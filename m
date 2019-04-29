@@ -2,64 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6631EE3E9
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2019 15:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C664E571
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2019 16:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728219AbfD2NqX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Apr 2019 09:46:23 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:47560 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725838AbfD2NqX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Apr 2019 09:46:23 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id A532B4FBAD9A45CAE935;
-        Mon, 29 Apr 2019 21:46:20 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.439.0; Mon, 29 Apr 2019 21:46:09 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-CC:     YueHaibing <yuehaibing@huawei.com>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: [PATCH net-next] bpf: Use PTR_ERR_OR_ZERO in bpf_fd_sk_storage_update_elem()
-Date:   Mon, 29 Apr 2019 13:56:11 +0000
-Message-ID: <20190429135611.72640-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+        id S1728573AbfD2Ow6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Apr 2019 10:52:58 -0400
+Received: from condef-10.nifty.com ([202.248.20.75]:36217 "EHLO
+        condef-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728339AbfD2Ow6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Apr 2019 10:52:58 -0400
+Received: from conuserg-11.nifty.com ([10.126.8.74])by condef-10.nifty.com with ESMTP id x3TEnEj6007839
+        for <bpf@vger.kernel.org>; Mon, 29 Apr 2019 23:49:14 +0900
+Received: from grover.flets-west.jp (softbank126125154137.bbtec.net [126.125.154.137]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id x3TElneS020381;
+        Mon, 29 Apr 2019 23:47:50 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com x3TElneS020381
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1556549270;
+        bh=0mmb8KbbWCtfjhHsrd+vj0pp6+i0mYzDtsbj3K9ug1I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=E/9dWespF/U4QZkTXajWW8HEjCLAKKtzzLhBEGSrAj4VfD82pdB+QgLaWlgB+DsaT
+         6UI0FG8X+mhTF7iJ86IY7bk/U3OQrxcU79h6tlvXMIkW+rNrOfRKryd3DVsWy1zDwK
+         GEoeQScbG6zQ4LquGHs3UKD3O3f/13bm8Od5l+ilrhK1fR+9bjc8BSU6acIm2x3XLC
+         HdLCTYw7cNLim5D7ScD3XYmceYHSbcgDvkXZ5QWKCbEs8RsV66wgIIkk/SAIjtrJzP
+         pGVLbPgdaEyka1onhlmaEIaNBLWsgWmMU3aBWNiOlyoyhj6j6f3nXE4QE494aHzA1n
+         QXm9/2qJy4Asg==
+X-Nifty-SrcIP: [126.125.154.137]
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Sirio Balmelli <sirio@b-ad.ch>,
+        Song Liu <songliubraving@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
+        Yonghong Song <yhs@fb.com>,
+        Taeung Song <treeze.taeung@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
+Subject: [PATCH] bpftool: exclude bash-completion/bpftool from .gitignore pattern
+Date:   Mon, 29 Apr 2019 23:47:39 +0900
+Message-Id: <1556549259-16298-1-git-send-email-yamada.masahiro@socionext.com>
+X-Mailer: git-send-email 2.7.4
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use PTR_ERR_OR_ZERO rather than if(IS_ERR(...)) + PTR_ERR
+tools/bpf/bpftool/.gitignore has the "bpftool" pattern, which is
+intended to ignore the following build artifact:
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+  tools/bpf/bpftool/bpftool
+
+However, the .gitignore entry is effective not only for the current
+directory, but also for any sub-directories.
+
+So, the following file is also considered to be ignored:
+
+  tools/bpf/bpftool/bash-completion/bpftool
+
+It is obviously version-controlled, so should be excluded from the
+.gitignore pattern.
+
+You can fix it by prefixing the pattern with '/', which means it is
+only effective in the current directory.
+
+I prefixed the other patterns consistently. IMHO, '/' prefixing is
+safer when you intend to ignore specific files.
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
- net/core/bpf_sk_storage.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-index a8e9ac71b22d..cc9597a87770 100644
---- a/net/core/bpf_sk_storage.c
-+++ b/net/core/bpf_sk_storage.c
-@@ -708,7 +708,7 @@ static int bpf_fd_sk_storage_update_elem(struct bpf_map *map, void *key,
- 	if (sock) {
- 		sdata = sk_storage_update(sock->sk, map, value, map_flags);
- 		sockfd_put(sock);
--		return IS_ERR(sdata) ? PTR_ERR(sdata) : 0;
-+		return PTR_ERR_OR_ZERO(sdata);
- 	}
- 
- 	return err;
+ tools/bpf/bpftool/.gitignore | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-
-
-
+diff --git a/tools/bpf/bpftool/.gitignore b/tools/bpf/bpftool/.gitignore
+index 67167e4..19efcc8 100644
+--- a/tools/bpf/bpftool/.gitignore
++++ b/tools/bpf/bpftool/.gitignore
+@@ -1,5 +1,5 @@
+ *.d
+-bpftool
+-bpftool*.8
+-bpf-helpers.*
+-FEATURE-DUMP.bpftool
++/bpftool
++/bpftool*.8
++/bpf-helpers.*
++/FEATURE-DUMP.bpftool
+-- 
+2.7.4
 
