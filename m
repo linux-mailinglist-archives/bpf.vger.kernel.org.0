@@ -2,280 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19292ED54
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2019 01:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F399ED72
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2019 01:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728844AbfD2Xcx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Apr 2019 19:32:53 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:45916 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728748AbfD2Xcx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Apr 2019 19:32:53 -0400
-Received: by mail-io1-f66.google.com with SMTP id e8so10541539ioe.12;
-        Mon, 29 Apr 2019 16:32:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FHZfi5iW6HeO4gNAYB84MWqeizOGnBzEIRUuiVrwJMk=;
-        b=DA1dD8zjmeBAeA1Ee0lzq8z1DPv/5z9EkHCvdNJsl9ufaIGEAcTgawaTU0HktsV/wt
-         LMIWEAq0J/Ug+M23/B2TcLWn0daxB5B49FfBJ6oFbYjLHEoPp2cl3fhfS342JvkNPAno
-         5zWRJ+94cOJXDlbuTkZ5AkVrSOHiryGZtwsmthriEzUmjjG9d0AqqiiGSVPocdzIh907
-         YvaJxfhnzmVePC9V+H5WNWPE6Z1jcsIhuSUGt8bp62LGCEJvHMzjDNC0xoDhhwfLflUh
-         0xoaE1nQ732BigqMzlUbaLwvOL8bU35fSO5hfx75NZRMVLhhtlxD7jWIdwRoGqOh1dac
-         aJTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FHZfi5iW6HeO4gNAYB84MWqeizOGnBzEIRUuiVrwJMk=;
-        b=jyxWYKeccIk0+re2Hgxwwx45NzQZThh0Hlhuan/YvdOZp4/VquHHEANU4l4g8xyybv
-         xdYeKdyHd7rtJC5gfkFY3F0B/MjXHCzLXr6V7jrLf9hktgtonEqTgYNfKZHuZBvrYoCG
-         3XtxbUCW9Lv64FnlGol1aYHf5nqCPFNVIH6IL/FW0TNsVuyywLiDXmh0zfjYioGhL6qL
-         LjleA22EMZvMQ8ya53Bi16ipznexvbQQxTBqrZ7ftFXkS8M6idCGmF4jmBdU+Rji9OeU
-         9tIyT8bAG5LXyBUMp15WkUqIxOEeswmQcpdFfZTbWJZ0VqYiTp7Ku0EjSdceRadq0Ata
-         EbJg==
-X-Gm-Message-State: APjAAAXpt80d9mAxxqdWXz70cavdfQcgxO944Y8wqHg/Em9hyzk8WKgf
-        LscckoO38Ytyhktote8M3J/2/DYmIskPxb4n3xU=
-X-Google-Smtp-Source: APXvYqywEpn1WRJzCRSeJYcynIwRtSUCWThETR4iLXnUkIhfVMxUQN9YQ9NNXxUslGlgFc8TfvJfQ0SOWw+vOXBueJw=
-X-Received: by 2002:a5d:8a02:: with SMTP id w2mr24390895iod.89.1556580771889;
- Mon, 29 Apr 2019 16:32:51 -0700 (PDT)
+        id S1729319AbfD2X7n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Apr 2019 19:59:43 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:47522 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728844AbfD2X7n (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 29 Apr 2019 19:59:43 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x3TNq4fV018148
+        for <bpf@vger.kernel.org>; Mon, 29 Apr 2019 16:59:42 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=2wMCErr0sND7f1nPIJ6IsOlqNybTQX/QdARsf/EQBJc=;
+ b=lN3kRjA2thGLKMsFbOc9bQWSFmQtDxG2DKXFw14xvE+RksJe1GpCi/wa0gK5U2Vcr+9+
+ Q/WhOJDPyTgt1j/AkXdrhsBSAeg1M6zOSDGviTt0aZzTj82q2W1FlfBApDZU1iPIX8ja
+ H8YM6uM39bpBJq0t5npHorE3drt90ZyERk0= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 2s4jrcf5g0-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 29 Apr 2019 16:59:42 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 29 Apr 2019 16:59:41 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id D51373702EE7; Mon, 29 Apr 2019 16:59:38 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Yonghong Song <yhs@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] selftests/bpf: set RLIMIT_MEMLOCK properly for test_libbpf_open.c
+Date:   Mon, 29 Apr 2019 16:59:38 -0700
+Message-ID: <20190429235938.392833-1-yhs@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20190429095227.9745-1-quentin.monnet@netronome.com> <20190429095227.9745-2-quentin.monnet@netronome.com>
-In-Reply-To: <20190429095227.9745-2-quentin.monnet@netronome.com>
-From:   Y Song <ys114321@gmail.com>
-Date:   Mon, 29 Apr 2019 16:32:15 -0700
-Message-ID: <CAH3MdRUQn=ycpcDLbLxGAZwGhnVMoD-avPPcSCopAtwof4czNw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/6] tools: bpftool: add --log-libbpf option to
- get debug info from libbpf
-To:     Quentin Monnet <quentin.monnet@netronome.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        oss-drivers@netronome.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-04-29_14:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=9 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=699 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1904290155
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 29, 2019 at 2:53 AM Quentin Monnet
-<quentin.monnet@netronome.com> wrote:
->
-> libbpf has three levels of priority for output: warn, info, debug. By
-> default, debug output is not printed to stderr.
->
-> Add a new "--log-libbpf LOG_LEVEL" option to bpftool to provide more
-> flexibility on the log level for libbpf. LOG_LEVEL is a comma-separated
-> list of levels of log to print ("warn", "info", "debug"). The value
-> corresponding to the default behaviour would be "warn,info".
+Test test_libbpf.sh failed on my development server with failure
+  -bash-4.4$ sudo ./test_libbpf.sh
+  [0] libbpf: Error in bpf_object__probe_name():Operation not permitted(1).
+      Couldn't load basic 'r0 = 0' BPF program.
+  test_libbpf: failed at file test_l4lb.o
+  selftests: test_libbpf [FAILED]
+  -bash-4.4$
 
-Do you think option like "warn,debug" will be useful for bpftool users?
-Maybe at bpftool level, we could allow user only to supply minimum level
-for log output, e.g., "info" will output "warn,info"?
+The reason is because my machine has 64KB locked memory by default which
+is not enough for this program to get locked memory.
+Similar to other bpf selftests, let us increase RLIMIT_MEMLOCK
+to infinity, which fixed the issue.
 
->
-> Internally, we simply use the function provided by libbpf to replace the
-> default printing function by one that prints logs for all required
-> levels.
->
-> Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
-> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-> ---
->  .../bpftool/Documentation/bpftool-prog.rst    |  6 ++
->  tools/bpf/bpftool/bash-completion/bpftool     | 41 ++++++++++++-
->  tools/bpf/bpftool/main.c                      | 61 ++++++++++++++++---
->  3 files changed, 100 insertions(+), 8 deletions(-)
->
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-> index e8118544d118..77d9570488d1 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-> @@ -174,6 +174,12 @@ OPTIONS
->                   Do not automatically attempt to mount any virtual file system
->                   (such as tracefs or BPF virtual file system) when necessary.
->
-> +       --log-libbpf *LOG_LEVEL*
-> +                 Set the log level for libbpf output when attempting to load
-> +                 programs. *LOG_LEVEL* must be a comma-separated list of the
-> +                 levels of information to print, which can be **warn**,
-> +                 **info** or **debug**. The default is **warn,info**.
-> +
->  EXAMPLES
->  ========
->  **# bpftool prog show**
-> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-> index 50e402a5a9c8..a232da1b158d 100644
-> --- a/tools/bpf/bpftool/bash-completion/bpftool
-> +++ b/tools/bpf/bpftool/bash-completion/bpftool
-> @@ -44,6 +44,34 @@ _bpftool_one_of_list()
->      COMPREPLY+=( $( compgen -W "$*" -- "$cur" ) )
->  }
->
-> +# Complete a comma-separated list of items. For example:
-> +#     _bpftool_cslist "abc def ghi"
-> +# will suggest:
-> +#     - "abc" and "abc,"        to complete "a"
-> +#     - "abc,def" and "abc,ghi" to complete "abc,"
-> +#     - "abc,ghi,def"           to complete "abc,ghi,"
-> +_bpftool_cslist()
-> +{
-> +    local array_arg array_cur array_comp prevsubwords w ifs_back
-> +    read -r -a array_arg <<< "$*"
-> +    ifs_back=$IFS
-> +    IFS="," read -r -a array_cur <<< "$cur"
-> +    IFS=$ifs_back
-> +    prevsubwords=${cur%,*}
-> +    for w in "${array_arg[@]}"; do
-> +            if [[ ! "$cur" =~ "," ]]; then
-> +                array_comp+=( "$w" "$w," )
-> +            elif [[ ! "$cur" =~ "$w," ]]; then
-> +                if [[ "${#array_arg[@]}" > ${#array_cur[@]} ]]; then
-> +                    array_comp+=( "$prevsubwords,$w" "$prevsubwords,$w," )
-> +                else
-> +                    array_comp+=( "$prevsubwords,$w" )
-> +                fi
-> +            fi
-> +    done
-> +    COMPREPLY+=( $( compgen -W "${array_comp[*]}" -- "$cur" ) )
-> +}
-> +
->  _bpftool_get_map_ids()
->  {
->      COMPREPLY+=( $( compgen -W "$( bpftool -jp map  2>&1 | \
-> @@ -181,7 +209,7 @@ _bpftool()
->
->      # Deal with options
->      if [[ ${words[cword]} == -* ]]; then
-> -        local c='--version --json --pretty --bpffs --mapcompat'
-> +        local c='--version --json --pretty --bpffs --mapcompat --log-libbpf'
->          COMPREPLY=( $( compgen -W "$c" -- "$cur" ) )
->          return 0
->      fi
-> @@ -203,12 +231,23 @@ _bpftool()
->              COMPREPLY=( $( compgen -W 'file' -- "$cur" ) )
->              return 0
->              ;;
-> +        --log-libbpf)
-> +            _bpftool_cslist 'warn info debug'
-> +            return 0
-> +            ;;
->      esac
->
->      # Remove all options so completions don't have to deal with them.
->      local i
->      for (( i=1; i < ${#words[@]}; )); do
->          if [[ ${words[i]::1} == - ]]; then
-> +            # Remove arguments for options, if necessary
-> +            case ${words[i]} in
-> +                --log-libbpf)
-> +                    words=( "${words[@]:0:i+1}" "${words[@]:i+2}" )
-> +                    [[ $i -le $cword ]] && cword=$(( cword - 1 ))
-> +                    ;;
-> +            esac
->              words=( "${words[@]:0:i}" "${words[@]:i+1}" )
->              [[ $i -le $cword ]] && cword=$(( cword - 1 ))
->          else
-> diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-> index 1ac1fc520e6a..6318be6feb5c 100644
-> --- a/tools/bpf/bpftool/main.c
-> +++ b/tools/bpf/bpftool/main.c
-> @@ -10,6 +10,7 @@
->  #include <string.h>
->
->  #include <bpf.h>
-> +#include <libbpf.h>
->
->  #include "main.h"
->
-> @@ -26,6 +27,7 @@ bool json_output;
->  bool show_pinned;
->  bool block_mount;
->  int bpf_flags;
-> +int log_level_libbpf;
->  struct pinned_obj_table prog_table;
->  struct pinned_obj_table map_table;
->
-> @@ -77,6 +79,46 @@ static int do_version(int argc, char **argv)
->         return 0;
->  }
->
-> +static int __printf(2, 0)
-> +print_selected_levels(enum libbpf_print_level level, const char *format,
-> +                     va_list args)
-> +{
-> +       if (!(log_level_libbpf & (1 << level)))
-> +               return 0;
-> +
-> +       return vfprintf(stderr, format, args);
-> +}
-> +
-> +static int set_libbpf_loglevel(const char *log_str)
-> +{
-> +       char *log_str_cpy, *token;
-> +
-> +       log_str_cpy = strdup(log_str);
-> +       if (!log_str_cpy) {
-> +               p_err("mem alloc failed");
-> +               return -1;
-> +       }
-> +
-> +       token = strtok(log_str_cpy, ",");
-> +       while (token) {
-> +               if (is_prefix(token, "warn"))
-> +                       log_level_libbpf |= (1 << LIBBPF_WARN);
-> +               else if (is_prefix(token, "info"))
-> +                       log_level_libbpf |= (1 << LIBBPF_INFO);
-> +               else if (is_prefix(token, "debug"))
-> +                       log_level_libbpf |= (1 << LIBBPF_DEBUG);
-> +               else
-> +                       p_info("unrecognized log level for libbpf: %s", token);
-> +
-> +               token = strtok(NULL, ",");
-> +       }
-> +       free(log_str_cpy);
-> +
-> +       libbpf_set_print(print_selected_levels);
-> +
-> +       return 0;
-> +}
-> +
->  int cmd_select(const struct cmd *cmds, int argc, char **argv,
->                int (*help)(int argc, char **argv))
->  {
-> @@ -310,13 +352,14 @@ static int do_batch(int argc, char **argv)
->  int main(int argc, char **argv)
->  {
->         static const struct option options[] = {
-> -               { "json",       no_argument,    NULL,   'j' },
-> -               { "help",       no_argument,    NULL,   'h' },
-> -               { "pretty",     no_argument,    NULL,   'p' },
-> -               { "version",    no_argument,    NULL,   'V' },
-> -               { "bpffs",      no_argument,    NULL,   'f' },
-> -               { "mapcompat",  no_argument,    NULL,   'm' },
-> -               { "nomount",    no_argument,    NULL,   'n' },
-> +               { "json",       no_argument,            NULL,   'j' },
-> +               { "help",       no_argument,            NULL,   'h' },
-> +               { "pretty",     no_argument,            NULL,   'p' },
-> +               { "version",    no_argument,            NULL,   'V' },
-> +               { "bpffs",      no_argument,            NULL,   'f' },
-> +               { "mapcompat",  no_argument,            NULL,   'm' },
-> +               { "nomount",    no_argument,            NULL,   'n' },
-> +               { "log-libbpf", required_argument,      NULL,   'd' },
->                 { 0 }
->         };
->         int opt, ret;
-> @@ -362,6 +405,10 @@ int main(int argc, char **argv)
->                 case 'n':
->                         block_mount = true;
->                         break;
-> +               case 'd':
-> +                       if (set_libbpf_loglevel(optarg))
-> +                               return -1;
-> +                       break;
->                 default:
->                         p_err("unrecognized option '%s'", argv[optind - 1]);
->                         if (json_output)
-> --
-> 2.17.1
->
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ tools/testing/selftests/bpf/test_libbpf_open.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/testing/selftests/bpf/test_libbpf_open.c b/tools/testing/selftests/bpf/test_libbpf_open.c
+index 65cbd30704b5..9e9db202d218 100644
+--- a/tools/testing/selftests/bpf/test_libbpf_open.c
++++ b/tools/testing/selftests/bpf/test_libbpf_open.c
+@@ -11,6 +11,8 @@ static const char *__doc__ =
+ #include <bpf/libbpf.h>
+ #include <getopt.h>
+ 
++#include "bpf_rlimit.h"
++
+ static const struct option long_options[] = {
+ 	{"help",	no_argument,		NULL, 'h' },
+ 	{"debug",	no_argument,		NULL, 'D' },
+-- 
+2.17.1
+
