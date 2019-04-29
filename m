@@ -2,249 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DAFBC13
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2019 00:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77CCBDC35
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2019 08:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbfD1WL6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 28 Apr 2019 18:11:58 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:35896 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726393AbfD1WL5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 28 Apr 2019 18:11:57 -0400
-Received: by mail-wr1-f67.google.com with SMTP id o4so1047226wra.3
-        for <bpf@vger.kernel.org>; Sun, 28 Apr 2019 15:11:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=/IL43qS6udoTDftX6QDe2Hq5Yokp9Y3gaBgT9d3a0HA=;
-        b=EDvp9iUTucXpt0CkeBi2nbSpeptQNs9i1I0AlLIsyuzqMepEElKGgJL3OKAB4qk7m1
-         HVdRnEIIhUbJxR1lSDVBsPYLZC2ElbkDbOW+JKOHWjRSDCFNk2bgosrdc0q13s+qjEAE
-         86XZmI9N7sT6FBK/nJwSqBZrCF7XMevPSo2HACKA+RvzSfZnZHbn7VhzBaFDP3O3H1yJ
-         qe2COYCvny3n/ljW6jwh3Ryz5oEm8/MRmboqpCF8MSR4YZMb4GdJVeUy2t8OQpZjiHzv
-         9WnE9tRi8o+aPAkSuZKuOd80B5xc7dLb0fnyYcvWJRtN054eXoRq8eyPzPgz56sx8HHi
-         qcXQ==
+        id S1727432AbfD2GvI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Apr 2019 02:51:08 -0400
+Received: from mail-it1-f198.google.com ([209.85.166.198]:55236 "EHLO
+        mail-it1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727314AbfD2GvH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Apr 2019 02:51:07 -0400
+Received: by mail-it1-f198.google.com with SMTP id w1so8779117itk.4
+        for <bpf@vger.kernel.org>; Sun, 28 Apr 2019 23:51:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=/IL43qS6udoTDftX6QDe2Hq5Yokp9Y3gaBgT9d3a0HA=;
-        b=L6c6+2s5K46vC690yUI27GAcRu4wiecneJY4H/kfvUvh8Er4Ia0j4s80L+X2P/6aVo
-         C+U49uZF3pRtrgbEvr0n4dQNjiiQBtXzhv5tcLRafT1WXqM40AZmq1AM6cFs9ENquMfp
-         O39WGDiClGl+z/x+7onuplHLxFB4q3enoWPH+UswoZ01snRqJNGJthY2l8jtTKSB3Cny
-         i5b35PZlekpu9kBUK7P7A5zehGEDahjDdO0gP8/KV/doWaOEum6gk7qovm50SVBO0A4q
-         W8V7GWVi0u/dxWOraaKaEjx8DMkwFT7jroFnWw7zi8otoaxYyiTGAaHIsjzrT4w7MV6+
-         ixhw==
-X-Gm-Message-State: APjAAAUFhs8FiJHRV4YJfKoO8YeF71xB2w/Mg3psH49EyRZIc2tRdyyJ
-        C+DM3x+ctDS2wLgNrsX34ofBLA==
-X-Google-Smtp-Source: APXvYqwEo/2IK9hxShmxq/tTuamaV+b8HCjzN+6sVKByA/bSot2+V8OUigDAfffmTOYA3POvLkmAZA==
-X-Received: by 2002:a5d:684c:: with SMTP id o12mr3331059wrw.308.1556489515023;
-        Sun, 28 Apr 2019 15:11:55 -0700 (PDT)
-Received: from [192.168.0.23] (cpc1-cmbg19-2-0-cust104.5-4.cable.virginm.net. [82.27.180.105])
-        by smtp.gmail.com with ESMTPSA id c6sm26047475wmb.21.2019.04.28.15.11.54
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 28 Apr 2019 15:11:54 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: 32-bit zext time complexity (Was Re: [PATCH bpf-next]
- selftests/bpf: two scale tests)
-From:   Jiong Wang <jiong.wang@netronome.com>
-In-Reply-To: <20190427030512.zs3tfdudjbfpyawh@ast-mbp>
-Date:   Sun, 28 Apr 2019 23:11:57 +0100
-Cc:     Alexei Starovoitov <ast@kernel.org>, daniel@iogearbox.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        "oss-drivers@netronome.com" <oss-drivers@netronome.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <760D400C-2548-41B6-AE34-F89A66397A75@netronome.com>
-References: <20190412214132.2726285-1-ast@kernel.org>
- <lyimv3hujp.fsf@netronome.com>
- <20190425043347.pxrz5ln4m7khebt6@ast-mbp.dhcp.thefacebook.com>
- <lylfzyeebr.fsf@netronome.com>
- <20190425221021.ov2jj4piann7wmid@ast-mbp.dhcp.thefacebook.com>
- <lyk1fgrk4m.fsf@netronome.com> <20190427030512.zs3tfdudjbfpyawh@ast-mbp>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-X-Mailer: Apple Mail (2.3273)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=0qZLZLJmwFaFyVVTucnvYljP6E+0WAuE6+ls/H8SXaA=;
+        b=PCbijpQSSkfC7j8V7P1afyLQzUJfEz9Hs8XuvQu3qp1L8AgqbDQgVXIV+plkBJ2dsF
+         HNl3jwqwx/dCyGcD3EQ6HaA6cz0ACbOkmlsJb+qdJ7Zk+D1YHDTsokBHXz1nQbjp6L0f
+         M410vXew2u4PHtGjowUpc0Pz5xZvR3l9bXtmzpfFWoNfXQS2yOF+p2M6IPjDp41M5mtN
+         Z54AyrS+wl3NLXqeOEyIUiz3qUQWFuUg3txkHQodZMRphkiW7d7mcgn8uypcFKdh65OR
+         v2lV1r3s38INISceGzLIPkc3+B3YnDpOHGcQZSFfeElJ1qLI7k0i8fSF+o/3zWTvGtvV
+         4DIA==
+X-Gm-Message-State: APjAAAWb4m7cYXrO0YfTy1UHxRMJvv0w9ipEt9VvtB9fHn03pSMKTwPl
+        NBJyk5NDMIlZH6Ch8EkGMJfLd/nJHTA/DkOv/ShgYFS8phYm
+X-Google-Smtp-Source: APXvYqzBlacjE2ExRtUWfBvMM1j4Ozybdf6vgt9+tSDSO7k6XjIYOVdWlLEO+tL5wACDS96JhgfhVx6q+10OanjuRRVdIW+nPxM5
+MIME-Version: 1.0
+X-Received: by 2002:a24:ee83:: with SMTP id b125mr19875331iti.43.1556520666605;
+ Sun, 28 Apr 2019 23:51:06 -0700 (PDT)
+Date:   Sun, 28 Apr 2019 23:51:06 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006b30f30587a5b569@google.com>
+Subject: general protection fault in ip6_dst_lookup_tail (2)
+From:   syzbot <syzbot+58d8f704b86e4e3fb4d3@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, kafai@fb.com, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hello,
 
-> On 27 Apr 2019, at 04:05, Alexei Starovoitov =
-<alexei.starovoitov@gmail.com> wrote:
->=20
-> On Fri, Apr 26, 2019 at 02:06:33PM +0100, Jiong Wang wrote:
+syzbot found the following crash on:
 
-<snip>
+HEAD commit:    fdfdf867 net: phy: marvell: Fix buffer overrun with stats ..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=12be0d38a00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a42d110b47dd6b36
+dashboard link: https://syzkaller.appspot.com/bug?extid=58d8f704b86e4e3fb4d3
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
 
->>=20
->>> Note that bpf_patch_insn_single() is calling bpf_adj_branches() =
-twice too.
->>> And dead_code + convert_ctx + fixup_bpf_calls are calling
->>> bpf_patch_insn_single() a lot.
->>> How about before dead_code pass we convert the program into =
-basic-block
->>> format, patch it all, and then convert from bb back to offsets.
->>> Patching will become very cheap, since no loop over program will be
->>> necessary. A jump from bb-N to bb-M will stay as-is regardless
->>> of amount of patching was done inside each bb.
->>> The loops inside these patching passes will be converted from:
->>> for (i =3D 0; i < insn_cnt; i++, insn++)
->>> into:
->>> for each bb
->>>  for each insn in bb
->>=20
->> Interesting. If I am understanding correctly, BB then needs to =
-support
->> dynamic insn buffer resize. And after all insn patching finished, all =
-BBs
->> are finalized, we then linearized BBs (in a best order) to generate =
-the
->> final bpf image.
->=20
-> dynamic BB resize could be done similar to existing prog resize.
-> It grows in page increments.
->=20
->>> As far as option 1 "also pass aux_insn information to JITs"...
->>> in theory it's fine, but looks like big refactoring to existing =
-code.
->>=20
->> Will do quick explore, might turn out to be small change.
->>=20
->>> So if you want to make this bb conversion as step 2 and unblock the
->>> current patch set faster I suggest to go with option 2 "Introduce =
-zero
->>> extension insn".
->>=20
->> A second think, even zero extension insn introduced, it is inserted =
-after
->> the sub-register write insn, so we are still doing insert *not*
->> replacement, insn_delta inside bpf_patch_insn_single will be 1, so =
-the slow
->> path will always be taken (memmove + bpf_prog_realloc + 2 x
->> bpf_adj_branches).
->=20
-> ahh. right.
->=20
->> For the 1M-scale test, bpf_patch_insn_single is triggered because of =
-hi32
->> poisoning, not lo32 zext. So we just need to change MOV32 to MOV64 in =
-the
->> testcase which doesn't break the initial testing purpose of this =
-testcase
->> from my understanding. This then could avoid 1M call to
->> bpf_patch_insn_single and pass the test after 32-bit opt patch set =
-applied.
->>=20
->> Without this change and with hi32 randomization enabled, scale tests =
-will
->> still hang before insn patch infra improved.
->>=20
->> @@ -228,7 +228,7 @@ static void bpf_fill_scale1(struct bpf_test =
-*self)          =20
->> -             insn[i++] =3D BPF_ALU32_IMM(BPF_MOV, BPF_REG_0, 42);
->> +             insn[i++] =3D BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 42);
->>=20
->> This is change is not to paperover the underlying issue. We now know =
-the
->> existing insn patch infra doesn't scale to million level, so could =
-work on
->> improving it in the next step.
->=20
-> I'm hesitant to step back.
-> Do you see a program that can hit this patch_insn issue already?
-> (I mean without your hi32/lo32 zext changes).
+Unfortunately, I don't have any reproducer for this crash yet.
 
-No really on real world program which I feel won't do that much insn =
-patching.  =20
-                                                                         =
-       =20
-But on test_verifier, could be reproduced through enabling jit blinding, =
-       =20
-because the "scale" test contains imm insn.                              =
-       =20
-                                                                         =
-       =20
-For example, on bpf-next master, just run:                               =
-       =20
-                                                                         =
-       =20
-  sysctl net/core/bpf_jit_enable=3D1                                     =
-         =20
-  sysctl net/core/bpf_jit_harden=3D2                                     =
-         =20
-  test_verifier 732 (732 is the test number for =E2=80=9Cscale: scale =
-test1=E2=80=9D on my env) =20
-                                                                         =
-       =20
-This enables constant blinding which also needs insn patching.           =
-       =20
-test 732 contains nearly 1M BPF_MOV_IMM to be blinded, so could          =
-       =20
-have similar effect as hi32 poisoning.                                   =
-       =20
-                                                                         =
-       =20
-And benchmarking shows, once insn patch helper is called over 15000 =
-times,    =20
-then the user could fell the load delay, and when it is called around    =
-  =20
-50000 times, it will take about half minutes to finish verification.     =
-       =20
-                                                                         =
-       =20
-15000 :   3s                                                             =
-       =20
-45000 :  29s                                                             =
-       =20
-95000 : 125s                                                             =
-       =20
-195000: 712s=20
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+58d8f704b86e4e3fb4d3@syzkaller.appspotmail.com
 
->=20
->> At the same time the issue exposed from hi32 poisoning does raise =
-alarm
->> that there could be the same issue for lo32 zext, therefore this =
-patch set
->> doesn't scale if there are lots of insns to be zero extended, even =
-though
->> this may not happen in real world bpf prog.
->>=20
->> IMHO, avoid using insn patching when possible might always be better. =
-So,
->> if option 1 turns out to also generate clean patch set and introduce =
-small
->> changes, I am going to follow it in the update version.
->>=20
->> Please let me know if you have different opinion.
->=20
-> if you can craft a test that shows patch_insn issue before your set,
-> then it's ok to hack bpf_fill_scale1 to use alu64.
+kasan: CONFIG_KASAN_INLINE enabled
+kasan: GPF could be caused by NULL-ptr deref or user memory access
+general protection fault: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 20190 Comm: syz-executor.0 Not tainted 5.1.0-rc6+ #184
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+RIP: 0010:ip6_route_get_saddr include/net/ip6_route.h:119 [inline]
+RIP: 0010:ip6_dst_lookup_tail+0xf0e/0x1b30 net/ipv6/ip6_output.c:971
+Code: e6 07 e8 55 57 61 fb 48 85 db 0f 84 83 08 00 00 e8 47 57 61 fb 48 8d  
+7b 7c 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48  
+89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 07
+RSP: 0018:ffff888063406f40 EFLAGS: 00010207
+RAX: dffffc0000000000 RBX: 00c0200001ffff88 RCX: ffffc90005fe4000
+RDX: 0018040000400000 RSI: ffffffff860f35a9 RDI: 00c0200002000004
+RBP: ffff888063407098 R08: ffff888085a7c000 R09: ffffed1015d25bc8
+R10: ffffed1015d25bc7 R11: ffff8880ae92de3b R12: ffff8880653b3270
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff8880653b3298
+FS:  00007f58b1851700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000001fc96f0 CR3: 000000006d91d000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+  ip6_dst_lookup_flow+0xa8/0x220 net/ipv6/ip6_output.c:1094
+  sctp_v6_get_dst+0x785/0x1d80 net/sctp/ipv6.c:293
+  sctp_transport_route+0x132/0x370 net/sctp/transport.c:312
+  sctp_assoc_add_peer+0x53e/0xfc0 net/sctp/associola.c:678
+  sctp_process_param net/sctp/sm_make_chunk.c:2548 [inline]
+  sctp_process_init+0x249f/0x2b20 net/sctp/sm_make_chunk.c:2361
+  sctp_sf_do_unexpected_init net/sctp/sm_statefuns.c:1556 [inline]
+  sctp_sf_do_unexpected_init.isra.0+0x7cd/0x1350 net/sctp/sm_statefuns.c:1456
+  sctp_sf_do_5_2_1_siminit+0x35/0x40 net/sctp/sm_statefuns.c:1685
+  sctp_do_sm+0x12c/0x5770 net/sctp/sm_sideeffect.c:1188
+  sctp_assoc_bh_rcv+0x343/0x660 net/sctp/associola.c:1074
+  sctp_inq_push+0x1ea/0x290 net/sctp/inqueue.c:95
+  sctp_backlog_rcv+0x196/0xbe0 net/sctp/input.c:354
+  sk_backlog_rcv include/net/sock.h:943 [inline]
+  __release_sock+0x12e/0x3a0 net/core/sock.c:2413
+  release_sock+0x59/0x1c0 net/core/sock.c:2929
+  sctp_wait_for_connect+0x316/0x540 net/sctp/socket.c:9048
+  __sctp_connect+0xac2/0xce0 net/sctp/socket.c:1241
+  sctp_connect net/sctp/socket.c:4858 [inline]
+  sctp_inet_connect+0x2a2/0x340 net/sctp/socket.c:4874
+  __sys_connect+0x266/0x330 net/socket.c:1808
+  __do_sys_connect net/socket.c:1819 [inline]
+  __se_sys_connect net/socket.c:1816 [inline]
+  __x64_sys_connect+0x73/0xb0 net/socket.c:1816
+  do_syscall_64+0x103/0x610 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x458da9
+Code: ad b8 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 7b b8 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f58b1850c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000458da9
+RDX: 000000000000001c RSI: 0000000020000200 RDI: 0000000000000003
+RBP: 000000000073bfa0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f58b18516d4
+R13: 00000000004bf1f1 R14: 00000000004d02c0 R15: 00000000ffffffff
+Modules linked in:
+---[ end trace 04c26bfcf25dca59 ]---
+RIP: 0010:ip6_route_get_saddr include/net/ip6_route.h:119 [inline]
+RIP: 0010:ip6_dst_lookup_tail+0xf0e/0x1b30 net/ipv6/ip6_output.c:971
+Code: e6 07 e8 55 57 61 fb 48 85 db 0f 84 83 08 00 00 e8 47 57 61 fb 48 8d  
+7b 7c 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48  
+89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 07
+RSP: 0018:ffff888063406f40 EFLAGS: 00010207
+RAX: dffffc0000000000 RBX: 00c0200001ffff88 RCX: ffffc90005fe4000
+RDX: 0018040000400000 RSI: ffffffff860f35a9 RDI: 00c0200002000004
+RBP: ffff888063407098 R08: ffff888085a7c000 R09: ffffed1015d25bc8
+R10: ffffed1015d25bc7 R11: ffff8880ae92de3b R12: ffff8880653b3270
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff8880653b3298
+FS:  00007f58b1851700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000070c09b CR3: 000000006d91d000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-As described above, does the test_verifier 732 + jit blinding looks =
-convincing?
 
-> I would also prefer to go with option 2 (new zext insn) for JITs.
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Got it.
-
-> I still don't have good feeling about option 1.
-> Exposing all of aux_data to JITs may become a headache
-> in the verifier development. It needs to be done carefully.
-
-OK, understood.
-
-Just for clarification, I thought to just add a field, something like    =
-       =20
-"bool *zext_dst" inside bpf_prog_aux. Then only copy                     =
-       =20
-"env->insn_aux_data[*].zext_dst" to bpf_prog->aux->zext_dst, not copy =
-all        =20
-aux_data generated by verifier. The field in bpf_prog could latter be =
-extended  =20
-to a structure contains those analysis info verifier want to push down =
-to       =20
-JIT back-ends, and JIT back-end must free them as soon as JIT =
-compilation is    =20
-done.=
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
