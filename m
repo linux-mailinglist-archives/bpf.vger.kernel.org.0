@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A25C0DFDF
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2019 11:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B1ADFDB
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2019 11:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbfD2Jw4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Apr 2019 05:52:56 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:40030 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727800AbfD2Jwr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Apr 2019 05:52:47 -0400
-Received: by mail-wr1-f66.google.com with SMTP id h4so15061824wre.7
-        for <bpf@vger.kernel.org>; Mon, 29 Apr 2019 02:52:46 -0700 (PDT)
+        id S1727868AbfD2Jww (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Apr 2019 05:52:52 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:36211 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727856AbfD2Jws (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Apr 2019 05:52:48 -0400
+Received: by mail-wr1-f68.google.com with SMTP id o4so3126844wra.3
+        for <bpf@vger.kernel.org>; Mon, 29 Apr 2019 02:52:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=tv8ecTyhcL3Z+2NSBu2JHftiHPMgWFdUmca/m77pSlY=;
-        b=hwpQ0zLyGrp8uf4LlGrgPAPjWUmuGeNWiPWk5/Pt6y5HOHMgb2Nrp0SUr6ShXIj1e4
-         K8tF7bsGDSHX2IDgBtxJLB4/HTUu6mDBmEr+skfHvHl3IseR7UD7/xf/eWi94kurRDsg
-         VNn6aBynG8ktmbuMqYro5pIS0TY3c8OE3lOkWJI0KWxoBCazG1apS3w1V6PmFVrRcxlT
-         kmMf6E9viOhMl8TYe4fyhNnPhBvTCkyEMgYiWINIwa7sx3SEEgfEY//8xadETjwvWTgo
-         clXjQL6ZJzszEUzacf/BV1K+0S2Wf/4iO1wFoxz3GBpQUDDjClXxdB62rI2wT/gpyxDA
-         +vlg==
+        bh=vV5IIF8H0WuMd2J5w6doIbRMaPgBbSK0Xirjfj1X1Pk=;
+        b=my8m0mReTHmyo4fn7jJxDhUQY8e9Zh0juPFuK5oJ3YBpDjT+aHHIUh1MN5f9s/wBVW
+         kZ9Plw7/IcLth6gsmtyPY5j06Bnzgw4zclqFSZuYmqX2oduf5t4z4YyDDAAeiinJUB4c
+         KOCznbPSE+qXrkOT93ry2+vAIlzghZC2S0QQoEQD0MjIVp/WQZJHUoB8/5XsCGRm4s+p
+         4eOFJgIS32CA/+Y5N/7ZKODhG5SJxtM0yfr6BYgZI4mN4F9S+paa4641o7bx3coFoe4U
+         OHL4Vuf/gZNVmP1yUCG1ikmPFrIus4uyURVCAc+g4J7IyxPNJN8g/FtaIDGh1/FHmrD8
+         20ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=tv8ecTyhcL3Z+2NSBu2JHftiHPMgWFdUmca/m77pSlY=;
-        b=ulI+2To5hkGTxTmyoeK5S7xlfZzAyBuoqgD2/k/wfZ5aG4WRwzROEEC1UoRJrAlGTn
-         iclFX+p7pv68gR/SJLEW2AHfLf1daAm+lXKNZ460fX8sfvgNaOFD1bB9nIQwOC/+hL99
-         mg12MG2C6NS2obeaDC77PwMNXHmhRkTuSMHXszvV0crCRdmun5BtPfVK6XggZ6WubTOk
-         Fe+cvgvoJcAzBpu+a7Knia4Vo+G2+9ce6ksRvs8D6mhNQ4IuJyPcnmYJI9j7OTS91Xnh
-         SQx4yoARsGkWrTKH/is8kLt6iI/Q1aj2J0BjNVWre9nNhMlxvkgJKMc7McgnRzeb0b/l
-         GuZg==
-X-Gm-Message-State: APjAAAV+WdaJ4/VwC5eWS1no1x2YU2FKztUnMN+dPAWMo+pcARsG5RlR
-        DiZlwTX05Y1UqTkTh1tOE0XMglPeAmfo/w==
-X-Google-Smtp-Source: APXvYqyCrk1XrgS8M4Cc3qBZpHbjjfEx5TjOqBvq1sQCMtbfg5vUv/h9zFy+GPXHSq09T8oEKYM4dA==
-X-Received: by 2002:a05:6000:18b:: with SMTP id p11mr182875wrx.292.1556531565443;
-        Mon, 29 Apr 2019 02:52:45 -0700 (PDT)
+        bh=vV5IIF8H0WuMd2J5w6doIbRMaPgBbSK0Xirjfj1X1Pk=;
+        b=FgYMp0yxquyTqDvgVwTSwlkXC68Kv1kh8vvQhav+Dm0WVpwmJAkwT/UrpP54VK6nqA
+         sZ69q7+WB0Ay/L7ipq8PXskSXYQ3f3CIK8XftNs3rpmBM5eKRvzYLWY4eQ96f7blcnWy
+         +e9A5lA4MKORJLGAKdEdbKku7RaKrP9cgukdU/9zzT5onjUL6FmCNd/5W8Zvv5S2Fci8
+         rVG+40MEaqDNBM4gtapIImzQFvPJk043/swunV8wzxuUpjV1GLQgNYj0KiqzxD0UTYnM
+         dwzWI/fJKcdx2iKZgMVS7yKz7kcH/Lp+6ZrBFJ++3vkY/GbWc106O98VPtWyiOSKfGcg
+         9RsQ==
+X-Gm-Message-State: APjAAAVBZhIs49cmtet1c6QyLC6Cd3ODPiOu/uvJcAGFZg6wZVqqajXs
+        FVhGrDkISrJErDVd2nwESWUV6Z0ALC3bkQ==
+X-Google-Smtp-Source: APXvYqxNm30s9yu5w5vYvnLkD72BT9dAUzdeQCF48MFULg0qUGNGBSa+x3YtI3bN2qKu0/ZcPt3YFw==
+X-Received: by 2002:a5d:6a03:: with SMTP id m3mr13081906wru.135.1556531566508;
+        Mon, 29 Apr 2019 02:52:46 -0700 (PDT)
 Received: from cbtest32.netronome.com ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id x20sm11241535wrg.29.2019.04.29.02.52.44
+        by smtp.gmail.com with ESMTPSA id x20sm11241535wrg.29.2019.04.29.02.52.45
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 29 Apr 2019 02:52:44 -0700 (PDT)
+        Mon, 29 Apr 2019 02:52:45 -0700 (PDT)
 From:   Quentin Monnet <quentin.monnet@netronome.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         oss-drivers@netronome.com,
         Quentin Monnet <quentin.monnet@netronome.com>
-Subject: [PATCH bpf-next 4/6] bpf: make BPF_LOG_* flags available in UAPI header
-Date:   Mon, 29 Apr 2019 10:52:25 +0100
-Message-Id: <20190429095227.9745-5-quentin.monnet@netronome.com>
+Subject: [PATCH bpf-next 5/6] tools: bpf: report latest changes from BPF UAPI header to tools
+Date:   Mon, 29 Apr 2019 10:52:26 +0100
+Message-Id: <20190429095227.9745-6-quentin.monnet@netronome.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190429095227.9745-1-quentin.monnet@netronome.com>
 References: <20190429095227.9745-1-quentin.monnet@netronome.com>
@@ -60,38 +60,19 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The kernel verifier combines several flags to select what kind of logs
-to print to the log buffer provided by users.
-
-In order to make it easier to provide the relevant flags, move the
-related #define-s to the UAPI header, so that applications can set for
-example: attr->log_level = BPF_LOG_LEVEL1 | BPF_LOG_STATS.
+BPF verifier log level flags were moved from an internal header to the
+UAPI header file. Report the changes accordingly.
 
 Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
 Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
 ---
- include/linux/bpf_verifier.h | 3 ---
- include/uapi/linux/bpf.h     | 5 +++++
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ tools/include/uapi/linux/bpf.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 1305ccbd8fe6..8160a4bb7ad9 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -253,9 +253,6 @@ static inline bool bpf_verifier_log_full(const struct bpf_verifier_log *log)
- 	return log->len_used >= log->len_total - 1;
- }
- 
--#define BPF_LOG_LEVEL1	1
--#define BPF_LOG_LEVEL2	2
--#define BPF_LOG_STATS	4
- #define BPF_LOG_LEVEL	(BPF_LOG_LEVEL1 | BPF_LOG_LEVEL2)
- #define BPF_LOG_MASK	(BPF_LOG_LEVEL | BPF_LOG_STATS)
- 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
 index 72336bac7573..f8e3e764aff4 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
 @@ -335,6 +335,11 @@ struct bpf_stack_build_id {
  	};
  };
