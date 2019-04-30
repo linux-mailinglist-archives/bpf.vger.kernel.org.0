@@ -2,51 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE50FD06
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2019 17:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A65FCFDCF
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2019 18:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725942AbfD3Piz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Apr 2019 11:38:55 -0400
-Received: from smtp5.emailarray.com ([65.39.216.39]:41660 "EHLO
-        smtp5.emailarray.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725930AbfD3Piz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Apr 2019 11:38:55 -0400
-Received: (qmail 35411 invoked by uid 89); 30 Apr 2019 15:38:54 -0000
-Received: from unknown (HELO ?172.26.104.201?) (amxlbW9uQGZsdWdzdmFtcC5jb21AMTk5LjIwMS42NC40) (POLARISLOCAL)  
-  by smtp5.emailarray.com with (AES256-GCM-SHA384 encrypted) SMTP; 30 Apr 2019 15:38:54 -0000
-From:   "Jonathan Lemon" <jlemon@flugsvamp.com>
-To:     "=?utf-8?b?QmrDtnJuIFTDtnBlbA==?=" <bjorn.topel@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        magnus.karlsson@intel.com, magnus.karlsson@gmail.com,
-        bpf@vger.kernel.org, u9012063@gmail.com
-Subject: Re: [PATCH bpf 0/2] libbpf: fixes for AF_XDP teardown
-Date:   Tue, 30 Apr 2019 08:38:49 -0700
-X-Mailer: MailMate (1.12.4r5594)
-Message-ID: <15B5FD82-D048-416F-9D1E-7F2B675100DA@flugsvamp.com>
-In-Reply-To: <20190430124536.7734-1-bjorn.topel@gmail.com>
-References: <20190430124536.7734-1-bjorn.topel@gmail.com>
+        id S1726505AbfD3Q0y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Apr 2019 12:26:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44674 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725942AbfD3Q0y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Apr 2019 12:26:54 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id A8B90AE64;
+        Tue, 30 Apr 2019 16:26:52 +0000 (UTC)
+From:   mrostecki@opensuse.org
+Cc:     Michal Rostecki <mrostecki@opensuse.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] bpf, libbpf: Add .so files to gitignore
+Date:   Tue, 30 Apr 2019 18:25:01 +0200
+Message-Id: <20190430162501.13256-1-mrostecki@opensuse.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; markup=markdown
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Michal Rostecki <mrostecki@opensuse.org>
 
+This change adds libbpf shared libraries to .gitignore which were
+previously not included there.
 
-On 30 Apr 2019, at 5:45, Björn Töpel wrote:
+Signed-off-by: Michal Rostecki <mrostecki@opensuse.org>
+---
+ tools/lib/bpf/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
 
-> William found two bugs, when doing socket teardown within the same
-> process.
->
-> The first issue was an invalid munmap call, and the second one was an
-> invalid XSKMAP cleanup. Both resulted in that the process kept
-> references to the socket, which was not correctly cleaned up. When a
-> new socket was created, the bind() call would fail, since the old
-> socket was still lingering, refusing to give up the queue on the
-> netdev.
->
-> More details can be found in the individual commits.
+diff --git a/tools/lib/bpf/.gitignore b/tools/lib/bpf/.gitignore
+index 7d9e182a1f51..0b181b23f97d 100644
+--- a/tools/lib/bpf/.gitignore
++++ b/tools/lib/bpf/.gitignore
+@@ -1,4 +1,5 @@
+ libbpf_version.h
+ libbpf.pc
++libbpf.so.0*
+ FEATURE-DUMP.libbpf
+ test_libbpf
+-- 
+2.21.0
 
-Reviewed-by: Jonathan Lemon <jonathan.lemon@gmail.com>
