@@ -2,59 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A65FCFDCF
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2019 18:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42B2FED2
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2019 19:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbfD3Q0y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Apr 2019 12:26:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44674 "EHLO mx1.suse.de"
+        id S1726073AbfD3R1I (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Apr 2019 13:27:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55136 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725942AbfD3Q0y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Apr 2019 12:26:54 -0400
+        id S1726028AbfD3R1I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Apr 2019 13:27:08 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A8B90AE64;
-        Tue, 30 Apr 2019 16:26:52 +0000 (UTC)
-From:   mrostecki@opensuse.org
-Cc:     Michal Rostecki <mrostecki@opensuse.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        by mx1.suse.de (Postfix) with ESMTP id 3BA23ACC4;
+        Tue, 30 Apr 2019 17:27:07 +0000 (UTC)
+Date:   Tue, 30 Apr 2019 19:27:01 +0200
+From:   Michal Rostecki <mrostecki@opensuse.org>
+To:     mrostecki@opensuse.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] bpf, libbpf: Add .so files to gitignore
-Date:   Tue, 30 Apr 2019 18:25:01 +0200
-Message-Id: <20190430162501.13256-1-mrostecki@opensuse.org>
-X-Mailer: git-send-email 2.21.0
+Subject: Re: [PATCH] bpf, libbpf: Add .so files to gitignore
+Message-ID: <20190430172701.jegv3tmcvo3ytdri@workstation>
+References: <20190430162501.13256-1-mrostecki@opensuse.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190430162501.13256-1-mrostecki@opensuse.org>
+User-Agent: NeoMutt/20180716
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Michal Rostecki <mrostecki@opensuse.org>
-
-This change adds libbpf shared libraries to .gitignore which were
-previously not included there.
-
-Signed-off-by: Michal Rostecki <mrostecki@opensuse.org>
----
- tools/lib/bpf/.gitignore | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/lib/bpf/.gitignore b/tools/lib/bpf/.gitignore
-index 7d9e182a1f51..0b181b23f97d 100644
---- a/tools/lib/bpf/.gitignore
-+++ b/tools/lib/bpf/.gitignore
-@@ -1,4 +1,5 @@
- libbpf_version.h
- libbpf.pc
-+libbpf.so.0*
- FEATURE-DUMP.libbpf
- test_libbpf
--- 
-2.21.0
-
+I forgot to add "bpf-next" to the subject prefix, sorry!
