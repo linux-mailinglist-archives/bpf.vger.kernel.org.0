@@ -2,176 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC47F2AF
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2019 11:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E35EF314
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2019 11:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726644AbfD3JV4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Apr 2019 05:21:56 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:52086 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726294AbfD3JV4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Apr 2019 05:21:56 -0400
-Received: by mail-wm1-f65.google.com with SMTP id 4so2955834wmf.1
-        for <bpf@vger.kernel.org>; Tue, 30 Apr 2019 02:21:55 -0700 (PDT)
+        id S1726769AbfD3JeY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Apr 2019 05:34:24 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:40360 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726012AbfD3JeX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Apr 2019 05:34:23 -0400
+Received: by mail-wr1-f66.google.com with SMTP id h4so20170655wre.7
+        for <bpf@vger.kernel.org>; Tue, 30 Apr 2019 02:34:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iaFDFnvVtS1iWSBFrIIKUe+7Fko1T4rJ0OHw8pGokPc=;
-        b=SGZs7DUnbcoM2RcuSABcJ5nEoFb5Jh0yeaPcnF7PUPj+8pC9/WQCx9BoIHQSJleqz3
-         N/9J58myQKiVQXvIx8lwvoC+4AC9LE0osAegiYd5wfE42z2H/ePs54RyDNrRSTAa2IXw
-         7ByXxjQSOPkiK2LuY8u2671JH6lLW96Vv1MD5QJe62rqoc7RjuFVEEa0byaLidAP6+ss
-         mJg+n7238TTgYfVBHgjWao3xUI8HqccPyvjGIsXVyTLswrqQWSqnLM/WCl2P2UDefbzq
-         wY1iDaaKC5b4iIaEUCuRGx9TKrASiJp1IY0YURTny0z3gzpj5c7obFWhL8lZPD35gAo3
-         RPrA==
+        bh=WgeJtIaVk2LjqwSgc2L1QBSn7MOThACp1yk5NcAoAik=;
+        b=i2IJj0wNGRy4xTHMRfdNsjUEdx1lRAgJyA11hdM4I/j3rk6knydIAEH3RRMm9+0wne
+         mPZNf6Jjvj1+Uhj42BeIfuLGwv8LXHr1cLBCA4g9139MDeDB8OHQKWcb7cxEnTPPTysd
+         JYFP+nBit9hHNXjoPzM3E1l/E8gJm2Axc1SAqPnmI8qRSpb2q5/2j1Z99FPVigRJ+0Hc
+         o1gCcx5jAjdtkDcDxy0CNXA0IQHgR2bdmKyn1DUPAHIzz/ceIBP+Ud/MgU0OGRIaqV/u
+         KUMPYGcfRGIT3d4I5j4yhE0Kdu20BgcFkezSw6FdyJpOR1NSxxuV7bwMgYD9JNJ6lwT/
+         bskQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=iaFDFnvVtS1iWSBFrIIKUe+7Fko1T4rJ0OHw8pGokPc=;
-        b=UwgYLQKnA7hAmQ4hyCqdXSpTthPEhefm2ZoqVW9GenbkXUhCidayLEK/MqKPmrvdi7
-         mr1/l4TZry8xKjtIWK7qnWeLNaqfTa9Fh7wwXIr5tdf9JGElKZaje9dPKJhVpUJ7VEOm
-         wM04QzLF54GjUOHigoRYF8L5K4z7XdoP0fqxxnB+AScfcBrF5g1CKdkduEiql0DQ12Nq
-         94pW9EqbiJJKkbTSFUarU+MeQdMtde38VLoJMWN0eKtNm6G3v5IX+AZHWHDxvhBdBhJx
-         UJJzAeTghp4NgCjqvg9ehxeRIFTx5Rrpz/orMN2w4Uveh+KiMRRuWzO1chxXY5jBWYq4
-         iv8w==
-X-Gm-Message-State: APjAAAXfAwmgWTDARfCooosAmLfLP0+i88Y0QQGT7EjRtMsyfpQpXEc5
-        GtRpN/uzZ10Qke9diC5UTI4bHq9FuN4=
-X-Google-Smtp-Source: APXvYqx+yh3Iadp8l8x5yFZGysITBwlj+gNULdwM6jjBvepbMk7WQhnCC99IjaETLKFpNyD41sTd9w==
-X-Received: by 2002:a7b:c054:: with SMTP id u20mr2564880wmc.100.1556616114786;
-        Tue, 30 Apr 2019 02:21:54 -0700 (PDT)
+        bh=WgeJtIaVk2LjqwSgc2L1QBSn7MOThACp1yk5NcAoAik=;
+        b=tbcF1lAis+Zp80Fvvb34y/zWzno0P9jIK0GUqHTvV244gfPBv5TCSBLP4Sv9Op5Wkz
+         rtUjMIIANMEL9Qxs4WvzpJCfIN6f2xg6KYvnKB7HE1gmYxQVMBheQhv/7UwTxlKH9bc7
+         BBy4/vtYS3If0bjnAUC2M3PlDE3nHRiMG5SjMXWKSNHb+Z6qk1dxE8yT3onSYYr9HI9h
+         bh5dd3+DpdL3e7uoQLoVNTkbHNQOZmBlaRWwVQuoDitkigjPVEMrFJWzvPekR9eU4Vvz
+         7W/4/j8JbkcqLioK6LQv57mct18A/T4mZMmsnnz3d9/7nG474kBAtwtt8Eytk2NIDoIV
+         awZA==
+X-Gm-Message-State: APjAAAW0DsmZRQA42RMPJfP1CJEREH5vgPDuO9F0yuXZ/R0dI8I9d2Aa
+        5NrNRj3nzyd7p9x9a/7RCJrMjQ==
+X-Google-Smtp-Source: APXvYqwgccHJSG+cYk7+C2F0UUHVL3LdLvbbu7hXo1Rh5d38y19YJgdeb4kOyOz2peZCJvBjbN+toA==
+X-Received: by 2002:adf:f7d0:: with SMTP id a16mr17750328wrq.211.1556616862742;
+        Tue, 30 Apr 2019 02:34:22 -0700 (PDT)
 Received: from [192.168.1.2] ([194.53.187.71])
-        by smtp.gmail.com with ESMTPSA id r2sm9694774wrr.65.2019.04.30.02.21.53
+        by smtp.gmail.com with ESMTPSA id p67sm2111596wmp.22.2019.04.30.02.34.21
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 30 Apr 2019 02:21:54 -0700 (PDT)
-Subject: Re: [PATCH] bpftool: exclude bash-completion/bpftool from .gitignore
- pattern
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Sirio Balmelli <sirio@b-ad.ch>,
-        Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
-        Taeung Song <treeze.taeung@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
-References: <1556549259-16298-1-git-send-email-yamada.masahiro@socionext.com>
- <ec1d2c14-ae27-38c7-9b79-4e323161d6f5@netronome.com>
- <CAK7LNARBOtOMr-=FRh0K1nMFLijRjRCMHYb0L=NY7KZQGydVrQ@mail.gmail.com>
+        Tue, 30 Apr 2019 02:34:21 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 1/6] tools: bpftool: add --log-libbpf option to
+ get debug info from libbpf
+To:     Y Song <ys114321@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        oss-drivers@netronome.com
+References: <20190429095227.9745-1-quentin.monnet@netronome.com>
+ <20190429095227.9745-2-quentin.monnet@netronome.com>
+ <CAH3MdRUQn=ycpcDLbLxGAZwGhnVMoD-avPPcSCopAtwof4czNw@mail.gmail.com>
 From:   Quentin Monnet <quentin.monnet@netronome.com>
-Message-ID: <ca18f97d-0a16-0c2f-2849-841633ad09cb@netronome.com>
-Date:   Tue, 30 Apr 2019 10:21:52 +0100
+Message-ID: <d4f761c3-d133-4f89-44c2-a96c7f917571@netronome.com>
+Date:   Tue, 30 Apr 2019 10:34:20 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <CAK7LNARBOtOMr-=FRh0K1nMFLijRjRCMHYb0L=NY7KZQGydVrQ@mail.gmail.com>
+In-Reply-To: <CAH3MdRUQn=ycpcDLbLxGAZwGhnVMoD-avPPcSCopAtwof4czNw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2019-04-30 09:15 UTC+0900 ~ Masahiro Yamada <yamada.masahiro@socionext.com>
-> Hi Quentin,
-> 
-> 
-> On Tue, Apr 30, 2019 at 12:33 AM Quentin Monnet
+Hi Yonghong,
+
+2019-04-29 16:32 UTC-0700 ~ Y Song <ys114321@gmail.com>
+> On Mon, Apr 29, 2019 at 2:53 AM Quentin Monnet
 > <quentin.monnet@netronome.com> wrote:
 >>
->> 2019-04-29 23:47 UTC+0900 ~ Masahiro Yamada <yamada.masahiro@socionext.com>
->>> tools/bpf/bpftool/.gitignore has the "bpftool" pattern, which is
->>> intended to ignore the following build artifact:
->>>
->>>    tools/bpf/bpftool/bpftool
->>>
->>> However, the .gitignore entry is effective not only for the current
->>> directory, but also for any sub-directories.
->>>
->>> So, the following file is also considered to be ignored:
->>>
->>>    tools/bpf/bpftool/bash-completion/bpftool
->>>
->>> It is obviously version-controlled, so should be excluded from the
->>> .gitignore pattern.
->>>
->>> You can fix it by prefixing the pattern with '/', which means it is
->>> only effective in the current directory.
->>>
->>> I prefixed the other patterns consistently. IMHO, '/' prefixing is
->>> safer when you intend to ignore specific files.
->>>
->>> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
->>> ---
+>> libbpf has three levels of priority for output: warn, info, debug. By
+>> default, debug output is not printed to stderr.
 >>
->> Hi,
->>
->> “Files already tracked by Git are not affected” by the .gitignore (says
->> the relevant man page), so bash completion file is not ignored. It would
->> be if we were to add the sources to the index of a new Git repo. But
->> sure, it does not cost much to make the .gitignore cleaner.
+>> Add a new "--log-libbpf LOG_LEVEL" option to bpftool to provide more
+>> flexibility on the log level for libbpf. LOG_LEVEL is a comma-separated
+>> list of levels of log to print ("warn", "info", "debug"). The value
+>> corresponding to the default behaviour would be "warn,info".
 > 
-> Right, git seems to be flexible enough.
-> 
-> 
-> But, .gitignore is useful to identify
-> build artifacts in general.
-> In fact, other than git, some projects
-> already parse this.
-> 
-> For example, tar(1) supports:
-> 
->       --exclude-vcs-ignores
->             read exclude patterns from the VCS ignore files
-> 
-> 
-> As of writing, this option works only to some extent,
-> but I thought this would be useful to create a source
-> package without relying on "git archive".
-> 
-> When I tried "tar --exclude-vcs-ignores", I noticed
-> tools/bpf/bpftool/bash-completion/bpftool was not
-> contained in the tarball.
-> 
-> That's why I sent this patch.
+> Do you think option like "warn,debug" will be useful for bpftool users?
+> Maybe at bpftool level, we could allow user only to supply minimum level
+> for log output, e.g., "info" will output "warn,info"?
+I've been pondering this, too. Since we allow to combine all levels for 
+the verifier logs it feels a bit odd to be less flexible for libbpf. And 
+we could imagine a user who wants verifier logs (so libbpf "debug") but 
+prefers to limit libbpf output (so no "info")... Although I admit this 
+might be a bit far-fetched.
 
-Ok, thanks for explaining! Makes sense to me now.
+I can resend a version with the option taking only the minimal log 
+level, as you describe, if you think this is best.
 
-> 
-> I can add more info in v2 to clarify
-> my motivation though.
-
-Sounds good, yes please.
-
-> 
-> 
->>>
->>>   tools/bpf/bpftool/.gitignore | 8 ++++----
->>>   1 file changed, 4 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/tools/bpf/bpftool/.gitignore b/tools/bpf/bpftool/.gitignore
->>> index 67167e4..19efcc8 100644
->>> --- a/tools/bpf/bpftool/.gitignore
->>> +++ b/tools/bpf/bpftool/.gitignore
->>> @@ -1,5 +1,5 @@
->>>   *.d
->>> -bpftool
->>> -bpftool*.8
->>> -bpf-helpers.*
->>> -FEATURE-DUMP.bpftool
->>> +/bpftool
->>> +/bpftool*.8
->>> +/bpf-helpers.*
->>
->> Careful when you add all those slashes, however. "bpftool*.8" and
->> "bpf-helpers.*" should match files under Documentation/, so you do NOT
->> want to prefix them with just a "/".
-> 
-> OK, I should not have touched what I was unsure about.
-> Will fix in v2.
-
-Thanks!
 Quentin
+
+> 
+>>
+>> Internally, we simply use the function provided by libbpf to replace the
+>> default printing function by one that prints logs for all required
+>> levels.
+>>
+>> Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
+>> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
