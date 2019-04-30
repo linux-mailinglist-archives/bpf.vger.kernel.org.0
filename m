@@ -2,93 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F399ED72
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2019 01:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87737ED8E
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2019 02:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729319AbfD2X7n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Apr 2019 19:59:43 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:47522 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728844AbfD2X7n (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 29 Apr 2019 19:59:43 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x3TNq4fV018148
-        for <bpf@vger.kernel.org>; Mon, 29 Apr 2019 16:59:42 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=2wMCErr0sND7f1nPIJ6IsOlqNybTQX/QdARsf/EQBJc=;
- b=lN3kRjA2thGLKMsFbOc9bQWSFmQtDxG2DKXFw14xvE+RksJe1GpCi/wa0gK5U2Vcr+9+
- Q/WhOJDPyTgt1j/AkXdrhsBSAeg1M6zOSDGviTt0aZzTj82q2W1FlfBApDZU1iPIX8ja
- H8YM6uM39bpBJq0t5npHorE3drt90ZyERk0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 2s4jrcf5g0-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 29 Apr 2019 16:59:42 -0700
-Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 29 Apr 2019 16:59:41 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id D51373702EE7; Mon, 29 Apr 2019 16:59:38 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Yonghong Song <yhs@fb.com>
-Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Yonghong Song <yhs@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] selftests/bpf: set RLIMIT_MEMLOCK properly for test_libbpf_open.c
-Date:   Mon, 29 Apr 2019 16:59:38 -0700
-Message-ID: <20190429235938.392833-1-yhs@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1729230AbfD3APp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Apr 2019 20:15:45 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:28682 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729083AbfD3APp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Apr 2019 20:15:45 -0400
+X-Greylist: delayed 33991 seconds by postgrey-1.27 at vger.kernel.org; Mon, 29 Apr 2019 20:15:43 EDT
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id x3U0Fd25000867;
+        Tue, 30 Apr 2019 09:15:40 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com x3U0Fd25000867
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1556583340;
+        bh=q+wnSYJgkuXCqwUQQQG2fqHF1PoqjJGwSyWrsWQE94c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=xZwit9Hy6Z7yHd7FKiZxqkHlA/bLXU/WykOGiv+L1JwBrATQrlPAKQ7rkLHbGGJIH
+         Nb8ntDBv0s6xoSvW8K+4STy0Ak/FmWU+3oy9xNZBb0ff/CJslJi7rfLxJ8KYsbK8Ev
+         YnLTI7v+EJdEtml9aA8Qoa1CBoEvNfzlzKWiihqso/WUwdcq3JpjukLgPFDIC7GlDw
+         aB1RWiZ5si3OXdz3zU/9TmwHDXzI60L6Na86T/7ZslTCe/7nADk45F7CN+KW9RXcyW
+         wzoHv69N/GiXTD+zg4U7MWHfIf21Pmy6EIFIOpCQGhPg/yP1irYDqAd7tqNovKKp2D
+         zfXf93X5OTCWA==
+X-Nifty-SrcIP: [209.85.217.53]
+Received: by mail-vs1-f53.google.com with SMTP id g127so7000845vsd.6;
+        Mon, 29 Apr 2019 17:15:40 -0700 (PDT)
+X-Gm-Message-State: APjAAAVEUl1/DSl2xQzYovpasi6f2RPeCn+k8wa4aqMLAXiYC0ParJQ0
+        +344hUGzTegnpXNrZtNcV1Y4lvJh8Pd1VSCmPL4=
+X-Google-Smtp-Source: APXvYqxJ7rTBWuDPzw87BgOp3DuLMtn+EoCbWyN0RkUTb1ATihGYEaPQMWglwlBdQmpgTqHdSgJ6IWLuEEkmT9yLzKU=
+X-Received: by 2002:a67:f105:: with SMTP id n5mr34539591vsk.181.1556583339164;
+ Mon, 29 Apr 2019 17:15:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-04-29_14:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=9 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=699 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1904290155
-X-FB-Internal: deliver
+References: <1556549259-16298-1-git-send-email-yamada.masahiro@socionext.com> <ec1d2c14-ae27-38c7-9b79-4e323161d6f5@netronome.com>
+In-Reply-To: <ec1d2c14-ae27-38c7-9b79-4e323161d6f5@netronome.com>
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+Date:   Tue, 30 Apr 2019 09:15:03 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARBOtOMr-=FRh0K1nMFLijRjRCMHYb0L=NY7KZQGydVrQ@mail.gmail.com>
+Message-ID: <CAK7LNARBOtOMr-=FRh0K1nMFLijRjRCMHYb0L=NY7KZQGydVrQ@mail.gmail.com>
+Subject: Re: [PATCH] bpftool: exclude bash-completion/bpftool from .gitignore pattern
+To:     Quentin Monnet <quentin.monnet@netronome.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Sirio Balmelli <sirio@b-ad.ch>,
+        Song Liu <songliubraving@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
+        Taeung Song <treeze.taeung@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Test test_libbpf.sh failed on my development server with failure
-  -bash-4.4$ sudo ./test_libbpf.sh
-  [0] libbpf: Error in bpf_object__probe_name():Operation not permitted(1).
-      Couldn't load basic 'r0 = 0' BPF program.
-  test_libbpf: failed at file test_l4lb.o
-  selftests: test_libbpf [FAILED]
-  -bash-4.4$
+Hi Quentin,
 
-The reason is because my machine has 64KB locked memory by default which
-is not enough for this program to get locked memory.
-Similar to other bpf selftests, let us increase RLIMIT_MEMLOCK
-to infinity, which fixed the issue.
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/test_libbpf_open.c | 2 ++
- 1 file changed, 2 insertions(+)
+On Tue, Apr 30, 2019 at 12:33 AM Quentin Monnet
+<quentin.monnet@netronome.com> wrote:
+>
+> 2019-04-29 23:47 UTC+0900 ~ Masahiro Yamada <yamada.masahiro@socionext.co=
+m>
+> > tools/bpf/bpftool/.gitignore has the "bpftool" pattern, which is
+> > intended to ignore the following build artifact:
+> >
+> >   tools/bpf/bpftool/bpftool
+> >
+> > However, the .gitignore entry is effective not only for the current
+> > directory, but also for any sub-directories.
+> >
+> > So, the following file is also considered to be ignored:
+> >
+> >   tools/bpf/bpftool/bash-completion/bpftool
+> >
+> > It is obviously version-controlled, so should be excluded from the
+> > .gitignore pattern.
+> >
+> > You can fix it by prefixing the pattern with '/', which means it is
+> > only effective in the current directory.
+> >
+> > I prefixed the other patterns consistently. IMHO, '/' prefixing is
+> > safer when you intend to ignore specific files.
+> >
+> > Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> > ---
+>
+> Hi,
+>
+> =E2=80=9CFiles already tracked by Git are not affected=E2=80=9D by the .g=
+itignore (says
+> the relevant man page), so bash completion file is not ignored. It would
+> be if we were to add the sources to the index of a new Git repo. But
+> sure, it does not cost much to make the .gitignore cleaner.
 
-diff --git a/tools/testing/selftests/bpf/test_libbpf_open.c b/tools/testing/selftests/bpf/test_libbpf_open.c
-index 65cbd30704b5..9e9db202d218 100644
---- a/tools/testing/selftests/bpf/test_libbpf_open.c
-+++ b/tools/testing/selftests/bpf/test_libbpf_open.c
-@@ -11,6 +11,8 @@ static const char *__doc__ =
- #include <bpf/libbpf.h>
- #include <getopt.h>
- 
-+#include "bpf_rlimit.h"
-+
- static const struct option long_options[] = {
- 	{"help",	no_argument,		NULL, 'h' },
- 	{"debug",	no_argument,		NULL, 'D' },
--- 
-2.17.1
+Right, git seems to be flexible enough.
 
+
+But, .gitignore is useful to identify
+build artifacts in general.
+In fact, other than git, some projects
+already parse this.
+
+For example, tar(1) supports:
+
+     --exclude-vcs-ignores
+           read exclude patterns from the VCS ignore files
+
+
+As of writing, this option works only to some extent,
+but I thought this would be useful to create a source
+package without relying on "git archive".
+
+When I tried "tar --exclude-vcs-ignores", I noticed
+tools/bpf/bpftool/bash-completion/bpftool was not
+contained in the tarball.
+
+That's why I sent this patch.
+
+I can add more info in v2 to clarify
+my motivation though.
+
+
+
+
+
+> >
+> >  tools/bpf/bpftool/.gitignore | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/tools/bpf/bpftool/.gitignore b/tools/bpf/bpftool/.gitignor=
+e
+> > index 67167e4..19efcc8 100644
+> > --- a/tools/bpf/bpftool/.gitignore
+> > +++ b/tools/bpf/bpftool/.gitignore
+> > @@ -1,5 +1,5 @@
+> >  *.d
+> > -bpftool
+> > -bpftool*.8
+> > -bpf-helpers.*
+> > -FEATURE-DUMP.bpftool
+> > +/bpftool
+> > +/bpftool*.8
+> > +/bpf-helpers.*
+>
+> Careful when you add all those slashes, however. "bpftool*.8" and
+> "bpf-helpers.*" should match files under Documentation/, so you do NOT
+> want to prefix them with just a "/".
+
+OK, I should not have touched what I was unsure about.
+Will fix in v2.
+
+
+> Quentin
+>
+> > +/FEATURE-DUMP.bpftool
+> >
+>
+
+
+
+--
+Best Regards
+Masahiro Yamada
