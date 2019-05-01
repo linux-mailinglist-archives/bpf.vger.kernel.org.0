@@ -2,69 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 844EB10EB1
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2019 23:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AADE10F63
+	for <lists+bpf@lfdr.de>; Thu,  2 May 2019 00:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbfEAVoX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 May 2019 17:44:23 -0400
-Received: from www62.your-server.de ([213.133.104.62]:43006 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbfEAVoW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 May 2019 17:44:22 -0400
-Received: from [78.46.172.2] (helo=sslproxy05.your-server.de)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hLx1R-0008PH-NM; Wed, 01 May 2019 23:44:13 +0200
-Received: from [173.228.226.134] (helo=localhost.localdomain)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hLx1R-000OV8-8R; Wed, 01 May 2019 23:44:13 +0200
-Subject: Re: [PATCH v2] bpf, x32: Fix bug for BPF_JMP | {BPF_JSGT, BPF_JSLE,
- BPF_JSLT, BPF_JSGE}
-To:     Wang YanQing <udknight@gmail.com>, ast@kernel.org,
-        davem@davemloft.net, kuznet@ms2.inr.ac.ru, tglx@linutronix.de,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20190427082826.GA16311@udknight>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <aca27db2-5c16-6bf8-e601-be8b42678cd4@iogearbox.net>
-Date:   Wed, 1 May 2019 23:44:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.3.0
+        id S1726139AbfEAWxv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 May 2019 18:53:51 -0400
+Received: from dc8-smtprelay2.synopsys.com ([198.182.47.102]:58254 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726126AbfEAWxv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 1 May 2019 18:53:51 -0400
+Received: from mailhost.synopsys.com (badc-mailhost1.synopsys.com [10.192.0.17])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 2829AC0169;
+        Wed,  1 May 2019 22:53:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1556751232; bh=MBk03IEPACXRS9nF/u/+JCyk6lPEN0xQOcBI/LToqls=;
+        h=From:To:CC:Subject:Date:From;
+        b=W0tsRNLMk9Zplp79naCLyBUECO+G1OCcPZpjnbHDQ0j4JJ21+GEc7qw+IUL4t4eRr
+         1+yJGuMtYGdk/UfpAxSIB4E3abWSMgWhwO9Aph8PFCieVnhxfEj3gdJPjOP8Z2ZcXN
+         8wJnI2j9ugEr/wzchzwc77NkVhRq2viN3muklkKavGwU4Kts6zN2vKzRqfsLh/OS+s
+         6bOH+l2mhF6Wu608/zXnG2OgPEPxiRQ+3BDZX/SDvj64DDnUduGXik2ckguV2N35ZY
+         zIqSKEjmUbxa0d8mI9A0GwJ6OEk5QM7aISq4zMtNCnqNOA2pqMHBVp1xhuWK0cBIqH
+         H/kaQMXlAt33g==
+Received: from US01WEHTC3.internal.synopsys.com (us01wehtc3.internal.synopsys.com [10.15.84.232])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPS id 03127A0071;
+        Wed,  1 May 2019 22:53:50 +0000 (UTC)
+Received: from IN01WEHTCA.internal.synopsys.com (10.144.199.104) by
+ US01WEHTC3.internal.synopsys.com (10.15.84.232) with Microsoft SMTP Server
+ (TLS) id 14.3.408.0; Wed, 1 May 2019 15:53:49 -0700
+Received: from IN01WEHTCB.internal.synopsys.com (10.144.199.105) by
+ IN01WEHTCA.internal.synopsys.com (10.144.199.103) with Microsoft SMTP Server
+ (TLS) id 14.3.408.0; Thu, 2 May 2019 04:23:58 +0530
+Received: from vineetg-Latitude-E7450.internal.synopsys.com (10.13.182.230) by
+ IN01WEHTCB.internal.synopsys.com (10.144.199.243) with Microsoft SMTP Server
+ (TLS) id 14.3.408.0; Thu, 2 May 2019 04:23:57 +0530
+From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+CC:     <netdev@vger.kernel.org>, Wang Nan <wangnan0@huawei.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-snps-arc@lists.infradead.org>,
+        <linux-perf-users@vger.kernel.org>, <arnaldo.melo@gmail.com>,
+        Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Subject: [PATCH] tools/bpf: fix perf build error with uClibc (seen on ARC)
+Date:   Wed, 1 May 2019 15:53:29 -0700
+Message-ID: <1556751209-4778-1-git-send-email-vgupta@synopsys.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20190427082826.GA16311@udknight>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25436/Wed May  1 09:58:19 2019)
+Content-Type: text/plain
+X-Originating-IP: [10.13.182.230]
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 04/27/2019 10:28 AM, Wang YanQing wrote:
-> The current method to compare 64-bit numbers for conditional jump is:
-> 
-> 1) Compare the high 32-bit first.
-> 
-> 2) If the high 32-bit isn't the same, then goto step 4.
-> 
-> 3) Compare the low 32-bit.
-> 
-> 4) Check the desired condition.
-> 
-> This method is right for unsigned comparison, but it is buggy for signed
-> comparison, because it does signed comparison for low 32-bit too.
-> 
-> There is only one sign bit in 64-bit number, that is the MSB in the 64-bit
-> number, it is wrong to treat low 32-bit as signed number and do the signed
-> comparison for it.
-> 
-> This patch fixes the bug and adds a testcase in selftests/bpf for such bug.
-> 
-> Signed-off-by: Wang YanQing <udknight@gmail.com>
+When build perf for ARC recently, there was a build failure due to lack
+of __NR_bpf.
 
-Applied, thanks!
+| Auto-detecting system features:
+|
+| ...                     get_cpuid: [ OFF ]
+| ...                           bpf: [ on  ]
+|
+| #  error __NR_bpf not defined. libbpf does not support your arch.
+    ^~~~~
+| bpf.c: In function 'sys_bpf':
+| bpf.c:66:17: error: '__NR_bpf' undeclared (first use in this function)
+|  return syscall(__NR_bpf, cmd, attr, size);
+|                 ^~~~~~~~
+|                 sys_bpf
+
+The fix is to define a fallbak __NR_bpf.
+
+The obvious fix with be __arc__ specific value, but i think a better fix
+is to use the asm-generic uapi value applicable to ARC as well as any new
+arch (hopefully we don't add an old existing arch here). Otherwise I can
+just add __arc__
+
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+---
+ tools/lib/bpf/bpf.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 9cd015574e83..2c5eb7928400 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -47,7 +47,10 @@
+ # elif defined(__s390__)
+ #  define __NR_bpf 351
+ # else
+-#  error __NR_bpf not defined. libbpf does not support your arch.
++/*
++ * Any non listed arch (new) will have to asm-generic uapi complient
++ */
++#  define __NR_bpf 280
+ # endif
+ #endif
+ 
+-- 
+2.7.4
+
