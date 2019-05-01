@@ -2,173 +2,314 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D856108A6
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2019 16:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E011110944
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2019 16:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726525AbfEAOCb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 May 2019 10:02:31 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:46907 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726473AbfEAOCa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 May 2019 10:02:30 -0400
-Received: by mail-wr1-f68.google.com with SMTP id r7so4965484wrr.13
-        for <bpf@vger.kernel.org>; Wed, 01 May 2019 07:02:29 -0700 (PDT)
+        id S1726890AbfEAOoN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 May 2019 10:44:13 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:35730 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726823AbfEAOoM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 May 2019 10:44:12 -0400
+Received: by mail-wm1-f68.google.com with SMTP id y197so7252630wmd.0
+        for <bpf@vger.kernel.org>; Wed, 01 May 2019 07:44:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:openpgp:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=TwsO2wFjZO2vvYlbEHyzdno1Dpggj2I7OM8g4T68ZR8=;
-        b=wnTExwJyZzK+XA1MJcx4Vm1SICd5aDt9tZg/ErnfQ4XbXW+xQcSGAaVaVCNWa0QTcC
-         aKohWqX3FEKfuNzJkNyiPDzrPyZfVe/EjCkN03lnOGzVgpzMo/tbUMvWXJHMUvN7fOmo
-         85cy8+7hkbSADq61UFQxm3y5t6BQeFJ2MgFjZVryYxb18sIHhJoWDg9ir/W9ga6EpWa3
-         1ftnI/dhzftaVhAOA1Wx7sGjNiRgD+2CxARoF2zEragj1DHq+xZF21kBFwiWB911YrVt
-         wUbgkZKEo3/PFzDe4+0rplTs9GHLimUWiAlatA8d0FhLwMwRZXlQvua+GPcbk4CJA3X4
-         WLBg==
+        bh=UEKun5otufNAwx8YBAyUxGDzAVU+lk0pgfDUI4nGLCk=;
+        b=pTsfoApBrnh5T+DZMNXS8Lscwd3G6/vqwDVbqMd1bKCdIsASSoVGMDdqlwbxmL8ppz
+         PQcVpPmoD1OzDtvNWFzFIPASKbBAd6qMdSuGDGxKE+wJ7ZfsrBhG0bQ/vKKNuOg9d+Z5
+         D3l/jdTZUV+aAQ143bMDcUFS4bwIiWIqIYQITKJ744UZLD7dsShAo4/p9PsIvgO68PVU
+         SXEJqEA5ACRNOg5HCphnh6GHG09PODXaQwHt0aJI0Rbb9pcsv8i66rQW6oI+gjKUSHlW
+         N5fnmzDqEjHIsbCTy2L2EPUSN+UYgzO/FGGugpvr8JQRXsdo8EJg79NAzWcPo2IaMIct
+         Oh1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=TwsO2wFjZO2vvYlbEHyzdno1Dpggj2I7OM8g4T68ZR8=;
-        b=tfkMWjHQ/GYTydjP/82nUMzhBVhkDAR6nmEsPLpeu4dgwL2/Q8BTEKEprwi1B7uLNQ
-         5moipYhXXeAyx9CHa9dWGFajAmtnm4u7vFrsDv2i5Bn1aRO4ks/pv32ubluLFay1o1J2
-         UVZ8fq59jqho2iFEDGv40MwKjvUb+9UD9A8qBC/VIKRXiS+6KAOXICQoK1B3vaAofiVw
-         6Vj8rL+3t68HE4dRamTMksfp9Sje3VimFNiWkNHgh+/T1QguJgBS+QbA4BaaBYWqyxZG
-         y1FMCnSpeDmiHC7bwZV+yyxtHOXUejNGGmKTVqI5TWAzRzsecQFthecpiJGm/dVhHeVf
-         uZVQ==
-X-Gm-Message-State: APjAAAX0zq9N0zOo3Q08o0bC+bCH43u2WrTAq/sDH288h3KGwqTvI0v7
-        hS5NOxs38yYSs0aMkRz/sQb5DJY+c44=
-X-Google-Smtp-Source: APXvYqzjwuQ0bO4MsykfOZ//x/l/XUt08HE+WQ7h8mp0msWbAvZrrvU072ThfM4+YRD53yNX62wYYQ==
-X-Received: by 2002:adf:92e2:: with SMTP id 89mr15436366wrn.53.1556719348220;
-        Wed, 01 May 2019 07:02:28 -0700 (PDT)
-Received: from [172.20.1.104] ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id p18sm32119901wrp.38.2019.05.01.07.02.27
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 01 May 2019 07:02:27 -0700 (PDT)
-Subject: Re: [PATCH v2] bpftool: exclude bash-completion/bpftool from
- .gitignore pattern
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Sirio Balmelli <sirio@b-ad.ch>, Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
-        Yonghong Song <yhs@fb.com>,
-        Taeung Song <treeze.taeung@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
-References: <1556718359-1598-1-git-send-email-yamada.masahiro@socionext.com>
-From:   Quentin Monnet <quentin.monnet@netronome.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quentin.monnet@netronome.com; prefer-encrypt=mutual; keydata=
- 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
- RHhSHGnKaQ6MfrTge5Q0h5A=
-Message-ID: <b550f762-5324-0bdb-7097-6bcf354b6d67@netronome.com>
-Date:   Wed, 1 May 2019 15:02:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UEKun5otufNAwx8YBAyUxGDzAVU+lk0pgfDUI4nGLCk=;
+        b=SoMtAHELoSM4JctygC4lBCnUFzLBBdeM+a6fsyjNsD4Lyc64HjaE4SCibqZd7TZP/Q
+         rDMNVR5RQYq3RlXzlzLoo58SFIY5d/EfWHg5qA6swIpb3PgdB8siHwQsd9prpGfuH8Zg
+         HANsKXqPIsWtNi9YBxEcIgDy3Sle9z8RtAzuKDvtLf8Wxv6WhXqUkOVFrXuN06TV0X3Q
+         yP146YUqohIxevyIXSXtPDlL9f8PiEULUsvRf5kIFRD7fs19idEVIAriCAZKfvvA5YXh
+         AMOb6CT0iwjG5MEI6xx1NMpG2z+RTHPyq4OfWKZIMPBFBaycESJVZXpJK+jN9ZYPTAab
+         qMsQ==
+X-Gm-Message-State: APjAAAXywXIXklsh6S5be52BxYgOIybiEM5hVzU2nENgRUABRUfny28q
+        a7YfHt0HIG57JKTjoFnMP5tWJA==
+X-Google-Smtp-Source: APXvYqxt8pqd9vSnAbZpKUKrJrgpSxi1B6+XoZBhRQCBnHC9JVevecKAfpPL+ikm1hjgx43pMW4s2g==
+X-Received: by 2002:a1c:22c6:: with SMTP id i189mr7161054wmi.128.1556721850008;
+        Wed, 01 May 2019 07:44:10 -0700 (PDT)
+Received: from cbtest28.netronome.com ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id g10sm36164976wrq.2.2019.05.01.07.44.08
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Wed, 01 May 2019 07:44:09 -0700 (PDT)
+From:   Jiong Wang <jiong.wang@netronome.com>
+To:     alexei.starovoitov@gmail.com, daniel@iogearbox.net
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        oss-drivers@netronome.com, Jiong Wang <jiong.wang@netronome.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Paul Burton <paul.burton@mips.com>,
+        Wang YanQing <udknight@gmail.com>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>
+Subject: [PATCH v5 bpf-next 00/17] bpf: eliminate zero extensions for sub-register writes
+Date:   Wed,  1 May 2019 15:43:45 +0100
+Message-Id: <1556721842-29836-1-git-send-email-jiong.wang@netronome.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <1556718359-1598-1-git-send-email-yamada.masahiro@socionext.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2019-05-01 22:45 UTC+0900 ~ Masahiro Yamada <yamada.masahiro@socionext.com>
-> tools/bpf/bpftool/.gitignore has the "bpftool" pattern, which is
-> intended to ignore the following build artifact:
-> 
->   tools/bpf/bpftool/bpftool
-> 
-> However, the .gitignore entry is effective not only for the current
-> directory, but also for any sub-directories.
-> 
-> So, from the point of .gitignore grammar, the following check-in file
-> is also considered to be ignored:
-> 
->   tools/bpf/bpftool/bash-completion/bpftool
-> 
-> As the manual gitignore(5) says "Files already tracked by Git are not
-> affected", this is not a problem as far as Git is concerned.
-> 
-> However, Git is not the only program that parses .gitignore because
-> .gitignore is useful to distinguish build artifacts from source files.
-> 
-> For example, tar(1) supports the --exclude-vcs-ignore option. As of
-> writing, this option does not work perfectly, but it intends to create
-> a tarball excluding files specified by .gitignore.
-> 
-> So, I believe it is better to fix this issue.
-> 
-> You can fix it by prefixing the pattern with a slash; the leading slash
-> means the specified pattern is relative to the current directory.
-> 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
-> 
-> Changes in v2:
->   - Add more information to the commit log to clarify my main motivation
->   - Touch "bpftool" pattern only
-> 
->  tools/bpf/bpftool/.gitignore | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/bpf/bpftool/.gitignore b/tools/bpf/bpftool/.gitignore
-> index 67167e4..8248b8d 100644
-> --- a/tools/bpf/bpftool/.gitignore
-> +++ b/tools/bpf/bpftool/.gitignore
-> @@ -1,5 +1,5 @@
->  *.d
-> -bpftool
-> +/bpftool
->  bpftool*.8
->  bpf-helpers.*
->  FEATURE-DUMP.bpftool
-> 
+v5:
+  - Adjusted several test_verifier helpers to make them works on hosts
+    w and w/o hardware zext. (Naveen)
+  - Make sure zext flag not set when verifier by-passed, for example,
+    libtest_bpf.ko. (Naveen)
+  - Conservatively mark bpf main return value as 64-bit. (Alexei)
+  - Make sure read flag is either READ64 or READ32, not the mix of both.
+    (Alexei)
+  - Merged patch 1 and 2 in v4. (Alexei)
+  - Fixed kbuild bot warning on NFP. (kbuild bot)
+  - Proposed new BPF_ZEXT insn to have optimal code-gen for various JIT
+    back-ends.
+  - Conservately set zext flags for patched-insn.
+  - Fixed return value zext for helper function calls.
+  - Also adjusted test_verifier scalability unit test to avoid triggerring
+    too many insn patch which will hang computer.
+  - re-tested on x86 host with llvm 9.0, no regression on test_verifier,
+    test_progs, test_progs_32.
+  - re-tested offload target (nfp), no regression on local testsuite.
 
-Thanks a lot for the changes!
+v4:
+  - added the two missing fixes which addresses two Jakub's reviewes in v3.
+  - rebase on top of bpf-next.
 
-Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
+v3:
+  - remove redundant check in "propagate_liveness_reg". (Jakub)
+  - add extra check in "mark_reg_read" to prune more search. (Jakub)
+  - re-implemented "prog_flags" passing mechanism, removed use of
+    global switch inside libbpf.
+  - enabled high 32-bit randomization beyond "test_verifier" and
+    "test_progs". Now it should have been enabled for all possible
+    tests. Re-run all tests, haven't noticed regression.
+  - remove RFC tag.
+
+v2:
+  - rebased on top of bpf-next master.
+  - added comments for what is sub-register def index. (Edward, Alexei)
+  - removed patch 1 which turns bit mask from enum to macro. (Alexei)
+  - removed sysctl/bpf_jit_32bit_opt. (Alexei)
+  - merged sub-register def insn index into reg state. (Alexei)
+  - change test methodology (Alexei):
+      + instead of simple unit tests on x86_64 for which this optimization
+        doesn't enabled due to there is hardware support, poison high
+        32-bit for whose def identified as safe to do so. this could let
+        the correctness of this patch set checked when daily bpf selftest
+        ran which delivers very stressful test on host machine like x86_64.
+      + hi32 poisoning is gated by a new BPF_F_TEST_RND_HI32 prog flags.
+      + BPF_F_TEST_RND_HI32 is enabled for all tests of "test_progs" and
+        "test_verifier", the latter needs minor tweak on two unit tests,
+        please see the patch for the change.
+      + introduced a new global variable "libbpf_test_mode" into libbpf.
+        once it is set to true, it will set BPF_F_TEST_RND_HI32 for all the
+        later PROG_LOAD syscall, the goal is to easy the enable of hi32
+        poison on exsiting testsuite.
+        we could also introduce new APIs, for example "bpf_prog_test_load",
+        then use -Dbpf_prog_load=bpf_prog_test_load to migrate tests under
+        test_progs, but there are several load APIs, and such new API need
+        some change on struture like "struct bpf_prog_load_attr".
+      + removed old unit tests. it is based on insn scan and requires quite
+        a few test_verifier generic code change. given hi32 randomization
+        could offer good test coverage, the unit tests doesn't add much
+        extra test value.
+  - enhanced register width check ("is_reg64") when record sub-register
+    write, now, it returns more accurate width.
+  - Re-run all tests under "test_progs" and "test_verifier" on x86_64, no
+    regression. Fixed a couple of bugs exposed:
+      1. ctx field size transformation was not taken into account.
+      2. insn patch could cause lost of original aux data which is
+         important for ctx field conversion.
+      3. return value for propagate_liveness was wrong and caused
+         regression on processed insn number.
+      4. helper call arg wasn't handled properly that path prune may cause
+         64-bit read info in pruned path lost.
+  - Re-run Cilium bpf prog for processed-insn-number benchmarking, no
+    regression.
+
+v1:
+  - Fixed the missing handling on callee-saved for bpf-to-bpf call,
+    sub-register defs therefore moved to frame state. (Jakub Kicinski)
+  - Removed redundant "cross_reg". (Jakub Kicinski)
+  - Various coding styles & grammar fixes. (Jakub Kicinski, Quentin Monnet)
+
+eBPF ISA specification requires high 32-bit cleared when low 32-bit
+sub-register is written. This applies to destination register of
+ALU32/LD_H/B/W etc. JIT back-ends must guarantee this semantic when doing
+code-gen.
+
+x86-64 and arm64 ISA has the same semantics, so the corresponding JIT
+back-end doesn't need to do extra work. However, 32-bit arches (arm, nfp
+etc.) and some other 64-bit arches (powerpc, sparc etc), need explicitly
+zero extension sequence to meet such semantic.
+
+This is important, because for C code like the following:
+
+  u64_value = (u64) u32_value
+  ... other uses of u64_value
+
+compiler could exploit the semantic described above and save those zero
+extensions for extending u32_value to u64_value. Hardware, runtime, or BPF
+JIT back-ends, are responsible for guaranteeing this. Some benchmarks shows
+~40% sub-register writes out of total insns, meaning ~40% extra code-gen
+and could go up for arches requiring two shifts for zero extension. All
+these are because JIT back-end needs to do extra code-gen for all such
+instructions, always.
+
+However this is not always necessary in case u32 value is never cast into a
+u64, which is quite normal in real life program. So, it would be really
+good if we could identify those places where such type cast happened, and
+only do zero extensions for them, not for the others. This could save a lot
+of BPF code-gen.
+
+Algo
+====
+We could use insn scan based static analysis to tell whether one
+sub-register def doesn't need zero extension. However, using such static
+analysis, we must do conservative assumption at branching point where
+multiple uses could be introduced. So, for any sub-register def that is
+active at branching point, we need to mark it as needing zero extension.
+This could introducing quite a few false alarms, for example ~25% on
+Cilium bpf_lxc.
+
+It will be far better to use dynamic data-flow tracing which verifier
+fortunately already has and could be easily extend to serve the purpose of
+this patch set.
+
+ - Record indices of instructions that do sub-register def (write). And
+   these indices need to stay with function state so path pruning and bpf
+   to bpf function call could be handled properly.
+
+   These indices are kept up to date while doing insn walk.
+
+ - A full register read on an active sub-register def marks the def insn as
+   needing zero extension on dst register.
+
+ - A new sub-register write overrides the old one.
+
+   A new full register write makes the register free of zero extension on
+   dst register.
+
+ - When propagating register read64 during path pruning, it also marks def
+   insns whose defs are hanging active sub-register, if there is any read64
+   from shown from the equal state.
+
+ The core patch in this set is patch 4.
+
+Benchmark
+=========
+ - I estimate the JITed image could be 25% smaller on average on all these
+   affected arches (nfp, arm, x32, risv, ppc, sparc, s390).
+
+ - The implementation is based on existing register read liveness tracking
+   infrastructure, so it is dynamic tracking and would trace all possible
+   code paths, therefore, it shouldn't be any false alarm.
+
+   For Cilium bpf_lxc, there is ~11500 insns in the compiled binary (use
+   latest LLVM snapshot, and with -mcpu=v3 -mattr=+alu32 enabled), 4460 of
+   them has sub-register writes (~40%). Calculated by:
+
+    cat dump | grep -P "\tw" | wc -l       (ALU32)
+    cat dump | grep -P "r.*=.*u32" | wc -l (READ_W)
+    cat dump | grep -P "r.*=.*u16" | wc -l (READ_H)
+    cat dump | grep -P "r.*=.*u8" | wc -l  (READ_B)
+
+   After this patch set enabled, up-to 647 out of those 4460 could be
+   identified as really needing zero extension on the destination, then it
+   is safe for JIT back-ends to eliminate zero extension for all the other
+   instructions which is ~85% of all those sub-register write insns or 33%
+   of total insns. It is a significant save.
+
+   For those insns marked as needing zero extension, part of them are
+   setting up u64 parameters for help calls, remaining ones are those whose
+   sub-register defs really have 64-bit reads.
+
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Paul Burton <paul.burton@mips.com>
+Cc: Wang YanQing <udknight@gmail.com>
+Cc: Zi Shen Lim <zlim.lnx@gmail.com>
+Cc: Shubham Bansal <illusionist.neo@gmail.com>
+Cc: Naveen N. Rao <naveen.n.rao@linux.ibm.com>
+Cc: Sandipan Das <sandipan@linux.ibm.com>
+Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: Jakub Kicinski <jakub.kicinski@netronome.com>
+
+Jiong Wang (17):
+  bpf: verifier: offer more accurate helper function arg and return type
+  bpf: verifier: mark verified-insn with sub-register zext flag
+  bpf: verifier: mark patched-insn with sub-register zext flag
+  bpf: introduce new alu insn BPF_ZEXT for explicit zero extension
+  bpf: verifier: insert BPF_ZEXT according to zext analysis result
+  bpf: introduce new bpf prog load flags "BPF_F_TEST_RND_HI32"
+  bpf: verifier: randomize high 32-bit when BPF_F_TEST_RND_HI32 is set
+  libbpf: add "prog_flags" to
+    bpf_program/bpf_prog_load_attr/bpf_load_program_attr
+  selftests: bpf: adjust several test_verifier helpers for insn
+    insertion
+  selftests: bpf: enable hi32 randomization for all tests
+  arm: bpf: eliminate zero extension code-gen
+  powerpc: bpf: eliminate zero extension code-gen
+  s390: bpf: eliminate zero extension code-gen
+  sparc: bpf: eliminate zero extension code-gen
+  x32: bpf: eliminate zero extension code-gen
+  riscv: bpf: eliminate zero extension code-gen
+  nfp: bpf: eliminate zero extension code-gen
+
+ Documentation/networking/filter.txt                |  10 +
+ arch/arm/net/bpf_jit_32.c                          |  35 +-
+ arch/powerpc/net/bpf_jit_comp64.c                  |  13 +-
+ arch/riscv/net/bpf_jit_comp.c                      |  36 ++-
+ arch/s390/net/bpf_jit_comp.c                       |  20 +-
+ arch/sparc/net/bpf_jit_comp_64.c                   |  12 +-
+ arch/x86/net/bpf_jit_comp32.c                      |  39 ++-
+ drivers/net/ethernet/netronome/nfp/bpf/jit.c       | 115 ++++---
+ drivers/net/ethernet/netronome/nfp/bpf/main.h      |   2 +
+ drivers/net/ethernet/netronome/nfp/bpf/verifier.c  |  12 +
+ include/linux/bpf.h                                |   7 +-
+ include/linux/bpf_verifier.h                       |  14 +-
+ include/linux/filter.h                             |   1 +
+ include/uapi/linux/bpf.h                           |  21 ++
+ kernel/bpf/core.c                                  |  14 +-
+ kernel/bpf/helpers.c                               |  10 +-
+ kernel/bpf/syscall.c                               |   4 +-
+ kernel/bpf/verifier.c                              | 352 +++++++++++++++++++--
+ kernel/trace/bpf_trace.c                           |   4 +-
+ net/core/filter.c                                  |  38 +--
+ tools/include/uapi/linux/bpf.h                     |  21 ++
+ tools/lib/bpf/bpf.c                                |   1 +
+ tools/lib/bpf/bpf.h                                |   1 +
+ tools/lib/bpf/libbpf.c                             |   3 +
+ tools/lib/bpf/libbpf.h                             |   1 +
+ tools/testing/selftests/bpf/Makefile               |  10 +-
+ .../selftests/bpf/prog_tests/bpf_verif_scale.c     |   1 +
+ tools/testing/selftests/bpf/test_sock_addr.c       |   1 +
+ tools/testing/selftests/bpf/test_sock_fields.c     |   1 +
+ tools/testing/selftests/bpf/test_socket_cookie.c   |   1 +
+ tools/testing/selftests/bpf/test_stub.c            |  40 +++
+ tools/testing/selftests/bpf/test_verifier.c        |  31 +-
+ 32 files changed, 716 insertions(+), 155 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/test_stub.c
+
+-- 
+2.7.4
+
