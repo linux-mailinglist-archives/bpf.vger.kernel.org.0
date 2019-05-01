@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF9910961
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2019 16:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4471094A
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2019 16:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726975AbfEAOoT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1726978AbfEAOoV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 May 2019 10:44:21 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:36931 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726964AbfEAOoT (ORCPT <rfc822;bpf@vger.kernel.org>);
         Wed, 1 May 2019 10:44:19 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:45140 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726944AbfEAOoS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 May 2019 10:44:18 -0400
-Received: by mail-wr1-f68.google.com with SMTP id s15so24786037wra.12
-        for <bpf@vger.kernel.org>; Wed, 01 May 2019 07:44:16 -0700 (PDT)
+Received: by mail-wm1-f67.google.com with SMTP id y5so7272559wma.2
+        for <bpf@vger.kernel.org>; Wed, 01 May 2019 07:44:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=bFUvv35ufEZvkXkPHvBLDe5lZpgODNVDdkEpJrmoqTU=;
-        b=nVbtYKH+ZK9vn6OVV86K6kJuyqP/UHl9CVeLxdpE/MQbeu9AxsrbR/NarVHlabJLSt
-         i0TrWOYQXCGJcAWKN9pDREVfoatKNYYrDXoPTiJ2npBVwiZ1MReQg8DiGjBa4zPvGCKK
-         G2zbL/FkDY1sRn8np7LEFrjANICO83yz1ROc+UF0wEXWcxqioWOrr012Qjp3MlN4SDE9
-         VUISyAvL3Wn85mWo1/bFPTTftJaqSXWpSH2y3mwHbjEhJBuT3dt52vQRlCzPtJIBW0EK
-         Rb8u2HvBMLA6K1hGoX1y97NB6ThQfH6Fn7lVLmPG67yBpFZrBvRDvll/QDYtvJno9wtC
-         GFRw==
+        bh=uEylg6KmKUveZPcda9kkJ4iLAOp2pnuAdpF2a/e8Dss=;
+        b=JGSVKHaXCnPhsBLDCpUmvTIPQkmclisFxTJ00uauXvru4Wb8NNYhlsrPZfN2t9PaJ6
+         I20gdEKRKuExL0kJSDuqM5GA1qxUz4y3pwbpWLkQB+UnW5es1WasDt4E2eDE9+b4Vc4n
+         3fvWM/7KwUuisdC0tP1K89TchPd0e0C1NGXhz9OAxf7Sy9owIurbT4jNkPmkdi2MIM9v
+         A+ghUCzcCtPxLJ3IHUHb6cQ5cslbKDPL8i/hmws2Q42F+qK6rfyJFPCnsQKY/zRTOUTJ
+         u/kEd6dkt3fCHqTumKUTdv6iTiBY5xnv03BbUH6YscBJaWdjFTL2c0LjBIzo/rgfLeFb
+         oCpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=bFUvv35ufEZvkXkPHvBLDe5lZpgODNVDdkEpJrmoqTU=;
-        b=dXo/8Bt9vAFnS7Ub5vK/bD6AxzstEpQHYxb28twuWrDzvHMWZqLO5JDKRSDj3J0uKO
-         eqmYLvdV9PZGnu2slDysf1c9zggtxQnMk9pfHDeM9rMZTWU39CQhluPSBwoMrtqa1eyZ
-         VS8PE+3q3JXzp847KOmpmP1rk5/ySdefTRvgS8po+T+mb6siVzJj7nyiwqYghMmBAymw
-         roWbWkYraLMxcWOE+dbY8C+M3AOhUwpu7Uy5WFBptpuHCqJvWb8yzD0BRkvHEp8Z/txL
-         DhCYE5kXt2C91O2gzQCCRMHWBpY80gy2gsqoyzedgs0MjjLO6r9a+d4ewwcVaB+iY6Tt
-         2dug==
-X-Gm-Message-State: APjAAAX6XxgPXeD1/Bl3R38s3w8hUl8lQH1I1AiOvqi+kQEXgVx7lDQk
-        0+qBKqVuEkk2xTeQKMHeSf5a8A==
-X-Google-Smtp-Source: APXvYqxqaxo1CJW9JlO4rZVw29vjIMKifM6w84BQCPeO9dR61drugy/RCA2f7vI28S/aAw4+M0HZ+g==
-X-Received: by 2002:adf:b458:: with SMTP id v24mr51433250wrd.46.1556721855998;
-        Wed, 01 May 2019 07:44:15 -0700 (PDT)
+        bh=uEylg6KmKUveZPcda9kkJ4iLAOp2pnuAdpF2a/e8Dss=;
+        b=nzH1F/STSqgjRI4KdwvQIW3/0x3S040uF+09mCplAw40yjlE21hywHNGZh2hfx1VLq
+         JEFvwXsU82jgkgAe7TbsSQuIxYC3mKJrvgZMB0ivxNdpOBtKcA3PU4lsOBt18SQecq2M
+         6yQ+MFJmsmcqdlkLZeq0ZosQSLEY80yGkTBPSZIUvoQmjEhMNCHztTG1Vo81DiO+gfcL
+         TjjEb1rAjDOzKrQghwBE3KKPf5ezD1f0+UVCpN74vRsePMj5q1bvgzV7A2bN9RKzp4px
+         i1AtEtAOu/18xCGIOZDCxJZieMv5MoFsSvPhOVXf5s1k3KpIgzYa2906ieJFxvbIj+L2
+         8WnQ==
+X-Gm-Message-State: APjAAAVnB9Szxip7obHIzuDTCHyY0Ht+mquLaU43lDBn6xyWnDg99hkS
+        TQKnnHQMWzASt7zBCrU/7NRe5g==
+X-Google-Smtp-Source: APXvYqy0HItLbvQKdqBQOWeb+9nm4fnwAdIsR0iaRJhZYL6eMO8yys+/0L285l14Tz339g+o+V/Y4Q==
+X-Received: by 2002:a1c:81cc:: with SMTP id c195mr6912888wmd.61.1556721857204;
+        Wed, 01 May 2019 07:44:17 -0700 (PDT)
 Received: from cbtest28.netronome.com ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id g10sm36164976wrq.2.2019.05.01.07.44.15
+        by smtp.gmail.com with ESMTPSA id g10sm36164976wrq.2.2019.05.01.07.44.16
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Wed, 01 May 2019 07:44:15 -0700 (PDT)
+        Wed, 01 May 2019 07:44:16 -0700 (PDT)
 From:   Jiong Wang <jiong.wang@netronome.com>
 To:     alexei.starovoitov@gmail.com, daniel@iogearbox.net
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         oss-drivers@netronome.com, Jiong Wang <jiong.wang@netronome.com>
-Subject: [PATCH v5 bpf-next 06/17] bpf: introduce new bpf prog load flags "BPF_F_TEST_RND_HI32"
-Date:   Wed,  1 May 2019 15:43:51 +0100
-Message-Id: <1556721842-29836-7-git-send-email-jiong.wang@netronome.com>
+Subject: [PATCH v5 bpf-next 07/17] bpf: verifier: randomize high 32-bit when BPF_F_TEST_RND_HI32 is set
+Date:   Wed,  1 May 2019 15:43:52 +0100
+Message-Id: <1556721842-29836-8-git-send-email-jiong.wang@netronome.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1556721842-29836-1-git-send-email-jiong.wang@netronome.com>
 References: <1556721842-29836-1-git-send-email-jiong.wang@netronome.com>
@@ -58,101 +58,125 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-x86_64 and AArch64 perhaps are two arches that running bpf testsuite
-frequently, however the zero extension insertion pass is not enabled for
-them because of their hardware support.
+This patch randomizes high 32-bit of a definition when BPF_F_TEST_RND_HI32
+is set.
 
-It is critical to guarantee the pass correction as it is supposed to be
-enabled at default for a couple of other arches, for example PowerPC,
-SPARC, arm, NFP etc. Therefore, it would be very useful if there is a way
-to test this pass on for example x86_64.
-
-The test methodology employed by this set is "poisoning" useless bits. High
-32-bit of a definition is randomized if it is identified as not used by any
-later instructions. Such randomization is only enabled under testing mode
-which is gated by the new bpf prog load flags "BPF_F_TEST_RND_HI32".
+It does this once the flag set no matter there is hardware zero extension
+support or not. Because this is a test feature and we want to deliver the
+most stressful test.
 
 Suggested-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
 ---
- include/uapi/linux/bpf.h       | 18 ++++++++++++++++++
- kernel/bpf/syscall.c           |  4 +++-
- tools/include/uapi/linux/bpf.h | 18 ++++++++++++++++++
- 3 files changed, 39 insertions(+), 1 deletion(-)
+ kernel/bpf/verifier.c | 69 +++++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 58 insertions(+), 11 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 22ccdf4..1bf32c3 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -263,6 +263,24 @@ enum bpf_attach_type {
-  */
- #define BPF_F_ANY_ALIGNMENT	(1U << 1)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 66aaaa0..6f3b8db 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7648,32 +7648,79 @@ static int opt_remove_nops(struct bpf_verifier_env *env)
+ 	return 0;
+ }
  
-+/* BPF_F_TEST_RND_HI32 is used in BPF_PROG_LOAD command for testing purpose.
-+ * Verifier does sub-register def/use analysis and identifies instructions whose
-+ * def only matters for low 32-bit, high 32-bit is never referenced later
-+ * through implicit zero extension. Therefore verifier notifies JIT back-ends
-+ * that it is safe to ignore clearing high 32-bit for these instructions. This
-+ * saves some back-ends a lot of code-gen. However such optimization is not
-+ * necessary on some arches, for example x86_64, arm64 etc, whose JIT back-ends
-+ * hence hasn't used verifier's analysis result. But, we really want to have a
-+ * way to be able to verify the correctness of the described optimization on
-+ * x86_64 on which testsuites are frequently exercised.
-+ *
-+ * So, this flag is introduced. Once it is set, verifier will randomize high
-+ * 32-bit for those instructions who has been identified as safe to ignore them.
-+ * Then, if verifier is not doing correct analysis, such randomization will
-+ * regress tests to expose bugs.
-+ */
-+#define BPF_F_TEST_RND_HI32	(1U << 2)
+-static int opt_subreg_zext_lo32(struct bpf_verifier_env *env)
++static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
++					 const union bpf_attr *attr)
+ {
++	struct bpf_insn *patch, zext_patch[2], rnd_hi32_patch[4];
+ 	struct bpf_insn_aux_data *aux = env->insn_aux_data;
++	int i, patch_len, delta = 0, len = env->prog->len;
+ 	struct bpf_insn *insns = env->prog->insnsi;
+-	int i, delta = 0, len = env->prog->len;
+-	struct bpf_insn zext_patch[2];
+ 	struct bpf_prog *new_prog;
++	bool rnd_hi32;
 +
- /* When BPF ldimm64's insn[0].src_reg != 0 then this can have
-  * two extensions:
-  *
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index ad3ccf8..ec1b42c 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1601,7 +1601,9 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
- 	if (CHECK_ATTR(BPF_PROG_LOAD))
- 		return -EINVAL;
++	rnd_hi32 = attr->prog_flags & BPF_F_TEST_RND_HI32;
  
--	if (attr->prog_flags & ~(BPF_F_STRICT_ALIGNMENT | BPF_F_ANY_ALIGNMENT))
-+	if (attr->prog_flags & ~(BPF_F_STRICT_ALIGNMENT |
-+				 BPF_F_ANY_ALIGNMENT |
-+				 BPF_F_TEST_RND_HI32))
- 		return -EINVAL;
+ 	zext_patch[1] = BPF_ALU32_IMM(BPF_ZEXT, 0, 0);
++	rnd_hi32_patch[1] = BPF_ALU64_IMM(BPF_MOV, BPF_REG_AX, 0);
++	rnd_hi32_patch[2] = BPF_ALU64_IMM(BPF_LSH, BPF_REG_AX, 32);
++	rnd_hi32_patch[3] = BPF_ALU64_REG(BPF_OR, 0, BPF_REG_AX);
+ 	for (i = 0; i < len; i++) {
+ 		int adj_idx = i + delta;
+ 		struct bpf_insn insn;
  
- 	if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) &&
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 22ccdf4..1bf32c3 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -263,6 +263,24 @@ enum bpf_attach_type {
-  */
- #define BPF_F_ANY_ALIGNMENT	(1U << 1)
- 
-+/* BPF_F_TEST_RND_HI32 is used in BPF_PROG_LOAD command for testing purpose.
-+ * Verifier does sub-register def/use analysis and identifies instructions whose
-+ * def only matters for low 32-bit, high 32-bit is never referenced later
-+ * through implicit zero extension. Therefore verifier notifies JIT back-ends
-+ * that it is safe to ignore clearing high 32-bit for these instructions. This
-+ * saves some back-ends a lot of code-gen. However such optimization is not
-+ * necessary on some arches, for example x86_64, arm64 etc, whose JIT back-ends
-+ * hence hasn't used verifier's analysis result. But, we really want to have a
-+ * way to be able to verify the correctness of the described optimization on
-+ * x86_64 on which testsuites are frequently exercised.
-+ *
-+ * So, this flag is introduced. Once it is set, verifier will randomize high
-+ * 32-bit for those instructions who has been identified as safe to ignore them.
-+ * Then, if verifier is not doing correct analysis, such randomization will
-+ * regress tests to expose bugs.
-+ */
-+#define BPF_F_TEST_RND_HI32	(1U << 2)
+-		if (!aux[adj_idx].zext_dst)
++		insn = insns[adj_idx];
++		if (!aux[adj_idx].zext_dst) {
++			u8 code, class;
++			u32 imm_rnd;
 +
- /* When BPF ldimm64's insn[0].src_reg != 0 then this can have
-  * two extensions:
-  *
++			if (!rnd_hi32)
++				continue;
++
++			code = insn.code;
++			class = BPF_CLASS(code);
++			if (insn_no_def(&insn))
++				continue;
++
++			/* NOTE: arg "reg" (the fourth one) is only used for
++			 *       BPF_STX which has been ruled out in above
++			 *       check, it is safe to pass NULL here.
++			 */
++			if (is_reg64(env, &insn, insn.dst_reg, NULL, DST_OP)) {
++				if (class == BPF_LD &&
++				    BPF_MODE(code) == BPF_IMM)
++					i++;
++				continue;
++			}
++
++			/* ctx load could be transformed into wider load. */
++			if (class == BPF_LDX &&
++			    aux[adj_idx].ptr_type == PTR_TO_CTX)
++				continue;
++
++			imm_rnd = get_random_int();
++			rnd_hi32_patch[0] = insn;
++			rnd_hi32_patch[1].imm = imm_rnd;
++			rnd_hi32_patch[3].dst_reg = insn.dst_reg;
++			patch = rnd_hi32_patch;
++			patch_len = 4;
++			goto apply_patch_buffer;
++		}
++
++		if (bpf_jit_hardware_zext())
+ 			continue;
+ 
+-		insn = insns[adj_idx];
+ 		zext_patch[0] = insn;
+ 		zext_patch[1].dst_reg = insn.dst_reg;
+-		new_prog = bpf_patch_insn_data(env, adj_idx, zext_patch, 2);
++		patch = zext_patch;
++		patch_len = 2;
++apply_patch_buffer:
++		new_prog = bpf_patch_insn_data(env, adj_idx, patch, patch_len);
+ 		if (!new_prog)
+ 			return -ENOMEM;
+ 		env->prog = new_prog;
+ 		insns = new_prog->insnsi;
+ 		aux = env->insn_aux_data;
+-		delta += 2;
++		delta += patch_len - 1;
+ 	}
+ 
+ 	return 0;
+@@ -8533,10 +8580,10 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
+ 	/* do 32-bit optimization after insn patching has done so those patched
+ 	 * insns could be handled correctly.
+ 	 */
+-	if (ret == 0 && !bpf_jit_hardware_zext() &&
+-	    !bpf_prog_is_dev_bound(env->prog->aux)) {
+-		ret = opt_subreg_zext_lo32(env);
+-		env->prog->aux->verifier_zext = !ret;
++	if (ret == 0 && !bpf_prog_is_dev_bound(env->prog->aux)) {
++		ret = opt_subreg_zext_lo32_rnd_hi32(env, attr);
++		env->prog->aux->verifier_zext =
++			bpf_jit_hardware_zext() ? false : !ret;
+ 	}
+ 
+ 	if (ret == 0)
 -- 
 2.7.4
 
