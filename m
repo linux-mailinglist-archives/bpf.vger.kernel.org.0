@@ -2,111 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA0D122F6
-	for <lists+bpf@lfdr.de>; Thu,  2 May 2019 22:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B19A12313
+	for <lists+bpf@lfdr.de>; Thu,  2 May 2019 22:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726030AbfEBUFN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 May 2019 16:05:13 -0400
-Received: from mail-yw1-f68.google.com ([209.85.161.68]:35805 "EHLO
-        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbfEBUFN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 May 2019 16:05:13 -0400
-Received: by mail-yw1-f68.google.com with SMTP id n188so2564665ywe.2;
-        Thu, 02 May 2019 13:05:12 -0700 (PDT)
+        id S1726061AbfEBUSy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 May 2019 16:18:54 -0400
+Received: from mail-it1-f193.google.com ([209.85.166.193]:39924 "EHLO
+        mail-it1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725962AbfEBUSy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 May 2019 16:18:54 -0400
+Received: by mail-it1-f193.google.com with SMTP id t200so5682241itf.4;
+        Thu, 02 May 2019 13:18:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TJNAk0Lvfagj8fRo6Jl6RQONptd5xU+ZB1fw7sgph30=;
-        b=eAs4GRXJ5Bl7vzQy7WcntFmTXgCjyDkydNz11hqgpIygMgpRlH/Rni8x07UN5Ov8zt
-         gfpHNxfO8oboQIBwIOqXOsYiv/atbjnio1nni0LLOUDECgVkoTDRInzrtLFajrFsT5Mm
-         d1UVXabCg+Bbkgg2ORLc13O9X5JPMtKzV2eeUdBoOZGGiAtPQzUh0gDMNJKbSpkHgcF2
-         t2/k8uPGHkV7T9KVSbk1OyavlIxlgVNpJBuQPs3T+vCKO8eni7gZ/xYsNKTP9PPFGqb4
-         W+17lnLJcakRSgPAarG+aE6zHDjV79GYj/GgpIALFpD8U4++cdrv+l4TbXmFmrEYjHyY
-         nCww==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BqrdERgYm6oaGKzw62ZugOufogtv2Ccque8qwoUuCvs=;
+        b=ZcsBdqCC6n31fkPJ8ASfbQWNAEEs6BUW0COVKXsow4GizghE73TsCSVKffmYPpRD6M
+         5rl5YpDT+m3fCNXTwjL/luVLKdJLHfg1cHd96VbZf+UKwZVpCOfNirDGB7oc2JOHWsWy
+         ahW/Ukl02kdIltUB9LG1sdMl2LS9Y9tEiZc2tI9XE+mAn1juFrE7NMIFS6WQZEg690JQ
+         RsNyS6j8GpCTAgO0NN6MGq3x6MRdTQwdBFbn7MYsO8X8DMGjh8YEMpzj8+3YynwC3NmR
+         eJCS6XLN0J7NQnGdxyxEuvS9pitLDIrAZ0DiNF37DIHhlskFcYLRE4JcWR9ITzboUlWV
+         Oy+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TJNAk0Lvfagj8fRo6Jl6RQONptd5xU+ZB1fw7sgph30=;
-        b=uR9vFK9NwoncqXyqyVqCLGKjU3z3K0fDbIiWbK+T3+lWflnDCLkAS8kTFVVQUa/B9A
-         3xr6KrRalTUdXzC2Gv4Kv62z6hmp240DibmU/5RmJ9K2uvWcnDV59QuCTW56fOXyM7gM
-         ALnZpFYOT5aarxt7OKJI37AYnPYr8XK2VtWMkQdlfhMY/oK9eT8WLSOXtAL4E2SfT3hs
-         3pcHuCDE1R4PlXt9I1OF57g8RJXqLk6aLvO7AY9QGUSM128p8xXpoH94fc9hPeeVFuta
-         QEBFwk/kfuBzgp9pRg5+PuTKKpiR4rch2yg8beQySaW9b3lTHNuw9JNYEk5MWDZM+5ff
-         FDBA==
-X-Gm-Message-State: APjAAAWbSAms6n8hg3eTBPyXNq7de4XpSg7mO/GylOrkwJmz/13ex9nC
-        pj+n9RhRD4TTVFEsZdw6mArJQlwP/5/lmg==
-X-Google-Smtp-Source: APXvYqwciAe4nEria44nc6rzApTMdY1iD2aS5mcwajyy/cffGlk4sZyRqLkM4cV6eKKiDXJ+Cv9ZYg==
-X-Received: by 2002:a81:110c:: with SMTP id 12mr4887289ywr.188.1556827512026;
-        Thu, 02 May 2019 13:05:12 -0700 (PDT)
-Received: from [172.20.28.132] (adsl-173-228-226-134.prtc.net. [173.228.226.134])
-        by smtp.gmail.com with ESMTPSA id m1sm6100ywi.89.2019.05.02.13.05.10
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 02 May 2019 13:05:10 -0700 (PDT)
-Subject: Re: [bpf-next PATCH v3 0/4] sockmap/ktls fixes
-To:     jakub.kicinski@netronome.com, ast@kernel.org, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <155667629056.4128.14102391877350907561.stgit@john-XPS-13-9360>
-From:   John Fastabend <john.fastabend@gmail.com>
-Message-ID: <c6621617-9edf-bd4a-7738-63de6e910eb4@gmail.com>
-Date:   Thu, 2 May 2019 13:05:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BqrdERgYm6oaGKzw62ZugOufogtv2Ccque8qwoUuCvs=;
+        b=gBIvkkN8XSGht5+WSc9CjsBxI9ijF4BMXK9J/bC9cwdMT8eg0S/255xs7jqDhXMhyL
+         5gUqRxcy9+mV0BneufGBaPCZJ0ZX6weI7jGhrgvj1Qst/HhRIyKoZLMR/jJWiXh2XgC8
+         9VC97zqt7sQfn7G1N1E98GHDKRmp71amGxwf2x8nyWlaMrvAlGblP8YwpwKOFZfcm7HX
+         XXuXW97c508VoVYhxWGoY9cOJT+KZwslMtWmOzF7LPupOFXfutgxsmdjsXKONTbi/DPC
+         yVww+ul+f8zUJMPFfL8XI2FN9r+ywVviE1KZxVxVusdUKKEYeoAPBckh2PI/TVssr49F
+         wPfg==
+X-Gm-Message-State: APjAAAUpm7SFE3j+zOAlXzzEC9kAGdMBkrs9ZRJJoibqx0Re4mW9KteR
+        AVGlciJ5k6ZaERSLb3n2g6bQ+8wike/Clq6NhWY=
+X-Google-Smtp-Source: APXvYqyhOjAAwkfA5XXosGRI9NbToQpDgFnNe5aaxF4ifLbemoFih1YT2N1NiR6Hbnx5GPsozlBSmx/sG05/NrfRaaM=
+X-Received: by 2002:a24:4210:: with SMTP id i16mr3914027itb.37.1556828333546;
+ Thu, 02 May 2019 13:18:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <155667629056.4128.14102391877350907561.stgit@john-XPS-13-9360>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1556822018-75282-1-git-send-email-u9012063@gmail.com>
+In-Reply-To: <1556822018-75282-1-git-send-email-u9012063@gmail.com>
+From:   Y Song <ys114321@gmail.com>
+Date:   Thu, 2 May 2019 13:18:17 -0700
+Message-ID: <CAH3MdRVLVugbJbD4_u2bYjqitC4xFL_j8GoHUTBN77Tm9Dy3Ew@mail.gmail.com>
+Subject: Re: [PATCH bpf] libbpf: add libbpf_util.h to header install.
+To:     William Tu <u9012063@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>, blp@ovn.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/30/19 7:06 PM, John Fastabend wrote:
-> Series of fixes for sockmap and ktls, see patches for descriptions.
-> 
-> v2: fix build issue for CONFIG_TLS_DEVICE and fixup couple comments
->     from Jakub
-> 
-> v3: fix issue where release could call unhash resulting in a use after
->     free. Now we detach the ulp pointer before calling into destroy
->     or unhash. This way if we get a callback into unhash from destroy
->     path there is no ulp to access. The fallout is we must pass the
->     ctx into the functions rather than use the sk lookup in each
->     routine. This is probably better anyways.
-> 
->     @Jakub, I did not fix the hw device case it seems the ulp ptr is
->     needed for the hardware teardown but this is buggy for sure. Its
->     not clear to me how to resolve the hw issue at the moment so fix
->     the sw path why we discuss it.
-> 
-Unfortunately, this is still failing with hardware offload (thanks
-Jakub) so will need a v4 to actually fix this.
+On Thu, May 2, 2019 at 11:34 AM William Tu <u9012063@gmail.com> wrote:
+>
+> The libbpf_util.h is used by xsk.h, so add it to
+> the install headers.
 
+Can we try to change code a little bit to avoid exposing libbpf_util.h?
+Originally libbpf_util.h is considered as libbpf internal.
+I am not strongly against this patch. But would really like to see
+whether we have an alternative not exposing libbpf_util.h.
 
-Thanks,
-John
-
+>
+> Reported-by: Ben Pfaff <blp@ovn.org>
+> Signed-off-by: William Tu <u9012063@gmail.com>
 > ---
-> 
-> John Fastabend (4):
->       bpf: tls, implement unhash to avoid transition out of ESTABLISHED
->       bpf: sockmap remove duplicate queue free
->       bpf: sockmap fix msg->sg.size account on ingress skb
->       bpf: sockmap, only stop/flush strp if it was enabled at some point
-> 
-> 
->  include/net/tls.h    |   24 ++++++++++++---
->  net/core/skmsg.c     |    7 +++-
->  net/ipv4/tcp_bpf.c   |    2 -
->  net/tls/tls_device.c |    6 ++--
->  net/tls/tls_main.c   |   78 +++++++++++++++++++++++++++++++++-----------------
->  net/tls/tls_sw.c     |   51 ++++++++++++++++-----------------
->  6 files changed, 103 insertions(+), 65 deletions(-)
-> 
+>  tools/lib/bpf/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+> index c6c06bc6683c..f91639bf5650 100644
+> --- a/tools/lib/bpf/Makefile
+> +++ b/tools/lib/bpf/Makefile
+> @@ -230,6 +230,7 @@ install_headers:
+>                 $(call do_install,bpf.h,$(prefix)/include/bpf,644); \
+>                 $(call do_install,libbpf.h,$(prefix)/include/bpf,644); \
+>                 $(call do_install,btf.h,$(prefix)/include/bpf,644); \
+> +               $(call do_install,libbpf_util.h,$(prefix)/include/bpf,644); \
+>                 $(call do_install,xsk.h,$(prefix)/include/bpf,644);
+>
+>  install_pkgconfig: $(PC_FILE)
 > --
-> Signature
-> 
-
+> 2.7.4
+>
