@@ -2,123 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8B7132ED
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2019 19:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F45D13395
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2019 20:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727780AbfECRMI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 May 2019 13:12:08 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:32921 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727899AbfECRMH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 May 2019 13:12:07 -0400
-Received: by mail-wm1-f68.google.com with SMTP id s18so109682wmh.0
-        for <bpf@vger.kernel.org>; Fri, 03 May 2019 10:12:06 -0700 (PDT)
+        id S1726468AbfECSZd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 May 2019 14:25:33 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:35988 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726321AbfECSZd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 May 2019 14:25:33 -0400
+Received: by mail-pg1-f196.google.com with SMTP id 85so3100625pgc.3
+        for <bpf@vger.kernel.org>; Fri, 03 May 2019 11:25:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=JItq0clnNbfwGksYOOxSTYXceJfwEzdYsFQEskY5j2k=;
-        b=1J+OplU5Tnh+crpHj/GVxsLIP6r4LWP83QVA+FcHyfq4QOg8bAG32gyX+QvDvuhfJk
-         LGlufS8LbtY1WSZUFLBPLtuK82uh+96kajYQwMR0rBvkvNiZk3OvRaDlp8TecSfz3qLD
-         Oz6oQRnfalCxX9ozHLUMA/i+MeAdf8c1CTCKRI5REkflC4+E9Vy8soUHyihqsQsz0Iu0
-         UgQBBcYHIY2f96JODFa7rwmJ9O7aLZkmLFDW3fW7uF+AWXSKOdMy457Vu9ZuGFJkrZKm
-         oYJqJz3voc6dh91r0WnfTOa+Nezxu94/8EjbEb5uNN9AXCq1LYz6dJCJWS91+vjXmVy2
-         C4hg==
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i/bmY+EZ6xV0W0SpIYyFyIDSPu4iDN/leFZKV35/9Vc=;
+        b=m7r8+vcXgU2Jzs3FITtKSxn3MZ0/Ui0kiBxk1JUrg+f9GJCZqLzVOs28Xuo7YABkcp
+         HkZI4irETyZws53pUubSxSy2M0164P9FJYKzN3EKqiuCufrWsFAhpnuhF8CGmvuEEFdo
+         RYdVxSMizwoP6PdkcyTua4mYxoeSqRh/dtQfA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=JItq0clnNbfwGksYOOxSTYXceJfwEzdYsFQEskY5j2k=;
-        b=ghvszQBsfiNdYKeHMwkHJhE1ssYYhNJDyJ6Mz8Refbq0i1E5ksm/EWv+F1aHBvbvkH
-         OEh7cVpME5tguuiQOlrl/Dg9xSQWD9BaHbKmS+2qAKxjsA98pDASHbpAkT00iKe5Kd6U
-         GSF895WE2/VzxrcAiSvkRM05eUXGfOC3ic0iXZOOuNU9V1yo3xaKqkqaH/LwbF11wZtc
-         kVfXiwgAaqs7Bi8fU3z+NqcpaF+ZYZ2xOzhYADD49PMTWTPkDJGEwZDmykJoEz6SGbNg
-         dE8Wm53KPeNCof/uyFcNAwPkM5oG1JonGXcmA3+ZsKvwjjcjObK3RQb3hKdDevr4xvKo
-         3Itw==
-X-Gm-Message-State: APjAAAXZgSWl2RufajwhQor4tiQBtzJZElKeTDu0pQ+GUfs0tXNDuwTw
-        7qIKcr4bOa6xIhHASA46BlsNo5w3ryY=
-X-Google-Smtp-Source: APXvYqxf0QfaoLryA6SbPdQzJLwjOE/uoEE6nyEfNTY02EQUgNE+Z2Ej7LcHjzvrJoxxiVAbNQjEdw==
-X-Received: by 2002:a1c:4d04:: with SMTP id o4mr7177413wmh.126.1556903525613;
-        Fri, 03 May 2019 10:12:05 -0700 (PDT)
-Received: from LAPTOP-V3S7NLPL ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id a22sm1759446wmb.47.2019.05.03.10.12.04
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 May 2019 10:12:04 -0700 (PDT)
-References: <20190412214132.2726285-1-ast@kernel.org> <lyimv3hujp.fsf@netronome.com> <20190425043347.pxrz5ln4m7khebt6@ast-mbp.dhcp.thefacebook.com> <lylfzyeebr.fsf@netronome.com> <20190425221021.ov2jj4piann7wmid@ast-mbp.dhcp.thefacebook.com> <lyk1fgrk4m.fsf@netronome.com> <20190427030512.zs3tfdudjbfpyawh@ast-mbp> <760D400C-2548-41B6-AE34-F89A66397A75@netronome.com> <CAMsOgNDumbU7EWmOpwUoXdM5QWZ8h=W5nG3_JTFU5Tju-ofg_A@mail.gmail.com>
-User-agent: mu4e 0.9.18; emacs 25.2.2
-From:   Jiong Wang <jiong.wang@netronome.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        "oss-drivers\@netronome.com" <oss-drivers@netronome.com>
-Subject: Re: 32-bit zext JIT efficiency (Was Re: [PATCH bpf-next] selftests/bpf: two scale tests)
-In-reply-to: <CAMsOgNDumbU7EWmOpwUoXdM5QWZ8h=W5nG3_JTFU5Tju-ofg_A@mail.gmail.com>
-Date:   Fri, 03 May 2019 18:12:02 +0100
-Message-ID: <871s1fsbrx.fsf@netronome.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i/bmY+EZ6xV0W0SpIYyFyIDSPu4iDN/leFZKV35/9Vc=;
+        b=BQGRclUYiHkNQzhxFmX+iD6UiFAwrpsLRigJD45yqh1cYD6RJSSI7UUFA+FMPiFPt1
+         u0zjP6S6tbb4yxE/21V7bUWcTTmykvaBWrWvVv9dk3GlP2jrU2tKk35fNCqz1EHwF0DT
+         SRY1eRTL27XFyvpkHqkwuxAacZ94IrnFUSgSHxtTT8d9xZyWb3uyh+O3c8+jEkQPX79n
+         S+5xjmkU/t1ZyhRWkEzMGqHp7uLDWYdF+xap9inOds7NCvj05ZOlpg/J4f2qrrCYimLe
+         //rQzN5YO9ci1U8bGeRPet8ZZAtKNhYhn9pmCKcrpexFvJ5RPS/NvL4S0ZI46dqFUbPq
+         DF+w==
+X-Gm-Message-State: APjAAAXkOGiUgPS1NPAYcp3az60DZGiiB+Sim/amIyxiA7Zq66wbCQ62
+        YKz0suugKKMFe7DmmFyNS6WbHQ==
+X-Google-Smtp-Source: APXvYqxXomx3NaQybucA9CD70Lvpm4yE4KqrBRott1+Bcq0msUt/U7YHgaagq201nzW7ilNHNeShKw==
+X-Received: by 2002:a63:5110:: with SMTP id f16mr12391491pgb.107.1556907932139;
+        Fri, 03 May 2019 11:25:32 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id n188sm4110093pfn.64.2019.05.03.11.25.27
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Fri, 03 May 2019 11:25:30 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, atishp04@gmail.com,
+        bpf@vger.kernel.org, Brendan Gregg <bgregg@netflix.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>, dancol@google.com,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        dietmar.eggemann@arm.com, duyuchao <yuchao.du@unisoc.com>,
+        gregkh@linuxfoundation.org, Guenter Roeck <groeck@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Karim Yaghmour <karim.yaghmour@opersys.com>,
+        Kees Cook <keescook@chromium.org>, kernel-team@android.com,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org,
+        Manjo Raja Rao <linux@manojrajarao.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        =?UTF-8?q?Micha=C5=82=20Gregorczyk?= <michalgr@fb.com>,
+        Michal Gregorczyk <michalgr@live.com>,
+        Mohammad Husain <russoue@gmail.com>,
+        Olof Johansson <olof@lixom.net>, qais.yousef@arm.com,
+        rdunlap@infradead.org, Shuah Khan <shuah@kernel.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        Tamir Carmeli <carmeli.tamir@gmail.com>, yhs@fb.com
+Subject: [PATCH] kheaders: Move from proc to sysfs
+Date:   Fri,  3 May 2019 14:24:59 -0400
+Message-Id: <20190503182459.159121-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+The kheaders archive consisting of the kernel headers used for compiling
+bpf programs is in /proc. However there is concern that moving it here
+will make it permanent. Let us move it to /sys/kernel as discussed [1].
 
-Jiong Wang writes:
+[1] https://lore.kernel.org/patchwork/patch/1067310/#1265969
 
->> > if you can craft a test that shows patch_insn issue before your set,
->> > then it's ok to hack bpf_fill_scale1 to use alu64.
->>
->> As described above, does the test_verifier 732 + jit blinding looks convincing?
->>
->> > I would also prefer to go with option 2 (new zext insn) for JITs.
->>
->> Got it.
->
-> I followed option 2 and have sent out v5 with latests changes/fixes:
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+This patch applies on top of the previous patch that was applied to the
+driver tree:
+https://lore.kernel.org/patchwork/patch/1067310/
 
-Had done second look at various back-ends, now noticed one new issue,
-some arches are not consistent on implicit zext. For example, for s390,
-alu32 move could be JITed using single instruction "llgfr" which will do
-implicit zext, but alu32 move on PowerPC needs explicit zext. Then for
-riscv, all BPF_ALU | BPF_K needs zext but not for some of BPF_ALU | BPF_X.
-So, while these arches are generally better off after verifier zext
-insertion enabled, but there do have unnecessary zext inserted by verifier
-for them case by case.
+ kernel/kheaders.c | 40 ++++++++++++++++------------------------
+ 1 file changed, 16 insertions(+), 24 deletions(-)
 
-Also, for 64-bit arches like PowerPC, S390 etc, they normally has zero
-extended load, so narrowed load doesn't need extra zext insn, but for
-32-bit arches like arm, narrowed load always need explicit zext.
-
-All these differences are because of BPF_ALU32 or BPF_LDX + B | H | W
-will be eventually mapped to diversified back-ends which do not have
-consistent ISA semantics.
-
-Given all these, looks like pass down the analysis info to back-ends
-and let them do the decision become the choice again?
-
-Regards,
-Jiong
-
-> The major changes are:
->   - introduced BPF_ZEXT, even though it doesn't resolve insn patch in-efficient,
->     but could let JIT back-ends do optimal code-gen, and the change is small,
->     so perhap just better to support it in this set.
->   - while look insn patch code, I feel patched-insn need to be conservatiely
->     marked if any insn inside patch buffer define sub-register.
->   - Also fixed helper function return value handling bug. I am thinking helper
->     function should have accurate return value type description, otherwise
->     there could be bug. For example arm32 back-end just executes the native
->     helper functions and doesn't do anything special on the return value. So
->     a function returns u32 would only set native reg r0, not r1 in the pair.
->     Then if the outside eBPF insn is casting it into u64, there needs to be
->     zext.
->   - adjusted test_verifier to make sure it could pass on hosts w and w/o hw
->     zext.
->
-> For more info, please see the cover letter and patch description at v5.
->
-> Thanks.
-> Regards,
-> Jiong
-
+diff --git a/kernel/kheaders.c b/kernel/kheaders.c
+index 70ae6052920d..6a16f8f6898d 100644
+--- a/kernel/kheaders.c
++++ b/kernel/kheaders.c
+@@ -8,9 +8,8 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+-#include <linux/proc_fs.h>
++#include <linux/kobject.h>
+ #include <linux/init.h>
+-#include <linux/uaccess.h>
+ 
+ /*
+  * Define kernel_headers_data and kernel_headers_data_end, within which the
+@@ -31,39 +30,32 @@ extern char kernel_headers_data;
+ extern char kernel_headers_data_end;
+ 
+ static ssize_t
+-ikheaders_read_current(struct file *file, char __user *buf,
+-		      size_t len, loff_t *offset)
++ikheaders_read(struct file *file,  struct kobject *kobj,
++	       struct bin_attribute *bin_attr,
++	       char *buf, loff_t off, size_t len)
+ {
+-	return simple_read_from_buffer(buf, len, offset,
+-				       &kernel_headers_data,
+-				       &kernel_headers_data_end -
+-				       &kernel_headers_data);
++	memcpy(buf, &kernel_headers_data + off, len);
++	return len;
+ }
+ 
+-static const struct file_operations ikheaders_file_ops = {
+-	.read = ikheaders_read_current,
+-	.llseek = default_llseek,
++static struct bin_attribute kheaders_attr __ro_after_init = {
++	.attr = {
++		.name = "kheaders.tar.xz",
++		.mode = S_IRUGO,
++	},
++	.read = &ikheaders_read,
+ };
+ 
+ static int __init ikheaders_init(void)
+ {
+-	struct proc_dir_entry *entry;
+-
+-	/* create the current headers file */
+-	entry = proc_create("kheaders.tar.xz", S_IRUGO, NULL,
+-			    &ikheaders_file_ops);
+-	if (!entry)
+-		return -ENOMEM;
+-
+-	proc_set_size(entry,
+-		      &kernel_headers_data_end -
+-		      &kernel_headers_data);
+-	return 0;
++	kheaders_attr.size = (&kernel_headers_data_end -
++			      &kernel_headers_data);
++	return sysfs_create_bin_file(kernel_kobj, &kheaders_attr);
+ }
+ 
+ static void __exit ikheaders_cleanup(void)
+ {
+-	remove_proc_entry("kheaders.tar.xz", NULL);
++	sysfs_remove_bin_file(kernel_kobj, &kheaders_attr);
+ }
+ 
+ module_init(ikheaders_init);
+-- 
+2.21.0.1020.gf2820cf01a-goog
