@@ -2,56 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FFE112BB5
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2019 12:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093EE12BC7
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2019 12:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727608AbfECKn7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 May 2019 06:43:59 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:40392 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727144AbfECKn6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 May 2019 06:43:58 -0400
-Received: by mail-wm1-f68.google.com with SMTP id h11so6147673wmb.5
-        for <bpf@vger.kernel.org>; Fri, 03 May 2019 03:43:57 -0700 (PDT)
+        id S1727556AbfECKoL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 May 2019 06:44:11 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:34199 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727501AbfECKoA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 May 2019 06:44:00 -0400
+Received: by mail-wr1-f68.google.com with SMTP id e9so7290589wrc.1
+        for <bpf@vger.kernel.org>; Fri, 03 May 2019 03:43:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=E1uglxRyFecLZ4+8so4GbOenEokaEEM+HAxuo+s+1vc=;
-        b=lGuseTtRRTcHSSPfpFgHZOyTSY1+fUabWrvLqxaF3wYYvI1DidnNCrtmLmSQIvxfsT
-         vgf60AEAVmvHnXm5qwFZrMghi172CPBT/TlqQdsgk03voaYCXpcRjlH9HbhC8rWEwoGb
-         bK+b4qvWOEcfsM6JkCM9HeO+RefC05YfVi+iHMndMN+KXlp+wiVVDEV9n3YhnDTHNSl8
-         g7OtF1vp5WugCtWi2hO7dsYOqpeOaS7rglLtxsvFQ1/zJIREpnk/gJ9ww29TLc3x24jD
-         MSADvs3v7l6X1jDvQwS4LEvnGiClVBMzeGw/wy/XRGuRzknfufQMrrkEo+9HUqzizyOm
-         Q9yw==
+        bh=XP0RwQbziCxRtw0HK+xAhkTdFI68wuwmjjzs474PFlM=;
+        b=rNyO6h4PPVEd5LaW8uo+Hd9Gva2gPEgs+27p47gm0YHntR3EHW33cAjYQ5eqKMB/jZ
+         ZMXRQf1RQcmoFqKXUggTCuztk1f7dNCggtNsW5Yz9p5caGPkPmLxLd+7cHyYYlUJ6p3t
+         L08rRUD4eWU8CO9s2+IYns08RCHD/2f2TxlSdXtYEA5lcyBcGceVymA4/EsoAEzVjihO
+         cr6SXmoGa1/vQkbfswlAQmCZjM05N/ZRmgzksocw6ZVR0qcgDhSsB4dw+Rtjr94ZRu3V
+         719rzDuZ+2fURgvXD7Mnm4R1EVmuE7wDIzJ18O1JSBeeBjx9XAYXgwDDS8pylksnPRx3
+         O/ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=E1uglxRyFecLZ4+8so4GbOenEokaEEM+HAxuo+s+1vc=;
-        b=KfPBMEQsW4e19Ug//b719D2VtjFQpR6Zu4XPnHh6qBF7rqPQbo1mYuGnvuhBknRhq2
-         ghWOJLPte5RRvrLt+Ap2nb+aX+fw5FuT8dMslqdgRIs9hlJHqV5NGoO8mcJ3PS5TjpCl
-         qTknzAf7RAbhc0lx6JOT9VF6V9IJEFQ+8gKJPz1Qay9ffcQzlDkfbGvPnxtCzBdc/J89
-         h5XTSLmrzSxy2ZVF8PS3m0N9iYMba2ItW3PPaG0CJz4PucSxgxaJTZyumDveIEHj3HF6
-         gnQwZO6b1TsXQJ8RfM8shAAio9drmsWEYKTocMwySw3xWSqCbKu4OYaE6hUtW5FzVNXy
-         HjHA==
-X-Gm-Message-State: APjAAAUN1dXEJ9kLYCtHkaW+hxM8fQpdA+xEwvI5kdZ05D0V6HCOQWwd
-        tmLPXiOxMTZSP20u1Brf8l6ptQ==
-X-Google-Smtp-Source: APXvYqzh2ofhMr072gDqrU/ulHXAnV5cagPt/km9f+/WPDKMYJKne/DiRcd38ypS/lGyhm+CyV4qNQ==
-X-Received: by 2002:a7b:c5c7:: with SMTP id n7mr6001889wmk.9.1556880237144;
-        Fri, 03 May 2019 03:43:57 -0700 (PDT)
+        bh=XP0RwQbziCxRtw0HK+xAhkTdFI68wuwmjjzs474PFlM=;
+        b=cf4HvcjyAHuuL2t2jcyeZUr/l+7rT3HzwXHAVuks7F5slvj12yY2ar4AEBfZIJ+omq
+         ovdiUgge8kD1mvqpsQeN782U948D8VrthHVYei9NY4ndhUI/3uugunbBlVpJAAfLXgBL
+         4FhCGienXcbQ4ZF+3EFZV2f19MCYncBZPxPhjW6lPMHzeIA/SyWltbYRbD5tyJ5oKDny
+         PYJj5s/DEtWCEyxrAfxgoLp8gCe9ctRJrwCvhN0jGBJOmx8ZX+PIrEFEW++Sz6RiWrw5
+         aqig51B9hWoqNBHsx00Z7paQsRdNnI77WNSQtjlZwwI6NDTh6MTCsHSmBXDdbpTQh9EH
+         Xx+A==
+X-Gm-Message-State: APjAAAXq5/t4V9Hr8bCojPhNjrCv37ylSct2xdoYive1C1LwvTYpv/91
+        2A5PHnjELANvXVOA5Ht8sim67g==
+X-Google-Smtp-Source: APXvYqzbnZ1JAE+CniEsw6ea0nVorWFG8Rlfh2hpHw3PlZj63X3b0PMFKjAtokjYND9xpxLYoBY5bw==
+X-Received: by 2002:a5d:5501:: with SMTP id b1mr2673789wrv.196.1556880238328;
+        Fri, 03 May 2019 03:43:58 -0700 (PDT)
 Received: from cbtest28.netronome.com ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id r29sm1716999wra.56.2019.05.03.03.43.56
+        by smtp.gmail.com with ESMTPSA id r29sm1716999wra.56.2019.05.03.03.43.57
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Fri, 03 May 2019 03:43:56 -0700 (PDT)
+        Fri, 03 May 2019 03:43:57 -0700 (PDT)
 From:   Jiong Wang <jiong.wang@netronome.com>
 To:     alexei.starovoitov@gmail.com, daniel@iogearbox.net
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         oss-drivers@netronome.com, Jiong Wang <jiong.wang@netronome.com>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>
-Subject: [PATCH v6 bpf-next 13/17] s390: bpf: eliminate zero extension code-gen
-Date:   Fri,  3 May 2019 11:42:40 +0100
-Message-Id: <1556880164-10689-14-git-send-email-jiong.wang@netronome.com>
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH v6 bpf-next 14/17] sparc: bpf: eliminate zero extension code-gen
+Date:   Fri,  3 May 2019 11:42:41 +0100
+Message-Id: <1556880164-10689-15-git-send-email-jiong.wang@netronome.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1556880164-10689-1-git-send-email-jiong.wang@netronome.com>
 References: <1556880164-10689-1-git-send-email-jiong.wang@netronome.com>
@@ -60,48 +59,39 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: David S. Miller <davem@davemloft.net>
 Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
 ---
- arch/s390/net/bpf_jit_comp.c | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+ arch/sparc/net/bpf_jit_comp_64.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index 51dd026..8315b2e 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -299,9 +299,11 @@ static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
+diff --git a/arch/sparc/net/bpf_jit_comp_64.c b/arch/sparc/net/bpf_jit_comp_64.c
+index 65428e7..8bac761 100644
+--- a/arch/sparc/net/bpf_jit_comp_64.c
++++ b/arch/sparc/net/bpf_jit_comp_64.c
+@@ -905,6 +905,10 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx)
+ 		ctx->saw_frame_pointer = true;
  
- #define EMIT_ZERO(b1)						\
- ({								\
--	/* llgfr %dst,%dst (zero extend to 64 bit) */		\
--	EMIT4(0xb9160000, b1, b1);				\
--	REG_SET_SEEN(b1);					\
-+	if (!fp->aux->verifier_zext) {				\
-+		/* llgfr %dst,%dst (zero extend to 64 bit) */	\
-+		EMIT4(0xb9160000, b1, b1);			\
-+		REG_SET_SEEN(b1);				\
-+	}							\
- })
- 
- /*
-@@ -515,6 +517,13 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
- 		jit->seen |= SEEN_REG_AX;
- 	switch (insn->code) {
- 	/*
-+	 * BPF_ZEXT
-+	 */
-+	case BPF_ALU | BPF_ZEXT: /* dst = (u32) dst */
-+		/* llgfr %dst,%dst */
-+		EMIT4(0xb9160000, dst_reg, dst_reg);
+ 	switch (code) {
++	/* dst = (u32) dst */
++	case BPF_ALU | BPF_ZEXT:
++		emit_alu_K(SRL, dst, 0, ctx);
 +		break;
-+	/*
- 	 * BPF_MOV
- 	 */
- 	case BPF_ALU | BPF_MOV | BPF_X: /* dst = (u32) src */
-@@ -1282,6 +1291,11 @@ static int bpf_jit_prog(struct bpf_jit *jit, struct bpf_prog *fp)
- 	return 0;
+ 	/* dst = src */
+ 	case BPF_ALU | BPF_MOV | BPF_X:
+ 		emit_alu3_K(SRL, src, 0, dst, ctx);
+@@ -1144,7 +1148,8 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx)
+ 		break;
+ 
+ 	do_alu32_trunc:
+-		if (BPF_CLASS(code) == BPF_ALU)
++		if (BPF_CLASS(code) == BPF_ALU &&
++		    !ctx->prog->aux->verifier_zext)
+ 			emit_alu_K(SRL, dst, 0, ctx);
+ 		break;
+ 
+@@ -1432,6 +1437,11 @@ static void jit_fill_hole(void *area, unsigned int size)
+ 		*ptr++ = 0x91d02005; /* ta 5 */
  }
  
 +bool bpf_jit_hardware_zext(void)
@@ -109,9 +99,9 @@ index 51dd026..8315b2e 100644
 +	return false;
 +}
 +
- /*
-  * Compile eBPF program "fp"
-  */
+ struct sparc64_jit_data {
+ 	struct bpf_binary_header *header;
+ 	u8 *image;
 -- 
 2.7.4
 
