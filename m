@@ -2,91 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B0112F60
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2019 15:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A968A12F94
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2019 15:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727282AbfECNl1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 May 2019 09:41:27 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53666 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726514AbfECNl1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 3 May 2019 09:41:27 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x43DX3eb016735
-        for <bpf@vger.kernel.org>; Fri, 3 May 2019 09:41:26 -0400
-Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2s8n1xmucm-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 03 May 2019 09:41:26 -0400
-Received: from localhost
-        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <heiko.carstens@de.ibm.com>;
-        Fri, 3 May 2019 14:41:24 +0100
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
-        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 3 May 2019 14:41:21 +0100
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x43DfKgo60555504
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 May 2019 13:41:20 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9F5ECA4060;
-        Fri,  3 May 2019 13:41:20 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5C466A4054;
-        Fri,  3 May 2019 13:41:20 +0000 (GMT)
-Received: from osiris (unknown [9.152.212.21])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri,  3 May 2019 13:41:20 +0000 (GMT)
-Date:   Fri, 3 May 2019 15:41:19 +0200
-From:   Heiko Carstens <heiko.carstens@de.ibm.com>
-To:     Jiong Wang <jiong.wang@netronome.com>
+        id S1727089AbfECNuY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 May 2019 09:50:24 -0400
+Received: from mail-yw1-f66.google.com ([209.85.161.66]:34588 "EHLO
+        mail-yw1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726989AbfECNuY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 May 2019 09:50:24 -0400
+Received: by mail-yw1-f66.google.com with SMTP id u14so4343075ywe.1;
+        Fri, 03 May 2019 06:50:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Cb3dOBONDPUiw5QKA/nv+e9o48H5wdiEyR1XR+NWF7Q=;
+        b=Xn9UptjKN6pBBWC7044HXJYeH+C2WZcGF1mSgDlvKBW5w+G+XlFep2SXI7ZZibKG91
+         7B3+1LZ7b2KLoHKcOwDFpalF/85Nhlb1kVS9Tt0iOtVqO+HAO1+FWs6iQJvgh6wbBMZo
+         ei0p1BJw9jZ2MluLdFpnKQK2PpsG5J+yaixC7m5ez/SLeJQhXd3j5nNLMJp+CClRpqPM
+         kJEwuR+3M2GGDCFGAfaAwqhaXamjCe1gkr9K1gLFpnJdXHZvCdZ0UEILIqk9L8rISQFa
+         3J6glB8+gnyfOUUCf/MVHqLum936mJg1elH0dFq12PbEcmNQewWPXYW+ft8ImKdD4Rjh
+         SlLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Cb3dOBONDPUiw5QKA/nv+e9o48H5wdiEyR1XR+NWF7Q=;
+        b=ED32sENlKy1ZNw2XHA9xzfwnhL1L7bQN94CHYS2Z8bzYFvG6s3JxZ/GqPIrfE2YufV
+         ACxJDUkFOCK22YZu4NomatIVIPUZKPfuhHsbeZeoVhxYvQiwPH7XVOFKrul2Z7/PeA2J
+         A0AwihblLPDFtxeXAb/KdLuP0bU+tMstgGhDvzGDOc+Ccvw0kv3PW8GHUce6fBggTPqj
+         sVLCzepI8wh26xyNp4vRuntkuK1q0AOdPwuHH4JXIcf3rZGaKxRBNgFdyC56bn4YYDdf
+         i//YHTk4iRoXsZGgeZARIwUa4cje/MSzBBYsYKD0tGtsNpGderBQwLgsb+TRCrUpAi19
+         ZIBg==
+X-Gm-Message-State: APjAAAV3DOe7Wgto1BrMLhxoUzDrqamLUNG4Oiib/4Bm+VKqtxoFc47v
+        kRuPwfxaHf0NxAquVAidHH8=
+X-Google-Smtp-Source: APXvYqztBjyl2B8gSqLjvTLqMuZoGDHXZaPRTpwrYgZvWw8SHiE6wRo8h3GbEsGPlpgRypFtWy7syw==
+X-Received: by 2002:a25:2f52:: with SMTP id v79mr7624158ybv.182.1556891423269;
+        Fri, 03 May 2019 06:50:23 -0700 (PDT)
+Received: from [172.20.0.54] (adsl-173-228-226-134.prtc.net. [173.228.226.134])
+        by smtp.gmail.com with ESMTPSA id b69sm930316ywh.18.2019.05.03.06.50.21
+        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+        Fri, 03 May 2019 06:50:22 -0700 (PDT)
+Subject: Re: [PATCH v6 bpf-next 13/17] s390: bpf: eliminate zero extension
+ code-gen
+To:     Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Jiong Wang <jiong.wang@netronome.com>
 Cc:     alexei.starovoitov@gmail.com, daniel@iogearbox.net,
         bpf@vger.kernel.org, netdev@vger.kernel.org,
         oss-drivers@netronome.com,
         Martin Schwidefsky <schwidefsky@de.ibm.com>
-Subject: Re: [PATCH v6 bpf-next 13/17] s390: bpf: eliminate zero extension
- code-gen
 References: <1556880164-10689-1-git-send-email-jiong.wang@netronome.com>
  <1556880164-10689-14-git-send-email-jiong.wang@netronome.com>
+ <20190503134118.GA5602@osiris>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <c0d08132-c1ac-72a9-9ba3-376add0352c2@gmail.com>
+Date:   Fri, 3 May 2019 09:50:21 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1556880164-10689-14-git-send-email-jiong.wang@netronome.com>
-X-TM-AS-GCONF: 00
-x-cbid: 19050313-0016-0000-0000-00000277F6D4
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19050313-0017-0000-0000-000032D49407
-Message-Id: <20190503134118.GA5602@osiris>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-03_07:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=889 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905030086
+In-Reply-To: <20190503134118.GA5602@osiris>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 03, 2019 at 11:42:40AM +0100, Jiong Wang wrote:
-> Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
-> Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-> Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
-> ---
->  arch/s390/net/bpf_jit_comp.c | 20 +++++++++++++++++---
->  1 file changed, 17 insertions(+), 3 deletions(-)
 
-When sending patches which affect s390, could you please add Martin
-and me on cc to _all_ patches? We now received only the cover-letter
-plus one patch. It's always hard in such cirumstances to figure out if
-the code is doing the right thing.
 
-Usually I end up looking up the missing patches within other mailing
-lists, however I haven't subscribed the bpf and netdev mailing lists.
+On 5/3/19 9:41 AM, Heiko Carstens wrote:
+> On Fri, May 03, 2019 at 11:42:40AM +0100, Jiong Wang wrote:
+>> Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
+>> Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+>> Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
+>> ---
+>>  arch/s390/net/bpf_jit_comp.c | 20 +++++++++++++++++---
+>>  1 file changed, 17 insertions(+), 3 deletions(-)
+> 
+> When sending patches which affect s390, could you please add Martin
+> and me on cc to _all_ patches? We now received only the cover-letter
+> plus one patch. It's always hard in such cirumstances to figure out if
+> the code is doing the right thing.
+> 
+>
+One possible way is to use  --signed-off-by-cc option in git send-email
 
-The extra e-mail volume because of being added to CC really doesn't
-matter at all.
+       --[no-]signed-off-by-cc
+           If this is set, add emails found in Signed-off-by: or Cc: lines to the cc list.
+           Default is the value of sendemail.signedoffbycc configuration value; if that is
+           unspecified, default to --signed-off-by-cc.
 
