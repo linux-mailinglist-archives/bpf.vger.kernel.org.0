@@ -2,169 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F45D13395
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2019 20:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394F81342E
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2019 21:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbfECSZd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 May 2019 14:25:33 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:35988 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726321AbfECSZd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 May 2019 14:25:33 -0400
-Received: by mail-pg1-f196.google.com with SMTP id 85so3100625pgc.3
-        for <bpf@vger.kernel.org>; Fri, 03 May 2019 11:25:32 -0700 (PDT)
+        id S1725798AbfECTyL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 May 2019 15:54:11 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:45520 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbfECTyL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 May 2019 15:54:11 -0400
+Received: by mail-qt1-f195.google.com with SMTP id t1so7411498qtc.12;
+        Fri, 03 May 2019 12:54:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i/bmY+EZ6xV0W0SpIYyFyIDSPu4iDN/leFZKV35/9Vc=;
-        b=m7r8+vcXgU2Jzs3FITtKSxn3MZ0/Ui0kiBxk1JUrg+f9GJCZqLzVOs28Xuo7YABkcp
-         HkZI4irETyZws53pUubSxSy2M0164P9FJYKzN3EKqiuCufrWsFAhpnuhF8CGmvuEEFdo
-         RYdVxSMizwoP6PdkcyTua4mYxoeSqRh/dtQfA=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dcNO8H4JVaKlLHehIOVLfbJ0MseX0TEZi3YtkHapVeE=;
+        b=OkMBUfw4i6GE6tlDtd15zhYU/IhCdb4FiDnpBVGpv8Tf+oElh+7N+XWPiXi6s+byNO
+         2k0+WanD9//PW9OjgMqnKODOiY0nzdWjiSMoV/b8aks3zBzAkv/uQSr0lH1lrnCLZYn3
+         R6xP3DV/YgxGx/03hj3lzQovCtT4IeQQl7p7zGzP2CIfo/XDHmaNHIYd9r5a6pFecN5g
+         1dh23b7knP32tcZURwiN7+ZhjvdizxxbB7E4LG4AxSP6bz6EKmEGSDTqgw0hQF+YtnV0
+         oYpOvog98lwAiy+AjwxYYc5JIBv+sWWaUT6uDuvKyGkPKaUXQ8sMH8B3BZL8FbHX1mVs
+         S3pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i/bmY+EZ6xV0W0SpIYyFyIDSPu4iDN/leFZKV35/9Vc=;
-        b=BQGRclUYiHkNQzhxFmX+iD6UiFAwrpsLRigJD45yqh1cYD6RJSSI7UUFA+FMPiFPt1
-         u0zjP6S6tbb4yxE/21V7bUWcTTmykvaBWrWvVv9dk3GlP2jrU2tKk35fNCqz1EHwF0DT
-         SRY1eRTL27XFyvpkHqkwuxAacZ94IrnFUSgSHxtTT8d9xZyWb3uyh+O3c8+jEkQPX79n
-         S+5xjmkU/t1ZyhRWkEzMGqHp7uLDWYdF+xap9inOds7NCvj05ZOlpg/J4f2qrrCYimLe
-         //rQzN5YO9ci1U8bGeRPet8ZZAtKNhYhn9pmCKcrpexFvJ5RPS/NvL4S0ZI46dqFUbPq
-         DF+w==
-X-Gm-Message-State: APjAAAXkOGiUgPS1NPAYcp3az60DZGiiB+Sim/amIyxiA7Zq66wbCQ62
-        YKz0suugKKMFe7DmmFyNS6WbHQ==
-X-Google-Smtp-Source: APXvYqxXomx3NaQybucA9CD70Lvpm4yE4KqrBRott1+Bcq0msUt/U7YHgaagq201nzW7ilNHNeShKw==
-X-Received: by 2002:a63:5110:: with SMTP id f16mr12391491pgb.107.1556907932139;
-        Fri, 03 May 2019 11:25:32 -0700 (PDT)
-Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id n188sm4110093pfn.64.2019.05.03.11.25.27
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 03 May 2019 11:25:30 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>, atishp04@gmail.com,
-        bpf@vger.kernel.org, Brendan Gregg <bgregg@netflix.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>, dancol@google.com,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dan Williams <dan.j.williams@intel.com>,
-        dietmar.eggemann@arm.com, duyuchao <yuchao.du@unisoc.com>,
-        gregkh@linuxfoundation.org, Guenter Roeck <groeck@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Karim Yaghmour <karim.yaghmour@opersys.com>,
-        Kees Cook <keescook@chromium.org>, kernel-team@android.com,
-        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org,
-        Manjo Raja Rao <linux@manojrajarao.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        =?UTF-8?q?Micha=C5=82=20Gregorczyk?= <michalgr@fb.com>,
-        Michal Gregorczyk <michalgr@live.com>,
-        Mohammad Husain <russoue@gmail.com>,
-        Olof Johansson <olof@lixom.net>, qais.yousef@arm.com,
-        rdunlap@infradead.org, Shuah Khan <shuah@kernel.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        Tamir Carmeli <carmeli.tamir@gmail.com>, yhs@fb.com
-Subject: [PATCH] kheaders: Move from proc to sysfs
-Date:   Fri,  3 May 2019 14:24:59 -0400
-Message-Id: <20190503182459.159121-1-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dcNO8H4JVaKlLHehIOVLfbJ0MseX0TEZi3YtkHapVeE=;
+        b=diMDEZ3L2C5fPsPal6Ar8WDV//d/33eh70OTrx80iBwzGxU5GCcmTN3iEIiguG1EYn
+         xxKivbDOJMqQokCVHxwhbWyeHE5ZEg6tazGijvSTYHNwSG4nJFBgtkI/xVYhasSRocce
+         34MuqB9sBtHLNoguyWYmZ0lLSJWzN7IrA0bWwxO0FxR1CrNWOzsFOv4ZTWtfAs6Yc+f5
+         3D0QQfiozLoFzJ7vZiPT4aaZfWbFyhRaMkh/erdnc/kXWh1jmQ/+9ktQodIntTGbHxFc
+         lQoJxMOWT7aCWpeZ0v7fLsm08Wk6wpH282M9Qw296yT87Z6iEP0PzIx2HRxdSS1l599I
+         iQDw==
+X-Gm-Message-State: APjAAAUDjpFctetixvuHWanVaIVYFjVcQZqzZ4mATiCV654hT9E16Anm
+        sjy/OY6IWutqE7p17nlsZFyM7WW14YNYgag8bVk=
+X-Google-Smtp-Source: APXvYqwYZLwRtRGf79qzGB2xP1Xx0iaBKEVGsRmDg/udzzTcKOtpgbrWBfe0qwpaz2izHyQDCocu9k/jn3t51iZ0jQc=
+X-Received: by 2002:a0c:881c:: with SMTP id 28mr9472135qvl.150.1556913250225;
+ Fri, 03 May 2019 12:54:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1556822018-75282-1-git-send-email-u9012063@gmail.com> <CAH3MdRVLVugbJbD4_u2bYjqitC4xFL_j8GoHUTBN77Tm9Dy3Ew@mail.gmail.com>
+In-Reply-To: <CAH3MdRVLVugbJbD4_u2bYjqitC4xFL_j8GoHUTBN77Tm9Dy3Ew@mail.gmail.com>
+From:   William Tu <u9012063@gmail.com>
+Date:   Fri, 3 May 2019 12:53:33 -0700
+Message-ID: <CALDO+SZtusQ3Zw4jT6BEgGV7poiwSwZDuhghO+6y53RBA0Mg1A@mail.gmail.com>
+Subject: Re: [PATCH bpf] libbpf: add libbpf_util.h to header install.
+To:     Y Song <ys114321@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Ben Pfaff <blp@ovn.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The kheaders archive consisting of the kernel headers used for compiling
-bpf programs is in /proc. However there is concern that moving it here
-will make it permanent. Let us move it to /sys/kernel as discussed [1].
+On Thu, May 2, 2019 at 1:18 PM Y Song <ys114321@gmail.com> wrote:
+>
+> On Thu, May 2, 2019 at 11:34 AM William Tu <u9012063@gmail.com> wrote:
+> >
+> > The libbpf_util.h is used by xsk.h, so add it to
+> > the install headers.
+>
+> Can we try to change code a little bit to avoid exposing libbpf_util.h?
+> Originally libbpf_util.h is considered as libbpf internal.
+> I am not strongly against this patch. But would really like to see
+> whether we have an alternative not exposing libbpf_util.h.
+>
 
-[1] https://lore.kernel.org/patchwork/patch/1067310/#1265969
+The commit b7e3a28019c92ff ("libbpf: remove dependency on barrier.h in xsk.h")
+adds the dependency of libbpf_util.h to xsk.h.
+How about we move the libbpf_smp_* into the xsk.h, since they are
+used only by xsk.h.
 
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
-This patch applies on top of the previous patch that was applied to the
-driver tree:
-https://lore.kernel.org/patchwork/patch/1067310/
+Regards,
+William
 
- kernel/kheaders.c | 40 ++++++++++++++++------------------------
- 1 file changed, 16 insertions(+), 24 deletions(-)
-
-diff --git a/kernel/kheaders.c b/kernel/kheaders.c
-index 70ae6052920d..6a16f8f6898d 100644
---- a/kernel/kheaders.c
-+++ b/kernel/kheaders.c
-@@ -8,9 +8,8 @@
- 
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/proc_fs.h>
-+#include <linux/kobject.h>
- #include <linux/init.h>
--#include <linux/uaccess.h>
- 
- /*
-  * Define kernel_headers_data and kernel_headers_data_end, within which the
-@@ -31,39 +30,32 @@ extern char kernel_headers_data;
- extern char kernel_headers_data_end;
- 
- static ssize_t
--ikheaders_read_current(struct file *file, char __user *buf,
--		      size_t len, loff_t *offset)
-+ikheaders_read(struct file *file,  struct kobject *kobj,
-+	       struct bin_attribute *bin_attr,
-+	       char *buf, loff_t off, size_t len)
- {
--	return simple_read_from_buffer(buf, len, offset,
--				       &kernel_headers_data,
--				       &kernel_headers_data_end -
--				       &kernel_headers_data);
-+	memcpy(buf, &kernel_headers_data + off, len);
-+	return len;
- }
- 
--static const struct file_operations ikheaders_file_ops = {
--	.read = ikheaders_read_current,
--	.llseek = default_llseek,
-+static struct bin_attribute kheaders_attr __ro_after_init = {
-+	.attr = {
-+		.name = "kheaders.tar.xz",
-+		.mode = S_IRUGO,
-+	},
-+	.read = &ikheaders_read,
- };
- 
- static int __init ikheaders_init(void)
- {
--	struct proc_dir_entry *entry;
--
--	/* create the current headers file */
--	entry = proc_create("kheaders.tar.xz", S_IRUGO, NULL,
--			    &ikheaders_file_ops);
--	if (!entry)
--		return -ENOMEM;
--
--	proc_set_size(entry,
--		      &kernel_headers_data_end -
--		      &kernel_headers_data);
--	return 0;
-+	kheaders_attr.size = (&kernel_headers_data_end -
-+			      &kernel_headers_data);
-+	return sysfs_create_bin_file(kernel_kobj, &kheaders_attr);
- }
- 
- static void __exit ikheaders_cleanup(void)
- {
--	remove_proc_entry("kheaders.tar.xz", NULL);
-+	sysfs_remove_bin_file(kernel_kobj, &kheaders_attr);
- }
- 
- module_init(ikheaders_init);
--- 
-2.21.0.1020.gf2820cf01a-goog
+> >
+> > Reported-by: Ben Pfaff <blp@ovn.org>
+> > Signed-off-by: William Tu <u9012063@gmail.com>
+> > ---
+> >  tools/lib/bpf/Makefile | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+> > index c6c06bc6683c..f91639bf5650 100644
+> > --- a/tools/lib/bpf/Makefile
+> > +++ b/tools/lib/bpf/Makefile
+> > @@ -230,6 +230,7 @@ install_headers:
+> >                 $(call do_install,bpf.h,$(prefix)/include/bpf,644); \
+> >                 $(call do_install,libbpf.h,$(prefix)/include/bpf,644); \
+> >                 $(call do_install,btf.h,$(prefix)/include/bpf,644); \
+> > +               $(call do_install,libbpf_util.h,$(prefix)/include/bpf,644); \
+> >                 $(call do_install,xsk.h,$(prefix)/include/bpf,644);
+> >
+> >  install_pkgconfig: $(PC_FILE)
+> > --
+> > 2.7.4
+> >
