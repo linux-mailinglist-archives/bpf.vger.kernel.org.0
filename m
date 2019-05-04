@@ -2,120 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A00813B17
-	for <lists+bpf@lfdr.de>; Sat,  4 May 2019 18:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DAEF13B63
+	for <lists+bpf@lfdr.de>; Sat,  4 May 2019 19:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727174AbfEDQHG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 4 May 2019 12:07:06 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:34107 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726217AbfEDQHD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 4 May 2019 12:07:03 -0400
-Received: by mail-pg1-f193.google.com with SMTP id c13so4258195pgt.1;
-        Sat, 04 May 2019 09:07:02 -0700 (PDT)
+        id S1726654AbfEDRZw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 4 May 2019 13:25:52 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:32922 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726480AbfEDRZv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 4 May 2019 13:25:51 -0400
+Received: by mail-qk1-f193.google.com with SMTP id k189so273584qkc.0;
+        Sat, 04 May 2019 10:25:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lS00FWHyTFR/FJuO91xXRMo5CVp7ykNCRIiy16tO7jc=;
-        b=JsFg9epaupPV7iKZ39JCayZMQ9nw2lrjF6cMtCBDJT+7R5wYmlRnI/vk9fAdT4sV4Y
-         VeV3w4Dk0ldqkIUcHmD/SwLQSqpuP0YidI/H0io78GxiawwbrK2/2gyWt73vuHu4gJhX
-         3JAlO/DpXSvzDpaWr+icOGvHvvJ3gJILeqpF9bHctQQC/13mNsnwEYnj+nUMAsBMI/9r
-         8zaOXaqzYS3FcvqYMrd39S6ZgsyXQSk96cnIjfsZka++5O++8t2G26EMAlpANacUiuYR
-         jcDSPcE3eji9uWHqIbkk2DKif5mhE04ehIvjwpWQWO8NoT1QNdwbUf8FKCIsDDIf92Nf
-         VRNg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aeIr2xYUVvk3yQWnL07RF0qzoNgh0zjWYEMxr0YSFWA=;
+        b=mD1gRGwUPp5N64opyhHYamX+1iKoFew8i2R99fxUCC31Dt9vxtWIL9XjETHQ9uVbJv
+         DXm/LSDeTkZWkJXFcKic8cZIiP19/g9vgYSh/5WAlY873K9RyEaiKFyXNigYAACX2w1m
+         K9VFO9ct5eGJpc8aW6JfBxzEq4XUi8U2d12mXg2WtPc4i11BMgV0dtGMfd4Nxg3HUb7L
+         d02ckG6Uiuxo5rHxANDakZskw0l7JORdZHmoKtGjP4oUALP/8RKPlkCoZ5bfgReXnaP6
+         qNgAz+8MIzTw8c0olzQPuVRzU06KsfYPRqe0w1AfD3SYYWDfByep2V/cM9Nn5sfbrAeI
+         +CWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lS00FWHyTFR/FJuO91xXRMo5CVp7ykNCRIiy16tO7jc=;
-        b=kyo3JL6nwjkqL0Ld913VwLZ8/L2nPj4oYxytR3WwVyVtHGUcnBq2/q87CZigIAdrDH
-         5TJF+yHgW4mwfSEOYYtla9jlS8LtGGVrjIxPugrMxAkJy3dEJ08WysMaOg0rvEu3sWb/
-         CpEdnFtx5xxFy8oj4u5XrGGArpZ3Ao8zWNg+qVHQe6z2jTXOwo3by5epHC6j9seDYa/J
-         lott4GZyG6CguEohtLenWKwy5WHxD1NnESOo/+AH4pm7D3jFgwy3y2n4LKenmqM9Yo8/
-         T/46R31V41fRXAMjKjzIybkHpFoQWBUC/PY17UVJhHx5I62G2rdDSbpzs7Uu87wpacv9
-         89ng==
-X-Gm-Message-State: APjAAAWe2KFwCSm7GJ2iqVVpVp+2st7xGqL+bYs3ieulHXMJp46h0x3t
-        iH6lwQP9mEk5FcWi+2Isq+8=
-X-Google-Smtp-Source: APXvYqwAmuH2qndIpc0pucEuioTwFb2HFdinvmSJMBpUQ/JQOH2PbH+xAao75xHrT5dDuKQK6PyyxA==
-X-Received: by 2002:aa7:8c84:: with SMTP id p4mr20310671pfd.164.1556986022616;
-        Sat, 04 May 2019 09:07:02 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com ([192.55.54.44])
-        by smtp.gmail.com with ESMTPSA id n67sm8032593pfn.22.2019.05.04.09.06.53
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 04 May 2019 09:07:02 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, magnus.karlsson@gmail.com,
-        bruce.richarson@intel.com, bpf@vger.kernel.org
-Subject: [PATCH bpf-next 2/2] xsk: honor BPF_EXIST and BPF_NOEXIST flags in XSKMAP
-Date:   Sat,  4 May 2019 18:06:03 +0200
-Message-Id: <20190504160603.10173-3-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190504160603.10173-1-bjorn.topel@gmail.com>
-References: <20190504160603.10173-1-bjorn.topel@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aeIr2xYUVvk3yQWnL07RF0qzoNgh0zjWYEMxr0YSFWA=;
+        b=hJHB4yHziEdF7Ef7B4t5KQmtcMyvzB96glamQRpeJhsjwvWcv+Y/tits5XTg3YunI/
+         jP5iCrmcGqz0HWiymDm034ToMUq090ToixeOvD/+ujDDRE2ADpslmidLnVDJIxgtjwmy
+         OVPkMBYkAf4yfcAlgbRbVCPbzUGv7XtkP3W+OOCKwlzkA9Fc1DFzPLJF607EazjDGJbo
+         s3dYNt9SeQPo8Y07i4fQ7O2g0j6x+JCX8S00qfYqNQh9Zj3pdB2NP7nfPrtIbJ8YXJ6i
+         0LhdAycFc7MAnv4FjmJQA+iz+zQSrSm/z1SC7bJqOA8o75ekE7/FqrDXv2bIMqPCsLNL
+         nBBQ==
+X-Gm-Message-State: APjAAAWaU6G4v6Oi8QDE9Rwzy87ZOW8MWkaH3JdEbGnDdO6lpcv1S9L/
+        QAo3MzmOhdpZFwpPruuhousryF9WXl0UVAIUys8=
+X-Google-Smtp-Source: APXvYqxi+w3yUON7YjqufOPe4m6KCd05Ub21wlYRl1pg2v1EqY0zS7mOcU78nDP+MIVJGwQ6w78+SJ4wlpJ1KhWaYEM=
+X-Received: by 2002:a05:620a:12a5:: with SMTP id x5mr13411197qki.334.1556990750181;
+ Sat, 04 May 2019 10:25:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20190430181215.15305-1-maximmi@mellanox.com>
+In-Reply-To: <20190430181215.15305-1-maximmi@mellanox.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Sat, 4 May 2019 19:25:38 +0200
+Message-ID: <CAJ+HfNga0DJ9SXd71rf1emwnZnAExahHAX7GwDgV6wY-Escueg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 00/16] AF_XDP infrastructure improvements and
+ mlx5e support
+To:     Maxim Mikityanskiy <maximmi@mellanox.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Jonathan Lemon <bsd@fb.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+On Tue, 30 Apr 2019 at 20:12, Maxim Mikityanskiy <maximmi@mellanox.com> wrote:
+>
+> This series contains improvements to the AF_XDP kernel infrastructure
+> and AF_XDP support in mlx5e. The infrastructure improvements are
+> required for mlx5e, but also some of them benefit to all drivers, and
+> some can be useful for other drivers that want to implement AF_XDP.
+>
+> The performance testing was performed on a machine with the following
+> configuration:
+>
+> - 24 cores of Intel Xeon E5-2620 v3 @ 2.40 GHz
+> - Mellanox ConnectX-5 Ex with 100 Gbit/s link
+>
+> The results with retpoline disabled, single stream:
+>
+> txonly: 33.3 Mpps (21.5 Mpps with queue and app pinned to the same CPU)
+> rxdrop: 12.2 Mpps
+> l2fwd: 9.4 Mpps
+>
+> The results with retpoline enabled, single stream:
+>
+> txonly: 21.3 Mpps (14.1 Mpps with queue and app pinned to the same CPU)
+> rxdrop: 9.9 Mpps
+> l2fwd: 6.8 Mpps
+>
+> v2 changes:
+>
+> Added patches for mlx5e and addressed the comments for v1. Rebased for
+> bpf-next (net-next has to be merged first, because this series depends
+> on some patches from there).
+>
 
-The XSKMAP did not honor the BPF_EXIST/BPF_NOEXIST flags when updating
-an entry. This patch addresses that.
+Nit: There're some checkpatch warnings (>80 char lines) for the driver parts.
 
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- kernel/bpf/xskmap.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/bpf/xskmap.c b/kernel/bpf/xskmap.c
-index ad15e8e92a87..4214ea7b8cfc 100644
---- a/kernel/bpf/xskmap.c
-+++ b/kernel/bpf/xskmap.c
-@@ -236,8 +236,6 @@ static int xsk_map_update_elem(struct bpf_map *map, void *key, void *value,
- 		return -EINVAL;
- 	if (unlikely(i >= m->map.max_entries))
- 		return -E2BIG;
--	if (unlikely(map_flags == BPF_NOEXIST))
--		return -EEXIST;
- 
- 	sock = sockfd_lookup(fd, &err);
- 	if (!sock)
-@@ -263,15 +261,28 @@ static int xsk_map_update_elem(struct bpf_map *map, void *key, void *value,
- 
- 	spin_lock_bh(&m->lock);
- 	entry = &m->xsk_map[i];
-+	old_xs = *entry;
-+	if (old_xs && map_flags == BPF_NOEXIST) {
-+		err = -EEXIST;
-+		goto out;
-+	} else if (!old_xs && map_flags == BPF_EXIST) {
-+		err = -ENOENT;
-+		goto out;
-+	}
- 	xsk_map_node_init(node, m, entry);
- 	xsk_map_add_node(xs, node);
--	old_xs = xchg(entry, xs);
- 	if (old_xs)
- 		xsk_map_del_node(old_xs, entry);
- 	spin_unlock_bh(&m->lock);
- 
- 	sockfd_put(sock);
- 	return 0;
-+
-+out:
-+	spin_unlock_bh(&m->lock);
-+	sockfd_put(sock);
-+	xsk_map_node_free(node);
-+	return err;
- }
- 
- static int xsk_map_delete_elem(struct bpf_map *map, void *key)
--- 
-2.20.1
-
+> Maxim Mikityanskiy (16):
+>   xsk: Add API to check for available entries in FQ
+>   xsk: Add getsockopt XDP_OPTIONS
+>   libbpf: Support getsockopt XDP_OPTIONS
+>   xsk: Extend channels to support combined XSK/non-XSK traffic
+>   xsk: Change the default frame size to 4096 and allow controlling it
+>   xsk: Return the whole xdp_desc from xsk_umem_consume_tx
+>   net/mlx5e: Replace deprecated PCI_DMA_TODEVICE
+>   net/mlx5e: Calculate linear RX frag size considering XSK
+>   net/mlx5e: Allow ICO SQ to be used by multiple RQs
+>   net/mlx5e: Refactor struct mlx5e_xdp_info
+>   net/mlx5e: Share the XDP SQ for XDP_TX between RQs
+>   net/mlx5e: XDP_TX from UMEM support
+>   net/mlx5e: Consider XSK in XDP MTU limit calculation
+>   net/mlx5e: Encapsulate open/close queues into a function
+>   net/mlx5e: Move queue param structs to en/params.h
+>   net/mlx5e: Add XSK support
+>
+>  drivers/net/ethernet/intel/i40e/i40e_xsk.c    |  12 +-
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  |  15 +-
+>  .../net/ethernet/mellanox/mlx5/core/Makefile  |   2 +-
+>  drivers/net/ethernet/mellanox/mlx5/core/en.h  | 147 +++-
+>  .../ethernet/mellanox/mlx5/core/en/params.c   | 108 ++-
+>  .../ethernet/mellanox/mlx5/core/en/params.h   |  87 ++-
+>  .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 231 ++++--
+>  .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |  36 +-
+>  .../mellanox/mlx5/core/en/xsk/Makefile        |   1 +
+>  .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   | 192 +++++
+>  .../ethernet/mellanox/mlx5/core/en/xsk/rx.h   |  27 +
+>  .../mellanox/mlx5/core/en/xsk/setup.c         | 220 ++++++
+>  .../mellanox/mlx5/core/en/xsk/setup.h         |  25 +
+>  .../ethernet/mellanox/mlx5/core/en/xsk/tx.c   | 108 +++
+>  .../ethernet/mellanox/mlx5/core/en/xsk/tx.h   |  15 +
+>  .../ethernet/mellanox/mlx5/core/en/xsk/umem.c | 252 +++++++
+>  .../ethernet/mellanox/mlx5/core/en/xsk/umem.h |  34 +
+>  .../ethernet/mellanox/mlx5/core/en_ethtool.c  |  21 +-
+>  .../mellanox/mlx5/core/en_fs_ethtool.c        |  44 +-
+>  .../net/ethernet/mellanox/mlx5/core/en_main.c | 680 +++++++++++-------
+>  .../net/ethernet/mellanox/mlx5/core/en_rep.c  |  12 +-
+>  .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 104 ++-
+>  .../ethernet/mellanox/mlx5/core/en_stats.c    | 115 ++-
+>  .../ethernet/mellanox/mlx5/core/en_stats.h    |  30 +
+>  .../net/ethernet/mellanox/mlx5/core/en_txrx.c |  42 +-
+>  .../ethernet/mellanox/mlx5/core/ipoib/ipoib.c |  14 +-
+>  drivers/net/ethernet/mellanox/mlx5/core/wq.h  |   5 -
+>  include/net/xdp_sock.h                        |  27 +-
+>  include/uapi/linux/if_xdp.h                   |  18 +
+>  net/xdp/xsk.c                                 |  43 +-
+>  net/xdp/xsk_queue.h                           |  14 +
+>  samples/bpf/xdpsock_user.c                    |  52 +-
+>  tools/include/uapi/linux/if_xdp.h             |  18 +
+>  tools/lib/bpf/xsk.c                           | 127 +++-
+>  tools/lib/bpf/xsk.h                           |   6 +-
+>  35 files changed, 2384 insertions(+), 500 deletions(-)
+>  create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/Makefile
+>  create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
+>  create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.h
+>  create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
+>  create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.h
+>  create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/tx.c
+>  create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/tx.h
+>  create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/umem.c
+>  create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/umem.h
+>
+> --
+> 2.19.1
+>
