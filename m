@@ -2,127 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3931213DF7
-	for <lists+bpf@lfdr.de>; Sun,  5 May 2019 08:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC39813E02
+	for <lists+bpf@lfdr.de>; Sun,  5 May 2019 09:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbfEEGpA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 5 May 2019 02:45:00 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:38911 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbfEEGpA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 5 May 2019 02:45:00 -0400
-Received: by mail-lf1-f67.google.com with SMTP id v1so7006401lfg.5;
-        Sat, 04 May 2019 23:44:58 -0700 (PDT)
+        id S1726359AbfEEHDY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 May 2019 03:03:24 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:36531 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725792AbfEEHDX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 5 May 2019 03:03:23 -0400
+Received: by mail-lj1-f195.google.com with SMTP id y8so8256977ljd.3;
+        Sun, 05 May 2019 00:03:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rNM8okm3j5qcFOlmbtWz/i2dMSCk9m19FRDJuL/XICM=;
-        b=PnTxj4e7Sd5m5Qx13CNSVDglWtShUklbGXst0dBhWas3TyPw7cPe2rx18VME+UOY4l
-         p1EbTPApp/FJtj88mTtHzXHyCcD2vRAx6+tsnPeqm92mfSY50CsenIx5eNZ3zXR+s3Kl
-         5Va7YeyFpQWd0esBmZWWBTUwyhZ+VJ8fnqk2yi46zWtb9kGcPGyW1gCxfMqL9BN+c0UI
-         Cy0CzpcbBniyaT94O9hoYsVa5hLGrb231P6PRkrx6htQzHaVCsCubzAuP2bGaeKmwd7l
-         XW1vHdwOph6/D2dNeOhxfVu/v2iSSCdiZuthdzGsFhpihjSb0tkawoaiBjShvABaeqVW
-         gk+g==
+        bh=ualfQGZO/XL4lpOzDR7Gj6XZhSNh/P7TGnKM3Oo0yYU=;
+        b=k9MkHLWrw8QMSSyEGj3mMm3aBQvUmwq6NhVbZsaGYYe5VxkvpY4Qpq/9n7bOSngNlF
+         1BzocAGm9wh2IMU+mjaG2chKIwdddASVXgwoIGpSSc3CjWqyBsmpoxP0uEc8Dk4UKo0k
+         8ubOvFsihXEqv0cPM4VTnmo4NqY8UEOwwfWUhCLBZoQpyEeRWgsvyDVOhSfBzJ9gTdls
+         m2DlZvgF08I2yX7VpGRUTGGiSvkNzr/aZfYHT6JgTumt8kSdzYHQPOdNfLdj4eMDDGbh
+         AYJJGLY4IrDxW+iKR8OaolrgtUYWXdK3uCVrDEGPa3EvALnuZsnWkMEVjJO4ChdXfbpS
+         mtig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rNM8okm3j5qcFOlmbtWz/i2dMSCk9m19FRDJuL/XICM=;
-        b=kMG6PxvSVtU0iAxJ3r8iMBFhgM0u1g9DK8miwndYLf7R+cmMuAdpI0EG1AjSoGFox3
-         Q7fM7n6bdz8vD57NDVs9KNpJpaiRi/tibNupyU1Yp+RMT//K0yhT4GYrXVVNerXsCfrU
-         /WFJJuunlBoJzYFGGJKJUm69dGSYSX531BYYBFmJttAuFBJV/AthnWRSJpFLJfnr4jBm
-         l4dKWocm12tlqNL2svgET0msOLYS8qUFf9RF50kP1TU6sYBK6puJvpgU9AfvM1Gy99sE
-         8GstFX7T3YQvuePfzkJkd+aG6CthMcFYc3otBGXURTVYxsTI7ZH0vx0+OyW45DKbDb3K
-         zlnA==
-X-Gm-Message-State: APjAAAVisYvAV+1QAd/aUzd34VPYQ4g2Xt+XWh6ItCBdIGcPzhFzrVc1
-        ln61v70GCAoCPMywLqCFCCz+iQQSJazVooQGQok=
-X-Google-Smtp-Source: APXvYqy7amIsq5DhpiC8V2vckqyUcmbqQ+PeQ6Pc/A34RZ1jExivExzYEtAMrFinu6QQ0+4cNy+2PGitm18RFCEn8MU=
-X-Received: by 2002:ac2:494f:: with SMTP id o15mr565893lfi.22.1557038697905;
- Sat, 04 May 2019 23:44:57 -0700 (PDT)
+        bh=ualfQGZO/XL4lpOzDR7Gj6XZhSNh/P7TGnKM3Oo0yYU=;
+        b=GT1gYiUUtExMaxfO7+Y5DKb3ydwMSc11x1hzDR2Xp++VID/K2hxr1AaBQSqd0/vggg
+         euNJ2jUev0wrA7fCbiHDdqS3bUlTXtf7c8xk5C4S0eD2WTezbK8qvA2fry1JPBAzw8TQ
+         ZZ/toM3UVgucpjKS0mdHd9caVn50N1wwMSiI8nCfwwZ7WaC+NGgQbuNdAcgfsKUNomyK
+         zjv01RSr3x7NGnIic2KbrNkTdGwXU3fMeXa2lgmL4kX+M6uka2p8NfjRcAcodayQsh1v
+         jjb3YfRtpx6KEiai64Qn7CJIp5xTUT5Lj9Kh9g3bxzhkHZT9Tk2WjRck7fsBvCLvCxwF
+         fGZA==
+X-Gm-Message-State: APjAAAXYSAXAsJRoy0bVORCoUBcLBYlke3qkET/L8WnMHslUwjb+Rh4k
+        TbuCfzupVKFfLInANERPSm8GR+PPQgKRESRapOw=
+X-Google-Smtp-Source: APXvYqzdT6aPGFOKokWuDctgUsdvgDiasBMhIy4A5IlTVq0ZLRCNWZW7PXDhFE6K1CL/m0eIZ2rt9nekjkwzLYGYZ70=
+X-Received: by 2002:a2e:3c06:: with SMTP id j6mr9138016lja.99.1557039801359;
+ Sun, 05 May 2019 00:03:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <1556718359-1598-1-git-send-email-yamada.masahiro@socionext.com> <b550f762-5324-0bdb-7097-6bcf354b6d67@netronome.com>
-In-Reply-To: <b550f762-5324-0bdb-7097-6bcf354b6d67@netronome.com>
+References: <20190502081453.25097-1-mrostecki@opensuse.org>
+In-Reply-To: <20190502081453.25097-1-mrostecki@opensuse.org>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 4 May 2019 23:44:46 -0700
-Message-ID: <CAADnVQLnAjzqhNC78OX3QKfV0YRL55bSyo=FR7k3LErmAiOxnw@mail.gmail.com>
-Subject: Re: [PATCH v2] bpftool: exclude bash-completion/bpftool from
- .gitignore pattern
-To:     Quentin Monnet <quentin.monnet@netronome.com>
-Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+Date:   Sun, 5 May 2019 00:03:09 -0700
+Message-ID: <CAADnVQ+exT+Jv=i9a4MWNB_eeO6ZeJWAm0=OL5_EZ1gQLvRk-w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf, libbpf: Add .so files to gitignore
+To:     Michal Rostecki <mrostecki@opensuse.org>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Sirio Balmelli <sirio@b-ad.ch>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Taeung Song <treeze.taeung@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 1, 2019 at 7:02 AM Quentin Monnet
-<quentin.monnet@netronome.com> wrote:
+On Thu, May 2, 2019 at 1:15 AM Michal Rostecki <mrostecki@opensuse.org> wrote:
 >
-> 2019-05-01 22:45 UTC+0900 ~ Masahiro Yamada <yamada.masahiro@socionext.com>
-> > tools/bpf/bpftool/.gitignore has the "bpftool" pattern, which is
-> > intended to ignore the following build artifact:
-> >
-> >   tools/bpf/bpftool/bpftool
-> >
-> > However, the .gitignore entry is effective not only for the current
-> > directory, but also for any sub-directories.
-> >
-> > So, from the point of .gitignore grammar, the following check-in file
-> > is also considered to be ignored:
-> >
-> >   tools/bpf/bpftool/bash-completion/bpftool
-> >
-> > As the manual gitignore(5) says "Files already tracked by Git are not
-> > affected", this is not a problem as far as Git is concerned.
-> >
-> > However, Git is not the only program that parses .gitignore because
-> > .gitignore is useful to distinguish build artifacts from source files.
-> >
-> > For example, tar(1) supports the --exclude-vcs-ignore option. As of
-> > writing, this option does not work perfectly, but it intends to create
-> > a tarball excluding files specified by .gitignore.
-> >
-> > So, I believe it is better to fix this issue.
-> >
-> > You can fix it by prefixing the pattern with a slash; the leading slash
-> > means the specified pattern is relative to the current directory.
-> >
-> > Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> > ---
-> >
-> > Changes in v2:
-> >   - Add more information to the commit log to clarify my main motivation
-> >   - Touch "bpftool" pattern only
-> >
-> >  tools/bpf/bpftool/.gitignore | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/tools/bpf/bpftool/.gitignore b/tools/bpf/bpftool/.gitignore
-> > index 67167e4..8248b8d 100644
-> > --- a/tools/bpf/bpftool/.gitignore
-> > +++ b/tools/bpf/bpftool/.gitignore
-> > @@ -1,5 +1,5 @@
-> >  *.d
-> > -bpftool
-> > +/bpftool
-> >  bpftool*.8
-> >  bpf-helpers.*
-> >  FEATURE-DUMP.bpftool
-> >
+> This change adds libbpf shared libraries to .gitignore which were
+> previously not included there.
 >
-> Thanks a lot for the changes!
+> Acked-by: Yonghong Song <yhs@fb.com>
+> Signed-off-by: Michal Rostecki <mrostecki@opensuse.org>
+> ---
+>  tools/lib/bpf/.gitignore | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
+> diff --git a/tools/lib/bpf/.gitignore b/tools/lib/bpf/.gitignore
+> index 7d9e182a1f51..0b181b23f97d 100644
+> --- a/tools/lib/bpf/.gitignore
+> +++ b/tools/lib/bpf/.gitignore
+> @@ -1,4 +1,5 @@
+>  libbpf_version.h
+>  libbpf.pc
+> +libbpf.so.0*
 
-Applied. Thanks
+Some folks build libbpf as part of selftests.
+Please update .gitignore in tools/lib/bpf and
+in tools/testing/selftests/bpf
+
+Also instead of "bpf, libbpf:" subj prefix just mention "libbpf:"
