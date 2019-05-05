@@ -2,476 +2,279 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F05BF13B69
-	for <lists+bpf@lfdr.de>; Sat,  4 May 2019 19:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E5513CB4
+	for <lists+bpf@lfdr.de>; Sun,  5 May 2019 03:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727159AbfEDR0P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 4 May 2019 13:26:15 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:43814 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726480AbfEDR0P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 4 May 2019 13:26:15 -0400
-Received: by mail-qt1-f196.google.com with SMTP id r3so446526qtp.10;
-        Sat, 04 May 2019 10:26:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=vPyW6g0bqUV5YGH5iLBj0sshJdwXORQBAsNC9tevW7M=;
-        b=Mhb901KZ/tkbWbHmGHC33dnI33bePClKTUbB4fSGNKTTuRgG+eu5UHNsHdrIIXsrmw
-         3DrLK8vPmWyFBUJjkUSbdrQe5MHRGu0cTGjrlxUEX3NiivppuiNFhING/gu1nPg8ZCPd
-         wqJQtK0Q7yq7TcRCrWaGTK8iljpJALBWS+T1T/oKzd0GQydDeyWWROtFjvxPjKSM52nt
-         qN9xiunGTwTuuFE+OfeyGmtueA1adM66p8wGRHjjRgEy4UyUJxPbd5saWHuIls1wvxaX
-         hL8bcXEQf88oKQfCAnYn6d0iuZchtPCbHkqHbjgX0Wt6C9/OOdfuOpk92Eicyay7Js5n
-         xjVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vPyW6g0bqUV5YGH5iLBj0sshJdwXORQBAsNC9tevW7M=;
-        b=EhXHtIyqOOdPxeF1kMxr4hFkHisNQDjdqVbc1tzHPm1GKQPAGl3qbn3xYGf7sP/cUU
-         ulU2YCdLm5jaJ7CC6i21bXkNPtxXdZpJcWrnEmWAbm0culcTXtv6090qf3ZCCA8698xJ
-         8Nh+F5mrWH6kiksL61NVPBOaxOu6vzYBWSS93zyBbidMw0UE511NtSiBmdFH/6tHX31s
-         FaT7rU4NWCFDl2LufaCDdEXZv1QaI/4XWq1Dx3wDdMgFxG6r4tays/AJyJhVskqAWuqw
-         FZJGmb6csV1kq3rD+bBBZQ4tc/KYfBgoejAP3xcm9MWf3Lxol9IVIvXmfkhzj2R3hXXj
-         BYww==
-X-Gm-Message-State: APjAAAWhp0LaQzV7S3Biy+q0sIIBzLquNjOBvzXH4Vg/mQjIhPYwnfO9
-        yU+RsLnSVqEeCivDk41PFr+MD/7/cse1ivUIXYc=
-X-Google-Smtp-Source: APXvYqynmnxvM26E+hvtJy14rbvzKaR3z1OPQFlgb0TRCYnXwvNh0y8gGiCH5p1O/+qxW5+J2c5EM9SaVlIb88j8nOI=
-X-Received: by 2002:ac8:2bb9:: with SMTP id m54mr8430883qtm.303.1556990773522;
- Sat, 04 May 2019 10:26:13 -0700 (PDT)
+        id S1726414AbfEEBvI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 4 May 2019 21:51:08 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:43600 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726390AbfEEBvI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 4 May 2019 21:51:08 -0400
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id x451odLI015095;
+        Sun, 5 May 2019 10:50:39 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com x451odLI015095
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1557021040;
+        bh=HxqhNXUccAGwVFV55EiI+BIgzu6GPW9Pcu4RFLUIwGU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jVKKTnN7gGX/4LSR3iRCFynUZdWVlCDnHoTLXzAMIIAih28B7Dk4CYmbP1QjZNjwK
+         FlZA+eGMERiBUNMpJIadPgl78bHf3XZFHAzM6+EDEZGlk2kJ+g0XGE00kLszfPch3O
+         qe2PwWhG7tf6MGfKGRf3hBJTG9nvqQidLwCpB/YhgYQd71k0366+OpztwVoM2mmIIh
+         l2vT55WKslfF2TvAWTbFnQEe6M4pGfwYKOUWlcRcS6CDfcDMpPrfrl+W4aluo5pi2J
+         K4hhvjcXil40UG0fThPCXIF/qu9adtILlOHALWjbWjirGnYmiSZseBt51DOKcvRDeN
+         vGnA0LBBJQ3AQ==
+X-Nifty-SrcIP: [209.85.222.41]
+Received: by mail-ua1-f41.google.com with SMTP id n23so3409518uap.13;
+        Sat, 04 May 2019 18:50:39 -0700 (PDT)
+X-Gm-Message-State: APjAAAWrbyAobuHjl7nfNgbgLM6rOD76Sv2vOO372wb4zDjKQ6AnU7ww
+        0Vwehnsu6oDqw/ptwkPGLpV7iqFCYWBSqDro+jQ=
+X-Google-Smtp-Source: APXvYqyto4ywW4Iezc4YOr2mUelBO4Me/wMnxNfrtcwB3XD3vHe4ZMaidSA58I9jVgOGsG83g8VowvGi+NCqMERjTtU=
+X-Received: by 2002:ab0:2bd8:: with SMTP id s24mr9344582uar.121.1557021038230;
+ Sat, 04 May 2019 18:50:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190430181215.15305-1-maximmi@mellanox.com> <20190430181215.15305-5-maximmi@mellanox.com>
-In-Reply-To: <20190430181215.15305-5-maximmi@mellanox.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Sat, 4 May 2019 19:26:02 +0200
-Message-ID: <CAJ+HfNho0H7qq+hFn7Ri=9Y+KGEcM19SOChfPZxwkyqJNymKcQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 04/16] xsk: Extend channels to support
- combined XSK/non-XSK traffic
-To:     Maxim Mikityanskiy <maximmi@mellanox.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+References: <20190504121213.183203-1-joel@joelfernandes.org>
+In-Reply-To: <20190504121213.183203-1-joel@joelfernandes.org>
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+Date:   Sun, 5 May 2019 10:50:02 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASkvm0t02DykwOxB0R6h0-j83sU01c1+ERZHp-A23R23w@mail.gmail.com>
+Message-ID: <CAK7LNASkvm0t02DykwOxB0R6h0-j83sU01c1+ERZHp-A23R23w@mail.gmail.com>
+Subject: Re: [PATCH v2] kheaders: Move from proc to sysfs
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        atish patra <atishp04@gmail.com>, bpf@vger.kernel.org,
+        Brendan Gregg <bgregg@netflix.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Daniel Colascione <dancol@google.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Jonathan Lemon <bsd@fb.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
+        Dan Williams <dan.j.williams@intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        duyuchao <yuchao.du@unisoc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Karim Yaghmour <karim.yaghmour@opersys.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-trace-devel@vger.kernel.org,
+        Manjo Raja Rao <linux@manojrajarao.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        =?UTF-8?Q?Micha=C5=82_Gregorczyk?= <michalgr@fb.com>,
+        Michal Gregorczyk <michalgr@live.com>,
+        Mohammad Husain <russoue@gmail.com>,
+        Olof Johansson <olof@lixom.net>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        Tamir Carmeli <carmeli.tamir@gmail.com>,
+        Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 30 Apr 2019 at 20:12, Maxim Mikityanskiy <maximmi@mellanox.com> wro=
-te:
+On Sat, May 4, 2019 at 9:26 PM Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
 >
-> Currently, the drivers that implement AF_XDP zero-copy support (e.g.,
-> i40e) switch the channel into a different mode when an XSK is opened. It
-> causes some issues that have to be taken into account. For example, RSS
-> needs to be reconfigured to skip the XSK-enabled channels, or the XDP
-> program should filter out traffic not intended for that socket and
-> XDP_PASS it with an additional copy. As nothing validates or forces the
-> proper configuration, it's easy to have packets drops, when they get
-> into an XSK by mistake, and, in fact, it's the default configuration.
-> There has to be some tool to have RSS reconfigured on each socket open
-> and close event, but such a tool is problematic to implement, because no
-> one reports these events, and it's race-prone.
+> The kheaders archive consisting of the kernel headers used for compiling
+> bpf programs is in /proc. However there is concern that moving it here
+> will make it permanent. Let us move it to /sys/kernel as discussed [1].
 >
-> This commit extends XSK to support both kinds of traffic (XSK and
-> non-XSK) in the same channel. It implies having two RX queues in
-> XSK-enabled channels: one for the regular traffic, and the other for
-> XSK. It solves the problem with RSS: the default configuration just
-> works without the need to manually reconfigure RSS or to perform some
-> possibly complicated filtering in the XDP layer. It makes it easy to run
-> both AF_XDP and regular sockets on the same machine. In the XDP program,
-> the QID's most significant bit will serve as a flag to indicate whether
-> it's the XSK queue or not. The extension is compatible with the legacy
-> configuration, so if one wants to run the legacy mode, they can
-> reconfigure RSS and ignore the flag in the XDP program (implemented in
-> the reference XDP program in libbpf). mlx5e will support this extension.
+> [1] https://lore.kernel.org/patchwork/patch/1067310/#1265969
 >
-> A single XDP program can run both with drivers supporting or not
-> supporting this extension. The xdpsock sample and libbpf are updated
-> accordingly.
->
-
-I'm still not a fan of this, or maybe I'm not following you. It makes
-it more complex and even harder to use. Let's take a look at the
-kernel nomenclature. "ethtool" uses netdevs and channels. A channel is
-a Rx queue or a Tx queue. In AF_XDP we call the channel a queue, which
-is what kernel uses internally (netdev_rx_queue, netdev_queue).
-
-Today, AF_XDP can attach to an existing queue for ingress. (On the
-egress side, we're using "a queue", but the "XDP queue". XDP has these
-"shadow queues" which are separated from the netdev. This is a bit
-messy, and we can't really configure them. I believe Jakub has some
-ideas here. :-) For now, let's leave egress aside.)
-
-If an application would like to get all the traffic from a netdev,
-it'll create an equal amout of sockets as the queues and bind to the
-queues. Yes, even the queues in the RSS  set.
-
-What you would like (I think):
-a) is a way of spawning a new queue for a netdev, that is not part of
-the stack and/or RSS set
-b) steering traffic to that queue using a configuration mechanism (tc?
-some yet to be hacked BPF configuration hook?)
-
-With your mechanism you're doing this in contrived way. This makes the
-existing AF_XDP model *more* complex/hard(er) to use.
-
-How do you steer traffic to this dual-channel RQ? So you have a netdev
-receiving on all queues. Then, e.g., the last queue is a "dual
-channel" queue that can receive traffic from some other filter. How do
-you use it?
-
-
-
-Bj=C3=B6rn
-
-> Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
-> Acked-by: Saeed Mahameed <saeedm@mellanox.com>
+> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > ---
->  include/uapi/linux/if_xdp.h       |  11 +++
->  net/xdp/xsk.c                     |   5 +-
->  samples/bpf/xdpsock_user.c        |  10 ++-
->  tools/include/uapi/linux/if_xdp.h |  11 +++
->  tools/lib/bpf/xsk.c               | 116 ++++++++++++++++++++++--------
->  tools/lib/bpf/xsk.h               |   4 ++
->  6 files changed, 126 insertions(+), 31 deletions(-)
+> This patch applies on top of the previous patch that was applied to the
+> driver tree:
+> https://lore.kernel.org/patchwork/patch/1067310/
 >
-> diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
-> index 9ae4b4e08b68..cf6ff1ecc6bd 100644
-> --- a/include/uapi/linux/if_xdp.h
-> +++ b/include/uapi/linux/if_xdp.h
-> @@ -82,4 +82,15 @@ struct xdp_desc {
+> v1->v2: Fixed some kconfig nits (Masami).
+
+
+My name is Masahiro, just in case.
+
+
 >
->  /* UMEM descriptor is __u64 */
+>  init/Kconfig                                | 16 ++++-----
+>  kernel/Makefile                             |  4 +--
+>  kernel/{gen_ikh_data.sh => gen_kheaders.sh} |  2 +-
+>  kernel/kheaders.c                           | 40 +++++++++------------
+>  4 files changed, 26 insertions(+), 36 deletions(-)
+>  rename kernel/{gen_ikh_data.sh => gen_kheaders.sh} (98%)
 >
-> +/* The driver may run a dedicated XSK RQ in the channel. The XDP program=
- uses
-> + * this flag bit in the queue index to distinguish between two RQs of th=
-e same
-> + * channel.
-> + */
-> +#define XDP_QID_FLAG_XSKRQ (1 << 31)
-> +
-> +static inline __u32 xdp_qid_get_channel(__u32 qid)
-> +{
-> +       return qid & ~XDP_QID_FLAG_XSKRQ;
-> +}
-> +
->  #endif /* _LINUX_IF_XDP_H */
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index 998199109d5c..114ba17acb09 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -104,9 +104,12 @@ static int __xsk_rcv_zc(struct xdp_sock *xs, struct =
-xdp_buff *xdp, u32 len)
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 26a364a95b57..c3661991b089 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -579,15 +579,13 @@ config IKCONFIG_PROC
+>           This option enables access to the kernel configuration file
+>           through /proc/config.gz.
 >
->  int xsk_rcv(struct xdp_sock *xs, struct xdp_buff *xdp)
+> -config IKHEADERS_PROC
+> -       tristate "Enable kernel header artifacts through /proc/kheaders.tar.xz"
+> -       depends on PROC_FS
+> -       help
+> -         This option enables access to the kernel header and other artifacts that
+> -         are generated during the build process. These can be used to build eBPF
+> -         tracing programs, or similar programs.  If you build the headers as a
+> -         module, a module called kheaders.ko is built which can be loaded on-demand
+> -         to get access to the headers.
+> +config IKHEADERS
+> +       tristate "Enable kernel headers through /sys/kernel/kheaders.tar.xz"
+
+
+In v1, I suggested to change "depends on PROC_FS"
+to "depends on SYSFS".
+
+fs/sysfs/ must be compiled to make this feature work.
+
+
+
+
+> +       help
+> +         This option enables access to the in-kernel headers that are generated during
+> +         the build process. These can be used to build eBPF tracing programs,
+> +         or similar programs.  If you build the headers as a module, a module called
+
+
+While you are touching the help,
+could you make the number of spaces
+between sentences consistent?
+
+
+Thanks.
+
+
+
+> +         kheaders.ko is built which can be loaded on-demand to get access to headers.
+>
+>  config LOG_BUF_SHIFT
+>         int "Kernel log buffer size (16 => 64KB, 17 => 128KB)"
+> diff --git a/kernel/Makefile b/kernel/Makefile
+> index 12399614c350..b32a558fae2f 100644
+> --- a/kernel/Makefile
+> +++ b/kernel/Makefile
+> @@ -70,7 +70,7 @@ obj-$(CONFIG_UTS_NS) += utsname.o
+>  obj-$(CONFIG_USER_NS) += user_namespace.o
+>  obj-$(CONFIG_PID_NS) += pid_namespace.o
+>  obj-$(CONFIG_IKCONFIG) += configs.o
+> -obj-$(CONFIG_IKHEADERS_PROC) += kheaders.o
+> +obj-$(CONFIG_IKHEADERS) += kheaders.o
+>  obj-$(CONFIG_SMP) += stop_machine.o
+>  obj-$(CONFIG_KPROBES_SANITY_TEST) += test_kprobes.o
+>  obj-$(CONFIG_AUDIT) += audit.o auditfilter.o
+> @@ -126,7 +126,7 @@ $(obj)/config_data.gz: $(KCONFIG_CONFIG) FORCE
+>  $(obj)/kheaders.o: $(obj)/kheaders_data.tar.xz
+>
+>  quiet_cmd_genikh = CHK     $(obj)/kheaders_data.tar.xz
+> -cmd_genikh = $(srctree)/kernel/gen_ikh_data.sh $@
+> +cmd_genikh = $(srctree)/kernel/gen_kheaders.sh $@
+>  $(obj)/kheaders_data.tar.xz: FORCE
+>         $(call cmd,genikh)
+>
+> diff --git a/kernel/gen_ikh_data.sh b/kernel/gen_kheaders.sh
+> similarity index 98%
+> rename from kernel/gen_ikh_data.sh
+> rename to kernel/gen_kheaders.sh
+> index 591a94f7b387..581b83534587 100755
+> --- a/kernel/gen_ikh_data.sh
+> +++ b/kernel/gen_kheaders.sh
+> @@ -2,7 +2,7 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>
+>  # This script generates an archive consisting of kernel headers
+> -# for CONFIG_IKHEADERS_PROC.
+> +# for CONFIG_IKHEADERS.
+>  set -e
+>  spath="$(dirname "$(readlink -f "$0")")"
+>  kroot="$spath/.."
+> diff --git a/kernel/kheaders.c b/kernel/kheaders.c
+> index 70ae6052920d..6a16f8f6898d 100644
+> --- a/kernel/kheaders.c
+> +++ b/kernel/kheaders.c
+> @@ -8,9 +8,8 @@
+>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+> -#include <linux/proc_fs.h>
+> +#include <linux/kobject.h>
+>  #include <linux/init.h>
+> -#include <linux/uaccess.h>
+>
+>  /*
+>   * Define kernel_headers_data and kernel_headers_data_end, within which the
+> @@ -31,39 +30,32 @@ extern char kernel_headers_data;
+>  extern char kernel_headers_data_end;
+>
+>  static ssize_t
+> -ikheaders_read_current(struct file *file, char __user *buf,
+> -                     size_t len, loff_t *offset)
+> +ikheaders_read(struct file *file,  struct kobject *kobj,
+> +              struct bin_attribute *bin_attr,
+> +              char *buf, loff_t off, size_t len)
 >  {
-> +       struct xdp_rxq_info *rxq =3D xdp->rxq;
-> +       u32 channel =3D xdp_qid_get_channel(rxq->queue_index);
->         u32 len;
+> -       return simple_read_from_buffer(buf, len, offset,
+> -                                      &kernel_headers_data,
+> -                                      &kernel_headers_data_end -
+> -                                      &kernel_headers_data);
+> +       memcpy(buf, &kernel_headers_data + off, len);
+> +       return len;
+>  }
 >
-> -       if (xs->dev !=3D xdp->rxq->dev || xs->queue_id !=3D xdp->rxq->que=
-ue_index)
-> +       if (xs->dev !=3D rxq->dev || xs->queue_id !=3D channel ||
-> +           xs->zc !=3D (rxq->mem.type =3D=3D MEM_TYPE_ZERO_COPY))
->                 return -EINVAL;
->
->         len =3D xdp->data_end - xdp->data;
-> diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-> index d08ee1ab7bb4..a6b13025ee79 100644
-> --- a/samples/bpf/xdpsock_user.c
-> +++ b/samples/bpf/xdpsock_user.c
-> @@ -62,6 +62,7 @@ enum benchmark_type {
->
->  static enum benchmark_type opt_bench =3D BENCH_RXDROP;
->  static u32 opt_xdp_flags =3D XDP_FLAGS_UPDATE_IF_NOEXIST;
-> +static u32 opt_libbpf_flags;
->  static const char *opt_if =3D "";
->  static int opt_ifindex;
->  static int opt_queue;
-> @@ -306,7 +307,7 @@ static struct xsk_socket_info *xsk_configure_socket(s=
-truct xsk_umem_info *umem)
->         xsk->umem =3D umem;
->         cfg.rx_size =3D XSK_RING_CONS__DEFAULT_NUM_DESCS;
->         cfg.tx_size =3D XSK_RING_PROD__DEFAULT_NUM_DESCS;
-> -       cfg.libbpf_flags =3D 0;
-> +       cfg.libbpf_flags =3D opt_libbpf_flags;
->         cfg.xdp_flags =3D opt_xdp_flags;
->         cfg.bind_flags =3D opt_xdp_bind_flags;
->         ret =3D xsk_socket__create(&xsk->xsk, opt_if, opt_queue, umem->um=
-em,
-> @@ -346,6 +347,7 @@ static struct option long_options[] =3D {
->         {"interval", required_argument, 0, 'n'},
->         {"zero-copy", no_argument, 0, 'z'},
->         {"copy", no_argument, 0, 'c'},
-> +       {"combined", no_argument, 0, 'C'},
->         {0, 0, 0, 0}
+> -static const struct file_operations ikheaders_file_ops = {
+> -       .read = ikheaders_read_current,
+> -       .llseek = default_llseek,
+> +static struct bin_attribute kheaders_attr __ro_after_init = {
+> +       .attr = {
+> +               .name = "kheaders.tar.xz",
+> +               .mode = S_IRUGO,
+> +       },
+> +       .read = &ikheaders_read,
 >  };
 >
-> @@ -365,6 +367,7 @@ static void usage(const char *prog)
->                 "  -n, --interval=3Dn     Specify statistics update inter=
-val (default 1 sec).\n"
->                 "  -z, --zero-copy      Force zero-copy mode.\n"
->                 "  -c, --copy           Force copy mode.\n"
-> +               "  -C, --combined       Driver supports combined XSK and =
-non-XSK traffic in a channel.\n"
->                 "\n";
->         fprintf(stderr, str, prog);
->         exit(EXIT_FAILURE);
-> @@ -377,7 +380,7 @@ static void parse_command_line(int argc, char **argv)
->         opterr =3D 0;
->
->         for (;;) {
-> -               c =3D getopt_long(argc, argv, "Frtli:q:psSNn:cz", long_op=
-tions,
-> +               c =3D getopt_long(argc, argv, "Frtli:q:psSNn:czC", long_o=
-ptions,
->                                 &option_index);
->                 if (c =3D=3D -1)
->                         break;
-> @@ -420,6 +423,9 @@ static void parse_command_line(int argc, char **argv)
->                 case 'F':
->                         opt_xdp_flags &=3D ~XDP_FLAGS_UPDATE_IF_NOEXIST;
->                         break;
-> +               case 'C':
-> +                       opt_libbpf_flags |=3D XSK_LIBBPF_FLAGS__COMBINED_=
-CHANNELS;
-> +                       break;
->                 default:
->                         usage(basename(argv[0]));
->                 }
-> diff --git a/tools/include/uapi/linux/if_xdp.h b/tools/include/uapi/linux=
-/if_xdp.h
-> index 9ae4b4e08b68..cf6ff1ecc6bd 100644
-> --- a/tools/include/uapi/linux/if_xdp.h
-> +++ b/tools/include/uapi/linux/if_xdp.h
-> @@ -82,4 +82,15 @@ struct xdp_desc {
->
->  /* UMEM descriptor is __u64 */
->
-> +/* The driver may run a dedicated XSK RQ in the channel. The XDP program=
- uses
-> + * this flag bit in the queue index to distinguish between two RQs of th=
-e same
-> + * channel.
-> + */
-> +#define XDP_QID_FLAG_XSKRQ (1 << 31)
-> +
-> +static inline __u32 xdp_qid_get_channel(__u32 qid)
-> +{
-> +       return qid & ~XDP_QID_FLAG_XSKRQ;
-> +}
-> +
->  #endif /* _LINUX_IF_XDP_H */
-> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> index a95b06d1f81d..969dfd856039 100644
-> --- a/tools/lib/bpf/xsk.c
-> +++ b/tools/lib/bpf/xsk.c
-> @@ -76,6 +76,12 @@ struct xsk_nl_info {
->         int fd;
->  };
->
-> +enum qidconf {
-> +       QIDCONF_REGULAR,
-> +       QIDCONF_XSK,
-> +       QIDCONF_XSK_COMBINED,
-> +};
-> +
->  /* For 32-bit systems, we need to use mmap2 as the offsets are 64-bit.
->   * Unfortunately, it is not part of glibc.
->   */
-> @@ -139,7 +145,7 @@ static int xsk_set_xdp_socket_config(struct xsk_socke=
-t_config *cfg,
->                 return 0;
->         }
->
-> -       if (usr_cfg->libbpf_flags & ~XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD)
-> +       if (usr_cfg->libbpf_flags & ~XSK_LIBBPF_FLAGS_MASK)
->                 return -EINVAL;
->
->         cfg->rx_size =3D usr_cfg->rx_size;
-> @@ -267,44 +273,93 @@ static int xsk_load_xdp_prog(struct xsk_socket *xsk=
-)
->         /* This is the C-program:
->          * SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
->          * {
-> -        *     int *qidconf, index =3D ctx->rx_queue_index;
-> +        *     int *qidconf, qc;
-> +        *     int index =3D ctx->rx_queue_index & ~(1 << 31);
-> +        *     bool is_xskrq =3D ctx->rx_queue_index & (1 << 31);
->          *
-> -        *     // A set entry here means that the correspnding queue_id
-> -        *     // has an active AF_XDP socket bound to it.
-> +        *     // A set entry here means that the corresponding queue_id
-> +        *     // has an active AF_XDP socket bound to it. Value 2 means
-> +        *     // it's zero-copy multi-RQ mode.
->          *     qidconf =3D bpf_map_lookup_elem(&qidconf_map, &index);
->          *     if (!qidconf)
->          *         return XDP_ABORTED;
->          *
-> -        *     if (*qidconf)
-> +        *     qc =3D *qidconf;
-> +        *
-> +        *     if (qc =3D=3D 2)
-> +        *         qc =3D is_xskrq ? 1 : 0;
-> +        *
-> +        *     switch (qc) {
-> +        *     case 0:
-> +        *         return XDP_PASS;
-> +        *     case 1:
->          *         return bpf_redirect_map(&xsks_map, index, 0);
-> +        *     }
->          *
-> -        *     return XDP_PASS;
-> +        *     return XDP_ABORTED;
->          * }
->          */
->         struct bpf_insn prog[] =3D {
-> -               /* r1 =3D *(u32 *)(r1 + 16) */
-> -               BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_1, 16),
-> -               /* *(u32 *)(r10 - 4) =3D r1 */
-> -               BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_1, -4),
-> -               BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-> -               BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -4),
-> -               BPF_LD_MAP_FD(BPF_REG_1, xsk->qidconf_map_fd),
-> +               /* Load index. */
-> +               /* r6 =3D *(u32 *)(r1 + 16) */
-> +               BPF_LDX_MEM(BPF_W, BPF_REG_6, BPF_REG_ARG1, 16),
-> +               /* w7 =3D w6 */
-> +               BPF_MOV32_REG(BPF_REG_7, BPF_REG_6),
-> +               /* w7 &=3D 2147483647 */
-> +               BPF_ALU32_IMM(BPF_AND, BPF_REG_7, ~XDP_QID_FLAG_XSKRQ),
-> +               /* *(u32 *)(r10 - 4) =3D r7 */
-> +               BPF_STX_MEM(BPF_W, BPF_REG_FP, BPF_REG_7, -4),
-> +
-> +               /* Call bpf_map_lookup_elem. */
-> +               /* r2 =3D r10 */
-> +               BPF_MOV64_REG(BPF_REG_ARG2, BPF_REG_FP),
-> +               /* r2 +=3D -4 */
-> +               BPF_ALU64_IMM(BPF_ADD, BPF_REG_ARG2, -4),
-> +               /* r1 =3D qidconf_map ll */
-> +               BPF_LD_MAP_FD(BPF_REG_ARG1, xsk->qidconf_map_fd),
-> +               /* call 1 */
->                 BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
-> -               BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-> -               BPF_MOV32_IMM(BPF_REG_0, 0),
-> -               /* if r1 =3D=3D 0 goto +8 */
-> -               BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0, 8),
-> -               BPF_MOV32_IMM(BPF_REG_0, 2),
-> -               /* r1 =3D *(u32 *)(r1 + 0) */
-> -               BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_1, 0),
-> -               /* if r1 =3D=3D 0 goto +5 */
-> -               BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0, 5),
-> -               /* r2 =3D *(u32 *)(r10 - 4) */
-> -               BPF_LD_MAP_FD(BPF_REG_1, xsk->xsks_map_fd),
-> -               BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_10, -4),
-> +
-> +               /* Check the return value. */
-> +               /* if r0 =3D=3D 0 goto +14 */
-> +               BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 14),
-> +
-> +               /* Check qc =3D=3D QIDCONF_XSK_COMBINED. */
-> +               /* r6 >>=3D 31 */
-> +               BPF_ALU64_IMM(BPF_RSH, BPF_REG_6, 31),
-> +               /* r1 =3D *(u32 *)(r0 + 0) */
-> +               BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 0),
-> +               /* if r1 =3D=3D 2 goto +1 */
-> +               BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, QIDCONF_XSK_COMBINED, 1),
-> +
-> +               /* qc !=3D QIDCONF_XSK_COMBINED */
-> +               /* r6 =3D r1 */
-> +               BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
-> +
-> +               /* switch (qc) */
-> +               /* w0 =3D 2 */
-> +               BPF_MOV32_IMM(BPF_REG_0, XDP_PASS),
-> +               /* if w6 =3D=3D 0 goto +8 */
-> +               BPF_JMP32_IMM(BPF_JEQ, BPF_REG_6, QIDCONF_REGULAR, 8),
-> +               /* if w6 !=3D 1 goto +6 */
-> +               BPF_JMP32_IMM(BPF_JNE, BPF_REG_6, QIDCONF_XSK, 6),
-> +
-> +               /* Call bpf_redirect_map. */
-> +               /* r1 =3D xsks_map ll */
-> +               BPF_LD_MAP_FD(BPF_REG_ARG1, xsk->xsks_map_fd),
-> +               /* w2 =3D w7 */
-> +               BPF_MOV32_REG(BPF_REG_ARG2, BPF_REG_7),
-> +               /* w3 =3D 0 */
->                 BPF_MOV32_IMM(BPF_REG_3, 0),
-> +               /* call 51 */
->                 BPF_EMIT_CALL(BPF_FUNC_redirect_map),
-> -               /* The jumps are to this instruction */
-> +               /* exit */
-> +               BPF_EXIT_INSN(),
-> +
-> +               /* XDP_ABORTED */
-> +               /* w0 =3D 0 */
-> +               BPF_MOV32_IMM(BPF_REG_0, XDP_ABORTED),
-> +               /* exit */
->                 BPF_EXIT_INSN(),
->         };
->         size_t insns_cnt =3D sizeof(prog) / sizeof(struct bpf_insn);
-> @@ -483,6 +538,7 @@ static int xsk_update_bpf_maps(struct xsk_socket *xsk=
-, int qidconf_value,
->
->  static int xsk_setup_xdp_prog(struct xsk_socket *xsk)
+>  static int __init ikheaders_init(void)
 >  {
-> +       int qidconf_value =3D QIDCONF_XSK;
->         bool prog_attached =3D false;
->         __u32 prog_id =3D 0;
->         int err;
-> @@ -505,7 +561,11 @@ static int xsk_setup_xdp_prog(struct xsk_socket *xsk=
-)
->                 xsk->prog_fd =3D bpf_prog_get_fd_by_id(prog_id);
->         }
+> -       struct proc_dir_entry *entry;
+> -
+> -       /* create the current headers file */
+> -       entry = proc_create("kheaders.tar.xz", S_IRUGO, NULL,
+> -                           &ikheaders_file_ops);
+> -       if (!entry)
+> -               return -ENOMEM;
+> -
+> -       proc_set_size(entry,
+> -                     &kernel_headers_data_end -
+> -                     &kernel_headers_data);
+> -       return 0;
+> +       kheaders_attr.size = (&kernel_headers_data_end -
+> +                             &kernel_headers_data);
+> +       return sysfs_create_bin_file(kernel_kobj, &kheaders_attr);
+>  }
 >
-> -       err =3D xsk_update_bpf_maps(xsk, true, xsk->fd);
-> +       if (xsk->config.libbpf_flags & XSK_LIBBPF_FLAGS__COMBINED_CHANNEL=
-S)
-> +               if (xsk->zc)
-> +                       qidconf_value =3D QIDCONF_XSK_COMBINED;
-> +
-> +       err =3D xsk_update_bpf_maps(xsk, qidconf_value, xsk->fd);
->         if (err)
->                 goto out_load;
+>  static void __exit ikheaders_cleanup(void)
+>  {
+> -       remove_proc_entry("kheaders.tar.xz", NULL);
+> +       sysfs_remove_bin_file(kernel_kobj, &kheaders_attr);
+>  }
 >
-> @@ -717,7 +777,7 @@ void xsk_socket__delete(struct xsk_socket *xsk)
->         if (!xsk)
->                 return;
->
-> -       (void)xsk_update_bpf_maps(xsk, 0, 0);
-> +       (void)xsk_update_bpf_maps(xsk, QIDCONF_REGULAR, 0);
->
->         optlen =3D sizeof(off);
->         err =3D getsockopt(xsk->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &opt=
-len);
-> diff --git a/tools/lib/bpf/xsk.h b/tools/lib/bpf/xsk.h
-> index 82ea71a0f3ec..be26a2423c04 100644
-> --- a/tools/lib/bpf/xsk.h
-> +++ b/tools/lib/bpf/xsk.h
-> @@ -180,6 +180,10 @@ struct xsk_umem_config {
->
->  /* Flags for the libbpf_flags field. */
->  #define XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD (1 << 0)
-> +#define XSK_LIBBPF_FLAGS__COMBINED_CHANNELS (1 << 1)
-> +#define XSK_LIBBPF_FLAGS_MASK ( \
-> +       XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD | \
-> +       XSK_LIBBPF_FLAGS__COMBINED_CHANNELS)
->
->  struct xsk_socket_config {
->         __u32 rx_size;
+>  module_init(ikheaders_init);
 > --
-> 2.19.1
->
+> 2.21.0.1020.gf2820cf01a-goog
+
+
+
+--
+Best Regards
+
+Masahiro Yamada
