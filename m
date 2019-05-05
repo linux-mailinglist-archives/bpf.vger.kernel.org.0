@@ -2,118 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8FCF13DC7
-	for <lists+bpf@lfdr.de>; Sun,  5 May 2019 08:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CFD13DDA
+	for <lists+bpf@lfdr.de>; Sun,  5 May 2019 08:23:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727537AbfEEGTR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 5 May 2019 02:19:17 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:34278 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726237AbfEEGTR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 5 May 2019 02:19:17 -0400
-Received: by mail-pg1-f195.google.com with SMTP id c13so4835763pgt.1;
-        Sat, 04 May 2019 23:19:16 -0700 (PDT)
+        id S1727463AbfEEGXX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 May 2019 02:23:23 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:35350 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726237AbfEEGXW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 5 May 2019 02:23:22 -0400
+Received: by mail-lf1-f65.google.com with SMTP id j20so7008614lfh.2;
+        Sat, 04 May 2019 23:23:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/O0+bcvBE2OoO/gEJJYwRuRI/RoGqtMYiiZRYQc0t4I=;
-        b=sVUer8yo9OhUMSJX6hMcLyZ+WUt9ijpiwKTXdDxyiNFPrWmlSF1bSzGIxcU9MQZDl/
-         VX9Pm4+viIfiVlcPLEUCKpLOhERG3PfBuMA/Abvbktj0/MF9jGMMRl5toJJli4UQOBDW
-         52BqRPznwSDs3vjHfnh8JJqbQVUofVXrjYcCBEUF207yGPlEL7QHvg/TB6wkNClRRwNJ
-         OULDI6PqWV3ffyHQpv5pJHc2J9nQyGa8sbRmqkpGKM1UNFxB9dvYkfvtalkxJq95upI8
-         r+3lAKrPCMLAndOZWsPtHMO6N9QUT4vBxyj+ROXQtHHN72eKkF8NPeq1CK2a+kWPmzq6
-         7iZg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VHPSmeiaEyI+fZI5jnTJrK4KWAfYaHxzzqx2Hh2oJWI=;
+        b=gk+gb6/j94zsaoE97skuYE1/Pv9RcbdsI5m6pu5xXsPvE5LSPPl1dKNrzhSjw72k6G
+         0oGu7aDUl4sB/2GaJp6Yxfm2XwBdd58mgiah9zFLDSKfHR/TLRPLtvPNoBSKYG/Gv+7x
+         MZhOnqlM392DzjhsW2aj/q32LGcwAMOjLRkJgWiv6SOALv6H/EufvmwEK60Kc9OeAnL8
+         ZLHi99S73hd3VUTSPCnHQTYqDlMCMlLnA8PSzmGnhUre+nPF/YwOnagmd2kZ1PgLkMPd
+         soYIjBGfbsHeGVG1nYs+K87NDDv++1ajoped5vkVcCWNkzhV6T8b1vPXa/i0oWSRGlDn
+         dtgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/O0+bcvBE2OoO/gEJJYwRuRI/RoGqtMYiiZRYQc0t4I=;
-        b=ok+TQIDWQ6+zjS9zdrEZG5sO+1IggXwuoKnVy1Bhaq7f90x6zH+K8jEcMx6TAIEG3b
-         UsJbwLPAt3zVcKifL57uJIygkmMvZCXrUbZ0VEzkP/Qhzlhhzm55ozJXH+ToV1OfHAvm
-         MOTqbECJScPNLxVO7wW8cYAPKd1ujasxvE5fIKRpL1oKHj1bybWWvEPOcE6aw35Lr6Ns
-         PGK2KOKUWMOi6Jr5yv//V/OPxshuXsuID3j5cCxiULQ+ljraObEdHAwk7ddBt06PrHFx
-         kVMP4U2GVxrnVzmMxlL8TdAtaMGBLAZMB+V8kBfTAQy5omxSulaqVJW5T9sMb6wOYRTS
-         Lv2w==
-X-Gm-Message-State: APjAAAVTS5roZt0S1KTVTYsOIhESQ6jfzS3obOmNwHB6LGl3s9B+i295
-        mHDJqz6zxKy/XbOjob12FzOk4Ic9
-X-Google-Smtp-Source: APXvYqzvyiCxAFPvRtwFJEnXIdbqPspm5dip3VA/y6atEk9Tt9bRxCDrDN4ROhC0K5EZZ7NbSWeOsg==
-X-Received: by 2002:a63:ed12:: with SMTP id d18mr23581304pgi.248.1557037156347;
-        Sat, 04 May 2019 23:19:16 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:180::2e11])
-        by smtp.gmail.com with ESMTPSA id k7sm8649674pfi.67.2019.05.04.23.19.14
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 04 May 2019 23:19:15 -0700 (PDT)
-Date:   Sat, 4 May 2019 23:19:14 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Quentin Monnet <quentin.monnet@netronome.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, oss-drivers@netronome.com
-Subject: Re: [PATCH bpf-next 4/6] bpf: make BPF_LOG_* flags available in UAPI
- header
-Message-ID: <20190505061913.mgazaivmg62auirx@ast-mbp>
-References: <20190429095227.9745-1-quentin.monnet@netronome.com>
- <20190429095227.9745-5-quentin.monnet@netronome.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VHPSmeiaEyI+fZI5jnTJrK4KWAfYaHxzzqx2Hh2oJWI=;
+        b=Q9Yrg+6BgKE5ifDN3YphLoaUZeh7lUKNGe1/Kln+ZrZOy/Zo8y4ikX5s9rDqnnDp8Y
+         TGUEiis+3DupCgy4wPdg6UC1l3iboexHVIcJchFBM502Qlh+2oXUugWJWEWc4gKhVL+V
+         H+yZnsEv3oJOXd7XFSsCmw5IJlFZD0YrnKSRKGcxF1yqTgvvVQ+DQy9URjItwuK6PeN4
+         LZYmDJsuh3/C+l5THD3/tLvl8WiqkdZ7kQKFswb8lh71sRZRr7OKIEQkMivuJY3MTek1
+         /xqkbHPZtkSTR4XlCXqv4djmY4Ln2v8VkQ1f7yOQ76/TPnS64OeLVI62ZeKI7lLwd9LB
+         xEew==
+X-Gm-Message-State: APjAAAU4JxIkzfWJ2XiY6Givw4IDPVDRR7Kl3Sl34tuyV3PdFZjMyc2U
+        z5uuTvy90uizwLOenYd0HF1rXbGjTTW34H7D+94=
+X-Google-Smtp-Source: APXvYqxmzye1w9ywCiF5Mf9/PUrmPP1RRpHTVk/MlTGKqqXTbd/JZjNEtAN712PgpQ4fDy962zTQC9Ie8bZE5diZCa4=
+X-Received: by 2002:a19:8:: with SMTP id 8mr9593361lfa.125.1557037400792; Sat,
+ 04 May 2019 23:23:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190429095227.9745-5-quentin.monnet@netronome.com>
-User-Agent: NeoMutt/20180223
+References: <20190429135611.72640-1-yuehaibing@huawei.com> <20190429154017.j5yotcmvtw4fcbuo@kafai-mbp.dhcp.thefacebook.com>
+ <20190429154052.7qtxsqex5xure4a3@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20190429154052.7qtxsqex5xure4a3@kafai-mbp.dhcp.thefacebook.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sat, 4 May 2019 23:23:08 -0700
+Message-ID: <CAADnVQJ+GpPn7g=zv5KdZhdu5=uT4SWT6rGsMn_onFwO7oH=pA@mail.gmail.com>
+Subject: Re: [PATCH net-next] bpf: Use PTR_ERR_OR_ZERO in bpf_fd_sk_storage_update_elem()
+To:     Martin Lau <kafai@fb.com>
+Cc:     YueHaibing <yuehaibing@huawei.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 29, 2019 at 10:52:25AM +0100, Quentin Monnet wrote:
-> The kernel verifier combines several flags to select what kind of logs
-> to print to the log buffer provided by users.
-> 
-> In order to make it easier to provide the relevant flags, move the
-> related #define-s to the UAPI header, so that applications can set for
-> example: attr->log_level = BPF_LOG_LEVEL1 | BPF_LOG_STATS.
-> 
-> Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
-> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-> ---
->  include/linux/bpf_verifier.h | 3 ---
->  include/uapi/linux/bpf.h     | 5 +++++
->  2 files changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index 1305ccbd8fe6..8160a4bb7ad9 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -253,9 +253,6 @@ static inline bool bpf_verifier_log_full(const struct bpf_verifier_log *log)
->  	return log->len_used >= log->len_total - 1;
->  }
->  
-> -#define BPF_LOG_LEVEL1	1
-> -#define BPF_LOG_LEVEL2	2
-> -#define BPF_LOG_STATS	4
->  #define BPF_LOG_LEVEL	(BPF_LOG_LEVEL1 | BPF_LOG_LEVEL2)
->  #define BPF_LOG_MASK	(BPF_LOG_LEVEL | BPF_LOG_STATS)
->  
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 72336bac7573..f8e3e764aff4 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -335,6 +335,11 @@ struct bpf_stack_build_id {
->  	};
->  };
->  
-> +/* verifier log_level values for loading programs, can be combined */
-> +#define BPF_LOG_LEVEL1	1
-> +#define BPF_LOG_LEVEL2	2
-> +#define BPF_LOG_STATS	4
+On Mon, Apr 29, 2019 at 8:42 AM Martin Lau <kafai@fb.com> wrote:
+>
+> On Mon, Apr 29, 2019 at 08:40:17AM -0700, Martin KaFai Lau wrote:
+> > On Mon, Apr 29, 2019 at 01:56:11PM +0000, YueHaibing wrote:
+> > > Use PTR_ERR_OR_ZERO rather than if(IS_ERR(...)) + PTR_ERR
+> > Acked-by: Martin KaFai Lau <kafai@fb.com>
+> btw, that should go to the bpf-next branch.
 
-The verifier log levels are kernel implementation details.
-They were not exposed before and shouldn't be exposed in the future.
-I know that some folks already know about existence of level2 and use it
-when the verifier rejects the program, but this is not uapi.
-What is being output at level1 and 2 can change.
-It's ok for libbpf to use this knowledge of kernel internals,
-but it shouldn't be in uapi header.
-That was the reason I didn't expose stats=4 in uapi in the first place
-when I added that commit.
-
+Applied to bpf-next. Thanks!
