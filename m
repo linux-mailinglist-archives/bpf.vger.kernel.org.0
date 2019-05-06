@@ -2,83 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA5514252
-	for <lists+bpf@lfdr.de>; Sun,  5 May 2019 22:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52BD14323
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2019 02:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727367AbfEEUbv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 5 May 2019 16:31:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54074 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726905AbfEEUbv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 5 May 2019 16:31:51 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3ADEB20651;
-        Sun,  5 May 2019 20:31:47 +0000 (UTC)
-Date:   Sun, 5 May 2019 16:31:45 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
-        Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>, atishp04@gmail.com,
-        bpf@vger.kernel.org, Brendan Gregg <bgregg@netflix.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>, dancol@google.com,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dan Williams <dan.j.williams@intel.com>,
-        dietmar.eggemann@arm.com, duyuchao <yuchao.du@unisoc.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Karim Yaghmour <karim.yaghmour@opersys.com>,
-        Kees Cook <keescook@chromium.org>, kernel-team@android.com,
-        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org,
-        Manjo Raja Rao <linux@manojrajarao.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        =?UTF-8?B?TWljaGHFgg==?= Gregorczyk <michalgr@fb.com>,
-        Michal Gregorczyk <michalgr@live.com>,
-        Mohammad Husain <russoue@gmail.com>,
-        Olof Johansson <olof@lixom.net>, qais.yousef@arm.com,
-        rdunlap@infradead.org, Shuah Khan <shuah@kernel.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        Tamir Carmeli <carmeli.tamir@gmail.com>, yhs@fb.com
-Subject: Re: [PATCH v2] kheaders: Move from proc to sysfs
-Message-ID: <20190505163145.45f77e44@oasis.local.home>
-In-Reply-To: <20190505132623.GA3076@localhost>
-References: <20190504121213.183203-1-joel@joelfernandes.org>
-        <20190504122158.GA23535@kroah.com>
-        <20190504123650.GA229151@google.com>
-        <20190505091030.GA25646@kroah.com>
-        <20190505132623.GA3076@localhost>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727628AbfEFAKr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 May 2019 20:10:47 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:38628 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727285AbfEFAKq (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 5 May 2019 20:10:46 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4604n0E009676
+        for <bpf@vger.kernel.org>; Sun, 5 May 2019 17:10:46 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=HQNR+ajknOMARZWsVADyoDmTPiSw0EYyP9Bz1Nn55sw=;
+ b=ECqe4XlZz2Lf4sTWgBmQ0GdLuXw++Xg24UjTTmf+6mXMvn6FmDOp33YOSii33fdW0UJf
+ TunMtIBP4ZE/7CGbo1xR3BdFXYMdqcvtKnYD+Ebefg60cLPg8qLu02azdvRxYoHGBrzO
+ DZjd5yfyg6d9s8+YVTndaOQD6gyRv728Avc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2s96s0unje-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Sun, 05 May 2019 17:10:46 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sun, 5 May 2019 17:10:44 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 84882862582; Sun,  5 May 2019 17:10:42 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <andrii.nakryiko@gmail.com>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <yhs@fb.com>, <daniel@iogearbox.net>,
+        <kernel-team@fb.com>
+CC:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf] kbuild: tolerate missing pahole when generating BTF
+Date:   Sun, 5 May 2019 17:10:33 -0700
+Message-ID: <20190506001033.2765060-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-05_20:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=738 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905050216
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 5 May 2019 13:26:23 +0000
-Joel Fernandes <joel@joelfernandes.org> wrote:
+When BTF generation is enabled through CONFIG_DEBUG_INFO_BTF,
+scripts/link-vmlinux.sh detects if pahole version is too old and
+gracefully continues build process, skipping BTF generation build step.
+But if pahole is not available, build will still fail. This patch adds
+check for whether pahole exists at all and bails out gracefully, if not.
 
-> On Sun, May 05, 2019 at 11:10:30AM +0200, Greg KH wrote:
-> > On Sat, May 04, 2019 at 08:36:50AM -0400, Joel Fernandes wrote:  
-> > > > But, you should change S_IRUGO to the correct octal number, checkpatch
-> > > > should have barfed on this change.  
-> > > 
-> > > fixed, below is the updated patch inline, thanks!  
-> > 
-> > Please resend as a "real" submission, doing so in this format is a bit
-> > more difficult to apply.  
-> 
-> git am --scissors can do it, but no problem I will send as a formal
-> submission. Thanks a lot.
->
+Cc: Alexei Starovoitov <ast@fb.com>
+Reported-by: Yonghong Song <yhs@fb.com>
+Fixes: e83b9f55448a ("kbuild: add ability to generate BTF type info for vmlinux")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ scripts/link-vmlinux.sh | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-True, but a lot of us depend on scripts to pull in patches from our
-INBOX. Which is why we like them to stay with the standard format.
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 6a148d0d51bf..e3c06b9482a2 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -96,6 +96,11 @@ gen_btf()
+ {
+ 	local pahole_ver;
+ 
++	if ! [ -x "$(command -v ${PAHOLE})" ]; then
++		info "BTF" "${1}: pahole (${PAHOLE}) is not available"
++		return 0
++	fi
++
+ 	pahole_ver=$(${PAHOLE} --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
+ 	if [ "${pahole_ver}" -lt "113" ]; then
+ 		info "BTF" "${1}: pahole version $(${PAHOLE} --version) is too old, need at least v1.13"
+-- 
+2.17.1
 
--- Steve
