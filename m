@@ -2,136 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9667154BD
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2019 21:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA2A15531
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2019 23:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbfEFT5P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 May 2019 15:57:15 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:41201 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbfEFT5O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 May 2019 15:57:14 -0400
-Received: by mail-pf1-f194.google.com with SMTP id l132so2369646pfc.8
-        for <bpf@vger.kernel.org>; Mon, 06 May 2019 12:57:14 -0700 (PDT)
+        id S1726649AbfEFVAf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 May 2019 17:00:35 -0400
+Received: from mail-qt1-f173.google.com ([209.85.160.173]:42867 "EHLO
+        mail-qt1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726439AbfEFVAb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 May 2019 17:00:31 -0400
+Received: by mail-qt1-f173.google.com with SMTP id p20so16539612qtc.9
+        for <bpf@vger.kernel.org>; Mon, 06 May 2019 14:00:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CLvXgkmEF2HuuDRz+thRTXD1OtlI2uKzA2+jsYBonhs=;
-        b=S6iea+gwnFA7+UtQ38F/1k2BteEzmNzXl+aCRycK15pGhNFpdyCe6rhOEQHexmbGnQ
-         e2CB8RFbWcPDfBoW2UNpy6UNA1V6tEYjkD1QsWLAowhee9HO2z/IKHMNWHNqjuT8lG2x
-         O75FFPOK/kakEUTjZK1qAzPGXtVUQXnbi1kU4=
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=3wJRQ6VKWRxL27a5QxEQoOQCJUnNTmSip3XDWhvdBaQ=;
+        b=A/lSskv2O+Uy1ln/4WsjLObJSCsYlFzGzAWfWBpCgQp9nJ+T99/ChlO5vaAVXQQYq1
+         kDaLE662WickGYjmxtVJdcvsq7kbFg4eC4W16FIdZCN7C2VGClGEdQDMahn3ZhHRkxpz
+         xIiZn7TZq4GQZTSQxsdL3I9hj6RlHCaA9RvYcxeBBfDIV/gJAtL4IGK1GyNFw5ACccvr
+         cZ2eUhhH0dV8ZgUOM7Un1kQSqKXNjDsZnpU1zGcN0N71PRXpRelhx4MLGkHG5W9T6Npv
+         y9Wtzcv1SgLUUVHhBJVhRcCciD8eRu8h4dAs/HDyUMOPXIM1H+KtNqfsI1DVDUYMxByn
+         pMyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CLvXgkmEF2HuuDRz+thRTXD1OtlI2uKzA2+jsYBonhs=;
-        b=JcyELHj+u3D3fbI7SUre5DvYFHuD5l82JsL5FB5412P2hKOqleaqZSrbdhkiRtT5kd
-         bpqpWlsK5COMlAh/zel2BYIo6yJiZLIwNZcY9gjgCgNy2z8Og9IadlZqkAkEi47cccyu
-         c0pcuO+OTga7rfytt42DouMYJVOifVrm2P71FtIGMVS3va88djl/vmDXwLbFG2igRZAI
-         9cFTeNxc6NghiHwJIU/Edp7vMuVgqwtT91n8tC8i80nIkALe1VEx85uS7SnLQU6kbgmO
-         CdjlS3Z58cEYlXqe1LGrwb+hG+Bwk58I8TzuG2uhmNwCLP3IUdXUT7SGpaPf8zn/zPtC
-         4UZA==
-X-Gm-Message-State: APjAAAXr1oP2pEL7NGl3q9Zwice1kZ56rxpfpkr9zTgpDOAZAOPu02Ep
-        5slLdMPioWNIwuNH+X/S1C9yPA==
-X-Google-Smtp-Source: APXvYqynLDYXDnI9TexIDiiHv8fM/e64HKHfby9Od5eT6nRpjknFGCFcb8PzLIcX0Va+gYVKgmJsnA==
-X-Received: by 2002:aa7:8b8b:: with SMTP id r11mr35947156pfd.130.1557172633764;
-        Mon, 06 May 2019 12:57:13 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id 128sm13713965pgb.47.2019.05.06.12.57.12
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 06 May 2019 12:57:12 -0700 (PDT)
-Date:   Mon, 6 May 2019 15:57:11 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     linux-kernel@vger.kernel.org,
-        Michal Gregorczyk <michalgr@live.com>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Mohammad Husain <russoue@gmail.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        duyuchao <yuchao.du@unisoc.com>,
-        Manjo Raja Rao <linux@manojrajarao.com>,
-        Karim Yaghmour <karim.yaghmour@opersys.com>,
-        Tamir Carmeli <carmeli.tamir@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=3wJRQ6VKWRxL27a5QxEQoOQCJUnNTmSip3XDWhvdBaQ=;
+        b=raHe4HY/tlsSnokPR+6idF8q+nzqqbV8+nj6x/I/eof6Y39Yb4liFpxt8HRdRrhH7i
+         qI+yeKIhyfpqG0omEj4CMOAIMP0PKi5K3FRo0yIxsQdqIlYPm0RgLKh831uzv1NIH9Ns
+         QhGLLwHGEUz35psDgFA1jNysRvAQ0hjcOOyauFuOXfRS/t2NYpZi5irGVl20OOIYx1s0
+         GiBbEl60ayegA/oSryed4Wxp8IaPn9QnzoSVpBHxmadGNjAiGfVTGIFw+czhqbrHGmtz
+         sI5xmW/Vd8BE+Iu5//nINUs8ji0NMk/M1vDDz6tL+S9wOc4uTQdD5cpEtY2lTYvJKAyi
+         W9rA==
+X-Gm-Message-State: APjAAAUevDMG7I7llmOEGCR8V7jEPVxi5YqxAvhhqreiAesQ4grP/LFN
+        ocVTono/SAyM+JUAcSX2nfPZiw==
+X-Google-Smtp-Source: APXvYqx/0CijmHQT5nAegd8Iq3bmLEJ/dSOVuelYyGhdUDs4JSPE3rCKI5bh09sk4kBRUcTwpfs8uA==
+X-Received: by 2002:ac8:743:: with SMTP id k3mr20214481qth.207.1557176430476;
+        Mon, 06 May 2019 14:00:30 -0700 (PDT)
+Received: from cakuba.hsd1.ca.comcast.net ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id 67sm5934254qtc.29.2019.05.06.14.00.28
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 06 May 2019 14:00:30 -0700 (PDT)
+Date:   Mon, 6 May 2019 14:00:22 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@android.com,
-        bpf@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>
-Subject: Re: [PATCH v2 1/4] bpf: Add support for reading user pointers
-Message-ID: <20190506195711.GA48323@google.com>
-References: <20190506183116.33014-1-joel@joelfernandes.org>
- <3c6b312c-5763-0d9c-7c2c-436ee41f9be1@iogearbox.net>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        oss-drivers@netronome.com, linux-kernel@vger.kernel.org,
+        xdp-newbies@vger.kernel.org, valdis@vt.edu
+Subject: Re: netronome/nfp/bpf/jit.c cannot be build with -O3
+Message-ID: <20190506140022.188d2b84@cakuba.hsd1.ca.comcast.net>
+In-Reply-To: <673b885183fb64f1cbb3ed2387524077@natalenko.name>
+References: <673b885183fb64f1cbb3ed2387524077@natalenko.name>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3c6b312c-5763-0d9c-7c2c-436ee41f9be1@iogearbox.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 06, 2019 at 09:11:19PM +0200, Daniel Borkmann wrote:
-> On 05/06/2019 08:31 PM, Joel Fernandes (Google) wrote:
-> > The eBPF based opensnoop tool fails to read the file path string passed
-> > to the do_sys_open function. This is because it is a pointer to
-> > userspace address and causes an -EFAULT when read with
-> > probe_kernel_read. This is not an issue when running the tool on x86 but
-> > is an issue on arm64. This patch adds a new bpf function call based
-> > which calls the recently proposed probe_user_read function [1].
-> > Using this function call from opensnoop fixes the issue on arm64.
-> > 
-> > [1] https://lore.kernel.org/patchwork/patch/1051588/
-> > 
-> > Cc: Michal Gregorczyk <michalgr@live.com>
-> > Cc: Adrian Ratiu <adrian.ratiu@collabora.com>
-> > Cc: Mohammad Husain <russoue@gmail.com>
-> > Cc: Qais Yousef <qais.yousef@arm.com>
-> > Cc: Srinivas Ramana <sramana@codeaurora.org>
-> > Cc: duyuchao <yuchao.du@unisoc.com>
-> > Cc: Manjo Raja Rao <linux@manojrajarao.com>
-> > Cc: Karim Yaghmour <karim.yaghmour@opersys.com>
-> > Cc: Tamir Carmeli <carmeli.tamir@gmail.com>
-> > Cc: Yonghong Song <yhs@fb.com>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Brendan Gregg <brendan.d.gregg@gmail.com>
-> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > Cc: Peter Ziljstra <peterz@infradead.org>
-> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Cc: kernel-team@android.com
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> > Masami, could you carry these patches in the series where are you add
-> > probe_user_read function?
-> > 
-> > Previous submissions is here:
-> > https://lore.kernel.org/patchwork/patch/1069552/
-> > v1->v2: split tools uapi sync into separate commit, added deprecation
-> > warning for old bpf_probe_read function.
+On Mon, 06 May 2019 21:40:07 +0200, Oleksandr Natalenko wrote:
+> Hi.
 > 
-> Please properly submit this series to bpf tree once the base
-> infrastructure from Masami is upstream.
+> Obligatory disclaimer: building the kernel with -O3 is a non-standard 
+> thing done via this patch [1], but I've asked people in #kernelnewbies, 
+> and it was suggested that the issue should be still investigated.
+> 
+> So, with v5.1 kernel release I cannot build the kernel with -O3 anymore. 
+> It fails as shown below:
 
-Could you clarify what do you mean by "properly submit this series to bpf
-tree" mean? bpf@vger.kernel.org is CC'd.
-
-> This series here should
-> also fix up all current probe read usage under samples/bpf/ and
-> tools/testing/selftests/bpf/.
-
-Ok. Agreed, will do that.
-
-thanks,
-
-- Joel
-
+Any chance you could try different compiler versions?  The code in
+question does not look too unusual.  Could you try if removing
+FIELD_FIT() on line 326 makes a difference?
