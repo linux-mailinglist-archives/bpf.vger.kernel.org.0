@@ -2,103 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F971509F
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2019 17:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9990150AC
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2019 17:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726670AbfEFPr3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 May 2019 11:47:29 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:44666 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725994AbfEFPr3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 May 2019 11:47:29 -0400
-Received: by mail-qk1-f194.google.com with SMTP id w25so2045503qkj.11;
-        Mon, 06 May 2019 08:47:28 -0700 (PDT)
+        id S1726814AbfEFPuq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 May 2019 11:50:46 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:43566 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726304AbfEFPuq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 May 2019 11:50:46 -0400
+Received: by mail-pf1-f195.google.com with SMTP id c6so1786113pfa.10;
+        Mon, 06 May 2019 08:50:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=E/XjEjFJHTNXNUvCeIBTVGrT6CD0tFJQfkjcnYeMhDY=;
-        b=WFo86atePse5UmQK+FdjsQtdOQVjO6JrWLd1xYEi2IMozqnr1cQ3J6vuxd3K5gctkU
-         XsHuazRLDKDlGNx+rMgrPMRCPJ6oBDmOOlutFuDcLwMPw4scj7kpqzMv7cl6hg35vWEY
-         5Jo6jnIk5CH1m9lNzIXjTixLiTU77ECI7aUU/JbALWp0cMUgMEwkMgZ7hD3uN9i6ImhW
-         2a3f1jij5WKh6ZVyp1ZYKiNoBS3PgNo3b11OoMZftLmzMwIrn3ULeWrJwifkleo4h6d6
-         bKGMiQvOOvCNzRjOGOOP6O5nxYth83P/miVp9QGwck0+wEWuGrwwA1wlrLAfhekoHQTn
-         pYyg==
+        bh=4h6c69krvoIOxEQP2kDxN5Xj3mPYUgRHclyDxLY3Sh0=;
+        b=REiIGyWuoUTJpB1Pch98JUzAEk8ap6S1I36DikzGdR1pRS19cEyCPmpDC9NMFA/m0N
+         YvG2ws+a+p149IMp9mhLaSYKS90QFxNdKwRMMSK11WrWhP4SuDOj70PPDwvg3+SYDdiL
+         ejAZUjn449GQKHl+RxNrXkekjOdCSWTJlQk9ab6YRer3idb4mlzlYqlciJlMgvnKibON
+         7MBk89RETAVSZ7kjvCdjdOvqcBAHqovlsipYI3qfGMDzKsiQc3R4pL/2U3SqqtK0X2lA
+         8sOzPZ40oUrWlPyJTrqhDzcAjQkG4Myb7QSEiSPnsN/4yaMl0eclacE44gUdr84faXZW
+         e3bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=E/XjEjFJHTNXNUvCeIBTVGrT6CD0tFJQfkjcnYeMhDY=;
-        b=NTNWAM4SS7AOFuCA0Kiu3c+b8LmjB+xLCrDGUkba+mYj5LDMBfA9GhBRQCuLy3TuH4
-         jCVgt7gjD7QS1cDdm2zmsoNUFzIK1LNgN8i1rZSzswEK4NWUCAb36sGYGmopXgtFSfO9
-         ikD6c4W9gVejNPrfKHGR1cCnCmHnmzHvlNeYOPEq7GOlL1YbZNvn2nMCV0+SUcXvG/6v
-         DSoFpBYZpRbj2hnlpCR9RhUVchEkDlZ8C1AfVIJsVSum89XBoYNFJRj+Wyq1N5AhIVyQ
-         EgFBVIC1YudFsjxGm/UQX2D94YjSwE+ViJtcROsW4RoH4DFR4rJBmBJ7/H2xYC+4RaTb
-         98Ug==
-X-Gm-Message-State: APjAAAWTFqphWOk4BKHRdouGRrmAfFyNou0+amEv8C1obHttu3S6c0Hj
-        nk5EMp6Mhyx+loATAA3xtXs=
-X-Google-Smtp-Source: APXvYqyGWKd+xSOSpvNfUpsvwC4L227cvwkKiLHI1zuDfWsdmprNrmz8KfFvHgA6pkY4TuPO96A4Rg==
-X-Received: by 2002:a37:de16:: with SMTP id h22mr19541559qkj.306.1557157647429;
-        Mon, 06 May 2019 08:47:27 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:500::3:34f3])
-        by smtp.gmail.com with ESMTPSA id i23sm8328331qtc.18.2019.05.06.08.47.26
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4h6c69krvoIOxEQP2kDxN5Xj3mPYUgRHclyDxLY3Sh0=;
+        b=Y9wxIdx0WEMDBzzP6xD/p8WBWLFD5rGtc8SNjAvLURpLxa9w2vIrdHVcDV/ReX+A1t
+         W67I2rCmC+g2pAED8uULpEVauPYkPUJ4sndts8fgGofcfIyCX0HS4eJ8Va202O+bj2x1
+         Xx9YnwyfZKSo7+QpARtmjvnQqbOGtxeflz/UVvG8RQqXxP3PGtFz4fWiDyUZx1Zf+RHH
+         YfUkbMUlHkan2z8VTlq20N92BxexpG4f4bT6yQ39W46CRnCctte1fdZVR33/C7FgaTVe
+         t0a7bKkZocRVAdYxkXYtMvXHT/Whb28M+Pg8EOTJG/sq0QfXPVNq1w3ohVF5ZbcXPETv
+         WLrA==
+X-Gm-Message-State: APjAAAXzb7eDmJNSLp6cVV/YYAwBte8ct2n8aQRR8cji0QtJP3KVuRS9
+        cIhvQtLGQbPxfdaFy1j4XSdW76hU
+X-Google-Smtp-Source: APXvYqxQcYyxsv2xNx3M2J5q2cX+Wsl5SsKNw6kdfWINz7PuxKpZUyNnb2cQihm3F7Qc2/rxnN8euQ==
+X-Received: by 2002:aa7:8252:: with SMTP id e18mr34192136pfn.105.1557157844753;
+        Mon, 06 May 2019 08:50:44 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:200::3:1919])
+        by smtp.gmail.com with ESMTPSA id n184sm7202714pfn.21.2019.05.06.08.50.43
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 06 May 2019 08:47:26 -0700 (PDT)
-Date:   Mon, 6 May 2019 08:47:25 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@infradead.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Jens Axboe <axboe@kernel.dk>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-block@vger.kernel.org,
-        cgroups@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v2 08/79] docs: cgroup-v1: convert docs to ReST and
- rename to *.rst
-Message-ID: <20190506154725.GS374014@devbig004.ftw2.facebook.com>
-References: <cover.1555938375.git.mchehab+samsung@kernel.org>
- <c6e79690c038fc6bbf9265a065c1f861d6e156fa.1555938375.git.mchehab+samsung@kernel.org>
+        Mon, 06 May 2019 08:50:43 -0700 (PDT)
+Date:   Mon, 6 May 2019 08:50:42 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jiong Wang <jiong.wang@netronome.com>
+Cc:     daniel@iogearbox.net, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        oss-drivers@netronome.com
+Subject: Re: [PATCH v6 bpf-next 01/17] bpf: verifier: offer more accurate
+ helper function arg and return type
+Message-ID: <20190506155041.ofxsvozqza6xrjep@ast-mbp>
+References: <1556880164-10689-1-git-send-email-jiong.wang@netronome.com>
+ <1556880164-10689-2-git-send-email-jiong.wang@netronome.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c6e79690c038fc6bbf9265a065c1f861d6e156fa.1555938375.git.mchehab+samsung@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <1556880164-10689-2-git-send-email-jiong.wang@netronome.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 22, 2019 at 10:26:57AM -0300, Mauro Carvalho Chehab wrote:
-> Convert the cgroup-v1 files to ReST format, in order to
-> allow a later addition to the admin-guide.
+On Fri, May 03, 2019 at 11:42:28AM +0100, Jiong Wang wrote:
+> BPF helper call transfers execution from eBPF insns to native functions
+> while verifier insn walker only walks eBPF insns. So, verifier can only
+> knows argument and return value types from explicit helper function
+> prototype descriptions.
 > 
-> The conversion is actually:
->   - add blank lines and identation in order to identify paragraphs;
->   - fix tables markups;
->   - add some lists markups;
->   - mark literal blocks;
->   - adjust title markups.
+> For 32-bit optimization, it is important to know whether argument (register
+> use from eBPF insn) and return value (register define from external
+> function) is 32-bit or 64-bit, so corresponding registers could be
+> zero-extended correctly.
 > 
-> At its new index.rst, let's add a :orphan: while this is not linked to
-> the main index.rst file, in order to avoid build warnings.
+> For arguments, they are register uses, we conservatively treat all of them
+> as 64-bit at default, while the following new bpf_arg_type are added so we
+> could start to mark those frequently used helper functions with more
+> accurate argument type.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+>   ARG_CONST_SIZE32
+>   ARG_CONST_SIZE32_OR_ZERO
+>   ARG_ANYTHING32
+> 
+> A few helper functions shown up frequently inside Cilium bpf program are
+> updated using these new types.
+> 
+> For return values, they are register defs, we need to know accurate width
+> for correct zero extensions. Given most of the helper functions returning
+> integers return 32-bit value, a new RET_INTEGER64 is added to make those
+> functions return 64-bit value. All related helper functions are updated.
+> 
+> Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
+> ---
+>  include/linux/bpf.h      |  6 +++++-
+>  kernel/bpf/core.c        |  2 +-
+>  kernel/bpf/helpers.c     | 10 +++++-----
+>  kernel/bpf/verifier.c    | 15 ++++++++++-----
+>  kernel/trace/bpf_trace.c |  4 ++--
+>  net/core/filter.c        | 38 +++++++++++++++++++-------------------
+>  6 files changed, 42 insertions(+), 33 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 9a21848..11a5fb9 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -198,9 +198,12 @@ enum bpf_arg_type {
+>  
+>  	ARG_CONST_SIZE,		/* number of bytes accessed from memory */
+>  	ARG_CONST_SIZE_OR_ZERO,	/* number of bytes accessed from memory or 0 */
+> +	ARG_CONST_SIZE32,	/* Likewise, but size fits into 32-bit */
+> +	ARG_CONST_SIZE32_OR_ZERO,	/* Ditto */
 
-Acked-by: Tejun Heo <tj@kernel.org>
+these two should not be necessary. The program must pass constant into
+the helper. The verifier is smart enough already to see it through.
+Looks like patch 2 is using it as a band-aid.
 
-Please feel free to route with other patches in the series.
+>  	ARG_PTR_TO_CTX,		/* pointer to context */
+>  	ARG_ANYTHING,		/* any (initialized) argument is ok */
+> +	ARG_ANYTHING32,		/* Likewise, but it is a 32-bit argument */
 
-Thanks.
+Such annotation has subtle semantics that I don't think we've explored
+in the past and I don't see from commit logs of this patch set that
+the necessary analysis was done.
+In particular 'int' in the helper argument does not mean that the verifier
+will reject 64-bit values. It also doesn't mean that the helper
+will reject them at run-time. In most cases it's a silent truncation.
+Like bpf_tail_call will accept 64-bit value, and will cast it to u32
+before doing max_entries bounds check.
+In other cases it could be signed vs unsigned interpretation inside
+the helper.
+imo the code base is not ready for semi-automatic remarking of
+helpers with ARG_ANYTHING32 when helper is accepting 32-bit value.
+Definitely not something short term and not a prerequisite for this set.
 
--- 
-tejun
+Longer term... if we introduce ARG_ANYTHING32, what would that mean?
+Would the verifier insert zext before calling the helper automatically
+and we can drop truncation in the helper? May be useful?
+What about passing negative value ?
+ld_imm64 r2, -1
+call foo
+is a valid program.
+
+>  	ARG_PTR_TO_SPIN_LOCK,	/* pointer to bpf_spin_lock */
+>  	ARG_PTR_TO_SOCK_COMMON,	/* pointer to sock_common */
+>  	ARG_PTR_TO_INT,		/* pointer to int */
+> @@ -210,7 +213,8 @@ enum bpf_arg_type {
+>  
+>  /* type of values returned from helper functions */
+>  enum bpf_return_type {
+> -	RET_INTEGER,			/* function returns integer */
+> +	RET_INTEGER,			/* function returns 32-bit integer */
+> +	RET_INTEGER64,			/* function returns 64-bit integer */
+
+These type of annotations are dangerous too since they don't consider sign
+of the return value. In BPF ISA all arguments and return values are 64-bit.
+When it's full 64-bit we don't need to specify the sign, since sing-bit
+will be interpreted by the program and the verifier doesn't need to worry.
+If we say that helper returns 32-bit we need state whether it's signed or not
+for the verifier to analyze it properly.
+
+I think it's the best to drop this patch. I don't think the rest of the set
+really needs it. It looks to me as a last minute optimization that I really
+wish wasn't there, because the rest we've discussed in depth and the set
+was practically ready to land, but now bpf-next is closed.
+Please resubmit after it reopens.
+
