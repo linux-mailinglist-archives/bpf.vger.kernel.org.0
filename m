@@ -2,109 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C40681546D
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2019 21:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617B815497
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2019 21:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbfEFTac (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 May 2019 15:30:32 -0400
-Received: from www62.your-server.de ([213.133.104.62]:32896 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbfEFTab (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 May 2019 15:30:31 -0400
-Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hNj1F-0002mm-CQ; Mon, 06 May 2019 21:11:21 +0200
-Received: from [178.199.41.31] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hNj1F-000NW8-2z; Mon, 06 May 2019 21:11:21 +0200
-Subject: Re: [PATCH v2 1/4] bpf: Add support for reading user pointers
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Michal Gregorczyk <michalgr@live.com>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Mohammad Husain <russoue@gmail.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        duyuchao <yuchao.du@unisoc.com>,
-        Manjo Raja Rao <linux@manojrajarao.com>,
-        Karim Yaghmour <karim.yaghmour@opersys.com>,
-        Tamir Carmeli <carmeli.tamir@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@android.com,
-        bpf@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>
-References: <20190506183116.33014-1-joel@joelfernandes.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <3c6b312c-5763-0d9c-7c2c-436ee41f9be1@iogearbox.net>
-Date:   Mon, 6 May 2019 21:11:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.3.0
+        id S1726236AbfEFTsZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 May 2019 15:48:25 -0400
+Received: from vulcan.natalenko.name ([104.207.131.136]:35728 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726175AbfEFTsZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 May 2019 15:48:25 -0400
+X-Greylist: delayed 493 seconds by postgrey-1.27 at vger.kernel.org; Mon, 06 May 2019 15:48:23 EDT
+Received: from mail.natalenko.name (vulcan.natalenko.name [IPv6:fe80::5400:ff:fe0c:dfa0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id A9DEC53D2A2;
+        Mon,  6 May 2019 21:40:07 +0200 (CEST)
 MIME-Version: 1.0
-In-Reply-To: <20190506183116.33014-1-joel@joelfernandes.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25441/Mon May  6 10:04:24 2019)
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 06 May 2019 21:40:07 +0200
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        oss-drivers@netronome.com, linux-kernel@vger.kernel.org,
+        xdp-newbies@vger.kernel.org, valdis@vt.edu
+Subject: netronome/nfp/bpf/jit.c cannot be build with -O3
+Message-ID: <673b885183fb64f1cbb3ed2387524077@natalenko.name>
+X-Sender: oleksandr@natalenko.name
+User-Agent: Roundcube Webmail/1.3.9
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/06/2019 08:31 PM, Joel Fernandes (Google) wrote:
-> The eBPF based opensnoop tool fails to read the file path string passed
-> to the do_sys_open function. This is because it is a pointer to
-> userspace address and causes an -EFAULT when read with
-> probe_kernel_read. This is not an issue when running the tool on x86 but
-> is an issue on arm64. This patch adds a new bpf function call based
-> which calls the recently proposed probe_user_read function [1].
-> Using this function call from opensnoop fixes the issue on arm64.
-> 
-> [1] https://lore.kernel.org/patchwork/patch/1051588/
-> 
-> Cc: Michal Gregorczyk <michalgr@live.com>
-> Cc: Adrian Ratiu <adrian.ratiu@collabora.com>
-> Cc: Mohammad Husain <russoue@gmail.com>
-> Cc: Qais Yousef <qais.yousef@arm.com>
-> Cc: Srinivas Ramana <sramana@codeaurora.org>
-> Cc: duyuchao <yuchao.du@unisoc.com>
-> Cc: Manjo Raja Rao <linux@manojrajarao.com>
-> Cc: Karim Yaghmour <karim.yaghmour@opersys.com>
-> Cc: Tamir Carmeli <carmeli.tamir@gmail.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Brendan Gregg <brendan.d.gregg@gmail.com>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Peter Ziljstra <peterz@infradead.org>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: kernel-team@android.com
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
-> Masami, could you carry these patches in the series where are you add
-> probe_user_read function?
-> 
-> Previous submissions is here:
-> https://lore.kernel.org/patchwork/patch/1069552/
-> v1->v2: split tools uapi sync into separate commit, added deprecation
-> warning for old bpf_probe_read function.
+Hi.
 
-Please properly submit this series to bpf tree once the base
-infrastructure from Masami is upstream. This series here should
-also fix up all current probe read usage under samples/bpf/ and
-tools/testing/selftests/bpf/.
+Obligatory disclaimer: building the kernel with -O3 is a non-standard 
+thing done via this patch [1], but I've asked people in #kernelnewbies, 
+and it was suggested that the issue should be still investigated.
 
-Thanks,
-Daniel
+So, with v5.1 kernel release I cannot build the kernel with -O3 anymore. 
+It fails as shown below:
+
+===
+   CC      drivers/net/ethernet/netronome/nfp/bpf/jit.o
+In file included from ./include/asm-generic/bug.h:5,
+                  from ./arch/x86/include/asm/bug.h:83,
+                  from ./include/linux/bug.h:5,
+                  from drivers/net/ethernet/netronome/nfp/bpf/jit.c:6:
+In function ‘__emit_shf’,
+     inlined from ‘emit_shf.constprop’ at 
+drivers/net/ethernet/netronome/nfp/bpf/jit.c:364:2,
+     inlined from ‘shl_reg64_lt32_low’ at 
+drivers/net/ethernet/netronome/nfp/bpf/jit.c:379:2,
+     inlined from ‘shl_reg’ at 
+drivers/net/ethernet/netronome/nfp/bpf/jit.c:2506:2:
+./include/linux/compiler.h:344:38: error: call to 
+‘__compiletime_assert_341’ declared with attribute error: BUILD_BUG_ON 
+failed: (((0x001f0000000ULL) + (1ULL << 
+(__builtin_ffsll(0x001f0000000ULL) - 1))) & (((0x001f0000000ULL) + (1ULL 
+<< (__builtin_ffsll(0x001f0000000ULL) - 1))) - 1)) != 0
+   _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
+                                       ^
+./include/linux/compiler.h:325:4: note: in definition of macro 
+‘__compiletime_assert’
+     prefix ## suffix();    \
+     ^~~~~~
+./include/linux/compiler.h:344:2: note: in expansion of macro 
+‘_compiletime_assert’
+   _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
+   ^~~~~~~~~~~~~~~~~~~
+./include/linux/build_bug.h:39:37: note: in expansion of macro 
+‘compiletime_assert’
+  #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+                                      ^~~~~~~~~~~~~~~~~~
+./include/linux/bitfield.h:57:3: note: in expansion of macro 
+‘BUILD_BUG_ON_MSG’
+    BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?  \
+    ^~~~~~~~~~~~~~~~
+./include/linux/bitfield.h:89:3: note: in expansion of macro 
+‘__BF_FIELD_CHECK’
+    __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: "); \
+    ^~~~~~~~~~~~~~~~
+drivers/net/ethernet/netronome/nfp/bpf/jit.c:341:3: note: in expansion 
+of macro ‘FIELD_PREP’
+    FIELD_PREP(OP_SHF_SHIFT, shift) |
+    ^~~~~~~~~~
+make[1]: *** [scripts/Makefile.build:276: 
+drivers/net/ethernet/netronome/nfp/bpf/jit.o] Error 1
+make: *** [Makefile:1726: drivers/net/ethernet/netronome/nfp/bpf/jit.o] 
+Error 2
+===
+
+Needless to say, with -O2 this file is built just fine. My compiler is:
+
+===
+$ gcc --version
+gcc (GCC) 8.3.0
+Copyright (C) 2018 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is 
+NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+PURPOSE.
+===
+
+I had no issues with -O3 before, so, maybe, this deserves a peek.
+
+I'm open to testing patches and providing more info if needed.
+
+Thanks.
+
+[1] 
+https://gitlab.com/post-factum/pf-kernel/commit/7fef93015ff1776d08119ef3d057a9e9433954a9
+
+-- 
+   Oleksandr Natalenko (post-factum)
