@@ -2,41 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2DD145EA
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2019 10:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6553F14626
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2019 10:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726197AbfEFITv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 May 2019 04:19:51 -0400
-Received: from www62.your-server.de ([213.133.104.62]:52550 "EHLO
+        id S1726220AbfEFI0E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 May 2019 04:26:04 -0400
+Received: from www62.your-server.de ([213.133.104.62]:53696 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725837AbfEFITv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 May 2019 04:19:51 -0400
-Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
+        with ESMTP id S1725846AbfEFI0E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 May 2019 04:26:04 -0400
+Received: from [78.46.172.2] (helo=sslproxy05.your-server.de)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1hNYqi-00021T-PC; Mon, 06 May 2019 10:19:48 +0200
+        id 1hNYwj-0002PO-FG; Mon, 06 May 2019 10:26:01 +0200
 Received: from [2a02:120b:c3fc:feb0:dda7:bd28:a848:50e2] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89)
         (envelope-from <daniel@iogearbox.net>)
-        id 1hNYqi-000RYB-Id; Mon, 06 May 2019 10:19:48 +0200
-Subject: Re: [PATCH bpf] kbuild: tolerate missing pahole when generating BTF
-To:     Andrii Nakryiko <andriin@fb.com>, andrii.nakryiko@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, yhs@fb.com,
-        kernel-team@fb.com
-Cc:     Alexei Starovoitov <ast@fb.com>
-References: <20190506001033.2765060-1-andriin@fb.com>
+        id 1hNYwj-000Tq4-93; Mon, 06 May 2019 10:26:01 +0200
+Subject: Re: [PATCH bpf 1/2] libbpf: fix invalid munmap call
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        ast@kernel.org, netdev@vger.kernel.org
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        magnus.karlsson@intel.com, magnus.karlsson@gmail.com,
+        bpf@vger.kernel.org, u9012063@gmail.com
+References: <20190430124536.7734-1-bjorn.topel@gmail.com>
+ <20190430124536.7734-2-bjorn.topel@gmail.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <aed4c5ed-32fc-4ce7-6490-42aa51d41888@iogearbox.net>
-Date:   Mon, 6 May 2019 10:19:47 +0200
+Message-ID: <20aaa3f5-fd93-9773-ca8a-40809e9dc981@iogearbox.net>
+Date:   Mon, 6 May 2019 10:26:00 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.3.0
 MIME-Version: 1.0
-In-Reply-To: <20190506001033.2765060-1-andriin@fb.com>
+In-Reply-To: <20190430124536.7734-2-bjorn.topel@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.100.3/25440/Sun May  5 10:04:31 2019)
 Sender: bpf-owner@vger.kernel.org
@@ -44,16 +46,91 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/06/2019 02:10 AM, Andrii Nakryiko wrote:
-> When BTF generation is enabled through CONFIG_DEBUG_INFO_BTF,
-> scripts/link-vmlinux.sh detects if pahole version is too old and
-> gracefully continues build process, skipping BTF generation build step.
-> But if pahole is not available, build will still fail. This patch adds
-> check for whether pahole exists at all and bails out gracefully, if not.
+On 04/30/2019 02:45 PM, Björn Töpel wrote:
+> From: Björn Töpel <bjorn.topel@intel.com>
 > 
-> Cc: Alexei Starovoitov <ast@fb.com>
-> Reported-by: Yonghong Song <yhs@fb.com>
-> Fixes: e83b9f55448a ("kbuild: add ability to generate BTF type info for vmlinux")
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> When unmapping the AF_XDP memory regions used for the rings, an
+> invalid address was passed to the munmap() calls. Instead of passing
+> the beginning of the memory region, the descriptor region was passed
+> to munmap.
+> 
+> When the userspace application tried to tear down an AF_XDP socket,
+> the operation failed and the application would still have a reference
+> to socket it wished to get rid of.
+> 
+> Reported-by: William Tu <u9012063@gmail.com>
+> Fixes: 1cad07884239 ("libbpf: add support for using AF_XDP sockets")
+> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+[...]
+>  out_mmap_tx:
+>  	if (tx)
+> -		munmap(xsk->tx,
+> -		       off.tx.desc +
+> +		munmap(tx_map, off.tx.desc +
+>  		       xsk->config.tx_size * sizeof(struct xdp_desc));
+>  out_mmap_rx:
+>  	if (rx)
+> -		munmap(xsk->rx,
+> -		       off.rx.desc +
+> +		munmap(rx_map, off.rx.desc +
+>  		       xsk->config.rx_size * sizeof(struct xdp_desc));
+>  out_socket:
+>  	if (--umem->refcount)
+> @@ -684,10 +681,12 @@ int xsk_umem__delete(struct xsk_umem *umem)
+>  	optlen = sizeof(off);
+>  	err = getsockopt(umem->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &optlen);
+>  	if (!err) {
+> -		munmap(umem->fill->ring,
+> -		       off.fr.desc + umem->config.fill_size * sizeof(__u64));
+> -		munmap(umem->comp->ring,
+> -		       off.cr.desc + umem->config.comp_size * sizeof(__u64));
+> +		(void)munmap(umem->fill->ring - off.fr.desc,
+> +			     off.fr.desc +
+> +			     umem->config.fill_size * sizeof(__u64));
+> +		(void)munmap(umem->comp->ring - off.cr.desc,
+> +			     off.cr.desc +
+> +			     umem->config.comp_size * sizeof(__u64));
 
-Applied, thanks!
+What's the rationale to cast to void here and other places (e.g. below)?
+If there's no proper reason, then lets remove it. Given the patch has already
+been applied, please send a follow up. Thanks.
+
+>  	}
+>  
+>  	close(umem->fd);
+> @@ -698,6 +697,7 @@ int xsk_umem__delete(struct xsk_umem *umem)
+>  
+>  void xsk_socket__delete(struct xsk_socket *xsk)
+>  {
+> +	size_t desc_sz = sizeof(struct xdp_desc);
+>  	struct xdp_mmap_offsets off;
+>  	socklen_t optlen;
+>  	int err;
+> @@ -710,14 +710,17 @@ void xsk_socket__delete(struct xsk_socket *xsk)
+>  	optlen = sizeof(off);
+>  	err = getsockopt(xsk->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &optlen);
+>  	if (!err) {
+> -		if (xsk->rx)
+> -			munmap(xsk->rx->ring,
+> -			       off.rx.desc +
+> -			       xsk->config.rx_size * sizeof(struct xdp_desc));
+> -		if (xsk->tx)
+> -			munmap(xsk->tx->ring,
+> -			       off.tx.desc +
+> -			       xsk->config.tx_size * sizeof(struct xdp_desc));
+> +		if (xsk->rx) {
+> +			(void)munmap(xsk->rx->ring - off.rx.desc,
+> +				     off.rx.desc +
+> +				     xsk->config.rx_size * desc_sz);
+> +		}
+> +		if (xsk->tx) {
+> +			(void)munmap(xsk->tx->ring - off.tx.desc,
+> +				     off.tx.desc +
+> +				     xsk->config.tx_size * desc_sz);
+> +		}
+> +
+>  	}
+>  
+>  	xsk->umem->refcount--;
+> 
+
