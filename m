@@ -2,39 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 681AC147B2
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2019 11:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F5F14814
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2019 12:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725856AbfEFJgR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 May 2019 05:36:17 -0400
-Received: from www62.your-server.de ([213.133.104.62]:40372 "EHLO
+        id S1725856AbfEFKFB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 May 2019 06:05:01 -0400
+Received: from www62.your-server.de ([213.133.104.62]:46766 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725855AbfEFJgQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 May 2019 05:36:16 -0400
-Received: from [78.46.172.2] (helo=sslproxy05.your-server.de)
+        with ESMTP id S1725861AbfEFKFB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 May 2019 06:05:01 -0400
+Received: from [88.198.220.130] (helo=sslproxy01.your-server.de)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1hNa2g-0000UI-Jm; Mon, 06 May 2019 11:36:14 +0200
+        id 1hNaUV-0002df-9i; Mon, 06 May 2019 12:04:59 +0200
 Received: from [2a02:120b:c3fc:feb0:dda7:bd28:a848:50e2] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89)
         (envelope-from <daniel@iogearbox.net>)
-        id 1hNa2g-000QDF-D8; Mon, 06 May 2019 11:36:14 +0200
-Subject: Re: [PATCH bpf] libbpf: remove unnecessary cast-to-void
+        id 1hNaUU-0002c0-Sp; Mon, 06 May 2019 12:04:59 +0200
+Subject: Re: [PATCH bpf-next 1/2] xsk: remove AF_XDP socket from map when the
+ socket is released
 To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
         ast@kernel.org, netdev@vger.kernel.org
 Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         magnus.karlsson@intel.com, magnus.karlsson@gmail.com,
-        bpf@vger.kernel.org
-References: <20190506092443.24483-1-bjorn.topel@gmail.com>
+        bruce.richarson@intel.com, bpf@vger.kernel.org,
+        Bruce Richardson <bruce.richardson@intel.com>
+References: <20190504160603.10173-1-bjorn.topel@gmail.com>
+ <20190504160603.10173-2-bjorn.topel@gmail.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <2f46de83-7b76-b7ba-54ed-9b084bb83df8@iogearbox.net>
-Date:   Mon, 6 May 2019 11:36:13 +0200
+Message-ID: <89542aec-4fb5-5322-624f-99731a834b8b@iogearbox.net>
+Date:   Mon, 6 May 2019 12:04:57 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.3.0
 MIME-Version: 1.0
-In-Reply-To: <20190506092443.24483-1-bjorn.topel@gmail.com>
+In-Reply-To: <20190504160603.10173-2-bjorn.topel@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -45,18 +48,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/06/2019 11:24 AM, Björn Töpel wrote:
+On 05/04/2019 06:06 PM, Björn Töpel wrote:
 > From: Björn Töpel <bjorn.topel@intel.com>
 > 
-> The patches with fixes tags added a cast-to-void in the places when
-> the return value of a function was ignored.
+> When an AF_XDP socket is released/closed the XSKMAP still holds a
+> reference to the socket in a "released" state. The socket will still
+> use the netdev queue resource, and block newly created sockets from
+> attaching to that queue, but no user application can access the
+> fill/complete/rx/tx rings. This results in that all applications need
+> to explicitly clear the map entry from the old "zombie state"
+> socket. This should be done automatically.
 > 
-> This is not common practice in the kernel, and is therefore removed in
-> this patch.
+> After this patch, when a socket is released, it will remove itself
+> from all the XSKMAPs it resides in, allowing the socket application to
+> remove the code that cleans the XSKMAP entry.
 > 
-> Reported-by: Daniel Borkmann <daniel@iogearbox.net>
-> Fixes: 5750902a6e9b ("libbpf: proper XSKMAP cleanup")
-> Fixes: 0e6741f09297 ("libbpf: fix invalid munmap call")
+> This behavior is also closer to that of SOCKMAP, making the two socket
+> maps more consistent.
+> 
+> Reported-by: Bruce Richardson <bruce.richardson@intel.com>
 > Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+[...]
 
-Applied, thanks!
+
+> +static void __xsk_map_delete_elem(struct xsk_map *map,
+> +				  struct xdp_sock **map_entry)
+> +{
+> +	struct xdp_sock *old_xs;
+> +
+> +	spin_lock_bh(&map->lock);
+> +	old_xs = xchg(map_entry, NULL);
+> +	if (old_xs)
+> +		xsk_map_del_node(old_xs, map_entry);
+> +	spin_unlock_bh(&map->lock);
+> +
+> +}
+> +
+>  static void xsk_map_free(struct bpf_map *map)
+>  {
+>  	struct xsk_map *m = container_of(map, struct xsk_map, map);
+> @@ -78,15 +142,16 @@ static void xsk_map_free(struct bpf_map *map)
+>  	bpf_clear_redirect_map(map);
+>  	synchronize_net();
+>  
+> +	spin_lock_bh(&m->lock);
+>  	for (i = 0; i < map->max_entries; i++) {
+> +		struct xdp_sock **entry = &m->xsk_map[i];
+>  		struct xdp_sock *xs;
+>  
+> -		xs = m->xsk_map[i];
+> -		if (!xs)
+> -			continue;
+> -
+> -		sock_put((struct sock *)xs);
+> +		xs = xchg(entry, NULL);
+> +		if (xs)
+> +			__xsk_map_delete_elem(m, entry);
+>  	}
+> +	spin_unlock_bh(&m->lock);
+>  
+
+Was this tested? Doesn't the above straight run into a deadlock?
+
+From xsk_map_free() you iterate over the map with m->lock held. Once you
+xchg'ed the entry and call into __xsk_map_delete_elem(), you attempt to
+call map->lock on the same map once again. What am I missing?
+
+Thanks,
+Daniel
