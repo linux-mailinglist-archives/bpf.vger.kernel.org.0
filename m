@@ -2,168 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6641468A
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2019 10:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68442146EE
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2019 11:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726249AbfEFIkw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 May 2019 04:40:52 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:35428 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725851AbfEFIkw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 May 2019 04:40:52 -0400
-Received: by mail-qk1-f195.google.com with SMTP id b7so7304227qkl.2;
-        Mon, 06 May 2019 01:40:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=dsmV2ykcRa+8zSWcpqYpvl/Vvn4+OyDOGXdXsu4MKuQ=;
-        b=LAynFvTLlhZ6phipsCmkx0lVqcXmxFSyOU0JNHfdxurp2kY23u8cVFnMzMVMbzwJRP
-         d4HrSCwJzjQFfbfGelYbkSHy4rqRbqZi6qNJ+0sEUfwXlMO+fg2fc1JK8/HjwdsXuwqf
-         sSA9ElFKbJQfgIuWKhZ59EnyzEZfD+ylxzy9SuBenTlOWy8WYc0AVtg1wD6waPSOgnUy
-         Mss46wi5IZ+AEGi1qoU7MxWCHB9O+FwqPSbGrCClWj+o/CkhcZ6oul3v88bxspSHe2A/
-         7vnxyCNOIyAKmVQ3FPu0xUAk5AnUju1Uvffex2y0wpqvuC1deZvyQPi+IowGJjnGB1Mj
-         5rXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dsmV2ykcRa+8zSWcpqYpvl/Vvn4+OyDOGXdXsu4MKuQ=;
-        b=uoFMQmOZiLjQ/pJYgKvuCZZKlkjCYSZHGGBd0VhFTZIov0YvloNoJ+4hOgDQv6+p/e
-         sX8RHTr3JcUSsgcL2QVyCUEvKEAbMFY41/6C26ZfbV8Qww0S78lkVSSgF3OdPtwwig4Z
-         nMp7W/SmmFtLp/hZrZRj2w70Or4EoT/osA3aQOqmzkXzAW8i8C0YxAxna/8zHPBHapsr
-         EpnrQ2gPXR/f6BTMtp4lakwfJStQNQpDAn5XRQxg/ONWSXS6fr/W4gYMJWQMBpP49dP/
-         tPw+1/VdXfGWO6Ys8ZsiGXH2aZ/4f2Ua9BwX2fl4f5G5IxmMVwNweztbsmbQi2M6zIXH
-         qvLA==
-X-Gm-Message-State: APjAAAW6u9p7ZiKXukjcPqVYRUMCp0WwV+p5ZL2QELpg+z5+EONR7Xrt
-        q7e2V4OVTBaF47CwlIf8JG5e3US0pNmvxzgabw4=
-X-Google-Smtp-Source: APXvYqzo8OKKxa/iTpl1F7TJmH2AZxlLO4ZYXZy7MPUZsbCaDmz93nuKr6A7BItYCJ3iDueHhgvv3acBam/SpzJE/1E=
-X-Received: by 2002:a37:a3d8:: with SMTP id m207mr5267633qke.334.1557132050843;
- Mon, 06 May 2019 01:40:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190430124536.7734-1-bjorn.topel@gmail.com> <20190430124536.7734-2-bjorn.topel@gmail.com>
- <20aaa3f5-fd93-9773-ca8a-40809e9dc981@iogearbox.net>
-In-Reply-To: <20aaa3f5-fd93-9773-ca8a-40809e9dc981@iogearbox.net>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Mon, 6 May 2019 10:40:39 +0200
-Message-ID: <CAJ+HfNhuHoZ5HEBTOTapg9Mu2vMB1pFvbXXrXbkRo4E7m2nNLQ@mail.gmail.com>
+        id S1725851AbfEFJCF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 May 2019 05:02:05 -0400
+Received: from www62.your-server.de ([213.133.104.62]:33298 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbfEFJCF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 May 2019 05:02:05 -0400
+Received: from [88.198.220.130] (helo=sslproxy01.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hNZVY-0004xk-6r; Mon, 06 May 2019 11:02:00 +0200
+Received: from [2a02:120b:c3fc:feb0:dda7:bd28:a848:50e2] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hNZVX-0003iY-Ro; Mon, 06 May 2019 11:01:59 +0200
 Subject: Re: [PATCH bpf 1/2] libbpf: fix invalid munmap call
-To:     Daniel Borkmann <daniel@iogearbox.net>
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Netdev <netdev@vger.kernel.org>,
         =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         "Karlsson, Magnus" <magnus.karlsson@intel.com>,
         Magnus Karlsson <magnus.karlsson@gmail.com>,
         bpf <bpf@vger.kernel.org>, William Tu <u9012063@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+References: <20190430124536.7734-1-bjorn.topel@gmail.com>
+ <20190430124536.7734-2-bjorn.topel@gmail.com>
+ <20aaa3f5-fd93-9773-ca8a-40809e9dc981@iogearbox.net>
+ <CAJ+HfNhuHoZ5HEBTOTapg9Mu2vMB1pFvbXXrXbkRo4E7m2nNLQ@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ea7d7ea7-a2cb-0ed7-2fa3-9d8db5b62381@iogearbox.net>
+Date:   Mon, 6 May 2019 11:01:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
+MIME-Version: 1.0
+In-Reply-To: <CAJ+HfNhuHoZ5HEBTOTapg9Mu2vMB1pFvbXXrXbkRo4E7m2nNLQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25441/Mon May  6 10:04:24 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 6 May 2019 at 10:26, Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 04/30/2019 02:45 PM, Bj=C3=B6rn T=C3=B6pel wrote:
-> > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> >
-> > When unmapping the AF_XDP memory regions used for the rings, an
-> > invalid address was passed to the munmap() calls. Instead of passing
-> > the beginning of the memory region, the descriptor region was passed
-> > to munmap.
-> >
-> > When the userspace application tried to tear down an AF_XDP socket,
-> > the operation failed and the application would still have a reference
-> > to socket it wished to get rid of.
-> >
-> > Reported-by: William Tu <u9012063@gmail.com>
-> > Fixes: 1cad07884239 ("libbpf: add support for using AF_XDP sockets")
-> > Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> [...]
-> >  out_mmap_tx:
-> >       if (tx)
-> > -             munmap(xsk->tx,
-> > -                    off.tx.desc +
-> > +             munmap(tx_map, off.tx.desc +
-> >                      xsk->config.tx_size * sizeof(struct xdp_desc));
-> >  out_mmap_rx:
-> >       if (rx)
-> > -             munmap(xsk->rx,
-> > -                    off.rx.desc +
-> > +             munmap(rx_map, off.rx.desc +
-> >                      xsk->config.rx_size * sizeof(struct xdp_desc));
-> >  out_socket:
-> >       if (--umem->refcount)
-> > @@ -684,10 +681,12 @@ int xsk_umem__delete(struct xsk_umem *umem)
-> >       optlen =3D sizeof(off);
-> >       err =3D getsockopt(umem->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &op=
-tlen);
-> >       if (!err) {
-> > -             munmap(umem->fill->ring,
-> > -                    off.fr.desc + umem->config.fill_size * sizeof(__u6=
-4));
-> > -             munmap(umem->comp->ring,
-> > -                    off.cr.desc + umem->config.comp_size * sizeof(__u6=
-4));
-> > +             (void)munmap(umem->fill->ring - off.fr.desc,
-> > +                          off.fr.desc +
-> > +                          umem->config.fill_size * sizeof(__u64));
-> > +             (void)munmap(umem->comp->ring - off.cr.desc,
-> > +                          off.cr.desc +
-> > +                          umem->config.comp_size * sizeof(__u64));
->
-> What's the rationale to cast to void here and other places (e.g. below)?
-> If there's no proper reason, then lets remove it. Given the patch has alr=
-eady
-> been applied, please send a follow up. Thanks.
->
+On 05/06/2019 10:40 AM, Björn Töpel wrote:
+> On Mon, 6 May 2019 at 10:26, Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 04/30/2019 02:45 PM, Björn Töpel wrote:
+>>> From: Björn Töpel <bjorn.topel@intel.com>
+>>>
+>>> When unmapping the AF_XDP memory regions used for the rings, an
+>>> invalid address was passed to the munmap() calls. Instead of passing
+>>> the beginning of the memory region, the descriptor region was passed
+>>> to munmap.
+>>>
+>>> When the userspace application tried to tear down an AF_XDP socket,
+>>> the operation failed and the application would still have a reference
+>>> to socket it wished to get rid of.
+>>>
+>>> Reported-by: William Tu <u9012063@gmail.com>
+>>> Fixes: 1cad07884239 ("libbpf: add support for using AF_XDP sockets")
+>>> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+>> [...]
+>>>  out_mmap_tx:
+>>>       if (tx)
+>>> -             munmap(xsk->tx,
+>>> -                    off.tx.desc +
+>>> +             munmap(tx_map, off.tx.desc +
+>>>                      xsk->config.tx_size * sizeof(struct xdp_desc));
+>>>  out_mmap_rx:
+>>>       if (rx)
+>>> -             munmap(xsk->rx,
+>>> -                    off.rx.desc +
+>>> +             munmap(rx_map, off.rx.desc +
+>>>                      xsk->config.rx_size * sizeof(struct xdp_desc));
+>>>  out_socket:
+>>>       if (--umem->refcount)
+>>> @@ -684,10 +681,12 @@ int xsk_umem__delete(struct xsk_umem *umem)
+>>>       optlen = sizeof(off);
+>>>       err = getsockopt(umem->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &optlen);
+>>>       if (!err) {
+>>> -             munmap(umem->fill->ring,
+>>> -                    off.fr.desc + umem->config.fill_size * sizeof(__u64));
+>>> -             munmap(umem->comp->ring,
+>>> -                    off.cr.desc + umem->config.comp_size * sizeof(__u64));
+>>> +             (void)munmap(umem->fill->ring - off.fr.desc,
+>>> +                          off.fr.desc +
+>>> +                          umem->config.fill_size * sizeof(__u64));
+>>> +             (void)munmap(umem->comp->ring - off.cr.desc,
+>>> +                          off.cr.desc +
+>>> +                          umem->config.comp_size * sizeof(__u64));
+>>
+>> What's the rationale to cast to void here and other places (e.g. below)?
+>> If there's no proper reason, then lets remove it. Given the patch has already
+>> been applied, please send a follow up. Thanks.
+> 
+> The rationale was to make it explicit that the return value is *not*
+> cared about. If this is not common practice, I'll remove it in a
+> follow up!
 
-The rationale was to make it explicit that the return value is *not*
-cared about. If this is not common practice, I'll remove it in a
-follow up!
+Yeah, it's not common practice, so lets rather remove it.
 
-Thank,
-Bj=C3=B6rn
-
-> >       }
-> >
-> >       close(umem->fd);
-> > @@ -698,6 +697,7 @@ int xsk_umem__delete(struct xsk_umem *umem)
-> >
-> >  void xsk_socket__delete(struct xsk_socket *xsk)
-> >  {
-> > +     size_t desc_sz =3D sizeof(struct xdp_desc);
-> >       struct xdp_mmap_offsets off;
-> >       socklen_t optlen;
-> >       int err;
-> > @@ -710,14 +710,17 @@ void xsk_socket__delete(struct xsk_socket *xsk)
-> >       optlen =3D sizeof(off);
-> >       err =3D getsockopt(xsk->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &opt=
-len);
-> >       if (!err) {
-> > -             if (xsk->rx)
-> > -                     munmap(xsk->rx->ring,
-> > -                            off.rx.desc +
-> > -                            xsk->config.rx_size * sizeof(struct xdp_de=
-sc));
-> > -             if (xsk->tx)
-> > -                     munmap(xsk->tx->ring,
-> > -                            off.tx.desc +
-> > -                            xsk->config.tx_size * sizeof(struct xdp_de=
-sc));
-> > +             if (xsk->rx) {
-> > +                     (void)munmap(xsk->rx->ring - off.rx.desc,
-> > +                                  off.rx.desc +
-> > +                                  xsk->config.rx_size * desc_sz);
-> > +             }
-> > +             if (xsk->tx) {
-> > +                     (void)munmap(xsk->tx->ring - off.tx.desc,
-> > +                                  off.tx.desc +
-> > +                                  xsk->config.tx_size * desc_sz);
-> > +             }
-> > +
-> >       }
-> >
-> >       xsk->umem->refcount--;
-> >
->
+Thanks,
+Daniel
