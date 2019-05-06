@@ -2,43 +2,31 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E66414D47
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2019 16:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234F11508E
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2019 17:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728819AbfEFOto (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 May 2019 10:49:44 -0400
-Received: from www62.your-server.de ([213.133.104.62]:52624 "EHLO
+        id S1726442AbfEFPp3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 May 2019 11:45:29 -0400
+Received: from www62.your-server.de ([213.133.104.62]:35698 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729605AbfEFOtm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 May 2019 10:49:42 -0400
-Received: from [88.198.220.132] (helo=sslproxy03.your-server.de)
+        with ESMTP id S1726321AbfEFPp3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 May 2019 11:45:29 -0400
+Received: from [2a02:120b:c3fc:feb0:dda7:bd28:a848:50e2] (helo=localhost)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1hNevz-00043M-Gy; Mon, 06 May 2019 16:49:39 +0200
-Received: from [2a02:120b:c3fc:feb0:dda7:bd28:a848:50e2] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hNevz-0001hM-4Q; Mon, 06 May 2019 16:49:39 +0200
-Subject: Re: [PATCH v6 bpf-next 02/17] bpf: verifier: mark verified-insn with
- sub-register zext flag
+        id 1hNfNm-0007gy-PX; Mon, 06 May 2019 17:18:22 +0200
 From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Jiong Wang <jiong.wang@netronome.com>, alexei.starovoitov@gmail.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@netronome.com
-References: <1556880164-10689-1-git-send-email-jiong.wang@netronome.com>
- <1556880164-10689-3-git-send-email-jiong.wang@netronome.com>
- <76304717-347f-990a-2a5a-0999ebbc3b70@iogearbox.net>
-Message-ID: <31605274-2146-1bb8-7625-8820f6948f6e@iogearbox.net>
-Date:   Mon, 6 May 2019 16:49:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.3.0
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, ast@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: pull-request: bpf-next 2019-05-06
+Date:   Mon,  6 May 2019 17:18:22 +0200
+Message-Id: <20190506151822.19628-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.9.5
 MIME-Version: 1.0
-In-Reply-To: <76304717-347f-990a-2a5a-0999ebbc3b70@iogearbox.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.100.3/25441/Mon May  6 10:04:24 2019)
 Sender: bpf-owner@vger.kernel.org
@@ -46,149 +34,81 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/06/2019 03:49 PM, Daniel Borkmann wrote:
-> On 05/03/2019 12:42 PM, Jiong Wang wrote:
->> eBPF ISA specification requires high 32-bit cleared when low 32-bit
->> sub-register is written. This applies to destination register of ALU32 etc.
->> JIT back-ends must guarantee this semantic when doing code-gen.
->>
->> x86-64 and arm64 ISA has the same semantic, so the corresponding JIT
->> back-end doesn't need to do extra work. However, 32-bit arches (arm, nfp
->> etc.) and some other 64-bit arches (powerpc, sparc etc), need explicit zero
->> extension sequence to meet such semantic.
->>
->> This is important, because for code the following:
->>
->>   u64_value = (u64) u32_value
->>   ... other uses of u64_value
->>
->> compiler could exploit the semantic described above and save those zero
->> extensions for extending u32_value to u64_value. Hardware, runtime, or BPF
->> JIT back-ends, are responsible for guaranteeing this. Some benchmarks show
->> ~40% sub-register writes out of total insns, meaning ~40% extra code-gen (
->> could go up to more for some arches which requires two shifts for zero
->> extension) because JIT back-end needs to do extra code-gen for all such
->> instructions.
->>
->> However this is not always necessary in case u32_value is never cast into
->> a u64, which is quite normal in real life program. So, it would be really
->> good if we could identify those places where such type cast happened, and
->> only do zero extensions for them, not for the others. This could save a lot
->> of BPF code-gen.
->>
->> Algo:
->>  - Split read flags into READ32 and READ64.
->>
->>  - Record indices of instructions that do sub-register def (write). And
->>    these indices need to stay with reg state so path pruning and bpf
->>    to bpf function call could be handled properly.
->>
->>    These indices are kept up to date while doing insn walk.
->>
->>  - A full register read on an active sub-register def marks the def insn as
->>    needing zero extension on dst register.
->>
->>  - A new sub-register write overrides the old one.
->>
->>    A new full register write makes the register free of zero extension on
->>    dst register.
->>
->>  - When propagating read64 during path pruning, also marks def insns whose
->>    defs are hanging active sub-register.
->>
->> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
->> Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
-> 
-> [...]
->> +/* This function is supposed to be used by the following 32-bit optimization
->> + * code only. It returns TRUE if the source or destination register operates
->> + * on 64-bit, otherwise return FALSE.
->> + */
->> +static bool is_reg64(struct bpf_verifier_env *env, struct bpf_insn *insn,
->> +		     u32 regno, struct bpf_reg_state *reg, enum reg_arg_type t)
->> +{
->> +	u8 code, class, op;
->> +
->> +	code = insn->code;
->> +	class = BPF_CLASS(code);
->> +	op = BPF_OP(code);
->> +	if (class == BPF_JMP) {
->> +		/* BPF_EXIT for "main" will reach here. Return TRUE
->> +		 * conservatively.
->> +		 */
->> +		if (op == BPF_EXIT)
->> +			return true;
->> +		if (op == BPF_CALL) {
->> +			/* BPF to BPF call will reach here because of marking
->> +			 * caller saved clobber with DST_OP_NO_MARK for which we
->> +			 * don't care the register def because they are anyway
->> +			 * marked as NOT_INIT already.
->> +			 */
->> +			if (insn->src_reg == BPF_PSEUDO_CALL)
->> +				return false;
->> +			/* Helper call will reach here because of arg type
->> +			 * check.
->> +			 */
->> +			if (t == SRC_OP)
->> +				return helper_call_arg64(env, insn->imm, regno);
->> +
->> +			return false;
->> +		}
->> +	}
->> +
->> +	if (class == BPF_ALU64 || class == BPF_JMP ||
->> +	    /* BPF_END always use BPF_ALU class. */
->> +	    (class == BPF_ALU && op == BPF_END && insn->imm == 64))
->> +		return true;
-> 
-> For the BPF_JMP + JA case we don't look at registers, but I presume here
-> we 'pretend' to use 64 bit regs to be more conservative as verifier would
-> otherwise need to do more complex analysis at the jump target wrt zero
-> extension, correct?
+Hi David,
 
-Hmm, scratch that last thought. Shouldn't it behave the same as with the
-below class == BPF_JMP32 case?
+The following pull-request contains BPF updates for your *net-next* tree.
 
->> +	if (class == BPF_ALU || class == BPF_JMP32)
->> +		return false;
->> +
->> +	if (class == BPF_LDX) {
->> +		if (t != SRC_OP)
->> +			return BPF_SIZE(code) == BPF_DW;
->> +		/* LDX source must be ptr. */
->> +		return true;
->> +	}
->> +
->> +	if (class == BPF_STX) {
->> +		if (reg->type != SCALAR_VALUE)
->> +			return true;
->> +		return BPF_SIZE(code) == BPF_DW;
->> +	}
->> +
->> +	if (class == BPF_LD) {
->> +		u8 mode = BPF_MODE(code);
->> +
->> +		/* LD_IMM64 */
->> +		if (mode == BPF_IMM)
->> +			return true;
->> +
->> +		/* Both LD_IND and LD_ABS return 32-bit data. */
->> +		if (t != SRC_OP)
->> +			return  false;
->> +
->> +		/* Implicit ctx ptr. */
->> +		if (regno == BPF_REG_6)
->> +			return true;
->> +
->> +		/* Explicit source could be any width. */
->> +		return true;
->> +	}
->> +
->> +	if (class == BPF_ST)
->> +		/* The only source register for BPF_ST is a ptr. */
->> +		return true;
->> +
->> +	/* Conservatively return true at default. */
->> +	return true;
->> +}
+The main changes are:
 
+1) Two AF_XDP libbpf fixes for socket teardown; first one an invalid
+   munmap and the other one an invalid skmap cleanup, both from Björn.
+
+2) More graceful CONFIG_DEBUG_INFO_BTF handling when pahole is not
+   present in the system to generate vmlinux btf info, from Andrii.
+
+3) Fix libbpf and thus fix perf build error with uClibc on arc
+   architecture, from Vineet.
+
+4) Fix missing libbpf_util.h header install in libbpf, from William.
+
+5) Exclude bash-completion/bpftool from .gitignore pattern, from Masahiro.
+
+6) Fix up rlimit in test_libbpf_open kselftest test case, from Yonghong.
+
+7) Minor misc cleanups.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+Thanks a lot!
+
+----------------------------------------------------------------
+
+The following changes since commit a734d1f4c2fc962ef4daa179e216df84a8ec5f84:
+
+  net: openvswitch: return an error instead of doing BUG_ON() (2019-05-04 01:36:36 -0400)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
+
+for you to fetch changes up to d24ed99b3b270c6de8f47c25d709b5f6ef7d3807:
+
+  libbpf: remove unnecessary cast-to-void (2019-05-06 11:35:17 +0200)
+
+----------------------------------------------------------------
+Alexei Starovoitov (1):
+      Merge branch 'af_xdp-fixes'
+
+Andrii Nakryiko (1):
+      kbuild: tolerate missing pahole when generating BTF
+
+Björn Töpel (3):
+      libbpf: fix invalid munmap call
+      libbpf: proper XSKMAP cleanup
+      libbpf: remove unnecessary cast-to-void
+
+Masahiro Yamada (1):
+      bpftool: exclude bash-completion/bpftool from .gitignore pattern
+
+Vineet Gupta (1):
+      tools/bpf: fix perf build error with uClibc (seen on ARC)
+
+William Tu (1):
+      libbpf: add libbpf_util.h to header install.
+
+Yonghong Song (1):
+      selftests/bpf: set RLIMIT_MEMLOCK properly for test_libbpf_open.c
+
+YueHaibing (1):
+      bpf: Use PTR_ERR_OR_ZERO in bpf_fd_sk_storage_update_elem()
+
+ net/core/bpf_sk_storage.c                      |   2 +-
+ scripts/link-vmlinux.sh                        |   5 +
+ tools/bpf/bpftool/.gitignore                   |   2 +-
+ tools/lib/bpf/Makefile                         |   1 +
+ tools/lib/bpf/bpf.c                            |   2 +
+ tools/lib/bpf/xsk.c                            | 184 +++++++++++++------------
+ tools/testing/selftests/bpf/test_libbpf_open.c |   2 +
+ 7 files changed, 106 insertions(+), 92 deletions(-)
