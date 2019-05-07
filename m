@@ -2,69 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBE7158BC
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2019 07:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA01E1594E
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2019 07:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726400AbfEGFFW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 May 2019 01:05:22 -0400
-Received: from vulcan.natalenko.name ([104.207.131.136]:56392 "EHLO
-        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725839AbfEGFFW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 May 2019 01:05:22 -0400
-Received: from mail.natalenko.name (vulcan.natalenko.name [IPv6:fe80::5400:ff:fe0c:dfa0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727876AbfEGFfq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 May 2019 01:35:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727357AbfEGFfp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 May 2019 01:35:45 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 1765853D517;
-        Tue,  7 May 2019 07:05:19 +0200 (CEST)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 07 May 2019 07:05:18 +0200
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Jiong Wang <jiong.wang@netronome.com>
-Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        by mail.kernel.org (Postfix) with ESMTPSA id 862E620989;
+        Tue,  7 May 2019 05:35:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1557207344;
+        bh=To6ntoFPkk+7s1H59Tx1g2okEXT3UKCDKafe5bRRc3k=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=xI6kGt/V77e2f4im+fnYM32aEqZ5pJSTbNy/szYMHZIsDO2DtRZT412tVUBBwv3Qo
+         Izwzvpd18q7CoCp8vdZSuYvwkrnIMX1UzSGi1YBzwmfTHpbXF/bgrJcdQSOcUeg/2t
+         bqpBAEPdGlRtQrDknltbwawxN0LgUBRQw0coEmgY=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Willem de Bruijn <willemb@google.com>, Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        oss-drivers@netronome.com, linux-kernel@vger.kernel.org,
-        xdp-newbies@vger.kernel.org, valdis@vt.edu
-Subject: Re: [oss-drivers] netronome/nfp/bpf/jit.c cannot be build with -O3
-In-Reply-To: <87mujzutsw.fsf@netronome.com>
-References: <673b885183fb64f1cbb3ed2387524077@natalenko.name>
- <87mujzutsw.fsf@netronome.com>
-Message-ID: <4414f1798ea3c0f70128b7e4caa14edc@natalenko.name>
-X-Sender: oleksandr@natalenko.name
-User-Agent: Roundcube Webmail/1.3.9
+        Sasha Levin <alexander.levin@microsoft.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.0 96/99] bpf: only test gso type on gso packets
+Date:   Tue,  7 May 2019 01:32:30 -0400
+Message-Id: <20190507053235.29900-96-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190507053235.29900-1-sashal@kernel.org>
+References: <20190507053235.29900-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi.
+From: Willem de Bruijn <willemb@google.com>
 
-On 07.05.2019 00:01, Jiong Wang wrote:
-> I guess it's because constant prop. Could you try the following change 
-> to
-> __emit_shift?
-> 
-> drivers/net/ethernet/netronome/nfp/bpf/jit.c
-> __emit_shift:331
-> -       if (sc == SHF_SC_L_SHF)
-> +       if (sc == SHF_SC_L_SHF && shift)
->                 shift = 32 - shift;
-> 
-> emit_shf_indir is passing "0" as shift to __emit_shift which will
-> eventually be turned into 32 and it was OK because we truncate to 
-> 5-bit,
-> but before truncation, it will overflow the shift mask.
+[ Upstream commit 4c3024debf62de4c6ac6d3cb4c0063be21d4f652 ]
 
-Yup, it silences the error for me.
+BPF can adjust gso only for tcp bytestreams. Fail on other gso types.
 
+But only on gso packets. It does not touch this field if !gso_size.
+
+Fixes: b90efd225874 ("bpf: only adjust gso_size on bytestream protocols")
+Signed-off-by: Willem de Bruijn <willemb@google.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Sasha Levin <alexander.levin@microsoft.com>
+---
+ include/linux/skbuff.h | 4 ++--
+ net/core/filter.c      | 8 ++++----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index bdb9563c64a0..b8679dcba96f 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -4212,10 +4212,10 @@ static inline bool skb_is_gso_sctp(const struct sk_buff *skb)
+ 	return skb_shinfo(skb)->gso_type & SKB_GSO_SCTP;
+ }
+ 
++/* Note: Should be called only if skb_is_gso(skb) is true */
+ static inline bool skb_is_gso_tcp(const struct sk_buff *skb)
+ {
+-	return skb_is_gso(skb) &&
+-	       skb_shinfo(skb)->gso_type & (SKB_GSO_TCPV4 | SKB_GSO_TCPV6);
++	return skb_shinfo(skb)->gso_type & (SKB_GSO_TCPV4 | SKB_GSO_TCPV6);
+ }
+ 
+ static inline void skb_gso_reset(struct sk_buff *skb)
+diff --git a/net/core/filter.c b/net/core/filter.c
+index f7d0004fc160..ff07996515f2 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -2789,7 +2789,7 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
+ 	u32 off = skb_mac_header_len(skb);
+ 	int ret;
+ 
+-	if (!skb_is_gso_tcp(skb))
++	if (skb_is_gso(skb) && !skb_is_gso_tcp(skb))
+ 		return -ENOTSUPP;
+ 
+ 	ret = skb_cow(skb, len_diff);
+@@ -2830,7 +2830,7 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
+ 	u32 off = skb_mac_header_len(skb);
+ 	int ret;
+ 
+-	if (!skb_is_gso_tcp(skb))
++	if (skb_is_gso(skb) && !skb_is_gso_tcp(skb))
+ 		return -ENOTSUPP;
+ 
+ 	ret = skb_unclone(skb, GFP_ATOMIC);
+@@ -2955,7 +2955,7 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 len_diff)
+ 	u32 off = skb_mac_header_len(skb) + bpf_skb_net_base_len(skb);
+ 	int ret;
+ 
+-	if (!skb_is_gso_tcp(skb))
++	if (skb_is_gso(skb) && !skb_is_gso_tcp(skb))
+ 		return -ENOTSUPP;
+ 
+ 	ret = skb_cow(skb, len_diff);
+@@ -2984,7 +2984,7 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 len_diff)
+ 	u32 off = skb_mac_header_len(skb) + bpf_skb_net_base_len(skb);
+ 	int ret;
+ 
+-	if (!skb_is_gso_tcp(skb))
++	if (skb_is_gso(skb) && !skb_is_gso_tcp(skb))
+ 		return -ENOTSUPP;
+ 
+ 	ret = skb_unclone(skb, GFP_ATOMIC);
 -- 
-   Oleksandr Natalenko (post-factum)
+2.20.1
+
