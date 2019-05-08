@@ -2,109 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9577917DE1
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2019 18:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A62E17E74
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2019 18:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727280AbfEHQKV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 May 2019 12:10:21 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:37408 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727938AbfEHQJ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 May 2019 12:09:29 -0400
-Received: by mail-wr1-f67.google.com with SMTP id a12so17840266wrn.4
-        for <bpf@vger.kernel.org>; Wed, 08 May 2019 09:09:28 -0700 (PDT)
+        id S1728093AbfEHQt5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 May 2019 12:49:57 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:43499 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728539AbfEHQt5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 May 2019 12:49:57 -0400
+Received: by mail-wr1-f65.google.com with SMTP id r4so12805304wro.10
+        for <bpf@vger.kernel.org>; Wed, 08 May 2019 09:49:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MfOB7GbrkVZQCFgD0TA7DzG1OYHj9B/YynSp6vT8HYg=;
-        b=TxlQ7LnDi5z67Seonj7PKYAYmrQO64ZkA4yU/l7nOZnnysOHCUzQtw9DKvoHaVSsDC
-         iqbKcnXtCpyph553a+nKcbwW4Q6ywTKBwSd8KGGkYnz3iys/qBQ+9WY67/RHTO+vpK4z
-         Xjl9En5YRuddyiAo2dtSY3qy0kV8yBoh2tmOQ=
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=G8MAmQX+P9EF3nRW1/NWc8ojhP+nz5CJ1gNJjnmA4cg=;
+        b=ZCtXN/UBXDKr4yWegjw+n02XmYzsSck/v6jyVvslNpgFHbjbp6A4UwUoVO8Q2GDcW6
+         sfPlBIjoQpTTlW3zhqdygPYEUW+d0sgc2jZEN2vSA58Aa/fuObwXtGQ+XKII9hQpj4Ou
+         zYRIefsbKUHbhVWUspT7mtUGtDV+8vWuDh+ic=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MfOB7GbrkVZQCFgD0TA7DzG1OYHj9B/YynSp6vT8HYg=;
-        b=kXe+WTnwzICzVQ3J4aEO9/EuEwAFEvO34MNY9H7vtECxT8ENej0hXMB5nneNVbF0b2
-         6eTQ6UfEncvlbe/FtdVwW9tsIXForPOV+FPYVPFYDXY41pOQizjV7Q93VpMNl4aJ6FwZ
-         B81ZRO/95zHmrGgkV+N0m5YdBLpe6kHyx8Cvb1FQrJafrVrwlIU4G31vnOGBbZu2Cyvx
-         m9vV/UEJ2M11dDTgTLgHH3ZS0RpBYK1jI58g7000XwzFzefJPMy53QZlMkjpItmF5JjQ
-         TjA0DIhyD6kxmDznmxsFwNDmYuX3Gnknh98HmyX/4H/i9tP0QP+K7Jn6WfkGhl3OsI4l
-         Xzjg==
-X-Gm-Message-State: APjAAAXijrI31sU6hWIhSg3BZNsTmYsuqyjv3drhdFoDPKpG3zBg3+wA
-        R5mnKU5ca9YyTUwgGUcb0CCH4nsKtJnZNg==
-X-Google-Smtp-Source: APXvYqzgHU7/QFy+kUEadXwmue5yL6Xg92QjTGn320/Urf+QNinCxeLGYLo//3BTARwBgfRGmOvOcQ==
-X-Received: by 2002:a05:6000:c2:: with SMTP id q2mr16616288wrx.324.1557331767708;
-        Wed, 08 May 2019 09:09:27 -0700 (PDT)
-Received: from localhost.localdomain (ip5f5aea19.dynamic.kabel-deutschland.de. [95.90.234.25])
-        by smtp.gmail.com with ESMTPSA id r2sm3235756wmh.31.2019.05.08.09.09.26
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 08 May 2019 09:09:26 -0700 (PDT)
-From:   Krzesimir Nowak <krzesimir@kinvolk.io>
-To:     bpf@vger.kernel.org
-Cc:     Krzesimir Nowak <krzesimir@kinvolk.io>,
-        Alban Crequy <alban@kinvolk.io>,
-        =?UTF-8?q?Iago=20L=C3=B3pez=20Galeiras?= <iago@kinvolk.io>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf v1] bpf: Fix undefined behavior in narrow load handling
-Date:   Wed,  8 May 2019 18:08:58 +0200
-Message-Id: <20190508160859.4380-1-krzesimir@kinvolk.io>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=G8MAmQX+P9EF3nRW1/NWc8ojhP+nz5CJ1gNJjnmA4cg=;
+        b=f5MZ7LvDmXftIqL+CxwmtU6v4rthf6C2pafEQrHFXbOJ6ILCFLlSh5qep+ISWTeRph
+         flV6/ohQGA5R6blZZNtpM/wKIz2VG0UYMTc6i9SNbWlyosS5kwTeHJQRVK/1ABnRkbYb
+         IQYJxBoRbwTgUEiKI5J5mnSlbAqmo8TfSi5+Azo7jaIqCwC97LHoK325dyvffI0dC6fW
+         zUoP7qy5flh2GlM0CbnODzA6Rug7eopN9cfIZ/0NpMupcy2J/1skrvUbeyh0YM4LzU9u
+         zUgD+bVbqcJeWOkX9LSYhllFDR4IPS0wT7YhhTD0RjCu66KPJ45v1s0bCmD3saum6OOM
+         Z5gw==
+X-Gm-Message-State: APjAAAXqUfVQ8bA9EWgPROxxKqLqVJr15+p64O7DgoRjOTfMIDdDVfol
+        7GdIsZNgasxqkntb7f0bcjhIDyo83Jbitg==
+X-Google-Smtp-Source: APXvYqyeyf2CA7VpYSzZDuNqSfMjZwF1eq2NRu7M8YNjkzhh4psOodMNf6DYGHVoUoU027kZY5O7Rg==
+X-Received: by 2002:adf:f548:: with SMTP id j8mr10715529wrp.171.1557334194939;
+        Wed, 08 May 2019 09:49:54 -0700 (PDT)
+Received: from antares.lan (b.0.9.9.d.c.a.3.f.3.d.a.b.3.c.2.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:2c3b:ad3f:3acd:990b])
+        by smtp.gmail.com with ESMTPSA id q22sm3888249wmj.35.2019.05.08.09.49.53
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 08 May 2019 09:49:53 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com
+Cc:     Lorenz Bauer <lmb@cloudflare.com>
+Subject: [PATCH bpf v2] selftests: bpf: initialize bpf_object pointers where needed
+Date:   Wed,  8 May 2019 17:49:32 +0100
+Message-Id: <20190508164932.28729-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.19.1
+In-Reply-To: <20190502154932.14698-1-lmb@cloudflare.com>
+References: <20190502154932.14698-1-lmb@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit 31fd85816dbe ("bpf: permits narrower load from bpf program
-context fields") made the verifier add AND instructions to clear the
-unwanted bits with a mask when doing a narrow load. The mask is
-computed with
+There are a few tests which call bpf_object__close on uninitialized
+bpf_object*, which may segfault. Explicitly zero-initialise these pointers
+to avoid this.
 
-(1 << size * 8) - 1
-
-where "size" is the size of the narrow load. When doing a 4 byte load
-of a an 8 byte field the verifier shifts the literal 1 by 32 places to
-the left. This results in an overflow of a signed integer, which is an
-undefined behavior. Typically the computed mask was zero, so the
-result of the narrow load ended up being zero too.
-
-Cast the literal to long long to avoid overflows. Note that narrow
-load of the 4 byte fields does not have the undefined behavior,
-because the load size can only be either 1 or 2 bytes, so shifting 1
-by 8 or 16 places will not overflow it. And reading 4 bytes would not
-be a narrow load of a 4 bytes field.
-
-Reviewed-by: Alban Crequy <alban@kinvolk.io>
-Reviewed-by: Iago López Galeiras <iago@kinvolk.io>
-Fixes: 31fd85816dbe ("bpf: permits narrower load from bpf program context fields")
-Cc: Yonghong Song <yhs@fb.com>
-Signed-off-by: Krzesimir Nowak <krzesimir@kinvolk.io>
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
 ---
- kernel/bpf/verifier.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c  | 2 +-
+ tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c | 2 +-
+ tools/testing/selftests/bpf/prog_tests/tp_attach_query.c  | 3 +++
+ 3 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 09d5d972c9ff..950fac024fbb 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7296,7 +7296,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
- 									insn->dst_reg,
- 									shift);
- 				insn_buf[cnt++] = BPF_ALU64_IMM(BPF_AND, insn->dst_reg,
--								(1 << size * 8) - 1);
-+								(1ULL << size * 8) - 1);
- 			}
- 		}
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
+index 23b159d95c3f..b74e2f6e96d0 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
+@@ -15,7 +15,7 @@ static int libbpf_debug_print(enum libbpf_print_level level,
+ static int check_load(const char *file)
+ {
+ 	struct bpf_prog_load_attr attr;
+-	struct bpf_object *obj;
++	struct bpf_object *obj = NULL;
+ 	int err, prog_fd;
  
+ 	memset(&attr, 0, sizeof(struct bpf_prog_load_attr));
+diff --git a/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c b/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
+index d636a4f39476..f9b70e81682b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
++++ b/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
+@@ -9,7 +9,7 @@ static void test_task_fd_query_tp_core(const char *probe_name,
+ 	struct perf_event_attr attr = {};
+ 	__u64 probe_offset, probe_addr;
+ 	__u32 len, prog_id, fd_type;
+-	struct bpf_object *obj;
++	struct bpf_object *obj = NULL;
+ 	__u32 duration = 0;
+ 	char buf[256];
+ 
+diff --git a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
+index a2f476f91637..fb095e5cd9af 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
++++ b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
+@@ -13,6 +13,9 @@ void test_tp_attach_query(void)
+ 	struct bpf_prog_info prog_info;
+ 	char buf[256];
+ 
++	for (i = 0; i < num_progs; i++)
++		obj[i] = NULL;
++
+ 	snprintf(buf, sizeof(buf),
+ 		 "/sys/kernel/debug/tracing/events/sched/sched_switch/id");
+ 	efd = open(buf, O_RDONLY, 0);
 -- 
-2.20.1
+2.19.1
 
