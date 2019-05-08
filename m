@@ -2,330 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD4D17BE4
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2019 16:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9577917DE1
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2019 18:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728782AbfEHOpd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 May 2019 10:45:33 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:54547 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728842AbfEHOpU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 May 2019 10:45:20 -0400
-Received: by mail-wm1-f67.google.com with SMTP id b203so2465262wmb.4
-        for <bpf@vger.kernel.org>; Wed, 08 May 2019 07:45:18 -0700 (PDT)
+        id S1727280AbfEHQKV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 May 2019 12:10:21 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:37408 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727938AbfEHQJ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 May 2019 12:09:29 -0400
+Received: by mail-wr1-f67.google.com with SMTP id a12so17840266wrn.4
+        for <bpf@vger.kernel.org>; Wed, 08 May 2019 09:09:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=p2Hhf9Zkfghsa69t+Pulg/6nRtvK80Zby2amZmhcPWk=;
-        b=gYIa22QrMNwrANUfAZG22itrhiYlsgkmL9l3P1gPolatu4ZIsFGHuSuDCdtK60AoaH
-         UPiss8BojtFdPdiLu4AykaH8mj97naHUZaNr92yKsWNVQk0iGfBPELEv7hYO2MsjZdwO
-         Yzqe8BDV1M8i5e2nkCHCU36gBg0cp7SmlToZz65+cMjJ+uRMjcTKRXnVSGcCwgfKkiub
-         Xq2j0GrRUFsdJUxQA81eoFLX3NCXORo7EiCH5/OvybCIXrr5Pv/xqkz+M0HAmNgHjvdL
-         wkLRw/WmeYdRmg8DAmNLukbmUfBGPOEIH00t0ZSzahDIFYLtJpmUhvvBYVgeojHOn3BS
-         kQyA==
+        d=kinvolk.io; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MfOB7GbrkVZQCFgD0TA7DzG1OYHj9B/YynSp6vT8HYg=;
+        b=TxlQ7LnDi5z67Seonj7PKYAYmrQO64ZkA4yU/l7nOZnnysOHCUzQtw9DKvoHaVSsDC
+         iqbKcnXtCpyph553a+nKcbwW4Q6ywTKBwSd8KGGkYnz3iys/qBQ+9WY67/RHTO+vpK4z
+         Xjl9En5YRuddyiAo2dtSY3qy0kV8yBoh2tmOQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=p2Hhf9Zkfghsa69t+Pulg/6nRtvK80Zby2amZmhcPWk=;
-        b=LyEmGO67KXQukQDYgdUS9KE/vAfv02EpAwCkzELE/M+S/osY19hg4eoN/H65ouSmX2
-         DIUzjdrpfHWmiw/gXgnYZXHOk59maygrJS7UDlCik375bBpNLqBBaIkeXYsFIKxN6i2M
-         q0XhlzMl6qAaQJnvf4ubxsm2FZFpOxtcbp97rASsdK+1bhHaYxe6oHMMt3z7M9qnaeRX
-         fyujmzclNhxkbG3CBuWxw5yeFaErre0bBKnW5dlhVR/iVCvdSiGIJvSZ0IMJNQR1M+Te
-         3lq4tfeg0UQOs13j4J/ukVnEJV5LqLgtYZ0Zx5V5CfpahxaIY6Uz7w3tqbOiJ/aaGTUK
-         hU8w==
-X-Gm-Message-State: APjAAAXO8cHJMuPkA0qjJzNp0+YJQvh++hhhi2BqJvq+7/4PVAMEr/ZU
-        NGqkdyJJ8RkU/i4VqRBomtQDCSXnam0=
-X-Google-Smtp-Source: APXvYqxzjpB5HxJaVvg+AxyhmhikiMPKYvEoY+GVU6bdhRwbb/aHSnnGP2pRi5a88DRWwE9Ses/mRg==
-X-Received: by 2002:a1c:7613:: with SMTP id r19mr3443585wmc.120.1557326717728;
-        Wed, 08 May 2019 07:45:17 -0700 (PDT)
-Received: from LAPTOP-V3S7NLPL ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id d16sm12360530wrs.68.2019.05.08.07.45.16
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MfOB7GbrkVZQCFgD0TA7DzG1OYHj9B/YynSp6vT8HYg=;
+        b=kXe+WTnwzICzVQ3J4aEO9/EuEwAFEvO34MNY9H7vtECxT8ENej0hXMB5nneNVbF0b2
+         6eTQ6UfEncvlbe/FtdVwW9tsIXForPOV+FPYVPFYDXY41pOQizjV7Q93VpMNl4aJ6FwZ
+         B81ZRO/95zHmrGgkV+N0m5YdBLpe6kHyx8Cvb1FQrJafrVrwlIU4G31vnOGBbZu2Cyvx
+         m9vV/UEJ2M11dDTgTLgHH3ZS0RpBYK1jI58g7000XwzFzefJPMy53QZlMkjpItmF5JjQ
+         TjA0DIhyD6kxmDznmxsFwNDmYuX3Gnknh98HmyX/4H/i9tP0QP+K7Jn6WfkGhl3OsI4l
+         Xzjg==
+X-Gm-Message-State: APjAAAXijrI31sU6hWIhSg3BZNsTmYsuqyjv3drhdFoDPKpG3zBg3+wA
+        R5mnKU5ca9YyTUwgGUcb0CCH4nsKtJnZNg==
+X-Google-Smtp-Source: APXvYqzgHU7/QFy+kUEadXwmue5yL6Xg92QjTGn320/Urf+QNinCxeLGYLo//3BTARwBgfRGmOvOcQ==
+X-Received: by 2002:a05:6000:c2:: with SMTP id q2mr16616288wrx.324.1557331767708;
+        Wed, 08 May 2019 09:09:27 -0700 (PDT)
+Received: from localhost.localdomain (ip5f5aea19.dynamic.kabel-deutschland.de. [95.90.234.25])
+        by smtp.gmail.com with ESMTPSA id r2sm3235756wmh.31.2019.05.08.09.09.26
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 08 May 2019 07:45:16 -0700 (PDT)
-References: <1556880164-10689-1-git-send-email-jiong.wang@netronome.com> <1556880164-10689-2-git-send-email-jiong.wang@netronome.com> <20190506155041.ofxsvozqza6xrjep@ast-mbp>
-User-agent: mu4e 0.9.18; emacs 25.2.2
-From:   Jiong Wang <jiong.wang@netronome.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiong Wang <jiong.wang@netronome.com>, daniel@iogearbox.net,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@netronome.com
-Subject: Re: [PATCH v6 bpf-next 01/17] bpf: verifier: offer more accurate helper function arg and return type
-In-reply-to: <20190506155041.ofxsvozqza6xrjep@ast-mbp>
-Date:   Wed, 08 May 2019 15:45:12 +0100
-Message-ID: <87mujx6m4n.fsf@netronome.com>
+        Wed, 08 May 2019 09:09:26 -0700 (PDT)
+From:   Krzesimir Nowak <krzesimir@kinvolk.io>
+To:     bpf@vger.kernel.org
+Cc:     Krzesimir Nowak <krzesimir@kinvolk.io>,
+        Alban Crequy <alban@kinvolk.io>,
+        =?UTF-8?q?Iago=20L=C3=B3pez=20Galeiras?= <iago@kinvolk.io>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf v1] bpf: Fix undefined behavior in narrow load handling
+Date:   Wed,  8 May 2019 18:08:58 +0200
+Message-Id: <20190508160859.4380-1-krzesimir@kinvolk.io>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Commit 31fd85816dbe ("bpf: permits narrower load from bpf program
+context fields") made the verifier add AND instructions to clear the
+unwanted bits with a mask when doing a narrow load. The mask is
+computed with
 
-Alexei Starovoitov writes:
+(1 << size * 8) - 1
 
-> On Fri, May 03, 2019 at 11:42:28AM +0100, Jiong Wang wrote:
->> BPF helper call transfers execution from eBPF insns to native functions
->> while verifier insn walker only walks eBPF insns. So, verifier can only
->> knows argument and return value types from explicit helper function
->> prototype descriptions.
->> 
->> For 32-bit optimization, it is important to know whether argument (register
->> use from eBPF insn) and return value (register define from external
->> function) is 32-bit or 64-bit, so corresponding registers could be
->> zero-extended correctly.
->> 
->> For arguments, they are register uses, we conservatively treat all of them
->> as 64-bit at default, while the following new bpf_arg_type are added so we
->> could start to mark those frequently used helper functions with more
->> accurate argument type.
->> 
->>   ARG_CONST_SIZE32
->>   ARG_CONST_SIZE32_OR_ZERO
->>   ARG_ANYTHING32
->> 
->> A few helper functions shown up frequently inside Cilium bpf program are
->> updated using these new types.
->> 
->> For return values, they are register defs, we need to know accurate width
->> for correct zero extensions. Given most of the helper functions returning
->> integers return 32-bit value, a new RET_INTEGER64 is added to make those
->> functions return 64-bit value. All related helper functions are updated.
->> 
->> Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
->> ---
->>  include/linux/bpf.h      |  6 +++++-
->>  kernel/bpf/core.c        |  2 +-
->>  kernel/bpf/helpers.c     | 10 +++++-----
->>  kernel/bpf/verifier.c    | 15 ++++++++++-----
->>  kernel/trace/bpf_trace.c |  4 ++--
->>  net/core/filter.c        | 38 +++++++++++++++++++-------------------
->>  6 files changed, 42 insertions(+), 33 deletions(-)
->> 
->> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index 9a21848..11a5fb9 100644
->> --- a/include/linux/bpf.h
->> +++ b/include/linux/bpf.h
->> @@ -198,9 +198,12 @@ enum bpf_arg_type {
->>  
->>  	ARG_CONST_SIZE,		/* number of bytes accessed from memory */
->>  	ARG_CONST_SIZE_OR_ZERO,	/* number of bytes accessed from memory or 0 */
->> +	ARG_CONST_SIZE32,	/* Likewise, but size fits into 32-bit */
->> +	ARG_CONST_SIZE32_OR_ZERO,	/* Ditto */
->
-> these two should not be necessary. The program must pass constant into
-> the helper. The verifier is smart enough already to see it through.
-> Looks like patch 2 is using it as a band-aid.
->
->>  	ARG_PTR_TO_CTX,		/* pointer to context */
->>  	ARG_ANYTHING,		/* any (initialized) argument is ok */
->> +	ARG_ANYTHING32,		/* Likewise, but it is a 32-bit argument */
->
-> Such annotation has subtle semantics that I don't think we've explored
-> in the past and I don't see from commit logs of this patch set that
-> the necessary analysis was done.
-> In particular 'int' in the helper argument does not mean that the verifier
-> will reject 64-bit values. It also doesn't mean that the helper
-> will reject them at run-time. In most cases it's a silent truncation.
-> Like bpf_tail_call will accept 64-bit value, and will cast it to u32
-> before doing max_entries bounds check.
-> In other cases it could be signed vs unsigned interpretation inside
-> the helper.
+where "size" is the size of the narrow load. When doing a 4 byte load
+of a an 8 byte field the verifier shifts the literal 1 by 32 places to
+the left. This results in an overflow of a signed integer, which is an
+undefined behavior. Typically the computed mask was zero, so the
+result of the narrow load ended up being zero too.
 
-I might be misunderstanding your points, please just shout if I am wrong.
+Cast the literal to long long to avoid overflows. Note that narrow
+load of the 4 byte fields does not have the undefined behavior,
+because the load size can only be either 1 or 2 bytes, so shifting 1
+by 8 or 16 places will not overflow it. And reading 4 bytes would not
+be a narrow load of a 4 bytes field.
 
-Suppose the following BPF code:
+Reviewed-by: Alban Crequy <alban@kinvolk.io>
+Reviewed-by: Iago López Galeiras <iago@kinvolk.io>
+Fixes: 31fd85816dbe ("bpf: permits narrower load from bpf program context fields")
+Cc: Yonghong Song <yhs@fb.com>
+Signed-off-by: Krzesimir Nowak <krzesimir@kinvolk.io>
+---
+ kernel/bpf/verifier.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  unsigned helper(unsigned long long, unsigned long long);
-  unsigned long long test(unsigned *a, unsigned int c)
-  {
-    unsigned int b = *a;
-    c += 10;
-    return helper(b, c);
-  }
-
-We get the following instruction sequence by latest llvm
-(-O2 -mattr=+alu32 -mcpu=v3)
-
-  test:
-    1: w1 = *(u32 *)(r1 + 0)
-    2: w2 += 10
-    3: call helper
-    4: exit
-
-Argument Types
-===
-Now instruction 1 and 2 are sub-register defines, and instruction 3, the
-call, use them implicitly.
-
-Without the introduction of the new ARG_CONST_SIZE32 and
-ARG_CONST_SIZE32_OR_ZERO, we don't know what should be done with w1 and
-w2, zero-extend them should be fine for all cases, but could resulting in a
-few unnecessary zero-extension inserted.
-
-By introducing the new types, we know both are u64, so should zero-extend
-them.
-
-This sort of comes to how high 32-bit zero extension semantics are
-exploited by compiler or handle-written assembler.
-
-For LLVM compiler, it will exploit ISA zext semantics for quite a few
-cases.
-
-  1. narrow load at are naturally done by instruction combine pattern,
-  things like:
-
-  def : Pat<(i64 (zextloadi32 ADDRri:$src)),
-              (SUBREG_TO_REG (i64 0), (LDW32 ADDRri:$src), sub_32)>;
-
-  2. For ALUs, there is BPF peephole pass trying to do it, sequence for
-  preparing argument 2 would have been:
-  
-     w2 = 16
-     r2 <<= 32
-     r2 >>= 32
-     
-  But, the peephole pass could know the two shifts are shifting value comes
-  from sub-register MOV, so safe to remove the redundant two shifts.
-
-So, finally the BPF instruction sequence we get is the one shown early,
-without new argument types, verifier doesn't know how to deal with
-zext.
-
-Static compiler has header files which contains function prototypes/C-types
-to guide code-gen. IMHO, verifier needs the same thing, which is BPF helper
-function prototype description.
-
-And that why I introduce these new argument types, without them, there
-could be more than 10% extra zext inserted on benchmarks like bpf_lxc.
-
-Return Types
-===
-If we change the testcase a little bit by introducing one new function
-helper1.
-
-  unsigned helper(unsigned long long, unsigned long long);
-  unsigned long long helper1(unsigned long long);
-
-  unsigned long long test(unsigned *a, unsigned int c)
-  {
-    unsigned int b = *a;
-    c += 10;
-    return helper1(helper(b, c));
-  }
-
-Code-gen for -O2 -mattr=+alu32 -mcpu=v3 will be:
-
-  test:
-    1: w1 = *(u32 *)(r1 + 0)
-    2: w2 += 10
-    3: call helper
-    4: r1 = r0
-    5: call helper1
-    6: exit
-
-The return value of "helper" is u32 and is used as u64 arg for helper1
-directly. For bpf-to-bpf call, I think it is correct, because the value
-define happens inside bpf program, and 32-bit opt pass does pass the
-definition information from callee to caller at exit, so the sub-register
-define instruction will be marked, and the register will be zero extended,
-so no problem to use it directly as 64-bit to helper1.
-
-But for helper functions, they are done by native code which may not follow
-this convention. For example, on arm32, calling helper functions are just
-jump to and execute native code. And if the helper returns u32, it just set
-r0, no clearing of r1 which is the high 32-bit in the register pair
-modeling eBPF R0.
-
-Inside verifier, we assume helper return values are all 64-bit, without new
-return types, there won't be zero-extension on u32 value if 32-bit JIT
-back-ends haven't done correct job to clear high 32-bit of return value if
-the helper function is 64-bit type. This requires JIT back-ends check
-helper function prototypes and do code-gen accordingly. Maybe is is too
-strict to ask JIT backends to do this, we should just let compiler always
-generates extra zero extension if the 32-bit return value comes from
-external helper functions?
-
-> imo the code base is not ready for semi-automatic remarking of
-> helpers with ARG_ANYTHING32 when helper is accepting 32-bit value.
-> Definitely not something short term and not a prerequisite for this set.
->
-> Longer term... if we introduce ARG_ANYTHING32, what would that mean?
-
-At the moment I am thinking ARG_ANYTHING32 just means the read of the value
-is low 32-bit only.
-
-> Would the verifier insert zext before calling the helper automatically
-> and we can drop truncation in the helper? May be useful?
-
-Yes, after 32-bit opt enabled, JIT back-ends doesn't need to generate high
-32-bit clearance instructions if once instruction is not marked. Verifier
-is responsible for inserting zext before calling the helper if the
-definition of the arguments is a sub-register define and if the argument
-usage if 64-bit.
-
-> What about passing negative value ?
-> ld_imm64 r2, -1
-> call foo
-> is a valid program.
-
-ld_imm64 is a 64-bit define, so 32-bit opt pass won't touch the sequence.
-
->
->>  	ARG_PTR_TO_SPIN_LOCK,	/* pointer to bpf_spin_lock */
->>  	ARG_PTR_TO_SOCK_COMMON,	/* pointer to sock_common */
->>  	ARG_PTR_TO_INT,		/* pointer to int */
->> @@ -210,7 +213,8 @@ enum bpf_arg_type {
->>  
->>  /* type of values returned from helper functions */
->>  enum bpf_return_type {
->> -	RET_INTEGER,			/* function returns integer */
->> +	RET_INTEGER,			/* function returns 32-bit integer */
->> +	RET_INTEGER64,			/* function returns 64-bit integer */
->
-> These type of annotations are dangerous too since they don't consider sign
-> of the return value. In BPF ISA all arguments and return values are 64-bit.
-> When it's full 64-bit we don't need to specify the sign, since sing-bit
-> will be interpreted by the program and the verifier doesn't need to worry.
-> If we say that helper returns 32-bit we need state whether it's signed or not
-> for the verifier to analyze it properly.
-
-I feel signed or unsigned will just work, for example:
-
-  s32 helper(u64, u64);
-  s64 helper1(u64);
-
-  s64 test(u32 *a, u32 c)
-  {
-    u32 b = *a;
-    c += 10;
-    return helper1(helper(b, c));
-  }
-
-  test:
-    w1 = *(u32 *)(r1 + 0)
-    w2 += 10
-    call helper
-    r1 = r0
-    r1 <<= 32
-    r1 s>>= 32
-    call helper1
-    exit
-    
-"helper" is RET_INTEGER which means returning 32-bit, and helper1 is
-RET_INTEGER64. LLVM compiler should have generated explicit signed
-extension sequence like above to sign extend return value of "helper". And
-because is is RET_INTEGER and because there is later 64-bit use in the
-following "r1 = r0" move, it is fine to insert zero extension after the
-call, the later signed extension sequence will still work.
-
-Regards,
-Jiong
-
-> I think it's the best to drop this patch. I don't think the rest of the set
-> really needs it. It looks to me as a last minute optimization that I really
-> wish wasn't there, because the rest we've discussed in depth and the set
-> was practically ready to land, but now bpf-next is closed.
-> Please resubmit after it reopens.
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 09d5d972c9ff..950fac024fbb 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7296,7 +7296,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ 									insn->dst_reg,
+ 									shift);
+ 				insn_buf[cnt++] = BPF_ALU64_IMM(BPF_AND, insn->dst_reg,
+-								(1 << size * 8) - 1);
++								(1ULL << size * 8) - 1);
+ 			}
+ 		}
+ 
+-- 
+2.20.1
 
