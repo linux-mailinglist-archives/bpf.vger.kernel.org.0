@@ -2,92 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5A91828D
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2019 01:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F949182A2
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2019 01:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727328AbfEHXJq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 May 2019 19:09:46 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:42876 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725910AbfEHXJq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 May 2019 19:09:46 -0400
-Received: by mail-pg1-f194.google.com with SMTP id 145so141025pgg.9;
-        Wed, 08 May 2019 16:09:46 -0700 (PDT)
+        id S1728257AbfEHXRm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 May 2019 19:17:42 -0400
+Received: from mail-yw1-f68.google.com ([209.85.161.68]:36503 "EHLO
+        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727082AbfEHXRm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 May 2019 19:17:42 -0400
+Received: by mail-yw1-f68.google.com with SMTP id q185so359099ywe.3
+        for <bpf@vger.kernel.org>; Wed, 08 May 2019 16:17:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RDwzXQQnVDWTDb2YFzPQmIWZ8cdJid91E6t4A4DL6uw=;
-        b=SIKxP3zdIRNGdfA9n9jawuuQwPpjGyglfCv+JB9Z2/RkkFujQtX+3PRetO2n6ykFFb
-         f4jqC8qStWdJ7E+EePuRjrkBKWXIx2CnEA6/OV7pLimV+/Gy5rnbI9Twivsed8ihlaCQ
-         sc7VE+ZIza7y+4DDXc8a9LUuKra8GAc2EreafpyST1LBFiVAxY0DVfL0LjgRn3L52yNc
-         v4Q9b4G5Nqr5QkZZIlCdYjb2i+WXPdsXpeHFVuAPH5sL83rI+VWpic2vSzCpFbpMo4NM
-         8PcR+RxMZ+R6aD0vlxBTAL/o9jnoiKj7sxb71oirHuFfHzgKGePl5CGPAi0ooTmoiQXi
-         1aWw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=arzlWlxPv2OymsEHTQYVqat+ZNRKJaW7m2Sd15vAYKI=;
+        b=uzXYgC/JFWHLD17dh31clIrTzYYKBttuO+F3BBulBqFp/B+0EdUvEjVu+Z4RLOn1Ix
+         MeyPvmqeaaO5d+LSULaABT8GH6lP4FO1QU/3btIm+DZ6cRsDULZuGEi97KKuU/UObLnL
+         7tLH3ghLiCnwZcLusFXeR1pQq8R67E2xWe7s5LdpcXcgimf8+RRd1Am6Bgq3QCEddHRT
+         vgtm+skiJ15cq/ZIATLwIUA3Y7ECrJlznEBwRxPAJxMPq7LB4vhT9g9LGi3OvyWsGqHD
+         VGl9TnCvV0+4OLI8+b1dsXI1fjFrzHpl8i2hETu27nOSdbM5bgV5ZcfduLDGefvpEMPl
+         VaiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RDwzXQQnVDWTDb2YFzPQmIWZ8cdJid91E6t4A4DL6uw=;
-        b=Gl4IJgsGC46rWY5qfYY1LSolO9Lu9y/W0loLhxSz1/XBj9nKi+KdIk7a2yqIl0hQ4X
-         VOGpwaCCcg6Ld4sySkY6wveM4zbAJsST3h2lqPQMBpuGSML5UpPY5wq4mUHlx8a9iYlp
-         elPi7XracQPlzrtr2DqQ8uUWgsrZESYK/vSn7sn7C/iCE0SG5ZjNRdumvxVq9x47KtgA
-         MpMneYEjaQZa9fdBYXGczZIzk6eRxN8oX+t/Hgp2G882lxbRJGYKb0D/EWos84PmYw3n
-         NirQe3eFlWTthIStrShZRL0BKr9lJWrYpIq0S7JlqKhiY4qlyJh+Ruz75JigKu9mQDiv
-         7FZA==
-X-Gm-Message-State: APjAAAV1jEMud5GAe0WO8+skUXmq0zU3dC4YiJ6V9xqWy4pWBwY2MVRc
-        jhqsiJXIBYUoUqWak4+W4DA=
-X-Google-Smtp-Source: APXvYqz50hlcDAplG0HxHH8o/bhNnozfCSXXJdwIOyhVKEAIYd4dgLCZb1hisyrGyu8jno3EgrHyOw==
-X-Received: by 2002:a63:e52:: with SMTP id 18mr984879pgo.3.1557356985878;
-        Wed, 08 May 2019 16:09:45 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:180::f5a7])
-        by smtp.gmail.com with ESMTPSA id h6sm411641pfk.188.2019.05.08.16.09.44
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 08 May 2019 16:09:45 -0700 (PDT)
-Date:   Wed, 8 May 2019 16:09:43 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Eric Dumazet <edumazet@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=arzlWlxPv2OymsEHTQYVqat+ZNRKJaW7m2Sd15vAYKI=;
+        b=Yhrvq5MYxoqwHh/INe1uNUmE2AaTnUqWYXcOa998sAM8kclR8W7hfMwxygpp9yu1wM
+         r/TyUv6wd6u97gOTEpHucAlRDlkfRRw/T80xc5Z84G/wdPncrep8PcoxHpm1HSH5+iFL
+         AFd9bf+N2pie2MBXe2Hb6i1TBgFBYKyIPqESmXtPB4wt/lkhGumNm9I8jXE/IYqpq4DV
+         TpOo4R9lRxGLai71610PKOJc9v1zjFV3e6jLHlAK7CI5ee5j2a7BpL82JSC79xzMPfMq
+         HwRJGgLWJ5KY0By0b4X4lAgMoKI3jpxiLspHFict5oafNmVNrTTwF8Y+ThAAOK7grG0H
+         tGjw==
+X-Gm-Message-State: APjAAAXqyMp0KNItGxYhgSAh7k1xdNRPBGt5lfZfQbvYtdNnmho+tOdK
+        a3ZAv1sVAz71ItDuDD/kWEtgflKkekzxO7959xlG/A==
+X-Google-Smtp-Source: APXvYqwO32lw7Q547HjV5okCMbcsiOF0jVzqi9/qPCvyxGGfgTG7kTHSP6nYt4CD8IAcl2D/g8LOKH7he/eo03KLaaY=
+X-Received: by 2002:a25:d68d:: with SMTP id n135mr345070ybg.461.1557357461388;
+ Wed, 08 May 2019 16:17:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <CANn89iL_XLb5C-+DY5PRhneZDJv585xfbLtiEVc3-ejzNNXaVg@mail.gmail.com>
+ <20190508230941.6rqccgijqzkxmz4t@ast-mbp>
+In-Reply-To: <20190508230941.6rqccgijqzkxmz4t@ast-mbp>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 8 May 2019 16:17:29 -0700
+Message-ID: <CANn89iL_1n8Lb5yCEk3ZrBsUtPPWPZ=0BiELUo+jyBWfLfaAzg@mail.gmail.com>
+Subject: Re: Question about seccomp / bpf
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
-Subject: Re: Question about seccomp / bpf
-Message-ID: <20190508230941.6rqccgijqzkxmz4t@ast-mbp>
-References: <CANn89iL_XLb5C-+DY5PRhneZDJv585xfbLtiEVc3-ejzNNXaVg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANn89iL_XLb5C-+DY5PRhneZDJv585xfbLtiEVc3-ejzNNXaVg@mail.gmail.com>
-User-Agent: NeoMutt/20180223
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 08, 2019 at 02:21:52PM -0700, Eric Dumazet wrote:
-> Hi Alexei and Daniel
-> 
-> I have a question about seccomp.
-> 
-> It seems that after this patch, seccomp no longer needs a helper
-> (seccomp_bpf_load())
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=bd4cf0ed331a275e9bf5a49e6d0fd55dffc551b8
-> 
-> Are we detecting that a particular JIT code needs to call at least one
-> function from the kernel at all ?
+On Wed, May 8, 2019 at 4:09 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, May 08, 2019 at 02:21:52PM -0700, Eric Dumazet wrote:
+> > Hi Alexei and Daniel
+> >
+> > I have a question about seccomp.
+> >
+> > It seems that after this patch, seccomp no longer needs a helper
+> > (seccomp_bpf_load())
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=bd4cf0ed331a275e9bf5a49e6d0fd55dffc551b8
+> >
+> > Are we detecting that a particular JIT code needs to call at least one
+> > function from the kernel at all ?
+>
+> Currently we don't track such things and trying very hard to avoid
+> any special cases for classic vs extended.
+>
+> > If the filter contains self-contained code (no call, just inline
+> > code), then we could use any room in whole vmalloc space,
+> > not only from the modules (which is something like 2GB total on x86_64)
+>
+> I believe there was an effort to make bpf progs and other executable things
+> to be everywhere too, but I lost the track of it.
+> It's not that hard to tweak x64 jit to emit 64-bit calls to helpers
+> when delta between call insn and a helper is more than 32-bit that fits
+> into call insn. iirc there was even such patch floating around.
+>
+> but what motivated you question? do you see 2GB space being full?!
 
-Currently we don't track such things and trying very hard to avoid
-any special cases for classic vs extended.
 
-> If the filter contains self-contained code (no call, just inline
-> code), then we could use any room in whole vmalloc space,
-> not only from the modules (which is something like 2GB total on x86_64)
-
-I believe there was an effort to make bpf progs and other executable things
-to be everywhere too, but I lost the track of it.
-It's not that hard to tweak x64 jit to emit 64-bit calls to helpers
-when delta between call insn and a helper is more than 32-bit that fits
-into call insn. iirc there was even such patch floating around.
-
-but what motivated you question? do you see 2GB space being full?!
-
+A customer seems to hit the limit, with about 75,000 threads,
+each one having a seccomp filter with 6 pages (plus one guard page
+given by vmalloc)
