@@ -2,141 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D803017EFD
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2019 19:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D1817F57
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2019 19:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728990AbfEHRS6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 May 2019 13:18:58 -0400
-Received: from mail-pg1-f202.google.com ([209.85.215.202]:41331 "EHLO
-        mail-pg1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728979AbfEHRS6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 May 2019 13:18:58 -0400
-Received: by mail-pg1-f202.google.com with SMTP id d7so7608429pgc.8
-        for <bpf@vger.kernel.org>; Wed, 08 May 2019 10:18:57 -0700 (PDT)
+        id S1726709AbfEHRvR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 May 2019 13:51:17 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:44161 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726506AbfEHRvR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 May 2019 13:51:17 -0400
+Received: by mail-pf1-f195.google.com with SMTP id g9so733457pfo.11;
+        Wed, 08 May 2019 10:51:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=Oc7kGTxNNeGPMnF+md75kkPiq5ynkJFXLqMqAf1RaYg=;
-        b=sCcoidYMTgO8wDHVNyo0zWkArtuSb7+lrPRlpqwpffe0Qu3asnZmSU3fYLKVcgq4OG
-         cvdqIziG4VFAUaXw5hlGpmPAxzyN2fGyhXIxCqwCd8PMTgb62S7MPB/6SvM0fYeaPRC5
-         q5l24qgY2+rD3nsgx2QYGgw0ohAfXfww3oU0BAJYO8NOJCMFCl57QvdEDJVw1K0FgmHe
-         WIuGspqMa+feZ7XQbBsTFd+qPatPsh++1NPW4i7A+9AnoLE19Df3PcrZBikTobBqcYvl
-         jNaFIyOo+H3IwNWC4JxrOZMKaUXa4dyZ7nuQEVCN/ubWWz/j4q1Z8xwepbS6J6GmdR2C
-         K8vg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mU0jCr2GPi1b5hbzLUx4Twx7GHJo/Q+lsHVdxoN16WQ=;
+        b=DSVxsfCoTYlsJiHyH+9Kv4UMbRKGb59U4V+42afB2Ua1B2m1PccT8qdY6QSNXFTH+D
+         ms6d5fJqJTSYDrKENn41Uaq3E1SHvNQSzmWMbRc+++i8waeoUkSIg8X0jUY6Vtoe23WX
+         HhejBRgikCGmXv49MNTI1zHcJb87AxpsdpwRxQEsF9eTug1eUYRkxlbJde++glevtiM4
+         8EtDeuQRUAWlNp9PGNA9vywSWF3Bq1UavwrrIPnL1H/o+CIc9YMGgJ0kuWOJ3lzzWFeR
+         QMqMc5UA6P5qcBE3pbNH/DsKgsveesTaZaLMGk173OabSSRUS84l9i2mTt1jTE7u0cp1
+         GpdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Oc7kGTxNNeGPMnF+md75kkPiq5ynkJFXLqMqAf1RaYg=;
-        b=FHic9zFvVGlJFk2zb8c6Z5BblW0hsdmYU5Uv+pGW2jUwlKaRnx183rd5Hq8IhqzB/r
-         NdB2FwSHh5ydz59ZJmXu5xsenAhPQuMS/FRTGy17OSv4O/t1vHT+B/XiburUhUM0LVJN
-         QXyMEoJw0WC/DeDVPJh3WFdLxKFcpLeEIW+tw7upUmeAMCMcS1UM91dqacmK+ZGsPj4Z
-         lQ/1rrjse7iUxmvPEeVgpr0w/djbgIt0+hxdpAA47XRUGoqChzqnNfmrZHu+2OnP4x4z
-         7QuDNVA9L0gFG2hmaV3A8Gj0sAqt3ltomjbdk+TXtdXb981WZ4Ij9V0fvUHHqGeNfd3o
-         Gdnw==
-X-Gm-Message-State: APjAAAWdQPrcPlE266yBuU+3QS2fLHhYVCwrcCuoTxpxH4XBI1qy6pFc
-        Hc3UnMWMO87ZOmUDvLSJ3fBVuWk=
-X-Google-Smtp-Source: APXvYqzuMXoR4vtaeQnTo9Th5W6+ExYtT4hBDJZP8CCSEYSCPHu3PrFjoogcKMz4CIiw8wE10YkgZkI=
-X-Received: by 2002:a63:191b:: with SMTP id z27mr48733425pgl.327.1557335937408;
- Wed, 08 May 2019 10:18:57 -0700 (PDT)
-Date:   Wed,  8 May 2019 10:18:45 -0700
-In-Reply-To: <20190508171845.201303-1-sdf@google.com>
-Message-Id: <20190508171845.201303-5-sdf@google.com>
-Mime-Version: 1.0
-References: <20190508171845.201303-1-sdf@google.com>
-X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
-Subject: [PATCH bpf 4/4] bpf: tracing: properly use bpf_prog_array api
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mU0jCr2GPi1b5hbzLUx4Twx7GHJo/Q+lsHVdxoN16WQ=;
+        b=RE3gQ5S0E/I02m9Fa8IfhmEll/gc5n7LGokyFXsDS98cogbtOreRlgyhOd8rd4mpYS
+         /tkNWoXLfXaXs9a716aO9vJggR684+OwEeUpVFcj4bGzmnj9sMvKiJJm2Fwa/3cP8fy8
+         hHGd2skyGTmTj7z5AFb1OlqfkHPr/K6sNLz2pdK+HWexUxkZdTM5geb3kmuob7Kzib7B
+         hMqREeAqU4bSUvKfpXlo27BWsvd0fCxG+w4lrofvUo98GfaA1orp/lOsGXJRLMUljdVF
+         ASTWr0c/e7ZB8HuKB0c8NJHPS8Bg0Mxyzq+a2C727L92BBLyFFrRgZJT03PoYmcavBzX
+         5pgA==
+X-Gm-Message-State: APjAAAWsN7Q2kZmZ5ejdshYB+2XfMwX21YUNIjyGaXJMzVGAJB+GcZlY
+        4jKpYLHdLgGXEJ+BmcNy9E4=
+X-Google-Smtp-Source: APXvYqywnMrTGy+V5HxpsShneQGGiggrBPbQibmHxh5kYafR4eYcMMhoReTslDBhJWDH6xWD9RZIJQ==
+X-Received: by 2002:a63:6ac3:: with SMTP id f186mr48202908pgc.326.1557337876471;
+        Wed, 08 May 2019 10:51:16 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:180::cecc])
+        by smtp.gmail.com with ESMTPSA id j184sm710557pge.83.2019.05.08.10.51.14
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 08 May 2019 10:51:15 -0700 (PDT)
+Date:   Wed, 8 May 2019 10:51:13 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jiong Wang <jiong.wang@netronome.com>
+Cc:     daniel@iogearbox.net, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        oss-drivers@netronome.com
+Subject: Re: [PATCH v6 bpf-next 01/17] bpf: verifier: offer more accurate
+ helper function arg and return type
+Message-ID: <20190508175111.hcbufw22mbksbpca@ast-mbp>
+References: <1556880164-10689-1-git-send-email-jiong.wang@netronome.com>
+ <1556880164-10689-2-git-send-email-jiong.wang@netronome.com>
+ <20190506155041.ofxsvozqza6xrjep@ast-mbp>
+ <87mujx6m4n.fsf@netronome.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87mujx6m4n.fsf@netronome.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now that we don't have __rcu markers on the bpf_prog_array helpers,
-let's use proper rcu_dereference_protected to obtain array pointer
-under mutex.
+On Wed, May 08, 2019 at 03:45:12PM +0100, Jiong Wang wrote:
+> 
+> I might be misunderstanding your points, please just shout if I am wrong.
+> 
+> Suppose the following BPF code:
+> 
+>   unsigned helper(unsigned long long, unsigned long long);
+>   unsigned long long test(unsigned *a, unsigned int c)
+>   {
+>     unsigned int b = *a;
+>     c += 10;
+>     return helper(b, c);
+>   }
+> 
+> We get the following instruction sequence by latest llvm
+> (-O2 -mattr=+alu32 -mcpu=v3)
+> 
+>   test:
+>     1: w1 = *(u32 *)(r1 + 0)
+>     2: w2 += 10
+>     3: call helper
+>     4: exit
+> 
+> Argument Types
+> ===
+> Now instruction 1 and 2 are sub-register defines, and instruction 3, the
+> call, use them implicitly.
+> 
+> Without the introduction of the new ARG_CONST_SIZE32 and
+> ARG_CONST_SIZE32_OR_ZERO, we don't know what should be done with w1 and
+> w2, zero-extend them should be fine for all cases, but could resulting in a
+> few unnecessary zero-extension inserted.
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- kernel/trace/bpf_trace.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+I don't think we're on the same page.
+The argument type is _const_.
+In the example above they are not _const_.
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index d64c00afceb5..5f8f7fdbe27c 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -17,6 +17,9 @@
- #include "trace_probe.h"
- #include "trace.h"
- 
-+#define bpf_event_dereference(p)					\
-+	rcu_dereference_protected(p, lockdep_is_held(&bpf_event_mutex))
-+
- #ifdef CONFIG_MODULES
- struct bpf_trace_module {
- 	struct module *module;
-@@ -999,7 +1002,7 @@ static DEFINE_MUTEX(bpf_event_mutex);
- int perf_event_attach_bpf_prog(struct perf_event *event,
- 			       struct bpf_prog *prog)
- {
--	struct bpf_prog_array __rcu *old_array;
-+	struct bpf_prog_array *old_array;
- 	struct bpf_prog_array *new_array;
- 	int ret = -EEXIST;
- 
-@@ -1017,7 +1020,7 @@ int perf_event_attach_bpf_prog(struct perf_event *event,
- 	if (event->prog)
- 		goto unlock;
- 
--	old_array = event->tp_event->prog_array;
-+	old_array = bpf_event_dereference(event->tp_event->prog_array);
- 	if (old_array &&
- 	    bpf_prog_array_length(old_array) >= BPF_TRACE_MAX_PROGS) {
- 		ret = -E2BIG;
-@@ -1040,7 +1043,7 @@ int perf_event_attach_bpf_prog(struct perf_event *event,
- 
- void perf_event_detach_bpf_prog(struct perf_event *event)
- {
--	struct bpf_prog_array __rcu *old_array;
-+	struct bpf_prog_array *old_array;
- 	struct bpf_prog_array *new_array;
- 	int ret;
- 
-@@ -1049,7 +1052,7 @@ void perf_event_detach_bpf_prog(struct perf_event *event)
- 	if (!event->prog)
- 		goto unlock;
- 
--	old_array = event->tp_event->prog_array;
-+	old_array = bpf_event_dereference(event->tp_event->prog_array);
- 	ret = bpf_prog_array_copy(old_array, event->prog, NULL, &new_array);
- 	if (ret == -ENOENT)
- 		goto unlock;
-@@ -1071,6 +1074,7 @@ int perf_event_query_prog_array(struct perf_event *event, void __user *info)
- {
- 	struct perf_event_query_bpf __user *uquery = info;
- 	struct perf_event_query_bpf query = {};
-+	struct bpf_prog_array *progs;
- 	u32 *ids, prog_cnt, ids_len;
- 	int ret;
- 
-@@ -1095,10 +1099,8 @@ int perf_event_query_prog_array(struct perf_event *event, void __user *info)
- 	 */
- 
- 	mutex_lock(&bpf_event_mutex);
--	ret = bpf_prog_array_copy_info(event->tp_event->prog_array,
--				       ids,
--				       ids_len,
--				       &prog_cnt);
-+	progs = bpf_event_dereference(event->tp_event->prog_array);
-+	ret = bpf_prog_array_copy_info(progs, ids, ids_len, &prog_cnt);
- 	mutex_unlock(&bpf_event_mutex);
- 
- 	if (copy_to_user(&uquery->prog_cnt, &prog_cnt, sizeof(prog_cnt)) ||
--- 
-2.21.0.1020.gf2820cf01a-goog
+> 
+> And that why I introduce these new argument types, without them, there
+> could be more than 10% extra zext inserted on benchmarks like bpf_lxc.
+
+10% extra ? so be it.
+We're talking past each other here.
+I agree with your optimization goal, but I think you're missing
+the safety concerns I'm trying to explain.
+
+> 
+> But for helper functions, they are done by native code which may not follow
+> this convention. For example, on arm32, calling helper functions are just
+> jump to and execute native code. And if the helper returns u32, it just set
+> r0, no clearing of r1 which is the high 32-bit in the register pair
+> modeling eBPF R0.
+
+it's arm32 bug then. All helpers _must_ return 64-bit back to bpf prog
+and _must_ accept 64-bit from bpf prog.
 
