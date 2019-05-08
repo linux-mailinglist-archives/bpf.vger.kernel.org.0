@@ -2,123 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7161716F82
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2019 05:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82BAD16F98
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2019 05:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbfEHDgI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 May 2019 23:36:08 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:53235 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726632AbfEHDgH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 May 2019 23:36:07 -0400
-Received: by mail-io1-f70.google.com with SMTP id n82so2346807iod.19
-        for <bpf@vger.kernel.org>; Tue, 07 May 2019 20:36:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=5dZSJzVyB2gZ6t0seAHk5Qi3NpAEiExb1GD1A6ohrB8=;
-        b=Tojn9BfDVCwn2aqsteHY1kDcuDCLg6J6I/PZIPPRh6+5Hx+Y03vKCu/i/OdKIr6Hr7
-         FqEr+o51elka1fZicC+ihbuqWRa8ZR4SgHrRf3e2v6sTyw8wZmYnkpRg8/Gv/Pk4wzgn
-         mjfvJX1wlDUJvi7lltiyBeujqK1E2QCogKKsrllFxnbGnAHRGh+jk+eZ5UpRMKO1nZUY
-         oxXkq0UTV5haml+ZCAhW4WD20x7ltbzFWo2JS6bMqh2/MPsEEWpu6eTexBmqfy62msoH
-         SaNlt6rcp1xqHSWR/L9F7NmgQwmRkRRp0ZWeJ9TatZuu+Dch585savMtL1eTvLI76gIn
-         GyXQ==
-X-Gm-Message-State: APjAAAVedDaKwps4nd1KO0SxGC1Drq06FdZ/OZBJViUQlAIStVIsFlqX
-        6e1x6TX57k0U0nia51x5MHggjgy872K2OxbRVMiFoWThi6/y
-X-Google-Smtp-Source: APXvYqyvDopLdusXrW7Wfp1Y5mfs8uWUq8XNTfgSfTejHF8cNKXeZaZUCwr3DFE+0yNkV3zvh+Hm2tCGTH8I1ctUgFdD0idYHzH6
+        id S1727064AbfEHDoc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 May 2019 23:44:32 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:55088 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726704AbfEHDoc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 May 2019 23:44:32 -0400
+Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id x483iAfQ000467;
+        Wed, 8 May 2019 12:44:11 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com x483iAfQ000467
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1557287051;
+        bh=GtYEji5+EE71+LZjKDY0sxmohdZ0g+Z5/jFvjX0CHzk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=1ZESEjZOrbdTa5+bMjMIxX7JKfYmQ/Y+dVySrIFat/BgQw0mbSCMDzXGSvjMWFz/n
+         avfYjmfH7jmGaI5QdsMqFVxzcZu8izw/LpK1K5OCkgm8I5KWmyRvu9UHOa8gxKoDZt
+         m+aRszBtUwNrViHlN1ejn9NLZd5sBn8LipsbVhKP/EmJklWC8d0SClpntEUdswPbO0
+         uxHDUcYmEs99d3dEYaGWHtzJe4sW3DhiZbWvfKF+a3i+oGn774ldgNtYyHqsLu0LUi
+         wdmGRah9iOVXGv/gkE0XnKA1+0cx7FHv6uxS86y+Yf+qd+CK0/DwFFePzuMXVm07lT
+         NS2Z5t8WpH/UA==
+X-Nifty-SrcIP: [209.85.217.45]
+Received: by mail-vs1-f45.google.com with SMTP id g127so11777172vsd.6;
+        Tue, 07 May 2019 20:44:11 -0700 (PDT)
+X-Gm-Message-State: APjAAAUR3AuX3SmgwdBFiodM0SXGkP8nbnBJI942Jhx3gtbPtTPGtQfc
+        gQJhKeLMYD4sno69/A9o8/2bWOLvuRdWYJQxHWE=
+X-Google-Smtp-Source: APXvYqz4ub6AwdOUIv3IBI3Jv6hdIY2r3aV/UeyA9Lf21f53omFZix/UHdWvee9kuR48UmUZmxkT6DyZqggTTN2/rBA=
+X-Received: by 2002:a67:fd89:: with SMTP id k9mr7071343vsq.54.1557287050111;
+ Tue, 07 May 2019 20:44:10 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a24:b701:: with SMTP id h1mr1646271itf.178.1557286567110;
- Tue, 07 May 2019 20:36:07 -0700 (PDT)
-Date:   Tue, 07 May 2019 20:36:07 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a573da058858083c@google.com>
-Subject: WARNING in cgroup_exit
-From:   syzbot <syzbot+f14868630901fc6151d3@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
-        daniel@iogearbox.net, hannes@cmpxchg.org, kafai@fb.com,
-        linux-kernel@vger.kernel.org, lizefan@huawei.com,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tj@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+References: <20190506013456.86061-1-joel@joelfernandes.org>
+In-Reply-To: <20190506013456.86061-1-joel@joelfernandes.org>
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+Date:   Wed, 8 May 2019 12:43:34 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQesyT-vspoGKdgRqycZfhtJm5Upx2T6ij-yB5i4Nx5nw@mail.gmail.com>
+Message-ID: <CAK7LNAQesyT-vspoGKdgRqycZfhtJm5Upx2T6ij-yB5i4Nx5nw@mail.gmail.com>
+Subject: Re: [PATCH v3] kheaders: Move from proc to sysfs
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        atish patra <atishp04@gmail.com>, bpf@vger.kernel.org,
+        Brendan Gregg <bgregg@netflix.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Daniel Colascione <dancol@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        duyuchao <yuchao.du@unisoc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Karim Yaghmour <karim.yaghmour@opersys.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-trace-devel@vger.kernel.org,
+        Manjo Raja Rao <linux@manojrajarao.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        =?UTF-8?Q?Micha=C5=82_Gregorczyk?= <michalgr@fb.com>,
+        Michal Gregorczyk <michalgr@live.com>,
+        Mohammad Husain <russoue@gmail.com>,
+        Olof Johansson <olof@lixom.net>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        Tamir Carmeli <carmeli.tamir@gmail.com>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    00c3bc00 Add linux-next specific files for 20190507
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15220ec8a00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=63cd766601c6c9fc
-dashboard link: https://syzkaller.appspot.com/bug?extid=f14868630901fc6151d3
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10fcf758a00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1202ffa4a00000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+f14868630901fc6151d3@syzkaller.appspotmail.com
-
-WARNING: CPU: 0 PID: 8653 at kernel/cgroup/cgroup.c:6008  
-cgroup_exit+0x51a/0x5d0 kernel/cgroup/cgroup.c:6008
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 8653 Comm: syz-executor076 Not tainted 5.1.0-next-20190507 #2
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
-  panic+0x2cb/0x75a kernel/panic.c:218
-  __warn.cold+0x20/0x47 kernel/panic.c:575
-  report_bug+0x263/0x2b0 lib/bug.c:186
-  fixup_bug arch/x86/kernel/traps.c:179 [inline]
-  fixup_bug arch/x86/kernel/traps.c:174 [inline]
-  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:272
-  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:291
-  invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:972
-RIP: 0010:cgroup_exit+0x51a/0x5d0 kernel/cgroup/cgroup.c:6008
-Code: 00 48 c7 c2 20 7f 6d 87 be d3 01 00 00 48 c7 c7 20 80 6d 87 c6 05 01  
-93 f1 07 01 e8 fb 03 ed ff e9 b1 fb ff ff e8 96 f9 05 00 <0f> 0b e9 75 fc  
-ff ff e8 8a f9 05 00 48 c7 c2 e0 82 6d 87 be 85 02
-RSP: 0018:ffff888086c17a80 EFLAGS: 00010093
-RAX: ffff88808e99a000 RBX: 0000000000000001 RCX: ffffffff816b0b5e
-RDX: 0000000000000000 RSI: ffffffff816b0eea RDI: 0000000000000001
-RBP: ffff888086c17b18 R08: ffff88808e99a000 R09: ffffed1010d82f3e
-R10: ffffed1010d82f3d R11: 0000000000000003 R12: ffff88808e99a000
-R13: ffff8880981c3200 R14: ffff888086c17af0 R15: 1ffff11010d82f52
-  do_exit+0x97a/0x2fa0 kernel/exit.c:889
-  do_group_exit+0x135/0x370 kernel/exit.c:980
-  get_signal+0x425/0x2270 kernel/signal.c:2638
-  do_signal+0x87/0x1900 arch/x86/kernel/signal.c:815
-  exit_to_usermode_loop+0x244/0x2c0 arch/x86/entry/common.c:163
-  prepare_exit_to_usermode arch/x86/entry/common.c:198 [inline]
-  syscall_return_slowpath arch/x86/entry/common.c:276 [inline]
-  do_syscall_64+0x57e/0x670 arch/x86/entry/common.c:301
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x4471e9
-Code: e8 3c e6 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 ab 06 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f479f748db8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 00000000006dcc38 RCX: 00000000004471e9
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00000000006dcc38
-RBP: 00000000006dcc30 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dcc3c
-R13: 00007ffd1ab0c31f R14: 00007f479f7499c0 R15: 0000000000000001
-Shutting down cpus with NMI
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+On Mon, May 6, 2019 at 10:37 AM Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
+>
+> The kheaders archive consisting of the kernel headers used for compiling
+> bpf programs is in /proc. However there is concern that moving it here
+> will make it permanent. Let us move it to /sys/kernel as discussed [1].
+>
+> [1] https://lore.kernel.org/patchwork/patch/1067310/#1265969
+>
+> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+> This patch applies on top of the previous patch that was applied to the
+> driver tree:
+> https://lore.kernel.org/patchwork/patch/1067310/
+>
+> v2->v3: Fixed sysfs file mode nit (Greg).
+> v1->v2: Fixed some kconfig nits.
+>
+>  init/Kconfig                                | 16 ++++-----
+>  kernel/Makefile                             |  4 +--
+>  kernel/{gen_ikh_data.sh => gen_kheaders.sh} |  2 +-
+>  kernel/kheaders.c                           | 40 +++++++++------------
+>  4 files changed, 26 insertions(+), 36 deletions(-)
+>  rename kernel/{gen_ikh_data.sh => gen_kheaders.sh} (98%)
+>
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 26a364a95b57..c3661991b089 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -579,15 +579,13 @@ config IKCONFIG_PROC
+>           This option enables access to the kernel configuration file
+>           through /proc/config.gz.
+>
+> -config IKHEADERS_PROC
+> -       tristate "Enable kernel header artifacts through /proc/kheaders.tar.xz"
+> -       depends on PROC_FS
+> -       help
+> -         This option enables access to the kernel header and other artifacts that
+> -         are generated during the build process. These can be used to build eBPF
+> -         tracing programs, or similar programs.  If you build the headers as a
+> -         module, a module called kheaders.ko is built which can be loaded on-demand
+> -         to get access to the headers.
+> +config IKHEADERS
+> +       tristate "Enable kernel headers through /sys/kernel/kheaders.tar.xz"
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+I suggested "depends on SYSFS" twice, both in v1 and v2.
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+https://lore.kernel.org/patchwork/patch/1069806/#1266147
+https://lore.kernel.org/patchwork/patch/1070005/#1266279
+
+
+
+> +       help
+> +         This option enables access to the in-kernel headers that are generated during
+> +         the build process. These can be used to build eBPF tracing programs,
+> +         or similar programs.  If you build the headers as a module, a module called
+> +         kheaders.ko is built which can be loaded on-demand to get access to headers.
+>
+>  config LOG_BUF_SHIFT
+>         int "Kernel log buffer size (16 => 64KB, 17 => 128KB)"
+
+
+-- 
+Best Regards
+Masahiro Yamada
