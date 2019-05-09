@@ -2,208 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1825319551
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2019 00:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171B119564
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2019 00:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbfEIWk7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 May 2019 18:40:59 -0400
-Received: from mail-it1-f195.google.com ([209.85.166.195]:36225 "EHLO
-        mail-it1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726694AbfEIWk7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 May 2019 18:40:59 -0400
-Received: by mail-it1-f195.google.com with SMTP id o190so6093662itc.1
-        for <bpf@vger.kernel.org>; Thu, 09 May 2019 15:40:58 -0700 (PDT)
+        id S1726726AbfEIWrr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 May 2019 18:47:47 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:44376 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726108AbfEIWrr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 May 2019 18:47:47 -0400
+Received: by mail-pf1-f193.google.com with SMTP id g9so2060525pfo.11
+        for <bpf@vger.kernel.org>; Thu, 09 May 2019 15:47:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+c2Z1tjGcCUP7qnZjAbhtnJOxApx0T1cMEm41uQaDmE=;
-        b=WXPgU5ADcyJlbRA5g99WKXjN12emhy7wvNhkVXj6LV+uUQ2g0bLmxf2jfXO2F4wu1X
-         GWnqbW6jVSPO8ccaxZVrWayTf97V8JS/XGyfLcknXAfPbIkM1xWZHQCTAjoLjza8PO+g
-         m5D+vKj+1IO9XWuBCkY1ruZ7RPWbvFG//v0sE=
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vZRf/O+AYO1pjasRFrKqOyps3I4eNGFPQS8KhShdX90=;
+        b=Ye5VPeIClHIvOa3yb/Txa2nZfvUQR7hyXGf8jlN8r7iBdWzaJtSWZksEgYFQpdW+le
+         CqqejGHpFq3qNoZ6SId2I8t2xH38UIuS4VQ0klh21WPl8hWhSZnaIBHQpZQdxggBGLJb
+         zkdOrKjnmeaLHbdYu1LbpWW+AHV9M7rizlsQA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+c2Z1tjGcCUP7qnZjAbhtnJOxApx0T1cMEm41uQaDmE=;
-        b=QLnA4674Ud0B3oip+U9thggs7p7wdDXeXFYRcfh1obR44hDDjiV2hl4r80hyYLccED
-         SKYIWiUA7SO4bGJGdTmbc5bTWqKYkeXxhT2b83gJzKfNvhYWXYyXowIWW8cS8rTzw4Nj
-         U30ek7vb4v+OJuI0gNGvz86pg/0ETs5lFQQ+dLCQx62qF8fMdUnkT+3vNpUogz9bFLD7
-         6zxWYoXXPFA1SJte70xSwSjfZZnbpe8P1XEhyYL2gBtblBAlkKUPIZbDEb2EqKANgN0d
-         bl9dlht5gdvnmQnjIMEEKyiXIZ3c9Q6P9hdIiWhZEz2SxQXhYrMJPS+rwbxM7dzINPki
-         Nuww==
-X-Gm-Message-State: APjAAAVXnEqICLXxMeYt1P97xYT4inSz+kId6wVUYKEWHHVVIaoH0D4U
-        MJPqMeNzhag2H8AY+9svidDsbw==
-X-Google-Smtp-Source: APXvYqxMIWnH4z/8mfTvar+svk0lrRasK0Td8p6AI5iY6AsTpOwftDSabA89CDPcqRDna0Y8mne0pA==
-X-Received: by 2002:a24:3ce:: with SMTP id e197mr5240351ite.167.1557441658274;
-        Thu, 09 May 2019 15:40:58 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id j8sm1479790itk.0.2019.05.09.15.40.56
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 May 2019 15:40:57 -0700 (PDT)
-Subject: Re: [GIT PULL] Kselftest update for Linux 5.2-rc1
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        shuah <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, Shuah Khan <skhan@linuxfoundation.org>
-References: <9b434125-44b6-0e83-4f70-d1fd28752407@linuxfoundation.org>
- <20190509222043.b4zn32kuohduzzzr@ast-mbp>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <dd983d42-d148-372d-3e57-b97c313d58b9@linuxfoundation.org>
-Date:   Thu, 9 May 2019 16:40:56 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vZRf/O+AYO1pjasRFrKqOyps3I4eNGFPQS8KhShdX90=;
+        b=Df8RG8c6O7yNmM3g6wyJYSlvv3jUK61Zo7hcf8FQjKpEL/yIq0n/ezsolIikiJMFJS
+         r+Hzn9do/YFzfQmIMLESpslLya+/0ziUjKT9xy7oKYY9dmRRMeszklZcFdImn7OE/4RR
+         LaVdrwb2/tkDr80XFlS/B0cdEk55kxi0EOF3kyPY3Tvr1ox2ur1V2YycWKGKnbJUlpcU
+         kWPQRksQ1u53hh/XMIv3Gi1ubJFnOS/VR9V/2nrdupAiQzNqhtgNIFVPvgGmjZhz/0kf
+         kT1xuyUWGjA6pMjGisB1mgrprgddZwIPHxbem99F6PjV5sumwAzWVARGFATa1Zk70KII
+         Yd7w==
+X-Gm-Message-State: APjAAAVRxIm3ujm7l+cDaVYPv8O/m07fz7RJvFJhw13A1MqZY8ewzG8W
+        bGw10Qcj5/FXZ/oR5tlv4tz/wA==
+X-Google-Smtp-Source: APXvYqwO0Rpd3ouiehbTSdDrhChC3UhFFIDoCyfVb2yZJbYtD/jBLOeJxKNQDgTgWjLrHtJmKc4WbA==
+X-Received: by 2002:a65:43c8:: with SMTP id n8mr8758516pgp.365.1557442066517;
+        Thu, 09 May 2019 15:47:46 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id h6sm8950991pfk.188.2019.05.09.15.47.44
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 09 May 2019 15:47:45 -0700 (PDT)
+Date:   Thu, 9 May 2019 18:47:43 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        atish patra <atishp04@gmail.com>, bpf@vger.kernel.org,
+        Brendan Gregg <bgregg@netflix.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Daniel Colascione <dancol@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        duyuchao <yuchao.du@unisoc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Karim Yaghmour <karim.yaghmour@opersys.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-trace-devel@vger.kernel.org,
+        Manjo Raja Rao <linux@manojrajarao.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        =?utf-8?Q?Micha=C5=82?= Gregorczyk <michalgr@fb.com>,
+        Michal Gregorczyk <michalgr@live.com>,
+        Mohammad Husain <russoue@gmail.com>,
+        Olof Johansson <olof@lixom.net>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        Tamir Carmeli <carmeli.tamir@gmail.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH v3] kheaders: Move from proc to sysfs
+Message-ID: <20190509224743.GA29215@google.com>
+References: <20190506013456.86061-1-joel@joelfernandes.org>
+ <CAK7LNAQesyT-vspoGKdgRqycZfhtJm5Upx2T6ij-yB5i4Nx5nw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20190509222043.b4zn32kuohduzzzr@ast-mbp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAQesyT-vspoGKdgRqycZfhtJm5Upx2T6ij-yB5i4Nx5nw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/9/19 4:20 PM, Alexei Starovoitov wrote:
-> On Mon, May 06, 2019 at 10:56:56AM -0600, Shuah Khan wrote:
->> Hi Linus,
->>
->> Please pull the following Kselftest update for Linux 5.2-rc1
->>
->> This Kselftest update for Linux 5.2-rc1 consists of
->>
->> - fixes to seccomp test, and kselftest framework
->> - cleanups to remove duplicate header defines
->> - fixes to efivarfs "make clean" target
->> - cgroup cleanup path
->> - Moving the IMA kexec_load selftest to selftests/kexec work from
->>    Mimi Johar and Petr Vorel
->> - A framework to kselftest for writing kernel test modules addition
->>    from Tobin C. Harding
->>
->> diff is attached.
->>
->> thanks,
->> -- Shuah
->>
->>
->> ----------------------------------------------------------------
->> The following changes since commit 15ade5d2e7775667cf191cf2f94327a4889f8b9d:
->>
->>    Linux 5.1-rc4 (2019-04-07 14:09:59 -1000)
->>
->> are available in the Git repository at:
->>
->>    git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest
->> tags/linux-kselftest-5.2-rc1
->>
->> for you to fetch changes up to d917fb876f6eaeeea8a2b620d2a266ce26372f4d:
->>
->>    selftests: build and run gpio when output directory is the src dir
->> (2019-04-22 17:02:26 -0600)
->>
->> ----------------------------------------------------------------
->> linux-kselftest-5.2-rc1
->>
->> This Kselftest update for Linux 5.2-rc1 consists of
->>
->> - fixes to seccomp test, and kselftest framework
->> - cleanups to remove duplicate header defines
->> - fixes to efivarfs "make clean" target
->> - cgroup cleanup path
->> - Moving the IMA kexec_load selftest to selftests/kexec work from
->>    Mimi Johar and Petr Vorel
->> - A framework to kselftest for writing kernel test modules addition
->>    from Tobin C. Harding
->>
->> ----------------------------------------------------------------
->> Kees Cook (3):
->>        selftests/seccomp: Handle namespace failures gracefully
->>        selftests/harness: Add 30 second timeout per test
->>        selftests/ipc: Fix msgque compiler warnings
->>
->> Mathieu Desnoyers (1):
->>        rseq/selftests: Adapt number of threads to the number of detected cpus
->>
->> Mimi Zohar (9):
->>        selftests/kexec: move the IMA kexec_load selftest to selftests/kexec
->>        selftests/kexec: cleanup the kexec selftest
->>        selftests/kexec: define a set of common functions
->>        selftests/kexec: define common logging functions
->>        selftests/kexec: define "require_root_privileges"
->>        selftests/kexec: kexec_file_load syscall test
->>        selftests/kexec: check kexec_load and kexec_file_load are enabled
->>        selftests/kexec: make kexec_load test independent of IMA being enabled
->>        selftests/kexec: update get_secureboot_mode
->>
->> Petr Vorel (1):
->>        selftests/kexec: Add missing '=y' to config options
->>
->> Po-Hsu Lin (1):
->>        selftests/efivarfs: clean up test files from test_create*()
->>
->> Roman Gushchin (1):
->>        selftests: cgroup: fix cleanup path in test_memcg_subtree_control()
->>
->> Sabyasachi Gupta (4):
->>        selftest/x86/mpx-dig.c: Remove duplicate header
->>        selftest/timers: Remove duplicate header
->>        selftest/rseq: Remove duplicate header
->>        selftest/gpio: Remove duplicate header
->>
->> Shuah Khan (2):
->>        selftests: fix headers_install circular dependency
+On Wed, May 08, 2019 at 12:43:34PM +0900, Masahiro Yamada wrote:
+> On Mon, May 6, 2019 at 10:37 AM Joel Fernandes (Google)
+> <joel@joelfernandes.org> wrote:
+> >
+> > The kheaders archive consisting of the kernel headers used for compiling
+> > bpf programs is in /proc. However there is concern that moving it here
+> > will make it permanent. Let us move it to /sys/kernel as discussed [1].
+> >
+> > [1] https://lore.kernel.org/patchwork/patch/1067310/#1265969
+> >
+> > Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> > This patch applies on top of the previous patch that was applied to the
+> > driver tree:
+> > https://lore.kernel.org/patchwork/patch/1067310/
+> >
+> > v2->v3: Fixed sysfs file mode nit (Greg).
+> > v1->v2: Fixed some kconfig nits.
+> >
+> >  init/Kconfig                                | 16 ++++-----
+> >  kernel/Makefile                             |  4 +--
+> >  kernel/{gen_ikh_data.sh => gen_kheaders.sh} |  2 +-
+> >  kernel/kheaders.c                           | 40 +++++++++------------
+> >  4 files changed, 26 insertions(+), 36 deletions(-)
+> >  rename kernel/{gen_ikh_data.sh => gen_kheaders.sh} (98%)
+> >
+> > diff --git a/init/Kconfig b/init/Kconfig
+> > index 26a364a95b57..c3661991b089 100644
+> > --- a/init/Kconfig
+> > +++ b/init/Kconfig
+> > @@ -579,15 +579,13 @@ config IKCONFIG_PROC
+> >           This option enables access to the kernel configuration file
+> >           through /proc/config.gz.
+> >
+> > -config IKHEADERS_PROC
+> > -       tristate "Enable kernel header artifacts through /proc/kheaders.tar.xz"
+> > -       depends on PROC_FS
+> > -       help
+> > -         This option enables access to the kernel header and other artifacts that
+> > -         are generated during the build process. These can be used to build eBPF
+> > -         tracing programs, or similar programs.  If you build the headers as a
+> > -         module, a module called kheaders.ko is built which can be loaded on-demand
+> > -         to get access to the headers.
+> > +config IKHEADERS
+> > +       tristate "Enable kernel headers through /sys/kernel/kheaders.tar.xz"
 > 
-> Shuah,
 > 
-> the commit 8ce72dc32578 ("selftests: fix headers_install circular dependency")
-> broke our build/test workflow, since it added:
->    ifneq ($(KBUILD_OUTPUT),)
->            OUTPUT := $(KBUILD_OUTPUT)
->    else
+> I suggested "depends on SYSFS" twice, both in v1 and v2.
 > 
-> which means that all of selftests/bpf artifacts are now going into
-> main build directory cluttering it with all sorts of .o, generated files
-> and executables.
-> The end result is humans and scripts can no longer find tests.
-> 
-> For now I hacked it as:
-> diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-> index 5979fdc4f36c..caecec7aebde 100644
-> --- a/tools/testing/selftests/lib.mk
-> +++ b/tools/testing/selftests/lib.mk
-> @@ -6,12 +6,8 @@ ifeq (0,$(MAKELEVEL))
->       ifneq ($(O),)
->          OUTPUT := $(O)
->       else
-> -       ifneq ($(KBUILD_OUTPUT),)
-> -               OUTPUT := $(KBUILD_OUTPUT)
-> -       else
-> -               OUTPUT := $(shell pwd)
-> -               DEFAULT_INSTALL_HDR_PATH := 1
-> -       endif
-> +       OUTPUT := $(shell pwd)
-> +       DEFAULT_INSTALL_HDR_PATH := 1
->       endif
->   endif
-> 
-> bpf developers are doing "cd tools/testing/selftests/bpf; make; ./test_verifier; ..."
-> while KBUILD_OUTPUT is also set.
-Sorry about that. I tested several use-cases, and missed this one. :(
-This patch was in next for a while before I sent the pull request.
+> https://lore.kernel.org/patchwork/patch/1069806/#1266147
+> https://lore.kernel.org/patchwork/patch/1070005/#1266279
 
-> I don't quite get this 'circular dependency' issue that your commit suppose to address
-> but please fix it differently, so bpf developer's workflow is restored and buildbots work again.
-> People and scripts depend on it.
-> It's even described in Documentation/bpf/bpf_devel_QA.rst
-> 
+Sorry about missing that. I have made a note of this, and can address it in a
+later patch. There is a more pressing issue with allmodconfig regression
+times so I will look into that first. Also a vacation is taking up some of my
+time.
 
-You won't see the circular dependency with your use-case. I will try
-to get the fix in.
+Needless to say I will get to it soon and the point has been duly noted!
 
 thanks,
--- Shuah
 
-
-
+ - Joel
