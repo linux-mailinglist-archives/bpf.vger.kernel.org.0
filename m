@@ -2,93 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FBD7193D0
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2019 22:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 278C5194A1
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2019 23:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726704AbfEIUwI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 May 2019 16:52:08 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:44420 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726682AbfEIUwH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 May 2019 16:52:07 -0400
-Received: by mail-lf1-f65.google.com with SMTP id n134so2542713lfn.11;
-        Thu, 09 May 2019 13:52:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8izfY7QaATSiteV+jgAASzN3KHkaEiuR2IercyuoomA=;
-        b=onL47UGdbdYp6jBL7dw86aJtJ9+XHCblfj1S2UF8L/0l3M1HoE5EjfEZB+8ncJeQes
-         CDq5hzA3ZEaeJgjsNmL5afpuLujvbJ9AZg//GUXdDGZXNKg2qKFPZl0Nonmyig/rXyhM
-         4KJCtrxJYPhjcgpCenoPS2oNj0FSsh9AmdxSww3hqpHCC0RAt91ex0HsmooyKMhrNBP7
-         qcjLhwYf1WeT6N4kSKxq8vRbbkbjWTkFtDhgHs2bgzqpJiZbNT6iwE1AgIv0hQa9apvY
-         Z1YBewW/UToX3mwziHunEM9TDkS1f5ybpDHj9kbzaGXGI7liVus8VKLd6MTttJd9HqMS
-         KFuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8izfY7QaATSiteV+jgAASzN3KHkaEiuR2IercyuoomA=;
-        b=FuuCa2wVun9clu7QQgVbVdLhCGAvCLgYgAkBermclrX5kPxsC506S7Z/cGXr1zpNJ1
-         EApTEUy7OCzzwiHuPTTgf2zsskYVNjQU2qkLsElZf/hx+nDBsIFJsMXBCjlX0JYlmETy
-         dL8UWzMra3JtYBgA9s9YKlvcjE8cYf7xYAFpaluFsp0yiIM4jwp5AU/IGUcHW2reEMP9
-         hKOE3a2LxqkZeb5N2rQAam+dpzzhUh2BzCioA02HDKJnzompXGBRJSo93srmr+GOBS3g
-         a6DB7nUI/D/nqSGxAeayfEfLyQdPNdXwrfn7kov2x6wCyDmeSa1z0i33fWRbDpWP6Ez/
-         rtYA==
-X-Gm-Message-State: APjAAAXh81rT/bSYUMMOJJ5kdcFZqIyyELLqIJ5kZEYJ740F9YYEnACf
-        HVVPYfdrt4yzJY1l3AsXkSMfXp4XzkQyZAmmtiw=
-X-Google-Smtp-Source: APXvYqyNz7VRs76mnyUSutong8ogRBnUo1HREZ8RuBuXFpYB8nt0XjI4isUzAAUFh8CyIYznJaoqycgB5KRFCJL7Kmc=
-X-Received: by 2002:ac2:5606:: with SMTP id v6mr3318657lfd.129.1557435125608;
- Thu, 09 May 2019 13:52:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190507231224.GA3787@ip-172-31-29-54.us-west-2.compute.internal>
-In-Reply-To: <20190507231224.GA3787@ip-172-31-29-54.us-west-2.compute.internal>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 9 May 2019 13:51:54 -0700
-Message-ID: <CAADnVQ+e6TW9cH6yDmRSG5pRHXJiZajcx_q9SoPQi1keDROh-g@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: Fix compile warning in bpf selftest
-To:     Alakesh Haloi <alakesh.haloi@gmail.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S1726682AbfEIVaf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 May 2019 17:30:35 -0400
+Received: from www62.your-server.de ([213.133.104.62]:59618 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726219AbfEIVaf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 May 2019 17:30:35 -0400
+Received: from [78.46.172.2] (helo=sslproxy05.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hOqca-0007ay-Nx; Thu, 09 May 2019 23:30:32 +0200
+Received: from [178.199.41.31] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hOqca-000J7d-Hy; Thu, 09 May 2019 23:30:32 +0200
+Subject: Re: [PATCH bpf v1] bpf: Fix undefined behavior in narrow load
+ handling
+To:     Krzesimir Nowak <krzesimir@kinvolk.io>, bpf@vger.kernel.org
+Cc:     Alban Crequy <alban@kinvolk.io>,
+        =?UTF-8?Q?Iago_L=c3=b3pez_Galeiras?= <iago@kinvolk.io>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Song Liu <songliubraving@fb.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20190508160859.4380-1-krzesimir@kinvolk.io>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <46056c60-f106-e539-b614-498cb1e9e3d0@iogearbox.net>
+Date:   Thu, 9 May 2019 23:30:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
+MIME-Version: 1.0
+In-Reply-To: <20190508160859.4380-1-krzesimir@kinvolk.io>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25444/Thu May  9 09:57:18 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 7, 2019 at 4:12 PM Alakesh Haloi <alakesh.haloi@gmail.com> wrot=
-e:
->
-> This fixes the following compile time warning
->
-> flow_dissector_load.c: In function =E2=80=98detach_program=E2=80=99:
-> flow_dissector_load.c:55:19: warning: format not a string literal and no =
-format arguments [-Wformat-security]
->    error(1, errno, command);
->                    ^~~~~~~
-> Signed-off-by: Alakesh Haloi <alakesh.haloi@gmail.com>
+On 05/08/2019 06:08 PM, Krzesimir Nowak wrote:
+> Commit 31fd85816dbe ("bpf: permits narrower load from bpf program
+> context fields") made the verifier add AND instructions to clear the
+> unwanted bits with a mask when doing a narrow load. The mask is
+> computed with
+> 
+> (1 << size * 8) - 1
+> 
+> where "size" is the size of the narrow load. When doing a 4 byte load
+> of a an 8 byte field the verifier shifts the literal 1 by 32 places to
+> the left. This results in an overflow of a signed integer, which is an
+> undefined behavior. Typically the computed mask was zero, so the
+> result of the narrow load ended up being zero too.
+> 
+> Cast the literal to long long to avoid overflows. Note that narrow
+> load of the 4 byte fields does not have the undefined behavior,
+> because the load size can only be either 1 or 2 bytes, so shifting 1
+> by 8 or 16 places will not overflow it. And reading 4 bytes would not
+> be a narrow load of a 4 bytes field.
+> 
+> Reviewed-by: Alban Crequy <alban@kinvolk.io>
+> Reviewed-by: Iago López Galeiras <iago@kinvolk.io>
+> Fixes: 31fd85816dbe ("bpf: permits narrower load from bpf program context fields")
+> Cc: Yonghong Song <yhs@fb.com>
+> Signed-off-by: Krzesimir Nowak <krzesimir@kinvolk.io>
 > ---
->  tools/testing/selftests/bpf/flow_dissector_load.c | 2 +-
+>  kernel/bpf/verifier.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/flow_dissector_load.c b/tools/te=
-sting/selftests/bpf/flow_dissector_load.c
-> index 77cafa66d048..7136ab9ffa73 100644
-> --- a/tools/testing/selftests/bpf/flow_dissector_load.c
-> +++ b/tools/testing/selftests/bpf/flow_dissector_load.c
-> @@ -52,7 +52,7 @@ static void detach_program(void)
->         sprintf(command, "rm -r %s", cfg_pin_path);
->         ret =3D system(command);
->         if (ret)
-> -               error(1, errno, command);
-> +               error(1, errno, "%s", command);
->  }
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 09d5d972c9ff..950fac024fbb 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -7296,7 +7296,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+>  									insn->dst_reg,
+>  									shift);
+>  				insn_buf[cnt++] = BPF_ALU64_IMM(BPF_AND, insn->dst_reg,
+> -								(1 << size * 8) - 1);
+> +								(1ULL << size * 8) - 1);
+>  			}
 
-it was fixed month ago.
+Makes sense, good catch & thanks for the fix!
+
+Could you also add a test case to test_verifier.c so we keep track of this?
+
+Thanks,
+Daniel
