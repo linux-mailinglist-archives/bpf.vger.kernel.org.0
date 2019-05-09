@@ -2,112 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A241893F
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2019 13:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9039189D0
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2019 14:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbfEILtc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 May 2019 07:49:32 -0400
-Received: from www62.your-server.de ([213.133.104.62]:46058 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725961AbfEILtc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 May 2019 07:49:32 -0400
-Received: from [88.198.220.130] (helo=sslproxy01.your-server.de)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hOhYE-0001ym-UL; Thu, 09 May 2019 13:49:27 +0200
-Received: from [178.199.41.31] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hOhYE-0000XM-ED; Thu, 09 May 2019 13:49:26 +0200
-Subject: Re: Question about seccomp / bpf
-To:     Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@fb.com>, netdev <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kees Cook <keescook@google.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jann Horn <jannh@google.com>, Will Drewry <wad@chromium.org>
-References: <CANn89iL_XLb5C-+DY5PRhneZDJv585xfbLtiEVc3-ejzNNXaVg@mail.gmail.com>
- <20190508230941.6rqccgijqzkxmz4t@ast-mbp>
- <CANn89iL_1n8Lb5yCEk3ZrBsUtPPWPZ=0BiELUo+jyBWfLfaAzg@mail.gmail.com>
- <20190509044720.fxlcldi74atev5id@ast-mbp>
- <CANn89i+v52ktezz5J_0of_EvTUozf86rP1Uh36HpbHf33uzDJg@mail.gmail.com>
- <CANn89iK8e8ROW8CrtTDq9-_bFeg2MdeqAdjf10i6HiwKuaZi=g@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <e525ec9d-df46-4280-b1c8-486a809f61e6@iogearbox.net>
-Date:   Thu, 9 May 2019 13:49:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.3.0
+        id S1726426AbfEIMcf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 May 2019 08:32:35 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:36881 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726557AbfEIMcf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 May 2019 08:32:35 -0400
+Received: by mail-wr1-f66.google.com with SMTP id a12so2834867wrn.4
+        for <bpf@vger.kernel.org>; Thu, 09 May 2019 05:32:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=1d8zXSY+AZq9wDDVDSlQy1dBUW/l/obQzBtjFOwR/O4=;
+        b=TZ4wpBf8jH0WoGpFl8+03hhNlUmkk84X6pGihYt3RrL6U6IG5P7IxQOrrqGvTrzdN/
+         ZYcZu9CKwDin9PE/wR4ZFRY3PCJuC7JYMOLI4XjiR5vXSOqK7CYyvjXyRQEokDACzqET
+         +OeMYQXGkVO4DErXshiDvf65LSft43g/bDz/rNyr4y/Q7exghNLGHsqmvIGRbAkgFHLX
+         0igTYS2GKAjnB2TA1flfgwkmCMRX1MbYFveaGCOJbIjEtyWGwNdFp0LjtHcQb63Iwvwg
+         NJRJB5G1wUWvVUo8ItA0wQiOVezeoRBS/QeKWJ80oXOkm3MprCD4FOWT7bNWI8eZNeJF
+         n9LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=1d8zXSY+AZq9wDDVDSlQy1dBUW/l/obQzBtjFOwR/O4=;
+        b=Zc0Ad2/JH/9HFmjVpkd8iwj1T2hCHt77LbDjHrL+0Lpt4jZdltQGddt+Cqq4ZSClCV
+         hahIAP5/Tug7GGw2RH8kn4yCt/NIQ5UI9fG/c3erA6E/8B2bcZZFD/kA/fE8lmHcA+6C
+         ecBwFETGeygeqyvxll/p95xXVA3WB9WaPZWbFhEnNfnLVyvc2zmBIpjXlUil29wxZahy
+         ZSy1lzjtDHyJaZbfeLBwj+R+qTTTw3E1zIAsqyakaaF85M0Uk0nRZkb8OVMaCruCaJhv
+         r+YdNhaTDRh9y1qPnENJ3EexQn0TDF7bJ7QbwPuu4KgftnfQBZMV3W5E34ULi7S0gp/8
+         P0fA==
+X-Gm-Message-State: APjAAAVvJ8iO62ttBb+YNpr6UV8gIf5Pzxbt39JRIb7T2PHRUAX+hKsG
+        kSyrJUVP3JbsrYEbDtiSq9Iuz9bUvQA=
+X-Google-Smtp-Source: APXvYqzqCmytXr95C7x7aoThg0NjaW4CzIEUltDwkfHqJ5lD0dpt2rKClwUL1zloQ0h8nwVhI1bVRQ==
+X-Received: by 2002:adf:d081:: with SMTP id y1mr2905745wrh.283.1557405153076;
+        Thu, 09 May 2019 05:32:33 -0700 (PDT)
+Received: from LAPTOP-V3S7NLPL ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id y7sm6836661wrg.45.2019.05.09.05.32.31
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 09 May 2019 05:32:32 -0700 (PDT)
+References: <1556880164-10689-1-git-send-email-jiong.wang@netronome.com> <1556880164-10689-2-git-send-email-jiong.wang@netronome.com> <20190506155041.ofxsvozqza6xrjep@ast-mbp> <87mujx6m4n.fsf@netronome.com> <20190508175111.hcbufw22mbksbpca@ast-mbp>
+User-agent: mu4e 0.9.18; emacs 25.2.2
+From:   Jiong Wang <jiong.wang@netronome.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiong Wang <jiong.wang@netronome.com>, daniel@iogearbox.net,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        oss-drivers@netronome.com
+Subject: Re: [PATCH v6 bpf-next 01/17] bpf: verifier: offer more accurate helper function arg and return type
+In-reply-to: <20190508175111.hcbufw22mbksbpca@ast-mbp>
+Date:   Thu, 09 May 2019 13:32:30 +0100
+Message-ID: <87ef5795b5.fsf@netronome.com>
 MIME-Version: 1.0
-In-Reply-To: <CANn89iK8e8ROW8CrtTDq9-_bFeg2MdeqAdjf10i6HiwKuaZi=g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25444/Thu May  9 09:57:18 2019)
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/09/2019 12:58 PM, Eric Dumazet wrote:
-> On Thu, May 9, 2019 at 3:52 AM Eric Dumazet <edumazet@google.com> wrote:
->> On Wed, May 8, 2019 at 9:47 PM Alexei Starovoitov
->> <alexei.starovoitov@gmail.com> wrote:
->>> On Wed, May 08, 2019 at 04:17:29PM -0700, Eric Dumazet wrote:
->>>> On Wed, May 8, 2019 at 4:09 PM Alexei Starovoitov
->>>> <alexei.starovoitov@gmail.com> wrote:
->>>>> On Wed, May 08, 2019 at 02:21:52PM -0700, Eric Dumazet wrote:
->>>>>> Hi Alexei and Daniel
->>>>>>
->>>>>> I have a question about seccomp.
->>>>>>
->>>>>> It seems that after this patch, seccomp no longer needs a helper
->>>>>> (seccomp_bpf_load())
->>>>>>
->>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=bd4cf0ed331a275e9bf5a49e6d0fd55dffc551b8
->>>>>>
->>>>>> Are we detecting that a particular JIT code needs to call at least one
->>>>>> function from the kernel at all ?
->>>>>
->>>>> Currently we don't track such things and trying very hard to avoid
->>>>> any special cases for classic vs extended.
->>>>>
->>>>>> If the filter contains self-contained code (no call, just inline
->>>>>> code), then we could use any room in whole vmalloc space,
->>>>>> not only from the modules (which is something like 2GB total on x86_64)
->>>>>
->>>>> I believe there was an effort to make bpf progs and other executable things
->>>>> to be everywhere too, but I lost the track of it.
->>>>> It's not that hard to tweak x64 jit to emit 64-bit calls to helpers
->>>>> when delta between call insn and a helper is more than 32-bit that fits
->>>>> into call insn. iirc there was even such patch floating around.
->>>>>
->>>>> but what motivated you question? do you see 2GB space being full?!
->>>>
->>>> A customer seems to hit the limit, with about 75,000 threads,
->>>> each one having a seccomp filter with 6 pages (plus one guard page
->>>> given by vmalloc)
->>>
->>> Since cbpf doesn't have "fd as a program" concept I suspect
->>> the same program was loaded 75k times. What a waste of kernel memory.
->>> And, no, we're not going to extend or fix cbpf for this.
->>> cbpf is frozen. seccomp needs to start using ebpf.
->>> It can have one program to secure all threads.
->>> If necessary single program can be customized via bpf maps
->>> for each thread.
->>
->> Yes,  docker seems to have a very generic implementation and  should
->> probably be fixed
->> ( https://github.com/moby/moby/blob/v17.03.2-ce/profiles/seccomp/seccomp.go )
-> 
-> Even if the seccomp program was optimized to a few bytes, it would
-> still consume at least 2 pages in module vmalloc space,
-> so the limit in number of concurrent programs would be around 262,144
-> 
-> We might ask seccomp guys to detect that the same program is used, by
-> maintaining a hash of already loaded ones.
-> ( I see struct seccomp_filter has a @usage refcount_t )
 
-+1, that would indeed be worth to pursue as a short term solution.
+Alexei Starovoitov writes:
+
+> On Wed, May 08, 2019 at 03:45:12PM +0100, Jiong Wang wrote:
+>> 
+>> I might be misunderstanding your points, please just shout if I am wrong.
+>> 
+>> Suppose the following BPF code:
+>> 
+>>   unsigned helper(unsigned long long, unsigned long long);
+>>   unsigned long long test(unsigned *a, unsigned int c)
+>>   {
+>>     unsigned int b = *a;
+>>     c += 10;
+>>     return helper(b, c);
+>>   }
+>> 
+>> We get the following instruction sequence by latest llvm
+>> (-O2 -mattr=+alu32 -mcpu=v3)
+>> 
+>>   test:
+>>     1: w1 = *(u32 *)(r1 + 0)
+>>     2: w2 += 10
+>>     3: call helper
+>>     4: exit
+>> 
+>> Argument Types
+>> ===
+>> Now instruction 1 and 2 are sub-register defines, and instruction 3, the
+>> call, use them implicitly.
+>> 
+>> Without the introduction of the new ARG_CONST_SIZE32 and
+>> ARG_CONST_SIZE32_OR_ZERO, we don't know what should be done with w1 and
+>> w2, zero-extend them should be fine for all cases, but could resulting in a
+>> few unnecessary zero-extension inserted.
+>
+> I don't think we're on the same page.
+> The argument type is _const_.
+> In the example above they are not _const_.
+
+Right, have read check_func_arg + check_helper_mem_access again.
+
+Looks like ARG_CONST_SIZE* are designed for describing memory access size
+for things like bounds checking. It must be a constant for stack access,
+otherwise prog will be rejected, but it looks to me variables are allowed
+for pkt/map access.
+
+But pkt/map has extra range info. So, indeed, ARG_CONST_SIZE32* are
+unnecessary, the width could be figured out through the range.
+
+Will just drop this patch in next version.
+
+And sorry for repeating it again, I am still concerned on the issue
+described at https://www.spinics.net/lists/netdev/msg568678.html.
+
+To be simple, zext insertion is based on eBPF ISA and assumes all
+sub-register defines from alu32 or narrow loads need it if the underlying
+hardware arches don't do it. However, some arches support hardware zext
+partially. For example, PowerPC, SPARC etc are 64-bit arches, while they
+don't do hardware zext on alu32, they do it for narrow loads. And RISCV is
+even more special, some alu32 has hardware zext, some don't.
+
+At the moment we have single backend hook "bpf_jit_hardware_zext", once a
+backend enable it, verifier just insert zero extension for all identified
+alu32 and narrow loads.
+
+Given verifier analysis info is not pushed down to JIT back-ends, verifier
+needs more back-end info pushed up from back-ends. Do you think make sense
+to introduce another hook "bpf_jit_hardware_zext_narrow_load" to at least
+prevent unnecessary zext inserted for narrowed loads for arches like
+PowerPC, SPARC?
+
+The hooks to control verifier zext insertion then becomes two:
+
+  bpf_jit_hardware_zext_alu32
+  bpf_jit_hardware_zext_narrow_load
+
+>> And that why I introduce these new argument types, without them, there
+>> could be more than 10% extra zext inserted on benchmarks like bpf_lxc.
+>
+> 10% extra ? so be it.
+> We're talking past each other here.
+> I agree with your optimization goal, but I think you're missing
+> the safety concerns I'm trying to explain.
+>> But for helper functions, they are done by native code which may not follow
+>> this convention. For example, on arm32, calling helper functions are just
+>> jump to and execute native code. And if the helper returns u32, it just set
+>> r0, no clearing of r1 which is the high 32-bit in the register pair
+>> modeling eBPF R0.
+>
+> it's arm32 bug then. All helpers _must_ return 64-bit back to bpf prog
+> and _must_ accept 64-bit from bpf prog.
