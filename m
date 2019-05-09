@@ -2,93 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7ED319594
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2019 01:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8874A195AA
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2019 01:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbfEIXEh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 9 May 2019 19:04:37 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:46552 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726698AbfEIXEf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 9 May 2019 19:04:35 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x49Mx7mB024518
-        for <bpf@vger.kernel.org>; Thu, 9 May 2019 16:04:33 -0700
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by m0089730.ppops.net with ESMTP id 2scrbes638-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 09 May 2019 16:04:33 -0700
-Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Thu, 9 May 2019 16:04:32 -0700
-Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
-        id 8CFCB7609CC; Thu,  9 May 2019 16:04:31 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Alexei Starovoitov <ast@kernel.org>
-Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
-To:     <davem@davemloft.net>
-CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: pull-request: bpf 2019-05-09
-Date:   Thu, 9 May 2019 16:04:31 -0700
-Message-ID: <20190509230431.3084008-1-ast@kernel.org>
-X-Mailer: git-send-email 2.20.0
+        id S1726716AbfEIXa2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 May 2019 19:30:28 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:42003 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726108AbfEIXa2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 May 2019 19:30:28 -0400
+Received: by mail-pf1-f193.google.com with SMTP id 13so2117353pfw.9;
+        Thu, 09 May 2019 16:30:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=X0EhyXdJpFVtlXticnttUl+SFARY0aY87LKd2dIvVQ8=;
+        b=rrj6r2+N1eUkVzqShP8wkR/b9dISnZO4EA4/zEYCDIsQVJRV6JHfrGWn4pffCN8o19
+         TjKH+cTIIbMC/vk7M2MYHc3hfBV3/Z9ZCGaJ+dDwTsdLLWKN7zEFxu/yDB1hUbLcWpD4
+         J+aqLuu98mK5B9LoN13oHSm+YP6vt6AWbsc1edwLBbojpiC44zKcwMGxk4hNBlYAFZA9
+         MaJrtJlogckB8GqGFFjEIFs0AIueoAXgMBv+k4QhrzUWSmcDg1mZoF057ghznJTZ8lW3
+         i8801UXoWWBshjd3+Cjp5o2ynv52vsODS1SPZVVA3RlgHpcMcVseiv5ICupUqZkO7f/V
+         DD8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=X0EhyXdJpFVtlXticnttUl+SFARY0aY87LKd2dIvVQ8=;
+        b=LWgSE7tzuPSmbrK++DQNheKwteG6iTdeNDorYX1Vali3DAWy1TRKrbaVcVhNhl5qaZ
+         D58g35sQtQaYtH/eZlyVGrFRceXDR3jakA7IZGuP7i0AWjWzX8+zXqVofpWpLl/YWkuM
+         trH92mmpKZQKOj0PNgw1oGedXawnjsvN/vO7MFjLXdzdEnWpB0/yN120ikejNocAiFER
+         x4z+NH68Tq12LAYTMwx0zxgU359GL3scbiMPjBM4PyydY99x904k/7ZCtSEVEh34A0Zn
+         nGRt6v5ZB3hcgEN0DLhuxacBQmEpt7YaSfJ2TA7bN7bmuak85DrDNzmcr2+j/xOVPOrC
+         Au5w==
+X-Gm-Message-State: APjAAAWDARFm1jHyPfv6cnp2vKPjhD0oIAK3Tv4T3/kzzPN5OxCWUTOf
+        X5WHYJ+M/STdYbCPj1qS4Y0=
+X-Google-Smtp-Source: APXvYqzI97GIocrYRREfaeAKKWQFV8YHUZCzCufPgYLgIUCfogXgsBmDXjrh21GF1y2tRQOtIywCWQ==
+X-Received: by 2002:a63:d252:: with SMTP id t18mr9426277pgi.131.1557444627765;
+        Thu, 09 May 2019 16:30:27 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:200::bc44])
+        by smtp.gmail.com with ESMTPSA id r12sm4762439pfn.144.2019.05.09.16.30.26
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 09 May 2019 16:30:26 -0700 (PDT)
+Date:   Thu, 9 May 2019 16:30:25 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@fb.com>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@google.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jann Horn <jannh@google.com>, Will Drewry <wad@chromium.org>
+Subject: Re: Question about seccomp / bpf
+Message-ID: <20190509233023.jrezshp2aglvoieo@ast-mbp>
+References: <CANn89iL_XLb5C-+DY5PRhneZDJv585xfbLtiEVc3-ejzNNXaVg@mail.gmail.com>
+ <20190508230941.6rqccgijqzkxmz4t@ast-mbp>
+ <CANn89iL_1n8Lb5yCEk3ZrBsUtPPWPZ=0BiELUo+jyBWfLfaAzg@mail.gmail.com>
+ <20190509044720.fxlcldi74atev5id@ast-mbp>
+ <CANn89i+v52ktezz5J_0of_EvTUozf86rP1Uh36HpbHf33uzDJg@mail.gmail.com>
+ <CANn89iK8e8ROW8CrtTDq9-_bFeg2MdeqAdjf10i6HiwKuaZi=g@mail.gmail.com>
+ <e525ec9d-df46-4280-b1c8-486a809f61e6@iogearbox.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-09_02:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
-X-FB-Internal: Safe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e525ec9d-df46-4280-b1c8-486a809f61e6@iogearbox.net>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David,
+On Thu, May 09, 2019 at 01:49:25PM +0200, Daniel Borkmann wrote:
+> On 05/09/2019 12:58 PM, Eric Dumazet wrote:
+> > On Thu, May 9, 2019 at 3:52 AM Eric Dumazet <edumazet@google.com> wrote:
+> >> On Wed, May 8, 2019 at 9:47 PM Alexei Starovoitov
+> >> <alexei.starovoitov@gmail.com> wrote:
+> >>> On Wed, May 08, 2019 at 04:17:29PM -0700, Eric Dumazet wrote:
+> >>>> On Wed, May 8, 2019 at 4:09 PM Alexei Starovoitov
+> >>>> <alexei.starovoitov@gmail.com> wrote:
+> >>>>> On Wed, May 08, 2019 at 02:21:52PM -0700, Eric Dumazet wrote:
+> >>>>>> Hi Alexei and Daniel
+> >>>>>>
+> >>>>>> I have a question about seccomp.
+> >>>>>>
+> >>>>>> It seems that after this patch, seccomp no longer needs a helper
+> >>>>>> (seccomp_bpf_load())
+> >>>>>>
+> >>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=bd4cf0ed331a275e9bf5a49e6d0fd55dffc551b8
+> >>>>>>
+> >>>>>> Are we detecting that a particular JIT code needs to call at least one
+> >>>>>> function from the kernel at all ?
+> >>>>>
+> >>>>> Currently we don't track such things and trying very hard to avoid
+> >>>>> any special cases for classic vs extended.
+> >>>>>
+> >>>>>> If the filter contains self-contained code (no call, just inline
+> >>>>>> code), then we could use any room in whole vmalloc space,
+> >>>>>> not only from the modules (which is something like 2GB total on x86_64)
+> >>>>>
+> >>>>> I believe there was an effort to make bpf progs and other executable things
+> >>>>> to be everywhere too, but I lost the track of it.
+> >>>>> It's not that hard to tweak x64 jit to emit 64-bit calls to helpers
+> >>>>> when delta between call insn and a helper is more than 32-bit that fits
+> >>>>> into call insn. iirc there was even such patch floating around.
+> >>>>>
+> >>>>> but what motivated you question? do you see 2GB space being full?!
+> >>>>
+> >>>> A customer seems to hit the limit, with about 75,000 threads,
+> >>>> each one having a seccomp filter with 6 pages (plus one guard page
+> >>>> given by vmalloc)
+> >>>
+> >>> Since cbpf doesn't have "fd as a program" concept I suspect
+> >>> the same program was loaded 75k times. What a waste of kernel memory.
+> >>> And, no, we're not going to extend or fix cbpf for this.
+> >>> cbpf is frozen. seccomp needs to start using ebpf.
+> >>> It can have one program to secure all threads.
+> >>> If necessary single program can be customized via bpf maps
+> >>> for each thread.
+> >>
+> >> Yes,  docker seems to have a very generic implementation and  should
+> >> probably be fixed
+> >> ( https://github.com/moby/moby/blob/v17.03.2-ce/profiles/seccomp/seccomp.go )
+> > 
+> > Even if the seccomp program was optimized to a few bytes, it would
+> > still consume at least 2 pages in module vmalloc space,
+> > so the limit in number of concurrent programs would be around 262,144
+> > 
+> > We might ask seccomp guys to detect that the same program is used, by
+> > maintaining a hash of already loaded ones.
+> > ( I see struct seccomp_filter has a @usage refcount_t )
+> 
+> +1, that would indeed be worth to pursue as a short term solution.
 
-The following pull-request contains BPF updates for your *net* tree.
+I'm not sure how that can work. seccomp's prctl accepts a list of insns.
+There is no handle.
+kernel can keep a hashtable of all progs ever loaded and do a search
+in it before loading another one, but that's an ugly hack.
+Another alternative is to attach seccomp prog to parent task
+instead of N childrens.
 
-The main changes are:
-
-1) three small fixes from Gary, Jiong and Lorenz.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-----------------------------------------------------------------
-
-The following changes since commit 494bc1d281b5a9f02a81249fa566d8c7e390c50c:
-
-  net/tcp: use deferred jump label for TCP acked data hook (2019-05-09 11:13:57 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to 3ef4641fbf870ee1ecd5f890a54881b7f0e20b90:
-
-  docs/btf: fix the missing section marks (2019-05-09 15:59:59 -0700)
-
-----------------------------------------------------------------
-Gary Lin (1):
-      docs/btf: fix the missing section marks
-
-Jiong Wang (1):
-      nfp: bpf: fix static check error through tightening shift amount adjustment
-
-Lorenz Bauer (1):
-      selftests: bpf: initialize bpf_object pointers where needed
-
- Documentation/bpf/btf.rst                                 |  2 ++
- drivers/net/ethernet/netronome/nfp/bpf/jit.c              | 13 ++++++++++++-
- tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c  |  2 +-
- tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c |  2 +-
- tools/testing/selftests/bpf/prog_tests/tp_attach_query.c  |  3 +++
- 5 files changed, 19 insertions(+), 3 deletions(-)
