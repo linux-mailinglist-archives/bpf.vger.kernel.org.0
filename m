@@ -2,157 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 171B119564
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2019 00:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2743E19587
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2019 01:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726726AbfEIWrr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 May 2019 18:47:47 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:44376 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726108AbfEIWrr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 May 2019 18:47:47 -0400
-Received: by mail-pf1-f193.google.com with SMTP id g9so2060525pfo.11
-        for <bpf@vger.kernel.org>; Thu, 09 May 2019 15:47:46 -0700 (PDT)
+        id S1726843AbfEIXBo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 May 2019 19:01:44 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:35123 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726809AbfEIXBn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 May 2019 19:01:43 -0400
+Received: by mail-lj1-f196.google.com with SMTP id m20so3457377lji.2;
+        Thu, 09 May 2019 16:01:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vZRf/O+AYO1pjasRFrKqOyps3I4eNGFPQS8KhShdX90=;
-        b=Ye5VPeIClHIvOa3yb/Txa2nZfvUQR7hyXGf8jlN8r7iBdWzaJtSWZksEgYFQpdW+le
-         CqqejGHpFq3qNoZ6SId2I8t2xH38UIuS4VQ0klh21WPl8hWhSZnaIBHQpZQdxggBGLJb
-         zkdOrKjnmeaLHbdYu1LbpWW+AHV9M7rizlsQA=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QCAH7KsOk9niJJskOeykDP/4/x+QWrsBEWl5YZqfzGQ=;
+        b=AG1RO7axa+jNvMfMyjCF4bPJoRHT/j76cITgLQd7sc/0MT/trc9thupCxB6jGGI7yo
+         yTTgNYppk8BcR/PRNhCejiqXFZ8y7d6Q7yMGIwY7HUVl4KwH/hI6m+j2bgOcZAr5OrhM
+         V7NcMpiCknzO+RuG0K5PAbjtc2G6dlzfy9w+ISaPIsXk5m72HYZMVzATJETECw3DpqeQ
+         fcrY/VUoH1aho5pyiYVmjwmBUBb9pCcJSFL8GSf80RmUkgB9FV+pDd4ibnI61kLgmYY3
+         nWlVwMou0cSOQNs7tXkOhGk9EDMS/pzw4XHhahoWR6uFMDb24Yo0hvttLEfxfezBhg1j
+         n4+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vZRf/O+AYO1pjasRFrKqOyps3I4eNGFPQS8KhShdX90=;
-        b=Df8RG8c6O7yNmM3g6wyJYSlvv3jUK61Zo7hcf8FQjKpEL/yIq0n/ezsolIikiJMFJS
-         r+Hzn9do/YFzfQmIMLESpslLya+/0ziUjKT9xy7oKYY9dmRRMeszklZcFdImn7OE/4RR
-         LaVdrwb2/tkDr80XFlS/B0cdEk55kxi0EOF3kyPY3Tvr1ox2ur1V2YycWKGKnbJUlpcU
-         kWPQRksQ1u53hh/XMIv3Gi1ubJFnOS/VR9V/2nrdupAiQzNqhtgNIFVPvgGmjZhz/0kf
-         kT1xuyUWGjA6pMjGisB1mgrprgddZwIPHxbem99F6PjV5sumwAzWVARGFATa1Zk70KII
-         Yd7w==
-X-Gm-Message-State: APjAAAVRxIm3ujm7l+cDaVYPv8O/m07fz7RJvFJhw13A1MqZY8ewzG8W
-        bGw10Qcj5/FXZ/oR5tlv4tz/wA==
-X-Google-Smtp-Source: APXvYqwO0Rpd3ouiehbTSdDrhChC3UhFFIDoCyfVb2yZJbYtD/jBLOeJxKNQDgTgWjLrHtJmKc4WbA==
-X-Received: by 2002:a65:43c8:: with SMTP id n8mr8758516pgp.365.1557442066517;
-        Thu, 09 May 2019 15:47:46 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id h6sm8950991pfk.188.2019.05.09.15.47.44
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 09 May 2019 15:47:45 -0700 (PDT)
-Date:   Thu, 9 May 2019 18:47:43 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        atish patra <atishp04@gmail.com>, bpf@vger.kernel.org,
-        Brendan Gregg <bgregg@netflix.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Daniel Colascione <dancol@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        duyuchao <yuchao.du@unisoc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Karim Yaghmour <karim.yaghmour@opersys.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-trace-devel@vger.kernel.org,
-        Manjo Raja Rao <linux@manojrajarao.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        =?utf-8?Q?Micha=C5=82?= Gregorczyk <michalgr@fb.com>,
-        Michal Gregorczyk <michalgr@live.com>,
-        Mohammad Husain <russoue@gmail.com>,
-        Olof Johansson <olof@lixom.net>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        Tamir Carmeli <carmeli.tamir@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH v3] kheaders: Move from proc to sysfs
-Message-ID: <20190509224743.GA29215@google.com>
-References: <20190506013456.86061-1-joel@joelfernandes.org>
- <CAK7LNAQesyT-vspoGKdgRqycZfhtJm5Upx2T6ij-yB5i4Nx5nw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QCAH7KsOk9niJJskOeykDP/4/x+QWrsBEWl5YZqfzGQ=;
+        b=QQkmXi5FoAxd2F7HeebCrUZQCa2uIbY4edtlUt8BpYLodY2c86vCGTSQ6fO6aVxrr+
+         xt60k62Da+iDGGtyZuVkeJ3VTdk+wcQFXicx6xLSEdBnJvnkBfLEVhzxUcdzA42IOo0v
+         +qGQ+GK/ZPHn1K+vDflWM14EYkNktDarl3PC+s2lIPt//NcDuTMI+W99zCaBDk+W8r1M
+         DXaWT0viQ/xiZdjvKX9gX3cQ2PYq8k1D2NzJjbCTrrHBbtmmcR1mgAJaBksle2vDCNEj
+         8+CLJj93XfW9zkTNJPWsogcq9+rS8ncoirzq/Ys7YygYYBemIm01sIgSaw8+GKeu5dM2
+         2M7Q==
+X-Gm-Message-State: APjAAAV2XYEOzjcefM+8myGS1YPbOjno6Gb9uy2VPuobsHZh+nZQpR/8
+        hNGk0RsZIZZqUfNRYquOkt2glJeO28iGcVTJ2m0=
+X-Google-Smtp-Source: APXvYqykhx77nicQEyVpJNQRqqYO5YWcVTu5AuzdiK3HnSrB1+jyjeKCCvXhnyW02duf/fprn7qsJZ7MHANsLKId2QY=
+X-Received: by 2002:a2e:6c02:: with SMTP id h2mr3761948ljc.103.1557442901356;
+ Thu, 09 May 2019 16:01:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAQesyT-vspoGKdgRqycZfhtJm5Upx2T6ij-yB5i4Nx5nw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190502154932.14698-1-lmb@cloudflare.com> <20190508164932.28729-1-lmb@cloudflare.com>
+ <20190509155600.4yypxncilarbayh4@kafai-mbp>
+In-Reply-To: <20190509155600.4yypxncilarbayh4@kafai-mbp>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 9 May 2019 16:01:29 -0700
+Message-ID: <CAADnVQ+Sr-ecQn7LCq=NOPwfeVT7QD9yy8DmPCPgxTMYKY=JAQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] selftests: bpf: initialize bpf_object pointers
+ where needed
+To:     Martin Lau <kafai@fb.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 08, 2019 at 12:43:34PM +0900, Masahiro Yamada wrote:
-> On Mon, May 6, 2019 at 10:37 AM Joel Fernandes (Google)
-> <joel@joelfernandes.org> wrote:
-> >
-> > The kheaders archive consisting of the kernel headers used for compiling
-> > bpf programs is in /proc. However there is concern that moving it here
-> > will make it permanent. Let us move it to /sys/kernel as discussed [1].
-> >
-> > [1] https://lore.kernel.org/patchwork/patch/1067310/#1265969
-> >
-> > Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> > This patch applies on top of the previous patch that was applied to the
-> > driver tree:
-> > https://lore.kernel.org/patchwork/patch/1067310/
-> >
-> > v2->v3: Fixed sysfs file mode nit (Greg).
-> > v1->v2: Fixed some kconfig nits.
-> >
-> >  init/Kconfig                                | 16 ++++-----
-> >  kernel/Makefile                             |  4 +--
-> >  kernel/{gen_ikh_data.sh => gen_kheaders.sh} |  2 +-
-> >  kernel/kheaders.c                           | 40 +++++++++------------
-> >  4 files changed, 26 insertions(+), 36 deletions(-)
-> >  rename kernel/{gen_ikh_data.sh => gen_kheaders.sh} (98%)
-> >
-> > diff --git a/init/Kconfig b/init/Kconfig
-> > index 26a364a95b57..c3661991b089 100644
-> > --- a/init/Kconfig
-> > +++ b/init/Kconfig
-> > @@ -579,15 +579,13 @@ config IKCONFIG_PROC
-> >           This option enables access to the kernel configuration file
-> >           through /proc/config.gz.
-> >
-> > -config IKHEADERS_PROC
-> > -       tristate "Enable kernel header artifacts through /proc/kheaders.tar.xz"
-> > -       depends on PROC_FS
-> > -       help
-> > -         This option enables access to the kernel header and other artifacts that
-> > -         are generated during the build process. These can be used to build eBPF
-> > -         tracing programs, or similar programs.  If you build the headers as a
-> > -         module, a module called kheaders.ko is built which can be loaded on-demand
-> > -         to get access to the headers.
-> > +config IKHEADERS
-> > +       tristate "Enable kernel headers through /sys/kernel/kheaders.tar.xz"
-> 
-> 
-> I suggested "depends on SYSFS" twice, both in v1 and v2.
-> 
-> https://lore.kernel.org/patchwork/patch/1069806/#1266147
-> https://lore.kernel.org/patchwork/patch/1070005/#1266279
+On Thu, May 9, 2019 at 8:56 AM Martin Lau <kafai@fb.com> wrote:
+>
+> On Wed, May 08, 2019 at 05:49:32PM +0100, Lorenz Bauer wrote:
+> > There are a few tests which call bpf_object__close on uninitialized
+> > bpf_object*, which may segfault. Explicitly zero-initialise these pointers
+> > to avoid this.
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
 
-Sorry about missing that. I have made a note of this, and can address it in a
-later patch. There is a more pressing issue with allmodconfig regression
-times so I will look into that first. Also a vacation is taking up some of my
-time.
-
-Needless to say I will get to it soon and the point has been duly noted!
-
-thanks,
-
- - Joel
+Applied. Thanks
