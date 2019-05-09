@@ -2,155 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E9039189D0
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2019 14:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D69A018D6F
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2019 17:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbfEIMcf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 May 2019 08:32:35 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:36881 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726557AbfEIMcf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 May 2019 08:32:35 -0400
-Received: by mail-wr1-f66.google.com with SMTP id a12so2834867wrn.4
-        for <bpf@vger.kernel.org>; Thu, 09 May 2019 05:32:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=1d8zXSY+AZq9wDDVDSlQy1dBUW/l/obQzBtjFOwR/O4=;
-        b=TZ4wpBf8jH0WoGpFl8+03hhNlUmkk84X6pGihYt3RrL6U6IG5P7IxQOrrqGvTrzdN/
-         ZYcZu9CKwDin9PE/wR4ZFRY3PCJuC7JYMOLI4XjiR5vXSOqK7CYyvjXyRQEokDACzqET
-         +OeMYQXGkVO4DErXshiDvf65LSft43g/bDz/rNyr4y/Q7exghNLGHsqmvIGRbAkgFHLX
-         0igTYS2GKAjnB2TA1flfgwkmCMRX1MbYFveaGCOJbIjEtyWGwNdFp0LjtHcQb63Iwvwg
-         NJRJB5G1wUWvVUo8ItA0wQiOVezeoRBS/QeKWJ80oXOkm3MprCD4FOWT7bNWI8eZNeJF
-         n9LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=1d8zXSY+AZq9wDDVDSlQy1dBUW/l/obQzBtjFOwR/O4=;
-        b=Zc0Ad2/JH/9HFmjVpkd8iwj1T2hCHt77LbDjHrL+0Lpt4jZdltQGddt+Cqq4ZSClCV
-         hahIAP5/Tug7GGw2RH8kn4yCt/NIQ5UI9fG/c3erA6E/8B2bcZZFD/kA/fE8lmHcA+6C
-         ecBwFETGeygeqyvxll/p95xXVA3WB9WaPZWbFhEnNfnLVyvc2zmBIpjXlUil29wxZahy
-         ZSy1lzjtDHyJaZbfeLBwj+R+qTTTw3E1zIAsqyakaaF85M0Uk0nRZkb8OVMaCruCaJhv
-         r+YdNhaTDRh9y1qPnENJ3EexQn0TDF7bJ7QbwPuu4KgftnfQBZMV3W5E34ULi7S0gp/8
-         P0fA==
-X-Gm-Message-State: APjAAAVvJ8iO62ttBb+YNpr6UV8gIf5Pzxbt39JRIb7T2PHRUAX+hKsG
-        kSyrJUVP3JbsrYEbDtiSq9Iuz9bUvQA=
-X-Google-Smtp-Source: APXvYqzqCmytXr95C7x7aoThg0NjaW4CzIEUltDwkfHqJ5lD0dpt2rKClwUL1zloQ0h8nwVhI1bVRQ==
-X-Received: by 2002:adf:d081:: with SMTP id y1mr2905745wrh.283.1557405153076;
-        Thu, 09 May 2019 05:32:33 -0700 (PDT)
-Received: from LAPTOP-V3S7NLPL ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id y7sm6836661wrg.45.2019.05.09.05.32.31
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 09 May 2019 05:32:32 -0700 (PDT)
-References: <1556880164-10689-1-git-send-email-jiong.wang@netronome.com> <1556880164-10689-2-git-send-email-jiong.wang@netronome.com> <20190506155041.ofxsvozqza6xrjep@ast-mbp> <87mujx6m4n.fsf@netronome.com> <20190508175111.hcbufw22mbksbpca@ast-mbp>
-User-agent: mu4e 0.9.18; emacs 25.2.2
-From:   Jiong Wang <jiong.wang@netronome.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiong Wang <jiong.wang@netronome.com>, daniel@iogearbox.net,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@netronome.com
-Subject: Re: [PATCH v6 bpf-next 01/17] bpf: verifier: offer more accurate helper function arg and return type
-In-reply-to: <20190508175111.hcbufw22mbksbpca@ast-mbp>
-Date:   Thu, 09 May 2019 13:32:30 +0100
-Message-ID: <87ef5795b5.fsf@netronome.com>
+        id S1726448AbfEIP4c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 May 2019 11:56:32 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:36504 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726187AbfEIP4c (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 9 May 2019 11:56:32 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x49Fqjxm013575;
+        Thu, 9 May 2019 08:56:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : cc : subject :
+ date : message-id : references : in-reply-to : content-type : content-id :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=o9rZxIUi9sTWfwwXpQggpRRur6p3Rn4x9DLgLuCyYVA=;
+ b=f8ZSjQxHbhBwLoSaZlBtlOGfgJrUA+rvhT1LP/REHbaix1409gjt6iMciQu2FP4RdoLA
+ F9/KLUFgQLLDEQ6wnGDVkatZ0LKyAx20jCqYoz4lLVCaq/Dl5JO9IWy+nO5Xs7TY5nF6
+ qcyeeSJrdi13+dows/cJVoBjN0foQtbw72E= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2scamua92m-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 09 May 2019 08:56:10 -0700
+Received: from ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) by
+ ash-exhub203.TheFacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 9 May 2019 08:56:09 -0700
+Received: from NAM01-BY2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 9 May 2019 08:56:09 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o9rZxIUi9sTWfwwXpQggpRRur6p3Rn4x9DLgLuCyYVA=;
+ b=Ev0jlJ/HHw48TO/llyvaW4ZvmJCTuUnhakKBswL3lMLwYtgbGMyyGe2aXkgDQtsrs9B7fDXn7EPVgMJSESqu5ExKoJGPNfiJeAfXGr36HtJB7gGiQ5pQjoJa6gDqeeh+N/qLtMLqb6XsrRfqUSGYbwR0uA7hDe+SQ6AR5gLG9/4=
+Received: from MWHPR15MB1790.namprd15.prod.outlook.com (10.174.255.19) by
+ MWHPR15MB1679.namprd15.prod.outlook.com (10.175.141.137) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1878.22; Thu, 9 May 2019 15:56:08 +0000
+Received: from MWHPR15MB1790.namprd15.prod.outlook.com
+ ([fe80::c1c6:4833:1762:cf29]) by MWHPR15MB1790.namprd15.prod.outlook.com
+ ([fe80::c1c6:4833:1762:cf29%7]) with mapi id 15.20.1856.012; Thu, 9 May 2019
+ 15:56:08 +0000
+From:   Martin Lau <kafai@fb.com>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf v2] selftests: bpf: initialize bpf_object pointers
+ where needed
+Thread-Topic: [PATCH bpf v2] selftests: bpf: initialize bpf_object pointers
+ where needed
+Thread-Index: AQHVBb4eqiQDNIICmU2K4snWKgFUPaZi8+gA
+Date:   Thu, 9 May 2019 15:56:07 +0000
+Message-ID: <20190509155600.4yypxncilarbayh4@kafai-mbp>
+References: <20190502154932.14698-1-lmb@cloudflare.com>
+ <20190508164932.28729-1-lmb@cloudflare.com>
+In-Reply-To: <20190508164932.28729-1-lmb@cloudflare.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR08CA0027.namprd08.prod.outlook.com
+ (2603:10b6:301:5f::40) To MWHPR15MB1790.namprd15.prod.outlook.com
+ (2603:10b6:301:4e::19)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::3:bd25]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7b4e7511-0120-4898-7a95-08d6d496d8ee
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:MWHPR15MB1679;
+x-ms-traffictypediagnostic: MWHPR15MB1679:
+x-microsoft-antispam-prvs: <MWHPR15MB16791D4640F497E4ED12C04DD5330@MWHPR15MB1679.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1332;
+x-forefront-prvs: 003245E729
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(366004)(396003)(346002)(376002)(136003)(39860400002)(189003)(199004)(54906003)(68736007)(33716001)(5660300002)(76176011)(11346002)(476003)(316002)(81156014)(486006)(86362001)(9686003)(81166006)(53936002)(8676002)(6512007)(52116002)(8936002)(4326008)(25786009)(109986005)(6246003)(256004)(14444005)(99286004)(229853002)(1076003)(6116002)(558084003)(6486002)(14454004)(2906002)(1671002)(305945005)(71200400001)(71190400001)(46003)(186003)(7736002)(73956011)(59246006)(478600001)(66946007)(446003)(66446008)(64756008)(66556008)(66476007)(386003)(102836004)(6506007)(6436002);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1679;H:MWHPR15MB1790.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: pxsQrXr5ZOWl5MuwXYVhtm466sHNwPiaREF6nwsbdriAYOPBoe6mxGg5WelPHbm10vZwhh9GohDQDQsKUrUB9bpk59uP6S7P74DJmAXQgxUfiFpMF4PXJi8Q9ysP+dxOtWZ9wu7Nf4OrZSHgCGd1Bt7zk6yxtBAGqsV5YblEU9DCl14RJ/FBYqzslVffji2IJ15SZu/FFWCbZH3h4w4CLDCLEcGLKk3XaQQlRmO2q9vsYslZXE9hXOgfi+ek/3oTpsJEDDvWXEryMTvG99ubeY+6uIcF9rUdRrZ1Z/nAyrbXu1IYd5ssXDzG+41MsZQWWH//Oq+aotpwXd4pL6QUJBtdDVh9tQ1DW/Ia/y41tQ30iaht6FI0mJGGnomc/PTX1C4lD29yNwJlCM8De16m1RuSh0aRWsU4OOp92XOx0Kw=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <A281699AEFA8FE45B532A60829520F21@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b4e7511-0120-4898-7a95-08d6d496d8ee
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 May 2019 15:56:07.8972
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1679
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-09_02:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=527 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905090091
+X-FB-Internal: deliver
+To:     unlisted-recipients:; (no To-header on input)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-Alexei Starovoitov writes:
-
-> On Wed, May 08, 2019 at 03:45:12PM +0100, Jiong Wang wrote:
->> 
->> I might be misunderstanding your points, please just shout if I am wrong.
->> 
->> Suppose the following BPF code:
->> 
->>   unsigned helper(unsigned long long, unsigned long long);
->>   unsigned long long test(unsigned *a, unsigned int c)
->>   {
->>     unsigned int b = *a;
->>     c += 10;
->>     return helper(b, c);
->>   }
->> 
->> We get the following instruction sequence by latest llvm
->> (-O2 -mattr=+alu32 -mcpu=v3)
->> 
->>   test:
->>     1: w1 = *(u32 *)(r1 + 0)
->>     2: w2 += 10
->>     3: call helper
->>     4: exit
->> 
->> Argument Types
->> ===
->> Now instruction 1 and 2 are sub-register defines, and instruction 3, the
->> call, use them implicitly.
->> 
->> Without the introduction of the new ARG_CONST_SIZE32 and
->> ARG_CONST_SIZE32_OR_ZERO, we don't know what should be done with w1 and
->> w2, zero-extend them should be fine for all cases, but could resulting in a
->> few unnecessary zero-extension inserted.
->
-> I don't think we're on the same page.
-> The argument type is _const_.
-> In the example above they are not _const_.
-
-Right, have read check_func_arg + check_helper_mem_access again.
-
-Looks like ARG_CONST_SIZE* are designed for describing memory access size
-for things like bounds checking. It must be a constant for stack access,
-otherwise prog will be rejected, but it looks to me variables are allowed
-for pkt/map access.
-
-But pkt/map has extra range info. So, indeed, ARG_CONST_SIZE32* are
-unnecessary, the width could be figured out through the range.
-
-Will just drop this patch in next version.
-
-And sorry for repeating it again, I am still concerned on the issue
-described at https://www.spinics.net/lists/netdev/msg568678.html.
-
-To be simple, zext insertion is based on eBPF ISA and assumes all
-sub-register defines from alu32 or narrow loads need it if the underlying
-hardware arches don't do it. However, some arches support hardware zext
-partially. For example, PowerPC, SPARC etc are 64-bit arches, while they
-don't do hardware zext on alu32, they do it for narrow loads. And RISCV is
-even more special, some alu32 has hardware zext, some don't.
-
-At the moment we have single backend hook "bpf_jit_hardware_zext", once a
-backend enable it, verifier just insert zero extension for all identified
-alu32 and narrow loads.
-
-Given verifier analysis info is not pushed down to JIT back-ends, verifier
-needs more back-end info pushed up from back-ends. Do you think make sense
-to introduce another hook "bpf_jit_hardware_zext_narrow_load" to at least
-prevent unnecessary zext inserted for narrowed loads for arches like
-PowerPC, SPARC?
-
-The hooks to control verifier zext insertion then becomes two:
-
-  bpf_jit_hardware_zext_alu32
-  bpf_jit_hardware_zext_narrow_load
-
->> And that why I introduce these new argument types, without them, there
->> could be more than 10% extra zext inserted on benchmarks like bpf_lxc.
->
-> 10% extra ? so be it.
-> We're talking past each other here.
-> I agree with your optimization goal, but I think you're missing
-> the safety concerns I'm trying to explain.
->> But for helper functions, they are done by native code which may not follow
->> this convention. For example, on arm32, calling helper functions are just
->> jump to and execute native code. And if the helper returns u32, it just set
->> r0, no clearing of r1 which is the high 32-bit in the register pair
->> modeling eBPF R0.
->
-> it's arm32 bug then. All helpers _must_ return 64-bit back to bpf prog
-> and _must_ accept 64-bit from bpf prog.
+On Wed, May 08, 2019 at 05:49:32PM +0100, Lorenz Bauer wrote:
+> There are a few tests which call bpf_object__close on uninitialized
+> bpf_object*, which may segfault. Explicitly zero-initialise these pointer=
+s
+> to avoid this.
+Acked-by: Martin KaFai Lau <kafai@fb.com>
