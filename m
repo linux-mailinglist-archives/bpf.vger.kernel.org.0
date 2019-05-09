@@ -2,115 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D69A018D6F
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2019 17:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35FBB18F03
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2019 19:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbfEIP4c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 May 2019 11:56:32 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:36504 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726187AbfEIP4c (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 9 May 2019 11:56:32 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x49Fqjxm013575;
-        Thu, 9 May 2019 08:56:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : cc : subject :
- date : message-id : references : in-reply-to : content-type : content-id :
- content-transfer-encoding : mime-version; s=facebook;
- bh=o9rZxIUi9sTWfwwXpQggpRRur6p3Rn4x9DLgLuCyYVA=;
- b=f8ZSjQxHbhBwLoSaZlBtlOGfgJrUA+rvhT1LP/REHbaix1409gjt6iMciQu2FP4RdoLA
- F9/KLUFgQLLDEQ6wnGDVkatZ0LKyAx20jCqYoz4lLVCaq/Dl5JO9IWy+nO5Xs7TY5nF6
- qcyeeSJrdi13+dows/cJVoBjN0foQtbw72E= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2scamua92m-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 09 May 2019 08:56:10 -0700
-Received: from ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) by
- ash-exhub203.TheFacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 9 May 2019 08:56:09 -0700
-Received: from NAM01-BY2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 9 May 2019 08:56:09 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o9rZxIUi9sTWfwwXpQggpRRur6p3Rn4x9DLgLuCyYVA=;
- b=Ev0jlJ/HHw48TO/llyvaW4ZvmJCTuUnhakKBswL3lMLwYtgbGMyyGe2aXkgDQtsrs9B7fDXn7EPVgMJSESqu5ExKoJGPNfiJeAfXGr36HtJB7gGiQ5pQjoJa6gDqeeh+N/qLtMLqb6XsrRfqUSGYbwR0uA7hDe+SQ6AR5gLG9/4=
-Received: from MWHPR15MB1790.namprd15.prod.outlook.com (10.174.255.19) by
- MWHPR15MB1679.namprd15.prod.outlook.com (10.175.141.137) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1878.22; Thu, 9 May 2019 15:56:08 +0000
-Received: from MWHPR15MB1790.namprd15.prod.outlook.com
- ([fe80::c1c6:4833:1762:cf29]) by MWHPR15MB1790.namprd15.prod.outlook.com
- ([fe80::c1c6:4833:1762:cf29%7]) with mapi id 15.20.1856.012; Thu, 9 May 2019
- 15:56:08 +0000
-From:   Martin Lau <kafai@fb.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>
-Subject: Re: [PATCH bpf v2] selftests: bpf: initialize bpf_object pointers
- where needed
-Thread-Topic: [PATCH bpf v2] selftests: bpf: initialize bpf_object pointers
- where needed
-Thread-Index: AQHVBb4eqiQDNIICmU2K4snWKgFUPaZi8+gA
-Date:   Thu, 9 May 2019 15:56:07 +0000
-Message-ID: <20190509155600.4yypxncilarbayh4@kafai-mbp>
-References: <20190502154932.14698-1-lmb@cloudflare.com>
- <20190508164932.28729-1-lmb@cloudflare.com>
-In-Reply-To: <20190508164932.28729-1-lmb@cloudflare.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR08CA0027.namprd08.prod.outlook.com
- (2603:10b6:301:5f::40) To MWHPR15MB1790.namprd15.prod.outlook.com
- (2603:10b6:301:4e::19)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::3:bd25]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7b4e7511-0120-4898-7a95-08d6d496d8ee
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:MWHPR15MB1679;
-x-ms-traffictypediagnostic: MWHPR15MB1679:
-x-microsoft-antispam-prvs: <MWHPR15MB16791D4640F497E4ED12C04DD5330@MWHPR15MB1679.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1332;
-x-forefront-prvs: 003245E729
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(366004)(396003)(346002)(376002)(136003)(39860400002)(189003)(199004)(54906003)(68736007)(33716001)(5660300002)(76176011)(11346002)(476003)(316002)(81156014)(486006)(86362001)(9686003)(81166006)(53936002)(8676002)(6512007)(52116002)(8936002)(4326008)(25786009)(109986005)(6246003)(256004)(14444005)(99286004)(229853002)(1076003)(6116002)(558084003)(6486002)(14454004)(2906002)(1671002)(305945005)(71200400001)(71190400001)(46003)(186003)(7736002)(73956011)(59246006)(478600001)(66946007)(446003)(66446008)(64756008)(66556008)(66476007)(386003)(102836004)(6506007)(6436002);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1679;H:MWHPR15MB1790.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: pxsQrXr5ZOWl5MuwXYVhtm466sHNwPiaREF6nwsbdriAYOPBoe6mxGg5WelPHbm10vZwhh9GohDQDQsKUrUB9bpk59uP6S7P74DJmAXQgxUfiFpMF4PXJi8Q9ysP+dxOtWZ9wu7Nf4OrZSHgCGd1Bt7zk6yxtBAGqsV5YblEU9DCl14RJ/FBYqzslVffji2IJ15SZu/FFWCbZH3h4w4CLDCLEcGLKk3XaQQlRmO2q9vsYslZXE9hXOgfi+ek/3oTpsJEDDvWXEryMTvG99ubeY+6uIcF9rUdRrZ1Z/nAyrbXu1IYd5ssXDzG+41MsZQWWH//Oq+aotpwXd4pL6QUJBtdDVh9tQ1DW/Ia/y41tQ30iaht6FI0mJGGnomc/PTX1C4lD29yNwJlCM8De16m1RuSh0aRWsU4OOp92XOx0Kw=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <A281699AEFA8FE45B532A60829520F21@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726878AbfEIR1H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 May 2019 13:27:07 -0400
+Received: from mail-it1-f198.google.com ([209.85.166.198]:53564 "EHLO
+        mail-it1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726714AbfEIR1H (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 May 2019 13:27:07 -0400
+Received: by mail-it1-f198.google.com with SMTP id q1so2742488itc.3
+        for <bpf@vger.kernel.org>; Thu, 09 May 2019 10:27:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=g48Dhm3yLTEZrnSrkdwgyIF4w5hBUxYzeM4OkxKBLnc=;
+        b=WNpgpDJ9MMyyXvLMTtg9PVXZfP5xsDK+CU2HJQc/Xu4zzZfGA1uMYavV2JiIpsNzH7
+         LMX2lquyoDunE8//pNQMxJQ/tJdot6XWHZD++YDCk4Yge31Gewo73JILiVJHS/WhVGBY
+         p8QjiEzSOAFyDiStzEuR8eHoMfkLkJrmUb0WAPJqUF0EOn5NejVYoieHy8XMLeazO+4l
+         3H5fyFTZgOBV9M9DVa+b5ffxoCB6Udv8PuaxAvFoec5qUjPSJVSthigUNAoL2WKcTQA3
+         KOHbC8Vkzh876IWJiNrc5T8EzKv0sbjx5X4VarzVdCBmbVjj6E4Vbo8+VhTeknyUg7Ax
+         L83g==
+X-Gm-Message-State: APjAAAXh1mAvMrsVTC717WovnNICHy6UmSg+MinCMOnSphZJAFVSQovc
+        mYk2ZtDownu7fJ8WVe3wWh8mDEflFw0RJ1rcB05rIvbOewA3
+X-Google-Smtp-Source: APXvYqzXAhnaZbPjX6PZnuEx+BfZwpai6VfZNHOUUBb+mWQTzrhb8xm63KISe+JenwX53s2M1ZwVVxOM+uH2ThTpQ856jPukPtIu
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7b4e7511-0120-4898-7a95-08d6d496d8ee
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 May 2019 15:56:07.8972
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1679
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-09_02:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=527 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905090091
-X-FB-Internal: deliver
-To:     unlisted-recipients:; (no To-header on input)
+X-Received: by 2002:a6b:6405:: with SMTP id t5mr2818480iog.190.1557422826047;
+ Thu, 09 May 2019 10:27:06 -0700 (PDT)
+Date:   Thu, 09 May 2019 10:27:06 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004fd863058877c251@google.com>
+Subject: KASAN: slab-out-of-bounds Read in ip_append_data
+From:   syzbot <syzbot+b8031b06e100c1c5292c@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, jon.maloy@ericsson.com, kafai@fb.com,
+        kuznet@ms2.inr.ac.ru, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com,
+        tipc-discussion@lists.sourceforge.net, yhs@fb.com,
+        ying.xue@windriver.com, yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 08, 2019 at 05:49:32PM +0100, Lorenz Bauer wrote:
-> There are a few tests which call bpf_object__close on uninitialized
-> bpf_object*, which may segfault. Explicitly zero-initialise these pointer=
-s
-> to avoid this.
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+Hello,
+
+syzbot found the following crash on:
+
+HEAD commit:    80f23212 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1630988ca00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=40a58b399941db7e
+dashboard link: https://syzkaller.appspot.com/bug?extid=b8031b06e100c1c5292c
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17b4aec8a00000
+
+The bug was bisected to:
+
+commit 52dfae5c85a4c1078e9f1d5e8947d4a25f73dd81
+Author: Jon Maloy <jon.maloy@ericsson.com>
+Date:   Thu Mar 22 19:42:52 2018 +0000
+
+     tipc: obtain node identity from interface by default
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10130c22a00000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=12130c22a00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14130c22a00000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+b8031b06e100c1c5292c@syzkaller.appspotmail.com
+Fixes: 52dfae5c85a4 ("tipc: obtain node identity from interface by default")
+
+==================================================================
+BUG: KASAN: slab-out-of-bounds in skb_queue_empty  
+include/linux/skbuff.h:1478 [inline]
+BUG: KASAN: slab-out-of-bounds in ip_append_data.part.0+0x16a/0x170  
+net/ipv4/ip_output.c:1207
+Read of size 8 at addr ffff8880a74d0bd4 by task udevd/7768
+
+CPU: 0 PID: 7768 Comm: udevd Not tainted 5.1.0+ #3
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  <IRQ>
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+  print_address_description.cold+0x7c/0x20d mm/kasan/report.c:188
+  __kasan_report.cold+0x1b/0x40 mm/kasan/report.c:317
+  kasan_report+0x12/0x20 mm/kasan/common.c:614
+  __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:132
+  skb_queue_empty include/linux/skbuff.h:1478 [inline]
+  ip_append_data.part.0+0x16a/0x170 net/ipv4/ip_output.c:1207
+  ip_append_data+0x6e/0x90 net/ipv4/ip_output.c:1204
+  icmp_push_reply+0x189/0x510 net/ipv4/icmp.c:375
+  __icmp_send+0xaa1/0x1400 net/ipv4/icmp.c:737
+  icmp_send include/net/icmp.h:47 [inline]
+  __udp4_lib_rcv+0x1fe9/0x2ca0 net/ipv4/udp.c:2318
+  udp_rcv+0x22/0x30 net/ipv4/udp.c:2477
+  ip_protocol_deliver_rcu+0x3bc/0x940 net/ipv4/ip_input.c:211
+  ip_local_deliver_finish+0x23b/0x390 net/ipv4/ip_input.c:238
+  NF_HOOK include/linux/netfilter.h:305 [inline]
+  NF_HOOK include/linux/netfilter.h:299 [inline]
+  ip_local_deliver+0x1e9/0x520 net/ipv4/ip_input.c:259
+  dst_input include/net/dst.h:439 [inline]
+  ip_rcv_finish+0x1e1/0x300 net/ipv4/ip_input.c:420
+  NF_HOOK include/linux/netfilter.h:305 [inline]
+  NF_HOOK include/linux/netfilter.h:299 [inline]
+  ip_rcv+0xe8/0x3f0 net/ipv4/ip_input.c:530
+  __netif_receive_skb_one_core+0x18d/0x1f0 net/core/dev.c:4990
+  __netif_receive_skb+0x2c/0x1d0 net/core/dev.c:5104
+  process_backlog+0x206/0x750 net/core/dev.c:5944
+  napi_poll net/core/dev.c:6367 [inline]
+  net_rx_action+0x4fa/0x1070 net/core/dev.c:6433
+  __do_softirq+0x266/0x95a kernel/softirq.c:293
+  invoke_softirq kernel/softirq.c:374 [inline]
+  irq_exit+0x180/0x1d0 kernel/softirq.c:414
+  exiting_irq arch/x86/include/asm/apic.h:536 [inline]
+  smp_apic_timer_interrupt+0x14a/0x570 arch/x86/kernel/apic/apic.c:1067
+  apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:806
+  </IRQ>
+RIP: 0010:find_vma+0xe4/0x170 mm/mmap.c:2243
+Code: 00 0f 85 8b 00 00 00 48 8b 5b 10 e8 f6 fe d2 ff 48 85 db 74 4c e8 ec  
+fe d2 ff 48 8d 7b e8 48 89 f8 48 c1 e8 03 42 80 3c 38 00 <75> 58 4c 8b 73  
+e8 4c 89 e6 4c 89 f7 e8 eb ff d2 ff 4d 39 e6 0f 87
+RSP: 0000:ffff888090777e68 EFLAGS: 00000246 ORIG_RAX: ffffffffffffff13
+RAX: 1ffff110123db801 RBX: ffff888091edc020 RCX: ffffffff819d8a45
+RDX: 0000000000000000 RSI: ffffffff819d8a24 RDI: ffff888091edc008
+RBP: ffff888090777e90 R08: ffff888093a62500 R09: ffff888093a62da0
+R10: ffff888093a62d80 R11: ffff888093a62500 R12: 00007ffd5ea48f40
+R13: 0000000000000000 R14: 00007f6ebd0e3000 R15: dffffc0000000000
+  do_user_addr_fault arch/x86/mm/fault.c:1418 [inline]
+  __do_page_fault+0x375/0xda0 arch/x86/mm/fault.c:1523
+  do_page_fault+0x71/0x581 arch/x86/mm/fault.c:1554
+  page_fault+0x1e/0x30 arch/x86/entry/entry_64.S:1142
+RIP: 0033:0x407821
+Code: 02 00 00 e9 c7 fb ff ff 8b 54 24 68 85 d2 0f 89 e9 fb ff ff 48 83 7c  
+24 40 00 0f 84 9c fa ff ff 48 8b 54 24 40 48 8b 44 24 58 <c6> 04 02 00 e9  
+89 fa ff ff 66 0f 1f 44 00 00 be 02 00 00 00 44 89
+RSP: 002b:00007ffd5ea45cf0 EFLAGS: 00010202
+RAX: 0000000000000000 RBX: 0000000002215250 RCX: 00000000ffffffff
+RDX: 00007ffd5ea48f40 RSI: 0000000000000002 RDI: 0000000000000007
+RBP: 0000000000625500 R08: 00007ffd5ebb80b0 R09: 00007ffd5ebb8080
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd5ea45dc0
+R13: 0000000000000001 R14: 00007ffd5ea45d54 R15: 0000000002215250
+
+Allocated by task 7810:
+  save_stack+0x23/0x90 mm/kasan/common.c:71
+  set_track mm/kasan/common.c:79 [inline]
+  __kasan_kmalloc mm/kasan/common.c:489 [inline]
+  __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:462
+  kasan_slab_alloc+0xf/0x20 mm/kasan/common.c:497
+  slab_post_alloc_hook mm/slab.h:437 [inline]
+  slab_alloc mm/slab.c:3357 [inline]
+  kmem_cache_alloc+0x11a/0x6f0 mm/slab.c:3519
+  sk_prot_alloc+0x67/0x2e0 net/core/sock.c:1602
+  sk_alloc+0x39/0xf70 net/core/sock.c:1662
+  inet_create net/ipv4/af_inet.c:325 [inline]
+  inet_create+0x36a/0xe10 net/ipv4/af_inet.c:251
+  __sock_create+0x3e6/0x750 net/socket.c:1430
+  sock_create_kern+0x3b/0x50 net/socket.c:1499
+  inet_ctl_sock_create+0x9d/0x1f0 net/ipv4/af_inet.c:1624
+  icmp_sk_init+0x11c/0x4c0 net/ipv4/icmp.c:1204
+  ops_init+0xb6/0x410 net/core/net_namespace.c:129
+  setup_net+0x2d3/0x740 net/core/net_namespace.c:315
+  copy_net_ns+0x1df/0x340 net/core/net_namespace.c:438
+  create_new_namespaces+0x400/0x7b0 kernel/nsproxy.c:107
+  unshare_nsproxy_namespaces+0xc2/0x200 kernel/nsproxy.c:206
+  ksys_unshare+0x440/0x980 kernel/fork.c:2661
+  __do_sys_unshare kernel/fork.c:2729 [inline]
+  __se_sys_unshare kernel/fork.c:2727 [inline]
+  __x64_sys_unshare+0x31/0x40 kernel/fork.c:2727
+  do_syscall_64+0x103/0x670 arch/x86/entry/common.c:298
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+Freed by task 0:
+(stack is not available)
+
+The buggy address belongs to the object at ffff8880a74d0680
+  which belongs to the cache RAW of size 1352
+The buggy address is located 12 bytes to the right of
+  1352-byte region [ffff8880a74d0680, ffff8880a74d0bc8)
+The buggy address belongs to the page:
+page:ffffea00029d3400 count:1 mapcount:0 mapping:ffff88821ac8bc00 index:0x0  
+compound_mapcount: 0
+flags: 0x1fffc0000010200(slab|head)
+raw: 01fffc0000010200 ffffea0002970088 ffffea000219cb88 ffff88821ac8bc00
+raw: 0000000000000000 ffff8880a74d0080 0000000100000005 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+  ffff8880a74d0a80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  ffff8880a74d0b00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> ffff8880a74d0b80: 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc
+                                                  ^
+  ffff8880a74d0c00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+  ffff8880a74d0c80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
