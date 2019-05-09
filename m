@@ -2,105 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B36418F2A
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2019 19:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBD7193D0
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2019 22:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbfEIRbK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 May 2019 13:31:10 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:36007 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726576AbfEIRbJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 May 2019 13:31:09 -0400
-Received: by mail-wm1-f67.google.com with SMTP id j187so4196618wmj.1
-        for <bpf@vger.kernel.org>; Thu, 09 May 2019 10:31:08 -0700 (PDT)
+        id S1726704AbfEIUwI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 May 2019 16:52:08 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:44420 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726682AbfEIUwH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 May 2019 16:52:07 -0400
+Received: by mail-lf1-f65.google.com with SMTP id n134so2542713lfn.11;
+        Thu, 09 May 2019 13:52:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=Crhk9lcEiYLiah6PZ+aUx1I7QMePtrTkjU5HwUJdRe4=;
-        b=RbLgxNTndfEdtJq/JKfG3xLgs38HGCAyqU3PSwyz+oOwdAAcySUrCSOaARtpMylKT2
-         JIEWcHLpwJ7bFDruKE9WaKHnRsa7O2hhmtHc5ICxd0igomPgSB7StLYT4L7tZtvZnl5o
-         PCmR9INEeCXN3+flYzjsJAXXY0kQbISUKR6XSm6rPwnb68w5cbQVNR+PBl1di1dlF8KK
-         EzwbppKgkGwcisOb+lw/6hbr49kNtQafEpOs6fy+m+JbQo8Owvl4ZSMpQBvWSOCkVWy1
-         wNY+fzQXZ4ZMdSXLrBKw+t3KrPO8wh+bIJH35QzyBmTHRuMjW3AeCXUh/0OYKTdX3NwP
-         SWKg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8izfY7QaATSiteV+jgAASzN3KHkaEiuR2IercyuoomA=;
+        b=onL47UGdbdYp6jBL7dw86aJtJ9+XHCblfj1S2UF8L/0l3M1HoE5EjfEZB+8ncJeQes
+         CDq5hzA3ZEaeJgjsNmL5afpuLujvbJ9AZg//GUXdDGZXNKg2qKFPZl0Nonmyig/rXyhM
+         4KJCtrxJYPhjcgpCenoPS2oNj0FSsh9AmdxSww3hqpHCC0RAt91ex0HsmooyKMhrNBP7
+         qcjLhwYf1WeT6N4kSKxq8vRbbkbjWTkFtDhgHs2bgzqpJiZbNT6iwE1AgIv0hQa9apvY
+         Z1YBewW/UToX3mwziHunEM9TDkS1f5ybpDHj9kbzaGXGI7liVus8VKLd6MTttJd9HqMS
+         KFuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=Crhk9lcEiYLiah6PZ+aUx1I7QMePtrTkjU5HwUJdRe4=;
-        b=sNShPNiRuSrrd1yM891CJk871Yep+aE/E8TP0DoQuJv0rAp7/mHlB9VC7L2YoSSYzi
-         mJcxQqO9wJCm7XSw/BSeecImIGXvMbyld/RZMg5REVKFIeseSE1XiBZmIpBNiQH7CC3/
-         3u4jDQI0v+F4UF0aoWQG2nBRqkKF8KUuVtvJEFm9pT02la9xtTDUPMaPplszZMPk8dbl
-         z1zuYeO0WbXf1viZKUVl/X1zP9Q+So4hXkG0vcju5wGT92slYIpnN+OKbi9qNuoSntBN
-         abVjYtvL+zTHB1Yt+jhjpvM8cFA01AmHKnl8y7oLqtJWmKbkpuWki3xvlC26qVC2Y2Dz
-         YknQ==
-X-Gm-Message-State: APjAAAUi+B5+X9Kqa5UVlOdkvkPUt7+Jl06yhgIV0XONiVne9W4+sQ1m
-        Af5LIj5a3FfSaAPieR2206js5voAtn4=
-X-Google-Smtp-Source: APXvYqwk6LbYk2adh0taZ4rOV2wKkSH1dyL+zGYUThe1eOD7Wggnz8ZSDdldWIfkbJxVLEyxcH4jpg==
-X-Received: by 2002:a1c:ef0c:: with SMTP id n12mr445593wmh.110.1557423067566;
-        Thu, 09 May 2019 10:31:07 -0700 (PDT)
-Received: from LAPTOP-V3S7NLPL (cpc1-cmbg19-2-0-cust104.5-4.cable.virginm.net. [82.27.180.105])
-        by smtp.gmail.com with ESMTPSA id w7sm3696145wmm.16.2019.05.09.10.31.06
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 09 May 2019 10:31:06 -0700 (PDT)
-References: <1556880164-10689-1-git-send-email-jiong.wang@netronome.com> <1556880164-10689-2-git-send-email-jiong.wang@netronome.com> <20190506155041.ofxsvozqza6xrjep@ast-mbp> <87mujx6m4n.fsf@netronome.com> <20190508175111.hcbufw22mbksbpca@ast-mbp> <87ef5795b5.fsf@netronome.com>
-User-agent: mu4e 0.9.18; emacs 25.2.2
-From:   Jiong Wang <jiong.wang@netronome.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     daniel@iogearbox.net, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@netronome.com
-Subject: Re: [PATCH v6 bpf-next 01/17] bpf: verifier: offer more accurate helper function arg and return type
-In-reply-to: <87ef5795b5.fsf@netronome.com>
-Date:   Thu, 09 May 2019 18:31:04 +0100
-Message-ID: <87v9yjk013.fsf@netronome.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8izfY7QaATSiteV+jgAASzN3KHkaEiuR2IercyuoomA=;
+        b=FuuCa2wVun9clu7QQgVbVdLhCGAvCLgYgAkBermclrX5kPxsC506S7Z/cGXr1zpNJ1
+         EApTEUy7OCzzwiHuPTTgf2zsskYVNjQU2qkLsElZf/hx+nDBsIFJsMXBCjlX0JYlmETy
+         dL8UWzMra3JtYBgA9s9YKlvcjE8cYf7xYAFpaluFsp0yiIM4jwp5AU/IGUcHW2reEMP9
+         hKOE3a2LxqkZeb5N2rQAam+dpzzhUh2BzCioA02HDKJnzompXGBRJSo93srmr+GOBS3g
+         a6DB7nUI/D/nqSGxAeayfEfLyQdPNdXwrfn7kov2x6wCyDmeSa1z0i33fWRbDpWP6Ez/
+         rtYA==
+X-Gm-Message-State: APjAAAXh81rT/bSYUMMOJJ5kdcFZqIyyELLqIJ5kZEYJ740F9YYEnACf
+        HVVPYfdrt4yzJY1l3AsXkSMfXp4XzkQyZAmmtiw=
+X-Google-Smtp-Source: APXvYqyNz7VRs76mnyUSutong8ogRBnUo1HREZ8RuBuXFpYB8nt0XjI4isUzAAUFh8CyIYznJaoqycgB5KRFCJL7Kmc=
+X-Received: by 2002:ac2:5606:: with SMTP id v6mr3318657lfd.129.1557435125608;
+ Thu, 09 May 2019 13:52:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20190507231224.GA3787@ip-172-31-29-54.us-west-2.compute.internal>
+In-Reply-To: <20190507231224.GA3787@ip-172-31-29-54.us-west-2.compute.internal>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 9 May 2019 13:51:54 -0700
+Message-ID: <CAADnVQ+e6TW9cH6yDmRSG5pRHXJiZajcx_q9SoPQi1keDROh-g@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: Fix compile warning in bpf selftest
+To:     Alakesh Haloi <alakesh.haloi@gmail.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-Jiong Wang writes:
-
-<snip>
-
-> At the moment we have single backend hook "bpf_jit_hardware_zext", once a
-> backend enable it, verifier just insert zero extension for all identified
-> alu32 and narrow loads.
+On Tue, May 7, 2019 at 4:12 PM Alakesh Haloi <alakesh.haloi@gmail.com> wrot=
+e:
 >
-> Given verifier analysis info is not pushed down to JIT back-ends, verifier
-> needs more back-end info pushed up from back-ends. Do you think make sense
-> to introduce another hook "bpf_jit_hardware_zext_narrow_load"
-
-Maybe just keep the current "bpf_jit_hardware_zext", but let it return
-int/enum instead of bool. Then verifier could know hardware ability through
-the enum value?
-
-
-> to at least
-> prevent unnecessary zext inserted for narrowed loads for arches like
-> PowerPC, SPARC?
+> This fixes the following compile time warning
 >
-> The hooks to control verifier zext insertion then becomes two:
+> flow_dissector_load.c: In function =E2=80=98detach_program=E2=80=99:
+> flow_dissector_load.c:55:19: warning: format not a string literal and no =
+format arguments [-Wformat-security]
+>    error(1, errno, command);
+>                    ^~~~~~~
+> Signed-off-by: Alakesh Haloi <alakesh.haloi@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/flow_dissector_load.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
->   bpf_jit_hardware_zext_alu32
->   bpf_jit_hardware_zext_narrow_load
->
->>> And that why I introduce these new argument types, without them, there
->>> could be more than 10% extra zext inserted on benchmarks like bpf_lxc.
->>
->> 10% extra ? so be it.
->> We're talking past each other here.
->> I agree with your optimization goal, but I think you're missing
->> the safety concerns I'm trying to explain.
->>> But for helper functions, they are done by native code which may not follow
->>> this convention. For example, on arm32, calling helper functions are just
->>> jump to and execute native code. And if the helper returns u32, it just set
->>> r0, no clearing of r1 which is the high 32-bit in the register pair
->>> modeling eBPF R0.
->>
->> it's arm32 bug then. All helpers _must_ return 64-bit back to bpf prog
->> and _must_ accept 64-bit from bpf prog.
+> diff --git a/tools/testing/selftests/bpf/flow_dissector_load.c b/tools/te=
+sting/selftests/bpf/flow_dissector_load.c
+> index 77cafa66d048..7136ab9ffa73 100644
+> --- a/tools/testing/selftests/bpf/flow_dissector_load.c
+> +++ b/tools/testing/selftests/bpf/flow_dissector_load.c
+> @@ -52,7 +52,7 @@ static void detach_program(void)
+>         sprintf(command, "rm -r %s", cfg_pin_path);
+>         ret =3D system(command);
+>         if (ret)
+> -               error(1, errno, command);
+> +               error(1, errno, "%s", command);
+>  }
 
+it was fixed month ago.
