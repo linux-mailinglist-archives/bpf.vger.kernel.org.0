@@ -2,241 +2,312 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E623F196A0
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2019 04:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F723197B6
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2019 06:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbfEJCR7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 May 2019 22:17:59 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:33556 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726765AbfEJCR7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 May 2019 22:17:59 -0400
-Received: by mail-pg1-f194.google.com with SMTP id h17so2203034pgv.0;
-        Thu, 09 May 2019 19:17:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=7VYa/MEIVczpQRsw/RIk5RlJQFeInzCPJlDSn6sQGlg=;
-        b=JHERfb9ZyjPyresjl9aaDPqMeZKvF1FShLS/m/ky8TScHxGL7U+T41SIotnyVJS0fc
-         2FY9A5LmqWxn+vAlqbZExhT5ldiYywh3m5zOkftJHULEpCBDnkrYZRBvY8luW212ft+G
-         O/PuCodxHnAc/SfeVWA5WXoZxYTAb3XnFQ/qiBcwa2vu4bI4LgJ3AaCrxrQtlis8SZoI
-         GwDZVz2OGO4rxbWJ0nv7sFZYIWKpr0jL9TKhWMC5Ozz8O3C1vXN572tv7HwaPPeNvK1R
-         oOgAtAI3Ey6T4aktpOkNr65izSB/w+GrIhDbtTORx7rw4Zf+xDvBj2aaUxnX1tYEr/9H
-         3K1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=7VYa/MEIVczpQRsw/RIk5RlJQFeInzCPJlDSn6sQGlg=;
-        b=Kple7zYfpo3XmEp24s1fBDHipAsYKiuYnJE/o/5KmI6WJ+tRvc7AWLyTKb2poVuYOu
-         jy9RPmFMHuJPZgLXTqQ58c2PTPgWBqzC5jvM+AvDoE3zMLfC6pEjyUTTh9u+1pne8VMU
-         ZvTRtzPzk5IW0+TXxyAlL8DDakz5y2roRODxLE2NCOGXNTOkoJUGmuJyuahPZd02iwgY
-         71eZ8nWd8SF7QmNSZZZo+lQ/9udfY4GCT7ZPGiN4XxdeaIroyPU/f+fZruIpDYQBVu+z
-         lE8bwlEU+UsZNO9OVBcdnSi1pW41/u8TQNrQiDIoIDLoLQbEtQk8zAWmKmX5UVpG24F4
-         uZRQ==
-X-Gm-Message-State: APjAAAWsWNGa7x9nksZQ9NIqdC2hjOud6tE97Ib70gVPz+SnJe1yXIRe
-        2l99s6GpCuGej4NAhOQ5dMI=
-X-Google-Smtp-Source: APXvYqyN1LffL7F3Fkqy7BlJsuFNIt6pIHf7nT4kRmDNyze3slWFemEJt1HD2iYXKotUMa8gsivQAA==
-X-Received: by 2002:aa7:8b83:: with SMTP id r3mr10214828pfd.248.1557454677889;
-        Thu, 09 May 2019 19:17:57 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:180::b86c])
-        by smtp.gmail.com with ESMTPSA id l1sm4508118pgp.9.2019.05.09.19.17.55
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 May 2019 19:17:57 -0700 (PDT)
-Date:   Thu, 9 May 2019 19:17:52 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        shuah <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net
-Subject: Re: [GIT PULL] Kselftest update for Linux 5.2-rc1
-Message-ID: <20190510021750.bxjda2wbuj3hdml7@ast-mbp>
-References: <9b434125-44b6-0e83-4f70-d1fd28752407@linuxfoundation.org>
- <20190509222043.b4zn32kuohduzzzr@ast-mbp>
- <dd983d42-d148-372d-3e57-b97c313d58b9@linuxfoundation.org>
- <28072ca5-f7c8-f16d-6881-aec3e8b61ae8@linuxfoundation.org>
+        id S1726910AbfEJEhe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 May 2019 00:37:34 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:35774 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725927AbfEJEhe (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 10 May 2019 00:37:34 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4A4XBdQ001188
+        for <bpf@vger.kernel.org>; Thu, 9 May 2019 21:37:33 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=EqYT+9L31dIrnbPraGziZNkdXZCOBSrIHR6fY2+lzhg=;
+ b=WkFAOIQzSQ63LIUobLn8tBVvbOBuqlN77Usp1N5vIJDGwf/n1CzOl52G04/JDU0JOecc
+ Sjn0tq42BuXAvMMyEpGxS+zxhsiqkqcIXcq4AQ0HVq9+g4TDfmaPmGaR0/q9lEh+UY45
+ WwnZXBd40DrBj9Vn3rkQWPkG/pbPFWSgYCc= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2scv04h331-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 09 May 2019 21:37:33 -0700
+Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::126) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Thu, 9 May 2019 21:37:32 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id A0B108625AE; Thu,  9 May 2019 21:37:31 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <andrii.nakryiko@gmail.com>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>, <ast@fb.com>,
+        <yhs@fb.com>
+CC:     Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf] libbpf: detect supported kernel BTF features and sanitize BTF
+Date:   Thu, 9 May 2019 21:37:23 -0700
+Message-ID: <20190510043723.3359135-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <28072ca5-f7c8-f16d-6881-aec3e8b61ae8@linuxfoundation.org>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-09_02:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
+X-FB-Internal: Safe
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 09, 2019 at 07:42:09PM -0600, Shuah Khan wrote:
-> On 5/9/19 4:40 PM, Shuah Khan wrote:
-> > On 5/9/19 4:20 PM, Alexei Starovoitov wrote:
-> > > On Mon, May 06, 2019 at 10:56:56AM -0600, Shuah Khan wrote:
-> > > > Hi Linus,
-> > > > 
-> > > > Please pull the following Kselftest update for Linux 5.2-rc1
-> > > > 
-> > > > This Kselftest update for Linux 5.2-rc1 consists of
-> > > > 
-> > > > - fixes to seccomp test, and kselftest framework
-> > > > - cleanups to remove duplicate header defines
-> > > > - fixes to efivarfs "make clean" target
-> > > > - cgroup cleanup path
-> > > > - Moving the IMA kexec_load selftest to selftests/kexec work from
-> > > >    Mimi Johar and Petr Vorel
-> > > > - A framework to kselftest for writing kernel test modules addition
-> > > >    from Tobin C. Harding
-> > > > 
-> > > > diff is attached.
-> > > > 
-> > > > thanks,
-> > > > -- Shuah
-> > > > 
-> > > > 
-> > > > ----------------------------------------------------------------
-> > > > The following changes since commit
-> > > > 15ade5d2e7775667cf191cf2f94327a4889f8b9d:
-> > > > 
-> > > >    Linux 5.1-rc4 (2019-04-07 14:09:59 -1000)
-> > > > 
-> > > > are available in the Git repository at:
-> > > > 
-> > > >    git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest
-> > > > tags/linux-kselftest-5.2-rc1
-> > > > 
-> > > > for you to fetch changes up to d917fb876f6eaeeea8a2b620d2a266ce26372f4d:
-> > > > 
-> > > >    selftests: build and run gpio when output directory is the src dir
-> > > > (2019-04-22 17:02:26 -0600)
-> > > > 
-> > > > ----------------------------------------------------------------
-> > > > linux-kselftest-5.2-rc1
-> > > > 
-> > > > This Kselftest update for Linux 5.2-rc1 consists of
-> > > > 
-> > > > - fixes to seccomp test, and kselftest framework
-> > > > - cleanups to remove duplicate header defines
-> > > > - fixes to efivarfs "make clean" target
-> > > > - cgroup cleanup path
-> > > > - Moving the IMA kexec_load selftest to selftests/kexec work from
-> > > >    Mimi Johar and Petr Vorel
-> > > > - A framework to kselftest for writing kernel test modules addition
-> > > >    from Tobin C. Harding
-> > > > 
-> > > > ----------------------------------------------------------------
-> > > > Kees Cook (3):
-> > > >        selftests/seccomp: Handle namespace failures gracefully
-> > > >        selftests/harness: Add 30 second timeout per test
-> > > >        selftests/ipc: Fix msgque compiler warnings
-> > > > 
-> > > > Mathieu Desnoyers (1):
-> > > >        rseq/selftests: Adapt number of threads to the number of
-> > > > detected cpus
-> > > > 
-> > > > Mimi Zohar (9):
-> > > >        selftests/kexec: move the IMA kexec_load selftest to
-> > > > selftests/kexec
-> > > >        selftests/kexec: cleanup the kexec selftest
-> > > >        selftests/kexec: define a set of common functions
-> > > >        selftests/kexec: define common logging functions
-> > > >        selftests/kexec: define "require_root_privileges"
-> > > >        selftests/kexec: kexec_file_load syscall test
-> > > >        selftests/kexec: check kexec_load and kexec_file_load are enabled
-> > > >        selftests/kexec: make kexec_load test independent of IMA
-> > > > being enabled
-> > > >        selftests/kexec: update get_secureboot_mode
-> > > > 
-> > > > Petr Vorel (1):
-> > > >        selftests/kexec: Add missing '=y' to config options
-> > > > 
-> > > > Po-Hsu Lin (1):
-> > > >        selftests/efivarfs: clean up test files from test_create*()
-> > > > 
-> > > > Roman Gushchin (1):
-> > > >        selftests: cgroup: fix cleanup path in
-> > > > test_memcg_subtree_control()
-> > > > 
-> > > > Sabyasachi Gupta (4):
-> > > >        selftest/x86/mpx-dig.c: Remove duplicate header
-> > > >        selftest/timers: Remove duplicate header
-> > > >        selftest/rseq: Remove duplicate header
-> > > >        selftest/gpio: Remove duplicate header
-> > > > 
-> > > > Shuah Khan (2):
-> > > >        selftests: fix headers_install circular dependency
-> > > 
-> > > Shuah,
-> > > 
-> > > the commit 8ce72dc32578 ("selftests: fix headers_install circular
-> > > dependency")
-> > > broke our build/test workflow, since it added:
-> > >    ifneq ($(KBUILD_OUTPUT),)
-> > >            OUTPUT := $(KBUILD_OUTPUT)
-> > >    else
-> > > 
-> > > which means that all of selftests/bpf artifacts are now going into
-> > > main build directory cluttering it with all sorts of .o, generated files
-> > > and executables.
-> > > The end result is humans and scripts can no longer find tests.
-> 
-> bpf build fails with the above commit. However, even without it, I am
-> seeing bpf objects going to tools/testing/selftests/bpf
-> 
-> I reverted the commit and ran your use-case:
-> 
-> export KBUILD_OUTPUT=/tmp/kselftest_bpf
-> cd tools/testing/selftests/bpf/
-> make
-> ./test_verifier
-> 
-> I see bpf objects in tools/testing/selftests/bpf/ and I can run the
-> test.
-> 
-> What am I missing? The only way ./test_verifier would work is if
-> test_verifier is in tools/testing/selftests/bpf/
+Depending on used versions of libbpf, Clang, and kernel, it's possible to
+have valid BPF object files with valid BTF information, that still won't
+load successfully due to Clang emitting newer BTF features (e.g.,
+BTF_KIND_FUNC, .BTF.ext's line_info/func_info, BTF_KIND_DATASEC, etc), that
+are not yet supported by older kernel.
 
-That's the point. All artifacts should be in tools/testing/selftests/bpf/
-if 'make' was done there regardless of KBUILD_OUTPUT.
+This patch adds detection of BTF features and sanitizes BPF object's BTF
+by substituting various supported BTF kinds, which have compatible layout:
+  - BTF_KIND_FUNC -> BTF_KIND_TYPEDEF
+  - BTF_KIND_FUNC_PROTO -> BTF_KIND_ENUM
+  - BTF_KIND_VAR -> BTF_KIND_INT
+  - BTF_KIND_DATASEC -> BTF_KIND_STRUCT
 
-> I am curious what you are actually seeing with this commit?
-> 
-> With the 8ce72dc32578
-> 
-> What I see is - if KBUILD_OUTPUT directory is missing, then the make
-> just fails and the following diff fixes that problem:
+Replacement is done in such a way as to preserve as much information as
+possible (names, sizes, etc) where possible without violating kernel's
+validation rules.
 
-KBUILD_OUTPUT is a valid dir where kernel build goes.
+Reported-by: Alexei Starovoitov <ast@fb.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/libbpf.c | 185 ++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 184 insertions(+), 1 deletion(-)
 
-> diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-> index 098dd0065fb1..074ce7d26a9d 100644
-> --- a/tools/testing/selftests/lib.mk
-> +++ b/tools/testing/selftests/lib.mk
-> @@ -13,6 +13,7 @@ ifeq (0,$(MAKELEVEL))
->                 DEFAULT_INSTALL_HDR_PATH := 1
->         endif
->      endif
-> +$(shell mkdir -p $(OUTPUT))
-
-makefile should not create the dir this automatically.
-
->  endif
->  selfdir = $(realpath $(dir $(filter %/lib.mk,$(MAKEFILE_LIST))))
-> 
-> 
-> Now when I run
-> 
-> cd tools/testing/selftests/bpf/
-> make
-> ./test_verifier
-> 
-> bpf objects end up in /tmp/kselftest_bpf
-> 
-> which is what should happen when KBUILD_OUPUT is set.
-
-No. KBUILD_OUPUT must be ignored while building selftests/bpf.
-Just like it's ignored when samples/bpf/ are build.
-People do 'cd samples/bpf; make; run stuff'
-and they do the same 'cd .../selftests/bpf; make; run'
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 11a65db4b93f..0813c4ad5d11 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -128,6 +128,10 @@ struct bpf_capabilities {
+ 	__u32 name:1;
+ 	/* v5.2: kernel support for global data sections. */
+ 	__u32 global_data:1;
++	/* BTF_KIND_FUNC and BTF_KIND_FUNC_PROTO support */
++	__u32 btf_func:1;
++	/* BTF_KIND_VAR and BTF_KIND_DATASEC support */
++	__u32 btf_datasec:1;
+ };
+ 
+ /*
+@@ -1021,6 +1025,81 @@ static bool section_have_execinstr(struct bpf_object *obj, int idx)
+ 	return false;
+ }
+ 
++static void bpf_object__sanitize_btf(struct bpf_object *obj)
++{
++#define BTF_INFO_ENC(kind, kind_flag, vlen) \
++	((!!(kind_flag) << 31) | ((kind) << 24) | ((vlen) & BTF_MAX_VLEN))
++#define BTF_INT_ENC(encoding, bits_offset, nr_bits) \
++	((encoding) << 24 | (bits_offset) << 16 | (nr_bits))
++
++	bool has_datasec = obj->caps.btf_datasec;
++	bool has_func = obj->caps.btf_func;
++	struct btf *btf = obj->btf;
++	struct btf_type *t;
++	int i, j, vlen;
++	__u16 kind;
++
++	if (!obj->btf || (has_func && has_datasec))
++		return;
++
++	for (i = 1; i <= btf__get_nr_types(btf); i++) {
++		t = (struct btf_type *)btf__type_by_id(btf, i);
++		kind = BTF_INFO_KIND(t->info);
++
++		if (!has_datasec && kind == BTF_KIND_VAR) {
++			/* replace VAR with INT */
++			t->info = BTF_INFO_ENC(BTF_KIND_INT, 0, 0);
++			t->size = sizeof(int);
++			*(int *)(t+1) = BTF_INT_ENC(0, 0, 32);
++		} else if (!has_datasec && kind == BTF_KIND_DATASEC) {
++			/* replace DATASEC with STRUCT */
++			struct btf_var_secinfo *v = (void *)(t + 1);
++			struct btf_member *m = (void *)(t + 1);
++			struct btf_type *vt;
++			char *name;
++
++			name = (char *)btf__name_by_offset(btf, t->name_off);
++			while (*name) {
++				if (*name == '.')
++					*name = '_';
++				name++;
++			}
++
++			vlen = BTF_INFO_VLEN(t->info);
++			t->info = BTF_INFO_ENC(BTF_KIND_STRUCT, 0, vlen);
++			for (j = 0; j < vlen; j++, v++, m++) {
++				/* order of field assignments is important */
++				m->offset = v->offset * 8;
++				m->type = v->type;
++				/* preserve variable name as member name */
++				vt = (void *)btf__type_by_id(btf, v->type);
++				m->name_off = vt->name_off;
++			}
++		} else if (!has_func && kind == BTF_KIND_FUNC_PROTO) {
++			/* replace FUNC_PROTO with ENUM */
++			vlen = BTF_INFO_VLEN(t->info);
++			t->info = BTF_INFO_ENC(BTF_KIND_ENUM, 0, vlen);
++			t->size = sizeof(__u32); /* kernel enforced */
++		} else if (!has_func && kind == BTF_KIND_FUNC) {
++			/* replace FUNC with TYPEDEF */
++			t->info = BTF_INFO_ENC(BTF_KIND_TYPEDEF, 0, 0);
++		}
++	}
++#undef BTF_INFO_ENC
++#undef BTF_INT_ENC
++}
++
++static void bpf_object__sanitize_btf_ext(struct bpf_object *obj)
++{
++	if (!obj->btf_ext)
++		return;
++
++	if (!obj->caps.btf_func) {
++		btf_ext__free(obj->btf_ext);
++		obj->btf_ext = NULL;
++	}
++}
++
+ static int bpf_object__elf_collect(struct bpf_object *obj, int flags)
+ {
+ 	Elf *elf = obj->efile.elf;
+@@ -1164,8 +1243,10 @@ static int bpf_object__elf_collect(struct bpf_object *obj, int flags)
+ 			obj->btf = NULL;
+ 		} else {
+ 			err = btf__finalize_data(obj, obj->btf);
+-			if (!err)
++			if (!err) {
++				bpf_object__sanitize_btf(obj);
+ 				err = btf__load(obj->btf);
++			}
+ 			if (err) {
+ 				pr_warning("Error finalizing and loading %s into kernel: %d. Ignored and continue.\n",
+ 					   BTF_ELF_SEC, err);
+@@ -1187,6 +1268,8 @@ static int bpf_object__elf_collect(struct bpf_object *obj, int flags)
+ 					   BTF_EXT_ELF_SEC,
+ 					   PTR_ERR(obj->btf_ext));
+ 				obj->btf_ext = NULL;
++			} else {
++				bpf_object__sanitize_btf_ext(obj);
+ 			}
+ 		}
+ 	}
+@@ -1556,12 +1639,112 @@ bpf_object__probe_global_data(struct bpf_object *obj)
+ 	return 0;
+ }
+ 
++static int try_load_btf(const char *raw_types, size_t types_len,
++			const char *str_sec, size_t str_len)
++{
++	char buf[1024];
++	struct btf_header hdr = {
++		.magic = BTF_MAGIC,
++		.version = BTF_VERSION,
++		.hdr_len = sizeof(struct btf_header),
++		.type_len = types_len,
++		.str_off = types_len,
++		.str_len = str_len,
++	};
++	int btf_fd, btf_len;
++	__u8 *raw_btf;
++
++	btf_len = hdr.hdr_len + hdr.type_len + hdr.str_len;
++	raw_btf = malloc(btf_len);
++	if (!raw_btf)
++		return -ENOMEM;
++
++	memcpy(raw_btf, &hdr, sizeof(hdr));
++	memcpy(raw_btf + hdr.hdr_len, raw_types, hdr.type_len);
++	memcpy(raw_btf + hdr.hdr_len + hdr.type_len, str_sec, hdr.str_len);
++
++	btf_fd = bpf_load_btf(raw_btf, btf_len, buf, 1024, 0);
++	if (btf_fd < 0) {
++		free(raw_btf);
++		return 0;
++	}
++
++	close(btf_fd);
++	free(raw_btf);
++	return 1;
++}
++
++#define BTF_INFO_ENC(kind, kind_flag, vlen) \
++	((!!(kind_flag) << 31) | ((kind) << 24) | ((vlen) & BTF_MAX_VLEN))
++#define BTF_TYPE_ENC(name, info, size_or_type) (name), (info), (size_or_type)
++#define BTF_INT_ENC(encoding, bits_offset, nr_bits) \
++	((encoding) << 24 | (bits_offset) << 16 | (nr_bits))
++#define BTF_TYPE_INT_ENC(name, encoding, bits_offset, bits, sz) \
++	BTF_TYPE_ENC(name, BTF_INFO_ENC(BTF_KIND_INT, 0, 0), sz), \
++	BTF_INT_ENC(encoding, bits_offset, bits)
++#define BTF_PARAM_ENC(name, type) (name), (type)
++#define BTF_VAR_SECINFO_ENC(type, offset, size) (type), (offset), (size)
++static int bpf_object__probe_btf_func(struct bpf_object *obj)
++{
++	const char strs[] = "\0int\0x\0a";
++	/* void x(int a) {} */
++	__u32 types[] = {
++		/* int */
++		BTF_TYPE_INT_ENC(1, BTF_INT_SIGNED, 0, 32, 4),  /* [1] */
++		/* FUNC_PROTO */                                /* [2] */
++		BTF_TYPE_ENC(0, BTF_INFO_ENC(BTF_KIND_FUNC_PROTO, 0, 1), 0),
++		BTF_PARAM_ENC(7, 1),
++		/* FUNC x */                                    /* [3] */
++		BTF_TYPE_ENC(5, BTF_INFO_ENC(BTF_KIND_FUNC, 0, 0), 2),
++	};
++	int res;
++
++	res = try_load_btf((char *)types, sizeof(types), strs, sizeof(strs));
++	if (res < 0)
++		return res;
++	if (res > 0)
++		obj->caps.btf_func = 1;
++	return 0;
++}
++
++static int bpf_object__probe_btf_datasec(struct bpf_object *obj)
++{
++	const char strs[] = "\0x\0.data";
++	/* static int a; */
++	__u32 types[] = {
++		/* int */
++		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),  /* [1] */
++		/* VAR x */                                     /* [2] */
++		BTF_TYPE_ENC(1, BTF_INFO_ENC(BTF_KIND_VAR, 0, 0), 1),
++		BTF_VAR_STATIC,
++		/* DATASEC val */                               /* [3] */
++		BTF_TYPE_ENC(3, BTF_INFO_ENC(BTF_KIND_DATASEC, 0, 1), 4),
++		BTF_VAR_SECINFO_ENC(2, 0, 4),
++	};
++	int res;
++
++	res = try_load_btf((char *)&types, sizeof(types), strs, sizeof(strs));
++	if (res < 0)
++		return res;
++	if (res > 0)
++		obj->caps.btf_datasec = 1;
++	return 0;
++}
++#undef BTF_INFO_ENC
++#undef BTF_TYPE_ENC
++#undef BTF_INT_ENC
++#undef BTF_TYPE_INT_ENC
++#undef BTF_PARAM_ENC
++#undef BTF_VAR_SECINFO_ENC
++
+ static int
+ bpf_object__probe_caps(struct bpf_object *obj)
+ {
+ 	int (*probe_fn[])(struct bpf_object *obj) = {
+ 		bpf_object__probe_name,
+ 		bpf_object__probe_global_data,
++		bpf_object__probe_btf_func,
++		bpf_object__probe_btf_datasec,
+ 	};
+ 	int i, ret;
+ 
+-- 
+2.17.1
 
