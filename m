@@ -2,453 +2,359 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D6B19F94
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2019 16:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 731A219FF9
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2019 17:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727516AbfEJOvq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 May 2019 10:51:46 -0400
-Received: from mail-wr1-f50.google.com ([209.85.221.50]:36893 "EHLO
-        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727472AbfEJOvq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 May 2019 10:51:46 -0400
-Received: by mail-wr1-f50.google.com with SMTP id a12so8272585wrn.4
-        for <bpf@vger.kernel.org>; Fri, 10 May 2019 07:51:44 -0700 (PDT)
+        id S1727469AbfEJPR6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 May 2019 11:17:58 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:38941 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727374AbfEJPR5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 May 2019 11:17:57 -0400
+Received: by mail-ot1-f65.google.com with SMTP id r7so1416879otn.6
+        for <bpf@vger.kernel.org>; Fri, 10 May 2019 08:17:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=5Nx6DKYjRH/S3UFhKToHF83aEKiWRiGWoiR2FaHMQnI=;
-        b=JiepDImx3WZHjL5/MJp0nxhPAZ27iDgUDmJU1uxlKHXHIaf+SR7KLxwgrPjISi4QSY
-         tjic//cPW5zXAC7T9aW1qZXFzkHp6/tz3FVTMx3FF3xL6LoW0eGVNbzzPbKUO10Pr83S
-         J5LDqj6Q1sBlALsR9VQlCyJcOHrDUaxLfV5sz/rs5qPm8hPam1Z7KaL3lKgh/m0XXo65
-         SsyzeqPcoN0Cqjp9of2NxvGcZMnyjOUVCpBaVNlDj49DctgjlWaPNHlN/tMjqXILtIV2
-         z1H/ZXzuGhWh7rl2mgtGaitNFykruwyPSQQ35H3R5Sgo2Ekw4ipo9LJHXF9+T5Ei7KLe
-         MsvQ==
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q0AdmB2Ribb69WZgIXem/aSFpim7bXdsvKjI28i23gE=;
+        b=rZqCvDmT0+AXssSXGnAA9AJw4wXWq874vYPoin+DMy3r6gawNMT7DWg6746jroDd/x
+         sShBCQugXHw07kkMFceLr/UxI/pxoZ5WZtwQ4UbYA6fQJvyA4a/wVn+YBudMiG+YRTO9
+         pyBj7zp8vJV5aGsfXO35kFOT1AzQt8+v17OrM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=5Nx6DKYjRH/S3UFhKToHF83aEKiWRiGWoiR2FaHMQnI=;
-        b=rfqUhysCCgKhEgahlRwv3c1ChW6cOStGKGNNPR4bWOdVXbDsli2ljM1IQBKrU3H64E
-         FbybNM1/9fTYgXYMO8s/79ZitfWkhu3NETlDsXg0tRRiVbpQaJoBsleJ2fXtDg4afqWe
-         q/p5nZb5MgyOjogV+M+3+MaC7sljx1Za/i/K3XV6E1IpT9eF4SupzBOU8c6Jb30GC5Yo
-         u4/4y8FIXdiHDTb1KNBVIrtFl2QLnnpGyBfyvvzfQwIrsAodaST1GuSlbtDew4C6Ho7/
-         47S9BYWm9Xs9MRkfn4+XVcxE2QAWTL6wT9vPKI2OfSUfQvSHoKCw6c+xfcCZEgk4DunD
-         AE/Q==
-X-Gm-Message-State: APjAAAXDpHVVMfQnLUq4AlsxJvsQTcLzcarY8REcr90/wPFIIGtUkjlG
-        BxABdTfySkzEzY03re4ZBmxPFg==
-X-Google-Smtp-Source: APXvYqxHG/gdePAi+dWSR92CqU7h/6kTd3bb2DU0k0DcUitxGhJ2BLMs1ZZbwlFAscwBoH6hV55jUw==
-X-Received: by 2002:adf:e30d:: with SMTP id b13mr40824wrj.246.1557499903684;
-        Fri, 10 May 2019 07:51:43 -0700 (PDT)
-Received: from reblochon.netronome.com ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id p17sm7561027wrg.92.2019.05.10.07.51.42
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 10 May 2019 07:51:42 -0700 (PDT)
-From:   Quentin Monnet <quentin.monnet@netronome.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@netronome.com,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Yonghong Song <yhs@fb.com>
-Subject: [PATCH bpf 4/4] tools: bpf: synchronise BPF UAPI header with tools
-Date:   Fri, 10 May 2019 15:51:25 +0100
-Message-Id: <20190510145125.8416-5-quentin.monnet@netronome.com>
-X-Mailer: git-send-email 2.14.1
-In-Reply-To: <20190510145125.8416-1-quentin.monnet@netronome.com>
-References: <20190510145125.8416-1-quentin.monnet@netronome.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q0AdmB2Ribb69WZgIXem/aSFpim7bXdsvKjI28i23gE=;
+        b=ue1GNR+uSvumDthtZy7+8XcA13NIPHC+0avfuwS5cEZftPP5jJsDXr5tqBEotGsoy2
+         DHKbPoPfmzPgK3VdvzyR/0z0EpSxIdT347Y6mKkgZKC5v1hQ9VHgUxybHss4P3iWgIgg
+         J9qlMtAlG8758q5hPn0xuuQqeyQMpjiNH5AXJPjokPgelCVLPneWSoSa1zAzqyuBDRle
+         o+yUxbKjSpXqtwMXs6FlGLYfPaWF9FtZRdmkh5OAW7vz2ov3tk6s/swcag4msjatLxoe
+         jPdwqcc0jY2X1B7DuEdUBpXL7uQldBtU/2UYvwOdNxI0pKZmycdZwWc02gxdmRdStN4+
+         ZTrQ==
+X-Gm-Message-State: APjAAAV42w9pI8o1RoCbXq/qZhqA3tEKa8cdKBXWpCqVqsOJQNFmcmM0
+        n05G8Hjf7UKdZCSFvjo9mYoIGExW2nvw2/jiFm5c/A==
+X-Google-Smtp-Source: APXvYqyFt5GxmW1MZA2favbnaGcALb5mA4MoHVzSPHzcHbrwxbVk/7uXhgi8vvAQlXavsk2qquYwokltZ6a5lIXnf1M=
+X-Received: by 2002:a9d:5e15:: with SMTP id d21mr7540040oti.138.1557501476705;
+ Fri, 10 May 2019 08:17:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190510043723.3359135-1-andriin@fb.com> <CACAyw9_9Q4CPzPm-ikMyMMmWR56u+5c7RpW-7o0YBG5JoheF2A@mail.gmail.com>
+ <CAEf4BzafBqC63EW8Pf8Du4McL9veOU_SUOHoE9_94zTv9r1XJg@mail.gmail.com>
+In-Reply-To: <CAEf4BzafBqC63EW8Pf8Du4McL9veOU_SUOHoE9_94zTv9r1XJg@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Fri, 10 May 2019 16:17:45 +0100
+Message-ID: <CACAyw99Rpmn1=jgOJfbvBsTfTn2txK1mFcbYhMCtLq1_OtD7Pw@mail.gmail.com>
+Subject: Re: [PATCH bpf] libbpf: detect supported kernel BTF features and
+ sanitize BTF
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Synchronise the bpf.h header under tools, to report the fixes and
-additions recently brought to the documentation for the BPF helpers.
+On Fri, 10 May 2019 at 15:16, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, May 10, 2019 at 2:46 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> >
+> > On Fri, 10 May 2019 at 05:37, Andrii Nakryiko <andriin@fb.com> wrote:
+> > >
+> > > Depending on used versions of libbpf, Clang, and kernel, it's possible to
+> > > have valid BPF object files with valid BTF information, that still won't
+> > > load successfully due to Clang emitting newer BTF features (e.g.,
+> > > BTF_KIND_FUNC, .BTF.ext's line_info/func_info, BTF_KIND_DATASEC, etc), that
+> > > are not yet supported by older kernel.
+> >
+> > For sys_bpf, we ignore a zero tail in struct bpf_attr, which gives us
+> > backwards / forwards compatibility
+> > as long as the user doesn't use the new fields.
+> > Do we need a similar mechanism for BTF? Is it possible to discard
+> > unknown types at load time?
+>
+> Unfortunately, unknown BTF types can be intermixed with older, known
+> BTF types, so it's not as simple as trimming at the end of data. Also,
+> to skip some type, you have to know which kind of type is it, as we
+> don't explicitly encode the length of BTF type descriptor. So it's
+> just impossible to do from kernel side.
 
-Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
-Acked-by: Jakub Kicinski <jakub.kicinski@netronome.com>
----
- tools/include/uapi/linux/bpf.h | 145 +++++++++++++++++++++--------------------
- 1 file changed, 75 insertions(+), 70 deletions(-)
+That's a really good point. I stumbled on the same problem when writing a BTF
+PoC in Go. Doesn't this mean that libbpf itself suffers from this
+problem as well?
+If I upgrade my clang, it might emit BTF that libbpf can't understand, and we're
+back to square one.
 
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 72336bac7573..63e0cf66f01a 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -629,7 +629,7 @@ union bpf_attr {
-  * 		**BPF_F_INVALIDATE_HASH** (set *skb*\ **->hash**, *skb*\
-  * 		**->swhash** and *skb*\ **->l4hash** to 0).
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -654,7 +654,7 @@ union bpf_attr {
-  * 		flexibility and can handle sizes larger than 2 or 4 for the
-  * 		checksum to update.
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -686,7 +686,7 @@ union bpf_attr {
-  * 		flexibility and can handle sizes larger than 2 or 4 for the
-  * 		checksum to update.
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -741,7 +741,7 @@ union bpf_attr {
-  * 		efficient, but it is handled through an action code where the
-  * 		redirection happens only after the eBPF program has returned.
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -806,7 +806,7 @@ union bpf_attr {
-  * 		**ETH_P_8021Q** and **ETH_P_8021AD**, it is considered to
-  * 		be **ETH_P_8021Q**.
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -818,7 +818,7 @@ union bpf_attr {
-  * 	Description
-  * 		Pop a VLAN header from the packet associated to *skb*.
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -1168,7 +1168,7 @@ union bpf_attr {
-  * 		All values for *flags* are reserved for future usage, and must
-  * 		be left at zero.
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -1281,7 +1281,7 @@ union bpf_attr {
-  * 		implicitly linearizes, unclones and drops offloads from the
-  * 		*skb*.
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -1317,7 +1317,7 @@ union bpf_attr {
-  * 		**bpf_skb_pull_data()** to effectively unclone the *skb* from
-  * 		the very beginning in case it is indeed cloned.
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -1369,7 +1369,7 @@ union bpf_attr {
-  * 		All values for *flags* are reserved for future usage, and must
-  * 		be left at zero.
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -1384,7 +1384,7 @@ union bpf_attr {
-  * 		can be used to prepare the packet for pushing or popping
-  * 		headers.
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -1518,20 +1518,20 @@ union bpf_attr {
-  *		* **BPF_F_ADJ_ROOM_FIXED_GSO**: Do not adjust gso_size.
-  *		  Adjusting mss in this way is not allowed for datagrams.
-  *
-- *		* **BPF_F_ADJ_ROOM_ENCAP_L3_IPV4 **:
-- *		* **BPF_F_ADJ_ROOM_ENCAP_L3_IPV6 **:
-+ *		* **BPF_F_ADJ_ROOM_ENCAP_L3_IPV4**,
-+ *		  **BPF_F_ADJ_ROOM_ENCAP_L3_IPV6**:
-  *		  Any new space is reserved to hold a tunnel header.
-  *		  Configure skb offsets and other fields accordingly.
-  *
-- *		* **BPF_F_ADJ_ROOM_ENCAP_L4_GRE **:
-- *		* **BPF_F_ADJ_ROOM_ENCAP_L4_UDP **:
-+ *		* **BPF_F_ADJ_ROOM_ENCAP_L4_GRE**,
-+ *		  **BPF_F_ADJ_ROOM_ENCAP_L4_UDP**:
-  *		  Use with ENCAP_L3 flags to further specify the tunnel type.
-  *
-- *		* **BPF_F_ADJ_ROOM_ENCAP_L2(len) **:
-+ *		* **BPF_F_ADJ_ROOM_ENCAP_L2**\ (*len*):
-  *		  Use with ENCAP_L3/L4 flags to further specify the tunnel
-- *		  type; **len** is the length of the inner MAC header.
-+ *		  type; *len* is the length of the inner MAC header.
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -1610,7 +1610,7 @@ union bpf_attr {
-  * 		more flexibility as the user is free to store whatever meta
-  * 		data they need.
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -1852,7 +1852,7 @@ union bpf_attr {
-  * 		copied if necessary (i.e. if data was not linear and if start
-  * 		and end pointers do not point to the same chunk).
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -1886,7 +1886,7 @@ union bpf_attr {
-  * 		only possible to shrink the packet as of this writing,
-  * 		therefore *delta* must be a negative integer.
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -2061,18 +2061,18 @@ union bpf_attr {
-  *		**BPF_LWT_ENCAP_IP**
-  *			IP encapsulation (GRE/GUE/IPIP/etc). The outer header
-  *			must be IPv4 or IPv6, followed by zero or more
-- *			additional headers, up to LWT_BPF_MAX_HEADROOM total
-- *			bytes in all prepended headers. Please note that
-- *			if skb_is_gso(skb) is true, no more than two headers
-- *			can be prepended, and the inner header, if present,
-- *			should be either GRE or UDP/GUE.
-- *
-- *		BPF_LWT_ENCAP_SEG6*** types can be called by bpf programs of
-- *		type BPF_PROG_TYPE_LWT_IN; BPF_LWT_ENCAP_IP type can be called
-- *		by bpf programs of types BPF_PROG_TYPE_LWT_IN and
-- *		BPF_PROG_TYPE_LWT_XMIT.
-- *
-- * 		A call to this helper is susceptible to change the underlaying
-+ *			additional headers, up to **LWT_BPF_MAX_HEADROOM**
-+ *			total bytes in all prepended headers. Please note that
-+ *			if **skb_is_gso**\ (*skb*) is true, no more than two
-+ *			headers can be prepended, and the inner header, if
-+ *			present, should be either GRE or UDP/GUE.
-+ *
-+ *		**BPF_LWT_ENCAP_SEG6**\ \* types can be called by BPF programs
-+ *		of type **BPF_PROG_TYPE_LWT_IN**; **BPF_LWT_ENCAP_IP** type can
-+ *		be called by bpf programs of types **BPF_PROG_TYPE_LWT_IN** and
-+ *		**BPF_PROG_TYPE_LWT_XMIT**.
-+ *
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -2087,7 +2087,7 @@ union bpf_attr {
-  *		inside the outermost IPv6 Segment Routing Header can be
-  *		modified through this helper.
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -2103,7 +2103,7 @@ union bpf_attr {
-  *		after the segments are accepted. *delta* can be as well
-  *		positive (growing) as negative (shrinking).
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -2126,13 +2126,13 @@ union bpf_attr {
-  *			Type of *param*: **int**.
-  *		**SEG6_LOCAL_ACTION_END_B6**
-  *			End.B6 action: Endpoint bound to an SRv6 policy.
-- *			Type of param: **struct ipv6_sr_hdr**.
-+ *			Type of *param*: **struct ipv6_sr_hdr**.
-  *		**SEG6_LOCAL_ACTION_END_B6_ENCAP**
-  *			End.B6.Encap action: Endpoint bound to an SRv6
-  *			encapsulation policy.
-- *			Type of param: **struct ipv6_sr_hdr**.
-+ *			Type of *param*: **struct ipv6_sr_hdr**.
-  *
-- * 		A call to this helper is susceptible to change the underlaying
-+ * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-  * 		performed again, if the helper is used in combination with
-@@ -2285,7 +2285,8 @@ union bpf_attr {
-  *	Return
-  *		Pointer to **struct bpf_sock**, or **NULL** in case of failure.
-  *		For sockets with reuseport option, the **struct bpf_sock**
-- *		result is from **reuse->socks**\ [] using the hash of the tuple.
-+ *		result is from *reuse*\ **->socks**\ [] using the hash of the
-+ *		tuple.
-  *
-  * struct bpf_sock *bpf_sk_lookup_udp(void *ctx, struct bpf_sock_tuple *tuple, u32 tuple_size, u64 netns, u64 flags)
-  *	Description
-@@ -2321,7 +2322,8 @@ union bpf_attr {
-  *	Return
-  *		Pointer to **struct bpf_sock**, or **NULL** in case of failure.
-  *		For sockets with reuseport option, the **struct bpf_sock**
-- *		result is from **reuse->socks**\ [] using the hash of the tuple.
-+ *		result is from *reuse*\ **->socks**\ [] using the hash of the
-+ *		tuple.
-  *
-  * int bpf_sk_release(struct bpf_sock *sock)
-  *	Description
-@@ -2490,31 +2492,34 @@ union bpf_attr {
-  *		network namespace *netns*. The return value must be checked,
-  *		and if non-**NULL**, released via **bpf_sk_release**\ ().
-  *
-- *		This function is identical to bpf_sk_lookup_tcp, except that it
-- *		also returns timewait or request sockets. Use bpf_sk_fullsock
-- *		or bpf_tcp_socket to access the full structure.
-+ *		This function is identical to **bpf_sk_lookup_tcp**\ (), except
-+ *		that it also returns timewait or request sockets. Use
-+ *		**bpf_sk_fullsock**\ () or **bpf_tcp_sock**\ () to access the
-+ *		full structure.
-  *
-  *		This helper is available only if the kernel was compiled with
-  *		**CONFIG_NET** configuration option.
-  *	Return
-  *		Pointer to **struct bpf_sock**, or **NULL** in case of failure.
-  *		For sockets with reuseport option, the **struct bpf_sock**
-- *		result is from **reuse->socks**\ [] using the hash of the tuple.
-+ *		result is from *reuse*\ **->socks**\ [] using the hash of the
-+ *		tuple.
-  *
-  * int bpf_tcp_check_syncookie(struct bpf_sock *sk, void *iph, u32 iph_len, struct tcphdr *th, u32 th_len)
-  * 	Description
-- * 		Check whether iph and th contain a valid SYN cookie ACK for
-- * 		the listening socket in sk.
-+ * 		Check whether *iph* and *th* contain a valid SYN cookie ACK for
-+ * 		the listening socket in *sk*.
-  *
-- * 		iph points to the start of the IPv4 or IPv6 header, while
-- * 		iph_len contains sizeof(struct iphdr) or sizeof(struct ip6hdr).
-+ * 		*iph* points to the start of the IPv4 or IPv6 header, while
-+ * 		*iph_len* contains **sizeof**\ (**struct iphdr**) or
-+ * 		**sizeof**\ (**struct ip6hdr**).
-  *
-- * 		th points to the start of the TCP header, while th_len contains
-- * 		sizeof(struct tcphdr).
-+ * 		*th* points to the start of the TCP header, while *th_len*
-+ * 		contains **sizeof**\ (**struct tcphdr**).
-  *
-  * 	Return
-- * 		0 if iph and th are a valid SYN cookie ACK, or a negative error
-- * 		otherwise.
-+ * 		0 if *iph* and *th* are a valid SYN cookie ACK, or a negative
-+ * 		error otherwise.
-  *
-  * int bpf_sysctl_get_name(struct bpf_sysctl *ctx, char *buf, size_t buf_len, u64 flags)
-  *	Description
-@@ -2592,17 +2597,17 @@ union bpf_attr {
-  *		and save the result in *res*.
-  *
-  *		The string may begin with an arbitrary amount of white space
-- *		(as determined by isspace(3)) followed by a single optional '-'
-- *		sign.
-+ *		(as determined by **isspace**\ (3)) followed by a single
-+ *		optional '**-**' sign.
-  *
-  *		Five least significant bits of *flags* encode base, other bits
-  *		are currently unused.
-  *
-  *		Base must be either 8, 10, 16 or 0 to detect it automatically
-- *		similar to user space strtol(3).
-+ *		similar to user space **strtol**\ (3).
-  *	Return
-  *		Number of characters consumed on success. Must be positive but
-- *		no more than buf_len.
-+ *		no more than *buf_len*.
-  *
-  *		**-EINVAL** if no valid digits were found or unsupported base
-  *		was provided.
-@@ -2616,16 +2621,16 @@ union bpf_attr {
-  *		given base and save the result in *res*.
-  *
-  *		The string may begin with an arbitrary amount of white space
-- *		(as determined by isspace(3)).
-+ *		(as determined by **isspace**\ (3)).
-  *
-  *		Five least significant bits of *flags* encode base, other bits
-  *		are currently unused.
-  *
-  *		Base must be either 8, 10, 16 or 0 to detect it automatically
-- *		similar to user space strtoul(3).
-+ *		similar to user space **strtoul**\ (3).
-  *	Return
-  *		Number of characters consumed on success. Must be positive but
-- *		no more than buf_len.
-+ *		no more than *buf_len*.
-  *
-  *		**-EINVAL** if no valid digits were found or unsupported base
-  *		was provided.
-@@ -2634,26 +2639,26 @@ union bpf_attr {
-  *
-  * void *bpf_sk_storage_get(struct bpf_map *map, struct bpf_sock *sk, void *value, u64 flags)
-  *	Description
-- *		Get a bpf-local-storage from a sk.
-+ *		Get a bpf-local-storage from a *sk*.
-  *
-  *		Logically, it could be thought of getting the value from
-  *		a *map* with *sk* as the **key**.  From this
-  *		perspective,  the usage is not much different from
-- *		**bpf_map_lookup_elem(map, &sk)** except this
-- *		helper enforces the key must be a **bpf_fullsock()**
-- *		and the map must be a BPF_MAP_TYPE_SK_STORAGE also.
-+ *		**bpf_map_lookup_elem**\ (*map*, **&**\ *sk*) except this
-+ *		helper enforces the key must be a full socket and the map must
-+ *		be a **BPF_MAP_TYPE_SK_STORAGE** also.
-  *
-  *		Underneath, the value is stored locally at *sk* instead of
-- *		the map.  The *map* is used as the bpf-local-storage **type**.
-- *		The bpf-local-storage **type** (i.e. the *map*) is searched
-- *		against all bpf-local-storages residing at sk.
-+ *		the *map*.  The *map* is used as the bpf-local-storage
-+ *		"type". The bpf-local-storage "type" (i.e. the *map*) is
-+ *		searched against all bpf-local-storages residing at *sk*.
-  *
-- *		An optional *flags* (BPF_SK_STORAGE_GET_F_CREATE) can be
-+ *		An optional *flags* (**BPF_SK_STORAGE_GET_F_CREATE**) can be
-  *		used such that a new bpf-local-storage will be
-  *		created if one does not exist.  *value* can be used
-- *		together with BPF_SK_STORAGE_GET_F_CREATE to specify
-+ *		together with **BPF_SK_STORAGE_GET_F_CREATE** to specify
-  *		the initial value of a bpf-local-storage.  If *value* is
-- *		NULL, the new bpf-local-storage will be zero initialized.
-+ *		**NULL**, the new bpf-local-storage will be zero initialized.
-  *	Return
-  *		A bpf-local-storage pointer is returned on success.
-  *
-@@ -2662,7 +2667,7 @@ union bpf_attr {
-  *
-  * int bpf_sk_storage_delete(struct bpf_map *map, struct bpf_sock *sk)
-  *	Description
-- *		Delete a bpf-local-storage from a sk.
-+ *		Delete a bpf-local-storage from a *sk*.
-  *	Return
-  *		0 on success.
-  *
+Would it be possible to add such type_length to the format?
+
+>
+> >
+> > >
+> > > This patch adds detection of BTF features and sanitizes BPF object's BTF
+> > > by substituting various supported BTF kinds, which have compatible layout:
+> > >   - BTF_KIND_FUNC -> BTF_KIND_TYPEDEF
+> > >   - BTF_KIND_FUNC_PROTO -> BTF_KIND_ENUM
+> > >   - BTF_KIND_VAR -> BTF_KIND_INT
+> > >   - BTF_KIND_DATASEC -> BTF_KIND_STRUCT
+> > >
+> > > Replacement is done in such a way as to preserve as much information as
+> > > possible (names, sizes, etc) where possible without violating kernel's
+> > > validation rules.
+> > >
+> > > Reported-by: Alexei Starovoitov <ast@fb.com>
+> > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > > ---
+> > >  tools/lib/bpf/libbpf.c | 185 ++++++++++++++++++++++++++++++++++++++++-
+> > >  1 file changed, 184 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > index 11a65db4b93f..0813c4ad5d11 100644
+> > > --- a/tools/lib/bpf/libbpf.c
+> > > +++ b/tools/lib/bpf/libbpf.c
+> > > @@ -128,6 +128,10 @@ struct bpf_capabilities {
+> > >         __u32 name:1;
+> > >         /* v5.2: kernel support for global data sections. */
+> > >         __u32 global_data:1;
+> > > +       /* BTF_KIND_FUNC and BTF_KIND_FUNC_PROTO support */
+> > > +       __u32 btf_func:1;
+> > > +       /* BTF_KIND_VAR and BTF_KIND_DATASEC support */
+> > > +       __u32 btf_datasec:1;
+> > >  };
+> > >
+> > >  /*
+> > > @@ -1021,6 +1025,81 @@ static bool section_have_execinstr(struct bpf_object *obj, int idx)
+> > >         return false;
+> > >  }
+> > >
+> > > +static void bpf_object__sanitize_btf(struct bpf_object *obj)
+> > > +{
+> > > +#define BTF_INFO_ENC(kind, kind_flag, vlen) \
+> > > +       ((!!(kind_flag) << 31) | ((kind) << 24) | ((vlen) & BTF_MAX_VLEN))
+> > > +#define BTF_INT_ENC(encoding, bits_offset, nr_bits) \
+> > > +       ((encoding) << 24 | (bits_offset) << 16 | (nr_bits))
+> > > +
+> > > +       bool has_datasec = obj->caps.btf_datasec;
+> > > +       bool has_func = obj->caps.btf_func;
+> > > +       struct btf *btf = obj->btf;
+> > > +       struct btf_type *t;
+> > > +       int i, j, vlen;
+> > > +       __u16 kind;
+> > > +
+> > > +       if (!obj->btf || (has_func && has_datasec))
+> > > +               return;
+> > > +
+> > > +       for (i = 1; i <= btf__get_nr_types(btf); i++) {
+> > > +               t = (struct btf_type *)btf__type_by_id(btf, i);
+> > > +               kind = BTF_INFO_KIND(t->info);
+> > > +
+> > > +               if (!has_datasec && kind == BTF_KIND_VAR) {
+> > > +                       /* replace VAR with INT */
+> > > +                       t->info = BTF_INFO_ENC(BTF_KIND_INT, 0, 0);
+> > > +                       t->size = sizeof(int);
+> > > +                       *(int *)(t+1) = BTF_INT_ENC(0, 0, 32);
+> > > +               } else if (!has_datasec && kind == BTF_KIND_DATASEC) {
+> > > +                       /* replace DATASEC with STRUCT */
+> > > +                       struct btf_var_secinfo *v = (void *)(t + 1);
+> > > +                       struct btf_member *m = (void *)(t + 1);
+> > > +                       struct btf_type *vt;
+> > > +                       char *name;
+> > > +
+> > > +                       name = (char *)btf__name_by_offset(btf, t->name_off);
+> > > +                       while (*name) {
+> > > +                               if (*name == '.')
+> > > +                                       *name = '_';
+> > > +                               name++;
+> > > +                       }
+> > > +
+> > > +                       vlen = BTF_INFO_VLEN(t->info);
+> > > +                       t->info = BTF_INFO_ENC(BTF_KIND_STRUCT, 0, vlen);
+> > > +                       for (j = 0; j < vlen; j++, v++, m++) {
+> > > +                               /* order of field assignments is important */
+> > > +                               m->offset = v->offset * 8;
+> > > +                               m->type = v->type;
+> > > +                               /* preserve variable name as member name */
+> > > +                               vt = (void *)btf__type_by_id(btf, v->type);
+> > > +                               m->name_off = vt->name_off;
+> > > +                       }
+> > > +               } else if (!has_func && kind == BTF_KIND_FUNC_PROTO) {
+> > > +                       /* replace FUNC_PROTO with ENUM */
+> > > +                       vlen = BTF_INFO_VLEN(t->info);
+> > > +                       t->info = BTF_INFO_ENC(BTF_KIND_ENUM, 0, vlen);
+> > > +                       t->size = sizeof(__u32); /* kernel enforced */
+> > > +               } else if (!has_func && kind == BTF_KIND_FUNC) {
+> > > +                       /* replace FUNC with TYPEDEF */
+> > > +                       t->info = BTF_INFO_ENC(BTF_KIND_TYPEDEF, 0, 0);
+> > > +               }
+> > > +       }
+> > > +#undef BTF_INFO_ENC
+> > > +#undef BTF_INT_ENC
+> > > +}
+> > > +
+> > > +static void bpf_object__sanitize_btf_ext(struct bpf_object *obj)
+> > > +{
+> > > +       if (!obj->btf_ext)
+> > > +               return;
+> > > +
+> > > +       if (!obj->caps.btf_func) {
+> > > +               btf_ext__free(obj->btf_ext);
+> > > +               obj->btf_ext = NULL;
+> > > +       }
+> > > +}
+> > > +
+> > >  static int bpf_object__elf_collect(struct bpf_object *obj, int flags)
+> > >  {
+> > >         Elf *elf = obj->efile.elf;
+> > > @@ -1164,8 +1243,10 @@ static int bpf_object__elf_collect(struct bpf_object *obj, int flags)
+> > >                         obj->btf = NULL;
+> > >                 } else {
+> > >                         err = btf__finalize_data(obj, obj->btf);
+> > > -                       if (!err)
+> > > +                       if (!err) {
+> > > +                               bpf_object__sanitize_btf(obj);
+> > >                                 err = btf__load(obj->btf);
+> > > +                       }
+> > >                         if (err) {
+> > >                                 pr_warning("Error finalizing and loading %s into kernel: %d. Ignored and continue.\n",
+> > >                                            BTF_ELF_SEC, err);
+> > > @@ -1187,6 +1268,8 @@ static int bpf_object__elf_collect(struct bpf_object *obj, int flags)
+> > >                                            BTF_EXT_ELF_SEC,
+> > >                                            PTR_ERR(obj->btf_ext));
+> > >                                 obj->btf_ext = NULL;
+> > > +                       } else {
+> > > +                               bpf_object__sanitize_btf_ext(obj);
+> > >                         }
+> > >                 }
+> > >         }
+> > > @@ -1556,12 +1639,112 @@ bpf_object__probe_global_data(struct bpf_object *obj)
+> > >         return 0;
+> > >  }
+> > >
+> > > +static int try_load_btf(const char *raw_types, size_t types_len,
+> > > +                       const char *str_sec, size_t str_len)
+> > > +{
+> > > +       char buf[1024];
+> > > +       struct btf_header hdr = {
+> > > +               .magic = BTF_MAGIC,
+> > > +               .version = BTF_VERSION,
+> > > +               .hdr_len = sizeof(struct btf_header),
+> > > +               .type_len = types_len,
+> > > +               .str_off = types_len,
+> > > +               .str_len = str_len,
+> > > +       };
+> > > +       int btf_fd, btf_len;
+> > > +       __u8 *raw_btf;
+> > > +
+> > > +       btf_len = hdr.hdr_len + hdr.type_len + hdr.str_len;
+> > > +       raw_btf = malloc(btf_len);
+> > > +       if (!raw_btf)
+> > > +               return -ENOMEM;
+> > > +
+> > > +       memcpy(raw_btf, &hdr, sizeof(hdr));
+> > > +       memcpy(raw_btf + hdr.hdr_len, raw_types, hdr.type_len);
+> > > +       memcpy(raw_btf + hdr.hdr_len + hdr.type_len, str_sec, hdr.str_len);
+> > > +
+> > > +       btf_fd = bpf_load_btf(raw_btf, btf_len, buf, 1024, 0);
+> > > +       if (btf_fd < 0) {
+> > > +               free(raw_btf);
+> > > +               return 0;
+> > > +       }
+> > > +
+> > > +       close(btf_fd);
+> > > +       free(raw_btf);
+> > > +       return 1;
+> > > +}
+> > > +
+> > > +#define BTF_INFO_ENC(kind, kind_flag, vlen) \
+> > > +       ((!!(kind_flag) << 31) | ((kind) << 24) | ((vlen) & BTF_MAX_VLEN))
+> > > +#define BTF_TYPE_ENC(name, info, size_or_type) (name), (info), (size_or_type)
+> > > +#define BTF_INT_ENC(encoding, bits_offset, nr_bits) \
+> > > +       ((encoding) << 24 | (bits_offset) << 16 | (nr_bits))
+> > > +#define BTF_TYPE_INT_ENC(name, encoding, bits_offset, bits, sz) \
+> > > +       BTF_TYPE_ENC(name, BTF_INFO_ENC(BTF_KIND_INT, 0, 0), sz), \
+> > > +       BTF_INT_ENC(encoding, bits_offset, bits)
+> > > +#define BTF_PARAM_ENC(name, type) (name), (type)
+> > > +#define BTF_VAR_SECINFO_ENC(type, offset, size) (type), (offset), (size)
+> > > +static int bpf_object__probe_btf_func(struct bpf_object *obj)
+> > > +{
+> > > +       const char strs[] = "\0int\0x\0a";
+> > > +       /* void x(int a) {} */
+> > > +       __u32 types[] = {
+> > > +               /* int */
+> > > +               BTF_TYPE_INT_ENC(1, BTF_INT_SIGNED, 0, 32, 4),  /* [1] */
+> > > +               /* FUNC_PROTO */                                /* [2] */
+> > > +               BTF_TYPE_ENC(0, BTF_INFO_ENC(BTF_KIND_FUNC_PROTO, 0, 1), 0),
+> > > +               BTF_PARAM_ENC(7, 1),
+> > > +               /* FUNC x */                                    /* [3] */
+> > > +               BTF_TYPE_ENC(5, BTF_INFO_ENC(BTF_KIND_FUNC, 0, 0), 2),
+> > > +       };
+> > > +       int res;
+> > > +
+> > > +       res = try_load_btf((char *)types, sizeof(types), strs, sizeof(strs));
+> > > +       if (res < 0)
+> > > +               return res;
+> > > +       if (res > 0)
+> > > +               obj->caps.btf_func = 1;
+> > > +       return 0;
+> > > +}
+> > > +
+> > > +static int bpf_object__probe_btf_datasec(struct bpf_object *obj)
+> > > +{
+> > > +       const char strs[] = "\0x\0.data";
+> > > +       /* static int a; */
+> > > +       __u32 types[] = {
+> > > +               /* int */
+> > > +               BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),  /* [1] */
+> > > +               /* VAR x */                                     /* [2] */
+> > > +               BTF_TYPE_ENC(1, BTF_INFO_ENC(BTF_KIND_VAR, 0, 0), 1),
+> > > +               BTF_VAR_STATIC,
+> > > +               /* DATASEC val */                               /* [3] */
+> > > +               BTF_TYPE_ENC(3, BTF_INFO_ENC(BTF_KIND_DATASEC, 0, 1), 4),
+> > > +               BTF_VAR_SECINFO_ENC(2, 0, 4),
+> > > +       };
+> > > +       int res;
+> > > +
+> > > +       res = try_load_btf((char *)&types, sizeof(types), strs, sizeof(strs));
+> > > +       if (res < 0)
+> > > +               return res;
+> > > +       if (res > 0)
+> > > +               obj->caps.btf_datasec = 1;
+> > > +       return 0;
+> > > +}
+> > > +#undef BTF_INFO_ENC
+> > > +#undef BTF_TYPE_ENC
+> > > +#undef BTF_INT_ENC
+> > > +#undef BTF_TYPE_INT_ENC
+> > > +#undef BTF_PARAM_ENC
+> > > +#undef BTF_VAR_SECINFO_ENC
+> > > +
+> > >  static int
+> > >  bpf_object__probe_caps(struct bpf_object *obj)
+> > >  {
+> > >         int (*probe_fn[])(struct bpf_object *obj) = {
+> > >                 bpf_object__probe_name,
+> > >                 bpf_object__probe_global_data,
+> > > +               bpf_object__probe_btf_func,
+> > > +               bpf_object__probe_btf_datasec,
+> > >         };
+> > >         int i, ret;
+> > >
+> > > --
+> > > 2.17.1
+> > >
+> >
+> >
+> > --
+> > Lorenz Bauer  |  Systems Engineer
+> > 25 Lavington St., London SE1 0NZ
+> >
+> > www.cloudflare.com
+
+
+
 -- 
-2.14.1
+Lorenz Bauer  |  Systems Engineer
+25 Lavington St., London SE1 0NZ
 
+www.cloudflare.com
