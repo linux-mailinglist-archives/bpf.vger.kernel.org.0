@@ -2,47 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E8F19F93
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2019 16:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D6B19F94
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2019 16:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727507AbfEJOvp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 May 2019 10:51:45 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:39831 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727497AbfEJOvo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 May 2019 10:51:44 -0400
-Received: by mail-wm1-f65.google.com with SMTP id n25so7771483wmk.4
-        for <bpf@vger.kernel.org>; Fri, 10 May 2019 07:51:43 -0700 (PDT)
+        id S1727516AbfEJOvq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 May 2019 10:51:46 -0400
+Received: from mail-wr1-f50.google.com ([209.85.221.50]:36893 "EHLO
+        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727472AbfEJOvq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 May 2019 10:51:46 -0400
+Received: by mail-wr1-f50.google.com with SMTP id a12so8272585wrn.4
+        for <bpf@vger.kernel.org>; Fri, 10 May 2019 07:51:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=+IUrU0HbHrpGdy/7krlh/fE3iwWu7P+Dj/LIBD0TCto=;
-        b=LySJhNneq3KYgwhN58ZFnSggLsKGyyDsRnrZ2oysf3dSwqBg6kzHFNFPOadd13on0q
-         eYSam0/V+SQNL8gz+s88/im0Qu1UL8U2TyacaIZZCoA5i3hpu0NQ7iHeO68V7niYyTJG
-         3IhtVUx2hJCPcsLM4m1xVqIPUPz2E6ZpbEuuK9c7yllCfK61TBp3gFqrcod4mzkBLEui
-         aPGLlS68AXFSYlHxbeLMB/JEpnFfH+ooR4o2Pqomgh5q63J/F+HKfvIUaKpTjNl1CmQU
-         LsVufQTcXhPvL84bAsoFUzTA67pzBjtuKBeifU0/5txdM5R77b4TVZoB8tDIFTVg5SLj
-         ybBg==
+        bh=5Nx6DKYjRH/S3UFhKToHF83aEKiWRiGWoiR2FaHMQnI=;
+        b=JiepDImx3WZHjL5/MJp0nxhPAZ27iDgUDmJU1uxlKHXHIaf+SR7KLxwgrPjISi4QSY
+         tjic//cPW5zXAC7T9aW1qZXFzkHp6/tz3FVTMx3FF3xL6LoW0eGVNbzzPbKUO10Pr83S
+         J5LDqj6Q1sBlALsR9VQlCyJcOHrDUaxLfV5sz/rs5qPm8hPam1Z7KaL3lKgh/m0XXo65
+         SsyzeqPcoN0Cqjp9of2NxvGcZMnyjOUVCpBaVNlDj49DctgjlWaPNHlN/tMjqXILtIV2
+         z1H/ZXzuGhWh7rl2mgtGaitNFykruwyPSQQ35H3R5Sgo2Ekw4ipo9LJHXF9+T5Ei7KLe
+         MsvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=+IUrU0HbHrpGdy/7krlh/fE3iwWu7P+Dj/LIBD0TCto=;
-        b=FY8R2AnGuaw++wsTFlh56lehnXD1bOOm7Xrp7U3lqI9FRWjTRc399U+rUa7HeHdwQ5
-         p/Xg/RCQNoK50KeiV94jgc07zQZwcNw9uhJxsw+RItgrFiiJHb4WlDchU97BQH9WJLqs
-         GpsDbhJKDUeRIsgs67Os5IYBGOtviI+l/yx8UvVXnIr0vuDuJu2abzoR2eTjhhCEApRh
-         6l4og9hgcXAvoqoxWHITLKUeGdXotgdMQw2LbESukkRbvkIuKEDsPfv8vwdmaYDuBzVS
-         eQkluwisDRhk0NLR+jCJDNjtMESyTjBLP0vM3jUy+VOoT75A5Cuuq6olmWKL5vYgXlNR
-         la6w==
-X-Gm-Message-State: APjAAAUNTsLArnBi/rNHV+LNtcmvg8yMoZsk+iKQhizytinhLjGsFMMQ
-        Df6/rAXjZsFOxvG4s2Rox0XpxQ==
-X-Google-Smtp-Source: APXvYqx9kAToLnO+avIYmMZOgXUR8sPIhAfSD52JGDHX/yqD8QoHSxz225AN0RBGeHXqUMkyPJB5iA==
-X-Received: by 2002:a1c:b4d4:: with SMTP id d203mr7150078wmf.34.1557499902576;
-        Fri, 10 May 2019 07:51:42 -0700 (PDT)
+        bh=5Nx6DKYjRH/S3UFhKToHF83aEKiWRiGWoiR2FaHMQnI=;
+        b=rfqUhysCCgKhEgahlRwv3c1ChW6cOStGKGNNPR4bWOdVXbDsli2ljM1IQBKrU3H64E
+         FbybNM1/9fTYgXYMO8s/79ZitfWkhu3NETlDsXg0tRRiVbpQaJoBsleJ2fXtDg4afqWe
+         q/p5nZb5MgyOjogV+M+3+MaC7sljx1Za/i/K3XV6E1IpT9eF4SupzBOU8c6Jb30GC5Yo
+         u4/4y8FIXdiHDTb1KNBVIrtFl2QLnnpGyBfyvvzfQwIrsAodaST1GuSlbtDew4C6Ho7/
+         47S9BYWm9Xs9MRkfn4+XVcxE2QAWTL6wT9vPKI2OfSUfQvSHoKCw6c+xfcCZEgk4DunD
+         AE/Q==
+X-Gm-Message-State: APjAAAXDpHVVMfQnLUq4AlsxJvsQTcLzcarY8REcr90/wPFIIGtUkjlG
+        BxABdTfySkzEzY03re4ZBmxPFg==
+X-Google-Smtp-Source: APXvYqxHG/gdePAi+dWSR92CqU7h/6kTd3bb2DU0k0DcUitxGhJ2BLMs1ZZbwlFAscwBoH6hV55jUw==
+X-Received: by 2002:adf:e30d:: with SMTP id b13mr40824wrj.246.1557499903684;
+        Fri, 10 May 2019 07:51:43 -0700 (PDT)
 Received: from reblochon.netronome.com ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id p17sm7561027wrg.92.2019.05.10.07.51.40
+        by smtp.gmail.com with ESMTPSA id p17sm7561027wrg.92.2019.05.10.07.51.42
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 10 May 2019 07:51:41 -0700 (PDT)
+        Fri, 10 May 2019 07:51:42 -0700 (PDT)
 From:   Quentin Monnet <quentin.monnet@netronome.com>
 To:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>
@@ -50,9 +50,9 @@ Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         oss-drivers@netronome.com,
         Quentin Monnet <quentin.monnet@netronome.com>,
         Yonghong Song <yhs@fb.com>
-Subject: [PATCH bpf 3/4] bpf: fix minor issues in documentation for BPF helpers.
-Date:   Fri, 10 May 2019 15:51:24 +0100
-Message-Id: <20190510145125.8416-4-quentin.monnet@netronome.com>
+Subject: [PATCH bpf 4/4] tools: bpf: synchronise BPF UAPI header with tools
+Date:   Fri, 10 May 2019 15:51:25 +0100
+Message-Id: <20190510145125.8416-5-quentin.monnet@netronome.com>
 X-Mailer: git-send-email 2.14.1
 In-Reply-To: <20190510145125.8416-1-quentin.monnet@netronome.com>
 References: <20190510145125.8416-1-quentin.monnet@netronome.com>
@@ -61,25 +61,119 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This commit brings many minor fixes to the documentation for BPF helper
-functions. Mostly, this is limited to formatting fixes and improvements.
-In particular, fix broken formatting for bpf_skb_adjust_room().
-
-Besides formatting, replace the mention of "bpf_fullsock()" (that is not
-associated with any function or type exposed to the user) in the
-description of bpf_sk_storage_get() by "full socket".
+Synchronise the bpf.h header under tools, to report the fixes and
+additions recently brought to the documentation for the BPF helpers.
 
 Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
 Acked-by: Jakub Kicinski <jakub.kicinski@netronome.com>
 ---
- include/uapi/linux/bpf.h | 103 +++++++++++++++++++++++++----------------------
- 1 file changed, 54 insertions(+), 49 deletions(-)
+ tools/include/uapi/linux/bpf.h | 145 +++++++++++++++++++++--------------------
+ 1 file changed, 75 insertions(+), 70 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 989ef6b1c269..63e0cf66f01a 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1518,18 +1518,18 @@ union bpf_attr {
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 72336bac7573..63e0cf66f01a 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -629,7 +629,7 @@ union bpf_attr {
+  * 		**BPF_F_INVALIDATE_HASH** (set *skb*\ **->hash**, *skb*\
+  * 		**->swhash** and *skb*\ **->l4hash** to 0).
+  *
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -654,7 +654,7 @@ union bpf_attr {
+  * 		flexibility and can handle sizes larger than 2 or 4 for the
+  * 		checksum to update.
+  *
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -686,7 +686,7 @@ union bpf_attr {
+  * 		flexibility and can handle sizes larger than 2 or 4 for the
+  * 		checksum to update.
+  *
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -741,7 +741,7 @@ union bpf_attr {
+  * 		efficient, but it is handled through an action code where the
+  * 		redirection happens only after the eBPF program has returned.
+  *
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -806,7 +806,7 @@ union bpf_attr {
+  * 		**ETH_P_8021Q** and **ETH_P_8021AD**, it is considered to
+  * 		be **ETH_P_8021Q**.
+  *
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -818,7 +818,7 @@ union bpf_attr {
+  * 	Description
+  * 		Pop a VLAN header from the packet associated to *skb*.
+  *
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -1168,7 +1168,7 @@ union bpf_attr {
+  * 		All values for *flags* are reserved for future usage, and must
+  * 		be left at zero.
+  *
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -1281,7 +1281,7 @@ union bpf_attr {
+  * 		implicitly linearizes, unclones and drops offloads from the
+  * 		*skb*.
+  *
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -1317,7 +1317,7 @@ union bpf_attr {
+  * 		**bpf_skb_pull_data()** to effectively unclone the *skb* from
+  * 		the very beginning in case it is indeed cloned.
+  *
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -1369,7 +1369,7 @@ union bpf_attr {
+  * 		All values for *flags* are reserved for future usage, and must
+  * 		be left at zero.
+  *
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -1384,7 +1384,7 @@ union bpf_attr {
+  * 		can be used to prepare the packet for pushing or popping
+  * 		headers.
+  *
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -1518,20 +1518,20 @@ union bpf_attr {
   *		* **BPF_F_ADJ_ROOM_FIXED_GSO**: Do not adjust gso_size.
   *		  Adjusting mss in this way is not allowed for datagrams.
   *
@@ -102,9 +196,39 @@ index 989ef6b1c269..63e0cf66f01a 100644
 - *		  type; **len** is the length of the inner MAC header.
 + *		  type; *len* is the length of the inner MAC header.
   *
-  * 		A call to this helper is susceptible to change the underlying
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
   * 		packet buffer. Therefore, at load time, all checks on pointers
-@@ -2061,16 +2061,16 @@ union bpf_attr {
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -1610,7 +1610,7 @@ union bpf_attr {
+  * 		more flexibility as the user is free to store whatever meta
+  * 		data they need.
+  *
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -1852,7 +1852,7 @@ union bpf_attr {
+  * 		copied if necessary (i.e. if data was not linear and if start
+  * 		and end pointers do not point to the same chunk).
+  *
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -1886,7 +1886,7 @@ union bpf_attr {
+  * 		only possible to shrink the packet as of this writing,
+  * 		therefore *delta* must be a negative integer.
+  *
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -2061,18 +2061,18 @@ union bpf_attr {
   *		**BPF_LWT_ENCAP_IP**
   *			IP encapsulation (GRE/GUE/IPIP/etc). The outer header
   *			must be IPv4 or IPv6, followed by zero or more
@@ -113,24 +237,47 @@ index 989ef6b1c269..63e0cf66f01a 100644
 - *			if skb_is_gso(skb) is true, no more than two headers
 - *			can be prepended, and the inner header, if present,
 - *			should be either GRE or UDP/GUE.
+- *
+- *		BPF_LWT_ENCAP_SEG6*** types can be called by bpf programs of
+- *		type BPF_PROG_TYPE_LWT_IN; BPF_LWT_ENCAP_IP type can be called
+- *		by bpf programs of types BPF_PROG_TYPE_LWT_IN and
+- *		BPF_PROG_TYPE_LWT_XMIT.
+- *
+- * 		A call to this helper is susceptible to change the underlaying
 + *			additional headers, up to **LWT_BPF_MAX_HEADROOM**
 + *			total bytes in all prepended headers. Please note that
 + *			if **skb_is_gso**\ (*skb*) is true, no more than two
 + *			headers can be prepended, and the inner header, if
 + *			present, should be either GRE or UDP/GUE.
-  *
-- *		BPF_LWT_ENCAP_SEG6*** types can be called by bpf programs of
-- *		type BPF_PROG_TYPE_LWT_IN; BPF_LWT_ENCAP_IP type can be called
-- *		by bpf programs of types BPF_PROG_TYPE_LWT_IN and
-- *		BPF_PROG_TYPE_LWT_XMIT.
++ *
 + *		**BPF_LWT_ENCAP_SEG6**\ \* types can be called by BPF programs
 + *		of type **BPF_PROG_TYPE_LWT_IN**; **BPF_LWT_ENCAP_IP** type can
 + *		be called by bpf programs of types **BPF_PROG_TYPE_LWT_IN** and
 + *		**BPF_PROG_TYPE_LWT_XMIT**.
-  *
-  * 		A call to this helper is susceptible to change the underlying
++ *
++ * 		A call to this helper is susceptible to change the underlying
   * 		packet buffer. Therefore, at load time, all checks on pointers
-@@ -2126,11 +2126,11 @@ union bpf_attr {
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -2087,7 +2087,7 @@ union bpf_attr {
+  *		inside the outermost IPv6 Segment Routing Header can be
+  *		modified through this helper.
+  *
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -2103,7 +2103,7 @@ union bpf_attr {
+  *		after the segments are accepted. *delta* can be as well
+  *		positive (growing) as negative (shrinking).
+  *
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
+@@ -2126,13 +2126,13 @@ union bpf_attr {
   *			Type of *param*: **int**.
   *		**SEG6_LOCAL_ACTION_END_B6**
   *			End.B6 action: Endpoint bound to an SRv6 policy.
@@ -142,8 +289,11 @@ index 989ef6b1c269..63e0cf66f01a 100644
 - *			Type of param: **struct ipv6_sr_hdr**.
 + *			Type of *param*: **struct ipv6_sr_hdr**.
   *
-  * 		A call to this helper is susceptible to change the underlying
+- * 		A call to this helper is susceptible to change the underlaying
++ * 		A call to this helper is susceptible to change the underlying
   * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+  * 		performed again, if the helper is used in combination with
 @@ -2285,7 +2285,8 @@ union bpf_attr {
   *	Return
   *		Pointer to **struct bpf_sock**, or **NULL** in case of failure.
