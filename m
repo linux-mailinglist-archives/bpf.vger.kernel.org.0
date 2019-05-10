@@ -2,90 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 007EA197DF
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2019 06:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BAF6199B5
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2019 10:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbfEJE64 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 May 2019 00:58:56 -0400
-Received: from mail-it1-f195.google.com ([209.85.166.195]:50753 "EHLO
-        mail-it1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725927AbfEJE64 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 May 2019 00:58:56 -0400
-Received: by mail-it1-f195.google.com with SMTP id i10so3529161ite.0;
-        Thu, 09 May 2019 21:58:56 -0700 (PDT)
+        id S1726992AbfEJIae (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 May 2019 04:30:34 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:33566 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727038AbfEJIae (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 May 2019 04:30:34 -0400
+Received: by mail-wm1-f67.google.com with SMTP id c66so776264wme.0
+        for <bpf@vger.kernel.org>; Fri, 10 May 2019 01:30:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=sXjcZAGx/RpTcazRtKGemnEzej0TeSnJcmicvFWVu4Q=;
-        b=FEsMZqtePG1DT2N40RwQ1mJnZO/UuSWc1tDQpYSskbki6aupwm+VT7LNuFFCL191+w
-         qMAjaJFhy/zUyVbRrQUaHJCt+myy3aS3maHIPx9eeJtv3DXoYZIv81CsTWEvwlOaSgpD
-         4B166WhgCNhROhB9+RQQw5v/6c3YBm4Z9a7O2YST4kZ7oSd+QOKCu9qIZoX2SWpeNHkP
-         AQMYRnSee/YTmL66wP/AW89QxcMATJJ2jdux8PqUuOTaEfW3pWJxiHt7SeAjI+r/Dy/f
-         TCkiZ9Sd2JEXHuc5NqzfWEiIXevcVqGmT7tcpk/id7mMTUSD2vd3yF8Eb9UI3F9yD0f6
-         XAUg==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=F/Td0eaPxnoNbOJZCgHxw/HETg5Y69oytcbCTXlZk6c=;
+        b=irB2mahgIGo5kC78hREMdMIFF9prezeGby843hv3d0Le4YOBq/Z03SeHabmdSwjJGt
+         yIiRspIg+1w6eyv32tvWsrCYj37ERS6uodECfMNlxxaDZJJXJUF3LVZyzEM7WsNsedJE
+         FoAVlBQdzDNrayLnJh+FqDBFVIz0OC5Y4dR5/1+J+FLB5vVJk6ZWY7wC8u1m1bo1kN/F
+         hRef2oXkH1xXQsXybxF24e66zSJzjm4WhbjY27VcPkRfUEp36cEvFFs+hfx/AEff42RO
+         /VBQTbw6iHXorT9h3oqI4NczGUWh8dEnk1xd70VxIKm67DrLyZdTrepZA+inhe5b/mNc
+         lYCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=sXjcZAGx/RpTcazRtKGemnEzej0TeSnJcmicvFWVu4Q=;
-        b=Wpi9t2oWXTzWbrcu9FJxBSOonYDuDnPUsJRYgR5lolvJp7VqJCTNgxZmdDbDJrUY7I
-         aB5UnWLOVHcNEHk5vlpKo/+d1cIq/AxqYXnV6rqjtBniI1xXl/TFA50jaQNo9wONv5V9
-         +PwMeSP02K2g3JbOZz3q28H/MjTkHO4OcQKIE8HZl57YumQpWTjBOHxmSkJgnKbTA2hx
-         KMu46dN5TGOa731p3zD6CB8cYZmiGhrjgHs7CncDuZSs7MSFQdWjmYbAbnZ/ZKNwOvMn
-         RL1Tk23dhlv+Dci9ysj2IAybQSMrjJtQfa/qFSDvFHquU3mtfNzGNGtYnrQE7w5IaIvo
-         PzQQ==
-X-Gm-Message-State: APjAAAWwjguujpwjh5tsNwzkQfNoTOQ7O7I0SosmEazo8poLvpwn63sX
-        CIKtWfSCGlrBkMG0rLGFmvYWSyNQd00=
-X-Google-Smtp-Source: APXvYqySsDADTTzR8MylZnx4EpN6PW2vjAEMfnZkIYkDkNB6dBBOr0wzT+WNoscJjbpTAh1x6AS01A==
-X-Received: by 2002:a24:a3c8:: with SMTP id p191mr5935756ite.149.1557464335786;
-        Thu, 09 May 2019 21:58:55 -0700 (PDT)
-Received: from [127.0.1.1] ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id 8sm1922254itd.24.2019.05.09.21.58.49
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 May 2019 21:58:55 -0700 (PDT)
-Subject: [bpf PATCH v4 4/4] bpf: sockmap fix msg->sg.size account on ingress
- skb
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     jakub.kicinski@netronome.com, ast@kernel.org, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        john.fastabend@gmail.com
-Date:   Thu, 09 May 2019 21:58:44 -0700
-Message-ID: <155746432481.20677.8713455957718721777.stgit@john-XPS-13-9360>
-In-Reply-To: <155746412544.20677.8888193135689886027.stgit@john-XPS-13-9360>
-References: <155746412544.20677.8888193135689886027.stgit@john-XPS-13-9360>
-User-Agent: StGit/0.17.1-dirty
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=F/Td0eaPxnoNbOJZCgHxw/HETg5Y69oytcbCTXlZk6c=;
+        b=gurS9MjvjvQM9CrC5MhZWVb8CkcYUbw0wMAE70VRnpbqHVp3k4DEMMYme2cRgt6kPL
+         XUR3nXEmb4FVIdpn4p/gOcV+I1QKS1UvRoVWPXA1j39nSMGgJMC/rufhkhSyjo+mw07X
+         FXLxGADg5xjNd2QikPgKfgeHRYpRS/6prERMWZs5pi2xW1IwcIFvkYibBj008jOpBzDV
+         LHnar6OUp1HsoupmpDQYvgepzhFfCTqYS3l7VDCJLbGpAmHCh37Nx0zXevOrW2Yak3BG
+         8aH/dUUlKejwkB3AC/bQw7eOtHQuyHJenUGg21RPBDCWzbanJ6I40YHvqassFn65pAmm
+         rAXA==
+X-Gm-Message-State: APjAAAVCs7eFy/AYZwuli+c6ysYk07AS+vd1BrpBY4o3BxJQ2iFl+pdx
+        wLlFixy3YUzbzSaPRihOlUpYhQ==
+X-Google-Smtp-Source: APXvYqyn5vK8d1moEggp5eYhIUDKJAPB5lYOXwzQ5Rebexk4x9l+zyF0nIEK30U7xtlZGnenHEHxsg==
+X-Received: by 2002:a1c:e912:: with SMTP id q18mr5929468wmc.137.1557477032305;
+        Fri, 10 May 2019 01:30:32 -0700 (PDT)
+Received: from LAPTOP-V3S7NLPL (cpc1-cmbg19-2-0-cust104.5-4.cable.virginm.net. [82.27.180.105])
+        by smtp.gmail.com with ESMTPSA id 17sm5446355wrk.91.2019.05.10.01.30.31
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 10 May 2019 01:30:31 -0700 (PDT)
+References: <1556880164-10689-1-git-send-email-jiong.wang@netronome.com> <1556880164-10689-2-git-send-email-jiong.wang@netronome.com> <20190506155041.ofxsvozqza6xrjep@ast-mbp> <87mujx6m4n.fsf@netronome.com> <20190508175111.hcbufw22mbksbpca@ast-mbp> <87ef5795b5.fsf@netronome.com> <20190510015352.6w6fghcthtjj74pl@ast-mbp>
+User-agent: mu4e 0.9.18; emacs 25.2.2
+From:   Jiong Wang <jiong.wang@netronome.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiong Wang <jiong.wang@netronome.com>, daniel@iogearbox.net,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        oss-drivers@netronome.com
+Subject: Re: [PATCH v6 bpf-next 01/17] bpf: verifier: offer more accurate helper function arg and return type
+In-reply-to: <20190510015352.6w6fghcthtjj74pl@ast-mbp>
+Date:   Fri, 10 May 2019 09:30:28 +0100
+Message-ID: <87sgtmk8yj.fsf@netronome.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When converting a skb to msg->sg we forget to set the size after the
-latest ktls/tls code conversion. This patch can be reached by doing
-a redir into ingress path from BPF skb sock recv hook. Then trying to
-read the size fails.
 
-Fix this by setting the size.
+Alexei Starovoitov writes:
 
-Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- net/core/skmsg.c |    1 +
- 1 file changed, 1 insertion(+)
+> On Thu, May 09, 2019 at 01:32:30PM +0100, Jiong Wang wrote:
+>> 
+>> Alexei Starovoitov writes:
+>> 
+>> > On Wed, May 08, 2019 at 03:45:12PM +0100, Jiong Wang wrote:
+>> >> 
+>> >> I might be misunderstanding your points, please just shout if I am wrong.
+>> >> 
+>> >> Suppose the following BPF code:
+>> >> 
+>> >>   unsigned helper(unsigned long long, unsigned long long);
+>> >>   unsigned long long test(unsigned *a, unsigned int c)
+>> >>   {
+>> >>     unsigned int b = *a;
+>> >>     c += 10;
+>> >>     return helper(b, c);
+>> >>   }
+>> >> 
+>> >> We get the following instruction sequence by latest llvm
+>> >> (-O2 -mattr=+alu32 -mcpu=v3)
+>> >> 
+>> >>   test:
+>> >>     1: w1 = *(u32 *)(r1 + 0)
+>> >>     2: w2 += 10
+>> >>     3: call helper
+>> >>     4: exit
+>> >> 
+>> >> Argument Types
+>> >> ===
+>> >> Now instruction 1 and 2 are sub-register defines, and instruction 3, the
+>> >> call, use them implicitly.
+>> >> 
+>> >> Without the introduction of the new ARG_CONST_SIZE32 and
+>> >> ARG_CONST_SIZE32_OR_ZERO, we don't know what should be done with w1 and
+>> >> w2, zero-extend them should be fine for all cases, but could resulting in a
+>> >> few unnecessary zero-extension inserted.
+>> >
+>> > I don't think we're on the same page.
+>> > The argument type is _const_.
+>> > In the example above they are not _const_.
+>> 
+>> Right, have read check_func_arg + check_helper_mem_access again.
+>> 
+>> Looks like ARG_CONST_SIZE* are designed for describing memory access size
+>> for things like bounds checking. It must be a constant for stack access,
+>> otherwise prog will be rejected, but it looks to me variables are allowed
+>> for pkt/map access.
+>> 
+>> But pkt/map has extra range info. So, indeed, ARG_CONST_SIZE32* are
+>> unnecessary, the width could be figured out through the range.
+>> 
+>> Will just drop this patch in next version.
+>> 
+>> And sorry for repeating it again, I am still concerned on the issue
+>> described at https://www.spinics.net/lists/netdev/msg568678.html.
+>> 
+>> To be simple, zext insertion is based on eBPF ISA and assumes all
+>> sub-register defines from alu32 or narrow loads need it if the underlying
+>
+> It's not an assumption. It's a requirement. If JIT is not zeroing
+> upper 32-bits after 32-bit alu or narrow load it's a bug.
+>
+>> hardware arches don't do it. However, some arches support hardware zext
+>> partially. For example, PowerPC, SPARC etc are 64-bit arches, while they
+>> don't do hardware zext on alu32, they do it for narrow loads. And RISCV is
+>> even more special, some alu32 has hardware zext, some don't.
+>> 
+>> At the moment we have single backend hook "bpf_jit_hardware_zext", once a
+>> backend enable it, verifier just insert zero extension for all identified
+>> alu32 and narrow loads.
+>> 
+>> Given verifier analysis info is not pushed down to JIT back-ends, verifier
+>> needs more back-end info pushed up from back-ends. Do you think make sense
+>> to introduce another hook "bpf_jit_hardware_zext_narrow_load" to at least
+>> prevent unnecessary zext inserted for narrowed loads for arches like
+>> PowerPC, SPARC?
+>> 
+>> The hooks to control verifier zext insertion then becomes two:
+>> 
+>>   bpf_jit_hardware_zext_alu32
+>>   bpf_jit_hardware_zext_narrow_load
+>
+> and what to do with other combinations?
+> Like in some cases narrow load on particular arch will be zero extended
+> by hw and if it's misaligned or some other condition then it will not be? 
+> It doesn't feel that we can enumerate all such combinations.
 
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 49d1efa329d7..93bffaad2135 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -411,6 +411,7 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
- 	sk_mem_charge(sk, skb->len);
- 	copied = skb->len;
- 	msg->sg.start = 0;
-+	msg->sg.size = copied;
- 	msg->sg.end = num_sge == MAX_MSG_FRAGS ? 0 : num_sge;
- 	msg->skb = skb;
- 
+Yes, and above narrow_load is just an example. As mentioned, behaviour on
+alu32 also diverse on some arches.
+
+> It feels 'bpf_jit_hardware_zext' backend hook isn't quite working.
+
+It is still useful for x86_64 and aarch64 to disable verifier insertion
+pass completely. But then perhaps should be renamed into
+"bpf_jit_verifier_zext". Returning false means verifier should disable the
+insertion completely.
+
+> It optimizes out some zext, but may be adding unnecessary extra zexts.
+
+This is exactly my concern.
+
+> May be it should be a global flag from the verifier unidirectional to JITs
+> that will say "the verifier inserted MOV32 where necessary. JIT doesn't
+> need to do zext manually".
+> And then JITs will remove MOV32 when hw does it automatically.
+> Removal should be easy, since such insn will be right after corresponding
+> alu32 or narrow load.
+
+OK, so you mean do a simple peephole to combine insns. JIT looks forward
+the next insn, if it is mov32 with dst_src == src_reg, then skip it. And
+only do this when jitting a sub-register write eBPF insn and there is
+hardware zext support.
+
+I guess such special mov32 won't be generated by compiler that it won't be
+jump destination hence skip it is safe.
+
+For zero extension insertion part of this set, I am going to do the
+following changes in next version:
+
+  1. verifier inserts special "mov32" (dst_reg == src_reg) as "zext".
+     JIT could still save zext for the other "mov32", but should always do
+     zext for this special "mov32".
+  2. rename 'bpf_jit_hardware_zext' to 'bpf_jit_verifier_zext' which
+     returns false at default to disable zext insertion.
+  3. JITs want verifier zext override bpf_jit_verifier_zext to return
+     true and should skip unnecessary mov32 as described above.
+
+Looks good?
+
+Regards,
+Jiong
+
 
