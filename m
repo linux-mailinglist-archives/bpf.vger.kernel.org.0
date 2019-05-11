@@ -2,209 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C41931A65F
-	for <lists+bpf@lfdr.de>; Sat, 11 May 2019 04:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC261A6AE
+	for <lists+bpf@lfdr.de>; Sat, 11 May 2019 06:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728456AbfEKCxD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 May 2019 22:53:03 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:45143 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728325AbfEKCxD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 May 2019 22:53:03 -0400
-Received: by mail-io1-f68.google.com with SMTP id b3so5988263iob.12
-        for <bpf@vger.kernel.org>; Fri, 10 May 2019 19:53:02 -0700 (PDT)
+        id S1726130AbfEKEhf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 May 2019 00:37:35 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:46753 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725990AbfEKEhf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 11 May 2019 00:37:35 -0400
+Received: by mail-pg1-f194.google.com with SMTP id t187so3944358pgb.13;
+        Fri, 10 May 2019 21:37:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QNZoChIf2lg8703PWLK0D4vhE3dgoghA+HjSLMHNtYc=;
-        b=aM7BCxyUBYM95MqIGVpU2RewLKHldN5lkU0Fb48xw4JGT/s2zA6M2yZ35jAU1dyXyj
-         qONocOLi+p5NvUTr9p4bz2tnECsRMsHMNTEcdidRor4E+dEG7Dff/NuK1NXd+AGevM3h
-         7ybeoqD6/YVwWFmNwlHDSwdRxpBbtfYKU0Cmg=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=UYukucv8TKh0+v5GWyB7Tlv7mRIdfVYQX3Glv66VIQw=;
+        b=BhTadKgUSYSyuSbjvV9r4iNRI9v6kX/UK39XJ6XUzwsLKQFarLP3R2ffrIqpL/UfvY
+         LdS0aPn6WOMM197Bs4sRrdOksUTFwP3/kW4nfCPCT3X3r1/sW53fUZZZW5nuz2AtSmnG
+         zd+ScySCXp4uFNnD0Cav+h+yLjRms0Df9hs3dw0n0yrh+9YK5NUl/wtxbxlZnb6EJ2PN
+         Bqya/lBp5UU/E7r9fYR0djIHMxA4pwj4I5ggPCtHUpCUZN0HBqb5p1dQEXlIKQAsDF7Q
+         okG0HdHtFFZo3mFFCsX/ISy0vSkny7VJVb3Znro211qyro2pDwJZdtOnYeTu1L6YTsUa
+         VkNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QNZoChIf2lg8703PWLK0D4vhE3dgoghA+HjSLMHNtYc=;
-        b=FvxeO/+EtxXFzbGFxLCjvRtsJxIsACPmG9M/+GShf7NGeg05n88g/QrbW4B0KqnLgu
-         4kG/314QUEBe5LbQPekvsXzGMUSVDx3vht4cUoBpYjkMYiJS/rr/RA2dBwJ5hmUdv/4D
-         tQxJ+R+vWMjc+SKJBe3X+MfJn5zwL9oKoN36YhUBTEI9HT6ZA6PXQRyKmpiP0+uTRUCw
-         9Qq7isDoNjAQQ/0YRxWLT2lwsBIbpBurMa/ZUSaWpGHbetmh2SYOGTMs2csJGalwu78f
-         4XW0GEsSc4+qEUZDZzW7LaRS24sqGHuuWqcfHJxkLVLzSk6YCT3v524I3uChKh5WfFjx
-         Y8tQ==
-X-Gm-Message-State: APjAAAU/gf+At89Mgp3bt1ShMWHsvNXNGZD4n5oaLkbyhYshXUqn9H3P
-        JYv6/JfikxsVr4WaJR0QqTQbnG/fWhM=
-X-Google-Smtp-Source: APXvYqxe4QgzEQeuJSwnU5rTv1AAsOgXkua44aeiqHQt+sJIUfj6qnNliRkc7znEWLRMNiwf94S/Og==
-X-Received: by 2002:a05:6602:1d6:: with SMTP id w22mr154210iot.215.1557543181638;
-        Fri, 10 May 2019 19:53:01 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c3sm2206061iob.80.2019.05.10.19.53.00
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=UYukucv8TKh0+v5GWyB7Tlv7mRIdfVYQX3Glv66VIQw=;
+        b=RIGp1GqfF+1JAwQIaZnzb7nCX2LyCkn2N3UPJwjV2PRjruCG/6px/jNotq/2rwse6v
+         qcbJV7sLvvGzkSI/FAyE8DqyM05r632f5DdajflzNUBjk1RyAo1L0gyn3eoozKrr6K4r
+         xwiCNqr8/ZutxB1byQQMR7QkBCzmkcJHiLXe71qc4eiUkNYeCUZgnWtqlZd63oenF5Eu
+         9cIraDFgL+oKNa5SbNO6Hms6yW6qtdEq27iJK9HkuTsatujNrvOV+pVd63tk4K01/vYz
+         Jy6FoX0lYPeIzl+9XfPgzR+F1OjXMUJlL2yQDnOeJ3n8lLL3zW026rf/Vj6D6v13G85A
+         SL5A==
+X-Gm-Message-State: APjAAAUCc3qrXwKmWGgf/2pIjeJ66Wcv8Ii3654C3C4UVbnh87wDOoEC
+        Z+GL9oJ/V7VYmz/hlEp2ELYeAf2Z
+X-Google-Smtp-Source: APXvYqw25vH295BAqDckkGeVfGTzE/+V28snDGJNVNL9f9vsLkAH4tpdjb1EN2gNru1RZ7tfD/49Dw==
+X-Received: by 2002:a63:ee10:: with SMTP id e16mr12005281pgi.207.1557549454123;
+        Fri, 10 May 2019 21:37:34 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:180::b64b])
+        by smtp.gmail.com with ESMTPSA id z66sm9656243pfz.83.2019.05.10.21.37.32
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 10 May 2019 19:53:00 -0700 (PDT)
-Subject: Re: [GIT PULL] Kselftest update for Linux 5.2-rc1
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        shuah <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, skhan@linuxfoundation.org
-References: <9b434125-44b6-0e83-4f70-d1fd28752407@linuxfoundation.org>
- <20190509222043.b4zn32kuohduzzzr@ast-mbp>
- <dd983d42-d148-372d-3e57-b97c313d58b9@linuxfoundation.org>
- <28072ca5-f7c8-f16d-6881-aec3e8b61ae8@linuxfoundation.org>
- <20190510021750.bxjda2wbuj3hdml7@ast-mbp>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <6da7fa0f-5da8-9274-3781-edd31a4c3043@linuxfoundation.org>
-Date:   Fri, 10 May 2019 20:53:00 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Fri, 10 May 2019 21:37:33 -0700 (PDT)
+Date:   Fri, 10 May 2019 21:37:31 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     shuah@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        torvalds@linux-foundation.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] selftests: fix bpf build/test workflow regression when
+ KBUILD_OUTPUT is set
+Message-ID: <20190511043729.3o4enh35lrmne3kd@ast-mbp>
+References: <20190511025249.32678-1-skhan@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20190510021750.bxjda2wbuj3hdml7@ast-mbp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190511025249.32678-1-skhan@linuxfoundation.org>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/9/19 8:17 PM, Alexei Starovoitov wrote:
-> On Thu, May 09, 2019 at 07:42:09PM -0600, Shuah Khan wrote:
->> On 5/9/19 4:40 PM, Shuah Khan wrote:
->>> On 5/9/19 4:20 PM, Alexei Starovoitov wrote:
->>>> On Mon, May 06, 2019 at 10:56:56AM -0600, Shuah Khan wrote:
->>>>> Hi Linus,
->>>>>
->>>>> Please pull the following Kselftest update for Linux 5.2-rc1
->>>>>
->>>>> This Kselftest update for Linux 5.2-rc1 consists of
->>>>>
->>>>> - fixes to seccomp test, and kselftest framework
->>>>> - cleanups to remove duplicate header defines
->>>>> - fixes to efivarfs "make clean" target
->>>>> - cgroup cleanup path
->>>>> - Moving the IMA kexec_load selftest to selftests/kexec work from
->>>>>     Mimi Johar and Petr Vorel
->>>>> - A framework to kselftest for writing kernel test modules addition
->>>>>     from Tobin C. Harding
->>>>>
->>>>> diff is attached.
->>>>>
->>>>> thanks,
->>>>> -- Shuah
->>>>>
->>>>>
->>>>> ----------------------------------------------------------------
->>>>> The following changes since commit
->>>>> 15ade5d2e7775667cf191cf2f94327a4889f8b9d:
->>>>>
->>>>>     Linux 5.1-rc4 (2019-04-07 14:09:59 -1000)
->>>>>
->>>>> are available in the Git repository at:
->>>>>
->>>>>     git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest
->>>>> tags/linux-kselftest-5.2-rc1
->>>>>
->>>>> for you to fetch changes up to d917fb876f6eaeeea8a2b620d2a266ce26372f4d:
->>>>>
->>>>>     selftests: build and run gpio when output directory is the src dir
->>>>> (2019-04-22 17:02:26 -0600)
->>>>>
->>>>> ----------------------------------------------------------------
->>>>> linux-kselftest-5.2-rc1
->>>>>
->>>>> This Kselftest update for Linux 5.2-rc1 consists of
->>>>>
->>>>> - fixes to seccomp test, and kselftest framework
->>>>> - cleanups to remove duplicate header defines
->>>>> - fixes to efivarfs "make clean" target
->>>>> - cgroup cleanup path
->>>>> - Moving the IMA kexec_load selftest to selftests/kexec work from
->>>>>     Mimi Johar and Petr Vorel
->>>>> - A framework to kselftest for writing kernel test modules addition
->>>>>     from Tobin C. Harding
->>>>>
->>>>> ----------------------------------------------------------------
->>>>> Kees Cook (3):
->>>>>         selftests/seccomp: Handle namespace failures gracefully
->>>>>         selftests/harness: Add 30 second timeout per test
->>>>>         selftests/ipc: Fix msgque compiler warnings
->>>>>
->>>>> Mathieu Desnoyers (1):
->>>>>         rseq/selftests: Adapt number of threads to the number of
->>>>> detected cpus
->>>>>
->>>>> Mimi Zohar (9):
->>>>>         selftests/kexec: move the IMA kexec_load selftest to
->>>>> selftests/kexec
->>>>>         selftests/kexec: cleanup the kexec selftest
->>>>>         selftests/kexec: define a set of common functions
->>>>>         selftests/kexec: define common logging functions
->>>>>         selftests/kexec: define "require_root_privileges"
->>>>>         selftests/kexec: kexec_file_load syscall test
->>>>>         selftests/kexec: check kexec_load and kexec_file_load are enabled
->>>>>         selftests/kexec: make kexec_load test independent of IMA
->>>>> being enabled
->>>>>         selftests/kexec: update get_secureboot_mode
->>>>>
->>>>> Petr Vorel (1):
->>>>>         selftests/kexec: Add missing '=y' to config options
->>>>>
->>>>> Po-Hsu Lin (1):
->>>>>         selftests/efivarfs: clean up test files from test_create*()
->>>>>
->>>>> Roman Gushchin (1):
->>>>>         selftests: cgroup: fix cleanup path in
->>>>> test_memcg_subtree_control()
->>>>>
->>>>> Sabyasachi Gupta (4):
->>>>>         selftest/x86/mpx-dig.c: Remove duplicate header
->>>>>         selftest/timers: Remove duplicate header
->>>>>         selftest/rseq: Remove duplicate header
->>>>>         selftest/gpio: Remove duplicate header
->>>>>
->>>>> Shuah Khan (2):
->>>>>         selftests: fix headers_install circular dependency
->>>>
->>>> Shuah,
->>>>
->>>> the commit 8ce72dc32578 ("selftests: fix headers_install circular
->>>> dependency")
->>>> broke our build/test workflow, since it added:
->>>>     ifneq ($(KBUILD_OUTPUT),)
->>>>             OUTPUT := $(KBUILD_OUTPUT)
->>>>     else
->>>>
->>>> which means that all of selftests/bpf artifacts are now going into
->>>> main build directory cluttering it with all sorts of .o, generated files
->>>> and executables.
->>>> The end result is humans and scripts can no longer find tests.
->>
->> bpf build fails with the above commit. However, even without it, I am
->> seeing bpf objects going to tools/testing/selftests/bpf
->>
->> I reverted the commit and ran your use-case:
->>
->> export KBUILD_OUTPUT=/tmp/kselftest_bpf
->> cd tools/testing/selftests/bpf/
->> make
->> ./test_verifier
->>
->> I see bpf objects in tools/testing/selftests/bpf/ and I can run the
->> test.
->>
->> What am I missing? The only way ./test_verifier would work is if
->> test_verifier is in tools/testing/selftests/bpf/
+On Fri, May 10, 2019 at 08:52:49PM -0600, Shuah Khan wrote:
+> commit 8ce72dc32578 ("selftests: fix headers_install circular dependency")
+> broke bpf build/test workflow. When KBUILD_OUTPUT is set, bpf objects end
+> up in KBUILD_OUTPUT build directory instead of in ../selftests/bpf.
 > 
-> That's the point. All artifacts should be in tools/testing/selftests/bpf/
-> if 'make' was done there regardless of KBUILD_OUTPUT.
+> The following bpf workflow breaks when it can't find the test_verifier:
 > 
+> cd tools/testing/selftests/bpf; make; ./test_verifier;
+> 
+> Fix it to set OUTPUT only when it is undefined in lib.mk. It didn't need
+> to be set in the first place.
+> 
+> Fixes: commit 8ce72dc32578 ("selftests: fix headers_install circular dependency")
+> 
+> Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Alexei,
+'git am' couldn't apply this patch because "sha1 information is lacking",
+but the patch itself looks good.
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+Thanks for the quick fix.
 
-Thanks for reporting the problem. Fix is on the way. Please test and let
-me know if it works for you. I verified bpf build/test workflow with
-and without KBUILD_OUTPUT set.
-
-thanks,
--- Shuah
