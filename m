@@ -2,115 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 353951A57C
-	for <lists+bpf@lfdr.de>; Sat, 11 May 2019 01:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5081A5F5
+	for <lists+bpf@lfdr.de>; Sat, 11 May 2019 02:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728125AbfEJXDX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 May 2019 19:03:23 -0400
-Received: from mail-it1-f196.google.com ([209.85.166.196]:52222 "EHLO
-        mail-it1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727828AbfEJXDW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 May 2019 19:03:22 -0400
-Received: by mail-it1-f196.google.com with SMTP id s3so11952700itk.1;
-        Fri, 10 May 2019 16:03:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=e3M6JwX/5Snb9e5vaNrJkKW+5XlxMp1QJjqq/xu5PGw=;
-        b=DY8JcaO2bHSD8e2vT7wFYUgOSvhW6RTyg7D6d8RsIGQnqOqFTW7ubMzjlCD4mALCKC
-         xjAChOFN01/NwWxWpoFMU+XY3iG3uGes7I9v47LKffI3K9REatNTI6j24YeS5PVOQE6u
-         iK5NdtnikaE7v5z+rb0N596OcfDlNK00E8Nup9zgbOrng33UYOr7PkH5aXMyYUq8G3nI
-         YkYvvr+DWlQQp5hUJHzz/yBAv1BQHMR6deLwuSQ4cku1ZXdfLHSemDvKTjbiF56BGvdQ
-         c528fyMP1Bv7BzffeAE0GhsxXbChLxG2QpmwUzEg0t4qJMMlWDj14OiEsdlebRtEXSmS
-         bQ0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=e3M6JwX/5Snb9e5vaNrJkKW+5XlxMp1QJjqq/xu5PGw=;
-        b=AD2T3aKhMkE26BjpxIY8lMZTkJj/S5eSjKV6GYKU/S2Gi9jHlDwkXSN6zhjD97gjEp
-         KBMHIonixdKgQfaZ3tXFw/CNrlBj8XI4rczSf1Q7kWFcto2yWeSz6tjC/+cw++igEoGf
-         CsuyjYsdRYcGEmkVEEZU0RZCfATk38Lr89r0PKEQsF5RmPH6xzYnPWvzB3s70og82AvO
-         TyksUBp8s8ByIbPSAMtBYdI1rU/8W1gN4Vhbo9mwo+XoYpVeW/XN2EOyBQh8YpmhKtcu
-         Dg7Z3+J4ilC9CDaqPxWnTFGtKvd2Oeldq6oKv0C6nMUAZJ50KJ6rG9x8aspUhA77uOgC
-         7WpQ==
-X-Gm-Message-State: APjAAAWBNiSBjHOv1TqkOwrFuNFe3DEN5oiW765FgtNxRkX+p0VJhkDV
-        NvB0Aex89X5Qm3QxTX+zX9M=
-X-Google-Smtp-Source: APXvYqyLedsuEFamdFvS/Kal+8aJKxOZZFM3dpWHo4P8rps40QsjhTeTHd0VEbJNxECrq4bUWaYvaw==
-X-Received: by 2002:a05:6638:29a:: with SMTP id c26mr9549359jaq.140.1557529401623;
-        Fri, 10 May 2019 16:03:21 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id y62sm3142674ita.15.2019.05.10.16.03.19
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 10 May 2019 16:03:20 -0700 (PDT)
-Date:   Fri, 10 May 2019 16:03:14 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>
-Message-ID: <5cd603329f753_af72ae355cbe5b8e8@john-XPS-13-9360.notmuch>
-In-Reply-To: <20190510100054.29f7235c@cakuba.netronome.com>
-References: <155746412544.20677.8888193135689886027.stgit@john-XPS-13-9360>
- <155746426913.20677.2783358822817593806.stgit@john-XPS-13-9360>
- <20190510100054.29f7235c@cakuba.netronome.com>
-Subject: Re: [bpf PATCH v4 1/4] bpf: tls, implement unhash to avoid transition
- out of ESTABLISHED
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1728299AbfEKAxL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 May 2019 20:53:11 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:31960 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727961AbfEKAxL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 May 2019 20:53:11 -0400
+Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id x4B0qe6p032760;
+        Sat, 11 May 2019 09:52:41 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com x4B0qe6p032760
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1557535961;
+        bh=iUxXS+30vplKGahUoVQhsc/083rdodKyu7vjq55D8xg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=umIRC7/3lNRLSfK+GHljh9R3w0EjQ+AonhIXa9BSr4osEJ1qBhMgzY50aI+8ebY8u
+         L9oNE/JlHyZaHMcd4m+0yEm/5oI6h4wmSJrCCbPCcO6F9NuHKAdyqzbvVIY2k5Zfna
+         ca9coS/3yMGwaZA736aNpG0ktBbgblls2W8ptdUMGkfOK9RM3DESUXB6IPNXsx8FcL
+         6cLIBKpJx7B2GacYkS186Z1oQ7b2X3Kyns+i1GE9ZBw8huUIgJvfsFJxpyQD6mWtwX
+         8rv9pykSnmYRazTLtdNBM/Z8HlK0+Kr7FWfwHPrYo4ncv0T60fUsm0CodN3bh5sY9g
+         MN3rUi7l+Az+g==
+X-Nifty-SrcIP: [209.85.217.50]
+Received: by mail-vs1-f50.google.com with SMTP id j184so4668136vsd.11;
+        Fri, 10 May 2019 17:52:41 -0700 (PDT)
+X-Gm-Message-State: APjAAAULBF5NbSY/oTiCb/RjkNEBAhB22SJO/v3+qos7RudpzuklxxXC
+        Lhu7f7D8vgA6EXESGRF3FFMdGYNbrcSYB9DiltI=
+X-Google-Smtp-Source: APXvYqyUc+v7TtnlTZkAvl+FZ1vVEt3lE7J6HYJX7L39IUWk68P03S3ownrv/zhg9Wxx1qmb65a+wPCgt1rx7T1DAls=
+X-Received: by 2002:a67:fd89:: with SMTP id k9mr7848953vsq.54.1557535960078;
+ Fri, 10 May 2019 17:52:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190510210243.152808-1-joel@joelfernandes.org> <20190510210243.152808-4-joel@joelfernandes.org>
+In-Reply-To: <20190510210243.152808-4-joel@joelfernandes.org>
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+Date:   Sat, 11 May 2019 09:52:04 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATeJqmE29M=Y1Vexg8nnRdr3qUDkq1BejN7t2_106PgVg@mail.gmail.com>
+Message-ID: <CAK7LNATeJqmE29M=Y1Vexg8nnRdr3qUDkq1BejN7t2_106PgVg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] kheaders: Make it depend on sysfs
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        atish patra <atishp04@gmail.com>, bpf@vger.kernel.org,
+        Brendan Gregg <bgregg@netflix.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Daniel Colascione <dancol@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        duyuchao <yuchao.du@unisoc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Karim Yaghmour <karim.yaghmour@opersys.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-trace-devel@vger.kernel.org,
+        Manjo Raja Rao <linux@manojrajarao.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        =?UTF-8?Q?Micha=C5=82_Gregorczyk?= <michalgr@fb.com>,
+        Michal Gregorczyk <michalgr@live.com>,
+        Mohammad Husain <russoue@gmail.com>,
+        Olof Johansson <olof@lixom.net>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        Tamir Carmeli <carmeli.tamir@gmail.com>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Kicinski wrote:
-> On Thu, 09 May 2019 21:57:49 -0700, John Fastabend wrote:
-> > @@ -2042,12 +2060,14 @@ void tls_sw_free_resources_tx(struct sock *sk)
-> >  	if (atomic_read(&ctx->encrypt_pending))
-> >  		crypto_wait_req(-EINPROGRESS, &ctx->async_wait);
-> >  
-> > -	release_sock(sk);
-> > +	if (locked)
-> > +		release_sock(sk);
-> >  	cancel_delayed_work_sync(&ctx->tx_work.work);
-> 
-> So in the splat I got (on a slightly hacked up kernel) it seemed like
-> unhash may be called in atomic context:
-> 
-> [  783.232150]  tls_sk_proto_unhash+0x72/0x110 [tls]
-> [  783.237497]  tcp_set_state+0x484/0x640
-> [  783.241776]  ? __sk_mem_reduce_allocated+0x72/0x4a0
-> [  783.247317]  ? tcp_recv_timestamp+0x5c0/0x5c0
-> [  783.252265]  ? tcp_write_queue_purge+0xa6a/0x1180
-> [  783.257614]  tcp_done+0xac/0x260
-> [  783.261309]  tcp_reset+0xbe/0x350
-> [  783.265101]  tcp_validate_incoming+0xd9d/0x1530
-> 
-> I may have been unclear off-list, I only tested the patch no longer
-> crashes the offload :(
-> 
-
-Yep, I misread and thought it was resolved here as well. OK I'll dig into
-it. I'm not seeing it from selftests but I guess that means we are missing
-a testcase. :( yet another version I guess.
-
-Thanks,
-John
+On Sat, May 11, 2019 at 6:05 AM Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
+>
+> The kheaders archive is exposed through SYSFS in /sys/kernel/. Make it
+> depend on SYSFS as it makes no sense to enable this feature without it.
 
 
-> > -	lock_sock(sk);
-> > +	if (locked)
-> > +		lock_sock(sk);
-> >  
-> >  	/* Tx whatever records we can transmit and abandon the rest */
-> > -	tls_tx_records(sk, -1);
-> > +	tls_tx_records(sk, tls_ctx, -1);
-> >  
-> >  	/* Free up un-sent records in tx_list. First, free
-> >  	 * the partially sent record if any at head of tx_list.
-> 
+And, it also makes no sense to break the feature by 1/3,
+then fix it by 3/3.
 
 
+Why don't you squash this?
+
+
+
+>
+> Suggested-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+>  init/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/init/Kconfig b/init/Kconfig
+> index ce08adf0f637..f27138a8cf28 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -581,6 +581,7 @@ config IKCONFIG_PROC
+>
+>  config IKHEADERS
+>         tristate "Enable kernel headers through /sys/kernel/kheaders.tar.xz"
+> +       depends on SYSFS
+>         help
+>           This option enables access to the in-kernel headers that are generated during
+>           the build process. These can be used to build eBPF tracing programs,
+> --
+> 2.21.0.1020.gf2820cf01a-goog
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
