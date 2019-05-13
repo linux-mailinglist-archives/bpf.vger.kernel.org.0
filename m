@@ -2,89 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8C61BD92
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2019 21:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 365F31BEC3
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2019 22:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729098AbfEMTEk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 May 2019 15:04:40 -0400
-Received: from mail-ua1-f74.google.com ([209.85.222.74]:36848 "EHLO
-        mail-ua1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726084AbfEMTEk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 May 2019 15:04:40 -0400
-Received: by mail-ua1-f74.google.com with SMTP id a6so671064uah.3
-        for <bpf@vger.kernel.org>; Mon, 13 May 2019 12:04:39 -0700 (PDT)
+        id S1726286AbfEMUdo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 May 2019 16:33:44 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:38763 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726218AbfEMUdo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 May 2019 16:33:44 -0400
+Received: by mail-ed1-f67.google.com with SMTP id w11so19388044edl.5;
+        Mon, 13 May 2019 13:33:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=oR8zQU2Zd3bm0eoT1c69aX6y+IQJBeinTbkDZoPCRQo=;
-        b=Yrcw+b/UvsPlCbLHRvvnToX6ehGI17r3/iVF3KBzx3OBXmQ5Od/l7/BXOgoUNauZb0
-         y6qX/mGY6Owrf84S6ERE0ghXSLREDm7gLd3BrXZXFOowzkqOeu66irrHOtK6UJR60hDN
-         FM/2Z8KoUs6T7wbK0BIFKQMEdNWlFMoFzHEPMCi1gYJAKxOSIndHRXZyGz4HzCo3SIRz
-         vfI4vg1sPDH8dV7jFCvfAuXq3D5C0i5OB1DzhwZY4pB3rsPYsJKucSwVEC3v2F2bVQUY
-         Gi741zmBOwDIaXBe4qE3jfZKaFZ86RKNFlMjoK2jpZBLc1l1mte7cFh+3VWA7lQa2t29
-         ODIg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B70CDG0UnrqM0ftRUzJ1VNMZ8Sv2w6+g3UHOZr1Nid0=;
+        b=MLkWQwJPXrkBm+//Y7FM9bkiVCUE6aXkrwTn0AEBy7nu7Xn8r0ZDuNd2ba/eNDGTob
+         KlbOZumMBvhTOKCeT0gaUNNxZVJkrx/MPTdLlN9ixCZlLYpGeiP6HU94phRJvSk1rkEy
+         bZMq43cy9D/ImB0cBtA+B2vaea3o4pDbYhT2ymhH5qe7jpbt0gGA2URrxs2qzrFOyfZD
+         Tgvf4GORXooa8d21p986sALJTZKPL/7G8b0NqOAcKeZt4Kv04mTm1kumvaGPuosqhbdo
+         yhidkIjdWR2+9U9NRdN0UP3+XIwb5moSL1SwqlWZyCtSG5prKF0ntDZX6w+InOtgQish
+         oNIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=oR8zQU2Zd3bm0eoT1c69aX6y+IQJBeinTbkDZoPCRQo=;
-        b=nnyHbcG4cJOoOZ1Md2bEyNHigWYXgb3dg1SFr2kxSWKmSj5LAX/cZbLh43iFYF3ZRg
-         iJBY2h8Fhfn48mgHaorFNguyVdttWTEZAPVT3wKeskXpm/FS/8JW4DWB/JgaPaUrrruk
-         h1F61LGFwcr0V/LH7LYF26h/B62obgZ2rNFcZCENnR/MhUpZVOe7nRVXiVoCCqbU+Fv3
-         DeMQAWAomyvZ936Hkww84yvLMIP1cSPMom1FT4uUkXtIeqM7ZD9t93NpBFAaF3V+b0gm
-         XLKvubxJgNQdg319hiV4vw3JMsbFw0DlyE0Pmrwrx4Z+Y+oQuKZ67Y9zSZm2Mi8XOnNS
-         JUmw==
-X-Gm-Message-State: APjAAAWf5tmaqphbXB1RBRaP73SXAnixVcKHExnWfqdVaJz4rz+ZN7CQ
-        ZEfhz577I9CnRhOiAbgnGaa9Pk4=
-X-Google-Smtp-Source: APXvYqzImIva+4pxY72XI3JSo2VA+GQHezF49xYTfBBSO8PxBC+B3KDIhBUMCHs+Z3KnztBXZG+Hrlc=
-X-Received: by 2002:a67:ff8b:: with SMTP id v11mr4306982vsq.88.1557774279361;
- Mon, 13 May 2019 12:04:39 -0700 (PDT)
-Date:   Mon, 13 May 2019 12:04:36 -0700
-Message-Id: <20190513190436.229860-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
-Subject: [PATCH bpf] bpf: mark bpf_event_notify and bpf_event_init as static
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B70CDG0UnrqM0ftRUzJ1VNMZ8Sv2w6+g3UHOZr1Nid0=;
+        b=qi97MrQCZCwuRxaJx4EYDo8TOkMVsFbkIB6BLk3O/mcuWELf2j/QKLqvnPpQQ6oM0Q
+         xLDwqcmt0sJCxPpaAU53Y6uVQnhwMGVHOxMhAXqwPCcGDdMN9cj/pEAnbE1xs+yooj5h
+         aVqfNnWuZb2REhYwje80SOavzDMRd2oxJ9OmlMUjO9qg5AMLN/6OVqlmHAnroNg3hw5x
+         a15eMSzTZbVFYNXUXOVbhpWJlnRmaSCnkHGum0S+IogYZRPx18vXa15j2Fn+DZ19tq4Y
+         Wo9zsH1uUhl2N7k5LGYeWETAQr29Q6kyevqIUC9av+9C8WjNw1Of4T5faHSYoOqexzWr
+         Bhqw==
+X-Gm-Message-State: APjAAAUXFmXNp5ailU0MVdnefCTugzdLPSOW06P81uJdknRAr52w+Lb/
+        GQ+vT+jjXaORy/42IOxvNKO4b37BBtp5RYB7KKo=
+X-Google-Smtp-Source: APXvYqzh/rFmdIB0xWUFlk4UcYw4AH8kUyDIOy03zsZdvOMpFL2kILxPHJ8wDuWHsSUHsyXznBNu3xivgd3D4vY8UGE=
+X-Received: by 2002:a50:8dc5:: with SMTP id s5mr4512379edh.138.1557779622307;
+ Mon, 13 May 2019 13:33:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190513185402.220122-1-sdf@google.com>
+In-Reply-To: <20190513185402.220122-1-sdf@google.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Mon, 13 May 2019 16:33:06 -0400
+Message-ID: <CAF=yD-LO6o=uZ-aT-J9uPiBcO4f2Zc9uyGZ+f7M7mPtRSB44gA@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] flow_dissector: support FLOW_DISSECTOR_KEY_ETH_ADDRS
+ with BPF
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, David Miller <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Willem de Bruijn <willemb@google.com>,
+        Petar Penkov <ppenkov@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Both of them are not declared in the headers and not used outside
-of bpf_trace.c file.
+On Mon, May 13, 2019 at 3:53 PM Stanislav Fomichev <sdf@google.com> wrote:
+>
+> If we have a flow dissector BPF program attached to the namespace,
+> FLOW_DISSECTOR_KEY_ETH_ADDRS won't trigger because we exit early.
 
-Fixes: a38d1107f937c ("bpf: support raw tracepoints in modules")
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- kernel/trace/bpf_trace.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+I suppose that this is true for a variety of keys? For instance, also
+FLOW_DISSECTOR_KEY_IPV4_ADDRS.
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index b496ffdf5f36..f92d6ad5e080 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1297,7 +1297,8 @@ int bpf_get_perf_event_info(const struct perf_event *event, u32 *prog_id,
- }
- 
- #ifdef CONFIG_MODULES
--int bpf_event_notify(struct notifier_block *nb, unsigned long op, void *module)
-+static int bpf_event_notify(struct notifier_block *nb, unsigned long op,
-+			    void *module)
- {
- 	struct bpf_trace_module *btm, *tmp;
- 	struct module *mod = module;
-@@ -1336,7 +1337,7 @@ static struct notifier_block bpf_module_nb = {
- 	.notifier_call = bpf_event_notify,
- };
- 
--int __init bpf_event_init(void)
-+static int __init bpf_event_init(void)
- {
- 	register_module_notifier(&bpf_module_nb);
- 	return 0;
--- 
-2.21.0.1020.gf2820cf01a-goog
+We originally intended BPF flow dissection for all paths except
+tc_flower. As that catches all the vulnerable cases on the ingress
+path on the one hand and it is infeasible to support all the
+flower features, now and future. I think that is the real fix.
 
+>
+> Handle FLOW_DISSECTOR_KEY_ETH_ADDRS before BPF and only if we have
+> an skb (used by tc-flower only).
+>
+> Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hook")
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  net/core/flow_dissector.c | 23 ++++++++++++-----------
+>  1 file changed, 12 insertions(+), 11 deletions(-)
+>
+> diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+> index 9ca784c592ac..ba76d9168c8b 100644
+> --- a/net/core/flow_dissector.c
+> +++ b/net/core/flow_dissector.c
+> @@ -825,6 +825,18 @@ bool __skb_flow_dissect(const struct net *net,
+>                         else if (skb->sk)
+>                                 net = sock_net(skb->sk);
+>                 }
+> +
+> +               if (dissector_uses_key(flow_dissector,
+> +                                      FLOW_DISSECTOR_KEY_ETH_ADDRS)) {
+> +                       struct ethhdr *eth = eth_hdr(skb);
+
+Here as well as in the original patch: is it safe to just cast to
+eth_hdr? In the same file, __skb_flow_dissect_gre does test for
+(encapsulated) protocol first.
