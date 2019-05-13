@@ -2,121 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5860F1BB76
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2019 19:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6B61BBA3
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2019 19:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729943AbfEMRBs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 May 2019 13:01:48 -0400
-Received: from mga04.intel.com ([192.55.52.120]:13979 "EHLO mga04.intel.com"
+        id S1728831AbfEMRRz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 May 2019 13:17:55 -0400
+Received: from foss.arm.com ([217.140.101.70]:33992 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728822AbfEMRBr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 May 2019 13:01:47 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 May 2019 10:01:16 -0700
-X-ExtLoop1: 1
-Received: from orsmsx102.amr.corp.intel.com ([10.22.225.129])
-  by orsmga008.jf.intel.com with ESMTP; 13 May 2019 10:01:16 -0700
-Received: from orsmsx125.amr.corp.intel.com (10.22.240.125) by
- ORSMSX102.amr.corp.intel.com (10.22.225.129) with Microsoft SMTP Server (TLS)
- id 14.3.408.0; Mon, 13 May 2019 10:01:15 -0700
-Received: from orsmsx112.amr.corp.intel.com ([169.254.3.79]) by
- ORSMSX125.amr.corp.intel.com ([169.254.3.172]) with mapi id 14.03.0415.000;
- Mon, 13 May 2019 10:01:15 -0700
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "mroos@linux.ee" <mroos@linux.ee>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-CC:     "namit@vmware.com" <namit@vmware.com>
-Subject: Re: bpf VM_FLUSH_RESET_PERMS breaks sparc64 boot
-Thread-Topic: bpf VM_FLUSH_RESET_PERMS breaks sparc64 boot
-Thread-Index: AQHVCZRjj+cySzbkfEOvygRTeV/vmqZpvREA
-Date:   Mon, 13 May 2019 17:01:15 +0000
-Message-ID: <b8493de00d9973f6f054814ed69d146b29207d3e.camel@intel.com>
-References: <4401874b-31b9-42a0-31bd-32bef5b36f2a@linux.ee>
-In-Reply-To: <4401874b-31b9-42a0-31bd-32bef5b36f2a@linux.ee>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.54.75.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <65999923B50E844DB7DCAA10933EAB82@intel.com>
-Content-Transfer-Encoding: base64
+        id S1728118AbfEMRRz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 May 2019 13:17:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 64BF2341;
+        Mon, 13 May 2019 10:17:54 -0700 (PDT)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.72.51.249])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 96BA13F6C4;
+        Mon, 13 May 2019 10:17:52 -0700 (PDT)
+Date:   Mon, 13 May 2019 18:17:46 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        netdev <netdev@vger.kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        bpf <bpf@vger.kernel.org>, syzbot <syzkaller@googlegroups.com>,
+        Petar Penkov <ppenkov@google.com>,
+        Stanislav Fomichev <sdf@google.com>
+Subject: Re: [PATCH net] flow_dissector: disable preemption around BPF calls
+Message-ID: <20190513171745.GA16567@lakrids.cambridge.arm.com>
+References: <20190513163855.225489-1-edumazet@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190513163855.225489-1-edumazet@google.com>
+User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gTW9uLCAyMDE5LTA1LTEzIGF0IDE3OjAxICswMzAwLCBNZWVsaXMgUm9vcyB3cm90ZToNCj4g
-SSB0ZXN0ZWQgeWVzdGVyZGF5cyA1LjIgZGV2ZWwgZ2l0IGFuZCBpdCBmYWlsZWQgdG8gYm9vdCBv
-biBteSBTdW4gRmlyZSBWNDQ1DQo+ICg0eCBVbHRyYVNwYXJjIElJSSkuIEluaXQgaXMgc3RhcnRl
-ZCBhbmQgaXQgaGFuZ3MgdGhlcmU6DQo+IA0KPiBbICAgMzguNDE0NDM2XSBSdW4gL3NiaW4vaW5p
-dCBhcyBpbml0IHByb2Nlc3MNCj4gWyAgIDM4LjUzMDcxMV0gcmFuZG9tOiBmYXN0IGluaXQgZG9u
-ZQ0KPiBbICAgMzkuNTgwNjc4XSBzeXN0ZW1kWzFdOiBJbnNlcnRlZCBtb2R1bGUgJ2F1dG9mczQn
-DQo+IFsgICAzOS43MjE1NzddIHN5c3RlbWRbMV06IHN5c3RlbWQgMjQxIHJ1bm5pbmcgaW4gc3lz
-dGVtIG1vZGUuICgrUEFNICtBVURJVA0KPiArU0VMSU5VWCArSU1BICtBUFBBUk1PUiArU01BQ0sg
-K1NZU1ZJTklUICtVVE1QICtMSUJDUllQVFNFVFVQICtHQ1JZUFQgK0dOVVRMUw0KPiArQUNMICtY
-WiArTFo0IC1TRUNDT01QICtCTEtJRCArRUxGVVRJTFMgK0tNT0QgLUlETjIgK0lETiAtUENSRTIg
-ZGVmYXVsdC0NCj4gaGllcmFyY2h5PWh5YnJpZCkNCj4gWyAgIDQwLjAyODA2OF0gc3lzdGVtZFsx
-XTogRGV0ZWN0ZWQgYXJjaGl0ZWN0dXJlIHNwYXJjNjQuDQo+IA0KPiBXZWxjb21lIHRvIERlYmlh
-biBHTlUvTGludXggMTAgKGJ1c3RlcikhDQo+IA0KPiBbICAgNDAuMTY4NzEzXSBzeXN0ZW1kWzFd
-OiBTZXQgaG9zdG5hbWUgdG8gPHY0NDU+Lg0KPiBbICAgNjEuMzE4MDM0XSByY3U6IElORk86IHJj
-dV9zY2hlZCBkZXRlY3RlZCBzdGFsbHMgb24gQ1BVcy90YXNrczoNCj4gWyAgIDYxLjQwMzAzOV0g
-cmN1OiAgICAgMS0uLi4hOiAoMCB0aWNrcyB0aGlzIEdQKQ0KPiBpZGxlPTYwMi8xLzB4NDAwMDAw
-MDAwMDAwMDAwMCBzb2Z0aXJxPTg1Lzg1IGZxcz0xDQo+IFsgICA2MS41MjY3ODBdIHJjdTogICAg
-IChkZXRlY3RlZCBieSAzLCB0PTUyNTIgamlmZmllcywgZz0tOTY3LCBxPTIyOCkNCj4gWyAgIDYx
-LjYxMzAzN10gICBDUFVbICAxXTogVFNUQVRFWzAwMDAwMDAwODAwMDE2MDJdIFRQQ1swMDAwMDAw
-MDAwNDNmMmI4XQ0KPiBUTlBDWzAwMDAwMDAwMDA0M2YyYmNdIFRBU0tbc3lzdGVtZC1mc3RhYi1n
-OjkwXQ0KPiBbICAgNjEuNzY2ODI4XSAgICAgICAgICAgICAgVFBDW3NtcF9zeW5jaHJvbml6ZV90
-aWNrX2NsaWVudCsweDE4LzB4MTgwXQ0KPiBPN1tfX2RvX211bm1hcCsweDIwNC8weDNlMF0gSTdb
-eGNhbGxfc3luY190aWNrKzB4MWMvMHgyY10NCj4gUlBDW3BhZ2VfZXZpY3RhYmxlKzB4NC8weDYw
-XQ0KPiBbICAgNjEuOTY2ODA3XSByY3U6IHJjdV9zY2hlZCBrdGhyZWFkIHN0YXJ2ZWQgZm9yIDUy
-NTAgamlmZmllcyEgZy05NjcgZjB4MA0KPiBSQ1VfR1BfV0FJVF9GUVMoNSkgLT5zdGF0ZT0weDQw
-MiAtPmNwdT0yDQo+IFsgICA2Mi4xMTMwNThdIHJjdTogUkNVIGdyYWNlLXBlcmlvZCBrdGhyZWFk
-IHN0YWNrIGR1bXA6DQo+IFsgICA2Mi4xODU1NThdIHJjdV9zY2hlZCAgICAgICBJICAgIDAgICAg
-MTAgICAgICAyIDB4MDYwMDAwMDANCj4gWyAgIDYyLjI2NDMxMl0gQ2FsbCBUcmFjZToNCj4gWyAg
-IDYyLjI5OTMxNl0gIFswMDAwMDAwMDAwOTJhMWZjXSBzY2hlZHVsZSsweDFjLzB4ODANCj4gWyAg
-IDYyLjM2ODA3MV0gIFswMDAwMDAwMDAwOTJkM2ZjXSBzY2hlZHVsZV90aW1lb3V0KzB4MTNjLzB4
-MjgwDQo+IFsgICA2Mi40NDkzMjhdICBbMDAwMDAwMDAwMDRiNmM2NF0gcmN1X2dwX2t0aHJlYWQr
-MHg0YzQvMHhhNDANCj4gWyAgIDYyLjUyODA3N10gIFswMDAwMDAwMDAwNDdlOTVjXSBrdGhyZWFk
-KzB4ZmMvMHgxMjANCj4gWyAgIDYyLjU5NjgzM10gIFswMDAwMDAwMDAwNDA2MGE0XSByZXRfZnJv
-bV9mb3JrKzB4MWMvMHgyYw0KPiBbICAgNjIuNjcxODMxXSAgWzAwMDAwMDAwMDAwMDAwMDBdICAg
-ICAgICAgICAobnVsbCkNCj4gDQo+IDUuMS4wIHdvcmtlZCBmaW5lLiBJIGJpc2VjdGVkIGl0IHRv
-IHRoZSBmb2xsb3dpbmcgY29tbWl0Og0KPiANCj4gZDUzZDJmNzhjZWFkYmEwODFmYzc3ODU1NzA3
-OThjM2M4ZDUwYTcxOCBpcyB0aGUgZmlyc3QgYmFkIGNvbW1pdA0KPiBjb21taXQgZDUzZDJmNzhj
-ZWFkYmEwODFmYzc3ODU1NzA3OThjM2M4ZDUwYTcxOA0KPiBBdXRob3I6IFJpY2sgRWRnZWNvbWJl
-IDxyaWNrLnAuZWRnZWNvbWJlQGludGVsLmNvbT4NCj4gRGF0ZTogICBUaHUgQXByIDI1IDE3OjEx
-OjM4IDIwMTkgLTA3MDANCj4gDQo+ICAgICAgYnBmOiBVc2Ugdm1hbGxvYyBzcGVjaWFsIGZsYWcN
-Cj4gICAgICANCj4gICAgICBVc2UgbmV3IGZsYWcgVk1fRkxVU0hfUkVTRVRfUEVSTVMgZm9yIGhh
-bmRsaW5nIGZyZWVpbmcgb2Ygc3BlY2lhbA0KPiAgICAgIHBlcm1pc3Npb25lZCBtZW1vcnkgaW4g
-dm1hbGxvYyBhbmQgcmVtb3ZlIHBsYWNlcyB3aGVyZSBtZW1vcnkgd2FzIHNldCBSVw0KPiAgICAg
-IGJlZm9yZSBmcmVlaW5nIHdoaWNoIGlzIG5vIGxvbmdlciBuZWVkZWQuIERvbid0IHRyYWNrIGlm
-IHRoZSBtZW1vcnkgaXMgUk8NCj4gICAgICBhbnltb3JlIGJlY2F1c2UgaXQgaXMgbm93IHRyYWNr
-ZWQgaW4gdm1hbGxvYy4NCj4gICAgICANCj4gICAgICBTaWduZWQtb2ZmLWJ5OiBSaWNrIEVkZ2Vj
-b21iZSA8cmljay5wLmVkZ2Vjb21iZUBpbnRlbC5jb20+DQo+ICAgICAgU2lnbmVkLW9mZi1ieTog
-UGV0ZXIgWmlqbHN0cmEgKEludGVsKSA8cGV0ZXJ6QGluZnJhZGVhZC5vcmc+DQo+ICAgICAgQ2M6
-IDxha3BtQGxpbnV4LWZvdW5kYXRpb24ub3JnPg0KPiAgICAgIENjOiA8YXJkLmJpZXNoZXV2ZWxA
-bGluYXJvLm9yZz4NCj4gICAgICBDYzogPGRlbmVlbi50LmRvY2tAaW50ZWwuY29tPg0KPiAgICAg
-IENjOiA8a2VybmVsLWhhcmRlbmluZ0BsaXN0cy5vcGVud2FsbC5jb20+DQo+ICAgICAgQ2M6IDxr
-cmlzdGVuQGxpbnV4LmludGVsLmNvbT4NCj4gICAgICBDYzogPGxpbnV4X2R0aUBpY2xvdWQuY29t
-Pg0KPiAgICAgIENjOiA8d2lsbC5kZWFjb25AYXJtLmNvbT4NCj4gICAgICBDYzogQWxleGVpIFN0
-YXJvdm9pdG92IDxhc3RAa2VybmVsLm9yZz4NCj4gICAgICBDYzogQW5keSBMdXRvbWlyc2tpIDxs
-dXRvQGtlcm5lbC5vcmc+DQo+ICAgICAgQ2M6IEJvcmlzbGF2IFBldGtvdiA8YnBAYWxpZW44LmRl
-Pg0KPiAgICAgIENjOiBEYW5pZWwgQm9ya21hbm4gPGRhbmllbEBpb2dlYXJib3gubmV0Pg0KPiAg
-ICAgIENjOiBEYXZlIEhhbnNlbiA8ZGF2ZS5oYW5zZW5AbGludXguaW50ZWwuY29tPg0KPiAgICAg
-IENjOiBILiBQZXRlciBBbnZpbiA8aHBhQHp5dG9yLmNvbT4NCj4gICAgICBDYzogTGludXMgVG9y
-dmFsZHMgPHRvcnZhbGRzQGxpbnV4LWZvdW5kYXRpb24ub3JnPg0KPiAgICAgIENjOiBOYWRhdiBB
-bWl0IDxuYWRhdi5hbWl0QGdtYWlsLmNvbT4NCj4gICAgICBDYzogUmlrIHZhbiBSaWVsIDxyaWVs
-QHN1cnJpZWwuY29tPg0KPiAgICAgIENjOiBUaG9tYXMgR2xlaXhuZXIgPHRnbHhAbGludXRyb25p
-eC5kZT4NCj4gICAgICBMaW5rOiBodHRwczovL2xrbWwua2VybmVsLm9yZy9yLzIwMTkwNDI2MDAx
-MTQzLjQ5ODMtMTktbmFtaXRAdm13YXJlLmNvbQ0KPiAgICAgIFNpZ25lZC1vZmYtYnk6IEluZ28g
-TW9sbmFyIDxtaW5nb0BrZXJuZWwub3JnPg0KPiANCj4gOjA0MDAwMCAwNDAwMDAgNTgwNjZkZTUz
-MTA3ZWFiMDcwNTM5OGI1ZDBjNDA3NDI0YzEzOGE4Ng0KPiA3YTEzNDVkNDNjNGNhY2VlNjBiOTEz
-NTg5OWI3NzVlY2RiNTRlYTdlIE0gICAgICBpbmNsdWRlDQo+IDowNDAwMDAgMDQwMDAwIGQwMjY5
-MmNmNTdhMzU5MDU2YjM0ZTYzNmQwZjEwMmQzN2RlNWIyNjQNCj4gODFjNGMyYzY0MDhiNjhlYjU1
-NTY3M2JkM2YwYmMzMDcxZGIxZjdlZCBNICAgICAga2VybmVsDQo+IA0KVGhhbmtzLCBJJ2xsIHNl
-ZSBpZiBJIGNhbiByZXByb2R1Y2UuDQoNClJpY2sNCg==
+On Mon, May 13, 2019 at 09:38:55AM -0700, 'Eric Dumazet' via syzkaller wrote:
+> Various things in eBPF really require us to disable preemption
+> before running an eBPF program.
+
+Is that true for all eBPF uses? I note that we don't disable preemption
+in the lib/test_bpf.c module, for example.
+
+If it's a general requirement, perhaps it's worth an assertion within
+BPF_PROG_RUN()?
+
+Thanks,
+Mark.
+
+> 
+> syzbot reported :
+> 
+> BUG: assuming atomic context at net/core/flow_dissector.c:737
+> in_atomic(): 0, irqs_disabled(): 0, pid: 24710, name: syz-executor.3
+> 2 locks held by syz-executor.3/24710:
+>  #0: 00000000e81a4bf1 (&tfile->napi_mutex){+.+.}, at: tun_get_user+0x168e/0x3ff0 drivers/net/tun.c:1850
+>  #1: 00000000254afebd (rcu_read_lock){....}, at: __skb_flow_dissect+0x1e1/0x4bb0 net/core/flow_dissector.c:822
+> CPU: 1 PID: 24710 Comm: syz-executor.3 Not tainted 5.1.0+ #6
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+>  __cant_sleep kernel/sched/core.c:6165 [inline]
+>  __cant_sleep.cold+0xa3/0xbb kernel/sched/core.c:6142
+>  bpf_flow_dissect+0xfe/0x390 net/core/flow_dissector.c:737
+>  __skb_flow_dissect+0x362/0x4bb0 net/core/flow_dissector.c:853
+>  skb_flow_dissect_flow_keys_basic include/linux/skbuff.h:1322 [inline]
+>  skb_probe_transport_header include/linux/skbuff.h:2500 [inline]
+>  skb_probe_transport_header include/linux/skbuff.h:2493 [inline]
+>  tun_get_user+0x2cfe/0x3ff0 drivers/net/tun.c:1940
+>  tun_chr_write_iter+0xbd/0x156 drivers/net/tun.c:2037
+>  call_write_iter include/linux/fs.h:1872 [inline]
+>  do_iter_readv_writev+0x5fd/0x900 fs/read_write.c:693
+>  do_iter_write fs/read_write.c:970 [inline]
+>  do_iter_write+0x184/0x610 fs/read_write.c:951
+>  vfs_writev+0x1b3/0x2f0 fs/read_write.c:1015
+>  do_writev+0x15b/0x330 fs/read_write.c:1058
+>  __do_sys_writev fs/read_write.c:1131 [inline]
+>  __se_sys_writev fs/read_write.c:1128 [inline]
+>  __x64_sys_writev+0x75/0xb0 fs/read_write.c:1128
+>  do_syscall_64+0x103/0x670 arch/x86/entry/common.c:298
+>  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> 
+> Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hook")
+> Signed-off-by: Eric Dumazet <edumazet@google.com>
+> Reported-by: syzbot <syzkaller@googlegroups.com>
+> Cc: Petar Penkov <ppenkov@google.com>
+> Cc: Stanislav Fomichev <sdf@google.com>
+> ---
+>  net/core/flow_dissector.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+> index 9ca784c592ac8c9c58282289a81889fbe4658a9e..548f39dde30711ac5be9e921993a6d8e53f74161 100644
+> --- a/net/core/flow_dissector.c
+> +++ b/net/core/flow_dissector.c
+> @@ -734,7 +734,9 @@ bool bpf_flow_dissect(struct bpf_prog *prog, struct bpf_flow_dissector *ctx,
+>  	flow_keys->nhoff = nhoff;
+>  	flow_keys->thoff = flow_keys->nhoff;
+>  
+> +	preempt_disable();
+>  	result = BPF_PROG_RUN(prog, ctx);
+> +	preempt_enable();
+>  
+>  	flow_keys->nhoff = clamp_t(u16, flow_keys->nhoff, nhoff, hlen);
+>  	flow_keys->thoff = clamp_t(u16, flow_keys->thoff,
+> -- 
+> 2.21.0.1020.gf2820cf01a-goog
+> 
+> -- 
+> You received this message because you are subscribed to the Google Groups "syzkaller" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller/20190513163855.225489-1-edumazet%40google.com.
+> For more options, visit https://groups.google.com/d/optout.
