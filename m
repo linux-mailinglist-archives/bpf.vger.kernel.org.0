@@ -2,129 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC901BFB8
-	for <lists+bpf@lfdr.de>; Tue, 14 May 2019 01:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2629B1BFC5
+	for <lists+bpf@lfdr.de>; Tue, 14 May 2019 01:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbfEMXFQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 May 2019 19:05:16 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:42014 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726319AbfEMXFP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 May 2019 19:05:15 -0400
-Received: by mail-pf1-f195.google.com with SMTP id 13so7994922pfw.9
-        for <bpf@vger.kernel.org>; Mon, 13 May 2019 16:05:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ClSQw8ycEIIMQiIBxg9FdUvY7G6QgeWAD+x2eOpvAXA=;
-        b=R/2KTcWRwnIXYNDjiLDd3shxRbS8G0DBxdB8Qy8s95MKg1RMJODSLnUFDLhXBcmQ5z
-         Nof4ATB84T/kUJ3rueMamQKZgIANiCKUfyrjz31P3MUR0NyLvt0omozmFxri3vszkCQc
-         akEuDePzDv+ohxb8RO9bwRxiBELiWj21/WWVRAKJQEnF4zYK4V4fou6LfEQx5t8oVi3L
-         uers4z+kM1973r6ObZlzzENAU8fnsbyUmQncDUwn31qkBKGr6BbI4S0WsEQCz04c+6M+
-         qAEyVcRM8R4r0w80JuCS57f5r/nbpLY2UQzVnY6qKu7zuDgyaX8z6mqFX1mJTk0OxgLe
-         mXgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ClSQw8ycEIIMQiIBxg9FdUvY7G6QgeWAD+x2eOpvAXA=;
-        b=UuiClN1uMzRye5mABG9xYBM+t/Gk5k/qW2uvdd3J4fbzmHg+U/3u3g9h+5w8ZKikAU
-         pm/dWx4r22pqPvYpyrTBEqBLmaJ4amglRVTEEsf10xI3noxjByRYg81iYuk+mHNFxZQt
-         pFjY9Nxz9fPLhC49rPGelbpitYcElNH55sXX1ckUSlcp3/gwG83zYXZLlDABUHNcbKeP
-         uXmrTJk5vNZPleiiTq4QY6xeLt/KYnlQagdYr2WYfkpnOaOUmn5OxbNbS5mza4lTUbpZ
-         aV4SgeXRPnjK/NAHQhyxzGahMjdnSaoLXJcr87yBMGtVaE4xs5UOg6RRnfp/y3Ccy08e
-         vgpA==
-X-Gm-Message-State: APjAAAUrjY1orWOZ5KuU/JEUCMTM4ibcKET8MDBLUO61tGtVUUPTH3a8
-        G9mAhiO3riJuNhuJFubusE1zng==
-X-Google-Smtp-Source: APXvYqy1YmyEWgT2uzXvu2WwT5J6UaGme+PcUzptgCYmTHmO9565PrR7j4LrYxY49rsNY3DVbG0N8w==
-X-Received: by 2002:a63:fd0c:: with SMTP id d12mr34983924pgh.391.1557788714740;
-        Mon, 13 May 2019 16:05:14 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id d85sm3556653pfd.94.2019.05.13.16.05.13
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 13 May 2019 16:05:14 -0700 (PDT)
-Date:   Mon, 13 May 2019 16:05:13 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, David Miller <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Willem de Bruijn <willemb@google.com>,
-        Petar Penkov <ppenkov@google.com>
-Subject: Re: [PATCH bpf 1/2] flow_dissector: support
- FLOW_DISSECTOR_KEY_ETH_ADDRS with BPF
-Message-ID: <20190513230513.GA10244@mini-arch>
-References: <20190513185402.220122-1-sdf@google.com>
- <CAF=yD-LO6o=uZ-aT-J9uPiBcO4f2Zc9uyGZ+f7M7mPtRSB44gA@mail.gmail.com>
- <20190513210239.GC24057@mini-arch>
- <CAF=yD-JKbzuoF_q7gPRjMNCBexn4pxgQ6pTeQSRfPXmwWk5dzg@mail.gmail.com>
- <CAF=yD-Lg16ETT09=fRd2FTx2FJoGZ9K0s-JHrhv-9OMTqE+5BQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAF=yD-Lg16ETT09=fRd2FTx2FJoGZ9K0s-JHrhv-9OMTqE+5BQ@mail.gmail.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+        id S1726651AbfEMXTW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 May 2019 19:19:22 -0400
+Received: from www62.your-server.de ([213.133.104.62]:57876 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726466AbfEMXTW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 May 2019 19:19:22 -0400
+Received: from [178.199.41.31] (helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hQKE3-0001rj-Pz; Tue, 14 May 2019 01:19:19 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     ast@kernel.org
+Cc:     kafai@fb.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH bpf 0/3] BPF LRU map fix
+Date:   Tue, 14 May 2019 01:18:54 +0200
+Message-Id: <cover.1557789256.git.daniel@iogearbox.net>
+X-Mailer: git-send-email 2.9.5
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25448/Mon May 13 09:57:34 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/13, Willem de Bruijn wrote:
-> On Mon, May 13, 2019 at 5:21 PM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
-> >
-> > On Mon, May 13, 2019 at 5:02 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
-> > >
-> > > On 05/13, Willem de Bruijn wrote:
-> > > > On Mon, May 13, 2019 at 3:53 PM Stanislav Fomichev <sdf@google.com> wrote:
-> > > > >
-> > > > > If we have a flow dissector BPF program attached to the namespace,
-> > > > > FLOW_DISSECTOR_KEY_ETH_ADDRS won't trigger because we exit early.
-> > > >
-> > > > I suppose that this is true for a variety of keys? For instance, also
-> > > > FLOW_DISSECTOR_KEY_IPV4_ADDRS.
-> >
-> > > I though the intent was to support most of the basic stuff (eth/ip/tcp/udp)
-> > > without any esoteric protocols.
-> >
-> > Indeed. But this applies both to protocols and the feature set. Both
-> > are more limited.
-> >
-> > > Not sure about FLOW_DISSECTOR_KEY_IPV4_ADDRS,
-> > > looks like we support that (except FLOW_DISSECTOR_KEY_TIPC part).
-> >
-> > Ah, I chose a bad example then.
-> >
-> > > > We originally intended BPF flow dissection for all paths except
-> > > > tc_flower. As that catches all the vulnerable cases on the ingress
-> > > > path on the one hand and it is infeasible to support all the
-> > > > flower features, now and future. I think that is the real fix.
-> >
-> > > Sorry, didn't get what you meant by the real fix.
-> > > Don't care about tc_flower? Just support a minimal set of features
-> > > needed by selftests?
-> >
-> > I do mean exclude BPF flow dissector (only) for tc_flower, as we
-> > cannot guarantee that the BPF program can fully implement the
-> > requested feature.
-> 
-> Though, the user inserting the BPF flow dissector is the same as the
-> user inserting the flower program, the (per netns) admin. So arguably
-> is aware of the constraints incurred by BPF flow dissection. And else
-> can still detect when a feature is not supported from the (lack of)
-> output, as in this case of Ethernet address. I don't think we want to
-> mix BPF and non-BPF flow dissection though. That subverts the safety
-> argument of switching to BPF for flow dissection.
-Yes, we cannot completely avoid tc_flower because we use it to do
-the end-to-end testing. That's why I was trying to make sure "basic"
-stuff works (it might feel confusing that tc_flower {src,dst}_mac
-stop working with a bpf program installed).
+This set fixes LRU map eviction in combination with map lookups out
+of system call side from user space. Main patch is the second one and
+test cases are adapted and added in the last one. Thanks!
 
-TBH, I'd not call this particular piece of code that exports src/dst
-addresses a dissection. At this point, it's a well-formed skb with
-a proper l2 header and we just copy the addresses out. It's probably
-part of the reason the original patch didn't include any skb->protocol
-checks.
+Daniel Borkmann (3):
+  bpf: add map_lookup_elem_sys_only for lookups from syscall side
+  bpf, lru: avoid messing with eviction heuristics upon syscall lookup
+  bpf: test ref bit from data path and add new tests for syscall path
+
+ include/linux/bpf.h                        |   1 +
+ kernel/bpf/hashtab.c                       |  23 ++-
+ kernel/bpf/syscall.c                       |   5 +-
+ tools/testing/selftests/bpf/test_lru_map.c | 288 +++++++++++++++++++++++++++--
+ 4 files changed, 297 insertions(+), 20 deletions(-)
+
+-- 
+2.9.5
+
