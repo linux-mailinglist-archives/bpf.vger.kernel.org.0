@@ -2,48 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E23021BD7C
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2019 20:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 175051BD7E
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2019 20:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728881AbfEMSyG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 May 2019 14:54:06 -0400
-Received: from mail-ua1-f74.google.com ([209.85.222.74]:49940 "EHLO
-        mail-ua1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728877AbfEMSyG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 May 2019 14:54:06 -0400
-Received: by mail-ua1-f74.google.com with SMTP id j43so1685842uae.16
-        for <bpf@vger.kernel.org>; Mon, 13 May 2019 11:54:05 -0700 (PDT)
+        id S1728933AbfEMSyJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 May 2019 14:54:09 -0400
+Received: from mail-oi1-f201.google.com ([209.85.167.201]:54569 "EHLO
+        mail-oi1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728879AbfEMSyI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 May 2019 14:54:08 -0400
+Received: by mail-oi1-f201.google.com with SMTP id a196so4505573oii.21
+        for <bpf@vger.kernel.org>; Mon, 13 May 2019 11:54:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=ojq1kpYzLVjj7s0IxpD9pNDAUCSKVEzFe5EcgprjOmE=;
-        b=N/NN1+KH1wMODtFxJ1Bf54yABh2tsar3BB9B2WrQsecN6NJDwv3pyRznv+SbcdjpPQ
-         tCzqaMhW/7+es7IEmdJf2By8o6W1r+jfSra7zwsHQq7vRmFQ/5FAG2wiuw9xBIxI1Yvo
-         JNGhwk4hcpeHHmmudR5D9dN9p88XdMIPlgXf+7l7o4S1XLxQwydzCMtVX6+NipkqLjxY
-         PGuXheP4rzFGhRrheUTA5C93kXgpVruHwSela2EMPfrwuvqA6LuI1Rv5hvLiKqZfz7+A
-         OsXemxsDBJUtmUMQNjbowMTPK+G8sy2cYa5C2rCbnLoe1I3l52X6kWZungHw1wJzDf+V
-         q6fg==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=ok8guVD0V5J+/Id0PgLrhseD+VuX/OMfP1RhhNrJ29o=;
+        b=NA/FjXgZpugDr7WpeNL0OJpq9gkSaObz1KX4mj/B5eF2O7mbF15+evo1GGcOXHWVBY
+         fS+oCwJp8BwTQttVADgHenSTtustg2XwnU3jsI6UrDPH3gK06kpX2/ZKH8dObqYq7XS0
+         DDWKBq56fwlewTEVhsmDQfNmnfYPtJy4GX+4aXxauQB4WSq2aK7YpZHFIo6L4WslL/70
+         xQ3pgpSwpedRx7fg1s5FYvmqtY5P0NJlPmzMOOKrHhGFcLmip90TMKQAQ9DBDZG3Egwa
+         Tep6HLHwjkU9+opDGY99dHWRfNStdWEUcAcfOSArITqm08BmML7cVYQppZpfOfGZdxX5
+         0Nwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=ojq1kpYzLVjj7s0IxpD9pNDAUCSKVEzFe5EcgprjOmE=;
-        b=WtoR11c4zf442C9CEOuBqRj5oocxubIlnyee95MQGHEx+XYdTm+r2OS/towdrIDDOC
-         xnEOs/cZa2NAR9OnIjcwS2bRIK6tP4Aez2bktN7iFfeKJXUuep7gG5tTLEF5mqagahC8
-         jnMPPBiUpj0CraDT/nJOvZaS4eKtKsnRE+PKxwnkRWaDQ7s++D+AaGz8G1Pe8euIjARs
-         Ql4DBKFrIMa01kp3eD4oOjSIGnanlcQOE6NuBDMYCruEN1JChg0AiSXYUE70zWeUVKps
-         EXW3iEA4tZxphcbtz8tc5vH3aUIXNtnAZ/OMg9PO1mNONbFov/j+aT80ihNfBlR2PAzN
-         2Iyg==
-X-Gm-Message-State: APjAAAV5uF4Pe3fOQCm2SshzAiBWvscj6S/IXTAazGvGqVTR2rKT1rkM
-        3tjHwsY9wt80Fb1QKLh46cbFcp8=
-X-Google-Smtp-Source: APXvYqwdDZTAL3yc21dxQnZKNPhlwTN9jMcv/Pc/16SNZfAxZkgotJj7aqgGZCE/DF4+vhMkt5PUU08=
-X-Received: by 2002:a67:ed84:: with SMTP id d4mr14634240vsp.207.1557773644903;
- Mon, 13 May 2019 11:54:04 -0700 (PDT)
-Date:   Mon, 13 May 2019 11:54:01 -0700
-Message-Id: <20190513185402.220122-1-sdf@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=ok8guVD0V5J+/Id0PgLrhseD+VuX/OMfP1RhhNrJ29o=;
+        b=ZPKhSApLuQxJcjiB2gipfQs6MkYi1zNZjR2kmq2fyRRbMpkZQ+Ca+iLNWAUZtzTSpF
+         X2aBojKqrGF5dQ19tC3Xgcdr7LX7KgCNVHhzTRMC2bw2ylySBQ322dZkbGbsLkDLmLF3
+         Gnlmn7jNa79+ZcLz6HmQwCFGFiu+sBxrNiQxQNe/XDW9KOOxNjje9FH+i89ZZYJF3WES
+         TQug39MvXtiZJJmOTbG6j3EPxS8fBRnXBAljP0wvpR3k9FHihZ9mNjDxUXQGXXdVXgKs
+         n+/+PuoI+Pcmoyowin7ecQcA/H8BRxKsPKOu98TjPe4Is+/FdSToZgFi4Ke19rAaN2WC
+         TzYg==
+X-Gm-Message-State: APjAAAUOO3WuhgPIPFRLNa9jLRsnIt5O5TYcGK4hzi7L7qpweIDtRH4v
+        ty5BfuHHBJltfNmcs24JvJt8QNs=
+X-Google-Smtp-Source: APXvYqwY0tusSpb8Cczy3tk0s4Bzv9pouPUhh+cmkNpLDlF9KbKQOBLh+z6fB/amnmTQPQDepcBKYf8=
+X-Received: by 2002:aca:f007:: with SMTP id o7mr404129oih.59.1557773647340;
+ Mon, 13 May 2019 11:54:07 -0700 (PDT)
+Date:   Mon, 13 May 2019 11:54:02 -0700
+In-Reply-To: <20190513185402.220122-1-sdf@google.com>
+Message-Id: <20190513185402.220122-2-sdf@google.com>
 Mime-Version: 1.0
+References: <20190513185402.220122-1-sdf@google.com>
 X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
-Subject: [PATCH bpf 1/2] flow_dissector: support FLOW_DISSECTOR_KEY_ETH_ADDRS
- with BPF
+Subject: [PATCH bpf 2/2] selftests/bpf: test L2 dissection in flow dissector
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
@@ -55,59 +58,46 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If we have a flow dissector BPF program attached to the namespace,
-FLOW_DISSECTOR_KEY_ETH_ADDRS won't trigger because we exit early.
+Make sure that everything that's coming from a pre-defined mac address
+can be dropped.
 
-Handle FLOW_DISSECTOR_KEY_ETH_ADDRS before BPF and only if we have
-an skb (used by tc-flower only).
-
-Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hook")
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- net/core/flow_dissector.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ .../selftests/bpf/test_flow_dissector.sh      | 23 +++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
-index 9ca784c592ac..ba76d9168c8b 100644
---- a/net/core/flow_dissector.c
-+++ b/net/core/flow_dissector.c
-@@ -825,6 +825,18 @@ bool __skb_flow_dissect(const struct net *net,
- 			else if (skb->sk)
- 				net = sock_net(skb->sk);
- 		}
+diff --git a/tools/testing/selftests/bpf/test_flow_dissector.sh b/tools/testing/selftests/bpf/test_flow_dissector.sh
+index d23d4da66b83..1505d0a5fb32 100755
+--- a/tools/testing/selftests/bpf/test_flow_dissector.sh
++++ b/tools/testing/selftests/bpf/test_flow_dissector.sh
+@@ -112,4 +112,27 @@ tc filter add dev lo parent ffff: protocol ipv6 pref 1337 flower ip_proto \
+ # Send 10 IPv6/UDP packets from port 10. Filter should not drop any.
+ ./test_flow_dissector -i 6 -f 10
+ 
++tc filter del dev lo ingress pref 1337
 +
-+		if (dissector_uses_key(flow_dissector,
-+				       FLOW_DISSECTOR_KEY_ETH_ADDRS)) {
-+			struct ethhdr *eth = eth_hdr(skb);
-+			struct flow_dissector_key_eth_addrs *key_eth_addrs;
++echo "Testing L2..."
++ip link set lo address 02:01:03:04:05:06
 +
-+			key_eth_addrs = skb_flow_dissector_target(flow_dissector,
-+								  FLOW_DISSECTOR_KEY_ETH_ADDRS,
-+								  target_container);
-+			memcpy(key_eth_addrs, &eth->h_dest,
-+			       sizeof(*key_eth_addrs));
-+		}
- 	}
- 
- 	WARN_ON_ONCE(!net);
-@@ -860,17 +872,6 @@ bool __skb_flow_dissect(const struct net *net,
- 		rcu_read_unlock();
- 	}
- 
--	if (dissector_uses_key(flow_dissector,
--			       FLOW_DISSECTOR_KEY_ETH_ADDRS)) {
--		struct ethhdr *eth = eth_hdr(skb);
--		struct flow_dissector_key_eth_addrs *key_eth_addrs;
--
--		key_eth_addrs = skb_flow_dissector_target(flow_dissector,
--							  FLOW_DISSECTOR_KEY_ETH_ADDRS,
--							  target_container);
--		memcpy(key_eth_addrs, &eth->h_dest, sizeof(*key_eth_addrs));
--	}
--
- proto_again:
- 	fdret = FLOW_DISSECT_RET_CONTINUE;
- 
++# Drops all packets coming from forged localhost mac
++tc filter add dev lo parent ffff: protocol ip pref 1337 flower \
++	src_mac 02:01:03:04:05:06 action drop
++
++# Send packets from any port. Filter should drop all.
++./test_flow_dissector -i 4 -f 8 -F
++
++tc filter del dev lo ingress pref 1337
++
++# Drops all packets coming from "random" non-localhost mac
++tc filter add dev lo parent ffff: protocol ip pref 1337 flower \
++	src_mac 02:01:03:04:05:07 action drop
++
++# Send packets from any port. Filter should not drop any.
++./test_flow_dissector -i 4 -f 8
++
++tc filter del dev lo ingress pref 1337
++
+ exit 0
 -- 
 2.21.0.1020.gf2820cf01a-goog
 
