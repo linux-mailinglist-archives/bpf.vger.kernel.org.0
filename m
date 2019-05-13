@@ -2,102 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 02AD11BC41
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2019 19:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E23021BD7C
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2019 20:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731898AbfEMRwR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 May 2019 13:52:17 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:42995 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731830AbfEMRwR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 May 2019 13:52:17 -0400
-Received: by mail-pf1-f196.google.com with SMTP id 13so7587559pfw.9;
-        Mon, 13 May 2019 10:52:16 -0700 (PDT)
+        id S1728881AbfEMSyG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 May 2019 14:54:06 -0400
+Received: from mail-ua1-f74.google.com ([209.85.222.74]:49940 "EHLO
+        mail-ua1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728877AbfEMSyG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 May 2019 14:54:06 -0400
+Received: by mail-ua1-f74.google.com with SMTP id j43so1685842uae.16
+        for <bpf@vger.kernel.org>; Mon, 13 May 2019 11:54:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gG0BeH3aPQX6+9LO5Ic0rQpmKN+xGb6eZVLaTkbtrKc=;
-        b=Udd90F4h0zCNNnbXAe+164TapFQw71wxN7u8OpVilQLDN2CAyCa7LF+znZakjhxeHJ
-         2JNP4csDk4coCIrwSntcXc7HRFk72zS6MDtQs17ck3OeABYzwTrOmjYSOO1FRP7r3Z71
-         V9FnaLbUX0Yt3I69Ps7TGVrNefJHEQXjk/7+NIvvHLL5hf2+PRpnlaIYL/Nylna7eMN7
-         AG4ljkSarqeOGZ+JhxAQLeV3fBotXHZqJN1izwapxqEe8bHMwfGmTW6C/I4PfGGHAWAy
-         v22WoTAIVlvcfWu63bevXOkut85yEw/+hlcHIqhXTpB+ybvIjJSmyI4hWW9vd8g9MhKL
-         0vJA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ojq1kpYzLVjj7s0IxpD9pNDAUCSKVEzFe5EcgprjOmE=;
+        b=N/NN1+KH1wMODtFxJ1Bf54yABh2tsar3BB9B2WrQsecN6NJDwv3pyRznv+SbcdjpPQ
+         tCzqaMhW/7+es7IEmdJf2By8o6W1r+jfSra7zwsHQq7vRmFQ/5FAG2wiuw9xBIxI1Yvo
+         JNGhwk4hcpeHHmmudR5D9dN9p88XdMIPlgXf+7l7o4S1XLxQwydzCMtVX6+NipkqLjxY
+         PGuXheP4rzFGhRrheUTA5C93kXgpVruHwSela2EMPfrwuvqA6LuI1Rv5hvLiKqZfz7+A
+         OsXemxsDBJUtmUMQNjbowMTPK+G8sy2cYa5C2rCbnLoe1I3l52X6kWZungHw1wJzDf+V
+         q6fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gG0BeH3aPQX6+9LO5Ic0rQpmKN+xGb6eZVLaTkbtrKc=;
-        b=ImvKp6BAfi0hSn97LgFywtif5CLxO1xGyOT5+RW7bm+kPqGt9weMTZ5B7rE8hcR1eV
-         3OLylDydWZloJSKrDsi7Q1m5OU/IY5O8/EJ+aAyt/v/Wv6MnJIDRmvvpy4gunu4lg92X
-         K5ewSKNkh3TdHVCyoeREb3EFBhy6XVeuOrguYhPvFOod7Bd4EbvtoaMH8ibfpvN5UFbd
-         EtWSIEMgPhcgX7aQ+dHI0yuYhaeGyyUt9nV2xT3SecowdKT+V6Nhx+qppcTYSYx7Y56Z
-         FFBqJMzo5K0/6PhB250umyOkvgzFZPH/X04UWpvY6yEz95j5zOF42gP6GqESfGNrRaWt
-         cGFA==
-X-Gm-Message-State: APjAAAXE7/h8wdGElwIh81r5D+hCkVKsGJnWzcySZr4o9BctkBzwGkrm
-        BSbd9c4SzTe2+Mb2JLaGcya6LxFh
-X-Google-Smtp-Source: APXvYqxseWYBCRfSGJpzKVqfYOLwGQPN63KyKSEflyxw90tRLNWj/yCNvcE0oWLz6A9qW1LfWTDtfA==
-X-Received: by 2002:a65:610b:: with SMTP id z11mr12844675pgu.204.1557769936363;
-        Mon, 13 May 2019 10:52:16 -0700 (PDT)
-Received: from ?IPv6:2620:15c:2c1:200:55c7:81e6:c7d8:94b? ([2620:15c:2c1:200:55c7:81e6:c7d8:94b])
-        by smtp.gmail.com with ESMTPSA id r138sm25380068pfr.2.2019.05.13.10.52.14
-        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
-        Mon, 13 May 2019 10:52:15 -0700 (PDT)
-Subject: Re: [PATCH net] flow_dissector: disable preemption around BPF calls
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        syzbot <syzkaller@googlegroups.com>,
-        Petar Penkov <ppenkov@google.com>,
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ojq1kpYzLVjj7s0IxpD9pNDAUCSKVEzFe5EcgprjOmE=;
+        b=WtoR11c4zf442C9CEOuBqRj5oocxubIlnyee95MQGHEx+XYdTm+r2OS/towdrIDDOC
+         xnEOs/cZa2NAR9OnIjcwS2bRIK6tP4Aez2bktN7iFfeKJXUuep7gG5tTLEF5mqagahC8
+         jnMPPBiUpj0CraDT/nJOvZaS4eKtKsnRE+PKxwnkRWaDQ7s++D+AaGz8G1Pe8euIjARs
+         Ql4DBKFrIMa01kp3eD4oOjSIGnanlcQOE6NuBDMYCruEN1JChg0AiSXYUE70zWeUVKps
+         EXW3iEA4tZxphcbtz8tc5vH3aUIXNtnAZ/OMg9PO1mNONbFov/j+aT80ihNfBlR2PAzN
+         2Iyg==
+X-Gm-Message-State: APjAAAV5uF4Pe3fOQCm2SshzAiBWvscj6S/IXTAazGvGqVTR2rKT1rkM
+        3tjHwsY9wt80Fb1QKLh46cbFcp8=
+X-Google-Smtp-Source: APXvYqwdDZTAL3yc21dxQnZKNPhlwTN9jMcv/Pc/16SNZfAxZkgotJj7aqgGZCE/DF4+vhMkt5PUU08=
+X-Received: by 2002:a67:ed84:: with SMTP id d4mr14634240vsp.207.1557773644903;
+ Mon, 13 May 2019 11:54:04 -0700 (PDT)
+Date:   Mon, 13 May 2019 11:54:01 -0700
+Message-Id: <20190513185402.220122-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
+Subject: [PATCH bpf 1/2] flow_dissector: support FLOW_DISSECTOR_KEY_ETH_ADDRS
+ with BPF
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        willemb@google.com, ppenkov@google.com,
         Stanislav Fomichev <sdf@google.com>
-References: <20190513163855.225489-1-edumazet@google.com>
- <20190513171745.GA16567@lakrids.cambridge.arm.com>
- <CANn89iJzsUbLXB_M5UZr2ieNyQdGHsKPFzqeQFGtKtL8d9pu0Q@mail.gmail.com>
- <20190513172527.GB16567@lakrids.cambridge.arm.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <49f8b98e-c717-c1c4-893d-cddccca3b887@gmail.com>
-Date:   Mon, 13 May 2019 10:52:14 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <20190513172527.GB16567@lakrids.cambridge.arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+If we have a flow dissector BPF program attached to the namespace,
+FLOW_DISSECTOR_KEY_ETH_ADDRS won't trigger because we exit early.
 
+Handle FLOW_DISSECTOR_KEY_ETH_ADDRS before BPF and only if we have
+an skb (used by tc-flower only).
 
-On 5/13/19 10:25 AM, Mark Rutland wrote:
-> On Mon, May 13, 2019 at 10:20:19AM -0700, 'Eric Dumazet' via syzkaller wrote:
->> On Mon, May 13, 2019 at 10:17 AM Mark Rutland <mark.rutland@arm.com> wrote:
->>>
->>> On Mon, May 13, 2019 at 09:38:55AM -0700, 'Eric Dumazet' via syzkaller wrote:
->>>> Various things in eBPF really require us to disable preemption
->>>> before running an eBPF program.
->>>
->>> Is that true for all eBPF uses? I note that we don't disable preemption
->>> in the lib/test_bpf.c module, for example.
->>>
->>> If it's a general requirement, perhaps it's worth an assertion within
->>> BPF_PROG_RUN()?
->>
->> The assertion is already there :)
->>
->> This is how syzbot triggered the report.
-> 
-> Ah! :)
-> 
-> I also see I'm wrong about test_bpf.c, so sorry for the noise on both
-> counts!
+Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hook")
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ net/core/flow_dissector.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
-No worries, thanks for reviewing !
+diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+index 9ca784c592ac..ba76d9168c8b 100644
+--- a/net/core/flow_dissector.c
++++ b/net/core/flow_dissector.c
+@@ -825,6 +825,18 @@ bool __skb_flow_dissect(const struct net *net,
+ 			else if (skb->sk)
+ 				net = sock_net(skb->sk);
+ 		}
++
++		if (dissector_uses_key(flow_dissector,
++				       FLOW_DISSECTOR_KEY_ETH_ADDRS)) {
++			struct ethhdr *eth = eth_hdr(skb);
++			struct flow_dissector_key_eth_addrs *key_eth_addrs;
++
++			key_eth_addrs = skb_flow_dissector_target(flow_dissector,
++								  FLOW_DISSECTOR_KEY_ETH_ADDRS,
++								  target_container);
++			memcpy(key_eth_addrs, &eth->h_dest,
++			       sizeof(*key_eth_addrs));
++		}
+ 	}
+ 
+ 	WARN_ON_ONCE(!net);
+@@ -860,17 +872,6 @@ bool __skb_flow_dissect(const struct net *net,
+ 		rcu_read_unlock();
+ 	}
+ 
+-	if (dissector_uses_key(flow_dissector,
+-			       FLOW_DISSECTOR_KEY_ETH_ADDRS)) {
+-		struct ethhdr *eth = eth_hdr(skb);
+-		struct flow_dissector_key_eth_addrs *key_eth_addrs;
+-
+-		key_eth_addrs = skb_flow_dissector_target(flow_dissector,
+-							  FLOW_DISSECTOR_KEY_ETH_ADDRS,
+-							  target_container);
+-		memcpy(key_eth_addrs, &eth->h_dest, sizeof(*key_eth_addrs));
+-	}
+-
+ proto_again:
+ 	fdret = FLOW_DISSECT_RET_CONTINUE;
+ 
+-- 
+2.21.0.1020.gf2820cf01a-goog
 
