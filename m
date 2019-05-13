@@ -2,147 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 867FC1BD84
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2019 20:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8C61BD92
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2019 21:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728255AbfEMS52 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 May 2019 14:57:28 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:39704 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728065AbfEMS52 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 May 2019 14:57:28 -0400
-Received: by mail-pl1-f194.google.com with SMTP id g9so6926756plm.6
-        for <bpf@vger.kernel.org>; Mon, 13 May 2019 11:57:27 -0700 (PDT)
+        id S1729098AbfEMTEk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 May 2019 15:04:40 -0400
+Received: from mail-ua1-f74.google.com ([209.85.222.74]:36848 "EHLO
+        mail-ua1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726084AbfEMTEk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 May 2019 15:04:40 -0400
+Received: by mail-ua1-f74.google.com with SMTP id a6so671064uah.3
+        for <bpf@vger.kernel.org>; Mon, 13 May 2019 12:04:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=BkQqub5XwKygwNJRTEvlmToJlno8Ci7n+XxR7Likzj0=;
-        b=VRGfs62xszS383fY9D/RVvy6vFRMDeO4m/6o8xQ0ihWb1H0ksvIGdJJOxMP9NM2Y4X
-         roBBxUNKHG/TrxtZSltr83IqdhpwWSFR1WmHF2bfmhOhmqrbZtfK+xuyidB1iPhTNHtm
-         vycBQnp7DNXNFRvGlo8ZoxtQDR6TtPgLZT3EeUXrAWmSgof9kagWgX1XsV7v7ISUvlMz
-         91FjHyxyJVJVwqjiukDD9R00f2MZdNLM7s+N9hlBx73100WxxLTWVr6w9wsaRPNRsN7z
-         FgXOs9qCdENVWVLXk/tGrgBxdozsoiGPYeyA43LBig2tgenuRO2t3Pn8uC5YfzDShK4K
-         fkIQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=oR8zQU2Zd3bm0eoT1c69aX6y+IQJBeinTbkDZoPCRQo=;
+        b=Yrcw+b/UvsPlCbLHRvvnToX6ehGI17r3/iVF3KBzx3OBXmQ5Od/l7/BXOgoUNauZb0
+         y6qX/mGY6Owrf84S6ERE0ghXSLREDm7gLd3BrXZXFOowzkqOeu66irrHOtK6UJR60hDN
+         FM/2Z8KoUs6T7wbK0BIFKQMEdNWlFMoFzHEPMCi1gYJAKxOSIndHRXZyGz4HzCo3SIRz
+         vfI4vg1sPDH8dV7jFCvfAuXq3D5C0i5OB1DzhwZY4pB3rsPYsJKucSwVEC3v2F2bVQUY
+         Gi741zmBOwDIaXBe4qE3jfZKaFZ86RKNFlMjoK2jpZBLc1l1mte7cFh+3VWA7lQa2t29
+         ODIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BkQqub5XwKygwNJRTEvlmToJlno8Ci7n+XxR7Likzj0=;
-        b=UWwAYoA44HfQqUTt7UOGJX4h2Wmn7JOxmjyAWbT2HtA4x9hoEadrbZ8EKPrqeVdv4W
-         BQw35aLW2328NFsQuPk7gBI3iRL1z1ZoCsgGf/QY2SGh3pyvZ0sn/OPFvSbJJQLkKF8j
-         9KWq9HoSURFBONa0rgH1WfeEqIfchDqA6O0EEaeZ7+/0pYm+kxqQcm3Wk2kIkOXGache
-         +SwDuyeQ3gXqnv4oa8nMXtnLujm/+yOobqxYV75qIUZ1AwKrt4lT87UUzhCjaJ7J7/QE
-         4yu/7WvGM6d/sUImFEwQ6O99uy6i2PIveH2Ux2aryiGapXzEp7uif+1gap8J6/tTMxvs
-         FbiQ==
-X-Gm-Message-State: APjAAAVpfGlCDVzuo7KjJl/uvlp2bPcKGpZP248HXn+dUjS7sNrnlRns
-        O3tH+th5Ws5uKGpWUrO8kj0INw==
-X-Google-Smtp-Source: APXvYqzqcFrVkEXQdGDGzDvqxFEepgTBsa9yAkT/dWkFIgSh1Sg6k7dxrwiNz5o3OVgrg2IVSdAygA==
-X-Received: by 2002:a17:902:284a:: with SMTP id e68mr8362814plb.258.1557773847092;
-        Mon, 13 May 2019 11:57:27 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id 19sm15983387pgz.24.2019.05.13.11.57.25
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 13 May 2019 11:57:25 -0700 (PDT)
-Date:   Mon, 13 May 2019 11:57:24 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
-        daniel@iogearbox.net
-Subject: Re: [PATCH bpf 0/4] bpf: remove __rcu annotations from bpf_prog_array
-Message-ID: <20190513185724.GB24057@mini-arch>
-References: <20190508171845.201303-1-sdf@google.com>
- <20190508175644.e4k5o6o3cgn6k5lx@ast-mbp>
- <20190508181223.GH1247@mini-arch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190508181223.GH1247@mini-arch>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=oR8zQU2Zd3bm0eoT1c69aX6y+IQJBeinTbkDZoPCRQo=;
+        b=nnyHbcG4cJOoOZ1Md2bEyNHigWYXgb3dg1SFr2kxSWKmSj5LAX/cZbLh43iFYF3ZRg
+         iJBY2h8Fhfn48mgHaorFNguyVdttWTEZAPVT3wKeskXpm/FS/8JW4DWB/JgaPaUrrruk
+         h1F61LGFwcr0V/LH7LYF26h/B62obgZ2rNFcZCENnR/MhUpZVOe7nRVXiVoCCqbU+Fv3
+         DeMQAWAomyvZ936Hkww84yvLMIP1cSPMom1FT4uUkXtIeqM7ZD9t93NpBFAaF3V+b0gm
+         XLKvubxJgNQdg319hiV4vw3JMsbFw0DlyE0Pmrwrx4Z+Y+oQuKZ67Y9zSZm2Mi8XOnNS
+         JUmw==
+X-Gm-Message-State: APjAAAWf5tmaqphbXB1RBRaP73SXAnixVcKHExnWfqdVaJz4rz+ZN7CQ
+        ZEfhz577I9CnRhOiAbgnGaa9Pk4=
+X-Google-Smtp-Source: APXvYqzImIva+4pxY72XI3JSo2VA+GQHezF49xYTfBBSO8PxBC+B3KDIhBUMCHs+Z3KnztBXZG+Hrlc=
+X-Received: by 2002:a67:ff8b:: with SMTP id v11mr4306982vsq.88.1557774279361;
+ Mon, 13 May 2019 12:04:39 -0700 (PDT)
+Date:   Mon, 13 May 2019 12:04:36 -0700
+Message-Id: <20190513190436.229860-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
+Subject: [PATCH bpf] bpf: mark bpf_event_notify and bpf_event_init as static
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/08, Stanislav Fomichev wrote:
-> On 05/08, Alexei Starovoitov wrote:
-> > On Wed, May 08, 2019 at 10:18:41AM -0700, Stanislav Fomichev wrote:
-> > > Right now we are not using rcu api correctly: we pass __rcu pointers
-> > > to bpf_prog_array_xyz routines but don't use rcu_dereference on them
-> > > (see bpf_prog_array_delete_safe and bpf_prog_array_copy in particular).
-> > > Instead of sprinkling rcu_dereferences, let's just get rid of those
-> > > __rcu annotations and move rcu handling to a higher level.
-> > > 
-> > > It looks like all those routines are called from the rcu update
-> > > side and we can use simple rcu_dereference_protected to get a
-> > > reference that is valid as long as we hold a mutex (i.e. no other
-> > > updater can change the pointer, no need for rcu read section and
-> > > there should not be a use-after-free problem).
-> > > 
-> > > To be fair, there is currently no issue with the existing approach
-> > > since the calls are mutex-protected, pointer values don't change,
-> > > __rcu annotations are ignored. But it's still nice to use proper api.
-> > > 
-> > > The series fixes the following sparse warnings:
-> > 
-> > Absolutely not.
-> > please fix it properly.
-> > Removing annotations is not a fix.
-> I'm fixing it properly by removing the annotations and moving lifetime
-> management to the upper layer. See commits 2-4 where I fix the users, the
-> first patch is just the "preparation".
-> 
-> The users are supposed to do:
-> 
-> mutex_lock(&x);
-> p = rcu_dereference_protected(prog_array, lockdep_is_held(&x))
-> // ...
-> // call bpf_prog_array helpers while mutex guarantees that
-> // the object referenced by p is valid (i.e. no need for bpf_prog_array
-> // helpers to care about rcu lifetime)
-> // ...
-> mutex_unlock(&x);
-> 
-> What am I missing here?
+Both of them are not declared in the headers and not used outside
+of bpf_trace.c file.
 
-Just to give you my perspective on why current api with __rcu annotations
-is working, but not optimal (even if used from the rcu read section).
+Fixes: a38d1107f937c ("bpf: support raw tracepoints in modules")
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ kernel/trace/bpf_trace.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Sample code:
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index b496ffdf5f36..f92d6ad5e080 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1297,7 +1297,8 @@ int bpf_get_perf_event_info(const struct perf_event *event, u32 *prog_id,
+ }
+ 
+ #ifdef CONFIG_MODULES
+-int bpf_event_notify(struct notifier_block *nb, unsigned long op, void *module)
++static int bpf_event_notify(struct notifier_block *nb, unsigned long op,
++			    void *module)
+ {
+ 	struct bpf_trace_module *btm, *tmp;
+ 	struct module *mod = module;
+@@ -1336,7 +1337,7 @@ static struct notifier_block bpf_module_nb = {
+ 	.notifier_call = bpf_event_notify,
+ };
+ 
+-int __init bpf_event_init(void)
++static int __init bpf_event_init(void)
+ {
+ 	register_module_notifier(&bpf_module_nb);
+ 	return 0;
+-- 
+2.21.0.1020.gf2820cf01a-goog
 
-	struct bpf_prog_array __rcu *progs = <comes from somewhere>;
-	int n;
-
-	rcu_read_lock();
-	n = bpf_prog_array_length(progs);
-	if (n > 0) {
-	  // do something with __rcu progs
-	  do_something(progs);
-	}
-	rcu_read_unlock();
-
-Since progs is __rcu annotated, do_something() would need to do
-rcu_dereference again and it might get a different value compared to
-whatever bpf_prog_array_free got while doing its dereference.
-
-A better way is not to deal with rcu inside those helpers and let
-higher layers do that:
-
-	struct bpf_prog_array __rcu *progs = <comes from somewhere>;
-	struct bpf_prog_array *p;
-	int n;
-
-	rcu_read_lock();
-	p = rcu_dereference(p);
-	n = bpf_prog_array_length(p);
-	if (n > 0) {
-	  do_something(p); // do_something sees the same p as bpf_prog_array_length
-	}
-	rcu_read_unlock();
-
-What do you think?
-
-If it sounds reasonable, I can follow up with a v2 because I think I can
-replace xchg with rcu_swap_protected as well. Or I can resend for bpf-next to
-have another round of discussion. Thoughts?
