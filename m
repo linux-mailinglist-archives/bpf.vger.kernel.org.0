@@ -2,179 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A6ED91BB6A
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2019 18:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5860F1BB76
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2019 19:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730018AbfEMQ7U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 May 2019 12:59:20 -0400
-Received: from mail-pg1-f202.google.com ([209.85.215.202]:34317 "EHLO
-        mail-pg1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729650AbfEMQ7U (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 May 2019 12:59:20 -0400
-Received: by mail-pg1-f202.google.com with SMTP id z7so9584768pgc.1
-        for <bpf@vger.kernel.org>; Mon, 13 May 2019 09:59:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=3cOYEKKvk6z+zsgzYfoEXAvcfcEGnzEvXzE0Cid7gi0=;
-        b=tsPPx9G9DnakEWknuekFc2N5HipsZv24ezd4Ev1+u2ngFhmtDGkvDyM1OuK0wFfgyO
-         mC8dEpurynoMgE2/AGJwCWt6FLErTAuXZOzb9rHQWmTuwPMFe5Iy8f19J8uP07jtHQJK
-         pm1algwdM/iksIT0HH3rkhLAbq+BrAx5Ei/S8KNgT93ce2q0w8JVcg42cRmXl2Jd1IOw
-         2zYc9/6QYOXg++APE3nf8zzGJj4s8jgsSWaooQfpD/e79w3ZDPGjVFFbHhVGAJpXFanT
-         QHPq70VRMSIeB6nsJ14DVIr9EcSLUTGiykUkRo+eHZtJX9dyPJyB5FzJQkk2lz9fxq+0
-         kdQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=3cOYEKKvk6z+zsgzYfoEXAvcfcEGnzEvXzE0Cid7gi0=;
-        b=soB0p8+UUnN1y+em2kluUBpaU0xtN7KE3CgpuHF7nv3vhVKb7Fpo0CNycXANOayLDJ
-         1RTtbTSrp3PDJTHaj4KNya8lmQAt5aooKs7Wdli6JCQMNbhmBxa30QTbjCx6PMwZD6+M
-         e0gKqADoKe7CLtcOzRIuWfwQFDwt2WAJHkGd/o/pofnBXdJ5Zpb432J7Y92ZU3RdeDYY
-         R6GIAOfe3tqcaKJj4sX8GqqRWHQzz273ViK9SdLHvi86faVLQcfUHUoaUClcfH50q/ux
-         GP9rChMmD7RBo7kbhax0UawCuAP29Dzh2rJbCJb92eX0yHW7xVO5HGYuprrDsOHy8a6D
-         45/Q==
-X-Gm-Message-State: APjAAAW5YAmr03JAbyd+TR3eJJGpn9c9mlg8ShR4ue4Rdm9pIsEJQV23
-        onem9ypTnwZ9KBRG2gFKRX9cENbQfLgpPQ==
-X-Google-Smtp-Source: APXvYqznBPczJl6YOrY96mnx6E3eiJ064D+vOCus2SHa4iLhb2/DXSyg83tcd34hRfEtAJL9+tvfMVjUPRu97Q==
-X-Received: by 2002:a63:7982:: with SMTP id u124mr32165268pgc.352.1557766759318;
- Mon, 13 May 2019 09:59:19 -0700 (PDT)
-Date:   Mon, 13 May 2019 09:59:16 -0700
-Message-Id: <20190513165916.259013-1-edumazet@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
-Subject: [PATCH net] bpf: devmap: fix use-after-free Read in __dev_map_entry_free
-From:   Eric Dumazet <edumazet@google.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        syzbot+457d3e2ffbcf31aee5c0@syzkaller.appspotmail.com,
-        "=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?=" <toke@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1729943AbfEMRBs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 May 2019 13:01:48 -0400
+Received: from mga04.intel.com ([192.55.52.120]:13979 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728822AbfEMRBr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 May 2019 13:01:47 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 May 2019 10:01:16 -0700
+X-ExtLoop1: 1
+Received: from orsmsx102.amr.corp.intel.com ([10.22.225.129])
+  by orsmga008.jf.intel.com with ESMTP; 13 May 2019 10:01:16 -0700
+Received: from orsmsx125.amr.corp.intel.com (10.22.240.125) by
+ ORSMSX102.amr.corp.intel.com (10.22.225.129) with Microsoft SMTP Server (TLS)
+ id 14.3.408.0; Mon, 13 May 2019 10:01:15 -0700
+Received: from orsmsx112.amr.corp.intel.com ([169.254.3.79]) by
+ ORSMSX125.amr.corp.intel.com ([169.254.3.172]) with mapi id 14.03.0415.000;
+ Mon, 13 May 2019 10:01:15 -0700
+From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "mroos@linux.ee" <mroos@linux.ee>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+CC:     "namit@vmware.com" <namit@vmware.com>
+Subject: Re: bpf VM_FLUSH_RESET_PERMS breaks sparc64 boot
+Thread-Topic: bpf VM_FLUSH_RESET_PERMS breaks sparc64 boot
+Thread-Index: AQHVCZRjj+cySzbkfEOvygRTeV/vmqZpvREA
+Date:   Mon, 13 May 2019 17:01:15 +0000
+Message-ID: <b8493de00d9973f6f054814ed69d146b29207d3e.camel@intel.com>
+References: <4401874b-31b9-42a0-31bd-32bef5b36f2a@linux.ee>
+In-Reply-To: <4401874b-31b9-42a0-31bd-32bef5b36f2a@linux.ee>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.54.75.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <65999923B50E844DB7DCAA10933EAB82@intel.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-synchronize_rcu() is fine when the rcu callbacks only need
-to free memory (kfree_rcu() or direct kfree() call rcu call backs)
-
-__dev_map_entry_free() is a bit more complex, so we need to make
-sure that call queued __dev_map_entry_free() callbacks have completed.
-
-sysbot report:
-
-BUG: KASAN: use-after-free in dev_map_flush_old kernel/bpf/devmap.c:365
-[inline]
-BUG: KASAN: use-after-free in __dev_map_entry_free+0x2a8/0x300
-kernel/bpf/devmap.c:379
-Read of size 8 at addr ffff8801b8da38c8 by task ksoftirqd/1/18
-
-CPU: 1 PID: 18 Comm: ksoftirqd/1 Not tainted 4.17.0+ #39
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x1b9/0x294 lib/dump_stack.c:113
-  print_address_description+0x6c/0x20b mm/kasan/report.c:256
-  kasan_report_error mm/kasan/report.c:354 [inline]
-  kasan_report.cold.7+0x242/0x2fe mm/kasan/report.c:412
-  __asan_report_load8_noabort+0x14/0x20 mm/kasan/report.c:433
-  dev_map_flush_old kernel/bpf/devmap.c:365 [inline]
-  __dev_map_entry_free+0x2a8/0x300 kernel/bpf/devmap.c:379
-  __rcu_reclaim kernel/rcu/rcu.h:178 [inline]
-  rcu_do_batch kernel/rcu/tree.c:2558 [inline]
-  invoke_rcu_callbacks kernel/rcu/tree.c:2818 [inline]
-  __rcu_process_callbacks kernel/rcu/tree.c:2785 [inline]
-  rcu_process_callbacks+0xe9d/0x1760 kernel/rcu/tree.c:2802
-  __do_softirq+0x2e0/0xaf5 kernel/softirq.c:284
-  run_ksoftirqd+0x86/0x100 kernel/softirq.c:645
-  smpboot_thread_fn+0x417/0x870 kernel/smpboot.c:164
-  kthread+0x345/0x410 kernel/kthread.c:240
-  ret_from_fork+0x3a/0x50 arch/x86/entry/entry_64.S:412
-
-Allocated by task 6675:
-  save_stack+0x43/0xd0 mm/kasan/kasan.c:448
-  set_track mm/kasan/kasan.c:460 [inline]
-  kasan_kmalloc+0xc4/0xe0 mm/kasan/kasan.c:553
-  kmem_cache_alloc_trace+0x152/0x780 mm/slab.c:3620
-  kmalloc include/linux/slab.h:513 [inline]
-  kzalloc include/linux/slab.h:706 [inline]
-  dev_map_alloc+0x208/0x7f0 kernel/bpf/devmap.c:102
-  find_and_alloc_map kernel/bpf/syscall.c:129 [inline]
-  map_create+0x393/0x1010 kernel/bpf/syscall.c:453
-  __do_sys_bpf kernel/bpf/syscall.c:2351 [inline]
-  __se_sys_bpf kernel/bpf/syscall.c:2328 [inline]
-  __x64_sys_bpf+0x303/0x510 kernel/bpf/syscall.c:2328
-  do_syscall_64+0x1b1/0x800 arch/x86/entry/common.c:290
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Freed by task 26:
-  save_stack+0x43/0xd0 mm/kasan/kasan.c:448
-  set_track mm/kasan/kasan.c:460 [inline]
-  __kasan_slab_free+0x11a/0x170 mm/kasan/kasan.c:521
-  kasan_slab_free+0xe/0x10 mm/kasan/kasan.c:528
-  __cache_free mm/slab.c:3498 [inline]
-  kfree+0xd9/0x260 mm/slab.c:3813
-  dev_map_free+0x4fa/0x670 kernel/bpf/devmap.c:191
-  bpf_map_free_deferred+0xba/0xf0 kernel/bpf/syscall.c:262
-  process_one_work+0xc64/0x1b70 kernel/workqueue.c:2153
-  worker_thread+0x181/0x13a0 kernel/workqueue.c:2296
-  kthread+0x345/0x410 kernel/kthread.c:240
-  ret_from_fork+0x3a/0x50 arch/x86/entry/entry_64.S:412
-
-The buggy address belongs to the object at ffff8801b8da37c0
-  which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 264 bytes inside of
-  512-byte region [ffff8801b8da37c0, ffff8801b8da39c0)
-The buggy address belongs to the page:
-page:ffffea0006e368c0 count:1 mapcount:0 mapping:ffff8801da800940
-index:0xffff8801b8da3540
-flags: 0x2fffc0000000100(slab)
-raw: 02fffc0000000100 ffffea0007217b88 ffffea0006e30cc8 ffff8801da800940
-raw: ffff8801b8da3540 ffff8801b8da3040 0000000100000004 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
-  ffff8801b8da3780: fc fc fc fc fc fc fc fc fb fb fb fb fb fb fb fb
-  ffff8801b8da3800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ffff8801b8da3880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                               ^
-  ffff8801b8da3900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff8801b8da3980: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-
-Fixes: 546ac1ffb70d ("bpf: add devmap, a map for storing net device referen=
-ces")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot+457d3e2ffbcf31aee5c0@syzkaller.appspotmail.com
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- kernel/bpf/devmap.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 191b79948424f4b21b7aa120abc03801264bf0a6..1e525d70f83354e451b738ffb8e=
-42d83b5fa932f 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -164,6 +164,9 @@ static void dev_map_free(struct bpf_map *map)
- 	bpf_clear_redirect_map(map);
- 	synchronize_rcu();
-=20
-+	/* Make sure prior __dev_map_entry_free() have completed. */
-+	rcu_barrier();
-+
- 	/* To ensure all pending flush operations have completed wait for flush
- 	 * bitmap to indicate all flush_needed bits to be zero on _all_ cpus.
- 	 * Because the above synchronize_rcu() ensures the map is disconnected
---=20
-2.21.0.1020.gf2820cf01a-goog
-
+T24gTW9uLCAyMDE5LTA1LTEzIGF0IDE3OjAxICswMzAwLCBNZWVsaXMgUm9vcyB3cm90ZToNCj4g
+SSB0ZXN0ZWQgeWVzdGVyZGF5cyA1LjIgZGV2ZWwgZ2l0IGFuZCBpdCBmYWlsZWQgdG8gYm9vdCBv
+biBteSBTdW4gRmlyZSBWNDQ1DQo+ICg0eCBVbHRyYVNwYXJjIElJSSkuIEluaXQgaXMgc3RhcnRl
+ZCBhbmQgaXQgaGFuZ3MgdGhlcmU6DQo+IA0KPiBbICAgMzguNDE0NDM2XSBSdW4gL3NiaW4vaW5p
+dCBhcyBpbml0IHByb2Nlc3MNCj4gWyAgIDM4LjUzMDcxMV0gcmFuZG9tOiBmYXN0IGluaXQgZG9u
+ZQ0KPiBbICAgMzkuNTgwNjc4XSBzeXN0ZW1kWzFdOiBJbnNlcnRlZCBtb2R1bGUgJ2F1dG9mczQn
+DQo+IFsgICAzOS43MjE1NzddIHN5c3RlbWRbMV06IHN5c3RlbWQgMjQxIHJ1bm5pbmcgaW4gc3lz
+dGVtIG1vZGUuICgrUEFNICtBVURJVA0KPiArU0VMSU5VWCArSU1BICtBUFBBUk1PUiArU01BQ0sg
+K1NZU1ZJTklUICtVVE1QICtMSUJDUllQVFNFVFVQICtHQ1JZUFQgK0dOVVRMUw0KPiArQUNMICtY
+WiArTFo0IC1TRUNDT01QICtCTEtJRCArRUxGVVRJTFMgK0tNT0QgLUlETjIgK0lETiAtUENSRTIg
+ZGVmYXVsdC0NCj4gaGllcmFyY2h5PWh5YnJpZCkNCj4gWyAgIDQwLjAyODA2OF0gc3lzdGVtZFsx
+XTogRGV0ZWN0ZWQgYXJjaGl0ZWN0dXJlIHNwYXJjNjQuDQo+IA0KPiBXZWxjb21lIHRvIERlYmlh
+biBHTlUvTGludXggMTAgKGJ1c3RlcikhDQo+IA0KPiBbICAgNDAuMTY4NzEzXSBzeXN0ZW1kWzFd
+OiBTZXQgaG9zdG5hbWUgdG8gPHY0NDU+Lg0KPiBbICAgNjEuMzE4MDM0XSByY3U6IElORk86IHJj
+dV9zY2hlZCBkZXRlY3RlZCBzdGFsbHMgb24gQ1BVcy90YXNrczoNCj4gWyAgIDYxLjQwMzAzOV0g
+cmN1OiAgICAgMS0uLi4hOiAoMCB0aWNrcyB0aGlzIEdQKQ0KPiBpZGxlPTYwMi8xLzB4NDAwMDAw
+MDAwMDAwMDAwMCBzb2Z0aXJxPTg1Lzg1IGZxcz0xDQo+IFsgICA2MS41MjY3ODBdIHJjdTogICAg
+IChkZXRlY3RlZCBieSAzLCB0PTUyNTIgamlmZmllcywgZz0tOTY3LCBxPTIyOCkNCj4gWyAgIDYx
+LjYxMzAzN10gICBDUFVbICAxXTogVFNUQVRFWzAwMDAwMDAwODAwMDE2MDJdIFRQQ1swMDAwMDAw
+MDAwNDNmMmI4XQ0KPiBUTlBDWzAwMDAwMDAwMDA0M2YyYmNdIFRBU0tbc3lzdGVtZC1mc3RhYi1n
+OjkwXQ0KPiBbICAgNjEuNzY2ODI4XSAgICAgICAgICAgICAgVFBDW3NtcF9zeW5jaHJvbml6ZV90
+aWNrX2NsaWVudCsweDE4LzB4MTgwXQ0KPiBPN1tfX2RvX211bm1hcCsweDIwNC8weDNlMF0gSTdb
+eGNhbGxfc3luY190aWNrKzB4MWMvMHgyY10NCj4gUlBDW3BhZ2VfZXZpY3RhYmxlKzB4NC8weDYw
+XQ0KPiBbICAgNjEuOTY2ODA3XSByY3U6IHJjdV9zY2hlZCBrdGhyZWFkIHN0YXJ2ZWQgZm9yIDUy
+NTAgamlmZmllcyEgZy05NjcgZjB4MA0KPiBSQ1VfR1BfV0FJVF9GUVMoNSkgLT5zdGF0ZT0weDQw
+MiAtPmNwdT0yDQo+IFsgICA2Mi4xMTMwNThdIHJjdTogUkNVIGdyYWNlLXBlcmlvZCBrdGhyZWFk
+IHN0YWNrIGR1bXA6DQo+IFsgICA2Mi4xODU1NThdIHJjdV9zY2hlZCAgICAgICBJICAgIDAgICAg
+MTAgICAgICAyIDB4MDYwMDAwMDANCj4gWyAgIDYyLjI2NDMxMl0gQ2FsbCBUcmFjZToNCj4gWyAg
+IDYyLjI5OTMxNl0gIFswMDAwMDAwMDAwOTJhMWZjXSBzY2hlZHVsZSsweDFjLzB4ODANCj4gWyAg
+IDYyLjM2ODA3MV0gIFswMDAwMDAwMDAwOTJkM2ZjXSBzY2hlZHVsZV90aW1lb3V0KzB4MTNjLzB4
+MjgwDQo+IFsgICA2Mi40NDkzMjhdICBbMDAwMDAwMDAwMDRiNmM2NF0gcmN1X2dwX2t0aHJlYWQr
+MHg0YzQvMHhhNDANCj4gWyAgIDYyLjUyODA3N10gIFswMDAwMDAwMDAwNDdlOTVjXSBrdGhyZWFk
+KzB4ZmMvMHgxMjANCj4gWyAgIDYyLjU5NjgzM10gIFswMDAwMDAwMDAwNDA2MGE0XSByZXRfZnJv
+bV9mb3JrKzB4MWMvMHgyYw0KPiBbICAgNjIuNjcxODMxXSAgWzAwMDAwMDAwMDAwMDAwMDBdICAg
+ICAgICAgICAobnVsbCkNCj4gDQo+IDUuMS4wIHdvcmtlZCBmaW5lLiBJIGJpc2VjdGVkIGl0IHRv
+IHRoZSBmb2xsb3dpbmcgY29tbWl0Og0KPiANCj4gZDUzZDJmNzhjZWFkYmEwODFmYzc3ODU1NzA3
+OThjM2M4ZDUwYTcxOCBpcyB0aGUgZmlyc3QgYmFkIGNvbW1pdA0KPiBjb21taXQgZDUzZDJmNzhj
+ZWFkYmEwODFmYzc3ODU1NzA3OThjM2M4ZDUwYTcxOA0KPiBBdXRob3I6IFJpY2sgRWRnZWNvbWJl
+IDxyaWNrLnAuZWRnZWNvbWJlQGludGVsLmNvbT4NCj4gRGF0ZTogICBUaHUgQXByIDI1IDE3OjEx
+OjM4IDIwMTkgLTA3MDANCj4gDQo+ICAgICAgYnBmOiBVc2Ugdm1hbGxvYyBzcGVjaWFsIGZsYWcN
+Cj4gICAgICANCj4gICAgICBVc2UgbmV3IGZsYWcgVk1fRkxVU0hfUkVTRVRfUEVSTVMgZm9yIGhh
+bmRsaW5nIGZyZWVpbmcgb2Ygc3BlY2lhbA0KPiAgICAgIHBlcm1pc3Npb25lZCBtZW1vcnkgaW4g
+dm1hbGxvYyBhbmQgcmVtb3ZlIHBsYWNlcyB3aGVyZSBtZW1vcnkgd2FzIHNldCBSVw0KPiAgICAg
+IGJlZm9yZSBmcmVlaW5nIHdoaWNoIGlzIG5vIGxvbmdlciBuZWVkZWQuIERvbid0IHRyYWNrIGlm
+IHRoZSBtZW1vcnkgaXMgUk8NCj4gICAgICBhbnltb3JlIGJlY2F1c2UgaXQgaXMgbm93IHRyYWNr
+ZWQgaW4gdm1hbGxvYy4NCj4gICAgICANCj4gICAgICBTaWduZWQtb2ZmLWJ5OiBSaWNrIEVkZ2Vj
+b21iZSA8cmljay5wLmVkZ2Vjb21iZUBpbnRlbC5jb20+DQo+ICAgICAgU2lnbmVkLW9mZi1ieTog
+UGV0ZXIgWmlqbHN0cmEgKEludGVsKSA8cGV0ZXJ6QGluZnJhZGVhZC5vcmc+DQo+ICAgICAgQ2M6
+IDxha3BtQGxpbnV4LWZvdW5kYXRpb24ub3JnPg0KPiAgICAgIENjOiA8YXJkLmJpZXNoZXV2ZWxA
+bGluYXJvLm9yZz4NCj4gICAgICBDYzogPGRlbmVlbi50LmRvY2tAaW50ZWwuY29tPg0KPiAgICAg
+IENjOiA8a2VybmVsLWhhcmRlbmluZ0BsaXN0cy5vcGVud2FsbC5jb20+DQo+ICAgICAgQ2M6IDxr
+cmlzdGVuQGxpbnV4LmludGVsLmNvbT4NCj4gICAgICBDYzogPGxpbnV4X2R0aUBpY2xvdWQuY29t
+Pg0KPiAgICAgIENjOiA8d2lsbC5kZWFjb25AYXJtLmNvbT4NCj4gICAgICBDYzogQWxleGVpIFN0
+YXJvdm9pdG92IDxhc3RAa2VybmVsLm9yZz4NCj4gICAgICBDYzogQW5keSBMdXRvbWlyc2tpIDxs
+dXRvQGtlcm5lbC5vcmc+DQo+ICAgICAgQ2M6IEJvcmlzbGF2IFBldGtvdiA8YnBAYWxpZW44LmRl
+Pg0KPiAgICAgIENjOiBEYW5pZWwgQm9ya21hbm4gPGRhbmllbEBpb2dlYXJib3gubmV0Pg0KPiAg
+ICAgIENjOiBEYXZlIEhhbnNlbiA8ZGF2ZS5oYW5zZW5AbGludXguaW50ZWwuY29tPg0KPiAgICAg
+IENjOiBILiBQZXRlciBBbnZpbiA8aHBhQHp5dG9yLmNvbT4NCj4gICAgICBDYzogTGludXMgVG9y
+dmFsZHMgPHRvcnZhbGRzQGxpbnV4LWZvdW5kYXRpb24ub3JnPg0KPiAgICAgIENjOiBOYWRhdiBB
+bWl0IDxuYWRhdi5hbWl0QGdtYWlsLmNvbT4NCj4gICAgICBDYzogUmlrIHZhbiBSaWVsIDxyaWVs
+QHN1cnJpZWwuY29tPg0KPiAgICAgIENjOiBUaG9tYXMgR2xlaXhuZXIgPHRnbHhAbGludXRyb25p
+eC5kZT4NCj4gICAgICBMaW5rOiBodHRwczovL2xrbWwua2VybmVsLm9yZy9yLzIwMTkwNDI2MDAx
+MTQzLjQ5ODMtMTktbmFtaXRAdm13YXJlLmNvbQ0KPiAgICAgIFNpZ25lZC1vZmYtYnk6IEluZ28g
+TW9sbmFyIDxtaW5nb0BrZXJuZWwub3JnPg0KPiANCj4gOjA0MDAwMCAwNDAwMDAgNTgwNjZkZTUz
+MTA3ZWFiMDcwNTM5OGI1ZDBjNDA3NDI0YzEzOGE4Ng0KPiA3YTEzNDVkNDNjNGNhY2VlNjBiOTEz
+NTg5OWI3NzVlY2RiNTRlYTdlIE0gICAgICBpbmNsdWRlDQo+IDowNDAwMDAgMDQwMDAwIGQwMjY5
+MmNmNTdhMzU5MDU2YjM0ZTYzNmQwZjEwMmQzN2RlNWIyNjQNCj4gODFjNGMyYzY0MDhiNjhlYjU1
+NTY3M2JkM2YwYmMzMDcxZGIxZjdlZCBNICAgICAga2VybmVsDQo+IA0KVGhhbmtzLCBJJ2xsIHNl
+ZSBpZiBJIGNhbiByZXByb2R1Y2UuDQoNClJpY2sNCg==
