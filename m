@@ -2,149 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2021BFEB
-	for <lists+bpf@lfdr.de>; Tue, 14 May 2019 01:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DD91C049
+	for <lists+bpf@lfdr.de>; Tue, 14 May 2019 03:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbfEMXpi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 May 2019 19:45:38 -0400
-Received: from mail-yw1-f67.google.com ([209.85.161.67]:41854 "EHLO
-        mail-yw1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726233AbfEMXph (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 May 2019 19:45:37 -0400
-Received: by mail-yw1-f67.google.com with SMTP id o65so12470383ywd.8
-        for <bpf@vger.kernel.org>; Mon, 13 May 2019 16:45:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I61dv/srKkbPr0MSpNNyf5HMVuXv4XnCDZMGZoEsBtg=;
-        b=edP2unho3JGfLVtRf4xIIeNbT/1DKDyqQVTwvP5XUpMVKx5NqhxzehVcbDKHzP6RC2
-         dV1+g8QZah6EIbPImPJIGmLn0c+8Gq7azQ+fl0CcULfpfJsnhdODBzNXSgHawHmMR2x3
-         RP3kG+SJf47u611zaWk0uB4C0OLU3JJ5tCLEzP48lELR9A6YNbipT2rIXjROr/YAiABB
-         wXJsu1kd8qhiHxSJxcEW7auCj6xPGrxFE4+90qvoBRwxlHZ0uaLJhuX6GFExFV7Gth0G
-         CcgUw48M2f3YB/cWWjKB7lmNGtYpn+C4xSt47jmsj/qFklkQ6P3pAmslQaT1CKvrVnh2
-         gdWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I61dv/srKkbPr0MSpNNyf5HMVuXv4XnCDZMGZoEsBtg=;
-        b=mY22JTfaP0gIy5YNSqywEYb1C7oVtXk+VuYalVQmNEIhMon5dUk5KsvAl5GiHetwas
-         64K6EKdpM3830q03dkPg0kYU6py0BbBoYdBA84ku/6H7bgF1NDFbunf2g+EdWlByWw4/
-         hCNrnWy1z0ARPFG3Ef0/76SBQIS6K3lXp8NJyNuWdG8VTmnaVrZyhJxfisGe1uMAuZHS
-         udCSg9tZicKByffu6IRfrLTFP7Yyt3ClS0Ypj2QSh000UrOVq1DR6RNjs/Dzvj+QR3Xd
-         sJFvC700FWkiilaAxj6tOu1a7VZ9sk9Qr+dPFImLwNTaK44mVKrhA99PbaZ5viEs/Vid
-         y1SA==
-X-Gm-Message-State: APjAAAV+CKsnh2TpzXpppavNLBbmBt/j8IqJFrx8ILBF45NkYnkTQC+g
-        tbVHzrmKFYaJ1Zc7fUTICrPLtr4Q
-X-Google-Smtp-Source: APXvYqxxnJT1ugPDT0lzKtpAFQXHJvQanNBo4/Q3UycxJ2gvtttVKJGmJYNpo4x6mD0rmvkrACZbOQ==
-X-Received: by 2002:a25:d196:: with SMTP id i144mr14928630ybg.241.1557791136278;
-        Mon, 13 May 2019 16:45:36 -0700 (PDT)
-Received: from mail-yw1-f47.google.com (mail-yw1-f47.google.com. [209.85.161.47])
-        by smtp.gmail.com with ESMTPSA id 136sm1166583yww.63.2019.05.13.16.45.34
-        for <bpf@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 13 May 2019 16:45:35 -0700 (PDT)
-Received: by mail-yw1-f47.google.com with SMTP id 186so12481049ywo.4
-        for <bpf@vger.kernel.org>; Mon, 13 May 2019 16:45:34 -0700 (PDT)
-X-Received: by 2002:a0d:e386:: with SMTP id m128mr16039351ywe.283.1557791134580;
- Mon, 13 May 2019 16:45:34 -0700 (PDT)
+        id S1726327AbfENBPJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 May 2019 21:15:09 -0400
+Received: from mga14.intel.com ([192.55.52.115]:16484 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726233AbfENBPJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 May 2019 21:15:09 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 May 2019 18:15:08 -0700
+X-ExtLoop1: 1
+Received: from orsmsx104.amr.corp.intel.com ([10.22.225.131])
+  by fmsmga008.fm.intel.com with ESMTP; 13 May 2019 18:15:08 -0700
+Received: from orsmsx157.amr.corp.intel.com (10.22.240.23) by
+ ORSMSX104.amr.corp.intel.com (10.22.225.131) with Microsoft SMTP Server (TLS)
+ id 14.3.408.0; Mon, 13 May 2019 18:15:08 -0700
+Received: from orsmsx112.amr.corp.intel.com ([169.254.3.79]) by
+ ORSMSX157.amr.corp.intel.com ([169.254.9.37]) with mapi id 14.03.0415.000;
+ Mon, 13 May 2019 18:15:07 -0700
+From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "mroos@linux.ee" <mroos@linux.ee>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "namit@vmware.com" <namit@vmware.com>
+Subject: Re: bpf VM_FLUSH_RESET_PERMS breaks sparc64 boot
+Thread-Topic: bpf VM_FLUSH_RESET_PERMS breaks sparc64 boot
+Thread-Index: AQHVCZRjj+cySzbkfEOvygRTeV/vmqZpvREAgACJ/AA=
+Date:   Tue, 14 May 2019 01:15:07 +0000
+Message-ID: <102313756736cf8b34b36b1025102e2b75d16426.camel@intel.com>
+References: <4401874b-31b9-42a0-31bd-32bef5b36f2a@linux.ee>
+         <b8493de00d9973f6f054814ed69d146b29207d3e.camel@intel.com>
+In-Reply-To: <b8493de00d9973f6f054814ed69d146b29207d3e.camel@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.54.75.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0FE5689AC872BB429F5B5826E7DAE2D5@intel.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20190513185402.220122-1-sdf@google.com> <CAF=yD-LO6o=uZ-aT-J9uPiBcO4f2Zc9uyGZ+f7M7mPtRSB44gA@mail.gmail.com>
- <20190513210239.GC24057@mini-arch> <CAF=yD-JKbzuoF_q7gPRjMNCBexn4pxgQ6pTeQSRfPXmwWk5dzg@mail.gmail.com>
- <CAF=yD-Lg16ETT09=fRd2FTx2FJoGZ9K0s-JHrhv-9OMTqE+5BQ@mail.gmail.com>
- <20190513230513.GA10244@mini-arch> <CAKH8qBvG00EJVQ+YqNDOP-YuCRACB0q0c9G51Dgow9a1uzZnGQ@mail.gmail.com>
-In-Reply-To: <CAKH8qBvG00EJVQ+YqNDOP-YuCRACB0q0c9G51Dgow9a1uzZnGQ@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Mon, 13 May 2019 19:44:58 -0400
-X-Gmail-Original-Message-ID: <CA+FuTScvioH_f2Gew0e9Qh48bWYYBzAdVV4Hk3roGNEmLE8rfQ@mail.gmail.com>
-Message-ID: <CA+FuTScvioH_f2Gew0e9Qh48bWYYBzAdVV4Hk3roGNEmLE8rfQ@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] flow_dissector: support FLOW_DISSECTOR_KEY_ETH_ADDRS
- with BPF
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Stanislav Fomichev <sdf@fomichev.me>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, David Miller <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Petar Penkov <ppenkov@google.com>
-Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Stanislav Fomichev <sdf@google.com>
-Date: Mon, May 13, 2019 at 7:21 PM
-To: Stanislav Fomichev
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Network
-Development, bpf, David Miller, Alexei Starovoitov, Daniel Borkmann,
-Willem de Bruijn <willemb@google.com>, Petar Penkov
-
-> > On 05/13, Willem de Bruijn wrote:
-> > > On Mon, May 13, 2019 at 5:21 PM Willem de Bruijn
-> > > <willemdebruijn.kernel@gmail.com> wrote:
-> > > >
-> > > > On Mon, May 13, 2019 at 5:02 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
-> > > > >
-> > > > > On 05/13, Willem de Bruijn wrote:
-> > > > > > On Mon, May 13, 2019 at 3:53 PM Stanislav Fomichev <sdf@google.com> wrote:
-> > > > > > >
-> > > > > > > If we have a flow dissector BPF program attached to the namespace,
-> > > > > > > FLOW_DISSECTOR_KEY_ETH_ADDRS won't trigger because we exit early.
-> > > > > >
-> > > > > > I suppose that this is true for a variety of keys? For instance, also
-> > > > > > FLOW_DISSECTOR_KEY_IPV4_ADDRS.
-> > > >
-> > > > > I though the intent was to support most of the basic stuff (eth/ip/tcp/udp)
-> > > > > without any esoteric protocols.
-> > > >
-> > > > Indeed. But this applies both to protocols and the feature set. Both
-> > > > are more limited.
-> > > >
-> > > > > Not sure about FLOW_DISSECTOR_KEY_IPV4_ADDRS,
-> > > > > looks like we support that (except FLOW_DISSECTOR_KEY_TIPC part).
-> > > >
-> > > > Ah, I chose a bad example then.
-> > > >
-> > > > > > We originally intended BPF flow dissection for all paths except
-> > > > > > tc_flower. As that catches all the vulnerable cases on the ingress
-> > > > > > path on the one hand and it is infeasible to support all the
-> > > > > > flower features, now and future. I think that is the real fix.
-> > > >
-> > > > > Sorry, didn't get what you meant by the real fix.
-> > > > > Don't care about tc_flower? Just support a minimal set of features
-> > > > > needed by selftests?
-> > > >
-> > > > I do mean exclude BPF flow dissector (only) for tc_flower, as we
-> > > > cannot guarantee that the BPF program can fully implement the
-> > > > requested feature.
-> > >
-> > > Though, the user inserting the BPF flow dissector is the same as the
-> > > user inserting the flower program, the (per netns) admin. So arguably
-> > > is aware of the constraints incurred by BPF flow dissection. And else
-> > > can still detect when a feature is not supported from the (lack of)
-> > > output, as in this case of Ethernet address. I don't think we want to
-> > > mix BPF and non-BPF flow dissection though. That subverts the safety
-> > > argument of switching to BPF for flow dissection.
-> > Yes, we cannot completely avoid tc_flower because we use it to do
-> > the end-to-end testing. That's why I was trying to make sure "basic"
-> > stuff works (it might feel confusing that tc_flower {src,dst}_mac
-> > stop working with a bpf program installed).
-> >
-> > TBH, I'd not call this particular piece of code that exports src/dst
-> > addresses a dissection. At this point, it's a well-formed skb with
-> > a proper l2 header and we just copy the addresses out. It's probably
-> > part of the reason the original patch didn't include any skb->protocol
-> > checks.
-
-But it is not guaranteed to be an Ethernet link layer device. Making
-this a good example of why when moving to BPF for safety we should not
-keep any C dissection code in the path at all.
-
-> On the other hand, we can probably follow a simple rule:
-> if it's not exported via bpf_flow_keys (and src/dsc mac is not),
-> tc_flower is not supported as well.
-
-Agreed. I was using that as point of reference just now, too.
+T24gTW9uLCAyMDE5LTA1LTEzIGF0IDEwOjAxIC0wNzAwLCBSaWNrIEVkZ2Vjb21iZSB3cm90ZToN
+Cj4gT24gTW9uLCAyMDE5LTA1LTEzIGF0IDE3OjAxICswMzAwLCBNZWVsaXMgUm9vcyB3cm90ZToN
+Cj4gPiBJIHRlc3RlZCB5ZXN0ZXJkYXlzIDUuMiBkZXZlbCBnaXQgYW5kIGl0IGZhaWxlZCB0byBi
+b290IG9uIG15IFN1biBGaXJlIFY0NDUNCj4gPiAoNHggVWx0cmFTcGFyYyBJSUkpLiBJbml0IGlz
+IHN0YXJ0ZWQgYW5kIGl0IGhhbmdzIHRoZXJlOg0KPiA+IA0KPiA+IFsgICAzOC40MTQ0MzZdIFJ1
+biAvc2Jpbi9pbml0IGFzIGluaXQgcHJvY2Vzcw0KPiA+IFsgICAzOC41MzA3MTFdIHJhbmRvbTog
+ZmFzdCBpbml0IGRvbmUNCj4gPiBbICAgMzkuNTgwNjc4XSBzeXN0ZW1kWzFdOiBJbnNlcnRlZCBt
+b2R1bGUgJ2F1dG9mczQnDQo+ID4gWyAgIDM5LjcyMTU3N10gc3lzdGVtZFsxXTogc3lzdGVtZCAy
+NDEgcnVubmluZyBpbiBzeXN0ZW0gbW9kZS4gKCtQQU0gK0FVRElUDQo+ID4gK1NFTElOVVggK0lN
+QSArQVBQQVJNT1IgK1NNQUNLICtTWVNWSU5JVCArVVRNUCArTElCQ1JZUFRTRVRVUCArR0NSWVBU
+DQo+ID4gK0dOVVRMUw0KPiA+ICtBQ0wgK1haICtMWjQgLVNFQ0NPTVAgK0JMS0lEICtFTEZVVElM
+UyArS01PRCAtSUROMiArSUROIC1QQ1JFMiBkZWZhdWx0LQ0KPiA+IGhpZXJhcmNoeT1oeWJyaWQp
+DQo+ID4gWyAgIDQwLjAyODA2OF0gc3lzdGVtZFsxXTogRGV0ZWN0ZWQgYXJjaGl0ZWN0dXJlIHNw
+YXJjNjQuDQo+ID4gDQo+ID4gV2VsY29tZSB0byBEZWJpYW4gR05VL0xpbnV4IDEwIChidXN0ZXIp
+IQ0KPiA+IA0KPiA+IFsgICA0MC4xNjg3MTNdIHN5c3RlbWRbMV06IFNldCBob3N0bmFtZSB0byA8
+djQ0NT4uDQo+ID4gWyAgIDYxLjMxODAzNF0gcmN1OiBJTkZPOiByY3Vfc2NoZWQgZGV0ZWN0ZWQg
+c3RhbGxzIG9uIENQVXMvdGFza3M6DQo+ID4gWyAgIDYxLjQwMzAzOV0gcmN1OiAgICAgMS0uLi4h
+OiAoMCB0aWNrcyB0aGlzIEdQKQ0KPiA+IGlkbGU9NjAyLzEvMHg0MDAwMDAwMDAwMDAwMDAwIHNv
+ZnRpcnE9ODUvODUgZnFzPTENCj4gPiBbICAgNjEuNTI2NzgwXSByY3U6ICAgICAoZGV0ZWN0ZWQg
+YnkgMywgdD01MjUyIGppZmZpZXMsIGc9LTk2NywgcT0yMjgpDQo+ID4gWyAgIDYxLjYxMzAzN10g
+ICBDUFVbICAxXTogVFNUQVRFWzAwMDAwMDAwODAwMDE2MDJdIFRQQ1swMDAwMDAwMDAwNDNmMmI4
+XQ0KPiA+IFROUENbMDAwMDAwMDAwMDQzZjJiY10gVEFTS1tzeXN0ZW1kLWZzdGFiLWc6OTBdDQo+
+ID4gWyAgIDYxLjc2NjgyOF0gICAgICAgICAgICAgIFRQQ1tzbXBfc3luY2hyb25pemVfdGlja19j
+bGllbnQrMHgxOC8weDE4MF0NCj4gPiBPN1tfX2RvX211bm1hcCsweDIwNC8weDNlMF0gSTdbeGNh
+bGxfc3luY190aWNrKzB4MWMvMHgyY10NCj4gPiBSUENbcGFnZV9ldmljdGFibGUrMHg0LzB4NjBd
+DQo+ID4gWyAgIDYxLjk2NjgwN10gcmN1OiByY3Vfc2NoZWQga3RocmVhZCBzdGFydmVkIGZvciA1
+MjUwIGppZmZpZXMhIGctOTY3IGYweDANCj4gPiBSQ1VfR1BfV0FJVF9GUVMoNSkgLT5zdGF0ZT0w
+eDQwMiAtPmNwdT0yDQo+ID4gWyAgIDYyLjExMzA1OF0gcmN1OiBSQ1UgZ3JhY2UtcGVyaW9kIGt0
+aHJlYWQgc3RhY2sgZHVtcDoNCj4gPiBbICAgNjIuMTg1NTU4XSByY3Vfc2NoZWQgICAgICAgSSAg
+ICAwICAgIDEwICAgICAgMiAweDA2MDAwMDAwDQo+ID4gWyAgIDYyLjI2NDMxMl0gQ2FsbCBUcmFj
+ZToNCj4gPiBbICAgNjIuMjk5MzE2XSAgWzAwMDAwMDAwMDA5MmExZmNdIHNjaGVkdWxlKzB4MWMv
+MHg4MA0KPiA+IFsgICA2Mi4zNjgwNzFdICBbMDAwMDAwMDAwMDkyZDNmY10gc2NoZWR1bGVfdGlt
+ZW91dCsweDEzYy8weDI4MA0KPiA+IFsgICA2Mi40NDkzMjhdICBbMDAwMDAwMDAwMDRiNmM2NF0g
+cmN1X2dwX2t0aHJlYWQrMHg0YzQvMHhhNDANCj4gPiBbICAgNjIuNTI4MDc3XSAgWzAwMDAwMDAw
+MDA0N2U5NWNdIGt0aHJlYWQrMHhmYy8weDEyMA0KPiA+IFsgICA2Mi41OTY4MzNdICBbMDAwMDAw
+MDAwMDQwNjBhNF0gcmV0X2Zyb21fZm9yaysweDFjLzB4MmMNCj4gPiBbICAgNjIuNjcxODMxXSAg
+WzAwMDAwMDAwMDAwMDAwMDBdICAgICAgICAgICAobnVsbCkNCj4gPiANCj4gPiA1LjEuMCB3b3Jr
+ZWQgZmluZS4gSSBiaXNlY3RlZCBpdCB0byB0aGUgZm9sbG93aW5nIGNvbW1pdDoNCj4gPiANCj4g
+PiBkNTNkMmY3OGNlYWRiYTA4MWZjNzc4NTU3MDc5OGMzYzhkNTBhNzE4IGlzIHRoZSBmaXJzdCBi
+YWQgY29tbWl0DQo+ID4gY29tbWl0IGQ1M2QyZjc4Y2VhZGJhMDgxZmM3Nzg1NTcwNzk4YzNjOGQ1
+MGE3MTgNCj4gPiBBdXRob3I6IFJpY2sgRWRnZWNvbWJlIDxyaWNrLnAuZWRnZWNvbWJlQGludGVs
+LmNvbT4NCj4gPiBEYXRlOiAgIFRodSBBcHIgMjUgMTc6MTE6MzggMjAxOSAtMDcwMA0KPiA+IA0K
+PiA+ICAgICAgYnBmOiBVc2Ugdm1hbGxvYyBzcGVjaWFsIGZsYWcNCj4gPiAgICAgIA0KPiA+ICAg
+ICAgVXNlIG5ldyBmbGFnIFZNX0ZMVVNIX1JFU0VUX1BFUk1TIGZvciBoYW5kbGluZyBmcmVlaW5n
+IG9mIHNwZWNpYWwNCj4gPiAgICAgIHBlcm1pc3Npb25lZCBtZW1vcnkgaW4gdm1hbGxvYyBhbmQg
+cmVtb3ZlIHBsYWNlcyB3aGVyZSBtZW1vcnkgd2FzIHNldA0KPiA+IFJXDQo+ID4gICAgICBiZWZv
+cmUgZnJlZWluZyB3aGljaCBpcyBubyBsb25nZXIgbmVlZGVkLiBEb24ndCB0cmFjayBpZiB0aGUg
+bWVtb3J5IGlzDQo+ID4gUk8NCj4gPiAgICAgIGFueW1vcmUgYmVjYXVzZSBpdCBpcyBub3cgdHJh
+Y2tlZCBpbiB2bWFsbG9jLg0KPiA+ICAgICAgDQo+ID4gICAgICBTaWduZWQtb2ZmLWJ5OiBSaWNr
+IEVkZ2Vjb21iZSA8cmljay5wLmVkZ2Vjb21iZUBpbnRlbC5jb20+DQo+ID4gICAgICBTaWduZWQt
+b2ZmLWJ5OiBQZXRlciBaaWpsc3RyYSAoSW50ZWwpIDxwZXRlcnpAaW5mcmFkZWFkLm9yZz4NCj4g
+PiAgICAgIENjOiA8YWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZz4NCj4gPiAgICAgIENjOiA8YXJk
+LmJpZXNoZXV2ZWxAbGluYXJvLm9yZz4NCj4gPiAgICAgIENjOiA8ZGVuZWVuLnQuZG9ja0BpbnRl
+bC5jb20+DQo+ID4gICAgICBDYzogPGtlcm5lbC1oYXJkZW5pbmdAbGlzdHMub3BlbndhbGwuY29t
+Pg0KPiA+ICAgICAgQ2M6IDxrcmlzdGVuQGxpbnV4LmludGVsLmNvbT4NCj4gPiAgICAgIENjOiA8
+bGludXhfZHRpQGljbG91ZC5jb20+DQo+ID4gICAgICBDYzogPHdpbGwuZGVhY29uQGFybS5jb20+
+DQo+ID4gICAgICBDYzogQWxleGVpIFN0YXJvdm9pdG92IDxhc3RAa2VybmVsLm9yZz4NCj4gPiAg
+ICAgIENjOiBBbmR5IEx1dG9taXJza2kgPGx1dG9Aa2VybmVsLm9yZz4NCj4gPiAgICAgIENjOiBC
+b3Jpc2xhdiBQZXRrb3YgPGJwQGFsaWVuOC5kZT4NCj4gPiAgICAgIENjOiBEYW5pZWwgQm9ya21h
+bm4gPGRhbmllbEBpb2dlYXJib3gubmV0Pg0KPiA+ICAgICAgQ2M6IERhdmUgSGFuc2VuIDxkYXZl
+LmhhbnNlbkBsaW51eC5pbnRlbC5jb20+DQo+ID4gICAgICBDYzogSC4gUGV0ZXIgQW52aW4gPGhw
+YUB6eXRvci5jb20+DQo+ID4gICAgICBDYzogTGludXMgVG9ydmFsZHMgPHRvcnZhbGRzQGxpbnV4
+LWZvdW5kYXRpb24ub3JnPg0KPiA+ICAgICAgQ2M6IE5hZGF2IEFtaXQgPG5hZGF2LmFtaXRAZ21h
+aWwuY29tPg0KPiA+ICAgICAgQ2M6IFJpayB2YW4gUmllbCA8cmllbEBzdXJyaWVsLmNvbT4NCj4g
+PiAgICAgIENjOiBUaG9tYXMgR2xlaXhuZXIgPHRnbHhAbGludXRyb25peC5kZT4NCj4gPiAgICAg
+IExpbms6IGh0dHBzOi8vbGttbC5rZXJuZWwub3JnL3IvMjAxOTA0MjYwMDExNDMuNDk4My0xOS1u
+YW1pdEB2bXdhcmUuY29tDQo+ID4gICAgICBTaWduZWQtb2ZmLWJ5OiBJbmdvIE1vbG5hciA8bWlu
+Z29Aa2VybmVsLm9yZz4NCj4gPiANCj4gPiA6MDQwMDAwIDA0MDAwMCA1ODA2NmRlNTMxMDdlYWIw
+NzA1Mzk4YjVkMGM0MDc0MjRjMTM4YTg2DQo+ID4gN2ExMzQ1ZDQzYzRjYWNlZTYwYjkxMzU4OTli
+Nzc1ZWNkYjU0ZWE3ZSBNICAgICAgaW5jbHVkZQ0KPiA+IDowNDAwMDAgMDQwMDAwIGQwMjY5MmNm
+NTdhMzU5MDU2YjM0ZTYzNmQwZjEwMmQzN2RlNWIyNjQNCj4gPiA4MWM0YzJjNjQwOGI2OGViNTU1
+NjczYmQzZjBiYzMwNzFkYjFmN2VkIE0gICAgICBrZXJuZWwNCj4gPiANCj4gDQo+IFRoYW5rcywg
+SSdsbCBzZWUgaWYgSSBjYW4gcmVwcm9kdWNlLg0KPiANCj4gUmljaw0KDQpJJ20gaGF2aW5nIHRy
+b3VibGUgZ2V0dGluZyBEZWJpYW4gQnVzdGVyIHVwIGFuZCBydW5uaW5nIG9uIHFlbXUtc3lzdGVt
+LQ0Kc3BhcmM2NCBhbmQgc28gaGF2ZW4ndCBiZWVuIGFibGUgdG8gcmVwcm9kdWNlLiBJcyB0aGlz
+IGN1cnJlbnRseSB3b3JraW5nIGZvcg0KcGVvcGxlPw0KDQpUaGlzIHBhdGNoIGludm9sdmVzIHJl
+LXNldHRpbmcgbWVtb3J5IHBlcm1pc3Npb25zIHdoZW4gZnJlZWluZyBleGVjdXRhYmxlDQptZW1v
+cnkuIEl0IGxvb2tzIGxpa2UgU3BhcmM2NCBMaW51eCBkb2Vzbid0IGhhdmUgc3VwcG9ydCBmb3Ig
+dGhlIHNldF9tZW1vcnlfKCkNCmZ1bmN0aW9ucyBzbyB0aGF0IHBhcnQgc2hvdWxkbid0IGJlIGNo
+YW5naW5nIGFueXRoaW5nLiBUaGUgbWFpbiBvdGhlciB0aGluZyB0aGF0DQppcyBjaGFuZ2VkIGhl
+cmUgaXMgYWx3YXlzIGRvaW5nIGEgVExCIGZsdXNoIGluIHZmcmVlIHdoZW4gdGhlIEJQRiBKSVRz
+IGFyZQ0KZnJlZWQuIEl0IHdpbGwgYWxyZWFkeSBzb21ldGltZXMgaGFwcGVuIHNvIHRoYXQgc2hv
+dWxkbid0IGJlIHRvbyBkaWZmZXJlbnQNCmVpdGhlci4NCg0KU28gaXQgZG9lc24ndCBzZWVtIGV4
+dHJhIGVzcGVjaWFsbHkgbGlrZWx5IHRvIGNhdXNlIGEgc3BhcmMgc3BlY2lmaWMgcHJvYmxlbQ0K
+dGhhdCBJIGNhbiBzZWUuIElzIHRoZXJlIGFueSBjaGFuY2UgdGhpcyBpcyBhbiBpbnRlcm1pdHRl
+bnQgaXNzdWU/DQoNCkFsdGVybmF0aXZlbHksIHdlIGNvdWxkIG1heWJlIGp1c3QgZXhlbXB0IGFy
+Y2hpdGVjdHVyZXMgd2l0aCBubyBzZXRfbWVtb3J5XygpDQppbXBsZW1lbnRhdGlvbnMgZnJvbSB0
+aGlzIG5ldyBiZWhhdmlvci4gVGhhdCB3b3VsZCB1bmZvcnR1bmF0ZWx5IGxvc2UgdGhlDQpiZW5l
+Zml0cyBmb3IgYXJjaGl0ZWN0dXJlcyB3aXRoIG5vIHNldF9tZW1vcnlfKCkncyBidXQgdGhhdCBo
+YXZlIGV4ZWN1dGFibGUNCnBlcm1pc3Npb24gYml0cy4NCg0KQnV0IHRoZW4gdGhpcyBwYXRjaCB3
+b3VsZCBoYXZlIG5vIGVmZmVjdCBvbiBzcGFyYzY0IGFuZCB3b3VsZCBwb3NzaWJseSByZXNvbHZl
+DQppdCB3aXRob3V0IHJlYWxseSBkZWJ1Z2dpbmcgaXQuDQoNClRoYW5rcywNCg0KUmljaw0K
