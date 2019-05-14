@@ -2,94 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C88C1C17B
-	for <lists+bpf@lfdr.de>; Tue, 14 May 2019 06:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD8E1C18E
+	for <lists+bpf@lfdr.de>; Tue, 14 May 2019 06:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725985AbfENEmR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 May 2019 00:42:17 -0400
-Received: from mail-it1-f194.google.com ([209.85.166.194]:39892 "EHLO
-        mail-it1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725562AbfENEmR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 May 2019 00:42:17 -0400
-Received: by mail-it1-f194.google.com with SMTP id 9so2646132itf.4;
-        Mon, 13 May 2019 21:42:16 -0700 (PDT)
+        id S1726246AbfENEt5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 May 2019 00:49:57 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:34814 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725562AbfENEt4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 May 2019 00:49:56 -0400
+Received: by mail-qt1-f193.google.com with SMTP id h1so9718839qtp.1
+        for <bpf@vger.kernel.org>; Mon, 13 May 2019 21:49:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=OK+amOIyoJqoqKtJQ8fZgnv70LQ09z+QT/CtisP33vA=;
-        b=CkJevJMHG3DdojgneEqgpSlVEXQ37TfODb/h8CqSiAEVrLOZPv8A3fw13LV+ZAtFSS
-         JBOPiQUAnNnqgyTg5oWVpNThm6q8ul2ZsBHSg7tiiEnBF9F7JiOFVoDz+FJORULv+Kce
-         ykPV57bD0R5OPnJtIDIG4T+KOs595ErbNfF39VCxnd88Fy72s6EGm6NB1zOZCt/pn2bp
-         SFRIt2CryJJMAN6w4l6vuPUT2Jr4J1t2ErfUiYCm/lcxGFhC+n7N0TdhFHYTpvt0Kyk9
-         NLO9naZF1/Z+PYyw1vNbq8XYTNoVgInGzmWmPT+hjHH9Zx+xIFJqUU5U+vBN3YcP6vlG
-         7azA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YVZJsxUBOtf/Kj8PRqrKFyOSjbhNcrN5i1SaRCbqsIc=;
+        b=NucVh6BBsupblMjT+MitypyI+EfY715v4oB2NFKrNST553vkACO7w0011D5aXE3plg
+         sYA1Dgb8znRLAxMTr1mEWdYu4Y3vzatV5Co2snPOysqRlgfZTHML65JML8irbqA+jvEF
+         1NsthKz4dRVS9EMaQh1RlRYh06SWN24dJAExDbLOA1OUgCPOZ11WtN+e6XnKAHR3B4NX
+         kaBCVII9IaOHS94epD1YSdATTP1XoE7wm2E838vxgFHs8RQil9L9SVdWlchzjJpV8+J7
+         XcW+m9MN9e+zpdZFYAR14q4ymj6Skwq5vE8IYrD1HV6X1HDeGcKGfE/FDNnyMA0DdR7h
+         hcGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=OK+amOIyoJqoqKtJQ8fZgnv70LQ09z+QT/CtisP33vA=;
-        b=r6aaWx7Fv4mOrV62i4QmrXsUZjgD/DSSyADMUrwa3ZPpfVcy76uPZOm9dPXsRlZKbI
-         XI/d75L3FBLLseFJd7BrSp2KHLBUKbKivCrV1jkNsRklcPBQqn4A+hB0Qo4UaFiDr5cv
-         REMqa5Efnpf5VRT8rHkjJmA3TWPrZBndfLSUipEV6xpvVlMtkE+beFuamf17trTPXhaP
-         BMcd3Lpl7PqWT3jGcxS6ey24KeQmx1ZUVQpXvupE7HUT60qW0c9l0u3YE6CgYvTtyqZm
-         whmOPB/6udOvaSTIATY3WggRrlRA1+i7aWel6mp+tbsARsm/CHEGA4e5JcB6s8TMdfF+
-         zozA==
-X-Gm-Message-State: APjAAAUMYFpgMRwRrvPo6KX16pBa4r6yDpnkPtes661v+wroqQKdC0Hm
-        iTM0Xj9DIvpcmCOaBMT7qmr9C+Kc/7Q=
-X-Google-Smtp-Source: APXvYqw8jHakmSmdEon2t+dwXLuxZIJwyxhTyGr8bCIcsyfoXksr0nNZpu8ulFNNIAcokFlwCfeb+Q==
-X-Received: by 2002:a02:37d7:: with SMTP id r206mr22245076jar.127.1557808936273;
-        Mon, 13 May 2019 21:42:16 -0700 (PDT)
-Received: from [127.0.1.1] ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id g13sm5605818iom.46.2019.05.13.21.42.10
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 13 May 2019 21:42:15 -0700 (PDT)
-Subject: [bpf PATCH] net: tcp_bpf,
- correctly handle DONT_WAIT flags and timeo == 0
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        john.fastabend@gmail.com
-Date:   Mon, 13 May 2019 21:42:03 -0700
-Message-ID: <155780892372.10726.16677541867391282805.stgit@john-XPS-13-9360>
-User-Agent: StGit/0.17.1-dirty
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YVZJsxUBOtf/Kj8PRqrKFyOSjbhNcrN5i1SaRCbqsIc=;
+        b=FuAAXXZCSjN1o0WUHylyJDOhMb41YyM8tTPW35gH9VrrCRFGq6UkwKlUhccqt/sFR5
+         ufvwHBVfIW8p1wtlBFNijsPXemyLo2XiaHNDMqmyJWXIYku8qkbplzMdDJeMOggHFaqb
+         lU/d/n+WjW35Wj/A7Km1ziEMk9VItQPbmaU7PJ5KuCZtI82fDjrwebiXi7o6Z65NpO6I
+         eeKhSLF5dynBL8W1sgeJMk75S3t4RVld70WfJPFPXL45ioLtcE0lx6bHdF7FkbQ0ke1h
+         PYk+Hd4L3qk1jUVNGijINtY0HRyBNOmuFmyGyaJHHGAgR/8JEJczk6qr2BwMbpKd4fxg
+         G+jQ==
+X-Gm-Message-State: APjAAAVZSAAFIPQHJDBWqOz2fn36bhkLwwiVWWk16Wd80LIDt+gv+7K0
+        ErkUPUi+XRovGZvu2znHehWm4IfMP8ITg3JltCA=
+X-Google-Smtp-Source: APXvYqy8W+bFGz8+PqW8Qmo2HGt1izbamvulGShZajAAjh/n4NjpJrxYSB7AHvtWhizXby0p4mxeBWe7r5nvDETJ7n8=
+X-Received: by 2002:aed:3b24:: with SMTP id p33mr9522985qte.226.1557809395954;
+ Mon, 13 May 2019 21:49:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20190514031550.11446-1-glin@suse.com>
+In-Reply-To: <20190514031550.11446-1-glin@suse.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 13 May 2019 21:49:44 -0700
+Message-ID: <CAEf4BzbCbzdtgYODYf+Fr4+OWYRNmOq2QFC3UJJgd6DO1mxzVw@mail.gmail.com>
+Subject: Re: [PATCH] tools/bpf: Sync kernel btf.h header
+To:     Gary Lin <glin@suse.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The tcp_bpf_wait_data() routine needs to check timeo != 0 before
-calling sk_wait_event() otherwise we may see unexpected stalls
-on receiver.
+On Mon, May 13, 2019 at 8:16 PM Gary Lin <glin@suse.com> wrote:
+>
+> For the fix of BTF_INT_OFFSET()
+>
+> Signed-off-by: Gary Lin <glin@suse.com>
 
-Arika did all the leg work here I just formaatted, posted and ran
-a few tests.
+Thanks!
 
-Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-Reported-by: Arika Chen <eaglesora@gmail.com>
-Suggested-by: Arika Chen <eaglesora@gmail.com>
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- net/ipv4/tcp_bpf.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 1bb7321a256d..27206b2064db 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -27,7 +27,10 @@ static int tcp_bpf_wait_data(struct sock *sk, struct sk_psock *psock,
- 			     int flags, long timeo, int *err)
- {
- 	DEFINE_WAIT_FUNC(wait, woken_wake_function);
--	int ret;
-+	int ret = 0;
-+
-+	if (!timeo)
-+		return ret;
- 
- 	add_wait_queue(sk_sleep(sk), &wait);
- 	sk_set_bit(SOCKWQ_ASYNC_WAITDATA, sk);
-
+> ---
+>  tools/include/uapi/linux/btf.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/include/uapi/linux/btf.h b/tools/include/uapi/linux/btf.h
+> index 9310652ca4f9..63ae4a39e58b 100644
+> --- a/tools/include/uapi/linux/btf.h
+> +++ b/tools/include/uapi/linux/btf.h
+> @@ -83,7 +83,7 @@ struct btf_type {
+>   * is the 32 bits arrangement:
+>   */
+>  #define BTF_INT_ENCODING(VAL)  (((VAL) & 0x0f000000) >> 24)
+> -#define BTF_INT_OFFSET(VAL)    (((VAL  & 0x00ff0000)) >> 16)
+> +#define BTF_INT_OFFSET(VAL)    (((VAL) & 0x00ff0000) >> 16)
+>  #define BTF_INT_BITS(VAL)      ((VAL)  & 0x000000ff)
+>
+>  /* Attributes stored in the BTF_INT_ENCODING */
+> --
+> 2.21.0
+>
