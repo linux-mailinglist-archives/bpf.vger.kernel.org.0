@@ -2,81 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8451D118
-	for <lists+bpf@lfdr.de>; Tue, 14 May 2019 23:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0FAE1E52D
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2019 00:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726599AbfENVMl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 May 2019 17:12:41 -0400
-Received: from mail-oi1-f202.google.com ([209.85.167.202]:52858 "EHLO
-        mail-oi1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726265AbfENVMk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 May 2019 17:12:40 -0400
-Received: by mail-oi1-f202.google.com with SMTP id j9so175047oih.19
-        for <bpf@vger.kernel.org>; Tue, 14 May 2019 14:12:40 -0700 (PDT)
+        id S1726190AbfENWfH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 May 2019 18:35:07 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:32984 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726148AbfENWfH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 May 2019 18:35:07 -0400
+Received: by mail-io1-f67.google.com with SMTP id z4so642099iol.0;
+        Tue, 14 May 2019 15:35:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=f4HloUjiQjHr3SUwk4xw1iDaHpvfypDo+dWu4ub0D+0=;
-        b=lbqQA+/roB+NGcMKRsBPTxAX3UnGLFutoQsaIbPCUy/dl61OTM4A4waSp4cIh7BmWZ
-         FRyLPWnVmHGOUZO1ZxzkFWO2sigyRVhdfNjZBzDstPAdsNeXDKbq7IofpFzjGrc1e2Xa
-         S1EoHeKUkdHtPFHDLBhsp+u16C3mZU+cHdCXwLalXja2oTivUUo5+XQyn35YSs1qOhgG
-         v04gyApmmXzFCr9JtlAtZNm+DteGh4kbElbudxNIVtbHb4A3HMN3bqcUrOHaX5WOSOJS
-         IpLc3th2aHTMEP9R+k1cmljO4JbWizXZdcWI71S87R/XV2E8Sti1V9cF1XgWxoRmYo1+
-         7/wg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=c6VIJcB489ztcRK0OwTZEV2xJHqOq/bHOIY/aqM0MDA=;
+        b=FyQDWCqIO+zllMezkVswKNsrfrAjRoxdWQwYjJokW1fRuNYOkgFPfnixHIv8WS1Pcm
+         cNUQZwbgsXPU7Ul7TKWD+fVBf7TdXLyLdiHyk+yZ8EbknBpvArfRd0LvqXovvu+y1ZT0
+         GsCrHS/N0UwPoaaCei8SNcLwCKKkfOAVAOErp2b2NP3VtyeLXGH6Slx264KA2FlpFZMM
+         7u2vCuWKR/fnaLZoU2lseFVZ2bJwwuTlCo52D2Kzup9x6yAQvOr9WcNluR1zVR3X2Om3
+         GInNY7woejGljh+NpT0xbEtyW0jzqS8CmjRReA2GfO6iUqx/kUYrXLVri+5JhVBkf8xy
+         h+Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=f4HloUjiQjHr3SUwk4xw1iDaHpvfypDo+dWu4ub0D+0=;
-        b=bJtvy97xaLZYlVEbqa6Pmzi1o2e1OLwOV5HU9Ag0Htb52LVALo3lCwDHtfGOKyqEcM
-         zVpNnhOWQWQ1G4gFdSyIW/G/DmXRRDPI/N9PUhlxZHddzXjCG7aEQyU3qOF47CmI8tOR
-         6Nolfdt8QIvxV6YUj7HuwCBi3Cp4Nn4UZr+LWlJYcjlAjH89t8l3H2kTFPBiK0upCB8r
-         BkNGdAVTO48+E78BdO0pmgLwwcesenYrzu2XpnhSzWqEw04psEGM9f7FVFGgaKHEwMXD
-         Bwpfkj7BaP9vxT5l6Ruyd/J8C67tEv6s0x8DCC1Py777u4E9nEUq8hCvPHlH3nGv/rWr
-         kf8Q==
-X-Gm-Message-State: APjAAAVfGtJJ4UiOmSUJ4tRrOGSlFMOfzH2oNVVoO9mgXdI/DYrDMTzJ
-        9aeKzPEc1zb+ZeRKPBYruVUdy+g=
-X-Google-Smtp-Source: APXvYqyYiCp5DjnGAGHgrnNj6QVVU3tpJjkbXwVF4DaNh3Y34av5Dx+2S3jwV2YxuYPaxPcL0EY6wNM=
-X-Received: by 2002:aca:da82:: with SMTP id r124mr4192393oig.49.1557868359634;
- Tue, 14 May 2019 14:12:39 -0700 (PDT)
-Date:   Tue, 14 May 2019 14:12:34 -0700
-In-Reply-To: <20190514211234.25097-1-sdf@google.com>
-Message-Id: <20190514211234.25097-2-sdf@google.com>
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=c6VIJcB489ztcRK0OwTZEV2xJHqOq/bHOIY/aqM0MDA=;
+        b=kp3YqcS/fGYmL4l1n6pwKY8gCEfyeS5cwpMv90DdUeRXFULBuZW+Irle16xhnb0xj6
+         daw7SlkXaTvOgpipi8gbTiS/lYlek6x+lokwn0jyeCRqJ/ahs89I8gFYlU2wdiRA+Ki8
+         YhmEKGNAp+Jhm4mRKis6mxaCqiHjs2+0EEPIvzUegptDLf/sODBaHsnBatTSTJQEveXO
+         QbRmvpk2zxGTkumMRf8GQKNiSJ+LSGTqCFUHc7OKgcb6myl4YBMtZxkhqWlk+qu5Yp8P
+         nxx0y/+4lPH4r96F5vzuYyt46lg2+ceWrmgAadc/mzICRx7M+MdyQ/rPDc71lH/Wm2n+
+         W5fw==
+X-Gm-Message-State: APjAAAUoFGim4hyculexi6+n/xaTFXyvUBQHubTfyh1zk8f6xP6PJBeO
+        MCvPhT8xSomYeB2c7VpN3dI=
+X-Google-Smtp-Source: APXvYqx+Mmt7ClhQ20pvgDTvu7FiqTiQcUzT9Lmb/8enKmOL0BU8phBJFwGpFnEZ6da6z7wQWS6UBA==
+X-Received: by 2002:a6b:ef07:: with SMTP id k7mr20643762ioh.276.1557873306105;
+        Tue, 14 May 2019 15:35:06 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id k76sm213428ita.6.2019.05.14.15.35.02
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 14 May 2019 15:35:05 -0700 (PDT)
+Date:   Tue, 14 May 2019 15:34:55 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>
+Message-ID: <5cdb428fe9f53_3e672b0357f765b85c@john-XPS-13-9360.notmuch>
+In-Reply-To: <5cd603329f753_af72ae355cbe5b8e8@john-XPS-13-9360.notmuch>
+References: <155746412544.20677.8888193135689886027.stgit@john-XPS-13-9360>
+ <155746426913.20677.2783358822817593806.stgit@john-XPS-13-9360>
+ <20190510100054.29f7235c@cakuba.netronome.com>
+ <5cd603329f753_af72ae355cbe5b8e8@john-XPS-13-9360.notmuch>
+Subject: Re: [bpf PATCH v4 1/4] bpf: tls, implement unhash to avoid transition
+ out of ESTABLISHED
 Mime-Version: 1.0
-References: <20190514211234.25097-1-sdf@google.com>
-X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
-Subject: [PATCH bpf 2/2] selftests/bpf: add prog detach to flow_dissector test
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In case we are not running in a namespace (which we don't do by default),
-let's try to detach the bpf program that we use for eth_get_headlen tests.
+John Fastabend wrote:
+> Jakub Kicinski wrote:
+> > On Thu, 09 May 2019 21:57:49 -0700, John Fastabend wrote:
+> > > @@ -2042,12 +2060,14 @@ void tls_sw_free_resources_tx(struct sock *sk)
+> > >  	if (atomic_read(&ctx->encrypt_pending))
+> > >  		crypto_wait_req(-EINPROGRESS, &ctx->async_wait);
+> > >  
+> > > -	release_sock(sk);
+> > > +	if (locked)
+> > > +		release_sock(sk);
+> > >  	cancel_delayed_work_sync(&ctx->tx_work.work);
+> > 
+> > So in the splat I got (on a slightly hacked up kernel) it seemed like
+> > unhash may be called in atomic context:
+> > 
+> > [  783.232150]  tls_sk_proto_unhash+0x72/0x110 [tls]
+> > [  783.237497]  tcp_set_state+0x484/0x640
+> > [  783.241776]  ? __sk_mem_reduce_allocated+0x72/0x4a0
+> > [  783.247317]  ? tcp_recv_timestamp+0x5c0/0x5c0
+> > [  783.252265]  ? tcp_write_queue_purge+0xa6a/0x1180
+> > [  783.257614]  tcp_done+0xac/0x260
+> > [  783.261309]  tcp_reset+0xbe/0x350
+> > [  783.265101]  tcp_validate_incoming+0xd9d/0x1530
+> > 
+> > I may have been unclear off-list, I only tested the patch no longer
+> > crashes the offload :(
+> > 
+> 
+> Yep, I misread and thought it was resolved here as well. OK I'll dig into
+> it. I'm not seeing it from selftests but I guess that means we are missing
+> a testcase. :( yet another version I guess.
+> 
 
-Fixes: 0905beec9f52 ("selftests/bpf: run flow dissector tests in skb-less mode")
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/testing/selftests/bpf/prog_tests/flow_dissector.c | 1 +
- 1 file changed, 1 insertion(+)
+Seems we need to call release_sock in the unhash case as well. Will
+send a new patch shortly.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-index d40cee07a224..fbd1d88a6095 100644
---- a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-+++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-@@ -264,5 +264,6 @@ void test_flow_dissector(void)
- 		CHECK_FLOW_KEYS(tests[i].name, flow_keys, tests[i].keys);
- 	}
- 
-+	bpf_prog_detach(prog_fd, BPF_FLOW_DISSECTOR);
- 	bpf_object__close(obj);
- }
--- 
-2.21.0.1020.gf2820cf01a-goog
+.John
 
+> Thanks,
+> John
+> 
