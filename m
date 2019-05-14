@@ -2,129 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D1E1CD14
-	for <lists+bpf@lfdr.de>; Tue, 14 May 2019 18:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FBA1CD49
+	for <lists+bpf@lfdr.de>; Tue, 14 May 2019 18:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726036AbfENQey (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 May 2019 12:34:54 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:42580 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725916AbfENQey (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 May 2019 12:34:54 -0400
-Received: by mail-qk1-f195.google.com with SMTP id d4so10674909qkc.9;
-        Tue, 14 May 2019 09:34:53 -0700 (PDT)
+        id S1726503AbfENQzp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 May 2019 12:55:45 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:40828 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbfENQzp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 May 2019 12:55:45 -0400
+Received: by mail-lj1-f195.google.com with SMTP id d15so14985696ljc.7;
+        Tue, 14 May 2019 09:55:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/7gaeJYCOtWCIvoQvIfzhGeThP2BdCxa7jC4qIRZJ3o=;
-        b=WH6E4Wpa1kEuiCBSbaE6kFm1HBAQjTOiifF6SDMisU5TpWs9CZ0mm7w1c7Q9cvC12h
-         DBBN180bdTEKMLxO3TjqDaOmeRJnXCeVGF9UNJkLJU70YRHE8SXEs1whXkU9SviaxM9v
-         hxcDs2ksJdNFilGX+noM4VhtZjvYbGq065/D4PXYm4gMngC3Ih4VLyCDKUfqaJCQJ8fh
-         UYE4THMCS8dWaH4BEcwx8cDfo/Fdyx5tiJgyK+jf0/opt9IXjyvJ1pm70UOgHkaFNMm1
-         2UrcNE3PMijywulOR36NL9miVQud3BG18dOdAjrgKkcoG6RwaMBMcMTsE/leuPvn4CQr
-         1OEw==
+        bh=6sxKLfUh0DEiZngzXK9ZQcZ11Dr5kqpAhvPY359O2Uw=;
+        b=obbQ4/dYvGIfLSHAjMg4vzOyVxCOq86OAHLgKGAm+UMFbaRXxMH544a1oNbeM5zChy
+         c/zrT9fUDmQAoGPLUC/Z8AjZ1JLkEn8axGnSct5Cq810X34oL02ZMzDl07ouKU6eZHdC
+         TKDxpSqTOIxbWhTI9k0idfQOZWxl9dabU5mJrXWXGMU6CafS82fwNbfK6l22tCriPftC
+         UuZAbm81oVyQDQLCn/azCz9oq3lAGqX07HO5gG7PmaLcl6BfK3sFJDMoNVhTbYEMiIU+
+         pCPeDJicJteqmKAialdCRCyhV18SUrkqYYKILdrzI8jQoIhAGOlX+8Ronm8HYyBwn255
+         /Lqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/7gaeJYCOtWCIvoQvIfzhGeThP2BdCxa7jC4qIRZJ3o=;
-        b=XJ4yFJTa+3xiVcxmLZQAJx15jQ3AyIiFcOJ4aZhKH5btf8OeA3sQS9IaqhR7r14JSD
-         pB4KpTa0m6u1EG5bGcJYNrwJM8adTf4qBw3dOwICxooswCUkNqlUiDG03p6r3Tl4XKfz
-         iC8MQi1VGb86DwEU/CX6pQrBgM4YflaPKLi3qBeZLV1FsHg1Cy5IlU6oRSk83J4ZjZsV
-         WIiCHH7+YzjyeQ59EjBemJxpgP3OegrNOMGPy6DoA30L+XicM1oqN35Ee90/aGmnHro2
-         9WvaGxa4kPnCsf+b9r5odh8ezLpUV+Z/11nW8AdFBCVst9//2gBj86TARreagL6YLr9q
-         0sjg==
-X-Gm-Message-State: APjAAAXYp3MCYI2T0jAOCgeMMfRRKvDlUhJhpN8pvrnb8x9ccHgxpqa8
-        pgBuP/+6sET/aU56Sc/QJ0nKLmWcX713XvXzxYi5z6rlmXNh6g==
-X-Google-Smtp-Source: APXvYqyUki6Uak7QQDo5UhLsZ7eRpE796uqD5LHnXOWUCIJuwHUt6x5EayBs3Uk73DcsvqO01YhmELEOa76cfBklSas=
-X-Received: by 2002:a37:72c7:: with SMTP id n190mr27180656qkc.189.1557851693196;
- Tue, 14 May 2019 09:34:53 -0700 (PDT)
+        bh=6sxKLfUh0DEiZngzXK9ZQcZ11Dr5kqpAhvPY359O2Uw=;
+        b=a1VOmL34aLPp/lo5UkhmqXVlQcS9P59ik8HOPazqizO9/5oHq5b9baMTIW2WNheTGC
+         8wkVVF/1WiVXJm9cmtUrze8HH5OFSd+2QB14Sk0R45GRfjOI6ZU/1jeTu9BV8UD5LqcD
+         z5/ZHxt1RPbutbR6mIxpaxPD+AHrhN9F+yuEpFlzl6XyQkyvivIl863yoXxalZhJ1/iU
+         4qBoY6hvgXh53sPrErnjWnQyxJ6mElNvGzqJGWFwBAe1utmcAo3X7OR1FtVBIqh3v9lK
+         7GNhbtXo9SfyXj5Y+LHdQIFyIXC/9n85HOVzPT+Js6k8NDrfuOfuBZNiD1zJ/HaIqUg1
+         f+Rw==
+X-Gm-Message-State: APjAAAXEcLLK7/beTxfef/Z/wS3jJihVzrjvXwelpLeKBSqAs+RV8WmD
+        yhv0P7jdCaGJ+Z2ilpWUfgRtNTHEe+AR2v79G0PWOw==
+X-Google-Smtp-Source: APXvYqyJdlNlg6AHl3P3AH1z90uYLaUQ6Ro9fbpNXcbwttUuYJP1tMSSoSXUTv0E6h+hl5E9dXjCVw8vQyp1CVL3Ug8=
+X-Received: by 2002:a2e:84ce:: with SMTP id q14mr17889699ljh.80.1557852943040;
+ Tue, 14 May 2019 09:55:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1557789256.git.daniel@iogearbox.net> <505e5dfeea6ab7dd3719bb9863fc50e7595e06ed.1557789256.git.daniel@iogearbox.net>
- <CAEf4BzZc_8FfHKA0rEvgx8T0xRWQp-2scm1N+nwroXi5enDh_g@mail.gmail.com> <76dde419-7204-0aa0-3251-f52c2c15be85@iogearbox.net>
-In-Reply-To: <76dde419-7204-0aa0-3251-f52c2c15be85@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 14 May 2019 09:34:41 -0700
-Message-ID: <CAEf4BzZ_c3srGXfX5RvPPSoibeyiz0a6042sU0=Kx7XmZp3-Cg@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/3] bpf: add map_lookup_elem_sys_only for lookups
- from syscall side
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
-        bpf@vger.kernel.org, Networking <netdev@vger.kernel.org>
+References: <20190508171845.201303-1-sdf@google.com> <20190508175644.e4k5o6o3cgn6k5lx@ast-mbp>
+ <20190508181223.GH1247@mini-arch> <20190513185724.GB24057@mini-arch>
+In-Reply-To: <20190513185724.GB24057@mini-arch>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 14 May 2019 09:55:31 -0700
+Message-ID: <CAADnVQLX3EcbW=iVxjsjO38M3Lqw5TfCcZtmbnt1DJwDvp64dA@mail.gmail.com>
+Subject: Re: [PATCH bpf 0/4] bpf: remove __rcu annotations from bpf_prog_array
+To:     Stanislav Fomichev <sdf@fomichev.me>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 14, 2019 at 12:59 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Mon, May 13, 2019 at 11:57 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
 >
-> On 05/14/2019 07:04 AM, Andrii Nakryiko wrote:
-> > On Mon, May 13, 2019 at 4:20 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >>
-> >> Add a callback map_lookup_elem_sys_only() that map implementations
-> >> could use over map_lookup_elem() from system call side in case the
-> >> map implementation needs to handle the latter differently than from
-> >> the BPF data path. If map_lookup_elem_sys_only() is set, this will
-> >> be preferred pick for map lookups out of user space. This hook is
+> On 05/08, Stanislav Fomichev wrote:
+> > On 05/08, Alexei Starovoitov wrote:
+> > > On Wed, May 08, 2019 at 10:18:41AM -0700, Stanislav Fomichev wrote:
+> > > > Right now we are not using rcu api correctly: we pass __rcu pointers
+> > > > to bpf_prog_array_xyz routines but don't use rcu_dereference on them
+> > > > (see bpf_prog_array_delete_safe and bpf_prog_array_copy in particular).
+> > > > Instead of sprinkling rcu_dereferences, let's just get rid of those
+> > > > __rcu annotations and move rcu handling to a higher level.
+> > > >
+> > > > It looks like all those routines are called from the rcu update
+> > > > side and we can use simple rcu_dereference_protected to get a
+> > > > reference that is valid as long as we hold a mutex (i.e. no other
+> > > > updater can change the pointer, no need for rcu read section and
+> > > > there should not be a use-after-free problem).
+> > > >
+> > > > To be fair, there is currently no issue with the existing approach
+> > > > since the calls are mutex-protected, pointer values don't change,
+> > > > __rcu annotations are ignored. But it's still nice to use proper api.
+> > > >
+> > > > The series fixes the following sparse warnings:
+> > >
+> > > Absolutely not.
+> > > please fix it properly.
+> > > Removing annotations is not a fix.
+> > I'm fixing it properly by removing the annotations and moving lifetime
+> > management to the upper layer. See commits 2-4 where I fix the users, the
+> > first patch is just the "preparation".
 > >
-> > This is kind of surprising behavior  w/ preferred vs default lookup
-> > code path. Why the desired behavior can't be achieved with an extra
-> > flag, similar to BPF_F_LOCK? It seems like it will be more explicit,
-> > more extensible and more generic approach, avoiding duplication of
-> > lookup semantics.
+> > The users are supposed to do:
+> >
+> > mutex_lock(&x);
+> > p = rcu_dereference_protected(prog_array, lockdep_is_held(&x))
+> > // ...
+> > // call bpf_prog_array helpers while mutex guarantees that
+> > // the object referenced by p is valid (i.e. no need for bpf_prog_array
+> > // helpers to care about rcu lifetime)
+> > // ...
+> > mutex_unlock(&x);
+> >
+> > What am I missing here?
 >
-> For lookup from syscall side, this is possible of course. Given the
-> current situation breaks heuristic with any walks of the LRU map, I
-> presume you are saying something like an opt-in flag such as
-> BPF_F_MARK_USED would be more useful? I was thinking about something
-
-To preserve existing semantics, it would be opt-out
-BPF_F_DONT_MARK_USED, if you don't want to update LRU, so that
-existing use cases don't break.
-
-> like this initially, but then I couldn't come up with a concrete use
-> case where it's needed/useful today for user space. Given that, my
-> preference was to only add such flag wait until there is an actual
-> need for it, and in any case, it is trivial to add it later on. Do
-> you have a concrete need for it today that would justify such flag?
-
-So my concern was with having two ops for lookup for maps
-(map_lookup_elem() and map_lookup_elem_sys_only()) which for existing
-use cases differ only in whether we are reordering LRU on lookup or
-not, which felt like would be cleaner to solve with extending
-ops->map_lookup_elem() to accept flags. But now I realize that there
-are important implementation limitations preventing doing this cleanly
-and efficiently, so I rescind my proposal.
-
+> Just to give you my perspective on why current api with __rcu annotations
+> is working, but not optimal (even if used from the rcu read section).
 >
-> > E.g., for LRU map, with flag on lookup, one can decide whether lookup
-> > from inside BPF program (not just from syscall side!) should modify
-> > LRU ordering or not, simply by specifying extra flag. Am I missing
-> > some complication that prevents us from doing it that way?
+> Sample code:
 >
-> For programs it's a bit tricky. The BPF call interface is ...
+>         struct bpf_prog_array __rcu *progs = <comes from somewhere>;
+>         int n;
 >
->   BPF_CALL_2(bpf_map_lookup_elem, struct bpf_map *, map, void *, key)
+>         rcu_read_lock();
+>         n = bpf_prog_array_length(progs);
+>         if (n > 0) {
+>           // do something with __rcu progs
+>           do_something(progs);
+>         }
+>         rcu_read_unlock();
 >
-> ... meaning verifier does not care what argument 3 and beyond contains.
-> From BPF context/pov, it could also be uninitialized register. This would
-> mean, we'd need to add a BPF_CALL_3(bpf_map_lookup_elem2, ...) interface
-> which programs would use instead (and to not break existing ones), or
-> some other new helper call that gets a map value argument to unmark the
-> element from LRU side. While all doable one way or another although bit
-> hacky, we should probably clarify and understand the use case for it
-> first, thus brings me back to the last question from above paragraph.
+> Since progs is __rcu annotated, do_something() would need to do
+> rcu_dereference again and it might get a different value compared to
+> whatever bpf_prog_array_free got while doing its dereference.
 
-Yeah, if we wanted to expose this functionality from BPF side right
-now, we'd have to add new helper w/ extra flags arg. As I mentioned
-above, though, I assumed it wouldn't be too hard to make existing
-BPF_CALL_2(bpf_map_lookup_elem, struct bpf_map *, map, void *, key)
-translate to map->ops->map_lookup_elem(key, 0 /* flags */), filling in
-default flags = 0 value, but apparently that's not that simple (and
-will hurt performance).
+correct and I believe the code deals with it fine.
+cnt could be different between two calls.
 
+> A better way is not to deal with rcu inside those helpers and let
+> higher layers do that:
 >
-> Thanks,
-> Daniel
+>         struct bpf_prog_array __rcu *progs = <comes from somewhere>;
+>         struct bpf_prog_array *p;
+>         int n;
+>
+>         rcu_read_lock();
+>         p = rcu_dereference(p);
+>         n = bpf_prog_array_length(p);
+>         if (n > 0) {
+>           do_something(p); // do_something sees the same p as bpf_prog_array_length
+>         }
+>         rcu_read_unlock();
+>
+> What do you think?
+
+I'm not sure that generically applicable.
+Which piece of code do you have in mind for such refactoring?
