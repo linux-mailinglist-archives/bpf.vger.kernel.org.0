@@ -2,87 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 681CA1CE68
-	for <lists+bpf@lfdr.de>; Tue, 14 May 2019 19:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91471D116
+	for <lists+bpf@lfdr.de>; Tue, 14 May 2019 23:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727264AbfENR4T (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 May 2019 13:56:19 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:36134 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726481AbfENR4T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 May 2019 13:56:19 -0400
-Received: by mail-lf1-f65.google.com with SMTP id y10so12594241lfl.3;
-        Tue, 14 May 2019 10:56:18 -0700 (PDT)
+        id S1726380AbfENVMi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 May 2019 17:12:38 -0400
+Received: from mail-oi1-f202.google.com ([209.85.167.202]:34587 "EHLO
+        mail-oi1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726195AbfENVMi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 May 2019 17:12:38 -0400
+Received: by mail-oi1-f202.google.com with SMTP id x193so193789oix.1
+        for <bpf@vger.kernel.org>; Tue, 14 May 2019 14:12:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8jK8TdbJwPrf/QIXl7BYQvUmbQF/qisC1t8x+FQM900=;
-        b=SW7QhFUFPDaHZwYu6sofLvZpQX3mbBw3E3t3NP4MoF4p0Jp5OzO1qA3nZKycNaFiRv
-         /380bNKJuw1A8Ck28TQINUEtfTLJGb7D2l4Zy4O5W+cRhEgum73OEqa4AHlnm1yEpXi0
-         A2FDJLKNbYeCrnHB9PJCUMSsSgVlPdkxMTwr97TtHs4tEJX+1w3GMQdahkaa4eh3ORx1
-         +HM0+2MpTf8DwZbOGNiiSMgM+2Atz2YA+OwlAxI+BcnlpwpV+uZq787gan8mo1FN0IvJ
-         AWZ1W2Z4pKMUEdDBdn8tiDeIj3JqOGscY3HFZ7ChKaqXXRggMGtrEjhpPcoGrC+FugMy
-         q2vw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ST8fThbwHB7FPyg/UYGhE320wSCcxJdrKK/TrBgEs88=;
+        b=R3ALmlolgf8qQenjhtDTatJx1C6YLXjJj/KPwFTnaTz8tOuYLjlYjTrtuGSqYsUynU
+         sGUT7dP60mO/doCNlzhHTh+BpSUNbuobTFFl96UJJwUa4QtEUEbCR3De6edSnrMgzL04
+         bmYuHdafYOVGhqxz/UFT942qYt5fFgbWxKrU8AfJG0oPI/VGenN60h4Z+/9qfDdeEWlw
+         9fdaC2cy08y8nuBFqLcUCtr4CM5SQl209NIFXXKHKoI8EkiKsUH9f8V//Ew8GgMezma0
+         cbSdI7gXVVwBpBzOcAzU8ule6nnNV+cjnRJO41KzZVWfJIxShedPh0Ks5e5RRSA9VNDx
+         BacA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8jK8TdbJwPrf/QIXl7BYQvUmbQF/qisC1t8x+FQM900=;
-        b=ko5Dn1KbDHAkwwvv7tZS/NhGWCoIjKC61FGG41XvKxCegikP+k6sXCQ5d3MT7f5nlz
-         Daxr0U0k7BuMCP8e9UzdSLk3/33/CVjEFoIEUDrPfTuLtG9BH4XlbQNaFgh01Ck4sdXr
-         UUhDXsdedYIAaIn7RKcTQG1qSBMahf2n5vTNyS47pSabLJZMsrdqbvT+5zylCMLuLea4
-         aDfQx10aI6vML62ZDTKgQ5VHJpYIOlkMRsmNW3JkvmDUMz5tHsRcowkvdpYN843QFqJI
-         FSMELO8UqkE6L1pBofoOokEjuJx2dewI5cJ2X32DDXZUyS3FfXyeOdO55pzcDE7X+cvF
-         JDBw==
-X-Gm-Message-State: APjAAAXLzZxWB4Kbc30fD4poaSIKNT9517sNJhhWZzlSG0y5rshE9iMS
-        Ez71pNeH0rC9jynq6jNXhsmf4/B9Ub21Q5xwZs+n0Q==
-X-Google-Smtp-Source: APXvYqwp35U0FzpnU3cI7vFV4hrlhu28vz4J3r1WLM8M7WiTpktkSoHQbrpHU1fITL4JOzPhqoY+z0r8v6ak7XtKFFQ=
-X-Received: by 2002:ac2:5a04:: with SMTP id q4mr6100227lfn.90.1557856577478;
- Tue, 14 May 2019 10:56:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1557789256.git.daniel@iogearbox.net> <CAEf4BzaSj9Nh+2gcEJyBDzwgbaYWAUiQ7JWAez9+jDneCA6ZFQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzaSj9Nh+2gcEJyBDzwgbaYWAUiQ7JWAez9+jDneCA6ZFQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 14 May 2019 10:56:06 -0700
-Message-ID: <CAADnVQLHjQUZuv0tym4usZ3iqpRZQpbMfcj_x9OXhsN70h=fHg@mail.gmail.com>
-Subject: Re: [PATCH bpf 0/3] BPF LRU map fix
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ST8fThbwHB7FPyg/UYGhE320wSCcxJdrKK/TrBgEs88=;
+        b=aGdwkxz5gg9GCBfIYVlvA/TbRAEQAaZ4MQTUOziy2mZM5uBgBQKAZsALWOXII9w2ni
+         /sFuJVZHydGvl5fjKvZkYfx/O181j00wOMaprCRe/Rj7+f28Je7Ry5tzz3xJ5HPwKnMu
+         T3cWdx1gQK65qFSaDhZ/BWh/ts3NINqxcZeFqYWu8lTHUUL2u9dZKDtYODG5guPdkQkj
+         8X2M1AXcFE9rBJc67b7r3DswlNtyix46RKkOftoYkZXS/rq9mvb4YrYjRp2e8PUALove
+         fCUt/DKpWi7CiTKHhFaQKyDmvZZFGqcopHaARsRGKyiWl1pb3zDflD7Ghv3Owf97C2DM
+         +Syw==
+X-Gm-Message-State: APjAAAVnswhIAz39w9brkKb4ehD5xwgRC2giaTfMZRiH5q7eZR+Mo5k1
+        hl+Mxv1OeA7jethoSjqMRGkE8Ug=
+X-Google-Smtp-Source: APXvYqwSR5YBY5Hae3ywGuyWpPCY8+qie2boxw8IZcOirVPvEt+vVISriL7y0U7Wie5c7e5OHS5+OtI=
+X-Received: by 2002:aca:f444:: with SMTP id s65mr4191410oih.115.1557868357209;
+ Tue, 14 May 2019 14:12:37 -0700 (PDT)
+Date:   Tue, 14 May 2019 14:12:33 -0700
+Message-Id: <20190514211234.25097-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
+Subject: [PATCH bpf 1/2] selftests/bpf: add missing \n to flow_dissector CHECK errors
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 14, 2019 at 10:24 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, May 13, 2019 at 4:19 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >
-> > This set fixes LRU map eviction in combination with map lookups out
-> > of system call side from user space. Main patch is the second one and
-> > test cases are adapted and added in the last one. Thanks!
-> >
-> > Daniel Borkmann (3):
-> >   bpf: add map_lookup_elem_sys_only for lookups from syscall side
-> >   bpf, lru: avoid messing with eviction heuristics upon syscall lookup
-> >   bpf: test ref bit from data path and add new tests for syscall path
-> >
-> >  include/linux/bpf.h                        |   1 +
-> >  kernel/bpf/hashtab.c                       |  23 ++-
-> >  kernel/bpf/syscall.c                       |   5 +-
-> >  tools/testing/selftests/bpf/test_lru_map.c | 288 +++++++++++++++++++++++++++--
-> >  4 files changed, 297 insertions(+), 20 deletions(-)
-> >
-> > --
-> > 2.9.5
-> >
->
-> For the series:
->
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+Otherwise, in case of an error, everything gets mushed together.
 
-Applied. Thanks
+Fixes: a5cb33464e53 ("selftests/bpf: make flow dissector tests more extensible")
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ tools/testing/selftests/bpf/prog_tests/flow_dissector.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
+index 8b54adfd6264..d40cee07a224 100644
+--- a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
++++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
+@@ -242,12 +242,12 @@ void test_flow_dissector(void)
+ 	 */
+ 
+ 	err = bpf_prog_attach(prog_fd, 0, BPF_FLOW_DISSECTOR, 0);
+-	CHECK(err, "bpf_prog_attach", "err %d errno %d", err, errno);
++	CHECK(err, "bpf_prog_attach", "err %d errno %d\n", err, errno);
+ 
+ 	tap_fd = create_tap("tap0");
+-	CHECK(tap_fd < 0, "create_tap", "tap_fd %d errno %d", tap_fd, errno);
++	CHECK(tap_fd < 0, "create_tap", "tap_fd %d errno %d\n", tap_fd, errno);
+ 	err = ifup("tap0");
+-	CHECK(err, "ifup", "err %d errno %d", err, errno);
++	CHECK(err, "ifup", "err %d errno %d\n", err, errno);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+ 		struct bpf_flow_keys flow_keys = {};
+@@ -255,7 +255,7 @@ void test_flow_dissector(void)
+ 		__u32 key = 0;
+ 
+ 		err = tx_tap(tap_fd, &tests[i].pkt, sizeof(tests[i].pkt));
+-		CHECK(err < 0, "tx_tap", "err %d errno %d", err, errno);
++		CHECK(err < 0, "tx_tap", "err %d errno %d\n", err, errno);
+ 
+ 		err = bpf_map_lookup_elem(keys_fd, &key, &flow_keys);
+ 		CHECK_ATTR(err, tests[i].name, "bpf_map_lookup_elem %d\n", err);
+-- 
+2.21.0.1020.gf2820cf01a-goog
+
