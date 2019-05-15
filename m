@@ -2,118 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBDF1E72C
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2019 05:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA12D1E72E
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2019 05:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726325AbfEODiS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 May 2019 23:38:18 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:35786 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726201AbfEODiR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 May 2019 23:38:17 -0400
-Received: by mail-lf1-f65.google.com with SMTP id c17so824113lfi.2
-        for <bpf@vger.kernel.org>; Tue, 14 May 2019 20:38:17 -0700 (PDT)
+        id S1726254AbfEODix (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 May 2019 23:38:53 -0400
+Received: from mail-vs1-f74.google.com ([209.85.217.74]:47044 "EHLO
+        mail-vs1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726295AbfEODiw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 May 2019 23:38:52 -0400
+Received: by mail-vs1-f74.google.com with SMTP id q7so145608vsp.13
+        for <bpf@vger.kernel.org>; Tue, 14 May 2019 20:38:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3B6QOQeixS1xdatpREEZMmyQLJmZXqRtBMKmot8P8Y4=;
-        b=sgun8DKNsZtpXOzp+H55fE9TGdmdInwrZ8VqydYARvjDU/Gl8FfUeNAwBZy5vbUJz5
-         iypTpXF2VuC1Z+GRqbE0kL4FjMWSqN8cceCnNVvXpXvqffqcq4umKB7wSbh/19hNZMwi
-         ajhN5eFhl2+yPsx7xzVtuwfoELF1ok8O/rZxckFsiAd9d5t+NzWphCVllHXsnw9H99oc
-         vG//ZF4xHdOec46rc5tNbpoKu8GCLmLOe2C/kRUXY7LuyMNijDjV1/p4B1KUJUGI1f07
-         E8kp8mN8QsSluT/99rcENPB1DfEoNL7To6hkPfgRTL8j89p3YkFPa0R84Q4wPhC1Xupd
-         3mgg==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=64dZO103FjaqqJ22MJxyfeFXub3dklogxlZJawwpYtw=;
+        b=HM1wr/BKf8+hUTG+m9Jeld5VnMcx6ZjA0YuiKErnB9MOV8zYv2I8KxQyvF6WI+F13A
+         HMeBgcaPhqw+psSVvduehQw7py0qH913PY9e4tCX3z/8roQqgKV4Urz1A0PHXyf5aczd
+         I0Yk6+C0arvyJOxZsgWxFkMhzsi09HICz0N/elJVKtvG+CXGjTHBQjrFD2DU5AOuJ5lp
+         tQSjDmrWGcCv7tFRWZgKak8WpIqnjJqgzPcut6qT9k61okWx3CmxKnZKTSEHMIgz01s3
+         eMmRVyN87kifwOtTmGfuRuYr7e4gM2v2/lh39z1LGAbXyQcDxRTrvD/vjM54dKTwrI/l
+         NVSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3B6QOQeixS1xdatpREEZMmyQLJmZXqRtBMKmot8P8Y4=;
-        b=p9JP1t14uFwGL4XZWcDdpGywKOc+KwKQR/7ovZVQjIVVl/2Efed/39yxPo1fCLRhBp
-         XyfJvJNo/KtRkQqCBWu3QUhMXseWY50Y66ozVlxiV5lqgB+N17FDWJYnuCr/MmKWNstJ
-         77ii/BeFh2d7ygRRH4/0CNqE492sixX0VythHn/vmItWLmz2IsQO6lZ7wCEZG9Mc83a8
-         pEUqbIJ6CUyIk6kEWmt0BCt2jDavaUuWRHfbSoLyOCI1AXiM1+wg95hnWEOFYEg/NcQs
-         NItj01bPsT+nyCaYgRVFM1kRsr9hidSaToRrpnJqIkOdZaxL9H7JNgPBAu7teLvVZO6V
-         YjKw==
-X-Gm-Message-State: APjAAAU8pBtGmxLzlZ5NhGvb7GdckBEQ+gBoTmKEVx1HD4ZKxeDXUhe+
-        5/Loju/a5g+pxav6x1RZIyWwBn2+5lE+d7n39/DvPg==
-X-Google-Smtp-Source: APXvYqx9xhVA9OM4RjD4F2ROnmIkkArFTfJAqehp8RyQSu3Gw/n25DiQFGBhiGdgj0dN0fFrlZa/oTUmp5xNMOlzZQk=
-X-Received: by 2002:a19:4a04:: with SMTP id x4mr18273922lfa.124.1557891495795;
- Tue, 14 May 2019 20:38:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190513185724.GB24057@mini-arch> <CAADnVQLX3EcbW=iVxjsjO38M3Lqw5TfCcZtmbnt1DJwDvp64dA@mail.gmail.com>
- <20190514173002.GB10244@mini-arch> <20190514174523.myybhjzfhmxdycgf@ast-mbp>
- <20190514175332.GC10244@mini-arch> <CAADnVQLAJ77XS8vfdnszHsw_KcmzrMDvPH0UxVXORN-wjc=rWQ@mail.gmail.com>
- <20190515021144.GD10244@mini-arch> <CAADnVQ+LPLfdfkv2otb6HRPeQiiDyr4ZO04B--vrXT_Tu=-9xQ@mail.gmail.com>
- <5ed25b81-fdd0-d707-f012-736fe6269a72@gmail.com> <20190515025636.GE10244@mini-arch>
- <20190515031643.blzxa3sgw42nelzd@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20190515031643.blzxa3sgw42nelzd@ast-mbp.dhcp.thefacebook.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=64dZO103FjaqqJ22MJxyfeFXub3dklogxlZJawwpYtw=;
+        b=Y8tPfuwIRgq2/wuEYOg4+4/BnPZsQ6izx/5CLZmnjdZqkpjTcm0UN7y0SxvykBKLLH
+         fUDf9RRx+eeDzWpw/5XqhxyHcTiITt/X4pxmaWZVNwZIzVHRGctz0ul/K8SZW7ZSmpcw
+         hl5wj4UjKILPb8B5QCi/AUJSox4zhmJTFVK1/eOwICPfY4uI6LEXVKvNTt7Pd7hBBEoD
+         ZBWwv6Q/JNtLNAnoWKvLpYq83pzRhQJij/cdTtyWMW4/KcvJKZtRcvpPsZ3mPJG00m7c
+         FBtrEJ+TAra94N8BS1eDOYAAkjCFobXyflRpD84YzYrhAOx0YDN2rFS0G2sKNNxaMA9g
+         AF9w==
+X-Gm-Message-State: APjAAAXQCMywkQysZdmqdg1KIBOHSIh1tGKL14pZJKbDxJGbYEqxE2Pb
+        OpY5UGoUCcZ3+8Itb3j2Sy7BFAk=
+X-Google-Smtp-Source: APXvYqw9SYTGatPCNNTFUoLzz5PUPxyum/adtbFp5CGLh/BKPFXiattJWaB4hVno3oasdRfEy34uctg=
+X-Received: by 2002:a67:bc01:: with SMTP id t1mr15777058vsn.102.1557891531762;
+ Tue, 14 May 2019 20:38:51 -0700 (PDT)
+Date:   Tue, 14 May 2019 20:38:49 -0700
+Message-Id: <20190515033849.62059-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
+Subject: [PATCH bpf] libbpf: don't fail when feature probing fails
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 14 May 2019 20:38:03 -0700
-Message-ID: <CAKH8qBuSM3a6j6xupaWOGqT3XM9rUzZRLujg_E_8WLjsd2t-DA@mail.gmail.com>
-Subject: Re: [PATCH bpf 0/4] bpf: remove __rcu annotations from bpf_prog_array
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Stanislav Fomichev <sdf@fomichev.me>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 14, 2019 at 8:16 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, May 14, 2019 at 07:56:36PM -0700, Stanislav Fomichev wrote:
-> > On 05/14, Eric Dumazet wrote:
-> > >
-> > >
-> > > On 5/14/19 7:27 PM, Alexei Starovoitov wrote:
-> > >
-> > > > what about activate_effective_progs() ?
-> > > > I wouldn't want to lose the annotation there.
-> > > > but then array_free will lose it?
-> > It would not have have it because the input is the result of
-> > bpf_prog_array_alloc() which returns kmalloc'd pointer (and
-> > is not bound to an rcu section).
-> >
-> > > > in some cases it's called without mutex in a destruction path.
-> > Hm, can you point me to this place? I think I checked every path,
-> > maybe I missed something subtle. I'll double check.
->
-> I thought cgroup dying thingy is not doing it, but looks like it is.
-I was looking at the following chain:
-css_release_work_fn
-  mutex_lock(&cgroup_mutex);
-    cgroup_bpf_put
-      bpf_prog_array_free
-  mutex_unlock(&cgroup_mutex);
+Otherwise libbpf is unusable from unprivileged process with
+kernel.kernel.unprivileged_bpf_disabled=1.
+All I get is EPERM from the probes, even if I just want to
+open an ELF object and look at what progs/maps it has.
 
-I'll take another look tomorrow with a fresh mind :-)
+Instead of dying on probes, let's just pr_debug the error and
+try to continue.
 
-> > > > also how do you propose to solve different 'mtx' in
-> > > > lockdep_is_held(&mtx)); ?
-> > > > passing it through the call chain is imo not clean.
-> > Every caller would know which mutex protects it. As Eric said below,
-> > I'm adding a bunch of xxx_dereference macros that hardcode mutex, like
-> > the existing rtnl_dereference.
->
-> I have a hard time imagining how it will look without being a mess.
-> There are three mutexes to pass down instead of single rtnl_derefernce:
-> cgroup_mutex, ir_raw_handler_lock, bpf_event_mutex.
-We don't need to pass them down, we need those xxx_dereference
-wrappers only in the callers of those apis. They are private
-to cgroup.c/lirc.c/bpf_trace.c.
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Take a look at the patches 2-4 in the current series where I convert
-the callers.
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 7e3b79d7c25f..3562b6ef5fdc 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1696,7 +1696,7 @@ bpf_object__probe_caps(struct bpf_object *obj)
+ 	for (i = 0; i < ARRAY_SIZE(probe_fn); i++) {
+ 		ret = probe_fn[i](obj);
+ 		if (ret < 0)
+-			return ret;
++			pr_debug("Probe #%d failed with %d.\n", i, ret);
+ 	}
+ 
+ 	return 0;
+-- 
+2.21.0.1020.gf2820cf01a-goog
 
-(Though, I'd rename xxx_dereference to xxx_rcu_dereference for clarity we
-get to a v2).
->
-> Anyway, let's see how the patches look and discuss further.
