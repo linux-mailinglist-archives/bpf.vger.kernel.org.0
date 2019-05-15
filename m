@@ -2,116 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 003E41E6D8
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2019 04:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B73E31E6E3
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2019 04:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbfEOC1o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 May 2019 22:27:44 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:41200 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726201AbfEOC1o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 May 2019 22:27:44 -0400
-Received: by mail-lj1-f196.google.com with SMTP id k8so1032386lja.8;
-        Tue, 14 May 2019 19:27:42 -0700 (PDT)
+        id S1726381AbfEOCoe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 May 2019 22:44:34 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:47052 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726211AbfEOCoe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 May 2019 22:44:34 -0400
+Received: by mail-pg1-f196.google.com with SMTP id t187so533311pgb.13;
+        Tue, 14 May 2019 19:44:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cGWPE+Lzqg4+ue7Lyy7055pcyP5wWvksfTD3aW7p4mc=;
-        b=c+v75i9f59bBymPmSbsYhbuQI7JVimRSoQ8LhZttkHFAuUc3wiKtSB+0ZWkHVFDBvM
-         njwDY4aTcjmLDbLBuFUdNf47C9XrWHoFEXDVqECwY/OVniS8eJGkKNiF4b8cMqHPPq3X
-         YA5cuP0gJXQuSm7qrYCl7zcK7LOWhUlOTkPzYATcr/NIcJ9g+HisHdlexoPSBBpUiHI2
-         bZWNIc02PZbqm+XKSmNtB1uYZ/Meiu5plKtHjFdmfAJut95DVHhQPZ9+ZxHhlfscOD8i
-         EF6LAKt80zhczBgp1pINQa6EH4Xw5V55IUrrWFoIlCWMfN7+d82JtRrJh/hVjbJ3wdh2
-         TQTA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YJqN85hZT4XHxSeUWFYHm0YbU1tsX6DHvhIouN28Ye4=;
+        b=VnZOJv05MwaopIk+SOdyqDkZBGMH9yyp4IVyppA9G1t2HvQdiOvLHv688r2eY2HlE0
+         +TTmT2v1Z/9rr4g42M8nz8V//x0vaIUvW2pwCsjrS5dOybiB0KHu3zXnkCJazF7AWFkp
+         U/VNkbaOHot84y5WmQtwF2cQjecTnsmvG81m0ujNPuEpc/rTwHbKoukmWJcz31j2WMzp
+         pmFFtj40B1yRV3WuOE4wDYrLzscXsn/3xOgIyu2/60lCo2lZ1pPyvHnGvhTQ4cyRzpSU
+         JS0YF87M8YL4qID7fJBhu3ILkduoxtRXdTDrVIPw/ODVrX17/pAFo9AC3w9syla+AWQY
+         Kycg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cGWPE+Lzqg4+ue7Lyy7055pcyP5wWvksfTD3aW7p4mc=;
-        b=dcvfoO+a5yVJBleElLpjY9gPfBDYjDhB520s8PTHV11HZ7SIRO7bi/mLyaQZcF9/8H
-         2DOmFoftlbtdNd6jbTf5uh8mZpvuTemr0YjEFLdsWOVUWl4bHR6efxmjCFWjEt4F+n9Q
-         CDr4IwTbMyHjGKZCf+EV+txSmr6DIzEUcirI7t/tC3T6j3akjiJ/J2mUuBRgf5F90jBZ
-         5Xfaq9YoFdomsn9Dm/0Yi3Q0r59Xk17i2TKk6+e7/QScLVvg8oBSdHRXiqEgyDyEyrK0
-         UEI+oPPxN5YWc2WYKg7tWIS3c6beVrBdsq0QvSmFF4p9wqzjEBPWaWym2K+1WhFzGvnC
-         Ni+A==
-X-Gm-Message-State: APjAAAW9tazbKjUt90vwtyGBcq6XrBjecnddMxndZYdV5NbXdyl8egGb
-        yp8KeiGbAfYe9+FmueCIpq2Ewwh2iiI22CnnmBE=
-X-Google-Smtp-Source: APXvYqwakEoqgL//0PalK738zMWr8egwygJpTJfXyFzi2xy3pXb2Mef2521Xp9kXv9cHCFYzAjcPlQ3XdOyR3zxUqnw=
-X-Received: by 2002:a2e:8988:: with SMTP id c8mr13457632lji.99.1557887261403;
- Tue, 14 May 2019 19:27:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190508171845.201303-1-sdf@google.com> <20190508175644.e4k5o6o3cgn6k5lx@ast-mbp>
- <20190508181223.GH1247@mini-arch> <20190513185724.GB24057@mini-arch>
- <CAADnVQLX3EcbW=iVxjsjO38M3Lqw5TfCcZtmbnt1DJwDvp64dA@mail.gmail.com>
- <20190514173002.GB10244@mini-arch> <20190514174523.myybhjzfhmxdycgf@ast-mbp>
- <20190514175332.GC10244@mini-arch> <CAADnVQLAJ77XS8vfdnszHsw_KcmzrMDvPH0UxVXORN-wjc=rWQ@mail.gmail.com>
- <20190515021144.GD10244@mini-arch>
-In-Reply-To: <20190515021144.GD10244@mini-arch>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 14 May 2019 19:27:29 -0700
-Message-ID: <CAADnVQ+LPLfdfkv2otb6HRPeQiiDyr4ZO04B--vrXT_Tu=-9xQ@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YJqN85hZT4XHxSeUWFYHm0YbU1tsX6DHvhIouN28Ye4=;
+        b=tEXB8SokFTzTFYDf4s/Yx0ZigMIBP/g1RXY9r3VoqWlEtfm1oMClbC31OLLW4XsYiO
+         07AWNaeT2brc87OACe/N5622igPCtuSFDFWm0M/mebaMykrEVZy82vcKLlX757ycfiKE
+         Tpf8ALTKOl8LacNx8mHP2rYic14ow3P/3N8LdvOynAW0O9ZA/e5OXT2zRSj0iH329Olv
+         WwyWdKjuBdqP4Mm14NiSacjg6FAn6/yMVgSDzXOADqtuSfRSXkisK1O4TfSQDgAO4nyn
+         BFHbRBw4jbRK4Hsz6gx37PjBNyiCh1Zb4mtzP3J+4l6y087Z+zzBc1IYr2yP38GB1lOd
+         BaZA==
+X-Gm-Message-State: APjAAAVLnmS7bD6aib8bTu30SVxhby31Y02vQKCj0E+FJjffXb40UbeE
+        eaawd3xVaPYz1J9R9CNVmzU=
+X-Google-Smtp-Source: APXvYqyOmuegB60Ux81UU01RWZnBuUOEkRrzdoJxv+zrxfVHtzjRtu3YKgD/Q+IHLNaELqzXGAzMVQ==
+X-Received: by 2002:a63:b1d:: with SMTP id 29mr41505592pgl.103.1557888273742;
+        Tue, 14 May 2019 19:44:33 -0700 (PDT)
+Received: from [192.168.86.235] (c-73-241-150-70.hsd1.ca.comcast.net. [73.241.150.70])
+        by smtp.gmail.com with ESMTPSA id g128sm574699pfb.131.2019.05.14.19.44.31
+        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+        Tue, 14 May 2019 19:44:32 -0700 (PDT)
 Subject: Re: [PATCH bpf 0/4] bpf: remove __rcu annotations from bpf_prog_array
-To:     Stanislav Fomichev <sdf@fomichev.me>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Stanislav Fomichev <sdf@fomichev.me>
 Cc:     Stanislav Fomichev <sdf@google.com>,
         Network Development <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+References: <20190508171845.201303-1-sdf@google.com>
+ <20190508175644.e4k5o6o3cgn6k5lx@ast-mbp> <20190508181223.GH1247@mini-arch>
+ <20190513185724.GB24057@mini-arch>
+ <CAADnVQLX3EcbW=iVxjsjO38M3Lqw5TfCcZtmbnt1DJwDvp64dA@mail.gmail.com>
+ <20190514173002.GB10244@mini-arch> <20190514174523.myybhjzfhmxdycgf@ast-mbp>
+ <20190514175332.GC10244@mini-arch>
+ <CAADnVQLAJ77XS8vfdnszHsw_KcmzrMDvPH0UxVXORN-wjc=rWQ@mail.gmail.com>
+ <20190515021144.GD10244@mini-arch>
+ <CAADnVQ+LPLfdfkv2otb6HRPeQiiDyr4ZO04B--vrXT_Tu=-9xQ@mail.gmail.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <5ed25b81-fdd0-d707-f012-736fe6269a72@gmail.com>
+Date:   Tue, 14 May 2019 19:44:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+MIME-Version: 1.0
+In-Reply-To: <CAADnVQ+LPLfdfkv2otb6HRPeQiiDyr4ZO04B--vrXT_Tu=-9xQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 14, 2019 at 7:11 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
->
-> On 05/14, Alexei Starovoitov wrote:
-> > On Tue, May 14, 2019 at 10:53 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
-> > >
-> > > Existing __rcu annotations don't add anything to the safety.
-> >
-> > what do you mean?
-> > BPF_PROG_RUN_ARRAY derefs these pointers under rcu.
-> And I'm not removing them from the struct definitions, I'm removing __rcu
-> from the helpers' arguments only. Because those helpers are always called
-> with the mutex and don't need it. To reiterate: rcu_dereference_protected
-> is enough to get a pointer (from __rcu annotated) for the duration
-> of the mutex, helpers can operate on the non-annotated (dereferenced) prog
-> array.
->
-> Read section still does the following (BPF_PROG_RUN_ARRAY):
->
->         rcu_read_lock();
->         p = rcu_dereference(__rcu'd progs);
->         while (p) {}
->         rcu_read_unlock();
->
-> And write sections do:
->
->         mutex_lock(&mtx);
->         p = rcu_dereference_protected(__rcu'd progs, lockdep_is_held(&mtx);
->         // ^^^ does rcu_dereference in the mutex protected section
->         bpf_prog_array_length(p);
->         bpf_prog_array_copy_to_user(p, ...);
->         bpf_prog_array_delete_safe(p);
->         bpf_prog_array_copy_info(p);
->         bpf_prog_array_copy(p, ...);
->         bpf_prog_array_free(p);
 
-what about activate_effective_progs() ?
-I wouldn't want to lose the annotation there.
-but then array_free will lose it?
-in some cases it's called without mutex in a destruction path.
-also how do you propose to solve different 'mtx' in
-lockdep_is_held(&mtx)); ?
-passing it through the call chain is imo not clean.
 
-I wonder what others think about this whole discussion.
+On 5/14/19 7:27 PM, Alexei Starovoitov wrote:
 
->         // ^^^ all these helpers are consistent already with or
->         // without __rcu annotation because we hold a mutex and
->         // guarantee no concurrent updates, so __rcu annotations
->         // for their input arguments is not needed.
->         mutex_unlock(&mtx);
+> what about activate_effective_progs() ?
+> I wouldn't want to lose the annotation there.
+> but then array_free will lose it?
+> in some cases it's called without mutex in a destruction path.
+> also how do you propose to solve different 'mtx' in
+> lockdep_is_held(&mtx)); ?
+> passing it through the call chain is imo not clean.
+> 
+
+Usage of RCU api in BPF is indeed a bit strange and lacks lockdep support.
+
+Looking at bpf_prog_array_copy_core() for example, it looks like the __rcu
+in the first argument is not needed, since the caller must have done the proper dereference already,
+and the caller knows which mutex is protecting its rcu_dereference_protected() for the writer sides.
+
+bpf_prog_array_copy_core() should manipulate standard pointers, with no __rcu stuff.
+
+The analogy in net/ are probably the rtnl_dereference() users.
+
+
+
+
