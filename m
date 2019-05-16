@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D077B205C2
-	for <lists+bpf@lfdr.de>; Thu, 16 May 2019 13:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF050205DF
+	for <lists+bpf@lfdr.de>; Thu, 16 May 2019 13:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727593AbfEPLkH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 May 2019 07:40:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48114 "EHLO mail.kernel.org"
+        id S1727907AbfEPLkw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 May 2019 07:40:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727572AbfEPLkE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 May 2019 07:40:04 -0400
+        id S1727899AbfEPLkv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 May 2019 07:40:51 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD9A020862;
-        Thu, 16 May 2019 11:40:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2FC620833;
+        Thu, 16 May 2019 11:40:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558006803;
-        bh=KJF1ohD+GanVF7AGlDAg7a2PMSbc/5DsGZC2yHEZO0g=;
+        s=default; t=1558006850;
+        bh=5PqpqsePIaUZFwMZ6QtcnVAgVczOlnG/PGID8A8lAE0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uq+B5EM+bhZb70rts1oQMAu/fYkg1fUE1yHH9cjFSypxsCeS9uUNndXiwa5YbjTq6
-         8gLD/VIS8ikr8QRQ9R+vCBPQMRzskQocqKDrkziVnzLRvoZ2S73E3o2UHXg0uP07BF
-         qfd4RRAd/GJPCRDQjmOT7fHwa4jmevukLVjr8S8Q=
+        b=AvYlxS2n01PEKLxtUeoCqVzpX6kjA/REt7O/Pa2CTSjgCkdmE7l/K5s4k/vuoJVg7
+         mF5CGWwtCLCmK6YIYh1XxgtefhO2asXKfgzVzPL7vVDdmzhNGiGkrCHpyG2ixTo/uM
+         MK5EXqaqwW7BPAUMpXbWp6DWUp64v+1HxXT/XM00=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -31,12 +31,12 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.0 23/34] bpf: Fix preempt_enable_no_resched() abuse
-Date:   Thu, 16 May 2019 07:39:20 -0400
-Message-Id: <20190516113932.8348-23-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 18/25] bpf: Fix preempt_enable_no_resched() abuse
+Date:   Thu, 16 May 2019 07:40:21 -0400
+Message-Id: <20190516114029.8682-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190516113932.8348-1-sashal@kernel.org>
-References: <20190516113932.8348-1-sashal@kernel.org>
+In-Reply-To: <20190516114029.8682-1-sashal@kernel.org>
+References: <20190516114029.8682-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -65,10 +65,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index e734f163bd0b9..1fbd7672e4b37 100644
+index 523481a3471b5..fd95f2efe5f32 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -455,7 +455,7 @@ int bpf_prog_array_copy(struct bpf_prog_array __rcu *old_array,
+@@ -400,7 +400,7 @@ int bpf_prog_array_copy(struct bpf_prog_array __rcu *old_array,
  		}					\
  _out:							\
  		rcu_read_unlock();			\
