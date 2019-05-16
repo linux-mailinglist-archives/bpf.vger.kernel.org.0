@@ -2,91 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A59B20EC5
-	for <lists+bpf@lfdr.de>; Thu, 16 May 2019 20:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BDFF20EDA
+	for <lists+bpf@lfdr.de>; Thu, 16 May 2019 20:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727183AbfEPSgi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 May 2019 14:36:38 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:44226 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727158AbfEPSgi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 May 2019 14:36:38 -0400
-Received: by mail-lf1-f67.google.com with SMTP id n134so3387900lfn.11;
-        Thu, 16 May 2019 11:36:36 -0700 (PDT)
+        id S1727708AbfEPSmT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 May 2019 14:42:19 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:34121 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726546AbfEPSmS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 May 2019 14:42:18 -0400
+Received: by mail-lf1-f68.google.com with SMTP id v18so3452349lfi.1;
+        Thu, 16 May 2019 11:42:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=f+vfzW6eP2qMMPDF3Oo8GSsL6qZua9aEVyyeHZO1Mw8=;
-        b=fm/ptDLwjlO59tFgKllZKSA0FayNW9Q+veAeUCykX2YQDQ9XZ4j4JdZ3fNignQj+QC
-         t4IHzyz1daMp+WXIAX0EhQWWmn5J+nr6DKKxy8vBRkkirPIDehmDn8rbM+2IBBP5ovBu
-         GhbEAJOwG2SdvWA//gHdpI4BZSHEbP8a1bXFwsLFGL5BXmYRJmmH9Roi5OPdMsJzbd3d
-         jdGXab7V3VHiac5D3MAq1MGN7mTrMeiDnjkdvGFCPNqVNtJzPTzs0i4EU9sQvyr44Axf
-         ph1qen3SPNRyMZ5oysZUPzH7ftbOicoV4JdMjaNh4vXuRB2cLzVNZ07a3n9zdz0p05af
-         FcEg==
+        bh=NgjfAedEEfK/VbhjQWXMYlxY2gifU8riB1qnOlScHZc=;
+        b=NfICAbgMNkq5GbTuaHN6UaR8aHW9QqFRcOoD4uBFCSwlUMZ3Vk7ZnqIMOwiUB7s0x9
+         r/m7v5HyH1GeH7U2Ocv64zdFS+7hkhByniJDw8AQsqaI5LQS6y1QUa4YMe2vrlYz07+B
+         iIarCbU7EOxz+pH/nUu1HXfUCbdnd3Br9kr8p+tn+WNhcLCVEGQItDcwEd7oOOKikozH
+         SWU2po8N6iq1fCRuOvLMRvoud40xV3Ai/GQ9sRwSwEBuknuYHGXciM5iVncl/KZ0re+z
+         o1DSlD7qSWq/N+klQ0C4IUYcyYkOBQGjmZHsjPmXxydUz0exoaQJkVgfT+Fza7oRDa/n
+         USDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=f+vfzW6eP2qMMPDF3Oo8GSsL6qZua9aEVyyeHZO1Mw8=;
-        b=B0vGAQ/TxpcYKxpO/IXnwt0F3BrHvCYjGIo+fMUu9RWdMthRq+QTTbGSDyc0Tp3vb0
-         iFYvySzZeNUHVQ81aNZVwWXi2bixIC2tnjGcPlErdgrZyNhl9OJrr3S+JsO8pkwTtPVa
-         AhsiW9pBPSFgGYah2FYZvUVYiuitSEUnf0MCfGNXWBIxhaHQ/imU1qCmw2IHpynJ5y75
-         jdgBWJS1olHVI5LTtev77Y9I8/QI3gjyeLam+siw6eAmu5x/y3E4CyB4EKoX5v4em6ql
-         v+ylx0Fh6pBRKU5zJlq299Ouk5DXbmJMldfWzvRDXcs0dkdzE1pjMDIglsr9vjs7v5Lk
-         U6jA==
-X-Gm-Message-State: APjAAAVCNFLkbz4AV8qymv7eIw3qG9JPkWZgBk7BSxsipDR7jIw1QaKP
-        S9t2PtYlAUOI5DNFaqbaJaP8zrWqMqyABzreA51S5g==
-X-Google-Smtp-Source: APXvYqzOL2Ln7N6+03KL1lTz+KXMuislOZ8LsZ09CmjkM0dECOItTLmmhIeTwXzn11gbIlxPjN5U7UXUDSwQjsgnfzU=
-X-Received: by 2002:a19:8:: with SMTP id 8mr24736850lfa.125.1558031796007;
- Thu, 16 May 2019 11:36:36 -0700 (PDT)
+        bh=NgjfAedEEfK/VbhjQWXMYlxY2gifU8riB1qnOlScHZc=;
+        b=La1ZspGInnzdiC0mytyZ4YtvbQg9UehzN3zuN9JNnHLV9R9F4S0VGy0DTu3nVV2EEP
+         UFw9xgps8Bs5ZMDGQPQLeKF1j0TW5Jdon25U6C2lPk4ImQHlSKdDdnbFbSQhitSmLvMA
+         EkZjRu6VHkpSfu0uAN/k9zCFWrPS0S4yBCyFTUdNlAbRBJtFawx9FstjO1onCukSMyqv
+         bL6NZKikrBe7FgvLEIgBhYrHW3lzMhkW6pGVxujX8mWK+OwDz2I412aM3MbGHrqoI/Pd
+         Z+KMpavj3RBOUDig48Pak0M7zg5Yp9yGrrMl+77n58oaHECI/iHiCBf85ipgE1apM7Q1
+         rngQ==
+X-Gm-Message-State: APjAAAUkUfbFMCpukLrRoxg1Gn9CndIqeLsc9JY0zvXfTsw1/75+1nBS
+        +dKalOilH6LkqGjwIX2yq6XTDz/G3y3q7J1nkBA=
+X-Google-Smtp-Source: APXvYqz3r4u9fC7ON91VxOiV1eFCnZlFApsOLkbfGJR0Je6B8fzSITrw8AOGIhCopVk1fU6Y+LlUV0g2dvPqO201sY8=
+X-Received: by 2002:a19:81d4:: with SMTP id c203mr24931469lfd.160.1558032136729;
+ Thu, 16 May 2019 11:42:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190511025249.32678-1-skhan@linuxfoundation.org> <20190511043729.3o4enh35lrmne3kd@ast-mbp>
-In-Reply-To: <20190511043729.3o4enh35lrmne3kd@ast-mbp>
+References: <20190516164657.225320-1-sdf@google.com>
+In-Reply-To: <20190516164657.225320-1-sdf@google.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 16 May 2019 11:36:24 -0700
-Message-ID: <CAADnVQK2eyFdEULS6z-M1R77d-AKe5sACKCHxHShJFOqhqy0rw@mail.gmail.com>
-Subject: Re: [PATCH] selftests: fix bpf build/test workflow regression when
- KBUILD_OUTPUT is set
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Date:   Thu, 16 May 2019 11:42:05 -0700
+Message-ID: <CAADnVQLgUNpX1Bm5bHk-xUhZCZNU-mDAbftYNQJ4X+g-ZHWDMg@mail.gmail.com>
+Subject: Re: [PATCH bpf] selftests/bpf: add test_sysctl and map_tests/tests.h
+ to .gitignore
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 10, 2019 at 9:37 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Thu, May 16, 2019 at 9:47 AM Stanislav Fomichev <sdf@google.com> wrote:
 >
-> On Fri, May 10, 2019 at 08:52:49PM -0600, Shuah Khan wrote:
-> > commit 8ce72dc32578 ("selftests: fix headers_install circular dependency")
-> > broke bpf build/test workflow. When KBUILD_OUTPUT is set, bpf objects end
-> > up in KBUILD_OUTPUT build directory instead of in ../selftests/bpf.
-> >
-> > The following bpf workflow breaks when it can't find the test_verifier:
-> >
-> > cd tools/testing/selftests/bpf; make; ./test_verifier;
-> >
-> > Fix it to set OUTPUT only when it is undefined in lib.mk. It didn't need
-> > to be set in the first place.
-> >
-> > Fixes: commit 8ce72dc32578 ("selftests: fix headers_install circular dependency")
-> >
-> > Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> > Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> Missing files are:
+> * tools/testing/selftests/bpf/map_tests/tests.h - autogenerated
+> * tools/testing/selftests/bpf/test_sysctl - binary
 >
-> 'git am' couldn't apply this patch because "sha1 information is lacking",
-> but the patch itself looks good.
-> Acked-by: Alexei Starovoitov <ast@kernel.org>
-> Thanks for the quick fix.
+> Fixes: 51a0e301a563 ("bpf: Add BPF_MAP_TYPE_SK_STORAGE test to test_maps")
+> Fixes: 1f5fa9ab6e2e ("selftests/bpf: Test BPF_CGROUP_SYSCTL")
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 
-Ping! What is the status of the fix?
+Applied. Thanks
