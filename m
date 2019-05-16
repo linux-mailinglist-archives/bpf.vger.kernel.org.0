@@ -2,166 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 259D6203AC
-	for <lists+bpf@lfdr.de>; Thu, 16 May 2019 12:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A93E420481
+	for <lists+bpf@lfdr.de>; Thu, 16 May 2019 13:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727198AbfEPKjT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 May 2019 06:39:19 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:46458 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727144AbfEPKjT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 May 2019 06:39:19 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 5B9B43179164;
-        Thu, 16 May 2019 10:39:18 +0000 (UTC)
-Received: from krava (unknown [10.43.17.48])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 47273983F;
-        Thu, 16 May 2019 10:39:16 +0000 (UTC)
-Date:   Thu, 16 May 2019 12:39:15 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Daniel Mack <daniel@zonque.org>
-Cc:     cgroups@vger.kernel.org, bpf@vger.kernel.org,
+        id S1726606AbfEPLV3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 May 2019 07:21:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33932 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726383AbfEPLV3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 May 2019 07:21:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id CDC6CAEC6;
+        Thu, 16 May 2019 11:21:27 +0000 (UTC)
+From:   Michal Rostecki <mrostecki@opensuse.org>
+Cc:     Michal Rostecki <mrostecki@opensuse.org>,
+        Shuah Khan <shuah@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Pavel Hrdina <phrdina@redhat.com>
-Subject: [RFC] cgroup gets release after long time
-Message-ID: <20190516103915.GB27421@krava>
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiong Wang <jiong.wang@netronome.com>,
+        Mathieu Xhonneux <m.xhonneux@gmail.com>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xdp-newbies@vger.kernel.org
+Subject: [PATCH bpf-next 0/2] Move bpf_printk to bpf_helpers.h
+Date:   Thu, 16 May 2019 13:20:56 +0200
+Message-Id: <20190516112105.12887-1-mrostecki@opensuse.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.11.3 (2019-02-01)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.41]); Thu, 16 May 2019 10:39:18 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-hi,
-Pavel reported an issue with bpf programs (attached to cgroup)
-not being released at the time when the cgroup is removed and
-are still visible in 'bpftool prog' list afterwards.
+This series of patches move the commonly used bpf_printk macro to
+bpf_helpers.h which is already included in all BPF programs which
+defined that macro on their own.
 
-It seems like this is not bpf specific, because I was able
-to cut the bpf code from his example and still see delayed
-release of cgroup.
+Michal Rostecki (2):
+  selftests: bpf: Move bpf_printk to bpf_helpers.h
+  samples: bpf: Do not define bpf_printk macro
 
-It happens only on cgroup2 fs (booted with systemd.unified_cgroup_hierarchy=1
-kernel command line option), please check the attached program
-below and following scenario:
+ samples/bpf/hbm_kern.h                               | 12 +++---------
+ samples/bpf/hbm_out_kern.c                           |  2 ++
+ samples/bpf/tcp_basertt_kern.c                       |  7 -------
+ samples/bpf/tcp_bufs_kern.c                          |  7 -------
+ samples/bpf/tcp_clamp_kern.c                         |  7 -------
+ samples/bpf/tcp_cong_kern.c                          |  7 -------
+ samples/bpf/tcp_iw_kern.c                            |  7 -------
+ samples/bpf/tcp_rwnd_kern.c                          |  7 -------
+ samples/bpf/tcp_synrto_kern.c                        |  7 -------
+ samples/bpf/tcp_tos_reflect_kern.c                   |  7 -------
+ samples/bpf/xdp_sample_pkts_kern.c                   |  7 -------
+ tools/testing/selftests/bpf/bpf_helpers.h            |  8 ++++++++
+ .../testing/selftests/bpf/progs/sockmap_parse_prog.c |  7 -------
+ .../selftests/bpf/progs/sockmap_tcp_msg_prog.c       |  7 -------
+ .../selftests/bpf/progs/sockmap_verdict_prog.c       |  7 -------
+ .../testing/selftests/bpf/progs/test_lwt_seg6local.c |  7 -------
+ .../testing/selftests/bpf/progs/test_xdp_noinline.c  |  7 -------
+ tools/testing/selftests/bpf/test_sockmap_kern.h      |  7 -------
+ 18 files changed, 13 insertions(+), 114 deletions(-)
 
-TERM 1
-# gcc -o test test.c
+-- 
+2.21.0
 
-			TERM 2
-			# cd /sys/kernel/debug/tracing
-			# echo 1 > events/cgroup/cgroup_release/enable
-
-TERM 1 -> create and remove cgroup1
-# ./test group1
-qemu-system-x86_64: terminating on signal 15 from pid 1775 (./test)
-
-			TERM 2
-			# cat trace_pipe
-			<nothing>
-
-TERM 1 -> create and remove cgroup2
-# ./test group2
-qemu-system-x86_64: terminating on signal 15 from pid 1783 (./test)
-
-			TERM 2  - group1 being released
-			# cat trace_pipe
-			kworker/22:2-1135  [022] ....  2947.375526: cgroup_release: root=0 id=78 level=1 path=/group1
-
-TERM 1 -> create and remove cgroup3
-# ./test group3
-qemu-system-x86_64: terminating on signal 15 from pid 1798 (./test)
-
-			TERM 2 - group2 being released
-			# cat trace_pipe
-			kworker/22:2-1135  [022] ....  2947.375526: cgroup_release: root=0 id=78 level=1 path=/group1
-			kworker/22:0-1787  [022] ....  2961.501261: cgroup_release: root=0 id=78 level=1 path=/group2
-
-
-Looks like the previous cgroup release is triggered by creating
-another cgroup.  If I don't do anything the cgroup is released
-(tracepoint shows) in about 90 seconds.
-
-The cgroup_release tracepoint is triggered in css_release_work_fn,
-the same function where the cgroup_bpf_put is called, hence the
-delay in releasing of the bpf programs.
-
-Is this expected or somehow configurable? It's confusing seeing
-all the bpf programs from removed cgroups being around. In Pavel's
-setup it's about 100 of them.
-
-Note, I could reproduce this only with qemu-kvm being run in child
-process in the example below.
-
-thoughts? thanks,
-jirka
-
-
----
-#include <fcntl.h>
-#include <signal.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-
-#define CGROUP_PATH "/sys/fs/cgroup"
-
-int
-main(int argc, char **argv)
-{
-	pid_t pid = -1;
-	char path[1024];
-	int rc;
-
-	pid = fork();
-
-	if (pid == 0) {
-		execl("/usr/bin/qemu-kvm",
-		      "/usr/bin/qemu-kvm",
-		      "-display", "none",
-		      NULL);
-		fprintf(stderr, "failed to start qemu process\n");
-		_exit(-1);
-	} else {
-		int filefd = -1;
-		char proc[1024];
-
-		snprintf(path, 1024, "%s/%s", CGROUP_PATH, argv[1]);
-
-		sleep(1);
-
-		if (mkdir(path, 0755) < 0) {
-			fprintf(stderr, "failed to create cgroup '%s'\n", path);
-			return -1;
-		}
-
-		snprintf(proc, 1024, "%s/cgroup.procs", path);
-
-		filefd = open(proc, O_WRONLY|O_TRUNC);
-		if (filefd > 0) {
-			dprintf(filefd, "%u", pid);
-			close(filefd);
-		}
-
-		sleep(1);
-	}
-
-	if (pid > 0)
-		kill(pid, SIGTERM);
-	do {
-		rc = rmdir(path);
-	} while (rc != 0);
-
-	return 0;
-}
