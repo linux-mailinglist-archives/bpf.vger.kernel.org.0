@@ -2,166 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B48641FE3A
-	for <lists+bpf@lfdr.de>; Thu, 16 May 2019 05:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE7B1FED6
+	for <lists+bpf@lfdr.de>; Thu, 16 May 2019 07:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726190AbfEPDjd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 May 2019 23:39:33 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44520 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726259AbfEPDjd (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 May 2019 23:39:33 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4G3U4iL027744
-        for <bpf@vger.kernel.org>; Wed, 15 May 2019 20:39:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=CmSHyn6HPrP5p18KmBFlKUCdl/W/+J+Wgl33L/LR0kM=;
- b=iaEUTPuNAMP+f5n3BU7/xfF3qE3zyhEVmd1vjvJO8CE/o1nDPgoTaIquYO7h2OT5bTom
- 9D8PtkS9tZWOEkQE3IZ0CS5v8QW26dYdEd+75Yhak1G0zCSeaXan5glWO8MnfoDY9QqF
- V1XIn69LqQbqywbMmJusrLb9sfZpj0FVwlc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2sgrjehfe9-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 15 May 2019 20:39:32 -0700
-Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 15 May 2019 20:39:29 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id 860C28627FA; Wed, 15 May 2019 20:39:28 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <andrii.nakryiko@gmail.com>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <ast@fb.com>
-CC:     Andrii Nakryiko <andriin@fb.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH bpf] libbpf: move logging helpers into libbpf_internal.h
-Date:   Wed, 15 May 2019 20:39:27 -0700
-Message-ID: <20190516033927.2425057-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1726352AbfEPFqG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 May 2019 01:46:06 -0400
+Received: from mail-it1-f200.google.com ([209.85.166.200]:42638 "EHLO
+        mail-it1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726315AbfEPFqG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 May 2019 01:46:06 -0400
+Received: by mail-it1-f200.google.com with SMTP id t196so2282301ita.7
+        for <bpf@vger.kernel.org>; Wed, 15 May 2019 22:46:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ltOragm0SCqo4uoAEQQAlYmgIkzdvYfcpSv92gE1T/g=;
+        b=PKlX/SE2kCwrACsAQVpmGfVicQDKMVZriiCpZ92z1dqlQroXP7nCUZXLpk1ZNF2Fcz
+         vMBbidn01bZYqWGBr1XSKoosDtVXpNItfrgHXMkZxhbAfqHvABSb66YWGoAa0UhSMuPW
+         UV+H8UVxRJxKwnBecRESxiHX3pHcu3Oq6mXxblUxNy0NeLKgY3XLtOUI18DKWCpfNxrc
+         84CA7Z0bB8dF6HtdajCR3+iXgAY2JKpCMnp1WZzxJzT0A+BB6gGxWlJdkKNzDfCoZSJt
+         DhEocu2uNj3XoWAFyN9NeEs2X9IbcEAHD1mdHZa1c+OmTn2KrgpabNQ/dfSR3+Q8fhp8
+         C9hQ==
+X-Gm-Message-State: APjAAAXSAHs325keYx/fTwvrZj7FP2okZZ8Er4bEG3Ylv1yiUiqvUW62
+        08CqI0HRi45p1AdAEg8xGWGE+Dzo+F/TMfIlfN1zqAy8GQce
+X-Google-Smtp-Source: APXvYqzwKn9sE6VTf7DFye3cDrVijXOpZDs3MSil5qUtRVtlHQRwdifCAK2mN67WThT25zT+9EoQ4V1ve+lq7vw/p+h74CYtN/wj
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-16_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=886 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905160023
-X-FB-Internal: deliver
+X-Received: by 2002:a6b:ea02:: with SMTP id m2mr24613082ioc.270.1557985565350;
+ Wed, 15 May 2019 22:46:05 -0700 (PDT)
+Date:   Wed, 15 May 2019 22:46:05 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003028060588fac869@google.com>
+Subject: WARNING: locking bug in udpv6_pre_connect
+From:   syzbot <syzbot+65f10c5aadc049eb5ef5@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, kafai@fb.com, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-libbpf_util.h header was recently exposed as public as a dependency of
-xsk.h. In addition to memory barriers, it contained logging helpers,
-which are not supposed to be exposed. This patch moves those into
-libbpf_internal.h, which is kept as an internal header.
+Hello,
 
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Fixes: 7080da890984 ("libbpf: add libbpf_util.h to header install.")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+syzbot found the following crash on:
+
+HEAD commit:    8f779443 net: phy: realtek: fix double page ops in generic..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=13f16ee8a00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4005028a9d5ddac8
+dashboard link: https://syzkaller.appspot.com/bug?extid=65f10c5aadc049eb5ef5
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+65f10c5aadc049eb5ef5@syzkaller.appspotmail.com
+
+WARNING: CPU: 0 PID: 2749 at kernel/locking/lockdep.c:734  
+arch_local_save_flags arch/x86/include/asm/paravirt.h:762 [inline]
+WARNING: CPU: 0 PID: 2749 at kernel/locking/lockdep.c:734  
+arch_local_save_flags arch/x86/include/asm/paravirt.h:760 [inline]
+WARNING: CPU: 0 PID: 2749 at kernel/locking/lockdep.c:734  
+look_up_lock_class kernel/locking/lockdep.c:725 [inline]
+WARNING: CPU: 0 PID: 2749 at kernel/locking/lockdep.c:734  
+register_lock_class+0xe10/0x1860 kernel/locking/lockdep.c:1078
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 2749 Comm: syz-executor.2 Not tainted 5.1.0+ #8
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+  panic+0x2cb/0x65c kernel/panic.c:214
+  __warn.cold+0x20/0x45 kernel/panic.c:566
+  report_bug+0x263/0x2b0 lib/bug.c:186
+  fixup_bug arch/x86/kernel/traps.c:179 [inline]
+  fixup_bug arch/x86/kernel/traps.c:174 [inline]
+  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:272
+  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:291
+  invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:972
+RIP: 0010:look_up_lock_class kernel/locking/lockdep.c:734 [inline]
+RIP: 0010:register_lock_class+0xe10/0x1860 kernel/locking/lockdep.c:1078
+Code: 00 48 89 da 4d 8b 76 c0 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 80  
+3c 02 00 0f 85 23 07 00 00 4c 89 33 e9 e3 f4 ff ff 0f 0b <0f> 0b e9 ea f3  
+ff ff 44 89 e0 4c 8b 95 50 ff ff ff 83 c0 01 4c 8b
+RSP: 0018:ffff8880475b79e8 EFLAGS: 00010083
+RAX: dffffc0000000000 RBX: ffff888045e2f0a0 RCX: 0000000000000000
+RDX: 1ffff11008bc5e17 RSI: 0000000000000000 RDI: ffff888045e2f0b8
+RBP: ffff8880475b7ab0 R08: 1ffff11008eb6f45 R09: ffffffff8a455c80
+R10: ffffffff8a0e2318 R11: 0000000000000000 R12: ffffffff8a11ed60
+R13: 0000000000000000 R14: 0000000000000000 R15: ffffffff87fe3860
+  __lock_acquire+0x116/0x5490 kernel/locking/lockdep.c:3673
+  lock_acquire+0x16f/0x3f0 kernel/locking/lockdep.c:4302
+  __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+  _raw_spin_lock_bh+0x33/0x50 kernel/locking/spinlock.c:175
+  spin_lock_bh include/linux/spinlock.h:343 [inline]
+  lock_sock_nested+0x41/0x120 net/core/sock.c:2917
+  lock_sock include/net/sock.h:1525 [inline]
+  udpv6_pre_connect net/ipv6/udp.c:1064 [inline]
+  udpv6_pre_connect+0xc4/0x170 net/ipv6/udp.c:1046
+  inet_dgram_connect+0x1cd/0x2e0 net/ipv4/af_inet.c:568
+  __sys_connect+0x266/0x330 net/socket.c:1840
+  __do_sys_connect net/socket.c:1851 [inline]
+  __se_sys_connect net/socket.c:1848 [inline]
+  __x64_sys_connect+0x73/0xb0 net/socket.c:1848
+  do_syscall_64+0x103/0x670 arch/x86/entry/common.c:298
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x458da9
+Code: ad b8 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 7b b8 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f9ad544cc78 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000458da9
+RDX: 000000000000001c RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 000000000073bf00 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f9ad544d6d4
+R13: 00000000004bf1fe R14: 00000000004d04b8 R15: 00000000ffffffff
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
 ---
- tools/lib/bpf/btf.c             |  2 +-
- tools/lib/bpf/libbpf.c          |  1 -
- tools/lib/bpf/libbpf_internal.h | 13 +++++++++++++
- tools/lib/bpf/libbpf_util.h     | 13 -------------
- tools/lib/bpf/xsk.c             |  2 +-
- 5 files changed, 15 insertions(+), 16 deletions(-)
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 75eaf10b9e1a..03348c4d6bd4 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -11,7 +11,7 @@
- #include "btf.h"
- #include "bpf.h"
- #include "libbpf.h"
--#include "libbpf_util.h"
-+#include "libbpf_internal.h"
- 
- #define max(a, b) ((a) > (b) ? (a) : (b))
- #define min(a, b) ((a) < (b) ? (a) : (b))
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 3562b6ef5fdc..197b574406b3 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -43,7 +43,6 @@
- #include "bpf.h"
- #include "btf.h"
- #include "str_error.h"
--#include "libbpf_util.h"
- #include "libbpf_internal.h"
- 
- #ifndef EM_BPF
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index 789e435b5900..f3025b4d90e1 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -21,6 +21,19 @@
- #define BTF_PARAM_ENC(name, type) (name), (type)
- #define BTF_VAR_SECINFO_ENC(type, offset, size) (type), (offset), (size)
- 
-+extern void libbpf_print(enum libbpf_print_level level,
-+			 const char *format, ...)
-+	__attribute__((format(printf, 2, 3)));
-+
-+#define __pr(level, fmt, ...)	\
-+do {				\
-+	libbpf_print(level, "libbpf: " fmt, ##__VA_ARGS__);	\
-+} while (0)
-+
-+#define pr_warning(fmt, ...)	__pr(LIBBPF_WARN, fmt, ##__VA_ARGS__)
-+#define pr_info(fmt, ...)	__pr(LIBBPF_INFO, fmt, ##__VA_ARGS__)
-+#define pr_debug(fmt, ...)	__pr(LIBBPF_DEBUG, fmt, ##__VA_ARGS__)
-+
- int libbpf__probe_raw_btf(const char *raw_types, size_t types_len,
- 			  const char *str_sec, size_t str_len);
- 
-diff --git a/tools/lib/bpf/libbpf_util.h b/tools/lib/bpf/libbpf_util.h
-index da94c4cb2e4d..59c779c5790c 100644
---- a/tools/lib/bpf/libbpf_util.h
-+++ b/tools/lib/bpf/libbpf_util.h
-@@ -10,19 +10,6 @@
- extern "C" {
- #endif
- 
--extern void libbpf_print(enum libbpf_print_level level,
--			 const char *format, ...)
--	__attribute__((format(printf, 2, 3)));
--
--#define __pr(level, fmt, ...)	\
--do {				\
--	libbpf_print(level, "libbpf: " fmt, ##__VA_ARGS__);	\
--} while (0)
--
--#define pr_warning(fmt, ...)	__pr(LIBBPF_WARN, fmt, ##__VA_ARGS__)
--#define pr_info(fmt, ...)	__pr(LIBBPF_INFO, fmt, ##__VA_ARGS__)
--#define pr_debug(fmt, ...)	__pr(LIBBPF_DEBUG, fmt, ##__VA_ARGS__)
--
- /* Use these barrier functions instead of smp_[rw]mb() when they are
-  * used in a libbpf header file. That way they can be built into the
-  * application that uses libbpf.
-diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-index a3d1a302bc9c..38667b62f1fe 100644
---- a/tools/lib/bpf/xsk.c
-+++ b/tools/lib/bpf/xsk.c
-@@ -29,7 +29,7 @@
- 
- #include "bpf.h"
- #include "libbpf.h"
--#include "libbpf_util.h"
-+#include "libbpf_internal.h"
- #include "xsk.h"
- 
- #ifndef SOL_XDP
--- 
-2.17.1
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
