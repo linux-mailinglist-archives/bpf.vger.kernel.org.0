@@ -2,127 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 598CA20292
-	for <lists+bpf@lfdr.de>; Thu, 16 May 2019 11:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259D6203AC
+	for <lists+bpf@lfdr.de>; Thu, 16 May 2019 12:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbfEPJbR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 May 2019 05:31:17 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:44683 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbfEPJbR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 May 2019 05:31:17 -0400
-Received: by mail-lj1-f193.google.com with SMTP id e13so2411532ljl.11
-        for <bpf@vger.kernel.org>; Thu, 16 May 2019 02:31:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=scP5pJngsU9KJ/PvOc7PkGn3ctf+6jypjet7NqrKqmA=;
-        b=BQLpv+w5ngjqKJjwCym2ZWvuhIyTXrQXe/cH0kkyhS3AsX/8P4b2Uup0CJ63BRhZw6
-         0f6scy9IOKguNgia+DARy/Pgsf9ihVfdo+x2VptKljZpgjcpQh2K6bqp5DpPLMTCR1Ms
-         G/Ir19EM1+91HaPREMy7MEtETZbC78Ge1OCtU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=scP5pJngsU9KJ/PvOc7PkGn3ctf+6jypjet7NqrKqmA=;
-        b=newV6LPzufFa6Gz/HlL3Blj0XpmGwtEWc8GxfNxVhWNrMIz0sIFmfhO24TBdA1NoaP
-         meNKaDn1I9gzJOjCna5AnMd4l504BAXXM14tdv6ySlKIa5CQvHm++pu0rDKAMXCksJAe
-         4tdXvluPSrwd3u4cumP5gnUNSjs6bjzppBC711wdT9Gip/vH+KBLBjmRdD6p3lxbj9ef
-         k3eqU/6BUirq+m4w11bAgdIqiBaSioTUuCTJVdC6VSEztzUcSD8OT9OYv9OFpXHWBfHi
-         VrL08XptIDFuY/cxaTV1sgNcjL+RcRiS2uo/yBuoPiVCAyz+ys3k7tGJYqCy1gHxY+Cx
-         orkg==
-X-Gm-Message-State: APjAAAVcvY/51bMB9HQATuj9dtBlKb1HCcjdh+K3dx3W96HvwsNoqcIK
-        AUQdu5sQNdQ8/lYIBfoPuxtEKG5FFagYHTcUZVQEUA==
-X-Google-Smtp-Source: APXvYqwNaOEDdnyE4kovKiBd0lYy36SnZeTUeTmEcc48z/VV0dfPM42qlRB+DSHJU6bby/xttsO3fxo4hMv92OjcJ48=
-X-Received: by 2002:a2e:74f:: with SMTP id i15mr22844265ljd.156.1557999075116;
- Thu, 16 May 2019 02:31:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190515134731.12611-1-krzesimir@kinvolk.io> <20190515134731.12611-4-krzesimir@kinvolk.io>
- <20190515145037.6918f626@cakuba.netronome.com>
-In-Reply-To: <20190515145037.6918f626@cakuba.netronome.com>
-From:   Krzesimir Nowak <krzesimir@kinvolk.io>
-Date:   Thu, 16 May 2019 11:31:04 +0200
-Message-ID: <CAGGp+cHqJZFfYt9VUAuQ7SpCZZ9ijoreKVBumc+wnGfw7pAXTA@mail.gmail.com>
-Subject: Re: [PATCH bpf v1 3/3] selftests/bpf: Avoid a clobbering of errno
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     bpf@vger.kernel.org,
-        =?UTF-8?Q?Iago_L=C3=B3pez_Galeiras?= <iago@kinvolk.io>,
-        "Alban Crequy (Kinvolk)" <alban@kinvolk.io>,
-        Shuah Khan <shuah@kernel.org>,
+        id S1727198AbfEPKjT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 May 2019 06:39:19 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:46458 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727144AbfEPKjT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 May 2019 06:39:19 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 5B9B43179164;
+        Thu, 16 May 2019 10:39:18 +0000 (UTC)
+Received: from krava (unknown [10.43.17.48])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 47273983F;
+        Thu, 16 May 2019 10:39:16 +0000 (UTC)
+Date:   Thu, 16 May 2019 12:39:15 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Daniel Mack <daniel@zonque.org>
+Cc:     cgroups@vger.kernel.org, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Jiong Wang <jiong.wang@netronome.com>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        "David S. Miller" <davem@davemloft.net>,
+        Pavel Hrdina <phrdina@redhat.com>
+Subject: [RFC] cgroup gets release after long time
+Message-ID: <20190516103915.GB27421@krava>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.11.3 (2019-02-01)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.41]); Thu, 16 May 2019 10:39:18 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 15, 2019 at 11:51 PM Jakub Kicinski
-<jakub.kicinski@netronome.com> wrote:
->
-> On Wed, 15 May 2019 15:47:28 +0200, Krzesimir Nowak wrote:
-> > Save errno right after bpf_prog_test_run returns, so we later check
-> > the error code actually set by bpf_prog_test_run, not by some libcap
-> > function.
-> >
-> > Cc: Jakub Kicinski <jakub.kicinski@netronome.com>
-> > Fixes: 5a8d5209ac022 ("selftests: bpf: add trivial JSET tests")
->
-> This commit (of mine) just moved this code into a helper, the bug is
-> older:
->
-> Fixes: 832c6f2c29ec ("bpf: test make sure to run unpriv test cases in tes=
-t_verifier")
+hi,
+Pavel reported an issue with bpf programs (attached to cgroup)
+not being released at the time when the cgroup is removed and
+are still visible in 'bpftool prog' list afterwards.
 
-Oops, ok. Will fix it. Thanks.
+It seems like this is not bpf specific, because I was able
+to cut the bpf code from his example and still see delayed
+release of cgroup.
 
->
-> > Signed-off-by: Krzesimir Nowak <krzesimir@kinvolk.io>
-> > ---
-> >  tools/testing/selftests/bpf/test_verifier.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testin=
-g/selftests/bpf/test_verifier.c
-> > index bf0da03f593b..514e17246396 100644
-> > --- a/tools/testing/selftests/bpf/test_verifier.c
-> > +++ b/tools/testing/selftests/bpf/test_verifier.c
-> > @@ -818,15 +818,17 @@ static int do_prog_test_run(int fd_prog, bool unp=
-riv, uint32_t expected_val,
-> >       __u32 size_tmp =3D sizeof(tmp);
-> >       uint32_t retval;
-> >       int err;
-> > +     int saved_errno;
-> >
-> >       if (unpriv)
-> >               set_admin(true);
-> >       err =3D bpf_prog_test_run(fd_prog, 1, data, size_data,
-> >                               tmp, &size_tmp, &retval, NULL);
-> > +     saved_errno =3D errno;
-> >       if (unpriv)
-> >               set_admin(false);
-> >       if (err) {
-> > -             switch (errno) {
-> > +             switch (saved_errno) {
-> >               case 524/*ENOTSUPP*/:
-> >                       printf("Did not run the program (not supported) "=
-);
-> >                       return 0;
->
+It happens only on cgroup2 fs (booted with systemd.unified_cgroup_hierarchy=1
+kernel command line option), please check the attached program
+below and following scenario:
+
+TERM 1
+# gcc -o test test.c
+
+			TERM 2
+			# cd /sys/kernel/debug/tracing
+			# echo 1 > events/cgroup/cgroup_release/enable
+
+TERM 1 -> create and remove cgroup1
+# ./test group1
+qemu-system-x86_64: terminating on signal 15 from pid 1775 (./test)
+
+			TERM 2
+			# cat trace_pipe
+			<nothing>
+
+TERM 1 -> create and remove cgroup2
+# ./test group2
+qemu-system-x86_64: terminating on signal 15 from pid 1783 (./test)
+
+			TERM 2  - group1 being released
+			# cat trace_pipe
+			kworker/22:2-1135  [022] ....  2947.375526: cgroup_release: root=0 id=78 level=1 path=/group1
+
+TERM 1 -> create and remove cgroup3
+# ./test group3
+qemu-system-x86_64: terminating on signal 15 from pid 1798 (./test)
+
+			TERM 2 - group2 being released
+			# cat trace_pipe
+			kworker/22:2-1135  [022] ....  2947.375526: cgroup_release: root=0 id=78 level=1 path=/group1
+			kworker/22:0-1787  [022] ....  2961.501261: cgroup_release: root=0 id=78 level=1 path=/group2
 
 
---=20
-Kinvolk GmbH | Adalbertstr.6a, 10999 Berlin | tel: +491755589364
-Gesch=C3=A4ftsf=C3=BChrer/Directors: Alban Crequy, Chris K=C3=BChl, Iago L=
-=C3=B3pez Galeiras
-Registergericht/Court of registration: Amtsgericht Charlottenburg
-Registernummer/Registration number: HRB 171414 B
-Ust-ID-Nummer/VAT ID number: DE302207000
+Looks like the previous cgroup release is triggered by creating
+another cgroup.  If I don't do anything the cgroup is released
+(tracepoint shows) in about 90 seconds.
+
+The cgroup_release tracepoint is triggered in css_release_work_fn,
+the same function where the cgroup_bpf_put is called, hence the
+delay in releasing of the bpf programs.
+
+Is this expected or somehow configurable? It's confusing seeing
+all the bpf programs from removed cgroups being around. In Pavel's
+setup it's about 100 of them.
+
+Note, I could reproduce this only with qemu-kvm being run in child
+process in the example below.
+
+thoughts? thanks,
+jirka
+
+
+---
+#include <fcntl.h>
+#include <signal.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#define CGROUP_PATH "/sys/fs/cgroup"
+
+int
+main(int argc, char **argv)
+{
+	pid_t pid = -1;
+	char path[1024];
+	int rc;
+
+	pid = fork();
+
+	if (pid == 0) {
+		execl("/usr/bin/qemu-kvm",
+		      "/usr/bin/qemu-kvm",
+		      "-display", "none",
+		      NULL);
+		fprintf(stderr, "failed to start qemu process\n");
+		_exit(-1);
+	} else {
+		int filefd = -1;
+		char proc[1024];
+
+		snprintf(path, 1024, "%s/%s", CGROUP_PATH, argv[1]);
+
+		sleep(1);
+
+		if (mkdir(path, 0755) < 0) {
+			fprintf(stderr, "failed to create cgroup '%s'\n", path);
+			return -1;
+		}
+
+		snprintf(proc, 1024, "%s/cgroup.procs", path);
+
+		filefd = open(proc, O_WRONLY|O_TRUNC);
+		if (filefd > 0) {
+			dprintf(filefd, "%u", pid);
+			close(filefd);
+		}
+
+		sleep(1);
+	}
+
+	if (pid > 0)
+		kill(pid, SIGTERM);
+	do {
+		rc = rmdir(path);
+	} while (rc != 0);
+
+	return 0;
+}
