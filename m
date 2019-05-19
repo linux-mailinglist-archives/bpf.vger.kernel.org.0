@@ -2,203 +2,201 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C7E2248D
-	for <lists+bpf@lfdr.de>; Sat, 18 May 2019 21:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7EE225A1
+	for <lists+bpf@lfdr.de>; Sun, 19 May 2019 03:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728283AbfERTFu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 May 2019 15:05:50 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:37136 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728088AbfERTFu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 18 May 2019 15:05:50 -0400
-Received: from pps.filterd (m0044008.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4IJ3rxA024214;
-        Sat, 18 May 2019 12:05:27 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=5MpBUY+R49QGVVhsMrB5jvmm+YABkW8VZbDVp4wml9w=;
- b=eJ7SVU9199qV9tlLjeRHD9YN2YkNYLCyFhJMZfnAwCbCiAAzIOuYXhcx+EFf+K81z1ip
- 0nbsYhXXRmT2bq2kEUESLTXjcimFGLk7AU+8lfnOsBkPZ8FrXR+XfkqdYBpwq8wc9ox/
- tOKUaopjBLEKMUybqlEvo/mhO8HsAvH6Z+8= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2sjdbps80j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sat, 18 May 2019 12:05:27 -0700
-Received: from ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) by
- ash-exhub201.TheFacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sat, 18 May 2019 12:05:26 -0700
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Sat, 18 May 2019 12:05:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5MpBUY+R49QGVVhsMrB5jvmm+YABkW8VZbDVp4wml9w=;
- b=ikbbCCn1cpHQ9LiTbFHXsGzsDhuu53VA5yVjIhUF5WjB+6fZ+iuzU5fVaLOvAoqQgA+tieELYEg0LgG8XKLTpwsDVz20GPCDuKEoQTTZQNmJuZt4BRuFCIL8O+mMdV1DzdcOjYUpWIqnT0xL7Q8SvTjEI8f/iDtAbvoutedP7s4=
-Received: from MWHPR15MB1790.namprd15.prod.outlook.com (10.174.255.19) by
- MWHPR15MB1807.namprd15.prod.outlook.com (10.174.255.135) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1900.17; Sat, 18 May 2019 19:05:24 +0000
-Received: from MWHPR15MB1790.namprd15.prod.outlook.com
- ([fe80::c1c6:4833:1762:cf29]) by MWHPR15MB1790.namprd15.prod.outlook.com
- ([fe80::c1c6:4833:1762:cf29%7]) with mapi id 15.20.1878.024; Sat, 18 May 2019
- 19:05:24 +0000
-From:   Martin Lau <kafai@fb.com>
-To:     Joe Stringer <joe@isovalent.com>
-CC:     Eric Dumazet <eric.dumazet@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf] bpf: Check sk_fullsock() before returning from
- bpf_sk_lookup()
-Thread-Topic: [PATCH bpf] bpf: Check sk_fullsock() before returning from
- bpf_sk_lookup()
-Thread-Index: AQHVDPaOeeOfSvW6REiskICtB640KaZv24YAgAACyICAAVmeAIAAB20A
-Date:   Sat, 18 May 2019 19:05:24 +0000
-Message-ID: <20190518190520.53mrvat4c4y6cnbf@kafai-mbp>
-References: <20190517212117.2792415-1-kafai@fb.com>
- <6dc01cb7-cdd4-8a71-b602-0052b7aadfb7@gmail.com>
- <20190517220145.pkpkt7f5b72vvfyk@kafai-mbp>
- <CADa=RyxisbcVeXL7yq6o02XOgWd87QCzq-6zDXRnm9RoD2WM=A@mail.gmail.com>
-In-Reply-To: <CADa=RyxisbcVeXL7yq6o02XOgWd87QCzq-6zDXRnm9RoD2WM=A@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BYAPR04CA0007.namprd04.prod.outlook.com
- (2603:10b6:a03:40::20) To MWHPR15MB1790.namprd15.prod.outlook.com
- (2603:10b6:301:4e::19)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::9b5e]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: aa36a721-f067-4e33-cb0c-08d6dbc3c7d5
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:MWHPR15MB1807;
-x-ms-traffictypediagnostic: MWHPR15MB1807:
-x-microsoft-antispam-prvs: <MWHPR15MB1807C8C2D34912F93F3BF8D9D5040@MWHPR15MB1807.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-forefront-prvs: 0041D46242
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(346002)(136003)(39860400002)(376002)(396003)(366004)(199004)(189003)(11346002)(8936002)(54906003)(81166006)(7736002)(5660300002)(8676002)(305945005)(6916009)(99286004)(476003)(486006)(6246003)(81156014)(446003)(256004)(71190400001)(71200400001)(14444005)(86362001)(229853002)(316002)(68736007)(14454004)(6116002)(52116002)(2906002)(6486002)(66946007)(102836004)(46003)(1076003)(386003)(53936002)(6436002)(478600001)(53546011)(186003)(33716001)(9686003)(73956011)(6512007)(6506007)(25786009)(66476007)(66556008)(64756008)(4326008)(66446008)(76176011)(21314003);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1807;H:MWHPR15MB1790.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: U3Ar5z9bGWs4N5cN8ru5TDcMfES1iclPc4Yy4/HheuJHna85E/xmyY3B959btV7k7Uhmw5Kg69yMGpWTOGFTlivK/hej1h7NsL3wj1bnet+ubHot4ZREf6vO+cdwGuvMezQIjj6AN1VD44/MRUWibibaIdBCw0tk5ga+aySLbMYg950YQVppRhP/F1woRtjukqUBnAgqQQBcta73+04vJ/awrQ0MpwNZEni0fKNs9lzUcv9hZaoMY+GFjTwUoLVB/8ATfFf5bM8IiFZAS5hy0/BzKMNuT41Lel/Eb29itIvd3KvwxMmLpVCF99W5scCRVpfJEHCsHSu0M1RZWVNspxnoHyOEMvMtsBmq+vwS4XNqddpPps+9Vd0nUjUIq3GIMRFTZfVt9e/1XhTp50k9KlNp4M1kC+1FmWgTBoJgdFY=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <CF1E0EFF791FF5489B7D8616243C055E@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727331AbfESBUu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 May 2019 21:20:50 -0400
+Received: from mail-lj1-f176.google.com ([209.85.208.176]:33930 "EHLO
+        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726076AbfESBUu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 May 2019 21:20:50 -0400
+Received: by mail-lj1-f176.google.com with SMTP id j24so9426580ljg.1
+        for <bpf@vger.kernel.org>; Sat, 18 May 2019 18:20:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BGwvZjevVE2OQtRlZP5/0AHtykyUsY5+86ngoMkR7UQ=;
+        b=Xv/BBCS0bqJpTH5BmpL04QO9RjcsVkaeZ60gR4dC9LQbtOoPGFVOBgP0/cG8liS9ik
+         3P9iQlqCBjqpuivLksS+BCcHVnxmKYUwTaq0Ya3L0ROuy1MPMLdrhXYkC0ZvNjN45PSm
+         9vEWNg5NojMfxTkcHpF4Ho/kpgPuo92aJhONQdrwRkNezqkPlOl8StH5u5VgZmDSYIN+
+         WFqKqsRzjgE7qS2sTG4RVSKg7JZ6aGqvy0ll4Yr66K4olrFlQZeAwam4IsOL5l5+NGTS
+         L2NLtSi2/GPhBn76RyAhvLyFyJnlEeZctmoluJk89Nu09MFdSaIcezJqPJcr6mytJYYb
+         2+tQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BGwvZjevVE2OQtRlZP5/0AHtykyUsY5+86ngoMkR7UQ=;
+        b=n8kJ/IhG5W7IJ3nb7b5jSP66z+nBKt/i8qckO9AOxFo+jf87O/Dt2jWoBwmFkxRJQF
+         TNho9pE2W1012q48MOYTXhYNIxj4f6H7iOA1egfzvEQSX6xGJFf0zaifnym0hM+FnIEd
+         XrWiDvk5qmz6VRG7MBy969scYZvKe2aH/QEI/4q/zpL2HxyD/9t5Lp/J/qMDew5nFiAQ
+         B9GtDBrLOMd+36WPiEPATg/9H4SQ5oiAdXM1+rb6jzrk3t3KOGO9ievNnkl0Mkm5yZ1L
+         QFFvsqlPzgbHHyOKTvYzw47f6QpLvCBVToKoIW95lksoHS7vrNxwq39o/k8vwXoE4+bC
+         pxGA==
+X-Gm-Message-State: APjAAAW9wAvKEp/AbQdJSkuL/ukKDff7WShxghrawFIRgJfmQKPj58Mv
+        7SMiJ8q+v5yaGK03P2C4029sgQES9bkRsqVOpzVlIA==
+X-Google-Smtp-Source: APXvYqzsLfqPeK0euDSGnppL73eC7TFJNrP/R4wKGABmhdLlKARFiitHzUVncjeJYvVU5zxClLIjO677zhOAJ9BBTCM=
+X-Received: by 2002:a2e:9acb:: with SMTP id p11mr3833616ljj.129.1558228847330;
+ Sat, 18 May 2019 18:20:47 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa36a721-f067-4e33-cb0c-08d6dbc3c7d5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 May 2019 19:05:24.2410
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1807
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-18_16:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=835 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905180138
-X-FB-Internal: deliver
+References: <CACAyw98+qycmpQzKupquhkxbvWK4OFyDuuLMBNROnfWMZxUWeA@mail.gmail.com>
+ <CADa=RyyuAOupK7LOydQiNi6tx2ELOgD+bdu+DHh3xF0dDxw_gw@mail.gmail.com>
+ <CACAyw9_EGRob4VG0-G4PN9QS_xB5GoDMBB6mPXR-WcPnrFCuLg@mail.gmail.com>
+ <20190516203325.uhg7c5sr45od7lzm@ast-mbp> <CACAyw9_yq_xVjh0_2QhAg-2vOLHUCMce4Jhy466N+F4zH7dPmw@mail.gmail.com>
+In-Reply-To: <CACAyw9_yq_xVjh0_2QhAg-2vOLHUCMce4Jhy466N+F4zH7dPmw@mail.gmail.com>
+From:   Joe Stringer <joe@isovalent.com>
+Date:   Sat, 18 May 2019 18:20:36 -0700
+Message-ID: <CADa=RyzQqRUWLEKfY6MuvBjN4MuGsB8dGcuDYBcOhx0SLyZJ1Q@mail.gmail.com>
+Subject: Re: RFC: Fixing SK_REUSEPORT from sk_lookup_* helpers
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Martin Lau <kafai@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, edumazet@google.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, May 18, 2019 at 08:38:46AM -1000, Joe Stringer wrote:
-> On Fri, May 17, 2019, 12:02 Martin Lau <kafai@fb.com> wrote:
->=20
-> > On Fri, May 17, 2019 at 02:51:48PM -0700, Eric Dumazet wrote:
-> > >
-> > >
-> > > On 5/17/19 2:21 PM, Martin KaFai Lau wrote:
-> > > > The BPF_FUNC_sk_lookup_xxx helpers return RET_PTR_TO_SOCKET_OR_NULL=
-.
-> > > > Meaning a fullsock ptr and its fullsock's fields in bpf_sock can be
-> > > > accessed, e.g. type, protocol, mark and priority.
-> > > > Some new helper, like bpf_sk_storage_get(), also expects
-> > > > ARG_PTR_TO_SOCKET is a fullsock.
-> > > >
-> > > > bpf_sk_lookup() currently calls sk_to_full_sk() before returning.
-> > > > However, the ptr returned from sk_to_full_sk() is not guaranteed
-> > > > to be a fullsock.  For example, it cannot get a fullsock if sk
-> > > > is in TCP_TIME_WAIT.
-> > > >
-> > > > This patch checks for sk_fullsock() before returning. If it is not
-> > > > a fullsock, sock_gen_put() is called if needed and then returns NUL=
-L.
-> > > >
-> > > > Fixes: 6acc9b432e67 ("bpf: Add helper to retrieve socket in BPF")
-> > > > Cc: Joe Stringer <joe@isovalent.com>
-> > > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> > > > ---
-> > > >  net/core/filter.c | 16 ++++++++++++++--
-> > > >  1 file changed, 14 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/net/core/filter.c b/net/core/filter.c
-> > > > index 55bfc941d17a..85def5a20aaf 100644
-> > > > --- a/net/core/filter.c
-> > > > +++ b/net/core/filter.c
-> > > > @@ -5337,8 +5337,14 @@ __bpf_sk_lookup(struct sk_buff *skb, struct
-> > bpf_sock_tuple *tuple, u32 len,
-> > > >     struct sock *sk =3D __bpf_skc_lookup(skb, tuple, len, caller_ne=
-t,
-> > > >                                        ifindex, proto, netns_id,
-> > flags);
-> > > >
-> > > > -   if (sk)
-> > > > +   if (sk) {
-> > > >             sk =3D sk_to_full_sk(sk);
-> > > > +           if (!sk_fullsock(sk)) {
-> > > > +                   if (!sock_flag(sk, SOCK_RCU_FREE))
-> > > > +                           sock_gen_put(sk);
-> > >
-> > > This looks a bit convoluted/weird.
-> > >
-> > > What about telling/asking __bpf_skc_lookup() to not return a non
-> > fullsock instead ?
-> > It is becausee some other helpers, like BPF_FUNC_skc_lookup_tcp,
-> > can return non fullsock
+On Fri, May 17, 2019 at 7:15 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+>
+> On Thu, 16 May 2019 at 21:33, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
->=20
-> FYI this is necessary for finding a transparently proxied socket for a
-> non-local connection (tproxy use case).
-You meant it is necessary to return a non fullsock from the
-BPF_FUNC_sk_lookup_xxx helpers?
+> > On Thu, May 16, 2019 at 09:41:34AM +0100, Lorenz Bauer wrote:
+> > > On Wed, 15 May 2019 at 18:16, Joe Stringer <joe@isovalent.com> wrote:
+> > > >
+> > > > On Wed, May 15, 2019 at 8:11 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> > > > >
+> > > > > In the BPF-based TPROXY session with Joe Stringer [1], I mentioned
+> > > > > that the sk_lookup_* helpers currently return inconsistent results if
+> > > > > SK_REUSEPORT programs are in play.
+> > > > >
+> > > > > SK_REUSEPORT programs are a hook point in inet_lookup. They get access
+> > > > > to the full packet
+> > > > > that triggered the look up. To support this, inet_lookup gained a new
+> > > > > skb argument to provide such context. If skb is NULL, the SK_REUSEPORT
+> > > > > program is skipped and instead the socket is selected by its hash.
+> > > > >
+> > > > > The first problem is that not all callers to inet_lookup from BPF have
+> > > > > an skb, e.g. XDP. This means that a look up from XDP gives an
+> > > > > incorrect result. For now that is not a huge problem. However, once we
+> > > > > get sk_assign as proposed by Joe, we can end up circumventing
+> > > > > SK_REUSEPORT.
+> > > >
+> > > > To clarify a bit, the reason this is a problem is that a
+> > > > straightforward implementation may just consider passing the skb
+> > > > context into the sk_lookup_*() and through to the inet_lookup() so
+> > > > that it would run the SK_REUSEPORT BPF program for socket selection on
+> > > > the skb when the packet-path BPF program performs the socket lookup.
+> > > > However, as this paragraph describes, the skb context is not always
+> > > > available.
+> > > >
+> > > > > At the conference, someone suggested using a similar approach to the
+> > > > > work done on the flow dissector by Stanislav: create a dedicated
+> > > > > context sk_reuseport which can either take an skb or a plain pointer.
+> > > > > Patch up load_bytes to deal with both. Pass the context to
+> > > > > inet_lookup.
+> > > > >
+> > > > > This is when we hit the second problem: using the skb or XDP context
+> > > > > directly is incorrect, because it assumes that the relevant protocol
+> > > > > headers are at the start of the buffer. In our use case, the correct
+> > > > > headers are at an offset since we're inspecting encapsulated packets.
+> > > > >
+> > > > > The best solution I've come up with is to steal 17 bits from the flags
+> > > > > argument to sk_lookup_*, 1 bit for BPF_F_HEADERS_AT_OFFSET, 16bit for
+> > > > > the offset itself.
+> > > >
+> > > > FYI there's also the upper 32 bits of the netns_id parameter, another
+> > > > option would be to steal 16 bits from there.
+> > >
+> > > Or len, which is only 16 bits realistically. The offset doesn't really fit into
+> > > either of them very well, using flags seemed the cleanest to me.
+> > > Is there some best practice around this?
+> > >
+> > > >
+> > > > > Thoughts?
+> > > >
+> > > > Internally with skbs, we use `skb_pull()` to manage header offsets,
+> > > > could we do something similar with `bpf_xdp_adjust_head()` prior to
+> > > > the call to `bpf_sk_lookup_*()`?
+> > >
+> > > That would only work if it retained the contents of the skipped
+> > > buffer, and if there
+> > > was a way to undo the adjustment later. We're doing the sk_lookup to
+> > > decide whether to
+> > > accept or forward the packet, so at the point of the call we might still need
+> > > that data. Is that feasible with skb / XDP ctx?
+> >
+> > While discussing the solution for reuseport I propose to use
+> > progs/test_select_reuseport_kern.c as an example of realistic program.
+> > It reads tcp/udp header directly via ctx->data or via bpf_skb_load_bytes()
+> > including payload after the header.
+> > It also uses bpf_skb_load_bytes_relative() to fetch IP.
+> > I think if we're fixing the sk_lookup from XDP the above program
+> > would need to work.
+>
+> Agreed.
+>
+> > And I think we can make it work by adding new requirement that
+> > 'struct bpf_sock_tuple *' argument to bpf_sk_lookup_* must be
+> > a pointer to the packet and not a pointer to bpf program stack.
+>
+> This would break existing users, no? The sk_assign use case Joe Stringer
+> is working on would also break, because its impossible to look up a tuple
+> that hasn't come from the network.
 
->=20
->=20
-> > >
-> > > > +                   return NULL;
-> > > > +           }
-> > > > +   }
-> > > >
-> > > >     return sk;
-> > > >  }
-> > > > @@ -5369,8 +5375,14 @@ bpf_sk_lookup(struct sk_buff *skb, struct
-> > bpf_sock_tuple *tuple, u32 len,
-> > > >     struct sock *sk =3D bpf_skc_lookup(skb, tuple, len, proto, netn=
-s_id,
-> > > >                                      flags);
-> > > >
-> > > > -   if (sk)
-> > > > +   if (sk) {
-> > > >             sk =3D sk_to_full_sk(sk);
-> > > > +           if (!sk_fullsock(sk)) {
-> > > > +                   if (!sock_flag(sk, SOCK_RCU_FREE))
-> > > > +                           sock_gen_put(sk);
-> > > > +                   return NULL;
-> > > > +           }
-> > > > +   }
-> > > >
-> > > >     return sk;
-> > > >  }
-> > > >
+Right, in practice the bpf prog sk lookups for tproxy use case look
+like first, look up with packet tuple, then if no tproxied socket is
+found, substitute the destination port with the pre-configured tproxy
+port and look up. Requiring packet pointer means rewriting the packet
+for this case (not to mention the ext hdrs case that Lorenz mentions
+below).
+
+> It occurs to me that it's impossible to reconcile this use case with
+> SK_REUSEPORT in general. It would be great if we could return an
+> error in such case.
+>
+> > Then helper can construct a fake skb and assign
+> > fake_skb->data = &bpf_sock_tuple_arg.sport
+>
+> That isn't valid if the packet contains IP options or extension headers, because
+> the offset of sport is variable.
+>
+> > It can check that struct bpf_sock_tuple * pointer is within 100-ish bytes
+> > from xdp->data and within xdp->data_end
+>
+> Why the 100-byte limitation?
+>
+> > This way the reuseport program's assumption that ctx->data points to tcp/udp
+> > will be preserved and it can access it all including payload.
+>
+> How about the following:
+>
+>     sk_lookup(ctx, &saddr, len, netns, BPF_F_IPV4 |
+> BPF_F_OFFSET(offsetof(sport))
+>
+> SK_REUSEPORT can then access from saddr+offsetof(sport) to saddr+len.
+> The helper uses
+> offsetof(sport) to retrieve the tuple.
+>
+> - Works with stack, map, packet pointers
+> - The verifier does bounds checking on the buffer for us due to ARG_CONST_SIZE
+> - If no BPF_F_IPV? is present, we fall back to current behaviour
+>
 > >
+> > This approach doesn't need to mess with xdp_adjust_head and adjust uapi to pass length.
+> > Existing progs/test_sk_lookup_kern.c will magically start working with XDP
+> > even when reuseport prog is attached.
+> > Thoughts?
+> >
+>
+>
+> --
+> Lorenz Bauer  |  Systems Engineer
+> 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+>
+> www.cloudflare.com
