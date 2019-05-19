@@ -2,201 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7EE225A1
-	for <lists+bpf@lfdr.de>; Sun, 19 May 2019 03:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DC9225AD
+	for <lists+bpf@lfdr.de>; Sun, 19 May 2019 03:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727331AbfESBUu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 May 2019 21:20:50 -0400
-Received: from mail-lj1-f176.google.com ([209.85.208.176]:33930 "EHLO
-        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726076AbfESBUu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 18 May 2019 21:20:50 -0400
-Received: by mail-lj1-f176.google.com with SMTP id j24so9426580ljg.1
-        for <bpf@vger.kernel.org>; Sat, 18 May 2019 18:20:48 -0700 (PDT)
+        id S1727331AbfESBxC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 May 2019 21:53:02 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:44426 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727803AbfESBxC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 May 2019 21:53:02 -0400
+Received: by mail-lf1-f67.google.com with SMTP id n134so7798692lfn.11
+        for <bpf@vger.kernel.org>; Sat, 18 May 2019 18:53:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BGwvZjevVE2OQtRlZP5/0AHtykyUsY5+86ngoMkR7UQ=;
-        b=Xv/BBCS0bqJpTH5BmpL04QO9RjcsVkaeZ60gR4dC9LQbtOoPGFVOBgP0/cG8liS9ik
-         3P9iQlqCBjqpuivLksS+BCcHVnxmKYUwTaq0Ya3L0ROuy1MPMLdrhXYkC0ZvNjN45PSm
-         9vEWNg5NojMfxTkcHpF4Ho/kpgPuo92aJhONQdrwRkNezqkPlOl8StH5u5VgZmDSYIN+
-         WFqKqsRzjgE7qS2sTG4RVSKg7JZ6aGqvy0ll4Yr66K4olrFlQZeAwam4IsOL5l5+NGTS
-         L2NLtSi2/GPhBn76RyAhvLyFyJnlEeZctmoluJk89Nu09MFdSaIcezJqPJcr6mytJYYb
-         2+tQ==
+        bh=8ZVu/rDaXk4xxhCgGNgQKL8+MF9tQJRxjPPLagihVpE=;
+        b=NPbaNApd7jHuJEJNLu6WS9NXXqx+Urkklz31NhyH3NG8UCRWevdRYLUC1l8Goa1K+x
+         haXbVsyVbPZukWXGsyYzi3g7VY1j/xd7o0qrSTRRf213U8MXGqtgqvGTgtEeBzv+9ROy
+         av9hjGdMD5S7YHeIjPVcmHOzmVAWTGPrYJNYBoEmeLZ7ffnzJ3Ij9A/rZA8V5Fgzl5wB
+         NAvG+J9RHkuC/UjzidY0B8P0JMjcIyur280l+C0tXPTtgLgeWTs3MaztLNBcoOylIrLo
+         Tq3vXKA6BELG2lR8p2dV+uAqIa8LpW0GN7xpYwjCIU+qX6HOWXuHQg2DopDsebR9+AHU
+         alXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BGwvZjevVE2OQtRlZP5/0AHtykyUsY5+86ngoMkR7UQ=;
-        b=n8kJ/IhG5W7IJ3nb7b5jSP66z+nBKt/i8qckO9AOxFo+jf87O/Dt2jWoBwmFkxRJQF
-         TNho9pE2W1012q48MOYTXhYNIxj4f6H7iOA1egfzvEQSX6xGJFf0zaifnym0hM+FnIEd
-         XrWiDvk5qmz6VRG7MBy969scYZvKe2aH/QEI/4q/zpL2HxyD/9t5Lp/J/qMDew5nFiAQ
-         B9GtDBrLOMd+36WPiEPATg/9H4SQ5oiAdXM1+rb6jzrk3t3KOGO9ievNnkl0Mkm5yZ1L
-         QFFvsqlPzgbHHyOKTvYzw47f6QpLvCBVToKoIW95lksoHS7vrNxwq39o/k8vwXoE4+bC
-         pxGA==
-X-Gm-Message-State: APjAAAW9wAvKEp/AbQdJSkuL/ukKDff7WShxghrawFIRgJfmQKPj58Mv
-        7SMiJ8q+v5yaGK03P2C4029sgQES9bkRsqVOpzVlIA==
-X-Google-Smtp-Source: APXvYqzsLfqPeK0euDSGnppL73eC7TFJNrP/R4wKGABmhdLlKARFiitHzUVncjeJYvVU5zxClLIjO677zhOAJ9BBTCM=
-X-Received: by 2002:a2e:9acb:: with SMTP id p11mr3833616ljj.129.1558228847330;
- Sat, 18 May 2019 18:20:47 -0700 (PDT)
+        bh=8ZVu/rDaXk4xxhCgGNgQKL8+MF9tQJRxjPPLagihVpE=;
+        b=XdeyUkxzj6McEiHPqEAEpBlKoriBrT9k9fCceFapPoeaPKEaLejJd/8ulgJtqi1xtN
+         7T/xq8a9k5pvBeLza65Gd9KFC+LJ8Eca7ByKMWyo01aqaK1wgfo/Ue49E0nOyZ/TXgW1
+         Eg7aULQzeGqtz81Mg7S+zgL1aRGmWIGc7MdzI2SO4EgV0CjeQenz403nvcrWGeAt33di
+         CC3LFWLcXSsnRWJKBtSsLUQE8+cx/JsCP1MR+FKPWa22KSNGnlxZgcPvRccHxNqWBwPf
+         rQiVHuBu9nuc08w2wz7g7Xq8VWlnZqUUsp2Gd1PGWU95rRHAAdDcp2Qdfu2HYVMn259X
+         I97A==
+X-Gm-Message-State: APjAAAURj+w65LoMEQCatDkKp853fhSBTcU3osXp3RsqHxNAZeats0dQ
+        XFMnxc6BVs0NzLSGn10XEz9cpqjZClRh8KszmXpKsQ==
+X-Google-Smtp-Source: APXvYqxBLnfaECJVcHDfVcRR4rNEGIZ+KxGrIOIYKVdl+pAxoPdvcdHhRd5ePG8gqf1jrsYMqM5XPCFfQcxf5YLvY6A=
+X-Received: by 2002:a19:6a0c:: with SMTP id u12mr6963468lfu.109.1558230779757;
+ Sat, 18 May 2019 18:52:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <CACAyw98+qycmpQzKupquhkxbvWK4OFyDuuLMBNROnfWMZxUWeA@mail.gmail.com>
- <CADa=RyyuAOupK7LOydQiNi6tx2ELOgD+bdu+DHh3xF0dDxw_gw@mail.gmail.com>
- <CACAyw9_EGRob4VG0-G4PN9QS_xB5GoDMBB6mPXR-WcPnrFCuLg@mail.gmail.com>
- <20190516203325.uhg7c5sr45od7lzm@ast-mbp> <CACAyw9_yq_xVjh0_2QhAg-2vOLHUCMce4Jhy466N+F4zH7dPmw@mail.gmail.com>
-In-Reply-To: <CACAyw9_yq_xVjh0_2QhAg-2vOLHUCMce4Jhy466N+F4zH7dPmw@mail.gmail.com>
+References: <20190517212117.2792415-1-kafai@fb.com> <6dc01cb7-cdd4-8a71-b602-0052b7aadfb7@gmail.com>
+ <20190517220145.pkpkt7f5b72vvfyk@kafai-mbp> <CADa=RyxisbcVeXL7yq6o02XOgWd87QCzq-6zDXRnm9RoD2WM=A@mail.gmail.com>
+ <20190518190520.53mrvat4c4y6cnbf@kafai-mbp>
+In-Reply-To: <20190518190520.53mrvat4c4y6cnbf@kafai-mbp>
 From:   Joe Stringer <joe@isovalent.com>
-Date:   Sat, 18 May 2019 18:20:36 -0700
-Message-ID: <CADa=RyzQqRUWLEKfY6MuvBjN4MuGsB8dGcuDYBcOhx0SLyZJ1Q@mail.gmail.com>
-Subject: Re: RFC: Fixing SK_REUSEPORT from sk_lookup_* helpers
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Martin Lau <kafai@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, edumazet@google.com
+Date:   Sat, 18 May 2019 18:52:48 -0700
+Message-ID: <CADa=RyxfhK+XhAwf_C_an=+RnsQCPCXV23Qrwk-3OC1oLdHM=A@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Check sk_fullsock() before returning from bpf_sk_lookup()
+To:     Martin Lau <kafai@fb.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>, bpf@vger.kernel.org,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 17, 2019 at 7:15 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+On Sat, May 18, 2019, 09:05 Martin Lau <kafai@fb.com> wrote:
 >
-> On Thu, 16 May 2019 at 21:33, Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+> On Sat, May 18, 2019 at 08:38:46AM -1000, Joe Stringer wrote:
+> > On Fri, May 17, 2019, 12:02 Martin Lau <kafai@fb.com> wrote:
 > >
-> > On Thu, May 16, 2019 at 09:41:34AM +0100, Lorenz Bauer wrote:
-> > > On Wed, 15 May 2019 at 18:16, Joe Stringer <joe@isovalent.com> wrote:
+> > > On Fri, May 17, 2019 at 02:51:48PM -0700, Eric Dumazet wrote:
 > > > >
-> > > > On Wed, May 15, 2019 at 8:11 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> > > > >
-> > > > > In the BPF-based TPROXY session with Joe Stringer [1], I mentioned
-> > > > > that the sk_lookup_* helpers currently return inconsistent results if
-> > > > > SK_REUSEPORT programs are in play.
-> > > > >
-> > > > > SK_REUSEPORT programs are a hook point in inet_lookup. They get access
-> > > > > to the full packet
-> > > > > that triggered the look up. To support this, inet_lookup gained a new
-> > > > > skb argument to provide such context. If skb is NULL, the SK_REUSEPORT
-> > > > > program is skipped and instead the socket is selected by its hash.
-> > > > >
-> > > > > The first problem is that not all callers to inet_lookup from BPF have
-> > > > > an skb, e.g. XDP. This means that a look up from XDP gives an
-> > > > > incorrect result. For now that is not a huge problem. However, once we
-> > > > > get sk_assign as proposed by Joe, we can end up circumventing
-> > > > > SK_REUSEPORT.
 > > > >
-> > > > To clarify a bit, the reason this is a problem is that a
-> > > > straightforward implementation may just consider passing the skb
-> > > > context into the sk_lookup_*() and through to the inet_lookup() so
-> > > > that it would run the SK_REUSEPORT BPF program for socket selection on
-> > > > the skb when the packet-path BPF program performs the socket lookup.
-> > > > However, as this paragraph describes, the skb context is not always
-> > > > available.
-> > > >
-> > > > > At the conference, someone suggested using a similar approach to the
-> > > > > work done on the flow dissector by Stanislav: create a dedicated
-> > > > > context sk_reuseport which can either take an skb or a plain pointer.
-> > > > > Patch up load_bytes to deal with both. Pass the context to
-> > > > > inet_lookup.
+> > > > On 5/17/19 2:21 PM, Martin KaFai Lau wrote:
+> > > > > The BPF_FUNC_sk_lookup_xxx helpers return RET_PTR_TO_SOCKET_OR_NULL.
+> > > > > Meaning a fullsock ptr and its fullsock's fields in bpf_sock can be
+> > > > > accessed, e.g. type, protocol, mark and priority.
+> > > > > Some new helper, like bpf_sk_storage_get(), also expects
+> > > > > ARG_PTR_TO_SOCKET is a fullsock.
 > > > > >
-> > > > > This is when we hit the second problem: using the skb or XDP context
-> > > > > directly is incorrect, because it assumes that the relevant protocol
-> > > > > headers are at the start of the buffer. In our use case, the correct
-> > > > > headers are at an offset since we're inspecting encapsulated packets.
+> > > > > bpf_sk_lookup() currently calls sk_to_full_sk() before returning.
+> > > > > However, the ptr returned from sk_to_full_sk() is not guaranteed
+> > > > > to be a fullsock.  For example, it cannot get a fullsock if sk
+> > > > > is in TCP_TIME_WAIT.
 > > > > >
-> > > > > The best solution I've come up with is to steal 17 bits from the flags
-> > > > > argument to sk_lookup_*, 1 bit for BPF_F_HEADERS_AT_OFFSET, 16bit for
-> > > > > the offset itself.
+> > > > > This patch checks for sk_fullsock() before returning. If it is not
+> > > > > a fullsock, sock_gen_put() is called if needed and then returns NULL.
+> > > > >
+> > > > > Fixes: 6acc9b432e67 ("bpf: Add helper to retrieve socket in BPF")
+> > > > > Cc: Joe Stringer <joe@isovalent.com>
+> > > > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> > > > > ---
+> > > > >  net/core/filter.c | 16 ++++++++++++++--
+> > > > >  1 file changed, 14 insertions(+), 2 deletions(-)
+> > > > >
+> > > > > diff --git a/net/core/filter.c b/net/core/filter.c
+> > > > > index 55bfc941d17a..85def5a20aaf 100644
+> > > > > --- a/net/core/filter.c
+> > > > > +++ b/net/core/filter.c
+> > > > > @@ -5337,8 +5337,14 @@ __bpf_sk_lookup(struct sk_buff *skb, struct
+> > > bpf_sock_tuple *tuple, u32 len,
+> > > > >     struct sock *sk = __bpf_skc_lookup(skb, tuple, len, caller_net,
+> > > > >                                        ifindex, proto, netns_id,
+> > > flags);
+> > > > >
+> > > > > -   if (sk)
+> > > > > +   if (sk) {
+> > > > >             sk = sk_to_full_sk(sk);
+> > > > > +           if (!sk_fullsock(sk)) {
+> > > > > +                   if (!sock_flag(sk, SOCK_RCU_FREE))
+> > > > > +                           sock_gen_put(sk);
 > > > >
-> > > > FYI there's also the upper 32 bits of the netns_id parameter, another
-> > > > option would be to steal 16 bits from there.
+> > > > This looks a bit convoluted/weird.
+> > > >
+> > > > What about telling/asking __bpf_skc_lookup() to not return a non
+> > > fullsock instead ?
+> > > It is becausee some other helpers, like BPF_FUNC_skc_lookup_tcp,
+> > > can return non fullsock
 > > >
-> > > Or len, which is only 16 bits realistically. The offset doesn't really fit into
-> > > either of them very well, using flags seemed the cleanest to me.
-> > > Is there some best practice around this?
-> > >
-> > > >
-> > > > > Thoughts?
-> > > >
-> > > > Internally with skbs, we use `skb_pull()` to manage header offsets,
-> > > > could we do something similar with `bpf_xdp_adjust_head()` prior to
-> > > > the call to `bpf_sk_lookup_*()`?
-> > >
-> > > That would only work if it retained the contents of the skipped
-> > > buffer, and if there
-> > > was a way to undo the adjustment later. We're doing the sk_lookup to
-> > > decide whether to
-> > > accept or forward the packet, so at the point of the call we might still need
-> > > that data. Is that feasible with skb / XDP ctx?
 > >
-> > While discussing the solution for reuseport I propose to use
-> > progs/test_select_reuseport_kern.c as an example of realistic program.
-> > It reads tcp/udp header directly via ctx->data or via bpf_skb_load_bytes()
-> > including payload after the header.
-> > It also uses bpf_skb_load_bytes_relative() to fetch IP.
-> > I think if we're fixing the sk_lookup from XDP the above program
-> > would need to work.
->
-> Agreed.
->
-> > And I think we can make it work by adding new requirement that
-> > 'struct bpf_sock_tuple *' argument to bpf_sk_lookup_* must be
-> > a pointer to the packet and not a pointer to bpf program stack.
->
-> This would break existing users, no? The sk_assign use case Joe Stringer
-> is working on would also break, because its impossible to look up a tuple
-> that hasn't come from the network.
+> > FYI this is necessary for finding a transparently proxied socket for a
+> > non-local connection (tproxy use case).
+> You meant it is necessary to return a non fullsock from the
+> BPF_FUNC_sk_lookup_xxx helpers?
 
-Right, in practice the bpf prog sk lookups for tproxy use case look
-like first, look up with packet tuple, then if no tproxied socket is
-found, substitute the destination port with the pre-configured tproxy
-port and look up. Requiring packet pointer means rewriting the packet
-for this case (not to mention the ext hdrs case that Lorenz mentions
-below).
+Yes, that's what I want to associate with the skb so that the delivery
+to the SO_TRANSPARENT is received properly.
 
-> It occurs to me that it's impossible to reconcile this use case with
-> SK_REUSEPORT in general. It would be great if we could return an
-> error in such case.
->
-> > Then helper can construct a fake skb and assign
-> > fake_skb->data = &bpf_sock_tuple_arg.sport
->
-> That isn't valid if the packet contains IP options or extension headers, because
-> the offset of sport is variable.
->
-> > It can check that struct bpf_sock_tuple * pointer is within 100-ish bytes
-> > from xdp->data and within xdp->data_end
->
-> Why the 100-byte limitation?
->
-> > This way the reuseport program's assumption that ctx->data points to tcp/udp
-> > will be preserved and it can access it all including payload.
->
-> How about the following:
->
->     sk_lookup(ctx, &saddr, len, netns, BPF_F_IPV4 |
-> BPF_F_OFFSET(offsetof(sport))
->
-> SK_REUSEPORT can then access from saddr+offsetof(sport) to saddr+len.
-> The helper uses
-> offsetof(sport) to retrieve the tuple.
->
-> - Works with stack, map, packet pointers
-> - The verifier does bounds checking on the buffer for us due to ARG_CONST_SIZE
-> - If no BPF_F_IPV? is present, we fall back to current behaviour
->
-> >
-> > This approach doesn't need to mess with xdp_adjust_head and adjust uapi to pass length.
-> > Existing progs/test_sk_lookup_kern.c will magically start working with XDP
-> > even when reuseport prog is attached.
-> > Thoughts?
-> >
->
->
-> --
-> Lorenz Bauer  |  Systems Engineer
-> 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
->
-> www.cloudflare.com
+For the first packet of a connection, we look up the socket using the
+tproxy socket port as the destination, and deliver the packet there.
+The SO_TRANSPARENT logic then kicks in and sends back the ack and
+creates the non-full sock for the connection tuple, which can be
+entirely unrelated to local addresses or ports.
+
+For the second forward-direction packet, (ie ACK in 3-way handshake)
+then we must deliver the packet to this non-full sock as that's what
+is negotiating the proxied connection. If you look up using the packet
+tuple then get the full sock from it, it will go back to the
+SO_TRANSPARENT parent socket. Delivering the ACK there will result in
+a RST being sent back, because the SO_TRANSPARENT socket is just there
+to accept new connections for connections to be proxied. So this is
+the case where I need the non-full sock.
+
+(In practice, the lookup logic attempts the packet tuple first then if
+that fails, uses the tproxy port for lookup to achieve the above).
