@@ -2,65 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2198C24487
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 01:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE87244AA
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 01:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbfETXr4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 May 2019 19:47:56 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:34706 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbfETXrz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 May 2019 19:47:55 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4KNiIbv170861;
-        Mon, 20 May 2019 23:47:04 GMT
+        id S1727196AbfETXvc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 May 2019 19:51:32 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:37702 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726586AbfETXvb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 May 2019 19:51:31 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4KNiKQ1169947;
+        Mon, 20 May 2019 23:50:43 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id :
  mime-version : date : from : to : cc : subject : content-type :
  content-transfer-encoding; s=corp-2018-07-02;
- bh=4ftFFqAo1F7U1VytE7tnsxbwCffzarOIOBnr6rEpXT4=;
- b=fjjFVABav6yIZKxMpNJoYrBD6iNF7POidTcgsvLRFuM8Xrkt4ZL4Ut/wN0FQdSiqYwNg
- C2NAt/Q1WViWe+pDMN8ZBP//JA85oeBI8ZbSjE2aeRx4X6HD64kbd9yX05TPwR5/CTIT
- oVCyzZtxsky2LwfUe6sM/eUr2Mr4IcXuVhB5gNKk6AYxPWd0eEHr8d/AXwQGgI1Ct/nN
- lWcAYHZGftRCHWVXV9L5lmNqOk5SSCGNyFpv1dLBH8FEKyDQR18rJwZxL27GgF9NF+kQ
- cg8KhlGPCH13oXyR9CrWSA+EcpQpbyOtEYzn+5RcCrVj9DpedtrcYC+POgkOMJCLoHzf Mg== 
+ bh=EgNZYmbnBfnr5X9kPN54HG5OXTwdKL9pFw9yTMe8ELQ=;
+ b=ySFAgRZLvtS1Jpx7sHeyQBWBmhcfI2CSPaL6/q7yDLDGXYnk5BtQe6zV7DzFlx0Vk4wq
+ sX61aUkFpAM1B/qexNFHdZxb7KH6xE8odIYLYF3d3HIoLpcZa0h09xFPQ45eEVbtpD0Z
+ i9f4q2M4FUaJbvxV3AvBUzlsSFPmf4Z07606pPMf35Pbckmt9nRVPJXKdz0XBExGmmyI
+ AglwU+rAK8lX+abqVjuqy4PlzU47FTHyKjA2Y69vvLynpmLFurpmYWWm7DvMW8ro5dFe
+ Vd6ixz/cJGBlTTu72TdVlJh7eUH6hzA4JQfPfM/4pDMRJb7fTVyN0bXs1bHLnwDFjVgi cQ== 
 Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 2sj7jdj83f-1
+        by userp2120.oracle.com with ESMTP id 2sjapq9x1k-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 May 2019 23:47:04 +0000
+        Mon, 20 May 2019 23:50:43 +0000
 Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4KNjiUc178934;
-        Mon, 20 May 2019 23:47:03 GMT
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4KNnS2p184162;
+        Mon, 20 May 2019 23:50:42 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 2sks1xvjd4-1
+        by aserp3030.oracle.com with ESMTP id 2sks1xvk8f-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 20 May 2019 23:47:03 +0000
+        Mon, 20 May 2019 23:50:42 +0000
 Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x4KNl3Vo180864;
-        Mon, 20 May 2019 23:47:03 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 2sks1xvjcx-1
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x4KNognl186652;
+        Mon, 20 May 2019 23:50:42 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 2sks1xvk8a-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 May 2019 23:47:03 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x4KNl0cs030532;
-        Mon, 20 May 2019 23:47:00 GMT
-Message-Id: <201905202347.x4KNl0cs030532@aserv0121.oracle.com>
+        Mon, 20 May 2019 23:50:42 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x4KNoejM005640;
+        Mon, 20 May 2019 23:50:40 GMT
+Message-Id: <201905202350.x4KNoejM005640@userv0122.oracle.com>
 Received: from localhost (/10.159.211.99) by default (Oracle Beehive Gateway
- v4.0) with ESMTP ; Mon, 20 May 2019 23:46:59 +0000
+ v4.0) with ESMTP ; Mon, 20 May 2019 23:50:39 +0000
 MIME-Version: 1.0
-Date:   Mon, 20 May 2019 23:47:00 +0000 (UTC)
+Date:   Mon, 20 May 2019 23:50:39 +0000 (UTC)
 From:   Kris Van Hees <kris.van.hees@oracle.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         dtrace-devel@oss.oracle.com, linux-kernel@vger.kernel.org
 Cc:     rostedt@goodmis.org, mhiramat@kernel.org, acme@kernel.org,
         ast@kernel.org, daniel@iogearbox.net
-Subject: [RFC PATCH 00/11] bpf, trace, dtrace: DTrace BPF program type
- implementation and sample use
+Subject: [RFC PATCH 01/11] bpf: context casting for tail call
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9263 signatures=668687
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
  lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
  definitions=main-1905200146
@@ -69,158 +68,298 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch set is also available, applied to bpf-next, at the following URL:
+Currently BPF programs are executed with a context that is provided by
+code that initiates the execution.  Tracing tools that want to make use
+of existing probes and events that allow BPF programs to be attached to
+them are thus limited to the context information provided by the probe
+or event source.  Often, more context is needed to allow tracing tools
+the ablity to implement more complex constructs (e.g. more state-full
+tracing).
 
-	https://github.com/oracle/dtrace-linux-kernel/tree/dtrace-bpf
+This patch extends the tail-call mechanism to allow a BPF program of
+one type to call a BPF program of another type.
 
-The patches in this set are part of an larger effort to re-implement DTrace
-based on existing Linux kernel features wherever possible.  This allows
-existing DTrace scripts to run without modification on Linux and to write
-new scripts using a tracing tool that people may already be familiar with.
-This set of patches is posted as an RFC.  I am soliciting feedback on the
-patches, especially because they cross boundaries between tracing and BPF.
-Some of the features might be combined with existing more specialized forms
-of similar functionality, and perhaps some functionality could be moved to
-other parts of the code.
+BPF program types can specify two new operations in struct bpf_prog_ops:
+- bool is_valid_tail_call(enum bpf_prog_type stype)
+    This function is called from bpf_prog_array_valid_tail_call()
+            which is called from bpf_check_tail_call()
+            which is called from bpf_prog_select_runtime()
+            which is called from bpf_prog_load() right after the
+    verifier finishes processing the program.  It is called for every
+    map of type BPF_MAP_TYPE_PROG_ARRAY, and is passed the type of the
+    program that is being loaded and therefore will be the origin of
+    tail calls.  It returns true if tail calls from the source BPF
+    program type to the implementing program type are allowed.
 
-This set of patches provides the initial core to make it possible to execute
-DTrace BPF programs as probe actions, triggered from existing probes in the
-kernel (right now just kprobe, but more will be added in followup patches).
-The DTrace BPF programs run in a specific DTrace context that is independent
-from the probe-specific BPF program context because DTrace actions are
-implemented based on a general probe concept (an abstraction of the various
-specific probe types).
+- void *convert_ctx(enum bpf_prog_type stype, void *ctx)
+    This function is called during the execution of a BPF tail-call.
+    It returns a valid context for the implementing BPF program type,
+    based on the passed context pointer (ctx) for BPF program type
+    stype.
 
-It also provides a mechanism to store probe data in output buffers directly
-from BPF programs, using direct store instructions.  Finally, it provides a
-simple sample userspace tool to load programs, collect data, and print out the
-data.  This little tool is currently hardcoded to process a single test case,
-to show how the BPF program is to be constructed and to show how to retrieve
-data from the output buffers.
+The program array holding BPF programs that you can tail-call into
+continues to require that all programs are of the same type.  But when
+a compatibility check is made in a program that performs a tail-call,
+the is_valid_tail_call() function is called (if available) to allow
+the target type to determine whether it can handle the conversion of
+a context from the source type to the target type.  If the function is
+not implemented by the program type, casting is denied.
 
-The work presented here would not be possible without the effort many people
-have put into tracing features on Linux.  Especially BPF is instrumental in
-being able to do this project because it provides a safe and fast virtual
-execution engine that can be leveraged to execute probe actions in a more
-elegant manner.  The perf_event ring-buffer output mechanism has also proven
-to be very beneficial to starting a re-implementation of DTrace on Linux,
-especially because it avoids needing to add yet another buffer implementation
-to the kernel.  It really helped with being able to re-use functionality.
+During execution, the convert_ctx() function is called (if available)
+to perform the conversion of the current context to the context that the
+target type expects.  Since the program type of the executing BPF program
+is not explicitly known during execution, the verifier inserts an
+instruction right before the tail-call to assign the current BPF program
+type to R4.
 
-The patch set provides the following patches:
+The interpreter calls convert_ctx() using the program type in R4 as
+source program type, the program type associated with the program array
+as target program type, and the context as provided in R1.
 
-    1. bpf: context casting for tail call
+A helper (finalize_context) is added to allow tail called programs to
+perform context setup based on information that is passed in from the
+calling program by means of a map that is indexed by CPU id.  The actual
+content of the map is defined by the BPF program type implementation
+for the program type that is being called.
 
-	This patch adds the ability to tail-call into a BPF program of a
-	different type than the one initiating the call.  It provides two
-	program type specific operations: is_valid_tail_call (to validate
-	whether the tail-call between the source type and target type is
-	allowed) and convert_ctx (to create a context for the target type
-	based on the context of the source type).  It also provides a
-	bpf_finalize_context() helper function prototype.  BPF program types
-	should implement this helper to perform any final context setup that
-	may need to be done within the execution context of the program type.
-	This helper is typically invoked as the first statement in an eBPF
-	program that can be tail-called from another type.
+The bpf_prog_types array is now being exposed to the rest of the BPF
+code (where before it was local to just the syscall handling) because
+the is_valid_tail_call() and convert_ctx() operations need to be
+accessible.
 
-    2. bpf: add BPF_PROG_TYPE_DTRACE
+There is no noticeable effect on BPF program types that do not implement
+this new feature.
 
-	This patch adds BPF_PROG_TYPE_DTRACE as a new BPF program type, without
-	actually providing an implementation.  The actual implementation is
-	added in patch 4 (see below).  We do it this way because the
-	implementation is being added to the tracing subsystem as a component
-	that I would be happy to maintain (if merged) whereas the declaration
-	of the program type must be in the bpf subsystem.  Since the two
-	subsystems are maintained by different people, we split the
-	implementing patches across maintainer boundaries while ensuring that
-	the kernel remains buildable between patches.
+A JIT implementation is not available yet in this first iteration.
 
-    3. bpf: export proto for bpf_perf_event_output helper
+v2: Fixed compilation when CONFIG_BPF_SYSCALL=n.
+    Fixed casting issue on platforms with 32-bit pointers.
 
-	This patch make a prototype available for the bpf_perf_event_output
-	helper so that program types outside of the base tracing eBPF code can
-	make use of it.
+v3: Renamed the new program type operations to be more descriptive.
+    Added finalize_context() helper.
 
-    4. trace: initial implementation of DTrace based on kernel facilities
+Signed-off-by: Kris Van Hees <kris.van.hees@oracle.com>
+Reviewed-by: Nick Alcock <nick.alcock@oracle.com>
+---
+ include/linux/bpf.h                       |  3 +++
+ include/uapi/linux/bpf.h                  | 11 ++++++++-
+ kernel/bpf/core.c                         | 29 ++++++++++++++++++++++-
+ kernel/bpf/syscall.c                      |  2 +-
+ kernel/bpf/verifier.c                     | 16 +++++++++----
+ tools/include/uapi/linux/bpf.h            | 11 ++++++++-
+ tools/testing/selftests/bpf/bpf_helpers.h |  2 ++
+ 7 files changed, 66 insertions(+), 8 deletions(-)
 
-	This patch provides the most basic implementation of the DTrace
-	execution core based on eBPF and other kernel facilities.  This
-	version only supports kprobes.  It makes use of the cross-program-type
-	tail-call support adding with patch 1 (see above).
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 59631dd0777c..7a40a3cd7ff2 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -294,6 +294,8 @@ bpf_ctx_record_field_size(struct bpf_insn_access_aux *aux, u32 size)
+ struct bpf_prog_ops {
+ 	int (*test_run)(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 			union bpf_attr __user *uattr);
++	bool (*is_valid_tail_call)(enum bpf_prog_type stype);
++	void *(*convert_ctx)(enum bpf_prog_type stype, void *ctx);
+ };
+ 
+ struct bpf_verifier_ops {
+@@ -571,6 +573,7 @@ extern const struct file_operations bpf_prog_fops;
+ #undef BPF_PROG_TYPE
+ #undef BPF_MAP_TYPE
+ 
++extern const struct bpf_prog_ops * const bpf_prog_types[];
+ extern const struct bpf_prog_ops bpf_offload_prog_ops;
+ extern const struct bpf_verifier_ops tc_cls_act_analyzer_ops;
+ extern const struct bpf_verifier_ops xdp_analyzer_ops;
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 63e0cf66f01a..61abe6b56948 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -2672,6 +2672,14 @@ union bpf_attr {
+  *		0 on success.
+  *
+  *		**-ENOENT** if the bpf-local-storage cannot be found.
++ *
++ * int bpf_finalize_context(void *ctx, struct bpf_map *map)
++ *	Description
++ *		Perform any final context setup after a tail call took
++ *		place from another BPF program type into a program of
++ *		the implementing program type.
++ *	Return
++ *		0 on success, or a negative error in case of failure.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -2782,7 +2790,8 @@ union bpf_attr {
+ 	FN(strtol),			\
+ 	FN(strtoul),			\
+ 	FN(sk_storage_get),		\
+-	FN(sk_storage_delete),
++	FN(sk_storage_delete),		\
++	FN(finalize_context),
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+  * function eBPF program intends to call
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 242a643af82f..225b1be766b0 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1456,10 +1456,12 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+ 		CONT;
+ 
+ 	JMP_TAIL_CALL: {
++		void *ctx = (void *) (unsigned long) BPF_R1;
+ 		struct bpf_map *map = (struct bpf_map *) (unsigned long) BPF_R2;
+ 		struct bpf_array *array = container_of(map, struct bpf_array, map);
+ 		struct bpf_prog *prog;
+ 		u32 index = BPF_R3;
++		u32 type = BPF_R4;
+ 
+ 		if (unlikely(index >= array->map.max_entries))
+ 			goto out;
+@@ -1471,6 +1473,13 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+ 		prog = READ_ONCE(array->ptrs[index]);
+ 		if (!prog)
+ 			goto out;
++		if (prog->aux->ops->convert_ctx) {
++			ctx = prog->aux->ops->convert_ctx(type, ctx);
++			if (!ctx)
++				goto out;
++
++			BPF_R1 = (u64) (uintptr_t) ctx;
++		}
+ 
+ 		/* ARG1 at this point is guaranteed to point to CTX from
+ 		 * the verifier side due to the fact that the tail call is
+@@ -1667,6 +1676,23 @@ bool bpf_prog_array_compatible(struct bpf_array *array,
+ 	       array->owner_jited == fp->jited;
+ }
+ 
++bool bpf_prog_array_valid_tail_call(struct bpf_array *array,
++				    const struct bpf_prog *fp)
++{
++#ifdef CONFIG_BPF_SYSCALL
++	const struct bpf_prog_ops *ops;
++
++	if (array->owner_jited != fp->jited)
++		return false;
++
++	ops = bpf_prog_types[array->owner_prog_type];
++	if (ops->is_valid_tail_call)
++		return ops->is_valid_tail_call(fp->type);
++#endif
++
++	return false;
++}
++
+ static int bpf_check_tail_call(const struct bpf_prog *fp)
+ {
+ 	struct bpf_prog_aux *aux = fp->aux;
+@@ -1680,7 +1706,8 @@ static int bpf_check_tail_call(const struct bpf_prog *fp)
+ 			continue;
+ 
+ 		array = container_of(map, struct bpf_array, map);
+-		if (!bpf_prog_array_compatible(array, fp))
++		if (!bpf_prog_array_compatible(array, fp) &&
++		    !bpf_prog_array_valid_tail_call(array, fp))
+ 			return -EINVAL;
+ 	}
+ 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index ad3ccf82f31d..f76fd30ad372 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1179,7 +1179,7 @@ static int map_freeze(const union bpf_attr *attr)
+ 	return err;
+ }
+ 
+-static const struct bpf_prog_ops * const bpf_prog_types[] = {
++const struct bpf_prog_ops * const bpf_prog_types[] = {
+ #define BPF_PROG_TYPE(_id, _name) \
+ 	[_id] = & _name ## _prog_ops,
+ #define BPF_MAP_TYPE(_id, _ops)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 95f9354495ad..f9e5536fd1af 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7982,9 +7982,10 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
+ 			insn->imm = 0;
+ 			insn->code = BPF_JMP | BPF_TAIL_CALL;
+ 
++			cnt = 0;
+ 			aux = &env->insn_aux_data[i + delta];
+ 			if (!bpf_map_ptr_unpriv(aux))
+-				continue;
++				goto privileged;
+ 
+ 			/* instead of changing every JIT dealing with tail_call
+ 			 * emit two extra insns:
+@@ -7999,13 +8000,20 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
+ 
+ 			map_ptr = BPF_MAP_PTR(aux->map_state);
+ 			insn_buf[0] = BPF_JMP_IMM(BPF_JGE, BPF_REG_3,
+-						  map_ptr->max_entries, 2);
++						  map_ptr->max_entries, 3);
+ 			insn_buf[1] = BPF_ALU32_IMM(BPF_AND, BPF_REG_3,
+ 						    container_of(map_ptr,
+ 								 struct bpf_array,
+ 								 map)->index_mask);
+-			insn_buf[2] = *insn;
+-			cnt = 3;
++			cnt = 2;
++
++privileged:
++			/* store the BPF program type of the current program in
++			 * R4 so it is known in case this tail call requires
++			 * casting the context to a different program type
++			 */
++			insn_buf[cnt++] = BPF_MOV64_IMM(BPF_REG_4, prog->type);
++			insn_buf[cnt++] = *insn;
+ 			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
+ 			if (!new_prog)
+ 				return -ENOMEM;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 63e0cf66f01a..61abe6b56948 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -2672,6 +2672,14 @@ union bpf_attr {
+  *		0 on success.
+  *
+  *		**-ENOENT** if the bpf-local-storage cannot be found.
++ *
++ * int bpf_finalize_context(void *ctx, struct bpf_map *map)
++ *	Description
++ *		Perform any final context setup after a tail call took
++ *		place from another BPF program type into a program of
++ *		the implementing program type.
++ *	Return
++ *		0 on success, or a negative error in case of failure.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -2782,7 +2790,8 @@ union bpf_attr {
+ 	FN(strtol),			\
+ 	FN(strtoul),			\
+ 	FN(sk_storage_get),		\
+-	FN(sk_storage_delete),
++	FN(sk_storage_delete),		\
++	FN(finalize_context),
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+  * function eBPF program intends to call
+diff --git a/tools/testing/selftests/bpf/bpf_helpers.h b/tools/testing/selftests/bpf/bpf_helpers.h
+index 6e80b66d7fb1..d98a62b3b56c 100644
+--- a/tools/testing/selftests/bpf/bpf_helpers.h
++++ b/tools/testing/selftests/bpf/bpf_helpers.h
+@@ -216,6 +216,8 @@ static void *(*bpf_sk_storage_get)(void *map, struct bpf_sock *sk,
+ 	(void *) BPF_FUNC_sk_storage_get;
+ static int (*bpf_sk_storage_delete)(void *map, struct bpf_sock *sk) =
+ 	(void *)BPF_FUNC_sk_storage_delete;
++static int (*bpf_finalize_context)(void *ctx, void *map) =
++	(void *) BPF_FUNC_finalize_context;
+ 
+ /* llvm builtin functions that eBPF C program may use to
+  * emit BPF_LD_ABS and BPF_LD_IND instructions
+-- 
+2.20.1
 
-    5. trace: update Kconfig and Makefile to include DTrace
-
-	This patch adds DTrace to the kernel config system and it ensures that
-	if CONFIG_DTRACE is set, the implementation of the DTrace core is
-	compiled into the kernel.
-
-    6. dtrace: tiny userspace tool to exercise DTrace support features
-
-	This patch provides a tiny userspace DTrace consumer as a
-	proof-of-concept and to test the DTrace eBPF program type and its use
-	by the DTrace core.
-
-    7. bpf: implement writable buffers in contexts
-
-	This patch adds the ability to specify writable buffers in an eBPF
-	program type context.  The public context declaration should provide
-	<buf> and <buf>_end members (<buf> can be any valid identifier) for
-	each buffer.  The is_valid_access() function for the program type
-	should force the register type of read access to <buf> as
-	PTR_TO_BUFFER whereas reading <buf>_end should yield register type
-	PTR_TO_BUFFER_END.  The functionality is nearly identical to
-	PTR_TO_PACKET and PTR_TO_PACKET_END.  Contexts can have multiple
-	writable buffers, distinguished from one another by a new buf_id
-	member in the bpf_reg_state struct.  For every writable buffer, both
-	<buf> and <buf>_end must provide the same buf_id value (using
-	offset(context, <buf>) is a good and convenient choice). 
-
-    8. perf: add perf_output_begin_forward_in_page
-
-	This patch introduces a new function to commence the process of
-	writing data to a perf_event ring-buffer.  This variant enforces the
-	requirement that the data to be written cannot cross a page boundary.
-	It will fill the remainder of the current page with zeros and allocate
-	space for the data in the next page if the remainder of the current
-	page is too small.  This is necessary to allow eBPF program to write
-	to the buffer space directly with statements like: buf[offset] = value.
-
-    9. bpf: mark helpers explicitly whether they may change the context
-
-	This patch changes the way BPF determines whether a helper may change
-	the content of the context (i.e. if it does, any range information
-	related to pointers in the context must be invalidated).  The original
-	implementation contained a hard-coded list of helpers that change the
-	context.  The new implementation adds a new field to the helper proto
-	struct (ctx_update, default false).
-
-    10. bpf: add bpf_buffer_reserve and bpf_buffer_commit helpers
-
-	This patch adds two new helpers: bpf_buffer_reserve (to set up a
-	specific buffer in the context as writable space of a given size) and
-	bpf_buffer_commit (to finalize the data written to the buffer prepared
-	with bpf_buffer_reserve).
-
-    11. dtrace: make use of writable buffers in BPF
-
-	This patch updates the initial implementation of the DTrace core and
-	the proof-of-concept utility to make use of the writable-buffer support
-	and the bpf_buffer_reserve and bpf_buffer_commit helpers.
-
-(More detailed descriptions can be found in the individual commit messages.)
-
-The road ahead is roughly as follows:
-
-    - Adding support for DTrace specific probe meta data to be available to
-      DTrace BPF programs
-    - Adding support for other probe types
-    - Adding support for probe arguments
-    - Adding support for the DTrace probe naming mechanism to map DTrace
-      style probe names to the actual defined probes in the kernel
-    - Adding support for DTrace features that currently do not exist in
-      the kernel as existing functionality
-    - Rework the existing dtrace utility to make use of the new implementation
-    - Keep adding features to the DTrace system
-
-	Cheers,
-	Kris
