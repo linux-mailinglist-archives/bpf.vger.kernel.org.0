@@ -2,50 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBC223E36
-	for <lists+bpf@lfdr.de>; Mon, 20 May 2019 19:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF19923E4B
+	for <lists+bpf@lfdr.de>; Mon, 20 May 2019 19:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403964AbfETRR0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 May 2019 13:17:26 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:52684 "EHLO
+        id S1733201AbfETRUM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 May 2019 13:20:12 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48458 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2403941AbfETRR0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 20 May 2019 13:17:26 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4KHBOFB006005;
-        Mon, 20 May 2019 10:16:10 -0700
+        by vger.kernel.org with ESMTP id S1733069AbfETRUL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 20 May 2019 13:20:11 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4KH9NEb018704;
+        Mon, 20 May 2019 10:19:25 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : references : in-reply-to : content-type : content-id
  : content-transfer-encoding : mime-version; s=facebook;
- bh=+uir+/lIKAWNgt2VlaKM43O+PdzUmCCc55BWTUP+kco=;
- b=bDXmuCAj9VlUtAULxevxNcB7qvlOkLYuECkJIui5ATrbUUOIxqrNM1OmVUeQqqggRGgd
- uhzeuubcQZPZ3JiF+Gy025rdhCqOB58ge3UcpQyrx77hpkzumV6o1VTmdVId9HGNjsnl
- xYXop7V87WMwn+YBI1z7iaaxdpnFIidHXTs= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2sjfqyp6w3-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 20 May 2019 10:16:10 -0700
-Received: from ash-exhub201.TheFacebook.com (2620:10d:c0a8:83::7) by
- ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 20 May 2019 10:16:09 -0700
-Received: from NAM03-DM3-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 20 May 2019 10:16:09 -0700
+ bh=81AfIakDmhkQKoU122SDnOftu+nkWvzOxvv35A+cUo8=;
+ b=CAA7Ixg5rLdS8gs4YjIv3KxipsBxCgh06okHYPL5HjKjx9gzSdu0Rr+VFOjPVE/TD0RP
+ PeSR0/Jq71UO9tTm1kdy3xrO4GrYY5SJctvZhUkPf71atQyfMA9pUTNT/3wS5VeqQIKU
+ DGuGR2msKirjbe5YywVvlC2LZi2ICsMuktk= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2sm07hg2q3-6
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 20 May 2019 10:19:25 -0700
+Received: from prn-hub01.TheFacebook.com (2620:10d:c081:35::125) by
+ prn-hub01.TheFacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Mon, 20 May 2019 10:19:24 -0700
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Mon, 20 May 2019 10:19:24 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector1-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+uir+/lIKAWNgt2VlaKM43O+PdzUmCCc55BWTUP+kco=;
- b=YNCUzsGEqR5q1t6CpyxuMeMP2i6IvhgJRNp1Wg6lWUmncZEM+wFQipJlWoR5iIxmCDaPMScGfYNNZjiOxYEQ5p9gmIU4G8533S8XECjCmLrxGbtXurAgfHNircWaxIkTfuBl6+sZKDriS9Qj+zeg+OkahEsDGxhl1W6lBsCTbbE=
+ bh=81AfIakDmhkQKoU122SDnOftu+nkWvzOxvv35A+cUo8=;
+ b=eHj9FZl+O9Gei+6HDcDfPzhdK6AXxpyceTETFZSoeLao6yQinFpoBqItD0kR/xDJCIDPtPTY/ba61bwzfnYshjSytlzxJBUSmVjS+xfbdLLhgOPjFJ/dKTOtyoZvYrodAVOdDMKrmvSBOOZ8Vrex9sJmkAs8cxHNYfsBGvo+EdQ=
 Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.2.19) by
- MWHPR15MB1390.namprd15.prod.outlook.com (10.173.234.17) with Microsoft SMTP
+ MWHPR15MB1133.namprd15.prod.outlook.com (10.175.2.11) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1900.17; Mon, 20 May 2019 17:16:08 +0000
+ 15.20.1900.16; Mon, 20 May 2019 17:19:22 +0000
 Received: from MWHPR15MB1165.namprd15.prod.outlook.com
  ([fe80::85b5:614:bc49:8a15]) by MWHPR15MB1165.namprd15.prod.outlook.com
  ([fe80::85b5:614:bc49:8a15%11]) with mapi id 15.20.1900.020; Mon, 20 May 2019
- 17:16:07 +0000
+ 17:19:22 +0000
 From:   Song Liu <songliubraving@fb.com>
 To:     Kairui Song <kasong@redhat.com>
 CC:     Peter Zijlstra <peterz@infradead.org>,
@@ -57,9 +57,9 @@ CC:     Peter Zijlstra <peterz@infradead.org>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>
 Subject: Re: Getting empty callchain from perf_callchain_kernel() 
 Thread-Topic: Getting empty callchain from perf_callchain_kernel() 
-Thread-Index: AQHVDEJXbyjc1nknl06FlgTGlvLrzKZu8J8AgAAG+ICAAAFQgIAAD2QAgAO6dwCAAYQkAA==
-Date:   Mon, 20 May 2019 17:16:07 +0000
-Message-ID: <366B9124-728E-4985-9649-FDA64CDDF1FB@fb.com>
+Thread-Index: AQHVDEJXbyjc1nknl06FlgTGlvLrzKZu8J8AgAAG+ICAAAFQgIAAD2QAgAO6dwCAAYUMgA==
+Date:   Mon, 20 May 2019 17:19:22 +0000
+Message-ID: <BB5859B6-6686-474A-8CB2-FAC183C92829@fb.com>
 References: <3CD3EE63-0CD2-404A-A403-E11DCF2DF8D9@fb.com>
  <20190517074600.GJ2623@hirez.programming.kicks-ass.net>
  <20190517081057.GQ2650@hirez.programming.kicks-ass.net>
@@ -74,43 +74,39 @@ X-MS-TNEF-Correlator:
 x-mailer: Apple Mail (2.3445.104.8)
 x-originating-ip: [2620:10d:c090:200::1:c888]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 87daa1de-089a-4d73-3964-08d6dd46d923
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:MWHPR15MB1390;
-x-ms-traffictypediagnostic: MWHPR15MB1390:
-x-microsoft-antispam-prvs: <MWHPR15MB1390EC8D4751DB95FD6BF0D7B3060@MWHPR15MB1390.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2803;
+x-ms-office365-filtering-correlation-id: 7fa8d74e-9d25-470b-8d22-08d6dd474d0b
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:MWHPR15MB1133;
+x-ms-traffictypediagnostic: MWHPR15MB1133:
+x-microsoft-antispam-prvs: <MWHPR15MB113380E22A56BF1FC38E04F7B3060@MWHPR15MB1133.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3826;
 x-forefront-prvs: 004395A01C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(39860400002)(136003)(396003)(376002)(366004)(189003)(199004)(71190400001)(71200400001)(8936002)(82746002)(14454004)(81166006)(486006)(83716004)(305945005)(5660300002)(86362001)(478600001)(50226002)(7736002)(2906002)(73956011)(186003)(76116006)(229853002)(66446008)(6436002)(66556008)(66476007)(66946007)(81156014)(25786009)(64756008)(6486002)(316002)(256004)(6916009)(76176011)(68736007)(8676002)(6246003)(53936002)(54906003)(53546011)(6506007)(33656002)(99286004)(102836004)(446003)(6116002)(476003)(36756003)(4326008)(11346002)(6512007)(46003)(57306001)(2616005)(4743002);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1390;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(376002)(346002)(136003)(366004)(396003)(39860400002)(189003)(199004)(86362001)(229853002)(6246003)(4743002)(102836004)(66476007)(66556008)(64756008)(66446008)(66946007)(76116006)(57306001)(6116002)(53546011)(6506007)(8936002)(4326008)(99286004)(73956011)(25786009)(76176011)(54906003)(50226002)(11346002)(53936002)(82746002)(8676002)(81156014)(81166006)(486006)(2616005)(476003)(36756003)(83716004)(71200400001)(71190400001)(446003)(33656002)(6486002)(6436002)(5660300002)(7736002)(256004)(186003)(316002)(6512007)(46003)(478600001)(6916009)(2906002)(68736007)(14454004)(305945005);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1133;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: fb.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: FdhbAgVot/9Gl49ymWSJU+IzS6j1ibgL7m0r/ElprcOE4ZuiFplcLS2nILsw0IO+h9qH+hbnGDNcRfeRBnBc73m5jZQA2uz+cz7oFDi8BgPjydGcriUVOL6K0MkZq0TCfIl+QMZV3dn4jMntPDyqVmR7VjCRJkAGmRv6sTCtzX3/3o7L2CfhhcfaayiKKDUhn0OBQyu387o4CRHumPSuV8ccCddkiUZn1sHrR1p7mE7JLDfGDESGntmFinHKEIIc1kdmd0EOKhi7dTy+W0GqBkWXEGpQmBmyA3oLRw82nDQjpAIud3WWSxhWFswEevG/qsiJp1YTS9NvelK3GT6OMG259xUXfa7WKrl6qw+ZxTTkl+/vAKMTprfrJGsddqtQkicONXl9rOpr7uj9pGz90B4/Ok8Liglb2XqzsjFYMHM=
+x-microsoft-antispam-message-info: u8GgpFUoEVk+T6sRir4y67DOdzoz2p44B49npZTKRa9e+hfOqqosDg754OoQgJ5xD0D9K9ZwyOBDNWgCRpXZ0fYbx3hFXbr1qAtl7txmymD8MALJzugh+surYvgfdMYs24Ql/IMYF5VC0EnFv9n4IMc9IjUhwMGBgEHyUKUvMSq9exxo5SXoKecCN9sdw7Yb0y/N3f3lkTXrl7pmXzgQqSik/6nH2Ff24OnzDCkil/XA0gpmBwM6O93rHjFEgvrxgzyU0KLd0eWZo0u4OVbZuUTUfUdi3Ih0VXMc5N5jAUmQbjZPyiB1e00lSa60q0acAcH/oEixMCl3khWiIR4+3MyKO716N4qtvHsWnUqZMT+2TsxeVIbcA0/ifDlk+FIl9ZIpomQO3iFqxw5BR7+4asiKBg1pdqdGpIfJkh8tAI8=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <9E7B53455E04BD40A681F9D498E77607@namprd15.prod.outlook.com>
+Content-ID: <2D73D2FFA67EDE42A6DEA59B93F87828@namprd15.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 87daa1de-089a-4d73-3964-08d6dd46d923
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 May 2019 17:16:07.7725
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7fa8d74e-9d25-470b-8d22-08d6dd474d0b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 May 2019 17:19:22.2561
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1390
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1133
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-20_07:,,
  signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905200109
-X-FB-Internal: deliver
+X-Proofpoint-Spam-Reason: safe
+X-FB-Internal: Safe
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
+Sorry for previous empty email.. Clicked send by accident.=20
 
 > On May 19, 2019, at 11:06 AM, Kairui Song <kasong@redhat.com> wrote:
 >=20
@@ -256,6 +252,10 @@ gs
 >                             (unsigned long) size, flags, 0);
 > }
 >=20
+
+I think we really cannot do something above, as it leaks x86 specific
+code into kernel/events and kernel/trace.=20
+
 > And *_raw_tp functions will fetch the regs by themselves so a bit
 > trouble some...
 >=20
@@ -282,7 +282,12 @@ gs
 >=20
 > recursion_check:
 >        /*
->=20
+
+I think this one doesn't work for ORC either?=20
+
+Thanks,
+Song
+
 > Don't know how to do it the right way, or is it even possible for all
 > unwinders yet...
 >=20
