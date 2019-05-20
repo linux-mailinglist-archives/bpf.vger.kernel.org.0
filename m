@@ -2,160 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A171240B6
-	for <lists+bpf@lfdr.de>; Mon, 20 May 2019 20:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D07240BE
+	for <lists+bpf@lfdr.de>; Mon, 20 May 2019 20:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725971AbfETS4h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 May 2019 14:56:37 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:34559 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725764AbfETS4h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 May 2019 14:56:37 -0400
-Received: by mail-lf1-f68.google.com with SMTP id v18so11150321lfi.1
-        for <bpf@vger.kernel.org>; Mon, 20 May 2019 11:56:35 -0700 (PDT)
+        id S1726282AbfETS5v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 May 2019 14:57:51 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:38039 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726125AbfETS5v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 May 2019 14:57:51 -0400
+Received: by mail-lj1-f195.google.com with SMTP id 14so13500557ljj.5
+        for <bpf@vger.kernel.org>; Mon, 20 May 2019 11:57:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sPnAzJbYkBxZ8GdLkM+Cr/sPicvKMWcZppjXGTnVZX8=;
-        b=LSx305Nu3IrD2dMJAv14+RebdtFXbRlKjH16vpgsnr1BWcLHn5AGef1ZERw2LZmqav
-         v6Q/6SpscteB0afThA2AKhUFBDyIVoijzj3RHsaND2ls5+F5MkBJOsxrr3NSRnR1n1KT
-         4vxu5CuTQfh8ptUcHNc+YdYwBaWG4CHD20Vi/tTYYaMSc03wscu7WyBiZrQRxHo02q4D
-         ypZItg1gSlgWoc90pPwr/kYV5pZEBdeh+XZich2lfsKo2aLP/vlo1NrJsmaI3f/QxI65
-         6nh1IAaqtmjRr7cmyDVRD/FPCsvnAG8hZ2PLKmLQQlNhjYEA+gR9/qFnnNoc092yGFE5
-         blQQ==
+        bh=OmaVPUNIZXzoguiohx42nQv5edtRi7vwn1kzPXHaCDU=;
+        b=fMyll/PYRqDhUKiFB8FWnKnTIEQzIkiza71tvGxxVJhYoLtma2pufkLzZrNJzfHMCQ
+         DEQUyJfZ/FKF9qXw4Gszyc7Cx/Wchwc6YJmaz6m/TMqJHRmLqjSWQnFpmV3uyA7JmLbe
+         merYv5HX8zgk+6qeaa+yLv93n/+XXh57JMhmTAsXu/qsGMm4RTYfTixRoIzrDzByGpEV
+         t498nAncnts0ff/6jHnDXDkJy+A4K6WC7xkUSaeb3OLLNwzfPKZPtPCFmrURE1bnpspH
+         h0Mna6z+leiSlSL+sberZ70d7qdflrvzfoSwWOx88e+dDllUB5N64Y+xGHQt4tv6UOVs
+         yt8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sPnAzJbYkBxZ8GdLkM+Cr/sPicvKMWcZppjXGTnVZX8=;
-        b=DQGkTHfyTczMPwiEXsdVtZ0GayFdClJWim4Gll+J9zP90KNuMMw9Y35eZeFyhc7ZoX
-         BI7x7L9kF7GU5jMRC0hO9nHh/pB8MOJnuBTbEl0KL9qXGhF/SWP0byz3kz62VWMEWALV
-         bzs82sgw8Y9gVADnns13lqVK1tfOJuLvlgNZpew9GfUFZ1UewKI30ZhtQ6nebRUOJgZ/
-         MMPSJUJdLJaLfykFq+NMWNkJKoQHhvun9SRlf4qdtwdQ3rzvXi7mPakn5ukbnOn+MnM2
-         hUoJWItYD2jR0OY67srbefHIcmAi87+Wd4Eyt6Jp+PHkKafAkX3+j549vK++TpIBpxRu
-         B2JA==
-X-Gm-Message-State: APjAAAWi4gyxREcc7AMkAerXZKBZ8CltuJaqR4J69h/mXh4NmYGC7eyc
-        qWccInY+WfTw3DizFpTu8P52hA1whuT1BPK21Bs7Bw==
-X-Google-Smtp-Source: APXvYqzFCQA9rfaqCCSb6la6cyH0OpQBYXSqiW9H/Ur20IPIqN6zbgZ+XmhN0Oc/KV6DKKuNLbLFEYdI5EenJ72mK3E=
-X-Received: by 2002:ac2:47e3:: with SMTP id b3mr4015452lfp.56.1558378594234;
- Mon, 20 May 2019 11:56:34 -0700 (PDT)
+        bh=OmaVPUNIZXzoguiohx42nQv5edtRi7vwn1kzPXHaCDU=;
+        b=T+FBEXlQVxOagJxbuwVxbiS7UMcR1HdsKT0E/TqyGXbH99J24gzOboOg2qnWLjcGeY
+         wFA3mOXrdqN+x42cjVZyezbHRoM34EHGeFUPLeh0q0EgIDqAaQive61TCiWRba8ul0dg
+         bUQYTMhBgCZGkiQKNMCYnUCAl+ozNDfg36wYOj9RYVzr7wYfbqjJvVpnqC6kLSjSZf4E
+         ibhE4hishfrmeZ3jq6lNaGc3jiB5XbNfPHU7G9rddz3Qma53Sz+EWUzrm10spRM+wLIz
+         NCAVXdasQ/Ns80/weSsnb3kt22jkSFlx3agO8Ox8NCgkKRnoGfF+EGMfvVasbKOnhmRJ
+         2QCw==
+X-Gm-Message-State: APjAAAUHw5YS7TJ+PI63uMOUAG/NwvJP8nCl/Dr63I+tzuKgT35TBcQH
+        tjFAUn81iP0DTVufuwZdzIm3XQTBWynFkubxGx3HMQ==
+X-Google-Smtp-Source: APXvYqy6M9AYAHvKJNCbUtN+nVQJi5irsspzQdgBoUYpuK5uXs+rCoPdY/21xnEcQ0CBbK70aIgXROavyXsEF4+arOE=
+X-Received: by 2002:a2e:9d4e:: with SMTP id y14mr12542742ljj.199.1558378669341;
+ Mon, 20 May 2019 11:57:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190517212117.2792415-1-kafai@fb.com> <6dc01cb7-cdd4-8a71-b602-0052b7aadfb7@gmail.com>
- <20190517220145.pkpkt7f5b72vvfyk@kafai-mbp> <CADa=RyxisbcVeXL7yq6o02XOgWd87QCzq-6zDXRnm9RoD2WM=A@mail.gmail.com>
- <20190518190520.53mrvat4c4y6cnbf@kafai-mbp> <CADa=RyxfhK+XhAwf_C_an=+RnsQCPCXV23Qrwk-3OC1oLdHM=A@mail.gmail.com>
- <20190519020703.nbioindo5krpgupi@kafai-mbp>
-In-Reply-To: <20190519020703.nbioindo5krpgupi@kafai-mbp>
+References: <20190517212117.2792415-1-kafai@fb.com>
+In-Reply-To: <20190517212117.2792415-1-kafai@fb.com>
 From:   Joe Stringer <joe@isovalent.com>
-Date:   Mon, 20 May 2019 11:56:22 -0700
-Message-ID: <CADa=RywmyZ1s5hjpUibx0Qi+C8=51zz0uCYnYv_KjEK+BW-Q=g@mail.gmail.com>
+Date:   Mon, 20 May 2019 11:57:37 -0700
+Message-ID: <CADa=Ryxc8cU8mx7i91GXjT+b4md3c01hqja9oVMZxSbbR+OVPw@mail.gmail.com>
 Subject: Re: [PATCH bpf] bpf: Check sk_fullsock() before returning from bpf_sk_lookup()
-To:     Martin Lau <kafai@fb.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, May 18, 2019 at 7:08 PM Martin Lau <kafai@fb.com> wrote:
+On Fri, May 17, 2019 at 2:21 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> On Sat, May 18, 2019 at 06:52:48PM -0700, Joe Stringer wrote:
-> > On Sat, May 18, 2019, 09:05 Martin Lau <kafai@fb.com> wrote:
-> > >
-> > > On Sat, May 18, 2019 at 08:38:46AM -1000, Joe Stringer wrote:
-> > > > On Fri, May 17, 2019, 12:02 Martin Lau <kafai@fb.com> wrote:
-> > > >
-> > > > > On Fri, May 17, 2019 at 02:51:48PM -0700, Eric Dumazet wrote:
-> > > > > >
-> > > > > >
-> > > > > > On 5/17/19 2:21 PM, Martin KaFai Lau wrote:
-> > > > > > > The BPF_FUNC_sk_lookup_xxx helpers return RET_PTR_TO_SOCKET_OR_NULL.
-> > > > > > > Meaning a fullsock ptr and its fullsock's fields in bpf_sock can be
-> > > > > > > accessed, e.g. type, protocol, mark and priority.
-> > > > > > > Some new helper, like bpf_sk_storage_get(), also expects
-> > > > > > > ARG_PTR_TO_SOCKET is a fullsock.
-> > > > > > >
-> > > > > > > bpf_sk_lookup() currently calls sk_to_full_sk() before returning.
-> > > > > > > However, the ptr returned from sk_to_full_sk() is not guaranteed
-> > > > > > > to be a fullsock.  For example, it cannot get a fullsock if sk
-> > > > > > > is in TCP_TIME_WAIT.
-> > > > > > >
-> > > > > > > This patch checks for sk_fullsock() before returning. If it is not
-> > > > > > > a fullsock, sock_gen_put() is called if needed and then returns NULL.
-> > > > > > >
-> > > > > > > Fixes: 6acc9b432e67 ("bpf: Add helper to retrieve socket in BPF")
-> > > > > > > Cc: Joe Stringer <joe@isovalent.com>
-> > > > > > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> > > > > > > ---
-> > > > > > >  net/core/filter.c | 16 ++++++++++++++--
-> > > > > > >  1 file changed, 14 insertions(+), 2 deletions(-)
-> > > > > > >
-> > > > > > > diff --git a/net/core/filter.c b/net/core/filter.c
-> > > > > > > index 55bfc941d17a..85def5a20aaf 100644
-> > > > > > > --- a/net/core/filter.c
-> > > > > > > +++ b/net/core/filter.c
-> > > > > > > @@ -5337,8 +5337,14 @@ __bpf_sk_lookup(struct sk_buff *skb, struct
-> > > > > bpf_sock_tuple *tuple, u32 len,
-> > > > > > >     struct sock *sk = __bpf_skc_lookup(skb, tuple, len, caller_net,
-> > > > > > >                                        ifindex, proto, netns_id,
-> > > > > flags);
-> > > > > > >
-> > > > > > > -   if (sk)
-> > > > > > > +   if (sk) {
-> > > > > > >             sk = sk_to_full_sk(sk);
-> > > > > > > +           if (!sk_fullsock(sk)) {
-> > > > > > > +                   if (!sock_flag(sk, SOCK_RCU_FREE))
-> > > > > > > +                           sock_gen_put(sk);
-> > > > > >
-> > > > > > This looks a bit convoluted/weird.
-> > > > > >
-> > > > > > What about telling/asking __bpf_skc_lookup() to not return a non
-> > > > > fullsock instead ?
-> > > > > It is becausee some other helpers, like BPF_FUNC_skc_lookup_tcp,
-> > > > > can return non fullsock
-> > > > >
-> > > >
-> > > > FYI this is necessary for finding a transparently proxied socket for a
-> > > > non-local connection (tproxy use case).
-> > > You meant it is necessary to return a non fullsock from the
-> > > BPF_FUNC_sk_lookup_xxx helpers?
-> >
-> > Yes, that's what I want to associate with the skb so that the delivery
-> > to the SO_TRANSPARENT is received properly.
-> >
-> > For the first packet of a connection, we look up the socket using the
-> > tproxy socket port as the destination, and deliver the packet there.
-> > The SO_TRANSPARENT logic then kicks in and sends back the ack and
-> > creates the non-full sock for the connection tuple, which can be
-> > entirely unrelated to local addresses or ports.
-> >
-> > For the second forward-direction packet, (ie ACK in 3-way handshake)
-> > then we must deliver the packet to this non-full sock as that's what
-> > is negotiating the proxied connection. If you look up using the packet
-> > tuple then get the full sock from it, it will go back to the
-> > SO_TRANSPARENT parent socket. Delivering the ACK there will result in
-> > a RST being sent back, because the SO_TRANSPARENT socket is just there
-> > to accept new connections for connections to be proxied. So this is
-> > the case where I need the non-full sock.
-> >
-> > (In practice, the lookup logic attempts the packet tuple first then if
-> > that fails, uses the tproxy port for lookup to achieve the above).
-> hmm...I am likely missing something.
+> The BPF_FUNC_sk_lookup_xxx helpers return RET_PTR_TO_SOCKET_OR_NULL.
+> Meaning a fullsock ptr and its fullsock's fields in bpf_sock can be
+> accessed, e.g. type, protocol, mark and priority.
+> Some new helper, like bpf_sk_storage_get(), also expects
+> ARG_PTR_TO_SOCKET is a fullsock.
 >
-> 1) The above can be done by the "BPF_FUNC_skC_lookup_tcp" which
->    returns a non fullsock (RET_PTR_TO_SOCK_COMMON_OR_NULL), no?
+> bpf_sk_lookup() currently calls sk_to_full_sk() before returning.
+> However, the ptr returned from sk_to_full_sk() is not guaranteed
+> to be a fullsock.  For example, it cannot get a fullsock if sk
+> is in TCP_TIME_WAIT.
+>
+> This patch checks for sk_fullsock() before returning. If it is not
+> a fullsock, sock_gen_put() is called if needed and then returns NULL.
+>
+> Fixes: 6acc9b432e67 ("bpf: Add helper to retrieve socket in BPF")
+> Cc: Joe Stringer <joe@isovalent.com>
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> ---
 
-Correct, I meant to send as response to Eric as to use cases for
-__bpf_skc_lookup() returning non fullsock.
-
-> 2) The bpf_func_proto of "BPF_FUNC_sk_lookup_tcp" returns
->    fullsock (RET_PTR_TO_SOCKET_OR_NULL) and the bpf_prog (and
->    the verifier) is expecting that.  How to address the bug here?
-
-Your proposal seems fine to me.
+Acked-by: Joe Stringer <joe@isovalent.com>
