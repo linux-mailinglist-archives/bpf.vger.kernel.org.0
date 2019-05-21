@@ -2,330 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9622543B
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 17:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096FC25472
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 17:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728137AbfEUPl5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 May 2019 11:41:57 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:34996 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728067AbfEUPl5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 May 2019 11:41:57 -0400
-Received: by mail-wr1-f65.google.com with SMTP id m3so6213451wrv.2
-        for <bpf@vger.kernel.org>; Tue, 21 May 2019 08:41:55 -0700 (PDT)
+        id S1728212AbfEUPsL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 May 2019 11:48:11 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:40891 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728127AbfEUPsL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 May 2019 11:48:11 -0400
+Received: by mail-oi1-f196.google.com with SMTP id r136so13165773oie.7
+        for <bpf@vger.kernel.org>; Tue, 21 May 2019 08:48:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=lWKZ0fTCl66amGszMBQwOE+gmAoKqjSyVUyEoeR16P4=;
-        b=Uk9xUkkZGWL4DCSX5kc84hSC3YLv4w4GKw4xLfq60RuaNCqpxA+ROm1SfxPyDZJK8f
-         fhDzSIqSEakFOZoFIko+UVrXPbB2mDG38UEaEk3vsTrVgQQCVNHzJg4yEh1sLQqgrdN6
-         IxcfnSo7c3Fblg62o/Y/Z8tDvwkOJHSoiBt0HjhKBIBeMC8vuzyZAZHSLXaV+pZa970Y
-         7+lkE6RT1+K8Tj0v9k6UI3P/hReposGXDw6Vzy3VToN9UFHbSdS0AqfjlWNItD8uNEio
-         dk3sVoYpqyt+PTuPNNwbU28DxfG9ntoc13PngJ6FmrJ/gvPlJix6nHL77mQXE3dC2SFg
-         dKUA==
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Gzspr9L6T5PD32rmyed/l1iwW4W0/PWFdz4O0Jcggp0=;
+        b=YsrbMq6yJk8H4ooSqqE4k1VZf4dJgsidPK/daSASqZWoKQYcQ3g3yaUqG928XzKg8M
+         ryowsw8iFrXotpjjdOojCEi/CKsx5WK4SKzSEU7luXDsNSbdoljuYe2bWx8izkiPYWNw
+         j+E5BGgz/K/yNKyLXsgpIV1L1lY2ndaRZr1ys=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=lWKZ0fTCl66amGszMBQwOE+gmAoKqjSyVUyEoeR16P4=;
-        b=D3auns453wr3XgjgWxiyweFfISvxTNgAf+65GyIsXI1AWZKxYSrgdLZ200zSgXTj+3
-         O16WFmVeGWfmafR3bvwACvCj0iSyHCceLHt+7Gof3X/Mmdhn8TO1YJbAWJMq2T1JlYBn
-         CTObVvY1OKapfZWzwhEZkZNIlx8rBPBhBR0w2NiiOOeikupYyAWZyUo/IqGmpHQMFxUX
-         i40VlG9moaSrV4snlu/kHkDYIQT15ENVSZDcU3P6TEkCdzjEOXT3JlSPmDpKNP70kDuo
-         TkM+2pChdK74U+Ewbq+gMg5eWJAEziVwpL7MueFaZ3a1ZWEnenLqUfq+zJ1c5LgCHHEE
-         986w==
-X-Gm-Message-State: APjAAAUw65jF6CYAv6DLp9mpK2myvVE2PTMUYeZ62X0eMXGWjYYf5kab
-        VjvDXvkhnocRdjdL4GEGraVqEGce/FQ=
-X-Google-Smtp-Source: APXvYqzx4v2EysEbotYVE1xblwXp6DJ9OzBD2XU3meMZiDlE2waKJwICngY1p0EGK+bntP7YcAXmbA==
-X-Received: by 2002:adf:f44b:: with SMTP id f11mr21127797wrp.128.1558453314481;
-        Tue, 21 May 2019 08:41:54 -0700 (PDT)
-Received: from [172.20.1.229] ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id a15sm5908595wrw.49.2019.05.21.08.41.53
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 May 2019 08:41:53 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 0/9] eBPF support for GNU binutils
-From:   Jiong Wang <jiong.wang@netronome.com>
-In-Reply-To: <20190520164526.13491-1-jose.marchesi () oracle ! com>
-Date:   Tue, 21 May 2019 16:41:56 +0100
-Cc:     binutils@sourceware.org,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <1B2BE52B-527E-436E-AE49-29FA9E044FD3@netronome.com>
-References: <20190520164526.13491-1-jose.marchesi () oracle ! com>
-To:     jose.marchesi@oracle.com
-X-Mailer: Apple Mail (2.3273)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Gzspr9L6T5PD32rmyed/l1iwW4W0/PWFdz4O0Jcggp0=;
+        b=tjwTfcqz+hcCjsgDmCp6OGxhSz0UwyueslxCpKMG2EMZWGuU1Yw99qAWR7TwdtH+K2
+         z8q264yr2FmNkQlwUF1k3lLABKn8yDG/8VUZmy+HyL9IuMLQbGHhd8hfVY6pk2aZLR5i
+         lDpr+aLwXG4o8O9iGZAsFInU0QNFZg2bzvjPKXpfuqL0ftQ7THq41W5+gDVfVdseMwyO
+         2dVkpvv1KEUwgy7IGhCcFFzpWTlA9D10IgB7ik03rYeCnKNB/IdMw/bKpU4YGLTfCz42
+         C1IlY7omcTDNG9gsRbjWQK4juzYphZW7QeOh7Z17XfbmZCg/TOH6XmioTN+qLyhzvBNb
+         Bbiw==
+X-Gm-Message-State: APjAAAXXJWEK6qMWqvKxA96uwO+Kmf9GLGbEM9rxK/hgch61QxuG704C
+        /kDqFdq+YApbilRLG0sYqQcQdxMZinDHDyRY0XATCA==
+X-Google-Smtp-Source: APXvYqynlZMKZjWWCOsHl/WgDje+zRaSbHBlfJDUjwD6PTBDPwzv/C8TxIfRItHXVqCDR06KiE+F5keg7AUDz6lkHQg=
+X-Received: by 2002:aca:f0f:: with SMTP id 15mr2438283oip.78.1558453690173;
+ Tue, 21 May 2019 08:48:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <CACAyw98+qycmpQzKupquhkxbvWK4OFyDuuLMBNROnfWMZxUWeA@mail.gmail.com>
+ <CADa=RyyuAOupK7LOydQiNi6tx2ELOgD+bdu+DHh3xF0dDxw_gw@mail.gmail.com>
+ <CACAyw9_EGRob4VG0-G4PN9QS_xB5GoDMBB6mPXR-WcPnrFCuLg@mail.gmail.com>
+ <20190516203325.uhg7c5sr45od7lzm@ast-mbp> <CAGUcTrqnrE+9BGsuc3sf_DpzsD01wP6h3PbK3-u6hk=6wM0zGg@mail.gmail.com>
+In-Reply-To: <CAGUcTrqnrE+9BGsuc3sf_DpzsD01wP6h3PbK3-u6hk=6wM0zGg@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Tue, 21 May 2019 16:47:58 +0100
+Message-ID: <CACAyw9-ijc1o1QOnQD=ukr-skswxe+4mDVKdX58z6AkTrEpOuA@mail.gmail.com>
+Subject: Re: RFC: Fixing SK_REUSEPORT from sk_lookup_* helpers
+To:     Nitin Hande <nitin.hande@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Joe Stringer <joe@isovalent.com>,
+        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-CCing BPF kernel community who is defining the ISA and various runtime =
-stuff.
+On Fri, 17 May 2019 at 00:38, Nitin Hande <nitin.hande@gmail.com> wrote:
+>
+> On Thu, May 16, 2019 at 2:57 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Thu, May 16, 2019 at 09:41:34AM +0100, Lorenz Bauer wrote:
+> > > On Wed, 15 May 2019 at 18:16, Joe Stringer <joe@isovalent.com> wrote:
+> > > >
+> > > > On Wed, May 15, 2019 at 8:11 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> > > > >
+> > > > > In the BPF-based TPROXY session with Joe Stringer [1], I mentioned
+> > > > > that the sk_lookup_* helpers currently return inconsistent results if
+> > > > > SK_REUSEPORT programs are in play.
+> > > > >
+> > > > > SK_REUSEPORT programs are a hook point in inet_lookup. They get access
+> > > > > to the full packet
+> > > > > that triggered the look up. To support this, inet_lookup gained a new
+> > > > > skb argument to provide such context. If skb is NULL, the SK_REUSEPORT
+> > > > > program is skipped and instead the socket is selected by its hash.
+> > > > >
+> > > > > The first problem is that not all callers to inet_lookup from BPF have
+> > > > > an skb, e.g. XDP. This means that a look up from XDP gives an
+> > > > > incorrect result. For now that is not a huge problem. However, once we
+> > > > > get sk_assign as proposed by Joe, we can end up circumventing
+> > > > > SK_REUSEPORT.
+> > > >
+> > > > To clarify a bit, the reason this is a problem is that a
+> > > > straightforward implementation may just consider passing the skb
+> > > > context into the sk_lookup_*() and through to the inet_lookup() so
+> > > > that it would run the SK_REUSEPORT BPF program for socket selection on
+> > > > the skb when the packet-path BPF program performs the socket lookup.
+> > > > However, as this paragraph describes, the skb context is not always
+> > > > available.
+> > > >
+> > > > > At the conference, someone suggested using a similar approach to the
+> > > > > work done on the flow dissector by Stanislav: create a dedicated
+> > > > > context sk_reuseport which can either take an skb or a plain pointer.
+> > > > > Patch up load_bytes to deal with both. Pass the context to
+> > > > > inet_lookup.
+> > > > >
+> > > > > This is when we hit the second problem: using the skb or XDP context
+> > > > > directly is incorrect, because it assumes that the relevant protocol
+> > > > > headers are at the start of the buffer. In our use case, the correct
+> > > > > headers are at an offset since we're inspecting encapsulated packets.
+> > > > >
+> > > > > The best solution I've come up with is to steal 17 bits from the flags
+> > > > > argument to sk_lookup_*, 1 bit for BPF_F_HEADERS_AT_OFFSET, 16bit for
+> > > > > the offset itself.
+> > > >
+> > > > FYI there's also the upper 32 bits of the netns_id parameter, another
+> > > > option would be to steal 16 bits from there.
+> > >
+> > > Or len, which is only 16 bits realistically. The offset doesn't really fit into
+> > > either of them very well, using flags seemed the cleanest to me.
+> > > Is there some best practice around this?
+> > >
+> > > >
+> > > > > Thoughts?
+> > > >
+> > > > Internally with skbs, we use `skb_pull()` to manage header offsets,
+> > > > could we do something similar with `bpf_xdp_adjust_head()` prior to
+> > > > the call to `bpf_sk_lookup_*()`?
+> > >
+> > > That would only work if it retained the contents of the skipped
+> > > buffer, and if there
+> > > was a way to undo the adjustment later. We're doing the sk_lookup to
+> > > decide whether to
+> > > accept or forward the packet, so at the point of the call we might still need
+> > > that data. Is that feasible with skb / XDP ctx?
+> >
+> > While discussing the solution for reuseport I propose to use
+> > progs/test_select_reuseport_kern.c as an example of realistic program.
+> > It reads tcp/udp header directly via ctx->data or via bpf_skb_load_bytes()
+> > including payload after the header.
+> > It also uses bpf_skb_load_bytes_relative() to fetch IP.
+> > I think if we're fixing the sk_lookup from XDP the above program
+> > would need to work.
+> >
+> > And I think we can make it work by adding new requirement that
+> > 'struct bpf_sock_tuple *' argument to bpf_sk_lookup_* must be
+> > a pointer to the packet and not a pointer to bpf program stack.
+> > Then helper can construct a fake skb and assign
+> > fake_skb->data = &bpf_sock_tuple_arg.sport
+> > It can check that struct bpf_sock_tuple * pointer is within 100-ish bytes
+> > from xdp->data and within xdp->data_end
+> > This way the reuseport program's assumption that ctx->data points to tcp/udp
+> > will be preserved and it can access it all including payload.
+> >
+> > This approach doesn't need to mess with xdp_adjust_head and adjust uapi to pass length.
+> > Existing progs/test_sk_lookup_kern.c will magically start working with XDP
+> > even when reuseport prog is attached.
+> > Thoughts?
+>
+> I like this approach. A fake_skb approach will normalize the bpf_sk_lookup_*()
+> API peering into the kernel API between TC and XDP invocation. Just one question
+> that comes, I remember one of the comments I received during my XDP commit
+> was the stateless nature of XDP services and providing a fake_skb may bring
+> some potential side-effects to the desire of statelessness. Is that
+> still a possibility?
+> How do we guard against it?
 
-Also two inline comments below about the assembler
+To follow up on this, I'm also not sure how to tackle a "fake skb". If
+I remember this
+came up during the flow dissector series, and wasn't met with
+enthusiasm. Granted,
+replacing the skb argument to the lookup functions seems even harder, so maybe
+this is the lesser evil?
 
-> On 20 May 2019, at 17:45, Jose E. Marchesi <jose.marchesi oracle ! =
-com> wrote:
->=20
-> Hi people!
->=20
-> This patch series introduces support for eBPF, which is a virtual
-> machine that resides in the Linux kernel.  Initially intended for
-> user-level packet capture and filtering, eBPF is nowadays generalized
-> to serve as a general-purpose infrastructure also for non-networking
-> purposes.
->=20
-> The first patch is preparatory, and adds support to config.guess to
-> recognize bpf-*-* triplets.  This will be submitted as a patch to the
-> `config' project as soon as this series gets upstreamed.
->=20
-> The second and third patches add support for an ELF64 based eBPF
-> target to BFD, in both little-endian and big-endian vectors.
->=20
-> The fourth patch adds a CGEN cpu description for eBPF, plus support
-> code.  This description covers the full eBPF ISA.  Due to the 64-bit
-> instruction fields used in some instructions, we needed to fix a
-> bug/limitation in CGEN impacting 32-bit hosts.  The fix is in a patch
-> submitted to CGEN last week, that is still waiting for review:
-> http://www.sourceware.org/ml/cgen/2019-q2/msg00008.html None of the
-> existing CGEN ports in binutils are impacted by that patch: the code
-> generated for these remains exactly the same.
->=20
-> The fifth patch adds opcodes and disassembler support for eBPF, based
-> on the CGEN description.
->=20
-> The sixth patch adds a GAS port, including a testsuite and manual
-> updates.  By default the assembler generates objects using the same
-> endianness than the host.  This can be overrided by the usual -EB and
-> -EB command-line options.
->=20
-> Support for linking eBPF ELF files with ld/bfd is provided in the
-> seventh patch.  A couple of simple tests are included.
->=20
-> The eighth patch adds support for eBPF to readelf, and makes a little
-> adjustment in the `nm' testsuite to not fail in bpf-*-* targets.
->=20
-> Finally, the last patch adds myself as the maintainer of the BPF
-> target.  We are committing to maintain this port.
->=20
-> Future work on the binutils port:
-> * Support for semantic actions in bpf.cpu, and support code for a
->  simulator in sim/.
-> * Support for ld.gold.
->=20
-> Next stop is GCC.  An eBPF backend is on the works.  We plan to
-> upstream it before September.
->=20
-> Regressions tested in all targets.
-> Regressions tested with --enable-targets=3Dall
-> Tested in 64-bit x86_64 host.
-> Tested in 32-bit x86 host.
->=20
-> Oh, a little note regarding interoperability:
->=20
-> There is a clang/llvm based toolchain for eBPF.  However, at this
-> moment compiled eBPF doesn't have established conventions.  The
-> details on what is expected to be in an ELF file containing eBPF is
-> determined, in practice, by what the llvm BPF backend supports and
-> what the sample bpf_load.c in the Linux kernel source tree expects
-> [1].
->=20
-> Despite using a different syntax for the assembler (the llvm assembler
-> uses a C-ish expression-based syntax while the GNU assembler opts for
-> a more classic assembly-language syntax) this implementation tries to
-> provide inter-operability with clang/llvm generated objects.
-
-I also noticed your implementation doesn=E2=80=99t seem to use the same =
-sub-register
-syntax as what LLVM assembler is doing.
-
-  x register for 64-bit, and w register for 32-bit sub-register.
-
-So:
-  add r0, r1, r2 means BPF_ALU64 | BPF_ADD | BFF_X
-  add w0, w1, w1 means BPF_ALU | BPF_ADD | BPF_X
-
-ASAICT, different register prefix for different register width is also =
-adopted
-by quite a few other GNU assembler targets like AArch64, X86_64.
-
->=20
-> In particular, the numbers of the relocations used for instruction
-> fields are the same.  These are R_BPF_INSN_64 and R_BPF_INSN_DISP32.
-> The later is resolved at load-time by bpf_load.c.
-
-I think you missed the latest JMP32 instructions.
-
-  =
-https://github.com/torvalds/linux/blob/master/Documentation/networking/fil=
-ter.txt#L870
+>
+> Thanks
+> Nitin
+>
+> >
 
 
->=20
-> [1] We expect/hope that the addition of eBPF support to the GNU
->    toolchain will help to mature the domain of compiled eBPF.  We
->    will certainly be working with the kernel people to that effect.
->=20
-> Salud!
->=20
-> Jose E. Marchesi (9):
->  config: recognize eBPF triplets
->  include: add elf/bpf.h
->  bfd: add support for eBPF
->  cpu: add eBPF cpu description
->  opcodes: add support for eBPF
->  gas: add support for eBPF
->  ld: add support for eBPF
->  binutils: add support for eBPF
->  binutils: add myself as the maintainer for BPF
->=20
-> ChangeLog                              |    4 +
-> bfd/ChangeLog                          |   20 +
-> bfd/Makefile.am                        |    4 +
-> bfd/Makefile.in                        |    7 +
-> bfd/archures.c                         |    4 +
-> bfd/bfd-in2.h                          |    9 +
-> bfd/config.bfd                         |    6 +
-> bfd/configure                          |   30 +-
-> bfd/configure.ac                       |    2 +
-> bfd/cpu-bpf.c                          |   41 +
-> bfd/elf64-bpf.c                        |  463 +++++++++
-> bfd/libbfd.h                           |    5 +
-> bfd/reloc.c                            |   13 +
-> bfd/targets.c                          |    7 +
-> binutils/ChangeLog                     |   13 +
-> binutils/MAINTAINERS                   |    1 +
-> binutils/readelf.c                     |    8 +
-> binutils/testsuite/binutils-all/nm.exp |    3 +-
-> config.sub                             |    4 +-
-> cpu/ChangeLog                          |    5 +
-> cpu/bpf.cpu                            |  647 +++++++++++++
-> cpu/bpf.opc                            |  191 ++++
-> gas/ChangeLog                          |   45 +
-> gas/Makefile.am                        |    2 +
-> gas/Makefile.in                        |    6 +
-> gas/config/tc-bpf.c                    |  357 +++++++
-> gas/config/tc-bpf.h                    |   51 +
-> gas/configure                          |   38 +-
-> gas/configure.ac                       |    6 +
-> gas/configure.tgt                      |    1 +
-> gas/doc/Makefile.am                    |    1 +
-> gas/doc/Makefile.in                    |    6 +-
-> gas/doc/all.texi                       |    1 +
-> gas/doc/as.texi                        |   34 +
-> gas/doc/c-bpf.texi                     |  364 +++++++
-> gas/testsuite/gas/all/gas.exp          |    3 +
-> gas/testsuite/gas/all/org-1.l          |    2 +-
-> gas/testsuite/gas/all/org-1.s          |    2 +
-> gas/testsuite/gas/bpf/alu-be.d         |   59 ++
-> gas/testsuite/gas/bpf/alu.d            |   58 ++
-> gas/testsuite/gas/bpf/alu.s            |   51 +
-> gas/testsuite/gas/bpf/alu32-be.d       |   65 ++
-> gas/testsuite/gas/bpf/alu32.d          |   64 ++
-> gas/testsuite/gas/bpf/alu32.s          |   57 ++
-> gas/testsuite/gas/bpf/atomic-be.d      |   12 +
-> gas/testsuite/gas/bpf/atomic.d         |   11 +
-> gas/testsuite/gas/bpf/atomic.s         |    5 +
-> gas/testsuite/gas/bpf/bpf.exp          |   38 +
-> gas/testsuite/gas/bpf/call-be.d        |   19 +
-> gas/testsuite/gas/bpf/call.d           |   18 +
-> gas/testsuite/gas/bpf/call.s           |   11 +
-> gas/testsuite/gas/bpf/exit-be.d        |   11 +
-> gas/testsuite/gas/bpf/exit.d           |   10 +
-> gas/testsuite/gas/bpf/exit.s           |    2 +
-> gas/testsuite/gas/bpf/jump-be.d        |   32 +
-> gas/testsuite/gas/bpf/jump.d           |   31 +
-> gas/testsuite/gas/bpf/jump.s           |   25 +
-> gas/testsuite/gas/bpf/lddw-be.d        |   18 +
-> gas/testsuite/gas/bpf/lddw.d           |   17 +
-> gas/testsuite/gas/bpf/lddw.s           |    6 +
-> gas/testsuite/gas/bpf/mem-be.d         |   30 +
-> gas/testsuite/gas/bpf/mem.d            |   29 +
-> gas/testsuite/gas/bpf/mem.s            |   24 +
-> include/ChangeLog                      |    4 +
-> include/elf/bpf.h                      |   45 +
-> ld/ChangeLog                           |   15 +
-> ld/Makefile.am                         |    2 +
-> ld/Makefile.in                         |    4 +
-> ld/configure                           |   28 +-
-> ld/configure.tgt                       |    1 +
-> ld/emulparams/elf64bpf.sh              |   10 +
-> ld/testsuite/ld-bpf/bar.s              |    5 +
-> ld/testsuite/ld-bpf/baz.s              |    5 +
-> ld/testsuite/ld-bpf/bpf.exp            |   29 +
-> ld/testsuite/ld-bpf/call-1.d           |   23 +
-> ld/testsuite/ld-bpf/foo.s              |    5 +
-> ld/testsuite/ld-bpf/jump-1.d           |   23 +
-> ld/testsuite/lib/ld-lib.exp            |    1 +
-> opcodes/ChangeLog                      |   24 +
-> opcodes/Makefile.am                    |   17 +
-> opcodes/Makefile.in                    |   23 +
-> opcodes/bpf-asm.c                      |  590 ++++++++++++
-> opcodes/bpf-desc.c                     | 1638 =
-++++++++++++++++++++++++++++++++
-> opcodes/bpf-desc.h                     |  266 ++++++
-> opcodes/bpf-dis.c                      |  624 ++++++++++++
-> opcodes/bpf-ibld.c                     |  956 +++++++++++++++++++
-> opcodes/bpf-opc.c                      | 1495 =
-+++++++++++++++++++++++++++++
-> opcodes/bpf-opc.h                      |  151 +++
-> opcodes/configure                      |   19 +-
-> opcodes/configure.ac                   |    1 +
-> opcodes/disassemble.c                  |   35 +
-> opcodes/disassemble.h                  |    1 +
-> 92 files changed, 9116 insertions(+), 33 deletions(-)
-> create mode 100644 bfd/cpu-bpf.c
-> create mode 100644 bfd/elf64-bpf.c
-> create mode 100644 cpu/bpf.cpu
-> create mode 100644 cpu/bpf.opc
-> create mode 100644 gas/config/tc-bpf.c
-> create mode 100644 gas/config/tc-bpf.h
-> create mode 100644 gas/doc/c-bpf.texi
-> create mode 100644 gas/testsuite/gas/bpf/alu-be.d
-> create mode 100644 gas/testsuite/gas/bpf/alu.d
-> create mode 100644 gas/testsuite/gas/bpf/alu.s
-> create mode 100644 gas/testsuite/gas/bpf/alu32-be.d
-> create mode 100644 gas/testsuite/gas/bpf/alu32.d
-> create mode 100644 gas/testsuite/gas/bpf/alu32.s
-> create mode 100644 gas/testsuite/gas/bpf/atomic-be.d
-> create mode 100644 gas/testsuite/gas/bpf/atomic.d
-> create mode 100644 gas/testsuite/gas/bpf/atomic.s
-> create mode 100644 gas/testsuite/gas/bpf/bpf.exp
-> create mode 100644 gas/testsuite/gas/bpf/call-be.d
-> create mode 100644 gas/testsuite/gas/bpf/call.d
-> create mode 100644 gas/testsuite/gas/bpf/call.s
-> create mode 100644 gas/testsuite/gas/bpf/exit-be.d
-> create mode 100644 gas/testsuite/gas/bpf/exit.d
-> create mode 100644 gas/testsuite/gas/bpf/exit.s
-> create mode 100644 gas/testsuite/gas/bpf/jump-be.d
-> create mode 100644 gas/testsuite/gas/bpf/jump.d
-> create mode 100644 gas/testsuite/gas/bpf/jump.s
-> create mode 100644 gas/testsuite/gas/bpf/lddw-be.d
-> create mode 100644 gas/testsuite/gas/bpf/lddw.d
-> create mode 100644 gas/testsuite/gas/bpf/lddw.s
-> create mode 100644 gas/testsuite/gas/bpf/mem-be.d
-> create mode 100644 gas/testsuite/gas/bpf/mem.d
-> create mode 100644 gas/testsuite/gas/bpf/mem.s
-> create mode 100644 include/elf/bpf.h
-> create mode 100644 ld/emulparams/elf64bpf.sh
-> create mode 100644 ld/testsuite/ld-bpf/bar.s
-> create mode 100644 ld/testsuite/ld-bpf/baz.s
-> create mode 100644 ld/testsuite/ld-bpf/bpf.exp
-> create mode 100644 ld/testsuite/ld-bpf/call-1.d
-> create mode 100644 ld/testsuite/ld-bpf/foo.s
-> create mode 100644 ld/testsuite/ld-bpf/jump-1.d
-> create mode 100644 opcodes/bpf-asm.c
-> create mode 100644 opcodes/bpf-desc.c
-> create mode 100644 opcodes/bpf-desc.h
-> create mode 100644 opcodes/bpf-dis.c
-> create mode 100644 opcodes/bpf-ibld.c
-> create mode 100644 opcodes/bpf-opc.c
-> create mode 100644 opcodes/bpf-opc.h
->=20
-> --=20
-> 2.11.0
 
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
