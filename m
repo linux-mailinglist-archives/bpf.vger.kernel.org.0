@@ -2,91 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D85425718
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 19:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FAA25753
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 20:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbfEUR4V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 May 2019 13:56:21 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:45885 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726900AbfEUR4V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 May 2019 13:56:21 -0400
-Received: by mail-pg1-f194.google.com with SMTP id i21so8935983pgi.12;
-        Tue, 21 May 2019 10:56:20 -0700 (PDT)
+        id S1727990AbfEUSOs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 May 2019 14:14:48 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:50354 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727969AbfEUSOs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 May 2019 14:14:48 -0400
+Received: by mail-wm1-f68.google.com with SMTP id f204so3940466wme.0
+        for <bpf@vger.kernel.org>; Tue, 21 May 2019 11:14:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FbUU/EROxa+2gIry4MHohDpJnUD0iabB83okgZNIc04=;
-        b=A9l63JLobrODFKSiZjPIwZQwRFFUX/GwQzTZ02aEzGt3720G+1fRDJpZmxQH9KWP/t
-         oXuT/hzpOTcCJAgBGHN63EmpNPuI3lcNWXJ7gO+i72zueZSPTi+X+AoyX6WPAurrOExa
-         IHxk+dneIbgnWAYF7bZr2xjb0TGwtqmTk26VMK68efrkSIrm67ziYaz8XCey733yfORK
-         3blPoWofHrXEgHwt2x0pBRBgbgPJmi6IhnvZBukzfSs/zNffyTtnyz9vLu3/pq24S/i4
-         lMW2j3pyeLVb1jhTamJC51XNc6dhDaFkQulDMtqkbgdy3RSSXWuIDubblJoHDhz89Hl8
-         DqIA==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=TjP/P7c4gYjeR2oHe3nyYI9DsC4D1Q7fDKW4H12WVsw=;
+        b=RI6LK0RHL4fqzbP2qxqY3ZtYP1XFqtDxl4cZdAyPIHnA89BMNkWtRS0E60dvvIlupq
+         lPvp2CxK3y4nniGYp+tRydRV9vANAmPR9uxL2+zvcpENNW1bLg9dS/0e+I55JfPKbG0J
+         NOJzgpwyPohQDx/V3ZAuefx7J8TJzG6u9907pCeUUevBjvjrG7SBUkxUHN+qJ3FeqYBp
+         e4/QffG1Tb2JFo+JvUBf7tbuphp+wpFoOAPofZKAgXadaE+Z78YkVTkmY2L9Om024lyN
+         8bC4VkpyW3hbiQPHRbH1NRRpwKqjbEwuPE1slZjniwsutDiE46eL4V5yCgpT4Qz5+psp
+         qNWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FbUU/EROxa+2gIry4MHohDpJnUD0iabB83okgZNIc04=;
-        b=ZaAzbNBhzBfT2aexHpqDFAWLx135LPtFbXIgmCEMXrb1nxWslkBnLMmLUTH95E57Sj
-         CCmDduoNsIle7oiiLRmkVkgRPpfpJCKnDDqbjL3zYyXI/ufXYSlzpu3AEkMCgH7Dp08m
-         j7NFa30RdxpJUHvk/OrmAjYv63CmxB5fAmHuLmeH48XhzCS7oLzJwAmYfIz6deNZ9OsY
-         D9LLq4YzdvOwdcwXDZwXtgmbDABrtrNxLbEB1rmZ9VKYJne+99giL71A/7qOE/e0V5Pn
-         TFIkiW5Q0vwLePXVZCIVQVY5Bl861+Vhavh/9kT2XH+YmDOTSf8AlK62lglaDmkASKj6
-         R5lA==
-X-Gm-Message-State: APjAAAWnAYjpaDzM6NPEVLy6pVPHzZ/B4IB7L8sm+1cSUmmJEShTWBBk
-        j8Q/I9ey5FCcgLIHKSkyt2VLbW5S
-X-Google-Smtp-Source: APXvYqwr6le7YzXOZE6He2lQYhAYaDm+QCOjOj/OX5MLAxhb48XQUgkTIPzNV6vdjmNTb4OXp4eUlg==
-X-Received: by 2002:a62:1b85:: with SMTP id b127mr61348467pfb.165.1558461380471;
-        Tue, 21 May 2019 10:56:20 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::1:1eff])
-        by smtp.gmail.com with ESMTPSA id i12sm26796352pfd.33.2019.05.21.10.56.19
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=TjP/P7c4gYjeR2oHe3nyYI9DsC4D1Q7fDKW4H12WVsw=;
+        b=X9UF+MOIxMXcV6HO5JoFOrfritqaeKTrnqPxqvklw5ugQ1Eqyfmdkm1CbRvJlzpKVH
+         D89K81J/WboMfR7kDLPq8AM4oYuXjFWSh9f+W34OD+ZbK50Ffb8FjE4sXYR6RIlIvBPk
+         v034ejGzg6cNKzlP9WBK0adCV0Xr8nn/vTKmawZ9tflM7daZN4R1Lmv631trsj9fuVbB
+         tsGZFo3oRK2hdKTpQRwbldYxy0am4bIypKo4AeaJ5NN2+frz9K4OaAsPMHBWj9VcY4Fi
+         h/Zk/bp6qNHJEn8Iugj89Fid4yGyZm/fYWL4el5q99NuBit3RUrOvcn2D2aKXpRuEKfe
+         HS1g==
+X-Gm-Message-State: APjAAAXqN7fFFsKnHZzMXOBM0gzUcbkVdnafbyrDm19fnpP5v59L5MnI
+        ACAnfzi/MUIcaOtW+fwiQESCgA==
+X-Google-Smtp-Source: APXvYqyW59rke7avKYpxd3oIQTCxdxdVjEGbLxUs5T/SpXRob5tTmfzVnSBzk2gCjophNevaQe8FyQ==
+X-Received: by 2002:a1c:f910:: with SMTP id x16mr4663660wmh.132.1558462486290;
+        Tue, 21 May 2019 11:14:46 -0700 (PDT)
+Received: from [192.168.0.23] (cpc1-cmbg19-2-0-cust104.5-4.cable.virginm.net. [82.27.180.105])
+        by smtp.gmail.com with ESMTPSA id s13sm3798630wmh.31.2019.05.21.11.14.45
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 May 2019 10:56:19 -0700 (PDT)
-Date:   Tue, 21 May 2019 10:56:18 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kris Van Hees <kris.van.hees@oracle.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        dtrace-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        rostedt@goodmis.org, mhiramat@kernel.org, acme@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, peterz@infradead.org
-Subject: Re: [RFC PATCH 00/11] bpf, trace, dtrace: DTrace BPF program type
- implementation and sample use
-Message-ID: <20190521175617.ipry6ue7o24a2e6n@ast-mbp.dhcp.thefacebook.com>
-References: <201905202347.x4KNl0cs030532@aserv0121.oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <201905202347.x4KNl0cs030532@aserv0121.oracle.com>
-User-Agent: NeoMutt/20180223
+        Tue, 21 May 2019 11:14:45 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH 0/9] eBPF support for GNU binutils
+From:   Jiong Wang <jiong.wang@netronome.com>
+In-Reply-To: <87d0kbrb3m.fsf@oracle.com>
+Date:   Tue, 21 May 2019 19:14:47 +0100
+Cc:     binutils@sourceware.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <768B654F-A66B-4CCE-9320-D096538B23F2@netronome.com>
+References: <1B2BE52B-527E-436E-AE49-29FA9E044FD3@netronome.com>
+ <87d0kbrb3m.fsf@oracle.com>
+To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>
+X-Mailer: Apple Mail (2.3273)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 20, 2019 at 11:47:00PM +0000, Kris Van Hees wrote:
-> 
->     2. bpf: add BPF_PROG_TYPE_DTRACE
-> 
-> 	This patch adds BPF_PROG_TYPE_DTRACE as a new BPF program type, without
-> 	actually providing an implementation.  The actual implementation is
-> 	added in patch 4 (see below).  We do it this way because the
-> 	implementation is being added to the tracing subsystem as a component
-> 	that I would be happy to maintain (if merged) whereas the declaration
-> 	of the program type must be in the bpf subsystem.  Since the two
-> 	subsystems are maintained by different people, we split the
-> 	implementing patches across maintainer boundaries while ensuring that
-> 	the kernel remains buildable between patches.
 
-None of these kernel patches are necessary for what you want to achieve.
-Feel free to add tools/dtrace/ directory and maintain it though.
+> On 21 May 2019, at 18:06, Jose E. Marchesi <jose.marchesi@oracle.com> =
+wrote:
+>=20
+>=20
+> Hi Jiong.
+>=20
+>> Despite using a different syntax for the assembler (the llvm =
+assembler
+>> uses a C-ish expression-based syntax while the GNU assembler opts for
+>> a more classic assembly-language syntax) this implementation tries to
+>> provide inter-operability with clang/llvm generated objects.
+>=20
+>    I also noticed your implementation doesn=E2=80=99t seem to use the =
+same sub-register
+>    syntax as what LLVM assembler is doing.
+>=20
+>      x register for 64-bit, and w register for 32-bit sub-register.
+>=20
+>    So:
+>      add r0, r1, r2 means BPF_ALU64 | BPF_ADD | BFF_X
+>      add w0, w1, w1 means BPF_ALU | BPF_ADD | BPF_X
+>=20
+>    ASAICT, different register prefix for different register width is =
+also adopted
+>    by quite a few other GNU assembler targets like AArch64, X86_64.
+>=20
+> Right.  I opted for using different mnemonics for alu and alu64
+> instructions, as it seemed to be simpler.
+>=20
+> What was your rationale for using sub-register notation? =20
 
-The new dtrace_buffer doesn't need to replicate existing bpf+kernel functionality
-and no changes are necessary in kernel/events/ring_buffer.c either.
-tools/dtrace/ user space component can use either per-cpu array map
-or hash map as a buffer to store arbitrary data into and use
-existing bpf_perf_event_output() to send it to user space via perf ring buffer.
+It is the same instruction operating on different register classes, =
+sub-register
+is a new register class, so define separate notation for them. This also
+simplifies compiler back-end when generating sub-register instructions, =
+at
+least for LLVM, and is likely for GCC as well.=20
 
-See, for example, how bpftrace does that.
+LLVM eBPF backend has full support for generating sub-register ISA,
+
+
+> Are you
+> planning to support instructions (or pseudo-instructions) mixing w and =
+x
+> registers in the future?
+>=20
+>> In particular, the numbers of the relocations used for instruction
+>> fields are the same.  These are R_BPF_INSN_64 and R_BPF_INSN_DISP32.
+>> The later is resolved at load-time by bpf_load.c.
+>=20
+>    I think you missed the latest JMP32 instructions.
+>=20
+>      =
+https://github.com/torvalds/linux/blob/master/Documentation/networking/fil=
+ter.txt#L870
+>=20
+> Oh thanks for spotting that.
+> Adding support for it :)
 
