@@ -2,190 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A38A925658
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 19:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AF5256E8
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 19:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729021AbfEURH0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 May 2019 13:07:26 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:34661 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728768AbfEURH0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 May 2019 13:07:26 -0400
-Received: by mail-qt1-f195.google.com with SMTP id h1so21414994qtp.1
-        for <bpf@vger.kernel.org>; Tue, 21 May 2019 10:07:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=9uPTbP2BF+UpteaL2KhM3aAj7QjRcnMmKHeI6Yh9EPI=;
-        b=iDZLE7yNQ4lDtD0XYGkkl4K2STILfN2iFJ4sfOJWHZcNwYcoj01MXQAuZDOz8ypaRK
-         gQ2al+DExF3ndweDKlzGJ6S8sh3a4I1jE9yZebCzr/OaHgirNisBjWSFzzZ0aN37o2PE
-         bQq5ubtJDozzrq4fm4E7hHtO8mLFyoaA8Qex24dH+DQ36QAkCCXKVyOKiuGyL+WEUoit
-         I0O7bjcNirgWpLwqrE3kiuzk0lVusS/1S4J8ZocRTyM1V2+Hm8DaSmHQcZFgHDmya+Bv
-         hRISJqciG/x9jHFQJfYLXz+UjXrCfL/2L4BytVMEOGs4abeYw5KrgDt4gbfB+1SGo49B
-         /xHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=9uPTbP2BF+UpteaL2KhM3aAj7QjRcnMmKHeI6Yh9EPI=;
-        b=E/TFTlWRWri3RtF6ofINaQDXFfxJICN4XK9utoV3iPU2bI6Off4vqh4tZpW97usbVO
-         S543JBBtRBC+zCYFcVip1FEfqWZZKytmDjaCMdi/c/8KSeQ9/vY5Jmh8CUhvg6Qcki29
-         bknqc3jYtNQK7LxfV/7G40EN5mG59TNUslitMlg1KfO5lzXOMRLS8towNDQyeGz0lLr1
-         UOyK3WjJyhoD3wHkoxyA/8gymmxQQKME1w43bQfWw0DEnpkqfYYDKreaA9ZyAbPnmw6U
-         afbVnkfaj6mArHSIpW94DRfWK9VhLBwbnFPFLNY95JXAkNJVxozgvmIhWkZoQoKU/7GJ
-         ivmQ==
-X-Gm-Message-State: APjAAAUS5W+sVsseC4aPqkyjslb/0art+mcaqpim6l3Ld+bHbamnxzzV
-        5rvKJbbxvoS3E/DsdLGg0PkEmg==
-X-Google-Smtp-Source: APXvYqxcQMuxnmJbIw2a9Sa0BNYiUuGeK0GKVudpfcvZwyO/XpF8PgnhrbotuKRw055g6yJA5t4Tkw==
-X-Received: by 2002:ac8:1671:: with SMTP id x46mr47261518qtk.240.1558458444792;
-        Tue, 21 May 2019 10:07:24 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id l127sm9247563qkc.81.2019.05.21.10.07.23
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 21 May 2019 10:07:24 -0700 (PDT)
-Date:   Tue, 21 May 2019 10:06:48 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Matteo Croce <mcroce@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        xdp-newbies@vger.kernel.org, bpf@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH 1/5] samples/bpf: fix test_lru_dist build
-Message-ID: <20190521100648.1ce9b5be@cakuba.netronome.com>
-In-Reply-To: <CAGnkfhxZPXUvBemRxAFfoq+y-UmtdQH=dvnyeLBJQo43U2=sTg@mail.gmail.com>
-References: <20190518004639.20648-1-mcroce@redhat.com>
-        <CAGnkfhxt=nq-JV+D5Rrquvn8BVOjHswEJmuVVZE78p9HvAg9qQ@mail.gmail.com>
-        <20190520133830.1ac11fc8@cakuba.netronome.com>
-        <dfb6cf40-81f4-237e-9a43-646077e020f7@iogearbox.net>
-        <CAGnkfhxZPXUvBemRxAFfoq+y-UmtdQH=dvnyeLBJQo43U2=sTg@mail.gmail.com>
-Organization: Netronome Systems, Ltd.
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+        id S1728784AbfEURnb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 May 2019 13:43:31 -0400
+Received: from shards.monkeyblade.net ([23.128.96.9]:42858 "EHLO
+        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728053AbfEURnb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 May 2019 13:43:31 -0400
+Received: from localhost (unknown [IPv6:2601:601:9f80:35cd::3d8])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id B16AF146BB096;
+        Tue, 21 May 2019 10:43:30 -0700 (PDT)
+Date:   Tue, 21 May 2019 10:43:30 -0700 (PDT)
+Message-Id: <20190521.104330.1268444854419644640.davem@davemloft.net>
+To:     jiong.wang@netronome.com
+Cc:     jose.marchesi@oracle.com, binutils@sourceware.org,
+        alexei.starovoitov@gmail.com, daniel@iogearbox.net,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 0/9] eBPF support for GNU binutils
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <1B2BE52B-527E-436E-AE49-29FA9E044FD3@netronome.com>
+References: <20190520164526.13491-1-jose.marchesi_()_oracle_!_com>
+        <1B2BE52B-527E-436E-AE49-29FA9E044FD3@netronome.com>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 21 May 2019 10:43:30 -0700 (PDT)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 21 May 2019 17:36:17 +0200, Matteo Croce wrote:
-> On Tue, May 21, 2019 at 5:21 PM Daniel Borkmann <daniel@iogearbox.net> wr=
-ote:
-> >
-> > On 05/20/2019 10:38 PM, Jakub Kicinski wrote: =20
-> > > On Mon, 20 May 2019 19:46:27 +0200, Matteo Croce wrote: =20
-> > >> On Sat, May 18, 2019 at 2:46 AM Matteo Croce <mcroce@redhat.com> wro=
-te: =20
-> > >>>
-> > >>> Fix the following error by removing a duplicate struct definition: =
-=20
-> > >>
-> > >> Hi all,
-> > >>
-> > >> I forget to send a cover letter for this series, but basically what I
-> > >> wanted to say is that while patches 1-3 are very straightforward,
-> > >> patches 4-5 are a bit rough and I accept suggstions to make a cleaner
-> > >> work. =20
-> > >
-> > > samples depend on headers being locally installed:
-> > >
-> > > make headers_install
-> > >
-> > > Are you intending to change that? =20
-> >
-> > +1, Matteo, could you elaborate?
-> >
-> > On latest bpf tree, everything compiles just fine:
-> >
-> > [root@linux bpf]# make headers_install
-> > [root@linux bpf]# make -C samples/bpf/
-> > make: Entering directory '/home/darkstar/trees/bpf/samples/bpf'
-> > make -C ../../ /home/darkstar/trees/bpf/samples/bpf/ BPF_SAMPLES_PATH=
-=3D/home/darkstar/trees/bpf/samples/bpf
-> > make[1]: Entering directory '/home/darkstar/trees/bpf'
-> >   CALL    scripts/checksyscalls.sh
-> >   CALL    scripts/atomic/check-atomics.sh
-> >   DESCEND  objtool
-> > make -C /home/darkstar/trees/bpf/samples/bpf/../../tools/lib/bpf/ RM=3D=
-'rm -rf' LDFLAGS=3D srctree=3D/home/darkstar/trees/bpf/samples/bpf/../../ O=
-=3D
-> >   HOSTCC  /home/darkstar/trees/bpf/samples/bpf/test_lru_dist
-> >   HOSTCC  /home/darkstar/trees/bpf/samples/bpf/sock_example
-> > =20
->=20
-> Hi all,
->=20
-> I have kernel-headers installed from master, but yet the samples fail to =
-build:
->=20
-> matteo@turbo:~/src/linux/samples/bpf$ rpm -q kernel-headers
-> kernel-headers-5.2.0_rc1-38.x86_64
->=20
-> matteo@turbo:~/src/linux/samples/bpf$ git describe HEAD
-> v5.2-rc1-97-g5bdd9ad875b6
->=20
-> matteo@turbo:~/src/linux/samples/bpf$ make
-> make -C ../../ /home/matteo/src/linux/samples/bpf/
-> BPF_SAMPLES_PATH=3D/home/matteo/src/linux/samples/bpf
-> make[1]: Entering directory '/home/matteo/src/linux'
->   CALL    scripts/checksyscalls.sh
->   CALL    scripts/atomic/check-atomics.sh
->   DESCEND  objtool
-> make -C /home/matteo/src/linux/samples/bpf/../../tools/lib/bpf/ RM=3D'rm
-> -rf' LDFLAGS=3D srctree=3D/home/matteo/src/linux/samples/bpf/../../ O=3D
->   HOSTCC  /home/matteo/src/linux/samples/bpf/test_lru_dist
-> /home/matteo/src/linux/samples/bpf/test_lru_dist.c:39:8: error:
-> redefinition of =E2=80=98struct list_head=E2=80=99
->    39 | struct list_head {
->       |        ^~~~~~~~~
-> In file included from /home/matteo/src/linux/samples/bpf/test_lru_dist.c:=
-9:
-> ./tools/include/linux/types.h:69:8: note: originally defined here
->    69 | struct list_head {
->       |        ^~~~~~~~~
-> make[2]: *** [scripts/Makefile.host:90:
-> /home/matteo/src/linux/samples/bpf/test_lru_dist] Error 1
-> make[1]: *** [Makefile:1762: /home/matteo/src/linux/samples/bpf/] Error 2
-> make[1]: Leaving directory '/home/matteo/src/linux'
-> make: *** [Makefile:231: all] Error 2
->=20
-> Am I missing something obvious?
+From: Jiong Wang <jiong.wang@netronome.com>
+Date: Tue, 21 May 2019 16:41:56 +0100
 
-Yes ;)  Samples use a local installation of headers in $objtree/usr (I
-think, maybe $srctree/usr).  So you need to do make headers_install in
-your kernel source tree, otherwise the include path from tools/ takes
-priority over your global /usr/include and causes these issues.  I had
-this path in my tree for some time, but I don't like enough to post it:
+> CCing BPF kernel community who is defining the ISA and various runtime stuff.
+> 
+> Also two inline comments below about the assembler
 
-commit 35fb614049e93d46af708c0eaae6601df54017b3
-Author: Jakub Kicinski <jakub.kicinski@netronome.com>
-Date:   Mon Dec 3 15:00:24 2018 -0800
+Also, I already wrote such a binutils patch a year or two ago:
 
-    bpf: maybe warn ppl about hrds_install
-   =20
-    Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 4f0a1cdbfe7c..f79a4ed2f9f7 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -208,6 +208,15 @@ HOSTCC =3D $(CROSS_COMPILE)gcc
- CLANG_ARCH_ARGS =3D -target $(ARCH)
- endif
-=20
-+HDR_PROBE :=3D $(shell echo "\#include <linux/types.h>\n struct list_head =
-{ int a; }; int main() { return 0; }" | \
-+       gcc $(KBUILD_HOSTCFLAGS) -x c - -o /dev/null 2>/dev/null && \
-+       echo okay)
-+
-+ifeq ($(HDR_PROBE),)
-+$(warning Detected possible issues with include path.)
-+$(warning Please install kernel headers locally (make headers_install))
-+endif
-+
- BTF_LLC_PROBE :=3D $(shell $(LLC) -march=3Dbpf -mattr=3Dhelp 2>&1 | grep d=
-warfris)
- BTF_PAHOLE_PROBE :=3D $(shell $(BTF_PAHOLE) --help 2>&1 | grep BTF)
- BTF_OBJCOPY_PROBE :=3D $(shell $(LLVM_OBJCOPY) --help 2>&1 | grep -i 'usag=
-e.*llvm')
+https://lwn.net/Articles/721473/
