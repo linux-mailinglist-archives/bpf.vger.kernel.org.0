@@ -2,61 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7820125A2C
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 23:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C4425A46
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 00:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727559AbfEUVsO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 May 2019 17:48:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726907AbfEUVsO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 May 2019 17:48:14 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8272217F9;
-        Tue, 21 May 2019 21:48:12 +0000 (UTC)
-Date:   Tue, 21 May 2019 17:48:11 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kris Van Hees <kris.van.hees@oracle.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, dtrace-devel@oss.oracle.com,
-        linux-kernel@vger.kernel.org, mhiramat@kernel.org, acme@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, peterz@infradead.org
-Subject: Re: [RFC PATCH 00/11] bpf, trace, dtrace: DTrace BPF program type
- implementation and sample use
-Message-ID: <20190521174757.74ec8937@gandalf.local.home>
-In-Reply-To: <20190521214325.rr7emn5z3b7wqiiy@ast-mbp.dhcp.thefacebook.com>
-References: <201905202347.x4KNl0cs030532@aserv0121.oracle.com>
-        <20190521175617.ipry6ue7o24a2e6n@ast-mbp.dhcp.thefacebook.com>
-        <20190521184137.GH2422@oracle.com>
-        <20190521205533.evfszcjvdouby7vp@ast-mbp.dhcp.thefacebook.com>
-        <20190521173618.2ebe8c1f@gandalf.local.home>
-        <20190521214325.rr7emn5z3b7wqiiy@ast-mbp.dhcp.thefacebook.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726391AbfEUWZ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 May 2019 18:25:26 -0400
+Received: from www62.your-server.de ([213.133.104.62]:48604 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725797AbfEUWZ0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 May 2019 18:25:26 -0400
+Received: from [88.198.220.130] (helo=sslproxy01.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hTDCH-0004VO-8C; Wed, 22 May 2019 00:25:25 +0200
+Received: from [178.197.249.20] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hTDCH-0003Dm-1B; Wed, 22 May 2019 00:25:25 +0200
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, alexei.starovoitov@gmail.com
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Subject: bpf-next is OPEN
+Message-ID: <77117fa3-7437-c993-b054-a1105370ea06@iogearbox.net>
+Date:   Wed, 22 May 2019 00:25:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25456/Tue May 21 09:56:54 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 21 May 2019 14:43:26 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+Merge window is closed, so new round begins as usual.
 
-> Steve,
-> sounds like you've missed all prior threads.
-
-I probably have missed them ;-)
-
-> The feedback was given to Kris it was very clear:
-> implement dtrace the same way as bpftrace is working with bpf.
-> No changes are necessary to dtrace scripts
-> and no kernel changes are necessary.
-
-Kris, I haven't been keeping up on all the discussions. But what
-exactly is the issue where Dtrace can't be done the same way as the
-bpftrace is done?
-
--- Steve
+Thanks everyone,
+Daniel
