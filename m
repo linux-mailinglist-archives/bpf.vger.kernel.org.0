@@ -2,112 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E367625654
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 19:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A38A925658
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 19:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728271AbfEURG6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 May 2019 13:06:58 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:50268 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727990AbfEURG6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 May 2019 13:06:58 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4LH4TKu008515;
-        Tue, 21 May 2019 17:06:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : references : date : in-reply-to : message-id : mime-version :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=SCIScQ0uw9hvxrZB2jY9cbQFN9r1+sHJc0RTsq9YXfc=;
- b=IoDfUjpEXNvLMsArZmm541AzC2Qp1NlYt0FXMfcQFTHlpxzkUojILYdJZA4ll5xmrLJc
- Ej7qAn9K/rw26NQbsvqi+VvVXk8muFSjiaOB4ZGfuSEiirQ3XP5yMpz8xqjtveuvto8t
- R8N3GMcj9/MGjpQBFqclDAZkqjFWSkRAF8ZikzelFIM3G4scwvyVFTOvJBgABNXGv//g
- AmCabup6dQldNnnJkxF6DhHcdJuxn+QatGVBcjfjwI6q9xZ6rRpd/VyPQ9X3K4meL+in
- D2jEXw85XbzQ+nbAG7fyz4C9GB782ONfr7etexLvm2DNc7DCG8W1P5VB2MkjT0YQbzlr nQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2sj9ftewcx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 May 2019 17:06:33 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4LH4rPJ162185;
-        Tue, 21 May 2019 17:06:33 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2skudbgmv3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 May 2019 17:06:33 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x4LH6TgC016914;
-        Tue, 21 May 2019 17:06:30 GMT
-Received: from termi.oracle.com (/10.175.32.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 21 May 2019 17:06:29 +0000
-From:   jose.marchesi@oracle.com (Jose E. Marchesi)
-To:     Jiong Wang <jiong.wang@netronome.com>
-Cc:     binutils@sourceware.org,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Subject: Re: [PATCH 0/9] eBPF support for GNU binutils
-References: <1B2BE52B-527E-436E-AE49-29FA9E044FD3@netronome.com>
-Date:   Tue, 21 May 2019 19:06:21 +0200
-In-Reply-To: <1B2BE52B-527E-436E-AE49-29FA9E044FD3@netronome.com> (Jiong
-        Wang's message of "Tue, 21 May 2019 16:41:56 +0100")
-Message-ID: <87d0kbrb3m.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1729021AbfEURH0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 May 2019 13:07:26 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:34661 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728768AbfEURH0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 May 2019 13:07:26 -0400
+Received: by mail-qt1-f195.google.com with SMTP id h1so21414994qtp.1
+        for <bpf@vger.kernel.org>; Tue, 21 May 2019 10:07:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=9uPTbP2BF+UpteaL2KhM3aAj7QjRcnMmKHeI6Yh9EPI=;
+        b=iDZLE7yNQ4lDtD0XYGkkl4K2STILfN2iFJ4sfOJWHZcNwYcoj01MXQAuZDOz8ypaRK
+         gQ2al+DExF3ndweDKlzGJ6S8sh3a4I1jE9yZebCzr/OaHgirNisBjWSFzzZ0aN37o2PE
+         bQq5ubtJDozzrq4fm4E7hHtO8mLFyoaA8Qex24dH+DQ36QAkCCXKVyOKiuGyL+WEUoit
+         I0O7bjcNirgWpLwqrE3kiuzk0lVusS/1S4J8ZocRTyM1V2+Hm8DaSmHQcZFgHDmya+Bv
+         hRISJqciG/x9jHFQJfYLXz+UjXrCfL/2L4BytVMEOGs4abeYw5KrgDt4gbfB+1SGo49B
+         /xHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=9uPTbP2BF+UpteaL2KhM3aAj7QjRcnMmKHeI6Yh9EPI=;
+        b=E/TFTlWRWri3RtF6ofINaQDXFfxJICN4XK9utoV3iPU2bI6Off4vqh4tZpW97usbVO
+         S543JBBtRBC+zCYFcVip1FEfqWZZKytmDjaCMdi/c/8KSeQ9/vY5Jmh8CUhvg6Qcki29
+         bknqc3jYtNQK7LxfV/7G40EN5mG59TNUslitMlg1KfO5lzXOMRLS8towNDQyeGz0lLr1
+         UOyK3WjJyhoD3wHkoxyA/8gymmxQQKME1w43bQfWw0DEnpkqfYYDKreaA9ZyAbPnmw6U
+         afbVnkfaj6mArHSIpW94DRfWK9VhLBwbnFPFLNY95JXAkNJVxozgvmIhWkZoQoKU/7GJ
+         ivmQ==
+X-Gm-Message-State: APjAAAUS5W+sVsseC4aPqkyjslb/0art+mcaqpim6l3Ld+bHbamnxzzV
+        5rvKJbbxvoS3E/DsdLGg0PkEmg==
+X-Google-Smtp-Source: APXvYqxcQMuxnmJbIw2a9Sa0BNYiUuGeK0GKVudpfcvZwyO/XpF8PgnhrbotuKRw055g6yJA5t4Tkw==
+X-Received: by 2002:ac8:1671:: with SMTP id x46mr47261518qtk.240.1558458444792;
+        Tue, 21 May 2019 10:07:24 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id l127sm9247563qkc.81.2019.05.21.10.07.23
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 21 May 2019 10:07:24 -0700 (PDT)
+Date:   Tue, 21 May 2019 10:06:48 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Matteo Croce <mcroce@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        xdp-newbies@vger.kernel.org, bpf@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH 1/5] samples/bpf: fix test_lru_dist build
+Message-ID: <20190521100648.1ce9b5be@cakuba.netronome.com>
+In-Reply-To: <CAGnkfhxZPXUvBemRxAFfoq+y-UmtdQH=dvnyeLBJQo43U2=sTg@mail.gmail.com>
+References: <20190518004639.20648-1-mcroce@redhat.com>
+        <CAGnkfhxt=nq-JV+D5Rrquvn8BVOjHswEJmuVVZE78p9HvAg9qQ@mail.gmail.com>
+        <20190520133830.1ac11fc8@cakuba.netronome.com>
+        <dfb6cf40-81f4-237e-9a43-646077e020f7@iogearbox.net>
+        <CAGnkfhxZPXUvBemRxAFfoq+y-UmtdQH=dvnyeLBJQo43U2=sTg@mail.gmail.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9264 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=870
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1905210104
-X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9264 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=961 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1905210105
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, 21 May 2019 17:36:17 +0200, Matteo Croce wrote:
+> On Tue, May 21, 2019 at 5:21 PM Daniel Borkmann <daniel@iogearbox.net> wr=
+ote:
+> >
+> > On 05/20/2019 10:38 PM, Jakub Kicinski wrote: =20
+> > > On Mon, 20 May 2019 19:46:27 +0200, Matteo Croce wrote: =20
+> > >> On Sat, May 18, 2019 at 2:46 AM Matteo Croce <mcroce@redhat.com> wro=
+te: =20
+> > >>>
+> > >>> Fix the following error by removing a duplicate struct definition: =
+=20
+> > >>
+> > >> Hi all,
+> > >>
+> > >> I forget to send a cover letter for this series, but basically what I
+> > >> wanted to say is that while patches 1-3 are very straightforward,
+> > >> patches 4-5 are a bit rough and I accept suggstions to make a cleaner
+> > >> work. =20
+> > >
+> > > samples depend on headers being locally installed:
+> > >
+> > > make headers_install
+> > >
+> > > Are you intending to change that? =20
+> >
+> > +1, Matteo, could you elaborate?
+> >
+> > On latest bpf tree, everything compiles just fine:
+> >
+> > [root@linux bpf]# make headers_install
+> > [root@linux bpf]# make -C samples/bpf/
+> > make: Entering directory '/home/darkstar/trees/bpf/samples/bpf'
+> > make -C ../../ /home/darkstar/trees/bpf/samples/bpf/ BPF_SAMPLES_PATH=
+=3D/home/darkstar/trees/bpf/samples/bpf
+> > make[1]: Entering directory '/home/darkstar/trees/bpf'
+> >   CALL    scripts/checksyscalls.sh
+> >   CALL    scripts/atomic/check-atomics.sh
+> >   DESCEND  objtool
+> > make -C /home/darkstar/trees/bpf/samples/bpf/../../tools/lib/bpf/ RM=3D=
+'rm -rf' LDFLAGS=3D srctree=3D/home/darkstar/trees/bpf/samples/bpf/../../ O=
+=3D
+> >   HOSTCC  /home/darkstar/trees/bpf/samples/bpf/test_lru_dist
+> >   HOSTCC  /home/darkstar/trees/bpf/samples/bpf/sock_example
+> > =20
+>=20
+> Hi all,
+>=20
+> I have kernel-headers installed from master, but yet the samples fail to =
+build:
+>=20
+> matteo@turbo:~/src/linux/samples/bpf$ rpm -q kernel-headers
+> kernel-headers-5.2.0_rc1-38.x86_64
+>=20
+> matteo@turbo:~/src/linux/samples/bpf$ git describe HEAD
+> v5.2-rc1-97-g5bdd9ad875b6
+>=20
+> matteo@turbo:~/src/linux/samples/bpf$ make
+> make -C ../../ /home/matteo/src/linux/samples/bpf/
+> BPF_SAMPLES_PATH=3D/home/matteo/src/linux/samples/bpf
+> make[1]: Entering directory '/home/matteo/src/linux'
+>   CALL    scripts/checksyscalls.sh
+>   CALL    scripts/atomic/check-atomics.sh
+>   DESCEND  objtool
+> make -C /home/matteo/src/linux/samples/bpf/../../tools/lib/bpf/ RM=3D'rm
+> -rf' LDFLAGS=3D srctree=3D/home/matteo/src/linux/samples/bpf/../../ O=3D
+>   HOSTCC  /home/matteo/src/linux/samples/bpf/test_lru_dist
+> /home/matteo/src/linux/samples/bpf/test_lru_dist.c:39:8: error:
+> redefinition of =E2=80=98struct list_head=E2=80=99
+>    39 | struct list_head {
+>       |        ^~~~~~~~~
+> In file included from /home/matteo/src/linux/samples/bpf/test_lru_dist.c:=
+9:
+> ./tools/include/linux/types.h:69:8: note: originally defined here
+>    69 | struct list_head {
+>       |        ^~~~~~~~~
+> make[2]: *** [scripts/Makefile.host:90:
+> /home/matteo/src/linux/samples/bpf/test_lru_dist] Error 1
+> make[1]: *** [Makefile:1762: /home/matteo/src/linux/samples/bpf/] Error 2
+> make[1]: Leaving directory '/home/matteo/src/linux'
+> make: *** [Makefile:231: all] Error 2
+>=20
+> Am I missing something obvious?
 
-Hi Jiong.
+Yes ;)  Samples use a local installation of headers in $objtree/usr (I
+think, maybe $srctree/usr).  So you need to do make headers_install in
+your kernel source tree, otherwise the include path from tools/ takes
+priority over your global /usr/include and causes these issues.  I had
+this path in my tree for some time, but I don't like enough to post it:
 
-    > Despite using a different syntax for the assembler (the llvm assembler
-    > uses a C-ish expression-based syntax while the GNU assembler opts for
-    > a more classic assembly-language syntax) this implementation tries to
-    > provide inter-operability with clang/llvm generated objects.
-=20=20=20=20
-    I also noticed your implementation doesn=E2=80=99t seem to use the same=
- sub-register
-    syntax as what LLVM assembler is doing.
-=20=20=20=20
-      x register for 64-bit, and w register for 32-bit sub-register.
-=20=20=20=20
-    So:
-      add r0, r1, r2 means BPF_ALU64 | BPF_ADD | BFF_X
-      add w0, w1, w1 means BPF_ALU | BPF_ADD | BPF_X
-=20=20=20=20
-    ASAICT, different register prefix for different register width is also =
-adopted
-    by quite a few other GNU assembler targets like AArch64, X86_64.
+commit 35fb614049e93d46af708c0eaae6601df54017b3
+Author: Jakub Kicinski <jakub.kicinski@netronome.com>
+Date:   Mon Dec 3 15:00:24 2018 -0800
 
-Right.  I opted for using different mnemonics for alu and alu64
-instructions, as it seemed to be simpler.
+    bpf: maybe warn ppl about hrds_install
+   =20
+    Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
 
-What was your rationale for using sub-register notation?  Are you
-planning to support instructions (or pseudo-instructions) mixing w and x
-registers in the future?
-
-    > In particular, the numbers of the relocations used for instruction
-    > fields are the same.  These are R_BPF_INSN_64 and R_BPF_INSN_DISP32.
-    > The later is resolved at load-time by bpf_load.c.
-=20=20=20=20
-    I think you missed the latest JMP32 instructions.
-=20=20=20=20
-      https://github.com/torvalds/linux/blob/master/Documentation/networkin=
-g/filter.txt#L870
-
-Oh thanks for spotting that.
-Adding support for it :)
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index 4f0a1cdbfe7c..f79a4ed2f9f7 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -208,6 +208,15 @@ HOSTCC =3D $(CROSS_COMPILE)gcc
+ CLANG_ARCH_ARGS =3D -target $(ARCH)
+ endif
+=20
++HDR_PROBE :=3D $(shell echo "\#include <linux/types.h>\n struct list_head =
+{ int a; }; int main() { return 0; }" | \
++       gcc $(KBUILD_HOSTCFLAGS) -x c - -o /dev/null 2>/dev/null && \
++       echo okay)
++
++ifeq ($(HDR_PROBE),)
++$(warning Detected possible issues with include path.)
++$(warning Please install kernel headers locally (make headers_install))
++endif
++
+ BTF_LLC_PROBE :=3D $(shell $(LLC) -march=3Dbpf -mattr=3Dhelp 2>&1 | grep d=
+warfris)
+ BTF_PAHOLE_PROBE :=3D $(shell $(BTF_PAHOLE) --help 2>&1 | grep BTF)
+ BTF_OBJCOPY_PROBE :=3D $(shell $(LLVM_OBJCOPY) --help 2>&1 | grep -i 'usag=
+e.*llvm')
