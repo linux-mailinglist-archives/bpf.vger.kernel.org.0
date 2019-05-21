@@ -2,180 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 503942499B
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 10:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC0924A67
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 10:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbfEUIAQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 May 2019 04:00:16 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:56024 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726006AbfEUIAP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 May 2019 04:00:15 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id EE03B308620F;
-        Tue, 21 May 2019 08:00:09 +0000 (UTC)
-Received: from antique-laptop (ovpn-200-37.brq.redhat.com [10.40.200.37])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 71929646CE;
-        Tue, 21 May 2019 08:00:06 +0000 (UTC)
-Date:   Tue, 21 May 2019 10:00:03 +0200
-From:   Pavel Hrdina <phrdina@redhat.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>, Daniel Mack <daniel@zonque.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [RFC] cgroup gets release after long time
-Message-ID: <20190521080003.GA9932@antique-laptop>
-References: <20190516103915.GB27421@krava>
- <20190516152224.GA7163@castle.DHCP.thefacebook.com>
- <20190516153144.GC19737@antique-laptop>
- <20190516171427.GA8058@castle.DHCP.thefacebook.com>
- <CAADnVQ+c4HW+1jrurHDX0M4-yn13fmU=TYhF+8wPrxNZZRcjTw@mail.gmail.com>
- <20190517101222.GF1981@antique-laptop>
- <20190518005606.GA3431@tower.DHCP.thefacebook.com>
- <20190520084126.GM1981@antique-laptop>
- <20190520191135.GB24204@tower.DHCP.thefacebook.com>
+        id S1726705AbfEUIbG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 May 2019 04:31:06 -0400
+Received: from mail-it1-f198.google.com ([209.85.166.198]:56636 "EHLO
+        mail-it1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726363AbfEUIbG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 May 2019 04:31:06 -0400
+Received: by mail-it1-f198.google.com with SMTP id j9so2084082ite.6
+        for <bpf@vger.kernel.org>; Tue, 21 May 2019 01:31:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=wO+SNayuGRGORA/iNMIl13BvsLdE+BTs0PZ1vvmuPRk=;
+        b=OC0lLXoDozC8jCEYZyXaZUJPWksJKf/sfZvxXreZJwXCBfj/SeXkcVqf/6rcifmMGd
+         rMwmgpss6iDLcQF5kI88md7n/DsEJ/Ofomq99PVI1LAx0h7ZCr0mm3yVSQW443aQrm/W
+         rN2as1blEqzxVv+v2u4sVcYb4bs9Sy8UIPD7+AVLZOmqRJJ9ZSdZ3uqHDb5+wZyHcAbG
+         /+l0yVtPetdXLz4P0eXC7UchEV0A+nIwaNmeVJtUHtWen+wDz2nBIXLPkV5FUj6bKQyf
+         B0nHIf9FUx0C0OyoE3jInKq+hk36kAFR5Dd4VWQf7u9uKhKt7v1gI1bUwwI2hlAoNdyz
+         RyUA==
+X-Gm-Message-State: APjAAAVq7MhhGGYaN3NTHWF5SlixMzZT7GHB6y6GOi32qWHzGbXZ4E8j
+        +3iWp+fLCfdPUJKruWzVSzMNVirq1LrlRGix8pSfsV55jmkh
+X-Google-Smtp-Source: APXvYqxLNOmJWzS0OQ/JEpStyrsvuk+TfHKloJXRpkAqRBq3AeDbkB2ONuThOugJAqv1ke3lyt7HZEjcWvTZtjIyuSd4E5XRArVu
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="opJtzjQTFsWo+cga"
-Content-Disposition: inline
-In-Reply-To: <20190520191135.GB24204@tower.DHCP.thefacebook.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.42]); Tue, 21 May 2019 08:00:15 +0000 (UTC)
+X-Received: by 2002:a6b:da0f:: with SMTP id x15mr1036473iob.214.1558427465554;
+ Tue, 21 May 2019 01:31:05 -0700 (PDT)
+Date:   Tue, 21 May 2019 01:31:05 -0700
+In-Reply-To: <00000000000033a0120588fac894@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007e2260058961abd9@google.com>
+Subject: Re: WARNING: locking bug in inet_autobind
+From:   syzbot <syzbot+94cc2a66fc228b23f360@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, kafai@fb.com, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+syzbot has found a reproducer for the following crash on:
 
---opJtzjQTFsWo+cga
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+HEAD commit:    f49aa1de Merge tag 'for-5.2-rc1-tag' of git://git.kernel.o..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=14e5b130a00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fc045131472947d7
+dashboard link: https://syzkaller.appspot.com/bug?extid=94cc2a66fc228b23f360
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=163731f8a00000
 
-On Mon, May 20, 2019 at 07:11:39PM +0000, Roman Gushchin wrote:
-> On Mon, May 20, 2019 at 10:41:26AM +0200, Pavel Hrdina wrote:
-> > On Sat, May 18, 2019 at 12:56:12AM +0000, Roman Gushchin wrote:
-> > > On Fri, May 17, 2019 at 12:12:51PM +0200, Pavel Hrdina wrote:
-> > > > On Thu, May 16, 2019 at 10:25:50AM -0700, Alexei Starovoitov wrote:
-> > > > > On Thu, May 16, 2019 at 10:15 AM Roman Gushchin <guro@fb.com> wro=
-te:
-> > > > > >
-> > > > > > On Thu, May 16, 2019 at 05:31:44PM +0200, Pavel Hrdina wrote:
-> > > > > > > On Thu, May 16, 2019 at 03:22:33PM +0000, Roman Gushchin wrot=
-e:
-> > > > > > > > On Thu, May 16, 2019 at 12:39:15PM +0200, Jiri Olsa wrote:
-> > > > > > > > > hi,
-> > > > > > > > > Pavel reported an issue with bpf programs (attached to cg=
-roup)
-> > > > > > > > > not being released at the time when the cgroup is removed=
- and
-> > > > > > > > > are still visible in 'bpftool prog' list afterwards.
-> > > > > > > >
-> > > > > > > > Hi Jiri!
-> > > > > > > >
-> > > > > > > > Can you, please, try the patch from
-> > > > > > > > https://github.com/rgushchin/linux/commit/f77afa1952d81a1af=
-a6c4872d342bf6721e148e2 ?
-> > > > > > > >
-> > > > > > > > It should solve the problem, and I'm about to post it upstr=
-eam.
-> > > > > > >
-> > > > > > > Perfect, I'll give it a try with full libvirt setup as well.
-> > > > > > >
-> > > > > > > Can we have this somehow detectable from user-space so libvir=
-t can
-> > > > > > > decide when to use BPF or not?  I would like to avoid using B=
-PF with
-> > > > > > > libvirt if this issue is not fixed and we cannot simply worka=
-round it
-> > > > > > > as systemd automatically removes cgroups for us.
-> > > > > >
-> > > > > > Hm, I don't think there is a good way to detect it from userspa=
-ce.
-> > > > > > At least I have no good ideas. Alexei? Daniel?
-> > > > > >
-> > > > > > If you're interested in a particular stable version, we can pro=
-bably
-> > > > > > treat it as a "fix", and backport.
-> > > > >=20
-> > > > > right.
-> > > > > also user space workaround is trivial.
-> > > > > Just detach before rmdir.
-> > > >=20
-> > > > Well yes, it's trivial but not if you are using machined from syste=
-md.
-> > > > Once libvirt kills QEMU process systemd automatically removes the
-> > > > cgroup so we don't have any chance to remove the BPF program.
-> > > >=20
-> > > > Would it be too ugly to put something into
-> > > > '/sys/kernel/cgroup/features'?
-> > >=20
-> > > I thought about it, but it seems that /sys/kernel/cgroup/features is =
-also
-> > > relatively new. So if we're not going to backport it (I mean auto-det=
-aching),
-> > > than we can simple look at the kernel version, right?
-> >=20
-> > If you think only about upstream then the version check is in most cases
-> > good enough, but usually that's not the case and patches are backported
-> > to downstream distributions as well.
-> >=20
-> > Yes, that file was introduced in kernel 4.15 so there are some
-> > limitations where the fix would be introspectable.
-> >=20
-> > > If we're going to backport it, the question is which stable version w=
-e're
-> > > looking at.
-> > >=20
-> > > In general, I don't see any reasons why cgroup/features can't be used.
-> >=20
-> > Perfect, in that case I would prefer if we could export it in
-> > cgroup/features as it will be easier for user-space to figure out
-> > whether it's safe to relay on proper cleanup behavior or not and
-> > it will make downstream distributions life easier.
->=20
-> Hello, Pavel!
->=20
-> Tejun noticed that cgroup features are supposed to match cgroupfs mount o=
-ptions,
-> so it can't be used here. And this >=3D 4.15 limitation is also a signifi=
-cant
-> constraint.
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+94cc2a66fc228b23f360@syzkaller.appspotmail.com
 
-Hi Roman,
+WARNING: CPU: 1 PID: 28592 at kernel/locking/lockdep.c:734  
+arch_local_save_flags arch/x86/include/asm/paravirt.h:762 [inline]
+WARNING: CPU: 1 PID: 28592 at kernel/locking/lockdep.c:734  
+arch_local_save_flags arch/x86/include/asm/paravirt.h:760 [inline]
+WARNING: CPU: 1 PID: 28592 at kernel/locking/lockdep.c:734  
+look_up_lock_class kernel/locking/lockdep.c:725 [inline]
+WARNING: CPU: 1 PID: 28592 at kernel/locking/lockdep.c:734  
+register_lock_class+0xe10/0x1860 kernel/locking/lockdep.c:1078
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 28592 Comm: syz-executor.5 Not tainted 5.2.0-rc1+ #1
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+  panic+0x2cb/0x744 kernel/panic.c:218
+  __warn.cold+0x20/0x4d kernel/panic.c:575
+  report_bug+0x263/0x2b0 lib/bug.c:186
+  fixup_bug arch/x86/kernel/traps.c:179 [inline]
+  fixup_bug arch/x86/kernel/traps.c:174 [inline]
+  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:272
+  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:291
+  invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:986
+RIP: 0010:look_up_lock_class kernel/locking/lockdep.c:734 [inline]
+RIP: 0010:register_lock_class+0xe10/0x1860 kernel/locking/lockdep.c:1078
+Code: 00 48 89 da 4d 8b 76 c0 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 80  
+3c 02 00 0f 85 23 07 00 00 4c 89 33 e9 e3 f4 ff ff 0f 0b <0f> 0b e9 ea f3  
+ff ff 44 89 e0 4c 8b 95 50 ff ff ff 83 c0 01 4c 8b
+RSP: 0018:ffff888093d179e8 EFLAGS: 00010083
+RAX: dffffc0000000000 RBX: ffff8880967cd160 RCX: 0000000000000000
+RDX: 1ffff11012cf9a2f RSI: 0000000000000000 RDI: ffff8880967cd178
+RBP: ffff888093d17ab0 R08: 1ffff110127a2f45 R09: ffffffff8a659d40
+R10: ffffffff8a2e8440 R11: 0000000000000000 R12: ffffffff8a323030
+R13: 0000000000000000 R14: 0000000000000000 R15: ffffffff88022ba0
+  __lock_acquire+0x116/0x5490 kernel/locking/lockdep.c:3673
+  lock_acquire+0x16f/0x3f0 kernel/locking/lockdep.c:4302
+  __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+  _raw_spin_lock_bh+0x33/0x50 kernel/locking/spinlock.c:175
+  spin_lock_bh include/linux/spinlock.h:343 [inline]
+  lock_sock_nested+0x41/0x120 net/core/sock.c:2917
+  lock_sock include/net/sock.h:1525 [inline]
+  inet_autobind+0x20/0x1a0 net/ipv4/af_inet.c:183
+  inet_dgram_connect+0x243/0x2d0 net/ipv4/af_inet.c:573
+  __sys_connect+0x264/0x330 net/socket.c:1840
+  __do_sys_connect net/socket.c:1851 [inline]
+  __se_sys_connect net/socket.c:1848 [inline]
+  __x64_sys_connect+0x73/0xb0 net/socket.c:1848
+  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x459279
+Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f2321b1ac78 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000459279
+RDX: 000000000000001c RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f2321b1b6d4
+R13: 00000000004bf74d R14: 00000000004d0c18 R15: 00000000ffffffff
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
-That's unfortunate, I guess I will have to do the version check.
-
-Thanks for the info.
-
-Pavel
-
---opJtzjQTFsWo+cga
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEcbzs91ho/coWWY7aUi1kczAH4YwFAlzjsAMACgkQUi1kczAH
-4Yz+zA//aFF0Y0HPU9du0EUPp6EClAlDUc9qJ37sh1GID2cgsT/FdsFSey2AhqSV
-KJT3DDWwIcHHxefWgHLvjMN0Yc/P41byuu1kA9Hthp+TJ47Y9a5EnmJctbftCm6T
-xgEMBWIheX8nG1uYiXHPAlvm9nc1L4SUpJYxtRPBEcy9mEL8FhSPBpoazMbwyEz8
-r3x2vrJ08xGgVvYfJhIWpn2PNAi6SmBBbx+8EaddpeKU71Ck0xd9pSC60h3sHMhy
-oX81gn0ICfDhGZqeMovVmZ4BPedNutYTmUzJYUvNeRtfXOBHOql6yGcwTKWMIuhI
-yd3Hbt3qnKb4n0zUuFxZWmIdsLfrbkE+F8dFrMXIqpYe/HFP9x5LfYZTjnLdOBfG
-PIKGnaDfhTIH38jLEBewBlUDcD+s/P7CQ4Skc5lenGoQPBnqqrIduRYcKgYAyKy5
-m9+l9uI9mqoZ+H/QiySV9+ZIimk6L1IK/Wkjkdwrq3pHSTIZaDMNF0zvSgcy3p4h
-DKD2qpQHXwBvrMC/6WIAzNw48s8epghLwWiMtJsdytK+C4JYyQIluxy/xcACVGA0
-ibr1ICyGFRvDv6Slvs43sx+6KISUyyrSG4XAPJO8JSEkSflqkxcBSpJrCm2qP6WE
-hxoKHDzmmrQecyJVLbDplCM5p+0mYAJ1wpqNmMMQx8A41i+wSa8=
-=KPfi
------END PGP SIGNATURE-----
-
---opJtzjQTFsWo+cga--
