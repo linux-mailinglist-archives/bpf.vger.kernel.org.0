@@ -2,182 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 096FC25472
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 17:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E367625654
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 19:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728212AbfEUPsL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 May 2019 11:48:11 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:40891 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728127AbfEUPsL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 May 2019 11:48:11 -0400
-Received: by mail-oi1-f196.google.com with SMTP id r136so13165773oie.7
-        for <bpf@vger.kernel.org>; Tue, 21 May 2019 08:48:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Gzspr9L6T5PD32rmyed/l1iwW4W0/PWFdz4O0Jcggp0=;
-        b=YsrbMq6yJk8H4ooSqqE4k1VZf4dJgsidPK/daSASqZWoKQYcQ3g3yaUqG928XzKg8M
-         ryowsw8iFrXotpjjdOojCEi/CKsx5WK4SKzSEU7luXDsNSbdoljuYe2bWx8izkiPYWNw
-         j+E5BGgz/K/yNKyLXsgpIV1L1lY2ndaRZr1ys=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gzspr9L6T5PD32rmyed/l1iwW4W0/PWFdz4O0Jcggp0=;
-        b=tjwTfcqz+hcCjsgDmCp6OGxhSz0UwyueslxCpKMG2EMZWGuU1Yw99qAWR7TwdtH+K2
-         z8q264yr2FmNkQlwUF1k3lLABKn8yDG/8VUZmy+HyL9IuMLQbGHhd8hfVY6pk2aZLR5i
-         lDpr+aLwXG4o8O9iGZAsFInU0QNFZg2bzvjPKXpfuqL0ftQ7THq41W5+gDVfVdseMwyO
-         2dVkpvv1KEUwgy7IGhCcFFzpWTlA9D10IgB7ik03rYeCnKNB/IdMw/bKpU4YGLTfCz42
-         C1IlY7omcTDNG9gsRbjWQK4juzYphZW7QeOh7Z17XfbmZCg/TOH6XmioTN+qLyhzvBNb
-         Bbiw==
-X-Gm-Message-State: APjAAAXXJWEK6qMWqvKxA96uwO+Kmf9GLGbEM9rxK/hgch61QxuG704C
-        /kDqFdq+YApbilRLG0sYqQcQdxMZinDHDyRY0XATCA==
-X-Google-Smtp-Source: APXvYqynlZMKZjWWCOsHl/WgDje+zRaSbHBlfJDUjwD6PTBDPwzv/C8TxIfRItHXVqCDR06KiE+F5keg7AUDz6lkHQg=
-X-Received: by 2002:aca:f0f:: with SMTP id 15mr2438283oip.78.1558453690173;
- Tue, 21 May 2019 08:48:10 -0700 (PDT)
+        id S1728271AbfEURG6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 May 2019 13:06:58 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:50268 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727990AbfEURG6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 May 2019 13:06:58 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4LH4TKu008515;
+        Tue, 21 May 2019 17:06:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : references : date : in-reply-to : message-id : mime-version :
+ content-type : content-transfer-encoding; s=corp-2018-07-02;
+ bh=SCIScQ0uw9hvxrZB2jY9cbQFN9r1+sHJc0RTsq9YXfc=;
+ b=IoDfUjpEXNvLMsArZmm541AzC2Qp1NlYt0FXMfcQFTHlpxzkUojILYdJZA4ll5xmrLJc
+ Ej7qAn9K/rw26NQbsvqi+VvVXk8muFSjiaOB4ZGfuSEiirQ3XP5yMpz8xqjtveuvto8t
+ R8N3GMcj9/MGjpQBFqclDAZkqjFWSkRAF8ZikzelFIM3G4scwvyVFTOvJBgABNXGv//g
+ AmCabup6dQldNnnJkxF6DhHcdJuxn+QatGVBcjfjwI6q9xZ6rRpd/VyPQ9X3K4meL+in
+ D2jEXw85XbzQ+nbAG7fyz4C9GB782ONfr7etexLvm2DNc7DCG8W1P5VB2MkjT0YQbzlr nQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2sj9ftewcx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 May 2019 17:06:33 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4LH4rPJ162185;
+        Tue, 21 May 2019 17:06:33 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 2skudbgmv3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 May 2019 17:06:33 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x4LH6TgC016914;
+        Tue, 21 May 2019 17:06:30 GMT
+Received: from termi.oracle.com (/10.175.32.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 21 May 2019 17:06:29 +0000
+From:   jose.marchesi@oracle.com (Jose E. Marchesi)
+To:     Jiong Wang <jiong.wang@netronome.com>
+Cc:     binutils@sourceware.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+Subject: Re: [PATCH 0/9] eBPF support for GNU binutils
+References: <1B2BE52B-527E-436E-AE49-29FA9E044FD3@netronome.com>
+Date:   Tue, 21 May 2019 19:06:21 +0200
+In-Reply-To: <1B2BE52B-527E-436E-AE49-29FA9E044FD3@netronome.com> (Jiong
+        Wang's message of "Tue, 21 May 2019 16:41:56 +0100")
+Message-ID: <87d0kbrb3m.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <CACAyw98+qycmpQzKupquhkxbvWK4OFyDuuLMBNROnfWMZxUWeA@mail.gmail.com>
- <CADa=RyyuAOupK7LOydQiNi6tx2ELOgD+bdu+DHh3xF0dDxw_gw@mail.gmail.com>
- <CACAyw9_EGRob4VG0-G4PN9QS_xB5GoDMBB6mPXR-WcPnrFCuLg@mail.gmail.com>
- <20190516203325.uhg7c5sr45od7lzm@ast-mbp> <CAGUcTrqnrE+9BGsuc3sf_DpzsD01wP6h3PbK3-u6hk=6wM0zGg@mail.gmail.com>
-In-Reply-To: <CAGUcTrqnrE+9BGsuc3sf_DpzsD01wP6h3PbK3-u6hk=6wM0zGg@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Tue, 21 May 2019 16:47:58 +0100
-Message-ID: <CACAyw9-ijc1o1QOnQD=ukr-skswxe+4mDVKdX58z6AkTrEpOuA@mail.gmail.com>
-Subject: Re: RFC: Fixing SK_REUSEPORT from sk_lookup_* helpers
-To:     Nitin Hande <nitin.hande@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Joe Stringer <joe@isovalent.com>,
-        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9264 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=870
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1905210104
+X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9264 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=961 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1905210105
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 17 May 2019 at 00:38, Nitin Hande <nitin.hande@gmail.com> wrote:
->
-> On Thu, May 16, 2019 at 2:57 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Thu, May 16, 2019 at 09:41:34AM +0100, Lorenz Bauer wrote:
-> > > On Wed, 15 May 2019 at 18:16, Joe Stringer <joe@isovalent.com> wrote:
-> > > >
-> > > > On Wed, May 15, 2019 at 8:11 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> > > > >
-> > > > > In the BPF-based TPROXY session with Joe Stringer [1], I mentioned
-> > > > > that the sk_lookup_* helpers currently return inconsistent results if
-> > > > > SK_REUSEPORT programs are in play.
-> > > > >
-> > > > > SK_REUSEPORT programs are a hook point in inet_lookup. They get access
-> > > > > to the full packet
-> > > > > that triggered the look up. To support this, inet_lookup gained a new
-> > > > > skb argument to provide such context. If skb is NULL, the SK_REUSEPORT
-> > > > > program is skipped and instead the socket is selected by its hash.
-> > > > >
-> > > > > The first problem is that not all callers to inet_lookup from BPF have
-> > > > > an skb, e.g. XDP. This means that a look up from XDP gives an
-> > > > > incorrect result. For now that is not a huge problem. However, once we
-> > > > > get sk_assign as proposed by Joe, we can end up circumventing
-> > > > > SK_REUSEPORT.
-> > > >
-> > > > To clarify a bit, the reason this is a problem is that a
-> > > > straightforward implementation may just consider passing the skb
-> > > > context into the sk_lookup_*() and through to the inet_lookup() so
-> > > > that it would run the SK_REUSEPORT BPF program for socket selection on
-> > > > the skb when the packet-path BPF program performs the socket lookup.
-> > > > However, as this paragraph describes, the skb context is not always
-> > > > available.
-> > > >
-> > > > > At the conference, someone suggested using a similar approach to the
-> > > > > work done on the flow dissector by Stanislav: create a dedicated
-> > > > > context sk_reuseport which can either take an skb or a plain pointer.
-> > > > > Patch up load_bytes to deal with both. Pass the context to
-> > > > > inet_lookup.
-> > > > >
-> > > > > This is when we hit the second problem: using the skb or XDP context
-> > > > > directly is incorrect, because it assumes that the relevant protocol
-> > > > > headers are at the start of the buffer. In our use case, the correct
-> > > > > headers are at an offset since we're inspecting encapsulated packets.
-> > > > >
-> > > > > The best solution I've come up with is to steal 17 bits from the flags
-> > > > > argument to sk_lookup_*, 1 bit for BPF_F_HEADERS_AT_OFFSET, 16bit for
-> > > > > the offset itself.
-> > > >
-> > > > FYI there's also the upper 32 bits of the netns_id parameter, another
-> > > > option would be to steal 16 bits from there.
-> > >
-> > > Or len, which is only 16 bits realistically. The offset doesn't really fit into
-> > > either of them very well, using flags seemed the cleanest to me.
-> > > Is there some best practice around this?
-> > >
-> > > >
-> > > > > Thoughts?
-> > > >
-> > > > Internally with skbs, we use `skb_pull()` to manage header offsets,
-> > > > could we do something similar with `bpf_xdp_adjust_head()` prior to
-> > > > the call to `bpf_sk_lookup_*()`?
-> > >
-> > > That would only work if it retained the contents of the skipped
-> > > buffer, and if there
-> > > was a way to undo the adjustment later. We're doing the sk_lookup to
-> > > decide whether to
-> > > accept or forward the packet, so at the point of the call we might still need
-> > > that data. Is that feasible with skb / XDP ctx?
-> >
-> > While discussing the solution for reuseport I propose to use
-> > progs/test_select_reuseport_kern.c as an example of realistic program.
-> > It reads tcp/udp header directly via ctx->data or via bpf_skb_load_bytes()
-> > including payload after the header.
-> > It also uses bpf_skb_load_bytes_relative() to fetch IP.
-> > I think if we're fixing the sk_lookup from XDP the above program
-> > would need to work.
-> >
-> > And I think we can make it work by adding new requirement that
-> > 'struct bpf_sock_tuple *' argument to bpf_sk_lookup_* must be
-> > a pointer to the packet and not a pointer to bpf program stack.
-> > Then helper can construct a fake skb and assign
-> > fake_skb->data = &bpf_sock_tuple_arg.sport
-> > It can check that struct bpf_sock_tuple * pointer is within 100-ish bytes
-> > from xdp->data and within xdp->data_end
-> > This way the reuseport program's assumption that ctx->data points to tcp/udp
-> > will be preserved and it can access it all including payload.
-> >
-> > This approach doesn't need to mess with xdp_adjust_head and adjust uapi to pass length.
-> > Existing progs/test_sk_lookup_kern.c will magically start working with XDP
-> > even when reuseport prog is attached.
-> > Thoughts?
->
-> I like this approach. A fake_skb approach will normalize the bpf_sk_lookup_*()
-> API peering into the kernel API between TC and XDP invocation. Just one question
-> that comes, I remember one of the comments I received during my XDP commit
-> was the stateless nature of XDP services and providing a fake_skb may bring
-> some potential side-effects to the desire of statelessness. Is that
-> still a possibility?
-> How do we guard against it?
 
-To follow up on this, I'm also not sure how to tackle a "fake skb". If
-I remember this
-came up during the flow dissector series, and wasn't met with
-enthusiasm. Granted,
-replacing the skb argument to the lookup functions seems even harder, so maybe
-this is the lesser evil?
+Hi Jiong.
 
->
-> Thanks
-> Nitin
->
-> >
+    > Despite using a different syntax for the assembler (the llvm assembler
+    > uses a C-ish expression-based syntax while the GNU assembler opts for
+    > a more classic assembly-language syntax) this implementation tries to
+    > provide inter-operability with clang/llvm generated objects.
+=20=20=20=20
+    I also noticed your implementation doesn=E2=80=99t seem to use the same=
+ sub-register
+    syntax as what LLVM assembler is doing.
+=20=20=20=20
+      x register for 64-bit, and w register for 32-bit sub-register.
+=20=20=20=20
+    So:
+      add r0, r1, r2 means BPF_ALU64 | BPF_ADD | BFF_X
+      add w0, w1, w1 means BPF_ALU | BPF_ADD | BPF_X
+=20=20=20=20
+    ASAICT, different register prefix for different register width is also =
+adopted
+    by quite a few other GNU assembler targets like AArch64, X86_64.
 
+Right.  I opted for using different mnemonics for alu and alu64
+instructions, as it seemed to be simpler.
 
+What was your rationale for using sub-register notation?  Are you
+planning to support instructions (or pseudo-instructions) mixing w and x
+registers in the future?
 
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+    > In particular, the numbers of the relocations used for instruction
+    > fields are the same.  These are R_BPF_INSN_64 and R_BPF_INSN_DISP32.
+    > The later is resolved at load-time by bpf_load.c.
+=20=20=20=20
+    I think you missed the latest JMP32 instructions.
+=20=20=20=20
+      https://github.com/torvalds/linux/blob/master/Documentation/networkin=
+g/filter.txt#L870
 
-www.cloudflare.com
+Oh thanks for spotting that.
+Adding support for it :)
