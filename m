@@ -2,90 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E532585B
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 21:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA9125876
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 21:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727376AbfEUTfg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 May 2019 15:35:36 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:55010 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727319AbfEUTfg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 May 2019 15:35:36 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4LJTIZj132226;
-        Tue, 21 May 2019 19:35:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : references : date : in-reply-to : message-id : mime-version :
- content-type; s=corp-2018-07-02;
- bh=cMKeJH1/+w6ckA+Plj+KPekHQ1V3sUSloZDX68SpRHQ=;
- b=vt7daWwdZvAy02Q64z6WkqQuG8EajiFg7Ii5icaw5Z8RTKgXg3juq570CqTCC0CfoVBo
- dYSrRffV9g1a3fVjXlJ/fiT2VLt6w410lDM2MHBC8bwR0A3wMC6Iq6LkZi6RSV8/wNII
- qqtoIL6sSRPogUsSifInxpJAzzC/a2AyJPEK6Vy1IX0wfZEHv/XkOKimXN+bljesXJnn
- z7yjTF3/5DOX/GVqPLJvyHpUaHz1Fb/kR19l61jNmcXNBjSPVJrKbEl8qdkwD823KCiH
- NTpOF6iWpnlyN/ZtcrN1uJV8H0TnIBAFtjGfcQmiH3L71Q42SnK2llAxFuyrBykAvioO cQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2sj9ftfqdu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 May 2019 19:35:04 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4LJYqMX135056;
-        Tue, 21 May 2019 19:35:04 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2skudbjucf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 May 2019 19:35:04 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x4LJZ2KH015125;
-        Tue, 21 May 2019 19:35:02 GMT
-Received: from termi.oracle.com (/10.175.36.151)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 21 May 2019 19:35:02 +0000
-From:   jose.marchesi@oracle.com (Jose E. Marchesi)
-To:     Edward Cree <ecree@solarflare.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        id S1726907AbfEUTtX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 May 2019 15:49:23 -0400
+Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164]:39168 "EHLO
+        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726767AbfEUTtX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 21 May 2019 15:49:23 -0400
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from webmail.solarflare.com (webmail.solarflare.com [12.187.104.26])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1-us3.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id E32609C005B;
+        Tue, 21 May 2019 19:49:21 +0000 (UTC)
+Received: from [10.17.20.203] (10.17.20.203) by ocex03.SolarFlarecom.com
+ (10.20.40.36) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Tue, 21 May
+ 2019 12:49:17 -0700
+Subject: Re: [PATCH 0/9] eBPF support for GNU binutils
+To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>
+CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Jiong Wang <jiong.wang@netronome.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        "Andrii Nakryiko" <andriin@fb.com>, <binutils@sourceware.org>,
+        "Yonghong Song" <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, <binutils@sourceware.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH 0/9] eBPF support for GNU binutils
 References: <1B2BE52B-527E-436E-AE49-29FA9E044FD3@netronome.com>
-        <CAADnVQJcfnEh4_ok1o9oWNiaBAdd-2XHiguu1FvPZdnAuXuWBg@mail.gmail.com>
-        <9430cd91-9344-8bb7-27da-c6809f876757@solarflare.com>
-Date:   Tue, 21 May 2019 21:34:42 +0200
-In-Reply-To: <9430cd91-9344-8bb7-27da-c6809f876757@solarflare.com> (Edward
-        Cree's message of "Tue, 21 May 2019 20:02:24 +0100")
-Message-ID: <87tvdnlhyl.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+ <CAADnVQJcfnEh4_ok1o9oWNiaBAdd-2XHiguu1FvPZdnAuXuWBg@mail.gmail.com>
+ <9430cd91-9344-8bb7-27da-c6809f876757@solarflare.com>
+ <87tvdnlhyl.fsf@oracle.com>
+From:   Edward Cree <ecree@solarflare.com>
+Message-ID: <3be85ea0-2f81-a6bd-5291-6d6aed5aa554@solarflare.com>
+Date:   Tue, 21 May 2019 20:49:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9264 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=859
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1905210120
-X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9264 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=892 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1905210120
+In-Reply-To: <87tvdnlhyl.fsf@oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Originating-IP: [10.17.20.203]
+X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1010-24628.004
+X-TM-AS-Result: No-5.841900-4.000000-10
+X-TMASE-MatchedRID: VPleTT1nwdTmLzc6AOD8DfHkpkyUphL9IiTd2l7lf6H3msKSd1g4xR1Z
+        oYOHk+aurAcfB2a374AmYILGS2LR4y8ptaR5MzFyoezu6s3sLuA2vbWaKPnQ2wUNFj359fb25vX
+        VAEnFbKaEgl0njLljkhPR2B0aYIaNy6sqiZ9hS8YD2WXLXdz+AS3S35ohUu37oxpw+aZeXUejxY
+        yRBa/qJQOkBnb8H8GWDV8DVAd6AO/dB/CxWTRRu92KvEVWmYr1Zp4+3//ccZix9nU+lq9422EQW
+        3HcKaWR5na0rb9xLa3sp3/Doy0M4A==
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--5.841900-4.000000
+X-TMASE-Version: SMEX-12.5.0.1300-8.5.1010-24628.004
+X-MDID: 1558468162-FZtJ_IU9L9eL
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 21/05/2019 20:34, Jose E. Marchesi wrote:
+>     On 21/05/2019 19:18, Alexei Starovoitov wrote:
+>     > I think Ed had an idea on how to specify BTF in asm syntax.
+>     Specifically, see [1] for BTF as implemented in ebpf_asm, though note
+>     that it doesn't (yet) cover .btf.ext or lineinfo.
+>     
+>     [1]: https://github.com/solarflarecom/ebpf_asm/tree/btfdoc#type-definitions
+>
+> Thanks for the reference.  I just checked out your `btfdoc' branch.  I
+> will take a look.
+>
+> Where would you like to get feedback/suggestions/questions btw?
+For ebpf_asm?  Either through GitHub Issues, or this address (ecree@solarflare.com).
 
-    On 21/05/2019 19:18, Alexei Starovoitov wrote:
-    > I think Ed had an idea on how to specify BTF in asm syntax.
-    Specifically, see [1] for BTF as implemented in ebpf_asm, though note
-    that it doesn't (yet) cover .btf.ext or lineinfo.
-    
-    [1]: https://github.com/solarflarecom/ebpf_asm/tree/btfdoc#type-definitions
+I'm not actually on bpf@vger (though maybe I ought to subscribe...)
 
-Thanks for the reference.  I just checked out your `btfdoc' branch.  I
-will take a look.
+BTW I'm really happy to see someone working on eBPF support in the GNU
+ toolchain; being tied to an LLVM monoculture has been bad for eBPF imho.
 
-Where would you like to get feedback/suggestions/questions btw?
-bpf@vger.kernel.org?
+-Ed
