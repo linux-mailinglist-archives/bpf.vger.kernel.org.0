@@ -2,131 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E10250F7
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 15:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 485D02516C
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 16:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727999AbfEUNq5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 May 2019 09:46:57 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:42403 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727534AbfEUNq4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 May 2019 09:46:56 -0400
-Received: by mail-pf1-f195.google.com with SMTP id 13so9107623pfw.9;
-        Tue, 21 May 2019 06:46:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lI/jv0cKdLTVm7f1etTSpFXRa1zlfZqLSdICL8eVFUw=;
-        b=lCAUPhaIJyF7T7TW04duCQ1C/wP2Y+cJlgG5rd5N3NIcld0N4VZFJJQBQF7J++5d7Q
-         2rZXu0V10I9YsLnYMN6RowqjmkCY7dQbFYhNXibShcrGu1X9bj8FzjyvVXsLeLCQEw54
-         uPxXzxN3eUqWiAE++zFWF55PYe0XysKtlWzL7bPydyad26MOaK8mWoQ22ne18w2Y2cEt
-         UnQkYn4qDcUsM7gDWPsL+8dowsHhrz5BHHuxEGcP/MR6FP0Sk2l5s4W3ZgijENMPbyPP
-         d8gUXgVyE7ZjZJKDajKptNtxJ0B67G2pokldLIwaA1vWJVRYaP+VdA/Lzoa7NKOcm5k/
-         wcoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lI/jv0cKdLTVm7f1etTSpFXRa1zlfZqLSdICL8eVFUw=;
-        b=EfH5aGu2eX3c/fg7GKW6dF1IIv0V1uFH7/AWjs7wvxSbhMLpV6VYiJqkBrMtGMshar
-         +VJLJI8IXnW9zEbS5mZZTwblhi39Md5QKOJhnLV/8l2/+IOJLZ9Lom54AmPSaraz4VjJ
-         45XXLU9q81b+VK1C24JZ51oJ5bFVQOh8nxPXHlluAlYr+6tCW+xr2gbc93cTCeTtaZMo
-         2PJz9PL8nIYE9f8v+dwdr606seab/xsc2bvNiJ/grXRS6ftkGKAF/JbcpHmaQdzQmXUm
-         hviKtGwo5wwF5BJctS4hcSQxYSlCC/FWiZWJW9omMLb/f4u0eaY/Mui2Fxclw9HBarqS
-         3atg==
-X-Gm-Message-State: APjAAAXPMztbzlnPIjexMNsZNnp1s44waaYW0guyP+kUKLTgSl+pI60B
-        twz6ONpx0yriaC0strcsXrE=
-X-Google-Smtp-Source: APXvYqw2+j6d1zPFsjQLOI4MpHishChca1g7J1s/r/q2nqond5Z/8tIZ/+UrzhLBM0v/KnAAiounUg==
-X-Received: by 2002:a63:d613:: with SMTP id q19mr47586203pgg.339.1558446416048;
-        Tue, 21 May 2019 06:46:56 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com ([192.55.54.43])
-        by smtp.gmail.com with ESMTPSA id i16sm8437701pfd.100.2019.05.21.06.46.52
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 May 2019 06:46:55 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     daniel@iogearbox.net, ast@kernel.org, netdev@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
-        linux-riscv@lists.infradead.org, bpf@vger.kernel.org,
+        id S1728580AbfEUOC5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 May 2019 10:02:57 -0400
+Received: from www62.your-server.de ([213.133.104.62]:41750 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728589AbfEUOC4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 May 2019 10:02:56 -0400
+Received: from [78.46.172.2] (helo=sslproxy05.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hT5Ly-0006DJ-9f; Tue, 21 May 2019 16:02:54 +0200
+Received: from [178.197.249.20] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hT5Ly-000IeH-3T; Tue, 21 May 2019 16:02:54 +0200
+Subject: Re: [PATCH bpf] bpf, riscv: clear target register high 32-bits for
+ and/or/xor on ALU32
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        ast@kernel.org, netdev@vger.kernel.org
+Cc:     linux-riscv@lists.infradead.org, bpf@vger.kernel.org,
         Jiong Wang <jiong.wang@netronome.com>
-Subject: [PATCH bpf] bpf, riscv: clear target register high 32-bits for and/or/xor on ALU32
-Date:   Tue, 21 May 2019 15:46:22 +0200
-Message-Id: <20190521134622.18358-1-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.20.1
+References: <20190521134622.18358-1-bjorn.topel@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <49999b2d-f025-894a-be61-a52d13b24678@iogearbox.net>
+Date:   Tue, 21 May 2019 16:02:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20190521134622.18358-1-bjorn.topel@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25456/Tue May 21 09:56:54 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When using 32-bit subregisters (ALU32), the RISC-V JIT would not clear
-the high 32-bits of the target register and therefore generate
-incorrect code.
+On 05/21/2019 03:46 PM, Björn Töpel wrote:
+> When using 32-bit subregisters (ALU32), the RISC-V JIT would not clear
+> the high 32-bits of the target register and therefore generate
+> incorrect code.
+> 
+> E.g., in the following code:
+> 
+>   $ cat test.c
+>   unsigned int f(unsigned long long a,
+>   	       unsigned int b)
+>   {
+>   	return (unsigned int)a & b;
+>   }
+> 
+>   $ clang-9 -target bpf -O2 -emit-llvm -S test.c -o - | \
+>   	llc-9 -mattr=+alu32 -mcpu=v3
+>   	.text
+>   	.file	"test.c"
+>   	.globl	f
+>   	.p2align	3
+>   	.type	f,@function
+>   f:
+>   	r0 = r1
+>   	w0 &= w2
+>   	exit
+>   .Lfunc_end0:
+>   	.size	f, .Lfunc_end0-f
+> 
+> The JIT would not clear the high 32-bits of r0 after the
+> and-operation, which in this case might give an incorrect return
+> value.
+> 
+> After this patch, that is not the case, and the upper 32-bits are
+> cleared.
+> 
+> Reported-by: Jiong Wang <jiong.wang@netronome.com>
+> Fixes: 2353ecc6f91f ("bpf, riscv: add BPF JIT for RV64G")
+> Signed-off-by: Björn Töpel <bjorn.topel@gmail.com>
 
-E.g., in the following code:
+Was this missed because test_verifier did not have test coverage?
+If so, could you follow-up with alu32 test cases for it, so other
+JITs can be tracked for these kind of issue as well. We should
+probably have one for every alu32 alu op to make sure it's not
+forgotten anywhere.
 
-  $ cat test.c
-  unsigned int f(unsigned long long a,
-  	       unsigned int b)
-  {
-  	return (unsigned int)a & b;
-  }
-
-  $ clang-9 -target bpf -O2 -emit-llvm -S test.c -o - | \
-  	llc-9 -mattr=+alu32 -mcpu=v3
-  	.text
-  	.file	"test.c"
-  	.globl	f
-  	.p2align	3
-  	.type	f,@function
-  f:
-  	r0 = r1
-  	w0 &= w2
-  	exit
-  .Lfunc_end0:
-  	.size	f, .Lfunc_end0-f
-
-The JIT would not clear the high 32-bits of r0 after the
-and-operation, which in this case might give an incorrect return
-value.
-
-After this patch, that is not the case, and the upper 32-bits are
-cleared.
-
-Reported-by: Jiong Wang <jiong.wang@netronome.com>
-Fixes: 2353ecc6f91f ("bpf, riscv: add BPF JIT for RV64G")
-Signed-off-by: Björn Töpel <bjorn.topel@gmail.com>
----
- arch/riscv/net/bpf_jit_comp.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/arch/riscv/net/bpf_jit_comp.c b/arch/riscv/net/bpf_jit_comp.c
-index 80b12aa5e10d..e5c8d675bd6e 100644
---- a/arch/riscv/net/bpf_jit_comp.c
-+++ b/arch/riscv/net/bpf_jit_comp.c
-@@ -759,14 +759,20 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 	case BPF_ALU | BPF_AND | BPF_X:
- 	case BPF_ALU64 | BPF_AND | BPF_X:
- 		emit(rv_and(rd, rd, rs), ctx);
-+		if (!is64)
-+			emit_zext_32(rd, ctx);
- 		break;
- 	case BPF_ALU | BPF_OR | BPF_X:
- 	case BPF_ALU64 | BPF_OR | BPF_X:
- 		emit(rv_or(rd, rd, rs), ctx);
-+		if (!is64)
-+			emit_zext_32(rd, ctx);
- 		break;
- 	case BPF_ALU | BPF_XOR | BPF_X:
- 	case BPF_ALU64 | BPF_XOR | BPF_X:
- 		emit(rv_xor(rd, rd, rs), ctx);
-+		if (!is64)
-+			emit_zext_32(rd, ctx);
- 		break;
- 	case BPF_ALU | BPF_MUL | BPF_X:
- 	case BPF_ALU64 | BPF_MUL | BPF_X:
--- 
-2.20.1
-
+Thanks,
+Daniel
