@@ -2,226 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C2532247DD
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 08:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18ED02496A
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2019 09:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725885AbfEUGPk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 May 2019 02:15:40 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:36896 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726193AbfEUGPk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 May 2019 02:15:40 -0400
-Received: by mail-wm1-f68.google.com with SMTP id 7so1510220wmo.2
-        for <bpf@vger.kernel.org>; Mon, 20 May 2019 23:15:37 -0700 (PDT)
+        id S1726296AbfEUHxa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 May 2019 03:53:30 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:52017 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbfEUHx3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 May 2019 03:53:29 -0400
+Received: by mail-wm1-f65.google.com with SMTP id c77so1842638wmd.1
+        for <bpf@vger.kernel.org>; Tue, 21 May 2019 00:53:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wVURcngxHaUKK2/6DcO63462w2MMfQtg1uggxqLYhQw=;
-        b=dEUklpcSZJw0JKdU1qOtpFIq2HjB90fX/plfKjqUeat+/giiCHodVyp/Z1mw23OH6S
-         aOSs2njV6rbNgWJnxwjlGJkXDbNb5q4WWJetyHRVEbmJD68d0K3NteaH+L5XSBibmaGb
-         xbu4cHE+H9CRpnI5uKtMEVYmVRTJaMiwQc/qi9AxQsw5g+ZrLfYAJQFbOE36O6Q7zgrw
-         fn3E4uq/VlR13yQFfML58qqB4m1989AOXRi0SWVPwLb4t1//Ahcz1F3PNjQckfgH11tj
-         JaqQJv2HuxFMrJ9mxazFaJSriCE+9mFFFHemZHfkIBSkeWxKfdhPasGJ3aRzBC7w5Q1f
-         dwoA==
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1VmwFFsbqJK3+lRSkFVmV7bpMeUDcybN8WqYfoV1sqU=;
+        b=fh/ODLpu818axlZwJplBcIXfLxWCw1MDDaMvyMdY7OZiqk5ux9ysGSuTc8ZdNtHQgw
+         V0ZPljVgnSzv8u80v4/0gyOnK6DaRHzSyKhof2oW3wPv6Y2OtXPKPeDkr8665jqbPBTG
+         fS7TQzE+1r8D0w4xOM3YBV8NXSZs6fQbZ0E08=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wVURcngxHaUKK2/6DcO63462w2MMfQtg1uggxqLYhQw=;
-        b=CHIjs/B26jBuhNdCn5J9U/Sb5+PA9074wLW/FAtjBi2CyT1YP2xFAZbVnoJqw/9BEm
-         JdJumbFItDQ1BlbfdaEWu1bE3xo1mA7VamQ8UdAWYsMeCW7ahpD44rFGiGxGidi2GA61
-         aYpaDFWsHaS8o+cgugu5r42Wbg62TyP9Gl5eAzUjLAPqKmIktmqjF7G7DQ9CeUMNIiYy
-         Wbfms1QHl1zCR9xs1S4JSt0QuozyPG3b/RraPD99/sf8TJVI3Ei6wjjHlDjR9Tgoz+5L
-         DTfeHqVYPSly1Upb/cHON/0h6APd33cZvL/qGOUyTHk79wA0jnW1yhVjE4F96Z+NLFn9
-         kN/g==
-X-Gm-Message-State: APjAAAXO0vduYWEuBNTW/pNtV/rvY4qEVhgJczK4kADP+4EhSSANS/mQ
-        kBV7UzpsjNVaBCcCswtrudD7cQ==
-X-Google-Smtp-Source: APXvYqx0iy748Edu6ClBYQEDwgmMkaq7Im/sFwn2kAs5W3W6NItdo3My9kmAFcXEZSwBc2FCIG8f8Q==
-X-Received: by 2002:a1c:6342:: with SMTP id x63mr2082200wmb.58.1558419337178;
-        Mon, 20 May 2019 23:15:37 -0700 (PDT)
-Received: from localhost (jirka.pirko.cz. [84.16.102.26])
-        by smtp.gmail.com with ESMTPSA id t13sm43781124wra.81.2019.05.20.23.15.36
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 20 May 2019 23:15:36 -0700 (PDT)
-Date:   Tue, 21 May 2019 08:15:36 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Stephen Hemminger <stephen@networkplumber.org>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net,
-        xdp-newbies@vger.kernel.org, bpf@vger.kernel.org,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Jason Wang <jasowang@redhat.com>
-Subject: Re: [PATCH v2 net 2/2] net: core: generic XDP support for stacked
- device
-Message-ID: <20190521061536.GB2210@nanopsycho.orion>
-References: <20190519031046.4049-1-sthemmin@microsoft.com>
- <20190519031046.4049-3-sthemmin@microsoft.com>
- <20190520091105.GA2142@nanopsycho>
- <20190520090405.69b419e5@hermes.lan>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1VmwFFsbqJK3+lRSkFVmV7bpMeUDcybN8WqYfoV1sqU=;
+        b=T2jH+qVvdz6LcgTlUYW//AHMVU8r7q4W0vwm0D0cVmOMyKaJfucubaQAHNyaj5f4LE
+         gsjVBtmY+o2i76RrZE54WEFjIz3iK3RYudqj3UIaOM8ukqqUL06SWipEFyD3JVgFuLh/
+         D8GwTSDZvNgDHFh8m1lOIX6c7AAv/txhqJhFGNQdidGS49Dy+oHeL2TSgFM27u0xS/kq
+         FntFFHAEG31zqVpAbY17OyaYdBcqtI2xMA/J1u1OUICoOisKI8oO8+57Nb11VXfka15G
+         9GAEiweJcvxyPFjBOURtpUoZfW+b5Saxp9na4K5JILUneSPwj0fX3RmUDijxRvUNxxCA
+         APTg==
+X-Gm-Message-State: APjAAAU++xjyYCK3WMizN5rcbfzAz6e+WYSxMWoMyp3g3A4qNL2+ebpO
+        XgR1zgdSKkdkFrfphdSKEIo7aw==
+X-Google-Smtp-Source: APXvYqylOBVBlr4HUSfame1dJJqGIkr2/KIsfH7YcS0OSUKYlcLzyXSh3YrdTKiWRwlzdHNRuzvaKQ==
+X-Received: by 2002:a1c:f507:: with SMTP id t7mr2308565wmh.149.1558425207226;
+        Tue, 21 May 2019 00:53:27 -0700 (PDT)
+Received: from antares.lan (0.1.1.1.3.c.d.b.3.8.f.6.0.5.4.d.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:d450:6f83:bdc3:1110])
+        by smtp.gmail.com with ESMTPSA id d198sm2259295wmd.1.2019.05.21.00.53.25
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 21 May 2019 00:53:26 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.com
+Cc:     joe@isovalent.com, Lorenz Bauer <lmb@cloudflare.com>
+Subject: [PATCH bpf] bpf: fix out-of-bounds read in __bpf_skc_lookup
+Date:   Tue, 21 May 2019 08:52:38 +0100
+Message-Id: <20190521075238.26803-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190520090405.69b419e5@hermes.lan>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Mon, May 20, 2019 at 06:04:05PM CEST, stephen@networkplumber.org wrote:
->On Mon, 20 May 2019 11:11:05 +0200
->Jiri Pirko <jiri@resnulli.us> wrote:
->
->> Sun, May 19, 2019 at 05:10:46AM CEST, stephen@networkplumber.org wrote:
->> >When a device is stacked like (team, bonding, failsafe or netvsc) the
->> >XDP generic program for the parent device is not called.  In these
->> >cases, the rx handler changes skb->dev to its own in the receive
->> >handler, and returns RX_HANDLER_ANOTHER.  Fix this by calling
->> >do_xdp_generic if necessary before starting another round.
->> >
->> >Review of all the places RX_HANDLER_ANOTHER is returned
->> >show that the current devices do correctly change skb->dev.
->> >
->> >There was an older patch that got abandoned that did the
->> >same thing, this is just a rewrite.
->> >
->> >Suggested-by: Jason Wang <jasowang@redhat.com>
->> >Fixes: d445516966dc ("net: xdp: support xdp generic on virtual devices")
->> >Signed-off-by: Stephen Hemminger <sthemmin@microsoft.com>
->> >Acked-by: Jason Wang <jasowang@redhat.com>
->> >---
->> > net/core/dev.c | 10 ++++++++++
->> > 1 file changed, 10 insertions(+)
->> >
->> >diff --git a/net/core/dev.c b/net/core/dev.c
->> >index b6b8505cfb3e..240d0b2de1a8 100644
->> >--- a/net/core/dev.c
->> >+++ b/net/core/dev.c
->> >@@ -4921,6 +4921,16 @@ static int __netif_receive_skb_core(struct sk_buff *skb, bool pfmemalloc,
->> > 			ret = NET_RX_SUCCESS;
->> > 			goto out;
->> > 		case RX_HANDLER_ANOTHER:
->> >+			if (static_branch_unlikely(&generic_xdp_needed_key)) {
->> >+				struct bpf_prog *xdp_prog;
->> >+
->> >+				xdp_prog = rcu_dereference(skb->dev->xdp_prog);
->> >+				ret = do_xdp_generic(xdp_prog, skb);
->> >+				if (ret != XDP_PASS) {
->> >+					ret = NET_RX_SUCCESS;
->> >+					goto out;
->> >+				}
->> >+			}  
->> 
->> I'm always scarred of changes like this. The history tells us that this
->> codepaths are very fragile. It took us non-trivial efford to fix bonding
->> here, not to mention vlans (that was pain).
->> 
->> The reason for troubles was often fact that different flows were treated
->> differently (vlan accel/non-accel).
->> 
->> This patch calls do_xdp_generic for master device in different point in
->> the receive patch comparing to lower device. Would it be possible to
->> unify this? E.g. by moving do_xdp_generice() call from
->> netif_rx_internal()/netif_receive_skb_internal() here,
->> to the beginning of __netif_receive_skb_core()?
->> 
->
->I am trying that now. But one problem is that it would break the case
->where XDP was being run on one leg of a bridge. For example if eth1 is
->part of br0; then it would no longer be possible to run XDP on eth1.
+__bpf_skc_lookup takes a socket tuple and the length of the
+tuple as an argument. Based on the length, it decides which
+address family to pass to the helper function sk_lookup.
 
-I don't see why not. The xdp is still run in __netif_receive_skb_core()
-before goto another_round.
+In case of AF_INET6, it fails to verify that the length
+of the tuple is long enough. sk_lookup may therefore access
+data past the end of the tuple.
 
-I was thinking about patch similar to this:
+Fixes: 6acc9b432e67 ("bpf: Add helper to retrieve socket in BPF")
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+---
+ net/core/filter.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index b6b8505cfb3e..4c3fdda85544 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4502,23 +4502,6 @@ static int netif_rx_internal(struct sk_buff *skb)
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 55bfc941d17a..76f1d99640e2 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5304,7 +5304,13 @@ __bpf_skc_lookup(struct sk_buff *skb, struct bpf_sock_tuple *tuple, u32 len,
+ 	struct net *net;
+ 	int sdif;
  
- 	trace_netif_rx(skb);
- 
--	if (static_branch_unlikely(&generic_xdp_needed_key)) {
--		int ret;
--
--		preempt_disable();
--		rcu_read_lock();
--		ret = do_xdp_generic(rcu_dereference(skb->dev->xdp_prog), skb);
--		rcu_read_unlock();
--		preempt_enable();
--
--		/* Consider XDP consuming the packet a success from
--		 * the netdev point of view we do not want to count
--		 * this as an error.
--		 */
--		if (ret != XDP_PASS)
--			return NET_RX_SUCCESS;
--	}
--
- #ifdef CONFIG_RPS
- 	if (static_branch_unlikely(&rps_needed)) {
- 		struct rps_dev_flow voidflow, *rflow = &voidflow;
-@@ -4858,6 +4841,19 @@ static int __netif_receive_skb_core(struct sk_buff *skb, bool pfmemalloc,
- 
- 	__this_cpu_inc(softnet_data.processed);
- 
-+	if (static_branch_unlikely(&generic_xdp_needed_key)) {
-+		int ret2;
+-	family = len == sizeof(tuple->ipv4) ? AF_INET : AF_INET6;
++	if (len == sizeof(tuple->ipv4))
++		family = AF_INET;
++	else if (len == sizeof(tuple->ipv6))
++		family = AF_INET6;
++	else
++		return NULL;
 +
-+		preempt_disable();
-+		rcu_read_lock();
-+		ret2 = do_xdp_generic(rcu_dereference(skb->dev->xdp_prog), skb);
-+		rcu_read_unlock();
-+		preempt_enable();
-+
-+		if (ret2 != XDP_PASS)
-+			return NET_RX_DROP;
-+	}
-+
- 	if (skb->protocol == cpu_to_be16(ETH_P_8021Q) ||
- 	    skb->protocol == cpu_to_be16(ETH_P_8021AD)) {
- 		skb = skb_vlan_untag(skb);
-@@ -5178,19 +5174,6 @@ static int netif_receive_skb_internal(struct sk_buff *skb)
- 	if (skb_defer_rx_timestamp(skb))
- 		return NET_RX_SUCCESS;
- 
--	if (static_branch_unlikely(&generic_xdp_needed_key)) {
--		int ret;
--
--		preempt_disable();
--		rcu_read_lock();
--		ret = do_xdp_generic(rcu_dereference(skb->dev->xdp_prog), skb);
--		rcu_read_unlock();
--		preempt_enable();
--
--		if (ret != XDP_PASS)
--			return NET_RX_DROP;
--	}
--
- 	rcu_read_lock();
- #ifdef CONFIG_RPS
- 	if (static_branch_unlikely(&rps_needed)) {
-@@ -5224,21 +5207,6 @@ static void netif_receive_skb_list_internal(struct list_head *head)
- 	}
- 	list_splice_init(&sublist, head);
- 
--	if (static_branch_unlikely(&generic_xdp_needed_key)) {
--		preempt_disable();
--		rcu_read_lock();
--		list_for_each_entry_safe(skb, next, head, list) {
--			xdp_prog = rcu_dereference(skb->dev->xdp_prog);
--			skb_list_del_init(skb);
--			if (do_xdp_generic(xdp_prog, skb) == XDP_PASS)
--				list_add_tail(&skb->list, &sublist);
--		}
--		rcu_read_unlock();
--		preempt_enable();
--		/* Put passed packets back on main list */
--		list_splice_init(&sublist, head);
--	}
--
- 	rcu_read_lock();
- #ifdef CONFIG_RPS
- 	if (static_branch_unlikely(&rps_needed)) {
+ 	if (unlikely(family == AF_UNSPEC || flags ||
+ 		     !((s32)netns_id < 0 || netns_id <= S32_MAX)))
+ 		goto out;
+-- 
+2.19.1
+
