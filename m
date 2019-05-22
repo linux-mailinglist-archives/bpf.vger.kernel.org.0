@@ -2,104 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0084C26795
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 17:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1C2267CB
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 18:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729402AbfEVP6W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 May 2019 11:58:22 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:53351 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729506AbfEVP6H (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 May 2019 11:58:07 -0400
-Received: by mail-io1-f72.google.com with SMTP id c16so2074108ioo.20
-        for <bpf@vger.kernel.org>; Wed, 22 May 2019 08:58:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=erwCwLi/IMGQgqdgz2IK51VTR3OAaKII4qxB+lqID+g=;
-        b=KxgN+9G7JUuA7744egTJDjlPqiRnKlXPOauAbI4MugcQX1YJpV5QBEYhBz16BGQf/n
-         SAkW+8f6v4wzBrhKl7a+9fq2JHKCZmP0Sif8l7vrUxLp4/tCtv7gO2jK6dLI815UjLNK
-         JMCZvaUbODg6SBEJ97/jkZbJ+gKe923W5mrt5jfLxHTFpQG2r8jOpSLAv7elTGhBpawA
-         FkQxs3agm8FYAK7AAdJ6BmrqprChlmR9GT4nBmC38TWdgOJEJpOWg91FGlNUqzWixh4w
-         d6Jd9DE1eiOPmFSLtehStKj3fI3TEQ4IqqzGC+c4KXO07vLctkP6KVW6vQYrodYchWjm
-         jY1w==
-X-Gm-Message-State: APjAAAVZTStdPviQCSL2WUB2dylibcUckYnmkhgLN5vEKte5VU1FoJc1
-        G8qbDRDF3XiuNMu42o/WVVBwQEBjGw5f7tTeA6oK2/ObC5he
-X-Google-Smtp-Source: APXvYqzH9M01QETYOFX4ylwR0pwMC43Y5tbfd7IU5YF/nedV3ZoEwPV7/8eBoUaroTkUl+y1yHJxF2PlT/04o48SKoW4DBCH8cle
+        id S1729588AbfEVQNo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 May 2019 12:13:44 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:36694 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728466AbfEVQNo (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 May 2019 12:13:44 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4MGCZdm026547;
+        Wed, 22 May 2019 09:13:08 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=zWvMdWugovYXTPSCGMtXv4L7vDmLWCqrjg70YsLPczA=;
+ b=OecEqyhAq/WJLRkUnBIRcKm8CSc5ri+KN9GnRFNKx3eQZdLyLtooz17wTbnorQTYPA2d
+ 3DUNMRMFVuk3+4QfI3DbAQMvOakT9JFC/fn1+8fdWqR296WaONYr/BXR1i3jLtrzwDPp
+ VLK3EauaYhjy5+S56wqtm6xj9Mr9182zpoE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2sn9bgr3w7-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 22 May 2019 09:13:08 -0700
+Received: from ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) by
+ ash-exhub203.TheFacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 22 May 2019 09:13:05 -0700
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 22 May 2019 09:13:04 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zWvMdWugovYXTPSCGMtXv4L7vDmLWCqrjg70YsLPczA=;
+ b=b2ZjG7IbMqYTAXtbGOkuPH5AC/KtlyUyjJkJxuL31+je8Hj1EPuRtPO12RG446gdma1XbVanQrOurDrq58d2fnne/fCz9SQze82QvMsF/rxzJKuxEj3/BXih5XfHBBMPVkQ36XlZLv1Fx2AhbLj/XbrK8FVoJn3iCizTQ1WvWK8=
+Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.2.19) by
+ MWHPR15MB1567.namprd15.prod.outlook.com (10.173.235.11) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1922.15; Wed, 22 May 2019 16:12:49 +0000
+Received: from MWHPR15MB1165.namprd15.prod.outlook.com
+ ([fe80::85b5:614:bc49:8a15]) by MWHPR15MB1165.namprd15.prod.outlook.com
+ ([fe80::85b5:614:bc49:8a15%11]) with mapi id 15.20.1900.020; Wed, 22 May 2019
+ 16:12:49 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Kairui Song <kasong@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH] perf/x86: always include regs->ip in callchain
+Thread-Topic: [PATCH] perf/x86: always include regs->ip in callchain
+Thread-Index: AQHVEBaM9rNs0KV060agNJ6HaueIX6Z3LMkAgAAlbgA=
+Date:   Wed, 22 May 2019 16:12:49 +0000
+Message-ID: <305A8E31-13BC-4891-A9F2-30A25264771C@fb.com>
+References: <20190521204813.1167784-1-songliubraving@fb.com>
+ <20190522135850.GB16275@worktop.programming.kicks-ass.net>
+In-Reply-To: <20190522135850.GB16275@worktop.programming.kicks-ass.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3445.104.8)
+x-originating-ip: [2620:10d:c090:200::3:a64d]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f0f35c3c-2cd3-4a72-da17-08d6ded055f9
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:MWHPR15MB1567;
+x-ms-traffictypediagnostic: MWHPR15MB1567:
+x-microsoft-antispam-prvs: <MWHPR15MB15672A61DFD594A1D1DA2EEBB3000@MWHPR15MB1567.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 0045236D47
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(396003)(366004)(136003)(376002)(39860400002)(199004)(189003)(83716004)(14454004)(478600001)(99286004)(54906003)(71190400001)(66476007)(64756008)(6486002)(6916009)(71200400001)(66556008)(33656002)(68736007)(76116006)(66946007)(256004)(6436002)(66446008)(229853002)(73956011)(2906002)(102836004)(316002)(86362001)(50226002)(8676002)(305945005)(81156014)(8936002)(25786009)(6506007)(53546011)(7736002)(81166006)(46003)(486006)(11346002)(57306001)(4326008)(5660300002)(446003)(476003)(2616005)(76176011)(6512007)(82746002)(6116002)(6246003)(36756003)(53936002)(186003);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1567;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: pMhRQFBSJUzJcw+WHWyU+ThRuLF0I0IASahVZkP+o9x9cviPOnGdjjeUcleCi2I3xmRIO+o/40Fnj6Vrppy9700g12DA0m0ZIB/FHmGyY9dcu1RtxehW4Lchu7VWdAVbl5NPsbZyue3i7LX6aneB335KnPxmuNGlXbrSSwCaLa3ybGHDgNoOk5bx48KVfxAtxUfZrQ5h/gKtfP8GBhQMhQ/OFBT6Vlzzc/zeVxs1m4IMsQ5JY/9sJTm3B003FWixvoiIG/1D52iqcOVQuUXZT8sqVXqcFH5ALVYKjjb32iU3v+hLXXtBbMz7up0/YAU/h+cONjOlLa06V4UYyJcWBcFWSZcx8IMRW4JdToU+AcSSklTqn+WlKUhq8eMmlQTS4couaZeUEjqhEDbbePMreANs7o1TMlASrWkAnVhHGm8=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <012F3268734D894692438B583C7DFDFD@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Received: by 2002:a6b:b3c5:: with SMTP id c188mr54147098iof.203.1558540686350;
- Wed, 22 May 2019 08:58:06 -0700 (PDT)
-Date:   Wed, 22 May 2019 08:58:06 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fa662405897c0774@google.com>
-Subject: memory leak in sock_hash_update_common
-From:   syzbot <syzbot+30c7a1fc662026545124@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, john.fastabend@gmail.com, kafai@fb.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0f35c3c-2cd3-4a72-da17-08d6ded055f9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 May 2019 16:12:49.5324
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1567
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-22_09:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905220114
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    9c7db500 Merge tag 'selinux-pr-20190521' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1287358aa00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=61dd9e15a761691d
-dashboard link: https://syzkaller.appspot.com/bug?extid=30c7a1fc662026545124
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1284fb9ca00000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+30c7a1fc662026545124@syzkaller.appspotmail.com
-
-dy
-BUG: memory leak
-unreferenced object 0xffff88810dc30340 (size 64):
-   comm "softirq", pid 0, jiffies 4294949769 (age 8.870s)
-   hex dump (first 32 bytes):
-     00 70 f4 14 81 88 ff ff 00 2a c3 1b 82 88 ff ff  .p.......*......
-     bf 84 c1 58 00 00 00 00 c0 f2 cc 0d 81 88 ff ff  ...X............
-   backtrace:
-     [<0000000059c77455>] kmemleak_alloc_recursive  
-include/linux/kmemleak.h:55 [inline]
-     [<0000000059c77455>] slab_post_alloc_hook mm/slab.h:439 [inline]
-     [<0000000059c77455>] slab_alloc_node mm/slab.c:3269 [inline]
-     [<0000000059c77455>] kmem_cache_alloc_node_trace+0x15b/0x2a0  
-mm/slab.c:3597
-     [<00000000a3eee734>] __do_kmalloc_node mm/slab.c:3619 [inline]
-     [<00000000a3eee734>] __kmalloc_node+0x38/0x50 mm/slab.c:3627
-     [<00000000869e2762>] kmalloc_node include/linux/slab.h:590 [inline]
-     [<00000000869e2762>] sock_hash_alloc_elem net/core/sock_map.c:639  
-[inline]
-     [<00000000869e2762>] sock_hash_update_common+0x301/0x540  
-net/core/sock_map.c:690
-     [<00000000ae16fa93>] sock_hash_update_elem+0xf0/0x130  
-net/core/sock_map.c:739
-     [<0000000047230865>] map_update_elem kernel/bpf/syscall.c:925 [inline]
-     [<0000000047230865>] __do_sys_bpf+0x19b7/0x1dd0  
-kernel/bpf/syscall.c:2801
-     [<00000000fb5f3bec>] __se_sys_bpf kernel/bpf/syscall.c:2772 [inline]
-     [<00000000fb5f3bec>] __x64_sys_bpf+0x1e/0x30 kernel/bpf/syscall.c:2772
-     [<000000007b931104>] do_syscall_64+0x76/0x1a0  
-arch/x86/entry/common.c:301
-     [<00000000e7e5ff7d>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
 
+> On May 22, 2019, at 6:58 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+>=20
+> On Tue, May 21, 2019 at 01:48:13PM -0700, Song Liu wrote:
+>> Commit d15d356887e7 removes regs->ip for !perf_hw_regs(regs) case. This
+>> breaks tests like test_stacktrace_map from selftests/bpf/tests_prog.
+>=20
+> That test is broken by something else; just the one entry is wrong too.
+>=20
+> That said, yes the patch below is actually correct, but the above
+> description is misleading at best.
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+How about we change it to:=20
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Commit d15d356887e7 removes regs->ip for !perf_hw_regs(regs) case. This
+patch adds regs->ip back.
+
+
+Shall I send v2 with the change?=20
+
+Thanks,
+Song
+
+>=20
+>> This patch adds regs->ip back.
+>>=20
+>> Fixes: d15d356887e7 ("perf/x86: Make perf callchains work without CONFIG=
+_FRAME_POINTER")
+>> Cc: Kairui Song <kasong@redhat.com>
+>> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+>> Signed-off-by: Song Liu <songliubraving@fb.com>
+>> ---
+>> arch/x86/events/core.c | 4 ++--
+>> 1 file changed, 2 insertions(+), 2 deletions(-)
+>>=20
+>> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+>> index f315425d8468..7b8a9eb4d5fd 100644
+>> --- a/arch/x86/events/core.c
+>> +++ b/arch/x86/events/core.c
+>> @@ -2402,9 +2402,9 @@ perf_callchain_kernel(struct perf_callchain_entry_=
+ctx *entry, struct pt_regs *re
+>> 		return;
+>> 	}
+>>=20
+>> +	if (perf_callchain_store(entry, regs->ip))
+>> +		return;
+>> 	if (perf_hw_regs(regs)) {
+>> -		if (perf_callchain_store(entry, regs->ip))
+>> -			return;
+>> 		unwind_start(&state, current, regs, NULL);
+>> 	} else {
+>> 		unwind_start(&state, current, NULL, (void *)regs->sp);
+>> --=20
+>> 2.17.1
+>>=20
+
