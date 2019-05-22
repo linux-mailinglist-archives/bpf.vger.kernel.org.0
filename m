@@ -2,91 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0E225B67
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 02:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A84F525B84
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 03:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726466AbfEVA4P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 May 2019 20:56:15 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:33067 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726083AbfEVA4O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 May 2019 20:56:14 -0400
-Received: by mail-qk1-f195.google.com with SMTP id p18so463751qkk.0;
-        Tue, 21 May 2019 17:56:14 -0700 (PDT)
+        id S1728141AbfEVBEj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 May 2019 21:04:39 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:46725 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726466AbfEVBEj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 May 2019 21:04:39 -0400
+Received: by mail-qt1-f193.google.com with SMTP id z19so392876qtz.13
+        for <bpf@vger.kernel.org>; Tue, 21 May 2019 18:04:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UcsW6XhQiuBgEwwFMZJ9DR9uDKMcByzy/BIkt2l5OFk=;
-        b=p8mPEg2vUVu5GGyCDVr0SxAmjGzOTpSjCAURKnck5YIwNOcPmnSSG7Vqu2kKk6o/0D
-         gWHr6pgaQylnDKs8yLWt/GaCgIxdAiAHKtMH4Qrs5xmn6nyJiNwalH2/y5r2qp3PZKcO
-         I6u5H3OBMEvvAbvIHnsJ+WzHkTt7MXCN4fYCgFVTKan6voy9AdJTwzs5P4SO6qA+rM77
-         2Dx9PfPyBsxqoN0St1o79vjrDbM7OK2vsrTjI72h8mkGyXPOEI9bkAvYYH2+EZ+KV7En
-         Zlhz4coqKnMeYK57i2JISid+B9CNq1F/+M9umwKPCFVR4kQNBKGBMswxDSUIMBLngX5V
-         WOdA==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=wvMTdrFUPputvvouLMBvi2pmMD6BVgnc2STEUklDvOY=;
+        b=XU66xx4A4SP/8XgRREw8lgS+ZxEFYTSlXrAbdnTJozk6cf1la2f95ITYHyRqqX7qUk
+         Fnc6878GtzG6QC9m1e3p411t85Ec5MwW9JBNe8wcckhenozGg8g+IVq7UsgxGk6RhoXR
+         qBGvxa9+wDE0p96ciczrlYVI2ld49YdnXu/6nvPZOORZs9kRX5QXbsT0B+kMknS749An
+         Wqauy9BYMHQmPr2V8rackRt6NcWW4ZHIW+hZ8c+BfzKLJuPgIE1DfdBJOwczuJzP9Omt
+         g/BsTSFhY1xAYSX5HbCp/Q/8O+N+aQNHOLEI3NvrLONfDCXy7P2ePyRkKLjNwKrQ3Xnf
+         7WIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UcsW6XhQiuBgEwwFMZJ9DR9uDKMcByzy/BIkt2l5OFk=;
-        b=uEWQryVsbasb4BmrvYPlwUgV5lcMNz6/uRZidJKKdGd5LFADLbUGP8woKgjF42c6yd
-         i1fs4FUsa4LulGqNnbfiALcFlpruxmGRVxqnZmUxtQz2oV3STuYfLA52UsswxGtnozd+
-         c5AYhlqmIr/pZTJ7BhG/ggOTytNkC3aIAdBsShF+rVtVyTj4U80EgmuAvTkF+YubgIfU
-         LAfnwbDiRA5qeRlK/uF6PmIHR2LXl2pFdlDEvKRujl9LnYvkYzuY/bruJq923PvIzpXA
-         M7UY1W611No0eJXeaHuFEJ4LZgv8qv2z10Lqaj5F0FUW7bNcwmbaPKHUPSF5xWqNSfqd
-         J8sw==
-X-Gm-Message-State: APjAAAVpTUfwMQSt5AZmSUAOzTAilbjKkWOiZnag8KQYCExoDzY/FULf
-        uuod7nYl9S0h2WMDkj907TJb2LeehpRePyjddjfqDx8hQ4o=
-X-Google-Smtp-Source: APXvYqzZvfLS+8VnKHXJ/gKRV68+/+ZR0qAM+q3szoJTvYMSf7xZjvmvXkY8/dwYTxinJNbbv1kWxEhXGa1cLdaHsHE=
-X-Received: by 2002:a37:66c7:: with SMTP id a190mr67245391qkc.44.1558486573857;
- Tue, 21 May 2019 17:56:13 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=wvMTdrFUPputvvouLMBvi2pmMD6BVgnc2STEUklDvOY=;
+        b=mFVMdOvY4A4b+3YHj34YAfzb4LeFwfHc7bmxqFZ9H/mpiiYfsd86OTWm5T5LeHJb76
+         2d+ZgsPOiaevh1ARXJVnOkUIPj5Am+T7CwsetTHZ+YOAMXxV+4Brh0/s1MstdTbi5An3
+         3MoYPJXnoAo5bSH9ivp7hkDKdtblZ2AZScOWlgqHlukcLtkZ9I5hHelWnYZcQ/ZWGUtw
+         3lCocNvAiHW3F4NrlUOWTjqd2CtqssnBAArSEYqcLIvb2uqd2JgV5A+TM4y5yu/J01P/
+         R9/PbVIL1JljPivh9kBs3EUG9/mrfQ8E1ALgFoUedp3tvF2PqJCALoL9gbFAUnFdg91P
+         MWOg==
+X-Gm-Message-State: APjAAAXRDaT2hJ0mkIua6IzQdvZoLDG5d08pRnSikwGRVjI3K2zhquAf
+        ivRuztkRA2KTj1oF2VmqNtJSrQ==
+X-Google-Smtp-Source: APXvYqxjAbjzPuGxyI6XrYZOgCWkgw/8H2bFgHMOM1Z00y0URwt1bARHcPzUrn7DKxvd/wnZFGfuZA==
+X-Received: by 2002:a0c:b902:: with SMTP id u2mr13588017qvf.151.1558487078366;
+        Tue, 21 May 2019 18:04:38 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id u5sm12294898qtj.95.2019.05.21.18.04.36
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 21 May 2019 18:04:38 -0700 (PDT)
+Date:   Tue, 21 May 2019 18:04:03 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     <davem@davemloft.net>, <daniel@iogearbox.net>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: cleanup explored_states
+Message-ID: <20190521180403.0a24e0e9@cakuba.netronome.com>
+In-Reply-To: <20190521230635.2142522-2-ast@kernel.org>
+References: <20190521230635.2142522-1-ast@kernel.org>
+        <20190521230635.2142522-2-ast@kernel.org>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-References: <20190521230939.2149151-1-ast@kernel.org> <20190521230939.2149151-4-ast@kernel.org>
- <CAEf4BzZrK1Fw211ef9psBxOoP_vV9tH2Hre1DJSqUsp7iX7bSg@mail.gmail.com> <2a067f93-c607-34fc-1c34-611ed4a8f6a0@fb.com>
-In-Reply-To: <2a067f93-c607-34fc-1c34-611ed4a8f6a0@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 21 May 2019 17:56:02 -0700
-Message-ID: <CAEf4BzZ1r2brvaJvdXnpUD=Et9Ysp6361esRrDD_rPG4u4h7tA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: add pyperf scale test
-To:     Alexei Starovoitov <ast@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 21, 2019 at 5:50 PM Alexei Starovoitov <ast@fb.com> wrote:
->
-> On 5/21/19 5:36 PM, Andrii Nakryiko wrote:
-> >> --- /dev/null
-> >> +++ b/tools/testing/selftests/bpf/progs/pyperf.h
-> >> @@ -0,0 +1,268 @@
-> >> +// SPDX-License-Identifier: GPL-2.0
-> >> +// Copyright (c) 2019 Facebook
-> >
-> > Maybe let's include a link to an up-to-date real tool, that was used
-> > to create this scale test in BCC:
-> > https://github.com/iovisor/bcc/blob/master/examples/cpp/pyperf/PyPerfBPFProgram.cc
->
-> I thought about it, but decided not to,
-> since this hack is not exactly the same.
-> I tried to keep an idea of the loop though
-> with roughly the same number of probe_reads
-> and 'if' conditions, but was chopping all bcc-ism out of it.
-> In the commit log: "Add a snippet of pyperf bpf program"
-> By "a snippet" I meant that it's not the same thing,
-> but close enough from verifier complexity point of view.
-> Existing pyperf works around the lack of loops with tail-calls :(
-> I'm thinking to reuse this hack as future bounded loop test too.
->
-> Another reason to avoid the link is I'm hoping that pyperf
-> will move from 'examples' directory there into proper tool,
-> so the link will become broken.
+On Tue, 21 May 2019 16:06:33 -0700, Alexei Starovoitov wrote:
+> clean up explored_states to prep for introduction of hashtable
+> No functional changes.
+> 
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>  kernel/bpf/verifier.c | 30 +++++++++++++++++++++---------
+>  1 file changed, 21 insertions(+), 9 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 95f9354495ad..a171b2940382 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -5436,6 +5436,18 @@ enum {
+>  };
+>  
+>  #define STATE_LIST_MARK ((struct bpf_verifier_state_list *) -1L)
+> +static struct bpf_verifier_state_list **explored_state(
+> +					struct bpf_verifier_env *env,
+> +					int idx)
+> +{
+> +	return &env->explored_states[idx];
+> +}
+> +
+> +static void init_explored_state(struct bpf_verifier_env *env, int idx)
+> +{
+> +	env->explored_states[idx] = STATE_LIST_MARK;
+> +}
+> +
 
-Ok, fair enough.
+nit: extra new line here
+
+>  
