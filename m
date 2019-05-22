@@ -2,486 +2,392 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5870926A41
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 20:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6CF226A93
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 21:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728734AbfEVS4O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 May 2019 14:56:14 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:42177 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729771AbfEVS4J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 May 2019 14:56:09 -0400
-Received: by mail-wr1-f68.google.com with SMTP id l2so3465472wrb.9
-        for <bpf@vger.kernel.org>; Wed, 22 May 2019 11:56:07 -0700 (PDT)
+        id S1729506AbfEVTKJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 May 2019 15:10:09 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:46702 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728761AbfEVTKJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 May 2019 15:10:09 -0400
+Received: by mail-pl1-f195.google.com with SMTP id r18so1506407pls.13
+        for <bpf@vger.kernel.org>; Wed, 22 May 2019 12:10:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=P5M/sOCzka2qT+p4DDAjrnnn2G6z55p/ok/4haADAMQ=;
-        b=gaNUG1uwtbvPobVRRWgOlPAFobYj6VzGJQs+RLTUsJKKLvXwKcydEzeJWuBbfYXkWp
-         EyAKl+fB6RugluFPETCrJYH8CPXMSUL3vXpLFXjSwLVuv9UF35tZUOOczkqAH2K365eb
-         RkygOBmzmtNVmL/sAN8dqKiyITjk5g0ie3TFZwyNF4omIDJSPoelADjY5Tx7F3iKbnLB
-         ONd57cPoDEQIFAAuxsK7rny+GXESx7DWPI8lalORoM29ItIUFA2e7bYti9IWc4PnazzJ
-         C9vr0PlIMSTVk7RU/ZK0yxSclDfeSNsJqLAn8g/Y8VnPXJCB+SQTr5k/w5GKi+IJ5br8
-         CZeg==
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=b+Db0Ho967KIuB480AsX6/OKFU0wLR6Q1jk2wQ0DXCQ=;
+        b=WX1aKVNW/YnkYXQJzyC6vSeafONarW/j2n+CRF5tH2BTfoilsWZjgSOCVWOciORDjl
+         HPQuZuykB77k7JD5vQW4h/PEjS1ZK1fM+l/UyvHWAV/kWbZHmxBP0ALLiMJqEGtUPAkA
+         Xw4uOtngkdyt1c7P4pVI/duXphdOodJcSVlQHgVUDIl4Nr1+GTwSVtVwvlIEvADKqmvB
+         tP0/yzkXm+uy9LgKMKOHwDV/Ksfer9/26DxeVbVOeZw+XDY/M9pFbArKDQlC7laNeeqQ
+         SB3NbhS6sVycv+HD8qDiBDV1L0YASIUSBkr87NwtSPTpVPH8GHeX1SK/zChsHDg6zi4D
+         j9yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=P5M/sOCzka2qT+p4DDAjrnnn2G6z55p/ok/4haADAMQ=;
-        b=ZfMMh+NiZMCc4PRvJXQmhYVhs9072FY3BNVsjb90JKcRLFqaPtfX7ctS2qRo9Xg9S2
-         zNLOUgVUzoQr6Sfzt/Cq1VSMXJ9F3OzAVXwJDlEEOei4T3MEoedQJkhSMOeEeeghJBiQ
-         mB7FwpkNfJMwiw9l67QOC4Bf3BsJkjlsdDEa0fuTe9CneMLghni4u1KaisSjSXTWYF6U
-         KkF9j4M3PJJ9ptBJSoHLBQ2PQR4eSuQbFZAd2jasHsIATkfSXU+28L+q/xH5X6e2JdZa
-         I+HwSS0jCw7iDcQCqPAX3XTQwh5TqqLy3M94fDQMCQR4NK95X1utATp2z9JOM6VgLNT/
-         ofDg==
-X-Gm-Message-State: APjAAAWtKBynfEllVoQb/zCvX2qFbJk+4UaMMaHxbjsvHvbRH9I7vmEp
-        CsWFoq3PCtXoxGegiN4WxR2FmQ==
-X-Google-Smtp-Source: APXvYqydkqWWbfq5UvfMurrIgg5fvMJYiu4JrQ6eEGDH9L3tDKczRFK1zOBFPzhpY9RzJ9i14NNXOA==
-X-Received: by 2002:adf:dc8e:: with SMTP id r14mr40630016wrj.121.1558551366756;
-        Wed, 22 May 2019 11:56:06 -0700 (PDT)
-Received: from cbtest28.netronome.com ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id t12sm16328801wro.2.2019.05.22.11.56.05
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Wed, 22 May 2019 11:56:06 -0700 (PDT)
-From:   Jiong Wang <jiong.wang@netronome.com>
-To:     alexei.starovoitov@gmail.com, daniel@iogearbox.net
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=b+Db0Ho967KIuB480AsX6/OKFU0wLR6Q1jk2wQ0DXCQ=;
+        b=LH8hcDv1WArRu8h6CGT/bhDYXdx/atqEofFS/JJfAhs1tL/f2oUdsRns6YmH16msMW
+         f6I/VvrD9Y7sbemhxfv8XRYsLyeXIoBRnG8V4YUSpkOLWLxj80ERtqv9BnZ8FfCbQg35
+         cjAD7WOyNm27rTSyfvSMjagDLl1y++hBLj0sxaZFvLKdm0BFsqsNRUIOrAM4FvgkY69O
+         2+2h3mN0RIONvLswzYeiT1TOmO5EY01CSXXV3Yh8pRqTBLxdd2xKJi4w2gAPGpmbHPjI
+         jW93yZuypXRGb8Ll9tE9iPVrLAO2W1j3pZMMxNjJ+fIl9UFynrH2B1rSkzlY+tN2POWz
+         3zpA==
+X-Gm-Message-State: APjAAAUAgX4GyBr/7OSi6Ok57Yun+ia2P6+uuATd/JqkGtJWaMMeRyS/
+        33sOFQIrgP1IiJmKQoqkNJnbKw==
+X-Google-Smtp-Source: APXvYqwQH0q3LLA0opfCF1qW2MqmJcSagCew0hGSv2HZ4Jp770S60C6UTtZ9L6EXPEEAvPYjM+7XNQ==
+X-Received: by 2002:a17:902:b58a:: with SMTP id a10mr62595282pls.83.1558552208085;
+        Wed, 22 May 2019 12:10:08 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id j10sm26042127pgk.37.2019.05.22.12.10.07
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 22 May 2019 12:10:07 -0700 (PDT)
+Date:   Wed, 22 May 2019 12:10:06 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@netronome.com, davem@davemloft.net,
-        paul.burton@mips.com, udknight@gmail.com, zlim.lnx@gmail.com,
-        illusionist.neo@gmail.com, naveen.n.rao@linux.ibm.com,
-        sandipan@linux.ibm.com, schwidefsky@de.ibm.com,
-        heiko.carstens@de.ibm.com, jakub.kicinski@netronome.com,
-        Jiong Wang <jiong.wang@netronome.com>
-Subject: [PATCH v7 bpf-next 16/16] nfp: bpf: eliminate zero extension code-gen
-Date:   Wed, 22 May 2019 19:55:12 +0100
-Message-Id: <1558551312-17081-17-git-send-email-jiong.wang@netronome.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1558551312-17081-1-git-send-email-jiong.wang@netronome.com>
-References: <1558551312-17081-1-git-send-email-jiong.wang@netronome.com>
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH bpf-next v2 3/3] tools/bpf: add a selftest for
+ bpf_send_signal() helper
+Message-ID: <20190522191006.GN10244@mini-arch>
+References: <20190522053900.1663459-1-yhs@fb.com>
+ <20190522053903.1663924-1-yhs@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190522053903.1663924-1-yhs@fb.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch eliminate zero extension code-gen for instructions including
-both alu and load/store. The only exception is for ctx load, because
-offload target doesn't go through host ctx convert logic so we do
-customized load and ignores zext flag set by verifier.
+On 05/21, Yonghong Song wrote:
+> The test covered both nmi and tracepoint perf events.
+>   $ ./test_send_signal_user
+>   test_send_signal (tracepoint): OK
+>   test_send_signal (perf_event): OK
+> 
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  tools/testing/selftests/bpf/Makefile          |   3 +-
+>  tools/testing/selftests/bpf/bpf_helpers.h     |   1 +
+>  .../bpf/progs/test_send_signal_kern.c         |  51 +++++
+>  .../selftests/bpf/test_send_signal_user.c     | 212 ++++++++++++++++++
+>  4 files changed, 266 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+>  create mode 100644 tools/testing/selftests/bpf/test_send_signal_user.c
+> 
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 66f2dca1dee1..5eb6368a96a2 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -23,7 +23,8 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
+>  	test_align test_verifier_log test_dev_cgroup test_tcpbpf_user \
+>  	test_sock test_btf test_sockmap test_lirc_mode2_user get_cgroup_id_user \
+>  	test_socket_cookie test_cgroup_storage test_select_reuseport test_section_names \
+> -	test_netcnt test_tcpnotify_user test_sock_fields test_sysctl
+> +	test_netcnt test_tcpnotify_user test_sock_fields test_sysctl \
+> +	test_send_signal_user
+>  
+>  BPF_OBJ_FILES = $(patsubst %.c,%.o, $(notdir $(wildcard progs/*.c)))
+>  TEST_GEN_FILES = $(BPF_OBJ_FILES)
+> diff --git a/tools/testing/selftests/bpf/bpf_helpers.h b/tools/testing/selftests/bpf/bpf_helpers.h
+> index 5f6f9e7aba2a..cb02521b8e58 100644
+> --- a/tools/testing/selftests/bpf/bpf_helpers.h
+> +++ b/tools/testing/selftests/bpf/bpf_helpers.h
+> @@ -216,6 +216,7 @@ static void *(*bpf_sk_storage_get)(void *map, struct bpf_sock *sk,
+>  	(void *) BPF_FUNC_sk_storage_get;
+>  static int (*bpf_sk_storage_delete)(void *map, struct bpf_sock *sk) =
+>  	(void *)BPF_FUNC_sk_storage_delete;
+> +static int (*bpf_send_signal)(unsigned sig) = (void *)BPF_FUNC_send_signal;
+>  
+>  /* llvm builtin functions that eBPF C program may use to
+>   * emit BPF_LD_ABS and BPF_LD_IND instructions
+> diff --git a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+> new file mode 100644
+> index 000000000000..45a1a1a2c345
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+> @@ -0,0 +1,51 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (c) 2019 Facebook
+> +#include <linux/bpf.h>
+> +#include <linux/version.h>
+> +#include "bpf_helpers.h"
+> +
+> +struct bpf_map_def SEC("maps") info_map = {
+> +	.type = BPF_MAP_TYPE_ARRAY,
+> +	.key_size = sizeof(__u32),
+> +	.value_size = sizeof(__u64),
+> +	.max_entries = 1,
+> +};
+> +
+> +BPF_ANNOTATE_KV_PAIR(info_map, __u32, __u64);
+> +
+> +struct bpf_map_def SEC("maps") status_map = {
+> +	.type = BPF_MAP_TYPE_ARRAY,
+> +	.key_size = sizeof(__u32),
+> +	.value_size = sizeof(__u64),
+> +	.max_entries = 1,
+> +};
+> +
+> +BPF_ANNOTATE_KV_PAIR(status_map, __u32, __u64);
+> +
+> +SEC("send_signal_demo")
+> +int bpf_send_signal_test(void *ctx)
+> +{
+> +	__u64 *info_val, *status_val;
+> +	__u32 key = 0, pid, sig;
+> +	int ret;
+> +
+> +	status_val = bpf_map_lookup_elem(&status_map, &key);
+> +	if (!status_val || *status_val != 0)
+> +		return 0;
+> +
+> +	info_val = bpf_map_lookup_elem(&info_map, &key);
+> +	if (!info_val || *info_val == 0)
+> +		return 0;
+> +
+> +	sig = *info_val >> 32;
+> +	pid = *info_val & 0xffffFFFF;
+> +
+> +	if ((bpf_get_current_pid_tgid() >> 32) == pid) {
+> +		ret = bpf_send_signal(sig);
+> +		if (ret == 0)
+> +			*status_val = 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +char __license[] SEC("license") = "GPL";
+> diff --git a/tools/testing/selftests/bpf/test_send_signal_user.c b/tools/testing/selftests/bpf/test_send_signal_user.c
+> new file mode 100644
+> index 000000000000..0bd0f7674860
+> --- /dev/null
+[..]
+> +++ b/tools/testing/selftests/bpf/test_send_signal_user.c
+Any reason you didn't put it under bpf/prog_tests?
+That way you don't need to define your own CHECK macro and
+care about the includes.
 
-Cc: Jakub Kicinski <jakub.kicinski@netronome.com>
-Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
----
- drivers/net/ethernet/netronome/nfp/bpf/jit.c      | 115 +++++++++++++---------
- drivers/net/ethernet/netronome/nfp/bpf/main.h     |   2 +
- drivers/net/ethernet/netronome/nfp/bpf/verifier.c |  12 +++
- 3 files changed, 81 insertions(+), 48 deletions(-)
-
-diff --git a/drivers/net/ethernet/netronome/nfp/bpf/jit.c b/drivers/net/ethernet/netronome/nfp/bpf/jit.c
-index d4bf0e6..4054b70 100644
---- a/drivers/net/ethernet/netronome/nfp/bpf/jit.c
-+++ b/drivers/net/ethernet/netronome/nfp/bpf/jit.c
-@@ -623,6 +623,13 @@ static void wrp_immed(struct nfp_prog *nfp_prog, swreg dst, u32 imm)
- }
- 
- static void
-+wrp_zext(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta, u8 dst)
-+{
-+	if (meta->flags & FLAG_INSN_DO_ZEXT)
-+		wrp_immed(nfp_prog, reg_both(dst + 1), 0);
-+}
-+
-+static void
- wrp_immed_relo(struct nfp_prog *nfp_prog, swreg dst, u32 imm,
- 	       enum nfp_relo_type relo)
- {
-@@ -858,7 +865,8 @@ static int nfp_cpp_memcpy(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
- }
- 
- static int
--data_ld(struct nfp_prog *nfp_prog, swreg offset, u8 dst_gpr, int size)
-+data_ld(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta, swreg offset,
-+	u8 dst_gpr, int size)
- {
- 	unsigned int i;
- 	u16 shift, sz;
-@@ -881,14 +889,15 @@ data_ld(struct nfp_prog *nfp_prog, swreg offset, u8 dst_gpr, int size)
- 			wrp_mov(nfp_prog, reg_both(dst_gpr + i), reg_xfer(i));
- 
- 	if (i < 2)
--		wrp_immed(nfp_prog, reg_both(dst_gpr + 1), 0);
-+		wrp_zext(nfp_prog, meta, dst_gpr);
- 
- 	return 0;
- }
- 
- static int
--data_ld_host_order(struct nfp_prog *nfp_prog, u8 dst_gpr,
--		   swreg lreg, swreg rreg, int size, enum cmd_mode mode)
-+data_ld_host_order(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta,
-+		   u8 dst_gpr, swreg lreg, swreg rreg, int size,
-+		   enum cmd_mode mode)
- {
- 	unsigned int i;
- 	u8 mask, sz;
-@@ -911,33 +920,34 @@ data_ld_host_order(struct nfp_prog *nfp_prog, u8 dst_gpr,
- 			wrp_mov(nfp_prog, reg_both(dst_gpr + i), reg_xfer(i));
- 
- 	if (i < 2)
--		wrp_immed(nfp_prog, reg_both(dst_gpr + 1), 0);
-+		wrp_zext(nfp_prog, meta, dst_gpr);
- 
- 	return 0;
- }
- 
- static int
--data_ld_host_order_addr32(struct nfp_prog *nfp_prog, u8 src_gpr, swreg offset,
--			  u8 dst_gpr, u8 size)
-+data_ld_host_order_addr32(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta,
-+			  u8 src_gpr, swreg offset, u8 dst_gpr, u8 size)
- {
--	return data_ld_host_order(nfp_prog, dst_gpr, reg_a(src_gpr), offset,
--				  size, CMD_MODE_32b);
-+	return data_ld_host_order(nfp_prog, meta, dst_gpr, reg_a(src_gpr),
-+				  offset, size, CMD_MODE_32b);
- }
- 
- static int
--data_ld_host_order_addr40(struct nfp_prog *nfp_prog, u8 src_gpr, swreg offset,
--			  u8 dst_gpr, u8 size)
-+data_ld_host_order_addr40(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta,
-+			  u8 src_gpr, swreg offset, u8 dst_gpr, u8 size)
- {
- 	swreg rega, regb;
- 
- 	addr40_offset(nfp_prog, src_gpr, offset, &rega, &regb);
- 
--	return data_ld_host_order(nfp_prog, dst_gpr, rega, regb,
-+	return data_ld_host_order(nfp_prog, meta, dst_gpr, rega, regb,
- 				  size, CMD_MODE_40b_BA);
- }
- 
- static int
--construct_data_ind_ld(struct nfp_prog *nfp_prog, u16 offset, u16 src, u8 size)
-+construct_data_ind_ld(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta,
-+		      u16 offset, u16 src, u8 size)
- {
- 	swreg tmp_reg;
- 
-@@ -953,10 +963,12 @@ construct_data_ind_ld(struct nfp_prog *nfp_prog, u16 offset, u16 src, u8 size)
- 	emit_br_relo(nfp_prog, BR_BLO, BR_OFF_RELO, 0, RELO_BR_GO_ABORT);
- 
- 	/* Load data */
--	return data_ld(nfp_prog, imm_b(nfp_prog), 0, size);
-+	return data_ld(nfp_prog, meta, imm_b(nfp_prog), 0, size);
- }
- 
--static int construct_data_ld(struct nfp_prog *nfp_prog, u16 offset, u8 size)
-+static int
-+construct_data_ld(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta,
-+		  u16 offset, u8 size)
- {
- 	swreg tmp_reg;
- 
-@@ -967,7 +979,7 @@ static int construct_data_ld(struct nfp_prog *nfp_prog, u16 offset, u8 size)
- 
- 	/* Load data */
- 	tmp_reg = re_load_imm_any(nfp_prog, offset, imm_b(nfp_prog));
--	return data_ld(nfp_prog, tmp_reg, 0, size);
-+	return data_ld(nfp_prog, meta, tmp_reg, 0, size);
- }
- 
- static int
-@@ -1204,7 +1216,7 @@ mem_op_stack(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta,
- 	}
- 
- 	if (clr_gpr && size < 8)
--		wrp_immed(nfp_prog, reg_both(gpr + 1), 0);
-+		wrp_zext(nfp_prog, meta, gpr);
- 
- 	while (size) {
- 		u32 slice_end;
-@@ -1305,9 +1317,10 @@ wrp_alu32_imm(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta,
- 	      enum alu_op alu_op)
- {
- 	const struct bpf_insn *insn = &meta->insn;
-+	u8 dst = insn->dst_reg * 2;
- 
--	wrp_alu_imm(nfp_prog, insn->dst_reg * 2, alu_op, insn->imm);
--	wrp_immed(nfp_prog, reg_both(insn->dst_reg * 2 + 1), 0);
-+	wrp_alu_imm(nfp_prog, dst, alu_op, insn->imm);
-+	wrp_zext(nfp_prog, meta, dst);
- 
- 	return 0;
- }
-@@ -1319,7 +1332,7 @@ wrp_alu32_reg(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta,
- 	u8 dst = meta->insn.dst_reg * 2, src = meta->insn.src_reg * 2;
- 
- 	emit_alu(nfp_prog, reg_both(dst), reg_a(dst), alu_op, reg_b(src));
--	wrp_immed(nfp_prog, reg_both(meta->insn.dst_reg * 2 + 1), 0);
-+	wrp_zext(nfp_prog, meta, dst);
- 
- 	return 0;
- }
-@@ -2396,12 +2409,14 @@ static int neg_reg(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
- 	u8 dst = meta->insn.dst_reg * 2;
- 
- 	emit_alu(nfp_prog, reg_both(dst), reg_imm(0), ALU_OP_SUB, reg_b(dst));
--	wrp_immed(nfp_prog, reg_both(meta->insn.dst_reg * 2 + 1), 0);
-+	wrp_zext(nfp_prog, meta, dst);
- 
- 	return 0;
- }
- 
--static int __ashr_imm(struct nfp_prog *nfp_prog, u8 dst, u8 shift_amt)
-+static int
-+__ashr_imm(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta, u8 dst,
-+	   u8 shift_amt)
- {
- 	if (shift_amt) {
- 		/* Set signedness bit (MSB of result). */
-@@ -2410,7 +2425,7 @@ static int __ashr_imm(struct nfp_prog *nfp_prog, u8 dst, u8 shift_amt)
- 		emit_shf(nfp_prog, reg_both(dst), reg_none(), SHF_OP_ASHR,
- 			 reg_b(dst), SHF_SC_R_SHF, shift_amt);
- 	}
--	wrp_immed(nfp_prog, reg_both(dst + 1), 0);
-+	wrp_zext(nfp_prog, meta, dst);
- 
- 	return 0;
- }
-@@ -2425,7 +2440,7 @@ static int ashr_reg(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
- 	umin = meta->umin_src;
- 	umax = meta->umax_src;
- 	if (umin == umax)
--		return __ashr_imm(nfp_prog, dst, umin);
-+		return __ashr_imm(nfp_prog, meta, dst, umin);
- 
- 	src = insn->src_reg * 2;
- 	/* NOTE: the first insn will set both indirect shift amount (source A)
-@@ -2434,7 +2449,7 @@ static int ashr_reg(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
- 	emit_alu(nfp_prog, reg_none(), reg_a(src), ALU_OP_OR, reg_b(dst));
- 	emit_shf_indir(nfp_prog, reg_both(dst), reg_none(), SHF_OP_ASHR,
- 		       reg_b(dst), SHF_SC_R_SHF);
--	wrp_immed(nfp_prog, reg_both(dst + 1), 0);
-+	wrp_zext(nfp_prog, meta, dst);
- 
- 	return 0;
- }
-@@ -2444,15 +2459,17 @@ static int ashr_imm(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
- 	const struct bpf_insn *insn = &meta->insn;
- 	u8 dst = insn->dst_reg * 2;
- 
--	return __ashr_imm(nfp_prog, dst, insn->imm);
-+	return __ashr_imm(nfp_prog, meta, dst, insn->imm);
- }
- 
--static int __shr_imm(struct nfp_prog *nfp_prog, u8 dst, u8 shift_amt)
-+static int
-+__shr_imm(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta, u8 dst,
-+	  u8 shift_amt)
- {
- 	if (shift_amt)
- 		emit_shf(nfp_prog, reg_both(dst), reg_none(), SHF_OP_NONE,
- 			 reg_b(dst), SHF_SC_R_SHF, shift_amt);
--	wrp_immed(nfp_prog, reg_both(dst + 1), 0);
-+	wrp_zext(nfp_prog, meta, dst);
- 	return 0;
- }
- 
-@@ -2461,7 +2478,7 @@ static int shr_imm(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
- 	const struct bpf_insn *insn = &meta->insn;
- 	u8 dst = insn->dst_reg * 2;
- 
--	return __shr_imm(nfp_prog, dst, insn->imm);
-+	return __shr_imm(nfp_prog, meta, dst, insn->imm);
- }
- 
- static int shr_reg(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
-@@ -2474,22 +2491,24 @@ static int shr_reg(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
- 	umin = meta->umin_src;
- 	umax = meta->umax_src;
- 	if (umin == umax)
--		return __shr_imm(nfp_prog, dst, umin);
-+		return __shr_imm(nfp_prog, meta, dst, umin);
- 
- 	src = insn->src_reg * 2;
- 	emit_alu(nfp_prog, reg_none(), reg_a(src), ALU_OP_OR, reg_imm(0));
- 	emit_shf_indir(nfp_prog, reg_both(dst), reg_none(), SHF_OP_NONE,
- 		       reg_b(dst), SHF_SC_R_SHF);
--	wrp_immed(nfp_prog, reg_both(dst + 1), 0);
-+	wrp_zext(nfp_prog, meta, dst);
- 	return 0;
- }
- 
--static int __shl_imm(struct nfp_prog *nfp_prog, u8 dst, u8 shift_amt)
-+static int
-+__shl_imm(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta, u8 dst,
-+	  u8 shift_amt)
- {
- 	if (shift_amt)
- 		emit_shf(nfp_prog, reg_both(dst), reg_none(), SHF_OP_NONE,
- 			 reg_b(dst), SHF_SC_L_SHF, shift_amt);
--	wrp_immed(nfp_prog, reg_both(dst + 1), 0);
-+	wrp_zext(nfp_prog, meta, dst);
- 	return 0;
- }
- 
-@@ -2498,7 +2517,7 @@ static int shl_imm(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
- 	const struct bpf_insn *insn = &meta->insn;
- 	u8 dst = insn->dst_reg * 2;
- 
--	return __shl_imm(nfp_prog, dst, insn->imm);
-+	return __shl_imm(nfp_prog, meta, dst, insn->imm);
- }
- 
- static int shl_reg(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
-@@ -2511,11 +2530,11 @@ static int shl_reg(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
- 	umin = meta->umin_src;
- 	umax = meta->umax_src;
- 	if (umin == umax)
--		return __shl_imm(nfp_prog, dst, umin);
-+		return __shl_imm(nfp_prog, meta, dst, umin);
- 
- 	src = insn->src_reg * 2;
- 	shl_reg64_lt32_low(nfp_prog, dst, src);
--	wrp_immed(nfp_prog, reg_both(dst + 1), 0);
-+	wrp_zext(nfp_prog, meta, dst);
- 	return 0;
- }
- 
-@@ -2577,34 +2596,34 @@ static int imm_ld8(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
- 
- static int data_ld1(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
- {
--	return construct_data_ld(nfp_prog, meta->insn.imm, 1);
-+	return construct_data_ld(nfp_prog, meta, meta->insn.imm, 1);
- }
- 
- static int data_ld2(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
- {
--	return construct_data_ld(nfp_prog, meta->insn.imm, 2);
-+	return construct_data_ld(nfp_prog, meta, meta->insn.imm, 2);
- }
- 
- static int data_ld4(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
- {
--	return construct_data_ld(nfp_prog, meta->insn.imm, 4);
-+	return construct_data_ld(nfp_prog, meta, meta->insn.imm, 4);
- }
- 
- static int data_ind_ld1(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
- {
--	return construct_data_ind_ld(nfp_prog, meta->insn.imm,
-+	return construct_data_ind_ld(nfp_prog, meta, meta->insn.imm,
- 				     meta->insn.src_reg * 2, 1);
- }
- 
- static int data_ind_ld2(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
- {
--	return construct_data_ind_ld(nfp_prog, meta->insn.imm,
-+	return construct_data_ind_ld(nfp_prog, meta, meta->insn.imm,
- 				     meta->insn.src_reg * 2, 2);
- }
- 
- static int data_ind_ld4(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
- {
--	return construct_data_ind_ld(nfp_prog, meta->insn.imm,
-+	return construct_data_ind_ld(nfp_prog, meta, meta->insn.imm,
- 				     meta->insn.src_reg * 2, 4);
- }
- 
-@@ -2682,7 +2701,7 @@ mem_ldx_data(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta,
- 
- 	tmp_reg = re_load_imm_any(nfp_prog, meta->insn.off, imm_b(nfp_prog));
- 
--	return data_ld_host_order_addr32(nfp_prog, meta->insn.src_reg * 2,
-+	return data_ld_host_order_addr32(nfp_prog, meta, meta->insn.src_reg * 2,
- 					 tmp_reg, meta->insn.dst_reg * 2, size);
- }
- 
-@@ -2694,7 +2713,7 @@ mem_ldx_emem(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta,
- 
- 	tmp_reg = re_load_imm_any(nfp_prog, meta->insn.off, imm_b(nfp_prog));
- 
--	return data_ld_host_order_addr40(nfp_prog, meta->insn.src_reg * 2,
-+	return data_ld_host_order_addr40(nfp_prog, meta, meta->insn.src_reg * 2,
- 					 tmp_reg, meta->insn.dst_reg * 2, size);
- }
- 
-@@ -2755,7 +2774,7 @@ mem_ldx_data_from_pktcache_unaligned(struct nfp_prog *nfp_prog,
- 	wrp_reg_subpart(nfp_prog, dst_lo, src_lo, len_lo, off);
- 
- 	if (!len_mid) {
--		wrp_immed(nfp_prog, dst_hi, 0);
-+		wrp_zext(nfp_prog, meta, dst_gpr);
- 		return 0;
- 	}
- 
-@@ -2763,7 +2782,7 @@ mem_ldx_data_from_pktcache_unaligned(struct nfp_prog *nfp_prog,
- 
- 	if (size <= REG_WIDTH) {
- 		wrp_reg_or_subpart(nfp_prog, dst_lo, src_mid, len_mid, len_lo);
--		wrp_immed(nfp_prog, dst_hi, 0);
-+		wrp_zext(nfp_prog, meta, dst_gpr);
- 	} else {
- 		swreg src_hi = reg_xfer(idx + 2);
- 
-@@ -2794,10 +2813,10 @@ mem_ldx_data_from_pktcache_aligned(struct nfp_prog *nfp_prog,
- 
- 	if (size < REG_WIDTH) {
- 		wrp_reg_subpart(nfp_prog, dst_lo, src_lo, size, 0);
--		wrp_immed(nfp_prog, dst_hi, 0);
-+		wrp_zext(nfp_prog, meta, dst_gpr);
- 	} else if (size == REG_WIDTH) {
- 		wrp_mov(nfp_prog, dst_lo, src_lo);
--		wrp_immed(nfp_prog, dst_hi, 0);
-+		wrp_zext(nfp_prog, meta, dst_gpr);
- 	} else {
- 		swreg src_hi = reg_xfer(idx + 1);
- 
-diff --git a/drivers/net/ethernet/netronome/nfp/bpf/main.h b/drivers/net/ethernet/netronome/nfp/bpf/main.h
-index e54d1ac..57d6ff5 100644
---- a/drivers/net/ethernet/netronome/nfp/bpf/main.h
-+++ b/drivers/net/ethernet/netronome/nfp/bpf/main.h
-@@ -238,6 +238,8 @@ struct nfp_bpf_reg_state {
- #define FLAG_INSN_SKIP_PREC_DEPENDENT		BIT(4)
- /* Instruction is optimized by the verifier */
- #define FLAG_INSN_SKIP_VERIFIER_OPT		BIT(5)
-+/* Instruction needs to zero extend to high 32-bit */
-+#define FLAG_INSN_DO_ZEXT			BIT(6)
- 
- #define FLAG_INSN_SKIP_MASK		(FLAG_INSN_SKIP_NOOP | \
- 					 FLAG_INSN_SKIP_PREC_DEPENDENT | \
-diff --git a/drivers/net/ethernet/netronome/nfp/bpf/verifier.c b/drivers/net/ethernet/netronome/nfp/bpf/verifier.c
-index 36f56eb..e92ee51 100644
---- a/drivers/net/ethernet/netronome/nfp/bpf/verifier.c
-+++ b/drivers/net/ethernet/netronome/nfp/bpf/verifier.c
-@@ -744,6 +744,17 @@ static unsigned int nfp_bpf_get_stack_usage(struct nfp_prog *nfp_prog)
- 	goto continue_subprog;
- }
- 
-+static void nfp_bpf_insn_flag_zext(struct nfp_prog *nfp_prog,
-+				   struct bpf_insn_aux_data *aux)
-+{
-+	struct nfp_insn_meta *meta;
-+
-+	list_for_each_entry(meta, &nfp_prog->insns, l) {
-+		if (aux[meta->n].zext_dst)
-+			meta->flags |= FLAG_INSN_DO_ZEXT;
-+	}
-+}
-+
- int nfp_bpf_finalize(struct bpf_verifier_env *env)
- {
- 	struct bpf_subprog_info *info;
-@@ -784,6 +795,7 @@ int nfp_bpf_finalize(struct bpf_verifier_env *env)
- 		return -EOPNOTSUPP;
- 	}
- 
-+	nfp_bpf_insn_flag_zext(nfp_prog, env->insn_aux_data);
- 	return 0;
- }
- 
--- 
-2.7.4
-
+> @@ -0,0 +1,212 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <errno.h>
+> +#include <signal.h>
+> +#include <syscall.h>
+> +#include <sys/ioctl.h>
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <sys/wait.h>
+> +#include <fcntl.h>
+> +#include <unistd.h>
+> +
+> +#include <linux/perf_event.h>
+> +#include <bpf/bpf.h>
+> +#include <bpf/libbpf.h>
+> +
+> +#include "bpf_rlimit.h"
+> +
+> +#define CHECK(condition, tag, format...) ({				\
+> +	int __ret = !!(condition);					\
+> +	if (__ret) {							\
+> +		printf("%s(%d):FAIL:%s ", __func__, __LINE__, tag);	\
+> +		printf(format);						\
+> +		printf("\n");						\
+> +	}								\
+> +	__ret;								\
+> +})
+> +
+> +static volatile int signal_received = 0;
+> +
+> +static void sigusr1_handler(int signum)
+> +{
+> +	signal_received++;
+> +}
+> +
+> +static void test_common(struct perf_event_attr *attr, int prog_type,
+> +			const char *test_name)
+> +{
+> +	int pmu_fd, prog_fd, info_map_fd, status_map_fd;
+> +	const char *file = "./test_send_signal_kern.o";
+> +	struct bpf_object *obj = NULL;
+> +	int pipe_c2p[2], pipe_p2c[2];
+> +	char buf[256];
+> +	int err = 0;
+> +	u32 key = 0;
+> +	pid_t pid;
+> +	u64 val;
+> +
+> +	if (CHECK(pipe(pipe_c2p), test_name,
+> +		  "pipe pipe_c2p error: %s", strerror(errno)))
+> +		return;
+> +
+> +	if (CHECK(pipe(pipe_p2c), test_name,
+> +		  "pipe pipe_p2c error: %s", strerror(errno))) {
+> +		close(pipe_c2p[0]);
+> +		close(pipe_c2p[1]);
+> +		return;
+> +	}
+> +
+> +	pid = fork();
+> +	if (CHECK(pid < 0, test_name, "fork error: %s", strerror(errno))) {
+> +		close(pipe_c2p[0]);
+> +		close(pipe_c2p[1]);
+> +		close(pipe_p2c[0]);
+> +		close(pipe_p2c[1]);
+> +		return;
+> +	}
+> +
+> +	if (pid == 0) {
+> +		/* install signal handler and notify parent */
+> +		signal(SIGUSR1, sigusr1_handler);
+> +
+> +		close(pipe_c2p[0]); /* close read */
+> +		close(pipe_p2c[1]); /* close write */
+> +
+> +		/* notify parent signal handler is installed */
+> +		write(pipe_c2p[1], buf, 1);
+> +
+> +		/* make sense parent enabled bpf program to send_signal */
+> +		read(pipe_p2c[0], buf, 1);
+> +
+> +		/* wait a little for signal handler */
+> +		sleep(1);
+> +
+> +		if (signal_received)
+> +			write(pipe_c2p[1], "2", 1);
+> +		else
+> +			write(pipe_c2p[1], "0", 1);
+> +
+> +		/* wait for parent notification and exit */
+> +		read(pipe_p2c[0], buf, 1);
+> +
+> +		close(pipe_c2p[1]);
+> +		close(pipe_p2c[0]);
+> +		exit(0);
+> +	}
+> +
+> +	close(pipe_c2p[1]); /* close write */
+> +	close(pipe_p2c[0]); /* close read */
+> +
+> +	err = bpf_prog_load(file, prog_type, &obj, &prog_fd);
+> +	if (CHECK(err < 0, test_name, "bpf_prog_load error: %s",
+> +		  strerror(errno)))
+> +		goto prog_load_failure;
+> +
+> +	pmu_fd = syscall(__NR_perf_event_open, attr, pid, -1,
+> +			 -1 /* group id */, 0 /* flags */);
+> +	if (CHECK(pmu_fd < 0, test_name, "perf_event_open error: %s",
+> +		  strerror(errno)))
+> +		goto close_prog;
+> +
+> +	err = ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0);
+> +	if (CHECK(err < 0, test_name, "ioctl perf_event_ioc_enable error: %s",
+> +		  strerror(errno)))
+> +		goto disable_pmu;
+> +
+> +	err = ioctl(pmu_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
+> +	if (CHECK(err < 0, test_name, "ioctl perf_event_ioc_set_bpf error: %s",
+> +		  strerror(errno)))
+> +		goto disable_pmu;
+> +
+> +	info_map_fd = bpf_object__find_map_fd_by_name(obj, "info_map");
+> +	if (CHECK(info_map_fd < 0, test_name, "find map %s error", "info_map"))
+> +		goto disable_pmu;
+> +
+> +	status_map_fd = bpf_object__find_map_fd_by_name(obj, "status_map");
+> +	if (CHECK(status_map_fd < 0, test_name, "find map %s error", "status_map"))
+> +		goto disable_pmu;
+> +
+> +	/* wait until child signal handler installed */
+> +	read(pipe_c2p[0], buf, 1);
+> +
+> +	/* trigger the bpf send_signal */
+> +	key = 0;
+> +	val = (((u64)(SIGUSR1)) << 32) | pid;
+> +	bpf_map_update_elem(info_map_fd, &key, &val, 0);
+> +
+> +	/* notify child that bpf program can send_signal now */
+> +	write(pipe_p2c[1], buf, 1);
+> +
+> +	/* wait for result */
+> +	read(pipe_c2p[0], buf, 1);
+> +
+> +	if (buf[0] == '2')
+> +		printf("test_send_signal (%s): OK\n", test_name);
+> +	else
+> +		printf("test_send_signal (%s): FAIL\n", test_name);
+> +
+> +	/* notify child safe to exit */
+> +	write(pipe_p2c[1], buf, 1);
+> +
+> +disable_pmu:
+> +	close(pmu_fd);
+> +close_prog:
+> +	bpf_object__close(obj);
+> +prog_load_failure:
+> +	close(pipe_c2p[0]);
+> +	close(pipe_p2c[1]);
+> +	wait(NULL);
+> +}
+> +
+> +static void test_tracepoint(void)
+> +{
+> +	struct perf_event_attr attr = {
+> +		.type = PERF_TYPE_TRACEPOINT,
+> +		.sample_type = PERF_SAMPLE_RAW | PERF_SAMPLE_CALLCHAIN,
+> +		.sample_period = 1,
+> +		.wakeup_events = 1,
+> +	};
+> +	int bytes, efd;
+> +	char buf[256];
+> +
+> +	snprintf(buf, sizeof(buf),
+> +		 "/sys/kernel/debug/tracing/events/syscalls/sys_enter_nanosleep/id");
+> +	efd = open(buf, O_RDONLY, 0);
+> +	if (CHECK(efd < 0, "tracepoint",
+> +		  "open syscalls/sys_enter_nanosleep/id failure: %s",
+> +		  strerror(errno)))
+> +		return;
+> +
+> +	bytes = read(efd, buf, sizeof(buf));
+> +	close(efd);
+> +	if (CHECK(bytes <= 0 || bytes >= sizeof(buf), "tracepoint",
+> +		  "read syscalls/sys_enter_nanosleep/id failure: %s",
+> +		  strerror(errno)))
+> +		return;
+> +
+> +	attr.config = strtol(buf, NULL, 0);
+> +
+> +	test_common(&attr, BPF_PROG_TYPE_TRACEPOINT, "tracepoint");
+> +}
+> +
+> +static void test_nmi_perf_event(void)
+> +{
+> +	struct perf_event_attr attr = {
+> +		.sample_freq = 50,
+> +		.freq = 1,
+> +		.type = PERF_TYPE_HARDWARE,
+> +		.config = PERF_COUNT_HW_CPU_CYCLES,
+> +	};
+> +
+> +	test_common(&attr, BPF_PROG_TYPE_PERF_EVENT, "perf_event");
+> +}
+> +
+> +int main(void)
+> +{
+> +	test_tracepoint();
+> +	test_nmi_perf_event();
+> +	return 0;
+> +}
+> -- 
+> 2.17.1
+> 
