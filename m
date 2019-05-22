@@ -2,47 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8ED26A46
+	by mail.lfdr.de (Postfix) with ESMTP id 08ED326A45
 	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 20:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729807AbfEVS4S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 May 2019 14:56:18 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:42165 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729739AbfEVS4D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 May 2019 14:56:03 -0400
-Received: by mail-wr1-f67.google.com with SMTP id l2so3465183wrb.9
-        for <bpf@vger.kernel.org>; Wed, 22 May 2019 11:56:01 -0700 (PDT)
+        id S1729772AbfEVS4R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 May 2019 14:56:17 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:45843 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729740AbfEVS4E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 May 2019 14:56:04 -0400
+Received: by mail-wr1-f66.google.com with SMTP id b18so3443312wrq.12
+        for <bpf@vger.kernel.org>; Wed, 22 May 2019 11:56:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=f4W5FeA/DW4xIhHK1OTJ3eGyDxNy61HXqBC15p2OIws=;
-        b=ZC8j2UUe1lzUDKAUmYMZaDvn4TbOxzD0/vFHddFV6fq6KrZVzdLDiGtF+IsH4/T+fm
-         wl+bY4FOBLoYQSaWXztS7ZSeitJ6m5m1e4p0XNG6IktF4Tnb3e0BHm1RROA5GfNR/PtP
-         XJgYIAWTLkIWdpPaERz+s4xGB0FVkIYkgEZUMIOQ5GTfn6V7S2CfQywQlMglMx6j+vIk
-         z1Dn62Y2E87iOKyaWYYElyS9KyLh6c0rMtxZBjNScHXrLi8xlHcGb0/7kUvBl7+63Oww
-         ylVnord8B1nBAiqGGvYMEV2g4EEgzveafbpuKF6W8LhlEoECL+uTYRRii+sVE9bHSwV4
-         ZfsQ==
+        bh=VM5kQ5xTvrcmLaizE6FBV/hPB0ZSdjwt/JEn0M8IaOQ=;
+        b=CaUS0zwABgARMnK6mFPGgo6ia4rVXZ8q7672Cp8tXO/G3Hl38pZiql9whud6POTwv+
+         HDs+bpx6wNF+QqHhZmTcBifkDDVLYP1ZDzLFBHMK5a5VuDmcJzX9kPnjBbFlutqt9Qr6
+         LPxZuKll8YtZyRN7d5wNRseUE830rLeYgDiSDOoNDEfzHCAUsBlsJScJ7Y+9H+bTYo/Y
+         JV88Brj72Pu8tnaX8BklvK0zc4ZPtQBS2/x8UbSscT4Pa3M1BGdnaRGnqABSbO8uerlA
+         lo3ujeOug46ZSeavzIusn9O+bquPYTMbGSeBVmk/NiSmYOQzxoGN+sw9LvbIE+oabm7e
+         +rWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=f4W5FeA/DW4xIhHK1OTJ3eGyDxNy61HXqBC15p2OIws=;
-        b=svAMtYFceJFP2Ng7JaSxrPT6l5PtrXMjY4td36kSQtP+WdaKSHHiudcu+36l7YK0pu
-         ZUCCMXxjeS58BZRXwz6MSTHrBmElnph3kWLmYZ638oKNCzdrC1GHDNikRt4tj9yRWQPV
-         T5Z/eDosu6nJXnWVVQMUFTkUB6yIi2DTBjoT83UxyXmVG5/F+UProMlQ9EWGbyZUlDW5
-         TpM7GqXHev3eSIdktYcm8UW2qN9oiZsWxoi/yD28QnNc64DLskxKAx2hgz799FHKzaFH
-         9iHpKivjJc080y2tZ39pL0qgQt3pX8rYPPOP+anr9PpSExJ8YhrwPSTIIPCUp+B5EbuE
-         kAAg==
-X-Gm-Message-State: APjAAAVZTf18u9JTfx/YNm5Ii41NlzgMTQ58XrLAyypE7S7Pk3C1t/ip
-        p1G4FnRYhEdKMBlkrj7opD5DxA==
-X-Google-Smtp-Source: APXvYqwlk2guHs5eFQRxujFGJHkIa+YovdlpjTk1ODDsT4ifhY0Thxz5fXJNdgsAxztZUO1lnZIQyA==
-X-Received: by 2002:a5d:53c6:: with SMTP id a6mr31650546wrw.232.1558551361216;
-        Wed, 22 May 2019 11:56:01 -0700 (PDT)
+        bh=VM5kQ5xTvrcmLaizE6FBV/hPB0ZSdjwt/JEn0M8IaOQ=;
+        b=mY2TUO61DmuNUWydqglKmj/Ewfv5UdQlRwqv1qj0j0uGcpDBtrzxQZ2Iabw96zjVoF
+         yxhiXEee9QR1rDqsImNPUS0YrbdKNlChTqcSEx4s4NbSPUN2HMMn6RqTPzprtmiA+EI9
+         h+9LpKj088kzvAe7RkysBDBWIg71QElw2aDt/8P3Y4hNOx8mg0GKNPwEqjhAdqQlsuzZ
+         di2RWSPN0d6qmz5gDE4WWxJ8lYCpSpj0VkyDEqexLIrkwMB0zBjiAhyWbol07HW0FHNL
+         JovuT9UN4UVaKsWEMOOZjL5WYYVm+0pcjYHxFDE4EMin0UTNyX+r6q5TdTifL1dftljb
+         ptPg==
+X-Gm-Message-State: APjAAAUqlgnJPHDOq6LbIhDDu6QEqI+pRHeyXSwhWPtvAmkbmLvDqRfW
+        iDUDktgkkH/p+dXKLP6/qLpmZg==
+X-Google-Smtp-Source: APXvYqyRMeAX2oTt+8sUCY8k6sJ0861XQxX1q7qVGyhHZy8nLXGHymhnfgI3zhijMXMtzyD9nWhU7Q==
+X-Received: by 2002:a5d:4e41:: with SMTP id r1mr20065764wrt.66.1558551362677;
+        Wed, 22 May 2019 11:56:02 -0700 (PDT)
 Received: from cbtest28.netronome.com ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id t12sm16328801wro.2.2019.05.22.11.55.59
+        by smtp.gmail.com with ESMTPSA id t12sm16328801wro.2.2019.05.22.11.56.01
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Wed, 22 May 2019 11:56:00 -0700 (PDT)
+        Wed, 22 May 2019 11:56:01 -0700 (PDT)
 From:   Jiong Wang <jiong.wang@netronome.com>
 To:     alexei.starovoitov@gmail.com, daniel@iogearbox.net
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
@@ -52,9 +52,9 @@ Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         sandipan@linux.ibm.com, schwidefsky@de.ibm.com,
         heiko.carstens@de.ibm.com, jakub.kicinski@netronome.com,
         Jiong Wang <jiong.wang@netronome.com>
-Subject: [PATCH v7 bpf-next 11/16] powerpc: bpf: eliminate zero extension code-gen
-Date:   Wed, 22 May 2019 19:55:07 +0100
-Message-Id: <1558551312-17081-12-git-send-email-jiong.wang@netronome.com>
+Subject: [PATCH v7 bpf-next 12/16] s390: bpf: eliminate zero extension code-gen
+Date:   Wed, 22 May 2019 19:55:08 +0100
+Message-Id: <1558551312-17081-13-git-send-email-jiong.wang@netronome.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1558551312-17081-1-git-send-email-jiong.wang@netronome.com>
 References: <1558551312-17081-1-git-send-email-jiong.wang@netronome.com>
@@ -63,129 +63,137 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cc: Naveen N. Rao <naveen.n.rao@linux.ibm.com>
-Cc: Sandipan Das <sandipan@linux.ibm.com>
+Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
 Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
 ---
- arch/powerpc/net/bpf_jit_comp64.c | 36 +++++++++++++++++++++++++++++++++---
- 1 file changed, 33 insertions(+), 3 deletions(-)
+ arch/s390/net/bpf_jit_comp.c | 41 ++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 34 insertions(+), 7 deletions(-)
 
-diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-index 21a1dcd..0ebd946 100644
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -504,6 +504,9 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
- 		case BPF_ALU | BPF_LSH | BPF_X: /* (u32) dst <<= (u32) src */
- 			/* slw clears top 32 bits */
- 			PPC_SLW(dst_reg, dst_reg, src_reg);
-+			/* skip zero extension move, but set address map. */
-+			if (insn_is_zext(&insn[i + 1]))
-+				addrs[++i] = ctx->idx * 4;
- 			break;
- 		case BPF_ALU64 | BPF_LSH | BPF_X: /* dst <<= src; */
- 			PPC_SLD(dst_reg, dst_reg, src_reg);
-@@ -511,6 +514,8 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
- 		case BPF_ALU | BPF_LSH | BPF_K: /* (u32) dst <<== (u32) imm */
- 			/* with imm 0, we still need to clear top 32 bits */
- 			PPC_SLWI(dst_reg, dst_reg, imm);
-+			if (insn_is_zext(&insn[i + 1]))
-+				addrs[++i] = ctx->idx * 4;
- 			break;
- 		case BPF_ALU64 | BPF_LSH | BPF_K: /* dst <<== imm */
- 			if (imm != 0)
-@@ -518,12 +523,16 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
- 			break;
- 		case BPF_ALU | BPF_RSH | BPF_X: /* (u32) dst >>= (u32) src */
- 			PPC_SRW(dst_reg, dst_reg, src_reg);
-+			if (insn_is_zext(&insn[i + 1]))
-+				addrs[++i] = ctx->idx * 4;
- 			break;
- 		case BPF_ALU64 | BPF_RSH | BPF_X: /* dst >>= src */
- 			PPC_SRD(dst_reg, dst_reg, src_reg);
- 			break;
- 		case BPF_ALU | BPF_RSH | BPF_K: /* (u32) dst >>= (u32) imm */
- 			PPC_SRWI(dst_reg, dst_reg, imm);
-+			if (insn_is_zext(&insn[i + 1]))
-+				addrs[++i] = ctx->idx * 4;
- 			break;
- 		case BPF_ALU64 | BPF_RSH | BPF_K: /* dst >>= imm */
- 			if (imm != 0)
-@@ -548,6 +557,11 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
- 		 */
- 		case BPF_ALU | BPF_MOV | BPF_X: /* (u32) dst = src */
- 		case BPF_ALU64 | BPF_MOV | BPF_X: /* dst = src */
-+			if (imm == 1) {
-+				/* special mov32 for zext */
-+				PPC_RLWINM(dst_reg, dst_reg, 0, 0, 31);
-+				break;
-+			}
- 			PPC_MR(dst_reg, src_reg);
- 			goto bpf_alu32_trunc;
- 		case BPF_ALU | BPF_MOV | BPF_K: /* (u32) dst = imm */
-@@ -555,11 +569,13 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
- 			PPC_LI32(dst_reg, imm);
- 			if (imm < 0)
- 				goto bpf_alu32_trunc;
-+			else if (insn_is_zext(&insn[i + 1]))
-+				addrs[++i] = ctx->idx * 4;
- 			break;
+diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
+index 5e7c630..e636728 100644
+--- a/arch/s390/net/bpf_jit_comp.c
++++ b/arch/s390/net/bpf_jit_comp.c
+@@ -299,9 +299,11 @@ static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
  
- bpf_alu32_trunc:
- 		/* Truncate to 32-bits */
--		if (BPF_CLASS(code) == BPF_ALU)
-+		if (BPF_CLASS(code) == BPF_ALU && !fp->aux->verifier_zext)
- 			PPC_RLWINM(dst_reg, dst_reg, 0, 0, 31);
+ #define EMIT_ZERO(b1)						\
+ ({								\
+-	/* llgfr %dst,%dst (zero extend to 64 bit) */		\
+-	EMIT4(0xb9160000, b1, b1);				\
+-	REG_SET_SEEN(b1);					\
++	if (!fp->aux->verifier_zext) {				\
++		/* llgfr %dst,%dst (zero extend to 64 bit) */	\
++		EMIT4(0xb9160000, b1, b1);			\
++		REG_SET_SEEN(b1);				\
++	}							\
+ })
+ 
+ /*
+@@ -520,6 +522,8 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
+ 	case BPF_ALU | BPF_MOV | BPF_X: /* dst = (u32) src */
+ 		/* llgfr %dst,%src */
+ 		EMIT4(0xb9160000, dst_reg, src_reg);
++		if (insn_is_zext(&insn[1]))
++			insn_count = 2;
  		break;
- 
-@@ -618,10 +634,13 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
- 			case 16:
- 				/* zero-extend 16 bits into 64 bits */
- 				PPC_RLDICL(dst_reg, dst_reg, 0, 48);
-+				if (insn_is_zext(&insn[i + 1]))
-+					addrs[++i] = ctx->idx * 4;
- 				break;
- 			case 32:
--				/* zero-extend 32 bits into 64 bits */
--				PPC_RLDICL(dst_reg, dst_reg, 0, 32);
-+				if (!fp->aux->verifier_zext)
-+					/* zero-extend 32 bits into 64 bits */
-+					PPC_RLDICL(dst_reg, dst_reg, 0, 32);
- 				break;
- 			case 64:
- 				/* nop */
-@@ -698,14 +717,20 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
- 		/* dst = *(u8 *)(ul) (src + off) */
- 		case BPF_LDX | BPF_MEM | BPF_B:
- 			PPC_LBZ(dst_reg, src_reg, off);
-+			if (insn_is_zext(&insn[i + 1]))
-+				addrs[++i] = ctx->idx * 4;
+ 	case BPF_ALU64 | BPF_MOV | BPF_X: /* dst = src */
+ 		/* lgr %dst,%src */
+@@ -528,6 +532,8 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
+ 	case BPF_ALU | BPF_MOV | BPF_K: /* dst = (u32) imm */
+ 		/* llilf %dst,imm */
+ 		EMIT6_IMM(0xc00f0000, dst_reg, imm);
++		if (insn_is_zext(&insn[1]))
++			insn_count = 2;
+ 		break;
+ 	case BPF_ALU64 | BPF_MOV | BPF_K: /* dst = imm */
+ 		/* lgfi %dst,imm */
+@@ -639,6 +645,8 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
+ 		EMIT4(0xb9970000, REG_W0, src_reg);
+ 		/* llgfr %dst,%rc */
+ 		EMIT4(0xb9160000, dst_reg, rc_reg);
++		if (insn_is_zext(&insn[1]))
++			insn_count = 2;
+ 		break;
+ 	}
+ 	case BPF_ALU64 | BPF_DIV | BPF_X: /* dst = dst / src */
+@@ -676,6 +684,8 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
+ 			      EMIT_CONST_U32(imm));
+ 		/* llgfr %dst,%rc */
+ 		EMIT4(0xb9160000, dst_reg, rc_reg);
++		if (insn_is_zext(&insn[1]))
++			insn_count = 2;
+ 		break;
+ 	}
+ 	case BPF_ALU64 | BPF_DIV | BPF_K: /* dst = dst / imm */
+@@ -864,10 +874,13 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
+ 		case 16: /* dst = (u16) cpu_to_be16(dst) */
+ 			/* llghr %dst,%dst */
+ 			EMIT4(0xb9850000, dst_reg, dst_reg);
++			if (insn_is_zext(&insn[1]))
++				insn_count = 2;
  			break;
- 		/* dst = *(u16 *)(ul) (src + off) */
- 		case BPF_LDX | BPF_MEM | BPF_H:
- 			PPC_LHZ(dst_reg, src_reg, off);
-+			if (insn_is_zext(&insn[i + 1]))
-+				addrs[++i] = ctx->idx * 4;
+ 		case 32: /* dst = (u32) cpu_to_be32(dst) */
+-			/* llgfr %dst,%dst */
+-			EMIT4(0xb9160000, dst_reg, dst_reg);
++			if (!fp->aux->verifier_zext)
++				/* llgfr %dst,%dst */
++				EMIT4(0xb9160000, dst_reg, dst_reg);
  			break;
- 		/* dst = *(u32 *)(ul) (src + off) */
- 		case BPF_LDX | BPF_MEM | BPF_W:
- 			PPC_LWZ(dst_reg, src_reg, off);
-+			if (insn_is_zext(&insn[i + 1]))
-+				addrs[++i] = ctx->idx * 4;
+ 		case 64: /* dst = (u64) cpu_to_be64(dst) */
  			break;
- 		/* dst = *(u64 *)(ul) (src + off) */
- 		case BPF_LDX | BPF_MEM | BPF_DW:
-@@ -1046,6 +1071,11 @@ struct powerpc64_jit_data {
- 	struct codegen_context ctx;
- };
+@@ -882,12 +895,15 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
+ 			EMIT4_DISP(0x88000000, dst_reg, REG_0, 16);
+ 			/* llghr %dst,%dst */
+ 			EMIT4(0xb9850000, dst_reg, dst_reg);
++			if (insn_is_zext(&insn[1]))
++				insn_count = 2;
+ 			break;
+ 		case 32: /* dst = (u32) cpu_to_le32(dst) */
+ 			/* lrvr %dst,%dst */
+ 			EMIT4(0xb91f0000, dst_reg, dst_reg);
+-			/* llgfr %dst,%dst */
+-			EMIT4(0xb9160000, dst_reg, dst_reg);
++			if (!fp->aux->verifier_zext)
++				/* llgfr %dst,%dst */
++				EMIT4(0xb9160000, dst_reg, dst_reg);
+ 			break;
+ 		case 64: /* dst = (u64) cpu_to_le64(dst) */
+ 			/* lrvgr %dst,%dst */
+@@ -968,16 +984,22 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
+ 		/* llgc %dst,0(off,%src) */
+ 		EMIT6_DISP_LH(0xe3000000, 0x0090, dst_reg, src_reg, REG_0, off);
+ 		jit->seen |= SEEN_MEM;
++		if (insn_is_zext(&insn[1]))
++			insn_count = 2;
+ 		break;
+ 	case BPF_LDX | BPF_MEM | BPF_H: /* dst = *(u16 *)(ul) (src + off) */
+ 		/* llgh %dst,0(off,%src) */
+ 		EMIT6_DISP_LH(0xe3000000, 0x0091, dst_reg, src_reg, REG_0, off);
+ 		jit->seen |= SEEN_MEM;
++		if (insn_is_zext(&insn[1]))
++			insn_count = 2;
+ 		break;
+ 	case BPF_LDX | BPF_MEM | BPF_W: /* dst = *(u32 *)(ul) (src + off) */
+ 		/* llgf %dst,off(%src) */
+ 		jit->seen |= SEEN_MEM;
+ 		EMIT6_DISP_LH(0xe3000000, 0x0016, dst_reg, src_reg, REG_0, off);
++		if (insn_is_zext(&insn[1]))
++			insn_count = 2;
+ 		break;
+ 	case BPF_LDX | BPF_MEM | BPF_DW: /* dst = *(u64 *)(ul) (src + off) */
+ 		/* lg %dst,0(off,%src) */
+@@ -1282,6 +1304,11 @@ static int bpf_jit_prog(struct bpf_jit *jit, struct bpf_prog *fp)
+ 	return 0;
+ }
  
 +bool bpf_jit_needs_zext(void)
 +{
 +	return true;
 +}
 +
- struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- {
- 	u32 proglen;
+ /*
+  * Compile eBPF program "fp"
+  */
 -- 
 2.7.4
 
