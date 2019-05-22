@@ -2,180 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7B125D8D
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 07:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 839F925DB2
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 07:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728085AbfEVFYd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 May 2019 01:24:33 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:58180 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbfEVFYc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 May 2019 01:24:32 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4M5EDBu160383;
-        Wed, 22 May 2019 05:23:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=7yB1jRRKfJaTqC5CwIRJSAlMgBo0pt+Z3oKjydQnMbA=;
- b=Pdf6HkCpfujIhOnSEKRQckBYu+cLerSuyaUTvpy5Ji9HaoLNXsfTUr+fQErYVTc0qiiJ
- ZvzrCdv/4uxLdg369gHvAaTKruY3BmENC6m5HGe1U08UU85i3St1WVNSWWRAypdhucS+
- 8O41vongb2zciolGPc6rpqYNgA65IO3TWS+uyKY0olBdUO2rpdDOaK2yEvY2lj6plLV3
- C5t3Bcwi1Tca6Xk097sYBlil6dfgeNXAGwqnbxK52bmY94xK8Pq44DEj+PjH+FbJZaTC
- d1CV8v1t868VUFq9SKSXNCd20+C3mhyXkfw1zMU9jm/KEqQqN8hBj9XdwLgcCrkFniJJ Yg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 2smsk597sy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 May 2019 05:23:34 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4M5N9IU133624;
-        Wed, 22 May 2019 05:23:33 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 2smshecvjq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 22 May 2019 05:23:33 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x4M5NXYZ134191;
-        Wed, 22 May 2019 05:23:33 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 2smshecvjh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 May 2019 05:23:33 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x4M5NUSL027017;
-        Wed, 22 May 2019 05:23:30 GMT
-Received: from localhost (/10.159.211.99)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 22 May 2019 05:23:30 +0000
-Date:   Wed, 22 May 2019 01:23:27 -0400
-From:   Kris Van Hees <kris.van.hees@oracle.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kris Van Hees <kris.van.hees@oracle.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        dtrace-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        mhiramat@kernel.org, acme@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, peterz@infradead.org
-Subject: Re: [RFC PATCH 00/11] bpf, trace, dtrace: DTrace BPF program type
- implementation and sample use
-Message-ID: <20190522052327.GN2422@oracle.com>
-References: <201905202347.x4KNl0cs030532@aserv0121.oracle.com>
- <20190521175617.ipry6ue7o24a2e6n@ast-mbp.dhcp.thefacebook.com>
- <20190521184137.GH2422@oracle.com>
- <20190521205533.evfszcjvdouby7vp@ast-mbp.dhcp.thefacebook.com>
- <20190521173618.2ebe8c1f@gandalf.local.home>
- <20190521214325.rr7emn5z3b7wqiiy@ast-mbp.dhcp.thefacebook.com>
- <20190521174757.74ec8937@gandalf.local.home>
+        id S1727453AbfEVFjK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 May 2019 01:39:10 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:53238 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725796AbfEVFjK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 May 2019 01:39:10 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x4M5Wcaj002651
+        for <bpf@vger.kernel.org>; Tue, 21 May 2019 22:39:08 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=4XcjYewWSwgYkRjzUtZdBoQW5AGgzw4iFMY1kru+Vs4=;
+ b=ey5UBAoZTRdmWxSoFkr+vt7SieMiLaBOooovkdBXFVKPyCmZKLTubZu+jXp4Zf+d4Yd3
+ 6u0npxlVfSnFEjgu9SOV/XAwStfHKoZINg5la3+/K/4r8lU0p2zmAAYPPWTC+KuTioHS
+ CbUQ5vK8Y7mZgpgNOTyd5NU2bYQF1httOoE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 2smcnpuuv7-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 21 May 2019 22:39:08 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 21 May 2019 22:39:03 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id BB89C3702E2B; Tue, 21 May 2019 22:39:00 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Yonghong Song <yhs@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next v2 0/3] bpf: implement bpf_send_signal() helper
+Date:   Tue, 21 May 2019 22:39:00 -0700
+Message-ID: <20190522053900.1663459-1-yhs@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190521174757.74ec8937@gandalf.local.home>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9264 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1905220037
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-22_02:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=969 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905220040
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 21, 2019 at 05:48:11PM -0400, Steven Rostedt wrote:
-> On Tue, 21 May 2019 14:43:26 -0700
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> 
-> > Steve,
-> > sounds like you've missed all prior threads.
-> 
-> I probably have missed them ;-)
-> 
-> > The feedback was given to Kris it was very clear:
-> > implement dtrace the same way as bpftrace is working with bpf.
-> > No changes are necessary to dtrace scripts
-> > and no kernel changes are necessary.
-> 
-> Kris, I haven't been keeping up on all the discussions. But what
-> exactly is the issue where Dtrace can't be done the same way as the
-> bpftrace is done?
+This patch tries to solve the following specific use case.
 
-There are several issues (and I keep finding new ones as I move forward) but
-the biggest one is that I am not trying to re-design and re-implement) DTrace
-from the ground up.  We have an existing userspace component that is getting
-modified to work with a new kernel implementation (based on BPF and various
-other kernel features that are thankfully available these days).  But we need
-to ensure that the userspace component continues to function exactly as one
-would expect.  There should be no need to modify DTrace scripts.  Perhaps
-bpftrace could be taught to parse DTrace scripts (i.e. implement the D script
-language with all its bells and whistles) but it currently cannot and DTrace
-obviously can.  It seems to be a better use of resources to focus on the
-kernel component, where we can really provide a much cleaner implementation
-for DTrace probe execution because BPF is available and very powerful.
+Currently, bpf program can already collect stack traces
+through kernel function get_perf_callchain()
+when certain events happens (e.g., cache miss counter or
+cpu clock counter overflows). But such stack traces are
+not enough for jitted programs, e.g., hhvm (jited php).
+To get real stack trace, jit engine internal data structures
+need to be traversed in order to get the real user functions.
 
-Userspace aside, there are various features that are not currently available
-such as retrieving the ppid of the current task, and various other data items
-that relate to the current task that triggered a probe.  There are ways to
-work around it (using the bpf_probe_read() helper, which actually performs a
-probe_kernel_read()) but that is rather clunky and definitely shouldn't be
-something that can be done from a BPF program if we're doing unprivileged
-tracing (which is a goal that is important for us).  New helpers can be added
-for things like this, but the list grows large very quickly once you look at
-what information DTrace scripts tend to use.
+bpf program itself may not be the best place to traverse
+the jit engine as the traversing logic could be complex and
+it is not a stable interface either.
 
-One of the benefits of DTrace is that probes are largely abstracted entities
-when you get to the script level.  While different probes provide different
-data, they are all represented as probe arguments and they are accessed in a
-very consistent manner that is independent from the actual kind of probe that
-triggered the execution.  Often, a single DTrace clause is associated with
-multiple probes, of different types.  Probes in the kernel (kprobe, perf event,
-tracepoint, ...) are associated with their own BPF program type, so it is not
-possible to load the DTrace clause (translated into BPF code) once and
-associate it with probes of different types.  Instead, I'd have to load it
-as a BPF_PROG_TYPE_KPROBE program to associate it with a kprobe, and I'd have
-to load it as a BPF_PROG_TYPE_TRACEPOINT program to associate it with a
-tracepoint, and so on.  This also means that I suddenly have to add code to
-the userspace component to know about the different program types with more
-detail, like what helpers are available to specific program types.
+Instead, hhvm implements a signal handler,
+e.g. for SIGALARM, and a set of program locations which
+it can dump stack traces. When it receives a signal, it will
+dump the stack in next such program location.
 
-Another advantage of being able to operate on a more abstract probe concept
-that is not tied to a specific probe type is that the userspace component does
-not need to know about the implementation details of the specific probes.
-This avoids a tight coupling between the userspace component and the kernel
-implementation.
+This patch implements bpf_send_signal() helper to send
+a signal to hhvm in real time, resulting in intended stack traces.
 
-Another feature that is currently not supported is speculative tracing.  This
-is a feature that is not as commonly used (although I personally have found it
-to be very useful in the past couple of years) but it quite powerful because
-it allows for probe data to be recorded, and have the decision on whether it
-is to be made available to userspace postponed to a later event.  At that time,
-the data can be discarded or committed.
+Patch #1 implemented the bpf_send_helper() in the kernel,
+Patch #2 synced uapi header bpf.h to tools directory.
+Patch #3 added a self test which covers tracepoint
+and perf_event bpf programs.
 
-These are just some examples of issues I have been working on.  I spent quite
-a bit of time to look for ways to implement what we need for DTrace with a
-minimal amount of patches to the kernel because there really isn't any point
-in doing unnecessary work.  I do not doubt that there are possible clever
-ways to somehow get around some of these issues with clever hacks and
-workarounds, but I am not trying to hack something together that hopefully
-will be close enough to the expected functionality.
+Changelogs:
+  RFC v1 => v2:
+    . previous version allows to send signal to an arbitrary
+      pid. This version just sends the signal to current
+      task to avoid unstable pid and potential races between
+      sending signals and task state changes for the pid.
 
-DTrace has proven itself to be quite useful and dependable as a tracing
-solution, and I am working on continuing to deliver on that while recognizing
-the significant work that others have put into advancing the tracing
-infrastructure in Linux in recent years.  So many people have contributed
-excellent features - and I am making use of those features as much as I can.
-But as is often the case, not everything that I need is currently implemented.
-As I expressed during last year's Plumbers in Vancouver, I am putting a very
-strong emphasis on ensuring that what I propose as contributions is not
-limited to just DTrace.  My goal is to work in an open, collaborative manner,
-providing features that anyone can use if they want to.
+Yonghong Song (3):
+  bpf: implement bpf_send_signal() helper
+  tools/bpf: sync bpf uapi header bpf.h to tools directory
+  tools/bpf: add a selftest for bpf_send_signal() helper
 
-I wish that the assertion that "no changes are necessary to dtrace scripts and
-no kernel changes are necessary" were true, but my own findings contradict
-that.  To my knowledge no tool exists right now that can execute any and all
-valid DTrace scripts without any changes to the scripts and without any changes
-to the kernel.  The only tool I know that can execute DTrace scripts right now
-does require rather extensive kernel changes, and the work I am doing right now
-is aimed at doing much better than that.
+ include/uapi/linux/bpf.h                      |  17 +-
+ kernel/trace/bpf_trace.c                      |  67 ++++++
+ tools/include/uapi/linux/bpf.h                |  17 +-
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ tools/testing/selftests/bpf/bpf_helpers.h     |   1 +
+ .../bpf/progs/test_send_signal_kern.c         |  51 +++++
+ .../selftests/bpf/test_send_signal_user.c     | 212 ++++++++++++++++++
+ 7 files changed, 365 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+ create mode 100644 tools/testing/selftests/bpf/test_send_signal_user.c
 
-	Kris
+-- 
+2.17.1
+
