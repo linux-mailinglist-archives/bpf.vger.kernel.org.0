@@ -2,132 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF33E26138
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 12:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3852640E
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 14:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729124AbfEVKBp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 May 2019 06:01:45 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:36183 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729149AbfEVKBp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 May 2019 06:01:45 -0400
-Received: by mail-lf1-f65.google.com with SMTP id y10so1228072lfl.3
-        for <bpf@vger.kernel.org>; Wed, 22 May 2019 03:01:44 -0700 (PDT)
+        id S1729018AbfEVMyJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 May 2019 08:54:09 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:44159 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728794AbfEVMyJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 May 2019 08:54:09 -0400
+Received: by mail-pl1-f193.google.com with SMTP id c5so1034332pll.11;
+        Wed, 22 May 2019 05:54:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=JnVnevi+IXvwZDlS9zws2BfOVOYLG9/iHTFIsiQn0cs=;
-        b=IPxGan8SJsmWqaTkj/PHVIchRnweLfuylpXjADLt/vWxdye6aP1BWX8c8dwzd3z+vo
-         1A8869wttjcflRrpVRbQ8scQyxt6r8rMrvKfwG7RM3mS9UpwWVmUVBlVBGq8FZmA5QyS
-         Hc5GraUJVIOO+fOvguS3iQmKShMLrotp3t+m4=
+        bh=Y/iHFnqagpDsDyCYiTUDf5N1dEeXjUcnVe8sgUuGOL8=;
+        b=qYp0hfhvSwIJC8LsdXTvKV4kRx/FEZm7Au6BSy8FkOQw0/3JEkmhybmdj53JsshThc
+         aqFWB3v5pUB7SSCWBQjlbZGZsLXp3LNYRgjKgtkDTOgOnAXVV6W9dxUm2pR+qrdqNE6d
+         bcQzoN1Br05m/o4TSHklwuCQww1Qd9OAfh8qffiSREOUkoFvloinWaF0WqM/yxlBeYze
+         X+sBXi7kjyi3RXXmZWCFuG92iHL+EA5T5MBrsd3KrOsg2Ke3dYNAC94opSZIcTiAeBGn
+         R+mzjQVW9MRXJFMzYgZwRjpap5BerwNBrfzZVQWn/Gu0OHPOff4Sx6+/Mxeob7lzkt4D
+         p3HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=JnVnevi+IXvwZDlS9zws2BfOVOYLG9/iHTFIsiQn0cs=;
-        b=RQNWfYAkclPkYTz3VH42eSegNVEj3uVIyX3tt+pyBtWC3iuFdJ559SwXSkt1jtNbxQ
-         VGgiipNFSoS+usEzAyjVGe80DbbmWr8T1LBa5nv/yDrr69I9V9d+BedulWt7fn1M7sng
-         or4sraA8DmjMgBGCAaFpc2qTjBnN4hp+CFAB5s3PSEEE96St1kS2ZteQGouvNFI470zR
-         uuwA1MZdz9pYoxUorO/KzEoSMwwA61fPCs7IJJlcAlTl086aAqyePkeNqGjx4n21SRbe
-         k61j/plb8lsi88f4y1cP3o4ykUjGee9aO6E8yQQr3Sc1WQCikvOSu9LXlUYEA2nDpdsB
-         LYjA==
-X-Gm-Message-State: APjAAAUCTLezCMAx2AwVtS+wkrAuUjuY45yplNMX1vVNhl/zeIVKR3ig
-        VHoHG9YW9BAFPoC+KMXAhr6vEQ==
-X-Google-Smtp-Source: APXvYqxZEtCyQ3p6EHar8xNAw0eXao5afPJv4+gOM9qGtEwOydra7v6g0RKwZA1QiW2F4uvHFlwaiw==
-X-Received: by 2002:a19:2d1a:: with SMTP id k26mr961507lfj.104.1558519303632;
-        Wed, 22 May 2019 03:01:43 -0700 (PDT)
-Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id h22sm332804ljk.86.2019.05.22.03.01.42
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 22 May 2019 03:01:42 -0700 (PDT)
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@cloudflare.com
-Subject: [bpf PATCH] bpf: sockmap, restore sk_write_space when psock gets dropped
-Date:   Wed, 22 May 2019 12:01:42 +0200
-Message-Id: <20190522100142.28925-1-jakub@cloudflare.com>
+        bh=Y/iHFnqagpDsDyCYiTUDf5N1dEeXjUcnVe8sgUuGOL8=;
+        b=kQGLzLvzC6+0wF+e0gS0YWtQDwUE4+c9UOmae0gsJYTNEpjvDf32RvTeZse9o4yhQm
+         tattG0pxPVENmKGJqEiBuGb/bGdDO4sVc/HnldkPyVlJOZge8HomGSyfuedHVs7rdsT/
+         eRxi6eESDcJmPhkOO8l8ZOUp6cGBNU1itRpbH44nd0z8iheImbCDoXjtFmiy40OClV7b
+         pUX2+yc6B9GXBRDE+JqaVNF+oPE3SokqEAOLF8STmBH0S8Is2/Et3Qz3Qs6TirEIK+1T
+         3zKbHxJexqUa2obrrqC2Emna6Bzigml3brKFsEw26jSELEnKuHFnR4cmHbT/x7n/fFLE
+         4E5Q==
+X-Gm-Message-State: APjAAAVJ3RP121ITNSPesKSjX5kV8cpWq7Wn/wRti65/yokQHCO+cft1
+        5vfdE2AWj1ueQlVc5ZvTiq8=
+X-Google-Smtp-Source: APXvYqxH+7LdH8si+KOHfCNNqEhYLEzNBJ4z++SDzNNaT6Oot7/XMjRuOvllJZqEYTMg3nMjDbH28w==
+X-Received: by 2002:a17:902:e104:: with SMTP id cc4mr89713767plb.254.1558529648406;
+        Wed, 22 May 2019 05:54:08 -0700 (PDT)
+Received: from btopel-mobl.ger.intel.com ([192.55.54.43])
+        by smtp.gmail.com with ESMTPSA id 127sm29671054pfc.159.2019.05.22.05.54.03
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 22 May 2019 05:54:07 -0700 (PDT)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     toke@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        magnus.karlsson@intel.com, bjorn.topel@intel.com,
+        brouer@redhat.com, bpf@vger.kernel.org,
+        jakub.kicinski@netronome.com
+Subject: [PATCH bpf-next 0/2] net: xdp: refactor the XDP_QUERY_PROG and XDP_QUERY_PROG_HW code
+Date:   Wed, 22 May 2019 14:53:50 +0200
+Message-Id: <20190522125353.6106-1-bjorn.topel@gmail.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Once psock gets unlinked from its sock (sk_psock_drop), user-space can
-still trigger a call to sk->sk_write_space by setting TCP_NOTSENT_LOWAT
-socket option. This causes a null-ptr-deref because we try to read
-psock->saved_write_space from sk_psock_write_space:
+Here's another attempt (the first, horribly broken one, here [1]) to
+move the XDP_QUERY_PROG{,_HW} code out from the drivers to generic
+netdev code.
 
-==================================================================
-BUG: KASAN: null-ptr-deref in sk_psock_write_space+0x69/0x80
-Read of size 8 at addr 00000000000001a0 by task sockmap-echo/131
+The first patch in the series move the XDP query functionality, and
+the second remove XDP_QUERY_PROG{,_HW} from all drivers.
 
-CPU: 0 PID: 131 Comm: sockmap-echo Not tainted 5.2.0-rc1-00094-gf49aa1de9836 #81
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-?-20180724_192412-buildhw-07.phx2.fedoraproject.org-1.fc29 04/01/2014
-Call Trace:
- ? sk_psock_write_space+0x69/0x80
- __kasan_report.cold.2+0x5/0x3f
- ? sk_psock_write_space+0x69/0x80
- kasan_report+0xe/0x20
- sk_psock_write_space+0x69/0x80
- tcp_setsockopt+0x69a/0xfc0
- ? tcp_shutdown+0x70/0x70
- ? fsnotify+0x5b0/0x5f0
- ? remove_wait_queue+0x90/0x90
- ? __fget_light+0xa5/0xf0
- __sys_setsockopt+0xe6/0x180
- ? sockfd_lookup_light+0xb0/0xb0
- ? vfs_write+0x195/0x210
- ? ksys_write+0xc9/0x150
- ? __x64_sys_read+0x50/0x50
- ? __bpf_trace_x86_fpu+0x10/0x10
- __x64_sys_setsockopt+0x61/0x70
- do_syscall_64+0xc5/0x520
- ? vmacache_find+0xc0/0x110
- ? syscall_return_slowpath+0x110/0x110
- ? handle_mm_fault+0xb4/0x110
- ? entry_SYSCALL_64_after_hwframe+0x3e/0xbe
- ? trace_hardirqs_off_caller+0x4b/0x120
- ? trace_hardirqs_off_thunk+0x1a/0x3a
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x7f2e5e7cdcce
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb b1 66 2e 0f 1f 84 00 00 00 00 00
-0f 1f 44 00 00 f3 0f 1e fa 49 89 ca b8 36 00 00 00 0f 05 <48> 3d 01 f0 ff
-ff 73 01 c3 48 8b 0d 8a 11 0c 00 f7 d8 64 89 01 48
-RSP: 002b:00007ffed011b778 EFLAGS: 00000206 ORIG_RAX: 0000000000000036
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f2e5e7cdcce
-RDX: 0000000000000019 RSI: 0000000000000006 RDI: 0000000000000007
-RBP: 00007ffed011b790 R08: 0000000000000004 R09: 00007f2e5e84ee80
-R10: 00007ffed011b788 R11: 0000000000000206 R12: 00007ffed011b78c
-R13: 00007ffed011b788 R14: 0000000000000007 R15: 0000000000000068
-==================================================================
+Please refer to the individual commit messages for more details.
 
-Restore the saved sk_write_space callback when psock is being dropped to
-fix the crash.
+Shout out to all XDP driver hackers to check that the second patch
+doesn't break anything (especially Jakub). I've only been able to test
+on the Intel NICs.
 
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
----
- include/linux/skmsg.h | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index 178a3933a71b..50ced8aba9db 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -351,6 +351,8 @@ static inline void sk_psock_update_proto(struct sock *sk,
- static inline void sk_psock_restore_proto(struct sock *sk,
- 					  struct sk_psock *psock)
- {
-+	sk->sk_write_space = psock->saved_write_space;
-+
- 	if (psock->sk_proto) {
- 		sk->sk_prot = psock->sk_proto;
- 		psock->sk_proto = NULL;
+Thanks,
+Björn
+
+[1] https://lore.kernel.org/netdev/CAJ+HfNjfcGW=b_Ckox4jXf7od7yr+Sk2dXxFyO8Qpr-WJX0q7A@mail.gmail.com/
+
+Björn Töpel (2):
+  net: xdp: refactor XDP_QUERY_PROG{,_HW} to netdev
+  net: xdp: remove XDP_QUERY_PROG{,_HW}
+
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c |   4 -
+ .../net/ethernet/cavium/thunder/nicvf_main.c  |   3 -
+ .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  |   3 -
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |   3 -
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |   4 -
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |   4 -
+ .../net/ethernet/mellanox/mlx4/en_netdev.c    |  24 ----
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |  18 ---
+ .../ethernet/netronome/nfp/nfp_net_common.c   |   4 -
+ .../net/ethernet/qlogic/qede/qede_filter.c    |   3 -
+ drivers/net/netdevsim/bpf.c                   |   4 -
+ drivers/net/netdevsim/netdevsim.h             |   2 +-
+ drivers/net/tun.c                             |  15 ---
+ drivers/net/veth.c                            |  15 ---
+ drivers/net/virtio_net.c                      |  17 ---
+ include/linux/netdevice.h                     |  21 ++-
+ include/net/xdp.h                             |   2 -
+ net/core/dev.c                                | 125 +++++++++---------
+ net/core/rtnetlink.c                          |  33 +----
+ net/core/xdp.c                                |   9 --
+ 20 files changed, 77 insertions(+), 236 deletions(-)
+
 -- 
 2.20.1
 
