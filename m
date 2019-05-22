@@ -2,386 +2,300 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64CBE26A0E
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 20:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 908CF26A2B
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 20:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729381AbfEVStJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 May 2019 14:49:09 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:33213 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728734AbfEVStI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 May 2019 14:49:08 -0400
-Received: by mail-qk1-f196.google.com with SMTP id p18so2203587qkk.0;
-        Wed, 22 May 2019 11:49:07 -0700 (PDT)
+        id S1729625AbfEVSzw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 May 2019 14:55:52 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:41223 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728734AbfEVSzv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 May 2019 14:55:51 -0400
+Received: by mail-wr1-f66.google.com with SMTP id g12so80742wro.8
+        for <bpf@vger.kernel.org>; Wed, 22 May 2019 11:55:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9w2z/UYA71J3Md5pbuqiQS3+dbglt+COmCdXK+qx8bg=;
-        b=Chgo2geO0mTosVHqx6kDl8m8xC6Mk6lAjmybvXOfm75Vm4VAw0RMiLzq1YIEzlnULD
-         +kHgDk/tdzwy2lAsKSnp5scMSXudI45ZvNVWL8+K6qQiCLDHYnzWSkuC2/T+9bYtgrq0
-         BJoNETVbS3wzLIRiAKster294VQ1m71z40bsiBx392bYK3PMFVt/zs4oB33sCscuRR5d
-         IDj5/YuqDNaxRlVAzOAUFxi1Tk7NjPgpAYGMeFMfSW6WgAtjIlXv9IulJfKcOlEZtczD
-         YwNU+HoNj3kx8KNv+n+MsUF/cvwLeI24MiDkr6yGzlJEfzOIkc8dZEpXBkTjje+t+WeI
-         qqHw==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vSj3seU2cwXmQOE4lLlBTeGGFfBZ3dT8d88WBlNkwSk=;
+        b=p6J7htTw+kqrF+kluMC3pZkCJuVP2e0HKF6y9xe4fWUOuDeUJ+8q4fcISI4TXDtrdH
+         SxmNQlc0MSAfLdI0sNwgXjdJ/IMidvtwa5vx4jJW255URlDOJ2NeFcwXO03r3FYY66JS
+         01V2/RZU1rpOLRi2ZsqfDUnwuwLrVoYzaVB9/tOqYsmMZeMQPltYS0V4T+/aT49KlF8+
+         PYN9Z4HBoxtcUBWVFEw4ZywDSkwmGe5Tkm619btoVzl0LntwVYmiiGNMGb1UiN/QvLOZ
+         d/Z06/ou4IIrXMojFhTBi48mADxpNj2E8JlqqWqXTDtA2312dyGzaKLIf0sgqBjQQndc
+         7XHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9w2z/UYA71J3Md5pbuqiQS3+dbglt+COmCdXK+qx8bg=;
-        b=tarPeHEe+Si807QAJI1pPjesmxqSn2H6FXgOLtT9m2u8uf9ZaDggLq6Ndk18uwO/9Z
-         nDvtiGROIkXa6RTqJxnAYR6NSA6TK62jQy1KXazEcrPlPxA7LcM8N99/jYJU6ucWpVyb
-         cwW/4aL6HJ/ABHkaxsd+r+pOJcbS6xtRdBI0c0ysQtKhvw7LxnQcpnUjtJK+gBcuq2Dn
-         7A9izWicHB/vAqAxo+fL6PQkZUYhdOryM2qgYSG1ZxmKKOfpV4MXIKL4wikALYLPjx1t
-         KozJ+cmXZ1UlmELkItbVcQLdOJXpTYIUVS38PAWrXdUAowqoP0xEQBaONKmdGXQ8I1wY
-         HHdg==
-X-Gm-Message-State: APjAAAXbDfQ9gkgNbc+Q8wkIM5um23SHRSqsuI2Z9mLS4lfWAzl5b87Z
-        U2/3+6jlI8MjVvlBEwKaDSMcREPEXzd/LnNLh+A=
-X-Google-Smtp-Source: APXvYqywKerPneochQQTFDqYMxP0pdBASXLPJ+GxGlKywgLAOHa4i9UHlVb1NzgyQlMSZrAk8A3EkmpDGE4cewLAZ8o=
-X-Received: by 2002:a37:66c7:: with SMTP id a190mr71346562qkc.44.1558550947254;
- Wed, 22 May 2019 11:49:07 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vSj3seU2cwXmQOE4lLlBTeGGFfBZ3dT8d88WBlNkwSk=;
+        b=J4kS6UcgOTO+trMbQmQLf7jyWWymg2K97q4mbA7zcZMGz2dP1Wfb+tVmWxFjAJiCLa
+         8zhVyBqftclWQBRZXWWjWNY3K16iZHCjSwKrawp0rb7do9csTipuierAlPD7oFsQrLWZ
+         P0VOcTJCKMDcgMP7nvppLVvV57ysisbpgw+uif8amgnqXj+GF63afidy9fc0qcpkxJLS
+         BaTbjsWmh2wbm1dWDPlfKgFcbAXwk+rWU/eRozs9M0az78GF7s59BW/Fhkcx8YTypfSo
+         QQnqycaSoRE3z+Y9vSlfzVFOiYaJtMF8Z8subDzR3dOkA8WgjoWUUBEQGkTpgksUo82J
+         dK9w==
+X-Gm-Message-State: APjAAAXAfObgtiGeZnAwYkn4gWXTLKTRTu2bNJh+SK3bLDqjTENlP9a3
+        PmezXBhNVd+cxdE3VMfGq6NBag==
+X-Google-Smtp-Source: APXvYqzx3YGlu3YxlvZNlkfoiERJxl1nlfSD4v9dgeI19gMfLigEUepYXS1mZvfgemTDeHtq4BsDqw==
+X-Received: by 2002:adf:e8cf:: with SMTP id k15mr29913837wrn.185.1558551348946;
+        Wed, 22 May 2019 11:55:48 -0700 (PDT)
+Received: from cbtest28.netronome.com ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id t12sm16328801wro.2.2019.05.22.11.55.48
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Wed, 22 May 2019 11:55:48 -0700 (PDT)
+From:   Jiong Wang <jiong.wang@netronome.com>
+To:     alexei.starovoitov@gmail.com, daniel@iogearbox.net
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        oss-drivers@netronome.com, davem@davemloft.net,
+        paul.burton@mips.com, udknight@gmail.com, zlim.lnx@gmail.com,
+        illusionist.neo@gmail.com, naveen.n.rao@linux.ibm.com,
+        sandipan@linux.ibm.com, schwidefsky@de.ibm.com,
+        heiko.carstens@de.ibm.com, jakub.kicinski@netronome.com,
+        Jiong Wang <jiong.wang@netronome.com>
+Subject: [PATCH v7 bpf-next 00/16] bpf: eliminate zero extensions for sub-register writes
+Date:   Wed, 22 May 2019 19:54:56 +0100
+Message-Id: <1558551312-17081-1-git-send-email-jiong.wang@netronome.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20190522053900.1663459-1-yhs@fb.com> <20190522053903.1663924-1-yhs@fb.com>
-In-Reply-To: <20190522053903.1663924-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 22 May 2019 11:48:55 -0700
-Message-ID: <CAEf4BzbSvVRFd3ASnOR5kT40mCeH85ir2eFRdzu_rk4xjYky2g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/3] tools/bpf: add a selftest for
- bpf_send_signal() helper
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 21, 2019 at 10:40 PM Yonghong Song <yhs@fb.com> wrote:
->
-> The test covered both nmi and tracepoint perf events.
->   $ ./test_send_signal_user
->   test_send_signal (tracepoint): OK
->   test_send_signal (perf_event): OK
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  tools/testing/selftests/bpf/Makefile          |   3 +-
->  tools/testing/selftests/bpf/bpf_helpers.h     |   1 +
->  .../bpf/progs/test_send_signal_kern.c         |  51 +++++
->  .../selftests/bpf/test_send_signal_user.c     | 212 ++++++++++++++++++
->  4 files changed, 266 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/test_send_signal_kern.c
->  create mode 100644 tools/testing/selftests/bpf/test_send_signal_user.c
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 66f2dca1dee1..5eb6368a96a2 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -23,7 +23,8 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
->         test_align test_verifier_log test_dev_cgroup test_tcpbpf_user \
->         test_sock test_btf test_sockmap test_lirc_mode2_user get_cgroup_id_user \
->         test_socket_cookie test_cgroup_storage test_select_reuseport test_section_names \
-> -       test_netcnt test_tcpnotify_user test_sock_fields test_sysctl
-> +       test_netcnt test_tcpnotify_user test_sock_fields test_sysctl \
-> +       test_send_signal_user
->
->  BPF_OBJ_FILES = $(patsubst %.c,%.o, $(notdir $(wildcard progs/*.c)))
->  TEST_GEN_FILES = $(BPF_OBJ_FILES)
-> diff --git a/tools/testing/selftests/bpf/bpf_helpers.h b/tools/testing/selftests/bpf/bpf_helpers.h
-> index 5f6f9e7aba2a..cb02521b8e58 100644
-> --- a/tools/testing/selftests/bpf/bpf_helpers.h
-> +++ b/tools/testing/selftests/bpf/bpf_helpers.h
-> @@ -216,6 +216,7 @@ static void *(*bpf_sk_storage_get)(void *map, struct bpf_sock *sk,
->         (void *) BPF_FUNC_sk_storage_get;
->  static int (*bpf_sk_storage_delete)(void *map, struct bpf_sock *sk) =
->         (void *)BPF_FUNC_sk_storage_delete;
-> +static int (*bpf_send_signal)(unsigned sig) = (void *)BPF_FUNC_send_signal;
->
->  /* llvm builtin functions that eBPF C program may use to
->   * emit BPF_LD_ABS and BPF_LD_IND instructions
-> diff --git a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-> new file mode 100644
-> index 000000000000..45a1a1a2c345
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-> @@ -0,0 +1,51 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2019 Facebook
-> +#include <linux/bpf.h>
-> +#include <linux/version.h>
-> +#include "bpf_helpers.h"
-> +
-> +struct bpf_map_def SEC("maps") info_map = {
-> +       .type = BPF_MAP_TYPE_ARRAY,
-> +       .key_size = sizeof(__u32),
-> +       .value_size = sizeof(__u64),
-> +       .max_entries = 1,
-> +};
-> +
-> +BPF_ANNOTATE_KV_PAIR(info_map, __u32, __u64);
-> +
-> +struct bpf_map_def SEC("maps") status_map = {
-> +       .type = BPF_MAP_TYPE_ARRAY,
-> +       .key_size = sizeof(__u32),
-> +       .value_size = sizeof(__u64),
-> +       .max_entries = 1,
-> +};
-> +
-> +BPF_ANNOTATE_KV_PAIR(status_map, __u32, __u64);
-> +
-> +SEC("send_signal_demo")
-> +int bpf_send_signal_test(void *ctx)
-> +{
-> +       __u64 *info_val, *status_val;
-> +       __u32 key = 0, pid, sig;
-> +       int ret;
-> +
-> +       status_val = bpf_map_lookup_elem(&status_map, &key);
-> +       if (!status_val || *status_val != 0)
-> +               return 0;
-> +
-> +       info_val = bpf_map_lookup_elem(&info_map, &key);
-> +       if (!info_val || *info_val == 0)
-> +               return 0;
-> +
-> +       sig = *info_val >> 32;
-> +       pid = *info_val & 0xffffFFFF;
-> +
-> +       if ((bpf_get_current_pid_tgid() >> 32) == pid) {
-> +               ret = bpf_send_signal(sig);
-> +               if (ret == 0)
-> +                       *status_val = 1;
-> +       }
-> +
-> +       return 0;
-> +}
-> +char __license[] SEC("license") = "GPL";
-> diff --git a/tools/testing/selftests/bpf/test_send_signal_user.c b/tools/testing/selftests/bpf/test_send_signal_user.c
-> new file mode 100644
-> index 000000000000..0bd0f7674860
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/test_send_signal_user.c
-> @@ -0,0 +1,212 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <errno.h>
-> +#include <signal.h>
-> +#include <syscall.h>
-> +#include <sys/ioctl.h>
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <sys/wait.h>
-> +#include <fcntl.h>
-> +#include <unistd.h>
-> +
-> +#include <linux/perf_event.h>
-> +#include <bpf/bpf.h>
-> +#include <bpf/libbpf.h>
-> +
-> +#include "bpf_rlimit.h"
-> +
-> +#define CHECK(condition, tag, format...) ({                            \
-> +       int __ret = !!(condition);                                      \
-> +       if (__ret) {                                                    \
-> +               printf("%s(%d):FAIL:%s ", __func__, __LINE__, tag);     \
-> +               printf(format);                                         \
-> +               printf("\n");                                           \
-> +       }                                                               \
-> +       __ret;                                                          \
-> +})
-> +
-> +static volatile int signal_received = 0;
-> +
-> +static void sigusr1_handler(int signum)
-> +{
-> +       signal_received++;
-> +}
-> +
-> +static void test_common(struct perf_event_attr *attr, int prog_type,
-> +                       const char *test_name)
-> +{
-> +       int pmu_fd, prog_fd, info_map_fd, status_map_fd;
-> +       const char *file = "./test_send_signal_kern.o";
-> +       struct bpf_object *obj = NULL;
-> +       int pipe_c2p[2], pipe_p2c[2];
-> +       char buf[256];
-> +       int err = 0;
-> +       u32 key = 0;
-> +       pid_t pid;
-> +       u64 val;
-> +
-> +       if (CHECK(pipe(pipe_c2p), test_name,
-> +                 "pipe pipe_c2p error: %s", strerror(errno)))
-> +               return;
-> +
-> +       if (CHECK(pipe(pipe_p2c), test_name,
-> +                 "pipe pipe_p2c error: %s", strerror(errno))) {
-> +               close(pipe_c2p[0]);
-> +               close(pipe_c2p[1]);
-> +               return;
-> +       }
-> +
-> +       pid = fork();
-> +       if (CHECK(pid < 0, test_name, "fork error: %s", strerror(errno))) {
-> +               close(pipe_c2p[0]);
-> +               close(pipe_c2p[1]);
-> +               close(pipe_p2c[0]);
-> +               close(pipe_p2c[1]);
-> +               return;
-> +       }
-> +
-> +       if (pid == 0) {
-> +               /* install signal handler and notify parent */
-> +               signal(SIGUSR1, sigusr1_handler);
-> +
-> +               close(pipe_c2p[0]); /* close read */
-> +               close(pipe_p2c[1]); /* close write */
-> +
-> +               /* notify parent signal handler is installed */
-> +               write(pipe_c2p[1], buf, 1);
-> +
-> +               /* make sense parent enabled bpf program to send_signal */
-> +               read(pipe_p2c[0], buf, 1);
-> +
-> +               /* wait a little for signal handler */
-> +               sleep(1);
-> +
-> +               if (signal_received)
-> +                       write(pipe_c2p[1], "2", 1);
-> +               else
-> +                       write(pipe_c2p[1], "0", 1);
-> +
-> +               /* wait for parent notification and exit */
-> +               read(pipe_p2c[0], buf, 1);
-> +
-> +               close(pipe_c2p[1]);
-> +               close(pipe_p2c[0]);
-> +               exit(0);
-> +       }
-> +
-> +       close(pipe_c2p[1]); /* close write */
-> +       close(pipe_p2c[0]); /* close read */
-> +
-> +       err = bpf_prog_load(file, prog_type, &obj, &prog_fd);
-> +       if (CHECK(err < 0, test_name, "bpf_prog_load error: %s",
-> +                 strerror(errno)))
-> +               goto prog_load_failure;
-> +
-> +       pmu_fd = syscall(__NR_perf_event_open, attr, pid, -1,
-> +                        -1 /* group id */, 0 /* flags */);
-> +       if (CHECK(pmu_fd < 0, test_name, "perf_event_open error: %s",
-> +                 strerror(errno)))
-> +               goto close_prog;
-> +
-> +       err = ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0);
-> +       if (CHECK(err < 0, test_name, "ioctl perf_event_ioc_enable error: %s",
-> +                 strerror(errno)))
-> +               goto disable_pmu;
-> +
-> +       err = ioctl(pmu_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
-> +       if (CHECK(err < 0, test_name, "ioctl perf_event_ioc_set_bpf error: %s",
-> +                 strerror(errno)))
-> +               goto disable_pmu;
-> +
-> +       info_map_fd = bpf_object__find_map_fd_by_name(obj, "info_map");
-> +       if (CHECK(info_map_fd < 0, test_name, "find map %s error", "info_map"))
-> +               goto disable_pmu;
-> +
-> +       status_map_fd = bpf_object__find_map_fd_by_name(obj, "status_map");
-> +       if (CHECK(status_map_fd < 0, test_name, "find map %s error", "status_map"))
-> +               goto disable_pmu;
-> +
-> +       /* wait until child signal handler installed */
-> +       read(pipe_c2p[0], buf, 1);
-> +
-> +       /* trigger the bpf send_signal */
-> +       key = 0;
-> +       val = (((u64)(SIGUSR1)) << 32) | pid;
-> +       bpf_map_update_elem(info_map_fd, &key, &val, 0);
-> +
-> +       /* notify child that bpf program can send_signal now */
-> +       write(pipe_p2c[1], buf, 1);
-> +
-> +       /* wait for result */
-> +       read(pipe_c2p[0], buf, 1);
-> +
-> +       if (buf[0] == '2')
-> +               printf("test_send_signal (%s): OK\n", test_name);
-> +       else
-> +               printf("test_send_signal (%s): FAIL\n", test_name);
-> +
-> +       /* notify child safe to exit */
-> +       write(pipe_p2c[1], buf, 1);
-> +
-> +disable_pmu:
-> +       close(pmu_fd);
-> +close_prog:
-> +       bpf_object__close(obj);
-> +prog_load_failure:
-> +       close(pipe_c2p[0]);
-> +       close(pipe_p2c[1]);
-> +       wait(NULL);
-> +}
-> +
-> +static void test_tracepoint(void)
-> +{
-> +       struct perf_event_attr attr = {
-> +               .type = PERF_TYPE_TRACEPOINT,
-> +               .sample_type = PERF_SAMPLE_RAW | PERF_SAMPLE_CALLCHAIN,
-> +               .sample_period = 1,
-> +               .wakeup_events = 1,
-> +       };
-> +       int bytes, efd;
-> +       char buf[256];
-> +
-> +       snprintf(buf, sizeof(buf),
-> +                "/sys/kernel/debug/tracing/events/syscalls/sys_enter_nanosleep/id");
-> +       efd = open(buf, O_RDONLY, 0);
-> +       if (CHECK(efd < 0, "tracepoint",
-> +                 "open syscalls/sys_enter_nanosleep/id failure: %s",
-> +                 strerror(errno)))
-> +               return;
-> +
-> +       bytes = read(efd, buf, sizeof(buf));
-> +       close(efd);
-> +       if (CHECK(bytes <= 0 || bytes >= sizeof(buf), "tracepoint",
-> +                 "read syscalls/sys_enter_nanosleep/id failure: %s",
-> +                 strerror(errno)))
-> +               return;
-> +
-> +       attr.config = strtol(buf, NULL, 0);
-> +
-> +       test_common(&attr, BPF_PROG_TYPE_TRACEPOINT, "tracepoint");
-> +}
-> +
-> +static void test_nmi_perf_event(void)
-> +{
-> +       struct perf_event_attr attr = {
-> +               .sample_freq = 50,
-> +               .freq = 1,
-> +               .type = PERF_TYPE_HARDWARE,
-> +               .config = PERF_COUNT_HW_CPU_CYCLES,
-> +       };
-> +
-> +       test_common(&attr, BPF_PROG_TYPE_PERF_EVENT, "perf_event");
-> +}
-> +
-> +int main(void)
-> +{
-> +       test_tracepoint();
-> +       test_nmi_perf_event();
+v7:
+  - Drop the first patch in v6, the one adding 32-bit return value and
+    argument type. (Alexei)
+  - Rename bpf_jit_hardware_zext to bpf_jit_needs_zext. (Alexei)
+  - Use mov32 with imm == 1 to indicate it is zext. (Alexei)
+  - JIT back-ends peephole next insn to optimize out unnecessary zext
+    inserted by verifier. (Alexei)
+  - Testing:
+    + patch set tested (bpf selftest) on x64 host with llvm 9.0
+      no regression observed no both JIT and interpreter modes.
+    + patch set tested (bpf selftest) on x32 host.
+      By Yanqing Wang, thanks!
+      no regression observed on both JIT and interpreter modes.
+    + patch set tested (bpf selftest) on RV64 host with llvm 9.0,
+      By Björn Töpel, thanks!
+      no regression observed before and after this set with JIT_ALWAYS_ON.
+      test_progs_32 also enabled as LLVM 9.0 is used by Björn.
+    + cross compiled the other affected targets, arm, PowerPC, SPARC, S390.
 
-Tests should probably propagate failure up to main() and return exit
-code != 0, if any of the tests failed.
+v6:
+  - Fixed s390 kbuild test robot error. (kbuild)
+  - Make comment style in backends patches more consistent.
 
-> +       return 0;
-> +}
-> --
-> 2.17.1
->
+v5:
+  - Adjusted several test_verifier helpers to make them works on hosts
+    w and w/o hardware zext. (Naveen)
+  - Make sure zext flag not set when verifier by-passed, for example,
+    libtest_bpf.ko. (Naveen)
+  - Conservatively mark bpf main return value as 64-bit. (Alexei)
+  - Make sure read flag is either READ64 or READ32, not the mix of both.
+    (Alexei)
+  - Merged patch 1 and 2 in v4. (Alexei)
+  - Fixed kbuild test robot warning on NFP. (kbuild)
+  - Proposed new BPF_ZEXT insn to have optimal code-gen for various JIT
+    back-ends.
+  - Conservately set zext flags for patched-insn.
+  - Fixed return value zext for helper function calls.
+  - Also adjusted test_verifier scalability unit test to avoid triggerring
+    too many insn patch which will hang computer.
+  - re-tested on x86 host with llvm 9.0, no regression on test_verifier,
+    test_progs, test_progs_32.
+  - re-tested offload target (nfp), no regression on local testsuite.
+
+v4:
+  - added the two missing fixes which addresses two Jakub's reviewes in v3.
+  - rebase on top of bpf-next.
+
+v3:
+  - remove redundant check in "propagate_liveness_reg". (Jakub)
+  - add extra check in "mark_reg_read" to prune more search. (Jakub)
+  - re-implemented "prog_flags" passing mechanism, removed use of
+    global switch inside libbpf.
+  - enabled high 32-bit randomization beyond "test_verifier" and
+    "test_progs". Now it should have been enabled for all possible
+    tests. Re-run all tests, haven't noticed regression.
+  - remove RFC tag.
+
+v2:
+  - rebased on top of bpf-next master.
+  - added comments for what is sub-register def index. (Edward, Alexei)
+  - removed patch 1 which turns bit mask from enum to macro. (Alexei)
+  - removed sysctl/bpf_jit_32bit_opt. (Alexei)
+  - merged sub-register def insn index into reg state. (Alexei)
+  - change test methodology (Alexei):
+      + instead of simple unit tests on x86_64 for which this optimization
+        doesn't enabled due to there is hardware support, poison high
+        32-bit for whose def identified as safe to do so. this could let
+        the correctness of this patch set checked when daily bpf selftest
+        ran which delivers very stressful test on host machine like x86_64.
+      + hi32 poisoning is gated by a new BPF_F_TEST_RND_HI32 prog flags.
+      + BPF_F_TEST_RND_HI32 is enabled for all tests of "test_progs" and
+        "test_verifier", the latter needs minor tweak on two unit tests,
+        please see the patch for the change.
+      + introduced a new global variable "libbpf_test_mode" into libbpf.
+        once it is set to true, it will set BPF_F_TEST_RND_HI32 for all the
+        later PROG_LOAD syscall, the goal is to easy the enable of hi32
+        poison on exsiting testsuite.
+        we could also introduce new APIs, for example "bpf_prog_test_load",
+        then use -Dbpf_prog_load=bpf_prog_test_load to migrate tests under
+        test_progs, but there are several load APIs, and such new API need
+        some change on struture like "struct bpf_prog_load_attr".
+      + removed old unit tests. it is based on insn scan and requires quite
+        a few test_verifier generic code change. given hi32 randomization
+        could offer good test coverage, the unit tests doesn't add much
+        extra test value.
+  - enhanced register width check ("is_reg64") when record sub-register
+    write, now, it returns more accurate width.
+  - Re-run all tests under "test_progs" and "test_verifier" on x86_64, no
+    regression. Fixed a couple of bugs exposed:
+      1. ctx field size transformation was not taken into account.
+      2. insn patch could cause lost of original aux data which is
+         important for ctx field conversion.
+      3. return value for propagate_liveness was wrong and caused
+         regression on processed insn number.
+      4. helper call arg wasn't handled properly that path prune may cause
+         64-bit read info in pruned path lost.
+  - Re-run Cilium bpf prog for processed-insn-number benchmarking, no
+    regression.
+
+v1:
+  - Fixed the missing handling on callee-saved for bpf-to-bpf call,
+    sub-register defs therefore moved to frame state. (Jakub Kicinski)
+  - Removed redundant "cross_reg". (Jakub Kicinski)
+  - Various coding styles & grammar fixes. (Jakub Kicinski, Quentin Monnet)
+
+eBPF ISA specification requires high 32-bit cleared when low 32-bit
+sub-register is written. This applies to destination register of ALU32 etc.
+JIT back-ends must guarantee this semantic when doing code-gen. x86_64 and
+AArch64 ISA has the same semantics, so the corresponding JIT back-end
+doesn't need to do extra work.
+
+However, 32-bit arches (arm, x86, nfp etc.) and some other 64-bit arches
+(PowerPC, SPARC etc) need to do explicit zero extension to meet this
+requirement, otherwise code like the following will fail.
+
+  u64_value = (u64) u32_value
+  ... other uses of u64_value
+
+This is because compiler could exploit the semantic described above and
+save those zero extensions for extending u32_value to u64_value, these JIT
+back-ends are expected to guarantee this through inserting extra zero
+extensions which however could be a significant increase on the code size.
+Some benchmarks show there could be ~40% sub-register writes out of total
+insns, meaning at least ~40% extra code-gen.
+
+One observation is these extra zero extensions are not always necessary.
+Take above code snippet for example, it is possible u32_value will never be
+casted into a u64, the value of high 32-bit of u32_value then could be
+ignored and extra zero extension could be eliminated.
+
+This patch implements this idea, insns defining sub-registers will be
+marked when the high 32-bit of the defined sub-register matters. For
+those unmarked insns, it is safe to eliminate high 32-bit clearnace for
+them.
+
+Algo
+====
+We could use insn scan based static analysis to tell whether one
+sub-register def doesn't need zero extension. However, using such static
+analysis, we must do conservative assumption at branching point where
+multiple uses could be introduced. So, for any sub-register def that is
+active at branching point, we need to mark it as needing zero extension.
+This could introducing quite a few false alarms, for example ~25% on
+Cilium bpf_lxc.
+
+It will be far better to use dynamic data-flow tracing which verifier
+fortunately already has and could be easily extend to serve the purpose of
+this patch set.
+
+ - Split read flags into READ32 and READ64.
+
+ - Record index of insn that does sub-register write. Keep the index inside
+   reg state and update it during verifier insn walking.
+
+ - A full register read on a sub-register marks its definition insn as
+   needing zero extension on dst register.
+
+   A new sub-register write overrides the old one.
+
+ - When propagating read64 during path pruning, also mark any insn defining
+   a sub-register that is read in the pruned path as full-register.
+
+Benchmark
+=========
+ - I estimate the JITed image could be 15% ~ 30% smaller on these affected
+   arches (nfp, arm, x32, risv, ppc, sparc, s390), depending on the prog.
+
+ - For Cilium bpf_lxc, there is ~11500 insns in the compiled binary (use
+   latest LLVM snapshot, and with -mcpu=v3 -mattr=+alu32 enabled), 4460 of
+   them has sub-register writes (~40%). Calculated by:
+
+    cat dump | grep -P "\tw" | wc -l       (ALU32)
+    cat dump | grep -P "r.*=.*u32" | wc -l (READ_W)
+    cat dump | grep -P "r.*=.*u16" | wc -l (READ_H)
+    cat dump | grep -P "r.*=.*u8" | wc -l  (READ_B)
+
+   After this patch set enabled, more than half of those 4460 could be
+   identified as doesn't needing zero extension on the destination, this
+   could lead significant save on JITed image.
+
+Jiong Wang (16):
+  bpf: verifier: mark verified-insn with sub-register zext flag
+  bpf: verifier: mark patched-insn with sub-register zext flag
+  bpf: introduce new mov32 variant for doing explicit zero extension
+  bpf: verifier: insert zero extension according to analysis result
+  bpf: introduce new bpf prog load flags "BPF_F_TEST_RND_HI32"
+  bpf: verifier: randomize high 32-bit when BPF_F_TEST_RND_HI32 is set
+  libbpf: add "prog_flags" to
+    bpf_program/bpf_prog_load_attr/bpf_load_program_attr
+  selftests: bpf: adjust several test_verifier helpers for insn
+    insertion
+  selftests: bpf: enable hi32 randomization for all tests
+  arm: bpf: eliminate zero extension code-gen
+  powerpc: bpf: eliminate zero extension code-gen
+  s390: bpf: eliminate zero extension code-gen
+  sparc: bpf: eliminate zero extension code-gen
+  x32: bpf: eliminate zero extension code-gen
+  riscv: bpf: eliminate zero extension code-gen
+  nfp: bpf: eliminate zero extension code-gen
+
+ arch/arm/net/bpf_jit_32.c                          |  42 ++-
+ arch/powerpc/net/bpf_jit_comp64.c                  |  36 ++-
+ arch/riscv/net/bpf_jit_comp.c                      |  43 ++-
+ arch/s390/net/bpf_jit_comp.c                       |  41 ++-
+ arch/sparc/net/bpf_jit_comp_64.c                   |  29 +-
+ arch/x86/net/bpf_jit_comp32.c                      |  83 ++++--
+ drivers/net/ethernet/netronome/nfp/bpf/jit.c       | 115 ++++----
+ drivers/net/ethernet/netronome/nfp/bpf/main.h      |   2 +
+ drivers/net/ethernet/netronome/nfp/bpf/verifier.c  |  12 +
+ include/linux/bpf.h                                |   1 +
+ include/linux/bpf_verifier.h                       |  14 +-
+ include/linux/filter.h                             |  15 ++
+ include/uapi/linux/bpf.h                           |  18 ++
+ kernel/bpf/core.c                                  |   9 +
+ kernel/bpf/syscall.c                               |   4 +-
+ kernel/bpf/verifier.c                              | 299 +++++++++++++++++++--
+ tools/include/uapi/linux/bpf.h                     |  18 ++
+ tools/lib/bpf/bpf.c                                |   1 +
+ tools/lib/bpf/bpf.h                                |   1 +
+ tools/lib/bpf/libbpf.c                             |   3 +
+ tools/lib/bpf/libbpf.h                             |   1 +
+ tools/testing/selftests/bpf/Makefile               |  10 +-
+ .../selftests/bpf/prog_tests/bpf_verif_scale.c     |   1 +
+ tools/testing/selftests/bpf/test_sock_addr.c       |   1 +
+ tools/testing/selftests/bpf/test_sock_fields.c     |   1 +
+ tools/testing/selftests/bpf/test_socket_cookie.c   |   1 +
+ tools/testing/selftests/bpf/test_stub.c            |  40 +++
+ tools/testing/selftests/bpf/test_verifier.c        |  31 ++-
+ 28 files changed, 725 insertions(+), 147 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/test_stub.c
+
+-- 
+2.7.4
+
