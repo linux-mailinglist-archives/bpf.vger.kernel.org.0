@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCE326D63
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 21:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE0526D27
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 21:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732672AbfEVT2x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 May 2019 15:28:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51646 "EHLO mail.kernel.org"
+        id S1732960AbfEVTju (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 May 2019 15:39:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732668AbfEVT2x (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 May 2019 15:28:53 -0400
+        id S1732948AbfEVT3g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 May 2019 15:29:36 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E4682177E;
-        Wed, 22 May 2019 19:28:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D3DB3217D9;
+        Wed, 22 May 2019 19:29:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558553332;
-        bh=ZEOaOa7/cjki/9csMBailtCVQE5L3VElXMQNTLJbohU=;
+        s=default; t=1558553375;
+        bh=DMcVsn0ohh25afz3dEf0waXI4SCKFzmZdHefFU0jzvg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rK/lYH+KQZJddOlHBaz9BKnwnOlqOe3SCKwGUm4DV5OgtbQyFDHtA6S02vTQP0bbB
-         NSeMbVt3qO7NOoXppHwcaHMKyyq1h7COFIiQa0fGFv7FCLKUHc07qOUQ60aWqVxxv7
-         eYj5CIYi54gh59zO0A/hGZqHZAGkGBMOLS5YXurM=
+        b=sgrZstSlXEXkdiYjfLxhOw3EpLAryC2/Bs9BWFj4fjwR219LEKjZbuOpv9G119Vrk
+         6gDChGElap6jGLS1RXGvDlvQcOkDIixcTjJPEW5WrlyPKehOzIyhsdHU6kwwDAxMCv
+         KoNWpm3N2GHSLaaxYgQPwaCMTVbngxJSkpP12Uv0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Vineet Gupta <Vineet.Gupta1@synopsys.com>,
-        Vineet Gupta <vgupta@synopsys.com>, Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     "Daniel T. Lee" <danieltimlee@gmail.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 007/167] tools/bpf: fix perf build error with uClibc (seen on ARC)
-Date:   Wed, 22 May 2019 15:26:02 -0400
-Message-Id: <20190522192842.25858-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 035/167] libbpf: fix samples/bpf build failure due to undefined UINT32_MAX
+Date:   Wed, 22 May 2019 15:26:30 -0400
+Message-Id: <20190522192842.25858-35-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190522192842.25858-1-sashal@kernel.org>
 References: <20190522192842.25858-1-sashal@kernel.org>
@@ -45,47 +45,63 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+From: "Daniel T. Lee" <danieltimlee@gmail.com>
 
-[ Upstream commit ca31ca8247e2d3807ff5fa1d1760616a2292001c ]
+[ Upstream commit 32e621e55496a0009f44fe4914cd4a23cade4984 ]
 
-When build perf for ARC recently, there was a build failure due to lack
-of __NR_bpf.
+Currently, building bpf samples will cause the following error.
 
-| Auto-detecting system features:
-|
-| ...                     get_cpuid: [ OFF ]
-| ...                           bpf: [ on  ]
-|
-| #  error __NR_bpf not defined. libbpf does not support your arch.
-    ^~~~~
-| bpf.c: In function 'sys_bpf':
-| bpf.c:66:17: error: '__NR_bpf' undeclared (first use in this function)
-|  return syscall(__NR_bpf, cmd, attr, size);
-|                 ^~~~~~~~
-|                 sys_bpf
+    ./tools/lib/bpf/bpf.h:132:27: error: 'UINT32_MAX' undeclared here (not in a function) ..
+     #define BPF_LOG_BUF_SIZE (UINT32_MAX >> 8) /* verifier maximum in kernels <= 5.1 */
+                               ^
+    ./samples/bpf/bpf_load.h:31:25: note: in expansion of macro 'BPF_LOG_BUF_SIZE'
+     extern char bpf_log_buf[BPF_LOG_BUF_SIZE];
+                             ^~~~~~~~~~~~~~~~
 
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Due to commit 4519efa6f8ea ("libbpf: fix BPF_LOG_BUF_SIZE off-by-one error")
+hard-coded size of BPF_LOG_BUF_SIZE has been replaced with UINT32_MAX which is
+defined in <stdint.h> header.
+
+Even with this change, bpf selftests are running fine since these are built
+with clang and it includes header(-idirafter) from clang/6.0.0/include.
+(it has <stdint.h>)
+
+    clang -I. -I./include/uapi -I../../../include/uapi -idirafter /usr/local/include -idirafter /usr/include \
+    -idirafter /usr/lib/llvm-6.0/lib/clang/6.0.0/include -idirafter /usr/include/x86_64-linux-gnu \
+    -Wno-compare-distinct-pointer-types -O2 -target bpf -emit-llvm -c progs/test_sysctl_prog.c -o - | \
+    llc -march=bpf -mcpu=generic  -filetype=obj -o /linux/tools/testing/selftests/bpf/test_sysctl_prog.o
+
+But bpf samples are compiled with GCC, and it only searches and includes
+headers declared at the target file. As '#include <stdint.h>' hasn't been
+declared in tools/lib/bpf/bpf.h, it causes build failure of bpf samples.
+
+    gcc -Wp,-MD,./samples/bpf/.sockex3_user.o.d -Wall -Wmissing-prototypes -Wstrict-prototypes \
+    -O2 -fomit-frame-pointer -std=gnu89 -I./usr/include -I./tools/lib/ -I./tools/testing/selftests/bpf/ \
+    -I./tools/  lib/ -I./tools/include -I./tools/perf -c -o ./samples/bpf/sockex3_user.o ./samples/bpf/sockex3_user.c;
+
+This commit add declaration of '#include <stdint.h>' to tools/lib/bpf/bpf.h
+to fix this problem.
+
+Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
 Acked-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/bpf.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/lib/bpf/bpf.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 1d6907d379c99..976b28137d836 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -41,6 +41,8 @@
- #  define __NR_bpf 349
- # elif defined(__s390__)
- #  define __NR_bpf 351
-+# elif defined(__arc__)
-+#  define __NR_bpf 280
- # else
- #  error __NR_bpf not defined. libbpf does not support your arch.
- # endif
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index b8ea5843c39ee..e9423d6af9332 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -23,6 +23,7 @@
+ 
+ #include <linux/bpf.h>
+ #include <stddef.h>
++#include <stdint.h>
+ 
+ int bpf_create_map_node(enum bpf_map_type map_type, int key_size,
+ 			int value_size, int max_entries, __u32 map_flags,
 -- 
 2.20.1
 
