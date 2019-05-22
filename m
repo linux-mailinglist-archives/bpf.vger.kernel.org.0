@@ -2,160 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA5426624
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 16:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A02C26654
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 16:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729500AbfEVOpH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 May 2019 10:45:07 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:36432 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729005AbfEVOpH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 May 2019 10:45:07 -0400
-Received: by mail-io1-f69.google.com with SMTP id i195so1914184ioa.3
-        for <bpf@vger.kernel.org>; Wed, 22 May 2019 07:45:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=JpaeHPVPGMAQdVWaQpSNuUwJ+u77xcvaRtejmYrPhNY=;
-        b=eFY8ca8QLFB8K1HKKj1AbKA/cO2gLU+K6Jo1ylz3z7KilN16q1X6ew4ZsI6Rws1KiH
-         foufHurjkre5OmpIeD7cIpDllkr+d8JrZ0+4vnu5XBzHZvd59ajZAR9u+0RWsMiy6xJh
-         dP69ZDw4VVX2J6ZzABK9QBFp7v7wq7JAVp5Bbo0Z+c3q9kAh/QFt/m0NwKrqzna0pcat
-         YXkQWxR8lZJ5LGdolMB5vHB3VSOfZzNc4Q75+H2j2s3WKwWqN7IjnqrnWpr9ysDPFr2a
-         tMOTkj9/OX1gNhPP4lu9aAbkoEXGJg/tG/3kyxWSvxwMEQ2WYXepNLteKtD31q+GaKP/
-         ry+Q==
-X-Gm-Message-State: APjAAAVME40zofIncgwAX7b10844/imsH8yFakS10zd/njivwKzu0QTk
-        Wz3eVJ4h7hOpY5WNudheisGZ6BSLouWdMVdUizTH8bnmq4RW
-X-Google-Smtp-Source: APXvYqxM11HZi/fHUjTi67KvUqTOIWL6MxhmD1qTj5D6j6pzNGHUvEe91+PXKsoqh7aXJqfVR6YDckyiGdDbvvpf8GcF9jYFOgha
+        id S1729159AbfEVOxC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 May 2019 10:53:02 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:37148 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728450AbfEVOxB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 May 2019 10:53:01 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4MEiSk5015190;
+        Wed, 22 May 2019 07:51:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=sKbDtBGnVKIRUaCAczgStNECUOVI180S+3MwhCS8lFI=;
+ b=LHVMc+/Tw/xPFyA8DqbDJADpMXcHdwQ+9kPZs5iNgMKVElJAl6msaC6n2mlJ/c4f1bn8
+ DAlzFBQjtpyt1qJhyTuib1MmzuUz7stRYpMwIHhe+ce5QfiYvT3ybbuKrkee2mhcx8C4
+ +4qoCD51avfjv8ePMFyU5kLi9OPotCIXJTU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2smr4jty00-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 22 May 2019 07:51:23 -0700
+Received: from ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) by
+ ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 22 May 2019 07:51:22 -0700
+Received: from ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) by
+ ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 22 May 2019 07:51:22 -0700
+Received: from NAM05-BY2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 22 May 2019 07:51:20 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sKbDtBGnVKIRUaCAczgStNECUOVI180S+3MwhCS8lFI=;
+ b=tMVyY9n0OBZG+Fk8wHU+QAOjOlCB5iYK/M0qLMex80YU3TEyKd9DuCYJverCDH42qKiiqag+X7aMELAOo0PpulwlD7tUaxmEEKbWI9+xTFGXALuOfE1EjYN5w17HcQfTGoG0OyMDtpX/YylI9F4Oq+uqvnzOn+QgBymy+najJ+8=
+Received: from BYAPR15MB2501.namprd15.prod.outlook.com (52.135.196.11) by
+ BYAPR15MB3384.namprd15.prod.outlook.com (20.179.59.17) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1900.22; Wed, 22 May 2019 14:49:08 +0000
+Received: from BYAPR15MB2501.namprd15.prod.outlook.com
+ ([fe80::140e:9c62:f2d3:7f27]) by BYAPR15MB2501.namprd15.prod.outlook.com
+ ([fe80::140e:9c62:f2d3:7f27%7]) with mapi id 15.20.1900.020; Wed, 22 May 2019
+ 14:49:08 +0000
+From:   Alexei Starovoitov <ast@fb.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Kairui Song <kasong@redhat.com>
+CC:     Song Liu <songliubraving@fb.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: Getting empty callchain from perf_callchain_kernel()
+Thread-Topic: Getting empty callchain from perf_callchain_kernel()
+Thread-Index: AQHVDEJXYtrotGS6bU+cxwR7BKWjbKZu8J8AgAAG+ICAAAFQgIAAD2QAgAO6dwCABHK6gIAADP6A
+Date:   Wed, 22 May 2019 14:49:07 +0000
+Message-ID: <ab047883-69f6-1175-153f-5ad9462c6389@fb.com>
+References: <3CD3EE63-0CD2-404A-A403-E11DCF2DF8D9@fb.com>
+ <20190517074600.GJ2623@hirez.programming.kicks-ass.net>
+ <20190517081057.GQ2650@hirez.programming.kicks-ass.net>
+ <CACPcB9cB5n1HOmZcVpusJq8rAV5+KfmZ-Lxv3tgsSoy7vNrk7w@mail.gmail.com>
+ <20190517091044.GM2606@hirez.programming.kicks-ass.net>
+ <CACPcB9cpNp5CBqoRs+XMCwufzAFa8Pj-gbmj9fb+g5wVdue=ig@mail.gmail.com>
+ <20190522140233.GC16275@worktop.programming.kicks-ass.net>
+In-Reply-To: <20190522140233.GC16275@worktop.programming.kicks-ass.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: CO2PR07CA0072.namprd07.prod.outlook.com (2603:10b6:100::40)
+ To BYAPR15MB2501.namprd15.prod.outlook.com (2603:10b6:a02:88::11)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:180::9fb6]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0b423561-71ac-48fe-3bb5-08d6dec4a3f6
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:BYAPR15MB3384;
+x-ms-traffictypediagnostic: BYAPR15MB3384:
+x-microsoft-antispam-prvs: <BYAPR15MB338489B644EBFD81C185216CD7000@BYAPR15MB3384.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-forefront-prvs: 0045236D47
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(136003)(396003)(366004)(376002)(39860400002)(189003)(199004)(7736002)(305945005)(36756003)(6246003)(54906003)(99286004)(68736007)(14454004)(4326008)(6116002)(478600001)(25786009)(76176011)(2906002)(446003)(486006)(186003)(31686004)(52116002)(476003)(2616005)(386003)(6506007)(53546011)(11346002)(53936002)(46003)(102836004)(316002)(8676002)(6486002)(81156014)(31696002)(71190400001)(71200400001)(86362001)(81166006)(73956011)(256004)(66946007)(6436002)(5024004)(110136005)(5660300002)(229853002)(8936002)(66476007)(66556008)(64756008)(66446008)(6512007);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3384;H:BYAPR15MB2501.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: sa+SP/LIBVUKgSLWeUKvRj0++KKVopvhhvUy8QAn0iaNyiK4WIfxi1veGtoM89mx817l/TfF7dM/aEGGVn3gE8YWNYmwFD7pU9+fej9UenCEHMs9MsBFJKMT/NifleBnYH9RxTtyljpWel5q3cQXQzyRfuGnlDNR3pOxDqbQ0jIxtafv9eYsBQtF7r7edz3e8IiFDgiNjPw8k6hedoplcSjGMDYXOhNBeaFps+E3z6MjhMx0HSkuGj1UU5ppeL2rQKbL+wEk6jztUVyBNEnpxJZUhxI3YZHK3+Q8iKVKEUxC4vTWMUBYt+SGZvK/X9XPx5SWqJe7Wbyb3QJrFCS4twzxVnS2JCOrW7xH5hj6zvGS99UZCvoUXmgkEW13wrropIKisk8CmXx5ZsdPmJV4AaCDc8np8W+tP+c2phVjdhY=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2F061B130DBC5948B404DEA6DB676E69@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Received: by 2002:a24:5c5:: with SMTP id 188mr8347085itl.10.1558536306060;
- Wed, 22 May 2019 07:45:06 -0700 (PDT)
-Date:   Wed, 22 May 2019 07:45:06 -0700
-In-Reply-To: <000000000000fd342e05791cc86f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e4731905897b02c7@google.com>
-Subject: Re: KASAN: use-after-free Read in sk_psock_unlink
-From:   syzbot <syzbot+3acd9f67a6a15766686e@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, john.fastabend@gmail.com, kafai@fb.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b423561-71ac-48fe-3bb5-08d6dec4a3f6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 May 2019 14:49:08.0274
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3384
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-22_07:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905220105
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has found a reproducer for the following crash on:
-
-HEAD commit:    f49aa1de Merge tag 'for-5.2-rc1-tag' of git://git.kernel.o..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17279a52a00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fc045131472947d7
-dashboard link: https://syzkaller.appspot.com/bug?extid=3acd9f67a6a15766686e
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13adf56ca00000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+3acd9f67a6a15766686e@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in sock_hash_delete_from_link  
-net/core/sock_map.c:585 [inline]
-BUG: KASAN: use-after-free in sk_psock_unlink+0x443/0x4b0  
-net/core/sock_map.c:998
-Read of size 8 at addr ffff88808b760600 by task syz-executor.5/26193
-
-CPU: 1 PID: 26193 Comm: syz-executor.5 Not tainted 5.2.0-rc1+ #1
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
-  print_address_description.cold+0x7c/0x20d mm/kasan/report.c:188
-  __kasan_report.cold+0x1b/0x40 mm/kasan/report.c:317
-  kasan_report+0x12/0x20 mm/kasan/common.c:614
-  __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:132
-  sock_hash_delete_from_link net/core/sock_map.c:585 [inline]
-  sk_psock_unlink+0x443/0x4b0 net/core/sock_map.c:998
-  tcp_bpf_remove+0x21/0x50 net/ipv4/tcp_bpf.c:535
-  tcp_bpf_close+0x130/0x390 net/ipv4/tcp_bpf.c:575
-  inet_release+0xff/0x1e0 net/ipv4/af_inet.c:432
-  inet6_release+0x53/0x80 net/ipv6/af_inet6.c:474
-  __sock_release+0xce/0x2a0 net/socket.c:607
-  sock_close+0x1b/0x30 net/socket.c:1279
-  __fput+0x2ff/0x890 fs/file_table.c:279
-  ____fput+0x16/0x20 fs/file_table.c:312
-  task_work_run+0x145/0x1c0 kernel/task_work.c:113
-  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
-  exit_to_usermode_loop+0x273/0x2c0 arch/x86/entry/common.c:168
-  prepare_exit_to_usermode arch/x86/entry/common.c:199 [inline]
-  syscall_return_slowpath arch/x86/entry/common.c:279 [inline]
-  do_syscall_64+0x58e/0x680 arch/x86/entry/common.c:304
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x412f61
-Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 04 1b 00 00 c3 48  
-83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48  
-89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
-RSP: 002b:00007ffdbbd18870 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000006 RCX: 0000000000412f61
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000005
-RBP: 0000000000000000 R08: ffffffffffffffff R09: ffffffffffffffff
-R10: 00007ffdbbd18950 R11: 0000000000000293 R12: 00000000007610a8
-R13: 0000000000036769 R14: 0000000000036796 R15: 000000000075bfcc
-
-Allocated by task 26195:
-  save_stack+0x23/0x90 mm/kasan/common.c:71
-  set_track mm/kasan/common.c:79 [inline]
-  __kasan_kmalloc mm/kasan/common.c:489 [inline]
-  __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:462
-  kasan_kmalloc+0x9/0x10 mm/kasan/common.c:503
-  kmem_cache_alloc_trace+0x151/0x750 mm/slab.c:3555
-  kmalloc include/linux/slab.h:547 [inline]
-  kzalloc include/linux/slab.h:742 [inline]
-  sock_hash_alloc net/core/sock_map.c:802 [inline]
-  sock_hash_alloc+0x1e3/0x5b0 net/core/sock_map.c:786
-  find_and_alloc_map kernel/bpf/syscall.c:129 [inline]
-  map_create kernel/bpf/syscall.c:570 [inline]
-  __do_sys_bpf+0x730/0x43d0 kernel/bpf/syscall.c:2795
-  __se_sys_bpf kernel/bpf/syscall.c:2772 [inline]
-  __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:2772
-  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Freed by task 8823:
-  save_stack+0x23/0x90 mm/kasan/common.c:71
-  set_track mm/kasan/common.c:79 [inline]
-  __kasan_slab_free+0x102/0x150 mm/kasan/common.c:451
-  kasan_slab_free+0xe/0x10 mm/kasan/common.c:459
-  __cache_free mm/slab.c:3432 [inline]
-  kfree+0xcf/0x220 mm/slab.c:3755
-  sock_hash_free+0x327/0x4a0 net/core/sock_map.c:865
-  bpf_map_free_deferred+0xb4/0xe0 kernel/bpf/syscall.c:310
-  process_one_work+0x989/0x1790 kernel/workqueue.c:2268
-  worker_thread+0x98/0xe40 kernel/workqueue.c:2414
-  kthread+0x354/0x420 kernel/kthread.c:254
-  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-
-The buggy address belongs to the object at ffff88808b760500
-  which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 256 bytes inside of
-  512-byte region [ffff88808b760500, ffff88808b760700)
-The buggy address belongs to the page:
-page:ffffea00022dd800 refcount:1 mapcount:0 mapping:ffff8880aa400940  
-index:0xffff88808b760a00
-flags: 0x1fffc0000000200(slab)
-raw: 01fffc0000000200 ffffea00029e2508 ffffea00023ff008 ffff8880aa400940
-raw: ffff88808b760a00 ffff88808b760000 0000000100000002 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
-  ffff88808b760500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff88808b760580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ffff88808b760600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                    ^
-  ffff88808b760680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff88808b760700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
+T24gNS8yMi8xOSA3OjAyIEFNLCBQZXRlciBaaWpsc3RyYSB3cm90ZToNCj4gDQo+PiBJZiB0aGUg
+dW53aW5kZXIgY291bGQgdHJhY2UgYmFjayB0aHJvdWdoIHRoZSBicGYgZnVuYyBjYWxsIHRoZW4g
+dGhlcmUNCj4+IHdpbGwgYmUgbm8gc3VjaCBwcm9ibGVtLg0KPiANCj4gV2h5IGNvdWxkbid0IGl0
+IHRyYWNlIGJhY2sgdGhyb3VnaCB0aGUgYnBmIHN0dWZmPyBBbmQgaG93IGNhbiB3ZSBmaXgNCj4g
+dGhhdD8NCg0KTW9zdCBvZiB0aGUgdGltZSB0aGVyZSBpcyBubyAndHJhY2luZyB0aHJvdWdoIGJw
+ZiBzdHVmZicuDQpicGYgaW5mcmEgaXMgcHJlc2VydmluZyAncHRfcmVncyonIHRoYXQgd2FzIGNv
+bGxlY3RlZCBiZWZvcmUNCmFueSBicGYgdGhpbmdzIHN0YXJ0IGV4ZWN1dGluZy4NClRoZSByZWFz
+b24gaXMgdGhhdCBicGYgY2FuIGJlIGV4ZWN1dGVkIHZpYSBpbnRlcnByZXRlciBhbmQNCmRpcmVj
+dGx5IHdoZW4gSklUZWQuDQpJbiBib3RoIGNhc2VzIGNvbGxlY3RlZCBzdGFjayB0cmFjZXMgc2hv
+dWxkIGJlIHRoZSBzYW1lIG9yDQppdCdzIGNvbmZ1c2luZyB0aGUgdXNlcnMgYW5kIHRoZXkgY2Fu
+bm90IGNvbXBlbnNhdGUgZm9yIHN1Y2gNCmRpZmZlcmVuY2UuDQoNClRoZSBvbmx5IGV4Y2VwdGlv
+biBpcyByYXdfdHJhY2Vwb2ludCwgc2luY2UgaXQncyB0aGUgbW9zdA0KbWluaW1hbGlzdGljIHdh
+eSBvZiBjYWxsaW5nIGJwZiBhbmQga2VybmVsIHNpZGUgZG9lc24ndCBkbw0KYW55dGhpbmcgYmVm
+b3JlIGNhbGxpbmcgaW50byBicGYuDQpPbmx5IGluIHN1Y2ggY2FzZSBicGYgc2lkZSBoYXMgdG8g
+Y2FsbCBwZXJmX2ZldGNoX2NhbGxlcl9yZWdzKCkuDQpTZWUgYnBmX2dldF9zdGFja2lkX3Jhd190
+cCgpLg0KQnV0IHRoaXMgdGVzdCBjYXNlIGlzIGFjdHVhbGx5IHdvcmtpbmchDQpJdCdzIGNvdmVy
+ZWQgYnkgcHJvZ190ZXN0cy9zdGFja3RyYWNlX21hcF9yYXdfdHAuYyBhbmQNCml0IHBhc3Nlcy4N
+ClRoZSBvbmUgdGhhdCBpcyBicm9rZW4gaXMgcHJvZ190ZXN0cy9zdGFja3RyYWNlX21hcC5jDQpU
+aGVyZSB3ZSBhdHRhY2ggYnBmIHRvIHN0YW5kYXJkIHRyYWNlcG9pbnQgd2hlcmUNCmtlcm5lbCBz
+dXBwb3NlIHRvIGNvbGxlY3QgcHRfcmVncyBiZWZvcmUgY2FsbGluZyBpbnRvIGJwZi4NCkFuZCB0
+aGF0J3Mgd2hhdCBicGZfZ2V0X3N0YWNraWRfdHAoKSBpcyBkb2luZy4NCkl0IHBhc3NlcyBwdF9y
+ZWdzICh0aGF0IHdhcyBjb2xsZWN0ZWQgYmVmb3JlIGFueSBicGYpDQppbnRvIGJwZl9nZXRfc3Rh
+Y2tpZCgpIHdoaWNoIGNhbGxzIGdldF9wZXJmX2NhbGxjaGFpbigpLg0KU2FtZSB0aGluZyB3aXRo
+IGtwcm9iZXMsIHVwcm9iZXMuDQoNCg0K
