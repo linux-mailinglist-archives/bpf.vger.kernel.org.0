@@ -2,82 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B768E25DD1
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 07:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE96925FA6
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 10:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726358AbfEVFyZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 May 2019 01:54:25 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:42017 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbfEVFyY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 May 2019 01:54:24 -0400
-Received: by mail-qt1-f193.google.com with SMTP id j53so951395qta.9;
-        Tue, 21 May 2019 22:54:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DqGZmH5U35Dv5bwyTyiCYAuusP/EQsaROTmJmPCQsKs=;
-        b=Urse73IjNLmstfQV9wFT1opPjk6RlFiBHx2ITzhNWYfnyisCW9qdKJZfgjMt3r0Fdw
-         huo+z7g4nn70opDL0sSFrAr2HcwJUW4VhYuLcaGgaoURYUnpXDP0S3Qygq3b6gGaUmoc
-         KG782LvfePPINOb3rYPb69ZTDHbpm1tGjotBM0K3BWHn1LtrUVDtI07xNaDTGedYbE6a
-         d1U31GgmW1VbgE/PgLnjahJ7ajI26STRHToREp5YqzatKBXEPjLseN4dpCD+DzZarAPf
-         ONAvR8SIoWQlI2cLVkEdZUF/TNXTAnlkYO3XEhFMRBpahCVXl6I0H0V9988dNDcaiWM8
-         FUvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DqGZmH5U35Dv5bwyTyiCYAuusP/EQsaROTmJmPCQsKs=;
-        b=V3reosd8rJeb4zNcQjEDK+WwOm3xqUzLVshiQ66I6KWbYpSB0eSfBa8/KPwzMB0186
-         tDEyx7DdhSfP/YPIiFn2/OQoYIyWFMWVggA0EHImNNOJxKYawnWPMtWr6Pb6YHJR0Oqy
-         kxSCHYfiGUh0ddhqtqvOTej3Y/Y/XG0pe+duh1Ige632K16+jMPipD8CDd3MnUlFbbaS
-         j0IOM8Z8ANJYIU2+cxT7XSX5gduwJVvPWC2lNpR73v72+cXVXes6iIiw56QB5F8C9m92
-         HbRhEMmlZYqu485W5c8Lt5HvAWCOZ7KUzsLrigZnL5gbnGALujf5c65jZSlZwXzRlj43
-         UjMA==
-X-Gm-Message-State: APjAAAUaU4Kzhl5YJlxx5/XlvKP+VN/1pl6TmUB0M5CC4olcVfIP8SNA
-        sqY4is6P2hshdJ5KynsLbsGUKPII56LOFh1uy+Q=
-X-Google-Smtp-Source: APXvYqwB80FGeP6lOXlASL4MJihH/f7ozAdrki+ynOFPAVXrdBxuOzvhQNpAm6cxrNUWMS9p80pE+iQOsZYDpG3DX7Y=
-X-Received: by 2002:ac8:668d:: with SMTP id d13mr71539302qtp.59.1558504463755;
- Tue, 21 May 2019 22:54:23 -0700 (PDT)
+        id S1728869AbfEVIhg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 May 2019 04:37:36 -0400
+Received: from www62.your-server.de ([213.133.104.62]:45058 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728609AbfEVIhg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 May 2019 04:37:36 -0400
+Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hTMkR-0004Uo-If; Wed, 22 May 2019 10:37:19 +0200
+Received: from [2a02:120b:c3fc:feb0:dda7:bd28:a848:50e2] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hTMkR-000LEU-B8; Wed, 22 May 2019 10:37:19 +0200
+Subject: Re: tc_classid access in skb bpf context
+To:     Matthew Cover <matthew.cover@stackpath.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Matthew Cover <werekraken@gmail.com>
+References: <BYAPR10MB2680B63C684345098E6E7669E3070@BYAPR10MB2680.namprd10.prod.outlook.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <73d5b951-2598-0d7f-5b6e-8925cc61989a@iogearbox.net>
+Date:   Wed, 22 May 2019 10:37:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
 MIME-Version: 1.0
-References: <20190522031707.2834254-1-ast@kernel.org>
-In-Reply-To: <20190522031707.2834254-1-ast@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 21 May 2019 22:54:12 -0700
-Message-ID: <CAEf4BzbZyTiF8KZBdPS0pxfCHfTEZSjgDLFDywR7yi5=M_86wQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 0/3] bpf: optimize explored_states
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     davem@davemloft.net, Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <BYAPR10MB2680B63C684345098E6E7669E3070@BYAPR10MB2680.namprd10.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25456/Tue May 21 09:56:54 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 21, 2019 at 8:17 PM Alexei Starovoitov <ast@kernel.org> wrote:
->
-> Convert explored_states array into hash table and use simple hash to
-> reduce verifier peak memory consumption for programs with bpf2bpf calls.
-> More details in patch 3.
->
-> v1->v2: fixed Jakub's small nit in patch 1
->
-> Alexei Starovoitov (3):
->   bpf: cleanup explored_states
->   bpf: split explored_states
->   bpf: convert explored_states to hash table
->
->  include/linux/bpf_verifier.h |  2 +
->  kernel/bpf/verifier.c        | 77 ++++++++++++++++++++++--------------
->  2 files changed, 50 insertions(+), 29 deletions(-)
->
-> --
-> 2.20.0
->
+On 05/22/2019 01:52 AM, Matthew Cover wrote:
+> __sk_buff has a member tc_classid which I'm interested in accessing from the skb bpf context.
+> 
+> A bpf program which accesses skb->tc_classid compiles, but fails verification; the specific failure is "invalid bpf_context access".
+> 
+> if (skb->tc_classid != 0)
+>  return 1;
+> return 0;
+> 
+> Some of the tests in tools/testing/selftests/bpf/verifier/ (those on tc_classid) further confirm that this is, in all likelihood, intentional behavior.
+> 
+> The very similar bpf program which instead accesses skb->mark works as desired.
+> 
+> if (skb->mark != 0)
+>  return 1;
+> return 0;
 
-For the series:
+You should be able to access skb->tc_classid, perhaps you're using the wrong program
+type? BPF_PROG_TYPE_SCHED_CLS is supposed to work (if not we'd have a regression).
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+> I built a kernel (v5.1) with 4 instances of the following line removed from net/core/filter.c to test the behavior when the instructions pass verification.
+> 
+>     switch (off) {
+> -    case bpf_ctx_range(struct __sk_buff, tc_classid):
+> ...
+>         return false;
+> 
+> It appears skb->tc_classid is always zero within my bpf program, even when I verify by other means (e.g. netfilter) that the value is set non-zero.
+> 
+> I gather that sk_buff proper sometimes (i.e. at some layers) has qdisc_skb_cb stored in skb->cb, but not always.
+> 
+> I suspect that the tc_classid is available at l3 (and therefore to utils like netfilter, ip route, tc), but not at l2 (and not to AF_PACKET).
+
+From tc/BPF context you can use it; it's been long time, but I think back then
+we mapped it into cb[] so it can be used within the BPF context to pass skb data
+around e.g. between tail calls, and cls_bpf_classify() when in direct-action mode
+which likely everyone is/should-be using then maps that skb->tc_classid u16 cb[]
+value to res->classid on program return which then in either sch_handle_ingress()
+or sch_handle_egress() is transferred into the skb->tc_index.
+
+> Is it impractical to make skb->tc_classid available in this bpf context or is there just some plumbing which hasn't been connected yet?
+> 
+> Is my suspicion that skb->cb no longer contains qdisc_skb_cb due to crossing a layer boundary well founded?
+> 
+> I'm willing to look into hooking things together as time permits if it's a feasible task.
+> 
+> It's trivial to have iptables match on tc_classid and set a mark which is available to bpf at l2, but I'd like to better understand this.
+> 
+> Thanks,
+> Matt C.
+> 
+
