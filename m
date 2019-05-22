@@ -2,121 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFA0264E0
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 15:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4026A2651B
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 15:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729411AbfEVNiS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 May 2019 09:38:18 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:46584 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729405AbfEVNiS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 May 2019 09:38:18 -0400
-Received: by mail-pf1-f195.google.com with SMTP id y11so1335652pfm.13;
-        Wed, 22 May 2019 06:38:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lqLhChu2AsifnciOctMcQL0LYazbPIk0otwAyvD0vQ4=;
-        b=KN7cK4oU3JUBe5aAgjz0Vr4WbCT7H/MVYSlBFhBevsSITO3IlyItwak5wrlHfz8437
-         6kShjBjFKuQWOWMBtB5dmsEKxKIGN6ZVK31/11EpYXw8kBxNMSjsk7rD62/4qzG+rRGa
-         CZL2wM/4JrcdHhFKP4eEUJvWIMAE/6P19xqYlxOm9RE7AV+UCa8HAH2G4z+DblRwR2+1
-         wa54tN86b4sKoiqwxIVbyaaHYqCv0Mz3N388SjR7pD9gEMrRUiTMke7y/9uVTqgBpTIO
-         9ypFNa08fPCvxCeN31LoPJkE76rW+wIt0ucLqmYIEns/JjWEEd2GHepBI4p4eREEpnTh
-         9Wkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lqLhChu2AsifnciOctMcQL0LYazbPIk0otwAyvD0vQ4=;
-        b=LK8unc/WCVhPWjMOqRY1ziJG7WkM2PaLvVZyGE49/fRdZKMh4BYxkb4X+v9g3xLo0r
-         yposbJDfpGnHslUjcYuJXIUlw/bDUm7c/PnygouWlRC5xaP/Jgc2oJ//cjnUpZRMJvdi
-         sUNR5eo9WDO/S7fN7ENUBCI2w0LmDh8ymiAPmu1U04PXRbWkn8b4qsyxttH/A89xBQRS
-         aPPjD73iT/HXDRBKv/TGU8fgefdmt/tvIidmQzKyBJeyxl7gTo9ELLZQ4eZzexryo3WU
-         pGfEVSwzpRTbPPIl1BfGDRPuwqyhTI3i2M+XnKRwz0Cbjy0vvPmOsNPPiVyQfaZI5bfg
-         EWBg==
-X-Gm-Message-State: APjAAAUj93yC8y4p2B6zili1v/DrfqZZswiqhFbFkelhXcZPCghPIOa5
-        P/k7lLPFpIz/vE5/VSCN7iE=
-X-Google-Smtp-Source: APXvYqz5qu66R/TJIzScwirrAp+FjNoSaSqIXH0L04bbxaboXwmr8a3v0dfjyOR66MmPHARoxNmG2g==
-X-Received: by 2002:aa7:8e55:: with SMTP id d21mr95218713pfr.62.1558532297557;
-        Wed, 22 May 2019 06:38:17 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com ([192.55.54.45])
-        by smtp.gmail.com with ESMTPSA id o6sm53908997pfa.88.2019.05.22.06.38.13
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 May 2019 06:38:16 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, bruce.richardson@intel.com,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf-next v2 2/2] xsk: support BPF_EXIST and BPF_NOEXIST flags in XSKMAP
-Date:   Wed, 22 May 2019 15:37:42 +0200
-Message-Id: <20190522133742.7654-3-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190522133742.7654-1-bjorn.topel@gmail.com>
-References: <20190522133742.7654-1-bjorn.topel@gmail.com>
+        id S1728533AbfEVNvY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 May 2019 09:51:24 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:40208 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726770AbfEVNvY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 May 2019 09:51:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=7PcrUJpAN8FUR5Os5eZdN4/qfIg3FFf2/UF6cSYu22g=; b=FRneyTJ1KPX9uILNf6OYwDJke
+        r1sUw/VWN1m3p5ISAdhvMbPPFLADQ764Wp+ofMRLOF1Ixa1dwIVr6HuEH1GwdoVNpR1adztp+plZM
+        E5nO+VcZVOteXU3qtxUFly2BizAYJ05PghzY3RDhVnreLVIzynopkKDkQjFKDx8OYMYYkpUq+fTfC
+        VjvPSZzzwkCVzVocdTUB7rmIgRtTiiqU/QyTwWtgpOSbpOaQY5FJB/4+D3t1nvn7jqG8kGJ6dW53O
+        d5rXWNcHyUIkUJNOQMtQpHqRF3BK9F5pEp15zu04Mfn07X1V1MjGQYFVY14F6Zu2MJEDnGekXk3Hb
+        L8vU2JuXA==;
+Received: from [31.161.185.207] (helo=worktop.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
+        id 1hTRe7-0001EA-LX; Wed, 22 May 2019 13:51:08 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9FCCB984E09; Wed, 22 May 2019 15:51:06 +0200 (CEST)
+Date:   Wed, 22 May 2019 15:51:06 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Kairui Song <kasong@redhat.com>, Alexei Starovoitov <ast@fb.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: Getting empty callchain from perf_callchain_kernel()
+Message-ID: <20190522135106.GA16275@worktop.programming.kicks-ass.net>
+References: <3CD3EE63-0CD2-404A-A403-E11DCF2DF8D9@fb.com>
+ <20190517074600.GJ2623@hirez.programming.kicks-ass.net>
+ <20190517081057.GQ2650@hirez.programming.kicks-ass.net>
+ <CACPcB9cB5n1HOmZcVpusJq8rAV5+KfmZ-Lxv3tgsSoy7vNrk7w@mail.gmail.com>
+ <20190517091044.GM2606@hirez.programming.kicks-ass.net>
+ <8C814E68-B0B6-47E4-BDD6-917B01EC62D0@fb.com>
+ <c881767d-b6f3-c53e-5c70-556d09ea8d89@fb.com>
+ <8449BBF3-E754-4ABC-BFEF-A8F264297F2D@fb.com>
+ <CACPcB9emh9T23sixx-91mg2wL6kgrYF4MVfmuTCE0SsD=8efcQ@mail.gmail.com>
+ <842A0302-9B36-4FBF-ADF7-9C6749E8C5BE@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <842A0302-9B36-4FBF-ADF7-9C6749E8C5BE@fb.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+On Mon, May 20, 2019 at 05:22:12PM +0000, Song Liu wrote:
+> I think this is still the best fix/workaround here? And only one level 
+> of stack trace should be OK for tracepoint? 
 
-The XSKMAP did not honor the BPF_EXIST/BPF_NOEXIST flags when updating
-an entry. This patch addressed that.
-
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- kernel/bpf/xskmap.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/bpf/xskmap.c b/kernel/bpf/xskmap.c
-index 318f6a07fa31..7f4f75ff466b 100644
---- a/kernel/bpf/xskmap.c
-+++ b/kernel/bpf/xskmap.c
-@@ -223,8 +223,6 @@ static int xsk_map_update_elem(struct bpf_map *map, void *key, void *value,
- 		return -EINVAL;
- 	if (unlikely(i >= m->map.max_entries))
- 		return -E2BIG;
--	if (unlikely(map_flags == BPF_NOEXIST))
--		return -EEXIST;
- 
- 	sock = sockfd_lookup(fd, &err);
- 	if (!sock)
-@@ -250,15 +248,29 @@ static int xsk_map_update_elem(struct bpf_map *map, void *key, void *value,
- 
- 	spin_lock_bh(&m->lock);
- 	entry = &m->xsk_map[i];
-+	old_xs = *entry;
-+	if (old_xs && map_flags == BPF_NOEXIST) {
-+		err = -EEXIST;
-+		goto out;
-+	} else if (!old_xs && map_flags == BPF_EXIST) {
-+		err = -ENOENT;
-+		goto out;
-+	}
- 	xsk_map_node_init(node, m, entry);
- 	xsk_map_add_node(xs, node);
--	old_xs = xchg(entry, xs);
-+	*entry = xs;
- 	if (old_xs)
- 		xsk_map_del_node(old_xs, entry);
- 	spin_unlock_bh(&m->lock);
- 
- 	sockfd_put(sock);
- 	return 0;
-+
-+out:
-+	spin_unlock_bh(&m->lock);
-+	sockfd_put(sock);
-+	xsk_map_node_free(node);
-+	return err;
- }
- 
- static int xsk_map_delete_elem(struct bpf_map *map, void *key)
--- 
-2.20.1
-
+No. That's still completely broken.
