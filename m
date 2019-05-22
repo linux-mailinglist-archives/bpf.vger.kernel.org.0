@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC10626D0B
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 21:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE0626C85
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2019 21:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731647AbfEVTi7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 May 2019 15:38:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52898 "EHLO mail.kernel.org"
+        id S1732352AbfEVTf0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 May 2019 15:35:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733001AbfEVT3o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 May 2019 15:29:44 -0400
+        id S1733000AbfEVTbA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 May 2019 15:31:00 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAFC9204FD;
-        Wed, 22 May 2019 19:29:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC6BC20879;
+        Wed, 22 May 2019 19:30:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558553383;
+        s=default; t=1558553458;
         bh=bUV7btzIiYVMzojYWVtdJYvd+jQvuHheVwfOPfUHK5o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SW6b93qs79KcYhKBH0P3IrAe2/xtxw3l4twaAtAltSTx33RrIBVLnFXOkfLQOqpYM
-         QG61uiR2zVk3XQn/Rp2/xNOJVp9xtgtxekmGlRX46jXxz8tJnK1hFgv+1hx/PGHSU4
-         vn/E9bKeLXyF+dEHcdykWlI1hOKoL1jGJ1Ve5g6s=
+        b=owoVJJFW0NgUAlYQ2tqSml05tb/1ohZ4Py2sw4DlhCZPfjKWxc2P0fYfa2bhFG5Xo
+         gRcT2aFBWWYKHUwK7pE0q1waVw0heGwJieChjUGdsP5IbSUB5iGJX26qOk9MJ//Eu3
+         t7aUOS/SY/20oVNzzRnJlz7H+nJedkCtYf+wj7Bs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     YueHaibing <yuehaibing@huawei.com>, Hulk Robot <hulkci@huawei.com>,
@@ -30,12 +30,12 @@ Cc:     YueHaibing <yuehaibing@huawei.com>, Hulk Robot <hulkci@huawei.com>,
         Sasha Levin <sashal@kernel.org>,
         linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 041/167] ssb: Fix possible NULL pointer dereference in ssb_host_pcmcia_exit
-Date:   Wed, 22 May 2019 15:26:36 -0400
-Message-Id: <20190522192842.25858-41-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 026/114] ssb: Fix possible NULL pointer dereference in ssb_host_pcmcia_exit
+Date:   Wed, 22 May 2019 15:28:49 -0400
+Message-Id: <20190522193017.26567-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190522192842.25858-1-sashal@kernel.org>
-References: <20190522192842.25858-1-sashal@kernel.org>
+In-Reply-To: <20190522193017.26567-1-sashal@kernel.org>
+References: <20190522193017.26567-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
