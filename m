@@ -2,353 +2,498 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 135FD275E1
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2019 08:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B542D27608
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2019 08:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727809AbfEWGLP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 May 2019 02:11:15 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:39976 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727179AbfEWGLN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 23 May 2019 02:11:13 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4N63C2h017234
-        for <bpf@vger.kernel.org>; Wed, 22 May 2019 23:11:13 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=b4dI8PsWDrfX1gQK6gdhhnx4YxwHK8m5zMCEzYnmBKM=;
- b=fcma3Kl+qTlyfVhAV1GMPuyHXGnIQ1BE8OvP9H8tQWTwHp0YPPkzNkhfDFhilBcqlOJn
- z7SdrKMQziwxlYSe6K0Y6J2VbsRQHZmSC25zRh3ByboRRO9xqCrk7CtJeeqgpvIWyVzx
- JHXlSJaZtodWTVorXvdqe2nw4j6D0D91WvQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2sn8rtar5u-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 22 May 2019 23:11:13 -0700
-Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 22 May 2019 23:11:12 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 1B43C3702BC2; Wed, 22 May 2019 23:11:10 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Yonghong Song <yhs@fb.com>
-Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Yonghong Song <yhs@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next v4 3/3] tools/bpf: add selftest in test_progs for bpf_send_signal() helper
-Date:   Wed, 22 May 2019 23:11:10 -0700
-Message-ID: <20190523061110.1780095-1-yhs@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190523061107.1779896-1-yhs@fb.com>
-References: <20190523061107.1779896-1-yhs@fb.com>
-X-FB-Internal: Safe
+        id S1726081AbfEWGf1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 May 2019 02:35:27 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:43205 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725814AbfEWGf0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 May 2019 02:35:26 -0400
+Received: by mail-qk1-f194.google.com with SMTP id z6so3095429qkl.10;
+        Wed, 22 May 2019 23:35:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Ndju+099rXu88q6Yopuox1/QVpCguLpWcEMdi2BfZMw=;
+        b=nz1bFKNjoJV1UIhsWCwfHSNcizsAXfhuQB+c6GJ3S0BicKvQSOlQsydzvqvYQDdFAG
+         GezR2v9AuTM28cIBZesmMEh+q6mVz/4DssCi5KUQMubeH8AS/cb0D6TJafwolURThBfY
+         khxUBUBmyhKpWypjs1ruY4sYCOky4jl1+OOj2iw9Av4T30KkpF4TLrF7y8HG5Y6pKR/A
+         REJKPliu/btUCG2Gg4P2ECNShJhEZA4NdFacQ6r9ppacqOdHVgvc584AYqJ/RnyCuP4e
+         2iOut1RKV/eCylFDd/1+nEEJg8DtLIe7HBZ/5PcH4Xn4Rq73Za+a8OcDfr5+ybXSOdVT
+         RYNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Ndju+099rXu88q6Yopuox1/QVpCguLpWcEMdi2BfZMw=;
+        b=WCw8fdObubyM8Sbuf/X/cpFJPq3XXv8j6d7tIDby9w0j3Z5ULIi9zDlCxcgyLMdoSs
+         igacRC88K6LnQgIAOlNMY5YXQEQ50zeaup9S+2vzK9vRetN3O/MreoeZsShvo8nEA8Yq
+         ZKLeMT/+jPEoghW29UPFH5MHvOd8TI7XH/UNFv6Z/JT1pRrl76fOPy0pNtS+tT+FDp1I
+         +ymjUjKWy2GWbbF7FmFMFwf5sQFZ0pnQZpvnzJb2bpkO75VUxLwNNGDHWzf/iwUzyQCt
+         6DP8O+IWpHB2xV13Ikwn9rgDjfkHb3TxW/FL7YAvBbNVOq1o3ZTOlEHqICHpXn2xJ+y1
+         cGQA==
+X-Gm-Message-State: APjAAAW1AY5oqY+WO9FKcf1NUgFFPCjFKuBA8UDWZHckcq9Sz4129Qg3
+        yaiNFZbWUxqqrsTdpXFj+sNidMoXedw5h1dv+Ww=
+X-Google-Smtp-Source: APXvYqxwZ4iyVBiiHttXDKsl0VPIoAB0BaE0NhvpdBHuR+zTaQ9dzgix8PCzLpmSZXNp56hk1C7aL3V7QD7Pxb3BJU0=
+X-Received: by 2002:a37:a387:: with SMTP id m129mr74144266qke.39.1558593325347;
+ Wed, 22 May 2019 23:35:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-23_06:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905230043
-X-FB-Internal: deliver
+References: <20190522125353.6106-1-bjorn.topel@gmail.com> <20190522125353.6106-2-bjorn.topel@gmail.com>
+ <883964c3ad30ec49db599241857ceb41d8b35567.camel@mellanox.com>
+In-Reply-To: <883964c3ad30ec49db599241857ceb41d8b35567.camel@mellanox.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Thu, 23 May 2019 08:35:13 +0200
+Message-ID: <CAJ+HfNg947QSVoQ_jV27PAC5EErK5kVdrA3=6WEY=fxdve-QRw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] net: xdp: refactor XDP_QUERY_PROG{,_HW} to netdev
+To:     Saeed Mahameed <saeedm@mellanox.com>
+Cc:     "toke@redhat.com" <toke@redhat.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "magnus.karlsson@intel.com" <magnus.karlsson@intel.com>,
+        "bjorn.topel@intel.com" <bjorn.topel@intel.com>,
+        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
+        "brouer@redhat.com" <brouer@redhat.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The test covered both nmi and tracepoint perf events.
-  $ ./test_progs
-  ...
-  test_send_signal_tracepoint:PASS:tracepoint 0 nsec
-  ...
-  test_send_signal_common:PASS:tracepoint 0 nsec
-  ...
-  test_send_signal_common:PASS:perf_event 0 nsec
-  ...
-  test_send_signal:OK
+On Thu, 23 May 2019 at 07:47, Saeed Mahameed <saeedm@mellanox.com> wrote:
+>
+> On Wed, 2019-05-22 at 14:53 +0200, Bj=C3=B6rn T=C3=B6pel wrote:
+> > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> >
+> > All XDP capable drivers need to implement the XDP_QUERY_PROG{,_HW}
+> > command of ndo_bpf. The query code is fairly generic. This commit
+> > refactors the query code up from the drivers to the netdev level.
+> >
+> > The struct net_device has gained four new members tracking the XDP
+> > program, the corresponding program flags, and which programs
+> > (SKB_MODE, DRV_MODE or HW_MODE) that are activated.
+> >
+> > The xdp_prog member, previously only used for SKB_MODE, is shared
+> > with
+> > DRV_MODE, since they are mutually exclusive.
+> >
+> > The program query operations is all done under the rtnl lock.
+> > However,
+> > the xdp_prog member is __rcu annotated, and used in a lock-less
+> > manner
+> > for the SKB_MODE. This is because the xdp_prog member is shared from
+> > a
+> > query program perspective (again, SKB and DRV are mutual exclusive),
+> > RCU read and assignments functions are still used when altering
+> > xdp_prog, even when only for queries in DRV_MODE. This is for
+> > sparse/lockdep correctness.
+> >
+> > A minor behavioral change was done during this refactorization; When
+> > passing a negative file descriptor to a netdev to disable XDP, the
+> > same program flag as the running program is required. An example.
+> >
+> > The eth0 is DRV_DRV capable. Previously, this was OK, but confusing:
+> >
+> >   # ip link set dev eth0 xdp obj foo.o sec main
+> >   # ip link set dev eth0 xdpgeneric off
+> >
+> > Now, the same commands give:
+> >
+> >   # ip link set dev eth0 xdp obj foo.o sec main
+> >   # ip link set dev eth0 xdpgeneric off
+> >   Error: native and generic XDP can't be active at the same time.
+> >
+> > Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> > ---
+> >  include/linux/netdevice.h |  13 +++--
+> >  net/core/dev.c            | 120 ++++++++++++++++++++--------------
+> > ----
+> >  net/core/rtnetlink.c      |  33 ++---------
+> >  3 files changed, 76 insertions(+), 90 deletions(-)
+> >
+> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> > index 44b47e9df94a..bdcb20a3946c 100644
+> > --- a/include/linux/netdevice.h
+> > +++ b/include/linux/netdevice.h
+> > @@ -1940,6 +1940,11 @@ struct net_device {
+> >  #endif
+> >       struct hlist_node       index_hlist;
+> >
+> > +     struct bpf_prog         *xdp_prog_hw;
+> > +     unsigned int            xdp_flags;
+> > +     u32                     xdp_prog_flags;
+> > +     u32                     xdp_prog_hw_flags;
+> > +
+>
+>
+> Maybe it will be nicer if you wrap all xdp related data in one struct,
+> This is good as a weak enforcement so future xdp extensions will go to
+> the same place and not spread all across the net_device struct.
+>
+> this is going to be handy when we start introducing XDP offloads.
+>
+> >  /*
+> >   * Cache lines mostly used on transmit path
+> >   */
+> > @@ -2045,9 +2050,8 @@ struct net_device {
+> >
+> >  static inline bool netif_elide_gro(const struct net_device *dev)
+> >  {
+> > -     if (!(dev->features & NETIF_F_GRO) || dev->xdp_prog)
+> > -             return true;
+> > -     return false;
+> > +     return !(dev->features & NETIF_F_GRO) ||
+> > +             dev->xdp_flags & XDP_FLAGS_SKB_MODE;
+> >  }
+> >
+> >  #define      NETDEV_ALIGN            32
+> > @@ -3684,8 +3688,7 @@ struct sk_buff *dev_hard_start_xmit(struct
+> > sk_buff *skb, struct net_device *dev,
+> >  typedef int (*bpf_op_t)(struct net_device *dev, struct netdev_bpf
+> > *bpf);
+> >  int dev_change_xdp_fd(struct net_device *dev, struct netlink_ext_ack
+> > *extack,
+> >                     int fd, u32 flags);
+> > -u32 __dev_xdp_query(struct net_device *dev, bpf_op_t xdp_op,
+> > -                 enum bpf_netdev_command cmd);
+> > +u32 dev_xdp_query(struct net_device *dev, unsigned int flags);
+> >  int xdp_umem_query(struct net_device *dev, u16 queue_id);
+> >
+> >  int __dev_forward_skb(struct net_device *dev, struct sk_buff *skb);
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index b6b8505cfb3e..ead16c3f955c 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -8005,31 +8005,31 @@ int dev_change_proto_down_generic(struct
+> > net_device *dev, bool proto_down)
+> >  }
+> >  EXPORT_SYMBOL(dev_change_proto_down_generic);
+> >
+> > -u32 __dev_xdp_query(struct net_device *dev, bpf_op_t bpf_op,
+> > -                 enum bpf_netdev_command cmd)
+> > +u32 dev_xdp_query(struct net_device *dev, unsigned int flags)
+> >  {
+> > -     struct netdev_bpf xdp;
+> > +     struct bpf_prog *prog =3D NULL;
+> >
+> > -     if (!bpf_op)
+> > +     if (hweight32(flags) !=3D 1)
+> >               return 0;
+> >
+> > -     memset(&xdp, 0, sizeof(xdp));
+> > -     xdp.command =3D cmd;
+> > -
+> > -     /* Query must always succeed. */
+> > -     WARN_ON(bpf_op(dev, &xdp) < 0 && cmd =3D=3D XDP_QUERY_PROG);
+>
+> since now this function can only query PROG or PROG_HW it is a good
+> time to reflect that in the function name, maybe dev_xdp_query_prog is
+> a better name ?
+>
+> > +     if (flags & (XDP_FLAGS_SKB_MODE | XDP_FLAGS_DRV_MODE))
+> > +             prog =3D rtnl_dereference(dev->xdp_prog);
+> > +     else if (flags & XDP_FLAGS_HW_MODE)
+> > +             prog =3D dev->xdp_prog_hw;
+> >
+> > -     return xdp.prog_id;
+> > +     return prog ? prog->aux->id : 0;
+> >  }
+> >
+> > -static int dev_xdp_install(struct net_device *dev, bpf_op_t bpf_op,
+> > +static int dev_xdp_install(struct net_device *dev, unsigned int
+> > target,
+> >                          struct netlink_ext_ack *extack, u32 flags,
+> >                          struct bpf_prog *prog)
+> >  {
+> > +     bpf_op_t bpf_op =3D dev->netdev_ops->ndo_bpf;
+>
+> I would assing bpf_op below :
+> bpf_op =3D (target =3D=3D XDP_FLAGS_SKB_MODE) ?
+>          generic_xdp_install :
+>          dev->netdev_ops->ndo_bpf;
+>
+> or just drop bpf_op and call dev->netdev_ops->ndo_bpf in the one place
+> it bpf_op is being called.
+>
+> >       struct netdev_bpf xdp;
+> > +     int err;
+> >
+> >       memset(&xdp, 0, sizeof(xdp));
+> > -     if (flags & XDP_FLAGS_HW_MODE)
+> > +     if (target =3D=3D XDP_FLAGS_HW_MODE)
+> >               xdp.command =3D XDP_SETUP_PROG_HW;
+> >       else
+> >               xdp.command =3D XDP_SETUP_PROG;
+> > @@ -8037,35 +8037,41 @@ static int dev_xdp_install(struct net_device
+> > *dev, bpf_op_t bpf_op,
+> >       xdp.flags =3D flags;
+> >       xdp.prog =3D prog;
+>
+> Are you sure no one is using flags
+> >
+> > -     return bpf_op(dev, &xdp);
+> > +     err =3D (target =3D=3D XDP_FLAGS_SKB_MODE) ?
+> > +           generic_xdp_install(dev, &xdp) :
+> > +           bpf_op(dev, &xdp);
+> > +     if (!err) {
+> > +             if (prog)
+> > +                     dev->xdp_flags |=3D target;
+> > +             else
+> > +                     dev->xdp_flags &=3D ~target;
+> > +
+> > +             if (target =3D=3D XDP_FLAGS_HW_MODE) {
+> > +                     dev->xdp_prog_hw =3D prog;
+> > +                     dev->xdp_prog_hw_flags =3D flags;
+> > +             } else if (target =3D=3D XDP_FLAGS_DRV_MODE) {
+> > +                     rcu_assign_pointer(dev->xdp_prog, prog);
+> > +                     dev->xdp_prog_flags =3D flags;
+> > +             }
+> > +     }
+> > +
+> > +     return err;
+> >  }
+> >
+> >  static void dev_xdp_uninstall(struct net_device *dev)
+> >  {
+> > -     struct netdev_bpf xdp;
+> > -     bpf_op_t ndo_bpf;
+> > -
+> > -     /* Remove generic XDP */
+> > -     WARN_ON(dev_xdp_install(dev, generic_xdp_install, NULL, 0,
+> > NULL));
+> > -
+> > -     /* Remove from the driver */
+> > -     ndo_bpf =3D dev->netdev_ops->ndo_bpf;
+> > -     if (!ndo_bpf)
+> > -             return;
+> > -
+> > -     memset(&xdp, 0, sizeof(xdp));
+> > -     xdp.command =3D XDP_QUERY_PROG;
+> > -     WARN_ON(ndo_bpf(dev, &xdp));
+> > -     if (xdp.prog_id)
+> > -             WARN_ON(dev_xdp_install(dev, ndo_bpf, NULL,
+> > xdp.prog_flags,
+> > -                                     NULL));
+> > -
+> > -     /* Remove HW offload */
+> > -     memset(&xdp, 0, sizeof(xdp));
+> > -     xdp.command =3D XDP_QUERY_PROG_HW;
+> > -     if (!ndo_bpf(dev, &xdp) && xdp.prog_id)
+> > -             WARN_ON(dev_xdp_install(dev, ndo_bpf, NULL,
+> > xdp.prog_flags,
+> > -                                     NULL));
+> > +     if (dev->xdp_flags & XDP_FLAGS_SKB_MODE) {
+> > +             WARN_ON(dev_xdp_install(dev, XDP_FLAGS_SKB_MODE,
+> > +                                     NULL, 0, NULL));
+> > +     }
+> > +     if (dev->xdp_flags & XDP_FLAGS_DRV_MODE) {
+> > +             WARN_ON(dev_xdp_install(dev, XDP_FLAGS_DRV_MODE,
+> > +                                     NULL, dev->xdp_prog_flags,
+> > NULL));
+> > +     }
+> > +     if (dev->xdp_flags & XDP_FLAGS_HW_MODE) {
+> > +             WARN_ON(dev_xdp_install(dev, XDP_FLAGS_HW_MODE,
+> > +                                     NULL, dev->xdp_prog_hw_flags,
+> > NULL));
+> > +     }
+>
+> instead this long "if" dance, why don't you just use xdp->flags inside
+> dev_xdp_install when prog is NULL ?
+> I would even consider introducing an uninstall function, which doesn't
+> receive flags, and will use xdp->flags directly..
+>
+> uninstall can be just a two liner function
+>
+> dev_xdp_uninstall() {
+> xdp.prog =3D NULL;
+> (dev->xdp_flags =3D=3D XDP_FLAGS_SKB_MODE) ?
+>       generic_xdp_install(dev, &xdp) :
+>       dev->netdev_ops->ndo_bpf(dev, &xdp);
+> dev->xdp_flags &=3D ~(XDP_FLAGS_SKB_MODE | XDP_FLAGS_HW_MODE |
+> XDP_FLAGS_DRV_MODE);
+> }
+>
+> >  }
+> >
+> >  /**
+> > @@ -8080,41 +8086,41 @@ static void dev_xdp_uninstall(struct
+> > net_device *dev)
+> >  int dev_change_xdp_fd(struct net_device *dev, struct netlink_ext_ack
+> > *extack,
+> >                     int fd, u32 flags)
+> >  {
+> > -     const struct net_device_ops *ops =3D dev->netdev_ops;
+> > -     enum bpf_netdev_command query;
+> > +     bool offload, drv_supp =3D !!dev->netdev_ops->ndo_bpf;
+> >       struct bpf_prog *prog =3D NULL;
+> > -     bpf_op_t bpf_op, bpf_chk;
+> > -     bool offload;
+> > +     unsigned int target;
+> >       int err;
+> >
+> >       ASSERT_RTNL();
+> >
+> >       offload =3D flags & XDP_FLAGS_HW_MODE;
+> > -     query =3D offload ? XDP_QUERY_PROG_HW : XDP_QUERY_PROG;
+> > +     target =3D offload ? XDP_FLAGS_HW_MODE : XDP_FLAGS_DRV_MODE;
+>
+> I don't think you really need this target parameter it only complicates
+> things for no reason, all information you need are already in flags and
+> dev->xdp_flags.
+>
+> >
+> > -     bpf_op =3D bpf_chk =3D ops->ndo_bpf;
+> > -     if (!bpf_op && (flags & (XDP_FLAGS_DRV_MODE |
+> > XDP_FLAGS_HW_MODE))) {
+> > +     if (!drv_supp && (flags & (XDP_FLAGS_DRV_MODE |
+> > XDP_FLAGS_HW_MODE))) {
+> >               NL_SET_ERR_MSG(extack, "underlying driver does not
+> > support XDP in native mode");
+> >               return -EOPNOTSUPP;
+> >       }
+> > -     if (!bpf_op || (flags & XDP_FLAGS_SKB_MODE))
+> > -             bpf_op =3D generic_xdp_install;
+> > -     if (bpf_op =3D=3D bpf_chk)
+> > -             bpf_chk =3D generic_xdp_install;
+> > +
+> > +     if (!drv_supp || (flags & XDP_FLAGS_SKB_MODE))
+> > +             target =3D XDP_FLAGS_SKB_MODE;
+> > +
+>
+> since dev_xdp_install handles all cases now, you don't need this logic
+> here, I would move this into dev_xdp_install, maybe introduce a helper
+> dedicated function to choose the mode to be used.
+>
+> > +     if ((target =3D=3D XDP_FLAGS_SKB_MODE &&
+> > +          dev->xdp_flags & XDP_FLAGS_DRV_MODE) ||
+> > +         (target =3D=3D XDP_FLAGS_DRV_MODE &&
+> > +          dev->xdp_flags & XDP_FLAGS_SKB_MODE)) {
+> > +             NL_SET_ERR_MSG(extack, "native and generic XDP can't be
+> > active at the same time");
+> > +             return -EEXIST;
+> > +     }
+> >
+> >       if (fd >=3D 0) {
+> > -             if (!offload && __dev_xdp_query(dev, bpf_chk,
+> > XDP_QUERY_PROG)) {
+> > -                     NL_SET_ERR_MSG(extack, "native and generic XDP
+> > can't be active at the same time");
+> > -                     return -EEXIST;
+> > -             }
+> > -             if ((flags & XDP_FLAGS_UPDATE_IF_NOEXIST) &&
+> > -                 __dev_xdp_query(dev, bpf_op, query)) {
+> > +             if (flags & XDP_FLAGS_UPDATE_IF_NOEXIST &&
+> > +                 dev_xdp_query(dev, target)) {
+> >                       NL_SET_ERR_MSG(extack, "XDP program already
+> > attached");
+> >                       return -EBUSY;
+> >               }
+> >
+> > -             prog =3D bpf_prog_get_type_dev(fd, BPF_PROG_TYPE_XDP,
+> > -                                          bpf_op =3D=3D ops->ndo_bpf);
+> > +             prog =3D bpf_prog_get_type_dev(fd, BPF_PROG_TYPE_XDP,
+> > drv_supp);
+> > +
+> >               if (IS_ERR(prog))
+> >                       return PTR_ERR(prog);
+> >
+> > @@ -8125,7 +8131,7 @@ int dev_change_xdp_fd(struct net_device *dev,
+> > struct netlink_ext_ack *extack,
+> >               }
+> >       }
+> >
+> > -     err =3D dev_xdp_install(dev, bpf_op, extack, flags, prog);
+> > +     err =3D dev_xdp_install(dev, target, extack, flags, prog);
+> >       if (err < 0 && prog)
+> >               bpf_prog_put(prog);
+> >
+> > diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+> > index adcc045952c2..99ca58db297f 100644
+> > --- a/net/core/rtnetlink.c
+> > +++ b/net/core/rtnetlink.c
+> > @@ -1360,37 +1360,14 @@ static int rtnl_fill_link_ifmap(struct
+> > sk_buff *skb, struct net_device *dev)
+> >       return 0;
+> >  }
+> >
+> > -static u32 rtnl_xdp_prog_skb(struct net_device *dev)
+> > -{
+> > -     const struct bpf_prog *generic_xdp_prog;
+> > -
+> > -     ASSERT_RTNL();
+> > -
+> > -     generic_xdp_prog =3D rtnl_dereference(dev->xdp_prog);
+> > -     if (!generic_xdp_prog)
+> > -             return 0;
+> > -     return generic_xdp_prog->aux->id;
+> > -}
+> > -
+> > -static u32 rtnl_xdp_prog_drv(struct net_device *dev)
+> > -{
+> > -     return __dev_xdp_query(dev, dev->netdev_ops->ndo_bpf,
+> > XDP_QUERY_PROG);
+> > -}
+> > -
+> > -static u32 rtnl_xdp_prog_hw(struct net_device *dev)
+> > -{
+> > -     return __dev_xdp_query(dev, dev->netdev_ops->ndo_bpf,
+> > -                            XDP_QUERY_PROG_HW);
+> > -}
+> > -
+> >  static int rtnl_xdp_report_one(struct sk_buff *skb, struct
+> > net_device *dev,
+> >                              u32 *prog_id, u8 *mode, u8 tgt_mode, u32
+> > attr,
+> > -                            u32 (*get_prog_id)(struct net_device
+> > *dev))
+> > +                            unsigned int tgt_flags)
+> >  {
+> >       u32 curr_id;
+> >       int err;
+> >
+> > -     curr_id =3D get_prog_id(dev);
+> > +     curr_id =3D dev_xdp_query(dev, tgt_flags);
+> >       if (!curr_id)
+> >               return 0;
+> >
+> > @@ -1421,15 +1398,15 @@ static int rtnl_xdp_fill(struct sk_buff *skb,
+> > struct net_device *dev)
+> >       prog_id =3D 0;
+> >       mode =3D XDP_ATTACHED_NONE;
+> >       err =3D rtnl_xdp_report_one(skb, dev, &prog_id, &mode,
+> > XDP_ATTACHED_SKB,
+> > -                               IFLA_XDP_SKB_PROG_ID,
+> > rtnl_xdp_prog_skb);
+> > +                               IFLA_XDP_SKB_PROG_ID,
+> > XDP_FLAGS_SKB_MODE);
+> >       if (err)
+> >               goto err_cancel;
+> >       err =3D rtnl_xdp_report_one(skb, dev, &prog_id, &mode,
+> > XDP_ATTACHED_DRV,
+> > -                               IFLA_XDP_DRV_PROG_ID,
+> > rtnl_xdp_prog_drv);
+> > +                               IFLA_XDP_DRV_PROG_ID,
+> > XDP_FLAGS_DRV_MODE);
+> >       if (err)
+> >               goto err_cancel;
+> >       err =3D rtnl_xdp_report_one(skb, dev, &prog_id, &mode,
+> > XDP_ATTACHED_HW,
+> > -                               IFLA_XDP_HW_PROG_ID,
+> > rtnl_xdp_prog_hw);
+> > +                               IFLA_XDP_HW_PROG_ID,
+> > XDP_FLAGS_HW_MODE);
+> >       if (err)
+> >               goto err_cancel;
+> >
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/bpf_helpers.h     |   1 +
- .../selftests/bpf/prog_tests/send_signal.c    | 192 ++++++++++++++++++
- .../bpf/progs/test_send_signal_kern.c         |  51 +++++
- 3 files changed, 244 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/send_signal.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+Saeed, thanks a lot for your comments! All good stuff. I'll address
+them in the next version!
 
-diff --git a/tools/testing/selftests/bpf/bpf_helpers.h b/tools/testing/selftests/bpf/bpf_helpers.h
-index 5f6f9e7aba2a..cb02521b8e58 100644
---- a/tools/testing/selftests/bpf/bpf_helpers.h
-+++ b/tools/testing/selftests/bpf/bpf_helpers.h
-@@ -216,6 +216,7 @@ static void *(*bpf_sk_storage_get)(void *map, struct bpf_sock *sk,
- 	(void *) BPF_FUNC_sk_storage_get;
- static int (*bpf_sk_storage_delete)(void *map, struct bpf_sock *sk) =
- 	(void *)BPF_FUNC_sk_storage_delete;
-+static int (*bpf_send_signal)(unsigned sig) = (void *)BPF_FUNC_send_signal;
- 
- /* llvm builtin functions that eBPF C program may use to
-  * emit BPF_LD_ABS and BPF_LD_IND instructions
-diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-new file mode 100644
-index 000000000000..9937083f6e0a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-@@ -0,0 +1,192 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+
-+static volatile int sigusr1_received = 0;
-+
-+static void sigusr1_handler(int signum)
-+{
-+	sigusr1_received++;
-+}
-+
-+static int test_send_signal_common(struct perf_event_attr *attr,
-+				    int prog_type,
-+				    const char *test_name)
-+{
-+	int err = -1, pmu_fd, prog_fd, info_map_fd, status_map_fd;
-+	const char *file = "./test_send_signal_kern.o";
-+	struct bpf_object *obj = NULL;
-+	int pipe_c2p[2], pipe_p2c[2];
-+	__u32 key = 0, duration = 0;
-+	char buf[256];
-+	pid_t pid;
-+	__u64 val;
-+
-+	if (CHECK(pipe(pipe_c2p), test_name,
-+		  "pipe pipe_c2p error: %s\n", strerror(errno)))
-+		goto no_fork_done;
-+
-+	if (CHECK(pipe(pipe_p2c), test_name,
-+		  "pipe pipe_p2c error: %s\n", strerror(errno))) {
-+		close(pipe_c2p[0]);
-+		close(pipe_c2p[1]);
-+		goto no_fork_done;
-+	}
-+
-+	pid = fork();
-+	if (CHECK(pid < 0, test_name, "fork error: %s\n", strerror(errno))) {
-+		close(pipe_c2p[0]);
-+		close(pipe_c2p[1]);
-+		close(pipe_p2c[0]);
-+		close(pipe_p2c[1]);
-+		goto no_fork_done;
-+	}
-+
-+	if (pid == 0) {
-+		/* install signal handler and notify parent */
-+		signal(SIGUSR1, sigusr1_handler);
-+
-+		close(pipe_c2p[0]); /* close read */
-+		close(pipe_p2c[1]); /* close write */
-+
-+		/* notify parent signal handler is installed */
-+		write(pipe_c2p[1], buf, 1);
-+
-+		/* make sure parent enabled bpf program to send_signal */
-+		read(pipe_p2c[0], buf, 1);
-+
-+		/* wait a little for signal handler */
-+		sleep(1);
-+
-+		if (sigusr1_received)
-+			write(pipe_c2p[1], "2", 1);
-+		else
-+			write(pipe_c2p[1], "0", 1);
-+
-+		/* wait for parent notification and exit */
-+		read(pipe_p2c[0], buf, 1);
-+
-+		close(pipe_c2p[1]);
-+		close(pipe_p2c[0]);
-+		exit(0);
-+	}
-+
-+	close(pipe_c2p[1]); /* close write */
-+	close(pipe_p2c[0]); /* close read */
-+
-+	err = bpf_prog_load(file, prog_type, &obj, &prog_fd);
-+	if (CHECK(err < 0, test_name, "bpf_prog_load error: %s\n",
-+		  strerror(errno)))
-+		goto prog_load_failure;
-+
-+	pmu_fd = syscall(__NR_perf_event_open, attr, pid, -1,
-+			 -1 /* group id */, 0 /* flags */);
-+	if (CHECK(pmu_fd < 0, test_name, "perf_event_open error: %s\n",
-+		  strerror(errno))) {
-+		err = -1;
-+		goto close_prog;
-+	}
-+
-+	err = ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0);
-+	if (CHECK(err < 0, test_name, "ioctl perf_event_ioc_enable error: %s\n",
-+		  strerror(errno)))
-+		goto disable_pmu;
-+
-+	err = ioctl(pmu_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
-+	if (CHECK(err < 0, test_name, "ioctl perf_event_ioc_set_bpf error: %s\n",
-+		  strerror(errno)))
-+		goto disable_pmu;
-+
-+	err = -1;
-+	info_map_fd = bpf_object__find_map_fd_by_name(obj, "info_map");
-+	if (CHECK(info_map_fd < 0, test_name, "find map %s error\n", "info_map"))
-+		goto disable_pmu;
-+
-+	status_map_fd = bpf_object__find_map_fd_by_name(obj, "status_map");
-+	if (CHECK(status_map_fd < 0, test_name, "find map %s error\n", "status_map"))
-+		goto disable_pmu;
-+
-+	/* wait until child signal handler installed */
-+	read(pipe_c2p[0], buf, 1);
-+
-+	/* trigger the bpf send_signal */
-+	key = 0;
-+	val = (((__u64)(SIGUSR1)) << 32) | pid;
-+	bpf_map_update_elem(info_map_fd, &key, &val, 0);
-+
-+	/* notify child that bpf program can send_signal now */
-+	write(pipe_p2c[1], buf, 1);
-+
-+	/* wait for result */
-+	read(pipe_c2p[0], buf, 1);
-+
-+	err = CHECK(buf[0] != '2', test_name, "incorrect result\n");
-+
-+	/* notify child safe to exit */
-+	write(pipe_p2c[1], buf, 1);
-+
-+disable_pmu:
-+	close(pmu_fd);
-+close_prog:
-+	bpf_object__close(obj);
-+prog_load_failure:
-+	close(pipe_c2p[0]);
-+	close(pipe_p2c[1]);
-+	wait(NULL);
-+no_fork_done:
-+	return err;
-+}
-+
-+static int test_send_signal_tracepoint(void)
-+{
-+	const char *id_path = "/sys/kernel/debug/tracing/events/syscalls/sys_enter_nanosleep/id";
-+	struct perf_event_attr attr = {
-+		.type = PERF_TYPE_TRACEPOINT,
-+		.sample_type = PERF_SAMPLE_RAW | PERF_SAMPLE_CALLCHAIN,
-+		.sample_period = 1,
-+		.wakeup_events = 1,
-+	};
-+	__u32 duration = 0;
-+	int bytes, efd;
-+	char buf[256];
-+
-+	efd = open(id_path, O_RDONLY, 0);
-+	if (CHECK(efd < 0, "tracepoint",
-+		  "open syscalls/sys_enter_nanosleep/id failure: %s\n",
-+		  strerror(errno)))
-+		return -1;
-+
-+	bytes = read(efd, buf, sizeof(buf));
-+	close(efd);
-+	if (CHECK(bytes <= 0 || bytes >= sizeof(buf), "tracepoint",
-+		  "read syscalls/sys_enter_nanosleep/id failure: %s\n",
-+		  strerror(errno)))
-+		return -1;
-+
-+	attr.config = strtol(buf, NULL, 0);
-+
-+	return test_send_signal_common(&attr, BPF_PROG_TYPE_TRACEPOINT, "tracepoint");
-+}
-+
-+static int test_send_signal_nmi(void)
-+{
-+	struct perf_event_attr attr = {
-+		.sample_freq = 50,
-+		.freq = 1,
-+		.type = PERF_TYPE_HARDWARE,
-+		.config = PERF_COUNT_HW_CPU_CYCLES,
-+	};
-+
-+	return test_send_signal_common(&attr, BPF_PROG_TYPE_PERF_EVENT, "perf_event");
-+}
-+
-+void test_send_signal(void)
-+{
-+	int ret = 0;
-+
-+	ret |= test_send_signal_tracepoint();
-+	ret |= test_send_signal_nmi();
-+	if (!ret)
-+		printf("test_send_signal:OK\n");
-+	else
-+		printf("test_send_signal:FAIL\n");
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-new file mode 100644
-index 000000000000..45a1a1a2c345
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2019 Facebook
-+#include <linux/bpf.h>
-+#include <linux/version.h>
-+#include "bpf_helpers.h"
-+
-+struct bpf_map_def SEC("maps") info_map = {
-+	.type = BPF_MAP_TYPE_ARRAY,
-+	.key_size = sizeof(__u32),
-+	.value_size = sizeof(__u64),
-+	.max_entries = 1,
-+};
-+
-+BPF_ANNOTATE_KV_PAIR(info_map, __u32, __u64);
-+
-+struct bpf_map_def SEC("maps") status_map = {
-+	.type = BPF_MAP_TYPE_ARRAY,
-+	.key_size = sizeof(__u32),
-+	.value_size = sizeof(__u64),
-+	.max_entries = 1,
-+};
-+
-+BPF_ANNOTATE_KV_PAIR(status_map, __u32, __u64);
-+
-+SEC("send_signal_demo")
-+int bpf_send_signal_test(void *ctx)
-+{
-+	__u64 *info_val, *status_val;
-+	__u32 key = 0, pid, sig;
-+	int ret;
-+
-+	status_val = bpf_map_lookup_elem(&status_map, &key);
-+	if (!status_val || *status_val != 0)
-+		return 0;
-+
-+	info_val = bpf_map_lookup_elem(&info_map, &key);
-+	if (!info_val || *info_val == 0)
-+		return 0;
-+
-+	sig = *info_val >> 32;
-+	pid = *info_val & 0xffffFFFF;
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) == pid) {
-+		ret = bpf_send_signal(sig);
-+		if (ret == 0)
-+			*status_val = 1;
-+	}
-+
-+	return 0;
-+}
-+char __license[] SEC("license") = "GPL";
--- 
-2.17.1
 
+Thanks,
+Bj=C3=B6rn
