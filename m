@@ -2,123 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C2827FB3
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2019 16:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7ACD28006
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2019 16:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730875AbfEWOb3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 May 2019 10:31:29 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:41836 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730756AbfEWOb2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 May 2019 10:31:28 -0400
-Received: by mail-wr1-f68.google.com with SMTP id u16so2653949wrn.8
-        for <bpf@vger.kernel.org>; Thu, 23 May 2019 07:31:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=oitixCSyls+WYiarRC0a38mP4/mPHlJWvdjbHhBfuHw=;
-        b=B/Y4fH6Qgs2zYncTUWrRBciMLNiyA1JzQ+6IFRwIVufOmOufnPzzI1bl9Hs37qOk2w
-         APLNK6ED2e/jKD0/9FWVcR8OJkrnxL6OARAdbkmtNXaAGeKFS2XNBTmlIF3UUEITyQYY
-         l5DRGg9Cd2cCXEOeQjDS2fX6CKYTieotF7b6/sI9oatoAJ/wc67l+GFLAxdL0riWCQLm
-         Zil0wZ/8U9gLAvMQvTEI88tWK3D3mtWyX2fb7NavstFsm3wkaoLU0O9yTxeh60wC8Vfa
-         /89K6IQIi3Hw07k3OrJ1OgXHX1I13qX/2/j657OgX1qljfcWjyEO34w4VItOyNs/4UjC
-         PnFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=oitixCSyls+WYiarRC0a38mP4/mPHlJWvdjbHhBfuHw=;
-        b=E7cIDyFgORJKkSEn7uhp1owofIMORqArhXwOAPOQP+/pN+5dZTgUsp2DD08btRJYP7
-         x408ABpCg3sBTBj/nFQ6eRBXjVmN++NIQuSz8UsRWyDoWrpTQI2xpxEcAAEAOCzCaBhT
-         48bHOZVLad7qXCi+GV+ZeWqja+JA7T2IeBUiPKNv62+q9YgrDgR+ObCrzkx7sXziBsqH
-         /4vWdosjiAbebZiz3vnm6GlTWC7YhAsZdjii/DqpF2aL9tsf65rwTpACt0F9TdmTHinJ
-         jOqHA8go+a8gKqeZT98jo/T7p6RBjuLAJaBuRjYhE/IeFEFoPsncUJJwTbgyBaoR88Wz
-         dgYQ==
-X-Gm-Message-State: APjAAAWGShPs0n01YCLDuuGwKUIfFmfdpxcbZ325bTO0Y4Uc675akNsg
-        YbZOGLMEEfojt+9FqJXbKu/D2w==
-X-Google-Smtp-Source: APXvYqzLpgvV703PNCaOR0gIk35TrvPQMaresROkLbWDiJ/l3GB8TuILzZw00e4zoaFvppE2r535cQ==
-X-Received: by 2002:adf:e4c9:: with SMTP id v9mr35521866wrm.147.1558621886783;
-        Thu, 23 May 2019 07:31:26 -0700 (PDT)
-Received: from [172.20.1.229] ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id o4sm11751807wmo.20.2019.05.23.07.31.25
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 23 May 2019 07:31:26 -0700 (PDT)
+        id S1730741AbfEWOnE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 May 2019 10:43:04 -0400
+Received: from www62.your-server.de ([213.133.104.62]:60348 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730719AbfEWOnE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 May 2019 10:43:04 -0400
+Received: from [78.46.172.2] (helo=sslproxy05.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hTovp-0007x8-Mv; Thu, 23 May 2019 16:42:57 +0200
+Received: from [178.197.249.12] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hTovp-000HEs-HW; Thu, 23 May 2019 16:42:57 +0200
+Subject: Re: [PATCH v2 bpf-next 0/3] bpf: increase jmp sequence limit
+To:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+References: <20190522031421.2825174-1-ast@kernel.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <6c85c980-52da-c012-4879-8cc10bfca13c@iogearbox.net>
+Date:   Thu, 23 May 2019 16:42:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
+MIME-Version: 1.0
+In-Reply-To: <20190522031421.2825174-1-ast@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH bpf] selftests: bpf: add zero extend checks for ALU32
- and/or/xor
-From:   Jiong Wang <jiong.wang@netronome.com>
-In-Reply-To: <c1f90672-d2ce-0ac9-10d1-08208575f193@iogearbox.net>
-Date:   Thu, 23 May 2019 15:31:24 +0100
-Cc:     Y Song <ys114321@gmail.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <3ED3A4F8-CC01-4179-9154-6FC5338E83B5@netronome.com>
-References: <20190522092323.17435-1-bjorn.topel@gmail.com>
- <CAH3MdRWGeYZDCEPrw2HFpnq+8j+ehMj2uhNJS9HnFDw=LmK6PQ@mail.gmail.com>
- <CAJ+HfNhR2UozhqTrhDTmZNntmjRCWFyPyU2AaRdo-E6sJUZCKg@mail.gmail.com>
- <CAH3MdRX6gocSFJCkuMuhko+0eheWqKq4Y4X-Tb3q=hzMW5buyw@mail.gmail.com>
- <c1f90672-d2ce-0ac9-10d1-08208575f193@iogearbox.net>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-X-Mailer: Apple Mail (2.3273)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25458/Thu May 23 09:58:32 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 05/22/2019 05:14 AM, Alexei Starovoitov wrote:
+> Patch 1 - jmp sequence limit
+> Patch 2 - improve existing tests
+> Patch 3 - add pyperf-based realistic bpf program that takes advantage
+> of higher limit and use it as a stress test
+> 
+> v1->v2: fixed nit in patch 3. added Andrii's acks
+> 
+> Alexei Starovoitov (3):
+>   bpf: bump jmp sequence limit
+>   selftests/bpf: adjust verifier scale test
+>   selftests/bpf: add pyperf scale test
+> 
+>  kernel/bpf/verifier.c                         |   7 +-
+>  .../bpf/prog_tests/bpf_verif_scale.c          |  31 +-
+>  tools/testing/selftests/bpf/progs/pyperf.h    | 268 ++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/pyperf100.c |   4 +
+>  tools/testing/selftests/bpf/progs/pyperf180.c |   4 +
+>  tools/testing/selftests/bpf/progs/pyperf50.c  |   4 +
+>  tools/testing/selftests/bpf/test_verifier.c   |  31 +-
+>  7 files changed, 319 insertions(+), 30 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/pyperf.h
+>  create mode 100644 tools/testing/selftests/bpf/progs/pyperf100.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/pyperf180.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/pyperf50.c
+> 
 
-> On 23 May 2019, at 15:02, Daniel Borkmann <daniel@iogearbox.net> =
-wrote:
->=20
-> On 05/23/2019 08:38 AM, Y Song wrote:
->> On Wed, May 22, 2019 at 1:46 PM Bj=C3=B6rn T=C3=B6pel =
-<bjorn.topel@gmail.com> wrote:
->>> On Wed, 22 May 2019 at 20:13, Y Song <ys114321@gmail.com> wrote:
->>>> On Wed, May 22, 2019 at 2:25 AM Bj=C3=B6rn T=C3=B6pel =
-<bjorn.topel@gmail.com> wrote:
->>>>>=20
->>>>> Add three tests to test_verifier/basic_instr that make sure that =
-the
->>>>> high 32-bits of the destination register is cleared after an ALU32
->>>>> and/or/xor.
->>>>>=20
->>>>> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
->>>>=20
->>>> I think the patch intends for bpf-next, right? The patch itself =
-looks
->>>> good to me.
->>>> Acked-by: Yonghong Song <yhs@fb.com>
->>>=20
->>> Thank you. Actually, it was intended for the bpf tree, as a test
->>> follow up for this [1] fix.
->> Then maybe you want to add a Fixes tag and resubmit?
->=20
-> Why would the test case need a fixes tag? It's common practice that we =
-have
-> BPF fixes that we queue to bpf tree along with kselftest test cases =
-related
-> to them. Therefore, applied as well, thanks for following up!
->=20
-> Bj=C3=B6rn, in my email from the fix, I mentioned we should have test =
-snippets
-> ideally for all of the alu32 insns to not miss something falling =
-through the
-> cracks when JITs get added or changed. If you have some cycles to add =
-the
-> remaining missing ones, that would be much appreciated.
-
-Bj=C3=B6rn,
-
-  If you don=E2=80=99t have time, I can take this alu32 test case follow =
-up as well.
-
-Regards,
-Jiong
-
->=20
-> Thanks,
-> Daniel
-
+Looks good, applied, thanks!
