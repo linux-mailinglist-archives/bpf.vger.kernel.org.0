@@ -2,221 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FD02816E
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2019 17:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FED42819B
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2019 17:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730859AbfEWPlY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 May 2019 11:41:24 -0400
-Received: from www62.your-server.de ([213.133.104.62]:42398 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730790AbfEWPlY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 May 2019 11:41:24 -0400
-Received: from [78.46.172.2] (helo=sslproxy05.your-server.de)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hTpqL-0004pi-DF; Thu, 23 May 2019 17:41:21 +0200
-Received: from [178.197.249.12] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hTpqL-00009K-5e; Thu, 23 May 2019 17:41:21 +0200
-Subject: Re: [PATCH bpf-next v2 1/3] bpf: implement bpf_send_signal() helper
-To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@fb.com>, kernel-team@fb.com,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20190522053900.1663459-1-yhs@fb.com>
- <20190522053900.1663537-1-yhs@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <2c07890b-9da5-b4e8-dc94-35def14470ad@iogearbox.net>
-Date:   Thu, 23 May 2019 17:41:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.3.0
+        id S1730893AbfEWPse (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 May 2019 11:48:34 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:36420 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730752AbfEWPse (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 May 2019 11:48:34 -0400
+Received: by mail-io1-f68.google.com with SMTP id e19so5252579iob.3;
+        Thu, 23 May 2019 08:48:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=ONiQDH1voXY7RQXU091BwLFVqf2ZURndBabVQc1a4B0=;
+        b=IiRO04DHCDyWLJdH1wId/mptP7GMrhGCqrTFqzoJK19xrkUnS2rxuJQicu6++ybzWJ
+         CnCoD+G0n9FSFQsNeLIlrVSQcAG1Xd4h+5VKMBSs5igR2rSa29hAxDgZnljyS7ldUmdZ
+         RAwmu359Sde6opJxLB1ckkZlTdWcMbFNvqy+x+CK7WXuJdPhhKOoUeXHQ4LkEMWFiqB1
+         2alC11V3xJbkxY+pxdb/15yRVco5DcGuVI1VwYGhjbWFXV9G3klWIsfBXcsWULOdiG/5
+         doSXzerJxLNIkcsKY+fE+Uwh30CeuOdKtEIClZoPO1VLmEl2AiI3/x8DDXNdNr6FolRw
+         fScw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=ONiQDH1voXY7RQXU091BwLFVqf2ZURndBabVQc1a4B0=;
+        b=L5eSD9u2mdQWsNND+yc9vElpvIU8fUPGpxIEcFjtVLS2+uPo6btlkHhRchflNpt5+3
+         2NXM3higlXGzTIPr7frTNUIT5LjG0W5NrMNl9wXiuY/yaSCbrlNZh3L/RBk48hM0z5Du
+         jGdSKHxjFaOF2F5L+Npuyg+VRUuRmE6JswjY1SwqB6RVZJz3i9HPRPbBKQE7AOD1zjqR
+         shK8LTp6CNxflzBSJfmlcbvPxQZoPG67PGdHq870bgK9x+ouaC5Sfidt4Gj5HuvUR3Ul
+         7dOLJjZbrgFkhMZULk0dm5Tfqzq6rvDlvR3FmwQRImKTz6nlbgnUTt2fiP0sm/QlnT/T
+         29IQ==
+X-Gm-Message-State: APjAAAXpHSPNgLwR5Xh7r33UCA/Gm8pakn7wd9nis6u2bhYR2UO94pWk
+        aimTHeETZG7JLTVmjpalrKhm+CdJogs=
+X-Google-Smtp-Source: APXvYqyUPYZFpkj4LIp/XiXpnqH8quYL8S/fy7jdO6yxAKXhqHKzGjEbXQ4ksvePE/Leb/5YqwGELA==
+X-Received: by 2002:a5e:9411:: with SMTP id q17mr19288559ioj.65.1558626513193;
+        Thu, 23 May 2019 08:48:33 -0700 (PDT)
+Received: from [127.0.1.1] ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id j125sm2433263itb.27.2019.05.23.08.48.26
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 23 May 2019 08:48:32 -0700 (PDT)
+Subject: [PATCH] bpf: sockmap,
+ fix use after free from sleep in psock backlog workqueue
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     bpf@vger.kernel.org, jakub@cloudflare.com, daniel@iogearbox.net,
+        ast@kernel.org
+Cc:     netdev@vger.kernel.org, marek@cloudflare
+Date:   Thu, 23 May 2019 08:48:20 -0700
+Message-ID: <155862650069.11403.15148410261691250447.stgit@john-Precision-5820-Tower>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-In-Reply-To: <20190522053900.1663537-1-yhs@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25458/Thu May 23 09:58:32 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/22/2019 07:39 AM, Yonghong Song wrote:
-> This patch tries to solve the following specific use case.
-> 
-> Currently, bpf program can already collect stack traces
-> through kernel function get_perf_callchain()
-> when certain events happens (e.g., cache miss counter or
-> cpu clock counter overflows). But such stack traces are
-> not enough for jitted programs, e.g., hhvm (jited php).
-> To get real stack trace, jit engine internal data structures
-> need to be traversed in order to get the real user functions.
-> 
-> bpf program itself may not be the best place to traverse
-> the jit engine as the traversing logic could be complex and
-> it is not a stable interface either.
-> 
-> Instead, hhvm implements a signal handler,
-> e.g. for SIGALARM, and a set of program locations which
-> it can dump stack traces. When it receives a signal, it will
-> dump the stack in next such program location.
-> 
-> Such a mechanism can be implemented in the following way:
->   . a perf ring buffer is created between bpf program
->     and tracing app.
->   . once a particular event happens, bpf program writes
->     to the ring buffer and the tracing app gets notified.
->   . the tracing app sends a signal SIGALARM to the hhvm.
-> 
-> But this method could have large delays and causing profiling
-> results skewed.
-> 
-> This patch implements bpf_send_signal() helper to send
-> a signal to hhvm in real time, resulting in intended stack traces.
-> 
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  include/uapi/linux/bpf.h | 17 +++++++++-
->  kernel/trace/bpf_trace.c | 67 ++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 83 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 63e0cf66f01a..68d4470523a0 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -2672,6 +2672,20 @@ union bpf_attr {
->   *		0 on success.
->   *
->   *		**-ENOENT** if the bpf-local-storage cannot be found.
-> + *
-> + * int bpf_send_signal(u32 sig)
-> + *	Description
-> + *		Send signal *sig* to the current task.
-> + *	Return
-> + *		0 on success or successfully queued.
-> + *
-> + *		**-EBUSY** if work queue under nmi is full.
-> + *
-> + *		**-EINVAL** if *sig* is invalid.
-> + *
-> + *		**-EPERM** if no permission to send the *sig*.
-> + *
-> + *		**-EAGAIN** if bpf program can try again.
->   */
->  #define __BPF_FUNC_MAPPER(FN)		\
->  	FN(unspec),			\
-> @@ -2782,7 +2796,8 @@ union bpf_attr {
->  	FN(strtol),			\
->  	FN(strtoul),			\
->  	FN(sk_storage_get),		\
-> -	FN(sk_storage_delete),
-> +	FN(sk_storage_delete),		\
-> +	FN(send_signal),
->  
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
->   * function eBPF program intends to call
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index f92d6ad5e080..f8cd0db7289f 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -567,6 +567,58 @@ static const struct bpf_func_proto bpf_probe_read_str_proto = {
->  	.arg3_type	= ARG_ANYTHING,
->  };
->  
-> +struct send_signal_irq_work {
-> +	struct irq_work irq_work;
-> +	u32 sig;
-> +};
-> +
-> +static DEFINE_PER_CPU(struct send_signal_irq_work, send_signal_work);
-> +
-> +static void do_bpf_send_signal(struct irq_work *entry)
-> +{
-> +	struct send_signal_irq_work *work;
-> +
-> +	work = container_of(entry, struct send_signal_irq_work, irq_work);
-> +	group_send_sig_info(work->sig, SEND_SIG_PRIV, current, PIDTYPE_TGID);
-> +}
-> +
-> +BPF_CALL_1(bpf_send_signal, u32, sig)
-> +{
-> +	struct send_signal_irq_work *work = NULL;
-> +
-> +	/* Similar to bpf_probe_write_user, task needs to be
-> +	 * in a sound condition and kernel memory access be
-> +	 * permitted in order to send signal to the current
-> +	 * task.
-> +	 */
-> +	if (unlikely(current->flags & (PF_KTHREAD | PF_EXITING)))
-> +		return -EPERM;
-> +	if (unlikely(uaccess_kernel()))
-> +		return -EPERM;
-> +	if (unlikely(!nmi_uaccess_okay()))
-> +		return -EPERM;
-> +
-> +	if (in_nmi()) {
+Backlog work for psock (sk_psock_backlog) might sleep while waiting
+for memory to free up when sending packets. However, while sleeping
+the socket may be closed and removed from the map by the user space
+side.
 
-Hm, bit confused, can't this only be done out of process context in
-general since only there current points to e.g. hhvm? I'm probably
-missing something. Could you elaborate?
+This breaks an assumption in sk_stream_wait_memory, which expects the
+wait queue to be still there when it wakes up resulting in a
+use-after-free shown below. To fix his mark sendmsg as MSG_DONTWAIT
+to avoid the sleep altogether. We already set the flag for the
+sendpage case but we missed the case were sendmsg is used.
+Sockmap is currently the only user of skb_send_sock_locked() so only
+the sockmap paths should be impacted.
 
-> +		work = this_cpu_ptr(&send_signal_work);
-> +		if (work->irq_work.flags & IRQ_WORK_BUSY)
-> +			return -EBUSY;
-> +
-> +		work->sig = sig;
-> +		irq_work_queue(&work->irq_work);
-> +		return 0;
-> +	}
-> +
-> +	return group_send_sig_info(sig, SEND_SIG_PRIV, current, PIDTYPE_TGID);
-> +
+==================================================================
+BUG: KASAN: use-after-free in remove_wait_queue+0x31/0x70
+Write of size 8 at addr ffff888069a0c4e8 by task kworker/0:2/110
 
-Nit: extra newline slipped in
+CPU: 0 PID: 110 Comm: kworker/0:2 Not tainted 5.0.0-rc2-00335-g28f9d1a3d4fe-dirty #14
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-2.fc27 04/01/2014
+Workqueue: events sk_psock_backlog
+Call Trace:
+ print_address_description+0x6e/0x2b0
+ ? remove_wait_queue+0x31/0x70
+ kasan_report+0xfd/0x177
+ ? remove_wait_queue+0x31/0x70
+ ? remove_wait_queue+0x31/0x70
+ remove_wait_queue+0x31/0x70
+ sk_stream_wait_memory+0x4dd/0x5f0
+ ? sk_stream_wait_close+0x1b0/0x1b0
+ ? wait_woken+0xc0/0xc0
+ ? tcp_current_mss+0xc5/0x110
+ tcp_sendmsg_locked+0x634/0x15d0
+ ? tcp_set_state+0x2e0/0x2e0
+ ? __kasan_slab_free+0x1d1/0x230
+ ? kmem_cache_free+0x70/0x140
+ ? sk_psock_backlog+0x40c/0x4b0
+ ? process_one_work+0x40b/0x660
+ ? worker_thread+0x82/0x680
+ ? kthread+0x1b9/0x1e0
+ ? ret_from_fork+0x1f/0x30
+ ? check_preempt_curr+0xaf/0x130
+ ? iov_iter_kvec+0x5f/0x70
+ ? kernel_sendmsg_locked+0xa0/0xe0
+ skb_send_sock_locked+0x273/0x3c0
+ ? skb_splice_bits+0x180/0x180
+ ? start_thread+0xe0/0xe0
+ ? update_min_vruntime.constprop.27+0x88/0xc0
+ sk_psock_backlog+0xb3/0x4b0
+ ? strscpy+0xbf/0x1e0
+ process_one_work+0x40b/0x660
+ worker_thread+0x82/0x680
+ ? process_one_work+0x660/0x660
+ kthread+0x1b9/0x1e0
+ ? __kthread_create_on_node+0x250/0x250
+ ret_from_fork+0x1f/0x30
 
-> +}
-> +
-> +static const struct bpf_func_proto bpf_send_signal_proto = {
-> +	.func		= bpf_send_signal,
-> +	.gpl_only	= false,
-> +	.ret_type	= RET_INTEGER,
-> +	.arg1_type	= ARG_ANYTHING,
-> +};
-> +
->  static const struct bpf_func_proto *
->  tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->  {
-> @@ -617,6 +669,8 @@ tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->  	case BPF_FUNC_get_current_cgroup_id:
->  		return &bpf_get_current_cgroup_id_proto;
->  #endif
-> +	case BPF_FUNC_send_signal:
-> +		return &bpf_send_signal_proto;
->  	default:
->  		return NULL;
->  	}
-> @@ -1343,5 +1397,18 @@ static int __init bpf_event_init(void)
->  	return 0;
->  }
->  
-> +static int __init send_signal_irq_work_init(void)
-> +{
-> +	int cpu;
-> +	struct send_signal_irq_work *work;
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		work = per_cpu_ptr(&send_signal_work, cpu);
-> +		init_irq_work(&work->irq_work, do_bpf_send_signal);
-> +	}
-> +	return 0;
-> +}
-> +
->  fs_initcall(bpf_event_init);
-> +subsys_initcall(send_signal_irq_work_init);
->  #endif /* CONFIG_MODULES */
-> 
+Fixes: 20bf50de3028c ("skbuff: Function to send an skbuf on a socket")
+Reported-by: Jakub Sitnicki <jakub@cloudflare.com>
+Tested-by: Jakub Sitnicki <jakub@cloudflare.com>
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+---
+ net/core/skbuff.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index e89be62..c3b03c5 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -2337,6 +2337,7 @@ int skb_send_sock_locked(struct sock *sk, struct sk_buff *skb, int offset,
+ 		kv.iov_base = skb->data + offset;
+ 		kv.iov_len = slen;
+ 		memset(&msg, 0, sizeof(msg));
++		msg.flags = MSG_DONTWAIT;
+ 
+ 		ret = kernel_sendmsg_locked(sk, &msg, &kv, 1, slen);
+ 		if (ret <= 0)
 
