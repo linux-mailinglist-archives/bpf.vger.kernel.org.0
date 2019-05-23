@@ -2,102 +2,202 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE49127305
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2019 01:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C1927340
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2019 02:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727305AbfEVXqj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 May 2019 19:46:39 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:38822 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726218AbfEVXqi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 May 2019 19:46:38 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 5F88630832E6;
-        Wed, 22 May 2019 23:46:38 +0000 (UTC)
-Received: from treble (ovpn-120-127.rdu2.redhat.com [10.10.120.127])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id ECC1660857;
-        Wed, 22 May 2019 23:46:36 +0000 (UTC)
-Date:   Wed, 22 May 2019 18:46:35 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Alexei Starovoitov <ast@fb.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Kairui Song <kasong@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: Getting empty callchain from perf_callchain_kernel()
-Message-ID: <20190522234635.a47bettklcf5gt7c@treble>
-References: <3CD3EE63-0CD2-404A-A403-E11DCF2DF8D9@fb.com>
- <20190517074600.GJ2623@hirez.programming.kicks-ass.net>
- <20190517081057.GQ2650@hirez.programming.kicks-ass.net>
- <CACPcB9cB5n1HOmZcVpusJq8rAV5+KfmZ-Lxv3tgsSoy7vNrk7w@mail.gmail.com>
- <20190517091044.GM2606@hirez.programming.kicks-ass.net>
- <CACPcB9cpNp5CBqoRs+XMCwufzAFa8Pj-gbmj9fb+g5wVdue=ig@mail.gmail.com>
- <20190522140233.GC16275@worktop.programming.kicks-ass.net>
- <ab047883-69f6-1175-153f-5ad9462c6389@fb.com>
- <20190522174517.pbdopvookggen3d7@treble>
+        id S1727809AbfEWA0A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 May 2019 20:26:00 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:43731 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727691AbfEWA0A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 May 2019 20:26:00 -0400
+Received: by mail-qt1-f194.google.com with SMTP id i26so4705115qtr.10
+        for <bpf@vger.kernel.org>; Wed, 22 May 2019 17:25:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=p2ctVWfsWv4UZmWXJa4C4BH8ZDcP+z9l9tCHrEYfKWs=;
+        b=OitvanUGiiqrHHT0P9oMZuKu1AccSFRObmHJg2YUzT9+LsJIedb4PXPSu4mmji3eH4
+         M5OZNYTTkSmpt6Gk1sjycNNCk80eev381T2M7VKFbxp3GvQHpfb5e5/I/iaSyS/ivpuR
+         ZPQpknEEeW+651kcEWtkUxBOdlwn7LkKkYMIeLdcsOEFTj7kpTVXPYi4TQgk3O10hEzn
+         pjhzKHO+k8ZK3GzoiIzPj9fZmOsT3QS+5iVlaROYq8L9+eIAkZmB6VsiD+xYK5icucbh
+         VYVdn/sBJ7BTLurnWuTF6D+y9PG3g1lA83PqrtIeflCJgYBvGJC3RGulUM6rvdO9eaRY
+         PuCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=p2ctVWfsWv4UZmWXJa4C4BH8ZDcP+z9l9tCHrEYfKWs=;
+        b=kTuCGUy7Dktu3L6aGc2oITnRl7KHhwtTh1mU1+NWZgA88WPhHHxXHP6BzhTjHHGyB4
+         Zefmt9FabpvNJmhYi7fN29AVQ8V/YeFK0JK2oGGUcJHws5TM5whoqv8Ydd8LIt9g1WLC
+         BexYr0wpjJCOaPJTXoG1leJrI1d+WPNEoKhBOAN1Xu9wQ5wKYeI0Ot0lcTxMEqMhPh1O
+         WqOBZ7XYgTYHeBmEG3eD/dlpffb0aEZsTucwWXWMHVp3xud98vS0VzEV8LoSN5fcGf+8
+         ayBnwNREAiWxLfXhDixSUmfRkZdF4Pcgll8UxeuHn0r7NowS+K0+MF+LSztjd3MvKJxn
+         JXJQ==
+X-Gm-Message-State: APjAAAWL3u3AJoWBx5H9UX8XS+ZiZxuMHmWViiBZlh4LTVvO+EJ4qkRH
+        d8hBBGCSwSdJO2h4ikDVzJeO0g==
+X-Google-Smtp-Source: APXvYqxQyiEw/5ykorGvcpYrM2rQavIzorIE5QiQIdIDqGsI118wqz/vFBy0tbLXT5OXPrgNIbo1bg==
+X-Received: by 2002:ac8:1af9:: with SMTP id h54mr75912436qtk.292.1558571158974;
+        Wed, 22 May 2019 17:25:58 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id m30sm6610421qtf.77.2019.05.22.17.25.57
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 22 May 2019 17:25:58 -0700 (PDT)
+Date:   Wed, 22 May 2019 17:25:53 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     <andrii.nakryiko@gmail.com>, <ast@fb.com>, <daniel@iogearbox.net>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 10/12] bpftool: add C output format option to
+ btf dump subcommand
+Message-ID: <20190522172553.6f057e51@cakuba.netronome.com>
+In-Reply-To: <20190522195053.4017624-11-andriin@fb.com>
+References: <20190522195053.4017624-1-andriin@fb.com>
+        <20190522195053.4017624-11-andriin@fb.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20190522174517.pbdopvookggen3d7@treble>
-User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Wed, 22 May 2019 23:46:38 +0000 (UTC)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 22, 2019 at 12:45:17PM -0500, Josh Poimboeuf wrote:
-> On Wed, May 22, 2019 at 02:49:07PM +0000, Alexei Starovoitov wrote:
-> > The one that is broken is prog_tests/stacktrace_map.c
-> > There we attach bpf to standard tracepoint where
-> > kernel suppose to collect pt_regs before calling into bpf.
-> > And that's what bpf_get_stackid_tp() is doing.
-> > It passes pt_regs (that was collected before any bpf)
-> > into bpf_get_stackid() which calls get_perf_callchain().
-> > Same thing with kprobes, uprobes.
+On Wed, 22 May 2019 12:50:51 -0700, Andrii Nakryiko wrote:
+> Utilize new libbpf's btf_dump API to emit BTF as a C definitions.
 > 
-> Is it trying to unwind through ___bpf_prog_run()?
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
+>  tools/bpf/bpftool/btf.c | 63 +++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 60 insertions(+), 3 deletions(-)
 > 
-> If so, that would at least explain why ORC isn't working.  Objtool
-> currently ignores that function because it can't follow the jump table.
+> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> index a22ef6587ebe..ed3d3221cc78 100644
+> --- a/tools/bpf/bpftool/btf.c
+> +++ b/tools/bpf/bpftool/btf.c
+> @@ -1,5 +1,12 @@
+>  // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> -/* Copyright (C) 2019 Facebook */
+> +
+> +/*
+> + * BTF dumping command.
+> + * Load BTF from multiple possible sources and outptu entirety or subset of
+> + * types in either raw format or C-syntax format.
+> + *
 
-Here's a tentative fix (for ORC, at least).  I'll need to make sure this
-doesn't break anything else.
+I don't think this header adds any value.  Its very unlikely people
+will remember to update it.  And it's misspelled to begin with.
+Please remove.
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 242a643af82f..1d9a7cc4b836 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1562,7 +1562,6 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
- 		BUG_ON(1);
- 		return 0;
- }
--STACK_FRAME_NON_STANDARD(___bpf_prog_run); /* jump table */
- 
- #define PROG_NAME(stack_size) __bpf_prog_run##stack_size
- #define DEFINE_BPF_PROG_RUN(stack_size) \
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 172f99195726..2567027fce95 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1033,13 +1033,6 @@ static struct rela *find_switch_table(struct objtool_file *file,
- 		if (text_rela->type == R_X86_64_PC32)
- 			table_offset += 4;
- 
--		/*
--		 * Make sure the .rodata address isn't associated with a
--		 * symbol.  gcc jump tables are anonymous data.
--		 */
--		if (find_symbol_containing(rodata_sec, table_offset))
--			continue;
--
- 		rodata_rela = find_rela_by_dest(rodata_sec, table_offset);
- 		if (rodata_rela) {
- 			/*
+> + * Copyright (C) 2019 Facebook
+> + */
+>  
+>  #include <errno.h>
+>  #include <fcntl.h>
+> @@ -340,11 +347,48 @@ static int dump_btf_raw(const struct btf *btf,
+>  	return 0;
+>  }
+>  
+> +static void btf_dump_printf(void *ctx, const char *fmt, va_list args)
+> +{
+> +	vfprintf(stdout, fmt, args);
+> +}
+> +
+> +static int dump_btf_c(const struct btf *btf,
+> +		      __u32 *root_type_ids, int root_type_cnt)
+
+Please break the line after static int.
+
+> +{
+> +	struct btf_dump *d;
+> +	int err = 0, i, id;
+
+Hmm.. why do you have both i and id here?  Maybe my eyes are failing me
+but it seems either one or the other is used in different branches of
+the main if () :)
+
+> +	d = btf_dump__new(btf, NULL, NULL, btf_dump_printf);
+> +	if (IS_ERR(d))
+> +		return PTR_ERR(d);
+> +
+> +	if (root_type_cnt) {
+> +		for (i = 0; i < root_type_cnt; i++) {
+> +			err = btf_dump__dump_type(d, root_type_ids[i]);
+> +			if (err)
+> +				goto done;
+> +		}
+> +	} else {
+> +		int cnt = btf__get_nr_types(btf);
+> +
+> +		for (id = 1; id <= cnt; id++) {
+> +			err = btf_dump__dump_type(d, id);
+> +			if (err)
+> +				goto done;
+> +		}
+> +	}
+> +
+> +done:
+> +	btf_dump__free(d);
+> +	return err;
+
+What do we do for JSON output?
+
+> +}
+> +
+>  static int do_dump(int argc, char **argv)
+>  {
+>  	struct btf *btf = NULL;
+>  	__u32 root_type_ids[2];
+>  	int root_type_cnt = 0;
+> +	bool dump_c = false;
+>  	__u32 btf_id = -1;
+>  	const char *src;
+>  	int fd = -1;
+> @@ -431,6 +475,16 @@ static int do_dump(int argc, char **argv)
+>  		goto done;
+>  	}
+>  
+> +	while (argc) {
+> +		if (strcmp(*argv, "c") == 0) {
+> +			dump_c = true;
+> +			NEXT_ARG();
+> +		} else {
+> +			p_err("unrecognized option: '%s'", *argv);
+> +			goto done;
+> +		}
+> +	}
+
+This code should have checked there are no arguments and return an
+error from the start :S
+
+>  	if (!btf) {
+>  		err = btf__get_from_id(btf_id, &btf);
+>  		if (err) {
+> @@ -444,7 +498,10 @@ static int do_dump(int argc, char **argv)
+>  		}
+>  	}
+>  
+> -	dump_btf_raw(btf, root_type_ids, root_type_cnt);
+> +	if (dump_c)
+> +		dump_btf_c(btf, root_type_ids, root_type_cnt);
+> +	else
+> +		dump_btf_raw(btf, root_type_ids, root_type_cnt);
+>  
+>  done:
+>  	close(fd);
+> @@ -460,7 +517,7 @@ static int do_help(int argc, char **argv)
+>  	}
+>  
+>  	fprintf(stderr,
+> -		"Usage: %s btf dump BTF_SRC\n"
+> +		"Usage: %s btf dump BTF_SRC [c]\n"
+
+bpftool generally uses <key value> formats.  So perhaps we could do
+something like "[format raw|c]" here for consistency, defaulting to raw?
+
+>  		"       %s btf help\n"
+>  		"\n"
+>  		"       BTF_SRC := { id BTF_ID | prog PROG | map MAP [{key | value | kv | all}] | file FILE }\n"
+
