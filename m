@@ -2,291 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDBC28337
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2019 18:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7B228378
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2019 18:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731281AbfEWQVG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 May 2019 12:21:06 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:39175 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731089AbfEWQVF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 May 2019 12:21:05 -0400
-Received: by mail-qt1-f193.google.com with SMTP id y42so7422272qtk.6;
-        Thu, 23 May 2019 09:21:04 -0700 (PDT)
+        id S1730987AbfEWQ1H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 May 2019 12:27:07 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:40567 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730899AbfEWQ1G (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 May 2019 12:27:06 -0400
+Received: by mail-qk1-f193.google.com with SMTP id q197so4177224qke.7
+        for <bpf@vger.kernel.org>; Thu, 23 May 2019 09:27:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sqLMv4lX+d0MEfaumfdwq2LTZ8ZVJEzvnBVcOyszC94=;
-        b=nViIBdmO9HZGyp40cCQRlPa5m8sGIXpSeVvTQdKoXwvPoBFRhiePBroHblpU5AcfL2
-         M8QnOnsdekMs1JUG7nOKenlyRQBj0yDtP0VbG3X2Ucsx8hAo7V37LzSHorCXom97cIob
-         U+6RpmZETqzywie1CcEY6A405d4UffP4bbeuHuPm85Gc2Yyirxi0M7PqC8jL5M7UoCXd
-         vXH+I6WumgPBE3wzs063PtoprctcmIV9REn+LdYseiH+W8hJgR5qAKcP0Ab5IxxGAPxE
-         0VnlgVKf+4vmI2ukqlrfg0SlvQCFKmFEFRH+O1RkPBkJR0fGJoARFrg0EnpYsNzSPvO7
-         vonQ==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=+BHvPvg9wxYFnwvNTSzxgrkbl64Nq/obBbwrTAiGAmo=;
+        b=PMPEm3cdbSbFnwdzM4WoZQc5Wh5+S9GtkS7pV35RFuwT/cme9bXcFJCLqJooqwn2b2
+         4okbuItYRJAZugDPHs2D6ZhZI9wKmGbbIZC34ls9iWUL/ZEpnsBr304A5EABzHVQJnBA
+         C/GeU26opZBdQ3haW3rrk19OGz6XUNHW6W/w46CQzGnTAsZPOIS69+7xXR6ed8bkbTF6
+         FsoOdZzyjRjm5hZ8fKoawogy81UKlzyBl2fB8ui0OML6JMj57p/E9RIyRz4ts1lt+Hca
+         8fKN6SKrIo7t28xuCbsrCPde0t25zhuDFwdgI2p8zp5jO3Xi9ioSd/67D+QsvQlGfZZH
+         3SqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sqLMv4lX+d0MEfaumfdwq2LTZ8ZVJEzvnBVcOyszC94=;
-        b=TAJZVgOdeJO8ZkQ33zXKFjVr+tt8m3a5C/vgTHSfG4c/xNILcmdX2Xnrt1RF1lXCdL
-         dYSHIuZ1OjoCT6oYGBcUdCohAjCEbl7X30vZDWNYL5tbZp4+t/rkPA2V+74wpbOSnc+N
-         vOvlzxMBtdOedPL87okGAFmx+JXOAPhiRMAqcidwjt3hWpKZvjAnGTHzdAZF21gjL7RI
-         156sd1D+mMG0l5osGkvuTKMbH9tJbOtGRimS2jkcJAXavfP1TAKYzLvPQEb5F3XJhjjw
-         3noAkol++5wenvhZyhqf6v0eW3s14i8MYMMitm2z/UTkrA+Hl5BuOGnRYaWUIzHBljwS
-         bupQ==
-X-Gm-Message-State: APjAAAUTW7fgCRIclgOpJm/m8b04V1d4w3iiGfRtmnZrwjs4WCly6uE6
-        Hud1/fYpmqtH6W5KA/g1z72AhO3eTtZhigZOA+w=
-X-Google-Smtp-Source: APXvYqwmsJ/IhZ3jyK/lUZojdM8/DYluIGAHal88T7ztU+LOoRrTxyj5X0JD0O6doj1+It8nr0FE/sPKFtw4JUKsCFk=
-X-Received: by 2002:ac8:2a63:: with SMTP id l32mr65342950qtl.117.1558628464209;
- Thu, 23 May 2019 09:21:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=+BHvPvg9wxYFnwvNTSzxgrkbl64Nq/obBbwrTAiGAmo=;
+        b=s/8ExliF44DI0zPJ7FeP1nZx/p/3J7yvSkjDnSsEy1ODdvjNuwMHQo4p6oaFwdRGdw
+         ygZRJhQS8v8LrFOwIYQv2rz2ypXTLF6sMGwHLMGwVQxt/ITCiWbsNQdJTftCSi5FGsz/
+         ejIJVZmQVHhf1/NAmiAIGwNafa+UVPaWmnm0oNvMbi/OG02Mbcl0CtpcKX+8oGQuvQHy
+         UZQMdvoD20zDe02hM117gt9tfIlK5YmNLHI5+F3ckp5lKCxRewjwh77PlVoyD2FuRHtc
+         +IAAC/wGzzZc/AoRbcJmbqcx8tvCknhDKXuPMAo38bAr+dn1VXt3567aKjYdePvplNPK
+         DskA==
+X-Gm-Message-State: APjAAAWpqRVjnbSElfvdBU0vsmWthOv9LwrnZd3yL2dVYeGwYQcP1KSP
+        rlht7yVmXVQrJfOFg4mpbv7uGQ==
+X-Google-Smtp-Source: APXvYqyHVWnLxW2/LPniB3mpATf22VUTTwatVFJzVPTg9QhlykO9yHa2vv8OCtRdK8WyRK7uMpkXRw==
+X-Received: by 2002:a37:c409:: with SMTP id d9mr35683282qki.125.1558628825760;
+        Thu, 23 May 2019 09:27:05 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id l40sm17901238qtc.32.2019.05.23.09.27.04
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 23 May 2019 09:27:05 -0700 (PDT)
+Date:   Thu, 23 May 2019 09:27:00 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 10/12] bpftool: add C output format option to
+ btf dump subcommand
+Message-ID: <20190523092700.00c1cdaf@cakuba.netronome.com>
+In-Reply-To: <CAEf4BzaOAxKRNQasQtvAyLnvKtRLCpAcBq2q651PKG6b6r5Ktw@mail.gmail.com>
+References: <20190522195053.4017624-1-andriin@fb.com>
+        <20190522195053.4017624-11-andriin@fb.com>
+        <20190522172553.6f057e51@cakuba.netronome.com>
+        <CAEf4BzZ36rcVuKabefWD-CaJ-BUECiYM_=3mzNAi3XMAR=49fQ@mail.gmail.com>
+        <20190522182328.7c8621ec@cakuba.netronome.com>
+        <CAEf4BzaOAxKRNQasQtvAyLnvKtRLCpAcBq2q651PKG6b6r5Ktw@mail.gmail.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-References: <20190523105426.3938-1-quentin.monnet@netronome.com> <20190523105426.3938-2-quentin.monnet@netronome.com>
-In-Reply-To: <20190523105426.3938-2-quentin.monnet@netronome.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 23 May 2019 09:20:52 -0700
-Message-ID: <CAEf4BzZt75Wm29MQKx1g_u8cH2QYRF3HGYgnOpa3yF9NOMXysw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/3] tools: bpftool: add -d option to get
- debug output from libbpf
-To:     Quentin Monnet <quentin.monnet@netronome.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, oss-drivers@netronome.com,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 23, 2019 at 3:54 AM Quentin Monnet
-<quentin.monnet@netronome.com> wrote:
->
-> libbpf has three levels of priority for output messages: warn, info,
-> debug. By default, debug output is not printed to the console.
->
-> Add a new "--debug" (short name: "-d") option to bpftool to print libbpf
-> logs for all three levels.
->
-> Internally, we simply use the function provided by libbpf to replace the
-> default printing function by one that prints logs regardless of their
-> level.
->
-> v2:
-> - Remove the possibility to select the log-levels to use (v1 offered a
->   combination of "warn", "info" and "debug").
-> - Rename option and offer a short name: -d|--debug.
+On Wed, 22 May 2019 21:43:43 -0700, Andrii Nakryiko wrote:
+> On Wed, May 22, 2019 at 6:23 PM Jakub Kicinski wrote:
+> > On Wed, 22 May 2019 17:58:23 -0700, Andrii Nakryiko wrote:  
+> > > On Wed, May 22, 2019 at 5:25 PM Jakub Kicinski wrote:  
+> > > > On Wed, 22 May 2019 12:50:51 -0700, Andrii Nakryiko wrote:  
+> > > > > + * Copyright (C) 2019 Facebook
+> > > > > + */
+> > > > >
+> > > > >  #include <errno.h>
+> > > > >  #include <fcntl.h>
+> > > > > @@ -340,11 +347,48 @@ static int dump_btf_raw(const struct btf *btf,
+> > > > >       return 0;
+> > > > >  }
+> > > > >
+> > > > > +static void btf_dump_printf(void *ctx, const char *fmt, va_list args)
+> > > > > +{
+> > > > > +     vfprintf(stdout, fmt, args);
+> > > > > +}
+> > > > > +
+> > > > > +static int dump_btf_c(const struct btf *btf,
+> > > > > +                   __u32 *root_type_ids, int root_type_cnt)  
+> > > >
+> > > > Please break the line after static int.  
+> > >
+> > > I don't mind, but it seems that prevalent formatting for such cases
+> > > (at least in bpftool code base) is aligning arguments and not break
+> > > static <return type> into separate line:
+> > >
+> > > // multi-line function definitions with static on the same line
+> > > $ rg '^static \w+.*\([^\)]*$' | wc -l
+> > > 45
+> > > // multi-line function definitions with static on separate line
+> > > $ rg '^static \w+[^\(\{;]*$' | wc -l
+> > > 12
+> > >
+> > > So I don't mind changing, but which one is canonical way of formatting?  
+> >
+> > Not really, just my preference :)  
+> 
+> I'll stick to majority :) I feel like it's also a preferred style in
+> libbpf, so I'd rather converge to that.
 
-Such and option in CLI tools is usually called -v|--verbose, I'm
-wondering if it might be a better name choice?
+Majority is often wrong or at least lazy.  But yeah, this is a waste of
+time.  Do whatever.  You also use inline keyword in C files in your
+libbpf patches..  I think kernel style rules should apply.
 
-Btw, some tools also use -v, -vv and -vvv to define different levels
-of verbosity, which is something we can consider in the future, as
-it's backwards compatible.
+> > In my experience having the return type on a separate line if its
+> > longer than a few chars is the simplest rule for consistent and good
+> > looking code.
+> >  
+> > > > > +     d = btf_dump__new(btf, NULL, NULL, btf_dump_printf);
+> > > > > +     if (IS_ERR(d))
+> > > > > +             return PTR_ERR(d);
+> > > > > +
+> > > > > +     if (root_type_cnt) {
+> > > > > +             for (i = 0; i < root_type_cnt; i++) {
+> > > > > +                     err = btf_dump__dump_type(d, root_type_ids[i]);
+> > > > > +                     if (err)
+> > > > > +                             goto done;
+> > > > > +             }
+> > > > > +     } else {
+> > > > > +             int cnt = btf__get_nr_types(btf);
+> > > > > +
+> > > > > +             for (id = 1; id <= cnt; id++) {
+> > > > > +                     err = btf_dump__dump_type(d, id);
+> > > > > +                     if (err)
+> > > > > +                             goto done;
+> > > > > +             }
+> > > > > +     }
+> > > > > +
+> > > > > +done:
+> > > > > +     btf_dump__free(d);
+> > > > > +     return err;  
+> > > >
+> > > > What do we do for JSON output?  
+> > >
+> > > Still dump C syntax. What do you propose? Error out if json enabled?  
+> >
+> > I wonder.  Letting it just print C is going to confuse anything that
+> > just feeds the output into a JSON parser.  I'd err on the side of
+> > returning an error, we can always relax that later if we find a use
+> > case of returning C syntax via JSON.  
+> 
+> Ok, I'll emit error (seems like pr_err automatically handles JSON
+> output, which is very nice).
 
-> - Add option description to all bpftool manual pages (instead of
->   bpftool-prog.rst only), as all commands use libbpf.
->
-> Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
-> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-> ---
->  tools/bpf/bpftool/Documentation/bpftool-btf.rst    |  4 ++++
->  tools/bpf/bpftool/Documentation/bpftool-cgroup.rst |  4 ++++
->  .../bpf/bpftool/Documentation/bpftool-feature.rst  |  4 ++++
->  tools/bpf/bpftool/Documentation/bpftool-map.rst    |  4 ++++
->  tools/bpf/bpftool/Documentation/bpftool-net.rst    |  4 ++++
->  tools/bpf/bpftool/Documentation/bpftool-perf.rst   |  4 ++++
->  tools/bpf/bpftool/Documentation/bpftool-prog.rst   |  4 ++++
->  tools/bpf/bpftool/Documentation/bpftool.rst        |  3 +++
->  tools/bpf/bpftool/bash-completion/bpftool          |  2 +-
->  tools/bpf/bpftool/main.c                           | 14 +++++++++++++-
->  10 files changed, 45 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-btf.rst b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-> index 2dbc1413fabd..00668df1bf7a 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-> @@ -67,6 +67,10 @@ OPTIONS
->         -p, --pretty
->                   Generate human-readable JSON output. Implies **-j**.
->
-> +       -d, --debug
-> +                 Print all logs available from libbpf, including debug-level
-> +                 information.
-> +
->  EXAMPLES
->  ========
->  **# bpftool btf dump id 1226**
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-> index ac26876389c2..36807735e2a5 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-> @@ -113,6 +113,10 @@ OPTIONS
->         -f, --bpffs
->                   Show file names of pinned programs.
->
-> +       -d, --debug
-> +                 Print all logs available from libbpf, including debug-level
-> +                 information.
-> +
->  EXAMPLES
->  ========
->  |
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-feature.rst b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-> index 14180e887082..4d08f35034a2 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-> @@ -73,6 +73,10 @@ OPTIONS
->         -p, --pretty
->                   Generate human-readable JSON output. Implies **-j**.
->
-> +       -d, --debug
-> +                 Print all logs available from libbpf, including debug-level
-> +                 information.
-> +
->  SEE ALSO
->  ========
->         **bpf**\ (2),
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-> index 13ef27b39f20..490b4501cb6e 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-> @@ -152,6 +152,10 @@ OPTIONS
->                   Do not automatically attempt to mount any virtual file system
->                   (such as tracefs or BPF virtual file system) when necessary.
->
-> +       -d, --debug
-> +                 Print all logs available from libbpf, including debug-level
-> +                 information.
-> +
->  EXAMPLES
->  ========
->  **# bpftool map show**
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-net.rst b/tools/bpf/bpftool/Documentation/bpftool-net.rst
-> index 934580850f42..d8e5237a2085 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-net.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-net.rst
-> @@ -65,6 +65,10 @@ OPTIONS
->         -p, --pretty
->                   Generate human-readable JSON output. Implies **-j**.
->
-> +       -d, --debug
-> +                 Print all logs available from libbpf, including debug-level
-> +                 information.
-> +
->  EXAMPLES
->  ========
->
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-perf.rst b/tools/bpf/bpftool/Documentation/bpftool-perf.rst
-> index 0c7576523a21..e252bd0bc434 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-perf.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-perf.rst
-> @@ -53,6 +53,10 @@ OPTIONS
->         -p, --pretty
->                   Generate human-readable JSON output. Implies **-j**.
->
-> +       -d, --debug
-> +                 Print all logs available from libbpf, including debug-level
-> +                 information.
-> +
->  EXAMPLES
->  ========
->
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-> index e8118544d118..9a92614569e6 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-> @@ -174,6 +174,10 @@ OPTIONS
->                   Do not automatically attempt to mount any virtual file system
->                   (such as tracefs or BPF virtual file system) when necessary.
->
-> +       -d, --debug
-> +                 Print all logs available from libbpf, including debug-level
-> +                 information.
-> +
->  EXAMPLES
->  ========
->  **# bpftool prog show**
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool.rst b/tools/bpf/bpftool/Documentation/bpftool.rst
-> index 3e562d7fd56f..43dba0717953 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool.rst
-> @@ -66,6 +66,9 @@ OPTIONS
->                   Do not automatically attempt to mount any virtual file system
->                   (such as tracefs or BPF virtual file system) when necessary.
->
-> +       -d, --debug
-> +                 Print all logs available from libbpf, including debug-level
-> +                 information.
->
->  SEE ALSO
->  ========
-> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-> index 50e402a5a9c8..3a476e25d046 100644
-> --- a/tools/bpf/bpftool/bash-completion/bpftool
-> +++ b/tools/bpf/bpftool/bash-completion/bpftool
-> @@ -181,7 +181,7 @@ _bpftool()
->
->      # Deal with options
->      if [[ ${words[cword]} == -* ]]; then
-> -        local c='--version --json --pretty --bpffs --mapcompat'
-> +        local c='--version --json --pretty --bpffs --mapcompat --debug'
->          COMPREPLY=( $( compgen -W "$c" -- "$cur" ) )
->          return 0
->      fi
-> diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-> index 1ac1fc520e6a..d74293938a05 100644
-> --- a/tools/bpf/bpftool/main.c
-> +++ b/tools/bpf/bpftool/main.c
-> @@ -10,6 +10,7 @@
->  #include <string.h>
->
->  #include <bpf.h>
-> +#include <libbpf.h>
->
->  #include "main.h"
->
-> @@ -77,6 +78,13 @@ static int do_version(int argc, char **argv)
->         return 0;
->  }
->
-> +static int __printf(2, 0)
-> +print_all_levels(__maybe_unused enum libbpf_print_level level,
-> +                const char *format, va_list args)
-> +{
-> +       return vfprintf(stderr, format, args);
-> +}
-> +
->  int cmd_select(const struct cmd *cmds, int argc, char **argv,
->                int (*help)(int argc, char **argv))
->  {
-> @@ -317,6 +325,7 @@ int main(int argc, char **argv)
->                 { "bpffs",      no_argument,    NULL,   'f' },
->                 { "mapcompat",  no_argument,    NULL,   'm' },
->                 { "nomount",    no_argument,    NULL,   'n' },
-> +               { "debug",      no_argument,    NULL,   'd' },
->                 { 0 }
->         };
->         int opt, ret;
-> @@ -332,7 +341,7 @@ int main(int argc, char **argv)
->         hash_init(map_table.table);
->
->         opterr = 0;
-> -       while ((opt = getopt_long(argc, argv, "Vhpjfmn",
-> +       while ((opt = getopt_long(argc, argv, "Vhpjfmnd",
->                                   options, NULL)) >= 0) {
->                 switch (opt) {
->                 case 'V':
-> @@ -362,6 +371,9 @@ int main(int argc, char **argv)
->                 case 'n':
->                         block_mount = true;
->                         break;
-> +               case 'd':
-> +                       libbpf_set_print(print_all_levels);
-> +                       break;
->                 default:
->                         p_err("unrecognized option '%s'", argv[optind - 1]);
->                         if (json_output)
-> --
-> 2.17.1
->
+Thanks
+
+> > > > >       if (!btf) {
+> > > > >               err = btf__get_from_id(btf_id, &btf);
+> > > > >               if (err) {
+> > > > > @@ -444,7 +498,10 @@ static int do_dump(int argc, char **argv)
+> > > > >               }
+> > > > >       }
+> > > > >
+> > > > > -     dump_btf_raw(btf, root_type_ids, root_type_cnt);
+> > > > > +     if (dump_c)
+> > > > > +             dump_btf_c(btf, root_type_ids, root_type_cnt);
+> > > > > +     else
+> > > > > +             dump_btf_raw(btf, root_type_ids, root_type_cnt);
+> > > > >
+> > > > >  done:
+> > > > >       close(fd);
+> > > > > @@ -460,7 +517,7 @@ static int do_help(int argc, char **argv)
+> > > > >       }
+> > > > >
+> > > > >       fprintf(stderr,
+> > > > > -             "Usage: %s btf dump BTF_SRC\n"
+> > > > > +             "Usage: %s btf dump BTF_SRC [c]\n"  
+> > > >
+> > > > bpftool generally uses <key value> formats.  So perhaps we could do
+> > > > something like "[format raw|c]" here for consistency, defaulting to raw?  
+> > >
+> > > That's not true for options, though. I see that at cgroup, prog, and
+> > > some map subcommands (haven't checked all other) just accept a list of
+> > > options without extra identifying key.  
+> >
+> > Yeah, we weren't 100% enforcing this rule and it's a bit messy now :/  
+> 
+> Unless you feel very strongly about this, it seems ok to me to allow
+> "boolean options" (similarly to boolean --flag args) as a stand-alone
+> set of tags. bpftool invocations are already very verbose, no need to
+> add to that. Plus it also makes bash-completion simpler, it's always
+> good not to complicate bash script unnecessarily :)
+
+It's more of a question if we're going to have more formats.  If not
+then c as keyword is probably fine (although its worryingly short).
+If we start adding more then a key value would be better.  Let's take a
+gamble and if we add 2 more output types I'll say "I told you so"? :)
