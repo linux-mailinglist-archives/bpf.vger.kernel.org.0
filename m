@@ -2,117 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F8927E25
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2019 15:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A3827E31
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2019 15:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730492AbfEWN3m convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 23 May 2019 09:29:42 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:65062 "EHLO mx1.redhat.com"
+        id S1730706AbfEWNc6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 May 2019 09:32:58 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:45156 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729698AbfEWN3m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 May 2019 09:29:42 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        id S1730549AbfEWNc5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 May 2019 09:32:57 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 09D0C30605EF;
-        Thu, 23 May 2019 13:29:42 +0000 (UTC)
-Received: from carbon (ovpn-200-45.brq.redhat.com [10.40.200.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4FD2617A75;
-        Thu, 23 May 2019 13:29:28 +0000 (UTC)
-Date:   Thu, 23 May 2019 15:29:27 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
-Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        by mx1.redhat.com (Postfix) with ESMTPS id 00A18792AE;
+        Thu, 23 May 2019 13:32:57 +0000 (UTC)
+Received: from treble (ovpn-121-106.rdu2.redhat.com [10.10.121.106])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CBE446836A;
+        Thu, 23 May 2019 13:32:55 +0000 (UTC)
+Date:   Thu, 23 May 2019 08:32:53 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Kairui Song <kasong@redhat.com>
+Cc:     Alexei Starovoitov <ast@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
-        bpf@vger.kernel.org, brouer@redhat.com
-Subject: Re: [PATCH bpf-next 3/3] veth: Support bulk XDP_TX
-Message-ID: <20190523152927.14bf7ed1@carbon>
-In-Reply-To: <599302b2-96d2-b571-01ee-f4914acaf765@lab.ntt.co.jp>
-References: <1558609008-2590-1-git-send-email-makita.toshiaki@lab.ntt.co.jp>
-        <1558609008-2590-4-git-send-email-makita.toshiaki@lab.ntt.co.jp>
-        <87zhnd1kg9.fsf@toke.dk>
-        <599302b2-96d2-b571-01ee-f4914acaf765@lab.ntt.co.jp>
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: Getting empty callchain from perf_callchain_kernel()
+Message-ID: <20190523133253.tad6ywzzexks6hrp@treble>
+References: <20190517074600.GJ2623@hirez.programming.kicks-ass.net>
+ <20190517081057.GQ2650@hirez.programming.kicks-ass.net>
+ <CACPcB9cB5n1HOmZcVpusJq8rAV5+KfmZ-Lxv3tgsSoy7vNrk7w@mail.gmail.com>
+ <20190517091044.GM2606@hirez.programming.kicks-ass.net>
+ <CACPcB9cpNp5CBqoRs+XMCwufzAFa8Pj-gbmj9fb+g5wVdue=ig@mail.gmail.com>
+ <20190522140233.GC16275@worktop.programming.kicks-ass.net>
+ <ab047883-69f6-1175-153f-5ad9462c6389@fb.com>
+ <20190522174517.pbdopvookggen3d7@treble>
+ <20190522234635.a47bettklcf5gt7c@treble>
+ <CACPcB9dRJ89YAMDQdKoDMU=vFfpb5AaY0mWC_Xzw1ZMTFBf6ng@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.46]); Thu, 23 May 2019 13:29:42 +0000 (UTC)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CACPcB9dRJ89YAMDQdKoDMU=vFfpb5AaY0mWC_Xzw1ZMTFBf6ng@mail.gmail.com>
+User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.39]); Thu, 23 May 2019 13:32:57 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 23 May 2019 20:35:50 +0900
-Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp> wrote:
-
-> On 2019/05/23 20:25, Toke Høiland-Jørgensen wrote:
-> > Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp> writes:
-> >   
-> >> This improves XDP_TX performance by about 8%.
-> >>
-> >> Here are single core XDP_TX test results. CPU consumptions are taken
-> >> from "perf report --no-child".
-> >>
-> >> - Before:
-> >>
-> >>   7.26 Mpps
-> >>
-> >>   _raw_spin_lock  7.83%
-> >>   veth_xdp_xmit  12.23%
-> >>
-> >> - After:
-> >>
-> >>   7.84 Mpps
-> >>
-> >>   _raw_spin_lock  1.17%
-> >>   veth_xdp_xmit   6.45%
-> >>
-> >> Signed-off-by: Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
-> >> ---
-> >>  drivers/net/veth.c | 26 +++++++++++++++++++++++++-
-> >>  1 file changed, 25 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> >> index 52110e5..4edc75f 100644
-> >> --- a/drivers/net/veth.c
-> >> +++ b/drivers/net/veth.c
-> >> @@ -442,6 +442,23 @@ static int veth_xdp_xmit(struct net_device *dev, int n,
-> >>  	return ret;
-> >>  }
-> >>  
-> >> +static void veth_xdp_flush_bq(struct net_device *dev)
-> >> +{
-> >> +	struct xdp_tx_bulk_queue *bq = this_cpu_ptr(&xdp_tx_bq);
-> >> +	int sent, i, err = 0;
-> >> +
-> >> +	sent = veth_xdp_xmit(dev, bq->count, bq->q, 0);  
-> > 
-> > Wait, veth_xdp_xmit() is just putting frames on a pointer ring. So
-> > you're introducing an additional per-cpu bulk queue, only to avoid lock
-> > contention around the existing pointer ring. But the pointer ring is
-> > per-rq, so if you have lock contention, this means you must have
-> > multiple CPUs servicing the same rq, no?  
+On Thu, May 23, 2019 at 02:48:11PM +0800, Kairui Song wrote:
+> On Thu, May 23, 2019 at 7:46 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> >
+> > On Wed, May 22, 2019 at 12:45:17PM -0500, Josh Poimboeuf wrote:
+> > > On Wed, May 22, 2019 at 02:49:07PM +0000, Alexei Starovoitov wrote:
+> > > > The one that is broken is prog_tests/stacktrace_map.c
+> > > > There we attach bpf to standard tracepoint where
+> > > > kernel suppose to collect pt_regs before calling into bpf.
+> > > > And that's what bpf_get_stackid_tp() is doing.
+> > > > It passes pt_regs (that was collected before any bpf)
+> > > > into bpf_get_stackid() which calls get_perf_callchain().
+> > > > Same thing with kprobes, uprobes.
+> > >
+> > > Is it trying to unwind through ___bpf_prog_run()?
+> > >
+> > > If so, that would at least explain why ORC isn't working.  Objtool
+> > > currently ignores that function because it can't follow the jump table.
+> >
+> > Here's a tentative fix (for ORC, at least).  I'll need to make sure this
+> > doesn't break anything else.
+> >
+> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > index 242a643af82f..1d9a7cc4b836 100644
+> > --- a/kernel/bpf/core.c
+> > +++ b/kernel/bpf/core.c
+> > @@ -1562,7 +1562,6 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+> >                 BUG_ON(1);
+> >                 return 0;
+> >  }
+> > -STACK_FRAME_NON_STANDARD(___bpf_prog_run); /* jump table */
+> >
+> >  #define PROG_NAME(stack_size) __bpf_prog_run##stack_size
+> >  #define DEFINE_BPF_PROG_RUN(stack_size) \
+> > diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+> > index 172f99195726..2567027fce95 100644
+> > --- a/tools/objtool/check.c
+> > +++ b/tools/objtool/check.c
+> > @@ -1033,13 +1033,6 @@ static struct rela *find_switch_table(struct objtool_file *file,
+> >                 if (text_rela->type == R_X86_64_PC32)
+> >                         table_offset += 4;
+> >
+> > -               /*
+> > -                * Make sure the .rodata address isn't associated with a
+> > -                * symbol.  gcc jump tables are anonymous data.
+> > -                */
+> > -               if (find_symbol_containing(rodata_sec, table_offset))
+> > -                       continue;
+> > -
+> >                 rodata_rela = find_rela_by_dest(rodata_sec, table_offset);
+> >                 if (rodata_rela) {
+> >                         /*
 > 
-> Yes, it's possible. Not recommended though.
+> Hi Josh, this still won't fix the problem.
 > 
+> Problem is not (or not only) with ___bpf_prog_run, what actually went
+> wrong is with the JITed bpf code.
 
-I think the general per-cpu TX bulk queue is overkill.  There is a loop
-over packets in veth_xdp_rcv(struct veth_rq *rq, budget, *status), and
-the caller veth_poll() will call veth_xdp_flush(rq->dev).
+There seem to be a bunch of issues.  My patch at least fixes the failing
+selftest reported by Alexei for ORC.
 
-Why can't you store this "temp" bulk array in struct veth_rq ?
+How can I recreate your issue?
 
-You could even alloc/create it on the stack of veth_poll() and send it
-along via a pointer to veth_xdp_rcv).
+> For frame pointer unwinder, it seems the JITed bpf code will have a
+> shifted "BP" register? (arch/x86/net/bpf_jit_comp.c:217), so if we can
+> unshift it properly then it will work.
+
+Yeah, that looks like a frame pointer bug in emit_prologue().
+
+> I tried below code, and problem is fixed (only for frame pointer
+> unwinder though). Need to find a better way to detect and do any
+> similar trick for bpf part, if this is a feasible way to fix it:
+> 
+> diff --git a/arch/x86/kernel/unwind_frame.c b/arch/x86/kernel/unwind_frame.c
+> index 9b9fd4826e7a..2c0fa2aaa7e4 100644
+> --- a/arch/x86/kernel/unwind_frame.c
+> +++ b/arch/x86/kernel/unwind_frame.c
+> @@ -330,8 +330,17 @@ bool unwind_next_frame(struct unwind_state *state)
+>         }
+> 
+>         /* Move to the next frame if it's safe: */
+> -       if (!update_stack_state(state, next_bp))
+> -               goto bad_address;
+> +       if (!update_stack_state(state, next_bp)) {
+> +               // Try again with shifted BP
+> +               state->bp += 5; // see AUX_STACK_SPACE
+> +               next_bp = (unsigned long
+> *)READ_ONCE_TASK_STACK(state->task, *state->bp);
+> +               // Clean and refetch stack info, it's marked as error outed
+> +               state->stack_mask = 0;
+> +               get_stack_info(next_bp, state->task,
+> &state->stack_info, &state->stack_mask);
+> +               if (!update_stack_state(state, next_bp)) {
+> +                       goto bad_address;
+> +               }
+> +       }
+> 
+>         return true;
+
+Nack.
+
+> For ORC unwinder, I think the unwinder can't find any info about the
+> JITed part. Maybe if can let it just skip the JITed part and go to
+> kernel context, then should be good enough.
+
+If it's starting from a fake pt_regs then that's going to be a
+challenge.
+
+Will the JIT code always have the same stack layout?  If so then we
+could hard code that knowledge in ORC.  Or even better, create a generic
+interface for ORC to query the creator of the generated code about the
+stack layout.
 
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Josh
