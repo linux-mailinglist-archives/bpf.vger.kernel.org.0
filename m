@@ -2,202 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FA328ADB
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2019 21:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D83AE28B74
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2019 22:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731685AbfEWTsm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 May 2019 15:48:42 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:38092 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731727AbfEWTsk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 23 May 2019 15:48:40 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4NJi8hP007807
-        for <bpf@vger.kernel.org>; Thu, 23 May 2019 12:48:38 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=dM9+BVyTbQ+UpQVar9OuJ9mOa6aG8ajNryPCO9+TC84=;
- b=cH5YpDqLi+CHixLBKT4SUEC1kS0buGjmaHN3UnNbhX7V5irhEmIlTHU2ITVG7r4ZZSpg
- rTkUi1Q5TngrhHekFu3CNKDQT8mvcrmvLIpvvgnrJZs42PGzpPh9X0IO8f2bQYFApaR/
- hIgNplupE5tuAxxFwTPwxGK2khnmOsJp52M= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2snyam8mg5-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 23 May 2019 12:48:38 -0700
-Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 23 May 2019 12:48:37 -0700
-Received: by devvm2643.prn2.facebook.com (Postfix, from userid 111017)
-        id 57E5E125B048B; Thu, 23 May 2019 12:45:33 -0700 (PDT)
-Smtp-Origin-Hostprefix: devvm
-From:   Roman Gushchin <guro@fb.com>
-Smtp-Origin-Hostname: devvm2643.prn2.facebook.com
-To:     Alexei Starovoitov <ast@kernel.org>, <bpf@vger.kernel.org>
-CC:     Daniel Borkmann <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, <kernel-team@fb.com>,
-        <cgroups@vger.kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-        Yonghong Song <yhs@fb.com>, <linux-kernel@vger.kernel.org>,
-        Roman Gushchin <guro@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v3 bpf-next 4/4] selftests/bpf: add auto-detach test
-Date:   Thu, 23 May 2019 12:45:32 -0700
-Message-ID: <20190523194532.2376233-5-guro@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190523194532.2376233-1-guro@fb.com>
-References: <20190523194532.2376233-1-guro@fb.com>
-X-FB-Internal: Safe
+        id S2387974AbfEWUUW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 May 2019 16:20:22 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:45386 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726451AbfEWUUV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 May 2019 16:20:21 -0400
+Received: by mail-wr1-f65.google.com with SMTP id b18so7604439wrq.12
+        for <bpf@vger.kernel.org>; Thu, 23 May 2019 13:20:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=9F0FoQ8PdR78lWVTG+S7ZbqZVtmtEg/8mKeg0Q5fd34=;
+        b=BTfLCdPDlz+1fas+1ZiAKLw9cZSnFWtYUU5BFnH2r8aD3B2VRc8v8uMMbYY5fwtDfI
+         MIDJ+z35vCrUV0IoDoYuBUx+bcKCJ2XhFa0BZV9F2kImou9WkLWOMO3+LiU4pZanU5qi
+         vUlxQCSmH48a9naWMZMxcKaki3oYufNDVdP9qn7o4jSpv6SVPScgwDVlrAmzE1uQrJ04
+         WKvr9lRyWuRKhgaR3hCX0ES01sDpV5442lBHzMYJvg4YMqNugEP97S2NssCEQmItQLp7
+         UrnZe8rGPD/Qn57yALL0RrDScJjcJFG8FAk9087tbLoyGN16uga6ELcHiJ1BUlal9C+e
+         syWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=9F0FoQ8PdR78lWVTG+S7ZbqZVtmtEg/8mKeg0Q5fd34=;
+        b=G7hWz5z3rboXfzABhk7ST26S+LiJatfk3JlVRhbtsbiNJfIZyc2GGsTWM61YtHSitK
+         TEB7THSZ/KgN0PY5VgUpxLxkUF6BRVQcw+7LQrjeSPgxiw5PjIid/5aXHnx+2Oz0QMAW
+         fUldyB7rcjRoRHBseeQCJjeaNiOdwVvbQtKI92HdUAufK2kizAR0rsYjuopQ+kR5lSPP
+         URDgC/GovZ87pWXluzX3h3tAYdaz4Jd3uniwET+C6g4S7618UmlF5wJ16/hdW0n7x6Hh
+         /V/xP6H/IuC+AjFo/YjKOw6XUTqaatJdlmSG8Rr8jmiV9rw+Jp6t3+7RJwhqvBn2LKX2
+         jGxw==
+X-Gm-Message-State: APjAAAUCmrC3Ot2j+4scidh0KA1WenjWmjlcz5M2hjka4KTG7f8Cnae+
+        SumBptPbaw2/Njk/HrUamgtP+w==
+X-Google-Smtp-Source: APXvYqypmmuftnJtPF9XV1EJiIzFebtZBBxdAsyaAq270PwsWqAX4IlWypDfDDC2pHGQciSd3CKxVg==
+X-Received: by 2002:adf:ec8c:: with SMTP id z12mr632721wrn.209.1558642819385;
+        Thu, 23 May 2019 13:20:19 -0700 (PDT)
+Received: from LAPTOP-V3S7NLPL (cpc1-cmbg19-2-0-cust104.5-4.cable.virginm.net. [82.27.180.105])
+        by smtp.gmail.com with ESMTPSA id w3sm416822wrv.25.2019.05.23.13.20.18
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 23 May 2019 13:20:18 -0700 (PDT)
+References: <1558551312-17081-1-git-send-email-jiong.wang@netronome.com> <1558551312-17081-2-git-send-email-jiong.wang@netronome.com> <20190523020757.mwbux72pqjbvpqkh@ast-mbp.dhcp.thefacebook.com> <B9C052B7-DFB9-461A-B334-1607A94833D3@netronome.com> <20190523161601.mqvkzwjegon2cqku@ast-mbp.dhcp.thefacebook.com>
+User-agent: mu4e 0.9.18; emacs 25.2.2
+From:   Jiong Wang <jiong.wang@netronome.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiong Wang <jiong.wang@netronome.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, oss-drivers@netronome.com,
+        davem@davemloft.net, paul.burton@mips.com, udknight@gmail.com,
+        zlim.lnx@gmail.com, illusionist.neo@gmail.com,
+        naveen.n.rao@linux.ibm.com, sandipan@linux.ibm.com,
+        schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com,
+        jakub.kicinski@netronome.com
+Subject: Re: [PATCH v7 bpf-next 01/16] bpf: verifier: mark verified-insn with sub-register zext flag
+In-reply-to: <20190523161601.mqvkzwjegon2cqku@ast-mbp.dhcp.thefacebook.com>
+Date:   Thu, 23 May 2019 21:20:15 +0100
+Message-ID: <87h89kkjnk.fsf@netronome.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-23_16:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=2 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=488 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905230128
-X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a kselftest to cover bpf auto-detachment functionality.
-The test creates a cgroup, associates some resources with it,
-attaches a couple of bpf programs and deletes the cgroup.
 
-Then it checks that bpf programs are going away in 5 seconds.
+Alexei Starovoitov writes:
 
-Expected output:
-  $ ./test_cgroup_attach
-  #override:PASS
-  #multi:PASS
-  #autodetach:PASS
-  test_cgroup_attach:PASS
+<snip>
 
-On a kernel without auto-detaching:
-  $ ./test_cgroup_attach
-  #override:PASS
-  #multi:PASS
-  #autodetach:FAIL
-  test_cgroup_attach:FAIL
+> well, it made me realize that we're probably doing it wrong,
+> since after calling check_reg_arg() we need to re-parse insn encoding.
+> How about we change check_reg_arg()'s enum reg_arg_type instead?
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
----
- .../selftests/bpf/test_cgroup_attach.c        | 98 ++++++++++++++++++-
- 1 file changed, 97 insertions(+), 1 deletion(-)
+This is exactly what I had implemented in my initial internal version.
 
-diff --git a/tools/testing/selftests/bpf/test_cgroup_attach.c b/tools/testing/selftests/bpf/test_cgroup_attach.c
-index 2d6d57f50e10..7671909ee1cb 100644
---- a/tools/testing/selftests/bpf/test_cgroup_attach.c
-+++ b/tools/testing/selftests/bpf/test_cgroup_attach.c
-@@ -456,9 +456,105 @@ static int test_multiprog(void)
- 	return rc;
- }
- 
-+static int test_autodetach(void)
-+{
-+	__u32 prog_cnt = 4, attach_flags;
-+	int allow_prog[2] = {0};
-+	__u32 prog_ids[2] = {0};
-+	int cg = 0, i, rc = -1;
-+	void *ptr = NULL;
-+	int attempts;
-+
-+	for (i = 0; i < ARRAY_SIZE(allow_prog); i++) {
-+		allow_prog[i] = prog_load_cnt(1, 1 << i);
-+		if (!allow_prog[i])
-+			goto err;
-+	}
-+
-+	if (setup_cgroup_environment())
-+		goto err;
-+
-+	/* create a cgroup, attach two programs and remember their ids */
-+	cg = create_and_get_cgroup("/cg_autodetach");
-+	if (cg < 0)
-+		goto err;
-+
-+	if (join_cgroup("/cg_autodetach"))
-+		goto err;
-+
-+	for (i = 0; i < ARRAY_SIZE(allow_prog); i++) {
-+		if (bpf_prog_attach(allow_prog[i], cg, BPF_CGROUP_INET_EGRESS,
-+				    BPF_F_ALLOW_MULTI)) {
-+			log_err("Attaching prog[%d] to cg:egress", i);
-+			goto err;
-+		}
-+	}
-+
-+	/* make sure that programs are attached and run some traffic */
-+	assert(bpf_prog_query(cg, BPF_CGROUP_INET_EGRESS, 0, &attach_flags,
-+			      prog_ids, &prog_cnt) == 0);
-+	assert(system(PING_CMD) == 0);
-+
-+	/* allocate some memory (4Mb) to pin the original cgroup */
-+	ptr = malloc(4 * (1 << 20));
-+	if (!ptr)
-+		goto err;
-+
-+	/* close programs and cgroup fd */
-+	for (i = 0; i < ARRAY_SIZE(allow_prog); i++) {
-+		close(allow_prog[i]);
-+		allow_prog[i] = 0;
-+	}
-+
-+	close(cg);
-+	cg = 0;
-+
-+	/* leave the cgroup and remove it. don't detach programs */
-+	cleanup_cgroup_environment();
-+
-+	/* wait for the asynchronous auto-detachment.
-+	 * wait for no more than 5 sec and give up.
-+	 */
-+	for (i = 0; i < ARRAY_SIZE(prog_ids); i++) {
-+		for (attempts = 5; attempts >= 0; attempts--) {
-+			int fd = bpf_prog_get_fd_by_id(prog_ids[i]);
-+
-+			if (fd < 0)
-+				break;
-+
-+			/* don't leave the fd open */
-+			close(fd);
-+
-+			if (!attempts)
-+				goto err;
-+
-+			sleep(1);
-+		}
-+	}
-+
-+	rc = 0;
-+err:
-+	for (i = 0; i < ARRAY_SIZE(allow_prog); i++)
-+		if (allow_prog[i] > 0)
-+			close(allow_prog[i]);
-+	if (cg)
-+		close(cg);
-+	free(ptr);
-+	cleanup_cgroup_environment();
-+	if (!rc)
-+		printf("#autodetach:PASS\n");
-+	else
-+		printf("#autodetach:FAIL\n");
-+	return rc;
-+}
-+
- int main(void)
- {
--	int (*tests[])(void) = {test_foo_bar, test_multiprog};
-+	int (*tests[])(void) = {
-+		test_foo_bar,
-+		test_multiprog,
-+		test_autodetach,
-+	};
- 	int errors = 0;
- 	int i;
- 
--- 
-2.20.1
+> The caller has much more context and no need to parse insn opcode again.
 
+And I had exactly the same thoughts, is_reg64 is duplicating what has been
+done.
+
+The code evolved into the current shape mostly because I agreed if we
+re-centre all checks inside check_reg_arg, then we don't need to touch
+quite a few call sites of check_reg_arg, the change/patch looks simpler,
+and I was thinking is_reg64 is a quick check, so the overhead is not big.
+
+> Something like:
+> enum reg_arg_type {
+>         SRC_OP64,        
+>         DST_OP64,       
+>         DST_OP_NO_MARK, // probably no need to split this one ?
+>         SRC_OP32,      
+>         DST_OP32,      
+> };
+>
+
+Yeah, no need to split DST_OP_NO_MARK, my split was
+
+enum reg_arg_type {
+   SRC_OP,
++  SRC32_OP,
+   DST_OP,
++  DST32_OP,
+   DST_OP_NO_MARK 
+}
+
+No renaming on existing SRC/DST_OP, they mean 64-bit, the changes are
+smaller, looks better?
+
+But, we also need to know whether one patch-insn define sub-register, if it
+is, we then conservatively mark it as needing zero extension. patch-insn
+doesn't go through check_reg_arg analysis, so still need separate insn
+parsing.
+
+And because we also introduced hi32 rand which should only happen if
+insn_aux.zext_dst is false. But when zext_dst is false, there are two
+situations, one is this insn define a sub-register whose hi32 is not used
+later, the other is this insn define a full 64-bit register. hi32 rand
+should only happen on the prior situation. So is_reg64 also called to rule
+out the latter. The use of is_64 could be removed by changing aux.zext_dst
+from bool to enum, so we rename it to aux.reg_def, its value could be:
+
+  REG_DEF_NONE (some insn doesn't define value, this is default)
+  REG_DEF64
+  REG_DEF32
+  REG_DEF32_ZEXT
+
+When calling check_reg_arg, and DST/DST_32 will initialize aux.reg_def into
+REG_DEF64 and REG_DEF32 accordingly. Then, a later 64-bit use on sub-register
+could promote REG_DEF32 into REG_DEF32_ZEXT.
+
+In all, my propose changes are:
+  1. split enum reg_arg_type, adding new SRC32_OP and DST32_OP, during insn
+     walking, let call sites of check_reg_arg passing correct type
+     directly, remove insn re-parsing inside check_reg_arg.
+  2. keep "is_reg64", it will be used by parsing patched-insn.
+  3. change aux.zext_dst to aux.reg_def, and change the type from bool to
+     the enum listed above. When promoting one reg to REG_DEF32_ZEXT, also
+     do sanity check, the promotion should only happen on REG_DEF32.
+
+Does this looks good?
+
+Regards,
+Jiong
