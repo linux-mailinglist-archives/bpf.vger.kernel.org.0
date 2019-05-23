@@ -2,200 +2,246 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7B228378
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2019 18:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C0228435
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2019 18:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730987AbfEWQ1H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 May 2019 12:27:07 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:40567 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730899AbfEWQ1G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 May 2019 12:27:06 -0400
-Received: by mail-qk1-f193.google.com with SMTP id q197so4177224qke.7
-        for <bpf@vger.kernel.org>; Thu, 23 May 2019 09:27:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=+BHvPvg9wxYFnwvNTSzxgrkbl64Nq/obBbwrTAiGAmo=;
-        b=PMPEm3cdbSbFnwdzM4WoZQc5Wh5+S9GtkS7pV35RFuwT/cme9bXcFJCLqJooqwn2b2
-         4okbuItYRJAZugDPHs2D6ZhZI9wKmGbbIZC34ls9iWUL/ZEpnsBr304A5EABzHVQJnBA
-         C/GeU26opZBdQ3haW3rrk19OGz6XUNHW6W/w46CQzGnTAsZPOIS69+7xXR6ed8bkbTF6
-         FsoOdZzyjRjm5hZ8fKoawogy81UKlzyBl2fB8ui0OML6JMj57p/E9RIyRz4ts1lt+Hca
-         8fKN6SKrIo7t28xuCbsrCPde0t25zhuDFwdgI2p8zp5jO3Xi9ioSd/67D+QsvQlGfZZH
-         3SqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=+BHvPvg9wxYFnwvNTSzxgrkbl64Nq/obBbwrTAiGAmo=;
-        b=s/8ExliF44DI0zPJ7FeP1nZx/p/3J7yvSkjDnSsEy1ODdvjNuwMHQo4p6oaFwdRGdw
-         ygZRJhQS8v8LrFOwIYQv2rz2ypXTLF6sMGwHLMGwVQxt/ITCiWbsNQdJTftCSi5FGsz/
-         ejIJVZmQVHhf1/NAmiAIGwNafa+UVPaWmnm0oNvMbi/OG02Mbcl0CtpcKX+8oGQuvQHy
-         UZQMdvoD20zDe02hM117gt9tfIlK5YmNLHI5+F3ckp5lKCxRewjwh77PlVoyD2FuRHtc
-         +IAAC/wGzzZc/AoRbcJmbqcx8tvCknhDKXuPMAo38bAr+dn1VXt3567aKjYdePvplNPK
-         DskA==
-X-Gm-Message-State: APjAAAWpqRVjnbSElfvdBU0vsmWthOv9LwrnZd3yL2dVYeGwYQcP1KSP
-        rlht7yVmXVQrJfOFg4mpbv7uGQ==
-X-Google-Smtp-Source: APXvYqyHVWnLxW2/LPniB3mpATf22VUTTwatVFJzVPTg9QhlykO9yHa2vv8OCtRdK8WyRK7uMpkXRw==
-X-Received: by 2002:a37:c409:: with SMTP id d9mr35683282qki.125.1558628825760;
-        Thu, 23 May 2019 09:27:05 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id l40sm17901238qtc.32.2019.05.23.09.27.04
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 23 May 2019 09:27:05 -0700 (PDT)
-Date:   Thu, 23 May 2019 09:27:00 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 10/12] bpftool: add C output format option to
- btf dump subcommand
-Message-ID: <20190523092700.00c1cdaf@cakuba.netronome.com>
-In-Reply-To: <CAEf4BzaOAxKRNQasQtvAyLnvKtRLCpAcBq2q651PKG6b6r5Ktw@mail.gmail.com>
-References: <20190522195053.4017624-1-andriin@fb.com>
-        <20190522195053.4017624-11-andriin@fb.com>
-        <20190522172553.6f057e51@cakuba.netronome.com>
-        <CAEf4BzZ36rcVuKabefWD-CaJ-BUECiYM_=3mzNAi3XMAR=49fQ@mail.gmail.com>
-        <20190522182328.7c8621ec@cakuba.netronome.com>
-        <CAEf4BzaOAxKRNQasQtvAyLnvKtRLCpAcBq2q651PKG6b6r5Ktw@mail.gmail.com>
-Organization: Netronome Systems, Ltd.
+        id S1730951AbfEWQsv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 May 2019 12:48:51 -0400
+Received: from www62.your-server.de ([213.133.104.62]:52604 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730899AbfEWQsv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 May 2019 12:48:51 -0400
+Received: from [78.46.172.2] (helo=sslproxy05.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hTqZz-0008OR-DD; Thu, 23 May 2019 18:28:31 +0200
+Received: from [178.197.249.12] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hTqZz-000WCz-7N; Thu, 23 May 2019 18:28:31 +0200
+Subject: Re: [PATCH bpf-next v2 1/3] bpf: implement bpf_send_signal() helper
+To:     Yonghong Song <yhs@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Cc:     Alexei Starovoitov <ast@fb.com>, Kernel Team <Kernel-team@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20190522053900.1663459-1-yhs@fb.com>
+ <20190522053900.1663537-1-yhs@fb.com>
+ <2c07890b-9da5-b4e8-dc94-35def14470ad@iogearbox.net>
+ <6041511a-1628-868f-b4b1-e567c234a4a5@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <d863ad02-5151-3e3c-a276-404c9dc957b2@iogearbox.net>
+Date:   Thu, 23 May 2019 18:28:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <6041511a-1628-868f-b4b1-e567c234a4a5@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25458/Thu May 23 09:58:32 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 22 May 2019 21:43:43 -0700, Andrii Nakryiko wrote:
-> On Wed, May 22, 2019 at 6:23 PM Jakub Kicinski wrote:
-> > On Wed, 22 May 2019 17:58:23 -0700, Andrii Nakryiko wrote:  
-> > > On Wed, May 22, 2019 at 5:25 PM Jakub Kicinski wrote:  
-> > > > On Wed, 22 May 2019 12:50:51 -0700, Andrii Nakryiko wrote:  
-> > > > > + * Copyright (C) 2019 Facebook
-> > > > > + */
-> > > > >
-> > > > >  #include <errno.h>
-> > > > >  #include <fcntl.h>
-> > > > > @@ -340,11 +347,48 @@ static int dump_btf_raw(const struct btf *btf,
-> > > > >       return 0;
-> > > > >  }
-> > > > >
-> > > > > +static void btf_dump_printf(void *ctx, const char *fmt, va_list args)
-> > > > > +{
-> > > > > +     vfprintf(stdout, fmt, args);
-> > > > > +}
-> > > > > +
-> > > > > +static int dump_btf_c(const struct btf *btf,
-> > > > > +                   __u32 *root_type_ids, int root_type_cnt)  
-> > > >
-> > > > Please break the line after static int.  
-> > >
-> > > I don't mind, but it seems that prevalent formatting for such cases
-> > > (at least in bpftool code base) is aligning arguments and not break
-> > > static <return type> into separate line:
-> > >
-> > > // multi-line function definitions with static on the same line
-> > > $ rg '^static \w+.*\([^\)]*$' | wc -l
-> > > 45
-> > > // multi-line function definitions with static on separate line
-> > > $ rg '^static \w+[^\(\{;]*$' | wc -l
-> > > 12
-> > >
-> > > So I don't mind changing, but which one is canonical way of formatting?  
-> >
-> > Not really, just my preference :)  
+On 05/23/2019 05:58 PM, Yonghong Song wrote:
+> On 5/23/19 8:41 AM, Daniel Borkmann wrote:
+>> On 05/22/2019 07:39 AM, Yonghong Song wrote:
+>>> This patch tries to solve the following specific use case.
+>>>
+>>> Currently, bpf program can already collect stack traces
+>>> through kernel function get_perf_callchain()
+>>> when certain events happens (e.g., cache miss counter or
+>>> cpu clock counter overflows). But such stack traces are
+>>> not enough for jitted programs, e.g., hhvm (jited php).
+>>> To get real stack trace, jit engine internal data structures
+>>> need to be traversed in order to get the real user functions.
+>>>
+>>> bpf program itself may not be the best place to traverse
+>>> the jit engine as the traversing logic could be complex and
+>>> it is not a stable interface either.
+>>>
+>>> Instead, hhvm implements a signal handler,
+>>> e.g. for SIGALARM, and a set of program locations which
+>>> it can dump stack traces. When it receives a signal, it will
+>>> dump the stack in next such program location.
+>>>
+>>> Such a mechanism can be implemented in the following way:
+>>>    . a perf ring buffer is created between bpf program
+>>>      and tracing app.
+>>>    . once a particular event happens, bpf program writes
+>>>      to the ring buffer and the tracing app gets notified.
+>>>    . the tracing app sends a signal SIGALARM to the hhvm.
+>>>
+>>> But this method could have large delays and causing profiling
+>>> results skewed.
+>>>
+>>> This patch implements bpf_send_signal() helper to send
+>>> a signal to hhvm in real time, resulting in intended stack traces.
+>>>
+>>> Signed-off-by: Yonghong Song <yhs@fb.com>
+>>> ---
+>>>   include/uapi/linux/bpf.h | 17 +++++++++-
+>>>   kernel/trace/bpf_trace.c | 67 ++++++++++++++++++++++++++++++++++++++++
+>>>   2 files changed, 83 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>>> index 63e0cf66f01a..68d4470523a0 100644
+>>> --- a/include/uapi/linux/bpf.h
+>>> +++ b/include/uapi/linux/bpf.h
+>>> @@ -2672,6 +2672,20 @@ union bpf_attr {
+>>>    *		0 on success.
+>>>    *
+>>>    *		**-ENOENT** if the bpf-local-storage cannot be found.
+>>> + *
+>>> + * int bpf_send_signal(u32 sig)
+>>> + *	Description
+>>> + *		Send signal *sig* to the current task.
+>>> + *	Return
+>>> + *		0 on success or successfully queued.
+>>> + *
+>>> + *		**-EBUSY** if work queue under nmi is full.
+>>> + *
+>>> + *		**-EINVAL** if *sig* is invalid.
+>>> + *
+>>> + *		**-EPERM** if no permission to send the *sig*.
+>>> + *
+>>> + *		**-EAGAIN** if bpf program can try again.
+>>>    */
+>>>   #define __BPF_FUNC_MAPPER(FN)		\
+>>>   	FN(unspec),			\
+>>> @@ -2782,7 +2796,8 @@ union bpf_attr {
+>>>   	FN(strtol),			\
+>>>   	FN(strtoul),			\
+>>>   	FN(sk_storage_get),		\
+>>> -	FN(sk_storage_delete),
+>>> +	FN(sk_storage_delete),		\
+>>> +	FN(send_signal),
+>>>   
+>>>   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+>>>    * function eBPF program intends to call
+>>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+>>> index f92d6ad5e080..f8cd0db7289f 100644
+>>> --- a/kernel/trace/bpf_trace.c
+>>> +++ b/kernel/trace/bpf_trace.c
+>>> @@ -567,6 +567,58 @@ static const struct bpf_func_proto bpf_probe_read_str_proto = {
+>>>   	.arg3_type	= ARG_ANYTHING,
+>>>   };
+>>>   
+>>> +struct send_signal_irq_work {
+>>> +	struct irq_work irq_work;
+>>> +	u32 sig;
+>>> +};
+>>> +
+>>> +static DEFINE_PER_CPU(struct send_signal_irq_work, send_signal_work);
+>>> +
+>>> +static void do_bpf_send_signal(struct irq_work *entry)
+>>> +{
+>>> +	struct send_signal_irq_work *work;
+>>> +
+>>> +	work = container_of(entry, struct send_signal_irq_work, irq_work);
+>>> +	group_send_sig_info(work->sig, SEND_SIG_PRIV, current, PIDTYPE_TGID);
+>>> +}
+>>> +
+>>> +BPF_CALL_1(bpf_send_signal, u32, sig)
+>>> +{
+>>> +	struct send_signal_irq_work *work = NULL;
+>>> +
+>>> +	/* Similar to bpf_probe_write_user, task needs to be
+>>> +	 * in a sound condition and kernel memory access be
+>>> +	 * permitted in order to send signal to the current
+>>> +	 * task.
+>>> +	 */
+>>> +	if (unlikely(current->flags & (PF_KTHREAD | PF_EXITING)))
+>>> +		return -EPERM;
+>>> +	if (unlikely(uaccess_kernel()))
+>>> +		return -EPERM;
+>>> +	if (unlikely(!nmi_uaccess_okay()))
+>>> +		return -EPERM;
+>>> +
+>>> +	if (in_nmi()) {
+>>
+>> Hm, bit confused, can't this only be done out of process context in
+>> general since only there current points to e.g. hhvm? I'm probably
+>> missing something. Could you elaborate?
 > 
-> I'll stick to majority :) I feel like it's also a preferred style in
-> libbpf, so I'd rather converge to that.
-
-Majority is often wrong or at least lazy.  But yeah, this is a waste of
-time.  Do whatever.  You also use inline keyword in C files in your
-libbpf patches..  I think kernel style rules should apply.
-
-> > In my experience having the return type on a separate line if its
-> > longer than a few chars is the simplest rule for consistent and good
-> > looking code.
-> >  
-> > > > > +     d = btf_dump__new(btf, NULL, NULL, btf_dump_printf);
-> > > > > +     if (IS_ERR(d))
-> > > > > +             return PTR_ERR(d);
-> > > > > +
-> > > > > +     if (root_type_cnt) {
-> > > > > +             for (i = 0; i < root_type_cnt; i++) {
-> > > > > +                     err = btf_dump__dump_type(d, root_type_ids[i]);
-> > > > > +                     if (err)
-> > > > > +                             goto done;
-> > > > > +             }
-> > > > > +     } else {
-> > > > > +             int cnt = btf__get_nr_types(btf);
-> > > > > +
-> > > > > +             for (id = 1; id <= cnt; id++) {
-> > > > > +                     err = btf_dump__dump_type(d, id);
-> > > > > +                     if (err)
-> > > > > +                             goto done;
-> > > > > +             }
-> > > > > +     }
-> > > > > +
-> > > > > +done:
-> > > > > +     btf_dump__free(d);
-> > > > > +     return err;  
-> > > >
-> > > > What do we do for JSON output?  
-> > >
-> > > Still dump C syntax. What do you propose? Error out if json enabled?  
-> >
-> > I wonder.  Letting it just print C is going to confuse anything that
-> > just feeds the output into a JSON parser.  I'd err on the side of
-> > returning an error, we can always relax that later if we find a use
-> > case of returning C syntax via JSON.  
+> That is true. If in nmi, it is out of process context and in nmi 
+> context, we use an irq_work here since group_send_sig_info() has
+> spinlock inside. The bpf program (e.g., a perf_event program) needs to 
+> check it is with right current (e.g., by pid) before calling
+> this helper.
 > 
-> Ok, I'll emit error (seems like pr_err automatically handles JSON
-> output, which is very nice).
+> Does this address your question?
 
-Thanks
+Hm, but how is it guaranteed that 'current' inside the callback is still
+the very same you intend to send the signal to?
 
-> > > > >       if (!btf) {
-> > > > >               err = btf__get_from_id(btf_id, &btf);
-> > > > >               if (err) {
-> > > > > @@ -444,7 +498,10 @@ static int do_dump(int argc, char **argv)
-> > > > >               }
-> > > > >       }
-> > > > >
-> > > > > -     dump_btf_raw(btf, root_type_ids, root_type_cnt);
-> > > > > +     if (dump_c)
-> > > > > +             dump_btf_c(btf, root_type_ids, root_type_cnt);
-> > > > > +     else
-> > > > > +             dump_btf_raw(btf, root_type_ids, root_type_cnt);
-> > > > >
-> > > > >  done:
-> > > > >       close(fd);
-> > > > > @@ -460,7 +517,7 @@ static int do_help(int argc, char **argv)
-> > > > >       }
-> > > > >
-> > > > >       fprintf(stderr,
-> > > > > -             "Usage: %s btf dump BTF_SRC\n"
-> > > > > +             "Usage: %s btf dump BTF_SRC [c]\n"  
-> > > >
-> > > > bpftool generally uses <key value> formats.  So perhaps we could do
-> > > > something like "[format raw|c]" here for consistency, defaulting to raw?  
-> > >
-> > > That's not true for options, though. I see that at cgroup, prog, and
-> > > some map subcommands (haven't checked all other) just accept a list of
-> > > options without extra identifying key.  
-> >
-> > Yeah, we weren't 100% enforcing this rule and it's a bit messy now :/  
-> 
-> Unless you feel very strongly about this, it seems ok to me to allow
-> "boolean options" (similarly to boolean --flag args) as a stand-alone
-> set of tags. bpftool invocations are already very verbose, no need to
-> add to that. Plus it also makes bash-completion simpler, it's always
-> good not to complicate bash script unnecessarily :)
+What happens if you're in softirq and send SIGKILL to yourself? Is this
+ignored/handled gracefully in such case?
 
-It's more of a question if we're going to have more formats.  If not
-then c as keyword is probably fine (although its worryingly short).
-If we start adding more then a key value would be better.  Let's take a
-gamble and if we add 2 more output types I'll say "I told you so"? :)
+I think some more elaborate comment in the code would definitely be help.
+
+Btw, you probably need to wrap it under #ifdef CONFIG_IRQ_WORK.
+
+>>> +		work = this_cpu_ptr(&send_signal_work);
+>>> +		if (work->irq_work.flags & IRQ_WORK_BUSY)
+>>> +			return -EBUSY;
+>>> +
+>>> +		work->sig = sig;
+>>> +		irq_work_queue(&work->irq_work);
+>>> +		return 0;
+>>> +	}
+>>> +
+>>> +	return group_send_sig_info(sig, SEND_SIG_PRIV, current, PIDTYPE_TGID);
+>>> +
+>>
+>> Nit: extra newline slipped in
+> Thanks. Will remove this in the next revision.
+>>
+>>> +}
+>>> +
+>>> +static const struct bpf_func_proto bpf_send_signal_proto = {
+>>> +	.func		= bpf_send_signal,
+>>> +	.gpl_only	= false,
+>>> +	.ret_type	= RET_INTEGER,
+>>> +	.arg1_type	= ARG_ANYTHING,
+>>> +};
+>>> +
+>>>   static const struct bpf_func_proto *
+>>>   tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>>>   {
+>>> @@ -617,6 +669,8 @@ tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>>>   	case BPF_FUNC_get_current_cgroup_id:
+>>>   		return &bpf_get_current_cgroup_id_proto;
+>>>   #endif
+>>> +	case BPF_FUNC_send_signal:
+>>> +		return &bpf_send_signal_proto;
+>>>   	default:
+>>>   		return NULL;
+>>>   	}
+>>> @@ -1343,5 +1397,18 @@ static int __init bpf_event_init(void)
+>>>   	return 0;
+>>>   }
+>>>   
+>>> +static int __init send_signal_irq_work_init(void)
+>>> +{
+>>> +	int cpu;
+>>> +	struct send_signal_irq_work *work;
+>>> +
+>>> +	for_each_possible_cpu(cpu) {
+>>> +		work = per_cpu_ptr(&send_signal_work, cpu);
+>>> +		init_irq_work(&work->irq_work, do_bpf_send_signal);
+>>> +	}
+>>> +	return 0;
+>>> +}
+>>> +
+>>>   fs_initcall(bpf_event_init);
+>>> +subsys_initcall(send_signal_irq_work_init);
+>>>   #endif /* CONFIG_MODULES */
+>>>
+>>
+
