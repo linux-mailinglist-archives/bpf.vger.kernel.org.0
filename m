@@ -2,174 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DCAC729032
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 06:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1FD29047
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 07:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731628AbfEXEyn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 May 2019 00:54:43 -0400
-Received: from tama500.ecl.ntt.co.jp ([129.60.39.148]:36499 "EHLO
-        tama500.ecl.ntt.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbfEXEyn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 May 2019 00:54:43 -0400
-Received: from vc1.ecl.ntt.co.jp (vc1.ecl.ntt.co.jp [129.60.86.153])
-        by tama500.ecl.ntt.co.jp (8.13.8/8.13.8) with ESMTP id x4O4sCOR003200;
-        Fri, 24 May 2019 13:54:12 +0900
-Received: from vc1.ecl.ntt.co.jp (localhost [127.0.0.1])
-        by vc1.ecl.ntt.co.jp (Postfix) with ESMTP id 90D65EA7F56;
-        Fri, 24 May 2019 13:54:12 +0900 (JST)
-Received: from jcms-pop21.ecl.ntt.co.jp (jcms-pop21.ecl.ntt.co.jp [129.60.87.134])
-        by vc1.ecl.ntt.co.jp (Postfix) with ESMTP id 85EAEEA7F04;
-        Fri, 24 May 2019 13:54:12 +0900 (JST)
-Received: from [IPv6:::1] (eb8460w-makita.sic.ecl.ntt.co.jp [129.60.241.47])
-        by jcms-pop21.ecl.ntt.co.jp (Postfix) with ESMTPSA id 7A2B4400870;
-        Fri, 24 May 2019 13:54:12 +0900 (JST)
-Subject: Re: [PATCH bpf-next 3/3] veth: Support bulk XDP_TX
-References: <1558609008-2590-1-git-send-email-makita.toshiaki@lab.ntt.co.jp>
- <1558609008-2590-4-git-send-email-makita.toshiaki@lab.ntt.co.jp>
- <87zhnd1kg9.fsf@toke.dk> <599302b2-96d2-b571-01ee-f4914acaf765@lab.ntt.co.jp>
- <20190523152927.14bf7ed1@carbon>
- <c902c0f4-947b-ba9e-7baa-628ba87a8f01@gmail.com>
- <94046143-f05d-77db-88c4-7bd62f2c98d4@redhat.com>
- <c560baa0-8a71-4ab3-7107-c831d6ef8bb8@lab.ntt.co.jp>
- <1035faf0-3fd2-4986-540e-b76ab53fe99b@redhat.com>
-From:   Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
-Message-ID: <3a3217f2-89d0-fc1e-bca8-953cf83f5e57@lab.ntt.co.jp>
-Date:   Fri, 24 May 2019 13:52:46 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1727134AbfEXFLP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 May 2019 01:11:15 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:49890 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726450AbfEXFLO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 May 2019 01:11:14 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4O58OsX099722;
+        Fri, 24 May 2019 05:10:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=REAUKjfQKEdcVeSuvq5zJFnMuBvwiLH8VFdTYr5FO2A=;
+ b=N16bIUJUMgkuTYiVWaUyPgm0pnAAc3GzVg4umAtD70IztClaxxPGoU97HPBidT9mjnxl
+ 8cVLsdvzQHwy5qs1ERSiwsOwFicPCr0r5YL6zYPZNaiWflbuxaLMV6KqIXDyVCH6sXAK
+ Io9e6gyFpat9tuq6/4jDXoC0migg4oRzUoruZX1TfsPHjKDCzaR8iqXezrvTybEAOsAP
+ 0SWJreZs+Ig3JmI1Jv9DTHxZK26teL52X/JlrySXh23FkUWBwoFS94s3vVAFDCIcmeo8
+ AzEs6+N9JK+nLnHBudVv0/XdNfcNj0bx25Pbn+/R6AnKxqBT/2HeDEbz0P2b+cnMR0J2 hQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 2smsk5pjbq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 May 2019 05:10:18 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4O5A9v0051514;
+        Fri, 24 May 2019 05:10:17 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 2smsh2njjg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 24 May 2019 05:10:17 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x4O5AG23052029;
+        Fri, 24 May 2019 05:10:16 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 2smsh2njja-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 May 2019 05:10:16 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x4O5AF8X001163;
+        Fri, 24 May 2019 05:10:15 GMT
+Received: from localhost (/10.159.211.99)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 24 May 2019 05:10:15 +0000
+Date:   Fri, 24 May 2019 01:10:11 -0400
+From:   Kris Van Hees <kris.van.hees@oracle.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kris Van Hees <kris.van.hees@oracle.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        dtrace-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+        mhiramat@kernel.org, acme@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, peterz@infradead.org
+Subject: Re: [RFC PATCH 00/11] bpf, trace, dtrace: DTrace BPF program type
+ implementation and sample use
+Message-ID: <20190524051011.GV2422@oracle.com>
+References: <20190521184137.GH2422@oracle.com>
+ <20190521205533.evfszcjvdouby7vp@ast-mbp.dhcp.thefacebook.com>
+ <20190521173618.2ebe8c1f@gandalf.local.home>
+ <20190521214325.rr7emn5z3b7wqiiy@ast-mbp.dhcp.thefacebook.com>
+ <20190521174757.74ec8937@gandalf.local.home>
+ <20190522052327.GN2422@oracle.com>
+ <20190522205329.uu26oq2saj56og5m@ast-mbp.dhcp.thefacebook.com>
+ <20190523054610.GR2422@oracle.com>
+ <20190523211330.hng74yi75ixmcznc@ast-mbp.dhcp.thefacebook.com>
+ <20190523190243.54221053@gandalf.local.home>
 MIME-Version: 1.0
-In-Reply-To: <1035faf0-3fd2-4986-540e-b76ab53fe99b@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CC-Mail-RelayStamp: 1
-To:     Jason Wang <jasowang@redhat.com>,
-        Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
-        bpf@vger.kernel.org
-X-TM-AS-MML: disable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190523190243.54221053@gandalf.local.home>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9266 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1905240035
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2019/05/24 12:54, Jason Wang wrote:
-> On 2019/5/24 上午11:28, Toshiaki Makita wrote:
->> On 2019/05/24 12:13, Jason Wang wrote:
->>> On 2019/5/23 下午9:51, Toshiaki Makita wrote:
->>>> On 19/05/23 (木) 22:29:27, Jesper Dangaard Brouer wrote:
->>>>> On Thu, 23 May 2019 20:35:50 +0900
->>>>> Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp> wrote:
->>>>>
->>>>>> On 2019/05/23 20:25, Toke Høiland-Jørgensen wrote:
->>>>>>> Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp> writes:
->>>>>>>> This improves XDP_TX performance by about 8%.
->>>>>>>>
->>>>>>>> Here are single core XDP_TX test results. CPU consumptions are
->>>>>>>> taken
->>>>>>>> from "perf report --no-child".
->>>>>>>>
->>>>>>>> - Before:
->>>>>>>>
->>>>>>>>     7.26 Mpps
->>>>>>>>
->>>>>>>>     _raw_spin_lock  7.83%
->>>>>>>>     veth_xdp_xmit  12.23%
->>>>>>>>
->>>>>>>> - After:
->>>>>>>>
->>>>>>>>     7.84 Mpps
->>>>>>>>
->>>>>>>>     _raw_spin_lock  1.17%
->>>>>>>>     veth_xdp_xmit   6.45%
->>>>>>>>
->>>>>>>> Signed-off-by: Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
->>>>>>>> ---
->>>>>>>>    drivers/net/veth.c | 26 +++++++++++++++++++++++++-
->>>>>>>>    1 file changed, 25 insertions(+), 1 deletion(-)
->>>>>>>>
->>>>>>>> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
->>>>>>>> index 52110e5..4edc75f 100644
->>>>>>>> --- a/drivers/net/veth.c
->>>>>>>> +++ b/drivers/net/veth.c
->>>>>>>> @@ -442,6 +442,23 @@ static int veth_xdp_xmit(struct net_device
->>>>>>>> *dev, int n,
->>>>>>>>        return ret;
->>>>>>>>    }
->>>>>>>>    +static void veth_xdp_flush_bq(struct net_device *dev)
->>>>>>>> +{
->>>>>>>> +    struct xdp_tx_bulk_queue *bq = this_cpu_ptr(&xdp_tx_bq);
->>>>>>>> +    int sent, i, err = 0;
->>>>>>>> +
->>>>>>>> +    sent = veth_xdp_xmit(dev, bq->count, bq->q, 0);
->>>>>>> Wait, veth_xdp_xmit() is just putting frames on a pointer ring. So
->>>>>>> you're introducing an additional per-cpu bulk queue, only to avoid
->>>>>>> lock
->>>>>>> contention around the existing pointer ring. But the pointer ring is
->>>>>>> per-rq, so if you have lock contention, this means you must have
->>>>>>> multiple CPUs servicing the same rq, no?
->>>>>> Yes, it's possible. Not recommended though.
->>>>>>
->>>>> I think the general per-cpu TX bulk queue is overkill.  There is a
->>>>> loop
->>>>> over packets in veth_xdp_rcv(struct veth_rq *rq, budget, *status), and
->>>>> the caller veth_poll() will call veth_xdp_flush(rq->dev).
->>>>>
->>>>> Why can't you store this "temp" bulk array in struct veth_rq ?
->>>> Of course I can. But I thought tun has the same problem and we can
->>>> decrease memory footprint by sharing the same storage between devices.
->>>
->>> For TUN and for its fast path where vhost passes a bulk of XDP frames
->>> (through msg_control) to us, we probably just need a temporary bulk
->>> array in tun_xdp_one() instead of a global one. I can post patch or
->>> maybe you if you're interested in this.
->> Of course you/I can. What I'm concerned is that could be waste of cache
->> line when softirq runs veth napi handler and then tun napi handler.
->>
+On Thu, May 23, 2019 at 07:02:43PM -0400, Steven Rostedt wrote:
+> On Thu, 23 May 2019 14:13:31 -0700
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 > 
-> Well, technically the bulk queue passed to TUN could be reused. I admit
-> it may save cacheline in ideal case but I wonder how much we could gain
-> on real workload.
-
-I see veth_rq ptr_ring suffering from cacheline miss, which makes me
-conservative about adding more buffers for xdp_frames.
-I'll wait for some more feedback from others.
-
-> (Note TUN doesn't use napi handler to do XDP, it has a
-> NAPI mode but it was mainly used for hardening and XDP was not
-> implemented there, maybe we should fix this).
-
-Ah, that's true. Sorry for confusion.
-
+> > > In DTrace, people write scripts based on UAPI-style interfaces and they don't
+> > > have to concern themselves with e.g. knowing how to get the value of the 3rd
+> > > argument that was passed by the firing probe.  All they need to know is that
+> > > the probe will have a 3rd argument, and that the 3rd argument to *any* probe
+> > > can be accessed as 'arg2' (or args[2] for typed arguments, if the provider is
+> > > capable of providing that).  Different probes have different ways of passing
+> > > arguments, and only the provider code for each probe type needs to know how
+> > > to retrieve the argument values.
+> > > 
+> > > Does this help bring clarity to the reasons why an abstract (generic) probe
+> > > concept is part of DTrace's design?  
+> > 
+> > It actually sounds worse than I thought.
+> > If dtrace script reads some kernel field it's considered to be uapi?! ouch.
+> > It means dtrace development philosophy is incompatible with the linux kernel.
+> > There is no way kernel is going to bend itself to make dtrace scripts
+> > runnable if that means that all dtrace accessible fields become uapi.
 > 
-> Thanks
-> 
-> 
->>> Thanks
->>>
->>>
->>>> Or if other devices want to reduce queues so that we can use XDP on
->>>> many-cpu servers and introduce locks, we can use this storage for that
->>>> case as well.
->>>>
->>>> Still do you prefer veth-specific solution?
->>>>
->>>>> You could even alloc/create it on the stack of veth_poll() and send it
->>>>> along via a pointer to veth_xdp_rcv).
->>>>>
->>>> Toshiaki Makita
->>>
-> 
-> 
+> Now from what I'm reading, it seams that the Dtrace layer may be
+> abstracting out fields from the kernel. This is actually something I
+> have been thinking about to solve the "tracepoint abi" issue. There's
+> usually basic ideas that happen. An interrupt goes off, there's a
+> handler, etc. We could abstract that out that we trace when an
+> interrupt goes off and the handler happens, and record the vector
+> number, and/or what device it was for. We have tracepoints in the
+> kernel that do this, but they do depend a bit on the implementation.
+> Now, if we could get a layer that abstracts this information away from
+> the implementation, then I think that's a *good* thing.
 
--- 
-Toshiaki Makita
+This is indeed what DTrace uses.  When a probe triggers (be it kprobe, network
+event, tracepoint, etc), the core execution component is invoked with a probe
+id, and a set of data items.  In its current implementation (not BPF based),
+the probe triggers which causes a probe type specific handler to be called in
+the provider module for that probe type.  The handler determines the probe id
+(e.g. for a kprobe that might be based on the program counter value), and it
+also prepares the list of data items (which we call arguments to the probe).
+It then calls the execution component with the probe id and arguments.
 
+All probe types are handled by a provider, and each provider has a handler
+that determines the probe id and arguments, and then calls the execution
+component.  So, at the level of the execution component all probes look the
+same.
+
+Scripts commonly operate on the abstract probe, but scriptr writers can opt
+to do more fancy things that do depend on probe implementation details.  In
+that case, there is of course no guarantee that the script will keep working
+as kernel releases change.
+
+> > In stark contrast to dtrace all of bpf tracing scripts (bcc scripts
+> > and bpftrace scripts) are written for specific kernel with intimate
+> > knowledge of kernel details. They do break all the time when kernel changes.
+> > kprobe and tracepoints are NOT uapi. All of them can change.
+> > tracepoints are a bit more stable than kprobes, but they are not uapi.
+> 
+> I wish that was totally true, but tracepoints *can* be an abi. I had
+> code reverted because powertop required one to be a specific format. To
+> this day, the wakeup event has a "success" field that writes in a
+> hardcoded "1", because there's tools that depend on it, and they only
+> work if there's a success field and the value is 1.
+> 
+> I do definitely agree with you that the Dtrace code shall *never* keep
+> the kernel from changing. That is, if Dtrace depends on something that
+> changes (let's say we record priority of a task, but someday priority
+> is replaced by something else), then Dtrace must cope with it. It must
+> not be a blocker like user space applications can be.
+
+I fully agree that DTrace or any other tool should never prevent changes from
+happening at the kernel level.  Even in its current (non-BPF) implementation
+it has had to cope with changes.  The abstraction through the providers has
+been a real benefit for that because changes to probe mechanisms can be dealt
+with at the level of the providers, and everything else can remain the same
+because the abstraction "hides" the implementation details.
+
+	Kris
