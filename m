@@ -2,139 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA8329A86
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 17:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C73B29AC8
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 17:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389079AbfEXPBO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 May 2019 11:01:14 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:46407 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389060AbfEXPBO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 May 2019 11:01:14 -0400
-Received: by mail-pl1-f193.google.com with SMTP id r18so4269995pls.13;
-        Fri, 24 May 2019 08:01:14 -0700 (PDT)
+        id S2389927AbfEXPP0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 May 2019 11:15:26 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:32779 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389919AbfEXPP0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 May 2019 11:15:26 -0400
+Received: by mail-wr1-f67.google.com with SMTP id d9so10423436wrx.0
+        for <bpf@vger.kernel.org>; Fri, 24 May 2019 08:15:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:user-agent:mime-version
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:references:from:openpgp:autocrypt:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=b5yK+mZDp/Hujrm74lvJegWtKN3RJ00n+oCHVxd7ITI=;
-        b=SPOH6zkCb8LRGXvbT43xu6HbGHmry2uM+kJhJqNz089cXDnTfN93jE5A1Gue5soBPJ
-         05Q56blOjWgqU5vuCObeSs4nSbp592yuqpvX7JzaHfUh/aXpNGx1mJalTKU/wcOTLQav
-         YtxbUfyDb7dcEcC6kVN8y9lm5C+Qg0GwbLKQRfbV7ejv6wyCn6WWZF4HK018yBvy3FgT
-         8pTdcEAMDwmeJEytuJ50GV7C8VoJoUL0Q8Kd8RpcBsqvhwEeJiVHf2XsrjW6G5+7JvKY
-         d5wjjbY5HcNdml/hjJccNoimF06ce1+J375cqjVahpopwDa2S2dG7G9vDK7M/lr1m+6k
-         0s4w==
+        bh=KSRUhgjwtC0T8Cv+keG98JDBG7eSt1Ox9pHF1Wcdlcc=;
+        b=1IEmrwmKbF55Hu1kEEGWyRyPnAwXt2eZZEolcQjRW3ntth1RAitHZFftkNimSIYa07
+         zuJl+w2G6kryYG68/W7M/L+sYNbmTPyi+4tNZhYgeNn6Jl9b/B0RtlXWgNv3kEnjPGYg
+         CUHcInJ+d9OqXnbh6ynV1o0iMaTjU5Dt4IVQz8UogBeAGiP13zNEuD1jwdnN6wsWQq5w
+         T4WP2NIhZiS3LingDto9IFFkr5i/qswXBC3dkfG87rsZ9QMsYapNysAnHz3amOZgcn95
+         YGp4meajU3POuDXQdpcXY8e7hozU6XzPYy9FYnIoulcD5bNZYkFfGu5vZ4Z/DWISogFY
+         ibgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=b5yK+mZDp/Hujrm74lvJegWtKN3RJ00n+oCHVxd7ITI=;
-        b=pL0wV2YzHNSe30cDJwMZUiL4C6AnCTUCHOvk6LEtiXdazbr8ySEMs4+qpXIPuDJ8Hi
-         fP40nDuWm/MHSHYnk+vla3fAE9NDAzYmw2HLhPx9ckaydRzgzwP33qBbjpHRuA92c8QN
-         Uuvh9BEkVAY2REo+W3RqD7mSXpNBPwySUYPEakmHfb3G19MoZyes7wE+Gmtv/xN410uE
-         xLAMSbK9zbHBLyI+C8Y8Iu5rjMujvTkc3bKDYz6g9SjEBraQm6Ou8aadTHCJxc/921A2
-         mJ6zuhJgpwa+RqQ7oxgjo5YYf6L3Q3+78CWYSDulNFKMq5vemDfeAgPryjY+O9upuFi0
-         UeaQ==
-X-Gm-Message-State: APjAAAVD4xrTLdjaZRwhvBUxhwM8jenJTnJh/wcV7CW6uYKXjqBxq2P4
-        BacNW1nTymNvt48XkWgE32a9pmmS82g=
-X-Google-Smtp-Source: APXvYqzFBzHYKF0Nnt/mVhvwP99i7i7X65SajBv0LIMoX2wLkTJTLRh2GWHDC4WyVFrhCAx2nk5L0A==
-X-Received: by 2002:a17:902:9698:: with SMTP id n24mr22689628plp.118.1558710073768;
-        Fri, 24 May 2019 08:01:13 -0700 (PDT)
-Received: from [127.0.1.1] ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id x17sm2332176pgh.47.2019.05.24.08.01.07
+        h=x-gm-message-state:to:cc:references:from:openpgp:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=KSRUhgjwtC0T8Cv+keG98JDBG7eSt1Ox9pHF1Wcdlcc=;
+        b=T4YK69vDRs98MZerzzZtge1mmL3KpTEBmTzGyfqfZrHBMb8QLPSOVDreR9+daSyQSA
+         rbWbmzi7l7I+nTS4dXU6rXZ6TdhPZVzybMNku6Rj9G2M9RZNHK37QJzMos2FnXKOU+C8
+         6zhGDnAl5vyBbmqZCSabvBzQR1qfEPiYpKLsN2OjwLhjyMbikMfyRxQSb+YE46BxWuyb
+         QstmSRpM44w0b3+eeySh+cLxcvYYNQQQyDMunmdZGluMMGjzvNSBC+6QyqZPpcFTkn69
+         7F9iXh46PcZhi9N+/Eh1qiHhYAZ6YkFWw21q5Y0aXtrGy5a9B4CAGqr9TtrqZuWcXaM8
+         KsUw==
+X-Gm-Message-State: APjAAAXlb0UAMkeMPldvcOndU0zVbjwUGmgRejraA8EaAIc8lJwVRrYH
+        Udswejn8/laOCkWe/Qa34/YHhtK1LM4=
+X-Google-Smtp-Source: APXvYqy5wsUOySULmMEKRPHj4TnoiDtITTFjRyQRYhytJVzdTFqBE7AuFAthy6gYYXw852fZRndmgw==
+X-Received: by 2002:adf:f8ce:: with SMTP id f14mr14820676wrq.110.1558710924379;
+        Fri, 24 May 2019 08:15:24 -0700 (PDT)
+Received: from [172.20.1.104] ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id q14sm1735039wrw.60.2019.05.24.08.15.23
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 May 2019 08:01:12 -0700 (PDT)
-Subject: [PATCH v2] bpf: sockmap,
- fix use after free from sleep in psock backlog workqueue
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     bpf@vger.kernel.org, jakub@cloudflare.com, daniel@iogearbox.net,
-        ast@kernel.org
-Cc:     netdev@vger.kernel.org
-Date:   Fri, 24 May 2019 08:01:00 -0700
-Message-ID: <155871006055.18695.17031102947214023468.stgit@john-Precision-5820-Tower>
-User-Agent: StGit/0.17.1-dirty
+        Fri, 24 May 2019 08:15:23 -0700 (PDT)
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, oss-drivers@netronome.com,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>
+References: <20190524103648.15669-1-quentin.monnet@netronome.com>
+ <20190524103648.15669-3-quentin.monnet@netronome.com>
+ <20190524132215.4113ff08@carbon>
+ <5895821e-0d79-2169-d631-0fa7560135ec@netronome.com>
+ <20190524144900.618e8e93@carbon>
+From:   Quentin Monnet <quentin.monnet@netronome.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=quentin.monnet@netronome.com; prefer-encrypt=mutual; keydata=
+ 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
+ RHhSHGnKaQ6MfrTge5Q0h5A=
+Subject: Re: [PATCH bpf-next v3 2/3] libbpf: add bpf_object__load_xattr() API
+ function to pass log_level
+Message-ID: <0842db21-996b-346c-d572-e7384802eae0@netronome.com>
+Date:   Fri, 24 May 2019 16:15:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20190524144900.618e8e93@carbon>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Backlog work for psock (sk_psock_backlog) might sleep while waiting
-for memory to free up when sending packets. However, while sleeping
-the socket may be closed and removed from the map by the user space
-side.
+2019-05-24 14:49 UTC+0200 ~ Jesper Dangaard Brouer <brouer@redhat.com>
+> On Fri, 24 May 2019 12:51:14 +0100
+> Quentin Monnet <quentin.monnet@netronome.com> wrote:
+> 
+>> 2019-05-24 13:22 UTC+0200 ~ Jesper Dangaard Brouer <brouer@redhat.com>
+>>> On Fri, 24 May 2019 11:36:47 +0100
+>>> Quentin Monnet <quentin.monnet@netronome.com> wrote:
+>>>   
+>>>> libbpf was recently made aware of the log_level attribute for programs,
+>>>> used to specify the level of information expected to be dumped by the
+>>>> verifier. Function bpf_prog_load_xattr() got support for this log_level
+>>>> parameter.
+>>>>
+>>>> But some applications using libbpf rely on another function to load
+>>>> programs, bpf_object__load(), which does accept any parameter for log
+>>>> level. Create an API function based on bpf_object__load(), but accepting
+>>>> an "attr" object as a parameter. Then add a log_level field to that
+>>>> object, so that applications calling the new bpf_object__load_xattr()
+>>>> can pick the desired log level.  
+>>>
+>>> Does this allow us to extend struct bpf_object_load_attr later?  
+>>
+>> I see no reason why it could not. Having the _xattr() version of the
+>> function is precisely a way to have something extensible in the future,
+>> without having to create additional API functions each time we want to
+>> pass a new parameter. And e.g. struct bpf_prog_load_attr (used with
+>> bpf_prog_load_xattr()) has already been extended in the past. So, yeah,
+>> we can add to it in the future.
+> 
+> Great.  I just don't know/understand how user-space handle this. If a
+> binary is compiled with libbpf as dynamic loadable lib, then it e.g. saw
+> libbpf.so.2 when it was compiled, then can't it choose to use libbpf.so.3
+> then? (e.g. when libbpf.so.2 is not on the system). (I would actually
+> like to learn/understand this, so links are welcome).
 
-This breaks an assumption in sk_stream_wait_memory, which expects the
-wait queue to be still there when it wakes up resulting in a
-use-after-free shown below. To fix his mark sendmsg as MSG_DONTWAIT
-to avoid the sleep altogether. We already set the flag for the
-sendpage case but we missed the case were sendmsg is used.
-Sockmap is currently the only user of skb_send_sock_locked() so only
-the sockmap paths should be impacted.
+Well I'm no library expert, so don't take my word for it. As far as I
+understand, the soname of the library is selected at link time. So if
+your app is linked again libbpf.so.2, you will need version 2.* of the
+library to be installed on your system, because increasing the version
+number usually implies ABI breakage. You can usually check which version
+of the libraries is needed with ldd ("ldd bpftool", except that you
+won't see libbpf because it's statically linked for bpftool).
 
-==================================================================
-BUG: KASAN: use-after-free in remove_wait_queue+0x31/0x70
-Write of size 8 at addr ffff888069a0c4e8 by task kworker/0:2/110
+This being said, for now the version number for libbpf has not been
+incremented and is still at 0, we only had the extraversion increasing.
+Since it's not part of the soname ("-Wl,-soname,libbpf.so.$(VERSION)" in
+libbpf Makefile), it is not taken into account when searching for the
+lib on the system. What I mean is that if the program is linked against
+libbpf.so.0, it could pick libbpf.so.0.0.2 or libbpf.so.0.0.3
+indifferently depending on what it finds on the system (I assume it
+takes the newest?). There should not be any ABI breakage between the
+two, so programs compiled against an older patchlevel or extraversion of
+the library should still be able to use a newer one.
 
-CPU: 0 PID: 110 Comm: kworker/0:2 Not tainted 5.0.0-rc2-00335-g28f9d1a3d4fe-dirty #14
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-2.fc27 04/01/2014
-Workqueue: events sk_psock_backlog
-Call Trace:
- print_address_description+0x6e/0x2b0
- ? remove_wait_queue+0x31/0x70
- kasan_report+0xfd/0x177
- ? remove_wait_queue+0x31/0x70
- ? remove_wait_queue+0x31/0x70
- remove_wait_queue+0x31/0x70
- sk_stream_wait_memory+0x4dd/0x5f0
- ? sk_stream_wait_close+0x1b0/0x1b0
- ? wait_woken+0xc0/0xc0
- ? tcp_current_mss+0xc5/0x110
- tcp_sendmsg_locked+0x634/0x15d0
- ? tcp_set_state+0x2e0/0x2e0
- ? __kasan_slab_free+0x1d1/0x230
- ? kmem_cache_free+0x70/0x140
- ? sk_psock_backlog+0x40c/0x4b0
- ? process_one_work+0x40b/0x660
- ? worker_thread+0x82/0x680
- ? kthread+0x1b9/0x1e0
- ? ret_from_fork+0x1f/0x30
- ? check_preempt_curr+0xaf/0x130
- ? iov_iter_kvec+0x5f/0x70
- ? kernel_sendmsg_locked+0xa0/0xe0
- skb_send_sock_locked+0x273/0x3c0
- ? skb_splice_bits+0x180/0x180
- ? start_thread+0xe0/0xe0
- ? update_min_vruntime.constprop.27+0x88/0xc0
- sk_psock_backlog+0xb3/0x4b0
- ? strscpy+0xbf/0x1e0
- process_one_work+0x40b/0x660
- worker_thread+0x82/0x680
- ? process_one_work+0x660/0x660
- kthread+0x1b9/0x1e0
- ? __kthread_create_on_node+0x250/0x250
- ret_from_fork+0x1f/0x30
+There is some documentation on libraries here (I should take some time
+to finish reading it myself!):
 
-Fixes: 20bf50de3028c ("skbuff: Function to send an skbuf on a socket")
-Reported-by: Jakub Sitnicki <jakub@cloudflare.com>
-Tested-by: Jakub Sitnicki <jakub@cloudflare.com>
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- net/core/skbuff.c |    1 +
- 1 file changed, 1 insertion(+)
+http://tldp.org/HOWTO/Program-Library-HOWTO/
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index e89be62..4a7c656 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -2337,6 +2337,7 @@ int skb_send_sock_locked(struct sock *sk, struct sk_buff *skb, int offset,
- 		kv.iov_base = skb->data + offset;
- 		kv.iov_len = slen;
- 		memset(&msg, 0, sizeof(msg));
-+		msg.msg_flags = MSG_DONTWAIT;
- 
- 		ret = kernel_sendmsg_locked(sk, &msg, &kv, 1, slen);
- 		if (ret <= 0)
+There are also interesting elements in the documentation that was cited
+when Andrey introduced the LIBPPF_API macros in libbpf:
 
+https://www.akkadia.org/drepper/dsohowto.pdf
+
+> 
+>> Do you have something in mind?
+> 
+> I was playing with extending bpf_prog_load_attr, but instead I created a
+> bpf_prog_load_attr_maps instead and a new function
+> bpf_prog_load_xattr_maps(), e.g. see:
+> 
+> https://github.com/xdp-project/xdp-tutorial/blob/master/common/common_libbpf.h
+> https://github.com/xdp-project/xdp-tutorial/blob/master/common/common_libbpf.c
+> 
+> I guess, I could just extend bpf_prog_load_attr instead, right?
+> 
+
+I believe so.
+
+Best,
+Quentin
