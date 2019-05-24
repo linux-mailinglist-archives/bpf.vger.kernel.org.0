@@ -2,71 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E37042A041
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 23:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 485A92A04F
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 23:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391771AbfEXVMg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 May 2019 17:12:36 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:45196 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391765AbfEXVMg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 May 2019 17:12:36 -0400
-Received: by mail-lj1-f194.google.com with SMTP id r76so4377888lja.12;
-        Fri, 24 May 2019 14:12:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mnO/3dMMYrqeh5q3XQqxFXSGbOB5cTFdvh8nhmTed2g=;
-        b=mjqmNifl2XKUkgrfNXwI+AkFempUWdOxrx7CvnrxyfAafYj877hgdWLwoO7gl+L8v4
-         fJ4tlhbylEfjtyud9kS3TMFL7h9knP/Os94BQyxdLA3rlQy9DhLFC8jJpNBAzvW3yQjf
-         aMey56SJ3cj3/kxGspZ8AzlOpntbqB4dyeUMn+Akrqn1AupDkcp7tddobfE/T3iosz/G
-         YZn+7+PaKDmCTZ3MwTB5vYw1jKS1p06N/lYADvwjjYVQI+nk4arNOQAbhlGp1rVWvaAK
-         geCexSqBwnt3h4+YntZGUkwGKjBS+EHikuYWojfLZwH6KOS9VkrKXWmmPNd34IEN/DfO
-         nTXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mnO/3dMMYrqeh5q3XQqxFXSGbOB5cTFdvh8nhmTed2g=;
-        b=RF/y8/3+AGN1PTjIi0n527kZB8tlQyicNvpxGgl4ui8+eCvrohn0iWlHhXQr657yYT
-         NuS/Vu8U72YCl6YM5XHxrynipn1mhbPWLkTWHjHqssFTzSwkuP0WN0Yi8GLreyWcNp3W
-         dbbd/j0MUGGbyfCMc67/pmECMpQsL6+jlJsYlgrybCO0C10asn+pxe/YVphNI7g6Gihc
-         fXmV9PhzH1jT3LQgEwXUgm4D/HOxBsO45rwwFI2FLIMpDlXi1iJxqvLUxoE6GhSJLenJ
-         8/2L1PGGZ2rxPAno0BmDXXhyYA9VRVM+EtJrStfOqeA9Ozn8CHAdEuzv1EZ86BAxaTTG
-         PXxw==
-X-Gm-Message-State: APjAAAVHdKmsBzPMmQuYZZp1RMfXiuPux/qefndbhtrRsdIfWddNq3G+
-        ubJjJLGH77ewau1cJovANHo/gxmSXmrCjSc8+zY=
-X-Google-Smtp-Source: APXvYqyiDKO8As8voWE8lkCaEE73GnCSOHxjDW7wEoRSK3c0c2vXRa+ZOCWMxjjkk0e5Q534zuUlTUAf3kCYKu7fM6k=
-X-Received: by 2002:a2e:9d09:: with SMTP id t9mr21086168lji.151.1558732354088;
- Fri, 24 May 2019 14:12:34 -0700 (PDT)
+        id S2391780AbfEXVUE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 May 2019 17:20:04 -0400
+Received: from www62.your-server.de ([213.133.104.62]:49784 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391745AbfEXVUE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 May 2019 17:20:04 -0400
+Received: from [78.46.172.2] (helo=sslproxy05.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hUHbf-0008TR-1g; Fri, 24 May 2019 23:20:03 +0200
+Received: from [178.197.249.12] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hUHbe-000KbC-SO; Fri, 24 May 2019 23:20:02 +0200
+Subject: Re: [PATCH v2] bpf: sockmap, fix use after free from sleep in psock
+ backlog workqueue
+To:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        jakub@cloudflare.com, ast@kernel.org
+Cc:     netdev@vger.kernel.org
+References: <155871006055.18695.17031102947214023468.stgit@john-Precision-5820-Tower>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c41030d0-fa97-a82f-a63c-ebabc1f3d59f@iogearbox.net>
+Date:   Fri, 24 May 2019 23:20:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
 MIME-Version: 1.0
-References: <20190524185908.3562231-1-andriin@fb.com>
-In-Reply-To: <20190524185908.3562231-1-andriin@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 24 May 2019 14:12:22 -0700
-Message-ID: <CAADnVQ+kvMpERwtPJWQFymBDPGJmODXTw1-Dd5H6tQpDzHtBCw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 00/12] BTF-to-C converter
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <155871006055.18695.17031102947214023468.stgit@john-Precision-5820-Tower>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25459/Fri May 24 09:59:21 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 24, 2019 at 11:59 AM Andrii Nakryiko <andriin@fb.com> wrote:
->
-> This patch set adds BTF-to-C dumping APIs to libbpf, allowing to output
-> a subset of BTF types as a compilable C type definitions. This is useful by
-> itself, as raw BTF output is not easy to inspect and comprehend. But it's also
-> a big part of BPF CO-RE (compile once - run everywhere) initiative aimed at
-> allowing to write relocatable BPF programs, that won't require on-the-host
-> kernel headers (and would be able to inspect internal kernel structures, not
-> exposed through kernel headers).
+On 05/24/2019 05:01 PM, John Fastabend wrote:
+> Backlog work for psock (sk_psock_backlog) might sleep while waiting
+> for memory to free up when sending packets. However, while sleeping
+> the socket may be closed and removed from the map by the user space
+> side.
+> 
+> This breaks an assumption in sk_stream_wait_memory, which expects the
+> wait queue to be still there when it wakes up resulting in a
+> use-after-free shown below. To fix his mark sendmsg as MSG_DONTWAIT
+> to avoid the sleep altogether. We already set the flag for the
+> sendpage case but we missed the case were sendmsg is used.
+> Sockmap is currently the only user of skb_send_sock_locked() so only
+> the sockmap paths should be impacted.
+> 
+> ==================================================================
+> BUG: KASAN: use-after-free in remove_wait_queue+0x31/0x70
+> Write of size 8 at addr ffff888069a0c4e8 by task kworker/0:2/110
+> 
+> CPU: 0 PID: 110 Comm: kworker/0:2 Not tainted 5.0.0-rc2-00335-g28f9d1a3d4fe-dirty #14
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-2.fc27 04/01/2014
+> Workqueue: events sk_psock_backlog
+> Call Trace:
+>  print_address_description+0x6e/0x2b0
+>  ? remove_wait_queue+0x31/0x70
+>  kasan_report+0xfd/0x177
+>  ? remove_wait_queue+0x31/0x70
+>  ? remove_wait_queue+0x31/0x70
+>  remove_wait_queue+0x31/0x70
+>  sk_stream_wait_memory+0x4dd/0x5f0
+>  ? sk_stream_wait_close+0x1b0/0x1b0
+>  ? wait_woken+0xc0/0xc0
+>  ? tcp_current_mss+0xc5/0x110
+>  tcp_sendmsg_locked+0x634/0x15d0
+>  ? tcp_set_state+0x2e0/0x2e0
+>  ? __kasan_slab_free+0x1d1/0x230
+>  ? kmem_cache_free+0x70/0x140
+>  ? sk_psock_backlog+0x40c/0x4b0
+>  ? process_one_work+0x40b/0x660
+>  ? worker_thread+0x82/0x680
+>  ? kthread+0x1b9/0x1e0
+>  ? ret_from_fork+0x1f/0x30
+>  ? check_preempt_curr+0xaf/0x130
+>  ? iov_iter_kvec+0x5f/0x70
+[...]
 
-Tested. Works. Applied. Thanks!
+Applied, thanks!
