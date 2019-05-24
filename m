@@ -2,47 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 109A92975A
+	by mail.lfdr.de (Postfix) with ESMTP id 830AE2975B
 	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 13:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391143AbfEXLf5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S2391157AbfEXLgQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 May 2019 07:36:16 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:40231 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391106AbfEXLf5 (ORCPT <rfc822;bpf@vger.kernel.org>);
         Fri, 24 May 2019 07:35:57 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:38180 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391124AbfEXLf4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 May 2019 07:35:56 -0400
-Received: by mail-wm1-f67.google.com with SMTP id t5so8866034wmh.3
-        for <bpf@vger.kernel.org>; Fri, 24 May 2019 04:35:55 -0700 (PDT)
+Received: by mail-wr1-f66.google.com with SMTP id t4so1387236wrx.7
+        for <bpf@vger.kernel.org>; Fri, 24 May 2019 04:35:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=1ltC0XV47uD9Ss4Mv4UBpU2RzQzY2ir2n8PLOTN4Pg4=;
-        b=t1TgPjC3VDUhBc1Ma0/Yt+K+ysU7yqa805qYamXVQSO2/Ggh9TFc53No+P9QiC/wP2
-         w1pXHuvKAJw3KtyGwy+nvZQlOEgRMHQXr5vjq3aUh5XLTqlUhXRVbY4SyAVL+Vx+QjNb
-         usAfI8fhXcqsdu35V1nps1ycI6X4kOY/FMapqX6M0x23DkbKBmXhs/wD2nGtuM0sB4LL
-         kYdaPEnHTxSGdQgTd2o+BATRqEy7wq5fSwDmb9fsPGwV1GK6oQN8/poBpkg89KbUpSoO
-         Yf3++wbD/36jA2ES8XD3YZw6xp9SKRBq8yHZ6+Ut/HQBLJSoH1AY0oXtneJuYR5iJUOj
-         g/sg==
+        bh=xTwwuxPV3uUT4NunKLFggl50SO6uXgijXKYOVj0eUcM=;
+        b=xUK4MnJjpnHyswF/dFXcC+ZzCjc6obPTzxM+zzz6IzwWHA8cW5IU65CczY11hzMMIS
+         CXCEM/5sj5ICdP6knwcSANe0IZE5gkgklHB3XvxGKj4MC+w8d2tyDCD8pbWC476oYENQ
+         gR/NNrrNXjUsrgVwVvciaAdBz7P0W8jTX/vMtd9NU1S7a0OzJXFSI8m6oWiWaKisIdfj
+         AWRZUX7Aez8fLeCLgoZ44/P9qYfbZOsCjQzQfyVNtpZmSXlG6si88f4CbMahE/s1KzA+
+         4v33pHpq82cGzaWRlr7SEx7nkLxgrplpEIyy7fxzruqxFDQO2M4pYarexHSkPu94AFW7
+         mKTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=1ltC0XV47uD9Ss4Mv4UBpU2RzQzY2ir2n8PLOTN4Pg4=;
-        b=HJTdIndQjLKyURWDwMTQFDXEztzXd3luo03vKS//kHuNFLQ4Z0kD3s4sDW7x5X99rW
-         +APtXgo6AnXKWhMrj9Hvf+XHEQu7UGkyU975yUwN8i713oKVkiqBJG/Wk4wsOfWIZ2pf
-         zTTAgvCQKK7tu0eC6vjHL0Rr1CzDXKxOGN7L0IvvuypfA24bG+UKKSl7vk3ida0ed1by
-         IY9GG29Vd06YeaKIS8EBNE0bkWyto26SmWcHYvcttLVRatm/HRAToM79i8AJAx4l5ht2
-         b3WxmjTxpjxA+DrpuwgI1cRp1IghuYh5AEPNro8bYzxVVw7dVWI8r5gpEexjHiArnuZ9
-         niyw==
-X-Gm-Message-State: APjAAAVFWatAfe4N4zol+djjU2M4FBctgguDboBtK/A4XmrTZy1/uaQx
-        nG9kZffweG4SS9JvoBMvcLGMBw==
-X-Google-Smtp-Source: APXvYqy2pqXk1y+0mda/71ruhME633JfzwLg/H4SmqlitWD37csQVtzzLNzC1Kd9GQlLcVd+doQ9pQ==
-X-Received: by 2002:a1c:4045:: with SMTP id n66mr15703769wma.142.1558697754433;
-        Fri, 24 May 2019 04:35:54 -0700 (PDT)
+        bh=xTwwuxPV3uUT4NunKLFggl50SO6uXgijXKYOVj0eUcM=;
+        b=ZG8vFj69r1taeO0yXzDuxcaGh5uXFSZtBPirde3C+lKe84zNVrCSUFTc2Xa1vnhnQE
+         iut9GDeno5KgvYU4NFw2lpqKeDR0iu0J2a9TKHAAHlK9ZX006Q67haUaRaqovGWHVov/
+         q4EPT9a9oqjlq8UjKcr+pyLeERePs0zToIL7Dmv6tXs8UaU7FWTVEv95R+kVR9SWjVUR
+         rkYGUf0XT1FykRTUNmibIJnA4GPfpZ2zftNzqmD6teBKPnmNQgVEf6Ft5x+ke2tbh648
+         HGJdqHbbTmP2a6eIMjtIWhujwrRMaCnZDK7lQWF13VUYzLV1L2I2IHvdbx8FdwvMrkzK
+         425g==
+X-Gm-Message-State: APjAAAXpIFbQXf5sRXG6OI4iVsVewsc6V7J1FQCn938OQKzlnRxeDdl9
+        QeUVMCXmTIPZvDoz6wJIJlC0hQ==
+X-Google-Smtp-Source: APXvYqxKm9dGztRAm6hTAXc0xEl/WauBBSajRtDnIqEX+if6/XaFGJxtMxIjYbTxON8gZZj+EEkSYg==
+X-Received: by 2002:a5d:54cc:: with SMTP id x12mr17107082wrv.303.1558697755479;
+        Fri, 24 May 2019 04:35:55 -0700 (PDT)
 Received: from cbtest28.netronome.com ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id x22sm2462902wmi.4.2019.05.24.04.35.53
+        by smtp.gmail.com with ESMTPSA id x22sm2462902wmi.4.2019.05.24.04.35.54
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Fri, 24 May 2019 04:35:53 -0700 (PDT)
+        Fri, 24 May 2019 04:35:54 -0700 (PDT)
 From:   Jiong Wang <jiong.wang@netronome.com>
 To:     alexei.starovoitov@gmail.com, daniel@iogearbox.net
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
@@ -52,9 +52,9 @@ Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         sandipan@linux.ibm.com, schwidefsky@de.ibm.com,
         heiko.carstens@de.ibm.com, jakub.kicinski@netronome.com,
         Jiong Wang <jiong.wang@netronome.com>
-Subject: [PATCH v8 bpf-next 07/16] libbpf: add "prog_flags" to bpf_program/bpf_prog_load_attr/bpf_load_program_attr
-Date:   Fri, 24 May 2019 12:35:17 +0100
-Message-Id: <1558697726-4058-8-git-send-email-jiong.wang@netronome.com>
+Subject: [PATCH v8 bpf-next 08/16] selftests: bpf: adjust several test_verifier helpers for insn insertion
+Date:   Fri, 24 May 2019 12:35:18 +0100
+Message-Id: <1558697726-4058-9-git-send-email-jiong.wang@netronome.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1558697726-4058-1-git-send-email-jiong.wang@netronome.com>
 References: <1558697726-4058-1-git-send-email-jiong.wang@netronome.com>
@@ -63,86 +63,112 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-libbpf doesn't allow passing "prog_flags" during bpf program load in a
-couple of load related APIs, "bpf_load_program_xattr", "load_program" and
-"bpf_prog_load_xattr".
+  - bpf_fill_ld_abs_vlan_push_pop:
+    Prevent zext happens inside PUSH_CNT loop. This could happen because
+    of BPF_LD_ABS (32-bit def) + BPF_JMP (64-bit use), or BPF_LD_ABS +
+    EXIT (64-bit use of R0). So, change BPF_JMP to BPF_JMP32 and redefine
+    R0 at exit path to cut off the data-flow from inside the loop.
 
-It makes sense to allow passing "prog_flags" which is useful for
-customizing program loading.
+  - bpf_fill_jump_around_ld_abs:
+    Jump range is limited to 16 bit. every ld_abs is replaced by 6 insns,
+    but on arches like arm, ppc etc, there will be one BPF_ZEXT inserted
+    to extend the error value of the inlined ld_abs sequence which then
+    contains 7 insns. so, set the dividend to 7 so the testcase could
+    work on all arches.
 
-Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+  - bpf_fill_scale1/bpf_fill_scale2:
+    Both contains ~1M BPF_ALU32_IMM which will trigger ~1M insn patcher
+    call because of hi32 randomization later when BPF_F_TEST_RND_HI32 is
+    set for bpf selftests. Insn patcher is not efficient that 1M call to
+    it will hang computer. So , change to BPF_ALU64_IMM to avoid hi32
+    randomization.
+
 Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
 ---
- tools/lib/bpf/bpf.c    | 1 +
- tools/lib/bpf/bpf.h    | 1 +
- tools/lib/bpf/libbpf.c | 3 +++
- tools/lib/bpf/libbpf.h | 1 +
- 4 files changed, 6 insertions(+)
+ tools/testing/selftests/bpf/test_verifier.c | 29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index c4a4808..0d4b4fe 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -256,6 +256,7 @@ int bpf_load_program_xattr(const struct bpf_load_program_attr *load_attr,
- 	if (load_attr->name)
- 		memcpy(attr.prog_name, load_attr->name,
- 		       min(strlen(load_attr->name), BPF_OBJ_NAME_LEN - 1));
-+	attr.prog_flags = load_attr->prog_flags;
- 
- 	fd = sys_bpf_prog_load(&attr, sizeof(attr));
- 	if (fd >= 0)
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 9593fec..ff42ca0 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -87,6 +87,7 @@ struct bpf_load_program_attr {
- 	const void *line_info;
- 	__u32 line_info_cnt;
- 	__u32 log_level;
-+	__u32 prog_flags;
- };
- 
- /* Flags to direct loading requirements */
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 197b574..ff14937 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -188,6 +188,7 @@ struct bpf_program {
- 	void *line_info;
- 	__u32 line_info_rec_size;
- 	__u32 line_info_cnt;
-+	__u32 prog_flags;
- };
- 
- enum libbpf_map_type {
-@@ -2076,6 +2077,7 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
- 	load_attr.line_info_rec_size = prog->line_info_rec_size;
- 	load_attr.line_info_cnt = prog->line_info_cnt;
- 	load_attr.log_level = prog->log_level;
-+	load_attr.prog_flags = prog->prog_flags;
- 	if (!load_attr.insns || !load_attr.insns_cnt)
- 		return -EINVAL;
- 
-@@ -3521,6 +3523,7 @@ int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
- 						      expected_attach_type);
- 
- 		prog->log_level = attr->log_level;
-+		prog->prog_flags = attr->prog_flags;
- 		if (!first_prog)
- 			first_prog = prog;
+diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+index 6e2fec8..fa9b5bf 100644
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -138,32 +138,36 @@ static void bpf_fill_ld_abs_vlan_push_pop(struct bpf_test *self)
+ loop:
+ 	for (j = 0; j < PUSH_CNT; j++) {
+ 		insn[i++] = BPF_LD_ABS(BPF_B, 0);
+-		insn[i] = BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0x34, len - i - 2);
++		/* jump to error label */
++		insn[i] = BPF_JMP32_IMM(BPF_JNE, BPF_REG_0, 0x34, len - i - 3);
+ 		i++;
+ 		insn[i++] = BPF_MOV64_REG(BPF_REG_1, BPF_REG_6);
+ 		insn[i++] = BPF_MOV64_IMM(BPF_REG_2, 1);
+ 		insn[i++] = BPF_MOV64_IMM(BPF_REG_3, 2);
+ 		insn[i++] = BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
+ 					 BPF_FUNC_skb_vlan_push),
+-		insn[i] = BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, len - i - 2);
++		insn[i] = BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, len - i - 3);
+ 		i++;
  	}
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index c5ff005..5abc237 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -320,6 +320,7 @@ struct bpf_prog_load_attr {
- 	enum bpf_attach_type expected_attach_type;
- 	int ifindex;
- 	int log_level;
-+	int prog_flags;
- };
  
- LIBBPF_API int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
+ 	for (j = 0; j < PUSH_CNT; j++) {
+ 		insn[i++] = BPF_LD_ABS(BPF_B, 0);
+-		insn[i] = BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0x34, len - i - 2);
++		insn[i] = BPF_JMP32_IMM(BPF_JNE, BPF_REG_0, 0x34, len - i - 3);
+ 		i++;
+ 		insn[i++] = BPF_MOV64_REG(BPF_REG_1, BPF_REG_6);
+ 		insn[i++] = BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
+ 					 BPF_FUNC_skb_vlan_pop),
+-		insn[i] = BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, len - i - 2);
++		insn[i] = BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, len - i - 3);
+ 		i++;
+ 	}
+ 	if (++k < 5)
+ 		goto loop;
+ 
+-	for (; i < len - 1; i++)
+-		insn[i] = BPF_ALU32_IMM(BPF_MOV, BPF_REG_0, 0xbef);
++	for (; i < len - 3; i++)
++		insn[i] = BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 0xbef);
++	insn[len - 3] = BPF_JMP_A(1);
++	/* error label */
++	insn[len - 2] = BPF_MOV32_IMM(BPF_REG_0, 0);
+ 	insn[len - 1] = BPF_EXIT_INSN();
+ 	self->prog_len = len;
+ }
+@@ -171,8 +175,13 @@ static void bpf_fill_ld_abs_vlan_push_pop(struct bpf_test *self)
+ static void bpf_fill_jump_around_ld_abs(struct bpf_test *self)
+ {
+ 	struct bpf_insn *insn = self->fill_insns;
+-	/* jump range is limited to 16 bit. every ld_abs is replaced by 6 insns */
+-	unsigned int len = (1 << 15) / 6;
++	/* jump range is limited to 16 bit. every ld_abs is replaced by 6 insns,
++	 * but on arches like arm, ppc etc, there will be one BPF_ZEXT inserted
++	 * to extend the error value of the inlined ld_abs sequence which then
++	 * contains 7 insns. so, set the dividend to 7 so the testcase could
++	 * work on all arches.
++	 */
++	unsigned int len = (1 << 15) / 7;
+ 	int i = 0;
+ 
+ 	insn[i++] = BPF_MOV64_REG(BPF_REG_6, BPF_REG_1);
+@@ -232,7 +241,7 @@ static void bpf_fill_scale1(struct bpf_test *self)
+ 	 * within 1m limit add MAX_TEST_INSNS - MAX_JMP_SEQ - 1 MOVs and 1 EXIT
+ 	 */
+ 	while (i < MAX_TEST_INSNS - MAX_JMP_SEQ - 1)
+-		insn[i++] = BPF_ALU32_IMM(BPF_MOV, BPF_REG_0, 42);
++		insn[i++] = BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 42);
+ 	insn[i] = BPF_EXIT_INSN();
+ 	self->prog_len = i + 1;
+ 	self->retval = 42;
+@@ -264,7 +273,7 @@ static void bpf_fill_scale2(struct bpf_test *self)
+ 	 * within 1m limit add MAX_TEST_INSNS - MAX_JMP_SEQ - 1 MOVs and 1 EXIT
+ 	 */
+ 	while (i < MAX_TEST_INSNS - MAX_JMP_SEQ - 1)
+-		insn[i++] = BPF_ALU32_IMM(BPF_MOV, BPF_REG_0, 42);
++		insn[i++] = BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 42);
+ 	insn[i] = BPF_EXIT_INSN();
+ 	self->prog_len = i + 1;
+ 	self->retval = 42;
 -- 
 2.7.4
 
