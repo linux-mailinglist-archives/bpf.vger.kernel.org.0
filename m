@@ -2,148 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7C229B86
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 17:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71E229BAD
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 18:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389663AbfEXPxD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 May 2019 11:53:03 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:39789 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389385AbfEXPxC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 May 2019 11:53:02 -0400
-Received: by mail-pf1-f194.google.com with SMTP id z26so5571730pfg.6;
-        Fri, 24 May 2019 08:53:02 -0700 (PDT)
+        id S2390994AbfEXQAU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 May 2019 12:00:20 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:33577 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389079AbfEXP7p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 May 2019 11:59:45 -0400
+Received: by mail-wr1-f66.google.com with SMTP id d9so10561319wrx.0
+        for <bpf@vger.kernel.org>; Fri, 24 May 2019 08:59:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=8+x/dIqENBd125rAkkBsbYgjabWepAbfk4sGgoDbhQU=;
-        b=bXOUG6WL25ADYuAcepuHAAjq1HpTi0FQqVE4onieuK3c54//FhA1LmJdx/vhXlvzT+
-         njuvt57jQZZuhYRkayKMmKqHZxyQoxr3Z4rWZs4ZUmLsrNHSBTBcdoAhJWVViH3jj8YK
-         zVwo2NBPpn5ZhMP5O5rON3cdfO19CzEO7F7y/Jng/Aw6gpheJsYI6BkqOcjtJEUEra9d
-         e54BUgDtYBjOoF6xKGofzWUrZHv+yaGj2sXldnmHFcshmuCxLHFvm9Gsveo9Ia66xLfw
-         wcRREIyi/SEskYbNiKiOqd1blVhzYiL4dxnz0p5BBq7lF8qY0QZ1Jh4PKCiXJDtgGlqb
-         Nn3A==
+        d=kinvolk.io; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HTU8ZvQGukDYiT1iBEhaciWthxQj5tSMJzxivJb2X1g=;
+        b=Co9GxXET5rTh0Gix9SpGtQXpoW7PfAsPOzE4RvtRidzZoKoaH/7aXuFpxXZqijZTW5
+         VQpH43xlsRCoJpE3daQdOwG8owbA8EqUhSn/7bi+lnRdr5qbWDzXUo3qFT20Us01qhCy
+         +OpZp4cOR2+U9YWVmhvXfDVQhLk8sgHXZ/OW8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=8+x/dIqENBd125rAkkBsbYgjabWepAbfk4sGgoDbhQU=;
-        b=clxPtuBuM4uCUYdw+j1n7QMf5IWgJmqF7vfOhiqT4mLbjD0aviObO2Te7CtgvCFUlM
-         20WPniPms7XYleZ8q6ETIeLFj0K8+F+Uxscn+dNIBZ/rETMBC89a6m7xPbvewB3dL1Xv
-         l3uApDAzGc33E/vIgch8FYE+2dAxEnFNPBWIxDytReFf025Hw7ehNm9WbqpbnoiUCD4m
-         aboECPfUo6QkwnkBkQNOamyIrf9PqYKT3xoBcUbpEgUb/qKbdGRzAFf8k6U7/fzzq7Br
-         pGYnmwPueFRHAkjCWsxX7b1+t2STHSiRVX2XE0RST6aFZQxDyFO3ovJnAay8vOd7PZmH
-         oQCw==
-X-Gm-Message-State: APjAAAWUYBFkWFpjMn2p9RU3FJP65U5qBVQQ/WKlrTRXkbntqXmI4ZFq
-        qgimu7Lw7Uk7hgWSVDYbbJs=
-X-Google-Smtp-Source: APXvYqwhSiUYve33oW2dgK0MQ/y/Ap7QHhfiPfGuYBTXk5HdqMy0ljZ6x+K05kOr4Y5CK50TM7VAEA==
-X-Received: by 2002:a17:90a:ac0d:: with SMTP id o13mr10278775pjq.139.1558713182271;
-        Fri, 24 May 2019 08:53:02 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id q10sm2893980pff.132.2019.05.24.08.53.00
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 May 2019 08:53:01 -0700 (PDT)
-Date:   Fri, 24 May 2019 08:52:54 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        jakub@cloudflare.com, ast@kernel.org
-Cc:     netdev@vger.kernel.org, marek@cloudflare
-Message-ID: <5ce81356e941c_39402ae86c50a5bc28@john-XPS-13-9360.notmuch>
-In-Reply-To: <a9a37d43-32ba-5a82-bb02-f02ced179019@iogearbox.net>
-References: <155862650069.11403.15148410261691250447.stgit@john-Precision-5820-Tower>
- <a9a37d43-32ba-5a82-bb02-f02ced179019@iogearbox.net>
-Subject: Re: [PATCH] bpf: sockmap, fix use after free from sleep in psock
- backlog workqueue
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HTU8ZvQGukDYiT1iBEhaciWthxQj5tSMJzxivJb2X1g=;
+        b=ldUkXgsqJtrYuKU9JRFlRA8CX3f3Vumn3K3k/+I9+T7zOCRwqAmUJqOiMG9Q3KbFwz
+         DXMIcSrND7dlu5YVTz2l3bRddRvIXvBLd0pRukLyuEkeBD8orGGS0cx2IQX9Vmttw7yr
+         4uqgI6Kla7E36Gae14wzTUrfjEQy+A4qiE4ivRw20L/ZiMcIwCggHHOqlgr1zxQYY4aO
+         /TZkQvtxRgKtrp7DNGn8G6bsAVH3Kn0zLZgYeyfCZCBbSB+lgDcrGQ82MkIsPn1u7Fm+
+         reV+SvSW4ivdXaYtQQY096TeyMSqZNGueHFwqNsOI10Ds9ELDvvUKJcFG7iPaHE0S0ot
+         J54w==
+X-Gm-Message-State: APjAAAXRHs33BMa8NGNlBNn5W/Glb0xqDVk3zoozOsicTiVPmbDcwiXl
+        GHrxk9ljcj1JX491WKFs/DUpew==
+X-Google-Smtp-Source: APXvYqyA0nKVvtW4KzkZUeSSbuyLcKqJJfWlj5TiUYJ11BV86ItffK7JLzlBB5qMe/JE64Q0wWetkA==
+X-Received: by 2002:adf:e408:: with SMTP id g8mr31393993wrm.143.1558713583663;
+        Fri, 24 May 2019 08:59:43 -0700 (PDT)
+Received: from locke-xps13.localdomain (69.pool85-58-237.dynamic.orange.es. [85.58.237.69])
+        by smtp.gmail.com with ESMTPSA id i185sm4535054wmg.32.2019.05.24.08.59.42
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 24 May 2019 08:59:42 -0700 (PDT)
+From:   =?UTF-8?q?Iago=20L=C3=B3pez=20Galeiras?= <iago@kinvolk.io>
+To:     john.fastabend@gmail.com, ast@kernel.org, daniel@iogearbox.net
+Cc:     alban@kinvolk.io, krzesimir@kinvolk.io, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Iago=20L=C3=B3pez=20Galeiras?= <iago@kinvolk.io>
+Subject: [PATCH bpf-next v4 0/4] sock ops: add netns ino and dev in bpf context
+Date:   Fri, 24 May 2019 17:59:27 +0200
+Message-Id: <20190524155931.7946-1-iago@kinvolk.io>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann wrote:
-> On 05/23/2019 05:48 PM, John Fastabend wrote:
-> > Backlog work for psock (sk_psock_backlog) might sleep while waiting
-> > for memory to free up when sending packets. However, while sleeping
-> > the socket may be closed and removed from the map by the user space
-> > side.
-> > 
-> > This breaks an assumption in sk_stream_wait_memory, which expects the
-> > wait queue to be still there when it wakes up resulting in a
-> > use-after-free shown below. To fix his mark sendmsg as MSG_DONTWAIT
-> > to avoid the sleep altogether. We already set the flag for the
-> > sendpage case but we missed the case were sendmsg is used.
-> > Sockmap is currently the only user of skb_send_sock_locked() so only
-> > the sockmap paths should be impacted.
-> > 
-> > ==================================================================
-> > BUG: KASAN: use-after-free in remove_wait_queue+0x31/0x70
-> > Write of size 8 at addr ffff888069a0c4e8 by task kworker/0:2/110
-> > 
-> > CPU: 0 PID: 110 Comm: kworker/0:2 Not tainted 5.0.0-rc2-00335-g28f9d1a3d4fe-dirty #14
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-2.fc27 04/01/2014
-> > Workqueue: events sk_psock_backlog
-> > Call Trace:
-> >  print_address_description+0x6e/0x2b0
-> >  ? remove_wait_queue+0x31/0x70
-> >  kasan_report+0xfd/0x177
-> >  ? remove_wait_queue+0x31/0x70
-> >  ? remove_wait_queue+0x31/0x70
-> >  remove_wait_queue+0x31/0x70
-> >  sk_stream_wait_memory+0x4dd/0x5f0
-> >  ? sk_stream_wait_close+0x1b0/0x1b0
-> >  ? wait_woken+0xc0/0xc0
-> >  ? tcp_current_mss+0xc5/0x110
-> >  tcp_sendmsg_locked+0x634/0x15d0
-> >  ? tcp_set_state+0x2e0/0x2e0
-> >  ? __kasan_slab_free+0x1d1/0x230
-> >  ? kmem_cache_free+0x70/0x140
-> >  ? sk_psock_backlog+0x40c/0x4b0
-> >  ? process_one_work+0x40b/0x660
-> >  ? worker_thread+0x82/0x680
-> >  ? kthread+0x1b9/0x1e0
-> >  ? ret_from_fork+0x1f/0x30
-> >  ? check_preempt_curr+0xaf/0x130
-> >  ? iov_iter_kvec+0x5f/0x70
-> >  ? kernel_sendmsg_locked+0xa0/0xe0
-> >  skb_send_sock_locked+0x273/0x3c0
-> >  ? skb_splice_bits+0x180/0x180
-> >  ? start_thread+0xe0/0xe0
-> >  ? update_min_vruntime.constprop.27+0x88/0xc0
-> >  sk_psock_backlog+0xb3/0x4b0
-> >  ? strscpy+0xbf/0x1e0
-> >  process_one_work+0x40b/0x660
-> >  worker_thread+0x82/0x680
-> >  ? process_one_work+0x660/0x660
-> >  kthread+0x1b9/0x1e0
-> >  ? __kthread_create_on_node+0x250/0x250
-> >  ret_from_fork+0x1f/0x30
-> > 
-> > Fixes: 20bf50de3028c ("skbuff: Function to send an skbuf on a socket")
-> > Reported-by: Jakub Sitnicki <jakub@cloudflare.com>
-> > Tested-by: Jakub Sitnicki <jakub@cloudflare.com>
-> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> > ---
-> >  net/core/skbuff.c |    1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> > index e89be62..c3b03c5 100644
-> > --- a/net/core/skbuff.c
-> > +++ b/net/core/skbuff.c
-> > @@ -2337,6 +2337,7 @@ int skb_send_sock_locked(struct sock *sk, struct sk_buff *skb, int offset,
-> >  		kv.iov_base = skb->data + offset;
-> >  		kv.iov_len = slen;
-> >  		memset(&msg, 0, sizeof(msg));
-> > +		msg.flags = MSG_DONTWAIT;
-> >  
-> >  		ret = kernel_sendmsg_locked(sk, &msg, &kv, 1, slen);
-> >  		if (ret <= 0)
-> 
-> This doesn't even compile. :( It should have been msg_flags instead ...
+I'm taking over Alban's work on this.
 
-Sorry sent the patch without commiting an update, sent a v2 with correction.
+This series allows sockops programs to access the network namespace
+inode and device via (struct bpf_sock_ops)->netns_ino and ->netns_dev.
+This can be useful to apply different policies on different network
+namespaces.
+
+In the unlikely case where network namespaces are not compiled in
+(CONFIG_NET_NS=n), the verifier will generate code to return netns_dev
+as usual and will return 0 for netns_ino.
+
+The generated BPF bytecode for netns_ino is loading the correct
+inode number at the time of execution.
+
+However, the generated BPF bytecode for netns_dev is loading an
+immediate value determined at BPF-load-time by looking at the
+initial network namespace. In practice, this works because all netns
+currently use the same virtual device. If this was to change, this
+code would need to be updated too.
+
+It also adds sockmap and verifier selftests to cover the new fields.
+
+Partial reads work thanks to commit e2f7fc0ac69 ("bpf: fix undefined
+behavior in narrow load handling").
+
+v1 patchset can be found at:
+https://lkml.org/lkml/2019/4/12/238
+
+Changes since v1:
+- add netns_dev (review from Alexei)
+- tools/include/uapi/linux/bpf.h: update with netns_dev
+- tools/testing/selftests/bpf/test_sockmap_kern.h: print debugs with
+- This is a new selftest (review from Song)
+
+v2 patchest can be found at:
+https://lkml.org/lkml/2019/4/18/685
+
+Changes since v2:
+- replace __u64 by u64 in kernel code (review from Y Song)
+- remove unneeded #else branch: program would be rejected in
+  is_valid_access (review from Y Song)
+- allow partial reads (<u64) (review from Y Song)
+- standalone patch for the sync (requested by Y Song)
+- update commitmsg to refer to netns_ino
+- test partial reads on netns_dev (review from Y Song)
+- split in two tests
+
+v3 patchset can be found at:
+https://lkml.org/lkml/2019/4/26/740
+
+Changes since v3:
+- return netns_dev unconditionally and set netns_ino to 0 if
+  CONFIG_NET_NS is not enabled (review from Jakub Kicinski)
+- use bpf_ctx_record_field_size and bpf_ctx_narrow_access_ok instead of
+  manually deal with partial reads (review from Y Song)
+- update commit message to reflect new code and remove note about
+  partial reads since it was discussed in the review
+- use bpf_ctx_range() and offsetofend()
+
+Alban Crequy (4):
+  bpf: sock ops: add netns ino and dev in bpf context
+  bpf: sync bpf.h to tools/ for bpf_sock_ops->netns*
+  selftests: bpf: read netns_ino from struct bpf_sock_ops
+  selftests: bpf: verifier: read netns_dev and netns_ino from struct
+    bpf_sock_ops
+
+ include/uapi/linux/bpf.h                      |  2 +
+ net/core/filter.c                             | 70 +++++++++++++++++++
+ tools/include/uapi/linux/bpf.h                |  2 +
+ tools/testing/selftests/bpf/test_sockmap.c    | 38 +++++++++-
+ .../testing/selftests/bpf/test_sockmap_kern.h | 22 ++++++
+ .../testing/selftests/bpf/verifier/var_off.c  | 53 ++++++++++++++
+ 6 files changed, 184 insertions(+), 3 deletions(-)
+
+-- 
+2.21.0
+
