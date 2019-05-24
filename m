@@ -2,61 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BCA29260
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 10:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7D929377
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 10:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389170AbfEXIFV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 May 2019 04:05:21 -0400
-Received: from www62.your-server.de ([213.133.104.62]:58360 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388959AbfEXIFV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 May 2019 04:05:21 -0400
-Received: from [78.46.172.2] (helo=sslproxy05.your-server.de)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hU5CU-0007EH-Fq; Fri, 24 May 2019 10:05:14 +0200
-Received: from [178.197.249.12] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hU5CU-0005lH-8C; Fri, 24 May 2019 10:05:14 +0200
-Subject: Re: [PATCH v2 bpf-next 0/3] bpf: optimize explored_states
-To:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-References: <20190522031707.2834254-1-ast@kernel.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7182029c-f789-5856-551e-e991d13a129c@iogearbox.net>
-Date:   Fri, 24 May 2019 10:05:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.3.0
+        id S2389448AbfEXIxl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 May 2019 04:53:41 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:46692 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389276AbfEXIxl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 May 2019 04:53:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=LXmpMTr3XlRy99COjSyRQeXMTTr9YPleMD/v1+k5tko=; b=FFhzeP6klPAGGecTbC7KSAl/S
+        pN8lJ8PEZYEAdEN95JChOFyF98gYqQ4fIS7MUM1MK8ru4th8yMfJ6k5krhX/YvSCygYL2LHZzq4iE
+        4T+/ZuToRYQinZY6kIgbroXkTNZwgi6PGFlUgRuHrZN07UKGvjOMjgdDg4C/bea4ANH1wDhHPKdfh
+        vST04O7Y+1y6+uA68szMemv9ngVx6m3V96y7YKc3aARR5Z7Yxu0zA9V0M3zNRSgmmsIyGFpRW8bZ7
+        LvYqjUddgy3A9wmNdBKyHijpMcWBp1qSF8UO3WA69QsPdPvt/RSF7ICTXiBx2xuuHIIZmNyZhpkof
+        yy6DeQzBA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
+        id 1hU5x4-00079T-5N; Fri, 24 May 2019 08:53:22 +0000
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D12CD201D3687; Fri, 24 May 2019 10:53:19 +0200 (CEST)
+Date:   Fri, 24 May 2019 10:53:19 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Kairui Song <kasong@redhat.com>, Alexei Starovoitov <ast@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: Getting empty callchain from perf_callchain_kernel()
+Message-ID: <20190524085319.GE2589@hirez.programming.kicks-ass.net>
+References: <20190517091044.GM2606@hirez.programming.kicks-ass.net>
+ <CACPcB9cpNp5CBqoRs+XMCwufzAFa8Pj-gbmj9fb+g5wVdue=ig@mail.gmail.com>
+ <20190522140233.GC16275@worktop.programming.kicks-ass.net>
+ <ab047883-69f6-1175-153f-5ad9462c6389@fb.com>
+ <20190522174517.pbdopvookggen3d7@treble>
+ <20190522234635.a47bettklcf5gt7c@treble>
+ <CACPcB9dRJ89YAMDQdKoDMU=vFfpb5AaY0mWC_Xzw1ZMTFBf6ng@mail.gmail.com>
+ <20190523133253.tad6ywzzexks6hrp@treble>
+ <CACPcB9fQKg7xhzhCZaF4UGi=EQs1HLTFgg-C_xJQaUfho3yMyA@mail.gmail.com>
+ <20190523152413.m2pbnamihu3s2c5s@treble>
 MIME-Version: 1.0
-In-Reply-To: <20190522031707.2834254-1-ast@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25458/Thu May 23 09:58:32 2019)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190523152413.m2pbnamihu3s2c5s@treble>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/22/2019 05:17 AM, Alexei Starovoitov wrote:
-> Convert explored_states array into hash table and use simple hash to
-> reduce verifier peak memory consumption for programs with bpf2bpf calls.
-> More details in patch 3.
-> 
-> v1->v2: fixed Jakub's small nit in patch 1
-> 
-> Alexei Starovoitov (3):
->   bpf: cleanup explored_states
->   bpf: split explored_states
->   bpf: convert explored_states to hash table
-> 
->  include/linux/bpf_verifier.h |  2 +
->  kernel/bpf/verifier.c        | 77 ++++++++++++++++++++++--------------
->  2 files changed, 50 insertions(+), 29 deletions(-)
-> 
+On Thu, May 23, 2019 at 10:24:13AM -0500, Josh Poimboeuf wrote:
 
-Applied, thanks!
+> Here's the latest version which should fix it in all cases (based on
+> tip/master):
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git/commit/?h=bpf-orc-fix
+
+That patch suffers an inconsitency, the comment states:
+
+  'if they have "jump_table" in the name'
+
+while the actual code implements:
+
+  'if the name starts with "jump_table"'
+
+Other than that, I suppose that works just fine ;-)
+
+> There's no need to put special cases in the FP unwinder when we can
+> instead just fix the frame pointer usage in the JIT code.
+> 
+> For ORC, I'm thinking we may be able to just require that all generated
+> code (BPF and others) always use frame pointers.  Then when ORC doesn't
+> recognize a code address, it could try using the frame pointer as a
+> fallback.
+
+Yes, this seems like a sensible approach. We'd also have to audit the
+ftrace and kprobe trampolines, IIRC they only do framepointer setup for
+CONFIG_FRAME_POINTER currently, which should be easy to fix (after the
+patches I have to fix the FP generation in the first place:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/log/?h=x86/wip
+)
