@@ -2,137 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A20529DC4
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 20:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D46529E98
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 20:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728222AbfEXSLK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 May 2019 14:11:10 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:39970 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726909AbfEXSLK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 May 2019 14:11:10 -0400
-Received: by mail-qk1-f193.google.com with SMTP id q197so8847170qke.7;
-        Fri, 24 May 2019 11:11:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0dw7iCdrq5/IWGGfeL9OdT+fgaA92v5lwpPh6renQrQ=;
-        b=I/9+lATeNTr64jB6Vv4bYFBf5k4otwta7n+Fg/IK+kwTYqShKUA83nUV444/J40MRp
-         X5XDEcX4BwLtILlNAUSfEnsZQUYyU8s5Qr7pOoq/XoBNdzUPFvCYFaRByAYbn8VUwzQY
-         oXP1T4GuVj2VODxRNiX43O2AaCZU/dlElektvvCketkb1GTguHO1LqOZD64WcYm3kp5b
-         8nYp4mDKkQZYJikwkcMIckcXCd24hdWUGJwo64GlLv29F0VqG308vn0DQCjlWNdr3yoH
-         aC+c4uTlbtmd7pMZCq6hauBwLCp2yXkgIXC1Q3CYZAtk8Rj0ccnni7C2wbCQGOAKZ2vh
-         cpjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0dw7iCdrq5/IWGGfeL9OdT+fgaA92v5lwpPh6renQrQ=;
-        b=RDGpvXUw8eNu+yw8Vb9LfxyUf0M8jSnweyHgoqeTKQgoIT7EWu6Wl9oy2B7aZskIF7
-         5arSxkOBTT4mMWRCILpr4v0sQ4B1ieT3+PbWNnseJtkLQInsDFafR7aa8gCuOaXZYZlO
-         NaaFRKz4lBXfstvJc0USYfsyE7fd+AO4s4xc92v6LMHtmonFgolEbU5WNctUiacytOdc
-         u6XRhToFDLRbdZr7Uh2A/D8S4zKqAmV2XVRKXmOsmqEGiNTnYbaAKYShrYYsXQREcmAS
-         L0SoB6eifxVwS/vnUVHIC268G96rpiMPzBbA3A5Jm7G4UtDBoXNL+DWSlOsFvg6+tsdN
-         zF+A==
-X-Gm-Message-State: APjAAAWX43jAdav4vkheP05HLSrMe0BT3UMiK3uJyI+6+jpzXts0Itsl
-        iElZyXWMFskiVSSnHYE5gkooisPvpEuZjVue4Vs=
-X-Google-Smtp-Source: APXvYqxUwNWbqkf9RyjeSJfWTjghFhqiEU8NecvXdpSbXkW64z6VNZgjiIv2ZEqhC994LNHFj/pO4zfitvF0izujMVw=
-X-Received: by 2002:a37:ac11:: with SMTP id e17mr75312434qkm.339.1558721468961;
- Fri, 24 May 2019 11:11:08 -0700 (PDT)
+        id S1728920AbfEXS7O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 May 2019 14:59:14 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44792 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727115AbfEXS7O (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 24 May 2019 14:59:14 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4OIxCx8004488
+        for <bpf@vger.kernel.org>; Fri, 24 May 2019 11:59:12 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=VGNk/z685rkUcaU0J2KYCIjYdLVKdGIQA6fNh0aC3Fc=;
+ b=CaYIYx/yOuqRNIuzP7ltNKjpLfYGwIboKLPrhGS7N5gHDZk0gdShqLSxrhSQb9V1jsRM
+ mNBZlnTW+e6Dn4TtjsWbmrMuusjj/eho89Fw3Yoe7CGv3jmKVL9sltcaQMdrar1Pm1fP
+ TZKD0Fg5nycbrVIy8qw3nFMpfmAgrWTWkK0= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2spbs6a4gb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 24 May 2019 11:59:12 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 24 May 2019 11:59:11 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 157378613DC; Fri, 24 May 2019 11:59:09 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <andrii.nakryiko@gmail.com>, <ast@fb.com>, <daniel@iogearbox.net>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <kernel-team@fb.com>
+CC:     Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH v3 bpf-next 00/12] BTF-to-C converter
+Date:   Fri, 24 May 2019 11:58:55 -0700
+Message-ID: <20190524185908.3562231-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20190523204222.3998365-1-andriin@fb.com> <20190523204222.3998365-13-andriin@fb.com>
- <bf418594-0442-fe89-c86b-11d7e5269047@netronome.com>
-In-Reply-To: <bf418594-0442-fe89-c86b-11d7e5269047@netronome.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 24 May 2019 11:10:57 -0700
-Message-ID: <CAEf4BzbfvV6HQ-NZQEk0yxNL75JWKC6nHzofOk6BkfO7EPVStQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 12/12] bpftool: update bash-completion w/ new
- c option for btf dump
-To:     Quentin Monnet <quentin.monnet@netronome.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-24_06:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905240123
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 24, 2019 at 2:15 AM Quentin Monnet
-<quentin.monnet@netronome.com> wrote:
->
-> 2019-05-23 13:42 UTC-0700 ~ Andrii Nakryiko <andriin@fb.com>
-> > Add bash completion for new C btf dump option.
-> >
-> > Cc: Quentin Monnet <quentin.monnet@netronome.com>
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
-> >  tools/bpf/bpftool/bash-completion/bpftool | 25 +++++++++++++++++++----
-> >  1 file changed, 21 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-> > index 50e402a5a9c8..5b65e0309d2a 100644
-> > --- a/tools/bpf/bpftool/bash-completion/bpftool
-> > +++ b/tools/bpf/bpftool/bash-completion/bpftool
-> > @@ -638,11 +638,28 @@ _bpftool()
-> >                              esac
-> >                              return 0
-> >                              ;;
-> > +                        format)
-> > +                            COMPREPLY=( $( compgen -W "c raw" -- "$cur" ) )
-> > +                            ;;
-> >                          *)
-> > -                            if [[ $cword == 6 ]] && [[ ${words[3]} == "map" ]]; then
-> > -                                 COMPREPLY+=( $( compgen -W 'key value kv all' -- \
-> > -                                     "$cur" ) )
-> > -                            fi
-> > +                            # emit extra options
-> > +                            case ${words[3]} in
-> > +                                id|file)
-> > +                                    if [[ $cword > 4 ]]; then
->
-> Not sure if this "if" is necessary. It seems to me that if $cword is 4
-> then we are just after "id" or "file" in the command line, in which case
-> we hit previous cases and never reach this point?
+This patch set adds BTF-to-C dumping APIs to libbpf, allowing to output
+a subset of BTF types as a compilable C type definitions. This is useful by
+itself, as raw BTF output is not easy to inspect and comprehend. But it's also
+a big part of BPF CO-RE (compile once - run everywhere) initiative aimed at
+allowing to write relocatable BPF programs, that won't require on-the-host
+kernel headers (and would be able to inspect internal kernel structures, not
+exposed through kernel headers).
 
-Yep, you are right, removed.
+This patch set consists of three groups of patches and one pre-patch, with the
+BTF-to-C dumper API depending on the first two groups.
 
->
-> Also, reading the completion code I wonder, do we have completion for
-> BTF ids? It seems to me that we have nothing proposed to complete
-> "bpftool btf dump id <tab>". Any chance to get that in a follow-up patch?
+Pre-patch #1 fixes issue with libbpf_internal.h.
 
-We currently don't have a way to iterate all BTFs in a system (neither
-in bpftool, nor in libbpf, AFAICT), but I can do that based on btf_id
-field, dumped as part of `bpftool prog list` command. Would that work?
-I'll post that as a separate patch.
+btf__parse_elf() API patches:
+- patch #2 adds btf__parse_elf() API to libbpf, allowing to load BTF and/or
+  BTF.ext from ELF file;
+- patch #3 utilizies btf__parse_elf() from bpftool for `btf dump file` command;
+- patch #4 switches test_btf.c to use btf__parse_elf() to check for presence
+  of BTF data in object file.
 
->
-> > +                                        _bpftool_once_attr 'format'
-> > +                                    fi
-> > +                                    ;;
-> > +                                map|prog)
-> > +                                    if [[ ${words[3]} == "map" ]] && [[ $cword == 6 ]]; then
-> > +                                        COMPREPLY+=( $( compgen -W "key value kv all" -- "$cur" ) )
-> > +                                    fi
-> > +                                    if [[ $cword > 5 ]]; then
->
-> Same remark on the "if", I do not believe it is necessary?
+libbpf's internal hashmap patches:
+- patch #5 adds resizeable non-thread safe generic hashmap to libbpf;
+- patch #6 adds tests for that hashmap;
+- patch #7 migrates btf_dedup()'s dedup_table to use hashmap w/ APPEND.
 
-Yep, removed.
+BTF-to-C dumper API patches:
+- patch #8 adds btf_dump APIs with all the logic for laying out type
+  definitions in correct order and emitting C syntax for them;
+- patch #9 adds lots of tests for common and quirky parts of C type system;
+- patch #10 adds support for C-syntax btf dumping to bpftool;
+- patch #11 updates bpftool documentation to mention C-syntax dump option;
+- patch #12 update bash-completion for btf dump sub-command.
 
->
-> > +                                        _bpftool_once_attr 'format'
-> > +                                    fi
-> > +                                    ;;
-> > +                                *)
-> > +                                    ;;
-> > +                            esac
-> >                              return 0
-> >                              ;;
-> >                      esac
-> >
->
+v2->v3:
+- fix bpftool-btf.rst formatting (Quentin);
+- simplify bash autocompletion script (Quentin);
+- better error message in btf dump (Quentin);
+
+v1->v2:
+- removed unuseful file header (Jakub);
+- removed inlines in .c (Jakub);
+- added 'format {c|raw}' keyword/option (Jakub);
+- re-use i var for iteration in btf_dump_c() (Jakub);
+- bumped libbpf version to 0.0.4;
+
+v0->v1:
+- fix bug in hashmap__for_each_bucket_entry() not handling empty hashmap;
+- removed `btf dump`-specific libbpf logging hook up (Quentin has more generic
+  patchset);
+- change btf__parse_elf() to always load .BTF and return it as a result, with
+  .BTF.ext being optional and returned through struct btf_ext** arg (Alexei);
+- endianness check to use __BYTE_ORDER__ (Alexei);
+- bool:1 to __u8:1 in type_aux_state (Alexei);
+- added HASHMAP_APPEND strategy to hashmap, changed
+  hashmap__for_each_key_entry() to also check for key equality during
+  iteration (multimap iteration for key);
+- added new tests for empty hashmap and hashmap as a multimap;
+- tried to clarify weak/strong dependency ordering comments (Alexei)
+- btf dump test's expected output - support better commenting aproach (Alexei);
+- added bash-completion for a new "c" option (Alexei).
+
+Andrii Nakryiko (12):
+  libbpf: ensure libbpf.h is included along libbpf_internal.h
+  libbpf: add btf__parse_elf API to load .BTF and .BTF.ext
+  bpftool: use libbpf's btf__parse_elf API
+  selftests/bpf: use btf__parse_elf to check presence of BTF/BTF.ext
+  libbpf: add resizable non-thread safe internal hashmap
+  selftests/bpf: add tests for libbpf's hashmap
+  libbpf: switch btf_dedup() to hashmap for dedup table
+  libbpf: add btf_dump API for BTF-to-C conversion
+  selftests/bpf: add btf_dump BTF-to-C conversion tests
+  bpftool: add C output format option to btf dump subcommand
+  bpftool/docs: add description of btf dump C option
+  bpftool: update bash-completion w/ new c option for btf dump
+
+ .../bpf/bpftool/Documentation/bpftool-btf.rst |   35 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |   21 +-
+ tools/bpf/bpftool/btf.c                       |  162 +-
+ tools/lib/bpf/Build                           |    4 +-
+ tools/lib/bpf/btf.c                           |  329 ++--
+ tools/lib/bpf/btf.h                           |   19 +
+ tools/lib/bpf/btf_dump.c                      | 1336 +++++++++++++++++
+ tools/lib/bpf/hashmap.c                       |  229 +++
+ tools/lib/bpf/hashmap.h                       |  173 +++
+ tools/lib/bpf/libbpf.map                      |    8 +
+ tools/lib/bpf/libbpf_internal.h               |    2 +
+ tools/testing/selftests/bpf/.gitignore        |    2 +
+ tools/testing/selftests/bpf/Makefile          |    3 +-
+ .../bpf/progs/btf_dump_test_case_bitfields.c  |   92 ++
+ .../bpf/progs/btf_dump_test_case_multidim.c   |   35 +
+ .../progs/btf_dump_test_case_namespacing.c    |   73 +
+ .../bpf/progs/btf_dump_test_case_ordering.c   |   63 +
+ .../bpf/progs/btf_dump_test_case_packing.c    |   75 +
+ .../bpf/progs/btf_dump_test_case_padding.c    |  111 ++
+ .../bpf/progs/btf_dump_test_case_syntax.c     |  229 +++
+ tools/testing/selftests/bpf/test_btf.c        |   71 +-
+ tools/testing/selftests/bpf/test_btf_dump.c   |  143 ++
+ tools/testing/selftests/bpf/test_hashmap.c    |  382 +++++
+ 23 files changed, 3306 insertions(+), 291 deletions(-)
+ create mode 100644 tools/lib/bpf/btf_dump.c
+ create mode 100644 tools/lib/bpf/hashmap.c
+ create mode 100644 tools/lib/bpf/hashmap.h
+ create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_bitfields.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_multidim.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_namespacing.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_ordering.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_packing.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
+ create mode 100644 tools/testing/selftests/bpf/test_btf_dump.c
+ create mode 100644 tools/testing/selftests/bpf/test_hashmap.c
+
+-- 
+2.17.1
+
