@@ -2,72 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D60291B2
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 09:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE632924A
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 10:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388985AbfEXH1x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 May 2019 03:27:53 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:34234 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388910AbfEXH1x (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 May 2019 03:27:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=jfU/pBiYlCGOOaoH7p13zhcAF3lexkfxk9MxpHVVZyE=; b=qJiyBB98Yfd32wx1vnufAXNWM
-        KFwEGbxwXbqvJ4/GIFLYcI+svmXTa2/DmNWQGDQ7xEQRUCUSyBOz+NBYhsWg7XT9ctzwrzWdHexM5
-        OkQ+R9cdXaYjgpmaowyUJSnVlK+r7QrFZuOrHsaX0nlddAfIvQVArdUu2J5mzJT0swjbtH+1MAtm7
-        7b8nhuEFMFEpB+BKY+NWVjdLLnFpkO3rqDyTQrOki3KraXl5y/lzQESCIVANUNReOwTEENeoEhkNP
-        XcLdXJ/Rq+LVYi3NWoqP7mWIer2psH9MYtA22900cGlAiBA5KunxB3/sBRZXnABlEr8Biid3vWNTn
-        gNu36J8+g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
-        id 1hU4bx-0006pu-0P; Fri, 24 May 2019 07:27:29 +0000
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B02FF201D3687; Fri, 24 May 2019 09:27:26 +0200 (CEST)
-Date:   Fri, 24 May 2019 09:27:26 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kris Van Hees <kris.van.hees@oracle.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        dtrace-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        rostedt@goodmis.org, mhiramat@kernel.org, acme@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net
-Subject: Re: [RFC PATCH 00/11] bpf, trace, dtrace: DTrace BPF program type
- implementation and sample use
-Message-ID: <20190524072726.GD2589@hirez.programming.kicks-ass.net>
-References: <201905202347.x4KNl0cs030532@aserv0121.oracle.com>
- <20190521175617.ipry6ue7o24a2e6n@ast-mbp.dhcp.thefacebook.com>
- <20190522142531.GE16275@worktop.programming.kicks-ass.net>
- <20190522182215.GO2422@oracle.com>
+        id S2389001AbfEXIAW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 May 2019 04:00:22 -0400
+Received: from www62.your-server.de ([213.133.104.62]:57596 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389194AbfEXIAT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 May 2019 04:00:19 -0400
+Received: from [78.46.172.2] (helo=sslproxy05.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hU57h-0006lV-9d; Fri, 24 May 2019 10:00:17 +0200
+Received: from [178.197.249.12] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hU57h-000Rxo-36; Fri, 24 May 2019 10:00:17 +0200
+Subject: Re: [PATCH] bpf: sockmap, fix use after free from sleep in psock
+ backlog workqueue
+To:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        jakub@cloudflare.com, ast@kernel.org
+Cc:     netdev@vger.kernel.org, marek@cloudflare
+References: <155862650069.11403.15148410261691250447.stgit@john-Precision-5820-Tower>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <a9a37d43-32ba-5a82-bb02-f02ced179019@iogearbox.net>
+Date:   Fri, 24 May 2019 10:00:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190522182215.GO2422@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <155862650069.11403.15148410261691250447.stgit@john-Precision-5820-Tower>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25458/Thu May 23 09:58:32 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 22, 2019 at 02:22:15PM -0400, Kris Van Hees wrote:
-
-> > Let me further NAK it for adding all sorts of garbage to the code --
-> > we're not going to do gaps and stay_in_page nonsense.
+On 05/23/2019 05:48 PM, John Fastabend wrote:
+> Backlog work for psock (sk_psock_backlog) might sleep while waiting
+> for memory to free up when sending packets. However, while sleeping
+> the socket may be closed and removed from the map by the user space
+> side.
 > 
-> Could you give some guidance in terms of an alternative?  The ring buffer code
-> provides both non-contiguous page allocation support and a vmalloc-based
-> allocation, and the vmalloc version certainly would avoid the entire gap and
-> page boundary stuff.  But since the allocator is chosen at build time based on
-> the arch capabilities, there is no way to select a specific memory allocator.
-> I'd be happy to use an alternative approach that allows direct writing into
-> the ring buffer.
+> This breaks an assumption in sk_stream_wait_memory, which expects the
+> wait queue to be still there when it wakes up resulting in a
+> use-after-free shown below. To fix his mark sendmsg as MSG_DONTWAIT
+> to avoid the sleep altogether. We already set the flag for the
+> sendpage case but we missed the case were sendmsg is used.
+> Sockmap is currently the only user of skb_send_sock_locked() so only
+> the sockmap paths should be impacted.
+> 
+> ==================================================================
+> BUG: KASAN: use-after-free in remove_wait_queue+0x31/0x70
+> Write of size 8 at addr ffff888069a0c4e8 by task kworker/0:2/110
+> 
+> CPU: 0 PID: 110 Comm: kworker/0:2 Not tainted 5.0.0-rc2-00335-g28f9d1a3d4fe-dirty #14
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-2.fc27 04/01/2014
+> Workqueue: events sk_psock_backlog
+> Call Trace:
+>  print_address_description+0x6e/0x2b0
+>  ? remove_wait_queue+0x31/0x70
+>  kasan_report+0xfd/0x177
+>  ? remove_wait_queue+0x31/0x70
+>  ? remove_wait_queue+0x31/0x70
+>  remove_wait_queue+0x31/0x70
+>  sk_stream_wait_memory+0x4dd/0x5f0
+>  ? sk_stream_wait_close+0x1b0/0x1b0
+>  ? wait_woken+0xc0/0xc0
+>  ? tcp_current_mss+0xc5/0x110
+>  tcp_sendmsg_locked+0x634/0x15d0
+>  ? tcp_set_state+0x2e0/0x2e0
+>  ? __kasan_slab_free+0x1d1/0x230
+>  ? kmem_cache_free+0x70/0x140
+>  ? sk_psock_backlog+0x40c/0x4b0
+>  ? process_one_work+0x40b/0x660
+>  ? worker_thread+0x82/0x680
+>  ? kthread+0x1b9/0x1e0
+>  ? ret_from_fork+0x1f/0x30
+>  ? check_preempt_curr+0xaf/0x130
+>  ? iov_iter_kvec+0x5f/0x70
+>  ? kernel_sendmsg_locked+0xa0/0xe0
+>  skb_send_sock_locked+0x273/0x3c0
+>  ? skb_splice_bits+0x180/0x180
+>  ? start_thread+0xe0/0xe0
+>  ? update_min_vruntime.constprop.27+0x88/0xc0
+>  sk_psock_backlog+0xb3/0x4b0
+>  ? strscpy+0xbf/0x1e0
+>  process_one_work+0x40b/0x660
+>  worker_thread+0x82/0x680
+>  ? process_one_work+0x660/0x660
+>  kthread+0x1b9/0x1e0
+>  ? __kthread_create_on_node+0x250/0x250
+>  ret_from_fork+0x1f/0x30
+> 
+> Fixes: 20bf50de3028c ("skbuff: Function to send an skbuf on a socket")
+> Reported-by: Jakub Sitnicki <jakub@cloudflare.com>
+> Tested-by: Jakub Sitnicki <jakub@cloudflare.com>
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> ---
+>  net/core/skbuff.c |    1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index e89be62..c3b03c5 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -2337,6 +2337,7 @@ int skb_send_sock_locked(struct sock *sk, struct sk_buff *skb, int offset,
+>  		kv.iov_base = skb->data + offset;
+>  		kv.iov_len = slen;
+>  		memset(&msg, 0, sizeof(msg));
+> +		msg.flags = MSG_DONTWAIT;
+>  
+>  		ret = kernel_sendmsg_locked(sk, &msg, &kv, 1, slen);
+>  		if (ret <= 0)
 
-So why can't you do what the regular perf does? Use an output iterator
-that knows about the page breaks? See perf_output_put() for example.
-
-Anyway, I agree with Alexei and DaveM, get it working without/minimal
-kernel changes first, and then we can talk about possible optimizations.
+This doesn't even compile. :( It should have been msg_flags instead ...
