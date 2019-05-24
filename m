@@ -2,106 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A545A29EAF
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 20:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B8E29F38
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 21:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404102AbfEXS7j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 May 2019 14:59:39 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:32946 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404010AbfEXS7j (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 24 May 2019 14:59:39 -0400
-Received: from pps.filterd (m0044008.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4OIwZro026959
-        for <bpf@vger.kernel.org>; Fri, 24 May 2019 11:59:37 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=YRgZqxCbn0fM+3mMzWXVoho+/Srtm72NQfHQJHQDULw=;
- b=aK5rKqu94FvbJht85zCihN5nVGG7hOZUX8L71+EjbKVvLviPSHq0L8yJea09wyHN1RNT
- yDzly1KRZKqSFcpzOAsGzmhkGorXmkAS95zCfnFhX839//ERNQRlhZlgFhmeWc6lLVq4
- WKLYYlCkTnwbqogteinTZDs2gGQzx20I9t4= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2spmbjgfu8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 24 May 2019 11:59:37 -0700
-Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Fri, 24 May 2019 11:59:36 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id 4A14D8613DC; Fri, 24 May 2019 11:59:36 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <andrii.nakryiko@gmail.com>, <ast@fb.com>, <daniel@iogearbox.net>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <kernel-team@fb.com>
-CC:     Andrii Nakryiko <andriin@fb.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v3 bpf-next 12/12] bpftool: update bash-completion w/ new c option for btf dump
-Date:   Fri, 24 May 2019 11:59:07 -0700
-Message-ID: <20190524185908.3562231-13-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190524185908.3562231-1-andriin@fb.com>
-References: <20190524185908.3562231-1-andriin@fb.com>
-X-FB-Internal: Safe
+        id S1729597AbfEXTmF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 May 2019 15:42:05 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:37306 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732061AbfEXTmE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 May 2019 15:42:04 -0400
+Received: by mail-wm1-f68.google.com with SMTP id 7so10292554wmo.2
+        for <bpf@vger.kernel.org>; Fri, 24 May 2019 12:42:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bOyztbvPs1WDB8t01stjKvIzsOPGX3DvWoR6Ee1uwQc=;
+        b=B/YigiU7lOIbxbI+oZjq3PrdVGG18kK7A4KCC4bIP9MMpaiYgNrOQhFQPkBmGjRokW
+         3X6BykKbYYahsAI5plZs/KFictnM2XH2RsXR9h+2V7P0p0IEj5pepeNYx1Univ3YEWBh
+         aI4YQxRwpI67f4dqP8N/fVVmWwW9OnpOrVODDhFhA0xTYVFjM5m9jVPS43jmMPNHF7GK
+         LXtzAl1mRNmhsWihINUQ99cS1cP6k5LaXbvgH6QhXFDEIUO17EccD11Ty6cns3RWEGOv
+         /+26chX/ckWuBDuifApu8obtZfqoa43wL/A2l9eV8VHBAPe/JEDm219pzZUqjTXMUAJx
+         cCgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bOyztbvPs1WDB8t01stjKvIzsOPGX3DvWoR6Ee1uwQc=;
+        b=fvVOxJNN6ygtmvM9uJZOUVKIaoGVYhqoSWVAUmUzcmy6NtbitLo6gm6a1ZV9RwZdLM
+         yvkEeNIhCYNHq3LxUGnwW+59wkNjRY1zguGbDar4IpoXJ1ZQsb6v6vCC/o2KSTpxCK4M
+         +5sX09b4xBRSA/OPA5+D1XasAMZhS7zpMNhoEzmug1gsQxG6YlWdrILzvVNcIDcZLlEd
+         csR2mQHbi2Ifs65OZ2eqT1qJsRIejaSDOUtEoJExZpql5IMYrtUwnsqeElMutpDuBWdU
+         IOTC9zFirbU30o40bq4G3LupRvi0mZMUMtpIiOYcJVu6Pfjoj8g22Var62owvg+zEKDG
+         KHhw==
+X-Gm-Message-State: APjAAAXkWoUrenD8USD+IDqYDuXApGjibp4Ua6POvjoy1IWWsZRg7fVB
+        wipXi0EMxWPga5ZNPFZ25z6Zkw==
+X-Google-Smtp-Source: APXvYqxGUcuSuIClvixbgN9gLXOTvyO3R0mzzD6sgGP6Q3xuNSaSO2BKh070XvCt1tlB0INxrIp12g==
+X-Received: by 2002:a7b:cb85:: with SMTP id m5mr1000010wmi.85.1558726922720;
+        Fri, 24 May 2019 12:42:02 -0700 (PDT)
+Received: from [192.168.1.2] ([194.53.186.20])
+        by smtp.gmail.com with ESMTPSA id h8sm7297149wmf.5.2019.05.24.12.42.01
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 24 May 2019 12:42:02 -0700 (PDT)
+Subject: Re: [PATCH v2 bpf-next 10/12] bpftool: add C output format option to
+ btf dump subcommand
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+References: <20190523204222.3998365-1-andriin@fb.com>
+ <20190523204222.3998365-11-andriin@fb.com>
+ <eb690c2d-14d4-9c6f-2138-44f8cd027860@netronome.com>
+ <CAEf4Bza9ikV+SnBOE-h8J7ggw--1M3L8ak-VQ6-RxO71x0YUhw@mail.gmail.com>
+From:   Quentin Monnet <quentin.monnet@netronome.com>
+Message-ID: <72fbdb59-4b3b-0e7f-20e1-2ced103fdc46@netronome.com>
+Date:   Fri, 24 May 2019 20:42:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-24_06:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=884 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905240123
-X-FB-Internal: deliver
+In-Reply-To: <CAEf4Bza9ikV+SnBOE-h8J7ggw--1M3L8ak-VQ6-RxO71x0YUhw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add bash completion for new C btf dump option.
+2019-05-24 10:14 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> On Fri, May 24, 2019 at 2:14 AM Quentin Monnet
+> <quentin.monnet@netronome.com> wrote:
+>>
+>> Hi Andrii,
+>>
+>> Some nits inline, nothing blocking though.
+>>
+>> 2019-05-23 13:42 UTC-0700 ~ Andrii Nakryiko <andriin@fb.com>
+>>> Utilize new libbpf's btf_dump API to emit BTF as a C definitions.
+>>>
+>>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+>>> ---
+>>>  tools/bpf/bpftool/btf.c | 74 +++++++++++++++++++++++++++++++++++++++--
+>>>  1 file changed, 72 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+>>> index a22ef6587ebe..1cdbfad42b38 100644
+>>> --- a/tools/bpf/bpftool/btf.c
+>>> +++ b/tools/bpf/bpftool/btf.c
+>>> @@ -340,11 +340,48 @@ static int dump_btf_raw(const struct btf *btf,
+>>>       return 0;
+>>>  }
+>>>
+>>> +static void btf_dump_printf(void *ctx, const char *fmt, va_list args)
+>>
+>> Nit: This function could have a printf attribute ("__printf(2, 0)").
+> 
+> added, though I don't think it matters as it's only used as a callback function.
 
-Cc: Quentin Monnet <quentin.monnet@netronome.com>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/bpf/bpftool/bash-completion/bpftool | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+Thanks. Yes, true... But the attribute does not hurt, and we have it
+case it changes in the future and the function is reused. Ok, unlikely,
+but...
 
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index 50e402a5a9c8..75c01eafd3a1 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -638,11 +638,24 @@ _bpftool()
-                             esac
-                             return 0
-                             ;;
-+                        format)
-+                            COMPREPLY=( $( compgen -W "c raw" -- "$cur" ) )
-+                            ;;
-                         *)
--                            if [[ $cword == 6 ]] && [[ ${words[3]} == "map" ]]; then
--                                 COMPREPLY+=( $( compgen -W 'key value kv all' -- \
--                                     "$cur" ) )
--                            fi
-+                            # emit extra options
-+                            case ${words[3]} in
-+                                id|file)
-+                                    _bpftool_once_attr 'format'
-+                                    ;;
-+                                map|prog)
-+                                    if [[ ${words[3]} == "map" ]] && [[ $cword == 6 ]]; then
-+                                        COMPREPLY+=( $( compgen -W "key value kv all" -- "$cur" ) )
-+                                    fi
-+                                    _bpftool_once_attr 'format'
-+                                    ;;
-+                                *)
-+                                    ;;
-+                            esac
-                             return 0
-                             ;;
-                     esac
--- 
-2.17.1
+> 
+>>
+>>> +{
+>>> +     vfprintf(stdout, fmt, args);
+>>> +}
+>>> +
 
+
+>>> @@ -431,6 +468,29 @@ static int do_dump(int argc, char **argv)
+>>>               goto done;
+>>>       }
+>>>
+>>> +     while (argc) {
+>>> +             if (is_prefix(*argv, "format")) {
+>>> +                     NEXT_ARG();
+>>> +                     if (argc < 1) {
+>>> +                             p_err("expecting value for 'format' option\n");
+>>> +                             goto done;
+>>> +                     }
+>>> +                     if (strcmp(*argv, "c") == 0) {
+>>> +                             dump_c = true;
+>>> +                     } else if (strcmp(*argv, "raw") == 0) {
+>>
+>> Do you think we could use is_prefix() instead of strcmp() here?
+> 
+> So I considered it, and then decided against it, though I can still be
+> convinced otherwise. Right now we have raw and c, but let's say we add
+> rust as an option. r will become ambiguous, but actually will be
+> resolved to whatever we check first: either raw or rust, which is not
+> great. So given that those format specifiers will tend to be short, I
+> decided it's ok to require to specify them fully. Does it make sense?
+
+It does make sense. I thought about that too. I think I would add prefix
+handling anyway, especially because "raw" is the default so it makes
+sense defaulting to it in case there is a collision in the future. This
+is what happens already between "bpftool prog" and "bpftool perf". But I
+don't really mind, so ok, let's keep the full keyword for now if you prefer.
+
+> 
+>>
+>>> +                             dump_c = false;
+>>> +                     } else {
+>>> +                             p_err("unrecognized format specifier: '%s'",
+>>> +                                   *argv);
+>>
+>> Would it be worth reminding the user about the valid specifiers in that
+>> message? (But then we already have it in do_help(), so maybe not.)
+> 
+> Added possible options to the message.
+
+Cool, thanks!
