@@ -2,199 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C73B29AC8
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 17:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F4C29B79
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 17:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389927AbfEXPP0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 May 2019 11:15:26 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:32779 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389919AbfEXPP0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 May 2019 11:15:26 -0400
-Received: by mail-wr1-f67.google.com with SMTP id d9so10423436wrx.0
-        for <bpf@vger.kernel.org>; Fri, 24 May 2019 08:15:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:references:from:openpgp:autocrypt:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KSRUhgjwtC0T8Cv+keG98JDBG7eSt1Ox9pHF1Wcdlcc=;
-        b=1IEmrwmKbF55Hu1kEEGWyRyPnAwXt2eZZEolcQjRW3ntth1RAitHZFftkNimSIYa07
-         zuJl+w2G6kryYG68/W7M/L+sYNbmTPyi+4tNZhYgeNn6Jl9b/B0RtlXWgNv3kEnjPGYg
-         CUHcInJ+d9OqXnbh6ynV1o0iMaTjU5Dt4IVQz8UogBeAGiP13zNEuD1jwdnN6wsWQq5w
-         T4WP2NIhZiS3LingDto9IFFkr5i/qswXBC3dkfG87rsZ9QMsYapNysAnHz3amOZgcn95
-         YGp4meajU3POuDXQdpcXY8e7hozU6XzPYy9FYnIoulcD5bNZYkFfGu5vZ4Z/DWISogFY
-         ibgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:openpgp:autocrypt:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=KSRUhgjwtC0T8Cv+keG98JDBG7eSt1Ox9pHF1Wcdlcc=;
-        b=T4YK69vDRs98MZerzzZtge1mmL3KpTEBmTzGyfqfZrHBMb8QLPSOVDreR9+daSyQSA
-         rbWbmzi7l7I+nTS4dXU6rXZ6TdhPZVzybMNku6Rj9G2M9RZNHK37QJzMos2FnXKOU+C8
-         6zhGDnAl5vyBbmqZCSabvBzQR1qfEPiYpKLsN2OjwLhjyMbikMfyRxQSb+YE46BxWuyb
-         QstmSRpM44w0b3+eeySh+cLxcvYYNQQQyDMunmdZGluMMGjzvNSBC+6QyqZPpcFTkn69
-         7F9iXh46PcZhi9N+/Eh1qiHhYAZ6YkFWw21q5Y0aXtrGy5a9B4CAGqr9TtrqZuWcXaM8
-         KsUw==
-X-Gm-Message-State: APjAAAXlb0UAMkeMPldvcOndU0zVbjwUGmgRejraA8EaAIc8lJwVRrYH
-        Udswejn8/laOCkWe/Qa34/YHhtK1LM4=
-X-Google-Smtp-Source: APXvYqy5wsUOySULmMEKRPHj4TnoiDtITTFjRyQRYhytJVzdTFqBE7AuFAthy6gYYXw852fZRndmgw==
-X-Received: by 2002:adf:f8ce:: with SMTP id f14mr14820676wrq.110.1558710924379;
-        Fri, 24 May 2019 08:15:24 -0700 (PDT)
-Received: from [172.20.1.104] ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id q14sm1735039wrw.60.2019.05.24.08.15.23
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 May 2019 08:15:23 -0700 (PDT)
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, oss-drivers@netronome.com,
-        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>
+        id S2389663AbfEXPtL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 May 2019 11:49:11 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44762 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389079AbfEXPtL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 24 May 2019 11:49:11 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4OFm7O1005254;
+        Fri, 24 May 2019 08:48:48 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=JEK3y/P09j0d5ABVPuD1zjsmFnIyNIyxowIG2BTVP3c=;
+ b=oE1mClnLrR9tVeLlUV+ymK5HIhJecIcc5Dn+8zeF4xuSDzaYLa6rlpGYRzKpHxlUIxMA
+ labu/OVg7inkQoEiDTMlx/b/FyrvoCF2qTBWpsNJwKTV9P3/PqyB/wsNhX91OFgx7mJm
+ E4vqMQIUTV7ZLr7bSF97oOYKgVQe+DO/DTE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2spj2vgb97-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 24 May 2019 08:48:48 -0700
+Received: from ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) by
+ ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 24 May 2019 08:48:47 -0700
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Fri, 24 May 2019 08:48:47 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JEK3y/P09j0d5ABVPuD1zjsmFnIyNIyxowIG2BTVP3c=;
+ b=N+/Deu5qaxvvvm6EnZdRrnx6ITy3/B0Axq9FTFpMlqHW4i2wUtrOEKG87F7dFPcqGlefOtr6IsTw39EiYQGc4w0nHC7cQHYygkIeSL2aIRIz3T9xhPMSh/u/ornWgmQDOT+ATHZzOyfo362QJZXtlzbovzvdIt/kPVGQP1jDsd0=
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.59.17) by
+ BYAPR15MB2920.namprd15.prod.outlook.com (20.178.236.225) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1922.16; Fri, 24 May 2019 15:48:45 +0000
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::956e:28a4:f18d:b698]) by BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::956e:28a4:f18d:b698%3]) with mapi id 15.20.1900.020; Fri, 24 May 2019
+ 15:48:45 +0000
+From:   Yonghong Song <yhs@fb.com>
+To:     Quentin Monnet <quentin.monnet@netronome.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "oss-drivers@netronome.com" <oss-drivers@netronome.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH bpf-next v3 0/3] tools: bpftool: add an option for debug
+ output from libbpf and verifier
+Thread-Topic: [PATCH bpf-next v3 0/3] tools: bpftool: add an option for debug
+ output from libbpf and verifier
+Thread-Index: AQHVEhyeHssM0Sx0K0O8JHsdRwJYPKZ6bA6A
+Date:   Fri, 24 May 2019 15:48:45 +0000
+Message-ID: <e8f85691-2a29-eeea-9149-ded6b5bf39bc@fb.com>
 References: <20190524103648.15669-1-quentin.monnet@netronome.com>
- <20190524103648.15669-3-quentin.monnet@netronome.com>
- <20190524132215.4113ff08@carbon>
- <5895821e-0d79-2169-d631-0fa7560135ec@netronome.com>
- <20190524144900.618e8e93@carbon>
-From:   Quentin Monnet <quentin.monnet@netronome.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quentin.monnet@netronome.com; prefer-encrypt=mutual; keydata=
- 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
- RHhSHGnKaQ6MfrTge5Q0h5A=
-Subject: Re: [PATCH bpf-next v3 2/3] libbpf: add bpf_object__load_xattr() API
- function to pass log_level
-Message-ID: <0842db21-996b-346c-d572-e7384802eae0@netronome.com>
-Date:   Fri, 24 May 2019 16:15:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+In-Reply-To: <20190524103648.15669-1-quentin.monnet@netronome.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BYAPR07CA0002.namprd07.prod.outlook.com
+ (2603:10b6:a02:bc::15) To BYAPR15MB3384.namprd15.prod.outlook.com
+ (2603:10b6:a03:10e::17)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::1:f644]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 81ddb419-349d-4c9e-10ce-08d6e05f4ddb
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:BYAPR15MB2920;
+x-ms-traffictypediagnostic: BYAPR15MB2920:
+x-ms-exchange-purlcount: 2
+x-microsoft-antispam-prvs: <BYAPR15MB292010A187C939C04D522732D3020@BYAPR15MB2920.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:792;
+x-forefront-prvs: 0047BC5ADE
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(376002)(366004)(39860400002)(396003)(136003)(199004)(189003)(99286004)(8676002)(6436002)(53936002)(81156014)(81166006)(14454004)(6506007)(6486002)(76176011)(53546011)(966005)(52116002)(229853002)(102836004)(25786009)(4326008)(31686004)(478600001)(8936002)(6246003)(110136005)(54906003)(36756003)(316002)(46003)(476003)(2616005)(11346002)(446003)(256004)(71190400001)(14444005)(71200400001)(5660300002)(86362001)(31696002)(386003)(6512007)(6306002)(7736002)(68736007)(6116002)(305945005)(186003)(66476007)(66556008)(64756008)(66446008)(66946007)(486006)(73956011)(2906002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2920;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: GMrW+pIjvavDZbbydv1oJkn1Nuh72N/dQG9uVY4GD2liImrEYPmTdMmRPZ68jAQ8TvANVf2FAoNSgHSp1xyq84DF//Lyrkd8y3K5mqpLMR0oszDUcdfI4yikSr/f8UzrV9dXXnaBc7iAiEtFAVMu/cCqrLXNucrkYLBYdyvw7VRRk0iyX64MRgKd+A0BOjrS/y+/6WQ3WMkpbtCkbpGO4OF7JWXEl5UuycPOEPnwvPioFoHRK1MZh3jJYMO4fv4cRlnrXCHJS3FffLofF8o6aI2oWdHtqOAafUreUBLkQ/rHjR06cvh/43GxIyNXDCdUjtPWcuv140pRfOWBSVmH0O11zJbAatn9RUgQ7CZG7YB6pMC6VE7o1LpTCGrNynuZzFbcFoOrtBtlqL8zk5WlhgL7qLZInZmvA3qtj++mKu4=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9ACC35801332E3418279F21DD9FE43BE@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20190524144900.618e8e93@carbon>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-Network-Message-Id: 81ddb419-349d-4c9e-10ce-08d6e05f4ddb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 May 2019 15:48:45.5769
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2920
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-24_06:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=910 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905240104
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2019-05-24 14:49 UTC+0200 ~ Jesper Dangaard Brouer <brouer@redhat.com>
-> On Fri, 24 May 2019 12:51:14 +0100
-> Quentin Monnet <quentin.monnet@netronome.com> wrote:
-> 
->> 2019-05-24 13:22 UTC+0200 ~ Jesper Dangaard Brouer <brouer@redhat.com>
->>> On Fri, 24 May 2019 11:36:47 +0100
->>> Quentin Monnet <quentin.monnet@netronome.com> wrote:
->>>   
->>>> libbpf was recently made aware of the log_level attribute for programs,
->>>> used to specify the level of information expected to be dumped by the
->>>> verifier. Function bpf_prog_load_xattr() got support for this log_level
->>>> parameter.
->>>>
->>>> But some applications using libbpf rely on another function to load
->>>> programs, bpf_object__load(), which does accept any parameter for log
->>>> level. Create an API function based on bpf_object__load(), but accepting
->>>> an "attr" object as a parameter. Then add a log_level field to that
->>>> object, so that applications calling the new bpf_object__load_xattr()
->>>> can pick the desired log level.  
->>>
->>> Does this allow us to extend struct bpf_object_load_attr later?  
->>
->> I see no reason why it could not. Having the _xattr() version of the
->> function is precisely a way to have something extensible in the future,
->> without having to create additional API functions each time we want to
->> pass a new parameter. And e.g. struct bpf_prog_load_attr (used with
->> bpf_prog_load_xattr()) has already been extended in the past. So, yeah,
->> we can add to it in the future.
-> 
-> Great.  I just don't know/understand how user-space handle this. If a
-> binary is compiled with libbpf as dynamic loadable lib, then it e.g. saw
-> libbpf.so.2 when it was compiled, then can't it choose to use libbpf.so.3
-> then? (e.g. when libbpf.so.2 is not on the system). (I would actually
-> like to learn/understand this, so links are welcome).
-
-Well I'm no library expert, so don't take my word for it. As far as I
-understand, the soname of the library is selected at link time. So if
-your app is linked again libbpf.so.2, you will need version 2.* of the
-library to be installed on your system, because increasing the version
-number usually implies ABI breakage. You can usually check which version
-of the libraries is needed with ldd ("ldd bpftool", except that you
-won't see libbpf because it's statically linked for bpftool).
-
-This being said, for now the version number for libbpf has not been
-incremented and is still at 0, we only had the extraversion increasing.
-Since it's not part of the soname ("-Wl,-soname,libbpf.so.$(VERSION)" in
-libbpf Makefile), it is not taken into account when searching for the
-lib on the system. What I mean is that if the program is linked against
-libbpf.so.0, it could pick libbpf.so.0.0.2 or libbpf.so.0.0.3
-indifferently depending on what it finds on the system (I assume it
-takes the newest?). There should not be any ABI breakage between the
-two, so programs compiled against an older patchlevel or extraversion of
-the library should still be able to use a newer one.
-
-There is some documentation on libraries here (I should take some time
-to finish reading it myself!):
-
-http://tldp.org/HOWTO/Program-Library-HOWTO/
-
-There are also interesting elements in the documentation that was cited
-when Andrey introduced the LIBPPF_API macros in libbpf:
-
-https://www.akkadia.org/drepper/dsohowto.pdf
-
-> 
->> Do you have something in mind?
-> 
-> I was playing with extending bpf_prog_load_attr, but instead I created a
-> bpf_prog_load_attr_maps instead and a new function
-> bpf_prog_load_xattr_maps(), e.g. see:
-> 
-> https://github.com/xdp-project/xdp-tutorial/blob/master/common/common_libbpf.h
-> https://github.com/xdp-project/xdp-tutorial/blob/master/common/common_libbpf.c
-> 
-> I guess, I could just extend bpf_prog_load_attr instead, right?
-> 
-
-I believe so.
-
-Best,
-Quentin
+DQoNCk9uIDUvMjQvMTkgMzozNiBBTSwgUXVlbnRpbiBNb25uZXQgd3JvdGU6DQo+IEhpLA0KPiBU
+aGlzIHNlcmllcyBhZGRzIGFuIG9wdGlvbiB0byBicGZ0b29sIHRvIG1ha2UgaXQgcHJpbnQgYWRk
+aXRpb25hbA0KPiBpbmZvcm1hdGlvbiB2aWEgbGliYnBmIGFuZCB0aGUga2VybmVsIHZlcmlmaWVy
+IHdoZW4gYXR0ZW1wdGluZyB0byBsb2FkDQo+IHByb2dyYW1zLg0KPiANCj4gQSBuZXcgQVBJIGZ1
+bmN0aW9uIGlzIGFkZGVkIHRvIGxpYmJwZiBpbiBvcmRlciB0byBwYXNzIHRoZSBsb2dfbGV2ZWwg
+ZnJvbQ0KPiBicGZ0b29sIHdpdGggdGhlIGJwZl9vYmplY3RfXyogcGFydCBvZiB0aGUgQVBJLg0K
+PiANCj4gT3B0aW9ucyBmb3IgYSBmaW5lciBjb250cm9sIG92ZXIgdGhlIGxvZyBsZXZlbHMgdG8g
+dXNlIGZvciBsaWJicGYgYW5kIHRoZQ0KPiB2ZXJpZmllciBjb3VsZCBiZSBhZGRlZCBpbiB0aGUg
+ZnV0dXJlLCBpZiBkZXNpcmVkLg0KPiANCj4gdjM6DQo+IC0gRml4IGFuZCBjbGFyaWZ5IGNvbW1p
+dCBsb2dzLg0KPiANCj4gdjI6DQo+IC0gRG8gbm90IGFkZCBkaXN0aW5jdCBvcHRpb25zIGZvciBs
+aWJicGYgYW5kIHZlcmlmaWVyIGxvZ3MsIGp1c3Qga2VlcCB0aGUNCj4gICAgb25lIHRoYXQgc2V0
+cyBhbGwgbG9nIGxldmVscyB0byB0aGVpciBtYXhpbXVtLiBSZW5hbWUgdGhlIG9wdGlvbi4NCj4g
+LSBEbyBub3Qgb2ZmZXIgYSB3YXkgdG8gcGljayBkZXNpcmVkIGxvZyBsZXZlbHMuIFRoZSBjaG9p
+Y2UgaXMgInVzZSB0aGUNCj4gICAgb3B0aW9uIHRvIHByaW50IGFsbCBsb2dzIiBvciAic3RpY2sg
+d2l0aCB0aGUgZGVmYXVsdHMiLg0KPiAtIERvIG5vdCBleHBvcnQgQlBGX0xPR18qIGZsYWdzIHRv
+IHVzZXIgaGVhZGVyLg0KPiAtIFVwZGF0ZSBhbGwgbWFuIHBhZ2VzIChtb3N0IGJwZnRvb2wgb3Bl
+cmF0aW9ucyB1c2UgbGliYnBmIGFuZCBtYXkgcHJpbnQNCj4gICAgbGliYnBmIGxvZ3MpLiBWZXJp
+ZmllciBsb2dzIGFyZSBvbmx5IHVzZWQgd2hlbiBhdHRlbXB0aW5nIHRvIGxvYWQNCj4gICAgcHJv
+Z3JhbXMgZm9yIG5vdywgc28gYnBmdG9vbC1wcm9nLnJzdCBhbmQgYnBmdG9vbC5yc3QgcmVtYWlu
+IHRoZSBvbmx5DQo+ICAgIHBhZ2VzIHVwZGF0ZWQgaW4gdGhhdCByZWdhcmQuDQo+IA0KPiBQcmV2
+aW91cyBkaXNjdXNzaW9uIGF2YWlsYWJsZSBhdDoNCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcv
+YnBmLzIwMTkwNTIzMTA1NDI2LjM5MzgtMS1xdWVudGluLm1vbm5ldEBuZXRyb25vbWUuY29tLw0K
+PiBodHRwczovL2xvcmUua2VybmVsLm9yZy9icGYvMjAxOTA0MjkwOTUyMjcuOTc0NS0xLXF1ZW50
+aW4ubW9ubmV0QG5ldHJvbm9tZS5jb20vDQoNClRoZSBzZXJpZXMgbG9va3MgZ29vZCB0byBtZS4N
+CkFja2VkLWJ5OiBZb25naG9uZyBTb25nIDx5aHNAZmIuY29tPg0KDQo+IA0KPiBRdWVudGluIE1v
+bm5ldCAoMyk6DQo+ICAgIHRvb2xzOiBicGZ0b29sOiBhZGQgLWQgb3B0aW9uIHRvIGdldCBkZWJ1
+ZyBvdXRwdXQgZnJvbSBsaWJicGYNCj4gICAgbGliYnBmOiBhZGQgYnBmX29iamVjdF9fbG9hZF94
+YXR0cigpIEFQSSBmdW5jdGlvbiB0byBwYXNzIGxvZ19sZXZlbA0KPiAgICB0b29sczogYnBmdG9v
+bDogbWFrZSAtZCBvcHRpb24gcHJpbnQgZGVidWcgb3V0cHV0IGZyb20gdmVyaWZpZXINCj4gDQo+
+ICAgLi4uL2JwZi9icGZ0b29sL0RvY3VtZW50YXRpb24vYnBmdG9vbC1idGYucnN0IHwgIDQgKysr
+DQo+ICAgLi4uL2JwZnRvb2wvRG9jdW1lbnRhdGlvbi9icGZ0b29sLWNncm91cC5yc3QgIHwgIDQg
+KysrDQo+ICAgLi4uL2JwZnRvb2wvRG9jdW1lbnRhdGlvbi9icGZ0b29sLWZlYXR1cmUucnN0IHwg
+IDQgKysrDQo+ICAgLi4uL2JwZi9icGZ0b29sL0RvY3VtZW50YXRpb24vYnBmdG9vbC1tYXAucnN0
+IHwgIDQgKysrDQo+ICAgLi4uL2JwZi9icGZ0b29sL0RvY3VtZW50YXRpb24vYnBmdG9vbC1uZXQu
+cnN0IHwgIDQgKysrDQo+ICAgLi4uL2JwZnRvb2wvRG9jdW1lbnRhdGlvbi9icGZ0b29sLXBlcmYu
+cnN0ICAgIHwgIDQgKysrDQo+ICAgLi4uL2JwZnRvb2wvRG9jdW1lbnRhdGlvbi9icGZ0b29sLXBy
+b2cucnN0ICAgIHwgIDUgKysrKw0KPiAgIHRvb2xzL2JwZi9icGZ0b29sL0RvY3VtZW50YXRpb24v
+YnBmdG9vbC5yc3QgICB8ICA0ICsrKw0KPiAgIHRvb2xzL2JwZi9icGZ0b29sL2Jhc2gtY29tcGxl
+dGlvbi9icGZ0b29sICAgICB8ICAyICstDQo+ICAgdG9vbHMvYnBmL2JwZnRvb2wvbWFpbi5jICAg
+ICAgICAgICAgICAgICAgICAgIHwgMTYgKysrKysrKysrKy0NCj4gICB0b29scy9icGYvYnBmdG9v
+bC9tYWluLmggICAgICAgICAgICAgICAgICAgICAgfCAgMSArDQo+ICAgdG9vbHMvYnBmL2JwZnRv
+b2wvcHJvZy5jICAgICAgICAgICAgICAgICAgICAgIHwgMjcgKysrKysrKysrKysrLS0tLS0tLQ0K
+PiAgIHRvb2xzL2xpYi9icGYvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICB8ICAyICst
+DQo+ICAgdG9vbHMvbGliL2JwZi9saWJicGYuYyAgICAgICAgICAgICAgICAgICAgICAgIHwgMjAg
+KysrKysrKysrKystLS0NCj4gICB0b29scy9saWIvYnBmL2xpYmJwZi5oICAgICAgICAgICAgICAg
+ICAgICAgICAgfCAgNiArKysrKw0KPiAgIHRvb2xzL2xpYi9icGYvbGliYnBmLm1hcCAgICAgICAg
+ICAgICAgICAgICAgICB8ICA1ICsrKysNCj4gICAxNiBmaWxlcyBjaGFuZ2VkLCA5NiBpbnNlcnRp
+b25zKCspLCAxNiBkZWxldGlvbnMoLSkNCj4gDQo=
