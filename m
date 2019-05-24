@@ -2,78 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ADCC2987A
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 15:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7453298EC
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 15:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391272AbfEXNGB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 May 2019 09:06:01 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:29648 "EHLO mx1.redhat.com"
+        id S2391470AbfEXN3A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 May 2019 09:29:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391193AbfEXNGB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 May 2019 09:06:01 -0400
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2391395AbfEXN3A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 May 2019 09:29:00 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 0561E308338F;
-        Fri, 24 May 2019 13:06:01 +0000 (UTC)
-Received: from treble (ovpn-121-106.rdu2.redhat.com [10.10.121.106])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EEC6F68706;
-        Fri, 24 May 2019 13:05:59 +0000 (UTC)
-Date:   Fri, 24 May 2019 08:05:57 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Kairui Song <kasong@redhat.com>, Alexei Starovoitov <ast@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: Getting empty callchain from perf_callchain_kernel()
-Message-ID: <20190524130557.icmofltzzotqvurg@treble>
-References: <CACPcB9cpNp5CBqoRs+XMCwufzAFa8Pj-gbmj9fb+g5wVdue=ig@mail.gmail.com>
- <20190522140233.GC16275@worktop.programming.kicks-ass.net>
- <ab047883-69f6-1175-153f-5ad9462c6389@fb.com>
- <20190522174517.pbdopvookggen3d7@treble>
- <20190522234635.a47bettklcf5gt7c@treble>
- <CACPcB9dRJ89YAMDQdKoDMU=vFfpb5AaY0mWC_Xzw1ZMTFBf6ng@mail.gmail.com>
- <20190523133253.tad6ywzzexks6hrp@treble>
- <CACPcB9fQKg7xhzhCZaF4UGi=EQs1HLTFgg-C_xJQaUfho3yMyA@mail.gmail.com>
- <20190523152413.m2pbnamihu3s2c5s@treble>
- <20190524085319.GE2589@hirez.programming.kicks-ass.net>
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F75D217F9;
+        Fri, 24 May 2019 13:28:58 +0000 (UTC)
+Date:   Fri, 24 May 2019 09:28:55 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Kris Van Hees <kris.van.hees@oracle.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        dtrace-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+        mhiramat@kernel.org, acme@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, peterz@infradead.org
+Subject: Re: [RFC PATCH 00/11] bpf, trace, dtrace: DTrace BPF program type
+ implementation and sample use
+Message-ID: <20190524092855.356020f7@gandalf.local.home>
+In-Reply-To: <20190524040527.GU2422@oracle.com>
+References: <20190521175617.ipry6ue7o24a2e6n@ast-mbp.dhcp.thefacebook.com>
+        <20190521184137.GH2422@oracle.com>
+        <20190521205533.evfszcjvdouby7vp@ast-mbp.dhcp.thefacebook.com>
+        <20190521173618.2ebe8c1f@gandalf.local.home>
+        <20190521214325.rr7emn5z3b7wqiiy@ast-mbp.dhcp.thefacebook.com>
+        <20190521174757.74ec8937@gandalf.local.home>
+        <20190522052327.GN2422@oracle.com>
+        <20190522205329.uu26oq2saj56og5m@ast-mbp.dhcp.thefacebook.com>
+        <20190523054610.GR2422@oracle.com>
+        <20190523211330.hng74yi75ixmcznc@ast-mbp.dhcp.thefacebook.com>
+        <20190524040527.GU2422@oracle.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20190524085319.GE2589@hirez.programming.kicks-ass.net>
-User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Fri, 24 May 2019 13:06:01 +0000 (UTC)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 24, 2019 at 10:53:19AM +0200, Peter Zijlstra wrote:
-> On Thu, May 23, 2019 at 10:24:13AM -0500, Josh Poimboeuf wrote:
-> 
-> > Here's the latest version which should fix it in all cases (based on
-> > tip/master):
-> > 
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git/commit/?h=bpf-orc-fix
-> 
-> That patch suffers an inconsitency, the comment states:
-> 
->   'if they have "jump_table" in the name'
-> 
-> while the actual code implements:
-> 
->   'if the name starts with "jump_table"'
-> 
-> Other than that, I suppose that works just fine ;-)
+On Fri, 24 May 2019 00:05:27 -0400
+Kris Van Hees <kris.van.hees@oracle.com> wrote:
 
-The thing is, gcc converts a static local variable named "jump_table" to
-an ELF symbol with a numbered suffix, something like "jump_table.12345".
-But yeah I should at least clarify that in the comment.
+> No, no, that is not at all what I am saying.  In DTrace, the particulars of
+> how you get to e.g. probe arguments or current task information are not
+> something that script writers need to concern themselves about.  Similar to
+> how BPF contexts have a public (uapi) declaration and a kernel-level context
+> declaration taht is used to actually implement accessing the data (using the
+> is_valid_access and convert_ctx_access functions that prog types implement).
+> DTrace exposes an abstract probe entity to script writers where they can
+> access probe arguments as arg0 through arg9.  Nothing in the userspace needs
+> to know how you obtain the value of those arguments.  So, scripts can be
+> written for any kind of probe, and the only information that is used to
+> verify programs is obtained from the abstract probe description (things like
+> its unique id, number of arguments, and possible type information for each
+> argument).  The knowledge of how to get to the value of the probe arguments
+> is only known at the level of the kernel, so that when the implementation of
+> the probe in the kernel is modified, the mapping from actual probe to abstract
+> representation of the probe (in the kernel) can be modified along with it,
+> and userspace won't even notice that anything changed.
+> 
+> Many parts of the kernel work the same way.  E.g. file system implementations
+> change, yet the API to use the file systems remains the same.
 
--- 
-Josh
+Another example is actually the tracefs events directory. It represents
+normal trace events (tracepoints), kprobes, uprobes, and synthetic
+events. You don't need to know what they are to use them as soon as
+they are created. You can even add triggers and such on top of each,
+and there shouldn't be any difference.
+
+-- Steve
