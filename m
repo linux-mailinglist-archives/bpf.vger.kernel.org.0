@@ -2,47 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EEC22974E
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 13:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6308B29750
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 13:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391223AbfEXLgF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 May 2019 07:36:05 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:44851 "EHLO
+        id S2391225AbfEXLgH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 May 2019 07:36:07 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:33823 "EHLO
         mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391192AbfEXLgE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 May 2019 07:36:04 -0400
-Received: by mail-wr1-f66.google.com with SMTP id w13so1293847wru.11
-        for <bpf@vger.kernel.org>; Fri, 24 May 2019 04:36:03 -0700 (PDT)
+        with ESMTP id S2391219AbfEXLgG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 May 2019 07:36:06 -0400
+Received: by mail-wr1-f66.google.com with SMTP id f8so9686589wrt.1
+        for <bpf@vger.kernel.org>; Fri, 24 May 2019 04:36:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=t5QoTAKj6gWs22LRKizXuguuwC9VDKWN26JI1/YClLc=;
-        b=QaTNBgS146STwpF5bCiJpPyYd4Vk6Jo/N3wMPZD1NjtDW6jhKyiWMmRei+HOb9urrb
-         4lnA+NafdkPaB+gLR+bqCNGQExueCX+C6Zs83jgM5z/uiPVjKVCMooQ3VmvJci0ivVEK
-         73CGlvbSHUfM73kMbO+IFO3Ged3gB30FmTczlhA0OtVCoBNI8ymp2E+taw0CcuiEOjDH
-         aC6HT3mvu7txxWyWN/mCAfo8yvtEnverwhfTJ7IW6V2qgYJwcq0h2+w0lpFz00nYxkHX
-         wO7CvmdrDK0YEEMLvLIiT9GwzdVvBqfOt7hTQlVLPZQ5BM/to9PC3p1qt+T00R7dEHSe
-         G+0A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=mYjuI3PNQLgs76XUw59PtH5pPyLdg/8FK9GvazowTjQ=;
+        b=laYNiTTamnt4D98+p2x3ijtkYbQZ+48yMqyq11bTKO8AKweKDZWIjUnPry5I2AXFl/
+         C3FUNiDMeZYvOvz+8jruXSsg5xQIFJ0hTPDfjvXsynrx9G+Y3XpyWevC1z4fGyp61Nwq
+         Lfts0PmGTFWg0A/TA4HOCV+LDLsVZg1aeGmf33kunI+KTimA6qDGUIu8p1YkpoPwplbz
+         ss/q+4XHKRWUk8BBRK8MA7pnRcnYKxEoIEraQyNzVq+i9XZ5wCaor0bhNEtrfysiK+uQ
+         IoqHLKZHzfN+irt+ZRZDWmq/j/M0FTCTGbYg8zsTUUz4oesLL2t04loXgjs0GyBxYuc+
+         L2ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=t5QoTAKj6gWs22LRKizXuguuwC9VDKWN26JI1/YClLc=;
-        b=NFzBsU97L9pUNxzb0GVOUGp76kXafda2nPgVFFZlGu4vGBivQMCcZkTJiT+nZmGjch
-         JxqWUjM5U7XiPREvNtAuq95CVDTB5Ray/mXScDB86uJfsyNHLyib81nIwz9rRnWp+TyX
-         6mK4yop1/dOq042el5EyvF2SeCMFtKBxvEvSXa4mqyAD131dTI5McQHIzM5kdKtTzzu7
-         qKcFQ4wHAHmZs+ayS55irVhhY6A1bdYIZSwpq2bkpI/8GGRyUK05h+hYUSAotPOmSM9v
-         wZYs5qfz7B0WE6DoAoEiJqSIfd+yiFX46jWonUVMAOz5QV4fh0Vfl0MU8uWadJjAHKVF
-         mrwA==
-X-Gm-Message-State: APjAAAWBCP0/hAtG2lGQm4LJZn029KBfyeJj6evTnHnoxNm/nBkH1dL1
-        8LI2CbIY3WTPpzqOJ4j3iPIKGg==
-X-Google-Smtp-Source: APXvYqzRgZz8zfqRpWtVthj6/7Rg88wS7V15hCdCPQrMoggt91D9A2hcacxVaYJsZi4jOe0FZBXfBg==
-X-Received: by 2002:a5d:4682:: with SMTP id u2mr52934434wrq.202.1558697763034;
-        Fri, 24 May 2019 04:36:03 -0700 (PDT)
+         :references:mime-version:content-transfer-encoding;
+        bh=mYjuI3PNQLgs76XUw59PtH5pPyLdg/8FK9GvazowTjQ=;
+        b=Nti2Q4+ZgOnU0sgrnFteK0DRuoc68OeZL01/7AOZo0JyDx38jbfq6GsCE97ICCXIhH
+         /rWvhtV5AsOYnKnJS+EmkSKa6OF5tZmfirGmKPMKZUsLxnBbIrdsVXYrPSyAUS7yDdwY
+         7IztmtaTQ/3haH+8hkZA7Aq5nW6lK5YHkuF9t4PSFGf9sJWe5UI58GyHmEhHibGJo9jZ
+         Ted8st9oFAD85uR1HIRmQsMGfn5p/FKFSUiH7FotoMTHi0iSkJFdYYmojJqNcd8T2dbX
+         4XueUI7hIG4faHxnjDLfh/HVv0TgwV4Kj0jqmOx7V6TYbcEdT94Zet0+Gyw+XGQSJRWU
+         RetQ==
+X-Gm-Message-State: APjAAAXGJJ8geOfzTQR5CJd3LSyeM1kdRb1vfOfHvs+Pj1k/0727dMhx
+        oGX/zwN64NZNnaomOowx6mGpVQ==
+X-Google-Smtp-Source: APXvYqzSP+r5vVrzeDy3LXBTkOI2p2tCxVPPK7DbBWlm+08ezQBfuMUDvNBAM10/RD+qH7PnrOxRCw==
+X-Received: by 2002:a5d:40c2:: with SMTP id b2mr471758wrq.65.1558697764398;
+        Fri, 24 May 2019 04:36:04 -0700 (PDT)
 Received: from cbtest28.netronome.com ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id x22sm2462902wmi.4.2019.05.24.04.36.02
+        by smtp.gmail.com with ESMTPSA id x22sm2462902wmi.4.2019.05.24.04.36.03
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Fri, 24 May 2019 04:36:02 -0700 (PDT)
+        Fri, 24 May 2019 04:36:03 -0700 (PDT)
 From:   Jiong Wang <jiong.wang@netronome.com>
 To:     alexei.starovoitov@gmail.com, daniel@iogearbox.net
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
@@ -51,254 +52,190 @@ Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         illusionist.neo@gmail.com, naveen.n.rao@linux.ibm.com,
         sandipan@linux.ibm.com, schwidefsky@de.ibm.com,
         heiko.carstens@de.ibm.com, jakub.kicinski@netronome.com,
-        Jiong Wang <jiong.wang@netronome.com>
-Subject: [PATCH v8 bpf-next 14/16] x32: bpf: eliminate zero extension code-gen
-Date:   Fri, 24 May 2019 12:35:24 +0100
-Message-Id: <1558697726-4058-15-git-send-email-jiong.wang@netronome.com>
+        Jiong Wang <jiong.wang@netronome.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+Subject: [PATCH v8 bpf-next 15/16] riscv: bpf: eliminate zero extension code-gen
+Date:   Fri, 24 May 2019 12:35:25 +0100
+Message-Id: <1558697726-4058-16-git-send-email-jiong.wang@netronome.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1558697726-4058-1-git-send-email-jiong.wang@netronome.com>
 References: <1558697726-4058-1-git-send-email-jiong.wang@netronome.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cc: Wang YanQing <udknight@gmail.com>
-Tested-by: Wang YanQing <udknight@gmail.com>
+Cc: Björn Töpel <bjorn.topel@gmail.com>
+Acked-by: Björn Töpel <bjorn.topel@gmail.com>
+Tested-by: Björn Töpel <bjorn.topel@gmail.com>
 Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
 ---
- arch/x86/net/bpf_jit_comp32.c | 83 +++++++++++++++++++++++++++++--------------
- 1 file changed, 56 insertions(+), 27 deletions(-)
+ arch/riscv/net/bpf_jit_comp.c | 43 ++++++++++++++++++++++++++++++-------------
+ 1 file changed, 30 insertions(+), 13 deletions(-)
 
-diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
-index b29e82f..133433d 100644
---- a/arch/x86/net/bpf_jit_comp32.c
-+++ b/arch/x86/net/bpf_jit_comp32.c
-@@ -253,13 +253,14 @@ static inline void emit_ia32_mov_r(const u8 dst, const u8 src, bool dstk,
- /* dst = src */
- static inline void emit_ia32_mov_r64(const bool is64, const u8 dst[],
- 				     const u8 src[], bool dstk,
--				     bool sstk, u8 **pprog)
-+				     bool sstk, u8 **pprog,
-+				     const struct bpf_prog_aux *aux)
+diff --git a/arch/riscv/net/bpf_jit_comp.c b/arch/riscv/net/bpf_jit_comp.c
+index 80b12aa..c4c836e 100644
+--- a/arch/riscv/net/bpf_jit_comp.c
++++ b/arch/riscv/net/bpf_jit_comp.c
+@@ -731,6 +731,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
  {
- 	emit_ia32_mov_r(dst_lo, src_lo, dstk, sstk, pprog);
- 	if (is64)
- 		/* complete 8 byte move */
- 		emit_ia32_mov_r(dst_hi, src_hi, dstk, sstk, pprog);
--	else
-+	else if (!aux->verifier_zext)
- 		/* zero out high 4 bytes */
- 		emit_ia32_mov_i(dst_hi, 0, dstk, pprog);
- }
-@@ -313,7 +314,8 @@ static inline void emit_ia32_mul_r(const u8 dst, const u8 src, bool dstk,
- }
- 
- static inline void emit_ia32_to_le_r64(const u8 dst[], s32 val,
--					 bool dstk, u8 **pprog)
-+					 bool dstk, u8 **pprog,
-+					 const struct bpf_prog_aux *aux)
- {
- 	u8 *prog = *pprog;
- 	int cnt = 0;
-@@ -334,12 +336,14 @@ static inline void emit_ia32_to_le_r64(const u8 dst[], s32 val,
- 		 */
- 		EMIT2(0x0F, 0xB7);
- 		EMIT1(add_2reg(0xC0, dreg_lo, dreg_lo));
--		/* xor dreg_hi,dreg_hi */
--		EMIT2(0x33, add_2reg(0xC0, dreg_hi, dreg_hi));
-+		if (!aux->verifier_zext)
-+			/* xor dreg_hi,dreg_hi */
-+			EMIT2(0x33, add_2reg(0xC0, dreg_hi, dreg_hi));
+ 	bool is64 = BPF_CLASS(insn->code) == BPF_ALU64 ||
+ 		    BPF_CLASS(insn->code) == BPF_JMP;
++	struct bpf_prog_aux *aux = ctx->prog->aux;
+ 	int rvoff, i = insn - ctx->prog->insnsi;
+ 	u8 rd = -1, rs = -1, code = insn->code;
+ 	s16 off = insn->off;
+@@ -742,8 +743,13 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 	/* dst = src */
+ 	case BPF_ALU | BPF_MOV | BPF_X:
+ 	case BPF_ALU64 | BPF_MOV | BPF_X:
++		if (imm == 1) {
++			/* Special mov32 for zext */
++			emit_zext_32(rd, ctx);
++			break;
++		}
+ 		emit(is64 ? rv_addi(rd, rs, 0) : rv_addiw(rd, rs, 0), ctx);
+-		if (!is64)
++		if (!is64 && !aux->verifier_zext)
+ 			emit_zext_32(rd, ctx);
  		break;
- 	case 32:
--		/* xor dreg_hi,dreg_hi */
--		EMIT2(0x33, add_2reg(0xC0, dreg_hi, dreg_hi));
-+		if (!aux->verifier_zext)
-+			/* xor dreg_hi,dreg_hi */
-+			EMIT2(0x33, add_2reg(0xC0, dreg_hi, dreg_hi));
+ 
+@@ -771,19 +777,19 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 	case BPF_ALU | BPF_MUL | BPF_X:
+ 	case BPF_ALU64 | BPF_MUL | BPF_X:
+ 		emit(is64 ? rv_mul(rd, rd, rs) : rv_mulw(rd, rd, rs), ctx);
+-		if (!is64)
++		if (!is64 && !aux->verifier_zext)
+ 			emit_zext_32(rd, ctx);
  		break;
- 	case 64:
- 		/* nop */
-@@ -358,7 +362,8 @@ static inline void emit_ia32_to_le_r64(const u8 dst[], s32 val,
- }
- 
- static inline void emit_ia32_to_be_r64(const u8 dst[], s32 val,
--				       bool dstk, u8 **pprog)
-+				       bool dstk, u8 **pprog,
-+				       const struct bpf_prog_aux *aux)
- {
- 	u8 *prog = *pprog;
- 	int cnt = 0;
-@@ -380,16 +385,18 @@ static inline void emit_ia32_to_be_r64(const u8 dst[], s32 val,
- 		EMIT2(0x0F, 0xB7);
- 		EMIT1(add_2reg(0xC0, dreg_lo, dreg_lo));
- 
--		/* xor dreg_hi,dreg_hi */
--		EMIT2(0x33, add_2reg(0xC0, dreg_hi, dreg_hi));
-+		if (!aux->verifier_zext)
-+			/* xor dreg_hi,dreg_hi */
-+			EMIT2(0x33, add_2reg(0xC0, dreg_hi, dreg_hi));
+ 	case BPF_ALU | BPF_DIV | BPF_X:
+ 	case BPF_ALU64 | BPF_DIV | BPF_X:
+ 		emit(is64 ? rv_divu(rd, rd, rs) : rv_divuw(rd, rd, rs), ctx);
+-		if (!is64)
++		if (!is64 && !aux->verifier_zext)
+ 			emit_zext_32(rd, ctx);
  		break;
- 	case 32:
- 		/* Emit 'bswap eax' to swap lower 4 bytes */
- 		EMIT1(0x0F);
- 		EMIT1(add_1reg(0xC8, dreg_lo));
- 
--		/* xor dreg_hi,dreg_hi */
--		EMIT2(0x33, add_2reg(0xC0, dreg_hi, dreg_hi));
-+		if (!aux->verifier_zext)
-+			/* xor dreg_hi,dreg_hi */
-+			EMIT2(0x33, add_2reg(0xC0, dreg_hi, dreg_hi));
+ 	case BPF_ALU | BPF_MOD | BPF_X:
+ 	case BPF_ALU64 | BPF_MOD | BPF_X:
+ 		emit(is64 ? rv_remu(rd, rd, rs) : rv_remuw(rd, rd, rs), ctx);
+-		if (!is64)
++		if (!is64 && !aux->verifier_zext)
+ 			emit_zext_32(rd, ctx);
  		break;
- 	case 64:
- 		/* Emit 'bswap eax' to swap lower 4 bytes */
-@@ -569,7 +576,7 @@ static inline void emit_ia32_alu_r(const bool is64, const bool hi, const u8 op,
- static inline void emit_ia32_alu_r64(const bool is64, const u8 op,
- 				     const u8 dst[], const u8 src[],
- 				     bool dstk,  bool sstk,
--				     u8 **pprog)
-+				     u8 **pprog, const struct bpf_prog_aux *aux)
- {
- 	u8 *prog = *pprog;
+ 	case BPF_ALU | BPF_LSH | BPF_X:
+@@ -867,7 +873,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 	case BPF_ALU | BPF_MOV | BPF_K:
+ 	case BPF_ALU64 | BPF_MOV | BPF_K:
+ 		emit_imm(rd, imm, ctx);
+-		if (!is64)
++		if (!is64 && !aux->verifier_zext)
+ 			emit_zext_32(rd, ctx);
+ 		break;
  
-@@ -577,7 +584,7 @@ static inline void emit_ia32_alu_r64(const bool is64, const u8 op,
- 	if (is64)
- 		emit_ia32_alu_r(is64, true, op, dst_hi, src_hi, dstk, sstk,
- 				&prog);
--	else
-+	else if (!aux->verifier_zext)
- 		emit_ia32_mov_i(dst_hi, 0, dstk, &prog);
- 	*pprog = prog;
- }
-@@ -668,7 +675,8 @@ static inline void emit_ia32_alu_i(const bool is64, const bool hi, const u8 op,
- /* ALU operation (64 bit) */
- static inline void emit_ia32_alu_i64(const bool is64, const u8 op,
- 				     const u8 dst[], const u32 val,
--				     bool dstk, u8 **pprog)
-+				     bool dstk, u8 **pprog,
-+				     const struct bpf_prog_aux *aux)
- {
- 	u8 *prog = *pprog;
- 	u32 hi = 0;
-@@ -679,7 +687,7 @@ static inline void emit_ia32_alu_i64(const bool is64, const u8 op,
- 	emit_ia32_alu_i(is64, false, op, dst_lo, val, dstk, &prog);
- 	if (is64)
- 		emit_ia32_alu_i(is64, true, op, dst_hi, hi, dstk, &prog);
--	else
-+	else if (!aux->verifier_zext)
- 		emit_ia32_mov_i(dst_hi, 0, dstk, &prog);
- 
- 	*pprog = prog;
-@@ -1713,8 +1721,13 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
- 		case BPF_ALU64 | BPF_MOV | BPF_X:
- 			switch (BPF_SRC(code)) {
- 			case BPF_X:
--				emit_ia32_mov_r64(is64, dst, src, dstk,
--						  sstk, &prog);
-+				if (imm32 == 1) {
-+					/* Special mov32 for zext. */
-+					emit_ia32_mov_i(dst_hi, 0, dstk, &prog);
-+					break;
-+				}
-+				emit_ia32_mov_r64(is64, dst, src, dstk, sstk,
-+						  &prog, bpf_prog->aux);
- 				break;
- 			case BPF_K:
- 				/* Sign-extend immediate value to dst reg */
-@@ -1754,11 +1767,13 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
- 			switch (BPF_SRC(code)) {
- 			case BPF_X:
- 				emit_ia32_alu_r64(is64, BPF_OP(code), dst,
--						  src, dstk, sstk, &prog);
-+						  src, dstk, sstk, &prog,
-+						  bpf_prog->aux);
- 				break;
- 			case BPF_K:
- 				emit_ia32_alu_i64(is64, BPF_OP(code), dst,
--						  imm32, dstk, &prog);
-+						  imm32, dstk, &prog,
-+						  bpf_prog->aux);
- 				break;
- 			}
- 			break;
-@@ -1777,7 +1792,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
- 						false, &prog);
- 				break;
- 			}
--			emit_ia32_mov_i(dst_hi, 0, dstk, &prog);
-+			if (!bpf_prog->aux->verifier_zext)
-+				emit_ia32_mov_i(dst_hi, 0, dstk, &prog);
- 			break;
- 		case BPF_ALU | BPF_LSH | BPF_X:
- 		case BPF_ALU | BPF_RSH | BPF_X:
-@@ -1797,7 +1813,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
- 						  &prog);
- 				break;
- 			}
--			emit_ia32_mov_i(dst_hi, 0, dstk, &prog);
-+			if (!bpf_prog->aux->verifier_zext)
-+				emit_ia32_mov_i(dst_hi, 0, dstk, &prog);
- 			break;
- 		/* dst = dst / src(imm) */
- 		/* dst = dst % src(imm) */
-@@ -1819,7 +1836,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
- 						    &prog);
- 				break;
- 			}
--			emit_ia32_mov_i(dst_hi, 0, dstk, &prog);
-+			if (!bpf_prog->aux->verifier_zext)
-+				emit_ia32_mov_i(dst_hi, 0, dstk, &prog);
- 			break;
- 		case BPF_ALU64 | BPF_DIV | BPF_K:
- 		case BPF_ALU64 | BPF_DIV | BPF_X:
-@@ -1836,7 +1854,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
- 			EMIT2_off32(0xC7, add_1reg(0xC0, IA32_ECX), imm32);
- 			emit_ia32_shift_r(BPF_OP(code), dst_lo, IA32_ECX, dstk,
- 					  false, &prog);
--			emit_ia32_mov_i(dst_hi, 0, dstk, &prog);
-+			if (!bpf_prog->aux->verifier_zext)
-+				emit_ia32_mov_i(dst_hi, 0, dstk, &prog);
- 			break;
- 		/* dst = dst << imm */
- 		case BPF_ALU64 | BPF_LSH | BPF_K:
-@@ -1872,7 +1891,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
- 		case BPF_ALU | BPF_NEG:
- 			emit_ia32_alu_i(is64, false, BPF_OP(code),
- 					dst_lo, 0, dstk, &prog);
--			emit_ia32_mov_i(dst_hi, 0, dstk, &prog);
-+			if (!bpf_prog->aux->verifier_zext)
-+				emit_ia32_mov_i(dst_hi, 0, dstk, &prog);
- 			break;
- 		/* dst = ~dst (64 bit) */
- 		case BPF_ALU64 | BPF_NEG:
-@@ -1892,11 +1912,13 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
- 			break;
- 		/* dst = htole(dst) */
- 		case BPF_ALU | BPF_END | BPF_FROM_LE:
--			emit_ia32_to_le_r64(dst, imm32, dstk, &prog);
-+			emit_ia32_to_le_r64(dst, imm32, dstk, &prog,
-+					    bpf_prog->aux);
- 			break;
- 		/* dst = htobe(dst) */
- 		case BPF_ALU | BPF_END | BPF_FROM_BE:
--			emit_ia32_to_be_r64(dst, imm32, dstk, &prog);
-+			emit_ia32_to_be_r64(dst, imm32, dstk, &prog,
-+					    bpf_prog->aux);
- 			break;
- 		/* dst = imm64 */
- 		case BPF_LD | BPF_IMM | BPF_DW: {
-@@ -2051,6 +2073,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
- 			case BPF_B:
- 			case BPF_H:
- 			case BPF_W:
-+				if (!bpf_prog->aux->verifier_zext)
-+					break;
- 				if (dstk) {
- 					EMIT3(0xC7, add_1reg(0x40, IA32_EBP),
- 					      STACK_VAR(dst_hi));
-@@ -2475,6 +2499,11 @@ emit_cond_jmp:		jmp_cond = get_cond_jmp_opcode(BPF_OP(code), false);
- 	return proglen;
+@@ -882,7 +888,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 			emit(is64 ? rv_add(rd, rd, RV_REG_T1) :
+ 			     rv_addw(rd, rd, RV_REG_T1), ctx);
+ 		}
+-		if (!is64)
++		if (!is64 && !aux->verifier_zext)
+ 			emit_zext_32(rd, ctx);
+ 		break;
+ 	case BPF_ALU | BPF_SUB | BPF_K:
+@@ -895,7 +901,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 			emit(is64 ? rv_sub(rd, rd, RV_REG_T1) :
+ 			     rv_subw(rd, rd, RV_REG_T1), ctx);
+ 		}
+-		if (!is64)
++		if (!is64 && !aux->verifier_zext)
+ 			emit_zext_32(rd, ctx);
+ 		break;
+ 	case BPF_ALU | BPF_AND | BPF_K:
+@@ -906,7 +912,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 			emit_imm(RV_REG_T1, imm, ctx);
+ 			emit(rv_and(rd, rd, RV_REG_T1), ctx);
+ 		}
+-		if (!is64)
++		if (!is64 && !aux->verifier_zext)
+ 			emit_zext_32(rd, ctx);
+ 		break;
+ 	case BPF_ALU | BPF_OR | BPF_K:
+@@ -917,7 +923,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 			emit_imm(RV_REG_T1, imm, ctx);
+ 			emit(rv_or(rd, rd, RV_REG_T1), ctx);
+ 		}
+-		if (!is64)
++		if (!is64 && !aux->verifier_zext)
+ 			emit_zext_32(rd, ctx);
+ 		break;
+ 	case BPF_ALU | BPF_XOR | BPF_K:
+@@ -928,7 +934,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 			emit_imm(RV_REG_T1, imm, ctx);
+ 			emit(rv_xor(rd, rd, RV_REG_T1), ctx);
+ 		}
+-		if (!is64)
++		if (!is64 && !aux->verifier_zext)
+ 			emit_zext_32(rd, ctx);
+ 		break;
+ 	case BPF_ALU | BPF_MUL | BPF_K:
+@@ -936,7 +942,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 		emit_imm(RV_REG_T1, imm, ctx);
+ 		emit(is64 ? rv_mul(rd, rd, RV_REG_T1) :
+ 		     rv_mulw(rd, rd, RV_REG_T1), ctx);
+-		if (!is64)
++		if (!is64 && !aux->verifier_zext)
+ 			emit_zext_32(rd, ctx);
+ 		break;
+ 	case BPF_ALU | BPF_DIV | BPF_K:
+@@ -944,7 +950,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 		emit_imm(RV_REG_T1, imm, ctx);
+ 		emit(is64 ? rv_divu(rd, rd, RV_REG_T1) :
+ 		     rv_divuw(rd, rd, RV_REG_T1), ctx);
+-		if (!is64)
++		if (!is64 && !aux->verifier_zext)
+ 			emit_zext_32(rd, ctx);
+ 		break;
+ 	case BPF_ALU | BPF_MOD | BPF_K:
+@@ -952,7 +958,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 		emit_imm(RV_REG_T1, imm, ctx);
+ 		emit(is64 ? rv_remu(rd, rd, RV_REG_T1) :
+ 		     rv_remuw(rd, rd, RV_REG_T1), ctx);
+-		if (!is64)
++		if (!is64 && !aux->verifier_zext)
+ 			emit_zext_32(rd, ctx);
+ 		break;
+ 	case BPF_ALU | BPF_LSH | BPF_K:
+@@ -1239,6 +1245,8 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 		emit_imm(RV_REG_T1, off, ctx);
+ 		emit(rv_add(RV_REG_T1, RV_REG_T1, rs), ctx);
+ 		emit(rv_lbu(rd, 0, RV_REG_T1), ctx);
++		if (insn_is_zext(&insn[1]))
++			return 1;
+ 		break;
+ 	case BPF_LDX | BPF_MEM | BPF_H:
+ 		if (is_12b_int(off)) {
+@@ -1249,6 +1257,8 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 		emit_imm(RV_REG_T1, off, ctx);
+ 		emit(rv_add(RV_REG_T1, RV_REG_T1, rs), ctx);
+ 		emit(rv_lhu(rd, 0, RV_REG_T1), ctx);
++		if (insn_is_zext(&insn[1]))
++			return 1;
+ 		break;
+ 	case BPF_LDX | BPF_MEM | BPF_W:
+ 		if (is_12b_int(off)) {
+@@ -1259,6 +1269,8 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 		emit_imm(RV_REG_T1, off, ctx);
+ 		emit(rv_add(RV_REG_T1, RV_REG_T1, rs), ctx);
+ 		emit(rv_lwu(rd, 0, RV_REG_T1), ctx);
++		if (insn_is_zext(&insn[1]))
++			return 1;
+ 		break;
+ 	case BPF_LDX | BPF_MEM | BPF_DW:
+ 		if (is_12b_int(off)) {
+@@ -1503,6 +1515,11 @@ static void bpf_flush_icache(void *start, void *end)
+ 	flush_icache_range((unsigned long)start, (unsigned long)end);
  }
  
 +bool bpf_jit_needs_zext(void)
@@ -308,7 +245,7 @@ index b29e82f..133433d 100644
 +
  struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
  {
- 	struct bpf_binary_header *header = NULL;
+ 	bool tmp_blinded = false, extra_pass = false;
 -- 
 2.7.4
 
