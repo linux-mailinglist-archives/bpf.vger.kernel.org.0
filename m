@@ -2,69 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 459282950F
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 11:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D44A929511
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 11:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390048AbfEXJq6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 May 2019 05:46:58 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:53756 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389980AbfEXJq6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 May 2019 05:46:58 -0400
-Received: by mail-wm1-f66.google.com with SMTP id 198so8670420wme.3
-        for <bpf@vger.kernel.org>; Fri, 24 May 2019 02:46:57 -0700 (PDT)
+        id S2389582AbfEXJrG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 May 2019 05:47:06 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:50959 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390046AbfEXJrG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 May 2019 05:47:06 -0400
+Received: by mail-wm1-f65.google.com with SMTP id f204so8683882wme.0
+        for <bpf@vger.kernel.org>; Fri, 24 May 2019 02:47:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mkCiLlrSzhAV2CD8PHBGktrJShCBHx4vJYh2M4ZW7p0=;
-        b=cAo+rRhTZq9z2qCSV3cQYDh9UM2ZnNYvDfhK0Kemyke+xwh4upPOy7Gi2YbHvgRG2A
-         1E8cx1fBBr0UJLmRLJ2Xvb3pIJeNgPwBDR9oWko192PapCUgWMVeADq1JRe4QfdT25mR
-         prJxVgI/9mEw2NVr3Hwzw/FoS1WYbB7TeyiBmZxJLqyTnFu+HX9gyvgWdxUsHL2JJm6R
-         S6Z/VWMfUAgBKn23chrdO4JLXbJgxMY3xzDpORETxigyn4qcjoEdHKhYAHOCv7Rj44sZ
-         9O3eRRVqRIcAVm2NCahQTUqYck/RCh4zPMgYvEp99se7kst8CLNwnZwmLx6r3bpXvkBQ
-         2bfA==
+        bh=dOqJpOAI6HvYYtPXGw4CVVj27veh7KmTbOLYsz53/gg=;
+        b=wx/H2dDumegNZHRe1HZk642M5tqwiSWsdJKXelX0ggaArNukLxCQiRzfO4DPAaQsdw
+         FzjijVJuqYEqz6UPDDbGz19UTmeqigxKbNGhfbeXjCHUrJMlZY0fmiRSD/xK9vkNxKyN
+         IWa4wu20kD3Kd15BRt7bm0+7NKcyl2z8DJZqbYaGRcaAHgrqRGzCkKM6D6+CSvf3Np8N
+         PFgDhXE8nIJs1vIbPCd7tps5tva1g/N4noD4NaZ+VDMBh/vXLH0+GtM6Gn/1EtBD2fRq
+         Xgpi67BggqHLuC4iFIUdRKuVcfoiCCP+7PhiNHZO/YNAqfO4zVk11GGmSEUJ/f4R78ud
+         IwDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=mkCiLlrSzhAV2CD8PHBGktrJShCBHx4vJYh2M4ZW7p0=;
-        b=iImo4WfUu5Nfp+p+P5Tjolhc515e93o+UuJTJd2Az9N29IRIQEqtJAJMXMdNrrbCaZ
-         E27UT3aROiOsav+WykvzyvNoSdPIsRUnKxnZt0tkeCnbQh4twyoNN0pDR0l5sfD75T/3
-         AC979XHjjnrwEKkZQOpTUCigXu+gcy7Nup8AOW01nl4w7yNkATq+nVxtn2viNq8jyZRo
-         ZmJXYrcpiqZtuH3yae/t1yhwMw/u0bQY59RPmTL7Zl6YBilP1fTjRh0qoOFgungbMqM8
-         3WSj8XDEtB3EbDeBO0a58N8yO+mNTLZpOanVfNW1v2txZE1ZLyYqFGntdFIt9hao54ZA
-         HhHA==
-X-Gm-Message-State: APjAAAXqCjTOVVZnOdKYJccaC/x5tyR6Pp69rpvqS30MWYfw67pYcBqN
-        XzKyG8Tu+cbQZHa+o4frTzFe7Q==
-X-Google-Smtp-Source: APXvYqyOmcBpTlo/qkNaZeMYvIEjLQYgMp7eWOOzsanh0QRKYrYyzJRsPOwbF0mcezuMOUMX0NS3HA==
-X-Received: by 2002:a05:600c:23d2:: with SMTP id p18mr15045739wmb.66.1558691216664;
-        Fri, 24 May 2019 02:46:56 -0700 (PDT)
+        bh=dOqJpOAI6HvYYtPXGw4CVVj27veh7KmTbOLYsz53/gg=;
+        b=IrzRIKqBsxC32s/O9d0YRZlkdLsBCirPhWCk8Jf3QedzBM/YqHq0z+tHdlBxeqbdn+
+         jdD7JWltiPdgSjDkcnfrN0NcN/cuD3mkXcdlMLooa7ScDmduCh4aKKviNISGy+ONxhgb
+         UQ+xfGAT81aAjK8ZAP2X3MB0xcULCKxvOqJ/N20YDUwTcwA2tVbfeZeTDf+8BY4s81Lh
+         mmNRa6b+65jcBa8c8zdzTJGkhyVzuwUwFsaeDzFjJOu07wkLBTYM7o4axTELIqJXKQ8I
+         IpLanwBHitXLbp3bx4zogu3YXlnbtqiFF+BpkqOGJosKNqVLrznrpiBbNwHHLdeE7q3t
+         aa8A==
+X-Gm-Message-State: APjAAAXLQD/idtG0Xd8yKYkfQiIHjy7v+nbwzrgFQALZLelRg39rZEJY
+        oe+8k8VJNk+3FgKM9suclg4bt4SAXDc=
+X-Google-Smtp-Source: APXvYqymEL4op2zF3iHVs5rUyqgLtQSJwbR0FquD6ijiGdZ+ex3aHMk/XMLzo+k+reDK6VaEdh5vuQ==
+X-Received: by 2002:a05:600c:21d2:: with SMTP id x18mr5523493wmj.112.1558691223769;
+        Fri, 24 May 2019 02:47:03 -0700 (PDT)
 Received: from [192.168.1.2] ([194.53.186.20])
-        by smtp.gmail.com with ESMTPSA id i17sm1916346wrr.46.2019.05.24.02.46.55
+        by smtp.gmail.com with ESMTPSA id y18sm2306558wmd.29.2019.05.24.02.47.03
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 May 2019 02:46:56 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v2 1/3] tools: bpftool: add -d option to get
- debug output from libbpf
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, oss-drivers@netronome.com,
-        Yonghong Song <yhs@fb.com>
+        Fri, 24 May 2019 02:47:03 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v2 2/3] libbpf: add bpf_object__load_xattr() API
+ function to pass log_level
+To:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "oss-drivers@netronome.com" <oss-drivers@netronome.com>
 References: <20190523105426.3938-1-quentin.monnet@netronome.com>
- <20190523105426.3938-2-quentin.monnet@netronome.com>
- <CAEf4BzZt75Wm29MQKx1g_u8cH2QYRF3HGYgnOpa3yF9NOMXysw@mail.gmail.com>
- <20190523134421.38a0da0c@cakuba.netronome.com>
- <CAEf4BzbyE8w1wLN33OfUgu8qGqRbxE5LbXFniucyqW4mH7mQFw@mail.gmail.com>
+ <20190523105426.3938-3-quentin.monnet@netronome.com>
+ <d9d1d907-9f0d-7fc0-3f2d-dde5081e8bd3@fb.com>
+ <1d6ec594-5564-3b35-f134-055d8ff4eb0f@fb.com>
 From:   Quentin Monnet <quentin.monnet@netronome.com>
-Message-ID: <c720f3ce-059b-b47a-a0de-5e360b590a30@netronome.com>
-Date:   Fri, 24 May 2019 10:46:55 +0100
+Message-ID: <698c672e-f818-4b66-ebfc-e0b33964dec0@netronome.com>
+Date:   Fri, 24 May 2019 10:47:02 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzbyE8w1wLN33OfUgu8qGqRbxE5LbXFniucyqW4mH7mQFw@mail.gmail.com>
+In-Reply-To: <1d6ec594-5564-3b35-f134-055d8ff4eb0f@fb.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -73,57 +71,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2019-05-23 13:57 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> On Thu, May 23, 2019 at 1:44 PM Jakub Kicinski
-> <jakub.kicinski@netronome.com> wrote:
+2019-05-23 16:29 UTC+0000 ~ Yonghong Song <yhs@fb.com>
+> 
+> 
+> On 5/23/19 9:19 AM, Yonghong Song wrote:
 >>
->> On Thu, 23 May 2019 09:20:52 -0700, Andrii Nakryiko wrote:
->>> On Thu, May 23, 2019 at 3:54 AM Quentin Monnet wrote:
->>>>
->>>> libbpf has three levels of priority for output messages: warn, info,
->>>> debug. By default, debug output is not printed to the console.
->>>>
->>>> Add a new "--debug" (short name: "-d") option to bpftool to print libbpf
->>>> logs for all three levels.
->>>>
->>>> Internally, we simply use the function provided by libbpf to replace the
->>>> default printing function by one that prints logs regardless of their
->>>> level.
->>>>
->>>> v2:
->>>> - Remove the possibility to select the log-levels to use (v1 offered a
->>>>   combination of "warn", "info" and "debug").
->>>> - Rename option and offer a short name: -d|--debug.
->>>
->>> Such and option in CLI tools is usually called -v|--verbose, I'm
->>> wondering if it might be a better name choice?
->>>
->>> Btw, some tools also use -v, -vv and -vvv to define different levels
->>> of verbosity, which is something we can consider in the future, as
->>> it's backwards compatible.
 >>
->> That was my weak suggestion.  Sometimes -v is used for version, e.g.
->> GCC.  -d is sometimes used for debug, e.g. man, iproute2 uses it as
->> short for "detailed".  If the consensus is that -v is better I don't
->> really mind.
-> 
-> It's minor, so I'm not insisting at all, just wasn't sure it was
-> brought up. bpftool is sufficiently different in its conventions from
-> other modern CLIs anyways.
-> 
-> As for -v for version. It seems like the trend is to use -V|--version
-> for version, and -v|--verbose for verbosity. I've also seen some tools
-> option for `cli version` (subcommand) for version. Anyway, no strong
-> preferences from me either.
-> 
+>> On 5/23/19 3:54 AM, Quentin Monnet wrote:
+>>> libbpf was recently made aware of the log_level attribute for programs,
+>>> used to specify the level of information expected to be dumped by the
+>>> verifier.
+>>>
+>>> Create an API function to pass additional attributes when loading a
+>>> bpf_object, so we can set this log_level value in programs when loading
+>>> them, and so that so that applications relying on libbpf but not calling
+>> "so that so that" => "so that"
 
-For the record, bpftool has both "bpftool -V" and "bpftool version" to
-dump the version number.
+Oh, thanks!
 
-This leaves us with "-v" free to do something like "--verbose", but just
-as Jakub said we wanted to limit the risks of confusion... I don't mind
-changing, but since nobody has expressed a strong opinion on the matter,
-I'll stick to "-d|--debug" for now.
+>>> bpf_prog_load_xattr() can also use that feature.
+>>
+>> Do not fully understand the above statement. From the code below,
+>> I did not see how the non-zero log_level can be set for bpf_program
+>> without bpf_prog_load_xattr(). Maybe I miss something?
 
-Thanks Andrii for the review!
+bpf_prog_load_xattr() already had support for passing a log_level, it
+was added by Alexei when he made libbpf aware of the different log
+levels (commit da11b417583e). But bpftool does not rely on
+bpf_prog_load_xattr(), it loads programs with bpf_object__load(), that
+offered no way pass a log_level parameter. Does that help?
+
+> 
+> Looks like next patch uses it when -d is specified.
+
+It uses the new bpf_object__load_xattr() function introduced in this
+patch indeed.
+
+> Probably commit message can be made more clear.
+
+Yeah, probably. I'll improve it and submit a v3.
+
+Thanks!
 Quentin
