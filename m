@@ -2,96 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A9029844
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 14:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6122984A
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 14:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391031AbfEXMtJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 May 2019 08:49:09 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:56250 "EHLO mx1.redhat.com"
+        id S2391064AbfEXMxe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 May 2019 08:53:34 -0400
+Received: from foss.arm.com ([217.140.101.70]:42254 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390988AbfEXMtJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 May 2019 08:49:09 -0400
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id B09482EF169;
-        Fri, 24 May 2019 12:49:08 +0000 (UTC)
-Received: from carbon (ovpn-200-45.brq.redhat.com [10.40.200.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B62B7A4D7;
-        Fri, 24 May 2019 12:49:02 +0000 (UTC)
-Date:   Fri, 24 May 2019 14:49:00 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Quentin Monnet <quentin.monnet@netronome.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, oss-drivers@netronome.com,
-        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        brouer@redhat.com
-Subject: Re: [PATCH bpf-next v3 2/3] libbpf: add bpf_object__load_xattr()
- API function to pass log_level
-Message-ID: <20190524144900.618e8e93@carbon>
-In-Reply-To: <5895821e-0d79-2169-d631-0fa7560135ec@netronome.com>
-References: <20190524103648.15669-1-quentin.monnet@netronome.com>
-        <20190524103648.15669-3-quentin.monnet@netronome.com>
-        <20190524132215.4113ff08@carbon>
-        <5895821e-0d79-2169-d631-0fa7560135ec@netronome.com>
+        id S2390781AbfEXMxe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 May 2019 08:53:34 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4745DA78;
+        Fri, 24 May 2019 05:53:33 -0700 (PDT)
+Received: from ostrya.cambridge.arm.com (ostrya.cambridge.arm.com [10.1.196.129])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E34EA3F703;
+        Fri, 24 May 2019 05:53:31 -0700 (PDT)
+From:   Jean-Philippe Brucker <jean-philippe.brucker@arm.com>
+To:     will.deacon@arm.com, catalin.marinas@arm.com
+Cc:     daniel@iogearbox.net, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        yoshihiro.shimoda.uh@renesas.com, kuninori.morimoto.gx@renesas.com
+Subject: [PATCH 1/2] arm64: insn: Fix ldadd instruction encoding
+Date:   Fri, 24 May 2019 13:52:19 +0100
+Message-Id: <20190524125220.25463-1-jean-philippe.brucker@arm.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.29]); Fri, 24 May 2019 12:49:08 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 24 May 2019 12:51:14 +0100
-Quentin Monnet <quentin.monnet@netronome.com> wrote:
+GCC 8.1.0 reports that the ldadd instruction encoding, recently added to
+insn.c, doesn't match the mask and couldn't possibly be identified:
 
-> 2019-05-24 13:22 UTC+0200 ~ Jesper Dangaard Brouer <brouer@redhat.com>
-> > On Fri, 24 May 2019 11:36:47 +0100
-> > Quentin Monnet <quentin.monnet@netronome.com> wrote:
-> >   
-> >> libbpf was recently made aware of the log_level attribute for programs,
-> >> used to specify the level of information expected to be dumped by the
-> >> verifier. Function bpf_prog_load_xattr() got support for this log_level
-> >> parameter.
-> >>
-> >> But some applications using libbpf rely on another function to load
-> >> programs, bpf_object__load(), which does accept any parameter for log
-> >> level. Create an API function based on bpf_object__load(), but accepting
-> >> an "attr" object as a parameter. Then add a log_level field to that
-> >> object, so that applications calling the new bpf_object__load_xattr()
-> >> can pick the desired log level.  
-> > 
-> > Does this allow us to extend struct bpf_object_load_attr later?  
-> 
-> I see no reason why it could not. Having the _xattr() version of the
-> function is precisely a way to have something extensible in the future,
-> without having to create additional API functions each time we want to
-> pass a new parameter. And e.g. struct bpf_prog_load_attr (used with
-> bpf_prog_load_xattr()) has already been extended in the past. So, yeah,
-> we can add to it in the future.
+ linux/arch/arm64/include/asm/insn.h: In function 'aarch64_insn_is_ldadd':
+ linux/arch/arm64/include/asm/insn.h:280:257: warning: bitwise comparison always evaluates to false [-Wtautological-compare]
 
-Great.  I just don't know/understand how user-space handle this. If a
-binary is compiled with libbpf as dynamic loadable lib, then it e.g. saw
-libbpf.so.2 when it was compiled, then can't it choose to use libbpf.so.3
-then? (e.g. when libbpf.so.2 is not on the system). (I would actually
-like to learn/understand this, so links are welcome).
+Bits [31:30] normally encode the size of the instruction (1 to 8 bytes)
+and the current instruction value only encodes the 4- and 8-byte
+variants. At the moment only the BPF JIT needs this instruction, and
+doesn't require the 1- and 2-byte variants, but to be consistent with
+our other ldr and str instruction encodings, clear the size field in the
+insn value.
 
-> Do you have something in mind?
+Fixes: 34b8ab091f9ef57a ("bpf, arm64: use more scalable stadd over ldxr / stxr loop in xadd")
+Reported-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Signed-off-by: Jean-Philippe Brucker <jean-philippe.brucker@arm.com>
+---
+Strictly speaking, to be consistent with the ldr/str instructions we
+would also check the Acquire/Release bit to filter out the acquire
+release variants. I'm not sure if that matters, I think taking them in
+is harmless.
+---
+ arch/arm64/include/asm/insn.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I was playing with extending bpf_prog_load_attr, but instead I created a
-bpf_prog_load_attr_maps instead and a new function
-bpf_prog_load_xattr_maps(), e.g. see:
-
-https://github.com/xdp-project/xdp-tutorial/blob/master/common/common_libbpf.h
-https://github.com/xdp-project/xdp-tutorial/blob/master/common/common_libbpf.c
-
-I guess, I could just extend bpf_prog_load_attr instead, right?
-
+diff --git a/arch/arm64/include/asm/insn.h b/arch/arm64/include/asm/insn.h
+index ec894de0ed4e..f71b84d9f294 100644
+--- a/arch/arm64/include/asm/insn.h
++++ b/arch/arm64/include/asm/insn.h
+@@ -277,7 +277,7 @@ __AARCH64_INSN_FUNCS(adrp,	0x9F000000, 0x90000000)
+ __AARCH64_INSN_FUNCS(prfm,	0x3FC00000, 0x39800000)
+ __AARCH64_INSN_FUNCS(prfm_lit,	0xFF000000, 0xD8000000)
+ __AARCH64_INSN_FUNCS(str_reg,	0x3FE0EC00, 0x38206800)
+-__AARCH64_INSN_FUNCS(ldadd,	0x3F20FC00, 0xB8200000)
++__AARCH64_INSN_FUNCS(ldadd,	0x3F20FC00, 0x38200000)
+ __AARCH64_INSN_FUNCS(ldr_reg,	0x3FE0EC00, 0x38606800)
+ __AARCH64_INSN_FUNCS(ldr_lit,	0xBF000000, 0x18000000)
+ __AARCH64_INSN_FUNCS(ldrsw_lit,	0xFF000000, 0x98000000)
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+2.21.0
+
