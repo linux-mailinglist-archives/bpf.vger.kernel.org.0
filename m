@@ -2,277 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A39929C6C
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 18:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9884629CBC
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 19:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390210AbfEXQhA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 May 2019 12:37:00 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:37083 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390314AbfEXQhA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 May 2019 12:37:00 -0400
-Received: by mail-wm1-f66.google.com with SMTP id 7so9857199wmo.2
-        for <bpf@vger.kernel.org>; Fri, 24 May 2019 09:36:56 -0700 (PDT)
+        id S1731795AbfEXROs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 May 2019 13:14:48 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:33287 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725777AbfEXROs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 May 2019 13:14:48 -0400
+Received: by mail-qk1-f196.google.com with SMTP id p18so8629565qkk.0;
+        Fri, 24 May 2019 10:14:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=wiL8ccg6L6qKgzMC7HPnWoNlhf6ldX+sz23BgieJhC4=;
-        b=W+uzyXi78GalIJWB+nZv2PFL6IK7y4sgTEjvENs0nQjkNRJmcDHY7wOkBx5dcfGMGd
-         kDRqr+iINAHGF5M4Z2mTZncisMl1G6CQlSZ0KCkhMtP0UA42huwyEY9cEv+aSMOtjaVJ
-         gjqpYjJf65560iY51lbmbk4MyuelnWR4w1YDEVfo4+RfatcvxMVpHMp6U8h05smh2b/z
-         O5PmhTSQUE4GOUgAO2nt5KlklD69nT305a4PcfaNRTKwHJmEuDDS7tgiJkAVhq80Zcn/
-         t7iN9UgKPzisPDOgOyDIEPjkAzH9mONOIrReujsPo8pKRLEuyh95u7DO8TH5QEpBYeuB
-         /j6A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ar813iNuuqln4J/o633+npRn5L/YSkP1PWUkZ0Dh384=;
+        b=CaO0fabTM3uGEj13ybvEcaOljBG6DHDI83TGW4bCPZ6orl95h7I6d6lUHykW3jZMVB
+         ESD7dIcEvEF6cyLqOTKrIu9kMeEcbpS4Hh9+I3q5XW6ygUshGgqjcQWIiVoXGHt8C6TC
+         +lLg/xUKBXh91vYQp/i1s90r/TdccmiXOTLHdJVZMfV/+WYQIGBCqxABum0dKA3Z5/QN
+         CkhEgWK7FDsQeogt0SZtdKmsIqgOQDGOPLf/EhqZiSZjS/b0VqAUCq+XQcWicLt0SUp3
+         2GbTCM87sta0YF+7s8POdWRq4mimdZfd+o28+KJ2FBE62VMq9gRWGPDbByvd4/Q5R6UQ
+         BFhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version:content-transfer-encoding;
-        bh=wiL8ccg6L6qKgzMC7HPnWoNlhf6ldX+sz23BgieJhC4=;
-        b=CO48mcsinfW/Ciqn+WcCTxih7C0T8IITU+E766rGi+JHhe04cKVmhKeEpn8gmcFKid
-         yOoH3In4iOLtv1zB+Ix6mEN+llsR/C1lFcVECe8mmB90rLLD0oLKCKMp87XmfUvq3wwA
-         HLZBhugMqLYrZgPjq8DGToUBCmjKDFuvb3sEVTCd7i3w4yWUjX+IfZ5Wqi/k/Ska/bxO
-         Ynyv525Qesd7g3qx0ACP/K+gOTjD7VogKn2O+/RYTh427unxohrzE2PveepbsdAdSUwR
-         7VqhQvxGBDSx6s6FHi/Hfk3izA/DeGHfRdxHkTsapvAUBUQCggVgO+x3/5VIvOskR9+7
-         ZSYw==
-X-Gm-Message-State: APjAAAX8w4Sj68w+q9ikZM0JPGQFfSwHuFcv1xveXleTctL5wwl0ODZ2
-        Pw7PEx4mGHRx/IInsP/LekDbzQ==
-X-Google-Smtp-Source: APXvYqwn3KzgPLjDDRG5Jrc0ALzPibC2dJhO4gBjyIueZC62t67491sgNBOsOTNGFmKzTStDPeiMYQ==
-X-Received: by 2002:a1c:ef05:: with SMTP id n5mr535135wmh.149.1558715816140;
-        Fri, 24 May 2019 09:36:56 -0700 (PDT)
-Received: from LAPTOP-V3S7NLPL ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id h8sm6372253wmf.5.2019.05.24.09.36.55
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 May 2019 09:36:55 -0700 (PDT)
-References: <1558697726-4058-1-git-send-email-jiong.wang@netronome.com> <1558697726-4058-16-git-send-email-jiong.wang@netronome.com> <CAJ+HfNjJ6hoDvcjbU7yELDrzWhxXmyG44TcvBRL4OO1035U5fw@mail.gmail.com>
-User-agent: mu4e 0.9.18; emacs 25.2.2
-From:   Jiong Wang <jiong.wang@netronome.com>
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Jiong Wang <jiong.wang@netronome.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
-        oss-drivers@netronome.com, David Miller <davem@davemloft.net>,
-        paul.burton@mips.com, udknight@gmail.com, zlim.lnx@gmail.com,
-        illusionist.neo@gmail.com, naveen.n.rao@linux.ibm.com,
-        sandipan@linux.ibm.com, schwidefsky@de.ibm.com,
-        heiko.carstens@de.ibm.com,
-        Jakub Kicinski <jakub.kicinski@netronome.com>
-Subject: Re: [PATCH v8 bpf-next 15/16] riscv: bpf: eliminate zero extension code-gen
-In-reply-to: <CAJ+HfNjJ6hoDvcjbU7yELDrzWhxXmyG44TcvBRL4OO1035U5fw@mail.gmail.com>
-Date:   Fri, 24 May 2019 17:36:54 +0100
-Message-ID: <871s0nlsgp.fsf@netronome.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ar813iNuuqln4J/o633+npRn5L/YSkP1PWUkZ0Dh384=;
+        b=RZn1OqTnYCd3iisQPbWF3OPwjk4RhR4GM8JLUMDHbaeY21aO22Xq3yYhhlpWE7fi0S
+         wEHs4W3qieztTHm5hxFMjtcV8X9ap5MuorBdFEydnmopoTWMyYk1XTnqNQvL/bkwyau8
+         FKreIhzI/6NkWm2xIuH1Ok3tpEHEMMHvdhh5i9U16k2MrYsdmi7/VA/tVl4xZpLoIeCK
+         LDYznjzK3HSOMFTI/nwI7Yl8zFKvhfP7DLUm+TxkVmHTUmYoqyouroXrAZD0T4zc6iW6
+         OajqK/WBcq0cU8LZG85cRzr3G8kcw++RKKtwBkIXNOjR3Rzi64WlCaCw8x9YL2lHVu+o
+         8kYw==
+X-Gm-Message-State: APjAAAW0eGHu5Edd855pfSU6O+Uq18c84ZtKdXwPsRrALw/8FlfKO0fh
+        GD2ersmSnPCPe67m3AqVN6AHrg5xxv3fsGm/KGc=
+X-Google-Smtp-Source: APXvYqztGJI9Hb+bKzHUPndWMwA24tfhfsuk31l5jCWx6oe+I4hpQ+2mgSGj/d/Gucv5TRsNusZVhgrTrt1UMGgZMwY=
+X-Received: by 2002:a37:b3c2:: with SMTP id c185mr9656519qkf.44.1558718087045;
+ Fri, 24 May 2019 10:14:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+References: <20190523204222.3998365-1-andriin@fb.com> <20190523204222.3998365-11-andriin@fb.com>
+ <eb690c2d-14d4-9c6f-2138-44f8cd027860@netronome.com>
+In-Reply-To: <eb690c2d-14d4-9c6f-2138-44f8cd027860@netronome.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 24 May 2019 10:14:35 -0700
+Message-ID: <CAEf4Bza9ikV+SnBOE-h8J7ggw--1M3L8ak-VQ6-RxO71x0YUhw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 10/12] bpftool: add C output format option to
+ btf dump subcommand
+To:     Quentin Monnet <quentin.monnet@netronome.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-Björn Töpel writes:
-
-> On Fri, 24 May 2019 at 13:36, Jiong Wang <jiong.wang@netronome.com> wrote:
->>
->> Cc: Björn Töpel <bjorn.topel@gmail.com>
->> Acked-by: Björn Töpel <bjorn.topel@gmail.com>
->> Tested-by: Björn Töpel <bjorn.topel@gmail.com>
->> Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
->> ---
->>  arch/riscv/net/bpf_jit_comp.c | 43 ++++++++++++++++++++++++++++++-------------
->>  1 file changed, 30 insertions(+), 13 deletions(-)
->>
->> diff --git a/arch/riscv/net/bpf_jit_comp.c b/arch/riscv/net/bpf_jit_comp.c
->> index 80b12aa..c4c836e 100644
->> --- a/arch/riscv/net/bpf_jit_comp.c
->> +++ b/arch/riscv/net/bpf_jit_comp.c
->> @@ -731,6 +731,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>  {
->>         bool is64 = BPF_CLASS(insn->code) == BPF_ALU64 ||
->>                     BPF_CLASS(insn->code) == BPF_JMP;
->> +       struct bpf_prog_aux *aux = ctx->prog->aux;
->>         int rvoff, i = insn - ctx->prog->insnsi;
->>         u8 rd = -1, rs = -1, code = insn->code;
->>         s16 off = insn->off;
->> @@ -742,8 +743,13 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>         /* dst = src */
->>         case BPF_ALU | BPF_MOV | BPF_X:
->>         case BPF_ALU64 | BPF_MOV | BPF_X:
->> +               if (imm == 1) {
->> +                       /* Special mov32 for zext */
->> +                       emit_zext_32(rd, ctx);
->> +                       break;
->> +               }
+On Fri, May 24, 2019 at 2:14 AM Quentin Monnet
+<quentin.monnet@netronome.com> wrote:
 >
-> Hmm, missing is64 check here (fall-through for 64-bit movs)?
+> Hi Andrii,
+>
+> Some nits inline, nothing blocking though.
+>
+> 2019-05-23 13:42 UTC-0700 ~ Andrii Nakryiko <andriin@fb.com>
+> > Utilize new libbpf's btf_dump API to emit BTF as a C definitions.
+> >
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> >  tools/bpf/bpftool/btf.c | 74 +++++++++++++++++++++++++++++++++++++++--
+> >  1 file changed, 72 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> > index a22ef6587ebe..1cdbfad42b38 100644
+> > --- a/tools/bpf/bpftool/btf.c
+> > +++ b/tools/bpf/bpftool/btf.c
+> > @@ -340,11 +340,48 @@ static int dump_btf_raw(const struct btf *btf,
+> >       return 0;
+> >  }
+> >
+> > +static void btf_dump_printf(void *ctx, const char *fmt, va_list args)
+>
+> Nit: This function could have a printf attribute ("__printf(2, 0)").
 
-(re-send because of bouncing back)
-
-FOR BPF_X form, when imm == 1, it is a special mov32 constructed by
-verifier, it can only be BPF_ALU, not BPF_ALU64. And it is used for
-instructing JIT back-end to do unconditional zero extension.
-
-Please see patch 3 description for the explanation.
-
-Thanks.
-
-Regards,
-Jiong
+added, though I don't think it matters as it's only used as a callback function.
 
 >
-> Björn
+> > +{
+> > +     vfprintf(stdout, fmt, args);
+> > +}
+> > +
+> > +static int dump_btf_c(const struct btf *btf,
+> > +                   __u32 *root_type_ids, int root_type_cnt)
+> > +{
+> > +     struct btf_dump *d;
+> > +     int err = 0, i;
+> > +
+> > +     d = btf_dump__new(btf, NULL, NULL, btf_dump_printf);
+> > +     if (IS_ERR(d))
+> > +             return PTR_ERR(d);
+> > +
+> > +     if (root_type_cnt) {
+> > +             for (i = 0; i < root_type_cnt; i++) {
+> > +                     err = btf_dump__dump_type(d, root_type_ids[i]);
+> > +                     if (err)
+> > +                             goto done;
+> > +             }
+> > +     } else {
+> > +             int cnt = btf__get_nr_types(btf);
+> > +
+> > +             for (i = 1; i <= cnt; i++) {
+> > +                     err = btf_dump__dump_type(d, i);
+> > +                     if (err)
+> > +                             goto done;
+> > +             }
+> > +     }
+> > +
+> > +done:
+> > +     btf_dump__free(d);
+> > +     return err;
+> > +}
+> > +
+> >  static int do_dump(int argc, char **argv)
+> >  {
+> >       struct btf *btf = NULL;
+> >       __u32 root_type_ids[2];
+> >       int root_type_cnt = 0;
+> > +     bool dump_c = false;
+> >       __u32 btf_id = -1;
+> >       const char *src;
+> >       int fd = -1;
+> > @@ -431,6 +468,29 @@ static int do_dump(int argc, char **argv)
+> >               goto done;
+> >       }
+> >
+> > +     while (argc) {
+> > +             if (is_prefix(*argv, "format")) {
+> > +                     NEXT_ARG();
+> > +                     if (argc < 1) {
+> > +                             p_err("expecting value for 'format' option\n");
+> > +                             goto done;
+> > +                     }
+> > +                     if (strcmp(*argv, "c") == 0) {
+> > +                             dump_c = true;
+> > +                     } else if (strcmp(*argv, "raw") == 0) {
 >
->>                 emit(is64 ? rv_addi(rd, rs, 0) : rv_addiw(rd, rs, 0), ctx);
->> -               if (!is64)
->> +               if (!is64 && !aux->verifier_zext)
->>                         emit_zext_32(rd, ctx);
->>                 break;
->>
->> @@ -771,19 +777,19 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>         case BPF_ALU | BPF_MUL | BPF_X:
->>         case BPF_ALU64 | BPF_MUL | BPF_X:
->>                 emit(is64 ? rv_mul(rd, rd, rs) : rv_mulw(rd, rd, rs), ctx);
->> -               if (!is64)
->> +               if (!is64 && !aux->verifier_zext)
->>                         emit_zext_32(rd, ctx);
->>                 break;
->>         case BPF_ALU | BPF_DIV | BPF_X:
->>         case BPF_ALU64 | BPF_DIV | BPF_X:
->>                 emit(is64 ? rv_divu(rd, rd, rs) : rv_divuw(rd, rd, rs), ctx);
->> -               if (!is64)
->> +               if (!is64 && !aux->verifier_zext)
->>                         emit_zext_32(rd, ctx);
->>                 break;
->>         case BPF_ALU | BPF_MOD | BPF_X:
->>         case BPF_ALU64 | BPF_MOD | BPF_X:
->>                 emit(is64 ? rv_remu(rd, rd, rs) : rv_remuw(rd, rd, rs), ctx);
->> -               if (!is64)
->> +               if (!is64 && !aux->verifier_zext)
->>                         emit_zext_32(rd, ctx);
->>                 break;
->>         case BPF_ALU | BPF_LSH | BPF_X:
->> @@ -867,7 +873,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>         case BPF_ALU | BPF_MOV | BPF_K:
->>         case BPF_ALU64 | BPF_MOV | BPF_K:
->>                 emit_imm(rd, imm, ctx);
->> -               if (!is64)
->> +               if (!is64 && !aux->verifier_zext)
->>                         emit_zext_32(rd, ctx);
->>                 break;
->>
->> @@ -882,7 +888,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>                         emit(is64 ? rv_add(rd, rd, RV_REG_T1) :
->>                              rv_addw(rd, rd, RV_REG_T1), ctx);
->>                 }
->> -               if (!is64)
->> +               if (!is64 && !aux->verifier_zext)
->>                         emit_zext_32(rd, ctx);
->>                 break;
->>         case BPF_ALU | BPF_SUB | BPF_K:
->> @@ -895,7 +901,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>                         emit(is64 ? rv_sub(rd, rd, RV_REG_T1) :
->>                              rv_subw(rd, rd, RV_REG_T1), ctx);
->>                 }
->> -               if (!is64)
->> +               if (!is64 && !aux->verifier_zext)
->>                         emit_zext_32(rd, ctx);
->>                 break;
->>         case BPF_ALU | BPF_AND | BPF_K:
->> @@ -906,7 +912,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>                         emit_imm(RV_REG_T1, imm, ctx);
->>                         emit(rv_and(rd, rd, RV_REG_T1), ctx);
->>                 }
->> -               if (!is64)
->> +               if (!is64 && !aux->verifier_zext)
->>                         emit_zext_32(rd, ctx);
->>                 break;
->>         case BPF_ALU | BPF_OR | BPF_K:
->> @@ -917,7 +923,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>                         emit_imm(RV_REG_T1, imm, ctx);
->>                         emit(rv_or(rd, rd, RV_REG_T1), ctx);
->>                 }
->> -               if (!is64)
->> +               if (!is64 && !aux->verifier_zext)
->>                         emit_zext_32(rd, ctx);
->>                 break;
->>         case BPF_ALU | BPF_XOR | BPF_K:
->> @@ -928,7 +934,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>                         emit_imm(RV_REG_T1, imm, ctx);
->>                         emit(rv_xor(rd, rd, RV_REG_T1), ctx);
->>                 }
->> -               if (!is64)
->> +               if (!is64 && !aux->verifier_zext)
->>                         emit_zext_32(rd, ctx);
->>                 break;
->>         case BPF_ALU | BPF_MUL | BPF_K:
->> @@ -936,7 +942,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>                 emit_imm(RV_REG_T1, imm, ctx);
->>                 emit(is64 ? rv_mul(rd, rd, RV_REG_T1) :
->>                      rv_mulw(rd, rd, RV_REG_T1), ctx);
->> -               if (!is64)
->> +               if (!is64 && !aux->verifier_zext)
->>                         emit_zext_32(rd, ctx);
->>                 break;
->>         case BPF_ALU | BPF_DIV | BPF_K:
->> @@ -944,7 +950,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>                 emit_imm(RV_REG_T1, imm, ctx);
->>                 emit(is64 ? rv_divu(rd, rd, RV_REG_T1) :
->>                      rv_divuw(rd, rd, RV_REG_T1), ctx);
->> -               if (!is64)
->> +               if (!is64 && !aux->verifier_zext)
->>                         emit_zext_32(rd, ctx);
->>                 break;
->>         case BPF_ALU | BPF_MOD | BPF_K:
->> @@ -952,7 +958,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>                 emit_imm(RV_REG_T1, imm, ctx);
->>                 emit(is64 ? rv_remu(rd, rd, RV_REG_T1) :
->>                      rv_remuw(rd, rd, RV_REG_T1), ctx);
->> -               if (!is64)
->> +               if (!is64 && !aux->verifier_zext)
->>                         emit_zext_32(rd, ctx);
->>                 break;
->>         case BPF_ALU | BPF_LSH | BPF_K:
->> @@ -1239,6 +1245,8 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>                 emit_imm(RV_REG_T1, off, ctx);
->>                 emit(rv_add(RV_REG_T1, RV_REG_T1, rs), ctx);
->>                 emit(rv_lbu(rd, 0, RV_REG_T1), ctx);
->> +               if (insn_is_zext(&insn[1]))
->> +                       return 1;
->>                 break;
->>         case BPF_LDX | BPF_MEM | BPF_H:
->>                 if (is_12b_int(off)) {
->> @@ -1249,6 +1257,8 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>                 emit_imm(RV_REG_T1, off, ctx);
->>                 emit(rv_add(RV_REG_T1, RV_REG_T1, rs), ctx);
->>                 emit(rv_lhu(rd, 0, RV_REG_T1), ctx);
->> +               if (insn_is_zext(&insn[1]))
->> +                       return 1;
->>                 break;
->>         case BPF_LDX | BPF_MEM | BPF_W:
->>                 if (is_12b_int(off)) {
->> @@ -1259,6 +1269,8 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>                 emit_imm(RV_REG_T1, off, ctx);
->>                 emit(rv_add(RV_REG_T1, RV_REG_T1, rs), ctx);
->>                 emit(rv_lwu(rd, 0, RV_REG_T1), ctx);
->> +               if (insn_is_zext(&insn[1]))
->> +                       return 1;
->>                 break;
->>         case BPF_LDX | BPF_MEM | BPF_DW:
->>                 if (is_12b_int(off)) {
->> @@ -1503,6 +1515,11 @@ static void bpf_flush_icache(void *start, void *end)
->>         flush_icache_range((unsigned long)start, (unsigned long)end);
->>  }
->>
->> +bool bpf_jit_needs_zext(void)
->> +{
->> +       return true;
->> +}
->> +
->>  struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->>  {
->>         bool tmp_blinded = false, extra_pass = false;
->> --
->> 2.7.4
->>
+> Do you think we could use is_prefix() instead of strcmp() here?
 
+So I considered it, and then decided against it, though I can still be
+convinced otherwise. Right now we have raw and c, but let's say we add
+rust as an option. r will become ambiguous, but actually will be
+resolved to whatever we check first: either raw or rust, which is not
+great. So given that those format specifiers will tend to be short, I
+decided it's ok to require to specify them fully. Does it make sense?
+
+>
+> > +                             dump_c = false;
+> > +                     } else {
+> > +                             p_err("unrecognized format specifier: '%s'",
+> > +                                   *argv);
+>
+> Would it be worth reminding the user about the valid specifiers in that
+> message? (But then we already have it in do_help(), so maybe not.)
+
+Added possible options to the message.
+
+
+>
+> > +                             goto done;
+> > +                     }
+> > +                     NEXT_ARG();
+> > +             } else {
+> > +                     p_err("unrecognized option: '%s'", *argv);
+> > +                     goto done;
+> > +             }
+> > +     }
+> > +
+> >       if (!btf) {
+> >               err = btf__get_from_id(btf_id, &btf);
+> >               if (err) {
+> > @@ -444,7 +504,16 @@ static int do_dump(int argc, char **argv)
+> >               }
+> >       }
+> >
+> > -     dump_btf_raw(btf, root_type_ids, root_type_cnt);
+> > +     if (dump_c) {
+> > +             if (json_output) {
+> > +                     p_err("JSON output for C-syntax dump is not supported");
+> > +                     err = -ENOTSUP;
+> > +                     goto done;
+> > +             }
+> > +             err = dump_btf_c(btf, root_type_ids, root_type_cnt);
+> > +     } else {
+> > +             err = dump_btf_raw(btf, root_type_ids, root_type_cnt);
+> > +     }
+> >
+> >  done:
+> >       close(fd);
+> > @@ -460,10 +529,11 @@ static int do_help(int argc, char **argv)
+> >       }
+> >
+> >       fprintf(stderr,
+> > -             "Usage: %s btf dump BTF_SRC\n"
+> > +             "Usage: %s btf dump BTF_SRC [format FORMAT]\n"
+> >               "       %s btf help\n"
+> >               "\n"
+> >               "       BTF_SRC := { id BTF_ID | prog PROG | map MAP [{key | value | kv | all}] | file FILE }\n"
+> > +             "       FORMAT  := { raw | c }\n"
+> >               "       " HELP_SPEC_MAP "\n"
+> >               "       " HELP_SPEC_PROGRAM "\n"
+> >               "       " HELP_SPEC_OPTIONS "\n"
+> >
+>
