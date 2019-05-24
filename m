@@ -2,103 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA3528ED4
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 03:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1992428EF0
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 03:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388429AbfEXBfX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 May 2019 21:35:23 -0400
-Received: from tama50.ecl.ntt.co.jp ([129.60.39.147]:49618 "EHLO
-        tama50.ecl.ntt.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388378AbfEXBfX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 May 2019 21:35:23 -0400
-Received: from vc1.ecl.ntt.co.jp (vc1.ecl.ntt.co.jp [129.60.86.153])
-        by tama50.ecl.ntt.co.jp (8.13.8/8.13.8) with ESMTP id x4O1YXBI028947;
-        Fri, 24 May 2019 10:34:33 +0900
-Received: from vc1.ecl.ntt.co.jp (localhost [127.0.0.1])
-        by vc1.ecl.ntt.co.jp (Postfix) with ESMTP id D29F7EA7ABE;
-        Fri, 24 May 2019 10:34:33 +0900 (JST)
-Received: from jcms-pop21.ecl.ntt.co.jp (jcms-pop21.ecl.ntt.co.jp [129.60.87.134])
-        by vc1.ecl.ntt.co.jp (Postfix) with ESMTP id C7894EA79E3;
-        Fri, 24 May 2019 10:34:33 +0900 (JST)
-Received: from [IPv6:::1] (eb8460w-makita.sic.ecl.ntt.co.jp [129.60.241.47])
-        by jcms-pop21.ecl.ntt.co.jp (Postfix) with ESMTPSA id BAB76400870;
-        Fri, 24 May 2019 10:34:33 +0900 (JST)
-Subject: Re: [PATCH bpf-next 2/3] xdp: Add tracepoint for bulk XDP_TX
-References: <1558609008-2590-1-git-send-email-makita.toshiaki@lab.ntt.co.jp>
- <1558609008-2590-3-git-send-email-makita.toshiaki@lab.ntt.co.jp>
- <20190523151237.190fe76e@carbon>
-From:   Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
-Message-ID: <9ac8402e-fd27-519c-0c1c-d1b306b3441b@lab.ntt.co.jp>
-Date:   Fri, 24 May 2019 10:33:47 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1731684AbfEXB5m convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 23 May 2019 21:57:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52688 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731617AbfEXB5m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 May 2019 21:57:42 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 482142177E;
+        Fri, 24 May 2019 01:57:39 +0000 (UTC)
+Date:   Thu, 23 May 2019 21:57:37 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Kris Van Hees <kris.van.hees@oracle.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, dtrace-devel@oss.oracle.com,
+        linux-kernel@vger.kernel.org, mhiramat@kernel.org, acme@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, peterz@infradead.org
+Subject: Re: [RFC PATCH 00/11] bpf, trace, dtrace: DTrace BPF program type
+ implementation and sample use
+Message-ID: <20190523215737.6601ab7c@oasis.local.home>
+In-Reply-To: <20190524003148.pk7qbxn7ysievhym@ast-mbp.dhcp.thefacebook.com>
+References: <20190521184137.GH2422@oracle.com>
+        <20190521205533.evfszcjvdouby7vp@ast-mbp.dhcp.thefacebook.com>
+        <20190521173618.2ebe8c1f@gandalf.local.home>
+        <20190521214325.rr7emn5z3b7wqiiy@ast-mbp.dhcp.thefacebook.com>
+        <20190521174757.74ec8937@gandalf.local.home>
+        <20190522052327.GN2422@oracle.com>
+        <20190522205329.uu26oq2saj56og5m@ast-mbp.dhcp.thefacebook.com>
+        <20190523054610.GR2422@oracle.com>
+        <20190523211330.hng74yi75ixmcznc@ast-mbp.dhcp.thefacebook.com>
+        <20190523190243.54221053@gandalf.local.home>
+        <20190524003148.pk7qbxn7ysievhym@ast-mbp.dhcp.thefacebook.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20190523151237.190fe76e@carbon>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CC-Mail-RelayStamp: 1
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
-        bpf@vger.kernel.org
-X-TM-AS-MML: disable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2019/05/23 22:12, Jesper Dangaard Brouer wrote:
-> On Thu, 23 May 2019 19:56:47 +0900
-> Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp> wrote:
+On Thu, 23 May 2019 17:31:50 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+
+
+> > Now from what I'm reading, it seams that the Dtrace layer may be
+> > abstracting out fields from the kernel. This is actually something I
+> > have been thinking about to solve the "tracepoint abi" issue. There's
+> > usually basic ideas that happen. An interrupt goes off, there's a
+> > handler, etc. We could abstract that out that we trace when an
+> > interrupt goes off and the handler happens, and record the vector
+> > number, and/or what device it was for. We have tracepoints in the
+> > kernel that do this, but they do depend a bit on the implementation.
+> > Now, if we could get a layer that abstracts this information away from
+> > the implementation, then I think that's a *good* thing.  
 > 
->> This is introduced for admins to check what is happening on XDP_TX when
->> bulk XDP_TX is in use.
->>
->> Signed-off-by: Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
->> ---
->>  include/trace/events/xdp.h | 25 +++++++++++++++++++++++++
->>  kernel/bpf/core.c          |  1 +
->>  2 files changed, 26 insertions(+)
->>
->> diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
->> index e95cb86..e06ea65 100644
->> --- a/include/trace/events/xdp.h
->> +++ b/include/trace/events/xdp.h
->> @@ -50,6 +50,31 @@
->>  		  __entry->ifindex)
->>  );
->>  
->> +TRACE_EVENT(xdp_bulk_tx,
->> +
+> I don't like this deferred irq idea at all.
+
+What do you mean deferred?
+
+> Abstracting details from the users is _never_ a good idea.
+
+Really? Most everything we do is to abstract details from the user. The
+key is to make the abstraction more meaningful than the raw data.
+
+> A ton of people use bcc scripts and bpftrace because they want those details.
+> They need to know what kernel is doing to make better decisions.
+> Delaying irq record is the opposite.
+
+I never said anything about delaying the record. Just getting the
+information that is needed.
+
+> > 
+> > I wish that was totally true, but tracepoints *can* be an abi. I had
+> > code reverted because powertop required one to be a specific
+> > format. To this day, the wakeup event has a "success" field that
+> > writes in a hardcoded "1", because there's tools that depend on it,
+> > and they only work if there's a success field and the value is 1.  
 > 
-> You are using this tracepoint like/instead of trace_xdp_devmap_xmit if
-> I understand correctly?  Or maybe the trace_xdp_redirect tracepoint.
+> I really think that you should put powertop nightmares to rest.
+> That was long ago. The kernel is different now.
 
-Yes, I have trace_xdp_devmap_xmit in mind, which is for XDP_REDIRECT.
+Is it?
 
-> The point is that is will be good if the tracepoints can share the
-> TP_STRUCT layout beginning, as it allows for attaching and reusing eBPF
-> code that is only interested in the top part of the struct.
+> Linus made it clear several times that it is ok to change _all_
+> tracepoints. Period. Some maintainers somehow still don't believe
+> that they can do it.
 
-It's good, but this tracepoint does not have map concept so differs from
-xdp_devmap_xmit.
+From what I remember him saying several times, is that you can change
+all tracepoints, but if it breaks a tool that is useful, then that
+change will get reverted. He will allow you to go and fix that tool and
+bring back the change (which was the solution to powertop).
 
-> I would also want to see some identifier, that trace programs can use
-> to group and corrolate these events, you do have ifindex, but most
-> other XDP tracepoints also have "prog_id".
+> 
+> Some tracepoints are used more than others and more people will
+> complain: "ohh I need to change my script" when that tracepoint
+> changes. But the kernel development is not going to be hampered by a
+> tracepoint. No matter how widespread its usage in scripts.
 
-I have considered that too. The problem is that we cannot pass a
-reliable prog_id since bulk xmit happens after RCU critical section of
-XDP_TX.
-xdp_devmap_xmit does not have prog_id and I guess there is a similar
-reason for it?
+That's because we'll treat bpf (and Dtrace) scripts like modules (no
+abi), at least we better. But if there's a tool that doesn't use the
+script and reads the tracepoint directly via perf, then that's a
+different story.
 
--- 
-Toshiaki Makita
+-- Steve
 
+> 
+> Sometimes that pain of change can be mitigated a bit. Like that
+> 'success' field example, but tracepoints still change.
+> Meaningful value before vs hardcoded constant is still a breakage for
+> some scripts.
