@@ -2,144 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1525B29524
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 11:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD7829592
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 12:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389911AbfEXJxO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 24 May 2019 05:53:14 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:40290 "EHLO mx1.redhat.com"
+        id S2389616AbfEXKSj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 May 2019 06:18:39 -0400
+Received: from mga04.intel.com ([192.55.52.120]:4032 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389582AbfEXJxO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 May 2019 05:53:14 -0400
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 7F3D664458;
-        Fri, 24 May 2019 09:53:13 +0000 (UTC)
-Received: from carbon (ovpn-200-45.brq.redhat.com [10.40.200.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B8E085C239;
-        Fri, 24 May 2019 09:53:02 +0000 (UTC)
-Date:   Fri, 24 May 2019 11:53:01 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Toshiaki Makita <toshiaki.makita1@gmail.com>
-Cc:     Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>,
-        Toke =?UTF-8?B?SMO4?= =?UTF-8?B?aWxhbmQtSsO4cmdlbnNlbg==?= 
-        <toke@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+        id S2389448AbfEXKSj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 May 2019 06:18:39 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 24 May 2019 03:18:38 -0700
+X-ExtLoop1: 1
+Received: from nisrael1-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.255.41.138])
+  by fmsmga006.fm.intel.com with ESMTP; 24 May 2019 03:18:33 -0700
+Subject: Re: [PATCH bpf-next v3 00/16] AF_XDP infrastructure improvements and
+ mlx5e support
+To:     Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Magnus Karlsson <magnus.karlsson@intel.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Jonathan Lemon <bsd@fb.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
-        bpf@vger.kernel.org, brouer@redhat.com
-Subject: Re: [PATCH bpf-next 3/3] veth: Support bulk XDP_TX
-Message-ID: <20190524115301.7626ed44@carbon>
-In-Reply-To: <c902c0f4-947b-ba9e-7baa-628ba87a8f01@gmail.com>
-References: <1558609008-2590-1-git-send-email-makita.toshiaki@lab.ntt.co.jp>
-        <1558609008-2590-4-git-send-email-makita.toshiaki@lab.ntt.co.jp>
-        <87zhnd1kg9.fsf@toke.dk>
-        <599302b2-96d2-b571-01ee-f4914acaf765@lab.ntt.co.jp>
-        <20190523152927.14bf7ed1@carbon>
-        <c902c0f4-947b-ba9e-7baa-628ba87a8f01@gmail.com>
+        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
+References: <20190524093431.20887-1-maximmi@mellanox.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <8b0450c2-ad5e-ecaa-9958-df4da1dd6456@intel.com>
+Date:   Fri, 24 May 2019 12:18:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.39]); Fri, 24 May 2019 09:53:13 +0000 (UTC)
+In-Reply-To: <20190524093431.20887-1-maximmi@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 23 May 2019 22:51:34 +0900
-Toshiaki Makita <toshiaki.makita1@gmail.com> wrote:
-
-> On 19/05/23 (木) 22:29:27, Jesper Dangaard Brouer wrote:
-> > On Thu, 23 May 2019 20:35:50 +0900
-> > Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp> wrote:
-> >   
-> >> On 2019/05/23 20:25, Toke Høiland-Jørgensen wrote:  
-> >>> Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp> writes:
-> >>>      
-> >>>> This improves XDP_TX performance by about 8%.
-> >>>>
-> >>>> Here are single core XDP_TX test results. CPU consumptions are taken
-> >>>> from "perf report --no-child".
-> >>>>
-> >>>> - Before:
-> >>>>
-> >>>>    7.26 Mpps
-> >>>>
-> >>>>    _raw_spin_lock  7.83%
-> >>>>    veth_xdp_xmit  12.23%
-> >>>>
-> >>>> - After:
-> >>>>
-> >>>>    7.84 Mpps
-> >>>>
-> >>>>    _raw_spin_lock  1.17%
-> >>>>    veth_xdp_xmit   6.45%
-> >>>>
-> >>>> Signed-off-by: Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
-> >>>> ---
-> >>>>   drivers/net/veth.c | 26 +++++++++++++++++++++++++-
-> >>>>   1 file changed, 25 insertions(+), 1 deletion(-)
-> >>>>
-> >>>> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> >>>> index 52110e5..4edc75f 100644
-> >>>> --- a/drivers/net/veth.c
-> >>>> +++ b/drivers/net/veth.c
-> >>>> @@ -442,6 +442,23 @@ static int veth_xdp_xmit(struct net_device *dev, int n,
-> >>>>   	return ret;
-> >>>>   }
-> >>>>   
-> >>>> +static void veth_xdp_flush_bq(struct net_device *dev)
-> >>>> +{
-> >>>> +	struct xdp_tx_bulk_queue *bq = this_cpu_ptr(&xdp_tx_bq);
-> >>>> +	int sent, i, err = 0;
-> >>>> +
-> >>>> +	sent = veth_xdp_xmit(dev, bq->count, bq->q, 0);  
-> >>>
-> >>> Wait, veth_xdp_xmit() is just putting frames on a pointer ring. So
-> >>> you're introducing an additional per-cpu bulk queue, only to avoid lock
-> >>> contention around the existing pointer ring. But the pointer ring is
-> >>> per-rq, so if you have lock contention, this means you must have
-> >>> multiple CPUs servicing the same rq, no?  
-> >>
-> >> Yes, it's possible. Not recommended though.
-> >>  
-> > 
-> > I think the general per-cpu TX bulk queue is overkill.  There is a loop
-> > over packets in veth_xdp_rcv(struct veth_rq *rq, budget, *status), and
-> > the caller veth_poll() will call veth_xdp_flush(rq->dev).
-> > 
-> > Why can't you store this "temp" bulk array in struct veth_rq ?  
+On 2019-05-24 11:35, Maxim Mikityanskiy wrote:
+> This series contains improvements to the AF_XDP kernel infrastructure
+> and AF_XDP support in mlx5e. The infrastructure improvements are
+> required for mlx5e, but also some of them benefit to all drivers, and
+> some can be useful for other drivers that want to implement AF_XDP.
 > 
-> Of course I can. But I thought tun has the same problem and we can 
-> decrease memory footprint by sharing the same storage between devices.
-> Or if other devices want to reduce queues so that we can use XDP on 
-> many-cpu servers and introduce locks, we can use this storage for
-> that case as well.
+> The performance testing was performed on a machine with the following
+> configuration:
 > 
-> Still do you prefer veth-specific solution?
+> - 24 cores of Intel Xeon E5-2620 v3 @ 2.40 GHz
+> - Mellanox ConnectX-5 Ex with 100 Gbit/s link
+> 
+> The results with retpoline disabled, single stream:
+> 
+> txonly: 33.3 Mpps (21.5 Mpps with queue and app pinned to the same CPU)
+> rxdrop: 12.2 Mpps
+> l2fwd: 9.4 Mpps
+> 
+> The results with retpoline enabled, single stream:
+> 
+> txonly: 21.3 Mpps (14.1 Mpps with queue and app pinned to the same CPU)
+> rxdrop: 9.9 Mpps
+> l2fwd: 6.8 Mpps
+> 
+> v2 changes:
+> 
+> Added patches for mlx5e and addressed the comments for v1. Rebased for
+> bpf-next.
+> 
+> v3 changes:
+> 
+> Rebased for the newer bpf-next, resolved conflicts in libbpf. Addressed
+> Björn's comments for coding style. Fixed a bug in error handling flow in
+> mlx5e_open_xsk.
+>
 
-Yes.  Another reason is that with this shared/general per-cpu TX bulk
-queue, I can easily see bugs resulting in xdp_frames getting
-transmitted on a completely other NIC, which will be hard to debug for
-people.
+Maxim, this doesn't address the uapi concern we had on your v2.
+Please refer to Magnus' comment here [1].
 
-> > 
-> > You could even alloc/create it on the stack of veth_poll() and send
-> > it along via a pointer to veth_xdp_rcv).
+Please educate me why you cannot publish AF_XDP without the uapi change?
+It's an extension, right? If so, then existing XDP/AF_XDP program can
+use Mellanox ZC without your addition? It's great that Mellanox has a ZC
+capable driver, but the uapi change is a NAK.
 
-IHMO it would be cleaner code wise to place the "temp" bulk array in
-struct veth_rq.  But if you worry about performance and want a hot
-cacheline for this, then you could just use the call-stack for
-veth_poll(), as I described.  It should not be too ugly code wise to do
-this I think.
+To reiterate; We'd like to get the queue setup/steering for AF_XDP
+correct. I, and Magnus, dislike this approach. It requires a more
+complicated XDP program, and is hard for regular users to understand.
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+
+Thanks,
+Björn
+
+[1] 
+https://lore.kernel.org/bpf/CAJ8uoz2UHk+5xPwz-STM9gkQZdm7r_=jsgaB0nF+mHgch=axPg@mail.gmail.com/
+
+
+> Maxim Mikityanskiy (16):
+>    xsk: Add API to check for available entries in FQ
+>    xsk: Add getsockopt XDP_OPTIONS
+>    libbpf: Support getsockopt XDP_OPTIONS
+>    xsk: Extend channels to support combined XSK/non-XSK traffic
+>    xsk: Change the default frame size to 4096 and allow controlling it
+>    xsk: Return the whole xdp_desc from xsk_umem_consume_tx
+>    net/mlx5e: Replace deprecated PCI_DMA_TODEVICE
+>    net/mlx5e: Calculate linear RX frag size considering XSK
+>    net/mlx5e: Allow ICO SQ to be used by multiple RQs
+>    net/mlx5e: Refactor struct mlx5e_xdp_info
+>    net/mlx5e: Share the XDP SQ for XDP_TX between RQs
+>    net/mlx5e: XDP_TX from UMEM support
+>    net/mlx5e: Consider XSK in XDP MTU limit calculation
+>    net/mlx5e: Encapsulate open/close queues into a function
+>    net/mlx5e: Move queue param structs to en/params.h
+>    net/mlx5e: Add XSK support
+> 
+>   drivers/net/ethernet/intel/i40e/i40e_xsk.c    |  12 +-
+>   drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  |  15 +-
+>   .../net/ethernet/mellanox/mlx5/core/Makefile  |   2 +-
+>   drivers/net/ethernet/mellanox/mlx5/core/en.h  | 147 +++-
+>   .../ethernet/mellanox/mlx5/core/en/params.c   | 108 ++-
+>   .../ethernet/mellanox/mlx5/core/en/params.h   |  87 ++-
+>   .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 231 ++++--
+>   .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |  36 +-
+>   .../mellanox/mlx5/core/en/xsk/Makefile        |   1 +
+>   .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   | 192 +++++
+>   .../ethernet/mellanox/mlx5/core/en/xsk/rx.h   |  27 +
+>   .../mellanox/mlx5/core/en/xsk/setup.c         | 223 ++++++
+>   .../mellanox/mlx5/core/en/xsk/setup.h         |  25 +
+>   .../ethernet/mellanox/mlx5/core/en/xsk/tx.c   | 108 +++
+>   .../ethernet/mellanox/mlx5/core/en/xsk/tx.h   |  15 +
+>   .../ethernet/mellanox/mlx5/core/en/xsk/umem.c | 252 +++++++
+>   .../ethernet/mellanox/mlx5/core/en/xsk/umem.h |  34 +
+>   .../ethernet/mellanox/mlx5/core/en_ethtool.c  |  21 +-
+>   .../mellanox/mlx5/core/en_fs_ethtool.c        |  44 +-
+>   .../net/ethernet/mellanox/mlx5/core/en_main.c | 680 +++++++++++-------
+>   .../net/ethernet/mellanox/mlx5/core/en_rep.c  |  12 +-
+>   .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 104 ++-
+>   .../ethernet/mellanox/mlx5/core/en_stats.c    | 115 ++-
+>   .../ethernet/mellanox/mlx5/core/en_stats.h    |  30 +
+>   .../net/ethernet/mellanox/mlx5/core/en_txrx.c |  42 +-
+>   .../ethernet/mellanox/mlx5/core/ipoib/ipoib.c |  14 +-
+>   drivers/net/ethernet/mellanox/mlx5/core/wq.h  |   5 -
+>   include/net/xdp_sock.h                        |  27 +-
+>   include/uapi/linux/if_xdp.h                   |  19 +
+>   net/xdp/xsk.c                                 |  41 +-
+>   net/xdp/xsk_queue.h                           |  14 +
+>   samples/bpf/xdpsock_user.c                    |  52 +-
+>   tools/include/uapi/linux/if_xdp.h             |  19 +
+>   tools/lib/bpf/xsk.c                           | 131 +++-
+>   tools/lib/bpf/xsk.h                           |   6 +-
+>   35 files changed, 2389 insertions(+), 502 deletions(-)
+>   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/Makefile
+>   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
+>   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.h
+>   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
+>   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.h
+>   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/tx.c
+>   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/tx.h
+>   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/umem.c
+>   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/umem.h
+> 
