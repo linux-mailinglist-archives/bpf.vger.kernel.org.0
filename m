@@ -2,98 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD8D2A008
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 22:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D91EA2A015
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2019 22:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389927AbfEXUnu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 May 2019 16:43:50 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:46954 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389242AbfEXUnt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 May 2019 16:43:49 -0400
-Received: by mail-pl1-f196.google.com with SMTP id r18so4593274pls.13;
-        Fri, 24 May 2019 13:43:49 -0700 (PDT)
+        id S2404191AbfEXUtm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 May 2019 16:49:42 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:36853 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404182AbfEXUtl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 May 2019 16:49:41 -0400
+Received: by mail-lj1-f195.google.com with SMTP id z1so4327960ljb.3;
+        Fri, 24 May 2019 13:49:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/k/A5c9T6gaLP2pJ+tOkAg4n/fO0cio23a3iFow74S0=;
-        b=Ho9CHtBsuKUCyBWkAW/mjh2L4z3Z1e37UaMUcmyPWpvTMGxasUKhFO0rFKuuYl8/EP
-         k2Koh2hkBeh1vbIvfXS7Cd0vifZbAqiVxOmWCDrh6PZnmxt78MlcMHas7KIvsRHyvdgh
-         23NaAxmNqSN/ouQ8qna3fJnjAORv/mP/y/M7U+enVo6dsPUR3djL2YGM3i5niiZsk5zr
-         8cnxjtrF1UUMkr4w77ztbmvbsTKIyHU1UNlPcZxHZPxsGxSQ1UtGn8Rw20BA41Bcg6QE
-         5Fe/md8S6qr1HZNPF3+QC5wi1GNcFScwobxYbLnhx06BXlPgcAPAzm81s8+mREDlrHH/
-         S/dA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VhdT2Uy3Pi6rfMZvbQxZ0OsYh/yykRYbEqsyaHR8QXw=;
+        b=COq1Qwldga6qm3NHELwVkj4YtfxbMalPMy+X/x1ci3lZmksF7YOH0oBtRhxmSMpRPm
+         76d69IC6iVHUG1kUE3dNdYX85VdTLQwrxmoAHtWgU1qjH58cQWQtVODsBC6HhVUOy2A7
+         J91dQdJ5GPzdpc7/49JCkRVJDYLeq2EsFjCotWlDIgKGHIhLo0/ZGt5mNi6Q1nXj6VQ8
+         VJOmQyFTMwnFQhK9le/Ept7NaW2YxFQTnr7eBmmskdnxmf7Wl6O6pTazLsC9jyHzECeU
+         hIw4Q0yv63wrkTTEKIdntzMpXd28nCQAzmwKpPpxtVzRXbTe+q6q9iDh67H2ntMlE1RM
+         iIaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/k/A5c9T6gaLP2pJ+tOkAg4n/fO0cio23a3iFow74S0=;
-        b=JBifNTmciaCoZzGx+f9Cw04R36K9JQ0LrTCxVqFoyEzZAXDD7o0kNB1IpI1bIlvsMz
-         BQRMa3Z529on8ftya5P2iyOXGzcSYptSnae18ZUFTupUA9pVd8gW4UR8zGCmdBOMRqkM
-         x2Lfu6ucXPs12eF2J7qKxuQqoHzgINTGRil8/JEijmB5Eb3qGcISy8Oko6ROeq9au4Ng
-         czKN40y4o05OEZzBmM0Do6RPPYGjhwd9ELM7MaFJ5Z6TF4KsxHtBS6S+H8eTAHLBBiR8
-         ljpDePmApqKawWhMfr2rnqG9gjARMio4R9x4JyzTH6818Ftw46Y4kwiDFHBaKdct1GwE
-         6kDg==
-X-Gm-Message-State: APjAAAXaI6jhHXv0WTdPOFSGmfcUWLbhffplPyVBy6QhSHdrGBuEsPFY
-        aaFqpaIapcwkK9WlD1pO+bs=
-X-Google-Smtp-Source: APXvYqxbfVOU1z1dSJ3w8p3a7MygfoOTGdRThcymLv48MhA9X4o8OfU8RcJCVQcK4LdK8IUHMCZmWQ==
-X-Received: by 2002:a17:902:8ec3:: with SMTP id x3mr53195885plo.340.1558730628947;
-        Fri, 24 May 2019 13:43:48 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::93e9])
-        by smtp.gmail.com with ESMTPSA id b16sm3534317pfd.12.2019.05.24.13.43.46
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 May 2019 13:43:47 -0700 (PDT)
-Date:   Fri, 24 May 2019 13:43:45 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Jiong Wang <jiong.wang@netronome.com>
-Cc:     daniel@iogearbox.net, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@netronome.com, davem@davemloft.net,
-        paul.burton@mips.com, udknight@gmail.com, zlim.lnx@gmail.com,
-        illusionist.neo@gmail.com, naveen.n.rao@linux.ibm.com,
-        sandipan@linux.ibm.com, schwidefsky@de.ibm.com,
-        heiko.carstens@de.ibm.com, jakub.kicinski@netronome.com,
-        andriin@fb.com
-Subject: Re: [PATCH v8 bpf-next 05/16] bpf: introduce new bpf prog load flags
- "BPF_F_TEST_RND_HI32"
-Message-ID: <20190524204343.kprqtget3pwireak@ast-mbp.dhcp.thefacebook.com>
-References: <1558697726-4058-1-git-send-email-jiong.wang@netronome.com>
- <1558697726-4058-6-git-send-email-jiong.wang@netronome.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VhdT2Uy3Pi6rfMZvbQxZ0OsYh/yykRYbEqsyaHR8QXw=;
+        b=jt/H/pOwcNIhaMcT5YolWzGtXJCl8q2vcbHigerXfow5Qy7ZDN9KAqmR6BDf4/uGKD
+         9/iQlTdAHR9Qt6I1fd3pRTpeidhJ9INn4q49dckMvp3pG8C8bgIjDYowzJgc0Cx0CvST
+         Wl4GOx+Bi+YQ5pbjfuDzzPpchZ7/8/tmfcD1eUV1IaBF1nUv0D6Yjd1d8mEgrq8sJnO4
+         cND+ulJHimCy2tp1DC1uZy8ucP5HsfPbmoonLYJAIonciOwiqWGjI+RJgFWVD6CWRo79
+         D9A5az2cqSKQ2p3VQIIE1rjEJlKXECCiVr9g3nKQTr1EEaNkv6dQwH5mjSub1iVeDmt8
+         cQbw==
+X-Gm-Message-State: APjAAAV1l+K66yUyYl+ioE/5O3+7mEGL4JnVvfPh3gGYUoSZ3UnBmZ/F
+        A6uChP1a6M+47lcGWzsf2a3bBnEsGjZKX4Ef9Fg=
+X-Google-Smtp-Source: APXvYqy2UI/rZfZDvCke9BTAdI57OyrfDA2hvmMsq1QhIxpqi/JV9Ex2oV/fsS9k3ekCpzrzVLBvDGQaY1eTz2e6A1E=
+X-Received: by 2002:a2e:9d09:: with SMTP id t9mr21035214lji.151.1558730979076;
+ Fri, 24 May 2019 13:49:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1558697726-4058-6-git-send-email-jiong.wang@netronome.com>
-User-Agent: NeoMutt/20180223
+References: <20190523125355.18437-1-mrostecki@opensuse.org> <4642ca96-22ab-ad61-a6a1-1d2ef7239cb8@fb.com>
+In-Reply-To: <4642ca96-22ab-ad61-a6a1-1d2ef7239cb8@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 24 May 2019 13:49:26 -0700
+Message-ID: <CAADnVQKYiv2ZMTLcJ6ZAoSA8u7+GZe+o-00qidefuNPa7KsbbA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 RESEND 0/2] Move bpf_printk to bpf_helpers.h
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Michal Rostecki <mrostecki@opensuse.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+        "open list:XDP (eXpress Data Path)" <xdp-newbies@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 24, 2019 at 12:35:15PM +0100, Jiong Wang wrote:
-> x86_64 and AArch64 perhaps are two arches that running bpf testsuite
-> frequently, however the zero extension insertion pass is not enabled for
-> them because of their hardware support.
-> 
-> It is critical to guarantee the pass correction as it is supposed to be
-> enabled at default for a couple of other arches, for example PowerPC,
-> SPARC, arm, NFP etc. Therefore, it would be very useful if there is a way
-> to test this pass on for example x86_64.
-> 
-> The test methodology employed by this set is "poisoning" useless bits. High
-> 32-bit of a definition is randomized if it is identified as not used by any
-> later insn. Such randomization is only enabled under testing mode which is
-> gated by the new bpf prog load flags "BPF_F_TEST_RND_HI32".
-> 
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
-> ---
->  include/uapi/linux/bpf.h       | 18 ++++++++++++++++++
->  kernel/bpf/syscall.c           |  4 +++-
->  tools/include/uapi/linux/bpf.h | 18 ++++++++++++++++++
->  3 files changed, 39 insertions(+), 1 deletion(-)
+On Thu, May 23, 2019 at 9:52 AM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 5/23/19 5:53 AM, Michal Rostecki wrote:
+> > This series of patches move the commonly used bpf_printk macro to
+> > bpf_helpers.h which is already included in all BPF programs which
+> > defined that macro on their own.
+> >
+> > v1->v2:
+> > - If HBM_DEBUG is not defined in hbm sample, undefine bpf_printk and set
+> >    an empty macro for it.
+> >
+> > Michal Rostecki (2):
+> >    selftests: bpf: Move bpf_printk to bpf_helpers.h
+> >    samples: bpf: Do not define bpf_printk macro
+> >
+> >   samples/bpf/hbm_kern.h                                | 11 ++---------
+> >   samples/bpf/tcp_basertt_kern.c                        |  7 -------
+> >   samples/bpf/tcp_bufs_kern.c                           |  7 -------
+> >   samples/bpf/tcp_clamp_kern.c                          |  7 -------
+> >   samples/bpf/tcp_cong_kern.c                           |  7 -------
+> >   samples/bpf/tcp_iw_kern.c                             |  7 -------
+> >   samples/bpf/tcp_rwnd_kern.c                           |  7 -------
+> >   samples/bpf/tcp_synrto_kern.c                         |  7 -------
+> >   samples/bpf/tcp_tos_reflect_kern.c                    |  7 -------
+> >   samples/bpf/xdp_sample_pkts_kern.c                    |  7 -------
+> >   tools/testing/selftests/bpf/bpf_helpers.h             |  8 ++++++++
+> >   .../testing/selftests/bpf/progs/sockmap_parse_prog.c  |  7 -------
+> >   .../selftests/bpf/progs/sockmap_tcp_msg_prog.c        |  7 -------
+> >   .../selftests/bpf/progs/sockmap_verdict_prog.c        |  7 -------
+> >   .../testing/selftests/bpf/progs/test_lwt_seg6local.c  |  7 -------
+> >   tools/testing/selftests/bpf/progs/test_xdp_noinline.c |  7 -------
+> >   tools/testing/selftests/bpf/test_sockmap_kern.h       |  7 -------
+> >   17 files changed, 10 insertions(+), 114 deletions(-)
+>
+> Ack for the whole series.
+> Acked-by: Yonghong Song <yhs@fb.com>
 
-one more nit:
-could you please split this patch into two?
-Our mostly automatic sync of kernel/libbpf into github/libbpf will fail
-when tools/../bpf.h is not a separate commit.
-
+Applied. Thanks
