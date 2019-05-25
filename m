@@ -2,126 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E57F22A445
-	for <lists+bpf@lfdr.de>; Sat, 25 May 2019 13:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0482A559
+	for <lists+bpf@lfdr.de>; Sat, 25 May 2019 18:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbfEYLzT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 May 2019 07:55:19 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:34483 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726484AbfEYLzT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 May 2019 07:55:19 -0400
-Received: by mail-wr1-f65.google.com with SMTP id f8so12434025wrt.1
-        for <bpf@vger.kernel.org>; Sat, 25 May 2019 04:55:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=CsIarrO2L5WOB1SMV5+alsBx9LCjTDuPLbeAGtbhW7Q=;
-        b=D5FdVLiwCcZS1Lkl0Mb15BfbPGqf9qivdqrKsWL5OYV7Y1qWfmFFZWPoqqa6i+IyAK
-         z8/x3qEgA4fSQsL0AEOawi674itLRS9VS+IemoOs7Wpj+6K1Bk7yIC5mMpsUvwCKy8F0
-         3ow5byTCGiukQ9EQfReM7VW8jVK67BOpoE+vRPSkhteGn+HhrLhNsEpuVQVFlC3MlCi5
-         wmOO6X4m8Ppj0/wlnCP5xrtVyPRYKEfXQp0pik1ObmrwFjyhNjJHhpB0JRESTseMMoQ0
-         +MlQ9p5l/D7MPlI1vBFbD/DXjOIoSNkP91k2xsglyqyoL0KaXIzbwQdpLv9dJ7ByDfOr
-         JJXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CsIarrO2L5WOB1SMV5+alsBx9LCjTDuPLbeAGtbhW7Q=;
-        b=lF1vFHiylmJRCao3mKA1S3yJqq+vIjgzVTpJ4CZCqZjahBK0MoP5fr1Bq4X/RniC5V
-         v3huf4w8y2h6zJiMx5LsLF/LMPv6+SqYSPnX39et4l3+IIicdHcE7vD1+x4bUVnwaspG
-         A5m8H68lSKX16ewqx8zHSv+pm0Wh6PfjC+6ySVGVKq2oy6TvvFXpL6zOVhUle2VBEHHQ
-         Cx2iimuONhbvkt0xUbPimTYFTWrCRGkQj9V2Uhqt4Pou1/jbzzubN86TMrNRQ3caYGcI
-         vFA/dTV9PtD9KtvkENTYGjYjta2i7DjT5PpwFcXXYXAfX/z5tX5HIW428+jb/c3cffgm
-         WliA==
-X-Gm-Message-State: APjAAAVuQKS74fbG3VQy86dIHPi3NrN6TB76xnb7e+3GUCLYOUXGE9hD
-        2UjVxFDuBmKnjYjctKZZhFLf/Q==
-X-Google-Smtp-Source: APXvYqwkHNvD4zZ7FtIyBqKk4F+kYfrYOK5TZYZ09Nr2NSSmHgsLgAhSCW4q/8whTVypntU59myCpg==
-X-Received: by 2002:adf:cf0c:: with SMTP id o12mr59322659wrj.182.1558785317332;
-        Sat, 25 May 2019 04:55:17 -0700 (PDT)
-Received: from [192.168.1.2] ([194.53.186.20])
-        by smtp.gmail.com with ESMTPSA id x1sm7977487wrp.35.2019.05.25.04.55.15
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 25 May 2019 04:55:16 -0700 (PDT)
-Subject: Re: [PATCH bpf-next] bpftool: auto-complete BTF IDs for btf dump
-To:     Andrii Nakryiko <andriin@fb.com>, andrii.nakryiko@gmail.com,
-        kernel-team@fb.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        ast@fb.com, daniel@iogearbox.net
-References: <20190525053809.1207929-1-andriin@fb.com>
-From:   Quentin Monnet <quentin.monnet@netronome.com>
-Message-ID: <3543ed02-97f5-8d55-58d7-29f66220bacc@netronome.com>
-Date:   Sat, 25 May 2019 12:55:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1727139AbfEYQh4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 May 2019 12:37:56 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46448 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727028AbfEYQh4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 25 May 2019 12:37:56 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4PGXaB2009635
+        for <bpf@vger.kernel.org>; Sat, 25 May 2019 09:37:55 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=5RTPfI6UzZo8h/nwiW8QfQd6DBgTvw5sKSvqdQKtb2o=;
+ b=TPpiil9iO3VW4SB2PmqCp9qNWGOvc8+rJRLqlnPEeKiuoRpjr1zbk59/iNkN0Td3xokU
+ lcEQKnPuwKfjThy0/xEBlee717DwDqV0E5f+cVPd+4LOcwjNI/kCltJLw6FqkghIPQu8
+ qY/6g7VDt9ODi0BoBb5ESAfmkFJWRC/OFZw= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2sq2t88rmw-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Sat, 25 May 2019 09:37:55 -0700
+Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Sat, 25 May 2019 09:37:54 -0700
+Received: by devvm2643.prn2.facebook.com (Postfix, from userid 111017)
+        id 2E29D126D83B1; Sat, 25 May 2019 09:37:43 -0700 (PDT)
+Smtp-Origin-Hostprefix: devvm
+From:   Roman Gushchin <guro@fb.com>
+Smtp-Origin-Hostname: devvm2643.prn2.facebook.com
+To:     Alexei Starovoitov <ast@kernel.org>, <bpf@vger.kernel.org>
+CC:     Daniel Borkmann <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, <kernel-team@fb.com>,
+        <cgroups@vger.kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+        Yonghong Song <yhs@fb.com>, <linux-kernel@vger.kernel.org>,
+        Roman Gushchin <guro@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH v5 bpf-next 0/4] cgroup bpf auto-detachment
+Date:   Sat, 25 May 2019 09:37:38 -0700
+Message-ID: <20190525163742.2616471-1-guro@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-In-Reply-To: <20190525053809.1207929-1-andriin@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-25_11:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=742 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905250117
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2019-05-24 22:38 UTC-0700 ~ Andrii Nakryiko <andriin@fb.com>
-> Auto-complete BTF IDs for `btf dump id` sub-command. List of possible BTF
-> IDs is scavenged from loaded BPF programs that have associated BTFs, as
-> there is currently no API in libbpf to fetch list of all BTFs in the
-> system.
-> 
-> Suggested-by: Quentin Monnet <quentin.monnet@netronome.com>
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  tools/bpf/bpftool/bash-completion/bpftool | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-> index 75c01eafd3a1..9fbc33e93689 100644
-> --- a/tools/bpf/bpftool/bash-completion/bpftool
-> +++ b/tools/bpf/bpftool/bash-completion/bpftool
-> @@ -71,6 +71,13 @@ _bpftool_get_prog_tags()
->          command sed -n 's/.*"tag": "\(.*\)",$/\1/p' )" -- "$cur" ) )
->  }
->  
-> +_bpftool_get_btf_ids()
-> +{
-> +    COMPREPLY+=( $( compgen -W "$( bpftool -jp prog 2>&1 | \
-> +        command sed -n 's/.*"btf_id": \(.*\),\?$/\1/p' | \
-> +        command sort -nu )" -- "$cur" ) )
-> +}
+This patchset implements a cgroup bpf auto-detachment functionality:
+bpf programs are detached as soon as possible after removal of the
+cgroup, without waiting for the release of all associated resources.
 
-Thanks! It works well. It looks like the "sort -nu" is not required,
-however? Bash completion on my system seems to run the equivalent of
-"sort -u" on the results anyway, ignoring the ordering you made just
-before. As I understand this is what completion always does, unless we
-pass "-o nosort" to "complete".
+Patches 2 and 3 are required to implement a corresponding kselftest
+in patch 4.
 
-E.g. I get the same following output:
+v5:
+  1) rebase
 
-	1     1234  191   222   25
+v4:
+  1) release cgroup bpf data using a workqueue
+  2) add test_cgroup_attach to .gitignore
 
-When completing with this function:
+v3:
+  1) some minor changes and typo fixes
 
-	_bpftool()
-	{
-		COMPREPLY+=( $( compgen -W "$( \
-			command echo '1 1 1 191 1234 25 222')"))
-	}
-	complete -F _bpftool bpftool
+v2:
+  1) removed a bogus check in patch 4
+  2) moved buf[len] = 0 in patch 2
 
-or with that one:
 
-	_bpftool()
-	{
-		COMPREPLY+=( $( compgen -W "$( \
-			command echo '1 1 1 191 1234 25 222' | \
-			command sort -nu )" ) )
-	}
-	complete -F _bpftool bpftool
+Roman Gushchin (4):
+  bpf: decouple the lifetime of cgroup_bpf from cgroup itself
+  selftests/bpf: convert test_cgrp2_attach2 example into kselftest
+  selftests/bpf: enable all available cgroup v2 controllers
+  selftests/bpf: add auto-detach test
 
-Could you double check you have the same thing on your setup, please? If
-so we can just remove the "sort -nu".
+ include/linux/bpf-cgroup.h                    |  11 +-
+ include/linux/cgroup.h                        |  18 +++
+ kernel/bpf/cgroup.c                           |  41 ++++-
+ kernel/cgroup/cgroup.c                        |  11 +-
+ samples/bpf/Makefile                          |   2 -
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ tools/testing/selftests/bpf/cgroup_helpers.c  |  57 +++++++
+ .../selftests/bpf/test_cgroup_attach.c        | 146 ++++++++++++++++--
+ 9 files changed, 261 insertions(+), 29 deletions(-)
+ rename samples/bpf/test_cgrp2_attach2.c => tools/testing/selftests/bpf/test_cgroup_attach.c (79%)
 
-Quentin
+-- 
+2.21.0
+
