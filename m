@@ -2,68 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A293D2A271
-	for <lists+bpf@lfdr.de>; Sat, 25 May 2019 04:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08DA22A2FE
+	for <lists+bpf@lfdr.de>; Sat, 25 May 2019 07:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726633AbfEYC7C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 May 2019 22:59:02 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:38917 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726452AbfEYC7B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 May 2019 22:59:01 -0400
-Received: by mail-lf1-f65.google.com with SMTP id f1so8429613lfl.6;
-        Fri, 24 May 2019 19:59:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I42CaPGNEMCFp3CHpIjUQ2oZUjvywz2zdl78AKj9zEo=;
-        b=Npl7JritObxy1JJtlBqRQBvGcd9kLRUokl3Hh45MqZDJO+4MrshCR34M05VrIvOl5Y
-         7f9W+Y1KJ86KiuCVz9dvL0lNdu9ZB0+6wfr1n4Ik1zPE/CqBALBGRxFt9/0+iL3+vlLV
-         +l4y/No601fB74ol5PrSq7LUUCjkSanJhME/4DlQgANAb0rAnO/AczsBVXIhfAu4iq86
-         OiVQZctd9z6t9w6I32409WzNDlo+fNLX7t/y8in8Kvqq1sJp8BYRt/xSrZmNwXZFm1Gt
-         +bFok46TVwxJQKsLBcMyCBz3IRZK709ykkEj1oG3cA+YFod+3jEhl1X9VeJCalvWbnOQ
-         uoZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I42CaPGNEMCFp3CHpIjUQ2oZUjvywz2zdl78AKj9zEo=;
-        b=uIbf4Lv2zMdso44WPiDq8Nz/90msMFojMHBcbEi9Lw/UxCNGCgXngPcexWu4uZq6Uj
-         bdCiYmlGJmqpk92POJhRBfzzsGLgLEF+KA1LA0mzx38u6woZy7o9Kv2Enml3VuyT2zJv
-         3vpAUv4jEWltjFbxhwFUtXlpjVERxAsaKNShurzCZIMyYmtgq9ZtzqM9zVMZ/QwwjxmZ
-         8gw79dAhBWLu73O1t+/acJtamJbiSzP7rYlZlKWPgvEjbzwxtmlBuoLFXZ07tf47pmmH
-         21CfwEpaGXykK1tRkykD/W6eI56Val2O9QVG2NSsFaWfKYWRRKvMBmrfITC4xdnJu74V
-         zzOA==
-X-Gm-Message-State: APjAAAVfGWqJIIfAoZDtAAi2+YpXeVP39x5P/97pGjYa5ZBbMqG8pKnl
-        i4gKeYltN9nUfY47EnmbBMmWCtP3AsFvyKh+87Q=
-X-Google-Smtp-Source: APXvYqynMZ4i/b/sNcnC/qUMa8ryVMxbvDaU/zePZGwG5YMv1GIvEFr8MFNfQCSXwi4k+SgGsgWFtuR4Yx6yDk7DpWA=
-X-Received: by 2002:ac2:4252:: with SMTP id m18mr19148041lfl.100.1558753139417;
- Fri, 24 May 2019 19:58:59 -0700 (PDT)
+        id S1726206AbfEYFiR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 May 2019 01:38:17 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:40298 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726091AbfEYFiR (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 25 May 2019 01:38:17 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4P5Z8JQ014777
+        for <bpf@vger.kernel.org>; Fri, 24 May 2019 22:38:16 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=6H5JKgxkjq5QbRBdsVmRIPKzSYAfrFHKk4vUQrO+X0o=;
+ b=NVVm6h5gbXznHsE+8kmqDND+WRqnplD3dY+OkC2Q0/VPCtCzecBIS7UmG0PxmlUhMpBH
+ mj42uBW2mHgXo9xOBp/3DwoVq8iQ4xTj1Kg3Q3m6Y8LOKvnZuEnNWX+Vjlw6lpmrpwy9
+ X+q5nZEKGZ01P2Fvnr6BenqwxZ7k5CateIQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2spjbq2f3k-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 24 May 2019 22:38:16 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 24 May 2019 22:38:14 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id C3C1A86171B; Fri, 24 May 2019 22:38:12 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <quentin.monnet@netronome.com>
+CC:     Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next] bpftool: auto-complete BTF IDs for btf dump
+Date:   Fri, 24 May 2019 22:38:09 -0700
+Message-ID: <20190525053809.1207929-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20190524195912.4966-1-mcroce@redhat.com>
-In-Reply-To: <20190524195912.4966-1-mcroce@redhat.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 24 May 2019 19:58:47 -0700
-Message-ID: <CAADnVQJzb7ruKZu1Wr8=S6J4Yp9tw_kX0tKEL1FrZroUwy4j7Q@mail.gmail.com>
-Subject: Re: [PATCH bpf] samples: bpf: add ibumad sample to .gitignore
-To:     Matteo Croce <mcroce@redhat.com>
-Cc:     Xdp <xdp-newbies@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-25_03:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=511 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905250038
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 24, 2019 at 12:59 PM Matteo Croce <mcroce@redhat.com> wrote:
->
-> This commit adds ibumad to .gitignore which is
-> currently ommited from the ignore file.
->
-> Signed-off-by: Matteo Croce <mcroce@redhat.com>
+Auto-complete BTF IDs for `btf dump id` sub-command. List of possible BTF
+IDs is scavenged from loaded BPF programs that have associated BTFs, as
+there is currently no API in libbpf to fetch list of all BTFs in the
+system.
 
-Applied. Thanks
+Suggested-by: Quentin Monnet <quentin.monnet@netronome.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/bpf/bpftool/bash-completion/bpftool | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index 75c01eafd3a1..9fbc33e93689 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -71,6 +71,13 @@ _bpftool_get_prog_tags()
+         command sed -n 's/.*"tag": "\(.*\)",$/\1/p' )" -- "$cur" ) )
+ }
+ 
++_bpftool_get_btf_ids()
++{
++    COMPREPLY+=( $( compgen -W "$( bpftool -jp prog 2>&1 | \
++        command sed -n 's/.*"btf_id": \(.*\),\?$/\1/p' | \
++        command sort -nu )" -- "$cur" ) )
++}
++
+ _bpftool_get_obj_map_names()
+ {
+     local obj
+@@ -635,6 +642,9 @@ _bpftool()
+                                 map)
+                                     _bpftool_get_map_ids
+                                     ;;
++                                dump)
++                                    _bpftool_get_btf_ids
++                                    ;;
+                             esac
+                             return 0
+                             ;;
+-- 
+2.17.1
+
