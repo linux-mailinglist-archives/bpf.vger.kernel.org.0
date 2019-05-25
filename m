@@ -2,100 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 555C52A3A0
-	for <lists+bpf@lfdr.de>; Sat, 25 May 2019 11:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57F22A445
+	for <lists+bpf@lfdr.de>; Sat, 25 May 2019 13:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726376AbfEYJJT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 May 2019 05:09:19 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:34422 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726461AbfEYJJT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 May 2019 05:09:19 -0400
-Received: by mail-wm1-f66.google.com with SMTP id e19so3497330wme.1
-        for <bpf@vger.kernel.org>; Sat, 25 May 2019 02:09:17 -0700 (PDT)
+        id S1726801AbfEYLzT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 May 2019 07:55:19 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:34483 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726484AbfEYLzT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 25 May 2019 07:55:19 -0400
+Received: by mail-wr1-f65.google.com with SMTP id f8so12434025wrt.1
+        for <bpf@vger.kernel.org>; Sat, 25 May 2019 04:55:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=k/uq3QuHYJNZ9DfxUmqixLeELosy6Cl/suStGs9+peA=;
-        b=JMZB+kZTa7DkZWF5rYFI3NSTTKsi63QvETkz2wndiIG3Cjivj4rAGQUDJuayoxYqpL
-         N/Qo60TJr5Pet/fw/usNhJ/RANBWqGjFybVJtPGFIosq5KxI+syt4zErEjU8i0UrLUNl
-         iHTR7kafvftMey83Cyi769OdIxwJ5RcM0AiguGoB6qy1lWGdnOiIhkQrrjpOGuB6GEYX
-         jCu3ZRIzGWMjekzjt96Jpu5daOdgW40BBKLFQR96g8HmS9/fr6B8GidZ3bhTFzscth+e
-         Ye94lOz0HqeF75epFlXyzKP+5dRKwopmom/xUMlNfweDSlkx+uBWdMCnGhMZFnIMpyYt
-         Dnqg==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=CsIarrO2L5WOB1SMV5+alsBx9LCjTDuPLbeAGtbhW7Q=;
+        b=D5FdVLiwCcZS1Lkl0Mb15BfbPGqf9qivdqrKsWL5OYV7Y1qWfmFFZWPoqqa6i+IyAK
+         z8/x3qEgA4fSQsL0AEOawi674itLRS9VS+IemoOs7Wpj+6K1Bk7yIC5mMpsUvwCKy8F0
+         3ow5byTCGiukQ9EQfReM7VW8jVK67BOpoE+vRPSkhteGn+HhrLhNsEpuVQVFlC3MlCi5
+         wmOO6X4m8Ppj0/wlnCP5xrtVyPRYKEfXQp0pik1ObmrwFjyhNjJHhpB0JRESTseMMoQ0
+         +MlQ9p5l/D7MPlI1vBFbD/DXjOIoSNkP91k2xsglyqyoL0KaXIzbwQdpLv9dJ7ByDfOr
+         JJXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=k/uq3QuHYJNZ9DfxUmqixLeELosy6Cl/suStGs9+peA=;
-        b=arCz3Su4Lc1YQDiDw3X3RMzlm3I1N/9n8fC4sOdOxY/bpy7DFyJtmfNy6muVNIu5Yr
-         aLy9P+PvPJ7jSlPUEW+jRIMOTlf9ctHUckHtrOShLGSdnDU4N7UC0VQmSIFEu8gFNY79
-         UMHybw/RPyRPZxnkDzTPUUMl25JMgOWEvqDmmqnjZq90o8HBfVlN05PI0FTPLKaRjTP6
-         3Iu4gEGzaRUXDxr86wjfzZCGO42fDT4rQL/SPhosi3E/JaGiZPzsvnxcHxVU1T0Sja8q
-         I3sewIFlBepAeVOse3F7TRbbR1dP/lhn0v7c/Caow2gy9exP7f3/PAkYQUlt7EJXVAzb
-         uBYQ==
-X-Gm-Message-State: APjAAAW4p4SRNXUzpXvPp0SElL8dkafKaH8Bhk9xG2PvaqzW/JYYviNe
-        L8e3C9Khm5mG13vEStdvGlRTkw==
-X-Google-Smtp-Source: APXvYqxpKo0suvuOJXTNl3G3D7blNjblMNcQUinzwZxqmHGf87wAUdNOQ+YNxUSVhi+FMomvjIarhg==
-X-Received: by 2002:a7b:c549:: with SMTP id j9mr2726190wmk.122.1558775356841;
-        Sat, 25 May 2019 02:09:16 -0700 (PDT)
-Received: from LAPTOP-V3S7NLPL (cpc1-cmbg19-2-0-cust104.5-4.cable.virginm.net. [82.27.180.105])
-        by smtp.gmail.com with ESMTPSA id l8sm3354097wrw.56.2019.05.25.02.09.15
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 25 May 2019 02:09:15 -0700 (PDT)
-References: <1558736728-7229-1-git-send-email-jiong.wang@netronome.com> <20190525020736.gty5sdcu5jakffet@ast-mbp.dhcp.thefacebook.com>
-User-agent: mu4e 0.9.18; emacs 25.2.2
-From:   Jiong Wang <jiong.wang@netronome.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiong Wang <jiong.wang@netronome.com>, daniel@iogearbox.net,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@netronome.com, davem@davemloft.net,
-        paul.burton@mips.com, udknight@gmail.com, zlim.lnx@gmail.com,
-        illusionist.neo@gmail.com, naveen.n.rao@linux.ibm.com,
-        sandipan@linux.ibm.com, schwidefsky@de.ibm.com,
-        heiko.carstens@de.ibm.com, jakub.kicinski@netronome.com
-Subject: Re: [PATCH v9 bpf-next 00/17] bpf: eliminate zero extensions for sub-register writes
-In-reply-to: <20190525020736.gty5sdcu5jakffet@ast-mbp.dhcp.thefacebook.com>
-Date:   Sat, 25 May 2019 10:09:13 +0100
-Message-ID: <87zhnagati.fsf@netronome.com>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CsIarrO2L5WOB1SMV5+alsBx9LCjTDuPLbeAGtbhW7Q=;
+        b=lF1vFHiylmJRCao3mKA1S3yJqq+vIjgzVTpJ4CZCqZjahBK0MoP5fr1Bq4X/RniC5V
+         v3huf4w8y2h6zJiMx5LsLF/LMPv6+SqYSPnX39et4l3+IIicdHcE7vD1+x4bUVnwaspG
+         A5m8H68lSKX16ewqx8zHSv+pm0Wh6PfjC+6ySVGVKq2oy6TvvFXpL6zOVhUle2VBEHHQ
+         Cx2iimuONhbvkt0xUbPimTYFTWrCRGkQj9V2Uhqt4Pou1/jbzzubN86TMrNRQ3caYGcI
+         vFA/dTV9PtD9KtvkENTYGjYjta2i7DjT5PpwFcXXYXAfX/z5tX5HIW428+jb/c3cffgm
+         WliA==
+X-Gm-Message-State: APjAAAVuQKS74fbG3VQy86dIHPi3NrN6TB76xnb7e+3GUCLYOUXGE9hD
+        2UjVxFDuBmKnjYjctKZZhFLf/Q==
+X-Google-Smtp-Source: APXvYqwkHNvD4zZ7FtIyBqKk4F+kYfrYOK5TZYZ09Nr2NSSmHgsLgAhSCW4q/8whTVypntU59myCpg==
+X-Received: by 2002:adf:cf0c:: with SMTP id o12mr59322659wrj.182.1558785317332;
+        Sat, 25 May 2019 04:55:17 -0700 (PDT)
+Received: from [192.168.1.2] ([194.53.186.20])
+        by smtp.gmail.com with ESMTPSA id x1sm7977487wrp.35.2019.05.25.04.55.15
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 25 May 2019 04:55:16 -0700 (PDT)
+Subject: Re: [PATCH bpf-next] bpftool: auto-complete BTF IDs for btf dump
+To:     Andrii Nakryiko <andriin@fb.com>, andrii.nakryiko@gmail.com,
+        kernel-team@fb.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        ast@fb.com, daniel@iogearbox.net
+References: <20190525053809.1207929-1-andriin@fb.com>
+From:   Quentin Monnet <quentin.monnet@netronome.com>
+Message-ID: <3543ed02-97f5-8d55-58d7-29f66220bacc@netronome.com>
+Date:   Sat, 25 May 2019 12:55:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20190525053809.1207929-1-andriin@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+2019-05-24 22:38 UTC-0700 ~ Andrii Nakryiko <andriin@fb.com>
+> Auto-complete BTF IDs for `btf dump id` sub-command. List of possible BTF
+> IDs is scavenged from loaded BPF programs that have associated BTFs, as
+> there is currently no API in libbpf to fetch list of all BTFs in the
+> system.
+> 
+> Suggested-by: Quentin Monnet <quentin.monnet@netronome.com>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
+>  tools/bpf/bpftool/bash-completion/bpftool | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+> index 75c01eafd3a1..9fbc33e93689 100644
+> --- a/tools/bpf/bpftool/bash-completion/bpftool
+> +++ b/tools/bpf/bpftool/bash-completion/bpftool
+> @@ -71,6 +71,13 @@ _bpftool_get_prog_tags()
+>          command sed -n 's/.*"tag": "\(.*\)",$/\1/p' )" -- "$cur" ) )
+>  }
+>  
+> +_bpftool_get_btf_ids()
+> +{
+> +    COMPREPLY+=( $( compgen -W "$( bpftool -jp prog 2>&1 | \
+> +        command sed -n 's/.*"btf_id": \(.*\),\?$/\1/p' | \
+> +        command sort -nu )" -- "$cur" ) )
+> +}
 
-Alexei Starovoitov writes:
+Thanks! It works well. It looks like the "sort -nu" is not required,
+however? Bash completion on my system seems to run the equivalent of
+"sort -u" on the results anyway, ignoring the ordering you made just
+before. As I understand this is what completion always does, unless we
+pass "-o nosort" to "complete".
 
-> On Fri, May 24, 2019 at 11:25:11PM +0100, Jiong Wang wrote:
->> v9:
->>   - Split patch 5 in v8.
->>     make bpf uapi header file sync a separate patch. (Alexei)
->
-> 9th time's a charm? ;)
+E.g. I get the same following output:
 
-Yup :), it's all good things and helped us reaching a solution that fits
-verifier's existing infra.
+	1     1234  191   222   25
 
-> Applied.
-> Thanks a lot for all the hard work.
-> It's a great milestone.
+When completing with this function:
 
-Thanks. And I guess the answer to the question:
+	_bpftool()
+	{
+		COMPREPLY+=( $( compgen -W "$( \
+			command echo '1 1 1 191 1234 25 222')"))
+	}
+	complete -F _bpftool bpftool
 
-  "Q: BPF 32-bit subregister requirements"
+or with that one:
 
-inside Documentation/bpf/bpf_design_QA.rst now could be updated to
-mention LLVM and JIT back-ends 32-bit supports, will send out an update on
-this.
+	_bpftool()
+	{
+		COMPREPLY+=( $( compgen -W "$( \
+			command echo '1 1 1 191 1234 25 222' | \
+			command sort -nu )" ) )
+	}
+	complete -F _bpftool bpftool
 
-> Please follow up with an optimization for bpf_patch_insn_data()
-> to make it scaleable and undo that workaround in scale tests.
+Could you double check you have the same thing on your setup, please? If
+so we can just remove the "sort -nu".
 
-Sure, will do.
-
-Regards,
-Jiong
-
+Quentin
