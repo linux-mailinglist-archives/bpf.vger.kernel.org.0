@@ -2,163 +2,477 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A7F2AE60
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2019 08:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6132AF0C
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2019 08:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725943AbfE0GK1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 May 2019 02:10:27 -0400
-Received: from tama50.ecl.ntt.co.jp ([129.60.39.147]:53804 "EHLO
-        tama50.ecl.ntt.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725907AbfE0GK1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 May 2019 02:10:27 -0400
-Received: from vc1.ecl.ntt.co.jp (vc1.ecl.ntt.co.jp [129.60.86.153])
-        by tama50.ecl.ntt.co.jp (8.13.8/8.13.8) with ESMTP id x4R69pSw023863;
-        Mon, 27 May 2019 15:09:51 +0900
-Received: from vc1.ecl.ntt.co.jp (localhost [127.0.0.1])
-        by vc1.ecl.ntt.co.jp (Postfix) with ESMTP id CEE46EA7853;
-        Mon, 27 May 2019 15:09:51 +0900 (JST)
-Received: from jcms-pop21.ecl.ntt.co.jp (jcms-pop21.ecl.ntt.co.jp [129.60.87.134])
-        by vc1.ecl.ntt.co.jp (Postfix) with ESMTP id C3A8AEA7804;
-        Mon, 27 May 2019 15:09:51 +0900 (JST)
-Received: from [IPv6:::1] (eb8460w-makita.sic.ecl.ntt.co.jp [129.60.241.47])
-        by jcms-pop21.ecl.ntt.co.jp (Postfix) with ESMTPSA id B3D0F4001A4;
-        Mon, 27 May 2019 15:09:51 +0900 (JST)
-Subject: Re: [PATCH bpf-next 3/3] veth: Support bulk XDP_TX
-References: <1558609008-2590-1-git-send-email-makita.toshiaki@lab.ntt.co.jp>
- <1558609008-2590-4-git-send-email-makita.toshiaki@lab.ntt.co.jp>
- <87zhnd1kg9.fsf@toke.dk> <599302b2-96d2-b571-01ee-f4914acaf765@lab.ntt.co.jp>
- <20190523152927.14bf7ed1@carbon>
- <c902c0f4-947b-ba9e-7baa-628ba87a8f01@gmail.com>
- <20190524115301.7626ed44@carbon>
-From:   Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
-Message-ID: <eb212474-e8a0-77f6-254f-8778529628c6@lab.ntt.co.jp>
-Date:   Mon, 27 May 2019 15:08:54 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726052AbfE0G7E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 May 2019 02:59:04 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:40363 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726322AbfE0G7E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 May 2019 02:59:04 -0400
+Received: by mail-oi1-f196.google.com with SMTP id r136so11170616oie.7;
+        Sun, 26 May 2019 23:59:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kwmBauF3Liy9lrjbb0RAy2g2XFtZDHoyAbQcS7xg+RU=;
+        b=fpMKEywnDNP4KpGdmnHQxKVGvyqXf7uJP01AZwdHvO6P39Ji5eLgZeLApYWZsnBBx1
+         itfadeRY4UAVqiLaTdgNqsHfmkTZXLDPV4MI7voUHVjiqDgoYHAgzOiicFuoobNvrOr1
+         Nz7yOmEE5+3uWcniw14HXHsiXiVRHUPlV7n87ZYhlB5n/E6eCZvRc+6UmxSEXh1GG/xO
+         rHmPe86CoDl9uRs+q0SZm4XGG2BFIBrAWMgMCqwZ56akQgbLLhzJbvxOZ80D2GPI+qlK
+         Rg8iJ7nsRTe/LRElq7aB2aanROZG+heFl9G2pMW8VqI7sQwIhUzpQ1Rhs03zN9toaH6P
+         a6Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kwmBauF3Liy9lrjbb0RAy2g2XFtZDHoyAbQcS7xg+RU=;
+        b=e+5ZBiCTTsmFV3bXvyd3WEpUFBSzaIjjA0+lKg7dxmHvKG/Y6X6HNJU8+h01w0+jK7
+         7MuYO6WDdxm5GD79NloO8ZoNXtJcMt9QvwtWRhOB14cIGLFfjaS5feBXw84yZj3R1atC
+         xXGGOU4CrrabfL05LKPFx5cJtM+rpDvRY5VYz2PAazifysewYXMHNvlATLLe2y0aN+/8
+         owKfW3DD9KORFtXDRe1chSqjjKwGozWcse0AAbfhO3CulXvI5q0rU5Jt7vMSrJhScdiT
+         vOoirvUUUOh7FJIWCIMH4AAQM5oh22i6plzSm8ol+2dSp+2eSxAdEWZr9lopYmxJqOaM
+         v1aw==
+X-Gm-Message-State: APjAAAVQGeOxCeTR1Z717dDMOQ+S+8bv2Xjgo/qBKullJeENtpy6bKij
+        FSeVNTHmP74MgZo6kyadnu3G1TDaBq5H0pvcfKw=
+X-Google-Smtp-Source: APXvYqzzuXL+wiApg9ywUJW1/TdC6MKmMIfio6uAczrLUBqX3cemPAHqLrqtWj2TvcM6XdwOhx4eBnxHIX4yfYVsWQw=
+X-Received: by 2002:aca:ed0a:: with SMTP id l10mr14481855oih.39.1558940343029;
+ Sun, 26 May 2019 23:59:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190524115301.7626ed44@carbon>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CC-Mail-RelayStamp: 1
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+References: <1556786363-28743-1-git-send-email-magnus.karlsson@intel.com>
+ <1556786363-28743-8-git-send-email-magnus.karlsson@intel.com> <20190524025111.GB6321@intel.com>
+In-Reply-To: <20190524025111.GB6321@intel.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Mon, 27 May 2019 08:58:52 +0200
+Message-ID: <CAJ8uoz3MNrz_f7dy6+U=zj7GeywUda9E9pP2s9uU1jVW5O2zHw@mail.gmail.com>
+Subject: Re: [RFC bpf-next 7/7] samples/bpf: add busy-poll support to xdpsock sample
+To:     Ye Xiaolong <xiaolong.ye@intel.com>
+Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        bpf@vger.kernel.org, bruce.richardson@intel.com,
+        ciara.loftus@intel.com,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
-        bpf@vger.kernel.org
-X-TM-AS-MML: disable
+        "Zhang, Qi Z" <qi.z.zhang@intel.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        "Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
+        kevin.laatz@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2019/05/24 18:53, Jesper Dangaard Brouer wrote:
-> On Thu, 23 May 2019 22:51:34 +0900
-> Toshiaki Makita <toshiaki.makita1@gmail.com> wrote:
-> 
->> On 19/05/23 (木) 22:29:27, Jesper Dangaard Brouer wrote:
->>> On Thu, 23 May 2019 20:35:50 +0900
->>> Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp> wrote:
->>>   
->>>> On 2019/05/23 20:25, Toke Høiland-Jørgensen wrote:  
->>>>> Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp> writes:
->>>>>      
->>>>>> This improves XDP_TX performance by about 8%.
->>>>>>
->>>>>> Here are single core XDP_TX test results. CPU consumptions are taken
->>>>>> from "perf report --no-child".
->>>>>>
->>>>>> - Before:
->>>>>>
->>>>>>    7.26 Mpps
->>>>>>
->>>>>>    _raw_spin_lock  7.83%
->>>>>>    veth_xdp_xmit  12.23%
->>>>>>
->>>>>> - After:
->>>>>>
->>>>>>    7.84 Mpps
->>>>>>
->>>>>>    _raw_spin_lock  1.17%
->>>>>>    veth_xdp_xmit   6.45%
->>>>>>
->>>>>> Signed-off-by: Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
->>>>>> ---
->>>>>>   drivers/net/veth.c | 26 +++++++++++++++++++++++++-
->>>>>>   1 file changed, 25 insertions(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
->>>>>> index 52110e5..4edc75f 100644
->>>>>> --- a/drivers/net/veth.c
->>>>>> +++ b/drivers/net/veth.c
->>>>>> @@ -442,6 +442,23 @@ static int veth_xdp_xmit(struct net_device *dev, int n,
->>>>>>   	return ret;
->>>>>>   }
->>>>>>   
->>>>>> +static void veth_xdp_flush_bq(struct net_device *dev)
->>>>>> +{
->>>>>> +	struct xdp_tx_bulk_queue *bq = this_cpu_ptr(&xdp_tx_bq);
->>>>>> +	int sent, i, err = 0;
->>>>>> +
->>>>>> +	sent = veth_xdp_xmit(dev, bq->count, bq->q, 0);  
->>>>>
->>>>> Wait, veth_xdp_xmit() is just putting frames on a pointer ring. So
->>>>> you're introducing an additional per-cpu bulk queue, only to avoid lock
->>>>> contention around the existing pointer ring. But the pointer ring is
->>>>> per-rq, so if you have lock contention, this means you must have
->>>>> multiple CPUs servicing the same rq, no?  
->>>>
->>>> Yes, it's possible. Not recommended though.
->>>>  
->>>
->>> I think the general per-cpu TX bulk queue is overkill.  There is a loop
->>> over packets in veth_xdp_rcv(struct veth_rq *rq, budget, *status), and
->>> the caller veth_poll() will call veth_xdp_flush(rq->dev).
->>>
->>> Why can't you store this "temp" bulk array in struct veth_rq ?  
->>
->> Of course I can. But I thought tun has the same problem and we can 
->> decrease memory footprint by sharing the same storage between devices.
->> Or if other devices want to reduce queues so that we can use XDP on 
->> many-cpu servers and introduce locks, we can use this storage for
->> that case as well.
->>
->> Still do you prefer veth-specific solution?
-> 
-> Yes.  Another reason is that with this shared/general per-cpu TX bulk
-> queue, I can easily see bugs resulting in xdp_frames getting
-> transmitted on a completely other NIC, which will be hard to debug for
-> people.
-> 
->>>
->>> You could even alloc/create it on the stack of veth_poll() and send
->>> it along via a pointer to veth_xdp_rcv).
-> 
-> IHMO it would be cleaner code wise to place the "temp" bulk array in
-> struct veth_rq.  But if you worry about performance and want a hot
-> cacheline for this, then you could just use the call-stack for
-> veth_poll(), as I described.  It should not be too ugly code wise to do
-> this I think.
+On Fri, May 24, 2019 at 4:59 AM Ye Xiaolong <xiaolong.ye@intel.com> wrote:
+>
+> Hi, Magnus
+>
+> On 05/02, Magnus Karlsson wrote:
+> >This patch adds busy-poll support to the xdpsock sample
+> >application. It is enabled by the "-b" or the "--busy-poll" command
+> >line options.
+> >
+> >Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> >---
+> > samples/bpf/xdpsock_user.c | 203 ++++++++++++++++++++++++++++-----------------
+> > 1 file changed, 125 insertions(+), 78 deletions(-)
+> >
+> >diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
+> >index d08ee1a..1272edf 100644
+> >--- a/samples/bpf/xdpsock_user.c
+> >+++ b/samples/bpf/xdpsock_user.c
+> >@@ -66,6 +66,7 @@ static const char *opt_if = "";
+> > static int opt_ifindex;
+> > static int opt_queue;
+> > static int opt_poll;
+> >+static int opt_busy_poll;
+> > static int opt_interval = 1;
+> > static u32 opt_xdp_bind_flags;
+> > static __u32 prog_id;
+> >@@ -119,8 +120,11 @@ static void print_benchmark(bool running)
+> >       else
+> >               printf("        ");
+> >
+> >-      if (opt_poll)
+> >+      if (opt_poll) {
+> >+              if (opt_busy_poll)
+> >+                      printf("busy-");
+> >               printf("poll() ");
+> >+      }
+> >
+> >       if (running) {
+> >               printf("running...");
+> >@@ -306,7 +310,7 @@ static struct xsk_socket_info *xsk_configure_socket(struct xsk_umem_info *umem)
+> >       xsk->umem = umem;
+> >       cfg.rx_size = XSK_RING_CONS__DEFAULT_NUM_DESCS;
+> >       cfg.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
+> >-      cfg.libbpf_flags = 0;
+>
+> Any purpose for removing this line, as cfg here is a local variable, cfg.libbpf_flags
+> can be random and may lead to xdpsock failure as `Invalid no_argument`.
 
-Rethinking this I agree to not using global but use stack.
+No, that was a mistake. Thanks for catching.
 
-For performance you are right, stack should be as hot as global if other
-drivers use stack as well. I was a bit concerned about stack size, but
-128 bytes size is probably acceptable these days.
+I will produce a new patch set with the improvements needed to make
+execution of application and softirq/ksoftirqd on the same core
+efficient, make a v2 of the busy poll patch set (with all your
+suggested improvements) on top of that, and then see what performance
+we have.
 
-Wrt debugging, indeed the global solution is probably more difficult.
-When we fail to flush bq, the stack solution can be tracked by something
-like kmemleak but the global one cannot. Also the global solution has a
-risk to send packets from unintentional devices, which leads to a
-security problem. With the stack solution missing flush just causes
-packet loss and memory leak.
+Thanks: Magnus
 
--- 
-Toshiaki Makita
-
+> Thanks,
+> Xiaolong
+>
+> >+      cfg.busy_poll = (opt_busy_poll ? BATCH_SIZE : 0);
+> >       cfg.xdp_flags = opt_xdp_flags;
+> >       cfg.bind_flags = opt_xdp_bind_flags;
+> >       ret = xsk_socket__create(&xsk->xsk, opt_if, opt_queue, umem->umem,
+> >@@ -319,17 +323,17 @@ static struct xsk_socket_info *xsk_configure_socket(struct xsk_umem_info *umem)
+> >               exit_with_error(-ret);
+> >
+> >       ret = xsk_ring_prod__reserve(&xsk->umem->fq,
+> >-                                   XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> >+                                   1024,
+> >                                    &idx);
+> >-      if (ret != XSK_RING_PROD__DEFAULT_NUM_DESCS)
+> >+      if (ret != 1024)
+> >               exit_with_error(-ret);
+> >       for (i = 0;
+> >-           i < XSK_RING_PROD__DEFAULT_NUM_DESCS *
+> >+           i < 1024 *
+> >                    XSK_UMEM__DEFAULT_FRAME_SIZE;
+> >            i += XSK_UMEM__DEFAULT_FRAME_SIZE)
+> >               *xsk_ring_prod__fill_addr(&xsk->umem->fq, idx++) = i;
+> >       xsk_ring_prod__submit(&xsk->umem->fq,
+> >-                            XSK_RING_PROD__DEFAULT_NUM_DESCS);
+> >+                            1024);
+> >
+> >       return xsk;
+> > }
+> >@@ -341,6 +345,7 @@ static struct option long_options[] = {
+> >       {"interface", required_argument, 0, 'i'},
+> >       {"queue", required_argument, 0, 'q'},
+> >       {"poll", no_argument, 0, 'p'},
+> >+      {"busy-poll", no_argument, 0, 'b'},
+> >       {"xdp-skb", no_argument, 0, 'S'},
+> >       {"xdp-native", no_argument, 0, 'N'},
+> >       {"interval", required_argument, 0, 'n'},
+> >@@ -360,6 +365,7 @@ static void usage(const char *prog)
+> >               "  -i, --interface=n    Run on interface n\n"
+> >               "  -q, --queue=n        Use queue n (default 0)\n"
+> >               "  -p, --poll           Use poll syscall\n"
+> >+              "  -b, --busy-poll      Use poll syscall with busy poll\n"
+> >               "  -S, --xdp-skb=n      Use XDP skb-mod\n"
+> >               "  -N, --xdp-native=n   Enfore XDP native mode\n"
+> >               "  -n, --interval=n     Specify statistics update interval (default 1 sec).\n"
+> >@@ -377,7 +383,7 @@ static void parse_command_line(int argc, char **argv)
+> >       opterr = 0;
+> >
+> >       for (;;) {
+> >-              c = getopt_long(argc, argv, "Frtli:q:psSNn:cz", long_options,
+> >+              c = getopt_long(argc, argv, "Frtli:q:pbsSNn:cz", long_options,
+> >                               &option_index);
+> >               if (c == -1)
+> >                       break;
+> >@@ -401,6 +407,10 @@ static void parse_command_line(int argc, char **argv)
+> >               case 'p':
+> >                       opt_poll = 1;
+> >                       break;
+> >+              case 'b':
+> >+                      opt_busy_poll = 1;
+> >+                      opt_poll = 1;
+> >+                      break;
+> >               case 'S':
+> >                       opt_xdp_flags |= XDP_FLAGS_SKB_MODE;
+> >                       opt_xdp_bind_flags |= XDP_COPY;
+> >@@ -444,7 +454,8 @@ static void kick_tx(struct xsk_socket_info *xsk)
+> >       exit_with_error(errno);
+> > }
+> >
+> >-static inline void complete_tx_l2fwd(struct xsk_socket_info *xsk)
+> >+static inline void complete_tx_l2fwd(struct xsk_socket_info *xsk,
+> >+                                   struct pollfd *fds)
+> > {
+> >       u32 idx_cq = 0, idx_fq = 0;
+> >       unsigned int rcvd;
+> >@@ -453,7 +464,8 @@ static inline void complete_tx_l2fwd(struct xsk_socket_info *xsk)
+> >       if (!xsk->outstanding_tx)
+> >               return;
+> >
+> >-      kick_tx(xsk);
+> >+      if (!opt_poll)
+> >+              kick_tx(xsk);
+> >       ndescs = (xsk->outstanding_tx > BATCH_SIZE) ? BATCH_SIZE :
+> >               xsk->outstanding_tx;
+> >
+> >@@ -467,6 +479,8 @@ static inline void complete_tx_l2fwd(struct xsk_socket_info *xsk)
+> >               while (ret != rcvd) {
+> >                       if (ret < 0)
+> >                               exit_with_error(-ret);
+> >+                      if (opt_busy_poll)
+> >+                              ret = poll(fds, num_socks, 0);
+> >                       ret = xsk_ring_prod__reserve(&xsk->umem->fq, rcvd,
+> >                                                    &idx_fq);
+> >               }
+> >@@ -490,7 +504,8 @@ static inline void complete_tx_only(struct xsk_socket_info *xsk)
+> >       if (!xsk->outstanding_tx)
+> >               return;
+> >
+> >-      kick_tx(xsk);
+> >+      if (!opt_busy_poll)
+> >+              kick_tx(xsk);
+> >
+> >       rcvd = xsk_ring_cons__peek(&xsk->umem->cq, BATCH_SIZE, &idx);
+> >       if (rcvd > 0) {
+> >@@ -500,10 +515,10 @@ static inline void complete_tx_only(struct xsk_socket_info *xsk)
+> >       }
+> > }
+> >
+> >-static void rx_drop(struct xsk_socket_info *xsk)
+> >+static void rx_drop(struct xsk_socket_info *xsk, struct pollfd *fds)
+> > {
+> >-      unsigned int rcvd, i;
+> >       u32 idx_rx = 0, idx_fq = 0;
+> >+      unsigned int rcvd, i;
+> >       int ret;
+> >
+> >       rcvd = xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE, &idx_rx);
+> >@@ -514,6 +529,8 @@ static void rx_drop(struct xsk_socket_info *xsk)
+> >       while (ret != rcvd) {
+> >               if (ret < 0)
+> >                       exit_with_error(-ret);
+> >+              if (opt_busy_poll)
+> >+                      ret = poll(fds, num_socks, 0);
+> >               ret = xsk_ring_prod__reserve(&xsk->umem->fq, rcvd, &idx_fq);
+> >       }
+> >
+> >@@ -533,43 +550,68 @@ static void rx_drop(struct xsk_socket_info *xsk)
+> >
+> > static void rx_drop_all(void)
+> > {
+> >-      struct pollfd fds[MAX_SOCKS + 1];
+> >-      int i, ret, timeout, nfds = 1;
+> >+      struct pollfd fds[MAX_SOCKS];
+> >+      int i, ret;
+> >
+> >       memset(fds, 0, sizeof(fds));
+> >
+> >       for (i = 0; i < num_socks; i++) {
+> >               fds[i].fd = xsk_socket__fd(xsks[i]->xsk);
+> >               fds[i].events = POLLIN;
+> >-              timeout = 1000; /* 1sn */
+> >       }
+> >
+> >       for (;;) {
+> >               if (opt_poll) {
+> >-                      ret = poll(fds, nfds, timeout);
+> >+                      ret = poll(fds, num_socks, 0);
+> >                       if (ret <= 0)
+> >                               continue;
+> >               }
+> >
+> >               for (i = 0; i < num_socks; i++)
+> >-                      rx_drop(xsks[i]);
+> >+                      rx_drop(xsks[i], fds);
+> >+      }
+> >+}
+> >+
+> >+static void tx_only(struct xsk_socket_info *xsk, u32 frame_nb)
+> >+{
+> >+      u32 idx;
+> >+
+> >+      if (xsk_ring_prod__reserve(&xsk->tx, BATCH_SIZE, &idx) ==
+> >+          BATCH_SIZE) {
+> >+              unsigned int i;
+> >+
+> >+              for (i = 0; i < BATCH_SIZE; i++) {
+> >+                      xsk_ring_prod__tx_desc(&xsk->tx, idx + i)->addr
+> >+                              = (frame_nb + i) <<
+> >+                              XSK_UMEM__DEFAULT_FRAME_SHIFT;
+> >+                      xsk_ring_prod__tx_desc(&xsk->tx, idx + i)->len =
+> >+                              sizeof(pkt_data) - 1;
+> >+              }
+> >+
+> >+              xsk_ring_prod__submit(&xsk->tx, BATCH_SIZE);
+> >+              xsk->outstanding_tx += BATCH_SIZE;
+> >+              frame_nb += BATCH_SIZE;
+> >+              frame_nb %= NUM_FRAMES;
+> >       }
+> >+
+> >+      complete_tx_only(xsk);
+> > }
+> >
+> >-static void tx_only(struct xsk_socket_info *xsk)
+> >+static void tx_only_all(void)
+> > {
+> >-      int timeout, ret, nfds = 1;
+> >-      struct pollfd fds[nfds + 1];
+> >-      u32 idx, frame_nb = 0;
+> >+      struct pollfd fds[MAX_SOCKS];
+> >+      u32 frame_nb[MAX_SOCKS] = {};
+> >+      int i, ret;
+> >
+> >       memset(fds, 0, sizeof(fds));
+> >-      fds[0].fd = xsk_socket__fd(xsk->xsk);
+> >-      fds[0].events = POLLOUT;
+> >-      timeout = 1000; /* 1sn */
+> >+      for (i = 0; i < num_socks; i++) {
+> >+              fds[0].fd = xsk_socket__fd(xsks[i]->xsk);
+> >+              fds[0].events = POLLOUT;
+> >+      }
+> >
+> >       for (;;) {
+> >               if (opt_poll) {
+> >-                      ret = poll(fds, nfds, timeout);
+> >+                      ret = poll(fds, num_socks, 0);
+> >                       if (ret <= 0)
+> >                               continue;
+> >
+> >@@ -577,70 +619,75 @@ static void tx_only(struct xsk_socket_info *xsk)
+> >                               continue;
+> >               }
+> >
+> >-              if (xsk_ring_prod__reserve(&xsk->tx, BATCH_SIZE, &idx) ==
+> >-                  BATCH_SIZE) {
+> >-                      unsigned int i;
+> >-
+> >-                      for (i = 0; i < BATCH_SIZE; i++) {
+> >-                              xsk_ring_prod__tx_desc(&xsk->tx, idx + i)->addr
+> >-                                      = (frame_nb + i) <<
+> >-                                      XSK_UMEM__DEFAULT_FRAME_SHIFT;
+> >-                              xsk_ring_prod__tx_desc(&xsk->tx, idx + i)->len =
+> >-                                      sizeof(pkt_data) - 1;
+> >-                      }
+> >-
+> >-                      xsk_ring_prod__submit(&xsk->tx, BATCH_SIZE);
+> >-                      xsk->outstanding_tx += BATCH_SIZE;
+> >-                      frame_nb += BATCH_SIZE;
+> >-                      frame_nb %= NUM_FRAMES;
+> >-              }
+> >-
+> >-              complete_tx_only(xsk);
+> >+              for (i = 0; i < num_socks; i++)
+> >+                      tx_only(xsks[i], frame_nb[i]);
+> >       }
+> > }
+> >
+> >-static void l2fwd(struct xsk_socket_info *xsk)
+> >+static void l2fwd(struct xsk_socket_info *xsk, struct pollfd *fds)
+> > {
+> >-      for (;;) {
+> >-              unsigned int rcvd, i;
+> >-              u32 idx_rx = 0, idx_tx = 0;
+> >-              int ret;
+> >+      unsigned int rcvd, i;
+> >+      u32 idx_rx = 0, idx_tx = 0;
+> >+      int ret;
+> >
+> >-              for (;;) {
+> >-                      complete_tx_l2fwd(xsk);
+> >+      complete_tx_l2fwd(xsk, fds);
+> >
+> >-                      rcvd = xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE,
+> >-                                                 &idx_rx);
+> >-                      if (rcvd > 0)
+> >-                              break;
+> >-              }
+> >+      rcvd = xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE,
+> >+                                 &idx_rx);
+> >+      if (!rcvd)
+> >+              return;
+> >
+> >+      ret = xsk_ring_prod__reserve(&xsk->tx, rcvd, &idx_tx);
+> >+      while (ret != rcvd) {
+> >+              if (ret < 0)
+> >+                      exit_with_error(-ret);
+> >+              if (opt_busy_poll)
+> >+                      ret = poll(fds, num_socks, 0);
+> >               ret = xsk_ring_prod__reserve(&xsk->tx, rcvd, &idx_tx);
+> >-              while (ret != rcvd) {
+> >-                      if (ret < 0)
+> >-                              exit_with_error(-ret);
+> >-                      ret = xsk_ring_prod__reserve(&xsk->tx, rcvd, &idx_tx);
+> >-              }
+> >+      }
+> >+
+> >+      for (i = 0; i < rcvd; i++) {
+> >+              u64 addr = xsk_ring_cons__rx_desc(&xsk->rx,
+> >+                                                idx_rx)->addr;
+> >+              u32 len = xsk_ring_cons__rx_desc(&xsk->rx,
+> >+                                               idx_rx++)->len;
+> >+              char *pkt = xsk_umem__get_data(xsk->umem->buffer, addr);
+> >
+> >-              for (i = 0; i < rcvd; i++) {
+> >-                      u64 addr = xsk_ring_cons__rx_desc(&xsk->rx,
+> >-                                                        idx_rx)->addr;
+> >-                      u32 len = xsk_ring_cons__rx_desc(&xsk->rx,
+> >-                                                       idx_rx++)->len;
+> >-                      char *pkt = xsk_umem__get_data(xsk->umem->buffer, addr);
+> >+              swap_mac_addresses(pkt);
+> >
+> >-                      swap_mac_addresses(pkt);
+> >+              hex_dump(pkt, len, addr);
+> >+              xsk_ring_prod__tx_desc(&xsk->tx, idx_tx)->addr = addr;
+> >+              xsk_ring_prod__tx_desc(&xsk->tx, idx_tx++)->len = len;
+> >+      }
+> >
+> >-                      hex_dump(pkt, len, addr);
+> >-                      xsk_ring_prod__tx_desc(&xsk->tx, idx_tx)->addr = addr;
+> >-                      xsk_ring_prod__tx_desc(&xsk->tx, idx_tx++)->len = len;
+> >-              }
+> >+      xsk_ring_prod__submit(&xsk->tx, rcvd);
+> >+      xsk_ring_cons__release(&xsk->rx, rcvd);
+> >
+> >-              xsk_ring_prod__submit(&xsk->tx, rcvd);
+> >-              xsk_ring_cons__release(&xsk->rx, rcvd);
+> >+      xsk->rx_npkts += rcvd;
+> >+      xsk->outstanding_tx += rcvd;
+> >+}
+> >
+> >-              xsk->rx_npkts += rcvd;
+> >-              xsk->outstanding_tx += rcvd;
+> >+static void l2fwd_all(void)
+> >+{
+> >+      struct pollfd fds[MAX_SOCKS];
+> >+      int i, ret;
+> >+
+> >+      memset(fds, 0, sizeof(fds));
+> >+
+> >+      for (i = 0; i < num_socks; i++) {
+> >+              fds[i].fd = xsk_socket__fd(xsks[i]->xsk);
+> >+              fds[i].events = POLLOUT | POLLIN;
+> >+      }
+> >+
+> >+      for (;;) {
+> >+              if (opt_poll) {
+> >+                      ret = poll(fds, num_socks, 0);
+> >+                      if (ret <= 0)
+> >+                              continue;
+> >+              }
+> >+
+> >+              for (i = 0; i < num_socks; i++)
+> >+                      l2fwd(xsks[i], fds);
+> >       }
+> > }
+> >
+> >@@ -693,9 +740,9 @@ int main(int argc, char **argv)
+> >       if (opt_bench == BENCH_RXDROP)
+> >               rx_drop_all();
+> >       else if (opt_bench == BENCH_TXONLY)
+> >-              tx_only(xsks[0]);
+> >+              tx_only_all();
+> >       else
+> >-              l2fwd(xsks[0]);
+> >+              l2fwd_all();
+> >
+> >       return 0;
+> > }
+> >--
+> >2.7.4
+> >
