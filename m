@@ -2,171 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9AA2A8DF
-	for <lists+bpf@lfdr.de>; Sun, 26 May 2019 08:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A7F2AE60
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2019 08:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727185AbfEZGnQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 26 May 2019 02:43:16 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:38615 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726925AbfEZGnP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 26 May 2019 02:43:15 -0400
-Received: by mail-io1-f66.google.com with SMTP id x24so10884775ion.5
-        for <bpf@vger.kernel.org>; Sat, 25 May 2019 23:43:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ykvxJITftYjuXxiA50DtpHZBYlqXNVskwhB9Mpf150E=;
-        b=m6Mjp9YwG+MO3GK3/WiJs8xMKUyMflKU3POY+nzvZwJon57SHLuJJaPdItjQTu2h+L
-         YWVXgcXz8NuEwKLZsoqOOIMu497tHmO9lLoT8iGLEKZmvBgnyAAgjpp6myuRntsOZlRv
-         PGfX4tRUYCq/MbvaaMeLlLxmyUTYXZVCSzKULIwg5j/KTgNmesJ3pkR4AVb1km/8O6Bq
-         AVIzYiO6xuJC9i2tWYfQ7yNzm66A60o7tt38tg+2uC975pzVF8nQsgJapfTIghTZedcb
-         RsvWxJg57lMAW1hzL5eqF/yzmgPNx8YKQQl9ygiiaFgp31wnluUNQX+BpI+AQskxao9w
-         GKOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ykvxJITftYjuXxiA50DtpHZBYlqXNVskwhB9Mpf150E=;
-        b=m1bIGwdV0uwEqf/oz/HL0yvnwGmPvexpF++H8h2toRQe9GvRGT9jKT0Vjq/GeONO4V
-         nih9646CYZNLT5b5tzGYNmAvhxn67rRpKDgimz0nXIo4dQocMTMnlIg6M2hIE/7SLXSm
-         iEizlynyWC34OdYvWQTECf533lnTyZr44LMOX7hKbhOlRLKPMTMzYXn7TllGC2i5UFhW
-         nQfkQTr25D6uv+mQsTvhNXMFp8ZcsyVuDihY0V8s16vuEJyxfr/ZbSK8nJiIPsCp/Ftf
-         cd+rFhxXxm1qC97Ltl3nlz78xxQnV5XcnssozAfKsowyOjAtuH6LQz4Hx7QtidNwTbVP
-         TWHQ==
-X-Gm-Message-State: APjAAAW7iKL1skOtfDxqGDG0u+behJSLkyZXu0ukXUlnIU1XY3663UmI
-        52kwZFtUmOLjHUzGQVSemVrUcmhhuMMeHsC/EGdBMKpt8lPhbg==
-X-Google-Smtp-Source: APXvYqyjpTDjnSSHq2fQV4pZzfv+tFE5wgmT0Hz3I1nXVoGdzPZUfQv3VVFhV2rsLC3qe5ChyymvplhalIYwWsedv34=
-X-Received: by 2002:a6b:dc0d:: with SMTP id s13mr35756721ioc.144.1558852994241;
- Sat, 25 May 2019 23:43:14 -0700 (PDT)
+        id S1725943AbfE0GK1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 May 2019 02:10:27 -0400
+Received: from tama50.ecl.ntt.co.jp ([129.60.39.147]:53804 "EHLO
+        tama50.ecl.ntt.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725907AbfE0GK1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 May 2019 02:10:27 -0400
+Received: from vc1.ecl.ntt.co.jp (vc1.ecl.ntt.co.jp [129.60.86.153])
+        by tama50.ecl.ntt.co.jp (8.13.8/8.13.8) with ESMTP id x4R69pSw023863;
+        Mon, 27 May 2019 15:09:51 +0900
+Received: from vc1.ecl.ntt.co.jp (localhost [127.0.0.1])
+        by vc1.ecl.ntt.co.jp (Postfix) with ESMTP id CEE46EA7853;
+        Mon, 27 May 2019 15:09:51 +0900 (JST)
+Received: from jcms-pop21.ecl.ntt.co.jp (jcms-pop21.ecl.ntt.co.jp [129.60.87.134])
+        by vc1.ecl.ntt.co.jp (Postfix) with ESMTP id C3A8AEA7804;
+        Mon, 27 May 2019 15:09:51 +0900 (JST)
+Received: from [IPv6:::1] (eb8460w-makita.sic.ecl.ntt.co.jp [129.60.241.47])
+        by jcms-pop21.ecl.ntt.co.jp (Postfix) with ESMTPSA id B3D0F4001A4;
+        Mon, 27 May 2019 15:09:51 +0900 (JST)
+Subject: Re: [PATCH bpf-next 3/3] veth: Support bulk XDP_TX
+References: <1558609008-2590-1-git-send-email-makita.toshiaki@lab.ntt.co.jp>
+ <1558609008-2590-4-git-send-email-makita.toshiaki@lab.ntt.co.jp>
+ <87zhnd1kg9.fsf@toke.dk> <599302b2-96d2-b571-01ee-f4914acaf765@lab.ntt.co.jp>
+ <20190523152927.14bf7ed1@carbon>
+ <c902c0f4-947b-ba9e-7baa-628ba87a8f01@gmail.com>
+ <20190524115301.7626ed44@carbon>
+From:   Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
+Message-ID: <eb212474-e8a0-77f6-254f-8778529628c6@lab.ntt.co.jp>
+Date:   Mon, 27 May 2019 15:08:54 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-References: <0000000000001a546b0589b9c74f@google.com>
-In-Reply-To: <0000000000001a546b0589b9c74f@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sun, 26 May 2019 08:43:03 +0200
-Message-ID: <CACT4Y+bME3hecCNXQHvr6uwWjYY6BEqCnu8W4RUMZCm7XemPmQ@mail.gmail.com>
-Subject: Re: KASAN: use-after-free Read in class_equal
-To:     syzbot <syzbot+83c135be90fc92db7e13@syzkaller.appspotmail.com>,
-        bpf <bpf@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20190524115301.7626ed44@carbon>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CC-Mail-RelayStamp: 1
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
+        bpf@vger.kernel.org
+X-TM-AS-MML: disable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, May 25, 2019 at 7:38 PM syzbot
-<syzbot+83c135be90fc92db7e13@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following crash on:
->
-> HEAD commit:    c50bbf61 Merge tag 'platform-drivers-x86-v5.2-2' of git://..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12130c9aa00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=fc045131472947d7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=83c135be90fc92db7e13
-> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12e7d84ca00000
+On 2019/05/24 18:53, Jesper Dangaard Brouer wrote:
+> On Thu, 23 May 2019 22:51:34 +0900
+> Toshiaki Makita <toshiaki.makita1@gmail.com> wrote:
+> 
+>> On 19/05/23 (木) 22:29:27, Jesper Dangaard Brouer wrote:
+>>> On Thu, 23 May 2019 20:35:50 +0900
+>>> Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp> wrote:
+>>>   
+>>>> On 2019/05/23 20:25, Toke Høiland-Jørgensen wrote:  
+>>>>> Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp> writes:
+>>>>>      
+>>>>>> This improves XDP_TX performance by about 8%.
+>>>>>>
+>>>>>> Here are single core XDP_TX test results. CPU consumptions are taken
+>>>>>> from "perf report --no-child".
+>>>>>>
+>>>>>> - Before:
+>>>>>>
+>>>>>>    7.26 Mpps
+>>>>>>
+>>>>>>    _raw_spin_lock  7.83%
+>>>>>>    veth_xdp_xmit  12.23%
+>>>>>>
+>>>>>> - After:
+>>>>>>
+>>>>>>    7.84 Mpps
+>>>>>>
+>>>>>>    _raw_spin_lock  1.17%
+>>>>>>    veth_xdp_xmit   6.45%
+>>>>>>
+>>>>>> Signed-off-by: Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
+>>>>>> ---
+>>>>>>   drivers/net/veth.c | 26 +++++++++++++++++++++++++-
+>>>>>>   1 file changed, 25 insertions(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+>>>>>> index 52110e5..4edc75f 100644
+>>>>>> --- a/drivers/net/veth.c
+>>>>>> +++ b/drivers/net/veth.c
+>>>>>> @@ -442,6 +442,23 @@ static int veth_xdp_xmit(struct net_device *dev, int n,
+>>>>>>   	return ret;
+>>>>>>   }
+>>>>>>   
+>>>>>> +static void veth_xdp_flush_bq(struct net_device *dev)
+>>>>>> +{
+>>>>>> +	struct xdp_tx_bulk_queue *bq = this_cpu_ptr(&xdp_tx_bq);
+>>>>>> +	int sent, i, err = 0;
+>>>>>> +
+>>>>>> +	sent = veth_xdp_xmit(dev, bq->count, bq->q, 0);  
+>>>>>
+>>>>> Wait, veth_xdp_xmit() is just putting frames on a pointer ring. So
+>>>>> you're introducing an additional per-cpu bulk queue, only to avoid lock
+>>>>> contention around the existing pointer ring. But the pointer ring is
+>>>>> per-rq, so if you have lock contention, this means you must have
+>>>>> multiple CPUs servicing the same rq, no?  
+>>>>
+>>>> Yes, it's possible. Not recommended though.
+>>>>  
+>>>
+>>> I think the general per-cpu TX bulk queue is overkill.  There is a loop
+>>> over packets in veth_xdp_rcv(struct veth_rq *rq, budget, *status), and
+>>> the caller veth_poll() will call veth_xdp_flush(rq->dev).
+>>>
+>>> Why can't you store this "temp" bulk array in struct veth_rq ?  
+>>
+>> Of course I can. But I thought tun has the same problem and we can 
+>> decrease memory footprint by sharing the same storage between devices.
+>> Or if other devices want to reduce queues so that we can use XDP on 
+>> many-cpu servers and introduce locks, we can use this storage for
+>> that case as well.
+>>
+>> Still do you prefer veth-specific solution?
+> 
+> Yes.  Another reason is that with this shared/general per-cpu TX bulk
+> queue, I can easily see bugs resulting in xdp_frames getting
+> transmitted on a completely other NIC, which will be hard to debug for
+> people.
+> 
+>>>
+>>> You could even alloc/create it on the stack of veth_poll() and send
+>>> it along via a pointer to veth_xdp_rcv).
+> 
+> IHMO it would be cleaner code wise to place the "temp" bulk array in
+> struct veth_rq.  But if you worry about performance and want a hot
+> cacheline for this, then you could just use the call-stack for
+> veth_poll(), as I described.  It should not be too ugly code wise to do
+> this I think.
 
-From the repro looks like
+Rethinking this I agree to not using global but use stack.
 
-#syz dup: KASAN: slab-out-of-bounds Read in class_equal
+For performance you are right, stack should be as hot as global if other
+drivers use stack as well. I was a bit concerned about stack size, but
+128 bytes size is probably acceptable these days.
 
-+bpf mailing list
+Wrt debugging, indeed the global solution is probably more difficult.
+When we fail to flush bq, the stack solution can be tracked by something
+like kmemleak but the global one cannot. Also the global solution has a
+risk to send packets from unintentional devices, which leads to a
+security problem. With the stack solution missing flush just causes
+packet loss and memory leak.
 
-If bpf maps started badly smashing memory in a way that KASAN can't
-detect, please fix asap. Or we will start getting dozens of random
-reports. The usual question: why does not KASAN detect the root cause
-smash? How can we make it detect it?
+-- 
+Toshiaki Makita
 
-
-> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: syzbot+83c135be90fc92db7e13@syzkaller.appspotmail.com
->
-> ==================================================================
-> BUG: KASAN: use-after-free in class_equal+0x40/0x50
-> kernel/locking/lockdep.c:1527
-> Read of size 8 at addr ffff88807aedf360 by task syz-executor.0/9275
->
-> CPU: 0 PID: 9275 Comm: syz-executor.0 Not tainted 5.2.0-rc1+ #7
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> Google 01/01/2011
-> Call Trace:
->
-> Allocated by task 9264:
->   save_stack+0x23/0x90 mm/kasan/common.c:71
->   set_track mm/kasan/common.c:79 [inline]
->   __kasan_kmalloc mm/kasan/common.c:489 [inline]
->   __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:462
->   kasan_slab_alloc+0xf/0x20 mm/kasan/common.c:497
->   slab_post_alloc_hook mm/slab.h:437 [inline]
->   slab_alloc mm/slab.c:3326 [inline]
->   kmem_cache_alloc+0x11a/0x6f0 mm/slab.c:3488
->   getname_flags fs/namei.c:138 [inline]
->   getname_flags+0xd6/0x5b0 fs/namei.c:128
->   getname+0x1a/0x20 fs/namei.c:209
->   do_sys_open+0x2c9/0x5d0 fs/open.c:1064
->   __do_sys_open fs/open.c:1088 [inline]
->   __se_sys_open fs/open.c:1083 [inline]
->   __x64_sys_open+0x7e/0xc0 fs/open.c:1083
->   do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
->   entry_SYSCALL_64_after_hwframe+0x49/0xbe
->
-> Freed by task 9264:
->   save_stack+0x23/0x90 mm/kasan/common.c:71
->   set_track mm/kasan/common.c:79 [inline]
->   __kasan_slab_free+0x102/0x150 mm/kasan/common.c:451
->   kasan_slab_free+0xe/0x10 mm/kasan/common.c:459
->   __cache_free mm/slab.c:3432 [inline]
->   kmem_cache_free+0x86/0x260 mm/slab.c:3698
->   putname+0xef/0x130 fs/namei.c:259
->   do_sys_open+0x318/0x5d0 fs/open.c:1079
->   __do_sys_open fs/open.c:1088 [inline]
->   __se_sys_open fs/open.c:1083 [inline]
->   __x64_sys_open+0x7e/0xc0 fs/open.c:1083
->   do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
->   entry_SYSCALL_64_after_hwframe+0x49/0xbe
->
-> The buggy address belongs to the object at ffff88807aede580
->   which belongs to the cache names_cache of size 4096
-> The buggy address is located 3552 bytes inside of
->   4096-byte region [ffff88807aede580, ffff88807aedf580)
-> The buggy address belongs to the page:
-> page:ffffea0001ebb780 refcount:1 mapcount:0 mapping:ffff8880aa596c40
-> index:0x0 compound_mapcount: 0
-> flags: 0x1fffc0000010200(slab|head)
-> raw: 01fffc0000010200 ffffea0001ebb708 ffffea0001ebb908 ffff8880aa596c40
-> raw: 0000000000000000 ffff88807aede580 0000000100000001 0000000000000000
-> page dumped because: kasan: bad access detected
->
-> Memory state around the buggy address:
->   ffff88807aedf200: 00 00 fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->   ffff88807aedf280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb f1 f1
-> > ffff88807aedf300: f1 f1 00 f2 f2 f2 00 f2 f2 f2 fb fb fb fb 00 00
->                                                         ^
->   ffff88807aedf380: 00 f3 f3 f3 f3 f3 fb fb fb fb fb fb fb fb fb fb
->   ffff88807aedf400: fb fb fb fb fb fb fb fb fb fb fb fb fb 00 00 00
-> ==================================================================
->
->
-> ---
-> This bug is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this bug report. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this bug, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000001a546b0589b9c74f%40google.com.
-> For more options, visit https://groups.google.com/d/optout.
