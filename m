@@ -2,477 +2,455 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6132AF0C
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2019 08:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A012D2B3B9
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2019 13:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726052AbfE0G7E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 May 2019 02:59:04 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:40363 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726322AbfE0G7E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 May 2019 02:59:04 -0400
-Received: by mail-oi1-f196.google.com with SMTP id r136so11170616oie.7;
-        Sun, 26 May 2019 23:59:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kwmBauF3Liy9lrjbb0RAy2g2XFtZDHoyAbQcS7xg+RU=;
-        b=fpMKEywnDNP4KpGdmnHQxKVGvyqXf7uJP01AZwdHvO6P39Ji5eLgZeLApYWZsnBBx1
-         itfadeRY4UAVqiLaTdgNqsHfmkTZXLDPV4MI7voUHVjiqDgoYHAgzOiicFuoobNvrOr1
-         Nz7yOmEE5+3uWcniw14HXHsiXiVRHUPlV7n87ZYhlB5n/E6eCZvRc+6UmxSEXh1GG/xO
-         rHmPe86CoDl9uRs+q0SZm4XGG2BFIBrAWMgMCqwZ56akQgbLLhzJbvxOZ80D2GPI+qlK
-         Rg8iJ7nsRTe/LRElq7aB2aanROZG+heFl9G2pMW8VqI7sQwIhUzpQ1Rhs03zN9toaH6P
-         a6Mw==
+        id S1726956AbfE0L5v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 May 2019 07:57:51 -0400
+Received: from mail-it1-f194.google.com ([209.85.166.194]:38650 "EHLO
+        mail-it1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726941AbfE0L5v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 May 2019 07:57:51 -0400
+Received: by mail-it1-f194.google.com with SMTP id i63so23703737ita.3
+        for <bpf@vger.kernel.org>; Mon, 27 May 2019 04:57:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kwmBauF3Liy9lrjbb0RAy2g2XFtZDHoyAbQcS7xg+RU=;
-        b=e+5ZBiCTTsmFV3bXvyd3WEpUFBSzaIjjA0+lKg7dxmHvKG/Y6X6HNJU8+h01w0+jK7
-         7MuYO6WDdxm5GD79NloO8ZoNXtJcMt9QvwtWRhOB14cIGLFfjaS5feBXw84yZj3R1atC
-         xXGGOU4CrrabfL05LKPFx5cJtM+rpDvRY5VYz2PAazifysewYXMHNvlATLLe2y0aN+/8
-         owKfW3DD9KORFtXDRe1chSqjjKwGozWcse0AAbfhO3CulXvI5q0rU5Jt7vMSrJhScdiT
-         vOoirvUUUOh7FJIWCIMH4AAQM5oh22i6plzSm8ol+2dSp+2eSxAdEWZr9lopYmxJqOaM
-         v1aw==
-X-Gm-Message-State: APjAAAVQGeOxCeTR1Z717dDMOQ+S+8bv2Xjgo/qBKullJeENtpy6bKij
-        FSeVNTHmP74MgZo6kyadnu3G1TDaBq5H0pvcfKw=
-X-Google-Smtp-Source: APXvYqzzuXL+wiApg9ywUJW1/TdC6MKmMIfio6uAczrLUBqX3cemPAHqLrqtWj2TvcM6XdwOhx4eBnxHIX4yfYVsWQw=
-X-Received: by 2002:aca:ed0a:: with SMTP id l10mr14481855oih.39.1558940343029;
- Sun, 26 May 2019 23:59:03 -0700 (PDT)
+        bh=2JC9rpe2SgfUbgduMlYSwoRs0VR+Ljm2n8cHCtnDq64=;
+        b=g1jOPUAL1kp1DLRaavZxYeUg4TrTZybNKJS2Fwkp1EIbFlrxpoOVa9EDoAVBC4sAGD
+         exg4P/9aNQaeB/ZmIvaEkXlCp/wfsZc0mcdOA8WLxUQCK7LChrLc86EZ9pwUPh4J2xGf
+         DaVVkH2q37LFEXsCk3Eeu7mxeBg9MG1q/1os5HIHmWfcQ7wk+xgvKiRKc9HR3rdZ1u7y
+         XG4FUQ1RvzooK/Jli4fsmvL5q2ms0oygx7N3IEJQoXa3JI67xLpbt/5AQDkVJb97LT6l
+         OTycnQg5kiEI2vezEFgqDgHYVP/zu+EuhYKTfhvp7aYihfIuBae/S7KneNwZAD0U3U3c
+         9IXg==
+X-Gm-Message-State: APjAAAVT5zHyS5qiaBtBghyOr5QFlDUeeR8qRsOcrfFkS+9htv1u09lV
+        HBa3uu7V7aQS/RiGb47htlesWiOKxxesjXjOpfYFVw==
+X-Google-Smtp-Source: APXvYqw8g8dG6RE5zKHdKggi9CdD9XO8KNG9MxeJdoj9aVCzPQHjDRk8W3MnCzxmc6fhpFQwTNzSzxf1dJZ1uvubu28=
+X-Received: by 2002:a24:2e8c:: with SMTP id i134mr27908721ita.9.1558958269953;
+ Mon, 27 May 2019 04:57:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <1556786363-28743-1-git-send-email-magnus.karlsson@intel.com>
- <1556786363-28743-8-git-send-email-magnus.karlsson@intel.com> <20190524025111.GB6321@intel.com>
-In-Reply-To: <20190524025111.GB6321@intel.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 27 May 2019 08:58:52 +0200
-Message-ID: <CAJ8uoz3MNrz_f7dy6+U=zj7GeywUda9E9pP2s9uU1jVW5O2zHw@mail.gmail.com>
-Subject: Re: [RFC bpf-next 7/7] samples/bpf: add busy-poll support to xdpsock sample
-To:     Ye Xiaolong <xiaolong.ye@intel.com>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+References: <ab047883-69f6-1175-153f-5ad9462c6389@fb.com> <20190522174517.pbdopvookggen3d7@treble>
+ <20190522234635.a47bettklcf5gt7c@treble> <CACPcB9dRJ89YAMDQdKoDMU=vFfpb5AaY0mWC_Xzw1ZMTFBf6ng@mail.gmail.com>
+ <20190523133253.tad6ywzzexks6hrp@treble> <CACPcB9fQKg7xhzhCZaF4UGi=EQs1HLTFgg-C_xJQaUfho3yMyA@mail.gmail.com>
+ <20190523152413.m2pbnamihu3s2c5s@treble> <CACPcB9e0mL6jdNWfH-2K-rkvmQiz=G6mtLiZ+AEmp3-V0x+Z8A@mail.gmail.com>
+ <20190523172714.6fkzknfsuv2t44se@treble> <CACPcB9dHzht9v9G9_z6oe5AAwgxCTuswRLxTB29vhWphqBO5Ng@mail.gmail.com>
+ <20190524232312.upjixcrnidlibikd@treble>
+In-Reply-To: <20190524232312.upjixcrnidlibikd@treble>
+From:   Kairui Song <kasong@redhat.com>
+Date:   Mon, 27 May 2019 19:57:38 +0800
+Message-ID: <CACPcB9cFGQ6OU7Zk=q_c8V8ob6vg3HMaaXGaNjaKn8rvS-wg-g@mail.gmail.com>
+Subject: Re: Getting empty callchain from perf_callchain_kernel()
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Alexei Starovoitov <ast@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        bpf@vger.kernel.org, bruce.richardson@intel.com,
-        ciara.loftus@intel.com,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        "Zhang, Qi Z" <qi.z.zhang@intel.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        "Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
-        kevin.laatz@intel.com
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 24, 2019 at 4:59 AM Ye Xiaolong <xiaolong.ye@intel.com> wrote:
+On Sat, May 25, 2019 at 7:23 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 >
-> Hi, Magnus
+> On Fri, May 24, 2019 at 10:20:52AM +0800, Kairui Song wrote:
+> > On Fri, May 24, 2019 at 1:27 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> > >
+> > > On Fri, May 24, 2019 at 12:41:59AM +0800, Kairui Song wrote:
+> > > >  On Thu, May 23, 2019 at 11:24 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> > > > >
+> > > > > On Thu, May 23, 2019 at 10:50:24PM +0800, Kairui Song wrote:
+> > > > > > > > Hi Josh, this still won't fix the problem.
+> > > > > > > >
+> > > > > > > > Problem is not (or not only) with ___bpf_prog_run, what actually went
+> > > > > > > > wrong is with the JITed bpf code.
+> > > > > > >
+> > > > > > > There seem to be a bunch of issues.  My patch at least fixes the failing
+> > > > > > > selftest reported by Alexei for ORC.
+> > > > > > >
+> > > > > > > How can I recreate your issue?
+> > > > > >
+> > > > > > Hmm, I used bcc's example to attach bpf to trace point, and with that
+> > > > > > fix stack trace is still invalid.
+> > > > > >
+> > > > > > CMD I used with bcc:
+> > > > > > python3 ./tools/stackcount.py t:sched:sched_fork
+> > > > >
+> > > > > I've had problems in the past getting bcc to build, so I was hoping it
+> > > > > was reproducible with a standalone selftest.
+> > > > >
+> > > > > > And I just had another try applying your patch, self test is also failing.
+> > > > >
+> > > > > Is it the same selftest reported by Alexei?
+> > > > >
+> > > > >   test_stacktrace_map:FAIL:compare_map_keys stackid_hmap vs. stackmap err -1 errno 2
+> > > > >
+> > > > > > I'm applying on my local master branch, a few days older than
+> > > > > > upstream, I can update and try again, am I missing anything?
+> > > > >
+> > > > > The above patch had some issues, so with some configs you might see an
+> > > > > objtool warning for ___bpf_prog_run(), in which case the patch doesn't
+> > > > > fix the test_stacktrace_map selftest.
+> > > > >
+> > > > > Here's the latest version which should fix it in all cases (based on
+> > > > > tip/master):
+> > > > >
+> > > > >   https://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git/commit/?h=bpf-orc-fix
+> > > >
+> > > > Hmm, I still get the failure:
+> > > > test_stacktrace_map:FAIL:compare_map_keys stackid_hmap vs. stackmap
+> > > > err -1 errno 2
+> > > >
+> > > > And I didn't see how this will fix the issue. As long as ORC need to
+> > > > unwind through the JITed code it will fail. And that will happen
+> > > > before reaching ___bpf_prog_run.
+> > >
+> > > Ok, I was able to recreate by doing
+> > >
+> > >   echo 1 > /proc/sys/net/core/bpf_jit_enable
+> > >
+> > > first.  I'm guessing you have CONFIG_BPF_JIT_ALWAYS_ON.
+> > >
+> >
+> > Yes, with JIT off it will be fixed. I can confirm that.
 >
-> On 05/02, Magnus Karlsson wrote:
-> >This patch adds busy-poll support to the xdpsock sample
-> >application. It is enabled by the "-b" or the "--busy-poll" command
-> >line options.
-> >
-> >Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> >---
-> > samples/bpf/xdpsock_user.c | 203 ++++++++++++++++++++++++++++-----------------
-> > 1 file changed, 125 insertions(+), 78 deletions(-)
-> >
-> >diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-> >index d08ee1a..1272edf 100644
-> >--- a/samples/bpf/xdpsock_user.c
-> >+++ b/samples/bpf/xdpsock_user.c
-> >@@ -66,6 +66,7 @@ static const char *opt_if = "";
-> > static int opt_ifindex;
-> > static int opt_queue;
-> > static int opt_poll;
-> >+static int opt_busy_poll;
-> > static int opt_interval = 1;
-> > static u32 opt_xdp_bind_flags;
-> > static __u32 prog_id;
-> >@@ -119,8 +120,11 @@ static void print_benchmark(bool running)
-> >       else
-> >               printf("        ");
-> >
-> >-      if (opt_poll)
-> >+      if (opt_poll) {
-> >+              if (opt_busy_poll)
-> >+                      printf("busy-");
-> >               printf("poll() ");
-> >+      }
-> >
-> >       if (running) {
-> >               printf("running...");
-> >@@ -306,7 +310,7 @@ static struct xsk_socket_info *xsk_configure_socket(struct xsk_umem_info *umem)
-> >       xsk->umem = umem;
-> >       cfg.rx_size = XSK_RING_CONS__DEFAULT_NUM_DESCS;
-> >       cfg.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
-> >-      cfg.libbpf_flags = 0;
+> Here's a tentative BPF fix for the JIT frame pointer issue.  It was a
+> bit harder than I expected.  Encoding r12 as a base register requires a
+> SIB byte, so I had to add support for encoding that.  I also simplified
+> the prologue to resemble a GCC prologue, which decreases the prologue
+> size quite a bit.
 >
-> Any purpose for removing this line, as cfg here is a local variable, cfg.libbpf_flags
-> can be random and may lead to xdpsock failure as `Invalid no_argument`.
-
-No, that was a mistake. Thanks for catching.
-
-I will produce a new patch set with the improvements needed to make
-execution of application and softirq/ksoftirqd on the same core
-efficient, make a v2 of the busy poll patch set (with all your
-suggested improvements) on top of that, and then see what performance
-we have.
-
-Thanks: Magnus
-
-> Thanks,
-> Xiaolong
+> Next week I can work on the corresponding ORC change.  Then I can clean
+> all the patches up and submit them properly.
 >
-> >+      cfg.busy_poll = (opt_busy_poll ? BATCH_SIZE : 0);
-> >       cfg.xdp_flags = opt_xdp_flags;
-> >       cfg.bind_flags = opt_xdp_bind_flags;
-> >       ret = xsk_socket__create(&xsk->xsk, opt_if, opt_queue, umem->umem,
-> >@@ -319,17 +323,17 @@ static struct xsk_socket_info *xsk_configure_socket(struct xsk_umem_info *umem)
-> >               exit_with_error(-ret);
-> >
-> >       ret = xsk_ring_prod__reserve(&xsk->umem->fq,
-> >-                                   XSK_RING_PROD__DEFAULT_NUM_DESCS,
-> >+                                   1024,
-> >                                    &idx);
-> >-      if (ret != XSK_RING_PROD__DEFAULT_NUM_DESCS)
-> >+      if (ret != 1024)
-> >               exit_with_error(-ret);
-> >       for (i = 0;
-> >-           i < XSK_RING_PROD__DEFAULT_NUM_DESCS *
-> >+           i < 1024 *
-> >                    XSK_UMEM__DEFAULT_FRAME_SIZE;
-> >            i += XSK_UMEM__DEFAULT_FRAME_SIZE)
-> >               *xsk_ring_prod__fill_addr(&xsk->umem->fq, idx++) = i;
-> >       xsk_ring_prod__submit(&xsk->umem->fq,
-> >-                            XSK_RING_PROD__DEFAULT_NUM_DESCS);
-> >+                            1024);
-> >
-> >       return xsk;
-> > }
-> >@@ -341,6 +345,7 @@ static struct option long_options[] = {
-> >       {"interface", required_argument, 0, 'i'},
-> >       {"queue", required_argument, 0, 'q'},
-> >       {"poll", no_argument, 0, 'p'},
-> >+      {"busy-poll", no_argument, 0, 'b'},
-> >       {"xdp-skb", no_argument, 0, 'S'},
-> >       {"xdp-native", no_argument, 0, 'N'},
-> >       {"interval", required_argument, 0, 'n'},
-> >@@ -360,6 +365,7 @@ static void usage(const char *prog)
-> >               "  -i, --interface=n    Run on interface n\n"
-> >               "  -q, --queue=n        Use queue n (default 0)\n"
-> >               "  -p, --poll           Use poll syscall\n"
-> >+              "  -b, --busy-poll      Use poll syscall with busy poll\n"
-> >               "  -S, --xdp-skb=n      Use XDP skb-mod\n"
-> >               "  -N, --xdp-native=n   Enfore XDP native mode\n"
-> >               "  -n, --interval=n     Specify statistics update interval (default 1 sec).\n"
-> >@@ -377,7 +383,7 @@ static void parse_command_line(int argc, char **argv)
-> >       opterr = 0;
-> >
-> >       for (;;) {
-> >-              c = getopt_long(argc, argv, "Frtli:q:psSNn:cz", long_options,
-> >+              c = getopt_long(argc, argv, "Frtli:q:pbsSNn:cz", long_options,
-> >                               &option_index);
-> >               if (c == -1)
-> >                       break;
-> >@@ -401,6 +407,10 @@ static void parse_command_line(int argc, char **argv)
-> >               case 'p':
-> >                       opt_poll = 1;
-> >                       break;
-> >+              case 'b':
-> >+                      opt_busy_poll = 1;
-> >+                      opt_poll = 1;
-> >+                      break;
-> >               case 'S':
-> >                       opt_xdp_flags |= XDP_FLAGS_SKB_MODE;
-> >                       opt_xdp_bind_flags |= XDP_COPY;
-> >@@ -444,7 +454,8 @@ static void kick_tx(struct xsk_socket_info *xsk)
-> >       exit_with_error(errno);
-> > }
-> >
-> >-static inline void complete_tx_l2fwd(struct xsk_socket_info *xsk)
-> >+static inline void complete_tx_l2fwd(struct xsk_socket_info *xsk,
-> >+                                   struct pollfd *fds)
-> > {
-> >       u32 idx_cq = 0, idx_fq = 0;
-> >       unsigned int rcvd;
-> >@@ -453,7 +464,8 @@ static inline void complete_tx_l2fwd(struct xsk_socket_info *xsk)
-> >       if (!xsk->outstanding_tx)
-> >               return;
-> >
-> >-      kick_tx(xsk);
-> >+      if (!opt_poll)
-> >+              kick_tx(xsk);
-> >       ndescs = (xsk->outstanding_tx > BATCH_SIZE) ? BATCH_SIZE :
-> >               xsk->outstanding_tx;
-> >
-> >@@ -467,6 +479,8 @@ static inline void complete_tx_l2fwd(struct xsk_socket_info *xsk)
-> >               while (ret != rcvd) {
-> >                       if (ret < 0)
-> >                               exit_with_error(-ret);
-> >+                      if (opt_busy_poll)
-> >+                              ret = poll(fds, num_socks, 0);
-> >                       ret = xsk_ring_prod__reserve(&xsk->umem->fq, rcvd,
-> >                                                    &idx_fq);
-> >               }
-> >@@ -490,7 +504,8 @@ static inline void complete_tx_only(struct xsk_socket_info *xsk)
-> >       if (!xsk->outstanding_tx)
-> >               return;
-> >
-> >-      kick_tx(xsk);
-> >+      if (!opt_busy_poll)
-> >+              kick_tx(xsk);
-> >
-> >       rcvd = xsk_ring_cons__peek(&xsk->umem->cq, BATCH_SIZE, &idx);
-> >       if (rcvd > 0) {
-> >@@ -500,10 +515,10 @@ static inline void complete_tx_only(struct xsk_socket_info *xsk)
-> >       }
-> > }
-> >
-> >-static void rx_drop(struct xsk_socket_info *xsk)
-> >+static void rx_drop(struct xsk_socket_info *xsk, struct pollfd *fds)
-> > {
-> >-      unsigned int rcvd, i;
-> >       u32 idx_rx = 0, idx_fq = 0;
-> >+      unsigned int rcvd, i;
-> >       int ret;
-> >
-> >       rcvd = xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE, &idx_rx);
-> >@@ -514,6 +529,8 @@ static void rx_drop(struct xsk_socket_info *xsk)
-> >       while (ret != rcvd) {
-> >               if (ret < 0)
-> >                       exit_with_error(-ret);
-> >+              if (opt_busy_poll)
-> >+                      ret = poll(fds, num_socks, 0);
-> >               ret = xsk_ring_prod__reserve(&xsk->umem->fq, rcvd, &idx_fq);
-> >       }
-> >
-> >@@ -533,43 +550,68 @@ static void rx_drop(struct xsk_socket_info *xsk)
-> >
-> > static void rx_drop_all(void)
-> > {
-> >-      struct pollfd fds[MAX_SOCKS + 1];
-> >-      int i, ret, timeout, nfds = 1;
-> >+      struct pollfd fds[MAX_SOCKS];
-> >+      int i, ret;
-> >
-> >       memset(fds, 0, sizeof(fds));
-> >
-> >       for (i = 0; i < num_socks; i++) {
-> >               fds[i].fd = xsk_socket__fd(xsks[i]->xsk);
-> >               fds[i].events = POLLIN;
-> >-              timeout = 1000; /* 1sn */
-> >       }
-> >
-> >       for (;;) {
-> >               if (opt_poll) {
-> >-                      ret = poll(fds, nfds, timeout);
-> >+                      ret = poll(fds, num_socks, 0);
-> >                       if (ret <= 0)
-> >                               continue;
-> >               }
-> >
-> >               for (i = 0; i < num_socks; i++)
-> >-                      rx_drop(xsks[i]);
-> >+                      rx_drop(xsks[i], fds);
-> >+      }
-> >+}
-> >+
-> >+static void tx_only(struct xsk_socket_info *xsk, u32 frame_nb)
-> >+{
-> >+      u32 idx;
-> >+
-> >+      if (xsk_ring_prod__reserve(&xsk->tx, BATCH_SIZE, &idx) ==
-> >+          BATCH_SIZE) {
-> >+              unsigned int i;
-> >+
-> >+              for (i = 0; i < BATCH_SIZE; i++) {
-> >+                      xsk_ring_prod__tx_desc(&xsk->tx, idx + i)->addr
-> >+                              = (frame_nb + i) <<
-> >+                              XSK_UMEM__DEFAULT_FRAME_SHIFT;
-> >+                      xsk_ring_prod__tx_desc(&xsk->tx, idx + i)->len =
-> >+                              sizeof(pkt_data) - 1;
-> >+              }
-> >+
-> >+              xsk_ring_prod__submit(&xsk->tx, BATCH_SIZE);
-> >+              xsk->outstanding_tx += BATCH_SIZE;
-> >+              frame_nb += BATCH_SIZE;
-> >+              frame_nb %= NUM_FRAMES;
-> >       }
-> >+
-> >+      complete_tx_only(xsk);
-> > }
-> >
-> >-static void tx_only(struct xsk_socket_info *xsk)
-> >+static void tx_only_all(void)
-> > {
-> >-      int timeout, ret, nfds = 1;
-> >-      struct pollfd fds[nfds + 1];
-> >-      u32 idx, frame_nb = 0;
-> >+      struct pollfd fds[MAX_SOCKS];
-> >+      u32 frame_nb[MAX_SOCKS] = {};
-> >+      int i, ret;
-> >
-> >       memset(fds, 0, sizeof(fds));
-> >-      fds[0].fd = xsk_socket__fd(xsk->xsk);
-> >-      fds[0].events = POLLOUT;
-> >-      timeout = 1000; /* 1sn */
-> >+      for (i = 0; i < num_socks; i++) {
-> >+              fds[0].fd = xsk_socket__fd(xsks[i]->xsk);
-> >+              fds[0].events = POLLOUT;
-> >+      }
-> >
-> >       for (;;) {
-> >               if (opt_poll) {
-> >-                      ret = poll(fds, nfds, timeout);
-> >+                      ret = poll(fds, num_socks, 0);
-> >                       if (ret <= 0)
-> >                               continue;
-> >
-> >@@ -577,70 +619,75 @@ static void tx_only(struct xsk_socket_info *xsk)
-> >                               continue;
-> >               }
-> >
-> >-              if (xsk_ring_prod__reserve(&xsk->tx, BATCH_SIZE, &idx) ==
-> >-                  BATCH_SIZE) {
-> >-                      unsigned int i;
-> >-
-> >-                      for (i = 0; i < BATCH_SIZE; i++) {
-> >-                              xsk_ring_prod__tx_desc(&xsk->tx, idx + i)->addr
-> >-                                      = (frame_nb + i) <<
-> >-                                      XSK_UMEM__DEFAULT_FRAME_SHIFT;
-> >-                              xsk_ring_prod__tx_desc(&xsk->tx, idx + i)->len =
-> >-                                      sizeof(pkt_data) - 1;
-> >-                      }
-> >-
-> >-                      xsk_ring_prod__submit(&xsk->tx, BATCH_SIZE);
-> >-                      xsk->outstanding_tx += BATCH_SIZE;
-> >-                      frame_nb += BATCH_SIZE;
-> >-                      frame_nb %= NUM_FRAMES;
-> >-              }
-> >-
-> >-              complete_tx_only(xsk);
-> >+              for (i = 0; i < num_socks; i++)
-> >+                      tx_only(xsks[i], frame_nb[i]);
-> >       }
-> > }
-> >
-> >-static void l2fwd(struct xsk_socket_info *xsk)
-> >+static void l2fwd(struct xsk_socket_info *xsk, struct pollfd *fds)
-> > {
-> >-      for (;;) {
-> >-              unsigned int rcvd, i;
-> >-              u32 idx_rx = 0, idx_tx = 0;
-> >-              int ret;
-> >+      unsigned int rcvd, i;
-> >+      u32 idx_rx = 0, idx_tx = 0;
-> >+      int ret;
-> >
-> >-              for (;;) {
-> >-                      complete_tx_l2fwd(xsk);
-> >+      complete_tx_l2fwd(xsk, fds);
-> >
-> >-                      rcvd = xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE,
-> >-                                                 &idx_rx);
-> >-                      if (rcvd > 0)
-> >-                              break;
-> >-              }
-> >+      rcvd = xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE,
-> >+                                 &idx_rx);
-> >+      if (!rcvd)
-> >+              return;
-> >
-> >+      ret = xsk_ring_prod__reserve(&xsk->tx, rcvd, &idx_tx);
-> >+      while (ret != rcvd) {
-> >+              if (ret < 0)
-> >+                      exit_with_error(-ret);
-> >+              if (opt_busy_poll)
-> >+                      ret = poll(fds, num_socks, 0);
-> >               ret = xsk_ring_prod__reserve(&xsk->tx, rcvd, &idx_tx);
-> >-              while (ret != rcvd) {
-> >-                      if (ret < 0)
-> >-                              exit_with_error(-ret);
-> >-                      ret = xsk_ring_prod__reserve(&xsk->tx, rcvd, &idx_tx);
-> >-              }
-> >+      }
-> >+
-> >+      for (i = 0; i < rcvd; i++) {
-> >+              u64 addr = xsk_ring_cons__rx_desc(&xsk->rx,
-> >+                                                idx_rx)->addr;
-> >+              u32 len = xsk_ring_cons__rx_desc(&xsk->rx,
-> >+                                               idx_rx++)->len;
-> >+              char *pkt = xsk_umem__get_data(xsk->umem->buffer, addr);
-> >
-> >-              for (i = 0; i < rcvd; i++) {
-> >-                      u64 addr = xsk_ring_cons__rx_desc(&xsk->rx,
-> >-                                                        idx_rx)->addr;
-> >-                      u32 len = xsk_ring_cons__rx_desc(&xsk->rx,
-> >-                                                       idx_rx++)->len;
-> >-                      char *pkt = xsk_umem__get_data(xsk->umem->buffer, addr);
-> >+              swap_mac_addresses(pkt);
-> >
-> >-                      swap_mac_addresses(pkt);
-> >+              hex_dump(pkt, len, addr);
-> >+              xsk_ring_prod__tx_desc(&xsk->tx, idx_tx)->addr = addr;
-> >+              xsk_ring_prod__tx_desc(&xsk->tx, idx_tx++)->len = len;
-> >+      }
-> >
-> >-                      hex_dump(pkt, len, addr);
-> >-                      xsk_ring_prod__tx_desc(&xsk->tx, idx_tx)->addr = addr;
-> >-                      xsk_ring_prod__tx_desc(&xsk->tx, idx_tx++)->len = len;
-> >-              }
-> >+      xsk_ring_prod__submit(&xsk->tx, rcvd);
-> >+      xsk_ring_cons__release(&xsk->rx, rcvd);
-> >
-> >-              xsk_ring_prod__submit(&xsk->tx, rcvd);
-> >-              xsk_ring_cons__release(&xsk->rx, rcvd);
-> >+      xsk->rx_npkts += rcvd;
-> >+      xsk->outstanding_tx += rcvd;
-> >+}
-> >
-> >-              xsk->rx_npkts += rcvd;
-> >-              xsk->outstanding_tx += rcvd;
-> >+static void l2fwd_all(void)
-> >+{
-> >+      struct pollfd fds[MAX_SOCKS];
-> >+      int i, ret;
-> >+
-> >+      memset(fds, 0, sizeof(fds));
-> >+
-> >+      for (i = 0; i < num_socks; i++) {
-> >+              fds[i].fd = xsk_socket__fd(xsks[i]->xsk);
-> >+              fds[i].events = POLLOUT | POLLIN;
-> >+      }
-> >+
-> >+      for (;;) {
-> >+              if (opt_poll) {
-> >+                      ret = poll(fds, num_socks, 0);
-> >+                      if (ret <= 0)
-> >+                              continue;
-> >+              }
-> >+
-> >+              for (i = 0; i < num_socks; i++)
-> >+                      l2fwd(xsks[i], fds);
-> >       }
-> > }
-> >
-> >@@ -693,9 +740,9 @@ int main(int argc, char **argv)
-> >       if (opt_bench == BENCH_RXDROP)
-> >               rx_drop_all();
-> >       else if (opt_bench == BENCH_TXONLY)
-> >-              tx_only(xsks[0]);
-> >+              tx_only_all();
-> >       else
-> >-              l2fwd(xsks[0]);
-> >+              l2fwd_all();
-> >
-> >       return 0;
-> > }
-> >--
-> >2.7.4
-> >
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index afabf597c855..c9b4503558c9 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -104,9 +104,8 @@ static int bpf_size_to_x86_bytes(int bpf_size)
+>  /*
+>   * The following table maps BPF registers to x86-64 registers.
+>   *
+> - * x86-64 register R12 is unused, since if used as base address
+> - * register in load/store instructions, it always needs an
+> - * extra byte of encoding and is callee saved.
+> + * RBP isn't used; it needs to be preserved to allow the unwinder to move
+> + * through generated code stacks.
+>   *
+>   * Also x86-64 register R9 is unused. x86-64 register R10 is
+>   * used for blinding (if enabled).
+> @@ -122,7 +121,7 @@ static const int reg2hex[] = {
+>         [BPF_REG_7] = 5,  /* R13 callee saved */
+>         [BPF_REG_8] = 6,  /* R14 callee saved */
+>         [BPF_REG_9] = 7,  /* R15 callee saved */
+> -       [BPF_REG_FP] = 5, /* RBP readonly */
+> +       [BPF_REG_FP] = 4, /* R12 readonly */
+>         [BPF_REG_AX] = 2, /* R10 temp register */
+>         [AUX_REG] = 3,    /* R11 temp register */
+>  };
+> @@ -139,6 +138,7 @@ static bool is_ereg(u32 reg)
+>                              BIT(BPF_REG_7) |
+>                              BIT(BPF_REG_8) |
+>                              BIT(BPF_REG_9) |
+> +                            BIT(BPF_REG_FP) |
+>                              BIT(BPF_REG_AX));
+>  }
+>
+> @@ -147,6 +147,11 @@ static bool is_axreg(u32 reg)
+>         return reg == BPF_REG_0;
+>  }
+>
+> +static bool is_sib_reg(u32 reg)
+> +{
+> +       return reg == BPF_REG_FP;
+> +}
+> +
+>  /* Add modifiers if 'reg' maps to x86-64 registers R8..R15 */
+>  static u8 add_1mod(u8 byte, u32 reg)
+>  {
+> @@ -190,15 +195,13 @@ struct jit_context {
+>  #define BPF_MAX_INSN_SIZE      128
+>  #define BPF_INSN_SAFETY                64
+>
+> -#define AUX_STACK_SPACE                40 /* Space for RBX, R13, R14, R15, tailcnt */
+> -
+> -#define PROLOGUE_SIZE          37
+> +#define PROLOGUE_SIZE          25
+>
+>  /*
+>   * Emit x86-64 prologue code for BPF program and check its size.
+>   * bpf_tail_call helper will skip it while jumping into another program
+>   */
+> -static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf)
+> +static void emit_prologue(u8 **pprog, u32 stack_depth)
+>  {
+>         u8 *prog = *pprog;
+>         int cnt = 0;
+> @@ -206,40 +209,67 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf)
+>         /* push rbp */
+>         EMIT1(0x55);
+>
+> -       /* mov rbp,rsp */
+> +       /* mov rbp, rsp */
+>         EMIT3(0x48, 0x89, 0xE5);
+>
+> -       /* sub rsp, rounded_stack_depth + AUX_STACK_SPACE */
+> -       EMIT3_off32(0x48, 0x81, 0xEC,
+> -                   round_up(stack_depth, 8) + AUX_STACK_SPACE);
+> +       /* push r15 */
+> +       EMIT2(0x41, 0x57);
+> +       /* push r14 */
+> +       EMIT2(0x41, 0x56);
+> +       /* push r13 */
+> +       EMIT2(0x41, 0x55);
+> +       /* push r12 */
+> +       EMIT2(0x41, 0x54);
+> +       /* push rbx */
+> +       EMIT1(0x53);
+>
+> -       /* sub rbp, AUX_STACK_SPACE */
+> -       EMIT4(0x48, 0x83, 0xED, AUX_STACK_SPACE);
+> +       /*
+> +        * Push the tail call counter (tail_call_cnt) for eBPF tail calls.
+> +        * Initialized to zero.
+> +        *
+> +        * push $0
+> +        */
+> +       EMIT2(0x6a, 0x00);
+>
+> -       /* mov qword ptr [rbp+0],rbx */
+> -       EMIT4(0x48, 0x89, 0x5D, 0);
+> -       /* mov qword ptr [rbp+8],r13 */
+> -       EMIT4(0x4C, 0x89, 0x6D, 8);
+> -       /* mov qword ptr [rbp+16],r14 */
+> -       EMIT4(0x4C, 0x89, 0x75, 16);
+> -       /* mov qword ptr [rbp+24],r15 */
+> -       EMIT4(0x4C, 0x89, 0x7D, 24);
+> +       /*
+> +        * R12 is used for the BPF program's FP register.  It points to the end
+> +        * of the program's stack area.
+> +        *
+> +        * mov r12, rsp
+> +        */
+> +       EMIT3(0x49, 0x89, 0xE4);
+>
+> -       if (!ebpf_from_cbpf) {
+> -               /*
+> -                * Clear the tail call counter (tail_call_cnt): for eBPF tail
+> -                * calls we need to reset the counter to 0. It's done in two
+> -                * instructions, resetting RAX register to 0, and moving it
+> -                * to the counter location.
+> -                */
+> +       /* sub rsp, rounded_stack_depth */
+> +       EMIT3_off32(0x48, 0x81, 0xEC, round_up(stack_depth, 8));
+>
+> -               /* xor eax, eax */
+> -               EMIT2(0x31, 0xc0);
+> -               /* mov qword ptr [rbp+32], rax */
+> -               EMIT4(0x48, 0x89, 0x45, 32);
+> +       BUILD_BUG_ON(cnt != PROLOGUE_SIZE);
+>
+> -               BUILD_BUG_ON(cnt != PROLOGUE_SIZE);
+> -       }
+> +       *pprog = prog;
+> +}
+> +
+> +static void emit_epilogue(u8 **pprog)
+> +{
+> +       u8 *prog = *pprog;
+> +       int cnt = 0;
+> +
+> +       /* lea rsp, [rbp-0x28] */
+> +       EMIT4(0x48, 0x8D, 0x65, 0xD8);
+> +
+> +       /* pop rbx */
+> +       EMIT1(0x5B);
+> +       /* pop r12 */
+> +       EMIT2(0x41, 0x5C);
+> +       /* pop r13 */
+> +       EMIT2(0x41, 0x5D);
+> +       /* pop r14 */
+> +       EMIT2(0x41, 0x5E);
+> +       /* pop r15 */
+> +       EMIT2(0x41, 0x5F);
+> +       /* pop rbp */
+> +       EMIT1(0x5D);
+> +
+> +       /* ret */
+> +       EMIT1(0xC3);
+>
+>         *pprog = prog;
+>  }
+> @@ -277,7 +307,7 @@ static void emit_bpf_tail_call(u8 **pprog)
+>         EMIT2(0x89, 0xD2);                        /* mov edx, edx */
+>         EMIT3(0x39, 0x56,                         /* cmp dword ptr [rsi + 16], edx */
+>               offsetof(struct bpf_array, map.max_entries));
+> -#define OFFSET1 (41 + RETPOLINE_RAX_BPF_JIT_SIZE) /* Number of bytes to jump */
+> +#define OFFSET1 (35 + RETPOLINE_RAX_BPF_JIT_SIZE) /* Number of bytes to jump */
+>         EMIT2(X86_JBE, OFFSET1);                  /* jbe out */
+>         label1 = cnt;
+>
+> @@ -285,13 +315,13 @@ static void emit_bpf_tail_call(u8 **pprog)
+>          * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
+>          *      goto out;
+>          */
+> -       EMIT2_off32(0x8B, 0x85, 36);              /* mov eax, dword ptr [rbp + 36] */
+> +       EMIT3(0x8B, 0x45, 0xD4);                  /* mov eax, dword ptr [rbp - 44] */
+>         EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);     /* cmp eax, MAX_TAIL_CALL_CNT */
+> -#define OFFSET2 (30 + RETPOLINE_RAX_BPF_JIT_SIZE)
+> +#define OFFSET2 (27 + RETPOLINE_RAX_BPF_JIT_SIZE)
+>         EMIT2(X86_JA, OFFSET2);                   /* ja out */
+>         label2 = cnt;
+>         EMIT3(0x83, 0xC0, 0x01);                  /* add eax, 1 */
+> -       EMIT2_off32(0x89, 0x85, 36);              /* mov dword ptr [rbp + 36], eax */
+> +       EMIT3(0x89, 0x45, 0xD4);                  /* mov dword ptr [rbp - 44], eax */
+>
+>         /* prog = array->ptrs[index]; */
+>         EMIT4_off32(0x48, 0x8B, 0x84, 0xD6,       /* mov rax, [rsi + rdx * 8 + offsetof(...)] */
+> @@ -419,8 +449,7 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+>         int proglen = 0;
+>         u8 *prog = temp;
+>
+> -       emit_prologue(&prog, bpf_prog->aux->stack_depth,
+> -                     bpf_prog_was_classic(bpf_prog));
+> +       emit_prologue(&prog, bpf_prog->aux->stack_depth);
+>
+>         for (i = 0; i < insn_cnt; i++, insn++) {
+>                 const s32 imm32 = insn->imm;
+> @@ -767,10 +796,19 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+>                 case BPF_ST | BPF_MEM | BPF_DW:
+>                         EMIT2(add_1mod(0x48, dst_reg), 0xC7);
+>
+> -st:                    if (is_imm8(insn->off))
+> -                               EMIT2(add_1reg(0x40, dst_reg), insn->off);
+> +st:
+> +                       if (is_imm8(insn->off))
+> +                               EMIT1(add_1reg(0x40, dst_reg));
+>                         else
+> -                               EMIT1_off32(add_1reg(0x80, dst_reg), insn->off);
+> +                               EMIT1(add_1reg(0x80, dst_reg));
+> +
+> +                       if (is_sib_reg(dst_reg))
+> +                               EMIT1(add_1reg(0x20, dst_reg));
+> +
+> +                       if (is_imm8(insn->off))
+> +                               EMIT1(insn->off);
+> +                       else
+> +                               EMIT(insn->off, 4);
+>
+>                         EMIT(imm32, bpf_size_to_x86_bytes(BPF_SIZE(insn->code)));
+>                         break;
+> @@ -799,11 +837,19 @@ st:                       if (is_imm8(insn->off))
+>                         goto stx;
+>                 case BPF_STX | BPF_MEM | BPF_DW:
+>                         EMIT2(add_2mod(0x48, dst_reg, src_reg), 0x89);
+> -stx:                   if (is_imm8(insn->off))
+> -                               EMIT2(add_2reg(0x40, dst_reg, src_reg), insn->off);
+> +stx:
+> +                       if (is_imm8(insn->off))
+> +                               EMIT1(add_2reg(0x40, dst_reg, src_reg));
+> +                       else
+> +                               EMIT1(add_2reg(0x80, dst_reg, src_reg));
+> +
+> +                       if (is_sib_reg(dst_reg))
+> +                               EMIT1(add_1reg(0x20, dst_reg));
+> +
+> +                       if (is_imm8(insn->off))
+> +                               EMIT1(insn->off);
+>                         else
+> -                               EMIT1_off32(add_2reg(0x80, dst_reg, src_reg),
+> -                                           insn->off);
+> +                               EMIT(insn->off, 4);
+>                         break;
+>
+>                         /* LDX: dst_reg = *(u8*)(src_reg + off) */
+> @@ -825,16 +871,24 @@ stx:                      if (is_imm8(insn->off))
+>                 case BPF_LDX | BPF_MEM | BPF_DW:
+>                         /* Emit 'mov rax, qword ptr [rax+0x14]' */
+>                         EMIT2(add_2mod(0x48, src_reg, dst_reg), 0x8B);
+> -ldx:                   /*
+> +ldx:
+> +                       /*
+>                          * If insn->off == 0 we can save one extra byte, but
+>                          * special case of x86 R13 which always needs an offset
+>                          * is not worth the hassle
+>                          */
+>                         if (is_imm8(insn->off))
+> -                               EMIT2(add_2reg(0x40, src_reg, dst_reg), insn->off);
+> +                               EMIT1(add_2reg(0x40, src_reg, dst_reg));
+>                         else
+> -                               EMIT1_off32(add_2reg(0x80, src_reg, dst_reg),
+> -                                           insn->off);
+> +                               EMIT1(add_2reg(0x80, src_reg, dst_reg));
+> +
+> +                       if (is_sib_reg(src_reg))
+> +                               EMIT1(add_1reg(0x20, src_reg));
+> +
+> +                       if (is_imm8(insn->off))
+> +                               EMIT1(insn->off);
+> +                       else
+> +                               EMIT(insn->off, 4);
+>                         break;
+>
+>                         /* STX XADD: lock *(u32*)(dst_reg + off) += src_reg */
+> @@ -847,11 +901,19 @@ stx:                      if (is_imm8(insn->off))
+>                         goto xadd;
+>                 case BPF_STX | BPF_XADD | BPF_DW:
+>                         EMIT3(0xF0, add_2mod(0x48, dst_reg, src_reg), 0x01);
+> -xadd:                  if (is_imm8(insn->off))
+> -                               EMIT2(add_2reg(0x40, dst_reg, src_reg), insn->off);
+> +xadd:
+> +                       if (is_imm8(insn->off))
+> +                               EMIT1(add_2reg(0x40, dst_reg, src_reg));
+>                         else
+> -                               EMIT1_off32(add_2reg(0x80, dst_reg, src_reg),
+> -                                           insn->off);
+> +                               EMIT1(add_2reg(0x80, dst_reg, src_reg));
+> +
+> +                       if (is_sib_reg(dst_reg))
+> +                               EMIT1(add_1reg(0x20, dst_reg));
+> +
+> +                       if (is_imm8(insn->off))
+> +                               EMIT1(insn->off);
+> +                       else
+> +                               EMIT(insn->off, 4);
+>                         break;
+>
+>                         /* call */
+> @@ -1040,19 +1102,8 @@ xadd:                    if (is_imm8(insn->off))
+>                         seen_exit = true;
+>                         /* Update cleanup_addr */
+>                         ctx->cleanup_addr = proglen;
+> -                       /* mov rbx, qword ptr [rbp+0] */
+> -                       EMIT4(0x48, 0x8B, 0x5D, 0);
+> -                       /* mov r13, qword ptr [rbp+8] */
+> -                       EMIT4(0x4C, 0x8B, 0x6D, 8);
+> -                       /* mov r14, qword ptr [rbp+16] */
+> -                       EMIT4(0x4C, 0x8B, 0x75, 16);
+> -                       /* mov r15, qword ptr [rbp+24] */
+> -                       EMIT4(0x4C, 0x8B, 0x7D, 24);
+> -
+> -                       /* add rbp, AUX_STACK_SPACE */
+> -                       EMIT4(0x48, 0x83, 0xC5, AUX_STACK_SPACE);
+> -                       EMIT1(0xC9); /* leave */
+> -                       EMIT1(0xC3); /* ret */
+> +
+> +                       emit_epilogue(&prog);
+>                         break;
+>
+>                 default:
+
+Thanks! This looks good to me and passed the self test and bcc test
+(with frame pointer unwinder, and JIT enabled):
+With bcc's tools/stackcount.py I got the valid stack trace, and the
+self test says:
+test_stacktrace_map:PASS:compare_map_keys stackid_hmap vs. stackmap 0 nsec
+
+-- 
+Best Regards,
+Kairui Song
