@@ -2,109 +2,249 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDFF2CD1D
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2019 19:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05BE2CEAA
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2019 20:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbfE1RGd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 May 2019 13:06:33 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:36650 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbfE1RGd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 May 2019 13:06:33 -0400
-Received: by mail-qk1-f193.google.com with SMTP id g18so1835865qkl.3;
-        Tue, 28 May 2019 10:06:33 -0700 (PDT)
+        id S1728145AbfE1S3v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 May 2019 14:29:51 -0400
+Received: from mail-qk1-f202.google.com ([209.85.222.202]:46317 "EHLO
+        mail-qk1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727945AbfE1S3u (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 May 2019 14:29:50 -0400
+Received: by mail-qk1-f202.google.com with SMTP id 18so19342199qkl.13
+        for <bpf@vger.kernel.org>; Tue, 28 May 2019 11:29:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZG+HgSvarrwF5OwHkfKyIqXqPOGoT2iGeVsxoODEAoQ=;
-        b=dpPfVtcpg0pKdtA1+iO1Zeo6QSBLCLrQFuqiPYbn0W7b59LWGr/YzE1GmiX9duMd2B
-         1FmuujYJAfnPlgWQ6ck2rgHnN5i+O0KJPVlyQCT9xM+kT4cww2m0mJst9cFWprTbcMe9
-         BS+c9OUo1RkViKpj30EIO03ExOlhAUpPTBU2ihH8k3DhMmBPxQ9y02+Cx7jOiCsaoQ7V
-         XLYRVvssyD1KOiIgEnOnjcgqZscmqrMESKhWPUCdTZUWtznAFrpYOPIm/sHa5U9E10Me
-         W3RXLQETSYeewwE/ggW7MDHbfui2rIThWZ2yOLCTgBOovsqkdcYbg1dpeh/5tY0MzqO5
-         VJaw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Vvfcwr72bSznDRWDW9C8kPGBzuOHzue8v6sDrXmyPUo=;
+        b=tuHckHYG3/skabF1hc7zemawXEEPQIYN7R89X6wsX70HkoxJyTmzcxnXb/6PqnB1NS
+         rW1T0YJvL2P0jt49kQfSXUdxWe28BR6qpF0cQvMB92Fc0lO+GqQf+FWExTLPmcn/k+Hc
+         jdtXwNcjIXwJaJjz1UEVmWKYh36fhMfe+xMyITnPuXICt8/f+7tLfDd6HjaQLMcciwiU
+         83NJzBloY7EEYg/UnTBNP6yNJ/iPCvf+gTGL0321Bv+vI/274w95GEEQAgucWObwfpPG
+         kgYTu4mIIcHCMRJTmiCgqNX+gq3K6xAsInX3yCh2eWUiAZwy/Mddf3cGDzYY/nHecrHl
+         NDow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZG+HgSvarrwF5OwHkfKyIqXqPOGoT2iGeVsxoODEAoQ=;
-        b=gYI6u+kOAA1F+0Yj9ltJ+vQp9KRqRQ1dGWqM4waUJLg53u8EqvgjxsGF/Ygy3+uaxY
-         BAB0swLqF9nvwJGRS8ojrTSz1+J6P6yZksyIDx1Pg0cmqOEQQKq3m8mqd0lls/5ldo7E
-         Cie5p7CKol6GkmhERsri88MvFrJNjdIthoeizSq/j4CEwHf8fgwKZLe1jYKoPujlu104
-         RHIkYTcTmpzDE7gNdRECK0k5WcUD4+NFyJsPJerf9SXHxqFdUZEKvZyQYyfY73yt+V0e
-         zkdGE/+vFNdr547M+b0zdgqRCKbDGAeC4BU/b/YeRidlN+V3RbD8x1WlNJ7NMXP+WnRi
-         eD4Q==
-X-Gm-Message-State: APjAAAUmdcL6YfO1LNK40/JecBRcqHuOQ1Illtbwl8Oh+Dv2Q4XjleLE
-        LTO1EHE/lo/t2HtQUjvZzwZsePoqFgReQBy6FOhq8rL8ZJY=
-X-Google-Smtp-Source: APXvYqxTuM7O4YTvuIFMdvaIwxYuA39E5SX8NMe5pW8aDcK8VnSxZkjW7cMkPYgWfSueOO0Muu/6dTaDlnZsCsB1RJM=
-X-Received: by 2002:a05:620a:158c:: with SMTP id d12mr74455987qkk.33.1559063192718;
- Tue, 28 May 2019 10:06:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190522125353.6106-1-bjorn.topel@gmail.com> <20190522125353.6106-2-bjorn.topel@gmail.com>
- <20190522113212.68aea474@cakuba.netronome.com>
-In-Reply-To: <20190522113212.68aea474@cakuba.netronome.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 28 May 2019 19:06:21 +0200
-Message-ID: <CAJ+HfNjFPmRuESHE0MYqQ9UUnV+szPK4du4DugUuzQJRVYWtew@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] net: xdp: refactor XDP_QUERY_PROG{,_HW} to netdev
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Netdev <netdev@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        bpf <bpf@vger.kernel.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Vvfcwr72bSznDRWDW9C8kPGBzuOHzue8v6sDrXmyPUo=;
+        b=rD1Wfa+rGYqqYle29dAj+/45kWCscnmYZUABBhhNLffpBIG4saVgg8nB1cs0nx7gNu
+         v+d3fvGPeR+bd+zh8+1y2+KEz67i60NmIaAHqQBPQPj3YvZNTuANktwlD1qQhLuigD2o
+         VifUwouVP7pqfoh/WLVDn4dijw+7HETeuSxnQPKhqJ/qnXZcWbmDuAQj9wQOrbJCqOLI
+         /PcsYu3keAK9C8wqN53inUTZIItnJxxMxsIzi14vPFtaSG02GCWvB11Ckizh3Yr18/R9
+         G1rMEaGTU9dtzdjZYy0sGkPNa8Av0QhV9323B2Xi4ffwFH/JcevO33sL65BNGfmQz87q
+         BhpQ==
+X-Gm-Message-State: APjAAAWMrmCuAZgJ5gvaO18LQqR+BgZVZBmDjOYv8pIsG2f8NCaWyA6O
+        OC3WDZp59O9JHvFodhLbDoqCgIE=
+X-Google-Smtp-Source: APXvYqyh9d/cYnS/xEznpxdQ+BmKNPzrWR9rGYSSTgMknr1Fm9WB+ReMnIKxY7IY7DO4dIg8owSIE9k=
+X-Received: by 2002:a0c:e849:: with SMTP id l9mr3306819qvo.3.1559068189383;
+ Tue, 28 May 2019 11:29:49 -0700 (PDT)
+Date:   Tue, 28 May 2019 11:29:43 -0700
+Message-Id: <20190528182946.3633-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.22.0.rc1.257.g3120a18244-goog
+Subject: [PATCH bpf-next v3 1/4] bpf: remove __rcu annotations from bpf_prog_array
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        Roman Gushchin <guro@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 22 May 2019 at 20:32, Jakub Kicinski
-<jakub.kicinski@netronome.com> wrote:
->
-[...]
->
-> You should be able to just call install with the original flags, and
-> install handler should do the right maths again to direct it either to
-> drv or generic, no?
->
+Drop __rcu annotations and rcu read sections from bpf_prog_array
+helper functions. They are not needed since all existing callers
+call those helpers from the rcu update side while holding a mutex.
+This guarantees that use-after-free could not happen.
 
-On a related note: I ran the test_offload.py test (thanks for pointing
-that out!), and realized that my view of load flags was incorrect. To
-double-check:
+In the next patches I'll fix the callers with missing
+rcu_dereference_protected to make sparse/lockdep happy, the proper
+way to use these helpers is:
 
-Given an XDP DRV capable netdev "eth0".
+	struct bpf_prog_array __rcu *progs = ...;
+	struct bpf_prog_array *p;
 
-# ip link set dev eth0 xdp obj foo.o sec .text
-# ip link set dev eth0 xdpdrv off
+	mutex_lock(&mtx);
+	p = rcu_dereference_protected(progs, lockdep_is_held(&mtx));
+	bpf_prog_array_length(p);
+	bpf_prog_array_copy_to_user(p, ...);
+	bpf_prog_array_delete_safe(p, ...);
+	bpf_prog_array_copy_info(p, ...);
+	bpf_prog_array_copy(p, ...);
+	bpf_prog_array_free(p);
+	mutex_unlock(&mtx);
 
-and
+No functional changes! rcu_dereference_protected with lockdep_is_held
+should catch any cases where we update prog array without a mutex
+(I've looked at existing call sites and I think we hold a mutex
+everywhere).
 
-# ip link set dev eth0 xdpdrv obj foo.o sec .text
-# ip link set dev eth0 xdp off
+Motivation is to fix sparse warnings:
+kernel/bpf/core.c:1803:9: warning: incorrect type in argument 1 (different address spaces)
+kernel/bpf/core.c:1803:9:    expected struct callback_head *head
+kernel/bpf/core.c:1803:9:    got struct callback_head [noderef] <asn:4> *
+kernel/bpf/core.c:1877:44: warning: incorrect type in initializer (different address spaces)
+kernel/bpf/core.c:1877:44:    expected struct bpf_prog_array_item *item
+kernel/bpf/core.c:1877:44:    got struct bpf_prog_array_item [noderef] <asn:4> *
+kernel/bpf/core.c:1901:26: warning: incorrect type in assignment (different address spaces)
+kernel/bpf/core.c:1901:26:    expected struct bpf_prog_array_item *existing
+kernel/bpf/core.c:1901:26:    got struct bpf_prog_array_item [noderef] <asn:4> *
+kernel/bpf/core.c:1935:26: warning: incorrect type in assignment (different address spaces)
+kernel/bpf/core.c:1935:26:    expected struct bpf_prog_array_item *[assigned] existing
+kernel/bpf/core.c:1935:26:    got struct bpf_prog_array_item [noderef] <asn:4> *
 
-and
+v2:
+* remove comment about potential race; that can't happen
+  because all callers are in rcu-update section
 
-# ip link set dev eth0 xdpdrv obj foo.o sec .text
-# ip link -force set dev eth0 xdp obj foo.o sec .text
+Cc: Roman Gushchin <guro@fb.com>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ include/linux/bpf.h | 12 ++++++------
+ kernel/bpf/core.c   | 37 +++++++++++++------------------------
+ 2 files changed, 19 insertions(+), 30 deletions(-)
 
-and
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index d98141edb74b..ff3e00ff84d2 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -514,17 +514,17 @@ struct bpf_prog_array {
+ };
+ 
+ struct bpf_prog_array *bpf_prog_array_alloc(u32 prog_cnt, gfp_t flags);
+-void bpf_prog_array_free(struct bpf_prog_array __rcu *progs);
+-int bpf_prog_array_length(struct bpf_prog_array __rcu *progs);
+-int bpf_prog_array_copy_to_user(struct bpf_prog_array __rcu *progs,
++void bpf_prog_array_free(struct bpf_prog_array *progs);
++int bpf_prog_array_length(struct bpf_prog_array *progs);
++int bpf_prog_array_copy_to_user(struct bpf_prog_array *progs,
+ 				__u32 __user *prog_ids, u32 cnt);
+ 
+-void bpf_prog_array_delete_safe(struct bpf_prog_array __rcu *progs,
++void bpf_prog_array_delete_safe(struct bpf_prog_array *progs,
+ 				struct bpf_prog *old_prog);
+-int bpf_prog_array_copy_info(struct bpf_prog_array __rcu *array,
++int bpf_prog_array_copy_info(struct bpf_prog_array *array,
+ 			     u32 *prog_ids, u32 request_cnt,
+ 			     u32 *prog_cnt);
+-int bpf_prog_array_copy(struct bpf_prog_array __rcu *old_array,
++int bpf_prog_array_copy(struct bpf_prog_array *old_array,
+ 			struct bpf_prog *exclude_prog,
+ 			struct bpf_prog *include_prog,
+ 			struct bpf_prog_array **new_array);
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 3675b19ecb90..33fb292f2e30 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1795,38 +1795,33 @@ struct bpf_prog_array *bpf_prog_array_alloc(u32 prog_cnt, gfp_t flags)
+ 	return &empty_prog_array.hdr;
+ }
+ 
+-void bpf_prog_array_free(struct bpf_prog_array __rcu *progs)
++void bpf_prog_array_free(struct bpf_prog_array *progs)
+ {
+-	if (!progs ||
+-	    progs == (struct bpf_prog_array __rcu *)&empty_prog_array.hdr)
++	if (!progs || progs == &empty_prog_array.hdr)
+ 		return;
+ 	kfree_rcu(progs, rcu);
+ }
+ 
+-int bpf_prog_array_length(struct bpf_prog_array __rcu *array)
++int bpf_prog_array_length(struct bpf_prog_array *array)
+ {
+ 	struct bpf_prog_array_item *item;
+ 	u32 cnt = 0;
+ 
+-	rcu_read_lock();
+-	item = rcu_dereference(array)->items;
+-	for (; item->prog; item++)
++	for (item = array->items; item->prog; item++)
+ 		if (item->prog != &dummy_bpf_prog.prog)
+ 			cnt++;
+-	rcu_read_unlock();
+ 	return cnt;
+ }
+ 
+ 
+-static bool bpf_prog_array_copy_core(struct bpf_prog_array __rcu *array,
++static bool bpf_prog_array_copy_core(struct bpf_prog_array *array,
+ 				     u32 *prog_ids,
+ 				     u32 request_cnt)
+ {
+ 	struct bpf_prog_array_item *item;
+ 	int i = 0;
+ 
+-	item = rcu_dereference_check(array, 1)->items;
+-	for (; item->prog; item++) {
++	for (item = array->items; item->prog; item++) {
+ 		if (item->prog == &dummy_bpf_prog.prog)
+ 			continue;
+ 		prog_ids[i] = item->prog->aux->id;
+@@ -1839,7 +1834,7 @@ static bool bpf_prog_array_copy_core(struct bpf_prog_array __rcu *array,
+ 	return !!(item->prog);
+ }
+ 
+-int bpf_prog_array_copy_to_user(struct bpf_prog_array __rcu *array,
++int bpf_prog_array_copy_to_user(struct bpf_prog_array *array,
+ 				__u32 __user *prog_ids, u32 cnt)
+ {
+ 	unsigned long err = 0;
+@@ -1850,18 +1845,12 @@ int bpf_prog_array_copy_to_user(struct bpf_prog_array __rcu *array,
+ 	 * cnt = bpf_prog_array_length();
+ 	 * if (cnt > 0)
+ 	 *     bpf_prog_array_copy_to_user(..., cnt);
+-	 * so below kcalloc doesn't need extra cnt > 0 check, but
+-	 * bpf_prog_array_length() releases rcu lock and
+-	 * prog array could have been swapped with empty or larger array,
+-	 * so always copy 'cnt' prog_ids to the user.
+-	 * In a rare race the user will see zero prog_ids
++	 * so below kcalloc doesn't need extra cnt > 0 check.
+ 	 */
+ 	ids = kcalloc(cnt, sizeof(u32), GFP_USER | __GFP_NOWARN);
+ 	if (!ids)
+ 		return -ENOMEM;
+-	rcu_read_lock();
+ 	nospc = bpf_prog_array_copy_core(array, ids, cnt);
+-	rcu_read_unlock();
+ 	err = copy_to_user(prog_ids, ids, cnt * sizeof(u32));
+ 	kfree(ids);
+ 	if (err)
+@@ -1871,19 +1860,19 @@ int bpf_prog_array_copy_to_user(struct bpf_prog_array __rcu *array,
+ 	return 0;
+ }
+ 
+-void bpf_prog_array_delete_safe(struct bpf_prog_array __rcu *array,
++void bpf_prog_array_delete_safe(struct bpf_prog_array *array,
+ 				struct bpf_prog *old_prog)
+ {
+-	struct bpf_prog_array_item *item = array->items;
++	struct bpf_prog_array_item *item;
+ 
+-	for (; item->prog; item++)
++	for (item = array->items; item->prog; item++)
+ 		if (item->prog == old_prog) {
+ 			WRITE_ONCE(item->prog, &dummy_bpf_prog.prog);
+ 			break;
+ 		}
+ }
+ 
+-int bpf_prog_array_copy(struct bpf_prog_array __rcu *old_array,
++int bpf_prog_array_copy(struct bpf_prog_array *old_array,
+ 			struct bpf_prog *exclude_prog,
+ 			struct bpf_prog *include_prog,
+ 			struct bpf_prog_array **new_array)
+@@ -1947,7 +1936,7 @@ int bpf_prog_array_copy(struct bpf_prog_array __rcu *old_array,
+ 	return 0;
+ }
+ 
+-int bpf_prog_array_copy_info(struct bpf_prog_array __rcu *array,
++int bpf_prog_array_copy_info(struct bpf_prog_array *array,
+ 			     u32 *prog_ids, u32 request_cnt,
+ 			     u32 *prog_cnt)
+ {
+-- 
+2.22.0.rc1.257.g3120a18244-goog
 
-# ip link set dev eth0 xdp obj foo.o sec .text
-# ip link -force set dev eth0 xdpdrv obj foo.o sec .text
-
-Should all fail. IOW, there's a distinction between explicit DRV and
-auto-detected DRV? It's considered to be different flags.
-
-Correct?
-
-This was *not* my view. :-)
-
-
-Thanks,
-Bj=C3=B6rn
