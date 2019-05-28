@@ -2,107 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F13952D0BC
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2019 22:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5742D0D6
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2019 23:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727456AbfE1U54 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 May 2019 16:57:56 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:36210 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726654AbfE1U54 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 May 2019 16:57:56 -0400
-Received: by mail-qt1-f196.google.com with SMTP id u12so27061qth.3;
-        Tue, 28 May 2019 13:57:55 -0700 (PDT)
+        id S1727273AbfE1VEt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 May 2019 17:04:49 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:44083 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726878AbfE1VEs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 May 2019 17:04:48 -0400
+Received: by mail-qt1-f194.google.com with SMTP id m2so51023qtp.11;
+        Tue, 28 May 2019 14:04:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=o1ydLImzsmpkS5F7PlvU5sVhBXF/PklEQqQZqMpZmxE=;
-        b=pUUFYFdhSOjFKlE4+4l7DO7lFTfWN1aoCbBGKyUVb1zddz/d94F+w8Swz99yR7Z+yi
-         JMuV5TFhMLdvWJuUEBwYbuKUJTLJiQBweh9i1EOl3KSECbPvROcAD92Nzu8+lk+4Wj1H
-         Veg8w/g/mxEO9ooewq3DrgMWdw1+Vr35vdmu3em+cXEpVTUNhk7O82mGNdigmcgJZ6xY
-         DTOA1uWJRMCxYnoS7J/BuACvvS81cDojuRxFtxwWjzvUX0+IX7TNR+/C4RdSRQ3xJr6r
-         Hykh8DQekErFOps4eAllmh+qoou+mRcNzmo99/e49QV53zWeNCkSlIchshLsny5H1/NG
-         MpsA==
+         :cc;
+        bh=HdLChIagF/mUw9YeOGCyBWe4oSr7/uq03RdN8WKEtoE=;
+        b=t7Z0cnEoHbRttMLaJ2OZYhYrpNVTkmvzkZD1h2FFhSmqVie8V8PN3sWppFcjRqzei0
+         vIRvWZF8NSYs04ntwz0lW0xXYkbIHp3r+Bp7I33ouCQ5W/EiLHYgfh1cXGaTC21I9Ohf
+         tKvBWKKLxO8qOB1isHGkLXB8gXXee2nlbzZdtOcV0YlC2jhEsFUqVwWYnQuoosTqt5ub
+         zgstAhcBiHQu/jBIQKESnoq1X6dXBxu7O4b7LhqIprQwiVNZsqThAcqyocm7BnkfnQ3K
+         acE45duVO4ulHhm4Xfkt1GqSS4qWtvZgZQzTjAtyI6GT/uz9SAtr/ewfKhham7BfG6a6
+         NSCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=o1ydLImzsmpkS5F7PlvU5sVhBXF/PklEQqQZqMpZmxE=;
-        b=V1q2fKJ1tDgYDCATvHUtyniHmgOM9Z8OnGZxnXk9lRCFOpnS/9nzmKN/PeTGA8SulB
-         cDHGX4Fhf3RmE2OWfYWYcXaFr5rAqb2Eans8GX/FkolfnnGBGNyUJrL8XHXsKXCIpkYC
-         sOPK1rhkA80nZJjMGKwhAECDP8mDwVn9VYgLjnZm6Qwjgr3OnDdIOFPFOSQqri79NDMP
-         jnrQ/FeNDekTBqNdE2vhNhhvNBlZZLksxcHzihn4ML3xgXV7Drf4B7ljzt2vSVhowA9k
-         4J8X3+6MmfEtMTMIsBEZNeLZ7zajWDWGhuBKZF/a0QNUQv8zPRKI716ZD9EbEAWbAKJ3
-         192w==
-X-Gm-Message-State: APjAAAUydww0kRlInx5cKAeflE6pBv/sA2ax0yZ8TXwvJPONL7AlYClY
-        RejlbgbLs73uDGjlBE9hrZwfgh9QuRkWn2MJGzg=
-X-Google-Smtp-Source: APXvYqyVyzhSWxFPxx1Q7S/1xkEQOPxvA+Ddzkuz4KVntMBUsTlXhD9T29/yxzB2jQa3duROW2pyJYlgJS46nAlO7dk=
-X-Received: by 2002:a0c:d4ee:: with SMTP id y43mr95878708qvh.26.1559077075184;
- Tue, 28 May 2019 13:57:55 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=HdLChIagF/mUw9YeOGCyBWe4oSr7/uq03RdN8WKEtoE=;
+        b=V3mExFUHHEL7al1hp03nbdDTvUsHMhlsfE0km8oMBOoxGwllBlVgMbKX6kG/Wp7Nbq
+         g8C9ApLpv6qHrwEbHeeCib1FFc3pRy3KLl/GNjgL0vXKuqo9SkMZFR98PWI3Gz/tg6ku
+         k8mXZu6dOYc7s6OQRrIKawEj9hf0XLYCjWAq3kp9U2eDwOMfvKlTHtmsAhCcUq8XSibn
+         k3tf3dd/r1VvBKdbH2RcugQiRp7oj9uyrmR0dbss4WoaZ5++/WQabWCnZ7h3S1nao3pM
+         HPKHFhJdqMSjMDpzempNCRuu30tD1zvaZHveE1+IF8qgaisTccgf5+uLj+q6eU8rnr2y
+         DHtw==
+X-Gm-Message-State: APjAAAVNd/ieLK+CZAhvX1qeJe69QzqGOpn7xGeNAO3pMGwdzAVfzDjc
+        9lljhHPpgvQuA5fnaRI772FGuYKyQfCvZtmbhLeA0Es4
+X-Google-Smtp-Source: APXvYqzKlUW5I4Fmxa9kh82xNKHZ7Zj8btGNodhYAGUa9x0xZc3DMkxPUcIksraU56XPkqAalTpqw4C6sO+FlUFn9WM=
+X-Received: by 2002:aed:3b66:: with SMTP id q35mr14897917qte.118.1559077487843;
+ Tue, 28 May 2019 14:04:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190528190218.GA6950@ip-172-31-44-144.us-west-2.compute.internal>
-In-Reply-To: <20190528190218.GA6950@ip-172-31-44-144.us-west-2.compute.internal>
+References: <56c1f2f89428b49dad615fc13cc8c120d4ca4abf.camel@domdv.de>
+In-Reply-To: <56c1f2f89428b49dad615fc13cc8c120d4ca4abf.camel@domdv.de>
 From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Tue, 28 May 2019 13:57:44 -0700
-Message-ID: <CAPhsuW5uVgqVEfpJsCNmQKYgmAksJ+jVTkU7QG2Fz8ofg6Puxg@mail.gmail.com>
-Subject: Re: [PATCH bpf v2] selftests: bpf: fix compiler warning
-To:     Alakesh Haloi <alakesh.haloi@gmail.com>
-Cc:     linux-kselftest@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Stanislav Fomichev <sdf@google.com>
+Date:   Tue, 28 May 2019 14:04:36 -0700
+Message-ID: <CAPhsuW4TV5m_E3iO7FNyFoKwsKzGSZizbPfciHOJtun-=H_biA@mail.gmail.com>
+Subject: Re: [RFC][PATCH kernel_bpf] honor CAP_NET_ADMIN for BPF_PROG_LOAD
+To:     Andreas Steinmetz <ast@domdv.de>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 28, 2019 at 12:35 PM Alakesh Haloi <alakesh.haloi@gmail.com> wr=
-ote:
+On Tue, May 28, 2019 at 9:59 AM Andreas Steinmetz <ast@domdv.de> wrote:
 >
-> Add missing header file following compiler warning
+> [sorry for crossposting but this affects both lists]
 >
-> prog_tests/flow_dissector.c: In function =E2=80=98tx_tap=E2=80=99:
-> prog_tests/flow_dissector.c:175:9: warning: implicit declaration of funct=
-ion =E2=80=98writev=E2=80=99; did you mean =E2=80=98write=E2=80=99? [-Wimpl=
-icit-function-declaration]
->   return writev(fd, iov, ARRAY_SIZE(iov));
->          ^~~~~~
->          write
+> BPF_PROG_TYPE_SCHED_CLS and BPF_PROG_TYPE_XDP should be allowed
+> for CAP_NET_ADMIN capability. Nearly everything one can do with
+> these program types can be done some other way with CAP_NET_ADMIN
+> capability (e.g. NFQUEUE), but only slower.
 >
-> Fixes: 0905beec9f52 ("selftests/bpf: run flow dissector tests in skb-less=
- mode")
-> Signed-off-by: Alakesh Haloi <alakesh.haloi@gmail.com>
+> This change is similar in behaviour to the /proc/sys/net
+> CAP_NET_ADMIN exemption.
+>
+> Overall chances are of increased security as network related
+> applications do no longer require to keep CAP_SYS_ADMIN
+> admin capability for network related eBPF operations.
+>
+> It may well be that other program types than BPF_PROG_TYPE_XDP
+> and BPF_PROG_TYPE_SCHED_CLS do need the same exemption, though
+> I do not have sufficient knowledge of other program types
+> to be able to decide this.
+>
+> Preloading BPF programs is not possible in case of application
+> modified or generated BPF programs, so this is no alternative.
+> The verifier does prevent the BPF program from doing harmful
+> things anyway.
+>
+> Signed-off-by: Andreas Steinmetz <ast@domdv.de>
+>
+> --- a/kernel/bpf/syscall.c      2019-05-28 18:00:40.472841432 +0200
+> +++ b/kernel/bpf/syscall.c      2019-05-28 18:17:50.162811510 +0200
+> @@ -1561,8 +1561,13 @@ static int bpf_prog_load(union bpf_attr
+>                 return -E2BIG;
+>         if (type != BPF_PROG_TYPE_SOCKET_FILTER &&
+>             type != BPF_PROG_TYPE_CGROUP_SKB &&
 
-Acked-by: Song Liu <songliubraving@fb.com>
+You should extend this if () statement instead of adding another
+if () below.
 
-Thanks for the fix!
+Thanks,
+Song
 
-> ---
->  tools/testing/selftests/bpf/prog_tests/flow_dissector.c | 1 +
->  1 file changed, 1 insertion(+)
+> -           !capable(CAP_SYS_ADMIN))
+> -               return -EPERM;
+> +           !capable(CAP_SYS_ADMIN)) {
+> +               if (type != BPF_PROG_TYPE_SCHED_CLS &&
+> +                   type != BPF_PROG_TYPE_XDP)
+> +                       return -EPERM;
+> +               if(!capable(CAP_NET_ADMIN))
+> +                       return -EPERM;
+> +       }
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c b/to=
-ols/testing/selftests/bpf/prog_tests/flow_dissector.c
-> index fbd1d88a6095..c938283ac232 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-> @@ -3,6 +3,7 @@
->  #include <error.h>
->  #include <linux/if.h>
->  #include <linux/if_tun.h>
-> +#include <sys/uio.h>
->
->  #define CHECK_FLOW_KEYS(desc, got, expected)                           \
->         CHECK_ATTR(memcmp(&got, &expected, sizeof(got)) !=3D 0,          =
- \
-> --
-> 2.17.1
+>         bpf_prog_load_fixup_attach_type(attr);
+>         if (bpf_prog_load_check_attach_type(type, attr->expected_attach_type))
 >
