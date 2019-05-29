@@ -2,230 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7AF62D32D
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2019 03:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504E72D443
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2019 05:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbfE2BOw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 May 2019 21:14:52 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:59864 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726155AbfE2BOv (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 28 May 2019 21:14:51 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4T199Uo010160
-        for <bpf@vger.kernel.org>; Tue, 28 May 2019 18:14:50 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=n5ewKCwaOA83lHBBqlboxWM1BbEpHqxRFOcVw55ciXQ=;
- b=YLBAHGxmdUqJEGlHMQyxjkcL5gGeFgHyw3J0Aj4AfgKPg/wD49DwGnBM/wSLvuGrqeWM
- CDkcd2HINfk53zf61J27uJ7F7jiJzduvcE30DoVmrG7XRAKJYVKsZNfortqaj6pXhM26
- 8OltsMoX+2TQFMaOdLW6h+svs+GkAZuCB1Y= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2sscnx8nkh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 28 May 2019 18:14:50 -0700
-Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 28 May 2019 18:14:49 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id 43A8C8617AA; Tue, 28 May 2019 18:14:47 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <andrii.nakryiko@gmail.com>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <ast@fb.com>, <daniel@iogearbox.net>,
-        <kernel-team@fb.com>
-CC:     Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH bpf-next 9/9] libbpf: reduce unnecessary line wrapping
-Date:   Tue, 28 May 2019 18:14:26 -0700
-Message-ID: <20190529011426.1328736-10-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190529011426.1328736-1-andriin@fb.com>
-References: <20190529011426.1328736-1-andriin@fb.com>
-X-FB-Internal: Safe
+        id S1726034AbfE2D2s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 May 2019 23:28:48 -0400
+Received: from mail-wm1-f51.google.com ([209.85.128.51]:53964 "EHLO
+        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbfE2D2s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 May 2019 23:28:48 -0400
+Received: by mail-wm1-f51.google.com with SMTP id d17so489663wmb.3;
+        Tue, 28 May 2019 20:28:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=GY3PfFOyZcoJdIfdvR1GAwUmaDcfBTuvp/0vdZRtI1E=;
+        b=ttYncVVwVbPKTN+8oqzzmeWBiAIK7agvYOD1F/yo7xsJVJ/ZrJFIeQvZ8Jq2VsiXrK
+         vRm2ow+MF8qrdetTuxdvRxFywJuPAyv3jbvWolI5y4jfuN4VAMwWDjfLQf5SreQ3sFkF
+         XgaUTFQWt674FsEnZJqx7OVv20JcY6sYLOMZFmgtXyZQj0zsildDkHXBl+X8MSZvdUdB
+         64XG6us9gF0wDCTh8Umj/GruSC08/RUSWHYqBrh0K7ewoZogN8TvOBHzwr9JUVJlP7C1
+         pE9iDgQAxeRUubO90q9i7F21v37SRYd/vtMt7Ck26PmrKOHTvdxNsTnIFPaQOkzz82y5
+         FSyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=GY3PfFOyZcoJdIfdvR1GAwUmaDcfBTuvp/0vdZRtI1E=;
+        b=T7Mxg6pUSMAfQaUAWUpuiweg952uiTwLiYjXyjXqv8EYU+O8veN6MrgLxvKz3OGnKu
+         wrAIANiUfPMqQPsnr+g9tiwAd9+QRe9fvucrFwgoP/YTB/QouPtctHoDmnVNFI5izwFO
+         bKoAzyAc6LaMu4FvKqf01W4ca/Xooc45xgEzTMoSKVaGZnOiVRmkZ7tIeDtrVzCFtXYI
+         9qX6IwyVq5GyBiHQga5zPlbJ+hd3ACw8W2Dc6Zl1UytqAke9ZTrdBpe1Kl7RnA2tuwtw
+         /y8ikGkM7jRZXb4f3pYqZN9mwcB0nZVz1GK7/OBAfDDIvq5I3O0OMtFiJZ/y/6mVUVp0
+         ZdNw==
+X-Gm-Message-State: APjAAAWJGPJROD/dP1BCz+9kS4QKm1ehYXMAxag3PG3fBhqQUreau1bn
+        egrFKQY1fitccujAZRmv5bxGfTF7hkGu/6IYQLS2HEcf9y/DkQ==
+X-Google-Smtp-Source: APXvYqzhVLOOi/yvOCD8uKoYRVZAu6fBQCcXv5ZMU3Fq7B/ovWjOSwxMZ61lqogvojDUIyryuActSUGlwWJw5mT0t70=
+X-Received: by 2002:a1c:a7c6:: with SMTP id q189mr732886wme.146.1559100525867;
+ Tue, 28 May 2019 20:28:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-28_11:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905290006
-X-FB-Internal: deliver
+From:   Ming Lei <tom.leiming@gmail.com>
+Date:   Wed, 29 May 2019 11:28:34 +0800
+Message-ID: <CACVXFVN-YX0oRHDu8zBZHYpRvkD2C=zp04s20MN9MHASJBFSRA@mail.gmail.com>
+Subject: ebpf trace doesn't work during cpu hotplug
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There are a bunch of lines of code or comments that are unnecessary
-wrapped into multi-lines. Fix that without violating any code
-guidelines.
+Hi,
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/lib/bpf/libbpf.c | 52 +++++++++++++-----------------------------
- 1 file changed, 16 insertions(+), 36 deletions(-)
+Looks ebpf trace doesn't work during cpu hotplug, see the following trace:
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 9d9c19a1b2fe..2c576843ea40 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -497,8 +497,7 @@ static struct bpf_object *bpf_object__new(const char *path,
- 
- 	strcpy(obj->path, path);
- 	/* Using basename() GNU version which doesn't modify arg. */
--	strncpy(obj->name, basename((void *)path),
--		sizeof(obj->name) - 1);
-+	strncpy(obj->name, basename((void *)path), sizeof(obj->name) - 1);
- 	end = strchr(obj->name, '.');
- 	if (end)
- 		*end = 0;
-@@ -578,15 +577,13 @@ static int bpf_object__elf_init(struct bpf_object *obj)
- 	}
- 
- 	if (!obj->efile.elf) {
--		pr_warning("failed to open %s as ELF file\n",
--				obj->path);
-+		pr_warning("failed to open %s as ELF file\n", obj->path);
- 		err = -LIBBPF_ERRNO__LIBELF;
- 		goto errout;
- 	}
- 
- 	if (!gelf_getehdr(obj->efile.elf, &obj->efile.ehdr)) {
--		pr_warning("failed to get EHDR from %s\n",
--				obj->path);
-+		pr_warning("failed to get EHDR from %s\n", obj->path);
- 		err = -LIBBPF_ERRNO__FORMAT;
- 		goto errout;
- 	}
-@@ -622,18 +619,15 @@ static int bpf_object__check_endianness(struct bpf_object *obj)
- }
- 
- static int
--bpf_object__init_license(struct bpf_object *obj,
--			 void *data, size_t size)
-+bpf_object__init_license(struct bpf_object *obj, void *data, size_t size)
- {
--	memcpy(obj->license, data,
--	       min(size, sizeof(obj->license) - 1));
-+	memcpy(obj->license, data, min(size, sizeof(obj->license) - 1));
- 	pr_debug("license of %s is %s\n", obj->path, obj->license);
- 	return 0;
- }
- 
- static int
--bpf_object__init_kversion(struct bpf_object *obj,
--			  void *data, size_t size)
-+bpf_object__init_kversion(struct bpf_object *obj, void *data, size_t size)
- {
- 	__u32 kver;
- 
-@@ -643,8 +637,7 @@ bpf_object__init_kversion(struct bpf_object *obj,
- 	}
- 	memcpy(&kver, data, sizeof(kver));
- 	obj->kern_version = kver;
--	pr_debug("kernel version of %s is %x\n", obj->path,
--		 obj->kern_version);
-+	pr_debug("kernel version of %s is %x\n", obj->path, obj->kern_version);
- 	return 0;
- }
- 
-@@ -800,8 +793,7 @@ bpf_object__init_internal_map(struct bpf_object *obj, struct bpf_map *map,
- 	def->key_size = sizeof(int);
- 	def->value_size = data->d_size;
- 	def->max_entries = 1;
--	def->map_flags = type == LIBBPF_MAP_RODATA ?
--			 BPF_F_RDONLY_PROG : 0;
-+	def->map_flags = type == LIBBPF_MAP_RODATA ? BPF_F_RDONLY_PROG : 0;
- 	if (data_buff) {
- 		*data_buff = malloc(data->d_size);
- 		if (!*data_buff) {
-@@ -816,8 +808,7 @@ bpf_object__init_internal_map(struct bpf_object *obj, struct bpf_map *map,
- 	return 0;
- }
- 
--static int
--bpf_object__init_maps(struct bpf_object *obj, int flags)
-+static int bpf_object__init_maps(struct bpf_object *obj, int flags)
- {
- 	int i, map_idx, map_def_sz = 0, nr_syms, nr_maps = 0, nr_maps_glob = 0;
- 	bool strict = !(flags & MAPS_RELAX_COMPAT);
-@@ -1098,8 +1089,7 @@ static int bpf_object__elf_collect(struct bpf_object *obj, int flags)
- 
- 	/* Elf is corrupted/truncated, avoid calling elf_strptr. */
- 	if (!elf_rawdata(elf_getscn(elf, ep->e_shstrndx), NULL)) {
--		pr_warning("failed to get e_shstrndx from %s\n",
--			   obj->path);
-+		pr_warning("failed to get e_shstrndx from %s\n", obj->path);
- 		return -LIBBPF_ERRNO__FORMAT;
- 	}
- 
-@@ -1340,8 +1330,7 @@ bpf_program__collect_reloc(struct bpf_program *prog, GElf_Shdr *shdr,
- 	size_t nr_maps = obj->nr_maps;
- 	int i, nrels;
- 
--	pr_debug("collecting relocating info for: '%s'\n",
--		 prog->section_name);
-+	pr_debug("collecting relocating info for: '%s'\n", prog->section_name);
- 	nrels = shdr->sh_size / shdr->sh_entsize;
- 
- 	prog->reloc_desc = malloc(sizeof(*prog->reloc_desc) * nrels);
-@@ -1366,9 +1355,7 @@ bpf_program__collect_reloc(struct bpf_program *prog, GElf_Shdr *shdr,
- 			return -LIBBPF_ERRNO__FORMAT;
- 		}
- 
--		if (!gelf_getsym(symbols,
--				 GELF_R_SYM(rel.r_info),
--				 &sym)) {
-+		if (!gelf_getsym(symbols, GELF_R_SYM(rel.r_info), &sym)) {
- 			pr_warning("relocation: symbol %"PRIx64" not found\n",
- 				   GELF_R_SYM(rel.r_info));
- 			return -LIBBPF_ERRNO__FORMAT;
-@@ -1817,18 +1804,14 @@ check_btf_ext_reloc_err(struct bpf_program *prog, int err,
- 	if (btf_prog_info) {
- 		/*
- 		 * Some info has already been found but has problem
--		 * in the last btf_ext reloc.  Must have to error
--		 * out.
-+		 * in the last btf_ext reloc. Must have to error out.
- 		 */
- 		pr_warning("Error in relocating %s for sec %s.\n",
- 			   info_name, prog->section_name);
- 		return err;
- 	}
- 
--	/*
--	 * Have problem loading the very first info.  Ignore
--	 * the rest.
--	 */
-+	/* Have problem loading the very first info. Ignore the rest. */
- 	pr_warning("Cannot find %s for main program sec %s. Ignore all %s.\n",
- 		   info_name, prog->section_name, info_name);
- 	return 0;
-@@ -2032,9 +2015,7 @@ static int bpf_object__collect_reloc(struct bpf_object *obj)
- 			return -LIBBPF_ERRNO__RELOC;
- 		}
- 
--		err = bpf_program__collect_reloc(prog,
--						 shdr, data,
--						 obj);
-+		err = bpf_program__collect_reloc(prog, shdr, data, obj);
- 		if (err)
- 			return err;
- 	}
-@@ -2354,8 +2335,7 @@ struct bpf_object *bpf_object__open_buffer(void *obj_buf,
- 			 (unsigned long)obj_buf_sz);
- 		name = tmp_name;
- 	}
--	pr_debug("loading object '%s' from buffer\n",
--		 name);
-+	pr_debug("loading object '%s' from buffer\n", name);
- 
- 	return __bpf_object__open(name, obj_buf, obj_buf_sz, true, true);
- }
--- 
-2.17.1
+1) trace two functions called during CPU unplug via bcc/trace
 
+/usr/share/bcc/tools/trace -T 'takedown_cpu "%d", arg1'  'take_cpu_down'
+
+2) put cpu7 offline via:
+
+echo 0 > /sys/devices/system/cpu/cpu7/online
+
+3) only trace on 'takedown_cpu' is dumped via bcc/trace:
+
+TIME     PID     TID     COMM            FUNC             -
+03:23:17 733     733     bash            takedown_cpu     7
+
+The lost trace on 'take_cpu_down' can never be shown, even though
+CPU7 is switched ON again.
+
+take_cpu_down is called via stop_machine_cpuslocked.
+
+Thanks,
+Ming Lei
