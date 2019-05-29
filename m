@@ -2,52 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B93A2E2C7
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2019 19:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2612E2DC
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2019 19:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726005AbfE2RDz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 May 2019 13:03:55 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:34157 "EHLO
+        id S1726054AbfE2RJp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 May 2019 13:09:45 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:45233 "EHLO
         mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbfE2RDz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 May 2019 13:03:55 -0400
-Received: by mail-qt1-f193.google.com with SMTP id h1so3526803qtp.1;
-        Wed, 29 May 2019 10:03:54 -0700 (PDT)
+        with ESMTP id S1725917AbfE2RJp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 May 2019 13:09:45 -0400
+Received: by mail-qt1-f193.google.com with SMTP id t1so3484995qtc.12;
+        Wed, 29 May 2019 10:09:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lyYcWrWqk2uqaWHLdJCXZCIIhh/8/m2Rv6Ciz2qleeI=;
-        b=iSYEg5Ov8Q4PYW60985QWPtPvYglm2clHxaldgubR4k9IrHX73wb8rxpsgt1SfWsUK
-         LbxMrCphd3esuOlfZY9i4PBCVSYEB70ZfOoQ4iBcEIEHubF95mlyTct1O0jDjF+XmGwo
-         5W87w1vH2F9XqbN/n2pe+gEmiPAAb9sRKnODO5o6WPzvzkqYvV4LVSct7GuyHsBqt9YL
-         F33Kpjd+P2HTGL9ElYbYrZNsxUmjzkhQuy7KqnTNe40IApe8Nqr0AxqD22pBwgkXk4P+
-         Sr+tc1d5xH+ExmjXkBzpefz+wv+VB93T24RgeGe4WTp1mhPRwSJDGwVF+JftKcF5wzuH
-         UNSg==
+        bh=/vPyb/weYDgUvhZvoDfV2jI0RMOjFs7RPyYnsfVXMzY=;
+        b=c5OOj1/bl+OFg3Eu//NBS63TGa4en1WCthRGDYjq56M4aHJP0fLm/scCjg+jyNWCX3
+         k0RyI7Dbl7FE4Qq/sNKlx6QcuSEllb1kY3+KNlzRLjg4iJhfW0MH3VFPkZKvcZO1limX
+         jXb6Ah6nd5ydZl0X0AasHROzV0SyNsT6dQhixGOg/3T+H6LPbNE8/eMe+2gUWDMSyhYn
+         6oyko3szAbJKUcIDmJT6ej8fAxhzib+3e3hQrCkhdkRANDMMDn+LlbSegOahbdeaKUJb
+         Idtad7TUGJO2JSjRtD60Lx8YtYU2npPv6OAwDZtuENEAhb+b5UW13K+tH7ugC82mU7P4
+         FckA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lyYcWrWqk2uqaWHLdJCXZCIIhh/8/m2Rv6Ciz2qleeI=;
-        b=WtoQSrnvehmIej60treawQqg4qWU1yBdDOPfuMFhMeMWecjhz+B7DT/s51iCF898hu
-         9OcFG93cC0+oLXW71cKMgu1Mq+dWVVzIjE1Mve9vebSn3ymUODEzOgscEwI7FLttkS/d
-         QjXAJ9o2O8LbF3sRAPhVLihXkxrq00tgZ7PqYDLhQz3DjnjM5QNtL4Fw2u/Pge7jaxxn
-         l9eMQzF1N8//txhyUeIln0ogqFOOgM+0qkEICg3O3x4EicwDTZTeAETiQ2dduePlagif
-         7GQjW5zRQVGLtgwfge50LjOuTGU+a06K77Jio97hDqCN2EQsLB/LWnKzbTszCBVmUGaK
-         uz8Q==
-X-Gm-Message-State: APjAAAVv6K6QCFCu5a1uZ/O7mSpnsGP5foxKFlS3jj/aXXAeG7nbpDRH
-        qlbPvZZURmk5A2CJSxqi6Md8eVjtseOuk/DaDP4=
-X-Google-Smtp-Source: APXvYqy02lL+Z1B3IFy6hII2uGlCJeix/zAVZ/i/X8OzJVW4iu/6Q0XrzeMW1xyFDOZUCjFfNSv7g6g0HM2ktLtATwU=
-X-Received: by 2002:aed:3b66:: with SMTP id q35mr19513211qte.118.1559149434203;
- Wed, 29 May 2019 10:03:54 -0700 (PDT)
+        bh=/vPyb/weYDgUvhZvoDfV2jI0RMOjFs7RPyYnsfVXMzY=;
+        b=AMj7ymzOdPuTSeVRjxr4fpcy5U+ZPH5dq3ylwFyQY7rtIXgThTE/A6yqRWTpk8JRKZ
+         uo4YcwNWj5dUy1gyNsaUjEknYfn+KGqqym4O45bz+ffxVp8ZBlQWD9P1xhaOD5dGzhBv
+         DLnyDy056jB+4Fu8HdRX7Fymr6LowXogJTFAavXLS/7LtJqSVx0W046tSJnh6xSpCLa9
+         1OxSMvZ0cA68ZR63cbuMuw3CZEVn38hTnrGnBA0WDWRLzBHFzLmkmkIJD5S84W6wcKq/
+         hWk+ZlTUfAkyt6dG1g5bWtmRmu16EqJYjn5KuRwYHYEtRKOPmeNU+MxEpjVjr2HJ2yAk
+         OTrw==
+X-Gm-Message-State: APjAAAU10RE+T05gymC4JrUxj4Nk6rCPb5K61mH2IdaqlrNK6mX+N6D0
+        vvhJFaR0VYBNA5RQt9QKRFNz1r4/t8v6B1YSh+8=
+X-Google-Smtp-Source: APXvYqy1xoYTvufZJ2P25p70emZgnj7KFWdrfg2RDM0QekSzLNL2YrguC2WuGXbUKPA8iEClsbfhsk+EKqXckdHx4AY=
+X-Received: by 2002:aed:3b66:: with SMTP id q35mr19540850qte.118.1559149782745;
+ Wed, 29 May 2019 10:09:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190529011426.1328736-1-andriin@fb.com> <20190529011426.1328736-3-andriin@fb.com>
-In-Reply-To: <20190529011426.1328736-3-andriin@fb.com>
+References: <20190529011426.1328736-1-andriin@fb.com> <20190529011426.1328736-4-andriin@fb.com>
+In-Reply-To: <20190529011426.1328736-4-andriin@fb.com>
 From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Wed, 29 May 2019 10:03:43 -0700
-Message-ID: <CAPhsuW6OTt78SB+1-01=PZ3wAu0DV1V3HyTvSoQTDkfVP9hfeA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/9] libbpf: preserve errno before calling into
- user callback
+Date:   Wed, 29 May 2019 10:09:31 -0700
+Message-ID: <CAPhsuW7Zmds01cQ6KjLgTEnmnkV61DUCjDenTiLFeQonEZNg4g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/9] libbpf: simplify endianness check
 To:     Andrii Nakryiko <andriin@fb.com>
 Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
@@ -62,39 +61,65 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Tue, May 28, 2019 at 6:14 PM Andrii Nakryiko <andriin@fb.com> wrote:
 >
-> pr_warning ultimately may call into user-provided callback function,
-> which can clobber errno value, so we need to save it before that.
+> Rewrite endianness check to use "more canonical" way, using
+> compiler-defined macros, similar to few other places in libbpf. It also
+> is more obvious and shorter.
 >
 > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-
 Acked-by: Song Liu <songliubraving@fb.com>
 
-
 > ---
->  tools/lib/bpf/libbpf.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+>  tools/lib/bpf/libbpf.c | 37 ++++++++++++-------------------------
+>  1 file changed, 12 insertions(+), 25 deletions(-)
 >
 > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 05a73223e524..7b80b9ae8a1f 100644
+> index 7b80b9ae8a1f..c98f9942fba4 100644
 > --- a/tools/lib/bpf/libbpf.c
 > +++ b/tools/lib/bpf/libbpf.c
-> @@ -565,12 +565,12 @@ static int bpf_object__elf_init(struct bpf_object *obj)
->         } else {
->                 obj->efile.fd = open(obj->path, O_RDONLY);
->                 if (obj->efile.fd < 0) {
-> -                       char errmsg[STRERR_BUFSIZE];
-> -                       char *cp = libbpf_strerror_r(errno, errmsg,
-> -                                                    sizeof(errmsg));
-> +                       char errmsg[STRERR_BUFSIZE], *cp;
+> @@ -607,31 +607,18 @@ static int bpf_object__elf_init(struct bpf_object *obj)
+>         return err;
+>  }
 >
-> +                       err = -errno;
-> +                       cp = libbpf_strerror_r(err, errmsg, sizeof(errmsg));
->                         pr_warning("failed to open %s: %s\n", obj->path, cp);
-> -                       return -errno;
-> +                       return err;
->                 }
+> -static int
+> -bpf_object__check_endianness(struct bpf_object *obj)
+> -{
+> -       static unsigned int const endian = 1;
+> -
+> -       switch (obj->efile.ehdr.e_ident[EI_DATA]) {
+> -       case ELFDATA2LSB:
+> -               /* We are big endian, BPF obj is little endian. */
+> -               if (*(unsigned char const *)&endian != 1)
+> -                       goto mismatch;
+> -               break;
+> -
+> -       case ELFDATA2MSB:
+> -               /* We are little endian, BPF obj is big endian. */
+> -               if (*(unsigned char const *)&endian != 0)
+> -                       goto mismatch;
+> -               break;
+> -       default:
+> -               return -LIBBPF_ERRNO__ENDIAN;
+> -       }
+> -
+> -       return 0;
+> -
+> -mismatch:
+> -       pr_warning("Error: endianness mismatch.\n");
+> +static int bpf_object__check_endianness(struct bpf_object *obj)
+> +{
+> +#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+> +       if (obj->efile.ehdr.e_ident[EI_DATA] == ELFDATA2LSB)
+> +               return 0;
+> +#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+> +       if (obj->efile.ehdr.e_ident[EI_DATA] == ELFDATA2MSB)
+> +               return 0;
+> +#else
+> +# error "Unrecognized __BYTE_ORDER__"
+> +#endif
+> +       pr_warning("endianness mismatch.\n");
+>         return -LIBBPF_ERRNO__ENDIAN;
+>  }
 >
->                 obj->efile.elf = elf_begin(obj->efile.fd,
 > --
 > 2.17.1
 >
