@@ -2,55 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 587F62DD9F
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2019 15:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC112DDFA
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2019 15:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbfE2NAF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 May 2019 09:00:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35156 "EHLO mx1.suse.de"
+        id S1726897AbfE2NS6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 May 2019 09:18:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41218 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726889AbfE2NAF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 May 2019 09:00:05 -0400
+        id S1726863AbfE2NS6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 May 2019 09:18:58 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 962DEAEB7;
-        Wed, 29 May 2019 13:00:03 +0000 (UTC)
-Date:   Wed, 29 May 2019 12:59:59 +0000
+        by mx1.suse.de (Postfix) with ESMTP id 27A7DAEB7;
+        Wed, 29 May 2019 13:18:57 +0000 (UTC)
 From:   Michal Rostecki <mrostecki@opensuse.org>
-To:     Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 Cc:     Michal Rostecki <mrostecki@opensuse.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf] libbpf: Return btf_fd in libbpf__probe_raw_btf
-Message-ID: <20190529125959.GA31842@wotan.suse.de>
-References: <20190529082941.9440-1-mrostecki@opensuse.org>
- <e28170e1-cf06-87ef-812b-9b9e6185d925@cogentembedded.com>
+        netdev@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
+        bpf@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH bpf v2] libbpf: Return btf_fd in libbpf__probe_raw_btf
+Date:   Wed, 29 May 2019 15:20:00 +0200
+Message-Id: <20190529132000.24942-1-mrostecki@opensuse.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e28170e1-cf06-87ef-812b-9b9e6185d925@cogentembedded.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 29, 2019 at 12:53:42PM +0300, Sergei Shtylyov wrote:
-> Hello!
-> 
-> On 29.05.2019 11:29, Michal Rostecki wrote:
-> 
-> > Function load_sk_storage_btf expects that libbpf__probe_raw_btf is
-> > returning a btf descriptor, but before this change it was returning
-> > an information about whether the probe was successful (0 or 1).
-> > load_sk_storage_btf was using that value as an argument to the close
-> > function, which was resulting in closing stdout and thus terminating the
-> > process which used that dunction.
-> 
->    Function? :-)
+Function load_sk_storage_btf expects that libbpf__probe_raw_btf is
+returning a BTF descriptor, but before this change it was returning
+an information about whether the probe was successful (0 or 1).
+load_sk_storage_btf was using that value as an argument of the close
+function, which was resulting in closing stdout and thus terminating the
+process which called that function.
 
-Opps! I will fix in v2. Thanks!
+That bug was visible in bpftool. `bpftool feature` subcommand was always
+exiting too early (because of closed stdout) and it didn't display all
+requested probes. `bpftool -j feature` or `bpftool -p feature` were not
+returning a valid json object.
+
+v2:
+- Fix typo in the commit message.
+
+Fixes: d7c4b3980c18 ("libbpf: detect supported kernel BTF features and sanitize BTF")
+Signed-off-by: Michal Rostecki <mrostecki@opensuse.org>
+---
+ tools/lib/bpf/libbpf.c        | 36 +++++++++++++++++++++--------------
+ tools/lib/bpf/libbpf_probes.c |  7 +------
+ 2 files changed, 23 insertions(+), 20 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 197b574406b3..bc2dca36bced 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1645,15 +1645,19 @@ static int bpf_object__probe_btf_func(struct bpf_object *obj)
+ 		/* FUNC x */                                    /* [3] */
+ 		BTF_TYPE_ENC(5, BTF_INFO_ENC(BTF_KIND_FUNC, 0, 0), 2),
+ 	};
+-	int res;
++	int btf_fd;
++	int ret;
+ 
+-	res = libbpf__probe_raw_btf((char *)types, sizeof(types),
+-				    strs, sizeof(strs));
+-	if (res < 0)
+-		return res;
+-	if (res > 0)
++	btf_fd = libbpf__probe_raw_btf((char *)types, sizeof(types),
++				       strs, sizeof(strs));
++	if (btf_fd < 0)
++		ret = 0;
++	else {
++		ret = 1;
+ 		obj->caps.btf_func = 1;
+-	return 0;
++	}
++	close(btf_fd);
++	return ret;
+ }
+ 
+ static int bpf_object__probe_btf_datasec(struct bpf_object *obj)
+@@ -1670,15 +1674,19 @@ static int bpf_object__probe_btf_datasec(struct bpf_object *obj)
+ 		BTF_TYPE_ENC(3, BTF_INFO_ENC(BTF_KIND_DATASEC, 0, 1), 4),
+ 		BTF_VAR_SECINFO_ENC(2, 0, 4),
+ 	};
+-	int res;
++	int btf_fd;
++	int ret;
+ 
+-	res = libbpf__probe_raw_btf((char *)types, sizeof(types),
+-				    strs, sizeof(strs));
+-	if (res < 0)
+-		return res;
+-	if (res > 0)
++	btf_fd = libbpf__probe_raw_btf((char *)types, sizeof(types),
++				       strs, sizeof(strs));
++	if (btf_fd < 0)
++		ret = 0;
++	else {
++		ret = 1;
+ 		obj->caps.btf_datasec = 1;
+-	return 0;
++	}
++	close(btf_fd);
++	return ret;
+ }
+ 
+ static int
+diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+index 5e2aa83f637a..2c2828345514 100644
+--- a/tools/lib/bpf/libbpf_probes.c
++++ b/tools/lib/bpf/libbpf_probes.c
+@@ -157,14 +157,9 @@ int libbpf__probe_raw_btf(const char *raw_types, size_t types_len,
+ 	memcpy(raw_btf + hdr.hdr_len + hdr.type_len, str_sec, hdr.str_len);
+ 
+ 	btf_fd = bpf_load_btf(raw_btf, btf_len, NULL, 0, false);
+-	if (btf_fd < 0) {
+-		free(raw_btf);
+-		return 0;
+-	}
+ 
+-	close(btf_fd);
+ 	free(raw_btf);
+-	return 1;
++	return btf_fd;
+ }
+ 
+ static int load_sk_storage_btf(void)
+-- 
+2.21.0
+
