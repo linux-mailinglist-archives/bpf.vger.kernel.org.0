@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F3F2E2B9
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2019 19:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B93A2E2C7
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2019 19:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbfE2RBc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 May 2019 13:01:32 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:39911 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbfE2RBc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 May 2019 13:01:32 -0400
-Received: by mail-qt1-f194.google.com with SMTP id i34so3495929qta.6;
-        Wed, 29 May 2019 10:01:31 -0700 (PDT)
+        id S1726005AbfE2RDz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 May 2019 13:03:55 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:34157 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbfE2RDz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 May 2019 13:03:55 -0400
+Received: by mail-qt1-f193.google.com with SMTP id h1so3526803qtp.1;
+        Wed, 29 May 2019 10:03:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=EDg5s41H/Le6Vky7GnMK/Onoij5YEoC450y0nZXn5Zg=;
-        b=QNmDO3R/fG533Yb5gbmEk3SpaATJT5yzl9lrHaOe+xR2pN/RzIvl3i7ACuX7SPRoth
-         lVMh4ceBSJ7abRq3kgos6A8L+X0CwVtU/cJIQXMNfR4ShEhiSlESLkRVmge0SCtCZ7s0
-         b23nDkUNfvCtWkL4qaTT8+sZ0N2/IqnIYvJPrA25SQizz1ktE3ExQ7Aud4sYpOPoxFKE
-         hQzV7NmZsVQrmnKp/OinG6nCIGWiW5BDCAdmjaiZm353umjSn5wLpZWsG83/SzweW2rV
-         jP66q+6cukCgcWEJUTf1gWO65SV9JJkLxnr3genGVwOM6lj/v5BNIb0ip4gR1j+mVANC
-         NCEw==
+        bh=lyYcWrWqk2uqaWHLdJCXZCIIhh/8/m2Rv6Ciz2qleeI=;
+        b=iSYEg5Ov8Q4PYW60985QWPtPvYglm2clHxaldgubR4k9IrHX73wb8rxpsgt1SfWsUK
+         LbxMrCphd3esuOlfZY9i4PBCVSYEB70ZfOoQ4iBcEIEHubF95mlyTct1O0jDjF+XmGwo
+         5W87w1vH2F9XqbN/n2pe+gEmiPAAb9sRKnODO5o6WPzvzkqYvV4LVSct7GuyHsBqt9YL
+         F33Kpjd+P2HTGL9ElYbYrZNsxUmjzkhQuy7KqnTNe40IApe8Nqr0AxqD22pBwgkXk4P+
+         Sr+tc1d5xH+ExmjXkBzpefz+wv+VB93T24RgeGe4WTp1mhPRwSJDGwVF+JftKcF5wzuH
+         UNSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EDg5s41H/Le6Vky7GnMK/Onoij5YEoC450y0nZXn5Zg=;
-        b=M6sFCa1vpi8EiYPT3qSQIfPP13H5DmBohzl8QI24xmeCCZVxmHxNhgavPPDw8Fq3ZY
-         Ysls4Yr6HgDmARzTDM56IKzOHE4RRozze2QRBvD9JieP8P1HiYRFhT3YZj64zxcwKKjV
-         gBeDzu5dyXTWYxdrHjDYcK/1so8fnrKTjzgHlK01oiUncec7a9pZpg09ab2qH6/3AbqI
-         SvKd8qj604+yY5v5qge0I6JkQPRvBUewrbKzZffBtjvrJNSj3jv01W+mzejwDHAStkgi
-         NYvJcb/+kj5PTPQIJB+CeHnc2MRtijqTtJcx/n9afrHjJe1RANfcjs3t/l2jCB274W1d
-         n+ag==
-X-Gm-Message-State: APjAAAU8ZyLp6EogG104y6j4RJv0dRDJgpTOCDbyBCL/R7De3j/gz5gL
-        xE/DP3nUZXHWy9HYdrPZipy0zb01oW0+O34h8ns=
-X-Google-Smtp-Source: APXvYqxjmlaJMlLo6JJnOpJ77hvyEMtIkkDr1X+axmuBBnQcal6HE5G7RY/U19m/Tdk9V8juCXwfdbWoWuoUd2BCb60=
-X-Received: by 2002:ac8:2af4:: with SMTP id c49mr82844115qta.83.1559149291448;
- Wed, 29 May 2019 10:01:31 -0700 (PDT)
+        bh=lyYcWrWqk2uqaWHLdJCXZCIIhh/8/m2Rv6Ciz2qleeI=;
+        b=WtoQSrnvehmIej60treawQqg4qWU1yBdDOPfuMFhMeMWecjhz+B7DT/s51iCF898hu
+         9OcFG93cC0+oLXW71cKMgu1Mq+dWVVzIjE1Mve9vebSn3ymUODEzOgscEwI7FLttkS/d
+         QjXAJ9o2O8LbF3sRAPhVLihXkxrq00tgZ7PqYDLhQz3DjnjM5QNtL4Fw2u/Pge7jaxxn
+         l9eMQzF1N8//txhyUeIln0ogqFOOgM+0qkEICg3O3x4EicwDTZTeAETiQ2dduePlagif
+         7GQjW5zRQVGLtgwfge50LjOuTGU+a06K77Jio97hDqCN2EQsLB/LWnKzbTszCBVmUGaK
+         uz8Q==
+X-Gm-Message-State: APjAAAVv6K6QCFCu5a1uZ/O7mSpnsGP5foxKFlS3jj/aXXAeG7nbpDRH
+        qlbPvZZURmk5A2CJSxqi6Md8eVjtseOuk/DaDP4=
+X-Google-Smtp-Source: APXvYqy02lL+Z1B3IFy6hII2uGlCJeix/zAVZ/i/X8OzJVW4iu/6Q0XrzeMW1xyFDOZUCjFfNSv7g6g0HM2ktLtATwU=
+X-Received: by 2002:aed:3b66:: with SMTP id q35mr19513211qte.118.1559149434203;
+ Wed, 29 May 2019 10:03:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190529011426.1328736-1-andriin@fb.com> <20190529011426.1328736-2-andriin@fb.com>
-In-Reply-To: <20190529011426.1328736-2-andriin@fb.com>
+References: <20190529011426.1328736-1-andriin@fb.com> <20190529011426.1328736-3-andriin@fb.com>
+In-Reply-To: <20190529011426.1328736-3-andriin@fb.com>
 From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Wed, 29 May 2019 10:01:20 -0700
-Message-ID: <CAPhsuW7zZ=QQs2wpR46+0hydSzRYza2_7kSAr0a1nBChSHbu6Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/9] libbpf: fix detection of corrupted BPF
- instructions section
+Date:   Wed, 29 May 2019 10:03:43 -0700
+Message-ID: <CAPhsuW6OTt78SB+1-01=PZ3wAu0DV1V3HyTvSoQTDkfVP9hfeA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/9] libbpf: preserve errno before calling into
+ user callback
 To:     Andrii Nakryiko <andriin@fb.com>
 Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
@@ -62,54 +62,39 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Tue, May 28, 2019 at 6:14 PM Andrii Nakryiko <andriin@fb.com> wrote:
 >
-> Ensure that size of a section w/ BPF instruction is exactly a multiple
-> of BPF instruction size.
+> pr_warning ultimately may call into user-provided callback function,
+> which can clobber errno value, so we need to save it before that.
 >
 > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+
+Acked-by: Song Liu <songliubraving@fb.com>
+
+
 > ---
->  tools/lib/bpf/libbpf.c | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
+>  tools/lib/bpf/libbpf.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 >
 > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index ca4432f5b067..05a73223e524 100644
+> index 05a73223e524..7b80b9ae8a1f 100644
 > --- a/tools/lib/bpf/libbpf.c
 > +++ b/tools/lib/bpf/libbpf.c
-> @@ -349,8 +349,11 @@ static int
->  bpf_program__init(void *data, size_t size, char *section_name, int idx,
->                   struct bpf_program *prog)
->  {
-> -       if (size < sizeof(struct bpf_insn)) {
-> -               pr_warning("corrupted section '%s'\n", section_name);
-> +       const size_t bpf_insn_sz = sizeof(struct bpf_insn);
-> +
-> +       if (size < bpf_insn_sz || size % bpf_insn_sz) {
-
-how about
-           if (!size || size % bpf_insn_sz)
-
-> +               pr_warning("corrupted section '%s', size: %zu\n",
-> +                          section_name, size);
->                 return -EINVAL;
->         }
+> @@ -565,12 +565,12 @@ static int bpf_object__elf_init(struct bpf_object *obj)
+>         } else {
+>                 obj->efile.fd = open(obj->path, O_RDONLY);
+>                 if (obj->efile.fd < 0) {
+> -                       char errmsg[STRERR_BUFSIZE];
+> -                       char *cp = libbpf_strerror_r(errno, errmsg,
+> -                                                    sizeof(errmsg));
+> +                       char errmsg[STRERR_BUFSIZE], *cp;
 >
-> @@ -376,9 +379,8 @@ bpf_program__init(void *data, size_t size, char *section_name, int idx,
->                            section_name);
->                 goto errout;
->         }
-> -       prog->insns_cnt = size / sizeof(struct bpf_insn);
-> -       memcpy(prog->insns, data,
-> -              prog->insns_cnt * sizeof(struct bpf_insn));
-> +       prog->insns_cnt = size / bpf_insn_sz;
-> +       memcpy(prog->insns, data, prog->insns_cnt * bpf_insn_sz);
-
-Given the check above, we can just use size in memcpy, right?
-
-Thanks,
-Song
-
->         prog->idx = idx;
->         prog->instances.fds = NULL;
->         prog->instances.nr = -1;
+> +                       err = -errno;
+> +                       cp = libbpf_strerror_r(err, errmsg, sizeof(errmsg));
+>                         pr_warning("failed to open %s: %s\n", obj->path, cp);
+> -                       return -errno;
+> +                       return err;
+>                 }
+>
+>                 obj->efile.elf = elf_begin(obj->efile.fd,
 > --
 > 2.17.1
 >
