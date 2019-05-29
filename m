@@ -2,76 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 504E72D443
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2019 05:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CDD2D7CE
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2019 10:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726034AbfE2D2s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 May 2019 23:28:48 -0400
-Received: from mail-wm1-f51.google.com ([209.85.128.51]:53964 "EHLO
-        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbfE2D2s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 May 2019 23:28:48 -0400
-Received: by mail-wm1-f51.google.com with SMTP id d17so489663wmb.3;
-        Tue, 28 May 2019 20:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=GY3PfFOyZcoJdIfdvR1GAwUmaDcfBTuvp/0vdZRtI1E=;
-        b=ttYncVVwVbPKTN+8oqzzmeWBiAIK7agvYOD1F/yo7xsJVJ/ZrJFIeQvZ8Jq2VsiXrK
-         vRm2ow+MF8qrdetTuxdvRxFywJuPAyv3jbvWolI5y4jfuN4VAMwWDjfLQf5SreQ3sFkF
-         XgaUTFQWt674FsEnZJqx7OVv20JcY6sYLOMZFmgtXyZQj0zsildDkHXBl+X8MSZvdUdB
-         64XG6us9gF0wDCTh8Umj/GruSC08/RUSWHYqBrh0K7ewoZogN8TvOBHzwr9JUVJlP7C1
-         pE9iDgQAxeRUubO90q9i7F21v37SRYd/vtMt7Ck26PmrKOHTvdxNsTnIFPaQOkzz82y5
-         FSyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=GY3PfFOyZcoJdIfdvR1GAwUmaDcfBTuvp/0vdZRtI1E=;
-        b=T7Mxg6pUSMAfQaUAWUpuiweg952uiTwLiYjXyjXqv8EYU+O8veN6MrgLxvKz3OGnKu
-         wrAIANiUfPMqQPsnr+g9tiwAd9+QRe9fvucrFwgoP/YTB/QouPtctHoDmnVNFI5izwFO
-         bKoAzyAc6LaMu4FvKqf01W4ca/Xooc45xgEzTMoSKVaGZnOiVRmkZ7tIeDtrVzCFtXYI
-         9qX6IwyVq5GyBiHQga5zPlbJ+hd3ACw8W2Dc6Zl1UytqAke9ZTrdBpe1Kl7RnA2tuwtw
-         /y8ikGkM7jRZXb4f3pYqZN9mwcB0nZVz1GK7/OBAfDDIvq5I3O0OMtFiJZ/y/6mVUVp0
-         ZdNw==
-X-Gm-Message-State: APjAAAWJGPJROD/dP1BCz+9kS4QKm1ehYXMAxag3PG3fBhqQUreau1bn
-        egrFKQY1fitccujAZRmv5bxGfTF7hkGu/6IYQLS2HEcf9y/DkQ==
-X-Google-Smtp-Source: APXvYqzhVLOOi/yvOCD8uKoYRVZAu6fBQCcXv5ZMU3Fq7B/ovWjOSwxMZ61lqogvojDUIyryuActSUGlwWJw5mT0t70=
-X-Received: by 2002:a1c:a7c6:: with SMTP id q189mr732886wme.146.1559100525867;
- Tue, 28 May 2019 20:28:45 -0700 (PDT)
+        id S1725936AbfE2I34 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 May 2019 04:29:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39754 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725935AbfE2I34 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 May 2019 04:29:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id A8F12AE56;
+        Wed, 29 May 2019 08:29:54 +0000 (UTC)
+From:   Michal Rostecki <mrostecki@opensuse.org>
+Cc:     Michal Rostecki <mrostecki@opensuse.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf] libbpf: Return btf_fd in libbpf__probe_raw_btf
+Date:   Wed, 29 May 2019 10:29:41 +0200
+Message-Id: <20190529082941.9440-1-mrostecki@opensuse.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-From:   Ming Lei <tom.leiming@gmail.com>
-Date:   Wed, 29 May 2019 11:28:34 +0800
-Message-ID: <CACVXFVN-YX0oRHDu8zBZHYpRvkD2C=zp04s20MN9MHASJBFSRA@mail.gmail.com>
-Subject: ebpf trace doesn't work during cpu hotplug
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Function load_sk_storage_btf expects that libbpf__probe_raw_btf is
+returning a btf descriptor, but before this change it was returning
+an information about whether the probe was successful (0 or 1).
+load_sk_storage_btf was using that value as an argument to the close
+function, which was resulting in closing stdout and thus terminating the
+process which used that dunction.
 
-Looks ebpf trace doesn't work during cpu hotplug, see the following trace:
+That bug was visible in bpftool. `bpftool feature` subcommand was always
+exiting too early (because of closed stdout) and it didn't display all
+requested probes. `bpftool -j feature` or `bpftool -p feature` were not
+returning a valid json object.
 
-1) trace two functions called during CPU unplug via bcc/trace
+Fixes: d7c4b3980c18 ("libbpf: detect supported kernel BTF features and sanitize BTF")
+Signed-off-by: Michal Rostecki <mrostecki@opensuse.org>
+---
+ tools/lib/bpf/libbpf.c        | 36 +++++++++++++++++++++--------------
+ tools/lib/bpf/libbpf_probes.c |  7 +------
+ 2 files changed, 23 insertions(+), 20 deletions(-)
 
-/usr/share/bcc/tools/trace -T 'takedown_cpu "%d", arg1'  'take_cpu_down'
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 197b574406b3..bc2dca36bced 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1645,15 +1645,19 @@ static int bpf_object__probe_btf_func(struct bpf_object *obj)
+ 		/* FUNC x */                                    /* [3] */
+ 		BTF_TYPE_ENC(5, BTF_INFO_ENC(BTF_KIND_FUNC, 0, 0), 2),
+ 	};
+-	int res;
++	int btf_fd;
++	int ret;
+ 
+-	res = libbpf__probe_raw_btf((char *)types, sizeof(types),
+-				    strs, sizeof(strs));
+-	if (res < 0)
+-		return res;
+-	if (res > 0)
++	btf_fd = libbpf__probe_raw_btf((char *)types, sizeof(types),
++				       strs, sizeof(strs));
++	if (btf_fd < 0)
++		ret = 0;
++	else {
++		ret = 1;
+ 		obj->caps.btf_func = 1;
+-	return 0;
++	}
++	close(btf_fd);
++	return ret;
+ }
+ 
+ static int bpf_object__probe_btf_datasec(struct bpf_object *obj)
+@@ -1670,15 +1674,19 @@ static int bpf_object__probe_btf_datasec(struct bpf_object *obj)
+ 		BTF_TYPE_ENC(3, BTF_INFO_ENC(BTF_KIND_DATASEC, 0, 1), 4),
+ 		BTF_VAR_SECINFO_ENC(2, 0, 4),
+ 	};
+-	int res;
++	int btf_fd;
++	int ret;
+ 
+-	res = libbpf__probe_raw_btf((char *)types, sizeof(types),
+-				    strs, sizeof(strs));
+-	if (res < 0)
+-		return res;
+-	if (res > 0)
++	btf_fd = libbpf__probe_raw_btf((char *)types, sizeof(types),
++				       strs, sizeof(strs));
++	if (btf_fd < 0)
++		ret = 0;
++	else {
++		ret = 1;
+ 		obj->caps.btf_datasec = 1;
+-	return 0;
++	}
++	close(btf_fd);
++	return ret;
+ }
+ 
+ static int
+diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+index 5e2aa83f637a..2c2828345514 100644
+--- a/tools/lib/bpf/libbpf_probes.c
++++ b/tools/lib/bpf/libbpf_probes.c
+@@ -157,14 +157,9 @@ int libbpf__probe_raw_btf(const char *raw_types, size_t types_len,
+ 	memcpy(raw_btf + hdr.hdr_len + hdr.type_len, str_sec, hdr.str_len);
+ 
+ 	btf_fd = bpf_load_btf(raw_btf, btf_len, NULL, 0, false);
+-	if (btf_fd < 0) {
+-		free(raw_btf);
+-		return 0;
+-	}
+ 
+-	close(btf_fd);
+ 	free(raw_btf);
+-	return 1;
++	return btf_fd;
+ }
+ 
+ static int load_sk_storage_btf(void)
+-- 
+2.21.0
 
-2) put cpu7 offline via:
-
-echo 0 > /sys/devices/system/cpu/cpu7/online
-
-3) only trace on 'takedown_cpu' is dumped via bcc/trace:
-
-TIME     PID     TID     COMM            FUNC             -
-03:23:17 733     733     bash            takedown_cpu     7
-
-The lost trace on 'take_cpu_down' can never be shown, even though
-CPU7 is switched ON again.
-
-take_cpu_down is called via stop_machine_cpuslocked.
-
-Thanks,
-Ming Lei
