@@ -2,212 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8912E308
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2019 19:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D352E31D
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2019 19:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbfE2RTG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 May 2019 13:19:06 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:38354 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbfE2RTG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 May 2019 13:19:06 -0400
-Received: by mail-qt1-f196.google.com with SMTP id l3so3562667qtj.5;
-        Wed, 29 May 2019 10:19:05 -0700 (PDT)
+        id S1725990AbfE2RYE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 May 2019 13:24:04 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:36622 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726018AbfE2RYE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 May 2019 13:24:04 -0400
+Received: by mail-qt1-f193.google.com with SMTP id u12so3589573qth.3;
+        Wed, 29 May 2019 10:24:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PHew1bwj+G4UeKjddNBQfMUrkfTOT1qFTesYJ9KdpWY=;
-        b=JwDk6jzeFDTUav/+WuVHCptvci536u+S/rlqaHbXcsjTa64fzeibrl+DNgQa1p9t8i
-         Kt6nNlPUBAMO/sKtf7c6ZrdjnNRccqHMUmz8iUUnlxUCwpkpVl9ABFPClawbs9cwhTWE
-         p/adcFl1UyPm58/ETETPO5HEKX1Ft+TY6vU1AHC02jwNAOCMnYmMkJAyVLUYrLELSd7e
-         NfMJtF2p8neLmV4FGcNHCWGVgf+0nF62L1CWRUv8cLe94EsausanrdA1VwHp06dipN9G
-         g125fVGdgz7nT0XZfIAtFKshrs+RNJcg0b3em81PqqPgq7XScM9Wk1vx0cH57kCTlzjr
-         K8iw==
+        bh=jseR0G1MK8l+SedwWAn1+xBXO7oEnZiUpZgmshuXjz0=;
+        b=Qn7GudkzA3xXSobCXURVJJ6+nQeYz/Kz6q6xjwWs1qW07xGQ4sdIYFNhDOxjhixm2s
+         HL1DEQjUwjQQuKFgpZpBPYPuu8Mlh3DP27rrBkXFZL9IxsGQF/l0VDLH2E6GaxbQ45VG
+         qNKBZvEU9+BLTdGgR5RDb2+XCCpDbSnN/9A2QB0g9Yg9lyr3sfR+VgdEHhnP7iGwWdhR
+         PRrDJGgzoWSM9MBem67FERstpmwPo/GBa+Q8RJ6dyBI4yoeh7B+5TAeaRdy//NTsxK2M
+         vRCMI1nFHs66timVejLVNIHDBsuoM662LnLMoVJxOFZ8QFXspWvSJZd9QCjfPmU6sMu+
+         BB5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PHew1bwj+G4UeKjddNBQfMUrkfTOT1qFTesYJ9KdpWY=;
-        b=AeiO6L8Gu/3lpm1GLRbXKQ5ys/qJIGDffKmCK5tIgYr+AXXX6wGY+8IZeIzUEgiT8l
-         MPIMvEXT74w6fyWs5CtEi2PC3O3wNvmz6r6lDcD8eoKjvIT7ZqGgU2YybpSwPCDuzd++
-         BsMH8OkaUp/TaIFtaVXnhstT+Fcdso+B75K3OnHoSaxhYb5VoECXOYAtx0IxSiSZtFw2
-         yRfsluGX0a3eUCc+AGT2VH+Wgwf04lIhAJ4YYXndIvGQbqpKJCad4e0dpZeRS3ojIuBc
-         s1wNRR954QUNKTCrQ7HLsHH18GswcuEKMJ7YZHQZjIz9Td//5AjoQ07dy6EwRLTVE/IZ
-         s0LQ==
-X-Gm-Message-State: APjAAAVbNrfewt60XzmfTWt2/e04FsCZWcrt1ewsi+8eEZrwNyMemgFG
-        nQRsZ0Lvmf5TR/sF1Ch5Kw9wJxl3jjNr/yTdkZ1uwyzTk+Y=
-X-Google-Smtp-Source: APXvYqxlBB0dep/EPOGen5JaqTJdqhQonTOtlTbcJ3wsUcdbnPO0knRk7DEYFdun/hcIwR3Ea1j46FqigGDb8pzfvBs=
-X-Received: by 2002:ac8:2617:: with SMTP id u23mr102472823qtu.141.1559150344534;
- Wed, 29 May 2019 10:19:04 -0700 (PDT)
+        bh=jseR0G1MK8l+SedwWAn1+xBXO7oEnZiUpZgmshuXjz0=;
+        b=gz1ITQYHf0vDIWiKE0+/QA+IuTHCW6TuAZ7ciQ4+dnWma9UsUKcFnqEpyr3e38h/Gv
+         0zXIszMfTDss2SHmbwK4zNE2pOOdYBw4QoO1LZqNHQ/HOaSJgYOm1O6+3whb2QryphG4
+         dSbVAugas5omtpe9JHA/dt4sP6dGrdA0JgH1kCUwmXidFplYCxNBUBCkf17JwFYeE07/
+         gAEJ0+eqqszf9Wxiit+4oc+xV/U289kLj9vEjXPLiv6bvvtysNoqZZBnofAC5F6gk/Q7
+         Ni+OCFE5i2IauSYIo88OOmPJ1/9N8T4Ye6yO1AMpumHSUIaCoYkPR5l/UxqQJ5zJ0W1O
+         weRQ==
+X-Gm-Message-State: APjAAAWDukBmiNdO0uzraya3jxg1u7dlgf+Cthvy7mhXGybV61UqmToE
+        jeEO/IZOZiLQ6lvtv8HyvYCVNrlmjnlU82ucAslHCA+vsVc=
+X-Google-Smtp-Source: APXvYqwqaQkbWkSA9n7gxYchfWrtWbi4aBYWgcjg5ty6Myz0wvTm9z0q5Gz3sYg/WktolcsEvCxlcdgPVZSSAJ7SHEs=
+X-Received: by 2002:aed:3bd7:: with SMTP id s23mr21030065qte.139.1559150643071;
+ Wed, 29 May 2019 10:24:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190529163616.8418-1-mrostecki@opensuse.org>
-In-Reply-To: <20190529163616.8418-1-mrostecki@opensuse.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 29 May 2019 10:18:53 -0700
-Message-ID: <CAEf4BzbajeCeWbS8=Y+E-TxY5m5DnHkco7UriU96mNn-knqc4Q@mail.gmail.com>
-Subject: Re: [PATCH bpf v3] libbpf: Return btf_fd for load_sk_storage_btf
-To:     Michal Rostecki <mrostecki@opensuse.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+References: <20190529011426.1328736-1-andriin@fb.com> <20190529011426.1328736-7-andriin@fb.com>
+In-Reply-To: <20190529011426.1328736-7-andriin@fb.com>
+From:   Song Liu <liu.song.a23@gmail.com>
+Date:   Wed, 29 May 2019 10:23:51 -0700
+Message-ID: <CAPhsuW4UGQ1MRzmA5YLkQ_cem70BvNLQXimXjVVej46+TZ+=Hw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 6/9] libbpf: use negative fd to specify missing BTF
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 29, 2019 at 9:35 AM Michal Rostecki <mrostecki@opensuse.org> wrote:
+On Tue, May 28, 2019 at 6:14 PM Andrii Nakryiko <andriin@fb.com> wrote:
 >
-> Before this change, function load_sk_storage_btf expected that
-> libbpf__probe_raw_btf was returning a BTF descriptor, but in fact it was
-> returning an information about whether the probe was successful (0 or
-> 1). load_sk_storage_btf was using that value as an argument of the close
-> function, which was resulting in closing stdout and thus terminating the
-> process which called that function.
+> 0 is a valid FD, so it's better to initialize it to -1, as is done in
+> other places. Also, technically, BTF type ID 0 is valid (it's a VOID
+> type), so it's more reliable to check btf_fd, instead of
+> btf_key_type_id, to determine if there is any BTF associated with a map.
 >
-> That bug was visible in bpftool. `bpftool feature` subcommand was always
-> exiting too early (because of closed stdout) and it didn't display all
-> requested probes. `bpftool -j feature` or `bpftool -p feature` were not
-> returning a valid json object.
->
-> This change remnames the libbpf__probe_raw_btf function to
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Acked-by: Song Liu <songliubraving@fb.com>
 
-typo: remnames -> renames
-
-> libbpf__load_raw_btf, which now returns a BTF descriptor, as expected in
-> load_sk_storage_btf.
->
-> v2:
-> - Fix typo in the commit message.
->
-> v3:
-> - Simplify BTF descriptor handling in bpf_object__probe_btf_* functions.
-> - Rename libbpf__probe_raw_btf function to libbpf__load_raw_btf and
-> return a BTF descriptor.
->
-> Fixes: d7c4b3980c18 ("libbpf: detect supported kernel BTF features and sanitize BTF")
-> Signed-off-by: Michal Rostecki <mrostecki@opensuse.org>
 > ---
-
-Thanks!
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  tools/lib/bpf/libbpf.c          | 28 ++++++++++++++++------------
->  tools/lib/bpf/libbpf_internal.h |  4 ++--
->  tools/lib/bpf/libbpf_probes.c   | 13 ++++---------
->  3 files changed, 22 insertions(+), 23 deletions(-)
+>  tools/lib/bpf/libbpf.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
 >
 > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 197b574406b3..5d046cc7b207 100644
+> index 9c45856e7fd6..292ea9a2dc3d 100644
 > --- a/tools/lib/bpf/libbpf.c
 > +++ b/tools/lib/bpf/libbpf.c
-> @@ -1645,14 +1645,16 @@ static int bpf_object__probe_btf_func(struct bpf_object *obj)
->                 /* FUNC x */                                    /* [3] */
->                 BTF_TYPE_ENC(5, BTF_INFO_ENC(BTF_KIND_FUNC, 0, 0), 2),
->         };
-> -       int res;
-> +       int btf_fd;
+> @@ -1751,7 +1751,7 @@ bpf_object__create_maps(struct bpf_object *obj)
+>                 create_attr.key_size = def->key_size;
+>                 create_attr.value_size = def->value_size;
+>                 create_attr.max_entries = def->max_entries;
+> -               create_attr.btf_fd = 0;
+> +               create_attr.btf_fd = -1;
+>                 create_attr.btf_key_type_id = 0;
+>                 create_attr.btf_value_type_id = 0;
+>                 if (bpf_map_type__is_map_in_map(def->type) &&
+> @@ -1765,11 +1765,11 @@ bpf_object__create_maps(struct bpf_object *obj)
+>                 }
 >
-> -       res = libbpf__probe_raw_btf((char *)types, sizeof(types),
-> -                                   strs, sizeof(strs));
-> -       if (res < 0)
-> -               return res;
-> -       if (res > 0)
-> +       btf_fd = libbpf__load_raw_btf((char *)types, sizeof(types),
-> +                                     strs, sizeof(strs));
-> +       if (btf_fd >= 0) {
->                 obj->caps.btf_func = 1;
-> +               close(btf_fd);
-> +               return 1;
-> +       }
+>                 *pfd = bpf_create_map_xattr(&create_attr);
+> -               if (*pfd < 0 && create_attr.btf_key_type_id) {
+> +               if (*pfd < 0 && create_attr.btf_fd >= 0) {
+>                         cp = libbpf_strerror_r(errno, errmsg, sizeof(errmsg));
+>                         pr_warning("Error in bpf_create_map_xattr(%s):%s(%d). Retrying without BTF.\n",
+>                                    map->name, cp, errno);
+> -                       create_attr.btf_fd = 0;
+> +                       create_attr.btf_fd = -1;
+>                         create_attr.btf_key_type_id = 0;
+>                         create_attr.btf_value_type_id = 0;
+>                         map->btf_key_type_id = 0;
+> @@ -2053,6 +2053,9 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
+>         char *log_buf;
+>         int ret;
+>
+> +       if (!insns || !insns_cnt)
+> +               return -EINVAL;
 > +
->         return 0;
->  }
+>         memset(&load_attr, 0, sizeof(struct bpf_load_program_attr));
+>         load_attr.prog_type = prog->type;
+>         load_attr.expected_attach_type = prog->expected_attach_type;
+> @@ -2063,7 +2066,7 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
+>         load_attr.license = license;
+>         load_attr.kern_version = kern_version;
+>         load_attr.prog_ifindex = prog->prog_ifindex;
+> -       load_attr.prog_btf_fd = prog->btf_fd >= 0 ? prog->btf_fd : 0;
+> +       load_attr.prog_btf_fd = prog->btf_fd;
+>         load_attr.func_info = prog->func_info;
+>         load_attr.func_info_rec_size = prog->func_info_rec_size;
+>         load_attr.func_info_cnt = prog->func_info_cnt;
+> @@ -2072,8 +2075,6 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
+>         load_attr.line_info_cnt = prog->line_info_cnt;
+>         load_attr.log_level = prog->log_level;
+>         load_attr.prog_flags = prog->prog_flags;
+> -       if (!load_attr.insns || !load_attr.insns_cnt)
+> -               return -EINVAL;
 >
-> @@ -1670,14 +1672,16 @@ static int bpf_object__probe_btf_datasec(struct bpf_object *obj)
->                 BTF_TYPE_ENC(3, BTF_INFO_ENC(BTF_KIND_DATASEC, 0, 1), 4),
->                 BTF_VAR_SECINFO_ENC(2, 0, 4),
->         };
-> -       int res;
-> +       int btf_fd;
->
-> -       res = libbpf__probe_raw_btf((char *)types, sizeof(types),
-> -                                   strs, sizeof(strs));
-> -       if (res < 0)
-> -               return res;
-> -       if (res > 0)
-> +       btf_fd = libbpf__load_raw_btf((char *)types, sizeof(types),
-> +                                     strs, sizeof(strs));
-> +       if (btf_fd >= 0) {
->                 obj->caps.btf_datasec = 1;
-> +               close(btf_fd);
-> +               return 1;
-> +       }
-> +
->         return 0;
->  }
->
-> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-> index f3025b4d90e1..dfab8012185c 100644
-> --- a/tools/lib/bpf/libbpf_internal.h
-> +++ b/tools/lib/bpf/libbpf_internal.h
-> @@ -34,7 +34,7 @@ do {                          \
->  #define pr_info(fmt, ...)      __pr(LIBBPF_INFO, fmt, ##__VA_ARGS__)
->  #define pr_debug(fmt, ...)     __pr(LIBBPF_DEBUG, fmt, ##__VA_ARGS__)
->
-> -int libbpf__probe_raw_btf(const char *raw_types, size_t types_len,
-> -                         const char *str_sec, size_t str_len);
-> +int libbpf__load_raw_btf(const char *raw_types, size_t types_len,
-> +                        const char *str_sec, size_t str_len);
->
->  #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
-> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
-> index 5e2aa83f637a..6635a31a7a16 100644
-> --- a/tools/lib/bpf/libbpf_probes.c
-> +++ b/tools/lib/bpf/libbpf_probes.c
-> @@ -133,8 +133,8 @@ bool bpf_probe_prog_type(enum bpf_prog_type prog_type, __u32 ifindex)
->         return errno != EINVAL && errno != EOPNOTSUPP;
->  }
->
-> -int libbpf__probe_raw_btf(const char *raw_types, size_t types_len,
-> -                         const char *str_sec, size_t str_len)
-> +int libbpf__load_raw_btf(const char *raw_types, size_t types_len,
-> +                        const char *str_sec, size_t str_len)
->  {
->         struct btf_header hdr = {
->                 .magic = BTF_MAGIC,
-> @@ -157,14 +157,9 @@ int libbpf__probe_raw_btf(const char *raw_types, size_t types_len,
->         memcpy(raw_btf + hdr.hdr_len + hdr.type_len, str_sec, hdr.str_len);
->
->         btf_fd = bpf_load_btf(raw_btf, btf_len, NULL, 0, false);
-> -       if (btf_fd < 0) {
-> -               free(raw_btf);
-> -               return 0;
-> -       }
->
-> -       close(btf_fd);
->         free(raw_btf);
-> -       return 1;
-> +       return btf_fd;
->  }
->
->  static int load_sk_storage_btf(void)
-> @@ -190,7 +185,7 @@ static int load_sk_storage_btf(void)
->                 BTF_MEMBER_ENC(23, 2, 32),/* struct bpf_spin_lock l; */
->         };
->
-> -       return libbpf__probe_raw_btf((char *)types, sizeof(types),
-> +       return libbpf__load_raw_btf((char *)types, sizeof(types),
->                                      strs, sizeof(strs));
->  }
->
+>  retry_load:
+>         log_buf = malloc(log_buf_size);
 > --
-> 2.21.0
+> 2.17.1
 >
