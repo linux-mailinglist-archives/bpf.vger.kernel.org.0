@@ -2,829 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 952062E87C
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2019 00:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB272E914
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2019 01:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726462AbfE2WtK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 May 2019 18:49:10 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:50544 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726189AbfE2WtK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 29 May 2019 18:49:10 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4TMh83K021580;
-        Wed, 29 May 2019 15:48:43 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=STZ7gI2lBUQvhTvtd2TnEK14P9mWmHqUuhIF/p85PYM=;
- b=X1DjfI1sZe5maHWI9V4GOJx4XOTQwxi0wIbsgjPLauaEcNtzXZ++VQRctZctooxlbA4B
- Tt/wPpRso+m63s5Y3Jnh5XPZ9/fQfOw7np+98rZVIFiCyOpA0S4LaUIt6I1MtRgNrXyj
- lU48TYH6+reqhvHLFZYpEysI1joB9mF+xso= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2st0p58j08-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 29 May 2019 15:48:42 -0700
-Received: from prn-mbx06.TheFacebook.com (2620:10d:c081:6::20) by
- prn-hub05.TheFacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 29 May 2019 15:48:41 -0700
-Received: from prn-hub02.TheFacebook.com (2620:10d:c081:35::126) by
- prn-mbx06.TheFacebook.com (2620:10d:c081:6::20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 29 May 2019 15:48:41 -0700
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.26) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Wed, 29 May 2019 15:48:41 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=STZ7gI2lBUQvhTvtd2TnEK14P9mWmHqUuhIF/p85PYM=;
- b=qFOpkZ4o0mGVXYOW4aedFBMPwlKHIB4Riktk7i2khrZjwfA7wAH0ykQ5zMTZhJ4mKHKYnIsldpUVSz7g8evpR0OUDtVVbyR0MiDmGwZDC1OZPanTLA5kg7xbdp+IAVRHNWOpybQ6h4AnOppydXKJZ2/NEB39H4M6flvkBz3NvEc=
-Received: from BN6PR15MB1154.namprd15.prod.outlook.com (10.172.208.137) by
- BN6PR15MB1121.namprd15.prod.outlook.com (10.172.205.141) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1922.16; Wed, 29 May 2019 22:48:39 +0000
-Received: from BN6PR15MB1154.namprd15.prod.outlook.com
- ([fe80::adc0:9bbf:9292:27bd]) by BN6PR15MB1154.namprd15.prod.outlook.com
- ([fe80::adc0:9bbf:9292:27bd%2]) with mapi id 15.20.1922.021; Wed, 29 May 2019
- 22:48:39 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Alan Maguire <alan.maguire@oracle.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "xdp-newbies@vger.kernel.org" <xdp-newbies@vger.kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>, "Martin Lau" <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: measure RTT from xdp using
- xdping
-Thread-Topic: [PATCH bpf-next v2] selftests/bpf: measure RTT from xdp using
- xdping
-Thread-Index: AQHVFmt1F4kFCSA6ZUqvPQ6JVwc186aCtHUA
-Date:   Wed, 29 May 2019 22:48:38 +0000
-Message-ID: <9B5603F3-D182-483B-8E92-460C92DF73F0@fb.com>
-References: <1559167842-27138-1-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1559167842-27138-1-git-send-email-alan.maguire@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3445.104.11)
-x-originating-ip: [2620:10d:c090:180::a92c]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5b88303e-27ae-4ea2-6198-08d6e487cab8
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:BN6PR15MB1121;
-x-ms-traffictypediagnostic: BN6PR15MB1121:
-x-microsoft-antispam-prvs: <BN6PR15MB11216A571E97DE3A83DC1BF9B31F0@BN6PR15MB1121.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3826;
-x-forefront-prvs: 0052308DC6
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(376002)(396003)(39860400002)(346002)(366004)(136003)(199004)(189003)(91956017)(76116006)(66946007)(81166006)(186003)(53936002)(64756008)(54906003)(66446008)(73956011)(6916009)(66556008)(71190400001)(71200400001)(8676002)(68736007)(50226002)(7736002)(8936002)(316002)(229853002)(83716004)(82746002)(478600001)(36756003)(86362001)(5660300002)(14454004)(6436002)(2906002)(30864003)(7416002)(66476007)(486006)(76176011)(305945005)(11346002)(33656002)(25786009)(6506007)(53546011)(2616005)(5024004)(14444005)(256004)(102836004)(57306001)(53946003)(446003)(99286004)(46003)(6116002)(476003)(6486002)(4326008)(45080400002)(6512007)(6246003)(81156014);DIR:OUT;SFP:1102;SCL:1;SRVR:BN6PR15MB1121;H:BN6PR15MB1154.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: Lr+qmMFmmHEBdF0x8y0A3tGyeEJoaQvDJ5nxmx6eY9HCHvT3uFF57GdXXhyNo8Y2+x9CIU+kCxnPiHebojc+OcY45+RUYGnFzycwZ+1KXsptHq1pljmr1cgQny2ZrUwtKnQXT1sUSiy2Gr/yYvwfgJMrX6PUSikiAHICBQbtwiqKg1vcS2kYy5lR8EdhmChZMcAX0iw62tXi01Q6K7dFJl3HT4hqfcvwOlhDKjHu46G4xZU6ozAekfAuENrln8Sp1EHAlcoJu+Xw8NxOO9QSZpG4VjwpE5JqStBPFu0SXpHzDa3aS7oo4AxT9lJbgeQs3gDZ79I556OIJnRYvSaVaF2M3QI3xDqOBxZM3scmN8YjlfjrISPVqVr2jD8J71oQJfFg6WWbjWvtG6veH4DCOi5HM7aN2ggK8j6m0tc7hxE=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <F350B84790AFAD439D2C4ECA9B5C063F@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726859AbfE2XYZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 May 2019 19:24:25 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:49236 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726689AbfE2XYD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 May 2019 19:24:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=StJ6LM8sQHkYI5UThzShneAjra5wi5bo/RYRsdxPQsA=; b=V2B9Vgs83dRLjIuQnd2C2vgYZ
+        +JgyOXeO1GKHOK9c4tRnNUqThik6tzysID2WPnKRr+36Nqy1H2ECRX9ShWnHkjcDarRRE36sMjLp8
+        rMBiNxdP14bOP1wi/jaweQN4P3parh4up8rfOPsYIJGMzClSMcNhqm2YUZ7FfQaCciCjPJlpLJJ9c
+        aeXT61eHnnOWKaxRn+HXRc3LwC2Y8Shpt7KozKcXuJxu6PITTqtbQgKa7rv4JBRtqJqIYr0SPtFcn
+        /5RDAzsKEfsB7oXgNPBlX7TDbPq/0Xg+hPhZkg4J+5oeanlc8QNxz2G9sF0j0yZAp7oTlogcPh66P
+        SAaTMxt+g==;
+Received: from 177.132.232.81.dynamic.adsl.gvt.net.br ([177.132.232.81] helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
+        id 1hW7vL-0005Rx-II; Wed, 29 May 2019 23:23:59 +0000
+Received: from mchehab by bombadil.infradead.org with local (Exim 4.92)
+        (envelope-from <mchehab@bombadil.infradead.org>)
+        id 1hW7vI-0007wg-Fn; Wed, 29 May 2019 20:23:56 -0300
+From:   Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@infradead.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        xen-devel@lists.xenproject.org, linux-kselftest@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-pm@vger.kernel.org, devel@driverdev.osuosl.org,
+        keyrings@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-integrity@vger.kernel.org, linux-mtd@lists.infradead.org,
+        patches@opensource.cirrus.com, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, alsa-devel@alsa-project.org,
+        devel@acpica.org, virtualization@lists.linux-foundation.org,
+        linux-mm@kvack.org, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-security-module@vger.kernel.org, linux-i2c@vger.kernel.org,
+        kvm@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org
+Subject: [PATCH 00/22] Some documentation fixes
+Date:   Wed, 29 May 2019 20:23:31 -0300
+Message-Id: <cover.1559171394.git.mchehab+samsung@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b88303e-27ae-4ea2-6198-08d6e487cab8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 May 2019 22:48:39.1622
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: songliubraving@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR15MB1121
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-29_12:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905290141
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Fix several warnings and broken links.
+
+This series was generated against linux-next, but was rebased to be applied at
+docs-next. It should apply cleanly on either tree.
+
+There's a git tree with all of them applied on the top of docs/docs-next
+at:
+
+https://git.linuxtv.org/mchehab/experimental.git/log/?h=fix_doc_links_v2
 
 
-> On May 29, 2019, at 3:10 PM, Alan Maguire <alan.maguire@oracle.com> wrote=
-:
->=20
-> xdping allows us to get latency estimates from XDP.  Output looks
-> like this:
->=20
-> ./xdping -I eth4 192.168.55.8
-> Setting up XDP for eth4, please wait...
-> XDP setup disrupts network connectivity, hit Ctrl+C to quit
->=20
-> Normal ping RTT data
-> [Ignore final RTT; it is distorted by XDP using the reply]
-> PING 192.168.55.8 (192.168.55.8) from 192.168.55.7 eth4: 56(84) bytes of =
-data.
-> 64 bytes from 192.168.55.8: icmp_seq=3D1 ttl=3D64 time=3D0.302 ms
-> 64 bytes from 192.168.55.8: icmp_seq=3D2 ttl=3D64 time=3D0.208 ms
-> 64 bytes from 192.168.55.8: icmp_seq=3D3 ttl=3D64 time=3D0.163 ms
-> 64 bytes from 192.168.55.8: icmp_seq=3D8 ttl=3D64 time=3D0.275 ms
-				      ^ icmp_seq should be 4.=20
->=20
-> 4 packets transmitted, 4 received, 0% packet loss, time 3079ms
-> rtt min/avg/max/mdev =3D 0.163/0.237/0.302/0.054 ms
->=20
-> XDP RTT data:
-> 64 bytes from 192.168.55.8: icmp_seq=3D5 ttl=3D64 time=3D0.02808 ms
-> 64 bytes from 192.168.55.8: icmp_seq=3D6 ttl=3D64 time=3D0.02804 ms
-> 64 bytes from 192.168.55.8: icmp_seq=3D7 ttl=3D64 time=3D0.02815 ms
-> 64 bytes from 192.168.55.8: icmp_seq=3D8 ttl=3D64 time=3D0.02805 ms
->=20
-> The xdping program loads the associated xdping_kern.o BPF program
-> and attaches it to the specified interface.  If run in client
-> mode (the default), it will add a map entry keyed by the
-> target IP address; this map will store RTT measurements, current
-> sequence number etc.  Finally in client mode the ping command
-> is executed, and the xdping BPF program will use the last ICMP
-> reply, reformulate it as an ICMP request with the next sequence
-> number and XDP_TX it.  After the reply to that request is received
-> we can measure RTT and repeat until the desired number of
-> measurements is made.
->=20
-> In server mode (-s), xdping simply takes ICMP requests and replies
-> to them in XDP rather than passing the request up to the networking
-> stack.  No map entry is required.
->=20
-> xdping can be run in native XDP mode (the default, or specified
-> via -N) or in skb mode (-S).
->=20
-> A test program test_xdping.sh exercises some of these options.
->=20
-> Note that native XDP does not seem to XDP_TX for veths, hence -N
-> is not tested.  Looking at the code, it looks like XDP_TX is
-> supported so I'm not sure if that's expected.  Running xdping in
-> native mode for ixgbe as both client and server works fine.
->=20
-> Changes since v1
-> - moved from RFC to PATCH
-> - removed unused variable in ipv4_csum() (Song Liu)
-> - refactored ICMP checks into icmp_check() function called by client
->   and server programs and reworked client and server programs due
->   to lack of shared code (Song Liu)
-> - added checks to ensure that SKB and native mode are not requested
->   together (Song Liu)
->=20
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
-> tools/testing/selftests/bpf/.gitignore          |   1 +
-> tools/testing/selftests/bpf/Makefile            |   5 +-
-> tools/testing/selftests/bpf/progs/xdping_kern.c | 187 ++++++++++++++++++
-> tools/testing/selftests/bpf/test_xdping.sh      |  99 ++++++++++
-> tools/testing/selftests/bpf/xdping.c            | 251 +++++++++++++++++++=
-+++++
-> tools/testing/selftests/bpf/xdping.h            |  11 ++
-> 6 files changed, 552 insertions(+), 2 deletions(-)
-> create mode 100644 tools/testing/selftests/bpf/progs/xdping_kern.c
-> create mode 100755 tools/testing/selftests/bpf/test_xdping.sh
-> create mode 100644 tools/testing/selftests/bpf/xdping.c
-> create mode 100644 tools/testing/selftests/bpf/xdping.h
->=20
-> diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selft=
-ests/bpf/.gitignore
-> index b2a9902..7470327 100644
-> --- a/tools/testing/selftests/bpf/.gitignore
-> +++ b/tools/testing/selftests/bpf/.gitignore
-> @@ -38,3 +38,4 @@ libbpf.pc
-> libbpf.so.*
-> test_hashmap
-> test_btf_dump
-> +xdping
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index 9b21391..2b426ae 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -26,7 +26,7 @@ TEST_GEN_PROGS =3D test_verifier test_tag test_maps tes=
-t_lru_map test_lpm_map test
-> 	test_sock test_btf test_sockmap test_lirc_mode2_user get_cgroup_id_user =
-\
-> 	test_socket_cookie test_cgroup_storage test_select_reuseport test_sectio=
-n_names \
-> 	test_netcnt test_tcpnotify_user test_sock_fields test_sysctl test_hashma=
-p \
-> -	test_btf_dump test_cgroup_attach
-> +	test_btf_dump test_cgroup_attach xdping
->=20
-> BPF_OBJ_FILES =3D $(patsubst %.c,%.o, $(notdir $(wildcard progs/*.c)))
-> TEST_GEN_FILES =3D $(BPF_OBJ_FILES)
-> @@ -57,7 +57,8 @@ TEST_PROGS :=3D test_kmod.sh \
-> 	test_lwt_ip_encap.sh \
-> 	test_tcp_check_syncookie.sh \
-> 	test_tc_tunnel.sh \
-> -	test_tc_edt.sh
-> +	test_tc_edt.sh \
-> +	test_xdping.sh
->=20
-> TEST_PROGS_EXTENDED :=3D with_addr.sh \
-> 	with_tunnels.sh \
-> diff --git a/tools/testing/selftests/bpf/progs/xdping_kern.c b/tools/test=
-ing/selftests/bpf/progs/xdping_kern.c
-> new file mode 100644
-> index 0000000..1849015
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/xdping_kern.c
-> @@ -0,0 +1,187 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved=
-. */
-> +
-> +#define KBUILD_MODNAME "foo"
-> +#include <stddef.h>
-> +#include <string.h>
-> +#include <linux/bpf.h>
-> +#include <linux/icmp.h>
-> +#include <linux/in.h>
-> +#include <linux/if_ether.h>
-> +#include <linux/if_packet.h>
-> +#include <linux/if_vlan.h>
-> +#include <linux/ip.h>
-> +
-> +#include "bpf_helpers.h"
-> +#include "bpf_endian.h"
-> +
-> +#include "xdping.h"
-> +
-> +struct bpf_map_def SEC("maps") ping_map =3D {
-> +	.type =3D BPF_MAP_TYPE_HASH,
-> +	.key_size =3D sizeof(__u32),
-> +	.value_size =3D sizeof(struct pinginfo),
-> +	.max_entries =3D 256,
-> +};
-> +
-> +static __always_inline void swap_src_dst_mac(void *data)
-> +{
-> +	unsigned short *p =3D data;
-> +	unsigned short dst[3];
-> +
-> +	dst[0] =3D p[0];
-> +	dst[1] =3D p[1];
-> +	dst[2] =3D p[2];
-> +	p[0] =3D p[3];
-> +	p[1] =3D p[4];
-> +	p[2] =3D p[5];
-> +	p[3] =3D dst[0];
-> +	p[4] =3D dst[1];
-> +	p[5] =3D dst[2];
-> +}
-> +
-> +static __always_inline __u16 csum_fold_helper(__u32 csum)
-> +{
-> +	csum =3D (csum & 0xffff) + (csum >> 16);
-> +	return ~((csum & 0xffff) + (csum >> 16));
-> +}
-> +
-> +static __always_inline void ipv4_csum(void *data_start, int data_size,
-> +				      __u32 *csum)
-> +{
-> +	*csum =3D bpf_csum_diff(0, 0, data_start, data_size, *csum);
-> +	*csum =3D csum_fold_helper(*csum);
-> +}
-> +
-> +#define ICMP_ECHO_LEN		64
-> +
-> +static __always_inline int icmp_check(struct xdp_md *ctx, int type)
-> +{
-> +	void *data_end =3D (void *)(long)ctx->data_end;
-> +	void *data =3D (void *)(long)ctx->data;
-> +	struct ethhdr *eth =3D data;
-> +	struct icmphdr *icmph;
-> +	struct iphdr *iph;
-> +
-> +	if (data + sizeof(*eth) + sizeof(*iph) + ICMP_ECHO_LEN > data_end)
-> +		return XDP_PASS;
-> +
-> +	if (eth->h_proto !=3D bpf_htons(ETH_P_IP))
-> +		return XDP_PASS;
-> +
-> +	iph =3D data + sizeof(*eth);
-> +
-> +	if (iph->protocol !=3D IPPROTO_ICMP)
-> +		return XDP_PASS;
-> +
-> +	if (bpf_ntohs(iph->tot_len) - sizeof(*iph) !=3D ICMP_ECHO_LEN)
-> +		return XDP_PASS;
-> +
-> +	icmph =3D data + sizeof(*eth) + sizeof(*iph);
-> +
-> +	if (icmph->type !=3D type)
-> +		return XDP_PASS;
-> +
-> +	return XDP_TX;
-> +}
-> +
-> +SEC("xdpclient")
-> +int xdping_client(struct xdp_md *ctx)
-> +{
-> +	void *data_end =3D (void *)(long)ctx->data_end;
-> +	void *data =3D (void *)(long)ctx->data;
-> +	struct pinginfo *pinginfo =3D NULL;
-> +	struct ethhdr *eth =3D data;
-> +	struct icmphdr *icmph;
-> +	struct iphdr *iph;
-> +	__u64 recvtime;
-> +	__u32 csum =3D 0;
-> +	__u32 raddr;
-> +	__u16 seq;
+Mauro Carvalho Chehab (21):
+  ABI: sysfs-devices-system-cpu: point to the right docs
+  isdn: mISDN: remove a bogus reference to a non-existing doc
+  dt: fix broken references to nand.txt
+  docs: zh_CN: get rid of basic_profiling.txt
+  doc: it_IT: fix reference to magic-number.rst
+  docs: mm: numaperf.rst: get rid of a build warning
+  docs: bpf: get rid of two warnings
+  docs: mark orphan documents as such
+  docs: amd-memory-encryption.rst get rid of warnings
+  gpu: amdgpu: fix broken amdgpu_dma_buf.c references
+  gpu: i915.rst: Fix references to renamed files
+  docs: zh_CN: avoid duplicate citation references
+  docs: vm: hmm.rst: fix some warnings
+  docs: it: license-rules.rst: get rid of warnings
+  docs: gpio: driver.rst: fix a bad tag
+  docs: soundwire: locking: fix tags for a code-block
+  docs: security: trusted-encrypted.rst: fix code-block tag
+  docs: security: core.rst: Fix several warnings
+  docs: net: dpio-driver.rst: fix two codeblock warnings
+  docs: net: sja1105.rst: fix table format
+  docs: fix broken documentation links
 
-I think we should use __be32, __be16 for seq, radder, and csum.=20
+Otto Sabart (1):
+  mfd: madera: Fix bad reference to pinctrl.txt file
 
-> +	int ret;
-> +	__u8 i;
-> +
-> +	ret =3D icmp_check(ctx, ICMP_ECHOREPLY);
-> +
-> +	if (ret !=3D XDP_TX)
-> +		return ret;
-> +
-> +	iph =3D data + sizeof(*eth);
-> +	icmph =3D data + sizeof(*eth) + sizeof(*iph);
-> +	raddr =3D iph->saddr;
-> +
-> +	/* Record time reply received. */
-> +	recvtime =3D bpf_ktime_get_ns();
-> +	pinginfo =3D bpf_map_lookup_elem(&ping_map, &raddr);
-> +	if (!pinginfo || pinginfo->seq !=3D icmph->un.echo.sequence)
-> +		return XDP_PASS;
-> +
-> +	if (pinginfo->start) {
-> +#pragma clang loop unroll(full)
-> +		for (i =3D 0; i < XDPING_MAX_COUNT; i++) {
-> +			if (pinginfo->times[i] =3D=3D 0)
-> +				break;
-> +		}
-> +		/* verifier is fussy here... */
-> +		if (i < XDPING_MAX_COUNT) {
-> +			pinginfo->times[i] =3D recvtime -
-> +					     pinginfo->start;
-> +			pinginfo->start =3D 0;
-> +			i++;
-> +		}
-> +		/* No more space for values? */
-> +		if (i =3D=3D pinginfo->count || i =3D=3D XDPING_MAX_COUNT)
-> +			return XDP_PASS;
-> +	}
-> +
-> +	/* Now convert reply back into echo request. */
-> +	swap_src_dst_mac(data);
-> +	iph->saddr =3D iph->daddr;
-> +	iph->daddr =3D raddr;
-> +	icmph->type =3D ICMP_ECHO;
-> +	seq =3D bpf_htons(bpf_ntohs(icmph->un.echo.sequence) + 1);
-> +	icmph->un.echo.sequence =3D seq;
-> +	icmph->checksum =3D 0;
-> +	ipv4_csum(icmph, ICMP_ECHO_LEN, &csum);
-> +	icmph->checksum =3D csum;
-> +
-> +	pinginfo->seq =3D seq;
-> +	pinginfo->start =3D bpf_ktime_get_ns();
-> +
-> +	return XDP_TX;
-> +}
-> +
-> +SEC("xdpserver")
-> +int xdping_server(struct xdp_md *ctx)
-> +{
-> +	void *data_end =3D (void *)(long)ctx->data_end;
-> +	void *data =3D (void *)(long)ctx->data;
-> +	struct ethhdr *eth =3D data;
-> +	struct icmphdr *icmph;
-> +	struct iphdr *iph;
-> +	__u32 csum =3D 0;
-> +	__u32 raddr;
-> +	int ret;
-> +
-> +	ret =3D icmp_check(ctx, ICMP_ECHO);
-> +
-> +	if (ret !=3D XDP_TX)
-> +		return ret;
-> +
-> +	iph =3D data + sizeof(*eth);
-> +	icmph =3D data + sizeof(*eth) + sizeof(*iph);
-> +	raddr =3D iph->saddr;
-> +
-> +	/* Now convert request into echo reply. */
-> +	swap_src_dst_mac(data);
-> +	iph->saddr =3D iph->daddr;
-> +	iph->daddr =3D raddr;
-> +	icmph->type =3D ICMP_ECHOREPLY;
-> +	icmph->checksum =3D 0;
-> +	ipv4_csum(icmph, ICMP_ECHO_LEN, &csum);
-> +	icmph->checksum =3D csum;
-> +
-> +	return XDP_TX;
-> +}
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> diff --git a/tools/testing/selftests/bpf/test_xdping.sh b/tools/testing/s=
-elftests/bpf/test_xdping.sh
-> new file mode 100755
-> index 0000000..c2f0ddb
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/test_xdping.sh
-> @@ -0,0 +1,99 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +# xdping tests
-> +#   Here we setup and teardown configuration required to run
-> +#   xdping, exercising its options.
-> +#
-> +#   Setup is similar to test_tunnel tests but without the tunnel.
-> +#
-> +# Topology:
-> +# ---------
-> +#     root namespace   |     tc_ns0 namespace
-> +#                      |
-> +#      ----------      |     ----------
-> +#      |  veth1  | --------- |  veth0  |
-> +#      ----------    peer    ----------
-> +#
-> +# Device Configuration
-> +# --------------------
-> +# Root namespace with BPF
-> +# Device names and addresses:
-> +#	veth1 IP: 10.1.1.200
-> +#	xdp added to veth1, xdpings originate from here.
-> +#
-> +# Namespace tc_ns0 with BPF
-> +# Device names and addresses:
-> +#       veth0 IPv4: 10.1.1.100
-> +#	For some tests xdping run in server mode here.
-> +#
-> +
-> +readonly TARGET_IP=3D"10.1.1.100"
-> +readonly TARGET_NS=3D"xdp_ns0"
-> +
-> +readonly LOCAL_IP=3D"10.1.1.200"
-> +
-> +setup()
-> +{
-> +	ip netns add $TARGET_NS
-> +	ip link add veth0 type veth peer name veth1
-> +	ip link set veth0 netns $TARGET_NS
-> +	ip netns exec $TARGET_NS ip addr add ${TARGET_IP}/24 dev veth0
-> +	ip addr add ${LOCAL_IP}/24 dev veth1
-> +	ip netns exec $TARGET_NS ip link set veth0 up
-> +	ip link set veth1 up
-> +}
-> +
-> +cleanup()
-> +{
-> +	set +e
-> +	ip netns delete $TARGET_NS 2>/dev/null
-> +	ip link del veth1 2>/dev/null
-> +	if [[ $server_pid -ne 0 ]]; then
-> +		kill -TERM $server_pid
-> +	fi
-> +}
-> +
-> +test()
-> +{
-> +	client_args=3D"$1"
-> +	server_args=3D"$2"
-> +
-> +	echo "Test client args '$client_args'; server args '$server_args'"
-> +
-> +	server_pid=3D0
-> +	if [[ -n "$server_args" ]]; then
-> +		ip netns exec $TARGET_NS ./xdping $server_args &
-> +		server_pid=3D$!
-> +		sleep 10
-> +	fi
-> +	./xdping $client_args $TARGET_IP
-> +
-> +	if [[ $server_pid -ne 0 ]]; then
-> +		kill -TERM $server_pid
-> +		server_pid=3D0
-> +	fi
-> +
-> +	echo "Test client args '$client_args'; server args '$server_args': PASS=
-"
-> +}
-> +
-> +set -e
-> +
-> +server_pid=3D0
-> +
-> +trap cleanup EXIT
-> +
-> +setup
-> +
-> +for server_args in "" "-I veth0 -s -S" ; do
-> +	# client in skb mode
-> +	client_args=3D"-I veth1 -S"
-> +	test "$client_args" "$server_args"
-> +
-> +	# client with count of 10 RTT measurements.
-> +	client_args=3D"-I veth1 -S -c 10"
-> +	test "$client_args" "$server_args"
-> +done
-> +
-> +echo "OK. All tests passed"
-> +exit 0
-> diff --git a/tools/testing/selftests/bpf/xdping.c b/tools/testing/selftes=
-ts/bpf/xdping.c
-> new file mode 100644
-> index 0000000..f4bab16
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/xdping.c
-> @@ -0,0 +1,251 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved=
-. */
-> +
-> +#include <linux/bpf.h>
-> +#include <linux/if_link.h>
-> +#include <arpa/inet.h>
-> +#include <assert.h>
-> +#include <errno.h>
-> +#include <signal.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <unistd.h>
-> +#include <libgen.h>
-> +#include <sys/resource.h>
-> +#include <net/if.h>
-> +#include <sys/types.h>
-> +#include <sys/socket.h>
-> +#include <netdb.h>
-> +
-> +#include "bpf/bpf.h"
-> +#include "bpf/libbpf.h"
-> +
-> +#include "xdping.h"
-> +
-> +static int ifindex;
-> +static __u32 xdp_flags =3D XDP_FLAGS_UPDATE_IF_NOEXIST;
-> +
-> +static void cleanup(int sig)
-> +{
-> +	bpf_set_link_xdp_fd(ifindex, -1, xdp_flags);
-> +	if (sig)
-> +		exit(1);
-> +}
-> +
-> +static int get_stats(int fd, int count, __u32 raddr)
-> +{
-> +	struct pinginfo pinginfo =3D { 0 };
-> +	char inaddrbuf[INET_ADDRSTRLEN];
-> +	struct in_addr inaddr;
-> +	int i;
-> +
-> +	inaddr.s_addr =3D raddr;
-> +
-> +	printf("\nXDP RTT data:\n");
-> +
-> +	if (bpf_map_lookup_elem(fd, &raddr, &pinginfo)) {
-> +		perror("bpf_map_lookup elem: ");
-> +		return 1;
-> +	}
-> +
-> +	for (i =3D 0; i < count; i++) {
-> +		if (pinginfo.times[i] =3D=3D 0)
-> +			break;
-> +
-> +		printf("64 bytes from %s: icmp_seq=3D%d ttl=3D64 time=3D%#.5f ms\n",
-> +		       inet_ntop(AF_INET, &inaddr, inaddrbuf,
-> +				 sizeof(inaddrbuf)),
-> +		       count + i + 1,
-> +		       (double)pinginfo.times[i]/1000000);
-> +	}
-> +
-> +	if (i < count) {
-> +		fprintf(stderr, "Expected %d samples, got %d.\n", count, i);
-> +		return 1;
-> +	}
-> +
-> +	bpf_map_delete_elem(fd, &raddr);
-> +
-> +	return 0;
-> +}
-> +
-> +static void show_usage(const char *prog)
-> +{
-> +	fprintf(stderr,
-> +		"usage: %s [OPTS] -I interface destination\n\n"
-> +		"OPTS:\n"
-> +		"    -c count		Stop after sending count requests\n"
+ .../ABI/testing/sysfs-devices-system-cpu      |  3 +-
+ Documentation/accelerators/ocxl.rst           |  2 +
+ Documentation/acpi/dsd/leds.txt               |  2 +-
+ .../admin-guide/kernel-parameters.rst         |  6 +-
+ .../admin-guide/kernel-parameters.txt         | 16 ++---
+ Documentation/admin-guide/mm/numaperf.rst     |  5 +-
+ Documentation/admin-guide/ras.rst             |  2 +-
+ Documentation/arm/stm32/overview.rst          |  2 +
+ .../arm/stm32/stm32f429-overview.rst          |  2 +
+ .../arm/stm32/stm32f746-overview.rst          |  2 +
+ .../arm/stm32/stm32f769-overview.rst          |  2 +
+ .../arm/stm32/stm32h743-overview.rst          |  2 +
+ .../arm/stm32/stm32mp157-overview.rst         |  2 +
+ Documentation/bpf/btf.rst                     |  2 +
+ .../bindings/mtd/amlogic,meson-nand.txt       |  2 +-
+ .../devicetree/bindings/mtd/gpmc-nand.txt     |  2 +-
+ .../devicetree/bindings/mtd/marvell-nand.txt  |  2 +-
+ .../devicetree/bindings/mtd/tango-nand.txt    |  2 +-
+ .../devicetree/bindings/net/fsl-enetc.txt     |  7 +-
+ .../bindings/pci/amlogic,meson-pcie.txt       |  2 +-
+ .../regulator/qcom,rpmh-regulator.txt         |  2 +-
+ .../devicetree/booting-without-of.txt         |  2 +-
+ Documentation/driver-api/gpio/board.rst       |  2 +-
+ Documentation/driver-api/gpio/consumer.rst    |  2 +-
+ Documentation/driver-api/gpio/driver.rst      |  2 +-
+ .../driver-api/soundwire/locking.rst          |  4 +-
+ .../firmware-guide/acpi/enumeration.rst       |  2 +-
+ .../firmware-guide/acpi/method-tracing.rst    |  2 +-
+ Documentation/gpu/amdgpu.rst                  |  4 +-
+ Documentation/gpu/i915.rst                    |  6 +-
+ Documentation/gpu/msm-crash-dump.rst          |  2 +
+ Documentation/i2c/instantiating-devices       |  2 +-
+ Documentation/interconnect/interconnect.rst   |  2 +
+ Documentation/laptops/lg-laptop.rst           |  2 +
+ .../freescale/dpaa2/dpio-driver.rst           |  4 +-
+ Documentation/networking/dsa/sja1105.rst      |  6 +-
+ Documentation/powerpc/isa-versions.rst        |  2 +
+ Documentation/security/keys/core.rst          | 16 +++--
+ .../security/keys/trusted-encrypted.rst       |  4 +-
+ Documentation/sysctl/kernel.txt               |  4 +-
+ .../translations/it_IT/process/howto.rst      |  2 +-
+ .../it_IT/process/license-rules.rst           | 28 ++++----
+ .../it_IT/process/magic-number.rst            |  2 +-
+ .../it_IT/process/stable-kernel-rules.rst     |  4 +-
+ .../translations/zh_CN/basic_profiling.txt    | 71 -------------------
+ .../translations/zh_CN/process/4.Coding.rst   |  2 +-
+ .../zh_CN/process/management-style.rst        |  4 +-
+ .../zh_CN/process/programming-language.rst    | 28 ++++----
+ .../virtual/kvm/amd-memory-encryption.rst     |  5 ++
+ Documentation/virtual/kvm/vcpu-requests.rst   |  2 +
+ Documentation/vm/hmm.rst                      |  9 ++-
+ Documentation/x86/x86_64/5level-paging.rst    |  2 +-
+ Documentation/x86/x86_64/boot-options.rst     |  4 +-
+ .../x86/x86_64/fake-numa-for-cpusets.rst      |  2 +-
+ MAINTAINERS                                   |  6 +-
+ arch/arm/Kconfig                              |  2 +-
+ arch/arm64/kernel/kexec_image.c               |  2 +-
+ arch/powerpc/Kconfig                          |  2 +-
+ arch/x86/Kconfig                              | 16 ++---
+ arch/x86/Kconfig.debug                        |  2 +-
+ arch/x86/boot/header.S                        |  2 +-
+ arch/x86/entry/entry_64.S                     |  2 +-
+ arch/x86/include/asm/bootparam_utils.h        |  2 +-
+ arch/x86/include/asm/page_64_types.h          |  2 +-
+ arch/x86/include/asm/pgtable_64_types.h       |  2 +-
+ arch/x86/kernel/cpu/microcode/amd.c           |  2 +-
+ arch/x86/kernel/kexec-bzimage64.c             |  2 +-
+ arch/x86/kernel/pci-dma.c                     |  2 +-
+ arch/x86/mm/tlb.c                             |  2 +-
+ arch/x86/platform/pvh/enlighten.c             |  2 +-
+ drivers/acpi/Kconfig                          | 10 +--
+ drivers/isdn/mISDN/dsp_core.c                 |  2 -
+ drivers/net/ethernet/faraday/ftgmac100.c      |  2 +-
+ .../fieldbus/Documentation/fieldbus_dev.txt   |  4 +-
+ drivers/vhost/vhost.c                         |  2 +-
+ include/acpi/acpi_drivers.h                   |  2 +-
+ include/linux/fs_context.h                    |  2 +-
+ include/linux/lsm_hooks.h                     |  2 +-
+ include/linux/mfd/madera/pdata.h              |  3 +-
+ mm/Kconfig                                    |  2 +-
+ security/Kconfig                              |  2 +-
+ tools/include/linux/err.h                     |  2 +-
+ .../Documentation/stack-validation.txt        |  4 +-
+ tools/testing/selftests/x86/protection_keys.c |  2 +-
+ 84 files changed, 183 insertions(+), 212 deletions(-)
+ delete mode 100644 Documentation/translations/zh_CN/basic_profiling.txt
 
-(default 4, max 10)
+-- 
+2.21.0
 
-> +		"    -I interface	interface name\n"
-> +		"    -N			Run in driver mode\n"
-> +		"    -s			Server mode\n"
-> +		"    -S			Run in skb mode\n",
-> +		prog);
-> +}
-> +
-> +int main(int argc, char **argv)
-> +{
-> +	__u32 mode_flags =3D XDP_FLAGS_DRV_MODE | XDP_FLAGS_SKB_MODE;
-> +	struct addrinfo *a, hints =3D { .ai_family =3D AF_INET };
-> +	struct rlimit r =3D {RLIM_INFINITY, RLIM_INFINITY};
-> +	struct pinginfo pinginfo =3D { 0 };
-> +	const char *optstr =3D "c:I:NsS";
-> +	struct bpf_program *main_prog;
-> +	struct sockaddr_in rin;
-> +	struct bpf_object *obj;
-> +	int prog_fd, map_fd;
-> +	struct bpf_map *map;
-> +	char *ifname =3D NULL;
-> +	char filename[256];
-> +	__u32 raddr =3D 0;
-> +	int server =3D 0;
-> +	int count =3D 4;
-> +	char cmd[256];
-> +	int opt, ret;
-> +
-> +	while ((opt =3D getopt(argc, argv, optstr)) !=3D -1) {
-> +		switch (opt) {
-> +		case 'c':
-> +			count =3D atoi(optarg);
-> +			if (count < 1 || count > XDPING_MAX_COUNT) {
-> +				fprintf(stderr,
-> +					"min count is 1, max count is %d\n",
-> +					XDPING_MAX_COUNT);
-> +				return 1;
-> +			}
-> +			break;
-> +		case 'I':
-> +			ifname =3D optarg;
-> +			ifindex =3D if_nametoindex(ifname);
-> +			if (!ifindex) {
-> +				fprintf(stderr, "Could not get interface %s\n",
-> +					ifname);
-> +				return 1;
-> +			}
-> +			break;
-> +		case 'N':
-> +			xdp_flags |=3D XDP_FLAGS_DRV_MODE;
-> +			break;
-> +		case 's':
-> +			/* use server program */
-> +			server =3D 1;
-> +			break;
-> +		case 'S':
-> +			xdp_flags |=3D XDP_FLAGS_SKB_MODE;
-> +			break;
-> +		default:
-> +			show_usage(basename(argv[0]));
-> +			return 1;
-> +		}
-> +	}
-> +
-> +	if (!ifname) {
-> +		show_usage(basename(argv[0]));
-> +		return 1;
-> +	}
-> +	if (!server && optind =3D=3D argc) {
-> +		show_usage(basename(argv[0]));
-> +		return 1;
-> +	}
-> +
-> +	if ((xdp_flags & mode_flags) =3D=3D mode_flags) {
-> +		fprintf(stderr, "-N or -S can be specified, not both.\n");
-> +		show_usage(basename(argv[0]));
-> +		return 1;
-> +	}
-> +
-> +	if (!server) {
-> +		/* Only supports IPv4; see hints initiailization above. */
-> +		if (getaddrinfo(argv[optind], NULL, &hints, &a) || !a) {
-> +			fprintf(stderr, "Could not resolve %s\n", argv[optind]);
-> +			return 1;
-> +		}
-> +		memcpy(&rin, a->ai_addr, sizeof(rin));
-> +		raddr =3D rin.sin_addr.s_addr;
-> +		freeaddrinfo(a);
-> +	}
-> +
-> +	if (setrlimit(RLIMIT_MEMLOCK, &r)) {
-> +		perror("setrlimit(RLIMIT_MEMLOCK)");
-> +		return 1;
-> +	}
-> +
-> +	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
-> +
-> +	if (bpf_prog_load(filename, BPF_PROG_TYPE_XDP, &obj, &prog_fd)) {
-> +		fprintf(stderr, "load of %s failed\n", filename);
-> +		return 1;
-> +	}
-> +
-> +	main_prog =3D bpf_object__find_program_by_title(obj,
-> +						      server ? "xdpserver" :
-> +							       "xdpclient");
-> +	if (main_prog)
-> +		prog_fd =3D bpf_program__fd(main_prog);
-> +	if (!main_prog || !prog_fd) {
-> +		fprintf(stderr, "could not find xdping program");
-> +		return 1;
-> +	}
-> +
-> +	map =3D bpf_map__next(NULL, obj);
-> +	if (map)
-> +		map_fd =3D bpf_map__fd(map);
-> +	if (!map || !map_fd) {
-> +		fprintf(stderr, "Could not find ping map");
-> +		return 1;
-> +	}
-> +
-> +	signal(SIGINT, cleanup);
-> +	signal(SIGTERM, cleanup);
-> +
-> +	printf("Setting up XDP for %s, please wait...\n", ifname);
-> +
-> +	printf("XDP setup disrupts network connectivity, hit Ctrl+C to quit\n")=
-;
-> +
-> +	if (bpf_set_link_xdp_fd(ifindex, prog_fd, xdp_flags) < 0) {
-> +		fprintf(stderr, "Link set xdp fd failed for %s\n", ifname);
-> +		return 1;
-> +	}
-> +
-> +	if (server) {
-> +		printf("Running server on %s; press Ctrl+C to exit...\n",
-> +		       ifname);
-> +		do { } while (1);
-> +	}
-> +
-> +	/* Start xdping-ing from last regular ping reply, e.g. for a count
-> +	 * of 10 ICMP requests, we start xdping-ing using reply with seq number
-> +	 * 10.  The reason the last "real" ping RTT is much higher is that
-> +	 * the ping program sees the ICMP reply associated with the last
-> +	 * XDP-generated packet, so ping doesn't get a reply until XDP is done.
-> +	 */
-> +	pinginfo.seq =3D htons(count);
-> +	pinginfo.count =3D count;
-> +
-> +	if (bpf_map_update_elem(map_fd, &raddr, &pinginfo, BPF_ANY)) {
-> +		fprintf(stderr, "could not communicate with BPF map: %s\n",
-> +			strerror(errno));
-> +		cleanup(1);
-> +	}
-> +
-> +	/* We need to wait for XDP setup to complete. */
-> +	sleep(10);
-> +
-> +	snprintf(cmd, sizeof(cmd), "ping -c %d -I %s %s",
-> +		 count, ifname, argv[optind]);
-> +
-> +	printf("\nNormal ping RTT data\n");
-> +	printf("[Ignore final RTT; it is distorted by XDP using the reply]\n");
-> +
-> +	ret =3D system(cmd);
-> +
-> +	if (!ret)
-> +		ret =3D get_stats(map_fd, count, raddr);
-> +
-> +	cleanup(0);
-> +
-> +	if (ret)
-> +		return 1;
-> +
-> +	return 0;
-> +}
-> diff --git a/tools/testing/selftests/bpf/xdping.h b/tools/testing/selftes=
-ts/bpf/xdping.h
-> new file mode 100644
-> index 0000000..c4fcb1d
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/xdping.h
-> @@ -0,0 +1,11 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/* Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved=
-. */
-> +
-> +#define	XDPING_MAX_COUNT	10
-> +
-> +struct pinginfo {
-> +	__u64	count;
-> +	__u64	start;
-> +	__u64	seq;
-
-__be16 seq;
-
-> +	__u64	times[XDPING_MAX_COUNT];
-> +};
-> --=20
-> 1.8.3.1
->=20
 
