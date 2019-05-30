@@ -2,65 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6940D302FA
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2019 21:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D1E30326
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2019 22:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726031AbfE3TtA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 May 2019 15:49:00 -0400
-Received: from imap1.codethink.co.uk ([176.9.8.82]:33763 "EHLO
-        imap1.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725897AbfE3TtA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 May 2019 15:49:00 -0400
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126] helo=xylophone)
-        by imap1.codethink.co.uk with esmtpsa (Exim 4.84_2 #1 (Debian))
-        id 1hWR2n-0005UK-Dh; Thu, 30 May 2019 20:48:57 +0100
-Message-ID: <1559245735.24330.6.camel@codethink.co.uk>
-Subject: Re: [stable] bpf: add bpf_jit_limit knob to restrict unpriv
- allocations
-From:   Ben Hutchings <ben.hutchings@codethink.co.uk>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Sasha Levin <Alexander.Levin@microsoft.com>,
-        stable <stable@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Date:   Thu, 30 May 2019 20:48:55 +0100
-In-Reply-To: <20190530173100.GA23688@kroah.com>
-References: <1558994144.2631.14.camel@codethink.co.uk>
-         <1559236680.24330.5.camel@codethink.co.uk>
-         <20190530173100.GA23688@kroah.com>
-Organization: Codethink Ltd.
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.22.6-1+deb9u1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1725961AbfE3UMA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 May 2019 16:12:00 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:54069 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726079AbfE3UL6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 May 2019 16:11:58 -0400
+Received: by mail-wm1-f68.google.com with SMTP id d17so4694900wmb.3
+        for <bpf@vger.kernel.org>; Thu, 30 May 2019 13:11:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=Jk75FVcR69V05SN1mYqY/qJT3B3cWtnlO+MIL3iYbzc=;
+        b=SP5rLDLDJKOUBdw7NaAyEq80mS9yVnBbqv+LDc+ulp2dyLgvN64EAJxODSpY68ePLA
+         Krykxt9UIk2BQBAtBqNrAGX6Y1Y1jTnWaCwzyAPFKjjCamDa5zFuaHTG3eVe59eJf3cE
+         Xzd5PLVVqiOuy4kmKEldqK12SKtrFOOa//WTIMDedZGXc50w3QPhwTkG5LDyeUTxM5uH
+         S/TArgl9xaiT9djJW0cJfS2B1jViugsJ+xRVo+8M7rNtq0rnB8W6smIBcl4BDE/rCT8W
+         M5axAF/8Tf/Cy4udz3Xiq9bXTTaPwF19wmp8BC3+YU4mV499ok5TUkQuGE3OsRkWkbGb
+         EWFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=Jk75FVcR69V05SN1mYqY/qJT3B3cWtnlO+MIL3iYbzc=;
+        b=MDjY0wAzwDBk2ebaK+4yCgfdes4StlokahyYeHTBhHsw+lGbYdC2Ull4c9+4CRJxvr
+         jn/cEjcPHnXe+KGWsR9dIIvwSJ+6Q9/M+skI3wfA+IsymCa9oWdv4x/ADJhRQycnmo4w
+         BRwww8LE2Og9DMLPbeD4m6Xc+X32OTkeQAGKyM3zdOoftPh6KQP5+XNsYyhBku+swdik
+         LSj23fELJBE4IUNaQ9ZONAT3BYOxX3TWIGszz789olPIGva9QGRtE085pIJ910tQ8RMI
+         TnvO0pB7I97sUNZBBCIcEixDoTCQ4tF20hFbJnze75wLzKw2A26Mr5NFEnyohAzKvL3P
+         mUrg==
+X-Gm-Message-State: APjAAAX2Wkba5bxJu2H4sXhWxrwh/IdyxFG9diSiv19VxbEW4xab/br3
+        RFBZNsUS6/MlrKzsJSzEiElXJA==
+X-Google-Smtp-Source: APXvYqzX46mq4DxToktHvaK7AcLq+XHN33kKXU/CqOusf+bwbz8NDpScbMYuLYbEAxq8oBEnzELmuA==
+X-Received: by 2002:a1c:f606:: with SMTP id w6mr3479314wmc.130.1559247116638;
+        Thu, 30 May 2019 13:11:56 -0700 (PDT)
+Received: from LAPTOP-V3S7NLPL (cpc1-cmbg19-2-0-cust104.5-4.cable.virginm.net. [82.27.180.105])
+        by smtp.gmail.com with ESMTPSA id o20sm7381771wro.2.2019.05.30.13.11.54
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 30 May 2019 13:11:55 -0700 (PDT)
+References: <1559202287-15553-1-git-send-email-jiong.wang@netronome.com> <CAPhsuW4cFacLYAF1=8sG3gxu-g+Rzz6ySaFeBmL-sttxLZZLHw@mail.gmail.com>
+User-agent: mu4e 0.9.18; emacs 25.2.2
+From:   Jiong Wang <jiong.wang@netronome.com>
+To:     Song Liu <liu.song.a23@gmail.com>
+Cc:     Jiong Wang <jiong.wang@netronome.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        oss-drivers@netronome.com
+Subject: Re: [PATCH bpf-next] bpf: doc: update answer for 32-bit subregister question
+In-reply-to: <CAPhsuW4cFacLYAF1=8sG3gxu-g+Rzz6ySaFeBmL-sttxLZZLHw@mail.gmail.com>
+Date:   Thu, 30 May 2019 21:11:51 +0100
+Message-ID: <87pnnzpurc.fsf@netronome.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2019-05-30 at 10:31 -0700, Greg Kroah-Hartman wrote:
-> On Thu, May 30, 2019 at 06:18:00PM +0100, Ben Hutchings wrote:
-> > On Mon, 2019-05-27 at 22:55 +0100, Ben Hutchings wrote:
-> > > Please consider backporting this commit to 4.19-stable:
-> > > 
-> > > commit ede95a63b5e84ddeea6b0c473b36ab8bfd8c6ce3
-> > > Author: Daniel Borkmann <daniel@iogearbox.net>
-> > > Date:   Tue Oct 23 01:11:04 2018 +0200
-> > > 
-> > >     bpf: add bpf_jit_limit knob to restrict unpriv allocations
-> > > 
-> > > No other stable branches are affected by the issue.
-> > 
-> > Actually that's wrong; the commit introducing this was backported to
-> > 4.4, 4.9, and 4.14.  I haven't yet checked whether this fix applies
-> > cleanly to them.
-> 
-> It doesn't apply cleanly to those trees :(
 
-OK, then I'll try backporting it at some point.
+Song Liu writes:
 
-Ben.
+> On Thu, May 30, 2019 at 12:46 AM Jiong Wang <jiong.wang@netronome.com> wrote:
+>>
+>> There has been quite a few progress around the two steps mentioned in the
+>> answer to the following question:
+>>
+>>   Q: BPF 32-bit subregister requirements
+>>
+>> This patch updates the answer to reflect what has been done.
+>>
+>> v1:
+>>  - Integrated rephrase from Quentin and Jakub.
+>>
+>> Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
+>> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+>> Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
+>> ---
+>>  Documentation/bpf/bpf_design_QA.rst | 30 +++++++++++++++++++++++++-----
+>>  1 file changed, 25 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/Documentation/bpf/bpf_design_QA.rst b/Documentation/bpf/bpf_design_QA.rst
+>> index cb402c5..5092a2a 100644
+>> --- a/Documentation/bpf/bpf_design_QA.rst
+>> +++ b/Documentation/bpf/bpf_design_QA.rst
+>> @@ -172,11 +172,31 @@ registers which makes BPF inefficient virtual machine for 32-bit
+>>  CPU architectures and 32-bit HW accelerators. Can true 32-bit registers
+>>  be added to BPF in the future?
+>>
+>> -A: NO. The first thing to improve performance on 32-bit archs is to teach
+>> -LLVM to generate code that uses 32-bit subregisters. Then second step
+>> -is to teach verifier to mark operations where zero-ing upper bits
+>> -is unnecessary. Then JITs can take advantage of those markings and
+>> -drastically reduce size of generated code and improve performance.
+>> +A: NO
+>
+> Add period "."?
 
--- 
-Ben Hutchings, Software Developer                         Codethink Ltd
-https://www.codethink.co.uk/                 Dale House, 35 Dale Street
-                                     Manchester, M1 2HF, United Kingdom
+Ack
+
+>
+>> +
+>> +But some optimizations on zero-ing the upper 32 bits for BPF registers are
+>> +available, and can be leveraged to improve the performance of JIT compilers
+>> +for 32-bit architectures.
+>
+> I guess it should be "improve the performance of JITed BPF programs for 32-bit
+> architectures"?
+
+Ack, that is more accurate.
+
+Will respin.
+
+Thanks.
+
+Regards,
+Jiong
+
+>
+> Thanks,
+> Song
+>
+>> +
+>> +Starting with version 7, LLVM is able to generate instructions that operate
+>> +on 32-bit subregisters, provided the option -mattr=+alu32 is passed for
+>> +compiling a program. Furthermore, the verifier can now mark the
+>> +instructions for which zero-ing the upper bits of the destination register
+>> +is required, and insert an explicit zero-extension (zext) instruction
+>> +(a mov32 variant). This means that for architectures without zext hardware
+>> +support, the JIT back-ends do not need to clear the upper bits for
+>> +subregisters written by alu32 instructions or narrow loads. Instead, the
+>> +back-ends simply need to support code generation for that mov32 variant,
+>> +and to overwrite bpf_jit_needs_zext() to make it return "true" (in order to
+>> +enable zext insertion in the verifier).
+>> +
+>> +Note that it is possible for a JIT back-end to have partial hardware
+>> +support for zext. In that case, if verifier zext insertion is enabled,
+>> +it could lead to the insertion of unnecessary zext instructions. Such
+>> +instructions could be removed by creating a simple peephole inside the JIT
+>> +back-end: if one instruction has hardware support for zext and if the next
+>> +instruction is an explicit zext, then the latter can be skipped when doing
+>> +the code generation.
+>>
+>>  Q: Does BPF have a stable ABI?
+>>  ------------------------------
+>> --
+>> 2.7.4
+>>
+
