@@ -2,356 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4197030347
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2019 22:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B79930365
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2019 22:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbfE3Ual (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 May 2019 16:30:41 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:40170 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726080AbfE3Ual (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 May 2019 16:30:41 -0400
-Received: by mail-wr1-f67.google.com with SMTP id p11so191433wre.7
-        for <bpf@vger.kernel.org>; Thu, 30 May 2019 13:30:39 -0700 (PDT)
+        id S1726045AbfE3Umc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 May 2019 16:42:32 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:38835 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725961AbfE3Umb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 May 2019 16:42:31 -0400
+Received: by mail-qt1-f193.google.com with SMTP id l3so8728145qtj.5;
+        Thu, 30 May 2019 13:42:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:message-id:in-reply-to
-         :date:mime-version;
-        bh=HSteFUKF52rWVzt3NjcoHxXLBvXNbvyEYXBsHNUqUF0=;
-        b=wuaFUP1Ozlt+4+MWLG6fRYDs6aSrPIgbEmXi3tSSC6W/7egGZLIS272b1Qheh5JU5P
-         Oq9csJMPH8Wywm1a4U60VCgOQa48Mrk4ffhhYNDADsbPNnxg3nPWusMMHDatHMZPgLh6
-         S+fNEkjVPZqJ+sbUADzBEOh/azCtNVzI8Lv0x4pRr8ltsnNkeJqrjxnu+cTAblZKpSSr
-         mhjzCvGsBkx1x+qxeK1RRLbjGe0WMF6Jwt0JuMjeOiAlmSFhO2awU+QZJ+JOvnMhqqHk
-         IWb/jMFbRDHMXFigziw/39/xe8Kn6eQ/PZAfEMVg9G41H/U3UEfYFM0oKvmMbG68BX1G
-         Bv6g==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/bCRFrux5pdwM/eQQyMv7GDdYYyVvQy7m6pFv34PkSY=;
+        b=F5ssoZwtzysXIDBPCSZplmgGEgEdxTreD3mjUqR/tk8jifXUNxqOH7nqNoImBps+et
+         w/pDreTA38EdIofSxVKXDPW5kM16497mLEzsPa+B2lLY9gbwpqVzFxQE8r4I2iYhq0iw
+         7oNYOS/5/sR4w2WsBREIvSnLRfC6ON0eSm3BCvoBY22+eYF7hzdLuE5y8S2qf8bIfp/5
+         SqYjpDvu2lqJcVfqKTiDEHNXGuQuYBoIutSGlyQVNpLouNBLL1w411E+mlLmgV0ioxCq
+         +qIWlDK1ITMIwKn/EZF45CaNCZVSLTtji12r2udJbifJ7uvKn2LItFU3zZNYR8M8PUbC
+         O5pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :message-id:in-reply-to:date:mime-version;
-        bh=HSteFUKF52rWVzt3NjcoHxXLBvXNbvyEYXBsHNUqUF0=;
-        b=N7x3Qp+/rMWyxy54lRsShbPoYwF2LEOFSGQe63Ex+VjnTw8cmw7D7l+WttX5KYQXy0
-         YfQwEwJNZOtorSvsShIJrM1Iv1RYxRC8WJ/AYpfFPS/9wBIAHNOmSGks2wjJh9ugEx1D
-         EmAfrpuXg7cQsD+vVZja4BZGiMk3OIbNHVfGCvQ9KVsp3nbvnn6rPBqK3OoqYi/n9ARh
-         Zq0v1OFVIL51fBlFTXf7WRAmfwk/Ap9sXZrIYWEN4xwbnqkOLnHzm8QQGZ1P/pGpkLSU
-         ZOnRPU/89G15W/Gquy2qwypF+XYBDv58RAJm9dd+cjYiIJj2EBiswPZ18aX+TJrk9IV+
-         By+Q==
-X-Gm-Message-State: APjAAAXWY5Zbup08rHHAn+zRzDInIt5JagwTN4C/xwZNKLEoOvpM0nMX
-        kowSQsBcmqLR7rDBNeiwp9uAPw==
-X-Google-Smtp-Source: APXvYqxGLUZbjBbciy7kuigIoFOTAYX5bbCb2hDNu9emCUTJfNI7h9Yf8US1rv/g8abXrsSbSEaO8g==
-X-Received: by 2002:adf:e845:: with SMTP id d5mr3859527wrn.154.1559248239296;
-        Thu, 30 May 2019 13:30:39 -0700 (PDT)
-Received: from LAPTOP-V3S7NLPL (cpc1-cmbg19-2-0-cust104.5-4.cable.virginm.net. [82.27.180.105])
-        by smtp.gmail.com with ESMTPSA id 8sm3262857wmf.18.2019.05.30.13.30.37
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 30 May 2019 13:30:37 -0700 (PDT)
-References: <20190530190800.7633-1-luke.r.nels@gmail.com> <20190530190800.7633-2-luke.r.nels@gmail.com>
-User-agent: mu4e 0.9.18; emacs 25.2.2
-From:   Jiong Wang <jiong.wang@netronome.com>
-To:     Luke Nelson <luke.r.nels@gmail.com>
-Cc:     Xi Wang <xi.wang@gmail.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        netdev@vger.kernel.org, linux-riscv@lists.infradead.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] bpf: test_bpf: add tests for upper bits of 32-bit operations
-Message-ID: <87lfyn4rdy.fsf@netronome.com>
-In-reply-to: <20190530190800.7633-2-luke.r.nels@gmail.com>
-Date:   Thu, 30 May 2019 21:30:33 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/bCRFrux5pdwM/eQQyMv7GDdYYyVvQy7m6pFv34PkSY=;
+        b=HRKbhmqM8gcS0b8kYivdO2Coho8GoYwpcYp+z0CsRn5MYUnhZBw1ldkgM7b1zpIC2p
+         4ioZxKRrUx7JauhYlaC3OhAieziNq0SsKWv0KOIghW43is1mUUzkCc2i3YTD4eZn2mPx
+         uEx6Zq+RkkDKglT3poL0Ufzb5j+HTkJfalfiEvqgI6XPNYGNJZ0RUj2gMitn1o+zSv1K
+         y05xCx4cYaGrZ8AIcOhGNJwzFe+IxYqRS48EHK6UxxwJHWvrG1IEHUhZFMXfPZAmYUeZ
+         DTGFUc21rHjL4n2D5YSlrvcpaXNqhq5t/z4oPrWhJKfK8y35JMZWeniJRu3IPj8/VChU
+         wTVg==
+X-Gm-Message-State: APjAAAUcAroYEH0kkiCuCtY7+dAcjv6qBF8yPWO3PSx918lpU4GdEVMa
+        Y+3VfU3F8NM0GKgN5eRliq3qvHLZlqGDqbiRZgw=
+X-Google-Smtp-Source: APXvYqwk8NCHl5RAh/VcYRlRcCqByVC90TiGWVR+pLTcOv+xInn2XgmLBt0pJePEan8OwWJ1+eeopkhVzX40HfFE6Ns=
+X-Received: by 2002:ac8:152:: with SMTP id f18mr5265664qtg.84.1559248950884;
+ Thu, 30 May 2019 13:42:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1559247798-4670-1-git-send-email-jiong.wang@netronome.com>
+In-Reply-To: <1559247798-4670-1-git-send-email-jiong.wang@netronome.com>
+From:   Song Liu <liu.song.a23@gmail.com>
+Date:   Thu, 30 May 2019 13:42:19 -0700
+Message-ID: <CAPhsuW7ycQWP3C-DSDznSLw6G9KY1iNq5Ms8AbvdF8Vk1TjVGQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] bpf: doc: update answer for 32-bit
+ subregister question
+To:     Jiong Wang <jiong.wang@netronome.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        oss-drivers@netronome.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-Luke Nelson writes:
-
-> This commit introduces tests that validate the upper 32 bits
-> of the result of 32-bit BPF ALU operations.
+On Thu, May 30, 2019 at 1:23 PM Jiong Wang <jiong.wang@netronome.com> wrote:
 >
-> The existing tests for 32-bit operations do not check the upper 32
-> bits of results because the exit instruction truncates the result.
-> These tests perform a 32-bit ALU operation followed by a right shift.
-> These tests can catch subtle bugs in the extension behavior of JITed
-> instructions, including several bugs in the RISC-V BPF JIT, fixed in
-> another patch.
-
-Hi Luke,
-
-  Have you seen the following?
-
-    https://www.spinics.net/lists/netdev/msg573355.html
-
-  it has been merged to bpf tree and should have full test coverage of all
-  bpf insns that could write to sub-register and are exposed to JIT
-  back-end.
-
-  And AFAIK, we add new unit tests to test_verifier which is a userspace
-  test infrastructure which offers more test functionality plus tests will
-  go through verifier.
-
-Regards,
-Jiong
-
-> The added tests pass the JIT and interpreter on x86, as well as the
-> JIT and interpreter of RISC-V once the zero extension bugs were fixed.
+> There has been quite a few progress around the two steps mentioned in the
+> answer to the following question:
 >
-> Cc: Xi Wang <xi.wang@gmail.com>
-> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+>   Q: BPF 32-bit subregister requirements
+>
+> This patch updates the answer to reflect what has been done.
+>
+> v2:
+>  - Add missing full stop. (Song Liu)
+>  - Minor tweak on one sentence. (Song Liu)
+>
+> v1:
+>  - Integrated rephrase from Quentin and Jakub
+>
+> Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
+> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+> Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
+
+Acked-by: Song Liu <songliubraving@fb.com>
+
 > ---
->  lib/test_bpf.c | 164 +++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 164 insertions(+)
+>  Documentation/bpf/bpf_design_QA.rst | 30 +++++++++++++++++++++++++-----
+>  1 file changed, 25 insertions(+), 5 deletions(-)
 >
-> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-> index 0845f635f404..4580dc0220f1 100644
-> --- a/lib/test_bpf.c
-> +++ b/lib/test_bpf.c
-> @@ -2461,6 +2461,20 @@ static struct bpf_test tests[] = {
->  		{ },
->  		{ { 0, 1 } },
->  	},
-> +	{
-> +		"ALU_ADD_X: (1 + 4294967294) >> 32 + 4294967294 = 4294967294",
-> +		.u.insns_int = {
-> +			BPF_LD_IMM64(R0, 1U),
-> +			BPF_ALU32_IMM(BPF_MOV, R1, 4294967294U),
-> +			BPF_ALU32_REG(BPF_ADD, R0, R1),
-> +			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-> +			BPF_ALU32_REG(BPF_ADD, R0, R1),
-> +			BPF_EXIT_INSN(),
-> +		},
-> +		INTERNAL,
-> +		{ },
-> +		{ { 0, 4294967294U } },
-> +	},
->  	{
->  		"ALU64_ADD_X: 1 + 2 = 3",
->  		.u.insns_int = {
-> @@ -2812,6 +2826,20 @@ static struct bpf_test tests[] = {
->  		{ },
->  		{ { 0, 1 } },
->  	},
-> +	{
-> +		"ALU_SUB_X: (4294967295 - 1) >> 32 + 1 = 1",
-> +		.u.insns_int = {
-> +			BPF_LD_IMM64(R0, 4294967295U),
-> +			BPF_ALU32_IMM(BPF_MOV, R1, 1U),
-> +			BPF_ALU32_REG(BPF_SUB, R0, R1),
-> +			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-> +			BPF_ALU32_REG(BPF_ADD, R0, R1),
-> +			BPF_EXIT_INSN(),
-> +		},
-> +		INTERNAL,
-> +		{ },
-> +		{ { 0, 1 } },
-> +	},
->  	{
->  		"ALU64_SUB_X: 3 - 1 = 2",
->  		.u.insns_int = {
-> @@ -3391,6 +3419,20 @@ static struct bpf_test tests[] = {
->  		{ },
->  		{ { 0, 0xffffffff } },
->  	},
-> +	{
-> +		"ALU_AND_X: (-1 & -1) >> 32 + 1 = 1",
-> +		.u.insns_int = {
-> +			BPF_LD_IMM64(R0, -1UL),
-> +			BPF_LD_IMM64(R1, -1UL),
-> +			BPF_ALU32_REG(BPF_AND, R0, R1),
-> +			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-> +			BPF_ALU32_IMM(BPF_ADD, R0, 1U),
-> +			BPF_EXIT_INSN(),
-> +		},
-> +		INTERNAL,
-> +		{ },
-> +		{ { 0, 1 } },
-> +	},
->  	{
->  		"ALU64_AND_X: 3 & 2 = 2",
->  		.u.insns_int = {
-> @@ -3533,6 +3575,20 @@ static struct bpf_test tests[] = {
->  		{ },
->  		{ { 0, 0xffffffff } },
->  	},
-> +	{
-> +		"ALU_OR_X: (0 & -1) >> 32 + 1 = 1",
-> +		.u.insns_int = {
-> +			BPF_LD_IMM64(R0, 0),
-> +			BPF_LD_IMM64(R1, -1UL),
-> +			BPF_ALU32_REG(BPF_OR, R0, R1),
-> +			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-> +			BPF_ALU32_IMM(BPF_ADD, R0, 1U),
-> +			BPF_EXIT_INSN(),
-> +		},
-> +		INTERNAL,
-> +		{ },
-> +		{ { 0, 1 } },
-> +	},
->  	{
->  		"ALU64_OR_X: 1 | 2 = 3",
->  		.u.insns_int = {
-> @@ -3675,6 +3731,20 @@ static struct bpf_test tests[] = {
->  		{ },
->  		{ { 0, 0xfffffffe } },
->  	},
-> +	{
-> +		"ALU_XOR_X: (0 ^ -1) >> 32 + 1 = 1",
-> +		.u.insns_int = {
-> +			BPF_LD_IMM64(R0, 0),
-> +			BPF_LD_IMM64(R1, -1UL),
-> +			BPF_ALU32_REG(BPF_XOR, R0, R1),
-> +			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-> +			BPF_ALU32_IMM(BPF_ADD, R0, 1U),
-> +			BPF_EXIT_INSN(),
-> +		},
-> +		INTERNAL,
-> +		{ },
-> +		{ { 0, 1 } },
-> +	},
->  	{
->  		"ALU64_XOR_X: 5 ^ 6 = 3",
->  		.u.insns_int = {
-> @@ -3817,6 +3887,20 @@ static struct bpf_test tests[] = {
->  		{ },
->  		{ { 0, 0x80000000 } },
->  	},
-> +	{
-> +		"ALU_LSH_X: (1 << 31) >> 32 + 1 = 1",
-> +		.u.insns_int = {
-> +			BPF_LD_IMM64(R0, 1),
-> +			BPF_ALU32_IMM(BPF_MOV, R1, 31),
-> +			BPF_ALU32_REG(BPF_LSH, R0, R1),
-> +			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-> +			BPF_ALU32_IMM(BPF_ADD, R0, 1),
-> +			BPF_EXIT_INSN(),
-> +		},
-> +		INTERNAL,
-> +		{ },
-> +		{ { 0, 1 } },
-> +	},
->  	{
->  		"ALU64_LSH_X: 1 << 1 = 2",
->  		.u.insns_int = {
-> @@ -3842,6 +3926,19 @@ static struct bpf_test tests[] = {
->  		{ { 0, 0x80000000 } },
->  	},
->  	/* BPF_ALU | BPF_LSH | BPF_K */
-> +	{
-> +		"ALU_LSH_K: (1 << 31) >> 32 + 1 = 1",
-> +		.u.insns_int = {
-> +			BPF_LD_IMM64(R0, 1),
-> +			BPF_ALU32_IMM(BPF_LSH, R0, 31),
-> +			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-> +			BPF_ALU32_IMM(BPF_ADD, R0, 1),
-> +			BPF_EXIT_INSN(),
-> +		},
-> +		INTERNAL,
-> +		{ },
-> +		{ { 0, 1 } },
-> +	},
->  	{
->  		"ALU_LSH_K: 1 << 1 = 2",
->  		.u.insns_int = {
-> @@ -3911,6 +4008,20 @@ static struct bpf_test tests[] = {
->  		{ },
->  		{ { 0, 1 } },
->  	},
-> +	{
-> +		"ALU_RSH_X: (0x80000000 >> 0) >> 32 + 1 = 1",
-> +		.u.insns_int = {
-> +			BPF_LD_IMM64(R0, 0x80000000),
-> +			BPF_ALU32_IMM(BPF_MOV, R1, 0),
-> +			BPF_ALU32_REG(BPF_RSH, R0, R1),
-> +			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-> +			BPF_ALU32_IMM(BPF_ADD, R0, 1),
-> +			BPF_EXIT_INSN(),
-> +		},
-> +		INTERNAL,
-> +		{ },
-> +		{ { 0, 1 } },
-> +	},
->  	{
->  		"ALU64_RSH_X: 2 >> 1 = 1",
->  		.u.insns_int = {
-> @@ -3936,6 +4047,19 @@ static struct bpf_test tests[] = {
->  		{ { 0, 1 } },
->  	},
->  	/* BPF_ALU | BPF_RSH | BPF_K */
-> +	{
-> +		"ALU_RSH_K: (0x80000000 >> 0) >> 32 + 1 = 1",
-> +		.u.insns_int = {
-> +			BPF_LD_IMM64(R0, 0x80000000),
-> +			BPF_ALU32_IMM(BPF_RSH, R0, 0),
-> +			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-> +			BPF_ALU32_IMM(BPF_ADD, R0, 1),
-> +			BPF_EXIT_INSN(),
-> +		},
-> +		INTERNAL,
-> +		{ },
-> +		{ { 0, 1 } },
-> +	},
->  	{
->  		"ALU_RSH_K: 2 >> 1 = 1",
->  		.u.insns_int = {
-> @@ -3993,7 +4117,34 @@ static struct bpf_test tests[] = {
->  		{ },
->  		{ { 0, 0xffff00ff } },
->  	},
-> +	{
-> +		"ALU_ARSH_X: (0x80000000 >> 0) >> 32 + 1 = 1",
-> +		.u.insns_int = {
-> +			BPF_LD_IMM64(R0, 0x80000000),
-> +			BPF_ALU32_IMM(BPF_MOV, R1, 0),
-> +			BPF_ALU32_REG(BPF_ARSH, R0, R1),
-> +			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-> +			BPF_ALU32_IMM(BPF_ADD, R0, 1),
-> +			BPF_EXIT_INSN(),
-> +		},
-> +		INTERNAL,
-> +		{ },
-> +		{ { 0, 1 } },
-> +	},
->  	/* BPF_ALU | BPF_ARSH | BPF_K */
-> +	{
-> +		"ALU_ARSH_K: (0x80000000 >> 0) >> 32 + 1 = 1",
-> +		.u.insns_int = {
-> +			BPF_LD_IMM64(R0, 0x80000000),
-> +			BPF_ALU32_IMM(BPF_ARSH, R0, 0),
-> +			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-> +			BPF_ALU32_IMM(BPF_ADD, R0, 1),
-> +			BPF_EXIT_INSN(),
-> +		},
-> +		INTERNAL,
-> +		{ },
-> +		{ { 0, 1 } },
-> +	},
->  	{
->  		"ALU_ARSH_K: 0xff00ff0000000000 >> 40 = 0xffffffffffff00ff",
->  		.u.insns_int = {
-> @@ -4028,6 +4179,19 @@ static struct bpf_test tests[] = {
->  		{ },
->  		{ { 0, 3 } },
->  	},
-> +	{
-> +		"ALU_NEG: -(1) >> 32 + 1 = 1",
-> +		.u.insns_int = {
-> +			BPF_ALU32_IMM(BPF_MOV, R0, 1),
-> +			BPF_ALU32_IMM(BPF_NEG, R0, 0),
-> +			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-> +			BPF_ALU64_IMM(BPF_ADD, R0, 1),
-> +			BPF_EXIT_INSN(),
-> +		},
-> +		INTERNAL,
-> +		{ },
-> +		{ { 0, 1 } },
-> +	},
->  	{
->  		"ALU64_NEG: -(3) = -3",
->  		.u.insns_int = {
-
+> diff --git a/Documentation/bpf/bpf_design_QA.rst b/Documentation/bpf/bpf_design_QA.rst
+> index cb402c5..12a246f 100644
+> --- a/Documentation/bpf/bpf_design_QA.rst
+> +++ b/Documentation/bpf/bpf_design_QA.rst
+> @@ -172,11 +172,31 @@ registers which makes BPF inefficient virtual machine for 32-bit
+>  CPU architectures and 32-bit HW accelerators. Can true 32-bit registers
+>  be added to BPF in the future?
+>
+> -A: NO. The first thing to improve performance on 32-bit archs is to teach
+> -LLVM to generate code that uses 32-bit subregisters. Then second step
+> -is to teach verifier to mark operations where zero-ing upper bits
+> -is unnecessary. Then JITs can take advantage of those markings and
+> -drastically reduce size of generated code and improve performance.
+> +A: NO.
+> +
+> +But some optimizations on zero-ing the upper 32 bits for BPF registers are
+> +available, and can be leveraged to improve the performance of JITed BPF
+> +programs for 32-bit architectures.
+> +
+> +Starting with version 7, LLVM is able to generate instructions that operate
+> +on 32-bit subregisters, provided the option -mattr=+alu32 is passed for
+> +compiling a program. Furthermore, the verifier can now mark the
+> +instructions for which zero-ing the upper bits of the destination register
+> +is required, and insert an explicit zero-extension (zext) instruction
+> +(a mov32 variant). This means that for architectures without zext hardware
+> +support, the JIT back-ends do not need to clear the upper bits for
+> +subregisters written by alu32 instructions or narrow loads. Instead, the
+> +back-ends simply need to support code generation for that mov32 variant,
+> +and to overwrite bpf_jit_needs_zext() to make it return "true" (in order to
+> +enable zext insertion in the verifier).
+> +
+> +Note that it is possible for a JIT back-end to have partial hardware
+> +support for zext. In that case, if verifier zext insertion is enabled,
+> +it could lead to the insertion of unnecessary zext instructions. Such
+> +instructions could be removed by creating a simple peephole inside the JIT
+> +back-end: if one instruction has hardware support for zext and if the next
+> +instruction is an explicit zext, then the latter can be skipped when doing
+> +the code generation.
+>
+>  Q: Does BPF have a stable ABI?
+>  ------------------------------
+> --
+> 2.7.4
+>
