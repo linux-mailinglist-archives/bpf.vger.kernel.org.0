@@ -2,57 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A41300D2
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2019 19:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22D030116
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2019 19:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbfE3RSE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 May 2019 13:18:04 -0400
-Received: from imap1.codethink.co.uk ([176.9.8.82]:60066 "EHLO
-        imap1.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726280AbfE3RSE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 May 2019 13:18:04 -0400
-Received: from [167.98.27.226] (helo=xylophone)
-        by imap1.codethink.co.uk with esmtpsa (Exim 4.84_2 #1 (Debian))
-        id 1hWOgj-0002oW-IM; Thu, 30 May 2019 18:18:01 +0100
-Message-ID: <1559236680.24330.5.camel@codethink.co.uk>
+        id S1726583AbfE3RbB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 May 2019 13:31:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725961AbfE3RbB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 May 2019 13:31:01 -0400
+Received: from localhost (unknown [207.225.69.115])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 72BD525E83;
+        Thu, 30 May 2019 17:31:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1559237460;
+        bh=uJ05PYAHKs/Pry+XB+BlyBAE0t4HVAyNtW7R0W82kmM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QCu1te9YwHFqUwhSV5sg+fcQYKkNi7SMeXh4T4PO1nSfHLBu2g0tzzRqaKgMRZTO1
+         vhkz+louaperAMk3U6ZUfiVkUtjZYDaEDkhnwcFk9SWJvcdd+n/pAH/KhUkknrazh3
+         vosS6uWeBbYKxNneUL9wggskPi3ONrT7KlkMNjYY=
+Date:   Thu, 30 May 2019 10:31:00 -0700
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ben Hutchings <ben.hutchings@codethink.co.uk>
+Cc:     Sasha Levin <Alexander.Levin@microsoft.com>,
+        stable <stable@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
 Subject: Re: [stable] bpf: add bpf_jit_limit knob to restrict unpriv
  allocations
-From:   Ben Hutchings <ben.hutchings@codethink.co.uk>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <Alexander.Levin@microsoft.com>
-Cc:     stable <stable@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Date:   Thu, 30 May 2019 18:18:00 +0100
-In-Reply-To: <1558994144.2631.14.camel@codethink.co.uk>
+Message-ID: <20190530173100.GA23688@kroah.com>
 References: <1558994144.2631.14.camel@codethink.co.uk>
-Organization: Codethink Ltd.
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.22.6-1+deb9u1 
-Mime-Version: 1.0
+ <1559236680.24330.5.camel@codethink.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1559236680.24330.5.camel@codethink.co.uk>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2019-05-27 at 22:55 +0100, Ben Hutchings wrote:
-> Please consider backporting this commit to 4.19-stable:
+On Thu, May 30, 2019 at 06:18:00PM +0100, Ben Hutchings wrote:
+> On Mon, 2019-05-27 at 22:55 +0100, Ben Hutchings wrote:
+> > Please consider backporting this commit to 4.19-stable:
+> > 
+> > commit ede95a63b5e84ddeea6b0c473b36ab8bfd8c6ce3
+> > Author: Daniel Borkmann <daniel@iogearbox.net>
+> > Date:   Tue Oct 23 01:11:04 2018 +0200
+> > 
+> >     bpf: add bpf_jit_limit knob to restrict unpriv allocations
+> > 
+> > No other stable branches are affected by the issue.
 > 
-> commit ede95a63b5e84ddeea6b0c473b36ab8bfd8c6ce3
-> Author: Daniel Borkmann <daniel@iogearbox.net>
-> Date:Â Â Â Tue Oct 23 01:11:04 2018 +0200
-> 
-> Â Â Â Â bpf: add bpf_jit_limit knob to restrict unpriv allocations
-> 
-> No other stable branches are affected by the issue.
+> Actually that's wrong; the commit introducing this was backported to
+> 4.4, 4.9, and 4.14.  I haven't yet checked whether this fix applies
+> cleanly to them.
 
-Actually that's wrong; the commit introducing this was backported to
-4.4, 4.9, and 4.14.  I haven't yet checked whether this fix applies
-cleanly to them.
+It doesn't apply cleanly to those trees :(
 
-Ben.
+thanks,
 
--- 
-Ben Hutchings, Software Developer                Â         Codethink Ltd
-https://www.codethink.co.uk/                 Dale House, 35 Dale Street
-                                     Manchester, M1 2HF, United Kingdom
+greg k-h
