@@ -2,101 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EDB30182
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2019 20:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D57301A0
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2019 20:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbfE3SIW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 May 2019 14:08:22 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:36736 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726461AbfE3SIV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 May 2019 14:08:21 -0400
-Received: by mail-qt1-f194.google.com with SMTP id u12so8120120qth.3;
-        Thu, 30 May 2019 11:08:21 -0700 (PDT)
+        id S1726328AbfE3SQR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 May 2019 14:16:17 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:43901 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726125AbfE3SQR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 May 2019 14:16:17 -0400
+Received: by mail-qk1-f194.google.com with SMTP id m14so4503791qka.10;
+        Thu, 30 May 2019 11:16:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=uBh8frPBklj3PAGNxGo58zhsB+Wp0GYqDmO+TlNLHb4=;
-        b=PSCQw9shmXX7hlCnO9U9xGXJV2sYFdQGNyCBdUuUa/l3mnlJFLBbC/R9dO8coJ7KQK
-         uSkhT/QZjbHUNLMGnSrhfIS5EB7TBjkd3EKTwIQoL2jx4Y1HRJy+x2P0XyuKfJkLFiWr
-         kOOH6Zgm9RaJolfR7n+wpeCNprzuof6A5pDd8vZaRIbHfcb3wplUb077cAEldMm0aKi4
-         4y59CAYA05IALYlBFqgBO66SO9I00jxiXM9pJquIHViY1jPKULRBte6nn6Xdc1KGem17
-         3b/gLWwXQhUzCOLE05Hs9c1smxrC65+il0n6WzjIYLvKjDacuYo0ZLBVMTh6UAzsnASS
-         nzQw==
+        bh=HXX4EV/8xNoU9Sdh27c4Np9iv/07yW+jWe7HUpYM8MU=;
+        b=gNJ5gKkejhZZwHb37QvMpiRNfbPBNK+sECH4rO87bFg4f+BncL0TcRQu4lJoAn2ZIg
+         zne+t8QSbAxpfUrDqncR8c4AZTx3FCTD1KnTe5ejtdn8e3evs7QAu0lgBlH0TFYZL3KH
+         MaoCJS+FuWwDDEaxkv49u7YBr+UuU/MQm7bg0KXmZqH8dHn+bmOgMxpogO9j2ppnToeh
+         kVUeMo2NWIuoM898FsPAjv39ZlcsU11WDraAMnuGK8j2g8zWedgO7XbV2mZlzPG+n91e
+         qAg49cDJa9HfxqhPVa+bwR5HDSY300oC0v+w4L3tcQnJKt1ymZz83d+yW0sGEfvHup7Y
+         wxsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uBh8frPBklj3PAGNxGo58zhsB+Wp0GYqDmO+TlNLHb4=;
-        b=trXg6ySMivBEqrxYjBdy8d2Y7UlizJryArPhLpPHjIO71PKEbORvg3S9rGrHGkPq+C
-         QqFaDxtX3gP7Awtf6tCiLSDKIvAApoRsx/Z5lDCMzZhb0wxfVW9sZYaiKB941ttYFhnZ
-         991gz3f3U32S+sqGmFvKvC8AbNd7B3/YLgEfTTgBa8y4duxmHugPAOJdKvsD58vj9e5s
-         VtTPsqIk1BAwEdbgzaK+HB+6KvzQHJyE0h5ySKRRSevF37Ckm49hrByFPE44y5JnJxFT
-         4eHloxEsXLWmG5HMb+4SIuscRWkwtfwwDjjKCRtxtS0AvSJaT5UdA8ht+YIsMJmVRxGG
-         q20w==
-X-Gm-Message-State: APjAAAW/Yl+wmHnNcuwmpAmpDgUzIIfBNu2/GXACPXijSR85k9ekN0eF
-        zEqCFMTBCNrk608uI9ZSsn2NJ4amgBNlRGP2Am0=
-X-Google-Smtp-Source: APXvYqztZ5XPqFPZILkHDxcksjVQdRXGu0rSKUzB3EbR+JMHWyoaPnoI/6/aw1RV2DhRDXRoLNXbUn6tY50Hei/EO5g=
-X-Received: by 2002:ac8:2af4:: with SMTP id c49mr4598934qta.83.1559239700683;
- Thu, 30 May 2019 11:08:20 -0700 (PDT)
+        bh=HXX4EV/8xNoU9Sdh27c4Np9iv/07yW+jWe7HUpYM8MU=;
+        b=KGX2zE4qM8ue63VjCBb3k/IEaCbY2LChTeuG6HDiRV4SNyto0MpmxqXQ9PS9NdFEnX
+         9eSWuSwqaYb+dwEhcTvzSKIPAy4sVYlrfWP8dpsFE0rQM7H0ww8m8JdPPsqFBCeslBRO
+         +ptIWlDRzvP+zCrnjcQZkN2Utg2CYVA9dDzFxVQZE9Jh3ghPhDk3iW1IVTEQlO5arMny
+         QONxHYj0TJm7opXzHnyZVvOcD6/wUONgeMF72n++2QGs+dsttAZ5h53DWc3+4ajUZQQO
+         nOysOa3RXbmNU3PrTcCK/TaqGWIH4L0lKYcP4NeTv4n07gOseIZ3lMdfzRKjxSRFiP4T
+         DUcQ==
+X-Gm-Message-State: APjAAAWuVKQVWgX3d+buXubSc70SK51QJa+Yb775iEL7EOrt83pRdJgz
+        DSa7+6yk180tuRJakM7M/FE8xAbGnWpgYHrHk+4=
+X-Google-Smtp-Source: APXvYqyiywQfVs1X2jbbr3hG7cR8I0d2CJVhb+OpCTeKdzIChJFJ/PwFcpDoUzAGk2idaTiRB0DgeVp1fJRN5HD1u+w=
+X-Received: by 2002:ae9:ee0b:: with SMTP id i11mr4080848qkg.96.1559240176366;
+ Thu, 30 May 2019 11:16:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1559171394.git.mchehab+samsung@kernel.org> <f2f40f306acbd3d834746fe9acb607052e82a1ee.1559171394.git.mchehab+samsung@kernel.org>
-In-Reply-To: <f2f40f306acbd3d834746fe9acb607052e82a1ee.1559171394.git.mchehab+samsung@kernel.org>
+References: <1559202287-15553-1-git-send-email-jiong.wang@netronome.com>
+In-Reply-To: <1559202287-15553-1-git-send-email-jiong.wang@netronome.com>
 From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Thu, 30 May 2019 11:08:08 -0700
-Message-ID: <CAPhsuW7J-KWsWhODKLJu3H8VvZ7nZ+O0Prni4M-tCt_inko9zA@mail.gmail.com>
-Subject: Re: [PATCH 08/22] docs: bpf: get rid of two warnings
-To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 30 May 2019 11:16:04 -0700
+Message-ID: <CAPhsuW4cFacLYAF1=8sG3gxu-g+Rzz6ySaFeBmL-sttxLZZLHw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: doc: update answer for 32-bit subregister question
+To:     Jiong Wang <jiong.wang@netronome.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        oss-drivers@netronome.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 29, 2019 at 4:25 PM Mauro Carvalho Chehab
-<mchehab+samsung@kernel.org> wrote:
+On Thu, May 30, 2019 at 12:46 AM Jiong Wang <jiong.wang@netronome.com> wrote:
 >
-> Documentation/bpf/btf.rst:154: WARNING: Unexpected indentation.
-> Documentation/bpf/btf.rst:163: WARNING: Unexpected indentation.
+> There has been quite a few progress around the two steps mentioned in the
+> answer to the following question:
 >
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-
-Acked-by: Song Liu <songliubraving@fb.com>
-
+>   Q: BPF 32-bit subregister requirements
+>
+> This patch updates the answer to reflect what has been done.
+>
+> v1:
+>  - Integrated rephrase from Quentin and Jakub.
+>
+> Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
+> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+> Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
 > ---
->  Documentation/bpf/btf.rst | 2 ++
->  1 file changed, 2 insertions(+)
+>  Documentation/bpf/bpf_design_QA.rst | 30 +++++++++++++++++++++++++-----
+>  1 file changed, 25 insertions(+), 5 deletions(-)
 >
-> diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
-> index 8820360d00da..4ae022d274ab 100644
-> --- a/Documentation/bpf/btf.rst
-> +++ b/Documentation/bpf/btf.rst
-> @@ -151,6 +151,7 @@ for the type. The maximum value of ``BTF_INT_BITS()`` is 128.
+> diff --git a/Documentation/bpf/bpf_design_QA.rst b/Documentation/bpf/bpf_design_QA.rst
+> index cb402c5..5092a2a 100644
+> --- a/Documentation/bpf/bpf_design_QA.rst
+> +++ b/Documentation/bpf/bpf_design_QA.rst
+> @@ -172,11 +172,31 @@ registers which makes BPF inefficient virtual machine for 32-bit
+>  CPU architectures and 32-bit HW accelerators. Can true 32-bit registers
+>  be added to BPF in the future?
 >
->  The ``BTF_INT_OFFSET()`` specifies the starting bit offset to calculate values
->  for this int. For example, a bitfield struct member has:
+> -A: NO. The first thing to improve performance on 32-bit archs is to teach
+> -LLVM to generate code that uses 32-bit subregisters. Then second step
+> -is to teach verifier to mark operations where zero-ing upper bits
+> -is unnecessary. Then JITs can take advantage of those markings and
+> -drastically reduce size of generated code and improve performance.
+> +A: NO
+
+Add period "."?
+
 > +
->   * btf member bit offset 100 from the start of the structure,
->   * btf member pointing to an int type,
->   * the int type has ``BTF_INT_OFFSET() = 2`` and ``BTF_INT_BITS() = 4``
-> @@ -160,6 +161,7 @@ from bits ``100 + 2 = 102``.
->
->  Alternatively, the bitfield struct member can be the following to access the
->  same bits as the above:
+> +But some optimizations on zero-ing the upper 32 bits for BPF registers are
+> +available, and can be leveraged to improve the performance of JIT compilers
+> +for 32-bit architectures.
+
+I guess it should be "improve the performance of JITed BPF programs for 32-bit
+architectures"?
+
+Thanks,
+Song
+
 > +
->   * btf member bit offset 102,
->   * btf member pointing to an int type,
->   * the int type has ``BTF_INT_OFFSET() = 0`` and ``BTF_INT_BITS() = 4``
+> +Starting with version 7, LLVM is able to generate instructions that operate
+> +on 32-bit subregisters, provided the option -mattr=+alu32 is passed for
+> +compiling a program. Furthermore, the verifier can now mark the
+> +instructions for which zero-ing the upper bits of the destination register
+> +is required, and insert an explicit zero-extension (zext) instruction
+> +(a mov32 variant). This means that for architectures without zext hardware
+> +support, the JIT back-ends do not need to clear the upper bits for
+> +subregisters written by alu32 instructions or narrow loads. Instead, the
+> +back-ends simply need to support code generation for that mov32 variant,
+> +and to overwrite bpf_jit_needs_zext() to make it return "true" (in order to
+> +enable zext insertion in the verifier).
+> +
+> +Note that it is possible for a JIT back-end to have partial hardware
+> +support for zext. In that case, if verifier zext insertion is enabled,
+> +it could lead to the insertion of unnecessary zext instructions. Such
+> +instructions could be removed by creating a simple peephole inside the JIT
+> +back-end: if one instruction has hardware support for zext and if the next
+> +instruction is an explicit zext, then the latter can be skipped when doing
+> +the code generation.
+>
+>  Q: Does BPF have a stable ABI?
+>  ------------------------------
 > --
-> 2.21.0
+> 2.7.4
 >
