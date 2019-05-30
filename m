@@ -2,130 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B79930365
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2019 22:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8F130394
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2019 22:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726045AbfE3Umc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 May 2019 16:42:32 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:38835 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725961AbfE3Umb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 May 2019 16:42:31 -0400
-Received: by mail-qt1-f193.google.com with SMTP id l3so8728145qtj.5;
-        Thu, 30 May 2019 13:42:31 -0700 (PDT)
+        id S1726308AbfE3UxT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 May 2019 16:53:19 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:33610 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726045AbfE3UxT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 May 2019 16:53:19 -0400
+Received: by mail-qk1-f194.google.com with SMTP id p18so4890706qkk.0;
+        Thu, 30 May 2019 13:53:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/bCRFrux5pdwM/eQQyMv7GDdYYyVvQy7m6pFv34PkSY=;
-        b=F5ssoZwtzysXIDBPCSZplmgGEgEdxTreD3mjUqR/tk8jifXUNxqOH7nqNoImBps+et
-         w/pDreTA38EdIofSxVKXDPW5kM16497mLEzsPa+B2lLY9gbwpqVzFxQE8r4I2iYhq0iw
-         7oNYOS/5/sR4w2WsBREIvSnLRfC6ON0eSm3BCvoBY22+eYF7hzdLuE5y8S2qf8bIfp/5
-         SqYjpDvu2lqJcVfqKTiDEHNXGuQuYBoIutSGlyQVNpLouNBLL1w411E+mlLmgV0ioxCq
-         +qIWlDK1ITMIwKn/EZF45CaNCZVSLTtji12r2udJbifJ7uvKn2LItFU3zZNYR8M8PUbC
-         O5pw==
+        bh=z9CARR2sdyz0TzlZx5C1Y/HG1L1GZ/YQxjW8n3dkDtY=;
+        b=O9b/bK8EMj6Z/Aes6GvEEWWgQoaqgWaPkCaZ7cbWL42OrKuP7jCn08XnPqAmy2p306
+         8zhO25gwMO64WxuBI2gHUQlS/hvtoy5Caw3oUFl2PIjzGa0bYZkNqSLyaIzi2b1TeyUj
+         FF37jgA4vO32nO0WZtIk8qPAYjFw6a6a31YkeqEMWj6cA75nwjX6K+fNkXOSWkeNm8gG
+         IDAzymM/tDnhTeMvFQclwaOUNj9WlNGj9jdXrDTHK6nOYN4rb37VYFg2BOXyFCdWVDEX
+         3VX2YfBwDDiSgLEeBrbXF0Aaery1wJ4oqbzlGKl7kczZOsWjWFvMpf9Wln7u02PN41Hv
+         SoUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/bCRFrux5pdwM/eQQyMv7GDdYYyVvQy7m6pFv34PkSY=;
-        b=HRKbhmqM8gcS0b8kYivdO2Coho8GoYwpcYp+z0CsRn5MYUnhZBw1ldkgM7b1zpIC2p
-         4ioZxKRrUx7JauhYlaC3OhAieziNq0SsKWv0KOIghW43is1mUUzkCc2i3YTD4eZn2mPx
-         uEx6Zq+RkkDKglT3poL0Ufzb5j+HTkJfalfiEvqgI6XPNYGNJZ0RUj2gMitn1o+zSv1K
-         y05xCx4cYaGrZ8AIcOhGNJwzFe+IxYqRS48EHK6UxxwJHWvrG1IEHUhZFMXfPZAmYUeZ
-         DTGFUc21rHjL4n2D5YSlrvcpaXNqhq5t/z4oPrWhJKfK8y35JMZWeniJRu3IPj8/VChU
-         wTVg==
-X-Gm-Message-State: APjAAAUcAroYEH0kkiCuCtY7+dAcjv6qBF8yPWO3PSx918lpU4GdEVMa
-        Y+3VfU3F8NM0GKgN5eRliq3qvHLZlqGDqbiRZgw=
-X-Google-Smtp-Source: APXvYqwk8NCHl5RAh/VcYRlRcCqByVC90TiGWVR+pLTcOv+xInn2XgmLBt0pJePEan8OwWJ1+eeopkhVzX40HfFE6Ns=
-X-Received: by 2002:ac8:152:: with SMTP id f18mr5265664qtg.84.1559248950884;
- Thu, 30 May 2019 13:42:30 -0700 (PDT)
+        bh=z9CARR2sdyz0TzlZx5C1Y/HG1L1GZ/YQxjW8n3dkDtY=;
+        b=svapGs1oKeMGqBlnffuFnXrQKXBdtui7HHL8QVPEEPx4t22/p8xva3OS3CN84NjKEL
+         HBN8mEOhrbObI3yoYBheq1PgJ+ErQU8CDTXWCLs90lwaIFx7+8lpDz5RR3Y5iwAi8/55
+         q5E1TDEf3exzj2Pst2hzKM158nKVg8tkUiqfS+d403HSCl6IIi6wR15cWi+6peWDZnAQ
+         VJodwbvw+M5nya623hOSXG/vLgULFGFaJpQ9d6VHokJoqt2NnalzLRiX1lqFllaDb5vM
+         i5Q6SLuhWeoqu6CyD8EU8Q8voXlFNQvb1yXbbhT0ujpN06OekkgYtpvPu4afMVPkFTl7
+         VdTA==
+X-Gm-Message-State: APjAAAXw+M2SQgC40kxqJ95Bdlybe5gia5EN0i7jmsU9qMpg5+6aauC7
+        MYabNBWRKDEjerfgQrLL2qbwofnx95egX//82OY=
+X-Google-Smtp-Source: APXvYqwWhPLets6g5KL70GsN0a/SBVH9vdVhMDcuBw1NjRTLVGKTPlYj7q6szJQZYwKJTGwxrKqHl3zy1Vgg7W+OTbs=
+X-Received: by 2002:a05:620a:12f8:: with SMTP id f24mr5129490qkl.202.1559249597898;
+ Thu, 30 May 2019 13:53:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <1559247798-4670-1-git-send-email-jiong.wang@netronome.com>
-In-Reply-To: <1559247798-4670-1-git-send-email-jiong.wang@netronome.com>
+References: <20190530190800.7633-1-luke.r.nels@gmail.com>
+In-Reply-To: <20190530190800.7633-1-luke.r.nels@gmail.com>
 From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Thu, 30 May 2019 13:42:19 -0700
-Message-ID: <CAPhsuW7ycQWP3C-DSDznSLw6G9KY1iNq5Ms8AbvdF8Vk1TjVGQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] bpf: doc: update answer for 32-bit
- subregister question
-To:     Jiong Wang <jiong.wang@netronome.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+Date:   Thu, 30 May 2019 13:53:06 -0700
+Message-ID: <CAPhsuW4kMBSjpATqHrEhTmuqje=XZNGOrMyNur8f6K0RNQP=yw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] bpf, riscv: fix bugs in JIT for 32-bit ALU operations
+To:     Luke Nelson <luke.r.nels@gmail.com>
+Cc:     Xi Wang <xi.wang@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        oss-drivers@netronome.com
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Networking <netdev@vger.kernel.org>,
+        linux-riscv@lists.infradead.org, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 30, 2019 at 1:23 PM Jiong Wang <jiong.wang@netronome.com> wrote:
+On Thu, May 30, 2019 at 12:09 PM Luke Nelson <luke.r.nels@gmail.com> wrote:
 >
-> There has been quite a few progress around the two steps mentioned in the
-> answer to the following question:
+> In BPF, 32-bit ALU operations should zero-extend their results into
+> the 64-bit registers.  The current BPF JIT on RISC-V emits incorrect
+> instructions that perform either sign extension only (e.g., addw/subw)
+> or no extension on 32-bit add, sub, and, or, xor, lsh, rsh, arsh,
+> and neg.  This behavior diverges from the interpreter and JITs for
+> other architectures.
 >
->   Q: BPF 32-bit subregister requirements
+> This patch fixes the bugs by performing zero extension on the destination
+> register of 32-bit ALU operations.
 >
-> This patch updates the answer to reflect what has been done.
->
-> v2:
->  - Add missing full stop. (Song Liu)
->  - Minor tweak on one sentence. (Song Liu)
->
-> v1:
->  - Integrated rephrase from Quentin and Jakub
->
-> Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
-> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-> Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
+> Fixes: 2353ecc6f91f ("bpf, riscv: add BPF JIT for RV64G")
+> Cc: Xi Wang <xi.wang@gmail.com>
+> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
 
-Acked-by: Song Liu <songliubraving@fb.com>
+This is a little messy. How about we introduce some helper function
+like:
+
+/* please find a better name... */
+emit_32_or_64(bool is64, const u32 insn_32, const u32 inst_64, struct
+rv_jit_context *ctx)
+{
+       if (is64)
+            emit(insn_64, ctx);
+       else {
+            emit(insn_32, ctx);
+           rd = xxxx;
+           emit_zext_32(rd, ctx);
+       }
+}
+
+Thanks,
+Song
 
 > ---
->  Documentation/bpf/bpf_design_QA.rst | 30 +++++++++++++++++++++++++-----
->  1 file changed, 25 insertions(+), 5 deletions(-)
+>  arch/riscv/net/bpf_jit_comp.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
 >
-> diff --git a/Documentation/bpf/bpf_design_QA.rst b/Documentation/bpf/bpf_design_QA.rst
-> index cb402c5..12a246f 100644
-> --- a/Documentation/bpf/bpf_design_QA.rst
-> +++ b/Documentation/bpf/bpf_design_QA.rst
-> @@ -172,11 +172,31 @@ registers which makes BPF inefficient virtual machine for 32-bit
->  CPU architectures and 32-bit HW accelerators. Can true 32-bit registers
->  be added to BPF in the future?
+> diff --git a/arch/riscv/net/bpf_jit_comp.c b/arch/riscv/net/bpf_jit_comp.c
+> index 80b12aa5e10d..426d5c33ea90 100644
+> --- a/arch/riscv/net/bpf_jit_comp.c
+> +++ b/arch/riscv/net/bpf_jit_comp.c
+> @@ -751,22 +751,32 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+>         case BPF_ALU | BPF_ADD | BPF_X:
+>         case BPF_ALU64 | BPF_ADD | BPF_X:
+>                 emit(is64 ? rv_add(rd, rd, rs) : rv_addw(rd, rd, rs), ctx);
+> +               if (!is64)
+> +                       emit_zext_32(rd, ctx);
+>                 break;
+>         case BPF_ALU | BPF_SUB | BPF_X:
+>         case BPF_ALU64 | BPF_SUB | BPF_X:
+>                 emit(is64 ? rv_sub(rd, rd, rs) : rv_subw(rd, rd, rs), ctx);
+> +               if (!is64)
+> +                       emit_zext_32(rd, ctx);
+>                 break;
+>         case BPF_ALU | BPF_AND | BPF_X:
+>         case BPF_ALU64 | BPF_AND | BPF_X:
+>                 emit(rv_and(rd, rd, rs), ctx);
+> +               if (!is64)
+> +                       emit_zext_32(rd, ctx);
+>                 break;
+>         case BPF_ALU | BPF_OR | BPF_X:
+>         case BPF_ALU64 | BPF_OR | BPF_X:
+>                 emit(rv_or(rd, rd, rs), ctx);
+> +               if (!is64)
+> +                       emit_zext_32(rd, ctx);
+>                 break;
+>         case BPF_ALU | BPF_XOR | BPF_X:
+>         case BPF_ALU64 | BPF_XOR | BPF_X:
+>                 emit(rv_xor(rd, rd, rs), ctx);
+> +               if (!is64)
+> +                       emit_zext_32(rd, ctx);
+>                 break;
+>         case BPF_ALU | BPF_MUL | BPF_X:
+>         case BPF_ALU64 | BPF_MUL | BPF_X:
+> @@ -789,14 +799,20 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+>         case BPF_ALU | BPF_LSH | BPF_X:
+>         case BPF_ALU64 | BPF_LSH | BPF_X:
+>                 emit(is64 ? rv_sll(rd, rd, rs) : rv_sllw(rd, rd, rs), ctx);
+> +               if (!is64)
+> +                       emit_zext_32(rd, ctx);
+>                 break;
+>         case BPF_ALU | BPF_RSH | BPF_X:
+>         case BPF_ALU64 | BPF_RSH | BPF_X:
+>                 emit(is64 ? rv_srl(rd, rd, rs) : rv_srlw(rd, rd, rs), ctx);
+> +               if (!is64)
+> +                       emit_zext_32(rd, ctx);
+>                 break;
+>         case BPF_ALU | BPF_ARSH | BPF_X:
+>         case BPF_ALU64 | BPF_ARSH | BPF_X:
+>                 emit(is64 ? rv_sra(rd, rd, rs) : rv_sraw(rd, rd, rs), ctx);
+> +               if (!is64)
+> +                       emit_zext_32(rd, ctx);
+>                 break;
 >
-> -A: NO. The first thing to improve performance on 32-bit archs is to teach
-> -LLVM to generate code that uses 32-bit subregisters. Then second step
-> -is to teach verifier to mark operations where zero-ing upper bits
-> -is unnecessary. Then JITs can take advantage of those markings and
-> -drastically reduce size of generated code and improve performance.
-> +A: NO.
-> +
-> +But some optimizations on zero-ing the upper 32 bits for BPF registers are
-> +available, and can be leveraged to improve the performance of JITed BPF
-> +programs for 32-bit architectures.
-> +
-> +Starting with version 7, LLVM is able to generate instructions that operate
-> +on 32-bit subregisters, provided the option -mattr=+alu32 is passed for
-> +compiling a program. Furthermore, the verifier can now mark the
-> +instructions for which zero-ing the upper bits of the destination register
-> +is required, and insert an explicit zero-extension (zext) instruction
-> +(a mov32 variant). This means that for architectures without zext hardware
-> +support, the JIT back-ends do not need to clear the upper bits for
-> +subregisters written by alu32 instructions or narrow loads. Instead, the
-> +back-ends simply need to support code generation for that mov32 variant,
-> +and to overwrite bpf_jit_needs_zext() to make it return "true" (in order to
-> +enable zext insertion in the verifier).
-> +
-> +Note that it is possible for a JIT back-end to have partial hardware
-> +support for zext. In that case, if verifier zext insertion is enabled,
-> +it could lead to the insertion of unnecessary zext instructions. Such
-> +instructions could be removed by creating a simple peephole inside the JIT
-> +back-end: if one instruction has hardware support for zext and if the next
-> +instruction is an explicit zext, then the latter can be skipped when doing
-> +the code generation.
+>         /* dst = -dst */
+> @@ -804,6 +820,8 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+>         case BPF_ALU64 | BPF_NEG:
+>                 emit(is64 ? rv_sub(rd, RV_REG_ZERO, rd) :
+>                      rv_subw(rd, RV_REG_ZERO, rd), ctx);
+> +               if (!is64)
+> +                       emit_zext_32(rd, ctx);
+>                 break;
 >
->  Q: Does BPF have a stable ABI?
->  ------------------------------
+>         /* dst = BSWAP##imm(dst) */
+> @@ -958,14 +976,20 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+>         case BPF_ALU | BPF_LSH | BPF_K:
+>         case BPF_ALU64 | BPF_LSH | BPF_K:
+>                 emit(is64 ? rv_slli(rd, rd, imm) : rv_slliw(rd, rd, imm), ctx);
+> +               if (!is64)
+> +                       emit_zext_32(rd, ctx);
+>                 break;
+>         case BPF_ALU | BPF_RSH | BPF_K:
+>         case BPF_ALU64 | BPF_RSH | BPF_K:
+>                 emit(is64 ? rv_srli(rd, rd, imm) : rv_srliw(rd, rd, imm), ctx);
+> +               if (!is64)
+> +                       emit_zext_32(rd, ctx);
+>                 break;
+>         case BPF_ALU | BPF_ARSH | BPF_K:
+>         case BPF_ALU64 | BPF_ARSH | BPF_K:
+>                 emit(is64 ? rv_srai(rd, rd, imm) : rv_sraiw(rd, rd, imm), ctx);
+> +               if (!is64)
+> +                       emit_zext_32(rd, ctx);
+>                 break;
+>
+>         /* JUMP off */
 > --
-> 2.7.4
+> 2.19.1
 >
