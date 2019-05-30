@@ -2,338 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1077230292
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2019 21:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E98243029F
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2019 21:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbfE3TIW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 May 2019 15:08:22 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:42481 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726065AbfE3TIV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 May 2019 15:08:21 -0400
-Received: by mail-pf1-f195.google.com with SMTP id r22so4538698pfh.9;
-        Thu, 30 May 2019 12:08:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7H9dDYfkG5aoCexFiQp3mrYF6mxJsKXlL4736u8wxiY=;
-        b=fZcXJqowIrB3tNk9j2Vs6zQMB9vhzOEhXiXoNOT3C2SZUI/keXl5CUnUzXEOmdSdM5
-         w0m8w4++FRlx5nmKHK+bxr5j4dQ1EyWaji8MJy8dKDfUl8eRWdKqTHJF+z3qw0Uuwa7y
-         +NbvRl8AteuHJDxgBDqv0Zf6NPBNpNTkiZsLXP2k5JvcBuAIEhXrVRuBbQ/F0RyvCI8m
-         l6VmoKO/75H1hmPw7JgQ1D/eaTBD+HQrL1veyMvOgi0dNM70EPDRwjlxZtK/chMvzYvR
-         b0E0jLCRFaga/bnV3BCHwDCKF5M+XHO7AhVYOpH+/n7qiSgMMKXYKhDESgGA5iDqp8H2
-         goNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7H9dDYfkG5aoCexFiQp3mrYF6mxJsKXlL4736u8wxiY=;
-        b=WFg2/ovv7iz0o5uVAHuxSEaPDn/mZ+GG8VkBYhuOKuf+2CEYGBPe3TJZSRFhAuanna
-         84KJANMd7DCc6Gurn1Dj0xjFZdH0vdFzcxi71mCmEMdvYSjP5SodpdhAYKB1BTKioA1w
-         jBVSe1opfHJUQMZYOj/fKlYigGrq6fXPwK4AV7NYiSj1Ruml1osCsC/6kiDNAwx3mGoA
-         wS48Pgsfu1xePMLIvcsXnaxVI2Kedjl0NYWOH0QcYXLI3WHIara8736slKT4s+GMu4fo
-         k6PNV0Xtpmr4rQ3v7Fi2BX8pGq1UjgfbcynGPkBfUjRqU2OqBqsuw91308kQRLiJdY51
-         /SyQ==
-X-Gm-Message-State: APjAAAW0gcUpEBeSFnuCfmosJ8HVexncGZjGzY2l81CAxCQEedHr+ANb
-        tv72u/O2wY0uM+B2IqUE5kQxNqyF/X8=
-X-Google-Smtp-Source: APXvYqzw9JIF9TxBbFnD1DrZeGTUNq7drJnRoJjCnUUex5bRISoa/9IXRlVtRwwyYFDC9m7+TUscDg==
-X-Received: by 2002:a62:e718:: with SMTP id s24mr5189745pfh.247.1559243300157;
-        Thu, 30 May 2019 12:08:20 -0700 (PDT)
-Received: from kaby.cs.washington.edu ([2607:4000:200:15:61cb:56f1:2c08:844e])
-        by smtp.gmail.com with ESMTPSA id a8sm3927617pfk.14.2019.05.30.12.08.16
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 30 May 2019 12:08:17 -0700 (PDT)
-From:   Luke Nelson <luke.r.nels@gmail.com>
-Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1726125AbfE3TKb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 May 2019 15:10:31 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:55172 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725961AbfE3TKa (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 30 May 2019 15:10:30 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4UJ58h0019479;
+        Thu, 30 May 2019 12:10:09 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=VRen7c/KD+OSxY9FEuTOgvlcbFyWrmNDZVQHLjK+txg=;
+ b=bPHEfLP2MC4mBc8BiOKYfxLdB0G4YQNYvJIetaj1mDD05s/uB0mke7gy5XUpjH3F78o9
+ FpyHAWib3uYgYSMLeHh4otjeVmT2/0YkgzU6Cyig9tFTYGv6ce3XZqke0erqbiI3mJiu
+ sF8ntotUNoJChSApc9FRWVSUuNViwx64cBI= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2stjfc8mja-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 30 May 2019 12:10:09 -0700
+Received: from prn-mbx07.TheFacebook.com (2620:10d:c081:6::21) by
+ prn-hub06.TheFacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Thu, 30 May 2019 12:09:36 -0700
+Received: from prn-hub01.TheFacebook.com (2620:10d:c081:35::125) by
+ prn-mbx07.TheFacebook.com (2620:10d:c081:6::21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Thu, 30 May 2019 12:09:36 -0700
+Received: from NAM05-CO1-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Thu, 30 May 2019 12:09:36 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VRen7c/KD+OSxY9FEuTOgvlcbFyWrmNDZVQHLjK+txg=;
+ b=gpl1vcPmITNPgOweTXA7XJ0IKG+OEvXlwgDJ7YXvglHYZF8j3NPEW3/x/e4LIJF0UcfKHpZA2Z1wuwo4Kc4leRz0jXEdRRygLbxctQnqa/0batRjVU4kJ5LKm5ju7Zv3lO3k39lm2vnEyGgUsU/OziV6P5/I8o8klj7d3qgwI44=
+Received: from BYAPR15MB2631.namprd15.prod.outlook.com (20.179.156.24) by
+ BYAPR15MB2504.namprd15.prod.outlook.com (52.135.199.12) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1922.21; Thu, 30 May 2019 19:09:32 +0000
+Received: from BYAPR15MB2631.namprd15.prod.outlook.com
+ ([fe80::d4f6:b485:69ee:fd9a]) by BYAPR15MB2631.namprd15.prod.outlook.com
+ ([fe80::d4f6:b485:69ee:fd9a%7]) with mapi id 15.20.1922.021; Thu, 30 May 2019
+ 19:09:32 +0000
+From:   Roman Gushchin <guro@fb.com>
+To:     Song Liu <liu.song.a23@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        netdev@vger.kernel.org, linux-riscv@lists.infradead.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] bpf: test_bpf: add tests for upper bits of 32-bit operations
-Date:   Thu, 30 May 2019 12:08:00 -0700
-Message-Id: <20190530190800.7633-2-luke.r.nels@gmail.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20190530190800.7633-1-luke.r.nels@gmail.com>
-References: <20190530190800.7633-1-luke.r.nels@gmail.com>
+        bpf <bpf@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 5/5] bpf: move memory size checks to
+ bpf_map_charge_init()
+Thread-Topic: [PATCH bpf-next 5/5] bpf: move memory size checks to
+ bpf_map_charge_init()
+Thread-Index: AQHVFoO9Zt82W3qTWkWW4/aoFdXajqaEBd6AgAADg4A=
+Date:   Thu, 30 May 2019 19:09:32 +0000
+Message-ID: <20190530190928.GD4855@tower.DHCP.thefacebook.com>
+References: <20190530010359.2499670-1-guro@fb.com>
+ <20190530010359.2499670-6-guro@fb.com>
+ <CAPhsuW5QDXBRAbm=80EoWgYoB-=tvxnTrsbfuR2bCowDsh8xvA@mail.gmail.com>
+In-Reply-To: <CAPhsuW5QDXBRAbm=80EoWgYoB-=tvxnTrsbfuR2bCowDsh8xvA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BYAPR07CA0040.namprd07.prod.outlook.com
+ (2603:10b6:a03:60::17) To BYAPR15MB2631.namprd15.prod.outlook.com
+ (2603:10b6:a03:152::24)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::6fcb]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 31d99c94-71e6-4484-1a94-08d6e53258b2
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:BYAPR15MB2504;
+x-ms-traffictypediagnostic: BYAPR15MB2504:
+x-microsoft-antispam-prvs: <BYAPR15MB25040861DEFD65BE95E2D230BE180@BYAPR15MB2504.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-forefront-prvs: 00531FAC2C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(396003)(39860400002)(136003)(346002)(376002)(189003)(199004)(102836004)(478600001)(7736002)(52116002)(316002)(5660300002)(99286004)(66946007)(66446008)(14454004)(66476007)(6916009)(54906003)(1076003)(305945005)(6506007)(53546011)(8936002)(386003)(8676002)(486006)(71200400001)(71190400001)(86362001)(68736007)(4744005)(6116002)(64756008)(76176011)(81156014)(81166006)(73956011)(66556008)(6436002)(25786009)(6246003)(2906002)(4326008)(11346002)(229853002)(186003)(6512007)(46003)(6486002)(53936002)(33656002)(256004)(9686003)(446003)(476003);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2504;H:BYAPR15MB2631.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: BvMWdKYmkwkzRxQjZnFOwZ6lzhSIGvoGA8JPkV9zOrOZ4bLlWcizI4+/7jdV2iqtDd6BbNGcndpybVIJjw9dcDsoPAFww6aDmE9cR3YiEG/rHrM2aK21lKFN/Iin5DIne1ssuMG2DDjtt7VBTUCgYc3j8gaeapVOPoXRAkrvQ5jlQRB9ygMlYCxv0j1bjUUMe94VakacMTZnq48sDuOTHDikOmdOdBkO1DMPMUkATgQ/42CcEWOA4FO9ewklcffyLqszKWgVtx3NpXyOsUCZvjq0gK90TL4H/vb4SYow3X7R9huVqrfPZMw9KW0Pa4+w2lwOo3yP41zg2qMHVGjaFOZzeQDRFV91Wf66Vb5rl+SZb9WWKhwqYjmS3xYfTfQ4H5BlezpyNac9jWnNui6t2Rz3emimr7qsp4fImidyI4k=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <CC01526B819E214094F97395869D81AF@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 31d99c94-71e6-4484-1a94-08d6e53258b2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 May 2019 19:09:32.1794
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: guro@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2504
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-30_12:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=974 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905300134
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This commit introduces tests that validate the upper 32 bits
-of the result of 32-bit BPF ALU operations.
+On Thu, May 30, 2019 at 11:56:55AM -0700, Song Liu wrote:
+> On Wed, May 29, 2019 at 6:05 PM Roman Gushchin <guro@fb.com> wrote:
+> >
+> > Most bpf map types doing similar checks and bytes to pages
+> > conversion during memory allocation and charging.
+> >
+> > Let's unify these checks by moving them into bpf_map_charge_init().
+> >
+> > Signed-off-by: Roman Gushchin <guro@fb.com>
+>=20
+> Nice, I was thinking about similar issues while reading patches
+> 3/5 and 4/5. I really like this simplification.
+>=20
+> Acked-by: Song Liu <songliubraving@fb.com>
 
-The existing tests for 32-bit operations do not check the upper 32
-bits of results because the exit instruction truncates the result.
-These tests perform a 32-bit ALU operation followed by a right shift.
-These tests can catch subtle bugs in the extension behavior of JITed
-instructions, including several bugs in the RISC-V BPF JIT, fixed in
-another patch.
-
-The added tests pass the JIT and interpreter on x86, as well as the
-JIT and interpreter of RISC-V once the zero extension bugs were fixed.
-
-Cc: Xi Wang <xi.wang@gmail.com>
-Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
----
- lib/test_bpf.c | 164 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 164 insertions(+)
-
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index 0845f635f404..4580dc0220f1 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -2461,6 +2461,20 @@ static struct bpf_test tests[] = {
- 		{ },
- 		{ { 0, 1 } },
- 	},
-+	{
-+		"ALU_ADD_X: (1 + 4294967294) >> 32 + 4294967294 = 4294967294",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 1U),
-+			BPF_ALU32_IMM(BPF_MOV, R1, 4294967294U),
-+			BPF_ALU32_REG(BPF_ADD, R0, R1),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-+			BPF_ALU32_REG(BPF_ADD, R0, R1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 4294967294U } },
-+	},
- 	{
- 		"ALU64_ADD_X: 1 + 2 = 3",
- 		.u.insns_int = {
-@@ -2812,6 +2826,20 @@ static struct bpf_test tests[] = {
- 		{ },
- 		{ { 0, 1 } },
- 	},
-+	{
-+		"ALU_SUB_X: (4294967295 - 1) >> 32 + 1 = 1",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 4294967295U),
-+			BPF_ALU32_IMM(BPF_MOV, R1, 1U),
-+			BPF_ALU32_REG(BPF_SUB, R0, R1),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-+			BPF_ALU32_REG(BPF_ADD, R0, R1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 1 } },
-+	},
- 	{
- 		"ALU64_SUB_X: 3 - 1 = 2",
- 		.u.insns_int = {
-@@ -3391,6 +3419,20 @@ static struct bpf_test tests[] = {
- 		{ },
- 		{ { 0, 0xffffffff } },
- 	},
-+	{
-+		"ALU_AND_X: (-1 & -1) >> 32 + 1 = 1",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, -1UL),
-+			BPF_LD_IMM64(R1, -1UL),
-+			BPF_ALU32_REG(BPF_AND, R0, R1),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-+			BPF_ALU32_IMM(BPF_ADD, R0, 1U),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 1 } },
-+	},
- 	{
- 		"ALU64_AND_X: 3 & 2 = 2",
- 		.u.insns_int = {
-@@ -3533,6 +3575,20 @@ static struct bpf_test tests[] = {
- 		{ },
- 		{ { 0, 0xffffffff } },
- 	},
-+	{
-+		"ALU_OR_X: (0 & -1) >> 32 + 1 = 1",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0),
-+			BPF_LD_IMM64(R1, -1UL),
-+			BPF_ALU32_REG(BPF_OR, R0, R1),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-+			BPF_ALU32_IMM(BPF_ADD, R0, 1U),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 1 } },
-+	},
- 	{
- 		"ALU64_OR_X: 1 | 2 = 3",
- 		.u.insns_int = {
-@@ -3675,6 +3731,20 @@ static struct bpf_test tests[] = {
- 		{ },
- 		{ { 0, 0xfffffffe } },
- 	},
-+	{
-+		"ALU_XOR_X: (0 ^ -1) >> 32 + 1 = 1",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0),
-+			BPF_LD_IMM64(R1, -1UL),
-+			BPF_ALU32_REG(BPF_XOR, R0, R1),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-+			BPF_ALU32_IMM(BPF_ADD, R0, 1U),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 1 } },
-+	},
- 	{
- 		"ALU64_XOR_X: 5 ^ 6 = 3",
- 		.u.insns_int = {
-@@ -3817,6 +3887,20 @@ static struct bpf_test tests[] = {
- 		{ },
- 		{ { 0, 0x80000000 } },
- 	},
-+	{
-+		"ALU_LSH_X: (1 << 31) >> 32 + 1 = 1",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 1),
-+			BPF_ALU32_IMM(BPF_MOV, R1, 31),
-+			BPF_ALU32_REG(BPF_LSH, R0, R1),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-+			BPF_ALU32_IMM(BPF_ADD, R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 1 } },
-+	},
- 	{
- 		"ALU64_LSH_X: 1 << 1 = 2",
- 		.u.insns_int = {
-@@ -3842,6 +3926,19 @@ static struct bpf_test tests[] = {
- 		{ { 0, 0x80000000 } },
- 	},
- 	/* BPF_ALU | BPF_LSH | BPF_K */
-+	{
-+		"ALU_LSH_K: (1 << 31) >> 32 + 1 = 1",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 1),
-+			BPF_ALU32_IMM(BPF_LSH, R0, 31),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-+			BPF_ALU32_IMM(BPF_ADD, R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 1 } },
-+	},
- 	{
- 		"ALU_LSH_K: 1 << 1 = 2",
- 		.u.insns_int = {
-@@ -3911,6 +4008,20 @@ static struct bpf_test tests[] = {
- 		{ },
- 		{ { 0, 1 } },
- 	},
-+	{
-+		"ALU_RSH_X: (0x80000000 >> 0) >> 32 + 1 = 1",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0x80000000),
-+			BPF_ALU32_IMM(BPF_MOV, R1, 0),
-+			BPF_ALU32_REG(BPF_RSH, R0, R1),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-+			BPF_ALU32_IMM(BPF_ADD, R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 1 } },
-+	},
- 	{
- 		"ALU64_RSH_X: 2 >> 1 = 1",
- 		.u.insns_int = {
-@@ -3936,6 +4047,19 @@ static struct bpf_test tests[] = {
- 		{ { 0, 1 } },
- 	},
- 	/* BPF_ALU | BPF_RSH | BPF_K */
-+	{
-+		"ALU_RSH_K: (0x80000000 >> 0) >> 32 + 1 = 1",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0x80000000),
-+			BPF_ALU32_IMM(BPF_RSH, R0, 0),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-+			BPF_ALU32_IMM(BPF_ADD, R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 1 } },
-+	},
- 	{
- 		"ALU_RSH_K: 2 >> 1 = 1",
- 		.u.insns_int = {
-@@ -3993,7 +4117,34 @@ static struct bpf_test tests[] = {
- 		{ },
- 		{ { 0, 0xffff00ff } },
- 	},
-+	{
-+		"ALU_ARSH_X: (0x80000000 >> 0) >> 32 + 1 = 1",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0x80000000),
-+			BPF_ALU32_IMM(BPF_MOV, R1, 0),
-+			BPF_ALU32_REG(BPF_ARSH, R0, R1),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-+			BPF_ALU32_IMM(BPF_ADD, R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 1 } },
-+	},
- 	/* BPF_ALU | BPF_ARSH | BPF_K */
-+	{
-+		"ALU_ARSH_K: (0x80000000 >> 0) >> 32 + 1 = 1",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0x80000000),
-+			BPF_ALU32_IMM(BPF_ARSH, R0, 0),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-+			BPF_ALU32_IMM(BPF_ADD, R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 1 } },
-+	},
- 	{
- 		"ALU_ARSH_K: 0xff00ff0000000000 >> 40 = 0xffffffffffff00ff",
- 		.u.insns_int = {
-@@ -4028,6 +4179,19 @@ static struct bpf_test tests[] = {
- 		{ },
- 		{ { 0, 3 } },
- 	},
-+	{
-+		"ALU_NEG: -(1) >> 32 + 1 = 1",
-+		.u.insns_int = {
-+			BPF_ALU32_IMM(BPF_MOV, R0, 1),
-+			BPF_ALU32_IMM(BPF_NEG, R0, 0),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-+			BPF_ALU64_IMM(BPF_ADD, R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 1 } },
-+	},
- 	{
- 		"ALU64_NEG: -(3) = -3",
- 		.u.insns_int = {
--- 
-2.19.1
-
+Thank you for the review, Song!
