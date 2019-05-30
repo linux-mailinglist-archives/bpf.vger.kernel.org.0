@@ -2,97 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B422F7FB
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2019 09:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 631C02F808
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2019 09:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbfE3HjG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 May 2019 03:39:06 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:40952 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbfE3HjG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 May 2019 03:39:06 -0400
-Received: by mail-pl1-f194.google.com with SMTP id g69so2202358plb.7;
-        Thu, 30 May 2019 00:39:05 -0700 (PDT)
+        id S1727461AbfE3Ho4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 May 2019 03:44:56 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:42660 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726581AbfE3Ho4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 May 2019 03:44:56 -0400
+Received: by mail-wr1-f68.google.com with SMTP id l2so3452292wrb.9
+        for <bpf@vger.kernel.org>; Thu, 30 May 2019 00:44:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=IlTH5PC8QN6s5pDyLnED54IkhUjHpmYD5UVsaa4DGbU=;
-        b=l5lRqi8IRqBEozyKydowBAnxb3nZ+aLL11OIGap9RmyXaiKO8mPrHoxtgzRRUJTIKL
-         XMHQjyWq8ZAJ5AWas3g9VUglxljujDOrVgUmMXtAXxDDKmrlOymmHUVGLNj6rxzEB4RP
-         jYPy5lTIDjUSJRcBJFj0DIdgqrwhUxOwTbI+nYH/fM91fkbffDZdGMQprdIiAchyrjtz
-         op7fHDXhLysvEQU3eXT0yXsGQ6A7j54ABleP4oAbluOqmVxNUemmsdgXTHre/EY6kwJs
-         JdkfuiGoFbqFdx/w2xOod0AOQIGt+ZlW+2cS5bRer793aGgWMXfxspC2u+dPJcKBQFjM
-         0dfg==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=ZPN60tHW+fkN7QhWRO4Pw+Ht0a4svKocBgd17LlVcuk=;
+        b=ql6rd6yKVcz/rf1KXPSgKGesdv0ZREW2Tk4eJ8MQ7OIPaT2ANJfNhrSIFTsrpIvGz8
+         XqYICZewmULQzP6iWLEaNI4S8DbKiS1P4ml7hwP4JIrOPCY5pULsSjVijj55cqrDhQQL
+         IA97rxnBU7cM0Ir4YOghvg/XsjmG8DjZ4piUYyAWCQYRMgwJu9w8ycCuCS9QJTFy9PRj
+         W9LK8FXUIpu0Z/q6r5vEbSrbuGWj1Wa+25VcsUc6TFobFauMLYFXfSOKhprf5ja0Dyl7
+         lmLscXdHplID/Nzq0Nx3t45HrZ/sGw+f7MOIesptNlsS2h7CrypE3dnolO6OkrvNfT0a
+         KPRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IlTH5PC8QN6s5pDyLnED54IkhUjHpmYD5UVsaa4DGbU=;
-        b=IO1MjfkgJQqseYDaw/3k/ayXbTXxeH4Wl0wf+9HR2n0mKvz4xf2pqr7c0LAHcPZ91O
-         iq/Wl689IXxArEpNucTbVBfNJlvFthxfn0QgJk27vUIyzzIqIA07j8RXdPXRBLgyoq8x
-         7wYTihHAuw6e6F5O77dhz+ohcc8+vCJgkYDxFb1NgYfS1i2AYZgjd3dfrZn5bkSacUwl
-         +swbe7Pfd6nM0YlSCX9+D/LQM+TiVkY2J4gK5IxnwfQzScJcQ5Zs97qa7EBh02wT8XKi
-         l2xvlkcCBOEF0ffbzzhG+pJ7KQp+KLcqn/eTNYWNhKW/uh7xacQZHsjNNxadrxiJj9jt
-         dGDA==
-X-Gm-Message-State: APjAAAX0Q+DdBE7e4iYdA9594MqhKe6/GmNvQX3dtNev+7asIVvl4NM/
-        L7hFKy4ZcwJYyoBnKnU+I/s=
-X-Google-Smtp-Source: APXvYqxpjuyuftqs3w21evTb/aGMHh2P2kfcGNYgwXiDoswXKZSH/rHrzVejrYoPdlMHOgCYrCQ9oA==
-X-Received: by 2002:a17:902:b590:: with SMTP id a16mr2502085pls.168.1559201945505;
-        Thu, 30 May 2019 00:39:05 -0700 (PDT)
-Received: from zhanggen-UX430UQ ([66.42.35.75])
-        by smtp.gmail.com with ESMTPSA id 8sm1866863pfj.93.2019.05.30.00.38.46
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 30 May 2019 00:39:04 -0700 (PDT)
-Date:   Thu, 30 May 2019 15:38:34 +0800
-From:   Gen Zhang <blackgod016574@gmail.com>
-To:     William Roberts <bill.c.roberts@gmail.com>
-Cc:     Paul Moore <paul@paul-moore.com>, tony.luck@intel.com,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] hooks: fix a missing-check bug in
- selinux_sb_eat_lsm_opts()
-Message-ID: <20190530073834.GB2382@zhanggen-UX430UQ>
-References: <20190530035310.GA9127@zhanggen-UX430UQ>
- <CAFftDdrX_=7KXfbvMDdCamj84nzYB+QCGXWArD3=zEkPZsQ1eQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFftDdrX_=7KXfbvMDdCamj84nzYB+QCGXWArD3=zEkPZsQ1eQ@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ZPN60tHW+fkN7QhWRO4Pw+Ht0a4svKocBgd17LlVcuk=;
+        b=Wi17nYEfuGBFXFGsH5XrmVu22MAGo3qOM5n7VdiQ8WHPLYzKK1gdCGETJG/CuthcEj
+         QM8gZ794XAVKgQpTRwD4ok3lyvtRFaklwfrxDg9hNT2ALlmVX9+DyGSZrhTvbd/tTY7i
+         5zR3xyELYTQGz7jKlgeCVUaccmsOK7mJ8BkIOGEDagYzu07qWyxPqulcea+sMPJ7ux67
+         xnuEiMg2JW8hYuunC5ma9HD27xAVJX7IscczTNj2jOQaxx2TSkSDAclLzkpPvhufIO7r
+         NiDYA+Vsc/wpWePyVGvXY+rP4e1b3IlT26soge1GyeUopdZi0eVMb9wMLEFGaTVqTRj4
+         bKXA==
+X-Gm-Message-State: APjAAAX2fuXFiIAjDn9bA/u+ZamanvSOloHmxOT7i0LwWGpv6D3DeNM9
+        tgJzWeEua/rLLP4FLffuAkMBJw==
+X-Google-Smtp-Source: APXvYqw5ml6KXwvVIJOtulj/uLhJjCv/pOs6e+ZBjd+xQjftmb9aTPWWLAqtlBq8awPa2eZjJX32Qg==
+X-Received: by 2002:adf:f04d:: with SMTP id t13mr1552728wro.36.1559202294613;
+        Thu, 30 May 2019 00:44:54 -0700 (PDT)
+Received: from cbtest28.netronome.com ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id w2sm1544001wru.16.2019.05.30.00.44.53
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Thu, 30 May 2019 00:44:53 -0700 (PDT)
+From:   Jiong Wang <jiong.wang@netronome.com>
+To:     alexei.starovoitov@gmail.com, daniel@iogearbox.net
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        oss-drivers@netronome.com, Jiong Wang <jiong.wang@netronome.com>
+Subject: [PATCH bpf-next] bpf: doc: update answer for 32-bit subregister question
+Date:   Thu, 30 May 2019 08:44:47 +0100
+Message-Id: <1559202287-15553-1-git-send-email-jiong.wang@netronome.com>
+X-Mailer: git-send-email 2.7.4
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 29, 2019 at 09:39:50PM -0700, William Roberts wrote:
-> On Wed, May 29, 2019 at 8:55 PM Gen Zhang <blackgod016574@gmail.com> wrote:
-> >
-> > In selinux_sb_eat_lsm_opts(), 'arg' is allocated by kmemdup_nul(). It
-> > returns NULL when fails. So 'arg' should be checked.
-> >
-> > Signed-off-by: Gen Zhang <blackgod016574@gmail.com>
-> > ---
-> > diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> > index 3ec702c..5a9e959 100644
-> > --- a/security/selinux/hooks.c
-> > +++ b/security/selinux/hooks.c
-> > @@ -2635,6 +2635,8 @@ static int selinux_sb_eat_lsm_opts(char *options, void **mnt_opts)
-> >                                                 *q++ = c;
-> >                                 }
-> >                                 arg = kmemdup_nul(arg, q - arg, GFP_KERNEL);
-> > +                               if (!arg)
-> > +                                       return 0;
-> 
-> The routine seems to return 0 on success, why would it return 0 on ENOMEM?
-> 
-Thanks for your reply, William. I re-examined the source code and didn't
-figure out what the return value should be in this situation. Could it 
-be a -ENOMEM? Do you have any idea?
+There has been quite a few progress around the two steps mentioned in the
+answer to the following question:
 
-Thanks
-Gen
-> >                         }
-> >                         rc = selinux_add_opt(token, arg, mnt_opts);
-> >                         if (unlikely(rc)) {
+  Q: BPF 32-bit subregister requirements
+
+This patch updates the answer to reflect what has been done.
+
+v1:
+ - Integrated rephrase from Quentin and Jakub.
+
+Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
+Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
+---
+ Documentation/bpf/bpf_design_QA.rst | 30 +++++++++++++++++++++++++-----
+ 1 file changed, 25 insertions(+), 5 deletions(-)
+
+diff --git a/Documentation/bpf/bpf_design_QA.rst b/Documentation/bpf/bpf_design_QA.rst
+index cb402c5..5092a2a 100644
+--- a/Documentation/bpf/bpf_design_QA.rst
++++ b/Documentation/bpf/bpf_design_QA.rst
+@@ -172,11 +172,31 @@ registers which makes BPF inefficient virtual machine for 32-bit
+ CPU architectures and 32-bit HW accelerators. Can true 32-bit registers
+ be added to BPF in the future?
+ 
+-A: NO. The first thing to improve performance on 32-bit archs is to teach
+-LLVM to generate code that uses 32-bit subregisters. Then second step
+-is to teach verifier to mark operations where zero-ing upper bits
+-is unnecessary. Then JITs can take advantage of those markings and
+-drastically reduce size of generated code and improve performance.
++A: NO
++
++But some optimizations on zero-ing the upper 32 bits for BPF registers are
++available, and can be leveraged to improve the performance of JIT compilers
++for 32-bit architectures.
++
++Starting with version 7, LLVM is able to generate instructions that operate
++on 32-bit subregisters, provided the option -mattr=+alu32 is passed for
++compiling a program. Furthermore, the verifier can now mark the
++instructions for which zero-ing the upper bits of the destination register
++is required, and insert an explicit zero-extension (zext) instruction
++(a mov32 variant). This means that for architectures without zext hardware
++support, the JIT back-ends do not need to clear the upper bits for
++subregisters written by alu32 instructions or narrow loads. Instead, the
++back-ends simply need to support code generation for that mov32 variant,
++and to overwrite bpf_jit_needs_zext() to make it return "true" (in order to
++enable zext insertion in the verifier).
++
++Note that it is possible for a JIT back-end to have partial hardware
++support for zext. In that case, if verifier zext insertion is enabled,
++it could lead to the insertion of unnecessary zext instructions. Such
++instructions could be removed by creating a simple peephole inside the JIT
++back-end: if one instruction has hardware support for zext and if the next
++instruction is an explicit zext, then the latter can be skipped when doing
++the code generation.
+ 
+ Q: Does BPF have a stable ABI?
+ ------------------------------
+-- 
+2.7.4
+
