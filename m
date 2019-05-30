@@ -2,196 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8F130394
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2019 22:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03DCE30485
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2019 00:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbfE3UxT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 May 2019 16:53:19 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:33610 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726045AbfE3UxT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 May 2019 16:53:19 -0400
-Received: by mail-qk1-f194.google.com with SMTP id p18so4890706qkk.0;
-        Thu, 30 May 2019 13:53:18 -0700 (PDT)
+        id S1726489AbfE3WDD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 May 2019 18:03:03 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:35677 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726308AbfE3WDD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 May 2019 18:03:03 -0400
+Received: by mail-qt1-f195.google.com with SMTP id w1so9001511qts.2;
+        Thu, 30 May 2019 15:03:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=z9CARR2sdyz0TzlZx5C1Y/HG1L1GZ/YQxjW8n3dkDtY=;
-        b=O9b/bK8EMj6Z/Aes6GvEEWWgQoaqgWaPkCaZ7cbWL42OrKuP7jCn08XnPqAmy2p306
-         8zhO25gwMO64WxuBI2gHUQlS/hvtoy5Caw3oUFl2PIjzGa0bYZkNqSLyaIzi2b1TeyUj
-         FF37jgA4vO32nO0WZtIk8qPAYjFw6a6a31YkeqEMWj6cA75nwjX6K+fNkXOSWkeNm8gG
-         IDAzymM/tDnhTeMvFQclwaOUNj9WlNGj9jdXrDTHK6nOYN4rb37VYFg2BOXyFCdWVDEX
-         3VX2YfBwDDiSgLEeBrbXF0Aaery1wJ4oqbzlGKl7kczZOsWjWFvMpf9Wln7u02PN41Hv
-         SoUA==
+        bh=YSnAq3eKQkU54nDdKJphmGJsI8pTPt78FTo77Vo/2Xo=;
+        b=siIFyXztRvfOPf7xj65X+x00d6jAnupeh7lmFFIGJZsJQpmP0BK1Ca27TKaYCf4BHV
+         Mvta0w/zpnHYFw+CWMlPk8JH5u9TZSxEEaSY9/Lo80ukSQdXYVYnRwrnPvHqX6UMZ4hs
+         2OP6MfGuyXK6j2CuKzhZDVxyluTz7Ue2/RaQ3IHpMqWqqoWZD9OFBmVmFZT89UvYtVi2
+         Y0Rq4tP4TPQ0Zx4BhC69WzANk+1AGw+ZNBkNlXUhDagHAj/cdLYjoEqOYcvVnRMe43QE
+         I6oQADALlCdC+9h5jyYTuFx05x057Pyze9GYOJ1/qroSFG0hKlyT80ncb+vNaiUfZhrR
+         24zA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=z9CARR2sdyz0TzlZx5C1Y/HG1L1GZ/YQxjW8n3dkDtY=;
-        b=svapGs1oKeMGqBlnffuFnXrQKXBdtui7HHL8QVPEEPx4t22/p8xva3OS3CN84NjKEL
-         HBN8mEOhrbObI3yoYBheq1PgJ+ErQU8CDTXWCLs90lwaIFx7+8lpDz5RR3Y5iwAi8/55
-         q5E1TDEf3exzj2Pst2hzKM158nKVg8tkUiqfS+d403HSCl6IIi6wR15cWi+6peWDZnAQ
-         VJodwbvw+M5nya623hOSXG/vLgULFGFaJpQ9d6VHokJoqt2NnalzLRiX1lqFllaDb5vM
-         i5Q6SLuhWeoqu6CyD8EU8Q8voXlFNQvb1yXbbhT0ujpN06OekkgYtpvPu4afMVPkFTl7
-         VdTA==
-X-Gm-Message-State: APjAAAXw+M2SQgC40kxqJ95Bdlybe5gia5EN0i7jmsU9qMpg5+6aauC7
-        MYabNBWRKDEjerfgQrLL2qbwofnx95egX//82OY=
-X-Google-Smtp-Source: APXvYqwWhPLets6g5KL70GsN0a/SBVH9vdVhMDcuBw1NjRTLVGKTPlYj7q6szJQZYwKJTGwxrKqHl3zy1Vgg7W+OTbs=
-X-Received: by 2002:a05:620a:12f8:: with SMTP id f24mr5129490qkl.202.1559249597898;
- Thu, 30 May 2019 13:53:17 -0700 (PDT)
+        bh=YSnAq3eKQkU54nDdKJphmGJsI8pTPt78FTo77Vo/2Xo=;
+        b=N4oJC+onZXh/9q27KrvMTEx8t5KACCCLYjCgZdI+dUr8Unjor1F9ppmzn9xG28IVG+
+         +Nn7NSaclAHj41z8JreJMnY8Fmr4U+X82HtAOyl8MypvUj7V+wzpJHIvWzZI2TXMR2yX
+         wsz7qk8ehQlbapL1OOwzkAvTCnG79WlusmLb6x9O/Na5pQ3es+MDRvVErx6x53KDylLN
+         OJP/BNcLGir7CwbtF7gKVXekW6BbqsLuz398uxqsHNvop1unrt6q4ajkrS7ifgL0FvQb
+         hXOQ9z02okpMLBPrTjcORufP5LFrrTvlx6myqeH/AWSAV8+nbrgvO4bUk6ZVGXmZgbuQ
+         fNtQ==
+X-Gm-Message-State: APjAAAXrb0TbOKNT7XB73NqunRaNCMosHnzRxWfXhHNoy3yebACwPJOb
+        Xp2GPFc/a4oK/cTu3lkfC0S9SAPaXwk7kojfzQMUuz8K
+X-Google-Smtp-Source: APXvYqxkm0nA87BHD0ZYYUqgK5f/C1G3gfVmUkzmB+1Ed62DiDwD10zGKHZAQ44jlk3F/VpxwkjoDIcqP6Ysjv9Y3qA=
+X-Received: by 2002:ac8:2a73:: with SMTP id l48mr5678673qtl.183.1559252048319;
+ Thu, 30 May 2019 14:34:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190530190800.7633-1-luke.r.nels@gmail.com>
-In-Reply-To: <20190530190800.7633-1-luke.r.nels@gmail.com>
+References: <20190529183109.17317-1-mrostecki@opensuse.org>
+In-Reply-To: <20190529183109.17317-1-mrostecki@opensuse.org>
 From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Thu, 30 May 2019 13:53:06 -0700
-Message-ID: <CAPhsuW4kMBSjpATqHrEhTmuqje=XZNGOrMyNur8f6K0RNQP=yw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] bpf, riscv: fix bugs in JIT for 32-bit ALU operations
-To:     Luke Nelson <luke.r.nels@gmail.com>
-Cc:     Xi Wang <xi.wang@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
+Date:   Thu, 30 May 2019 14:33:56 -0700
+Message-ID: <CAPhsuW7KhR1XXDb6Sv54xb1OiLQUC7NH4+uf8_b3tRje7O-YUQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v4] libbpf: Return btf_fd for load_sk_storage_btf
+To:     Michal Rostecki <mrostecki@opensuse.org>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        linux-riscv@lists.infradead.org, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 30, 2019 at 12:09 PM Luke Nelson <luke.r.nels@gmail.com> wrote:
+On Wed, May 29, 2019 at 11:30 AM Michal Rostecki <mrostecki@opensuse.org> wrote:
 >
-> In BPF, 32-bit ALU operations should zero-extend their results into
-> the 64-bit registers.  The current BPF JIT on RISC-V emits incorrect
-> instructions that perform either sign extension only (e.g., addw/subw)
-> or no extension on 32-bit add, sub, and, or, xor, lsh, rsh, arsh,
-> and neg.  This behavior diverges from the interpreter and JITs for
-> other architectures.
+> Before this change, function load_sk_storage_btf expected that
+> libbpf__probe_raw_btf was returning a BTF descriptor, but in fact it was
+> returning an information about whether the probe was successful (0 or
+> 1). load_sk_storage_btf was using that value as an argument of the close
+> function, which was resulting in closing stdout and thus terminating the
+> process which called that function.
 >
-> This patch fixes the bugs by performing zero extension on the destination
-> register of 32-bit ALU operations.
+> That bug was visible in bpftool. `bpftool feature` subcommand was always
+> exiting too early (because of closed stdout) and it didn't display all
+> requested probes. `bpftool -j feature` or `bpftool -p feature` were not
+> returning a valid json object.
 >
-> Fixes: 2353ecc6f91f ("bpf, riscv: add BPF JIT for RV64G")
-> Cc: Xi Wang <xi.wang@gmail.com>
-> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+> This change renames the libbpf__probe_raw_btf function to
+> libbpf__load_raw_btf, which now returns a BTF descriptor, as expected in
+> load_sk_storage_btf.
+>
+> v2:
+> - Fix typo in the commit message.
+>
+> v3:
+> - Simplify BTF descriptor handling in bpf_object__probe_btf_* functions.
+> - Rename libbpf__probe_raw_btf function to libbpf__load_raw_btf and
+> return a BTF descriptor.
+>
+> v4:
+> - Fix typo in the commit message.
+>
+> Fixes: d7c4b3980c18 ("libbpf: detect supported kernel BTF features and sanitize BTF")
+> Signed-off-by: Michal Rostecki <mrostecki@opensuse.org>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-This is a little messy. How about we introduce some helper function
-like:
+Acked-by: Song Liu <songliubraving@fb.com>
 
-/* please find a better name... */
-emit_32_or_64(bool is64, const u32 insn_32, const u32 inst_64, struct
-rv_jit_context *ctx)
-{
-       if (is64)
-            emit(insn_64, ctx);
-       else {
-            emit(insn_32, ctx);
-           rd = xxxx;
-           emit_zext_32(rd, ctx);
-       }
-}
-
-Thanks,
-Song
+Thanks for the fix!
 
 > ---
->  arch/riscv/net/bpf_jit_comp.c | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
+>  tools/lib/bpf/libbpf.c          | 28 ++++++++++++++++------------
+>  tools/lib/bpf/libbpf_internal.h |  4 ++--
+>  tools/lib/bpf/libbpf_probes.c   | 13 ++++---------
+>  3 files changed, 22 insertions(+), 23 deletions(-)
 >
-> diff --git a/arch/riscv/net/bpf_jit_comp.c b/arch/riscv/net/bpf_jit_comp.c
-> index 80b12aa5e10d..426d5c33ea90 100644
-> --- a/arch/riscv/net/bpf_jit_comp.c
-> +++ b/arch/riscv/net/bpf_jit_comp.c
-> @@ -751,22 +751,32 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->         case BPF_ALU | BPF_ADD | BPF_X:
->         case BPF_ALU64 | BPF_ADD | BPF_X:
->                 emit(is64 ? rv_add(rd, rd, rs) : rv_addw(rd, rd, rs), ctx);
-> +               if (!is64)
-> +                       emit_zext_32(rd, ctx);
->                 break;
->         case BPF_ALU | BPF_SUB | BPF_X:
->         case BPF_ALU64 | BPF_SUB | BPF_X:
->                 emit(is64 ? rv_sub(rd, rd, rs) : rv_subw(rd, rd, rs), ctx);
-> +               if (!is64)
-> +                       emit_zext_32(rd, ctx);
->                 break;
->         case BPF_ALU | BPF_AND | BPF_X:
->         case BPF_ALU64 | BPF_AND | BPF_X:
->                 emit(rv_and(rd, rd, rs), ctx);
-> +               if (!is64)
-> +                       emit_zext_32(rd, ctx);
->                 break;
->         case BPF_ALU | BPF_OR | BPF_X:
->         case BPF_ALU64 | BPF_OR | BPF_X:
->                 emit(rv_or(rd, rd, rs), ctx);
-> +               if (!is64)
-> +                       emit_zext_32(rd, ctx);
->                 break;
->         case BPF_ALU | BPF_XOR | BPF_X:
->         case BPF_ALU64 | BPF_XOR | BPF_X:
->                 emit(rv_xor(rd, rd, rs), ctx);
-> +               if (!is64)
-> +                       emit_zext_32(rd, ctx);
->                 break;
->         case BPF_ALU | BPF_MUL | BPF_X:
->         case BPF_ALU64 | BPF_MUL | BPF_X:
-> @@ -789,14 +799,20 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->         case BPF_ALU | BPF_LSH | BPF_X:
->         case BPF_ALU64 | BPF_LSH | BPF_X:
->                 emit(is64 ? rv_sll(rd, rd, rs) : rv_sllw(rd, rd, rs), ctx);
-> +               if (!is64)
-> +                       emit_zext_32(rd, ctx);
->                 break;
->         case BPF_ALU | BPF_RSH | BPF_X:
->         case BPF_ALU64 | BPF_RSH | BPF_X:
->                 emit(is64 ? rv_srl(rd, rd, rs) : rv_srlw(rd, rd, rs), ctx);
-> +               if (!is64)
-> +                       emit_zext_32(rd, ctx);
->                 break;
->         case BPF_ALU | BPF_ARSH | BPF_X:
->         case BPF_ALU64 | BPF_ARSH | BPF_X:
->                 emit(is64 ? rv_sra(rd, rd, rs) : rv_sraw(rd, rd, rs), ctx);
-> +               if (!is64)
-> +                       emit_zext_32(rd, ctx);
->                 break;
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 197b574406b3..5d046cc7b207 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -1645,14 +1645,16 @@ static int bpf_object__probe_btf_func(struct bpf_object *obj)
+>                 /* FUNC x */                                    /* [3] */
+>                 BTF_TYPE_ENC(5, BTF_INFO_ENC(BTF_KIND_FUNC, 0, 0), 2),
+>         };
+> -       int res;
+> +       int btf_fd;
 >
->         /* dst = -dst */
-> @@ -804,6 +820,8 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->         case BPF_ALU64 | BPF_NEG:
->                 emit(is64 ? rv_sub(rd, RV_REG_ZERO, rd) :
->                      rv_subw(rd, RV_REG_ZERO, rd), ctx);
-> +               if (!is64)
-> +                       emit_zext_32(rd, ctx);
->                 break;
+> -       res = libbpf__probe_raw_btf((char *)types, sizeof(types),
+> -                                   strs, sizeof(strs));
+> -       if (res < 0)
+> -               return res;
+> -       if (res > 0)
+> +       btf_fd = libbpf__load_raw_btf((char *)types, sizeof(types),
+> +                                     strs, sizeof(strs));
+> +       if (btf_fd >= 0) {
+>                 obj->caps.btf_func = 1;
+> +               close(btf_fd);
+> +               return 1;
+> +       }
+> +
+>         return 0;
+>  }
 >
->         /* dst = BSWAP##imm(dst) */
-> @@ -958,14 +976,20 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->         case BPF_ALU | BPF_LSH | BPF_K:
->         case BPF_ALU64 | BPF_LSH | BPF_K:
->                 emit(is64 ? rv_slli(rd, rd, imm) : rv_slliw(rd, rd, imm), ctx);
-> +               if (!is64)
-> +                       emit_zext_32(rd, ctx);
->                 break;
->         case BPF_ALU | BPF_RSH | BPF_K:
->         case BPF_ALU64 | BPF_RSH | BPF_K:
->                 emit(is64 ? rv_srli(rd, rd, imm) : rv_srliw(rd, rd, imm), ctx);
-> +               if (!is64)
-> +                       emit_zext_32(rd, ctx);
->                 break;
->         case BPF_ALU | BPF_ARSH | BPF_K:
->         case BPF_ALU64 | BPF_ARSH | BPF_K:
->                 emit(is64 ? rv_srai(rd, rd, imm) : rv_sraiw(rd, rd, imm), ctx);
-> +               if (!is64)
-> +                       emit_zext_32(rd, ctx);
->                 break;
+> @@ -1670,14 +1672,16 @@ static int bpf_object__probe_btf_datasec(struct bpf_object *obj)
+>                 BTF_TYPE_ENC(3, BTF_INFO_ENC(BTF_KIND_DATASEC, 0, 1), 4),
+>                 BTF_VAR_SECINFO_ENC(2, 0, 4),
+>         };
+> -       int res;
+> +       int btf_fd;
 >
->         /* JUMP off */
+> -       res = libbpf__probe_raw_btf((char *)types, sizeof(types),
+> -                                   strs, sizeof(strs));
+> -       if (res < 0)
+> -               return res;
+> -       if (res > 0)
+> +       btf_fd = libbpf__load_raw_btf((char *)types, sizeof(types),
+> +                                     strs, sizeof(strs));
+> +       if (btf_fd >= 0) {
+>                 obj->caps.btf_datasec = 1;
+> +               close(btf_fd);
+> +               return 1;
+> +       }
+> +
+>         return 0;
+>  }
+>
+> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+> index f3025b4d90e1..dfab8012185c 100644
+> --- a/tools/lib/bpf/libbpf_internal.h
+> +++ b/tools/lib/bpf/libbpf_internal.h
+> @@ -34,7 +34,7 @@ do {                          \
+>  #define pr_info(fmt, ...)      __pr(LIBBPF_INFO, fmt, ##__VA_ARGS__)
+>  #define pr_debug(fmt, ...)     __pr(LIBBPF_DEBUG, fmt, ##__VA_ARGS__)
+>
+> -int libbpf__probe_raw_btf(const char *raw_types, size_t types_len,
+> -                         const char *str_sec, size_t str_len);
+> +int libbpf__load_raw_btf(const char *raw_types, size_t types_len,
+> +                        const char *str_sec, size_t str_len);
+>
+>  #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
+> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+> index 5e2aa83f637a..6635a31a7a16 100644
+> --- a/tools/lib/bpf/libbpf_probes.c
+> +++ b/tools/lib/bpf/libbpf_probes.c
+> @@ -133,8 +133,8 @@ bool bpf_probe_prog_type(enum bpf_prog_type prog_type, __u32 ifindex)
+>         return errno != EINVAL && errno != EOPNOTSUPP;
+>  }
+>
+> -int libbpf__probe_raw_btf(const char *raw_types, size_t types_len,
+> -                         const char *str_sec, size_t str_len)
+> +int libbpf__load_raw_btf(const char *raw_types, size_t types_len,
+> +                        const char *str_sec, size_t str_len)
+>  {
+>         struct btf_header hdr = {
+>                 .magic = BTF_MAGIC,
+> @@ -157,14 +157,9 @@ int libbpf__probe_raw_btf(const char *raw_types, size_t types_len,
+>         memcpy(raw_btf + hdr.hdr_len + hdr.type_len, str_sec, hdr.str_len);
+>
+>         btf_fd = bpf_load_btf(raw_btf, btf_len, NULL, 0, false);
+> -       if (btf_fd < 0) {
+> -               free(raw_btf);
+> -               return 0;
+> -       }
+>
+> -       close(btf_fd);
+>         free(raw_btf);
+> -       return 1;
+> +       return btf_fd;
+>  }
+>
+>  static int load_sk_storage_btf(void)
+> @@ -190,7 +185,7 @@ static int load_sk_storage_btf(void)
+>                 BTF_MEMBER_ENC(23, 2, 32),/* struct bpf_spin_lock l; */
+>         };
+>
+> -       return libbpf__probe_raw_btf((char *)types, sizeof(types),
+> +       return libbpf__load_raw_btf((char *)types, sizeof(types),
+>                                      strs, sizeof(strs));
+>  }
+>
 > --
-> 2.19.1
+> 2.21.0
 >
