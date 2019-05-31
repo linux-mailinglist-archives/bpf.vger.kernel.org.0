@@ -2,79 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 406F030BE7
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2019 11:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E727B30D84
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2019 13:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726275AbfEaJpb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 May 2019 05:45:31 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:33921 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726002AbfEaJpb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 May 2019 05:45:31 -0400
-Received: by mail-qt1-f194.google.com with SMTP id h1so86767qtp.1;
-        Fri, 31 May 2019 02:45:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=LDcV29/qPVGpkB//OjeTrEbRfiUxEsIxdkaAJ+VTQlY=;
-        b=soYhSBPo9zzMlghT0xaIhtrvfwo+dvXn44UcaDSKYqb2Ef++Fmyy/0YqlcDWpyQFwP
-         hBOk9ZWTdbgBkgoO/HJ4SB0N2sz9eJ+1RggnIvEM6fJiLu+oIeYeytmgSg7yt4ksIPQL
-         XVP0ABj8tOmn4FPvB1WwN8s9tf09LmN6nB3Jkr19OPdoom3im/j4/2+E38OYWAwO1JWE
-         4iq/9wvzBtmdDTuehIp30J3W7mLolf6xY8HUb3GFSaZZFKYAk/GurDU89XCRyDVkjzrj
-         WTt4E/2jJMVGR50m6SkYBODSWuf/uMg0hkKR5H1V+/l61Pup9z/SCZw/42zofu1KknuG
-         cP7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LDcV29/qPVGpkB//OjeTrEbRfiUxEsIxdkaAJ+VTQlY=;
-        b=XvQJdpjINCYBxzIri9mfIwfSNrnJZ7RwPOYhWyVsn9D8VlJtiBKkOTvOBH8H7d8I8v
-         pGEDC6sLcbG/eCAEyHTdmEVZiiZ21DL2zCaRjH7NuIaMM7i3mOJ41G0kZ7ExzUbgQPzP
-         4GwKdqqQ/jfGNAhPhsV1VSDX+jvb1MgIyZp/dOtLphdoPGvz0CRJN70gVP4y1FYDZijq
-         k0ttGN5SVX0YBbz4IgsQy9y/+Iz+qWaBFmItXNx+A+j5cdYFWH6vHzVd9XTkFQJmZhvD
-         vPoCGsc/lOpBrsVs0TUwrJZs5QEnzAMMy3EEEGOnrnmATk0p2z5WmwMDSeAvw3jlMfzi
-         Gelw==
-X-Gm-Message-State: APjAAAUT+ild73aEcl81lySQHCqu2/XuwlbDElX58f0J4WrBFWRAewbK
-        bJQqdRWEMibuYN71lQ66J6d1NieWJWlDgH2tXd0=
-X-Google-Smtp-Source: APXvYqwcPBfngY4jZ93UJIISh5+JRS/dCURkKMRSrEYGeaEFwabMz8dEQSjRgPAEiqCY9ezxPe4urkaBH4/aWoqrtDE=
-X-Received: by 2002:a0c:d610:: with SMTP id c16mr7974447qvj.22.1559295930740;
- Fri, 31 May 2019 02:45:30 -0700 (PDT)
+        id S1726330AbfEaLtq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 May 2019 07:49:46 -0400
+Received: from mga14.intel.com ([192.55.52.115]:39500 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726307AbfEaLtq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 May 2019 07:49:46 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 31 May 2019 04:49:45 -0700
+X-ExtLoop1: 1
+Received: from btopel-mobl.isw.intel.com (HELO btopel-mobl.ger.intel.com) ([10.103.211.157])
+  by fmsmga001.fm.intel.com with ESMTP; 31 May 2019 04:49:43 -0700
+Subject: Re: [PATCH v2 bpf-next 1/2] bpf: Allow bpf_map_lookup_elem() on an
+ xskmap
+To:     Jonathan Lemon <jonathan.lemon@gmail.com>, netdev@vger.kernel.org,
+        magnus.karlsson@intel.com
+Cc:     kernel-team@fb.com, bpf <bpf@vger.kernel.org>
+References: <20190530185709.1861867-1-jonathan.lemon@gmail.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <5fde46e3-1967-d802-d1db-f02d15d11aa4@intel.com>
+Date:   Fri, 31 May 2019 13:49:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <20190531094215.3729-1-bjorn.topel@gmail.com>
-In-Reply-To: <20190531094215.3729-1-bjorn.topel@gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Fri, 31 May 2019 11:45:19 +0200
-Message-ID: <CAJ+HfNhE3X3nt7bsfgFC7UwahKtd4_SVJtGoSXAOsNw8MEZVFw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/2] net: xdp: refactor the XDP_QUERY_PROG and
- XDP_QUERY_PROG_HW code
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Netdev <netdev@vger.kernel.org>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        bpf <bpf@vger.kernel.org>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20190530185709.1861867-1-jonathan.lemon@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 31 May 2019 at 11:42, Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>=
- wrote:
->
-[...]
->
-> I, hopefully, addressed all comments from Jakub and Saeed, except one;
-> I did not move the XDP struct net_device into a struct of its own.
->
+On 2019-05-30 20:57, Jonathan Lemon wrote:
+> Currently, the AF_XDP code uses a separate map in order to
+> determine if an xsk is bound to a queue.  Instead of doing this,
+> have bpf_map_lookup_elem() return the queue_id, as a way of
+> indicating that there is a valid entry at the map index.
+> 
+> Rearrange some xdp_sock members to eliminate structure holes.
+> 
+> Signed-off-by: Jonathan Lemon <jonathan.lemon@gmail.com>
+> ---
+>   include/net/xdp_sock.h                            |  6 +++---
+>   kernel/bpf/verifier.c                             |  6 +++++-
+>   kernel/bpf/xskmap.c                               |  4 +++-
+>   .../selftests/bpf/verifier/prevent_map_lookup.c   | 15 ---------------
+>   4 files changed, 11 insertions(+), 20 deletions(-)
+> 
+> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> index d074b6d60f8a..7d84b1da43d2 100644
+> --- a/include/net/xdp_sock.h
+> +++ b/include/net/xdp_sock.h
+> @@ -57,12 +57,12 @@ struct xdp_sock {
+>   	struct net_device *dev;
+>   	struct xdp_umem *umem;
+>   	struct list_head flush_node;
+> -	u16 queue_id;
+> -	struct xsk_queue *tx ____cacheline_aligned_in_smp;
+> -	struct list_head list;
+> +	u32 queue_id;
 
-Uhm, the last sentence was weird.
+Why the increase of size?
 
-What I meant was: I did not move the newly introduced XDP members
-(flags/hw prog) into a struct of its own.
+>   	bool zc;
+>   	/* Protects multiple processes in the control path */
+>   	struct mutex mutex;
+> +	struct xsk_queue *tx ____cacheline_aligned_in_smp;
+> +	struct list_head list;
+>   	/* Mutual exclusion of NAPI TX thread and sendmsg error paths
+>   	 * in the SKB destructor callback.
+>   	 */
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 2778417e6e0c..91c730f85e92 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -2905,10 +2905,14 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+>   	 * appear.
+>   	 */
+>   	case BPF_MAP_TYPE_CPUMAP:
+> -	case BPF_MAP_TYPE_XSKMAP:
+>   		if (func_id != BPF_FUNC_redirect_map)
+>   			goto error;
+>   		break;
+> +	case BPF_MAP_TYPE_XSKMAP:
+> +		if (func_id != BPF_FUNC_redirect_map &&
+> +		    func_id != BPF_FUNC_map_lookup_elem)
+> +			goto error;
+> +		break;
+>   	case BPF_MAP_TYPE_ARRAY_OF_MAPS:
+>   	case BPF_MAP_TYPE_HASH_OF_MAPS:
+>   		if (func_id != BPF_FUNC_map_lookup_elem)
+> diff --git a/kernel/bpf/xskmap.c b/kernel/bpf/xskmap.c
+> index 686d244e798d..249b22089014 100644
+> --- a/kernel/bpf/xskmap.c
+> +++ b/kernel/bpf/xskmap.c
+> @@ -154,7 +154,9 @@ void __xsk_map_flush(struct bpf_map *map)
+>   
+>   static void *xsk_map_lookup_elem(struct bpf_map *map, void *key)
+>   {
+> -	return ERR_PTR(-EOPNOTSUPP);
+> +	struct xdp_sock *xs = __xsk_map_lookup_elem(map, *(u32 *)key);
+> +
+> +	return xs ? &xs->queue_id : NULL;
+
+I like this! I haven't taken it for a spin, but still:
+
+Acked-by: Björn Töpel <bjorn.topel@intel.com>
+
+>   }
+>   
+>   static int xsk_map_update_elem(struct bpf_map *map, void *key, void *value,
+> diff --git a/tools/testing/selftests/bpf/verifier/prevent_map_lookup.c b/tools/testing/selftests/bpf/verifier/prevent_map_lookup.c
+> index bbdba990fefb..da7a4b37cb98 100644
+> --- a/tools/testing/selftests/bpf/verifier/prevent_map_lookup.c
+> +++ b/tools/testing/selftests/bpf/verifier/prevent_map_lookup.c
+> @@ -28,21 +28,6 @@
+>   	.errstr = "cannot pass map_type 18 into func bpf_map_lookup_elem",
+>   	.prog_type = BPF_PROG_TYPE_SOCK_OPS,
+>   },
+> -{
+> -	"prevent map lookup in xskmap",
+> -	.insns = {
+> -	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
+> -	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
+> -	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
+> -	BPF_LD_MAP_FD(BPF_REG_1, 0),
+> -	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
+> -	BPF_EXIT_INSN(),
+> -	},
+> -	.fixup_map_xskmap = { 3 },
+> -	.result = REJECT,
+> -	.errstr = "cannot pass map_type 17 into func bpf_map_lookup_elem",
+> -	.prog_type = BPF_PROG_TYPE_XDP,
+> -},
+>   {
+>   	"prevent map lookup in stack trace",
+>   	.insns = {
+> 
