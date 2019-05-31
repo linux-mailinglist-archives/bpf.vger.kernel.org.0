@@ -2,623 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC203169D
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2019 23:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9BF316D2
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2019 23:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbfEaV2i (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 May 2019 17:28:38 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:42211 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726359AbfEaV2i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 May 2019 17:28:38 -0400
-Received: by mail-pg1-f194.google.com with SMTP id e6so3457157pgd.9
-        for <bpf@vger.kernel.org>; Fri, 31 May 2019 14:28:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=PgY4dum0Kc23B2lFwK263HhPD3WhYG3TTGOqUl+JYIk=;
-        b=rgpTT97gtJRPaqWxUB5G/m9UC0il70BQBWRrORjjYWuBW9dlTYfNOZuZrOrrhZCIi7
-         mXSBn5yP/Hv2Fwld+Qa8hOAqZqt4a8IRgp0J8vgynzmEhU5LIU8q0KdJgBcAeZWHvkED
-         1KrfytfTg+ys4U4goCoa/ULVZGQMJ4Z5C1G46vI2DKjvknpwaEmgGWGrdlERkDeaR/xl
-         cmrClUnADd5QoildeYE0m/gwCJ2nOEpLFFNqf1sWzsx723pQfTnc4R5vTCyyeMeixPqr
-         3EMe5E15DQbZOOAXSfG/LIOMhg3P9eG05vgs/IionOmRpVszc1OvhHIzYchapQ2sMMMB
-         hEMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PgY4dum0Kc23B2lFwK263HhPD3WhYG3TTGOqUl+JYIk=;
-        b=W++ddM4Y3E+59F2rOghii/+2aw3eKd5B69UdA/c2nYY2/z7wtsvjuysxxOLSnysduW
-         leAYPR9+IqTyoLyQYSv+vxSEFJmsxH184LBm8MHjYTaqBWIVXkDaccwA7RB2WjF7AV/W
-         5fSlAJxZb+XMvNN2YZbH6PS3x7mApb7BuZWUGzzHiW4oziQrM2kDZcrnmgNateiYVFmO
-         omBtkgNeFNrx9SDR+r0IUpo8IZaGtXAGXyIgxYxRPe/s4AfBLyaKWyFilJw9+cWq2d2z
-         OKAZDx6flSE369vNTK4iDxXQ1T7hnro8lfLVgrSjGA+NJEUbouiLVsHWH6AJdFsGRRa0
-         /ONw==
-X-Gm-Message-State: APjAAAW4cTf4j7fOQTwQ0sgzbyDBR2m1VYFShrN+qrL2fCEcxtAxZ4DL
-        V/om8FGljysWgDfhKRhVBzbb7g==
-X-Google-Smtp-Source: APXvYqw7PPPQ1mGOExc2mU9XPA9IK3kMriHsbbvZFlNqYtgW6daQPRJAr2QXSNy/07T3tZlTVChzRw==
-X-Received: by 2002:a63:f509:: with SMTP id w9mr11919304pgh.134.1559338117220;
-        Fri, 31 May 2019 14:28:37 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id d5sm7841232pfn.25.2019.05.31.14.28.36
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 31 May 2019 14:28:36 -0700 (PDT)
-Date:   Fri, 31 May 2019 14:28:35 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, ast@fb.com, daniel@iogearbox.net,
-        kernel-team@fb.com
-Subject: Re: [RFC PATCH bpf-next 6/8] libbpf: allow specifying map
- definitions using BTF
-Message-ID: <20190531212835.GA31612@mini-arch>
-References: <20190531202132.379386-1-andriin@fb.com>
- <20190531202132.379386-7-andriin@fb.com>
+        id S1726634AbfEaV44 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 May 2019 17:56:56 -0400
+Received: from mail-eopbgr60083.outbound.protection.outlook.com ([40.107.6.83]:34170
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725913AbfEaV44 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 May 2019 17:56:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vmsWbHc4mN1eBgAzKzH/6JgJjohni4E9HkVlaycVOGE=;
+ b=fjbq8zMVf0le9bJFnRTTdIFfQjVa227ggB7cjWAtiATZQuk+13Vj4jcrf/O2K+RJCumhSQ0b57I+IcOq5xgn46fSuxUkaFKMkuKa7t7hPpNaE+NVWLyMbYrI0aMFyjqN3pzoUP6o5rEzmm0IyEM+0XMjeIJaqCnDydT+u0w6I/I=
+Received: from DB8PR05MB5898.eurprd05.prod.outlook.com (20.179.9.32) by
+ DB8PR05MB5916.eurprd05.prod.outlook.com (20.179.9.141) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1922.17; Fri, 31 May 2019 21:56:51 +0000
+Received: from DB8PR05MB5898.eurprd05.prod.outlook.com
+ ([fe80::4008:6417:32d4:6031]) by DB8PR05MB5898.eurprd05.prod.outlook.com
+ ([fe80::4008:6417:32d4:6031%5]) with mapi id 15.20.1943.018; Fri, 31 May 2019
+ 21:56:51 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "magnus.karlsson@intel.com" <magnus.karlsson@intel.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "bjorn.topel@intel.com" <bjorn.topel@intel.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "maciejromanfijalkowski@gmail.com" <maciejromanfijalkowski@gmail.com>,
+        "bsd@fb.com" <bsd@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v3 00/16] AF_XDP infrastructure improvements and
+ mlx5e support
+Thread-Topic: [PATCH bpf-next v3 00/16] AF_XDP infrastructure improvements and
+ mlx5e support
+Thread-Index: AQHVEhP77EFLAt51B0eS4F+v4SSj1qZ6D+sAgAvDagA=
+Date:   Fri, 31 May 2019 21:56:51 +0000
+Message-ID: <c5f6ab402de93f0b675d19499490e8c99701b5cc.camel@mellanox.com>
+References: <20190524093431.20887-1-maximmi@mellanox.com>
+         <8b0450c2-ad5e-ecaa-9958-df4da1dd6456@intel.com>
+In-Reply-To: <8b0450c2-ad5e-ecaa-9958-df4da1dd6456@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.32.2 (3.32.2-1.fc30) 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=saeedm@mellanox.com; 
+x-originating-ip: [209.116.155.178]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4651e7b1-92fb-4d2f-258b-08d6e612e372
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:DB8PR05MB5916;
+x-ms-traffictypediagnostic: DB8PR05MB5916:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <DB8PR05MB59160C0A017EF76201EA148DBE190@DB8PR05MB5916.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 00540983E2
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(346002)(39860400002)(396003)(136003)(366004)(199004)(189003)(99286004)(316002)(25786009)(2616005)(66476007)(14444005)(6306002)(118296001)(476003)(186003)(26005)(53546011)(73956011)(68736007)(11346002)(446003)(7416002)(6506007)(76176011)(102836004)(5660300002)(64756008)(66556008)(66446008)(76116006)(91956017)(66574012)(66946007)(229853002)(486006)(81156014)(7736002)(53936002)(6436002)(6486002)(478600001)(6116002)(3846002)(8676002)(2906002)(81166006)(256004)(8936002)(71190400001)(6636002)(6512007)(54906003)(6246003)(110136005)(966005)(2501003)(305945005)(66066001)(4326008)(14454004)(2201001)(36756003)(71200400001)(86362001)(58126008)(42413003)(32563001);DIR:OUT;SFP:1101;SCL:1;SRVR:DB8PR05MB5916;H:DB8PR05MB5898.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 9UwVVDSu7uhmOrs1S3byV7Tq27nyYV1OTNnufQOO0hWDaRhTnDAx15w3os3etcczrVckeXGJUMYRR0anWSlXTqZpO8OmxE8sDiDD3T+zjTUufSGFsV+/gbMpBr3BG0Il4TRV1m5HsNqEnMWq6P7Dzgtkh/b9n4jvSQclgFltmLYBaBZ+yqy7qmQqCgRTGp3tMNeBAW4syhNsFSXuFXuqeWFspGGWv2Lsqfoh0sz+KL7LUbd8j2BAq7fYF/xF8UYupOMaaleWQIjPjGeKif7LFTcCjvopssNCXvqoA0Mr/qtIXLuS5i6TrrMfgNDUdhQdgFfFhztYYuBjEIRhDedB2sL8Xc3Us3zBp2132f5GpnZ96OxwyUI/3BcCvm8e/NUvUx9GG4vwfwNKOz6db7jYfeObEgeRnB2D4UUkL43n028=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1B041F1EE12D024596B1E0E476DAF9D5@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190531202132.379386-7-andriin@fb.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4651e7b1-92fb-4d2f-258b-08d6e612e372
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 May 2019 21:56:51.7273
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: saeedm@mellanox.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR05MB5916
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/31, Andrii Nakryiko wrote:
-> This patch adds support for a new way to define BPF maps. It relies on
-> BTF to describe mandatory and optional attributes of a map, as well as
-> captures type information of key and value naturally. This eliminates
-> the need for BPF_ANNOTATE_KV_PAIR hack and ensures key/value sizes are
-> always in sync with the key/value type.
-My 2c: this is too magical and relies on me knowing the expected fields.
-(also, the compiler won't be able to help with the misspellings).
-
-I don't know how others feel about it, but I'd be much more comfortable
-with a simpler TLV-like approach. Have a new section where the format
-is |4-byte size|struct bpf_map_def_extendable|. That would essentially
-allow us to extend it the way we do with a syscall args.
-
-Also, (un)related: we don't currently use BTF internally, so if
-you convert all tests, we'd be unable to run them :-(
-
-> Relying on BTF, this approach allows for both forward and backward
-> compatibility w.r.t. extending supported map definition features. Old
-> libbpf implementation will ignore fields it doesn't recognize, while new
-> implementations will parse and recognize new optional attributes.
-I also don't know how to feel about old libbpf ignoring some attributes.
-In the kernel we require that the unknown fields are zeroed.
-We probably need to do something like that here? What do you think
-would be a good example of an optional attribute?
-
-> The outline of the new map definition (short, BTF-defined maps) is as follows:
-> 1. All the maps should be defined in .maps ELF section. It's possible to
->    have both "legacy" map definitions in `maps` sections and BTF-defined
->    maps in .maps sections. Everything will still work transparently.
-> 2. The map declaration and initialization is done through
->    a global/static variable of a struct type with few mandatory and
->    extra optional fields:
->    - type field is mandatory and specified type of BPF map;
->    - key/value fields are mandatory and capture key/value type/size information;
->    - max_entries attribute is optional; if max_entries is not specified or
->      initialized, it has to be provided in runtime through libbpf API
->      before loading bpf_object;
->    - map_flags is optional and if not defined, will be assumed to be 0.
-> 3. Key/value fields should be **a pointer** to a type describing
->    key/value. The pointee type is assumed (and will be recorded as such
->    and used for size determination) to be a type describing key/value of
->    the map. This is done to save excessive amounts of space allocated in
->    corresponding ELF sections for key/value of big size.
-> 4. As some maps disallow having BTF type ID associated with key/value,
->    it's possible to specify key/value size explicitly without
->    associating BTF type ID with it. Use key_size and value_size fields
->    to do that (see example below).
-> 
-> Here's an example of simple ARRAY map defintion:
-> 
-> struct my_value { int x, y, z; };
-> 
-> struct {
-> 	int type;
-> 	int max_entries;
-> 	int *key;
-> 	struct my_value *value;
-> } btf_map SEC(".maps") = {
-> 	.type = BPF_MAP_TYPE_ARRAY,
-> 	.max_entries = 16,
-> };
-> 
-> This will define BPF ARRAY map 'btf_map' with 16 elements. The key will
-> be of type int and thus key size will be 4 bytes. The value is struct
-> my_value of size 12 bytes. This map can be used from C code exactly the
-> same as with existing maps defined through struct bpf_map_def.
-> 
-> Here's an example of STACKMAP definition (which currently disallows BTF type
-> IDs for key/value):
-> 
-> struct {
-> 	__u32 type;
-> 	__u32 max_entries;
-> 	__u32 map_flags;
-> 	__u32 key_size;
-> 	__u32 value_size;
-> } stackmap SEC(".maps") = {
-> 	.type = BPF_MAP_TYPE_STACK_TRACE,
-> 	.max_entries = 128,
-> 	.map_flags = BPF_F_STACK_BUILD_ID,
-> 	.key_size = sizeof(__u32),
-> 	.value_size = PERF_MAX_STACK_DEPTH * sizeof(struct bpf_stack_build_id),
-> };
-> 
-> This approach is naturally extended to support map-in-map, by making a value
-> field to be another struct that describes inner map. This feature is not
-> implemented yet. It's also possible to incrementally add features like pinning
-> with full backwards and forward compatibility.
-> 
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  tools/lib/bpf/btf.h    |   1 +
->  tools/lib/bpf/libbpf.c | 333 +++++++++++++++++++++++++++++++++++++++--
->  2 files changed, 325 insertions(+), 9 deletions(-)
-> 
-> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-> index ba4ffa831aa4..88a52ae56fc6 100644
-> --- a/tools/lib/bpf/btf.h
-> +++ b/tools/lib/bpf/btf.h
-> @@ -17,6 +17,7 @@ extern "C" {
->  
->  #define BTF_ELF_SEC ".BTF"
->  #define BTF_EXT_ELF_SEC ".BTF.ext"
-> +#define MAPS_ELF_SEC ".maps"
->  
->  struct btf;
->  struct btf_ext;
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 79a8143240d7..5a8f1e82809b 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -262,6 +262,7 @@ struct bpf_object {
->  		} *reloc;
->  		int nr_reloc;
->  		int maps_shndx;
-> +		int btf_maps_shndx;
->  		int text_shndx;
->  		int data_shndx;
->  		int rodata_shndx;
-> @@ -514,6 +515,7 @@ static struct bpf_object *bpf_object__new(const char *path,
->  	obj->efile.obj_buf = obj_buf;
->  	obj->efile.obj_buf_sz = obj_buf_sz;
->  	obj->efile.maps_shndx = -1;
-> +	obj->efile.btf_maps_shndx = -1;
->  	obj->efile.data_shndx = -1;
->  	obj->efile.rodata_shndx = -1;
->  	obj->efile.bss_shndx = -1;
-> @@ -1012,6 +1014,292 @@ static int bpf_object__init_user_maps(struct bpf_object *obj, bool strict)
->  	return 0;
->  }
->  
-> +static const struct btf_type *skip_mods_and_typedefs(const struct btf *btf,
-> +						     __u32 id)
-> +{
-> +	const struct btf_type *t = btf__type_by_id(btf, id);
-> +
-> +	while (true) {
-> +		switch (BTF_INFO_KIND(t->info)) {
-> +		case BTF_KIND_VOLATILE:
-> +		case BTF_KIND_CONST:
-> +		case BTF_KIND_RESTRICT:
-> +		case BTF_KIND_TYPEDEF:
-> +			t = btf__type_by_id(btf, t->type);
-> +			break;
-> +		default:
-> +			return t;
-> +		}
-> +	}
-> +}
-> +
-> +static bool get_map_attr_int(const char *map_name, 
-> +			     const struct btf *btf, 
-> +			     const struct btf_type *def,
-> +			     const struct btf_member *m, 
-> +			     const void *data, __u32 *res) {
-> +	const struct btf_type *t = skip_mods_and_typedefs(btf, m->type);
-> +	const char *name = btf__name_by_offset(btf, m->name_off);
-> +	__u32 int_info = *(const __u32 *)(const void *)(t + 1);
-> +
-> +	if (BTF_INFO_KIND(t->info) != BTF_KIND_INT) {
-> +		pr_warning("map '%s': attr '%s': expected INT, got %u.\n",
-> +			   map_name, name, BTF_INFO_KIND(t->info));
-> +		return false;
-> +	}
-> +	if (t->size != 4 || BTF_INT_BITS(int_info) != 32 ||
-> +	    BTF_INT_OFFSET(int_info)) {
-> +		pr_warning("map '%s': attr '%s': expected 32-bit non-bitfield integer, "
-> +			   "got %u-byte (%d-bit) one with bit offset %d.\n",
-> +			   map_name, name, t->size, BTF_INT_BITS(int_info),
-> +			   BTF_INT_OFFSET(int_info));
-> +		return false;
-> +	}
-> +	if (BTF_INFO_KFLAG(def->info) && BTF_MEMBER_BITFIELD_SIZE(m->offset)) {
-> +		pr_warning("map '%s': attr '%s': bitfield is not supported.\n",
-> +			   map_name, name);
-> +		return false;
-> +	}
-> +	if (m->offset % 32) {
-> +		pr_warning("map '%s': attr '%s': unaligned fields are not supported.\n",
-> +			   map_name, name);
-> +		return false;
-> +	}
-> +
-> +	*res = *(const __u32 *)(data + m->offset / 8);
-> +	return true;
-> +}
-> +
-> +static int bpf_object__init_user_btf_map(struct bpf_object *obj,
-> +					 const struct btf_type *sec,
-> +					 int var_idx, int sec_idx,
-> +					 const Elf_Data *data)
-> +{
-> +	const struct btf_type *var, *def, *t;
-> +	const struct btf_var_secinfo *vi;
-> +	const struct btf_var *var_extra;
-> +	const struct btf_member *m;
-> +	const void *def_data;
-> +	const char *map_name;
-> +	struct bpf_map *map;
-> +	int vlen, i;
-> +
-> +	vi = (const struct btf_var_secinfo *)(const void *)(sec + 1) + var_idx;
-> +	var = btf__type_by_id(obj->btf, vi->type);
-> +	var_extra = (const void *)(var + 1);
-> +	map_name = btf__name_by_offset(obj->btf, var->name_off);
-> +	vlen = BTF_INFO_VLEN(var->info);
-> +
-> +	if (map_name == NULL || map_name[0] == '\0') {
-> +		pr_warning("map #%d: empty name.\n", var_idx);
-> +		return -EINVAL;
-> +	}
-> +	if ((__u64)vi->offset + vi->size > data->d_size) {
-> +		pr_warning("map '%s' BTF data is corrupted.\n", map_name);
-> +		return -EINVAL;
-> +	}
-> +	if (BTF_INFO_KIND(var->info) != BTF_KIND_VAR) {
-> +		pr_warning("map '%s': unexpected var kind %u.\n",
-> +			   map_name, BTF_INFO_KIND(var->info));
-> +		return -EINVAL;
-> +	}
-> +	if (var_extra->linkage != BTF_VAR_GLOBAL_ALLOCATED &&
-> +	    var_extra->linkage != BTF_VAR_STATIC) {
-> +		pr_warning("map '%s': unsupported var linkage %u.\n",
-> +			   map_name, var_extra->linkage);
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	def = skip_mods_and_typedefs(obj->btf, var->type);
-> +	if (BTF_INFO_KIND(def->info) != BTF_KIND_STRUCT) {
-> +		pr_warning("map '%s': unexpected def kind %u.\n",
-> +			   map_name, BTF_INFO_KIND(var->info));
-> +		return -EINVAL;
-> +	}
-> +	if (def->size > vi->size) {
-> +		pr_warning("map '%s': invalid def size.\n", map_name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	map = bpf_object__add_map(obj);
-> +	if (IS_ERR(map))
-> +		return PTR_ERR(map);
-> +	map->name = strdup(map_name);
-> +	if (!map->name) {
-> +		pr_warning("map '%s': failed to alloc map name.\n", map_name);
-> +		return -ENOMEM;
-> +	}
-> +	map->libbpf_type = LIBBPF_MAP_UNSPEC;
-> +	map->def.type = BPF_MAP_TYPE_UNSPEC;
-> +	map->sec_idx = sec_idx;
-> +	map->sec_offset = vi->offset;
-> +	pr_debug("map '%s': at sec_idx %d, offset %zu.\n",
-> +		 map_name, map->sec_idx, map->sec_offset);
-> +
-> +	def_data = data->d_buf + vi->offset;
-> +	vlen = BTF_INFO_VLEN(def->info);
-> +	m = (const void *)(def + 1);
-> +	for (i = 0; i < vlen; i++, m++) {
-> +		const char *name = btf__name_by_offset(obj->btf, m->name_off);
-> +
-> +		if (strcmp(name, "type") == 0) {
-> +			if (!get_map_attr_int(map_name, obj->btf, def, m,
-> +					      def_data, &map->def.type))
-> +				return -EINVAL;
-> +			pr_debug("map '%s': found type = %u.\n",
-> +				 map_name, map->def.type);
-> +		} else if (strcmp(name, "max_entries") == 0) {
-> +			if (!get_map_attr_int(map_name, obj->btf, def, m,
-> +					      def_data, &map->def.max_entries))
-> +				return -EINVAL;
-> +			pr_debug("map '%s': found max_entries = %u.\n",
-> +				 map_name, map->def.max_entries);
-> +		} else if (strcmp(name, "map_flags") == 0) {
-> +			if (!get_map_attr_int(map_name, obj->btf, def, m,
-> +					      def_data, &map->def.map_flags))
-> +				return -EINVAL;
-> +			pr_debug("map '%s': found map_flags = %u.\n",
-> +				 map_name, map->def.map_flags);
-> +		} else if (strcmp(name, "key_size") == 0) {
-> +			__u32 sz;
-> +
-> +			if (!get_map_attr_int(map_name, obj->btf, def, m,
-> +					      def_data, &sz))
-> +				return -EINVAL;
-> +			pr_debug("map '%s': found key_size = %u.\n",
-> +				 map_name, sz);
-> +			if (map->def.key_size && map->def.key_size != sz) {
-> +				pr_warning("map '%s': conflictling key size %u != %u.\n",
-> +					   map_name, map->def.key_size, sz);
-> +				return -EINVAL;
-> +			}
-> +			map->def.key_size = sz;
-> +		} else if (strcmp(name, "key") == 0) {
-> +			__s64 sz;
-> +
-> +			t = btf__type_by_id(obj->btf, m->type);
-> +			if (BTF_INFO_KIND(t->info) != BTF_KIND_PTR) {
-> +				pr_warning("map '%s': key spec is not PTR: %u.\n",
-> +					   map_name, BTF_INFO_KIND(t->info));
-> +				return -EINVAL;
-> +			}
-> +			sz = btf__resolve_size(obj->btf, t->type);
-> +			if (sz < 0) {
-> +				pr_warning("map '%s': can't determine key size for type [%u]: %lld.\n",
-> +					   map_name, t->type, sz);
-> +				return sz;
-> +			}
-> +			pr_debug("map '%s': found key [%u], sz = %lld.\n",
-> +				 map_name, t->type, sz);
-> +			if (map->def.key_size && map->def.key_size != sz) {
-> +				pr_warning("map '%s': conflictling key size %u != %lld.\n",
-> +					   map_name, map->def.key_size, sz);
-> +				return -EINVAL;
-> +			}
-> +			map->def.key_size = sz;
-> +			map->btf_key_type_id = t->type;
-> +		} else if (strcmp(name, "value_size") == 0) {
-> +			__u32 sz;
-> +
-> +			if (!get_map_attr_int(map_name, obj->btf, def, m,
-> +					      def_data, &sz))
-> +				return -EINVAL;
-> +			pr_debug("map '%s': found value_size = %u.\n",
-> +				 map_name, sz);
-> +			if (map->def.value_size && map->def.value_size != sz) {
-> +				pr_warning("map '%s': conflictling value size %u != %u.\n",
-> +					   map_name, map->def.value_size, sz);
-> +				return -EINVAL;
-> +			}
-> +			map->def.value_size = sz;
-> +		} else if (strcmp(name, "value") == 0) {
-> +			__s64 sz;
-> +
-> +			t = btf__type_by_id(obj->btf, m->type);
-> +			if (BTF_INFO_KIND(t->info) != BTF_KIND_PTR) {
-> +				pr_warning("map '%s': value spec is not PTR: %u.\n",
-> +					   map_name, BTF_INFO_KIND(t->info));
-> +				return -EINVAL;
-> +			}
-> +			sz = btf__resolve_size(obj->btf, t->type);
-> +			if (sz < 0) {
-> +				pr_warning("map '%s': can't determine value size for type [%u]: %lld.\n",
-> +					   map_name, t->type, sz);
-> +				return sz;
-> +			}
-> +			pr_debug("map '%s': found value [%u], sz = %lld.\n",
-> +				 map_name, t->type, sz);
-> +			if (map->def.value_size && map->def.value_size != sz) {
-> +				pr_warning("map '%s': conflictling value size %u != %lld.\n",
-> +					   map_name, map->def.value_size, sz);
-> +				return -EINVAL;
-> +			}
-> +			map->def.value_size = sz;
-> +			map->btf_value_type_id = t->type;
-> +		} else {
-> +			pr_debug("map '%s': ignoring unknown def field '%s'.\n",
-> +				 map_name, name);
-> +		}
-> +	}
-> +
-> +	if (map->def.type == BPF_MAP_TYPE_UNSPEC) {
-> +		pr_warning("map '%s': map type isn't specified.\n", map_name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int bpf_object__init_user_btf_maps(struct bpf_object *obj)
-> +{
-> +	const struct btf_type *sec = NULL;
-> +	int nr_types, i, vlen, err;
-> +	const struct btf_type *t;
-> +	const char *name;
-> +	Elf_Data *data;
-> +	Elf_Scn *scn;
-> +
-> +	if (obj->efile.btf_maps_shndx < 0)
-> +		return 0;
-> +
-> +	scn = elf_getscn(obj->efile.elf, obj->efile.btf_maps_shndx);
-> +	if (scn)
-> +		data = elf_getdata(scn, NULL);
-> +	if (!scn || !data) {
-> +		pr_warning("failed to get Elf_Data from map section %d (%s)\n",
-> +			   obj->efile.maps_shndx, MAPS_ELF_SEC);
-> +		return -EINVAL;
-> +	}
-> +
-> +	nr_types = btf__get_nr_types(obj->btf);
-> +	for (i = 1; i <= nr_types; i++) {
-> +		t = btf__type_by_id(obj->btf, i);
-> +		if (BTF_INFO_KIND(t->info) != BTF_KIND_DATASEC)
-> +			continue;
-> +		name = btf__name_by_offset(obj->btf, t->name_off);
-> +		if (strcmp(name, MAPS_ELF_SEC) == 0) {
-> +			sec = t;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (!sec) {
-> +		pr_warning("DATASEC '%s' not found.\n", MAPS_ELF_SEC);
-> +		return -ENOENT;
-> +	}
-> +
-> +	vlen = BTF_INFO_VLEN(sec->info);
-> +	for (i = 0; i < vlen; i++) {
-> +		err = bpf_object__init_user_btf_map(obj, sec, i,
-> +						    obj->efile.btf_maps_shndx,
-> +						    data);
-> +		if (err)
-> +			return err;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int bpf_object__init_maps(struct bpf_object *obj, int flags)
->  {
->  	bool strict = !(flags & MAPS_RELAX_COMPAT);
-> @@ -1021,6 +1309,10 @@ static int bpf_object__init_maps(struct bpf_object *obj, int flags)
->  	if (err)
->  		return err;
->  
-> +	err = bpf_object__init_user_btf_maps(obj);
-> +	if (err)
-> +		return err;
-> +
->  	err = bpf_object__init_global_data_maps(obj);
->  	if (err)
->  		return err;
-> @@ -1118,10 +1410,16 @@ static void bpf_object__sanitize_btf_ext(struct bpf_object *obj)
->  	}
->  }
->  
-> +static bool bpf_object__is_btf_mandatory(const struct bpf_object *obj)
-> +{
-> +	return obj->efile.btf_maps_shndx >= 0;
-> +}
-> +
->  static int bpf_object__init_btf(struct bpf_object *obj,
->  				Elf_Data *btf_data,
->  				Elf_Data *btf_ext_data)
->  {
-> +	bool btf_required = bpf_object__is_btf_mandatory(obj);
->  	int err = 0;
->  
->  	if (btf_data) {
-> @@ -1155,10 +1453,18 @@ static int bpf_object__init_btf(struct bpf_object *obj,
->  	}
->  out:
->  	if (err || IS_ERR(obj->btf)) {
-> +		if (btf_required)
-> +			err = err ? : PTR_ERR(obj->btf);
-> +		else
-> +			err = 0;
->  		if (!IS_ERR_OR_NULL(obj->btf))
->  			btf__free(obj->btf);
->  		obj->btf = NULL;
->  	}
-> +	if (btf_required && !obj->btf) {
-> +		pr_warning("BTF is required, but is missing or corrupted.\n");
-> +		return err == 0 ? -ENOENT : err;
-> +	}
->  	return 0;
->  }
->  
-> @@ -1178,6 +1484,8 @@ static int bpf_object__sanitize_and_load_btf(struct bpf_object *obj)
->  			   BTF_ELF_SEC, err);
->  		btf__free(obj->btf);
->  		obj->btf = NULL;
-> +		if (bpf_object__is_btf_mandatory(obj))
-> +			return err;
->  	}
->  	return 0;
->  }
-> @@ -1241,6 +1549,8 @@ static int bpf_object__elf_collect(struct bpf_object *obj, int flags)
->  				return err;
->  		} else if (strcmp(name, "maps") == 0) {
->  			obj->efile.maps_shndx = idx;
-> +		} else if (strcmp(name, MAPS_ELF_SEC) == 0) {
-> +			obj->efile.btf_maps_shndx = idx;
->  		} else if (strcmp(name, BTF_ELF_SEC) == 0) {
->  			btf_data = data;
->  		} else if (strcmp(name, BTF_EXT_ELF_SEC) == 0) {
-> @@ -1360,7 +1670,8 @@ static bool bpf_object__shndx_is_data(const struct bpf_object *obj,
->  static bool bpf_object__shndx_is_maps(const struct bpf_object *obj,
->  				      int shndx)
->  {
-> -	return shndx == obj->efile.maps_shndx;
-> +	return shndx == obj->efile.maps_shndx ||
-> +	       shndx == obj->efile.btf_maps_shndx;
->  }
->  
->  static bool bpf_object__relo_in_known_section(const struct bpf_object *obj,
-> @@ -1404,14 +1715,14 @@ bpf_program__collect_reloc(struct bpf_program *prog, GElf_Shdr *shdr,
->  	prog->nr_reloc = nrels;
->  
->  	for (i = 0; i < nrels; i++) {
-> -		GElf_Sym sym;
-> -		GElf_Rel rel;
-> -		unsigned int insn_idx;
-> -		unsigned int shdr_idx;
->  		struct bpf_insn *insns = prog->insns;
->  		enum libbpf_map_type type;
-> +		unsigned int insn_idx;
-> +		unsigned int shdr_idx;
->  		const char *name;
->  		size_t map_idx;
-> +		GElf_Sym sym;
-> +		GElf_Rel rel;
->  
->  		if (!gelf_getrel(data, i, &rel)) {
->  			pr_warning("relocation: failed to get %d reloc\n", i);
-> @@ -1505,14 +1816,18 @@ bpf_program__collect_reloc(struct bpf_program *prog, GElf_Shdr *shdr,
->  	return 0;
->  }
->  
-> -static int bpf_map_find_btf_info(struct bpf_map *map, const struct btf *btf)
-> +static int bpf_map_find_btf_info(struct bpf_object *obj, struct bpf_map *map)
->  {
->  	struct bpf_map_def *def = &map->def;
->  	__u32 key_type_id = 0, value_type_id = 0;
->  	int ret;
->  
-> +	/* if it's BTF-defined map, we don't need to search for type IDs */
-> +	if (map->sec_idx == obj->efile.btf_maps_shndx)
-> +		return 0;
-> +
->  	if (!bpf_map__is_internal(map)) {
-> -		ret = btf__get_map_kv_tids(btf, map->name, def->key_size,
-> +		ret = btf__get_map_kv_tids(obj->btf, map->name, def->key_size,
->  					   def->value_size, &key_type_id,
->  					   &value_type_id);
->  	} else {
-> @@ -1520,7 +1835,7 @@ static int bpf_map_find_btf_info(struct bpf_map *map, const struct btf *btf)
->  		 * LLVM annotates global data differently in BTF, that is,
->  		 * only as '.data', '.bss' or '.rodata'.
->  		 */
-> -		ret = btf__find_by_name(btf,
-> +		ret = btf__find_by_name(obj->btf,
->  				libbpf_type_to_btf_name[map->libbpf_type]);
->  	}
->  	if (ret < 0)
-> @@ -1810,7 +2125,7 @@ bpf_object__create_maps(struct bpf_object *obj)
->  		    map->inner_map_fd >= 0)
->  			create_attr.inner_map_fd = map->inner_map_fd;
->  
-> -		if (obj->btf && !bpf_map_find_btf_info(map, obj->btf)) {
-> +		if (obj->btf && !bpf_map_find_btf_info(obj, map)) {
->  			create_attr.btf_fd = btf__fd(obj->btf);
->  			create_attr.btf_key_type_id = map->btf_key_type_id;
->  			create_attr.btf_value_type_id = map->btf_value_type_id;
-> -- 
-> 2.17.1
-> 
+T24gRnJpLCAyMDE5LTA1LTI0IGF0IDEyOjE4ICswMjAwLCBCasO2cm4gVMO2cGVsIHdyb3RlOg0K
+PiBPbiAyMDE5LTA1LTI0IDExOjM1LCBNYXhpbSBNaWtpdHlhbnNraXkgd3JvdGU6DQo+ID4gVGhp
+cyBzZXJpZXMgY29udGFpbnMgaW1wcm92ZW1lbnRzIHRvIHRoZSBBRl9YRFAga2VybmVsDQo+ID4g
+aW5mcmFzdHJ1Y3R1cmUNCj4gPiBhbmQgQUZfWERQIHN1cHBvcnQgaW4gbWx4NWUuIFRoZSBpbmZy
+YXN0cnVjdHVyZSBpbXByb3ZlbWVudHMgYXJlDQo+ID4gcmVxdWlyZWQgZm9yIG1seDVlLCBidXQg
+YWxzbyBzb21lIG9mIHRoZW0gYmVuZWZpdCB0byBhbGwgZHJpdmVycywNCj4gPiBhbmQNCj4gPiBz
+b21lIGNhbiBiZSB1c2VmdWwgZm9yIG90aGVyIGRyaXZlcnMgdGhhdCB3YW50IHRvIGltcGxlbWVu
+dCBBRl9YRFAuDQo+ID4gDQo+ID4gDQpbLi4uXQ0KPiANCj4gTWF4aW0sIHRoaXMgZG9lc24ndCBh
+ZGRyZXNzIHRoZSB1YXBpIGNvbmNlcm4gd2UgaGFkIG9uIHlvdXIgdjIuDQo+IFBsZWFzZSByZWZl
+ciB0byBNYWdudXMnIGNvbW1lbnQgaGVyZSBbMV0uDQo+IA0KPiBQbGVhc2UgZWR1Y2F0ZSBtZSB3
+aHkgeW91IGNhbm5vdCBwdWJsaXNoIEFGX1hEUCB3aXRob3V0IHRoZSB1YXBpDQo+IGNoYW5nZT8N
+Cj4gSXQncyBhbiBleHRlbnNpb24sIHJpZ2h0PyBJZiBzbywgdGhlbiBleGlzdGluZyBYRFAvQUZf
+WERQIHByb2dyYW0gY2FuDQo+IHVzZSBNZWxsYW5veCBaQyB3aXRob3V0IHlvdXIgYWRkaXRpb24/
+IEl0J3MgZ3JlYXQgdGhhdCBNZWxsYW5veCBoYXMgYQ0KPiBaQw0KPiBjYXBhYmxlIGRyaXZlciwg
+YnV0IHRoZSB1YXBpIGNoYW5nZSBpcyBhIE5BSy4NCj4gDQo+IFRvIHJlaXRlcmF0ZTsgV2UnZCBs
+aWtlIHRvIGdldCB0aGUgcXVldWUgc2V0dXAvc3RlZXJpbmcgZm9yIEFGX1hEUA0KPiBjb3JyZWN0
+LiBJLCBhbmQgTWFnbnVzLCBkaXNsaWtlIHRoaXMgYXBwcm9hY2guIEl0IHJlcXVpcmVzIGEgbW9y
+ZQ0KPiBjb21wbGljYXRlZCBYRFAgcHJvZ3JhbSwgYW5kIGlzIGhhcmQgZm9yIHJlZ3VsYXIgdXNl
+cnMgdG8gdW5kZXJzdGFuZC4NCj4gDQo+IA0KDQpIaSBCam9ybiBhbmQgTWFnbnVzLA0KDQpJdCBp
+cyBub3QgY2xlYXIgdG8gbWUgd2h5IHlvdSBkb24ndCBsaWtlIHRoaXMgYXBwcm9hY2gsIGlmIGFu
+eXRoaW5nLA0KdGhpcyBhcHByb2FjaCBpcyBhZGRyZXNzaW5nIG1hbnkgY29uY2VybnMgeW91IHJh
+aXNlZCBhYm91dCBjdXJyZW50DQpsaW1pdGVkIGFwcHJvYWNoIG9mIHJlLXVzaW5nLyJzdGVhbGlu
+ZyIgb25seSByZWd1bGFyIFJYIHJpbmdzIGZvciB4c2sNCnRyYWZmaWMgIQ0KDQpmb3IgaW5zdGFu
+Y2UgDQoxKSB4c2sgcmluZyBub3cgaGFzIGEgdW5pcXVlIGlkLiAod2Fzbid0IHRoaXMgdGhlIHBs
+YW4gZnJvbSB0aGUNCmJlZ2lubmluZyA/KSANCjIpIE5vIFJTUyBpc3N1ZXMsIG9ubHkgZXhwbGlj
+aXQgc3RlZXJpbmcgcnVsZXMgZ290IHRoZSB0aGUgbmV3bHkNCmNyZWF0ZWQgaXNvbGF0ZWQgeHNr
+IHJpbmcsIGRlZmF1bHQgUlNTIGlzIG5vdCBhZmZlY3RlZCByZWd1bGFyIFJYIHJpbmdzDQphcmUg
+c3RpbGwgaW50YWN0Lg0KMykgdGhlIG5ldyBzY2hlbWUgaXMgZmxleGlibGUgYW5kIHdpbGwgYWxs
+b3cgYXMgbXVjaCB4c2sgc29ja2V0cyBhcw0KbmVlZGVkLCBhbmQgY2FuIGNvLWV4aXN0IHdpdGgg
+cmVndWxhciByaW5ncy4gDQo0KSBXZSB3YW50IHRvIGhhdmUgYSBzb2x1dGlvbiB0aGF0IHdpbGwg
+cmVwbGFjZSBEUERLLCBoYXZpbmcgc3VjaA0KbGltaXRhdGlvbnMgb2YgYSBsaW1pdGVkIG51bWJl
+ciBvZiBSWCByaW5ncyBhbmQgc3RlYWxpbmcgZnJvbSByZWd1bGFyDQpyaW5ncywgaXMgcmVhbGx5
+IG5vdCBhIHdvcnRoeSBkZXNpZ24sIGp1c3QgYmVjYXVzZSBzb21lIGRyaXZlcnMgZG8gbm90DQp3
+YW50IHRvIGRlYWwgb3IgZG9uJ3Qga25vdyBob3cgdG8gZGVhbCB3aXRoIGNyZWF0aW5nIGRlZGlj
+YXRlZA0KcmVzb3VyY2VzLg0KNSkgaSB0aGluayBpdCBpcyB3cm9uZyB0byBjb21wYXJlIHhzayBy
+aW5ncyB3aXRoIHJlZ3VsYXIgcmluZ3MsIHhzaw0KcmluZ3MgYXJlIGFjdHVhbGx5IGp1c3QgYSBh
+IGRldmljZSBjb250ZXh0IHRoYXQgcmVkaXJlY3RzIHRyYWZmaWMgdG8gYQ0Kc3BlY2lhbCBidWZm
+ZXIgc3BhY2UsIHRoZXJlIGlzIG5vIHJlYWwgbWVtb3J5IGJ1ZmZlcnMgbW9kZWwgYmVoaW5kIGl0
+LA0Kb3RoZXIgdGhhbiB0aGUgcngvdHggZGVzY3JpcHRvcnMuIChtZW1vcnkgbW9kZWwgaXMgaGFu
+ZGxlZCBvdXRzaWRlIHRoZQ0KZHJpdmVyKS4NCjYpIG1seDUgaXMgZGVzaWduZWQgYW5kIG9wdGlt
+aXplZCBmb3Igc3VjaCB1c2UgY2FzZXMgKGRlZGljYXRlZC91bmlxdWUNCnJ4L3R4IHJpbmdzIGZv
+ciBYRFApLCBsaW1pdGluZyB1cyB0byBjdXJyZW50IEFGX1hEUCBsaW1pdGF0aW9uIHdpdGhvdXQN
+CmFsbG93aW5nIHVzIHRvIGltcHJvdmUgdGhlIEFGX1hEUCBkZXNpZ24gaXMgcmVhbGx5IG5vdCBm
+YWlyLg0KDQp0aGUgd2F5IGkgc2VlIGl0LCB0aGlzIG5ldyBleHRlbnNpb24gaXMgYWN0dWFsbHkg
+YSBnZW5lcmFsaXphdGlvbiB0bw0KYWxsb3cgZm9yIG1vcmUgZHJpdmVycyBzdXBwb3J0IGFuZCBB
+Rl9YRFAgZmxleGliaWxpdHkuDQoNCmlmIHlvdSBoYXZlIGRpZmZlcmVudCBpZGVhcyBvbiBob3cg
+dG8gaW1wbGVtZW50IHRoZSBuZXcgZGVzaWduLCBwbGVhc2UNCnByb3ZpZGUgeW91ciBmZWVkYmFj
+ayBhbmQgd2Ugd2lsbCBiZSBtb3JlIHRoYW4gaGFwcHkgdG8gaW1wcm92ZSB0aGUNCmN1cnJlbnQg
+aW1wbGVtZW50YXRpb24sIGJ1dCByZXF1ZXN0aW5nIHRvIGRyb3AgaXQsIGkgdGhpbmsgaXMgbm90
+IGENCmZhaXIgcmVxdWVzdC4NCg0KU2lkZSBub3RlOiBPdXIgdGFzayBpcyB0byBwcm92aWRlIGEg
+c2NhbGFibGUgYW5kIGZsZXhpYmxlIGluLWtlcm5lbCBYRFANCnNvbHV0aW9uIHNvIHdlIGNhbiBv
+ZmZlciBhIHZhbGlkIHJlcGxhY2VtZW50IGZvciBEUERLIGFuZCB1c2Vyc3BhY2UNCm9ubHkgc29s
+dXRpb25zLCBJIHRoaW5rIHdlIG5lZWQgdG8gaGF2ZSBhIHNjaGVtZSB3aGVyZSB3ZSBhbGxvdyBh
+bg0KdW5saW1pdGVkIG51bWJlciBvZiB4c2sgc29ja2V0cy9yaW5ncyB3aXRoIGZ1bGwgZmxvdw0K
+c2VwYXJhdGlvbi9pc29sYXRpb24gYmV0d2VlbiBkaWZmZXJlbnQgdXNlciBzb2NrZXRzL2FwcHMs
+IHRoZSBkcml2ZXIvaHcNCnJlc291cmNlcyBhcmUgcmVhbGx5IHZlcnkgY2hlYXAgKGFzIHRoZXJl
+IGlzIG5vIGJ1ZmZlciBtYW5hZ2VtZW50KSBtdWNoDQpjaGVhcGVyIHRoYW4gYWxsb2NhdGluZyBh
+IGZ1bGwgYmxvd24gcmVndWxhciBzb2NrZXQgYnVmZmVycy4NCg0KVGhhbmtzLA0KU2FlZWQuDQoN
+Cj4gVGhhbmtzLA0KPiBCasO2cm4NCj4gDQo+IFsxXSANCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5v
+cmcvYnBmL0NBSjh1b3oyVUhrKzV4UHd6LVNUTTlna1FaZG03cl89anNnYUIwbkYrbUhnY2g9YXhQ
+Z0BtYWlsLmdtYWlsLmNvbS8NCj4gDQo+IA0K
