@@ -2,73 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9900B31885
-	for <lists+bpf@lfdr.de>; Sat,  1 Jun 2019 02:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1294C31897
+	for <lists+bpf@lfdr.de>; Sat,  1 Jun 2019 02:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbfFAABJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 May 2019 20:01:09 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:44974 "EHLO
+        id S1726643AbfFAAGM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 May 2019 20:06:12 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:42889 "EHLO
         mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726610AbfFAABJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 May 2019 20:01:09 -0400
-Received: by mail-lf1-f65.google.com with SMTP id r15so9236159lfm.11;
-        Fri, 31 May 2019 17:01:08 -0700 (PDT)
+        with ESMTP id S1726610AbfFAAGM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 May 2019 20:06:12 -0400
+Received: by mail-lf1-f65.google.com with SMTP id y13so9234119lfh.9;
+        Fri, 31 May 2019 17:06:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yKdvwn9RwsVp3ATSXapbe6ZW0aek57t8ojH7+ian7HM=;
-        b=kL/lYlFfJthahRmW8UDam8MACxdtYLAUTRKt4DilMNwK9KrzfJ58WAdyPV38esLCb2
-         zJ8538tu9N4Qk6rfPAzB+cl3gsk76G1vkfDUVUTb0LW441SNGEKRE1tQ1n1y/3rZDJ5L
-         Q5GmOgdpWUcz8nzMaVXDMydQsnUyaloQFx11y9lIMXlNyOb+HXPVBUwYq7RJKF6Kwpfp
-         R5axTB/E4JIlw+a5JbO+Gs7DjmeCN0BhwOjybvc81c/B4/QuiJW4LM9rkUGEaPj4TWUe
-         Wd+pyvuDGwPoP5Qo+wWtoTbpAuI3CD/+tANzbcndRz43iyun+CHf/E3pu6plNzdzHbi7
-         kb0A==
+        bh=C+hRwbbBN+m8ROhEdOibU7+RmReDvO/cuFmPkMpA2dU=;
+        b=reeFq44AouuCMnc8imHw+1E1EDmQkX6FxcCa8sP9Oa/io932d5gkNeSGUhcu1iC7j4
+         tBiOL5ilGIlqktpBgsZ3qvw9r7lsROMcLbxNTtujHF8RKFbRlAuuxjLTTlLdiY5jRCy1
+         5h0S0TBw/qhzCyf0MLSM2LxXqK80q19ezXqveH0ZJ2KerO2GJDHVVWwJlPCCJeRE/7s7
+         KVjKrmUWhP/advYQ1IIkheCO3Q7ucIE29KDr+O+JMxnJj5H4GgpCQWOC/SmekYexy6x+
+         aTWtZpZHyWiLU/UJVfatjwGPXPfQMxykDsgfNmJdoGpugYa51vyPCC+bLmMBrRPnUG54
+         mAmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yKdvwn9RwsVp3ATSXapbe6ZW0aek57t8ojH7+ian7HM=;
-        b=C8sx+87QN+POsM5LfiK1bNFYbSgbVxINMT7pSbSaQ4eSyhuohiaf6kZRTMHEd8nkTM
-         oeEVH8QO0V4J28WhvlAfore0QN9qz9pm5D9a0VSlobcftFEMtqHjRiniI2vxYGySqKmD
-         Ec4QsUat9UjLvZmWLQslc5tWZeV8FueQQlwHX+mlSFThqWoHCumI3nmBqAibfHgTJGtm
-         wbsRdwLmj+HbeauZZtsIT9czVqd4PvDn7PUMw8/OtvWCPnuB6CA1rhqXHZ/fe1bKjTpc
-         J58Mi/a2aGXqpwXd/5GOcCe0hO8v7xQKUjcCxjxfkvuy6oIwaHw4CL2x7TpAZHYdRO+A
-         X3Wg==
-X-Gm-Message-State: APjAAAVy6f++vmfsyPMrrAYVlqdjc5OoGrXLfuJe3iIY1AQuS1AQ/Xsc
-        d+q+efjjqpiVNb/U1nt8oM+jihQPM2UnZfmKXXk=
-X-Google-Smtp-Source: APXvYqznjO5XK58TWy6Smzmc/NgjZWLcWIv6IboQBhMU2TwYzgdkZQ4gZu6P+so9ZG43jy2N3EJq4LrdDcQHBrOvfHY=
-X-Received: by 2002:ac2:4252:: with SMTP id m18mr7059629lfl.100.1559347267743;
- Fri, 31 May 2019 17:01:07 -0700 (PDT)
+        bh=C+hRwbbBN+m8ROhEdOibU7+RmReDvO/cuFmPkMpA2dU=;
+        b=Mn2m86e4TfKaWnvh62C0I2IzAoWYTQhuehIAQJBud/aJG5GJainvk8yTvyz/Qv0RZ+
+         Zz/SMkQjj5eOMf7CyalqjOyCLB6oeYUd9MGQ0nHfFs2CVeFIAhAMf6gBAabYf9Fw4DIU
+         46OXIOa7LRaEncdZkMWDK3x83ykpOfuUTVHwDzQlZ2CZr/gbZtLuTyLREqYDxr4XCUXa
+         VKtirE9Ky3QE/TNNPhJtLw77GfRUx3yc1FZS8YeWejYqJxxwDrxC+C6P7CDbhMjcilWJ
+         rIZZgX8noLA2SrueRlxGAs8JhHn+Dp/H0FULvAvf9cVQ0gRKLEGAMpSzxjJApJadm/00
+         Zoqg==
+X-Gm-Message-State: APjAAAU/FORPBfwHb9abUt+k3tivz6vPWOKiZsmbPh3IueFH7/kb35D3
+        GZaQWUjcMya93Im7B3A6uSMA/sTLliUpRYiSgb4=
+X-Google-Smtp-Source: APXvYqwvZ+6Rr/le388HMh+q2h1+ryUd8bKbiaL1WlnBHuv4rfMxoVDnCrL8LpYCutzN+qUrY5w6SzXWNYuEjCZm+kw=
+X-Received: by 2002:ac2:4252:: with SMTP id m18mr7069498lfl.100.1559347569693;
+ Fri, 31 May 2019 17:06:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190530010359.2499670-1-guro@fb.com>
-In-Reply-To: <20190530010359.2499670-1-guro@fb.com>
+References: <20190529183109.17317-1-mrostecki@opensuse.org> <CAPhsuW7KhR1XXDb6Sv54xb1OiLQUC7NH4+uf8_b3tRje7O-YUQ@mail.gmail.com>
+In-Reply-To: <CAPhsuW7KhR1XXDb6Sv54xb1OiLQUC7NH4+uf8_b3tRje7O-YUQ@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 31 May 2019 17:00:56 -0700
-Message-ID: <CAADnVQKCYDdP2xvmV4P38Ewh5YgyPnT-EV10oWrUpeCCJBrqcA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/5] bpf: bpf maps memory accounting cleanup
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Fri, 31 May 2019 17:05:58 -0700
+Message-ID: <CAADnVQLw_8f8=P7TWxi2PeaWpEhALfSyATZD14WRg+C4g+xxkw@mail.gmail.com>
+Subject: Re: [PATCH bpf v4] libbpf: Return btf_fd for load_sk_storage_btf
+To:     Song Liu <liu.song.a23@gmail.com>
+Cc:     Michal Rostecki <mrostecki@opensuse.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 29, 2019 at 6:04 PM Roman Gushchin <guro@fb.com> wrote:
+On Thu, May 30, 2019 at 2:34 PM Song Liu <liu.song.a23@gmail.com> wrote:
 >
-> During my work on memcg-based memory accounting for bpf maps
-> I've done some cleanups and refactorings of the existing
-> memlock rlimit-based code. It makes it more robust, unifies
-> size to pages conversion, size checks and corresponding error
-> codes. Also it adds coverage for cgroup local storage and
-> socket local storage maps.
+> On Wed, May 29, 2019 at 11:30 AM Michal Rostecki <mrostecki@opensuse.org> wrote:
+> >
+> > Before this change, function load_sk_storage_btf expected that
+> > libbpf__probe_raw_btf was returning a BTF descriptor, but in fact it was
+> > returning an information about whether the probe was successful (0 or
+> > 1). load_sk_storage_btf was using that value as an argument of the close
+> > function, which was resulting in closing stdout and thus terminating the
+> > process which called that function.
+> >
+> > That bug was visible in bpftool. `bpftool feature` subcommand was always
+> > exiting too early (because of closed stdout) and it didn't display all
+> > requested probes. `bpftool -j feature` or `bpftool -p feature` were not
+> > returning a valid json object.
+> >
+> > This change renames the libbpf__probe_raw_btf function to
+> > libbpf__load_raw_btf, which now returns a BTF descriptor, as expected in
+> > load_sk_storage_btf.
+> >
+> > v2:
+> > - Fix typo in the commit message.
+> >
+> > v3:
+> > - Simplify BTF descriptor handling in bpf_object__probe_btf_* functions.
+> > - Rename libbpf__probe_raw_btf function to libbpf__load_raw_btf and
+> > return a BTF descriptor.
+> >
+> > v4:
+> > - Fix typo in the commit message.
+> >
+> > Fixes: d7c4b3980c18 ("libbpf: detect supported kernel BTF features and sanitize BTF")
+> > Signed-off-by: Michal Rostecki <mrostecki@opensuse.org>
+> > Acked-by: Andrii Nakryiko <andriin@fb.com>
 >
-> It looks like some preliminary work on the mm side might be
-> required to start working on the memcg-based accounting,
-> so I'm sending these patches as a separate patchset.
+> Acked-by: Song Liu <songliubraving@fb.com>
 
-Applied. Thanks
+Applied. Thanks!
