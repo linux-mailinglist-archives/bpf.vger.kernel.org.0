@@ -2,163 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8BE31924
-	for <lists+bpf@lfdr.de>; Sat,  1 Jun 2019 04:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10B931937
+	for <lists+bpf@lfdr.de>; Sat,  1 Jun 2019 05:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbfFAC6h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 May 2019 22:58:37 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:42430 "EHLO
+        id S1726531AbfFADNE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 May 2019 23:13:04 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:43632 "EHLO
         mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725913AbfFAC6h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 May 2019 22:58:37 -0400
-Received: by mail-lj1-f195.google.com with SMTP id t28so248372lje.9;
-        Fri, 31 May 2019 19:58:34 -0700 (PDT)
+        with ESMTP id S1726547AbfFADNE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 May 2019 23:13:04 -0400
+Received: by mail-lj1-f195.google.com with SMTP id z5so11361781lji.10;
+        Fri, 31 May 2019 20:13:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eDJPKBJvnZIRQnVeU5Lb59LIyt1tkURiT5wO7mlIN2g=;
-        b=MuvYnZ9XPAUOZtr1DQPs2ZYe/V+if7M4fgGPF9KyRogW1ExivLd9GX8YhgorfW7lKA
-         8nYfqY52S9/WE233IrA9c34eVWFJnw2Za0nS3oirRbYh0k6AS8aCvUd3X/h7akTgn+uy
-         UEa42RfzfaMaxAfeO4xUkRAmHsZ65fLRqWJccJg2/iuGioOBIaa4joTqf9vVVwyheOOb
-         z2zfwCqrvs9heMOWsKyMk5GB9tHf86qakbVzG+6Io6gRSsmzI1P1ZzaVHAO/IqeBXeBx
-         P9dSnZNpfiTZUfq3S0uekMzv5vRnC0w75Bi9HJGkHI12Od7waq2B1bl0XlyfhCq4rwoC
-         975w==
+        bh=W7y0t1BE57lzfu+uhdY3ylGWznDBN9VdOiMaLtHbq9Q=;
+        b=Ko/E4KiNUOEV/aYbKYehkF2WPxT7IHS+RfF/MLa0r+Elqiy4hKUbkeRC4mX7C+BwWe
+         S7GyN+1kAlEQ5LZ11/L46Tho+5OYTVM/Q+3yHFmFWafrQKbygG4Kct5ZmbqjhSv61geN
+         2rDH3mm4Kc+0dbq89YGycPhanJJiCrgUch3mSA8Kyb3Ed1855r5qoOpIZjqgmmSEUqxL
+         FIyMobAuOLwA3nV0nra7AlAK8CYqJ2Te6TsiGaMonRo3lcgWhydDNLDIp7g8fQu/GqD8
+         /OkRQBPIxZMj+Xrax0HoAyVaara0CKMgVdd15ufruLk+a+sxuO9Z2v2dsR3VEYB+W4P/
+         fpXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eDJPKBJvnZIRQnVeU5Lb59LIyt1tkURiT5wO7mlIN2g=;
-        b=JU9uCX/uLN2bG6lrXhJA/Sk2/j++gmG6q4bS8Ol5wdstBCejDDV3NjAwLs4bj5LX2+
-         jfUmgNdIiMxF2Jt7gi7LRbbpCeB7vLAeRm3JCdGMZ0O/NW1zEagAFYRGJkicYMec45SS
-         Z5VWcHCSFEs0mDeu0fvU9K9TabUUaPxpJl7Y2RVEuI17lX6fIXQ9z9xZ3VyCnsvFKBPU
-         VFwIg+xB84URsFZxB+g1UxZHZJ8gdeFUXFcjoOK5cx1LuHCHOwFtSY2/z//4q4fcezgc
-         7CORgIFQeAhtFqJITH3Mmre9HDz/7gx2+MpFbLuRDYUevHlCYmwiBFSonJvcbto7n4Wv
-         VA8Q==
-X-Gm-Message-State: APjAAAWawsSm7g7HV2UYjWkWKsMMTYYAcDbRgjSmvbL2epoUS02ZoUbw
-        HHX6gBgAhn08NM/oGRC8/jzpEF3jqiy6D8g8UgY=
-X-Google-Smtp-Source: APXvYqyreNdEHm79xwC9JivNNbNhJN4VOgT69fXZdX4ZtalnKX7JmwEccg3O7i6gmGhljZxUilzx4sxMisjuDvKS9nc=
-X-Received: by 2002:a2e:9c09:: with SMTP id s9mr7590038lji.74.1559357913798;
- Fri, 31 May 2019 19:58:33 -0700 (PDT)
+        bh=W7y0t1BE57lzfu+uhdY3ylGWznDBN9VdOiMaLtHbq9Q=;
+        b=nSp5YomLRecdrmJnfPlFg0gW/gzh807VoIC7VyctaFlm6R7nX92/82b/XkoCFFopi0
+         HCR19sQSSRdpLlrFPetXuHB0LjFGYj5n+SfvgYAJzxRpALpAEweqdriTFlRuRyKFzDIi
+         I06Je0VG438NSwgZ+uATC5o909T7X351Y4GVbF/sxvhbsmjNel/cGsEL4NKVT1RuP/Nc
+         K35Q6iTSOFzA+sWmg7dFc20i1wQgfqj+BDr56UFgW4toE/zDl3j5hmi6O98Gu93ucouI
+         H0TaUY01Vtg3zRsWEMxGF6z8IDsxNhS6lyFpa79X7mBpOcVXaY6AxViATfXC1tgwhjIp
+         1aOQ==
+X-Gm-Message-State: APjAAAWTOtJl560S1V/Vt6oNf79UB7xyvcZJqR0GkZxVLPNiK/eRziQL
+        4R7/GySZmMmdNHAHmqWak28Qz8k40+RGA/czZqs=
+X-Google-Smtp-Source: APXvYqzqURqxpAAoiO7eRZBWY1kPr5Erc0XlfyqAjvnwbGRYvXInlNmsMurhDZCieIEYUjLZZ5efUacCg2SVGA5tSLM=
+X-Received: by 2002:a2e:9f44:: with SMTP id v4mr7758548ljk.85.1559358781222;
+ Fri, 31 May 2019 20:13:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <1559324834-30570-1-git-send-email-alan.maguire@oracle.com> <ACCC49B3-7A81-45D4-9AB8-C91B487FD22A@fb.com>
-In-Reply-To: <ACCC49B3-7A81-45D4-9AB8-C91B487FD22A@fb.com>
+References: <20190531223735.4998-1-mmullins@fb.com> <B719E003-E100-463E-A921-E59189572181@fb.com>
+In-Reply-To: <B719E003-E100-463E-A921-E59189572181@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 31 May 2019 19:58:22 -0700
-Message-ID: <CAADnVQJsyCJAfH4ioBkRWdaeSJiXxE5bT39jhpo9sL2CSxf6eQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5] selftests/bpf: measure RTT from xdp using xdping
+Date:   Fri, 31 May 2019 20:12:49 -0700
+Message-ID: <CAADnVQKS1eMMzDRh-fkXQyQihoDBbdg3vAC9jvuOB9QgAakxag@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] bpf: preallocate a perf_sample_data per event fd
 To:     Song Liu <songliubraving@fb.com>
-Cc:     Alan Maguire <alan.maguire@oracle.com>,
+Cc:     Matt Mullins <mmullins@fb.com>, Andrew Hall <hall@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Networking <netdev@vger.kernel.org>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "xdp-newbies@vger.kernel.org" <xdp-newbies@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>
+        Networking <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 31, 2019 at 6:37 PM Song Liu <songliubraving@fb.com> wrote:
+On Fri, May 31, 2019 at 6:28 PM Song Liu <songliubraving@fb.com> wrote:
 >
 >
 >
-> > On May 31, 2019, at 10:47 AM, Alan Maguire <alan.maguire@oracle.com> wrote:
+> > On May 31, 2019, at 3:37 PM, Matt Mullins <mmullins@fb.com> wrote:
 > >
-> > xdping allows us to get latency estimates from XDP.  Output looks
-> > like this:
+> > It is possible that a BPF program can be called while another BPF
+> > program is executing bpf_perf_event_output.  This has been observed with
+> > I/O completion occurring as a result of an interrupt:
 > >
-> > ./xdping -I eth4 192.168.55.8
-> > Setting up XDP for eth4, please wait...
-> > XDP setup disrupts network connectivity, hit Ctrl+C to quit
+> >       bpf_prog_247fd1341cddaea4_trace_req_end+0x8d7/0x1000
+> >       ? trace_call_bpf+0x82/0x100
+> >       ? sch_direct_xmit+0xe2/0x230
+> >       ? blk_mq_end_request+0x1/0x100
+> >       ? blk_mq_end_request+0x5/0x100
+> >       ? kprobe_perf_func+0x19b/0x240
+> >       ? __qdisc_run+0x86/0x520
+> >       ? blk_mq_end_request+0x1/0x100
+> >       ? blk_mq_end_request+0x5/0x100
+> >       ? kprobe_ftrace_handler+0x90/0xf0
+> >       ? ftrace_ops_assist_func+0x6e/0xe0
+> >       ? ip6_input_finish+0xbf/0x460
+> >       ? 0xffffffffa01e80bf
+> >       ? nbd_dbg_flags_show+0xc0/0xc0 [nbd]
+> >       ? blkdev_issue_zeroout+0x200/0x200
+> >       ? blk_mq_end_request+0x1/0x100
+> >       ? blk_mq_end_request+0x5/0x100
+> >       ? flush_smp_call_function_queue+0x6c/0xe0
+> >       ? smp_call_function_single_interrupt+0x32/0xc0
+> >       ? call_function_single_interrupt+0xf/0x20
+> >       ? call_function_single_interrupt+0xa/0x20
+> >       ? swiotlb_map_page+0x140/0x140
+> >       ? refcount_sub_and_test+0x1a/0x50
+> >       ? tcp_wfree+0x20/0xf0
+> >       ? skb_release_head_state+0x62/0xc0
+> >       ? skb_release_all+0xe/0x30
+> >       ? napi_consume_skb+0xb5/0x100
+> >       ? mlx5e_poll_tx_cq+0x1df/0x4e0
+> >       ? mlx5e_poll_tx_cq+0x38c/0x4e0
+> >       ? mlx5e_napi_poll+0x58/0xc30
+> >       ? mlx5e_napi_poll+0x232/0xc30
+> >       ? net_rx_action+0x128/0x340
+> >       ? __do_softirq+0xd4/0x2ad
+> >       ? irq_exit+0xa5/0xb0
+> >       ? do_IRQ+0x7d/0xc0
+> >       ? common_interrupt+0xf/0xf
+> >       </IRQ>
+> >       ? __rb_free_aux+0xf0/0xf0
+> >       ? perf_output_sample+0x28/0x7b0
+> >       ? perf_prepare_sample+0x54/0x4a0
+> >       ? perf_event_output+0x43/0x60
+> >       ? bpf_perf_event_output_raw_tp+0x15f/0x180
+> >       ? blk_mq_start_request+0x1/0x120
+> >       ? bpf_prog_411a64a706fc6044_should_trace+0xad4/0x1000
+> >       ? bpf_trace_run3+0x2c/0x80
+> >       ? nbd_send_cmd+0x4c2/0x690 [nbd]
 > >
-> > Normal ping RTT data
-> > [Ignore final RTT; it is distorted by XDP using the reply]
-> > PING 192.168.55.8 (192.168.55.8) from 192.168.55.7 eth4: 56(84) bytes of data.
-> > 64 bytes from 192.168.55.8: icmp_seq=1 ttl=64 time=0.302 ms
-> > 64 bytes from 192.168.55.8: icmp_seq=2 ttl=64 time=0.208 ms
-> > 64 bytes from 192.168.55.8: icmp_seq=3 ttl=64 time=0.163 ms
-> > 64 bytes from 192.168.55.8: icmp_seq=8 ttl=64 time=0.275 ms
+> > This also cannot be alleviated by further splitting the per-cpu
+> > perf_sample_data structs (as in commit 283ca526a9bd ("bpf: fix
+> > corruption on concurrent perf_event_output calls")), as a raw_tp could
+> > be attached to the block:block_rq_complete tracepoint and execute during
+> > another raw_tp.  Instead, keep a pre-allocated perf_sample_data
+> > structure per perf_event_array element and fail a bpf_perf_event_output
+> > if that element is concurrently being used.
 > >
-> > 4 packets transmitted, 4 received, 0% packet loss, time 3079ms
-> > rtt min/avg/max/mdev = 0.163/0.237/0.302/0.054 ms
-> >
-> > XDP RTT data:
-> > 64 bytes from 192.168.55.8: icmp_seq=5 ttl=64 time=0.02808 ms
-> > 64 bytes from 192.168.55.8: icmp_seq=6 ttl=64 time=0.02804 ms
-> > 64 bytes from 192.168.55.8: icmp_seq=7 ttl=64 time=0.02815 ms
-> > 64 bytes from 192.168.55.8: icmp_seq=8 ttl=64 time=0.02805 ms
-> >
-> > The xdping program loads the associated xdping_kern.o BPF program
-> > and attaches it to the specified interface.  If run in client
-> > mode (the default), it will add a map entry keyed by the
-> > target IP address; this map will store RTT measurements, current
-> > sequence number etc.  Finally in client mode the ping command
-> > is executed, and the xdping BPF program will use the last ICMP
-> > reply, reformulate it as an ICMP request with the next sequence
-> > number and XDP_TX it.  After the reply to that request is received
-> > we can measure RTT and repeat until the desired number of
-> > measurements is made.  This is why the sequence numbers in the
-> > normal ping are 1, 2, 3 and 8.  We XDP_TX a modified version
-> > of ICMP reply 4 and keep doing this until we get the 4 replies
-> > we need; hence the networking stack only sees reply 8, where
-> > we have XDP_PASSed it upstream since we are done.
-> >
-> > In server mode (-s), xdping simply takes ICMP requests and replies
-> > to them in XDP rather than passing the request up to the networking
-> > stack.  No map entry is required.
-> >
-> > xdping can be run in native XDP mode (the default, or specified
-> > via -N) or in skb mode (-S).
-> >
-> > A test program test_xdping.sh exercises some of these options.
-> >
-> > Note that native XDP does not seem to XDP_TX for veths, hence -N
-> > is not tested.  Looking at the code, it looks like XDP_TX is
-> > supported so I'm not sure if that's expected.  Running xdping in
-> > native mode for ixgbe as both client and server works fine.
-> >
-> > Changes since v4
-> >
-> > - close fds on cleanup (Song Liu)
-> >
-> > Changes since v3
-> >
-> > - fixed seq to be __be16 (Song Liu)
-> > - fixed fd checks in xdping.c (Song Liu)
-> >
-> > Changes since v2
-> >
-> > - updated commit message to explain why seq number of last
-> >  ICMP reply is 8 not 4 (Song Liu)
-> > - updated types of seq number, raddr and eliminated csum variable
-> >  in xdpclient/xdpserver functions as it was not needed (Song Liu)
-> > - added XDPING_DEFAULT_COUNT definition and usage specification of
-> >  default/max counts (Song Liu)
-> >
-> > Changes since v1
-> > - moved from RFC to PATCH
-> > - removed unused variable in ipv4_csum() (Song Liu)
-> > - refactored ICMP checks into icmp_check() function called by client
-> >   and server programs and reworked client and server programs due
-> >   to lack of shared code (Song Liu)
-> > - added checks to ensure that SKB and native mode are not requested
-> >   together (Song Liu)
-> >
-> > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> > Fixes: 20b9d7ac4852 ("bpf: avoid excessive stack usage for perf_sample_data")
+> > Signed-off-by: Matt Mullins <mmullins@fb.com>
+>
+> This looks great. Thanks for the fix.
 >
 > Acked-by: Song Liu <songliubraving@fb.com>
 >
-> Note: I am Ack'ing it as a test. It needs more work, if we would
-> distribute it as a tool (maybe we really would).
+> > ---
+> > v1->v2:
+> >       keep a pointer to the struct perf_sample_data rather than directly
+> >       embedding it in the structure, avoiding the circular include and
+> >       removing the need for in_use.  Suggested by Song.
+> >
+> > include/linux/bpf.h      |  1 +
+> > kernel/bpf/arraymap.c    |  3 ++-
+> > kernel/trace/bpf_trace.c | 29 ++++++++++++++++-------------
+> > 3 files changed, 19 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 4fb3aa2dc975..47fd85cfbbaf 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -472,6 +472,7 @@ struct bpf_event_entry {
+> >       struct file *perf_file;
+> >       struct file *map_file;
+> >       struct rcu_head rcu;
+> > +     struct perf_sample_data *sd;
+> > };
+> >
+> > bool bpf_prog_array_compatible(struct bpf_array *array, const struct bpf_prog *fp);
+> > diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+> > index 584636c9e2eb..c7f5d593e04f 100644
+> > --- a/kernel/bpf/arraymap.c
+> > +++ b/kernel/bpf/arraymap.c
+> > @@ -654,11 +654,12 @@ static struct bpf_event_entry *bpf_event_entry_gen(struct file *perf_file,
+> > {
+> >       struct bpf_event_entry *ee;
+> >
+> > -     ee = kzalloc(sizeof(*ee), GFP_ATOMIC);
+> > +     ee = kzalloc(sizeof(*ee) + sizeof(struct perf_sample_data), GFP_ATOMIC);
+> >       if (ee) {
+> >               ee->event = perf_file->private_data;
+> >               ee->perf_file = perf_file;
+> >               ee->map_file = map_file;
+> > +             ee->sd = (void *)ee + sizeof(*ee);
 
-Agree. I think it works fine as a test.
-./test_xdping.sh passed in my test setup.
-Applied to bpf-next. Thanks
+This bit looks quite weird, but I don't have better ideas
+to avoid circular .h pain.
+
+Applied to bpf tree. Thanks
