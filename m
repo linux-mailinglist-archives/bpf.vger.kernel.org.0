@@ -2,90 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C43F63191E
-	for <lists+bpf@lfdr.de>; Sat,  1 Jun 2019 04:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8BE31924
+	for <lists+bpf@lfdr.de>; Sat,  1 Jun 2019 04:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726708AbfFACsI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 May 2019 22:48:08 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:36820 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726634AbfFACsH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 May 2019 22:48:07 -0400
-Received: by mail-pf1-f193.google.com with SMTP id u22so7288699pfm.3;
-        Fri, 31 May 2019 19:48:07 -0700 (PDT)
+        id S1726428AbfFAC6h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 May 2019 22:58:37 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:42430 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725913AbfFAC6h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 May 2019 22:58:37 -0400
+Received: by mail-lj1-f195.google.com with SMTP id t28so248372lje.9;
+        Fri, 31 May 2019 19:58:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wA6Nag5cogefANISMYEj8MTYfV7u56NtZXfu3ry/z74=;
-        b=iLLsRGv5rZG2Z2S1xBjyxzN2EiMpCOjxyobS4Kjt63lDR9BvrmiQKI8Z6KRR1cKDAS
-         T/elngl98c1HflHiYL2VK+WBLcwfvzg3p2brNe/PijlOZilflzHDABXBHGd3doMV5qm5
-         7k+vRi4HZ8LE01xkHSNMH4fc8G+apBDcKiyxn5SF54Lo3lyTKWJzgpSqBO2kxe7RgwF1
-         LjcaIwvwZKU8WXWL0YsG1/7Ly737J9odKGWEKYSZluOtXoF1wWphx82qZJn6zBbWvyhQ
-         Wr1m1M6RA4iwQ17iruIeE1lAZU6drlS4AQyoKU4WCiTQmQzW2y4EFVKA69mIcKloJlJb
-         mnpg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eDJPKBJvnZIRQnVeU5Lb59LIyt1tkURiT5wO7mlIN2g=;
+        b=MuvYnZ9XPAUOZtr1DQPs2ZYe/V+if7M4fgGPF9KyRogW1ExivLd9GX8YhgorfW7lKA
+         8nYfqY52S9/WE233IrA9c34eVWFJnw2Za0nS3oirRbYh0k6AS8aCvUd3X/h7akTgn+uy
+         UEa42RfzfaMaxAfeO4xUkRAmHsZ65fLRqWJccJg2/iuGioOBIaa4joTqf9vVVwyheOOb
+         z2zfwCqrvs9heMOWsKyMk5GB9tHf86qakbVzG+6Io6gRSsmzI1P1ZzaVHAO/IqeBXeBx
+         P9dSnZNpfiTZUfq3S0uekMzv5vRnC0w75Bi9HJGkHI12Od7waq2B1bl0XlyfhCq4rwoC
+         975w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wA6Nag5cogefANISMYEj8MTYfV7u56NtZXfu3ry/z74=;
-        b=pBTjkbHACsjchefUqPirUQA+q5C6+9qWTFnLDWAJpWWuCPqHdjHET44Plt6hpb8fZx
-         p5b8o3kjxPm3LM+EiJn5WBrK6UWpBQEDi9l1MVNy9y1oxv1AKmtGmjxiTfHtcwTDRvWx
-         9xEZVdJ9YtHJwN8pIYGmq5PAyTMW8V5vAzoG8LMNgpy6Ly+EaNU+qp61K2n3TwxhJf1V
-         1iIcbQYhxmYjRqzmYHDq8/ZAiJ0b3jKEqBV/1M2LHankjPhirDZW7DvX6o4lom7VkpOh
-         40Icnafjfw5s6H36jrcwCWAIt5neIyZUzIXbZbISW8NoKk/I0LxsU9GScDqBULQLzyIB
-         1mWw==
-X-Gm-Message-State: APjAAAV+cv1cutuiFmmcDj+7rK5OFzyoUkP8V7x2cEhGWDaRY6HxFA0T
-        tQQ7R4k/30k2x9hTJ0iZdms=
-X-Google-Smtp-Source: APXvYqwOHSP6VGI+c+WCLijOFl5QUgm7TIFm8uBRjKS560u4/63ZU3mOmv1fIgQ0ufdJeHFLrtehMQ==
-X-Received: by 2002:aa7:9256:: with SMTP id 22mr338244pfp.69.1559357287182;
-        Fri, 31 May 2019 19:48:07 -0700 (PDT)
-Received: from zhanggen-UX430UQ ([66.42.35.75])
-        by smtp.gmail.com with ESMTPSA id f11sm8189908pfd.27.2019.05.31.19.48.01
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 31 May 2019 19:48:06 -0700 (PDT)
-Date:   Sat, 1 Jun 2019 10:47:53 +0800
-From:   Gen Zhang <blackgod016574@gmail.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     paul@paul-moore.com, sds@tycho.nsa.gov, eparis@parisplace.org,
-        omosnace@redhat.com, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v3] selinux: lsm: fix a missing-check bug in
- selinux_sb_eat_lsm_opts()
-Message-ID: <20190601024753.GA8962@zhanggen-UX430UQ>
-References: <20190601021526.GA8264@zhanggen-UX430UQ>
- <20190601022527.GR17978@ZenIV.linux.org.uk>
- <20190601023449.GS17978@ZenIV.linux.org.uk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eDJPKBJvnZIRQnVeU5Lb59LIyt1tkURiT5wO7mlIN2g=;
+        b=JU9uCX/uLN2bG6lrXhJA/Sk2/j++gmG6q4bS8Ol5wdstBCejDDV3NjAwLs4bj5LX2+
+         jfUmgNdIiMxF2Jt7gi7LRbbpCeB7vLAeRm3JCdGMZ0O/NW1zEagAFYRGJkicYMec45SS
+         Z5VWcHCSFEs0mDeu0fvU9K9TabUUaPxpJl7Y2RVEuI17lX6fIXQ9z9xZ3VyCnsvFKBPU
+         VFwIg+xB84URsFZxB+g1UxZHZJ8gdeFUXFcjoOK5cx1LuHCHOwFtSY2/z//4q4fcezgc
+         7CORgIFQeAhtFqJITH3Mmre9HDz/7gx2+MpFbLuRDYUevHlCYmwiBFSonJvcbto7n4Wv
+         VA8Q==
+X-Gm-Message-State: APjAAAWawsSm7g7HV2UYjWkWKsMMTYYAcDbRgjSmvbL2epoUS02ZoUbw
+        HHX6gBgAhn08NM/oGRC8/jzpEF3jqiy6D8g8UgY=
+X-Google-Smtp-Source: APXvYqyreNdEHm79xwC9JivNNbNhJN4VOgT69fXZdX4ZtalnKX7JmwEccg3O7i6gmGhljZxUilzx4sxMisjuDvKS9nc=
+X-Received: by 2002:a2e:9c09:: with SMTP id s9mr7590038lji.74.1559357913798;
+ Fri, 31 May 2019 19:58:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190601023449.GS17978@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <1559324834-30570-1-git-send-email-alan.maguire@oracle.com> <ACCC49B3-7A81-45D4-9AB8-C91B487FD22A@fb.com>
+In-Reply-To: <ACCC49B3-7A81-45D4-9AB8-C91B487FD22A@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 31 May 2019 19:58:22 -0700
+Message-ID: <CAADnVQJsyCJAfH4ioBkRWdaeSJiXxE5bT39jhpo9sL2CSxf6eQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5] selftests/bpf: measure RTT from xdp using xdping
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Alan Maguire <alan.maguire@oracle.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "xdp-newbies@vger.kernel.org" <xdp-newbies@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 01, 2019 at 03:34:49AM +0100, Al Viro wrote:
-> On Sat, Jun 01, 2019 at 03:25:27AM +0100, Al Viro wrote:
-> > On Sat, Jun 01, 2019 at 10:15:26AM +0800, Gen Zhang wrote:
-> > > In selinux_sb_eat_lsm_opts(), 'arg' is allocated by kmemdup_nul(). It
-> > > returns NULL when fails. So 'arg' should be checked. And 'mnt_opts' 
-> > > should be freed when error.
-> > 
-> > What's the latter one for?  On failure we'll get to put_fs_context()
-> > pretty soon, so
-> >         security_free_mnt_opts(&fc->security);
-> > will be called just fine.  Leaving it allocated on failure is fine...
-> 
-> Actually, right now in mainline it is not (btrfs_mount_root() has
-> an odd call of security_sb_eat_lsm_opts()); eventually we will be
-> down to just the callers in ->parse_monolithic() instances, at which
-> point the above will become correct.  At the moment it is not, so
-> consider the objection withdrawn (and I really need to get some sleep,
-> seeing how long did it take me to recall the context... ;-/)
-Thanks for your comments. And have a good dream.
+On Fri, May 31, 2019 at 6:37 PM Song Liu <songliubraving@fb.com> wrote:
+>
+>
+>
+> > On May 31, 2019, at 10:47 AM, Alan Maguire <alan.maguire@oracle.com> wrote:
+> >
+> > xdping allows us to get latency estimates from XDP.  Output looks
+> > like this:
+> >
+> > ./xdping -I eth4 192.168.55.8
+> > Setting up XDP for eth4, please wait...
+> > XDP setup disrupts network connectivity, hit Ctrl+C to quit
+> >
+> > Normal ping RTT data
+> > [Ignore final RTT; it is distorted by XDP using the reply]
+> > PING 192.168.55.8 (192.168.55.8) from 192.168.55.7 eth4: 56(84) bytes of data.
+> > 64 bytes from 192.168.55.8: icmp_seq=1 ttl=64 time=0.302 ms
+> > 64 bytes from 192.168.55.8: icmp_seq=2 ttl=64 time=0.208 ms
+> > 64 bytes from 192.168.55.8: icmp_seq=3 ttl=64 time=0.163 ms
+> > 64 bytes from 192.168.55.8: icmp_seq=8 ttl=64 time=0.275 ms
+> >
+> > 4 packets transmitted, 4 received, 0% packet loss, time 3079ms
+> > rtt min/avg/max/mdev = 0.163/0.237/0.302/0.054 ms
+> >
+> > XDP RTT data:
+> > 64 bytes from 192.168.55.8: icmp_seq=5 ttl=64 time=0.02808 ms
+> > 64 bytes from 192.168.55.8: icmp_seq=6 ttl=64 time=0.02804 ms
+> > 64 bytes from 192.168.55.8: icmp_seq=7 ttl=64 time=0.02815 ms
+> > 64 bytes from 192.168.55.8: icmp_seq=8 ttl=64 time=0.02805 ms
+> >
+> > The xdping program loads the associated xdping_kern.o BPF program
+> > and attaches it to the specified interface.  If run in client
+> > mode (the default), it will add a map entry keyed by the
+> > target IP address; this map will store RTT measurements, current
+> > sequence number etc.  Finally in client mode the ping command
+> > is executed, and the xdping BPF program will use the last ICMP
+> > reply, reformulate it as an ICMP request with the next sequence
+> > number and XDP_TX it.  After the reply to that request is received
+> > we can measure RTT and repeat until the desired number of
+> > measurements is made.  This is why the sequence numbers in the
+> > normal ping are 1, 2, 3 and 8.  We XDP_TX a modified version
+> > of ICMP reply 4 and keep doing this until we get the 4 replies
+> > we need; hence the networking stack only sees reply 8, where
+> > we have XDP_PASSed it upstream since we are done.
+> >
+> > In server mode (-s), xdping simply takes ICMP requests and replies
+> > to them in XDP rather than passing the request up to the networking
+> > stack.  No map entry is required.
+> >
+> > xdping can be run in native XDP mode (the default, or specified
+> > via -N) or in skb mode (-S).
+> >
+> > A test program test_xdping.sh exercises some of these options.
+> >
+> > Note that native XDP does not seem to XDP_TX for veths, hence -N
+> > is not tested.  Looking at the code, it looks like XDP_TX is
+> > supported so I'm not sure if that's expected.  Running xdping in
+> > native mode for ixgbe as both client and server works fine.
+> >
+> > Changes since v4
+> >
+> > - close fds on cleanup (Song Liu)
+> >
+> > Changes since v3
+> >
+> > - fixed seq to be __be16 (Song Liu)
+> > - fixed fd checks in xdping.c (Song Liu)
+> >
+> > Changes since v2
+> >
+> > - updated commit message to explain why seq number of last
+> >  ICMP reply is 8 not 4 (Song Liu)
+> > - updated types of seq number, raddr and eliminated csum variable
+> >  in xdpclient/xdpserver functions as it was not needed (Song Liu)
+> > - added XDPING_DEFAULT_COUNT definition and usage specification of
+> >  default/max counts (Song Liu)
+> >
+> > Changes since v1
+> > - moved from RFC to PATCH
+> > - removed unused variable in ipv4_csum() (Song Liu)
+> > - refactored ICMP checks into icmp_check() function called by client
+> >   and server programs and reworked client and server programs due
+> >   to lack of shared code (Song Liu)
+> > - added checks to ensure that SKB and native mode are not requested
+> >   together (Song Liu)
+> >
+> > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+>
+> Acked-by: Song Liu <songliubraving@fb.com>
+>
+> Note: I am Ack'ing it as a test. It needs more work, if we would
+> distribute it as a tool (maybe we really would).
 
-Thanks
-Gen
+Agree. I think it works fine as a test.
+./test_xdping.sh passed in my test setup.
+Applied to bpf-next. Thanks
