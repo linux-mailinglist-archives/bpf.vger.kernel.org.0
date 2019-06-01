@@ -2,190 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0111320A3
-	for <lists+bpf@lfdr.de>; Sat,  1 Jun 2019 22:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B0D320D8
+	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2019 00:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbfFAUC2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 1 Jun 2019 16:02:28 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:45751 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726195AbfFAUC2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 1 Jun 2019 16:02:28 -0400
-Received: by mail-pg1-f195.google.com with SMTP id w34so5921709pga.12
-        for <bpf@vger.kernel.org>; Sat, 01 Jun 2019 13:02:27 -0700 (PDT)
+        id S1726414AbfFAWFJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 1 Jun 2019 18:05:09 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:41454 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726343AbfFAWFI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 1 Jun 2019 18:05:08 -0400
+Received: by mail-pl1-f196.google.com with SMTP id s24so5295143plr.8;
+        Sat, 01 Jun 2019 15:05:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=xy8MS2h0CWCw9bCHyV9wMr6WM+l0cnsYOJ5ENcwhPQU=;
-        b=KIgHCCMmCRxtATSwhQzp7Xt6whGBcSGWws0Ev9SBl6KxYrEkYH6pWjGD+H/rWa4n2Z
-         oxmp3pPPUKo+SoXRn4LiuYzF4GSoaikRH122gljJcnN8CB4XgBF1JD9YjOVcKDUuX8tA
-         sXXBbJyQES7trxmV3hqo3a/k2l0NlH1qHKL2KuVgnw5scQAl+NI/EqGjt5ISp0zRFRKR
-         dXSUzL7xkPz6yBoWTcGhToZkaBPPfik5hiKcQYrfixMb7qF2LXFYmSBgSSQpdQNM1DLq
-         X3k2/O8h/05z6PC+Dt1kj8EhD3UC9o5DEZEVIz2lA0MuHFAWlWghRwbiC7N/QdTGE4Fj
-         MhCQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=/4V2UooyuT/xkSgDxYFCbZIPQVYE9qANQONtUStbi0I=;
+        b=aEiIIh6j5gaLu/uiZsVxflyGB2psU3ACsQYja8COPyf/sGEsPia+zJxZNoD5tRkohA
+         g9RV5ceEJlQFAzKNPGKe9mXBRs4ZWaHZ/ykZOXdmK/wsC4X/pZk5ph1ByGBeC2VzyNRZ
+         O8yGDJHbGv6Vy23coroNP8rSiSlp0M9GBuLhOT6/rN6tqdYEKPQg9TLYjxNZ/5VUaPf6
+         5Qk97JOBOmNB8B9TzI1J8UsEzsUGf99HKRtbZ34XYB/ZzAlpWiIpjFEpBpm+MFutG6om
+         hebDvdHhAY/Ih8rd03POUsAeMllDh1EtKmFFh5UEMr8tP7v6OsTOY0nl5hoqMf5lb7mR
+         COPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=xy8MS2h0CWCw9bCHyV9wMr6WM+l0cnsYOJ5ENcwhPQU=;
-        b=OXJJwpGxGraO1vhrFtPj8I/KZsrZvcL3L7zMjAGyBsu9jWB0ZgHdcAGxncpO+WqAiG
-         dZy9RryE7O6/42lbvKwZgPCnub4yYluf0/awW+jLb7b0qg7ofF29ylAiwKh4Sf38uD08
-         MU/2yq5g3yCuVpLiHpyO/ypmB13FqvxQ5i9IPin7L1mSe5juotFrKnhg7bGXpWmloCqc
-         M6fnEdjTt+JqA3q1tHBEbVjFeT6AXUa2E68QrU+yjeeHs8USBmq7G0pgEwi+Gul61aa4
-         4VFPRyOjy9QoW88AGAPAMQCCn2hpxYrdsRWPTDUIxPsGrXfSj8+6XtiqLoV671JSVeI3
-         QVHw==
-X-Gm-Message-State: APjAAAUTiHsried/RiMnzDaS6Evumxh8JLMz8V3LAe8emljUpjl6guIr
-        m48mnNC/WSaGIUU0t40ZiqBnPQ==
-X-Google-Smtp-Source: APXvYqyE9zHR6wpcd+ILpl+RnJ2+hgV9hy8h9CYO7M2UFxvNRxMBxmMX99JZFHLzB7CBlemQHiIkuQ==
-X-Received: by 2002:a62:ee05:: with SMTP id e5mr19263697pfi.117.1559419347074;
-        Sat, 01 Jun 2019 13:02:27 -0700 (PDT)
-Received: from cakuba.netronome.com ([2601:646:8e00:e50::3])
-        by smtp.gmail.com with ESMTPSA id p13sm9604796pff.2.2019.06.01.13.02.26
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Sat, 01 Jun 2019 13:02:26 -0700 (PDT)
-Date:   Sat, 1 Jun 2019 13:02:23 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     toke@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, brouer@redhat.com, bpf@vger.kernel.org,
-        saeedm@mellanox.com
-Subject: Re: [PATCH bpf-next v2 1/2] net: xdp: refactor XDP_QUERY_PROG{,_HW}
- to netdev
-Message-ID: <20190601130223.5ef947fa@cakuba.netronome.com>
-In-Reply-To: <20190531094215.3729-2-bjorn.topel@gmail.com>
-References: <20190531094215.3729-1-bjorn.topel@gmail.com>
-        <20190531094215.3729-2-bjorn.topel@gmail.com>
-Organization: Netronome Systems, Ltd.
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/4V2UooyuT/xkSgDxYFCbZIPQVYE9qANQONtUStbi0I=;
+        b=mxn9fpVu4v6PczwtaajB8ugK0YYiScBmc0eencKcMuO9QJSBiBMOLH+WURh6vC4Uck
+         mTRX/PK1HPnw4GO/Ib3aBVmPn+L4bBto1QDrznYeUbvOg7wwVqpnBqsVcpYSZdmdHZKo
+         YpsqWG7soa3u4+IPe9/ZmLI+csTVT6juLJluVeUi7RHvM7nQVmQ9/vzNv0swGdLz7r02
+         JnPZLL+fi4VhikyyxFwxWl7X2uCeaJJvewhnrQll+Y5CfRdfeq3zDT8X+eNAjjSYhAZ3
+         4yMSojDbMAB0UtJ1Xu52/8GKvaX0/a+Gd2h+RvLCKt8+SJhinTnzAz7T2zqoQ++E0b3z
+         hhZA==
+X-Gm-Message-State: APjAAAUyRHW/OPKobDes4z7ojt21HgEcptUcr7YK0bFcHxH91KcqOeF2
+        L8Il7eHIj61XRf3hi7pEEZM=
+X-Google-Smtp-Source: APXvYqwphbTFBcDNn046SvWLFg37yH4vLdMAbWqhRuMWdSG0CO0So6w07nR8xMOHP9MX59I3A8TMoA==
+X-Received: by 2002:a17:902:9f8b:: with SMTP id g11mr19481783plq.199.1559426707771;
+        Sat, 01 Jun 2019 15:05:07 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::92b7])
+        by smtp.gmail.com with ESMTPSA id p7sm10562075pgb.92.2019.06.01.15.05.06
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 01 Jun 2019 15:05:07 -0700 (PDT)
+Date:   Sat, 1 Jun 2019 15:05:05 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, ast@fb.com, daniel@iogearbox.net,
+        kernel-team@fb.com
+Subject: Re: [PATCH bpf-next] selftests/bpf: add real-world BPF verifier
+ scale test program
+Message-ID: <20190601220503.7dabs472ixfbtjsf@ast-mbp.dhcp.thefacebook.com>
+References: <20190601063952.2176919-1-andriin@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190601063952.2176919-1-andriin@fb.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 31 May 2019 11:42:14 +0200, Bj=C3=B6rn T=C3=B6pel wrote:
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index 44b47e9df94a..f3a875a52c6c 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -1940,6 +1940,9 @@ struct net_device {
->  #endif
->  	struct hlist_node	index_hlist;
-> =20
-> +	struct bpf_prog		*xdp_prog_hw;
+On Fri, May 31, 2019 at 11:39:52PM -0700, Andrii Nakryiko wrote:
+> This patch adds a new test program, based on real-world production
+> application, for testing BPF verifier scalability w/ realistic
+> complexity.
 
-IDK if we should pay the cost of this pointer for every netdev on the
-system just for the single production driver out there that implements
-HW offload :(  I'm on the fence about this..
+Thanks!
 
-> +	u32			xdp_flags;
+> -	const char *pyperf[] = {
+> +	const char *tp_progs[] = {
+
+I had very similar change in my repo :)
+
+> +struct strobemeta_payload {
+> +	/* req_id has valid request ID, if req_meta_valid == 1 */
+> +	int64_t req_id;
+> +	uint8_t req_meta_valid;
+> +	/*
+> +	 * mask has Nth bit set to 1, if Nth metavar was present and
+> +	 * successfully read
+> +	 */
+> +	uint64_t int_vals_set_mask;
+> +	int64_t int_vals[STROBE_MAX_INTS];
+> +	/* len is >0 for present values */
+> +	uint16_t str_lens[STROBE_MAX_STRS];
+> +	/* if map_descrs[i].cnt == -1, metavar is not present/set */
+> +	struct strobe_map_descr map_descrs[STROBE_MAX_MAPS];
+> +	/*
+> +	 * payload has compactly packed values of str and map variables in the
+> +	 * form: strval1\0strval2\0map1key1\0map1val1\0map2key1\0map2val1\0
+> +	 * (and so on); str_lens[i], key_lens[i] and val_lens[i] determines
+> +	 * value length
+> +	 */
+> +	char payload[STROBE_MAX_PAYLOAD];
+> +};
 > +
->  /*
->   * Cache lines mostly used on transmit path
->   */
+> +struct strobelight_bpf_sample {
+> +	uint64_t ktime;
+> +	char comm[TASK_COMM_LEN];
+> +	pid_t pid;
+> +	int user_stack_id;
+> +	int kernel_stack_id;
+> +	int has_meta;
+> +	struct strobemeta_payload metadata;
+> +	/*
+> +	 * makes it possible to pass (<real payload size> + 1) as data size to
+> +	 * perf_submit() to avoid perf_submit's paranoia about passing zero as
+> +	 * size, as it deduces that <real payload size> might be
+> +	 * **theoretically** zero
+> +	 */
+> +	char dummy_safeguard;
+> +};
 
-> diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-> index adcc045952c2..5e396fd01d8b 100644
-> --- a/net/core/rtnetlink.c
-> +++ b/net/core/rtnetlink.c
-> @@ -1360,42 +1360,44 @@ static int rtnl_fill_link_ifmap(struct sk_buff *s=
-kb, struct net_device *dev)
->  	return 0;
->  }
-> =20
-> -static u32 rtnl_xdp_prog_skb(struct net_device *dev)
-> +static unsigned int rtnl_xdp_mode_to_flag(u8 tgt_mode)
->  {
-> -	const struct bpf_prog *generic_xdp_prog;
-> -
-> -	ASSERT_RTNL();
-> -
-> -	generic_xdp_prog =3D rtnl_dereference(dev->xdp_prog);
-> -	if (!generic_xdp_prog)
-> -		return 0;
-> -	return generic_xdp_prog->aux->id;
-> -}
-> -
-> -static u32 rtnl_xdp_prog_drv(struct net_device *dev)
-> -{
-> -	return __dev_xdp_query(dev, dev->netdev_ops->ndo_bpf, XDP_QUERY_PROG);
-> +	switch (tgt_mode) {
-> +	case XDP_ATTACHED_DRV:
-> +		return XDP_FLAGS_DRV_MODE;
-> +	case XDP_ATTACHED_SKB:
-> +		return XDP_FLAGS_SKB_MODE;
-> +	case XDP_ATTACHED_HW:
-> +		return XDP_FLAGS_HW_MODE;
-> +	}
-> +	return 0;
->  }
-> =20
-> -static u32 rtnl_xdp_prog_hw(struct net_device *dev)
-> +static u32 rtnl_xdp_mode_to_attr(u8 tgt_mode)
->  {
-> -	return __dev_xdp_query(dev, dev->netdev_ops->ndo_bpf,
-> -			       XDP_QUERY_PROG_HW);
-> +	switch (tgt_mode) {
-> +	case XDP_ATTACHED_DRV:
-> +		return IFLA_XDP_DRV_PROG_ID;
-> +	case XDP_ATTACHED_SKB:
-> +		return IFLA_XDP_SKB_PROG_ID;
-> +	case XDP_ATTACHED_HW:
-> +		return IFLA_XDP_HW_PROG_ID;
-> +	}
-> +	return 0;
->  }
-> =20
->  static int rtnl_xdp_report_one(struct sk_buff *skb, struct net_device *d=
-ev,
-> -			       u32 *prog_id, u8 *mode, u8 tgt_mode, u32 attr,
-> -			       u32 (*get_prog_id)(struct net_device *dev))
-> +			       u32 *prog_id, u8 *mode, u8 tgt_mode)
->  {
->  	u32 curr_id;
->  	int err;
-> =20
-> -	curr_id =3D get_prog_id(dev);
-> +	curr_id =3D dev_xdp_query(dev, rtnl_xdp_mode_to_flag(tgt_mode));
->  	if (!curr_id)
->  		return 0;
-> =20
->  	*prog_id =3D curr_id;
-> -	err =3D nla_put_u32(skb, attr, curr_id);
-> +	err =3D nla_put_u32(skb, rtnl_xdp_mode_to_attr(tgt_mode), curr_id);
->  	if (err)
->  		return err;
-> =20
-> @@ -1420,16 +1422,13 @@ static int rtnl_xdp_fill(struct sk_buff *skb, str=
-uct net_device *dev)
-> =20
->  	prog_id =3D 0;
->  	mode =3D XDP_ATTACHED_NONE;
-> -	err =3D rtnl_xdp_report_one(skb, dev, &prog_id, &mode, XDP_ATTACHED_SKB,
-> -				  IFLA_XDP_SKB_PROG_ID, rtnl_xdp_prog_skb);
-> +	err =3D rtnl_xdp_report_one(skb, dev, &prog_id, &mode, XDP_ATTACHED_SKB=
-);
->  	if (err)
->  		goto err_cancel;
-> -	err =3D rtnl_xdp_report_one(skb, dev, &prog_id, &mode, XDP_ATTACHED_DRV,
-> -				  IFLA_XDP_DRV_PROG_ID, rtnl_xdp_prog_drv);
-> +	err =3D rtnl_xdp_report_one(skb, dev, &prog_id, &mode, XDP_ATTACHED_DRV=
-);
->  	if (err)
->  		goto err_cancel;
-> -	err =3D rtnl_xdp_report_one(skb, dev, &prog_id, &mode, XDP_ATTACHED_HW,
-> -				  IFLA_XDP_HW_PROG_ID, rtnl_xdp_prog_hw);
-> +	err =3D rtnl_xdp_report_one(skb, dev, &prog_id, &mode, XDP_ATTACHED_HW);
->  	if (err)
->  		goto err_cancel;
-> =20
+> +struct bpf_map_def SEC("maps") sample_heap = {
+> +	.type = BPF_MAP_TYPE_PERCPU_ARRAY,
+> +	.key_size = sizeof(uint32_t),
+> +	.value_size = sizeof(struct strobelight_bpf_sample),
+> +	.max_entries = 1,
+> +};
 
-So you remove all the attr and flag params just to add a conversion
-helpers to get them based on mode?  Why?  Seems like unnecessary churn,
-and questionable change :S
+due to this design the stressfulness of the test is
+limited by bpf max map value limitation which comes from
+alloc_percpu limit.
+That makes it not as stressful as I was hoping for :)
 
-Otherwise looks good to me!
+> +#define STROBE_MAX_INTS 25
+> +#define STROBE_MAX_STRS 25
+> +#define STROBE_MAX_MAPS 5
+> +#define STROBE_MAX_MAP_ENTRIES 20
+
+so I could bump STROBE_MAX_INTS to 300 and got:
+verification time 302401 usec // with kasan
+stack depth 464
+processed 40388 insns (limit 1000000) max_states_per_insn 6 total_states 8863 peak_states 8796 mark_read 4110
+test_scale:./strobemeta25.o:OK
+
+which is not that stressful comparing to some of the tests :)
+
+Without unroll:
+verification time 435963 usec // with kasan
+stack depth 488
+processed 52812 insns (limit 1000000) max_states_per_insn 26 total_states 6786 peak_states 1405 mark_read 777
+test_scale:./strobemeta25.o:OK
+
+So things are looking pretty good.
+
+I'll roll your test into my set with few tweaks. Thanks a lot!
+
+btw I consistently see better code and less insn_processed in alu32 mode.
+It's probably time to make it llvm default.
+
