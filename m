@@ -2,294 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B082A33B6C
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2019 00:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D34433B9E
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2019 00:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbfFCWeU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Jun 2019 18:34:20 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:43209 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726025AbfFCWeT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Jun 2019 18:34:19 -0400
-Received: by mail-qt1-f194.google.com with SMTP id z24so4347744qtj.10;
-        Mon, 03 Jun 2019 15:34:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hUDi3LpJDfbh5JFvsyRAzGmS70LuLctJXOtDXn0LQ2Q=;
-        b=D7qJebudrGZeM1gOmc8jtIR6aIIHgpsJ8sYSHcLSX593cDg/MLokBdWE3Dc/4yxJLW
-         TEAgKcBdl1OU2WlLxZ8ImKNN8dwvRe2vQDf83zOTc59Ydzpqv7nINiUw10YWeIHBjPM9
-         WUigYO2x0AfogSKwADhhcVGPkBZQlSZhAj9G1cunBakpKr4zn8uTZBvG+HyKAzXIy/tc
-         ci07EH8yK3KtgJT0AQ+D4MIXpU7xPmwXT5F/FUbgZL4qHx5gOA5/DzZeYjJELHdj1LWD
-         VfzNfmMRNVrnpcf7Kb1YLgYdhtBV683/zHPcjCUVHqCZwmzTPWtqn1qeU0Bcw9i6cs+R
-         y0hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hUDi3LpJDfbh5JFvsyRAzGmS70LuLctJXOtDXn0LQ2Q=;
-        b=g+uR6a6NS6U+EApyaRmIeRXLDDoLu1xaigD0UxXmUxnudVvx/9VoU1IO16opVodtnW
-         prx/S/gn5jR7UB3cpLwaO16bR5ntTRzpqp3ld38TG/PIS2S4WH3Gv74eb2QsU8enC5Vc
-         Bz9r1Ga2J8XyiIf4dd7NeDZjYVU0KU7NkZ+voKg1q6kh1iPcKxBjcLLhMg9zRQeuMmip
-         1RPUCXq8hcbsxSPsbfVYmr/XyM5oekyBQZxUg85Itp7p5e26MAHAPctSE5m7sVo+PDkM
-         PhJF4LHzwdUM+W2e+7iVArDokGU83GAAGUDa+FY0Ht0F6TD/yZjk+kWEmkAbg3tD3pCT
-         0M2g==
-X-Gm-Message-State: APjAAAUvbb5RdsbBfhfHc7YsSrKdv0jPLO1kQVR8yY2sgfpdji92p3yh
-        Ab8j2tUFioDP+OcdVroDdYutcYuu5FnjDHIHZDn2rZTxWQE=
-X-Google-Smtp-Source: APXvYqzRDhbCUq4oamjTp7IFBzoFqATLRDyx7vn9DWCXD+P/G7Mm39rg8ZHzRHYYYBY9yKRu+AczaS5kivZNODkB7ew=
-X-Received: by 2002:ac8:2a63:: with SMTP id l32mr5360414qtl.117.1559601258098;
- Mon, 03 Jun 2019 15:34:18 -0700 (PDT)
+        id S1726163AbfFCW7N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Jun 2019 18:59:13 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:51928 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726025AbfFCW7N (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 3 Jun 2019 18:59:13 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x53MsNZq002029;
+        Mon, 3 Jun 2019 15:58:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=8WcOpp74X8zfixZNPEl/xpvkqmkWd5QCBGPPFOrruQ0=;
+ b=CKhNwItwD/rH33gD9xaipYrqP+F8PouDLiFwz21Pc+LirKrdj8TghRw3xAavEQHbeMEK
+ Lttrx6aTsieqUGmqjDPIyCHgWNBCPuTupu4l5R16myJBjz+zLn+02f8v2t4ZfIjS/zvz
+ zGENvL04AZ5OCmgLlwqCiiKctx5ZBzuq7X8= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2swbg0093p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 03 Jun 2019 15:58:23 -0700
+Received: from prn-hub02.TheFacebook.com (2620:10d:c081:35::126) by
+ prn-hub02.TheFacebook.com (2620:10d:c081:35::126) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Mon, 3 Jun 2019 15:58:22 -0700
+Received: from NAM01-BN3-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.26) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Mon, 3 Jun 2019 15:58:22 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8WcOpp74X8zfixZNPEl/xpvkqmkWd5QCBGPPFOrruQ0=;
+ b=rzpSVAWf/S6/wZuiviRtl7ge3CaHDnNVv8IvmNzUuPDJoLGO7fA/uvz1xxEApNUFB4A7CHXCf4/VfwuYkrzE2ZsQ2inAkHVcu8lC3vopM82gYdh8OuMCak7NAwjMxfbHIEwRfZxANRY+SzlJSlWpoeXe2aviwNqsJeLf3Ixm7+c=
+Received: from MWHPR15MB1262.namprd15.prod.outlook.com (10.175.3.141) by
+ MWHPR15MB1839.namprd15.prod.outlook.com (10.174.255.143) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1943.22; Mon, 3 Jun 2019 22:58:20 +0000
+Received: from MWHPR15MB1262.namprd15.prod.outlook.com
+ ([fe80::80df:7291:9855:e8bc]) by MWHPR15MB1262.namprd15.prod.outlook.com
+ ([fe80::80df:7291:9855:e8bc%8]) with mapi id 15.20.1943.018; Mon, 3 Jun 2019
+ 22:58:20 +0000
+From:   Matt Mullins <mmullins@fb.com>
+To:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Andrew Hall <hall@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: Re: [PATCH bpf v2] bpf: preallocate a perf_sample_data per event fd
+Thread-Topic: [PATCH bpf v2] bpf: preallocate a perf_sample_data per event fd
+Thread-Index: AQHVGAF59w/lvxC2rk6cErnZnaX1kaaJ6uwAgAADyACAAKCpAA==
+Date:   Mon, 3 Jun 2019 22:58:20 +0000
+Message-ID: <05626702394f7b95273ab19fef30461677779333.camel@fb.com>
+References: <20190531223735.4998-1-mmullins@fb.com>
+         <6c6a4d47-796a-20e2-eb12-503a00d1fa0b@iogearbox.net>
+         <68841715-4d5b-6ad1-5241-4e7199dd63da@iogearbox.net>
+In-Reply-To: <68841715-4d5b-6ad1-5241-4e7199dd63da@iogearbox.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+x-originating-ip: [2620:10d:c090:200::2:6bd5]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d672b6fe-9186-468a-2fb6-08d6e876f936
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:MWHPR15MB1839;
+x-ms-traffictypediagnostic: MWHPR15MB1839:
+x-microsoft-antispam-prvs: <MWHPR15MB183943A3DE10FA0E4010C0A9B0140@MWHPR15MB1839.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0057EE387C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(346002)(39860400002)(376002)(366004)(396003)(51444003)(189003)(199004)(446003)(66476007)(66556008)(64756008)(66446008)(76116006)(46003)(73956011)(81166006)(6246003)(81156014)(102836004)(8676002)(50226002)(6486002)(118296001)(66946007)(229853002)(76176011)(86362001)(14454004)(2501003)(2201001)(71190400001)(71200400001)(186003)(478600001)(99286004)(256004)(14444005)(5024004)(53546011)(6506007)(53936002)(6116002)(2616005)(6436002)(486006)(476003)(316002)(4326008)(110136005)(25786009)(5660300002)(8936002)(11346002)(305945005)(36756003)(68736007)(54906003)(7736002)(2906002)(6512007)(99106002);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1839;H:MWHPR15MB1262.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: ig4tZbYEK4RngD4QwJX+cwnLR3uN/2NPpvuA8tPFN/Uof3NvHOjqKo1cxqU3Ifg3ST+3bR86HObnChA0q5vVUBvTOhsBs7B0p0XqToNiaGWKg78fE1QA6vObQgnCBxmYdF3XyS8MwHbms9zPCoDiBQuS+RsXLl69r6yyDR2oWKWmDfCrNSTaD1R2HE++TXsRjo1taXQCI1w4jK/azl0jLvN60T2qgqUSkTd29pwFMqDWEbrHmpeO77hiWwp7+JK2d9K2DFtVI4I/PuIbKMTcISmQvDdVIFWYi9C/bDgD7iF4XZY6IHTnzT2E5FGUvV72T+oae70UNZk+rQOMxodmiYvPjDT/YRPA7nARXgsJVtclcUA1gSy1DO2XSQobIgQwNgcEOzhvGG1YyTC3ANIedt6qC3ZEsMNhCw6yAIFMKho=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C6AF67AF5CEC5D4FBBA8E194EF363257@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20190531202132.379386-1-andriin@fb.com> <20190531202132.379386-7-andriin@fb.com>
-In-Reply-To: <20190531202132.379386-7-andriin@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 3 Jun 2019 15:34:06 -0700
-Message-ID: <CAEf4BzbfdG2ub7gCi0OYqBrUoChVHWsmOntWAkJt47=FE+km+A@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 6/8] libbpf: allow specifying map definitions
- using BTF
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-Network-Message-Id: d672b6fe-9186-468a-2fb6-08d6e876f936
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2019 22:58:20.2495
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mmullins@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1839
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-03_18:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906030154
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 31, 2019 at 1:21 PM Andrii Nakryiko <andriin@fb.com> wrote:
->
-> This patch adds support for a new way to define BPF maps. It relies on
-> BTF to describe mandatory and optional attributes of a map, as well as
-> captures type information of key and value naturally. This eliminates
-> the need for BPF_ANNOTATE_KV_PAIR hack and ensures key/value sizes are
-> always in sync with the key/value type.
->
-> Relying on BTF, this approach allows for both forward and backward
-> compatibility w.r.t. extending supported map definition features. Old
-> libbpf implementation will ignore fields it doesn't recognize, while new
-> implementations will parse and recognize new optional attributes.
->
-> The outline of the new map definition (short, BTF-defined maps) is as follows:
-> 1. All the maps should be defined in .maps ELF section. It's possible to
->    have both "legacy" map definitions in `maps` sections and BTF-defined
->    maps in .maps sections. Everything will still work transparently.
-> 2. The map declaration and initialization is done through
->    a global/static variable of a struct type with few mandatory and
->    extra optional fields:
->    - type field is mandatory and specified type of BPF map;
->    - key/value fields are mandatory and capture key/value type/size information;
->    - max_entries attribute is optional; if max_entries is not specified or
->      initialized, it has to be provided in runtime through libbpf API
->      before loading bpf_object;
->    - map_flags is optional and if not defined, will be assumed to be 0.
-> 3. Key/value fields should be **a pointer** to a type describing
->    key/value. The pointee type is assumed (and will be recorded as such
->    and used for size determination) to be a type describing key/value of
->    the map. This is done to save excessive amounts of space allocated in
->    corresponding ELF sections for key/value of big size.
-> 4. As some maps disallow having BTF type ID associated with key/value,
->    it's possible to specify key/value size explicitly without
->    associating BTF type ID with it. Use key_size and value_size fields
->    to do that (see example below).
->
-> Here's an example of simple ARRAY map defintion:
->
-> struct my_value { int x, y, z; };
->
-> struct {
->         int type;
->         int max_entries;
->         int *key;
->         struct my_value *value;
-> } btf_map SEC(".maps") = {
->         .type = BPF_MAP_TYPE_ARRAY,
->         .max_entries = 16,
-> };
->
-> This will define BPF ARRAY map 'btf_map' with 16 elements. The key will
-> be of type int and thus key size will be 4 bytes. The value is struct
-> my_value of size 12 bytes. This map can be used from C code exactly the
-> same as with existing maps defined through struct bpf_map_def.
->
-> Here's an example of STACKMAP definition (which currently disallows BTF type
-> IDs for key/value):
->
-> struct {
->         __u32 type;
->         __u32 max_entries;
->         __u32 map_flags;
->         __u32 key_size;
->         __u32 value_size;
-> } stackmap SEC(".maps") = {
->         .type = BPF_MAP_TYPE_STACK_TRACE,
->         .max_entries = 128,
->         .map_flags = BPF_F_STACK_BUILD_ID,
->         .key_size = sizeof(__u32),
->         .value_size = PERF_MAX_STACK_DEPTH * sizeof(struct bpf_stack_build_id),
-> };
->
-> This approach is naturally extended to support map-in-map, by making a value
-> field to be another struct that describes inner map. This feature is not
-> implemented yet. It's also possible to incrementally add features like pinning
-> with full backwards and forward compatibility.
-
-So I wanted to elaborate a bit more on what I'm planning to add, once
-we agree on the approach. Those are the features that are currently
-supported by iproute2 loader and here's how I was thinking to support
-them with BTF-defined maps. Once all this is implemented, there should
-be just a mechanical field rename to switch BPF apps relying on
-iproute2 loader (size_key -> key_size, size_value -> value_size,
-max_elem -> max_entries) for most maps. For more complicated cases
-described below, I hope we can agree it's easy to migrate and end
-result might even look better (because more explicit).
-
-1. Pinning. This one is simple:
-  - add pinning attribute, that will either be "no pinning", "global
-pinning", "object-scope pinning".
-  - by default pinning root will be "/sys/fs/bpf", but one will be
-able to override this per-object using extra options (so that
-"/sys/fs/bpf/tc" can be specified).
-
-2. Map-in-map declaration:
-
-As outlined at LSF/MM, we can extend value type to be another map
-definition, specifying a prototype for inner map:
-
-struct {
-        int type;
-        int max_entries;
-        struct outer_key *key;
-        struct { /* this is definition of inner map */
-               int type;
-               int max_entries;
-               struct inner_key *key;
-               struct inner_value *value;
-        } value;
-} my_hash_of_arrays BPF_MAP = {
-        .type = BPF_MAP_TYPE_HASH_OF_MAPS,
-        .max_entries = 1024,
-        .value = {
-                .type = BPF_MAP_TYPE_ARRAY,
-                .max_entries = 64,
-        },
-};
-
-This would declare a hash_of_maps, where inner maps are arrays of 64
-elements each. Notice, that struct defining inner map can be declared
-outside and shared with other maps:
-
-struct inner_map_t {
-        int type;
-        int max_entries;
-        struct inner_key *key;
-        struct inner_value *value;
-};
-
-struct {
-        int type;
-        int max_entries;
-        struct outer_key *key;
-        struct inner_map_t value;
-} my_hash_of_arrays BPF_MAP = {
-        .type = BPF_MAP_TYPE_HASH_OF_MAPS,
-        .max_entries = 1024,
-        .value = {
-                .type = BPF_MAP_TYPE_ARRAY,
-                .max_entries = 64,
-        },
-};
-
-
-3. Initialization of prog array. Iproute2 supports a convention-driven
-initialization of BPF_MAP_TYPE_PROG_ARRAY using special section names
-(wrapped into __section_tail(ID, IDX)):
-
-struct bpf_elf_map SEC("maps") POLICY_CALL_MAP = {
-        .type = BPF_MAP_TYPE_PROG_ARRAY,
-        .id = MAP_ID,
-        .size_key = sizeof(__u32),
-        .size_value = sizeof(__u32),
-        .max_elem = 16,
-};
-
-__section_tail(MAP_ID, MAP_IDX) int handle_policy(struct __sk_buff *skb)
-{
-        ...
-}
-
-For each such program, iproute2 will put its FD (for later
-tail-calling) into a corresponding MAP with id == MAP_ID at index
-MAP_IDX.
-
-Here's how I see this supported in BTF-defined maps case.
-
-typedef int (* skbuff_tailcall_fn)(struct __sk_buff *);
-
-struct {
-        int type;
-        int max_entries;
-        int *key;
-        skbuff_tailcall_fb value[];
-} POLICY_CALL_MAP SEC(".maps") = {
-        .type = BPF_MAP_TYPE_PROG_ARRAY,
-        .max_entries = 16,
-        .value = {
-                &handle_policy,
-                NULL,
-                &handle_some_other_policy,
-        },
-};
-
-libbpf loader will greate BPF_MAP_TYPE_PROG_ARRAY map with 16 elements
-and will initialize first and third entries with FDs of handle_policy
-and handle_some_other_policy programs. As an added nice bonus,
-compiler should also warn on signature mismatch. ;)
-
-
-4. We can extend this idea into ARRAY_OF_MAPS initialization. This is
-currently implemented in iproute2 using .id, .inner_id, and .inner_idx
-fields.
-
-struct inner_map_t {
-        int type;
-        int max_entries;
-        struct inner_key *key;
-        struct inner_value *value;
-};
-
-struct inner_map_t map1 = {...};
-struct inner_map_t map2 = {...};
-
-struct {
-        int type;
-        int max_entries;
-        struct outer_key *key;
-        struct inner_map_t value[];
-} my_hash_of_arrays BPF_MAP = {
-        .type = BPF_MAP_TYPE_ARRAY_OF_MAPS,
-        .max_entries = 2,
-        .value = {
-                &map1,
-                &map2,
-        },
-};
-
-
-There are a bunch of slight variations we might consider (e.g., value
-vs values, when there is inline initialization, is it an array of
-structs or an array of pointers to structs, etc), but the overall idea
-stays the same.
-
-So when all this is implemented and supported, from looking at Cilium,
-it seems like conversion of iproute2 to libbpf should be rather simple
-and painless. I'd be curious to hear what Cilium folks are thinking
-about that.
-
-
-
->
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
+T24gTW9uLCAyMDE5LTA2LTAzIGF0IDE1OjIyICswMjAwLCBEYW5pZWwgQm9ya21hbm4gd3JvdGU6
+DQo+IE9uIDA2LzAzLzIwMTkgMDM6MDggUE0sIERhbmllbCBCb3JrbWFubiB3cm90ZToNCj4gPiBP
+biAwNi8wMS8yMDE5IDEyOjM3IEFNLCBNYXR0IE11bGxpbnMgd3JvdGU6DQo+ID4gPiBJdCBpcyBw
+b3NzaWJsZSB0aGF0IGEgQlBGIHByb2dyYW0gY2FuIGJlIGNhbGxlZCB3aGlsZSBhbm90aGVyIEJQ
+Rg0KPiA+ID4gcHJvZ3JhbSBpcyBleGVjdXRpbmcgYnBmX3BlcmZfZXZlbnRfb3V0cHV0LiAgVGhp
+cyBoYXMgYmVlbiBvYnNlcnZlZCB3aXRoDQo+ID4gPiBJL08gY29tcGxldGlvbiBvY2N1cnJpbmcg
+YXMgYSByZXN1bHQgb2YgYW4gaW50ZXJydXB0Og0KPiA+ID4gDQo+ID4gPiAJYnBmX3Byb2dfMjQ3
+ZmQxMzQxY2RkYWVhNF90cmFjZV9yZXFfZW5kKzB4OGQ3LzB4MTAwMA0KPiA+ID4gCT8gdHJhY2Vf
+Y2FsbF9icGYrMHg4Mi8weDEwMA0KPiA+ID4gCT8gc2NoX2RpcmVjdF94bWl0KzB4ZTIvMHgyMzAN
+Cj4gPiA+IAk/IGJsa19tcV9lbmRfcmVxdWVzdCsweDEvMHgxMDANCj4gPiA+IAk/IGJsa19tcV9l
+bmRfcmVxdWVzdCsweDUvMHgxMDANCj4gPiA+IAk/IGtwcm9iZV9wZXJmX2Z1bmMrMHgxOWIvMHgy
+NDANCj4gPiA+IAk/IF9fcWRpc2NfcnVuKzB4ODYvMHg1MjANCj4gPiA+IAk/IGJsa19tcV9lbmRf
+cmVxdWVzdCsweDEvMHgxMDANCj4gPiA+IAk/IGJsa19tcV9lbmRfcmVxdWVzdCsweDUvMHgxMDAN
+Cj4gPiA+IAk/IGtwcm9iZV9mdHJhY2VfaGFuZGxlcisweDkwLzB4ZjANCj4gPiA+IAk/IGZ0cmFj
+ZV9vcHNfYXNzaXN0X2Z1bmMrMHg2ZS8weGUwDQo+ID4gPiAJPyBpcDZfaW5wdXRfZmluaXNoKzB4
+YmYvMHg0NjANCj4gPiA+IAk/IDB4ZmZmZmZmZmZhMDFlODBiZg0KPiA+ID4gCT8gbmJkX2RiZ19m
+bGFnc19zaG93KzB4YzAvMHhjMCBbbmJkXQ0KPiA+ID4gCT8gYmxrZGV2X2lzc3VlX3plcm9vdXQr
+MHgyMDAvMHgyMDANCj4gPiA+IAk/IGJsa19tcV9lbmRfcmVxdWVzdCsweDEvMHgxMDANCj4gPiA+
+IAk/IGJsa19tcV9lbmRfcmVxdWVzdCsweDUvMHgxMDANCj4gPiA+IAk/IGZsdXNoX3NtcF9jYWxs
+X2Z1bmN0aW9uX3F1ZXVlKzB4NmMvMHhlMA0KPiA+ID4gCT8gc21wX2NhbGxfZnVuY3Rpb25fc2lu
+Z2xlX2ludGVycnVwdCsweDMyLzB4YzANCj4gPiA+IAk/IGNhbGxfZnVuY3Rpb25fc2luZ2xlX2lu
+dGVycnVwdCsweGYvMHgyMA0KPiA+ID4gCT8gY2FsbF9mdW5jdGlvbl9zaW5nbGVfaW50ZXJydXB0
+KzB4YS8weDIwDQo+ID4gPiAJPyBzd2lvdGxiX21hcF9wYWdlKzB4MTQwLzB4MTQwDQo+ID4gPiAJ
+PyByZWZjb3VudF9zdWJfYW5kX3Rlc3QrMHgxYS8weDUwDQo+ID4gPiAJPyB0Y3Bfd2ZyZWUrMHgy
+MC8weGYwDQo+ID4gPiAJPyBza2JfcmVsZWFzZV9oZWFkX3N0YXRlKzB4NjIvMHhjMA0KPiA+ID4g
+CT8gc2tiX3JlbGVhc2VfYWxsKzB4ZS8weDMwDQo+ID4gPiAJPyBuYXBpX2NvbnN1bWVfc2tiKzB4
+YjUvMHgxMDANCj4gPiA+IAk/IG1seDVlX3BvbGxfdHhfY3ErMHgxZGYvMHg0ZTANCj4gPiA+IAk/
+IG1seDVlX3BvbGxfdHhfY3ErMHgzOGMvMHg0ZTANCj4gPiA+IAk/IG1seDVlX25hcGlfcG9sbCsw
+eDU4LzB4YzMwDQo+ID4gPiAJPyBtbHg1ZV9uYXBpX3BvbGwrMHgyMzIvMHhjMzANCj4gPiA+IAk/
+IG5ldF9yeF9hY3Rpb24rMHgxMjgvMHgzNDANCj4gPiA+IAk/IF9fZG9fc29mdGlycSsweGQ0LzB4
+MmFkDQo+ID4gPiAJPyBpcnFfZXhpdCsweGE1LzB4YjANCj4gPiA+IAk/IGRvX0lSUSsweDdkLzB4
+YzANCj4gPiA+IAk/IGNvbW1vbl9pbnRlcnJ1cHQrMHhmLzB4Zg0KPiA+ID4gCTwvSVJRPg0KPiA+
+ID4gCT8gX19yYl9mcmVlX2F1eCsweGYwLzB4ZjANCj4gPiA+IAk/IHBlcmZfb3V0cHV0X3NhbXBs
+ZSsweDI4LzB4N2IwDQo+ID4gPiAJPyBwZXJmX3ByZXBhcmVfc2FtcGxlKzB4NTQvMHg0YTANCj4g
+PiA+IAk/IHBlcmZfZXZlbnRfb3V0cHV0KzB4NDMvMHg2MA0KPiA+ID4gCT8gYnBmX3BlcmZfZXZl
+bnRfb3V0cHV0X3Jhd190cCsweDE1Zi8weDE4MA0KPiA+ID4gCT8gYmxrX21xX3N0YXJ0X3JlcXVl
+c3QrMHgxLzB4MTIwDQo+ID4gPiAJPyBicGZfcHJvZ180MTFhNjRhNzA2ZmM2MDQ0X3Nob3VsZF90
+cmFjZSsweGFkNC8weDEwMDANCj4gPiA+IAk/IGJwZl90cmFjZV9ydW4zKzB4MmMvMHg4MA0KPiA+
+ID4gCT8gbmJkX3NlbmRfY21kKzB4NGMyLzB4NjkwIFtuYmRdDQo+ID4gPiANCj4gPiA+IFRoaXMg
+YWxzbyBjYW5ub3QgYmUgYWxsZXZpYXRlZCBieSBmdXJ0aGVyIHNwbGl0dGluZyB0aGUgcGVyLWNw
+dQ0KPiA+ID4gcGVyZl9zYW1wbGVfZGF0YSBzdHJ1Y3RzIChhcyBpbiBjb21taXQgMjgzY2E1MjZh
+OWJkICgiYnBmOiBmaXgNCj4gPiA+IGNvcnJ1cHRpb24gb24gY29uY3VycmVudCBwZXJmX2V2ZW50
+X291dHB1dCBjYWxscyIpKSwgYXMgYSByYXdfdHAgY291bGQNCj4gPiA+IGJlIGF0dGFjaGVkIHRv
+IHRoZSBibG9jazpibG9ja19ycV9jb21wbGV0ZSB0cmFjZXBvaW50IGFuZCBleGVjdXRlIGR1cmlu
+Zw0KPiA+ID4gYW5vdGhlciByYXdfdHAuICBJbnN0ZWFkLCBrZWVwIGEgcHJlLWFsbG9jYXRlZCBw
+ZXJmX3NhbXBsZV9kYXRhDQo+ID4gPiBzdHJ1Y3R1cmUgcGVyIHBlcmZfZXZlbnRfYXJyYXkgZWxl
+bWVudCBhbmQgZmFpbCBhIGJwZl9wZXJmX2V2ZW50X291dHB1dA0KPiA+ID4gaWYgdGhhdCBlbGVt
+ZW50IGlzIGNvbmN1cnJlbnRseSBiZWluZyB1c2VkLg0KPiA+ID4gDQo+ID4gPiBGaXhlczogMjBi
+OWQ3YWM0ODUyICgiYnBmOiBhdm9pZCBleGNlc3NpdmUgc3RhY2sgdXNhZ2UgZm9yIHBlcmZfc2Ft
+cGxlX2RhdGEiKQ0KPiA+ID4gU2lnbmVkLW9mZi1ieTogTWF0dCBNdWxsaW5zIDxtbXVsbGluc0Bm
+Yi5jb20+DQo+ID4gDQo+ID4gWW91IGRvIG5vdCBlbGFib3JhdGUgd2h5IGlzIHRoaXMgbmVlZGVk
+IGZvciBhbGwgdGhlIG5ldHdvcmtpbmcgcHJvZ3JhbXMgdGhhdA0KPiA+IHVzZSB0aGlzIGZ1bmN0
+aW9uYWxpdHkuIFRoZSBicGZfbWlzY19zZCBzaG91bGQgdGhlcmVmb3JlIGJlIGtlcHQgYXMtaXMu
+IFRoZXJlDQo+ID4gY2Fubm90IGJlIG5lc3RlZCBvY2N1cnJlbmNlcyB0aGVyZSAoeGRwLCB0YyBp
+bmdyZXNzL2VncmVzcykuIFBsZWFzZSBleHBsYWluIHdoeQ0KPiA+IG5vbi10cmFjaW5nIHNob3Vs
+ZCBiZSBhZmZlY3RlZCBoZXJlLi4uDQoNCklmIHRoZXNlIGFyZSBpbnZhcmlhYmx5IG5vbi1uZXN0
+ZWQsIEkgY2FuIGVhc2lseSBrZWVwIGJwZl9taXNjX3NkIHdoZW4NCkkgcmVzdWJtaXQuICBUaGVy
+ZSB3YXMgbm8gdGVjaG5pY2FsIHJlYXNvbiBvdGhlciB0aGFuIGtlZXBpbmcgdGhlIHR3bw0KY29k
+ZXBhdGhzIGFzIHNpbWlsYXIgYXMgcG9zc2libGUuDQoNCldoYXQgcmVzb3VyY2UgZ2l2ZXMgeW91
+IHdvcnJ5IGFib3V0IGRvaW5nIHRoaXMgZm9yIHRoZSBuZXR3b3JraW5nDQpjb2RlcGF0aD8NCg0K
+PiBBc2lkZSBmcm9tIHRoYXQgaXQncyBhbHNvIHJlYWxseSBiYWQgdG8gbWlzcyBldmVudHMgbGlr
+ZSB0aGlzIGFzIGV4cG9ydGluZw0KPiB0aHJvdWdoIHJiIGlzIGNyaXRpY2FsLiBXaHkgY2FuJ3Qg
+eW91IGhhdmUgYSBwZXItQ1BVIGNvdW50ZXIgdGhhdCBzZWxlY3RzIGENCj4gc2FtcGxlIGRhdGEg
+Y29udGV4dCBiYXNlZCBvbiBuZXN0aW5nIGxldmVsIGluIHRyYWNpbmc/IChJIGRvbid0IHNlZSBh
+IGRpc2N1c3Npb24NCj4gb2YgdGhpcyBpbiB5b3VyIGNvbW1pdCBtZXNzYWdlLikNCg0KVGhpcyBj
+aGFuZ2Ugd291bGQgb25seSBkcm9wIG1lc3NhZ2VzIGlmIHRoZSBzYW1lIHBlcmZfZXZlbnQgaXMN
+CmF0dGVtcHRlZCB0byBiZSB1c2VkIHJlY3Vyc2l2ZWx5IChpLmUuIHRoZSBzYW1lIENQVSBvbiB0
+aGUgc2FtZQ0KUEVSRl9FVkVOVF9BUlJBWSBtYXAsIGFzIEkgaGF2ZW4ndCBvYnNlcnZlZCBhbnl0
+aGluZyB1c2UgaW5kZXggIT0NCkJQRl9GX0NVUlJFTlRfQ1BVIGluIHRlc3RpbmcpLg0KDQpJJ2xs
+IHRyeSB0byBhY2NvbXBsaXNoIHRoZSBzYW1lIHdpdGggYSBwZXJjcHUgbmVzdGluZyBsZXZlbCBh
+bmQNCmFsbG9jYXRpbmcgMiBvciAzIHBlcmZfc2FtcGxlX2RhdGEgcGVyIGNwdS4gIEkgdGhpbmsg
+dGhhdCdsbCBzb2x2ZSB0aGUNCnNhbWUgcHJvYmxlbSAtLSBhIGxvY2FsIHBhdGNoIGtlZXBpbmcg
+dHJhY2sgb2YgdGhlIG5lc3RpbmcgbGV2ZWwgaXMgaG93DQpJIGdvdCB0aGUgYWJvdmUgc3RhY2sg
+dHJhY2UsIHRvby4NCg==
