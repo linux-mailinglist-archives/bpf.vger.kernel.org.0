@@ -2,130 +2,262 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4D133A08
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2019 23:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B96433A56
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2019 23:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbfFCVor (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Jun 2019 17:44:47 -0400
-Received: from mail-eopbgr150089.outbound.protection.outlook.com ([40.107.15.89]:55545
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726101AbfFCVor (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Jun 2019 17:44:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=olU0hpppv+S2hVIC6lK11fYUdJNDRVVHO4z+Odr29pg=;
- b=qNhezd5k+uhn32bJp30rmtqdjat5opN8qG4olYgZ/vW3w62QLK6hVpAm/JIp3qIC7OoszhR15/0cQjIY/sZrm0C+YNG0yr1nKOQuKD4aO32VDzzT7PyCWtlInZ0ZdIHxRI9GQaniXdb2gc+QQQlfAJIc2S+A/vCX8V7hqIjwhHQ=
-Received: from DB8PR05MB5898.eurprd05.prod.outlook.com (20.179.9.32) by
- DB8PR05MB5996.eurprd05.prod.outlook.com (20.179.10.88) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1943.22; Mon, 3 Jun 2019 21:20:30 +0000
-Received: from DB8PR05MB5898.eurprd05.prod.outlook.com
- ([fe80::4008:6417:32d4:6031]) by DB8PR05MB5898.eurprd05.prod.outlook.com
- ([fe80::4008:6417:32d4:6031%5]) with mapi id 15.20.1943.018; Mon, 3 Jun 2019
- 21:20:30 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
-        "bjorn.topel@gmail.com" <bjorn.topel@gmail.com>
-CC:     "toke@redhat.com" <toke@redhat.com>,
-        "magnus.karlsson@intel.com" <magnus.karlsson@intel.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "brouer@redhat.com" <brouer@redhat.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "bjorn.topel@intel.com" <bjorn.topel@intel.com>
-Subject: Re: [PATCH bpf-next v2 1/2] net: xdp: refactor XDP_QUERY_PROG{,_HW}
- to netdev
-Thread-Topic: [PATCH bpf-next v2 1/2] net: xdp: refactor XDP_QUERY_PROG{,_HW}
- to netdev
-Thread-Index: AQHVF5UyingDVomLXU+x48iNqvXUO6aFnAaAgAGZH4CAAnJWAIAAza8A
-Date:   Mon, 3 Jun 2019 21:20:30 +0000
-Message-ID: <f7e9b1c8f358a4bb83f01ab76dcc95195083e2bf.camel@mellanox.com>
-References: <20190531094215.3729-1-bjorn.topel@gmail.com>
-         <20190531094215.3729-2-bjorn.topel@gmail.com>
-         <b0a9c3b198bdefd145c34e52aa89d33aa502aaf5.camel@mellanox.com>
-         <20190601124233.5a130838@cakuba.netronome.com>
-         <CAJ+HfNjbALzf4SaopKe3pA4dV6n9m30doai_CLEDB9XG2RzjOg@mail.gmail.com>
-In-Reply-To: <CAJ+HfNjbALzf4SaopKe3pA4dV6n9m30doai_CLEDB9XG2RzjOg@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.32.2 (3.32.2-1.fc30) 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
-x-originating-ip: [209.116.155.178]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 598706f8-31f7-4d89-1bf4-08d6e8694e88
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:DB8PR05MB5996;
-x-ms-traffictypediagnostic: DB8PR05MB5996:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <DB8PR05MB59967A01A98576B253F39750BE140@DB8PR05MB5996.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 0057EE387C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(39860400002)(346002)(136003)(376002)(366004)(396003)(189003)(199004)(86362001)(4326008)(186003)(76176011)(102836004)(6506007)(66574012)(2616005)(99286004)(5024004)(256004)(6436002)(5660300002)(71200400001)(446003)(71190400001)(26005)(118296001)(6246003)(6486002)(6116002)(316002)(3846002)(66066001)(53936002)(8936002)(6512007)(486006)(966005)(11346002)(25786009)(229853002)(508600001)(6306002)(58126008)(2906002)(68736007)(8676002)(81166006)(81156014)(66446008)(66946007)(73956011)(36756003)(476003)(54906003)(64756008)(14454004)(66476007)(2501003)(305945005)(7416002)(7736002)(110136005)(66556008)(76116006)(91956017);DIR:OUT;SFP:1101;SCL:1;SRVR:DB8PR05MB5996;H:DB8PR05MB5898.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: Ns7BZ+H6Kl5akERsipUAI03hpjEeDb+Ib2kc15M90ct3ZkUf8qca7m2CqTKYxpoGL0QpJHQFyceds6rs5dNBUfJoLqPNcC51fXg6X/Wu6GCx/8reeNRtdjZoR6PDGjJQ2V8+yTr/5hcEHW3aFvbxxxyWVLn/prLR535dZ8QbkY03jfFZHVqaH9Eq1sw8NWPDZi2xV8kP+eSfWFtcx0IJzkLwZoPY4OKXSYNBby5qWgwKBHO68R0+tSQayquRQK8J2clDIs7MzBiu12oEf1HlNwM4DVphDHvgb7eURS/WpGx5pFtmcIvMIITaooVKw2NgzrBM64GeNQLyW2iONfNLECfMLkDLFklOF3dhF9NykX8LExOVvhxM9NLJCrnnLPMKcgFITvi5wNdetl923bP00mfAyD0yEmqxOkAd5tstsWY=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <EA54FFF36169E8478822E5964402D355@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726303AbfFCVzG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Jun 2019 17:55:06 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:39523 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726049AbfFCVzG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Jun 2019 17:55:06 -0400
+Received: by mail-qt1-f193.google.com with SMTP id i34so11379862qta.6;
+        Mon, 03 Jun 2019 14:55:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g62VoFh1TWt0BaxB4CVTV/laUlpe2RcekLLgFMDtDuU=;
+        b=aO/GsOEQrHp+Wg7huqZUjr8yY9wGXvoD0XGdXlHf2taoXMGORlwPHa1UMcLBfDBYNK
+         C49S8w9aN5kyzTP2v6MYsELhnDoCuRlky5zzFN0G5+ULoAPvnnsHd8McYjshCybiHbUR
+         fzRCAU0dZUn0axS40akc6FAexlmzg2Q6kmudw8s3p5xZ25zkU0LawnIVvsFGIM5z+8T6
+         oCj6MYQQR0ve/iaRHiu4at5ACpey+GNUSLjNIjgECn8dmydbvlxf0JIIh5l4UHG3/94N
+         JgjXALQdLoKC+C0jsz/oLNzNTu/HPLvNDM06QdAyv5KKPbs41LUaGx7a4nU4OJ+/R0RV
+         jqNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g62VoFh1TWt0BaxB4CVTV/laUlpe2RcekLLgFMDtDuU=;
+        b=gusSTpmdhPjV/qlsSlSyrVemyKIhHri2ZFvVZcEHFWMpMFFcykBnvloUN/xi6c66H2
+         77eOQl8NeFFhl4j+0X0DRHU/MTJyA1vTHk6kQRulaLh6j8/YRPqQtjp69UwXGqoZcZom
+         ugdu1THSKfUfd5JpcNQS6wOyy8PqKnN/dHPH85AqCMMADdovFyHUDD+cqb4WsEuEkfEA
+         QDfrC2iBZWbFH47jjPUMwNgF+5dewyPtuawfJVNwS/hvF9byIvwttpXETnTAuJLqIZ+r
+         I7XaXc5Q47EnZVetPj/hohYGY6Rnpswi5KWvo1jg1rd0T9XxZoZFcJj8L+N3YfYxvDwb
+         1iWg==
+X-Gm-Message-State: APjAAAXX8/mQ7danjP1CubYpv68xJnjYjh3vTZdJpvzX/DPkI1KHqDXc
+        8v1x5+fm8Z4hXTirMRqfjLZU7AhDIx9JP9JcbcY=
+X-Google-Smtp-Source: APXvYqyCuhHQOpDQKWdingGhf+mak19FKuBjYFTSl/OSd7LY7KJ4rlrgS3mjU3zDZlny1vPxv7nr1CvkrUrTbKeruEw=
+X-Received: by 2002:ac8:1087:: with SMTP id a7mr13753282qtj.141.1559598904733;
+ Mon, 03 Jun 2019 14:55:04 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 598706f8-31f7-4d89-1bf4-08d6e8694e88
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2019 21:20:30.4787
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: saeedm@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR05MB5996
+References: <20190531202132.379386-1-andriin@fb.com> <20190531202132.379386-7-andriin@fb.com>
+ <20190531212835.GA31612@mini-arch> <CAEf4Bza38VEh9NWTLEReAR_J0eqjsvH1a2T-0AeWqDZpE8YPfA@mail.gmail.com>
+ <20190602173334.18e68d66@cakuba.netronome.com>
+In-Reply-To: <20190602173334.18e68d66@cakuba.netronome.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 3 Jun 2019 14:54:53 -0700
+Message-ID: <CAEf4BzZ9vYDbdeZyhj_CQpqRUE_BLO9dbXRvnBNaikoO9OpVsw@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 6/8] libbpf: allow specifying map definitions
+ using BTF
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     Stanislav Fomichev <sdf@fomichev.me>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gTW9uLCAyMDE5LTA2LTAzIGF0IDExOjA0ICswMjAwLCBCasO2cm4gVMO2cGVsIHdyb3RlOg0K
-PiBPbiBTYXQsIDEgSnVuIDIwMTkgYXQgMjE6NDIsIEpha3ViIEtpY2luc2tpDQo+IDxqYWt1Yi5r
-aWNpbnNraUBuZXRyb25vbWUuY29tPiB3cm90ZToNCj4gPiBPbiBGcmksIDMxIE1heSAyMDE5IDE5
-OjE4OjE3ICswMDAwLCBTYWVlZCBNYWhhbWVlZCB3cm90ZToNCj4gPiA+IE9uIEZyaSwgMjAxOS0w
-NS0zMSBhdCAxMTo0MiArMDIwMCwgQmrDtnJuIFTDtnBlbCB3cm90ZToNCj4gPiA+ID4gRnJvbTog
-QmrDtnJuIFTDtnBlbCA8Ympvcm4udG9wZWxAaW50ZWwuY29tPg0KPiA+ID4gPiANCj4gPiA+ID4g
-QWxsIFhEUCBjYXBhYmxlIGRyaXZlcnMgbmVlZCB0byBpbXBsZW1lbnQgdGhlDQo+ID4gPiA+IFhE
-UF9RVUVSWV9QUk9HeyxfSFd9DQo+ID4gPiA+IGNvbW1hbmQgb2YgbmRvX2JwZi4gVGhlIHF1ZXJ5
-IGNvZGUgaXMgZmFpcmx5IGdlbmVyaWMuIFRoaXMNCj4gPiA+ID4gY29tbWl0DQo+ID4gPiA+IHJl
-ZmFjdG9ycyB0aGUgcXVlcnkgY29kZSB1cCBmcm9tIHRoZSBkcml2ZXJzIHRvIHRoZSBuZXRkZXYN
-Cj4gPiA+ID4gbGV2ZWwuDQo+ID4gPiA+IA0KPiA+ID4gPiBUaGUgc3RydWN0IG5ldF9kZXZpY2Ug
-aGFzIGdhaW5lZCB0d28gbmV3IG1lbWJlcnM6IHhkcF9wcm9nX2h3DQo+ID4gPiA+IGFuZA0KPiA+
-ID4gPiB4ZHBfZmxhZ3MuIFRoZSBmb3JtZXIgaXMgdGhlIG9mZmxvYWRlZCBYRFAgcHJvZ3JhbSwg
-aWYgYW55LCBhbmQNCj4gPiA+ID4gdGhlDQo+ID4gPiA+IGxhdHRlciB0cmFja3MgdGhlIGZsYWdz
-IHRoYXQgdGhlIHN1cHBsaWVkIHdoZW4gYXR0YWNoaW5nIHRoZQ0KPiA+ID4gPiBYRFANCj4gPiA+
-ID4gcHJvZ3JhbS4gVGhlIGZsYWdzIG9ubHkgYXBwbHkgdG8gU0tCX01PREUgb3IgRFJWX01PREUs
-IG5vdA0KPiA+ID4gPiBIV19NT0RFLg0KPiA+ID4gPiANCj4gPiA+ID4gVGhlIHhkcF9wcm9nIG1l
-bWJlciwgcHJldmlvdXNseSBvbmx5IHVzZWQgZm9yIFNLQl9NT0RFLCBpcw0KPiA+ID4gPiBzaGFy
-ZWQNCj4gPiA+ID4gd2l0aA0KPiA+ID4gPiBEUlZfTU9ERS4gVGhpcyBpcyBPSywgZHVlIHRvIHRo
-ZSBmYWN0IHRoYXQgU0tCX01PREUgYW5kDQo+ID4gPiA+IERSVl9NT0RFIGFyZQ0KPiA+ID4gPiBt
-dXR1YWxseSBleGNsdXNpdmUuIFRvIGRpZmZlcmVudGlhdGUgYmV0d2VlbiB0aGUgdHdvIG1vZGVz
-LCBhDQo+ID4gPiA+IG5ldw0KPiA+ID4gPiBpbnRlcm5hbCBmbGFnIGlzIGludHJvZHVjZWQgYXMg
-d2VsbC4NCj4gPiA+IA0KPiA+ID4gSnVzdCB0aGlua2luZyBvdXQgbG91ZCwgd2h5IGNhbid0IHdl
-IGFsbG93IGFueSBjb21iaW5hdGlvbiBvZg0KPiA+ID4gSFcvRFJWL1NLQiBtb2Rlcz8gdGhleSBh
-cmUgdG90YWxseSBkaWZmZXJlbnQgYXR0YWNoIHBvaW50cyBpbiBhDQo+ID4gPiB0b3RhbGx5DQo+
-ID4gPiBkaWZmZXJlbnQgY2hlY2twb2ludHMgaW4gYSBmcmFtZSBsaWZlIGN5Y2xlLg0KPiA+IA0K
-PiA+IEZXSVcgc2VlIE1lc3NhZ2UtSUQ6IDwyMDE5MDIwMTA4MDIzNi40NDZkODRkNEByZWRoYXQu
-Y29tPg0KPiA+IA0KPiANCj4gSSd2ZSBhbHdheXMgc2VlbiB0aGUgU0tCLW1vZGUgYXMgc29tZXRo
-aW5nIHRoYXQgd2lsbCBldmVudHVhbGx5IGJlDQo+IHJlbW92ZWQuDQo+IA0KDQpJIGRvbid0IHRo
-aW5rIHNvLCB3ZSBhcmUgdG9vIGRlZXAgaW50byBTS0ItbW9kZS4NCg0KPiBDbGlja2FibGUgbGlu
-azoNCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbmV0ZGV2LzIwMTkwMjAxMDgwMjM2LjQ0NmQ4
-NGQ0QHJlZGhhdC5jb20vIDotDQo+IFANCj4gDQoNClNvIHdlIGFyZSBhbGwgaGFuZ2luZyBvbiBK
-ZXNwZXIncyByZWZhY3RvcmluZyBpZGVhcyB0aGF0IGFyZSBub3QNCmdldHRpbmcgYW55IHByaW9y
-aXR5IGZvciBub3cgOikuDQoNCg0KPiA+ID4gRG93biB0aGUgcm9hZCBpIHRoaW5rIHdlIHdpbGwg
-dXRpbGl6ZSB0aGlzIGZhY3QgYW5kIHN0YXJ0DQo+ID4gPiBpbnRyb2R1Y2luZw0KPiA+ID4gU0tC
-IGhlbHBlcnMgZm9yIFNLQiBtb2RlIGFuZCBkcml2ZXIgaGVscGVycyBmb3IgRFJWIG1vZGUuLg0K
-PiA+IA0KPiA+IEFueSByZWFzb24gd2h5IHdlIHdvdWxkIHdhbnQgdGhlIGV4dHJhIGNvbXBsZXhp
-dHk/ICBUaGVyZSBpcw0KPiA+IGNsc19icGYNCj4gPiBpZiBzb21lb25lIHdhbnRzIHNrYiBmZWF0
-dXJlcyBhZnRlciBhbGwuLg0KDQpEb25ubywgU0tCIG1vZGUgaXMgZWFybGllciBpbiB0aGUgc3Rh
-Y2sgbWF5YmUgLi4gDQogDQoNCg==
+On Sun, Jun 2, 2019 at 5:33 PM Jakub Kicinski
+<jakub.kicinski@netronome.com> wrote:
+>
+> On Fri, 31 May 2019 15:58:41 -0700, Andrii Nakryiko wrote:
+> > On Fri, May 31, 2019 at 2:28 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> > > On 05/31, Andrii Nakryiko wrote:
+> > > > This patch adds support for a new way to define BPF maps. It relies on
+> > > > BTF to describe mandatory and optional attributes of a map, as well as
+> > > > captures type information of key and value naturally. This eliminates
+> > > > the need for BPF_ANNOTATE_KV_PAIR hack and ensures key/value sizes are
+> > > > always in sync with the key/value type.
+> > > My 2c: this is too magical and relies on me knowing the expected fields.
+> > > (also, the compiler won't be able to help with the misspellings).
+>
+> I have mixed feelings, too.  Especially the key and value fields are
+> very non-idiomatic for C :(  They never hold any value or data, while
+> the other fields do.  That feels so awkward.  I'm no compiler expert,
+> but even something like:
+>
+> struct map_def {
+>         void *key_type_ref;
+> } mamap = {
+>         .key_type_ref = &(struct key_xyz){},
+> };
+>
+> Would feel like less of a hack to me, and then map_def doesn't have to
+> be different for every map.  But yea, IDK if it's easy to (a) resolve
+> the type of what key_type points to, or (b) how to do this for scalar
+> types.
+
+The syntax for scalar would be &(int){0}, that compiles.
+
+But there are a bunch of things that make it infeasible. So let's take
+an example and see what's happening:
+
+/* huge struct */
+struct custom {int a; int b; int c; int d[1000000];};
+
+struct {
+        void *key;
+        void *value;
+} new_map = {
+        .key = &(int){0},
+        .value = &(struct custom){},
+};
+
+If we dump BTF, here's what we get:
+
+$ bpftool btf dump file tail_call_test.o
+[1] FUNC_PROTO '(anon)' ret_type_id=2 vlen=0
+[2] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+[3] FUNC 'main' type_id=1
+[4] VAR '.compoundliteral' type_id=0, linkage=static
+[5] VAR '.compoundliteral.1' type_id=0, linkage=static
+[6] STRUCT '(anon)' size=24 vlen=3
+        'type' type_id=2 bits_offset=0
+        'key' type_id=7 bits_offset=64
+        'value' type_id=7 bits_offset=128
+[7] PTR '(anon)' type_id=0
+[8] VAR 'new_map' type_id=6, linkage=global-alloc
+[9] DATASEC '.bss' size=0 vlen=2
+        type_id=4 offset=0 size=4
+        type_id=5 offset=4 size=4000012
+[10] DATASEC '.maps' size=0 vlen=1
+        type_id=8 offset=0 size=24
+
+So notice how we get two .bss entries, one for 4 bytes (for key, var
+'compoundliteral') and another for 4MB (for huge struct, var
+'.compoundliteral.1'). So while this won't increase the size of ELF,
+it will force a huge .bss (and corresponding global data map) to be
+created, which is no good.
+
+Also, notice how there is no type information associated with [4] and
+[5] vars, they are just of type void. There is no type information
+about struct custom at all, though it might be (?) possible to fix it
+by modifying compiler to preserve more type information.
+
+So while the second one is a technical hurdle, which we might overcome
+(not sure, actually), the issue with big .BSS is a showstopper for
+some applications.
+
+To eliminate .BSS issue, we'd need something like this to capture type
+information:
+
+struct {
+        void *key;
+        void *value;
+} new_map = {
+        .key = (int)0,
+        .value = (struct custom *)0,
+};
+
+But that doesn't capture any type information for those type casts at
+all, so more compiler work (if at all possible).
+
+Which is why I think capturing type information using a standard
+non-convoluted C way/syntax using a field declaration is the most
+reliable, simple, and clean way. You do intialize key/value, it's just
+a NULL pointer to corresponding type:
+
+struct {
+        int type;
+        int *key;
+        struct custom *value;
+} new_map __attribute__((section(".maps"), used)) = {
+        .type = 2,
+        .key = (int)0,
+        .value = (struct custom *)NULL,
+};
+
+
+Notice, btw, that this approach doesn't prevent you to re-use struct
+definitions for multiple maps, if they have identical key/value types
+or if you are not capturing type information at all.
+
+struct my_typical_map {
+        int type;
+        int max_entries;
+        u64 *key;
+        struct custom *value;
+};
+
+struct my_typical_map map1 SEC(".maps") = {
+        .type = BPF_MAP_TYPE_ARRAY,
+        .max_entries = 10,
+};
+
+struct my_typical_map map2 SEC(".maps") = {
+        .type = BPF_MAP_TYPE_ARRAY,
+        .max_entries = 20,
+};
+
+Or, you can just re-use struct bpf_map_def today like this (but you
+won't have type info for key/value, of course):
+
+struct bpf_map_def my_map_without_type_info SEC(".maps") = {
+        .type = BPF_MAP_TYPE_ARRAY,
+        .max_entries = 100,
+        .key_size = sizeof(u64),
+        .value_size = sizeof(struct custom),
+};
+
+This approach gives you as much flexibility as possible, you only will
+have to have different definition struct, if you have different
+key/value type (in C++ that would be solved by templates, but alas we
+are in C land).
+
+
+>
+> > I don't think it's really worse than current bpf_map_def approach. In
+> > typical scenario, there are only two fields you need to remember: type
+> > and max_entries (notice, they are called exactly the same as in
+> > bpf_map_def, so this knowledge is transferrable). Then you'll have
+> > key/value, using which you are describing both type (using field's
+> > type) and size (calculated from the type).
+> >
+> > I can relate a bit to that with bpf_map_def you can find definition
+> > and see all possible fields, but one can also find a lot of examples
+> > for new map definitions as well.
+> >
+> > One big advantage of this scheme, though, is that you get that type
+> > association automagically without using BPF_ANNOTATE_KV_PAIR hack,
+> > with no chance of having a mismatch, etc. This is less duplication (no
+> > need to do sizeof(struct my_struct) and struct my_struct as an arg to
+> > that macro) and there is no need to go and ping people to add those
+> > annotations to improve introspection of BPF maps.
+>
+> > > > Relying on BTF, this approach allows for both forward and backward
+> > > > compatibility w.r.t. extending supported map definition features. Old
+> > > > libbpf implementation will ignore fields it doesn't recognize, while new
+> > > > implementations will parse and recognize new optional attributes.
+> > > I also don't know how to feel about old libbpf ignoring some attributes.
+> > > In the kernel we require that the unknown fields are zeroed.
+> > > We probably need to do something like that here? What do you think
+> > > would be a good example of an optional attribute?
+> >
+> > Ignoring is required for forward-compatibility, where old libbpf will
+> > be used to load newer user BPF programs. We can decided not to do it,
+> > in that case it's just a question of erroring out on first unknown
+> > field. This RFC was posted exactly to discuss all these issues with
+> > more general community, as there is no single true way to do this.
+> >
+> > As for examples of when it can be used. It's any feature that can be
+> > considered optional or a hint, so if old libbpf doesn't do that, it's
+> > still not the end of the world (and we can live with that, or can
+> > correct using direct libbpf API calls).
+>
+> On forward compatibility my 0.02c would be - if we want to go there
+> and silently ignore fields it'd be good to have some form of "hard
+> required" bit.  For TLVs ABIs it can be a "you have to understand
+> this one" bit, for libbpf perhaps we could add a "min libbpf version
+> required" section?  That kind of ties us ELF formats to libbpf
+> specifics (the libbpf version presumably would imply support for
+> features), but I think we want to go there, anyway.
+
+I think we can go with strict/non-strict mode, which we already
+support in libbpf with MAPS_RELAX_COMPAT flag (see
+__bpf_object__open_xattr), would that work?
