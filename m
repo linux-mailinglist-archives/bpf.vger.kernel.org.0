@@ -2,124 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 08ED63363C
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2019 19:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4600B33675
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2019 19:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbfFCRMa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Jun 2019 13:12:30 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:44753 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728496AbfFCRM3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Jun 2019 13:12:29 -0400
-Received: by mail-wr1-f66.google.com with SMTP id w13so12874476wru.11
-        for <bpf@vger.kernel.org>; Mon, 03 Jun 2019 10:12:28 -0700 (PDT)
+        id S1729666AbfFCRVx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Jun 2019 13:21:53 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:35388 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729511AbfFCRVr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Jun 2019 13:21:47 -0400
+Received: by mail-qk1-f194.google.com with SMTP id l128so942303qke.2
+        for <bpf@vger.kernel.org>; Mon, 03 Jun 2019 10:21:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=6wind.com; s=google;
-        h=reply-to:subject:to:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hdzztUxr8+P2yiTShU7eDsGECp578g9yYtd++GlZKeM=;
-        b=YHBoiOODCu6PHgDttATy2kvMgIpaVHP/Y1ZLTzpWroQFuNU8dmiGF85Qzf2I8VGTR0
-         CgzRuEEQA8A0iVjlAcsuP04YbFFXH6loPt/UaGYrobJJrKR9jlAjeQZ0rClLPnZl+h7X
-         Hc2u5lUAgtKlOQmrV7KIiV9/eI5w2e0Bb7taZmI4F2l1EHr/U1PgsPhiS9aZ43L6/sS0
-         rQuDIj/LfVygTvQhFXbJRTIZdeWcEtAWtZOF3xCXUWZbCDxlNHQBokZe8RacAPFBgbGi
-         1YIlDSFm1wXonaTjVGVq8qs13S8vxely644588B+/w+Si9njxkhuzF6lOONsMbKIzuEV
-         ZKIA==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=x7mTqHfW25Yfgg2m6bdYw6M5XlwzGvI7rSJIno4dGcg=;
+        b=0pXOe0S3UATwQJ3foBGdeblPbc59sDMnw5rDa66bcJ7G6nqdYwsQk8hCfb5up0XMmM
+         Xy01qTNfOqEqK9rjJEe66Nr2RxfnaGNnjoSo8ZbBnNJreVKYmqsILtZwHNg4hZhpRkNU
+         YPvtf6KKMyygMqKeEOZ3ltOcu96YjOhtKbV7ZKGpqx1fO5zJGT8U8sIjlLmqq1jKniSX
+         Jb9Pgaj2cceEhgjBZE7RNL6I1QnfxIcCDY7L0Zsy9t5Ss1TVs4EHzOD31w0h6d3UhiHg
+         +Pw/XQ5+7tXPZyBDTJnK0Xv3aM8ZL6AO4j02CnutvdBDb+NXgHs7Md9385ZYFvG2M2H6
+         tctQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=hdzztUxr8+P2yiTShU7eDsGECp578g9yYtd++GlZKeM=;
-        b=boN7S1lGBcVlCWdX+g8jc8loWnKr3XQaqWZnVVCcj68t+8uFP6EpAEJgAbKzGK55NE
-         /5hAEM1LdRYD7+CY66tppw4pTwQM+jGgSZfWut369AMnnnC1P3DctozIJaUGzthVYqQj
-         FteWpVwZPdq9WYxJmNTovEiaBFDlNG70SkYwazLOa7F++OmrpwLholZsKI8abr3JMK4A
-         mfOCTW/NEliK0fcZOwpJTgGQNJ7bxyjke9xLmU933AMvlGjMMzvwlx4U6xFH2w76DqGZ
-         kSmHOzmk5e0OyssgbFsMn/lYnmFtbYHDNOdEfv2PPrw4KclrHg0xZ/CbtW52CIfprQ2L
-         W6Gg==
-X-Gm-Message-State: APjAAAXZa5sboqLSf24CVNLnnqUef+EMIJGF2hyokOsQIuI7SEnfP9Dm
-        EVAjWkOQBakK6q1JbgyHr0CjTOsa+fI=
-X-Google-Smtp-Source: APXvYqx2gy6R5EWjGdW4uHp6XrM8Ts2Jk2G8SrQ412rzSVmlcjnvLQUppAdTfeKc5Hf1g0ujRMEPdw==
-X-Received: by 2002:adf:ead0:: with SMTP id o16mr4216795wrn.216.1559581947459;
-        Mon, 03 Jun 2019 10:12:27 -0700 (PDT)
-Received: from [10.16.0.69] (host.78.145.23.62.rev.coltfrance.com. [62.23.145.78])
-        by smtp.gmail.com with ESMTPSA id l18sm35284484wrh.54.2019.06.03.10.12.26
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 03 Jun 2019 10:12:26 -0700 (PDT)
-Reply-To: nicolas.dichtel@6wind.com
-Subject: Re: [RFC][PATCH kernel_bpf] honor CAP_NET_ADMIN for BPF_PROG_LOAD
-To:     Andreas Steinmetz <ast@domdv.de>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <56c1f2f89428b49dad615fc13cc8c120d4ca4abf.camel@domdv.de>
-From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Organization: 6WIND
-Message-ID: <1188fe85-d627-89d1-d56b-91011166f9c7@6wind.com>
-Date:   Mon, 3 Jun 2019 19:12:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=x7mTqHfW25Yfgg2m6bdYw6M5XlwzGvI7rSJIno4dGcg=;
+        b=fFRUQlHXhZKkcdLGY4EpDPGzo4kPtkiismgiM0UT4z2KOIaNtAc78mqLfpWsvLVKDS
+         mgyT6JNh64vAbNbFY5eTS6YoKzBpmIhqnYYG6oD/eALXEZLOPGJ9PEwKDdJ1p4D+jMLu
+         zGHnCVFqAd6HwXoApYZUQYMVj8v0OH5rdjXruFoSXvzu3rmHEP/bgqQrMObH4WY50TG1
+         NF+hnNlNESIuJCwnGi+vB98n/IywRcFa6cYYPtcCOacJyZMLHjCTKHI1KBOQ+q/w8aj6
+         g3IDJy9PGnGiADihYsUXKqHpcDmFwD4bS7KRJhSpUmkiGlDv86Hgmk/KjugH0ljFxsXi
+         x4LQ==
+X-Gm-Message-State: APjAAAXO0RxBvJvpVt5ObAIGMAGnFCOVn33Jkgmgk1+ALU9WTTXRt8rT
+        NNG0zRiMzd4mUeAeoOU/OSXMZA==
+X-Google-Smtp-Source: APXvYqzLGOq03x63kPvRAktqQgITC5ecSo/OEEL09HH061JSrHRVkAQ5hmpnP8/k5LqHiSqlUAfRNw==
+X-Received: by 2002:ae9:ed0a:: with SMTP id c10mr22414632qkg.207.1559582506309;
+        Mon, 03 Jun 2019 10:21:46 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id 100sm8493263qtb.53.2019.06.03.10.21.44
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 03 Jun 2019 10:21:46 -0700 (PDT)
+Date:   Mon, 3 Jun 2019 10:21:40 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] bpf: remove redundant assignment to err
+Message-ID: <20190603102140.70fee157@cakuba.netronome.com>
+In-Reply-To: <20190603170247.9951-1-colin.king@canonical.com>
+References: <20190603170247.9951-1-colin.king@canonical.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-In-Reply-To: <56c1f2f89428b49dad615fc13cc8c120d4ca4abf.camel@domdv.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Le 28/05/2019 à 18:53, Andreas Steinmetz a écrit :
-> [sorry for crossposting but this affects both lists]
+On Mon,  3 Jun 2019 18:02:47 +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> BPF_PROG_TYPE_SCHED_CLS and BPF_PROG_TYPE_XDP should be allowed
-> for CAP_NET_ADMIN capability. Nearly everything one can do with
-> these program types can be done some other way with CAP_NET_ADMIN
-> capability (e.g. NFQUEUE), but only slower.
+> The variable err is assigned with the value -EINVAL that is never
+> read and it is re-assigned a new value later on.  The assignment is
+> redundant and can be removed.
 > 
-> This change is similar in behaviour to the /proc/sys/net
-> CAP_NET_ADMIN exemption.
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  kernel/bpf/devmap.c | 2 +-
+>  kernel/bpf/xskmap.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> Overall chances are of increased security as network related
-> applications do no longer require to keep CAP_SYS_ADMIN
-> admin capability for network related eBPF operations.
-> 
-> It may well be that other program types than BPF_PROG_TYPE_XDP
-> and BPF_PROG_TYPE_SCHED_CLS do need the same exemption, though
-> I do not have sufficient knowledge of other program types
-> to be able to decide this.
-> 
-> Preloading BPF programs is not possible in case of application
-> modified or generated BPF programs, so this is no alternative.
-> The verifier does prevent the BPF program from doing harmful
-> things anyway.
-> 
-> Signed-off-by: Andreas Steinmetz <ast@domdv.de>
-It makes sense to me.
-Do you plan to submit it formally?
+> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+> index 5ae7cce5ef16..a76cc6412fc4 100644
+> --- a/kernel/bpf/devmap.c
+> +++ b/kernel/bpf/devmap.c
+> @@ -88,7 +88,7 @@ static u64 dev_map_bitmap_size(const union bpf_attr *attr)
+>  static struct bpf_map *dev_map_alloc(union bpf_attr *attr)
+>  {
+>  	struct bpf_dtab *dtab;
+> -	int err = -EINVAL;
+> +	int err;
+>  	u64 cost;
 
-Looking a bit more at this topic, I see that most part of the bpf code uses
-capable(CAP_NET_ADMIN). I don't see why we cannot use ns_capable(CAP_NET_ADMIN).
+Perhaps keep the variables ordered longest to shortest?
 
-
-Regards,
-Nicolas
-
-> 
-> --- a/kernel/bpf/syscall.c	2019-05-28 18:00:40.472841432 +0200
-> +++ b/kernel/bpf/syscall.c	2019-05-28 18:17:50.162811510 +0200
-> @@ -1561,8 +1561,13 @@ static int bpf_prog_load(union bpf_attr
->  		return -E2BIG;
->  	if (type != BPF_PROG_TYPE_SOCKET_FILTER &&
->  	    type != BPF_PROG_TYPE_CGROUP_SKB &&
-> -	    !capable(CAP_SYS_ADMIN))
-> -		return -EPERM;
-> +	    !capable(CAP_SYS_ADMIN)) {
-> +		if (type != BPF_PROG_TYPE_SCHED_CLS &&
-> +		    type != BPF_PROG_TYPE_XDP)
-> +			return -EPERM;
-> +		if(!capable(CAP_NET_ADMIN))
-> +			return -EPERM;
-> +	}
+>  	if (!capable(CAP_NET_ADMIN))
+> diff --git a/kernel/bpf/xskmap.c b/kernel/bpf/xskmap.c
+> index 22066c28ba61..26859c6c9491 100644
+> --- a/kernel/bpf/xskmap.c
+> +++ b/kernel/bpf/xskmap.c
+> @@ -17,7 +17,7 @@ struct xsk_map {
 >  
->  	bpf_prog_load_fixup_attach_type(attr);
->  	if (bpf_prog_load_check_attach_type(type, attr->expected_attach_type))
-> 
+>  static struct bpf_map *xsk_map_alloc(union bpf_attr *attr)
+>  {
+> -	int cpu, err = -EINVAL;
+> +	int cpu, err;
+>  	struct xsk_map *m;
+>  	u64 cost;
+
+And here.
+
