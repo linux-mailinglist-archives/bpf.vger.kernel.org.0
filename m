@@ -2,143 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE99325B4
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2019 02:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB0932947
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2019 09:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbfFCAdk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 Jun 2019 20:33:40 -0400
-Received: from mail-pg1-f169.google.com ([209.85.215.169]:35931 "EHLO
-        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbfFCAdk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 2 Jun 2019 20:33:40 -0400
-Received: by mail-pg1-f169.google.com with SMTP id a3so7254617pgb.3
-        for <bpf@vger.kernel.org>; Sun, 02 Jun 2019 17:33:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=Axk3pAddM4DVVF3y+8riwBqiQl1hFLkJKxJi4K9liuY=;
-        b=wzluIUjYBioOXKA/k4ufqkLCbBUmT0CpBv8rpo9NJ6rl0Lhd+UiaNHl6xB/iIaMFrP
-         WsenvkehoFIf5Fi2rMtpVBj2L9Wxbn01Lekg1ZERSezczAD85OIFcPGhPT3grH4Srr7n
-         dH1aUoUiwPkwbYn3f26sm8Cq6i74/4ljF5r1llbicnCjBqPO1liHV11Cim4O1YtTBIcW
-         jm2ctHKORKEJ+ye5oI+PWm6UYcPTw6c/WbC0DLsbl9ocqU0pdeJ6mo6SE+prpxx1hkaz
-         bDrCjDUduIAXUNqTp4r4CQ3erdJCysP64Q8kRAE3tJVJDFGK0e9LDiobzvszJh8kkkTd
-         lf1g==
+        id S1726336AbfFCHXo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Jun 2019 03:23:44 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:40395 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726305AbfFCHXn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Jun 2019 03:23:43 -0400
+Received: by mail-oi1-f193.google.com with SMTP id w196so2577101oie.7
+        for <bpf@vger.kernel.org>; Mon, 03 Jun 2019 00:23:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=Axk3pAddM4DVVF3y+8riwBqiQl1hFLkJKxJi4K9liuY=;
-        b=Z1SDtqrNmtc9I80RdEeNh4+RlXntz+75qPKxjgOtkxduduiSzY80jPA2zgUzUPSyfv
-         3eWNrfIie/Z4sWGzQyxta/CmoETjL53PfVxSUZtITCsU1atHo3B2d/F3C0rHV5BGJdYj
-         jyQKmldH+2zYD/25H3OMUSzkJh36Ud22RIsEih6RVazVpUukd/0tm7/KbXug9FwFYTT0
-         C1t5MGo3VMl2wr4SGUU9H6qnuJ9uA/r6lkvO14cqK6M3z1IDZLpYxLtT+jCutxIDyvVc
-         +zjcyxqLmWBHUc5gneKjhKm1UgtAN2u0GCQRUY6C9mHje5w7/749HMCvTdpbYWs2vWqh
-         wV+w==
-X-Gm-Message-State: APjAAAUPEeyjqi0U2EzOyBwKo8v24AVMMFtGipWkZziZa9TMlHjtpA2E
-        8aOQKokUshp+pXk60kmOtMtT6w==
-X-Google-Smtp-Source: APXvYqxygP/xjo3Ov2qb74A/P/ttbI681/8gw/kDPhh5nqXQEcAuLo+jAOT3Iuhr+1hB25Cr/yC5Ng==
-X-Received: by 2002:a62:304:: with SMTP id 4mr27743090pfd.186.1559522019018;
-        Sun, 02 Jun 2019 17:33:39 -0700 (PDT)
-Received: from cakuba.netronome.com (c-71-204-185-212.hsd1.ca.comcast.net. [71.204.185.212])
-        by smtp.gmail.com with ESMTPSA id 66sm2651999pfg.140.2019.06.02.17.33.37
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Sun, 02 Jun 2019 17:33:38 -0700 (PDT)
-Date:   Sun, 2 Jun 2019 17:33:34 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Stanislav Fomichev <sdf@fomichev.me>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [RFC PATCH bpf-next 6/8] libbpf: allow specifying map
- definitions using BTF
-Message-ID: <20190602173334.18e68d66@cakuba.netronome.com>
-In-Reply-To: <CAEf4Bza38VEh9NWTLEReAR_J0eqjsvH1a2T-0AeWqDZpE8YPfA@mail.gmail.com>
-References: <20190531202132.379386-1-andriin@fb.com>
-        <20190531202132.379386-7-andriin@fb.com>
-        <20190531212835.GA31612@mini-arch>
-        <CAEf4Bza38VEh9NWTLEReAR_J0eqjsvH1a2T-0AeWqDZpE8YPfA@mail.gmail.com>
-Organization: Netronome Systems, Ltd.
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iTUu3d7b9FzAYYjmvVuBAKOXOUdvkARIBZFMJ5+g9jg=;
+        b=U8nABbufxUfmqUDuvBuJ6GJg9hQdwXIPCfprgd1WkQgOVnXRFWpkEB7JPBhqGGWQkb
+         jO8QHusxl+oqJo5N/+RXxCQ7BOZlujsr1yHgqZ4CmgisNs5dpPLENE+DtMMlpeKVJiJ1
+         oIX6Sgmks/vTG98c0/sMpEs+i4k/LGZrpISbvElzHRP+8uoC728+3IwUNo7kpEYJ0/jJ
+         r8ewV6cBexZ6gSJUT3qOSOtaqHj5V9ePzvZ8kvKhBOo8wvIma5j73XtCP6qqfB+0nIfa
+         VKQGj2P83o+1TZyXu16lVQMrRI/7oBghqn/CIYZT7QEHV11OJ6kSnsFeH0H+IetXE1T9
+         ZzCg==
+X-Gm-Message-State: APjAAAUdBh/CaFT/OSoiSvGQB3J6RhPjf4PaPtgcNcse9B4qcG/eT0Zp
+        8V1pzIWS4vBcSi68e8hHOXXNBdkXKGQFD+19unr/5Q==
+X-Google-Smtp-Source: APXvYqx0VgOQnKSu2Xug35l6BWUdLvg06ZkeE2AA30kAXedGN2FJpCJud/tT+mFlsFIbw6BQNQLjACXkglcx7v8H0DQ=
+X-Received: by 2002:aca:e887:: with SMTP id f129mr115563oih.156.1559546622977;
+ Mon, 03 Jun 2019 00:23:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20190601021526.GA8264@zhanggen-UX430UQ>
+In-Reply-To: <20190601021526.GA8264@zhanggen-UX430UQ>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Mon, 3 Jun 2019 09:23:32 +0200
+Message-ID: <CAFqZXNvBpmxNYjZx6YcH5Q-u4Tkwhfyzu_8VmEe8O7r9CCsvNg@mail.gmail.com>
+Subject: Re: [PATCH v3] selinux: lsm: fix a missing-check bug in selinux_sb_eat_lsm_opts()
+To:     Gen Zhang <blackgod016574@gmail.com>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 31 May 2019 15:58:41 -0700, Andrii Nakryiko wrote:
-> On Fri, May 31, 2019 at 2:28 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
-> > On 05/31, Andrii Nakryiko wrote:  
-> > > This patch adds support for a new way to define BPF maps. It relies on
-> > > BTF to describe mandatory and optional attributes of a map, as well as
-> > > captures type information of key and value naturally. This eliminates
-> > > the need for BPF_ANNOTATE_KV_PAIR hack and ensures key/value sizes are
-> > > always in sync with the key/value type.  
-> > My 2c: this is too magical and relies on me knowing the expected fields.
-> > (also, the compiler won't be able to help with the misspellings).  
+On Sat, Jun 1, 2019 at 4:15 AM Gen Zhang <blackgod016574@gmail.com> wrote:
+> In selinux_sb_eat_lsm_opts(), 'arg' is allocated by kmemdup_nul(). It
+> returns NULL when fails. So 'arg' should be checked. And 'mnt_opts'
+> should be freed when error.
+>
+> Signed-off-by: Gen Zhang <blackgod016574@gmail.com>
+> Reviewed-by: Ondrej Mosnacek <omosnace@redhat.com>
 
-I have mixed feelings, too.  Especially the key and value fields are
-very non-idiomatic for C :(  They never hold any value or data, while
-the other fields do.  That feels so awkward.  I'm no compiler expert,
-but even something like:
+It looks like you're new to the kernel development community, so let
+me give you a bit of friendly advice for the future :)
 
-struct map_def {
-	void *key_type_ref;
-} mamap = {
-	.key_type_ref = &(struct key_xyz){},
-};
+You don't need to repost the patch when people give you
+Acked-by/Reviewed-by/Tested-by (unless there is a different reason to
+respin/repost the patches). The maintainer goes over the replies when
+applying the final patch and adds Acked-by/Reviewed-by/... on his/her
+own.
 
-Would feel like less of a hack to me, and then map_def doesn't have to
-be different for every map.  But yea, IDK if it's easy to (a) resolve
-the type of what key_type points to, or (b) how to do this for scalar
-types.
+If you *do* need to respin a path for which you have received A/R/T,
+then you need to distinguish between two cases:
+1. Only trivial changes to the patch (only fixed typos, edited commit
+message, removed empty line, etc. - for example, v1 -> v2 of this
+patch falls into this category) - in this case you can collect the
+A/R/T yourself and add them to the new version. This saves the
+maintainer and the reviewers from redundant work, since the patch is
+still semantically the same and the A/R/T from the last version still
+apply.
+2. Non-trivial changes to the patch (as is the case for this patch) -
+in this case your patch needs to be reviewed again and you should
+disregard all A/R/T from the previous version. You can easily piss
+someone off if you add their Reviewed-by to a patch they haven't
+actually reviewed, so be careful ;-)
 
-> I don't think it's really worse than current bpf_map_def approach. In
-> typical scenario, there are only two fields you need to remember: type
-> and max_entries (notice, they are called exactly the same as in
-> bpf_map_def, so this knowledge is transferrable). Then you'll have
-> key/value, using which you are describing both type (using field's
-> type) and size (calculated from the type).
-> 
-> I can relate a bit to that with bpf_map_def you can find definition
-> and see all possible fields, but one can also find a lot of examples
-> for new map definitions as well.
-> 
-> One big advantage of this scheme, though, is that you get that type
-> association automagically without using BPF_ANNOTATE_KV_PAIR hack,
-> with no chance of having a mismatch, etc. This is less duplication (no
-> need to do sizeof(struct my_struct) and struct my_struct as an arg to
-> that macro) and there is no need to go and ping people to add those
-> annotations to improve introspection of BPF maps.
+(Someone please correct me if I got it wrong - this is what I gathered
+so far from my experience.)
 
-> > > Relying on BTF, this approach allows for both forward and backward
-> > > compatibility w.r.t. extending supported map definition features. Old
-> > > libbpf implementation will ignore fields it doesn't recognize, while new
-> > > implementations will parse and recognize new optional attributes.  
-> > I also don't know how to feel about old libbpf ignoring some attributes.
-> > In the kernel we require that the unknown fields are zeroed.
-> > We probably need to do something like that here? What do you think
-> > would be a good example of an optional attribute?  
-> 
-> Ignoring is required for forward-compatibility, where old libbpf will
-> be used to load newer user BPF programs. We can decided not to do it,
-> in that case it's just a question of erroring out on first unknown
-> field. This RFC was posted exactly to discuss all these issues with
-> more general community, as there is no single true way to do this.
-> 
-> As for examples of when it can be used. It's any feature that can be
-> considered optional or a hint, so if old libbpf doesn't do that, it's
-> still not the end of the world (and we can live with that, or can
-> correct using direct libbpf API calls).
+Good luck in your future work!
 
-On forward compatibility my 0.02c would be - if we want to go there 
-and silently ignore fields it'd be good to have some form of "hard
-required" bit.  For TLVs ABIs it can be a "you have to understand 
-this one" bit, for libbpf perhaps we could add a "min libbpf version
-required" section?  That kind of ties us ELF formats to libbpf
-specifics (the libbpf version presumably would imply support for
-features), but I think we want to go there, anyway.
+> Fixes: 99dbbb593fe6 ("selinux: rewrite selinux_sb_eat_lsm_opts()")
+> ---
+> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> index 3ec702c..f329fc0 100644
+> --- a/security/selinux/hooks.c
+> +++ b/security/selinux/hooks.c
+> @@ -2616,6 +2616,7 @@ static int selinux_sb_eat_lsm_opts(char *options, void **mnt_opts)
+>         char *from = options;
+>         char *to = options;
+>         bool first = true;
+> +       int ret;
+>
+>         while (1) {
+>                 int len = opt_len(from);
+> @@ -2635,15 +2636,16 @@ static int selinux_sb_eat_lsm_opts(char *options, void **mnt_opts)
+>                                                 *q++ = c;
+>                                 }
+>                                 arg = kmemdup_nul(arg, q - arg, GFP_KERNEL);
+> +                               if (!arg) {
+> +                                       ret = -ENOMEM;
+> +                                       goto free_opt;
+> +                               }
+>                         }
+>                         rc = selinux_add_opt(token, arg, mnt_opts);
+>                         if (unlikely(rc)) {
+> +                               ret = rc;
+>                                 kfree(arg);
+> -                               if (*mnt_opts) {
+> -                                       selinux_free_mnt_opts(*mnt_opts);
+> -                                       *mnt_opts = NULL;
+> -                               }
+> -                               return rc;
+> +                               goto free_opt;
+>                         }
+>                 } else {
+>                         if (!first) {   // copy with preceding comma
+> @@ -2661,6 +2663,12 @@ static int selinux_sb_eat_lsm_opts(char *options, void **mnt_opts)
+>         }
+>         *to = '\0';
+>         return 0;
+> +free_opt:
+> +       if (*mnt_opts) {
+> +               selinux_free_mnt_opts(*mnt_opts);
+> +               *mnt_opts = NULL;
+> +       }
+> +       return ret;
+>  }
+>
+>  static int selinux_sb_remount(struct super_block *sb, void *mnt_opts)
+
+-- 
+Ondrej Mosnacek <omosnace at redhat dot com>
+Software Engineer, Security Technologies
+Red Hat, Inc.
