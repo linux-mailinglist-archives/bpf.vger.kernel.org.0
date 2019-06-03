@@ -2,195 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E2932EB5
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2019 13:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C77E33098
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2019 15:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728414AbfFCLeK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 3 Jun 2019 07:34:10 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:44118 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727393AbfFCLeJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Jun 2019 07:34:09 -0400
-Received: by mail-ed1-f68.google.com with SMTP id b8so26439726edm.11
-        for <bpf@vger.kernel.org>; Mon, 03 Jun 2019 04:34:08 -0700 (PDT)
+        id S1728010AbfFCNHh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Jun 2019 09:07:37 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:46104 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727387AbfFCNHh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Jun 2019 09:07:37 -0400
+Received: by mail-qk1-f193.google.com with SMTP id a132so290003qkb.13
+        for <bpf@vger.kernel.org>; Mon, 03 Jun 2019 06:07:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BSEdgqESlMSsojoD0L6U8hdhvYh8fKdpdX1m+uG6RFw=;
+        b=DW+1tj6N1A9FAqtzap+AF6eatkOZTRTXTNwk0XFkECvmtI5lf6m5JH8zaLMoOV49Fe
+         pfGivCOkFydNDnB4SiT8LQZ6a3GosrtEz6VufOBIGuvqSpKaUeuhErLpMIaew66tE23s
+         1zMqpaUd/0fdVLdsdsKSrbXhbMa00wFK6fjAFYNiGY8mxd6HhoU3XUITgtfdfbPCfYMp
+         4DNHJ1fEpUUQuVtENTeM5BuuXW2b+lCFQVKnZv4S/NJAaanDHpcsNRnd74Gjj8gtfhmz
+         M4ncQGkj3SKmOcIvTfsXgD+lHz31scAjqrqxeoXoZhEw3V+t560vYe+odOzIPIEkw5UX
+         WICw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=QfftXsSxGUjNS1CUTQP+MzBIOwUkvebSHjlv4bruNN4=;
-        b=Eh5uuiRv1Mi8nIg7NYURTj+xjRI2wsCs8sFowcur5UMaeGGkO9bDobpZ7qeh56Vm2v
-         iLxSE+zpvmVsSiensiVpaHzRQXRi2Lg/ue03exWBTGF4/3DeTr3o6XVh6WlHPHuPDO6F
-         dMA+4cPKrphTkx/n5RrCsA/X/ID7lAx0KM4agRaCuGHjzBgGwvygBvTEO9PthNG2NtCq
-         T6QgGko1BhHi4gCTbKihMfEGGO2UKceISpZf4kDQ8CZi/JHf1w+QE9veOpotIgN4ZEAP
-         F01lkah+ySkEnff2TGUD0A3cX3NtQcG88Ec6D1N1qiHi0UVJ8T3MXJrkfsrRHQqk3BrJ
-         RL8Q==
-X-Gm-Message-State: APjAAAUJHWouPOBpiAT33u4M9tSzt1fiJUu+RuFyKnGq8Szf4l9MQ3xd
-        e1mxuKZ+xX+bBQw3Ab3oHqwU8w==
-X-Google-Smtp-Source: APXvYqzmWgd1fWRNjszC3sd2BvbHI7BhrOQKhumlQesV0ZjaLyL7E+u39H5eN+7AHkVNoMUUUmSvVQ==
-X-Received: by 2002:a05:6402:1717:: with SMTP id y23mr28621334edu.304.1559561648045;
-        Mon, 03 Jun 2019 04:34:08 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id w20sm2548135eja.74.2019.06.03.04.34.06
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 03 Jun 2019 04:34:06 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id DEE3D1800F7; Mon,  3 Jun 2019 12:56:49 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Netdev <netdev@vger.kernel.org>,
-        =?utf-8?B?Qmo=?= =?utf-8?B?w7ZybiBUw7ZwZWw=?= 
-        <bjorn.topel@intel.com>,
-        "Karlsson\, Magnus" <magnus.karlsson@intel.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        bpf <bpf@vger.kernel.org>, Saeed Mahameed <saeedm@mellanox.com>
-Subject: Re: [PATCH bpf-next v2 1/2] net: xdp: refactor XDP_QUERY_PROG{,_HW} to netdev
-In-Reply-To: <CAJ+HfNh-ifUqJHL61e7nQysZRCrKhNeX_mZ6Vn2D786-XEfm3g@mail.gmail.com>
-References: <20190531094215.3729-1-bjorn.topel@gmail.com> <20190531094215.3729-2-bjorn.topel@gmail.com> <20190601130223.5ef947fa@cakuba.netronome.com> <CAJ+HfNh-ifUqJHL61e7nQysZRCrKhNeX_mZ6Vn2D786-XEfm3g@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 03 Jun 2019 12:56:49 +0200
-Message-ID: <87muizgcni.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BSEdgqESlMSsojoD0L6U8hdhvYh8fKdpdX1m+uG6RFw=;
+        b=h/s+6ogJz2f9NQn5J9VvM7DV4ovv8CSecfQkshVtuAJ9AGEPN1aQq/2EQoPPrESYBp
+         Jxhtp8WDqn0vAaRx7tOsn7149PGkuBi8svV2GOq4YEHbkHshOV+QB0eb0Ns04OctYrbE
+         Yjg2Vb0UWWXf7VwMWPZ+GNSCa1r8JWwtCaoGmBwkD7TfEubFGJ0RsEWEIeUV0REoQKc7
+         kvzEhDRiZyKffBwzdVqYfcPnNXcBiQPlfw0JE9lD12ioSGlGM5UoH6XFs3y6B6mPRRih
+         puyKeJiWt3H5EgBKlNEZxnlAZzYmtPEoMDoTdIC3oHEQCqnFbU68M2mC1oXnKpKSGIOn
+         vsNw==
+X-Gm-Message-State: APjAAAVem1ykbjOa3nqv3GixA3oAbmP6BDcc6qV8uUYlUmw2E0nuZFBG
+        C+mZBYTujjmK6Dd++McRjt8c6uhggkeT5GM+bJ+8SQ==
+X-Google-Smtp-Source: APXvYqyq3rUxBaOA0YTWzvW4UmUadCCZQDT1jRpuqGG7BQNosITRSlrgEDi9k3H2zgxs+fEv02BXOLT0hjqss3UsmnU=
+X-Received: by 2002:a37:a9c9:: with SMTP id s192mr21560737qke.335.1559567256651;
+ Mon, 03 Jun 2019 06:07:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+References: <20190531222910.2499861-1-kafai@fb.com> <20190531222911.2500496-1-kafai@fb.com>
+In-Reply-To: <20190531222911.2500496-1-kafai@fb.com>
+From:   Craig Gallek <kraig@google.com>
+Date:   Mon, 3 Jun 2019 09:07:33 -0400
+Message-ID: <CAEfhGiyfydP4xggD-v5DCXyM0mtaEa5oPu39WLD7o8v_DgobAA@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] bpf: udp: ipv6: Avoid running reuseport's
+ bpf_prog from __udp6_lib_err
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Björn Töpel <bjorn.topel@gmail.com> writes:
-
-> On Sat, 1 Jun 2019 at 22:02, Jakub Kicinski
-> <jakub.kicinski@netronome.com> wrote:
->>
->> On Fri, 31 May 2019 11:42:14 +0200, Björn Töpel wrote:
->> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
->> > index 44b47e9df94a..f3a875a52c6c 100644
->> > --- a/include/linux/netdevice.h
->> > +++ b/include/linux/netdevice.h
->> > @@ -1940,6 +1940,9 @@ struct net_device {
->> >  #endif
->> >       struct hlist_node       index_hlist;
->> >
->> > +     struct bpf_prog         *xdp_prog_hw;
->>
->> IDK if we should pay the cost of this pointer for every netdev on the
->> system just for the single production driver out there that implements
->> HW offload :(  I'm on the fence about this..
->>
+On Fri, May 31, 2019 at 6:29 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> Hmm. Adding a config option? Keep the QUERY_PROG_HW?
+> __udp6_lib_err() may be called when handling icmpv6 message. For example,
+> the icmpv6 toobig(type=2).  __udp6_lib_lookup() is then called
+> which may call reuseport_select_sock().  reuseport_select_sock() will
+> call into a bpf_prog (if there is one).
 >
->> > +     u32                     xdp_flags;
->> > +
->> >  /*
->> >   * Cache lines mostly used on transmit path
->> >   */
->>
->> > diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
->> > index adcc045952c2..5e396fd01d8b 100644
->> > --- a/net/core/rtnetlink.c
->> > +++ b/net/core/rtnetlink.c
->> > @@ -1360,42 +1360,44 @@ static int rtnl_fill_link_ifmap(struct sk_buff *skb, struct net_device *dev)
->> >       return 0;
->> >  }
->> >
->> > -static u32 rtnl_xdp_prog_skb(struct net_device *dev)
->> > +static unsigned int rtnl_xdp_mode_to_flag(u8 tgt_mode)
->> >  {
->> > -     const struct bpf_prog *generic_xdp_prog;
->> > -
->> > -     ASSERT_RTNL();
->> > -
->> > -     generic_xdp_prog = rtnl_dereference(dev->xdp_prog);
->> > -     if (!generic_xdp_prog)
->> > -             return 0;
->> > -     return generic_xdp_prog->aux->id;
->> > -}
->> > -
->> > -static u32 rtnl_xdp_prog_drv(struct net_device *dev)
->> > -{
->> > -     return __dev_xdp_query(dev, dev->netdev_ops->ndo_bpf, XDP_QUERY_PROG);
->> > +     switch (tgt_mode) {
->> > +     case XDP_ATTACHED_DRV:
->> > +             return XDP_FLAGS_DRV_MODE;
->> > +     case XDP_ATTACHED_SKB:
->> > +             return XDP_FLAGS_SKB_MODE;
->> > +     case XDP_ATTACHED_HW:
->> > +             return XDP_FLAGS_HW_MODE;
->> > +     }
->> > +     return 0;
->> >  }
->> >
->> > -static u32 rtnl_xdp_prog_hw(struct net_device *dev)
->> > +static u32 rtnl_xdp_mode_to_attr(u8 tgt_mode)
->> >  {
->> > -     return __dev_xdp_query(dev, dev->netdev_ops->ndo_bpf,
->> > -                            XDP_QUERY_PROG_HW);
->> > +     switch (tgt_mode) {
->> > +     case XDP_ATTACHED_DRV:
->> > +             return IFLA_XDP_DRV_PROG_ID;
->> > +     case XDP_ATTACHED_SKB:
->> > +             return IFLA_XDP_SKB_PROG_ID;
->> > +     case XDP_ATTACHED_HW:
->> > +             return IFLA_XDP_HW_PROG_ID;
->> > +     }
->> > +     return 0;
->> >  }
->> >
->> >  static int rtnl_xdp_report_one(struct sk_buff *skb, struct net_device *dev,
->> > -                            u32 *prog_id, u8 *mode, u8 tgt_mode, u32 attr,
->> > -                            u32 (*get_prog_id)(struct net_device *dev))
->> > +                            u32 *prog_id, u8 *mode, u8 tgt_mode)
->> >  {
->> >       u32 curr_id;
->> >       int err;
->> >
->> > -     curr_id = get_prog_id(dev);
->> > +     curr_id = dev_xdp_query(dev, rtnl_xdp_mode_to_flag(tgt_mode));
->> >       if (!curr_id)
->> >               return 0;
->> >
->> >       *prog_id = curr_id;
->> > -     err = nla_put_u32(skb, attr, curr_id);
->> > +     err = nla_put_u32(skb, rtnl_xdp_mode_to_attr(tgt_mode), curr_id);
->> >       if (err)
->> >               return err;
->> >
->> > @@ -1420,16 +1422,13 @@ static int rtnl_xdp_fill(struct sk_buff *skb, struct net_device *dev)
->> >
->> >       prog_id = 0;
->> >       mode = XDP_ATTACHED_NONE;
->> > -     err = rtnl_xdp_report_one(skb, dev, &prog_id, &mode, XDP_ATTACHED_SKB,
->> > -                               IFLA_XDP_SKB_PROG_ID, rtnl_xdp_prog_skb);
->> > +     err = rtnl_xdp_report_one(skb, dev, &prog_id, &mode, XDP_ATTACHED_SKB);
->> >       if (err)
->> >               goto err_cancel;
->> > -     err = rtnl_xdp_report_one(skb, dev, &prog_id, &mode, XDP_ATTACHED_DRV,
->> > -                               IFLA_XDP_DRV_PROG_ID, rtnl_xdp_prog_drv);
->> > +     err = rtnl_xdp_report_one(skb, dev, &prog_id, &mode, XDP_ATTACHED_DRV);
->> >       if (err)
->> >               goto err_cancel;
->> > -     err = rtnl_xdp_report_one(skb, dev, &prog_id, &mode, XDP_ATTACHED_HW,
->> > -                               IFLA_XDP_HW_PROG_ID, rtnl_xdp_prog_hw);
->> > +     err = rtnl_xdp_report_one(skb, dev, &prog_id, &mode, XDP_ATTACHED_HW);
->> >       if (err)
->> >               goto err_cancel;
->> >
->>
->> So you remove all the attr and flag params just to add a conversion
->> helpers to get them based on mode?  Why?  Seems like unnecessary churn,
->> and questionable change :S
->>
+> reuseport_select_sock() is expecting the skb->data pointing to the
+> transport header (udphdr in this case).  For example, run_bpf_filter()
+> is pulling the transport header.
 >
-> Fair enough. I'll address this!
+> However, in the __udp6_lib_err() path, the skb->data is pointing to the
+> ipv6hdr instead of the udphdr.
+>
+> One option is to pull and push the ipv6hdr in __udp6_lib_err().
+> Instead of doing this, this patch follows how the original
+> commit 538950a1b752 ("soreuseport: setsockopt SO_ATTACH_REUSEPORT_[CE]BPF")
+> was done in IPv4, which has passed a NULL skb pointer to
+> reuseport_select_sock().
+>
+> Fixes: 538950a1b752 ("soreuseport: setsockopt SO_ATTACH_REUSEPORT_[CE]BPF")
+> Cc: Craig Gallek <kraig@google.com>
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 
-I think this was actually my idea, wasn't it? :)
-
-My thought being that if you just do the minimal change here, we'll end
-up with three empty wrapper functions, which we might as well just fold
-into the caller...
-
--Toke
+Acked-by: Craig Gallek <kraig@google.com>
