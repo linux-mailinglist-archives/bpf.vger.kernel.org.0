@@ -2,195 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7C13224D
-	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2019 09:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE99325B4
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2019 02:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725871AbfFBHGW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 Jun 2019 03:06:22 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44096 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725877AbfFBHGW (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 2 Jun 2019 03:06:22 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x526xfMB022800;
-        Sun, 2 Jun 2019 00:05:58 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=Ap5EQrVbKfzcSD1frDo36WIThZ9bovXqi5upQVpyHhQ=;
- b=qrGXwWyituZoHBgd/TOFR6k50ATaQDVwRLEsVoXte15KhMVyn70bDbOyV2Au/QN2FpVX
- 86ERtdCloFzCwWETGqCLTowwTxd83k/uuUUkeBnG2XAhGFQfaoAYzfuYyff0wHfzw/2I
- 84cnBWXv3GUTqErnn6oQ5dT7+49YNciLc1k= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2sunfu21vq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 02 Jun 2019 00:05:58 -0700
-Received: from ash-exopmbx201.TheFacebook.com (2620:10d:c0a8:83::8) by
- ash-exhub102.TheFacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sun, 2 Jun 2019 00:05:57 -0700
-Received: from ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) by
- ash-exopmbx201.TheFacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sun, 2 Jun 2019 00:05:56 -0700
-Received: from NAM01-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Sun, 2 Jun 2019 00:05:56 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ap5EQrVbKfzcSD1frDo36WIThZ9bovXqi5upQVpyHhQ=;
- b=licIMrQkVpRY/Ks6D2tei0bjg7D+Pa1SRQUFXuPViwNrPi+hxM5NznyaOZg9Wq8DPpXp2Mi14fbdAJie22lDH7XSciUlgmmPNLj5nQ5++OwunnpAXmYX++fjB/+pFah8GRwXlmqhY252ilwYWCntWRAjH1a1FaIlqBNLxZzS53k=
-Received: from DM5PR15MB1163.namprd15.prod.outlook.com (10.173.215.141) by
- DM5PR15MB1386.namprd15.prod.outlook.com (10.173.219.147) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1922.15; Sun, 2 Jun 2019 07:05:38 +0000
-Received: from DM5PR15MB1163.namprd15.prod.outlook.com
- ([fe80::cc3d:9bc2:1c3f:e661]) by DM5PR15MB1163.namprd15.prod.outlook.com
- ([fe80::cc3d:9bc2:1c3f:e661%4]) with mapi id 15.20.1943.018; Sun, 2 Jun 2019
- 07:05:38 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Martin Lau <kafai@fb.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
+        id S1726561AbfFCAdk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 2 Jun 2019 20:33:40 -0400
+Received: from mail-pg1-f169.google.com ([209.85.215.169]:35931 "EHLO
+        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726305AbfFCAdk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 2 Jun 2019 20:33:40 -0400
+Received: by mail-pg1-f169.google.com with SMTP id a3so7254617pgb.3
+        for <bpf@vger.kernel.org>; Sun, 02 Jun 2019 17:33:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=Axk3pAddM4DVVF3y+8riwBqiQl1hFLkJKxJi4K9liuY=;
+        b=wzluIUjYBioOXKA/k4ufqkLCbBUmT0CpBv8rpo9NJ6rl0Lhd+UiaNHl6xB/iIaMFrP
+         WsenvkehoFIf5Fi2rMtpVBj2L9Wxbn01Lekg1ZERSezczAD85OIFcPGhPT3grH4Srr7n
+         dH1aUoUiwPkwbYn3f26sm8Cq6i74/4ljF5r1llbicnCjBqPO1liHV11Cim4O1YtTBIcW
+         jm2ctHKORKEJ+ye5oI+PWm6UYcPTw6c/WbC0DLsbl9ocqU0pdeJ6mo6SE+prpxx1hkaz
+         bDrCjDUduIAXUNqTp4r4CQ3erdJCysP64Q8kRAE3tJVJDFGK0e9LDiobzvszJh8kkkTd
+         lf1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=Axk3pAddM4DVVF3y+8riwBqiQl1hFLkJKxJi4K9liuY=;
+        b=Z1SDtqrNmtc9I80RdEeNh4+RlXntz+75qPKxjgOtkxduduiSzY80jPA2zgUzUPSyfv
+         3eWNrfIie/Z4sWGzQyxta/CmoETjL53PfVxSUZtITCsU1atHo3B2d/F3C0rHV5BGJdYj
+         jyQKmldH+2zYD/25H3OMUSzkJh36Ud22RIsEih6RVazVpUukd/0tm7/KbXug9FwFYTT0
+         C1t5MGo3VMl2wr4SGUU9H6qnuJ9uA/r6lkvO14cqK6M3z1IDZLpYxLtT+jCutxIDyvVc
+         +zjcyxqLmWBHUc5gneKjhKm1UgtAN2u0GCQRUY6C9mHje5w7/749HMCvTdpbYWs2vWqh
+         wV+w==
+X-Gm-Message-State: APjAAAUPEeyjqi0U2EzOyBwKo8v24AVMMFtGipWkZziZa9TMlHjtpA2E
+        8aOQKokUshp+pXk60kmOtMtT6w==
+X-Google-Smtp-Source: APXvYqxygP/xjo3Ov2qb74A/P/ttbI681/8gw/kDPhh5nqXQEcAuLo+jAOT3Iuhr+1hB25Cr/yC5Ng==
+X-Received: by 2002:a62:304:: with SMTP id 4mr27743090pfd.186.1559522019018;
+        Sun, 02 Jun 2019 17:33:39 -0700 (PDT)
+Received: from cakuba.netronome.com (c-71-204-185-212.hsd1.ca.comcast.net. [71.204.185.212])
+        by smtp.gmail.com with ESMTPSA id 66sm2651999pfg.140.2019.06.02.17.33.37
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Sun, 02 Jun 2019 17:33:38 -0700 (PDT)
+Date:   Sun, 2 Jun 2019 17:33:34 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Stanislav Fomichev <sdf@fomichev.me>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Tom Herbert <tom@herbertland.com>
-Subject: Re: [PATCH bpf 2/2] bpf: udp: Avoid calling reuseport's bpf_prog from
- udp_gro
-Thread-Topic: [PATCH bpf 2/2] bpf: udp: Avoid calling reuseport's bpf_prog
- from udp_gro
-Thread-Index: AQHVGABUpxevhnmX1kivwtuNG3NSD6aHesWAgAAU4oCAAGOCAA==
-Date:   Sun, 2 Jun 2019 07:05:38 +0000
-Message-ID: <361864C5-1353-4B41-A0C9-BD277607A809@fb.com>
-References: <20190531222910.2499861-1-kafai@fb.com>
- <20190531222913.2500781-1-kafai@fb.com>
- <AB1E485E-DAEE-49BD-BC86-1299C6830B7F@fb.com>
- <20190602010925.eifdfmuao4pv5mui@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20190602010925.eifdfmuao4pv5mui@kafai-mbp.dhcp.thefacebook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3445.104.11)
-x-originating-ip: [2620:10d:c090:180::91be]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c4de0803-8d3e-4cce-22fa-08d6e728b7d2
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:DM5PR15MB1386;
-x-ms-traffictypediagnostic: DM5PR15MB1386:
-x-microsoft-antispam-prvs: <DM5PR15MB13861C4B2E72B022AA62E295B31B0@DM5PR15MB1386.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2449;
-x-forefront-prvs: 005671E15D
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(376002)(346002)(136003)(396003)(366004)(51914003)(189003)(199004)(82746002)(83716004)(71200400001)(71190400001)(86362001)(36756003)(91956017)(76116006)(305945005)(2906002)(46003)(33656002)(73956011)(66446008)(66476007)(66556008)(64756008)(66946007)(256004)(5660300002)(478600001)(186003)(54906003)(6636002)(37006003)(6862004)(50226002)(4326008)(76176011)(2616005)(6486002)(99286004)(6512007)(7736002)(6436002)(446003)(14454004)(11346002)(8936002)(229853002)(53936002)(6246003)(8676002)(81156014)(81166006)(316002)(486006)(57306001)(25786009)(476003)(6116002)(68736007)(6506007)(53546011)(102836004);DIR:OUT;SFP:1102;SCL:1;SRVR:DM5PR15MB1386;H:DM5PR15MB1163.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: E1+pNtqxnUwAqOcGSAFjMz8MImB4JF9jOYw4+p/dyBtkKudyGpN0aKEftS+OXu/K6Y9k/qTsjEFcfCIlVT1VW2B3b5mEH+jqHDqjBuKUEp2LhDcwPiBtBYioa3LeWcFx/OtYrN5oSzQUo2UL+bDirMCwNsY9hoZqGX1982KS0KUqz8xjlqWDHyXSeV2OtpBZJDHDOQ8JFLTsTG/YQbbU7ctJAQYhHoBy9FVvPT4QSYbhaDEshnqGssJ/FwhIN7EhklJcwi3NH8gT0DJ0Gs/IW/X27/jOhwG1QnbLwL8mreRVQnFNTPd9wC7ixaQP4TJtHeCbXs+npyso6c3HiKvqlAkuwlNQyN9Hhe4jCMgnpnlSmK0M+/N+xy51qrA8bBGT2ZThGFu6en1aZDa7vUm3vB5OodwYCN7Rbzj8ld44wRA=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <9C987E6570F9324DA667AE18FBDBA265@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [RFC PATCH bpf-next 6/8] libbpf: allow specifying map
+ definitions using BTF
+Message-ID: <20190602173334.18e68d66@cakuba.netronome.com>
+In-Reply-To: <CAEf4Bza38VEh9NWTLEReAR_J0eqjsvH1a2T-0AeWqDZpE8YPfA@mail.gmail.com>
+References: <20190531202132.379386-1-andriin@fb.com>
+        <20190531202132.379386-7-andriin@fb.com>
+        <20190531212835.GA31612@mini-arch>
+        <CAEf4Bza38VEh9NWTLEReAR_J0eqjsvH1a2T-0AeWqDZpE8YPfA@mail.gmail.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4de0803-8d3e-4cce-22fa-08d6e728b7d2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jun 2019 07:05:38.7383
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: songliubraving@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1386
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-02_02:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906020053
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, 31 May 2019 15:58:41 -0700, Andrii Nakryiko wrote:
+> On Fri, May 31, 2019 at 2:28 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> > On 05/31, Andrii Nakryiko wrote:  
+> > > This patch adds support for a new way to define BPF maps. It relies on
+> > > BTF to describe mandatory and optional attributes of a map, as well as
+> > > captures type information of key and value naturally. This eliminates
+> > > the need for BPF_ANNOTATE_KV_PAIR hack and ensures key/value sizes are
+> > > always in sync with the key/value type.  
+> > My 2c: this is too magical and relies on me knowing the expected fields.
+> > (also, the compiler won't be able to help with the misspellings).  
 
+I have mixed feelings, too.  Especially the key and value fields are
+very non-idiomatic for C :(  They never hold any value or data, while
+the other fields do.  That feels so awkward.  I'm no compiler expert,
+but even something like:
 
-> On Jun 1, 2019, at 6:09 PM, Martin Lau <kafai@fb.com> wrote:
->=20
-> On Sat, Jun 01, 2019 at 04:54:46PM -0700, Song Liu wrote:
->>=20
->>=20
->>> On May 31, 2019, at 3:29 PM, Martin KaFai Lau <kafai@fb.com> wrote:
->>>=20
->>> When the commit a6024562ffd7 ("udp: Add GRO functions to UDP socket")
->>> added udp[46]_lib_lookup_skb to the udp_gro code path, it broke
->>> the reuseport_select_sock() assumption that skb->data is pointing
->>> to the transport header.
->>>=20
->>> This patch follows an earlier __udp6_lib_err() fix by
->>> passing a NULL skb to avoid calling the reuseport's bpf_prog.
->>>=20
->>> Fixes: a6024562ffd7 ("udp: Add GRO functions to UDP socket")
->>> Cc: Tom Herbert <tom@herbertland.com>
->>> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
->>> ---
->>> net/ipv4/udp.c | 6 +++++-
->>> net/ipv6/udp.c | 2 +-
->>> 2 files changed, 6 insertions(+), 2 deletions(-)
->>>=20
->>> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
->>> index 8fb250ed53d4..85db0e3d7f3f 100644
->>> --- a/net/ipv4/udp.c
->>> +++ b/net/ipv4/udp.c
->>> @@ -503,7 +503,11 @@ static inline struct sock *__udp4_lib_lookup_skb(s=
-truct sk_buff *skb,
-> Note that this patch is changing the below "udp4_lib_lookup_skb()"
-> instead of the above "__udp4_lib_lookup_skb()".
->=20
->>> struct sock *udp4_lib_lookup_skb(struct sk_buff *skb,
->>> 				 __be16 sport, __be16 dport)
->>> {
->>> -	return __udp4_lib_lookup_skb(skb, sport, dport, &udp_table);
->>> +	const struct iphdr *iph =3D ip_hdr(skb);
->>> +
->>> +	return __udp4_lib_lookup(dev_net(skb->dev), iph->saddr, sport,
->>> +				 iph->daddr, dport, inet_iif(skb),
->>> +				 inet_sdif(skb), &udp_table, NULL);
->>=20
->> I think we can now remove the last argument of __udp4_lib_lookup()?
-> The last arg of __udp4_lib_lookup() is skb.
-> __udp4_lib_lookup_skb(), which is not changed in this patch, is still
-> calling __udp4_lib_lookup() with a skb and the skb is used by the
-> reuseport's bpf_prog.  Hence, it cannot be removed.
+struct map_def {
+	void *key_type_ref;
+} mamap = {
+	.key_type_ref = &(struct key_xyz){},
+};
 
-I see. I somehow missed this path. Thanks for the explanation.=20
+Would feel like less of a hack to me, and then map_def doesn't have to
+be different for every map.  But yea, IDK if it's easy to (a) resolve
+the type of what key_type points to, or (b) how to do this for scalar
+types.
 
-Acked-by: Song Liu <songliubraving@fb.com>
+> I don't think it's really worse than current bpf_map_def approach. In
+> typical scenario, there are only two fields you need to remember: type
+> and max_entries (notice, they are called exactly the same as in
+> bpf_map_def, so this knowledge is transferrable). Then you'll have
+> key/value, using which you are describing both type (using field's
+> type) and size (calculated from the type).
+> 
+> I can relate a bit to that with bpf_map_def you can find definition
+> and see all possible fields, but one can also find a lot of examples
+> for new map definitions as well.
+> 
+> One big advantage of this scheme, though, is that you get that type
+> association automagically without using BPF_ANNOTATE_KV_PAIR hack,
+> with no chance of having a mismatch, etc. This is less duplication (no
+> need to do sizeof(struct my_struct) and struct my_struct as an arg to
+> that macro) and there is no need to go and ping people to add those
+> annotations to improve introspection of BPF maps.
 
->=20
->>=20
->>=20
->>> }
->>> EXPORT_SYMBOL_GPL(udp4_lib_lookup_skb);
->>>=20
->>> diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
->>> index 133e6370f89c..4e52c37bb836 100644
->>> --- a/net/ipv6/udp.c
->>> +++ b/net/ipv6/udp.c
->>> @@ -243,7 +243,7 @@ struct sock *udp6_lib_lookup_skb(struct sk_buff *sk=
-b,
->>>=20
->>> 	return __udp6_lib_lookup(dev_net(skb->dev), &iph->saddr, sport,
->>> 				 &iph->daddr, dport, inet6_iif(skb),
->>> -				 inet6_sdif(skb), &udp_table, skb);
->>> +				 inet6_sdif(skb), &udp_table, NULL);
->>> }
->>> EXPORT_SYMBOL_GPL(udp6_lib_lookup_skb);
->>>=20
->>> --=20
->>> 2.17.1
->>>=20
->>=20
+> > > Relying on BTF, this approach allows for both forward and backward
+> > > compatibility w.r.t. extending supported map definition features. Old
+> > > libbpf implementation will ignore fields it doesn't recognize, while new
+> > > implementations will parse and recognize new optional attributes.  
+> > I also don't know how to feel about old libbpf ignoring some attributes.
+> > In the kernel we require that the unknown fields are zeroed.
+> > We probably need to do something like that here? What do you think
+> > would be a good example of an optional attribute?  
+> 
+> Ignoring is required for forward-compatibility, where old libbpf will
+> be used to load newer user BPF programs. We can decided not to do it,
+> in that case it's just a question of erroring out on first unknown
+> field. This RFC was posted exactly to discuss all these issues with
+> more general community, as there is no single true way to do this.
+> 
+> As for examples of when it can be used. It's any feature that can be
+> considered optional or a hint, so if old libbpf doesn't do that, it's
+> still not the end of the world (and we can live with that, or can
+> correct using direct libbpf API calls).
 
+On forward compatibility my 0.02c would be - if we want to go there 
+and silently ignore fields it'd be good to have some form of "hard
+required" bit.  For TLVs ABIs it can be a "you have to understand 
+this one" bit, for libbpf perhaps we could add a "min libbpf version
+required" section?  That kind of ties us ELF formats to libbpf
+specifics (the libbpf version presumably would imply support for
+features), but I think we want to go there, anyway.
