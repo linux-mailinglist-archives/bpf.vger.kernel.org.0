@@ -2,51 +2,22 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B34A633731
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2019 19:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC76633783
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2019 20:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727082AbfFCRth (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Jun 2019 13:49:37 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:46810 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbfFCRth (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Jun 2019 13:49:37 -0400
-Received: by mail-qt1-f193.google.com with SMTP id z19so10402545qtz.13
-        for <bpf@vger.kernel.org>; Mon, 03 Jun 2019 10:49:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=YGNZXdoeRNmz7BqeF0/v3i59X3wiJHrSCMaZEz5idac=;
-        b=UaVuEr/kuy5hiq44Vf2xKm1Yj7c+f/OmHOwwwaNBE+hEEHXF2JMkizF7W0TNG0ZqOV
-         vAVGiZfmwhJNGAgCvAwCEhC1PlGwzWbBUyCLkgOrSi7zvR0FxhY8W1dJelfaN/00dRWc
-         97P8ELdZwEXFh0hdUXrMdmEPvlEVZ51R4ltg0ecUrBNziApYmpfYaVpnkP+bkP2otft+
-         lmVLkL3cATiX1Uxg1dV/nKaKl5/rore1zlk0dVi5wn/2NoB6BLWN4UFAlG2KYsqcomDC
-         iSM/Vgcuf5WgI+Kxky6hG1HH47rBWZ0MWU2MSoJ5sSqrZ21p0sl7SGN6kTgzFeEOlqww
-         nQHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=YGNZXdoeRNmz7BqeF0/v3i59X3wiJHrSCMaZEz5idac=;
-        b=REyb2YUDh7eBNrdjzhmZB2MakIjLwwstNITWM1a6PoTpHQOF3vPmtaiUj0VL3yQGjF
-         Od+PBHcjQymqmolejK06mwTu5n98/IvZjyXpZqoqzcBEzwtt6/Puim4jkLfnOMXZwkQg
-         v1kXopoNQQUPXHg3SQPEcJ3CPurhJox2nrYDx9VtLXHp0GB1daar7MlSpLKhaZQvOgaS
-         hTtCtOCxreIAbpfSVWkkUoEn+EIjI6lSG+Q/9pQX+m7fRvGGk9pRB6D0J3AKlVG0v/AD
-         5B4joR20lsPzUyXBDHE0RdQNv0J7MvU2aVjqVr/7Ouy56b9qU20rvWMSMmevpLNyl1mH
-         5x3w==
-X-Gm-Message-State: APjAAAUaoF+t1Bc6QnyWSij5hf67b09jXCAnai1+gKLjynRGs6bFVpe8
-        j/Ba90fzUfUR69kUO061T3PJ8w==
-X-Google-Smtp-Source: APXvYqy/e+Icc90gZvRu6SLe47LtjkZ15LHtXZ8eD5H9j0kECFuBEjDcn8Vx5zAwaodVM/Kr93ev9Q==
-X-Received: by 2002:a0c:b5c7:: with SMTP id o7mr22920460qvf.220.1559584175979;
-        Mon, 03 Jun 2019 10:49:35 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id e133sm11972673qkb.76.2019.06.03.10.49.34
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 03 Jun 2019 10:49:35 -0700 (PDT)
-Date:   Mon, 3 Jun 2019 10:49:30 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Colin Ian King <colin.king@canonical.com>
+        id S1726305AbfFCSHX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Jun 2019 14:07:23 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59072 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726055AbfFCSHX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Jun 2019 14:07:23 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.0:RSA_AES_128_CBC_SHA1:16)
+        (Exim 4.76)
+        (envelope-from <colin.king@canonical.com>)
+        id 1hXrMe-0000O6-Ld; Mon, 03 Jun 2019 18:07:20 +0000
+Subject: Re: [PATCH][next] bpf: remove redundant assignment to err
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         "David S . Miller" <davem@davemloft.net>,
@@ -57,68 +28,121 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
         bpf@vger.kernel.org, kernel-janitors@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] bpf: remove redundant assignment to err
-Message-ID: <20190603104930.466a306b@cakuba.netronome.com>
-In-Reply-To: <276525bd-dd79-052e-7663-9acc92621853@canonical.com>
 References: <20190603170247.9951-1-colin.king@canonical.com>
-        <20190603102140.70fee157@cakuba.netronome.com>
-        <276525bd-dd79-052e-7663-9acc92621853@canonical.com>
-Organization: Netronome Systems, Ltd.
+ <20190603102140.70fee157@cakuba.netronome.com>
+ <276525bd-dd79-052e-7663-9acc92621853@canonical.com>
+ <20190603104930.466a306b@cakuba.netronome.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=colin.king@canonical.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <e351d18c-21cd-6617-2a59-31a48be54b7e@canonical.com>
+Date:   Mon, 3 Jun 2019 19:07:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20190603104930.466a306b@cakuba.netronome.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 3 Jun 2019 18:39:16 +0100, Colin Ian King wrote:
-> On 03/06/2019 18:21, Jakub Kicinski wrote:
-> > On Mon,  3 Jun 2019 18:02:47 +0100, Colin King wrote:  
-> >> From: Colin Ian King <colin.king@canonical.com>
-> >>
-> >> The variable err is assigned with the value -EINVAL that is never
-> >> read and it is re-assigned a new value later on.  The assignment is
-> >> redundant and can be removed.
-> >>
-> >> Addresses-Coverity: ("Unused value")
-> >> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> >> ---
-> >>  kernel/bpf/devmap.c | 2 +-
-> >>  kernel/bpf/xskmap.c | 2 +-
-> >>  2 files changed, 2 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-> >> index 5ae7cce5ef16..a76cc6412fc4 100644
-> >> --- a/kernel/bpf/devmap.c
-> >> +++ b/kernel/bpf/devmap.c
-> >> @@ -88,7 +88,7 @@ static u64 dev_map_bitmap_size(const union bpf_attr *attr)
-> >>  static struct bpf_map *dev_map_alloc(union bpf_attr *attr)
-> >>  {
-> >>  	struct bpf_dtab *dtab;
-> >> -	int err = -EINVAL;
-> >> +	int err;
-> >>  	u64 cost;  
-> > 
-> > Perhaps keep the variables ordered longest to shortest?  
+On 03/06/2019 18:49, Jakub Kicinski wrote:
+> On Mon, 3 Jun 2019 18:39:16 +0100, Colin Ian King wrote:
+>> On 03/06/2019 18:21, Jakub Kicinski wrote:
+>>> On Mon,  3 Jun 2019 18:02:47 +0100, Colin King wrote:  
+>>>> From: Colin Ian King <colin.king@canonical.com>
+>>>>
+>>>> The variable err is assigned with the value -EINVAL that is never
+>>>> read and it is re-assigned a new value later on.  The assignment is
+>>>> redundant and can be removed.
+>>>>
+>>>> Addresses-Coverity: ("Unused value")
+>>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>>>> ---
+>>>>  kernel/bpf/devmap.c | 2 +-
+>>>>  kernel/bpf/xskmap.c | 2 +-
+>>>>  2 files changed, 2 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+>>>> index 5ae7cce5ef16..a76cc6412fc4 100644
+>>>> --- a/kernel/bpf/devmap.c
+>>>> +++ b/kernel/bpf/devmap.c
+>>>> @@ -88,7 +88,7 @@ static u64 dev_map_bitmap_size(const union bpf_attr *attr)
+>>>>  static struct bpf_map *dev_map_alloc(union bpf_attr *attr)
+>>>>  {
+>>>>  	struct bpf_dtab *dtab;
+>>>> -	int err = -EINVAL;
+>>>> +	int err;
+>>>>  	u64 cost;  
+>>>
+>>> Perhaps keep the variables ordered longest to shortest?  
+>>
+>> Is that a required coding standard?
 > 
-> Is that a required coding standard?
+> For networking code, yes.  Just look around the files you're changing
+> and see for yourself.
 
-For networking code, yes.  Just look around the files you're changing
-and see for yourself.
+Ah, informal coding standards. Great. Won't this end up with more diff
+churn?
 
-> >>  	if (!capable(CAP_NET_ADMIN))
-> >> diff --git a/kernel/bpf/xskmap.c b/kernel/bpf/xskmap.c
-> >> index 22066c28ba61..26859c6c9491 100644
-> >> --- a/kernel/bpf/xskmap.c
-> >> +++ b/kernel/bpf/xskmap.c
-> >> @@ -17,7 +17,7 @@ struct xsk_map {
-> >>  
-> >>  static struct bpf_map *xsk_map_alloc(union bpf_attr *attr)
-> >>  {
-> >> -	int cpu, err = -EINVAL;
-> >> +	int cpu, err;
-> >>  	struct xsk_map *m;
-> >>  	u64 cost;  
-> > 
-> > And here.
+> 
+>>>>  	if (!capable(CAP_NET_ADMIN))
+>>>> diff --git a/kernel/bpf/xskmap.c b/kernel/bpf/xskmap.c
+>>>> index 22066c28ba61..26859c6c9491 100644
+>>>> --- a/kernel/bpf/xskmap.c
+>>>> +++ b/kernel/bpf/xskmap.c
+>>>> @@ -17,7 +17,7 @@ struct xsk_map {
+>>>>  
+>>>>  static struct bpf_map *xsk_map_alloc(union bpf_attr *attr)
+>>>>  {
+>>>> -	int cpu, err = -EINVAL;
+>>>> +	int cpu, err;
+>>>>  	struct xsk_map *m;
+>>>>  	u64 cost;  
+>>>
+>>> And here.
+
