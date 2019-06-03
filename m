@@ -2,69 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 400EA32AC0
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2019 10:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7BF32AF9
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2019 10:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727255AbfFCI1P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Jun 2019 04:27:15 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:38279 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726272AbfFCI1P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Jun 2019 04:27:15 -0400
-Received: by mail-ot1-f68.google.com with SMTP id d17so1082385oth.5;
-        Mon, 03 Jun 2019 01:27:14 -0700 (PDT)
+        id S1727783AbfFCIj0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Jun 2019 04:39:26 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:40817 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725856AbfFCIjZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Jun 2019 04:39:25 -0400
+Received: by mail-qk1-f195.google.com with SMTP id c70so10458456qkg.7;
+        Mon, 03 Jun 2019 01:39:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=uv/TYWEESnDfEscWsGSPSE6N/KhRP3li2RzgDdqcb9s=;
-        b=bYkYopunreF8aBv8dJzYYp8r1Tc6xLp7e7TvvhnVCjKyT3yI0dw7w9IgS5bVkP7azy
-         z6h+xf5XS+2QD3nn5lK0+f5GdzgnEeuEx8IdFMMcy+5oxs1wdQaCTcMFACptJS+ZYeax
-         DYGehZGIfjKHUDAz74wHNbbga7p0zQv+v2yRiowWZHmaCDoqzAbly76kHeNWf9sKSB6a
-         0jGMvDkizbSLu8XWxpKXdqrg/hZ32sHhVxCX2gtZkj2c9VqwjJBKisyLIZ8IVj9G8LYv
-         zmyKEdtyA8DIhHWGxQh1APk8SXjMYNU8nvhnubjz8QgijjNE6IHfhC1CAbIM4fOaE43Q
-         sHmg==
+        bh=CTE1fvL7sqNvtmHNQOimde9iCZVJJom3/Sbeudz0IZk=;
+        b=YC6LLowl/UTHnHgUzHHywMz5i+kyzNizBVGkHYExrkBJWJnRa1ntNjwmJynSK2D7+p
+         zP5Ml+27Phz/rkVSeqzxpdZf+o1SXJnpW8x4qEQNYLIl24ATsQnZPtvjZO63pZJQyrpQ
+         WiarbugQBlVGGxzSwP3//DpDDl2Pvbs+2N9oFpELxvoVOzysw8smPusWVmZmnoUlU9pk
+         /+cdIvNbiIlwfWk1PbhTaumhSA+/cBA3bqNn0F74KRfm+VTQqctz6Ubhw9vHN4qS9brr
+         CSq4mv67r9R5Sj75DZdVE84PQIIRLbkb7AH/Eqs+oTscW+xFGbl5gdC6g6B/2PdARPIK
+         UtEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=uv/TYWEESnDfEscWsGSPSE6N/KhRP3li2RzgDdqcb9s=;
-        b=thvZDDDmb6bQRBoyfotj7s2COe/ZZdRcJQYerbNBvzTg82XT7W1nJLvlpKwt1ws/2k
-         pM6Bbx0vaEg1oUsQc4NFFf94Lce88p/7gyU235IMOOCkrVkFyhUGNHJKm7zcpWAgxCLc
-         YkQXgQm+ij9bIWwaC/V+ZeRGHxogv9rU6y9wZ5pp/ascewDX3ue4KA8GoBcZuKtMqSM1
-         nXhuK6A43ImsraVAfF58G2I4og5kswBD+Fp64UUfWgzOsNg6xBl8IyLiRHQev5tY6BeB
-         FYIlmpTks/HSpcmUzewJgIHQAnF9MP10HHZ8eA/Qo+cAvo0ztWkRvKgJCweqD5PFxEU3
-         LH2g==
-X-Gm-Message-State: APjAAAU8cF5z3NPXwJmZjSkdJKTP4dpak8f9kWq7/MwAiYdPofY0gZdU
-        Tfdvz+DP0y8vangODFQY5EZ/NXrFf5tjWmLbDfQ=
-X-Google-Smtp-Source: APXvYqws1NHuRMJ3cst1WOeYWICtgUQP/IXjVREOK02PnlVFd/0ygeJ4jq+eB7TUSp2JDdAKcbrVcjI2LO66nGaFi2c=
-X-Received: by 2002:a9d:69ce:: with SMTP id v14mr302587oto.39.1559550434134;
- Mon, 03 Jun 2019 01:27:14 -0700 (PDT)
+        bh=CTE1fvL7sqNvtmHNQOimde9iCZVJJom3/Sbeudz0IZk=;
+        b=Fe4WglVfDLRHCSCNXiADz58RdMu0F8DFFHjgTNpg9/9QpZr3Vvwh91zcoJ0C/qv6yr
+         XR8Noq5fXxUz7d+uE0fU5IqdnYa5u8Y0cyw5ZNh6SlOTkMjtVPlu+WoFYnfHjaOymgtj
+         /joCnDgWR7DIdPnUmmrlwzKIsEvi5dVW+icYXzcWkIEazQgZHwRkj9rsaz0vThKitiYl
+         tqgFDkXD3G2jKhWPDg4fEIEW7N+euDE1aRxQr64JDjF7sov2XXal93bjpds6O2KQee6L
+         72AhZza3y/rTeJKH/PphzHx2qrwXZPnOzuiptbowP0Jstfthod46za/U2bh2FiRVYzMI
+         qXZg==
+X-Gm-Message-State: APjAAAVz8Par4nBuUD/8JKka/ilOqcpYQxLq3mibvMwWLkIKN9IEzO1X
+        8rh2dJfhs8Y4Qid05FKRRcJo02I8wQgul1Qje+w=
+X-Google-Smtp-Source: APXvYqzvs/ycwkARvcvVyHi7cmkLF//gjpXT0aZo+1RFrDgzS62PVser3z4HN74Pcm4HLSu9K9hW3X9Zv5GgPEhWzc0=
+X-Received: by 2002:a05:620a:158c:: with SMTP id d12mr20071304qkk.33.1559551163242;
+ Mon, 03 Jun 2019 01:39:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190524093431.20887-1-maximmi@mellanox.com> <8b0450c2-ad5e-ecaa-9958-df4da1dd6456@intel.com>
- <c5f6ab402de93f0b675d19499490e8c99701b5cc.camel@mellanox.com>
-In-Reply-To: <c5f6ab402de93f0b675d19499490e8c99701b5cc.camel@mellanox.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 3 Jun 2019 10:27:02 +0200
-Message-ID: <CAJ8uoz01-0B+-ePfPA2J+qrq4JM1aNUaesevQDmSZLJ1m91crA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 00/16] AF_XDP infrastructure improvements and
- mlx5e support
-To:     Saeed Mahameed <saeedm@mellanox.com>
-Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "magnus.karlsson@intel.com" <magnus.karlsson@intel.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "bjorn.topel@intel.com" <bjorn.topel@intel.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "yhs@fb.com" <yhs@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "maciejromanfijalkowski@gmail.com" <maciejromanfijalkowski@gmail.com>,
-        "bsd@fb.com" <bsd@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+References: <20190531094215.3729-1-bjorn.topel@gmail.com> <20190531094215.3729-2-bjorn.topel@gmail.com>
+ <E5650E49-81B5-4F36-B931-E433A0BD210D@flugsvamp.com>
+In-Reply-To: <E5650E49-81B5-4F36-B931-E433A0BD210D@flugsvamp.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Mon, 3 Jun 2019 10:39:11 +0200
+Message-ID: <CAJ+HfNj=h1Ns_Q4tzmK-5q8jr5icVLA9-tiH7-tQTXx0hATZ0A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] net: xdp: refactor XDP_QUERY_PROG{,_HW}
+ to netdev
+To:     Jonathan Lemon <jlemon@flugsvamp.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Netdev <netdev@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        bpf <bpf@vger.kernel.org>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Saeed Mahameed <saeedm@mellanox.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
@@ -72,133 +67,532 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 31, 2019 at 11:59 PM Saeed Mahameed <saeedm@mellanox.com> wrote=
-:
+On Sat, 1 Jun 2019 at 20:12, Jonathan Lemon <jlemon@flugsvamp.com> wrote:
 >
-> On Fri, 2019-05-24 at 12:18 +0200, Bj=C3=B6rn T=C3=B6pel wrote:
-> > On 2019-05-24 11:35, Maxim Mikityanskiy wrote:
-> > > This series contains improvements to the AF_XDP kernel
-> > > infrastructure
-> > > and AF_XDP support in mlx5e. The infrastructure improvements are
-> > > required for mlx5e, but also some of them benefit to all drivers,
-> > > and
-> > > some can be useful for other drivers that want to implement AF_XDP.
-> > >
-> > >
-> [...]
-> >
-> > Maxim, this doesn't address the uapi concern we had on your v2.
-> > Please refer to Magnus' comment here [1].
-> >
-> > Please educate me why you cannot publish AF_XDP without the uapi
-> > change?
-> > It's an extension, right? If so, then existing XDP/AF_XDP program can
-> > use Mellanox ZC without your addition? It's great that Mellanox has a
-> > ZC
-> > capable driver, but the uapi change is a NAK.
-> >
-> > To reiterate; We'd like to get the queue setup/steering for AF_XDP
-> > correct. I, and Magnus, dislike this approach. It requires a more
-> > complicated XDP program, and is hard for regular users to understand.
-> >
-> >
+> On 31 May 2019, at 2:42, Bj=C3=B6rn T=C3=B6pel wrote:
 >
-> Hi Bjorn and Magnus,
+> > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> >
+> > All XDP capable drivers need to implement the XDP_QUERY_PROG{,_HW}
+> > command of ndo_bpf. The query code is fairly generic. This commit
+> > refactors the query code up from the drivers to the netdev level.
+> >
+> > The struct net_device has gained two new members: xdp_prog_hw and
+> > xdp_flags. The former is the offloaded XDP program, if any, and the
+> > latter tracks the flags that the supplied when attaching the XDP
+> > program. The flags only apply to SKB_MODE or DRV_MODE, not HW_MODE.
+> >
+> > The xdp_prog member, previously only used for SKB_MODE, is shared with
+> > DRV_MODE. This is OK, due to the fact that SKB_MODE and DRV_MODE are
+> > mutually exclusive. To differentiate between the two modes, a new
+> > internal flag is introduced as well.
 >
-> It is not clear to me why you don't like this approach, if anything,
-> this approach is addressing many concerns you raised about current
-> limited approach of re-using/"stealing" only regular RX rings for xsk
-> traffic !
+> I'm not entirely clear why this new flag is needed - GENERIC seems to
+> be an alias for SKB_MODE, so why just use SKB_MODE directly?
 >
-> for instance
-> 1) xsk ring now has a unique id. (wasn't this the plan from the
-> beginning ?)
-> 2) No RSS issues, only explicit steering rules got the the newly
-> created isolated xsk ring, default RSS is not affected regular RX rings
-> are still intact.
-> 3) the new scheme is flexible and will allow as much xsk sockets as
-> needed, and can co-exist with regular rings.
-> 4) We want to have a solution that will replace DPDK, having such
-> limitations of a limited number of RX rings and stealing from regular
-> rings, is really not a worthy design, just because some drivers do not
-> want to deal or don't know how to deal with creating dedicated
-> resources.
-> 5) i think it is wrong to compare xsk rings with regular rings, xsk
-> rings are actually just a a device context that redirects traffic to a
-> special buffer space, there is no real memory buffers model behind it,
-> other than the rx/tx descriptors. (memory model is handled outside the
-> driver).
-> 6) mlx5 is designed and optimized for such use cases (dedicated/unique
-> rx/tx rings for XDP), limiting us to current AF_XDP limitation without
-> allowing us to improve the AF_XDP design is really not fair.
+> If the user does not explicitly specify a type (skb|drv|hw), then the
+> command should choose the correct type and then behave as if this type
+> was specified.
+>
 
-Hi Saeed,
+Yes, this is kind of hairy.
 
-Agree on all your statements. We need and should proceed in this
-direction (as I have stated before) so I am all aligned with what you
-want and hopefully also what other users or potential users want. The
-only issue I personally have is that we identify the "create a new
-channel/pipe/flow of packets from the NIC completely separated from
-the regular SKB flows" with the queue id. The user really does not
-care about queue ids. He/She only wants an endpoint that can be used
-to receive and send packets and then to be able to program this
-endpoint to receive the packets that the application is interested in.
-Queue ids and conglomerates of queue ids expose too much of HW
-concepts that we really should not care about in user space, IMHO.
-What I would like is to be able to do all these things without
-exposing queue ids. Maybe just with the socket instead.
+SKB and DRV are mutually exclusive, but HW is not. IOW, valid options are:
+SKB, DRV, HW, SKB+HW DRV+HW.
 
-Now I am going to argue for the other side :-). The above approach
-would require some new plumbing for sure, since ethtool uses queue ids
-today to set the redirection of packets. So maybe it is just a pipe
-dream to get to this point (it will take too long, for example) and we
-should just reuse the queue id space for a new set of queue ids that
-have all the good properties that you describe. What I would
-preferably not like to end up with is some new interface that we do
-not need in one to two years time.
+What complicates things further, is that SKB and DRV can be implicitly
+(auto/no flags) or explicitly enabled (flags).
 
-Is there some way we can extend the uapi so that it can be used for
-both the intermediary step (tagging along the queue ids) and the end
-goal (not having to use them at all)? Could we extend the bind() call
-so that it creates a socket that is bound to some queue that we do not
-specify (it can be created together with some other queues and bundled
-with them, or some completely new queue and irq line, or whatever, we
-do not care). It is bound to an "anonymous queue" you could say. Then
-as an intermediary step, we can add a getsockopt that gets the real
-queue id identifiers from the socket that we can use in ethtool, for
-example. Other suggestions?
+If a user doesn't pass any flags, the "best supported mode" should be
+selected. If this "auto mode" is used, it should be seen as a third
+mode. E.g.
 
-As I have said before, I like 99% of the work that Maxim has done. But
-new uapis should not be take lightly as they have repercussions that
-lasts forever. That is why your patch set is taking time as you
-bundled them all together. Or maybe I am just chicken ;-).
+ip link set dev eth0 xdp on -- OK
+ip link set dev eth0 xdp off -- OK
 
-/Magnus
+ip link set dev eth0 xdp on -- OK # generic auto selected
+ip link set dev eth0 xdpgeneric off -- NOK, bad flags
 
-> the way i see it, this new extension is actually a generalization to
-> allow for more drivers support and AF_XDP flexibility.
+ip link set dev eth0 xdp on -- OK # drv auto selected
+ip link set dev eth0 xdpdrv off -- NOK, bad flags
+
+...and so on. The idea is that a user should use the same set of flags alwa=
+ys.
+
+The internal "GENERIC" flag is only to determine if the xdp_prog
+represents a DRV version or SKB version. Maybe it would be clearer
+just to add an additional xdp_prog_drv to the net_device, instead?
+
+> The logic in dev_change_xdp_fd() is too complicated.  It disallows
+> setting (drv|skb), but allows (hw|skb), which I'm not sure is
+> intentional.
 >
-> if you have different ideas on how to implement the new design, please
-> provide your feedback and we will be more than happy to improve the
-> current implementation, but requesting to drop it, i think is not a
-> fair request.
+> It should be clearer as to which combinations are allowed.
+
+Fair point. I'll try to clean it up further.
+
+
+Bj=C3=B6rn
+
+> --
+> Jonathan
 >
-> Side note: Our task is to provide a scalable and flexible in-kernel XDP
-> solution so we can offer a valid replacement for DPDK and userspace
-> only solutions, I think we need to have a scheme where we allow an
-> unlimited number of xsk sockets/rings with full flow
-> separation/isolation between different user sockets/apps, the driver/hw
-> resources are really very cheap (as there is no buffer management) much
-> cheaper than allocating a full blown regular socket buffers.
 >
-> Thanks,
-> Saeed.
 >
-> > Thanks,
-> > Bj=C3=B6rn
 > >
-> > [1]
-> > https://lore.kernel.org/bpf/CAJ8uoz2UHk+5xPwz-STM9gkQZdm7r_=3DjsgaB0nF+=
-mHgch=3DaxPg@mail.gmail.com/
+> > The program query operations is all done under the rtnl lock. However,
+> > the xdp_prog member is __rcu annotated, and used in a lock-less manner
+> > for the SKB_MODE. Now that xdp_prog member is shared from a query
+> > program perspective, RCU read and assignments functions are still used
+> > when altering xdp_prog, even when only for queries in DRV_MODE. This
+> > is for sparse/lockdep correctness.
 > >
+> > Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> > ---
+> >  include/linux/netdevice.h |  15 +++--
+> >  include/net/xdp.h         |   4 ++
+> >  net/core/dev.c            | 138
+> > ++++++++++++++++++++++++--------------
+> >  net/core/rtnetlink.c      |  53 +++++++--------
+> >  net/core/xdp.c            |  17 +++--
+> >  5 files changed, 139 insertions(+), 88 deletions(-)
 > >
+> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> > index 44b47e9df94a..f3a875a52c6c 100644
+> > --- a/include/linux/netdevice.h
+> > +++ b/include/linux/netdevice.h
+> > @@ -1940,6 +1940,9 @@ struct net_device {
+> >  #endif
+> >       struct hlist_node       index_hlist;
+> >
+> > +     struct bpf_prog         *xdp_prog_hw;
+> > +     u32                     xdp_flags;
+> > +
+> >  /*
+> >   * Cache lines mostly used on transmit path
+> >   */
+> > @@ -2043,11 +2046,14 @@ struct net_device {
+> >  };
+> >  #define to_net_dev(d) container_of(d, struct net_device, dev)
+> >
+> > +/* Reusing the XDP flags space for kernel internal flag */
+> > +#define XDP_FLAGS_KERN_GENERIC (1U << 4)
+> > +static_assert(!(XDP_FLAGS_KERN_GENERIC & XDP_FLAGS_MASK));
+> > +
+> >  static inline bool netif_elide_gro(const struct net_device *dev)
+> >  {
+> > -     if (!(dev->features & NETIF_F_GRO) || dev->xdp_prog)
+> > -             return true;
+> > -     return false;
+> > +     return !(dev->features & NETIF_F_GRO) ||
+> > +             dev->xdp_flags & XDP_FLAGS_KERN_GENERIC;
+> >  }
+> >
+> >  #define      NETDEV_ALIGN            32
+> > @@ -3684,8 +3690,7 @@ struct sk_buff *dev_hard_start_xmit(struct
+> > sk_buff *skb, struct net_device *dev,
+> >  typedef int (*bpf_op_t)(struct net_device *dev, struct netdev_bpf
+> > *bpf);
+> >  int dev_change_xdp_fd(struct net_device *dev, struct netlink_ext_ack
+> > *extack,
+> >                     int fd, u32 flags);
+> > -u32 __dev_xdp_query(struct net_device *dev, bpf_op_t xdp_op,
+> > -                 enum bpf_netdev_command cmd);
+> > +u32 dev_xdp_query(struct net_device *dev, unsigned int mode);
+> >  int xdp_umem_query(struct net_device *dev, u16 queue_id);
+> >
+> >  int __dev_forward_skb(struct net_device *dev, struct sk_buff *skb);
+> > diff --git a/include/net/xdp.h b/include/net/xdp.h
+> > index 0f25b3675c5c..3691280c8fc1 100644
+> > --- a/include/net/xdp.h
+> > +++ b/include/net/xdp.h
+> > @@ -51,6 +51,7 @@ struct xdp_mem_info {
+> >  };
+> >
+> >  struct page_pool;
+> > +struct netlink_ext_ack;
+> >
+> >  struct zero_copy_allocator {
+> >       void (*free)(struct zero_copy_allocator *zca, unsigned long handl=
+e);
+> > @@ -166,4 +167,7 @@ bool xdp_attachment_flags_ok(struct
+> > xdp_attachment_info *info,
+> >  void xdp_attachment_setup(struct xdp_attachment_info *info,
+> >                         struct netdev_bpf *bpf);
+> >
+> > +bool xdp_prog_flags_ok(u32 old_flags, u32 new_flags,
+> > +                    struct netlink_ext_ack *extack);
+> > +
+> >  #endif /* __LINUX_NET_XDP_H__ */
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index b6b8505cfb3e..1a9da508149a 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -8005,21 +8005,43 @@ int dev_change_proto_down_generic(struct
+> > net_device *dev, bool proto_down)
+> >  }
+> >  EXPORT_SYMBOL(dev_change_proto_down_generic);
+> >
+> > -u32 __dev_xdp_query(struct net_device *dev, bpf_op_t bpf_op,
+> > -                 enum bpf_netdev_command cmd)
+> > +static u32 dev_xdp_query_generic(struct net_device *dev)
+> >  {
+> > -     struct netdev_bpf xdp;
+> > +     struct bpf_prog *prog =3D rtnl_dereference(dev->xdp_prog);
+> >
+> > -     if (!bpf_op)
+> > -             return 0;
+> > +     return prog && dev->xdp_flags & XDP_FLAGS_KERN_GENERIC ?
+> > +             prog->aux->id : 0;
+> > +}
+> >
+> > -     memset(&xdp, 0, sizeof(xdp));
+> > -     xdp.command =3D cmd;
+> > +static u32 dev_xdp_query_drv(struct net_device *dev)
+> > +{
+> > +     struct bpf_prog *prog =3D rtnl_dereference(dev->xdp_prog);
+> > +
+> > +     return prog && !(dev->xdp_flags & XDP_FLAGS_KERN_GENERIC) ?
+> > +             prog->aux->id : 0;
+> > +}
+> > +
+> > +static u32 dev_xdp_current_mode(struct net_device *dev)
+> > +{
+> > +     struct bpf_prog *prog =3D rtnl_dereference(dev->xdp_prog);
+> >
+> > -     /* Query must always succeed. */
+> > -     WARN_ON(bpf_op(dev, &xdp) < 0 && cmd =3D=3D XDP_QUERY_PROG);
+> > +     if (prog)
+> > +             return dev_xdp_query_generic(dev) ? XDP_FLAGS_SKB_MODE :
+> > +                     XDP_FLAGS_DRV_MODE;
+>
+>         return xdp->flags & XDP_FLAGS_MODE;
+>
+>
+> > +     return 0;
+> > +}
+> >
+> > -     return xdp.prog_id;
+> > +u32 dev_xdp_query(struct net_device *dev, unsigned int mode)
+> > +{
+> > +     switch (mode) {
+> > +     case XDP_FLAGS_DRV_MODE:
+> > +             return dev_xdp_query_drv(dev);
+> > +     case XDP_FLAGS_SKB_MODE:
+> > +             return dev_xdp_query_generic(dev);
+> > +     case XDP_FLAGS_HW_MODE:
+> > +             return dev->xdp_prog_hw ? dev->xdp_prog_hw->aux->id : 0;
+> > +     }
+> > +     return 0;
+> >  }
+> >
+> >  static int dev_xdp_install(struct net_device *dev, bpf_op_t bpf_op,
+> > @@ -8027,45 +8049,47 @@ static int dev_xdp_install(struct net_device
+> > *dev, bpf_op_t bpf_op,
+> >                          struct bpf_prog *prog)
+> >  {
+> >       struct netdev_bpf xdp;
+> > +     int err;
+> >
+> >       memset(&xdp, 0, sizeof(xdp));
+> > -     if (flags & XDP_FLAGS_HW_MODE)
+> > +     if (flags & XDP_FLAGS_HW_MODE) {
+> >               xdp.command =3D XDP_SETUP_PROG_HW;
+> > -     else
+> > +             xdp.flags =3D XDP_FLAGS_HW_MODE;
+> > +     } else {
+> >               xdp.command =3D XDP_SETUP_PROG;
+> > +             xdp.flags =3D flags;
+> > +     }
+> >       xdp.extack =3D extack;
+> > -     xdp.flags =3D flags;
+> >       xdp.prog =3D prog;
+> >
+> > -     return bpf_op(dev, &xdp);
+> > +     err =3D bpf_op(dev, &xdp);
+> > +     if (err)
+> > +             return err;
+> > +
+> > +     if (flags & XDP_FLAGS_HW_MODE) {
+> > +             dev->xdp_prog_hw =3D prog;
+> > +             return 0;
+> > +     }
+> > +
+> > +     rcu_assign_pointer(dev->xdp_prog, prog);
+> > +     dev->xdp_flags =3D prog ? flags : 0;
+> > +     return 0;
+> >  }
+> >
+> >  static void dev_xdp_uninstall(struct net_device *dev)
+> >  {
+> > -     struct netdev_bpf xdp;
+> > -     bpf_op_t ndo_bpf;
+> > -
+> > -     /* Remove generic XDP */
+> > -     WARN_ON(dev_xdp_install(dev, generic_xdp_install, NULL, 0, NULL))=
+;
+> > -
+> > -     /* Remove from the driver */
+> > -     ndo_bpf =3D dev->netdev_ops->ndo_bpf;
+> > -     if (!ndo_bpf)
+> > -             return;
+> > -
+> > -     memset(&xdp, 0, sizeof(xdp));
+> > -     xdp.command =3D XDP_QUERY_PROG;
+> > -     WARN_ON(ndo_bpf(dev, &xdp));
+> > -     if (xdp.prog_id)
+> > -             WARN_ON(dev_xdp_install(dev, ndo_bpf, NULL, xdp.prog_flag=
+s,
+> > -                                     NULL));
+> > +     struct bpf_prog *prog =3D rtnl_dereference(dev->xdp_prog);
+> > +     bpf_op_t bpf_op;
+> >
+> > -     /* Remove HW offload */
+> > -     memset(&xdp, 0, sizeof(xdp));
+> > -     xdp.command =3D XDP_QUERY_PROG_HW;
+> > -     if (!ndo_bpf(dev, &xdp) && xdp.prog_id)
+> > -             WARN_ON(dev_xdp_install(dev, ndo_bpf, NULL, xdp.prog_flag=
+s,
+> > +     if (prog) {
+> > +             bpf_op =3D dev_xdp_query_generic(dev) ?
+> > +                      generic_xdp_install : dev->netdev_ops->ndo_bpf;
+> > +             WARN_ON(dev_xdp_install(dev, bpf_op, NULL, dev->xdp_flags=
+,
+> >                                       NULL));
+> > +     }
+> > +     if (dev_xdp_query(dev, XDP_FLAGS_HW_MODE))
+> > +             WARN_ON(dev_xdp_install(dev, dev->netdev_ops->ndo_bpf,
+> > +                                     NULL, XDP_FLAGS_HW_MODE, NULL));
+> >  }
+> >
+> >  /**
+> > @@ -8080,41 +8104,49 @@ static void dev_xdp_uninstall(struct
+> > net_device *dev)
+> >  int dev_change_xdp_fd(struct net_device *dev, struct netlink_ext_ack
+> > *extack,
+> >                     int fd, u32 flags)
+> >  {
+> > -     const struct net_device_ops *ops =3D dev->netdev_ops;
+> > -     enum bpf_netdev_command query;
+> >       struct bpf_prog *prog =3D NULL;
+> > -     bpf_op_t bpf_op, bpf_chk;
+> > +     u32 mode, curr_mode;
+> > +     bpf_op_t bpf_op;
+> >       bool offload;
+> >       int err;
+> >
+> >       ASSERT_RTNL();
+> >
+> >       offload =3D flags & XDP_FLAGS_HW_MODE;
+> > -     query =3D offload ? XDP_QUERY_PROG_HW : XDP_QUERY_PROG;
+> > +     mode =3D offload ? XDP_FLAGS_HW_MODE : XDP_FLAGS_DRV_MODE;
+> >
+> > -     bpf_op =3D bpf_chk =3D ops->ndo_bpf;
+> > +     bpf_op =3D dev->netdev_ops->ndo_bpf;
+> >       if (!bpf_op && (flags & (XDP_FLAGS_DRV_MODE | XDP_FLAGS_HW_MODE))=
+) {
+> >               NL_SET_ERR_MSG(extack, "underlying driver does not suppor=
+t XDP in
+> > native mode");
+> >               return -EOPNOTSUPP;
+> >       }
+> > -     if (!bpf_op || (flags & XDP_FLAGS_SKB_MODE))
+> > -             bpf_op =3D generic_xdp_install;
+> > -     if (bpf_op =3D=3D bpf_chk)
+> > -             bpf_chk =3D generic_xdp_install;
+> >
+> > -     if (fd >=3D 0) {
+> > -             if (!offload && __dev_xdp_query(dev, bpf_chk, XDP_QUERY_P=
+ROG)) {
+> > +     if (!bpf_op || flags & XDP_FLAGS_SKB_MODE)
+> > +             mode =3D XDP_FLAGS_SKB_MODE;
+> > +
+> > +     curr_mode =3D dev_xdp_current_mode(dev);
+> > +
+> > +     if (!offload && curr_mode && (mode ^ curr_mode) &
+> > +         (XDP_FLAGS_DRV_MODE | XDP_FLAGS_SKB_MODE)) {
+> > +             if (fd >=3D 0) {
+> >                       NL_SET_ERR_MSG(extack, "native and generic XDP ca=
+n't be active at
+> > the same time");
+> >                       return -EEXIST;
+> >               }
+> > -             if ((flags & XDP_FLAGS_UPDATE_IF_NOEXIST) &&
+> > -                 __dev_xdp_query(dev, bpf_op, query)) {
+> > +             return 0;
+> > +     }
+> > +
+> > +     if (!offload && dev_xdp_query(dev, mode) &&
+> > +         !xdp_prog_flags_ok(dev->xdp_flags, flags, extack))
+> > +             return -EBUSY;
+> > +
+> > +     if (fd >=3D 0) {
+> > +             if (flags & XDP_FLAGS_UPDATE_IF_NOEXIST &&
+> > +                 dev_xdp_query(dev, mode)) {
+> >                       NL_SET_ERR_MSG(extack, "XDP program already attac=
+hed");
+> >                       return -EBUSY;
+> >               }
+> >
+> > -             prog =3D bpf_prog_get_type_dev(fd, BPF_PROG_TYPE_XDP,
+> > -                                          bpf_op =3D=3D ops->ndo_bpf);
+> > +             prog =3D bpf_prog_get_type_dev(fd, BPF_PROG_TYPE_XDP, !!b=
+pf_op);
+> >               if (IS_ERR(prog))
+> >                       return PTR_ERR(prog);
+> >
+> > @@ -8125,6 +8157,10 @@ int dev_change_xdp_fd(struct net_device *dev,
+> > struct netlink_ext_ack *extack,
+> >               }
+> >       }
+> >
+> > +     if (mode =3D=3D XDP_FLAGS_SKB_MODE) {
+> > +             bpf_op =3D generic_xdp_install;
+> > +             flags |=3D XDP_FLAGS_KERN_GENERIC;
+> > +     }
+> >       err =3D dev_xdp_install(dev, bpf_op, extack, flags, prog);
+> >       if (err < 0 && prog)
+> >               bpf_prog_put(prog);
+> > diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+> > index adcc045952c2..5e396fd01d8b 100644
+> > --- a/net/core/rtnetlink.c
+> > +++ b/net/core/rtnetlink.c
+> > @@ -1360,42 +1360,44 @@ static int rtnl_fill_link_ifmap(struct sk_buff
+> > *skb, struct net_device *dev)
+> >       return 0;
+> >  }
+> >
+> > -static u32 rtnl_xdp_prog_skb(struct net_device *dev)
+> > +static unsigned int rtnl_xdp_mode_to_flag(u8 tgt_mode)
+> >  {
+> > -     const struct bpf_prog *generic_xdp_prog;
+> > -
+> > -     ASSERT_RTNL();
+> > -
+> > -     generic_xdp_prog =3D rtnl_dereference(dev->xdp_prog);
+> > -     if (!generic_xdp_prog)
+> > -             return 0;
+> > -     return generic_xdp_prog->aux->id;
+> > -}
+> > -
+> > -static u32 rtnl_xdp_prog_drv(struct net_device *dev)
+> > -{
+> > -     return __dev_xdp_query(dev, dev->netdev_ops->ndo_bpf,
+> > XDP_QUERY_PROG);
+> > +     switch (tgt_mode) {
+> > +     case XDP_ATTACHED_DRV:
+> > +             return XDP_FLAGS_DRV_MODE;
+> > +     case XDP_ATTACHED_SKB:
+> > +             return XDP_FLAGS_SKB_MODE;
+> > +     case XDP_ATTACHED_HW:
+> > +             return XDP_FLAGS_HW_MODE;
+> > +     }
+> > +     return 0;
+> >  }
+> >
+> > -static u32 rtnl_xdp_prog_hw(struct net_device *dev)
+> > +static u32 rtnl_xdp_mode_to_attr(u8 tgt_mode)
+> >  {
+> > -     return __dev_xdp_query(dev, dev->netdev_ops->ndo_bpf,
+> > -                            XDP_QUERY_PROG_HW);
+> > +     switch (tgt_mode) {
+> > +     case XDP_ATTACHED_DRV:
+> > +             return IFLA_XDP_DRV_PROG_ID;
+> > +     case XDP_ATTACHED_SKB:
+> > +             return IFLA_XDP_SKB_PROG_ID;
+> > +     case XDP_ATTACHED_HW:
+> > +             return IFLA_XDP_HW_PROG_ID;
+> > +     }
+> > +     return 0;
+> >  }
+> >
+> >  static int rtnl_xdp_report_one(struct sk_buff *skb, struct net_device
+> > *dev,
+> > -                            u32 *prog_id, u8 *mode, u8 tgt_mode, u32 a=
+ttr,
+> > -                            u32 (*get_prog_id)(struct net_device *dev)=
+)
+> > +                            u32 *prog_id, u8 *mode, u8 tgt_mode)
+> >  {
+> >       u32 curr_id;
+> >       int err;
+> >
+> > -     curr_id =3D get_prog_id(dev);
+> > +     curr_id =3D dev_xdp_query(dev, rtnl_xdp_mode_to_flag(tgt_mode));
+> >       if (!curr_id)
+> >               return 0;
+> >
+> >       *prog_id =3D curr_id;
+> > -     err =3D nla_put_u32(skb, attr, curr_id);
+> > +     err =3D nla_put_u32(skb, rtnl_xdp_mode_to_attr(tgt_mode), curr_id=
+);
+> >       if (err)
+> >               return err;
+> >
+> > @@ -1420,16 +1422,13 @@ static int rtnl_xdp_fill(struct sk_buff *skb,
+> > struct net_device *dev)
+> >
+> >       prog_id =3D 0;
+> >       mode =3D XDP_ATTACHED_NONE;
+> > -     err =3D rtnl_xdp_report_one(skb, dev, &prog_id, &mode,
+> > XDP_ATTACHED_SKB,
+> > -                               IFLA_XDP_SKB_PROG_ID, rtnl_xdp_prog_skb=
+);
+> > +     err =3D rtnl_xdp_report_one(skb, dev, &prog_id, &mode,
+> > XDP_ATTACHED_SKB);
+> >       if (err)
+> >               goto err_cancel;
+> > -     err =3D rtnl_xdp_report_one(skb, dev, &prog_id, &mode,
+> > XDP_ATTACHED_DRV,
+> > -                               IFLA_XDP_DRV_PROG_ID, rtnl_xdp_prog_drv=
+);
+> > +     err =3D rtnl_xdp_report_one(skb, dev, &prog_id, &mode,
+> > XDP_ATTACHED_DRV);
+> >       if (err)
+> >               goto err_cancel;
+> > -     err =3D rtnl_xdp_report_one(skb, dev, &prog_id, &mode,
+> > XDP_ATTACHED_HW,
+> > -                               IFLA_XDP_HW_PROG_ID, rtnl_xdp_prog_hw);
+> > +     err =3D rtnl_xdp_report_one(skb, dev, &prog_id, &mode,
+> > XDP_ATTACHED_HW);
+> >       if (err)
+> >               goto err_cancel;
+> >
+> > diff --git a/net/core/xdp.c b/net/core/xdp.c
+> > index 4b2b194f4f1f..af92c04a58d8 100644
+> > --- a/net/core/xdp.c
+> > +++ b/net/core/xdp.c
+> > @@ -388,16 +388,23 @@ int xdp_attachment_query(struct
+> > xdp_attachment_info *info,
+> >  }
+> >  EXPORT_SYMBOL_GPL(xdp_attachment_query);
+> >
+> > -bool xdp_attachment_flags_ok(struct xdp_attachment_info *info,
+> > -                          struct netdev_bpf *bpf)
+> > +bool xdp_prog_flags_ok(u32 old_flags, u32 new_flags,
+> > +                    struct netlink_ext_ack *extack)
+> >  {
+> > -     if (info->prog && (bpf->flags ^ info->flags) & XDP_FLAGS_MODES) {
+> > -             NL_SET_ERR_MSG(bpf->extack,
+> > -                            "program loaded with different flags");
+> > +     if ((new_flags ^ old_flags) & XDP_FLAGS_MODES) {
+> > +             NL_SET_ERR_MSG(extack, "program loaded with different fla=
+gs");
+> >               return false;
+> >       }
+> >       return true;
+> >  }
+> > +
+> > +bool xdp_attachment_flags_ok(struct xdp_attachment_info *info,
+> > +                          struct netdev_bpf *bpf)
+> > +{
+> > +     if (info->prog)
+> > +             return xdp_prog_flags_ok(bpf->flags, info->flags, bpf->ex=
+tack);
+> > +     return true;
+> > +}
+> >  EXPORT_SYMBOL_GPL(xdp_attachment_flags_ok);
+> >
+> >  void xdp_attachment_setup(struct xdp_attachment_info *info,
+> > --
+> > 2.20.1
