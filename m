@@ -2,135 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A3C33BC4
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2019 01:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD8933BE8
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2019 01:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726101AbfFCXLw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Jun 2019 19:11:52 -0400
-Received: from www62.your-server.de ([213.133.104.62]:40314 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726097AbfFCXLw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Jun 2019 19:11:52 -0400
-Received: from [88.198.220.132] (helo=sslproxy03.your-server.de)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hXw7C-0006HK-Ew; Tue, 04 Jun 2019 01:11:42 +0200
-Received: from [178.197.249.21] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hXw7C-00042r-3W; Tue, 04 Jun 2019 01:11:42 +0200
-Subject: Re: [PATCH bpf-next v2 1/2] net: xdp: refactor XDP_QUERY_PROG{,_HW}
- to netdev
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Jonathan Lemon <jlemon@flugsvamp.com>
-Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        bpf <bpf@vger.kernel.org>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-References: <20190531094215.3729-1-bjorn.topel@gmail.com>
- <20190531094215.3729-2-bjorn.topel@gmail.com>
- <E5650E49-81B5-4F36-B931-E433A0BD210D@flugsvamp.com>
- <CAJ+HfNj=h1Ns_Q4tzmK-5q8jr5icVLA9-tiH7-tQTXx0hATZ0A@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a9c3be97-6c74-6491-199f-219bd4c2c631@iogearbox.net>
-Date:   Tue, 4 Jun 2019 01:11:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.3.0
+        id S1726223AbfFCX1h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Jun 2019 19:27:37 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:32966 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbfFCX1h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Jun 2019 19:27:37 -0400
+Received: by mail-lf1-f68.google.com with SMTP id y17so14930501lfe.0;
+        Mon, 03 Jun 2019 16:27:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o9KhBDmRSvyA17K9yLz93GnFppJZ9/pTjhne6a8KQc4=;
+        b=dvwzkPELPl5nUZRVZU4gRYPnhCE55hxxM399myYdEENPvpGIE8RV7G9g73ozE+ApRw
+         dJuqDbQdACfLbz60Tuqd9wyM78ah1m/nMlr997ItFEOHJhubidgZlOXj3Vi46T1mph5e
+         EFWmMJV5idtQTYKRlkwXIbmz9AjLzCLzNLYH+MD3SZdEZXII665wE2hoL42y5KjN5F0Z
+         I0nNupJH/f9mQKbJpDjqoTxTGmYE7U2PlXCO+wH1jTWVzNgVNcpwzxm4u6oV07Bxcq6t
+         6vc5uJMNz5oJY9I4A6X/rGGqnSFbwz7QCIxB5ORArf/3pNlxirELVli+BHINObtCFGlM
+         X1sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o9KhBDmRSvyA17K9yLz93GnFppJZ9/pTjhne6a8KQc4=;
+        b=h0/GIW+khEMAGiGF33uKgLNJPXEc7CUwUjZkPtioQKLoC9C/Y0CD6IvUUWNZcOduUv
+         S1SIueFPpDf/yDw/Ju/RzvSeni8QNAeYrazolH+0044VvMp+zjQhMlSnPHL3bulk/n53
+         gNyIGd3iSc2Xv4NRG06EdWl2DJhO/qqWBMJu671b09t2mJhRwJKsjZkjfRqP59ZkarjG
+         syRWKKr7Mg+33Gwq8eK1XSTaayxD5THPmFe0Ijgen/AZfrj9NJUX5D30KH/YXB7/OxFy
+         Ct4SvNHCVE2OY/a+/6HG9wjk+oxdG55SZU4JyEQ5OhQtvJuddlMLF+MzmWeJd/CsMIKk
+         /Ukg==
+X-Gm-Message-State: APjAAAXA82n3naRa96Kq2ex1FG4DXGkJnIJc6UUQf0L6/36bTW/CmPLg
+        ODF3Giu7SOg3HYl4oeg6vF8TGkYreFer3IsqbAlbTO4Q
+X-Google-Smtp-Source: APXvYqz9hOL4RaiKfOlOB3Z42QvxuObHHBxVPqDnbWXCIStvl7miabWH+J5FaAVZ8iLPzbs/JlQZ0s2aIwOnIbw59D8=
+X-Received: by 2002:ac2:4252:: with SMTP id m18mr14656401lfl.100.1559604454843;
+ Mon, 03 Jun 2019 16:27:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJ+HfNj=h1Ns_Q4tzmK-5q8jr5icVLA9-tiH7-tQTXx0hATZ0A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25469/Mon Jun  3 09:59:22 2019)
+References: <20190531223735.4998-1-mmullins@fb.com> <6c6a4d47-796a-20e2-eb12-503a00d1fa0b@iogearbox.net>
+ <68841715-4d5b-6ad1-5241-4e7199dd63da@iogearbox.net> <05626702394f7b95273ab19fef30461677779333.camel@fb.com>
+In-Reply-To: <05626702394f7b95273ab19fef30461677779333.camel@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 3 Jun 2019 16:27:23 -0700
+Message-ID: <CAADnVQKAPTao3nE1AC5dvYtCKFhDHu9VeCnVE04TLjGpY6yANw@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] bpf: preallocate a perf_sample_data per event fd
+To:     Matt Mullins <mmullins@fb.com>
+Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Andrew Hall <hall@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        Song Liu <songliubraving@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/03/2019 10:39 AM, Björn Töpel wrote:
-> On Sat, 1 Jun 2019 at 20:12, Jonathan Lemon <jlemon@flugsvamp.com> wrote:
->> On 31 May 2019, at 2:42, Björn Töpel wrote:
->>> From: Björn Töpel <bjorn.topel@intel.com>
->>>
->>> All XDP capable drivers need to implement the XDP_QUERY_PROG{,_HW}
->>> command of ndo_bpf. The query code is fairly generic. This commit
->>> refactors the query code up from the drivers to the netdev level.
->>>
->>> The struct net_device has gained two new members: xdp_prog_hw and
->>> xdp_flags. The former is the offloaded XDP program, if any, and the
->>> latter tracks the flags that the supplied when attaching the XDP
->>> program. The flags only apply to SKB_MODE or DRV_MODE, not HW_MODE.
->>>
->>> The xdp_prog member, previously only used for SKB_MODE, is shared with
->>> DRV_MODE. This is OK, due to the fact that SKB_MODE and DRV_MODE are
->>> mutually exclusive. To differentiate between the two modes, a new
->>> internal flag is introduced as well.
->>
->> I'm not entirely clear why this new flag is needed - GENERIC seems to
->> be an alias for SKB_MODE, so why just use SKB_MODE directly?
->>
->> If the user does not explicitly specify a type (skb|drv|hw), then the
->> command should choose the correct type and then behave as if this type
->> was specified.
-> 
-> Yes, this is kind of hairy.
-> 
-> SKB and DRV are mutually exclusive, but HW is not. IOW, valid options are:
-> SKB, DRV, HW, SKB+HW DRV+HW.
+On Mon, Jun 3, 2019 at 3:59 PM Matt Mullins <mmullins@fb.com> wrote:
+>
+> If these are invariably non-nested, I can easily keep bpf_misc_sd when
+> I resubmit.  There was no technical reason other than keeping the two
+> codepaths as similar as possible.
+>
+> What resource gives you worry about doing this for the networking
+> codepath?
 
-Correct, HW is a bit special here in that it helps offloading parts of
-the DRV XDP program to NIC, but also do RSS steering in BPF etc, hence
-this combo is intentionally allowed (see also git log).
+my preference would be to keep tracing and networking the same.
+there is already minimal nesting in networking and probably we see
+more when reuseport progs will start running from xdp and clsbpf
 
-> What complicates things further, is that SKB and DRV can be implicitly
-> (auto/no flags) or explicitly enabled (flags).
+> > Aside from that it's also really bad to miss events like this as exporting
+> > through rb is critical. Why can't you have a per-CPU counter that selects a
+> > sample data context based on nesting level in tracing? (I don't see a discussion
+> > of this in your commit message.)
+>
+> This change would only drop messages if the same perf_event is
+> attempted to be used recursively (i.e. the same CPU on the same
+> PERF_EVENT_ARRAY map, as I haven't observed anything use index !=
+> BPF_F_CURRENT_CPU in testing).
+>
+> I'll try to accomplish the same with a percpu nesting level and
+> allocating 2 or 3 perf_sample_data per cpu.  I think that'll solve the
+> same problem -- a local patch keeping track of the nesting level is how
+> I got the above stack trace, too.
 
-Mainly out of historic context: originally the fallback to SKB mode was
-implicit if the ndo_bpf was missing. But there are use cases where we
-want to fail if the driver does not support native XDP to avoid surprises.
-
-> If a user doesn't pass any flags, the "best supported mode" should be
-> selected. If this "auto mode" is used, it should be seen as a third
-> mode. E.g.
-> 
-> ip link set dev eth0 xdp on -- OK
-> ip link set dev eth0 xdp off -- OK
-> 
-> ip link set dev eth0 xdp on -- OK # generic auto selected
-> ip link set dev eth0 xdpgeneric off -- NOK, bad flags
-
-This would work if the auto selection would have selected XDP generic.
-
-> ip link set dev eth0 xdp on -- OK # drv auto selected
-> ip link set dev eth0 xdpdrv off -- NOK, bad flags
-
-This would work if the auto selection chose native XDP previously. Are
-you saying it's not the case?
-
-Also, what is the use case in mixing these commands? It should be xdp
-on+off, xdpdrv on+off, and so on. Are you saying you would prefer a
-xdp{,any} off that uninstalls everything? Isn't this mostly a user space
-issue to whatever orchestrates XDP?
-
-> ...and so on. The idea is that a user should use the same set of flags always.
-> 
-> The internal "GENERIC" flag is only to determine if the xdp_prog
-> represents a DRV version or SKB version. Maybe it would be clearer
-> just to add an additional xdp_prog_drv to the net_device, instead?
-> 
->> The logic in dev_change_xdp_fd() is too complicated.  It disallows
->> setting (drv|skb), but allows (hw|skb), which I'm not sure is
->> intentional.
->>
->> It should be clearer as to which combinations are allowed.
-> 
-> Fair point. I'll try to clean it up further.
-> 
+I don't think counter approach works. The amount of nesting is unknown.
+imo the approach taken in this patch is good.
+I don't see any issue when event_outputs will be dropped for valid progs.
+Only when user called the helper incorrectly without BPF_F_CURRENT_CPU.
+But that's an error anyway.
