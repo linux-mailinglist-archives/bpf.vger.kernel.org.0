@@ -2,57 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1271C33AA3
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2019 00:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B082A33B6C
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2019 00:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726241AbfFCWDa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Jun 2019 18:03:30 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:32947 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbfFCWDa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Jun 2019 18:03:30 -0400
-Received: by mail-qk1-f195.google.com with SMTP id r6so1543990qkc.0;
-        Mon, 03 Jun 2019 15:03:28 -0700 (PDT)
+        id S1726261AbfFCWeU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Jun 2019 18:34:20 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:43209 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726025AbfFCWeT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Jun 2019 18:34:19 -0400
+Received: by mail-qt1-f194.google.com with SMTP id z24so4347744qtj.10;
+        Mon, 03 Jun 2019 15:34:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=gWv5V0/ta59nQpjTBeFRFaXwoOhTRqRKQPqzVwoEPFY=;
-        b=g+w/JPF2X4+ZLrxseSdMcT7a0I7fvfSaEkSoYG5NuqBBLhUfeQoBcaUPKGAeOw5XZZ
-         Vwd+XzIDH8hhz4NQw9ALUwtBfH0MXAJtJQsLlNWzTsLf47iKu8jN/olmz3tXeTg21Zdb
-         3lIJZ58ldJXB3RjE18x+IgMYxUUUrS928TIHOXSND5uX6t6KcoM0Zpe9sOMNgVm6xrki
-         Yix0W7yscNBEPVpSQF9Am6kO2KFKCAmmCi6D2kB+V2sz746rDDaWTJ4U30JFAccweckN
-         IzRd9KPgwSVxELYYKtyt/rHbmBarZe2/QNRUHz6DGVZSRNNsdCxZjD7Y040LZ/oY9Gm/
-         GwpA==
+        bh=hUDi3LpJDfbh5JFvsyRAzGmS70LuLctJXOtDXn0LQ2Q=;
+        b=D7qJebudrGZeM1gOmc8jtIR6aIIHgpsJ8sYSHcLSX593cDg/MLokBdWE3Dc/4yxJLW
+         TEAgKcBdl1OU2WlLxZ8ImKNN8dwvRe2vQDf83zOTc59Ydzpqv7nINiUw10YWeIHBjPM9
+         WUigYO2x0AfogSKwADhhcVGPkBZQlSZhAj9G1cunBakpKr4zn8uTZBvG+HyKAzXIy/tc
+         ci07EH8yK3KtgJT0AQ+D4MIXpU7xPmwXT5F/FUbgZL4qHx5gOA5/DzZeYjJELHdj1LWD
+         VfzNfmMRNVrnpcf7Kb1YLgYdhtBV683/zHPcjCUVHqCZwmzTPWtqn1qeU0Bcw9i6cs+R
+         y0hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gWv5V0/ta59nQpjTBeFRFaXwoOhTRqRKQPqzVwoEPFY=;
-        b=MTddgC6BCPwavdz41+N+fQey1TPiHpeilikqENSQAyNCsXzrID0BWs9mnh5lhwxY7i
-         BtsrwBABVE+CMMXZs60wcknMF9GWxPfolwXmlykE1yQvWF5xlh3qSI6w/P1XD3Cz46t2
-         1+nVi7orfhpLZQwjAseWD7RIdSwF/ocAAcE1P48e0po+6yoWbtu6rca3+S/vCT5RKsrn
-         86yj5R+jxlMvroyl4Rp99/2635oKpuQSh0v+7CqFItNdk8q0UD5tRmq2S4Vr+4wOXX3s
-         SvkLnTHk52qrHAENC6XhLDRFD2PNN9xViBzzv3OAEezjPgrAgsp6JV4WmqLq0hp6UoMU
-         tyYA==
-X-Gm-Message-State: APjAAAWUXNwDEU/Ja6/GPLDx0FqFmMSOmM362PSq2N5J5xwkt9roQwZx
-        IvXkxNUUKuQoJPJ8oPjtYgSWdIcKqQDLbP41x2uBA2oraLA=
-X-Google-Smtp-Source: APXvYqz9/g0gashzobTt6rTz5+EO4tt9rB5q3r5aGBYkkMTw12kqcRkTT1x9ndV45FD+v/aAekjfmM+D1bunRDhxVeo=
-X-Received: by 2002:a37:b3c2:: with SMTP id c185mr24150891qkf.44.1559599407865;
- Mon, 03 Jun 2019 15:03:27 -0700 (PDT)
+        bh=hUDi3LpJDfbh5JFvsyRAzGmS70LuLctJXOtDXn0LQ2Q=;
+        b=g+uR6a6NS6U+EApyaRmIeRXLDDoLu1xaigD0UxXmUxnudVvx/9VoU1IO16opVodtnW
+         prx/S/gn5jR7UB3cpLwaO16bR5ntTRzpqp3ld38TG/PIS2S4WH3Gv74eb2QsU8enC5Vc
+         Bz9r1Ga2J8XyiIf4dd7NeDZjYVU0KU7NkZ+voKg1q6kh1iPcKxBjcLLhMg9zRQeuMmip
+         1RPUCXq8hcbsxSPsbfVYmr/XyM5oekyBQZxUg85Itp7p5e26MAHAPctSE5m7sVo+PDkM
+         PhJF4LHzwdUM+W2e+7iVArDokGU83GAAGUDa+FY0Ht0F6TD/yZjk+kWEmkAbg3tD3pCT
+         0M2g==
+X-Gm-Message-State: APjAAAUvbb5RdsbBfhfHc7YsSrKdv0jPLO1kQVR8yY2sgfpdji92p3yh
+        Ab8j2tUFioDP+OcdVroDdYutcYuu5FnjDHIHZDn2rZTxWQE=
+X-Google-Smtp-Source: APXvYqzRDhbCUq4oamjTp7IFBzoFqATLRDyx7vn9DWCXD+P/G7Mm39rg8ZHzRHYYYBY9yKRu+AczaS5kivZNODkB7ew=
+X-Received: by 2002:ac8:2a63:: with SMTP id l32mr5360414qtl.117.1559601258098;
+ Mon, 03 Jun 2019 15:34:18 -0700 (PDT)
 MIME-Version: 1.0
 References: <20190531202132.379386-1-andriin@fb.com> <20190531202132.379386-7-andriin@fb.com>
- <20190531212835.GA31612@mini-arch> <CAEf4Bza38VEh9NWTLEReAR_J0eqjsvH1a2T-0AeWqDZpE8YPfA@mail.gmail.com>
- <20190603163222.GA14556@mini-arch>
-In-Reply-To: <20190603163222.GA14556@mini-arch>
+In-Reply-To: <20190531202132.379386-7-andriin@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 3 Jun 2019 15:03:16 -0700
-Message-ID: <CAEf4BzbRXAZMXY3kG9HuRC93j5XhyA3EbWxkLrrZsG7K4abdBg@mail.gmail.com>
+Date:   Mon, 3 Jun 2019 15:34:06 -0700
+Message-ID: <CAEf4BzbfdG2ub7gCi0OYqBrUoChVHWsmOntWAkJt47=FE+km+A@mail.gmail.com>
 Subject: Re: [RFC PATCH bpf-next 6/8] libbpf: allow specifying map definitions
  using BTF
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
@@ -62,206 +59,237 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 3, 2019 at 9:32 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
+On Fri, May 31, 2019 at 1:21 PM Andrii Nakryiko <andriin@fb.com> wrote:
 >
-> On 05/31, Andrii Nakryiko wrote:
-> > On Fri, May 31, 2019 at 2:28 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
-> > >
-> > > On 05/31, Andrii Nakryiko wrote:
-> > > > This patch adds support for a new way to define BPF maps. It relies on
-> > > > BTF to describe mandatory and optional attributes of a map, as well as
-> > > > captures type information of key and value naturally. This eliminates
-> > > > the need for BPF_ANNOTATE_KV_PAIR hack and ensures key/value sizes are
-> > > > always in sync with the key/value type.
-> > > My 2c: this is too magical and relies on me knowing the expected fields.
-> > > (also, the compiler won't be able to help with the misspellings).
-> >
-> > I don't think it's really worse than current bpf_map_def approach. In
-> > typical scenario, there are only two fields you need to remember: type
-> > and max_entries (notice, they are called exactly the same as in
-> > bpf_map_def, so this knowledge is transferrable). Then you'll have
-> > key/value, using which you are describing both type (using field's
-> > type) and size (calculated from the type).
-> >
-> > I can relate a bit to that with bpf_map_def you can find definition
-> > and see all possible fields, but one can also find a lot of examples
-> > for new map definitions as well.
-> >
-> > One big advantage of this scheme, though, is that you get that type
-> > association automagically without using BPF_ANNOTATE_KV_PAIR hack,
-> > with no chance of having a mismatch, etc. This is less duplication (no
-> > need to do sizeof(struct my_struct) and struct my_struct as an arg to
-> > that macro) and there is no need to go and ping people to add those
-> > annotations to improve introspection of BPF maps.
-> Don't get me wrong, it looks good and there are advantages compared to
-> the existing way. But, again, feels to me a bit too magic. We should somehow
-> make it less magic (see below).
+> This patch adds support for a new way to define BPF maps. It relies on
+> BTF to describe mandatory and optional attributes of a map, as well as
+> captures type information of key and value naturally. This eliminates
+> the need for BPF_ANNOTATE_KV_PAIR hack and ensures key/value sizes are
+> always in sync with the key/value type.
 >
-> > > I don't know how others feel about it, but I'd be much more comfortable
-> > > with a simpler TLV-like approach. Have a new section where the format
-> > > is |4-byte size|struct bpf_map_def_extendable|. That would essentially
-> > > allow us to extend it the way we do with a syscall args.
-> >
-> > It would help with extensibility, sure, though even current
-> > bpf_map_def approach sort of can be extended already. But it won't
-> > solve the problem of having BTF types captured for key/value (see
-> > above). Also, you'd need another macro to lay everything out properly.
-> I didn't know that we look into the list of exported symbols to estimate
-> the number of maps and then use it to derive struct bpf_map_def size.
+> Relying on BTF, this approach allows for both forward and backward
+> compatibility w.r.t. extending supported map definition features. Old
+> libbpf implementation will ignore fields it doesn't recognize, while new
+> implementations will parse and recognize new optional attributes.
 >
-> In that case, maybe we can keep extending struct bpf_map_def
-> and support BTF mode as a better alternative? bpf_map_def could be
-> used as a reference for which fields there are, people can still use it
-> (with BPF_ANNOTATE_KV_PAIR if needed), but they can also use
-> new BTF mode if they find that works better for them?
+> The outline of the new map definition (short, BTF-defined maps) is as follows:
+> 1. All the maps should be defined in .maps ELF section. It's possible to
+>    have both "legacy" map definitions in `maps` sections and BTF-defined
+>    maps in .maps sections. Everything will still work transparently.
+> 2. The map declaration and initialization is done through
+>    a global/static variable of a struct type with few mandatory and
+>    extra optional fields:
+>    - type field is mandatory and specified type of BPF map;
+>    - key/value fields are mandatory and capture key/value type/size information;
+>    - max_entries attribute is optional; if max_entries is not specified or
+>      initialized, it has to be provided in runtime through libbpf API
+>      before loading bpf_object;
+>    - map_flags is optional and if not defined, will be assumed to be 0.
+> 3. Key/value fields should be **a pointer** to a type describing
+>    key/value. The pointee type is assumed (and will be recorded as such
+>    and used for size determination) to be a type describing key/value of
+>    the map. This is done to save excessive amounts of space allocated in
+>    corresponding ELF sections for key/value of big size.
+> 4. As some maps disallow having BTF type ID associated with key/value,
+>    it's possible to specify key/value size explicitly without
+>    associating BTF type ID with it. Use key_size and value_size fields
+>    to do that (see example below).
 >
-> Because the biggest issue for me with the BTF mode is the question
-> of where to look for the supported fields (and misspellings). People
-> on this mailing list can probably figure it out, but people who don't
-> work full time on bpf might find it hard. Having 'struct bpf_map_def'
-> as a reference (or a good supported piece of documentation) might help
+> Here's an example of simple ARRAY map defintion:
+>
+> struct my_value { int x, y, z; };
+>
+> struct {
+>         int type;
+>         int max_entries;
+>         int *key;
+>         struct my_value *value;
+> } btf_map SEC(".maps") = {
+>         .type = BPF_MAP_TYPE_ARRAY,
+>         .max_entries = 16,
+> };
+>
+> This will define BPF ARRAY map 'btf_map' with 16 elements. The key will
+> be of type int and thus key size will be 4 bytes. The value is struct
+> my_value of size 12 bytes. This map can be used from C code exactly the
+> same as with existing maps defined through struct bpf_map_def.
+>
+> Here's an example of STACKMAP definition (which currently disallows BTF type
+> IDs for key/value):
+>
+> struct {
+>         __u32 type;
+>         __u32 max_entries;
+>         __u32 map_flags;
+>         __u32 key_size;
+>         __u32 value_size;
+> } stackmap SEC(".maps") = {
+>         .type = BPF_MAP_TYPE_STACK_TRACE,
+>         .max_entries = 128,
+>         .map_flags = BPF_F_STACK_BUILD_ID,
+>         .key_size = sizeof(__u32),
+>         .value_size = PERF_MAX_STACK_DEPTH * sizeof(struct bpf_stack_build_id),
+> };
+>
+> This approach is naturally extended to support map-in-map, by making a value
+> field to be another struct that describes inner map. This feature is not
+> implemented yet. It's also possible to incrementally add features like pinning
+> with full backwards and forward compatibility.
 
-So yeah, it's more about documentation and examples, it seems, rather
-than having a C struct in code, right? Today, if I need to add new
-map, I copy/paste either from example, existing code or look up
-documentation. You'll be able to do the same with new way (just grep
-for \.maps).
+So I wanted to elaborate a bit more on what I'm planning to add, once
+we agree on the approach. Those are the features that are currently
+supported by iproute2 loader and here's how I was thinking to support
+them with BTF-defined maps. Once all this is implemented, there should
+be just a mechanical field rename to switch BPF apps relying on
+iproute2 loader (size_key -> key_size, size_value -> value_size,
+max_elem -> max_entries) for most maps. For more complicated cases
+described below, I hope we can agree it's easy to migrate and end
+result might even look better (because more explicit).
 
-> with that.
+1. Pinning. This one is simple:
+  - add pinning attribute, that will either be "no pinning", "global
+pinning", "object-scope pinning".
+  - by default pinning root will be "/sys/fs/bpf", but one will be
+able to override this per-object using extra options (so that
+"/sys/fs/bpf/tc" can be specified).
+
+2. Map-in-map declaration:
+
+As outlined at LSF/MM, we can extend value type to be another map
+definition, specifying a prototype for inner map:
+
+struct {
+        int type;
+        int max_entries;
+        struct outer_key *key;
+        struct { /* this is definition of inner map */
+               int type;
+               int max_entries;
+               struct inner_key *key;
+               struct inner_value *value;
+        } value;
+} my_hash_of_arrays BPF_MAP = {
+        .type = BPF_MAP_TYPE_HASH_OF_MAPS,
+        .max_entries = 1024,
+        .value = {
+                .type = BPF_MAP_TYPE_ARRAY,
+                .max_entries = 64,
+        },
+};
+
+This would declare a hash_of_maps, where inner maps are arrays of 64
+elements each. Notice, that struct defining inner map can be declared
+outside and shared with other maps:
+
+struct inner_map_t {
+        int type;
+        int max_entries;
+        struct inner_key *key;
+        struct inner_value *value;
+};
+
+struct {
+        int type;
+        int max_entries;
+        struct outer_key *key;
+        struct inner_map_t value;
+} my_hash_of_arrays BPF_MAP = {
+        .type = BPF_MAP_TYPE_HASH_OF_MAPS,
+        .max_entries = 1024,
+        .value = {
+                .type = BPF_MAP_TYPE_ARRAY,
+                .max_entries = 64,
+        },
+};
+
+
+3. Initialization of prog array. Iproute2 supports a convention-driven
+initialization of BPF_MAP_TYPE_PROG_ARRAY using special section names
+(wrapped into __section_tail(ID, IDX)):
+
+struct bpf_elf_map SEC("maps") POLICY_CALL_MAP = {
+        .type = BPF_MAP_TYPE_PROG_ARRAY,
+        .id = MAP_ID,
+        .size_key = sizeof(__u32),
+        .size_value = sizeof(__u32),
+        .max_elem = 16,
+};
+
+__section_tail(MAP_ID, MAP_IDX) int handle_policy(struct __sk_buff *skb)
+{
+        ...
+}
+
+For each such program, iproute2 will put its FD (for later
+tail-calling) into a corresponding MAP with id == MAP_ID at index
+MAP_IDX.
+
+Here's how I see this supported in BTF-defined maps case.
+
+typedef int (* skbuff_tailcall_fn)(struct __sk_buff *);
+
+struct {
+        int type;
+        int max_entries;
+        int *key;
+        skbuff_tailcall_fb value[];
+} POLICY_CALL_MAP SEC(".maps") = {
+        .type = BPF_MAP_TYPE_PROG_ARRAY,
+        .max_entries = 16,
+        .value = {
+                &handle_policy,
+                NULL,
+                &handle_some_other_policy,
+        },
+};
+
+libbpf loader will greate BPF_MAP_TYPE_PROG_ARRAY map with 16 elements
+and will initialize first and third entries with FDs of handle_policy
+and handle_some_other_policy programs. As an added nice bonus,
+compiler should also warn on signature mismatch. ;)
+
+
+4. We can extend this idea into ARRAY_OF_MAPS initialization. This is
+currently implemented in iproute2 using .id, .inner_id, and .inner_idx
+fields.
+
+struct inner_map_t {
+        int type;
+        int max_entries;
+        struct inner_key *key;
+        struct inner_value *value;
+};
+
+struct inner_map_t map1 = {...};
+struct inner_map_t map2 = {...};
+
+struct {
+        int type;
+        int max_entries;
+        struct outer_key *key;
+        struct inner_map_t value[];
+} my_hash_of_arrays BPF_MAP = {
+        .type = BPF_MAP_TYPE_ARRAY_OF_MAPS,
+        .max_entries = 2,
+        .value = {
+                &map1,
+                &map2,
+        },
+};
+
+
+There are a bunch of slight variations we might consider (e.g., value
+vs values, when there is inline initialization, is it an array of
+structs or an array of pointers to structs, etc), but the overall idea
+stays the same.
+
+So when all this is implemented and supported, from looking at Cilium,
+it seems like conversion of iproute2 to libbpf should be rather simple
+and painless. I'd be curious to hear what Cilium folks are thinking
+about that.
+
+
+
 >
-> What do you think? The only issue is that we now have two formats
-> to support :-/
-
-We'll have to support existing bpf_map_def for backwards compatibility
-(and see my reply to Jakub, you can just plain re-use struct
-bpf_map_def today with BTF approach, just put it into .maps section),
-but I'd love to avoid having to support new features using two
-different way, so if we go with BTF, I'd restrict new features to BTF
-only, moving forward.
-
->
-> > > Also, (un)related: we don't currently use BTF internally, so if
-> > > you convert all tests, we'd be unable to run them :-(
-> >
-> > Not exactly sure what you mean "you'd be unable to run them". Do you
-> > mean that you use old Clang that doesn't emit BTF? If that's what you
-> > are saying, a lot of tests already rely on latest Clang, so those
-> > tests already don't work for you, probably. I'll leave it up to Daniel
-> > and Alexei to decide if we want to convert selftests right now or not.
-> > I did it mostly to prove that we can handle all existing cases (and
-> > found few gotchas and bugs along the way, both in my implementation
-> > and in kernel - fixes coming soon).
-> Yes, I mean that we don't always use the latest features of clang,
-> so having the existing tests in the old form (at least for a while)
-> would be appreciated. Good candidates to showcase new format can
-> be features that explicitly require BTF, stuff like spinlocks.
-
-I totally understand a concern, but I'll still defer to maintainers to
-make a call as to when to do conversion.
-
->
-> > > > Relying on BTF, this approach allows for both forward and backward
-> > > > compatibility w.r.t. extending supported map definition features. Old
-> > > > libbpf implementation will ignore fields it doesn't recognize, while new
-> > > > implementations will parse and recognize new optional attributes.
-> > > I also don't know how to feel about old libbpf ignoring some attributes.
-> > > In the kernel we require that the unknown fields are zeroed.
-> > > We probably need to do something like that here? What do you think
-> > > would be a good example of an optional attribute?
-> >
-> > Ignoring is required for forward-compatibility, where old libbpf will
-> > be used to load newer user BPF programs. We can decided not to do it,
-> > in that case it's just a question of erroring out on first unknown
-> > field. This RFC was posted exactly to discuss all these issues with
-> > more general community, as there is no single true way to do this.
-> >
-> > As for examples of when it can be used. It's any feature that can be
-> > considered optional or a hint, so if old libbpf doesn't do that, it's
-> > still not the end of the world (and we can live with that, or can
-> > correct using direct libbpf API calls).
-> In general, doing what we do right now with bpf_map_def (returning an error
-> for non-zero unknown options) seems like the safest option. We should
-> probably do the same with the unknown BTF fields (return an error
-> for non-zero value).
-
-Yeah, as I replied to Jakub, libbpf already has strict/non-strict
-mode, we should probably do the same. The only potential difference is
-that there is no need to check for zeros and stuff: just don't define
-a field. And using an extra flag, we can allow more relaxed semantics
-(just debug/info/warn message on unknown fields). This is what
-__bpf_object__open_xattr does today with MAPS_RELAX_COMPAT flag.
-
->
-> For a general BTF case, we can have some predefined policy: if, for example,
-> the field name starts with an underscore, it's optional and doesn't require
-> non-zero check. (or the name ends with '_opt' or some other clear policy).
->
-> > > > The outline of the new map definition (short, BTF-defined maps) is as follows:
-> > > > 1. All the maps should be defined in .maps ELF section. It's possible to
-> > > >    have both "legacy" map definitions in `maps` sections and BTF-defined
-> > > >    maps in .maps sections. Everything will still work transparently.
-> > > > 2. The map declaration and initialization is done through
-> > > >    a global/static variable of a struct type with few mandatory and
-> > > >    extra optional fields:
-> > > >    - type field is mandatory and specified type of BPF map;
-> > > >    - key/value fields are mandatory and capture key/value type/size information;
-> > > >    - max_entries attribute is optional; if max_entries is not specified or
-> > > >      initialized, it has to be provided in runtime through libbpf API
-> > > >      before loading bpf_object;
-> > > >    - map_flags is optional and if not defined, will be assumed to be 0.
-> > > > 3. Key/value fields should be **a pointer** to a type describing
-> > > >    key/value. The pointee type is assumed (and will be recorded as such
-> > > >    and used for size determination) to be a type describing key/value of
-> > > >    the map. This is done to save excessive amounts of space allocated in
-> > > >    corresponding ELF sections for key/value of big size.
-> > > > 4. As some maps disallow having BTF type ID associated with key/value,
-> > > >    it's possible to specify key/value size explicitly without
-> > > >    associating BTF type ID with it. Use key_size and value_size fields
-> > > >    to do that (see example below).
-> > > >
-> > > > Here's an example of simple ARRAY map defintion:
-> > > >
-> > > > struct my_value { int x, y, z; };
-> > > >
-> > > > struct {
-> > > >       int type;
-> > > >       int max_entries;
-> > > >       int *key;
-> > > >       struct my_value *value;
-> > > > } btf_map SEC(".maps") = {
-> > > >       .type = BPF_MAP_TYPE_ARRAY,
-> > > >       .max_entries = 16,
-> > > > };
-> > > >
-> > > > This will define BPF ARRAY map 'btf_map' with 16 elements. The key will
-> > > > be of type int and thus key size will be 4 bytes. The value is struct
-> > > > my_value of size 12 bytes. This map can be used from C code exactly the
-> > > > same as with existing maps defined through struct bpf_map_def.
-> > > >
-> > > > Here's an example of STACKMAP definition (which currently disallows BTF type
-> > > > IDs for key/value):
-> > > >
-> > > > struct {
-> > > >       __u32 type;
-> > > >       __u32 max_entries;
-> > > >       __u32 map_flags;
-> > > >       __u32 key_size;
-> > > >       __u32 value_size;
-> > > > } stackmap SEC(".maps") = {
-> > > >       .type = BPF_MAP_TYPE_STACK_TRACE,
-> > > >       .max_entries = 128,
-> > > >       .map_flags = BPF_F_STACK_BUILD_ID,
-> > > >       .key_size = sizeof(__u32),
-> > > >       .value_size = PERF_MAX_STACK_DEPTH * sizeof(struct bpf_stack_build_id),
-> > > > };
-> > > >
-> > > > This approach is naturally extended to support map-in-map, by making a value
-> > > > field to be another struct that describes inner map. This feature is not
-> > > > implemented yet. It's also possible to incrementally add features like pinning
-> > > > with full backwards and forward compatibility.
-> > > >
-> > > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > > > ---
-> > > >  tools/lib/bpf/btf.h    |   1 +
-> > > >  tools/lib/bpf/libbpf.c | 333 +++++++++++++++++++++++++++++++++++++++--
-> > > >  2 files changed, 325 insertions(+), 9 deletions(-)
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
