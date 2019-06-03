@@ -2,137 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 10484335EE
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2019 19:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08ED63363C
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2019 19:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727371AbfFCRD2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Jun 2019 13:03:28 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:36850 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726406AbfFCRD2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Jun 2019 13:03:28 -0400
-Received: by mail-qt1-f194.google.com with SMTP id u12so10296038qth.3
-        for <bpf@vger.kernel.org>; Mon, 03 Jun 2019 10:03:28 -0700 (PDT)
+        id S1726844AbfFCRMa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Jun 2019 13:12:30 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:44753 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728496AbfFCRM3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Jun 2019 13:12:29 -0400
+Received: by mail-wr1-f66.google.com with SMTP id w13so12874476wru.11
+        for <bpf@vger.kernel.org>; Mon, 03 Jun 2019 10:12:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=am+dNRanSfM5h6HFkfZX425XfgvKMLx1bGpcXWFpu2w=;
-        b=u/Svv29crDNnFEKEhTfb/LgHkuzLBxS5231mB05VzvbTGaRDdsuaWYePqvLNLshCge
-         MlxHocjWrwMLQtryiaL/vdIRoqwOatMPokxTWRMNnhkRe5h7BEHAVt+O6oNGFx/8D2lT
-         XOpL0qFP6q+vgj3I1JSS1li6pg+9i397JOCL8DxkmEPzX7yy/5hheQPDyHyxEb1jYcJx
-         KCHWEm9fNpUco6XiHn4FS7ABa/5+ynS/FYeVSjY2vUxpKZyscvFyHsDj2+W1zxwYEPhj
-         dNif7qMFfZLk7X5VewGJDDOqQorlzJtO+e9vYEdYVfuloKqu0u3dveMM1gzvBOnd+TJ1
-         qIqQ==
+        d=6wind.com; s=google;
+        h=reply-to:subject:to:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hdzztUxr8+P2yiTShU7eDsGECp578g9yYtd++GlZKeM=;
+        b=YHBoiOODCu6PHgDttATy2kvMgIpaVHP/Y1ZLTzpWroQFuNU8dmiGF85Qzf2I8VGTR0
+         CgzRuEEQA8A0iVjlAcsuP04YbFFXH6loPt/UaGYrobJJrKR9jlAjeQZ0rClLPnZl+h7X
+         Hc2u5lUAgtKlOQmrV7KIiV9/eI5w2e0Bb7taZmI4F2l1EHr/U1PgsPhiS9aZ43L6/sS0
+         rQuDIj/LfVygTvQhFXbJRTIZdeWcEtAWtZOF3xCXUWZbCDxlNHQBokZe8RacAPFBgbGi
+         1YIlDSFm1wXonaTjVGVq8qs13S8vxely644588B+/w+Si9njxkhuzF6lOONsMbKIzuEV
+         ZKIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=am+dNRanSfM5h6HFkfZX425XfgvKMLx1bGpcXWFpu2w=;
-        b=ZBc8gvBKhVxRV+G0sA7XYLVtPVgj6lPPCK9JNxhCip5XQTTvK1wLj8Yj1FgF/f0sEu
-         ApjGMXqZDgAWvN3p17NdUPxBX/J0ObmChaATmIbP9EIVVxHDImslthZj1ID5fxD5kvi+
-         zBYPvtQiP/ZgUvqaPqqdI+H8TPZQ1GXRfV0O6e+OEXcgMGd/RzsPfWQoVJPhJhm1RSMZ
-         0w5NkWCnFK38OrSgaYiPDDuOlESNFrtDelpP8mdDVtxJjRydffMX2YdO1hF1waD7ena/
-         S7OYRX6YW9tDl80iuxlz8RM1vos32aqCYv0B5dOwsGrEg5D6UDBo3RnsXrtXOejRfBzH
-         EQAw==
-X-Gm-Message-State: APjAAAUlTnPtpmSfGw1NqczHsNtBg9klT66c3YQXjcWZjPmy1N63VF/B
-        b/7/oH0fazYug7xvWWaTO/lp/g==
-X-Google-Smtp-Source: APXvYqxFV9OBd1xIJwEZ5biX/0WT3ou36cazkhzkgiK/RguiXqVcdQ81M8Nkji7f030UaHMekeSQxA==
-X-Received: by 2002:ac8:303c:: with SMTP id f57mr23859627qte.294.1559581407538;
-        Mon, 03 Jun 2019 10:03:27 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id m66sm8909018qkb.12.2019.06.03.10.03.26
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 03 Jun 2019 10:03:27 -0700 (PDT)
-Date:   Mon, 3 Jun 2019 10:03:21 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        "toke@redhat.com" <toke@redhat.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "magnus.karlsson@intel.com" <magnus.karlsson@intel.com>,
-        "bjorn.topel@intel.com" <bjorn.topel@intel.com>,
-        "brouer@redhat.com" <brouer@redhat.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v2 1/2] net: xdp: refactor XDP_QUERY_PROG{,_HW}
- to netdev
-Message-ID: <20190603100321.56a6a6e4@cakuba.netronome.com>
-In-Reply-To: <CAJ+HfNix+oa=9oMOg9pVMiVTiM5sZe5Tn6zTE_Bu6gV5M=B7kQ@mail.gmail.com>
-References: <20190531094215.3729-1-bjorn.topel@gmail.com>
-        <20190531094215.3729-2-bjorn.topel@gmail.com>
-        <b0a9c3b198bdefd145c34e52aa89d33aa502aaf5.camel@mellanox.com>
-        <20190601125717.28982f35@cakuba.netronome.com>
-        <CAJ+HfNix+oa=9oMOg9pVMiVTiM5sZe5Tn6zTE_Bu6gV5M=B7kQ@mail.gmail.com>
-Organization: Netronome Systems, Ltd.
+        h=x-gm-message-state:reply-to:subject:to:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=hdzztUxr8+P2yiTShU7eDsGECp578g9yYtd++GlZKeM=;
+        b=boN7S1lGBcVlCWdX+g8jc8loWnKr3XQaqWZnVVCcj68t+8uFP6EpAEJgAbKzGK55NE
+         /5hAEM1LdRYD7+CY66tppw4pTwQM+jGgSZfWut369AMnnnC1P3DctozIJaUGzthVYqQj
+         FteWpVwZPdq9WYxJmNTovEiaBFDlNG70SkYwazLOa7F++OmrpwLholZsKI8abr3JMK4A
+         mfOCTW/NEliK0fcZOwpJTgGQNJ7bxyjke9xLmU933AMvlGjMMzvwlx4U6xFH2w76DqGZ
+         kSmHOzmk5e0OyssgbFsMn/lYnmFtbYHDNOdEfv2PPrw4KclrHg0xZ/CbtW52CIfprQ2L
+         W6Gg==
+X-Gm-Message-State: APjAAAXZa5sboqLSf24CVNLnnqUef+EMIJGF2hyokOsQIuI7SEnfP9Dm
+        EVAjWkOQBakK6q1JbgyHr0CjTOsa+fI=
+X-Google-Smtp-Source: APXvYqx2gy6R5EWjGdW4uHp6XrM8Ts2Jk2G8SrQ412rzSVmlcjnvLQUppAdTfeKc5Hf1g0ujRMEPdw==
+X-Received: by 2002:adf:ead0:: with SMTP id o16mr4216795wrn.216.1559581947459;
+        Mon, 03 Jun 2019 10:12:27 -0700 (PDT)
+Received: from [10.16.0.69] (host.78.145.23.62.rev.coltfrance.com. [62.23.145.78])
+        by smtp.gmail.com with ESMTPSA id l18sm35284484wrh.54.2019.06.03.10.12.26
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 03 Jun 2019 10:12:26 -0700 (PDT)
+Reply-To: nicolas.dichtel@6wind.com
+Subject: Re: [RFC][PATCH kernel_bpf] honor CAP_NET_ADMIN for BPF_PROG_LOAD
+To:     Andreas Steinmetz <ast@domdv.de>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <56c1f2f89428b49dad615fc13cc8c120d4ca4abf.camel@domdv.de>
+From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Organization: 6WIND
+Message-ID: <1188fe85-d627-89d1-d56b-91011166f9c7@6wind.com>
+Date:   Mon, 3 Jun 2019 19:12:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <56c1f2f89428b49dad615fc13cc8c120d4ca4abf.camel@domdv.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 3 Jun 2019 11:04:36 +0200, Bj=C3=B6rn T=C3=B6pel wrote:
-> On Sat, 1 Jun 2019 at 21:57, Jakub Kicinski
-> <jakub.kicinski@netronome.com> wrote:
-> >
-> > On Fri, 31 May 2019 19:18:17 +0000, Saeed Mahameed wrote: =20
-> > > > +   if (!bpf_op || flags & XDP_FLAGS_SKB_MODE)
-> > > > +           mode =3D XDP_FLAGS_SKB_MODE;
-> > > > +
-> > > > +   curr_mode =3D dev_xdp_current_mode(dev);
-> > > > +
-> > > > +   if (!offload && curr_mode && (mode ^ curr_mode) &
-> > > > +       (XDP_FLAGS_DRV_MODE | XDP_FLAGS_SKB_MODE)) { =20
-> > >
-> > > if i am reading this correctly this is equivalent to :
-> > >
-> > > if (!offload && (curre_mode !=3D mode))
-> > > offlad is false then curr_mode and mode must be DRV or GENERIC .. =20
-> >
-> > Naw, if curr_mode is not set, i.e. nothing installed now, we don't care
-> > about the diff.
-> > =20
-> > > better if you keep bitwise operations for actual bitmasks, mode and
-> > > curr_mode are not bitmask, they can hold one value each .. according =
-to
-> > > your logic.. =20
-> >
-> > Well, they hold one bit each, whether one bit is a bitmap perhaps is
-> > disputable? :)
-> >
-> > I think the logic is fine.
-> > =20
->=20
-> Hmm, but changing to:
->=20
->        if (!offload && curr_mode && mode !=3D curr_mode)
->=20
-> is equal, and to Saeed's point, clearer. I'll go that route in a v3.
+Le 28/05/2019 à 18:53, Andreas Steinmetz a écrit :
+> [sorry for crossposting but this affects both lists]
+> 
+> BPF_PROG_TYPE_SCHED_CLS and BPF_PROG_TYPE_XDP should be allowed
+> for CAP_NET_ADMIN capability. Nearly everything one can do with
+> these program types can be done some other way with CAP_NET_ADMIN
+> capability (e.g. NFQUEUE), but only slower.
+> 
+> This change is similar in behaviour to the /proc/sys/net
+> CAP_NET_ADMIN exemption.
+> 
+> Overall chances are of increased security as network related
+> applications do no longer require to keep CAP_SYS_ADMIN
+> admin capability for network related eBPF operations.
+> 
+> It may well be that other program types than BPF_PROG_TYPE_XDP
+> and BPF_PROG_TYPE_SCHED_CLS do need the same exemption, though
+> I do not have sufficient knowledge of other program types
+> to be able to decide this.
+> 
+> Preloading BPF programs is not possible in case of application
+> modified or generated BPF programs, so this is no alternative.
+> The verifier does prevent the BPF program from doing harmful
+> things anyway.
+> 
+> Signed-off-by: Andreas Steinmetz <ast@domdv.de>
+It makes sense to me.
+Do you plan to submit it formally?
 
-Sorry, you're right, the flags get mangled before they get here, so
-yeah, this condition should work.  Confusingly.
+Looking a bit more at this topic, I see that most part of the bpf code uses
+capable(CAP_NET_ADMIN). I don't see why we cannot use ns_capable(CAP_NET_ADMIN).
 
-> > What happened to my request to move the change in behaviour for
-> > disabling to a separate patch, tho, Bjorn? :) =20
->=20
-> Actually, I left that out completely. This patch doesn't change the
-> behavior. After I realized how the flags *should* be used, I don't
-> think my v1 change makes sense anymore. My v1 patch was to give an
-> error if you tried to disable, say generic if drv was enabled via
-> "auto detect/no flags". But this is catched by looking at the flags.
->=20
-> What I did, however, was moving the flags check into change_fd so that
-> the driver doesn't have to do the check. E.g. the Intel drivers didn't
-> do correct checking of flags.
 
-Ugh.  Could you please rewrite the conditions to make the fd >=3D check
-consistently the outside if?  Also could you add extack to this:
+Regards,
+Nicolas
 
-+	if (!offload && dev_xdp_query(dev, mode) &&
-+	    !xdp_prog_flags_ok(dev->xdp_flags, flags, extack))
-+		return -EBUSY;
-
-It's unclear what it's doing.
+> 
+> --- a/kernel/bpf/syscall.c	2019-05-28 18:00:40.472841432 +0200
+> +++ b/kernel/bpf/syscall.c	2019-05-28 18:17:50.162811510 +0200
+> @@ -1561,8 +1561,13 @@ static int bpf_prog_load(union bpf_attr
+>  		return -E2BIG;
+>  	if (type != BPF_PROG_TYPE_SOCKET_FILTER &&
+>  	    type != BPF_PROG_TYPE_CGROUP_SKB &&
+> -	    !capable(CAP_SYS_ADMIN))
+> -		return -EPERM;
+> +	    !capable(CAP_SYS_ADMIN)) {
+> +		if (type != BPF_PROG_TYPE_SCHED_CLS &&
+> +		    type != BPF_PROG_TYPE_XDP)
+> +			return -EPERM;
+> +		if(!capable(CAP_NET_ADMIN))
+> +			return -EPERM;
+> +	}
+>  
+>  	bpf_prog_load_fixup_attach_type(attr);
+>  	if (bpf_prog_load_check_attach_type(type, attr->expected_attach_type))
+> 
