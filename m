@@ -2,60 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8826F34F84
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2019 20:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F764351A2
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2019 23:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726341AbfFDSFQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Jun 2019 14:05:16 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:49692 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726179AbfFDSFQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Jun 2019 14:05:16 -0400
-Received: from localhost (unknown [IPv6:2601:601:9f80:35cd::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 65ECF14F1D51A;
-        Tue,  4 Jun 2019 11:05:15 -0700 (PDT)
-Date:   Tue, 04 Jun 2019 11:05:14 -0700 (PDT)
-Message-Id: <20190604.110514.1990517575751465932.davem@davemloft.net>
-To:     netdev@vger.kernel.org, daniel@iogearbox.net
-CC:     linux-wireless@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, lwn@lwn.net
-Subject: LPC 2019 Networking Track CFP
-From:   David Miller <davem@davemloft.net>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 04 Jun 2019 11:05:15 -0700 (PDT)
+        id S1726572AbfFDVHN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Jun 2019 17:07:13 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:37330 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726352AbfFDVHN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Jun 2019 17:07:13 -0400
+Received: by mail-pg1-f195.google.com with SMTP id 20so11068608pgr.4
+        for <bpf@vger.kernel.org>; Tue, 04 Jun 2019 14:07:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=AVNzuJ16OlOt4Vvvv/aqtbS0TAayMNqKXRIgbNicTgk=;
+        b=hNom/jwSwV6l3jYiFNsE9F2XTqDdeaGPCv2lIEpqA0UT7JmGDDrdwLPsPJrEGpRY9c
+         t4y9vUkamRrGLrNJ+lbFbm31eZyc/Rr8smNBmu3u1VEVOEoHoRbzUa3SF1X2d9KVBnyx
+         NKnp6P0bFkcz78/RMm5rF1XhY4TdD27hm9zXNWD/JlTLvozYxH7N/JDNZ14OdP/jUZJD
+         nfoBZ9mBskBlJde6Gt/uUMIN28SLs5U0vy1/5lxRLGBqdPgl6QIdLDEPKZGr/s5Ougyp
+         62GeQYWolJEHUF3aDuBEsqnvdrtii+9sJFXzmp2nWX8EHgXpJjwNo8gbpqX72cR89B5b
+         g55w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=AVNzuJ16OlOt4Vvvv/aqtbS0TAayMNqKXRIgbNicTgk=;
+        b=N/bUlo0xzWKdhBAqmsKGewMAme2YbYNbw55ojvwkftcnpJzEnZA2dBZ2t1CqW5pgUV
+         wij+z0iEHfc/Io1zVxseqKmRGMLCGFzFXSYIRnUqA6f5tuL7PaHzdLJRGDPFOH63/1fM
+         8tSD0ZwGIXec6PXmQMRN7PMihAbYwG6LcK/l7SMcJw6dqtsOmZtjPYaLY7SYxPzdYStb
+         0klUAyo7ziIZMRwF7yQt9DansmWYmJRb2dwFEmWMB4W15p+bO37/1wLMjBZ8FEoz0FBl
+         wE2FIFT7XmTHGL0MSuhqjy4Cst//IZUZijSBh/ro4a/E0rkax6S9nYpiHf/vB/mcp2Ty
+         a09A==
+X-Gm-Message-State: APjAAAUL6v8bm0/8jPgemIUs5vKVPmkJNkNBO4hjhG4aWt8ovK0KfoEJ
+        4g0Tx1ueyZDmRMFK5bENEu5PIg==
+X-Google-Smtp-Source: APXvYqzlpK5pBiX4ZkgLqxxNTRGRH0ynLDYmWkspxcryl8RjU9it0Gu+UXY5JkgZrcsNnP/avbUxqw==
+X-Received: by 2002:a63:6157:: with SMTP id v84mr785749pgb.36.1559682432353;
+        Tue, 04 Jun 2019 14:07:12 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id n184sm20166360pfn.21.2019.06.04.14.07.11
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 04 Jun 2019 14:07:11 -0700 (PDT)
+Date:   Tue, 4 Jun 2019 14:07:10 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [RFC PATCH bpf-next 6/8] libbpf: allow specifying map
+ definitions using BTF
+Message-ID: <20190604210710.GA17053@mini-arch>
+References: <20190531202132.379386-7-andriin@fb.com>
+ <20190531212835.GA31612@mini-arch>
+ <CAEf4Bza38VEh9NWTLEReAR_J0eqjsvH1a2T-0AeWqDZpE8YPfA@mail.gmail.com>
+ <20190603163222.GA14556@mini-arch>
+ <CAEf4BzbRXAZMXY3kG9HuRC93j5XhyA3EbWxkLrrZsG7K4abdBg@mail.gmail.com>
+ <20190604010254.GB14556@mini-arch>
+ <f2b5120c-fae7-bf72-238a-b76257b0c0e4@fb.com>
+ <20190604042902.GA2014@mini-arch>
+ <20190604134538.GB2014@mini-arch>
+ <CAEf4BzZEqmnwL0MvEkM7iH3qKJ+TF7=yCKJRAAb34m4+B-1Zcg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZEqmnwL0MvEkM7iH3qKJ+TF7=yCKJRAAb34m4+B-1Zcg@mail.gmail.com>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 06/04, Andrii Nakryiko wrote:
+> On Tue, Jun 4, 2019 at 6:45 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> >
+> > On 06/03, Stanislav Fomichev wrote:
+> > > > BTF is mandatory for _any_ new feature.
+> > > If something is easy to support without asking everyone to upgrade to
+> > > a bleeding edge llvm, why not do it?
+> > > So much for backwards compatibility and flexibility.
+> > >
+> > > > It's for introspection and debuggability in the first place.
+> > > > Good debugging is not optional.
+> > > Once llvm 8+ is everywhere, sure, but we are not there yet (I'm talking
+> > > about upstream LTS distros like ubuntu/redhat).
+> > But putting this aside, one thing that I didn't see addressed in the
+> > cover letter is: what is the main motivation for the series?
+> > Is it to support iproute2 map definitions (so cilium can switch to libbpf)?
+> 
+> In general, the motivation is to arrive at a way to support
+> declaratively defining maps in such a way, that:
+> - captures type information (for debuggability/introspection) in
+> coherent and hard-to-screw-up way;
+> - allows to support missing useful features w/ good syntax (e.g.,
+> natural map-in-map case vs current completely manual non-declarative
+> way for libbpf);
 
-This is a call for proposals for the 3 day networking track at the
-Linux Plumbers Conference in Lisbon, which will be happening on
-September 9th-11th, 2019.
+[..]
+> - ultimately allow iproute2 to use libbpf as unified loader (and thus
+> the need to support its existing features, like
+> BPF_MAP_TYPE_PROG_ARRAY initialization, pinning, map-in-map);
+So prog_array tail call info would be encoded in the magic struct instead of
+a __section_tail(whatever) macros that iproute2 is using? Does it
+mean that the programs that target iproute2 would have to be rewritten?
+Or we don't have a goal to provide source-level compatibility?
 
-We are seeking talks of 40 minutes in length (including Q & A),
-optionally accompanied by papers of 2 to 10 pages in length.  The
-papers, while not required, are very strongly encouraged by the
-committee.  The submitters intention to provide a paper will be taken
-into consideration as a criteria when deciding which proposals to
-accept.
+In general, supporting iproute2 seems like the most compelling
+reason to use BTF given current state of llvm+btf adoption.
+BPF_ANNOTATE_KV_PAIR and map-in-map syntax while ugly, is not the major
+paint point (imho); but I agree, with BTF both of those things
+look much better.
 
-Any kind of advanced networking-related topic will be considered.
+That's why I was trying to understand whether we can start with using
+BTF to support _existing_ iproute2 format and then, once it's working,
+generalize it (and kill bpf_map_def or make it a subset of generic BTF).
+That way we are not implementing another way to support pinning/tail
+calls, but enabling iproute2 to use libbpf.
 
-Please submit your proposals on the LPC website at:
+But feel free to ignore all my nonsense above; I don't really have any
+major concerns with the new generic format rather than discoverability
+(the docs might help) and a mandate that everyone switches to it immediately.
 
-	https://www.linuxplumbersconf.org/event/4/abstracts/#submit-abstract
-
-And be sure to select "Networking Summit Track" in the Track pulldown
-menu.
-
-Proposals must be submitted by August 2nd, and submitters will be
-notified of acceptance by August 9th.
-
-Final slides and papers (as PDF) are due on September 2nd.
+> The only missing feature that can be supported reasonably with
+> bpf_map_def is pinning (as it's just another int field), but all the
+> other use cases requires awkward approach of matching arbitrary IDs,
+> which feels like a bad way forward.
+> 
+> 
+> > If that's the case, maybe explicitly focus on that? Once we have
+> > proof-of-concept working for iproute2 mode, we can extend it to everything.
