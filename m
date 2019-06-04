@@ -2,36 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8586135437
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2019 01:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8AD35433
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2019 01:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726881AbfFDXWj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Jun 2019 19:22:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60980 "EHLO mail.kernel.org"
+        id S1727001AbfFDXWw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Jun 2019 19:22:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726876AbfFDXWi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Jun 2019 19:22:38 -0400
+        id S1727009AbfFDXWv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Jun 2019 19:22:51 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65B8520859;
-        Tue,  4 Jun 2019 23:22:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36DF420863;
+        Tue,  4 Jun 2019 23:22:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559690558;
-        bh=mIl1qkLw6ixFkw961ZXi8NjSN8yh49bdoYo0oKYcreE=;
+        s=default; t=1559690571;
+        bh=66hOY2fBtQRs/WlfFucZlqG6SUvnQxfmiGeG7HznvFQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=og9rgRypUkY8bkK+WmJpvzoZqJa4It4V+Z2MD1UxPMvhds255BdAkFTzD1PomUgIG
-         M/hS7+aMkkVFM1W13sLNv7t8FIpAe73ADPnRMDNdMTsiG8WcXGd6DvQrgF+Cj6B2zx
-         BHlf2QQCVYi2rP+xVK3Z6kTeI4vE1JGVJXTLbZpU=
+        b=szIKkU80u6EavR5yIQEaETIy6ElQRBKN1jhNvXWZOWNoypc+qMyhuZ2wuX0VwISt4
+         jSCed1sXaJcCKo2UquS7MHxrvcudAsTAczQwTh6yo/Q9Xnqws3gXqM6FxddOsnAs/x
+         zZXV/mhgF0Or7BBFy7IGQIrECC4uuWgNJ0Td1vpE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Arika Chen <eaglesora@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.1 14/60] bpf: sockmap fix msg->sg.size account on ingress skb
-Date:   Tue,  4 Jun 2019 19:21:24 -0400
-Message-Id: <20190604232212.6753-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.1 24/60] bpf, tcp: correctly handle DONT_WAIT flags and timeo == 0
+Date:   Tue,  4 Jun 2019 19:21:34 -0400
+Message-Id: <20190604232212.6753-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190604232212.6753-1-sashal@kernel.org>
 References: <20190604232212.6753-1-sashal@kernel.org>
@@ -46,35 +47,41 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: John Fastabend <john.fastabend@gmail.com>
 
-[ Upstream commit cabede8b4f2b746232aa25730a0b752de1cb82ca ]
+[ Upstream commit 5fa2ca7c4a3fc176f31b495e1a704862d8188b53 ]
 
-When converting a skb to msg->sg we forget to set the size after the
-latest ktls/tls code conversion. This patch can be reached by doing
-a redir into ingress path from BPF skb sock recv hook. Then trying to
-read the size fails.
+The tcp_bpf_wait_data() routine needs to check timeo != 0 before
+calling sk_wait_event() otherwise we may see unexpected stalls
+on receiver.
 
-Fix this by setting the size.
+Arika did all the leg work here I just formatted, posted and ran
+a few tests.
 
 Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
+Reported-by: Arika Chen <eaglesora@gmail.com>
+Suggested-by: Arika Chen <eaglesora@gmail.com>
 Signed-off-by: John Fastabend <john.fastabend@gmail.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/skmsg.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/ipv4/tcp_bpf.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 49d1efa329d7..93bffaad2135 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -411,6 +411,7 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
- 	sk_mem_charge(sk, skb->len);
- 	copied = skb->len;
- 	msg->sg.start = 0;
-+	msg->sg.size = copied;
- 	msg->sg.end = num_sge == MAX_MSG_FRAGS ? 0 : num_sge;
- 	msg->skb = skb;
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index 4a619c85daed..3d1e15401384 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -27,7 +27,10 @@ static int tcp_bpf_wait_data(struct sock *sk, struct sk_psock *psock,
+ 			     int flags, long timeo, int *err)
+ {
+ 	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+-	int ret;
++	int ret = 0;
++
++	if (!timeo)
++		return ret;
  
+ 	add_wait_queue(sk_sleep(sk), &wait);
+ 	sk_set_bit(SOCKWQ_ASYNC_WAITDATA, sk);
 -- 
 2.20.1
 
