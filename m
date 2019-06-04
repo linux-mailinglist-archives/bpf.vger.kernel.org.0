@@ -2,168 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD10334988
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2019 15:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D33C334A03
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2019 16:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727533AbfFDN4H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Jun 2019 09:56:07 -0400
-Received: from mail-it1-f199.google.com ([209.85.166.199]:42876 "EHLO
-        mail-it1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727504AbfFDN4H (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Jun 2019 09:56:07 -0400
-Received: by mail-it1-f199.google.com with SMTP id s18so69873itl.7
-        for <bpf@vger.kernel.org>; Tue, 04 Jun 2019 06:56:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=e0x3CjfxT+Tc9OfQE9UyUP0v/CUgs1KGy0Ok9Cy7y8Q=;
-        b=Ncolpllqp7xPDCQ7voftSW2tGlCzGnnMNCp7h7PHu/HMhQ8iTTkKqL/aJmSZm5c/nn
-         8TVcqACMOvYYQSiqgOifzGU37mWK8vNMJnquX2E8A8PuipbPYd/jb2222Alcv4j5a/aV
-         2ESPWp3CrdYhN2k7/bma8h8B47MBKDgZj8nq+95lf4LIqbxB+jvGZK+A/49qHvHAjxb+
-         URqBH4MPCgkMePQY7DnuSchvIreEJz+cgBtVb4iGZgyeKNrE24xQDKsNfSjKlLzA15tc
-         l7uYwkq4iQUS+oTdOG3gXJ8hxFhLSmg5GB0f3u3BxUkBnImicHEPM5MseXML+pDbFspF
-         FWmg==
-X-Gm-Message-State: APjAAAXkgpnyTtdmrTDSvccE6r1xBuDLWkcbBNjXpP6gaQmYAcrrw7yn
-        Jltbm/OVabKW2MaGaJsInV6Gp9uPXHkGhCtF3ed9v0EQpNFb
-X-Google-Smtp-Source: APXvYqxswE3V/GpTEDke+LgJdIgEgE7AHZepq4QIp7VgGjhnjLYEetNn3M4bxurDFjITYWRV/6FI9+281KrpB9Zvomf/8KvUcPy8
+        id S1727744AbfFDOSD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Jun 2019 10:18:03 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:52572 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727729AbfFDOSD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Jun 2019 10:18:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=5pILMQXKeyLYh5ydaNJLoPQY2CsjJ232NGCECQ6ieOU=; b=QLUJW3Xy70Q2w9OUNVuRZY0o4
+        yWEYAcj9wsEw/WCH3Ev2mmzFxcX3nSL4HEiIv6hp/loWiN4uF7rzQIqHqcU7ri65t0K8wXd2HAu32
+        2qao64KVRLpHeaks4KHMJG0MEhxr4/9evrll3GcDcTV8HO/nsABvymJIdTvw0UDffzz0uUe/RWTxq
+        ZK/VHAgrMxMZA/7JVdt8Xq59mnyk5F8VKB64zj6NS8ZVedxbkIR1tg3EaCh7nTghyuOfPODuStkaL
+        BMYE86ezcmk7k/DZmlS1YAx9pXLecloginxyygBPabhwPbkn78TFuiL2uXY5h2thVba5HWy/RmD7c
+        bFRQzyRtQ==;
+Received: from [179.182.172.34] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
+        id 1hYAGH-0001Rn-U6; Tue, 04 Jun 2019 14:18:02 +0000
+Received: from mchehab by bombadil.infradead.org with local (Exim 4.92)
+        (envelope-from <mchehab@bombadil.infradead.org>)
+        id 1hYAGE-0002kc-G7; Tue, 04 Jun 2019 11:17:58 -0300
+From:   Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@infradead.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH v2 00/22] Some documentation fixes
+Date:   Tue,  4 Jun 2019 11:17:34 -0300
+Message-Id: <cover.1559656538.git.mchehab+samsung@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9f12:: with SMTP id q18mr16396879iot.250.1559656566027;
- Tue, 04 Jun 2019 06:56:06 -0700 (PDT)
-Date:   Tue, 04 Jun 2019 06:56:06 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000097025d058a7fd785@google.com>
-Subject: KASAN: slab-out-of-bounds Read in css_task_iter_advance
-From:   syzbot <syzbot+9343b7623bc03dc680c1@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
-        daniel@iogearbox.net, hannes@cmpxchg.org, kafai@fb.com,
-        linux-kernel@vger.kernel.org, lizefan@huawei.com,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tj@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
 
-syzbot found the following crash on:
+Fix several warnings and broken links.
 
-HEAD commit:    56b697c6 Add linux-next specific files for 20190604
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=170d747ca00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4248d6bc70076f7d
-dashboard link: https://syzkaller.appspot.com/bug?extid=9343b7623bc03dc680c1
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+This series was generated against linux-next, but was rebased to be applied at
+docs-next. It should apply cleanly on either tree.
 
-Unfortunately, I don't have any reproducer for this crash yet.
+There's a git tree with all of them applied on the top of docs/docs-next
+at:
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+9343b7623bc03dc680c1@syzkaller.appspotmail.com
+https://git.linuxtv.org/mchehab/experimental.git/log/?h=fix_doc_links_v2
 
-==================================================================
-BUG: KASAN: slab-out-of-bounds in css_task_iter_advance+0x49b/0x540  
-kernel/cgroup/cgroup.c:4507
-Read of size 4 at addr ffff88809ae59d64 by task syz-executor.2/28895
+-
 
-CPU: 1 PID: 28895 Comm: syz-executor.2 Not tainted 5.2.0-rc3-next-20190604  
-#8
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
-  print_address_description.cold+0xd4/0x306 mm/kasan/report.c:351
-  __kasan_report.cold+0x1b/0x36 mm/kasan/report.c:482
-  kasan_report+0x12/0x20 mm/kasan/common.c:614
-  __asan_report_load4_noabort+0x14/0x20 mm/kasan/generic_report.c:131
-  css_task_iter_advance+0x49b/0x540 kernel/cgroup/cgroup.c:4507
-  css_task_iter_start+0x18b/0x230 kernel/cgroup/cgroup.c:4543
-  update_tasks_flags+0x85/0x100 kernel/cgroup/cpuset.c:1836
-  update_flag+0x232/0x470 kernel/cgroup/cpuset.c:1886
-  cpuset_write_u64+0x222/0x270 kernel/cgroup/cpuset.c:2268
-  cgroup_file_write+0x4db/0x790 kernel/cgroup/cgroup.c:3727
-  kernfs_fop_write+0x2b8/0x480 fs/kernfs/file.c:316
-  __vfs_write+0x8a/0x110 fs/read_write.c:494
-  vfs_write+0x268/0x5d0 fs/read_write.c:558
-  ksys_write+0x14f/0x290 fs/read_write.c:611
-  __do_sys_write fs/read_write.c:623 [inline]
-  __se_sys_write fs/read_write.c:620 [inline]
-  __x64_sys_write+0x73/0xb0 fs/read_write.c:620
-  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x459279
-Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f8d15ef2c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000459279
-RDX: 0000000000000011 RSI: 00000000200000c0 RDI: 0000000000000004
-RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f8d15ef36d4
-R13: 00000000004c8eb1 R14: 00000000004dfb68 R15: 00000000ffffffff
+v2:
 
-Allocated by task 9803:
-  save_stack+0x23/0x90 mm/kasan/common.c:71
-  set_track mm/kasan/common.c:79 [inline]
-  __kasan_kmalloc mm/kasan/common.c:489 [inline]
-  __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:462
-  kasan_slab_alloc+0xf/0x20 mm/kasan/common.c:497
-  slab_post_alloc_hook mm/slab.h:444 [inline]
-  slab_alloc mm/slab.c:3320 [inline]
-  kmem_cache_alloc+0x11a/0x6f0 mm/slab.c:3482
-  getname_flags fs/namei.c:138 [inline]
-  getname_flags+0xd6/0x5b0 fs/namei.c:128
-  getname fs/namei.c:209 [inline]
-  do_renameat2+0x199/0xc40 fs/namei.c:4543
-  __do_sys_rename fs/namei.c:4671 [inline]
-  __se_sys_rename fs/namei.c:4669 [inline]
-  __x64_sys_rename+0x61/0x80 fs/namei.c:4669
-  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+- added received acks/reviewed-by tags
+- removed patches that got merged at linux-next
+- Removed it_IT patches, as a different version was already submitted;
+- removed mfd: madera: patch, assuming that it will be merged via
+  some other tree;
+- Removed the :orphan:  markups for KVM patches, as those are fixed
+  at -next;
+- zh_CN: use a different approach to fix duplicate references;
+- added a patch moving protection-keys.rst to the core-api book;
+- added 3 patches fixing new broken stuff:
 
-Freed by task 9803:
-  save_stack+0x23/0x90 mm/kasan/common.c:71
-  set_track mm/kasan/common.c:79 [inline]
-  __kasan_slab_free+0x102/0x150 mm/kasan/common.c:451
-  kasan_slab_free+0xe/0x10 mm/kasan/common.c:459
-  __cache_free mm/slab.c:3426 [inline]
-  kmem_cache_free+0x86/0x320 mm/slab.c:3692
-  putname+0xef/0x130 fs/namei.c:259
-  do_renameat2+0x2b4/0xc40 fs/namei.c:4647
-  __do_sys_rename fs/namei.c:4671 [inline]
-  __se_sys_rename fs/namei.c:4669 [inline]
-  __x64_sys_rename+0x61/0x80 fs/namei.c:4669
-  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-The buggy address belongs to the object at ffff88809ae58440
-  which belongs to the cache names_cache of size 4096
-The buggy address is located 2340 bytes to the right of
-  4096-byte region [ffff88809ae58440, ffff88809ae59440)
-The buggy address belongs to the page:
-page:ffffea00026b9600 refcount:1 mapcount:0 mapping:ffff8880aa593ac0  
-index:0x0 compound_mapcount: 0
-flags: 0x1fffc0000010200(slab|head)
-raw: 01fffc0000010200 ffffea00018b4308 ffffea0001afb488 ffff8880aa593ac0
-raw: 0000000000000000 ffff88809ae58440 0000000100000001 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
-  ffff88809ae59c00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-  ffff88809ae59c80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> ffff88809ae59d00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                                                        ^
-  ffff88809ae59d80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-  ffff88809ae59e00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+	docs: isdn: remove hisax references from kernel-parameters.txt
+	dt: bindings: fix some broken links from txt->yaml conversion
+	docs: fix broken documentation links
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Mauro Carvalho Chehab (22):
+  ABI: sysfs-devices-system-cpu: point to the right docs
+  isdn: mISDN: remove a bogus reference to a non-existing doc
+  docs: zh_CN: get rid of basic_profiling.txt
+  docs: mm: numaperf.rst: get rid of a build warning
+  docs: bpf: get rid of two warnings
+  docs: mark orphan documents as such
+  docs: amd-memory-encryption.rst get rid of warnings
+  gpu: i915.rst: Fix references to renamed files
+  docs: zh_CN: avoid duplicate citation references
+  docs: vm: hmm.rst: fix some warnings
+  docs: it: license-rules.rst: get rid of warnings
+  docs: gpio: driver.rst: fix a bad tag
+  docs: soundwire: locking: fix tags for a code-block
+  docs: security: trusted-encrypted.rst: fix code-block tag
+  docs: security: core.rst: Fix several warnings
+  docs: net: dpio-driver.rst: fix two codeblock warnings
+  docs: net: sja1105.rst: fix table format
+  docs: move protection-keys.rst to the core-api book
+  docs: fix broken documentation links
+  dt: bindings: fix some broken links from txt->yaml conversion
+  docs: isdn: remove hisax references from kernel-parameters.txt
+  docs: Kbuild/Makefile: allow check for missing docs at build time
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+ .../ABI/testing/sysfs-devices-system-cpu      |  3 +-
+ Documentation/Kconfig                         | 13 ++++
+ Documentation/Makefile                        |  5 ++
+ Documentation/accelerators/ocxl.rst           |  2 +
+ Documentation/acpi/dsd/leds.txt               |  2 +-
+ .../admin-guide/kernel-parameters.rst         |  6 +-
+ .../admin-guide/kernel-parameters.txt         | 19 +++--
+ Documentation/admin-guide/mm/numaperf.rst     |  5 +-
+ Documentation/admin-guide/ras.rst             |  2 +-
+ Documentation/arm/stm32/overview.rst          |  2 +
+ .../arm/stm32/stm32f429-overview.rst          |  2 +
+ .../arm/stm32/stm32f746-overview.rst          |  2 +
+ .../arm/stm32/stm32f769-overview.rst          |  2 +
+ .../arm/stm32/stm32h743-overview.rst          |  2 +
+ .../arm/stm32/stm32mp157-overview.rst         |  2 +
+ Documentation/bpf/btf.rst                     |  2 +
+ Documentation/core-api/index.rst              |  1 +
+ .../{x86 => core-api}/protection-keys.rst     |  0
+ .../bindings/media/st,stm32-dcmi.txt          |  2 +-
+ .../devicetree/bindings/net/fsl-enetc.txt     |  7 +-
+ .../bindings/pci/amlogic,meson-pcie.txt       |  2 +-
+ .../regulator/qcom,rpmh-regulator.txt         |  2 +-
+ .../bindings/sound/st,stm32-i2s.txt           |  2 +-
+ .../bindings/sound/st,stm32-sai.txt           |  2 +-
+ .../devicetree/booting-without-of.txt         |  2 +-
+ Documentation/driver-api/gpio/board.rst       |  2 +-
+ Documentation/driver-api/gpio/consumer.rst    |  2 +-
+ Documentation/driver-api/gpio/driver.rst      |  2 +-
+ .../driver-api/soundwire/locking.rst          |  4 +-
+ .../firmware-guide/acpi/enumeration.rst       |  2 +-
+ .../firmware-guide/acpi/method-tracing.rst    |  2 +-
+ Documentation/gpu/i915.rst                    |  6 +-
+ Documentation/gpu/msm-crash-dump.rst          |  2 +
+ Documentation/i2c/instantiating-devices       |  2 +-
+ Documentation/interconnect/interconnect.rst   |  2 +
+ Documentation/laptops/lg-laptop.rst           |  2 +
+ .../freescale/dpaa2/dpio-driver.rst           |  4 +-
+ Documentation/networking/dsa/sja1105.rst      |  6 +-
+ Documentation/powerpc/isa-versions.rst        |  2 +
+ Documentation/security/keys/core.rst          | 16 +++--
+ .../security/keys/trusted-encrypted.rst       |  4 +-
+ Documentation/sysctl/kernel.txt               |  4 +-
+ .../it_IT/process/license-rules.rst           | 28 ++++----
+ .../translations/zh_CN/basic_profiling.txt    | 71 -------------------
+ .../translations/zh_CN/process/4.Coding.rst   |  2 +-
+ .../zh_CN/process/management-style.rst        |  4 +-
+ .../zh_CN/process/programming-language.rst    | 59 +++++++++++----
+ .../virtual/kvm/amd-memory-encryption.rst     |  3 +
+ Documentation/vm/hmm.rst                      |  3 +-
+ Documentation/x86/index.rst                   |  1 -
+ Documentation/x86/x86_64/5level-paging.rst    |  2 +-
+ Documentation/x86/x86_64/boot-options.rst     |  4 +-
+ .../x86/x86_64/fake-numa-for-cpusets.rst      |  2 +-
+ Kconfig                                       |  2 +
+ MAINTAINERS                                   |  6 +-
+ arch/arm/Kconfig                              |  2 +-
+ arch/arm64/kernel/kexec_image.c               |  2 +-
+ arch/powerpc/Kconfig                          |  2 +-
+ arch/x86/Kconfig                              | 16 ++---
+ arch/x86/Kconfig.debug                        |  2 +-
+ arch/x86/boot/header.S                        |  2 +-
+ arch/x86/entry/entry_64.S                     |  2 +-
+ arch/x86/include/asm/bootparam_utils.h        |  2 +-
+ arch/x86/include/asm/page_64_types.h          |  2 +-
+ arch/x86/include/asm/pgtable_64_types.h       |  2 +-
+ arch/x86/kernel/cpu/microcode/amd.c           |  2 +-
+ arch/x86/kernel/kexec-bzimage64.c             |  2 +-
+ arch/x86/kernel/pci-dma.c                     |  2 +-
+ arch/x86/mm/tlb.c                             |  2 +-
+ arch/x86/platform/pvh/enlighten.c             |  2 +-
+ drivers/acpi/Kconfig                          | 10 +--
+ drivers/isdn/mISDN/dsp_core.c                 |  2 -
+ drivers/net/ethernet/faraday/ftgmac100.c      |  2 +-
+ .../fieldbus/Documentation/fieldbus_dev.txt   |  4 +-
+ drivers/vhost/vhost.c                         |  2 +-
+ include/acpi/acpi_drivers.h                   |  2 +-
+ include/linux/fs_context.h                    |  2 +-
+ include/linux/lsm_hooks.h                     |  2 +-
+ mm/Kconfig                                    |  2 +-
+ scripts/documentation-file-ref-check          |  9 +++
+ security/Kconfig                              |  2 +-
+ tools/include/linux/err.h                     |  2 +-
+ .../Documentation/stack-validation.txt        |  4 +-
+ tools/testing/selftests/x86/protection_keys.c |  2 +-
+ 84 files changed, 227 insertions(+), 206 deletions(-)
+ create mode 100644 Documentation/Kconfig
+ rename Documentation/{x86 => core-api}/protection-keys.rst (100%)
+ delete mode 100644 Documentation/translations/zh_CN/basic_profiling.txt
+
+-- 
+2.21.0
+
+
