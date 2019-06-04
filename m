@@ -2,126 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 677A73461F
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2019 14:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A946E34942
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2019 15:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727250AbfFDMES (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Jun 2019 08:04:18 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:35573 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727248AbfFDMES (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Jun 2019 08:04:18 -0400
-Received: by mail-lj1-f195.google.com with SMTP id h11so19445366ljb.2;
-        Tue, 04 Jun 2019 05:04:16 -0700 (PDT)
+        id S1727137AbfFDNpl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Jun 2019 09:45:41 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:46475 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727041AbfFDNpl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Jun 2019 09:45:41 -0400
+Received: by mail-pl1-f194.google.com with SMTP id e5so6628611pls.13
+        for <bpf@vger.kernel.org>; Tue, 04 Jun 2019 06:45:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=FXYFlU4Gtt1sNdAjVggynhOg2dbU2oGefZAnt6fsu2U=;
+        b=Tbi2u/FdtK2E7K6ejc7yZJ6aQwkZSm4xxiryFDGQGrEwZfBVxEHdBm4bD0GbunlEQV
+         C9WyPnVDv44be2dPO6UFVC3wBkhhViqTF+aNOPKGAPTDYDZ83OOoJAq/cDlT3NF1UEoy
+         cSRAoePj1itruwChupXGNcG9QHk5zdVTEFV2UmmdCzIhvGIDAQkTBb6Mx6SvaMaqRFv0
+         QuFaUMxvrFoAi5JszAmfSds89ycyvC60JeynIyoEFq5RsPYkI1JFzbNmRBKoXAqsX6Lf
+         3AU9OjOGcMFXK2JbEQ0yuML5ABluZ8KFSgjQvizUQpQF74sL56XGTz5sVcz1C2XyJpj+
+         kvPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s3J1gXJ8WrBLFRAI1dgrNYQJUNQV1AcqpuGg+T5+KPk=;
-        b=h/ZxBNfgtyojJEWdl1prRJA5WkBOT2fM+xWmUMbKNBQN9DeEkdDumnOAdSIxJoSg0B
-         e5YAujz/3HUcr+KR5AEDbRYdCXb85osWwBGm7YrNT5QCxes2s0mb57IU5oUD7enutrH5
-         j1UYIdBRLSQI4EZ+dOif7mnSPnjkpeMiFr2rnUnCmnRH3zNUN1t5uEQAojPHuB2oCf9F
-         XhDJyalwA6BDO52C0jtR25f0B0Ns3c+j9XqFEdopj8W9wUOeomA2vcjREaVIR2p2rKE3
-         hRfWyt3aOdG4UY27QFxRugFf7O6caU+pUVjFkIyAe/9wSVKLasd45qhJJuS0Ix2Iq/9v
-         Hihw==
-X-Gm-Message-State: APjAAAVoJYEffN3C/ypYsFgGVr2+cgqhi95Qk3Dz1EH4pF9sBlms7s3A
-        uotBPHOQJEN6e0ukUyR4jUsNnJBU2Tqh+4/aEd8=
-X-Google-Smtp-Source: APXvYqz5/3pzap8ZE3WMM30TBQVT+VfiRL9u2vQiwVXG2dfHIRAikYK0s02dYmEOvbTJdR7Bi3vtAJqvSmijM8vUFoo=
-X-Received: by 2002:a2e:6e01:: with SMTP id j1mr16411083ljc.135.1559649856163;
- Tue, 04 Jun 2019 05:04:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <f42c7b44b3f694056c4216e9d9ba914b44e72ab9.1559648367.git.baruch@tkos.co.il>
-In-Reply-To: <f42c7b44b3f694056c4216e9d9ba914b44e72ab9.1559648367.git.baruch@tkos.co.il>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 4 Jun 2019 14:04:03 +0200
-Message-ID: <CAMuHMdWbcSUyYo1sJ81qojmbB_g595dVnzQycZq0Yh5BdQYCEg@mail.gmail.com>
-Subject: Re: [PATCH] bpf: fix uapi bpf_prog_info fields alignment
-To:     Baruch Siach <baruch@tkos.co.il>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FXYFlU4Gtt1sNdAjVggynhOg2dbU2oGefZAnt6fsu2U=;
+        b=g4U59EOmH/aZEzpt3jxAdER27jS20X1v6B/Or4xk5GL3qrvaYtNPVBJHcvrG7n2/VM
+         +bIBb8qdpNh1Q5Ho+i4ujgKq5E0O2M7nqpvtK8BoiPcpgoWfOCNzHBo8XW+fLq2c3mA1
+         3/gVAIR6p9DHaqcDjYBymiTaIPPoZFpioFJIkEH31w9XMjcoUtyGBxH9JjH3x3gJziaY
+         ahe2o63ZYQggchPz9BVndmXlf9nUQ45GeJmXC1u28bSTdWkwsN2Ddok+j75c42gF1/mI
+         /SajKiCXfvjIGP0mZ6VxqoaY2HblWpA/upEGXVZ/CXYaZauO/MU6R5ZVDBtmFaZcb9uF
+         rh9w==
+X-Gm-Message-State: APjAAAW7WOv4Gr51kRIcqG3qlKqPMb+9+g0qgcDOOGQF0tEx/l8lfJS/
+        obFEZP8GPKuybCy4gQnucsDqMw==
+X-Google-Smtp-Source: APXvYqz3ZTxtw1bpsSszcQ7p1WSYVxLQleNdZtVgGMEWXWNgB0CDoMCghRH63hN6aZmoPosAFXZiuQ==
+X-Received: by 2002:a17:902:2869:: with SMTP id e96mr35514488plb.203.1559655940367;
+        Tue, 04 Jun 2019 06:45:40 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id g8sm2377205pfi.8.2019.06.04.06.45.39
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 04 Jun 2019 06:45:39 -0700 (PDT)
+Date:   Tue, 4 Jun 2019 06:45:38 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Alexei Starovoitov <ast@fb.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        "Dmitry V . Levin" <ldv@altlinux.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [RFC PATCH bpf-next 6/8] libbpf: allow specifying map
+ definitions using BTF
+Message-ID: <20190604134538.GB2014@mini-arch>
+References: <20190531202132.379386-1-andriin@fb.com>
+ <20190531202132.379386-7-andriin@fb.com>
+ <20190531212835.GA31612@mini-arch>
+ <CAEf4Bza38VEh9NWTLEReAR_J0eqjsvH1a2T-0AeWqDZpE8YPfA@mail.gmail.com>
+ <20190603163222.GA14556@mini-arch>
+ <CAEf4BzbRXAZMXY3kG9HuRC93j5XhyA3EbWxkLrrZsG7K4abdBg@mail.gmail.com>
+ <20190604010254.GB14556@mini-arch>
+ <f2b5120c-fae7-bf72-238a-b76257b0c0e4@fb.com>
+ <20190604042902.GA2014@mini-arch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190604042902.GA2014@mini-arch>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Baruch,
-
-On Tue, Jun 4, 2019 at 1:40 PM Baruch Siach <baruch@tkos.co.il> wrote:
-> Merge commit 1c8c5a9d38f60 ("Merge
-> git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next") undid the
-> fix from commit 36f9814a494 ("bpf: fix uapi hole for 32 bit compat
-> applications") by taking the gpl_compatible 1-bit field definition from
-> commit b85fab0e67b162 ("bpf: Add gpl_compatible flag to struct
-> bpf_prog_info") as is. That breaks architectures with 16-bit alignment
-> like m68k. Widen gpl_compatible to 32-bit to restore alignment of the
-> following fields.
->
-> Thanks to Dmitry V. Levin his analysis of this bug history.
->
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
-
-Thanks for your patch!
-
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3140,7 +3140,7 @@ struct bpf_prog_info {
->         __aligned_u64 map_ids;
->         char name[BPF_OBJ_NAME_LEN];
->         __u32 ifindex;
-> -       __u32 gpl_compatible:1;
-> +       __u32 gpl_compatible;
->         __u64 netns_dev;
->         __u64 netns_ino;
-
-Wouldn't it be better to change the types of the fields that require
-8-byte alignment from __u64 to __aligned_u64, like is already used
-for the map_ids fields?
-
-Without that, some day people will need to add a new flag, and will
-convert the 32-bit flag to a bitfield again to make space, reintroducing
-the issue.
-
->         __u32 nr_jited_ksyms;
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index 63e0cf66f01a..fe73829b5b1c 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -3140,7 +3140,7 @@ struct bpf_prog_info {
->         __aligned_u64 map_ids;
->         char name[BPF_OBJ_NAME_LEN];
->         __u32 ifindex;
-> -       __u32 gpl_compatible:1;
-> +       __u32 gpl_compatible;
->         __u64 netns_dev;
->         __u64 netns_ino;
-
-Same here.
-
->         __u32 nr_jited_ksyms;
-> --
-> 2.20.1
->
-
-
--- 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+On 06/03, Stanislav Fomichev wrote:
+> > BTF is mandatory for _any_ new feature.
+> If something is easy to support without asking everyone to upgrade to
+> a bleeding edge llvm, why not do it?
+> So much for backwards compatibility and flexibility.
+> 
+> > It's for introspection and debuggability in the first place.
+> > Good debugging is not optional.
+> Once llvm 8+ is everywhere, sure, but we are not there yet (I'm talking
+> about upstream LTS distros like ubuntu/redhat).
+But putting this aside, one thing that I didn't see addressed in the
+cover letter is: what is the main motivation for the series?
+Is it to support iproute2 map definitions (so cilium can switch to libbpf)?
+If that's the case, maybe explicitly focus on that? Once we have
+proof-of-concept working for iproute2 mode, we can extend it to everything.
