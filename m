@@ -2,181 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8901233E71
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2019 07:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DF234121
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2019 10:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbfFDFhV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Jun 2019 01:37:21 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:39463 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbfFDFhV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Jun 2019 01:37:21 -0400
-Received: by mail-qk1-f193.google.com with SMTP id i125so2055776qkd.6;
-        Mon, 03 Jun 2019 22:37:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=36J3I7Fuugme+mq6p4mk4Ngg78eCdJB/76haz5JE75s=;
-        b=m5ewveizZ8GMYQ4T78LySwh+5lInoyktPCXEG5LudhnWLgmzcoxp898J1dDdVeOtod
-         bxFsOkq5nHwT+ZkbqbDML1djROlLvB8yCqINCIZLNeBAiXQmlJUM1dQXRUO6pIvFzJbg
-         x7HEbSHFuJeLzh4zJkk+qsUTsfbo5owDlTHw0v1tjYQOZnAamjxyxi8hODxWGTr4xItf
-         aH3KaRIosM/5sfGe/0MvEtM6NFZZ2PzRCKgqr7dQ7maj8pSDHD5/jPRqWvArb2aemODw
-         +PdzG8ZrwxKlPmvZ18YpK7zocAg8Q14cogpzsZqJa8sYynTgyXAPhYa2t+YxU8sILQfk
-         OEqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=36J3I7Fuugme+mq6p4mk4Ngg78eCdJB/76haz5JE75s=;
-        b=me/Bp3vAcuj3iQJhYFxc+PEpminvf2rzEc0UQI0x8kNDKSA6CEvzEu5ROTJ4JmpwJ7
-         Z6T94tnhKJ4Y0l0qKL4G3Py8Fc440nhXAt6B3lr7Qz9kjpl14Aq01ANzpSFFHeO1sxTg
-         z9mP1v/j49uOEYdRKi5tlpVZvlRcjVlBV4XdFo6byVUJ0tRiMjNTVp+Qo+O/jd3T6K70
-         qlLpiv+oDaq2LMukhKMYjiUxOpafpXkwOabBwHYwUvBvuER/aw5qxB7M8M3j7nu1v0hP
-         FKVeLDAMM6X0RfGvBuaRsjKckCUVhfwtBQst2ZbwXpDvO7VRxrZzqMcYZcRhxkT+4nGz
-         QqMg==
-X-Gm-Message-State: APjAAAVaegFaqT9Xy8q2WR7aIb0SJNt6pZQlqDYwjScyOzZ7411ODqVW
-        9/bIK6h9+nvWCjvaVvtznXsJ/xG+YXjbK315Ujo=
-X-Google-Smtp-Source: APXvYqwwZfIzPzJ/9wzDwWVYTlppF0yZUkCQJEaPMWzc87FrKCSy+qUelljfh7rYkYgEO4Vrow0lfcDJ/PXWnbWh3iI=
-X-Received: by 2002:a05:620a:16a6:: with SMTP id s6mr25993787qkj.39.1559626639747;
- Mon, 03 Jun 2019 22:37:19 -0700 (PDT)
+        id S1726873AbfFDIGm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Jun 2019 04:06:42 -0400
+Received: from mga17.intel.com ([192.55.52.151]:6995 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726855AbfFDIGl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Jun 2019 04:06:41 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Jun 2019 01:06:41 -0700
+X-ExtLoop1: 1
+Received: from unknown (HELO btopel-mobl.ger.intel.com) ([10.255.41.153])
+  by fmsmga006.fm.intel.com with ESMTP; 04 Jun 2019 01:06:37 -0700
+Subject: Re: [RFC PATCH bpf-next 1/4] libbpf: fill the AF_XDP fill queue
+ before bind() call
+To:     Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
+        magnus.karlsson@intel.com, netdev@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, jakub.kicinski@netronome.com,
+        jonathan.lemon@gmail.com, songliubraving@fb.com,
+        bpf <bpf@vger.kernel.org>
+References: <20190603131907.13395-1-maciej.fijalkowski@intel.com>
+ <20190603131907.13395-2-maciej.fijalkowski@intel.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <76bc124c-46ed-f0a6-315e-1600c837aea0@intel.com>
+Date:   Tue, 4 Jun 2019 10:06:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <20190531094215.3729-1-bjorn.topel@gmail.com> <20190531094215.3729-2-bjorn.topel@gmail.com>
- <E5650E49-81B5-4F36-B931-E433A0BD210D@flugsvamp.com> <CAJ+HfNj=h1Ns_Q4tzmK-5q8jr5icVLA9-tiH7-tQTXx0hATZ0A@mail.gmail.com>
- <a9c3be97-6c74-6491-199f-219bd4c2c631@iogearbox.net>
-In-Reply-To: <a9c3be97-6c74-6491-199f-219bd4c2c631@iogearbox.net>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 4 Jun 2019 07:37:08 +0200
-Message-ID: <CAJ+HfNiMksZg2yyGcPV-njA4NmXmeW_70MDpoPugBtD8pHsYZw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] net: xdp: refactor XDP_QUERY_PROG{,_HW}
- to netdev
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Jonathan Lemon <jlemon@flugsvamp.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        bpf <bpf@vger.kernel.org>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20190603131907.13395-2-maciej.fijalkowski@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 4 Jun 2019 at 01:11, Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 06/03/2019 10:39 AM, Bj=C3=B6rn T=C3=B6pel wrote:
-> > On Sat, 1 Jun 2019 at 20:12, Jonathan Lemon <jlemon@flugsvamp.com> wrot=
-e:
-> >> On 31 May 2019, at 2:42, Bj=C3=B6rn T=C3=B6pel wrote:
-> >>> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> >>>
-> >>> All XDP capable drivers need to implement the XDP_QUERY_PROG{,_HW}
-> >>> command of ndo_bpf. The query code is fairly generic. This commit
-> >>> refactors the query code up from the drivers to the netdev level.
-> >>>
-> >>> The struct net_device has gained two new members: xdp_prog_hw and
-> >>> xdp_flags. The former is the offloaded XDP program, if any, and the
-> >>> latter tracks the flags that the supplied when attaching the XDP
-> >>> program. The flags only apply to SKB_MODE or DRV_MODE, not HW_MODE.
-> >>>
-> >>> The xdp_prog member, previously only used for SKB_MODE, is shared wit=
-h
-> >>> DRV_MODE. This is OK, due to the fact that SKB_MODE and DRV_MODE are
-> >>> mutually exclusive. To differentiate between the two modes, a new
-> >>> internal flag is introduced as well.
-> >>
-> >> I'm not entirely clear why this new flag is needed - GENERIC seems to
-> >> be an alias for SKB_MODE, so why just use SKB_MODE directly?
-> >>
-> >> If the user does not explicitly specify a type (skb|drv|hw), then the
-> >> command should choose the correct type and then behave as if this type
-> >> was specified.
-> >
-> > Yes, this is kind of hairy.
-> >
-> > SKB and DRV are mutually exclusive, but HW is not. IOW, valid options a=
-re:
-> > SKB, DRV, HW, SKB+HW DRV+HW.
->
-> Correct, HW is a bit special here in that it helps offloading parts of
-> the DRV XDP program to NIC, but also do RSS steering in BPF etc, hence
-> this combo is intentionally allowed (see also git log).
->
-> > What complicates things further, is that SKB and DRV can be implicitly
-> > (auto/no flags) or explicitly enabled (flags).
->
-> Mainly out of historic context: originally the fallback to SKB mode was
-> implicit if the ndo_bpf was missing. But there are use cases where we
-> want to fail if the driver does not support native XDP to avoid surprises=
-.
->
-> > If a user doesn't pass any flags, the "best supported mode" should be
-> > selected. If this "auto mode" is used, it should be seen as a third
-> > mode. E.g.
-> >
-> > ip link set dev eth0 xdp on -- OK
-> > ip link set dev eth0 xdp off -- OK
-> >
-> > ip link set dev eth0 xdp on -- OK # generic auto selected
-> > ip link set dev eth0 xdpgeneric off -- NOK, bad flags
->
-> This would work if the auto selection would have selected XDP generic.
->
-> > ip link set dev eth0 xdp on -- OK # drv auto selected
-> > ip link set dev eth0 xdpdrv off -- NOK, bad flags
->
-> This would work if the auto selection chose native XDP previously. Are
-> you saying it's not the case?
->
+On 2019-06-03 15:19, Maciej Fijalkowski wrote:
+> Let's get into the driver via ndo_bpf with command set to XDP_SETUP_UMEM
+> with fill queue that already contains some available entries that can be
+> used by Rx driver rings. Things worked in such way on old version of
+> xdpsock (that lacked libbpf support) and there's no particular reason
+> for having this preparation done after bind().
+> 
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> Signed-off-by: Krzysztof Kazimierczak <krzysztof.kazimierczak@intel.com>
+> ---
+>   samples/bpf/xdpsock_user.c | 15 ---------------
+>   tools/lib/bpf/xsk.c        | 19 ++++++++++++++++++-
+>   2 files changed, 18 insertions(+), 16 deletions(-)
+> 
+> diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
+> index d08ee1ab7bb4..e9dceb09b6d1 100644
+> --- a/samples/bpf/xdpsock_user.c
+> +++ b/samples/bpf/xdpsock_user.c
+> @@ -296,8 +296,6 @@ static struct xsk_socket_info *xsk_configure_socket(struct xsk_umem_info *umem)
+>   	struct xsk_socket_config cfg;
+>   	struct xsk_socket_info *xsk;
+>   	int ret;
+> -	u32 idx;
+> -	int i;
+>   
+>   	xsk = calloc(1, sizeof(*xsk));
+>   	if (!xsk)
+> @@ -318,19 +316,6 @@ static struct xsk_socket_info *xsk_configure_socket(struct xsk_umem_info *umem)
+>   	if (ret)
+>   		exit_with_error(-ret);
+>   
+> -	ret = xsk_ring_prod__reserve(&xsk->umem->fq,
+> -				     XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> -				     &idx);
+> -	if (ret != XSK_RING_PROD__DEFAULT_NUM_DESCS)
+> -		exit_with_error(-ret);
+> -	for (i = 0;
+> -	     i < XSK_RING_PROD__DEFAULT_NUM_DESCS *
+> -		     XSK_UMEM__DEFAULT_FRAME_SIZE;
+> -	     i += XSK_UMEM__DEFAULT_FRAME_SIZE)
+> -		*xsk_ring_prod__fill_addr(&xsk->umem->fq, idx++) = i;
+> -	xsk_ring_prod__submit(&xsk->umem->fq,
+> -			      XSK_RING_PROD__DEFAULT_NUM_DESCS);
+> -
+>   	return xsk;
+>   }
+>   
+> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> index 38667b62f1fe..57dda1389870 100644
+> --- a/tools/lib/bpf/xsk.c
+> +++ b/tools/lib/bpf/xsk.c
+> @@ -529,7 +529,8 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
+>   	struct xdp_mmap_offsets off;
+>   	struct xsk_socket *xsk;
+>   	socklen_t optlen;
+> -	int err;
+> +	int err, i;
+> +	u32 idx;
+>   
+>   	if (!umem || !xsk_ptr || !rx || !tx)
+>   		return -EFAULT;
+> @@ -632,6 +633,22 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
+>   	}
+>   	xsk->tx = tx;
+>   
+> +	err = xsk_ring_prod__reserve(umem->fill,
+> +				     XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> +				     &idx);
+> +	if (err != XSK_RING_PROD__DEFAULT_NUM_DESCS) {
+> +		err = -errno;
+> +		goto out_mmap_tx;
+> +	}
+> +
+> +	for (i = 0;
+> +	     i < XSK_RING_PROD__DEFAULT_NUM_DESCS *
+> +		     XSK_UMEM__DEFAULT_FRAME_SIZE;
+> +	     i += XSK_UMEM__DEFAULT_FRAME_SIZE)
+> +		*xsk_ring_prod__fill_addr(umem->fill, idx++) = i;
+> +	xsk_ring_prod__submit(umem->fill,
+> +			      XSK_RING_PROD__DEFAULT_NUM_DESCS);
+> +
 
-Yes, that is *not* the case for some drivers. With the Intel drivers
-we didn't check the flags at all at XDP attachment (check out the
-usage of xdp_attachment_flags_ok), but e.g. nfp and netdevsim does.
-Grep for 'program loaded with different flags' in the test_offload.py
-selftest. I like this approach, and my patch does this flag check in
-dev_change_xdp_fd.
+Here, entries are added to the umem fill ring regardless if Rx is being
+used or not. For a Tx only setup, this is not what we want, right?
 
-> Also, what is the use case in mixing these commands? It should be xdp
-> on+off, xdpdrv on+off, and so on. Are you saying you would prefer a
-> xdp{,any} off that uninstalls everything? Isn't this mostly a user space
-> issue to whatever orchestrates XDP?
->
+Thinking out loud here; Now libbpf is making the decision which umem
+entries that are added to the fill ring. The sample application has this
+(naive) scheme. I'm not sure that all applications would like that
+policy. What do you think?
 
-No, I'm not suggesting a change. There is no use-case mixing them.
-What the flags ok checks do is returning an error (like nfp and
-netdevsim does) if a user tries to mix, say,  "xdp" and explicit
-xdpdrv/xdpgeneric". This patch moves this check to the generic
-function dev_change_xdp_fd.
-
-There seems to be a confusion about how this is supposed to be used.
-It was for me, e.g. I though using "enable with xdp and disable with
-xdpdrv" was OK. This was the reason why I added an error on "disable
-with xdpgeneric off, if xdpdrv is active" in my first revision of the
-series. I removed this in v2, after Jakub pointed out the
-test_offload.py test, which is a great showcase/test of what should be
-allowed and what shouldn't in terms of flags.
-
-TL;DR: Let's stick to what test_offload.py asserts, for all XDP.
-
-
-> > ...and so on. The idea is that a user should use the same set of flags =
-always.
-> >
-> > The internal "GENERIC" flag is only to determine if the xdp_prog
-> > represents a DRV version or SKB version. Maybe it would be clearer
-> > just to add an additional xdp_prog_drv to the net_device, instead?
-> >
-> >> The logic in dev_change_xdp_fd() is too complicated.  It disallows
-> >> setting (drv|skb), but allows (hw|skb), which I'm not sure is
-> >> intentional.
-> >>
-> >> It should be clearer as to which combinations are allowed.
-> >
-> > Fair point. I'll try to clean it up further.
-> >
+>   	sxdp.sxdp_family = PF_XDP;
+>   	sxdp.sxdp_ifindex = xsk->ifindex;
+>   	sxdp.sxdp_queue_id = xsk->queue_id;
+> 
