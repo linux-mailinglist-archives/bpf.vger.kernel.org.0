@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C3F353FD
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2019 01:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53241353DF
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2019 01:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727432AbfFDXYA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Jun 2019 19:24:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34650 "EHLO mail.kernel.org"
+        id S1727681AbfFDXYl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Jun 2019 19:24:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727409AbfFDXX4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Jun 2019 19:23:56 -0400
+        id S1727616AbfFDXYk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Jun 2019 19:24:40 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A406208E3;
-        Tue,  4 Jun 2019 23:23:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF3F320863;
+        Tue,  4 Jun 2019 23:24:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559690635;
-        bh=fo4Jxt26GAww2/q3Ytrjs1EhQpirKIJtrKleEwe11zw=;
+        s=default; t=1559690679;
+        bh=9DVrfb+RbfAXUwVGsZ1Q/yAi2qX0Y8GWACm+qa2AtnU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OU8f6PRp5yG9X+kOtbE1B/sGiS/+gzKF990vqJ0QS0QrZ9zXvWh4GdB124JxcJ7k4
-         EpPsQMVyxMz56IyxEaxAN59SiKVLAuc2b/UYyY8hN0US7k9EPjZOjSS6hYqwLt263A
-         3DIdiVRxgBqYmEGDBh72TjaLk5rdlIB+nG2uCMwg=
+        b=k/78EMeiQ9/8NMZ3HsIXWsISPKW6BKvzvB7jYjXp2yGF6uAnANIPsm72tuJa1r38R
+         jDgkXK69HONp02YWkPd8ptP4q2MetEauJl2L2wAT/JlxRi0Z9KWjoCZ+Svl/ptVSwA
+         UNWHLA6FkZzP5cNDJItsHInTQJADrZYjZCSAtosE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Li Rongqing <lirongqing@baidu.com>, Zhang Yu <zhangyu31@baidu.com>,
@@ -33,12 +33,12 @@ Cc:     Li Rongqing <lirongqing@baidu.com>, Zhang Yu <zhangyu31@baidu.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 11/36] ipc: prevent lockup on alloc_msg and free_msg
-Date:   Tue,  4 Jun 2019 19:23:06 -0400
-Message-Id: <20190604232333.7185-11-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 10/24] ipc: prevent lockup on alloc_msg and free_msg
+Date:   Tue,  4 Jun 2019 19:24:01 -0400
+Message-Id: <20190604232416.7479-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190604232333.7185-1-sashal@kernel.org>
-References: <20190604232333.7185-1-sashal@kernel.org>
+In-Reply-To: <20190604232416.7479-1-sashal@kernel.org>
+References: <20190604232416.7479-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -140,10 +140,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 14 insertions(+), 2 deletions(-)
 
 diff --git a/ipc/mqueue.c b/ipc/mqueue.c
-index c0d58f390c3b..bce7af1546d9 100644
+index d24025626310..5c0ae912f2f2 100644
 --- a/ipc/mqueue.c
 +++ b/ipc/mqueue.c
-@@ -391,7 +391,8 @@ static void mqueue_evict_inode(struct inode *inode)
+@@ -374,7 +374,8 @@ static void mqueue_evict_inode(struct inode *inode)
  	struct user_struct *user;
  	unsigned long mq_bytes, mq_treesize;
  	struct ipc_namespace *ipc_ns;
@@ -153,7 +153,7 @@ index c0d58f390c3b..bce7af1546d9 100644
  
  	clear_inode(inode);
  
-@@ -402,10 +403,15 @@ static void mqueue_evict_inode(struct inode *inode)
+@@ -385,10 +386,15 @@ static void mqueue_evict_inode(struct inode *inode)
  	info = MQUEUE_I(inode);
  	spin_lock(&info->lock);
  	while ((msg = msg_get(info)) != NULL)
