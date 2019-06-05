@@ -2,57 +2,31 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF9C364D4
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2019 21:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D1336520
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2019 22:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbfFEThH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Jun 2019 15:37:07 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:33451 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbfFEThG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Jun 2019 15:37:06 -0400
-Received: by mail-qt1-f196.google.com with SMTP id 14so19454047qtf.0;
-        Wed, 05 Jun 2019 12:37:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O2csJP2e8mT2YZIAsKNMmzTnJtLz0nsfolBkD/FQ0NM=;
-        b=iNXoPmjllI2/CbhIrRsJHG8jG71wQBxSAfnaOyDnT60rEsaUMvW4f2k91xQ4XWIdwC
-         Pm8i3V7NI4ynV+7ThzEN/bQG6dRXwBu8HWxm4KgCHvXdxm2JGDjVv10rGuOQNSMKLvld
-         T5bm8j+sYOoBio994RCOeI2lrTUBnLVTA/wmqp0sO25fY+FAE30GFF+tSVNlsoZlH2/2
-         qhjojyuQjL7qtOJ16BA4aDRB+T7IFnaK4IBsaTjwTLshCovTfnLTCXJlv7hTpQnd0WLt
-         Q+Z8pMLnPOm5kGo/12ntVIQ0QSuDior4Mb1OvxNZW3NQhFN1aVkiwTdqXlhbcocqs5pU
-         yFQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O2csJP2e8mT2YZIAsKNMmzTnJtLz0nsfolBkD/FQ0NM=;
-        b=BEa43mN8TbuOG5zncDHEI+tO2x1UDUo/Ny7bmcZHIpxlc8pxhku5vBWVHLEk/N+L8t
-         fSBGXx3Q+QRah6UWay6qU831sB44Bb8unrLgkJ0vUIdLz2qlOiRw4MgHoilc2jj9H/xd
-         uEOKMd0HGmxl2FnettwMohwavUnygcQ9/fIW9N8Haw6AF+mJHsnKFuDHfwqq2DQzhiCh
-         aWmXu44v4SxBcF6sUgJ/hmJ99/jhGHD/mMAkj6Nnk8D/ds/sfWPsWOHD/gcZ2JwCV9JU
-         e1LgOekDPvJ6+IbzzSYJfYn3TbieKZLknQ+6k1E04lSDPSXO6Q2k6B0r75dIolB/HFhz
-         jOmA==
-X-Gm-Message-State: APjAAAV4pJztrcLX2eAITXt3LfrwByxrJKk2Jxvaq1Vzi70K1svZDMJ0
-        EOkxVb3XVYHrWs7NAUz2Andl5KQQPxDeWrK0qW0=
-X-Google-Smtp-Source: APXvYqzwXd5uLGh2CZqKB9dUHEats+uYz9LtoxSTgwyhTvw7ooC6Liz3aa7R40tQxs4RPSH9v+WOukKDMKWx2vf72Lo=
-X-Received: by 2002:a0c:95af:: with SMTP id s44mr7864192qvs.162.1559763425613;
- Wed, 05 Jun 2019 12:37:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190605191707.24429-1-krzesimir@kinvolk.io>
-In-Reply-To: <20190605191707.24429-1-krzesimir@kinvolk.io>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 5 Jun 2019 12:36:54 -0700
-Message-ID: <CAEf4BzYUg+FbBfCe-DTLrrT07ifK49NRFhLWye+Ej1JiFYwioQ@mail.gmail.com>
+        id S1726555AbfFEUKf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Jun 2019 16:10:35 -0400
+Received: from www62.your-server.de ([213.133.104.62]:36612 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726501AbfFEUKf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Jun 2019 16:10:35 -0400
+Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hYcEx-0002kS-Qb; Wed, 05 Jun 2019 22:10:31 +0200
+Received: from [178.197.249.21] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hYcEx-000Xli-JO; Wed, 05 Jun 2019 22:10:31 +0200
 Subject: Re: [BPF v1] tools: bpftool: Fix JSON output when lookup fails
-To:     Krzesimir Nowak <krzesimir@kinvolk.io>
-Cc:     bpf <bpf@vger.kernel.org>, Alban Crequy <alban@kinvolk.io>,
-        =?UTF-8?Q?Iago_L=C3=B3pez_Galeiras?= <iago@kinvolk.io>,
+To:     Krzesimir Nowak <krzesimir@kinvolk.io>, bpf@vger.kernel.org
+Cc:     Alban Crequy <alban@kinvolk.io>,
+        =?UTF-8?Q?Iago_L=c3=b3pez_Galeiras?= <iago@kinvolk.io>,
         Quentin Monnet <quentin.monnet@netronome.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
@@ -60,23 +34,33 @@ Cc:     bpf <bpf@vger.kernel.org>, Alban Crequy <alban@kinvolk.io>,
         Prashant Bhole <bhole_prashant_q7@lab.ntt.co.jp>,
         Okash Khawaja <osk@fb.com>,
         David Calavera <david.calavera@gmail.com>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20190605191707.24429-1-krzesimir@kinvolk.io>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <bd439a28-fed1-b35c-79b0-2100c58584ed@iogearbox.net>
+Date:   Wed, 5 Jun 2019 22:10:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
+MIME-Version: 1.0
+In-Reply-To: <20190605191707.24429-1-krzesimir@kinvolk.io>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25471/Wed Jun  5 10:12:21 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 5, 2019 at 12:18 PM Krzesimir Nowak <krzesimir@kinvolk.io> wrote:
->
+On 06/05/2019 09:17 PM, Krzesimir Nowak wrote:
 > In commit 9a5ab8bf1d6d ("tools: bpftool: turn err() and info() macros
 > into functions") one case of error reporting was special cased, so it
 > could report a lookup error for a specific key when dumping the map
 > element. What the code forgot to do is to wrap the key and value keys
 > into a JSON object, so an example output of pretty JSON dump of a
 > sockhash map (which does not support looking up its values) is:
->
+> 
 > [
 >     "key": ["0x0a","0x41","0x00","0x02","0x1f","0x78","0x00","0x00"
 >     ],
@@ -89,11 +73,11 @@ On Wed, Jun 5, 2019 at 12:18 PM Krzesimir Nowak <krzesimir@kinvolk.io> wrote:
 >         "error": "Operation not supported"
 >     }
 > ]
->
+> 
 > Note the key-value pairs inside the toplevel array. They should be
 > wrapped inside a JSON object, otherwise it is an invalid JSON. This
 > commit fixes this, so the output now is:
->
+> 
 > [{
 >         "key": ["0x0a","0x41","0x00","0x02","0x1f","0x78","0x00","0x00"
 >         ],
@@ -108,36 +92,9 @@ On Wed, Jun 5, 2019 at 12:18 PM Krzesimir Nowak <krzesimir@kinvolk.io> wrote:
 >         }
 >     }
 > ]
->
+> 
 > Fixes: 9a5ab8bf1d6d ("tools: bpftool: turn err() and info() macros into functions")
 > Cc: Quentin Monnet <quentin.monnet@netronome.com>
 > Signed-off-by: Krzesimir Nowak <krzesimir@kinvolk.io>
-> ---
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  tools/bpf/bpftool/map.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-> index 3ec82904ccec..5da5a7311f13 100644
-> --- a/tools/bpf/bpftool/map.c
-> +++ b/tools/bpf/bpftool/map.c
-> @@ -716,12 +716,14 @@ static int dump_map_elem(int fd, void *key, void *value,
->                 return 0;
->
->         if (json_output) {
-> +               jsonw_start_object(json_wtr);
->                 jsonw_name(json_wtr, "key");
->                 print_hex_data_json(key, map_info->key_size);
->                 jsonw_name(json_wtr, "value");
->                 jsonw_start_object(json_wtr);
->                 jsonw_string_field(json_wtr, "error", strerror(lookup_errno));
->                 jsonw_end_object(json_wtr);
-> +               jsonw_end_object(json_wtr);
->         } else {
->                 const char *msg = NULL;
->
-> --
-> 2.20.1
->
+Applied, thanks!
