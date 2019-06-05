@@ -2,120 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 098593554E
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2019 04:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6675355B4
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2019 06:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbfFECiF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Jun 2019 22:38:05 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:23777 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726460AbfFECiF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Jun 2019 22:38:05 -0400
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id x552bwqj023011;
-        Wed, 5 Jun 2019 11:37:59 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com x552bwqj023011
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1559702279;
-        bh=rlXG4KafJ48SszDXPb9veQ1mChqnZopGbbSbM2AtzLc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=reRoC3LCODW2GBXW/hPCv4S/B7CVl9c+nRtJ4VY8VY6hzI24tWZrUHkGNWz420Nxm
-         kA5XCPbqM+OcfHVU2VJwzQuuBHYJqAn1wVeQ72k4q/3g1jhzo46RQXCg/ukFh2Dox7
-         LR1uj6rky7CyY6u4WR0us9bTjJZgclXEUPQxSVVG70hHPG2k8nOGylY2MysCZiL0iG
-         YqMskldpLSmjYFpHCr5Tkh2Ifh48QY8xmg7TBMBkEF8jxDxwwerKaY9jc0GYh1EpfR
-         eGmZCZ4253i7cIrBZj1Z1utua3uwfrvPlahSg5FCD/jXViNq2pL+e8DeNYjaabxd3l
-         fbTOkdui/IHVw==
-X-Nifty-SrcIP: [209.85.217.48]
-Received: by mail-vs1-f48.google.com with SMTP id n21so9083325vsp.12;
-        Tue, 04 Jun 2019 19:37:59 -0700 (PDT)
-X-Gm-Message-State: APjAAAUJSf6uv3e8xz/lSHIFnG7yWBQ4EMyfIbvLeziXJe+cZWKe2PaA
-        BHwSO3AdTPTTF1TIyYuLO8jAgWtqFiGJcWbl6Kk=
-X-Google-Smtp-Source: APXvYqzyi/PN7usug5PnObKBoqJxKJtYCUFINZdd71aBKnjEu2CMU8+EOU/sdcKVYceeBvsBUi01Xqmwcp/M7j6Sefg=
-X-Received: by 2002:a67:f495:: with SMTP id o21mr3047792vsn.54.1559702278042;
- Tue, 04 Jun 2019 19:37:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190604101409.2078-1-yamada.masahiro@socionext.com>
-In-Reply-To: <20190604101409.2078-1-yamada.masahiro@socionext.com>
-From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-Date:   Wed, 5 Jun 2019 11:37:21 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ50Lnz+1hjHg2PK_h7DyfNkY7D1XGL5_VPDe5xLgx2Kw@mail.gmail.com>
-Message-ID: <CAK7LNAQ50Lnz+1hjHg2PK_h7DyfNkY7D1XGL5_VPDe5xLgx2Kw@mail.gmail.com>
-Subject: Re: [PATCH 00/15] kbuild: refactor headers_install and support
- compile-test of UAPI headers
-To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Cc:     Song Liu <songliubraving@fb.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        id S1726263AbfFEEGP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Jun 2019 00:06:15 -0400
+Received: from guitar.tcltek.co.il ([192.115.133.116]:60648 "EHLO
+        mx.tkos.co.il" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725783AbfFEEGP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Jun 2019 00:06:15 -0400
+Received: from sapphire.tkos.co.il (unknown [192.168.100.188])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx.tkos.co.il (Postfix) with ESMTPS id 52E9A44030A;
+        Wed,  5 Jun 2019 07:06:12 +0300 (IDT)
+Date:   Wed, 5 Jun 2019 07:06:11 +0300
+From:   Baruch Siach <baruch@tkos.co.il>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-riscv@lists.infradead.org,
-        Vincent Chen <deanbo422@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Helge Deller <deller@gmx.de>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Yonghong Song <yhs@fb.com>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-parisc@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, "Dmitry V . Levin" <ldv@altlinux.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org
+Subject: Re: [PATCH] bpf: fix uapi bpf_prog_info fields alignment
+Message-ID: <20190605040611.dt5fiegte2ys7z7z@sapphire.tkos.co.il>
+References: <f42c7b44b3f694056c4216e9d9ba914b44e72ab9.1559648367.git.baruch@tkos.co.il>
+ <CAADnVQJ1vRvqNFsWjvwmzSc_-OY51HTsVa13XhgK1v9NbYY2_A@mail.gmail.com>
+ <CAMuHMdV-0s_ikRmCrEcMCfkAp57Fu8WTUnJsopGagbYa+GGpbA@mail.gmail.com>
+ <20190604153028.ysyzvmpxqaaln4v2@ast-mbp.dhcp.thefacebook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190604153028.ysyzvmpxqaaln4v2@ast-mbp.dhcp.thefacebook.com>
+User-Agent: NeoMutt/20180716
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 4, 2019 at 7:15 PM Masahiro Yamada
-<yamada.masahiro@socionext.com> wrote:
->
->
-> Multiple people have suggested to compile-test UAPI headers.
->
-> Currently, Kbuild provides simple sanity checks by headers_check
-> but they are not enough to catch bugs.
->
-> The most recent patch I know is David Howells' work:
-> https://patchwork.kernel.org/patch/10590203/
->
-> I agree that we need better tests for UAPI headers,
-> but I want to integrate it in a clean way.
->
-> The idea that has been in my mind is to compile each header
-> to make sure the selfcontainedness.
+Hi Alexei,
 
+(Adding Arnd and linux-arch to Cc)
 
-For convenience, I pushed this series at
+On Tue, Jun 04, 2019 at 08:30:29AM -0700, Alexei Starovoitov wrote:
+> On Tue, Jun 04, 2019 at 05:23:46PM +0200, Geert Uytterhoeven wrote:
+> > On Tue, Jun 4, 2019 at 5:17 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > > On Tue, Jun 4, 2019 at 4:40 AM Baruch Siach <baruch@tkos.co.il> wrote:
+> > > > Merge commit 1c8c5a9d38f60 ("Merge
+> > > > git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next") undid the
+> > > > fix from commit 36f9814a494 ("bpf: fix uapi hole for 32 bit compat
+> > > > applications") by taking the gpl_compatible 1-bit field definition from
+> > > > commit b85fab0e67b162 ("bpf: Add gpl_compatible flag to struct
+> > > > bpf_prog_info") as is. That breaks architectures with 16-bit alignment
+> > > > like m68k. Widen gpl_compatible to 32-bit to restore alignment of the
+> > > > following fields.
+> > >
+> > > The commit log is misleading and incorrect.
+> > > Since compiler makes it into 16-bit field, it's a compiler bug.
+> > > u32 in C should stay as u32 regardless of architecture.
+> > 
+> > C99 says (Section 6.7.2.1, Structure and union specifiers, Semantics)
+> > 
+> >     10  An implementation may allocate any addressable storage unit
+> >         large enough to hold a bit-field.
+> > 
+> > $ cat hello.c
+> > #include <stdio.h>
+> > #include <stdint.h>
+> > #include <stdlib.h>
+> > 
+> > struct x {
+> >         unsigned int bit : 1;
+> >         unsigned char byte;
+> > };
+> > 
+> > int main(int argc, char *argv[])
+> > {
+> >         struct x x;
+> > 
+> >         printf("byte is at offset %zu\n", (uintptr_t)&x.byte - (uintptr_t)&x);
+> >         printf("sizeof(x) = %zu\n", sizeof(x));
+> >         exit(0);
+> > }
+> > $ gcc -Wall hello.c -o hello && ./hello
+> > byte is at offset 1
+> > sizeof(x) = 4
+> > $ uname -m
+> > x86_64
+> > 
+> > So the compiler allocates a single byte, even on a 64-bit platform!
+> > The gap is solely determined by the alignment rule for the
+> > successive field.
+> 
+> argh. then we need something like this:
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 7c6aef253173..a2ac0b961251 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3174,6 +3174,7 @@ struct bpf_prog_info {
+>         char name[BPF_OBJ_NAME_LEN];
+>         __u32 ifindex;
+>         __u32 gpl_compatible:1;
+> +       __u32 :31;
+>         __u64 netns_dev;
+>         __u64 netns_ino;
+>         __u32 nr_jited_ksyms;
 
-git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-uapi-header-test-v1
+Is that guaranteed to work across platforms/compilers? Maybe an anonymous 
+union would be safer? Something like:
 
-(13/15 was replaced with v2)
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 63e0cf66f01a..06c9fb314ea5 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3140,7 +3140,10 @@ struct bpf_prog_info {
+ 	__aligned_u64 map_ids;
+ 	char name[BPF_OBJ_NAME_LEN];
+ 	__u32 ifindex;
+-	__u32 gpl_compatible:1;
++	union {
++		__u32 gpl_compatible:1;
++		__u32 pad;
++	};
+ 	__u64 netns_dev;
+ 	__u64 netns_ino;
+ 	__u32 nr_jited_ksyms;
 
-
-If you want to test it quickly, please check-out it, then
-
-  $ make -j8 allmodconfig usr/
-
-(As I noted in the commit log, you need to use
-a compiler that provides <stdlib.h>, <sys/time.h>, etc.)
-
+baruch
 
 -- 
-Best Regards
-Masahiro Yamada
+     http://baruch.siach.name/blog/                  ~. .~   Tk Open Systems
+=}------------------------------------------------ooO--U--Ooo------------{=
+   - baruch@tkos.co.il - tel: +972.2.679.5364, http://www.tkos.co.il -
