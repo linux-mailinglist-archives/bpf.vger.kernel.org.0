@@ -2,258 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 355B937AC7
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 19:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5DA37B7C
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 19:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730025AbfFFRRx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jun 2019 13:17:53 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:33656 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727120AbfFFRRx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jun 2019 13:17:53 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x56H7MT1007457;
-        Thu, 6 Jun 2019 10:17:51 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=Wj8ELLARzE1mTJq2p7LH10zZdupNyT9FtwhFSZEppxY=;
- b=JY0qu8mTj6ZHb9uWEP2VsSq2nMHj+EZ/8g0xJoyeylvGsAToklXHNEoWECGr8p6y0im7
- DS0gH3jG0xxDOEsT71gdOrW5OvBj1fzL62Dkgc+NVLyWfYCSol/tpNsGMNl443D28bpP
- yWwNmxS82x+a02lJaOFIbLzk6uNrjlTP+po= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2sy07a9kjg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 06 Jun 2019 10:17:51 -0700
-Received: from ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) by
- ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 6 Jun 2019 10:17:47 -0700
-Received: from NAM03-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 6 Jun 2019 10:17:47 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Wj8ELLARzE1mTJq2p7LH10zZdupNyT9FtwhFSZEppxY=;
- b=F1E5q4hS/jjAUkG6ffKUeKvZ+oi3xc+eNLOt2CvEpPfLYcs8a/PymhaHV0EqUpinWeoN57iD0csFOM9AttwvxbBq8f46Ba8xV1Mw6/F0l+TVJjud1aH0rM7y+PQt/gaZzhJ8vBViVl9orRCpYZkD8jdtaC2ooHpqGjkAMJawBUQ=
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
- MWHPR15MB1263.namprd15.prod.outlook.com (10.175.2.11) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1965.14; Thu, 6 Jun 2019 17:17:45 +0000
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::400e:e329:ea98:aa0d]) by MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::400e:e329:ea98:aa0d%6]) with mapi id 15.20.1965.011; Thu, 6 Jun 2019
- 17:17:45 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Hechao Li <hechaol@fb.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 2/2] bpf: use libbpf_num_possible_cpus in
- bpftool and selftests
-Thread-Topic: [PATCH v2 bpf-next 2/2] bpf: use libbpf_num_possible_cpus in
- bpftool and selftests
-Thread-Index: AQHVHIlfB45LrsDQrEOIdC3wdcxrZaaO3m8A
-Date:   Thu, 6 Jun 2019 17:17:45 +0000
-Message-ID: <AED5E1DA-DBD4-41C8-A78F-44A4ED19C06F@fb.com>
-References: <20190606165837.2042247-1-hechaol@fb.com>
- <20190606165837.2042247-3-hechaol@fb.com>
-In-Reply-To: <20190606165837.2042247-3-hechaol@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3445.104.11)
-x-originating-ip: [2620:10d:c090:200::3:bed9]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2c5d4a0c-3ee1-4ab7-3074-08d6eaa2e447
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MWHPR15MB1263;
-x-ms-traffictypediagnostic: MWHPR15MB1263:
-x-microsoft-antispam-prvs: <MWHPR15MB1263511F9BA0EA35B5D6179BB3170@MWHPR15MB1263.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:159;
-x-forefront-prvs: 00603B7EEF
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(136003)(376002)(346002)(396003)(366004)(199004)(189003)(64756008)(66556008)(66476007)(66446008)(102836004)(86362001)(486006)(186003)(76116006)(53546011)(73956011)(66946007)(83716004)(57306001)(6636002)(6116002)(71190400001)(71200400001)(2906002)(14444005)(5660300002)(256004)(8676002)(6862004)(25786009)(6246003)(33656002)(36756003)(68736007)(4326008)(450100002)(478600001)(6512007)(6436002)(50226002)(14454004)(81166006)(8936002)(81156014)(53936002)(446003)(99286004)(305945005)(37006003)(7736002)(54906003)(316002)(229853002)(46003)(11346002)(6486002)(76176011)(82746002)(476003)(2616005)(6506007);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1263;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: e3ZL4whBwVGdtcU1rCWrn/VSkGUp+uzg4UzGtliGLR0OII76ajiG+nwCSk4OK1qR11PNTcfgVk40S9r81oNYLhofqN0oGTn1et7OnE5MtXzQsmVHKc8n7iA1m8hw8H3gy94sT1k+v13ID2zkvaxRRfxVUkuGHVcq/NNg7uziszOsuEKOVb5WXe7DWV9txkaJ6T1lq03aAM4y84lj9mDeobp6/mO7oG+ve9cAjc5O/t32Buc4U8t2jtf4N+DabwniOOJfzt50v19/z6RQfjOPNYe9iXnB2vyNUgTigSIAmH/AkDNJwGV7Z6tm7/2j2gBoBNe2cdGsbYICL6Qe7Disu+oPqpOdr32M3X6noPNGwa0pZbLZ1z7oK1BGkBEUmN0avYb7E//F1tr9ZnUNW6Uw0plBTb8gxVDO8eNft2f5gR8=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <E306DA8B780738429153467D251C2A2C@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c5d4a0c-3ee1-4ab7-3074-08d6eaa2e447
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jun 2019 17:17:45.3334
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: songliubraving@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1263
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-06_12:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906060115
-X-FB-Internal: deliver
+        id S1728774AbfFFRvu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jun 2019 13:51:50 -0400
+Received: from mail-ua1-f73.google.com ([209.85.222.73]:44420 "EHLO
+        mail-ua1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728815AbfFFRvt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jun 2019 13:51:49 -0400
+Received: by mail-ua1-f73.google.com with SMTP id m5so605376uak.11
+        for <bpf@vger.kernel.org>; Thu, 06 Jun 2019 10:51:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=JCwv+UD4yQBiRat0LbHtuxWmZ8WThdMX43Z60hYFlcA=;
+        b=dcY56VPlNU1UmmXBB1IyITcEr//sUVUAdlNZy9SuAbRjX9y/SMTDEDPQdr+g7EEB6r
+         ZOuf2dPmD+E495d2hfhPWCPPRFRjlcU/DTvh2Pk7IyB+gEv7RfzDUT8aDXbEHdyCTXvF
+         z4vog1tCuslJzLz6rXp2mWCcUFzQFzP6RYPHdLKubVpNeu7vov1uJuaqh0r/hwYAfuMS
+         TxD7DtwiEFKZuMOyDGk/Qf0dPM0wMbUGPvpkOctCJQY5/8/3XvBegwbdYwJOuitgeKh3
+         Y4DiV2dI12XrTScKe6FWTXOIal8kgoQ148W17MaI+j3LDfY6xtJrJwWZgoD6RfegEbxZ
+         NCfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=JCwv+UD4yQBiRat0LbHtuxWmZ8WThdMX43Z60hYFlcA=;
+        b=fUO5PJrwAfKWNcWdIXWZo4W1/W5PxHCelgyuRr+xMTQOpi5SBXaX4HbKpeW3OUxOXP
+         d9/XkVBsf/QjSt0tfRU8A7z5BGBi2avvpzFuxHbi5Et5YY48Rdvm613rV+6kQKlDfhxn
+         gMDXeg5/z67DyVzTCHsB01sd6ti2JXdPQw6XG53O2VqDv9Xea3TcS6xneo866Xz/1L01
+         mrY5SybNg/M2DyIEoclnBenjbBwVS/a18DzjVaY1mW/PvQkJqHVdMwr7pPRUMlp6oU7H
+         TJPHwQCs+DGh9TCqiWfDDQ+oQBNuj82O5mvDutpv1qbGMWOc1KPN5rSbqEJLtZ17TDTu
+         xfsA==
+X-Gm-Message-State: APjAAAU2gEETycfeLtPZDSColE8P7D86pCie/ntum87Z41+BxDUzXrd1
+        ezr7tD+szAjnUYi9VUaL4NmjWjY=
+X-Google-Smtp-Source: APXvYqwKk+I4HbuA4RcglkP8o46iI6xbteS+/MuFwJyr/XWMftq/+pw8TuJDIwz+Yidoj+OgCKZAOXQ=
+X-Received: by 2002:a1f:a1c8:: with SMTP id k191mr6874449vke.77.1559843508489;
+ Thu, 06 Jun 2019 10:51:48 -0700 (PDT)
+Date:   Thu,  6 Jun 2019 10:51:38 -0700
+Message-Id: <20190606175146.205269-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.22.0.rc1.311.g5d7573a151-goog
+Subject: [PATCH bpf-next v2 0/8] bpf: getsockopt and setsockopt hooks
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This series implements two new per-cgroup hooks: getsockopt and
+setsockopt along with a new sockopt program type. The idea is pretty
+similar to recently introduced cgroup sysctl hooks, but
+implementation is simpler (no need to convert to/from strings).
 
+What this can be applied to:
+* move business logic of what tos/priority/etc can be set by
+  containers (either pass or reject)
+* handle existing options (or introduce new ones) differently by
+  propagating some information in cgroup/socket local storage
 
-> On Jun 6, 2019, at 9:58 AM, Hechao Li <hechaol@fb.com> wrote:
->=20
-> Use the newly added bpf_num_possible_cpus() in bpftool and selftests
-> and remove duplicate implementations.
->=20
-> Signed-off-by: Hechao Li <hechaol@fb.com>
-> ---
-> tools/bpf/bpftool/common.c             | 53 +++-----------------------
-> tools/testing/selftests/bpf/bpf_util.h | 37 +++---------------
-> 2 files changed, 10 insertions(+), 80 deletions(-)
->=20
-> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-> index f7261fad45c1..0b1c56758cd9 100644
-> --- a/tools/bpf/bpftool/common.c
-> +++ b/tools/bpf/bpftool/common.c
-> @@ -21,6 +21,7 @@
-> #include <sys/vfs.h>
->=20
-> #include <bpf.h>
-> +#include <libbpf.h> /* libbpf_num_possible_cpus */
->=20
-> #include "main.h"
->=20
-> @@ -439,57 +440,13 @@ unsigned int get_page_size(void)
->=20
-> unsigned int get_possible_cpus(void)
-> {
-> -	static unsigned int result;
-> -	char buf[128];
-> -	long int n;
-> -	char *ptr;
-> -	int fd;
-> -
-> -	if (result)
-> -		return result;
-> -
-> -	fd =3D open("/sys/devices/system/cpu/possible", O_RDONLY);
-> -	if (fd < 0) {
-> -		p_err("can't open sysfs possible cpus");
-> -		exit(-1);
-> -	}
-> -
-> -	n =3D read(fd, buf, sizeof(buf));
-> -	if (n < 2) {
-> -		p_err("can't read sysfs possible cpus");
-> -		exit(-1);
-> -	}
-> -	close(fd);
-> +	int cpus =3D libbpf_num_possible_cpus();
->=20
-> -	if (n =3D=3D sizeof(buf)) {
-> -		p_err("read sysfs possible cpus overflow");
-> +	if (cpus <=3D 0) {
-> +		p_err("can't get # of possible cpus");
-> 		exit(-1);
-> 	}
-> -
-> -	ptr =3D buf;
-> -	n =3D 0;
-> -	while (*ptr && *ptr !=3D '\n') {
-> -		unsigned int a, b;
-> -
-> -		if (sscanf(ptr, "%u-%u", &a, &b) =3D=3D 2) {
-> -			n +=3D b - a + 1;
-> -
-> -			ptr =3D strchr(ptr, '-') + 1;
-> -		} else if (sscanf(ptr, "%u", &a) =3D=3D 1) {
-> -			n++;
-> -		} else {
-> -			assert(0);
-> -		}
-> -
-> -		while (isdigit(*ptr))
-> -			ptr++;
-> -		if (*ptr =3D=3D ',')
-> -			ptr++;
-> -	}
-> -
-> -	result =3D n;
-> -
-> -	return result;
-> +	return cpus;
-> }
->=20
-> static char *
-> diff --git a/tools/testing/selftests/bpf/bpf_util.h b/tools/testing/selft=
-ests/bpf/bpf_util.h
-> index a29206ebbd13..9ad9c7595f93 100644
-> --- a/tools/testing/selftests/bpf/bpf_util.h
-> +++ b/tools/testing/selftests/bpf/bpf_util.h
-> @@ -6,44 +6,17 @@
-> #include <stdlib.h>
-> #include <string.h>
-> #include <errno.h>
-> +#include <libbpf.h>
->=20
-> static inline unsigned int bpf_num_possible_cpus(void)
-> {
-> -	static const char *fcpu =3D "/sys/devices/system/cpu/possible";
-> -	unsigned int start, end, possible_cpus =3D 0;
-> -	char buff[128];
-> -	FILE *fp;
-> -	int len, n, i, j =3D 0;
-> +	int possible_cpus =3D libbpf_num_possible_cpus();
->=20
-> -	fp =3D fopen(fcpu, "r");
-> -	if (!fp) {
-> -		printf("Failed to open %s: '%s'!\n", fcpu, strerror(errno));
-> +	if (possible_cpus <=3D 0) {
-> +		printf("Failed to get # of possible cpus: '%s'!\n",
-> +		       strerror(-possible_cpus));
+Compared to a simple syscall/{g,s}etsockopt tracepoint, those
+hooks are context aware. Meaning, they can access underlying socket
+and use cgroup and socket local storage.
 
-strerror(0) is "Success". This is a little weird.=20
+Stanislav Fomichev (8):
+  bpf: implement getsockopt and setsockopt hooks
+  bpf: sync bpf.h to tools/
+  libbpf: support sockopt hooks
+  selftests/bpf: test sockopt section name
+  selftests/bpf: add sockopt test
+  selftests/bpf: add sockopt test that exercises sk helpers
+  bpf: add sockopt documentation
+  bpftool: support cgroup sockopt
 
-Thanks,
-Song
+ Documentation/bpf/index.rst                   |   1 +
+ Documentation/bpf/prog_cgroup_sockopt.rst     |  39 +
+ include/linux/bpf-cgroup.h                    |  29 +
+ include/linux/bpf.h                           |  46 ++
+ include/linux/bpf_types.h                     |   1 +
+ include/linux/filter.h                        |  13 +
+ include/uapi/linux/bpf.h                      |  14 +
+ kernel/bpf/cgroup.c                           | 277 +++++++
+ kernel/bpf/core.c                             |   9 +
+ kernel/bpf/syscall.c                          |  19 +
+ kernel/bpf/verifier.c                         |  15 +
+ net/core/filter.c                             |   4 +-
+ net/socket.c                                  |  18 +
+ .../bpftool/Documentation/bpftool-cgroup.rst  |   7 +-
+ .../bpftool/Documentation/bpftool-prog.rst    |   2 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |   8 +-
+ tools/bpf/bpftool/cgroup.c                    |   5 +-
+ tools/bpf/bpftool/main.h                      |   1 +
+ tools/bpf/bpftool/prog.c                      |   3 +-
+ tools/include/uapi/linux/bpf.h                |  14 +
+ tools/lib/bpf/libbpf.c                        |   5 +
+ tools/lib/bpf/libbpf_probes.c                 |   1 +
+ tools/testing/selftests/bpf/.gitignore        |   2 +
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ .../testing/selftests/bpf/progs/sockopt_sk.c  |  77 ++
+ .../selftests/bpf/test_section_names.c        |  10 +
+ tools/testing/selftests/bpf/test_sockopt.c    | 773 ++++++++++++++++++
+ tools/testing/selftests/bpf/test_sockopt_sk.c | 156 ++++
+ 28 files changed, 1542 insertions(+), 11 deletions(-)
+ create mode 100644 Documentation/bpf/prog_cgroup_sockopt.rst
+ create mode 100644 tools/testing/selftests/bpf/progs/sockopt_sk.c
+ create mode 100644 tools/testing/selftests/bpf/test_sockopt.c
+ create mode 100644 tools/testing/selftests/bpf/test_sockopt_sk.c
 
-> 		exit(1);
-> 	}
-> -
-> -	if (!fgets(buff, sizeof(buff), fp)) {
-> -		printf("Failed to read %s!\n", fcpu);
-> -		exit(1);
-> -	}
-> -
-> -	len =3D strlen(buff);
-> -	for (i =3D 0; i <=3D len; i++) {
-> -		if (buff[i] =3D=3D ',' || buff[i] =3D=3D '\0') {
-> -			buff[i] =3D '\0';
-> -			n =3D sscanf(&buff[j], "%u-%u", &start, &end);
-> -			if (n <=3D 0) {
-> -				printf("Failed to retrieve # possible CPUs!\n");
-> -				exit(1);
-> -			} else if (n =3D=3D 1) {
-> -				end =3D start;
-> -			}
-> -			possible_cpus +=3D end - start + 1;
-> -			j =3D i + 1;
-> -		}
-> -	}
-> -
-> -	fclose(fp);
-> -
-> 	return possible_cpus;
-> }
->=20
-> --=20
-> 2.17.1
->=20
-
+-- 
+2.22.0.rc1.311.g5d7573a151-goog
