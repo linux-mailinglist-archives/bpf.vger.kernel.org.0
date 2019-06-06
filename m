@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B44223754E
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 15:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6C537563
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 15:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727581AbfFFNea (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jun 2019 09:34:30 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:44476 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727234AbfFFNe3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jun 2019 09:34:29 -0400
-Received: by mail-qk1-f195.google.com with SMTP id w187so1402969qkb.11;
-        Thu, 06 Jun 2019 06:34:29 -0700 (PDT)
+        id S1728289AbfFFNip (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jun 2019 09:38:45 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:39957 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726014AbfFFNio (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jun 2019 09:38:44 -0400
+Received: by mail-qk1-f196.google.com with SMTP id c70so1426871qkg.7;
+        Thu, 06 Jun 2019 06:38:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=xirkV3DOzB14wA6wGRICAfj7Wrpc/HfyNCjzGeOnGKc=;
-        b=MEj3AExPDyVN4I1G2SW+SUr1+x4qCvqxVBDCxtRWeITMp6cIAYQfV236ccTohX8FSa
-         blnAKNB64m7Swcl3teB3EXi07NlJpTjQlSYIRGL9/Da3zZoUuK2IbMiG2PHPrJCuGxXw
-         MOzttgUPmzjrlcBWHjHpqpS+/TxqpecTt+wkhizn/XoMuGQhgxmojdWqiqMA10RrC7c2
-         UcXzJCWxlShVLjlEplNb6Hj/0towoyDUUdx692AzJumaaco4toerPp7ysWcYCv22Fc7z
-         kQa4L45ydlKnsoK2a1+mf/H4P67wrkyzAJcrTvfMbQ8d3B2MUJ1cx0WPWohOVD9LmJ63
-         f+lA==
+        bh=trAiNHHguw+SHGFI0WIJdhNPJZ51oDisk40wuKdyvmU=;
+        b=vHa4kjUvJnh6TEwOmtVpCGO4LsEuQXwm5fKHkwflbo3A5timtdFEXGDDmITiOe9crt
+         zyWRONHudPdcXHLWhGt/CbLJlKIswAejg6Cpm1/zfjx3g1/iPYVF2QFBFd3tQI7iblis
+         EzSjHGJNaTzwTphdMvFe3DoDgm/pzq2pAQvpRQKY3aa2dKpg/BcrLSsUPPg9Iz/Um7EB
+         P0Yz2d7x2CB+oIy2rhcx19+nSIczxgbZggZRP8Z4h9Pm3eGgspZOHyZ/U4eC4sPnHRBX
+         LIhygJYWqp4dDy7feSvYM1wipi5YVrmKpalKAJNo1Nk+5uZ0JLnucqmRafxZQaqsqlBG
+         /QJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xirkV3DOzB14wA6wGRICAfj7Wrpc/HfyNCjzGeOnGKc=;
-        b=U3Yr2TF1oy4/dL+UmzaaWPDhsgx56PnuVRGZtmujgQSdWrzUzNk+8RWcTmc9HOokf/
-         +wjfFggohXPHKMrgWhqx2t6f9oigxH3kSyVV7zEQd39pdJ3Jg0EUsf5Q8ioWSRJRaAzu
-         Bnwt7RRgRoXnc8b9N6sjkAcYVSMxSkIojDA8ePPZ/X4MHgHPUDdP2B11yqhEzOEpzZrG
-         M0CQwsm7ErZAAKXUOkiydmXCftDSxV4RPjkhRT5vJUjX85M2FbHRWhskp/AkJXIbmzw1
-         fWffV/V0lG9b2DKA5gYqOM8lXqUfylrQqZR5hYbshhoxB3Pm+mPCQ0UcfDkl9P1KJ7Hj
-         uHkA==
-X-Gm-Message-State: APjAAAXSeCfUF26rJy6+FZKm7SArMOQPgJn8UV8nVUEQrWO58L7O77vI
-        4lBDh+xTEaqdUZ0w1L46/8M=
-X-Google-Smtp-Source: APXvYqzTMkdozEtb0Oh5NYEZq7Ry3yMH+jPn44WVyk1YibbMQ0oHHDMxV3Kn/VBJrpsl9dxlXmFWEw==
-X-Received: by 2002:a37:aa4d:: with SMTP id t74mr39408551qke.144.1559828068671;
-        Thu, 06 Jun 2019 06:34:28 -0700 (PDT)
+        bh=trAiNHHguw+SHGFI0WIJdhNPJZ51oDisk40wuKdyvmU=;
+        b=FyrZrGzfBM2McsS7zPwXM1plTNGH6u7ugbnB8mFt7CALSjaaphZ1LaJfDG25xnn1pw
+         zRgfkOUBsc5o4ZIP6eLu2cmMAB/3avwpwZMGabZ5In1dNVmtojiGuxNvn4VWBAYSJwBb
+         jENtRdW+SHbxauc+BySQWIBSad1KSsKO8ywHvhja4B64LEYAbUY6CnOaCPLmPVuijoIx
+         y4+KYk8v76qF3AycNG5/7QI8fdPM+lPgtWbqYSSn3EiZevMGR/+4DHNdjxc3ZSjm9bUo
+         sf3wTSdYF6P5DmYir4H2+lbqj+sy5nAhqA5FAELyAMNOHMIGNt9KprtVlGyHHbYFQ0Vw
+         eUPQ==
+X-Gm-Message-State: APjAAAXE21+z5/syrkcJ6q3jdHS60c7FH8sjakHDnqw4ZV3oGaVNgXJS
+        jebShx+6wp1lUImPxB2Ksts=
+X-Google-Smtp-Source: APXvYqwNYpcGINzZbp9tNCzgiOv6LVrx/6BJcmxzKvf7s6SzTOfvn4wTdFgp8W/HMNp7tU1tCl80Vw==
+X-Received: by 2002:a37:b342:: with SMTP id c63mr39439096qkf.292.1559828323053;
+        Thu, 06 Jun 2019 06:38:43 -0700 (PDT)
 Received: from quaco.ghostprotocols.net ([177.195.208.82])
-        by smtp.gmail.com with ESMTPSA id e66sm1062158qtb.55.2019.06.06.06.34.27
+        by smtp.gmail.com with ESMTPSA id e8sm924845qkn.95.2019.06.06.06.38.41
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 06 Jun 2019 06:34:27 -0700 (PDT)
+        Thu, 06 Jun 2019 06:38:42 -0700 (PDT)
 From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
 X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 53B6941149; Thu,  6 Jun 2019 10:34:24 -0300 (-03)
-Date:   Thu, 6 Jun 2019 10:34:24 -0300
+        id 8F18341149; Thu,  6 Jun 2019 10:38:38 -0300 (-03)
+Date:   Thu, 6 Jun 2019 10:38:38 -0300
 To:     Leo Yan <leo.yan@linaro.org>
 Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@redhat.com>,
@@ -63,15 +63,15 @@ Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] perf trace: Exit when build eBPF program failure
-Message-ID: <20190606133424.GB30166@kernel.org>
+Subject: Re: [PATCH v2 3/4] perf augmented_raw_syscalls: Support arm64 raw
+ syscalls
+Message-ID: <20190606133838.GC30166@kernel.org>
 References: <20190606094845.4800-1-leo.yan@linaro.org>
- <20190606094845.4800-2-leo.yan@linaro.org>
- <20190606133019.GA30166@kernel.org>
+ <20190606094845.4800-4-leo.yan@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190606133019.GA30166@kernel.org>
+In-Reply-To: <20190606094845.4800-4-leo.yan@linaro.org>
 X-Url:  http://acmel.wordpress.com
 User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: bpf-owner@vger.kernel.org
@@ -79,54 +79,135 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Jun 06, 2019 at 10:30:19AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Thu, Jun 06, 2019 at 05:48:42PM +0800, Leo Yan escreveu:
-> > +++ b/tools/perf/builtin-trace.c
-> > @@ -3664,6 +3664,14 @@ static int trace__config(const char *var, const char *value, void *arg)
-> >  					       "event selector. use 'perf list' to list available events",
-> >  					       parse_events_option);
-> >  		err = parse_events_option(&o, value, 0);
-> > +
-> > +		/*
-> > +		 * When parse option successfully parse_events_option() will
-> > +		 * return 0, otherwise means the paring failure.  And it
-> > +		 * returns 1 for eBPF program building failure; so adjust the
-> > +		 * err value to -1 for the failure.
-> > +		 */
-> > +		err = err ? -1 : 0;
+Em Thu, Jun 06, 2019 at 05:48:44PM +0800, Leo Yan escreveu:
+> This patch adds support for arm64 raw syscall numbers so that we can use
+> it on arm64 platform.
 > 
-> I'll rewrite the comment above to make it more succint and fix things
-> like 'paring' (parsing):
-> 
-> 		/*
-> 		 * parse_events_option() returns !0 to indicate failure
-> 		 * while the perf_config code that calls trace__config()
-> 		 * expects < 0 returns to indicate error, so:
-> 		 */
-> 
-> 		 if (err)
-> 		 	err = -1;
+> After applied this patch, we need to specify macro -D__aarch64__ or
+> -D__x86_64__ in compilation option so Clang can use the corresponding
+> syscall numbers for arm64 or x86_64 respectively, other architectures
+> will report failure when compilation.
 
-Even shorter, please let me know if I can keep your
-Signed-off-by/authorship for this one.
+So, please check what I have in my perf/core branch, I've completely
+removed arch specific stuff from augmented_raw_syscalls.c.
+
+What is done now is use a map to specify what to copy, that same map
+that is used to state which syscalls should be traced.
+
+It uses that tools/perf/arch/arm64/entry/syscalls/mksyscalltbl to figure
+out the mapping of syscall names to ids, just like is done for x86_64
+and other arches, falling back to audit-libs when that syscalltbl thing
+is not present.
 
 - Arnaldo
+ 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  .../examples/bpf/augmented_raw_syscalls.c     | 81 +++++++++++++++++++
+>  1 file changed, 81 insertions(+)
+> 
+> diff --git a/tools/perf/examples/bpf/augmented_raw_syscalls.c b/tools/perf/examples/bpf/augmented_raw_syscalls.c
+> index 5c4a4e715ae6..a3701a4daf2e 100644
+> --- a/tools/perf/examples/bpf/augmented_raw_syscalls.c
+> +++ b/tools/perf/examples/bpf/augmented_raw_syscalls.c
+> @@ -45,6 +45,83 @@ struct augmented_filename {
+>  	char		value[PATH_MAX];
+>  };
+>  
+> +#if defined(__aarch64__)
+> +
+> +/* syscalls where the first arg is a string */
+> +#define SYS_OPEN               1024
+> +#define SYS_STAT               1038
+> +#define SYS_LSTAT              1039
+> +#define SYS_ACCESS             1033
+> +#define SYS_EXECVE              221
+> +#define SYS_TRUNCATE             45
+> +#define SYS_CHDIR                49
+> +#define SYS_RENAME             1034
+> +#define SYS_MKDIR              1030
+> +#define SYS_RMDIR              1031
+> +#define SYS_CREAT              1064
+> +#define SYS_LINK               1025
+> +#define SYS_UNLINK             1026
+> +#define SYS_SYMLINK            1036
+> +#define SYS_READLINK           1035
+> +#define SYS_CHMOD              1028
+> +#define SYS_CHOWN              1029
+> +#define SYS_LCHOWN             1032
+> +#define SYS_MKNOD              1027
+> +#define SYS_STATFS             1056
+> +#define SYS_PIVOT_ROOT           41
+> +#define SYS_CHROOT               51
+> +#define SYS_ACCT                 89
+> +#define SYS_SWAPON              224
+> +#define SYS_SWAPOFF             225
+> +#define SYS_DELETE_MODULE       106
+> +#define SYS_SETXATTR              5
+> +#define SYS_LSETXATTR             6
+> +#define SYS_GETXATTR              8
+> +#define SYS_LGETXATTR             9
+> +#define SYS_LISTXATTR            11
+> +#define SYS_LLISTXATTR           12
+> +#define SYS_REMOVEXATTR          14
+> +#define SYS_LREMOVEXATTR         15
+> +#define SYS_MQ_OPEN             180
+> +#define SYS_MQ_UNLINK           181
+> +#define SYS_ADD_KEY             217
+> +#define SYS_REQUEST_KEY         218
+> +#define SYS_SYMLINKAT            36
+> +#define SYS_MEMFD_CREATE        279
+> +
+> +/* syscalls where the second arg is a string */
+> +#define SYS_PWRITE64             68
+> +#define SYS_RENAME             1034
+> +#define SYS_QUOTACTL             60
+> +#define SYS_FSETXATTR             7
+> +#define SYS_FGETXATTR            10
+> +#define SYS_FREMOVEXATTR         16
+> +#define SYS_MQ_TIMEDSEND        182
+> +#define SYS_REQUEST_KEY         218
+> +#define SYS_INOTIFY_ADD_WATCH    27
+> +#define SYS_OPENAT               56
+> +#define SYS_MKDIRAT              34
+> +#define SYS_MKNODAT              33
+> +#define SYS_FCHOWNAT             54
+> +#define SYS_FUTIMESAT          1066
+> +#define SYS_NEWFSTATAT         1054
+> +#define SYS_UNLINKAT             35
+> +#define SYS_RENAMEAT             38
+> +#define SYS_LINKAT               37
+> +#define SYS_READLINKAT           78
+> +#define SYS_FCHMODAT             53
+> +#define SYS_FACCESSAT            48
+> +#define SYS_UTIMENSAT            88
+> +#define SYS_NAME_TO_HANDLE_AT   264
+> +#define SYS_FINIT_MODULE        273
+> +#define SYS_RENAMEAT2           276
+> +#define SYS_EXECVEAT            281
+> +#define SYS_STATX               291
+> +#define SYS_MOVE_MOUNT          429
+> +#define SYS_FSPICK              433
+> +
+> +#elif defined(__x86_64__)
+> +
+>  /* syscalls where the first arg is a string */
+>  #define SYS_OPEN                 2
+>  #define SYS_STAT                 4
+> @@ -119,6 +196,10 @@ struct augmented_filename {
+>  #define SYS_MOVE_MOUNT         429
+>  #define SYS_FSPICK             433
+>  
+> +#else
+> +#error "unsupported architecture"
+> +#endif
+> +
+>  pid_filter(pids_filtered);
+>  
+>  struct augmented_args_filename {
+> -- 
+> 2.17.1
 
-diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-index f7e4e50bddbd..1a2a605cf068 100644
---- a/tools/perf/builtin-trace.c
-+++ b/tools/perf/builtin-trace.c
-@@ -3703,7 +3703,12 @@ static int trace__config(const char *var, const char *value, void *arg)
- 		struct option o = OPT_CALLBACK('e', "event", &trace->evlist, "event",
- 					       "event selector. use 'perf list' to list available events",
- 					       parse_events_option);
--		err = parse_events_option(&o, value, 0);
-+		/*
-+		 * We can't propagate parse_event_option() return, as it is 1
-+		 * for failure while perf_config() expects -1.
-+		 */
-+		if (parse_events_option(&o, value, 0))
-+			err = -1;
- 	} else if (!strcmp(var, "trace.show_timestamp")) {
- 		trace->show_tstamp = perf_config_bool(var, value);
- 	} else if (!strcmp(var, "trace.show_duration")) {
+-- 
+
+- Arnaldo
