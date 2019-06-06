@@ -2,67 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D48368B5
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 02:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A59F36BAB
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 07:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbfFFATw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Jun 2019 20:19:52 -0400
-Received: from www62.your-server.de ([213.133.104.62]:35100 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726573AbfFFATw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Jun 2019 20:19:52 -0400
-Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hYg8D-0006b8-Qe; Thu, 06 Jun 2019 02:19:49 +0200
-Received: from [178.197.249.21] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hYg8D-000LUS-JF; Thu, 06 Jun 2019 02:19:49 +0200
-Subject: Re: [PATCH bpf 1/2] bpf: fix unconnected udp hooks
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Martin Lau <kafai@fb.com>, Andrey Ignatov <rdna@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Martynas Pumputis <m@lambda.lt>
-References: <3d59d0458a8a3a050d24f81e660fcccde3479a05.1559767053.git.daniel@iogearbox.net>
- <20190605235451.lqas2jgbur2sre4z@kafai-mbp.dhcp.thefacebook.com>
- <bcdc5ced-5bf0-a9c2-eeaf-01459e1d5b62@iogearbox.net>
- <CAADnVQ+nraxxKw8=ues8W3odoLx5JR3JwAjCqW3AA3W64XY77w@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <fb3d69fb-214e-88ba-21c7-1ff4ae03b173@iogearbox.net>
-Date:   Thu, 6 Jun 2019 02:19:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.3.0
+        id S1726599AbfFFFdH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jun 2019 01:33:07 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:37287 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726040AbfFFFdG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jun 2019 01:33:06 -0400
+Received: by mail-io1-f72.google.com with SMTP id j18so788384ioj.4
+        for <bpf@vger.kernel.org>; Wed, 05 Jun 2019 22:33:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=W5FF42zVDo3trtwvrjbtAnVcsXKoMkINuTi+BPyFgek=;
+        b=GMGWUXFWR72vYkuH+UtN22eDsCCaCF+IZCHX3I1DuSDXuzF92OJy/mZ/k3TwehbRFI
+         4WppMlNZ0PmkAoDpiMuRWijybSTrk+VaEc7DJ6qMB9pkbA773urNyk4PMI5kXdYphljb
+         mdWqKJM1EHg6zpKUEPzUIUtqq9KqcWM7P8oJIrCdh7wK3XZ1ewk1lvNS1NAP7YIMK80B
+         kKvV5nEiW2RcZCr8DIahjUyeivXE+KPy8r/Tm1PoMXPtrNH1H2c7mGZ847xeNPc7sjTI
+         hdFEPKpXafD8kutXrP+D4TP3Ke1M25cEtJxhTuaE+Db0cGXabVFLcNGkj9ozwAgs1K0I
+         BNFA==
+X-Gm-Message-State: APjAAAV60S/Q5Eqd3MaAr8Z74OYL+qRXb5pyTROh8M5Zrwx+ur03c/gk
+        M8zU6ELS7A3R0g2JyU5sS5wD/nQjf+QrMutkJWLh5l77RoKp
+X-Google-Smtp-Source: APXvYqz9VSUc/8eq6b84tHBQ+U7qjz624v0EGp0dlfT+6ewmxPMDHxVvliMgENV/TnWGADV2fbh3yhNDyGIqQ+am2toYAWdTda+c
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQ+nraxxKw8=ues8W3odoLx5JR3JwAjCqW3AA3W64XY77w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25471/Wed Jun  5 10:12:21 2019)
+X-Received: by 2002:a05:660c:887:: with SMTP id o7mr5081314itk.159.1559799186165;
+ Wed, 05 Jun 2019 22:33:06 -0700 (PDT)
+Date:   Wed, 05 Jun 2019 22:33:06 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006994aa058aa10cb8@google.com>
+Subject: WARNING: refcount bug in css_task_iter_next
+From:   syzbot <syzbot+644dc16442b3a35f3629@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
+        daniel@iogearbox.net, hannes@cmpxchg.org, kafai@fb.com,
+        linux-kernel@vger.kernel.org, lizefan@huawei.com,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tj@kernel.org, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/06/2019 02:13 AM, Alexei Starovoitov wrote:
-> On Wed, Jun 5, 2019 at 5:09 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>
->>>>  tools/bpf/bpftool/cgroup.c     |  5 ++++-
->>>>  tools/include/uapi/linux/bpf.h |  2 ++
->>> Should the bpf.h sync to tools/ be in a separate patch?
->>
->> I was thinking about it, but concluded for such small change, it's not
->> really worth it. If there's a strong opinion, I could do it, but I think
->> that 2-liner sync patch just adds noise.
-> 
-> it's not about the size. It breaks the sync of libbpf.
-> we should really enforce user vs kernel to be separate patches.
+Hello,
 
-Okay, I see. Fair enough, I'll split them in that case.
+syzbot found the following crash on:
 
-Thanks,
-Daniel
+HEAD commit:    b2924447 Add linux-next specific files for 20190605
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=11c492d2a00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4248d6bc70076f7d
+dashboard link: https://syzkaller.appspot.com/bug?extid=644dc16442b3a35f3629
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+644dc16442b3a35f3629@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+refcount_t: increment on 0; use-after-free.
+WARNING: CPU: 0 PID: 4184 at lib/refcount.c:156 refcount_inc_checked  
+lib/refcount.c:156 [inline]
+WARNING: CPU: 0 PID: 4184 at lib/refcount.c:156  
+refcount_inc_checked+0x61/0x70 lib/refcount.c:154
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 4184 Comm: syz-executor.3 Not tainted 5.2.0-rc3-next-20190605 #9
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+  panic+0x2cb/0x744 kernel/panic.c:219
+  __warn.cold+0x20/0x4d kernel/panic.c:576
+  report_bug+0x263/0x2b0 lib/bug.c:186
+  fixup_bug arch/x86/kernel/traps.c:179 [inline]
+  fixup_bug arch/x86/kernel/traps.c:174 [inline]
+  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:272
+  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:291
+  invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:986
+RIP: 0010:refcount_inc_checked lib/refcount.c:156 [inline]
+RIP: 0010:refcount_inc_checked+0x61/0x70 lib/refcount.c:154
+Code: 1d db 0e 68 06 31 ff 89 de e8 1b c4 3b fe 84 db 75 dd e8 d2 c2 3b fe  
+48 c7 c7 e0 b6 c4 87 c6 05 bb 0e 68 06 01 e8 dd db 0d fe <0f> 0b eb c1 90  
+90 90 90 90 90 90 90 90 90 90 55 48 89 e5 41 57 41
+RSP: 0018:ffff8882000ef290 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff815b04b6 RDI: ffffed104001de44
+RBP: ffff8882000ef2a0 R08: ffff8882035744c0 R09: ffffed1015d040f1
+R10: ffffed1015d040f0 R11: ffff8880ae820787 R12: ffff88804436a660
+R13: ffff8882000ef368 R14: ffff88804436a640 R15: 1ffff1104001de5d
+  css_task_iter_next+0xf9/0x190 kernel/cgroup/cgroup.c:4568
+  mem_cgroup_scan_tasks+0xbb/0x180 mm/memcontrol.c:1168
+  select_bad_process mm/oom_kill.c:374 [inline]
+  out_of_memory mm/oom_kill.c:1088 [inline]
+  out_of_memory+0x6b2/0x1280 mm/oom_kill.c:1035
+  mem_cgroup_out_of_memory+0x1ca/0x230 mm/memcontrol.c:1573
+  mem_cgroup_oom mm/memcontrol.c:1905 [inline]
+  try_charge+0xfbe/0x1480 mm/memcontrol.c:2468
+  mem_cgroup_try_charge+0x24d/0x5e0 mm/memcontrol.c:6073
+  __add_to_page_cache_locked+0x425/0xe70 mm/filemap.c:839
+  add_to_page_cache_lru+0x1cb/0x760 mm/filemap.c:916
+  pagecache_get_page+0x357/0x850 mm/filemap.c:1655
+  grab_cache_page_write_begin+0x75/0xb0 mm/filemap.c:3157
+  simple_write_begin+0x36/0x2c0 fs/libfs.c:438
+  generic_perform_write+0x22a/0x520 mm/filemap.c:3207
+  __generic_file_write_iter+0x25e/0x630 mm/filemap.c:3336
+  generic_file_write_iter+0x360/0x610 mm/filemap.c:3368
+  call_write_iter include/linux/fs.h:1870 [inline]
+  new_sync_write+0x4d3/0x770 fs/read_write.c:483
+  __vfs_write+0xe1/0x110 fs/read_write.c:496
+  vfs_write+0x268/0x5d0 fs/read_write.c:558
+  ksys_write+0x14f/0x290 fs/read_write.c:611
+  __do_sys_write fs/read_write.c:623 [inline]
+  __se_sys_write fs/read_write.c:620 [inline]
+  __x64_sys_write+0x73/0xb0 fs/read_write.c:620
+  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x459279
+Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f9a334d9c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000459279
+RDX: 0000000003d3427e RSI: 0000000020000180 RDI: 0000000000000004
+RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f9a334da6d4
+R13: 00000000004c8ee8 R14: 00000000004dfbb0 R15: 00000000ffffffff
+Shutting down cpus with NMI
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
