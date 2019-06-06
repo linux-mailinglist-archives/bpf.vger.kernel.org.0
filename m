@@ -2,195 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DCAE837B8C
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 19:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D9837BC7
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 20:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730359AbfFFRwK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jun 2019 13:52:10 -0400
-Received: from mail-oi1-f202.google.com ([209.85.167.202]:51982 "EHLO
-        mail-oi1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729125AbfFFRwI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jun 2019 13:52:08 -0400
-Received: by mail-oi1-f202.google.com with SMTP id w5so907142oig.18
-        for <bpf@vger.kernel.org>; Thu, 06 Jun 2019 10:52:08 -0700 (PDT)
+        id S1730367AbfFFSDl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jun 2019 14:03:41 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:39646 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727559AbfFFSDk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jun 2019 14:03:40 -0400
+Received: by mail-pf1-f196.google.com with SMTP id j2so1977662pfe.6;
+        Thu, 06 Jun 2019 11:03:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=yErqIu3OgO24L5QyVBM0BiOznDJfoK1Hx1xADayQnhI=;
-        b=l1Y0IwsVsnkVSmwxio8jutZiUyHvuRfVNBVyV6LA2T84kUJivPedXW4A8QAx2cgoom
-         5IEnRqeCDkmOkEzxYw5EvJPR4YRK4ziHfVFRrbAX4psVcz/iFI2tKerb4yI0qeTrSJud
-         lv+E4GonN0xIv+No7ZOpdF+y0JeQmieF/IohJa1KLNe4OH2+cUaq95hSNqedtBV+HkNt
-         TMqn9OHdjmkPaZXZMJuu4mTsccCrAwl2CJKjjdXTdEmhai6FO/oZtXJRYn3cpInN25uq
-         /fDWLFpsYlC73ejYnLvS8i6b6rpQg530QHR9tXrngh1N3eXjcxDRl0kwXA+5k/6Ih7af
-         oQYw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=vL/yJFjtKE26N8WppeIL8DymV0OTQcN/8h3vh7inQew=;
+        b=IFN7rlmIbyt4XlgxMONME0XVhDVkFm4/1VckRnhxVZgALeXceWARI58K7ZtGHpKwOy
+         L5Kr/+0Y6h16yPS6wINB6v5GwmzYnv8/ROmq8FDfXI2OChdFeehg5PTa+6E9rn07F1/c
+         86Bjl/RxTuS9675ElTVkQ08H1BugEjAEStdtVAFSEjn0vuy2IL1eeIigSXH53HnEmEiq
+         O6i/7I3Z30JHDLj6OZHCCYg49GCvhr+8x838/5cttfZtDVtgyFT6LKL92FY4YEHRFFAg
+         9NpjqI95GwWz7JrVJ2Vw4C8hvOYaqyfeKSUBWYLP0SIBqpnWSWHbOGeaVCQl9zRtEeDg
+         HQbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=yErqIu3OgO24L5QyVBM0BiOznDJfoK1Hx1xADayQnhI=;
-        b=ZHE8aoJosmr4NmwVgHL/7RY/bzYNZRat/iIi5tOtfz54q6weag2Qa7iSmU58xvd+kI
-         lM+UgG2MAQCnyiWXIFW8cRSz9ytnwSHWjEwmj4O0UQND18Ym6lRkw3+jFu0a4E0FpjLL
-         HaJuAelx44i755Z5l3gYbUuw631nKTebvG1trrXIYHO5+nknt17Kf4Rx6MlRgMTa88fO
-         yPqEpD5R8HoXqjCh0LZapMciEI9l7ZnyxRX8CK1adGghV7mS7tfLlwnFM48gATAu6oL8
-         GFwpEx6fn24DIovdWC9VoYVjZbJALZX3WD/ScDkWND6N5w81HMrHyj8B6txHK4h2wQo5
-         BJHg==
-X-Gm-Message-State: APjAAAXTCj9NTgS+pEVHojfVhR8PQPqVNqgsgfuaPHCO+dQxKq0I3b5P
-        Nu34vRtqkKhzXIcS2+LhBbRZfKM=
-X-Google-Smtp-Source: APXvYqyOKnv70Uu8Y0zui6I8bRcJ39lUMdeSv6U8Xfo0X6XDid2ojtLJvL0AwdDyYLsQXoX7keZAw9M=
-X-Received: by 2002:aca:ab04:: with SMTP id u4mr897087oie.15.1559843528140;
- Thu, 06 Jun 2019 10:52:08 -0700 (PDT)
-Date:   Thu,  6 Jun 2019 10:51:46 -0700
-In-Reply-To: <20190606175146.205269-1-sdf@google.com>
-Message-Id: <20190606175146.205269-9-sdf@google.com>
-Mime-Version: 1.0
-References: <20190606175146.205269-1-sdf@google.com>
-X-Mailer: git-send-email 2.22.0.rc1.311.g5d7573a151-goog
-Subject: [PATCH bpf-next v2 8/8] bpftool: support cgroup sockopt
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=vL/yJFjtKE26N8WppeIL8DymV0OTQcN/8h3vh7inQew=;
+        b=FfeP4oI6FbzcPEBgNw1/zXbxaI7M26EDyBDJFjgjnrgw5FchJID1TibeUOwMc7/wRm
+         IcA9TGA1lo0sSrdr8C3MOKPUtyBATiXb+IkcljQ10UMaBhGIPDPTCr9A+6poVcLtws/C
+         E0GPyEGzKy+0wFW/gT+VOYVosfls3TKpaEDnApQct7+EbPjsFJFBdb2g6EtAqLKk2zqS
+         bC78E4+4lQaPrA7Xt/T6Z3zKspulqB5DaI8euRiSopxfyxTPkC825lgiQWTB/whPeVi1
+         knUInvh8GaztguXc5MpUuc0Ama+Ii6ZO4EyZwrO64qvhd3CSNbdUbMF/Nd5X2sjfn1Xl
+         pLSg==
+X-Gm-Message-State: APjAAAUkkyzO3E+okDaSeLO3s7uufceCeZuEb38eaOFVrJNfFmHxsmVg
+        Q7A2mmCRVdzXCOefP6DJmEw=
+X-Google-Smtp-Source: APXvYqyfjbd021wZbVjBB+70qJRPXGTgTljHe/nVnBfkUy4Y3ButrRqFGUdwG5ulgCJppMyvpTGiDA==
+X-Received: by 2002:a62:1a93:: with SMTP id a141mr54671966pfa.72.1559844220056;
+        Thu, 06 Jun 2019 11:03:40 -0700 (PDT)
+Received: from [172.26.126.80] ([2620:10d:c090:180::1:627e])
+        by smtp.gmail.com with ESMTPSA id h2sm2125014pgs.17.2019.06.06.11.03.39
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 06 Jun 2019 11:03:39 -0700 (PDT)
+From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
+To:     "Ilya Maximets" <i.maximets@samsung.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, xdp-newbies@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        "=?utf-8?b?QmrDtnJuIFTDtnBlbA==?=" <bjorn.topel@intel.com>,
+        "Magnus Karlsson" <magnus.karlsson@intel.com>
+Subject: Re: [PATCH] net: Fix hang while unregistering device bound to xdp
+ socket
+Date:   Thu, 06 Jun 2019 11:03:38 -0700
+X-Mailer: MailMate (1.12.5r5635)
+Message-ID: <4414B6B6-3FE2-4CF2-A67A-159FCF6B9ECF@gmail.com>
+In-Reply-To: <20190606124014.23231-1-i.maximets@samsung.com>
+References: <CGME20190606124020eucas1p2007396ae8f23a426a17e0e5481636187@eucas1p2.samsung.com>
+ <20190606124014.23231-1-i.maximets@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Support sockopt prog type and cgroup hooks in the bpftool.
+On 6 Jun 2019, at 5:40, Ilya Maximets wrote:
 
-Acked-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/bpf/bpftool/Documentation/bpftool-cgroup.rst | 7 +++++--
- tools/bpf/bpftool/Documentation/bpftool-prog.rst   | 2 +-
- tools/bpf/bpftool/bash-completion/bpftool          | 8 +++++---
- tools/bpf/bpftool/cgroup.c                         | 5 ++++-
- tools/bpf/bpftool/main.h                           | 1 +
- tools/bpf/bpftool/prog.c                           | 3 ++-
- 6 files changed, 18 insertions(+), 8 deletions(-)
+> Device that bound to XDP socket will not have zero refcount until the
+> userspace application will not close it. This leads to hang inside
+> 'netdev_wait_allrefs()' if device unregistering requested:
+>
+>   # ip link del p1
+>   < hang on recvmsg on netlink socket >
+>
+>   # ps -x | grep ip
+>   5126  pts/0    D+   0:00 ip link del p1
+>
+>   # journalctl -b
+>
+>   Jun 05 07:19:16 kernel:
+>   unregister_netdevice: waiting for p1 to become free. Usage count = 1
+>
+>   Jun 05 07:19:27 kernel:
+>   unregister_netdevice: waiting for p1 to become free. Usage count = 1
+>   ...
+>
+> Fix that by counting XDP references for the device and failing
+> RTM_DELLINK with EBUSY if device is still in use by any XDP socket.
+>
+> With this change:
+>
+>   # ip link del p1
+>   RTNETLINK answers: Device or resource busy
+>
+> Fixes: 965a99098443 ("xsk: add support for bind for Rx")
+> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
+> ---
+>
+> Another option could be to force closing all the corresponding AF_XDP
+> sockets, but I didn't figure out how to do this properly yet.
+>
+>  include/linux/netdevice.h | 25 +++++++++++++++++++++++++
+>  net/core/dev.c            | 10 ++++++++++
+>  net/core/rtnetlink.c      |  6 ++++++
+>  net/xdp/xsk.c             |  7 ++++++-
+>  4 files changed, 47 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index 44b47e9df94a..24451cfc5590 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -1705,6 +1705,7 @@ enum netdev_priv_flags {
+>   *	@watchdog_timer:	List of timers
+>   *
+>   *	@pcpu_refcnt:		Number of references to this device
+> + *	@pcpu_xdp_refcnt:	Number of XDP socket references to this device
+>   *	@todo_list:		Delayed register/unregister
+>   *	@link_watch_list:	XXX: need comments on this one
+>   *
+> @@ -1966,6 +1967,7 @@ struct net_device {
+>  	struct timer_list	watchdog_timer;
+>
+>  	int __percpu		*pcpu_refcnt;
+> +	int __percpu		*pcpu_xdp_refcnt;
+>  	struct list_head	todo_list;
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-index 36807735e2a5..cac088a320a6 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-@@ -29,7 +29,8 @@ CGROUP COMMANDS
- |	*PROG* := { **id** *PROG_ID* | **pinned** *FILE* | **tag** *PROG_TAG* }
- |	*ATTACH_TYPE* := { **ingress** | **egress** | **sock_create** | **sock_ops** | **device** |
- |		**bind4** | **bind6** | **post_bind4** | **post_bind6** | **connect4** | **connect6** |
--|		**sendmsg4** | **sendmsg6** | **sysctl** }
-+|		**sendmsg4** | **sendmsg6** | **sysctl** | **getsockopt** |
-+|		**setsockopt** }
- |	*ATTACH_FLAGS* := { **multi** | **override** }
- 
- DESCRIPTION
-@@ -86,7 +87,9 @@ DESCRIPTION
- 		  unconnected udp4 socket (since 4.18);
- 		  **sendmsg6** call to sendto(2), sendmsg(2), sendmmsg(2) for an
- 		  unconnected udp6 socket (since 4.18);
--		  **sysctl** sysctl access (since 5.2).
-+		  **sysctl** sysctl access (since 5.2);
-+		  **getsockopt** call to getsockopt (since 5.3);
-+		  **setsockopt** call to setsockopt (since 5.3).
- 
- 	**bpftool cgroup detach** *CGROUP* *ATTACH_TYPE* *PROG*
- 		  Detach *PROG* from the cgroup *CGROUP* and attach type
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-index 228a5c863cc7..c6bade35032c 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-@@ -40,7 +40,7 @@ PROG COMMANDS
- |		**lwt_seg6local** | **sockops** | **sk_skb** | **sk_msg** | **lirc_mode2** |
- |		**cgroup/bind4** | **cgroup/bind6** | **cgroup/post_bind4** | **cgroup/post_bind6** |
- |		**cgroup/connect4** | **cgroup/connect6** | **cgroup/sendmsg4** | **cgroup/sendmsg6** |
--|		**cgroup/sysctl**
-+|		**cgroup/sysctl** | **cgroup/getsockopt** | **cgroup/setsockopt**
- |	}
- |       *ATTACH_TYPE* := {
- |		**msg_verdict** | **stream_verdict** | **stream_parser** | **flow_dissector**
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index 2725e27dfa42..7afb8b6fbaaa 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -378,7 +378,8 @@ _bpftool()
-                                 cgroup/connect4 cgroup/connect6 \
-                                 cgroup/sendmsg4 cgroup/sendmsg6 \
-                                 cgroup/post_bind4 cgroup/post_bind6 \
--                                cgroup/sysctl" -- \
-+                                cgroup/sysctl cgroup/getsockopt \
-+                                cgroup/setsockopt" -- \
-                                                    "$cur" ) )
-                             return 0
-                             ;;
-@@ -688,7 +689,8 @@ _bpftool()
-                 attach|detach)
-                     local ATTACH_TYPES='ingress egress sock_create sock_ops \
-                         device bind4 bind6 post_bind4 post_bind6 connect4 \
--                        connect6 sendmsg4 sendmsg6 sysctl'
-+                        connect6 sendmsg4 sendmsg6 sysctl getsockopt \
-+                        setsockopt'
-                     local ATTACH_FLAGS='multi override'
-                     local PROG_TYPE='id pinned tag'
-                     case $prev in
-@@ -698,7 +700,7 @@ _bpftool()
-                             ;;
-                         ingress|egress|sock_create|sock_ops|device|bind4|bind6|\
-                         post_bind4|post_bind6|connect4|connect6|sendmsg4|\
--                        sendmsg6|sysctl)
-+                        sendmsg6|sysctl|getsockopt|setsockopt)
-                             COMPREPLY=( $( compgen -W "$PROG_TYPE" -- \
-                                 "$cur" ) )
-                             return 0
-diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
-index 7e22f115c8c1..3083f2e4886e 100644
---- a/tools/bpf/bpftool/cgroup.c
-+++ b/tools/bpf/bpftool/cgroup.c
-@@ -25,7 +25,8 @@
- 	"       ATTACH_TYPE := { ingress | egress | sock_create |\n"	       \
- 	"                        sock_ops | device | bind4 | bind6 |\n"	       \
- 	"                        post_bind4 | post_bind6 | connect4 |\n"       \
--	"                        connect6 | sendmsg4 | sendmsg6 | sysctl }"
-+	"                        connect6 | sendmsg4 | sendmsg6 | sysctl |\n"  \
-+	"                        getsockopt | setsockopt }"
- 
- static const char * const attach_type_strings[] = {
- 	[BPF_CGROUP_INET_INGRESS] = "ingress",
-@@ -42,6 +43,8 @@ static const char * const attach_type_strings[] = {
- 	[BPF_CGROUP_UDP4_SENDMSG] = "sendmsg4",
- 	[BPF_CGROUP_UDP6_SENDMSG] = "sendmsg6",
- 	[BPF_CGROUP_SYSCTL] = "sysctl",
-+	[BPF_CGROUP_GETSOCKOPT] = "getsockopt",
-+	[BPF_CGROUP_SETSOCKOPT] = "setsockopt",
- 	[__MAX_BPF_ATTACH_TYPE] = NULL,
- };
- 
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index 28a2a5857e14..9c5d9c80f71e 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -74,6 +74,7 @@ static const char * const prog_type_name[] = {
- 	[BPF_PROG_TYPE_SK_REUSEPORT]		= "sk_reuseport",
- 	[BPF_PROG_TYPE_FLOW_DISSECTOR]		= "flow_dissector",
- 	[BPF_PROG_TYPE_CGROUP_SYSCTL]		= "cgroup_sysctl",
-+	[BPF_PROG_TYPE_CGROUP_SOCKOPT]		= "cgroup_sockopt",
- };
- 
- extern const char * const map_type_name[];
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 1f209c80d906..a201e1c83346 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -1070,7 +1070,8 @@ static int do_help(int argc, char **argv)
- 		"                 sk_reuseport | flow_dissector | cgroup/sysctl |\n"
- 		"                 cgroup/bind4 | cgroup/bind6 | cgroup/post_bind4 |\n"
- 		"                 cgroup/post_bind6 | cgroup/connect4 | cgroup/connect6 |\n"
--		"                 cgroup/sendmsg4 | cgroup/sendmsg6 }\n"
-+		"                 cgroup/sendmsg4 | cgroup/sendmsg6 | cgroup/getsockopt |\n"
-+		"                 cgroup/setsockopt }\n"
- 		"       ATTACH_TYPE := { msg_verdict | stream_verdict | stream_parser |\n"
- 		"                        flow_dissector }\n"
- 		"       " HELP_SPEC_OPTIONS "\n"
+
+I understand the intention here, but don't think that putting a XDP reference
+into the generic netdev structure is the right way of doing this.  Likely the
+NETDEV_UNREGISTER notifier should be used so the socket and umem unbinds from
+the device.
 -- 
-2.22.0.rc1.311.g5d7573a151-goog
-
+Jonathan
