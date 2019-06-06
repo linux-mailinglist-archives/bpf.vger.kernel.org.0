@@ -2,120 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6DC36DED
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 09:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D33A536EC8
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 10:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbfFFH5H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jun 2019 03:57:07 -0400
-Received: from mail-yw1-f66.google.com ([209.85.161.66]:42108 "EHLO
-        mail-yw1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726962AbfFFH5G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jun 2019 03:57:06 -0400
-Received: by mail-yw1-f66.google.com with SMTP id s5so506841ywd.9
-        for <bpf@vger.kernel.org>; Thu, 06 Jun 2019 00:57:06 -0700 (PDT)
+        id S1727138AbfFFIfH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jun 2019 04:35:07 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]:34978 "EHLO
+        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727082AbfFFIfG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jun 2019 04:35:06 -0400
+Received: by mail-wr1-f47.google.com with SMTP id m3so1461453wrv.2
+        for <bpf@vger.kernel.org>; Thu, 06 Jun 2019 01:35:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=uI1TPeuSd92UbPS5N8KX6krfL9bLASM56BYU9fb4POc=;
-        b=EK+JXrEb8VZeAve5rLD+Ic/Gr9G7cOKUKRQnt3SOMK+SMmMPKBMI+B0StZwtvAWh1D
-         aBEv5d/DrZVVRllIXm915E2xHNU8V5RG/EiWbcA/AbyqyqyiFJOrT83ecKGDkF7i9tJY
-         GpckMQnpe3QSIqMStsVcUDMErMzwZ4opdg5k7/YHlRovgOSvj9xRCuITR2V/S9RX+FBc
-         U7vAhEqS/GK2I3xjJGUiyIMMXYRGNUY8a4ut5u4Y5q+Hwcvw+ATyrJdCFA1295pinl45
-         lDcxuOjC2Jy+XnANxtciH4TLAqcmexvePomh1YCeWNPFD8cxJmHmXf09mKK+2o9etBYr
-         mVoQ==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UajfkvM7OMJhBvn/3zITvVVwFNbh5QyO0KD2fL7HAfA=;
+        b=UbM+6nRG7Q9a6hI2VA/6WzMgfRI7Nn9xKWc9A95Qws3o3ixBOObYuWvBMr3Bpuj0WG
+         hRT4h9n1S0g+tLMSOIxisZgD0aUTjd2vWSP6Ko72PWqiiG0dO91cM+flvt6O7JSakFvT
+         zQdIipZToAPYy6A+638GxJzEB11qId921AV4V/woyiyA3N+AwNmKDJsoAlCKnyn9Exlw
+         3eyKx2rAmo7Rg3z8Llr7xK0Zw2//lV7tfOgPSPdVDmGI/DBK8Vlv1n17XklMq9emhYz/
+         sfihH313La+yqb7YpPrwnDubl2keaLvIiZEKL0i4ZyWM2J3e9NBEfXI4t/wYi7/fRQ0k
+         7pYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=uI1TPeuSd92UbPS5N8KX6krfL9bLASM56BYU9fb4POc=;
-        b=fHsqy35bU3aGpMEwx0lJp6Sh9YDl5bFEgIvTbuYODGbkQOb6opI4MoNWGvd8XGt2gs
-         RwR3aSZUUSp5LC6TdnvDF8rqhcrAx9KBrtCzGJuwERDDcfC5H0/JBaF21Exq5iqKM8te
-         SvrupdMWJeix9hGLtA86IVTCrNSRUK70PnzMqG4S77fjlfyHLkh0ZhbrtmOZCssAuW7Z
-         4SmZSsQcDSw2dmQVAFCQJR+FweotVDwTYVrZLHeYqxwT6Lp4HvkXrzflMDXpJV7GIGaP
-         LC1s5zWIZ0NzTnT8feyFxQH1UtzlDS4KnIzT5r+H4aDV7VwNEBUpNnQZqDVmqTi9kVRc
-         z+SQ==
-X-Gm-Message-State: APjAAAWUhGeh+P5myC9ZFj9nef+FNniyqyUEWfAYK+jBppkZ0RjE67k3
-        jCqqmd8V/ogBK9samq9ZuS5Q4A==
-X-Google-Smtp-Source: APXvYqwawStzIwou/O3xsYrAU5aPquQ94myNiyOSNQU3EYzZCpIHUF8OmPh0kwyflIJZ2LrFUHDCEQ==
-X-Received: by 2002:a81:308d:: with SMTP id w135mr5488572yww.110.1559807825644;
-        Thu, 06 Jun 2019 00:57:05 -0700 (PDT)
-Received: from localhost.localdomain (li1322-146.members.linode.com. [45.79.223.146])
-        by smtp.gmail.com with ESMTPSA id 14sm316343yws.16.2019.06.06.00.56.59
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UajfkvM7OMJhBvn/3zITvVVwFNbh5QyO0KD2fL7HAfA=;
+        b=ASwLdHFyM7Wkwqv/yQCB7ZKz59k6Qa5uTH/2iIUghVqzQ0FmEj0Pa04McT7wTccY7v
+         NYrnm03132C+TVrMxV5bVRAUCTM+JLKdYaCevW9k7kvAFX7IpIT2E76RTUs91m2pJjfq
+         wbXLRiBQrFBcMORbZHniY4N6pMLL+VimUUpJ+0lePkbvHtmf6cIDrrLwdfV3T/bMPZPX
+         8JD3mOYDBrMawxcjmYh7aKSbkt3KoOgMgyByhlJ9LopRG7qJI3QjivvSmZKX8A6n3WOp
+         t2O9J2GeYcoVBdmmWTrGieTdEsvcTpfpDwrMOKZaqgcjaglfd0kmqeaMuwESHdowuNkZ
+         UYKA==
+X-Gm-Message-State: APjAAAVBfOl9Sqqo/nABWX2D2/YjIDv0jOrjNZlpLvyY2P3blIDYsFhq
+        asyyDOf57fVDH8l5JGuA+hEt3w==
+X-Google-Smtp-Source: APXvYqyOFzSFIK9iH9gmLtZmWmFphGmHhd6PnyF4U1Wb4+QmU7OZiVqpqvzrhC1x39/y09fQL2kSUg==
+X-Received: by 2002:a5d:6a05:: with SMTP id m5mr20463872wru.161.1559810105316;
+        Thu, 06 Jun 2019 01:35:05 -0700 (PDT)
+Received: from [192.168.1.2] ([194.53.187.113])
+        by smtp.gmail.com with ESMTPSA id p2sm1405646wrx.90.2019.06.06.01.35.03
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 06 Jun 2019 00:57:05 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        Thu, 06 Jun 2019 01:35:04 -0700 (PDT)
+Subject: Re: [BPF v1] tools: bpftool: Fix JSON output when lookup fails
+To:     Krzesimir Nowak <krzesimir@kinvolk.io>, bpf@vger.kernel.org
+Cc:     Alban Crequy <alban@kinvolk.io>,
+        =?UTF-8?Q?Iago_L=c3=b3pez_Galeiras?= <iago@kinvolk.io>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v1 4/4] perf augmented_raw_syscalls: Document clang configuration
-Date:   Thu,  6 Jun 2019 15:56:17 +0800
-Message-Id: <20190606075617.14327-5-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190606075617.14327-1-leo.yan@linaro.org>
-References: <20190606075617.14327-1-leo.yan@linaro.org>
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Prashant Bhole <bhole_prashant_q7@lab.ntt.co.jp>,
+        Okash Khawaja <osk@fb.com>,
+        David Calavera <david.calavera@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20190605191707.24429-1-krzesimir@kinvolk.io>
+From:   Quentin Monnet <quentin.monnet@netronome.com>
+Message-ID: <3b26789b-3b51-8c47-b710-8df09b63ce73@netronome.com>
+Date:   Thu, 6 Jun 2019 09:35:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <20190605191707.24429-1-krzesimir@kinvolk.io>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-To build this program successfully with clang, there have three
-compiler options need to be specified:
+2019-06-05 21:17 UTC+0200 ~ Krzesimir Nowak <krzesimir@kinvolk.io>
+> In commit 9a5ab8bf1d6d ("tools: bpftool: turn err() and info() macros
+> into functions") one case of error reporting was special cased, so it
+> could report a lookup error for a specific key when dumping the map
+> element. What the code forgot to do is to wrap the key and value keys
+> into a JSON object, so an example output of pretty JSON dump of a
+> sockhash map (which does not support looking up its values) is:
+> 
+> [
+>     "key": ["0x0a","0x41","0x00","0x02","0x1f","0x78","0x00","0x00"
+>     ],
+>     "value": {
+>         "error": "Operation not supported"
+>     },
+>     "key": ["0x0a","0x41","0x00","0x02","0x1f","0x78","0x00","0x01"
+>     ],
+>     "value": {
+>         "error": "Operation not supported"
+>     }
+> ]
+> 
+> Note the key-value pairs inside the toplevel array. They should be
+> wrapped inside a JSON object, otherwise it is an invalid JSON. This
+> commit fixes this, so the output now is:
+> 
+> [{
+>         "key": ["0x0a","0x41","0x00","0x02","0x1f","0x78","0x00","0x00"
+>         ],
+>         "value": {
+>             "error": "Operation not supported"
+>         }
+>     },{
+>         "key": ["0x0a","0x41","0x00","0x02","0x1f","0x78","0x00","0x01"
+>         ],
+>         "value": {
+>             "error": "Operation not supported"
+>         }
+>     }
+> ]
+> 
+> Fixes: 9a5ab8bf1d6d ("tools: bpftool: turn err() and info() macros into functions")
+> Cc: Quentin Monnet <quentin.monnet@netronome.com>
+> Signed-off-by: Krzesimir Nowak <krzesimir@kinvolk.io>
 
-  - Header file path: tools/perf/include/bpf;
-  - Specify architecture;
-  - Define macro __NR_CPUS__.
+Thanks for the fix!
 
-This patch add comments to explain the reasons for building failure and
-give two examples for llvm.clang-opt variable, one is for x86_64
-architecture and another is for aarch64 architecture.
-
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- .../examples/bpf/augmented_raw_syscalls.c     | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/tools/perf/examples/bpf/augmented_raw_syscalls.c b/tools/perf/examples/bpf/augmented_raw_syscalls.c
-index f4ed101b697d..5adc0b3bb351 100644
---- a/tools/perf/examples/bpf/augmented_raw_syscalls.c
-+++ b/tools/perf/examples/bpf/augmented_raw_syscalls.c
-@@ -6,6 +6,25 @@
-  *
-  * perf trace -e tools/perf/examples/bpf/augmented_raw_syscalls.c cat /etc/passwd > /dev/null
-  *
-+ * This program include two header files 'unistd.h' and 'pid_filter.h', which
-+ * are placed in the folder tools/perf/include/bpf, but this folder is not
-+ * included in env $KERNEL_INC_OPTIONS and it leads to compilation failure.
-+ * For building this code, we also need to specify architecture and define macro
-+ * __NR_CPUS__.  To resolve these issues, variable llvm.clang-opt can be set in
-+ * the file ~/.perfconfig:
-+ *
-+ * E.g. Test on a platform with 8 CPUs with x86_64 architecture:
-+ *
-+ *   [llvm]
-+ *		clang-opt = "-D__NR_CPUS__=8 -D__x86_64__ \
-+ *			     -I./tools/perf/include/bpf"
-+ *
-+ * E.g. Test on a platform with 5 CPUs with aarch64 architecture:
-+ *
-+ *   [llvm]
-+ *		clang-opt = "-D__NR_CPUS__=5 -D__aarch64__ \
-+ *			     -I./tools/perf/include/bpf"
-+
-  * This exactly matches what is marshalled into the raw_syscall:sys_enter
-  * payload expected by the 'perf trace' beautifiers.
-  *
--- 
-2.17.1
+Quentin
 
