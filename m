@@ -2,144 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A59F36BAB
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 07:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7329036BBE
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 07:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726599AbfFFFdH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jun 2019 01:33:07 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:37287 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726040AbfFFFdG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jun 2019 01:33:06 -0400
-Received: by mail-io1-f72.google.com with SMTP id j18so788384ioj.4
-        for <bpf@vger.kernel.org>; Wed, 05 Jun 2019 22:33:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=W5FF42zVDo3trtwvrjbtAnVcsXKoMkINuTi+BPyFgek=;
-        b=GMGWUXFWR72vYkuH+UtN22eDsCCaCF+IZCHX3I1DuSDXuzF92OJy/mZ/k3TwehbRFI
-         4WppMlNZ0PmkAoDpiMuRWijybSTrk+VaEc7DJ6qMB9pkbA773urNyk4PMI5kXdYphljb
-         mdWqKJM1EHg6zpKUEPzUIUtqq9KqcWM7P8oJIrCdh7wK3XZ1ewk1lvNS1NAP7YIMK80B
-         kKvV5nEiW2RcZCr8DIahjUyeivXE+KPy8r/Tm1PoMXPtrNH1H2c7mGZ847xeNPc7sjTI
-         hdFEPKpXafD8kutXrP+D4TP3Ke1M25cEtJxhTuaE+Db0cGXabVFLcNGkj9ozwAgs1K0I
-         BNFA==
-X-Gm-Message-State: APjAAAV60S/Q5Eqd3MaAr8Z74OYL+qRXb5pyTROh8M5Zrwx+ur03c/gk
-        M8zU6ELS7A3R0g2JyU5sS5wD/nQjf+QrMutkJWLh5l77RoKp
-X-Google-Smtp-Source: APXvYqz9VSUc/8eq6b84tHBQ+U7qjz624v0EGp0dlfT+6ewmxPMDHxVvliMgENV/TnWGADV2fbh3yhNDyGIqQ+am2toYAWdTda+c
+        id S1726331AbfFFFkN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jun 2019 01:40:13 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:59806 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725267AbfFFFkM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jun 2019 01:40:12 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x565dfH2011484;
+        Wed, 5 Jun 2019 22:39:48 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=sO391QFJCa2eLcwUNnbTRhXYXFuO1wkzd78zVKnzFJk=;
+ b=X1Ll1lbnfbBwOc2nDToZ3FbdemPGc1ByimUvHnwnTXSm3sJjDgf74JK69BLPougm+XSV
+ mpNSXhVItROwTNS951QZTPZ+UlS8ulSHiwRBYlkHbS1QsPbgrGl8FsGpq7XuED28rxgb
+ nJ/P+6MCbgwdexOEh2YQXv2Tk1lMeKtFy6Q= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2sxqppgua5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 05 Jun 2019 22:39:48 -0700
+Received: from prn-mbx04.TheFacebook.com (2620:10d:c081:6::18) by
+ prn-hub03.TheFacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Wed, 5 Jun 2019 22:39:47 -0700
+Received: from prn-hub02.TheFacebook.com (2620:10d:c081:35::126) by
+ prn-mbx04.TheFacebook.com (2620:10d:c081:6::18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Wed, 5 Jun 2019 22:39:47 -0700
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.26) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Wed, 5 Jun 2019 22:39:47 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sO391QFJCa2eLcwUNnbTRhXYXFuO1wkzd78zVKnzFJk=;
+ b=YFnvSw1/0u9FUH+iwySTV5KATmwFqIWthzbSHu3SfJWethoshl3lBYjiqtsHy5d5CWeSP+KdSFMhJG5U+NB/CxcaqLdEQR6kKipAiXkdDtG4rNAD+whMYs62iv3TivemEi9uigJKaRiHT8SqVgOouGbUGcr1DkqmdAwtvF9cc+0=
+Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
+ MWHPR15MB1727.namprd15.prod.outlook.com (10.174.96.17) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1965.12; Thu, 6 Jun 2019 05:39:33 +0000
+Received: from MWHPR15MB1165.namprd15.prod.outlook.com
+ ([fe80::400e:e329:ea98:aa0d]) by MWHPR15MB1165.namprd15.prod.outlook.com
+ ([fe80::400e:e329:ea98:aa0d%6]) with mapi id 15.20.1965.011; Thu, 6 Jun 2019
+ 05:39:32 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Hechao Li <hechaol@fb.com>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH 0/2] bpf: Add a new API libbpf_num_possible_cpus()
+Thread-Topic: [PATCH 0/2] bpf: Add a new API libbpf_num_possible_cpus()
+Thread-Index: AQHVG/Scq94tv95ggEKQQT8yveWl9KaOHIUA
+Date:   Thu, 6 Jun 2019 05:39:32 +0000
+Message-ID: <3E5DB8E5-35D2-49DF-BB0A-B69154A4764F@fb.com>
+References: <20190605231506.2983988-1-hechaol@fb.com>
+In-Reply-To: <20190605231506.2983988-1-hechaol@fb.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3445.104.11)
+x-originating-ip: [2620:10d:c090:180::1:efa5]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 82d6eec4-f18d-489e-0bec-08d6ea415a60
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MWHPR15MB1727;
+x-ms-traffictypediagnostic: MWHPR15MB1727:
+x-microsoft-antispam-prvs: <MWHPR15MB1727652E186CE9085E1E962EB3170@MWHPR15MB1727.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-forefront-prvs: 00603B7EEF
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(396003)(39840400004)(366004)(376002)(346002)(199004)(189003)(50226002)(36756003)(6436002)(66446008)(66476007)(186003)(25786009)(6506007)(64756008)(53546011)(66946007)(57306001)(66556008)(6512007)(4744005)(76116006)(99286004)(82746002)(76176011)(102836004)(5660300002)(229853002)(53936002)(86362001)(73956011)(37006003)(81166006)(6116002)(6486002)(256004)(7736002)(71200400001)(8936002)(316002)(71190400001)(305945005)(6246003)(83716004)(6862004)(8676002)(486006)(54906003)(46003)(14454004)(6636002)(446003)(476003)(2616005)(478600001)(68736007)(11346002)(4326008)(81156014)(33656002)(2906002);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1727;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: F7TxcvpJOBmRjwKKnQ84DgDS8CdG4zdU3ZDp77Xrckqu2/kqHyVj9VjgU4nL4BeikJXWqaRwaqf/oWvCQGQRwc18hutfSF+E5G67kFWjoTR69HFazJG5dPo+1YTqSToXVz/kvf6ZxtafUWEozh+HhVMRdlH6OSBbGeg5rwswM2w2IUaqAn3U5V1F6SAsmjpSBo7kEmx9R036wzRDviw0jrxKgjDQZZJOvw0hkAfuCXwI0jT0eMDGMNkXkFb4ilCox+8HCT5E13+PKmBwDZ5CDrBSno/DFDT8yMd3I4rUDbjN63x5wX+zZeeGL4oZnsmreAchh7iFpDIGMQH/GnT4QyDWnmVsx6YTTkuU4qJ3qNtAy5e3T3E29zoqAhBsAdVayJ2Dv4hG2ApwC5oLu0mWPos1CUm/noqI5YMMx3cdPig=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <757A347574E0924DAADF4D975ED4CF87@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Received: by 2002:a05:660c:887:: with SMTP id o7mr5081314itk.159.1559799186165;
- Wed, 05 Jun 2019 22:33:06 -0700 (PDT)
-Date:   Wed, 05 Jun 2019 22:33:06 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006994aa058aa10cb8@google.com>
-Subject: WARNING: refcount bug in css_task_iter_next
-From:   syzbot <syzbot+644dc16442b3a35f3629@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
-        daniel@iogearbox.net, hannes@cmpxchg.org, kafai@fb.com,
-        linux-kernel@vger.kernel.org, lizefan@huawei.com,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tj@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82d6eec4-f18d-489e-0bec-08d6ea415a60
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jun 2019 05:39:32.7760
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: songliubraving@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1727
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-06_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906060042
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    b2924447 Add linux-next specific files for 20190605
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=11c492d2a00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4248d6bc70076f7d
-dashboard link: https://syzkaller.appspot.com/bug?extid=644dc16442b3a35f3629
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+644dc16442b3a35f3629@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-refcount_t: increment on 0; use-after-free.
-WARNING: CPU: 0 PID: 4184 at lib/refcount.c:156 refcount_inc_checked  
-lib/refcount.c:156 [inline]
-WARNING: CPU: 0 PID: 4184 at lib/refcount.c:156  
-refcount_inc_checked+0x61/0x70 lib/refcount.c:154
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 4184 Comm: syz-executor.3 Not tainted 5.2.0-rc3-next-20190605 #9
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
-  panic+0x2cb/0x744 kernel/panic.c:219
-  __warn.cold+0x20/0x4d kernel/panic.c:576
-  report_bug+0x263/0x2b0 lib/bug.c:186
-  fixup_bug arch/x86/kernel/traps.c:179 [inline]
-  fixup_bug arch/x86/kernel/traps.c:174 [inline]
-  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:272
-  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:291
-  invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:986
-RIP: 0010:refcount_inc_checked lib/refcount.c:156 [inline]
-RIP: 0010:refcount_inc_checked+0x61/0x70 lib/refcount.c:154
-Code: 1d db 0e 68 06 31 ff 89 de e8 1b c4 3b fe 84 db 75 dd e8 d2 c2 3b fe  
-48 c7 c7 e0 b6 c4 87 c6 05 bb 0e 68 06 01 e8 dd db 0d fe <0f> 0b eb c1 90  
-90 90 90 90 90 90 90 90 90 90 55 48 89 e5 41 57 41
-RSP: 0018:ffff8882000ef290 EFLAGS: 00010082
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000040000 RSI: ffffffff815b04b6 RDI: ffffed104001de44
-RBP: ffff8882000ef2a0 R08: ffff8882035744c0 R09: ffffed1015d040f1
-R10: ffffed1015d040f0 R11: ffff8880ae820787 R12: ffff88804436a660
-R13: ffff8882000ef368 R14: ffff88804436a640 R15: 1ffff1104001de5d
-  css_task_iter_next+0xf9/0x190 kernel/cgroup/cgroup.c:4568
-  mem_cgroup_scan_tasks+0xbb/0x180 mm/memcontrol.c:1168
-  select_bad_process mm/oom_kill.c:374 [inline]
-  out_of_memory mm/oom_kill.c:1088 [inline]
-  out_of_memory+0x6b2/0x1280 mm/oom_kill.c:1035
-  mem_cgroup_out_of_memory+0x1ca/0x230 mm/memcontrol.c:1573
-  mem_cgroup_oom mm/memcontrol.c:1905 [inline]
-  try_charge+0xfbe/0x1480 mm/memcontrol.c:2468
-  mem_cgroup_try_charge+0x24d/0x5e0 mm/memcontrol.c:6073
-  __add_to_page_cache_locked+0x425/0xe70 mm/filemap.c:839
-  add_to_page_cache_lru+0x1cb/0x760 mm/filemap.c:916
-  pagecache_get_page+0x357/0x850 mm/filemap.c:1655
-  grab_cache_page_write_begin+0x75/0xb0 mm/filemap.c:3157
-  simple_write_begin+0x36/0x2c0 fs/libfs.c:438
-  generic_perform_write+0x22a/0x520 mm/filemap.c:3207
-  __generic_file_write_iter+0x25e/0x630 mm/filemap.c:3336
-  generic_file_write_iter+0x360/0x610 mm/filemap.c:3368
-  call_write_iter include/linux/fs.h:1870 [inline]
-  new_sync_write+0x4d3/0x770 fs/read_write.c:483
-  __vfs_write+0xe1/0x110 fs/read_write.c:496
-  vfs_write+0x268/0x5d0 fs/read_write.c:558
-  ksys_write+0x14f/0x290 fs/read_write.c:611
-  __do_sys_write fs/read_write.c:623 [inline]
-  __se_sys_write fs/read_write.c:620 [inline]
-  __x64_sys_write+0x73/0xb0 fs/read_write.c:620
-  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x459279
-Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f9a334d9c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000459279
-RDX: 0000000003d3427e RSI: 0000000020000180 RDI: 0000000000000004
-RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f9a334da6d4
-R13: 00000000004c8ee8 R14: 00000000004dfbb0 R15: 00000000ffffffff
-Shutting down cpus with NMI
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> On Jun 5, 2019, at 4:15 PM, Hechao Li <hechaol@fb.com> wrote:
+>=20
+> Getting number of possible CPUs is commonly used for per-CPU BPF maps
+> and perf_event_maps. Add a new API libbpf_num_possible_cpus() that
+> helps user with per-CPU related operations and remove duplicate
+> implementations in bpftool and selftests.
+>=20
+> Hechao Li (2):
+>  bpf: add a new API libbpf_num_possible_cpus()
+>  bpf: use libbpf_num_possible_cpus in bpftool and selftests
+>=20
+> tools/bpf/bpftool/common.c             | 53 +++-----------------------
+> tools/lib/bpf/libbpf.c                 | 49 ++++++++++++++++++++++++
+> tools/lib/bpf/libbpf.h                 | 16 ++++++++
+> tools/lib/bpf/libbpf.map               |  1 +
+> tools/testing/selftests/bpf/bpf_util.h | 37 +++---------------
+> 5 files changed, 76 insertions(+), 80 deletions(-)
+>=20
+> --=20
+> 2.17.1
+>=20
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Please specify which tree the patch is based on (bpf-next for=20
+this one), and version of patch (v2) in the subject with
+
+    git format-patch --subject-prefix=3D"PATCH v2 bpf-next"
+
+Thanks,
+Song
+
+
