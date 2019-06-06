@@ -2,124 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5E437709
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 16:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D0637737
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 16:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728508AbfFFOoT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jun 2019 10:44:19 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:36038 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727309AbfFFOoT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jun 2019 10:44:19 -0400
-Received: by mail-qk1-f196.google.com with SMTP id g18so1611187qkl.3;
-        Thu, 06 Jun 2019 07:44:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=QiT2s8e89xd+f/5BqwjU7xp+ncS2jpCgbXa7HZDxqTY=;
-        b=VhwyJU/+ivjU1zPCSlPQrda2fDRKoXHBpsp2xDCXDh5RJs9qZ2ZFMKzDR8OqNKFxRH
-         6MoaSJ7Rj58BYSaLH+brbA4YxXwdSxwLaXawTEi0ZHRYIstMhx6dVKBzZBEtDdwWGEHW
-         qT+S/LFrIHtJxhxcpJ6l4gJDmestUH5rdGKFuirXpfNylF8FOYMxrC079t2BhL/BPbdb
-         EBtt8Dfz7X4LbqyebRStRq6QKofSvBbto0bw/KtM3IoDm6GQIdVgQ4FjWAHNRCBBozEx
-         F+sxVXYrWq7mfy1CeStus+t7NqCx/IpOANbhtK9hJMTAWuOvDT5YGJ5uRBYk4NO0Xea7
-         8z0A==
+        id S1729006AbfFFOzB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jun 2019 10:55:01 -0400
+Received: from mail-it1-f199.google.com ([209.85.166.199]:58430 "EHLO
+        mail-it1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728965AbfFFOzB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jun 2019 10:55:01 -0400
+Received: by mail-it1-f199.google.com with SMTP id l193so140252ita.8
+        for <bpf@vger.kernel.org>; Thu, 06 Jun 2019 07:55:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QiT2s8e89xd+f/5BqwjU7xp+ncS2jpCgbXa7HZDxqTY=;
-        b=HxOwlITr24fiP19bQmp7F1aQ7tPunYd7bIt+5Giu4pEfQRUMm47MfwbHUFRinSnHkA
-         OHXfREW7fhTgLhEpwwoNxkvjFUy25aGEYJwsEJr833QL0qZisuUBzpGlYav7AzrNobyK
-         Z+tZRkW5O/58pq/xvhrvvmkZRbdfcHciUkG8zslK89XY/JysJlC4mfwl5Q2H9wNbXaYa
-         WKcHEBcfKfTGkOecbjbFHAe6nXUu9upnneeWl06qpg1e2WO6yg27Y6j67gUvGVt0K/xD
-         oziigxmcWIVcaoM+RbUjNyiToON++dwmnfRW3EXsD9n2VQnVinfJzqQcVgw8rWmiEiFf
-         bUaA==
-X-Gm-Message-State: APjAAAV2/7pW1rXCbC84sB/BVw7vHkN1drk3Wm+cch7SeUp9izeMVKqZ
-        03z7vaYbnFaLLiaJDJmsCbY=
-X-Google-Smtp-Source: APXvYqy4gqJMKLRhlKX01BsFurCNHHmfUplwwtZoGmnZbOzn9Wr0V47tBBll7Ci9gBAUn4qZlccVBA==
-X-Received: by 2002:a37:5c8:: with SMTP id 191mr27446435qkf.188.1559832257784;
-        Thu, 06 Jun 2019 07:44:17 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([177.195.208.82])
-        by smtp.gmail.com with ESMTPSA id q37sm1216774qtj.94.2019.06.06.07.44.16
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 06 Jun 2019 07:44:16 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2B59A41149; Thu,  6 Jun 2019 11:44:12 -0300 (-03)
-Date:   Thu, 6 Jun 2019 11:44:12 -0300
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] perf augmented_raw_syscalls: Support arm64 raw
- syscalls
-Message-ID: <20190606144412.GC21245@kernel.org>
-References: <20190606094845.4800-1-leo.yan@linaro.org>
- <20190606094845.4800-4-leo.yan@linaro.org>
- <20190606133838.GC30166@kernel.org>
- <20190606141231.GC5970@leoy-ThinkPad-X240s>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=R8TcDtdRwn0wi82EAl1Zo57LJuPK69T+qkxhIovalQk=;
+        b=Kc2BiW6gHceVfHg2BvuYRfhrpxyeRW0D9GSHcDTsaSUUZakIyLBP5aEvaRFfEx2sew
+         x8B4GrsdVaRgi4q5ygCYdNLTjJEZhebj8/DKcj/CoJ/lrJxenqpKgR8ZR0PSWvMclCqA
+         7/Y5KyGjSKeRXVKQ7953UlAwvKVT4yRU7lpV9ClNj2SMMCEuR1id5suBrjxabUB6GrYW
+         HCyFzXDvqZOS8bcTU2BfVJj3mingIrSqYrcC5t7GEmp+HQuC7rpvmszV7xi4z5pyb91F
+         uPqruEUrbXUW3Wabad6DsNWiUSIo1lSXO3kGcCC+qdFdctNZR4WdwZEdsXLyFADF8kST
+         C4Jw==
+X-Gm-Message-State: APjAAAV1Jxp98rPjzGK/xW7FMuq2uAH7DrauGOkq4rY7YGy3b/nI1AQx
+        PNkhkefhCznIC7nCfTEvRa218hqkcEwN4wQNhGwnfgEoxggf
+X-Google-Smtp-Source: APXvYqx6hNO688f1nGb9aDJ5teyR9hvYnxbn79yt4+3zppAhrpmNEdwnM+sH6zml00TrbrVYYjMr1hhagZN6LsUkZFoxkm5OAoeB
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190606141231.GC5970@leoy-ThinkPad-X240s>
-X-Url:  http://acmel.wordpress.com
-User-Agent: Mutt/1.11.3 (2019-02-01)
+X-Received: by 2002:a6b:7a42:: with SMTP id k2mr21307120iop.214.1559832900696;
+ Thu, 06 Jun 2019 07:55:00 -0700 (PDT)
+Date:   Thu, 06 Jun 2019 07:55:00 -0700
+In-Reply-To: <000000000000454279058aa80535@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f48306058aa8e5cb@google.com>
+Subject: Re: KASAN: slab-out-of-bounds Read in usage_accumulate
+From:   syzbot <syzbot+b0d730107e2ca6cb952f@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        dvyukov@google.com, john.fastabend@gmail.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Jun 06, 2019 at 10:12:31PM +0800, Leo Yan escreveu:
-> Hi Arnaldo,
-> 
-> On Thu, Jun 06, 2019 at 10:38:38AM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Thu, Jun 06, 2019 at 05:48:44PM +0800, Leo Yan escreveu:
-> > > This patch adds support for arm64 raw syscall numbers so that we can use
-> > > it on arm64 platform.
-> > > 
-> > > After applied this patch, we need to specify macro -D__aarch64__ or
-> > > -D__x86_64__ in compilation option so Clang can use the corresponding
-> > > syscall numbers for arm64 or x86_64 respectively, other architectures
-> > > will report failure when compilation.
-> > 
-> > So, please check what I have in my perf/core branch, I've completely
-> > removed arch specific stuff from augmented_raw_syscalls.c.
-> > 
-> > What is done now is use a map to specify what to copy, that same map
-> > that is used to state which syscalls should be traced.
-> > 
-> > It uses that tools/perf/arch/arm64/entry/syscalls/mksyscalltbl to figure
-> > out the mapping of syscall names to ids, just like is done for x86_64
-> > and other arches, falling back to audit-libs when that syscalltbl thing
-> > is not present.
-> 
-> Actually I have noticed mksyscalltbl has been enabled for arm64, and
-> had to say your approach is much better :)
-> 
-> Thanks for the info and I will try your patch at my side.
+syzbot has bisected this bug to:
 
-That is excellent news! I'm eager to hear from you if this perf+BPF
-integration experiment works for arm64.
+commit e9db4ef6bf4ca9894bb324c76e01b8f1a16b2650
+Author: John Fastabend <john.fastabend@gmail.com>
+Date:   Sat Jun 30 13:17:47 2018 +0000
 
-I'm now trying to get past the verifier when checking if more than one
-syscall arg is a filename, i.e. things like the rename* family, that
-take two filenames.
+     bpf: sockhash fix omitted bucket lock in sock_close
 
-An exercise in loop unrolling, providing the right hints to the
-verifier, making sure clang don't trash those via explicit barriers, and
-a lot of patience, limitless fun! ;-)
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=111ccbbaa00000
+start commit:   156c0591 Merge tag 'linux-kselftest-5.2-rc4' of git://git...
+git tree:       upstream
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=131ccbbaa00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=151ccbbaa00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=60564cb52ab29d5b
+dashboard link: https://syzkaller.appspot.com/bug?extid=b0d730107e2ca6cb952f
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a8fb61a00000
 
-- Arnaldo
+Reported-by: syzbot+b0d730107e2ca6cb952f@syzkaller.appspotmail.com
+Fixes: e9db4ef6bf4c ("bpf: sockhash fix omitted bucket lock in sock_close")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
