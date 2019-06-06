@@ -2,54 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D1E3759A
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 15:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B740375CB
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 15:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727082AbfFFNqa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jun 2019 09:46:30 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:33288 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726877AbfFFNqa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jun 2019 09:46:30 -0400
-Received: by mail-qt1-f194.google.com with SMTP id 14so2717331qtf.0;
-        Thu, 06 Jun 2019 06:46:29 -0700 (PDT)
+        id S1728217AbfFFN4r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jun 2019 09:56:47 -0400
+Received: from mail-yw1-f68.google.com ([209.85.161.68]:41924 "EHLO
+        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728215AbfFFN4r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jun 2019 09:56:47 -0400
+Received: by mail-yw1-f68.google.com with SMTP id y185so873906ywy.8
+        for <bpf@vger.kernel.org>; Thu, 06 Jun 2019 06:56:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=sxuZRg/a5BwwLpOXc2E8P4g4IXtD5jAKIRcm5GraeZs=;
-        b=XHOrwfS8/mtrMMyB0x5R2qAgNUAIbmokPuEjYslAfmR42hmTwX6mUmvqN0qJVubtIA
-         apBbNQEYjXPml15lz6BHEJTV10xXUF5a6sDyMzyaiyne5WyQLcBKqZPkonlIeHJsVGeM
-         m7wlYApzbK9DFyYGaWuyjgPUexcb9gM9Z78ysaRPD5M+FgS52C8hZJ85gec5f0OUj1Q1
-         IODc0tO8cks0OwbkxIrpk1JLV8DGd0RTdzDZW7beSOlIe6BEMRk9LukdwPPTrpWmbjVh
-         XKBQfQNgo+jLan7eW+FMPE3CY69AggrgnhF2KWAH2HBjK7a15UvDrlnFSJoQNGGeekgW
-         RdEQ==
+        bh=EuZEMPInyVgdEoDMJMoyMn3YL8ggKxsec4fG7IvocOc=;
+        b=zPqvKRNcDvVCqV0gjhYDsU0fOnT75Wa7Kd3oFYdx8cvUM9Ysjp730xNRukjoB4Bdbs
+         BsF/Alp7YL/7E2FOCXmuPjp0S/DNt6JVzkl5GBY8MzBBPzaE/NJ6hGL8p9wDJbFsNPMj
+         FOlMetdQFH5ogblxA72iE9SuCvb7neh448iMOGMyy+5NAIoF2hxQc9DVoZgmHmsdtaJd
+         zn9T2QWSCO5ZXNtebvUfuA0o0t4rRT+0KamDYz1zWW1Ew4d3q/QLg3Apo03iCaJq0rDg
+         XNOe3MX4am4uwsyG+f6lyYv9v4Jmi/8CD1Q9B6rb3aH+ymZL3AKXECYktyNYiRmKHBZE
+         i1ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sxuZRg/a5BwwLpOXc2E8P4g4IXtD5jAKIRcm5GraeZs=;
-        b=oelqLTW1K7m53dxWmCWg1ZGiFuJ11gOzPgnirEc7Aw7yacMZ7z+JpDr82iAVum/i/B
-         RWqv/7MNKk4SJzJTM61manXDTSEpjPTFepGAD85KaxWzfQ890X9T5EYwmv0Yk02GAoHA
-         KwzaWEhRF8//CegcFoYH2oLUXkYdOAbbKbUREfezGJ8yMjNbCXP2S53aCymH1/7/GYnV
-         M0QLC6ohokP47Z5p+CRVdUaTI8oYuLrYFb7pUcPDL1auQyeHkriz/MOwGYPj4JWjRnkd
-         pWYlA1h+Yf+9iNrz/CyXpCqc3oPVTeEFekovRjuda8fJQ682keN1ia3F9mccmY5SeR1b
-         O0RQ==
-X-Gm-Message-State: APjAAAXNjo7Kdvq3B8YH2Z7W8iXNc5hibQFfCAokE53vc7yMdrtzNtXj
-        oefYbCwIvmJRKp3PzR8rJDI=
-X-Google-Smtp-Source: APXvYqzvYPqMM+pY1ADNXKjLo3mWNDAGhRI7ulZ41cG+60iOZwW/XVjlNwg0XL5s/YODyp1GiDnkwg==
-X-Received: by 2002:a0c:99d8:: with SMTP id y24mr38959520qve.74.1559828789107;
-        Thu, 06 Jun 2019 06:46:29 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([177.195.208.82])
-        by smtp.gmail.com with ESMTPSA id d38sm1344329qtb.95.2019.06.06.06.46.27
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 06 Jun 2019 06:46:27 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 41B7441149; Thu,  6 Jun 2019 10:46:24 -0300 (-03)
-Date:   Thu, 6 Jun 2019 10:46:24 -0300
-To:     Leo Yan <leo.yan@linaro.org>
+        bh=EuZEMPInyVgdEoDMJMoyMn3YL8ggKxsec4fG7IvocOc=;
+        b=jHL5Gt1knQaYGnbonavCb7rit2+MUrQ1qveIjuk0hGLy7SwwIGfEVZR187yyeYPsJc
+         bIFNTuVqC41Lzdj9CSSEWRnu7zKCuqpIcdEMnzV9rhUCa7IV5PKOwUl66WEmvfP2p3Fq
+         FXHwNi5R5+1I9DzoB48Vq0gFDZkmMQvrJ6W+AMmvHoCNqALoE1k1i+r0bTI2x2KJVj4p
+         eFUR6LHw1siqbhfJM8D86AYwT6qiqq5eTvV/nPsuUqi9MKdVKBodqD7plCRQOSYHKHaH
+         /lvBhUJRGRNty7OwxSATJ8VZJAArbQleYn0RfJxbD2fgXiobPqu6RSM8KdeGOGTbBrDi
+         xdoA==
+X-Gm-Message-State: APjAAAVjw0ar7+4iHgT6P6HRSKpBFJBiv7MgYwPvdf9dxwcGNCtA0+wa
+        993rcHNey2+jdJh0Hm2yrrKROA==
+X-Google-Smtp-Source: APXvYqzT/vCdorUtjdKVe6VVR021Fy47x9VKZvvjHt0nmwarVe65p3BtWF7bTf18NTWNVIukHdGIUg==
+X-Received: by 2002:a81:8407:: with SMTP id u7mr7806996ywf.243.1559829406501;
+        Thu, 06 Jun 2019 06:56:46 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s (li1322-146.members.linode.com. [45.79.223.146])
+        by smtp.gmail.com with ESMTPSA id 13sm173961ywm.38.2019.06.06.06.56.39
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 06 Jun 2019 06:56:45 -0700 (PDT)
+Date:   Thu, 6 Jun 2019 21:56:35 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
 Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
@@ -63,48 +60,164 @@ Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] perf augmented_raw_syscalls: Support arm64 raw
- syscalls
-Message-ID: <20190606134624.GD30166@kernel.org>
+Subject: Re: [PATCH v2 1/4] perf trace: Exit when build eBPF program failure
+Message-ID: <20190606135635.GB5970@leoy-ThinkPad-X240s>
 References: <20190606094845.4800-1-leo.yan@linaro.org>
- <20190606094845.4800-4-leo.yan@linaro.org>
- <20190606133838.GC30166@kernel.org>
+ <20190606094845.4800-2-leo.yan@linaro.org>
+ <20190606133019.GA30166@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190606133838.GC30166@kernel.org>
-X-Url:  http://acmel.wordpress.com
-User-Agent: Mutt/1.11.3 (2019-02-01)
+In-Reply-To: <20190606133019.GA30166@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Jun 06, 2019 at 10:38:38AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Thu, Jun 06, 2019 at 05:48:44PM +0800, Leo Yan escreveu:
-> > This patch adds support for arm64 raw syscall numbers so that we can use
-> > it on arm64 platform.
+Hi Arnaldo,
+
+On Thu, Jun 06, 2019 at 10:30:19AM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Jun 06, 2019 at 05:48:42PM +0800, Leo Yan escreveu:
+> > On my Juno board with ARM64 CPUs, perf trace command reports the eBPF
+> > program building failure but the command will not exit and continue to
+> > run.  If we define an eBPF event in config file, the event will be
+> > parsed with below flow:
 > > 
-> > After applied this patch, we need to specify macro -D__aarch64__ or
-> > -D__x86_64__ in compilation option so Clang can use the corresponding
-> > syscall numbers for arm64 or x86_64 respectively, other architectures
-> > will report failure when compilation.
+> >   perf_config()
+> >     `> trace__config()
+> > 	 `> parse_events_option()
+> > 	      `> parse_events__scanner()
+> > 	           `-> parse_events_parse()
+> > 	                 `> parse_events_load_bpf()
+> > 	                      `> llvm__compile_bpf()
+> > 
+> > Though the low level functions return back error values when detect eBPF
+> > building failure, but parse_events_option() returns 1 for this case and
 > 
-> So, please check what I have in my perf/core branch, I've completely
-> removed arch specific stuff from augmented_raw_syscalls.c.
+> (gdb) n
+> parse_events__scanner (str=0xb9d170 "/home/acme/git/perf/tools/perf/examples/bpf/augmented_raw_syscalls.o", parse_state=0x7fffffff7fa0,
+>     start_token=258) at util/parse-events.c:1870
+> 1870		parse_events__delete_buffer(buffer, scanner);
+> (gdb) n
+> 1871		parse_events_lex_destroy(scanner);
+> (gdb) n
+> 1872		return ret;
+> (gdb) p ret
+> $53 = 1
+> (gdb) bt
+> #0  parse_events__scanner (str=0xb9d170 "/home/acme/git/perf/tools/perf/examples/bpf/augmented_raw_syscalls.o", parse_state=0x7fffffff7fa0,
+>     start_token=258) at util/parse-events.c:1872
+> #1  0x000000000050a926 in parse_events (evlist=0xb9e5d0, str=0xb9d170 "/home/acme/git/perf/tools/perf/examples/bpf/augmented_raw_syscalls.o",
+>     err=0x7fffffff8020) at util/parse-events.c:1907
+> #2  0x000000000050ad94 in parse_events_option (opt=0x7fffffff8080,
+>     str=0xb9d170 "/home/acme/git/perf/tools/perf/examples/bpf/augmented_raw_syscalls.o", unset=0) at util/parse-events.c:2007
+> #3  0x0000000000497fa8 in trace__config (var=0x7fffffff8150 "trace.add_events",
+>     value=0xb9d170 "/home/acme/git/perf/tools/perf/examples/bpf/augmented_raw_syscalls.o", arg=0x7fffffffa1c0) at builtin-trace.c:3706
+> #4  0x00000000004e9a79 in perf_config (fn=0x497ee4 <trace__config>, data=0x7fffffffa1c0) at util/config.c:738
+> #5  0x0000000000498c97 in cmd_trace (argc=2, argv=0x7fffffffd690) at builtin-trace.c:3865
+> #6  0x00000000004d8c17 in run_builtin (p=0xa0e600 <commands+576>, argc=2, argv=0x7fffffffd690) at perf.c:303
+> #7  0x00000000004d8e84 in handle_internal_command (argc=2, argv=0x7fffffffd690) at perf.c:355
+> #8  0x00000000004d8fd3 in run_argv (argcp=0x7fffffffd4ec, argv=0x7fffffffd4e0) at perf.c:399
+> #9  0x00000000004d933f in main (argc=2, argv=0x7fffffffd690) at perf.c:521
+> (gdb)
 > 
-> What is done now is use a map to specify what to copy, that same map
-> that is used to state which syscalls should be traced.
+> So its parse_events__scanner() that returns 1, parse_events() propagate
+> that and:
 > 
-> It uses that tools/perf/arch/arm64/entry/syscalls/mksyscalltbl to figure
-> out the mapping of syscall names to ids, just like is done for x86_64
-> and other arches, falling back to audit-libs when that syscalltbl thing
-> is not present.
+> parse_events_option (opt=0x7fffffff8080, str=0xb9d170 "/home/acme/git/perf/tools/perf/examples/bpf/augmented_raw_syscalls.o", unset=0)
+>     at util/parse-events.c:2009
+> 2009		if (ret) {
+> (gdb) p ret
+> $56 = 1
+> (gdb) n
+> 2010			parse_events_print_error(&err, str);
+> (gdb) n
+> event syntax error: '/home/acme/git/perf/tools/perf/examples/bpf/augmented_raw_syscalls.o'
+>                      \___ Kernel verifier blocks program loading
+> 
+> (add -v to see detail)
+> 2011			fprintf(stderr, "Run 'perf list' for a list of valid events\n");
+> (gdb)
+> 
+> So the -4007 error is printed, and all we can say is that parsing events
+> failed, but we end up not propagating that error back when we use
+> parse_events_option(), we could use instead:
+> 
+>         struct parse_events_error err = { .idx = 0, };
+>         int ret = parse_events(evlist, str, &err);
+> 
+> And make parse_events_error have the raw err, i.e. -4007 in this case:
+> 
+>         [ERRCODE_OFFSET(VERIFY)]        = "Kernel verifier blocks program loading",
+> 
+> In your case would be something else, I'm just trying to load the
+> precompiled .o that does things the BPF kernel verifier doesn't like.
 
-Also added:
+Yes, exactly.  My failure is compilation failure but not BPF verifier
+failure.
 
-Fixes: ac96287cae08 ("perf trace: Allow specifying a set of events to add in perfconfig")
+> So yeah, your patch looks ok, i.e. parse_events_option() returning !0
+> should make trace__config() return -1.
+> 
+> But see below:
+> 
+> - Arnaldo
+> 
+> > trace__config() passes 1 to perf_config(); perf_config() doesn't treat
+> > the returned value 1 as failure and it continues to parse other
+> > configurations.  Thus the perf command continues to run even without
+> > enabling eBPF event successfully.
+> > 
+> > This patch changes error handling in trace__config(), when it detects
+> > failure it will return -1 rather than directly pass error value (1);
+> > finally, perf_config() will directly bail out and perf will exit for
+> > this case.
+> > 
+> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> > ---
+> >  tools/perf/builtin-trace.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+> > index 54b2d0fd0d02..4b5d004aab74 100644
+> > --- a/tools/perf/builtin-trace.c
+> > +++ b/tools/perf/builtin-trace.c
+> > @@ -3664,6 +3664,14 @@ static int trace__config(const char *var, const char *value, void *arg)
+> >  					       "event selector. use 'perf list' to list available events",
+> >  					       parse_events_option);
+> >  		err = parse_events_option(&o, value, 0);
+> > +
+> > +		/*
+> > +		 * When parse option successfully parse_events_option() will
+> > +		 * return 0, otherwise means the paring failure.  And it
+> > +		 * returns 1 for eBPF program building failure; so adjust the
+> > +		 * err value to -1 for the failure.
+> > +		 */
+> > +		err = err ? -1 : 0;
+> 
+> I'll rewrite the comment above to make it more succint and fix things
+> like 'paring' (parsing):
+> 
+> 		/*
+> 		 * parse_events_option() returns !0 to indicate failure
+> 		 * while the perf_config code that calls trace__config()
+> 		 * expects < 0 returns to indicate error, so:
+> 		 */
+> 
+> 		 if (err)
+> 		 	err = -1;
 
-For the stable@kernel.org folks to automagically pick this.
+This looks good to me.  Thanks a lot for the reviewing.
 
-- Arnaldo
+Leo.
+
+> >  	} else if (!strcmp(var, "trace.show_timestamp")) {
+> >  		trace->show_tstamp = perf_config_bool(var, value);
+> >  	} else if (!strcmp(var, "trace.show_duration")) {
+> > -- 
+> > 2.17.1
+> 
+> -- 
+> 
+> - Arnaldo
