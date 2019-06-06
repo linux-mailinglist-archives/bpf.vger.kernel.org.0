@@ -2,275 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8181A3745E
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 14:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8103753A
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 15:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727234AbfFFMkX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jun 2019 08:40:23 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:53563 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726762AbfFFMkX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jun 2019 08:40:23 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20190606124022euoutp028c4031b91b767e3a06bf4f5b0a8739f9~lnGlMHM132158221582euoutp02o
-        for <bpf@vger.kernel.org>; Thu,  6 Jun 2019 12:40:22 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20190606124022euoutp028c4031b91b767e3a06bf4f5b0a8739f9~lnGlMHM132158221582euoutp02o
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1559824822;
-        bh=Y5QDbSvNeJjyie1lOqEuseCVGP7F8cCUInKekAvvG8s=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=mCjsyQdzHSvSQ9J8osPL8ATnipjdtHVWfp+ElTXUbIkAbeYpOupgYJIE6KiRMrclt
-         SexngE9WhUCURkJMZwcpwCt9hoPH+8rMAka8fikFXWm5bri4H/ZRNDklFUAPZNqgqY
-         wZer+Nfu7j1+bcrrvWIMnph2FvUmkHS+h9OrB4bg=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20190606124021eucas1p20a3254ac4d556cc87f7c2e2074de1841~lnGkts2QI1479514795eucas1p23;
-        Thu,  6 Jun 2019 12:40:21 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id D8.02.04325.5B909FC5; Thu,  6
-        Jun 2019 13:40:21 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20190606124020eucas1p2007396ae8f23a426a17e0e5481636187~lnGj5SaWH0841208412eucas1p2l;
-        Thu,  6 Jun 2019 12:40:20 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20190606124020eusmtrp1a52d1f8862b9a721124ad34e778095d3~lnGjpu4L42301723017eusmtrp1D;
-        Thu,  6 Jun 2019 12:40:20 +0000 (GMT)
-X-AuditID: cbfec7f5-fbbf09c0000010e5-9f-5cf909b54579
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 86.A4.04140.4B909FC5; Thu,  6
-        Jun 2019 13:40:20 +0100 (BST)
-Received: from imaximets.rnd.samsung.ru (unknown [106.109.129.180]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20190606124019eusmtip29b381735e734cfd699abae670fd3bb78~lnGjE83rr2301123011eusmtip2-;
-        Thu,  6 Jun 2019 12:40:19 +0000 (GMT)
-From:   Ilya Maximets <i.maximets@samsung.com>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        xdp-newbies@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Ilya Maximets <i.maximets@samsung.com>
-Subject: [PATCH] net: Fix hang while unregistering device bound to xdp
- socket
-Date:   Thu,  6 Jun 2019 15:40:14 +0300
-Message-Id: <20190606124014.23231-1-i.maximets@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrPIsWRmVeSWpSXmKPExsWy7djP87pbOX/GGHycz2Pxp20Do8XnI8fZ
-        LOacb2GxuNL+k93i8q45bBYrDp1gtzi2QMxie/8+RgcOjy0rbzJ5LN7zksmjb8sqRo/Pm+QC
-        WKK4bFJSczLLUov07RK4Mp6ubGEumKpZcWTRbcYGxgbFLkZODgkBE4mmCSvZuhi5OIQEVjBK
-        LPjexAzhfGGU2Le7ESrzmVHic9MmRpiWHRf/Q1UtZ5T49WUnC4Tzg1HibP9iZpAqNgEdiVOr
-        j4B1iAhISXzcsZ0dpIhZYDKTxMuXf9lBEsIC/hKvXrwFs1kEVCUuPl0AZvMKWEu8n/aCHWKd
-        vMTqDQfA1kkIXGeTmHDlJtQdLhLLuw5A2cISr45vgWqQkTg9uYcFwq6XuN/ykhGiuYNRYvqh
-        f0wQCXuJLa/PATVwAJ2kKbF+lz5E2FGiZWErE0hYQoBP4sZbQZAwM5A5adt0Zogwr0RHmxBE
-        tYrE74PLmSFsKYmb7z5DXeAhsfXdVlYQW0ggVuJ0/zLGCYxysxB2LWBkXMUonlpanJueWmyc
-        l1quV5yYW1yal66XnJ+7iRGYDE7/O/51B+O+P0mHGAU4GJV4eD3Yf8YIsSaWFVfmHmKU4GBW
-        EuEtu/AjRog3JbGyKrUoP76oNCe1+BCjNAeLkjhvNcODaCGB9MSS1OzU1ILUIpgsEwenVAOj
-        6jaf/Um7pkR2PWUXPfm+b3/RyyVHFkXLHA6r23x2m7vvPJsUh8mTFUIbzgu0/W6qCpwTs/QV
-        r6snQ+yUXE8jLvbGt8phlhPKFXK/B+a/32popVev389TwNmZ9V1qq9EyXXHVYwG7HbqiH3PO
-        8Tl+ym3Ho60BBVET7TbtVj06bePHJZfEOMSUWIozEg21mIuKEwH3UwNyAgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKLMWRmVeSWpSXmKPExsVy+t/xe7pbOH/GGMy7L2Txp20Do8XnI8fZ
-        LOacb2GxuNL+k93i8q45bBYrDp1gtzi2QMxie/8+RgcOjy0rbzJ5LN7zksmjb8sqRo/Pm+QC
-        WKL0bIryS0tSFTLyi0tslaINLYz0DC0t9IxMLPUMjc1jrYxMlfTtbFJSczLLUov07RL0Mp6u
-        bGEumKpZcWTRbcYGxgbFLkZODgkBE4kdF/8zdzFycQgJLGWU6H34hhEiISXx49cFVghbWOLP
-        tS42iKJvjBKL2mazgyTYBHQkTq0+AtYgAtTwccd2dpAiZoGZTBJ7+k+wgCSEBXwl1r19Dmaz
-        CKhKXHy6AKyZV8Ba4v20F+wQG+QlVm84wDyBkWcBI8MqRpHU0uLc9NxiI73ixNzi0rx0veT8
-        3E2MwCDcduznlh2MXe+CDzEKcDAq8fDOYPoZI8SaWFZcmXuIUYKDWUmEt+zCjxgh3pTEyqrU
-        ovz4otKc1OJDjKZAyycyS4km5wMjJK8k3tDU0NzC0tDc2NzYzEJJnLdD4GCMkEB6Yklqdmpq
-        QWoRTB8TB6dUA+OKr74Wx27qrnT/Z+B8pndz10bpJVMrLN47bdvTpWbU8mKRV/DCqol1BnEn
-        /67tSzQrF8jjVT/jZVDLsZ/9xNdjx3v+xVr8X37ajbduyf5zsxlPvmCdmqyxVnT5p9YIM6aJ
-        DeYFuT9+lwXOfb1mR8WvAytn+Fh9++N8+n5MObP17BLlueEMKjOUWIozEg21mIuKEwFLF3FS
-        WAIAAA==
-X-CMS-MailID: 20190606124020eucas1p2007396ae8f23a426a17e0e5481636187
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20190606124020eucas1p2007396ae8f23a426a17e0e5481636187
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20190606124020eucas1p2007396ae8f23a426a17e0e5481636187
-References: <CGME20190606124020eucas1p2007396ae8f23a426a17e0e5481636187@eucas1p2.samsung.com>
+        id S1727189AbfFFNa0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jun 2019 09:30:26 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:34344 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726014AbfFFNa0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jun 2019 09:30:26 -0400
+Received: by mail-qt1-f194.google.com with SMTP id m29so2644631qtu.1;
+        Thu, 06 Jun 2019 06:30:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=laXwKrCLDbQlZ5wqNW0JxArXs2q0tdfYtz3FSuxgpnw=;
+        b=oio9Cs4FcULACpYJdCfIrGZ5HmO1N1uOIpV9OTozuAF3AMBHbg+Lz4EYlMLV5z0wiu
+         gRn4F7mZ2YxzDQbtqe86OzrFsESB+x4iyTsbDdEz1cL6I/xltLeKZlyPXHsMylrBnthD
+         j6AI04HZm4Kh5fKztYnVY43d2bh3KwbUUnMZ5Hv6AjHs47t9wAx+dhIdaQusthDVClqY
+         SioYhGBBRB2Q1ZSg+jXZRjFgfuC1H0atwpwtUApCDVxmSR1mhmO4kR9dxhE3YH5So6rR
+         8T+ZCQXRefZYTokfOoX/MMWNIM9An2m3Ouqe2/6g3EqvTGDki+rfKLee9zulKE8xGjMD
+         YEwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=laXwKrCLDbQlZ5wqNW0JxArXs2q0tdfYtz3FSuxgpnw=;
+        b=A69zQSb4JQnXY8EfPe9l5HFlnHumgUfKGNkzlISZK+fxrxnKs+h/GDD0/vTk7PhvuO
+         G7OJ51ArovIhokDExcxt4itwT0mJq7T819/mrRzNqxhICX9biVLXH1h5DM/SYS/JEIfY
+         kn45cHIBk1DJDt27zHsawUQtvWEiJ+TuYO+T/BoDiKU4WgzVnE4TVo766+n1knGfS/Tt
+         YqKVbis1qYuK9QJCCTAlzTP3qqEDNeSZcyvQA/nxOKZEmfyRiOzxjHPqxKFjfTjztB1v
+         EOOx/4mW//OSm9mXLdFqgjSGx9JkQjhU+2uUfFXM09I82mFTV1MYimtl/BFMtWNXbPo2
+         d6wg==
+X-Gm-Message-State: APjAAAU31zY6Ht8ZJZ0nAoAuNc/aJth9rORWDcCH+LP+vUCQGPAQyYix
+        KrmrRXyYlXv3ncCqmXJ7SQI=
+X-Google-Smtp-Source: APXvYqye2Zer3v0375PJLsNnVEZWtnUFz3D+ewVQx6S/sIBYhEo9URgNjMzz04PV2w/aCgg5/MH/dg==
+X-Received: by 2002:ac8:525a:: with SMTP id y26mr41110270qtn.297.1559827824900;
+        Thu, 06 Jun 2019 06:30:24 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([177.195.208.82])
+        by smtp.gmail.com with ESMTPSA id e9sm905732qth.13.2019.06.06.06.30.22
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 06 Jun 2019 06:30:23 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6FBC541149; Thu,  6 Jun 2019 10:30:19 -0300 (-03)
+Date:   Thu, 6 Jun 2019 10:30:19 -0300
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] perf trace: Exit when build eBPF program failure
+Message-ID: <20190606133019.GA30166@kernel.org>
+References: <20190606094845.4800-1-leo.yan@linaro.org>
+ <20190606094845.4800-2-leo.yan@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190606094845.4800-2-leo.yan@linaro.org>
+X-Url:  http://acmel.wordpress.com
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Device that bound to XDP socket will not have zero refcount until the
-userspace application will not close it. This leads to hang inside
-'netdev_wait_allrefs()' if device unregistering requested:
+Em Thu, Jun 06, 2019 at 05:48:42PM +0800, Leo Yan escreveu:
+> On my Juno board with ARM64 CPUs, perf trace command reports the eBPF
+> program building failure but the command will not exit and continue to
+> run.  If we define an eBPF event in config file, the event will be
+> parsed with below flow:
+> 
+>   perf_config()
+>     `> trace__config()
+> 	 `> parse_events_option()
+> 	      `> parse_events__scanner()
+> 	           `-> parse_events_parse()
+> 	                 `> parse_events_load_bpf()
+> 	                      `> llvm__compile_bpf()
+> 
+> Though the low level functions return back error values when detect eBPF
+> building failure, but parse_events_option() returns 1 for this case and
 
-  # ip link del p1
-  < hang on recvmsg on netlink socket >
+(gdb) n
+parse_events__scanner (str=0xb9d170 "/home/acme/git/perf/tools/perf/examples/bpf/augmented_raw_syscalls.o", parse_state=0x7fffffff7fa0,
+    start_token=258) at util/parse-events.c:1870
+1870		parse_events__delete_buffer(buffer, scanner);
+(gdb) n
+1871		parse_events_lex_destroy(scanner);
+(gdb) n
+1872		return ret;
+(gdb) p ret
+$53 = 1
+(gdb) bt
+#0  parse_events__scanner (str=0xb9d170 "/home/acme/git/perf/tools/perf/examples/bpf/augmented_raw_syscalls.o", parse_state=0x7fffffff7fa0,
+    start_token=258) at util/parse-events.c:1872
+#1  0x000000000050a926 in parse_events (evlist=0xb9e5d0, str=0xb9d170 "/home/acme/git/perf/tools/perf/examples/bpf/augmented_raw_syscalls.o",
+    err=0x7fffffff8020) at util/parse-events.c:1907
+#2  0x000000000050ad94 in parse_events_option (opt=0x7fffffff8080,
+    str=0xb9d170 "/home/acme/git/perf/tools/perf/examples/bpf/augmented_raw_syscalls.o", unset=0) at util/parse-events.c:2007
+#3  0x0000000000497fa8 in trace__config (var=0x7fffffff8150 "trace.add_events",
+    value=0xb9d170 "/home/acme/git/perf/tools/perf/examples/bpf/augmented_raw_syscalls.o", arg=0x7fffffffa1c0) at builtin-trace.c:3706
+#4  0x00000000004e9a79 in perf_config (fn=0x497ee4 <trace__config>, data=0x7fffffffa1c0) at util/config.c:738
+#5  0x0000000000498c97 in cmd_trace (argc=2, argv=0x7fffffffd690) at builtin-trace.c:3865
+#6  0x00000000004d8c17 in run_builtin (p=0xa0e600 <commands+576>, argc=2, argv=0x7fffffffd690) at perf.c:303
+#7  0x00000000004d8e84 in handle_internal_command (argc=2, argv=0x7fffffffd690) at perf.c:355
+#8  0x00000000004d8fd3 in run_argv (argcp=0x7fffffffd4ec, argv=0x7fffffffd4e0) at perf.c:399
+#9  0x00000000004d933f in main (argc=2, argv=0x7fffffffd690) at perf.c:521
+(gdb)
 
-  # ps -x | grep ip
-  5126  pts/0    D+   0:00 ip link del p1
+So its parse_events__scanner() that returns 1, parse_events() propagate
+that and:
 
-  # journalctl -b
+parse_events_option (opt=0x7fffffff8080, str=0xb9d170 "/home/acme/git/perf/tools/perf/examples/bpf/augmented_raw_syscalls.o", unset=0)
+    at util/parse-events.c:2009
+2009		if (ret) {
+(gdb) p ret
+$56 = 1
+(gdb) n
+2010			parse_events_print_error(&err, str);
+(gdb) n
+event syntax error: '/home/acme/git/perf/tools/perf/examples/bpf/augmented_raw_syscalls.o'
+                     \___ Kernel verifier blocks program loading
 
-  Jun 05 07:19:16 kernel:
-  unregister_netdevice: waiting for p1 to become free. Usage count = 1
+(add -v to see detail)
+2011			fprintf(stderr, "Run 'perf list' for a list of valid events\n");
+(gdb)
 
-  Jun 05 07:19:27 kernel:
-  unregister_netdevice: waiting for p1 to become free. Usage count = 1
-  ...
+So the -4007 error is printed, and all we can say is that parsing events
+failed, but we end up not propagating that error back when we use
+parse_events_option(), we could use instead:
 
-Fix that by counting XDP references for the device and failing
-RTM_DELLINK with EBUSY if device is still in use by any XDP socket.
+        struct parse_events_error err = { .idx = 0, };
+        int ret = parse_events(evlist, str, &err);
 
-With this change:
+And make parse_events_error have the raw err, i.e. -4007 in this case:
 
-  # ip link del p1
-  RTNETLINK answers: Device or resource busy
+        [ERRCODE_OFFSET(VERIFY)]        = "Kernel verifier blocks program loading",
 
-Fixes: 965a99098443 ("xsk: add support for bind for Rx")
-Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
----
+In your case would be something else, I'm just trying to load the
+precompiled .o that does things the BPF kernel verifier doesn't like.
 
-Another option could be to force closing all the corresponding AF_XDP
-sockets, but I didn't figure out how to do this properly yet.
+So yeah, your patch looks ok, i.e. parse_events_option() returning !0
+should make trace__config() return -1.
 
- include/linux/netdevice.h | 25 +++++++++++++++++++++++++
- net/core/dev.c            | 10 ++++++++++
- net/core/rtnetlink.c      |  6 ++++++
- net/xdp/xsk.c             |  7 ++++++-
- 4 files changed, 47 insertions(+), 1 deletion(-)
+But see below:
 
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 44b47e9df94a..24451cfc5590 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -1705,6 +1705,7 @@ enum netdev_priv_flags {
-  *	@watchdog_timer:	List of timers
-  *
-  *	@pcpu_refcnt:		Number of references to this device
-+ *	@pcpu_xdp_refcnt:	Number of XDP socket references to this device
-  *	@todo_list:		Delayed register/unregister
-  *	@link_watch_list:	XXX: need comments on this one
-  *
-@@ -1966,6 +1967,7 @@ struct net_device {
- 	struct timer_list	watchdog_timer;
- 
- 	int __percpu		*pcpu_refcnt;
-+	int __percpu		*pcpu_xdp_refcnt;
- 	struct list_head	todo_list;
- 
- 	struct list_head	link_watch_list;
-@@ -2636,6 +2638,7 @@ static inline void unregister_netdevice(struct net_device *dev)
- }
- 
- int netdev_refcnt_read(const struct net_device *dev);
-+int netdev_xdp_refcnt_read(const struct net_device *dev);
- void free_netdev(struct net_device *dev);
- void netdev_freemem(struct net_device *dev);
- void synchronize_net(void);
-@@ -3739,6 +3742,28 @@ static inline void dev_hold(struct net_device *dev)
- 	this_cpu_inc(*dev->pcpu_refcnt);
- }
- 
-+/**
-+ *	dev_put_xdp - release xdp reference to device
-+ *	@dev: network device
-+ *
-+ * Decrease the reference counter of XDP sockets bound to device.
-+ */
-+static inline void dev_put_xdp(struct net_device *dev)
-+{
-+	this_cpu_dec(*dev->pcpu_xdp_refcnt);
-+}
-+
-+/**
-+ *	dev_hold_xdp - get xdp reference to device
-+ *	@dev: network device
-+ *
-+ * Increase the reference counter of XDP sockets bound to device.
-+ */
-+static inline void dev_hold_xdp(struct net_device *dev)
-+{
-+	this_cpu_inc(*dev->pcpu_xdp_refcnt);
-+}
-+
- /* Carrier loss detection, dial on demand. The functions netif_carrier_on
-  * and _off may be called from IRQ context, but it is caller
-  * who is responsible for serialization of these calls.
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 66f7508825bd..f6f7cf3d8e93 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -8840,6 +8840,16 @@ int netdev_refcnt_read(const struct net_device *dev)
- }
- EXPORT_SYMBOL(netdev_refcnt_read);
- 
-+int netdev_xdp_refcnt_read(const struct net_device *dev)
-+{
-+	int i, refcnt = 0;
-+
-+	for_each_possible_cpu(i)
-+		refcnt += *per_cpu_ptr(dev->pcpu_xdp_refcnt, i);
-+	return refcnt;
-+}
-+EXPORT_SYMBOL(netdev_xdp_refcnt_read);
-+
- /**
-  * netdev_wait_allrefs - wait until all references are gone.
-  * @dev: target net_device
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index adcc045952c2..f88bf52d41b3 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -2777,6 +2777,9 @@ static int rtnl_group_dellink(const struct net *net, int group)
- 			ops = dev->rtnl_link_ops;
- 			if (!ops || !ops->dellink)
- 				return -EOPNOTSUPP;
-+
-+			if (netdev_xdp_refcnt_read(dev))
-+				return -EBUSY;
- 		}
- 	}
- 
-@@ -2805,6 +2808,9 @@ int rtnl_delete_link(struct net_device *dev)
- 	if (!ops || !ops->dellink)
- 		return -EOPNOTSUPP;
- 
-+	if (netdev_xdp_refcnt_read(dev))
-+		return -EBUSY;
-+
- 	ops->dellink(dev, &list_kill);
- 	unregister_netdevice_many(&list_kill);
- 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index a14e8864e4fa..215cc8712b8d 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -361,6 +361,7 @@ static int xsk_release(struct socket *sock)
- 		xdp_del_sk_umem(xs->umem, xs);
- 		xs->dev = NULL;
- 		synchronize_net();
-+		dev_put_xdp(dev);
- 		dev_put(dev);
- 	}
- 
-@@ -423,6 +424,8 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
- 		goto out_release;
- 	}
- 
-+	dev_hold_xdp(dev);
-+
- 	if (!xs->rx && !xs->tx) {
- 		err = -EINVAL;
- 		goto out_unlock;
-@@ -490,8 +493,10 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
- 	xdp_add_sk_umem(xs->umem, xs);
- 
- out_unlock:
--	if (err)
-+	if (err) {
-+		dev_put_xdp(dev);
- 		dev_put(dev);
-+	}
- out_release:
- 	mutex_unlock(&xs->mutex);
- 	return err;
+- Arnaldo
+
+> trace__config() passes 1 to perf_config(); perf_config() doesn't treat
+> the returned value 1 as failure and it continues to parse other
+> configurations.  Thus the perf command continues to run even without
+> enabling eBPF event successfully.
+> 
+> This patch changes error handling in trace__config(), when it detects
+> failure it will return -1 rather than directly pass error value (1);
+> finally, perf_config() will directly bail out and perf will exit for
+> this case.
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  tools/perf/builtin-trace.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+> index 54b2d0fd0d02..4b5d004aab74 100644
+> --- a/tools/perf/builtin-trace.c
+> +++ b/tools/perf/builtin-trace.c
+> @@ -3664,6 +3664,14 @@ static int trace__config(const char *var, const char *value, void *arg)
+>  					       "event selector. use 'perf list' to list available events",
+>  					       parse_events_option);
+>  		err = parse_events_option(&o, value, 0);
+> +
+> +		/*
+> +		 * When parse option successfully parse_events_option() will
+> +		 * return 0, otherwise means the paring failure.  And it
+> +		 * returns 1 for eBPF program building failure; so adjust the
+> +		 * err value to -1 for the failure.
+> +		 */
+> +		err = err ? -1 : 0;
+
+I'll rewrite the comment above to make it more succint and fix things
+like 'paring' (parsing):
+
+		/*
+		 * parse_events_option() returns !0 to indicate failure
+		 * while the perf_config code that calls trace__config()
+		 * expects < 0 returns to indicate error, so:
+		 */
+
+		 if (err)
+		 	err = -1;
+>  	} else if (!strcmp(var, "trace.show_timestamp")) {
+>  		trace->show_tstamp = perf_config_bool(var, value);
+>  	} else if (!strcmp(var, "trace.show_duration")) {
+> -- 
+> 2.17.1
+
 -- 
-2.17.1
 
+- Arnaldo
