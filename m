@@ -2,135 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D9837BC7
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 20:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C1937C46
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 20:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730367AbfFFSDl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jun 2019 14:03:41 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:39646 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727559AbfFFSDk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jun 2019 14:03:40 -0400
-Received: by mail-pf1-f196.google.com with SMTP id j2so1977662pfe.6;
-        Thu, 06 Jun 2019 11:03:40 -0700 (PDT)
+        id S1730648AbfFFS3x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jun 2019 14:29:53 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:44423 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729165AbfFFS3x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jun 2019 14:29:53 -0400
+Received: by mail-qt1-f193.google.com with SMTP id x47so3804314qtk.11;
+        Thu, 06 Jun 2019 11:29:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version;
-        bh=vL/yJFjtKE26N8WppeIL8DymV0OTQcN/8h3vh7inQew=;
-        b=IFN7rlmIbyt4XlgxMONME0XVhDVkFm4/1VckRnhxVZgALeXceWARI58K7ZtGHpKwOy
-         L5Kr/+0Y6h16yPS6wINB6v5GwmzYnv8/ROmq8FDfXI2OChdFeehg5PTa+6E9rn07F1/c
-         86Bjl/RxTuS9675ElTVkQ08H1BugEjAEStdtVAFSEjn0vuy2IL1eeIigSXH53HnEmEiq
-         O6i/7I3Z30JHDLj6OZHCCYg49GCvhr+8x838/5cttfZtDVtgyFT6LKL92FY4YEHRFFAg
-         9NpjqI95GwWz7JrVJ2Vw4C8hvOYaqyfeKSUBWYLP0SIBqpnWSWHbOGeaVCQl9zRtEeDg
-         HQbw==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=VDyWzmRCEFjiSNNaRnKgaThnkb6qt5FoNhaBpkNRo4o=;
+        b=AAlI2KM0uk4kE32HxvkLoOpHYXsGwTmmS3guDD0J9itTCOT6EA1N308hWHCK6p1paf
+         hXwv9mzUL7eVRRjl9LVk2FPptt5QYiUu6AmVQyXYVNYYZnsP2Q7nk6fhdiFK3E0YtFOF
+         hDSsyKUbrWsQ/w+amz1hTw34jj+O3oSjUy7CMFCRs2NKPxM/ZBOViJFwcsAHTSCJrmIp
+         ZcV1xsGbC39xQYk0EcD7iG2S1vRg61MUF/PnpRP/0Fo/W9tDLRi/gyfnyN7koKIYsUkL
+         ZJrvGlnj6+fYdGO9e2EHTA3xFR3QM7er5dSgLvkfIUDMqBQ3vGFvBxdnUPcD6LQBkurK
+         nrXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version;
-        bh=vL/yJFjtKE26N8WppeIL8DymV0OTQcN/8h3vh7inQew=;
-        b=FfeP4oI6FbzcPEBgNw1/zXbxaI7M26EDyBDJFjgjnrgw5FchJID1TibeUOwMc7/wRm
-         IcA9TGA1lo0sSrdr8C3MOKPUtyBATiXb+IkcljQ10UMaBhGIPDPTCr9A+6poVcLtws/C
-         E0GPyEGzKy+0wFW/gT+VOYVosfls3TKpaEDnApQct7+EbPjsFJFBdb2g6EtAqLKk2zqS
-         bC78E4+4lQaPrA7Xt/T6Z3zKspulqB5DaI8euRiSopxfyxTPkC825lgiQWTB/whPeVi1
-         knUInvh8GaztguXc5MpUuc0Ama+Ii6ZO4EyZwrO64qvhd3CSNbdUbMF/Nd5X2sjfn1Xl
-         pLSg==
-X-Gm-Message-State: APjAAAUkkyzO3E+okDaSeLO3s7uufceCeZuEb38eaOFVrJNfFmHxsmVg
-        Q7A2mmCRVdzXCOefP6DJmEw=
-X-Google-Smtp-Source: APXvYqyfjbd021wZbVjBB+70qJRPXGTgTljHe/nVnBfkUy4Y3ButrRqFGUdwG5ulgCJppMyvpTGiDA==
-X-Received: by 2002:a62:1a93:: with SMTP id a141mr54671966pfa.72.1559844220056;
-        Thu, 06 Jun 2019 11:03:40 -0700 (PDT)
-Received: from [172.26.126.80] ([2620:10d:c090:180::1:627e])
-        by smtp.gmail.com with ESMTPSA id h2sm2125014pgs.17.2019.06.06.11.03.39
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 06 Jun 2019 11:03:39 -0700 (PDT)
-From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
-To:     "Ilya Maximets" <i.maximets@samsung.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, xdp-newbies@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        "=?utf-8?b?QmrDtnJuIFTDtnBlbA==?=" <bjorn.topel@intel.com>,
-        "Magnus Karlsson" <magnus.karlsson@intel.com>
-Subject: Re: [PATCH] net: Fix hang while unregistering device bound to xdp
- socket
-Date:   Thu, 06 Jun 2019 11:03:38 -0700
-X-Mailer: MailMate (1.12.5r5635)
-Message-ID: <4414B6B6-3FE2-4CF2-A67A-159FCF6B9ECF@gmail.com>
-In-Reply-To: <20190606124014.23231-1-i.maximets@samsung.com>
-References: <CGME20190606124020eucas1p2007396ae8f23a426a17e0e5481636187@eucas1p2.samsung.com>
- <20190606124014.23231-1-i.maximets@samsung.com>
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=VDyWzmRCEFjiSNNaRnKgaThnkb6qt5FoNhaBpkNRo4o=;
+        b=OstfW8VTnnlEVel9NlPNLnzcHCADNxwYvBQ44TDhDaPWS450hjNGvCNO8K3YyLxzJ/
+         gLZVHqlzcp3uNRVFnhrmbnLjAkctH4+y5F+NNYJJ+PbhvaOENmTQijQB5yRwosK34DjJ
+         7UtMF0tw3/ejaRM6TKFC4afFpHh3HmiSBPtxMPwSJ3jmMFFM+SBzNr+nDJaAciw0lg/v
+         J/g9hJ+J1urldyM/SlJGrOtmrhYcOLxU7DiS7OY3HL+WbCEUPi3vkG1DBlqYf8CzYqXx
+         fk9p3GIWLeDipiXhxnua7mkzjdHtPVMSzHZd7fWJ+epIbxV6nX7K5pRqwNHCXH//WiV7
+         uNOA==
+X-Gm-Message-State: APjAAAW7M3nNBG71QMSDWQyMN9z9YR034LU4CCh4Ub2fMLktid0tcqGo
+        kAwrURwAm82evJtJjpEBslE=
+X-Google-Smtp-Source: APXvYqxSQs6DlT2QSTIZfamR7F6e/5KiLWc1qKb6vFB+/5MPiN3QfN7IcRBzokNHwN+mLuffT0AfyQ==
+X-Received: by 2002:ac8:1855:: with SMTP id n21mr38568496qtk.311.1559845791966;
+        Thu, 06 Jun 2019 11:29:51 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([177.195.209.167])
+        by smtp.gmail.com with ESMTPSA id x7sm1581941qth.37.2019.06.06.11.29.51
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 06 Jun 2019 11:29:51 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 36B6341149; Thu,  6 Jun 2019 15:29:41 -0300 (-03)
+Date:   Thu, 6 Jun 2019 15:29:41 -0300
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] perf augmented_raw_syscalls: Document clang
+ configuration
+Message-ID: <20190606182941.GE21245@kernel.org>
+References: <20190606094845.4800-1-leo.yan@linaro.org>
+ <20190606094845.4800-5-leo.yan@linaro.org>
+ <20190606140800.GF30166@kernel.org>
+ <20190606143532.GD5970@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190606143532.GD5970@leoy-ThinkPad-X240s>
+X-Url:  http://acmel.wordpress.com
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6 Jun 2019, at 5:40, Ilya Maximets wrote:
+Em Thu, Jun 06, 2019 at 10:35:32PM +0800, Leo Yan escreveu:
+> On Thu, Jun 06, 2019 at 11:08:00AM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Thu, Jun 06, 2019 at 05:48:45PM +0800, Leo Yan escreveu:
+> > > To build this program successfully with clang, there have three
+> > > compiler options need to be specified:
+> > > 
+> > >   - Header file path: tools/perf/include/bpf;
+> > >   - Specify architecture;
+> > >   - Define macro __NR_CPUS__.
+> > 
+> > So, this shouldn't be needed, all of this is supposed to be done
+> > automagically, have you done a 'make -C tools/perf install'?
+> 
+> I missed the up operation.  But after git pulled the lastest code base
+> from perf/core branch and used the command 'make -C tools/perf
+> install', I still saw the eBPF build failure.
+> 
+> Just now this issue is fixed after I removed the config
+> 'clang-bpf-cmd-template' from ~/.perfconfig;  the reason is I followed
+> up the Documentation/perf-config.txt to set the config as below:
+> 
+>   clang-bpf-cmd-template = "$CLANG_EXEC -D__KERNEL__ $CLANG_OPTIONS \
+>                           $KERNEL_INC_OPTIONS -Wno-unused-value \
+>                           -Wno-pointer-sign -working-directory \
+>                           $WORKING_DIR -c $CLANG_SOURCE -target bpf \
+>                           -O2 -o -"
+> 
+> In fact, util/llvm-utils.c has updated the default configuration as
+> below:
+> 
+>   #define CLANG_BPF_CMD_DEFAULT_TEMPLATE                          \
+>                 "$CLANG_EXEC -D__KERNEL__ -D__NR_CPUS__=$NR_CPUS "\
+>                 "-DLINUX_VERSION_CODE=$LINUX_VERSION_CODE "     \
+>                 "$CLANG_OPTIONS $PERF_BPF_INC_OPTIONS $KERNEL_INC_OPTIONS " \
+>                 "-Wno-unused-value -Wno-pointer-sign "          \
+>                 "-working-directory $WORKING_DIR "              \
+>                 "-c \"$CLANG_SOURCE\" -target bpf $CLANG_EMIT_LLVM -O2 -o - $LLVM_OPTIONS_PIPE"
+> 
+> Maybe should update Documentation/perf-config.txt to tell users the
+> real default value of clang-bpf-cmd-template?
 
-> Device that bound to XDP socket will not have zero refcount until the
-> userspace application will not close it. This leads to hang inside
-> 'netdev_wait_allrefs()' if device unregistering requested:
->
->   # ip link del p1
->   < hang on recvmsg on netlink socket >
->
->   # ps -x | grep ip
->   5126  pts/0    D+   0:00 ip link del p1
->
->   # journalctl -b
->
->   Jun 05 07:19:16 kernel:
->   unregister_netdevice: waiting for p1 to become free. Usage count = 1
->
->   Jun 05 07:19:27 kernel:
->   unregister_netdevice: waiting for p1 to become free. Usage count = 1
->   ...
->
-> Fix that by counting XDP references for the device and failing
-> RTM_DELLINK with EBUSY if device is still in use by any XDP socket.
->
-> With this change:
->
->   # ip link del p1
->   RTNETLINK answers: Device or resource busy
->
-> Fixes: 965a99098443 ("xsk: add support for bind for Rx")
-> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
-> ---
->
-> Another option could be to force closing all the corresponding AF_XDP
-> sockets, but I didn't figure out how to do this properly yet.
->
->  include/linux/netdevice.h | 25 +++++++++++++++++++++++++
->  net/core/dev.c            | 10 ++++++++++
->  net/core/rtnetlink.c      |  6 ++++++
->  net/xdp/xsk.c             |  7 ++++++-
->  4 files changed, 47 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index 44b47e9df94a..24451cfc5590 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -1705,6 +1705,7 @@ enum netdev_priv_flags {
->   *	@watchdog_timer:	List of timers
->   *
->   *	@pcpu_refcnt:		Number of references to this device
-> + *	@pcpu_xdp_refcnt:	Number of XDP socket references to this device
->   *	@todo_list:		Delayed register/unregister
->   *	@link_watch_list:	XXX: need comments on this one
->   *
-> @@ -1966,6 +1967,7 @@ struct net_device {
->  	struct timer_list	watchdog_timer;
->
->  	int __percpu		*pcpu_refcnt;
-> +	int __percpu		*pcpu_xdp_refcnt;
->  	struct list_head	todo_list;
+Sure, if you fell like doing this, please update and also please figure
+out when the this changed and add a Fixes: that cset,
 
+Its great that you're going thru the docs and making sure the
+differences are noted so that we update the docs, thanks a lot!
 
-I understand the intention here, but don't think that putting a XDP reference
-into the generic netdev structure is the right way of doing this.  Likely the
-NETDEV_UNREGISTER notifier should be used so the socket and umem unbinds from
-the device.
--- 
-Jonathan
+- Arnaldo
