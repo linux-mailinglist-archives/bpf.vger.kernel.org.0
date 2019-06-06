@@ -2,119 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9E5376D8
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 16:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9299376FE
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 16:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728776AbfFFOfp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jun 2019 10:35:45 -0400
-Received: from mail-yb1-f196.google.com ([209.85.219.196]:46669 "EHLO
-        mail-yb1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728682AbfFFOfo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jun 2019 10:35:44 -0400
-Received: by mail-yb1-f196.google.com with SMTP id p8so991552ybo.13
-        for <bpf@vger.kernel.org>; Thu, 06 Jun 2019 07:35:44 -0700 (PDT)
+        id S1728859AbfFFOls (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jun 2019 10:41:48 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:33059 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728834AbfFFOls (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jun 2019 10:41:48 -0400
+Received: by mail-io1-f67.google.com with SMTP id u13so410226iop.0
+        for <bpf@vger.kernel.org>; Thu, 06 Jun 2019 07:41:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HgJ0GZY//Len7veYiP6CvMdfuN08GbgxjLHnvQVRuds=;
-        b=Ej65huN6br/BvsJL6NdryRgqMaigzdNrEh0yptxU6ktxfkOVfnGB8JhlcnDFegwM39
-         1+xf+2IbGCkZB2jitqE7MsxKe30xIxv6oUIFZb6dZojIaggD1y9e4wkzFf6KEnZXQAqs
-         Dka83U7UotuhVF2sxPWPJXwFEBL/RGPvmp+iW3hO/pbvvqr2hWVkwHI4hCcz1H+v8zVs
-         OwjZQY6FfB4+yJ4wASjdtBBchHyOGI2lsAZ1758+/CfmAKb7zdYttFR66+IXUdJkua8n
-         8l5PehvXi2ROk4xfrf1yIV+PuPc2tzcfIIjxZyYe149/ZfI5TuYzV25HnKl5aAl6A0yT
-         kF2w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yUBzruiX0poMVnebHkNCtUzf308xan955Nhmvp3Y24o=;
+        b=N8oLfhfCoP/t5PYG52TcjF2tc8yM9MUIV91XTL1dQyRXANlO4TMjLOYVQCRmv8WS6G
+         dPw0BjG98OS26hm3NjvwDU7LkcKsojQNR+HtJHfn0Uu01UYlMw6RpKw5CnAKrKbgERRc
+         2B9n2VfK+C2+t1MKp0rZkCMTUbOPSMd4tw2wsCq3Lq6LQzBNAOEMbAzcOb/PxPAJyKLf
+         028o5J4GgWK6IRAQT6Ab31TogjeE80cmxwOJdjspx80QtGRG9ICcAFNCpapC7hbZ59bs
+         i24iWVXGStx0+mKUkyKF5GE86Vfs3BkmG5/DCWI3rUSsj1jkzj6Gx8qKJK1N71cii1jt
+         8NHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HgJ0GZY//Len7veYiP6CvMdfuN08GbgxjLHnvQVRuds=;
-        b=jzbpOKZl7LKtLMZRA3BaIyRHyt8iO5IYKy2+XdcUWX/IgpguoY94unTfDNv+w2Sgnh
-         Tnay5zAXb5lRXUGJU1QtyyXsTyVve+0tiC2wrNWqrJK+jkHm/l2s0+D5b6iOCf4ZoUis
-         4hw8+CyiCOBtzq2eVdCJ0P+nPVxukREAUO8W7ANvac1hHMTOLIZ/Gb46d2Giv9SqPFcZ
-         qyhSjj8TdB6bG8/oThbYYOzaWDbRYU3oyX2pw2jVu0aRkqMC0XKHERsfuNZ1DfAooKGb
-         M5MoUlmIhF+BottpdnE2gBWM1u2x4mOmPHpsvcrYzujmXJ1/K8zYIh0O1k1d0pjY+IGc
-         PuOw==
-X-Gm-Message-State: APjAAAVP0/wyJXkRlC64yrowQqC1WES0eAOgL0UTWMRoWamZu/TCosGU
-        z/lxH386ud3nga/KOmfEt9rsrA==
-X-Google-Smtp-Source: APXvYqx4wLLqF1nY5nqIufaWI5Hdcp2smawrQmPU3ZCZZRABh9cWLQ/l6pM/bekVLBiX79E90XgiSg==
-X-Received: by 2002:a5b:a90:: with SMTP id h16mr21558068ybq.341.1559831744170;
-        Thu, 06 Jun 2019 07:35:44 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s (li1322-146.members.linode.com. [45.79.223.146])
-        by smtp.gmail.com with ESMTPSA id v70sm515376ywc.78.2019.06.06.07.35.37
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 06 Jun 2019 07:35:43 -0700 (PDT)
-Date:   Thu, 6 Jun 2019 22:35:32 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] perf augmented_raw_syscalls: Document clang
- configuration
-Message-ID: <20190606143532.GD5970@leoy-ThinkPad-X240s>
-References: <20190606094845.4800-1-leo.yan@linaro.org>
- <20190606094845.4800-5-leo.yan@linaro.org>
- <20190606140800.GF30166@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yUBzruiX0poMVnebHkNCtUzf308xan955Nhmvp3Y24o=;
+        b=TgpfwqLkr+RQX+BPIQhILBUgJhHqcRzGEi6ktH8ArYanhyPsbXtC47Ac2Ti3Ry+/FC
+         XJsKIOapkBEaUZFId5lIUJXAt/c+C+bl4NjkeRdgwkx927EB1Wabj4YlVGdFkR6oChSF
+         Csr2Dy9933Txi7UWShBWqK/7H8QGao2CHzT7uad1vmFQ+Ko9VIFd6o5FYKwMTVzbozsS
+         h8ihnfepYBta8FvL6mytbs+UPZ56wzI5JrIoe6O9lyxuamu7LiUx4sRmGshHkB+gK/G7
+         N9h+5N8Ilf7+4ZIKcW1ON8YK0GDcA5rWE1VoCG7Hgsn4OxJmMHkRkRjhWYfTiNR3GJFT
+         iiKQ==
+X-Gm-Message-State: APjAAAUUSYe+nTyW449JFfHim9pgnwRvsIVo24veuy+Jtus/hYI9QPvR
+        QkqHsk+MlFcR65rKY0YR0xZIoDc+/BXbAeYKuIGvDw==
+X-Google-Smtp-Source: APXvYqz8hOqO9k3wIdvVxhHX1nxpHAKAeuDw82/eM+fgXI+5jTsEKJYqN9UOwv8HWhW3FUMfi6A1SwZfoXGCqRs3Edg=
+X-Received: by 2002:a6b:8d92:: with SMTP id p140mr28286627iod.144.1559832107426;
+ Thu, 06 Jun 2019 07:41:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190606140800.GF30166@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <000000000000454279058aa80535@google.com>
+In-Reply-To: <000000000000454279058aa80535@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 6 Jun 2019 16:41:36 +0200
+Message-ID: <CACT4Y+bk4=avQpdiHM7BTRjZ+NahivshytP5-eVU7vDCxR2udA@mail.gmail.com>
+Subject: Re: KASAN: slab-out-of-bounds Read in usage_accumulate
+To:     syzbot <syzbot+b0d730107e2ca6cb952f@syzkaller.appspotmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 06, 2019 at 11:08:00AM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Thu, Jun 06, 2019 at 05:48:45PM +0800, Leo Yan escreveu:
-> > To build this program successfully with clang, there have three
-> > compiler options need to be specified:
-> > 
-> >   - Header file path: tools/perf/include/bpf;
-> >   - Specify architecture;
-> >   - Define macro __NR_CPUS__.
-> 
-> So, this shouldn't be needed, all of this is supposed to be done
-> automagically, have you done a 'make -C tools/perf install'?
+On Thu, Jun 6, 2019 at 3:52 PM syzbot
+<syzbot+b0d730107e2ca6cb952f@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following crash on:
+>
+> HEAD commit:    156c0591 Merge tag 'linux-kselftest-5.2-rc4' of git://git...
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15f2095aa00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=60564cb52ab29d5b
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b0d730107e2ca6cb952f
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a8fb61a00000
 
-I missed the up operation.  But after git pulled the lastest code base
-from perf/core branch and used the command 'make -C tools/perf
-install', I still saw the eBPF build failure.
+Looks +bpf related from the repro.
 
-Just now this issue is fixed after I removed the config
-'clang-bpf-cmd-template' from ~/.perfconfig;  the reason is I followed
-up the Documentation/perf-config.txt to set the config as below:
-
-  clang-bpf-cmd-template = "$CLANG_EXEC -D__KERNEL__ $CLANG_OPTIONS \
-                          $KERNEL_INC_OPTIONS -Wno-unused-value \
-                          -Wno-pointer-sign -working-directory \
-                          $WORKING_DIR -c $CLANG_SOURCE -target bpf \
-                          -O2 -o -"
-
-In fact, util/llvm-utils.c has updated the default configuration as
-below:
-
-  #define CLANG_BPF_CMD_DEFAULT_TEMPLATE                          \
-                "$CLANG_EXEC -D__KERNEL__ -D__NR_CPUS__=$NR_CPUS "\
-                "-DLINUX_VERSION_CODE=$LINUX_VERSION_CODE "     \
-                "$CLANG_OPTIONS $PERF_BPF_INC_OPTIONS $KERNEL_INC_OPTIONS " \
-                "-Wno-unused-value -Wno-pointer-sign "          \
-                "-working-directory $WORKING_DIR "              \
-                "-c \"$CLANG_SOURCE\" -target bpf $CLANG_EMIT_LLVM -O2 -o - $LLVM_OPTIONS_PIPE"
-
-Maybe should update Documentation/perf-config.txt to tell users the
-real default value of clang-bpf-cmd-template?
-
-Thanks,
-Leo Yan
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+b0d730107e2ca6cb952f@syzkaller.appspotmail.com
+>
+> ==================================================================
+> BUG: KASAN: slab-out-of-bounds in usage_accumulate+0x9e/0xb0
+> kernel/locking/lockdep.c:1676
+> Read of size 8 at addr ffff8880a59cfed0 by task syz-executor.1/9366
+>
+> CPU: 1 PID: 9366 Comm: syz-executor.1 Not tainted 5.2.0-rc3+ #20
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+> Google 01/01/2011
+> Call Trace:
+>
+> Allocated by task 0:
+> (stack is not available)
+>
+> Freed by task 0:
+> (stack is not available)
+>
+> The buggy address belongs to the object at ffff8880a59ce6c0
+>   which belongs to the cache kmalloc-4k of size 4096
+> The buggy address is located 2064 bytes to the right of
+>   4096-byte region [ffff8880a59ce6c0, ffff8880a59cf6c0)
+> The buggy address belongs to the page:
+> page:ffffea0002967380 refcount:1 mapcount:0 mapping:ffff8880aa400dc0
+> index:0x0 compound_mapcount: 0
+> flags: 0x1fffc0000010200(slab|head)
+> raw: 01fffc0000010200 ffffea000296a008 ffffea000233fe08 ffff8880aa400dc0
+> raw: 0000000000000000 ffff8880a59ce6c0 0000000100000001 0000000000000000
+> page dumped because: kasan: bad access detected
+>
+> Memory state around the buggy address:
+>   ffff8880a59cfd80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>   ffff8880a59cfe00: fc fc fc fc f1 f1 f1 f1 00 f2 f2 f2 00 f2 f2 f2
+> > ffff8880a59cfe80: 00 f2 f2 f2 00 f2 f2 f2 fc fc fc fc 00 00 00 f2
+>                                                   ^
+>   ffff8880a59cff00: f2 f2 f2 f2 fc fc fc fc 00 00 00 f3 f3 f3 f3 f3
+>   ffff8880a59cff80: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
+> ==================================================================
+>
+>
+> ---
+> This bug is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this bug report. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> syzbot can test patches for this bug, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000454279058aa80535%40google.com.
+> For more options, visit https://groups.google.com/d/optout.
