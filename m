@@ -2,72 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B1B3368A3
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 02:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38732368B2
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 02:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726581AbfFFAOE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Jun 2019 20:14:04 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:44668 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726532AbfFFAOE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Jun 2019 20:14:04 -0400
-Received: by mail-lf1-f68.google.com with SMTP id r15so173630lfm.11;
-        Wed, 05 Jun 2019 17:14:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aXrDN3EGoMNOai3xNClZPIzc6tnDf+HKd0phCU3s7tU=;
-        b=F6lRlbd10IcIoKchBpSGeanqhBOXnHVi+4WteJiHZcWYMYpPLyW9ZJMhl4ISQxY6rR
-         I+6i4gG5srqlwQaLpbVzXC/L3w4zv/IxIdPdINvJOqMyDFL2WmOekaYtliNxcv7p9JS7
-         2ycLIJR5YQsy/VJgx5n/9SXHnv5c9mQkVWbwk2krQ0IgTGYxoGorO4s+bprNYcy4TXVb
-         CmWsqMQvZuDw6pDrpycvAFsToHiQD4uj17IjE3A7wlT+DrJisyTYTkaOL+NSEsfSmfF1
-         g8IR7xwQ61wwBfNnqWg6HF16Bxv7Ayo7lDPLeQjp0MdUeCitP6pW78LuXtczeNA8ZocB
-         8AZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aXrDN3EGoMNOai3xNClZPIzc6tnDf+HKd0phCU3s7tU=;
-        b=GMJaMO9NTVFijMdFsC5e1OSXBXZhwPcUnUYExKJ0oYS6m426sXQyeE1hznE2R3yUjR
-         ox/cL/F/hqBd1FvA05IKtr69xWwO8Mw7Tem1pwMRVxw4Zw8wSFy4Gdml3ISi91Odfr7p
-         R9UmgzM9UrXwvewUlpqD+n/4vTa9GY1BMdDwk09aU0f6K/WeZx6EUKGps/cn535Cck0H
-         DqrX/1x+AU2qaEX7KcmXDF1YwSA8Xa+aGbrWGyWq5dBRWFfjupY+5iltuFboxNhwnrTm
-         kgZx4EXGjIaJwzVheg1NhShwQVhofE1h7M9t6Gfyxr9+Qkp9rP4/kgGbZyftLO+2vzV4
-         ZUlw==
-X-Gm-Message-State: APjAAAVdHT4Sp8lqqB12GpY+kr76yc9IJKQ05N6y2XOfpjZjG2y74Irw
-        Pe32njssULIHdBmIDpAdAvS19cDr7WCvRP0Wv6U=
-X-Google-Smtp-Source: APXvYqxMXfxvz5dtkY2Jcgv/Al3NCEeVsKuYHWMMcvilTML82tvagnn/uHV8Q0bpPJ20rR7KrlL3kvF0XDwZLLK7tDU=
-X-Received: by 2002:a19:e05c:: with SMTP id g28mr7340408lfj.167.1559780042420;
- Wed, 05 Jun 2019 17:14:02 -0700 (PDT)
+        id S1726573AbfFFASG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Jun 2019 20:18:06 -0400
+Received: from www62.your-server.de ([213.133.104.62]:34756 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726532AbfFFASG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Jun 2019 20:18:06 -0400
+Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hYg6X-0006XH-9e; Thu, 06 Jun 2019 02:18:05 +0200
+Received: from [178.197.249.21] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hYg6X-000G5n-2O; Thu, 06 Jun 2019 02:18:05 +0200
+Subject: Re: [PATCH bpf-next v2] samples: bpf: print a warning about
+ headers_install
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        alexei.starovoitov@gmail.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        oss-drivers@netronome.com,
+        Quentin Monnet <quentin.monnet@netronome.com>
+References: <20190605234722.2291-1-jakub.kicinski@netronome.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <aacd31df-0b4b-a7ec-62b2-18c098a320d6@iogearbox.net>
+Date:   Thu, 6 Jun 2019 02:18:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
 MIME-Version: 1.0
-References: <3d59d0458a8a3a050d24f81e660fcccde3479a05.1559767053.git.daniel@iogearbox.net>
- <20190605235451.lqas2jgbur2sre4z@kafai-mbp.dhcp.thefacebook.com> <bcdc5ced-5bf0-a9c2-eeaf-01459e1d5b62@iogearbox.net>
-In-Reply-To: <bcdc5ced-5bf0-a9c2-eeaf-01459e1d5b62@iogearbox.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 5 Jun 2019 17:13:51 -0700
-Message-ID: <CAADnVQ+nraxxKw8=ues8W3odoLx5JR3JwAjCqW3AA3W64XY77w@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] bpf: fix unconnected udp hooks
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Martin Lau <kafai@fb.com>, Andrey Ignatov <rdna@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Martynas Pumputis <m@lambda.lt>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20190605234722.2291-1-jakub.kicinski@netronome.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25471/Wed Jun  5 10:12:21 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 5, 2019 at 5:09 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> >>  tools/bpf/bpftool/cgroup.c     |  5 ++++-
-> >>  tools/include/uapi/linux/bpf.h |  2 ++
-> > Should the bpf.h sync to tools/ be in a separate patch?
->
-> I was thinking about it, but concluded for such small change, it's not
-> really worth it. If there's a strong opinion, I could do it, but I think
-> that 2-liner sync patch just adds noise.
+On 06/06/2019 01:47 AM, Jakub Kicinski wrote:
+> It seems like periodically someone posts patches to "fix"
+> header includes.  The issue is that samples expect the
+> include path to have the uAPI headers (from usr/) first,
+> and then tools/ headers, so that locally installed uAPI
+> headers take precedence.  This means that if users didn't
+> run headers_install they will see all sort of strange
+> compilation errors, e.g.:
+> 
+>   HOSTCC  samples/bpf/test_lru_dist
+>   samples/bpf/test_lru_dist.c:39:8: error: redefinition of ‘struct list_head’
+>    struct list_head {
+>           ^~~~~~~~~
+>    In file included from samples/bpf/test_lru_dist.c:9:0:
+>    ../tools/include/linux/types.h:69:8: note: originally defined here
+>     struct list_head {
+>            ^~~~~~~~~
+> 
+> Try to detect this situation, and print a helpful warning.
+> 
+> v2: just use HOSTCC (Jiong).
+> 
+> Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+> Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
 
-it's not about the size. It breaks the sync of libbpf.
-we should really enforce user vs kernel to be separate patches.
+Applied, thanks!
