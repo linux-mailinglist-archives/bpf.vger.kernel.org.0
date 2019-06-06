@@ -2,48 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7387037F3F
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 23:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAEAF37FDE
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 23:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727732AbfFFVJ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jun 2019 17:09:26 -0400
-Received: from www62.your-server.de ([213.133.104.62]:42620 "EHLO
+        id S1726077AbfFFVsb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jun 2019 17:48:31 -0400
+Received: from www62.your-server.de ([213.133.104.62]:51212 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbfFFVJ0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jun 2019 17:09:26 -0400
-Received: from [78.46.172.2] (helo=sslproxy05.your-server.de)
+        with ESMTP id S1727071AbfFFVsb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jun 2019 17:48:31 -0400
+Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1hYzdP-0008MU-Rg; Thu, 06 Jun 2019 23:09:19 +0200
+        id 1hZ0FG-00034C-A2; Thu, 06 Jun 2019 23:48:26 +0200
 Received: from [178.197.249.21] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89)
         (envelope-from <daniel@iogearbox.net>)
-        id 1hYzdP-000XK7-KF; Thu, 06 Jun 2019 23:09:19 +0200
-Subject: Re: [RFC PATCH bpf-next 6/8] libbpf: allow specifying map definitions
- using BTF
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Alexei Starovoitov <ast@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>, yhs@fb.com
-References: <20190531202132.379386-1-andriin@fb.com>
- <20190531202132.379386-7-andriin@fb.com> <20190531212835.GA31612@mini-arch>
- <CAEf4Bza38VEh9NWTLEReAR_J0eqjsvH1a2T-0AeWqDZpE8YPfA@mail.gmail.com>
- <20190603163222.GA14556@mini-arch>
- <CAEf4BzbRXAZMXY3kG9HuRC93j5XhyA3EbWxkLrrZsG7K4abdBg@mail.gmail.com>
- <20190604010254.GB14556@mini-arch>
- <f2b5120c-fae7-bf72-238a-b76257b0c0e4@fb.com>
- <20190604042902.GA2014@mini-arch> <20190604134538.GB2014@mini-arch>
- <CAEf4BzZEqmnwL0MvEkM7iH3qKJ+TF7=yCKJRAAb34m4+B-1Zcg@mail.gmail.com>
+        id 1hZ0FG-000AWZ-3A; Thu, 06 Jun 2019 23:48:26 +0200
+Subject: Re: [PATCH bpf v2 0/4] Fix unconnected bpf cgroup hooks
+To:     Andrey Ignatov <rdna@fb.com>
+Cc:     "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>,
+        Martin Lau <kafai@fb.com>, "m@lambda.lt" <m@lambda.lt>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+References: <20190606143517.25710-1-daniel@iogearbox.net>
+ <20190606204554.GA50385@rdna-mbp.dhcp.thefacebook.com>
+ <20190606205148.GB50385@rdna-mbp.dhcp.thefacebook.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <3ff873a8-a1a6-133b-fa20-ad8bc1d347ed@iogearbox.net>
-Date:   Thu, 6 Jun 2019 23:09:18 +0200
+Message-ID: <b966c6df-a4f4-e83d-f012-16b337aff97d@iogearbox.net>
+Date:   Thu, 6 Jun 2019 23:48:25 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.3.0
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzZEqmnwL0MvEkM7iH3qKJ+TF7=yCKJRAAb34m4+B-1Zcg@mail.gmail.com>
+In-Reply-To: <20190606205148.GB50385@rdna-mbp.dhcp.thefacebook.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -54,83 +47,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/04/2019 07:31 PM, Andrii Nakryiko wrote:
-> On Tue, Jun 4, 2019 at 6:45 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
->> On 06/03, Stanislav Fomichev wrote:
->>>> BTF is mandatory for _any_ new feature.
->>> If something is easy to support without asking everyone to upgrade to
->>> a bleeding edge llvm, why not do it?
->>> So much for backwards compatibility and flexibility.
+On 06/06/2019 10:51 PM, Andrey Ignatov wrote:
+> Andrey Ignatov <rdna@fb.com> [Thu, 2019-06-06 13:45 -0700]:
+>> Daniel Borkmann <daniel@iogearbox.net> [Thu, 2019-06-06 07:36 -0700]:
+>>> Please refer to the patch 1/4 as the main patch with the details
+>>> on the current sendmsg hook API limitations and proposal to fix
+>>> it in order to work with basic applications like DNS. Remaining
+>>> patches are the usual uapi and tooling updates as well as test
+>>> cases. Thanks a lot!
 >>>
->>>> It's for introspection and debuggability in the first place.
->>>> Good debugging is not optional.
->>> Once llvm 8+ is everywhere, sure, but we are not there yet (I'm talking
->>> about upstream LTS distros like ubuntu/redhat).
->> But putting this aside, one thing that I didn't see addressed in the
->> cover letter is: what is the main motivation for the series?
->> Is it to support iproute2 map definitions (so cilium can switch to libbpf)?
+>>> v1 -> v2:
+>>>   - Split off uapi header sync and bpftool bits (Martin, Alexei)
+>>>   - Added missing bpftool doc and bash completion as well
+>>>
+>>> Daniel Borkmann (4):
+>>>   bpf: fix unconnected udp hooks
+>>>   bpf: sync tooling uapi header
+>>>   bpf, bpftool: enable recvmsg attach types
+>>>   bpf: add further msg_name rewrite tests to test_sock_addr
+>>>
+>>>  include/linux/bpf-cgroup.h                    |   8 +
+>>>  include/uapi/linux/bpf.h                      |   2 +
+>>>  kernel/bpf/syscall.c                          |   8 +
+>>>  kernel/bpf/verifier.c                         |  12 +-
+>>>  net/core/filter.c                             |   2 +
+>>>  net/ipv4/udp.c                                |   4 +
+>>>  net/ipv6/udp.c                                |   4 +
+>>>  .../bpftool/Documentation/bpftool-cgroup.rst  |   6 +-
+>>>  .../bpftool/Documentation/bpftool-prog.rst    |   2 +-
+>>>  tools/bpf/bpftool/bash-completion/bpftool     |   5 +-
+>>>  tools/bpf/bpftool/cgroup.c                    |   5 +-
+>>>  tools/bpf/bpftool/prog.c                      |   3 +-
+>>>  tools/include/uapi/linux/bpf.h                |   2 +
+>>>  tools/testing/selftests/bpf/test_sock_addr.c  | 213 ++++++++++++++++--
+>>>  14 files changed, 250 insertions(+), 26 deletions(-)
+>>
+>> tools/lib/bpf/libbpf.c should also be updated: section_names and
 > 
-> In general, the motivation is to arrive at a way to support
-> declaratively defining maps in such a way, that:
-> - captures type information (for debuggability/introspection) in
-> coherent and hard-to-screw-up way;
-> - allows to support missing useful features w/ good syntax (e.g.,
-> natural map-in-map case vs current completely manual non-declarative
-> way for libbpf);
-> - ultimately allow iproute2 to use libbpf as unified loader (and thus
-> the need to support its existing features, like
-> BPF_MAP_TYPE_PROG_ARRAY initialization, pinning, map-in-map);
-
-Thanks for working on this & sorry for jumping in late! Generally, I like
-the approach of using BTF to make sense out of the individual members and
-to have extensibility, so overall I think it's a step in the right direction.
-Going back to the example where others complained that the k/v NULL
-initialization feels too much magic from a C pov:
-
-struct {
-	int type;
-	int max_entries;
-	int *key;
-	struct my_value *value;
-} my_map SEC(".maps") = {
-	.type = BPF_MAP_TYPE_ARRAY,
-	.max_entries = 16,
-};
-
-Given LLVM is in charge of emitting BTF plus given gcc/clang seem /both/
-to support *target* specific attributes [0], how about something along these
-lines where the type specific info is annotated as a variable BPF target
-attribute, like:
-
-struct {
-	int type;
-	int max_entries;
-} my_map __attribute__((map(int,struct my_value))) = {
-	.type = BPF_MAP_TYPE_ARRAY,
-	.max_entries = 16,
-};
-
-Of course this would need BPF backend support, but at least that approach
-would be more C like. Thus this would define types where we can automatically
-derive key/val sizes etc. The SEC() could be dropped as well as map attribute
-would imply it for LLVM to do the right thing underneath. The normal/actual members
-from the struct has a base set of well-known names that are minimally required
-but there could be custom stuff as well where libbpf would query some user
-defined callback that can handle these. Anyway, main point, what do you think
-about the __attribute__ approach instead? I think this feels cleaner to me at
-least iff feasible.
-
-Thanks,
-Daniel
-
-  [0] https://clang.llvm.org/docs/AttributeReference.html
-      https://gcc.gnu.org/onlinedocs/gcc/Variable-Attributes.html
-
-> The only missing feature that can be supported reasonably with
-> bpf_map_def is pinning (as it's just another int field), but all the
-> other use cases requires awkward approach of matching arbitrary IDs,
-> which feels like a bad way forward.
+> And tools/testing/selftests/bpf/test_section_names.c as well.
 > 
->> If that's the case, maybe explicitly focus on that? Once we have
->> proof-of-concept working for iproute2 mode, we can extend it to everything.
+>> bpf_prog_type__needs_kver. Please either follow-up separately or send
+
+Sigh, yes, makes sense, I'll fold these in for a final v3. Thanks for
+spotting!
+
+>> v3. Other than this LGMT.
+>>
+>> Acked-by: Andrey Ignatov <rdna@fb.com>
+>>
+>> -- 
+>> Andrey Ignatov
+> 
 
