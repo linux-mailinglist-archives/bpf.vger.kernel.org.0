@@ -2,135 +2,227 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E1A380FA
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2019 00:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F014838182
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2019 01:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726538AbfFFWkH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jun 2019 18:40:07 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48806 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726352AbfFFWkH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jun 2019 18:40:07 -0400
-Received: from pps.filterd (m0044008.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x56MYMNr023667;
-        Thu, 6 Jun 2019 15:39:06 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=NG7v0SaDv/pxnLUdpQTc4vMtNg4tltirnqVPcfN4QAE=;
- b=ekbRS0e0XNQaWZvxDEzV3Bbx+h+zTqia1wVZz/9ENb3nnAZmK8ntW9UOOfm5wAqqiF02
- sCuD98fkulPnmLWtNK/niChw0LWmuQr7OSATMqeevqBXM02b0BXlvGC1L94d4/riaYvu
- YqQPxxLLYI7IAxX367O4NVkrakszeNX4XHg= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2sy072trf1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 06 Jun 2019 15:39:06 -0700
-Received: from prn-hub03.TheFacebook.com (2620:10d:c081:35::127) by
- prn-hub06.TheFacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Thu, 6 Jun 2019 15:39:05 -0700
-Received: from NAM01-BN3-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Thu, 6 Jun 2019 15:39:05 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NG7v0SaDv/pxnLUdpQTc4vMtNg4tltirnqVPcfN4QAE=;
- b=KmT7OIyJfIBEV6DaF7qFK5CXlqQODpgyfBQpqWEktNGUmKihhDyXUbb7BlI0g5Qywm7ah2ZK6vm+omYLRYqLTH7dXkwP85M1aF9HvZN2xQVpzcbFt0O2l92jTi4QoXhL67BTbLj8CS7drashxSpI+DLv710TZ4k8gEUqfZ3/1L4=
-Received: from CY4PR15MB1254.namprd15.prod.outlook.com (10.172.180.136) by
- CY4PR15MB1206.namprd15.prod.outlook.com (10.172.182.17) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1965.14; Thu, 6 Jun 2019 22:39:03 +0000
-Received: from CY4PR15MB1254.namprd15.prod.outlook.com
- ([fe80::5913:4af7:f57c:1d22]) by CY4PR15MB1254.namprd15.prod.outlook.com
- ([fe80::5913:4af7:f57c:1d22%7]) with mapi id 15.20.1965.011; Thu, 6 Jun 2019
- 22:39:03 +0000
-From:   Matt Mullins <mmullins@fb.com>
-To:     "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>
-CC:     Song Liu <songliubraving@fb.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "ast@kernel.org" <ast@kernel.org>, Andrew Hall <hall@fb.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Martin Lau" <kafai@fb.com>, Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH bpf] bpf: fix nested bpf tracepoints with per-cpu data
-Thread-Topic: [PATCH bpf] bpf: fix nested bpf tracepoints with per-cpu data
-Thread-Index: AQHVHJldLlMzOQXFxkujs8FjBsQ6GqaPMQUAgAAHDwA=
-Date:   Thu, 6 Jun 2019 22:39:03 +0000
-Message-ID: <90ffbb8e2251b1afc95d813b6fcc325e67f31118.camel@fb.com>
-References: <a6a31da39debb8bde6ca5085b0f4e43a96a88ea5.camel@fb.com>
-         <20190606185427.7558-1-mmullins@fb.com>
-         <20190606151346.6a9ed27e@cakuba.netronome.com>
-In-Reply-To: <20190606151346.6a9ed27e@cakuba.netronome.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-x-originating-ip: [2620:10d:c090:200::306b]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 94f92e55-18f5-4215-b2a0-08d6eacfc6f2
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:CY4PR15MB1206;
-x-ms-traffictypediagnostic: CY4PR15MB1206:
-x-microsoft-antispam-prvs: <CY4PR15MB12067497A30874083DFC0ECBB0170@CY4PR15MB1206.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 00603B7EEF
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(396003)(376002)(346002)(136003)(366004)(189003)(199004)(11346002)(6246003)(446003)(81166006)(2616005)(476003)(76116006)(81156014)(2351001)(6486002)(6512007)(5640700003)(71200400001)(486006)(71190400001)(6436002)(118296001)(229853002)(91956017)(73956011)(66476007)(66946007)(7736002)(68736007)(66446008)(305945005)(66556008)(64756008)(53936002)(36756003)(2501003)(8676002)(54906003)(76176011)(50226002)(6506007)(14454004)(4326008)(6916009)(2906002)(5660300002)(316002)(25786009)(99286004)(186003)(6116002)(46003)(8936002)(256004)(86362001)(478600001)(102836004)(99106002);DIR:OUT;SFP:1102;SCL:1;SRVR:CY4PR15MB1206;H:CY4PR15MB1254.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 4h7vyei5fVIaKVjP3NqjGCb6qDsvdNsEZHbitnDUs7ryUEy4j/NyX2iN/pEmeBlRxW7n5luy8HhAMQcKMjWNhlrzPNjgv5l9mIU7zkzuaHX1EMvKvgmb0jzTG/6h00pDD+QbZACYnHqORad5tT6S0l5tjJTeO8hhTTLHWodaQYnF5czbEXdFzaILc43ouiCWaOQMkM0wPBrQyUdVbYPmz9yVEez/kCLLI2NICekCw2rmkWNtukw3HpgotQfB8e8TIGwkfK2mpEh52+rIG0KojcG5P25x6d/V+UUdVLlCFk6puZ8B7kOtyqCUrjDlC8on7E1AoaCAMZ1U05pzQsyfO4WFfGyy5z+fA9r5qdGtCHvNsijAuwnNo0aGbf7XVowMVfpYmiwpg35ilTspu4o+RIq3gnuUE+TekaOr9XbWsac=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <09AD664F88A07441B6ACE1BE5D290FAE@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727337AbfFFXDJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jun 2019 19:03:09 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:38593 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726352AbfFFXDJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jun 2019 19:03:09 -0400
+Received: by mail-qk1-f195.google.com with SMTP id a27so151737qkk.5;
+        Thu, 06 Jun 2019 16:03:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BDPaDoeuXxQwHmjfz8Yws2/Zn5iE00QLeSiTN6Wh4Cg=;
+        b=VoxgOEBYxzzRRP5X0ZiIPoi5gdQoNCTkBpbuBYUd+Pyx1GsUfkshdiYoU6g/MxwP7i
+         VV3EwAb3QQQ9A1hGcCWFlT5vMOwbmCW8u6qCt8DpLlkwWTa3ld/h3E1oUhvKRE42zfBF
+         ySxrs7ebyCzwlCh635OszsNMWcn93ftZogHGDkCoc8AZ7h8KQ3KX/KW/U4vsJSKjgils
+         1iygE4+0yXsr+5Muw1p066dnWA/rj+W5NXjcCQ3sQapTkENnlOhphN7o9SzWKN+4CfwL
+         Zvja7D02mHroxDEyYZf5k6vGyyXMpzsyTqoXB9Urcga1z2cH11K5/24iApm3w+f5fuGl
+         LRWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BDPaDoeuXxQwHmjfz8Yws2/Zn5iE00QLeSiTN6Wh4Cg=;
+        b=nmiF95UDqiIaPuCenQZ+PRvSShxQhvdPvoRGUIQq9dYXpEJoXBNySjUyPmsKG6n+zp
+         GMml2uMl1O65KW8kRLii3sCgbj5hL28dkiXfvf+f7ESyYNIUF+agnADqbkf0PPILqSSR
+         MkxmkOOHP7ZQu1BZY8BcYql6qPM+cJKtlwodbxSBk+cZLMPWm29qA5yQdd34FO+ZTs6K
+         8+kkrWuzFrgbDqWzm5BExQ6I2r9UVjDiwdHuXSbznmRjqvdhnH8+7s/nPqrlYXtCjdSy
+         3D7ZCn6FhrTzlKSujvO32jRkOW4/w/wVxRdfoc4j/lLKkxsDG0cDJrRg6VC80pUfpN16
+         72Xg==
+X-Gm-Message-State: APjAAAXQb4vRZBplGioIOIUOrStqb4fy9iFnFt8eeviSSGHM8HlTl7uN
+        Zgp3W2RfILN6rK2VJpeIGhpKbq6OblYtTQ5JTnjMLtl1ocQ=
+X-Google-Smtp-Source: APXvYqxI93+DC6T6Z1t37ep/0YrXUo8vxjAvHpEQa4299HNRitIXn8cgFkDpYfqTRkmcQEbCB6CqJgVeECu6e9hKjGE=
+X-Received: by 2002:ae9:de81:: with SMTP id s123mr37542177qkf.339.1559862187787;
+ Thu, 06 Jun 2019 16:03:07 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94f92e55-18f5-4215-b2a0-08d6eacfc6f2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jun 2019 22:39:03.4096
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mmullins@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR15MB1206
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-06_15:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906060153
-X-FB-Internal: deliver
+References: <20190531202132.379386-1-andriin@fb.com> <20190531202132.379386-7-andriin@fb.com>
+ <20190531212835.GA31612@mini-arch> <CAEf4Bza38VEh9NWTLEReAR_J0eqjsvH1a2T-0AeWqDZpE8YPfA@mail.gmail.com>
+ <20190603163222.GA14556@mini-arch> <CAEf4BzbRXAZMXY3kG9HuRC93j5XhyA3EbWxkLrrZsG7K4abdBg@mail.gmail.com>
+ <20190604010254.GB14556@mini-arch> <f2b5120c-fae7-bf72-238a-b76257b0c0e4@fb.com>
+ <20190604042902.GA2014@mini-arch> <20190604134538.GB2014@mini-arch>
+ <CAEf4BzZEqmnwL0MvEkM7iH3qKJ+TF7=yCKJRAAb34m4+B-1Zcg@mail.gmail.com> <3ff873a8-a1a6-133b-fa20-ad8bc1d347ed@iogearbox.net>
+In-Reply-To: <3ff873a8-a1a6-133b-fa20-ad8bc1d347ed@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 6 Jun 2019 16:02:56 -0700
+Message-ID: <CAEf4BzYr_3heu2gb8U-rmbgMPu54ojcdjMZu7M_VaqOyCNGR5g@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 6/8] libbpf: allow specifying map definitions
+ using BTF
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Stanislav Fomichev <sdf@fomichev.me>,
+        Alexei Starovoitov <ast@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gVGh1LCAyMDE5LTA2LTA2IGF0IDE1OjEzIC0wNzAwLCBKYWt1YiBLaWNpbnNraSB3cm90ZToN
-Cj4gT24gVGh1LCA2IEp1biAyMDE5IDExOjU0OjI3IC0wNzAwLCBNYXR0IE11bGxpbnMgd3JvdGU6
-DQo+ID4gQlBGX1BST0dfVFlQRV9SQVdfVFJBQ0VQT0lOVHMgY2FuIGJlIGV4ZWN1dGVkIG5lc3Rl
-ZCBvbiB0aGUgc2FtZSBDUFUsIGFzDQo+ID4gdGhleSBkbyBub3QgaW5jcmVtZW50IGJwZl9wcm9n
-X2FjdGl2ZSB3aGlsZSBleGVjdXRpbmcuDQo+ID4gDQo+ID4gVGhpcyBlbmFibGVzIHRocmVlIGxl
-dmVscyBvZiBuZXN0aW5nLCB0byBzdXBwb3J0DQo+ID4gICAtIGEga3Byb2JlIG9yIHJhdyB0cCBv
-ciBwZXJmIGV2ZW50LA0KPiA+ICAgLSBhbm90aGVyIG9uZSBvZiB0aGUgYWJvdmUgdGhhdCBpcnEg
-Y29udGV4dCBoYXBwZW5zIHRvIGNhbGwsIGFuZA0KPiA+ICAgLSBhbm90aGVyIG9uZSBpbiBubWkg
-Y29udGV4dA0KPiA+IChhdCBtb3N0IG9uZSBvZiB3aGljaCBtYXkgYmUgYSBrcHJvYmUgb3IgcGVy
-ZiBldmVudCkuDQo+ID4gDQo+ID4gRml4ZXM6IDIwYjlkN2FjNDg1MiAoImJwZjogYXZvaWQgZXhj
-ZXNzaXZlIHN0YWNrIHVzYWdlIGZvciBwZXJmX3NhbXBsZV9kYXRhIikNCj4gDQo+IE5vIGNvbW1l
-bnQgb24gdGhlIGNvZGUsIGJ1dCB5b3UncmUgZGVmaW5pdGVseSBtaXNzaW5nIGEgc2lnbi1vZmYu
-DQoNCk9vcHMsIEkgdG90YWxseSBhbS4gIEknbGwgZ2l2ZSBpdCBzb21lIG1vcmUgdGltZSBmb3Ig
-b3BpbmlvbnMgdG8gcm9sbA0KaW4sIGFuZCBJJ2xsIGZpeCB0aGF0IGJlZm9yZSBJIHJlc3VibWl0
-IDopDQoNCj4gDQo+ID4gLS0tDQo+ID4gVGhpcyBpcyBtb3JlIGxpbmVzIG9mIGNvZGUsIGJ1dCBw
-b3NzaWJseSBsZXNzIGludHJ1c2l2ZSB0aGFuIHRoZQ0KPiA+IHBlci1hcnJheS1lbGVtZW50IGFw
-cHJvYWNoLg0KPiA+IA0KPiA+IEkgZG9uJ3QgbmVjZXNzYXJpbHkgbGlrZSB0aGF0IEkgZHVwbGlj
-YXRlZCB0aGUgbmVzdF9sZXZlbCBsb2dpYyBpbiB0d28NCj4gPiBwbGFjZXMsIGJ1dCBJIGRvbid0
-IHNlZSBhIHdheSB0byB1bmlmeSB0aGVtOg0KPiA+ICAgLSBrcHJvYmVzJyBicGZfcGVyZl9ldmVu
-dF9vdXRwdXQgZG9lc24ndCB1c2UgYnBmX3Jhd190cF9yZWdzLCBhbmQgZG9lcw0KPiA+ICAgICB1
-c2UgdGhlIHBlcmZfc2FtcGxlX2RhdGEsDQo+ID4gICAtIHJhdyB0cmFjZXBvaW50cycgYnBmX2dl
-dF9zdGFja2lkIHVzZXMgYnBmX3Jhd190cF9yZWdzLCBidXQgbm90DQo+ID4gICAgIHRoZSBwZXJm
-X3NhbXBsZV9kYXRhLCBhbmQNCj4gPiAgIC0gcmF3IHRyYWNlcG9pbnRzJyBicGZfcGVyZl9ldmVu
-dF9vdXRwdXQgdXNlcyBib3RoLi4uDQo+IA0KPiANCg==
+On Thu, Jun 6, 2019 at 2:09 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 06/04/2019 07:31 PM, Andrii Nakryiko wrote:
+> > On Tue, Jun 4, 2019 at 6:45 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> >> On 06/03, Stanislav Fomichev wrote:
+> >>>> BTF is mandatory for _any_ new feature.
+> >>> If something is easy to support without asking everyone to upgrade to
+> >>> a bleeding edge llvm, why not do it?
+> >>> So much for backwards compatibility and flexibility.
+> >>>
+> >>>> It's for introspection and debuggability in the first place.
+> >>>> Good debugging is not optional.
+> >>> Once llvm 8+ is everywhere, sure, but we are not there yet (I'm talking
+> >>> about upstream LTS distros like ubuntu/redhat).
+> >> But putting this aside, one thing that I didn't see addressed in the
+> >> cover letter is: what is the main motivation for the series?
+> >> Is it to support iproute2 map definitions (so cilium can switch to libbpf)?
+> >
+> > In general, the motivation is to arrive at a way to support
+> > declaratively defining maps in such a way, that:
+> > - captures type information (for debuggability/introspection) in
+> > coherent and hard-to-screw-up way;
+> > - allows to support missing useful features w/ good syntax (e.g.,
+> > natural map-in-map case vs current completely manual non-declarative
+> > way for libbpf);
+> > - ultimately allow iproute2 to use libbpf as unified loader (and thus
+> > the need to support its existing features, like
+> > BPF_MAP_TYPE_PROG_ARRAY initialization, pinning, map-in-map);
+>
+> Thanks for working on this & sorry for jumping in late! Generally, I like
+> the approach of using BTF to make sense out of the individual members and
+> to have extensibility, so overall I think it's a step in the right direction.
+> Going back to the example where others complained that the k/v NULL
+> initialization feels too much magic from a C pov:
+>
+> struct {
+>         int type;
+>         int max_entries;
+>         int *key;
+>         struct my_value *value;
+> } my_map SEC(".maps") = {
+>         .type = BPF_MAP_TYPE_ARRAY,
+>         .max_entries = 16,
+> };
+>
+> Given LLVM is in charge of emitting BTF plus given gcc/clang seem /both/
+> to support *target* specific attributes [0], how about something along these
+> lines where the type specific info is annotated as a variable BPF target
+> attribute, like:
+>
+> struct {
+>         int type;
+>         int max_entries;
+> } my_map __attribute__((map(int,struct my_value))) = {
+>         .type = BPF_MAP_TYPE_ARRAY,
+>         .max_entries = 16,
+> };
+>
+> Of course this would need BPF backend support, but at least that approach
+> would be more C like. Thus this would define types where we can automatically
+
+I guess it's technically possible (not a compiler guru, but I don't
+see why it wouldn't be possible). But it will require at least two
+things:
+1. Compiler support, obviously, as you mentioned.
+2. BTF specification on how to describe attributes and how to describe
+what entities (variable in this case) it is attached to.
+
+2. is not straightforward, as attributes in general is a collection of
+values of vastly different types: some values could be integers, some
+strings, some, like in this case, would be a reference another BTF
+type. It seems like a powerful and potentially useful addition to BTF,
+of course, but it's very unclear at this point what's the best way to
+represent them.
+
+I'm not relating with "non idiomatic C" motive, though, so all that
+seems like unnecessarily heavy-weight way to get something that we can
+get today w/o compiler support in a clean, succinct and familiar C
+syntax, that to me doesn't look like magic at all.
+
+And if anything, attribute feels just as much magic to me. But here's
+very similarly looking macro-trick:
+
+#define MAP_KEY_VALUE_META(KEY, VALUE) KEY *key; VALUE *value;
+
+struct {
+       MAP_KEY_VALUE_META(int, struct my_value)
+       int type;
+       int max_entries;
+} my_map SEC(".maps") = {
+       .type = BPF_MAP_TYPE_ARRAY,
+       .max_entries = 16,
+};
+
+Or even:
+
+#define MAP_DEF(KEY, VALUE) struct { KEY *key; VALUE *value; int type;
+int max_entries; }
+
+MAP_DEF(int, struct my_value) my_map SEC(".maps") = {
+       .type = BPF_MAP_TYPE_ARRAY,
+       .max_entries = 16,
+};
+
+> derive key/val sizes etc. The SEC() could be dropped as well as map attribute
+
+I think we should at least have an ability to override ELF section
+name, just in case we add support to have maps in multiple sections
+(e.g., shared library with its own set of maps, or whatever).
+
+> would imply it for LLVM to do the right thing underneath. The normal/actual members
+> from the struct has a base set of well-known names that are minimally required
+> but there could be custom stuff as well where libbpf would query some user
+> defined callback that can handle these. Anyway, main point, what do you think
+
+So regarding callback. I find it hard to imagine how that could be
+implemented interface-wise. As each field can have very different
+value (it could be another embedded custom struct, not just integer;
+or it could be char array of fixed size, etc), which is determined by
+BTF, I don't know how I would expose that to custom callback in C type
+system.
+
+If I absolutely had to do it, though, how about this approach. We
+either add BTF type id of a defining struct to bpf_map_def or add
+bpf_map__btf_def() API, which returns it, so:
+
+struct bpf_map *map = bpf_object__find_map_by_name(obj, "my_fancy_map");
+struct btf *btf = bpf_object__btf(obj);
+__u32 def_id = bpf_map__btf_map_def_type_id(map);
+const void *def_data = bpf_map__btf_map_def_data(map);
+struct btf_type *t = btf__type_by_id(btf, def_id);
+
+Then application can do whatever parsing it wants on BTF map
+definition and extract values in whatever manner suits it. This way
+it's just a bunch of very straightforward APIs, instead of callbacks
+w/ unclear interface (i.e., you'd still need to expose field_name,
+field's type_id, raw pointer to data).
+
+Does this make sense?
+
+But having said that, what are the use cases you have in mind that
+require application to put custom stuff into a standardized map
+definition?
+
+> about the __attribute__ approach instead? I think this feels cleaner to me at
+> least iff feasible.
+>
+> Thanks,
+> Daniel
+>
+>   [0] https://clang.llvm.org/docs/AttributeReference.html
+>       https://gcc.gnu.org/onlinedocs/gcc/Variable-Attributes.html
+>
+> > The only missing feature that can be supported reasonably with
+> > bpf_map_def is pinning (as it's just another int field), but all the
+> > other use cases requires awkward approach of matching arbitrary IDs,
+> > which feels like a bad way forward.
+> >
+> >> If that's the case, maybe explicitly focus on that? Once we have
+> >> proof-of-concept working for iproute2 mode, we can extend it to everything.
+>
