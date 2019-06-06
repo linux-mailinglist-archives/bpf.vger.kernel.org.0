@@ -2,149 +2,201 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 85DE737EFA
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 22:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6C837F30
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2019 23:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726542AbfFFUwT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jun 2019 16:52:19 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:45610 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726305AbfFFUwS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jun 2019 16:52:18 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x56Khov1030006;
-        Thu, 6 Jun 2019 13:51:54 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=Hvms6yyx88vesmvny3EGQroVRDArB55xkvHiPLxl6dE=;
- b=PQykSZ1Kjuo4hKgpivClfsyXvYaJ6otms3dy0Zj00297RKNx4wThXpIjrjIf+TVqEfJm
- KV1e9WxkBJTjqMklPeiniCUYWd1WYW+pLthROXHVGFScN/BvSECTkd1l2bTUggUD7SMK
- aBDfb0isC5b8iaKkw6n+U/2t1v0aNNuABwM= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by m0089730.ppops.net with ESMTP id 2sy71g0tj2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 06 Jun 2019 13:51:53 -0700
-Received: from prn-mbx01.TheFacebook.com (2620:10d:c081:6::15) by
- prn-hub04.TheFacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Thu, 6 Jun 2019 13:51:52 -0700
-Received: from prn-hub05.TheFacebook.com (2620:10d:c081:35::129) by
- prn-mbx01.TheFacebook.com (2620:10d:c081:6::15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Thu, 6 Jun 2019 13:51:52 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.29) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Thu, 6 Jun 2019 13:51:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hvms6yyx88vesmvny3EGQroVRDArB55xkvHiPLxl6dE=;
- b=a7nzqYzhvuD7h7ZtTxLZNgPNsGBZD+HOrlDrw84stFH8CaSc/+iv9lr5qHe3Wx254MbURZTjqvWVB0+MfvA11V7UbUcO5WQdo91IDLIdXqtkdYtPX8Id4Z+mFFhGitjoE9cRjF7cqk+qKlLZmOLX3PucXE74H2BxPGDv9AMLoa4=
-Received: from CY4PR15MB1366.namprd15.prod.outlook.com (10.172.157.148) by
- CY4PR15MB1831.namprd15.prod.outlook.com (10.174.54.16) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1922.23; Thu, 6 Jun 2019 20:51:50 +0000
-Received: from CY4PR15MB1366.namprd15.prod.outlook.com
- ([fe80::90e4:71c9:e7e9:43bb]) by CY4PR15MB1366.namprd15.prod.outlook.com
- ([fe80::90e4:71c9:e7e9:43bb%2]) with mapi id 15.20.1943.018; Thu, 6 Jun 2019
- 20:51:50 +0000
-From:   Andrey Ignatov <rdna@fb.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-CC:     "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>,
-        Martin Lau <kafai@fb.com>, "m@lambda.lt" <m@lambda.lt>,
+        id S1727821AbfFFVAC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jun 2019 17:00:02 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:37236 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727736AbfFFVAB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jun 2019 17:00:01 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x56Kwvi7035512;
+        Thu, 6 Jun 2019 20:58:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=drRR+6CX4wX/6UUl5ax5nLLNcEZtf2FgpdLY3+Avjx8=;
+ b=tpAub7gDsWCoILP8GDMYVgaffNAV+Nma+Mi0gxs5ELnN0QrSWpzV2LPksjAn7jfK1R/L
+ IMZ89tm+p8PkFwMw4SL8VOpBAVmDcHrjCgejmBwlijMv20xs7OvR9MB0NjF4h//ck3o9
+ rq1zG5F8Y16jNuDIUMRlsy3YI9tsfTF/zQ9z5bFO5x1SAn4LjTtMHD08EiYrMeU9Yxua
+ pqacmfVkZEtKO1JW55K5d0e/d1hI8/IMhS2/Ja49hm2nVJqoKU6BUX9IcZa97Mp+3WlC
+ t4sn/25kB3fqQZBENJ231K1M5v/kqWsD9ScTXBFRVth+1MWOhw90BDWMPUzlQgNM91Gm IQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 2sugsttx57-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 Jun 2019 20:58:56 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x56KwZrG096313;
+        Thu, 6 Jun 2019 20:58:56 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 2swnhaywtw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 06 Jun 2019 20:58:56 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x56KwuIf096743;
+        Thu, 6 Jun 2019 20:58:56 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 2swnhaywtm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 Jun 2019 20:58:56 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x56KwsrG017895;
+        Thu, 6 Jun 2019 20:58:54 GMT
+Received: from localhost (/10.159.211.102)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 06 Jun 2019 13:58:54 -0700
+Date:   Thu, 6 Jun 2019 16:58:51 -0400
+From:   Kris Van Hees <kris.van.hees@oracle.com>
+To:     Chris Mason <clm@fb.com>
+Cc:     Kris Van Hees <kris.van.hees@oracle.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf v2 0/4] Fix unconnected bpf cgroup hooks
-Thread-Topic: [PATCH bpf v2 0/4] Fix unconnected bpf cgroup hooks
-Thread-Index: AQHVHHUuKmeVn8eTnkeGX10FyBqYwaaPKYQA///w4gA=
-Date:   Thu, 6 Jun 2019 20:51:50 +0000
-Message-ID: <20190606205148.GB50385@rdna-mbp.dhcp.thefacebook.com>
-References: <20190606143517.25710-1-daniel@iogearbox.net>
- <20190606204554.GA50385@rdna-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20190606204554.GA50385@rdna-mbp.dhcp.thefacebook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR19CA0055.namprd19.prod.outlook.com
- (2603:10b6:300:94::17) To CY4PR15MB1366.namprd15.prod.outlook.com
- (2603:10b6:903:f7::20)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::3:877]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4a493de8-8c1e-4dbe-ddec-08d6eac0cc6f
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:CY4PR15MB1831;
-x-ms-traffictypediagnostic: CY4PR15MB1831:
-x-microsoft-antispam-prvs: <CY4PR15MB18314442C28F8822AD58AF3FA8170@CY4PR15MB1831.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 00603B7EEF
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(136003)(346002)(39860400002)(366004)(376002)(189003)(199004)(14454004)(81156014)(6246003)(8676002)(81166006)(86362001)(6506007)(9686003)(186003)(68736007)(256004)(5660300002)(386003)(316002)(99286004)(6512007)(6116002)(5024004)(102836004)(4326008)(76176011)(33656002)(52116002)(14444005)(7736002)(1076003)(8936002)(6916009)(305945005)(561944003)(25786009)(66946007)(71190400001)(53936002)(71200400001)(54906003)(486006)(66556008)(46003)(478600001)(446003)(64756008)(476003)(66476007)(11346002)(66446008)(229853002)(73956011)(2906002)(6486002)(6436002);DIR:OUT;SFP:1102;SCL:1;SRVR:CY4PR15MB1831;H:CY4PR15MB1366.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: zHuSG87sPDhan36HcPcho0ZSuZet5BNX1r9fovNtx4eXhISqj0GWpjtE4rxOn7hlOeSM3FheQ5Iwb2Ci0q4O/N2EgWNu5Ktha5KJZ/WO3u6J47PQhn1aPnjfSvduzCPswUm+hudcb3cs8gOWsunloN8JwQKraPYg+nGD2IXuJ1U0tItEE85GVeKl8PDiINmpfq99jVWPgPAKqQ7YlENcP3p3kb+5i7Q62lrUmIVymBGOLUfY8itPMRApqCJB9rwpvx6is9Jw5ZePO+m6f3Iv8ogmJfyvs34ecxoJUk2h3i85ZNoW19w+avFRRO2D7GOqyJ+eF0GWuAUJaZMaDt2QCz47aq2hjd+5Tsda4z1rE5CmBM1wIIcYHRJFLFyjitS88D0XcusKQlf2hY5Xg9VWw8dc4C5mVyJWUTxQ8GioJyU=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D854A141E1133447BC0ED16A6B08B7BF@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        "dtrace-devel@oss.oracle.com" <dtrace-devel@oss.oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mhiramat@kernel.org" <mhiramat@kernel.org>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "peterz@infradead.org" <peterz@infradead.org>
+Subject: Re: [RFC PATCH 00/11] bpf, trace, dtrace: DTrace BPF program type
+ implementation and sample use
+Message-ID: <20190606205851.GI11035@oracle.com>
+References: <20190521184137.GH2422@oracle.com>
+ <20190521205533.evfszcjvdouby7vp@ast-mbp.dhcp.thefacebook.com>
+ <20190521213648.GK2422@oracle.com>
+ <20190521232618.xyo6w3e6nkwu3h5v@ast-mbp.dhcp.thefacebook.com>
+ <20190522041253.GM2422@oracle.com>
+ <20190522201624.eza3pe2v55sn2t2w@ast-mbp.dhcp.thefacebook.com>
+ <20190523051608.GP2422@oracle.com>
+ <20190523202842.ij2quhpmem3nabii@ast-mbp.dhcp.thefacebook.com>
+ <20190530161543.GA1835@oracle.com>
+ <5AD44AC7-F88F-4068-B122-962839F968B2@fb.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a493de8-8c1e-4dbe-ddec-08d6eac0cc6f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jun 2019 20:51:50.8571
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rdna@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR15MB1831
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-06_14:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906060140
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5AD44AC7-F88F-4068-B122-962839F968B2@fb.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9280 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906060142
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-QW5kcmV5IElnbmF0b3YgPHJkbmFAZmIuY29tPiBbVGh1LCAyMDE5LTA2LTA2IDEzOjQ1IC0wNzAw
-XToNCj4gRGFuaWVsIEJvcmttYW5uIDxkYW5pZWxAaW9nZWFyYm94Lm5ldD4gW1RodSwgMjAxOS0w
-Ni0wNiAwNzozNiAtMDcwMF06DQo+ID4gUGxlYXNlIHJlZmVyIHRvIHRoZSBwYXRjaCAxLzQgYXMg
-dGhlIG1haW4gcGF0Y2ggd2l0aCB0aGUgZGV0YWlscw0KPiA+IG9uIHRoZSBjdXJyZW50IHNlbmRt
-c2cgaG9vayBBUEkgbGltaXRhdGlvbnMgYW5kIHByb3Bvc2FsIHRvIGZpeA0KPiA+IGl0IGluIG9y
-ZGVyIHRvIHdvcmsgd2l0aCBiYXNpYyBhcHBsaWNhdGlvbnMgbGlrZSBETlMuIFJlbWFpbmluZw0K
-PiA+IHBhdGNoZXMgYXJlIHRoZSB1c3VhbCB1YXBpIGFuZCB0b29saW5nIHVwZGF0ZXMgYXMgd2Vs
-bCBhcyB0ZXN0DQo+ID4gY2FzZXMuIFRoYW5rcyBhIGxvdCENCj4gPiANCj4gPiB2MSAtPiB2MjoN
-Cj4gPiAgIC0gU3BsaXQgb2ZmIHVhcGkgaGVhZGVyIHN5bmMgYW5kIGJwZnRvb2wgYml0cyAoTWFy
-dGluLCBBbGV4ZWkpDQo+ID4gICAtIEFkZGVkIG1pc3NpbmcgYnBmdG9vbCBkb2MgYW5kIGJhc2gg
-Y29tcGxldGlvbiBhcyB3ZWxsDQo+ID4gDQo+ID4gRGFuaWVsIEJvcmttYW5uICg0KToNCj4gPiAg
-IGJwZjogZml4IHVuY29ubmVjdGVkIHVkcCBob29rcw0KPiA+ICAgYnBmOiBzeW5jIHRvb2xpbmcg
-dWFwaSBoZWFkZXINCj4gPiAgIGJwZiwgYnBmdG9vbDogZW5hYmxlIHJlY3Ztc2cgYXR0YWNoIHR5
-cGVzDQo+ID4gICBicGY6IGFkZCBmdXJ0aGVyIG1zZ19uYW1lIHJld3JpdGUgdGVzdHMgdG8gdGVz
-dF9zb2NrX2FkZHINCj4gPiANCj4gPiAgaW5jbHVkZS9saW51eC9icGYtY2dyb3VwLmggICAgICAg
-ICAgICAgICAgICAgIHwgICA4ICsNCj4gPiAgaW5jbHVkZS91YXBpL2xpbnV4L2JwZi5oICAgICAg
-ICAgICAgICAgICAgICAgIHwgICAyICsNCj4gPiAga2VybmVsL2JwZi9zeXNjYWxsLmMgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHwgICA4ICsNCj4gPiAga2VybmVsL2JwZi92ZXJpZmllci5jICAg
-ICAgICAgICAgICAgICAgICAgICAgIHwgIDEyICstDQo+ID4gIG5ldC9jb3JlL2ZpbHRlci5jICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArDQo+ID4gIG5ldC9pcHY0L3VkcC5jICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNCArDQo+ID4gIG5ldC9pcHY2L3VkcC5j
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNCArDQo+ID4gIC4uLi9icGZ0b29s
-L0RvY3VtZW50YXRpb24vYnBmdG9vbC1jZ3JvdXAucnN0ICB8ICAgNiArLQ0KPiA+ICAuLi4vYnBm
-dG9vbC9Eb2N1bWVudGF0aW9uL2JwZnRvb2wtcHJvZy5yc3QgICAgfCAgIDIgKy0NCj4gPiAgdG9v
-bHMvYnBmL2JwZnRvb2wvYmFzaC1jb21wbGV0aW9uL2JwZnRvb2wgICAgIHwgICA1ICstDQo+ID4g
-IHRvb2xzL2JwZi9icGZ0b29sL2Nncm91cC5jICAgICAgICAgICAgICAgICAgICB8ICAgNSArLQ0K
-PiA+ICB0b29scy9icGYvYnBmdG9vbC9wcm9nLmMgICAgICAgICAgICAgICAgICAgICAgfCAgIDMg
-Ky0NCj4gPiAgdG9vbHMvaW5jbHVkZS91YXBpL2xpbnV4L2JwZi5oICAgICAgICAgICAgICAgIHwg
-ICAyICsNCj4gPiAgdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Rlc3Rfc29ja19hZGRyLmMg
-IHwgMjEzICsrKysrKysrKysrKysrKystLQ0KPiA+ICAxNCBmaWxlcyBjaGFuZ2VkLCAyNTAgaW5z
-ZXJ0aW9ucygrKSwgMjYgZGVsZXRpb25zKC0pDQo+IA0KPiB0b29scy9saWIvYnBmL2xpYmJwZi5j
-IHNob3VsZCBhbHNvIGJlIHVwZGF0ZWQ6IHNlY3Rpb25fbmFtZXMgYW5kDQoNCkFuZCB0b29scy90
-ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvdGVzdF9zZWN0aW9uX25hbWVzLmMgYXMgd2VsbC4NCg0KPiBi
-cGZfcHJvZ190eXBlX19uZWVkc19rdmVyLiBQbGVhc2UgZWl0aGVyIGZvbGxvdy11cCBzZXBhcmF0
-ZWx5IG9yIHNlbmQNCj4gdjMuIE90aGVyIHRoYW4gdGhpcyBMR01ULg0KPiANCj4gQWNrZWQtYnk6
-IEFuZHJleSBJZ25hdG92IDxyZG5hQGZiLmNvbT4NCj4gDQo+IC0tIA0KPiBBbmRyZXkgSWduYXRv
-dg0KDQotLSANCkFuZHJleSBJZ25hdG92DQo=
+On Fri, May 31, 2019 at 03:25:25PM +0000, Chris Mason wrote:
+> 
+> I'm being pretty liberal with chopping down quoted material to help 
+> emphasize a particular opinion about how to bootstrap existing 
+> out-of-tree projects into the kernel.  My goal here is to talk more 
+> about the process and less about the technical details, so please 
+> forgive me if I've ignored or changed the technical meaning of anything 
+> below.
+> 
+> On 30 May 2019, at 12:15, Kris Van Hees wrote:
+> 
+> > On Thu, May 23, 2019 at 01:28:44PM -0700, Alexei Starovoitov wrote:
+> >
+> > ... I believe that the discussion that has been going on in other
+> > emails has shown that while introducing a program type that provides a
+> > generic (abstracted) context is a different approach from what has 
+> > been done
+> > so far, it is a new use case that provides for additional ways in 
+> > which BPF
+> > can be used.
+> >
+> 
+> [ ... ]
+> 
+> >
+> > Yes and no.  It depends on what you are trying to do with the BPF 
+> > program that
+> > is attached to the different events.  From a tracing perspective, 
+> > providing a
+> > single BPF program with an abstract context would ...
+> 
+> [ ... ]
+> 
+> >
+> > In this model kprobe/ksys_write and 
+> > tracepoint/syscalls/sys_enter_write are
+> > equivalent for most tracing purposes ...
+> 
+> [ ... ]
+> 
+> >
+> > I agree with what you are saying but I am presenting an additional use 
+> > case
+> 
+> [ ... ]
+> 
+> >>
+> >> All that aside the kernel support for shared libraries is an awesome
+> >> feature to have and a bunch of folks want to see it happen, but
+> >> it's not a blocker for 'dtrace to bpf' user space work.
+> >> libbpf can be taught to do this 'pseudo shared library' feature
+> >> while 'dtrace to bpf' side doesn't need to do anything special.
+> 
+> [ ... ]
+> 
+> This thread intermixes some abstract conceptual changes with smaller 
+> technical improvements, and in general it follows a familiar pattern 
+> other out-of-tree projects have hit while trying to adapt the kernel to 
+> their existing code.  Just from this one email, I quoted the abstract 
+> models with use cases etc, and this is often where the discussions side 
+> track into less productive areas.
+> 
+> >
+> > So you are basically saying that I should redesign DTrace?
+> 
+> In your place, I would have removed features and adapted dtrace as much 
+> as possible to require the absolute minimum of kernel patches, or even 
+> better, no patches at all.  I'd document all of the features that worked 
+> as expected, and underline anything either missing or suboptimal that 
+> needed additional kernel changes.  Then I'd focus on expanding the 
+> community of people using dtrace against the mainline kernel, and work 
+> through the series features and improvements one by one upstream over 
+> time.
+
+Well, that is actually what I am doing in the sense that the proposed patches
+are quite minimal and lie at the core of the style of tracing that we need to
+support.  So I definitely agree with your statement.  The code I posted
+implements a minimal set of features (hardly any at all), although as Peter
+pointed out, some more can be stripped from it and I have done that already
+in a revision of the patchset I was preparing.
+
+> Your current approach relies on an all-or-nothing landing of patches 
+> upstream, and this consistently leads to conflict every time a project 
+> tries it.  A more incremental approach will require bigger changes on 
+> the dtrace application side, but over time it'll be much easier to 
+> justify your kernel changes.  You won't have to talk in abstract models, 
+> and you'll have many more concrete examples of people asking for dtrace 
+> features against mainline.  Most importantly, you'll make dtrace 
+> available on more kernels than just the absolute latest mainline, and 
+> removing dependencies makes the project much easier for new users to 
+> try.
+
+I am not sure where I gave the impression that my approach relies on an
+all-or-nothing landing of patches.  My intent (and the content of the patches
+reflects that I think) was to work from a minimal base and build on that,
+adding things as needed.  Granted, it depends on a rather crucial feature in
+the design that apparently should be avoided for now as well, and I can
+definitely work on avoiding that for now.  But I hope that it is clear from
+the patch set I posted that an incremental approach is indeed what I intend
+to do.
+
+Thank you for putting it in clear terms and explaining patfalls that have
+be observed in the past with projects.  I will proceed with an even more
+minimalist approach.
+
+To that end, could you advice on who patches should be Cc'd to to have the
+first minimal code submitted to a tools/dtrace directory in the kernel tree?
+
+	Kris
