@@ -2,86 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A2302393BB
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2019 19:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C7139460
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2019 20:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730230AbfFGR5P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Jun 2019 13:57:15 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:43390 "EHLO
+        id S1731179AbfFGSdB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Jun 2019 14:33:01 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:44473 "EHLO
         mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727391AbfFGR5P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Jun 2019 13:57:15 -0400
-Received: by mail-qt1-f193.google.com with SMTP id z24so3271146qtj.10;
-        Fri, 07 Jun 2019 10:57:14 -0700 (PDT)
+        with ESMTP id S1730870AbfFGSdA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Jun 2019 14:33:00 -0400
+Received: by mail-qt1-f193.google.com with SMTP id x47so3387697qtk.11;
+        Fri, 07 Jun 2019 11:33:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GnZ8utMoWZghJhijN6JzlV9oeMLjaDcVbBVuvmMM+oE=;
-        b=HIaKGCP7j2Oexz3aBeGQhfU5Ec9tEOhUXebZdCbWcMQzjwUjGmh0eH+/I6lhmMjQ+T
-         4TN3O9f7QY2EDIVjYSsnyZWuQbQvGPo0iF1dsaK5RKoEmridEBiZKapb6+UdLznvaGmN
-         JP7pK93XXtJfIV5e/bxUe04yi8qj/t+bWg0Up/XjTZdwK8MqrqPems5c6QHJTCTvBELh
-         8DSaYAQCGM6iFW6dDnptOi8CTayPb9qaxJlk+ej6xbQ/IgbExEwhnrcQI07RtbFt2Cji
-         dHz50QLv8B+SN9TwdEydYgkhGcfBfvK+nFaL+6q2USPzBft6bAJE0jcOlWpg5xwoAV8Z
-         2HJA==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5GYL4fUKk00yP4HXvUNZ6Fi+8Ufg5Y3SKrb4tcTkGv4=;
+        b=Er9Haffn8ymi5u7v6whd1+YGF4s/uaDHMom/eLld0djCyg42kKyXN4TEC/UE2hHkG+
+         JC1MdoWB4bISksLxecXalDGdIMlo62BwnGRPNB9peeXKNcA1MUNrzw36J015vMEaa0uD
+         RWJPYcnze0Zh1hxLeHvCHxrkL3AO1M5P83Y2jysQSfFELXvWLJ4LPCh2ZzXAyJlPqDwL
+         PMoWEfi7ADRLzSzpB/2HZtnXZktZXZ6EEI+Kp5vkQG6eE9x4atGjGC0R8utDlDzIyqT0
+         oe5ZoIG4RfMmeeObNUScT5vRb/4haAEq84Wo3vihCdxEmWeqZSV46x47jHHjFRqlcYxl
+         b6eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GnZ8utMoWZghJhijN6JzlV9oeMLjaDcVbBVuvmMM+oE=;
-        b=cztZJYqB1b84eK7Gs3VWVQZo09sqPHATAZqBM0irtHfaQ/rOo6KaZgEjyb1JYKDoRy
-         5JpbeOVSm/OEerki3RR/Rq6Z+6DMfrU0scMIBX80RjP7a9SGWNgMDTQ4BesmhhHeymtI
-         KZYz49TXNf/9xaxzvtAmNFslkJyEQ8OM95ZJwEHMX8SFMFEKmjaoSv8/ZwOvoPoAGNCo
-         C1PIQBMcLSAtXyP6PluM+cOJtKdZdN00WeURXpO88DGzxn05kiHaIe+xlfSsL6C8d4ld
-         T7GLfxUhaipU0CmcB7+3V7jrhoHdmPWr9efzLxNJxDDcdbYeYmlotfuIUQBCEm7PkR+C
-         xSWw==
-X-Gm-Message-State: APjAAAUL8ar45zsqywssMHm0xN3vXz0Osjp01k5FuVubJoL+DH9tMh/w
-        OJT9kS9HT6tP0IeHOj6QbSa8NHHfGtNLD0Erdvw=
-X-Google-Smtp-Source: APXvYqxytH8ATdRW6FH3DxJ28Wt+cgxpqJ2Bp6eZT5hPVVWSgpKxtG3oaaGTYEM3PNyRQGium/vtucr4fznKhnViYXI=
-X-Received: by 2002:ac8:2a63:: with SMTP id l32mr27329164qtl.117.1559930233882;
- Fri, 07 Jun 2019 10:57:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190607163759.2211904-1-hechaol@fb.com>
-In-Reply-To: <20190607163759.2211904-1-hechaol@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 7 Jun 2019 10:57:02 -0700
-Message-ID: <CAEf4BzYzfTAyHZwAdE1MPxZ4cUhP9LsAEDJ_VLQqx_PkVW9_0w@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 0/2] bpf: Add a new API libbpf_num_possible_cpus()
-To:     Hechao Li <hechaol@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5GYL4fUKk00yP4HXvUNZ6Fi+8Ufg5Y3SKrb4tcTkGv4=;
+        b=W5atWO0rx+EZ6knUYsYfjDk2kzI02aFbb2UXhmUU3GRuiLXZ2nfUbVA273DtYGtV5y
+         REjzfpJSfn3KRGXuzcDZ0qS3g8+hQRfRsQhzOhwPnPrzvm25GdsqgBim41A6Lf70q/ZA
+         H5jk8qVcEPNOVXaSUJ3m75yBJ23rWEiGytu0Oed6PrvCG7i56Gup/R2Z2gmXQCjXnJ2F
+         DXGkWbdUsbptm9wMzC/yJ0RKbkrvojqhzj4rf5FcLuk58ArIDXzmQnNuHIgtSoUo94n9
+         R4eu8EIrljc7R3UxmFa7KuBjqimEaVY29eTi7mfll3X7PsCtDlHHqPByDwANEzOMsZ/P
+         2G7Q==
+X-Gm-Message-State: APjAAAVIVI0XpRrLrXVLtGiu5Nfy+yN46ilfpMBK8aOdrg/8K3L0zTKS
+        54v/OW6f3kTdD7Cj18Wb8bk=
+X-Google-Smtp-Source: APXvYqz70lCRh739won9H5qXaTU9fvSzxLj46nPTcb4qmQOkP9x5eHZsfgZiCIQP/4l7xDriedsOJA==
+X-Received: by 2002:a0c:ae31:: with SMTP id y46mr14635450qvc.172.1559932379563;
+        Fri, 07 Jun 2019 11:32:59 -0700 (PDT)
+Received: from quaco.ghostprotocols.net (187-26-97-17.3g.claro.net.br. [187.26.97.17])
+        by smtp.gmail.com with ESMTPSA id p13sm1340288qkj.4.2019.06.07.11.32.58
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Fri, 07 Jun 2019 11:32:58 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0776F41149; Fri,  7 Jun 2019 15:32:55 -0300 (-03)
+Date:   Fri, 7 Jun 2019 15:32:54 -0300
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andi Kleen <ak@linux.intel.com>, Mark Drayton <mbd@fb.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] perf config: Update default value for
+ llvm.clang-bpf-cmd-template
+Message-ID: <20190607183254.GM21245@kernel.org>
+References: <20190607143508.18141-1-leo.yan@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190607143508.18141-1-leo.yan@linaro.org>
+X-Url:  http://acmel.wordpress.com
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 7, 2019 at 9:38 AM Hechao Li <hechaol@fb.com> wrote:
->
-> Getting number of possible CPUs is commonly used for per-CPU BPF maps
-> and perf_event_maps. Add a new API libbpf_num_possible_cpus() that
-> helps user with per-CPU related operations and remove duplicate
-> implementations in bpftool and selftests.
->
-> v4: Fixed error code when reading 0 bytes from possible CPU file
->
-> Hechao Li (2):
->   bpf: add a new API libbpf_num_possible_cpus()
->   bpf: use libbpf_num_possible_cpus in bpftool and selftests
->
->  tools/bpf/bpftool/common.c             | 53 +++---------------------
->  tools/lib/bpf/libbpf.c                 | 57 ++++++++++++++++++++++++++
->  tools/lib/bpf/libbpf.h                 | 16 ++++++++
->  tools/lib/bpf/libbpf.map               |  1 +
->  tools/testing/selftests/bpf/bpf_util.h | 37 +++--------------
->  5 files changed, 84 insertions(+), 80 deletions(-)
->
-> --
+Em Fri, Jun 07, 2019 at 10:35:08PM +0800, Leo Yan escreveu:
+> The clang bpf cmdline template has defined default value in the file
+> tools/perf/util/llvm-utils.c, which has been changed for several times.
+> 
+> This patch updates the documentation to reflect the latest default value
+> for the configuration llvm.clang-bpf-cmd-template.
+> 
+> Fixes: d35b168c3dcd ("perf bpf: Give precedence to bpf header dir")
+> Fixes: cb76371441d0 ("perf llvm: Allow passing options to llc in addition to clang")
+> Fixes: 1b16fffa389d ("perf llvm-utils: Add bpf include path to clang command line")
+
+Well done! Three fixes! :-)
+
+Who was it that made the changes and forgot to update the docs... oops,
+it was me 8-)
+
+Thanks, applied.
+
+- Arnaldo
+
+
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  tools/perf/Documentation/perf-config.txt | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
+> index 462b3cde0675..e4aa268d2e38 100644
+> --- a/tools/perf/Documentation/perf-config.txt
+> +++ b/tools/perf/Documentation/perf-config.txt
+> @@ -564,9 +564,12 @@ llvm.*::
+>  	llvm.clang-bpf-cmd-template::
+>  		Cmdline template. Below lines show its default value. Environment
+>  		variable is used to pass options.
+> -		"$CLANG_EXEC -D__KERNEL__ $CLANG_OPTIONS $KERNEL_INC_OPTIONS \
+> -		-Wno-unused-value -Wno-pointer-sign -working-directory \
+> -		$WORKING_DIR  -c $CLANG_SOURCE -target bpf -O2 -o -"
+> +		"$CLANG_EXEC -D__KERNEL__ -D__NR_CPUS__=$NR_CPUS "\
+> +		"-DLINUX_VERSION_CODE=$LINUX_VERSION_CODE "	\
+> +		"$CLANG_OPTIONS $PERF_BPF_INC_OPTIONS $KERNEL_INC_OPTIONS " \
+> +		"-Wno-unused-value -Wno-pointer-sign "		\
+> +		"-working-directory $WORKING_DIR "		\
+> +		"-c \"$CLANG_SOURCE\" -target bpf $CLANG_EMIT_LLVM -O2 -o - $LLVM_OPTIONS_PIPE"
+>  
+>  	llvm.clang-opt::
+>  		Options passed to clang.
+> -- 
 > 2.17.1
->
 
-For the series:
+-- 
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+- Arnaldo
