@@ -2,147 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E4538C52
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2019 16:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B292C38D49
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2019 16:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728519AbfFGOLf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Jun 2019 10:11:35 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:35567 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729474AbfFGOLR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Jun 2019 10:11:17 -0400
-Received: by mail-ed1-f67.google.com with SMTP id p26so3253697edr.2
-        for <bpf@vger.kernel.org>; Fri, 07 Jun 2019 07:11:16 -0700 (PDT)
+        id S1729695AbfFGOgW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Jun 2019 10:36:22 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:35732 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729441AbfFGOfd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Jun 2019 10:35:33 -0400
+Received: by mail-qt1-f195.google.com with SMTP id d23so2511680qto.2
+        for <bpf@vger.kernel.org>; Fri, 07 Jun 2019 07:35:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=a4BYbY0H/gJ/SBV0pW9HBq0oWfzuEg4LxLjaui3637c=;
-        b=A52/UPhaDFmKTtTG9exlP6gH+yrRJmVwrdz56ohUfKW1gwkj+x4/Dq2PHUdpuj6YZT
-         3/pvcYZolg2Xqok2Jijpnu95I/Og/Kfeehoz+bDcnwAmyAxlDjhYJnx0Xz2dbAz90qQP
-         Fa2uO6BTJrDA/X2hHq0xwrOt4Te63fRj1iUjA=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=GbgsWWJsYfuFE0Ayk1WcQ4Df2lBstgQ/CvJS7+ETd2s=;
+        b=QGUXZscHEoL0COiYgKJzGauvXiRnD/yzWrfJsYJcTclbPX9TCvCrdfjxhLSv6VqVOy
+         Ds63L+KT50jtxVnmqpdXm+k0hnKJi5RXnLS0g7q5/aYYikllYLDJlOL5jJq9fIyS2KXT
+         N4kSzGLH1BqH5+sIoQRhIEIplVz6xOOFXH3kUevzoxUvalU97d0JQV8t5yyidDelIDry
+         k8NouTI/Vwk3wkIkBwrPlJNHi55Eas42L1+bSUxShFHT/PfTIYvWn+XASslmcOf+opCq
+         Xe44NUEbE+9/+hU7i7HYNQl4s6GIv+QUbmYg2o2r2mDo0R1jnV48MtbC/0gPLmPAyG0T
+         qL2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=a4BYbY0H/gJ/SBV0pW9HBq0oWfzuEg4LxLjaui3637c=;
-        b=NZgXEztespVSVclsa/i4nIz7sDvFPmnn1O3y9cu6/XIyqJUSGgn/8ZC7FkqmgHGLUs
-         xt8bhK9CpQzMRUHghTv5rmv/cGGb0oEW1enZkQdQ9znAKkKGc8Dzo0WWpal0qHhcDKNF
-         qnnhM6w+rX25VqLwhxYk4bOFn+2NL/c8qxZ9ff66CeKuuGMbHGL20nbugHVG/sJ5+ZqE
-         BXquRX3x11BvjZkMrpY3sXz5fKzdde1pIFfDe76nAlcocPnwj2yWUT0GIRsmEBcJgvNq
-         bN4+c1n2k+eJzfNdgVx+jg6SW6P5Ymm3L2C1WUJrrzLYn29cQaQmjwHzYSkIZ6MeRbx8
-         vUWg==
-X-Gm-Message-State: APjAAAVsV2h8TnpWPFmJSDScTzOgsCMabdFaxbxNYDXk5UjlZhNIdgKS
-        DfjnLzRRqkLn0kX2f/Mo/udjAA==
-X-Google-Smtp-Source: APXvYqwLVNr+7w9/STmzWhSBQ6bLcxrBsjntrXkA1h+OPVqNKlLghZ1xop6URIiy5ZgptgoOzJHl7A==
-X-Received: by 2002:a17:906:7388:: with SMTP id f8mr47614254ejl.231.1559916675852;
-        Fri, 07 Jun 2019 07:11:15 -0700 (PDT)
-Received: from locke-xps13.fritz.box (dslb-002-205-069-198.002.205.pools.vodafone-ip.de. [2.205.69.198])
-        by smtp.gmail.com with ESMTPSA id a40sm546116edd.1.2019.06.07.07.11.14
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 07 Jun 2019 07:11:15 -0700 (PDT)
-From:   =?UTF-8?q?Iago=20L=C3=B3pez=20Galeiras?= <iago@kinvolk.io>
-To:     john.fastabend@gmail.com, ast@kernel.org, daniel@iogearbox.net
-Cc:     alban@kinvolk.io, krzesimir@kinvolk.io, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v5 4/4] selftests: bpf: verifier: read netns_dev and netns_ino from struct bpf_sock_ops
-Date:   Fri,  7 Jun 2019 16:11:06 +0200
-Message-Id: <20190607141106.32148-5-iago@kinvolk.io>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190607141106.32148-1-iago@kinvolk.io>
-References: <20190607141106.32148-1-iago@kinvolk.io>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=GbgsWWJsYfuFE0Ayk1WcQ4Df2lBstgQ/CvJS7+ETd2s=;
+        b=G0UuswP9wuETUmAvOeBbNZZDMscfyEgKrZspQaTMJ5fLeML6UNwkuU5/q8+D6DmpEQ
+         xdJsmIfxsGwj9JPhlhDL2P5Jx8w76mUiEWmi7EAUEUCK3iNp5gyp8tHVXSj8pHett9II
+         TqGtfmVLKhkitqyXpbAuO1ry/hw/C0HC5jHkV/7dZDCCj1iwYsT7dOLHWnQcLzYlY6mg
+         AltzpYAqTrQEA77s+SAL/hOZxLceI0xRLO6Qai+wNTiCDcJZA7bYLgKgVmJWSMrqb2XP
+         9if0NjAAWE2MR1cof9bgqJ8tQv/ZFsHe4nlSOWZEz1v5a/iWUGiTrgujNOcw4SUJ/Zk7
+         szxw==
+X-Gm-Message-State: APjAAAXvqYMd4An98+BKbMd8Qy0yCpSbIGZk+fiskMCsEpAemoXTI2H3
+        4ps0uwDqGDE2ShGnXLekC73j6u+TI1xN6A==
+X-Google-Smtp-Source: APXvYqylHXL8PP8WU7yZy4f3dkfIgSoGD/enIs4QVNUfQMUWy/e2kCWQ7kzXKicoMTtJqeMAeDYHQA==
+X-Received: by 2002:ac8:2ca5:: with SMTP id 34mr47371137qtw.246.1559918132104;
+        Fri, 07 Jun 2019 07:35:32 -0700 (PDT)
+Received: from localhost.localdomain (li1322-146.members.linode.com. [45.79.223.146])
+        by smtp.gmail.com with ESMTPSA id c5sm1243963qkb.41.2019.06.07.07.35.24
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 07 Jun 2019 07:35:31 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andi Kleen <ak@linux.intel.com>, Mark Drayton <mbd@fb.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH] perf config: Update default value for llvm.clang-bpf-cmd-template
+Date:   Fri,  7 Jun 2019 22:35:08 +0800
+Message-Id: <20190607143508.18141-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alban Crequy <alban@kinvolk.io>
+The clang bpf cmdline template has defined default value in the file
+tools/perf/util/llvm-utils.c, which has been changed for several times.
 
-Tested with:
-> $ sudo ./test_verifier
-> ...
-> #905/p sockops accessing bpf_sock_ops->netns_dev, ok OK
-> #906/p sockops accessing bpf_sock_ops->netns_ino, ok OK
-> ...
-> Summary: 1421 PASSED, 0 SKIPPED, 0 FAILED
+This patch updates the documentation to reflect the latest default value
+for the configuration llvm.clang-bpf-cmd-template.
 
-Signed-off-by: Alban Crequy <alban@kinvolk.io>
-
+Fixes: d35b168c3dcd ("perf bpf: Give precedence to bpf header dir")
+Fixes: cb76371441d0 ("perf llvm: Allow passing options to llc in addition to clang")
+Fixes: 1b16fffa389d ("perf llvm-utils: Add bpf include path to clang command line")
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
+ tools/perf/Documentation/perf-config.txt | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-Changes since v1:
-- This is a new selftest (review from Song)
-
-Changes since v2:
-- test partial reads on netns_dev (review from Y Song)
-- split in two tests
----
- .../testing/selftests/bpf/verifier/var_off.c  | 53 +++++++++++++++++++
- 1 file changed, 53 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/verifier/var_off.c b/tools/testing/selftests/bpf/verifier/var_off.c
-index 8504ac937809..9e4c6c78eb9d 100644
---- a/tools/testing/selftests/bpf/verifier/var_off.c
-+++ b/tools/testing/selftests/bpf/verifier/var_off.c
-@@ -246,3 +246,56 @@
- 	.result = ACCEPT,
- 	.prog_type = BPF_PROG_TYPE_LWT_IN,
- },
-+{
-+	"sockops accessing bpf_sock_ops->netns_dev, ok",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_4, BPF_REG_1, offsetof(struct bpf_sock_ops,
-+							   netns_dev)),
-+
-+	BPF_LDX_MEM(BPF_W, BPF_REG_4, BPF_REG_1, offsetof(struct bpf_sock_ops,
-+							   netns_dev)),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_4, BPF_REG_1, offsetof(struct bpf_sock_ops,
-+							   netns_dev) + 4),
-+
-+	BPF_LDX_MEM(BPF_H, BPF_REG_4, BPF_REG_1, offsetof(struct bpf_sock_ops,
-+							   netns_dev)),
-+	BPF_LDX_MEM(BPF_H, BPF_REG_4, BPF_REG_1, offsetof(struct bpf_sock_ops,
-+							   netns_dev) + 2),
-+	BPF_LDX_MEM(BPF_H, BPF_REG_4, BPF_REG_1, offsetof(struct bpf_sock_ops,
-+							   netns_dev) + 4),
-+	BPF_LDX_MEM(BPF_H, BPF_REG_4, BPF_REG_1, offsetof(struct bpf_sock_ops,
-+							   netns_dev) + 6),
-+
-+	BPF_LDX_MEM(BPF_B, BPF_REG_4, BPF_REG_1, offsetof(struct bpf_sock_ops,
-+							   netns_dev)),
-+	BPF_LDX_MEM(BPF_B, BPF_REG_4, BPF_REG_1, offsetof(struct bpf_sock_ops,
-+							   netns_dev) + 1),
-+	BPF_LDX_MEM(BPF_B, BPF_REG_4, BPF_REG_1, offsetof(struct bpf_sock_ops,
-+							   netns_dev) + 2),
-+	BPF_LDX_MEM(BPF_B, BPF_REG_4, BPF_REG_1, offsetof(struct bpf_sock_ops,
-+							   netns_dev) + 3),
-+	BPF_LDX_MEM(BPF_B, BPF_REG_4, BPF_REG_1, offsetof(struct bpf_sock_ops,
-+							   netns_dev) + 4),
-+	BPF_LDX_MEM(BPF_B, BPF_REG_4, BPF_REG_1, offsetof(struct bpf_sock_ops,
-+							   netns_dev) + 5),
-+	BPF_LDX_MEM(BPF_B, BPF_REG_4, BPF_REG_1, offsetof(struct bpf_sock_ops,
-+							   netns_dev) + 6),
-+	BPF_LDX_MEM(BPF_B, BPF_REG_4, BPF_REG_1, offsetof(struct bpf_sock_ops,
-+							   netns_dev) + 7),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.prog_type = BPF_PROG_TYPE_SOCK_OPS,
-+},
-+{
-+	"sockops accessing bpf_sock_ops->netns_ino, ok",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_4, BPF_REG_1, offsetof(struct bpf_sock_ops,
-+							   netns_ino)),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.prog_type = BPF_PROG_TYPE_SOCK_OPS,
-+},
+diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
+index 462b3cde0675..e4aa268d2e38 100644
+--- a/tools/perf/Documentation/perf-config.txt
++++ b/tools/perf/Documentation/perf-config.txt
+@@ -564,9 +564,12 @@ llvm.*::
+ 	llvm.clang-bpf-cmd-template::
+ 		Cmdline template. Below lines show its default value. Environment
+ 		variable is used to pass options.
+-		"$CLANG_EXEC -D__KERNEL__ $CLANG_OPTIONS $KERNEL_INC_OPTIONS \
+-		-Wno-unused-value -Wno-pointer-sign -working-directory \
+-		$WORKING_DIR  -c $CLANG_SOURCE -target bpf -O2 -o -"
++		"$CLANG_EXEC -D__KERNEL__ -D__NR_CPUS__=$NR_CPUS "\
++		"-DLINUX_VERSION_CODE=$LINUX_VERSION_CODE "	\
++		"$CLANG_OPTIONS $PERF_BPF_INC_OPTIONS $KERNEL_INC_OPTIONS " \
++		"-Wno-unused-value -Wno-pointer-sign "		\
++		"-working-directory $WORKING_DIR "		\
++		"-c \"$CLANG_SOURCE\" -target bpf $CLANG_EMIT_LLVM -O2 -o - $LLVM_OPTIONS_PIPE"
+ 
+ 	llvm.clang-opt::
+ 		Options passed to clang.
 -- 
-2.21.0
+2.17.1
 
