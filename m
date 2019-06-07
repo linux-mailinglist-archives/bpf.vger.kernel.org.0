@@ -2,113 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D0638719
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2019 11:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0758138779
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2019 11:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbfFGJce (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Jun 2019 05:32:34 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:35128 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726671AbfFGJcd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Jun 2019 05:32:33 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 7105530C1206;
-        Fri,  7 Jun 2019 09:32:31 +0000 (UTC)
-Received: from carbon (ovpn-200-32.brq.redhat.com [10.40.200.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7C02710A4B42;
-        Fri,  7 Jun 2019 09:32:21 +0000 (UTC)
-Date:   Fri, 7 Jun 2019 11:32:20 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Toshiaki Makita <toshiaki.makita1@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1727233AbfFGJ6n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Jun 2019 05:58:43 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:37097 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726996AbfFGJ6m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Jun 2019 05:58:42 -0400
+Received: by mail-qk1-f196.google.com with SMTP id d15so846117qkl.4
+        for <bpf@vger.kernel.org>; Fri, 07 Jun 2019 02:58:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=DYaslGuRCa44w27gCTBvwFQNPiCOo89j5a92HT1O398=;
+        b=gNCRPlL5SC+waW1M964joyZ8kMUdAunRd0kG2R0C3sWB5B8AwM4yXoHZDbl/s+VEtP
+         WYXbP6xATcoLWTTvcuy9SFgWcIg7JbxHPYcew0ZPeQ/QY3/fxBBsWrcpj0qPc8EpyRcM
+         nvhTc2y5F3BrqmiUNxdGpNx5vpDhO8OCPI6D555S9mzfUR5vAiGGYgarsFHsBdGccDiA
+         80LZRj2aZdhvOfLehAI5nE1cZz+Jy7Xm/Qe0HdCFW1Pj9z+sH+YhYHITYZaV8IRjkSjh
+         92oT/4VuYF9Ow5L2FyT4NqFYMe1hijDDrM1bJwUZ86MHz8CZlXfzrCKDYf7NEwdtHN5F
+         rwMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DYaslGuRCa44w27gCTBvwFQNPiCOo89j5a92HT1O398=;
+        b=XoGRdn+7lqt7ut1oM25BZxkbW4Qv/lkuI0NHR/FJ0vzyBSMo1cj277eZ4aH0PUv0eG
+         elyojWfXlAx/ou6WRoxiMvKUc7t4rBfd1j3/ETo+jfRjy7x6FWNTgbr//O1WTRLq1B0Y
+         9Iiu86+zdTO40DyyRbe195gjC6dsr0u1CfiQIgGWYD8xtNloM3YLnyMZuHE6IQmaiFgJ
+         KC/dcTz/BCy/j1YVLNcFGgRqInzD6tWcqrOqlMPheuBL0vYWGMea9Yr6pq9vmpI9UflV
+         xQWWBM9MMjO7Vvvs9zlk4NLYpV9A4/NLy/+9+AUkoWwlf9tKytmHH+QFfqiEG50WUKYK
+         rhxQ==
+X-Gm-Message-State: APjAAAWppLdvguhrGPnTPCHPaq3uSZIIXVclOs1ii2lzQiSq65oCvylY
+        jmwuJQD/d9wW4ikCEErnjhSQ6A==
+X-Google-Smtp-Source: APXvYqzuPCkCoJMd93+bmUPkXRWcKmfAOtQiwBn348DGiv4tPkZy2smKLzEhRZ2ORX+iZMnBTJy22Q==
+X-Received: by 2002:a05:620a:533:: with SMTP id h19mr43063500qkh.325.1559901521594;
+        Fri, 07 Jun 2019 02:58:41 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s (li1322-146.members.linode.com. [45.79.223.146])
+        by smtp.gmail.com with ESMTPSA id w16sm970120qtc.41.2019.06.07.02.58.35
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 07 Jun 2019 02:58:41 -0700 (PDT)
+Date:   Fri, 7 Jun 2019 17:58:31 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
-        bpf@vger.kernel.org,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, brouer@redhat.com,
-        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-Subject: Re: [PATCH v2 bpf-next 1/2] xdp: Add tracepoint for bulk XDP_TX
-Message-ID: <20190607113220.1ea4093a@carbon>
-In-Reply-To: <e0266202-5db6-123c-eba6-33e5c5c4ba6d@gmail.com>
-References: <20190605053613.22888-1-toshiaki.makita1@gmail.com>
-        <20190605053613.22888-2-toshiaki.makita1@gmail.com>
-        <20190605095931.5d90b69c@carbon>
-        <abd43c39-afb7-acd4-688a-553cec76f55c@gmail.com>
-        <20190606214105.6bf2f873@carbon>
-        <e0266202-5db6-123c-eba6-33e5c5c4ba6d@gmail.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] perf augmented_raw_syscalls: Support arm64 raw
+ syscalls
+Message-ID: <20190607095831.GG5970@leoy-ThinkPad-X240s>
+References: <20190606094845.4800-1-leo.yan@linaro.org>
+ <20190606094845.4800-4-leo.yan@linaro.org>
+ <20190606133838.GC30166@kernel.org>
+ <20190606141231.GC5970@leoy-ThinkPad-X240s>
+ <20190606144412.GC21245@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.46]); Fri, 07 Jun 2019 09:32:33 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190606144412.GC21245@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 7 Jun 2019 11:22:00 +0900
-Toshiaki Makita <toshiaki.makita1@gmail.com> wrote:
+Hi Arnaldo,
 
-> On 2019/06/07 4:41, Jesper Dangaard Brouer wrote:
-> > On Thu, 6 Jun 2019 20:04:20 +0900
-> > Toshiaki Makita <toshiaki.makita1@gmail.com> wrote:
-> >   
-> >> On 2019/06/05 16:59, Jesper Dangaard Brouer wrote:  
-> >>> On Wed,  5 Jun 2019 14:36:12 +0900
-> >>> Toshiaki Makita <toshiaki.makita1@gmail.com> wrote:
-> >>>      
-[...]
-> >>
-> >> So... prog_id is the problem. The program can be changed while we are
-> >> enqueueing packets to the bulk queue, so the prog_id at flush may be an
-> >> unexpected one.  
+On Thu, Jun 06, 2019 at 11:44:12AM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Jun 06, 2019 at 10:12:31PM +0800, Leo Yan escreveu:
+> > Hi Arnaldo,
 > > 
-> > Hmmm... that sounds problematic, if the XDP bpf_prog for veth can
-> > change underneath, before the flush.  Our redirect system, depend on
-> > things being stable until the xdp_do_flush_map() operation, as will
-> > e.g. set per-CPU (bpf_redirect_info) map_to_flush pointer (which depend
-> > on XDP prog), and expect it to be correct/valid.  
+> > On Thu, Jun 06, 2019 at 10:38:38AM -0300, Arnaldo Carvalho de Melo wrote:
+> > > Em Thu, Jun 06, 2019 at 05:48:44PM +0800, Leo Yan escreveu:
+> > > > This patch adds support for arm64 raw syscall numbers so that we can use
+> > > > it on arm64 platform.
+> > > > 
+> > > > After applied this patch, we need to specify macro -D__aarch64__ or
+> > > > -D__x86_64__ in compilation option so Clang can use the corresponding
+> > > > syscall numbers for arm64 or x86_64 respectively, other architectures
+> > > > will report failure when compilation.
+> > > 
+> > > So, please check what I have in my perf/core branch, I've completely
+> > > removed arch specific stuff from augmented_raw_syscalls.c.
+> > > 
+> > > What is done now is use a map to specify what to copy, that same map
+> > > that is used to state which syscalls should be traced.
+> > > 
+> > > It uses that tools/perf/arch/arm64/entry/syscalls/mksyscalltbl to figure
+> > > out the mapping of syscall names to ids, just like is done for x86_64
+> > > and other arches, falling back to audit-libs when that syscalltbl thing
+> > > is not present.
+> > 
+> > Actually I have noticed mksyscalltbl has been enabled for arm64, and
+> > had to say your approach is much better :)
+> > 
+> > Thanks for the info and I will try your patch at my side.
 > 
-> Sorry, I don't get how maps depend on programs.
+> That is excellent news! I'm eager to hear from you if this perf+BPF
+> integration experiment works for arm64.
 
-BPF/XDP programs have a reference count on the map (e.g. used for
-redirect) and when the XDP is removed, and last refcnt for the map is
-reached, then the map is also removed (redirect maps does a call_rcu
-when shutdown).
+I tested with the lastest perf/core branch which contains the patch:
+'perf augmented_raw_syscalls: Tell which args are filenames and how
+many bytes to copy' and got the error as below:
 
-> At least xdp_do_redirect_map() handles map_to_flush change during NAPI. 
-> Is there a problem when the map is not changed but the program is changed?
-> Also I believe this is not veth-specific behavior. Looking at tun and 
-> i40e, they seem to change xdp_prog without stopping data path.
- 
-I guess this could actually happen, but we are "saved" by the
-'map_to_flush' (pointer) is still valid due to RCU protection.
+# perf trace -e string -e /mnt/linux-kernel/linux-cs-dev/tools/perf/examples/bpf/augmented_raw_syscalls.c
+Error:  Invalid syscall access, chmod, chown, creat, futimesat, lchown, link, lstat, mkdir, mknod, newfstatat, open, readlink, rename,
+rmdir, stat, statfs, symlink, truncate, unlink
+Hint:   try 'perf list syscalls:sys_enter_*'
+Hint:   and: 'man syscalls'
 
-But it does look fishy, as our rcu_read_lock's does not encapsulation
-this. There is RCU-read-section in veth_xdp_rcv_skb(), which via can
-call xdp_do_redirect() which set per-CPU ri->map_to_flush.  
+So seems mksyscalltbl has not included completely for syscalls, I
+use below command to generate syscalltbl_arm64[] array and it don't
+include related entries for access, chmod, chown, etc ...
 
-Do we get this protection by running under softirq, and does this
-prevent an RCU grace-period (call_rcu callbacks) from happening?
-(between veth_xdp_rcv_skb() and xdp_do_flush_map() in veth_poll())
+You could refer the generated syscalltbl_arm64 in:
+http://paste.ubuntu.com/p/8Bj7Jkm2mP/
 
+> I'm now trying to get past the verifier when checking if more than one
+> syscall arg is a filename, i.e. things like the rename* family, that
+> take two filenames.
+> 
+> An exercise in loop unrolling, providing the right hints to the
+> verifier, making sure clang don't trash those via explicit barriers, and
+> a lot of patience, limitless fun! ;-)
 
-To Toshiaki, regarding your patch 2/2, you are not affected by this
-per-CPU map storing, as you pass along the bulk-queue.  I do see you
-point, with prog_id could change.  Could you change the tracepoint to
-include the 'act' and place 'ifindex' above this in the struct, this way
-the 'act' member is in the same location/offset as other XDP
-tracepoints.  I see the 'ifindex' as the identifier for this tracepoint
-(other have map_id or prog_id in this location).
+Cool!  Please feel free let me know if need me to do testing for this.
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Thanks,
+Leo Yan
