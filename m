@@ -2,145 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9FD39463
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2019 20:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1DD3948F
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2019 20:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731793AbfFGSde (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Jun 2019 14:33:34 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:34528 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730870AbfFGSde (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Jun 2019 14:33:34 -0400
-Received: by mail-qt1-f196.google.com with SMTP id m29so3450768qtu.1;
-        Fri, 07 Jun 2019 11:33:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=QNRX9KnxWkZ2r9K8YGQq6ZdDeDJ/GrTZUflSmXosl7M=;
-        b=bWHWpsvEXP6UCqxstvYTLpY98dCZdRFEJaXRlEBBKPuFW7gjzbELeALwqVKt5gMcoO
-         OitNPdnpbl3Agn1TV1Zj+XaK9RHHEsCzeC4CUgDIzpSliYHVHJjRRQh9g4Nv+gX9hd1G
-         E8VQ5EMXS0VSS8hp+66tlYAFV5QwYz8GHWnFaKAGw7E8Xd5tjulhLKvA5qO49wCjyuzW
-         ah2MSK5omCXAGvmMFmOAE8wDRlX1cGnx8sBOKokrHZ+hF1RacuN+ac4vnSJeRPYfEt2d
-         e8rCKl2BwFSMa/UQYi1w2iBQua3fbimTOmK4HYZgvP7y2inEaALM4IyBVwsWYOVIkN0E
-         P6pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QNRX9KnxWkZ2r9K8YGQq6ZdDeDJ/GrTZUflSmXosl7M=;
-        b=r41Gh2le1OZOrwIV/kcX4E1TZGWRqtXjZQrhixT9YU23DPDn5vIHt9wHhyZEW0IbZJ
-         SD9zV+epWzJf/t8Ja0Uw3puNZfBxs4TUlmXv6+FX0wROiRvvVO0XivLVeSNQ7UUp9Qee
-         Tf1cewGnAO1tUe2pFQzIR1UTbrEgnSP2flxAngrO0pdJ7e7ghmHfhEkYSjJL7SmNgNO8
-         OAWmJ3Zuz8nCw4X5iV7247ijBLHultWHXJLj3aV4+rQKZ+fO63NbBrmA3c1BKgQbhUNU
-         EW1HKPcMhb+jTLl6feN1fmQBVnnXyzp2hn7sIiC9/VgMyhoEVxLOycGsfiqO1rF6k4bt
-         aEXQ==
-X-Gm-Message-State: APjAAAUCBwzDOVFtr81LOcd9WaaQ680WLnDSMI1q+dsiHCaAViR3Jnyv
-        PHF34westCdbYhFFM7S5Ye4=
-X-Google-Smtp-Source: APXvYqywQCAflJJIG/WDcICjNR9y51jZgagcRPT2LEDOooYhRTB2XYGnyCKSbsqBjPF7IaWwtzFTOg==
-X-Received: by 2002:ac8:18b2:: with SMTP id s47mr46754820qtj.75.1559932412813;
-        Fri, 07 Jun 2019 11:33:32 -0700 (PDT)
-Received: from quaco.ghostprotocols.net (187-26-97-17.3g.claro.net.br. [187.26.97.17])
-        by smtp.gmail.com with ESMTPSA id o6sm1604801qtc.47.2019.06.07.11.33.31
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 07 Jun 2019 11:33:31 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 4093741149; Fri,  7 Jun 2019 15:33:28 -0300 (-03)
-Date:   Fri, 7 Jun 2019 15:33:28 -0300
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1729930AbfFGSon (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Jun 2019 14:44:43 -0400
+Received: from casper.infradead.org ([85.118.1.10]:55408 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728873AbfFGSon (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Jun 2019 14:44:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=okj69MZGvSUR6PKRM1mo76QwPQAo0KpBD3JOl7izOGQ=; b=tkvWPXolFrV5gC6B/5s5iq8MdS
+        71AqKowXyuv3bN8SkI+l2hm+nntwA7kf9Vp1BZbYZ7a0zstKeUuQK4lQC4lL7Hf/lc9Qnhq/nADyG
+        oZpW6Uvw7OAz13o5FduofHVYHVUtVImMNlJ082ilSm5zr5jpHf0z+vlpbgt2oDx/I4RcAQym43m5b
+        /rAepyYSek6lQnoC10I5TM/3wYS5L00RHVmJ+gp+qSRzJhGgsVMWutpTVH0ns9VVtodda92tav6RA
+        eeqwTIvWGagPvmBIBDHO/e0ogkZerSFtXxQWrFNw9IdUifKf6NcumiewyU6UVX+vIx6FuKNMcCpa7
+        qorGd03g==;
+Received: from [179.181.119.115] (helo=coco.lan)
+        by casper.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1hZJqw-0006VH-9M; Fri, 07 Jun 2019 18:44:38 +0000
+Date:   Fri, 7 Jun 2019 15:44:30 -0300
+From:   Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@infradead.org>,
+        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] perf augmented_raw_syscalls: Document clang
- configuration
-Message-ID: <20190607183328.GN21245@kernel.org>
-References: <20190606094845.4800-1-leo.yan@linaro.org>
- <20190606094845.4800-5-leo.yan@linaro.org>
- <20190606140800.GF30166@kernel.org>
- <20190606143532.GD5970@leoy-ThinkPad-X240s>
- <20190606182941.GE21245@kernel.org>
- <20190607143849.GI5970@leoy-ThinkPad-X240s>
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 00/22] Some documentation fixes
+Message-ID: <20190607154430.4879976d@coco.lan>
+In-Reply-To: <20190607115521.6bf39030@lwn.net>
+References: <cover.1559656538.git.mchehab+samsung@kernel.org>
+        <20190607115521.6bf39030@lwn.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190607143849.GI5970@leoy-ThinkPad-X240s>
-X-Url:  http://acmel.wordpress.com
-User-Agent: Mutt/1.11.3 (2019-02-01)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Jun 07, 2019 at 10:38:49PM +0800, Leo Yan escreveu:
-> Hi Arnaldo,
+Em Fri, 7 Jun 2019 11:55:21 -0600
+Jonathan Corbet <corbet@lwn.net> escreveu:
+
+> On Tue,  4 Jun 2019 11:17:34 -0300
+> Mauro Carvalho Chehab <mchehab+samsung@kernel.org> wrote:
 > 
-> On Thu, Jun 06, 2019 at 03:29:41PM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Thu, Jun 06, 2019 at 10:35:32PM +0800, Leo Yan escreveu:
-> > > On Thu, Jun 06, 2019 at 11:08:00AM -0300, Arnaldo Carvalho de Melo wrote:
-> > > > Em Thu, Jun 06, 2019 at 05:48:45PM +0800, Leo Yan escreveu:
-> > > > > To build this program successfully with clang, there have three
-> > > > > compiler options need to be specified:
-> > > > > 
-> > > > >   - Header file path: tools/perf/include/bpf;
-> > > > >   - Specify architecture;
-> > > > >   - Define macro __NR_CPUS__.
-> > > > 
-> > > > So, this shouldn't be needed, all of this is supposed to be done
-> > > > automagically, have you done a 'make -C tools/perf install'?
-> > > 
-> > > I missed the up operation.  But after git pulled the lastest code base
-> > > from perf/core branch and used the command 'make -C tools/perf
-> > > install', I still saw the eBPF build failure.
-> > > 
-> > > Just now this issue is fixed after I removed the config
-> > > 'clang-bpf-cmd-template' from ~/.perfconfig;  the reason is I followed
-> > > up the Documentation/perf-config.txt to set the config as below:
-> > > 
-> > >   clang-bpf-cmd-template = "$CLANG_EXEC -D__KERNEL__ $CLANG_OPTIONS \
-> > >                           $KERNEL_INC_OPTIONS -Wno-unused-value \
-> > >                           -Wno-pointer-sign -working-directory \
-> > >                           $WORKING_DIR -c $CLANG_SOURCE -target bpf \
-> > >                           -O2 -o -"
-> > > 
-> > > In fact, util/llvm-utils.c has updated the default configuration as
-> > > below:
-> > > 
-> > >   #define CLANG_BPF_CMD_DEFAULT_TEMPLATE                          \
-> > >                 "$CLANG_EXEC -D__KERNEL__ -D__NR_CPUS__=$NR_CPUS "\
-> > >                 "-DLINUX_VERSION_CODE=$LINUX_VERSION_CODE "     \
-> > >                 "$CLANG_OPTIONS $PERF_BPF_INC_OPTIONS $KERNEL_INC_OPTIONS " \
-> > >                 "-Wno-unused-value -Wno-pointer-sign "          \
-> > >                 "-working-directory $WORKING_DIR "              \
-> > >                 "-c \"$CLANG_SOURCE\" -target bpf $CLANG_EMIT_LLVM -O2 -o - $LLVM_OPTIONS_PIPE"
-> > > 
-> > > Maybe should update Documentation/perf-config.txt to tell users the
-> > > real default value of clang-bpf-cmd-template?
+> > Fix several warnings and broken links.
 > > 
-> > Sure, if you fell like doing this, please update and also please figure
-> > out when the this changed and add a Fixes: that cset,
+> > This series was generated against linux-next, but was rebased to be applied at
+> > docs-next. It should apply cleanly on either tree.
+> > 
+> > There's a git tree with all of them applied on the top of docs/docs-next
+> > at:
+> > 
+> > https://git.linuxtv.org/mchehab/experimental.git/log/?h=fix_doc_links_v2  
 > 
-> Thanks for guidance.  Have sent patch for this [1].
+> So I'll admit I've kind of lost track of which of these are applied, which
+> have comments, etc.  When you feel things have settled, can you get me an
+> updated set and I'll get them applied?
 
-yeah, applied already.
+What I usually do here to check what was already applied (besides
+looking e-mails) is to reset my tree against yours, then pull from
+linux-next and pull from my old branch with those patches.
 
-- Arnaldo
- 
-> > Its great that you're going thru the docs and making sure the
-> > differences are noted so that we update the docs, thanks a lot!
-> 
-> You are welcome!
+Then, I reset again to your tree, in order to make easier for you
+to apply. It should be noticed that, due to this, you might actually
+see a few more warnings on your tree, if a patch on this series
+fix an issue that it is at linux next but didn't arrive your
+tree.
+
+Yet, all patches apply cleanly on your tree.
+
+After doing that, there are 17 patches yet to be applied. Two new
+patches are now needed too, due to vfs.txt -> vfs.rst and
+pci.txt -> pci.rst renames.
+
+The patches against your tree are at:
+
+	https://git.linuxtv.org/mchehab/experimental.git/log/?h=fix_doc_links_v3.3
+
+For convenience, I'm sending them again as a new patch series
+(with the two extra patches fixing the recent issues).
 
 
+Thanks,
+Mauro
