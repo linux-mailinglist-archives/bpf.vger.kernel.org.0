@@ -2,102 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B292C38D49
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2019 16:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A7438D7C
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2019 16:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729695AbfFGOgW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Jun 2019 10:36:22 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:35732 "EHLO
+        id S1729058AbfFGOjC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Jun 2019 10:39:02 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:39554 "EHLO
         mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729441AbfFGOfd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Jun 2019 10:35:33 -0400
-Received: by mail-qt1-f195.google.com with SMTP id d23so2511680qto.2
-        for <bpf@vger.kernel.org>; Fri, 07 Jun 2019 07:35:32 -0700 (PDT)
+        with ESMTP id S1728252AbfFGOjC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Jun 2019 10:39:02 -0400
+Received: by mail-qt1-f195.google.com with SMTP id i34so2503599qta.6
+        for <bpf@vger.kernel.org>; Fri, 07 Jun 2019 07:39:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=GbgsWWJsYfuFE0Ayk1WcQ4Df2lBstgQ/CvJS7+ETd2s=;
-        b=QGUXZscHEoL0COiYgKJzGauvXiRnD/yzWrfJsYJcTclbPX9TCvCrdfjxhLSv6VqVOy
-         Ds63L+KT50jtxVnmqpdXm+k0hnKJi5RXnLS0g7q5/aYYikllYLDJlOL5jJq9fIyS2KXT
-         N4kSzGLH1BqH5+sIoQRhIEIplVz6xOOFXH3kUevzoxUvalU97d0JQV8t5yyidDelIDry
-         k8NouTI/Vwk3wkIkBwrPlJNHi55Eas42L1+bSUxShFHT/PfTIYvWn+XASslmcOf+opCq
-         Xe44NUEbE+9/+hU7i7HYNQl4s6GIv+QUbmYg2o2r2mDo0R1jnV48MtbC/0gPLmPAyG0T
-         qL2A==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=I6Vo/0BQbeVOQIU2II6ANL7fw8IZQXHZ3ofS+Wbw2iM=;
+        b=t7ciDZMWEN4uFEwkBu3XhfxO00cpYxCwEvm3eSDwsKGCEMOmhBaOG5ZLTaKQpmI3fv
+         DMS4vvDVv7Bj1nejX3DXVrEo0MU736ABNq165Hp5XOx4gO/hGxK0TcSWTBsBJ7A0mbf7
+         4rTvF2JIjkcZD+YzcBJ/4sfbFj1ElP2OQPUbNp1bOiA0SkVw7Te6WxerYSvsxmw0UYOl
+         ajh/c7YlFwW2juSIdwU9pF7Y0tkVO4z7NTkEez5sEXcfrEowgoC/aJi1UEdd5NvE55+p
+         TPUYylhz0NCyGOylFKP2gKmGAyMRW5wHx3CBWwaVgFeDYZtdxdyZnScyD42qZh7L1v4k
+         Z9Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=GbgsWWJsYfuFE0Ayk1WcQ4Df2lBstgQ/CvJS7+ETd2s=;
-        b=G0UuswP9wuETUmAvOeBbNZZDMscfyEgKrZspQaTMJ5fLeML6UNwkuU5/q8+D6DmpEQ
-         xdJsmIfxsGwj9JPhlhDL2P5Jx8w76mUiEWmi7EAUEUCK3iNp5gyp8tHVXSj8pHett9II
-         TqGtfmVLKhkitqyXpbAuO1ry/hw/C0HC5jHkV/7dZDCCj1iwYsT7dOLHWnQcLzYlY6mg
-         AltzpYAqTrQEA77s+SAL/hOZxLceI0xRLO6Qai+wNTiCDcJZA7bYLgKgVmJWSMrqb2XP
-         9if0NjAAWE2MR1cof9bgqJ8tQv/ZFsHe4nlSOWZEz1v5a/iWUGiTrgujNOcw4SUJ/Zk7
-         szxw==
-X-Gm-Message-State: APjAAAXvqYMd4An98+BKbMd8Qy0yCpSbIGZk+fiskMCsEpAemoXTI2H3
-        4ps0uwDqGDE2ShGnXLekC73j6u+TI1xN6A==
-X-Google-Smtp-Source: APXvYqylHXL8PP8WU7yZy4f3dkfIgSoGD/enIs4QVNUfQMUWy/e2kCWQ7kzXKicoMTtJqeMAeDYHQA==
-X-Received: by 2002:ac8:2ca5:: with SMTP id 34mr47371137qtw.246.1559918132104;
-        Fri, 07 Jun 2019 07:35:32 -0700 (PDT)
-Received: from localhost.localdomain (li1322-146.members.linode.com. [45.79.223.146])
-        by smtp.gmail.com with ESMTPSA id c5sm1243963qkb.41.2019.06.07.07.35.24
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 07 Jun 2019 07:35:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=I6Vo/0BQbeVOQIU2II6ANL7fw8IZQXHZ3ofS+Wbw2iM=;
+        b=SXpsofZBK7T1OlD3UNQzfIvVF/0lZEq/t34qQPGOVRpGUEcaaY6EaY2/DdncJEiE2Z
+         sshI2j2Lxg/5ydC8MDnEzWPEywokgpOM6VSPm0ueEnNjtzhBcOuIKxihsled8kSd9h4l
+         igpwDNtuB0KB2FJB+2YM6HagQXYkSR5HEfDTgwokOKi8Ik6T1GJw1GryBE6ZzFwFtovW
+         n+wVdMxC67CswMOa0y/eh8Hi/FPFzWThSAnrhyEEpXrO4hPvq+sOa3pAVrsvhIyZilh5
+         NLlPawnjgrsmhwVuLbw8TImDwI0hTCHwFr8M9ZEwF3eFUGH0AVzzcT4PQ6U25lb4Cbr1
+         l6TQ==
+X-Gm-Message-State: APjAAAV76SCpapHtYo/1276mXKYmGzs7+n05lemhhz1Ol9y32pUr46tz
+        HmFX3ZeIx23m8pa8OoLV49lBbA==
+X-Google-Smtp-Source: APXvYqzwMI+9SOSqjmaaTm/028fJXoeCC6JvnHEJGe3K0nGoj7mPi0aT119mPcB+bjuwt62hBqe0FA==
+X-Received: by 2002:a0c:9acb:: with SMTP id k11mr44200846qvf.85.1559918341516;
+        Fri, 07 Jun 2019 07:39:01 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s (li1322-146.members.linode.com. [45.79.223.146])
+        by smtp.gmail.com with ESMTPSA id s23sm387152qtk.31.2019.06.07.07.38.53
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 07 Jun 2019 07:39:00 -0700 (PDT)
+Date:   Fri, 7 Jun 2019 22:38:49 +0800
 From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andi Kleen <ak@linux.intel.com>, Mark Drayton <mbd@fb.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH] perf config: Update default value for llvm.clang-bpf-cmd-template
-Date:   Fri,  7 Jun 2019 22:35:08 +0800
-Message-Id: <20190607143508.18141-1-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
+Subject: Re: [PATCH v2 4/4] perf augmented_raw_syscalls: Document clang
+ configuration
+Message-ID: <20190607143849.GI5970@leoy-ThinkPad-X240s>
+References: <20190606094845.4800-1-leo.yan@linaro.org>
+ <20190606094845.4800-5-leo.yan@linaro.org>
+ <20190606140800.GF30166@kernel.org>
+ <20190606143532.GD5970@leoy-ThinkPad-X240s>
+ <20190606182941.GE21245@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190606182941.GE21245@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The clang bpf cmdline template has defined default value in the file
-tools/perf/util/llvm-utils.c, which has been changed for several times.
+Hi Arnaldo,
 
-This patch updates the documentation to reflect the latest default value
-for the configuration llvm.clang-bpf-cmd-template.
+On Thu, Jun 06, 2019 at 03:29:41PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Jun 06, 2019 at 10:35:32PM +0800, Leo Yan escreveu:
+> > On Thu, Jun 06, 2019 at 11:08:00AM -0300, Arnaldo Carvalho de Melo wrote:
+> > > Em Thu, Jun 06, 2019 at 05:48:45PM +0800, Leo Yan escreveu:
+> > > > To build this program successfully with clang, there have three
+> > > > compiler options need to be specified:
+> > > > 
+> > > >   - Header file path: tools/perf/include/bpf;
+> > > >   - Specify architecture;
+> > > >   - Define macro __NR_CPUS__.
+> > > 
+> > > So, this shouldn't be needed, all of this is supposed to be done
+> > > automagically, have you done a 'make -C tools/perf install'?
+> > 
+> > I missed the up operation.  But after git pulled the lastest code base
+> > from perf/core branch and used the command 'make -C tools/perf
+> > install', I still saw the eBPF build failure.
+> > 
+> > Just now this issue is fixed after I removed the config
+> > 'clang-bpf-cmd-template' from ~/.perfconfig;  the reason is I followed
+> > up the Documentation/perf-config.txt to set the config as below:
+> > 
+> >   clang-bpf-cmd-template = "$CLANG_EXEC -D__KERNEL__ $CLANG_OPTIONS \
+> >                           $KERNEL_INC_OPTIONS -Wno-unused-value \
+> >                           -Wno-pointer-sign -working-directory \
+> >                           $WORKING_DIR -c $CLANG_SOURCE -target bpf \
+> >                           -O2 -o -"
+> > 
+> > In fact, util/llvm-utils.c has updated the default configuration as
+> > below:
+> > 
+> >   #define CLANG_BPF_CMD_DEFAULT_TEMPLATE                          \
+> >                 "$CLANG_EXEC -D__KERNEL__ -D__NR_CPUS__=$NR_CPUS "\
+> >                 "-DLINUX_VERSION_CODE=$LINUX_VERSION_CODE "     \
+> >                 "$CLANG_OPTIONS $PERF_BPF_INC_OPTIONS $KERNEL_INC_OPTIONS " \
+> >                 "-Wno-unused-value -Wno-pointer-sign "          \
+> >                 "-working-directory $WORKING_DIR "              \
+> >                 "-c \"$CLANG_SOURCE\" -target bpf $CLANG_EMIT_LLVM -O2 -o - $LLVM_OPTIONS_PIPE"
+> > 
+> > Maybe should update Documentation/perf-config.txt to tell users the
+> > real default value of clang-bpf-cmd-template?
+> 
+> Sure, if you fell like doing this, please update and also please figure
+> out when the this changed and add a Fixes: that cset,
 
-Fixes: d35b168c3dcd ("perf bpf: Give precedence to bpf header dir")
-Fixes: cb76371441d0 ("perf llvm: Allow passing options to llc in addition to clang")
-Fixes: 1b16fffa389d ("perf llvm-utils: Add bpf include path to clang command line")
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- tools/perf/Documentation/perf-config.txt | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Thanks for guidance.  Have sent patch for this [1].
 
-diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
-index 462b3cde0675..e4aa268d2e38 100644
---- a/tools/perf/Documentation/perf-config.txt
-+++ b/tools/perf/Documentation/perf-config.txt
-@@ -564,9 +564,12 @@ llvm.*::
- 	llvm.clang-bpf-cmd-template::
- 		Cmdline template. Below lines show its default value. Environment
- 		variable is used to pass options.
--		"$CLANG_EXEC -D__KERNEL__ $CLANG_OPTIONS $KERNEL_INC_OPTIONS \
--		-Wno-unused-value -Wno-pointer-sign -working-directory \
--		$WORKING_DIR  -c $CLANG_SOURCE -target bpf -O2 -o -"
-+		"$CLANG_EXEC -D__KERNEL__ -D__NR_CPUS__=$NR_CPUS "\
-+		"-DLINUX_VERSION_CODE=$LINUX_VERSION_CODE "	\
-+		"$CLANG_OPTIONS $PERF_BPF_INC_OPTIONS $KERNEL_INC_OPTIONS " \
-+		"-Wno-unused-value -Wno-pointer-sign "		\
-+		"-working-directory $WORKING_DIR "		\
-+		"-c \"$CLANG_SOURCE\" -target bpf $CLANG_EMIT_LLVM -O2 -o - $LLVM_OPTIONS_PIPE"
- 
- 	llvm.clang-opt::
- 		Options passed to clang.
--- 
-2.17.1
+> Its great that you're going thru the docs and making sure the
+> differences are noted so that we update the docs, thanks a lot!
 
+You are welcome!
+
+Thanks,
+Leo Yan
+
+[1] https://lkml.org/lkml/2019/6/7/477
