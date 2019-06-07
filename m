@@ -2,201 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E423924B
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2019 18:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40230392D6
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2019 19:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730852AbfFGQiJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Jun 2019 12:38:09 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:55038 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730304AbfFGQiI (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 7 Jun 2019 12:38:08 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x57GTRWc011446
-        for <bpf@vger.kernel.org>; Fri, 7 Jun 2019 09:38:07 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=kK787B2fSNLKBrSmlRNcG4ZJqW2AkkeJP293AgQqc94=;
- b=jK6/7JASXOWMM0E1UyrKjDhVoy7dqQ0rKqvbyQxamb/EI9rQKwpODb8yyoYa+M/qhPmQ
- h1hO5broVIZ3kl9YHPCYZQHmZz8UO0bLvfWMdZG614o2FOXx/lrvaYhsaq02QbC9if3c
- RjxiTzSsf8feVpJ+fpyvTgqgpjar2PZwrkU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2syq410xan-18
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 07 Jun 2019 09:38:07 -0700
-Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 7 Jun 2019 09:38:04 -0700
-Received: by devvm3632.prn2.facebook.com (Postfix, from userid 172007)
-        id 912AACD9C6E4; Fri,  7 Jun 2019 09:38:03 -0700 (PDT)
-Smtp-Origin-Hostprefix: devvm
-From:   Hechao Li <hechaol@fb.com>
-Smtp-Origin-Hostname: devvm3632.prn2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     <netdev@vger.kernel.org>, <daniel@iogearbox.net>, <ast@kernel.org>,
-        <kernel-team@fb.com>, Hechao Li <hechaol@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v4 bpf-next 2/2] bpf: use libbpf_num_possible_cpus in bpftool and selftests
-Date:   Fri, 7 Jun 2019 09:37:59 -0700
-Message-ID: <20190607163759.2211904-3-hechaol@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190607163759.2211904-1-hechaol@fb.com>
-References: <20190607163759.2211904-1-hechaol@fb.com>
-X-FB-Internal: Safe
+        id S1730306AbfFGRL1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Jun 2019 13:11:27 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:35592 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729947AbfFGRL1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Jun 2019 13:11:27 -0400
+Received: by mail-qt1-f193.google.com with SMTP id d23so3141378qto.2
+        for <bpf@vger.kernel.org>; Fri, 07 Jun 2019 10:11:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wV65jHmXxXYwEI5deTNY6dp3x/XfRTRroK95qm1AXzw=;
+        b=phJjV8OS/Kp6CZAQGOf/4k5LaQy3VZustLDdJD0AQb1n/CCV8y24sI7aYYBRCEILHr
+         25JDQ38p0fV6t/Rgo4ONy91cN+lAriSRzMXmQCYP05GFkZ8o32V16etQUYZheNDqYPql
+         jGcq3Rc6qETLpvjNQugy6zMNh15ymtjfajlCqP6MlrdXRe03qQqlno1uWWrs+xf/Dls3
+         49hFvcCz2AIdCIW/2ZHClvE3DHz19JJRpDnSuEXnHq5gblorX0bKRIQooOPL0C6fZagM
+         FfcrX+uc9YPb5IZNxLCF/0X9hc9rxb3NoaFN0PrWDBM0a9P8zp7DchwAjqHYAl5hCAKd
+         OqYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wV65jHmXxXYwEI5deTNY6dp3x/XfRTRroK95qm1AXzw=;
+        b=c0cuDOQV1WkzY1aLc4X6FmiwXSczdtJKkUNSxmUjo/CvJigwkGFgopH/RHhRB2ez3D
+         gAiOGwxcBfZLQQNWgrUHRtFeJenkTmeN3B0pGSwrZEKPub2Bc9pf0OlKADzeDPzNq7JX
+         uZ7YR/QbAWYq5MS2PFPKFgyJ32EX7S57AttTLAg+pWTTN14gAgm1DlMi6+oHrDGWwXx4
+         yN3AFcDuFMpYI3e3/ETTo0jz18a3uPUh3fjoTDzGrxtEhWw2zLWMGZy+f9MjDAdoFMS+
+         eb6IvvfT+t6kYZnyqf2n99ZVYqwX3gHQR0bCu48WXXY2tjAG6hkNOB3ufToHg4lHKryY
+         sDSg==
+X-Gm-Message-State: APjAAAXZZC0QXIg52m11rTWbXn3ZiqYUrXEKF+JRoCZ1RbET6vKo19wr
+        xuM8RY4m24i3ZlGFX31uYMAc7Q==
+X-Google-Smtp-Source: APXvYqwiGoCKNJb3ycGShjtp56s2py2nMCvyTEGRhup71swNyv6Vc3Rto1jSiFCFCEReFvSgE46JrA==
+X-Received: by 2002:a0c:f78d:: with SMTP id s13mr24081609qvn.156.1559927486643;
+        Fri, 07 Jun 2019 10:11:26 -0700 (PDT)
+Received: from jkicinski-Precision-T1700.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id 15sm1517893qtf.2.2019.06.07.10.11.24
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 07 Jun 2019 10:11:25 -0700 (PDT)
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     alexei.starovoitov@gmail.com, daniel@iogearbox.net
+Cc:     oss-drivers@netronome.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>
+Subject: [PATCH bpf-next] samples: bpf: don't run probes at the local make stage
+Date:   Fri,  7 Jun 2019 10:11:16 -0700
+Message-Id: <20190607171116.19173-1-jakub.kicinski@netronome.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-07_08:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=13 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=727 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906070110
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use the newly added bpf_num_possible_cpus() in bpftool and selftests
-and remove duplicate implementations.
+Quentin reports that commit 07c3bbdb1a9b ("samples: bpf: print
+a warning about headers_install") is producing the false
+positive when make is invoked locally, from the samples/bpf/
+directory.
 
-Signed-off-by: Hechao Li <hechaol@fb.com>
-Acked-by: Song Liu <songliubraving@fb.com>
+When make is run locally it hits the "all" target, which
+will recursively invoke make through the full build system.
+
+Speed up the "local" run which doesn't actually build anything,
+and avoid false positives by skipping all the probes if not in
+kbuild environment (cover both the new warning and the BTF
+probes).
+
+Reported-by: Quentin Monnet <quentin.monnet@netronome.com>
+Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
 ---
- tools/bpf/bpftool/common.c             | 53 +++-----------------------
- tools/testing/selftests/bpf/bpf_util.h | 37 +++---------------
- 2 files changed, 10 insertions(+), 80 deletions(-)
+ samples/bpf/Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index f7261fad45c1..5215e0870bcb 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -21,6 +21,7 @@
- #include <sys/vfs.h>
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index 4074a66a70ca..9eb5d733f575 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -206,6 +206,8 @@ HOSTCC = $(CROSS_COMPILE)gcc
+ CLANG_ARCH_ARGS = -target $(ARCH)
+ endif
  
- #include <bpf.h>
-+#include <libbpf.h> /* libbpf_num_possible_cpus */
++# Don't evaluate probes and warnings if we need to run make recursively
++ifneq ($(src),)
+ HDR_PROBE := $(shell echo "\#include <linux/types.h>\n struct list_head { int a; }; int main() { return 0; }" | \
+ 	$(HOSTCC) $(KBUILD_HOSTCFLAGS) -x c - -o /dev/null 2>/dev/null && \
+ 	echo okay)
+@@ -232,6 +234,7 @@ ifneq ($(and $(BTF_LLC_PROBE),$(BTF_PAHOLE_PROBE),$(BTF_OBJCOPY_PROBE)),)
+ 	DWARF2BTF = y
+ endif
+ endif
++endif
  
- #include "main.h"
- 
-@@ -439,57 +440,13 @@ unsigned int get_page_size(void)
- 
- unsigned int get_possible_cpus(void)
- {
--	static unsigned int result;
--	char buf[128];
--	long int n;
--	char *ptr;
--	int fd;
--
--	if (result)
--		return result;
--
--	fd = open("/sys/devices/system/cpu/possible", O_RDONLY);
--	if (fd < 0) {
--		p_err("can't open sysfs possible cpus");
--		exit(-1);
--	}
--
--	n = read(fd, buf, sizeof(buf));
--	if (n < 2) {
--		p_err("can't read sysfs possible cpus");
--		exit(-1);
--	}
--	close(fd);
-+	int cpus = libbpf_num_possible_cpus();
- 
--	if (n == sizeof(buf)) {
--		p_err("read sysfs possible cpus overflow");
-+	if (cpus < 0) {
-+		p_err("Can't get # of possible cpus: %s", strerror(-cpus));
- 		exit(-1);
- 	}
--
--	ptr = buf;
--	n = 0;
--	while (*ptr && *ptr != '\n') {
--		unsigned int a, b;
--
--		if (sscanf(ptr, "%u-%u", &a, &b) == 2) {
--			n += b - a + 1;
--
--			ptr = strchr(ptr, '-') + 1;
--		} else if (sscanf(ptr, "%u", &a) == 1) {
--			n++;
--		} else {
--			assert(0);
--		}
--
--		while (isdigit(*ptr))
--			ptr++;
--		if (*ptr == ',')
--			ptr++;
--	}
--
--	result = n;
--
--	return result;
-+	return cpus;
- }
- 
- static char *
-diff --git a/tools/testing/selftests/bpf/bpf_util.h b/tools/testing/selftests/bpf/bpf_util.h
-index a29206ebbd13..6231eafd4a5a 100644
---- a/tools/testing/selftests/bpf/bpf_util.h
-+++ b/tools/testing/selftests/bpf/bpf_util.h
-@@ -6,44 +6,17 @@
- #include <stdlib.h>
- #include <string.h>
- #include <errno.h>
-+#include <libbpf.h>
- 
- static inline unsigned int bpf_num_possible_cpus(void)
- {
--	static const char *fcpu = "/sys/devices/system/cpu/possible";
--	unsigned int start, end, possible_cpus = 0;
--	char buff[128];
--	FILE *fp;
--	int len, n, i, j = 0;
-+	int possible_cpus = libbpf_num_possible_cpus();
- 
--	fp = fopen(fcpu, "r");
--	if (!fp) {
--		printf("Failed to open %s: '%s'!\n", fcpu, strerror(errno));
-+	if (possible_cpus < 0) {
-+		printf("Failed to get # of possible cpus: '%s'!\n",
-+		       strerror(-possible_cpus));
- 		exit(1);
- 	}
--
--	if (!fgets(buff, sizeof(buff), fp)) {
--		printf("Failed to read %s!\n", fcpu);
--		exit(1);
--	}
--
--	len = strlen(buff);
--	for (i = 0; i <= len; i++) {
--		if (buff[i] == ',' || buff[i] == '\0') {
--			buff[i] = '\0';
--			n = sscanf(&buff[j], "%u-%u", &start, &end);
--			if (n <= 0) {
--				printf("Failed to retrieve # possible CPUs!\n");
--				exit(1);
--			} else if (n == 1) {
--				end = start;
--			}
--			possible_cpus += end - start + 1;
--			j = i + 1;
--		}
--	}
--
--	fclose(fp);
--
- 	return possible_cpus;
- }
- 
+ # Trick to allow make to be run from this directory
+ all:
 -- 
-2.17.1
+2.21.0
 
