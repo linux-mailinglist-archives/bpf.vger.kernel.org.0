@@ -2,128 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6AC38209
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2019 02:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F0D38213
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2019 02:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728058AbfFGAKN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jun 2019 20:10:13 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:35635 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbfFGAKN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jun 2019 20:10:13 -0400
-Received: by mail-qt1-f196.google.com with SMTP id d23so367412qto.2
-        for <bpf@vger.kernel.org>; Thu, 06 Jun 2019 17:10:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=PQ2XAR6hZ/EY+FpEUrzo0/+MJOKvGMZ695YybUBi+EY=;
-        b=HiRQ+yygcHxstdNjp+cQvLUkx6aaUQjCRl87yWceOUutMelt+FZe4TlciS1OFslzkH
-         4IsoPgvB+a5fu/0YLTyQ0qtsknTDcLk9spS//TtVnP/HuD6nH2nraeDy0Lwg/V/LtRek
-         RTVzoGcVkNSqSQVwRxjGATRP2ZWaRw+lrg8CZN5mfbpc0X0gG9d/JsV6QTI0Qxau8ihK
-         Vkk9fzYHCSs/urbrNcThyQK7tPMqEbj0PnQPmfTG66kKwgkuJVrb/tYTnw7E4uVgOb06
-         HO7FvlQMiyUi/OtPc1GtqJ7/VVEmPBrT1qQoGlUSMnpCelp6ZeEkhfLgkGjXih6ZRCOR
-         eCSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=PQ2XAR6hZ/EY+FpEUrzo0/+MJOKvGMZ695YybUBi+EY=;
-        b=dbJ5tkPpffu+Ww2HGGxiLgALihPHIaE/wQYtnoMwtbx0faHhF9SsuBi7J47z6TtShB
-         Yb+UPGkJn76STICm5xkCpKTezLSht5u3fzFETlyHLsZYZMaLwUrytO7YP4WzPX5pdNYq
-         UjaJnE/d8ZAA8gY/6+spLyeK3KtBo6e5yeA/xLwerjUBmWLmDXCWrmRneXvrQDZkhIGt
-         jLwUi+6IpD6rNWIacUUNxu+26VGFS6CwoW0X0r119uUu+fZlXVv77jw6aNaIHizhsGbQ
-         DCgV0dbKzQi6xOhbsXo18meX1ewlgXTW+QL2yzTpnzjiWEdojVVdp7bvkNlAfWy4rD6T
-         PcSg==
-X-Gm-Message-State: APjAAAWj9I+eVEi+ICIWkYGoqR8zCza7s+L6qeK4zTMXpVtCNkZoCG+r
-        fsQNMgirJhN+AcStYZ8JtjoU9Q==
-X-Google-Smtp-Source: APXvYqxhjp2q6w6Oi0tn04YexkBWRXpa051ZGZGco961wfnrsM592DrMfmE58IV09hSO2jvFbsB2VA==
-X-Received: by 2002:aed:3fc3:: with SMTP id w3mr16028620qth.168.1559866212082;
-        Thu, 06 Jun 2019 17:10:12 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id v17sm350623qtc.23.2019.06.06.17.10.10
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 06 Jun 2019 17:10:11 -0700 (PDT)
-Date:   Thu, 6 Jun 2019 17:10:07 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Alexei Starovoitov <ast@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@fomichev.me>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
-Subject: Re: [RFC PATCH bpf-next 6/8] libbpf: allow specifying map
- definitions using BTF
-Message-ID: <20190606171007.1e1eb808@cakuba.netronome.com>
-In-Reply-To: <9d0bff7f-3b9f-9d2c-36df-64569061edd6@fb.com>
-References: <20190531202132.379386-1-andriin@fb.com>
-        <20190531202132.379386-7-andriin@fb.com>
-        <20190531212835.GA31612@mini-arch>
-        <CAEf4Bza38VEh9NWTLEReAR_J0eqjsvH1a2T-0AeWqDZpE8YPfA@mail.gmail.com>
-        <20190603163222.GA14556@mini-arch>
-        <CAEf4BzbRXAZMXY3kG9HuRC93j5XhyA3EbWxkLrrZsG7K4abdBg@mail.gmail.com>
-        <20190604010254.GB14556@mini-arch>
-        <f2b5120c-fae7-bf72-238a-b76257b0c0e4@fb.com>
-        <20190604042902.GA2014@mini-arch>
-        <20190604134538.GB2014@mini-arch>
-        <CAEf4BzZEqmnwL0MvEkM7iH3qKJ+TF7=yCKJRAAb34m4+B-1Zcg@mail.gmail.com>
-        <3ff873a8-a1a6-133b-fa20-ad8bc1d347ed@iogearbox.net>
-        <CAEf4BzYr_3heu2gb8U-rmbgMPu54ojcdjMZu7M_VaqOyCNGR5g@mail.gmail.com>
-        <9d0bff7f-3b9f-9d2c-36df-64569061edd6@fb.com>
-Organization: Netronome Systems, Ltd.
+        id S1728163AbfFGAXR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jun 2019 20:23:17 -0400
+Received: from hermes.domdv.de ([193.102.202.1]:3912 "EHLO hermes.domdv.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728164AbfFGAXQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jun 2019 20:23:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=domdv.de;
+         s=dk3; h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=t/CvURF1J8FjGfutT+vOH29IsXY8PPAy08YxlKcW2sI=; b=LESZEO1CZs6FpQ8nXMCtvTHM3b
+        Z9mZMOo9VjdMekzbJV2CASgUhdB9K5lnbS1j0No/UJz039Y6x7/trKAwg4f0vw4e4kwVJ5PfDytp4
+        qdB/WxgBLHNO7ldA7ZA2+PT0BrDJE/UEMEEKQV5kz+3X51QDI/ZWMH7vMr/axNjH5hfU=;
+Received: from [fd06:8443:81a1:74b0::212] (port=3802 helo=castor.lan.domdv.de)
+        by zeus.domdv.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.91)
+        (envelope-from <ast@domdv.de>)
+        id 1hZ2f4-0002Pq-HH; Fri, 07 Jun 2019 02:23:14 +0200
+Received: from woody.lan.domdv.de ([10.1.9.28] helo=host028-server-9.lan.domdv.de)
+        by castor.lan.domdv.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.91)
+        (envelope-from <ast@domdv.de>)
+        id 1hZ2eN-0000OZ-UY; Fri, 07 Jun 2019 02:22:31 +0200
+Message-ID: <e9f7226d1066cb0e86b60ad3d84cf7908f12a1cc.camel@domdv.de>
+Subject: Re: eBPF verifier slowness, more than 2 cpu seconds for about 600
+ instructions
+From:   Andreas Steinmetz <ast@domdv.de>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Date:   Fri, 07 Jun 2019 02:22:47 +0200
+In-Reply-To: <CAADnVQLmrF579H6-TAdMK8wDM9eUz2rP3F6LmhkSW4yuVKJnPg@mail.gmail.com>
+References: <f0179a5f61ecd32efcea10ae05eb6aa3a151f791.camel@domdv.de>
+         <CAADnVQLmrF579H6-TAdMK8wDM9eUz2rP3F6LmhkSW4yuVKJnPg@mail.gmail.com>
+Organization: D.O.M. Datenverarbeitung GmbH
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 6 Jun 2019 23:27:36 +0000, Alexei Starovoitov wrote:
-> On 6/6/19 4:02 PM, Andrii Nakryiko wrote:
-> >> struct {
-> >>          int type;
-> >>          int max_entries;
-> >> } my_map __attribute__((map(int,struct my_value))) = {
-> >>          .type = BPF_MAP_TYPE_ARRAY,
-> >>          .max_entries = 16,
-> >> };
-> >>
-> >> Of course this would need BPF backend support, but at least that approach
-> >> would be more C like. Thus this would define types where we can automatically  
-> > I guess it's technically possible (not a compiler guru, but I don't
-> > see why it wouldn't be possible). But it will require at least two
-> > things:
-> > 1. Compiler support, obviously, as you mentioned.  
+On Sat, 2019-06-01 at 22:03 -0700, Alexei Starovoitov wrote:
+> On Fri, May 31, 2019 at 3:55 PM Andreas Steinmetz <ast@domdv.de> wrote:
+> > I do have a working eBPF program (handcrafted assembler) that has about
+> > 600 instructions. This programs takes more than 2 CPU seconds to load.
+> > 
+> > In short, the eBPF program selects and redirects packets, does MSS
+> > clamping and sends ICMPs where required for IPv4 and IPv6. The eBPF
+> > program is part of a project that will be GPLed when sufficiently
+> > ready.
+> > 
+> > I am willing to cobble something testable together and post it
+> > (attachment only) or send it directly, if somebody on this list is
+> > willing to investigate, why the verifier is having lots of CPU for
+> > breakfast.
 > 
-> every time we're doing llvm common change it takes many months.
-> Adding BTF took 6 month, though the common changes were trivial.
-> Now we're already 1+ month into adding 4 intrinsics to support CO-RE.
-> 
-> In the past I was very much in favor of extending __attribute__
-> with bpf specific stuff. Now not so much.
-> __attribute__((map(int,struct my_value))) cannot be done as strings.
-> clang has to process the types, create new objects inside debug info.
-> It's not clear to me how this modified debug info will be associated
-> with the variable my_map.
-> So I suspect doing __attribute__ with actual C type inside (())
-> will not be possible.
-> I think in the future we might still add string based attributes,
-> but it's not going to be easy.
-> So... Unless somebody in the community who is doing full time llvm work
-> will not step in right now and says "I will code the above attr stuff",
-> we should not count on such clang+llvm feature.
+> Please post it to the bpf mailing list if it's reproducible on the
+> latest kernel.
 
-If nobody has resources to commit to this, perhaps we can just stick 
-to BPF_ANNOTATE_KV_PAIR()?
+Will do, probably over the weekend - I have to do this as an attached tgz,
+though.
 
-Apologies, but I think I missed the memo on why that's considered 
-a hack.  Could someone point me to the relevant discussion?
+Regards,
+Andreas
 
-We could conceivably add BTF-based map_def for other features, and
-solve the K/V problem once a clean solution becomes apparent and
-tractable?  BPF_ANNOTATE_KV_PAIR() is not great, but we kinda already
-have it..
-
-Perhaps I'm not thinking clearly about this and I should stay quiet :)
