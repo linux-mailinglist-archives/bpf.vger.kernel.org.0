@@ -2,54 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1BE3A191
-	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2019 21:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0ED3A1FF
+	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2019 22:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727389AbfFHToJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 8 Jun 2019 15:44:09 -0400
-Received: from ms.lwn.net ([45.79.88.28]:36348 "EHLO ms.lwn.net"
+        id S1727372AbfFHUjg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 Jun 2019 16:39:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727215AbfFHToJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 8 Jun 2019 15:44:09 -0400
-Received: from lwn.net (localhost [127.0.0.1])
+        id S1727324AbfFHUjg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 8 Jun 2019 16:39:36 -0400
+Received: from oasis.local.home (unknown [12.156.218.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id BEB8E2CD;
-        Sat,  8 Jun 2019 19:44:08 +0000 (UTC)
-Date:   Sat, 8 Jun 2019 13:44:07 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@infradead.org>,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 00/22] Some documentation fixes
-Message-ID: <20190608134407.580f8bb5@lwn.net>
-In-Reply-To: <20190607154430.4879976d@coco.lan>
-References: <cover.1559656538.git.mchehab+samsung@kernel.org>
-        <20190607115521.6bf39030@lwn.net>
-        <20190607154430.4879976d@coco.lan>
-Organization: LWN.net
+        by mail.kernel.org (Postfix) with ESMTPSA id E2992208E3;
+        Sat,  8 Jun 2019 20:39:34 +0000 (UTC)
+Date:   Sat, 8 Jun 2019 16:39:33 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Matt Mullins <mmullins@fb.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>, Andrew Hall <hall@fb.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH bpf] bpf: preallocate a perf_sample_data per event fd
+Message-ID: <20190608163933.50033e9f@oasis.local.home>
+In-Reply-To: <C9035893-C2C6-4051-BF19-9AC931D475ED@fb.com>
+References: <20190530225549.23014-1-mmullins@fb.com>
+        <E5BC8108-4E9A-416C-B12C-945091E31B0A@fb.com>
+        <e0adcdedab52521111c2aa157eca276ae838fdb8.camel@fb.com>
+        <C9035893-C2C6-4051-BF19-9AC931D475ED@fb.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 7 Jun 2019 15:44:30 -0300
-Mauro Carvalho Chehab <mchehab+samsung@kernel.org> wrote:
+On Fri, 31 May 2019 05:26:30 +0000
+Song Liu <songliubraving@fb.com> wrote:
 
-> After doing that, there are 17 patches yet to be applied. Two new
-> patches are now needed too, due to vfs.txt -> vfs.rst and
-> pci.txt -> pci.rst renames.
+> We can also do something like
+> 
+>    ee = kzalloc(sizeof(struct bpf_event_entry) + sizeof(struct perf_sample_data));
+>    ee->sd = (void *)ee + sizeof(struct bpf_event_entry);
 
-OK, I've applied the set, minus those that had been picked up elsewhere.
+Or perhaps:
 
-Thanks,
+	ee->sd = (struct perf_sample_data *)(ee + 1);
 
-jon
+-- Steve
