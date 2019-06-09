@@ -2,78 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C76A63A35B
-	for <lists+bpf@lfdr.de>; Sun,  9 Jun 2019 04:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46BA13A46B
+	for <lists+bpf@lfdr.de>; Sun,  9 Jun 2019 11:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727552AbfFICdl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 8 Jun 2019 22:33:41 -0400
-Received: from casper.infradead.org ([85.118.1.10]:37438 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727485AbfFICdl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 8 Jun 2019 22:33:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=3Fp1yuwwbOTbYdEqsZgF9iklbrQHl3f9VYC9FtEc6kI=; b=QklMMOA9CGj+eXx0W9MvmFE0by
-        0aQedeNfBMWna6CYprMFaEI2qA4kPeOnRyOEvn2aWyVBRVrFxHsJhJT4y8j8WRET4/OuncElTGcKY
-        1kXcQ0a8VlI2NwrvtTMO2cQ3q7h1Jn66qeukXioB6/N9vSPhV0EgdPWi9n/gC+9fmyNydhA9BXiNo
-        9yKbfd0o7rTBHQVpNnQx4TQOlFVXinBGdjSGKt7RUOGCGI+/dbrJnHDzL0AkB20um1bet10+OzDMq
-        dP0ath70zmmP8wrAoVRXdoywUNkrUudR2U+ifiamGNlWhAtXUpuSrxNwDl+xdQy39vJRKkx3vlkf3
-        aQ09AIQw==;
-Received: from 179.176.115.133.dynamic.adsl.gvt.net.br ([179.176.115.133] helo=coco.lan)
-        by casper.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1hZneK-0004xW-3Q; Sun, 09 Jun 2019 02:33:36 +0000
-Date:   Sat, 8 Jun 2019 23:33:31 -0300
-From:   Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
+        id S1728029AbfFIJQz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 9 Jun 2019 05:16:55 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47406 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728014AbfFIJQy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 9 Jun 2019 05:16:54 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5997Smu096003
+        for <bpf@vger.kernel.org>; Sun, 9 Jun 2019 05:16:54 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2t0t4pqt9m-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Sun, 09 Jun 2019 05:16:53 -0400
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <heiko.carstens@de.ibm.com>;
+        Sun, 9 Jun 2019 10:16:51 +0100
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Sun, 9 Jun 2019 10:16:46 +0100
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x599Gj1v56492118
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 9 Jun 2019 09:16:45 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 15AA4A4053;
+        Sun,  9 Jun 2019 09:16:45 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6CDE1A404D;
+        Sun,  9 Jun 2019 09:16:44 +0000 (GMT)
+Received: from osiris (unknown [9.145.173.81])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sun,  9 Jun 2019 09:16:44 +0000 (GMT)
+Date:   Sun, 9 Jun 2019 11:16:43 +0200
+From:   Heiko Carstens <heiko.carstens@de.ibm.com>
+To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Mauro Carvalho Chehab <mchehab@infradead.org>,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 00/22] Some documentation fixes
-Message-ID: <20190608233149.6a35bee9@coco.lan>
-In-Reply-To: <20190608134407.580f8bb5@lwn.net>
-References: <cover.1559656538.git.mchehab+samsung@kernel.org>
-        <20190607115521.6bf39030@lwn.net>
-        <20190607154430.4879976d@coco.lan>
-        <20190608134407.580f8bb5@lwn.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        linux-riscv@lists.infradead.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v3 00/33] Convert files to ReST - part 1
+References: <cover.1560045490.git.mchehab+samsung@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1560045490.git.mchehab+samsung@kernel.org>
+X-TM-AS-GCONF: 00
+x-cbid: 19060909-0020-0000-0000-0000034878F1
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19060909-0021-0000-0000-0000219B9744
+Message-Id: <20190609091642.GA3705@osiris>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-09_02:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906090069
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Sat, 8 Jun 2019 13:44:07 -0600
-Jonathan Corbet <corbet@lwn.net> escreveu:
-
-> On Fri, 7 Jun 2019 15:44:30 -0300
-> Mauro Carvalho Chehab <mchehab+samsung@kernel.org> wrote:
+On Sat, Jun 08, 2019 at 11:26:50PM -0300, Mauro Carvalho Chehab wrote:
+> This is the first part of a series I wrote sometime ago where I manually
+> convert lots of files to be properly parsed by Sphinx as ReST files.
 > 
-> > After doing that, there are 17 patches yet to be applied. Two new
-> > patches are now needed too, due to vfs.txt -> vfs.rst and
-> > pci.txt -> pci.rst renames.  
+> As it touches on lot of stuff, this series is based on today's docs-next
+> + linux-next, at tag next-20190607.
 > 
-> OK, I've applied the set, minus those that had been picked up elsewhere.
+> I have right now about 85 patches with this undergoing work. That's
+> because I opted to do ~1 patch per converted directory.
+> 
+> That sounds too much to be send on a single round. So, I'm opting to split
+> it on 3 parts. Those patches should probably be good to be merged
+> either by subsystem maintainers or via the docs tree.
+> 
+> I opted to mark new files not included yet to the main index.rst (directly or
+> indirectly ) with the :orphan: tag, in order to avoid adding warnings to the
+> build system. This should be removed after we find a "home" for all
+> the converted files within the new document tree arrangement.
+> 
+> Both this series and  the next parts are on my devel git tree,
+> at:
+> 
+> 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=convert_rst_renames_v4
+> 
+> The final output in html (after all patches I currently have, including 
+> the upcoming series) can be seen at:
+> 
+> 	https://www.infradead.org/~mchehab/rst_conversion/
 
-Thank you!
+Will there be a web page (e.g. kernel.org), which contains always the
+latest upstream version?
 
-I'm sending the conversion patches based after your tree + linux-next.
+>   docs: Debugging390.txt: convert table to ascii artwork
+>   docs: s390: convert docs to ReST and rename to *.rst
+>   s390: include/asm/debug.h add kerneldoc markups
 
-I opted to split it on a few series, as I have already 85 patches
-here (and still several new "orphan" index files that I need to work
-in order to find them a place).
+I can pick these up for s390. Or do you want to send the whole series
+in one go upstream?
 
-Sending right now the first 33 patches.
-
-
-Thanks,
-Mauro
