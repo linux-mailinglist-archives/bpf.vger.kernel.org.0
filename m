@@ -2,144 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 784103BBD4
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 20:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B6A3BBE7
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 20:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728068AbfFJS3y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Jun 2019 14:29:54 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:43882 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728059AbfFJS3y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Jun 2019 14:29:54 -0400
-Received: by mail-pg1-f193.google.com with SMTP id f25so5468763pgv.10
-        for <bpf@vger.kernel.org>; Mon, 10 Jun 2019 11:29:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wxek0fx6s3KddrvpU4oKL76nIQmH9qs+TlcDE0JEbIk=;
-        b=YZN36eEawrMxHODDnV8WczaMoDAiuRJdDSk6AesfddpU/KW0pnNup7G0XKqgSRjFtj
-         S88CLwGzAxyQ4qMtIx3uWwsdFPvZwXQq32UJVMYHBnrFFuO5e3e8tB4Z+hStWAE7ataW
-         M4bR0zpFlNYBNEJrxofdY3Hx2q6bABKHi5TY83uBUsvJ3u7ArN9F5m4L59RiVMI+MPpq
-         UmcpPVm/yHScgw7LoxWv7O0F84YskknCnf00lSPQJ2Sg1g/rhI4pTMJ91RxqksS/jeNf
-         JJP0F99PQzgvwb4tHt9T8ACe+5f4grt7An2ZnUV+3AX0USECNf02mQIYKeueiraUM/bH
-         bMVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wxek0fx6s3KddrvpU4oKL76nIQmH9qs+TlcDE0JEbIk=;
-        b=IxP/J4d5cgiqrXXTDVLvVAMxObERhxetmrUDdPK3IiqwJ5ScZDrPMycyp1j+3vM05U
-         kf70xA43HrlgeRFxeYl7kLb4pALNH/Zz7QXXf2fZtoVc+gdOn5itydd7X2Is7tRzDAQo
-         BgbZ+0i+KpOCUjxzU29eqbBEQ+ahhIE6ayx7ATaoCdYe2uTuM64fZR0I0urRSfxpfDut
-         eS2+0sqWXASNJbzRsNEmI4XYmrQUUL6e+UHbMhvJBxvj0Syh03mGSryJ8TjJ1NHWZwr+
-         +VWOeWWrk0BC+NITB9UvmS4styb0izYIvf9hzwZtDNKZRdmMmImQF1Zap3mLtBVweoxn
-         nUlA==
-X-Gm-Message-State: APjAAAVXG0Nq3lWew7pCcngt88+DnbBvSRZmTpP78Ve//p9Cmo+cpic3
-        Rbux+5i8Geqb/dHtdp9kI2rQRw==
-X-Google-Smtp-Source: APXvYqy8PisKXmSQXG/OSrVuBZ8vbZywZ5Spo3c5zekDLT1Q9NFs+rKIZVcwRkC4TfabqB6yhczoCw==
-X-Received: by 2002:a62:b40a:: with SMTP id h10mr76674102pfn.216.1560191393563;
-        Mon, 10 Jun 2019 11:29:53 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id t11sm10563709pgp.1.2019.06.10.11.29.52
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 10 Jun 2019 11:29:53 -0700 (PDT)
-Date:   Mon, 10 Jun 2019 11:29:52 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        davem@davemloft.net, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH bpf-next v4 0/8] bpf: getsockopt and setsockopt hooks
-Message-ID: <20190610182952.GG9660@mini-arch>
-References: <20190610163421.208126-1-sdf@google.com>
- <CAEf4BzYvvBwWP9qaCc=saJx-tPmX1qz8TXACfKwBOUW4Q_7bcA@mail.gmail.com>
+        id S2387500AbfFJSlH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Jun 2019 14:41:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38468 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387398AbfFJSlH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Jun 2019 14:41:07 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 40CCA20820;
+        Mon, 10 Jun 2019 18:41:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560192066;
+        bh=2ymFpgEEZ8TWmSlRAxNiVZGhcCAfLnl6klJhS+j3XUk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Riz7I1FaxSrLQkloA/Pah1yPP2bFV5nQCZ61L7dhwoIYboWKcUmM44zCctE4a8Y7x
+         MavM2RftvPG0mE2WBlFeOkuoMwIba+1mgK//6LFg57gJx/OZXCClhXUUXlqJo/kwLp
+         3fPJ0Gf+XXD3XRA74YgdmP2WK7hrnI4OIcF3qcP0=
+Date:   Mon, 10 Jun 2019 11:41:04 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Vakul Garg <vakul.garg@nxp.com>
+Cc:     syzbot <syzbot+df0d4ec12332661dd1f9@syzkaller.appspotmail.com>,
+        ast@kernel.org, aviadye@mellanox.com, borisp@mellanox.com,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davejwatson@fb.com,
+        davem@davemloft.net, john.fastabend@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Subject: Re: kernel BUG at include/linux/scatterlist.h:LINE!
+Message-ID: <20190610184103.GF63833@gmail.com>
+References: <000000000000f41cd905897c075e@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzYvvBwWP9qaCc=saJx-tPmX1qz8TXACfKwBOUW4Q_7bcA@mail.gmail.com>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+In-Reply-To: <000000000000f41cd905897c075e@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/10, Andrii Nakryiko wrote:
-> On Mon, Jun 10, 2019 at 9:39 AM Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > This series implements two new per-cgroup hooks: getsockopt and
-> > setsockopt along with a new sockopt program type. The idea is pretty
-> > similar to recently introduced cgroup sysctl hooks, but
-> > implementation is simpler (no need to convert to/from strings).
-> >
-> > What this can be applied to:
-> > * move business logic of what tos/priority/etc can be set by
-> >   containers (either pass or reject)
-> > * handle existing options (or introduce new ones) differently by
-> >   propagating some information in cgroup/socket local storage
-> >
-> > Compared to a simple syscall/{g,s}etsockopt tracepoint, those
-> > hooks are context aware. Meaning, they can access underlying socket
-> > and use cgroup and socket local storage.
+On Wed, May 22, 2019 at 08:58:05AM -0700, syzbot wrote:
+> Hello,
 > 
-> It's customary to include version change log for the whole patch set
-> in a cover letter vs first patch. Please include it in the future.
-> Thanks!
-I don't think there is a precedent that strongly favors one way or
-the other. If you search the mailing list, you can find both versions:
-cover letter has short version log vs each patch has detailed version
-log.
+> syzbot found the following crash on:
+> 
+> HEAD commit:    af8f3fb7 net: stmmac: dma channel control register need to..
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17c2d418a00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=fc045131472947d7
+> dashboard link: https://syzkaller.appspot.com/bug?extid=df0d4ec12332661dd1f9
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15b53ce4a00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14b0aa52a00000
+> 
+> The bug was bisected to:
+> 
+> commit f295b3ae9f5927e084bd5decdff82390e3471801
+> Author: Vakul Garg <vakul.garg@nxp.com>
+> Date:   Wed Mar 20 02:03:36 2019 +0000
+> 
+>     net/tls: Add support of AES128-CCM based ciphers
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16915282a00000
+> final crash:    https://syzkaller.appspot.com/x/report.txt?x=15915282a00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11915282a00000
+> 
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+df0d4ec12332661dd1f9@syzkaller.appspotmail.com
+> Fixes: f295b3ae9f59 ("net/tls: Add support of AES128-CCM based ciphers")
+> 
+> ------------[ cut here ]------------
+> kernel BUG at include/linux/scatterlist.h:97!
+> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> CPU: 1 PID: 8868 Comm: syz-executor428 Not tainted 5.2.0-rc1+ #21
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+> Google 01/01/2011
+> RIP: 0010:sg_assign_page include/linux/scatterlist.h:97 [inline]
+> RIP: 0010:sg_set_page include/linux/scatterlist.h:119 [inline]
+> RIP: 0010:sk_msg_page_add include/linux/skmsg.h:246 [inline]
+> RIP: 0010:tls_sw_do_sendpage net/tls/tls_sw.c:1171 [inline]
+> RIP: 0010:tls_sw_sendpage+0xd63/0xf50 net/tls/tls_sw.c:1230
 
-My reasoning for putting version log in the particular patches is to
-make life of people who review the changes easier. For example, if
-a particular patch doesn't have a version change log, it means that
-the patch is in the same state as in the previous version and doesn't
-need another round of scrutiny.
+Hi Vakul, when are you planning to fix this?
 
-> > Stanislav Fomichev (8):
-> >   bpf: implement getsockopt and setsockopt hooks
-> >   bpf: sync bpf.h to tools/
-> >   libbpf: support sockopt hooks
-> >   selftests/bpf: test sockopt section name
-> >   selftests/bpf: add sockopt test
-> >   selftests/bpf: add sockopt test that exercises sk helpers
-> >   bpf: add sockopt documentation
-> >   bpftool: support cgroup sockopt
-> >
-> >  Documentation/bpf/index.rst                   |   1 +
-> >  Documentation/bpf/prog_cgroup_sockopt.rst     |  39 +
-> >  include/linux/bpf-cgroup.h                    |  29 +
-> >  include/linux/bpf.h                           |  45 +
-> >  include/linux/bpf_types.h                     |   1 +
-> >  include/linux/filter.h                        |  13 +
-> >  include/uapi/linux/bpf.h                      |  13 +
-> >  kernel/bpf/cgroup.c                           | 262 ++++++
-> >  kernel/bpf/core.c                             |   9 +
-> >  kernel/bpf/syscall.c                          |  19 +
-> >  kernel/bpf/verifier.c                         |  15 +
-> >  net/core/filter.c                             |   2 +-
-> >  net/socket.c                                  |  18 +
-> >  .../bpftool/Documentation/bpftool-cgroup.rst  |   7 +-
-> >  .../bpftool/Documentation/bpftool-prog.rst    |   2 +-
-> >  tools/bpf/bpftool/bash-completion/bpftool     |   8 +-
-> >  tools/bpf/bpftool/cgroup.c                    |   5 +-
-> >  tools/bpf/bpftool/main.h                      |   1 +
-> >  tools/bpf/bpftool/prog.c                      |   3 +-
-> >  tools/include/uapi/linux/bpf.h                |  14 +
-> >  tools/lib/bpf/libbpf.c                        |   5 +
-> >  tools/lib/bpf/libbpf_probes.c                 |   1 +
-> >  tools/testing/selftests/bpf/.gitignore        |   2 +
-> >  tools/testing/selftests/bpf/Makefile          |   4 +-
-> >  .../testing/selftests/bpf/progs/sockopt_sk.c  |  67 ++
-> >  .../selftests/bpf/test_section_names.c        |  10 +
-> >  tools/testing/selftests/bpf/test_sockopt.c    | 773 ++++++++++++++++++
-> >  tools/testing/selftests/bpf/test_sockopt_sk.c | 156 ++++
-> >  28 files changed, 1514 insertions(+), 10 deletions(-)
-> >  create mode 100644 Documentation/bpf/prog_cgroup_sockopt.rst
-> >  create mode 100644 tools/testing/selftests/bpf/progs/sockopt_sk.c
-> >  create mode 100644 tools/testing/selftests/bpf/test_sockopt.c
-> >  create mode 100644 tools/testing/selftests/bpf/test_sockopt_sk.c
-> >
-> > --
-> > 2.22.0.rc2.383.gf4fbbf30c2-goog
+- Eric
