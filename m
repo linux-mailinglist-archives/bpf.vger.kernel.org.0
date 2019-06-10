@@ -2,93 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BBF3BB49
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 19:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45633BB99
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 20:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388569AbfFJRrd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Jun 2019 13:47:33 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:59080 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387643AbfFJRrc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 10 Jun 2019 13:47:32 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x5AHdc1P010110
-        for <bpf@vger.kernel.org>; Mon, 10 Jun 2019 10:47:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=UTxkqcRX6jSWq0gj7yLGtoNF37Wi8kZLdZlUEegLVJo=;
- b=SrJP6uYUN4bOmSbu8I3r8TnjXgFZqlY0zcsMJbvD0YSblGp+icvsQUvTrtR4+HPcllwP
- CLHKNBNoEijnBV4+3SnimLO6n4yJ3q83JsosX6sb1CtC3Mt8dL7/V1A0FmHe1Cfw8K86
- khvvLUdBNOAD+y6+Rr7NWRO5BjSMbMFHMfA= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by m0001303.ppops.net with ESMTP id 2t08pc6jmv-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 10 Jun 2019 10:47:31 -0700
-Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Mon, 10 Jun 2019 10:46:58 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id E3BDD8617E5; Mon, 10 Jun 2019 10:46:56 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <andrii.nakryiko@gmail.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <kernel-team@fb.com>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH bpf-next] selftests/bpf: fix constness of source arg for bpf helpers
-Date:   Mon, 10 Jun 2019 10:46:55 -0700
-Message-ID: <20190610174655.2207879-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S2388174AbfFJSFl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Jun 2019 14:05:41 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:33769 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388052AbfFJSFl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Jun 2019 14:05:41 -0400
+Received: by mail-qt1-f196.google.com with SMTP id x2so10623276qtr.0;
+        Mon, 10 Jun 2019 11:05:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZtStdpDNoyEsUZ6qL6LprfD1eEPpxVt5IEMfulMqHXY=;
+        b=ICFgyX5FN9AjjbitaeqmhCoIKKQQX/8+Rk0dyoN/VHYeFttg/zqJEFKpB4dvXSgkXr
+         7IpvnX1fbkSfhogHqesZ7GAbbq/vtijTJCfmoozhS6QutFABFhKe1YhPmt4PqU3HaBqG
+         Ww4akR1fqYLjQj3ERf/YPi4cYhtfc7n7EchhSYJ42iBMuwr05uzy/iMpqGDqGadx13CX
+         Zdi6af1ZJ4VxA046BZfU3KfOONRi0rm3dL0CRjc+bs1CC3Ksp11x8f8mZN7EzBM0RqDo
+         WfH+kHv8dIeIBoBDT4Wz06NIqjwsKaDHiP37q1qNkoBNSY1DsOJ0EoHhVzGeCqnLQrzl
+         v9yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZtStdpDNoyEsUZ6qL6LprfD1eEPpxVt5IEMfulMqHXY=;
+        b=OsuOcy9L5wbt/BiAoK5vIz31z/1nHC0oyfhzkdmbFyGIPuRHRdwSH0RSMwKscewA2S
+         GmkceKU1fvTJwWNxi5iEv3G+2V9741PbfWj+l/iO4aJy92YlfyRnNwRtWQLirTT6IqFd
+         rSr001Mc0AeAITASXAhPPP3nLKeQBVweLXjpGI32h0x0HwlMoQpmUDfTQrr4/3S7f4oF
+         tQsA19+tRxJUpAmyE44CgOl/4F9xNtpSsUnOB5Z05ABy3KYz5u/oQvqaQRsr6uJZMsqk
+         +n2iF7KVDDmZxL4UgrlZQ7z/bH/7HA4BnPGEPhDM/1L/0neBv8THu5pLv8eQoZYOV6Es
+         dPSA==
+X-Gm-Message-State: APjAAAUHmntxZQ30+9gEBa+lbEqdjOoBBIqwahtI+nPpMaOBQgXi7ssf
+        Dg+3FYohYi+RKPNYD58LYGNjYQuN6YrAp6crI6Y=
+X-Google-Smtp-Source: APXvYqyr7p8LglbEhvSAleTQvxen1XQO6XNyrKqkUdrjB6tREVMk8IGec9zH4R6BQ2zlWR/jUaKetesb3owr0fn6Yfg=
+X-Received: by 2002:ac8:21b7:: with SMTP id 52mr42323888qty.59.1560189939904;
+ Mon, 10 Jun 2019 11:05:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-10_07:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=709 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906100119
-X-FB-Internal: deliver
+References: <20190610165708.2083220-1-hechaol@fb.com>
+In-Reply-To: <20190610165708.2083220-1-hechaol@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 10 Jun 2019 11:05:28 -0700
+Message-ID: <CAEf4BzZGK+SN1EPudi=tt8ppN58ovW8o+=JMd8rhEgr4KBnSmw@mail.gmail.com>
+Subject: Re: [PATCH v1 bpf-next] selftests/bpf : Clean up feature/ when make clean
+To:     Hechao Li <hechaol@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix signature of bpf_probe_read and bpf_probe_write_user to mark source
-pointer as const. This causes warnings during compilation for
-applications relying on those helpers.
+On Mon, Jun 10, 2019 at 9:57 AM Hechao Li <hechaol@fb.com> wrote:
+>
+> I got an error when compiling selftests/bpf:
+>
+> libbpf.c:411:10: error: implicit declaration of function 'reallocarray';
+> did you mean 'realloc'? [-Werror=implicit-function-declaration]
+>   progs = reallocarray(progs, nr_progs + 1, sizeof(progs[0]));
+>
+> It was caused by feature-reallocarray=1 in FEATURE-DUMP.libbpf and it
+> was fixed by manually removing feature/ folder. This diff adds feature/
+> to EXTRA_CLEAN to avoid this problem.
+>
+> Signed-off-by: Hechao Li <hechaol@fb.com>
+> ---
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/testing/selftests/bpf/bpf_helpers.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+There is no need to include v1 into patch prefix for a first version
+of a patch. Only v2 and further versions are added.
 
-diff --git a/tools/testing/selftests/bpf/bpf_helpers.h b/tools/testing/selftests/bpf/bpf_helpers.h
-index e6d243b7cd74..1a5b1accf091 100644
---- a/tools/testing/selftests/bpf/bpf_helpers.h
-+++ b/tools/testing/selftests/bpf/bpf_helpers.h
-@@ -31,7 +31,7 @@ static int (*bpf_map_pop_elem)(void *map, void *value) =
- 	(void *) BPF_FUNC_map_pop_elem;
- static int (*bpf_map_peek_elem)(void *map, void *value) =
- 	(void *) BPF_FUNC_map_peek_elem;
--static int (*bpf_probe_read)(void *dst, int size, void *unsafe_ptr) =
-+static int (*bpf_probe_read)(void *dst, int size, const void *unsafe_ptr) =
- 	(void *) BPF_FUNC_probe_read;
- static unsigned long long (*bpf_ktime_get_ns)(void) =
- 	(void *) BPF_FUNC_ktime_get_ns;
-@@ -62,7 +62,7 @@ static int (*bpf_perf_event_output)(void *ctx, void *map,
- 	(void *) BPF_FUNC_perf_event_output;
- static int (*bpf_get_stackid)(void *ctx, void *map, int flags) =
- 	(void *) BPF_FUNC_get_stackid;
--static int (*bpf_probe_write_user)(void *dst, void *src, int size) =
-+static int (*bpf_probe_write_user)(void *dst, const void *src, int size) =
- 	(void *) BPF_FUNC_probe_write_user;
- static int (*bpf_current_task_under_cgroup)(void *map, int index) =
- 	(void *) BPF_FUNC_current_task_under_cgroup;
--- 
-2.17.1
 
+>  tools/testing/selftests/bpf/Makefile | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 2b426ae1cdc9..44fb61f4d502 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -279,4 +279,5 @@ $(OUTPUT)/verifier/tests.h: $(VERIFIER_TESTS_DIR) $(VERIFIER_TEST_FILES)
+>                  ) > $(VERIFIER_TESTS_H))
+>
+>  EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(ALU32_BUILD_DIR) \
+> -       $(VERIFIER_TESTS_H) $(PROG_TESTS_H) $(MAP_TESTS_H)
+> +       $(VERIFIER_TESTS_H) $(PROG_TESTS_H) $(MAP_TESTS_H) \
+> +       feature
+
+It doesn't seem any of linux's Makefile do that. From brief reading of
+build/Makefile.feature, it seems like it is supposed to handle
+transparently the case where environment changes and thus a set of
+supported features changes. I also verified that FEATURE-DUMP.libbpf
+is re-generated every single time I run make in
+tools/testing/selftests/bpf, even if nothing changed at all. So I
+don't think this patch is necessary.
+
+I'm not sure what was the cause of your original problem, though.
+
+> --
+> 2.17.1
+>
