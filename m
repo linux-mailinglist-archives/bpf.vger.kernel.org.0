@@ -2,226 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 383343BE2B
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 23:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B87563BECB
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 23:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728508AbfFJVPf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Jun 2019 17:15:35 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:33897 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726528AbfFJVPf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Jun 2019 17:15:35 -0400
-Received: by mail-qk1-f194.google.com with SMTP id t8so2652450qkt.1
-        for <bpf@vger.kernel.org>; Mon, 10 Jun 2019 14:15:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=l2JMKZKqJmt1NYrjuUGS6Z1wyAQvv+M3r7FpXksFsu0=;
-        b=P01o7/CyE0Rw9M8rddLa6fZDYq4EqYVEq9Y+U5d1MuCne5xChO4Rts6eYRS5oBtiTj
-         UOS8ungEBQXgID1THIU1g09p70V7rFqZYSNJxqqleBcgFzf+0s+wmAeSoQvj+q/wbxIV
-         N9NMVWboMuDu4KDRffQuiSdfnMk6dUByiJYDc5F5TCxt9fid9XWazlnWH+dHJqoD5yn4
-         t5mo1vNIbQs5YrrDRfYmi3Dv2euQsp0QxyU3wVH0jDMDIfyX8rzB5sKOLq10cFozAB8m
-         hxEGA6k3ijJ/6qWfCGDkLJ06IOXFGqgGPPLNMAqEK+CTXYherPI/Kb/nF8b327861vCD
-         8IzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=l2JMKZKqJmt1NYrjuUGS6Z1wyAQvv+M3r7FpXksFsu0=;
-        b=R11aLhqjlcNiX0uL3rb9cXbejyFP2HgRLdzxwuq9vvS+zmpQL/cDaZcHWSEiIyQduZ
-         wDMFNAUWmbeDF2pc4n/c0T60TmgUJg4MknoZfIlC2WGQbT+6CJ6OwWuew/9808wqGzvJ
-         nt36YWKWKPOgNDO+qaVz7jFl2YbOhUU4pkDDJIsL5H77UJ/qpuxOQBchwl1cJBDkj/Sm
-         ejst9sHrNMHMTefcxBKXXDnw2Au/ekmb5BJR2aTHCIutxtehoV6hPKeeZjt+aUmDsw3I
-         odjyuG20hkMT7vj3UrKnItzO/mm6qHcRNcz/fxj48IFNbFY5Dpg8OEHyJFdhB3CoL5kz
-         6E1w==
-X-Gm-Message-State: APjAAAXkAH1jmWT5fSOnaR6EGTHYyKUXUTDZZQq+MAi4d8aVsqinjRo4
-        w5IY8pLGftYzs2TGqB2poT4lLQ==
-X-Google-Smtp-Source: APXvYqzIcyo2eKKD5mhWVSqH4qkao2VO+MhIwV3sqIDvD7B8da1+hvqTTiGBb34ZaECWyUGizxSilg==
-X-Received: by 2002:a37:670e:: with SMTP id b14mr55596090qkc.216.1560201334079;
-        Mon, 10 Jun 2019 14:15:34 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id x40sm1281024qta.20.2019.06.10.14.15.32
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 10 Jun 2019 14:15:33 -0700 (PDT)
-Date:   Mon, 10 Jun 2019 14:15:28 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Alexei Starovoitov <ast@fb.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@fomichev.me>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
-Subject: Re: explicit maps. Was: [RFC PATCH bpf-next 6/8] libbpf: allow
- specifying map definitions using BTF
-Message-ID: <20190610141528.38c71524@cakuba.netronome.com>
-In-Reply-To: <b9798871-3b0e-66ce-903d-c9a587651abc@fb.com>
-References: <20190531202132.379386-1-andriin@fb.com>
-        <20190531202132.379386-7-andriin@fb.com>
-        <20190531212835.GA31612@mini-arch>
-        <CAEf4Bza38VEh9NWTLEReAR_J0eqjsvH1a2T-0AeWqDZpE8YPfA@mail.gmail.com>
-        <20190603163222.GA14556@mini-arch>
-        <CAEf4BzbRXAZMXY3kG9HuRC93j5XhyA3EbWxkLrrZsG7K4abdBg@mail.gmail.com>
-        <20190604010254.GB14556@mini-arch>
-        <f2b5120c-fae7-bf72-238a-b76257b0c0e4@fb.com>
-        <20190604042902.GA2014@mini-arch>
-        <20190604134538.GB2014@mini-arch>
-        <CAEf4BzZEqmnwL0MvEkM7iH3qKJ+TF7=yCKJRAAb34m4+B-1Zcg@mail.gmail.com>
-        <3ff873a8-a1a6-133b-fa20-ad8bc1d347ed@iogearbox.net>
-        <CAEf4BzYr_3heu2gb8U-rmbgMPu54ojcdjMZu7M_VaqOyCNGR5g@mail.gmail.com>
-        <9d0bff7f-3b9f-9d2c-36df-64569061edd6@fb.com>
-        <20190606171007.1e1eb808@cakuba.netronome.com>
-        <4553f579-c7bb-2d4c-a1ef-3e4fbed64427@fb.com>
-        <20190606180253.36f6d2ae@cakuba.netronome.com>
-        <b9798871-3b0e-66ce-903d-c9a587651abc@fb.com>
-Organization: Netronome Systems, Ltd.
+        id S2389854AbfFJVjX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Jun 2019 17:39:23 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:55510 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389362AbfFJVjW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 10 Jun 2019 17:39:22 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x5ALcn3p018529;
+        Mon, 10 Jun 2019 14:39:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=c1qVk4nXj8/AxxzfHV8C4tPj+LO9QAJ4ptVjB/w4/5Q=;
+ b=MVUmhkMOjcZ4IaupPNJZyC0T2O+WI9VTb6r3xbJOKXT/V8nskJpBMaDpRqx9Le128T1a
+ /hOAWHVcgCy0gUe2rvGO7xW1WGZuMSr/SiCC952M5sGP8os0+s0MuVPkP7plOaNEcG2+
+ CuAUvlUEkQCeRhk9CTaRJOkAhLIUibewKbI= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by m0089730.ppops.net with ESMTP id 2t1u4qs1de-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 10 Jun 2019 14:38:59 -0700
+Received: from prn-hub06.TheFacebook.com (2620:10d:c081:35::130) by
+ prn-hub04.TheFacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Mon, 10 Jun 2019 14:38:56 -0700
+Received: from NAM01-SN1-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.30) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Mon, 10 Jun 2019 14:38:56 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c1qVk4nXj8/AxxzfHV8C4tPj+LO9QAJ4ptVjB/w4/5Q=;
+ b=ge5jRD7fYLuzTXRipLh0kxGqnQyGQOchrHMgRE8TOTn2gCsXV8EPq8+p4SKAeTmTE64+saxG6c5mjgHD8t5h44A1MCXtq8R5c49/PWLgWLLC0+qhd9p5WwRZEASYwMm4Zf5L9J3GW65LseUzuV1z39mGdEv8K9ARYByeh/b72tc=
+Received: from MWHPR15MB1790.namprd15.prod.outlook.com (10.174.97.138) by
+ MWHPR15MB1694.namprd15.prod.outlook.com (10.175.141.8) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1965.13; Mon, 10 Jun 2019 21:38:55 +0000
+Received: from MWHPR15MB1790.namprd15.prod.outlook.com
+ ([fe80::6590:7f75:5516:3871]) by MWHPR15MB1790.namprd15.prod.outlook.com
+ ([fe80::6590:7f75:5516:3871%3]) with mapi id 15.20.1965.017; Mon, 10 Jun 2019
+ 21:38:55 +0000
+From:   Martin Lau <kafai@fb.com>
+To:     Stanislav Fomichev <sdf@google.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf-next v5 0/8] bpf: getsockopt and setsockopt hooks
+Thread-Topic: [PATCH bpf-next v5 0/8] bpf: getsockopt and setsockopt hooks
+Thread-Index: AQHVH9C4cK5m9+GzZEimVutm907JWKaVaiqA
+Date:   Mon, 10 Jun 2019 21:38:55 +0000
+Message-ID: <20190610213853.vx4dtpspzgvsspez@kafai-mbp.dhcp.thefacebook.com>
+References: <20190610210830.105694-1-sdf@google.com>
+In-Reply-To: <20190610210830.105694-1-sdf@google.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR08CA0011.namprd08.prod.outlook.com
+ (2603:10b6:301:5f::24) To MWHPR15MB1790.namprd15.prod.outlook.com
+ (2603:10b6:301:53::10)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::1:4395]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f9b2ccfe-8a37-49c7-a948-08d6edec09e2
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MWHPR15MB1694;
+x-ms-traffictypediagnostic: MWHPR15MB1694:
+x-microsoft-antispam-prvs: <MWHPR15MB1694F51D1E015347A822EB57D5130@MWHPR15MB1694.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-forefront-prvs: 0064B3273C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(136003)(396003)(366004)(376002)(39860400002)(199004)(189003)(386003)(102836004)(305945005)(478600001)(7736002)(66556008)(66946007)(66476007)(6246003)(73956011)(6506007)(66446008)(64756008)(4326008)(99286004)(229853002)(46003)(486006)(476003)(5660300002)(11346002)(81166006)(81156014)(86362001)(6512007)(68736007)(4744005)(76176011)(71190400001)(186003)(2906002)(446003)(8676002)(14454004)(71200400001)(53936002)(9686003)(1076003)(6436002)(6116002)(6486002)(316002)(54906003)(25786009)(6916009)(52116002)(256004)(14444005)(8936002);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1694;H:MWHPR15MB1790.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: /Qn6ORfAlky8kmobT2jFyZ0agy1i62kzSOgLOWhoEFoB00kY5ebSVTWopa03qDC+njlzCB+cOFLGS6Asxrgh67poljhB4op54ieIH1DDvqFFzvhB3ESu10X9yRuaHGme6s6HXb78i1vPD1Ny7kPiar7mHRdUpd1Ebh0gTGd9BEwTXEc0+zcKtUzyZ0QPTtNlnu8XVIo2vLthv2brct4F+b23KxHt1uxEeNE7WU4fJDbTSSxtkUb8moZQ5RjisZ1uGu3VyAiO6fOlt7zjdedKUNcyZDTiE2NpQAfUVVQRDVnCJehlJAfq56asj0BrIxorqUjg+qTXnJ8qwkFo4x4IgzFYnxaOo4+9NV0jmh0AgNEhcVmJ8fWgJzVF4TV22vC78BmQV2ml7PO3GRtbcQnEvAE2h83HH2ZIfa8QPkisSJQ=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <56D62451CFBD80468CE07BB84E0FCA85@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-Network-Message-Id: f9b2ccfe-8a37-49c7-a948-08d6edec09e2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jun 2019 21:38:55.7861
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kafai@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1694
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-10_09:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=663 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906100146
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 10 Jun 2019 01:17:13 +0000, Alexei Starovoitov wrote:
-> On 6/6/19 6:02 PM, Jakub Kicinski wrote:
-> > On Fri, 7 Jun 2019 00:27:52 +0000, Alexei Starovoitov wrote:  
-> >> the solution we're discussing should solve BPF_ANNOTATE_KV_PAIR too.
-> >> That hack must go.  
-> > 
-> > I see.
-> >   
-> >> If I understood your objections to Andrii's format is that
-> >> you don't like pointer part of key/value while Andrii explained
-> >> why we picked the pointer, right?
-> >>
-> >> So how about:
-> >>
-> >> struct {
-> >>     int type;
-> >>     int max_entries;
-> >>     struct {
-> >>       __u32 key;
-> >>       struct my_value value;
-> >>     } types[];
-> >> } ...  
-> > 
-> > My objection is that k/v fields are never initialized, so they're
-> > "metafields", mixed with real fields which hold parameters - like
-> > type, max_entries etc.  
-> 
-> I don't share this meta fields vs real fields distinction.
-> All of the fields are meta.
-> Kernel implementation of the map doesn't need to hold type and
-> max_entries as actual configuration fields.
-> The map definition in c++ would have looked like:
-> bpf::hash_map<int, struct my_value, 1000, NO_PREALLOC> foo;
-> bpf::array_map<struct my_value, 2000> bar;
-> 
-> Sometime key is not necessary. Sometimes flags have to be zero.
-> bpf syscall api is a superset of all fiels for all maps.
-> All of them are configuration and meta fields at the same time.
-> In c++ example there is really no difference between
-> 'struct my_value' and '1000' attributes.
-> 
-> I'm pretty sure bpf will have C++ front-end in the future,
-> but until then we have to deal with C and, I think, the map
-> definition should be the most natural C syntax.
-> In that sense what you're proposing with extern:
-> > extern struct my_key my_key;
-> > extern int type_int;
-> > 
-> > struct map_def {
-> >      int type;
-> >      int max_entries;
-> >      void *btf_key_ref;
-> >      void *btf_val_ref;
-> > } = {
-> >      ...
-> >      .btf_key_ref = &my_key,
-> >      .btf_val_ref = &type_int,
-> > };  
-> 
-> is worse than
-> 
-> struct map_def {
->        int type;
->        int max_entries;
->        int btf_key;
->        struct my_key btf_value;
-> };
-> 
-> imo explicit key and value would be ideal,
-> but they take too much space. Hence pointers
-> or zero sized array:
-> struct {
->       int type;
->       int max_entries;
->       struct {
->         __u32 key;
->         struct my_value value;
->       } types[];
-> };
-
-It is a C syntax problem, I do agree with you that it works well for
-templates.  The map_def structure holds parameters, and we can't take
-a type as a value in C.  Hence the types[] in your proposal - you could
-as well call them ghost_fields[] :)
-
-> I think we should also consider explicit map creation.
-> 
-> Something like:
-> 
-> struct my_map {
->    __u32 key;
->    struct my_value value;
-> } *my_hash_map, *my_pinned_hash_map;
-> 
-> struct {
->     __u64 key;
->    struct my_map *value;
-> } *my_hash_of_maps;
-> 
-> struct {
->    struct my_map *value;
-> } *my_array_of_maps;
-> 
-> __init void create_my_maps(void)
-> {
->    bpf_create_hash_map(&my_hash_map, 1000/*max_entries*/);
->    bpf_obj_get(&my_pinned_hash_map, "/sys/fs/bpf/my_map");
->    bpf_create_hash_of_maps(&my_hash_of_maps, 1000/*max_entries*/);
->    bpf_create_array_of_maps(&my_array_of_maps, 20);
-> }
-> 
-> SEC("cgroup/skb")
-> int bpf_prog(struct __sk_buff *skb)
-> {
->    struct my_value *val;
->    __u32 key;
->    __u64 key64;
->    struct my_map *map;
-> 
->    val = bpf_map_lookup(my_hash_map, &key);
->    map = bpf_map_lookup(my_hash_of_maps, &key64);
-> }
-> 
-> '__init' section will be compiled by llvm into bpf instructions
-> that will be executed in users space by libbpf.
-> The __init prog has to succeed otherwise prog load fails.
-> 
-> May be all map pointers should be in a special section to avoid
-> putting them into datasec, but libbpf should be able to figure that
-> out without requiring user to specify the .map section.
-> The rest of global vars would go into special datasec map.
-> 
-> No llvm changes necessary and BTF is available for keys and values.
-> 
-> libbpf can start with simple __init and eventually grow into
-> complex init procedure where maps are initialized,
-> prog_array is populated, etc.
-> 
-> Thoughts?
-
-I like it! :)
+On Mon, Jun 10, 2019 at 02:08:22PM -0700, Stanislav Fomichev wrote:
+> This series implements two new per-cgroup hooks: getsockopt and
+> setsockopt along with a new sockopt program type. The idea is pretty
+> similar to recently introduced cgroup sysctl hooks, but
+> implementation is simpler (no need to convert to/from strings).
+>=20
+> What this can be applied to:
+> * move business logic of what tos/priority/etc can be set by
+>   containers (either pass or reject)
+> * handle existing options (or introduce new ones) differently by
+>   propagating some information in cgroup/socket local storage
+>=20
+> Compared to a simple syscall/{g,s}etsockopt tracepoint, those
+> hooks are context aware. Meaning, they can access underlying socket
+> and use cgroup and socket local storage.
+Acked-by: Martin KaFai Lau <kafai@fb.com>
