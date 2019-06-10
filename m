@@ -2,213 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E50C3BC54
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 21:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C983BC62
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 21:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388592AbfFJTAQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Jun 2019 15:00:16 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:42019 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388544AbfFJTAP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Jun 2019 15:00:15 -0400
-Received: by mail-qt1-f195.google.com with SMTP id s15so11645093qtk.9;
-        Mon, 10 Jun 2019 12:00:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DYGCcgIzNRgOnK2uYJS4UUOKGwEBja8jP4+71AJtuO0=;
-        b=k7jMXpoNB7tftrdk5v1jb6fZEk5Fqeo3DHdjz8RAuHj0w0gpyBF0/VImwEe/W5HvdC
-         bL+2Sc4lpSSqI2oPdVwxRS+JzrNVRcgT14Ne+pcvx7SmJPDAJiYM5Ab9awsdS4+Lddjp
-         G/FSZoqMKmo9rRtFxrTVHNpy7P81rWKWfqx9ELG7G4yLSW8M8qo1XsMJ4IzYqze+JZ0z
-         ZSBNdx0/jC7IRe5JmMlv10Tc9U3CsFNbcNQ5z1c5SKgEhJ3J9qvXCGqmv8vJVTA644sz
-         syl/cRvx4dXaWfkRIfHQwVdPANprt4dMmI7KlKRfo0LigFo6OoNYiIWD7cQsEumTyN+O
-         pGjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DYGCcgIzNRgOnK2uYJS4UUOKGwEBja8jP4+71AJtuO0=;
-        b=dYcjyoEzaRdqUZQZ6tXjwhbJJa7I5vPPEvqWLVD95KwHGTHjYDYW09/xcj4evd/knX
-         P8z/qCMyIXVPVJbAR8cp7/3MhTW74M8jYqOadlYmrmAsIKjBwK+DVaTEJPotRglsjqBK
-         0K654u6xWFYad/PDVTy0saEgFwZFPYwD2QegUBrZeJLMAK8Y1GfOH3LUahj1JCFRjtC2
-         dQFYfjHH8rm+o3aZ7eb/O8PDdf9rNSpI6AcBPoPuI+zlTLOG+wTO6077MAOs5JpqDv+3
-         qdb/xrQ8DJNGkyzeoOhqKHWNyahtkf26TbI0omAlCEzRD4IAw4GYSzdicqv0TUlzJm/j
-         +70A==
-X-Gm-Message-State: APjAAAXKu2QDLR0SDA890jB9CKbR8k/wCDb/h3uMM0n875JbuQPyqCR9
-        /yXPso1poH+O0jVKn8LBxfbUF9FLvUdL9JI6A4o=
-X-Google-Smtp-Source: APXvYqxRHCyD/I8OlqUKWPrk0zoq7Q+e08ILTTNMItXDSzjMHnTfSg0B19FambpPsPGUXr1KTnIgKTMWndHo/UxWFTI=
-X-Received: by 2002:ac8:2a63:: with SMTP id l32mr40774096qtl.117.1560193214620;
- Mon, 10 Jun 2019 12:00:14 -0700 (PDT)
+        id S2388592AbfFJTDi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Jun 2019 15:03:38 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:35956 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387674AbfFJTDi (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 10 Jun 2019 15:03:38 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5AIxO0S022865;
+        Mon, 10 Jun 2019 12:03:16 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=TLPN5t5DwI7msD9zTVLYQbGuKknuEP16Ld4zb6la4YA=;
+ b=lqBxxRir1h2mKAHr7EkxI33PHrda7+LtD6VGr5MCA6OGW7x81wxblYDS1VyCTRuEDJAE
+ uAV/iiB0Kvb+hWW0OPm5z5HIGBOG6m55CY4lwYRZcpcg1S4R6AFHm654ea8RrLgr49sN
+ fSRIak4a8Aaw1vk9Qy2szoTigG7+KVLhCdg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2t1sjx18yp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 10 Jun 2019 12:03:16 -0700
+Received: from ash-exhub201.TheFacebook.com (2620:10d:c0a8:83::7) by
+ ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 10 Jun 2019 12:03:15 -0700
+Received: from NAM01-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Mon, 10 Jun 2019 12:03:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TLPN5t5DwI7msD9zTVLYQbGuKknuEP16Ld4zb6la4YA=;
+ b=TsORAzfNLoQGpHjSxXmjNcd/kUwz87zd7uVRWPk9/HawCj4lKa1q0wFcCMvxaXS/kHmLcfQqJj1txZar8AJlPsUS0tkOm9coG6XYnNwccdecbtWG9pVVeemW22FboJywDFFLl/kjHYkLho+waiQ/4MQcgNO366Ro8VLD7++rkks=
+Received: from BYAPR15MB2968.namprd15.prod.outlook.com (20.178.237.149) by
+ BYAPR15MB3173.namprd15.prod.outlook.com (20.179.56.27) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1965.12; Mon, 10 Jun 2019 19:02:56 +0000
+Received: from BYAPR15MB2968.namprd15.prod.outlook.com
+ ([fe80::1ccd:3dd5:6b36:eeed]) by BYAPR15MB2968.namprd15.prod.outlook.com
+ ([fe80::1ccd:3dd5:6b36:eeed%5]) with mapi id 15.20.1965.017; Mon, 10 Jun 2019
+ 19:02:56 +0000
+From:   Hechao Li <hechaol@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Kernel Team" <Kernel-team@fb.com>
+Subject: Re: [PATCH v1 bpf-next] selftests/bpf : Clean up feature/ when make
+ clean
+Thread-Topic: [PATCH v1 bpf-next] selftests/bpf : Clean up feature/ when make
+ clean
+Thread-Index: AQHVH62g7GQ5XKZJUEWeP1LzWDYO2qaVLtAAgAAQCQA=
+Date:   Mon, 10 Jun 2019 19:02:56 +0000
+Message-ID: <20190610190252.GA41381@hechaol-mbp.dhcp.thefacebook.com>
+References: <20190610165708.2083220-1-hechaol@fb.com>
+ <CAEf4BzZGK+SN1EPudi=tt8ppN58ovW8o+=JMd8rhEgr4KBnSmw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZGK+SN1EPudi=tt8ppN58ovW8o+=JMd8rhEgr4KBnSmw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: CO1PR15CA0112.namprd15.prod.outlook.com
+ (2603:10b6:101:21::32) To BYAPR15MB2968.namprd15.prod.outlook.com
+ (2603:10b6:a03:f8::21)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::1:284]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ecf121ab-28c1-406c-417b-08d6edd63f27
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB3173;
+x-ms-traffictypediagnostic: BYAPR15MB3173:
+x-microsoft-antispam-prvs: <BYAPR15MB3173A9D26C53AF12FBBC9CD7D5130@BYAPR15MB3173.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:261;
+x-forefront-prvs: 0064B3273C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(396003)(346002)(39860400002)(376002)(136003)(199004)(189003)(54906003)(52116002)(71190400001)(53546011)(76176011)(14444005)(476003)(256004)(316002)(6116002)(386003)(71200400001)(68736007)(6506007)(102836004)(8936002)(99286004)(486006)(186003)(81166006)(46003)(478600001)(8676002)(14454004)(9686003)(446003)(81156014)(11346002)(53936002)(86362001)(7736002)(6512007)(305945005)(6246003)(229853002)(1076003)(6436002)(25786009)(4326008)(6916009)(73956011)(5660300002)(66946007)(33656002)(2906002)(6486002)(66446008)(64756008)(66556008)(66476007);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3173;H:BYAPR15MB2968.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 1RKMFDFFR2y9gc5UNoJJ2KgAdTOIjs+2aYoeJunUsmugGO0j2ZXnkWMr7Khx83KBjt5DzOe4hvs+WXfjOHfuYqWcY8wFtN76xJ9W85GvsR0M7Ew8s75KEpn9M/7Il9Bh69TNHmdC5EQH4c810oM8lj9n1+3ce7AM8UNzXOxFYPJtR4N9dotpZAQhnC77lbqCf0XKZLk7vsD1GY4qYDjuxm6m5upZvzKXi5d2DUlVS6QkO00DHp2aO/bl0fsVZJ6BQ2maG+My/ueTEy31AXYtTiRl0kd2+Mv8pQO0C0tfnGLxY4jt9mQoaTVaWOJy7kRdCjKYQnv+8Gr1zXUiiT7y1PL9MzF2oX1YUVvop7DS0+m058pk9yzzq66C51POIWdEVy3z7UvoJCXovjVhQYobyUQXXTP6fKcpLBg5xCXBV9U=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <786CD1747DA89B4088CCEA991E1F1D91@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <CGME20190610161551eucas1p1f370190ee6d0d5e921de1a21f3da72df@eucas1p1.samsung.com>
- <20190610161546.30569-1-i.maximets@samsung.com>
-In-Reply-To: <20190610161546.30569-1-i.maximets@samsung.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 10 Jun 2019 12:00:03 -0700
-Message-ID: <CAEf4BzaJpWb+PakO2qmg-TQtOPKs=__4Vg=CksfqnarT0gtpqA@mail.gmail.com>
-Subject: Re: [PATCH bpf v3] xdp: fix hang while unregistering device bound to
- xdp socket
-To:     Ilya Maximets <i.maximets@samsung.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, xdp-newbies@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-Network-Message-Id: ecf121ab-28c1-406c-417b-08d6edd63f27
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jun 2019 19:02:56.1593
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: hechaol@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3173
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-10_08:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906100128
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 10, 2019 at 9:39 AM Ilya Maximets <i.maximets@samsung.com> wrote:
->
-> Device that bound to XDP socket will not have zero refcount until the
-> userspace application will not close it. This leads to hang inside
-> 'netdev_wait_allrefs()' if device unregistering requested:
->
->   # ip link del p1
->   < hang on recvmsg on netlink socket >
->
->   # ps -x | grep ip
->   5126  pts/0    D+   0:00 ip link del p1
->
->   # journalctl -b
->
->   Jun 05 07:19:16 kernel:
->   unregister_netdevice: waiting for p1 to become free. Usage count = 1
->
->   Jun 05 07:19:27 kernel:
->   unregister_netdevice: waiting for p1 to become free. Usage count = 1
->   ...
->
-> Fix that by implementing NETDEV_UNREGISTER event notification handler
-> to properly clean up all the resources and unref device.
->
-> This should also allow socket killing via ss(8) utility.
->
-> Fixes: 965a99098443 ("xsk: add support for bind for Rx")
-> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
-> ---
->
-> Version 3:
->
->     * Declaration lines ordered from longest to shortest.
->     * Checking of event type moved to the top to avoid unnecessary
->       locking.
->
-> Version 2:
->
->     * Completely re-implemented using netdev event handler.
->
->  net/xdp/xsk.c | 65 ++++++++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 64 insertions(+), 1 deletion(-)
->
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index a14e8864e4fa..273a419a8c4d 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -693,6 +693,57 @@ static int xsk_mmap(struct file *file, struct socket *sock,
->                                size, vma->vm_page_prot);
->  }
->
-> +static int xsk_notifier(struct notifier_block *this,
-> +                       unsigned long msg, void *ptr)
-> +{
-> +       struct net_device *dev = netdev_notifier_info_to_dev(ptr);
-> +       struct net *net = dev_net(dev);
-> +       int i, unregister_count = 0;
-> +       struct sock *sk;
-> +
-> +       switch (msg) {
-> +       case NETDEV_UNREGISTER:
-> +               mutex_lock(&net->xdp.lock);
-> +               sk_for_each(sk, &net->xdp.list) {
-> +                       struct xdp_sock *xs = xdp_sk(sk);
-> +
-> +                       mutex_lock(&xs->mutex);
-> +                       if (dev != xs->dev) {
-> +                               mutex_unlock(&xs->mutex);
-> +                               continue;
-> +                       }
-> +
-> +                       sk->sk_err = ENETDOWN;
-> +                       if (!sock_flag(sk, SOCK_DEAD))
-> +                               sk->sk_error_report(sk);
-> +
-> +                       /* Wait for driver to stop using the xdp socket. */
-> +                       xdp_del_sk_umem(xs->umem, xs);
-> +                       xs->dev = NULL;
-> +                       synchronize_net();
-> +
-> +                       /* Clear device references in umem. */
-> +                       xdp_put_umem(xs->umem);
-> +                       xs->umem = NULL;
-> +
-> +                       mutex_unlock(&xs->mutex);
-> +                       unregister_count++;
-> +               }
-> +               mutex_unlock(&net->xdp.lock);
-> +
-> +               if (unregister_count) {
-> +                       /* Wait for umem clearing completion. */
-> +                       synchronize_net();
-> +                       for (i = 0; i < unregister_count; i++)
-> +                               dev_put(dev);
-> +               }
-> +
-> +               break;
-> +       }
-> +
-> +       return NOTIFY_DONE;
-> +}
-> +
->  static struct proto xsk_proto = {
->         .name =         "XDP",
->         .owner =        THIS_MODULE,
-> @@ -727,7 +778,8 @@ static void xsk_destruct(struct sock *sk)
->         if (!sock_flag(sk, SOCK_DEAD))
->                 return;
->
-> -       xdp_put_umem(xs->umem);
-> +       if (xs->umem)
-> +               xdp_put_umem(xs->umem);
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote on Mon [2019-Jun-10 11:05=
+:28 -0700]:
+> On Mon, Jun 10, 2019 at 9:57 AM Hechao Li <hechaol@fb.com> wrote:
+> >
+> > I got an error when compiling selftests/bpf:
+> >
+> > libbpf.c:411:10: error: implicit declaration of function 'reallocarray'=
+;
+> > did you mean 'realloc'? [-Werror=3Dimplicit-function-declaration]
+> >   progs =3D reallocarray(progs, nr_progs + 1, sizeof(progs[0]));
+> >
+> > It was caused by feature-reallocarray=3D1 in FEATURE-DUMP.libbpf and it
+> > was fixed by manually removing feature/ folder. This diff adds feature/
+> > to EXTRA_CLEAN to avoid this problem.
+> >
+> > Signed-off-by: Hechao Li <hechaol@fb.com>
+> > ---
+>=20
+> There is no need to include v1 into patch prefix for a first version
+> of a patch. Only v2 and further versions are added.
+>=20
+>=20
+> >  tools/testing/selftests/bpf/Makefile | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selft=
+ests/bpf/Makefile
+> > index 2b426ae1cdc9..44fb61f4d502 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -279,4 +279,5 @@ $(OUTPUT)/verifier/tests.h: $(VERIFIER_TESTS_DIR) $=
+(VERIFIER_TEST_FILES)
+> >                  ) > $(VERIFIER_TESTS_H))
+> >
+> >  EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS) $(ALU32_BUILD_DIR) \
+> > -       $(VERIFIER_TESTS_H) $(PROG_TESTS_H) $(MAP_TESTS_H)
+> > +       $(VERIFIER_TESTS_H) $(PROG_TESTS_H) $(MAP_TESTS_H) \
+> > +       feature
+>=20
+> It doesn't seem any of linux's Makefile do that. From brief reading of
+> build/Makefile.feature, it seems like it is supposed to handle
+> transparently the case where environment changes and thus a set of
+> supported features changes. I also verified that FEATURE-DUMP.libbpf
+> is re-generated every single time I run make in
+> tools/testing/selftests/bpf, even if nothing changed at all. So I
+> don't think this patch is necessary.
+>=20
+> I'm not sure what was the cause of your original problem, though.
+>=20
+> > --
+> > 2.17.1
+> >
 
-xpd_put_umem already checks for NULL umem, so you don't have to do it here.
+# Background:
 
->
->         sk_refcnt_debug_dec(sk);
->  }
-> @@ -784,6 +836,10 @@ static const struct net_proto_family xsk_family_ops = {
->         .owner  = THIS_MODULE,
->  };
->
-> +static struct notifier_block xsk_netdev_notifier = {
-> +       .notifier_call  = xsk_notifier,
-> +};
-> +
->  static int __net_init xsk_net_init(struct net *net)
->  {
->         mutex_init(&net->xdp.lock);
-> @@ -816,8 +872,15 @@ static int __init xsk_init(void)
->         err = register_pernet_subsys(&xsk_net_ops);
->         if (err)
->                 goto out_sk;
-> +
-> +       err = register_netdevice_notifier(&xsk_netdev_notifier);
-> +       if (err)
-> +               goto out_pernet;
-> +
->         return 0;
->
-> +out_pernet:
-> +       unregister_pernet_subsys(&xsk_net_ops);
->  out_sk:
->         sock_unregister(PF_XDP);
->  out_proto:
-> --
-> 2.17.1
->
+My default GCC version is 4.8.5, which caused the following error when I
+run make under selftests/bpf:
+libbpf.c:39:10: fatal error: libelf.h: No such file or directory
+
+To fix it, I have to run:
+
+make CC=3D<Path to GCC 7.x>
+
+The I got reallocarray not found error. By deleting feature/ folder
+under selftests/bpf, it was fixed.
+
+# Root Cause:
+
+Now I found the root cause. When I run "make", which uses GCC 4.8.5, it
+generates feature/test-reallocarray.d which indicates reallocarray is
+enabled. However, when I switched to GCC 7.0, this file was not
+re-generated and thus even FEATURE-DUMP.libbpf was re-generated,=20
+feature-reallocarray is still 1 in it.
+
+This can be reproduced by the following steps:
+$ cd tools/testing/selftests/bpf
+$ make clean && make CC=3D<Path to GCC 4.8.5>
+(Fail due to libelf.h not found)
+$ make clean && make CC=3D<Path to GCC 7.x>
+(Should succeed but actually fail with reallocarray not defined)
+
+If adding feature to EXTRA_CLEAN is not the way to go, do you have any
+suggestion to fix such problem? I spent some time debugging this and I
+hope to fix it so that other people with similar situation won't have to
+waste time on this issue.
+
+Thanks,
+Hechao
