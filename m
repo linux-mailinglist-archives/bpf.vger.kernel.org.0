@@ -2,136 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0783AFCC
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 09:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0C73B02E
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 10:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388118AbfFJHip (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Jun 2019 03:38:45 -0400
-Received: from mail-yb1-f193.google.com ([209.85.219.193]:41175 "EHLO
-        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388061AbfFJHip (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Jun 2019 03:38:45 -0400
-Received: by mail-yb1-f193.google.com with SMTP id d2so3408906ybh.8
-        for <bpf@vger.kernel.org>; Mon, 10 Jun 2019 00:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ivYOsIQLaE0sFyLyjt7AVV6ZKC2mGOmSWvKcFrNuPaE=;
-        b=P7eZqS7v1jWK7YUf29+8gLaGSSiK7dU3B73uNY5V7CwGXNrkg5QvP+z0Dw1Gtad5ty
-         JdlDoiVl4itADcaBgTAVCdh72YIIgQ8/2IzoYFbrKzPvoZIr6l4PuZRstzbBPqdRh6Qd
-         XgkslJ1W9RaZccIBn2aVNsQFz5Vj0jmaC8xwazXHG2OpuvdEYV9++05a+qB5BSp6ND3b
-         X6jmii2rHoq0tyDkYvzX9oaLpE+ClHmIfKlAqGCOhuTcXib645dFnUNKT+BffM8r6tEf
-         n3Qy+M573i+KXP+UD8zITQmhKS9o9VUyF8hPFGFDz4K58ws0cd+hAh/kC9w6PRchjpeN
-         b5FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ivYOsIQLaE0sFyLyjt7AVV6ZKC2mGOmSWvKcFrNuPaE=;
-        b=KGdzq1w1pbDn07Hvj5FwT8E0tXH9ydYsqDX27mRFznT/ymiP/I0pQRm5popKpcRlOc
-         etCgE/2p3LVSCZruGnUj6/ArmsR8xz1ZHCioNc5TJ9glTfxVN9M5jWRung05JZT1Y10H
-         tM5orkhBXuGeEu/Y40/j7wmFZLi3RdKbPQXLkKYgB6Le3Vnxtf1yZVAsnc0XZiGskHY4
-         IN8CrTHOS6NbYSbrMsfYnUstwpla6zxWxLSX/iQBcfQ8GDvbJVhvyNm9JvzIBEQoWw5d
-         wfHaAAS6/urDOxSTjTGOWPgBgZEUl2ppw3oyX0ColEr2Y+O8bGUhyRkZt7JVs7gHC627
-         qIZw==
-X-Gm-Message-State: APjAAAVaMviWnwPjvL8D13x6YuzRuPcoWl7GODKaf6/mMgC/7/35NB4U
-        q4esxPl2V989+ly4uEZyw6IWKA==
-X-Google-Smtp-Source: APXvYqyFUdlctc8HdWsYt+J1cb0djjlngW+/MYywRZ0lxsUs4EclvkHMtVtNDgPg8MnKDJqz9Fa6/w==
-X-Received: by 2002:a25:d1d5:: with SMTP id i204mr31442488ybg.292.1560152324219;
-        Mon, 10 Jun 2019 00:38:44 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s (li1322-146.members.linode.com. [45.79.223.146])
-        by smtp.gmail.com with ESMTPSA id 207sm2821824ywo.98.2019.06.10.00.38.31
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 10 Jun 2019 00:38:43 -0700 (PDT)
-Date:   Mon, 10 Jun 2019 15:38:25 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] perf trace: Exit when build eBPF program failure
-Message-ID: <20190610073825.GB6140@leoy-ThinkPad-X240s>
-References: <20190606094845.4800-1-leo.yan@linaro.org>
- <20190606094845.4800-2-leo.yan@linaro.org>
- <20190606133019.GA30166@kernel.org>
- <20190606133424.GB30166@kernel.org>
+        id S2388261AbfFJIFr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Jun 2019 04:05:47 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:55208 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388121AbfFJIFr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Jun 2019 04:05:47 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20190610080545euoutp02c82c6ec1625ed1af691a5cc7885a826d~mx79Mofk83150031500euoutp02k
+        for <bpf@vger.kernel.org>; Mon, 10 Jun 2019 08:05:45 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20190610080545euoutp02c82c6ec1625ed1af691a5cc7885a826d~mx79Mofk83150031500euoutp02k
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1560153945;
+        bh=Iydzu+34xMOqZUeL4a5kLloyjoWo0xPAO3gew+uxnu8=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=sH/4LAkHLx5LaovrpNwy12MpT8CJXv7/xkiwiDpXtHPdZ7fQDMTcWf7X+sL6btgr9
+         rkPl7nPCboz85OMHt+8Kl8OUle3NIX7UCfzqEiCaKtdAeiJvXnHPeqLMd78IyHkgaR
+         hEED+yxS8Ue2nSnWuUFHF64XBzqns9f4FunbBPjs=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20190610080544eucas1p22efd8450d445146257a36b83adde084a~mx78aOjzV0238302383eucas1p2l;
+        Mon, 10 Jun 2019 08:05:44 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 12.DD.04325.85F0EFC5; Mon, 10
+        Jun 2019 09:05:44 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20190610080543eucas1p1925be58eed3fadb6df90b58541e87cbb~mx77lHQId2351823518eucas1p1A;
+        Mon, 10 Jun 2019 08:05:43 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20190610080543eusmtrp1f50cfc06142c71af65eb2953a6d6aff2~mx77VWRmP3063330633eusmtrp1G;
+        Mon, 10 Jun 2019 08:05:43 +0000 (GMT)
+X-AuditID: cbfec7f5-b8fff700000010e5-b1-5cfe0f5899b8
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 35.D7.04146.75F0EFC5; Mon, 10
+        Jun 2019 09:05:43 +0100 (BST)
+Received: from [106.109.129.180] (unknown [106.109.129.180]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20190610080542eusmtip23f447e2d8dc20e3cf266844fb3998a84~mx76qbxxV0105901059eusmtip2V;
+        Mon, 10 Jun 2019 08:05:42 +0000 (GMT)
+Subject: Re: [PATCH bpf v2] xdp: fix hang while unregistering device bound
+ to xdp socket
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, xdp-newbies@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>
+From:   Ilya Maximets <i.maximets@samsung.com>
+Message-ID: <d8b2bc92-3b7e-dfe7-35ee-61a68d46ff02@samsung.com>
+Date:   Mon, 10 Jun 2019 11:05:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190606133424.GB30166@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190607163156.12cd3418@cakuba.netronome.com>
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHKsWRmVeSWpSXmKPExsWy7djP87oR/P9iDM618ln8advAaPH5yHE2
+        iznnW1gsrrT/ZLc49qKFzWLXupnMFpd3zWGzWHHoBFBsgZjF9v59jA5cHltW3mTy2DnrLrvH
+        4j0vmTymdz9k9ujbsorR4/MmuQC2KC6blNSczLLUIn27BK6MWfdeMha846648voZSwPjJs4u
+        Rg4OCQETiS+Tg7oYuTiEBFYwSnz9vZIZwvnCKHGvsYsVwvnMKHGy9z9QhhOs4+W/FjaIxHJG
+        iQ8t36BaPjJKfJv/DqxKWCBK4tu/p0wgtoiAocSvG1PARjELrGWSuPRnIgtIgk1AR+LU6iOM
+        IDavgJ1E/+6F7CA2i4CqxJwZJ8AGiQpESHzZuQmqRlDi5MwnYL2cAtYS7cvvsILYzALiEk1f
+        VkLZ8hLb384Bu0hC4By7RFvndyaIu10k5t+YxAJhC0u8Or6FHcKWkTg9uQcqXi9xv+UlI0Rz
+        B6PE9EP/oJrtJba8PscOCjJmAU2J9bv0IcKOEt8vtbNDQpJP4sZbQYgb+CQmbZvODBHmleho
+        E4KoVpH4fXA5NBSlJG6++8w+gVFpFpLPZiH5ZhaSb2Yh7F3AyLKKUTy1tDg3PbXYOC+1XK84
+        Mbe4NC9dLzk/dxMjMFWd/nf86w7GfX+SDjEKcDAq8fAesP8bI8SaWFZcmXuIUYKDWUmE9+3R
+        PzFCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeasZHkQLCaQnlqRmp6YWpBbBZJk4OKUaGJUVXn2w
+        V0//Nfeqks7Br83XPzv03w5hCKmSKthteEOc2fSu1Tex7NZp/7KNPsd+DdY+dOGXl6Dn+TUq
+        H66J3etXPcZZvLLANGlOZeJ26TVLJXOVU07uejl5h1Rr59y/eb8Sr/6+/iRlchrj7LeTNxpU
+        ZXP2R26WP1r8/um9/4HvEpYq8dxXFFNiKc5INNRiLipOBADigeVQUQMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrEIsWRmVeSWpSXmKPExsVy+t/xe7rh/P9iDGad5Lf407aB0eLzkeNs
+        FnPOt7BYXGn/yW5x7EULm8WudTOZLS7vmsNmseLQCaDYAjGL7f37GB24PLasvMnksXPWXXaP
+        xXteMnlM737I7NG3ZRWjx+dNcgFsUXo2RfmlJakKGfnFJbZK0YYWRnqGlhZ6RiaWeobG5rFW
+        RqZK+nY2Kak5mWWpRfp2CXoZs+69ZCx4x11x5fUzlgbGTZxdjJwcEgImEi//tbB1MXJxCAks
+        ZZT4ef4XI0RCSuLHrwusELawxJ9rXVBF7xklHv06xASSEBaIkrj0+DgziC0iYCjx68YUVpAi
+        ZoG1TBK7VjczQXTsZ5TYeuopWAebgI7EqdVHwFbwCthJ9O9eyA5iswioSsyZcQJskqhAhMTs
+        XQ0sEDWCEidnPgGzOQWsJdqX3wE7iVlAXeLPvEvMELa4RNOXlVBxeYntb+cwT2AUmoWkfRaS
+        lllIWmYhaVnAyLKKUSS1tDg3PbfYUK84Mbe4NC9dLzk/dxMjMD63Hfu5eQfjpY3BhxgFOBiV
+        eHgP2P+NEWJNLCuuzD3EKMHBrCTC+/bonxgh3pTEyqrUovz4otKc1OJDjKZAz01klhJNzgem
+        jrySeENTQ3MLS0NzY3NjMwslcd4OgYMxQgLpiSWp2ampBalFMH1MHJxSDYy6Equ6i9YVXTOJ
+        7+mo3zd5xWnLz3cvX4t+IDRDvNdugv2hM91zfy9o+3ijq/Vcv5OSTt85lorF1yuWcCtM7N8Q
+        l3/1kvelhVazLL2FszlfrgnbuiWJzf6/c1fWyu+1Pm1f2V4Ue89a219xM7DsgPJtq+d/7i/M
+        WC9mua1PesVqm+rfS9ZlMy5VYinOSDTUYi4qTgQAAmzqW+UCAAA=
+X-CMS-MailID: 20190610080543eucas1p1925be58eed3fadb6df90b58541e87cbb
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20190607173149eucas1p1d2ebedcab469ebd66acfe7c7dcd18d7e
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20190607173149eucas1p1d2ebedcab469ebd66acfe7c7dcd18d7e
+References: <CGME20190607173149eucas1p1d2ebedcab469ebd66acfe7c7dcd18d7e@eucas1p1.samsung.com>
+        <20190607173143.4919-1-i.maximets@samsung.com>
+        <20190607163156.12cd3418@cakuba.netronome.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 06, 2019 at 10:34:24AM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Thu, Jun 06, 2019 at 10:30:19AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Thu, Jun 06, 2019 at 05:48:42PM +0800, Leo Yan escreveu:
-> > > +++ b/tools/perf/builtin-trace.c
-> > > @@ -3664,6 +3664,14 @@ static int trace__config(const char *var, const char *value, void *arg)
-> > >  					       "event selector. use 'perf list' to list available events",
-> > >  					       parse_events_option);
-> > >  		err = parse_events_option(&o, value, 0);
-> > > +
-> > > +		/*
-> > > +		 * When parse option successfully parse_events_option() will
-> > > +		 * return 0, otherwise means the paring failure.  And it
-> > > +		 * returns 1 for eBPF program building failure; so adjust the
-> > > +		 * err value to -1 for the failure.
-> > > +		 */
-> > > +		err = err ? -1 : 0;
-> > 
-> > I'll rewrite the comment above to make it more succint and fix things
-> > like 'paring' (parsing):
-> > 
-> > 		/*
-> > 		 * parse_events_option() returns !0 to indicate failure
-> > 		 * while the perf_config code that calls trace__config()
-> > 		 * expects < 0 returns to indicate error, so:
-> > 		 */
-> > 
-> > 		 if (err)
-> > 		 	err = -1;
+On 08.06.2019 2:31, Jakub Kicinski wrote:
+> On Fri,  7 Jun 2019 20:31:43 +0300, Ilya Maximets wrote:
+>> +static int xsk_notifier(struct notifier_block *this,
+>> +			unsigned long msg, void *ptr)
+>> +{
+>> +	struct sock *sk;
+>> +	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>> +	struct net *net = dev_net(dev);
+>> +	int i, unregister_count = 0;
 > 
-> Even shorter, please let me know if I can keep your
-> Signed-off-by/authorship for this one.
+> Please order the var declaration lines longest to shortest.
+> (reverse christmas tree)
 
-Sorry I miss this email.
+Hi.
+I'm not a fan of mixing 'struct's with bare types in the declarations.
+Moving the 'sk' to the third place will make a hole like this:
 
-> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-> index f7e4e50bddbd..1a2a605cf068 100644
-> --- a/tools/perf/builtin-trace.c
-> +++ b/tools/perf/builtin-trace.c
-> @@ -3703,7 +3703,12 @@ static int trace__config(const char *var, const char *value, void *arg)
->  		struct option o = OPT_CALLBACK('e', "event", &trace->evlist, "event",
->  					       "event selector. use 'perf list' to list available events",
->  					       parse_events_option);
-> -		err = parse_events_option(&o, value, 0);
-> +		/*
-> +		 * We can't propagate parse_event_option() return, as it is 1
-> +		 * for failure while perf_config() expects -1.
-> +		 */
-> +		if (parse_events_option(&o, value, 0))
-> +			err = -1;
->  	} else if (!strcmp(var, "trace.show_timestamp")) {
->  		trace->show_tstamp = perf_config_bool(var, value);
->  	} else if (!strcmp(var, "trace.show_duration")) {
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+	struct net *net = dev_net(dev);
+	struct sock *sk;
+	int i, unregister_count = 0;
 
+Which is not looking good.
+Moving to the 4th place:
 
-Yeah, the change looks good to me. And very appreciate your effort to
-improve the patch quality.
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+	struct net *net = dev_net(dev);
+	int i, unregister_count = 0;
+	struct sock *sk;
 
-Thanks,
-Leo.
+This variant doesn't look good for me because of mixing 'struct's with
+bare integers.
+
+Do you think I need to use one of above variants?
+
+> 
+>> +	mutex_lock(&net->xdp.lock);
+>> +	sk_for_each(sk, &net->xdp.list) {
+>> +		struct xdp_sock *xs = xdp_sk(sk);
+>> +
+>> +		mutex_lock(&xs->mutex);
+>> +		switch (msg) {
+>> +		case NETDEV_UNREGISTER:
+> 
+> You should probably check the msg type earlier and not take all the
+> locks and iterate for other types..
+
+Yeah. I thought about it too. Will fix in the next version.
+
+Best regards, Ilya Maximets.
