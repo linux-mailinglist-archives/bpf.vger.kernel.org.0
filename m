@@ -2,162 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3D23B938
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 18:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9833B984
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 18:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391032AbfFJQRm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Jun 2019 12:17:42 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:40175 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390259AbfFJQRl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Jun 2019 12:17:41 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20190610161740euoutp01aece0f66daf7049161311cdd47fac979~m4pdXimO32394823948euoutp01A
-        for <bpf@vger.kernel.org>; Mon, 10 Jun 2019 16:17:40 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20190610161740euoutp01aece0f66daf7049161311cdd47fac979~m4pdXimO32394823948euoutp01A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1560183460;
-        bh=sAFK7z11VVTb7FnfO2m2bg3sqAxX7frwXuQTxjAelag=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=bKVhvvtQaX5z3yG5D3noiVf8R9JGqcQzsgM4ySLGGbT0PomeYQBC83qR9mTw9Jyua
-         3pIcMsHBxaAqZBjhD1EsUUfHxAaZhn+A06VLXpezFDFwaZvziwulPTd0A4AHAPGkS3
-         0ad0WjSl04p41ZhcwN5Bg5uxwlfgd6rr9JcPH+go=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20190610161739eucas1p17c0338184126cab4edaa1e201e70e2dc~m4pcjC3Pk1445614456eucas1p10;
-        Mon, 10 Jun 2019 16:17:39 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id E8.D4.04298.3A28EFC5; Mon, 10
-        Jun 2019 17:17:39 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20190610161738eucas1p18e8ea92ad360435f32979380caed7f0b~m4pbzh9tt1445614456eucas1p1z;
-        Mon, 10 Jun 2019 16:17:38 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20190610161738eusmtrp2a2a495b577bf1fbfabfc5ce074264323~m4pbj2g5A1476914769eusmtrp2g;
-        Mon, 10 Jun 2019 16:17:38 +0000 (GMT)
-X-AuditID: cbfec7f2-f2dff700000010ca-7f-5cfe82a3680a
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 0E.D3.04140.2A28EFC5; Mon, 10
-        Jun 2019 17:17:38 +0100 (BST)
-Received: from [106.109.129.180] (unknown [106.109.129.180]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20190610161737eusmtip1dd37683d70038d9f90fe32a0dfdf9043~m4parH2bQ2310323103eusmtip1d;
-        Mon, 10 Jun 2019 16:17:37 +0000 (GMT)
-Subject: Re: [PATCH bpf v2] xdp: fix hang while unregistering device bound
- to xdp socket
-From:   Ilya Maximets <i.maximets@samsung.com>
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, xdp-newbies@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>
-Message-ID: <06eee1e3-283a-d665-904b-f0bc89b73232@samsung.com>
-Date:   Mon, 10 Jun 2019 19:17:37 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
-        Thunderbird/60.7.0
-MIME-Version: 1.0
-In-Reply-To: <d8b2bc92-3b7e-dfe7-35ee-61a68d46ff02@samsung.com>
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrJKsWRmVeSWpSXmKPExsWy7djP87qLm/7FGDT+ErH407aB0eLzkeNs
-        FnPOt7BYXGn/yW5x7EULm8WudTOZLS7vmsNmseLQCaDYAjGL7f37GB24PLasvMnksXPWXXaP
-        xXteMnlM737I7NG3ZRWjx+dNcgFsUVw2Kak5mWWpRfp2CVwZKy7rFGznrVh17S1bA+MRri5G
-        Tg4JAROJqZOOsXQxcnAICaxglHguDBIWEvjCKPF5WVYXIxeQ/ZlRYsHF7aww9Y9evWaESCwH
-        Knq6lw3C+cgoMeP1YiaQKmGBKIlv/56C2WwCOhKnVh9hBLFFBAwlft2YwgrSwCywlkni0p+J
-        YKt5BewkJnRmg5gsAqoSl6+Kg5SLCkRIfNm5CayVV0BQ4uTMJywgNqeAvcSJo2/AbGYBcYmm
-        LytZIWx5ie1v5zCDjJcQOMcu0X3kKyPE1S4St1t3MEPYwhKvjm9hh7BlJP7vnM8EYddL3G95
-        yQjR3MEoMf3QP6iEvcSW1+fYQY5jFtCUWL9LHyLsKPH9UjtYWEKAT+LGW0GIG/gkJm2bzgwR
-        5pXoaBOCqFaR+H1wOdQFUhI3331mn8CoNAvJZ7OQfDMLyTezEPYuYGRZxSieWlqcm55abJiX
-        Wq5XnJhbXJqXrpecn7uJEZigTv87/mkH49dLSYcYBTgYlXh4I6L/xQixJpYVV+YeYpTgYFYS
-        4V0hBRTiTUmsrEotyo8vKs1JLT7EKM3BoiTOW83wIFpIID2xJDU7NbUgtQgmy8TBKdXAOG3/
-        P64U/lNqfAUyDN///lXpcmYW9fmxQnJ5rNYdnquKWRxi6n8Znm7+4f1Ims/OxPPixTzNWbLr
-        F273XHvBoe4f94n7Xv8vcfiqvdgWuftibNZaN5XvPGtVOTqs+v35nBu/K4SqzBCdzjG/rMd/
-        mvzc21E5PWYrO1dsnLLVc23PyfJefqN3SizFGYmGWsxFxYkAYheG7kwDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrHIsWRmVeSWpSXmKPExsVy+t/xu7qLmv7FGEyeJGjxp20Do8XnI8fZ
-        LOacb2GxuNL+k93i2IsWNotd62YyW1zeNYfNYsWhE0CxBWIW2/v3MTpweWxZeZPJY+esu+we
-        i/e8ZPKY3v2Q2aNvyypGj8+b5ALYovRsivJLS1IVMvKLS2yVog0tjPQMLS30jEws9QyNzWOt
-        jEyV9O1sUlJzMstSi/TtEvQyVlzWKdjOW7Hq2lu2BsYjXF2MnBwSAiYSj169Zuxi5OIQEljK
-        KPFx5URWiISUxI9fF6BsYYk/17rYIIreM0osvfSHGSQhLBAlcenxcTCbTUBH4tTqI4wgtoiA
-        ocSvG1NYQRqYBdYySexa3cwEkhAS+MIo8WmxeRcjBwevgJ3EhM5sEJNFQFXi8lVxkApRgQiJ
-        2bsaWEBsXgFBiZMzn4DZnAL2EieOvgGzmQXUJf7Mu8QMYYtLNH1ZyQphy0tsfzuHeQKj0Cwk
-        7bOQtMxC0jILScsCRpZVjCKppcW56bnFRnrFibnFpXnpesn5uZsYgXG57djPLTsYu94FH2IU
-        4GBU4uGNiP4XI8SaWFZcmXuIUYKDWUmEd4UUUIg3JbGyKrUoP76oNCe1+BCjKdBvE5mlRJPz
-        gSkjryTe0NTQ3MLS0NzY3NjMQkmct0PgYIyQQHpiSWp2ampBahFMHxMHp1QDY013I0vBsWkv
-        o9t26bKZSC1yOG7au+/nevabLk0iQpOUdA4Ylhd4rKm/bblMYM0HkTv1Tis8SjelXXggp11i
-        V/jXdv3zKxzfjs/cnGrCuPDq7qDe//PXeaf722dWh9xMTGidWL11wvQl9S7H67JSmTxe3Nx7
-        SrN43rFX5lJsnRUvyxh2r7/7QomlOCPRUIu5qDgRAGsFRj/hAgAA
-X-CMS-MailID: 20190610161738eucas1p18e8ea92ad360435f32979380caed7f0b
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20190607173149eucas1p1d2ebedcab469ebd66acfe7c7dcd18d7e
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20190607173149eucas1p1d2ebedcab469ebd66acfe7c7dcd18d7e
-References: <CGME20190607173149eucas1p1d2ebedcab469ebd66acfe7c7dcd18d7e@eucas1p1.samsung.com>
-        <20190607173143.4919-1-i.maximets@samsung.com>
-        <20190607163156.12cd3418@cakuba.netronome.com>
-        <d8b2bc92-3b7e-dfe7-35ee-61a68d46ff02@samsung.com>
+        id S1728146AbfFJQeZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Jun 2019 12:34:25 -0400
+Received: from mail-vs1-f73.google.com ([209.85.217.73]:41929 "EHLO
+        mail-vs1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728139AbfFJQeZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Jun 2019 12:34:25 -0400
+Received: by mail-vs1-f73.google.com with SMTP id a200so3223106vsd.8
+        for <bpf@vger.kernel.org>; Mon, 10 Jun 2019 09:34:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=WTJ0CLWWhp91boKJRzsc1QxdiFix806yxAsK82lwins=;
+        b=VR3Q2lkJUDVvdBszcGrz/TkrHsxBfNsCPlb1XzX2K/bP0YDNw+BSHtov/YBzq4wHLq
+         oZFJsM7TAc2hP3fhvQA0C4KzpepgQ2CSu9vhSA1klixENWXv74gKfvFWu7hpLq2v9w8Z
+         PEDzD1CF+Ao/0Hfu5lSGpgjy/htcZp7OQlO+nV8gxnATyntN/WolqQ5kFoZmK51mDIIq
+         Nit7k8Yk2DILCs76GPSMY1J91xxQlPPeVR3VRcd06o/73uz8RI8Oci6+SGOVrGMoENlU
+         97QIxxu2kQuzUC0CLhB3PMLt18YGs4WblXaYAAxFlQkD64mBX1fV7DF+a3XzRkDL+mXM
+         yLPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=WTJ0CLWWhp91boKJRzsc1QxdiFix806yxAsK82lwins=;
+        b=H9ZcyBkT2VaB2p94TZO0f21+RRwm+F649/nJlwwsCvrZwk5Vi+v4/v5avS1GeuUmGo
+         +9NO2Xnwh6QhnYkMCnMJlV+MHRV4YaZAnPGPWGn7qU6lAdzYK2K6E54u+UGMhXjKVNba
+         2L16bODqq6sNYCVXTLGnrbvpw9cdMsnbLC4UlZe5uzszUio6DJYiMr5GIeHt2yqNpJrb
+         +77WkGGjBC0TZvV1LUyQp7zq9QCFzwMvCGQIOascVKvbwLpED/qGNZDWSJluivoejwp3
+         SQbl8lP6p8SvD7yoMkj/fxTxkda8EVMl2aqtoYWJzaXqCHRWYynTo1HUw9WKJ/+24nv+
+         ATng==
+X-Gm-Message-State: APjAAAUV0su+6ZRpDxhco5inArd2sPjzNjWb/+bJLkU5ZADNcndPaUW/
+        rIMVsTM97XhaUquwKGMlQC7479E=
+X-Google-Smtp-Source: APXvYqyTH5vQBy+TeDL2fFHLQxIvj7F6k90vf/dWf+3yvjjbN3VGdnuj4qUzSpY2+s9gzggvTb6wUBk=
+X-Received: by 2002:a9f:2372:: with SMTP id 105mr4190313uae.85.1560184464300;
+ Mon, 10 Jun 2019 09:34:24 -0700 (PDT)
+Date:   Mon, 10 Jun 2019 09:34:13 -0700
+Message-Id: <20190610163421.208126-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.22.0.rc2.383.gf4fbbf30c2-goog
+Subject: [PATCH bpf-next v4 0/8] bpf: getsockopt and setsockopt hooks
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10.06.2019 11:05, Ilya Maximets wrote:
-> On 08.06.2019 2:31, Jakub Kicinski wrote:
->> On Fri,  7 Jun 2019 20:31:43 +0300, Ilya Maximets wrote:
->>> +static int xsk_notifier(struct notifier_block *this,
->>> +			unsigned long msg, void *ptr)
->>> +{
->>> +	struct sock *sk;
->>> +	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
->>> +	struct net *net = dev_net(dev);
->>> +	int i, unregister_count = 0;
->>
->> Please order the var declaration lines longest to shortest.
->> (reverse christmas tree)
-> 
-> Hi.
-> I'm not a fan of mixing 'struct's with bare types in the declarations.
-> Moving the 'sk' to the third place will make a hole like this:
-> 
-> 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
-> 	struct net *net = dev_net(dev);
-> 	struct sock *sk;
-> 	int i, unregister_count = 0;
-> 
-> Which is not looking good.
-> Moving to the 4th place:
-> 
-> 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
-> 	struct net *net = dev_net(dev);
-> 	int i, unregister_count = 0;
-> 	struct sock *sk;
+This series implements two new per-cgroup hooks: getsockopt and
+setsockopt along with a new sockopt program type. The idea is pretty
+similar to recently introduced cgroup sysctl hooks, but
+implementation is simpler (no need to convert to/from strings).
 
-I've sent v3 with this variant and with moved msg check to the top level.
+What this can be applied to:
+* move business logic of what tos/priority/etc can be set by
+  containers (either pass or reject)
+* handle existing options (or introduce new ones) differently by
+  propagating some information in cgroup/socket local storage
 
-> 
-> This variant doesn't look good for me because of mixing 'struct's with
-> bare integers.
-> 
-> Do you think I need to use one of above variants?
-> 
->>
->>> +	mutex_lock(&net->xdp.lock);
->>> +	sk_for_each(sk, &net->xdp.list) {
->>> +		struct xdp_sock *xs = xdp_sk(sk);
->>> +
->>> +		mutex_lock(&xs->mutex);
->>> +		switch (msg) {
->>> +		case NETDEV_UNREGISTER:
->>
->> You should probably check the msg type earlier and not take all the
->> locks and iterate for other types..
-> 
-> Yeah. I thought about it too. Will fix in the next version.
-> 
-> Best regards, Ilya Maximets.
-> 
+Compared to a simple syscall/{g,s}etsockopt tracepoint, those
+hooks are context aware. Meaning, they can access underlying socket
+and use cgroup and socket local storage.
+
+Stanislav Fomichev (8):
+  bpf: implement getsockopt and setsockopt hooks
+  bpf: sync bpf.h to tools/
+  libbpf: support sockopt hooks
+  selftests/bpf: test sockopt section name
+  selftests/bpf: add sockopt test
+  selftests/bpf: add sockopt test that exercises sk helpers
+  bpf: add sockopt documentation
+  bpftool: support cgroup sockopt
+
+ Documentation/bpf/index.rst                   |   1 +
+ Documentation/bpf/prog_cgroup_sockopt.rst     |  39 +
+ include/linux/bpf-cgroup.h                    |  29 +
+ include/linux/bpf.h                           |  45 +
+ include/linux/bpf_types.h                     |   1 +
+ include/linux/filter.h                        |  13 +
+ include/uapi/linux/bpf.h                      |  13 +
+ kernel/bpf/cgroup.c                           | 262 ++++++
+ kernel/bpf/core.c                             |   9 +
+ kernel/bpf/syscall.c                          |  19 +
+ kernel/bpf/verifier.c                         |  15 +
+ net/core/filter.c                             |   2 +-
+ net/socket.c                                  |  18 +
+ .../bpftool/Documentation/bpftool-cgroup.rst  |   7 +-
+ .../bpftool/Documentation/bpftool-prog.rst    |   2 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |   8 +-
+ tools/bpf/bpftool/cgroup.c                    |   5 +-
+ tools/bpf/bpftool/main.h                      |   1 +
+ tools/bpf/bpftool/prog.c                      |   3 +-
+ tools/include/uapi/linux/bpf.h                |  14 +
+ tools/lib/bpf/libbpf.c                        |   5 +
+ tools/lib/bpf/libbpf_probes.c                 |   1 +
+ tools/testing/selftests/bpf/.gitignore        |   2 +
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ .../testing/selftests/bpf/progs/sockopt_sk.c  |  67 ++
+ .../selftests/bpf/test_section_names.c        |  10 +
+ tools/testing/selftests/bpf/test_sockopt.c    | 773 ++++++++++++++++++
+ tools/testing/selftests/bpf/test_sockopt_sk.c | 156 ++++
+ 28 files changed, 1514 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/bpf/prog_cgroup_sockopt.rst
+ create mode 100644 tools/testing/selftests/bpf/progs/sockopt_sk.c
+ create mode 100644 tools/testing/selftests/bpf/test_sockopt.c
+ create mode 100644 tools/testing/selftests/bpf/test_sockopt_sk.c
+
+-- 
+2.22.0.rc2.383.gf4fbbf30c2-goog
