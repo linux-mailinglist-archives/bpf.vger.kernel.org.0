@@ -2,122 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 743E93B228
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 11:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 508D23B41E
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 13:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388777AbfFJJaP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Jun 2019 05:30:15 -0400
-Received: from mail-it1-f199.google.com ([209.85.166.199]:53606 "EHLO
-        mail-it1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388453AbfFJJaG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Jun 2019 05:30:06 -0400
-Received: by mail-it1-f199.google.com with SMTP id p19so8383105itm.3
-        for <bpf@vger.kernel.org>; Mon, 10 Jun 2019 02:30:06 -0700 (PDT)
+        id S2388866AbfFJLl0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Jun 2019 07:41:26 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:40352 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388453AbfFJLl0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Jun 2019 07:41:26 -0400
+Received: by mail-pf1-f195.google.com with SMTP id p184so1866684pfp.7;
+        Mon, 10 Jun 2019 04:41:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=L4AlfmLwBFZZOdcgZsTQ5atOdp5qnYtX3LhUVSPdmCc=;
+        b=Vp/JNUXerYMyXz/41OibUTg13ONS3djMgugJ/IOKH8KDXuD6V+oa0hgdKxNr6gVSZ2
+         POTkDQhxi/G9vKOmJCX4ju+09NbDxbmBJTZSX2qGWez7IYk6odiZC+Hx0C+zwJDdLZMU
+         ILYUcs8m9m7FQBNNlRNYj7PL830JyIDpMUvWLdigLKXplALTEwwXmO8vUfi4uJnStJic
+         fG8Vf6tC9GdGiWhz8+smPeOFxng96HT4Vb/rUzodzpvJ6YOcEeyir3tZpiXKJZVmeB5w
+         cOXKsjA6OIH8qWhfAnf2jVEJ1YNkcMqhUAi6dywn1kZN7g3oCfiLot9V12w+3hDX/78V
+         TTUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Np+xPJWikxtIIlIvGvVx4ZfVKde2a2GTO356MNseHYo=;
-        b=gykyYD13oU29Yc9863lVialiw6vanNkYzX4ck+12eWBBjcLuZCVlmoZPrhOKkxIwBB
-         8zBgVqePibUCuh/oE6v2QW6IuXfr+YFxK/lpIxyFRXWF0Ikpb1q+fyqCc42sbPfm8z/w
-         o4MtTQSlpFuSh1NfMUv4MwGPjajZ8T1Nw0sOzV1Q37moswCW8of91ntAnH1DZQrOPyHv
-         EpxkiCJLS/ZXH+xi5Q8l82S5a+sRckKjkpZcv4fokbAsr+eDi8FcVur0GbcM8THwBpGr
-         JoC/s5jLfUVs4IUXnn/WXUJIiJ99XZM4tApcED9+e6ANqPErtvuv4V9wSPv0dB5b7WYs
-         XnXg==
-X-Gm-Message-State: APjAAAXsIrbKtLIk6KDZFRBK1xD7uU4h95zIh6vxUQkHxvvPE6DG27C/
-        LBcBtddcHGd0IwPseYgCRowjjaEdfPTHEVNP8fwUcdmgo8V9
-X-Google-Smtp-Source: APXvYqz2M+f0Q17h76RoBB7choSL+vGIvH++EpNIaPAzhimyQwDJcGoElZVdPCA72l9rTJFgMT/hvree53vNcYjlWWDhxWCDz0Rs
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=L4AlfmLwBFZZOdcgZsTQ5atOdp5qnYtX3LhUVSPdmCc=;
+        b=ZWXc4L8q8kjvQx7zEu5HDHUimTZhKojdLoTz+83zg9dzm88qh0Pq7yaSXMmVnCV6Ty
+         E6U23fIIiIdqV41EDCZg5g5a70iiXEdax46Qno90eZJF1yoSlwCLICiUT2+Mi7RCwNpd
+         53cU5DM97cyB+ArzOeL/A0VLN1XgaCZV6n3pHcV5s/VXrqFC1WFyl2JCbDYes4YQvsFP
+         ILvpYhlKjCk68jP/D+NASDUyo/1mYfTJCickQwCu6P46iXACdHm6sr3hm/9NcVV8M+op
+         KTam1sDFu7v++kzUT7JxQKzAGKNwyZmSt2NUv+iB/AbGgI0Ls0qgo4xp1PQOxUnao24D
+         y/uQ==
+X-Gm-Message-State: APjAAAXtSIYHTJlmojteig4ehiWt9eSsgZqoXerLT74U6lbuki74I8o/
+        N/YQGnR6GW57r30swWszLkWnoGrB
+X-Google-Smtp-Source: APXvYqy+rP/vKEbQ1X011iDahbdEBxPlZug6tj6euYiNTm6eB9W3piJgML2XvSkdXH9DtaiMaUXjpA==
+X-Received: by 2002:a17:90a:2446:: with SMTP id h64mr21795406pje.0.1560166885281;
+        Mon, 10 Jun 2019 04:41:25 -0700 (PDT)
+Received: from [172.20.20.103] ([222.151.198.97])
+        by smtp.gmail.com with ESMTPSA id 188sm20817875pfe.30.2019.06.10.04.41.20
+        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+        Mon, 10 Jun 2019 04:41:23 -0700 (PDT)
+From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/2] xdp: Add tracepoint for bulk XDP_TX
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
+        bpf@vger.kernel.org,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+References: <20190605053613.22888-1-toshiaki.makita1@gmail.com>
+ <20190605053613.22888-2-toshiaki.makita1@gmail.com>
+ <20190605095931.5d90b69c@carbon>
+ <abd43c39-afb7-acd4-688a-553cec76f55c@gmail.com>
+ <20190606214105.6bf2f873@carbon>
+ <e0266202-5db6-123c-eba6-33e5c5c4ba6d@gmail.com>
+ <20190607113220.1ea4093a@carbon>
+Message-ID: <cf0bed1c-aa70-7c67-3735-c0137f0fbc5d@gmail.com>
+Date:   Mon, 10 Jun 2019 20:41:16 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-X-Received: by 2002:a24:690f:: with SMTP id e15mr378569itc.31.1560159005811;
- Mon, 10 Jun 2019 02:30:05 -0700 (PDT)
-Date:   Mon, 10 Jun 2019 02:30:05 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000055aba7058af4d378@google.com>
-Subject: KASAN: null-ptr-deref Read in css_task_iter_advance
-From:   syzbot <syzbot+d4bba5ccd4f9a2a68681@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
-        daniel@iogearbox.net, hannes@cmpxchg.org, kafai@fb.com,
-        linux-kernel@vger.kernel.org, lizefan@huawei.com,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tj@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+In-Reply-To: <20190607113220.1ea4093a@carbon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On 2019/06/07 18:32, Jesper Dangaard Brouer wrote:
+> On Fri, 7 Jun 2019 11:22:00 +0900
+> Toshiaki Makita <toshiaki.makita1@gmail.com> wrote:
+> 
+>> On 2019/06/07 4:41, Jesper Dangaard Brouer wrote:
+>>> On Thu, 6 Jun 2019 20:04:20 +0900
+>>> Toshiaki Makita <toshiaki.makita1@gmail.com> wrote:
+>>>    
+>>>> On 2019/06/05 16:59, Jesper Dangaard Brouer wrote:
+>>>>> On Wed,  5 Jun 2019 14:36:12 +0900
+>>>>> Toshiaki Makita <toshiaki.makita1@gmail.com> wrote:
+>>>>>       
+> [...]
+>>>>
+>>>> So... prog_id is the problem. The program can be changed while we are
+>>>> enqueueing packets to the bulk queue, so the prog_id at flush may be an
+>>>> unexpected one.
+>>>
+>>> Hmmm... that sounds problematic, if the XDP bpf_prog for veth can
+>>> change underneath, before the flush.  Our redirect system, depend on
+>>> things being stable until the xdp_do_flush_map() operation, as will
+>>> e.g. set per-CPU (bpf_redirect_info) map_to_flush pointer (which depend
+>>> on XDP prog), and expect it to be correct/valid.
+>>
+>> Sorry, I don't get how maps depend on programs.
+> 
+> BPF/XDP programs have a reference count on the map (e.g. used for
+> redirect) and when the XDP is removed, and last refcnt for the map is
+> reached, then the map is also removed (redirect maps does a call_rcu
+> when shutdown).
 
-syzbot found the following crash on:
+Thanks, now I understand what you mean.
 
-HEAD commit:    3f310e51 Add linux-next specific files for 20190607
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=170acfa6a00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5d176e1849bbc45
-dashboard link: https://syzkaller.appspot.com/bug?extid=d4bba5ccd4f9a2a68681
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+>> At least xdp_do_redirect_map() handles map_to_flush change during NAPI.
+>> Is there a problem when the map is not changed but the program is changed?
+>> Also I believe this is not veth-specific behavior. Looking at tun and
+>> i40e, they seem to change xdp_prog without stopping data path.
+>   
+> I guess this could actually happen, but we are "saved" by the
+> 'map_to_flush' (pointer) is still valid due to RCU protection.
+> 
+> But it does look fishy, as our rcu_read_lock's does not encapsulation
+> this. There is RCU-read-section in veth_xdp_rcv_skb(), which via can
+> call xdp_do_redirect() which set per-CPU ri->map_to_flush.
+> 
+> Do we get this protection by running under softirq, and does this
+> prevent an RCU grace-period (call_rcu callbacks) from happening?
+> (between veth_xdp_rcv_skb() and xdp_do_flush_map() in veth_poll())
 
-Unfortunately, I don't have any reproducer for this crash yet.
+We are trying to avoid the problem in dev_map_free()?
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+d4bba5ccd4f9a2a68681@syzkaller.appspotmail.com
+	/* To ensure all pending flush operations have completed wait for flush
+	 * bitmap to indicate all flush_needed bits to be zero on _all_ cpus.
+	 * Because the above synchronize_rcu() ensures the map is disconnected
+	 * from the program we can assume no new bits will be set.
+	 */
+	for_each_online_cpu(cpu) {
+		unsigned long *bitmap = per_cpu_ptr(dtab->flush_needed, cpu);
 
-==================================================================
-BUG: KASAN: null-ptr-deref in atomic_read  
-include/asm-generic/atomic-instrumented.h:26 [inline]
-BUG: KASAN: null-ptr-deref in css_task_iter_advance+0x240/0x540  
-kernel/cgroup/cgroup.c:4503
-Read of size 4 at addr 0000000000000004 by task syz-executor.2/26575
+		while (!bitmap_empty(bitmap, dtab->map.max_entries))
+			cond_resched();
+	}
 
-CPU: 1 PID: 26575 Comm: syz-executor.2 Not tainted 5.2.0-rc3-next-20190607  
-#11
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
-  __kasan_report.cold+0x5/0x36 mm/kasan/report.c:486
-  kasan_report+0x12/0x20 mm/kasan/common.c:614
-  check_memory_region_inline mm/kasan/generic.c:185 [inline]
-  check_memory_region+0x123/0x190 mm/kasan/generic.c:191
-  kasan_check_read+0x11/0x20 mm/kasan/common.c:94
-  atomic_read include/asm-generic/atomic-instrumented.h:26 [inline]
-  css_task_iter_advance+0x240/0x540 kernel/cgroup/cgroup.c:4503
-  css_task_iter_start+0x18b/0x230 kernel/cgroup/cgroup.c:4543
-  __cgroup_procs_start.isra.0+0x32f/0x400 kernel/cgroup/cgroup.c:4638
-  cgroup_procs_start kernel/cgroup/cgroup.c:4660 [inline]
-  cgroup_procs_start+0x1e7/0x260 kernel/cgroup/cgroup.c:4647
-  cgroup_seqfile_start+0xa4/0xd0 kernel/cgroup/cgroup.c:3752
-  kernfs_seq_start+0xdc/0x190 fs/kernfs/file.c:118
-  seq_read+0x2a7/0x1110 fs/seq_file.c:224
-  kernfs_fop_read+0xed/0x560 fs/kernfs/file.c:252
-  do_loop_readv_writev fs/read_write.c:714 [inline]
-  do_loop_readv_writev fs/read_write.c:701 [inline]
-  do_iter_read+0x4a4/0x660 fs/read_write.c:935
-  vfs_readv+0xf0/0x160 fs/read_write.c:997
-  do_preadv+0x1c4/0x280 fs/read_write.c:1089
-  __do_sys_preadv fs/read_write.c:1139 [inline]
-  __se_sys_preadv fs/read_write.c:1134 [inline]
-  __x64_sys_preadv+0x9a/0xf0 fs/read_write.c:1134
-  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x459279
-Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f4ee9fa8c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000127
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000000459279
-RDX: 0000000000000001 RSI: 0000000020000180 RDI: 0000000000000005
-RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f4ee9fa96d4
-R13: 00000000004c6376 R14: 00000000004dae78 R15: 00000000ffffffff
-==================================================================
+Not sure if this is working as expected.
 
+> 
+> 
+> To Toshiaki, regarding your patch 2/2, you are not affected by this
+> per-CPU map storing, as you pass along the bulk-queue.  I do see you
+> point, with prog_id could change.  Could you change the tracepoint to
+> include the 'act' and place 'ifindex' above this in the struct, this way
+> the 'act' member is in the same location/offset as other XDP
+> tracepoints.  I see the 'ifindex' as the identifier for this tracepoint
+> (other have map_id or prog_id in this location).
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Sure, thanks.
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Toshiaki Makita
