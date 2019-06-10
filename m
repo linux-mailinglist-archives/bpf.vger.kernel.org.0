@@ -2,209 +2,279 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 920813BFEA
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2019 01:38:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 537313C025
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2019 01:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390717AbfFJXhg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Jun 2019 19:37:36 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:38748 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390716AbfFJXhg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 10 Jun 2019 19:37:36 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5ANZIb5002912;
-        Mon, 10 Jun 2019 16:37:14 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=fDIYlLlHR5kG0I34hesY7C4RlsSxwts+kq5ICIC8xpA=;
- b=faEMETIO51LpH/B9kPqxfL+1XLdzeDw8jEtAVZVQ9dKHUxJeASfI0xuBPPjGuZdDfHwe
- TBE3fGr2cnrfaVN55f3eI2h8rxnqP+ykUPDC/eoQm4tnlNyR2NHpqfVYuknWn0g6/IDo
- llE8PP3xyrOV7dhWa+Mgjuy97kdlMcS4S/c= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2t1s63264v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 10 Jun 2019 16:37:13 -0700
-Received: from ash-exhub102.TheFacebook.com (2620:10d:c0a8:82::f) by
- ash-exhub203.TheFacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 10 Jun 2019 16:37:12 -0700
-Received: from NAM05-BY2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 10 Jun 2019 16:37:12 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fDIYlLlHR5kG0I34hesY7C4RlsSxwts+kq5ICIC8xpA=;
- b=Vug1lHXCeDc9A4XWWfA1fgm1krxf+6O/Aaul+tcvVL3Z5T/zRak93JdTLtzQlwE3SSBUaZPE4iXEM24iRDo1EQaojrPvU3I+L2d2hZXZ9MezlNrb55u2Myhnn1aBj89GCml++IDBOfc3IIAuLMl7TC59ne2/IV67yoA0sp3QxjM=
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
- MWHPR15MB1949.namprd15.prod.outlook.com (10.175.8.15) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1965.15; Mon, 10 Jun 2019 23:37:10 +0000
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::400e:e329:ea98:aa0d]) by MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::400e:e329:ea98:aa0d%6]) with mapi id 15.20.1965.017; Mon, 10 Jun 2019
- 23:37:10 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Hechao Li <hechaol@fb.com>
-CC:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v1 bpf-next] selftests/bpf : Clean up feature/ when make
- clean
-Thread-Topic: [PATCH v1 bpf-next] selftests/bpf : Clean up feature/ when make
- clean
-Thread-Index: AQHVH62f7FaYR0Jg40GsFfzFT4Z/eaaVLtAAgAAQDgCAAEydgA==
-Date:   Mon, 10 Jun 2019 23:37:10 +0000
-Message-ID: <958F91F9-A596-45DB-B550-894EE82F80B9@fb.com>
-References: <20190610165708.2083220-1-hechaol@fb.com>
- <CAEf4BzZGK+SN1EPudi=tt8ppN58ovW8o+=JMd8rhEgr4KBnSmw@mail.gmail.com>
- <20190610190252.GA41381@hechaol-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20190610190252.GA41381@hechaol-mbp.dhcp.thefacebook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3445.104.11)
-x-originating-ip: [2620:10d:c090:200::1:73aa]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b378678d-371a-4312-3f03-08d6edfc8f23
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MWHPR15MB1949;
-x-ms-traffictypediagnostic: MWHPR15MB1949:
-x-microsoft-antispam-prvs: <MWHPR15MB194980BDDC5C3ADF27DB8F87B3130@MWHPR15MB1949.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:311;
-x-forefront-prvs: 0064B3273C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(346002)(136003)(376002)(396003)(366004)(199004)(189003)(478600001)(66446008)(81166006)(81156014)(446003)(102836004)(305945005)(8936002)(91956017)(68736007)(64756008)(99286004)(53936002)(6506007)(76116006)(8676002)(66556008)(82746002)(53546011)(66946007)(7736002)(14454004)(66476007)(73956011)(76176011)(2906002)(6116002)(25786009)(46003)(11346002)(316002)(476003)(71190400001)(71200400001)(2616005)(6862004)(4326008)(83716004)(186003)(37006003)(33656002)(6486002)(486006)(256004)(6636002)(14444005)(6436002)(54906003)(36756003)(229853002)(6512007)(50226002)(57306001)(5660300002)(6246003)(86362001);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1949;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: uffuMjyZUgLmRC92bcdPrZWGwRovJ/6B7VDhWn+aroWGJQSDGVXZj9OpN+pG0R8lInPLvOCRyNilZyL97X/93FNhsa+UGxon/574UCi7hF2rqNZI/qTMTyx5b78fkA9p+6SYHOp+rC/iAWSii48/LFjBwZm7cnPsLZDTTje9UqG0xLsJ0j+9YEJo+Bj36QpKzZHtAQBm46QLfWOMUWvv+O7jyZyVtbggZfbeG/Z87/VNc1QK2CcnQk9Fw7W1skl3R8cTlZpC5UhQdMEV7GW88Yv3TW723jN+U7mQQmy9UrcKWiFkvgxxd+fyTedakhILK40ZTUlFFim2PsnjlUgM1DuPefJ6wjWTMlBHV1V1rWM55SvwS89cUUAblaTnubEN6bv6c9lM68hXoTs8VgEIhf2mdPYp4Tfw4im9gxZJWAE=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <09BD337A7CC6CF4F8207F905F3CC9C71@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S2390657AbfFJXtK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Jun 2019 19:49:10 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:39648 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390524AbfFJXtK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Jun 2019 19:49:10 -0400
+Received: by mail-qk1-f194.google.com with SMTP id i125so6534798qkd.6;
+        Mon, 10 Jun 2019 16:49:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jozXrqFphFU3vlMDyhbHjG2RsqRJsZmkKUiyJq3WnkU=;
+        b=LMyU70vXzsDEPlCW64H81+tj/TbcQVyMwNMUO1EpwQhk2EczBO99rhx2BQ9QcU65Fi
+         /JgiFW/xfbYAGM4e0UzsAut8o2Th5Mz6xp4HbtBaQ1W0U+Mk1BKK2l0X5ZUUGmw7Pq0i
+         ECD9CPuuaW6ZLvvbIx7j5tdlUPWDUJWasTjTONkcH+m5gCj3UOdwEwpjJg8JXxJpQkvg
+         O9jwRBm+Xgmui22CL7zzNXa599JjW60ybOmDuED9pEAKGYTk9dyGh1KJABRzSZFl5Ezt
+         e1tZXBc377LYB0cT6sOdsSHHvI7H2JJjJm1jKM06pxP72ZGJXGGL8QHOd2lHo4YlTtOO
+         F67g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jozXrqFphFU3vlMDyhbHjG2RsqRJsZmkKUiyJq3WnkU=;
+        b=sLXAVk+6lAxEr6B1op1Pv6s1tzX0rB+e49ALFDhps03pdxoz5qCY5Cf4OijwMY0GZU
+         1TSwvw7j5M9mmsN+b7TjjYsT3syO3T7WgBQl2VybQts6t8vbGRS/dDZDTMC2NEJh9g+e
+         hlJjE1J8gjnNpaKGU/JrJX8dbo0Z63J+cIk6p+UMFzY5fi9OvqOsrKb8Pa9ezx0Cj3ex
+         Xupw5dkeTGcmwr35sENfrhtnX9GocMeQ0gCJnmbRD7xThcZi7afzSOT6QvnRJQNYOODA
+         3DmgbSA7IKfS7b2o2xqd6LGIwE+LGtMhKWk+jfswIwv17FOspjTKLIxEVgR73bGFGleA
+         AY5g==
+X-Gm-Message-State: APjAAAWUxiOZrs2lnGWQlLlknjoe74c/iWvFer7ja1tC0CIgsJQ2S/L+
+        A0QOC7nNt2qmtX0XOuetVV3Psc24JSriTH/CbcAGsaYP
+X-Google-Smtp-Source: APXvYqxFbJihatw/rosGsK6jqnEnOWU7hg8gvwhFIM57z5ifKEihnbQCiILzN7esjRT3OnWnnGctKNo5qMH07u9Mu6I=
+X-Received: by 2002:a05:620a:147:: with SMTP id e7mr57263734qkn.247.1560210548951;
+ Mon, 10 Jun 2019 16:49:08 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: b378678d-371a-4312-3f03-08d6edfc8f23
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jun 2019 23:37:10.6397
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: songliubraving@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1949
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-10_09:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906100159
-X-FB-Internal: deliver
+References: <20190531202132.379386-1-andriin@fb.com> <20190531202132.379386-7-andriin@fb.com>
+ <20190531212835.GA31612@mini-arch> <CAEf4Bza38VEh9NWTLEReAR_J0eqjsvH1a2T-0AeWqDZpE8YPfA@mail.gmail.com>
+ <20190603163222.GA14556@mini-arch> <CAEf4BzbRXAZMXY3kG9HuRC93j5XhyA3EbWxkLrrZsG7K4abdBg@mail.gmail.com>
+ <20190604010254.GB14556@mini-arch> <f2b5120c-fae7-bf72-238a-b76257b0c0e4@fb.com>
+ <20190604042902.GA2014@mini-arch> <20190604134538.GB2014@mini-arch>
+ <CAEf4BzZEqmnwL0MvEkM7iH3qKJ+TF7=yCKJRAAb34m4+B-1Zcg@mail.gmail.com>
+ <3ff873a8-a1a6-133b-fa20-ad8bc1d347ed@iogearbox.net> <CAEf4BzYr_3heu2gb8U-rmbgMPu54ojcdjMZu7M_VaqOyCNGR5g@mail.gmail.com>
+ <9d0bff7f-3b9f-9d2c-36df-64569061edd6@fb.com> <20190606171007.1e1eb808@cakuba.netronome.com>
+ <4553f579-c7bb-2d4c-a1ef-3e4fbed64427@fb.com> <20190606180253.36f6d2ae@cakuba.netronome.com>
+ <b9798871-3b0e-66ce-903d-c9a587651abc@fb.com>
+In-Reply-To: <b9798871-3b0e-66ce-903d-c9a587651abc@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 10 Jun 2019 16:48:57 -0700
+Message-ID: <CAEf4Bzbc0VAMjxt=K6nguLz0aP+YEt9Au+KWh-WxvZR19KCD4A@mail.gmail.com>
+Subject: Re: explicit maps. Was: [RFC PATCH bpf-next 6/8] libbpf: allow
+ specifying map definitions using BTF
+To:     Alexei Starovoitov <ast@fb.com>
+Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@fomichev.me>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sun, Jun 9, 2019 at 6:17 PM Alexei Starovoitov <ast@fb.com> wrote:
+>
+> On 6/6/19 6:02 PM, Jakub Kicinski wrote:
+> > On Fri, 7 Jun 2019 00:27:52 +0000, Alexei Starovoitov wrote:
+> >> the solution we're discussing should solve BPF_ANNOTATE_KV_PAIR too.
+> >> That hack must go.
+> >
+> > I see.
+> >
+> >> If I understood your objections to Andrii's format is that
+> >> you don't like pointer part of key/value while Andrii explained
+> >> why we picked the pointer, right?
+> >>
+> >> So how about:
+> >>
+> >> struct {
+> >>     int type;
+> >>     int max_entries;
+> >>     struct {
+> >>       __u32 key;
+> >>       struct my_value value;
+> >>     } types[];
+> >> } ...
+> >
+> > My objection is that k/v fields are never initialized, so they're
+> > "metafields", mixed with real fields which hold parameters - like
+> > type, max_entries etc.
+>
+> I don't share this meta fields vs real fields distinction.
 
+100% agree.
 
-> On Jun 10, 2019, at 12:02 PM, Hechao Li <hechaol@fb.com> wrote:
->=20
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote on Mon [2019-Jun-10 11:=
-05:28 -0700]:
->> On Mon, Jun 10, 2019 at 9:57 AM Hechao Li <hechaol@fb.com> wrote:
->>>=20
->>> I got an error when compiling selftests/bpf:
->>>=20
->>> libbpf.c:411:10: error: implicit declaration of function 'reallocarray'=
-;
->>> did you mean 'realloc'? [-Werror=3Dimplicit-function-declaration]
->>>  progs =3D reallocarray(progs, nr_progs + 1, sizeof(progs[0]));
->>>=20
->>> It was caused by feature-reallocarray=3D1 in FEATURE-DUMP.libbpf and it
->>> was fixed by manually removing feature/ folder. This diff adds feature/
->>> to EXTRA_CLEAN to avoid this problem.
->>>=20
->>> Signed-off-by: Hechao Li <hechaol@fb.com>
->>> ---
->>=20
->> There is no need to include v1 into patch prefix for a first version
->> of a patch. Only v2 and further versions are added.
->>=20
->>=20
->>> tools/testing/selftests/bpf/Makefile | 3 ++-
->>> 1 file changed, 2 insertions(+), 1 deletion(-)
->>>=20
->>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selft=
-ests/bpf/Makefile
->>> index 2b426ae1cdc9..44fb61f4d502 100644
->>> --- a/tools/testing/selftests/bpf/Makefile
->>> +++ b/tools/testing/selftests/bpf/Makefile
->>> @@ -279,4 +279,5 @@ $(OUTPUT)/verifier/tests.h: $(VERIFIER_TESTS_DIR) $=
-(VERIFIER_TEST_FILES)
->>>                 ) > $(VERIFIER_TESTS_H))
->>>=20
->>> EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS) $(ALU32_BUILD_DIR) \
->>> -       $(VERIFIER_TESTS_H) $(PROG_TESTS_H) $(MAP_TESTS_H)
->>> +       $(VERIFIER_TESTS_H) $(PROG_TESTS_H) $(MAP_TESTS_H) \
->>> +       feature
+> All of the fields are meta.
+> Kernel implementation of the map doesn't need to hold type and
+> max_entries as actual configuration fields.
+> The map definition in c++ would have looked like:
+> bpf::hash_map<int, struct my_value, 1000, NO_PREALLOC> foo;
+> bpf::array_map<struct my_value, 2000> bar;
+>
+> Sometime key is not necessary. Sometimes flags have to be zero.
+> bpf syscall api is a superset of all fiels for all maps.
+> All of them are configuration and meta fields at the same time.
+> In c++ example there is really no difference between
+> 'struct my_value' and '1000' attributes.
+>
+> I'm pretty sure bpf will have C++ front-end in the future,
+> but until then we have to deal with C and, I think, the map
+> definition should be the most natural C syntax.
+> In that sense what you're proposing with extern:
+> > extern struct my_key my_key;
+> > extern int type_int;
+> >
+> > struct map_def {
+> >      int type;
+> >      int max_entries;
+> >      void *btf_key_ref;
+> >      void *btf_val_ref;
+> > } = {
+> >      ...
+> >      .btf_key_ref = &my_key,
+> >      .btf_val_ref = &type_int,
+> > };
+>
+> is worse than
+>
+> struct map_def {
+>        int type;
+>        int max_entries;
+>        int btf_key;
+>        struct my_key btf_value;
+> };
+>
+> imo explicit key and value would be ideal,
 
-I think this makes sense (before we find a better solution). Folder
-feature is already in .gitignore, we know it can be removed.=20
+also agree 100%, that's how I started, but then was quickly pointed to
+a real cases where value is just way too big.
 
-Thanks,
-Song
+> but they take too much space. Hence pointers
+> or zero sized array:
+> struct {
+>       int type;
+>       int max_entries;
+>       struct {
+>         __u32 key;
+>         struct my_value value;
+>       } types[];
+> };
 
->>=20
->> It doesn't seem any of linux's Makefile do that. From brief reading of
->> build/Makefile.feature, it seems like it is supposed to handle
->> transparently the case where environment changes and thus a set of
->> supported features changes. I also verified that FEATURE-DUMP.libbpf
->> is re-generated every single time I run make in
->> tools/testing/selftests/bpf, even if nothing changed at all. So I
->> don't think this patch is necessary.
->>=20
->> I'm not sure what was the cause of your original problem, though.
->>=20
->>> --
->>> 2.17.1
->>>=20
->=20
-> # Background:
->=20
-> My default GCC version is 4.8.5, which caused the following error when I
-> run make under selftests/bpf:
-> libbpf.c:39:10: fatal error: libelf.h: No such file or directory
->=20
-> To fix it, I have to run:
->=20
-> make CC=3D<Path to GCC 7.x>
->=20
-> The I got reallocarray not found error. By deleting feature/ folder
-> under selftests/bpf, it was fixed.
->=20
-> # Root Cause:
->=20
-> Now I found the root cause. When I run "make", which uses GCC 4.8.5, it
-> generates feature/test-reallocarray.d which indicates reallocarray is
-> enabled. However, when I switched to GCC 7.0, this file was not
-> re-generated and thus even FEATURE-DUMP.libbpf was re-generated,=20
-> feature-reallocarray is still 1 in it.
->=20
-> This can be reproduced by the following steps:
-> $ cd tools/testing/selftests/bpf
-> $ make clean && make CC=3D<Path to GCC 4.8.5>
-> (Fail due to libelf.h not found)
-> $ make clean && make CC=3D<Path to GCC 7.x>
-> (Should succeed but actually fail with reallocarray not defined)
->=20
-> If adding feature to EXTRA_CLEAN is not the way to go, do you have any
-> suggestion to fix such problem? I spent some time debugging this and I
-> hope to fix it so that other people with similar situation won't have to
-> waste time on this issue.
->=20
-> Thanks,
-> Hechao
+This works, but I still prefer simpler
 
+__u32 *key;
+struct my_value *value;
+
+It has less visual clutter and doesn't rely on somewhat obscure
+flexible array feature (and it will have to be last in the struct,
+unless you do zero-sized array w/ [0]).
+
+>
+> I think we should also consider explicit map creation.
+>
+> Something like:
+>
+> struct my_map {
+>    __u32 key;
+>    struct my_value value;
+> } *my_hash_map, *my_pinned_hash_map;
+>
+> struct {
+>     __u64 key;
+>    struct my_map *value;
+> } *my_hash_of_maps;
+>
+> struct {
+>    struct my_map *value;
+> } *my_array_of_maps;
+>
+> __init void create_my_maps(void)
+> {
+>    bpf_create_hash_map(&my_hash_map, 1000/*max_entries*/);
+>    bpf_obj_get(&my_pinned_hash_map, "/sys/fs/bpf/my_map");
+>    bpf_create_hash_of_maps(&my_hash_of_maps, 1000/*max_entries*/);
+>    bpf_create_array_of_maps(&my_array_of_maps, 20);
+> }
+>
+> SEC("cgroup/skb")
+> int bpf_prog(struct __sk_buff *skb)
+> {
+>    struct my_value *val;
+>    __u32 key;
+>    __u64 key64;
+>    struct my_map *map;
+>
+>    val = bpf_map_lookup(my_hash_map, &key);
+>    map = bpf_map_lookup(my_hash_of_maps, &key64);
+> }
+>
+> '__init' section will be compiled by llvm into bpf instructions
+> that will be executed in users space by libbpf.
+> The __init prog has to succeed otherwise prog load fails.
+>
+> May be all map pointers should be in a special section to avoid
+> putting them into datasec, but libbpf should be able to figure that
+> out without requiring user to specify the .map section.
+> The rest of global vars would go into special datasec map.
+>
+> No llvm changes necessary and BTF is available for keys and values.
+>
+> libbpf can start with simple __init and eventually grow into
+> complex init procedure where maps are initialized,
+> prog_array is populated, etc.
+>
+> Thoughts?
+
+I have few. :)
+
+I think it would be great to have this feature as a sort of "escape
+hatch" for really complicated initialization of maps, which can't be
+done w/ declarative syntax (and doing it from user-land driving app is
+not possible/desirable). But there is a lot of added complexity and
+work to be done to make this happen:
+
+1. We'll need to build BPF interpreter into libbpf (so partial
+duplication of in-kernel BPF machinery);
+2. We'll need to define some sort of user-space BPF API, so that these
+init functions can call into libbpf API (at least). So now in addition
+to in-kernel BPF helpers, we'll have another and different set of
+helpers/APIs exposed to user-land BPF code. This will certainly add
+confusion and raise learning curve.
+3. Next we'll be adding not-just-libbpf APIs, for cases where the size
+of map depends on some system parameter (e.g., number of CPUs, or
+amount of free RAM, or something else). This probably can be done
+through exposed libbpf APIs again, but now we'll need to decide what
+gets exposed, in what format, etc.
+
+It's all doable, but looks like a very large effort, while we yet
+don't have a realistic use case for this. Today cases like that are
+handled by driving user-land app. It seems like having prog_array and
+map-in-map declarative initialization covers a lot of advanced use
+cases (plus, of course, pinning), so for starters I'd concentrate
+effort there to get declarative approach powerful enough to address a
+lot of real-world needs.
+
+The good thing, though, is that nothing prevents us from specifying
+and adding this later, once we have good use cases and most needs
+already covered w/ declarative syntax.
+
+But, assuming we do explicit map creation, I'd also vote for per-map
+"factory" functions, like this:
+
+typedef int (*map_factory_fn)(struct bpf_map); /* can be provided by libbpf */
+
+int init_my_map(struct bpf_map *map)
+{
+    /* something fancy here */
+}
+
+struct {
+    __u64 *key;
+    struct my_value *value;
+    map_factory_fn factory;
+} my_map SEC(".maps") = {
+    .factory = &init_my_map,
+};
+
+/* we can still have per-BPF object init function: */
+int init_my_app(struct bpf_object *obj) {
+    /* some more initialization of BPF object */
+}
