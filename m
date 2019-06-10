@@ -2,196 +2,226 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFA43BE1D
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 23:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383343BE2B
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 23:15:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389854AbfFJVIz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Jun 2019 17:08:55 -0400
-Received: from mail-qt1-f201.google.com ([209.85.160.201]:54264 "EHLO
-        mail-qt1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389860AbfFJVIy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Jun 2019 17:08:54 -0400
-Received: by mail-qt1-f201.google.com with SMTP id h47so4277971qtc.20
-        for <bpf@vger.kernel.org>; Mon, 10 Jun 2019 14:08:54 -0700 (PDT)
+        id S1728508AbfFJVPf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Jun 2019 17:15:35 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:33897 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726528AbfFJVPf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Jun 2019 17:15:35 -0400
+Received: by mail-qk1-f194.google.com with SMTP id t8so2652450qkt.1
+        for <bpf@vger.kernel.org>; Mon, 10 Jun 2019 14:15:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=LUp0nj+AqZw3G+Fm1Fsn+w6Tf8Ol+e+vk5LYlQtxXeU=;
-        b=Qr4QnfqUnUg/XPwC7g4dXQn+zzihbSyDRPERJFM21Hm4TwDlTjilaIxNAHgASdhXnw
-         fFT88B/rUJ8jPiQ6/D+MmhaozKy03V84s0dv4CgyngggXg6nrIAFnt3v+ZDvRasFJAq2
-         U8jxi+f+d9ZGV/nHYdB1Se61fs4mqd4sFYZkDhUja7xudphZMxpfnooXhQfTKbIyrH4x
-         Ii9Ru6uGzvYE9RTrNKcsznFefKaLYSLJNEQ28hjFsrjzS90du9pF7jXKMxdg89DNA1W2
-         U+Lf1XtOw62D/k5IMAejGVNYZhn5UcSp/G2zfEIQxrAAOYrRqLtXPrYsq0EFkAyxCXLJ
-         yxag==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=l2JMKZKqJmt1NYrjuUGS6Z1wyAQvv+M3r7FpXksFsu0=;
+        b=P01o7/CyE0Rw9M8rddLa6fZDYq4EqYVEq9Y+U5d1MuCne5xChO4Rts6eYRS5oBtiTj
+         UOS8ungEBQXgID1THIU1g09p70V7rFqZYSNJxqqleBcgFzf+0s+wmAeSoQvj+q/wbxIV
+         N9NMVWboMuDu4KDRffQuiSdfnMk6dUByiJYDc5F5TCxt9fid9XWazlnWH+dHJqoD5yn4
+         t5mo1vNIbQs5YrrDRfYmi3Dv2euQsp0QxyU3wVH0jDMDIfyX8rzB5sKOLq10cFozAB8m
+         hxEGA6k3ijJ/6qWfCGDkLJ06IOXFGqgGPPLNMAqEK+CTXYherPI/Kb/nF8b327861vCD
+         8IzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=LUp0nj+AqZw3G+Fm1Fsn+w6Tf8Ol+e+vk5LYlQtxXeU=;
-        b=bqnF2T/sd8w7VRVSPEqXdMhZg6O/gUb4+mjuQBAu2NilEbmFaNeCkp3B0wTm0qpWpC
-         RWGQfYSXm8OAtqAuvJN1QHuZt3AtV0FIensNDEvZqzhr9hkPljBcQhmx36hudRSH0J9v
-         h/HNZekvIU54SI1Imr/dKycji5NNlhqpR4GMXLhcoLrmgBBx6QxBt65pdhDXcKcIzR40
-         nEUvvaO/eQqH1vS2zDHRJueW1WZ7TIzhPxCbBobQaK1QB21TL0yfDRtw+q220PXJMtgJ
-         sJ4UPAF2aA8YGwC55Bie03CdBvAulk/hpi+AYDyroCEiUtMplzh8g0biCUjt/2XkM4M9
-         hoVQ==
-X-Gm-Message-State: APjAAAWQMloFjX/LwQxzGFg2d+18RaBkJ/VNCEs4g2sf/b2jior+vwaa
-        sf+YunGzs2j8+TBDVresbdmcRnw=
-X-Google-Smtp-Source: APXvYqxiqVHQykSUTUM2skzxR6ol3sY+RTBGC14LRbbDbX4PwM+IlmfDSUPJbsRc58v2vfM+XPyFAys=
-X-Received: by 2002:a0c:d0ab:: with SMTP id z40mr5367513qvg.216.1560200933777;
- Mon, 10 Jun 2019 14:08:53 -0700 (PDT)
-Date:   Mon, 10 Jun 2019 14:08:30 -0700
-In-Reply-To: <20190610210830.105694-1-sdf@google.com>
-Message-Id: <20190610210830.105694-9-sdf@google.com>
-Mime-Version: 1.0
-References: <20190610210830.105694-1-sdf@google.com>
-X-Mailer: git-send-email 2.22.0.rc2.383.gf4fbbf30c2-goog
-Subject: [PATCH bpf-next v5 8/8] bpftool: support cgroup sockopt
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>, Martin Lau <kafai@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=l2JMKZKqJmt1NYrjuUGS6Z1wyAQvv+M3r7FpXksFsu0=;
+        b=R11aLhqjlcNiX0uL3rb9cXbejyFP2HgRLdzxwuq9vvS+zmpQL/cDaZcHWSEiIyQduZ
+         wDMFNAUWmbeDF2pc4n/c0T60TmgUJg4MknoZfIlC2WGQbT+6CJ6OwWuew/9808wqGzvJ
+         nt36YWKWKPOgNDO+qaVz7jFl2YbOhUU4pkDDJIsL5H77UJ/qpuxOQBchwl1cJBDkj/Sm
+         ejst9sHrNMHMTefcxBKXXDnw2Au/ekmb5BJR2aTHCIutxtehoV6hPKeeZjt+aUmDsw3I
+         odjyuG20hkMT7vj3UrKnItzO/mm6qHcRNcz/fxj48IFNbFY5Dpg8OEHyJFdhB3CoL5kz
+         6E1w==
+X-Gm-Message-State: APjAAAXkAH1jmWT5fSOnaR6EGTHYyKUXUTDZZQq+MAi4d8aVsqinjRo4
+        w5IY8pLGftYzs2TGqB2poT4lLQ==
+X-Google-Smtp-Source: APXvYqzIcyo2eKKD5mhWVSqH4qkao2VO+MhIwV3sqIDvD7B8da1+hvqTTiGBb34ZaECWyUGizxSilg==
+X-Received: by 2002:a37:670e:: with SMTP id b14mr55596090qkc.216.1560201334079;
+        Mon, 10 Jun 2019 14:15:34 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id x40sm1281024qta.20.2019.06.10.14.15.32
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 10 Jun 2019 14:15:33 -0700 (PDT)
+Date:   Mon, 10 Jun 2019 14:15:28 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Alexei Starovoitov <ast@fb.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@fomichev.me>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
+Subject: Re: explicit maps. Was: [RFC PATCH bpf-next 6/8] libbpf: allow
+ specifying map definitions using BTF
+Message-ID: <20190610141528.38c71524@cakuba.netronome.com>
+In-Reply-To: <b9798871-3b0e-66ce-903d-c9a587651abc@fb.com>
+References: <20190531202132.379386-1-andriin@fb.com>
+        <20190531202132.379386-7-andriin@fb.com>
+        <20190531212835.GA31612@mini-arch>
+        <CAEf4Bza38VEh9NWTLEReAR_J0eqjsvH1a2T-0AeWqDZpE8YPfA@mail.gmail.com>
+        <20190603163222.GA14556@mini-arch>
+        <CAEf4BzbRXAZMXY3kG9HuRC93j5XhyA3EbWxkLrrZsG7K4abdBg@mail.gmail.com>
+        <20190604010254.GB14556@mini-arch>
+        <f2b5120c-fae7-bf72-238a-b76257b0c0e4@fb.com>
+        <20190604042902.GA2014@mini-arch>
+        <20190604134538.GB2014@mini-arch>
+        <CAEf4BzZEqmnwL0MvEkM7iH3qKJ+TF7=yCKJRAAb34m4+B-1Zcg@mail.gmail.com>
+        <3ff873a8-a1a6-133b-fa20-ad8bc1d347ed@iogearbox.net>
+        <CAEf4BzYr_3heu2gb8U-rmbgMPu54ojcdjMZu7M_VaqOyCNGR5g@mail.gmail.com>
+        <9d0bff7f-3b9f-9d2c-36df-64569061edd6@fb.com>
+        <20190606171007.1e1eb808@cakuba.netronome.com>
+        <4553f579-c7bb-2d4c-a1ef-3e4fbed64427@fb.com>
+        <20190606180253.36f6d2ae@cakuba.netronome.com>
+        <b9798871-3b0e-66ce-903d-c9a587651abc@fb.com>
+Organization: Netronome Systems, Ltd.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Support sockopt prog type and cgroup hooks in the bpftool.
+On Mon, 10 Jun 2019 01:17:13 +0000, Alexei Starovoitov wrote:
+> On 6/6/19 6:02 PM, Jakub Kicinski wrote:
+> > On Fri, 7 Jun 2019 00:27:52 +0000, Alexei Starovoitov wrote:  
+> >> the solution we're discussing should solve BPF_ANNOTATE_KV_PAIR too.
+> >> That hack must go.  
+> > 
+> > I see.
+> >   
+> >> If I understood your objections to Andrii's format is that
+> >> you don't like pointer part of key/value while Andrii explained
+> >> why we picked the pointer, right?
+> >>
+> >> So how about:
+> >>
+> >> struct {
+> >>     int type;
+> >>     int max_entries;
+> >>     struct {
+> >>       __u32 key;
+> >>       struct my_value value;
+> >>     } types[];
+> >> } ...  
+> > 
+> > My objection is that k/v fields are never initialized, so they're
+> > "metafields", mixed with real fields which hold parameters - like
+> > type, max_entries etc.  
+> 
+> I don't share this meta fields vs real fields distinction.
+> All of the fields are meta.
+> Kernel implementation of the map doesn't need to hold type and
+> max_entries as actual configuration fields.
+> The map definition in c++ would have looked like:
+> bpf::hash_map<int, struct my_value, 1000, NO_PREALLOC> foo;
+> bpf::array_map<struct my_value, 2000> bar;
+> 
+> Sometime key is not necessary. Sometimes flags have to be zero.
+> bpf syscall api is a superset of all fiels for all maps.
+> All of them are configuration and meta fields at the same time.
+> In c++ example there is really no difference between
+> 'struct my_value' and '1000' attributes.
+> 
+> I'm pretty sure bpf will have C++ front-end in the future,
+> but until then we have to deal with C and, I think, the map
+> definition should be the most natural C syntax.
+> In that sense what you're proposing with extern:
+> > extern struct my_key my_key;
+> > extern int type_int;
+> > 
+> > struct map_def {
+> >      int type;
+> >      int max_entries;
+> >      void *btf_key_ref;
+> >      void *btf_val_ref;
+> > } = {
+> >      ...
+> >      .btf_key_ref = &my_key,
+> >      .btf_val_ref = &type_int,
+> > };  
+> 
+> is worse than
+> 
+> struct map_def {
+>        int type;
+>        int max_entries;
+>        int btf_key;
+>        struct my_key btf_value;
+> };
+> 
+> imo explicit key and value would be ideal,
+> but they take too much space. Hence pointers
+> or zero sized array:
+> struct {
+>       int type;
+>       int max_entries;
+>       struct {
+>         __u32 key;
+>         struct my_value value;
+>       } types[];
+> };
 
-Cc: Martin Lau <kafai@fb.com>
-Acked-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/bpf/bpftool/Documentation/bpftool-cgroup.rst | 7 +++++--
- tools/bpf/bpftool/Documentation/bpftool-prog.rst   | 2 +-
- tools/bpf/bpftool/bash-completion/bpftool          | 8 +++++---
- tools/bpf/bpftool/cgroup.c                         | 5 ++++-
- tools/bpf/bpftool/main.h                           | 1 +
- tools/bpf/bpftool/prog.c                           | 3 ++-
- 6 files changed, 18 insertions(+), 8 deletions(-)
+It is a C syntax problem, I do agree with you that it works well for
+templates.  The map_def structure holds parameters, and we can't take
+a type as a value in C.  Hence the types[] in your proposal - you could
+as well call them ghost_fields[] :)
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-index 36807735e2a5..cac088a320a6 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-@@ -29,7 +29,8 @@ CGROUP COMMANDS
- |	*PROG* := { **id** *PROG_ID* | **pinned** *FILE* | **tag** *PROG_TAG* }
- |	*ATTACH_TYPE* := { **ingress** | **egress** | **sock_create** | **sock_ops** | **device** |
- |		**bind4** | **bind6** | **post_bind4** | **post_bind6** | **connect4** | **connect6** |
--|		**sendmsg4** | **sendmsg6** | **sysctl** }
-+|		**sendmsg4** | **sendmsg6** | **sysctl** | **getsockopt** |
-+|		**setsockopt** }
- |	*ATTACH_FLAGS* := { **multi** | **override** }
- 
- DESCRIPTION
-@@ -86,7 +87,9 @@ DESCRIPTION
- 		  unconnected udp4 socket (since 4.18);
- 		  **sendmsg6** call to sendto(2), sendmsg(2), sendmmsg(2) for an
- 		  unconnected udp6 socket (since 4.18);
--		  **sysctl** sysctl access (since 5.2).
-+		  **sysctl** sysctl access (since 5.2);
-+		  **getsockopt** call to getsockopt (since 5.3);
-+		  **setsockopt** call to setsockopt (since 5.3).
- 
- 	**bpftool cgroup detach** *CGROUP* *ATTACH_TYPE* *PROG*
- 		  Detach *PROG* from the cgroup *CGROUP* and attach type
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-index 228a5c863cc7..c6bade35032c 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-@@ -40,7 +40,7 @@ PROG COMMANDS
- |		**lwt_seg6local** | **sockops** | **sk_skb** | **sk_msg** | **lirc_mode2** |
- |		**cgroup/bind4** | **cgroup/bind6** | **cgroup/post_bind4** | **cgroup/post_bind6** |
- |		**cgroup/connect4** | **cgroup/connect6** | **cgroup/sendmsg4** | **cgroup/sendmsg6** |
--|		**cgroup/sysctl**
-+|		**cgroup/sysctl** | **cgroup/getsockopt** | **cgroup/setsockopt**
- |	}
- |       *ATTACH_TYPE* := {
- |		**msg_verdict** | **stream_verdict** | **stream_parser** | **flow_dissector**
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index 2725e27dfa42..7afb8b6fbaaa 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -378,7 +378,8 @@ _bpftool()
-                                 cgroup/connect4 cgroup/connect6 \
-                                 cgroup/sendmsg4 cgroup/sendmsg6 \
-                                 cgroup/post_bind4 cgroup/post_bind6 \
--                                cgroup/sysctl" -- \
-+                                cgroup/sysctl cgroup/getsockopt \
-+                                cgroup/setsockopt" -- \
-                                                    "$cur" ) )
-                             return 0
-                             ;;
-@@ -688,7 +689,8 @@ _bpftool()
-                 attach|detach)
-                     local ATTACH_TYPES='ingress egress sock_create sock_ops \
-                         device bind4 bind6 post_bind4 post_bind6 connect4 \
--                        connect6 sendmsg4 sendmsg6 sysctl'
-+                        connect6 sendmsg4 sendmsg6 sysctl getsockopt \
-+                        setsockopt'
-                     local ATTACH_FLAGS='multi override'
-                     local PROG_TYPE='id pinned tag'
-                     case $prev in
-@@ -698,7 +700,7 @@ _bpftool()
-                             ;;
-                         ingress|egress|sock_create|sock_ops|device|bind4|bind6|\
-                         post_bind4|post_bind6|connect4|connect6|sendmsg4|\
--                        sendmsg6|sysctl)
-+                        sendmsg6|sysctl|getsockopt|setsockopt)
-                             COMPREPLY=( $( compgen -W "$PROG_TYPE" -- \
-                                 "$cur" ) )
-                             return 0
-diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
-index 7e22f115c8c1..3083f2e4886e 100644
---- a/tools/bpf/bpftool/cgroup.c
-+++ b/tools/bpf/bpftool/cgroup.c
-@@ -25,7 +25,8 @@
- 	"       ATTACH_TYPE := { ingress | egress | sock_create |\n"	       \
- 	"                        sock_ops | device | bind4 | bind6 |\n"	       \
- 	"                        post_bind4 | post_bind6 | connect4 |\n"       \
--	"                        connect6 | sendmsg4 | sendmsg6 | sysctl }"
-+	"                        connect6 | sendmsg4 | sendmsg6 | sysctl |\n"  \
-+	"                        getsockopt | setsockopt }"
- 
- static const char * const attach_type_strings[] = {
- 	[BPF_CGROUP_INET_INGRESS] = "ingress",
-@@ -42,6 +43,8 @@ static const char * const attach_type_strings[] = {
- 	[BPF_CGROUP_UDP4_SENDMSG] = "sendmsg4",
- 	[BPF_CGROUP_UDP6_SENDMSG] = "sendmsg6",
- 	[BPF_CGROUP_SYSCTL] = "sysctl",
-+	[BPF_CGROUP_GETSOCKOPT] = "getsockopt",
-+	[BPF_CGROUP_SETSOCKOPT] = "setsockopt",
- 	[__MAX_BPF_ATTACH_TYPE] = NULL,
- };
- 
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index 28a2a5857e14..9c5d9c80f71e 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -74,6 +74,7 @@ static const char * const prog_type_name[] = {
- 	[BPF_PROG_TYPE_SK_REUSEPORT]		= "sk_reuseport",
- 	[BPF_PROG_TYPE_FLOW_DISSECTOR]		= "flow_dissector",
- 	[BPF_PROG_TYPE_CGROUP_SYSCTL]		= "cgroup_sysctl",
-+	[BPF_PROG_TYPE_CGROUP_SOCKOPT]		= "cgroup_sockopt",
- };
- 
- extern const char * const map_type_name[];
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 1f209c80d906..a201e1c83346 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -1070,7 +1070,8 @@ static int do_help(int argc, char **argv)
- 		"                 sk_reuseport | flow_dissector | cgroup/sysctl |\n"
- 		"                 cgroup/bind4 | cgroup/bind6 | cgroup/post_bind4 |\n"
- 		"                 cgroup/post_bind6 | cgroup/connect4 | cgroup/connect6 |\n"
--		"                 cgroup/sendmsg4 | cgroup/sendmsg6 }\n"
-+		"                 cgroup/sendmsg4 | cgroup/sendmsg6 | cgroup/getsockopt |\n"
-+		"                 cgroup/setsockopt }\n"
- 		"       ATTACH_TYPE := { msg_verdict | stream_verdict | stream_parser |\n"
- 		"                        flow_dissector }\n"
- 		"       " HELP_SPEC_OPTIONS "\n"
--- 
-2.22.0.rc2.383.gf4fbbf30c2-goog
+> I think we should also consider explicit map creation.
+> 
+> Something like:
+> 
+> struct my_map {
+>    __u32 key;
+>    struct my_value value;
+> } *my_hash_map, *my_pinned_hash_map;
+> 
+> struct {
+>     __u64 key;
+>    struct my_map *value;
+> } *my_hash_of_maps;
+> 
+> struct {
+>    struct my_map *value;
+> } *my_array_of_maps;
+> 
+> __init void create_my_maps(void)
+> {
+>    bpf_create_hash_map(&my_hash_map, 1000/*max_entries*/);
+>    bpf_obj_get(&my_pinned_hash_map, "/sys/fs/bpf/my_map");
+>    bpf_create_hash_of_maps(&my_hash_of_maps, 1000/*max_entries*/);
+>    bpf_create_array_of_maps(&my_array_of_maps, 20);
+> }
+> 
+> SEC("cgroup/skb")
+> int bpf_prog(struct __sk_buff *skb)
+> {
+>    struct my_value *val;
+>    __u32 key;
+>    __u64 key64;
+>    struct my_map *map;
+> 
+>    val = bpf_map_lookup(my_hash_map, &key);
+>    map = bpf_map_lookup(my_hash_of_maps, &key64);
+> }
+> 
+> '__init' section will be compiled by llvm into bpf instructions
+> that will be executed in users space by libbpf.
+> The __init prog has to succeed otherwise prog load fails.
+> 
+> May be all map pointers should be in a special section to avoid
+> putting them into datasec, but libbpf should be able to figure that
+> out without requiring user to specify the .map section.
+> The rest of global vars would go into special datasec map.
+> 
+> No llvm changes necessary and BTF is available for keys and values.
+> 
+> libbpf can start with simple __init and eventually grow into
+> complex init procedure where maps are initialized,
+> prog_array is populated, etc.
+> 
+> Thoughts?
 
+I like it! :)
