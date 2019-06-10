@@ -2,196 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1429C3B8DF
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 18:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C39F3B90E
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2019 18:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389356AbfFJQDn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Jun 2019 12:03:43 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:46926 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391403AbfFJQDn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Jun 2019 12:03:43 -0400
-Received: by mail-pg1-f196.google.com with SMTP id v9so3562136pgr.13;
-        Mon, 10 Jun 2019 09:03:42 -0700 (PDT)
+        id S2404097AbfFJQKU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Jun 2019 12:10:20 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:36702 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404096AbfFJQKR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Jun 2019 12:10:17 -0400
+Received: by mail-pg1-f194.google.com with SMTP id a3so5290712pgb.3
+        for <bpf@vger.kernel.org>; Mon, 10 Jun 2019 09:10:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HCfE1HXr841yj0UuVhFnJTe/4mtHmyzJWu6FOc5d5xg=;
-        b=vMENmKodAfR8b/o+ajLdRPIEHoYD0PUw7zaMUP72lq3WQyuJ7isg7yO+DFQdZLy6gQ
-         qHbW4SfGhltEPns+dCJVDL0BQJ50b3WC9+2jzS2suMyh5Qk3d+O66Mfdtk++7S93yM6u
-         WkFkgVqLjPARD8qSJDCz0dtiaok57Bu+kqmZo6qAYT9X79eKXv9y8mvC9O2Qq2rlwAoA
-         4iLOLRIdONvHwg0+k15eHeiuyecE/UvkXFmWCY+NCNNfztrqaAvn4le4cJSBvZsmZKSe
-         uFHW0kPdsGsQVRxSn6qTXSTHzRdsXSXD1sJ3Yr/oEiFUUvYSBT7DJfZTgz+JKZWj7lv5
-         PE1w==
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=f7/rbL3Dk/NEUx3FX6rUib9IDqvOsMsi8C0Ft4QcvEo=;
+        b=MwRC702lxTRBbj1UWnhFJIoldchFVYWRo3POpzh9O2sOlaQSzpC2Pd37raaD9WU2HR
+         ilsjvGCrKEiFk9+ylj7IsdWjV7fFCiTXP6b/9fnGuojP0WuzPfgTke6+B8zSRLQ/VQoj
+         e4wk4/CKne5syWQu3e5a79t+z+1Gy3LyRoM2VDrxQNGs1u5kk8+y0NmSUYb7tCdTrCyi
+         hmxTPe8WM8TLEs13gn5+VBnYVDWysCtlku9lwukym9FEhYzXtQH7LK0bsYTvHQIv0TbF
+         FJcPVzM6jdSEh3rvCMR3FX4EqOyk/XsCur01acv29QaM8lUofWV+irnNCcvyjGXeaoKR
+         pxyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HCfE1HXr841yj0UuVhFnJTe/4mtHmyzJWu6FOc5d5xg=;
-        b=lM2TCr4a0a4hboeU+tvCFZSxIzaB1fvlsSySOEtXY5ejBZPiDLpYGguWFBeppYLxJw
-         S1LMkJD668M/FnxtZRXJU0J1YEaOPR/VgeT6aiVroyQk8MLz/M3jmryanlqfREkCsqVk
-         fFl2xvSuQyh14irOux3VQRu/ztHw2e5UpxqCAmAL+jP6KSE4ZDvOaDdoYIHN8Hw+kZLU
-         b71zpDYaYwvBnYP2eowpF9iYxSsZBFPquOX4hQRV5P93K4NqslpG4ZEUkl3paBiuPWo1
-         8pylBRgU8z3vnZfGnM65+SiEHqbfP0LIOUmb8PQDKFawwGS10a2DVeHcQWqEfDdc/C2d
-         kkZQ==
-X-Gm-Message-State: APjAAAXrNpR7UYnyfFEgBaRnYnedRN1xGigDMqydRntWI07g/ii7dZgI
-        C9BgiKXYSw2ATVD9RaRJ6A8=
-X-Google-Smtp-Source: APXvYqxZDGhD6JcN70YCJC3WwmteOM+0OIP7/ZiKoHfOHfY3GNtepe8bAFyQocArFAIPfHCjtB6OBw==
-X-Received: by 2002:a65:44cb:: with SMTP id g11mr16067015pgs.193.1560182618321;
-        Mon, 10 Jun 2019 09:03:38 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com ([192.55.54.44])
-        by smtp.gmail.com with ESMTPSA id f5sm10574118pfn.161.2019.06.10.09.03.32
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=f7/rbL3Dk/NEUx3FX6rUib9IDqvOsMsi8C0Ft4QcvEo=;
+        b=qiT3vXkInE4UjzMlgYgxvUQRwBsJPUwGL5Hi6ixuowwqH9UTAjPjdU12CO6NQA+Wip
+         pjzkVrz6Rpz9GFhsGdz25xXBxqelpN6g/9pDVh4118SvpSwqvFTc5rioeWzIYLxQUEpN
+         e/uc6vUNBuOjs5rsRIfLRrkbHrmaQ+cX9xr3OcIC3NoXk1UKlXjN6kdjy1c6A4djZjhM
+         nqXBi4Vb+Bj4+mBBe23ZhHZHdDLPMFkd7ag4HZkRudacKq8fN8kaOSIHdyRERPs0ELqI
+         9uimIurT7jgj4yErWMtZgB3uzwSv/FXeLq6AB24V+hBAF3fc231GixoMDnx4SZ4yGnNz
+         VxgA==
+X-Gm-Message-State: APjAAAU5zjJt38WZIbL3PF+TPXHcZnP4LHD31X8ll3+MACvlIl1B4Jap
+        JqZX2RNiUJG2hK8+uCTk4X7SgFDiJpY=
+X-Google-Smtp-Source: APXvYqz3lip0epi7tuFzRlTAVZMHxbp8l5QHIMTOHuWXUDy7ka7QHI57pNzqsBrOrdnK6/1ZNbTRVw==
+X-Received: by 2002:a62:5387:: with SMTP id h129mr77219193pfb.6.1560183016833;
+        Mon, 10 Jun 2019 09:10:16 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id u23sm5810634pfn.140.2019.06.10.09.10.15
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 10 Jun 2019 09:03:37 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, toke@redhat.com, brouer@redhat.com,
-        bpf@vger.kernel.org, jakub.kicinski@netronome.com,
-        saeedm@mellanox.com
-Subject: [PATCH bpf-next v3 5/5] net: xdp: remove xdp_attachment_flags_ok() and flags member
-Date:   Mon, 10 Jun 2019 18:02:34 +0200
-Message-Id: <20190610160234.4070-6-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190610160234.4070-1-bjorn.topel@gmail.com>
-References: <20190610160234.4070-1-bjorn.topel@gmail.com>
+        Mon, 10 Jun 2019 09:10:15 -0700 (PDT)
+Date:   Mon, 10 Jun 2019 09:10:15 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Martin Lau <kafai@fb.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH bpf-next v3 1/8] bpf: implement getsockopt and setsockopt
+ hooks
+Message-ID: <20190610161015.GF9660@mini-arch>
+References: <20190607162920.24546-1-sdf@google.com>
+ <20190607162920.24546-2-sdf@google.com>
+ <20190608070838.4vhwss4anyibju53@kafai-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190608070838.4vhwss4anyibju53@kafai-mbp.dhcp.thefacebook.com>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+On 06/08, Martin Lau wrote:
+> On Fri, Jun 07, 2019 at 09:29:13AM -0700, Stanislav Fomichev wrote:
+> > Implement new BPF_PROG_TYPE_CGROUP_SOCKOPT program type and
+> > BPF_CGROUP_{G,S}ETSOCKOPT cgroup hooks.
+> > 
+> > BPF_CGROUP_SETSOCKOPT get a read-only view of the setsockopt arguments.
+> > BPF_CGROUP_GETSOCKOPT can modify the supplied buffer.
+> > Both of them reuse existing PTR_TO_PACKET{,_END} infrastructure.
+> > 
+> > The buffer memory is pre-allocated (because I don't think there is
+> > a precedent for working with __user memory from bpf). This might be
+> > slow to do for each {s,g}etsockopt call, that's why I've added
+> > __cgroup_bpf_prog_array_is_empty that exits early if there is nothing
+> > attached to a cgroup. Note, however, that there is a race between
+> > __cgroup_bpf_prog_array_is_empty and BPF_PROG_RUN_ARRAY where cgroup
+> > program layout might have changed; this should not be a problem
+> > because in general there is a race between multiple calls to
+> > {s,g}etsocktop and user adding/removing bpf progs from a cgroup.
+> > 
+> > The return code of the BPF program is handled as follows:
+> > * 0: EPERM
+> > * 1: success, execute kernel {s,g}etsockopt path after BPF prog exits
+> > * 2: success, do _not_ execute kernel {s,g}etsockopt path after BPF
+> >      prog exits
+> > 
+> > v3:
+> > * typos in BPF_PROG_CGROUP_SOCKOPT_RUN_ARRAY comments (Andrii Nakryiko)
+> > * reverse christmas tree in BPF_PROG_CGROUP_SOCKOPT_RUN_ARRAY (Andrii
+> >   Nakryiko)
+> > * use __bpf_md_ptr instead of __u32 for optval{,_end} (Martin Lau)
+> > * use BPF_FIELD_SIZEOF() for consistency (Martin Lau)
+> > * new CG_SOCKOPT_ACCESS macro to wrap repeated parts
+> > 
+> > v2:
+> > * moved bpf_sockopt_kern fields around to remove a hole (Martin Lau)
+> > * aligned bpf_sockopt_kern->buf to 8 bytes (Martin Lau)
+> > * bpf_prog_array_is_empty instead of bpf_prog_array_length (Martin Lau)
+> > * added [0,2] return code check to verifier (Martin Lau)
+> > * dropped unused buf[64] from the stack (Martin Lau)
+> > * use PTR_TO_SOCKET for bpf_sockopt->sk (Martin Lau)
+> > * dropped bpf_target_off from ctx rewrites (Martin Lau)
+> > * use return code for kernel bypass (Martin Lau & Andrii Nakryiko)
+> > 
+> 
+> > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> > index 1b65ab0df457..4fc8429af6fc 100644
+> > --- a/kernel/bpf/cgroup.c
+> > +++ b/kernel/bpf/cgroup.c
+> 
+> [ ... ]
+> 
+> > +static const struct bpf_func_proto *
+> > +cg_sockopt_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> > +{
+> > +	switch (func_id) {
+> > +	case BPF_FUNC_sk_fullsock:
+> > +		return &bpf_sk_fullsock_proto;
+> May be my v2 comment has been missed.
+> 
+> sk here (i.e. PTR_TO_SOCKET) must be a fullsock.
+> bpf_sk_fullsock() will be a no-op.  Hence, there is
+> no need to expose bpf_sk_fullsock_proto.
+I think I missed that fact that PTR_TO_SOCKET implies fullsock.
+Will remove, thanks!
 
-The attachment flags check is done in the generic netdev code, so
-there is no need for this function anymore. Remove it and all uses of
-it.
+> > +	case BPF_FUNC_sk_storage_get:
+> > +		return &bpf_sk_storage_get_proto;
+> > +	case BPF_FUNC_sk_storage_delete:
+> > +		return &bpf_sk_storage_delete_proto;
+> > +#ifdef CONFIG_INET
+> > +	case BPF_FUNC_tcp_sock:
+> > +		return &bpf_tcp_sock_proto;
+> > +#endif
+> > +	default:
+> > +		return cgroup_base_func_proto(func_id, prog);
+> > +	}
+> > +}
+> > +
+> > +static bool cg_sockopt_is_valid_access(int off, int size,
+> > +				       enum bpf_access_type type,
+> > +				       const struct bpf_prog *prog,
+> > +				       struct bpf_insn_access_aux *info)
+> > +{
+> > +	const int size_default = sizeof(__u32);
+> > +
+> > +	if (off < 0 || off >= sizeof(struct bpf_sockopt))
+> > +		return false;
+> > +
+> > +	if (off % size != 0)
+> > +		return false;
+> > +
+> > +	if (type == BPF_WRITE) {
+> > +		switch (off) {
+> > +		case offsetof(struct bpf_sockopt, optlen):
+> > +			if (size != size_default)
+> > +				return false;
+> > +			return prog->expected_attach_type ==
+> > +				BPF_CGROUP_GETSOCKOPT;
+> > +		default:
+> > +			return false;
+> > +		}
+> > +	}
+> > +
+> > +	switch (off) {
+> > +	case offsetof(struct bpf_sockopt, sk):
+> > +		if (size != sizeof(struct bpf_sock *))
+> Based on my understanding in commit b7df9ada9a77 ("bpf: fix pointer offsets in context for 32 bit"),
+> I think it should be 'size != sizeof(__u64)'
+> 
+> Same for the optval and optval_end below.
+Good point. I was actually wondering when converting BPF_W to BPF_DW in
+the tests whether that would work correctly on 32 bits. Thanks for
+commit pointer, that should, indeed, always be all sizeof(__u64).
 
-Further; Passing flags from struct netdev_bpf when attaching an XDP
-program is no longer necessary, so let us remove that member.
+> > +			return false;
+> > +		info->reg_type = PTR_TO_SOCKET;
+> > +		break;
+> > +	case bpf_ctx_range(struct bpf_sockopt, optval):
+> offsetof(struct bpf_sockopt, optval)
+Ack. No narrow loads for the pointers.
 
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- drivers/net/ethernet/netronome/nfp/nfp_net_common.c |  6 ------
- drivers/net/netdevsim/bpf.c                         |  3 ---
- include/linux/netdevice.h                           |  1 -
- include/net/xdp.h                                   |  3 ---
- net/core/dev.c                                      |  1 -
- net/core/xdp.c                                      | 13 -------------
- 6 files changed, 27 deletions(-)
+> > +		if (size != sizeof(void *))
+> > +			return false;
+> > +		info->reg_type = PTR_TO_PACKET;
+> > +		break;
+> > +	case bpf_ctx_range(struct bpf_sockopt, optval_end):
+> offsetof(struct bpf_sockopt, optval_end)
+> 
+> > +		if (size != sizeof(void *))
+> > +			return false;
+> > +		info->reg_type = PTR_TO_PACKET_END;
+> > +		break;
+> > +	default:
+> > +		if (size != size_default)
+> > +			return false;
+> > +		break;
+> > +	}
+> > +	return true;
+> > +}
+> > +
+> 
+> [ ... ]
+> 
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 55bfc941d17a..4652c0a005ca 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -1835,7 +1835,7 @@ BPF_CALL_1(bpf_sk_fullsock, struct sock *, sk)
+> >  	return sk_fullsock(sk) ? (unsigned long)sk : (unsigned long)NULL;
+> >  }
+> >  
+> > -static const struct bpf_func_proto bpf_sk_fullsock_proto = {
+> > +const struct bpf_func_proto bpf_sk_fullsock_proto = {
+> As mentioned above, this change is also not needed.
+> 
+> Others LGTM.
+Agreed, will not export.
 
-diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-index 2a9683db54e5..c164da24c28c 100644
---- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-+++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-@@ -3497,9 +3497,6 @@ static int nfp_net_xdp_setup_drv(struct nfp_net *nn, struct netdev_bpf *bpf)
- 	struct nfp_net_dp *dp;
- 	int err;
- 
--	if (!xdp_attachment_flags_ok(&nn->xdp, bpf))
--		return -EBUSY;
--
- 	if (!prog == !nn->dp.xdp_prog) {
- 		WRITE_ONCE(nn->dp.xdp_prog, prog);
- 		xdp_attachment_setup(&nn->xdp, bpf);
-@@ -3528,9 +3525,6 @@ static int nfp_net_xdp_setup_hw(struct nfp_net *nn, struct netdev_bpf *bpf)
- {
- 	int err;
- 
--	if (!xdp_attachment_flags_ok(&nn->xdp_hw, bpf))
--		return -EBUSY;
--
- 	err = nfp_app_xdp_offload(nn->app, nn, bpf->prog, bpf->extack);
- 	if (err)
- 		return err;
-diff --git a/drivers/net/netdevsim/bpf.c b/drivers/net/netdevsim/bpf.c
-index d03d31721e38..51b2430f1edc 100644
---- a/drivers/net/netdevsim/bpf.c
-+++ b/drivers/net/netdevsim/bpf.c
-@@ -190,9 +190,6 @@ nsim_xdp_set_prog(struct netdevsim *ns, struct netdev_bpf *bpf,
- {
- 	int err;
- 
--	if (!xdp_attachment_flags_ok(xdp, bpf))
--		return -EBUSY;
--
- 	if (bpf->command == XDP_SETUP_PROG && !ns->bpf_xdpdrv_accept) {
- 		NSIM_EA(bpf->extack, "driver XDP disabled in DebugFS");
- 		return -EOPNOTSUPP;
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 6b700005288d..d7fa2c9fa031 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -879,7 +879,6 @@ struct netdev_bpf {
- 	union {
- 		/* XDP_SETUP_PROG */
- 		struct {
--			u32 flags;
- 			struct bpf_prog *prog;
- 			struct netlink_ext_ack *extack;
- 		};
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index 4ad4b20fe2c0..854267b3b624 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -155,12 +155,9 @@ xdp_data_meta_unsupported(const struct xdp_buff *xdp)
- 
- struct xdp_attachment_info {
- 	struct bpf_prog *prog;
--	u32 flags;
- };
- 
- struct netdev_bpf;
--bool xdp_attachment_flags_ok(struct xdp_attachment_info *info,
--			     struct netdev_bpf *bpf);
- void xdp_attachment_setup(struct xdp_attachment_info *info,
- 			  struct netdev_bpf *bpf);
- 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index bb5fbb395596..b0476545fbc8 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -8026,7 +8026,6 @@ static int dev_xdp_install(struct net_device *dev, bpf_op_t bpf_op,
- 	}
- 
- 	xdp.extack = extack;
--	xdp.flags = flags;
- 	xdp.prog = prog;
- 
- 	err = bpf_op(dev, &xdp);
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 6f76ad995fef..b2cdebd0b17d 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -379,25 +379,12 @@ void xdp_return_buff(struct xdp_buff *xdp)
- }
- EXPORT_SYMBOL_GPL(xdp_return_buff);
- 
--bool xdp_attachment_flags_ok(struct xdp_attachment_info *info,
--			     struct netdev_bpf *bpf)
--{
--	if (info->prog && (bpf->flags ^ info->flags) & XDP_FLAGS_MODES) {
--		NL_SET_ERR_MSG(bpf->extack,
--			       "program loaded with different flags");
--		return false;
--	}
--	return true;
--}
--EXPORT_SYMBOL_GPL(xdp_attachment_flags_ok);
--
- void xdp_attachment_setup(struct xdp_attachment_info *info,
- 			  struct netdev_bpf *bpf)
- {
- 	if (info->prog)
- 		bpf_prog_put(info->prog);
- 	info->prog = bpf->prog;
--	info->flags = bpf->flags;
- }
- EXPORT_SYMBOL_GPL(xdp_attachment_setup);
- 
--- 
-2.20.1
-
+> >  	.func		= bpf_sk_fullsock,
+> >  	.gpl_only	= false,
+> >  	.ret_type	= RET_PTR_TO_SOCKET_OR_NULL,
+> > @@ -5636,7 +5636,7 @@ BPF_CALL_1(bpf_tcp_sock, struct sock *, sk)
+> >  	return (unsigned long)NULL;
+> >  }
+> >  
