@@ -2,118 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CE63C38C
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2019 07:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 547AA3C45C
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2019 08:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391075AbfFKFrG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Jun 2019 01:47:06 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:36397 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390485AbfFKFrF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Jun 2019 01:47:05 -0400
-Received: by mail-qt1-f194.google.com with SMTP id p15so5730351qtl.3;
-        Mon, 10 Jun 2019 22:47:05 -0700 (PDT)
+        id S2391162AbfFKGi2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Jun 2019 02:38:28 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:41465 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390485AbfFKGi2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Jun 2019 02:38:28 -0400
+Received: by mail-lj1-f194.google.com with SMTP id s21so10385755lji.8;
+        Mon, 10 Jun 2019 23:38:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=A5wEeAyNDVZXiW6xkSMzpzOefP4LoMFNlikHzfFKkbA=;
-        b=MEjjALLPHdnWy5msWX3MwHLfjkl8sZtsl9HKWIhJrzZM6n6n7RND9/LRrdhnkLWZYH
-         bGgxrVSPjyLG+VaGT9Xfee2TCU4N2HhtqdQ+rMmV6v1oZe2s6spwrsyXx+5WQjuf7I8+
-         x1ugPkDN54ZiERf4RreN2BtDBYh16gtxL0l02ILc5ZtYGDAGmtmeuUkfkX58ckBknQs9
-         sMNmWz0FjAw9FXm0UCaFvzZ0OOfXNyxMIC4LRdH5TDrjPZSPkCr75dcZuH1jx2963hd3
-         e36Z8rcwEUMvUeWvBrK4czZouDeX2ZN35sw1nz2EDY4sD73pA9zzij7Ez+mHaYhpZ1Dk
-         obsQ==
+         :cc;
+        bh=e4V8OAbAgAw1bvmAqD0UnpvSRhF5f7ARJmj6R3bpeTI=;
+        b=nZA8vm/bN2S8fhEu+frMoA5oHO1GTAkM8ypx3kwCkh5p7d2igMmMNHRbZambTrohTh
+         vT7aClREWlwe6gKmhZI1iyfTtWhniRRPaUvRG8odTRnfiHVI3AxPn9iVqcoaWmbKZkh5
+         /QC2yHE2p8tZALwprIsEXnvkNBpcDTEPuk30kD/CAcFJYg2rXqtiCJTdLTMtYijGXYYN
+         eVoQLgZPJXVYoDmUDEkIPdeg18pCppHqMliJFDSALOuOeLd/ipAzIdilId2oRQ5OQaHy
+         /7/kytq0f1Kbjs1Vi8im2HdJlqNbCOmZ7YNrfY4jlXWhjymTcny8a1OZm0P0n8WJ9bXd
+         rx3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=A5wEeAyNDVZXiW6xkSMzpzOefP4LoMFNlikHzfFKkbA=;
-        b=Gp5jMIxSJQCBq+skH1VYNSsfLb5v4/8KJD8KolIWWhvH6XcRHqoza4JDUt8UHj94Yy
-         xrHXvBQCruxZiyBqH2DsYW0x/Q5Glq3kIJ7fAiruXl/lkKfaooGmCJFNEh2t6IWvehO/
-         ZzYBHIlJxWmez8cXujdrk62hUHIORgJR5SAUyumBdnbpcbd1gCoQtQS16/ZFAtSlylYQ
-         s0AhZFa7GWFMc1juWXau5vOxO8CXjIf2wkm/b/Vk0ZVEESj4Mu0KIJlRxtMZMDyFheMq
-         rvGC0SAbRvvgyF9WCN4rVJYbzdbdBaUNhIi5yzXrAYHdKJy4t96ppgbJUCq75DVbT7cV
-         USKw==
-X-Gm-Message-State: APjAAAUWJmC8+qttN8Z5tpUEKFOIKyotnGpz8wVCd55nRIK4e6PhlZOm
-        +kFnXqyOBi7729/wfsS+eCoebf1B3GaM6e3WRwA=
-X-Google-Smtp-Source: APXvYqwz0mZMk1bLFqIpFAmo4mB6Gt5pF/u2vMOVOWKu7V2PtslgKVLzTrmb5hNGsIJDrNDl1+aXHzIO5PBhVKihcZo=
-X-Received: by 2002:ac8:2d56:: with SMTP id o22mr12538069qta.171.1560232024706;
- Mon, 10 Jun 2019 22:47:04 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=e4V8OAbAgAw1bvmAqD0UnpvSRhF5f7ARJmj6R3bpeTI=;
+        b=AqB4nh0Or93pOGEMp2pEIwKgEyi6yyc2bpZbhbg+3rLheZoeAb5/XBuhCx2zcunpGV
+         X/1iR3xs4rrRsCrBsAl+s6bg71jsnpgheePER5ZRr64Mxn91hBbUvaA5eN6HcTKpg0dm
+         sZ+L5NdUX2wc0Y7kzn7TMEWWtqqVMGdOYu7w9zCbsIPhBLFiVG6ipbHhDv1B5hfzktUO
+         w7vInL6ZLnLjIIo72QNXZ4viLLe6HSwX187HmspiG/BHYR/zP92YJo+C6dQZeYAHqGMt
+         vUJix2G75Yea3UC4xAIHktm+Fu21AE73XuBua5kpVyJblvijBmTgwYCwYk96z4v4JaNi
+         0FMA==
+X-Gm-Message-State: APjAAAU6SXwvEDrrjtqWvelcgdAxxh8hArM8JFmEi/0u9PFguUlvmkOO
+        zaoXxWj6cdTp/naykx1AJjm996qY6Sq+LYjuIJg7ag==
+X-Google-Smtp-Source: APXvYqymt0pZAX9/AgdJdlG+o3BK7Cp6HcsNSja4neI5oL0SZHA8s+ADd8CKk6OCp+X2Bsk6YZT+KwIjLaUs78e7ZXE=
+X-Received: by 2002:a2e:9e1a:: with SMTP id e26mr23044925ljk.158.1560235106188;
+ Mon, 10 Jun 2019 23:38:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <29466.1559875167@turing-police>
-In-Reply-To: <29466.1559875167@turing-police>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 10 Jun 2019 22:46:53 -0700
-Message-ID: <CAEf4BzbN2DzQ2QuUwcQy1r8kc4dQv7PyufWLkbymsL8rPSC0UQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf/core.c - silence warning messages
-To:     =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+References: <20190607171116.19173-1-jakub.kicinski@netronome.com>
+In-Reply-To: <20190607171116.19173-1-jakub.kicinski@netronome.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 10 Jun 2019 23:38:14 -0700
+Message-ID: <CAADnVQJUuQqBXJw_kC5DcbYymM_3WoOYDLtWzhw+GNmHt5=RMQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] samples: bpf: don't run probes at the local make stage
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, oss-drivers@netronome.com,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Quentin Monnet <quentin.monnet@netronome.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 6, 2019 at 8:08 PM Valdis Kl=C4=93tnieks <valdis.kletnieks@vt.e=
-du> wrote:
+On Fri, Jun 7, 2019 at 10:11 AM Jakub Kicinski
+<jakub.kicinski@netronome.com> wrote:
 >
-> Compiling kernel/bpf/core.c with W=3D1 causes a flood of warnings:
+> Quentin reports that commit 07c3bbdb1a9b ("samples: bpf: print
+> a warning about headers_install") is producing the false
+> positive when make is invoked locally, from the samples/bpf/
+> directory.
 >
-> kernel/bpf/core.c:1198:65: warning: initialized field overwritten [-Wover=
-ride-init]
->  1198 | #define BPF_INSN_3_TBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] =3D=
- true
->       |                                                                 ^=
-~~~
-> kernel/bpf/core.c:1087:2: note: in expansion of macro 'BPF_INSN_3_TBL'
->  1087 |  INSN_3(ALU, ADD,  X),   \
->       |  ^~~~~~
-> kernel/bpf/core.c:1202:3: note: in expansion of macro 'BPF_INSN_MAP'
->  1202 |   BPF_INSN_MAP(BPF_INSN_2_TBL, BPF_INSN_3_TBL),
->       |   ^~~~~~~~~~~~
-> kernel/bpf/core.c:1198:65: note: (near initialization for 'public_insntab=
-le[12]')
->  1198 | #define BPF_INSN_3_TBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] =3D=
- true
->       |                                                                 ^=
-~~~
-> kernel/bpf/core.c:1087:2: note: in expansion of macro 'BPF_INSN_3_TBL'
->  1087 |  INSN_3(ALU, ADD,  X),   \
->       |  ^~~~~~
-> kernel/bpf/core.c:1202:3: note: in expansion of macro 'BPF_INSN_MAP'
->  1202 |   BPF_INSN_MAP(BPF_INSN_2_TBL, BPF_INSN_3_TBL),
->       |   ^~~~~~~~~~~~
+> When make is run locally it hits the "all" target, which
+> will recursively invoke make through the full build system.
 >
-> 98 copies of the above.
+> Speed up the "local" run which doesn't actually build anything,
+> and avoid false positives by skipping all the probes if not in
+> kbuild environment (cover both the new warning and the BTF
+> probes).
 >
-> The attached patch silences the warnings, because we *know* we're overwri=
-ting
-> the default initializer. That leaves bpf/core.c with only 6 other warning=
-s,
-> which become more visible in comparison.
->
-> Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
+> Reported-by: Quentin Monnet <quentin.monnet@netronome.com>
+> Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+> Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
 
-Thanks! Please include bpf-next in [PATCH] prefix in the future. I've
-also CC'ed bpf@vger.kernel.org list.
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->
-> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> index 4c2fa3ac56f6..2606665f2cb5 100644
-> --- a/kernel/bpf/Makefile
-> +++ b/kernel/bpf/Makefile
-> @@ -21,3 +21,4 @@ obj-$(CONFIG_CGROUP_BPF) +=3D cgroup.o
->  ifeq ($(CONFIG_INET),y)
->  obj-$(CONFIG_BPF_SYSCALL) +=3D reuseport_array.o
->  endif
-> +CFLAGS_core.o          +=3D $(call cc-disable-warning, override-init)
->
->
+Applied. Thanks
