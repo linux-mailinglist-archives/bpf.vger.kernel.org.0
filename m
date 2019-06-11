@@ -2,68 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7CA3C502
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2019 09:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6841A3C584
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2019 10:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404277AbfFKHYu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Jun 2019 03:24:50 -0400
-Received: from mga14.intel.com ([192.55.52.115]:20273 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404116AbfFKHYu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Jun 2019 03:24:50 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Jun 2019 00:24:50 -0700
-X-ExtLoop1: 1
-Received: from unknown (HELO btopel-mobl.ger.intel.com) ([10.255.41.162])
-  by fmsmga006.fm.intel.com with ESMTP; 11 Jun 2019 00:24:43 -0700
-Subject: Re: [PATCH bpf-next v3 0/5] net: xdp: refactor XDP program queries
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        magnus.karlsson@intel.com, toke@redhat.com, brouer@redhat.com,
-        bpf@vger.kernel.org, saeedm@mellanox.com
-References: <20190610160234.4070-1-bjorn.topel@gmail.com>
- <20190610152433.6e265d6c@cakuba.netronome.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <980c54f7-e270-f6cf-089d-969cebad8f38@intel.com>
-Date:   Tue, 11 Jun 2019 09:24:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S2404547AbfFKIEi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Jun 2019 04:04:38 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:43895 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404132AbfFKIEh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Jun 2019 04:04:37 -0400
+Received: by mail-ed1-f68.google.com with SMTP id w33so18630877edb.10
+        for <bpf@vger.kernel.org>; Tue, 11 Jun 2019 01:04:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=sender:date:from:to:cc:subject:message-id:mail-followup-to
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1VpP4BQl0scWmMIfvVrIwxl9EaLNPQUpAZnq/R1E08A=;
+        b=ZIa8H2Jy5lWKWQz1TT7B/cBLsAJV/t0RUOsjzlAUmvjxv48OR/2G2Z3xwj89VqyCSC
+         Y7NCdLF+j+Zb7j9MlTsh2N8qAd9mQSkTkGybODE0RYNXFT6BGqim8aTZFx8ccV9Ema2X
+         VHizYVWLs+TJqJRySt+NsoMrmPz7kLRDwVbHA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=1VpP4BQl0scWmMIfvVrIwxl9EaLNPQUpAZnq/R1E08A=;
+        b=QQMquHhtx6h4ShQtGCq0DGjkXpKpLX5va0AHTklTQZ0YpaM8UsABoazgD/hVwAr6yi
+         em+dOEp/Y86Mkj99vFBYtTLgTfi862Fqt0vT68/FBjMaIvTkVvjTjZXFRdoQgl4Vgxno
+         wsJYQpi58JGaWbnD4LrLORr7Dfo5/g5f1C+o2S4XrPqCT8x23qGZ4rVu9FHgg5DFTuTZ
+         qtinLEqWcSd2U27X6Bv4yYJyvfRMCqLW7klnPBw11YkdtC0j7m+n62rNbKtMCjKiUfD5
+         PLJeYtie0hf8kZumCuhaW8VqXldZzZY72YufNOaHxRexvrXunpm+dQdpBgzj42VpW+Ot
+         QdsA==
+X-Gm-Message-State: APjAAAXbNNsprv2XcZOhuqXqaezwaEiFPMgDopf7RIFMCNAq9Ielr3zy
+        vCQWNHW6vg8GuZheYA4CRJ3JXw==
+X-Google-Smtp-Source: APXvYqxTt4reyZxOwFM7gpLn44B2/syN7stLMXz/LTQgDQdiH76jkBmOlBKjhtvaB3E/mb8+p5bIJQ==
+X-Received: by 2002:a17:906:ad86:: with SMTP id la6mr44226340ejb.43.1560240275503;
+        Tue, 11 Jun 2019 01:04:35 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:569e:0:3106:d637:d723:e855])
+        by smtp.gmail.com with ESMTPSA id y11sm3576596edj.96.2019.06.11.01.04.33
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 11 Jun 2019 01:04:34 -0700 (PDT)
+Date:   Tue, 11 Jun 2019 10:04:31 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     syzbot <syzbot+2ff1e7cb738fd3c41113@syzkaller.appspotmail.com>
+Cc:     airlied@linux.ie, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@ffwll.ch, daniel@iogearbox.net, davem@davemloft.net,
+        dri-devel@lists.freedesktop.org, hawk@kernel.org,
+        jakub.kicinski@netronome.com, john.fastabend@gmail.com,
+        kafai@fb.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, maxime.ripard@bootlin.com,
+        netdev@vger.kernel.org, paul.kocialkowski@bootlin.com,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        wens@csie.org, xdp-newbies@vger.kernel.org, yhs@fb.com
+Subject: Re: WARNING in bpf_jit_free
+Message-ID: <20190611080431.GP21222@phenom.ffwll.local>
+Mail-Followup-To: syzbot <syzbot+2ff1e7cb738fd3c41113@syzkaller.appspotmail.com>,
+        airlied@linux.ie, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net,
+        dri-devel@lists.freedesktop.org, hawk@kernel.org,
+        jakub.kicinski@netronome.com, john.fastabend@gmail.com,
+        kafai@fb.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, maxime.ripard@bootlin.com,
+        netdev@vger.kernel.org, paul.kocialkowski@bootlin.com,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        wens@csie.org, xdp-newbies@vger.kernel.org, yhs@fb.com
+References: <000000000000e92d1805711f5552@google.com>
+ <000000000000381684058ace28e5@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20190610152433.6e265d6c@cakuba.netronome.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000381684058ace28e5@google.com>
+X-Operating-System: Linux phenom 4.14.0-3-amd64 
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2019-06-11 00:24, Jakub Kicinski wrote:
-> On Mon, 10 Jun 2019 18:02:29 +0200, Björn Töpel wrote:
->> Jakub, what's your thoughts on the special handling of XDP offloading?
->> Maybe it's just overkill? Just allocate space for the offloaded
->> program regardless support or not? Also, please review the
->> dev_xdp_support_offload() addition into the nfp code.
+On Sat, Jun 08, 2019 at 04:22:06AM -0700, syzbot wrote:
+> syzbot has found a reproducer for the following crash on:
 > 
-> I'm not a huge fan of the new approach - it adds a conditional move,
-> dereference and a cache line reference to the fast path :(
+> HEAD commit:    79c3ba32 Merge tag 'drm-fixes-2019-06-07-1' of git://anong..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1201b971a00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=60564cb52ab29d5b
+> dashboard link: https://syzkaller.appspot.com/bug?extid=2ff1e7cb738fd3c41113
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a3bf51a00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=120d19f2a00000
+
+Looking at the reproducer I don't see any calls to ioctl which could end
+up anywhere in drm.
 > 
-> I think it'd be fine to allocate entries for all 3 types, but the
-> potential of slowing down DRV may not be a good thing in a refactoring
-> series.
+> The bug was bisected to:
+> 
+> commit 0fff724a33917ac581b5825375d0b57affedee76
+> Author: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> Date:   Fri Jan 18 14:51:13 2019 +0000
+> 
+>     drm/sun4i: backend: Use explicit fourcc helpers for packed YUV422 check
+
+And most definitely not in drm/sun4i. You can only hit this if you have
+sun4i and run on arm, which per your config isn't the case.
+
+tldr; smells like bisect gone wrong.
+-Daniel
+
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1467550f200000
+> final crash:    https://syzkaller.appspot.com/x/report.txt?x=1667550f200000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1267550f200000
+> 
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+2ff1e7cb738fd3c41113@syzkaller.appspotmail.com
+> Fixes: 0fff724a3391 ("drm/sun4i: backend: Use explicit fourcc helpers for
+> packed YUV422 check")
+> 
+> WARNING: CPU: 0 PID: 8951 at kernel/bpf/core.c:851 bpf_jit_free+0x157/0x1b0
+> Kernel panic - not syncing: panic_on_warn set ...
+> CPU: 0 PID: 8951 Comm: kworker/0:0 Not tainted 5.2.0-rc3+ #23
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+> Google 01/01/2011
+> Workqueue: events bpf_prog_free_deferred
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+>  panic+0x2cb/0x744 kernel/panic.c:219
+>  __warn.cold+0x20/0x4d kernel/panic.c:576
+>  report_bug+0x263/0x2b0 lib/bug.c:186
+>  fixup_bug arch/x86/kernel/traps.c:179 [inline]
+>  fixup_bug arch/x86/kernel/traps.c:174 [inline]
+>  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:272
+>  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:291
+>  invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:986
+> RIP: 0010:bpf_jit_free+0x157/0x1b0
+> Code: 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 5d 48 b8 00 02 00 00
+> 00 00 ad de 48 39 43 70 0f 84 05 ff ff ff e8 f9 b5 f4 ff <0f> 0b e9 f9 fe ff
+> ff e8 bd 53 2d 00 e9 d9 fe ff ff 48 89 7d e0 e8
+> RSP: 0018:ffff88808886fcb0 EFLAGS: 00010293
+> RAX: ffff88808cb6c480 RBX: ffff88809051d280 RCX: ffffffff817ae68d
+> RDX: 0000000000000000 RSI: ffffffff817bf0f7 RDI: ffff88809051d2f0
+> RBP: ffff88808886fcd0 R08: 1ffffffff14ccaa8 R09: fffffbfff14ccaa9
+> R10: fffffbfff14ccaa8 R11: ffffffff8a665547 R12: ffffc90001925000
+> R13: ffff88809051d2e8 R14: ffff8880a0e43900 R15: ffff8880ae834840
+>  bpf_prog_free_deferred+0x27a/0x350 kernel/bpf/core.c:1984
+>  process_one_work+0x989/0x1790 kernel/workqueue.c:2269
+>  worker_thread+0x98/0xe40 kernel/workqueue.c:2415
+>  kthread+0x354/0x420 kernel/kthread.c:255
+>  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+> Kernel Offset: disabled
+> Rebooting in 86400 seconds..
 > 
 
-Note, that currently it's "only" the XDP_SKB path that's affected, but
-yeah, I agree with out. And going forward, I'd like to use the netdev
-xdp_prog from the Intel drivers, instead of spreading/caching it all over.
-
-I'll go back to the drawing board. Any suggestions on a how/where the
-program should be stored in the netdev are welcome! :-) ...or maybe just
-simply store the netdev_xdp flat (w/o the additional allocation step) in
-net_device. Three programs and the boolean (remove the num_progs).
-
-
-Björn
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
