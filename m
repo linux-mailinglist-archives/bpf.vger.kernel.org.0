@@ -2,71 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF17C3C462
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2019 08:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1EF53C49E
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2019 09:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391185AbfFKGlg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Jun 2019 02:41:36 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:39523 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390485AbfFKGlf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Jun 2019 02:41:35 -0400
-Received: by mail-lj1-f195.google.com with SMTP id v18so10377579ljh.6;
-        Mon, 10 Jun 2019 23:41:34 -0700 (PDT)
+        id S2391274AbfFKHAW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Jun 2019 03:00:22 -0400
+Received: from mail-it1-f195.google.com ([209.85.166.195]:51187 "EHLO
+        mail-it1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391233AbfFKHAW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Jun 2019 03:00:22 -0400
+Received: by mail-it1-f195.google.com with SMTP id j194so3163472ite.0
+        for <bpf@vger.kernel.org>; Tue, 11 Jun 2019 00:00:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OB1OybDU8IsXaF9ajR5n/uysPAwBp/qRaY9IE3Ad6y8=;
-        b=ekuR4iclaKqKoxi+hPT3rdJ1pLCh+eKouy19OWd1aaRv5ZyFN8NTDjASATMbzIyBYm
-         uCV1hAuyJeo8TC6+h3Oew0tRG5jsqwlhD+/uP5R9FF6JemXVxJM6i1pGw8UBtorVU5f8
-         rQ4CwTB+8Oqpk43w8Q8jdq/vMfQAaL1veVmNu+8WxM7dfFARsrMr0+6eWB/fnSIVqNyf
-         94qZLvHRgFeIo6O16EJlvvug9jdW17BxARIBZcu8sAkfjPmVKOmacBNQ7Wp7KWu0XdT5
-         K9B4hSGXpg6kWT353IWN5HGYnnFNJG5JhZYBs1A2Nz0lUZmm4zEwP5t2ObIQbiHQLYZp
-         gKYw==
+        bh=vI5acHmkA6nTEYfV591ATb0I6pQPEbOKaKN82hg7RCM=;
+        b=LCGuTjO2TxUrUxb2CuUCMlbw+aT+V48pldHb/E8/HyXyhAcJadkKRTydOYZaLbyaYO
+         UFtSG+6oLe+7212hqKM3zKI58XosqcuQN5yr4MZTfClkV+lP9X7WQ/TXCkIwp6yJyjYQ
+         UYYS+sSWMxLJRYXgoadzaDdOX6wf0CZSQJTjNdkoB9ahn/djzXI9gOhXuteD/YeX64dQ
+         kxqaZKYtwHJQb9V6J8l+PKkw8OWqZtUF+CpghawnAHXjJ4dMpEi47ZhScw6UcIjjTkLw
+         Ir++FWv/LC5oeZcD0gs7t5aN3QQ4bQIAvrA1jbE5wf551c9FBya6Q1MR/VSJ8vNZZ7Uw
+         RBgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OB1OybDU8IsXaF9ajR5n/uysPAwBp/qRaY9IE3Ad6y8=;
-        b=j0x6To45GMWUKP9rafmGduavdOgdwvuV1ZrF8M0tdZPMiIVgkDPqplusv29HUxMk7B
-         hx/Dh2cjC7YAjUfqp23up5zqnDBiNQ0k6lzuJqIxDFomDr6vEyrbKlNeVdFlabDwp9Jv
-         NgArDAkr/lS9la7DLffOh/CJsLpmo6SUL3qrPfBr4dU1eF2cShcVQlGcybgP/gmWAt/0
-         aHyN+qnatKpfmAvKB7YWwO1i+eskOjBX6++txUmqird8aq1FqR6jYfxJF2P0EGdpo9kq
-         Pf8Ra8RS/EV8OO+nrc1Yk6uwRNfCN7tPy5m+pIC4TVpKgf87iHw8okL1ZtwWD2+DhTvB
-         /rwQ==
-X-Gm-Message-State: APjAAAVxfIsat3ld+7BeFya2sI6hs2x5VWKOBhb+EmghNEX0M5gWSy6c
-        7VN7oKc/tib+pNC8Qq+1ginXN6eFnxENXTVjQuU=
-X-Google-Smtp-Source: APXvYqyRdJ6l3SXWgXGEWX/3STvcER/nOBLdfye+sG+aE3BusZaRjGpwx0cSiQgnQKjXpSAv5mEPo/lsOWjLxSl90JA=
-X-Received: by 2002:a2e:298a:: with SMTP id p10mr9878897ljp.74.1560235293691;
- Mon, 10 Jun 2019 23:41:33 -0700 (PDT)
+        bh=vI5acHmkA6nTEYfV591ATb0I6pQPEbOKaKN82hg7RCM=;
+        b=aTCkxbIDnlpyBSDzOmjvmjyVg9QGSHr05bNrFzo/LICFWCAGt3HuL8GNASb+pe079i
+         UHTtnJsor4E+/+28fRrKQw7WQexjkKLyCcxLKwbQmaQ8Aq7OKuVsQRUUv/ZfD4ggqImc
+         Gg0/ra0OTz0u+RW4LBBSPsQkdxSU2HOoFf6pkW5fcSTt4HizPaN3Z9FBT8U4wKG5tkwg
+         +ykZk+rfEuH1tvCWAOeX4EFnD8IVShGPPV1KZJ/RZLU1nzz7r104h0PRCAfiEE8gylw4
+         LMx4nTN5GUqPbClsQsmLlliMyhqkNlWarFmbAtLa628UCvn7lCpBsG7G4eiPHR0LvIMP
+         MeJw==
+X-Gm-Message-State: APjAAAXsL77U0Q7ca1v3gryzCMtr8s8mcHkzD++Efk7tNVOjFakh68j2
+        klv9LirDSqvEDxDj1sbH2fhsgFtmce73iy1hzgUMJw==
+X-Google-Smtp-Source: APXvYqw5L3QgsGUT/uUiUEEf1cTR2kRkCU5zFtdPavouBPiFq6joDoKrg25++85Cx9Pi97zf+dP+doMtRgFU6BvEKSk=
+X-Received: by 2002:a24:9083:: with SMTP id x125mr17320288itd.76.1560236421302;
+ Tue, 11 Jun 2019 00:00:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190610174655.2207879-1-andriin@fb.com>
-In-Reply-To: <20190610174655.2207879-1-andriin@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 10 Jun 2019 23:41:22 -0700
-Message-ID: <CAADnVQ+_JdRryLgcQpH0ZRVZDavw+Q_fXnrEvCj90oeEMZ3iOQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix constness of source arg for
- bpf helpers
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
+References: <000000000000c0d84e058ad677aa@google.com> <87ftoh6si4.fsf@xmission.com>
+In-Reply-To: <87ftoh6si4.fsf@xmission.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 11 Jun 2019 09:00:09 +0200
+Message-ID: <CACT4Y+btAivG8iYQFM=Qy_qMoE0SFNhx-ngjN=1hgf7UGrNViw@mail.gmail.com>
+Subject: Re: general protection fault in mm_update_next_owner
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     syzbot <syzbot+f625baafb9a1c4bfc3f6@syzkaller.appspotmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Parri <andrea.parri@amarulasolutions.com>,
+        Alexei Starovoitov <ast@kernel.org>, avagin@gmail.com,
+        Daniel Borkmann <daniel@iogearbox.net>, dbueso@suse.de,
+        John Fastabend <john.fastabend@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+        prsood@codeaurora.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 10, 2019 at 10:48 AM Andrii Nakryiko <andriin@fb.com> wrote:
+On Mon, Jun 10, 2019 at 11:27 PM Eric W. Biederman
+<ebiederm@xmission.com> wrote:
 >
-> Fix signature of bpf_probe_read and bpf_probe_write_user to mark source
-> pointer as const. This causes warnings during compilation for
-> applications relying on those helpers.
+> syzbot <syzbot+f625baafb9a1c4bfc3f6@syzkaller.appspotmail.com> writes:
 >
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > syzbot has bisected this bug to:
+> >
+> > commit e9db4ef6bf4ca9894bb324c76e01b8f1a16b2650
+> > Author: John Fastabend <john.fastabend@gmail.com>
+> > Date:   Sat Jun 30 13:17:47 2018 +0000
+> >
+> >     bpf: sockhash fix omitted bucket lock in sock_close
+> >
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15e978e1a00000
+> > start commit:   38e406f6 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+> > git tree:       net
+> > final crash:    https://syzkaller.appspot.com/x/report.txt?x=17e978e1a00000
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=13e978e1a00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=60564cb52ab29d5b
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=f625baafb9a1c4bfc3f6
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1193d81ea00000
+> >
+> > Reported-by: syzbot+f625baafb9a1c4bfc3f6@syzkaller.appspotmail.com
+> > Fixes: e9db4ef6bf4c ("bpf: sockhash fix omitted bucket lock in sock_close")
+> >
+> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+>
+> How is mm_update_next_owner connected to bpf?
 
-Applied. Thanks
+
+There seems to be a nasty bug in bpf that causes assorted crashes
+throughout the kernel for some time. I've seen a bunch of reproducers
+that do something with bpf and then cause a random crash. The more
+unpleasant ones are the bugs without reproducers, because for these we
+don't have a way to link them back to the bpf bug but they are still
+hanging there without good explanation, e.g. maybe a part of one-off
+crashes in moderation:
+https://syzkaller.appspot.com/upstream#moderation2
+
+Such bugs are nice to fix asap to not produce more and more random
+crash reports.
+
+Hillf, did you understand the mechanics of this bug and memory
+corruption? A good question is why this was unnoticed by KASAN. If we
+could make it catch it at the point of occurrence, then it would be a
+single bug report clearly attributed to bpf rather then dozens of
+assorted crashes.
