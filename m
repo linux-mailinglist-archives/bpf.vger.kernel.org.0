@@ -2,75 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 314CB429CE
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2019 16:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1408429D8
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2019 16:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732570AbfFLOru (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Jun 2019 10:47:50 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:34373 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732556AbfFLOru (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Jun 2019 10:47:50 -0400
-Received: by mail-lf1-f68.google.com with SMTP id y198so12366937lfa.1;
-        Wed, 12 Jun 2019 07:47:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=atj4Dig3dtuCtSDSSa+DD85GmhDxDaBZi0keQGxDoi8=;
-        b=sDszYOIoZwSCOxJ1bqIhnEQdDWhP/Y13vCedI/horI8IhJjeSMtx6JDbLl80JC+2ZG
-         hjjoGsBPdZeHRiFIHWsWGZnD+JSsmNfeOUu+u/iVVl78D1Lqj1X5BVNCUzr8jw7l2Vqk
-         Dc9hON+r3NREYlwIIQMKt7+X4/pTnJNDFiPN7s6QmrbpReF+FoSRaBhglQ1gyZPW6Jph
-         XzpB2HbK3Wh8IjY5piM/FVYIegFueG8QtUDvETEnv6IeftPvU7gG8wcL/hHiuQzFFZ1G
-         qT4i+ccebM2CrhPlZcHyixAJOj+trdKGIya7w4SNdVLaUU3zR6ufQPzN6uWut3qYcHdy
-         /tTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=atj4Dig3dtuCtSDSSa+DD85GmhDxDaBZi0keQGxDoi8=;
-        b=G9yqeB6V+Y7Q28NSvqYLbPwuNI8P2/eirMQNcSn6YyrcEpbo+p2/1+VmGrUugwuH5d
-         nSy/VQXcbcJrefzi1ihmJg8yiM+9+Zj+YjHO6q3OHQ3u6Vl26WxpWOnr/3vWYr9ByVva
-         4oWxOMEjsNlcMMnrThAO4Y/UuvYQ1ngHYl94sxkLKGxLiMX6tAgeOxUQrPHfNC8ER/w1
-         Ik1S86NFdKZv5KQXNwLIBnwoqLQVVjpa/GgzPrXOrZRYLfkLg1vblGc0DVKS2iBNW73O
-         X7S71EnR0QIfvRghzRve/t8BvsdTiVOFpaPBG8rlxLbhNehGXb5I48V+KEYABSlnGnpt
-         SZZA==
-X-Gm-Message-State: APjAAAX8cbzbJTyR60xWPeKRA8jWBMkscoAc6zn6htmaydhYjEiAoilb
-        VIf+oSL1j1Uw2vehNiPJw4uzA58zIfOmURn93C1AHQ==
-X-Google-Smtp-Source: APXvYqzv10lk2WbQXRocxToNZyod64yBRQS3n0YKJMQmBM6fU2Q+rYqgb3hw2533pYAt0M5y9gZ0toZWIapcNKr3Juk=
-X-Received: by 2002:ac2:4252:: with SMTP id m18mr16950403lfl.100.1560350868086;
- Wed, 12 Jun 2019 07:47:48 -0700 (PDT)
+        id S2406315AbfFLOsd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Jun 2019 10:48:33 -0400
+Received: from www62.your-server.de ([213.133.104.62]:45052 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392030AbfFLOsd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Jun 2019 10:48:33 -0400
+Received: from [88.198.220.132] (helo=sslproxy03.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hb4Y5-0007eZ-8M; Wed, 12 Jun 2019 16:48:25 +0200
+Received: from [178.199.41.31] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hb4Y5-0000kb-0T; Wed, 12 Jun 2019 16:48:25 +0200
+Subject: Re: [PATCH bpf] bpf: net: Set sk_bpf_storage back to NULL for cloned
+ sk
+To:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@fb.com>,
+        David Miller <davem@davemloft.net>, kernel-team@fb.com
+References: <20190611214557.2700117-1-kafai@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <90b81b8f-1ce1-4dd7-bdbb-b51c03839ca7@iogearbox.net>
+Date:   Wed, 12 Jun 2019 16:48:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
 MIME-Version: 1.0
-References: <20190612113208.21865-1-naveen.n.rao@linux.vnet.ibm.com>
-In-Reply-To: <20190612113208.21865-1-naveen.n.rao@linux.vnet.ibm.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 12 Jun 2019 07:47:36 -0700
-Message-ID: <CAADnVQLp+N8pYTgmgEGfoubqKrWrnuTBJ9z2qc1rB6+04WfgHA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: optimize constant blinding
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Jiong Wang <jiong.wang@netronome.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20190611214557.2700117-1-kafai@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25478/Wed Jun 12 10:14:54 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 4:32 AM Naveen N. Rao
-<naveen.n.rao@linux.vnet.ibm.com> wrote:
->
-> Currently, for constant blinding, we re-allocate the bpf program to
-> account for its new size and adjust all branches to accommodate the
-> same, for each BPF instruction that needs constant blinding. This is
-> inefficient and can lead to soft lockup with sufficiently large
-> programs, such as the new verifier scalability test (ld_dw: xor
-> semi-random 64 bit imms, test 5 -- with net.core.bpf_jit_harden=2)
+On 06/11/2019 11:45 PM, Martin KaFai Lau wrote:
+> The cloned sk should not carry its parent-listener's sk_bpf_storage.
+> This patch fixes it by setting it back to NULL.
+> 
+> Fixes: 6ac99e8f23d4 ("bpf: Introduce bpf sk local storage")
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 
-Slowdown you see is due to patch_insn right?
-In such case I prefer to fix the scaling issue of patch_insn instead.
-This specific fix for blinding only is not addressing the core of the problem.
-Jiong,
-how is the progress on fixing patch_insn?
+Applied, thanks!
