@@ -2,76 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B831F428FA
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2019 16:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DAC242922
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2019 16:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439645AbfFLO1C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Jun 2019 10:27:02 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:60032 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439638AbfFLO1B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Jun 2019 10:27:01 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 91C0DC18B2F3;
-        Wed, 12 Jun 2019 14:27:00 +0000 (UTC)
-Received: from treble (ovpn-120-37.rdu2.redhat.com [10.10.120.37])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BA67519483;
-        Wed, 12 Jun 2019 14:26:54 +0000 (UTC)
-Date:   Wed, 12 Jun 2019 09:26:52 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Kairui Song <kasong@redhat.com>,
-        Alexei Starovoitov <ast@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: Getting empty callchain from perf_callchain_kernel()
-Message-ID: <20190612142652.tzrlwduirm4edmtf@treble>
-References: <ab047883-69f6-1175-153f-5ad9462c6389@fb.com>
- <20190522174517.pbdopvookggen3d7@treble>
- <20190522234635.a47bettklcf5gt7c@treble>
- <CACPcB9dRJ89YAMDQdKoDMU=vFfpb5AaY0mWC_Xzw1ZMTFBf6ng@mail.gmail.com>
- <20190523133253.tad6ywzzexks6hrp@treble>
- <CACPcB9fQKg7xhzhCZaF4UGi=EQs1HLTFgg-C_xJQaUfho3yMyA@mail.gmail.com>
- <20190523152413.m2pbnamihu3s2c5s@treble>
- <20190524085319.GE2589@hirez.programming.kicks-ass.net>
- <20190612030501.7tbsjy353g7l74ej@treble>
- <20190612091023.6bccf262@gandalf.local.home>
+        id S2437580AbfFLO3Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Jun 2019 10:29:16 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:42017 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437144AbfFLO3Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Jun 2019 10:29:16 -0400
+Received: by mail-pf1-f193.google.com with SMTP id q10so9759675pff.9;
+        Wed, 12 Jun 2019 07:29:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=i2lHhyHM9Am5ZKv4ZERVjIYftF/2/pl8FBg2eVYcKHk=;
+        b=JLmcSe+wAzzpnKkgwvo/T1DJShHK+8zUW4xmw1zWJyEFwLFoR2TFoW6jDWzWVft820
+         iHjVOXhjGBw7OEiJyAN66RZdasUZcnvtNYqA+30QJDCD17RJEU+VTAmcbnbFDvKaT8cY
+         HpPXZJn9Emvrt9lGfQfpeG0f3Wr/e8u0blJVePSPGWQBbuX5BbV+xrl1tvOpuelSJBo4
+         wzXHtk0BZ60Bkf0cDdY2oHZ0ZdLf0F6A7bO7lNdYHwU6rraAtlN8qqe9M+fRmu6t5XmK
+         NkqpoSB7t5Ld9ElLjyfDnbMm48It11x2lQpFhvnccQIgrBUxaHc8SM8cfjCwihiUptik
+         Na9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=i2lHhyHM9Am5ZKv4ZERVjIYftF/2/pl8FBg2eVYcKHk=;
+        b=B5GITcWw77BwKDPPC287cexNQqlU60Lw7ySRQ4NS4OFL+IEGBXVc59OPNQcwgFJKy+
+         H+X9dIPIo57ClSefgs5xZWgdtuZnpb8hsmAAXBvZ2gtWVhgnCapnDsteX28G/Af8LmBb
+         +/sRmrq+HdCERyR1Or8NPjiMS6qrhOAIcKTBtPgi1zlHw25TGA4iH2lhiu8eCW+GbtnE
+         URvADwYSKYUZbz37woyLU+8HVsTYvoGBJUb1t9R8E6EcW+O7qGKnVYFjGOP2euBxtviV
+         uZFbXR7Tu6pPVBZRnFQy3zfwTxqSvbtd+nzt4KXYErnJRq3wIP+a+NJY0i1OZ+5Gz0hp
+         Omnw==
+X-Gm-Message-State: APjAAAVtdXmp7P/NXySI/Z44J74wzk7uDUdXX+Nb7c1/l4EwSZSHGldE
+        i0PtcbRBUauSqMETqPviCZk=
+X-Google-Smtp-Source: APXvYqzFwERzMYTKTt+QXS/AxrGBHTzZgwv6lP7jSb9Fw8afo+Zi0xwYKJxnHkZ21IaK/DjcWBIeCQ==
+X-Received: by 2002:a17:90a:2e87:: with SMTP id r7mr33021706pjd.121.1560349755472;
+        Wed, 12 Jun 2019 07:29:15 -0700 (PDT)
+Received: from [172.26.107.103] ([2620:10d:c090:180::1:1d4d])
+        by smtp.gmail.com with ESMTPSA id j14sm19519914pfe.10.2019.06.12.07.29.14
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 12 Jun 2019 07:29:14 -0700 (PDT)
+From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, davem@davemloft.net,
+        jakub.kicinski@netronome.com, linux-kernel@vger.kernel.org,
+        xdp-newbies@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next] bpf: Fix build error without CONFIG_INET
+Date:   Wed, 12 Jun 2019 07:29:13 -0700
+X-Mailer: MailMate (1.12.5r5635)
+Message-ID: <CFE96009-1D3A-4D99-8A96-86C281772396@gmail.com>
+In-Reply-To: <20190612091847.23708-1-yuehaibing@huawei.com>
+References: <20190612091847.23708-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20190612091023.6bccf262@gandalf.local.home>
-User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.31]); Wed, 12 Jun 2019 14:27:01 +0000 (UTC)
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 09:10:23AM -0400, Steven Rostedt wrote:
-> On Tue, 11 Jun 2019 22:05:01 -0500
-> Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> 
-> > Right now, ftrace has a special hook in the ORC unwinder
-> > (orc_ftrace_find).  It would be great if we could get rid of that in
-> > favor of the "always use frame pointers" approach.  I'll hold off on
-> > doing the kpatch/kprobe trampoline conversions in my patches since it
-> > would conflict with yours.
-> 
-> Basically, IIUC, what you are saying is that the ftrace trampoline
-> should always store the %sp in %rb even when CONFIG_FRAME_POINTER is not
-> enabled? And this can allow you to remove the ftrace specific code from
-> the orc unwinder?
+On 12 Jun 2019, at 2:18, YueHaibing wrote:
 
-Basically, yes.  Though the frame pointer encoding which Peter is adding
-to the ftrace/kprobes trampolines might complicate things a bit.
-
--- 
-Josh
+> If CONFIG_INET is not set, building fails:
+>
+> kernel/bpf/verifier.o: In function `check_mem_access':
+> verifier.c: undefined reference to `bpf_xdp_sock_is_valid_access'
+> kernel/bpf/verifier.o: In function `convert_ctx_accesses':
+> verifier.c: undefined reference to `bpf_xdp_sock_convert_ctx_access'
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Fixes: fada7fdc83c0 ("bpf: Allow bpf_map_lookup_elem() on an xskmap")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
