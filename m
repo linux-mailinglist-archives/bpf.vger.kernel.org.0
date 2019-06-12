@@ -2,247 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A7D41742
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2019 23:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D09541932
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2019 02:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436634AbfFKVyf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Jun 2019 17:54:35 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:43126 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391563AbfFKVyf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 11 Jun 2019 17:54:35 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5BLmhPY014766;
-        Tue, 11 Jun 2019 14:53:15 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=lvUJUfl7vkOJvmMu8y+5Qbz3L/l78ZP+Gmj+lYaz4xQ=;
- b=UjrDsP+sBJ4+B5ISLnb1cGCO48vJCfLVSaxgvU20vYb8ULzbeRYMvi2wKsGPtb1q3iLa
- Oeg1qLVugXtvf9H3/fzRlDVuP/4VPjQR5UGZIWUd042ALf7ZNkcT+pGd0Ue4SIuOq+Bi
- Bs2zQzVA94mYa6OOVaEQ9ZNn4zrs5/dvRU4= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2t2keag8ag-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 11 Jun 2019 14:53:15 -0700
-Received: from mmullins-1.thefacebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server id
- 15.1.1713.5; Tue, 11 Jun 2019 14:53:14 -0700
-From:   Matt Mullins <mmullins@fb.com>
-To:     <hall@fb.com>, <mmullins@fb.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Ingo Molnar" <mingo@redhat.com>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Subject: [PATCH bpf v2] bpf: fix nested bpf tracepoints with per-cpu data
-Date:   Tue, 11 Jun 2019 14:53:04 -0700
-Message-ID: <20190611215304.28831-1-mmullins@fb.com>
-X-Mailer: git-send-email 2.17.1
+        id S2390115AbfFLAFV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Jun 2019 20:05:21 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:41495 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387864AbfFLAFV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Jun 2019 20:05:21 -0400
+Received: by mail-lj1-f193.google.com with SMTP id s21so13434812lji.8;
+        Tue, 11 Jun 2019 17:05:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=twnhTVYd7tn35O7vvlIa3XEgKYk2/zieh7kgQ5Ms1VY=;
+        b=iDBd+Nyh60vWHvSGtVHWVETugM2fnnm+FqmmiJZ56NZHl6V9Aty9AmjFW8CRdEnVVB
+         aGKuXc3BMI1WRmMN59ZmT1r6kVO7qzb4q1bDpYmpS/ZUrVuenxbQGoF2Qv4WS5P5xTYu
+         MgUGL2vvXlsZ04GvxKv4oWOnyz8mNGE24H+bdBFJTo0aHTJ0k0u+7bh9tcE9VNAMwAtH
+         iKtxqCy1DSmKDdJUUU93WbsyygyX8RtwvZ5Owd5cCDJ9ZU6yAlx8+gKU6PDNIGy1Yrds
+         5FOvUqOWwAWAd5bt0eEYz6DGK7Ot7sHrl6lNbuwYOmPXTEQ7T1WTuP7Qnyr0A/A07xpx
+         QkCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=twnhTVYd7tn35O7vvlIa3XEgKYk2/zieh7kgQ5Ms1VY=;
+        b=fqEU0XMyfNflfhQT79oxZghavXpJ1dAzYWSMm/qb4gmos8iA2TeNBJ0PUDAE/Hziuc
+         bcmkQUVGTodSXW4WmUcE9UbCbklB1P7Hfg+uvtOj6dEzEdotDAAFyArOd3ScHgIQNVs5
+         0JS9pIniFAgDhZ4tXvbDA5Wd7OJm5Til/+3lHBMc+FZ4Th9Uj7DK21wcJRIHCksoumid
+         oyUuStSybwP7edfVFrdhM6JvHk+DDVpdY1QTx93zhasPNw8m+Rv31ORF54nq/akB0sbh
+         SVkLKb03VXRyP+j7I9Yb4Iqiz7BHFYtNrpDNWePKx+aosKbJYg7P7LG1/Z8/MzWuKwy8
+         Zlbw==
+X-Gm-Message-State: APjAAAVdLDPQZSMGnTI0GPYm3j5E17tzyOWa4m4EfXM7tVCJe8oCX3/+
+        qfJ4ROah2uLK8s8qnMM5gMeTz+fyeeBSbUV9JBw=
+X-Google-Smtp-Source: APXvYqyO/Oi3PmoK5iJ0YzdPrMw5xZcqUF1R75rhMCOs6SLJy8NUkUXX4LUB1wFJr6ZxPQT0SJAlgxYZrwxAPMCixo8=
+X-Received: by 2002:a2e:298a:: with SMTP id p10mr12710225ljp.74.1560297918252;
+ Tue, 11 Jun 2019 17:05:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [2620:10d:c081:10::13]
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-11_10:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906110141
-X-FB-Internal: deliver
+References: <20190611193836.2772-1-shyam.saini@amarulasolutions.com>
+In-Reply-To: <20190611193836.2772-1-shyam.saini@amarulasolutions.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 11 Jun 2019 17:05:06 -0700
+Message-ID: <CAADnVQKwvfuoyDEu+rB8=btOi33LdrUvk4EkQM86sDpDG61kew@mail.gmail.com>
+Subject: Re: [PATCH V2] include: linux: Regularise the use of FIELD_SIZEOF macro
+To:     Shyam Saini <shyam.saini@amarulasolutions.com>
+Cc:     Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Network Development <netdev@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, devel@lists.orangefs.org,
+        linux-mm <linux-mm@kvack.org>, linux-sctp@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, kvm@vger.kernel.org,
+        mayhs11saini@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BPF_PROG_TYPE_RAW_TRACEPOINTs can be executed nested on the same CPU, as
-they do not increment bpf_prog_active while executing.
+On Tue, Jun 11, 2019 at 5:00 PM Shyam Saini
+<shyam.saini@amarulasolutions.com> wrote:
+>
+> Currently, there are 3 different macros, namely sizeof_field, SIZEOF_FIELD
+> and FIELD_SIZEOF which are used to calculate the size of a member of
+> structure, so to bring uniformity in entire kernel source tree lets use
+> FIELD_SIZEOF and replace all occurrences of other two macros with this.
+>
+> For this purpose, redefine FIELD_SIZEOF in include/linux/stddef.h and
+> tools/testing/selftests/bpf/bpf_util.h and remove its defination from
+> include/linux/kernel.h
 
-This enables three levels of nesting, to support
-  - a kprobe or raw tp or perf event,
-  - another one of the above that irq context happens to call, and
-  - another one in nmi context
-(at most one of which may be a kprobe or perf event).
-
-Fixes: 20b9d7ac4852 ("bpf: avoid excessive stack usage for perf_sample_data")
-Signed-off-by: Matt Mullins <mmullins@fb.com>
----
-v1->v2:
-  * reverse-Christmas-tree-ize the declarations in bpf_perf_event_output
-  * instantiate err more readably
-
-I've done additional testing with the original workload that hit the
-irq+raw-tp reentrancy problem, and as far as I can tell, it's still
-solved with this solution (as opposed to my earlier per-map-element
-version).
-
- kernel/trace/bpf_trace.c | 100 ++++++++++++++++++++++++++++++++-------
- 1 file changed, 84 insertions(+), 16 deletions(-)
-
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index f92d6ad5e080..1c9a4745e596 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -410,8 +410,6 @@ static const struct bpf_func_proto bpf_perf_event_read_value_proto = {
- 	.arg4_type	= ARG_CONST_SIZE,
- };
- 
--static DEFINE_PER_CPU(struct perf_sample_data, bpf_trace_sd);
--
- static __always_inline u64
- __bpf_perf_event_output(struct pt_regs *regs, struct bpf_map *map,
- 			u64 flags, struct perf_sample_data *sd)
-@@ -442,24 +440,50 @@ __bpf_perf_event_output(struct pt_regs *regs, struct bpf_map *map,
- 	return perf_event_output(event, sd, regs);
- }
- 
-+/*
-+ * Support executing tracepoints in normal, irq, and nmi context that each call
-+ * bpf_perf_event_output
-+ */
-+struct bpf_trace_sample_data {
-+	struct perf_sample_data sds[3];
-+};
-+
-+static DEFINE_PER_CPU(struct bpf_trace_sample_data, bpf_trace_sds);
-+static DEFINE_PER_CPU(int, bpf_trace_nest_level);
- BPF_CALL_5(bpf_perf_event_output, struct pt_regs *, regs, struct bpf_map *, map,
- 	   u64, flags, void *, data, u64, size)
- {
--	struct perf_sample_data *sd = this_cpu_ptr(&bpf_trace_sd);
-+	struct bpf_trace_sample_data *sds = this_cpu_ptr(&bpf_trace_sds);
-+	int nest_level = this_cpu_inc_return(bpf_trace_nest_level);
- 	struct perf_raw_record raw = {
- 		.frag = {
- 			.size = size,
- 			.data = data,
- 		},
- 	};
-+	struct perf_sample_data *sd;
-+	int err;
- 
--	if (unlikely(flags & ~(BPF_F_INDEX_MASK)))
--		return -EINVAL;
-+	if (WARN_ON_ONCE(nest_level > ARRAY_SIZE(sds->sds))) {
-+		err = -EBUSY;
-+		goto out;
-+	}
-+
-+	sd = &sds->sds[nest_level - 1];
-+
-+	if (unlikely(flags & ~(BPF_F_INDEX_MASK))) {
-+		err = -EINVAL;
-+		goto out;
-+	}
- 
- 	perf_sample_data_init(sd, 0, 0);
- 	sd->raw = &raw;
- 
--	return __bpf_perf_event_output(regs, map, flags, sd);
-+	err = __bpf_perf_event_output(regs, map, flags, sd);
-+
-+out:
-+	this_cpu_dec(bpf_trace_nest_level);
-+	return err;
- }
- 
- static const struct bpf_func_proto bpf_perf_event_output_proto = {
-@@ -822,16 +846,48 @@ pe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- /*
-  * bpf_raw_tp_regs are separate from bpf_pt_regs used from skb/xdp
-  * to avoid potential recursive reuse issue when/if tracepoints are added
-- * inside bpf_*_event_output, bpf_get_stackid and/or bpf_get_stack
-+ * inside bpf_*_event_output, bpf_get_stackid and/or bpf_get_stack.
-+ *
-+ * Since raw tracepoints run despite bpf_prog_active, support concurrent usage
-+ * in normal, irq, and nmi context.
-  */
--static DEFINE_PER_CPU(struct pt_regs, bpf_raw_tp_regs);
-+struct bpf_raw_tp_regs {
-+	struct pt_regs regs[3];
-+};
-+static DEFINE_PER_CPU(struct bpf_raw_tp_regs, bpf_raw_tp_regs);
-+static DEFINE_PER_CPU(int, bpf_raw_tp_nest_level);
-+static struct pt_regs *get_bpf_raw_tp_regs(void)
-+{
-+	struct bpf_raw_tp_regs *tp_regs = this_cpu_ptr(&bpf_raw_tp_regs);
-+	int nest_level = this_cpu_inc_return(bpf_raw_tp_nest_level);
-+
-+	if (WARN_ON_ONCE(nest_level > ARRAY_SIZE(tp_regs->regs))) {
-+		this_cpu_dec(bpf_raw_tp_nest_level);
-+		return ERR_PTR(-EBUSY);
-+	}
-+
-+	return &tp_regs->regs[nest_level - 1];
-+}
-+
-+static void put_bpf_raw_tp_regs(void)
-+{
-+	this_cpu_dec(bpf_raw_tp_nest_level);
-+}
-+
- BPF_CALL_5(bpf_perf_event_output_raw_tp, struct bpf_raw_tracepoint_args *, args,
- 	   struct bpf_map *, map, u64, flags, void *, data, u64, size)
- {
--	struct pt_regs *regs = this_cpu_ptr(&bpf_raw_tp_regs);
-+	struct pt_regs *regs = get_bpf_raw_tp_regs();
-+	int ret;
-+
-+	if (IS_ERR(regs))
-+		return PTR_ERR(regs);
- 
- 	perf_fetch_caller_regs(regs);
--	return ____bpf_perf_event_output(regs, map, flags, data, size);
-+	ret = ____bpf_perf_event_output(regs, map, flags, data, size);
-+
-+	put_bpf_raw_tp_regs();
-+	return ret;
- }
- 
- static const struct bpf_func_proto bpf_perf_event_output_proto_raw_tp = {
-@@ -848,12 +904,18 @@ static const struct bpf_func_proto bpf_perf_event_output_proto_raw_tp = {
- BPF_CALL_3(bpf_get_stackid_raw_tp, struct bpf_raw_tracepoint_args *, args,
- 	   struct bpf_map *, map, u64, flags)
- {
--	struct pt_regs *regs = this_cpu_ptr(&bpf_raw_tp_regs);
-+	struct pt_regs *regs = get_bpf_raw_tp_regs();
-+	int ret;
-+
-+	if (IS_ERR(regs))
-+		return PTR_ERR(regs);
- 
- 	perf_fetch_caller_regs(regs);
- 	/* similar to bpf_perf_event_output_tp, but pt_regs fetched differently */
--	return bpf_get_stackid((unsigned long) regs, (unsigned long) map,
--			       flags, 0, 0);
-+	ret = bpf_get_stackid((unsigned long) regs, (unsigned long) map,
-+			      flags, 0, 0);
-+	put_bpf_raw_tp_regs();
-+	return ret;
- }
- 
- static const struct bpf_func_proto bpf_get_stackid_proto_raw_tp = {
-@@ -868,11 +930,17 @@ static const struct bpf_func_proto bpf_get_stackid_proto_raw_tp = {
- BPF_CALL_4(bpf_get_stack_raw_tp, struct bpf_raw_tracepoint_args *, args,
- 	   void *, buf, u32, size, u64, flags)
- {
--	struct pt_regs *regs = this_cpu_ptr(&bpf_raw_tp_regs);
-+	struct pt_regs *regs = get_bpf_raw_tp_regs();
-+	int ret;
-+
-+	if (IS_ERR(regs))
-+		return PTR_ERR(regs);
- 
- 	perf_fetch_caller_regs(regs);
--	return bpf_get_stack((unsigned long) regs, (unsigned long) buf,
--			     (unsigned long) size, flags, 0);
-+	ret = bpf_get_stack((unsigned long) regs, (unsigned long) buf,
-+			    (unsigned long) size, flags, 0);
-+	put_bpf_raw_tp_regs();
-+	return ret;
- }
- 
- static const struct bpf_func_proto bpf_get_stack_proto_raw_tp = {
--- 
-2.17.1
-
+please dont. bpf_util.h is a user space header.
+Please leave it as-is.
