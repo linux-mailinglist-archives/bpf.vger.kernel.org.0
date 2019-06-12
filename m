@@ -2,242 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC86542BE3
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2019 18:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E08A42D86
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2019 19:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727340AbfFLQQb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Jun 2019 12:16:31 -0400
-Received: from www62.your-server.de ([213.133.104.62]:43164 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727126AbfFLQQb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Jun 2019 12:16:31 -0400
-Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hb5vH-0006i5-3G; Wed, 12 Jun 2019 18:16:27 +0200
-Received: from [178.199.41.31] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hb5vG-0003em-UF; Wed, 12 Jun 2019 18:16:26 +0200
-Subject: Re: [PATCH bpf-next v5 1/4] bpf: sock ops: add netns ino and dev in
- bpf context
-To:     =?UTF-8?Q?Iago_L=c3=b3pez_Galeiras?= <iago@kinvolk.io>,
-        john.fastabend@gmail.com, ast@kernel.org
-Cc:     alban@kinvolk.io, krzesimir@kinvolk.io, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20190607141106.32148-1-iago@kinvolk.io>
- <20190607141106.32148-2-iago@kinvolk.io>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d3eeb0f0-b222-1b15-af22-28dfd129771d@iogearbox.net>
-Date:   Wed, 12 Jun 2019 18:16:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.3.0
-MIME-Version: 1.0
-In-Reply-To: <20190607141106.32148-2-iago@kinvolk.io>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25478/Wed Jun 12 10:14:54 2019)
+        id S2409540AbfFLRao (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Jun 2019 13:30:44 -0400
+Received: from mail-yw1-f73.google.com ([209.85.161.73]:51437 "EHLO
+        mail-yw1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405127AbfFLRan (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Jun 2019 13:30:43 -0400
+Received: by mail-yw1-f73.google.com with SMTP id k10so18087832ywb.18
+        for <bpf@vger.kernel.org>; Wed, 12 Jun 2019 10:30:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=aYBwDRPMLFch8pErCdIVdR1XezeWG6lP+OS+4p/QF+c=;
+        b=CpQCaylW6r4KuQiFK2ncRi0OFhoAF4GV8L7k1BLZzapxVl+Frhylr8y2Y3R2qRTIo4
+         BbquX9A6+i3MWQ/FW2no1uDA4zc4cUprLSu5f2XAiEma7k4Wrb1qqDkWT3kCeD08tAIY
+         EpLbDFfcgRluPaUt2hwGk5Lr1pQENs+1+J/hQL5W50c3OOdGZ/blvI7+jdhipHCXP7Vd
+         t5j4Y5TGVmyoFoSY3OtXw/CSIOkkDFHnCgzSoiJofYlKTY/fnnrhRGnt1hI3WCxlhEQ4
+         nq75c0i/yISy3tY6rsM0P+lO2bwNd1CVXnazov+L8hYJlgEd4f4BHAzBerePOK2fcLvm
+         RumQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=aYBwDRPMLFch8pErCdIVdR1XezeWG6lP+OS+4p/QF+c=;
+        b=GHj8T5wvtcqrkkcHdSSOhzrVEmo00G8Fzmqrv5b6rM4cQ+F2E2HeUlhcwsNrJ+qANI
+         Nw82HZRw4eXIJgaSZuDiaCcIzbtw09CKPkFtobrx6IZVCau9zgG9KMPXdkGuPNaZA9qc
+         VB8qkqRfeIimx3PAbW5nzx8mnldsEA6EDGimJDMFRJpZOyIVjOs9qLa1IsFSIeFUX9Zz
+         lXp31Wt/sSDrq3UK7zMXx7xIjCmLjSA0q4JStlMj1S835AGPqEuo9QjFYyf91DbgTTwh
+         tz2iVfG819uVqA0oSQJqFRBYeeO33AmN5ozXmrkVQE3Kxg+Hb6DGmTKOyqqTblln2Bkf
+         o7Lw==
+X-Gm-Message-State: APjAAAXN0OkUHJO3n+ksvUD4m2Xz4oBsdVXPM8EQi+pEyx3crY34lw0y
+        wrwQX7tnoyPfDolgX4v+TbP3++Q=
+X-Google-Smtp-Source: APXvYqwsn4/amuGEz22WG8rYKmA2pTovjkohArEshMqJ0nEKfzISTDi8W5ZDi2i3k6uBkVUHB+OSj+g=
+X-Received: by 2002:a81:f90:: with SMTP id 138mr36999084ywp.425.1560360642931;
+ Wed, 12 Jun 2019 10:30:42 -0700 (PDT)
+Date:   Wed, 12 Jun 2019 10:30:37 -0700
+Message-Id: <20190612173040.61944-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.22.0.rc2.383.gf4fbbf30c2-goog
+Subject: [PATCH bpf-next 1/4] bpf: export bpf_sock for BPF_PROG_TYPE_CGROUP_SOCK_ADDR
+ prog type
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>, Martin Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/07/2019 04:11 PM, Iago López Galeiras wrote:
-> From: Alban Crequy <alban@kinvolk.io>
-> 
-> sockops programs can now access the network namespace inode and device
-> via (struct bpf_sock_ops)->netns_ino and ->netns_dev. This can be useful
-> to apply different policies on different network namespaces.
-> 
-> In the unlikely case where network namespaces are not compiled in
-> (CONFIG_NET_NS=n), the verifier will return netns_dev as usual and will
-> return 0 for netns_ino.
-> 
-> The generated BPF bytecode for netns_ino is loading the correct inode
-> number at the time of execution.
-> 
-> However, the generated BPF bytecode for netns_dev is loading an
-> immediate value determined at BPF-load-time by looking at the initial
-> network namespace. In practice, this works because all netns currently
-> use the same virtual device. If this was to change, this code would need
-> to be updated too.
-> 
-> Co-authored-by: Iago López Galeiras <iago@kinvolk.io>
-> Signed-off-by: Alban Crequy <alban@kinvolk.io>
-> Signed-off-by: Iago López Galeiras <iago@kinvolk.io>
-> 
-> ---
-> 
-> Changes since v1:
-> - add netns_dev (review from Alexei)
-> 
-> Changes since v2:
-> - replace __u64 by u64 in kernel code (review from Y Song)
-> - remove unneeded #else branch: program would be rejected in
->   is_valid_access (review from Y Song)
-> - allow partial reads (<u64) (review from Y Song)
-> 
-> Changes since v3:
-> - return netns_dev unconditionally and set netns_ino to 0 if
->   CONFIG_NET_NS is not enabled (review from Jakub Kicinski)
-> - use bpf_ctx_record_field_size and bpf_ctx_narrow_access_ok instead of
->   manually deal with partial reads (review from Y Song)
-> - update commit message to reflect new code and remove note about
->   partial reads since it was discussed in the review
-> - use bpf_ctx_range() and offsetofend()
-> 
-> Changes since v4:
-> - add netns_dev comment on uapi header (review from Y Song)
-> - remove redundant bounds check (review from Y Song)
-> ---
->  include/uapi/linux/bpf.h |  6 ++++
->  net/core/filter.c        | 67 ++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 73 insertions(+)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 63e0cf66f01a..41f54ac3db95 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3261,6 +3261,12 @@ struct bpf_sock_ops {
->  	__u32 sk_txhash;
->  	__u64 bytes_received;
->  	__u64 bytes_acked;
-> +	/*
-> +	 * netns_dev might be zero if there's an error getting it
-> +	 * when loading the BPF program. This is very unlikely.
-> +	 */
-> +	__u64 netns_dev;
-> +	__u64 netns_ino;
->  };
->  
->  /* Definitions for bpf_sock_ops_cb_flags */
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 55bfc941d17a..ce3dc5fef57e 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -76,6 +76,8 @@
->  #include <net/lwtunnel.h>
->  #include <net/ipv6_stubs.h>
->  #include <net/bpf_sk_storage.h>
-> +#include <linux/kdev_t.h>
-> +#include <linux/proc_ns.h>
->  
->  /**
->   *	sk_filter_trim_cap - run a packet through a socket filter
-> @@ -6822,6 +6824,15 @@ static bool sock_ops_is_valid_access(int off, int size,
->  		}
->  	} else {
->  		switch (off) {
-> +		case bpf_ctx_range(struct bpf_sock_ops, netns_dev):
-> +			bpf_ctx_record_field_size(info, sizeof(u64));
-> +			if (!bpf_ctx_narrow_access_ok(off, size, sizeof(u64)))
-> +				return false;
-> +			break;
-> +		case offsetof(struct bpf_sock_ops, netns_ino):
-> +			if (size != sizeof(u64))
-> +				return false;
-> +			break;
->  		case bpf_ctx_range_till(struct bpf_sock_ops, bytes_received,
->  					bytes_acked):
->  			if (size != sizeof(__u64))
-> @@ -7739,6 +7750,11 @@ static u32 sock_addr_convert_ctx_access(enum bpf_access_type type,
->  	return insn - insn_buf;
->  }
->  
-> +static struct ns_common *sockops_netns_cb(void *private_data)
-> +{
-> +	return &init_net.ns;
-> +}
-> +
->  static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
->  				       const struct bpf_insn *si,
->  				       struct bpf_insn *insn_buf,
-> @@ -7747,6 +7763,10 @@ static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
->  {
->  	struct bpf_insn *insn = insn_buf;
->  	int off;
-> +	struct inode *ns_inode;
-> +	struct path ns_path;
-> +	u64 netns_dev;
-> +	void *res;
->  
->  /* Helper macro for adding read access to tcp_sock or sock fields. */
->  #define SOCK_OPS_GET_FIELD(BPF_FIELD, OBJ_FIELD, OBJ)			      \
-> @@ -7993,6 +8013,53 @@ static u32 sock_ops_convert_ctx_access(enum bpf_access_type type,
->  		SOCK_OPS_GET_OR_SET_FIELD(sk_txhash, sk_txhash,
->  					  struct sock, type);
->  		break;
-> +
-> +	case bpf_ctx_range(struct bpf_sock_ops, netns_dev):
-> +		/* We get the netns_dev at BPF-load-time and not at
-> +		 * BPF-exec-time. We assume that netns_dev is a constant.
-> +		 */
-> +		res = ns_get_path_cb(&ns_path, sockops_netns_cb, NULL);
-> +		if (IS_ERR(res)) {
-> +			netns_dev = 0;
-> +		} else {
-> +			ns_inode = ns_path.dentry->d_inode;
-> +			netns_dev = new_encode_dev(ns_inode->i_sb->s_dev);
-> +		}
+And let it use bpf_sk_storage_{get,delete} helpers to access socket
+storage. Kernel context (struct bpf_sock_addr_kern) already has sk
+member, so I just expose it to the BPF hooks. Using PTR_TO_SOCKET
+instead of PTR_TO_SOCK_COMMON should be safe because the hook is
+called on bind/connect.
 
-This is leaking the netns path ref here, you're missing a path_put().
+Cc: Martin Lau <kafai@fb.com>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ include/uapi/linux/bpf.h |  1 +
+ net/core/filter.c        | 16 ++++++++++++++++
+ 2 files changed, 17 insertions(+)
 
-The feature looks very useful, thanks! But more on a higher level, the assumption
-that netns_dev is and will remain a constant is a bit troublesome to me. As soon
-as this assumption changes at some point, this ctx uapi restriction will give us
-a potentially hard time to fix up at runtime. It basically would mean that all this
-needs to be correctly resolved via BPF asm ctx rewrite at program /runtime/ as
-opposed to load time.
-
-Imho, it would be more future proof to design this as a helper function which would
-pass dev and ino back to the program when passed as args plus perhaps a bitmask
-which can select to fill in one of them or both (but that's an implementation detail).
-Issue I'd see here is that __ns_get_path() can be quite expensive and potentially
-sleep, but perhaps ns->stashed could be filled / cached such that we'll always hit
-fast-path at BPF runtime? (Anyway, as a helper, this should also be enabled for other
-program types.)
-
-> +		*target_size = 8;
-> +		*insn++ = BPF_MOV64_IMM(si->dst_reg, netns_dev);
-> +		break;
-> +
-> +	case offsetof(struct bpf_sock_ops, netns_ino):
-> +#ifdef CONFIG_NET_NS
-> +		/* Loading: sk_ops->sk->__sk_common.skc_net.net->ns.inum
-> +		 * Type: (struct bpf_sock_ops_kern *)
-> +		 *       ->(struct sock *)
-> +		 *       ->(struct sock_common)
-> +		 *       .possible_net_t
-> +		 *       .(struct net *)
-> +		 *       ->(struct ns_common)
-> +		 *       .(unsigned int)
-> +		 */
-> +		BUILD_BUG_ON(offsetof(struct sock, __sk_common) != 0);
-> +		BUILD_BUG_ON(offsetof(possible_net_t, net) != 0);
-> +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(
-> +						struct bpf_sock_ops_kern, sk),
-> +				      si->dst_reg, si->src_reg,
-> +				      offsetof(struct bpf_sock_ops_kern, sk));
-> +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(
-> +						possible_net_t, net),
-> +				      si->dst_reg, si->dst_reg,
-> +				      offsetof(struct sock_common, skc_net));
-> +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(
-> +						struct ns_common, inum),
-> +				      si->dst_reg, si->dst_reg,
-> +				      offsetof(struct net, ns) +
-> +				      offsetof(struct ns_common, inum));
-> +#else
-> +		*insn++ = BPF_MOV64_IMM(si->dst_reg, 0);
-> +#endif
-> +		break;
-> +
->  	}
->  	return insn - insn_buf;
->  }
-> 
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index ae0907d8c03a..8815fc418cde 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3247,6 +3247,7 @@ struct bpf_sock_addr {
+ 	__u32 msg_src_ip6[4];	/* Allows 1,2,4-byte read an 4-byte write.
+ 				 * Stored in network byte order.
+ 				 */
++	__bpf_md_ptr(struct bpf_sock *, sk);
+ };
+ 
+ /* User bpf_sock_ops struct to access socket values and specify request ops
+diff --git a/net/core/filter.c b/net/core/filter.c
+index a5e4ac7fcbe5..37c4a2fd559b 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5922,6 +5922,10 @@ sock_addr_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 	case BPF_FUNC_skc_lookup_tcp:
+ 		return &bpf_sock_addr_skc_lookup_tcp_proto;
+ #endif /* CONFIG_INET */
++	case BPF_FUNC_sk_storage_get:
++		return &bpf_sk_storage_get_proto;
++	case BPF_FUNC_sk_storage_delete:
++		return &bpf_sk_storage_delete_proto;
+ 	default:
+ 		return bpf_base_func_proto(func_id);
+ 	}
+@@ -6828,6 +6832,13 @@ static bool sock_addr_is_valid_access(int off, int size,
+ 		if (size != size_default)
+ 			return false;
+ 		break;
++	case offsetof(struct bpf_sock_addr, sk):
++		if (type != BPF_READ)
++			return false;
++		if (size != sizeof(__u64))
++			return false;
++		info->reg_type = PTR_TO_SOCKET;
++		break;
+ 	default:
+ 		if (type == BPF_READ) {
+ 			if (size != size_default)
+@@ -7778,6 +7789,11 @@ static u32 sock_addr_convert_ctx_access(enum bpf_access_type type,
+ 			struct bpf_sock_addr_kern, struct in6_addr, t_ctx,
+ 			s6_addr32[0], BPF_SIZE(si->code), off, tmp_reg);
+ 		break;
++	case offsetof(struct bpf_sock_addr, sk):
++		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct bpf_sock_addr_kern, sk),
++				      si->dst_reg, si->src_reg,
++				      offsetof(struct bpf_sock_addr_kern, sk));
++		break;
+ 	}
+ 
+ 	return insn - insn_buf;
+-- 
+2.22.0.rc2.383.gf4fbbf30c2-goog
 
