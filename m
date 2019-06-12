@@ -2,74 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57A0D4270F
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2019 15:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2913A42765
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2019 15:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731221AbfFLNK0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Jun 2019 09:10:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729528AbfFLNK0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Jun 2019 09:10:26 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C24A420874;
-        Wed, 12 Jun 2019 13:10:24 +0000 (UTC)
-Date:   Wed, 12 Jun 2019 09:10:23 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Kairui Song <kasong@redhat.com>,
-        Alexei Starovoitov <ast@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: Getting empty callchain from perf_callchain_kernel()
-Message-ID: <20190612091023.6bccf262@gandalf.local.home>
-In-Reply-To: <20190612030501.7tbsjy353g7l74ej@treble>
-References: <CACPcB9cpNp5CBqoRs+XMCwufzAFa8Pj-gbmj9fb+g5wVdue=ig@mail.gmail.com>
-        <20190522140233.GC16275@worktop.programming.kicks-ass.net>
-        <ab047883-69f6-1175-153f-5ad9462c6389@fb.com>
-        <20190522174517.pbdopvookggen3d7@treble>
-        <20190522234635.a47bettklcf5gt7c@treble>
-        <CACPcB9dRJ89YAMDQdKoDMU=vFfpb5AaY0mWC_Xzw1ZMTFBf6ng@mail.gmail.com>
-        <20190523133253.tad6ywzzexks6hrp@treble>
-        <CACPcB9fQKg7xhzhCZaF4UGi=EQs1HLTFgg-C_xJQaUfho3yMyA@mail.gmail.com>
-        <20190523152413.m2pbnamihu3s2c5s@treble>
-        <20190524085319.GE2589@hirez.programming.kicks-ass.net>
-        <20190612030501.7tbsjy353g7l74ej@treble>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2437168AbfFLNZB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Jun 2019 09:25:01 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:56009 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2437123AbfFLNZB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 12 Jun 2019 09:25:01 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 26C8722189;
+        Wed, 12 Jun 2019 09:25:00 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 12 Jun 2019 09:25:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=IFCQ/vms79l7hgd/l
+        6vGHNzlJtXLUoIlyBXGe1TKXKg=; b=fL82qqdMH/s8XJkEHQnEySkJpJ1vzFJwY
+        9d90SwwCcmz/WQUyXcAA6lLc+m6i6+o3ZS54JRNy5Em/KMKWAAiuhVFoaD5Xa1gK
+        +iGnea6QvxI/kRlt/Xh+5L/hs+PKo5RLSbY2Cb5YMxHcWOLsurNsj7l0+ag54XKx
+        Uh4EMTe6C+xul93drNzZljp9gQPWYTrXlRXtl5PFZ/s8hVdYRvdPKw+5ssUI/kSb
+        Qh5stqkJ7xLdnViNZyidd0kRTmWsYxGx93ag8i4/1hvaxertjxqFPWHFByK1QWC9
+        HdQGdRFYIFQhY4fC1ID1h+VLVMIhXaNPT1F1RecnOh+pJpj6A0U7g==
+X-ME-Sender: <xms:Kv0AXVRjJmmdaAJqPsIA68E5ifZVqIHJaI4X3hHVoBjCcau-G9pYYQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduuddrudehjedgieekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomhepofgrrhhthihnrghsucfruhhmphhuthhishcuoehmsehlrghmsggu
+    rgdrlhhtqeenucfkphepudekkedrieefrddvtdejrddvfeehnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehmsehlrghmsggurgdrlhhtnecuvehluhhsthgvrhfuihiivgeptd
+X-ME-Proxy: <xmx:Kv0AXXUXzghSVG-N8jisQ6wMtWau5igDt49HUKbE4P1sjbLnMCPanA>
+    <xmx:Kv0AXR6_qJsV43tzH4P4qKD1zQKDMRmPvgpUW87tFNDB7r9ZKsSRPg>
+    <xmx:Kv0AXSGxCTMfoqaz78Ln7QHoqtehiScweOUAmcBHUSse9e_lQ5a1PQ>
+    <xmx:LP0AXbWmzbTtuLZJHBbG8PaZ-1ZGSgbLLjm9MCJAHtiqFiFqYrRv2g>
+Received: from ceuse.home (235.207.63.188.dynamic.wline.res.cust.swisscom.ch [188.63.207.235])
+        by mail.messagingengine.com (Postfix) with ESMTPA id CF3C38005B;
+        Wed, 12 Jun 2019 09:24:57 -0400 (EDT)
+From:   Martynas Pumputis <m@lambda.lt>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        m@lambda.lt
+Subject: [PATCH bpf] bpf: Simplify definition of BPF_FIB_LOOKUP related flags
+Date:   Wed, 12 Jun 2019 15:26:45 +0200
+Message-Id: <20190612132645.19385-1-m@lambda.lt>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 11 Jun 2019 22:05:01 -0500
-Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+Previously, the BPF_FIB_LOOKUP_{DIRECT,OUTPUT} flags were defined
+with the help of BIT macro. This had the following issues:
 
-> Right now, ftrace has a special hook in the ORC unwinder
-> (orc_ftrace_find).  It would be great if we could get rid of that in
-> favor of the "always use frame pointers" approach.  I'll hold off on
-> doing the kpatch/kprobe trampoline conversions in my patches since it
-> would conflict with yours.
+- In order to user any of the flags, a user was required to depend
+  on <linux/bits.h>.
+- No other flag in bpf.h uses the macro, so it seems that an unwritten
+  convention is to use (1 << (nr)) to define BPF-related flags.
 
-Basically, IIUC, what you are saying is that the ftrace trampoline
-should always store the %sp in %rb even when CONFIG_FRAME_POINTER is not
-enabled? And this can allow you to remove the ftrace specific code from
-the orc unwinder?
+Signed-off-by: Martynas Pumputis <m@lambda.lt>
+---
+ include/uapi/linux/bpf.h       | 4 ++--
+ tools/include/uapi/linux/bpf.h | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
--- Steve
-
-
-> 
-> Though, hm, because of pt_regs I guess ORC would need to be able to
-> decode an encoded frame pointer?  I was hoping we could leave those
-> encoded frame pointers behind in CONFIG_FRAME_POINTER-land forever...
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 63e0cf66f01a..a8f17bc86732 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3376,8 +3376,8 @@ struct bpf_raw_tracepoint_args {
+ /* DIRECT:  Skip the FIB rules and go to FIB table associated with device
+  * OUTPUT:  Do lookup from egress perspective; default is ingress
+  */
+-#define BPF_FIB_LOOKUP_DIRECT  BIT(0)
+-#define BPF_FIB_LOOKUP_OUTPUT  BIT(1)
++#define BPF_FIB_LOOKUP_DIRECT  (1U << 0)
++#define BPF_FIB_LOOKUP_OUTPUT  (1U << 1)
+ 
+ enum {
+ 	BPF_FIB_LKUP_RET_SUCCESS,      /* lookup successful */
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 63e0cf66f01a..a8f17bc86732 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -3376,8 +3376,8 @@ struct bpf_raw_tracepoint_args {
+ /* DIRECT:  Skip the FIB rules and go to FIB table associated with device
+  * OUTPUT:  Do lookup from egress perspective; default is ingress
+  */
+-#define BPF_FIB_LOOKUP_DIRECT  BIT(0)
+-#define BPF_FIB_LOOKUP_OUTPUT  BIT(1)
++#define BPF_FIB_LOOKUP_DIRECT  (1U << 0)
++#define BPF_FIB_LOOKUP_OUTPUT  (1U << 1)
+ 
+ enum {
+ 	BPF_FIB_LKUP_RET_SUCCESS,      /* lookup successful */
+-- 
+2.21.0
 
