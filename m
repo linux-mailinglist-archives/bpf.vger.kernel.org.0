@@ -2,147 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 208D042F5A
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2019 20:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9AA42F84
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2019 21:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727615AbfFLSwA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Jun 2019 14:52:00 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42936 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727051AbfFLSv7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 12 Jun 2019 14:51:59 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5CIlSDS002795
-        for <bpf@vger.kernel.org>; Wed, 12 Jun 2019 14:51:58 -0400
-Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2t33jk8xqr-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 12 Jun 2019 14:51:58 -0400
-Received: from localhost
-        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <naveen.n.rao@linux.vnet.ibm.com>;
-        Wed, 12 Jun 2019 19:51:56 +0100
-Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
-        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 12 Jun 2019 19:51:52 +0100
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x5CIppiA40436118
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 12 Jun 2019 18:51:51 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C66F911C04A;
-        Wed, 12 Jun 2019 18:51:51 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4408A11C04C;
-        Wed, 12 Jun 2019 18:51:50 +0000 (GMT)
-Received: from naverao1-tp.ibmuc.com (unknown [9.199.37.223])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 12 Jun 2019 18:51:50 +0000 (GMT)
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>
-Subject: [PATCH 2/2] powerpc/bpf: use unsigned division instruction for 64-bit operations
-Date:   Thu, 13 Jun 2019 00:21:40 +0530
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <cover.1560364574.git.naveen.n.rao@linux.vnet.ibm.com>
-References: <cover.1560364574.git.naveen.n.rao@linux.vnet.ibm.com>
+        id S1727537AbfFLTFu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Jun 2019 15:05:50 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:50510 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726840AbfFLTFu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 12 Jun 2019 15:05:50 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5CJ5eFu026454
+        for <bpf@vger.kernel.org>; Wed, 12 Jun 2019 12:05:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=BZ9wl21VPaEPa4GER1hHqcmAiFKEXojmHjRVib2Zpx0=;
+ b=S2QHifyVSD+Q67ftH+4O06+u9iDErnyNIp4TTP2x5XMgvFyi4Ohh8nMPiYZsfmVAcTrD
+ m52vrWubmQlAHTrTohyslV8ezf5N+pgvsF2zJWiYzF+lTFj2pcazfxxqmuGIzrZBCV7z
+ b/iqe/InC63HlwEXZwH2IQ8ZcKcSS2Rasvg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2t32w49202-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 12 Jun 2019 12:05:49 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 12 Jun 2019 12:05:38 -0700
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id 6624C2941B77; Wed, 12 Jun 2019 12:05:36 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 0/2] bpf: net: Detach BPF prog from reuseport sk
+Date:   Wed, 12 Jun 2019 12:05:36 -0700
+Message-ID: <20190612190536.2340077-1-kafai@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19061218-0028-0000-0000-00000379C105
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19061218-0029-0000-0000-00002439B6C5
-Message-Id: <1cc07782f4f09389e6c0df52e93a6db1ce6710d3.1560364574.git.naveen.n.rao@linux.vnet.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-12_11:,,
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-12_12:,,
  signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906120127
+ mlxlogscore=615 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906120128
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BPF_ALU64 div/mod operations are currently using signed division, unlike
-BPF_ALU32 operations. Fix the same. DIV64 and MOD64 overflow tests pass
-with this fix.
+This patch adds SO_DETACH_REUSEPORT_BPF to detach BPF prog from
+reuseport sk.
 
-Fixes: 156d0e290e969c ("powerpc/ebpf/jit: Implement JIT compiler for extended BPF")
-Cc: stable@vger.kernel.org # v4.8+
-Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
----
- arch/powerpc/include/asm/ppc-opcode.h | 1 +
- arch/powerpc/net/bpf_jit.h            | 2 +-
- arch/powerpc/net/bpf_jit_comp64.c     | 8 ++++----
- 3 files changed, 6 insertions(+), 5 deletions(-)
+Martin KaFai Lau (2):
+  bpf: net: Add SO_DETACH_REUSEPORT_BPF
+  bpf: Add test for SO_REUSEPORT_DETACH_BPF
 
-diff --git a/arch/powerpc/include/asm/ppc-opcode.h b/arch/powerpc/include/asm/ppc-opcode.h
-index 23f7ed796f38..49d65cd08ee0 100644
---- a/arch/powerpc/include/asm/ppc-opcode.h
-+++ b/arch/powerpc/include/asm/ppc-opcode.h
-@@ -342,6 +342,7 @@
- #define PPC_INST_MADDLD			0x10000033
- #define PPC_INST_DIVWU			0x7c000396
- #define PPC_INST_DIVD			0x7c0003d2
-+#define PPC_INST_DIVDU			0x7c000392
- #define PPC_INST_RLWINM			0x54000000
- #define PPC_INST_RLWINM_DOT		0x54000001
- #define PPC_INST_RLWIMI			0x50000000
-diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
-index dcac37745b05..1e932898d430 100644
---- a/arch/powerpc/net/bpf_jit.h
-+++ b/arch/powerpc/net/bpf_jit.h
-@@ -116,7 +116,7 @@
- 				     ___PPC_RA(a) | IMM_L(i))
- #define PPC_DIVWU(d, a, b)	EMIT(PPC_INST_DIVWU | ___PPC_RT(d) |	      \
- 				     ___PPC_RA(a) | ___PPC_RB(b))
--#define PPC_DIVD(d, a, b)	EMIT(PPC_INST_DIVD | ___PPC_RT(d) |	      \
-+#define PPC_DIVDU(d, a, b)	EMIT(PPC_INST_DIVDU | ___PPC_RT(d) |	      \
- 				     ___PPC_RA(a) | ___PPC_RB(b))
- #define PPC_AND(d, a, b)	EMIT(PPC_INST_AND | ___PPC_RA(d) |	      \
- 				     ___PPC_RS(a) | ___PPC_RB(b))
-diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-index 0ebd946f178b..b0fa4723d6fb 100644
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -399,12 +399,12 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
- 		case BPF_ALU64 | BPF_DIV | BPF_X: /* dst /= src */
- 		case BPF_ALU64 | BPF_MOD | BPF_X: /* dst %= src */
- 			if (BPF_OP(code) == BPF_MOD) {
--				PPC_DIVD(b2p[TMP_REG_1], dst_reg, src_reg);
-+				PPC_DIVDU(b2p[TMP_REG_1], dst_reg, src_reg);
- 				PPC_MULD(b2p[TMP_REG_1], src_reg,
- 						b2p[TMP_REG_1]);
- 				PPC_SUB(dst_reg, dst_reg, b2p[TMP_REG_1]);
- 			} else
--				PPC_DIVD(dst_reg, dst_reg, src_reg);
-+				PPC_DIVDU(dst_reg, dst_reg, src_reg);
- 			break;
- 		case BPF_ALU | BPF_MOD | BPF_K: /* (u32) dst %= (u32) imm */
- 		case BPF_ALU | BPF_DIV | BPF_K: /* (u32) dst /= (u32) imm */
-@@ -432,7 +432,7 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
- 				break;
- 			case BPF_ALU64:
- 				if (BPF_OP(code) == BPF_MOD) {
--					PPC_DIVD(b2p[TMP_REG_2], dst_reg,
-+					PPC_DIVDU(b2p[TMP_REG_2], dst_reg,
- 							b2p[TMP_REG_1]);
- 					PPC_MULD(b2p[TMP_REG_1],
- 							b2p[TMP_REG_1],
-@@ -440,7 +440,7 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
- 					PPC_SUB(dst_reg, dst_reg,
- 							b2p[TMP_REG_1]);
- 				} else
--					PPC_DIVD(dst_reg, dst_reg,
-+					PPC_DIVDU(dst_reg, dst_reg,
- 							b2p[TMP_REG_1]);
- 				break;
- 			}
+ arch/alpha/include/uapi/asm/socket.h          |  2 +
+ arch/mips/include/uapi/asm/socket.h           |  2 +
+ arch/parisc/include/uapi/asm/socket.h         |  2 +
+ arch/sparc/include/uapi/asm/socket.h          |  2 +
+ include/net/sock_reuseport.h                  |  2 +
+ include/uapi/asm-generic/socket.h             |  2 +
+ net/core/sock.c                               |  4 ++
+ net/core/sock_reuseport.c                     | 24 +++++++++
+ tools/testing/selftests/bpf/Makefile          |  1 +
+ .../selftests/bpf/test_select_reuseport.c     | 50 +++++++++++++++++++
+ 10 files changed, 91 insertions(+)
+
 -- 
-2.21.0
+2.17.1
 
