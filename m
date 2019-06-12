@@ -2,164 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C49A24307D
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2019 21:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F2A430D3
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2019 22:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388470AbfFLT7U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Jun 2019 15:59:20 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:38742 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388447AbfFLT7T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Jun 2019 15:59:19 -0400
-Received: by mail-pl1-f195.google.com with SMTP id f97so7083034plb.5
-        for <bpf@vger.kernel.org>; Wed, 12 Jun 2019 12:59:18 -0700 (PDT)
+        id S1727924AbfFLUKX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Jun 2019 16:10:23 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:33180 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727321AbfFLUKX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Jun 2019 16:10:23 -0400
+Received: by mail-qt1-f196.google.com with SMTP id x2so19031011qtr.0
+        for <bpf@vger.kernel.org>; Wed, 12 Jun 2019 13:10:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=YXo2pGsL2sbCtFbNaUybVNbLhzgrUMJfssd/0MYAwv4=;
-        b=Mk6XLOnnW4QppyMWHCS0NldCM8XQo6tVC9topS+WELsexNMe1y/C8KGilpQerlBFJj
-         DnMOKyWFt6WUWMIFAnQBHRl8CdlY9s88IvfWGPjXTPF5fsSUMfuxHbvywegHVYu1pYy0
-         AM2CwytV9VdN9jArYV/n/+/GIWwBddUm0k7CFA5I8Yw+h1LUl+FWSkBzyS+0OSbT185d
-         rYi/neTA5heUcGU9CBaFVvzl9xTEN1nPt8s9iJ0n+Hi6rSf/TbLLpTiO+ubt12Nn8QAk
-         bwA2EXVL1wepKJYli61odG4XLR/Ux9PscZw9z2cEgtx/Ce3lrFo0eetZ08EgMjQkE5cA
-         54CA==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=tjcULuVIIshCojU2HNorZY/2Ib3Oc3G9ImchPaHSWX4=;
+        b=QA8N9ere1/+Mso9/7ufj4qBFF3laWlzveSLuc5+FSpNkPoNIPp53nMi8xn4esyn7xe
+         aRl30Cy0+xrMzeaApq65qBUpIw4YP2lS4ZPhdJc/wkJSrhm3ID6lCOtzIolTGPwM0DQL
+         w/GI0hSmyQtf2pvZmUmjpjK6s40sP8WFVAvwMqX6uFVAAnyINoYbRHgQqFThZgCMZGHT
+         Mut09KMzs3xZEklu/T2ggTjp8EwmsKsyl+S1/meBtuSoHHWcc1L8rpWggAGffGOIycBu
+         mMk085AjcUAwl2RrDt5jw6Q909wd2TnOoHSEDCjlZglET6ZuFVOzPdf8kIjIzboLqkTJ
+         bPXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YXo2pGsL2sbCtFbNaUybVNbLhzgrUMJfssd/0MYAwv4=;
-        b=sYNh5c2+kcFzYUPlfko5Rb7PL8B+eGbhAB/BSfRCC2kjL/Js11fBQP3/vWiupSmIZ+
-         +V8yEjT6NOZOBKvi7L8zKfbw0ZH662AgrfbUfx2F3XHrJOU8ToJqVBtZtiDSyzdfY1JG
-         fdosKEoibQNuFxJjruCs23y5Ug1Misafz365+HJ0HxKzsvsGJsNQHzZwRo97rYXyoHps
-         IlXHNUTZetFd4kgeefBqcbPDyT/uSdIT4vfaE8Kq1KAYTpwafPY7zm9CSg00nT7ICGY1
-         7CnwVsZxkSYbrTgJ8U2aUgQf7Ob8p8ZNCfnngIHDf7rcSX6+Y1mGBPbxMYtn4XgHe4AO
-         uMOA==
-X-Gm-Message-State: APjAAAUSY+id1zTnT5l4Eku3bXka8yZgEOLeHN9MLCBz/oJp5kqU9Awi
-        7/nep+VwLs4P/kGR7bRSleBiFw==
-X-Google-Smtp-Source: APXvYqzD31Hsp4P/+qMUXYuo1N6szXTfwcLhfCZBVbKOe5ErKLSWoOUqoIIRNFREzuTBc7uVhVv+vA==
-X-Received: by 2002:a17:902:848c:: with SMTP id c12mr82093141plo.17.1560369558603;
-        Wed, 12 Jun 2019 12:59:18 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id u20sm283242pgm.56.2019.06.12.12.59.17
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=tjcULuVIIshCojU2HNorZY/2Ib3Oc3G9ImchPaHSWX4=;
+        b=RbiTnP9yQGpwm0mdnv78qnvzZqhTWHK7GaBKD+YNPwpVrHLLjuVaRNXdT3nuBZ0STH
+         Dij7X9u3+TScgglg+P6J9Z/mTQ6PSgov61rvg5tWJUlw+I+3+9Y/9BLwlipgRofAKlHl
+         gwEKFxN0DhpdGoKM0wTmEiCeexLXlo1N8SS/qCInEfn7um+b6YSmuN9QRIEVBeA1uwEb
+         IcMnW0Box0z1xNNlV+zAfV539eHR0l1dIPdsi6Pw/3u1PHbXpA6K2bep6q/QtAniCWbx
+         FJuq/JPqUHPXBp8DLaWcpdcltBaWYNOFZucfjK5Czw+zE8ETnJRk6TTkv/EmwKB9aKbq
+         pdXw==
+X-Gm-Message-State: APjAAAWjvYxPsQWlWNK48EehwEbQiwRVN3APnjfPgTvmZFfyzRmEFdhL
+        mAYxk0uhMeRjFP39crBj6aZ2pA==
+X-Google-Smtp-Source: APXvYqydVI7I1cvD7d9ucXZgBk6TNKvV1oANHC0Q1FJZO0S2+Lo+l8cNY68dY2ybu7CfEuj4CfNlgw==
+X-Received: by 2002:a0c:942c:: with SMTP id h41mr336156qvh.146.1560370222383;
+        Wed, 12 Jun 2019 13:10:22 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id z57sm512762qta.62.2019.06.12.13.10.20
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 12 Jun 2019 12:59:18 -0700 (PDT)
-Date:   Wed, 12 Jun 2019 12:59:17 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@fb.com>,
+        Wed, 12 Jun 2019 13:10:22 -0700 (PDT)
+Date:   Wed, 12 Jun 2019 13:10:17 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Maxim Mikityanskiy <maximmi@mellanox.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 2/2] bpf: Add test for SO_REUSEPORT_DETACH_BPF
-Message-ID: <20190612195917.GB9056@mini-arch>
-References: <20190612190536.2340077-1-kafai@fb.com>
- <20190612190539.2340343-1-kafai@fb.com>
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Jonathan Lemon <bsd@fb.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
+Subject: Re: [PATCH bpf-next v4 05/17] xsk: Change the default frame size to
+ 4096 and allow controlling it
+Message-ID: <20190612131017.766b4e82@cakuba.netronome.com>
+In-Reply-To: <20190612155605.22450-6-maximmi@mellanox.com>
+References: <20190612155605.22450-1-maximmi@mellanox.com>
+        <20190612155605.22450-6-maximmi@mellanox.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190612190539.2340343-1-kafai@fb.com>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/12, Martin KaFai Lau wrote:
-> This patch adds a test for the new sockopt SO_REUSEPORT_DETACH_BPF.
-> 
-> '-I../../../../usr/include/' is added to the Makefile to get
-> the newly added SO_REUSEPORT_DETACH_BPF.
-> 
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> ---
->  tools/testing/selftests/bpf/Makefile          |  1 +
->  .../selftests/bpf/test_select_reuseport.c     | 50 +++++++++++++++++++
->  2 files changed, 51 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 44fb61f4d502..c7370361fa81 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -16,6 +16,7 @@ LLVM_OBJCOPY	?= llvm-objcopy
->  LLVM_READELF	?= llvm-readelf
->  BTF_PAHOLE	?= pahole
->  CFLAGS += -Wall -O2 -I$(APIDIR) -I$(LIBDIR) -I$(BPFDIR) -I$(GENDIR) $(GENFLAGS) -I../../../include \
-> +	  -I../../../../usr/include/ \
-Why not copy inlude/uapi/asm-generic/socket.h into tools/include
-instead? Will that work?
+On Wed, 12 Jun 2019 15:56:43 +0000, Maxim Mikityanskiy wrote:
+> The typical XDP memory scheme is one packet per page. Change the AF_XDP
+> frame size in libbpf to 4096, which is the page size on x86, to allow
+> libbpf to be used with the drivers with the packet-per-page scheme.
 
->  	  -Dbpf_prog_load=bpf_prog_test_load \
->  	  -Dbpf_load_program=bpf_test_load_program
->  LDLIBS += -lcap -lelf -lrt -lpthread
-> diff --git a/tools/testing/selftests/bpf/test_select_reuseport.c b/tools/testing/selftests/bpf/test_select_reuseport.c
-> index 75646d9b34aa..5aa00b4a4702 100644
-> --- a/tools/testing/selftests/bpf/test_select_reuseport.c
-> +++ b/tools/testing/selftests/bpf/test_select_reuseport.c
-> @@ -523,6 +523,54 @@ static void test_pass_on_err(int type, sa_family_t family)
->  	printf("OK\n");
->  }
->  
-> +static void test_detach_bpf(int type, sa_family_t family)
-> +{
-> +	__u32 nr_run_before = 0, nr_run_after = 0, tmp, i;
-> +	struct epoll_event ev;
-> +	int cli_fd, err, nev;
-> +	struct cmd cmd = {};
-> +	int optvalue = 0;
-> +
-> +	printf("%s: ", __func__);
-> +	err = setsockopt(sk_fds[0], SOL_SOCKET, SO_DETACH_REUSEPORT_BPF,
-> +			 &optvalue, sizeof(optvalue));
-> +	CHECK(err == -1, "setsockopt(SO_DETACH_REUSEPORT_BPF)",
-> +	      "err:%d errno:%d\n", err, errno);
-> +
-> +	err = setsockopt(sk_fds[1], SOL_SOCKET, SO_DETACH_REUSEPORT_BPF,
-> +			 &optvalue, sizeof(optvalue));
-> +	CHECK(err == 0 || errno != ENOENT, "setsockopt(SO_DETACH_REUSEPORT_BPF)",
-> +	      "err:%d errno:%d\n", err, errno);
-> +
-> +	for (i = 0; i < NR_RESULTS; i++) {
-> +		err = bpf_map_lookup_elem(result_map, &i, &tmp);
-> +		CHECK(err == -1, "lookup_elem(result_map)",
-> +		      "i:%u err:%d errno:%d\n", i, err, errno);
-> +		nr_run_before += tmp;
-> +	}
-> +
-> +	cli_fd = send_data(type, family, &cmd, sizeof(cmd), PASS);
-> +	nev = epoll_wait(epfd, &ev, 1, 5);
-> +	CHECK(nev <= 0, "nev <= 0",
-> +	      "nev:%d expected:1 type:%d family:%d data:(0, 0)\n",
-> +	      nev,  type, family);
-> +
-> +	for (i = 0; i < NR_RESULTS; i++) {
-> +		err = bpf_map_lookup_elem(result_map, &i, &tmp);
-> +		CHECK(err == -1, "lookup_elem(result_map)",
-> +		      "i:%u err:%d errno:%d\n", i, err, errno);
-> +		nr_run_after += tmp;
-> +	}
-> +
-> +	CHECK(nr_run_before != nr_run_after,
-> +	      "nr_run_before != nr_run_after",
-> +	      "nr_run_before:%u nr_run_after:%u\n",
-> +	      nr_run_before, nr_run_after);
-> +
-> +	printf("OK\n");
-> +	close(cli_fd);
-> +}
-> +
->  static void prepare_sk_fds(int type, sa_family_t family, bool inany)
->  {
->  	const int first = REUSEPORT_ARRAY_SIZE - 1;
-> @@ -664,6 +712,8 @@ static void test_all(void)
->  			test_pass(type, family);
->  			test_syncookie(type, family);
->  			test_pass_on_err(type, family);
-> +			/* Must be the last test */
-> +			test_detach_bpf(type, family);
->  
->  			cleanup_per_test();
->  			printf("\n");
-> -- 
-> 2.17.1
+This is slightly surprising.  Why does the driver care about the bufsz?
+
+You're not supposed to so page operations on UMEM pages, anyway.
+And the RX size filter should be configured according to MTU regardless
+of XDP state.
+
+Can you explain?
+
+> Add a command line option -f to xdpsock to allow to specify a custom
+> frame size.
 > 
+> Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+> Reviewed-by: Tariq Toukan <tariqt@mellanox.com>
+> Acked-by: Saeed Mahameed <saeedm@mellanox.com>
