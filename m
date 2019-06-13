@@ -2,97 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C80444E7
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2019 18:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 534DC44443
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2019 18:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730653AbfFMQkN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Jun 2019 12:40:13 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:50248 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730582AbfFMHAy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Jun 2019 03:00:54 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5D6xHRu024210;
-        Thu, 13 Jun 2019 07:00:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2018-07-02;
- bh=HWozqqcp/Blla7YkQ0XS6n2TRrp0GniU7ZKMsnbPK8A=;
- b=kADCSkyizcWvoL+XnNHHj7MkMAp0bHVJrX0tiAJI3Pv6/l3KEpYxWmiSJr32D5qWbhVQ
- f5VIqjC2A4A60o63syLAqF8i42QYwvwrRC2KorK5MLfV21yTSipyAcqPHXRgPF58Eb7a
- 0UNEByz5cpMC5/0gMurnHYBqxr/UJra/DuNGiZ4eFRDH/YQuu38kGztRwaycIwaJw45O
- zImic6Ooyxj1pQYi1yIaBIdRcy1TD19bGOcIxL4ErkCniPuDMaaLJFhQ/tAUq2dSiSDf
- ixkO/UVAnr1Y6Dvz4S20LOoKXx9KS4AJsTYKPjQ2uHeFd9N6g5w6mk8HxL1xliES4p9f NQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2t05nqyj5v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 13 Jun 2019 07:00:32 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5D6xMcJ012723;
-        Thu, 13 Jun 2019 07:00:31 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 2t024vbrar-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 13 Jun 2019 07:00:31 +0000
-Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5D70UbZ012610;
-        Thu, 13 Jun 2019 07:00:30 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 13 Jun 2019 00:00:29 -0700
-Date:   Thu, 13 Jun 2019 10:00:21 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Shuah Khan <shuah@kernel.org>, Roman Gushchin <guro@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] selftests/bpf: signedness bug in enable_all_controllers()
-Message-ID: <20190613070021.GG16334@mwanda>
+        id S1730695AbfFMQfy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Jun 2019 12:35:54 -0400
+Received: from mga01.intel.com ([192.55.52.88]:5947 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730699AbfFMHhk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Jun 2019 03:37:40 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Jun 2019 00:37:39 -0700
+X-ExtLoop1: 1
+Received: from mkarlsso-mobl.ger.corp.intel.com (HELO VM.ger.corp.intel.com) ([10.103.211.41])
+  by orsmga004.jf.intel.com with ESMTP; 13 Jun 2019 00:37:34 -0700
+From:   Magnus Karlsson <magnus.karlsson@intel.com>
+To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org, brouer@redhat.com
+Cc:     bpf@vger.kernel.org, bruce.richardson@intel.com,
+        ciara.loftus@intel.com, jakub.kicinski@netronome.com,
+        xiaolong.ye@intel.com, qi.z.zhang@intel.com, maximmi@mellanox.com,
+        sridhar.samudrala@intel.com, kevin.laatz@intel.com,
+        ilias.apalodimas@linaro.org, kiran.patil@intel.com,
+        axboe@kernel.dk, maciej.fijalkowski@intel.com,
+        maciejromanfijalkowski@gmail.com, intel-wired-lan@lists.osuosl.org
+Subject: [PATCH bpf-next 0/6] add need_wakeup flag to the AF_XDP rings
+Date:   Thu, 13 Jun 2019 09:37:24 +0200
+Message-Id: <1560411450-29121-1-git-send-email-magnus.karlsson@intel.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9286 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906130056
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9286 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906130056
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The "len" variable needs to be signed for the error handling to work
-properly.
 
-Fixes: 596092ef8bea ("selftests/bpf: enable all available cgroup v2 controllers")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- tools/testing/selftests/bpf/cgroup_helpers.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This patch set adds support for a new flag called need_wakeup in the
+AF_XDP Tx and fill rings. When this flag is set by the driver, it
+means that the application has to explicitly wake up the kernel Rx
+(for the bit in the fill ring) or kernel Tx (for bit in the Tx ring)
+processing by issuing a syscall. Poll() can wake up both and sendto()
+will wake up Tx processing only.
 
-diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
-index 0d89f0396be4..e95c33e333a4 100644
---- a/tools/testing/selftests/bpf/cgroup_helpers.c
-+++ b/tools/testing/selftests/bpf/cgroup_helpers.c
-@@ -47,7 +47,7 @@ int enable_all_controllers(char *cgroup_path)
- 	char buf[PATH_MAX];
- 	char *c, *c2;
- 	int fd, cfd;
--	size_t len;
-+	ssize_t len;
- 
- 	snprintf(path, sizeof(path), "%s/cgroup.controllers", cgroup_path);
- 	fd = open(path, O_RDONLY);
--- 
-2.20.1
+The main reason for introducing this new flag is to be able to
+efficiently support the case when application and driver is executing
+on the same core. Previously, the driver was just busy-spinning on the
+fill ring if it ran out of buffers in the HW and there were none to
+get from the fill ring. This approach works when the application and
+driver is running on different cores as the application can replenish
+the fill ring while the driver is busy-spinning. Though, this is a
+lousy approach if both of them are running on the same core as the
+probability of the fill ring getting more entries when the driver is
+busy-spinning is zero. With this new feature the driver now sets the
+need_wakeup flag and returns to the application. The application can
+then replenish the fill queue and then explicitly wake up the Rx
+processing in the kernel using the syscall poll(). For Tx, the flag is
+only set to one if the driver has no outstanding Tx completion
+interrupts. If it has some, the flag is zero as it will be woken up by
+a completion interrupt anyway. This flag can also be used in other
+situations where the driver needs to be woken up explicitly.
 
+As a nice side effect, this new flag also improves the Tx performance
+of the case where application and driver are running on two different
+cores as it reduces the number of syscalls to the kernel. The kernel
+tells user space if it needs to be woken up by a syscall, and this
+eliminates many of the syscalls. The Rx performance of the 2-core case
+is on the other hand slightly worse, since there is a need to use a
+syscall now to wake up the driver, instead of the driver
+busy-spinning. It does waste less CPU cycles though, which might lead
+to better overall system performance.
+
+This new flag needs some simple driver support. If the driver does not
+support it, the Rx flag is always zero and the Tx flag is always
+one. This makes any application relying on this feature default to the
+old behavior of not requiring any syscalls in the Rx path and always
+having to call sendto() in the Tx path.
+
+For backwards compatibility reasons, this feature has to be explicitly
+turned on using a new bind flag (XDP_USE_NEED_WAKEUP). I recommend
+that you always turn it on as it has a large positive performance
+impact for the one core case and does not degrade 2 core performance
+and actually improves it for Tx heavy workloads.
+
+Here are some performance numbers measured on my local,
+non-performance optimized development system. That is why you are
+seeing numbers lower than the ones from Björn and Jesper. 64 byte
+packets at 40Gbit/s line rate. All results in Mpps. Cores == 1 means
+that both application and driver is executing on the same core. Cores
+== 2 that they are on different cores.
+
+                              Applications
+need_wakeup  cores    txpush    rxdrop      l2fwd
+---------------------------------------------------------------
+     n         1       0.07      0.06        0.03
+     y         1       21.6      8.2         6.5
+     n         2       32.3      11.7        8.7
+     y         2       33.1      11.7        8.7
+
+Overall, the need_wakeup flag provides the same or better performance
+in all the micro-benchmarks. The reduction of sendto() calls in txpush
+is large. Only a few per second is needed. For l2fwd, the drop is 50%
+for the 1 core case and more than 99.9% for the 2 core case. Do not
+know why I am not seeing the same drop for the 1 core case yet.
+
+The name and inspiration of the flag has been taken from io_uring by
+Jens Axboe. Details about this feature in io_uring can be found in
+http://kernel.dk/io_uring.pdf, section 8.3. It also addresses most of
+the denial of service and sendto() concerns raised by Maxim
+Mikityanskiy in https://www.spinics.net/lists/netdev/msg554657.html.
+
+The typical Tx part of an application will have to change from:
+
+ret = sendto(fd,....)
+
+to:
+
+if (xsk_ring_prod__needs_wakeup(&xsk->tx))
+       ret = sendto(fd,....)
+
+and th Rx part from:
+
+rcvd = xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE, &idx_rx);
+if (!rcvd)
+       return;
+
+to:
+
+rcvd = xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE, &idx_rx);
+if (!rcvd) {
+       if (xsk_ring_prod__needs_wakeup(&xsk->umem->fq))
+              ret = poll(fd,.....);
+       return;
+}
+
+This patch has been applied against commit aee450cbe482 ("bpf: silence warning messages in core")
+
+Structure of the patch set:
+
+Patch 1: Replaces the ndo_xsk_async_xmit with ndo_xsk_wakeup to
+         support waking up both Rx and Tx processing
+Patch 2: Implements the need_wakeup functionality in common code
+Patch 3-4: Add need_wakeup support to the i40e and ixgbe drivers
+Patch 5: Add need_wakeup support to libbpf
+Patch 6: Add need_wakeup support to the xdpsock sample application
+
+Thanks: Magnus
+
+Magnus Karlsson (6):
+  xsk: replace ndo_xsk_async_xmit with ndo_xsk_wakeup
+  xsk: add support for need_wakeup flag in AF_XDP rings
+  i40e: add support for AF_XDP need_wakup feature
+  ixgbe: add support for AF_XDP need_wakup feature
+  libbpf: add support for need_wakeup flag in AF_XDP part
+  samples/bpf: add use of need_sleep flag in xdpsock
+
+ drivers/net/ethernet/intel/i40e/i40e_main.c        |   5 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c         |  23 ++-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.h         |   2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      |   5 +-
+ .../net/ethernet/intel/ixgbe/ixgbe_txrx_common.h   |   2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |  20 ++-
+ include/linux/netdevice.h                          |  18 +-
+ include/net/xdp_sock.h                             |  33 +++-
+ include/uapi/linux/if_xdp.h                        |  13 ++
+ net/xdp/xdp_umem.c                                 |   6 +-
+ net/xdp/xsk.c                                      |  93 +++++++++-
+ net/xdp/xsk_queue.h                                |   1 +
+ samples/bpf/xdpsock_user.c                         | 191 +++++++++++++--------
+ tools/include/uapi/linux/if_xdp.h                  |  13 ++
+ tools/lib/bpf/xsk.c                                |   4 +
+ tools/lib/bpf/xsk.h                                |   6 +
+ 16 files changed, 343 insertions(+), 92 deletions(-)
+
+--
+2.7.4
