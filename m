@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 81743449BA
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2019 19:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29064449C1
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2019 19:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726092AbfFMR3n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Jun 2019 13:29:43 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:45125 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725837AbfFMR3m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Jun 2019 13:29:42 -0400
-Received: by mail-qt1-f196.google.com with SMTP id j19so23462627qtr.12
-        for <bpf@vger.kernel.org>; Thu, 13 Jun 2019 10:29:42 -0700 (PDT)
+        id S1725793AbfFMRec (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Jun 2019 13:34:32 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:40333 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727458AbfFMRec (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Jun 2019 13:34:32 -0400
+Received: by mail-qk1-f194.google.com with SMTP id c70so13272749qkg.7
+        for <bpf@vger.kernel.org>; Thu, 13 Jun 2019 10:34:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:in-reply-to:references
          :organization:mime-version:content-transfer-encoding;
-        bh=Vkz0EExAX+LyWJhpQLekP+MxHO5+Vrab4RkRIVz5TI4=;
-        b=jYJbRrX9v6Ln6k5PC/tNPKRlTuv1PGDu99M4fLHTGHzPYEi61JmDXa1PzRDIXYVT3k
-         NN0RcUDmwcYuixseOcJtyR1W1EYCJPxpbXai8Rz/vkBjz0S4dDgNK3D4vZkJbNtgSGcP
-         hcL8CG+FqTHo5ZZJ/0/7jcozkdW95UQwdZ13WOasVZfyU6kEboFEKEJCvnS3W93hrXPq
-         swE+6nb8Wi4D95ukWQDv+CIaJ67X8an3z+hXyaZP72UgO1zU990KWedBaNSn6EM53VxF
-         uC5Sdu0ruEKaZ4puFz6r1ub1ymS2UU+nXbmHLMGQlTdvC8c2nW+/nMMKWNhIrTypkPnc
-         aCkA==
+        bh=vjp8AzbzM7TyaR3koS56Ggcg0U3MN11dnEYbMbimRNs=;
+        b=c/TOsKfmO2RxrfiSEbdqUmqoGCbiH0LE7TrGB2Wyw1RErNYq0UJXBUFjUok91petJV
+         pZgYkNyskwdEWoMCFyGf/i8FRqaZQn/XfiOt6NCnFAGLDeHEWOSuZJ6XcSX67drfxVOk
+         Bw2G/CIwqSt3e+mZKOcyRksp9x7xAZZLdwSC4pgClRFR0nUD7UjWYbDkvv6mwR2bJndp
+         f4cCPJq9Z5owflyRKRyw4OkJvZgrCsuEt5NVj8S6ZAlxcVVLdcSzQfklZvLQKcneXv2H
+         HihfxHoMS14GilknVKjpCiRgEdNGl5KPV0xdAL4yDPQGYzXIvGSzBr73IBZkneuu+ISw
+         ZXtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
          :references:organization:mime-version:content-transfer-encoding;
-        bh=Vkz0EExAX+LyWJhpQLekP+MxHO5+Vrab4RkRIVz5TI4=;
-        b=V5eLwtDFMX3PigZbYGIIUEJMQpekinsNt47UJbGdd+73ETxN0sElWPzG6aXWCbuYvF
-         NN3aujgXso312xsh40mOwj3lEQhsLMOg4KTGnraw+anscSYmStvHoYETFyVxSWr6l0rf
-         OQ1ICcHlEdiUfQ82onufIonMTgtOrDuwlcex2zO/xelXtIH+EmQp0hMxYrXAZO4SEHES
-         zgqpYV1BftYJXFszuAl4sPFRAyHunJPvGkn1eJzc76xwX33TG0eKQzuoIdNHcrhoxGTT
-         N3dJpIvMUNptfKu94cDfmiC6OKwdNHTFHEW7EGbzIQ5/H+KL5lsNRX+8ou9Ak9NRPVm/
-         siAQ==
-X-Gm-Message-State: APjAAAUT0gEmKIQPyQbfUGnAV8xTeQgoM008+a76SzWQCXNDF+voUM+x
-        uX+7nG0y2Jx4U1wtde4U6cR31A==
-X-Google-Smtp-Source: APXvYqxA/hsjUjmBs9SM6QXlL8NL+RTmlFAowM1RUue8CWvRAMj1II8Y3KSlaa/YWX1Lh8iVT6iKHg==
-X-Received: by 2002:a0c:f9c1:: with SMTP id j1mr4501017qvo.235.1560446981811;
-        Thu, 13 Jun 2019 10:29:41 -0700 (PDT)
+        bh=vjp8AzbzM7TyaR3koS56Ggcg0U3MN11dnEYbMbimRNs=;
+        b=G998WAoOTMl8OCHznCQ+JnH5RnWuWnQz6K5qhutjUB9TnNvd2pg/YCM/W77G4MA1wk
+         OK7eWOw/voaTh8I0dtwF0FFL9b3UHoHwxp+PLJkbEZgG+JVxqur+uJkPgoEE5d/DpXzZ
+         4fIMBN2TDxPzZGkTFLMTpKcyu53yDFr3jjZprgCyFdZOCnX+N2QvgfwDmFN4/bMIiuoa
+         wKQsKZM9TpuwBcxzys3DJVVgiUslgU+6jOgO6Eza/EJdKimyL08oybShhyAhTA0zHirU
+         2P2fuC+SqhOOPlfR3yUEvbuD50pt55KsQI5gYMs5f9J5dE8HPAeTVSkODYlOofmNV4mQ
+         b2Dw==
+X-Gm-Message-State: APjAAAVUUav1uNwEgdaAZzB0qVLaqV/yiQlMtIBOMGJZjoWy6XnVMnox
+        YcphuY7jFtw2RKac3XXuifxZjg==
+X-Google-Smtp-Source: APXvYqwBrqU7vjn1q5xplHNVYtQY4aU+s1Aku7I2GaXZeLJQUiuQ3J90bXbKYbOZh6LYPdZJzet4Ag==
+X-Received: by 2002:a37:7a47:: with SMTP id v68mr57356837qkc.56.1560447271399;
+        Thu, 13 Jun 2019 10:34:31 -0700 (PDT)
 Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id s134sm111885qke.51.2019.06.13.10.29.40
+        by smtp.gmail.com with ESMTPSA id m6sm145004qte.17.2019.06.13.10.34.29
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 13 Jun 2019 10:29:41 -0700 (PDT)
-Date:   Thu, 13 Jun 2019 10:29:36 -0700
+        Thu, 13 Jun 2019 10:34:31 -0700 (PDT)
+Date:   Thu, 13 Jun 2019 10:34:26 -0700
 From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Maxim Mikityanskiy <maximmi@mellanox.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Maxim Mikityanskiy <maximmi@mellanox.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         =?UTF-8?B?Qmo=?= =?UTF-8?B?w7ZybiBUw7ZwZWw=?= 
@@ -62,54 +62,56 @@ Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
-Subject: Re: [PATCH bpf-next v4 05/17] xsk: Change the default frame size to
- 4096 and allow controlling it
-Message-ID: <20190613102936.2c8979ed@cakuba.netronome.com>
-In-Reply-To: <b7217210-1ce6-4b27-9964-b4daa4929e8b@mellanox.com>
+Subject: Re: [PATCH bpf-next v4 07/17] libbpf: Support drivers with
+ non-combined channels
+Message-ID: <20190613103426.76d3789e@cakuba.netronome.com>
+In-Reply-To: <CAJ+HfNjp6DJe5xdWxe6pPysXu8D24P4Pp7WcEt4N4EhE1sZNGQ@mail.gmail.com>
 References: <20190612155605.22450-1-maximmi@mellanox.com>
-        <20190612155605.22450-6-maximmi@mellanox.com>
-        <20190612131017.766b4e82@cakuba.netronome.com>
-        <b7217210-1ce6-4b27-9964-b4daa4929e8b@mellanox.com>
+        <20190612155605.22450-8-maximmi@mellanox.com>
+        <20190612132352.7ee27bf3@cakuba.netronome.com>
+        <CAJ+HfNjp6DJe5xdWxe6pPysXu8D24P4Pp7WcEt4N4EhE1sZNGQ@mail.gmail.com>
 Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 13 Jun 2019 14:01:39 +0000, Maxim Mikityanskiy wrote:
-> On 2019-06-12 23:10, Jakub Kicinski wrote:
-> > On Wed, 12 Jun 2019 15:56:43 +0000, Maxim Mikityanskiy wrote:  
-> >> The typical XDP memory scheme is one packet per page. Change the AF_XDP
-> >> frame size in libbpf to 4096, which is the page size on x86, to allow
-> >> libbpf to be used with the drivers with the packet-per-page scheme.  
-> > 
-> > This is slightly surprising.  Why does the driver care about the bufsz?  
-> 
-> The classic XDP implementation supports only the packet-per-page scheme. 
-> mlx5e implements this scheme, because it perfectly fits with xdp_return 
-> and page pool APIs. AF_XDP relies on XDP, and even though AF_XDP doesn't 
-> really allocate or release pages, it works on top of XDP, and XDP 
-> implementation in mlx5e does allocate and release pages (in general 
-> case) and works with the packet-per-page scheme.
+On Thu, 13 Jun 2019 14:41:30 +0200, Bj=C3=B6rn T=C3=B6pel wrote:
+> On Wed, 12 Jun 2019 at 22:24, Jakub Kicinski
+> <jakub.kicinski@netronome.com> wrote:
+> >
+> > On Wed, 12 Jun 2019 15:56:48 +0000, Maxim Mikityanskiy wrote: =20
+> > > Currently, libbpf uses the number of combined channels as the maximum
+> > > queue number. However, the kernel has a different limitation:
+> > >
+> > > - xdp_reg_umem_at_qid() allows up to max(RX queues, TX queues).
+> > >
+> > > - ethtool_set_channels() checks for UMEMs in queues up to
+> > >   combined_count + max(rx_count, tx_count).
+> > >
+> > > libbpf shouldn't limit applications to a lower max queue number. Acco=
+unt
+> > > for non-combined RX and TX channels when calculating the max queue
+> > > number. Use the same formula that is used in ethtool.
+> > >
+> > > Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+> > > Reviewed-by: Tariq Toukan <tariqt@mellanox.com>
+> > > Acked-by: Saeed Mahameed <saeedm@mellanox.com> =20
+> >
+> > I don't think this is correct.  max_tx tells you how many TX channels
+> > there can be, you can't add that to combined.  Correct calculations is:
+> >
+> > max_num_chans =3D max(max_combined, max(max_rx, max_tx))
+> > =20
+>=20
+> ...but the inner max should be min, right?
+>=20
+> Assuming we'd like to receive and send.
 
-Yes, okay, I get that.  But I still don't know what's the exact use you
-have for AF_XDP buffers being 4k..  Could you point us in the code to
-the place which relies on all buffers being 4k in any XDP scenario?
-
-> > You're not supposed to so page operations on UMEM pages, anyway.
-> > And the RX size filter should be configured according to MTU regardless
-> > of XDP state.  
-> 
-> Yes, of course, MTU is taken into account.
-> 
-> > Can you explain?
-> >   
-> >> Add a command line option -f to xdpsock to allow to specify a custom
-> >> frame size.
-> >>
-> >> Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
-> >> Reviewed-by: Tariq Toukan <tariqt@mellanox.com>
-> >> Acked-by: Saeed Mahameed <saeedm@mellanox.com>  
+That was my knee jerk reaction too, but I think this is only use to
+size the array (I could be wrong).  In which case we need an index for
+unidirectional socks, too.  Perhaps the helper could be named better if
+my understanding is correct :(
