@@ -2,154 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D2644D60
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2019 22:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10EF44DB5
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2019 22:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726974AbfFMU0W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Jun 2019 16:26:22 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:54868 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726344AbfFMU0W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Jun 2019 16:26:22 -0400
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id DC73580F79;
-        Thu, 13 Jun 2019 20:26:19 +0000 (UTC)
-Received: from treble (ovpn-121-232.rdu2.redhat.com [10.10.121.232])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 96F995D9C8;
-        Thu, 13 Jun 2019 20:26:16 +0000 (UTC)
-Date:   Thu, 13 Jun 2019 15:26:13 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Kairui Song <kasong@redhat.com>, Alexei Starovoitov <ast@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
+        id S1727960AbfFMUmO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Jun 2019 16:42:14 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:36684 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726177AbfFMUmO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Jun 2019 16:42:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=kshn4ZcN21VZaUe82Mo3RQdVUWkWj4qocgi4/UQKjOI=; b=k8P9/UKRp4ziFYYHWL66rO2eN
+        D8jDNH/mFy2wOaQEW9uSGv0RfQKD05TV7PtJavRr9wrN7cJkB8wfWt/AmtznMxSq6rTAZGVQ2HVpa
+        XQPIqMpRoUFkbXbQ4fCp5ig4uI3lfPVOeDOAomhyWj22TDlV0SGLb33Lw+7MSUQyU59EXt/TVQ0Ol
+        PwXohXhe1r9HU780A44+R67Iz2UXTClS5VvByZUYqCRZtgUOdaLij2fPG9FK93ToE7aaI5JLN/m8V
+        FJNmOZthc+982RGbAPHJF67z6BMyYCtWU3p0bzCvAy3jrWpLjULS3502EUDYVMpjW8lWvXQJh+9ZZ
+        UffNyk1GA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1hbWXh-0006Wi-Qw; Thu, 13 Jun 2019 20:41:53 +0000
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A4A3720435AA1; Thu, 13 Jun 2019 22:41:51 +0200 (CEST)
+Date:   Thu, 13 Jun 2019 22:41:51 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: Getting empty callchain from perf_callchain_kernel()
-Message-ID: <20190613202613.zt4rvxiqyaolvqpq@treble>
-References: <20190522174517.pbdopvookggen3d7@treble>
- <20190522234635.a47bettklcf5gt7c@treble>
- <CACPcB9dRJ89YAMDQdKoDMU=vFfpb5AaY0mWC_Xzw1ZMTFBf6ng@mail.gmail.com>
- <20190523133253.tad6ywzzexks6hrp@treble>
- <CACPcB9fQKg7xhzhCZaF4UGi=EQs1HLTFgg-C_xJQaUfho3yMyA@mail.gmail.com>
- <20190523152413.m2pbnamihu3s2c5s@treble>
- <20190524085319.GE2589@hirez.programming.kicks-ass.net>
- <20190612030501.7tbsjy353g7l74ej@treble>
- <20190612085423.GE3436@hirez.programming.kicks-ass.net>
- <20190612145008.3l5iguuwk2termi4@treble>
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        Kairui Song <kasong@redhat.com>
+Subject: Re: [PATCH 0/9] x86/bpf: unwinder fixes
+Message-ID: <20190613204151.GP3436@hirez.programming.kicks-ass.net>
+References: <cover.1560431531.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190612145008.3l5iguuwk2termi4@treble>
-User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.27]); Thu, 13 Jun 2019 20:26:22 +0000 (UTC)
+In-Reply-To: <cover.1560431531.git.jpoimboe@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 09:50:08AM -0500, Josh Poimboeuf wrote:
-> > Other than that, the same note as before, the 32bit JIT still seems
-> > buggered, but I'm not sure you (or anybody else) cares enough about that
-> > to fix it though. It seems to use ebp as its own frame pointer, which
-> > completely defeats an unwinder.
+On Thu, Jun 13, 2019 at 08:20:57AM -0500, Josh Poimboeuf wrote:
+
+> Josh Poimboeuf (8):
+>   objtool: Fix ORC unwinding in non-JIT BPF generated code
+>   x86/bpf: Move epilogue generation to a dedicated function
+>   x86/bpf: Simplify prologue generation
+>   x86/bpf: Support SIB byte generation
+>   x86/bpf: Fix JIT frame pointer usage
+>   x86/unwind/orc: Fall back to using frame pointers for generated code
+>   x86/bpf: Convert asm comments to AT&T syntax
+>   x86/bpf: Convert MOV function/macro argument ordering to AT&T syntax
 > 
-> I'm still trying to decide if I care about 32-bit.  It does indeed use
-> ebp everywhere.  But I'm not sure if I want to poke the beehive...  Also
-> factoring into the equation is the fact that I'll be on PTO next week
-> :-)  If I have time in the next couple days then I may take a look.
+> Song Liu (1):
+>   perf/x86: Always store regs->ip in perf_callchain_kernel()
+> 
+>  arch/x86/events/core.c       |  10 +-
+>  arch/x86/kernel/unwind_orc.c |  26 ++-
+>  arch/x86/net/bpf_jit_comp.c  | 355 ++++++++++++++++++++---------------
+>  kernel/bpf/core.c            |   5 +-
+>  tools/objtool/check.c        |  16 +-
+>  5 files changed, 246 insertions(+), 166 deletions(-)
 
-32-bit actually looks much easier to fix than 64-bit was.  I haven't
-tested it yet though, but I'll be gone next week so I'll just drop it
-here in case anybody wants to try it.
-
-
-diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
-index b29e82f190c7..8c1de7786e49 100644
---- a/arch/x86/net/bpf_jit_comp32.c
-+++ b/arch/x86/net/bpf_jit_comp32.c
-@@ -169,6 +169,10 @@ static const u8 bpf2ia32[][2] = {
- #define src_hi	src[1]
- 
- #define STACK_ALIGNMENT	8
-+
-+/* Size of callee-saved register space (except EBP) */
-+#define CALLEE_SAVE_SIZE 12
-+
- /*
-  * Stack space for BPF_REG_1, BPF_REG_2, BPF_REG_3, BPF_REG_4,
-  * BPF_REG_5, BPF_REG_6, BPF_REG_7, BPF_REG_8, BPF_REG_9,
-@@ -176,13 +180,14 @@ static const u8 bpf2ia32[][2] = {
-  */
- #define SCRATCH_SIZE 96
- 
--/* Total stack size used in JITed code */
-+/* Total stack size used in JITed code (except callee-saved) */
- #define _STACK_SIZE	(stack_depth + SCRATCH_SIZE)
- 
- #define STACK_SIZE ALIGN(_STACK_SIZE, STACK_ALIGNMENT)
- 
--/* Get the offset of eBPF REGISTERs stored on scratch space. */
--#define STACK_VAR(off) (off)
-+/* Offset of eBPF REGISTERs stored in scratch space, relative to EBP */
-+//FIXME: rename to EBP_OFFSET
-+#define STACK_VAR(off) (off - CALLEE_SAVE_SIZE - SCRATCH_SIZE)
- 
- /* Encode 'dst_reg' register into IA32 opcode 'byte' */
- static u8 add_1reg(u8 byte, u32 dst_reg)
-@@ -1408,7 +1413,7 @@ struct jit_context {
- #define BPF_MAX_INSN_SIZE	128
- #define BPF_INSN_SAFETY		64
- 
--#define PROLOGUE_SIZE 35
-+#define PROLOGUE_SIZE 32
- 
- /*
-  * Emit prologue code for BPF program and check it's size.
-@@ -1436,8 +1441,6 @@ static void emit_prologue(u8 **pprog, u32 stack_depth)
- 
- 	/* sub esp,STACK_SIZE */
- 	EMIT2_off32(0x81, 0xEC, STACK_SIZE);
--	/* sub ebp,SCRATCH_SIZE+12*/
--	EMIT3(0x83, add_1reg(0xE8, IA32_EBP), SCRATCH_SIZE + 12);
- 	/* xor ebx,ebx */
- 	EMIT2(0x31, add_2reg(0xC0, IA32_EBX, IA32_EBX));
- 
-@@ -1470,18 +1473,21 @@ static void emit_epilogue(u8 **pprog, u32 stack_depth)
- 	/* mov edx,dword ptr [ebp+off]*/
- 	EMIT3(0x8B, add_2reg(0x40, IA32_EBP, IA32_EDX), STACK_VAR(r0[1]));
- 
--	/* add ebp,SCRATCH_SIZE+12*/
--	EMIT3(0x83, add_1reg(0xC0, IA32_EBP), SCRATCH_SIZE + 12);
-+	/* add esp, STACK_SIZE */
-+	EMIT2_off32(0x81, 0xC4, STACK_SIZE);
-+
-+	/* pop ebx */
-+	EMIT1(0x5b);
-+	/* pop esi */
-+	EMIT1(0x5e);
-+	/* pop edi */
-+	EMIT1(0x5f);
-+	/* pop ebp */
-+	EMIT1(0x5d);
- 
--	/* mov ebx,dword ptr [ebp-12]*/
--	EMIT3(0x8B, add_2reg(0x40, IA32_EBP, IA32_EBX), -12);
--	/* mov esi,dword ptr [ebp-8]*/
--	EMIT3(0x8B, add_2reg(0x40, IA32_EBP, IA32_ESI), -8);
--	/* mov edi,dword ptr [ebp-4]*/
--	EMIT3(0x8B, add_2reg(0x40, IA32_EBP, IA32_EDI), -4);
-+	/* ret */
-+	EMIT1(0xC3);
- 
--	EMIT1(0xC9); /* leave */
--	EMIT1(0xC3); /* ret */
- 	*pprog = prog;
- }
- 
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
