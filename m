@@ -2,92 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF2E1445D8
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2019 18:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7040F44551
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2019 18:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730273AbfFMQrD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Jun 2019 12:47:03 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35310 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730272AbfFMFG2 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 13 Jun 2019 01:06:28 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5D51rog045499
-        for <bpf@vger.kernel.org>; Thu, 13 Jun 2019 01:06:28 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2t3ekajsw0-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 13 Jun 2019 01:06:27 -0400
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <sandipan@linux.ibm.com>;
-        Thu, 13 Jun 2019 06:06:25 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 13 Jun 2019 06:06:22 +0100
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x5D56EsZ28442890
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 13 Jun 2019 05:06:14 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AEED95204F;
-        Thu, 13 Jun 2019 05:06:21 +0000 (GMT)
-Received: from [9.85.72.231] (unknown [9.85.72.231])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 10F5B52051;
-        Thu, 13 Jun 2019 05:06:19 +0000 (GMT)
-Subject: Re: [PATCH 0/2] powerpc/bpf: DIV64 instruction fix
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1560364574.git.naveen.n.rao@linux.vnet.ibm.com>
-From:   Sandipan Das <sandipan@linux.ibm.com>
-Date:   Thu, 13 Jun 2019 10:36:17 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.4.0
+        id S1730478AbfFMQn1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Jun 2019 12:43:27 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:38016 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730477AbfFMGnT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Jun 2019 02:43:19 -0400
+Received: by mail-qk1-f194.google.com with SMTP id a27so12030084qkk.5;
+        Wed, 12 Jun 2019 23:43:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=flGs/zukBw/aJYyUovVgv99efBK9sWkhQiABa3roI/o=;
+        b=megZvWjY8VwSIokUFMGe+HGyYwiYoCZVf4illXjf2hB0iW1H3Zsh8paEAJVEaCB4Wk
+         sEiHz6cGLfTiVg0ZCP9qp1sKXyvz5ZsW1IlJgwqZuS9Q4WYjYvuP9SfWACFCnVJA0OIO
+         ZT5t4HkobJSBmOUvT+jpWtp33dGEKlD1FFnVRNQqxF71J7pxtWno65N7hbfK6USDiyZN
+         PidDNCrwL5ltud6gpaGrkb7ID2ilV+bFZoESs2LiBYIcFYSu4PgtWtaliNZb2p6bXcBn
+         7junQwok4iSqE1phqZa9GysUKeIBv6cghuX5pUdnzrrtSCNK+m7wr9G2zV7WpUdEjJt5
+         vysQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=flGs/zukBw/aJYyUovVgv99efBK9sWkhQiABa3roI/o=;
+        b=Hc/kUd8NJ7NPrA8juV8tlsUBsE1Pjhji43HJpSrOl9Oifq5FLhzYC8W9lAcDa54OED
+         cfabRjFTXiz4m+xa/WsiSYaHOTvc0rt5PQQwWyv2CXEGDoNlqolTQtA3+u+FmEMKJlZb
+         x/5p3E397BqSEWyo69tzf6Z0AQ30EN7UkwYP1b9K98sExSUZ9VTdPk5RPOvS3+jay3TG
+         ouJbTf+NLyMVvRncyik3XmVlqVfwqlWFWL4G8j5j9qsAUQexiek8M6sJtVbszWrBgLJ2
+         9R6iNPF0nlcgX+16I7RVXioH+TdaUCyfXPwjKo2EQaDsI3ZZVKJjbOcWEDIP6mZSr3W6
+         0l3Q==
+X-Gm-Message-State: APjAAAW03UxT96Mx6xzfycWvZ+QoMPHM4PhZ/cf/8dJWaWxPrqn18QCc
+        qrllUQSH++J8XBDifADvZlGSRuAmttqCxaIhiUA=
+X-Google-Smtp-Source: APXvYqy9qKc3dDKrBdfAu5wW1ZVxAlIFPRi1b+Bo2iiKumfS1L0sMfnIgAQQQwf5oA911kNGLXPTt+Iodu+XLWwluYA=
+X-Received: by 2002:ae9:de81:: with SMTP id s123mr516623qkf.339.1560408197897;
+ Wed, 12 Jun 2019 23:43:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <cover.1560364574.git.naveen.n.rao@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 19061305-0008-0000-0000-000002F3521F
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19061305-0009-0000-0000-000022605641
-Message-Id: <9420d355-94d3-4ab0-78d3-01596774676d@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-13_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=669 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906130040
+References: <20190612160541.2550-1-m@lambda.lt>
+In-Reply-To: <20190612160541.2550-1-m@lambda.lt>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 12 Jun 2019 23:43:06 -0700
+Message-ID: <CAEf4BzZHSP=ua_sO=431PXDjNB6mVn7QXFWL12sQAZDjz1D1PQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 1/2] bpf: simplify definition of BPF_FIB_LOOKUP
+ related flags
+To:     Martynas Pumputis <m@lambda.lt>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Jun 12, 2019 at 11:06 AM Martynas Pumputis <m@lambda.lt> wrote:
+>
+> Previously, the BPF_FIB_LOOKUP_{DIRECT,OUTPUT} flags were defined
+> with the help of BIT macro. This had the following issues:
+>
+> - In order to user any of the flags, a user was required to depend
+>   on <linux/bits.h>.
+> - No other flag in bpf.h uses the macro, so it seems that an unwritten
+>   convention is to use (1 << (nr)) to define BPF-related flags.
+>
 
-On 13/06/19 12:21 AM, Naveen N. Rao wrote:
-> The first patch updates DIV64 overflow tests to properly detect error 
-> conditions. The second patch fixes powerpc64 JIT to generate the proper 
-> unsigned division instruction for BPF_ALU64.
-> 
-> - Naveen
-> 
-> Naveen N. Rao (2):
->   bpf: fix div64 overflow tests to properly detect errors
->   powerpc/bpf: use unsigned division instruction for 64-bit operations
-> 
->  arch/powerpc/include/asm/ppc-opcode.h              |  1 +
->  arch/powerpc/net/bpf_jit.h                         |  2 +-
->  arch/powerpc/net/bpf_jit_comp64.c                  |  8 ++++----
->  .../testing/selftests/bpf/verifier/div_overflow.c  | 14 ++++++++++----
->  4 files changed, 16 insertions(+), 9 deletions(-)
-> 
+Makes sense!
 
-For the series
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-Acked-by: Sandipan Das <sandipan@linux.ibm.com>
-
+> Signed-off-by: Martynas Pumputis <m@lambda.lt>
+> ---
+>  include/uapi/linux/bpf.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 63e0cf66f01a..a8f17bc86732 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3376,8 +3376,8 @@ struct bpf_raw_tracepoint_args {
+>  /* DIRECT:  Skip the FIB rules and go to FIB table associated with device
+>   * OUTPUT:  Do lookup from egress perspective; default is ingress
+>   */
+> -#define BPF_FIB_LOOKUP_DIRECT  BIT(0)
+> -#define BPF_FIB_LOOKUP_OUTPUT  BIT(1)
+> +#define BPF_FIB_LOOKUP_DIRECT  (1U << 0)
+> +#define BPF_FIB_LOOKUP_OUTPUT  (1U << 1)
+>
+>  enum {
+>         BPF_FIB_LKUP_RET_SUCCESS,      /* lookup successful */
+> --
+> 2.21.0
+>
