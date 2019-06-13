@@ -2,393 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A70B44443B
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2019 18:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFD143ECE
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2019 17:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730887AbfFMQfr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Jun 2019 12:35:47 -0400
-Received: from mga06.intel.com ([134.134.136.31]:23443 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730708AbfFMHiK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Jun 2019 03:38:10 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Jun 2019 00:38:10 -0700
-X-ExtLoop1: 1
-Received: from mkarlsso-mobl.ger.corp.intel.com (HELO VM.ger.corp.intel.com) ([10.103.211.41])
-  by orsmga004.jf.intel.com with ESMTP; 13 Jun 2019 00:38:05 -0700
-From:   Magnus Karlsson <magnus.karlsson@intel.com>
-To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org, brouer@redhat.com
-Cc:     bpf@vger.kernel.org, bruce.richardson@intel.com,
-        ciara.loftus@intel.com, jakub.kicinski@netronome.com,
-        xiaolong.ye@intel.com, qi.z.zhang@intel.com, maximmi@mellanox.com,
-        sridhar.samudrala@intel.com, kevin.laatz@intel.com,
-        ilias.apalodimas@linaro.org, kiran.patil@intel.com,
-        axboe@kernel.dk, maciej.fijalkowski@intel.com,
-        maciejromanfijalkowski@gmail.com, intel-wired-lan@lists.osuosl.org
-Subject: [PATCH bpf-next 6/6] samples/bpf: add use of need_sleep flag in xdpsock
-Date:   Thu, 13 Jun 2019 09:37:30 +0200
-Message-Id: <1560411450-29121-7-git-send-email-magnus.karlsson@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1560411450-29121-1-git-send-email-magnus.karlsson@intel.com>
-References: <1560411450-29121-1-git-send-email-magnus.karlsson@intel.com>
+        id S1727885AbfFMPxP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Jun 2019 11:53:15 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:32831 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731622AbfFMJE5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Jun 2019 05:04:57 -0400
+Received: by mail-qt1-f195.google.com with SMTP id x2so20771957qtr.0;
+        Thu, 13 Jun 2019 02:04:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=nzBa57T0OIAyCAQ1O9RvCN6xb/3FwMwRN6SvgCLPgNg=;
+        b=j0ffML8CyknDu3KfnBFj/WQMQZZFynuLeLWDGUeLp6l3FicB/MW5OIR7Ud0yBDHFa/
+         ZxexagDVif9zNpvQgeWsmdi/sFzZjfB0Eyl2hkiSxKHZYha8CIiLJUWGSboBqVfCZ2ZS
+         O9sh40jRtvswNq/GPJZPyagSPZGGook8X72ixU7ay+tyMHQSTTvm2VqTlkoXrelZBMfL
+         ozfwmIo9AUfUsGBvgDInOJoUB+E3sMgXhU2HsIwe5OrMUzspt/u8Csi3DFNmtQz1vbFC
+         6c/s+OmLUO0GIr8oOh9OAIa4J+IhtV/+0mkVETGvXy1Zt4hl+fiCkzZknnBcx5R1/73n
+         FXOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nzBa57T0OIAyCAQ1O9RvCN6xb/3FwMwRN6SvgCLPgNg=;
+        b=FGQoD3CgXKclRSC1QE100CNDAxV8IpXYUBOHnFtQOpBzIG3QhiWFWIaw+SdzyaBiWk
+         tLPZzJptan0au0df1FxxkOuTb15iZfB7gOofxdQ4vRGGmx0vDQzu9sSPtTj1OO0Q7hhU
+         ahKXOdyCx3A8xNBOuTopCdbZT/f6QMNOOkvqkLdL/j76W0f2Dq+QXd7cdJuWTLBJBQaB
+         hqZOAnUrrPswH+uRHeI40uyO2pTyzNKEpMTSVyLV9VIFeNN2UnpgM7C79EHzuLPvw8k1
+         wv6gcs+ZSE751njb6W+DsuiQ9fIowfxcvKdRCj71rVdiM0j5CU2MQtjvxtvDTp9uEasa
+         6nTQ==
+X-Gm-Message-State: APjAAAXsZuuGGJpxGDsKfem+xhxT2oj8GlrW1xDhoHgTbxSmjTCBd8pD
+        jgDK9wltr3MmwzKbPghARm67Z91/pqjnPlAgi+Y=
+X-Google-Smtp-Source: APXvYqwk0F13xjccym5Gt178pFDO4lYhoTFYCOIlHvKPia2bX3aSKEJFLdRHwBQlOO2fKzcJK9Aid1F2KKXkkvWckwE=
+X-Received: by 2002:ac8:4442:: with SMTP id m2mr52640121qtn.107.1560416696641;
+ Thu, 13 Jun 2019 02:04:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190612161405.24064-1-maximmi@mellanox.com> <20190612141506.7900e952@cakuba.netronome.com>
+In-Reply-To: <20190612141506.7900e952@cakuba.netronome.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Thu, 13 Jun 2019 11:04:45 +0200
+Message-ID: <CAJ+HfNg8C+teCywDDjKY6_gdPsg_dzm1cMNFhj7gLps6RYMAJQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] net: Don't uninstall an XDP program when none is installed
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This commit adds using the need_sleep flag to the xdpsock sample
-application. It is turned on by default as we think it is a feature
-that seems to always produce a performance benefit, if the application
-has been written taking advantage of it. It can be turned off in the
-sample app by using the '-m' command line option.
+On Wed, 12 Jun 2019 at 23:15, Jakub Kicinski
+<jakub.kicinski@netronome.com> wrote:
+>
+> On Wed, 12 Jun 2019 16:14:18 +0000, Maxim Mikityanskiy wrote:
+> > dev_change_xdp_fd doesn't perform any checks in case it uninstalls an
+> > XDP program. It means that the driver's ndo_bpf can be called with
+> > XDP_SETUP_PROG asking to set it to NULL even if it's already NULL. This
+> > case happens if the user runs `ip link set eth0 xdp off` when there is
+> > no XDP program attached.
+> >
+> > The drivers typically perform some heavy operations on XDP_SETUP_PROG,
+> > so they all have to handle this case internally to return early if it
+> > happens. This patch puts this check into the kernel code, so that all
+> > drivers will benefit from it.
+> >
+> > Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+> > ---
+> > Bj=C3=B6rn, please take a look at this, Saeed told me you were doing
+> > something related, but I couldn't find it. If this fix is already
+> > covered by your work, please tell about that.
+> >
+> >  net/core/dev.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index 66f7508825bd..68b3e3320ceb 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -8089,6 +8089,9 @@ int dev_change_xdp_fd(struct net_device *dev, str=
+uct netlink_ext_ack *extack,
+> >                       bpf_prog_put(prog);
+> >                       return -EINVAL;
+> >               }
+> > +     } else {
+> > +             if (!__dev_xdp_query(dev, bpf_op, query))
+> > +                     return 0;
+>
+> This will mask the error if program is installed with different flags.
+>
 
-The txpush and l2fwd sub applications have also been updated to
-support poll() with multiple sockets.
+Hmm, probably missing something, but I fail to see how the error is
+being masked? This is to catch the NULL-to-NULL case early.
 
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- samples/bpf/xdpsock_user.c | 191 ++++++++++++++++++++++++++++-----------------
- 1 file changed, 119 insertions(+), 72 deletions(-)
-
-diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-index d08ee1a..4b760b8 100644
---- a/samples/bpf/xdpsock_user.c
-+++ b/samples/bpf/xdpsock_user.c
-@@ -67,7 +67,9 @@ static int opt_ifindex;
- static int opt_queue;
- static int opt_poll;
- static int opt_interval = 1;
--static u32 opt_xdp_bind_flags;
-+static u32 opt_xdp_bind_flags = XDP_USE_NEED_WAKEUP;
-+static int opt_timeout = 1000;
-+static bool opt_might_sleep = true;
- static __u32 prog_id;
- 
- struct xsk_umem_info {
-@@ -346,6 +348,7 @@ static struct option long_options[] = {
- 	{"interval", required_argument, 0, 'n'},
- 	{"zero-copy", no_argument, 0, 'z'},
- 	{"copy", no_argument, 0, 'c'},
-+	{"no-might-sleep", no_argument, 0, 'm'},
- 	{0, 0, 0, 0}
- };
- 
-@@ -365,6 +368,7 @@ static void usage(const char *prog)
- 		"  -n, --interval=n	Specify statistics update interval (default 1 sec).\n"
- 		"  -z, --zero-copy      Force zero-copy mode.\n"
- 		"  -c, --copy           Force copy mode.\n"
-+		"  -m, --no-might-sleep Turn off use of driver might sleep flag.\n"
- 		"\n";
- 	fprintf(stderr, str, prog);
- 	exit(EXIT_FAILURE);
-@@ -377,7 +381,7 @@ static void parse_command_line(int argc, char **argv)
- 	opterr = 0;
- 
- 	for (;;) {
--		c = getopt_long(argc, argv, "Frtli:q:psSNn:cz", long_options,
-+		c = getopt_long(argc, argv, "Frtli:q:psSNn:czm", long_options,
- 				&option_index);
- 		if (c == -1)
- 			break;
-@@ -420,6 +424,10 @@ static void parse_command_line(int argc, char **argv)
- 		case 'F':
- 			opt_xdp_flags &= ~XDP_FLAGS_UPDATE_IF_NOEXIST;
- 			break;
-+		case 'm':
-+			opt_might_sleep = false;
-+			opt_xdp_bind_flags &= ~XDP_USE_NEED_WAKEUP;
-+			break;
- 		default:
- 			usage(basename(argv[0]));
- 		}
-@@ -444,7 +452,8 @@ static void kick_tx(struct xsk_socket_info *xsk)
- 	exit_with_error(errno);
- }
- 
--static inline void complete_tx_l2fwd(struct xsk_socket_info *xsk)
-+static inline void complete_tx_l2fwd(struct xsk_socket_info *xsk,
-+				     struct pollfd *fds)
- {
- 	u32 idx_cq = 0, idx_fq = 0;
- 	unsigned int rcvd;
-@@ -453,7 +462,9 @@ static inline void complete_tx_l2fwd(struct xsk_socket_info *xsk)
- 	if (!xsk->outstanding_tx)
- 		return;
- 
--	kick_tx(xsk);
-+	if (!opt_might_sleep || xsk_ring_prod__needs_wakeup(&xsk->tx))
-+		kick_tx(xsk);
-+
- 	ndescs = (xsk->outstanding_tx > BATCH_SIZE) ? BATCH_SIZE :
- 		xsk->outstanding_tx;
- 
-@@ -467,6 +478,8 @@ static inline void complete_tx_l2fwd(struct xsk_socket_info *xsk)
- 		while (ret != rcvd) {
- 			if (ret < 0)
- 				exit_with_error(-ret);
-+			if (xsk_ring_prod__needs_wakeup(&xsk->umem->fq))
-+				ret = poll(fds, num_socks, opt_timeout);
- 			ret = xsk_ring_prod__reserve(&xsk->umem->fq, rcvd,
- 						     &idx_fq);
- 		}
-@@ -490,7 +503,8 @@ static inline void complete_tx_only(struct xsk_socket_info *xsk)
- 	if (!xsk->outstanding_tx)
- 		return;
- 
--	kick_tx(xsk);
-+	if (!opt_might_sleep || xsk_ring_prod__needs_wakeup(&xsk->tx))
-+		kick_tx(xsk);
- 
- 	rcvd = xsk_ring_cons__peek(&xsk->umem->cq, BATCH_SIZE, &idx);
- 	if (rcvd > 0) {
-@@ -500,20 +514,25 @@ static inline void complete_tx_only(struct xsk_socket_info *xsk)
- 	}
- }
- 
--static void rx_drop(struct xsk_socket_info *xsk)
-+static void rx_drop(struct xsk_socket_info *xsk, struct pollfd *fds)
- {
- 	unsigned int rcvd, i;
- 	u32 idx_rx = 0, idx_fq = 0;
- 	int ret;
- 
- 	rcvd = xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE, &idx_rx);
--	if (!rcvd)
-+	if (!rcvd) {
-+		if (xsk_ring_prod__needs_wakeup(&xsk->umem->fq))
-+			ret = poll(fds, num_socks, opt_timeout);
- 		return;
-+	}
- 
- 	ret = xsk_ring_prod__reserve(&xsk->umem->fq, rcvd, &idx_fq);
- 	while (ret != rcvd) {
- 		if (ret < 0)
- 			exit_with_error(-ret);
-+		if (xsk_ring_prod__needs_wakeup(&xsk->umem->fq))
-+			ret = poll(fds, num_socks, opt_timeout);
- 		ret = xsk_ring_prod__reserve(&xsk->umem->fq, rcvd, &idx_fq);
- 	}
- 
-@@ -534,42 +553,65 @@ static void rx_drop(struct xsk_socket_info *xsk)
- static void rx_drop_all(void)
- {
- 	struct pollfd fds[MAX_SOCKS + 1];
--	int i, ret, timeout, nfds = 1;
-+	int i, ret;
- 
- 	memset(fds, 0, sizeof(fds));
- 
- 	for (i = 0; i < num_socks; i++) {
- 		fds[i].fd = xsk_socket__fd(xsks[i]->xsk);
- 		fds[i].events = POLLIN;
--		timeout = 1000; /* 1sn */
- 	}
- 
- 	for (;;) {
- 		if (opt_poll) {
--			ret = poll(fds, nfds, timeout);
-+			ret = poll(fds, num_socks, opt_timeout);
- 			if (ret <= 0)
- 				continue;
- 		}
- 
- 		for (i = 0; i < num_socks; i++)
--			rx_drop(xsks[i]);
-+			rx_drop(xsks[i], fds);
-+	}
-+}
-+
-+static void tx_only(struct xsk_socket_info *xsk, u32 frame_nb)
-+{
-+	u32 idx;
-+
-+	if (xsk_ring_prod__reserve(&xsk->tx, BATCH_SIZE, &idx) == BATCH_SIZE) {
-+		unsigned int i;
-+
-+		for (i = 0; i < BATCH_SIZE; i++) {
-+			xsk_ring_prod__tx_desc(&xsk->tx, idx + i)->addr	=
-+				(frame_nb + i) << XSK_UMEM__DEFAULT_FRAME_SHIFT;
-+			xsk_ring_prod__tx_desc(&xsk->tx, idx + i)->len =
-+				sizeof(pkt_data) - 1;
-+		}
-+
-+		xsk_ring_prod__submit(&xsk->tx, BATCH_SIZE);
-+		xsk->outstanding_tx += BATCH_SIZE;
-+		frame_nb += BATCH_SIZE;
-+		frame_nb %= NUM_FRAMES;
- 	}
-+
-+	complete_tx_only(xsk);
- }
- 
--static void tx_only(struct xsk_socket_info *xsk)
-+static void tx_only_all(void)
- {
--	int timeout, ret, nfds = 1;
--	struct pollfd fds[nfds + 1];
--	u32 idx, frame_nb = 0;
-+	struct pollfd fds[MAX_SOCKS];
-+	u32 frame_nb[MAX_SOCKS] = {};
-+	int i, ret;
- 
- 	memset(fds, 0, sizeof(fds));
--	fds[0].fd = xsk_socket__fd(xsk->xsk);
--	fds[0].events = POLLOUT;
--	timeout = 1000; /* 1sn */
-+	for (i = 0; i < num_socks; i++) {
-+		fds[0].fd = xsk_socket__fd(xsks[i]->xsk);
-+		fds[0].events = POLLOUT;
-+	}
- 
- 	for (;;) {
- 		if (opt_poll) {
--			ret = poll(fds, nfds, timeout);
-+			ret = poll(fds, num_socks, opt_timeout);
- 			if (ret <= 0)
- 				continue;
- 
-@@ -577,70 +619,75 @@ static void tx_only(struct xsk_socket_info *xsk)
- 				continue;
- 		}
- 
--		if (xsk_ring_prod__reserve(&xsk->tx, BATCH_SIZE, &idx) ==
--		    BATCH_SIZE) {
--			unsigned int i;
--
--			for (i = 0; i < BATCH_SIZE; i++) {
--				xsk_ring_prod__tx_desc(&xsk->tx, idx + i)->addr
--					= (frame_nb + i) <<
--					XSK_UMEM__DEFAULT_FRAME_SHIFT;
--				xsk_ring_prod__tx_desc(&xsk->tx, idx + i)->len =
--					sizeof(pkt_data) - 1;
--			}
--
--			xsk_ring_prod__submit(&xsk->tx, BATCH_SIZE);
--			xsk->outstanding_tx += BATCH_SIZE;
--			frame_nb += BATCH_SIZE;
--			frame_nb %= NUM_FRAMES;
--		}
--
--		complete_tx_only(xsk);
-+		for (i = 0; i < num_socks; i++)
-+			tx_only(xsks[i], frame_nb[i]);
- 	}
- }
- 
--static void l2fwd(struct xsk_socket_info *xsk)
-+static void l2fwd(struct xsk_socket_info *xsk, struct pollfd *fds)
- {
--	for (;;) {
--		unsigned int rcvd, i;
--		u32 idx_rx = 0, idx_tx = 0;
--		int ret;
-+	unsigned int rcvd, i;
-+	u32 idx_rx = 0, idx_tx = 0;
-+	int ret;
- 
--		for (;;) {
--			complete_tx_l2fwd(xsk);
-+	complete_tx_l2fwd(xsk, fds);
- 
--			rcvd = xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE,
--						   &idx_rx);
--			if (rcvd > 0)
--				break;
--		}
-+	rcvd = xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE, &idx_rx);
-+	if (!rcvd) {
-+		if (xsk_ring_prod__needs_wakeup(&xsk->umem->fq))
-+			ret = poll(fds, num_socks, opt_timeout);
-+		return;
-+	}
- 
-+	ret = xsk_ring_prod__reserve(&xsk->tx, rcvd, &idx_tx);
-+	while (ret != rcvd) {
-+		if (ret < 0)
-+			exit_with_error(-ret);
-+		if (xsk_ring_prod__needs_wakeup(&xsk->tx))
-+			kick_tx(xsk);
- 		ret = xsk_ring_prod__reserve(&xsk->tx, rcvd, &idx_tx);
--		while (ret != rcvd) {
--			if (ret < 0)
--				exit_with_error(-ret);
--			ret = xsk_ring_prod__reserve(&xsk->tx, rcvd, &idx_tx);
--		}
-+	}
-+
-+	for (i = 0; i < rcvd; i++) {
-+		u64 addr = xsk_ring_cons__rx_desc(&xsk->rx, idx_rx)->addr;
-+		u32 len = xsk_ring_cons__rx_desc(&xsk->rx, idx_rx++)->len;
-+		char *pkt = xsk_umem__get_data(xsk->umem->buffer, addr);
-+
-+		swap_mac_addresses(pkt);
- 
--		for (i = 0; i < rcvd; i++) {
--			u64 addr = xsk_ring_cons__rx_desc(&xsk->rx,
--							  idx_rx)->addr;
--			u32 len = xsk_ring_cons__rx_desc(&xsk->rx,
--							 idx_rx++)->len;
--			char *pkt = xsk_umem__get_data(xsk->umem->buffer, addr);
-+		hex_dump(pkt, len, addr);
-+		xsk_ring_prod__tx_desc(&xsk->tx, idx_tx)->addr = addr;
-+		xsk_ring_prod__tx_desc(&xsk->tx, idx_tx++)->len = len;
-+	}
- 
--			swap_mac_addresses(pkt);
-+	xsk_ring_prod__submit(&xsk->tx, rcvd);
-+	xsk_ring_cons__release(&xsk->rx, rcvd);
- 
--			hex_dump(pkt, len, addr);
--			xsk_ring_prod__tx_desc(&xsk->tx, idx_tx)->addr = addr;
--			xsk_ring_prod__tx_desc(&xsk->tx, idx_tx++)->len = len;
--		}
-+	xsk->rx_npkts += rcvd;
-+	xsk->outstanding_tx += rcvd;
-+}
-+
-+static void l2fwd_all(void)
-+{
-+	struct pollfd fds[MAX_SOCKS];
-+	int i, ret;
-+
-+	memset(fds, 0, sizeof(fds));
-+
-+	for (i = 0; i < num_socks; i++) {
-+		fds[i].fd = xsk_socket__fd(xsks[i]->xsk);
-+		fds[i].events = POLLOUT | POLLIN;
-+	}
- 
--		xsk_ring_prod__submit(&xsk->tx, rcvd);
--		xsk_ring_cons__release(&xsk->rx, rcvd);
-+	for (;;) {
-+		if (opt_poll) {
-+			ret = poll(fds, num_socks, opt_timeout);
-+			if (ret <= 0)
-+				continue;
-+		}
- 
--		xsk->rx_npkts += rcvd;
--		xsk->outstanding_tx += rcvd;
-+		for (i = 0; i < num_socks; i++)
-+			l2fwd(xsks[i], fds);
- 	}
- }
- 
-@@ -693,9 +740,9 @@ int main(int argc, char **argv)
- 	if (opt_bench == BENCH_RXDROP)
- 		rx_drop_all();
- 	else if (opt_bench == BENCH_TXONLY)
--		tx_only(xsks[0]);
-+		tx_only_all();
- 	else
--		l2fwd(xsks[0]);
-+		l2fwd_all();
- 
- 	return 0;
- }
--- 
-2.7.4
-
+> You driver should do nothing is program installation state did not
+> change.  I.e.:
+>
+>         if (!!prog =3D=3D !!oldprog)
+>
+> You can't remove the active -> active check anyway, this change should
+> make no difference.
+>
+> >       }
+> >
+> >       err =3D dev_xdp_install(dev, bpf_op, extack, flags, prog);
