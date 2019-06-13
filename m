@@ -2,144 +2,271 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3255A43780
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2019 16:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6FA4376B
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2019 16:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732698AbfFMO7Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Jun 2019 10:59:25 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:33715 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732612AbfFMOyB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Jun 2019 10:54:01 -0400
-Received: by mail-qt1-f194.google.com with SMTP id x2so21976357qtr.0;
-        Thu, 13 Jun 2019 07:54:00 -0700 (PDT)
+        id S1732629AbfFMO6z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Jun 2019 10:58:55 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:33686 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732617AbfFMOzl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Jun 2019 10:55:41 -0400
+Received: by mail-io1-f67.google.com with SMTP id u13so17561072iop.0
+        for <bpf@vger.kernel.org>; Thu, 13 Jun 2019 07:55:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=t93Vsea+mncWu5w81OgAOHS5fdn/ySDdn/QB0hnie8U=;
-        b=EXawz2vZWlzFlzQyD9VZwDi3+WtUwrKm8U07fUaB2DwR7+4uVpTYLZnzCS2wgRAIj3
-         u2YGaruDx+u8XGmgSiEbgOMfnJMMpuYKdYYc/jgUqoaJNafS014IqcmLVAZzHThgooer
-         gmWJacZQ1lpZxVpbvhTSDvp5H8S1IBmqfIOeMMzYkJ1MAq8/Kpid0MH06l6YciBblGvN
-         YWIzTIZ+CY4jVZAVCHmtaWBzYSgayoZpXajjvTSKhImYmC41NihaQFP1aqI9KeX9AzWk
-         uPzuUMVtcTbCkbeRohteOEarB39rdEMW/vWAOqivpamyg+mCA/6lAlAcozgdx9ZmEoDa
-         ACEA==
+         :cc;
+        bh=uup4+yu3rtMc7LeujGtatwYo2KR3g+6RsZgNCQu53+s=;
+        b=dRA7kkC6r7wRPZLUONW10Np1uUb8HPBolEESaREKqFHCIt9zzjww757ZoQSNpKxNPG
+         hzG+r+5YOC8bst+qIvQX3Xfyd/NIpwF/n5adKAckP6Ym7vRhL/7uWyyKnoNTat0f/nX8
+         B/v+24+5LtdOQuMe3NPVEv7GWNVD6MuSM5cgFFNYRNcqOc35o62b1h/fb3YhTqQe6z0Q
+         sEllM3MXFo42WWWhRLZSYtLip27DXU+a86+XbEKRZKPZ6AeIzggquANG1MUxj7B8j+C8
+         bQ71VSyRSSIAU26XKUD916rOfN62mouWgp1ylR8aA9k5oYDq+qMlijPdOWeDkHHL7VBU
+         o5iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=t93Vsea+mncWu5w81OgAOHS5fdn/ySDdn/QB0hnie8U=;
-        b=qsmoSt8zuRZwIdWfgBY0xCelyCG0iRkebnSKsNtMdUclfWmQ1sp2vy115pfbYsTElb
-         polX3ta4w8cJISWseHcujAywL8cZkVTk8MImJZF08dgTTUOeoApjbVW82BthpMGXW5Or
-         zb9G0YiqskvJKvOA+TvTmQIt7tOS+YOzOy9S9c2JjRhIpkoO1JXVSirOu/hxBWH8wCPd
-         UMlsthmUsWEvOYSb3qDuawsWLYPdpAi8O4/icJmpEaMJEoz/6y1aa8YBFrr3F5P4faZl
-         y+tyvkyWt1fOT3ociAHo+yFqzar3dhJki2kKJwTDCmWPiwr2h7t39F6YbMwxNGvOElpp
-         57rw==
-X-Gm-Message-State: APjAAAUI65v4Xmn0SzKJqihviGmehCrbdqGbBO2/6AkRGZQfmtN6iC1a
-        eu6qC/NWauyiMD0HRLCOLtrCnp9MEykrmLsZ7c0=
-X-Google-Smtp-Source: APXvYqzX3gepabt+63Au///TfQueZRwESZe9fkZBCrUg5i4MNAbFRFc0ZBbqMJA3Nb1+zqHnyL07+K6KKMZqusv9y7E=
-X-Received: by 2002:ac8:19ac:: with SMTP id u41mr58061798qtj.46.1560437640073;
- Thu, 13 Jun 2019 07:54:00 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=uup4+yu3rtMc7LeujGtatwYo2KR3g+6RsZgNCQu53+s=;
+        b=Fwo0TlIyKZo470/7Ya0+neEgzDxAOHCXRuruCBwFS2hgd6w3h3aJraugqOvo4Rdfnp
+         P56NTW20fDT6hWMOAsvgToEcTR40VS/7g2sqMgta0eVS0uhxFYMRvmYhvpRrEa4F1pQZ
+         Pjw9zVvRbw2q+DlK2oQyUFZ0D1kpD1ZuBzDNDpiWkCG7+u6BBOUHzZ6pOtCBQm75id9s
+         gUuHJoRmI4DH3YnrMLef5P/DCQuWPzktWjCVGgNLQsSl5xMTHFq+fXXhFGsUWXJNcwVF
+         wBCV9tlEikpx10FUX4Na7BgaI4BC3IVdvkP1YUb60YWkE4NGoODK3zGDXLy3FhtK8R4h
+         crHA==
+X-Gm-Message-State: APjAAAVpzy7oHq5BmPpz406CjnZ207E+WvCp+k5OPZYqBhP/rRWsIySt
+        lsVH6KULEu7cuSqnxNzgot5DUasMtOM+7hma5etjKg==
+X-Google-Smtp-Source: APXvYqzndfKSRA8giBrYgV9Bq3flf7/vWqrwRTfUpglIJWfRs4WlFdnhSvBS3hk0Dee76SlakiYKGNbXkT69+kh9eqg=
+X-Received: by 2002:a6b:b556:: with SMTP id e83mr46526986iof.94.1560437740323;
+ Thu, 13 Jun 2019 07:55:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190612155605.22450-1-maximmi@mellanox.com> <20190612134805.3bf4ea25@cakuba.netronome.com>
- <CAJ+HfNh3KcoZC5W6CLgnx2tzH41Kz11Zs__2QkOKF+CyEMzdMQ@mail.gmail.com>
- <65cf2b7b-79a5-c660-358c-a265fc03b495@mellanox.com> <54a8ed28-0690-565e-f470-2c81a990251e@intel.com>
-In-Reply-To: <54a8ed28-0690-565e-f470-2c81a990251e@intel.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Thu, 13 Jun 2019 16:53:47 +0200
-Message-ID: <CAJ+HfNiXbPUh2zhMJN9=O2a_8nBak2yOeVvZNJaofY4S624N+w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 00/17] AF_XDP infrastructure improvements and
- mlx5e support
-To:     Maxim Mikityanskiy <maximmi@mellanox.com>
-Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
+References: <20190613141521.424-1-hdanton@sina.com>
+In-Reply-To: <20190613141521.424-1-hdanton@sina.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 13 Jun 2019 16:55:28 +0200
+Message-ID: <CACT4Y+bAuAiApr9CxSH5CoDnZ5hYmU+K4kJqrSo5yBZLyrzONA@mail.gmail.com>
+Subject: Re: memory leak in vhost_net_ioctl
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        syzbot <syzbot+0789f0c7e45efd7bb643@syzkaller.appspotmail.com>,
+        "ast@kernel.org" <ast@kernel.org>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Jonathan Lemon <bsd@fb.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "xdp-newbies@vger.kernel.org" <xdp-newbies@vger.kernel.org>,
+        Asias He <asias@redhat.com>
+Content-Type: multipart/mixed; boundary="000000000000355591058b35b99c"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 13 Jun 2019 at 16:11, Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>=
- wrote:
+--000000000000355591058b35b99c
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Jun 13, 2019 at 4:15 PM Hillf Danton <hdanton@sina.com> wrote:
 >
 >
-> On 2019-06-13 16:01, Maxim Mikityanskiy wrote:
-> > On 2019-06-13 15:58, Bj=C3=B6rn T=C3=B6pel wrote:
-> >> On Wed, 12 Jun 2019 at 22:49, Jakub Kicinski
-> >> <jakub.kicinski@netronome.com> wrote:
-> >>>
-> >>> On Wed, 12 Jun 2019 15:56:33 +0000, Maxim Mikityanskiy wrote:
-> >>>> UAPI is not changed, XSK RX queues are exposed to the kernel. The lo=
-wer
-> >>>> half of the available amount of RX queues are regular queues, and th=
-e
-> >>>> upper half are XSK RX queues.
-> >>>
-> >>> If I have 32 queues enabled on the NIC and I install AF_XDP socket on
-> >>> queue 10, does the NIC now have 64 RQs, but only first 32 are in the
-> >>> normal RSS map?
-> >>>
-> >>
-> >> Additional, related, question to Jakub's: Say that I'd like to hijack
-> >> all 32 Rx queues of the NIC. I create 32 AF_XDP socket and attach them
-> >> in zero-copy mode to the device. What's the result?
+> Hello Dmitry
+>
+> On Thu, 13 Jun 2019 20:12:06 +0800 Dmitry Vyukov wrote:
+> > On Thu, Jun 13, 2019 at 2:07 PM Hillf Danton <hdanton@sina.com> wrote:
+> > >
+> > > Hello Jason
+> > >
+> > > On Thu, 13 Jun 2019 17:10:39 +0800 Jason Wang wrote:
+> > > >
+> > > > This is basically a kfree(ubuf) after the second vhost_net_flush() =
+in
+> > > > vhost_net_release().
+> > > >
+> > > Fairly good catch.
+> > >
+> > > > Could you please post a formal patch?
+> > > >
+> > > I'd like very much to do that; but I wont, I am afraid, until I colle=
+ct a
+> > > Tested-by because of reproducer without a cutting edge.
 > >
-> > There are 32 regular RX queues (0..31) and 32 XSK RX queues (32..63). I=
-f
-> > you want 32 zero-copy AF_XDP sockets, you can attach them to queues
-> > 32..63, and the regular traffic won't be affected at all.
+> > You can easily collect Tested-by from syzbot for any bug with a reprodu=
+cer;)
+> > https://github.com/google/syzkaller/blob/master/docs/syzbot.md#testing-=
+patches
 > >
-> Thanks for getting back! More questions!
+> Thank you for the light you are casting.
+
+:)
+
+But you did not ask syzbot to test. That would be something like this
+(keeping syzbot email in CC):
+
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+master
+
+(I've attached the patch because my email client is incapable of
+sending non-corrupted patches inline, but otherwise inline patches
+should work too).
+
+
+> Here it goes.
+> --->8--------
+> From: Hillf Danton <hdanton@sina.com>
+> Subject: [PATCH] vhost: fix memory leak in vhost_net_release
 >
-> Ok, so I cannot (with zero-copy) get the regular traffic into AF_XDP
-> sockets?
+> syzbot found the following crash on:
 >
-> How does qids map? Can I only bind a zero-copy socket to qid 32..63 in
-> the example above?
+> HEAD commit:    788a0249 Merge tag 'arc-5.2-rc4' of git://git.kernel.org/=
+p..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x dc9ea6a00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=C3=95c73825cbdc=
+7326
+> dashboard link: https://syzkaller.appspot.com/bug?extid 89f0c7e45efd7bb64=
+3
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x b31761a00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x 4892c1a00000
 >
-> Say that I have a a copy-mode AF_XDP socket bound to queue 2. In this
-> case I will receive the regular traffic from queue 2. Enabling zero-copy
-> for the same queue, will this give an error, or receive AF_XDP specific
-> traffic from queue 2+32? Or return an error, and require an explicit
-> bind to any of the queues 32..63?
+>
+> udit: type 00 audit(1559768703.229:36): avc:  denied  { map } for
+> pidq16 comm=3D"syz-executor330" path=3D"/root/syz-executor330334897"
+> dev=3D"sda1" ino 461 scontext=3Dunconfined_u:system_r:insmod_t:s0-s0:c0.c=
+1023
+> tcontext=3Dunconfined_u:object_r:user_home_t:s0 tclass=3Dfile permissive=
+=3D1
+> executing program
+> executing program
+>
+> BUG: memory leak
+> unreferenced object 0xffff88812421fe40 (size 64):
+>    comm "syz-executor330", pid 7117, jiffies 4294949245 (age 13.030s)
+>    hex dump (first 32 bytes):
+>      01 00 00 00 20 69 6f 63 00 00 00 00 64 65 76 2f  .... ioc....dev/
+>      50 fe 21 24 81 88 ff ff 50 fe 21 24 81 88 ff ff  P.!$....P.!$....
+>    backtrace:
+>      [<00000000ae0c4ae0>] kmemleak_alloc_recursive include/linux/kmemleak=
+.h:55 [inline]
+>      [<00000000ae0c4ae0>] slab_post_alloc_hook mm/slab.h:439 [inline]
+>      [<00000000ae0c4ae0>] slab_alloc mm/slab.c:3326 [inline]
+>      [<00000000ae0c4ae0>] kmem_cache_alloc_trace+0x13d/0x280 mm/slab.c:35=
+53
+>      [<0000000079ebab38>] kmalloc include/linux/slab.h:547 [inline]
+>      [<0000000079ebab38>] vhost_net_ubuf_alloc drivers/vhost/net.c:241 [i=
+nline]
+>      [<0000000079ebab38>] vhost_net_set_backend drivers/vhost/net.c:1534 =
+[inline]
+>      [<0000000079ebab38>] vhost_net_ioctl+0xb43/0xc10 drivers/vhost/net.c=
+:1716
+>      [<000000009f6204a2>] vfs_ioctl fs/ioctl.c:46 [inline]
+>      [<000000009f6204a2>] file_ioctl fs/ioctl.c:509 [inline]
+>      [<000000009f6204a2>] do_vfs_ioctl+0x62a/0x810 fs/ioctl.c:696
+>      [<00000000b45866de>] ksys_ioctl+0x86/0xb0 fs/ioctl.c:713
+>      [<00000000dfb41eb8>] __do_sys_ioctl fs/ioctl.c:720 [inline]
+>      [<00000000dfb41eb8>] __se_sys_ioctl fs/ioctl.c:718 [inline]
+>      [<00000000dfb41eb8>] __x64_sys_ioctl+0x1e/0x30 fs/ioctl.c:718
+>      [<0000000049c1f547>] do_syscall_64+0x76/0x1a0 arch/x86/entry/common.=
+c:301
+>      [<0000000029cc8ca7>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> BUG: memory leak
+> unreferenced object 0xffff88812421fa80 (size 64):
+>    comm "syz-executor330", pid 7130, jiffies 4294949755 (age 7.930s)
+>    hex dump (first 32 bytes):
+>      01 00 00 00 01 00 00 00 00 00 00 00 2f 76 69 72  ............/vir
+>      90 fa 21 24 81 88 ff ff 90 fa 21 24 81 88 ff ff  ..!$......!$....
+>    backtrace:
+>      [<00000000ae0c4ae0>] kmemleak_alloc_recursive  include/linux/kmemlea=
+k.h:55 [inline]
+>      [<00000000ae0c4ae0>] slab_post_alloc_hook mm/slab.h:439 [inline]
+>      [<00000000ae0c4ae0>] slab_alloc mm/slab.c:3326 [inline]
+>      [<00000000ae0c4ae0>] kmem_cache_alloc_trace+0x13d/0x280 mm/slab.c:35=
+53
+>      [<0000000079ebab38>] kmalloc include/linux/slab.h:547 [inline]
+>      [<0000000079ebab38>] vhost_net_ubuf_alloc drivers/vhost/net.c:241  [=
+inline]
+>      [<0000000079ebab38>] vhost_net_set_backend drivers/vhost/net.c:1534 =
+ [inline]
+>      [<0000000079ebab38>] vhost_net_ioctl+0xb43/0xc10  drivers/vhost/net.=
+c:1716
+>      [<000000009f6204a2>] vfs_ioctl fs/ioctl.c:46 [inline]
+>      [<000000009f6204a2>] file_ioctl fs/ioctl.c:509 [inline]
+>      [<000000009f6204a2>] do_vfs_ioctl+0x62a/0x810 fs/ioctl.c:696
+>      [<00000000b45866de>] ksys_ioctl+0x86/0xb0 fs/ioctl.c:713
+>      [<00000000dfb41eb8>] __do_sys_ioctl fs/ioctl.c:720 [inline]
+>      [<00000000dfb41eb8>] __se_sys_ioctl fs/ioctl.c:718 [inline]
+>      [<00000000dfb41eb8>] __x64_sys_ioctl+0x1e/0x30 fs/ioctl.c:718
+>      [<0000000049c1f547>] do_syscall_64+0x76/0x1a0  arch/x86/entry/common=
+.c:301
+>      [<0000000029cc8ca7>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> End of syzbot report.
+>
+> The function vhost_net_ubuf_alloc() appears in the two cases of dump info=
+, for
+> pid 7130 and 7117, suggesting that it is ubuf leak.
+>
+> Since commit c38e39c378f4 ("vhost-net: fix use-after-free in vhost_net_fl=
+ush")
+> the function vhost_net_flush() had been no longer releasing ubuf.
+>
+> Freeing the slab after the last flush in the release path fixes it.
 >
 >
+> Fixes: c38e39c378f4 ("vhost-net: fix use-after-free in vhost_net_flush")
+> Reported-by: Syzbot <syzbot+0789f0c7e45efd7bb643@syzkaller.appspotmail.co=
+m>
+> Suggested-by: Jason Wang <jasowang@redhat.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Asias He <asias@redhat.com>
+> Signed-off-by: Hillf Danton <hdanton@sina.com>
+> ---
+> This is sent only for collecting Tested-by.
+>
+>  drivers/vhost/net.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+> index 3beb401..22fae0a 100644
+> --- a/drivers/vhost/net.c
+> +++ b/drivers/vhost/net.c
+> @@ -1404,6 +1404,7 @@ static int vhost_net_release(struct inode *inode, s=
+truct file *f)
+>         /* We do an extra flush before freeing memory,
+>          * since jobs can re-queue themselves. */
+>         vhost_net_flush(n);
+> +       kfree(n->vqs[VHOST_NET_VQ_TX].ubufs);
+>         kfree(n->vqs[VHOST_NET_VQ_RX].rxq.queue);
+>         kfree(n->vqs[VHOST_NET_VQ_TX].xdp);
+>         kfree(n->dev.vqs);
+> --
+>
 
-Let me expand a bit on why I'm asking these qid questions.
+--000000000000355591058b35b99c
+Content-Type: application/octet-stream; name=patch
+Content-Disposition: attachment; filename=patch
+Content-Transfer-Encoding: base64
+Content-ID: <f_jwus9oj40>
+X-Attachment-Id: f_jwus9oj40
 
-It's unfortunate that vendors have different view/mapping on
-"qids". For Intel, we allow to bind a zero-copy socket to all Rx
-qids. For Mellanox, a certain set of qids are allowed for zero-copy
-sockets.
-
-This highlights a need for a better abstraction for queues than "some
-queue id from ethtool". This will take some time, and I think that we
-have to accept for now that we'll have different behavior/mapping for
-zero-copy sockets on different NICs.
-
-Let's address this need for a better queue abstraction, but that
-shouldn't block this series IMO. Other than patch:
-
-"[PATCH bpf-next v4 07/17] libbpf: Support drivers with non-combined channe=
-ls"
-
-which I'd like to see a bit more discussion on, I'm OK with this
-series. I haven't been able to test it (no hardware "hint, hint"), but
-I know Jonathan has been running it.
-
-Thanks for working on this, Max!
-
-Bj=C3=B6rn
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmhvc3QvbmV0LmMgYi9kcml2ZXJzL3Zob3N0L25ldC5jCmlu
+ZGV4IDNiZWI0MDEuLjIyZmFlMGEgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvdmhvc3QvbmV0LmMKKysr
+IGIvZHJpdmVycy92aG9zdC9uZXQuYwpAQCAtMTQwNCw2ICsxNDA0LDcgQEAgc3RhdGljIGludCB2
+aG9zdF9uZXRfcmVsZWFzZShzdHJ1Y3QgaW5vZGUgKmlub2RlLCBzdHJ1Y3QgZmlsZSAqZikKIAkv
+KiBXZSBkbyBhbiBleHRyYSBmbHVzaCBiZWZvcmUgZnJlZWluZyBtZW1vcnksCiAJICogc2luY2Ug
+am9icyBjYW4gcmUtcXVldWUgdGhlbXNlbHZlcy4gKi8KIAl2aG9zdF9uZXRfZmx1c2gobik7CisJ
+a2ZyZWUobi0+dnFzW1ZIT1NUX05FVF9WUV9UWF0udWJ1ZnMpOwogCWtmcmVlKG4tPnZxc1tWSE9T
+VF9ORVRfVlFfUlhdLnJ4cS5xdWV1ZSk7CiAJa2ZyZWUobi0+dnFzW1ZIT1NUX05FVF9WUV9UWF0u
+eGRwKTsKIAlrZnJlZShuLT5kZXYudnFzKTsKLS0K
+--000000000000355591058b35b99c--
