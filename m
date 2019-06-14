@@ -2,135 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A172646567
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 19:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC0C46574
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 19:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726262AbfFNRJS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jun 2019 13:09:18 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:45975 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbfFNRJR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jun 2019 13:09:17 -0400
-Received: by mail-qt1-f195.google.com with SMTP id j19so3262528qtr.12;
-        Fri, 14 Jun 2019 10:09:17 -0700 (PDT)
+        id S1725825AbfFNRQF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jun 2019 13:16:05 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:35677 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725802AbfFNRQF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jun 2019 13:16:05 -0400
+Received: by mail-pg1-f195.google.com with SMTP id s27so1917881pgl.2;
+        Fri, 14 Jun 2019 10:16:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8wh55Cc5i2Lm0uKQU6Z1K0oTPrUc8lTykFYnyLF1hmI=;
-        b=Xj7snfT/PvWl6aBQDyjdw33T+D2UjBfUv8RjbVPeLJPCahk+HvjxdswjSWDN7oIr3C
-         VQqddC+9kvHVUKM8EGbrAmYUV0+0j4Bi4GJOz0KS7SWEutrJnQ9h6o629P1e7aXgz1hG
-         jYAAyP+qXwhwdMKmCGbXYsK3ptud5FO8peYMj6VfZdpP0x3PEAqns/79Scv8oNPOyINZ
-         IGwWr6UiFZcxLd9zcmVIEH+Ua+3+7Zs7hlkWipuAtIXd7S3PXrI7KzjnzaNiUNOkfiBK
-         JNlEh8bt5d+0/rwI+49lysrhE8rhSD/DxFGxvmsO5e2415dRKMYoTgq0ebMlIrBZ5zt0
-         HK3w==
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=w4xkfhw9P/mZ5Ov6JWcVYWfC+GgKo69/kxNNY20kkhA=;
+        b=aWr1mLGflo4B0gklLMgNG5TQYmjw4KhJEWBX01cWmxiTSa/6niCilaGzLttBFRHtOp
+         eI6X2+PdURC14gRWzkvTDjp77K4JI5B7DdN+vm2c3wvEZgJHciFf4v8HUJSFykc/j+NL
+         Pn99ZlkI9Apd+ki5nEdF3tAXFsRXejPigSGaU3/3+dK9ME1ot1zipNfXKo9pOcUxFUsQ
+         H4nYwQohLLNHE4pDoYjpynzMUr3mjnaUWqKiIxeuVqHkOyfO9IyvbsShpFO8lwIrE54v
+         ROg1lVrLHYxF+R1dWLg6LEXWU8mS7hWT7LVxFNAySd1i9K0hs4nX00Hu1wlApvZV+zLO
+         oAww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8wh55Cc5i2Lm0uKQU6Z1K0oTPrUc8lTykFYnyLF1hmI=;
-        b=arPf1lu+3vdAUw90UiAL970Xgw2fAyeB4bhdKDgfBywaWbEHNPV9dzO2ttjMyMMKU2
-         a9V7LgaNMVYBU1z24HMY/i0TjnRkcx0kp4Zd6CxYgHW36yvmNJ+HnDqA2v/eANzJwHBl
-         bofwFzp2j7h0eiPcuDsMOX3Gzm2+VTrYmE9B4s2Ak8FYOVrERRw4G1hYWoBWdJZVpkvv
-         8UJCmdGZOy8B/vu3HZBcAbhVAs8P0FDh8WDYRYPh5hOge7hyorqZpXVVZBGMUpmOmrch
-         bwecBfNGQuaCoisp+4l1U4+RAiXBg6E02oXemwZoU6btl2ciC1rMI2IOCQSCpoYqB1Xj
-         PJ4w==
-X-Gm-Message-State: APjAAAXeyCUBYwwLySunPxD1xhNVat6sN3Su0mFME+UtMq+e+XCHpXOu
-        mhqCgtmf3Ir9ZL1e0bctKz4=
-X-Google-Smtp-Source: APXvYqzZee60sXrwkCUgGq+ra5aKQV5AK6TR6hJfqiSgAwuo4IfEnuq9VXMpCRgDobBNl5LOD3J3xw==
-X-Received: by 2002:a0c:af16:: with SMTP id i22mr9320471qvc.234.1560532156439;
-        Fri, 14 Jun 2019 10:09:16 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::6bab])
-        by smtp.gmail.com with ESMTPSA id g185sm1822986qkf.54.2019.06.14.10.09.15
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 14 Jun 2019 10:09:15 -0700 (PDT)
-Date:   Fri, 14 Jun 2019 10:09:14 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     Alexei Starovoitov <ast@fb.com>
-Cc:     Quentin Monnet <quentin.monnet@netronome.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>, Andy Newell <newella@fb.com>,
-        Chris Mason <clm@fb.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        Dennis Zhou <dennisz@fb.com>,
-        "lizefan@huawei.com" <lizefan@huawei.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH 10/10] blkcg: implement BPF_PROG_TYPE_IO_COST
-Message-ID: <20190614170914.GF538958@devbig004.ftw2.facebook.com>
-References: <20190614015620.1587672-1-tj@kernel.org>
- <20190614015620.1587672-11-tj@kernel.org>
- <e4d1df7b-66bb-061a-8ecb-ff1e5be3ab1d@netronome.com>
- <20190614145239.GA538958@devbig004.ftw2.facebook.com>
- <bed0a66a-7aa6-ac36-9182-31a4937257e5@fb.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=w4xkfhw9P/mZ5Ov6JWcVYWfC+GgKo69/kxNNY20kkhA=;
+        b=kID4kQxxYUfN3Ly/USSEjQH+SM7KedaZo/IUMT0m5yKeyc5z5jaoma3ssUGKmUvsQo
+         fztuwfH1IcL7HQD2cVmqIwdRl7klZn0GDSWkQmhObr0B7AolWjrUo6rcQ0R/xsObC9cG
+         7Z+2vXKfux3VL/ani1vX3pC2lndBhCVzCFMBhUktim8n3tBRpEOg6KatGHkDaB4tNBa5
+         mB/qjylqGAZZDS+cnAHQXdJMOYDWQGEPTsLm/u3w5vKzWZf082xEtlUhQGQ1ODaXEpk4
+         dwe2GX5ob0PSi8rpskVbBQyaYYOBEHEJHt85DX1vcUVK9yJC1y4djAd1kU5q+Lb5DpS5
+         xgQw==
+X-Gm-Message-State: APjAAAVr1xAwlbZ3I1UMbQx497kCmOpQa0wZv1tPhnE9OBzblAcNf7Y/
+        w7H+kZWBLSD3Ou2HaqjeHuTfeSGdkmM=
+X-Google-Smtp-Source: APXvYqx6xvb15603XcKfdISIGDjP0rvkCDGFkgv6fRaGiehXSy0ZApehsh6pSX46o+Jyo7+dL0zahA==
+X-Received: by 2002:a65:60c2:: with SMTP id r2mr36174586pgv.156.1560532564021;
+        Fri, 14 Jun 2019 10:16:04 -0700 (PDT)
+Received: from localhost ([192.55.54.45])
+        by smtp.gmail.com with ESMTPSA id r4sm2885535pjd.28.2019.06.14.10.16.00
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 14 Jun 2019 10:16:03 -0700 (PDT)
+Date:   Fri, 14 Jun 2019 19:15:49 +0200
+From:   Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
+To:     Maxim Mikityanskiy <maximmi@mellanox.com>
+Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Jonathan Lemon <bsd@fb.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH bpf-next v4 07/17] libbpf: Support drivers with
+ non-combined channels
+Message-ID: <20190614191549.0000374d@gmail.com>
+In-Reply-To: <eb175575-1ab4-4d29-1dc9-28d85cddd842@mellanox.com>
+References: <20190612155605.22450-1-maximmi@mellanox.com>
+ <20190612155605.22450-8-maximmi@mellanox.com>
+ <20190612132352.7ee27bf3@cakuba.netronome.com>
+ <0afd3ef2-d0e3-192b-095e-0f8ae8e6fb5d@mellanox.com>
+ <20190613164514.00002f66@gmail.com>
+ <eb175575-1ab4-4d29-1dc9-28d85cddd842@mellanox.com>
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.32; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bed0a66a-7aa6-ac36-9182-31a4937257e5@fb.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello, Alexei.
+On Fri, 14 Jun 2019 13:25:24 +0000
+Maxim Mikityanskiy <maximmi@mellanox.com> wrote:
 
-On Fri, Jun 14, 2019 at 04:35:35PM +0000, Alexei Starovoitov wrote:
-> the example bpf prog looks flexible enough to allow some degree
-> of experiments. The question is what kind of new algorithms you envision
-> it will do? what other inputs it would need to make a decision?
-> I think it's ok to start with what it does now and extend further
-> when need arises.
-
-I'm not sure right now.  The linear model worked a lot better than I
-originally expected and looks like it can cover most of the current
-use cases.  It could easily be that we just haven't seen enough
-different cases yet.
-
-At one point, quadratic model was on the table in case the linear
-model wasn't good enough.  Also, one area which may need improvements
-could be factoring in r/w mixture into consideration.  Some SSDs'
-performance nose-dive when r/w commands are mixed in certain
-proportions.  Right now, we just deal with that by adjusting global
-performance ratio (vrate) but I can imagine a model which considers
-the issue history in the past X seconds of the cgroup and bumps the
-overall cost according to r/w mixture.
-
-> > * Is block ioctl the right mechanism to attach these programs?
-> 
-> imo ioctl is a bit weird, but since its only one program per block
-> device it's probably ok? Unless you see it being cgroup scoped in
-> the future? Then cgroup-bpf style hooks will be more suitable
-> and allow a chain of programs.
-
-As this is a device property, I think there should only be one program
-per block device.
-
-> > * Are there more parameters that need to be exposed to the programs?
+> On 2019-06-13 17:45, Maciej Fijalkowski wrote:
+> > On Thu, 13 Jun 2019 14:01:39 +0000
+> > Maxim Mikityanskiy <maximmi@mellanox.com> wrote:
+> >   
+> >> On 2019-06-12 23:23, Jakub Kicinski wrote:  
+> >>> On Wed, 12 Jun 2019 15:56:48 +0000, Maxim Mikityanskiy wrote:  
+> >>>> Currently, libbpf uses the number of combined channels as the maximum
+> >>>> queue number. However, the kernel has a different limitation:
+> >>>>
+> >>>> - xdp_reg_umem_at_qid() allows up to max(RX queues, TX queues).
+> >>>>
+> >>>> - ethtool_set_channels() checks for UMEMs in queues up to
+> >>>>     combined_count + max(rx_count, tx_count).
+> >>>>
+> >>>> libbpf shouldn't limit applications to a lower max queue number. Account
+> >>>> for non-combined RX and TX channels when calculating the max queue
+> >>>> number. Use the same formula that is used in ethtool.
+> >>>>
+> >>>> Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+> >>>> Reviewed-by: Tariq Toukan <tariqt@mellanox.com>
+> >>>> Acked-by: Saeed Mahameed <saeedm@mellanox.com>  
+> >>>
+> >>> I don't think this is correct.  max_tx tells you how many TX channels
+> >>> there can be, you can't add that to combined.  Correct calculations is:
+> >>>
+> >>> max_num_chans = max(max_combined, max(max_rx, max_tx))  
+> >>
+> >> First of all, I'm aligning with the formula in the kernel, which is:
+> >>
+> >>       curr.combined_count + max(curr.rx_count, curr.tx_count);
+> >>
+> >> (see net/core/ethtool.c, ethtool_set_channels()).
+> >>
+> >> The formula in libbpf should match it.
+> >>
+> >> Second, the existing drivers have either combined channels or separate
+> >> rx and tx channels. So, for the first kind of drivers, max_tx doesn't
+> >> tell how many TX channels there can be, it just says 0, and max_combined
+> >> tells how many TX and RX channels are supported. As max_tx doesn't
+> >> include max_combined (and vice versa), we should add them up.
+> >>  
+> >>>>    tools/lib/bpf/xsk.c | 6 +++---
+> >>>>    1 file changed, 3 insertions(+), 3 deletions(-)
+> >>>>
+> >>>> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> >>>> index bf15a80a37c2..86107857e1f0 100644
+> >>>> --- a/tools/lib/bpf/xsk.c
+> >>>> +++ b/tools/lib/bpf/xsk.c
+> >>>> @@ -334,13 +334,13 @@ static int xsk_get_max_queues(struct xsk_socket *xsk)
+> >>>>    		goto out;
+> >>>>    	}
+> >>>>    
+> >>>> -	if (channels.max_combined == 0 || errno == EOPNOTSUPP)
+> >>>> +	ret = channels.max_combined + max(channels.max_rx, channels.max_tx);  
 > > 
-> > * It'd be great to have efficient access to per-blockdev and
-> >    per-blockdev-cgroup-pair storages available to these programs so
-> >    that they can keep track of history.  What'd be the best of way of
-> >    doing that considering the fact that these programs will be called
-> >    per each IO and the overhead can add up quickly?
+> > So in case of 32 HW queues you'd like to get 64 entries in xskmap?  
 > 
-> Martin's socket local storage solved that issue for sockets.
-> Something very similar can work for per-blockdev-per-cgroup.
+> "32 HW queues" is not quite correct. It will be 32 combined channels, 
+> each with one regular RX queue and one XSK RX queue (regular RX queues 
+> are part of RSS). In this case, I'll have 64 XSKMAP entries.
+> 
+> > Do you still
+> > have a need for attaching the xsksocks to the RSS queues?  
+> 
+> You can attach an XSK to a regular RX queue, but not in zero-copy mode. 
+> The intended use is, of course, to attach XSKs to XSK RX queues in 
+> zero-copy mode.
+>
+> > I thought you want
+> > them to be separated. So if I'm reading this right, [0, 31] xskmap entries
+> > would be unused for the most of the time, no?  
+> 
+> This is correct, but these entries are still needed if one decides to 
+> run compatibility mode without zero-copy on queues 0..31.
 
-Cool, that sounds great in case we need to develop this further.  Andy
-had this self-learning model which didn't need any external input and
-could tune itself solely based on device saturation state.  If the
-prog can remember states cheaply, it'd be pretty cool to experiment
-with things like that in bpf.
+Why would I want to run AF_XDP without ZC? The main reason for having AF_XDP
+support in drivers is the zero copy, right?
 
-Thanks.
+Besides that, are you educating the user in some way which queue ids should be
+used so there's ZC in picture? If that was already asked/answered, then sorry
+about that.
 
--- 
-tejun
+> 
+> >   
+> >>>> +
+> >>>> +	if (ret == 0 || errno == EOPNOTSUPP)
+> >>>>    		/* If the device says it has no channels, then all traffic
+> >>>>    		 * is sent to a single stream, so max queues = 1.
+> >>>>    		 */
+> >>>>    		ret = 1;
+> >>>> -	else
+> >>>> -		ret = channels.max_combined;
+> >>>>    
+> >>>>    out:
+> >>>>    	close(fd);  
+> >>>      
+> >>  
+> >   
+> 
+
