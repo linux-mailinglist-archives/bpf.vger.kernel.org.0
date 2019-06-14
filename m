@@ -2,285 +2,294 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB6A4546D
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 08:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E050A4547E
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 08:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725993AbfFNGAN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jun 2019 02:00:13 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:35349 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbfFNGAN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jun 2019 02:00:13 -0400
-Received: by mail-pl1-f194.google.com with SMTP id p1so552961plo.2;
-        Thu, 13 Jun 2019 23:00:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=PNllyiNPePpmts4Pc87kGwpa1biWOwXKxqA4hiAUYe8=;
-        b=XdHhVgbGsLKbKl2SIQMZ/w8qFREHTIoXfwJhoYk2mPe+/rIgmH7KPorNo8eVgTrv4+
-         6hJjriKgFKjA2/Xk3WW32mqxqlpyHG0m8tIwtVQsUUQJp/lTVq9IpKNd4ilyR7Uy6mdC
-         QoHz69LyEQv8vUKjwpHNUAJQRm9WjDpCqZHIkrrzJFAlR54DNQJmeJvQkhxzFwH91lbL
-         LMcnkLPt+lawuJEC/mmqMMHmxQLcxY/Eo6iMOv6E88BVLKwAAA+X3nr1P12ceGQhVFBR
-         xpl1MypOSmTIKFBZVkVOo+PEC6thRC+LlCrHO8r1Thyg3TWcUHXHIh4cFMWLhI5jyzj7
-         Mnpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PNllyiNPePpmts4Pc87kGwpa1biWOwXKxqA4hiAUYe8=;
-        b=C7jygnuJpORWuaskYe8TZNPE4ShFRi8+tHhs5zxwDFsz+RUWXCwPfvAWak5k04kRFF
-         MryE4vqzE5/cXG7xXrNvyrHSwAS3z+biUaU5P6ouwRFclIcAfhI/Ec0DGKFxcsBPyHBj
-         al+uJgJZS8pgA/tv5LpYrFpAX2naAV+RXQXUOvEiobWYIrRXRqFDzmqpm+n/DrihLBwx
-         gGpOOC69aPCSSU3pJwdixnj9yPpaNp1jQ3Lo2XjL3lG5yFiEHy8K4R+FneyDXGg2jkAy
-         /05liYtu4ePgBplrm2mcn53BucIBo9GsCkEyLfkoMGFaDOwYvY8XNp0KuOkHBetPbUqD
-         QeFw==
-X-Gm-Message-State: APjAAAWvRTTroLFUIWhOOnf+jKEPVN/R7bdtr+j6zU2e2Y45CJAi3Ai5
-        UUN91v+Qsp+V9s1cPcyFhhw7cdCG
-X-Google-Smtp-Source: APXvYqxa10BHBNCSX6ZXiNOtwPtmlhios3JctohSb964IPax1aOEtPcqtzkwU4Z3mKXf3fCfLjIZ/Q==
-X-Received: by 2002:a17:902:9897:: with SMTP id s23mr24422200plp.47.1560492012441;
-        Thu, 13 Jun 2019 23:00:12 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::1:f6f1])
-        by smtp.gmail.com with ESMTPSA id j7sm1605660pfa.184.2019.06.13.23.00.10
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 13 Jun 2019 23:00:11 -0700 (PDT)
-Date:   Thu, 13 Jun 2019 23:00:09 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Kairui Song <kasong@redhat.com>
-Subject: Re: [PATCH 7/9] x86/unwind/orc: Fall back to using frame pointers
- for generated code
-Message-ID: <20190614060006.na6nfl6shawsyj3i@ast-mbp.dhcp.thefacebook.com>
-References: <cover.1560431531.git.jpoimboe@redhat.com>
- <4f536ec4facda97406273a22a4c2677f7cb22148.1560431531.git.jpoimboe@redhat.com>
- <20190613220054.tmonrgfdeie2kl74@ast-mbp.dhcp.thefacebook.com>
- <20190614013051.6gnwduy4dsygbamj@treble>
- <20190614014244.st7fbr6areazmyrb@ast-mbp.dhcp.thefacebook.com>
- <20190614015848.todgfogryjn573nd@treble>
- <20190614022848.ly4vlgsz6fa4bcbl@treble>
- <20190614045037.zinbi2sivthcfrtg@treble>
+        id S1725789AbfFNGLM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jun 2019 02:11:12 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46724 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725774AbfFNGLL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 14 Jun 2019 02:11:11 -0400
+Received: from pps.filterd (m0044008.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5E694if024525;
+        Thu, 13 Jun 2019 23:10:39 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=Hra4ZBhiz2bfXeD7xtvy+Ues97oDu/B8WHFobUcHDWU=;
+ b=HoBRO3F9dgfnc1vUknmm0ncnoXmJTfAHk663yeZlXMUBJK+h1IdlICnLiHait2JCUS+T
+ FO8YzX2jbRKSXNH25sH1tnKEdp1+5m+1zB9wtZfQGCeuYPkV8PY6A5NxPMwNVmkrxn2p
+ mnwhIGq9L1KVBR/lDhc27ePJOg6cJxUylkk= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2t3ru7jjf6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 13 Jun 2019 23:10:38 -0700
+Received: from ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) by
+ ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 13 Jun 2019 23:10:37 -0700
+Received: from NAM01-BN3-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 13 Jun 2019 23:10:37 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Hra4ZBhiz2bfXeD7xtvy+Ues97oDu/B8WHFobUcHDWU=;
+ b=aU2WoX4yfmiX3RZ8NlyjbaIvS8I5tkvcCFfwzY72TbgcR4SHRVSGLGSGfCQcrM2lltAv5nrCGhvgehrfnxMkCQMaKnO3mJ3T6qnaTNHoWwn1PWw+JhfHtYa34x06rk5sjsmuIt8j+YwpfmNeEYjgNMI4hGSmRdFP6qstHjsF6bM=
+Received: from BYAPR15MB2501.namprd15.prod.outlook.com (52.135.196.11) by
+ BYAPR15MB3352.namprd15.prod.outlook.com (20.179.58.158) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1987.11; Fri, 14 Jun 2019 06:10:36 +0000
+Received: from BYAPR15MB2501.namprd15.prod.outlook.com
+ ([fe80::60a3:8bdd:1ea2:3702]) by BYAPR15MB2501.namprd15.prod.outlook.com
+ ([fe80::60a3:8bdd:1ea2:3702%7]) with mapi id 15.20.1987.012; Fri, 14 Jun 2019
+ 06:10:36 +0000
+From:   Alexei Starovoitov <ast@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        "Edward Cree" <ecree@solarflare.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, Jann Horn <jannh@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 1/9] bpf: track spill/fill of constants
+Thread-Topic: [PATCH bpf-next 1/9] bpf: track spill/fill of constants
+Thread-Index: AQHVIZ92GSriSS7bskSOYpmjc/P6IaaaH5YAgACM5AA=
+Date:   Fri, 14 Jun 2019 06:10:34 +0000
+Message-ID: <10eec948-adb0-1c9b-4a88-803d95e9e603@fb.com>
+References: <20190613042003.3791852-1-ast@kernel.org>
+ <20190613042003.3791852-2-ast@kernel.org>
+ <CAEf4BzYR+PzdTwEsCr_H6yX=jH3-9g-_9GOJMZV8wNw1+OkMoA@mail.gmail.com>
+In-Reply-To: <CAEf4BzYR+PzdTwEsCr_H6yX=jH3-9g-_9GOJMZV8wNw1+OkMoA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BYAPR02CA0055.namprd02.prod.outlook.com
+ (2603:10b6:a03:54::32) To BYAPR15MB2501.namprd15.prod.outlook.com
+ (2603:10b6:a02:88::11)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:180::1:f6f1]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 939a0091-bb35-4451-9fe0-08d6f08f0173
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB3352;
+x-ms-traffictypediagnostic: BYAPR15MB3352:
+x-microsoft-antispam-prvs: <BYAPR15MB3352EB489980D7F8B6304FD7D7EE0@BYAPR15MB3352.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-forefront-prvs: 0068C7E410
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(39860400002)(366004)(396003)(346002)(376002)(189003)(199004)(66946007)(54906003)(6116002)(36756003)(68736007)(6486002)(229853002)(7736002)(5660300002)(110136005)(66476007)(66556008)(99286004)(6436002)(73956011)(305945005)(66446008)(64756008)(316002)(8676002)(81156014)(6512007)(71190400001)(71200400001)(8936002)(52116002)(81166006)(53936002)(478600001)(46003)(102836004)(31686004)(6246003)(186003)(4326008)(31696002)(486006)(86362001)(2906002)(14444005)(256004)(446003)(11346002)(476003)(2616005)(14454004)(25786009)(53546011)(7416002)(6506007)(386003)(76176011);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3352;H:BYAPR15MB2501.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 63D6jj8ONun93fueQAAUEmImMwarvUIsb5l+kg4+prwra7r/uLHiaRD/aDXJBphZMG5qRQkaolUMLaSSw2USapHpVYTE0Rl08qHcN2mHvaGo74j04UEJ0+dsp9dv1DObIkdBM/zyAxU0iLg0pV74t1akYhdgPLu8GM7UFmaQsAtizO0oZsuZYCXg7hqEUPwJg/XX9dCrQfgE/cPTsnUFJAY3PRL3argdXg2w4u7eGFEdSGFqUmzYuAfyr2ekiIk54q45wxIpUlMADc6sVKoAyt2rOnKEm8l8DX7rHarETBfvnUQujT3GkSGG5ik3AVdg1fcM/z0msDab9Y5Cyto9G/zlPMIkQnGj8ixN96nOaqaQr+5HSMOx2fmSTROyRMJN0MDpmSsiUkNW7tnbuo6QWfbIfVvZp64Udt2aiCBbhrQ=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C9D8E14647588A439CB61B4DE55ACFB4@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190614045037.zinbi2sivthcfrtg@treble>
-User-Agent: NeoMutt/20180223
+X-MS-Exchange-CrossTenant-Network-Message-Id: 939a0091-bb35-4451-9fe0-08d6f08f0173
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jun 2019 06:10:35.9002
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ast@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3352
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-14_04:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906140051
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 13, 2019 at 11:50:37PM -0500, Josh Poimboeuf wrote:
-> On Thu, Jun 13, 2019 at 09:28:48PM -0500, Josh Poimboeuf wrote:
-> > On Thu, Jun 13, 2019 at 08:58:48PM -0500, Josh Poimboeuf wrote:
-> > > On Thu, Jun 13, 2019 at 06:42:45PM -0700, Alexei Starovoitov wrote:
-> > > > On Thu, Jun 13, 2019 at 08:30:51PM -0500, Josh Poimboeuf wrote:
-> > > > > On Thu, Jun 13, 2019 at 03:00:55PM -0700, Alexei Starovoitov wrote:
-> > > > > > > @@ -392,8 +402,16 @@ bool unwind_next_frame(struct unwind_state *state)
-> > > > > > >  	 * calls and calls to noreturn functions.
-> > > > > > >  	 */
-> > > > > > >  	orc = orc_find(state->signal ? state->ip : state->ip - 1);
-> > > > > > > -	if (!orc)
-> > > > > > > -		goto err;
-> > > > > > > +	if (!orc) {
-> > > > > > > +		/*
-> > > > > > > +		 * As a fallback, try to assume this code uses a frame pointer.
-> > > > > > > +		 * This is useful for generated code, like BPF, which ORC
-> > > > > > > +		 * doesn't know about.  This is just a guess, so the rest of
-> > > > > > > +		 * the unwind is no longer considered reliable.
-> > > > > > > +		 */
-> > > > > > > +		orc = &orc_fp_entry;
-> > > > > > > +		state->error = true;
-> > > > > > 
-> > > > > > That seems fragile.
-> > > > > 
-> > > > > I don't think so.  The unwinder has sanity checks to make sure it
-> > > > > doesn't go off the rails.  And it works just fine.  The beauty is that
-> > > > > it should work for all generated code (not just BPF).
-> > > > > 
-> > > > > > Can't we populate orc_unwind tables after JIT ?
-> > > > > 
-> > > > > As I mentioned it would introduce a lot more complexity.  For each JIT
-> > > > > function, BPF would have to tell ORC the following:
-> > > > > 
-> > > > > - where the BPF function lives
-> > > > > - how big the stack frame is
-> > > > > - where RBP and other callee-saved regs are on the stack
-> > > > 
-> > > > that sounds like straightforward addition that ORC should have anyway.
-> > > > right now we're not using rbp in the jit-ed code,
-> > > > but one day we definitely will.
-> > > > Same goes for r12. It's reserved right now for 'strategic use'.
-> > > > We've been thinking to add another register to bpf isa.
-> > > > It will map to r12 on x86. arm64 and others have plenty of regs to use.
-> > > > The programs are getting bigger and register spill/fill starting to
-> > > > become a performance concern. Extra register will give us more room.
-> > > 
-> > > With CONFIG_FRAME_POINTER, RBP isn't available.  If you look at all the
-> > > code in the entire kernel you'll notice that BPF JIT is pretty much the
-> > > only one still clobbering it.
-> > 
-> > Hm.  If you wanted to eventually use R12 for other purposes, there might
-> > be a way to abstract BPF_REG_FP such that it doesn't actually need a
-> > dedicated register.  The BPF program's frame pointer will always be a
-> > certain constant offset away from RBP (real frame pointer), so accesses
-> > to BPF_REG_FP could still be based on RBP, but with an offset added to
-> > it.
-> 
-> How about something like this (based on top of patch 4)?  This fixes
-> frame pointers without using R12, by making BPF_REG_FP equivalent to
-> RBP, minus a constant offset (callee-save area + tail_call_cnt = 40).
-> 
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 485692d4b163..2f313622c741 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -104,6 +104,9 @@ static int bpf_size_to_x86_bytes(int bpf_size)
->   * register in load/store instructions, it always needs an
->   * extra byte of encoding and is callee saved.
->   *
-> + * BPF_REG_FP corresponds to x86-64 register RBP, but 40 bytes must be
-> + * subtracted from it to get the BPF_REG_FP value.
-> + *
->   * Also x86-64 register R9 is unused. x86-64 register R10 is
->   * used for blinding (if enabled).
->   */
-> @@ -118,11 +121,18 @@ static const int reg2hex[] = {
->  	[BPF_REG_7] = 5,  /* R13 callee saved */
->  	[BPF_REG_8] = 6,  /* R14 callee saved */
->  	[BPF_REG_9] = 7,  /* R15 callee saved */
-> -	[BPF_REG_FP] = 5, /* RBP readonly */
-> +	[BPF_REG_FP] = 5, /* (RBP - 40 bytes) readonly */
->  	[BPF_REG_AX] = 2, /* R10 temp register */
->  	[AUX_REG] = 3,    /* R11 temp register */
->  };
->  
-> +static s16 offset(struct bpf_insn *insn)
-> +{
-> +	if (insn->src_reg == BPF_REG_FP || insn->dst_reg == BPF_REG_FP)
-> +		return insn->off - 40;
-> +	return insn->off;
-> +}
-> +
->  /*
->   * is_ereg() == true if BPF register 'reg' maps to x86-64 r8..r15
->   * which need extra byte of encoding.
-> @@ -197,14 +207,18 @@ static void emit_prologue(u8 **pprog, u32 stack_depth)
->  	u8 *prog = *pprog;
->  	int cnt = 0;
->  
-> +	/* push rbp */
-> +	EMIT1(0x55);
-> +
-> +	/* mov rbp,rsp */
-> +	EMIT3(0x48, 0x89, 0xE5);
-> +
->  	/* push r15 */
->  	EMIT2(0x41, 0x57);
->  	/* push r14 */
->  	EMIT2(0x41, 0x56);
->  	/* push r13 */
->  	EMIT2(0x41, 0x55);
-> -	/* push rbp */
-> -	EMIT1(0x55);
->  	/* push rbx */
->  	EMIT1(0x53);
->  
-> @@ -216,14 +230,6 @@ static void emit_prologue(u8 **pprog, u32 stack_depth)
->  	 */
->  	EMIT2(0x6a, 0x00);
->  
-> -	/*
-> -	 * RBP is used for the BPF program's FP register.  It points to the end
-> -	 * of the program's stack area.
-> -	 *
-> -	 * mov rbp, rsp
-> -	 */
-> -	EMIT3(0x48, 0x89, 0xE5);
-> -
->  	/* sub rsp, rounded_stack_depth */
->  	EMIT3_off32(0x48, 0x81, 0xEC, round_up(stack_depth, 8));
->  
-> @@ -237,19 +243,19 @@ static void emit_epilogue(u8 **pprog)
->  	u8 *prog = *pprog;
->  	int cnt = 0;
->  
-> -	/* lea rsp, [rbp+0x8] */
-> -	EMIT4(0x48, 0x8D, 0x65, 0x08);
-> +	/* lea rsp, [rbp-0x20] */
-> +	EMIT4(0x48, 0x8D, 0x65, 0xE0);
->  
->  	/* pop rbx */
->  	EMIT1(0x5B);
-> -	/* pop rbp */
-> -	EMIT1(0x5D);
->  	/* pop r13 */
->  	EMIT2(0x41, 0x5D);
->  	/* pop r14 */
->  	EMIT2(0x41, 0x5E);
->  	/* pop r15 */
->  	EMIT2(0x41, 0x5F);
-> +	/* pop rbp */
-> +	EMIT1(0x5D);
->  
->  	/* ret */
->  	EMIT1(0xC3);
-> @@ -298,13 +304,13 @@ static void emit_bpf_tail_call(u8 **pprog)
->  	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
->  	 *	goto out;
->  	 */
-> -	EMIT3(0x8B, 0x45, 0x04);                  /* mov eax, dword ptr [rbp + 4] */
-> +	EMIT3(0x8B, 0x45, 0xDC);                  /* mov eax, dword ptr [rbp - 36] */
->  	EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);     /* cmp eax, MAX_TAIL_CALL_CNT */
->  #define OFFSET2 (27 + RETPOLINE_RAX_BPF_JIT_SIZE)
->  	EMIT2(X86_JA, OFFSET2);                   /* ja out */
->  	label2 = cnt;
->  	EMIT3(0x83, 0xC0, 0x01);                  /* add eax, 1 */
-> -	EMIT3(0x89, 0x45, 0x04);                  /* mov dword ptr [rbp + 4], eax */
-> +	EMIT3(0x89, 0x45, 0xDC);                  /* mov dword ptr [rbp - 36], eax */
->  
->  	/* prog = array->ptrs[index]; */
->  	EMIT4_off32(0x48, 0x8B, 0x84, 0xD6,       /* mov rax, [rsi + rdx * 8 + offsetof(...)] */
-> @@ -418,6 +424,17 @@ static void emit_mov_reg(u8 **pprog, bool is64, u32 dst_reg, u32 src_reg)
->  		EMIT2(0x89, add_2reg(0xC0, dst_reg, src_reg));
->  	}
->  
-> +	if (src_reg == BPF_REG_FP) {
-> +		/*
-> +		 * If the value was copied from RBP (real frame pointer),
-> +		 * adjust it to the BPF program's frame pointer value.
-> +		 *
-> +		 * add dst, -40
-> +		 */
-> +		EMIT4(add_1mod(0x48, dst_reg), 0x83, add_1reg(0xC0, dst_reg),
-> +		      0xD8);
-> +	}
-> +
-
-That won't work. Any register can point to a stack.
-The register can point to a stack of a different JITed function as well.
-
-There is something wrong with
-commit d15d356887e7 ("perf/x86: Make perf callchains work without CONFIG_FRAME_POINTER")
-
-If I simply revert it and have CONFIG_UNWINDER_FRAME_POINTER=y
-JITed stacks work just fine, because
-bpf_get_stackid()->get_perf_callchain()
-need to start unwinding before any bpf stuff.
-After that commit it needs to go through which is a bug on its own.
-imo patch 1 doesn't really fix that issue.
-
-As far as mangled rbp can we partially undo old
-commit 177366bf7ceb ("bpf: change x86 JITed program stack layout")
-that introduced that rbp adjustment.
-Going through bpf code is only interesting in case of panics somewhere
-in bpf helpers. Back then we didn't even have ksym of jited code.
-
-Anyhow I agree that we need to make the jited frame proper,
-but unwinding need to start before any bpf stuff.
-That's a bigger issue.
-
+T24gNi8xMy8xOSAyOjQ2IFBNLCBBbmRyaWkgTmFrcnlpa28gd3JvdGU6DQo+IE9uIFRodSwgSnVu
+IDEzLCAyMDE5IGF0IDk6NTAgQU0gQWxleGVpIFN0YXJvdm9pdG92IDxhc3RAa2VybmVsLm9yZz4g
+d3JvdGU6DQo+Pg0KPj4gQ29tcGlsZXJzIG9mdGVuIHNwaWxsIGluZHVjdGlvbiB2YXJpYWJsZXMg
+aW50byB0aGUgc3RhY2ssDQo+PiBoZW5jZSBpdCBpcyBuZWNlc3NhcnkgZm9yIHRoZSB2ZXJpZmll
+ciB0byB0cmFjayBzY2FsYXIgdmFsdWVzDQo+PiBvZiB0aGUgcmVnaXN0ZXJzIHRocm91Z2ggc3Rh
+Y2sgc2xvdHMuDQo+Pg0KPj4gQWxzbyBmZXcgYnBmIHByb2dyYW1zIHdlcmUgaW5jb3JyZWN0bHkg
+cmVqZWN0ZWQgaW4gdGhlIHBhc3QsDQo+PiBzaW5jZSB0aGUgdmVyaWZpZXIgd2FzIG5vdCBhYmxl
+IHRvIHRyYWNrIHN1Y2ggY29uc3RhbnRzIHdoaWxlDQo+PiB0aGV5IHdlcmUgdXNlZCB0byBjb21w
+dXRlIG9mZnNldHMgaW50byBwYWNrZXQgaGVhZGVycy4NCj4+DQo+PiBUcmFja2luZyBjb25zdGFu
+dHMgdGhyb3VnaCB0aGUgc3RhY2sgc2lnbmlmaWNhbnRseSBkZWNyZWFzZXMNCj4+IHRoZSBjaGFu
+Y2VzIG9mIHN0YXRlIHBydW5pbmcsIHNpbmNlIHR3byBkaWZmZXJlbnQgY29uc3RhbnRzDQo+PiBh
+cmUgY29uc2lkZXJlZCB0byBiZSBkaWZmZXJlbnQgYnkgc3RhdGUgZXF1aXZhbGVuY3kuDQo+PiBF
+bmQgcmVzdWx0IHRoYXQgY2lsaXVtIHRlc3RzIHN1ZmZlciBzZXJpb3VzIGRlZ3JhZGF0aW9uIGlu
+IHRoZSBudW1iZXINCj4+IG9mIHN0YXRlcyBwcm9jZXNzZWQgYW5kIGNvcnJlc3BvbmRpbmcgdmVy
+aWZpY2F0aW9uIHRpbWUgaW5jcmVhc2UuDQo+Pg0KPj4gICAgICAgICAgICAgICAgICAgICAgIGJl
+Zm9yZSAgYWZ0ZXINCj4+IGJwZl9sYi1ETEJfTDMubyAgICAgIDE4MzggICAgNjQ0MQ0KPj4gYnBm
+X2xiLURMQl9MNC5vICAgICAgMzIxOCAgICA1OTA4DQo+PiBicGZfbGItRFVOS05PV04ubyAgICAx
+MDY0ICAgIDEwNjQNCj4+IGJwZl9seGMtRERST1BfQUxMLm8gIDI2OTM1ICAgOTM3OTANCj4+IGJw
+Zl9seGMtRFVOS05PV04ubyAgIDM0NDM5ICAgMTIzODg2DQo+PiBicGZfbmV0ZGV2Lm8gICAgICAg
+ICA5NzIxICAgIDMxNDEzDQo+PiBicGZfb3ZlcmxheS5vICAgICAgICA2MTg0ICAgIDE4NTYxDQo+
+PiBicGZfbHhjX2ppdC5vICAgICAgICAzOTM4OSAgIDM1OTQ0NQ0KPj4NCj4+IEFmdGVyIGZ1cnRo
+ZXIgZGVidWdnaW5nIHR1cm5lZCBvdXQgdGhhdCBjaWxsaXVtIHByb2dzIGFyZQ0KPj4gZ2V0dGlu
+ZyBodXJ0IGJ5IGNsYW5nIGR1ZSB0byB0aGUgc2FtZSBjb25zdGFudCB0cmFja2luZyBpc3N1ZS4N
+Cj4+IE5ld2VyIGNsYW5nIGdlbmVyYXRlcyBiZXR0ZXIgY29kZSBieSBzcGlsbGluZyBsZXNzIHRv
+IHRoZSBzdGFjay4NCj4+IEluc3RlYWQgaXQga2VlcHMgbW9yZSBjb25zdGFudHMgaW4gdGhlIHJl
+Z2lzdGVycyB3aGljaA0KPj4gaHVydHMgc3RhdGUgcHJ1bmluZyBzaW5jZSB0aGUgdmVyaWZpZXIg
+YWxyZWFkeSB0cmFja3MgY29uc3RhbnRzDQo+PiBpbiB0aGUgcmVnaXN0ZXJzOg0KPj4gICAgICAg
+ICAgICAgICAgICAgIG9sZCBjbGFuZyAgbmV3IGNsYW5nDQo+PiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIChubyBzcGlsbC9maWxsIHRyYWNraW5nIGludHJvZHVjZWQgYnkgdGhpcyBwYXRjaCkN
+Cj4+IGJwZl9sYi1ETEJfTDMubyAgICAgIDE4MzggICAgMTkyMw0KPj4gYnBmX2xiLURMQl9MNC5v
+ICAgICAgMzIxOCAgICAzMDc3DQo+PiBicGZfbGItRFVOS05PV04ubyAgICAxMDY0ICAgIDEwNjIN
+Cj4+IGJwZl9seGMtRERST1BfQUxMLm8gIDI2OTM1ICAgMTY2NzI5DQo+PiBicGZfbHhjLURVTktO
+T1dOLm8gICAzNDQzOSAgIDE3NDYwNw0KPj4gYnBmX25ldGRldi5vICAgICAgICAgOTcyMSAgICA4
+NDA3DQo+PiBicGZfb3ZlcmxheS5vICAgICAgICA2MTg0ICAgIDU0MjANCj4+IGJwZl9sY3hfaml0
+Lm8gICAgICAgIDM5Mzg5ICAgMzkzODkNCj4+DQo+PiBUaGUgZmluYWwgdGFibGUgaXMgZGVwcmVz
+c2luZzoNCj4+ICAgICAgICAgICAgICAgICAgICBvbGQgY2xhbmcgIG9sZCBjbGFuZyAgICBuZXcg
+Y2xhbmcgIG5ldyBjbGFuZw0KPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnN0IHNw
+aWxsL2ZpbGwgICAgICAgIGNvbnN0IHNwaWxsL2ZpbGwNCj4+IGJwZl9sYi1ETEJfTDMubyAgICAg
+IDE4MzggICAgNjQ0MSAgICAgICAgICAxOTIzICAgICAgODEyOA0KPj4gYnBmX2xiLURMQl9MNC5v
+ICAgICAgMzIxOCAgICA1OTA4ICAgICAgICAgIDMwNzcgICAgICA2NzA3DQo+PiBicGZfbGItRFVO
+S05PV04ubyAgICAxMDY0ICAgIDEwNjQgICAgICAgICAgMTA2MiAgICAgIDEwNjINCj4+IGJwZl9s
+eGMtRERST1BfQUxMLm8gIDI2OTM1ICAgOTM3OTAgICAgICAgICAxNjY3MjkgICAgMzgwNzEyDQo+
+PiBicGZfbHhjLURVTktOT1dOLm8gICAzNDQzOSAgIDEyMzg4NiAgICAgICAgMTc0NjA3ICAgIDQ0
+MDY1Mg0KPj4gYnBmX25ldGRldi5vICAgICAgICAgOTcyMSAgICAzMTQxMyAgICAgICAgIDg0MDcg
+ICAgICAzMTkwNA0KPj4gYnBmX292ZXJsYXkubyAgICAgICAgNjE4NCAgICAxODU2MSAgICAgICAg
+IDU0MjAgICAgICAyMzU2OQ0KPj4gYnBmX2x4Y19qaXQubyAgICAgICAgMzkzODkgICAzNTk0NDUg
+ICAgICAgIDM5Mzg5ICAgICAzNTk0NDUNCj4+DQo+PiBUcmFja2luZyBjb25zdGFudHMgaW4gdGhl
+IHJlZ2lzdGVycyBodXJ0cyBzdGF0ZSBwcnVuaW5nIGFscmVhZHkuDQo+PiBBZGRpbmcgdHJhY2tp
+bmcgb2YgY29uc3RhbnRzIHRocm91Z2ggc3RhY2sgaHVydHMgcHJ1bmluZyBldmVuIG1vcmUuDQo+
+PiBUaGUgbGF0ZXIgcGF0Y2ggYWRkcmVzcyB0aGlzIGdlbmVyYWwgY29uc3RhbnQgdHJhY2tpbmcg
+aXNzdWUNCj4+IHdpdGggY29hcnNlL3ByZWNpc2UgbG9naWMuDQo+Pg0KPj4gU2lnbmVkLW9mZi1i
+eTogQWxleGVpIFN0YXJvdm9pdG92IDxhc3RAa2VybmVsLm9yZz4NCj4+IC0tLQ0KPj4gICBrZXJu
+ZWwvYnBmL3ZlcmlmaWVyLmMgfCA2NyArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKyst
+LS0tLS0tLS0tDQo+PiAgIDEgZmlsZSBjaGFuZ2VkLCA1MiBpbnNlcnRpb25zKCspLCAxNSBkZWxl
+dGlvbnMoLSkNCj4+DQo+PiBkaWZmIC0tZ2l0IGEva2VybmVsL2JwZi92ZXJpZmllci5jIGIva2Vy
+bmVsL2JwZi92ZXJpZmllci5jDQo+PiBpbmRleCA4ZDE3ODYzNTdhMDkuLmEyMWJhZmQ3ZDkzMSAx
+MDA2NDQNCj4+IC0tLSBhL2tlcm5lbC9icGYvdmVyaWZpZXIuYw0KPj4gKysrIGIva2VybmVsL2Jw
+Zi92ZXJpZmllci5jDQo+PiBAQCAtMTM3OCw2ICsxMzc4LDExIEBAIHN0YXRpYyBib29sIHJlZ2lz
+dGVyX2lzX251bGwoc3RydWN0IGJwZl9yZWdfc3RhdGUgKnJlZykNCj4+ICAgICAgICAgIHJldHVy
+biByZWctPnR5cGUgPT0gU0NBTEFSX1ZBTFVFICYmIHRudW1fZXF1YWxzX2NvbnN0KHJlZy0+dmFy
+X29mZiwgMCk7DQo+PiAgIH0NCj4+DQo+PiArc3RhdGljIGJvb2wgcmVnaXN0ZXJfaXNfY29uc3Qo
+c3RydWN0IGJwZl9yZWdfc3RhdGUgKnJlZykNCj4+ICt7DQo+PiArICAgICAgIHJldHVybiByZWct
+PnR5cGUgPT0gU0NBTEFSX1ZBTFVFICYmIHRudW1faXNfY29uc3QocmVnLT52YXJfb2ZmKTsNCj4+
+ICt9DQo+PiArDQo+PiAgIC8qIGNoZWNrX3N0YWNrX3JlYWQvd3JpdGUgZnVuY3Rpb25zIHRyYWNr
+IHNwaWxsL2ZpbGwgb2YgcmVnaXN0ZXJzLA0KPj4gICAgKiBzdGFjayBib3VuZGFyeSBhbmQgYWxp
+Z25tZW50IGFyZSBjaGVja2VkIGluIGNoZWNrX21lbV9hY2Nlc3MoKQ0KPj4gICAgKi8NCj4+IEBA
+IC0xMzg3LDcgKzEzOTIsNyBAQCBzdGF0aWMgaW50IGNoZWNrX3N0YWNrX3dyaXRlKHN0cnVjdCBi
+cGZfdmVyaWZpZXJfZW52ICplbnYsDQo+PiAgIHsNCj4+ICAgICAgICAgIHN0cnVjdCBicGZfZnVu
+Y19zdGF0ZSAqY3VyOyAvKiBzdGF0ZSBvZiB0aGUgY3VycmVudCBmdW5jdGlvbiAqLw0KPj4gICAg
+ICAgICAgaW50IGksIHNsb3QgPSAtb2ZmIC0gMSwgc3BpID0gc2xvdCAvIEJQRl9SRUdfU0laRSwg
+ZXJyOw0KPj4gLSAgICAgICBlbnVtIGJwZl9yZWdfdHlwZSB0eXBlOw0KPj4gKyAgICAgICBzdHJ1
+Y3QgYnBmX3JlZ19zdGF0ZSAqcmVnID0gTlVMTDsNCj4+DQo+PiAgICAgICAgICBlcnIgPSByZWFs
+bG9jX2Z1bmNfc3RhdGUoc3RhdGUsIHJvdW5kX3VwKHNsb3QgKyAxLCBCUEZfUkVHX1NJWkUpLA0K
+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXRlLT5hY3F1aXJlZF9yZWZz
+LCB0cnVlKTsNCj4+IEBAIC0xNDA0LDI3ICsxNDA5LDM3IEBAIHN0YXRpYyBpbnQgY2hlY2tfc3Rh
+Y2tfd3JpdGUoc3RydWN0IGJwZl92ZXJpZmllcl9lbnYgKmVudiwNCj4+ICAgICAgICAgIH0NCj4+
+DQo+PiAgICAgICAgICBjdXIgPSBlbnYtPmN1cl9zdGF0ZS0+ZnJhbWVbZW52LT5jdXJfc3RhdGUt
+PmN1cmZyYW1lXTsNCj4+IC0gICAgICAgaWYgKHZhbHVlX3JlZ25vID49IDAgJiYNCj4+IC0gICAg
+ICAgICAgIGlzX3NwaWxsYWJsZV9yZWd0eXBlKCh0eXBlID0gY3VyLT5yZWdzW3ZhbHVlX3JlZ25v
+XS50eXBlKSkpIHsNCj4+ICsgICAgICAgaWYgKHZhbHVlX3JlZ25vID49IDApDQo+PiArICAgICAg
+ICAgICAgICAgcmVnID0gJmN1ci0+cmVnc1t2YWx1ZV9yZWdub107DQo+Pg0KPj4gKyAgICAgICBp
+ZiAocmVnICYmIHNpemUgPT0gQlBGX1JFR19TSVpFICYmIHJlZ2lzdGVyX2lzX2NvbnN0KHJlZykg
+JiYNCj4+ICsgICAgICAgICAgICF0bnVtX2VxdWFsc19jb25zdChyZWctPnZhcl9vZmYsIDApKSB7
+DQo+IA0KPiBuaXQ6IHVzaW5nICFyZWdpc3Rlcl9pc19udWxsKHJlZykgY2hlY2sgaW5zdGVhZCB3
+b3VsZCBiZSBhIGdvb2QNCj4gY291bnRlcnBhcnQgdG8gU1RBQ0tfWkVSTyBsb2dpYyBiZWxvdy4N
+Cg0KSSB3YXNuJ3Qgc3VyZSB0aGF0IGNvbXBpbGVyIGNhbiBvcHRpbWl6ZSB0d28gPT0gc2NhbGFy
+IGNoZWNrcyBpbnRvIG9uZS4NCg0KPj4gKyAgICAgICAgICAgICAgIGdvdG8gc2F2ZV9yZWdfc3Rh
+dGU7DQo+IA0KPiBUaGlzIGdvdG8gYnVzaW5lc3MgaXMgdWdseSwgd2h5IG5vdCBleHRyYWN0aW5n
+IHJlZ2lzdGVyIHNwaWxsaW5nIGxvZ2ljDQo+IGludG8gc2VwYXJhdGUgZnVuY3Rpb24/DQo+IA0K
+Pj4gKyAgICAgICB9IGVsc2UgaWYgKHJlZyAmJiBpc19zcGlsbGFibGVfcmVndHlwZShyZWctPnR5
+cGUpKSB7DQo+PiAgICAgICAgICAgICAgICAgIC8qIHJlZ2lzdGVyIGNvbnRhaW5pbmcgcG9pbnRl
+ciBpcyBiZWluZyBzcGlsbGVkIGludG8gc3RhY2sgKi8NCj4+ICAgICAgICAgICAgICAgICAgaWYg
+KHNpemUgIT0gQlBGX1JFR19TSVpFKSB7DQo+PiArICAgICAgICAgICAgICAgICAgICAgICB2ZXJi
+b3NlX2xpbmZvKGVudiwgaW5zbl9pZHgsICI7ICIpOw0KPj4gICAgICAgICAgICAgICAgICAgICAg
+ICAgIHZlcmJvc2UoZW52LCAiaW52YWxpZCBzaXplIG9mIHJlZ2lzdGVyIHNwaWxsXG4iKTsNCj4+
+ICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gLUVBQ0NFUzsNCj4+ICAgICAgICAgICAg
+ICAgICAgfQ0KPj4NCj4+IC0gICAgICAgICAgICAgICBpZiAoc3RhdGUgIT0gY3VyICYmIHR5cGUg
+PT0gUFRSX1RPX1NUQUNLKSB7DQo+PiArICAgICAgICAgICAgICAgaWYgKHN0YXRlICE9IGN1ciAm
+JiByZWctPnR5cGUgPT0gUFRSX1RPX1NUQUNLKSB7DQo+PiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgdmVyYm9zZShlbnYsICJjYW5ub3Qgc3BpbGwgcG9pbnRlcnMgdG8gc3RhY2sgaW50byBzdGFj
+ayBmcmFtZSBvZiB0aGUgY2FsbGVyXG4iKTsNCj4+ICAgICAgICAgICAgICAgICAgICAgICAgICBy
+ZXR1cm4gLUVJTlZBTDsNCj4+ICAgICAgICAgICAgICAgICAgfQ0KPj4NCj4+IC0gICAgICAgICAg
+ICAgICAvKiBzYXZlIHJlZ2lzdGVyIHN0YXRlICovDQo+PiAtICAgICAgICAgICAgICAgc3RhdGUt
+PnN0YWNrW3NwaV0uc3BpbGxlZF9wdHIgPSBjdXItPnJlZ3NbdmFsdWVfcmVnbm9dOw0KPj4gLSAg
+ICAgICAgICAgICAgIHN0YXRlLT5zdGFja1tzcGldLnNwaWxsZWRfcHRyLmxpdmUgfD0gUkVHX0xJ
+VkVfV1JJVFRFTjsNCj4+ICsgICAgICAgICAgICAgICBpZiAoIWVudi0+YWxsb3dfcHRyX2xlYWtz
+KSB7DQo+PiArICAgICAgICAgICAgICAgICAgICAgICBib29sIHNhbml0aXplID0gZmFsc2U7DQo+
+Pg0KPj4gLSAgICAgICAgICAgICAgIGZvciAoaSA9IDA7IGkgPCBCUEZfUkVHX1NJWkU7IGkrKykg
+ew0KPj4gLSAgICAgICAgICAgICAgICAgICAgICAgaWYgKHN0YXRlLT5zdGFja1tzcGldLnNsb3Rf
+dHlwZVtpXSA9PSBTVEFDS19NSVNDICYmDQo+PiAtICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IWVudi0+YWxsb3dfcHRyX2xlYWtzKSB7DQo+PiArICAgICAgICAgICAgICAgICAgICAgICBpZiAo
+c3RhdGUtPnN0YWNrW3NwaV0uc2xvdF90eXBlWzBdID09IFNUQUNLX1NQSUxMICYmDQo+PiArICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgcmVnaXN0ZXJfaXNfY29uc3QoJnN0YXRlLT5zdGFja1tz
+cGldLnNwaWxsZWRfcHRyKSkNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2Fu
+aXRpemUgPSB0cnVlOw0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgZm9yIChpID0gMDsgaSA8
+IEJQRl9SRUdfU0laRTsgaSsrKQ0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBp
+ZiAoc3RhdGUtPnN0YWNrW3NwaV0uc2xvdF90eXBlW2ldID09IFNUQUNLX01JU0MpIHsNCj4+ICsg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzYW5pdGl6ZSA9IHRydWU7DQo+
+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+PiArICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0NCj4+ICsgICAgICAgICAgICAgICAgICAgICAg
+IGlmIChzYW5pdGl6ZSkgew0KPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW50
+ICpwb2ZmID0gJmVudi0+aW5zbl9hdXhfZGF0YVtpbnNuX2lkeF0uc2FuaXRpemVfc3RhY2tfb2Zm
+Ow0KPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW50IHNvZmYgPSAoLXNwaSAt
+IDEpICogQlBGX1JFR19TSVpFOw0KPj4NCj4+IEBAIC0xNDQ3LDggKzE0NjIsMTQgQEAgc3RhdGlj
+IGludCBjaGVja19zdGFja193cml0ZShzdHJ1Y3QgYnBmX3ZlcmlmaWVyX2VudiAqZW52LA0KPj4g
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfQ0KPj4gICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgKnBvZmYgPSBzb2ZmOw0KPj4gICAgICAgICAgICAgICAgICAgICAgICAg
+IH0NCj4+IC0gICAgICAgICAgICAgICAgICAgICAgIHN0YXRlLT5zdGFja1tzcGldLnNsb3RfdHlw
+ZVtpXSA9IFNUQUNLX1NQSUxMOw0KPj4gICAgICAgICAgICAgICAgICB9DQo+PiArc2F2ZV9yZWdf
+c3RhdGU6DQo+PiArICAgICAgICAgICAgICAgLyogc2F2ZSByZWdpc3RlciBzdGF0ZSAqLw0KPj4g
+KyAgICAgICAgICAgICAgIHN0YXRlLT5zdGFja1tzcGldLnNwaWxsZWRfcHRyID0gKnJlZzsNCj4+
+ICsgICAgICAgICAgICAgICBzdGF0ZS0+c3RhY2tbc3BpXS5zcGlsbGVkX3B0ci5saXZlIHw9IFJF
+R19MSVZFX1dSSVRURU47DQo+PiArDQo+PiArICAgICAgICAgICAgICAgZm9yIChpID0gMDsgaSA8
+IEJQRl9SRUdfU0laRTsgaSsrKQ0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgc3RhdGUtPnN0
+YWNrW3NwaV0uc2xvdF90eXBlW2ldID0gU1RBQ0tfU1BJTEw7DQo+PiAgICAgICAgICB9IGVsc2Ug
+ew0KPj4gICAgICAgICAgICAgICAgICB1OCB0eXBlID0gU1RBQ0tfTUlTQzsNCj4+DQo+PiBAQCAt
+MTQ3MSw4ICsxNDkyLDcgQEAgc3RhdGljIGludCBjaGVja19zdGFja193cml0ZShzdHJ1Y3QgYnBm
+X3ZlcmlmaWVyX2VudiAqZW52LA0KPj4gICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXRlLT5z
+dGFja1tzcGldLnNwaWxsZWRfcHRyLmxpdmUgfD0gUkVHX0xJVkVfV1JJVFRFTjsNCj4+DQo+PiAg
+ICAgICAgICAgICAgICAgIC8qIHdoZW4gd2UgemVybyBpbml0aWFsaXplIHN0YWNrIHNsb3RzIG1h
+cmsgdGhlbSBhcyBzdWNoICovDQo+PiAtICAgICAgICAgICAgICAgaWYgKHZhbHVlX3JlZ25vID49
+IDAgJiYNCj4+IC0gICAgICAgICAgICAgICAgICAgcmVnaXN0ZXJfaXNfbnVsbCgmY3VyLT5yZWdz
+W3ZhbHVlX3JlZ25vXSkpDQo+PiArICAgICAgICAgICAgICAgaWYgKHJlZyAmJiByZWdpc3Rlcl9p
+c19udWxsKHJlZykpDQo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgdHlwZSA9IFNUQUNLX1pF
+Uk87DQo+Pg0KPj4gICAgICAgICAgICAgICAgICAvKiBNYXJrIHNsb3RzIGFmZmVjdGVkIGJ5IHRo
+aXMgc3RhY2sgd3JpdGUuICovDQo+PiBAQCAtMTUwMSw3ICsxNTIxLDE1IEBAIHN0YXRpYyBpbnQg
+Y2hlY2tfc3RhY2tfcmVhZChzdHJ1Y3QgYnBmX3ZlcmlmaWVyX2VudiAqZW52LA0KPj4NCj4+ICAg
+ICAgICAgIGlmIChzdHlwZVswXSA9PSBTVEFDS19TUElMTCkgew0KPj4gICAgICAgICAgICAgICAg
+ICBpZiAoc2l6ZSAhPSBCUEZfUkVHX1NJWkUpIHsNCj4+IC0gICAgICAgICAgICAgICAgICAgICAg
+IHZlcmJvc2UoZW52LCAiaW52YWxpZCBzaXplIG9mIHJlZ2lzdGVyIHNwaWxsXG4iKTsNCj4+ICsg
+ICAgICAgICAgICAgICAgICAgICAgIGlmIChyZWdfc3RhdGUtPnN0YWNrW3NwaV0uc3BpbGxlZF9w
+dHIudHlwZSA9PSBTQ0FMQVJfVkFMVUUpIHsNCj4gDQo+IHNwaWxsZWRfcHRyIGlzIG1pc2xlYWRp
+bmcgbm93LCBob3cgYWJvdXQgcmVuYW1pbmcgdG8gc3BpbGxlZF9yZWc/DQoNCm5vdCBpbiB0aGlz
+IHNldC4gd2UgY2FuIGNvbnNpZGVyIGluIHRoZSBmdXR1cmUsDQpidXQgSSdkIHJhdGhlciBsZWF2
+ZSBpdCBhbG9uZS4gVG9vIG11Y2ggY29kZSBjaHVybi4NCg0KPj4gKyAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBpZiAodmFsdWVfcmVnbm8gPj0gMCkgew0KPj4gKyAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIG1hcmtfcmVnX3Vua25vd24oZW52LCBzdGF0ZS0+cmVn
+cywgdmFsdWVfcmVnbm8pOw0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHN0YXRlLT5yZWdzW3ZhbHVlX3JlZ25vXS5saXZlIHw9IFJFR19MSVZFX1dSSVRURU47DQo+
+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0NCj4+ICsgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgZ290byBtYXJrX3JlYWQ7DQo+IA0KPiBBZ2Fpbiwgbm90IGxpa2luZyB1
+bm5lY2Vzc2FyeSBnb3Rvcy4gSG93IGFib3V0IHRoaXMgbG9naWM6DQo+IA0KPiBpZiAoc2l6ZSAh
+PSBCUEZfUkVHX1NJWkUgJiYgcmVnX3N0YXRlLT5zdGFja1tzcGldLnNwaWxsZWRfcHRyLnR5cGUg
+IT0NCj4gU0NBTEFSX1ZBTFVFKSB7DQo+ICAgLi4uIGxvZyBhbmQgcmV0dXJuIC1FQUNDRVNTIC4u
+Lg0KPiB9DQo+IA0KPiAvLyBsb29wIHRvIGNoZWNrIFNUQUNLX1NQSUxMIChpdCBkb2Vzbid0IGh1
+cnQgZm9yIFNDQUxBUl9WQUxVRSwgcmlnaHQ/KQ0KDQppdCB3aWxsIGh1cnQsIHNpbmNlIGl0IGNh
+bm5vdCBkbyBzby4NCg0KPiBpZiAodmFsdWVfcmVnbm8gPj0gMCkgew0KPiAgICAgICAgICBpZiAo
+c2l6ZSAhPSBCUEZfUkVHX1NJWkUpDQo+ICAgICAgICAgICAgICAgICAgbWFya19yZWdfdW5rbm93
+bihlbnYsIHN0YXRlLT5yZWdzLCB2YWx1ZV9yZWdubyk7DQoNCmFsc28gbm90IGNvcnJlY3QuDQo+
+ICAgICAgICAgIGVsc2UNCj4gICAgICAgICAgICAgICAgICBzdGF0ZS0+cmVnc1t2YWx1ZV9yZWdu
+b10gPSByZWdfc3RhdGUtPnN0YWNrW3NwaV0uc3BpbGxlZF9wdHI7DQo+ICAgICAgICAgIHN0YXRl
+LT5yZWdzW3ZhbHVlX3JlZ25vXS5saXZlIHw9IFJFR19MSVZFX1dSSVRURU47DQo+IH0NCj4gDQo+
+IC8vIG1hcmtfcmVnX3JlYWQgaGVyZQ0KPiANCj4gDQo+IGl0J3MgbW9yZSBsaW5lYXIgYW5kIGNs
+ZWFybHkgc2hvd3MgdGhhdCBmb3IgcGFydGlhbCByZWFkcyBvZiBjb25zdGFudHMNCj4gd2Ugc2V0
+IHRvIHVua25vd24sIG90aGVyd2lzZSByZXN0b3JlIHN0YXRlIGNvbXBsZXRlbHkuDQoNCkkgZG9u
+J3Qgc2hhcmUgdGhpcyAnZGlzbGlrZSBvZiBnb3RvcycuDQpUaGUgYm9va3MgdGhhdCBpbnRyb2R1
+Y2VkIHRoYXQgbm90aW9uIHRoYXQgZ290b3MgYXJlIHNvbWVob3cgYmFkDQphbmQgYmFkIHByb2dy
+YW1taW5nIHN0eWxlIGFyZSB3cm9uZy4gSW4gbXkgb3BpbmlvbiA6KQ0KQnV0IEknbGwgc2VlIGhv
+dyB0byByZWR1Y2UgdGhlbSBpbiB0aGlzIGNhc2UuDQpQcm9iYWJseSB3aWxsIGRvIGEgaGVscGVy
+IGZ1bmN0aW9uLg0KDQo=
