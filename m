@@ -2,88 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E622046B42
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 22:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A3C46B52
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 22:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbfFNUui convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 14 Jun 2019 16:50:38 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:43185 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbfFNUui (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jun 2019 16:50:38 -0400
-Received: by mail-ed1-f65.google.com with SMTP id e3so5241491edr.10
-        for <bpf@vger.kernel.org>; Fri, 14 Jun 2019 13:50:37 -0700 (PDT)
+        id S1725981AbfFNU4T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jun 2019 16:56:19 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:45502 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725809AbfFNU4T (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jun 2019 16:56:19 -0400
+Received: by mail-pg1-f196.google.com with SMTP id s21so2164273pga.12;
+        Fri, 14 Jun 2019 13:56:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Yne9fkU6wE/82N/AFeecOPZEhmtxL6CFlvongVG7mfE=;
+        b=DZK18+j/Zl+kVuDlssgW7C9bDCoD1Qr+/Mmke0JecU4VD4daD2/SUDN3/4UOWFDeUI
+         CsLNIKid5hnOv8RX8ROzGtFNVPZW7izEXTz+JkZ43/Ia0Xq6A1+W92ObG/VwuM4hB+Ny
+         uOh/I6BFWw1ds5ZZws3gfzSBzFYdhDVX/D6JVykAcbve6VObBW2ET0dmx3WxSNn0bL/r
+         YDXaPKAPKH150QgCqmFSLdewyGVGOB8KsREwIDh8RGLVGiw343ts1MHXfFYPrUN83rGF
+         v/stxJCqMWqUfgWF6JqqZIEG/4YxONKFqeBYEGIH/Exr4UK7BbWM8C77hvMWAqEcSW6T
+         n/0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=lh0n1D7R2t0Y0d+wEjcTMFEBGes1xmgH+/nCCWSCn40=;
-        b=koEv8d9M42U7NB4eeBYgHheBwkza7P5kaeZ38I7JEt0F68OdOwhtoql+BFyvgAgDFn
-         GsyW6g2vmG/Z0E5x8QGVMlmEb003zJcE6TwD82vVkKKMoNY6FZRVQX80d/ejAqZXdEOC
-         +32plibI3q3KzreBdFJWZPOEoD4YpXtupdqO1zpi6e5ENyr0L59A+q2XziSuogd6IH2I
-         5kb/jm+hfrdRMJBYp5jKh+bSRd3SyEiZpJPpelaBlWPVJ67GMCu+5T1+1cNRZBJTdnni
-         kg+N3v6Tu/4pO+2PZ6p2JE6e+Qlw0AfoVgzOMMgCjFU4myvjKhPN8Wps2yqLgvbvRGhl
-         YCpw==
-X-Gm-Message-State: APjAAAXfDEIJrv6B39gE8kzewKhF0GGhZqsJ6CoXXpi0gu/GnS/Wgcuv
-        2kBgiZ07YNYVn60MeNkqf8Itfw==
-X-Google-Smtp-Source: APXvYqw5ig+HTGJdDvIEyeCTt+dMoTZfjl/YqoKuroUVvyIcNYyXmfL0k5ThxMse9XKZpDPvdkdRJA==
-X-Received: by 2002:a50:b4cb:: with SMTP id x11mr34441028edd.284.1560545436484;
-        Fri, 14 Jun 2019 13:50:36 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id u26sm1128548edf.91.2019.06.14.13.50.35
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 14 Jun 2019 13:50:35 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id B6F021804AF; Fri, 14 Jun 2019 22:50:34 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     axboe@kernel.dk, newella@fb.com, clm@fb.com, josef@toxicpanda.com,
-        dennisz@fb.com, lizefan@huawei.com, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        kernel-team@fb.com, cgroups@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, bpf@vger.kernel.org, Josef Bacik <jbacik@fb.com>
-Subject: Re: [PATCH 08/10] blkcg: implement blk-ioweight
-In-Reply-To: <20190614150924.GB538958@devbig004.ftw2.facebook.com>
-References: <20190614015620.1587672-1-tj@kernel.org> <20190614015620.1587672-9-tj@kernel.org> <87pnngbbti.fsf@toke.dk> <20190614150924.GB538958@devbig004.ftw2.facebook.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 14 Jun 2019 22:50:34 +0200
-Message-ID: <87blyzc2n9.fsf@toke.dk>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Yne9fkU6wE/82N/AFeecOPZEhmtxL6CFlvongVG7mfE=;
+        b=g2jcfqD3a+TDoN+96ZjXBC8gwWmYluMHKh43A8N7Dh5C/oa9JZIU1UXsVZ1cJ20ytA
+         BXhf6wN6ML1k7sBG9H1U2Mkohj+WaeFUN1C67M+6tmlAXvxUW2cNlIcM0bjB11NT9tg8
+         ZJlIFeDL5Z+eT5G2EPckHGAp0f3S74aE99/IqfAWIB5CZWDWc/cJgTCisDLVlMBVafCp
+         Di6SO1xeio5goVk4xVcd223uOlLY7e1F1GK0JktYt74IcyODXyilUfHZPxGN3i459PK/
+         6qoTlnzxeLqiJJ1S8PJO9Yfv+7atMKN/93343zWeYUnfspWWKScqxbRPUpJKur5LrX4t
+         PXZQ==
+X-Gm-Message-State: APjAAAWGYlTBYGEDHe9SfYKzGH86wtJ/YRQDymQQizU2t96l2lMXoedR
+        nddbdVu4tU/OV6nf11USCNc=
+X-Google-Smtp-Source: APXvYqz8fF3d09X3S5MDTl9m8/QKwwEvli9hG2LfLqQI22wUh+UIK5jKnhAhsQgDhY1T7Z/EgREJ0A==
+X-Received: by 2002:a63:fb4b:: with SMTP id w11mr3077734pgj.415.1560545778214;
+        Fri, 14 Jun 2019 13:56:18 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::1:6345])
+        by smtp.gmail.com with ESMTPSA id y185sm3781367pfy.110.2019.06.14.13.56.16
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 14 Jun 2019 13:56:17 -0700 (PDT)
+Date:   Fri, 14 Jun 2019 13:56:15 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>,
+        Kairui Song <kasong@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v2 1/5] perf/x86: Always store regs->ip in
+ perf_callchain_kernel()
+Message-ID: <20190614205614.zr6awljx3qdg2fnb@ast-mbp.dhcp.thefacebook.com>
+References: <cover.1560534694.git.jpoimboe@redhat.com>
+ <81b0cdc5aa276dac315a0536df384cc82da86243.1560534694.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <81b0cdc5aa276dac315a0536df384cc82da86243.1560534694.git.jpoimboe@redhat.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Tejun Heo <tj@kernel.org> writes:
+On Fri, Jun 14, 2019 at 12:56:40PM -0500, Josh Poimboeuf wrote:
+> From: Song Liu <songliubraving@fb.com>
+> 
+> The stacktrace_map_raw_tp BPF selftest is failing because the RIP saved
+> by perf_arch_fetch_caller_regs() isn't getting saved by
+> perf_callchain_kernel().
+> 
+> This was broken by the following commit:
+> 
+>   d15d356887e7 ("perf/x86: Make perf callchains work without CONFIG_FRAME_POINTER")
+> 
+> With that change, when starting with non-HW regs, the unwinder starts
+> with the current stack frame and unwinds until it passes up the frame
+> which called perf_arch_fetch_caller_regs().  So regs->ip needs to be
+> saved deliberately.
+> 
+> Fixes: d15d356887e7 ("perf/x86: Make perf callchains work without CONFIG_FRAME_POINTER")
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-> Hello, Toke.
->
-> On Fri, Jun 14, 2019 at 02:17:45PM +0200, Toke Høiland-Jørgensen wrote:
->> One question: How are equal-weight cgroups scheduled relative to each
->> other? Or requests from different processes within a single cgroup for
->> that matter? FIFO? Round-robin? Something else?
->
-> Once each cgroup got their hierarchical weight and current vtime for
-> the period, they don't talk to each other.  Each is expected to do the
-> right thing on their own.  When the period ends, the timer looks at
-> how the device is performing, how much each used and so on and then
-> make necessary adjustments.  So, there's no direct cross-cgroup
-> synchronization.  Each is throttled to their target level
-> independently.
+It's not cool to remove people's SOB.
+It's Song's patch. His should be first and your second.
 
-Right, makes sense.
-
-> Within a single cgroup, the IOs are FIFO. When an IO has enough vtime
-> credit, it just passes through. When it doesn't, it always waits
-> behind any other IOs which are already waiting.
-
-OK. Is there any fundamental reason why requests from individual
-processes could not be interleaved? Or does it just not give the same
-benefits in an IO request context as it does for network packets?
-
-Thanks for the explanations! :)
-
--Toke
