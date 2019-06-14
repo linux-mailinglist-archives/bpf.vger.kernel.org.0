@@ -2,78 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3007B45B20
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 13:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C8F45B7B
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 13:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727360AbfFNLHq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jun 2019 07:07:46 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:36617 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727326AbfFNLHq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jun 2019 07:07:46 -0400
-Received: by mail-lj1-f194.google.com with SMTP id i21so1981138ljj.3
-        for <bpf@vger.kernel.org>; Fri, 14 Jun 2019 04:07:44 -0700 (PDT)
+        id S1727314AbfFNLcO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jun 2019 07:32:14 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:38807 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727471AbfFNLcO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jun 2019 07:32:14 -0400
+Received: by mail-wm1-f68.google.com with SMTP id s15so1969082wmj.3
+        for <bpf@vger.kernel.org>; Fri, 14 Jun 2019 04:32:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8nVWJoeY39suIIZgzswj4aacVGQOKuAApyinJQUDhzc=;
+        b=wISeSxpdrtKy6YhXKfQtLkE0GD4kqa0Oy/ToMDpugnOr/zje0ASKBMqfYVlwFAJ7g9
+         qXKsNUHtAnPBZUlTbwYFb8A5Qo5d+LAh2OFvLBIJSpsDjbeow7PfCwXVKA9lHIH5pTOl
+         ytn8W8OncmzZ4Z/wB28QLVHWqJmr0J74T6Z4BUSEI6y+qhdIoIpAU2TLCtOlufQIPRgd
+         pJKe0B4Ub69eLYUbHVNtoo3gERByIWNNtz3dyGwTnmCCRNZjpxm+Rzdhp8ilmSVzo55a
+         9FDw6931BM5c3Sb4T7JFrD7hdknJooQM1Ph79P9CZiOO/2NLv+03hFFoAHE266bJexg0
+         gU+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=3VuI/ARgBvHW+hRNPoKYYqvTrzb3zzgYFggaO8Tlsxg=;
-        b=f9YrPrhs2IckuOyNN8L/F2uO+bNzSVtx2DT1OIjZp71Z+hAvqmcgyJpaUD7cVkoL4T
-         1/qWjEsL2VxPjb0H1awpHPczZD8k5N1VusEw4mGIie4hKo7t0ejarC/hZbnUeVjuRQ/X
-         oiaRPZ5xXux117oP21HcFosNm0Pthl0uU7Q+YWM9+x1GqjwEpcAAnkm6S4z5UzsK/B4I
-         769FfsT06Ead2dZhh31QlVkWDqRv7/sKYrQRvEdA38Jidm8xgE9fDwNj3wpOLUoUn25J
-         1iAPO1A+bF/F41GhWUUi5nzYbWvtmZmXJBiFkBqZrBODZL+m/Rh7WSbNljua3Y69ctLT
-         ILcg==
-X-Gm-Message-State: APjAAAVvQfskqEZP1036dFRQ/HUquuMy8tGW3Aoj6eYKCccFUw8mpTfQ
-        DGvO47hQWN8L1sXL5kH5wqxn8Q==
-X-Google-Smtp-Source: APXvYqywJtw6aSaN0OG9Qqe+rCRaZUDaVXIDDZIoFUX2H+0ODNlrFkK7wX/+s7uKRKpppxfOJcYlaw==
-X-Received: by 2002:a2e:5341:: with SMTP id t1mr40303992ljd.170.1560510463983;
-        Fri, 14 Jun 2019 04:07:43 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id b25sm427666lff.42.2019.06.14.04.07.43
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 14 Jun 2019 04:07:43 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 6399D1804AF; Fri, 14 Jun 2019 13:07:42 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
-        bpf@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        David Ahern <dsahern@gmail.com>
-Subject: Re: [PATCH bpf 3/3] devmap: Add missing RCU read lock on flush
-In-Reply-To: <20190614082015.23336-4-toshiaki.makita1@gmail.com>
-References: <20190614082015.23336-1-toshiaki.makita1@gmail.com> <20190614082015.23336-4-toshiaki.makita1@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 14 Jun 2019 13:07:42 +0200
-Message-ID: <874l4sctmp.fsf@toke.dk>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8nVWJoeY39suIIZgzswj4aacVGQOKuAApyinJQUDhzc=;
+        b=BHzbskCiFSUjVZLYx9Q3KnEaOGpsYKoluqcgpjHHWIAbrH9jgbzJ2Am2VCrz35gkGm
+         9p11gKHZ9dAuDv4OS8whK3Xqa6i3Ar1lrizogdfr5W4WywqF2r4ZFTJCxhXWKEOMsDOk
+         0KYEwV6x+Ho7LfOZJjwQTbtkzmpWXwEe94bIWJB35WCi8tXs98KJo6MiusHoKsv9oveC
+         gBh5CNqq4p0ShmvmYEVE+nEM1Fqhd4mFSrAPF/Le2Sz6X6o5DkTk1M+fLdi3VDF0moF+
+         NMhcJAhO9zYtZjRZLEfNZBjZ5ygs6viw5etDQerY8Or8uEI1fQPEwWrubXmw7TW0YH0b
+         LApQ==
+X-Gm-Message-State: APjAAAXg0tr0xlLBzoZxajPmfj9KcBjnA3G8BiqPVeka3EavTEAp7nb7
+        zsHWMXGNqmmQ6fJaXSR0tMKKmgTBYUM=
+X-Google-Smtp-Source: APXvYqx7OtBYzo+1nZZ0vNBobqP0xzx4kNpGJs1wptqcmSRhSZdVRuabeVA+HC8nOOGivJkQ5uKSxw==
+X-Received: by 2002:a1c:480a:: with SMTP id v10mr7594045wma.120.1560511931738;
+        Fri, 14 Jun 2019 04:32:11 -0700 (PDT)
+Received: from [192.168.1.2] ([194.53.186.239])
+        by smtp.gmail.com with ESMTPSA id y133sm4375771wmg.5.2019.06.14.04.32.10
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 14 Jun 2019 04:32:11 -0700 (PDT)
+Subject: Re: [PATCH 10/10] blkcg: implement BPF_PROG_TYPE_IO_COST
+To:     Tejun Heo <tj@kernel.org>, axboe@kernel.dk, newella@fb.com,
+        clm@fb.com, josef@toxicpanda.com, dennisz@fb.com,
+        lizefan@huawei.com, hannes@cmpxchg.org
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        kernel-team@fb.com, cgroups@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, bpf@vger.kernel.org
+References: <20190614015620.1587672-1-tj@kernel.org>
+ <20190614015620.1587672-11-tj@kernel.org>
+From:   Quentin Monnet <quentin.monnet@netronome.com>
+Message-ID: <e4d1df7b-66bb-061a-8ecb-ff1e5be3ab1d@netronome.com>
+Date:   Fri, 14 Jun 2019 12:32:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20190614015620.1587672-11-tj@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
-
-> .ndo_xdp_xmit() assumes it is called under RCU. For example virtio_net
-> uses RCU to detect it has setup the resources for tx. The assumption
-> accidentally broke when introducing bulk queue in devmap.
->
-> Fixes: 5d053f9da431 ("bpf: devmap prepare xdp frames for bulking")
-> Reported-by: David Ahern <dsahern@gmail.com>
-> Signed-off-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
+2019-06-13 18:56 UTC-0700 ~ Tejun Heo <tj@kernel.org>
+> Currently, blkcg implements one builtin IO cost model - lienar.  To
+> allow customization and experimentation, allow a bpf program to
+> override IO cost model.
+> 
+> Signed-off-by: Tejun Heo <tj@kernel.org>
 > ---
 
-I think this is still needed, but the patch context is going to conflict
-with the patch I linked above... I guess it's up to the maintainers to
-decide which order to merge them in :)
+[...]
 
--Toke
+> diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
+> index d672d9086fff..beeac8ac48f3 100644
+> --- a/tools/bpf/bpftool/feature.c
+> +++ b/tools/bpf/bpftool/feature.c
+> @@ -383,6 +383,9 @@ static void probe_kernel_image_config(void)
+>  		/* bpftilter module with "user mode helper" */
+>  		"CONFIG_BPFILTER_UMH",
+>  
+> +		/* Block */
+> +		"CONFIG_BLK_IO_COST",
+> +
+>  		/* test_bpf module for BPF tests */
+>  		"CONFIG_TEST_BPF",
+>  	};
+> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+> index 3d63feb7f852..298e53f35573 100644
+> --- a/tools/bpf/bpftool/main.h
+> +++ b/tools/bpf/bpftool/main.h
+> @@ -74,6 +74,7 @@ static const char * const prog_type_name[] = {
+>  	[BPF_PROG_TYPE_SK_REUSEPORT]		= "sk_reuseport",
+>  	[BPF_PROG_TYPE_FLOW_DISSECTOR]		= "flow_dissector",
+>  	[BPF_PROG_TYPE_CGROUP_SYSCTL]		= "cgroup_sysctl",
+> +	[BPF_PROG_TYPE_IO_COST]			= "io_cost",
+>  };
+>  
+>  extern const char * const map_type_name[];
+
+Hi Tejun,
+
+Please make sure to update the documentation and bash
+completion when adding the new type to bpftool. You
+probably want something like the diff below.
+
+Thanks,
+Quentin
+
+
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+index 228a5c863cc7..0ceae71c07a8 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+@@ -40,7 +40,7 @@ PROG COMMANDS
+ |              **lwt_seg6local** | **sockops** | **sk_skb** | **sk_msg** | **lirc_mode2** |
+ |              **cgroup/bind4** | **cgroup/bind6** | **cgroup/post_bind4** | **cgroup/post_bind6** |
+ |              **cgroup/connect4** | **cgroup/connect6** | **cgroup/sendmsg4** | **cgroup/sendmsg6** |
+-|              **cgroup/sysctl**
++|              **cgroup/sysctl** | **io_cost**
+ |      }
+ |       *ATTACH_TYPE* := {
+ |              **msg_verdict** | **stream_verdict** | **stream_parser** | **flow_dissector**
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index 2725e27dfa42..057590611e63 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -378,7 +378,7 @@ _bpftool()
+                                 cgroup/connect4 cgroup/connect6 \
+                                 cgroup/sendmsg4 cgroup/sendmsg6 \
+                                 cgroup/post_bind4 cgroup/post_bind6 \
+-                                cgroup/sysctl" -- \
++                                cgroup/sysctl io_cost" -- \
+                                                    "$cur" ) )
+                             return 0
+                             ;;
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index 1f209c80d906..6ba1d567bf17 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -1070,7 +1070,7 @@ static int do_help(int argc, char **argv)
+                "                 sk_reuseport | flow_dissector | cgroup/sysctl |\n"
+                "                 cgroup/bind4 | cgroup/bind6 | cgroup/post_bind4 |\n"
+                "                 cgroup/post_bind6 | cgroup/connect4 | cgroup/connect6 |\n"
+-               "                 cgroup/sendmsg4 | cgroup/sendmsg6 }\n"
++               "                 cgroup/sendmsg4 | cgroup/sendmsg6 | io_cost }\n"
+                "       ATTACH_TYPE := { msg_verdict | stream_verdict | stream_parser |\n"
+                "                        flow_dissector }\n"
+                "       " HELP_SPEC_OPTIONS "\n"
