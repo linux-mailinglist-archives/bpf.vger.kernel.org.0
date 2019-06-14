@@ -2,93 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9C146CFC
-	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2019 01:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0D346D04
+	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2019 01:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726047AbfFNXnx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jun 2019 19:43:53 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:35058 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725981AbfFNXnx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jun 2019 19:43:53 -0400
-Received: by mail-qk1-f193.google.com with SMTP id l128so2812368qke.2;
-        Fri, 14 Jun 2019 16:43:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xJP8PPoAP8r7kaAAybEx4rwl+7jp0GqNz9cJuvREu4w=;
-        b=cy1l53EEUjQ96xI4ecZzikc8ifXIMJLymjZcR3ktedrmxZhXSpT7Ssn7fNIqn3jmkU
-         vpKkRw3MNnmmPyFPUENbWQPjZmrTrzXtGTVNdc7gTum9zvFdq+luRc+vNWb/F9jhBakD
-         N3Mrw9DYzE5eH5bXlTbd36nrHLq4HMZEl+aLuHrCazFBm9ejHqlBpgANPZoiosmdPxKk
-         04DlwPYO2Nb2gGAyOfGBce4fozQcnNB39X5zBgV8b8Uc1EsxXAijB1YoRcARDid8n4/J
-         xjqwKQQx37SciDVkFcJQh4IU3g6CDf4OIZaO68AAgVZq70HvOsT0d7XTK7zEBOegQAjS
-         jINw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xJP8PPoAP8r7kaAAybEx4rwl+7jp0GqNz9cJuvREu4w=;
-        b=c5nInkQ+paCj2xxb99kloSbHVEwb5fFOvBoAMMTjbWPGDtMoP1PVFtRkkj4Yblz9XT
-         2/2wIu+qBc9chfCOEuxFdJ4KYM2T3RzG93/IUrORPG4UArzuxEEXO63E9GwTktnIcG97
-         vbWnimqrhcy9YER5gVPwMw4PMyBEt4aM3AQIUyWbmKLlwkC2vWMIpS/ZaZPYNRU51Fop
-         ohh+hK2UZT9I7CIBr1MZ7o3KI9OhZ1PGNw1go4vIkcUyJhJ/K5dT/RAoll1DufSTyO8y
-         8jA60tRJz1ZxBvLNqy/KVuHENm0FXQ5TnvMue2l0IwsSdzsCrioYCVn7W7vqJJVfOc5t
-         qpBw==
-X-Gm-Message-State: APjAAAUaVFB3wqIBTe1mh7tmaN99MvA+BCanJhXyFzitBaiEzXnRdhnS
-        LRjEbpqGSFQoPtuHQXAKav3k8Pzx7jfSS0zbKy7JLZW+
-X-Google-Smtp-Source: APXvYqwCN6MxhnCE5U+1nP/fXMYZShHoZGYTNsYWOWMEbc/6mjZynOFpout8lY0zthY8aVmk9UdFSy4tEIiDQI/BSTk=
-X-Received: by 2002:a05:620a:14a8:: with SMTP id x8mr22990751qkj.35.1560555832116;
- Fri, 14 Jun 2019 16:43:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190611044747.44839-1-andriin@fb.com> <20190611044747.44839-9-andriin@fb.com>
- <20190614232329.GF9636@mini-arch>
-In-Reply-To: <20190614232329.GF9636@mini-arch>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 14 Jun 2019 16:43:41 -0700
-Message-ID: <CAEf4BzZ5itJ+toa-3Bm3yNxP=CyvNm=CZ5Dg+=nhU=p4CSu=+g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 8/8] selftests/bpf: switch tests to BTF-defined
- map definitions
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        id S1726072AbfFNXyZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jun 2019 19:54:25 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:42892 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725981AbfFNXyZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jun 2019 19:54:25 -0400
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id BAE9F3083391;
+        Fri, 14 Jun 2019 23:54:24 +0000 (UTC)
+Received: from treble (ovpn-112-39.rdu2.redhat.com [10.10.112.39])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E62DF60CA3;
+        Fri, 14 Jun 2019 23:54:20 +0000 (UTC)
+Date:   Fri, 14 Jun 2019 18:54:17 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     X86 ML <x86@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>,
+        Kairui Song <kasong@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Laight <David.Laight@aculab.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v2 4/5] x86/bpf: Fix 64-bit JIT frame pointer usage
+Message-ID: <20190614235417.7oagddee75xo7otp@treble>
+References: <cover.1560534694.git.jpoimboe@redhat.com>
+ <178097de8c1bd6a877342304f3469eac4067daa4.1560534694.git.jpoimboe@redhat.com>
+ <20190614210555.q4ictql3tzzjio4r@ast-mbp.dhcp.thefacebook.com>
+ <20190614211916.jnxakyfwilcv6r57@treble>
+ <CAADnVQJ0dmxYTnaQC1UiSo7MhcTy2KRWJWJKw4jyxFWby-JgRg@mail.gmail.com>
+ <20190614231311.gfeb47rpjoholuov@treble>
+ <CAADnVQKOjvhpMQqjHvF-oX2U99WRCi+repgqmt6hiSObovxoaQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAADnVQKOjvhpMQqjHvF-oX2U99WRCi+repgqmt6hiSObovxoaQ@mail.gmail.com>
+User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Fri, 14 Jun 2019 23:54:24 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 14, 2019 at 4:23 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
->
-> On 06/10, Andrii Nakryiko wrote:
-> > Switch test map definition to new BTF-defined format.
-> Reiterating my concerns on non-RFC version:
->
-> Pretty please, let's not convert everything at once. Let's start
-> with stuff that explicitly depends on BTF (spinlocks?).
+On Fri, Jun 14, 2019 at 04:23:41PM -0700, Alexei Starovoitov wrote:
+> On Fri, Jun 14, 2019 at 4:13 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> >
+> > On Fri, Jun 14, 2019 at 02:27:30PM -0700, Alexei Starovoitov wrote:
+> > > On Fri, Jun 14, 2019 at 2:19 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> > > >
+> > > > On Fri, Jun 14, 2019 at 02:05:56PM -0700, Alexei Starovoitov wrote:
+> > > > > Have you tested it ?
+> > > > > I really doubt, since in my test both CONFIG_UNWINDER_ORC and
+> > > > > CONFIG_UNWINDER_FRAME_POINTER failed to unwind through such odd frame.
+> > > >
+> > > > Hm, are you seeing selftest failures?  They seem to work for me.
+> > > >
+> > > > > Here is much simple patch that I mentioned in the email yesterday,
+> > > > > but you failed to listen instead of focusing on perceived 'code readability'.
+> > > > >
+> > > > > It makes one proper frame and both frame and orc unwinders are happy.
+> > > >
+> > > > I'm on my way out the door and I just skimmed it, but it looks fine.
+> > > >
+> > > > Some of the code and patch description look familiar, please be sure to
+> > > > give me proper credit.
+> > >
+> > > credit means something positive.
+> >
+> > So you only give credit for *good* stolen code.  I must have missed that
+> > section of the kernel patch guidelines.
+> 
+> what are you talking about?
+> you've posted one bad patch. I pointed out multiple issues in it.
+> Then proposed another bad idea. I pointed out another set of issues.
+> Than David proposed yet another idea that you've implemented
+> and claimed that it's working when it was not.
+> Then I got fed up with this thread and fix it for real by reverting
+> that old commit that I mentioned way earlier.
+> https://patchwork.ozlabs.org/patch/1116307/
+> Where do you see your code or ideas being used?
+> I see none.
 
-How about this approach. I can split last commit into two. One
-converting all the stuff that needs BTF (spinlocks, etc). Another part
-- everything else. If it's so important for your use case, you'll be
-able to just back out my last commit. Or we just don't land last
-commit.
+Obviously I wasn't referring to this new whitewashed patch for which I
+wasn't even on Cc, despite being one of the people (along with Peter Z)
+who convinced you that there was a problem to begin with.
 
->
-> One good argument (aside from the one that we'd like to be able to
-> run tests internally without BTF for a while): libbpf doesn't
-> have any tests as far as I'm aware. If we don't have 'legacy' maps in the
-> selftests, libbpf may bit rot.
+The previous patch you posted has my patch description, push/pop and
+comment changes, with no credit:
 
-I left few legacy maps exactly for that reason. See progs/test_btf_*.c.
+https://lkml.kernel.org/r/20190614210555.q4ictql3tzzjio4r@ast-mbp.dhcp.thefacebook.com
 
->
-> (Andrii, feel free to ignore, since we've already discussed that)
->
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
-
-
-<snip>
+-- 
+Josh
