@@ -2,108 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A13E245C88
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 14:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F3E45C9F
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 14:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727706AbfFNMRs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jun 2019 08:17:48 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:36766 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727378AbfFNMRs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jun 2019 08:17:48 -0400
-Received: by mail-ed1-f65.google.com with SMTP id k21so3232457edq.3
-        for <bpf@vger.kernel.org>; Fri, 14 Jun 2019 05:17:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=+8quq0k8tqu/xsODhVIPdEOM4T34ZCS4DIB0amj5ChA=;
-        b=Mo6wun8A7pgxPORUx10wMaMNVN/w8B1W9Mauo4Mcn5BN4+zbcx+Eh2MPqbeAtn18es
-         LfuTzKdqNZTM0K5B6Cyt062P7wn8CPsCJbKmkPxgdruyO7ey2xZk8vBRw6ojuT9GJx3I
-         9kAlypbPKUVQSZ76QCSX1FA6GpVweTNOpAOOYoh15rs1oS3f2FyAFAJtitz1Utku1XEl
-         YDIFZXlkEKgdGTEw0bbi6ZHPpVCrRjFmxvai52Q+h1yuGRG12ogyAizaL8noiClDASJB
-         aTj1rrK33kq27qK8pjkG0wdxEOkOCwHx3LYN8K5eB7o4ThOEeWaLs+Noc8GYKFEsQamy
-         Ebig==
-X-Gm-Message-State: APjAAAXu7I/W6SdRkZJ6bcm2D1Hf9p4BpQhMFcJ2zJA22Vkmu/vgahLv
-        S9cxAC2XoPP39KtzEb6zMqHOdA==
-X-Google-Smtp-Source: APXvYqyqOun6k3rFPZiHWrWAxUeMwEI/iqTNd06JTPho68It+7LHZEn/6EYjihJLeJfIdRD2OVDxgw==
-X-Received: by 2002:a17:906:2594:: with SMTP id m20mr82883736ejb.217.1560514666534;
-        Fri, 14 Jun 2019 05:17:46 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id z40sm847346edb.61.2019.06.14.05.17.45
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 14 Jun 2019 05:17:45 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 3194F1804AF; Fri, 14 Jun 2019 14:17:45 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Tejun Heo <tj@kernel.org>, axboe@kernel.dk, newella@fb.com,
-        clm@fb.com, josef@toxicpanda.com, dennisz@fb.com,
-        lizefan@huawei.com, hannes@cmpxchg.org
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        kernel-team@fb.com, cgroups@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, bpf@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Josef Bacik <jbacik@fb.com>
-Subject: Re: [PATCH 08/10] blkcg: implement blk-ioweight
-In-Reply-To: <20190614015620.1587672-9-tj@kernel.org>
-References: <20190614015620.1587672-1-tj@kernel.org> <20190614015620.1587672-9-tj@kernel.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 14 Jun 2019 14:17:45 +0200
-Message-ID: <87pnngbbti.fsf@toke.dk>
+        id S1727729AbfFNMUa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 14 Jun 2019 08:20:30 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:57746 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727362AbfFNMUa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jun 2019 08:20:30 -0400
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 5B7C52F8BFD;
+        Fri, 14 Jun 2019 12:20:25 +0000 (UTC)
+Received: from carbon (ovpn-200-32.brq.redhat.com [10.40.200.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D5BF467261;
+        Fri, 14 Jun 2019 12:20:11 +0000 (UTC)
+Date:   Fri, 14 Jun 2019 14:20:09 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
+        bpf@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        David Ahern <dsahern@gmail.com>, brouer@redhat.com
+Subject: Re: [PATCH bpf 1/3] devmap: Fix premature entry free on destroying
+ map
+Message-ID: <20190614142009.3922795a@carbon>
+In-Reply-To: <877e9octre.fsf@toke.dk>
+References: <20190614082015.23336-1-toshiaki.makita1@gmail.com>
+        <20190614082015.23336-2-toshiaki.makita1@gmail.com>
+        <877e9octre.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.38]); Fri, 14 Jun 2019 12:20:30 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Tejun Heo <tj@kernel.org> writes:
+On Fri, 14 Jun 2019 13:04:53 +0200
+Toke Høiland-Jørgensen <toke@redhat.com> wrote:
 
-> This patchset implements IO cost model based work-conserving
-> proportional controller.
->
-> While io.latency provides the capability to comprehensively prioritize
-> and protect IOs depending on the cgroups, its protection is binary -
-> the lowest latency target cgroup which is suffering is protected at
-> the cost of all others.  In many use cases including stacking multiple
-> workload containers in a single system, it's necessary to distribute
-> IO capacity with better granularity.
->
-> One challenge of controlling IO resources is the lack of trivially
-> observable cost metric.  The most common metrics - bandwidth and iops
-> - can be off by orders of magnitude depending on the device type and
-> IO pattern.  However, the cost isn't a complete mystery.  Given
-> several key attributes, we can make fairly reliable predictions on how
-> expensive a given stream of IOs would be, at least compared to other
-> IO patterns.
->
-> The function which determines the cost of a given IO is the IO cost
-> model for the device.  This controller distributes IO capacity based
-> on the costs estimated by such model.  The more accurate the cost
-> model the better but the controller adapts based on IO completion
-> latency and as long as the relative costs across differents IO
-> patterns are consistent and sensible, it'll adapt to the actual
-> performance of the device.
->
-> Currently, the only implemented cost model is a simple linear one with
-> a few sets of default parameters for different classes of device.
-> This covers most common devices reasonably well.  All the
-> infrastructure to tune and add different cost models is already in
-> place and a later patch will also allow using bpf progs for cost
-> models.
->
-> Please see the top comment in blk-ioweight.c and documentation for
-> more details.
+> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
+> 
+> > dev_map_free() waits for flush_needed bitmap to be empty in order to
+> > ensure all flush operations have completed before freeing its entries.
+> > However the corresponding clear_bit() was called before using the
+> > entries, so the entries could be used after free.
+> >
+> > All access to the entries needs to be done before clearing the bit.
+> > It seems commit a5e2da6e9787 ("bpf: netdev is never null in
+> > __dev_map_flush") accidentally changed the clear_bit() and memory access
+> > order.
+> >
+> > Note that the problem happens only in __dev_map_flush(), not in
+> > dev_map_flush_old(). dev_map_flush_old() is called only after nulling
+> > out the corresponding netdev_map entry, so dev_map_free() never frees
+> > the entry thus no such race happens there.
+> >
+> > Fixes: a5e2da6e9787 ("bpf: netdev is never null in __dev_map_flush")
+> > Signed-off-by: Toshiaki Makita <toshiaki.makita1@gmail.com>  
+> 
+> I recently posted a patch[0] that gets rid of the bitmap entirely, so I
+> think you can drop this one...
 
-Reading through the description here and in the comment, and with the
-caveat that I am familiar with network packet scheduling but not with
-the IO layer, I think your approach sounds quite reasonable; and I'm
-happy to see improvements in this area!
+One could argue that this is a stable tree fix... which unfortunately
+will cause some pain for your patch.  Or maybe for the maintainers, as
+this is for 'bpf' git-tree and your patch is for 'bpf-next' git-tree.
 
-One question: How are equal-weight cgroups scheduled relative to each
-other? Or requests from different processes within a single cgroup for
-that matter? FIFO? Round-robin? Something else?
+ 
+> [0] https://lore.kernel.org/netdev/156042464148.25684.11881534392137955942.stgit@alrua-x1/
 
-Thanks,
-
--Toke
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
