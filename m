@@ -2,95 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1A14622B
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 17:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF2D4624C
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 17:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725838AbfFNPJb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jun 2019 11:09:31 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:46993 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725837AbfFNPJb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jun 2019 11:09:31 -0400
-Received: by mail-pl1-f195.google.com with SMTP id e5so1128901pls.13;
-        Fri, 14 Jun 2019 08:09:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=+I9U1GODgSkyxPAIv5uSBlih1n/pRySECC43JZGkdsQ=;
-        b=iGhc4xzitJMk67sXbQMyBo8eYE8TxhKJEDf+KuuPxlnOLUZFysidCzwr54Kzzy0K2J
-         D+GJRX71MpXYgXx2M6apuBILbtB+nlVv2HxnXhyaQJh8VlGfzYaUAn2jZSunbRUcJP+x
-         iOB3D7jvu5eEN6YbwgH60SuKTejWz4B6PizS20cko5zfs7ZiBvyTkCfK/CSqY5Bns3l8
-         Ro6EsJZk30weiEJY/Uk5TEteCCGXB8XYvuQXqPh/3FoevGvIok7Er3BS5HLnUo9gdnw3
-         FP2pyydyRWD6S3lNwlB6S79WFXpwubyELDGZOmGBXGY7MLSjmvWneimvwEkDnHpcmFWV
-         0G/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to:user-agent;
-        bh=+I9U1GODgSkyxPAIv5uSBlih1n/pRySECC43JZGkdsQ=;
-        b=HyJqtfDS72O5+9b4rUTlWezjRoRGjZcozrgUUZAu/pHK3Ra2m5TzIiRFzDuS26+PtL
-         BrTEV7VCmGA6vZkz0pXKdvVNAv25hJ+TR3tbOs4mLP/wmzmrVQEjBenljYN9TsRRumrC
-         e51XXRACUySdMtCGx+CMvJ3baFsoIv2nGjl3RrKEsxNYfWBrkDkNURBPUJ6YgqHRISny
-         lGSZGSV3l2vNFsKq5bYdRSeykmffCti5Cl1MT5soFduDfrcDLD3bdkXEBwi2GSdZjBha
-         oxF0bnd2MGzqz1jGCdKtf0fJ3r18iudr7oV9NdarQp9dM0Ld0IWQuSJWMS7CYOf3HwVC
-         EdNg==
-X-Gm-Message-State: APjAAAXJQhL/2ux5JThI5KGU1SoHqOQv9PkNNXpkEs48awzC58nuDUEH
-        8F2s0wQiWoe0Q73tZmHsO0Y=
-X-Google-Smtp-Source: APXvYqxzOCKBrFEtUYYWecwehqGBRjbcRqqz2d1PNNKgZEyBo102COqcOPB0Jz3DOPgdv6CXMm9Xlg==
-X-Received: by 2002:a17:902:b70f:: with SMTP id d15mr12366371pls.318.1560524969921;
-        Fri, 14 Jun 2019 08:09:29 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:180::1:b330])
-        by smtp.gmail.com with ESMTPSA id a22sm4039041pfn.173.2019.06.14.08.09.28
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 14 Jun 2019 08:09:28 -0700 (PDT)
-Date:   Fri, 14 Jun 2019 08:09:24 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     axboe@kernel.dk, newella@fb.com, clm@fb.com, josef@toxicpanda.com,
-        dennisz@fb.com, lizefan@huawei.com, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        kernel-team@fb.com, cgroups@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, bpf@vger.kernel.org, Josef Bacik <jbacik@fb.com>
-Subject: Re: [PATCH 08/10] blkcg: implement blk-ioweight
-Message-ID: <20190614150924.GB538958@devbig004.ftw2.facebook.com>
-References: <20190614015620.1587672-1-tj@kernel.org>
- <20190614015620.1587672-9-tj@kernel.org>
- <87pnngbbti.fsf@toke.dk>
+        id S1726259AbfFNPOh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jun 2019 11:14:37 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:52440 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725822AbfFNPOh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 14 Jun 2019 11:14:37 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5EF49Zk022999;
+        Fri, 14 Jun 2019 08:13:25 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=yryuILdBwZnK1CyKNgOJsebOGk8n7E1Kyf0D5bEn2Mw=;
+ b=d5LN2vyrypTLi75HEw6JkGoef7T87KdMGcTlHwxT513JsnymgUnrRg2JI4UyjfISLFa+
+ 2pgxKD3ZQTP2xyF+5rpgnkzD04z/q+bMS6WyHgzUIsglkQx/gmjEbHy6mjtrTRJEb+Tk
+ V0oguA5UebTojN3zxMuL1eQlejX5JB+Nu9Q= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2t4ds0r2aw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 14 Jun 2019 08:13:25 -0700
+Received: from ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) by
+ ash-exhub203.TheFacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 14 Jun 2019 08:13:24 -0700
+Received: from NAM05-BY2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Fri, 14 Jun 2019 08:13:24 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yryuILdBwZnK1CyKNgOJsebOGk8n7E1Kyf0D5bEn2Mw=;
+ b=dbBmwI8obqTc+QVopdmIMII1d1jfkYO/6+GXwmioxqMGuXrE8gHW+fWFvHmwWb3JcczdIo92Shn+L6n/gK7h1F7JXAsVziPbLX5ZqwIJHfOQCSoy9x1miyMws6/n9+2LlDuEpHdpUHtgA95ls8oknYAAZJ0wyW0bB2Yvv/djyX0=
+Received: from DM5PR15MB1163.namprd15.prod.outlook.com (10.173.215.141) by
+ DM5PR15MB1706.namprd15.prod.outlook.com (10.174.108.143) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1987.12; Fri, 14 Jun 2019 15:13:23 +0000
+Received: from DM5PR15MB1163.namprd15.prod.outlook.com
+ ([fe80::38aa:95ca:d50f:9745]) by DM5PR15MB1163.namprd15.prod.outlook.com
+ ([fe80::38aa:95ca:d50f:9745%3]) with mapi id 15.20.1987.012; Fri, 14 Jun 2019
+ 15:13:23 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kairui Song <kasong@redhat.com>
+Subject: Re: [PATCH 8/9] x86/bpf: Convert asm comments to AT&T syntax
+Thread-Topic: [PATCH 8/9] x86/bpf: Convert asm comments to AT&T syntax
+Thread-Index: AQHVIetLPIU2acwXW0W72I9U+7dGQaaZ7m6AgADXPYCAAH3nAA==
+Date:   Fri, 14 Jun 2019 15:13:23 +0000
+Message-ID: <38F47DBB-F98F-4C12-B7D0-A363085065F3@fb.com>
+References: <cover.1560431531.git.jpoimboe@redhat.com>
+ <77fe02f7d575091b06f68f8eed256da94aee653f.1560431531.git.jpoimboe@redhat.com>
+ <E8372F56-269A-48A4-B80B-14FA664F8D41@fb.com>
+ <20190614074245.GS3436@hirez.programming.kicks-ass.net>
+In-Reply-To: <20190614074245.GS3436@hirez.programming.kicks-ass.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3445.104.11)
+x-originating-ip: [2620:10d:c090:200::2:e3f9]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9f9e4c4c-e9a3-4751-f78e-08d6f0dad7e8
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:DM5PR15MB1706;
+x-ms-traffictypediagnostic: DM5PR15MB1706:
+x-microsoft-antispam-prvs: <DM5PR15MB17065AAF7DB3C386288FD2CEB3EE0@DM5PR15MB1706.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-forefront-prvs: 0068C7E410
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(376002)(366004)(346002)(396003)(136003)(199004)(189003)(6916009)(2616005)(305945005)(476003)(11346002)(46003)(71200400001)(71190400001)(486006)(54906003)(14454004)(446003)(316002)(81156014)(36756003)(68736007)(25786009)(2906002)(81166006)(8676002)(33656002)(6246003)(6436002)(256004)(229853002)(5660300002)(53936002)(57306001)(99286004)(50226002)(4326008)(6116002)(6486002)(6512007)(4744005)(91956017)(186003)(86362001)(7736002)(8936002)(76176011)(66446008)(66476007)(64756008)(53546011)(102836004)(478600001)(66946007)(73956011)(66556008)(6506007)(76116006);DIR:OUT;SFP:1102;SCL:1;SRVR:DM5PR15MB1706;H:DM5PR15MB1163.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: UOGSl6SMQCB63dXemZtpAuYVDTrfircjD8Qe550uKjvR77DeuFnM2qdxMLM9ZS53wf4wfQ1e7+K91gx4Ph1G4KsXXUOx20aNrlHyqTAiwhkPJ9I7MTawHzYuC2CotYFU627B5DpVYbYo+R2c63nacj0CrU3zskiZqcCL84PPE5Fnra2CK5EpRo1w/P4v3vZiyvjQKJ2sQeS0vjue9CZKTu5KEllsY+XN6myd0d8ElbYJHuXhO3COKqSdKAxX24lxBgFLLKfeLzrEcMSB+15ndtWQC9q6oycVZnndfAqp2X9SOoBIqiAB+bAOm/tLBGyLD3tuJehq3DKCFG1lCh8W/6GiemwKGrKgnXzLzEwQel+PSKakzUAz2748Zzh7Tsi/FR9Alrt45wd84xcrY0YrPI7TQ7JnIb5+KSeMfXd0PRc=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2A1DC0A2427F574BB2C824E37D7C26A4@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87pnngbbti.fsf@toke.dk>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f9e4c4c-e9a3-4751-f78e-08d6f0dad7e8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jun 2019 15:13:23.4008
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: songliubraving@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1706
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-14_07:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=785 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906140125
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello, Toke.
 
-On Fri, Jun 14, 2019 at 02:17:45PM +0200, Toke Høiland-Jørgensen wrote:
-> One question: How are equal-weight cgroups scheduled relative to each
-> other? Or requests from different processes within a single cgroup for
-> that matter? FIFO? Round-robin? Something else?
 
-Once each cgroup got their hierarchical weight and current vtime for
-the period, they don't talk to each other.  Each is expected to do the
-right thing on their own.  When the period ends, the timer looks at
-how the device is performing, how much each used and so on and then
-make necessary adjustments.  So, there's no direct cross-cgroup
-synchronization.  Each is throttled to their target level
-independently.
+> On Jun 14, 2019, at 12:42 AM, Peter Zijlstra <peterz@infradead.org> wrote=
+:
+>=20
+> On Thu, Jun 13, 2019 at 06:52:24PM +0000, Song Liu wrote:
+>>> On Jun 13, 2019, at 6:21 AM, Josh Poimboeuf <jpoimboe@redhat.com> wrote=
+:
+>=20
+>>> @@ -403,11 +403,11 @@ static void emit_mov_imm64(u8 **pprog, u32 dst_re=
+g,
+>>> 		 * For emitting plain u32, where sign bit must not be
+>>> 		 * propagated LLVM tends to load imm64 over mov32
+>>> 		 * directly, so save couple of bytes by just doing
+>>> -		 * 'mov %eax, imm32' instead.
+>>> +		 * 'mov imm32, %eax' instead.
+>>> 		 */
+>>> 		emit_mov_imm32(&prog, false, dst_reg, imm32_lo);
+>>> 	} else {
+>>> -		/* movabsq %rax, imm64 */
+>>> +		/* movabs imm64, %rax */
+>>=20
+>> 		^^^^^ Should this be moveabsq?=20
+>>=20
+>>> 		EMIT2(add_1mod(0x48, dst_reg), add_1reg(0xB8, dst_reg));
+>>> 		EMIT(imm32_lo, 4);
+>>> 		EMIT(imm32_hi, 4);
+>=20
+> Song, can you please trim replies; I only found what you said because of
+> Josh's reply.
 
-Within a single cgroup, the IOs are FIFO.  When an IO has enough vtime
-credit, it just passes through.  When it doesn't, it always waits
-behind any other IOs which are already waiting.
+Sorry for the problem. I will trim in the future.=20
 
-Thanks.
-
--- 
-tejun
+Song
