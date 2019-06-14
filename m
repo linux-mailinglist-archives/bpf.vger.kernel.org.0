@@ -2,154 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E555450F1
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 02:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F55745120
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 03:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725812AbfFNAzu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Jun 2019 20:55:50 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:38149 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbfFNAzu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Jun 2019 20:55:50 -0400
-Received: by mail-lf1-f65.google.com with SMTP id b11so492491lfa.5;
-        Thu, 13 Jun 2019 17:55:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ryaPCZIxAcKEqlnkJURjQarpGjK1d3kFhw+bV3KFP9w=;
-        b=Am2rlOOmSe5TZvPubrB9t5WLp99W7cGT3AFwKkLm752jiH3pKsM7TuXaV/gVBtbI0I
-         Lvt/jAO2ZklUO1AuoGu4BSbAG3VQGC0Bs/G/Nudkn/xfVMLjTPELMRMyOX731rgWMoqJ
-         9Gh6wD1+eyS6aCNiN3tdJ1UyKEUtUfWNfMC3eDMhMJsX44+v5DWx7n2a931/3UcXjJs5
-         QbANRRVfLLaJzAf3JXE4YvgTn0D3VYoGcLZh3KqPm6iMoJOfV0OFEXA94WXq3noAf1yq
-         iFlBs6bFtTBu3UnsjO3GXwg/ug1ViobK/hpmMhcfcroIa30HDFexgv6ZYKKPwspta92N
-         VdvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ryaPCZIxAcKEqlnkJURjQarpGjK1d3kFhw+bV3KFP9w=;
-        b=DhP81wer8GY2AoeNzp0w3CV4Q04uUa0DWyPXb1srpOHIx3Ib/zE/GVDlzsz/J8bkqE
-         GSViQVBYm0F27uuSXJs7yj6Uxny3WG4W+PQ3FNvm4j827EhxRgchJoTescpXhegWo0dr
-         EA+/SMzLvphSAhNfMPV/RwxBraSeewXjf9v8lzNbo/zwRoN0DymXKUPUi83XgpRz/HZo
-         XDQOvBtw9ZLRUug4+SF0DIjkxJSUTx1jVLQ0DnqI8Z8qonFvdi8oLpneFh73RCdLVKpM
-         v2W3feCLGxc7AFIkJzZx/kbqllA1W5kPvMmJsmbU0xJaGYJAWU29lTPru1R8MjBYcg0e
-         /SIA==
-X-Gm-Message-State: APjAAAUEs+RAWOZGMdbf1ZKdJKOCWLlQND/Qxb+1pi+lbZ0lDBWf9M7k
-        Sy3CSH9ZMYHSU0CF6gODDR9S7xGZnmJIJOPhO+M=
-X-Google-Smtp-Source: APXvYqx9lJ1Egqv+7WXAkIM2x8BJIXO6TIeTHbKoqF+cwbEj1hpPLT6iy6bgD8dz8+Z+cP0erI7MZ1fSdo/A3fdlVgE=
-X-Received: by 2002:a19:ab1a:: with SMTP id u26mr8730266lfe.6.1560473747165;
- Thu, 13 Jun 2019 17:55:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190611215304.28831-1-mmullins@fb.com> <CAEf4BzZ_Gypm32mSnrpGWw_U9q8LfTn7hag-p-LvYKVNkFdZGw@mail.gmail.com>
- <4aa26670-75b8-118d-68ca-56719af44204@iogearbox.net> <9c77657414993332987ca79d4081c4d71cc48d66.camel@fb.com>
-In-Reply-To: <9c77657414993332987ca79d4081c4d71cc48d66.camel@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 13 Jun 2019 17:55:35 -0700
-Message-ID: <CAADnVQLV3n3ozBbz-7dJbYfptDwQtL_zM95Z5rcAF-A72aJ9DA@mail.gmail.com>
-Subject: Re: [PATCH bpf v2] bpf: fix nested bpf tracepoints with per-cpu data
-To:     Matt Mullins <mmullins@fb.com>
-Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
+        id S1726028AbfFNBUe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Jun 2019 21:20:34 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:43448 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725616AbfFNBUe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Jun 2019 21:20:34 -0400
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 2159E85539;
+        Fri, 14 Jun 2019 01:20:34 +0000 (UTC)
+Received: from treble (ovpn-121-232.rdu2.redhat.com [10.10.121.232])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BE45619C67;
+        Fri, 14 Jun 2019 01:20:32 +0000 (UTC)
+Date:   Thu, 13 Jun 2019 20:20:30 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
         Song Liu <songliubraving@fb.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "ast@kernel.org" <ast@kernel.org>, Andrew Hall <hall@fb.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Kairui Song <kasong@redhat.com>
+Subject: Re: [PATCH 2/9] objtool: Fix ORC unwinding in non-JIT BPF generated
+ code
+Message-ID: <20190614012030.b6eujm7b4psu62kj@treble>
+References: <cover.1560431531.git.jpoimboe@redhat.com>
+ <99c22bbd79e72855f4bc9049981602d537a54e70.1560431531.git.jpoimboe@redhat.com>
+ <20190613205710.et5fywop4gfalsa6@ast-mbp.dhcp.thefacebook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20190613205710.et5fywop4gfalsa6@ast-mbp.dhcp.thefacebook.com>
+User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.28]); Fri, 14 Jun 2019 01:20:34 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 13, 2019 at 5:52 PM Matt Mullins <mmullins@fb.com> wrote:
->
-> On Fri, 2019-06-14 at 00:47 +0200, Daniel Borkmann wrote:
-> > On 06/12/2019 07:00 AM, Andrii Nakryiko wrote:
-> > > On Tue, Jun 11, 2019 at 8:48 PM Matt Mullins <mmullins@fb.com> wrote:
-> > > >
-> > > > BPF_PROG_TYPE_RAW_TRACEPOINTs can be executed nested on the same CP=
-U, as
-> > > > they do not increment bpf_prog_active while executing.
-> > > >
-> > > > This enables three levels of nesting, to support
-> > > >   - a kprobe or raw tp or perf event,
-> > > >   - another one of the above that irq context happens to call, and
-> > > >   - another one in nmi context
-> > > > (at most one of which may be a kprobe or perf event).
-> > > >
-> > > > Fixes: 20b9d7ac4852 ("bpf: avoid excessive stack usage for perf_sam=
-ple_data")
-> >
-> > Generally, looks good to me. Two things below:
-> >
-> > Nit, for stable, shouldn't fixes tag be c4f6699dfcb8 ("bpf: introduce B=
-PF_RAW_TRACEPOINT")
-> > instead of the one you currently have?
->
-> Ah, yeah, that's probably more reasonable; I haven't managed to come up
-> with a scenario where one could hit this without raw tracepoints.  I'll
-> fix up the nits that've accumulated since v2.
->
-> > One more question / clarification: we have __bpf_trace_run() vs trace_c=
-all_bpf().
-> >
-> > Only raw tracepoints can be nested since the rest has the bpf_prog_acti=
-ve per-CPU
-> > counter via trace_call_bpf() and would bail out otherwise, iiuc. And ra=
-w ones use
-> > the __bpf_trace_run() added in c4f6699dfcb8 ("bpf: introduce BPF_RAW_TR=
-ACEPOINT").
-> >
-> > 1) I tried to recall and find a rationale for mentioned trace_call_bpf(=
-) split in
-> > the c4f6699dfcb8 log, but couldn't find any. Is the raison d'=C3=AAtre =
-purely because of
-> > performance overhead (and desire to not miss events as a result of nest=
-ing)? (This
-> > also means we're not protected by bpf_prog_active in all the map ops, o=
-f course.)
-> > 2) Wouldn't this also mean that we only need to fix the raw tp programs=
- via
-> > get_bpf_raw_tp_regs() / put_bpf_raw_tp_regs() and won't need this dupli=
-cation for
-> > the rest which relies upon trace_call_bpf()? I'm probably missing somet=
-hing, but
-> > given they have separate pt_regs there, how could they be affected then=
-?
->
-> For the pt_regs, you're correct: I only used get/put_raw_tp_regs for
-> the _raw_tp variants.  However, consider the following nesting:
->
->                                     trace_nest_level raw_tp_nest_level
->   (kprobe) bpf_perf_event_output            1               0
->   (raw_tp) bpf_perf_event_output_raw_tp     2               1
->   (raw_tp) bpf_get_stackid_raw_tp           2               2
->
-> I need to increment a nest level (and ideally increment it only once)
-> between the kprobe and the first raw_tp, because they would otherwise
-> share the struct perf_sample_data.  But I also need to increment a nest
-> level between the two raw_tps, since they share the pt_regs -- I can't
-> use trace_nest_level for everything because it's not used by
-> get_stackid, and I can't use raw_tp_nest_level for everything because
-> it's not incremented by kprobes.
->
-> If raw tracepoints were to bump bpf_prog_active, then I could get away
-> with just using that count in these callsites -- I'm reluctant to do
-> that, though, since it would prevent kprobes from ever running inside a
-> raw_tp.  I'd like to retain the ability to (e.g.)
->   trace.py -K htab_map_update_elem
-> and get some stack traces from at least within raw tracepoints.
->
-> That said, as I wrote up this example, bpf_trace_nest_level seems to be
-> wildly misnamed; I should name those after the structure they're
-> protecting...
+On Thu, Jun 13, 2019 at 01:57:11PM -0700, Alexei Starovoitov wrote:
+> On Thu, Jun 13, 2019 at 08:20:59AM -0500, Josh Poimboeuf wrote:
+> > Objtool currently ignores ___bpf_prog_run() because it doesn't
+> > understand the jump table.  This results in the ORC unwinder not being
+> > able to unwind through non-JIT BPF code.
+> > 
+> > Luckily, the BPF jump table resembles a GCC switch jump table, which
+> > objtool already knows how to read.
+> > 
+> > Add generic support for reading any static local jump table array named
+> > "jump_table", and rename the BPF variable accordingly, so objtool can
+> > generate ORC data for ___bpf_prog_run().
+> > 
+> > Fixes: d15d356887e7 ("perf/x86: Make perf callchains work without CONFIG_FRAME_POINTER")
+> > Reported-by: Song Liu <songliubraving@fb.com>
+> > Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> > ---
+> >  kernel/bpf/core.c     |  5 ++---
+> >  tools/objtool/check.c | 16 ++++++++++++++--
+> >  2 files changed, 16 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > index 7c473f208a10..aa546ef7dbdc 100644
+> > --- a/kernel/bpf/core.c
+> > +++ b/kernel/bpf/core.c
+> > @@ -1299,7 +1299,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+> >  {
+> >  #define BPF_INSN_2_LBL(x, y)    [BPF_##x | BPF_##y] = &&x##_##y
+> >  #define BPF_INSN_3_LBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] = &&x##_##y##_##z
+> > -	static const void *jumptable[256] = {
+> > +	static const void *jump_table[256] = {
+> 
+> Nack to the change like above
 
-I still don't get what's wrong with the previous approach.
-Didn't I manage to convince both of you that perf_sample_data
-inside bpf_perf_event_array doesn't have any issue that Daniel brought up?
-I think this refcnting approach is inferior.
+"jump table" is two words, so does it not make sense to separate them
+with an underscore for readability?
+
+I created a generic feature in objtool for this so that other code can
+also use it.  So a generic name (and typical Linux naming convention --
+separating words with an underscore) makes sense here.
+
+> and to patches 8 and 9.
+
+Well, it's your code, but ... can I ask why?  AT&T syntax is the
+standard for Linux, which is in fact the OS we are developing for.
+
+It makes the code extra confusing for it to be annotated differently
+than all other Linux asm code.  And due to the inherent complexity of
+generating code at runtime, I'd think we'd want to make the code as
+readable as possible, for as many people as possible (i.e. other Linux
+developers).
+
+-- 
+Josh
