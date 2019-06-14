@@ -2,164 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 92730464F3
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 18:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B37F4654F
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 19:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725908AbfFNQtk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jun 2019 12:49:40 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:37140 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbfFNQtk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jun 2019 12:49:40 -0400
-Received: by mail-qk1-f196.google.com with SMTP id d15so2098644qkl.4;
-        Fri, 14 Jun 2019 09:49:40 -0700 (PDT)
+        id S1725814AbfFNRGC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jun 2019 13:06:02 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:42853 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725809AbfFNRGC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jun 2019 13:06:02 -0400
+Received: by mail-lj1-f196.google.com with SMTP id t28so3101292lje.9;
+        Fri, 14 Jun 2019 10:06:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xGLh1XrgnhZOUucQhhPrW1F8VtojcwkzIIfnOkB9Xtw=;
-        b=Ek7WPW1lT82gNISGED4ZrdfbnFVakB7iseeZxOgr0dowwInMcWw/TnzCBehnEKslBb
-         /SeMG18Ue5q0DTxvZmBjej9s6ot+rwWzyr/4qHv51awGA3qLTOX9rMQUtkDG3sN4L2vH
-         HCQ60CUjzB316QyW9nHePPFMm+5wqbOmdsmY7JtcsFW2EKYsLASfqq95LbvtNROldl5j
-         2rR6Ul3N842yGj/p0LWNGygLsFU3sMXYEslkIw4a9upMN98qz7TWKfG3FETKUddvJ+ut
-         ji2pKTVt65J9ETl9/AFnjnU2lF9r6bTTz0WkJ8ePad4AHmT2yz7BuFesXYwxQx3figMM
-         S+Hw==
+        bh=yUyWgMcF8YtqLLCB/ssmwJMUkK3COGkr3CAkr8Pd3Qs=;
+        b=dA3LeS1ezaJ1F1vwaadjQb9osOlxuLnDyjStmvQdrgvQrLp/OVBz0khyBBhGDd96J8
+         pOhDIi4zPFFyWXmAkgs++KXuEQIDcj9uCMPNW+7MfUAIWsZpgFFw0hHu+6upx1merAJX
+         s5+k8IS8MKoyRRduFogPqCueXQ2dg2K+900x1wklHNTgTdjY5hjlOx1oepSxwjBookyy
+         FsxnkBNVe7p1qI3b7CKxyv4JN45XTUEYCpuNyOqeF1VK6+G5Jhcr1gM/49dXfDiEblCN
+         Kwdxvyzi166El4AsCzVkAw6q04spDggjU253Vr2Rfr8LSf6zE7TAMqzinlV+f6BRXAGT
+         0Tsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xGLh1XrgnhZOUucQhhPrW1F8VtojcwkzIIfnOkB9Xtw=;
-        b=ieOtbkALDTomutPK6wR4En5/O7Dpn5oMmGhidsMVtoQOKJ3PBVBW9CLldfLWVqi3sS
-         NqnGVvjYsEPK7gsshVVSiIlyZt/08sa1eJlS+OS5t62Q4JAAnrGpb6KLfcWBQGXzjUrw
-         fKiXISAXIu1fgqNBUq3L0oWEsXYDVycocmB9/bgOSfp50UqshosbcwjSaM02x6fRagVH
-         B37AbMAAq0pTsy8GCtJv4GNpm2+cxGkhenuqT4Z8VEGcPhUOz+KxlVmmDzIfCdirQMad
-         N2UIRys+LByictYMr4ST7+KDREFxMDlOZnMYza7gWjuOuXE50FTAr2uHedE9bFKojiwU
-         IaAA==
-X-Gm-Message-State: APjAAAVwRrLMTtVUkQAsIqY7stla1Au0lggJp8Va5v2jtCzl4Z0Aq03/
-        V9GvCVDz+yg3WVu0mlG5dXxvKnswN46XEng2Hn8=
-X-Google-Smtp-Source: APXvYqydzFvWyNBnYDV2jM4O9wSxkHYjk1FoOkqXaLGXQLEqVZoBCNXpTw/0HXUyXPzRoOmFtB08NHkgsEkKzg7gQqs=
-X-Received: by 2002:a05:620a:14a8:: with SMTP id x8mr21466070qkj.35.1560530979737;
- Fri, 14 Jun 2019 09:49:39 -0700 (PDT)
+        bh=yUyWgMcF8YtqLLCB/ssmwJMUkK3COGkr3CAkr8Pd3Qs=;
+        b=E1lmaDWxRbAlXL/1XDgVojyYptUX7mgDa+BYelAziyhAEsH3l7RuiBz/Gg67T3fNHb
+         KZss1CIRAo/yLNlAeykqKCLZ90/JVgr+4PTs2iDBGvsKSy23UlhpbjOTgiBNzkW4vBUH
+         dqqXe+kfGpqAIdpnt7Za7+eAYl2elD/PF9U57qkLnRZ7+cKxSW6XQfPuPqpAXxzURfGn
+         eXdd4NTXZtdG2WUbylOyxaZNLe++rvFu8AZtSixmrzTBV6ZZS0H6esGu0et6I0eUs9Fp
+         f41T+Ok3kVFtQrxYiItPTnoWGXEcRptf5XD9iFaZ0ULy+RbeFdqCODStIYsTCBTaPpWA
+         OpOw==
+X-Gm-Message-State: APjAAAX3j2PuvacHSOKSWYPtZpJFXYN1vV7edA2FfbuW8Ig7pcCVZL2G
+        kTSQCnvjlhQ/B69LtMdhFpk8640jN2r8q6TrBRY=
+X-Google-Smtp-Source: APXvYqwKdybAT4jHrPCu6+NoLD+MEDKQbRqUSolbhlNXvlDzQPFNIphIVPS5jQf/wuDND57EHSkU0pOel/p/+sGRJ0U=
+X-Received: by 2002:a2e:86d1:: with SMTP id n17mr28518814ljj.58.1560531960033;
+ Fri, 14 Jun 2019 10:06:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190614072557.196239-1-ast@kernel.org> <20190614072557.196239-9-ast@kernel.org>
-In-Reply-To: <20190614072557.196239-9-ast@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 14 Jun 2019 09:49:28 -0700
-Message-ID: <CAEf4Bzb0fjGFK5-KNM9dzdJ0y6oGR5OVTCC5OJ46kRXkWZvy1A@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 8/9] selftests/bpf: add realistic loop tests
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+References: <20190612113208.21865-1-naveen.n.rao@linux.vnet.ibm.com>
+ <CAADnVQLp+N8pYTgmgEGfoubqKrWrnuTBJ9z2qc1rB6+04WfgHA@mail.gmail.com>
+ <87sgse26av.fsf@netronome.com> <87r27y25c3.fsf@netronome.com>
+ <CAADnVQJZkJu60jy8QoomVssC=z3NE4402bMnfobaWNE_ANC6sg@mail.gmail.com> <87ef3w5hew.fsf@netronome.com>
+In-Reply-To: <87ef3w5hew.fsf@netronome.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 14 Jun 2019 10:05:48 -0700
+Message-ID: <CAADnVQJybVNQofzROiXe1np+zNY3eBduNgFZdquSCdTeckof-g@mail.gmail.com>
+Subject: Re: [PATCH] bpf: optimize constant blinding
+To:     Jiong Wang <jiong.wang@netronome.com>
+Cc:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 14, 2019 at 12:26 AM Alexei Starovoitov <ast@kernel.org> wrote:
+On Fri, Jun 14, 2019 at 8:13 AM Jiong Wang <jiong.wang@netronome.com> wrote:
 >
-> Add a bunch of loop tests. Most of them are created by replacing
-> '#pragma unroll' with '#pragma clang loop unroll(disable)'
 >
-> Several tests are artificially large:
->   /* partial unroll. llvm will unroll loop ~150 times.
->    * C loop count -> 600.
->    * Asm loop count -> 4.
->    * 16k insns in loop body.
->    * Total of 5 such loops. Total program size ~82k insns.
->    */
->   "./pyperf600.o",
+> Alexei Starovoitov writes:
 >
->   /* no unroll at all.
->    * C loop count -> 600.
->    * ASM loop count -> 600.
->    * ~110 insns in loop body.
->    * Total of 5 such loops. Total program size ~1500 insns.
->    */
->   "./pyperf600_nounroll.o",
+> > On Wed, Jun 12, 2019 at 8:25 AM Jiong Wang <jiong.wang@netronome.com> wrote:
+> >>
+> >>
+> >> Jiong Wang writes:
+> >>
+> >> > Alexei Starovoitov writes:
+> >> >
+> >> >> On Wed, Jun 12, 2019 at 4:32 AM Naveen N. Rao
+> >> >> <naveen.n.rao@linux.vnet.ibm.com> wrote:
+> >> >>>
+> >> >>> Currently, for constant blinding, we re-allocate the bpf program to
+> >> >>> account for its new size and adjust all branches to accommodate the
+> >> >>> same, for each BPF instruction that needs constant blinding. This is
+> >> >>> inefficient and can lead to soft lockup with sufficiently large
+> >> >>> programs, such as the new verifier scalability test (ld_dw: xor
+> >> >>> semi-random 64 bit imms, test 5 -- with net.core.bpf_jit_harden=2)
+> >> >>
+> >> >> Slowdown you see is due to patch_insn right?
+> >> >> In such case I prefer to fix the scaling issue of patch_insn instead.
+> >> >> This specific fix for blinding only is not addressing the core of the problem.
+> >> >> Jiong,
+> >> >> how is the progress on fixing patch_insn?
+> >>
+> >> And what I have done is I have digested your conversion with Edward, and is
+> >> slightly incline to the BB based approach as it also exposes the inserted
+> >> insn to later pass in a natural way, then was trying to find a way that
+> >> could create BB info in little extra code based on current verifier code,
+> >> for example as a side effect of check_subprogs which is doing two insn
+> >> traversal already. (I had some such code before in the historical
+> >> wip/bpf-loop-detection branch, but feel it might be still too heavy for
+> >> just improving insn patching)
+> >
+> > BB - basic block?
+> > I'm not sure that was necessary.
+> > The idea was that patching is adding stuff to linked list instead
+> > and single pass at the end to linearize it.
 >
->   /* partial unroll. 19k insn in a loop.
->    * Total program size 20.8k insn.
->    * ~350k processed_insns
->    */
->   "./strobemeta.o",
+> Just an update and keep people posted.
 >
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> ---
+> Working on linked list based approach, the implementation looks like the
+> following, mostly a combine of discussions happened and Naveen's patch,
+> please feel free to comment.
+>
+>   - Use the reserved opcode 0xf0 with BPF_ALU as new pseudo insn code
+>     BPF_LIST_INSN. (0xf0 is also used with BPF_JMP class for tail call).
+>
+>   - Introduce patch pool into bpf_prog->aux to keep all patched insns.
+>     Pool structure looks like:
+>
+>     struct {
+>       int num;
+>       int prev;
+>       int next;
+>     } head_0;
+>     NUM patched insns for head_0
+>     head_1;
+>     patched insns for head_1
+>     head_2;
+>     ...
+>
+>   - Now when doing bpf_patch_insn_single, it doesn't change the original
+>     prog etc, instead, it merely update the insn at patched offset into a
+>     BPF_LIST_INSN, and pushed the patched insns plus a patch header into
+>     the patch pool. Fields of BPF_LIST_INSN is updated to setup the links:
+>
+>       BPF_LIST_INSN.off += patched_size
+>       (accumulating the size attached to this list_insn, it is possible a
+>       later patch pass patches insn in the patch pool, this means insn
+>       traversal needs to be changed, when seeing BPF_LIST_INSN, should go
+>       through the list)
+>
+>       BPF_LIST_INSN.imm = offset of the patch header in patch pool
+>       (off is 16-bit, imm is 32-bit, the patch pool is 32-bit length, so
+>       use imm for keeping offset, meaning a BPF_LIST_INSN can contains no
+>       more than 8192 insns, guess it is enough)
+>
+>   - When doing linearize:
+>     1. a quick scan of prog->insnsi to know the final
+>        image size, would be simple as:
+>
+>       fini_size = 0;
+>       for_each_insn:
+>         if (insn.code == (BPF_ALU | BPF_LIST_HEAD))
+>           fini_size += insn->off;
+>         else
+>           fini_size++;
+>
+>     2. Resize prog into fini_size, and a second scan of prog->insnsi to
+>        copy over all insns and patched insns, at the same time generate a
+>        auxiliary index array which maps an old index to the new index in
+>        final image, like the "clone_index" in Naveen's patch.
+>
+>     3. Finally, a single pass to update branch target, the same algo used
+>        by this patch.
+>
+>   - The APIs for doing insning patch looks like:
+>       bpf_patch_insn_init:   init the generic patch pool.
+>       bpf_patch_insn_single: push patched insns to the pool.
+>                              link them to the associated BPF_LIST_INSN.
+>       bpf_patch_insn_fini:   linearize a bpf_prog contains BPF_LIST_INSN.
+>                              destroy patch pool in prog->aux.
+>
+> I am trying to making the implementation working with jit blind first to make
+> sure basic things are ready. As JIT blinds happens after verification so no
+> need to both aux update etc. Then will cleanup quite a few things for
+> example patch a patched insn, adjust aux data, what to do with insn delete
+> etc.
 
-<snip>
+explicit indices feels like premature optimization.
+May be use vanilla singly linked list instead?
+Also do we have a case when patched insn will be patched again?
+In such case 'patch insn pool' will become recursive?
+Feels difficult to think through all offsets and indices.
+Whereas with linked list patching patched insns will be inserting
+them into link list.
 
-> diff --git a/tools/testing/selftests/bpf/progs/strobemeta.c b/tools/testing/selftests/bpf/progs/strobemeta.c
-> new file mode 100644
-> index 000000000000..d3df3d86f092
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/strobemeta.c
-> @@ -0,0 +1,10 @@
-> +// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-
-given strobemeta.h is GPL-2, this should probably be same
-
-> +// Copyright (c) 2019 Facebook
-> +
-> +#define STROBE_MAX_INTS 2
-> +#define STROBE_MAX_STRS 25
-> +#define STROBE_MAX_MAPS 100
-> +#define STROBE_MAX_MAP_ENTRIES 20
-> +/* full unroll by llvm #undef NO_UNROLL */
-> +#include "strobemeta.h"
-> +
-> diff --git a/tools/testing/selftests/bpf/progs/strobemeta.h b/tools/testing/selftests/bpf/progs/strobemeta.h
-> new file mode 100644
-> index 000000000000..1ff73f60a3e4
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/strobemeta.h
-> @@ -0,0 +1,528 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2019 Facebook
-> +
-
-<snip>
-
-> +char _license[] SEC("license") = "GPL";
-> diff --git a/tools/testing/selftests/bpf/progs/strobemeta_nounroll1.c b/tools/testing/selftests/bpf/progs/strobemeta_nounroll1.c
-> new file mode 100644
-> index 000000000000..f0a1669e11d6
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/strobemeta_nounroll1.c
-> @@ -0,0 +1,9 @@
-> +// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-
-... and here
-
-> +// Copyright (c) 2019 Facebook
-> +
-> +#define STROBE_MAX_INTS 2
-> +#define STROBE_MAX_STRS 25
-> +#define STROBE_MAX_MAPS 13
-> +#define STROBE_MAX_MAP_ENTRIES 20
-> +#define NO_UNROLL
-> +#include "strobemeta.h"
-> diff --git a/tools/testing/selftests/bpf/progs/strobemeta_nounroll2.c b/tools/testing/selftests/bpf/progs/strobemeta_nounroll2.c
-> new file mode 100644
-> index 000000000000..4291a7d642e7
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/strobemeta_nounroll2.c
-> @@ -0,0 +1,9 @@
-> +// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-
-... and here
-
-> +// Copyright (c) 2019 Facebook
-> +
-> +#define STROBE_MAX_INTS 2
-> +#define STROBE_MAX_STRS 25
-> +#define STROBE_MAX_MAPS 30
-> +#define STROBE_MAX_MAP_ENTRIES 20
-> +#define NO_UNROLL
-> +#include "strobemeta.h"
-
-<snip>
+May be better alternative is to convert the whole program to link list
+of insns with branch targets becoming pointers and insert patched
+insns into this single singly linked list ?
