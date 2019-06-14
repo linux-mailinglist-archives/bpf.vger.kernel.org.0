@@ -2,109 +2,252 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB354515C
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 03:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F26EE4516A
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 03:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbfFNBwy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Jun 2019 21:52:54 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:51620 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725813AbfFNBwy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Jun 2019 21:52:54 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 1DED081F0C;
-        Fri, 14 Jun 2019 01:52:54 +0000 (UTC)
-Received: from treble (ovpn-121-232.rdu2.redhat.com [10.10.121.232])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EEE8460A9A;
-        Fri, 14 Jun 2019 01:52:52 +0000 (UTC)
-Date:   Thu, 13 Jun 2019 20:52:51 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Kairui Song <kasong@redhat.com>
-Subject: Re: [PATCH 6/9] x86/bpf: Fix JIT frame pointer usage
-Message-ID: <20190614015251.xyfzl5djr7zurtvj@treble>
-References: <cover.1560431531.git.jpoimboe@redhat.com>
- <03ddea21a533b7b0e471c1d73ebff19dacdcf7e3.1560431531.git.jpoimboe@redhat.com>
- <20190613215807.wjcop6eaadirz5xm@ast-mbp.dhcp.thefacebook.com>
- <20190614012248.ztruzocusb2vu7bl@treble>
- <20190614013904.v2tpiunrjukzlxsu@ast-mbp.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20190614013904.v2tpiunrjukzlxsu@ast-mbp.dhcp.thefacebook.com>
-User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.27]); Fri, 14 Jun 2019 01:52:54 +0000 (UTC)
+        id S1726140AbfFNB4a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Jun 2019 21:56:30 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:35782 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726083AbfFNB4a (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Jun 2019 21:56:30 -0400
+Received: by mail-pg1-f196.google.com with SMTP id s27so582014pgl.2;
+        Thu, 13 Jun 2019 18:56:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id;
+        bh=SR8M6Ti5j/3I6nXx+EB2QCVkt/EsvMWc6B0LovjzHEY=;
+        b=tuogteSkKpt2iRcOnqRANHGIzyYK7P/qZ6GixOJk7Rblemec1OhU7Bi33T7HdV9x05
+         rU6FkYi7SXRaeVmrvKCFzyFo2Fm7nZ1QJHSYmzITHW9MdUgsiY8EQfzCFwGggCQvcKcm
+         FVKyovUbiRGlK8rnYUp91QbMxObu/yBHnnp26iu36uxYoEOX+CRf+umhStz3ehVX52WX
+         TNxSKfTzaNTi+s53F0d7NQd0uybzHufs4378zvE4hgwosVhsW143fBpBpG0JZyqTNxcv
+         72KsqJ2Y1UCdDau0pgi2DEhRPF8Eq9uoVlUY1XYJwtaysxyKFEetnq+0KlZ/zHzg8Duk
+         v8Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
+        bh=SR8M6Ti5j/3I6nXx+EB2QCVkt/EsvMWc6B0LovjzHEY=;
+        b=C8sNYGr86Fd5/fO3Fx9YPFTopV+6zwgkaBL8C5US8Ojd7bdcYpEH18EN1J84pVoGlf
+         o7+pXHHtG5mAdDTZd4VQVFzw7I35/LHulTSOno+xF3KqVq9DMB2AheXUsJjxR7c0KGod
+         +VPqFi+xpXoHLe6PpCvr0sJX6YuJsksBQxvgdFciu0RyGtmI/kO1wf9J3jboRIoZb/qG
+         x1i7zAXRen3ArWc+/nkuxRs9S7O/EaM7M/7wJIiYjRhD1rc6x8TzVPt1vJ7P9JR4BDAY
+         6BNaELWDv+Yxj7LcTHQKT86thA5TNLyzoBDGqbKiJZC9cGpCaeEY/Z6ISmPzbUkvcW5M
+         /RIQ==
+X-Gm-Message-State: APjAAAXELzA/nO/8b/Yed0VXGNyab3HWTu/xj2WkkLRD5ZCqSjd5RSDu
+        WAWx0g8Trb3NbhcM3tjjbPs=
+X-Google-Smtp-Source: APXvYqx66cHST5ToX+HhTP5yXqS10svpi3XfuBzFGcgLyrXYcclXY5mqSC2Gie/VJ6ax8NpzOa8XlQ==
+X-Received: by 2002:a63:e358:: with SMTP id o24mr32652524pgj.78.1560477389128;
+        Thu, 13 Jun 2019 18:56:29 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::2:9d14])
+        by smtp.gmail.com with ESMTPSA id g5sm958549pjt.14.2019.06.13.18.56.27
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 13 Jun 2019 18:56:27 -0700 (PDT)
+From:   Tejun Heo <tj@kernel.org>
+To:     axboe@kernel.dk, newella@fb.com, clm@fb.com, josef@toxicpanda.com,
+        dennisz@fb.com, lizefan@huawei.com, hannes@cmpxchg.org
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        kernel-team@fb.com, cgroups@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, bpf@vger.kernel.org
+Subject: [PATCHSET block/for-next] IO cost model based work-conserving porportional controller
+Date:   Thu, 13 Jun 2019 18:56:10 -0700
+Message-Id: <20190614015620.1587672-1-tj@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 13, 2019 at 06:39:05PM -0700, Alexei Starovoitov wrote:
-> On Thu, Jun 13, 2019 at 08:22:48PM -0500, Josh Poimboeuf wrote:
-> > On Thu, Jun 13, 2019 at 02:58:09PM -0700, Alexei Starovoitov wrote:
-> > > On Thu, Jun 13, 2019 at 08:21:03AM -0500, Josh Poimboeuf wrote:
-> > > > The BPF JIT code clobbers RBP.  This breaks frame pointer convention and
-> > > > thus prevents the FP unwinder from unwinding through JIT generated code.
-> > > > 
-> > > > RBP is currently used as the BPF stack frame pointer register.  The
-> > > > actual register used is opaque to the user, as long as it's a
-> > > > callee-saved register.  Change it to use R12 instead.
-> > > > 
-> > > > Fixes: d15d356887e7 ("perf/x86: Make perf callchains work without CONFIG_FRAME_POINTER")
-> > > > Reported-by: Song Liu <songliubraving@fb.com>
-> > > > Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> > > > ---
-> > > >  arch/x86/net/bpf_jit_comp.c | 43 +++++++++++++++++++++----------------
-> > > >  1 file changed, 25 insertions(+), 18 deletions(-)
-> > > > 
-> > > > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> > > > index e649f977f8e1..bb1968fea50a 100644
-> > > > --- a/arch/x86/net/bpf_jit_comp.c
-> > > > +++ b/arch/x86/net/bpf_jit_comp.c
-> > > > @@ -100,9 +100,8 @@ static int bpf_size_to_x86_bytes(int bpf_size)
-> > > >  /*
-> > > >   * The following table maps BPF registers to x86-64 registers.
-> > > >   *
-> > > > - * x86-64 register R12 is unused, since if used as base address
-> > > > - * register in load/store instructions, it always needs an
-> > > > - * extra byte of encoding and is callee saved.
-> > > > + * RBP isn't used; it needs to be preserved to allow the unwinder to move
-> > > > + * through generated code stacks.
-> > > 
-> > > Extra register save/restore is kinda annoying just to fix ORC.
-> > 
-> > It's not just for the ORC unwinder.  It also fixes the frame pointer
-> > unwinder (see above commit msg).  And it's standard frame pointer
-> > practice to not clobber RBP.
-> 
-> not true.
-> generated JITed code has no issues with regular stack unwinder.
-> it breaks down under ORC only.
-> 
-> > > Also every stack access from bpf prog will be encoded via r12 and consume
-> > > extra byte of encoding. I really don't like this approach.
-> > 
-> > Do you have another callee-saved register you'd prefer to use as the
-> > stack pointer?
-> 
-> RBP must be used.
-> 
-> > > Can you teach ORC to understand JIT-ed frames instead?
-> > 
-> > We could, but it would add a lot more complexity than this.  And anyway,
-> > the frame pointer unwinder would still be broken.
-> 
-> I disagree. See above. Only ORC is broken. Hence ORC should be fixed.
+One challenge of controlling IO resources is the lack of trivially
+observable cost metric.  This is distinguished from CPU and memory
+where wallclock time and the number of bytes can serve as accurate
+enough approximations.
 
-You're clobbering RBP.  Frame pointer unwinding is broken.  Period.
+Bandwidth and iops are the most commonly used metrics for IO devices
+but depending on the type and specifics of the device, different IO
+patterns easily lead to multiple orders of magnitude variations
+rendering them useless for the purpose of IO capacity distribution.
+While on-device time, with a lot of clutches, could serve as a useful
+approximation for non-queued rotational devices, this is no longer
+viable with modern devices, even the rotational ones.
 
--- 
-Josh
+While there is no cost metric we can trivially observe, it isn't a
+complete mystery.  For example, on a rotational device, seek cost
+dominates while a contiguous transfer contributes a smaller amount
+proportional to the size.  If we can characterize at least the
+relative costs of these different types of IOs, it should be possible
+to implement a reasonable work-conserving proportional IO resource
+distribution.
+
+This patchset implements IO cost model based work-conserving
+proportional controller.  It currently has a simple linear cost model
+builtin where each IO is classified as sequential or random and given
+a base cost accordingly and additional size-proportional cost is added
+on top.  Each IO is given a cost based on the model and the controller
+issues IOs for each cgroup according to their hierarchical weight.
+
+By default, the controller adapts its overall IO rate so that it
+doesn't build up buffer bloat in the request_queue layer, which
+guarantees that the controller doesn't lose significant amount of
+total work.  However, this may not provide sufficient differentiation
+as the underlying device may have a deep queue and not be fair in how
+the queued IOs are serviced.  The controller provides extra QoS
+control knobs which allow tightening control feedback loop as
+necessary.
+
+For more details on the control mechanism, implementation and
+interface, please refer to the comment at the top of
+block/blk-ioweight.c and Documentation/admin-guide/cgroup-v2.rst
+changes in the "blkcg: implement blk-ioweight" patch.
+
+Here are some test results.  Each test run goes through the following
+combinations with each combination running for a minute.  All tests
+are performed against regular files on btrfs w/ deadline as the IO
+scheduler.  Random IOs are direct w/ queue depth of 64.  Sequential
+are normal buffered IOs.
+
+	high priority (weight=500)	low priority (weight=100)
+
+	Rand read			None
+	ditto				Rand read
+	ditto				Seq  read
+	ditto				Rand write
+	ditto				Seq  write
+	Seq  read			None
+	ditto				Rand read
+	ditto				Seq  read
+	ditto				Rand write
+	ditto				Seq  write
+	Rand write			None
+	ditto				Rand read
+	ditto				Seq  read
+	ditto				Rand write
+	ditto				Seq  write
+	Seq  write			None
+	ditto				Rand read
+	ditto				Seq  read
+	ditto				Rand write
+	ditto				Seq  write
+
+* 7200RPM SATA hard disk
+  * No IO control
+    https://photos.app.goo.gl/1KBHn7ykpC1LXRkB8
+  * ioweight, QoS: None
+    https://photos.app.goo.gl/MLNQGxCtBQ8wAmjm7
+  * ioweight, QoS: rpct=95.00 rlat=40000 wpct=95.00 wlat=40000 min=25.00 max=200.00
+    https://photos.app.goo.gl/XqXHm3Mkbm9w6Db46
+* NCQ-blacklisted SATA SSD (QD==1)
+  * No IO control
+    https://photos.app.goo.gl/wCTXeu2uJ6LYL4pk8
+  * ioweight, QoS: None
+    https://photos.app.goo.gl/T2HedKD2sywQgj7R9
+  * ioweight, QoS: rpct=95.00 rlat=20000 wpct=95.00 wlat=20000 min=50.00 max=200.00
+    https://photos.app.goo.gl/urBTV8XQc1UqPJJw7
+* SATA SSD (QD==32)
+  * No IO control
+    https://photos.app.goo.gl/TjEVykuVudSQcryh6
+  * ioweight, QoS: None
+    https://photos.app.goo.gl/iyQBsky7bmM54Xiq7
+  * ioweight, QoS: rpct=95.00 rlat=10000 wpct=95.00 wlat=20000 min=50.00 max=400.00
+    https://photos.app.goo.gl/q1a6URLDxPLMrnHy5
+
+Even without explicit QoS configuration, read-heavy scenarios can
+obtain acceptable differentiation.  However, when write-heavy, the
+deep buffering on the device side makes it difficult to maintain
+control.  With QoS parameters set, the differentiation is acceptable
+across all combinations.
+
+The implementation comes with default cost model parameters which are
+selected automatically which should provide acceptable behavior across
+most common devices.  The parameters for hdd and consumer-grade SSDs
+seem pretty robust.  The default parameter set and selection criteria
+for highend SSDs might need further adjustments.
+
+It is fairly easy to configure the QoS parameters and, if needed, cost
+model coefficients.  We'll follow up with tooling and further
+documentation.  Also, the last RFC patch in the series implements
+support for bpf-based custom cost function.  Originally we thought
+that we'd need per-device-type cost functions but the simple linear
+model now seem good enough to cover all common device classes.  In
+case custom cost functions become necessary, we can fully develop the
+bpf based extension and also easily add different builtin cost models.
+
+Andy Newell did the heavy lifting of analyzing IO workloads and device
+characteristics, exploring various cost models, determining the
+default model and parameters to use.
+
+Josef Bacik implemented a prototype which explored the use of
+different types of cost metrics including on-device time and Andy's
+linear model.
+
+This patchset is on top of
+  cgroup/for-5.3
+    git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.3
++ [PATCHSET block/for-linus] Assorted blkcg fixes
+    http://lkml.kernel.org/r/20190613223041.606735-1-tj@kernel.org
++ [PATCHSET btrfs/for-next] btrfs: fix cgroup writeback support
+    http://20190614003350.1178444-1-tj@kernel.org
+
+This patchset contains the following 10 patches.
+
+ 0001-blkcg-pass-q-and-blkcg-into-blkcg_pol_alloc_pd_fn.patch
+ 0002-blkcg-make-cpd_init_fn-optional.patch
+ 0003-blkcg-separate-blkcg_conf_get_disk-out-of-blkg_conf_.patch
+ 0004-block-rq_qos-add-rq_qos_merge.patch
+ 0005-block-rq_qos-implement-rq_qos_ops-queue_depth_change.patch
+ 0006-blkcg-s-RQ_QOS_CGROUP-RQ_QOS_LATENCY.patch
+ 0007-blk-mq-add-optional-request-pre_start_time_ns.patch
+ 0008-blkcg-implement-blk-ioweight.patch
+ 0009-blkcg-add-tools-cgroup-monitor_ioweight.py.patch
+ 0010-RFC-blkcg-implement-BPF_PROG_TYPE_IO_COST.patch
+
+0001-0007 are prep patches.
+0008 implements blk-ioweight.
+0009 adds monitoring script.
+0010 is the RFC patch for BPF cost function.
+
+The patchset is also available in the following git branch.
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git review-iow
+
+diffstat follows, Thanks.
+
+ Documentation/admin-guide/cgroup-v2.rst                |   93 
+ block/Kconfig                                          |   12 
+ block/Makefile                                         |    1 
+ block/bfq-cgroup.c                                     |    5 
+ block/blk-cgroup.c                                     |   71 
+ block/blk-core.c                                       |    4 
+ block/blk-iolatency.c                                  |    8 
+ block/blk-ioweight.c                                   | 2509 +++++++++++++++++
+ block/blk-mq.c                                         |   11 
+ block/blk-rq-qos.c                                     |   18 
+ block/blk-rq-qos.h                                     |   28 
+ block/blk-settings.c                                   |    2 
+ block/blk-throttle.c                                   |    6 
+ block/blk-wbt.c                                        |   18 
+ block/blk-wbt.h                                        |    4 
+ block/blk.h                                            |    8 
+ block/ioctl.c                                          |    4 
+ include/linux/blk-cgroup.h                             |    4 
+ include/linux/blk_types.h                              |    3 
+ include/linux/blkdev.h                                 |    7 
+ include/linux/bpf_types.h                              |    3 
+ include/trace/events/ioweight.h                        |  174 +
+ include/uapi/linux/bpf.h                               |   11 
+ include/uapi/linux/fs.h                                |    2 
+ tools/bpf/bpftool/feature.c                            |    3 
+ tools/bpf/bpftool/main.h                               |    1 
+ tools/cgroup/monitor_ioweight.py                       |  264 +
+ tools/include/uapi/linux/bpf.h                         |   11 
+ tools/include/uapi/linux/fs.h                          |    2 
+ tools/lib/bpf/libbpf.c                                 |    2 
+ tools/lib/bpf/libbpf_probes.c                          |    1 
+ tools/testing/selftests/bpf/Makefile                   |    2 
+ tools/testing/selftests/bpf/iocost_ctrl.c              |   43 
+ tools/testing/selftests/bpf/progs/iocost_linear_prog.c |   52 
+ 34 files changed, 3333 insertions(+), 54 deletions(-)
+
+--
+tejun
+
