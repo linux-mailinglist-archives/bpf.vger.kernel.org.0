@@ -2,116 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA89466C9
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 20:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924CE46855
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2019 21:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727437AbfFNSAo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jun 2019 14:00:44 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:37034 "EHLO mx1.redhat.com"
+        id S1725972AbfFNTvE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jun 2019 15:51:04 -0400
+Received: from mga05.intel.com ([192.55.52.43]:30568 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726762AbfFNSAn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jun 2019 14:00:43 -0400
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id EACA330832F4;
-        Fri, 14 Jun 2019 18:00:42 +0000 (UTC)
-Received: from treble.redhat.com (ovpn-121-232.rdu2.redhat.com [10.10.121.232])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1CE865D982;
-        Fri, 14 Jun 2019 18:00:40 +0000 (UTC)
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     x86@kernel.org, Alexei Starovoitov <ast@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Kairui Song <kasong@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH v2 5/5] x86/unwind/orc: Fall back to using frame pointers for generated code
-Date:   Fri, 14 Jun 2019 12:56:44 -0500
-Message-Id: <43cce8f734cf8ae1fcd10ea14d67c028c73b1540.1560534694.git.jpoimboe@redhat.com>
-In-Reply-To: <cover.1560534694.git.jpoimboe@redhat.com>
-References: <cover.1560534694.git.jpoimboe@redhat.com>
+        id S1725808AbfFNTvE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jun 2019 15:51:04 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Jun 2019 12:51:04 -0700
+X-ExtLoop1: 1
+Received: from nisrael1-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.255.41.147])
+  by orsmga006.jf.intel.com with ESMTP; 14 Jun 2019 12:50:54 -0700
+Subject: Re: [PATCH bpf-next v4 07/17] libbpf: Support drivers with
+ non-combined channels
+To:     Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>
+Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Jonathan Lemon <bsd@fb.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+References: <20190612155605.22450-1-maximmi@mellanox.com>
+ <20190612155605.22450-8-maximmi@mellanox.com>
+ <20190612132352.7ee27bf3@cakuba.netronome.com>
+ <0afd3ef2-d0e3-192b-095e-0f8ae8e6fb5d@mellanox.com>
+ <20190613164514.00002f66@gmail.com>
+ <eb175575-1ab4-4d29-1dc9-28d85cddd842@mellanox.com>
+ <20190614191549.0000374d@gmail.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <9ee7363b-508a-4461-1c4f-252c2ba9cf76@intel.com>
+Date:   Fri, 14 Jun 2019 21:50:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
+In-Reply-To: <20190614191549.0000374d@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Fri, 14 Jun 2019 18:00:43 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The ORC unwinder can't unwind through BPF JIT generated code because
-there are no ORC entries associated with the code.
+On 2019-06-14 19:15, Maciej Fijalkowski wrote:
+> Why would I want to run AF_XDP without ZC? The main reason for having AF_XDP
+> support in drivers is the zero copy, right?
 
-If an ORC entry isn't available, try to fall back to frame pointers.  If
-BPF and other generated code always do frame pointer setup (even with
-CONFIG_FRAME_POINTERS=n) then this will allow ORC to unwind through most
-generated code despite there being no corresponding ORC entries.
+In general I agree with you on this point. Short-term, I see copy-mode
+useful for API adoption reasons (as XDP_SKB), so from that perspecitve
+it's important. Longer term I'd like to explore AF_XDP as a faster
+AF_PACKET for pcap functionality.
 
-Fixes: d15d356887e7 ("perf/x86: Make perf callchains work without CONFIG_FRAME_POINTER")
-Reported-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/kernel/unwind_orc.c | 26 ++++++++++++++++++++++----
- 1 file changed, 22 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
-index 33b66b5c5aec..72b997eaa1fc 100644
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -82,9 +82,9 @@ static struct orc_entry *orc_find(unsigned long ip);
-  * But they are copies of the ftrace entries that are static and
-  * defined in ftrace_*.S, which do have orc entries.
-  *
-- * If the undwinder comes across a ftrace trampoline, then find the
-+ * If the unwinder comes across a ftrace trampoline, then find the
-  * ftrace function that was used to create it, and use that ftrace
-- * function's orc entrie, as the placement of the return code in
-+ * function's orc entry, as the placement of the return code in
-  * the stack will be identical.
-  */
- static struct orc_entry *orc_ftrace_find(unsigned long ip)
-@@ -128,6 +128,16 @@ static struct orc_entry null_orc_entry = {
- 	.type = ORC_TYPE_CALL
- };
- 
-+/* Fake frame pointer entry -- used as a fallback for generated code */
-+static struct orc_entry orc_fp_entry = {
-+	.type		= ORC_TYPE_CALL,
-+	.sp_reg		= ORC_REG_BP,
-+	.sp_offset	= 16,
-+	.bp_reg		= ORC_REG_PREV_SP,
-+	.bp_offset	= -16,
-+	.end		= 0,
-+};
-+
- static struct orc_entry *orc_find(unsigned long ip)
- {
- 	static struct orc_entry *orc;
-@@ -392,8 +402,16 @@ bool unwind_next_frame(struct unwind_state *state)
- 	 * calls and calls to noreturn functions.
- 	 */
- 	orc = orc_find(state->signal ? state->ip : state->ip - 1);
--	if (!orc)
--		goto err;
-+	if (!orc) {
-+		/*
-+		 * As a fallback, try to assume this code uses a frame pointer.
-+		 * This is useful for generated code, like BPF, which ORC
-+		 * doesn't know about.  This is just a guess, so the rest of
-+		 * the unwind is no longer considered reliable.
-+		 */
-+		orc = &orc_fp_entry;
-+		state->error = true;
-+	}
- 
- 	/* End-of-stack check for kernel threads: */
- 	if (orc->sp_reg == ORC_REG_UNDEFINED) {
--- 
-2.20.1
+Björn
 
