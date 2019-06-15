@@ -2,90 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38FC647278
-	for <lists+bpf@lfdr.de>; Sun, 16 Jun 2019 00:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF1047289
+	for <lists+bpf@lfdr.de>; Sun, 16 Jun 2019 01:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726400AbfFOWyY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Jun 2019 18:54:24 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:43128 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbfFOWyY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Jun 2019 18:54:24 -0400
-Received: by mail-ot1-f65.google.com with SMTP id i8so5985402oth.10;
-        Sat, 15 Jun 2019 15:54:23 -0700 (PDT)
+        id S1726650AbfFOXf0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Jun 2019 19:35:26 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:43578 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726434AbfFOXf0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Jun 2019 19:35:26 -0400
+Received: by mail-lf1-f67.google.com with SMTP id j29so4043633lfk.10;
+        Sat, 15 Jun 2019 16:35:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+P9nTmx6AVkxzkcKWAq6SHRAx2uOE86z8ZQoqv44Q9g=;
-        b=jB3pkVuVNX2IYGpaqDtwbo7gRnhwlEbLmP8p69kIOY91oQnS637b0mA8ACYFui0KNK
-         CaEF/iH24zh6eQ9zfrbb09Uw16IY/gZxukgu7m6YSiUOR3AQ49ENveWYMlypHo9S55jD
-         9X2FpEEMAoc/hp1rqpGaUHTUNgtGokiFfxd8x5KnFvH/jLTIcftkMYFVBBmWvoZcrc15
-         rGGareM0+q9JawutLvcMZN7HuTlV9b4LtYUPqTRypQyFYmvfDe0WcI42e3DOCtOS/Ce+
-         Pocg25BZDBxJhpp+SmwwCHn71wWupTcDOnbHq/zm0A+7EBFHankJioOOghvjaZWhIguZ
-         6Y4w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KS7GuZ58mSVlo/UODgh9jqmMf1OWtYb0tsfUawgjzv0=;
+        b=kTa6Q1QCI0Z4J8clCy8W10U1qXnkVuz4ZUetAJzr9tOFDdUCtJgf1TZvTXaOhVifST
+         XIO+44juUdU6UM3Mb0q9iPoE6toh8N+AsYNnqw9IyIoT6y0V87VKoU4goEzWN1bpVhNp
+         +ySQbBGvUV8CCVqPll0dIzv7wHSa3AuMh3wcWoatXGrSTAmRXcTokhzqydb+P07Xbgq+
+         3yw3x1yJ2xzAsnZ1Izsn93GmVkb9nIhI07WF6/h1ebntwXzvqu3dlnCF3eTwCKenZxPJ
+         yE0RXe0ipeSn8rIG1kx1J4gprdRloCCF7/oivl6GgJRalrTlElOtwD3OnLnnNYeDVGyu
+         7eMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+P9nTmx6AVkxzkcKWAq6SHRAx2uOE86z8ZQoqv44Q9g=;
-        b=qAaBL/zSwdBNGCMzygS5oCyZz3nF3Pp4ER126gaPGTwyM5JSMymq7NajriRZVavrJf
-         gsMi0D9W7FcM3n48trqqGcDjpDNEfzs1R9N02IaJUGENa0r5JcuyIn2wvCN20YEHgwol
-         w7H0BjAbCZWWbH0v7T/GOi6AHJYkzVtFo2l5gUgcdenNUZxGWAZx9yRf97DNQYNIxBiC
-         ZGjR2ft2HZe2cuHIBbwdOmsFNULBUDXjEv8fI5srT8HOhxeIciRn9A+QN/ctxHahkHP/
-         ePSQaKgv24UuKs8g0eePGa7SM9L9/6qRVfp5IRWBBvscKAhYJ0lInFAQDeMMSVhqcJ2/
-         BAOA==
-X-Gm-Message-State: APjAAAWtWbiKy9nlGni5BUqtIwzrj2yk78hmlpGdJxNjYHPDgZ0Xnskx
-        grEcicAfeE1EMY6cuZvEQTP5HlqUtLPLhNZr
-X-Google-Smtp-Source: APXvYqxAAMCoJNtcF1RRUeY2DeG7Kwb7t+4t+b/GVJ7FQ2lgfETnfG1dJbZ8k2MIH3Z1fib0+LMgRg==
-X-Received: by 2002:a9d:4c17:: with SMTP id l23mr51185564otf.367.1560639263582;
-        Sat, 15 Jun 2019 15:54:23 -0700 (PDT)
-Received: from localhost.members.linode.com ([2600:3c00::f03c:91ff:fe99:7fe5])
-        by smtp.gmail.com with ESMTPSA id o131sm3130636oia.21.2019.06.15.15.54.23
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Sat, 15 Jun 2019 15:54:23 -0700 (PDT)
-From:   Anton Protopopov <a.s.protopopov@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Anton Protopopov <a.s.protopopov@gmail.com>
-Subject: [PATCH bpf] bpf: fix the check that forwarding is enabled in bpf_ipv6_fib_lookup
-Date:   Sat, 15 Jun 2019 22:53:48 +0000
-Message-Id: <20190615225348.2539-1-a.s.protopopov@gmail.com>
-X-Mailer: git-send-email 2.19.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KS7GuZ58mSVlo/UODgh9jqmMf1OWtYb0tsfUawgjzv0=;
+        b=rBVtBRwOvtsRsR9Jeat9XuP7YTrYJGLpiWFQ/Br9FPVBTt2pJvorDNgSs/8m/5peU9
+         KwaDkU6++VvjoHip8UxKrbyCZxGB6THEklyUTjg/z+6KA3y8EeeFx62IqKUspUB0ruZj
+         vFlAqmDUm0zLbBlR+SDfIMhNMzE5xTIZgawhMCEguUGD7RcGvygZJyjvbinruiyMFpL/
+         zYOCHzgPvmYN0M6rnywVCq51srxVQt0DNZr1J8mhuEOHcireqcwuwc4nBjUvAWHfatQ8
+         kKCm0MMyz0SXUe02l4TbCnQ9gjo4otK/xyNRGyNlDRD2O07QF4lWbd93jgIt86tVWVNn
+         PeaQ==
+X-Gm-Message-State: APjAAAWErvZ/3VDjGSgT/FdjMA6GP9q/6ZgRe738xYFX77DlilLQhUEb
+        aGsaza+V3hbcIFXZ2PYUhZT/AIdWs7U8o5cdX30=
+X-Google-Smtp-Source: APXvYqzW2dUVula1K7et209n0mipZpMAmmBz3Lu+mizcU6RAUMBmVfosL1aqmHc0+Sggr7kEypD567DCGrb8gToZpIU=
+X-Received: by 2002:ac2:4252:: with SMTP id m18mr26605642lfl.100.1560641724078;
+ Sat, 15 Jun 2019 16:35:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20190611215304.28831-1-mmullins@fb.com>
+In-Reply-To: <20190611215304.28831-1-mmullins@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sat, 15 Jun 2019 16:35:12 -0700
+Message-ID: <CAADnVQ+tPkiuYHPAE28OP3BDRgM+JY5DpTLiFP1iUn9fXhCjYQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] bpf: fix nested bpf tracepoints with per-cpu data
+To:     Matt Mullins <mmullins@fb.com>
+Cc:     Andrew Hall <hall@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpf_ipv6_fib_lookup function should return BPF_FIB_LKUP_RET_FWD_DISABLED
-when forwarding is disabled for the input device.  However instead of checking
-if forwarding is enabled on the input device, it checked the global
-net->ipv6.devconf_all->forwarding flag.  Change it to behave as expected.
+On Tue, Jun 11, 2019 at 2:54 PM Matt Mullins <mmullins@fb.com> wrote:
+>
+> BPF_PROG_TYPE_RAW_TRACEPOINTs can be executed nested on the same CPU, as
+> they do not increment bpf_prog_active while executing.
+>
+> This enables three levels of nesting, to support
+>   - a kprobe or raw tp or perf event,
+>   - another one of the above that irq context happens to call, and
+>   - another one in nmi context
+> (at most one of which may be a kprobe or perf event).
+>
+> Fixes: 20b9d7ac4852 ("bpf: avoid excessive stack usage for perf_sample_data")
+> Signed-off-by: Matt Mullins <mmullins@fb.com>
 
-Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
----
- net/core/filter.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/core/filter.c b/net/core/filter.c
-index f615e42cf4ef..3fdf1b21be36 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4737,7 +4737,7 @@ static int bpf_ipv6_fib_lookup(struct net *net, struct bpf_fib_lookup *params,
- 		return -ENODEV;
- 
- 	idev = __in6_dev_get_safely(dev);
--	if (unlikely(!idev || !net->ipv6.devconf_all->forwarding))
-+	if (unlikely(!idev || !idev->cnf.forwarding))
- 		return BPF_FIB_LKUP_RET_FWD_DISABLED;
- 
- 	if (flags & BPF_FIB_LOOKUP_OUTPUT) {
--- 
-2.19.1
-
+Applied. Thanks
