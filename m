@@ -2,105 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0D346D04
-	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2019 01:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E48746D0D
+	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2019 02:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726072AbfFNXyZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jun 2019 19:54:25 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:42892 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725981AbfFNXyZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jun 2019 19:54:25 -0400
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id BAE9F3083391;
-        Fri, 14 Jun 2019 23:54:24 +0000 (UTC)
-Received: from treble (ovpn-112-39.rdu2.redhat.com [10.10.112.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E62DF60CA3;
-        Fri, 14 Jun 2019 23:54:20 +0000 (UTC)
-Date:   Fri, 14 Jun 2019 18:54:17 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     X86 ML <x86@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+        id S1726274AbfFOABH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jun 2019 20:01:07 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:40189 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725812AbfFOABG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jun 2019 20:01:06 -0400
+Received: by mail-pg1-f193.google.com with SMTP id d30so2382007pgm.7
+        for <bpf@vger.kernel.org>; Fri, 14 Jun 2019 17:01:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=KT4IpT0YGFv9ghQa3t6IoKfeIcka4hGjEOUTWMdheO0=;
+        b=G4IbYnFq6pwJFgRwo/04ruaGJs9xY/ZMoBzIlPkuUieQFa1/KJaS5naRz3hYc4GMDS
+         o8DkRTVvxOI7OY65kf5DSxqsh6tlBJOfSJt4Af0PSU2dLX9zt20RlnjUFsQQkZvxbpwO
+         B0cfACa0GqIGJLR3GyW6mHIPw/ndMJu02RkolBIglA7GUjNdqLFOvpTw215PrF8ATkP6
+         GVBHJWJPHp/xdev5Oqy7hvAOm2xgXYPZuOD14eGqsPVboAWtuhA2a8Hoa6lIQGJF0prh
+         9j4UFibuM9UZtv5GLqqw9a0d/3c0j4N9biF3KKbKvkNp9rFuj5p5stH3EjqTPdvFDCyS
+         t/SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=KT4IpT0YGFv9ghQa3t6IoKfeIcka4hGjEOUTWMdheO0=;
+        b=XInoDa4zfW0p2+RxfWvhnJ8hdR+R30wvVwPdx94rhDjCUIW7Tz/GM2Y9queNJK+HSw
+         KQZ69saQcCYmgjj8JFims7PNSv8ctSbH/JRLbTAjMXeHpM/rIpb0iTe/bFrEwmAp4hwo
+         HCR8AAEHToldUsXd8eicJquWNl73Jr5uGXGvJ7rQ19/ugPlg3IJTGPeQ1oPkKbBCI1VX
+         xZLBtxIULaY40XW6/o8x7MqQ/R+BpDrGssS6RpuJ0cvkXLxLa0EeFocXaf1X70ht3CaE
+         QzPCdvMRioKZKHfg20qHYzTU94pkjqkJcba4Ou4DekySgSYfdv9v++vSbcAMfCAqQeu2
+         K7vw==
+X-Gm-Message-State: APjAAAXP/1Zj3VpeoE2aa3pPg+riUWvaD0KwJdeA2u486OlqTfQDjNaD
+        8pa9h5ln3OpRUSRoN3+eLZ3WjQ==
+X-Google-Smtp-Source: APXvYqy0L2Z2bLrRj3KJePR5v/Ve/h0OoWDU0HMJoHgbMo7ZO13QMuQiJYYkYAdhKjapy8X88GaiaA==
+X-Received: by 2002:aa7:808a:: with SMTP id v10mr10082536pff.170.1560556866116;
+        Fri, 14 Jun 2019 17:01:06 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id a7sm3705828pgj.42.2019.06.14.17.01.05
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Fri, 14 Jun 2019 17:01:05 -0700 (PDT)
+Date:   Fri, 14 Jun 2019 17:01:04 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Kairui Song <kasong@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        David Laight <David.Laight@aculab.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH v2 4/5] x86/bpf: Fix 64-bit JIT frame pointer usage
-Message-ID: <20190614235417.7oagddee75xo7otp@treble>
-References: <cover.1560534694.git.jpoimboe@redhat.com>
- <178097de8c1bd6a877342304f3469eac4067daa4.1560534694.git.jpoimboe@redhat.com>
- <20190614210555.q4ictql3tzzjio4r@ast-mbp.dhcp.thefacebook.com>
- <20190614211916.jnxakyfwilcv6r57@treble>
- <CAADnVQJ0dmxYTnaQC1UiSo7MhcTy2KRWJWJKw4jyxFWby-JgRg@mail.gmail.com>
- <20190614231311.gfeb47rpjoholuov@treble>
- <CAADnVQKOjvhpMQqjHvF-oX2U99WRCi+repgqmt6hiSObovxoaQ@mail.gmail.com>
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 8/8] selftests/bpf: switch tests to BTF-defined
+ map definitions
+Message-ID: <20190615000104.GG9636@mini-arch>
+References: <20190611044747.44839-1-andriin@fb.com>
+ <20190611044747.44839-9-andriin@fb.com>
+ <20190614232329.GF9636@mini-arch>
+ <CAEf4BzZ5itJ+toa-3Bm3yNxP=CyvNm=CZ5Dg+=nhU=p4CSu=+g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQKOjvhpMQqjHvF-oX2U99WRCi+repgqmt6hiSObovxoaQ@mail.gmail.com>
-User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Fri, 14 Jun 2019 23:54:24 +0000 (UTC)
+In-Reply-To: <CAEf4BzZ5itJ+toa-3Bm3yNxP=CyvNm=CZ5Dg+=nhU=p4CSu=+g@mail.gmail.com>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 14, 2019 at 04:23:41PM -0700, Alexei Starovoitov wrote:
-> On Fri, Jun 14, 2019 at 4:13 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+On 06/14, Andrii Nakryiko wrote:
+> On Fri, Jun 14, 2019 at 4:23 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
 > >
-> > On Fri, Jun 14, 2019 at 02:27:30PM -0700, Alexei Starovoitov wrote:
-> > > On Fri, Jun 14, 2019 at 2:19 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > > >
-> > > > On Fri, Jun 14, 2019 at 02:05:56PM -0700, Alexei Starovoitov wrote:
-> > > > > Have you tested it ?
-> > > > > I really doubt, since in my test both CONFIG_UNWINDER_ORC and
-> > > > > CONFIG_UNWINDER_FRAME_POINTER failed to unwind through such odd frame.
-> > > >
-> > > > Hm, are you seeing selftest failures?  They seem to work for me.
-> > > >
-> > > > > Here is much simple patch that I mentioned in the email yesterday,
-> > > > > but you failed to listen instead of focusing on perceived 'code readability'.
-> > > > >
-> > > > > It makes one proper frame and both frame and orc unwinders are happy.
-> > > >
-> > > > I'm on my way out the door and I just skimmed it, but it looks fine.
-> > > >
-> > > > Some of the code and patch description look familiar, please be sure to
-> > > > give me proper credit.
-> > >
-> > > credit means something positive.
+> > On 06/10, Andrii Nakryiko wrote:
+> > > Switch test map definition to new BTF-defined format.
+> > Reiterating my concerns on non-RFC version:
 > >
-> > So you only give credit for *good* stolen code.  I must have missed that
-> > section of the kernel patch guidelines.
+> > Pretty please, let's not convert everything at once. Let's start
+> > with stuff that explicitly depends on BTF (spinlocks?).
 > 
-> what are you talking about?
-> you've posted one bad patch. I pointed out multiple issues in it.
-> Then proposed another bad idea. I pointed out another set of issues.
-> Than David proposed yet another idea that you've implemented
-> and claimed that it's working when it was not.
-> Then I got fed up with this thread and fix it for real by reverting
-> that old commit that I mentioned way earlier.
-> https://patchwork.ozlabs.org/patch/1116307/
-> Where do you see your code or ideas being used?
-> I see none.
+> How about this approach. I can split last commit into two. One
+> converting all the stuff that needs BTF (spinlocks, etc). Another part
+> - everything else. If it's so important for your use case, you'll be
+> able to just back out my last commit. Or we just don't land last
+> commit.
+I can always rollback or do not backport internally; the issue is that
+it would be much harder to backport any future fixes/extensions to
+those tests. So splitting in two and not landing the last one is
+preferable ;-)
 
-Obviously I wasn't referring to this new whitewashed patch for which I
-wasn't even on Cc, despite being one of the people (along with Peter Z)
-who convinced you that there was a problem to begin with.
+> > One good argument (aside from the one that we'd like to be able to
+> > run tests internally without BTF for a while): libbpf doesn't
+> > have any tests as far as I'm aware. If we don't have 'legacy' maps in the
+> > selftests, libbpf may bit rot.
+> 
+> I left few legacy maps exactly for that reason. See progs/test_btf_*.c.
+Damn it, you've destroyed my only good argument.
 
-The previous patch you posted has my patch description, push/pop and
-comment changes, with no credit:
-
-https://lkml.kernel.org/r/20190614210555.q4ictql3tzzjio4r@ast-mbp.dhcp.thefacebook.com
-
--- 
-Josh
+> > (Andrii, feel free to ignore, since we've already discussed that)
+> >
+> > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > > ---
+> 
+> 
+> <snip>
