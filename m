@@ -2,95 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E406E46DB6
-	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2019 04:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32EA846E47
+	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2019 06:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726133AbfFOCMn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jun 2019 22:12:43 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:34077 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbfFOCMn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jun 2019 22:12:43 -0400
-Received: by mail-qk1-f194.google.com with SMTP id t8so2957443qkt.1
-        for <bpf@vger.kernel.org>; Fri, 14 Jun 2019 19:12:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=70GWEAQ/zIvFb13btevo8yQ10Sw33r3KUhoGywNNloo=;
-        b=fHGl+m2lrHdFmsFWU4IvNgtXpmFrd5LHtQh0dzx0a+nKY7v+7C6tJN1pr1LeQNDrS3
-         XGFa6lsno8Pc3Xn5NtAf28DawgtDMReBQklddYeoTWkEaxbEsSngWFt5UFqlyv9++1hN
-         PskCtSKf7udf3RDPmMiiBpQVzV8RbbDNLBy+novLwOrIvY9JGByol8ljcbWB7Hx2rOvF
-         OFElYl3GKnuT4yfk6hHlJl3rcO3N7M+AFchDu+MPZqGsy5krMetRqe0gSxP+aFZyq6zq
-         pdtP8RVuIkrRHIJ+AChc/Uel2GLmb6Iml4HOXF7CD2dx2dRUr+S2c4Q3IyenJQR+Lu0X
-         9New==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=70GWEAQ/zIvFb13btevo8yQ10Sw33r3KUhoGywNNloo=;
-        b=Rgtg7W9XhPnf1w+BwRetg+614Q/rFtEFgF7Ky5ddkhljEKZbScNUkEdiPoJi0Mofnb
-         Z0tOZejtLeRK5CP2UIM7jKvxgSNns/Z1EPHaE95Sj3b5DAb6Q3jTsQPaF8OaATGm9XR1
-         tuE6gZRx1iUfyVOv7fflYts2AqCB1JEt8eGhhxJx4qXC3fFuiokCpmO84roIkQg6B71C
-         iriDlymesSt/Lg7r8lWAhg7BAL4bC/xn6z5bKGNxjATA2gOOOSZGVm2LyrUGOjAe7Mfp
-         fWlc7slQHx0gEAlR+XcV5AIwzrVQfUroOBVQDbY4pHtW3nbV34SC0Kxsq7qd+MCbnWav
-         qGrA==
-X-Gm-Message-State: APjAAAXK4b1fhinGVhJiGFYGFV8khbxhJrGnC4/D4qYfHlxyEsc748Y5
-        NxhJbJa7dNJwFijRMbYYq3PF4g==
-X-Google-Smtp-Source: APXvYqwpXkXvvDfj8ISJEdaEC6oQtFSRPYV038G0N7iqkzFMi6nr1HqEg+BAsUoqkVs5tIl2/0affQ==
-X-Received: by 2002:a37:66cb:: with SMTP id a194mr59367912qkc.312.1560564762005;
-        Fri, 14 Jun 2019 19:12:42 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id k58sm3078498qtc.38.2019.06.14.19.12.40
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 14 Jun 2019 19:12:41 -0700 (PDT)
-Date:   Fri, 14 Jun 2019 19:12:36 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Maxim Mikityanskiy <maximmi@mellanox.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1725816AbfFOE1z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Jun 2019 00:27:55 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:46554 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725805AbfFOE1z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Jun 2019 00:27:55 -0400
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id C8CD43082E06;
+        Sat, 15 Jun 2019 04:27:54 +0000 (UTC)
+Received: from treble (ovpn-120-9.rdu2.redhat.com [10.10.120.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6B4A01001B23;
+        Sat, 15 Jun 2019 04:27:50 +0000 (UTC)
+Date:   Fri, 14 Jun 2019 23:27:47 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     X86 ML <x86@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Jonathan Lemon <bsd@fb.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
-Subject: Re: [PATCH bpf-next v4 07/17] libbpf: Support drivers with
- non-combined channels
-Message-ID: <20190614191236.2e498632@cakuba.netronome.com>
-In-Reply-To: <f0d9e7cc-6266-a5d5-e371-dd355066b994@mellanox.com>
-References: <20190612155605.22450-1-maximmi@mellanox.com>
-        <20190612155605.22450-8-maximmi@mellanox.com>
-        <20190612132352.7ee27bf3@cakuba.netronome.com>
-        <0afd3ef2-d0e3-192b-095e-0f8ae8e6fb5d@mellanox.com>
-        <20190613110956.001ef81f@cakuba.netronome.com>
-        <f0d9e7cc-6266-a5d5-e371-dd355066b994@mellanox.com>
-Organization: Netronome Systems, Ltd.
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>,
+        Kairui Song <kasong@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Laight <David.Laight@aculab.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v2 4/5] x86/bpf: Fix 64-bit JIT frame pointer usage
+Message-ID: <20190615042747.awyy4djqe6vfmles@treble>
+References: <cover.1560534694.git.jpoimboe@redhat.com>
+ <178097de8c1bd6a877342304f3469eac4067daa4.1560534694.git.jpoimboe@redhat.com>
+ <20190614210555.q4ictql3tzzjio4r@ast-mbp.dhcp.thefacebook.com>
+ <20190614211916.jnxakyfwilcv6r57@treble>
+ <CAADnVQJ0dmxYTnaQC1UiSo7MhcTy2KRWJWJKw4jyxFWby-JgRg@mail.gmail.com>
+ <20190614231311.gfeb47rpjoholuov@treble>
+ <CAADnVQKOjvhpMQqjHvF-oX2U99WRCi+repgqmt6hiSObovxoaQ@mail.gmail.com>
+ <20190614235417.7oagddee75xo7otp@treble>
+ <CAADnVQ+mjtgZExhtKDu6bbaVSHUfOYb=XeJodPB5+WdjtLYvCA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAADnVQ+mjtgZExhtKDu6bbaVSHUfOYb=XeJodPB5+WdjtLYvCA@mail.gmail.com>
+User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.46]); Sat, 15 Jun 2019 04:27:55 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 14 Jun 2019 13:25:05 +0000, Maxim Mikityanskiy wrote:
-> Imagine you have configured the NIC to have the maximum supported amount 
-> of channels. Then your formula in ethtool.c returns some value. Exactly 
-> the same value should also be returned from libbpf's 
-> xsk_get_max_queues(). It's achieved by applying your formula directly to 
-> max.
+On Fri, Jun 14, 2019 at 05:02:36PM -0700, Alexei Starovoitov wrote:
+> On Fri, Jun 14, 2019 at 4:54 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> > The previous patch you posted has my patch description, push/pop and
+> > comment changes, with no credit:
+> >
+> > https://lkml.kernel.org/r/20190614210555.q4ictql3tzzjio4r@ast-mbp.dhcp.thefacebook.com
+> 
+> I'm sorry for reusing one sentence from your commit log and
+> not realizing you want credit for that.
+> Will not happen again.
 
-I'm just trying to limit people inventing their own interpretations 
-of this API.  Broadcom for instance does something dumb with current
-counts I think they return curr.combined = curr.rx, even though there
-is only curr.combined rings...
+Um.  What are you talking about?  The entire patch was clearly derived
+from mine.  Not just "one sentence from your commit log".  The title,
+the pushes/pops in the prologue/epilogue, the removal of the
+"ebpf_from_cbpf" argument, the code spacing, and some of the non trivial
+comment changes were the same.
 
-You will over allocate space for all NICs with return both combined and
-non-combined counts.  But that's not a huge deal, not worth arguing about.
-Moving on..
+> I also suggest you never touch anything bpf related.
+> Just to avoid this credit claims and threads like this one.
+
+Wth.  I made a simple request for credit.  Anybody can see the patch was
+derived from mine.  It's not like I really care.  It's just basic human
+decency.
+
+-- 
+Josh
