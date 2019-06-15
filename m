@@ -2,177 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 082D147254
-	for <lists+bpf@lfdr.de>; Sun, 16 Jun 2019 00:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FC647278
+	for <lists+bpf@lfdr.de>; Sun, 16 Jun 2019 00:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726217AbfFOWF0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Jun 2019 18:05:26 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:42154 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbfFOWF0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Jun 2019 18:05:26 -0400
-Received: by mail-qt1-f195.google.com with SMTP id s15so6684440qtk.9;
-        Sat, 15 Jun 2019 15:05:25 -0700 (PDT)
+        id S1726400AbfFOWyY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Jun 2019 18:54:24 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:43128 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726214AbfFOWyY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Jun 2019 18:54:24 -0400
+Received: by mail-ot1-f65.google.com with SMTP id i8so5985402oth.10;
+        Sat, 15 Jun 2019 15:54:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sIK84/4fIQczM72saSv2RoZEV3A00521k5sfoE09TaM=;
-        b=QJnkDiLAVGTFl31e2hY/3nE8CyAunz2Qqj9TcCCCJxwN1H1qiYBdwuOzdE+YyV+UN+
-         R1KM1Z1GW8tYX4yjctiQGF1YGDZHQijLxx4tRXjNpc0vl/Mva6WLe9NtD67et8bTKJwz
-         YKDWfDtdpI7hdr8RlVuRyYTHLHBwd+TRhBG+nk+ihB/BKsASPxYSNox2VWMb9k/4aag1
-         Pgx8t1C3LggRrjI5o6oTbfsL+pHK14Ui3PQo8CpCm8q2WVq0BDqXuwHGQ567FAxZSNK1
-         ogPyA1iHucZQMFxIOtwwHwTeRzYqR9ezndsszTz2Cv+Xa50GJgwV5Xr2gNq4GaeDLSV2
-         2bHA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+P9nTmx6AVkxzkcKWAq6SHRAx2uOE86z8ZQoqv44Q9g=;
+        b=jB3pkVuVNX2IYGpaqDtwbo7gRnhwlEbLmP8p69kIOY91oQnS637b0mA8ACYFui0KNK
+         CaEF/iH24zh6eQ9zfrbb09Uw16IY/gZxukgu7m6YSiUOR3AQ49ENveWYMlypHo9S55jD
+         9X2FpEEMAoc/hp1rqpGaUHTUNgtGokiFfxd8x5KnFvH/jLTIcftkMYFVBBmWvoZcrc15
+         rGGareM0+q9JawutLvcMZN7HuTlV9b4LtYUPqTRypQyFYmvfDe0WcI42e3DOCtOS/Ce+
+         Pocg25BZDBxJhpp+SmwwCHn71wWupTcDOnbHq/zm0A+7EBFHankJioOOghvjaZWhIguZ
+         6Y4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sIK84/4fIQczM72saSv2RoZEV3A00521k5sfoE09TaM=;
-        b=f+jNUygoQqLWBy0IrPGR1MLWbf2aP0+3vx5J78fHKZ2/jAlruQAyzEXVCSogiyanNr
-         cSYM67+PjkqHrUbTZCN48IdIpcRN9sLp+d44omxnMjpgA/6FuGdMD7C6uF7uLsBjqQMM
-         ExaW2IEGEWYEY/Qhq/ZmHGWMT/hcfq8wEBxYubHwGSM+fhdQ8jiXGeFDN+BkvKNlU+/P
-         YhU2qAkHh2HZ0t3efAIUxYGhlD5j52pBvXUQaB9fIaKsnwFK/S1NVdNg5ZYO7MFjaN9r
-         vnsde2OEa75OY6w5sicD55zTERFE4tyFUL73rcJX7j/HBs6o0wePnyvwG7/Pg0pzt7Pp
-         z/Qw==
-X-Gm-Message-State: APjAAAVgwmFyI4xvX9TldB+daTKNzPgQ0H3OS1JeEkojb6AgjrbLYSZV
-        yfqkwYm667E22pXTidvflEVRCAxgU19E5yZ3zTfn/qeT
-X-Google-Smtp-Source: APXvYqx68fwWNhLHOXo2tQY0nN8MHNkWnF/9b0hNr77GA3LjYermhSITI4EbffOOOr7dEagdJYVvzZwQqT1+gGNUu8I=
-X-Received: by 2002:a0c:d0fc:: with SMTP id b57mr14887957qvh.78.1560636325218;
- Sat, 15 Jun 2019 15:05:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190611044747.44839-1-andriin@fb.com> <20190611044747.44839-8-andriin@fb.com>
-In-Reply-To: <20190611044747.44839-8-andriin@fb.com>
-From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Sat, 15 Jun 2019 15:05:14 -0700
-Message-ID: <CAPhsuW5MNx4NvXJGNo9uPkQBHFgojHCbdy4eyVE31e6bENx8Mg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 7/8] selftests/bpf: add test for BTF-defined maps
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+P9nTmx6AVkxzkcKWAq6SHRAx2uOE86z8ZQoqv44Q9g=;
+        b=qAaBL/zSwdBNGCMzygS5oCyZz3nF3Pp4ER126gaPGTwyM5JSMymq7NajriRZVavrJf
+         gsMi0D9W7FcM3n48trqqGcDjpDNEfzs1R9N02IaJUGENa0r5JcuyIn2wvCN20YEHgwol
+         w7H0BjAbCZWWbH0v7T/GOi6AHJYkzVtFo2l5gUgcdenNUZxGWAZx9yRf97DNQYNIxBiC
+         ZGjR2ft2HZe2cuHIBbwdOmsFNULBUDXjEv8fI5srT8HOhxeIciRn9A+QN/ctxHahkHP/
+         ePSQaKgv24UuKs8g0eePGa7SM9L9/6qRVfp5IRWBBvscKAhYJ0lInFAQDeMMSVhqcJ2/
+         BAOA==
+X-Gm-Message-State: APjAAAWtWbiKy9nlGni5BUqtIwzrj2yk78hmlpGdJxNjYHPDgZ0Xnskx
+        grEcicAfeE1EMY6cuZvEQTP5HlqUtLPLhNZr
+X-Google-Smtp-Source: APXvYqxAAMCoJNtcF1RRUeY2DeG7Kwb7t+4t+b/GVJ7FQ2lgfETnfG1dJbZ8k2MIH3Z1fib0+LMgRg==
+X-Received: by 2002:a9d:4c17:: with SMTP id l23mr51185564otf.367.1560639263582;
+        Sat, 15 Jun 2019 15:54:23 -0700 (PDT)
+Received: from localhost.members.linode.com ([2600:3c00::f03c:91ff:fe99:7fe5])
+        by smtp.gmail.com with ESMTPSA id o131sm3130636oia.21.2019.06.15.15.54.23
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Sat, 15 Jun 2019 15:54:23 -0700 (PDT)
+From:   Anton Protopopov <a.s.protopopov@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Anton Protopopov <a.s.protopopov@gmail.com>
+Subject: [PATCH bpf] bpf: fix the check that forwarding is enabled in bpf_ipv6_fib_lookup
+Date:   Sat, 15 Jun 2019 22:53:48 +0000
+Message-Id: <20190615225348.2539-1-a.s.protopopov@gmail.com>
+X-Mailer: git-send-email 2.19.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 10, 2019 at 9:49 PM Andrii Nakryiko <andriin@fb.com> wrote:
->
-> Add file test for BTF-defined map definition.
->
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+The bpf_ipv6_fib_lookup function should return BPF_FIB_LKUP_RET_FWD_DISABLED
+when forwarding is disabled for the input device.  However instead of checking
+if forwarding is enabled on the input device, it checked the global
+net->ipv6.devconf_all->forwarding flag.  Change it to behave as expected.
 
-Acked-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+---
+ net/core/filter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->  .../selftests/bpf/progs/test_btf_newkv.c      | 73 +++++++++++++++++++
->  tools/testing/selftests/bpf/test_btf.c        | 10 +--
->  2 files changed, 76 insertions(+), 7 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/test_btf_newkv.c
->
-> diff --git a/tools/testing/selftests/bpf/progs/test_btf_newkv.c b/tools/testing/selftests/bpf/progs/test_btf_newkv.c
-> new file mode 100644
-> index 000000000000..28c16bb583b6
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_btf_newkv.c
-> @@ -0,0 +1,73 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/* Copyright (c) 2018 Facebook */
-> +#include <linux/bpf.h>
-> +#include "bpf_helpers.h"
-> +
-> +int _version SEC("version") = 1;
-> +
-> +struct ipv_counts {
-> +       unsigned int v4;
-> +       unsigned int v6;
-> +};
-> +
-> +/* just to validate we can handle maps in multiple sections */
-> +struct bpf_map_def SEC("maps") btf_map_legacy = {
-> +       .type = BPF_MAP_TYPE_ARRAY,
-> +       .key_size = sizeof(int),
-> +       .value_size = sizeof(long long),
-> +       .max_entries = 4,
-> +};
-> +
-> +BPF_ANNOTATE_KV_PAIR(btf_map_legacy, int, struct ipv_counts);
-> +
-> +struct {
-> +       int *key;
-> +       struct ipv_counts *value;
-> +       unsigned int type;
-> +       unsigned int max_entries;
-> +} btf_map SEC(".maps") = {
-> +       .type = BPF_MAP_TYPE_ARRAY,
-> +       .max_entries = 4,
-> +};
-> +
-> +struct dummy_tracepoint_args {
-> +       unsigned long long pad;
-> +       struct sock *sock;
-> +};
-> +
-> +__attribute__((noinline))
-> +static int test_long_fname_2(struct dummy_tracepoint_args *arg)
-> +{
-> +       struct ipv_counts *counts;
-> +       int key = 0;
-> +
-> +       if (!arg->sock)
-> +               return 0;
-> +
-> +       counts = bpf_map_lookup_elem(&btf_map, &key);
-> +       if (!counts)
-> +               return 0;
-> +
-> +       counts->v6++;
-> +
-> +       /* just verify we can reference both maps */
-> +       counts = bpf_map_lookup_elem(&btf_map_legacy, &key);
-> +       if (!counts)
-> +               return 0;
-> +
-> +       return 0;
-> +}
-> +
-> +__attribute__((noinline))
-> +static int test_long_fname_1(struct dummy_tracepoint_args *arg)
-> +{
-> +       return test_long_fname_2(arg);
-> +}
-> +
-> +SEC("dummy_tracepoint")
-> +int _dummy_tracepoint(struct dummy_tracepoint_args *arg)
-> +{
-> +       return test_long_fname_1(arg);
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> diff --git a/tools/testing/selftests/bpf/test_btf.c b/tools/testing/selftests/bpf/test_btf.c
-> index 289daf54dec4..8351cb5f4a20 100644
-> --- a/tools/testing/selftests/bpf/test_btf.c
-> +++ b/tools/testing/selftests/bpf/test_btf.c
-> @@ -4016,13 +4016,9 @@ struct btf_file_test {
->  };
->
->  static struct btf_file_test file_tests[] = {
-> -{
-> -       .file = "test_btf_haskv.o",
-> -},
-> -{
-> -       .file = "test_btf_nokv.o",
-> -       .btf_kv_notfound = true,
-> -},
-> +       { .file = "test_btf_haskv.o", },
-> +       { .file = "test_btf_newkv.o", },
-> +       { .file = "test_btf_nokv.o", .btf_kv_notfound = true, },
->  };
->
->  static int do_test_file(unsigned int test_num)
-> --
-> 2.17.1
->
+diff --git a/net/core/filter.c b/net/core/filter.c
+index f615e42cf4ef..3fdf1b21be36 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4737,7 +4737,7 @@ static int bpf_ipv6_fib_lookup(struct net *net, struct bpf_fib_lookup *params,
+ 		return -ENODEV;
+ 
+ 	idev = __in6_dev_get_safely(dev);
+-	if (unlikely(!idev || !net->ipv6.devconf_all->forwarding))
++	if (unlikely(!idev || !idev->cnf.forwarding))
+ 		return BPF_FIB_LKUP_RET_FWD_DISABLED;
+ 
+ 	if (flags & BPF_FIB_LOOKUP_OUTPUT) {
+-- 
+2.19.1
+
