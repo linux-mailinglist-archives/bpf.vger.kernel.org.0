@@ -2,51 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 534F747209
-	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2019 22:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B4E4720C
+	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2019 22:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726954AbfFOU0y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Jun 2019 16:26:54 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:42162 "EHLO
+        id S1726515AbfFOU2i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Jun 2019 16:28:38 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:40459 "EHLO
         mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726490AbfFOU0y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Jun 2019 16:26:54 -0400
-Received: by mail-qt1-f193.google.com with SMTP id s15so6534100qtk.9;
-        Sat, 15 Jun 2019 13:26:53 -0700 (PDT)
+        with ESMTP id S1726490AbfFOU2i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Jun 2019 16:28:38 -0400
+Received: by mail-qt1-f193.google.com with SMTP id a15so6552858qtn.7;
+        Sat, 15 Jun 2019 13:28:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YGr51ar+nFM0sHRf+pNLuySIpupvWiH2vffpCg+UTPc=;
-        b=rBTpPSzPN3xLEgHdwQeTOQ0cE2If0HojLt0UwHnLfu7JApLhsIpMw5B/8B33Pw8Yl4
-         l85b6rI1mtkwdObTR2iPdTZSe1nKoKEqfYKylYl0I27nM9hzPm78YF7KuM0GcYKNvOTA
-         icSD9wKp084LYAzzkI4ffT3n7Vw0BAlj+4joAwzC8X9/ky7Gzs1h0b6zpnIBGUsiFS98
-         z6CovGJF0V7V020FMJaoQqDcq/ZLsiBy1hLHQ5yPnh8FPbTrTKFchlSWIBBkYYYCLyfG
-         z6USLGvOmTiP3Fn/oxvKKyeYe78VaPJhI6chEElXcUZU+/Pq383mADgp4fQqVsmC3tBv
-         95fQ==
+        bh=AFXP8ArBgwuQMhnw6wU4tmFPigpMKj9TBA5brc9hfIA=;
+        b=MNwKhhOlhWhepZiReL6nhIZvxSj36Qz1pFZeXHeMVBgWCd0ekk+mE+8/xx9H0KxkAB
+         /Ra6HPHA2jjgCNi13srBnHz53ms6rEzR2HADOhXMVL1e6tCzTGzNjwh545yG+gCWvbbW
+         2R9IU2hiZX1djzxJKm8AUqt6mfuAfR+i9JojIn0ixoVEfbFRARD+yo8rzJShry4vH/Dy
+         FetKc2L3PY6KDUMx2cB0+1Gjh/vcUnJdCciPY1Z/YiughdE7jDodKE66hcgUpEBxCEij
+         xCwtwnaa7+i57xEkbBjTtN0Vy7OTOk5T0T3Utbt/oc6srE1p9Qfu3YzsZQLr7o2Jg2Va
+         0EcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YGr51ar+nFM0sHRf+pNLuySIpupvWiH2vffpCg+UTPc=;
-        b=CSKM7OGb8/5D0AMeYK5ceHSI9u8OYCu3L8XrhBihJzyb07Ab6epPImTL8Jm/SzRtMa
-         8BUe341axjrvPKZ9C10iUbqf2IePjQMFiQ+46TrVwO3tBPQytE9+4v4dK4ORtvm7bTPJ
-         36yazHzNzgNHFlB1jvSew9w05LG92zGAKUPCX+61Dzuc/IhhQCEABYAUgkVx3CjL8Zou
-         2fC27sDeG6jG+hYlP1kdFF/z8+wOud1T1tGdWSARIGY8ySHiemMotvzkAwbzz8omT9dB
-         xOtJp9qmEHIbKddVhReNLGMcksOG78uTy/15cOsfrC6lCb9Mv0KB4uRZvKhXzvLAxPSw
-         pbQA==
-X-Gm-Message-State: APjAAAWw0QBpG45g/IMH9WmCWK0Jg2snWb1oK7jUAcoWirxYnw2S9gkp
-        6cE/2Op3eI/b4x3uKieVPDf/eqx7k6dU5XOyQIs=
-X-Google-Smtp-Source: APXvYqwOLGZ2JJxAAOqXB5JLVA8e1kaAuYoilLk41J1Ywu/jdGHnX8gOsJmnSl2T1JwLqF+ACluJcqanP30V/WZ06IM=
-X-Received: by 2002:ac8:152:: with SMTP id f18mr83092387qtg.84.1560630413236;
- Sat, 15 Jun 2019 13:26:53 -0700 (PDT)
+        bh=AFXP8ArBgwuQMhnw6wU4tmFPigpMKj9TBA5brc9hfIA=;
+        b=hRvdURbyom9orMqHQNVZSupfM7N1z24DM0kzzelZRhthu7epAkycc2K8dZEoJoVq/h
+         cFfk3aztYDVPLShNwfSzird2MWHltkNQjExpjNVervBbvCCQhXSbGLNoGgWOAqXDBTYs
+         paRhRgdzjn4kMQ7KT/+/Ugx/vCE39zYNOy9nYe8zhxXctTL9ARLnXg2aolfoC9f6OJ84
+         JxY8iX2AxjWzhGrUEFW4DZjgv3uJJ39C2Gauzt82migQfKXeOIKjx+/qkK3RRV14UhcE
+         wEobNODM/hp6UFAHcu+VRhpVWt2QctXifeIyThKSbmfr+26XShI/K2S2dz0DjTui2sFm
+         IfzQ==
+X-Gm-Message-State: APjAAAWttxXop5F4so95KRyR56/4++SCEjnbr8v0bI4wYfGawMqTB1JT
+        nXFoS5i/UtsRySfZ4oI2ACii3N9tWvU7ckTeNZc=
+X-Google-Smtp-Source: APXvYqwlzKv7do6hIHpRYsqfYZr5Q0IgWk6JIYH9FQzEQtkqP8wEpi7O3BwCZhDukrbEqyd7QEoOlv7DMOD9x/FM2u4=
+X-Received: by 2002:ac8:1af4:: with SMTP id h49mr78106194qtk.183.1560630517248;
+ Sat, 15 Jun 2019 13:28:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190611044747.44839-1-andriin@fb.com> <20190611044747.44839-2-andriin@fb.com>
-In-Reply-To: <20190611044747.44839-2-andriin@fb.com>
+References: <20190611044747.44839-1-andriin@fb.com> <20190611044747.44839-3-andriin@fb.com>
+ <CAPhsuW6kAN=gMjtXiAJazDFTszuq4xE-9OQTP_GhDX2cxym0NQ@mail.gmail.com>
+In-Reply-To: <CAPhsuW6kAN=gMjtXiAJazDFTszuq4xE-9OQTP_GhDX2cxym0NQ@mail.gmail.com>
 From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Sat, 15 Jun 2019 13:26:42 -0700
-Message-ID: <CAPhsuW5JdUqTUDtcYbrQTBd_skKvtpCNQwdXMpYmO_toTe6Y3A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/8] libbpf: add common min/max macro to libbpf_internal.h
+Date:   Sat, 15 Jun 2019 13:28:26 -0700
+Message-ID: <CAPhsuW5AhXxiRj9x-EWLWy-3Akzh=2y83XxuG2Ma269FjkprrA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/8] libbpf: extract BTF loading and simplify ELF
+ parsing logic
 To:     Andrii Nakryiko <andriin@fb.com>
 Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
@@ -59,114 +61,265 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 10, 2019 at 9:49 PM Andrii Nakryiko <andriin@fb.com> wrote:
+On Sat, Jun 15, 2019 at 1:25 PM Song Liu <liu.song.a23@gmail.com> wrote:
 >
-> Multiple files in libbpf redefine their own definitions for min/max.
-> Let's define them in libbpf_internal.h and use those everywhere.
->
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> On Mon, Jun 10, 2019 at 9:49 PM Andrii Nakryiko <andriin@fb.com> wrote:
+> >
+> > As a preparation for adding BTF-based BPF map loading, extract .BTF and
+> > .BTF.ext loading logic. Also simplify error handling in
+> > bpf_object__elf_collect() by returning early, as there is no common
+> > clean up to be done.
 
-Acked-by: Song Liu <songliubraving@fb.com>
+Maybe separate bpf_object__load_btf() and other cleanup in two patches?
+(I won't complain if you keep them together)
 
+Thanks,
+Song
 
-> ---
->  tools/lib/bpf/bpf.c             | 7 ++-----
->  tools/lib/bpf/bpf_prog_linfo.c  | 5 +----
->  tools/lib/bpf/btf.c             | 3 ---
->  tools/lib/bpf/btf_dump.c        | 3 ---
->  tools/lib/bpf/libbpf_internal.h | 7 +++++++
->  5 files changed, 10 insertions(+), 15 deletions(-)
+> >
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> >  tools/lib/bpf/libbpf.c | 137 ++++++++++++++++++++++-------------------
+> >  1 file changed, 75 insertions(+), 62 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index ba89d9727137..9e39a0a33aeb 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -1078,6 +1078,58 @@ static void bpf_object__sanitize_btf_ext(struct bpf_object *obj)
+> >         }
+> >  }
+> >
+> > +static int bpf_object__load_btf(struct bpf_object *obj,
+> > +                               Elf_Data *btf_data,
+> > +                               Elf_Data *btf_ext_data)
+> > +{
+> > +       int err = 0;
+> > +
+> > +       if (btf_data) {
+> > +               obj->btf = btf__new(btf_data->d_buf, btf_data->d_size);
+> > +               if (IS_ERR(obj->btf)) {
+> > +                       pr_warning("Error loading ELF section %s: %d.\n",
+> > +                                  BTF_ELF_SEC, err);
+> > +                       goto out;
 >
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 0d4b4fe10a84..c7d7993c44bb 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -26,10 +26,11 @@
->  #include <memory.h>
->  #include <unistd.h>
->  #include <asm/unistd.h>
-> +#include <errno.h>
->  #include <linux/bpf.h>
->  #include "bpf.h"
->  #include "libbpf.h"
-> -#include <errno.h>
-> +#include "libbpf_internal.h"
+> If we goto out here, we will return 0.
 >
->  /*
->   * When building perf, unistd.h is overridden. __NR_bpf is
-> @@ -53,10 +54,6 @@
->  # endif
->  #endif
+> > +               }
+> > +               err = btf__finalize_data(obj, obj->btf);
+> > +               if (err) {
+> > +                       pr_warning("Error finalizing %s: %d.\n",
+> > +                                  BTF_ELF_SEC, err);
+> > +                       goto out;
+> > +               }
+> > +               bpf_object__sanitize_btf(obj);
+> > +               err = btf__load(obj->btf);
+> > +               if (err) {
+> > +                       pr_warning("Error loading %s into kernel: %d.\n",
+> > +                                  BTF_ELF_SEC, err);
+> > +                       goto out;
+> > +               }
+> > +       }
+> > +       if (btf_ext_data) {
+> > +               if (!obj->btf) {
+> > +                       pr_debug("Ignore ELF section %s because its depending ELF section %s is not found.\n",
+> > +                                BTF_EXT_ELF_SEC, BTF_ELF_SEC);
+> > +                       goto out;
 >
-> -#ifndef min
-> -#define min(x, y) ((x) < (y) ? (x) : (y))
-> -#endif
-> -
->  static inline __u64 ptr_to_u64(const void *ptr)
->  {
->         return (__u64) (unsigned long) ptr;
-> diff --git a/tools/lib/bpf/bpf_prog_linfo.c b/tools/lib/bpf/bpf_prog_linfo.c
-> index 6978314ea7f6..8c67561c93b0 100644
-> --- a/tools/lib/bpf/bpf_prog_linfo.c
-> +++ b/tools/lib/bpf/bpf_prog_linfo.c
-> @@ -6,10 +6,7 @@
->  #include <linux/err.h>
->  #include <linux/bpf.h>
->  #include "libbpf.h"
-> -
-> -#ifndef min
-> -#define min(x, y) ((x) < (y) ? (x) : (y))
-> -#endif
-> +#include "libbpf_internal.h"
+> We will also return 0 when goto out here.
 >
->  struct bpf_prog_linfo {
->         void *raw_linfo;
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index b2478e98c367..467224feb43b 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-> @@ -16,9 +16,6 @@
->  #include "libbpf_internal.h"
->  #include "hashmap.h"
+> > +               }
+> > +               obj->btf_ext = btf_ext__new(btf_ext_data->d_buf,
+> > +                                           btf_ext_data->d_size);
+> > +               if (IS_ERR(obj->btf_ext)) {
+> > +                       pr_warning("Error loading ELF section %s: %ld. Ignored and continue.\n",
+> > +                                  BTF_EXT_ELF_SEC, PTR_ERR(obj->btf_ext));
+> > +                       obj->btf_ext = NULL;
+> > +                       goto out;
+> And, here. And we will not free obj->btf.
 >
-> -#define max(a, b) ((a) > (b) ? (a) : (b))
-> -#define min(a, b) ((a) < (b) ? (a) : (b))
-> -
->  #define BTF_MAX_NR_TYPES 0x7fffffff
->  #define BTF_MAX_STR_OFFSET 0x7fffffff
->
-> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-> index 4b22db77e2cc..7065bb5b2752 100644
-> --- a/tools/lib/bpf/btf_dump.c
-> +++ b/tools/lib/bpf/btf_dump.c
-> @@ -18,9 +18,6 @@
->  #include "libbpf.h"
->  #include "libbpf_internal.h"
->
-> -#define min(x, y) ((x) < (y) ? (x) : (y))
-> -#define max(x, y) ((x) < (y) ? (y) : (x))
-> -
->  static const char PREFIXES[] = "\t\t\t\t\t\t\t\t\t\t\t\t\t";
->  static const size_t PREFIX_CNT = sizeof(PREFIXES) - 1;
->
-> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-> index 850f7bdec5cb..554a7856dc2d 100644
-> --- a/tools/lib/bpf/libbpf_internal.h
-> +++ b/tools/lib/bpf/libbpf_internal.h
-> @@ -23,6 +23,13 @@
->  #define BTF_PARAM_ENC(name, type) (name), (type)
->  #define BTF_VAR_SECINFO_ENC(type, offset, size) (type), (offset), (size)
->
-> +#ifndef min
-> +# define min(x, y) ((x) < (y) ? (x) : (y))
-> +#endif
-> +#ifndef max
-> +# define max(x, y) ((x) < (y) ? (y) : (x))
-> +#endif
-> +
->  extern void libbpf_print(enum libbpf_print_level level,
->                          const char *format, ...)
->         __attribute__((format(printf, 2, 3)));
-> --
-> 2.17.1
->
+> > +               }
+> > +               bpf_object__sanitize_btf_ext(obj);
+> > +       }
+> > +out:
+> > +       if (err || IS_ERR(obj->btf)) {
+> > +               if (!IS_ERR_OR_NULL(obj->btf))
+> > +                       btf__free(obj->btf);
+> > +               obj->btf = NULL;
+> > +       }
+> > +       return 0;
+> > +}
+> > +
+> >  static int bpf_object__elf_collect(struct bpf_object *obj, int flags)
+> >  {
+> >         Elf *elf = obj->efile.elf;
+> > @@ -1102,24 +1154,21 @@ static int bpf_object__elf_collect(struct bpf_object *obj, int flags)
+> >                 if (gelf_getshdr(scn, &sh) != &sh) {
+> >                         pr_warning("failed to get section(%d) header from %s\n",
+> >                                    idx, obj->path);
+> > -                       err = -LIBBPF_ERRNO__FORMAT;
+> > -                       goto out;
+> > +                       return -LIBBPF_ERRNO__FORMAT;
+> >                 }
+> >
+> >                 name = elf_strptr(elf, ep->e_shstrndx, sh.sh_name);
+> >                 if (!name) {
+> >                         pr_warning("failed to get section(%d) name from %s\n",
+> >                                    idx, obj->path);
+> > -                       err = -LIBBPF_ERRNO__FORMAT;
+> > -                       goto out;
+> > +                       return -LIBBPF_ERRNO__FORMAT;
+> >                 }
+> >
+> >                 data = elf_getdata(scn, 0);
+> >                 if (!data) {
+> >                         pr_warning("failed to get section(%d) data from %s(%s)\n",
+> >                                    idx, name, obj->path);
+> > -                       err = -LIBBPF_ERRNO__FORMAT;
+> > -                       goto out;
+> > +                       return -LIBBPF_ERRNO__FORMAT;
+> >                 }
+> >                 pr_debug("section(%d) %s, size %ld, link %d, flags %lx, type=%d\n",
+> >                          idx, name, (unsigned long)data->d_size,
+> > @@ -1130,10 +1179,14 @@ static int bpf_object__elf_collect(struct bpf_object *obj, int flags)
+> >                         err = bpf_object__init_license(obj,
+> >                                                        data->d_buf,
+> >                                                        data->d_size);
+> > +                       if (err)
+> > +                               return err;
+> >                 } else if (strcmp(name, "version") == 0) {
+> >                         err = bpf_object__init_kversion(obj,
+> >                                                         data->d_buf,
+> >                                                         data->d_size);
+> > +                       if (err)
+> > +                               return err;
+> >                 } else if (strcmp(name, "maps") == 0) {
+> >                         obj->efile.maps_shndx = idx;
+> >                 } else if (strcmp(name, BTF_ELF_SEC) == 0) {
+> > @@ -1144,11 +1197,10 @@ static int bpf_object__elf_collect(struct bpf_object *obj, int flags)
+> >                         if (obj->efile.symbols) {
+> >                                 pr_warning("bpf: multiple SYMTAB in %s\n",
+> >                                            obj->path);
+> > -                               err = -LIBBPF_ERRNO__FORMAT;
+> > -                       } else {
+> > -                               obj->efile.symbols = data;
+> > -                               obj->efile.strtabidx = sh.sh_link;
+> > +                               return -LIBBPF_ERRNO__FORMAT;
+> >                         }
+> > +                       obj->efile.symbols = data;
+> > +                       obj->efile.strtabidx = sh.sh_link;
+> >                 } else if (sh.sh_type == SHT_PROGBITS && data->d_size > 0) {
+> >                         if (sh.sh_flags & SHF_EXECINSTR) {
+> >                                 if (strcmp(name, ".text") == 0)
+> > @@ -1162,6 +1214,7 @@ static int bpf_object__elf_collect(struct bpf_object *obj, int flags)
+> >
+> >                                         pr_warning("failed to alloc program %s (%s): %s",
+> >                                                    name, obj->path, cp);
+> > +                                       return err;
+> >                                 }
+> >                         } else if (strcmp(name, ".data") == 0) {
+> >                                 obj->efile.data = data;
+> > @@ -1173,8 +1226,8 @@ static int bpf_object__elf_collect(struct bpf_object *obj, int flags)
+> >                                 pr_debug("skip section(%d) %s\n", idx, name);
+> >                         }
+> >                 } else if (sh.sh_type == SHT_REL) {
+> > +                       int nr_reloc = obj->efile.nr_reloc;
+> >                         void *reloc = obj->efile.reloc;
+> > -                       int nr_reloc = obj->efile.nr_reloc + 1;
+> >                         int sec = sh.sh_info; /* points to other section */
+> >
+> >                         /* Only do relo for section with exec instructions */
+> > @@ -1184,79 +1237,39 @@ static int bpf_object__elf_collect(struct bpf_object *obj, int flags)
+> >                                 continue;
+> >                         }
+> >
+> > -                       reloc = reallocarray(reloc, nr_reloc,
+> > +                       reloc = reallocarray(reloc, nr_reloc + 1,
+> >                                              sizeof(*obj->efile.reloc));
+> >                         if (!reloc) {
+> >                                 pr_warning("realloc failed\n");
+> > -                               err = -ENOMEM;
+> > -                       } else {
+> > -                               int n = nr_reloc - 1;
+> > +                               return -ENOMEM;
+> > +                       }
+> >
+> > -                               obj->efile.reloc = reloc;
+> > -                               obj->efile.nr_reloc = nr_reloc;
+> > +                       obj->efile.reloc = reloc;
+> > +                       obj->efile.nr_reloc++;
+> >
+> > -                               obj->efile.reloc[n].shdr = sh;
+> > -                               obj->efile.reloc[n].data = data;
+> > -                       }
+> > +                       obj->efile.reloc[nr_reloc].shdr = sh;
+> > +                       obj->efile.reloc[nr_reloc].data = data;
+> >                 } else if (sh.sh_type == SHT_NOBITS && strcmp(name, ".bss") == 0) {
+> >                         obj->efile.bss = data;
+> >                         obj->efile.bss_shndx = idx;
+> >                 } else {
+> >                         pr_debug("skip section(%d) %s\n", idx, name);
+> >                 }
+> > -               if (err)
+> > -                       goto out;
+> >         }
+> >
+> >         if (!obj->efile.strtabidx || obj->efile.strtabidx >= idx) {
+> >                 pr_warning("Corrupted ELF file: index of strtab invalid\n");
+> >                 return -LIBBPF_ERRNO__FORMAT;
+> >         }
+> > -       if (btf_data) {
+> > -               obj->btf = btf__new(btf_data->d_buf, btf_data->d_size);
+> > -               if (IS_ERR(obj->btf)) {
+> > -                       pr_warning("Error loading ELF section %s: %ld. Ignored and continue.\n",
+> > -                                  BTF_ELF_SEC, PTR_ERR(obj->btf));
+> > -                       obj->btf = NULL;
+> > -               } else {
+> > -                       err = btf__finalize_data(obj, obj->btf);
+> > -                       if (!err) {
+> > -                               bpf_object__sanitize_btf(obj);
+> > -                               err = btf__load(obj->btf);
+> > -                       }
+> > -                       if (err) {
+> > -                               pr_warning("Error finalizing and loading %s into kernel: %d. Ignored and continue.\n",
+> > -                                          BTF_ELF_SEC, err);
+> > -                               btf__free(obj->btf);
+> > -                               obj->btf = NULL;
+> > -                               err = 0;
+> > -                       }
+> > -               }
+> > -       }
+> > -       if (btf_ext_data) {
+> > -               if (!obj->btf) {
+> > -                       pr_debug("Ignore ELF section %s because its depending ELF section %s is not found.\n",
+> > -                                BTF_EXT_ELF_SEC, BTF_ELF_SEC);
+> > -               } else {
+> > -                       obj->btf_ext = btf_ext__new(btf_ext_data->d_buf,
+> > -                                                   btf_ext_data->d_size);
+> > -                       if (IS_ERR(obj->btf_ext)) {
+> > -                               pr_warning("Error loading ELF section %s: %ld. Ignored and continue.\n",
+> > -                                          BTF_EXT_ELF_SEC,
+> > -                                          PTR_ERR(obj->btf_ext));
+> > -                               obj->btf_ext = NULL;
+> > -                       } else {
+> > -                               bpf_object__sanitize_btf_ext(obj);
+> > -                       }
+> > -               }
+> > -       }
+> > +       err = bpf_object__load_btf(obj, btf_data, btf_ext_data);
+> > +       if (err)
+> > +               return err;
+> >         if (bpf_object__has_maps(obj)) {
+> >                 err = bpf_object__init_maps(obj, flags);
+> >                 if (err)
+> > -                       goto out;
+> > +                       return err;
+> >         }
+> >         err = bpf_object__init_prog_names(obj);
+> > -out:
+> >         return err;
+> >  }
+> >
+> > --
+> > 2.17.1
+> >
