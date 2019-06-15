@@ -2,89 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 152AC46F75
-	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2019 12:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36EE147013
+	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2019 14:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726703AbfFOKKE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sat, 15 Jun 2019 06:10:04 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:35513 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726894AbfFOKKE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Jun 2019 06:10:04 -0400
-Received: by mail-ed1-f67.google.com with SMTP id p26so7455491edr.2
-        for <bpf@vger.kernel.org>; Sat, 15 Jun 2019 03:10:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=E5g/m2oNw0FmOnRwBHRfp/fjjyfTq1G4GJO9NWyBiak=;
-        b=sHUe8kJGlHFkK8pl0xt7mBgSRTv5nzVnqxMcxvuzgMDHPP0Ze3QmfqQqgibBNyOjqx
-         30i5OcXYIXn7Bev3VKDYNq98vwKxbgzpAGH4CxVVlotq0+Hx0RcoKG0RXftW0Aw24K7T
-         MlGrmDRowqzDyjX0EyurVQebJWFcViYu7w9plpZhMCeMICcRS3NRKxbZ7GRvBr2SVZEj
-         kNUDSGBF4PByfC98sTnbIJFZBej+CYf9I8JcfLpAbEGkzJQhjvwoUZRHvUjnUA694UD9
-         zpHIVE7mESJ2GSplWOnGwDYJPSlUTx9wXVxpJS8uFP8vHUBtU4q83OAGnmoVx1dbZVpn
-         AidA==
-X-Gm-Message-State: APjAAAVSaDpIi0oX8rcqHMyotJKj27X7XVn9pif2KiTAknxcaPWE/EjI
-        /rb4cgTww6oTHMB217KDrFrYLQ==
-X-Google-Smtp-Source: APXvYqzCPAU0G5SPBb3xNUalstBRFbSLtXj+BEgB2SaVj0rv4Pog5MGdF0GDUelBpwAAa2JHfqQ8Qg==
-X-Received: by 2002:a50:8974:: with SMTP id f49mr52230644edf.95.1560593402393;
-        Sat, 15 Jun 2019 03:10:02 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id k51sm1753562edb.7.2019.06.15.03.10.01
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Sat, 15 Jun 2019 03:10:01 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 013981804AF; Sat, 15 Jun 2019 12:10:00 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
-        bpf@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        David Ahern <dsahern@gmail.com>
-Subject: Re: [PATCH bpf 1/3] devmap: Fix premature entry free on destroying map
-In-Reply-To: <5f6efec8-87f8-4ac5-46ee-47788dbf1d44@iogearbox.net>
-References: <20190614082015.23336-1-toshiaki.makita1@gmail.com> <20190614082015.23336-2-toshiaki.makita1@gmail.com> <877e9octre.fsf@toke.dk> <87sgscbc5d.fsf@toke.dk> <fb895684-c863-e580-f36a-30722c480b41@gmail.com> <87muikb9ev.fsf@toke.dk> <5f6efec8-87f8-4ac5-46ee-47788dbf1d44@iogearbox.net>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sat, 15 Jun 2019 12:10:00 +0200
-Message-ID: <87r27v9n2f.fsf@toke.dk>
+        id S1726582AbfFOM55 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Jun 2019 08:57:57 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:35170 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726327AbfFOM55 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Jun 2019 08:57:57 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id A174B308213A;
+        Sat, 15 Jun 2019 12:57:55 +0000 (UTC)
+Received: from treble (ovpn-120-23.rdu2.redhat.com [10.10.120.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4A2B4379E;
+        Sat, 15 Jun 2019 12:57:51 +0000 (UTC)
+Date:   Sat, 15 Jun 2019 07:57:48 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     X86 ML <x86@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>,
+        Kairui Song <kasong@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Laight <David.Laight@aculab.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v2 4/5] x86/bpf: Fix 64-bit JIT frame pointer usage
+Message-ID: <20190615125748.2c4xpgfuccanjx5d@treble>
+References: <178097de8c1bd6a877342304f3469eac4067daa4.1560534694.git.jpoimboe@redhat.com>
+ <20190614210555.q4ictql3tzzjio4r@ast-mbp.dhcp.thefacebook.com>
+ <20190614211916.jnxakyfwilcv6r57@treble>
+ <CAADnVQJ0dmxYTnaQC1UiSo7MhcTy2KRWJWJKw4jyxFWby-JgRg@mail.gmail.com>
+ <20190614231311.gfeb47rpjoholuov@treble>
+ <CAADnVQKOjvhpMQqjHvF-oX2U99WRCi+repgqmt6hiSObovxoaQ@mail.gmail.com>
+ <20190614235417.7oagddee75xo7otp@treble>
+ <CAADnVQ+mjtgZExhtKDu6bbaVSHUfOYb=XeJodPB5+WdjtLYvCA@mail.gmail.com>
+ <20190615042747.awyy4djqe6vfmles@treble>
+ <CAADnVQJV6Yb9EyXE+NG6Nd1KLhhoF2Nr6BN=fihYnW7H0cvRoQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Disposition: inline
+In-Reply-To: <CAADnVQJV6Yb9EyXE+NG6Nd1KLhhoF2Nr6BN=fihYnW7H0cvRoQ@mail.gmail.com>
+User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.42]); Sat, 15 Jun 2019 12:57:56 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
+On Fri, Jun 14, 2019 at 10:16:53PM -0700, Alexei Starovoitov wrote:
+> On Fri, Jun 14, 2019 at 9:27 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> >
+> > On Fri, Jun 14, 2019 at 05:02:36PM -0700, Alexei Starovoitov wrote:
+> > > On Fri, Jun 14, 2019 at 4:54 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> > > > The previous patch you posted has my patch description, push/pop and
+> > > > comment changes, with no credit:
+> > > >
+> > > > https://lkml.kernel.org/r/20190614210555.q4ictql3tzzjio4r@ast-mbp.dhcp.thefacebook.com
+> > >
+> > > I'm sorry for reusing one sentence from your commit log and
+> > > not realizing you want credit for that.
+> > > Will not happen again.
+> >
+> > Um.  What are you talking about?  The entire patch was clearly derived
+> > from mine.  Not just "one sentence from your commit log".  The title,
+> > the pushes/pops in the prologue/epilogue, the removal of the
+> > "ebpf_from_cbpf" argument, the code spacing, and some of the non trivial
+> > comment changes were the same.
+> >
+> > > I also suggest you never touch anything bpf related.
+> > > Just to avoid this credit claims and threads like this one.
+> >
+> > Wth.  I made a simple request for credit.  Anybody can see the patch was
+> > derived from mine.  It's not like I really care.  It's just basic human
+> > decency.
+> 
+> derived? do you really think so ?
+> Please fix your orc stuff that is still broken.
+> Human decency is fixing stuff that you're responsible for.
+> Your commit d15d356887e7 on April 23 broke stack traces.
+> And we reported it 3 weeks ago.
+> Yet instead of fixing it you kept arguing about JIT frame pointers
+> that is orthogonal issue and was in this state for the last 2 years.
 
-> On 06/14/2019 03:09 PM, Toke Høiland-Jørgensen wrote:
->> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
-> [...]
->>>> Alternatively, since this entire series should probably go to stable, I
->>>> can respin mine on top of it?
->>>
->>> Indeed conflict will happen, as this is for 'bpf' not 'bpf-next'.
->>> Sorry for disturbing your work.
->> 
->> Oh, no worries!
->> 
->>> I'm also not sure how to proceed in this case.
->> 
->> I guess we'll leave that up to the maintainers :)
->
-> So all three look good to me, I've applied them to bpf tree. Fixes to
-> bpf do have precedence over patches to bpf-next given they need to
-> land in the current release. I'll get bpf out later tonight and ask
-> David to merge net into net-next after that since rebase is also
-> needed for Stanislav's cgroup series. We'll then flush out bpf-next so
-> we can fast-fwd to net-next to pull in all the dependencies.
+Again you're not making sense.  The fix has already been posted.  That
+was the point of this patch set.
 
-Right, I'll wait for that, then rebase my series and resubmit
+It's your call if you want to cherry pick the FP fix (which is a
+dependency of the ORC fix) without taking the others.
 
--Toke
+-- 
+Josh
