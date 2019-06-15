@@ -2,201 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3FF46E87
-	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2019 07:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152AC46F75
+	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2019 12:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725904AbfFOFxC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Jun 2019 01:53:02 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:47030 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725820AbfFOFxC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Jun 2019 01:53:02 -0400
-Received: by mail-qk1-f196.google.com with SMTP id x18so3080592qkn.13
-        for <bpf@vger.kernel.org>; Fri, 14 Jun 2019 22:53:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Kz+tawjj+TKGLusbM0dZKp0s2fiz0LpOWBpuEGiIXoo=;
-        b=c4dwLIgGIFZILjgl4mh8YLfuK7rL81nwXA/1iHCW5MEKfrs9x4sPI2/59Aao2vYRK2
-         JRupca19/9klmYhMoXAQRHQ524wIx8ItlLVH7TwwkzFrnbuPs+b+SL6MAw0etINOfGi1
-         tCsAM1QcalwmxnHVmpsNlbCx2ryeQ5qltSyoWo2HuyhrQr4lI7s9VA97Y1tY8Xh1rTGW
-         hoFH3XD2+VA6LJCqz5a3XMoCnW2Ge75kQgEAPtZ99qRZiN3MyPVYb4eM+8qjYalAeCEk
-         fzbiw7rNGVCwUwVs92X2Jly94WDadpVcYijCGrJrNP7QrA3rTPQlnnII9aQ6e8UHacpS
-         /QTA==
+        id S1726703AbfFOKKE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sat, 15 Jun 2019 06:10:04 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:35513 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726894AbfFOKKE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Jun 2019 06:10:04 -0400
+Received: by mail-ed1-f67.google.com with SMTP id p26so7455491edr.2
+        for <bpf@vger.kernel.org>; Sat, 15 Jun 2019 03:10:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Kz+tawjj+TKGLusbM0dZKp0s2fiz0LpOWBpuEGiIXoo=;
-        b=ctCQND8eKfj+uUXUd0M52CCao3zoMwYJ7KEXhSvyDT5x6rlD0yOnICcXTWpWgKjgWI
-         s9wQq0UA+p9qS/+uIwBoFnvHsCTDZUwGeSZEiP0+hT7olJoZv2MRnFpgBXdEF6zIyEbY
-         lywEoSUUAfrizoRYqNsf/fBNW672CMCEzyK+v6o966vyWWZWBB0LxNcKJAL7ixtJohYx
-         /ILtUB/zgtEc2eXImpUYbDeH7A8wkudj9kGDa3fccarhVzqbjmCVMK/tEbAsNaA29mXz
-         UpAirZBEfAOlo95MRu7R9vKotL9VzkXnU9GuhBt8Ac8dm0PjytWUZpwa8IzgZZr1c4Jt
-         ivGA==
-X-Gm-Message-State: APjAAAWpRe6UdRXWSKe+rQlRZHrhG/3C6XbalKG8hu2CvUALJhbxYJl8
-        HEU2Cot/OIXzo4lrh0JOwh7u7w==
-X-Google-Smtp-Source: APXvYqzJ8qzubBN5LJ4SW5ilBdh7p6QC+o8PkqRdl/sW5CGmuBBVQ572Ghw9AI2yNX6P9ThsL+rFpg==
-X-Received: by 2002:a05:620a:1661:: with SMTP id d1mr4643851qko.192.1560577981016;
-        Fri, 14 Jun 2019 22:53:01 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s (li1322-146.members.linode.com. [45.79.223.146])
-        by smtp.gmail.com with ESMTPSA id t67sm2494822qkf.34.2019.06.14.22.52.53
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 14 Jun 2019 22:53:00 -0700 (PDT)
-Date:   Sat, 15 Jun 2019 13:52:49 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=E5g/m2oNw0FmOnRwBHRfp/fjjyfTq1G4GJO9NWyBiak=;
+        b=sHUe8kJGlHFkK8pl0xt7mBgSRTv5nzVnqxMcxvuzgMDHPP0Ze3QmfqQqgibBNyOjqx
+         30i5OcXYIXn7Bev3VKDYNq98vwKxbgzpAGH4CxVVlotq0+Hx0RcoKG0RXftW0Aw24K7T
+         MlGrmDRowqzDyjX0EyurVQebJWFcViYu7w9plpZhMCeMICcRS3NRKxbZ7GRvBr2SVZEj
+         kNUDSGBF4PByfC98sTnbIJFZBej+CYf9I8JcfLpAbEGkzJQhjvwoUZRHvUjnUA694UD9
+         zpHIVE7mESJ2GSplWOnGwDYJPSlUTx9wXVxpJS8uFP8vHUBtU4q83OAGnmoVx1dbZVpn
+         AidA==
+X-Gm-Message-State: APjAAAVSaDpIi0oX8rcqHMyotJKj27X7XVn9pif2KiTAknxcaPWE/EjI
+        /rb4cgTww6oTHMB217KDrFrYLQ==
+X-Google-Smtp-Source: APXvYqzCPAU0G5SPBb3xNUalstBRFbSLtXj+BEgB2SaVj0rv4Pog5MGdF0GDUelBpwAAa2JHfqQ8Qg==
+X-Received: by 2002:a50:8974:: with SMTP id f49mr52230644edf.95.1560593402393;
+        Sat, 15 Jun 2019 03:10:02 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id k51sm1753562edb.7.2019.06.15.03.10.01
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Sat, 15 Jun 2019 03:10:01 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 013981804AF; Sat, 15 Jun 2019 12:10:00 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Toshiaki Makita <toshiaki.makita1@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] perf augmented_raw_syscalls: Support arm64 raw
- syscalls
-Message-ID: <20190615055249.GA3742@leoy-ThinkPad-X240s>
-References: <20190606094845.4800-4-leo.yan@linaro.org>
- <20190606133838.GC30166@kernel.org>
- <20190606141231.GC5970@leoy-ThinkPad-X240s>
- <20190606144412.GC21245@kernel.org>
- <20190607095831.GG5970@leoy-ThinkPad-X240s>
- <20190609131849.GB6357@leoy-ThinkPad-X240s>
- <20190610184754.GU21245@kernel.org>
- <20190611041831.GA3959@leoy-ThinkPad-X240s>
- <20190612024917.GG28689@kernel.org>
- <20190613181514.GC1402@kernel.org>
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
+        bpf@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        David Ahern <dsahern@gmail.com>
+Subject: Re: [PATCH bpf 1/3] devmap: Fix premature entry free on destroying map
+In-Reply-To: <5f6efec8-87f8-4ac5-46ee-47788dbf1d44@iogearbox.net>
+References: <20190614082015.23336-1-toshiaki.makita1@gmail.com> <20190614082015.23336-2-toshiaki.makita1@gmail.com> <877e9octre.fsf@toke.dk> <87sgscbc5d.fsf@toke.dk> <fb895684-c863-e580-f36a-30722c480b41@gmail.com> <87muikb9ev.fsf@toke.dk> <5f6efec8-87f8-4ac5-46ee-47788dbf1d44@iogearbox.net>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Sat, 15 Jun 2019 12:10:00 +0200
+Message-ID: <87r27v9n2f.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190613181514.GC1402@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 13, 2019 at 03:15:14PM -0300, Arnaldo Carvalho de Melo wrote:
+Daniel Borkmann <daniel@iogearbox.net> writes:
 
-[...]
+> On 06/14/2019 03:09 PM, Toke Høiland-Jørgensen wrote:
+>> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
+> [...]
+>>>> Alternatively, since this entire series should probably go to stable, I
+>>>> can respin mine on top of it?
+>>>
+>>> Indeed conflict will happen, as this is for 'bpf' not 'bpf-next'.
+>>> Sorry for disturbing your work.
+>> 
+>> Oh, no worries!
+>> 
+>>> I'm also not sure how to proceed in this case.
+>> 
+>> I guess we'll leave that up to the maintainers :)
+>
+> So all three look good to me, I've applied them to bpf tree. Fixes to
+> bpf do have precedence over patches to bpf-next given they need to
+> land in the current release. I'll get bpf out later tonight and ask
+> David to merge net into net-next after that since rebase is also
+> needed for Stanislav's cgroup series. We'll then flush out bpf-next so
+> we can fast-fwd to net-next to pull in all the dependencies.
 
-> > > > diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-> > > > index 1a2a605cf068..eb70a4b71755 100644
-> > > > --- a/tools/perf/builtin-trace.c
-> > > > +++ b/tools/perf/builtin-trace.c
-> > > > @@ -1529,6 +1529,7 @@ static int trace__read_syscall_info(struct trace *trace, int id)
-> > > >  static int trace__validate_ev_qualifier(struct trace *trace)
-> > > >  {
-> > > >  	int err = 0, i;
-> > > > +	bool printed_invalid_prefix = false;
-> > > >  	size_t nr_allocated;
-> > > >  	struct str_node *pos;
-> > > >  
-> > > > @@ -1555,14 +1556,15 @@ static int trace__validate_ev_qualifier(struct trace *trace)
-> > > >  			if (id >= 0)
-> > > >  				goto matches;
-> > > >  
-> > > > -			if (err == 0) {
-> > > > -				fputs("Error:\tInvalid syscall ", trace->output);
-> > > > -				err = -EINVAL;
-> > > > +			if (!printed_invalid_prefix) {
-> > > > +				pr_debug("Skipping unknown syscalls: ");
-> > > > +				printed_invalid_prefix = true;
-> > > >  			} else {
-> > > > -				fputs(", ", trace->output);
-> > > > +				pr_debug(", ");
-> > > >  			}
-> > > >  
-> > > > -			fputs(sc, trace->output);
-> > > > +			pr_debug("%s", sc);
-> > > > +			continue;
-> > > 
-> > > Here adds 'continue' so that we want to let ev_qualifier_ids.entries
-> > > to only store valid system call ids.  But this is not sufficient,
-> > > because we have initialized ev_qualifier_ids.nr at the beginning of
-> > > the function:
-> > > 
-> > >   trace->ev_qualifier_ids.nr = strlist__nr_entries(trace->ev_qualifier);
-> > > This sentence will set ids number to the string table's length; but
-> > > actually some strings are not really supported; this leads to some
-> > > items in trace->ev_qualifier_ids.entries[] will be not initialized
-> > > properly.
-> > > 
-> > > If we want to get neat entries and entry number, I suggest at the
-> > > beginning of the function we use variable 'nr_allocated' to store
-> > > string table length and use it to allocate entries:
-> > > 
-> > >   nr_allocated = strlist__nr_entries(trace->ev_qualifier);
-> > >   trace->ev_qualifier_ids.entries = malloc(nr_allocated *
-> > >                                            sizeof(trace->ev_qualifier_ids.entries[0]));
-> > > 
-> > > If we find any matched string, then increment the nr field under
-> > > 'matches' tag:
-> > > 
-> > > matches:
-> > >                 trace->ev_qualifier_ids.nr++;
-> > >                 trace->ev_qualifier_ids.entries[i++] = id;
-> > > 
-> > > This can ensure the entries[0..nr-1] has valid id and we can use
-> > > ev_qualifier_ids.nr to maintain the valid system call numbers.
-> > 
-> > yeah, you're right, I'll address these issues in a followup patch,
-> > tomorrow.
-> 
-> This is equivalent and I think the smallest patch, I'll add one on top
-> doing what you suggested about nr_allocated getting the
-> strlist__nr_entries() and also will rename i to nr_used to contrast with
-> nr_allocated, and then at the end set ev_qualifier_ids.nr to nr_used.
+Right, I'll wait for that, then rebase my series and resubmit
 
-Thanks for this patch, I tested below changes and 'perf trace' works
-well.  You could add my test tag:
-
-Tested-by: Leo Yan <leo.yan@linaro.org>
-
-> - Arnaldo
-> 
-> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-> index eb70a4b71755..bd1f00e7a2eb 100644
-> --- a/tools/perf/builtin-trace.c
-> +++ b/tools/perf/builtin-trace.c
-> @@ -1528,9 +1528,9 @@ static int trace__read_syscall_info(struct trace *trace, int id)
->  
->  static int trace__validate_ev_qualifier(struct trace *trace)
->  {
-> -	int err = 0, i;
-> +	int err = 0;
->  	bool printed_invalid_prefix = false;
-> -	size_t nr_allocated;
-> +	size_t nr_allocated, i;
->  	struct str_node *pos;
->  
->  	trace->ev_qualifier_ids.nr = strlist__nr_entries(trace->ev_qualifier);
-> @@ -1575,7 +1575,7 @@ static int trace__validate_ev_qualifier(struct trace *trace)
->  			id = syscalltbl__strglobmatch_next(trace->sctbl, sc, &match_next);
->  			if (id < 0)
->  				break;
-> -			if (nr_allocated == trace->ev_qualifier_ids.nr) {
-> +			if (nr_allocated == i) {
->  				void *entries;
->  
->  				nr_allocated += 8;
-> @@ -1588,11 +1588,11 @@ static int trace__validate_ev_qualifier(struct trace *trace)
->  				}
->  				trace->ev_qualifier_ids.entries = entries;
->  			}
-> -			trace->ev_qualifier_ids.nr++;
->  			trace->ev_qualifier_ids.entries[i++] = id;
->  		}
->  	}
->  
-> +	trace->ev_qualifier_ids.nr = i;
->  out:
->  	if (printed_invalid_prefix)
->  		pr_debug("\n");
+-Toke
