@@ -2,93 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D34470FD
-	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2019 17:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D859847116
+	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2019 17:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbfFOPmN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Jun 2019 11:42:13 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:36855 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726841AbfFOPmN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Jun 2019 11:42:13 -0400
-Received: by mail-pg1-f195.google.com with SMTP id f21so3297752pgi.3
-        for <bpf@vger.kernel.org>; Sat, 15 Jun 2019 08:42:13 -0700 (PDT)
+        id S1726847AbfFOP5s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Jun 2019 11:57:48 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:33029 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726405AbfFOP5r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Jun 2019 11:57:47 -0400
+Received: by mail-qk1-f195.google.com with SMTP id r6so3704108qkc.0;
+        Sat, 15 Jun 2019 08:57:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=E+0MPB3I9a6s5D5jezF+LFmb2tl4ibToyP9AXLMOIag=;
-        b=NXfaGKFtyw0+mBa8pU6K36dqbbBtA+oFue0XQ0oQnrFbW7yGvyJNOfFELJ2wLjQNkk
-         Sp+/VaEAQ19U3f6pkEnB2j74PpxsxZMmNjyNz24X209uqOYLgFs5mjinjeQxbVG7EG7E
-         rvylHzfKr7HBxZfXijEZgLF6MamqlSnh6zwb3qcJHUyE7qBjtBOACJXILFeD/s7kVXBE
-         6gEuwv16cOPOuCarwMnn4o1HyuRK6Ri29vpgcnISVcmuz0ulfTTW3eoLyAXT5c1wOTxD
-         IfvvCz+A3g4nXQ2GeDKpfMi5xxxiLZFO/JdoJUSpmE3QB1Uf1Pg7LoBnVkCyUZRkw69g
-         V2dA==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=V1Xn65jFA9fLzGnZCICEwL6tUShlHAvAc5j9I2/vRW4=;
+        b=csyg6vgm0i4uNhPsUxiT5I9v9LOyUNu0/a9saVtXHrnPe9wqOlbnYU16Udzo53uh/u
+         ntH7pwRtBjuYbe9ZRhTBP3W/jUlEuQnIvB0w7IG3x9Ic2hAnHAbtU0CPHO2gkqHUsvN6
+         cbfvLAcvtmBIdwilZEn2cBDPcUNiKMGQEWZcQt6R+ZKmEM4/Opb3ub+9xk/GktAgEGmR
+         7jDLFDvE5TNOV/yA2grBclF2D5ZeFv5ddWM5MPXh6kBco8WTEXIVO1CcoKFaaCofb2Bt
+         XsIzD6JAPKS4+AxN7vQovTd0s8Zxat1tSWhNEOzrhnY6XwBMzmfPPOwBkM1nY3UjStQW
+         Xtbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=E+0MPB3I9a6s5D5jezF+LFmb2tl4ibToyP9AXLMOIag=;
-        b=LiHdhQD05CEqnyXMx97Dr1KQTRDI/ofwZDDgnSRn74HMwbarx5RmH9bKZ6ECnIRVp+
-         LRHXYlIGxiJBnE/bZkZG22TMhkh/G7YpTx3sHSe9m6m1QxfogopmmBzw4ttHlvG4UILL
-         6hPlG4WiCqNyrQQwraZ7x2GhKx7wb0FCJ85eqajbmsHIBh0KCGwoGdMd63ziGyOe3ddi
-         AL8iqAdFFTM0Qvfks4ysz24sW4sqwOzzzXuJPdA2fCTHNR76yOheosAdDMMz23Ds6qea
-         GbYaNFENcDEu5ZyEeZBBLEA7TOPpwvk+PQ5HxHIWja+oUc7VD1TCHrUt2h2LrzjsV+S+
-         VBbQ==
-X-Gm-Message-State: APjAAAUwUxRqgUKcyRuGDDpeYs9R+FVe0VrT1zfE4DyEOhscSLDwQWV9
-        skaNHeHdqYWPNwm1ldFkoLew3g==
-X-Google-Smtp-Source: APXvYqyL5kKuZOKeiSyb+LPg6wgIgucH375Zp97mBdJVED4Keg/3XzJGXmM/rO84YSCOteqvgHuDQw==
-X-Received: by 2002:a65:5344:: with SMTP id w4mr40733913pgr.8.1560613332717;
-        Sat, 15 Jun 2019 08:42:12 -0700 (PDT)
-Received: from cakuba.netronome.com (c-71-204-185-212.hsd1.ca.comcast.net. [71.204.185.212])
-        by smtp.gmail.com with ESMTPSA id j23sm6298281pff.90.2019.06.15.08.42.11
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Sat, 15 Jun 2019 08:42:12 -0700 (PDT)
-Date:   Sat, 15 Jun 2019 08:42:08 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Maxim Mikityanskiy <maximmi@mellanox.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Jonathan Lemon <bsd@fb.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
-Subject: Re: [PATCH bpf-next v4 17/17] net/mlx5e: Add XSK zero-copy support
-Message-ID: <20190615084208.1a9fc711@cakuba.netronome.com>
-In-Reply-To: <20190612155605.22450-18-maximmi@mellanox.com>
-References: <20190612155605.22450-1-maximmi@mellanox.com>
-        <20190612155605.22450-18-maximmi@mellanox.com>
-Organization: Netronome Systems, Ltd.
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=V1Xn65jFA9fLzGnZCICEwL6tUShlHAvAc5j9I2/vRW4=;
+        b=coLPfFv7f+hAIkS0BM92BaoAp8P/hkPfbPRWJxIKN1boopRzD/uOcp03eoAVY7LbyM
+         2GmfPuLf1G+WTZPlzGIJy862384xRHhYrnPfJ7veYR3wP/u9g9P1UOFsk5fgQkGpF/P2
+         uuPCDa6Rl8WPd1yUB6PhuywUNJ5ReXbAuaeRryFt7nNgzKYW5dnpdN3MD5w5yIhxdjKF
+         XrY6o2X5ndjiPxdUuBEPwJr7b6R1Vc1PGDIOPjgunG9NFwx9VU0sAdOMM1lNg/fF4Rrj
+         1jU2SY6qEg0O3FyHAmuxlFEQjW+fY53Wz8wdd31UyVwBcrRXwuCH48XHqObT66MPNLxV
+         0N9A==
+X-Gm-Message-State: APjAAAWz5eXPQERHfp1ZAG/YL56uRSqQiq7m3Q/MAD+hAx+0Gi5SzHEB
+        KryA2GCForr8pyM2/Gq9D00=
+X-Google-Smtp-Source: APXvYqw7pW50FWwPRrhOjvP+Dt3tlqNNZWVvipaSTxtXb/kfSgJbt5OwlMOikhxcouvwT5smDdGKnA==
+X-Received: by 2002:ae9:f702:: with SMTP id s2mr82033743qkg.28.1560614266380;
+        Sat, 15 Jun 2019 08:57:46 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::673a])
+        by smtp.gmail.com with ESMTPSA id g10sm3067097qkk.91.2019.06.15.08.57.45
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 15 Jun 2019 08:57:45 -0700 (PDT)
+Date:   Sat, 15 Jun 2019 08:57:43 -0700
+From:   Tejun Heo <tj@kernel.org>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     axboe@kernel.dk, newella@fb.com, clm@fb.com, josef@toxicpanda.com,
+        dennisz@fb.com, lizefan@huawei.com, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        kernel-team@fb.com, cgroups@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, bpf@vger.kernel.org, Josef Bacik <jbacik@fb.com>
+Subject: Re: [PATCH 08/10] blkcg: implement blk-ioweight
+Message-ID: <20190615155743.GF657710@devbig004.ftw2.facebook.com>
+References: <20190614015620.1587672-1-tj@kernel.org>
+ <20190614015620.1587672-9-tj@kernel.org>
+ <87pnngbbti.fsf@toke.dk>
+ <20190614150924.GB538958@devbig004.ftw2.facebook.com>
+ <87blyzc2n9.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87blyzc2n9.fsf@toke.dk>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 12 Jun 2019 15:57:09 +0000, Maxim Mikityanskiy wrote:
-> @@ -390,6 +391,12 @@ void mlx5e_ethtool_get_channels(struct mlx5e_priv *priv,
->  {
->  	ch->max_combined   = mlx5e_get_netdev_max_channels(priv->netdev);
->  	ch->combined_count = priv->channels.params.num_channels;
-> +
-> +	/* XSK RQs */
-> +	ch->max_rx         = ch->max_combined;
-> +	/* rx_count shows the number of XSK RQs up to the highest active one. */
-> +	ch->rx_count       = mlx5e_xsk_first_unused_channel(&priv->channels.params,
-> +							    &priv->xsk);
->  }
+Hello,
 
-Ah, Maciej pointed out to me this is why you want the patch 7 to do
-what it does.  This count is for stack's queues.
+On Fri, Jun 14, 2019 at 10:50:34PM +0200, Toke Høiland-Jørgensen wrote:
+> > Within a single cgroup, the IOs are FIFO. When an IO has enough vtime
+> > credit, it just passes through. When it doesn't, it always waits
+> > behind any other IOs which are already waiting.
+> 
+> OK. Is there any fundamental reason why requests from individual
+> processes could not be interleaved? Or does it just not give the same
+> benefits in an IO request context as it does for network packets?
 
-Nacked-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+I don't think there's any fundamental reason we can't.  Currently, it
+just isn't doing anything it doesn't have to do while preserving the
+existing ordering.  One different from networking could be that
+there's more sharing - buffered writes are attributed to the whole
+domain (either system or cgroup) rather than individual tasks, so the
+ownership of IOs gets a bit mushy beyond resource domain level.
 
+Thanks.
+
+-- 
+tejun
