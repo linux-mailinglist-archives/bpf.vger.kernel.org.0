@@ -2,116 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BF646D1C
-	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2019 02:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CAED46D98
+	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2019 03:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726028AbfFOAIC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jun 2019 20:08:02 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:38890 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725981AbfFOAIB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jun 2019 20:08:01 -0400
-Received: by mail-lj1-f194.google.com with SMTP id r9so4016824ljg.5;
-        Fri, 14 Jun 2019 17:08:00 -0700 (PDT)
+        id S1726204AbfFOBk7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jun 2019 21:40:59 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:33182 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726201AbfFOBk7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jun 2019 21:40:59 -0400
+Received: by mail-qk1-f195.google.com with SMTP id r6so2940884qkc.0
+        for <bpf@vger.kernel.org>; Fri, 14 Jun 2019 18:40:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dMuHhicoOxTAPFE9bnFneN8d6+FK2VEGSek198YPmPE=;
-        b=ABuGBYXUO9WQYuqEIZqijiWQ0yzeMEeSU8iFE2yZUoEiEXEcDMIibgSGLQYyXH6IGN
-         zU+ZfXl/y6OMjVBOmFSY1A7vZU1CtfpvzHiDLeMG8AYIHQ+1mq9ZMA24mVWaInetYa5q
-         jQON4dHJ0XID7QxPKab2Xe/fa0RN5zD10daSsddLznd8KNTuYmEjrUKgrn4W82sJ3bNF
-         6nIDiWhH9jRz8EXyhhi0orcZThYp38dxiq8E8sU8BbuvCQJB3notOmkZo5DjGRWaNwGu
-         Yud8pIMLArb2vZA78NaOE7+c0J/YguNoWZRSMZVKgJmfnc1ABIE9PSiodFIEDL0haU6P
-         K2XA==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=JCtPFOpGgpLnJj5u7TUubJgflp/D3UgmWZAzwuTJhFI=;
+        b=cAg6aC53fWdVHMimgqrp+V/6NZ5KX+T197tVW/IXhZDpHLZEFmFD126LOI4+MjqxW/
+         rCW5MSaiVayASrkawU0H6x3XrIe4ZxiDbsZR7kQ5rLh8L4Du9OLEHim4ksfYsJZr/jcu
+         nakRy9GnBnj0iZLI/XehAGN7jLmjENQipavtzuYEVqjWDFocraI8qwATDwKLWrMQmS/H
+         5173jro9GqoY6vu129QTTM0WX75srS/dkMWhMmnrk1jmgCdfTHk7w+P0qCz4pByffanC
+         Sx3ZqQq+qzzWUjeJ0mrCgqWe5mZXVPn3Q87E5WssMEUcCyXDl89d6mHli9kno61UiUuG
+         ovyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dMuHhicoOxTAPFE9bnFneN8d6+FK2VEGSek198YPmPE=;
-        b=H9l3NwntxqdCQsAAeHc3XV2lV3Pv+T2u3cVRHrE3yI+b4lM+Yp+2lfBYxtQEK3BZk0
-         IVa1eQOXJJk3utqjqBbvolf5+LPoatZWHJjRPJvFFRaGLwOH1A81BpBtubEccBcetX16
-         vSA5scn96xbcckKf93hPtGNKVkO07HNMkUwCasUvB+oEi7B9NHwNcr0ZhqdcPo8oT/+i
-         BnT8AIwhacrQHPfGRbMLY1MdoFKYbbmGaV31OM+0qfUB+qjmc72CU5XkyRm9i3/KcIxG
-         Iz67ZIaDp8c206CZroK6vatxZp+Lf++YA70VQj/H1WWu9Ke3WVYtUVtsoMafU3OZRbBI
-         ZLsQ==
-X-Gm-Message-State: APjAAAWSrCiOAzcXo6R8SUnYD9CbLvfkBRP1kHFw+NHy1HOAEjp35CpD
-        A+JIizWdIP4q1Bqh2JKhnlNIQG6pL9n+OrnH45g=
-X-Google-Smtp-Source: APXvYqz06Ojw3v5QNieqmgknT26FRRsKiCHOLmB+DNqZWJkWnORe4tvRACG4Hx3hbE3azwDext4csLEaXF6r8Ozd7e0=
-X-Received: by 2002:a2e:94c9:: with SMTP id r9mr6524812ljh.210.1560557279650;
- Fri, 14 Jun 2019 17:07:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1560534694.git.jpoimboe@redhat.com> <c0add777a2e0207c1474ce99baa492a7ce3502d6.1560534694.git.jpoimboe@redhat.com>
- <20190614205841.s4utbpurntpr6aiq@ast-mbp.dhcp.thefacebook.com>
- <20190614210745.kwiqm5pkgabruzuj@treble> <CAADnVQLK3ixK1JWF_mfScZoFzFF=6O8f1WcqkYqiejKeex1GSQ@mail.gmail.com>
- <20190614211929.drnnawbi7guqj2ck@treble> <CAADnVQ+BCxsKEK=ZzYOZkgTJAg_7jz1_f+FCX+Ms0vTOuW8Mxw@mail.gmail.com>
- <20190614231717.xukbfpc2cy47s4xh@treble> <CAADnVQJn+TnSj82MJ0ry1UTNGXD0qzESqfp7E1oi_HAYC-xTXg@mail.gmail.com>
- <20190615000242.e5tcogffvyuuhnrs@treble>
-In-Reply-To: <20190615000242.e5tcogffvyuuhnrs@treble>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 14 Jun 2019 17:07:48 -0700
-Message-ID: <CAADnVQ+jhza8bsBNAdayk=tcXN4nJt+fVAxtoVZNDPbVPveR8A@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] objtool: Fix ORC unwinding in non-JIT BPF
- generated code
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     X86 ML <x86@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=JCtPFOpGgpLnJj5u7TUubJgflp/D3UgmWZAzwuTJhFI=;
+        b=gC87cAp7yW2V0mNSsjBFdAE0+cZAWRPqZtzC06vhmmEoIirhgMPoUApULQNzh526+r
+         1tvDaDCYzwG86nbto9HfwP8ZoVC+2LK1OFRPISaWq7tvvIPqjQmYM19Xy7upE8bwwG+9
+         ZSWjeQwgzjXh2W2Iw6TayNoe/yX+6il7Lweee7qPeIx0VcCZp04V1YukEJQ2kfR9WAbi
+         BcxlvdS1pk7YGskdGwQMJcIV+wv52/oua9j5qpIVzs1UZ78YJsn8Xil3Q4k1szj5u3rW
+         FWNtXZgp5tEWEq+aipHegL8naKbXEWz67ygp5F+LYvG/2h6LdqriQ63ahJBHaDtIcirG
+         n2yg==
+X-Gm-Message-State: APjAAAWcg5wAzfdl3ns0oXdeJokxUgaVWaNSDzF0iAYbq2ShiLlyEhOy
+        hqk2MbR+94LEnHdSI+KDAha4Hw==
+X-Google-Smtp-Source: APXvYqwtOAaP+SjrI33mbw9cPNL7U0/YfRUqczCN+4x5jmjaTAm3hA0felUDjRw3xvx5iM9bhxWt1A==
+X-Received: by 2002:ae9:f209:: with SMTP id m9mr58715974qkg.251.1560562858276;
+        Fri, 14 Jun 2019 18:40:58 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id k6sm2137673qkd.21.2019.06.14.18.40.56
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Fri, 14 Jun 2019 18:40:58 -0700 (PDT)
+Date:   Fri, 14 Jun 2019 18:40:52 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Maxim Mikityanskiy <maximmi@mellanox.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Kairui Song <kasong@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        David Laight <David.Laight@aculab.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        =?UTF-8?B?Qmo=?= =?UTF-8?B?w7ZybiBUw7ZwZWw=?= 
+        <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Jonathan Lemon <bsd@fb.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
+Subject: Re: [PATCH bpf-next v4 05/17] xsk: Change the default frame size to
+ 4096 and allow controlling it
+Message-ID: <20190614184052.7de9471b@cakuba.netronome.com>
+In-Reply-To: <161cec62-103f-c87c-52b7-8a627940622b@mellanox.com>
+References: <20190612155605.22450-1-maximmi@mellanox.com>
+        <20190612155605.22450-6-maximmi@mellanox.com>
+        <20190612131017.766b4e82@cakuba.netronome.com>
+        <b7217210-1ce6-4b27-9964-b4daa4929e8b@mellanox.com>
+        <20190613102936.2c8979ed@cakuba.netronome.com>
+        <161cec62-103f-c87c-52b7-8a627940622b@mellanox.com>
+Organization: Netronome Systems, Ltd.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 14, 2019 at 5:02 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Fri, Jun 14, 2019 at 04:30:15PM -0700, Alexei Starovoitov wrote:
-> > On Fri, Jun 14, 2019 at 4:17 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > >
-> > > On Fri, Jun 14, 2019 at 02:22:59PM -0700, Alexei Starovoitov wrote:
-> > > > On Fri, Jun 14, 2019 at 2:19 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > > > > > > > >
-> > > > > > > > > +#define JUMP_TABLE_SYM_PREFIX "jump_table."
-> > > > > > > >
-> > > > > > > > since external tool will be looking at it should it be named
-> > > > > > > > "bpf_jump_table." to avoid potential name conflicts?
-> > > > > > > > Or even more unique name?
-> > > > > > > > Like "bpf_interpreter_jump_table." ?
-> > > > > > >
-> > > > > > > No, the point is that it's a generic feature which can also be used any
-> > > > > > > non-BPF code which might also have a jump table.
-> > > > > >
-> > > > > > and you're proposing to name all such jump tables in the kernel
-> > > > > > as static foo jump_table[] ?
-> > > > >
-> > > > > That's the idea.
-> > > >
-> > > > Then it needs much wider discussion.
-> > >
-> > > Why would it need wider discussion?  It only has one user.  If you
-> > > honestly believe that it will be controversial to require future users
-> > > to call a static jump table "jump_table" then we can have that
-> > > discussion when it comes up.
-> >
-> > It's clearly controversial.
-> > I nacked it already on pointless name change
-> > from "jumptable" to "jump_table" and now you're saying
-> > that no one will complain about "jump_table" name
-> > for all jump tables in the kernel that will ever appear?
->
-> Let me get this straight.  You're saying that "jumptable" and
-> "bpf_interpreter_jump_table" are both acceptable.
->
-> But NACK to "jump_table".
->
-> Ok...
+On Fri, 14 Jun 2019 13:25:28 +0000, Maxim Mikityanskiy wrote:
+> On 2019-06-13 20:29, Jakub Kicinski wrote:
+> > On Thu, 13 Jun 2019 14:01:39 +0000, Maxim Mikityanskiy wrote:  
+> > 
+> > Yes, okay, I get that.  But I still don't know what's the exact use you
+> > have for AF_XDP buffers being 4k..  Could you point us in the code to
+> > the place which relies on all buffers being 4k in any XDP scenario?  
 
-Correct. I think I explained the reasons behind, right?
+Okay, I still don't get it, but that's for explaining :)  Perhaps it
+will become clearer when you resping with patch 17 split into
+reviewable chunks :)
+
+> 1. An XDP program is set on all queues, so to support non-4k AF_XDP 
+> frames, we would also need to support multiple-packet-per-page XDP for 
+> regular queues.
+
+Mm.. do you have some materials of how the mlx5 DMA/RX works?  I'd think
+that if you do single packet per buffer as long as all packets are
+guaranteed to fit in the buffer (based on MRU) the HW shouldn't care
+what the size of the buffer is.
+
+> 2. Page allocation in mlx5e perfectly fits page-sized XDP frames. Some 
+> examples in the code are:
+> 
+> 2.1. mlx5e_free_rx_mpwqe calls a generic mlx5e_page_release to release 
+> the pages of a MPWQE (multi-packet work queue element), which is 
+> implemented as xsk_umem_fq_reuse for the case of XSK. We avoid extra 
+> overhead by using the fact that packet == page.
+> 
+> 2.2. mlx5e_free_xdpsq_desc performs cleanup after XDP transmits. In case 
+> of XDP_TX, we can free/recycle the pages without having a refcount 
+> overhead, by using the fact that packet == page.
