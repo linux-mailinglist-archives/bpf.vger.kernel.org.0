@@ -2,81 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A368847A57
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2019 08:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752BF47DE4
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2019 11:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726091AbfFQG77 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Jun 2019 02:59:59 -0400
-Received: from mail-lj1-f177.google.com ([209.85.208.177]:40252 "EHLO
-        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725778AbfFQG76 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Jun 2019 02:59:58 -0400
-Received: by mail-lj1-f177.google.com with SMTP id a21so8168919ljh.7
-        for <bpf@vger.kernel.org>; Sun, 16 Jun 2019 23:59:57 -0700 (PDT)
+        id S1727948AbfFQJHZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Jun 2019 05:07:25 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:37110 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726887AbfFQJHZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Jun 2019 05:07:25 -0400
+Received: by mail-ot1-f65.google.com with SMTP id s20so8576927otp.4
+        for <bpf@vger.kernel.org>; Mon, 17 Jun 2019 02:07:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eAPMTgUkH2BrAhmQzg83zHPUYP2IIv22+l1H3bxOk64=;
-        b=sot51EAOYqVvCfAujb4x82YjnjcPXUhx/q+dKRW8v7qiwecTd/UTlTytLrsZIB/5vu
-         6OJBHt8VfHZAoh5rUeJrOpDfi6G3qC5TmuQXkjK3T8DfVfv79VYlfyNb1DDvZTz+6EpC
-         QU7Ku3QoMx3W7uzdpwZc+AdvZwvGdW5hYzzbe4fIZUHxSRda9UdSeYWIHPwX8RTGhBlN
-         MKfBbQEDJfkn1ck7AjjOF28xKu+FBOiLggVdDXNza8AJTkp4uoI+zCOUBwnAI5Elwi+S
-         ELjIpPrLHyi15WUjGBJD9NDuTvhfK3yCH62apzNims7SXuvX8oaoz464NWbEPXGntAyC
-         KsFQ==
+        bh=0U1z/nmUiL9l+lfI3wEX3iWZxtd/accR9HWtzjIm1lE=;
+        b=Bp+dUsspDr9660OEwgxvrCF0u2KqhhZahAZ+dk8bHvnjQdQ2K4X8gbhz7vksSjmqT5
+         foVLOyytN5sU/5Vae1f6/pZUZSMy+H3gofUP70ciCmtXIw1r97r2bJ1m9nCbFZ6q3Fnf
+         pzV2mn1C3N415/q4NM/Up/3oHLwgoeauIG464=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eAPMTgUkH2BrAhmQzg83zHPUYP2IIv22+l1H3bxOk64=;
-        b=jttZQWn+VzOGNMcvtqpiLFbqCpnx0U8aC8ydrX1KRjdUq9ZMRM8Cj4vvhioibycUQV
-         PsQB9O6pyIocvpYLD3+ekkmn+wDYLsLUcZI0ETsPUqIPEuFnYGUk4Ag6R+bWY9JahPjr
-         PIMLbmlIuNytrnjCHbGioWw3SPg2SMTgN4c6HVxZM39MPMwLiOOR2sIdyJP+JAHT5+S4
-         ZMiQPrjogUWvCLSCQdeaNwaHs6ayaDLqYW+kqF/V0DanWiFQBPs+e6oJVATFb8GX+ABz
-         1/gBAxmvPp1yDvtLR8pQ0r3B56Yfiks2ZZSB0KYr3Ou2jNOi9l8U2mIvrF8dE2AF7Njl
-         53Rw==
-X-Gm-Message-State: APjAAAU9MDZlr3gMpC3YK4TbK0BI0OJFSWb2f+aCYUGzxqQWnNS7KKwI
-        /aEE7JAUF6yF6xEDu2OsqFkmc9Uimvi3/8cqGbs=
-X-Google-Smtp-Source: APXvYqwBdnOTU9sv30pQ4K4kR7WWFqlaB1oWqTL+CGdX0ed5qXYxgOoo1TDNuNwHzNRuj+3R5v16DUsW0rlP55hpm9Q=
-X-Received: by 2002:a2e:9ed6:: with SMTP id h22mr19650279ljk.29.1560754796744;
- Sun, 16 Jun 2019 23:59:56 -0700 (PDT)
+        bh=0U1z/nmUiL9l+lfI3wEX3iWZxtd/accR9HWtzjIm1lE=;
+        b=b0fYIyHeT7YyhlCuPG3rG2j9Qc+gSxHjlHQbTKtcs02PuuIGgoXiCSiCC1BnVhr/vI
+         U27PFEc6+exggcKBMXvjtw+qVa6vFZ6qxGX+IoDyFxEzcJcr0R8kIICEbje8cZU64s9M
+         wXZF16p+EnEhbMB1X/QwWZYq+JzCaB5+neJsj7xFIRIJMzd2Ja7KbD2aBAWCFHnPV1kx
+         hKF6hn86bMxnEJjK+tsL1X90Kc9gjFLq4e+4jFNyXcz8zALE83Mk5FCilG6Dms+HcAR+
+         lm/FL0fef+jIgYD8YRmQsGII2V9Rj1oa4bWQrBL/6kUX+3EG4dIxT5b32cRsB1O4Mxk3
+         e6Ug==
+X-Gm-Message-State: APjAAAXfB732hD2JmDduVWDQmZk42Hc0L9RPBCNsytu/tsWh/0k++Txq
+        BtFbVmpDaCvhdJstVY6UcYDPcJH/djgsqfFfwQo+Hw==
+X-Google-Smtp-Source: APXvYqx0jVhIMtzsNuehae9G5y0W/bBlllBUBCFFpCHWEPs44xIJQSh48LEJKXCtFLr8HGBHVAuoyafYjLFCsHkJTxw=
+X-Received: by 2002:a9d:28:: with SMTP id 37mr50868435ota.289.1560762444540;
+ Mon, 17 Jun 2019 02:07:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <f0179a5f61ecd32efcea10ae05eb6aa3a151f791.camel@domdv.de>
- <CAADnVQLmrF579H6-TAdMK8wDM9eUz2rP3F6LmhkSW4yuVKJnPg@mail.gmail.com>
- <e9f7226d1066cb0e86b60ad3d84cf7908f12a1cc.camel@domdv.de> <CAADnVQKJr-=gZM2hAG-Zi3WA3oxSU_S6Nh54qG+z6Bi8m2e3PA@mail.gmail.com>
- <9917583f188315a5e6f961146c65b3d8371cc05e.camel@domdv.de>
-In-Reply-To: <9917583f188315a5e6f961146c65b3d8371cc05e.camel@domdv.de>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 16 Jun 2019 23:59:44 -0700
-Message-ID: <CAADnVQKe7RYNJXRQYuu4O_rL0YpAHe-ZrWPDL9gq_mRa6dkxMg@mail.gmail.com>
-Subject: Re: eBPF verifier slowness, more than 2 cpu seconds for about 600 instructions
-To:     Andreas Steinmetz <ast@domdv.de>,
+References: <20190531202132.379386-1-andriin@fb.com> <20190531202132.379386-7-andriin@fb.com>
+ <CACAyw99wD+7mXXeger6WoBTTu3aYHDW8EJV9_tP7MfXOnT0ODg@mail.gmail.com> <CAEf4BzamSjSa-7ddzyVsqygbtT6WSwsWpCFGX-4Rav4Aev8UsA@mail.gmail.com>
+In-Reply-To: <CAEf4BzamSjSa-7ddzyVsqygbtT6WSwsWpCFGX-4Rav4Aev8UsA@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Mon, 17 Jun 2019 10:07:13 +0100
+Message-ID: <CACAyw9_Yr=pmvCRYsVHoQBrH7qBwmcaXZezmqafwJTxaCmDf6A@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 6/8] libbpf: allow specifying map definitions
+ using BTF
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Edward Cree <ecree@solarflare.com>
-Cc:     bpf <bpf@vger.kernel.org>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 6, 2019 at 6:31 PM Andreas Steinmetz <ast@domdv.de> wrote:
+On Thu, 6 Jun 2019 at 23:35, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 >
-> Below is the source in question. It may look a bit strange but I
-> had to extract it from the project and preset parameters to fixed
-> values.
-> It takes from 2.8 to 4.5 seconds to load, depending on the processor.
-> Just compile and run the code below.
+> On Thu, Jun 6, 2019 at 9:43 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> >
+> > Thanks for sending this RFC! For me, the biggest draw is that map-in-map
+> > would be so much nicer to use, plus automatic dumping of map values.
+> >
+> > Others on the thread have raised this point already: not everybody lives
+> > on the bleeding edge or can control all of their dependencies. To me this means
+> > that having a good compatibility story is paramount. I'd like to have very clear
+> > rules how the presence / absence of fields is handled.
+>
+> I think that discussion was more about selftests being switched to
+> BTF-defined maps rather than BPF users having to switch to latest
+> compiler. struct bpf_map_def is still supported for those who can't
+> use clang that supports BTF_KIND_VAR/BTF_KIND_DATASEC.
+> So I don't think this enforces anyone to switch compiler, but
+> certainly incentivizes them :)
+>
+> >
+> > For example:
+> > - Fields that are present but not understood are an error. This makes
+> > sense because
+> >   the user can simply omit the field in their definition if they do
+> > not use it. It's also necessary
+> >   to preserve the freedom to add new fields in the future without
+> > risking user breakage.
+>
+> So you are arguing for strict-by-default behavior. It's fine by me,
+> but exactly that strict-by-default behavior is the problem with BTF
+> extensivility, that you care a lot about. You are advocating for
+> skipping unknown BTF types (if it was possible), which is directly
+> opposite to strict-by-default behavior. I have no strong preference
+> here, but given amount of problem (and how many times we missed this
+> problem in the past) w/ introducing new BTF feature and then
+> forgetting about doing something for older kernels, kind of makes me
+> lean towards skip-and-log behavior. But I'm happy to support both
+> (through flags) w/ strict by default.
 
-Thanks for the report.
-It's interesting one indeed.
-600+ instructions consume
-processed 280464 insns (limit 1000000) max_states_per_insn 15
-total_states 87341 peak_states 580 mark_read 45
+In my mind, BPF loaders should be able to pass through BTF to the kernel
+as a binary blob as much as possible. That's why I want the format to
+be "self describing". Compatibility then becomes a question of: what
+feature are you using on which kernel. The kernel itself can then still be
+strict-by-default or what have you.
 
-The verifier finds a lot of different ways to go through branches
-in the program and majority of the states are not equivalent and
-do not help pruning, so it's doing full brute force walk of all possible
-combinations.
-We need to figure out whether there is a way to make it smarter.
+>
+> > - If libbpf adds support for a new field, it must be optional. Seems
+> > like this is what current
+> >   map extensions already do, so maybe a no-brainer.
+>
+> Yeah, of course.
+>
+> >
+> > Somewhat related to this: I really wish that BTF was self-describing,
+> > e.g. possible
+> > to parse without understanding all types. I mentioned this in another
+> > thread of yours,
+> > but the more we add features where BTF is required the more important it becomes
+> > IMO.
+>
+> I relate, but have no new and better solution than previously
+> discussed :) We should try to add new stuff to .BTF.ext as much as
+> possible, which is self-describing.
+>
+> >
+> > Finally, some nits inline:
+> >
+> > On Fri, 31 May 2019 at 21:22, Andrii Nakryiko <andriin@fb.com> wrote:
+> > >
+> > > The outline of the new map definition (short, BTF-defined maps) is as follows:
+> > > 1. All the maps should be defined in .maps ELF section. It's possible to
+> > >    have both "legacy" map definitions in `maps` sections and BTF-defined
+> > >    maps in .maps sections. Everything will still work transparently.
+> >
+> > I'd prefer using a new map section "btf_maps" or whatever. No need to
+> > worry about code that deals with either type.
+>
+> We do use new map section. Its ".maps" vs "maps". Difference is
+> subtle, but ".maps" looks a bit more "standardized" than "btf_maps" to
+> me (and hopefully, eventually no one will use "maps" anymore :) ).
+
+Phew, spotting that difference is night impossible IMO.
+
+>
+> >
+> > > 3. Key/value fields should be **a pointer** to a type describing
+> > >    key/value. The pointee type is assumed (and will be recorded as such
+> > >    and used for size determination) to be a type describing key/value of
+> > >    the map. This is done to save excessive amounts of space allocated in
+> > >    corresponding ELF sections for key/value of big size.
+> >
+> > My biggest concern with the pointer is that there are cases when we want
+> > to _not_ use a pointer, e.g. your proposal for map in map and tail calling.
+> > There we need value to be a struct, an array, etc. The burden on the user
+> > for this is very high.
+>
+> Well, map-in-map is still a special case and whichever syntax we go
+> with, it will need to be of slightly different syntax to distinguish
+> between those cases. Initialized maps fall into similar category,
+> IMHO.
+
+I agree with you, the syntax probably has to be different. I'd just like it to
+differ by more than a "*" in the struct definition, because that is too small
+to notice.
+
+>
+> Embedding full value just to capture type info/size is unacceptable,
+> as we have use cases that cause too big ELF size increase, which will
+> prevent users from switching to this.
+>
+> >
+> > > 4. As some maps disallow having BTF type ID associated with key/value,
+> > >    it's possible to specify key/value size explicitly without
+> > >    associating BTF type ID with it. Use key_size and value_size fields
+> > >    to do that (see example below).
+> >
+> > Why not just make them use the legacy map?
+>
+> For completeness' sake at the least. E.g., what if you want to use
+> map-in-map, where inner map is stackmap or something like that, which
+> requires key_size/value_size? I think we all agree that it's better if
+> application uses just one style, instead of a mix of both, right?
+
+I kind of assumed that BTF support for those maps would at some point
+appear, maybe I should have checked that.
+
+> Btw, for map cases where map key can be arbitrary, but value is FD or
+> some other opaque value, libbpf can automatically "derive" value size
+> and still capture key type. I haven't done that, but it's very easy to
+> do (and also we can keep adding per-map-type checks/niceties, to help
+> users understand what's wrong with their map definition, instead of
+> getting EINVAL from kernel on map creation).
+>
+> >
+> > --
+> > Lorenz Bauer  |  Systems Engineer
+> > 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+> >
+> > www.cloudflare.com
+
+
+
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
