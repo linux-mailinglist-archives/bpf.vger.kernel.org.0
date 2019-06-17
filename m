@@ -2,69 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 43EFA4743D
-	for <lists+bpf@lfdr.de>; Sun, 16 Jun 2019 12:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A368847A57
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2019 08:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725879AbfFPK3A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 16 Jun 2019 06:29:00 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:39368 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725766AbfFPK3A (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 16 Jun 2019 06:29:00 -0400
-Received: by mail-lj1-f194.google.com with SMTP id v18so6532624ljh.6
-        for <bpf@vger.kernel.org>; Sun, 16 Jun 2019 03:28:59 -0700 (PDT)
+        id S1726091AbfFQG77 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Jun 2019 02:59:59 -0400
+Received: from mail-lj1-f177.google.com ([209.85.208.177]:40252 "EHLO
+        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725778AbfFQG76 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Jun 2019 02:59:58 -0400
+Received: by mail-lj1-f177.google.com with SMTP id a21so8168919ljh.7
+        for <bpf@vger.kernel.org>; Sun, 16 Jun 2019 23:59:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Me4XqG/m9sHfXXVEccb17VwdYwCFLO+trDo9KyCTW1Y=;
-        b=Mj+eQsS7MDu61+1NUKDH1vAVTLwD55IzuU/Ok6nGLyPgc2jYALj4QUYjUl44/7Urod
-         O/lKJOx/c96GmYVodsEeQyT09XPC3zY+UyHXxvzDGsxvm+C1TYDv3klWqlLDmHJgOW70
-         Mllq7UzbSzIFS66HvA5Dyy/5WaYfBnoRYkhgg=
+        bh=eAPMTgUkH2BrAhmQzg83zHPUYP2IIv22+l1H3bxOk64=;
+        b=sot51EAOYqVvCfAujb4x82YjnjcPXUhx/q+dKRW8v7qiwecTd/UTlTytLrsZIB/5vu
+         6OJBHt8VfHZAoh5rUeJrOpDfi6G3qC5TmuQXkjK3T8DfVfv79VYlfyNb1DDvZTz+6EpC
+         QU7Ku3QoMx3W7uzdpwZc+AdvZwvGdW5hYzzbe4fIZUHxSRda9UdSeYWIHPwX8RTGhBlN
+         MKfBbQEDJfkn1ck7AjjOF28xKu+FBOiLggVdDXNza8AJTkp4uoI+zCOUBwnAI5Elwi+S
+         ELjIpPrLHyi15WUjGBJD9NDuTvhfK3yCH62apzNims7SXuvX8oaoz464NWbEPXGntAyC
+         KsFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Me4XqG/m9sHfXXVEccb17VwdYwCFLO+trDo9KyCTW1Y=;
-        b=g/oCjsGTEQf81aresRuPZHYdJN9OGTkIJMHUWk1hYEj7/joQBozyQxn6Js/is9q2dD
-         tIwHmUW0SUF0OctFQrI/7TAW7RQC3arRQdCZN93QVBtX92NIwdZyUNfLJco8R7fqIoh6
-         QDktebFWI4CzfmAf4Toq7eMi6OA9IbN9y9INqSu/AsDARLSXLfyCqxRndeOZP+7QRJUC
-         /ozcQCyJ1NiGcWnJwiIzCaFYCM/Sr1aP/UstfAIsvQFGwX3Gy2+QeXVWESW+6kyI+vtb
-         aNR01cT7cT2+kt1b8iyvdk96wE1rSM344yE1CPZqa8NzHF+aAtQ3wD3crQtEOlKCx570
-         aBuQ==
-X-Gm-Message-State: APjAAAWBQTfFxCRfzAuli6BjZ8e2xFNPR2SDcycVcpPAVc+upkHf3Z5h
-        C4olqOQWQbnPmYgcEF72+G6KXamjADVumJsdAX+0Tw==
-X-Google-Smtp-Source: APXvYqxO8O0hAikX/nV9jyVW6aUtHpiYRATrrhyKO60SL4jd3wF5Sc0joxCGcm+leHffWey6z5+hGcFWv4ELMQpFpYU=
-X-Received: by 2002:a2e:2c14:: with SMTP id s20mr28744572ljs.54.1560680938585;
- Sun, 16 Jun 2019 03:28:58 -0700 (PDT)
+        bh=eAPMTgUkH2BrAhmQzg83zHPUYP2IIv22+l1H3bxOk64=;
+        b=jttZQWn+VzOGNMcvtqpiLFbqCpnx0U8aC8ydrX1KRjdUq9ZMRM8Cj4vvhioibycUQV
+         PsQB9O6pyIocvpYLD3+ekkmn+wDYLsLUcZI0ETsPUqIPEuFnYGUk4Ag6R+bWY9JahPjr
+         PIMLbmlIuNytrnjCHbGioWw3SPg2SMTgN4c6HVxZM39MPMwLiOOR2sIdyJP+JAHT5+S4
+         ZMiQPrjogUWvCLSCQdeaNwaHs6ayaDLqYW+kqF/V0DanWiFQBPs+e6oJVATFb8GX+ABz
+         1/gBAxmvPp1yDvtLR8pQ0r3B56Yfiks2ZZSB0KYr3Ou2jNOi9l8U2mIvrF8dE2AF7Njl
+         53Rw==
+X-Gm-Message-State: APjAAAU9MDZlr3gMpC3YK4TbK0BI0OJFSWb2f+aCYUGzxqQWnNS7KKwI
+        /aEE7JAUF6yF6xEDu2OsqFkmc9Uimvi3/8cqGbs=
+X-Google-Smtp-Source: APXvYqwBdnOTU9sv30pQ4K4kR7WWFqlaB1oWqTL+CGdX0ed5qXYxgOoo1TDNuNwHzNRuj+3R5v16DUsW0rlP55hpm9Q=
+X-Received: by 2002:a2e:9ed6:: with SMTP id h22mr19650279ljk.29.1560754796744;
+ Sun, 16 Jun 2019 23:59:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190614093728.622-1-afabre@cloudflare.com> <CAEf4BzZNO8Px2BRcs5WMxfrfRaekxF=_fz_p2A+eL94L0DrfQg@mail.gmail.com>
- <6aaa3a2f-5da5-525f-89a1-59dddc1cfa53@iogearbox.net> <CAADnVQK6=90Yu6jhEhE52ptS4vgbRVpyj2oZZsO6gcrScU9bsw@mail.gmail.com>
-In-Reply-To: <CAADnVQK6=90Yu6jhEhE52ptS4vgbRVpyj2oZZsO6gcrScU9bsw@mail.gmail.com>
-From:   Arthur Fabre <afabre@cloudflare.com>
-Date:   Sun, 16 Jun 2019 11:28:46 +0100
-Message-ID: <CAOn4ftsQGaVdB+BYx6s8e9GVSCBBVu-7YXU_B-n7YttXbt-gKA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] bpf: sk_storage: Fix out of bounds memory access
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <f0179a5f61ecd32efcea10ae05eb6aa3a151f791.camel@domdv.de>
+ <CAADnVQLmrF579H6-TAdMK8wDM9eUz2rP3F6LmhkSW4yuVKJnPg@mail.gmail.com>
+ <e9f7226d1066cb0e86b60ad3d84cf7908f12a1cc.camel@domdv.de> <CAADnVQKJr-=gZM2hAG-Zi3WA3oxSU_S6Nh54qG+z6Bi8m2e3PA@mail.gmail.com>
+ <9917583f188315a5e6f961146c65b3d8371cc05e.camel@domdv.de>
+In-Reply-To: <9917583f188315a5e6f961146c65b3d8371cc05e.camel@domdv.de>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 16 Jun 2019 23:59:44 -0700
+Message-ID: <CAADnVQKe7RYNJXRQYuu4O_rL0YpAHe-ZrWPDL9gq_mRa6dkxMg@mail.gmail.com>
+Subject: Re: eBPF verifier slowness, more than 2 cpu seconds for about 600 instructions
+To:     Andreas Steinmetz <ast@domdv.de>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Edward Cree <ecree@solarflare.com>
+Cc:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 15, 2019 at 10:45 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-> It's certainly should be in bpf tree.
-> It didn't apply directly, so I tweaked it a tiny bit,
-> reduced verbosity of commit log and pushed to bpf tree.
-> Thanks for the fix!
+On Thu, Jun 6, 2019 at 6:31 PM Andreas Steinmetz <ast@domdv.de> wrote:
+>
+> Below is the source in question. It may look a bit strange but I
+> had to extract it from the project and preset parameters to fixed
+> values.
+> It takes from 2.8 to 4.5 seconds to load, depending on the processor.
+> Just compile and run the code below.
 
-Thanks! I didn't realize this had already made it to the bpf tree.
+Thanks for the report.
+It's interesting one indeed.
+600+ instructions consume
+processed 280464 insns (limit 1000000) max_states_per_insn 15
+total_states 87341 peak_states 580 mark_read 45
+
+The verifier finds a lot of different ways to go through branches
+in the program and majority of the states are not equivalent and
+do not help pruning, so it's doing full brute force walk of all possible
+combinations.
+We need to figure out whether there is a way to make it smarter.
