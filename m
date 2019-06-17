@@ -2,92 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4113748509
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2019 16:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D4848642
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2019 16:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728055AbfFQOOa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Jun 2019 10:14:30 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:41340 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728036AbfFQOO3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Jun 2019 10:14:29 -0400
-Received: by mail-io1-f65.google.com with SMTP id w25so21410540ioc.8;
-        Mon, 17 Jun 2019 07:14:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=IfMMacDCEm5DrweDwYWF788XFS0vnRBrlp52D5AlxZY=;
-        b=cvDCotR4yV8JD1WStg2ykTBlVb4D2EG+aZ2eHDNyE16zkhSPlS2rll6A433QvIP+d4
-         bOOvG5/lQk7Nmm8XPRstaeQaKmAZQpQ3aOtqCYm5QMpmnB4CibSiIs8shiNUR+PaayL8
-         XLaZgRgffRrooFzRlk1rwZjsuWQ29sGtlX9Xt97KVc4KQfulmtO7QP1bBy1IVXaHVH7Q
-         m1Sd3enQWqzrYyV6ukMmH8BM3PljZUidJXSCWguBo2b43klrYzfWDenXLJh+mIJ1HtuW
-         AP9R2FaDWaT1PzKSxKn7/Qr7nq+k24gVBYiH/GiBuxZzT3NXZJ87zpOpFmoTNY8MuBHU
-         DO9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IfMMacDCEm5DrweDwYWF788XFS0vnRBrlp52D5AlxZY=;
-        b=c6J7ORjsIKnrm1TGhhpQYNPUmQFBH8Ngr2zpSCCWZ/QCAL+wCqfOqg6nbkmOT+Ia7h
-         j2ufpY7fW9eE6l/KABQWUJtlKk7X+DtryQJS2IgFbe2Gl7oL2ToLdTTlPptVt7Htf3o7
-         Yo0ca8Rx0Vkkxk8OxMDhgTOJsww5ncxF8QQo/PekHxJ/6tuHnJiszJfZ1YarX2Hxb/RD
-         aphO+pjCpn6MiPsqiSEDtpuuKEwvGnO+vN1lMP5Rhnrg1Cx/yK2VYMO5ltwbftJkpJUN
-         US3epsDZ1iqLoCyngsaiRxFKVsfONN/LjhGw0gtnjyGOpkGuDZN8ofX5D3qOTCBMLxBI
-         nQ4Q==
-X-Gm-Message-State: APjAAAUh0xOq5ORtVc3rUVcRXB7I6114ptqjWJ6GWfVBFMVCii/o4EQt
-        ETYRA6ZSC4vWoITy2BxIxmYTCidD
-X-Google-Smtp-Source: APXvYqywv7Qg7K8EwUy9WHIF+e+y9mecZODBz68uw3BKpbhaVJihQPyccQ1HKXKUJqa9r6c0yOI4JQ==
-X-Received: by 2002:a05:6602:2253:: with SMTP id o19mr30456906ioo.297.1560780868559;
-        Mon, 17 Jun 2019 07:14:28 -0700 (PDT)
-Received: from ?IPv6:2601:282:800:fd80:f1:4f12:3a05:d55e? ([2601:282:800:fd80:f1:4f12:3a05:d55e])
-        by smtp.googlemail.com with ESMTPSA id a2sm8888533iod.57.2019.06.17.07.14.27
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 17 Jun 2019 07:14:27 -0700 (PDT)
-Subject: Re: [PATCH bpf] bpf: fix the check that forwarding is enabled in
- bpf_ipv6_fib_lookup
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Anton Protopopov <a.s.protopopov@gmail.com>,
+        id S1726028AbfFQO5c convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 17 Jun 2019 10:57:32 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:52121 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726405AbfFQO5b (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 17 Jun 2019 10:57:31 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-190-hVB7mw-INdG5k3bducDmrQ-1; Mon, 17 Jun 2019 15:57:27 +0100
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b::d117) by AcuMS.aculab.com
+ (fd9f:af1c:a25b::d117) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Mon,
+ 17 Jun 2019 15:57:26 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 17 Jun 2019 15:57:26 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Alexei Starovoitov' <alexei.starovoitov@gmail.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+CC:     "x86@kernel.org" <x86@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20190615225348.2539-1-a.s.protopopov@gmail.com>
- <877e9ka2aj.fsf@toke.dk>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <df5297c5-87c5-5f2f-e22b-d35d6448d82c@gmail.com>
-Date:   Mon, 17 Jun 2019 08:14:23 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
- Gecko/20100101 Thunderbird/52.9.1
-MIME-Version: 1.0
-In-Reply-To: <877e9ka2aj.fsf@toke.dk>
-Content-Type: text/plain; charset=utf-8
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>,
+        "Kairui Song" <kasong@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
+Subject: RE: [PATCH v2 2/5] objtool: Fix ORC unwinding in non-JIT BPF
+ generated code
+Thread-Topic: [PATCH v2 2/5] objtool: Fix ORC unwinding in non-JIT BPF
+ generated code
+Thread-Index: AQHVIvP1MMjmbNr75kSp44+RDLqGVaaf832A
+Date:   Mon, 17 Jun 2019 14:57:26 +0000
+Message-ID: <28948180f13343b3b7b1f58878cebe3e@AcuMS.aculab.com>
+References: <cover.1560534694.git.jpoimboe@redhat.com>
+ <c0add777a2e0207c1474ce99baa492a7ce3502d6.1560534694.git.jpoimboe@redhat.com>
+ <20190614205841.s4utbpurntpr6aiq@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20190614205841.s4utbpurntpr6aiq@ast-mbp.dhcp.thefacebook.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+X-MC-Unique: hVB7mw-INdG5k3bducDmrQ-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/17/19 5:17 AM, Toke Høiland-Jørgensen wrote:
-> Anton Protopopov <a.s.protopopov@gmail.com> writes:
+From: Alexei Starovoitov
+> Sent: 14 June 2019 21:59
 > 
->> The bpf_ipv6_fib_lookup function should return BPF_FIB_LKUP_RET_FWD_DISABLED
->> when forwarding is disabled for the input device.  However instead of checking
->> if forwarding is enabled on the input device, it checked the global
->> net->ipv6.devconf_all->forwarding flag.  Change it to behave as expected.
->>
->> Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+> On Fri, Jun 14, 2019 at 12:56:41PM -0500, Josh Poimboeuf wrote:
+> > Objtool currently ignores ___bpf_prog_run() because it doesn't
+> > understand the jump table.  This results in the ORC unwinder not being
+> > able to unwind through non-JIT BPF code.
+> >
+> > Luckily, the BPF jump table resembles a GCC switch jump table, which
+> > objtool already knows how to read.
+> >
+> > Add generic support for reading any static local jump table array named
+> > "jump_table", and rename the BPF variable accordingly, so objtool can
+> > generate ORC data for ___bpf_prog_run().
+> >
+> > Fixes: d15d356887e7 ("perf/x86: Make perf callchains work without CONFIG_FRAME_POINTER")
+> > Reported-by: Song Liu <songliubraving@fb.com>
+> > Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> > Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > ---
+> >  kernel/bpf/core.c     |  5 ++---
+> >  tools/objtool/check.c | 16 ++++++++++++++--
+> >  2 files changed, 16 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > index 7c473f208a10..aa546ef7dbdc 100644
+> > --- a/kernel/bpf/core.c
+> > +++ b/kernel/bpf/core.c
+> > @@ -1299,7 +1299,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+> >  {
+> >  #define BPF_INSN_2_LBL(x, y)    [BPF_##x | BPF_##y] = &&x##_##y
+> >  #define BPF_INSN_3_LBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] = &&x##_##y##_##z
+> > -	static const void *jumptable[256] = {
+> > +	static const void *jump_table[256] = {
+> >  		[0 ... 255] = &&default_label,
+> >  		/* Now overwrite non-defaults ... */
+> >  		BPF_INSN_MAP(BPF_INSN_2_LBL, BPF_INSN_3_LBL),
+> > @@ -1315,7 +1315,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+> >  #define CONT_JMP ({ insn++; goto select_insn; })
+> >
+> >  select_insn:
+> > -	goto *jumptable[insn->code];
+> > +	goto *jump_table[insn->code];
+> >
+> >  	/* ALU */
+> >  #define ALU(OPCODE, OP)			\
+> > @@ -1558,7 +1558,6 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+> >  		BUG_ON(1);
+> >  		return 0;
+> >  }
+> > -STACK_FRAME_NON_STANDARD(___bpf_prog_run); /* jump table */
+> >
+> >  #define PROG_NAME(stack_size) __bpf_prog_run##stack_size
+> >  #define DEFINE_BPF_PROG_RUN(stack_size) \
+> > diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+> > index 172f99195726..8341c2fff14f 100644
+> > --- a/tools/objtool/check.c
+> > +++ b/tools/objtool/check.c
+> > @@ -18,6 +18,8 @@
+> >
+> >  #define FAKE_JUMP_OFFSET -1
+> >
+> > +#define JUMP_TABLE_SYM_PREFIX "jump_table."
 > 
-> Thanks!
-> 
-> Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> 
+> since external tool will be looking at it should it be named
+> "bpf_jump_table." to avoid potential name conflicts?
+> Or even more unique name?
+> Like "bpf_interpreter_jump_table." ?
 
-Fixes: 87f5fc7e48dd ("bpf: Provide helper to do forwarding lookups in
-kernel FIB table")
+If external code might need to process such symbols then
+jump_table_bpf_interpreter would (probably) make the symbols
+easier to locate.
 
-Reviewed-by: David Ahern <dsahern@gmail.com>
+Oh, and blue is a good colour :-)
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
