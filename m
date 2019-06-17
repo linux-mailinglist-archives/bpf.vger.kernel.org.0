@@ -2,96 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 667C147E01
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2019 11:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11B548076
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2019 13:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727545AbfFQJMM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Jun 2019 05:12:12 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:33753 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbfFQJMM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Jun 2019 05:12:12 -0400
-Received: by mail-ot1-f66.google.com with SMTP id p4so3799964oti.0
-        for <bpf@vger.kernel.org>; Mon, 17 Jun 2019 02:12:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=XkQKkEqj0Dk+yMwwMUT9kq+YcOABBfUMfQA+OLQkIhs=;
-        b=A97y2r8a4SElnnqWxEgYt9hqzUlV/cOq2E2WwDSEdCBsMl4m9cFtY2fwwCpdvcakGW
-         awt+SV7bLv8nxXRVmEnrNMG5nFwayb31HFNIpLayWLPTVlHkQNzKb7SuHGb/q/kFN1iG
-         KVV5NavH8nIx9y83mXraGlVjJ8aelPhg8mONarGKKwUmLvP7zgFt9KexSKptxXiLGBtB
-         AghmJ9J5muwb89JeCF2VbT9c8bxFbPOzohfyudUTv0h+bt9tmpFijVpS7R1W1toW/CwL
-         o9HaBfx9fAnEFi8vjuByIGu5qiqhE5bzRO7ym7pfTmOyYah4LXxvPFkfhV2bB4XvMmBB
-         qZjw==
+        id S1727987AbfFQLR7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 17 Jun 2019 07:17:59 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:33795 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727631AbfFQLR7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Jun 2019 07:17:59 -0400
+Received: by mail-ed1-f66.google.com with SMTP id s49so15662838edb.1
+        for <bpf@vger.kernel.org>; Mon, 17 Jun 2019 04:17:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=XkQKkEqj0Dk+yMwwMUT9kq+YcOABBfUMfQA+OLQkIhs=;
-        b=NW1I0XCpwoZiej4F1ciUy4JjxYtIRY3U9Y085/iwHpU6l0bkc4/onKUpA9JVkXtSSu
-         6h1qenUsolb9kJWWjVzu+be+RE0KuMKlcU7fLZOiGtbVEWB9eu5jPArDadwIfLPzwpRW
-         Zz47MAgdwy9cZL1W3sUk0oXJ4qp9ZAwYcKgqbKETwy0IDl8ZId51poSbMzMpiI16tUC5
-         3nUn7YXBrIyF3M3umKgNQpTxePy3D0vbPqAyv4YdaAMsP6znp4Y/OTT7WrKMM0HTAzMn
-         cvM0f5WbYdokjBUKMR0QBrOAjQkJi+slp6ME76TVYKQQjrk6lHwJhOwUj7JtzrD1Z93y
-         wlaA==
-X-Gm-Message-State: APjAAAXjulDtOyAt3v261CkDNAvZHx5TK46BUbls7l7vuzLCiI6QJ5Go
-        h+4tcczA1nPfszXIS9eNlp5+9Q==
-X-Google-Smtp-Source: APXvYqwsv0A5/ztfsCZbU16h7iBULFGTI4PThp2tCsCGD02xzLu83QPfwHz3CgMUuRTE/EiYGmWv6w==
-X-Received: by 2002:a9d:4b88:: with SMTP id k8mr61017358otf.285.1560762731712;
-        Mon, 17 Jun 2019 02:12:11 -0700 (PDT)
-Received: from localhost.localdomain (li964-79.members.linode.com. [45.33.10.79])
-        by smtp.gmail.com with ESMTPSA id l145sm4418324oib.6.2019.06.17.02.12.06
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 17 Jun 2019 02:12:11 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=V6M79Bvlfn3Y/3r6Oi9ctX8EPoRwXSGOlJOMMHDPmWM=;
+        b=lhaasLpPqfb4oCpMouFWTWXiOKKJNKKppLvTp/QEMgb0VqRZS/4h6iigFd8UubMqce
+         qODCzc+jq4WdekrXklz4o7eH1cHiDwWvrTiVheBbgT/SE67IPWYNcJfqMI3RJduJGYvJ
+         sII27io8bS36UHYn4FZrjzcBdHM7hy7Oc0xoxQD0OF0dx4VS/dV2uJ+Z1rBL5E7ta/L6
+         Xwb5d7IRvlyMhNO+33f9jP4lkaz3MngqmmIx1p9B1Wh7HjQ/r9OmjX4M6Yk6p8Nj56j1
+         0LCMmxE7oDhAaESgNg/yyubMSudoGflaNoS2OKfdYftBtPZFzPPdWH01zxZJQ/VBY3ni
+         fHaQ==
+X-Gm-Message-State: APjAAAVGq+9zJOhCvTARFGsEgY9jqeTRyIKX+vRUnSbUpbnF2qiUYBm8
+        3nmN54NXghJAn0kBAD7wSgROig==
+X-Google-Smtp-Source: APXvYqybOnw23k91/01uyTY1erdQuXnt4RumEV5SJQxuntvKl1Idy+2CKVinXUELC+WWGYW2kTgDhg==
+X-Received: by 2002:a17:906:6a45:: with SMTP id n5mr42843163ejs.61.1560770277849;
+        Mon, 17 Jun 2019 04:17:57 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id f3sm2149878ejo.90.2019.06.17.04.17.57
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 17 Jun 2019 04:17:57 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id BEA4C1804AF; Mon, 17 Jun 2019 13:17:56 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Anton Protopopov <a.s.protopopov@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH 2/2] perf trace: Handle NULL pointer dereference in trace__syscall_info()
-Date:   Mon, 17 Jun 2019 17:11:40 +0800
-Message-Id: <20190617091140.24372-2-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190617091140.24372-1-leo.yan@linaro.org>
-References: <20190617091140.24372-1-leo.yan@linaro.org>
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Anton Protopopov <a.s.protopopov@gmail.com>
+Subject: Re: [PATCH bpf] bpf: fix the check that forwarding is enabled in bpf_ipv6_fib_lookup
+In-Reply-To: <20190615225348.2539-1-a.s.protopopov@gmail.com>
+References: <20190615225348.2539-1-a.s.protopopov@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 17 Jun 2019 13:17:56 +0200
+Message-ID: <877e9ka2aj.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-trace__init_bpf_map_syscall_args() invokes trace__syscall_info() to
-retrieve system calls information, it always passes NULL for 'evsel'
-argument; when id is an invalid value then the logging will try to
-output event name, this triggers NULL pointer dereference.
+Anton Protopopov <a.s.protopopov@gmail.com> writes:
 
-This patch directly uses string "unknown" for event name when 'evsel'
-is NULL pointer.
+> The bpf_ipv6_fib_lookup function should return BPF_FIB_LKUP_RET_FWD_DISABLED
+> when forwarding is disabled for the input device.  However instead of checking
+> if forwarding is enabled on the input device, it checked the global
+> net->ipv6.devconf_all->forwarding flag.  Change it to behave as expected.
+>
+> Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
 
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- tools/perf/builtin-trace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks!
 
-diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-index 5cd74651db4c..49dfb2fd393b 100644
---- a/tools/perf/builtin-trace.c
-+++ b/tools/perf/builtin-trace.c
-@@ -1764,7 +1764,7 @@ static struct syscall *trace__syscall_info(struct trace *trace,
- 		static u64 n;
- 
- 		pr_debug("Invalid syscall %d id, skipping (%s, %" PRIu64 ")\n",
--			 id, perf_evsel__name(evsel), ++n);
-+			 id, evsel ? perf_evsel__name(evsel) : "unknown", ++n);
- 		return NULL;
- 	}
- 
--- 
-2.17.1
-
+Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
