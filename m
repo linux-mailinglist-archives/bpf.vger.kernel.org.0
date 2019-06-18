@@ -2,52 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E294A152
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2019 15:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1EF94A153
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2019 15:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbfFRNAz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1728881AbfFRNA4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Jun 2019 09:00:56 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:40868 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbfFRNAz (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 18 Jun 2019 09:00:55 -0400
-Received: from mail-lj1-f176.google.com ([209.85.208.176]:40040 "EHLO
-        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725913AbfFRNAy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Jun 2019 09:00:54 -0400
-Received: by mail-lj1-f176.google.com with SMTP id a21so13026817ljh.7
-        for <bpf@vger.kernel.org>; Tue, 18 Jun 2019 06:00:52 -0700 (PDT)
+Received: by mail-lj1-f195.google.com with SMTP id a21so13026947ljh.7
+        for <bpf@vger.kernel.org>; Tue, 18 Jun 2019 06:00:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zUCt1Xr2sEbY7cfOrXi8lz4heLXYX7H0RXCZwsrzX+w=;
-        b=WlrdVYiPw/B2a+O95RjnvMnYcDrLm2DlWVIEE84iQKWH0Z+Jc2UbhUj2+9cv5cRz6q
-         onb65iR10RRF6QrdA1R8Cjv18vEC8efYZNxZ2OgnRshdZaEkkfvHHtQu3XuFXnvm12M2
-         lc3IZo6x9PatujDr7JK7j/HL/M+qBhsa9bUXA=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=NO0kNLFRwXEdeJH8dwknA9A2F4vZ/ldyZLNuu9mlmKw=;
+        b=xiuwKYTNf48dhMiX0fICdvka1sbFK4qu4dFPOMEs+GOlMliudAgzdZOrJ9w0KjhSbJ
+         yw5Q2lPsDUr3c5gemU+Gwd4Thd9qMfznacVPNlUAQ96aa7bViPI/c56NvQNTODs2lgW9
+         LbuXKvQUdmtYSXYVQV91o8QUNTtzZGP/BBy34=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zUCt1Xr2sEbY7cfOrXi8lz4heLXYX7H0RXCZwsrzX+w=;
-        b=V5s3ZQ90acBwz6bU6ltH7piXu4b2v5f3ed8hzNsF9pKluK8/awT3sUQalPYqtQRiXu
-         y5hfkUZC8jggYzmElyrPihITDD7kndoPJj9nHoTjm8Y3ax2ecJLYhwlONR0fWBVH3z32
-         M/XhWR6QvFm1lVgWfIou5WrGXuoewc7rZV8jnOB5RpmmEGSwaQW1jzoL4kf/XCtMIuWZ
-         demyhYe1UMxv4PQQxbZbcWVisF1WGFVWX7vbBcVQiN4WDGKe1xmlRDqN7rQ2P1C2cLKE
-         yeSUZB2VlnlshygGcdUcPb7ZPQCAN1JSS8QJQFLB9bt5QuBIgegL+/dj5szypF6EY2up
-         WnBg==
-X-Gm-Message-State: APjAAAUqbm/mdf98SwHi92MivhhWValv1jQwCZTGVMo4aI6zJtZw47tx
-        MWrGFIv/obDtn2S4hgfbTHOKIqv4FeIwJg==
-X-Google-Smtp-Source: APXvYqx4fB1k/SIYL91oI3Q49ZteGat9gPL0g4OhKU5bZ7a/hjiGUCPW3yuFZyTIraGUp7MX+o8RGA==
-X-Received: by 2002:a2e:301a:: with SMTP id w26mr52809173ljw.76.1560862852079;
-        Tue, 18 Jun 2019 06:00:52 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=NO0kNLFRwXEdeJH8dwknA9A2F4vZ/ldyZLNuu9mlmKw=;
+        b=edHotodYG17Vpl6V6lRyMnxQUt8DOVpDbDmbmpKwOFRVZ/2emtpci49QmL4LOCv09S
+         OOudX0kgeRhizNDJAQ8uMXWdO1KtUOJHjRJgwV3oHSc1kDxVkg+BTt1DquU859LUvpVT
+         wqR/SvPGG7KLNrjZmsGsT6fCmG6SAEsyk5Xicsl1NCodABspHhtgXFpGOXR0S/ozvbiz
+         N110LDnJ3+7Zpa3tKq6cXocwDi73RZvT0orFxDHotwofO1pBmGJ+JuEeB4LUFJQQkzFA
+         unRJeKU6Yh3adGlK8fFCiQbX9TWmQlsRd5S6G8IsdvsjIe8lw8NOWP7JjB3lSwsDYosQ
+         SarA==
+X-Gm-Message-State: APjAAAXkmdihK9oUFC5hd/MKjySDprinqJ3OvWXGRxiLNfx6QFf84XFA
+        pl+G75HQhfCm38XKPejvbvfWSIFPGs+1Cg==
+X-Google-Smtp-Source: APXvYqxBDE+/M8Su3PELgt+zO+2LBj7hmraH2fyxgZ0ZLCwxRzOaqD1b6UF3DDy7DxjLlS1iiXYPyQ==
+X-Received: by 2002:a2e:98f:: with SMTP id 137mr15570625ljj.232.1560862853293;
+        Tue, 18 Jun 2019 06:00:53 -0700 (PDT)
 Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id d5sm2169695lfc.96.2019.06.18.06.00.51
+        by smtp.gmail.com with ESMTPSA id r17sm1398558ljb.77.2019.06.18.06.00.52
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 18 Jun 2019 06:00:51 -0700 (PDT)
+        Tue, 18 Jun 2019 06:00:52 -0700 (PDT)
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     kernel-team@cloudflare.com
-Subject: [RFC bpf-next 0/7] Programming socket lookup with BPF
-Date:   Tue, 18 Jun 2019 15:00:43 +0200
-Message-Id: <20190618130050.8344-1-jakub@cloudflare.com>
+Cc:     kernel-team@cloudflare.com, Marek Majkowski <marek@cloudflare.com>
+Subject: [RFC bpf-next 1/7] bpf: Introduce inet_lookup program type
+Date:   Tue, 18 Jun 2019 15:00:44 +0200
+Message-Id: <20190618130050.8344-2-jakub@cloudflare.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190618130050.8344-1-jakub@cloudflare.com>
+References: <20190618130050.8344-1-jakub@cloudflare.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
@@ -55,133 +57,399 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We have been exploring an idea of making listening socket
-lookup (inet_lookup) programmable with BPF.
+Add a new BPF program type that attaches to the network namespace.  Its
+purpose is to run before the listening socket lookup so that we can
+override the destination IP and/or port from BPF.
 
-Why? At last Netdev Marek talked [1] about two limitations of bind() API
-we're hitting when running services on our edge servers:
+The inet_lookup program receives the lookup 4-tuple via context as input
+for making a decision. It is allowed to overwrite the local IP & port that
+are used for looking up a listening socket.
 
-1) sharing a port between two services
+The program is not called anywhere yet. We hook it up to ipv4 and ipv6
+stacks in subsequent patches.
 
-   Services are accepting connections on different (disjoint) IP ranges but
-   use the same port. Say, packets to 192.0.2.0/24 tcp/80 go to NGINX,
-   while 198.51.100.0/24 tcp/80 is handled by Apache. Servers are running
-   as different users, in a flat single-netns setup.
+Suggested-by: Marek Majkowski <marek@cloudflare.com>
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+---
+ include/linux/bpf_types.h   |   1 +
+ include/linux/filter.h      |  17 +++
+ include/net/net_namespace.h |   3 +
+ include/uapi/linux/bpf.h    |  27 +++++
+ kernel/bpf/syscall.c        |  10 ++
+ net/core/filter.c           | 216 ++++++++++++++++++++++++++++++++++++
+ 6 files changed, 274 insertions(+)
 
-2) receiving traffic on all ports
-
-   Proxy accepts connections a specific IP range but on any port [2].
-
-In both cases we've found that bind() and a combination of INADDR_ANY,
-SO_REUSEADDR, or SO_REUSEPORT doesn't allow for the setup we need, short of
-binding each service to every IP:port pair combination :-)
-
-We've resorted at first to custom patches [3], and more recently to traffic
-steering with TPROXY. Not without pain points:
-
- - XDP programs using bpf_sk_lookup helpers, like load balancers, can't
-   find the listening socket to check for SYN cookies with TPROXY redirect.
-
- - TPROXY takes a reference to the listening socket on dispatch, which
-   raises lock contention concerns.
-
- - Traffic steering configuration is split over several iptables rules, at
-   least one per service, which makes configuration changes error prone.
-
-Now back to the patch set, it introduces a new BPF program type, dubbed
-inet_lookup, that runs before listening socket lookup, and can override the
-destination IP:port pair used as lookup key. Program attaches to netns in
-scope of which the lookup happens.
-
-What an inet_lookup program might look like? For the mentioned scenario
-with two HTTP servers sharing port 80:
-
-#define NET1 (IP4(192,  0,   2, 0) >> 8)
-#define NET2 (IP4(198, 51, 100, 0) >> 8)
-
-SEC("inet_lookup/demo_two_http_servers")
-int demo_two_http_servers(struct bpf_inet_lookup *ctx)
-{
-        if (ctx->family != AF_INET)
-                return BPF_OK;
-        if (ctx->local_port != 80)
-                return BPF_OK;
-
-        switch (bpf_ntohl(ctx->local_ip4) >> 8) {
-        case NET1:
-                ctx->local_ip4 = bpf_htonl(IP4(127, 0, 0, 1));
-                ctx->local_port = 81;
-                return BPF_REDIRECT;
-        case NET2:
-                ctx->local_ip4 = bpf_htonl(IP4(127, 0, 0, 1));
-                ctx->local_port = 82;
-                return BPF_REDIRECT;
-        }
-
-        return BPF_OK;
-}
-
-What are the downsides?
-
- - BPF program, if attached, runs on the receive hot path,
- - introspection is worse than for TPROXY iptables rules.
-
-Also UDP packet steering has to be reworked. In current form we run the
-inet_lookup program before checking for any connected UDP sockets, which is
-unexpected.
-
-The patches, while still in their early stages, show what we're trying to
-solve. We're reaching out early for feedback to see what are the technical
-concerns and if we can address them.
-
-Just in time for the coming Netconf conference.
-
-Thanks,
-Jakub
-
-[1] https://netdevconf.org/0x13/session.html?panel-industry-perspectives
-[2] https://blog.cloudflare.com/how-we-built-spectrum/
-[3] https://www.spinics.net/lists/netdev/msg370789.html
-
-
-Jakub Sitnicki (7):
-  bpf: Introduce inet_lookup program type
-  ipv4: Run inet_lookup bpf program on socket lookup
-  ipv6: Run inet_lookup bpf program on socket lookup
-  bpf: Sync linux/bpf.h to tools/
-  libbpf: Add support for inet_lookup program type
-  bpf: Test destination address remapping with inet_lookup
-  bpf: Add verifier tests for inet_lookup context access
-
- include/linux/bpf_types.h                     |   1 +
- include/linux/filter.h                        |  17 +
- include/net/inet6_hashtables.h                |  39 ++
- include/net/inet_hashtables.h                 |  39 ++
- include/net/net_namespace.h                   |   3 +
- include/uapi/linux/bpf.h                      |  27 +
- kernel/bpf/syscall.c                          |  10 +
- net/core/filter.c                             | 216 ++++++++
- net/ipv4/inet_hashtables.c                    |  11 +-
- net/ipv4/udp.c                                |   1 +
- net/ipv6/inet6_hashtables.c                   |  11 +-
- net/ipv6/udp.c                                |   6 +-
- tools/include/uapi/linux/bpf.h                |  27 +
- tools/lib/bpf/libbpf.c                        |   4 +
- tools/lib/bpf/libbpf.h                        |   2 +
- tools/lib/bpf/libbpf.map                      |   2 +
- tools/lib/bpf/libbpf_probes.c                 |   1 +
- tools/testing/selftests/bpf/.gitignore        |   1 +
- tools/testing/selftests/bpf/Makefile          |   6 +-
- .../selftests/bpf/progs/inet_lookup_prog.c    |  68 +++
- .../testing/selftests/bpf/test_inet_lookup.c  | 392 ++++++++++++++
- .../testing/selftests/bpf/test_inet_lookup.sh |  35 ++
- .../selftests/bpf/verifier/ctx_inet_lookup.c  | 511 ++++++++++++++++++
- 23 files changed, 1418 insertions(+), 12 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/inet_lookup_prog.c
- create mode 100644 tools/testing/selftests/bpf/test_inet_lookup.c
- create mode 100755 tools/testing/selftests/bpf/test_inet_lookup.sh
- create mode 100644 tools/testing/selftests/bpf/verifier/ctx_inet_lookup.c
-
+diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+index 5a9975678d6f..9f1424146de8 100644
+--- a/include/linux/bpf_types.h
++++ b/include/linux/bpf_types.h
+@@ -36,6 +36,7 @@ BPF_PROG_TYPE(BPF_PROG_TYPE_LIRC_MODE2, lirc_mode2)
+ #endif
+ #ifdef CONFIG_INET
+ BPF_PROG_TYPE(BPF_PROG_TYPE_SK_REUSEPORT, sk_reuseport)
++BPF_PROG_TYPE(BPF_PROG_TYPE_INET_LOOKUP, inet_lookup)
+ #endif
+ 
+ BPF_MAP_TYPE(BPF_MAP_TYPE_ARRAY, array_map_ops)
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 43b45d6db36d..f826fca6cc1c 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1199,4 +1199,21 @@ struct bpf_sysctl_kern {
+ 	u64 tmp_reg;
+ };
+ 
++#ifdef CONFIG_INET
++struct bpf_inet_lookup_kern {
++	unsigned short	family;
++	__be32		saddr;
++	struct in6_addr	saddr6;
++	__be16		sport;
++	__be32		daddr;
++	struct in6_addr	daddr6;
++	unsigned short	hnum;
++};
++
++int inet_lookup_attach_bpf(const union bpf_attr *attr, struct bpf_prog *prog);
++int inet_lookup_detach_bpf(const union bpf_attr *attr);
++int inet_lookup_query_bpf(const union bpf_attr *attr,
++			  union bpf_attr __user *uattr);
++#endif
++
+ #endif /* __LINUX_FILTER_H__ */
+diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
+index abb4f92456e1..6f2e5ecc8b08 100644
+--- a/include/net/net_namespace.h
++++ b/include/net/net_namespace.h
+@@ -167,6 +167,9 @@ struct net {
+ #endif
+ #ifdef CONFIG_XDP_SOCKETS
+ 	struct netns_xdp	xdp;
++#endif
++#ifdef CONFIG_BPF_SYSCALL
++	struct bpf_prog __rcu	*inet_lookup_prog;
+ #endif
+ 	struct sock		*diag_nlsk;
+ 	atomic_t		fnhe_genid;
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index d0a23476f887..7776f36a43d1 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -170,6 +170,7 @@ enum bpf_prog_type {
+ 	BPF_PROG_TYPE_FLOW_DISSECTOR,
+ 	BPF_PROG_TYPE_CGROUP_SYSCTL,
+ 	BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE,
++	BPF_PROG_TYPE_INET_LOOKUP,
+ };
+ 
+ enum bpf_attach_type {
+@@ -192,6 +193,7 @@ enum bpf_attach_type {
+ 	BPF_LIRC_MODE2,
+ 	BPF_FLOW_DISSECTOR,
+ 	BPF_CGROUP_SYSCTL,
++	BPF_INET_LOOKUP,
+ 	__MAX_BPF_ATTACH_TYPE
+ };
+ 
+@@ -3066,6 +3068,31 @@ struct bpf_tcp_sock {
+ 				 */
+ };
+ 
++/* User accessible data for inet_lookup programs.
++ * New fields must be added at the end.
++ */
++struct bpf_inet_lookup {
++	__u32 family;
++	__u32 remote_ip4;	/* Allows 1,2,4-byte read but no write.
++				 * Stored in network byte order.
++				 */
++	__u32 local_ip4;	/* Allows 1,2,4-byte read and 4-byte write.
++				 * Stored in network byte order.
++				 */
++	__u32 remote_ip6[4];	/* Allows 1,2,4-byte read but no write.
++				 * Stored in network byte order.
++				 */
++	__u32 local_ip6[4];	/* Allows 1,2,4-byte read and 4-byte write.
++				 * Stored in network byte order.
++				 */
++	__u32 remote_port;	/* Allows 4-byte read but no write.
++				 * Stored in network byte order.
++				 */
++	__u32 local_port;	/* Allows 4-byte read and write.
++				 * Stored in host byte order.
++				 */
++};
++
+ struct bpf_sock_tuple {
+ 	union {
+ 		struct {
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 4c53cbd3329d..57813c539a41 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1916,6 +1916,9 @@ static int bpf_prog_attach(const union bpf_attr *attr)
+ 	case BPF_CGROUP_SYSCTL:
+ 		ptype = BPF_PROG_TYPE_CGROUP_SYSCTL;
+ 		break;
++	case BPF_INET_LOOKUP:
++		ptype = BPF_PROG_TYPE_INET_LOOKUP;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -1940,6 +1943,9 @@ static int bpf_prog_attach(const union bpf_attr *attr)
+ 	case BPF_PROG_TYPE_FLOW_DISSECTOR:
+ 		ret = skb_flow_dissector_bpf_prog_attach(attr, prog);
+ 		break;
++	case BPF_PROG_TYPE_INET_LOOKUP:
++		ret = inet_lookup_attach_bpf(attr, prog);
++		break;
+ 	default:
+ 		ret = cgroup_bpf_prog_attach(attr, ptype, prog);
+ 	}
+@@ -1997,6 +2003,8 @@ static int bpf_prog_detach(const union bpf_attr *attr)
+ 	case BPF_CGROUP_SYSCTL:
+ 		ptype = BPF_PROG_TYPE_CGROUP_SYSCTL;
+ 		break;
++	case BPF_INET_LOOKUP:
++		return inet_lookup_detach_bpf(attr);
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -2036,6 +2044,8 @@ static int bpf_prog_query(const union bpf_attr *attr,
+ 		return lirc_prog_query(attr, uattr);
+ 	case BPF_FLOW_DISSECTOR:
+ 		return skb_flow_dissector_prog_query(attr, uattr);
++	case BPF_INET_LOOKUP:
++		return inet_lookup_query_bpf(attr, uattr);
+ 	default:
+ 		return -EINVAL;
+ 	}
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 8c18f2781afa..439e8eccb018 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -8716,4 +8716,220 @@ const struct bpf_verifier_ops sk_reuseport_verifier_ops = {
+ 
+ const struct bpf_prog_ops sk_reuseport_prog_ops = {
+ };
++
++static DEFINE_MUTEX(inet_lookup_prog_mutex);
++
++int inet_lookup_attach_bpf(const union bpf_attr *attr, struct bpf_prog *prog)
++{
++	struct net *net = current->nsproxy->net_ns;
++	struct bpf_prog *attached;
++
++	mutex_lock(&inet_lookup_prog_mutex);
++	attached = rcu_dereference_protected(net->inet_lookup_prog,
++					     lockdep_is_held(&inet_lookup_prog_mutex));
++	if (attached) {
++		/* Only one BPF program can be attached at a time */
++		mutex_unlock(&inet_lookup_prog_mutex);
++		return -EEXIST;
++	}
++	rcu_assign_pointer(net->inet_lookup_prog, prog);
++	mutex_unlock(&inet_lookup_prog_mutex);
++	return 0;
++}
++
++int inet_lookup_detach_bpf(const union bpf_attr *attr)
++{
++	struct net *net = current->nsproxy->net_ns;
++	struct bpf_prog *attached;
++
++	mutex_lock(&inet_lookup_prog_mutex);
++	attached = rcu_dereference_protected(net->inet_lookup_prog,
++					     lockdep_is_held(&inet_lookup_prog_mutex));
++	if (!attached) {
++		mutex_unlock(&inet_lookup_prog_mutex);
++		return -ENOENT;
++	}
++	bpf_prog_put(attached);
++	RCU_INIT_POINTER(net->inet_lookup_prog, NULL);
++	mutex_unlock(&inet_lookup_prog_mutex);
++
++	return 0;
++}
++
++int inet_lookup_query_bpf(const union bpf_attr *attr,
++			  union bpf_attr __user *uattr)
++{
++	return -EOPNOTSUPP;	/* TODO: Not implemented. */
++}
++
++static const struct bpf_func_proto *
++inet_lookup_func_proto(enum bpf_func_id func_id,
++		       const struct bpf_prog *prog)
++{
++	return bpf_base_func_proto(func_id);
++}
++
++static bool inet_lookup_is_valid_access(int off, int size,
++					enum bpf_access_type type,
++					const struct bpf_prog *prog,
++					struct bpf_insn_access_aux *info)
++{
++	const int size_default = sizeof(__u32);
++
++	if (off < 0 || off >= sizeof(struct bpf_inet_lookup))
++		return false;
++	if (off % size != 0)
++		return false;
++
++	switch (off) {
++	case bpf_ctx_range(struct bpf_inet_lookup, remote_ip4):
++	case bpf_ctx_range_till(struct bpf_inet_lookup,
++				remote_ip6[0], remote_ip6[3]):
++		if (type != BPF_READ)
++			return false;
++		if (!bpf_ctx_narrow_access_ok(off, size, size_default))
++			return false;
++		bpf_ctx_record_field_size(info, size_default);
++		break;
++
++	case bpf_ctx_range(struct bpf_inet_lookup, local_ip4):
++	case bpf_ctx_range_till(struct bpf_inet_lookup,
++				local_ip6[0], local_ip6[3]):
++		if (type == BPF_READ) {
++			if (!bpf_ctx_narrow_access_ok(off, size, size_default))
++				return false;
++			bpf_ctx_record_field_size(info, size_default);
++		} else {
++			if (size != size_default)
++				return false;
++		}
++		break;
++
++	case bpf_ctx_range(struct bpf_inet_lookup, family):
++	case bpf_ctx_range(struct bpf_inet_lookup, remote_port):
++		if (type != BPF_READ)
++			return false;
++		if (size != size_default)
++			return false;
++		break;
++
++	case bpf_ctx_range(struct bpf_inet_lookup, local_port):
++		if (size != size_default)
++			return false;
++		break;
++
++	default:
++		return false;
++	}
++
++	return true;
++}
++
++#define LOAD_FIELD_OFF(STRUCT, FIELD, OFF) ({				\
++	*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(STRUCT, FIELD),		\
++			      si->dst_reg, si->src_reg,			\
++			      bpf_target_off(STRUCT, FIELD,		\
++					     FIELD_SIZEOF(STRUCT,	\
++							  FIELD),	\
++					     target_size) + (OFF));	\
++})
++
++#define LOAD_FIELD(STRUCT, FIELD) LOAD_FIELD_OFF(STRUCT, FIELD, 0)
++
++#define STORE_FIELD_OFF(STRUCT, FIELD, OFF) ({				\
++	*insn++ = BPF_STX_MEM(BPF_FIELD_SIZEOF(STRUCT, FIELD),		\
++			      si->dst_reg, si->src_reg,			\
++			      bpf_target_off(STRUCT, FIELD,		\
++					     FIELD_SIZEOF(STRUCT,	\
++							  FIELD),	\
++					     target_size) + (OFF));	\
++})
++
++#define STORE_FIELD(STRUCT, FIELD) STORE_FIELD_OFF(STRUCT, FIELD, 0)
++
++/* TODO: Handle 1,2-byte reads from {local,remote}_ip[46]. */
++static u32 inet_lookup_convert_ctx_access(enum bpf_access_type type,
++					  const struct bpf_insn *si,
++					  struct bpf_insn *insn_buf,
++					  struct bpf_prog *prog,
++					  u32 *target_size)
++{
++	struct bpf_insn *insn = insn_buf;
++	int off;
++
++	switch (si->off) {
++	case offsetof(struct bpf_inet_lookup, family):
++		LOAD_FIELD(struct bpf_inet_lookup_kern, family);
++		break;
++
++	case offsetof(struct bpf_inet_lookup, remote_ip4):
++		LOAD_FIELD(struct bpf_inet_lookup_kern, saddr);
++		break;
++
++	case offsetof(struct bpf_inet_lookup, local_ip4):
++		if (type == BPF_READ)
++			LOAD_FIELD(struct bpf_inet_lookup_kern, daddr);
++		else
++			STORE_FIELD(struct bpf_inet_lookup_kern, daddr);
++		break;
++
++	case bpf_ctx_range_till(struct bpf_inet_lookup,
++				remote_ip6[0], remote_ip6[3]):
++#if IS_ENABLED(CONFIG_IPV6)
++		off = si->off;
++		off -= offsetof(struct bpf_inet_lookup, remote_ip6[0]);
++
++		LOAD_FIELD_OFF(struct bpf_inet_lookup_kern,
++			       saddr6.s6_addr32[0], off);
++#else
++		(void)off;
++
++		*insn++ = BPF_MOV32_IMM(si->dst_reg, 0);
++#endif
++		break;
++
++	case bpf_ctx_range_till(struct bpf_inet_lookup,
++				local_ip6[0], local_ip6[3]):
++#if IS_ENABLED(CONFIG_IPV6)
++		off = si->off;
++		off -= offsetof(struct bpf_inet_lookup, local_ip6[0]);
++
++		if (type == BPF_READ)
++			LOAD_FIELD_OFF(struct bpf_inet_lookup_kern,
++				       daddr6.s6_addr32[0], off);
++		else
++			STORE_FIELD_OFF(struct bpf_inet_lookup_kern,
++					daddr6.s6_addr32[0], off);
++#else
++		(void)off;
++
++		if (type == BPF_READ)
++			*insn++ = BPF_MOV32_IMM(si->dst_reg, 0);
++#endif
++		break;
++
++	case offsetof(struct bpf_inet_lookup, remote_port):
++		LOAD_FIELD(struct bpf_inet_lookup_kern, sport);
++		break;
++
++	case offsetof(struct bpf_inet_lookup, local_port):
++		if (type == BPF_READ)
++			LOAD_FIELD(struct bpf_inet_lookup_kern, hnum);
++		else
++			STORE_FIELD(struct bpf_inet_lookup_kern, hnum);
++		break;
++	}
++
++	return insn - insn_buf;
++}
++
++const struct bpf_prog_ops inet_lookup_prog_ops = {
++};
++
++const struct bpf_verifier_ops inet_lookup_verifier_ops = {
++	.get_func_proto		= inet_lookup_func_proto,
++	.is_valid_access	= inet_lookup_is_valid_access,
++	.convert_ctx_access	= inet_lookup_convert_ctx_access,
++};
++
+ #endif /* CONFIG_INET */
 -- 
 2.20.1
 
