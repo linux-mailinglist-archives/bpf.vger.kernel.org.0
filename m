@@ -2,85 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE6B4A038
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2019 14:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E294A152
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2019 15:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728454AbfFRMGE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Jun 2019 08:06:04 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:35744 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbfFRMGD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Jun 2019 08:06:03 -0400
-Received: by mail-lj1-f193.google.com with SMTP id x25so3254714ljh.2
-        for <bpf@vger.kernel.org>; Tue, 18 Jun 2019 05:06:02 -0700 (PDT)
+        id S1726543AbfFRNAz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Jun 2019 09:00:55 -0400
+Received: from mail-lj1-f176.google.com ([209.85.208.176]:40040 "EHLO
+        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725913AbfFRNAy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Jun 2019 09:00:54 -0400
+Received: by mail-lj1-f176.google.com with SMTP id a21so13026817ljh.7
+        for <bpf@vger.kernel.org>; Tue, 18 Jun 2019 06:00:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=eViPuB4mPRtq99GLUYp5aCnnWrpv2fPxaUrqbtshaow=;
-        b=OzFHA/skb+Cd3TvWb0I7U3fqoUbEdeAqdN4ud+HZoRnMK7mDQ/vDiz2gc8bfTm+QTg
-         oeqqo6aT01GA6E5/kqnmzskzYTF8tBSW8k17FIKLDlQS+5YI2eGyQfgYK29K3shxEUzz
-         O4ckLDcVheu7R0/1qdxRgcwXxvoWYbN+8p85sQbLGqoSIIh0MNmhHyWAWBZPZzLfwUvy
-         9FTigcgftBfssg9DERYI8X1JJc3SiGtqwT07bDp/iZb+I477c4fnrpgXrqyE1cC+jfoi
-         Qzx4J9FPnRKGo4YGVqFJWuhuuWPGdGa/lJlpLIzvJ9HUe+hapnsISe1qzXNxuasMRcaW
-         nZMg==
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zUCt1Xr2sEbY7cfOrXi8lz4heLXYX7H0RXCZwsrzX+w=;
+        b=WlrdVYiPw/B2a+O95RjnvMnYcDrLm2DlWVIEE84iQKWH0Z+Jc2UbhUj2+9cv5cRz6q
+         onb65iR10RRF6QrdA1R8Cjv18vEC8efYZNxZ2OgnRshdZaEkkfvHHtQu3XuFXnvm12M2
+         lc3IZo6x9PatujDr7JK7j/HL/M+qBhsa9bUXA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=eViPuB4mPRtq99GLUYp5aCnnWrpv2fPxaUrqbtshaow=;
-        b=LUdtl3pCiqhYHY+odt3BQNqu+WgwSktBrd3ZZHmRtgJldyEW5NSBHwpsVW0Hh2c4S/
-         gF1BizTfLqe0Si9rG2RpL0QJM+xDFyLJ/BensCwDRxQcZT+15WdYKuR8bE7B0AdwvTW9
-         pVxcIf/H+xb8x8sFf21lMKvj01ftBZd/DaQPY/wUv0fX09xJk44fOOktaTJL4jZD0eV2
-         zk6kWDuNJ7/O9CcepWPeqt1bvcsk4b/Rl8fvvUvPBfsDsGQu2LBazHoRV5EjUHgkh7mh
-         YpDsf3WTDFbeSxNW3Di8q6YCI581XHbRJVEzz5UZUQUZtW9VprbiQLKBdoHHqHHDRX4d
-         Ta4g==
-X-Gm-Message-State: APjAAAVu6Rk4Tdd3uZ7tORN6ERpuShwBzq3z3bwHoGUBCrMjyvubypN+
-        jmRhgDdqc56vcQRCD5LgjphzvLwn94/az9PLWyzJxg==
-X-Google-Smtp-Source: APXvYqynedWWS6RMfN+pXeWLkf2H5DM5H4yMJ5FcjVlUXuJ+N1JPU/Ap4AsjrjX3+umUXW+mGzRZGfQvvOr3ws24C8w=
-X-Received: by 2002:a2e:8495:: with SMTP id b21mr21465480ljh.149.1560859561469;
- Tue, 18 Jun 2019 05:06:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zUCt1Xr2sEbY7cfOrXi8lz4heLXYX7H0RXCZwsrzX+w=;
+        b=V5s3ZQ90acBwz6bU6ltH7piXu4b2v5f3ed8hzNsF9pKluK8/awT3sUQalPYqtQRiXu
+         y5hfkUZC8jggYzmElyrPihITDD7kndoPJj9nHoTjm8Y3ax2ecJLYhwlONR0fWBVH3z32
+         M/XhWR6QvFm1lVgWfIou5WrGXuoewc7rZV8jnOB5RpmmEGSwaQW1jzoL4kf/XCtMIuWZ
+         demyhYe1UMxv4PQQxbZbcWVisF1WGFVWX7vbBcVQiN4WDGKe1xmlRDqN7rQ2P1C2cLKE
+         yeSUZB2VlnlshygGcdUcPb7ZPQCAN1JSS8QJQFLB9bt5QuBIgegL+/dj5szypF6EY2up
+         WnBg==
+X-Gm-Message-State: APjAAAUqbm/mdf98SwHi92MivhhWValv1jQwCZTGVMo4aI6zJtZw47tx
+        MWrGFIv/obDtn2S4hgfbTHOKIqv4FeIwJg==
+X-Google-Smtp-Source: APXvYqx4fB1k/SIYL91oI3Q49ZteGat9gPL0g4OhKU5bZ7a/hjiGUCPW3yuFZyTIraGUp7MX+o8RGA==
+X-Received: by 2002:a2e:301a:: with SMTP id w26mr52809173ljw.76.1560862852079;
+        Tue, 18 Jun 2019 06:00:52 -0700 (PDT)
+Received: from cloudflare.com ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id d5sm2169695lfc.96.2019.06.18.06.00.51
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 18 Jun 2019 06:00:51 -0700 (PDT)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     kernel-team@cloudflare.com
+Subject: [RFC bpf-next 0/7] Programming socket lookup with BPF
+Date:   Tue, 18 Jun 2019 15:00:43 +0200
+Message-Id: <20190618130050.8344-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 18 Jun 2019 17:35:50 +0530
-Message-ID: <CA+G9fYufHb5N_NMd4RQnr3jJjqQ8b4Nj1CZXecWvDQPohFUewA@mail.gmail.com>
-Subject: next: arm64: build error: implicit declaration of function '__cookie_v6_init_sequence'
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>, kuznet@ms2.inr.ac.ru,
-        yoshfuji@linux-ipv6.org, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Linux -next build failed on arm64 and arm.
+We have been exploring an idea of making listening socket
+lookup (inet_lookup) programmable with BPF.
 
-In file included from net/ipv6/af_inet6.c:41:0:
-include/linux/netfilter_ipv6.h: In function 'nf_ipv6_cookie_init_sequence':
-include/linux/netfilter_ipv6.h:174:9: error: implicit declaration of
-function '__cookie_v6_init_sequence'; did you mean
-'cookie_init_sequence'? [-Werror=implicit-function-declaration]
-  return __cookie_v6_init_sequence(iph, th, mssp);
-         ^~~~~~~~~~~~~~~~~~~~~~~~~
-         cookie_init_sequence
-include/linux/netfilter_ipv6.h: In function 'nf_cookie_v6_check':
-include/linux/netfilter_ipv6.h:189:9: error: implicit declaration of
-function '__cookie_v6_check'; did you mean '__cookie_v4_check'?
-[-Werror=implicit-function-declaration]
-  return __cookie_v6_check(iph, th, cookie);
-         ^~~~~~~~~~~~~~~~~
-         __cookie_v4_check
-  CC      net/core/net-traces.o
-  CC      drivers/char/tpm/eventlog/acpi.o
-  CC      fs/proc/page.o
-cc1: some warnings being treated as errors
-scripts/Makefile.build:278: recipe for target 'net/ipv6/af_inet6.o' failed
-make[3]: *** [net/ipv6/af_inet6.o] Error 1
-scripts/Makefile.build:489: recipe for target 'net/ipv6' failed
-make[2]: *** [net/ipv6] Error 2
+Why? At last Netdev Marek talked [1] about two limitations of bind() API
+we're hitting when running services on our edge servers:
 
-Best regards
-Naresh Kamboju
+1) sharing a port between two services
+
+   Services are accepting connections on different (disjoint) IP ranges but
+   use the same port. Say, packets to 192.0.2.0/24 tcp/80 go to NGINX,
+   while 198.51.100.0/24 tcp/80 is handled by Apache. Servers are running
+   as different users, in a flat single-netns setup.
+
+2) receiving traffic on all ports
+
+   Proxy accepts connections a specific IP range but on any port [2].
+
+In both cases we've found that bind() and a combination of INADDR_ANY,
+SO_REUSEADDR, or SO_REUSEPORT doesn't allow for the setup we need, short of
+binding each service to every IP:port pair combination :-)
+
+We've resorted at first to custom patches [3], and more recently to traffic
+steering with TPROXY. Not without pain points:
+
+ - XDP programs using bpf_sk_lookup helpers, like load balancers, can't
+   find the listening socket to check for SYN cookies with TPROXY redirect.
+
+ - TPROXY takes a reference to the listening socket on dispatch, which
+   raises lock contention concerns.
+
+ - Traffic steering configuration is split over several iptables rules, at
+   least one per service, which makes configuration changes error prone.
+
+Now back to the patch set, it introduces a new BPF program type, dubbed
+inet_lookup, that runs before listening socket lookup, and can override the
+destination IP:port pair used as lookup key. Program attaches to netns in
+scope of which the lookup happens.
+
+What an inet_lookup program might look like? For the mentioned scenario
+with two HTTP servers sharing port 80:
+
+#define NET1 (IP4(192,  0,   2, 0) >> 8)
+#define NET2 (IP4(198, 51, 100, 0) >> 8)
+
+SEC("inet_lookup/demo_two_http_servers")
+int demo_two_http_servers(struct bpf_inet_lookup *ctx)
+{
+        if (ctx->family != AF_INET)
+                return BPF_OK;
+        if (ctx->local_port != 80)
+                return BPF_OK;
+
+        switch (bpf_ntohl(ctx->local_ip4) >> 8) {
+        case NET1:
+                ctx->local_ip4 = bpf_htonl(IP4(127, 0, 0, 1));
+                ctx->local_port = 81;
+                return BPF_REDIRECT;
+        case NET2:
+                ctx->local_ip4 = bpf_htonl(IP4(127, 0, 0, 1));
+                ctx->local_port = 82;
+                return BPF_REDIRECT;
+        }
+
+        return BPF_OK;
+}
+
+What are the downsides?
+
+ - BPF program, if attached, runs on the receive hot path,
+ - introspection is worse than for TPROXY iptables rules.
+
+Also UDP packet steering has to be reworked. In current form we run the
+inet_lookup program before checking for any connected UDP sockets, which is
+unexpected.
+
+The patches, while still in their early stages, show what we're trying to
+solve. We're reaching out early for feedback to see what are the technical
+concerns and if we can address them.
+
+Just in time for the coming Netconf conference.
+
+Thanks,
+Jakub
+
+[1] https://netdevconf.org/0x13/session.html?panel-industry-perspectives
+[2] https://blog.cloudflare.com/how-we-built-spectrum/
+[3] https://www.spinics.net/lists/netdev/msg370789.html
+
+
+Jakub Sitnicki (7):
+  bpf: Introduce inet_lookup program type
+  ipv4: Run inet_lookup bpf program on socket lookup
+  ipv6: Run inet_lookup bpf program on socket lookup
+  bpf: Sync linux/bpf.h to tools/
+  libbpf: Add support for inet_lookup program type
+  bpf: Test destination address remapping with inet_lookup
+  bpf: Add verifier tests for inet_lookup context access
+
+ include/linux/bpf_types.h                     |   1 +
+ include/linux/filter.h                        |  17 +
+ include/net/inet6_hashtables.h                |  39 ++
+ include/net/inet_hashtables.h                 |  39 ++
+ include/net/net_namespace.h                   |   3 +
+ include/uapi/linux/bpf.h                      |  27 +
+ kernel/bpf/syscall.c                          |  10 +
+ net/core/filter.c                             | 216 ++++++++
+ net/ipv4/inet_hashtables.c                    |  11 +-
+ net/ipv4/udp.c                                |   1 +
+ net/ipv6/inet6_hashtables.c                   |  11 +-
+ net/ipv6/udp.c                                |   6 +-
+ tools/include/uapi/linux/bpf.h                |  27 +
+ tools/lib/bpf/libbpf.c                        |   4 +
+ tools/lib/bpf/libbpf.h                        |   2 +
+ tools/lib/bpf/libbpf.map                      |   2 +
+ tools/lib/bpf/libbpf_probes.c                 |   1 +
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |   6 +-
+ .../selftests/bpf/progs/inet_lookup_prog.c    |  68 +++
+ .../testing/selftests/bpf/test_inet_lookup.c  | 392 ++++++++++++++
+ .../testing/selftests/bpf/test_inet_lookup.sh |  35 ++
+ .../selftests/bpf/verifier/ctx_inet_lookup.c  | 511 ++++++++++++++++++
+ 23 files changed, 1418 insertions(+), 12 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/inet_lookup_prog.c
+ create mode 100644 tools/testing/selftests/bpf/test_inet_lookup.c
+ create mode 100755 tools/testing/selftests/bpf/test_inet_lookup.sh
+ create mode 100644 tools/testing/selftests/bpf/verifier/ctx_inet_lookup.c
+
+-- 
+2.20.1
+
