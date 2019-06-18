@@ -2,212 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4290C4A5C2
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2019 17:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C244A6EB
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2019 18:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729647AbfFRPqz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Jun 2019 11:46:55 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:25939 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729209AbfFRPqy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Jun 2019 11:46:54 -0400
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id x5IFkfN4028453;
-        Wed, 19 Jun 2019 00:46:41 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com x5IFkfN4028453
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1560872802;
-        bh=386ZLEU3NwMBqho2YAfsvSOOObyOn03wy4ojBhvxK60=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=zEO3TjqbGOEvExBhKiAr+1HikWsmWFNgpCAfYBvqzvBYn3batDYk+Q30THkzzJVAi
-         AnDI2sDbURwJ6EawFc9+Ece35Tk04fStXcjIXDdGDhQWoL6w11dMbFama5grXT4j0R
-         V+OC4mb0Ws5539Va/vyrBmdYoQu8kXTFVWaH/UAZoxanZi0BUOfjT+zsRWLHNPFTye
-         piqVckY4JJ7yzRVgtKrHBVSo3c/c5FJA4qcI1V94YH5vl93xRVCn9rUzej4Ssem18q
-         v1tBySID2r88u+8+15EvkwHyxfo2CTpsQFe4gMd0Ab9Pv18fovHBho4ypB94zLM8Vd
-         /rVtx9E/pjG/g==
-X-Nifty-SrcIP: [209.85.222.44]
-Received: by mail-ua1-f44.google.com with SMTP id 8so6428262uaz.11;
-        Tue, 18 Jun 2019 08:46:41 -0700 (PDT)
-X-Gm-Message-State: APjAAAWR7k/6CtXPXCm6OxqQ6XZ9DQTZdUsAEw2DVDg9quBGyrNXTyF5
-        RXj9vCG7r/nNdVyIiCondC+vqOh1EPeGC5viJGU=
-X-Google-Smtp-Source: APXvYqxtLvDnMS0CFAbDTiZ+5ZRw6eQK7Tj+rcqL/cHf9e3ufopPnNNl1cknMI4hmuC4210dH4UbfTG8JkzKXgzkjhE=
-X-Received: by 2002:a67:7fcc:: with SMTP id a195mr44483545vsd.181.1560872800733;
- Tue, 18 Jun 2019 08:46:40 -0700 (PDT)
+        id S1729594AbfFRQbX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Jun 2019 12:31:23 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:39192 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729319AbfFRQbW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Jun 2019 12:31:22 -0400
+Received: by mail-pg1-f193.google.com with SMTP id 196so7983070pgc.6;
+        Tue, 18 Jun 2019 09:31:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WtfrveQ0bUvGWi+775oMSKdo/rRpDj0TtPUP6WR2xho=;
+        b=k7URCFdM7+EN3pMgCqRGsJyXpqc9QY4r6Cjvy8BO8QFs9Hs1/movCJlaXfGuHmoTn2
+         uZmTYE8kgQ5zAVLZGwWXB+KKRtN3hs2jLnGs8MHPWDpder5gGkHmM01H/yZ1sgJkkC28
+         tKRZZcqH1IbWzkP1YJXE0ZY48y9uEhwYU8ljC4G9fz8noeu/97vNR6ffmWBqEt2uGNJJ
+         x955YBhxHyjAfWHO4rVplduxhmPqOTftXY3EasG/r/++cJdtda1PRHnsbfN15KOevyLU
+         QtdKHKQbQzQ/HUMoqIl85Dit9KnralCJNolQijCJGibejexx7pVk4NUY5t0htvpTggky
+         8vPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WtfrveQ0bUvGWi+775oMSKdo/rRpDj0TtPUP6WR2xho=;
+        b=pX9OzfAo27vriJwRUQit5JW8VADhAh8GTppiqgK2OimwL3Quj9/oyX5DONVTdlUjvu
+         pvzfPLqqrfkBU6k1e2m1z78agSEQIZ/1JXxtxJbR+7T8NbalZ/zAs0qCTlr0xdwwiSzm
+         Zd3SdB5+bP/aAR1wuQQ36Apcf/Pxaz9CBGIv2wzGQ8wrsS7d6ogLSEeF2IYZRNeQroBM
+         An6lOKeIMikUlGFcZAOH4WkLSikxhkCWIkZ3pharUoJb/b9MUlejaaOlVHV1vjwVS/k6
+         IAjkWaRkZ708f1HbZdGzGU51Ggxfr4bxFJLOX2OAamfE2OZvUc242bhruQ/KABlDQw56
+         DtOg==
+X-Gm-Message-State: APjAAAWV4qB+kwlgQS2OBM2nToO5CRDijkdl2jyfjSoKX59AVjCDlWhL
+        3dajlBx1Le+7da5u2ky4Ppw=
+X-Google-Smtp-Source: APXvYqzrWHEe11DhVkVNZWOwq/uYPHhgjgA5ECFnpdyqA0m1tOrWAJ3hBKrzk5cDHnLBRi2p2yLu9Q==
+X-Received: by 2002:a63:31c7:: with SMTP id x190mr3462393pgx.376.1560875481657;
+        Tue, 18 Jun 2019 09:31:21 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::3:ae73])
+        by smtp.gmail.com with ESMTPSA id e22sm15888266pgb.9.2019.06.18.09.31.20
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 18 Jun 2019 09:31:20 -0700 (PDT)
+Date:   Tue, 18 Jun 2019 09:31:19 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net, Martin Lau <kafai@fb.com>
+Subject: Re: [PATCH bpf-next v6 1/9] bpf: implement getsockopt and setsockopt
+ hooks
+Message-ID: <20190618163117.yuw44b24lo6prsrz@ast-mbp.dhcp.thefacebook.com>
+References: <20190617180109.34950-1-sdf@google.com>
+ <20190617180109.34950-2-sdf@google.com>
 MIME-Version: 1.0
-References: <20190604101409.2078-1-yamada.masahiro@socionext.com>
-In-Reply-To: <20190604101409.2078-1-yamada.masahiro@socionext.com>
-From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-Date:   Wed, 19 Jun 2019 00:46:04 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASv7WP+X2_oEEmp5tGqOxiv2VCj84CLuHhSsesF6AiD8A@mail.gmail.com>
-Message-ID: <CAK7LNASv7WP+X2_oEEmp5tGqOxiv2VCj84CLuHhSsesF6AiD8A@mail.gmail.com>
-Subject: Re: [PATCH 00/15] kbuild: refactor headers_install and support
- compile-test of UAPI headers
-To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Cc:     Song Liu <songliubraving@fb.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-riscv@lists.infradead.org,
-        Vincent Chen <deanbo422@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Helge Deller <deller@gmx.de>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Yonghong Song <yhs@fb.com>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-parisc@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190617180109.34950-2-sdf@google.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 4, 2019 at 7:15 PM Masahiro Yamada
-<yamada.masahiro@socionext.com> wrote:
->
->
-> Multiple people have suggested to compile-test UAPI headers.
->
-> Currently, Kbuild provides simple sanity checks by headers_check
-> but they are not enough to catch bugs.
->
-> The most recent patch I know is David Howells' work:
-> https://patchwork.kernel.org/patch/10590203/
->
-> I agree that we need better tests for UAPI headers,
-> but I want to integrate it in a clean way.
->
-> The idea that has been in my mind is to compile each header
-> to make sure the selfcontainedness.
->
-> Recently, Jani Nikula proposed a new syntax 'header-test-y'.
-> https://patchwork.kernel.org/patch/10947005/
->
-> So, I implemented UAPI compile-testing on top of that.
->
-> When adding a new feature, cleaning the code first is a
-> good practice.
->
-> [1] Remove headers_install_all
->
-> This target installs UAPI headers of all architectures
-> in a single tree.
-> It does not make sense to compile test of headers from
-> multiple arches at the same time. Hence, removed.
->
-> [2] Split header installation into 'make headers' and 'make headers_install'
->
-> To compile-test UAPI headers, we need a work-directory somewhere
-> to save objects and .*.cmd files.
->
-> usr/include/ will be the work-directory.
->
-> Since we cannot pollute the final destination of headers_install,
->
-> I split the header installation into two stages.
->
-> 'make headers' will build up
-> the ready-to-install headers in usr/include,
-> which will be also used as a work-directory for the compile-test.
->
-> 'make headers_install' will copy headers
-> from usr/include to $(INSTALL_HDR_PATH)/include.
->
-> [3] Support compile-test of UAPI headers
->
-> This is implemented in usr/include/Makefile
->
->
-> Jani Nikula (1):
->   kbuild: add support for ensuring headers are self-contained
->
-> Masahiro Yamada (14):
->   kbuild: remove headers_{install,check}_all
->   kbuild: remove stale dependency between Documentation/ and
->     headers_install
->   kbuild: make gdb_script depend on prepare0 instead of prepare
->   kbuild: fix Kconfig prompt of CONFIG_HEADERS_CHECK
->   kbuild: add CONFIG_HEADERS_INSTALL and loosen the dependency of
->     samples
->   kbuild: remove build_unifdef target in scripts/Makefile
->   kbuild: build all prerequisite of headers_install simultaneously
->   kbuild: add 'headers' target to build up ready-to-install uapi headers
->   kbuild: re-implement Makefile.headersinst without directory descending
->   kbuild: move hdr-inst shorthand to top Makefile
->   kbuild: simplify scripts/headers_install.sh
->   kbuild: deb-pkg: do not run headers_check
->   fixup: kbuild: add support for ensuring headers are self-contained
->   kbuild: compile test UAPI headers to ensure they are self-contained
+On Mon, Jun 17, 2019 at 11:01:01AM -0700, Stanislav Fomichev wrote:
+> Implement new BPF_PROG_TYPE_CGROUP_SOCKOPT program type and
+> BPF_CGROUP_{G,S}ETSOCKOPT cgroup hooks.
+> 
+> BPF_CGROUP_SETSOCKOPT get a read-only view of the setsockopt arguments.
+> BPF_CGROUP_GETSOCKOPT can modify the supplied buffer.
+> Both of them reuse existing PTR_TO_PACKET{,_END} infrastructure.
+> 
+> The buffer memory is pre-allocated (because I don't think there is
+> a precedent for working with __user memory from bpf). This might be
+> slow to do for each {s,g}etsockopt call, that's why I've added
+> __cgroup_bpf_prog_array_is_empty that exits early if there is nothing
+> attached to a cgroup. Note, however, that there is a race between
+> __cgroup_bpf_prog_array_is_empty and BPF_PROG_RUN_ARRAY where cgroup
+> program layout might have changed; this should not be a problem
+> because in general there is a race between multiple calls to
+> {s,g}etsocktop and user adding/removing bpf progs from a cgroup.
+> 
+> The return code of the BPF program is handled as follows:
+> * 0: EPERM
+> * 1: success, execute kernel {s,g}etsockopt path after BPF prog exits
+> * 2: success, do _not_ execute kernel {s,g}etsockopt path after BPF
+>      prog exits
+> 
+> Note that if 0 or 2 is returned from BPF program, no further BPF program
+> in the cgroup hierarchy is executed. This is in contrast with any existing
+> per-cgroup BPF attach_type.
 
-Series, applied to linux-kbuild.
+This is drastically different from all other cgroup-bpf progs.
+I think all programs should be executed regardless of return code.
+It seems to me that 1 vs 2 difference can be expressed via bpf program logic
+instead of return code.
 
+How about we do what all other cgroup-bpf progs do:
+"any no is no. all yes is yes"
+Meaning any ret=0 - EPERM back to user.
+If all are ret=1 - kernel handles get/set.
 
->  Documentation/kbuild/headers_install.txt |   7 --
->  Documentation/kbuild/makefiles.txt       |  13 ++-
->  Makefile                                 |  56 +++++-----
->  arch/arc/configs/tb10x_defconfig         |   1 +
->  arch/nds32/configs/defconfig             |   1 +
->  arch/parisc/configs/a500_defconfig       |   1 +
->  arch/parisc/configs/b180_defconfig       |   1 +
->  arch/parisc/configs/c3000_defconfig      |   1 +
->  arch/parisc/configs/default_defconfig    |   1 +
->  arch/powerpc/configs/ppc6xx_defconfig    |   1 +
->  arch/s390/configs/debug_defconfig        |   1 +
->  include/uapi/{linux => }/Kbuild          |   6 +-
->  init/Kconfig                             |  20 ++++
->  lib/Kconfig.debug                        |  25 +++--
->  samples/Kconfig                          |  14 ++-
->  samples/Makefile                         |   4 +-
->  scripts/Kbuild.include                   |   6 --
->  scripts/Makefile                         |   5 -
->  scripts/Makefile.build                   |   9 ++
->  scripts/Makefile.headersinst             | 132 ++++++++++-------------
->  scripts/Makefile.lib                     |   3 +
->  scripts/cc-system-headers.sh             |   8 ++
->  scripts/headers.sh                       |  29 -----
->  scripts/headers_install.sh               |  48 ++++-----
->  scripts/package/builddeb                 |   2 +-
->  usr/.gitignore                           |   1 -
->  usr/Makefile                             |   2 +
->  usr/include/.gitignore                   |   3 +
->  usr/include/Makefile                     | 132 +++++++++++++++++++++++
->  29 files changed, 329 insertions(+), 204 deletions(-)
->  rename include/uapi/{linux => }/Kbuild (77%)
->  create mode 100755 scripts/cc-system-headers.sh
->  delete mode 100755 scripts/headers.sh
->  create mode 100644 usr/include/.gitignore
->  create mode 100644 usr/include/Makefile
->
-> --
-> 2.17.1
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+I think the desire to differentiate 1 vs 2 came from ordering issue
+on getsockopt.
+How about for setsockopt all progs run first and then kernel.
+For getsockopt kernel runs first and then all progs.
+Then progs will have an ability to overwrite anything the kernel returns.
 
-
-
--- 
-Best Regards
-Masahiro Yamada
