@@ -2,151 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96043497BE
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2019 05:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC8A4994F
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2019 08:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbfFRDVI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Jun 2019 23:21:08 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:34956 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725829AbfFRDVI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Jun 2019 23:21:08 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5I399uk137012;
-        Tue, 18 Jun 2019 03:20:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=O/i7AMMkUKKosjfAFp+SY89OApm68MO3nGMJOcuM8UY=;
- b=FYOTl3p47yilQEAD2tOSXuRWh3gNFBayMh3bDKZ5lPjaRURvbbcEuz68TSWGsfFiXaUS
- SA84AqA7I21wkzycLfTRKuwFe//sh0OuzkV8khR9BIigtRJMtITTLUI4hbnFiLxRKl5h
- NPKtYuI/J2ovXQW97DEIYIqebwSfMg6SxLj7RUf1qRjsd3OWvpC7CiOs6G4kBqp4dbFS
- AzRvyVjId6RuLbufF3V9kR+PhvPRo4CcOgl2g2GgcJ+1W2AX7vuGdjjItKX4d6Xq9UJV
- lvHh4fVbZyL/omBrLiYv6/HOEN8toK/SlCH185oHS41f1Yn1fIW2ZSr5/uG9Mjc9hx04 0A== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 2t4r3thqse-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Jun 2019 03:20:07 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5I3JKFx046047;
-        Tue, 18 Jun 2019 03:20:07 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 2t5h5tg1qt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 18 Jun 2019 03:20:07 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5I3K667047272;
-        Tue, 18 Jun 2019 03:20:06 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 2t5h5tg1qk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Jun 2019 03:20:06 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5I3K5nB021569;
-        Tue, 18 Jun 2019 03:20:05 GMT
-Received: from localhost (/10.159.211.102)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 17 Jun 2019 20:20:05 -0700
-Date:   Mon, 17 Jun 2019 23:19:59 -0400
-From:   Kris Van Hees <kris.van.hees@oracle.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kris Van Hees <kris.van.hees@oracle.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, dtrace-devel@oss.oracle.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        id S1726215AbfFRGuO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Jun 2019 02:50:14 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:37865 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbfFRGuO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Jun 2019 02:50:14 -0400
+Received: by mail-ot1-f67.google.com with SMTP id s20so12766245otp.4
+        for <bpf@vger.kernel.org>; Mon, 17 Jun 2019 23:50:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=F1uNa6FtFexED8BrkdYi+QJ3mxVBvnGOiE6mNV8TMuQ=;
+        b=Ai3DslE7sIcJd3lwcHv/nfIW3mBphyUfgA4ERiWbp1nKmnX57EUkIBMuGeFXdT7pfG
+         FW+l44ZOS6pT9YQMmmsJBwXjhCDuIbnT+EOSiX2bhs8hcy9G4XTUuePQGu5bCIvclU9N
+         M+Q5UcimomCZHO0VG2aTeQedTT1QWSp5ft8A387fC/cCeZBWRu6+r4n8Z8vmMPVmwT22
+         gEaGXNF9qds6fOLOwgu/tSpiXP/frXgklI4Ddj4OfJdKCVtItW3YXraLNJuTPqYKdLbu
+         fWogpJYS9Wfejc2Q5oTyxJKmSPjosEPlFfapUcOS7yE1nA0uBHKC3rVMhHJLvqMEZf5I
+         RRRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=F1uNa6FtFexED8BrkdYi+QJ3mxVBvnGOiE6mNV8TMuQ=;
+        b=RpWvHwLTpFKbHeJUg66dV/X15DeJidHm3npGRe5+xzCtCx3fFdAp2AIKNs7U9GhNds
+         sdr57AuoqiHy32CMhUyCI+pPisDSCJcFvGfP0y9CXaxKbuaR0JOLPa7J+gIkF+PU5xDU
+         4gbT/IgdzvnIyvki+wYGMLq5Rluk5GkReSRlOV6ol7LLGeZncKpmImJmOGNZaLw/h4Lj
+         40PG0RuLMkzywUE67i6azyU6MdeWYOUWDO1Pbt8W+6SwpklPs801MnZbDusytP3Ueta7
+         2xkh0xssaaHBlH0gXoKL3H96B5g5z+1YGFB1381O22D5GQG5MtOQlA77GJErWm68cm6N
+         tFQA==
+X-Gm-Message-State: APjAAAVo280thjEYrjaUsMUdXgDuq7i5JkFVh8tQ7iWEwImbAoE9jtBH
+        WqDf4Ea3rpQue9QMucWCGeFW/X6ckafFpw==
+X-Google-Smtp-Source: APXvYqzF6FAEm6X6iuXvqsBEPGfwrQNDfuWjFLfRsqVOsMs1hrhtT+EOaKTXLQrddSKqFiN5L3rpxw==
+X-Received: by 2002:a05:6830:1319:: with SMTP id p25mr2977936otq.224.1560839074504;
+        Mon, 17 Jun 2019 23:24:34 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s (li964-79.members.linode.com. [45.33.10.79])
+        by smtp.gmail.com with ESMTPSA id k3sm5360435otr.1.2019.06.17.23.24.28
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 17 Jun 2019 23:24:33 -0700 (PDT)
+Date:   Tue, 18 Jun 2019 14:24:23 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC PATCH 00/11] bpf, trace, dtrace: DTrace BPF program type
- implementation and sample use
-Message-ID: <20190618031959.GI8794@oracle.com>
-References: <20190521213648.GK2422@oracle.com>
- <20190521232618.xyo6w3e6nkwu3h5v@ast-mbp.dhcp.thefacebook.com>
- <20190522041253.GM2422@oracle.com>
- <20190522201624.eza3pe2v55sn2t2w@ast-mbp.dhcp.thefacebook.com>
- <20190523051608.GP2422@oracle.com>
- <20190523202842.ij2quhpmem3nabii@ast-mbp.dhcp.thefacebook.com>
- <20190618012509.GF8794@oracle.com>
- <CAADnVQJoH4WOQ0t7ZhLgh4kh2obxkFs0UGDRas0y4QSqh1EMsg@mail.gmail.com>
- <20190618015442.GG8794@oracle.com>
- <CAADnVQ+zAwoH_mjJLhfEgXHHz+3WYkzhEm-mEObP0koLiSvknw@mail.gmail.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 1/2] perf trace: Use pr_debug() instead of fprintf() for
+ logging
+Message-ID: <20190618062423.GA24549@leoy-ThinkPad-X240s>
+References: <20190617091140.24372-1-leo.yan@linaro.org>
+ <20190617152412.GJ1402@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQ+zAwoH_mjJLhfEgXHHz+3WYkzhEm-mEObP0koLiSvknw@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9291 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=875 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906180024
+In-Reply-To: <20190617152412.GJ1402@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 17, 2019 at 08:01:52PM -0700, Alexei Starovoitov wrote:
-> On Mon, Jun 17, 2019 at 6:54 PM Kris Van Hees <kris.van.hees@oracle.com> wrote:
-> >
-> > It is not hypothetical.  The folowing example works fine:
-> >
-> > static int noinline bpf_action(void *ctx, long fd, long buf, long count)
-> > {
-> >         int                     cpu = bpf_get_smp_processor_id();
-> >         struct data {
-> >                 u64     arg0;
-> >                 u64     arg1;
-> >                 u64     arg2;
-> >         }                       rec;
-> >
-> >         memset(&rec, 0, sizeof(rec));
-> >
-> >         rec.arg0 = fd;
-> >         rec.arg1 = buf;
-> >         rec.arg2 = count;
-> >
-> >         bpf_perf_event_output(ctx, &buffers, cpu, &rec, sizeof(rec));
-> >
-> >         return 0;
-> > }
-> >
-> > SEC("kprobe/ksys_write")
-> > int bpf_kprobe(struct pt_regs *ctx)
-> > {
-> >         return bpf_action(ctx, ctx->di, ctx->si, ctx->dx);
-> > }
-> >
-> > SEC("tracepoint/syscalls/sys_enter_write")
-> > int bpf_tp(struct syscalls_enter_write_args *ctx)
-> > {
-> >         return bpf_action(ctx, ctx->fd, ctx->buf, ctx->count);
-> > }
-> >
-> > char _license[] SEC("license") = "GPL";
-> > u32 _version SEC("version") = LINUX_VERSION_CODE;
+On Mon, Jun 17, 2019 at 12:24:12PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Mon, Jun 17, 2019 at 05:11:39PM +0800, Leo Yan escreveu:
+> > In the function trace__syscall_info(), it explicitly checks verbose
+> > level and print out log with fprintf().  Actually, we can use
+> > pr_debug() to do the same thing for debug logging.
+> > 
+> > This patch uses pr_debug() instead of fprintf() for debug logging; it
+> > includes a minor fixing for 'space before tab in indent', which
+> > dismisses git warning when apply it.
 > 
-> Great. Then you're all set to proceed with user space dtrace tooling, right?
+> But those are not fprintf(stdout,), they explicitely redirect to the
+> output file that the user may have specified using 'perf trace --output
+> filename.trace' :-)
 
-I can indeed proceed with the initial basics, yes, and have started.  I hope
-to have a first bare bones patch for review sometime next week.
+Thanks for pointing out, sorry for noise. Please drop this patch.
 
-> What you'll discover thought that it works only for simplest things
-> like above. libbpf assumes that everything in single elf will be used
-> and passes the whole thing to the kernel.
-> The verifer removes dead code only from single program.
-> It disallows unused functions. Hence libbpf needs to start doing
-> more "linker work" than it does today.
-> When it loads .o it needs to pass to the kernel only the functions
-> that are used by the program.
-> This work should be straightforward to implement.
-> Unfortunately no one had time to do it.
+Thanks,
+Leo Yan
 
-Ah yes, I see what you mean.  I'll work on that next since I will definitely
-be needing that.
-
-> It's also going to be the first step to multi-elf support.
-> libbpf would need to do the same "linker work" across .o-s.
+> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> > ---
+> >  tools/perf/builtin-trace.c | 21 +++++++++------------
+> >  1 file changed, 9 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+> > index bd1f00e7a2eb..5cd74651db4c 100644
+> > --- a/tools/perf/builtin-trace.c
+> > +++ b/tools/perf/builtin-trace.c
+> > @@ -1760,12 +1760,11 @@ static struct syscall *trace__syscall_info(struct trace *trace,
+> >  		 * grep "NR -1 " /t/trace_pipe
+> >  		 *
+> >  		 * After generating some load on the machine.
+> > - 		 */
+> > -		if (verbose > 1) {
+> > -			static u64 n;
+> > -			fprintf(trace->output, "Invalid syscall %d id, skipping (%s, %" PRIu64 ") ...\n",
+> > -				id, perf_evsel__name(evsel), ++n);
+> > -		}
+> > +		 */
+> > +		static u64 n;
+> > +
+> > +		pr_debug("Invalid syscall %d id, skipping (%s, %" PRIu64 ")\n",
+> > +			 id, perf_evsel__name(evsel), ++n);
+> >  		return NULL;
+> >  	}
+> >  
+> > @@ -1779,12 +1778,10 @@ static struct syscall *trace__syscall_info(struct trace *trace,
+> >  	return &trace->syscalls.table[id];
+> >  
+> >  out_cant_read:
+> > -	if (verbose > 0) {
+> > -		fprintf(trace->output, "Problems reading syscall %d", id);
+> > -		if (id <= trace->syscalls.max && trace->syscalls.table[id].name != NULL)
+> > -			fprintf(trace->output, "(%s)", trace->syscalls.table[id].name);
+> > -		fputs(" information\n", trace->output);
+> > -	}
+> > +	pr_debug("Problems reading syscall %d", id);
+> > +	if (id <= trace->syscalls.max && trace->syscalls.table[id].name != NULL)
+> > +		pr_debug("(%s)", trace->syscalls.table[id].name);
+> > +	pr_debug(" information\n");
+> >  	return NULL;
+> >  }
+> >  
+> > -- 
+> > 2.17.1
+> 
+> -- 
+> 
+> - Arnaldo
