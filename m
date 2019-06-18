@@ -2,55 +2,24 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 597AC495D8
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2019 01:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F8D4963F
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2019 02:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727000AbfFQX1r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Jun 2019 19:27:47 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:41804 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbfFQX1r (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Jun 2019 19:27:47 -0400
-Received: by mail-lf1-f66.google.com with SMTP id 136so7804972lfa.8;
-        Mon, 17 Jun 2019 16:27:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QisCyCC54c07CEBGHobCKmvjRF6o16SJc0jsMHiIM7g=;
-        b=hmbtH/IfkTu93XQQwhf9/9RUweB6+Pdartk6RdwC3ujCAXPsDneN73WM2Hw6zzgplF
-         o7wbH2U1mFiDhflep7nxzQPruUf5LPsv1/RDuoED2C8iJvORZO4Q51hE6PKj8zf+XT02
-         Go0FvHXeUdMEpyVozJjoKBAyX2WRsD4U+qFegmfvZ8Jwx7UwzrKxAPa0yoFSQ7zUau31
-         XQXra2NH249uB7f7y613KX2GA/CcwKWiWN1LskOTdoGLzdz02gH8qjeCBd7+qce9BEhL
-         1ElRkaIGUbi1djaHAQcyLVgeVmwIr6aHK7sOBZ7Ri9a/YNNQuWACWWDv/RxnMqH8vCZY
-         am6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QisCyCC54c07CEBGHobCKmvjRF6o16SJc0jsMHiIM7g=;
-        b=ETGC6yW2fBM0f+4ah5TeN63ufmwnP/ITh4x0fOEFU2EjkBGPHG7W0ZmiM4cXBHzbo2
-         lve5L4i0VDFUvd57gHzzkiioQuSBXzt7xrVODC8vTCeSIXzO7ItDBo6KYz7MHb1T3t9k
-         QVeOPkD7Md1nNooLxlwiES7grqNNMGTxPFLufhAtHW0ZaIzp1TtPmKWIlow3ipvcownf
-         I4gE2aBLoCc2Gi3mUZgoP1Ms3kNEr0vxP3dJfCif7GQX/QCAr++HsZAB85OAc7DFedLJ
-         Qd/8eQTrG9nEcMaouSXDnimKoEbVXLjBj228xJ9TL/1tkDiyvDN141drEKLLuS3lGP4O
-         Gr9A==
-X-Gm-Message-State: APjAAAVKcpG+RLvJvqrq0HIKMtRG14KT9+XZ/aH/L5AKe5etnym/mdHI
-        JlBRsa6OwfnN3BYvaLAuPz6hU/KdNOxfhCvzCXc=
-X-Google-Smtp-Source: APXvYqyfOPEJkS/5em0MecrHc0LkqJOWEx/G9vo7GL/zaM1yWRKjGDG3BHUevUEtJb9/Oph3JOElDJ6u3YctS6Eiq58=
-X-Received: by 2002:ac2:46f9:: with SMTP id q25mr4317288lfo.181.1560814065032;
- Mon, 17 Jun 2019 16:27:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190617125724.1616165-1-arnd@arndb.de> <CAADnVQ+LzuNHFyLae0vUAudZpOFQ4cA02OC0zu3ypis+gqnjew@mail.gmail.com>
- <20190617190920.71c21a6c@gandalf.local.home> <75e9ff40e1002ad9c82716dfd77966a3721022b6.camel@fb.com>
-In-Reply-To: <75e9ff40e1002ad9c82716dfd77966a3721022b6.camel@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 17 Jun 2019 16:27:33 -0700
-Message-ID: <CAADnVQKCeHrq+bf4DceH7+ihpq+q-V+bFOiF-TpYjekH7dPA0w@mail.gmail.com>
-Subject: Re: [PATCH] bpf: hide do_bpf_send_signal when unused
-To:     Matt Mullins <mmullins@fb.com>
-Cc:     "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        Song Liu <songliubraving@fb.com>,
+        id S1727261AbfFRASx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Jun 2019 20:18:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56116 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726568AbfFRASx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Jun 2019 20:18:53 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9602B20861;
+        Tue, 18 Jun 2019 00:18:51 +0000 (UTC)
+Date:   Mon, 17 Jun 2019 20:18:50 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Matt Mullins <mmullins@fb.com>, Song Liu <songliubraving@fb.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
@@ -59,20 +28,38 @@ Cc:     "rostedt@goodmis.org" <rostedt@goodmis.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
         "arnd@arndb.de" <arnd@arndb.de>, Andrii Nakryiko <andriin@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] bpf: hide do_bpf_send_signal when unused
+Message-ID: <20190617201850.010a4cf6@gandalf.local.home>
+In-Reply-To: <CAADnVQKCeHrq+bf4DceH7+ihpq+q-V+bFOiF-TpYjekH7dPA0w@mail.gmail.com>
+References: <20190617125724.1616165-1-arnd@arndb.de>
+        <CAADnVQ+LzuNHFyLae0vUAudZpOFQ4cA02OC0zu3ypis+gqnjew@mail.gmail.com>
+        <20190617190920.71c21a6c@gandalf.local.home>
+        <75e9ff40e1002ad9c82716dfd77966a3721022b6.camel@fb.com>
+        <CAADnVQKCeHrq+bf4DceH7+ihpq+q-V+bFOiF-TpYjekH7dPA0w@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 17, 2019 at 4:13 PM Matt Mullins <mmullins@fb.com> wrote:
-> >
-> > The bug (really just a warning) reported is exactly here.
->
-> I don't think bpf_send_signal is tied to modules at all;
-> send_signal_irq_work_init and the corresponding initcall should be
-> moved outside that #ifdef.
+On Mon, 17 Jun 2019 16:27:33 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-right. I guess send_signal_irq_work_init was accidentally placed
-after bpf_event_init and happened to be within that ifdef.
-Should definitely be outside.
+> On Mon, Jun 17, 2019 at 4:13 PM Matt Mullins <mmullins@fb.com> wrote:
+> > >
+> > > The bug (really just a warning) reported is exactly here.  
+> >
+> > I don't think bpf_send_signal is tied to modules at all;
+> > send_signal_irq_work_init and the corresponding initcall should be
+> > moved outside that #ifdef.  
+> 
+> right. I guess send_signal_irq_work_init was accidentally placed
+> after bpf_event_init and happened to be within that ifdef.
+> Should definitely be outside.
+
+So Arnd did find a bug. Just the wrong solution ;-)
+
+-- Steve
