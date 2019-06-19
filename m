@@ -2,279 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6B24C235
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2019 22:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5ACA4C286
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2019 22:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729971AbfFSURM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jun 2019 16:17:12 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:41534 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726322AbfFSURM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Jun 2019 16:17:12 -0400
-Received: by mail-pl1-f195.google.com with SMTP id m7so287926pls.8
-        for <bpf@vger.kernel.org>; Wed, 19 Jun 2019 13:17:11 -0700 (PDT)
+        id S1726449AbfFSUpc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jun 2019 16:45:32 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:54610 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726230AbfFSUpb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Jun 2019 16:45:31 -0400
+Received: by mail-wm1-f68.google.com with SMTP id g135so831714wme.4
+        for <bpf@vger.kernel.org>; Wed, 19 Jun 2019 13:45:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dNGtB2/j9PYYH31M5eB19QzHomZYS/RVbusazuJ6FEY=;
-        b=aJe0hjGAd2Qv43z/bqYgRyggkcUcTuDmUdml5ZD+r2VxJJLbrS79wE/sV5MlyFVKOt
-         ge+4vPvvScM0ls+7qRmcmPlra1kJj9PdpVtwhxQp9P1WdfZz84ILDBDkqDCPZ3ABiNlk
-         WRl+3QmlONScuvw2BO0ka1/iSlB/BrXzRPNUBjPiAdREjuOpFp62S3R7F7v7tlFbyDZ5
-         Lw7iHtcqqsZP+qHRCcd8t2UWH6/5CKBcIOB1waVmadaarDqthWFWxnbadfvdS1R/gDND
-         JE8c+jQ1eJ7nkJjFw2tSDbsLyE3/q90YlF4PCX38wW27UEWzy+NxLWJI23IeZsG9lW6M
-         RFvw==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=+cVbQuinB0gXdYIWimy8pDMGfWtqAQMswKhS2gmefNs=;
+        b=qimQMr9WiUhbndQru7ZqwmUTbBW9gJTRFM9d5kEz/eez46p7AXBTh6+x6HssF7/4hW
+         TNDihwMsKxGqX6MahMqgu29mANqmAOo+UW0ZZ8Oxy9Es0xfNxml84rvCZirTS4ODr7H6
+         AAr2mNVbLJy0rxjfK/aB2Iugnq0WfR5zAjWDt9bb2TRLjOvvIbaXbZHebB9YFFQhOnEA
+         9wyKxjerpEwpG8z7kZTGtmqGB/b5IvdwnA5M5LXvDz2nAcmZhzQ7A/3QLDmpMIbxQaBs
+         Z0kQ9btfQebYuYHS0PL3qxFEszU4M7Fy77slGZ/tg+q+xxKPePF8w7LT8amycp0V055Z
+         akSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dNGtB2/j9PYYH31M5eB19QzHomZYS/RVbusazuJ6FEY=;
-        b=fRDGiD4a3+BDZRKSL4vYff0S1g/TamIrWLDwwsuAAudnVlYKHgmgmJ+OpAIDlqHUER
-         LVOV7euZBqe/1dgqKnWkk5wIzzXl5MWVmGk+9VbKLPEFsDW6Cp3vqSBHAyrZs0kEhb9J
-         BmDCBwr+C0UctmJhmPm4oWbUCmFynBkQ8ylJ3xW0FH9NQDCCM/eGCq6Cbgec9lbHh6FC
-         qCIuVZo5idkSkceFDU0iBPjg3PV5p90DGkaMRMtm5enZBlso4PsOTpJEd5szwqzvENZw
-         7kHSrQMDhXtmHgsZUeW72UxKO+gu2MQLcyxhOp1Yntlo8WlYwqtE1P9S8+Gm/1ac+TL8
-         +66A==
-X-Gm-Message-State: APjAAAXE0O1wRs4TRLyH9fHe+ZI97ZeBS4PrR/O+M4nowDhnXzXVYoXa
-        FFAO8YP5p64d+GlWPpivPKB/hw==
-X-Google-Smtp-Source: APXvYqwSK6CVuWdCnjE1l5Xqq1HGG29TCFdmy52KVq8y2JeHRP+4Jv2MC58G6RaJJbfpfLf8DkAX9g==
-X-Received: by 2002:a17:902:59da:: with SMTP id d26mr60987807plj.306.1560975431501;
-        Wed, 19 Jun 2019 13:17:11 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id b7sm17953159pgq.71.2019.06.19.13.17.10
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 19 Jun 2019 13:17:10 -0700 (PDT)
-Date:   Wed, 19 Jun 2019 13:17:10 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version:content-transfer-encoding;
+        bh=+cVbQuinB0gXdYIWimy8pDMGfWtqAQMswKhS2gmefNs=;
+        b=U+xItBDaDFqhWT/aGd0hJuGYMwnZEyPV7Rnov0r3BZQ84uCK7chat5lVsagBT5lMkN
+         E5ONNjvMZynuH2+5Ur8sw9V7BJfR/toaPYSNsD7W9RArBnr/Jv/VLKfcCUhFoQzFasN6
+         n/ETjFMA3QJJXUVsLtrrACWafBfjuE6QysnuG91rzBN9SDs4LFvSdmDDQcNgYumqtK2f
+         8eDRJBeNa6qz5Y4lTD8IKhFVV32byU9SkKY74jjObhfw18PHUSZd21jJU/9JaVZROY2E
+         enwGabMV4DecaqluUqUuD7bf+s+7AoJ6iAxpYqWNf8a5iuM17vke0QvQfs4jjWauIKPK
+         fnsw==
+X-Gm-Message-State: APjAAAVC43acsE1PikfKEHtiJ1UBomWC8bRyaWDW6mjOoPg5B9ksZJpl
+        ODYAMQPNqSOd9lPt/lYB3zjcGA==
+X-Google-Smtp-Source: APXvYqy+vd6GbBZerEcvMwTL0G282UJ//9AwBhMYKMobXZqGiFj3357cHYRTSCwaOXqTpQmA2aHjUQ==
+X-Received: by 2002:a1c:e90f:: with SMTP id q15mr10195899wmc.89.1560977128877;
+        Wed, 19 Jun 2019 13:45:28 -0700 (PDT)
+Received: from LAPTOP-V3S7NLPL (cpc1-cmbg19-2-0-cust104.5-4.cable.virginm.net. [82.27.180.105])
+        by smtp.gmail.com with ESMTPSA id g10sm14179227wrw.60.2019.06.19.13.45.27
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 19 Jun 2019 13:45:28 -0700 (PDT)
+References: <20190612113208.21865-1-naveen.n.rao@linux.vnet.ibm.com> <CAADnVQLp+N8pYTgmgEGfoubqKrWrnuTBJ9z2qc1rB6+04WfgHA@mail.gmail.com> <87sgse26av.fsf@netronome.com> <87r27y25c3.fsf@netronome.com> <CAADnVQJZkJu60jy8QoomVssC=z3NE4402bMnfobaWNE_ANC6sg@mail.gmail.com> <87ef3w5hew.fsf@netronome.com> <41dfe080-be03-3344-d279-e638a5a6168d@solarflare.com> <878su0geyt.fsf@netronome.com> <58d86352-4989-38d6-666b-5e932df9ed46@solarflare.com> <877e9kgd39.fsf@netronome.com> <f2a74aac-7350-8b35-236a-b17323bb79e6@solarflare.com>
+User-agent: mu4e 0.9.18; emacs 25.2.2
+From:   Jiong Wang <jiong.wang@netronome.com>
+To:     Edward Cree <ecree@solarflare.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     Jiong Wang <jiong.wang@netronome.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>
-Subject: Re: [PATCH bpf-next v7 1/9] bpf: implement getsockopt and setsockopt
- hooks
-Message-ID: <20190619201710.GB19111@mini-arch>
-References: <20190619165957.235580-1-sdf@google.com>
- <20190619165957.235580-2-sdf@google.com>
- <CAEf4BzZWJVWr295-6TY=pbTNoeB9cfRwpDiuRyAxajOsV_6yDQ@mail.gmail.com>
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>
+Subject: Re: [PATCH] bpf: optimize constant blinding
+In-reply-to: <f2a74aac-7350-8b35-236a-b17323bb79e6@solarflare.com>
+Date:   Wed, 19 Jun 2019 21:45:25 +0100
+Message-ID: <87wohhxq1m.fsf@netronome.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZWJVWr295-6TY=pbTNoeB9cfRwpDiuRyAxajOsV_6yDQ@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/19, Andrii Nakryiko wrote:
-> On Wed, Jun 19, 2019 at 10:00 AM Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > Implement new BPF_PROG_TYPE_CGROUP_SOCKOPT program type and
-> > BPF_CGROUP_{G,S}ETSOCKOPT cgroup hooks.
-> >
-> > BPF_CGROUP_SETSOCKOPT get a read-only view of the setsockopt arguments.
-> > BPF_CGROUP_GETSOCKOPT can modify the supplied buffer.
-> > Both of them reuse existing PTR_TO_PACKET{,_END} infrastructure.
-> >
-> > The buffer memory is pre-allocated (because I don't think there is
-> > a precedent for working with __user memory from bpf). This might be
-> > slow to do for each {s,g}etsockopt call, that's why I've added
-> > __cgroup_bpf_prog_array_is_empty that exits early if there is nothing
-> > attached to a cgroup. Note, however, that there is a race between
-> > __cgroup_bpf_prog_array_is_empty and BPF_PROG_RUN_ARRAY where cgroup
-> > program layout might have changed; this should not be a problem
-> > because in general there is a race between multiple calls to
-> > {s,g}etsocktop and user adding/removing bpf progs from a cgroup.
-> >
-> > The return code of the BPF program is handled as follows:
-> > * 0: EPERM
-> > * 1: success, continue with next BPF program in the cgroup chain
-> >
-> > v7:
-> > * return only 0 or 1 (Alexei Starovoitov)
-> > * always run all progs (Alexei Starovoitov)
-> > * use optval=0 as kernel bypass in setsockopt (Alexei Starovoitov)
-> >   (decided to use optval=-1 instead, optval=0 might be a valid input)
-> > * call getsockopt hook after kernel handlers (Alexei Starovoitov)
-> >
-> > v6:
-> > * rework cgroup chaining; stop as soon as bpf program returns
-> >   0 or 2; see patch with the documentation for the details
-> > * drop Andrii's and Martin's Acked-by (not sure they are comfortable
-> >   with the new state of things)
-> 
-> I like the general approach, just overall unclear about seemingly
-> artificial restrictions I mentioned below.
-> 
-> >
-> > v5:
-> > * skip copy_to_user() and put_user() when ret == 0 (Martin Lau)
-> >
-> > v4:
-> > * don't export bpf_sk_fullsock helper (Martin Lau)
-> > * size != sizeof(__u64) for uapi pointers (Martin Lau)
-> > * offsetof instead of bpf_ctx_range when checking ctx access (Martin Lau)
-> >
-> > v3:
-> > * typos in BPF_PROG_CGROUP_SOCKOPT_RUN_ARRAY comments (Andrii Nakryiko)
-> > * reverse christmas tree in BPF_PROG_CGROUP_SOCKOPT_RUN_ARRAY (Andrii
-> >   Nakryiko)
-> > * use __bpf_md_ptr instead of __u32 for optval{,_end} (Martin Lau)
-> > * use BPF_FIELD_SIZEOF() for consistency (Martin Lau)
-> > * new CG_SOCKOPT_ACCESS macro to wrap repeated parts
-> >
-> > v2:
-> > * moved bpf_sockopt_kern fields around to remove a hole (Martin Lau)
-> > * aligned bpf_sockopt_kern->buf to 8 bytes (Martin Lau)
-> > * bpf_prog_array_is_empty instead of bpf_prog_array_length (Martin Lau)
-> > * added [0,2] return code check to verifier (Martin Lau)
-> > * dropped unused buf[64] from the stack (Martin Lau)
-> > * use PTR_TO_SOCKET for bpf_sockopt->sk (Martin Lau)
-> > * dropped bpf_target_off from ctx rewrites (Martin Lau)
-> > * use return code for kernel bypass (Martin Lau & Andrii Nakryiko)
-> >
-> > Cc: Martin Lau <kafai@fb.com>
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> 
-> <snip>
-> 
-> >
-> > +struct bpf_sockopt_kern {
-> > +       struct sock     *sk;
-> > +       u8              *optval;
-> > +       u8              *optval_end;
-> > +       s32             level;
-> > +       s32             optname;
-> > +       u32             optlen;
-> 
-> Optlen is used below as signed integer, so switch it to s32?
-Good catch, should be s32 here and below, thanks!
 
-> > +       s32             retval;
-> > +
-> > +       /* Small on-stack optval buffer to avoid small allocations.
-> > +        */
-> > +       u8 buf[64] __aligned(8);
-> > +};
-> > +
-> 
-> <snip>
-> 
-> >
-> > +struct bpf_sockopt {
-> > +       __bpf_md_ptr(struct bpf_sock *, sk);
-> > +       __bpf_md_ptr(void *, optval);
-> > +       __bpf_md_ptr(void *, optval_end);
-> > +
-> > +       __s32   level;
-> > +       __s32   optname;
-> > +       __u32   optlen;
-> 
-> Same as above, we expect BPF program to be able to set it to -1, so __s32?
-> 
-> > +       __s32   retval;
-> > +};
-> > +
-> >  #endif /* _UAPI__LINUX_BPF_H__ */
-> > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> 
-> <snip>
-> 
-> > +
-> > +       if (ctx.optlen == -1)
-> > +               /* optlen set to -1, bypass kernel */
-> > +               ret = 1;
-> > +       else if (ctx.optlen == optlen)
-> > +               /* optlen not changed, run kernel handler */
-> > +               ret = 0;
-> > +       else
-> > +               /* any other value is rejected */
-> > +               ret = -EFAULT;
-> 
-> I'm consufed about this assymetry between getsockopt and setsockopt
-> behavior. Why we are disallowing setsockopt from changing optlen (and
-> value itself)? Is there any harm in allowing that? Imagining some use
-> case that provides transparent "support" for some option, you'd need
-> to be able to intercept and provide custom values both for setsockopt
-> and getsockopt. So unless I'm missing some security implications, why
-> not make both sides able to write?
-Because kernel setsockopt handlers use get_user to read the data. We
-can definitely allow changing optval+optlen, but we'd have to copy
-that data back to userspace to let kernel handle it. I'm not sure how
-userspace might feel about it. Can it be a buffer in the readonly
-elf section?
+Edward Cree writes:
 
-> Similar will apply w.r.t. retval, why can't setsockopt return EINVAL
-> to reject some options? This seems very useful and very similar to
-> what sysctl BPF hooks do.
-I was just being defensive because I'm not sure what's the use-case.
-We can already return EPERM, why do we need to return a different
-error code? Are we comfortable letting progs return arbitrary number?
-Or you just want to allow a bunch of pre-defined error codes?
+> On 17/06/2019 21:40, Jiong Wang wrote:
+>> Now if we don't split patch when patch an insn inside patch, instead, if we
+>> replace the patched insn using what you suggested, then the logic looks to
+>> me becomes even more complex, something like
+>>
+>>    for (idx = 0; idx < insn_cnt; idx++) {
+>>      if (insns[idx] is not BPF_LIST_INSN) {
+>>        do_insn(...)
+>>      }
+>>      else if (insns[idx] is BPF_LIST_INSN) {
+>>        list = pool_base + insn.imm;
+>>        while (list) {
+>>          insn = list_head->insn;
+>>          if (insn is BF_LIST_INSN) {
+>>            sub_list = ...
+>>            while ()
+>>              do_insn()
+>>            continue;
+>>          }
+>>          do_insn(...)
+>>          list = pool_base + list->next;
+>>        }
+>>      }
+>>    }
+> Why can't do_insn() just go like:
+>     if (insn is BPF_LIST_INSN)
+>         for (idx = 0; idx < LIST_COUNT(insn); idx++)
+>             do_insn(pool_base + LIST_START(insn) + idx);
+>     else
+>         rest of processing
+> ?
+>
+> Alternatively, iterate with something more sophisticated than 'idx++'
+>  (standard recursion-to-loop transformation).
+> You shouldn't ever need a for() tower statically in the code...
 
-I haven't seen the ability to return arbitrary error from the sysctl
-hooks, but maybe I didn't look hard enough.
+I don't think this changes things much, the point is we still have two data
+structures for insns, array + list, so I fell you anyway need some tweak on
+existing traverse code while using singly linked list incurs very little
+changes, for example:
 
-> > +
-> > +out:
-> > +       sockopt_free_buf(&ctx);
-> > +       return ret;
-> > +}
-> > +EXPORT_SYMBOL(__cgroup_bpf_run_filter_setsockopt);
-> > +
-> > +int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
-> > +                                      int optname, char __user *optval,
-> > +                                      int __user *optlen, int max_optlen,
-> > +                                      int retval)
-> > +{
-> 
-> <snip>
-> 
-> > +
-> > +       if (ctx.optlen > max_optlen) {
-> > +               ret = -EFAULT;
-> > +               goto out;
-> > +       }
-> > +
-> > +       /* BPF programs only allowed to set retval to 0, not some
-> > +        * arbitrary value.
-> > +        */
-> > +       if (ctx.retval != 0 && ctx.retval != retval) {
-> 
-> Lookin at manpage of getsockopt, seems like at least two error codes
-> are relevant and generally useful for BPF program to be able to
-> return: EINVAL and ENOPROTOOPT? Why we are disallowing anything but 0
-> (or preserving original retval)?
-I was thinking about simple use-case where it's either BPF that
-handles the opt or the kernel. And then it's BFP returning success or
-EPERM. I don't think I understand why BPF needs to be able to
-return different error codes. We can certainly do that if you think
-that it makes sense; alternatively, we can start with 0 or kernel retval
-and relax the requirements if someone really needs that in the future.
+  for (i = 0; i < insn_cnt; i++, insn++) {
 
-(I don't have a strong opinion here tbh).
+  =>
 
-> > +               ret = -EFAULT;
-> > +               goto out;
-> > +       }
-> > +
-> > +       if (copy_to_user(optval, ctx.optval, ctx.optlen) ||
-> > +           put_user(ctx.optlen, optlen)) {
-> > +               ret = -EFAULT;
-> > +               goto out;
-> > +       }
-> > +
-> > +       ret = ctx.retval;
-> > +
-> > +out:
-> > +       sockopt_free_buf(&ctx);
-> > +       return ret;
-> > +}
-> > +EXPORT_SYMBOL(__cgroup_bpf_run_filter_getsockopt);
-> > +
-> 
-> <snip>
+  for (elem = list; elem; elem = elem->next) {
+    insn = elem->insn;
+
+>> So, I am thinking what Alexei and Andrii suggested make sense, just use
+>> single data structure (singly linked list) to represent everything, so the
+>> insn traversal etc could be simple
+> But then you have to also store orig_insn_idx with each insn, so you can
+>  calculate the new jump offsets when you linearise.  Having an array of
+>  patched_orig_insns gives you that for free.
+
+For pool based list, you don't need to store orig_insn_idx, those orig ones
+are guaranteed at the bottom of the pool, so just use index < orig_prog_len
+then you could know it is the orig insn. And for both pool and non-pool
+based list, the order of orig node in the list is the same as in array, so
+it quite easy to calculate the orig index as a by-product inside insn copy
+traverse, for non-pool base list, each node needs at least one bit to
+indicate it is orig node. I also found when patching a patched buffer which
+contains jmp insn is an issue (need to double check to see if there is such
+case), because then we will need to record the jump destination index of
+the jmp insn when it was inserted.
+
+And some updates on my side, did some benchmarking on both pool and
+non-pool based list.
+
+Patching time (ns) benchmarked using JIT blinding
+===
+
+                    existing    non-pool      pool
+
+"scale test 1"      no stop    ~0x1c600000  ~0x8800000
+Bench(~3.4K insns)  ~0xc50000  ~0xf1000     ~6b000
+
+(The non-pool means kmalloc a list node for each patch snippet, pool means
+vmalloc a big chunk of mem and allocate node from it, node is located using
+pool_base + index)
+
+For "scale test 1" which contains ~1M JIT blindable insns, using list based
+infra for patching could reduce most of the patching time, and pool based
+alloc only consumes 1/3 time of non-pool.
+
+And for a normal program with reasonable size (~3.4K), pool based alloc
+only consumes 1/30 time of exsisting infra, and 1/2.3 of non-pool.
+
+On the other hand, non-pool based implementation is cleaner and less error
+prone than pool based implementation.
+
+And for both pool and non-pool, I got the following kernel warning when
+running "scale test 11" (perhaps needs 3M * 16 ~= 48M mem)
+
+[   92.319792] WARNING: CPU: 6 PID: 2322 at mm/page_alloc.c:4639 __alloc_pages_nodemask+0x29e/0x330
+
+I am finishing aux adjust and code delete support.
+
+Regards,
+Jiong
