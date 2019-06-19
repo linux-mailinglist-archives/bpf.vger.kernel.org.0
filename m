@@ -2,336 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B91EB4C042
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2019 19:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5EC14C132
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2019 21:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726246AbfFSRt5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jun 2019 13:49:57 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:37376 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726518AbfFSRt5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Jun 2019 13:49:57 -0400
-Received: by mail-io1-f67.google.com with SMTP id e5so17541iok.4
-        for <bpf@vger.kernel.org>; Wed, 19 Jun 2019 10:49:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bmLaCWt5UCH3YXBEmMBN+/+tS5kXmSuF3wP3XuQD49w=;
-        b=GW8nrYT3hnch00JV9geW9v2U4EcUTvUQqklHcdGkMTDPjwLHjXTK+HUjpkyElUcNAk
-         Y+n5/o4kr/7NCjPzCvCy89PdWWHg6QOvAF8jHkuseDTySqOD0/C7HUbj3C1crVGHOYEw
-         Fc+xbJ39sZVfYhKiqg5gfyC3WfzsBc2p3EdSCKrZIcPsjfZbPqkABDOHCGGEZFIDYPRR
-         eNshs+1zPIF8a3zxs3arBF2f0k+WsGGr6lbIOiU9QakQqDIBnkBxOxjcrOv7s+KPcstA
-         VXtXwri7RLydgiJlnmCWk6LQnbm0NARUbURfQwEeRRL8wg5RBdU/3OoaML59AatSPrvx
-         LWNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bmLaCWt5UCH3YXBEmMBN+/+tS5kXmSuF3wP3XuQD49w=;
-        b=G3XlAxWqGKGDeoET+JPM7Jg5c+pM+wxdHnQBjjbRULRKt3696h4otrdTUQdLE8Ng6h
-         LHjmwdmTfHhoY/saWM5nkahy0p2mt2HB57ztTqHPxxMfFFQLdcjz6Lq2hZAE9xiUE9cl
-         BdMO1Frx9mucn53KecY4cxtOzVWVgp4nCr+tAGgvYFJPM0vSm8PtmQ+6g3nt/QrmpAJr
-         QY5t5gT4Lycy3ncWD9pclZ8o0WcII4CIJc6W95J+wF9hh2zC3PLE8Nx//GlTH6+Y5Iks
-         puRFgY30D5drU8/JW8YkGdG/jitpsriyuSu9kHEPLaPA3qJEjegFU1sMxzlQbg9SGr1u
-         4Pmg==
-X-Gm-Message-State: APjAAAXWYrPL1LYr+CZ3GxLxBTICFBs0AR6gJvfM4o0JsVGRnKPZhoZC
-        b7Q5AaXxlSUy18wm1G6BfonGlgpzzOcdifmRSJ8Wnw==
-X-Google-Smtp-Source: APXvYqyDXf/rLJTkinFSKjWI6OcHc6C9BZFfI9H7BwpF2w1mPjKjkIm8Usoy8JL2pmtWWwahcBfnYN5wjzXSEAmulIg=
-X-Received: by 2002:a6b:7d49:: with SMTP id d9mr24556639ioq.50.1560966595680;
- Wed, 19 Jun 2019 10:49:55 -0700 (PDT)
+        id S1726496AbfFSTGl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jun 2019 15:06:41 -0400
+Received: from gateway23.websitewelcome.com ([192.185.50.119]:12772 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726380AbfFSTGl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 19 Jun 2019 15:06:41 -0400
+X-Greylist: delayed 1227 seconds by postgrey-1.27 at vger.kernel.org; Wed, 19 Jun 2019 15:06:40 EDT
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id 6FEA76A1E
+        for <bpf@vger.kernel.org>; Wed, 19 Jun 2019 13:46:12 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id dfb2hzb21YTGMdfb2hvAkx; Wed, 19 Jun 2019 13:46:12 -0500
+X-Authority-Reason: nr=8
+Received: from [187.160.61.213] (port=39053 helo=[192.168.0.9])
+        by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1hdfb2-000DhH-0B; Wed, 19 Jun 2019 13:46:12 -0500
+Subject: Re: [PATCH][bpf-next] bpf: verifier: add a break statement in switch
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Lawrence Brakmo <brakmo@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
+References: <20190619160708.GA30356@embeddedor>
+ <CAEf4BzbVWSd=xVHdbM1R_u_V_HA7DESdF=gL9aH76VC25oq1dg@mail.gmail.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ VtSixD1uOgytAP7RWS474w==
+Message-ID: <ac7c8305-efc5-ffb6-f8a2-9595b2e06197@embeddedor.com>
+Date:   Wed, 19 Jun 2019 13:46:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-References: <20190617150024.11787-1-leo.yan@linaro.org>
-In-Reply-To: <20190617150024.11787-1-leo.yan@linaro.org>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Wed, 19 Jun 2019 11:49:44 -0600
-Message-ID: <CANLsYkyMW=WG+=yWTLSyMT3JXqd_2kvsrx9c-EwCoKEnRZvErA@mail.gmail.com>
-Subject: Re: [PATCH] perf cs-etm: Improve completeness for kernel address space
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suzuki Poulouse <suzuki.poulose@arm.com>,
-        Coresight ML <coresight@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAEf4BzbVWSd=xVHdbM1R_u_V_HA7DESdF=gL9aH76VC25oq1dg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.160.61.213
+X-Source-L: No
+X-Exim-ID: 1hdfb2-000DhH-0B
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.0.9]) [187.160.61.213]:39053
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 9
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Leo,
 
-On Mon, 17 Jun 2019 at 09:00, Leo Yan <leo.yan@linaro.org> wrote:
->
-> Arm and arm64 architecture reserve some memory regions prior to the
-> symbol '_stext' and these memory regions later will be used by device
-> module and BPF jit.  The current code misses to consider these memory
-> regions thus any address in the regions will be taken as user space
-> mode, but perf cannot find the corresponding dso with the wrong CPU
-> mode so we misses to generate samples for device module and BPF
-> related trace data.
->
-> This patch parse the link scripts to get the memory size prior to start
-> address and reduce this size from 'etmq->etm->kernel_start', then can
-> get a fixed up kernel start address which contain memory regions for
-> device module and BPF.  Finally, cs_etm__cpu_mode() can return right
-> mode for these memory regions and perf can successfully generate
-> samples.
->
-> The reason for parsing the link scripts is Arm architecture changes text
-> offset dependent on different platforms, which define multiple text
-> offsets in $kernel/arch/arm/Makefile.  This offset is decided when build
-> kernel and the final value is extended in the link script, so we can
-> extract the used value from the link script.  We use the same way to
-> parse arm64 link script as well.  If fail to find the link script, the
-> pre start memory size is assumed as zero, in this case it has no any
-> change caused with this patch.
->
-> Below is detailed info for testing this patch:
->
-> - Build LLVM/Clang 8.0 or later version;
->
-> - Configure perf with ~/.perfconfig:
->
->   root@debian:~# cat ~/.perfconfig
->   # this file is auto-generated.
->   [llvm]
->           clang-path =3D /mnt/build/llvm-build/build/install/bin/clang
->           kbuild-dir =3D /mnt/linux-kernel/linux-cs-dev/
->           clang-opt =3D "-DLINUX_VERSION_CODE=3D0x50200 -g"
->           dump-obj =3D true
->
->   [trace]
->           show_zeros =3D yes
->           show_duration =3D no
->           no_inherit =3D yes
->           show_timestamp =3D no
->           show_arg_names =3D no
->           args_alignment =3D 40
->           show_prefix =3D yes
->
-> - Run 'perf trace' command with eBPF event:
->
->   root@debian:~# perf trace -e string \
->       -e $kernel/tools/perf/examples/bpf/augmented_raw_syscalls.c
->
-> - Read eBPF program memory mapping in kernel:
->
->   root@debian:~# echo 1 > /proc/sys/net/core/bpf_jit_kallsyms
->   root@debian:~# cat /proc/kallsyms | grep -E "bpf_prog_.+_sys_[enter|exi=
-t]"
->   ffff000000086a84 t bpf_prog_f173133dc38ccf87_sys_enter  [bpf]
->   ffff000000088618 t bpf_prog_c1bd85c092d6e4aa_sys_exit   [bpf]
->
-> - Launch any program which accesses file system frequently so can hit
->   the system calls trace flow with eBPF event;
->
-> - Capture CoreSight trace data with filtering eBPF program:
->
->   root@debian:~# perf record -e cs_etm/@20070000.etr/ \
->           --filter 'filter 0xffff000000086a84/0x800' -a sleep 5s
->
-> - Annotate for symbol 'bpf_prog_f173133dc38ccf87_sys_enter':
->
->   root@debian:~# perf report
->   Then select 'branches' samples and press 'a' to annotate symbol
->   'bpf_prog_f173133dc38ccf87_sys_enter', press 'P' to print to the
->   bpf_prog_f173133dc38ccf87_sys_enter.annotation file:
->
->   root@debian:~# cat bpf_prog_f173133dc38ccf87_sys_enter.annotation
->
->   bpf_prog_f173133dc38ccf87_sys_enter() bpf_prog_f173133dc38ccf87_sys_ent=
-er
->   Event: branches
->
->   Percent      int sys_enter(struct syscall_enter_args *args)
->                  stp  x29, x30, [sp, #-16]!
->
->                 int key =3D 0;
->                  mov  x29, sp
->
->                        augmented_args =3D bpf_map_lookup_elem(&augmented_=
-filename_map, &key);
->                  stp  x19, x20, [sp, #-16]!
->
->                        augmented_args =3D bpf_map_lookup_elem(&augmented_=
-filename_map, &key);
->                  stp  x21, x22, [sp, #-16]!
->
->                  stp  x25, x26, [sp, #-16]!
->
->                 return bpf_get_current_pid_tgid();
->                  mov  x25, sp
->
->                 return bpf_get_current_pid_tgid();
->                  mov  x26, #0x0                         // #0
->
->                  sub  sp, sp, #0x10
->
->                 return bpf_map_lookup_elem(pids, &pid) !=3D NULL;
->                  add  x19, x0, #0x0
->
->                  mov  x0, #0x0                          // #0
->
->                  mov  x10, #0xfffffffffffffff8          // #-8
->
->                 if (pid_filter__has(&pids_filtered, getpid()))
->                  str  w0, [x25, x10]
->
->                 probe_read(&augmented_args->args, sizeof(augmented_args->=
-args), args);
->                  add  x1, x25, #0x0
->
->                 probe_read(&augmented_args->args, sizeof(augmented_args->=
-args), args);
->                  mov  x10, #0xfffffffffffffff8          // #-8
->
->                 syscall =3D bpf_map_lookup_elem(&syscalls, &augmented_arg=
-s->args.syscall_nr);
->                  add  x1, x1, x10
->
->                 syscall =3D bpf_map_lookup_elem(&syscalls, &augmented_arg=
-s->args.syscall_nr);
->                  mov  x0, #0xffff8009ffffffff           // #-140694538682=
-369
->
->                  movk x0, #0x6698, lsl #16
->
->                  movk x0, #0x3e00
->
->                  mov  x10, #0xffffffffffff1040          // #-61376
->
->                 if (syscall =3D=3D NULL || !syscall->enabled)
->                  movk x10, #0x1023, lsl #16
->
->                 if (syscall =3D=3D NULL || !syscall->enabled)
->                  movk x10, #0x0, lsl #32
->
->                 loop_iter_first()
->     3.69       =E2=86=92 blr  bpf_prog_f173133dc38ccf87_sys_enter
->                 loop_iter_first()
->                  add  x7, x0, #0x0
->
->                 loop_iter_first()
->                  add  x20, x7, #0x0
->
->                 int size =3D probe_read_str(&augmented_filename->value, f=
-ilename_len, filename_arg);
->                  mov  x0, #0x1                          // #1
->
->   [...]
->
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Suzuki Poulouse <suzuki.poulose@arm.com>
-> Cc: coresight@lists.linaro.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/Makefile.config | 24 ++++++++++++++++++++++++
->  tools/perf/util/cs-etm.c   | 26 +++++++++++++++++++++++++-
->  2 files changed, 49 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> index 51dd00f65709..4776c2c1fb6d 100644
-> --- a/tools/perf/Makefile.config
-> +++ b/tools/perf/Makefile.config
-> @@ -418,6 +418,30 @@ ifdef CORESIGHT
->      endif
->      LDFLAGS +=3D $(LIBOPENCSD_LDFLAGS)
->      EXTLIBS +=3D $(OPENCSDLIBS)
-> +    ifneq ($(wildcard $(srctree)/arch/arm64/kernel/vmlinux.lds),)
-> +      # Extract info from lds:
-> +      #  . =3D ((((((((0xffffffffffffffff)) - (((1)) << (48)) + 1) + (0)=
-) + (0x08000000))) + (0x08000000))) + 0x00080000;
-> +      # ARM64_PRE_START_SIZE :=3D (0x08000000 + 0x08000000 + 0x00080000)
-> +      ARM64_PRE_START_SIZE :=3D $(shell egrep ' \. \=3D \({8}0x[0-9a-fA-=
-F]+\){2}' \
-> +        $(srctree)/arch/arm64/kernel/vmlinux.lds | \
-> +        sed -e 's/[(|)|.|=3D|+|<|;|-]//g' -e 's/ \+/ /g' -e 's/^[ \t]*//=
-' | \
-> +        awk -F' ' '{print "("$$6 "+"  $$7 "+" $$8")"}' 2>/dev/null)
-> +    else
-> +      ARM64_PRE_START_SIZE :=3D 0
-> +    endif
-> +    CFLAGS +=3D -DARM64_PRE_START_SIZE=3D"$(ARM64_PRE_START_SIZE)"
-> +    ifneq ($(wildcard $(srctree)/arch/arm/kernel/vmlinux.lds),)
-> +      # Extract info from lds:
-> +      #   . =3D ((0xC0000000)) + 0x00208000;
-> +      # ARM_PRE_START_SIZE :=3D 0x00208000
-> +      ARM_PRE_START_SIZE :=3D $(shell egrep ' \. \=3D \({2}0x[0-9a-fA-F]=
-+\){2}' \
-> +        $(srctree)/arch/arm/kernel/vmlinux.lds | \
-> +        sed -e 's/[(|)|.|=3D|+|<|;|-]//g' -e 's/ \+/ /g' -e 's/^[ \t]*//=
-' | \
-> +        awk -F' ' '{print "("$$2")"}' 2>/dev/null)
-> +    else
-> +      ARM_PRE_START_SIZE :=3D 0
-> +    endif
-> +    CFLAGS +=3D -DARM_PRE_START_SIZE=3D"$(ARM_PRE_START_SIZE)"
->      $(call detected,CONFIG_LIBOPENCSD)
->      ifdef CSTRACE_RAW
->        CFLAGS +=3D -DCS_DEBUG_RAW
-> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> index 0c7776b51045..ae831f836c70 100644
-> --- a/tools/perf/util/cs-etm.c
-> +++ b/tools/perf/util/cs-etm.c
-> @@ -613,10 +613,34 @@ static void cs_etm__free(struct perf_session *sessi=
-on)
->  static u8 cs_etm__cpu_mode(struct cs_etm_queue *etmq, u64 address)
->  {
->         struct machine *machine;
-> +       u64 fixup_kernel_start =3D 0;
-> +       const char *arch;
->
->         machine =3D etmq->etm->machine;
-> +       arch =3D perf_env__arch(machine->env);
->
-> -       if (address >=3D etmq->etm->kernel_start) {
-> +       /*
-> +        * Since arm and arm64 specify some memory regions prior to
-> +        * 'kernel_start', kernel addresses can be less than 'kernel_star=
-t'.
-> +        *
-> +        * For arm architecture, the 16MB virtual memory space prior to
-> +        * 'kernel_start' is allocated to device modules, a PMD table if
-> +        * CONFIG_HIGHMEM is enabled and a PGD table.
-> +        *
-> +        * For arm64 architecture, the root PGD table, device module memo=
-ry
-> +        * region and BPF jit region are prior to 'kernel_start'.
-> +        *
-> +        * To reflect the complete kernel address space, compensate these
-> +        * pre-defined regions for kernel start address.
-> +        */
-> +       if (!strcmp(arch, "arm64"))
-> +               fixup_kernel_start =3D etmq->etm->kernel_start -
-> +                                    ARM64_PRE_START_SIZE;
-> +       else if (!strcmp(arch, "arm"))
-> +               fixup_kernel_start =3D etmq->etm->kernel_start -
-> +                                    ARM_PRE_START_SIZE;
 
-I will test your work but from a quick look wouldn't it be better to
-have a single define name here?  From looking at the modifications you
-did to Makefile.config there doesn't seem to be a reason to have two.
+On 6/19/19 12:44 PM, Andrii Nakryiko wrote:
+> On Wed, Jun 19, 2019 at 9:07 AM Gustavo A. R. Silva
+> <gustavo@embeddedor.com> wrote:
+>>
+>> Notice that in this case, it's much clearer to explicitly add a break
+>> rather than letting the code to fall through. It also avoid potential
+>> future fall-through warnings[1].
+>>
+>> This patch is part of the ongoing efforts to enable
+>> -Wimplicit-fallthrough.
+>>
+>> [1] https://lore.kernel.org/patchwork/patch/1087056/
+>>
+>> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+>> ---
+> 
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> 
 
-Thanks,
-Mathieu
+Thanks, Andrii.
 
-> +
-> +       if (address >=3D fixup_kernel_start) {
->                 if (machine__is_host(machine))
->                         return PERF_RECORD_MISC_KERNEL;
->                 else
-> --
-> 2.17.1
->
+--
+Gustavo
+
