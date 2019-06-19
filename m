@@ -2,196 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ECE74BF2F
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2019 19:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC844C006
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2019 19:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730070AbfFSRAY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jun 2019 13:00:24 -0400
-Received: from mail-vk1-f201.google.com ([209.85.221.201]:41281 "EHLO
-        mail-vk1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730039AbfFSRAX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Jun 2019 13:00:23 -0400
-Received: by mail-vk1-f201.google.com with SMTP id f125so7950135vkc.8
-        for <bpf@vger.kernel.org>; Wed, 19 Jun 2019 10:00:22 -0700 (PDT)
+        id S1726143AbfFSRni (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jun 2019 13:43:38 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:36269 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726047AbfFSRni (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Jun 2019 13:43:38 -0400
+Received: by mail-qk1-f195.google.com with SMTP id g18so82273qkl.3;
+        Wed, 19 Jun 2019 10:43:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=q6fAxPcopqOzKqAUUbb7EJUjbkYw4Cmey6lp2gh3NIw=;
-        b=BC3U5vbjP7l3vit9sa7l3OFi/3OeiogpmcROT8qe7DKnaG3tYrHVpe/X+qxwm0wa0Q
-         nxqUy5A3IwY2QxoE5lVZAhyNv0+9SEt3RgdxUXg30rMdfhKpdbDBKq3k3MXlrXDMHWUA
-         nyETPh/hj3yvjlWm96QTY2j6dWIGi8+KvL6stDTIkH3dC5BqT4H2RYelouEi1xSphwmi
-         LjCaF4uebqRY/u/PQ6yx7ykXO+Jlh5PDTGuV8jqm/8eamKRyqsWtJvxDbVWskoexvP3o
-         kIoLvuccWNvHt/K+RgbCmLsc2Ca/rZZg2ZV3jX6/pTJypXvjm7op24gxm8JLfeP6m3oV
-         5aZg==
+        bh=Q0JtMg6VhqJs+xdBOj+B5yb628OP/AHnMJJ6w0rRy8Y=;
+        b=dRA0MPSUYUgio2i0/xFlKR6/ytiP2KHIs74EMKP8Y2xu1Lds82bjlV9JEEUxkUL6O6
+         vYEjRjuT3d1e3ViIBnLqWS3Kb+seHaICTofRvYvJ0aSGDZSck5to/Dd0nsNpBQPfLgLK
+         9S4rAFeHuqNdhaYKAbYmLRW9DWTxQFQFFY0PMXj2O3fT10iCgecEj9NjN2q8LwLc/A1G
+         PNcwGOMuCfcKy+5WJG/dpQ2NDXqYUGD0Bnqo5btM36gKkk9tZgg/ntq7TBUkY3GZvTFY
+         /bFqHOna8C+99xOh70lgGRDi41OygSgFH7CZ22tuG0ATDRhMyNAkWDzMyiYUhzqBi1ob
+         A5sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=q6fAxPcopqOzKqAUUbb7EJUjbkYw4Cmey6lp2gh3NIw=;
-        b=PZL1ofO0pHTvwFstPHg5wsKf3AOQAF42FjN5AQKk31jooDjB2vrJawZWaEW5FWjEYB
-         5sguUOJaSPCzO0jd8PMfien2nIW7eVAxkWeh7yLkFpryZZj3+Y9P7Ge0yPgdMZmKmKH2
-         FaCggh8/RlH084Ptaczp2PBd+Tws29W+tyxE8yoNQMGFJwYBbm41l3NglSE5EceCgCGA
-         rk/eiWwtHi7qaCL3D4SJv3SL1RoiuR3spTSZRaHIT0gFW7MJo7QvPralmZCLOQRrsADq
-         k69Noxf20zmiiVgN/MgqSDYDB4L2+h0Q5hJHeT9jmxU9FRf2BCJ7V/7spHOSwATY2CBr
-         pXnQ==
-X-Gm-Message-State: APjAAAXaa4vJ4yvVk2U+k9Y8p/8yjMKps2H2ZuBHQc6JjsvdEyV3nRqp
-        D5koh1V8y3ZCI3HEspyHSSx2GaE=
-X-Google-Smtp-Source: APXvYqwW1gUoJZvOIMFBd5QYL9N/yoJRdx5HntpHfakeb8V4pv1SwCZp/oSo0uVw5HZEJRy+0v93x/c=
-X-Received: by 2002:a1f:a557:: with SMTP id o84mr5037226vke.10.1560963621909;
- Wed, 19 Jun 2019 10:00:21 -0700 (PDT)
-Date:   Wed, 19 Jun 2019 09:59:57 -0700
-In-Reply-To: <20190619165957.235580-1-sdf@google.com>
-Message-Id: <20190619165957.235580-10-sdf@google.com>
-Mime-Version: 1.0
-References: <20190619165957.235580-1-sdf@google.com>
-X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
-Subject: [PATCH bpf-next v7 9/9] bpftool: support cgroup sockopt
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>, Martin Lau <kafai@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q0JtMg6VhqJs+xdBOj+B5yb628OP/AHnMJJ6w0rRy8Y=;
+        b=tHKRoiow3XaAsI/2CnvU002kDARDdFhf8xbf9uRwB/ccn+WBv9M10T30YpeSRlynDD
+         AH+EtnH8KHErAQy4VAIlRLu/sDQ5KcktKegxeYIAwlWZ2juWKauQfk0g90wqxaHWDDo4
+         SooLzOrjsmJaXQaOLDsu2if0bW0omcG+0IcVJBUBtHtbzncbjGJd/Pg+VnBc4rRByKaS
+         KXFDBwZqTgJebOfwBN7NUYObqgoJqfos7YoXvLwFShNicdJ7c2+Z1W7V2wMfez/T01AB
+         QnV+p7k0DKaaFCP9JRbV4qwkjTPROmktaMfyGKIlfVVU2Uc0dVaDh15XGh8maYHP86X2
+         aqDw==
+X-Gm-Message-State: APjAAAVKP+3dzDBkdJLlMM2K59Q/s88aczj9F+/xjO7+TAkCqaA+C9up
+        j4wG9QYLaqFp/nnD7R1PMzceqNIB7Ge8ig2nb0o=
+X-Google-Smtp-Source: APXvYqwv177/wAgsGwcVsblmEBoK8ORUDAhFxShro/2cIePx9XNclQuxtyZ0nCZnfOGmgxp7ZE8fFI2FJBaOBWybgDo=
+X-Received: by 2002:a05:620a:147:: with SMTP id e7mr99959130qkn.247.1560966217540;
+ Wed, 19 Jun 2019 10:43:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190619160207.GA26960@embeddedor>
+In-Reply-To: <20190619160207.GA26960@embeddedor>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 19 Jun 2019 10:43:26 -0700
+Message-ID: <CAEf4BzY+1-G4Kn1NNEX7iy51rcC4-yV-XWjAdaRTMH-6i-LB3g@mail.gmail.com>
+Subject: Re: [PATCH][bpf] bpf: verifier: add break statement in switch
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Lawrence Brakmo <brakmo@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Support sockopt prog type and cgroup hooks in the bpftool.
+On Wed, Jun 19, 2019 at 9:02 AM Gustavo A. R. Silva
+<gustavo@embeddedor.com> wrote:
+>
+> Notice that in this case, it's much clearer to explicitly add a break
+> rather than letting the code to fall through. It also avoid potential
+> future fall-through warnings[1].
+>
+> This patch is part of the ongoing efforts to enable
+> -Wimplicit-fallthrough.
+>
+> [1] https://lore.kernel.org/patchwork/patch/1087056/
+>
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> ---
 
-Cc: Martin Lau <kafai@fb.com>
-Acked-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/bpf/bpftool/Documentation/bpftool-cgroup.rst | 7 +++++--
- tools/bpf/bpftool/Documentation/bpftool-prog.rst   | 2 +-
- tools/bpf/bpftool/bash-completion/bpftool          | 8 +++++---
- tools/bpf/bpftool/cgroup.c                         | 5 ++++-
- tools/bpf/bpftool/main.h                           | 1 +
- tools/bpf/bpftool/prog.c                           | 3 ++-
- 6 files changed, 18 insertions(+), 8 deletions(-)
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-index 36807735e2a5..cac088a320a6 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-@@ -29,7 +29,8 @@ CGROUP COMMANDS
- |	*PROG* := { **id** *PROG_ID* | **pinned** *FILE* | **tag** *PROG_TAG* }
- |	*ATTACH_TYPE* := { **ingress** | **egress** | **sock_create** | **sock_ops** | **device** |
- |		**bind4** | **bind6** | **post_bind4** | **post_bind6** | **connect4** | **connect6** |
--|		**sendmsg4** | **sendmsg6** | **sysctl** }
-+|		**sendmsg4** | **sendmsg6** | **sysctl** | **getsockopt** |
-+|		**setsockopt** }
- |	*ATTACH_FLAGS* := { **multi** | **override** }
- 
- DESCRIPTION
-@@ -86,7 +87,9 @@ DESCRIPTION
- 		  unconnected udp4 socket (since 4.18);
- 		  **sendmsg6** call to sendto(2), sendmsg(2), sendmmsg(2) for an
- 		  unconnected udp6 socket (since 4.18);
--		  **sysctl** sysctl access (since 5.2).
-+		  **sysctl** sysctl access (since 5.2);
-+		  **getsockopt** call to getsockopt (since 5.3);
-+		  **setsockopt** call to setsockopt (since 5.3).
- 
- 	**bpftool cgroup detach** *CGROUP* *ATTACH_TYPE* *PROG*
- 		  Detach *PROG* from the cgroup *CGROUP* and attach type
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-index 228a5c863cc7..c6bade35032c 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-@@ -40,7 +40,7 @@ PROG COMMANDS
- |		**lwt_seg6local** | **sockops** | **sk_skb** | **sk_msg** | **lirc_mode2** |
- |		**cgroup/bind4** | **cgroup/bind6** | **cgroup/post_bind4** | **cgroup/post_bind6** |
- |		**cgroup/connect4** | **cgroup/connect6** | **cgroup/sendmsg4** | **cgroup/sendmsg6** |
--|		**cgroup/sysctl**
-+|		**cgroup/sysctl** | **cgroup/getsockopt** | **cgroup/setsockopt**
- |	}
- |       *ATTACH_TYPE* := {
- |		**msg_verdict** | **stream_verdict** | **stream_parser** | **flow_dissector**
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index 2725e27dfa42..7afb8b6fbaaa 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -378,7 +378,8 @@ _bpftool()
-                                 cgroup/connect4 cgroup/connect6 \
-                                 cgroup/sendmsg4 cgroup/sendmsg6 \
-                                 cgroup/post_bind4 cgroup/post_bind6 \
--                                cgroup/sysctl" -- \
-+                                cgroup/sysctl cgroup/getsockopt \
-+                                cgroup/setsockopt" -- \
-                                                    "$cur" ) )
-                             return 0
-                             ;;
-@@ -688,7 +689,8 @@ _bpftool()
-                 attach|detach)
-                     local ATTACH_TYPES='ingress egress sock_create sock_ops \
-                         device bind4 bind6 post_bind4 post_bind6 connect4 \
--                        connect6 sendmsg4 sendmsg6 sysctl'
-+                        connect6 sendmsg4 sendmsg6 sysctl getsockopt \
-+                        setsockopt'
-                     local ATTACH_FLAGS='multi override'
-                     local PROG_TYPE='id pinned tag'
-                     case $prev in
-@@ -698,7 +700,7 @@ _bpftool()
-                             ;;
-                         ingress|egress|sock_create|sock_ops|device|bind4|bind6|\
-                         post_bind4|post_bind6|connect4|connect6|sendmsg4|\
--                        sendmsg6|sysctl)
-+                        sendmsg6|sysctl|getsockopt|setsockopt)
-                             COMPREPLY=( $( compgen -W "$PROG_TYPE" -- \
-                                 "$cur" ) )
-                             return 0
-diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
-index 7e22f115c8c1..3083f2e4886e 100644
---- a/tools/bpf/bpftool/cgroup.c
-+++ b/tools/bpf/bpftool/cgroup.c
-@@ -25,7 +25,8 @@
- 	"       ATTACH_TYPE := { ingress | egress | sock_create |\n"	       \
- 	"                        sock_ops | device | bind4 | bind6 |\n"	       \
- 	"                        post_bind4 | post_bind6 | connect4 |\n"       \
--	"                        connect6 | sendmsg4 | sendmsg6 | sysctl }"
-+	"                        connect6 | sendmsg4 | sendmsg6 | sysctl |\n"  \
-+	"                        getsockopt | setsockopt }"
- 
- static const char * const attach_type_strings[] = {
- 	[BPF_CGROUP_INET_INGRESS] = "ingress",
-@@ -42,6 +43,8 @@ static const char * const attach_type_strings[] = {
- 	[BPF_CGROUP_UDP4_SENDMSG] = "sendmsg4",
- 	[BPF_CGROUP_UDP6_SENDMSG] = "sendmsg6",
- 	[BPF_CGROUP_SYSCTL] = "sysctl",
-+	[BPF_CGROUP_GETSOCKOPT] = "getsockopt",
-+	[BPF_CGROUP_SETSOCKOPT] = "setsockopt",
- 	[__MAX_BPF_ATTACH_TYPE] = NULL,
- };
- 
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index 28a2a5857e14..9c5d9c80f71e 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -74,6 +74,7 @@ static const char * const prog_type_name[] = {
- 	[BPF_PROG_TYPE_SK_REUSEPORT]		= "sk_reuseport",
- 	[BPF_PROG_TYPE_FLOW_DISSECTOR]		= "flow_dissector",
- 	[BPF_PROG_TYPE_CGROUP_SYSCTL]		= "cgroup_sysctl",
-+	[BPF_PROG_TYPE_CGROUP_SOCKOPT]		= "cgroup_sockopt",
- };
- 
- extern const char * const map_type_name[];
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 1f209c80d906..a201e1c83346 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -1070,7 +1070,8 @@ static int do_help(int argc, char **argv)
- 		"                 sk_reuseport | flow_dissector | cgroup/sysctl |\n"
- 		"                 cgroup/bind4 | cgroup/bind6 | cgroup/post_bind4 |\n"
- 		"                 cgroup/post_bind6 | cgroup/connect4 | cgroup/connect6 |\n"
--		"                 cgroup/sendmsg4 | cgroup/sendmsg6 }\n"
-+		"                 cgroup/sendmsg4 | cgroup/sendmsg6 | cgroup/getsockopt |\n"
-+		"                 cgroup/setsockopt }\n"
- 		"       ATTACH_TYPE := { msg_verdict | stream_verdict | stream_parser |\n"
- 		"                        flow_dissector }\n"
- 		"       " HELP_SPEC_OPTIONS "\n"
--- 
-2.22.0.410.gd8fdbe21b5-goog
-
+>  kernel/bpf/verifier.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index d2c8a6677ac4..0acf7c569ec6 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -5365,6 +5365,7 @@ static int check_return_code(struct bpf_verifier_env *env)
+>                 if (env->prog->expected_attach_type == BPF_CGROUP_UDP4_RECVMSG ||
+>                     env->prog->expected_attach_type == BPF_CGROUP_UDP6_RECVMSG)
+>                         range = tnum_range(1, 1);
+> +               break;
+>         case BPF_PROG_TYPE_CGROUP_SKB:
+>         case BPF_PROG_TYPE_CGROUP_SOCK:
+>         case BPF_PROG_TYPE_SOCK_OPS:
+> --
+> 2.21.0
+>
