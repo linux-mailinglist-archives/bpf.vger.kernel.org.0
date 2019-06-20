@@ -2,172 +2,294 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC964C4AC
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2019 02:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E3B4C55E
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2019 04:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730068AbfFTA6i (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jun 2019 20:58:38 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:40052 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726552AbfFTA6i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Jun 2019 20:58:38 -0400
-Received: by mail-ot1-f65.google.com with SMTP id e8so998101otl.7
-        for <bpf@vger.kernel.org>; Wed, 19 Jun 2019 17:58:37 -0700 (PDT)
+        id S1731286AbfFTCXr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jun 2019 22:23:47 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:35209 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726370AbfFTCXp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Jun 2019 22:23:45 -0400
+Received: by mail-pg1-f194.google.com with SMTP id s27so720448pgl.2;
+        Wed, 19 Jun 2019 19:23:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Pv6DYs/rgMUhmFVTIlv6mQtmI4/e3SRdgmeYYSiE/gY=;
-        b=oTUnU1I9Q3P6mnwGmSHo8VtVE9FzfceDm8JYzas75iB8Vpe9bONAVPH2S3TkqM2T1F
-         AfMa+uPb+HeX3Uw62WFDmNKu7P8wioRQ2b3H0FBzHxKQnhgOOWvrNf5guNAdwAaDrF/I
-         xpJ/tV30aZvykXO0oOcH6KE4RQNKoOOFP/boZ/cieuj+impdRqlqR+E45fvl9LeIx1Md
-         p91138c9GCF1m2LJIz2xmLR3PzI9z8/c1OIFmPjKktYAjHDR16lNQgi3V8PXARwSA4Tr
-         pDxI9ygK81Mrd5QIssaBJhkHuqk1eXDNVLVe7aTsXm1Oyh8sR7oGawQguh8x4lYDolkK
-         OGhQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uXEldHMfNr4STLrSJDkwpcTDRF1aPJqHVLnszkg829M=;
+        b=EQsgQgN/yhpyV+w+MQ3FEV/kSJnVpnlluzd4JJzWqXebvkt5KnwXUIcNGc8tGVcRJq
+         jzRPve6/FT0StGYJpkscyFGjOgu6s8B4zVBLJGbpWAI+mBYAHP5eOzOMyNYfotaM0kKq
+         Uh92ApldC6mvZFjNujMGc4+Cwj9PB4u6YcNveY36v+CjthwX8CtsmyV7xrFiHkEVPMFx
+         Z5c2mbrbvFBSgqKDUfDkGdJhRCXG1oOnlZhMyS/kFY1CFl3h1oRzDkpgC/k1FYteDEFy
+         J8Edluye3dlmN/bdIhPF/Thi7si2FyL7l6j1B0jKqBRnnRilNfYk5b1w3Dm28tGmzERs
+         bhog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Pv6DYs/rgMUhmFVTIlv6mQtmI4/e3SRdgmeYYSiE/gY=;
-        b=A96D+TNwGuccvRzCR/yG3brcStUYhHN64BLeBz5ivZ36CHfM+/VeRAbxm1Yd98VEaq
-         7aRoFxIHdtO/tMybXiZY3XTAkFDEvczlB1rxuBJqWP9GTv6cwC+ypZJ9UFXNm8mYV1DW
-         v6kyWpIUzCi7AbLRbWconPkHVHxjBsw+I92TTesxqxx2Tx4xGsGrdlFMBQqyDMLS52p9
-         zV36LqBEd9KijUnCydMaRClmE2H2TgxRvU7+Htc0GxE3co3cCLRkCnf49dEd1JOxnBZf
-         HyW4IObTHYxs64NRR91NFOwR8mAyyIYneKdq1MGwzkpjS8DTBlK00gxDUG9ROCmcKl23
-         ysbA==
-X-Gm-Message-State: APjAAAUTvxZttcaFTTJxTuBosSubc+RrjOQtl3fZbmNlrBSzq1xdyz5U
-        bc8FqoTp/66Ru72x+WjfWzIT4ouVKYuyIQ==
-X-Google-Smtp-Source: APXvYqyGWcBsRjlJt5apXMRax/dVlTZbIM5JD9/pIw5q+E7QvXP98lnAmkC5vhNUCGfuVZN3B0sKsA==
-X-Received: by 2002:a9d:7d05:: with SMTP id v5mr8624081otn.245.1560992317485;
-        Wed, 19 Jun 2019 17:58:37 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s (li964-79.members.linode.com. [45.33.10.79])
-        by smtp.gmail.com with ESMTPSA id j135sm1940279oib.19.2019.06.19.17.58.32
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 19 Jun 2019 17:58:36 -0700 (PDT)
-Date:   Thu, 20 Jun 2019 08:58:29 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suzuki Poulouse <suzuki.poulose@arm.com>,
-        Coresight ML <coresight@lists.linaro.org>
-Subject: Re: [PATCH] perf cs-etm: Improve completeness for kernel address
- space
-Message-ID: <20190620005829.GH24549@leoy-ThinkPad-X240s>
-References: <20190617150024.11787-1-leo.yan@linaro.org>
- <CANLsYkyMW=WG+=yWTLSyMT3JXqd_2kvsrx9c-EwCoKEnRZvErA@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uXEldHMfNr4STLrSJDkwpcTDRF1aPJqHVLnszkg829M=;
+        b=o/R7avBvSTdaBjr+Q8YaCiKp/nQu1JCvx5z34FfT+ltYSu1ZlBmnYm98VvyBrPn2PU
+         Z+DlJ+bH/2TWs6cqFhe8h0yIJlGhPEa4YyoU0pc/2Tua7vcaI9//mo5pgrT/Sozbqjed
+         A2x2wPuh/d8lHSD8jpeh73GWVezzbdWensCab0PJRQ+4C39u9UUXUkytX14Be6mmNeKQ
+         MQpdh1CoOP4iFwjKNdiL7hBTMiCdMwaJC2d4ndYV3QIuIrXciLTbuxY1dDJnMr5XvMri
+         g5mJSJ4yscnYamuytCD6UaDnm+bBGurTWT49hXSnbAp2sxTqPLmYPF+s21RYCugOJ9ov
+         aBNg==
+X-Gm-Message-State: APjAAAUlIGue75pU78376sv1RDsBM0tML0B4tCI7Poiunt+NSarzR7DA
+        GqHedqPpLHsJ7KTqTOfmhZ0=
+X-Google-Smtp-Source: APXvYqy7i3XC7mqdxyX5B/1q312dYYoDVqNle6CbOeW5geEmUA5NKIh7izMI8V7AE/g5sGeQjpqrHw==
+X-Received: by 2002:a17:90a:342c:: with SMTP id o41mr420622pjb.1.1560997424511;
+        Wed, 19 Jun 2019 19:23:44 -0700 (PDT)
+Received: from z400-fedora29.kern.oss.ntt.co.jp ([222.151.198.97])
+        by smtp.gmail.com with ESMTPSA id g2sm18873362pgi.92.2019.06.19.19.23.41
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 19 Jun 2019 19:23:44 -0700 (PDT)
+From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH bpf-next] selftests: Add test for veth native XDP
+Date:   Thu, 20 Jun 2019 11:23:23 +0900
+Message-Id: <20190620022323.19243-1-toshiaki.makita1@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANLsYkyMW=WG+=yWTLSyMT3JXqd_2kvsrx9c-EwCoKEnRZvErA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Mathieu,
+Add a test case for veth native XDP. It checks if XDP_PASS, XDP_TX and
+XDP_REDIRECT work properly.
 
-On Wed, Jun 19, 2019 at 11:49:44AM -0600, Mathieu Poirier wrote:
+  $ cd tools/testing/selftests/bpf
+  $ make \
+  	TEST_CUSTOM_PROGS= \
+  	TEST_GEN_PROGS= \
+  	TEST_GEN_PROGS_EXTENDED= \
+  	TEST_PROGS_EXTENDED= \
+  	TEST_PROGS="test_xdp_veth.sh" \
+  	run_tests
+  TAP version 13
+  1..1
+  # selftests: bpf: test_xdp_veth.sh
+  # PING 10.1.1.33 (10.1.1.33) 56(84) bytes of data.
+  # 64 bytes from 10.1.1.33: icmp_seq=1 ttl=64 time=0.073 ms
+  #
+  # --- 10.1.1.33 ping statistics ---
+  # 1 packets transmitted, 1 received, 0% packet loss, time 0ms
+  # rtt min/avg/max/mdev = 0.073/0.073/0.073/0.000 ms
+  # selftests: xdp_veth [PASS]
+  ok 1 selftests: bpf: test_xdp_veth.sh
 
-[...]
+Signed-off-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
+---
+ tools/testing/selftests/bpf/Makefile               |   1 +
+ .../testing/selftests/bpf/progs/xdp_redirect_map.c |  31 ++++++
+ tools/testing/selftests/bpf/progs/xdp_tx.c         |  12 +++
+ tools/testing/selftests/bpf/test_xdp_veth.sh       | 118 +++++++++++++++++++++
+ 4 files changed, 162 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_redirect_map.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_tx.c
+ create mode 100755 tools/testing/selftests/bpf/test_xdp_veth.sh
 
-> > diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> > index 51dd00f65709..4776c2c1fb6d 100644
-> > --- a/tools/perf/Makefile.config
-> > +++ b/tools/perf/Makefile.config
-> > @@ -418,6 +418,30 @@ ifdef CORESIGHT
-> >      endif
-> >      LDFLAGS += $(LIBOPENCSD_LDFLAGS)
-> >      EXTLIBS += $(OPENCSDLIBS)
-> > +    ifneq ($(wildcard $(srctree)/arch/arm64/kernel/vmlinux.lds),)
-> > +      # Extract info from lds:
-> > +      #  . = ((((((((0xffffffffffffffff)) - (((1)) << (48)) + 1) + (0)) + (0x08000000))) + (0x08000000))) + 0x00080000;
-> > +      # ARM64_PRE_START_SIZE := (0x08000000 + 0x08000000 + 0x00080000)
-> > +      ARM64_PRE_START_SIZE := $(shell egrep ' \. \= \({8}0x[0-9a-fA-F]+\){2}' \
-> > +        $(srctree)/arch/arm64/kernel/vmlinux.lds | \
-> > +        sed -e 's/[(|)|.|=|+|<|;|-]//g' -e 's/ \+/ /g' -e 's/^[ \t]*//' | \
-> > +        awk -F' ' '{print "("$$6 "+"  $$7 "+" $$8")"}' 2>/dev/null)
-> > +    else
-> > +      ARM64_PRE_START_SIZE := 0
-> > +    endif
-> > +    CFLAGS += -DARM64_PRE_START_SIZE="$(ARM64_PRE_START_SIZE)"
-> > +    ifneq ($(wildcard $(srctree)/arch/arm/kernel/vmlinux.lds),)
-> > +      # Extract info from lds:
-> > +      #   . = ((0xC0000000)) + 0x00208000;
-> > +      # ARM_PRE_START_SIZE := 0x00208000
-> > +      ARM_PRE_START_SIZE := $(shell egrep ' \. \= \({2}0x[0-9a-fA-F]+\){2}' \
-> > +        $(srctree)/arch/arm/kernel/vmlinux.lds | \
-> > +        sed -e 's/[(|)|.|=|+|<|;|-]//g' -e 's/ \+/ /g' -e 's/^[ \t]*//' | \
-> > +        awk -F' ' '{print "("$$2")"}' 2>/dev/null)
-> > +    else
-> > +      ARM_PRE_START_SIZE := 0
-> > +    endif
-> > +    CFLAGS += -DARM_PRE_START_SIZE="$(ARM_PRE_START_SIZE)"
-> >      $(call detected,CONFIG_LIBOPENCSD)
-> >      ifdef CSTRACE_RAW
-> >        CFLAGS += -DCS_DEBUG_RAW
-> > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> > index 0c7776b51045..ae831f836c70 100644
-> > --- a/tools/perf/util/cs-etm.c
-> > +++ b/tools/perf/util/cs-etm.c
-> > @@ -613,10 +613,34 @@ static void cs_etm__free(struct perf_session *session)
-> >  static u8 cs_etm__cpu_mode(struct cs_etm_queue *etmq, u64 address)
-> >  {
-> >         struct machine *machine;
-> > +       u64 fixup_kernel_start = 0;
-> > +       const char *arch;
-> >
-> >         machine = etmq->etm->machine;
-> > +       arch = perf_env__arch(machine->env);
-> >
-> > -       if (address >= etmq->etm->kernel_start) {
-> > +       /*
-> > +        * Since arm and arm64 specify some memory regions prior to
-> > +        * 'kernel_start', kernel addresses can be less than 'kernel_start'.
-> > +        *
-> > +        * For arm architecture, the 16MB virtual memory space prior to
-> > +        * 'kernel_start' is allocated to device modules, a PMD table if
-> > +        * CONFIG_HIGHMEM is enabled and a PGD table.
-> > +        *
-> > +        * For arm64 architecture, the root PGD table, device module memory
-> > +        * region and BPF jit region are prior to 'kernel_start'.
-> > +        *
-> > +        * To reflect the complete kernel address space, compensate these
-> > +        * pre-defined regions for kernel start address.
-> > +        */
-> > +       if (!strcmp(arch, "arm64"))
-> > +               fixup_kernel_start = etmq->etm->kernel_start -
-> > +                                    ARM64_PRE_START_SIZE;
-> > +       else if (!strcmp(arch, "arm"))
-> > +               fixup_kernel_start = etmq->etm->kernel_start -
-> > +                                    ARM_PRE_START_SIZE;
-> 
-> I will test your work but from a quick look wouldn't it be better to
-> have a single define name here?  From looking at the modifications you
-> did to Makefile.config there doesn't seem to be a reason to have two.
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 44fb61f..11128ba 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -46,6 +46,7 @@ TEST_PROGS := test_kmod.sh \
+ 	test_libbpf.sh \
+ 	test_xdp_redirect.sh \
+ 	test_xdp_meta.sh \
++	test_xdp_veth.sh \
+ 	test_offload.py \
+ 	test_sock_addr.sh \
+ 	test_tunnel.sh \
+diff --git a/tools/testing/selftests/bpf/progs/xdp_redirect_map.c b/tools/testing/selftests/bpf/progs/xdp_redirect_map.c
+new file mode 100644
+index 0000000..e87a985
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/xdp_redirect_map.c
+@@ -0,0 +1,31 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bpf.h>
++#include "bpf_helpers.h"
++
++struct bpf_map_def SEC("maps") tx_port = {
++	.type = BPF_MAP_TYPE_DEVMAP,
++	.key_size = sizeof(int),
++	.value_size = sizeof(int),
++	.max_entries = 8,
++};
++
++SEC("redirect_map_0")
++int xdp_redirect_map_0(struct xdp_md *xdp)
++{
++	return bpf_redirect_map(&tx_port, 0, 0);
++}
++
++SEC("redirect_map_1")
++int xdp_redirect_map_1(struct xdp_md *xdp)
++{
++	return bpf_redirect_map(&tx_port, 1, 0);
++}
++
++SEC("redirect_map_2")
++int xdp_redirect_map_2(struct xdp_md *xdp)
++{
++	return bpf_redirect_map(&tx_port, 2, 0);
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/xdp_tx.c b/tools/testing/selftests/bpf/progs/xdp_tx.c
+new file mode 100644
+index 0000000..57912e7
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/xdp_tx.c
+@@ -0,0 +1,12 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bpf.h>
++#include "bpf_helpers.h"
++
++SEC("tx")
++int xdp_tx(struct xdp_md *xdp)
++{
++	return XDP_TX;
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/test_xdp_veth.sh b/tools/testing/selftests/bpf/test_xdp_veth.sh
+new file mode 100755
+index 0000000..ba8ffcd
+--- /dev/null
++++ b/tools/testing/selftests/bpf/test_xdp_veth.sh
+@@ -0,0 +1,118 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++#
++# Create 3 namespaces with 3 veth peers, and
++# forward packets in-between using native XDP
++#
++#                      XDP_TX
++# NS1(veth11)        NS2(veth22)        NS3(veth33)
++#      |                  |                  |
++#      |                  |                  |
++#   (veth1,            (veth2,            (veth3,
++#   id:111)            id:122)            id:133)
++#     ^ |                ^ |                ^ |
++#     | |  XDP_REDIRECT  | |  XDP_REDIRECT  | |
++#     | ------------------ ------------------ |
++#     -----------------------------------------
++#                    XDP_REDIRECT
++
++# Kselftest framework requirement - SKIP code is 4.
++ksft_skip=4
++
++TESTNAME=xdp_veth
++BPF_FS=$(awk '$3 == "bpf" {print $2; exit}' /proc/mounts)
++BPF_DIR=$BPF_FS/test_$TESTNAME
++
++_cleanup()
++{
++	set +e
++	ip link del veth1 2> /dev/null
++	ip link del veth2 2> /dev/null
++	ip link del veth3 2> /dev/null
++	ip netns del ns1 2> /dev/null
++	ip netns del ns2 2> /dev/null
++	ip netns del ns3 2> /dev/null
++	rm -rf $BPF_DIR 2> /dev/null
++}
++
++cleanup_skip()
++{
++	echo "selftests: $TESTNAME [SKIP]"
++	_cleanup
++
++	exit $ksft_skip
++}
++
++cleanup()
++{
++	if [ "$?" = 0 ]; then
++		echo "selftests: $TESTNAME [PASS]"
++	else
++		echo "selftests: $TESTNAME [FAILED]"
++	fi
++	_cleanup
++}
++
++if [ $(id -u) -ne 0 ]; then
++	echo "selftests: $TESTNAME [SKIP] Need root privileges"
++	exit $ksft_skip
++fi
++
++if ! ip link set dev lo xdp off > /dev/null 2>&1; then
++	echo "selftests: $TESTNAME [SKIP] Could not run test without the ip xdp support"
++	exit $ksft_skip
++fi
++
++if [ -z "$BPF_FS" ]; then
++	echo "selftests: $TESTNAME [SKIP] Could not run test without bpffs mounted"
++	exit $ksft_skip
++fi
++
++if ! bpftool version > /dev/null 2>&1; then
++	echo "selftests: $TESTNAME [SKIP] Could not run test without bpftool"
++	exit $ksft_skip
++fi
++
++set -e
++
++trap cleanup_skip EXIT
++
++ip netns add ns1
++ip netns add ns2
++ip netns add ns3
++
++ip link add veth1 index 111 type veth peer name veth11 netns ns1
++ip link add veth2 index 122 type veth peer name veth22 netns ns2
++ip link add veth3 index 133 type veth peer name veth33 netns ns3
++
++ip link set veth1 up
++ip link set veth2 up
++ip link set veth3 up
++
++ip -n ns1 addr add 10.1.1.11/24 dev veth11
++ip -n ns3 addr add 10.1.1.33/24 dev veth33
++
++ip -n ns1 link set dev veth11 up
++ip -n ns2 link set dev veth22 up
++ip -n ns3 link set dev veth33 up
++
++mkdir $BPF_DIR
++bpftool prog loadall \
++	xdp_redirect_map.o $BPF_DIR/progs type xdp \
++	pinmaps $BPF_DIR/maps
++bpftool map update pinned $BPF_DIR/maps/tx_port key 0 0 0 0 value 122 0 0 0
++bpftool map update pinned $BPF_DIR/maps/tx_port key 1 0 0 0 value 133 0 0 0
++bpftool map update pinned $BPF_DIR/maps/tx_port key 2 0 0 0 value 111 0 0 0
++ip link set dev veth1 xdp pinned $BPF_DIR/progs/redirect_map_0
++ip link set dev veth2 xdp pinned $BPF_DIR/progs/redirect_map_1
++ip link set dev veth3 xdp pinned $BPF_DIR/progs/redirect_map_2
++
++ip -n ns1 link set dev veth11 xdp obj xdp_dummy.o sec xdp_dummy
++ip -n ns2 link set dev veth22 xdp obj xdp_tx.o sec tx
++ip -n ns3 link set dev veth33 xdp obj xdp_dummy.o sec xdp_dummy
++
++trap cleanup EXIT
++
++ip netns exec ns1 ping -c 1 -W 1 10.1.1.33
++
++exit 0
+-- 
+1.8.3.1
 
-Thanks for suggestion.  I changed to use single define
-ARM_PRE_START_SIZE and sent patch v2 [1].
-
-If possible, please test patch v2.
-
-Thanks,
-Leo Yan
-
-[1] https://lore.kernel.org/linux-arm-kernel/20190620005428.20883-1-leo.yan@linaro.org/T/#u
-
-> > +
-> > +       if (address >= fixup_kernel_start) {
-> >                 if (machine__is_host(machine))
-> >                         return PERF_RECORD_MISC_KERNEL;
-> >                 else
-> > --
-> > 2.17.1
-> >
