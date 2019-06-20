@@ -2,171 +2,304 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E42B4C5D2
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2019 05:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 211674C5E7
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2019 05:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731390AbfFTDfq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jun 2019 23:35:46 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:40146 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbfFTDfq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Jun 2019 23:35:46 -0400
-Received: by mail-pg1-f193.google.com with SMTP id w10so791607pgj.7;
-        Wed, 19 Jun 2019 20:35:45 -0700 (PDT)
+        id S1731083AbfFTDpK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jun 2019 23:45:10 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:46465 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726480AbfFTDpK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Jun 2019 23:45:10 -0400
+Received: by mail-oi1-f194.google.com with SMTP id 65so1050080oid.13
+        for <bpf@vger.kernel.org>; Wed, 19 Jun 2019 20:45:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zOa1e8oAtRxerEx6kd/Fw1r45fnTVWgZRg3Uxwi0TJw=;
-        b=OEIoM2/X9thwmJuYNhWXcFwNix9ajM8mHleBbahR31DvIUagWIzWj8oT+ibYiL5vxY
-         BLKdrNKj80R9pCGF/sjgerhCQa9Zwj118HOdc1GNNXjWdtcKVThlvIdjd5gpbSa6rPrO
-         qeuB5IPIt1cAOg1Akp0drdZF58OoYZh1HgXPKq2IvkNN32XFkdFpjw0MoRTDLLjvmj74
-         KQJ3mbVE0Mub1H66xq8wFeOllIowM+N6YKpHjXt9C0Nk31ZkpuhqyRZgfR9SYfz9c/Pk
-         OxBRDIevBrpOCSePGPhUJtLOX5lcPkrCCXDs0xwuPweunJofSXW1Ute/5Y9QFgQmgW4g
-         CD6g==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5hmozZ3T7yXiQbHQwiiLz6hpYqDbodbt9yn6e1/Zlmk=;
+        b=h4QOvbpsIt3d3LIasq/8Yn9F2fiY5AlxUwWHg9KnfBzwX7+RIOOprlOJs74qJhE4Vu
+         yyvd9iiQy3wAg8/sDoD10cYJ2q5JODGUJ4tr+p0Wocb+qt/m0/g2GlfyDpxStAe8oVUA
+         UsdhPWpAdT0m3ROySt69iAsmqqgcIUuDeBO+JU3WS+ROWDeKOrv20SF9qkNVGco16keF
+         th/rxkbUIdSsIXln6ei/JQmYggM+NGNOaw2KsL/FlzlIDoswiS6LIeS8fiJJcGM3TD4q
+         M9E8JaXuVTqZ6QKTfNjkGmFE5nXzW2dbKd6E9m9dTj33u56ao9L6GcOt6GPBw7jXH5I7
+         Bmgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zOa1e8oAtRxerEx6kd/Fw1r45fnTVWgZRg3Uxwi0TJw=;
-        b=tRe+3bji9VDf3Nr0FotWa6W2wLzbo8+AF6kIv+by3XjKuhRJ9cDUyz/wOC+tuHjVO6
-         WHf638VzCELDf+zsOhFhfDleWRm3sxJ3RLBcNLGaQj9wBLudfNt014iyO27oYrPvLZgu
-         foxHAPMr+RJfXpjyR2MqyDwZXdaYaCEObTGe0ShcfzOcFl6eJdXK5WxW+KnsG0dGVJIJ
-         71u8t6uJT/4j4wUTUWLuan0jSV3R8GWt0Png9isCsYQcwYdUbmHFRO2n2BBcAS2sQ3eg
-         oQy5i1aZ3ngpKsNW+GQjM1484chXiYAfxuDNJDSKJltH7Bcl9eZf3g5Hkz1oCn9ANloK
-         taGA==
-X-Gm-Message-State: APjAAAWP2ZgP0w69Whe/DqVhtjZWdno6FZJcdpzpNjnJdtLz5Ij6lXRZ
-        SC2mWPdd4VMBeS5n8yreZ1c=
-X-Google-Smtp-Source: APXvYqw1P3mUG3ns3NOr/FWd1Lfmw6O29/m6sZbB4KDBSoE2m48JW1eZzvKu4PbyCD0qvXlwsUnqoQ==
-X-Received: by 2002:a62:6d47:: with SMTP id i68mr130221237pfc.189.1561001745232;
-        Wed, 19 Jun 2019 20:35:45 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::1:bbbf])
-        by smtp.gmail.com with ESMTPSA id l13sm2797416pjq.20.2019.06.19.20.35.43
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5hmozZ3T7yXiQbHQwiiLz6hpYqDbodbt9yn6e1/Zlmk=;
+        b=gTtcRuAI2e8sDX9XTP2nDEykv3iYjLyS9nMfAdcwo4E7iUTkXGOKOCmXxzHwQVlhUm
+         hKU6aG9unH6ocrX3ejdByOP/nVQuxeCMv4sM3iUN4xEBDOHtK1b2VutS5P1rWRuVdLQ6
+         Y7sFLeSi4TC8URDF99fKvLz5c0n4zGDfPI9OjhW/WFAvAlvXz7tLeGFjT4uHq1vt8EEP
+         IRUsSD4vCZVHOQpO6tNS238a+Uebc8oCzDb7lae9xiQjuNufsXWvB0IKYba3lp17x7Mz
+         St7rPjN4vz2I74M0G2mIS4i4uPP2SOPTBzg4j7vntNQ14j/YkNcAo6KELm7hI6ttrXzt
+         6yoA==
+X-Gm-Message-State: APjAAAWlzngX9IWe5iNxPW5sDj4mPPJY9FLQqMUAY+uOgLK/VYZA5LxU
+        +z1AyZHpD6RqpOceQIPwOnQ+pA==
+X-Google-Smtp-Source: APXvYqxibUhIiIOjuUpqxJfBW3ShhDR1KSMaBGfRGCWxo0//PMWa/TCML0kWk4uvNJre+U0LPcgTZA==
+X-Received: by 2002:aca:f4ce:: with SMTP id s197mr5088167oih.45.1561002308790;
+        Wed, 19 Jun 2019 20:45:08 -0700 (PDT)
+Received: from localhost.localdomain (li964-79.members.linode.com. [45.33.10.79])
+        by smtp.gmail.com with ESMTPSA id a18sm7142158otf.67.2019.06.19.20.45.01
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 19 Jun 2019 20:35:44 -0700 (PDT)
-Date:   Wed, 19 Jun 2019 23:35:40 -0400
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net,
-        daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v3 bpf-next 1/9] bpf: track spill/fill of constants
-Message-ID: <20190620033538.4oou4mbck6xs64mj@ast-mbp.dhcp.thefacebook.com>
-References: <20190615191225.2409862-1-ast@kernel.org>
- <20190615191225.2409862-2-ast@kernel.org>
- <5d0ad24027106_8822adea29a05b47c@john-XPS-13-9370.notmuch>
+        Wed, 19 Jun 2019 20:45:07 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        coresight@lists.linaro.org
+Subject: [PATCH v3] perf cs-etm: Improve completeness for kernel address space
+Date:   Thu, 20 Jun 2019 11:44:46 +0800
+Message-Id: <20190620034446.25561-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5d0ad24027106_8822adea29a05b47c@john-XPS-13-9370.notmuch>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 19, 2019 at 05:24:32PM -0700, John Fastabend wrote:
-> Alexei Starovoitov wrote:
-> > Compilers often spill induction variables into the stack,
-> > hence it is necessary for the verifier to track scalar values
-> > of the registers through stack slots.
-> > 
-> > Also few bpf programs were incorrectly rejected in the past,
-> > since the verifier was not able to track such constants while
-> > they were used to compute offsets into packet headers.
-> > 
-> > Tracking constants through the stack significantly decreases
-> > the chances of state pruning, since two different constants
-> > are considered to be different by state equivalency.
-> > End result that cilium tests suffer serious degradation in the number
-> > of states processed and corresponding verification time increase.
-> > 
-> >                      before  after
-> > bpf_lb-DLB_L3.o      1838    6441
-> > bpf_lb-DLB_L4.o      3218    5908
-> > bpf_lb-DUNKNOWN.o    1064    1064
-> > bpf_lxc-DDROP_ALL.o  26935   93790
-> > bpf_lxc-DUNKNOWN.o   34439   123886
-> > bpf_netdev.o         9721    31413
-> > bpf_overlay.o        6184    18561
-> > bpf_lxc_jit.o        39389   359445
-> > 
-> > After further debugging turned out that cillium progs are
-> > getting hurt by clang due to the same constant tracking issue.
-> > Newer clang generates better code by spilling less to the stack.
-> > Instead it keeps more constants in the registers which
-> > hurts state pruning since the verifier already tracks constants
-> > in the registers:
-> >                   old clang  new clang
-> >                          (no spill/fill tracking introduced by this patch)
-> > bpf_lb-DLB_L3.o      1838    1923
-> > bpf_lb-DLB_L4.o      3218    3077
-> > bpf_lb-DUNKNOWN.o    1064    1062
-> > bpf_lxc-DDROP_ALL.o  26935   166729
-> > bpf_lxc-DUNKNOWN.o   34439   174607
->                        ^^^^^^^^^^^^^^
-> Any idea what happened here? Going from 34439 -> 174607 on the new clang?
+Arm and arm64 architecture reserve some memory regions prior to the
+symbol '_stext' and these memory regions later will be used by device
+module and BPF jit.  The current code misses to consider these memory
+regions thus any address in the regions will be taken as user space
+mode, but perf cannot find the corresponding dso with the wrong CPU
+mode so we misses to generate samples for device module and BPF
+related trace data.
 
-As I was alluding in commit log newer clang is smarter and generates
-less spill/fill of constants.
-In particular older clang loads two constants into r8 and r9
-and immediately spills them into stack. Then fills later,
-does a bunch of unrelated code and calls into helper that
-has ARG_ANYTHING for that position. Then doing a bit more math
-on filled constants, spills them again and so on.
-Before this patch (that tracks spill/fill of constants into stack)
-pruning points were equivalent, but with the patch it sees the difference
-in registers and declares states not equivalent, though any constant
-is fine from safety standpoint.
-With new clang only r9 has this pattern of spill/fill.
-New clang manages to keep constant in r8 to be around without spill/fill.
-Existing verifier tracks constants so even without this patch
-the same pathalogical behavior is observed.
-The verifier need to walk a lot more instructions only because
-r8 has different constants.
+This patch parse the link scripts to get the memory size prior to start
+address and reduce this size from 'etmq->etm->kernel_start', then can
+get a fixed up kernel start address which contain memory regions for
+device module and BPF.  Finally, cs_etm__cpu_mode() can return right
+mode for these memory regions and perf can successfully generate
+samples.
 
-> > bpf_netdev.o         9721    8407
-> > bpf_overlay.o        6184    5420
-> > bpf_lcx_jit.o        39389   39389
-> > 
-> > The final table is depressing:
-> >                   old clang  old clang    new clang  new clang
-> >                            const spill/fill        const spill/fill
-> > bpf_lb-DLB_L3.o      1838    6441          1923      8128
-> > bpf_lb-DLB_L4.o      3218    5908          3077      6707
-> > bpf_lb-DUNKNOWN.o    1064    1064          1062      1062
-> > bpf_lxc-DDROP_ALL.o  26935   93790         166729    380712
-> > bpf_lxc-DUNKNOWN.o   34439   123886        174607    440652
-> > bpf_netdev.o         9721    31413         8407      31904
-> > bpf_overlay.o        6184    18561         5420      23569
-> > bpf_lxc_jit.o        39389   359445        39389     359445
-> > 
-> > Tracking constants in the registers hurts state pruning already.
-> > Adding tracking of constants through stack hurts pruning even more.
-> > The later patch address this general constant tracking issue
-> > with coarse/precise logic.
-> > 
-> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > Acked-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
-> >  kernel/bpf/verifier.c | 90 +++++++++++++++++++++++++++++++------------
-> >  1 file changed, 65 insertions(+), 25 deletions(-)
-> 
-> I know these are already in bpf-next sorry it took me awhile to get
-> time to review, but looks good to me. Thanks! We had something similar
-> in the earlier loop test branch from last year.
+The reason for parsing the link scripts is Arm architecture changes text
+offset dependent on different platforms, which define multiple text
+offsets in $kernel/arch/arm/Makefile.  This offset is decided when build
+kernel and the final value is extended in the link script, so we can
+extract the used value from the link script.  We use the same way to
+parse arm64 link script as well.  If fail to find the link script, the
+pre start memory size is assumed as zero, in this case it has no any
+change caused with this patch.
 
-It's not in bpf-next yet :)
-Code reviews are appreciated at any time.
-Looks like we were just lucky with older clang.
-I haven't tracked which clang version became smarter.
-If you haven't seen this issue and haven't changed cilium C source
-to workaround that then there is chance you'll hit it as well.
-By "new clang" I meant version 9.0
-"old clang" is unknown. I just had cilium elf .o around that
-I kept using for testing without recompiling them.
-Just by chance I recompiled them to see annotated verifier line info
-messages with BTF and hit this interesting issue.
-See patch 9 backtracking logic that resolves this 'precision of scalar'
-issue for progs compiled with both new and old clangs.
+Below is detailed info for testing this patch:
+
+- Build LLVM/Clang 8.0 or later version;
+
+- Configure perf with ~/.perfconfig:
+
+  root@debian:~# cat ~/.perfconfig
+  # this file is auto-generated.
+  [llvm]
+          clang-path = /mnt/build/llvm-build/build/install/bin/clang
+          kbuild-dir = /mnt/linux-kernel/linux-cs-dev/
+          clang-opt = "-g"
+          dump-obj = true
+
+  [trace]
+          show_zeros = yes
+          show_duration = no
+          no_inherit = yes
+          show_timestamp = no
+          show_arg_names = no
+          args_alignment = 40
+          show_prefix = yes
+
+- Run 'perf trace' command with eBPF event:
+
+  root@debian:~# perf trace -e string \
+      -e $kernel/tools/perf/examples/bpf/augmented_raw_syscalls.c
+
+- Read eBPF program memory mapping in kernel:
+
+  root@debian:~# echo 1 > /proc/sys/net/core/bpf_jit_kallsyms
+  root@debian:~# cat /proc/kallsyms | grep -E "bpf_prog_.+_sys_[enter|exit]"
+  ffff000000086a84 t bpf_prog_f173133dc38ccf87_sys_enter  [bpf]
+  ffff000000088618 t bpf_prog_c1bd85c092d6e4aa_sys_exit   [bpf]
+
+- Launch any program which accesses file system frequently so can hit
+  the system calls trace flow with eBPF event;
+
+- Capture CoreSight trace data with filtering eBPF program:
+
+  root@debian:~# perf record -e cs_etm/@20070000.etr/ \
+	  --filter 'filter 0xffff000000086a84/0x800' -a sleep 5s
+
+- Annotate for symbol 'bpf_prog_f173133dc38ccf87_sys_enter':
+
+  root@debian:~# perf report
+  Then select 'branches' samples and press 'a' to annotate symbol
+  'bpf_prog_f173133dc38ccf87_sys_enter', press 'P' to print to the
+  bpf_prog_f173133dc38ccf87_sys_enter.annotation file:
+
+  root@debian:~# cat bpf_prog_f173133dc38ccf87_sys_enter.annotation
+
+  bpf_prog_f173133dc38ccf87_sys_enter() bpf_prog_f173133dc38ccf87_sys_enter
+  Event: branches
+
+  Percent      int sys_enter(struct syscall_enter_args *args)
+                 stp  x29, x30, [sp, #-16]!
+
+               	int key = 0;
+                 mov  x29, sp
+
+                       augmented_args = bpf_map_lookup_elem(&augmented_filename_map, &key);
+                 stp  x19, x20, [sp, #-16]!
+
+                       augmented_args = bpf_map_lookup_elem(&augmented_filename_map, &key);
+                 stp  x21, x22, [sp, #-16]!
+
+                 stp  x25, x26, [sp, #-16]!
+
+               	return bpf_get_current_pid_tgid();
+                 mov  x25, sp
+
+               	return bpf_get_current_pid_tgid();
+                 mov  x26, #0x0                   	// #0
+
+                 sub  sp, sp, #0x10
+
+               	return bpf_map_lookup_elem(pids, &pid) != NULL;
+                 add  x19, x0, #0x0
+
+                 mov  x0, #0x0                   	// #0
+
+                 mov  x10, #0xfffffffffffffff8    	// #-8
+
+               	if (pid_filter__has(&pids_filtered, getpid()))
+                 str  w0, [x25, x10]
+
+               	probe_read(&augmented_args->args, sizeof(augmented_args->args), args);
+                 add  x1, x25, #0x0
+
+               	probe_read(&augmented_args->args, sizeof(augmented_args->args), args);
+                 mov  x10, #0xfffffffffffffff8    	// #-8
+
+               	syscall = bpf_map_lookup_elem(&syscalls, &augmented_args->args.syscall_nr);
+                 add  x1, x1, x10
+
+               	syscall = bpf_map_lookup_elem(&syscalls, &augmented_args->args.syscall_nr);
+                 mov  x0, #0xffff8009ffffffff    	// #-140694538682369
+
+                 movk x0, #0x6698, lsl #16
+
+                 movk x0, #0x3e00
+
+                 mov  x10, #0xffffffffffff1040    	// #-61376
+
+               	if (syscall == NULL || !syscall->enabled)
+                 movk x10, #0x1023, lsl #16
+
+               	if (syscall == NULL || !syscall->enabled)
+                 movk x10, #0x0, lsl #32
+
+               	loop_iter_first()
+    3.69       → blr  bpf_prog_f173133dc38ccf87_sys_enter
+               	loop_iter_first()
+                 add  x7, x0, #0x0
+
+               	loop_iter_first()
+                 add  x20, x7, #0x0
+
+               	int size = probe_read_str(&augmented_filename->value, filename_len, filename_arg);
+                 mov  x0, #0x1                   	// #1
+
+  [...]
+
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Suzuki Poulouse <suzuki.poulose@arm.com>
+Cc: coresight@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+---
+ tools/perf/Makefile.config | 22 ++++++++++++++++++++++
+ tools/perf/util/cs-etm.c   | 19 ++++++++++++++++++-
+ 2 files changed, 40 insertions(+), 1 deletion(-)
+
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 51dd00f65709..a58cd5a43a98 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -418,6 +418,28 @@ ifdef CORESIGHT
+     endif
+     LDFLAGS += $(LIBOPENCSD_LDFLAGS)
+     EXTLIBS += $(OPENCSDLIBS)
++    PRE_START_SIZE := 0
++    ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/kernel/vmlinux.lds),)
++      ifeq ($(SRCARCH),arm64)
++        # Extract info from lds:
++        #  . = ((((((((0xffffffffffffffff)) - (((1)) << (48)) + 1) + (0)) + (0x08000000))) + (0x08000000))) + 0x00080000;
++        # PRE_START_SIZE := (0x08000000 + 0x08000000 + 0x00080000) = 0x10080000
++        PRE_START_SIZE := $(shell egrep ' \. \= \({8}0x[0-9a-fA-F]+\){2}' \
++          $(srctree)/arch/$(SRCARCH)/kernel/vmlinux.lds | \
++          sed -e 's/[(|)|.|=|+|<|;|-]//g' -e 's/ \+/ /g' -e 's/^[ \t]*//' | \
++          awk -F' ' '{printf "0x%x", $$6+$$7+$$8}' 2>/dev/null)
++      endif
++      ifeq ($(SRCARCH),arm)
++        # Extract info from lds:
++        #   . = ((0xC0000000)) + 0x00208000;
++        # PRE_START_SIZE := 0x00208000
++        PRE_START_SIZE := $(shell egrep ' \. \= \({2}0x[0-9a-fA-F]+\){2}' \
++          $(srctree)/arch/$(SRCARCH)/kernel/vmlinux.lds | \
++          sed -e 's/[(|)|.|=|+|<|;|-]//g' -e 's/ \+/ /g' -e 's/^[ \t]*//' | \
++          awk -F' ' '{printf "0x%x", $$2}' 2>/dev/null)
++      endif
++    endif
++    CFLAGS += -DARM_PRE_START_SIZE=$(PRE_START_SIZE)
+     $(call detected,CONFIG_LIBOPENCSD)
+     ifdef CSTRACE_RAW
+       CFLAGS += -DCS_DEBUG_RAW
+diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+index 0c7776b51045..5fa0be3a3904 100644
+--- a/tools/perf/util/cs-etm.c
++++ b/tools/perf/util/cs-etm.c
+@@ -613,10 +613,27 @@ static void cs_etm__free(struct perf_session *session)
+ static u8 cs_etm__cpu_mode(struct cs_etm_queue *etmq, u64 address)
+ {
+ 	struct machine *machine;
++	u64 fixup_kernel_start = 0;
+ 
+ 	machine = etmq->etm->machine;
+ 
+-	if (address >= etmq->etm->kernel_start) {
++	/*
++	 * Since arm and arm64 specify some memory regions prior to
++	 * 'kernel_start', kernel addresses can be less than 'kernel_start'.
++	 *
++	 * For arm architecture, the 16MB virtual memory space prior to
++	 * 'kernel_start' is allocated to device modules, a PMD table if
++	 * CONFIG_HIGHMEM is enabled and a PGD table.
++	 *
++	 * For arm64 architecture, the root PGD table, device module memory
++	 * region and BPF jit region are prior to 'kernel_start'.
++	 *
++	 * To reflect the complete kernel address space, compensate these
++	 * pre-defined regions for kernel start address.
++	 */
++	fixup_kernel_start = etmq->etm->kernel_start - ARM_PRE_START_SIZE;
++
++	if (address >= fixup_kernel_start) {
+ 		if (machine__is_host(machine))
+ 			return PERF_RECORD_MISC_KERNEL;
+ 		else
+-- 
+2.17.1
 
