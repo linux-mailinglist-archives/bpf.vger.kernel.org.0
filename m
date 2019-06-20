@@ -2,128 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6AB4CE78
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2019 15:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C384D08A
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2019 16:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726952AbfFTNRH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Jun 2019 09:17:07 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:37068 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731956AbfFTNRG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Jun 2019 09:17:06 -0400
-Received: by mail-io1-f69.google.com with SMTP id j18so5201146ioj.4
-        for <bpf@vger.kernel.org>; Thu, 20 Jun 2019 06:17:06 -0700 (PDT)
+        id S1731773AbfFTOjC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Jun 2019 10:39:02 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:48906 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726551AbfFTOjC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Jun 2019 10:39:02 -0400
+Received: by mail-io1-f70.google.com with SMTP id z19so5497780ioi.15
+        for <bpf@vger.kernel.org>; Thu, 20 Jun 2019 07:39:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=qnpm2ey2SaMdFsp844f8fqM6l7lFZy4hxhn4zu2c9Q0=;
-        b=NEt1BWwoTuaMy5TaiLlwHfSmPEFG7OnGxFgHe1Ov0w3h6VHRK07bpluD105AcfsGse
-         CS+SuMxT97fMWEngcIJCn0R16DVulPx1OP0+/oAaIW8iwALzXwabRbZvl4AxCpdhNPge
-         8FFGCtVlJnwcm0+yU1x8M8Q8+mCnyAGMEGLA9LRbd3Dvmf/YWsYLiJGbB36LcBvKChMi
-         0OfQ0r+j12mIbHpFjpWIKTIGpS1AV4irFtrwtZqOYCYHENPrO0ldVWvXllNjk8ZDOd/C
-         gs102m47+JA6bCGawtHnARVA2rePMZuineKlNGBTQb66xgJKpWNPnDYBZZaG9ewmH1Ul
-         Xshw==
-X-Gm-Message-State: APjAAAWN/i9UL9oTGEMGWHDW6BzvIdTpEzfbS5a3QUSpo84Ler2vLwCM
-        vTiOtW6Fr++ixfvOKmEPDw3fXkesmA/E/Pxl8dwb+jrRalg7
-X-Google-Smtp-Source: APXvYqz5aZ3aKR/AVT0K9maciDso0v/J6cBLOy939L8NQzi44H2SoxoDLRpc5re9zZKKtPXX0im9kkZl2LTzEGPzwVpwenkSXcxE
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=pcMSWZKNicDpxHahzslAEA1Gd+yI94665La65rLMOto=;
+        b=G075XdKBdXY1rK0Fa9Uc/Y0BUNtuqCFAe/8duA9asUEsb34FAcpcMHAEv7XQwZOM7r
+         DrPDYDbfzF3FpDAQS+68Vwcr4roXEQPgMrpLk3ouCIpelnGoKaenwbgrkmxB2wRREaRP
+         XZuuloCgTW+IuqVTSRIq6CLy/NCRqfdhkYqShl1DOhrOJwfkk7cI8y7K0suY2xKC+Dew
+         vzXMSUsVAA2WnPGb0X60Vx+0esimp+UDxslG/zpwJCiXsNHrMQLuqHIeRguNAQ3xYeKV
+         UofkdOQXD+2t/N5DbCVbqPgqgIXegnuIUmw4NVlGUwTH+NLALCrd1tUH9tF6AcTZot8k
+         aqJw==
+X-Gm-Message-State: APjAAAVwTujfA2AqOOlJcbZ9QTWxDE/XuXljABW4poKmq+mssInGTBES
+        VFGR37rBMkfHwX89x8xUArkpI0Ms2Q8KZxATpAOgwLfWhexJ
+X-Google-Smtp-Source: APXvYqx+TYIh2vUv0uFyzxELBI4G5xYxTzkRj8btxI6/Q81qlMHz++HJM+3ytmsKnLPIC+Zek+ch3AjsBD++T5mDMbdR5vtbxIMl
 MIME-Version: 1.0
-X-Received: by 2002:a5e:cb43:: with SMTP id h3mr6987571iok.252.1561036626090;
- Thu, 20 Jun 2019 06:17:06 -0700 (PDT)
-Date:   Thu, 20 Jun 2019 06:17:06 -0700
+X-Received: by 2002:a5d:8c87:: with SMTP id g7mr20051791ion.85.1561041541089;
+ Thu, 20 Jun 2019 07:39:01 -0700 (PDT)
+Date:   Thu, 20 Jun 2019 07:39:01 -0700
+In-Reply-To: <000000000000946842058bc1291d@google.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000946842058bc1291d@google.com>
-Subject: WARNING in add_event_to_ctx
+Message-ID: <000000000000894e8f058bc24e2b@google.com>
+Subject: Re: WARNING in add_event_to_ctx
 From:   syzbot <syzbot+704bfe2c7d156640ad7a@syzkaller.appspotmail.com>
-To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        jolsa@redhat.com, kafai@fb.com, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, namhyung@kernel.org, netdev@vger.kernel.org,
-        peterz@infradead.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+To:     acme@kernel.org, acme@redhat.com,
+        alexander.shishkin@linux.intel.com, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        jbacik@fb.com, jolsa@redhat.com, kafai@fb.com, kernel-team@fb.com,
+        linux-kernel@vger.kernel.org, mingo@kernel.org, mingo@redhat.com,
+        namhyung@kernel.org, netdev@vger.kernel.org, peterz@infradead.org,
+        rostedt@goodmis.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        torvalds@linux-foundation.org, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+syzbot has bisected this bug to:
 
-syzbot found the following crash on:
+commit 33ea4b24277b06dbc55d7f5772a46f029600255e
+Author: Song Liu <songliubraving@fb.com>
+Date:   Wed Dec 6 22:45:16 2017 +0000
 
-HEAD commit:    abf02e29 Merge tag 'pm-5.2-rc6' of git://git.kernel.org/pu..
+     perf/core: Implement the 'perf_uprobe' PMU
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17561aa1a00000
+start commit:   abf02e29 Merge tag 'pm-5.2-rc6' of git://git.kernel.org/pu..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=129072e6a00000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=14d61aa1a00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10d61aa1a00000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=28ec3437a5394ee0
 dashboard link: https://syzkaller.appspot.com/bug?extid=704bfe2c7d156640ad7a
-compiler:       clang version 9.0.0 (/home/glider/llvm/clang  
-80fee25776c2fb61e74c1ecb1a523375c2500b69)
 syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16d8b732a00000
 C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17f7a5e6a00000
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
 Reported-by: syzbot+704bfe2c7d156640ad7a@syzkaller.appspotmail.com
+Fixes: 33ea4b24277b ("perf/core: Implement the 'perf_uprobe' PMU")
 
-WARNING: CPU: 0 PID: 8131 at kernel/events/core.c:1835 perf_group_attach  
-kernel/events/core.c:1835 [inline]
-WARNING: CPU: 0 PID: 8131 at kernel/events/core.c:1835  
-add_event_to_ctx+0x1351/0x1630 kernel/events/core.c:2393
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 8131 Comm: syz-executor982 Not tainted 5.2.0-rc5+ #4
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x1d8/0x2f8 lib/dump_stack.c:113
-  panic+0x28a/0x7c9 kernel/panic.c:219
-  __warn+0x216/0x220 kernel/panic.c:576
-  report_bug+0x190/0x290 lib/bug.c:186
-  fixup_bug arch/x86/kernel/traps.c:179 [inline]
-  do_error_trap+0xd7/0x450 arch/x86/kernel/traps.c:272
-  do_invalid_op+0x36/0x40 arch/x86/kernel/traps.c:291
-  invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:986
-RIP: 0010:perf_group_attach kernel/events/core.c:1835 [inline]
-RIP: 0010:add_event_to_ctx+0x1351/0x1630 kernel/events/core.c:2393
-Code: ff e8 d3 19 e6 ff 0f 0b e9 88 ed ff ff e8 c7 19 e6 ff 0f 0b e9 42 ed  
-ff ff e8 bb 19 e6 ff 0f 0b e9 4f f8 ff ff e8 af 19 e6 ff <0f> 0b e9 d5 f8  
-ff ff 48 c7 c1 a0 31 dd 88 80 e1 07 80 c1 03 38 c1
-RSP: 0018:ffff888094cdf900 EFLAGS: 00010093
-RAX: ffffffff818f9841 RBX: ffff888085d7c418 RCX: ffff888099a064c0
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffff888094cdf988 R08: ffffffff818f90aa R09: ffffed101299bf21
-R10: ffffed101299bf20 R11: 1ffff1101299bf20 R12: dffffc0000000000
-R13: ffff888085d7c200 R14: ffffe8ffffc15758 R15: ffff888085d7ca80
-  __perf_install_in_context+0x54a/0x7e0 kernel/events/core.c:2544
-  remote_function+0xeb/0x170 kernel/events/core.c:86
-  generic_exec_single+0x114/0x420 kernel/smp.c:154
-  smp_call_function_single+0x1a5/0x410 kernel/smp.c:300
-  cpu_function_call kernel/events/core.c:140 [inline]
-  perf_install_in_context+0x26b/0x5a0 kernel/events/core.c:2580
-  __do_sys_perf_event_open kernel/events/core.c:11110 [inline]
-  __se_sys_perf_event_open+0x224a/0x3270 kernel/events/core.c:10739
-  __x64_sys_perf_event_open+0xbf/0xd0 kernel/events/core.c:10739
-  do_syscall_64+0xfe/0x140 arch/x86/entry/common.c:301
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x446b69
-Code: e8 8c 19 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 7b 0c fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f2b0c7bddb8 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
-RAX: ffffffffffffffda RBX: 00000000006dcc28 RCX: 0000000000446b69
-RDX: 0000000000000000 RSI: 00000000ffffffff RDI: 0000000020000000
-RBP: 00000000006dcc20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000003 R11: 0000000000000246 R12: 00000000006dcc2c
-R13: 00007fff27b1f69f R14: 00007f2b0c7be9c0 R15: 0000000000000000
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
