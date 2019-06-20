@@ -2,59 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1308B4C6D7
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2019 07:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 164524C701
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2019 08:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725875AbfFTFkT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Jun 2019 01:40:19 -0400
-Received: from mail-io1-f47.google.com ([209.85.166.47]:38781 "EHLO
-        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725857AbfFTFkT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Jun 2019 01:40:19 -0400
-Received: by mail-io1-f47.google.com with SMTP id j6so123651ioa.5;
-        Wed, 19 Jun 2019 22:40:18 -0700 (PDT)
+        id S1725977AbfFTGBS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Jun 2019 02:01:18 -0400
+Received: from mail-io1-f41.google.com ([209.85.166.41]:41040 "EHLO
+        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbfFTGBS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Jun 2019 02:01:18 -0400
+Received: by mail-io1-f41.google.com with SMTP id w25so2423913ioc.8;
+        Wed, 19 Jun 2019 23:01:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=CHQrdpLakU3alJYQvxRZT1mY4W6opRcI/cqy2ZH4TS4=;
-        b=bwryuyaa+2wgtpk+f8ydLlXa2TpGhDppJZad8igWGDs9E6ZBV21lXn8GuezG1DSwWA
-         lASFr7gZFuZe8ToiUELQkAMAGsGA14m5QC1VCC/cdVActpxn+YmxnpzB+1ERw9UDXOa7
-         orGcVXrLgPf60iqFn6+cRtYvNjNkU8geVIXWY4HNoxBKz7Did9aN2c8gwnoyqJCKhkPH
-         0s0oIwP7LtjMfj0NdbrSlfC6Ah7s0/eaehSemmVcX5/5Ey/XEshgV4ivCBQOz7Cqdi0L
-         OiLjlJ2Z+Pa06OhkDHyxz6yR4U94mvEBiR4uskb2HWFcBvr5M2EMsPBsKBvyQwidbNY2
-         YyzQ==
+        bh=MqzsYCHBzioG4bOrNkmWcUKVevjbBvwuF35diEvjshw=;
+        b=NcL5l3LLLGw7PeJl+xcBFGqD4FfPr/xyhLw3NrW7XsmdZdl+P/bt80At4fPExKDJSh
+         CK3+Yz1GaMoQCyGWKZXx/seQaIrSGKCOWog6tdmr70Yuqg8dUNUuJ9c3XizoFZ6+Kpae
+         OHhb6FDTZy24LoiPgKxajPXB9VCHX7QRNO0tez7k+g+RF8gx+CHoP/ntT+ZQnQHW1ZFc
+         ygZSA6ZZn6dRr3zB7SPMPx/Hr6gzCVsMXJjiqNnx70OzA+d/lQUWJXzUDCk60VFLsaRX
+         HLE915TX2g14hQbs4lpXfz1LkQJzmZff3ggdMSuqy1El3OQMKJdbEtV8vPAuT1KbDE0r
+         xgxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=CHQrdpLakU3alJYQvxRZT1mY4W6opRcI/cqy2ZH4TS4=;
-        b=PHkVBj+JHv0rViHyWRhddTv/hxNQz3mxy01G1YOd2vo21pECMU9AMyt3k4b/XEX5y1
-         /pJy75j4AYo9W3mLfgk15t0lOdk71KSNfEGZMVwQmr9rM/6OBOjwW9Is5zP5L9bX9Igi
-         W3ABJwKVrigsESy/Q8Zm+PECcbRQlMAujA9Y3D+NrDgkOs4ne9/7SI2vXKWsS239yQWx
-         gPLAXgL5q1jIjUHiG/AwzIGw36yG9aog1aOi9/SPZh1600iDeXyja0Nm9T2KdZNen77v
-         xNn86u+LnyHz48Ly2JObgm8Che0m0rUASbruK8B0ll1Qnk7kTPuRPmwluL/iqFqkfls6
-         1RJA==
-X-Gm-Message-State: APjAAAU+Y6EfS9Udrm9qDzx0SeEFT9Tp5SG+eu/OKBTvk29/2oEFW/o4
-        y42ULwICnE/MtiTS/8hfGHc=
-X-Google-Smtp-Source: APXvYqxm0ykJ05XtDok9Xf3gPzbKZQGbqd7P1RWvPMt//Yj8IiKlHCsnnFVBKOXHUYYE9p89b5QW6Q==
-X-Received: by 2002:a02:c918:: with SMTP id t24mr103306349jao.111.1561009218572;
-        Wed, 19 Jun 2019 22:40:18 -0700 (PDT)
+        bh=MqzsYCHBzioG4bOrNkmWcUKVevjbBvwuF35diEvjshw=;
+        b=Gm6kpOLHy6G42Nor+nwZs5d5uIthq1SBf8JL5KuXlNePWA3Wi1Na96wwqHbeObADat
+         j1O9hn+mMQKHB/eO/E0w/xnikFkOZI7DQC7CjbGufL4kTsZLh3Xvc17DB630dB5FzvLA
+         qpT5UJGXopBtMC/HIjDy8I5qTgzQmqt+2u6e5xy9K9RkP1G+rruAqqhM1BxxoksLELfq
+         kXE5HyojZMoggHz9POpEVTuU63O8qAPYViFqnPcDQcRt01v6bmlkMWV7NNopTV0kony/
+         So83l8ra0tbJgp2LFpaBLAqkP6B8UH1nI3Yn9lfEtbPF4QFI7CAjIoUnLBbks+q1WMt/
+         C7KA==
+X-Gm-Message-State: APjAAAWaGA1ujx8Gj+0nx7qXqKiCjVov3GZ6hfpKRTb4FbHQNo5Fw43J
+        nDPPmtl3wywWImW3HBgCoXs=
+X-Google-Smtp-Source: APXvYqzrxsYXF0GmUq/peRBzWINlXtlmZN2iPXhZY9Tc13TaIh7W1CxAz/J5C9QnkPrCvJ4gBxWKvg==
+X-Received: by 2002:a5e:9241:: with SMTP id z1mr30495408iop.39.1561010477447;
+        Wed, 19 Jun 2019 23:01:17 -0700 (PDT)
 Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id k5sm20699467ioj.47.2019.06.19.22.40.15
+        by smtp.gmail.com with ESMTPSA id t4sm15550991iop.0.2019.06.19.23.01.15
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 19 Jun 2019 22:40:18 -0700 (PDT)
-Date:   Wed, 19 Jun 2019 22:40:10 -0700
+        Wed, 19 Jun 2019 23:01:16 -0700 (PDT)
+Date:   Wed, 19 Jun 2019 23:01:10 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net
 Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
         kernel-team@fb.com
-Message-ID: <5d0b1c3a3f565_21bb2acd7a54c5b49@john-XPS-13-9370.notmuch>
-In-Reply-To: <20190615191225.2409862-3-ast@kernel.org>
+Message-ID: <5d0b2126214c3_12352ac65c3c65c06a@john-XPS-13-9370.notmuch>
+In-Reply-To: <20190615191225.2409862-4-ast@kernel.org>
 References: <20190615191225.2409862-1-ast@kernel.org>
- <20190615191225.2409862-3-ast@kernel.org>
-Subject: RE: [PATCH v3 bpf-next 2/9] selftests/bpf: fix tests due to const
- spill/fill
+ <20190615191225.2409862-4-ast@kernel.org>
+Subject: RE: [PATCH v3 bpf-next 3/9] bpf: extend is_branch_taken to registers
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -65,15 +64,16 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Alexei Starovoitov wrote:
-> fix tests that incorrectly assumed that the verifier
-> cannot track constants through stack.
+> This patch extends is_branch_taken() logic from JMP+K instructions
+> to JMP+X instructions.
+> Conditional branches are often done when src and dst registers
+> contain known scalars. In such case the verifier can follow
+> the branch that is going to be taken when program executes.
+> That speeds up the verification and is essential feature to support
+> bounded loops.
 > 
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > Acked-by: Andrii Nakryiko <andriin@fb.com>
 > ---
->  .../bpf/verifier/direct_packet_access.c       |  3 +-
->  .../bpf/verifier/helper_access_var_len.c      | 28 ++++++++++---------
->  2 files changed, 17 insertions(+), 14 deletions(-)
-> 
- 
+
 Acked-by: John Fastabend <john.fastabend@gmail.com>
