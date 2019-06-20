@@ -2,90 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B55B4C7BD
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2019 08:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F22024C8FD
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2019 10:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726072AbfFTG60 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Jun 2019 02:58:26 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:43238 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbfFTG60 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Jun 2019 02:58:26 -0400
-Received: by mail-pg1-f196.google.com with SMTP id f25so1051891pgv.10;
-        Wed, 19 Jun 2019 23:58:26 -0700 (PDT)
+        id S1730196AbfFTIIF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Jun 2019 04:08:05 -0400
+Received: from mail-lf1-f49.google.com ([209.85.167.49]:41810 "EHLO
+        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726168AbfFTIIF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Jun 2019 04:08:05 -0400
+Received: by mail-lf1-f49.google.com with SMTP id 136so1727502lfa.8
+        for <bpf@vger.kernel.org>; Thu, 20 Jun 2019 01:08:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5tq+X4wXXrZG/wbS6SMtHzkOdEnpgI5MI2Re6q1RlzY=;
-        b=kQTPnYOo24zaVfkMSvmceTasBcY1+Fa4BgqJpcnvR4ft3F4lz3Feod/vAHtj2Gf/PK
-         lzoDy9jUETyt3/rJSPOyd+YsCTNuJtQley+Wfz0x4dFrukJkpKWhAD6xHT7zaYDXqK5N
-         SJFttAcv/I9wk0iae5Qe0Z5OCnHaD/xL6OC8x8DXSmJdFkrjCSStz5NfotSbVaBr128s
-         5HsLZ2ZofOefY7S1KRjL0uHCcOwTetPzlDjs7+rlskLPpoo+7To8HjCflYIzEtC4UaPD
-         Gb5lIg6JblGqSZdHpKow/MyomKtK5IE1UW7YCAu1aSjlohTxxawnqGAVxCiXz3tTzF11
-         9b9w==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=5nLDF4KvNjOO0UGhzTbw+kgDFdu3GO4N4s2vFIPF9iU=;
+        b=OmXGcAXDCg5tpnkC3zM065z42PKi+z/FVjoDHqkRFwQQ351XflSo05WQbSV3o17OA1
+         ZCsdnjvvy8dS/tX2Yrk0+vtSVbKzdotrcrp1d3vJpozy0Jdb5LybpVHsiW48i/dDVI4m
+         ck78rIIOF3bMUbZaiZAMkWKmJcJn6Z/ZVjyWEsqoSws8e7XxsYNIIMXEHmshvOdBKAcx
+         J/hpS3vishBxStBuT5Vd6dFmaBnP06wN4IJ6LTtHWz3vxRs0dzNXAKspTbq1O91EelUW
+         7USUCZOQGv2Sw7kPzWpfZs5oEBsiyWFpcnyvM6d2Eb0IbXkpG8FtvbT1xWFcC5FeFvd/
+         egbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5tq+X4wXXrZG/wbS6SMtHzkOdEnpgI5MI2Re6q1RlzY=;
-        b=NMYxv7AROVUt7BZqp7BfzQVoTtrdnWdISR5IcvQ5nWVP9GrPKtYuuRVf9wlN5ZjDb/
-         79lgmSX3UgRyyf1RhU2ig9X4VtbdZvhgfSpPWe7/rjZ996kuLmyDtbsMw1AsvhZ90l4i
-         o6vP/WtCGRQoXUgUM1XEds4Cn9VOF7/7kyAM0UO+VGSJ28bxI3sTt138B8Ze/Ka3D/D7
-         KLAnHe6l7Y+SrQ+wcxY+O3ULlvRRu9YkqM+14nW7/Bw98QrbXstBXdovrFJIqSjWTK8X
-         S5C8Y33WPyPbTrSp5cC0o2gg7gvIDWfuyFGimj5cd0zbiwpXZFMKQAFvWw5VLXzuo3bP
-         v+ug==
-X-Gm-Message-State: APjAAAW5wAPtw0SJGlp3kufO6O/fGX0qUv1iXVjXIqb7sQ5hRndvQCUo
-        ODGPoazkL3xR68usQ99iY8Y=
-X-Google-Smtp-Source: APXvYqyMJEY7PxlxA1/4Q8uaahhdBJwmbXOc6UbM+Z4zfMfygklvdBTS1l+bCE78VCyjJ0onYTHtyg==
-X-Received: by 2002:a17:90a:7148:: with SMTP id g8mr1508670pjs.51.1561013906103;
-        Wed, 19 Jun 2019 23:58:26 -0700 (PDT)
-Received: from localhost.localdomain ([222.151.198.97])
-        by smtp.gmail.com with ESMTPSA id t19sm3574203pjo.11.2019.06.19.23.58.23
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 19 Jun 2019 23:58:25 -0700 (PDT)
-From:   Prashant Bhole <prashantbhole.linux@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Prashant Bhole <prashantbhole.linux@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH bpf] samples/bpf: xdp_redirect, correctly get dummy program id
-Date:   Thu, 20 Jun 2019 15:58:15 +0900
-Message-Id: <20190620065815.7698-1-prashantbhole.linux@gmail.com>
-X-Mailer: git-send-email 2.21.0
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=5nLDF4KvNjOO0UGhzTbw+kgDFdu3GO4N4s2vFIPF9iU=;
+        b=iKNIDFDlEkiVdfVPwjG6NKnD3StLFja7paFJcJ7U7FCr/yalhyUxijK9w1t6tnN+t3
+         ngUbVpFgVKiVUdLMW6JyHTHB01ohgtvLvDmo56P+ZSZfcEuY61mt+dAhxS+/aRUlwnTY
+         l4Pg8BuUvGYYraxowEQoJhqbRUXtryGxZicgjoM2YaPyPLpUZXq4BQtf9UNTaXiYlTIG
+         1CuFev2VRNs1s7nkA983o6g1G4K6TuAtHeoOP2covvgYEPV/UorQ1n4BJRDIw7YAtqBH
+         ddYJjyBZskCyJVBijRbtZV9bo2QAE5dtZ2G5qA4fQ+vMTDK6awMccy+dyB+ENLfheyZG
+         WgYQ==
+X-Gm-Message-State: APjAAAVYEDrSsVhjwsIVlKl5LIocvRMqIOqsuKtwDtq3CPWDU39uaP5V
+        wbGCldh9MA/2zLlEB74X2AX1hjlj8hQ086rzTxijKQ==
+X-Google-Smtp-Source: APXvYqyU7SYZ3r1zFZE21AN1DFeMgGQwh6SguX3BRtEUzUX/aM0TrfFkxtA08Wzok29Qq+v25QAmavsjX/AI8Qz4iuA=
+X-Received: by 2002:a19:671c:: with SMTP id b28mr12475324lfc.164.1561018083426;
+ Thu, 20 Jun 2019 01:08:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 20 Jun 2019 13:37:52 +0530
+Message-ID: <CA+G9fYsMcdHmKY66CNhsrizO-gErkOQCkTcBSyOHLpOs+8g5=g@mail.gmail.com>
+Subject: selftests: bpf: test_libbpf.sh failed at file test_l4lb.o
+To:     "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf@vger.kernel.org,
+        Netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        xdp-newbies@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, kafai@fb.com,
+        Yonghong Song <yhs@fb.com>, john.fastabend@gmail.com,
+        hawk@kernel.org, jakub.kicinski@netronome.com,
+        Shuah Khan <shuah@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When we terminate xdp_redirect, it ends up with following message:
-"Program on iface OUT changed, not removing"
-This results in dummy prog still attached to OUT interface.
-It is because signal handler checks if the programs are the same that
-we had attached. But while fetching dummy_prog_id, current code uses
-prog_fd instead of dummy_prog_fd. This patch passes the correct fd.
+selftests: bpf test_libbpf.sh failed running Linux -next kernel
+20190618 and 20190619.
 
-Fixes: 3b7a8ec2dec3 ("samples/bpf: Check the prog id before exiting")
-Signed-off-by: Prashant Bhole <prashantbhole.linux@gmail.com>
----
- samples/bpf/xdp_redirect_user.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Here is the log from x86_64,
+# selftests bpf test_libbpf.sh
+bpf: test_libbpf.sh_ #
+# [0] libbpf BTF is required, but is missing or corrupted.
+libbpf: BTF_is #
+# test_libbpf failed at file test_l4lb.o
+failed: at_file #
+# selftests test_libbpf [FAILED]
+test_libbpf: [FAILED]_ #
+[FAIL] 29 selftests bpf test_libbpf.sh
+selftests: bpf_test_libbpf.sh [FAIL]
 
-diff --git a/samples/bpf/xdp_redirect_user.c b/samples/bpf/xdp_redirect_user.c
-index e9054c0269ff..1299e0f61dad 100644
---- a/samples/bpf/xdp_redirect_user.c
-+++ b/samples/bpf/xdp_redirect_user.c
-@@ -197,7 +197,7 @@ int main(int argc, char **argv)
- 	}
- 
- 	memset(&info, 0, sizeof(info));
--	ret = bpf_obj_get_info_by_fd(prog_fd, &info, &info_len);
-+	ret = bpf_obj_get_info_by_fd(dummy_prog_fd, &info, &info_len);
- 	if (ret) {
- 		printf("can't get prog info - %s\n", strerror(errno));
- 		return ret;
--- 
-2.20.1
+Full test log,
+https://qa-reports.linaro.org/lkft/linux-next-oe/build/next-20190619/testrun/781777/log
 
+Test results comparison,
+https://qa-reports.linaro.org/lkft/linux-next-oe/tests/kselftest/bpf_test_libbpf.sh
+
+Good linux -next tag: next-20190617
+Bad linux -next tag: next-20190618
+git branch     master
+git commit    1c6b40509daf5190b1fd2c758649f7df1da4827b
+git repo
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+
+Best regards
+Naresh Kamboju
