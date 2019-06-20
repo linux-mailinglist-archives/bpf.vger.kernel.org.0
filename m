@@ -2,78 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DADF4DD63
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2019 00:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A704DDA3
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2019 01:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbfFTWUz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Jun 2019 18:20:55 -0400
-Received: from mail-wm1-f48.google.com ([209.85.128.48]:40489 "EHLO
-        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbfFTWUz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Jun 2019 18:20:55 -0400
-Received: by mail-wm1-f48.google.com with SMTP id v19so4616546wmj.5;
-        Thu, 20 Jun 2019 15:20:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BOTfc6xkfy+nNPUxl8bRZyQtwbGj0bqWA6aMY4K9+Xw=;
-        b=Nf8TGbn6OVR9OJQqaA6T/0PXzq2RPCPkn1fva+MA7oxnSx+KTmRTXl8d5kzPdi8a+B
-         XZuzniMHYPndxcJcmk/gcXmboiD32wuLr3B3jmZUN2q8gRje38CZ/Gt1aiqYpRGymPc4
-         IEnWHEXo0srkWR04AinMct6y3q07fOEiEAku765lbvrAObIkBYZKjFNOo2jcvrXSYs5O
-         +BQTS9wUMPAmJxslf+QfaBorqEYgQ+0YRN2w4HYz6DdyHHsdHH/TQXItdJ6O3ElcCwDJ
-         xgj7Fa/WlqS9iJwv4fgF39gMvy9v44BWXKg4wzReoKhyI36xuJfghyb+LMASe6Dz6icc
-         ZqfA==
-X-Gm-Message-State: APjAAAVKw3EJoEVlSik8zdO5CMzyXqRzOFd07peL2z2dRJ7AVglfV51w
-        AQljRcAKWwr9m2CT0C0wply0H5meRHzqkJ1o2gqxkQ==
-X-Google-Smtp-Source: APXvYqytc7FGhIZ6v3mBOczs3HALl8ai/g2Gp77r/f6kV/1CIAj6C5Rr99Y6H0inh2JQhiHJSN0Ctef0UavM0E8p7h0=
-X-Received: by 2002:a1c:3b02:: with SMTP id i2mr998424wma.23.1561069252885;
- Thu, 20 Jun 2019 15:20:52 -0700 (PDT)
+        id S1726098AbfFTXKU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Jun 2019 19:10:20 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:42906 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725815AbfFTXKT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 20 Jun 2019 19:10:19 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5KN7kZx008068
+        for <bpf@vger.kernel.org>; Thu, 20 Jun 2019 16:10:18 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=RnLy4sqnK36QnV4nRge6edPCKvHBGHk32kZOjq8y8/I=;
+ b=fiZwf+YxwIHi+ZUMHqLE6Dkv3fiFiAzyxse0PFHpEnUs8n08rEtoNu+djf0xWYWvLmC0
+ KwEOCU1de+PAGFYYiHV3lWATu56qlYNQFEuCcUmoH0KEqxhgIaUZlIF01hv7saLb7I8q
+ mWLkUhkpFFeuViAxjpqndSXljZtg95/qiXU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2t8ewt11vp-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 20 Jun 2019 16:10:17 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 20 Jun 2019 16:10:10 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 4807B86173D; Thu, 20 Jun 2019 16:10:07 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <andrii.nakryiko@gmail.com>, <ast@fb.com>, <daniel@iogearbox.net>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <kernel-team@fb.com>
+CC:     Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next 0/7] libbpf: add tracing attach APIs 
+Date:   Thu, 20 Jun 2019 16:09:44 -0700
+Message-ID: <20190620230951.3155955-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20190618130050.8344-1-jakub@cloudflare.com> <20190618135258.spo6c457h6dfknt2@breakpoint.cc>
- <87sgs6ey43.fsf@cloudflare.com>
-In-Reply-To: <87sgs6ey43.fsf@cloudflare.com>
-From:   Joe Stringer <joe@wand.net.nz>
-Date:   Thu, 20 Jun 2019 15:20:41 -0700
-Message-ID: <CAOftzPj6NWyWnz4JL-mXBaQUKAvQDtKJTrjZmrN4W5rqoy-W0A@mail.gmail.com>
-Subject: Re: [RFC bpf-next 0/7] Programming socket lookup with BPF
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     Florian Westphal <fw@strlen.de>, netdev <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org, kernel-team@cloudflare.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-20_15:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=625 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906200163
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 19, 2019 at 2:14 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> Hey Florian,
->
-> Thanks for taking a look at it.
->
-> On Tue, Jun 18, 2019 at 03:52 PM CEST, Florian Westphal wrote:
-> > Jakub Sitnicki <jakub@cloudflare.com> wrote:
-> >>  - XDP programs using bpf_sk_lookup helpers, like load balancers, can't
-> >>    find the listening socket to check for SYN cookies with TPROXY redirect.
-> >
-> > Sorry for the question, but where is the problem?
-> > (i.e., is it with TPROXY or bpf side)?
->
-> The way I see it is that the problem is that we have mappings for
-> steering traffic into sockets split between two places: (1) the socket
-> lookup tables, and (2) the TPROXY rules.
->
-> BPF programs that need to check if there is a socket the packet is
-> destined for have access to the socket lookup tables, via the mentioned
-> bpf_sk_lookup helper, but are unaware of TPROXY redirects.
->
-> For TCP we're able to look up from BPF if there are any established,
-> request, and "normal" listening sockets. The listening sockets that
-> receive connections via TPROXY are invisible to BPF progs.
->
-> Why are we interested in finding all listening sockets? To check if any
-> of them had SYN queue overflow recently and if we should honor SYN
-> cookies.
+This patchset adds the following APIs to allow attaching BPF programs to
+tracing entities:
+- bpf_program__attach_perf_event for attaching to any opened perf event FD,
+  allowing users full control;
+- bpf_program__attach_kprobe for attaching to kernel probes (both entry and
+  return probes);
+- bpf_program__attach_uprobe for attaching to user probes (both entry/return);
+- bpf_program__attach_tracepoint for attaching to kernel tracepoints;
+- bpf_program__attach_raw_tracepoint for attaching to raw kernel tracepoint
+  (wrapper around bpf_raw_tracepoint_open);
 
-Why are they invisible? Can't you look them up with bpf_skc_lookup_tcp()?
+This set of APIs makes libbpf more useful for tracing applications.
+
+Pre-patch #1 makes internal libbpf_strerror_r helper function work w/ negative
+error codes, lifting the burder off callers to keep track of error sign.
+Patch #2 adds attach_perf_event, which is the base for all other APIs.
+Patch #3 adds kprobe/uprobe APIs.
+Patch #4 adds tracepoint/raw_tracepoint APIs.
+Patch #5 converts one existing test to use attach_perf_event.
+Patch #6 adds new kprobe/uprobe tests.
+Patch #7 converts all the selftests currently using tracepoint to new APIs.
+
+Andrii Nakryiko (7):
+  libbpf: make libbpf_strerror_r agnostic to sign of error
+  libbpf: add ability to attach/detach BPF to perf event
+  libbpf: add kprobe/uprobe attach API
+  libbpf: add tracepoint/raw tracepoint attach API
+  selftests/bpf: switch test to new attach_perf_event API
+  selftests/bpf: add kprobe/uprobe selftests
+  selftests/bpf: convert existing tracepoint tests to new APIs
+
+ tools/lib/bpf/libbpf.c                        | 347 ++++++++++++++++++
+ tools/lib/bpf/libbpf.h                        |  17 +
+ tools/lib/bpf/libbpf.map                      |   6 +
+ tools/lib/bpf/str_error.c                     |   2 +-
+ .../selftests/bpf/prog_tests/attach_probe.c   | 151 ++++++++
+ .../bpf/prog_tests/stacktrace_build_id.c      |  49 +--
+ .../bpf/prog_tests/stacktrace_build_id_nmi.c  |  16 +-
+ .../selftests/bpf/prog_tests/stacktrace_map.c |  42 +--
+ .../bpf/prog_tests/stacktrace_map_raw_tp.c    |  14 +-
+ .../bpf/prog_tests/task_fd_query_rawtp.c      |  10 +-
+ .../bpf/prog_tests/task_fd_query_tp.c         |  51 +--
+ .../bpf/prog_tests/tp_attach_query.c          |  56 +--
+ .../selftests/bpf/progs/test_attach_probe.c   |  55 +++
+ 13 files changed, 650 insertions(+), 166 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/attach_probe.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_attach_probe.c
+
+-- 
+2.17.1
+
