@@ -2,73 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F484D240
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2019 17:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DADF4DD63
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2019 00:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbfFTPhP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Jun 2019 11:37:15 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:39554 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726649AbfFTPhP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Jun 2019 11:37:15 -0400
-Received: by mail-lj1-f195.google.com with SMTP id v18so3133080ljh.6;
-        Thu, 20 Jun 2019 08:37:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sdFhQUOmy0HUAK5VEgiFaGF1/IYr6NuyuE67mdG7njg=;
-        b=fn5YZ4i8JYfgEW/htWLS9IPeR0JzfnFjzhT1gsxJf9+dDPvqeh+hpVdv7lpNAaJcGM
-         MQBdidhg56n22SRHF2wt2Q1q9ICjoNWcHfCPw55QkB1jRqAXc0p0t0u1Ph1XdC+mZD+i
-         JwgCHU7IzLWn2+jM/83rxbapJnnOnuVUv8OkGFPHOyrBZClKr/EWcGMfKaFsFo0gsBnW
-         tO2O/hQn5Zt7/+X3EZ3l+5oD+aJ3Op2A/Zu+Nivt+swkFUAZTNo2KSpLjbeNXokh9GbH
-         HMYKov+FHouZ4rv5Qc2jv/hdeV2qSFOKfVmI47x3Tm+EcW4AnqaddEG9UmrcKI1F0YQl
-         Tkcg==
+        id S1726147AbfFTWUz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Jun 2019 18:20:55 -0400
+Received: from mail-wm1-f48.google.com ([209.85.128.48]:40489 "EHLO
+        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbfFTWUz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Jun 2019 18:20:55 -0400
+Received: by mail-wm1-f48.google.com with SMTP id v19so4616546wmj.5;
+        Thu, 20 Jun 2019 15:20:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sdFhQUOmy0HUAK5VEgiFaGF1/IYr6NuyuE67mdG7njg=;
-        b=Vt2kopjSQBKg6NS71xIEeGPoOhY20eEeaCA2ay7XgTq5U8ETTIwuyC4EKI/7vRFv+M
-         8LKJUpYQSrrSUjd85EcgnUPpVSZEQzTHHKREajOZloDij9+pO/dz5VwI+FLIcvenh/1T
-         x+Op2ZXXalQjOemxhKNG+4oeqhXTioiFCx9Pd9Cmwy9YFeJykuzH0m6dEw2yGS+zRuoQ
-         PueqIN96lxPIz1rN4jk0yx1V4XuOc9bI2s5J3bhvBl2eUt6ttdA9LvfIiiKpaYr80pT1
-         CLSGi8iJ/im+o3NMGw6jma1stxthHVCHqPVUFpPGBemvB3kgizif96zA1XJkWtJshA2O
-         l4Og==
-X-Gm-Message-State: APjAAAUuxzZm1lJEXF95QERZu2xqoVS8BQjDjMhjKUFyH5a2S68544QY
-        qYzDa89RVIUFscEXf8036o5WxA1lMU0zSXOPxKM=
-X-Google-Smtp-Source: APXvYqzswEM46HvJ9q00SI3Pbqvu7kkgprJoqkGjWIGakUNmc4JZyLCnYieYrkq8hZ1yNVxSXNUVi/BM/Sqppa0EwmE=
-X-Received: by 2002:a2e:94c9:: with SMTP id r9mr23364870ljh.210.1561045033229;
- Thu, 20 Jun 2019 08:37:13 -0700 (PDT)
+        bh=BOTfc6xkfy+nNPUxl8bRZyQtwbGj0bqWA6aMY4K9+Xw=;
+        b=Nf8TGbn6OVR9OJQqaA6T/0PXzq2RPCPkn1fva+MA7oxnSx+KTmRTXl8d5kzPdi8a+B
+         XZuzniMHYPndxcJcmk/gcXmboiD32wuLr3B3jmZUN2q8gRje38CZ/Gt1aiqYpRGymPc4
+         IEnWHEXo0srkWR04AinMct6y3q07fOEiEAku765lbvrAObIkBYZKjFNOo2jcvrXSYs5O
+         +BQTS9wUMPAmJxslf+QfaBorqEYgQ+0YRN2w4HYz6DdyHHsdHH/TQXItdJ6O3ElcCwDJ
+         xgj7Fa/WlqS9iJwv4fgF39gMvy9v44BWXKg4wzReoKhyI36xuJfghyb+LMASe6Dz6icc
+         ZqfA==
+X-Gm-Message-State: APjAAAVKw3EJoEVlSik8zdO5CMzyXqRzOFd07peL2z2dRJ7AVglfV51w
+        AQljRcAKWwr9m2CT0C0wply0H5meRHzqkJ1o2gqxkQ==
+X-Google-Smtp-Source: APXvYqytc7FGhIZ6v3mBOczs3HALl8ai/g2Gp77r/f6kV/1CIAj6C5Rr99Y6H0inh2JQhiHJSN0Ctef0UavM0E8p7h0=
+X-Received: by 2002:a1c:3b02:: with SMTP id i2mr998424wma.23.1561069252885;
+ Thu, 20 Jun 2019 15:20:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190615191225.2409862-1-ast@kernel.org> <20190615191225.2409862-2-ast@kernel.org>
- <5d0ad24027106_8822adea29a05b47c@john-XPS-13-9370.notmuch>
- <20190620033538.4oou4mbck6xs64mj@ast-mbp.dhcp.thefacebook.com> <5d0b13c990eaa_21bb2acd7a54c5b4a0@john-XPS-13-9370.notmuch>
-In-Reply-To: <5d0b13c990eaa_21bb2acd7a54c5b4a0@john-XPS-13-9370.notmuch>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 20 Jun 2019 08:37:00 -0700
-Message-ID: <CAADnVQ+dA1+KH=vDzEW7idVH5Lsgrcwy+GjuzX-bNTYV4nDt7A@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 1/9] bpf: track spill/fill of constants
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+References: <20190618130050.8344-1-jakub@cloudflare.com> <20190618135258.spo6c457h6dfknt2@breakpoint.cc>
+ <87sgs6ey43.fsf@cloudflare.com>
+In-Reply-To: <87sgs6ey43.fsf@cloudflare.com>
+From:   Joe Stringer <joe@wand.net.nz>
+Date:   Thu, 20 Jun 2019 15:20:41 -0700
+Message-ID: <CAOftzPj6NWyWnz4JL-mXBaQUKAvQDtKJTrjZmrN4W5rqoy-W0A@mail.gmail.com>
+Subject: Re: [RFC bpf-next 0/7] Programming socket lookup with BPF
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Florian Westphal <fw@strlen.de>, netdev <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org, kernel-team@cloudflare.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 19, 2019 at 10:04 PM John Fastabend
-<john.fastabend@gmail.com> wrote:
+On Wed, Jun 19, 2019 at 2:14 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >
-> working my way through the series now, but for this patch
+> Hey Florian,
 >
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> Thanks for taking a look at it.
+>
+> On Tue, Jun 18, 2019 at 03:52 PM CEST, Florian Westphal wrote:
+> > Jakub Sitnicki <jakub@cloudflare.com> wrote:
+> >>  - XDP programs using bpf_sk_lookup helpers, like load balancers, can't
+> >>    find the listening socket to check for SYN cookies with TPROXY redirect.
+> >
+> > Sorry for the question, but where is the problem?
+> > (i.e., is it with TPROXY or bpf side)?
+>
+> The way I see it is that the problem is that we have mappings for
+> steering traffic into sockets split between two places: (1) the socket
+> lookup tables, and (2) the TPROXY rules.
+>
+> BPF programs that need to check if there is a socket the packet is
+> destined for have access to the socket lookup tables, via the mentioned
+> bpf_sk_lookup helper, but are unaware of TPROXY redirects.
+>
+> For TCP we're able to look up from BPF if there are any established,
+> request, and "normal" listening sockets. The listening sockets that
+> receive connections via TPROXY are invisible to BPF progs.
+>
+> Why are we interested in finding all listening sockets? To check if any
+> of them had SYN queue overflow recently and if we should honor SYN
+> cookies.
 
-Thanks a lot for review!
-It's landed now, but if you find anything I'll send
-follow up patches.
-Which I plan to do anyway for few things in backtracking logic.
+Why are they invisible? Can't you look them up with bpf_skc_lookup_tcp()?
