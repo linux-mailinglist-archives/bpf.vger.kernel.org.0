@@ -2,294 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E3B4C55E
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2019 04:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E42B4C5D2
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2019 05:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731286AbfFTCXr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jun 2019 22:23:47 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:35209 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbfFTCXp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Jun 2019 22:23:45 -0400
-Received: by mail-pg1-f194.google.com with SMTP id s27so720448pgl.2;
-        Wed, 19 Jun 2019 19:23:44 -0700 (PDT)
+        id S1731390AbfFTDfq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jun 2019 23:35:46 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:40146 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726370AbfFTDfq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Jun 2019 23:35:46 -0400
+Received: by mail-pg1-f193.google.com with SMTP id w10so791607pgj.7;
+        Wed, 19 Jun 2019 20:35:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uXEldHMfNr4STLrSJDkwpcTDRF1aPJqHVLnszkg829M=;
-        b=EQsgQgN/yhpyV+w+MQ3FEV/kSJnVpnlluzd4JJzWqXebvkt5KnwXUIcNGc8tGVcRJq
-         jzRPve6/FT0StGYJpkscyFGjOgu6s8B4zVBLJGbpWAI+mBYAHP5eOzOMyNYfotaM0kKq
-         Uh92ApldC6mvZFjNujMGc4+Cwj9PB4u6YcNveY36v+CjthwX8CtsmyV7xrFiHkEVPMFx
-         Z5c2mbrbvFBSgqKDUfDkGdJhRCXG1oOnlZhMyS/kFY1CFl3h1oRzDkpgC/k1FYteDEFy
-         J8Edluye3dlmN/bdIhPF/Thi7si2FyL7l6j1B0jKqBRnnRilNfYk5b1w3Dm28tGmzERs
-         bhog==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zOa1e8oAtRxerEx6kd/Fw1r45fnTVWgZRg3Uxwi0TJw=;
+        b=OEIoM2/X9thwmJuYNhWXcFwNix9ajM8mHleBbahR31DvIUagWIzWj8oT+ibYiL5vxY
+         BLKdrNKj80R9pCGF/sjgerhCQa9Zwj118HOdc1GNNXjWdtcKVThlvIdjd5gpbSa6rPrO
+         qeuB5IPIt1cAOg1Akp0drdZF58OoYZh1HgXPKq2IvkNN32XFkdFpjw0MoRTDLLjvmj74
+         KQJ3mbVE0Mub1H66xq8wFeOllIowM+N6YKpHjXt9C0Nk31ZkpuhqyRZgfR9SYfz9c/Pk
+         OxBRDIevBrpOCSePGPhUJtLOX5lcPkrCCXDs0xwuPweunJofSXW1Ute/5Y9QFgQmgW4g
+         CD6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uXEldHMfNr4STLrSJDkwpcTDRF1aPJqHVLnszkg829M=;
-        b=o/R7avBvSTdaBjr+Q8YaCiKp/nQu1JCvx5z34FfT+ltYSu1ZlBmnYm98VvyBrPn2PU
-         Z+DlJ+bH/2TWs6cqFhe8h0yIJlGhPEa4YyoU0pc/2Tua7vcaI9//mo5pgrT/Sozbqjed
-         A2x2wPuh/d8lHSD8jpeh73GWVezzbdWensCab0PJRQ+4C39u9UUXUkytX14Be6mmNeKQ
-         MQpdh1CoOP4iFwjKNdiL7hBTMiCdMwaJC2d4ndYV3QIuIrXciLTbuxY1dDJnMr5XvMri
-         g5mJSJ4yscnYamuytCD6UaDnm+bBGurTWT49hXSnbAp2sxTqPLmYPF+s21RYCugOJ9ov
-         aBNg==
-X-Gm-Message-State: APjAAAUlIGue75pU78376sv1RDsBM0tML0B4tCI7Poiunt+NSarzR7DA
-        GqHedqPpLHsJ7KTqTOfmhZ0=
-X-Google-Smtp-Source: APXvYqy7i3XC7mqdxyX5B/1q312dYYoDVqNle6CbOeW5geEmUA5NKIh7izMI8V7AE/g5sGeQjpqrHw==
-X-Received: by 2002:a17:90a:342c:: with SMTP id o41mr420622pjb.1.1560997424511;
-        Wed, 19 Jun 2019 19:23:44 -0700 (PDT)
-Received: from z400-fedora29.kern.oss.ntt.co.jp ([222.151.198.97])
-        by smtp.gmail.com with ESMTPSA id g2sm18873362pgi.92.2019.06.19.19.23.41
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 19 Jun 2019 19:23:44 -0700 (PDT)
-From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf-next] selftests: Add test for veth native XDP
-Date:   Thu, 20 Jun 2019 11:23:23 +0900
-Message-Id: <20190620022323.19243-1-toshiaki.makita1@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zOa1e8oAtRxerEx6kd/Fw1r45fnTVWgZRg3Uxwi0TJw=;
+        b=tRe+3bji9VDf3Nr0FotWa6W2wLzbo8+AF6kIv+by3XjKuhRJ9cDUyz/wOC+tuHjVO6
+         WHf638VzCELDf+zsOhFhfDleWRm3sxJ3RLBcNLGaQj9wBLudfNt014iyO27oYrPvLZgu
+         foxHAPMr+RJfXpjyR2MqyDwZXdaYaCEObTGe0ShcfzOcFl6eJdXK5WxW+KnsG0dGVJIJ
+         71u8t6uJT/4j4wUTUWLuan0jSV3R8GWt0Png9isCsYQcwYdUbmHFRO2n2BBcAS2sQ3eg
+         oQy5i1aZ3ngpKsNW+GQjM1484chXiYAfxuDNJDSKJltH7Bcl9eZf3g5Hkz1oCn9ANloK
+         taGA==
+X-Gm-Message-State: APjAAAWP2ZgP0w69Whe/DqVhtjZWdno6FZJcdpzpNjnJdtLz5Ij6lXRZ
+        SC2mWPdd4VMBeS5n8yreZ1c=
+X-Google-Smtp-Source: APXvYqw1P3mUG3ns3NOr/FWd1Lfmw6O29/m6sZbB4KDBSoE2m48JW1eZzvKu4PbyCD0qvXlwsUnqoQ==
+X-Received: by 2002:a62:6d47:: with SMTP id i68mr130221237pfc.189.1561001745232;
+        Wed, 19 Jun 2019 20:35:45 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::1:bbbf])
+        by smtp.gmail.com with ESMTPSA id l13sm2797416pjq.20.2019.06.19.20.35.43
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 19 Jun 2019 20:35:44 -0700 (PDT)
+Date:   Wed, 19 Jun 2019 23:35:40 -0400
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net,
+        daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v3 bpf-next 1/9] bpf: track spill/fill of constants
+Message-ID: <20190620033538.4oou4mbck6xs64mj@ast-mbp.dhcp.thefacebook.com>
+References: <20190615191225.2409862-1-ast@kernel.org>
+ <20190615191225.2409862-2-ast@kernel.org>
+ <5d0ad24027106_8822adea29a05b47c@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5d0ad24027106_8822adea29a05b47c@john-XPS-13-9370.notmuch>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a test case for veth native XDP. It checks if XDP_PASS, XDP_TX and
-XDP_REDIRECT work properly.
+On Wed, Jun 19, 2019 at 05:24:32PM -0700, John Fastabend wrote:
+> Alexei Starovoitov wrote:
+> > Compilers often spill induction variables into the stack,
+> > hence it is necessary for the verifier to track scalar values
+> > of the registers through stack slots.
+> > 
+> > Also few bpf programs were incorrectly rejected in the past,
+> > since the verifier was not able to track such constants while
+> > they were used to compute offsets into packet headers.
+> > 
+> > Tracking constants through the stack significantly decreases
+> > the chances of state pruning, since two different constants
+> > are considered to be different by state equivalency.
+> > End result that cilium tests suffer serious degradation in the number
+> > of states processed and corresponding verification time increase.
+> > 
+> >                      before  after
+> > bpf_lb-DLB_L3.o      1838    6441
+> > bpf_lb-DLB_L4.o      3218    5908
+> > bpf_lb-DUNKNOWN.o    1064    1064
+> > bpf_lxc-DDROP_ALL.o  26935   93790
+> > bpf_lxc-DUNKNOWN.o   34439   123886
+> > bpf_netdev.o         9721    31413
+> > bpf_overlay.o        6184    18561
+> > bpf_lxc_jit.o        39389   359445
+> > 
+> > After further debugging turned out that cillium progs are
+> > getting hurt by clang due to the same constant tracking issue.
+> > Newer clang generates better code by spilling less to the stack.
+> > Instead it keeps more constants in the registers which
+> > hurts state pruning since the verifier already tracks constants
+> > in the registers:
+> >                   old clang  new clang
+> >                          (no spill/fill tracking introduced by this patch)
+> > bpf_lb-DLB_L3.o      1838    1923
+> > bpf_lb-DLB_L4.o      3218    3077
+> > bpf_lb-DUNKNOWN.o    1064    1062
+> > bpf_lxc-DDROP_ALL.o  26935   166729
+> > bpf_lxc-DUNKNOWN.o   34439   174607
+>                        ^^^^^^^^^^^^^^
+> Any idea what happened here? Going from 34439 -> 174607 on the new clang?
 
-  $ cd tools/testing/selftests/bpf
-  $ make \
-  	TEST_CUSTOM_PROGS= \
-  	TEST_GEN_PROGS= \
-  	TEST_GEN_PROGS_EXTENDED= \
-  	TEST_PROGS_EXTENDED= \
-  	TEST_PROGS="test_xdp_veth.sh" \
-  	run_tests
-  TAP version 13
-  1..1
-  # selftests: bpf: test_xdp_veth.sh
-  # PING 10.1.1.33 (10.1.1.33) 56(84) bytes of data.
-  # 64 bytes from 10.1.1.33: icmp_seq=1 ttl=64 time=0.073 ms
-  #
-  # --- 10.1.1.33 ping statistics ---
-  # 1 packets transmitted, 1 received, 0% packet loss, time 0ms
-  # rtt min/avg/max/mdev = 0.073/0.073/0.073/0.000 ms
-  # selftests: xdp_veth [PASS]
-  ok 1 selftests: bpf: test_xdp_veth.sh
+As I was alluding in commit log newer clang is smarter and generates
+less spill/fill of constants.
+In particular older clang loads two constants into r8 and r9
+and immediately spills them into stack. Then fills later,
+does a bunch of unrelated code and calls into helper that
+has ARG_ANYTHING for that position. Then doing a bit more math
+on filled constants, spills them again and so on.
+Before this patch (that tracks spill/fill of constants into stack)
+pruning points were equivalent, but with the patch it sees the difference
+in registers and declares states not equivalent, though any constant
+is fine from safety standpoint.
+With new clang only r9 has this pattern of spill/fill.
+New clang manages to keep constant in r8 to be around without spill/fill.
+Existing verifier tracks constants so even without this patch
+the same pathalogical behavior is observed.
+The verifier need to walk a lot more instructions only because
+r8 has different constants.
 
-Signed-off-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
----
- tools/testing/selftests/bpf/Makefile               |   1 +
- .../testing/selftests/bpf/progs/xdp_redirect_map.c |  31 ++++++
- tools/testing/selftests/bpf/progs/xdp_tx.c         |  12 +++
- tools/testing/selftests/bpf/test_xdp_veth.sh       | 118 +++++++++++++++++++++
- 4 files changed, 162 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/xdp_redirect_map.c
- create mode 100644 tools/testing/selftests/bpf/progs/xdp_tx.c
- create mode 100755 tools/testing/selftests/bpf/test_xdp_veth.sh
+> > bpf_netdev.o         9721    8407
+> > bpf_overlay.o        6184    5420
+> > bpf_lcx_jit.o        39389   39389
+> > 
+> > The final table is depressing:
+> >                   old clang  old clang    new clang  new clang
+> >                            const spill/fill        const spill/fill
+> > bpf_lb-DLB_L3.o      1838    6441          1923      8128
+> > bpf_lb-DLB_L4.o      3218    5908          3077      6707
+> > bpf_lb-DUNKNOWN.o    1064    1064          1062      1062
+> > bpf_lxc-DDROP_ALL.o  26935   93790         166729    380712
+> > bpf_lxc-DUNKNOWN.o   34439   123886        174607    440652
+> > bpf_netdev.o         9721    31413         8407      31904
+> > bpf_overlay.o        6184    18561         5420      23569
+> > bpf_lxc_jit.o        39389   359445        39389     359445
+> > 
+> > Tracking constants in the registers hurts state pruning already.
+> > Adding tracking of constants through stack hurts pruning even more.
+> > The later patch address this general constant tracking issue
+> > with coarse/precise logic.
+> > 
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > Acked-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> >  kernel/bpf/verifier.c | 90 +++++++++++++++++++++++++++++++------------
+> >  1 file changed, 65 insertions(+), 25 deletions(-)
+> 
+> I know these are already in bpf-next sorry it took me awhile to get
+> time to review, but looks good to me. Thanks! We had something similar
+> in the earlier loop test branch from last year.
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 44fb61f..11128ba 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -46,6 +46,7 @@ TEST_PROGS := test_kmod.sh \
- 	test_libbpf.sh \
- 	test_xdp_redirect.sh \
- 	test_xdp_meta.sh \
-+	test_xdp_veth.sh \
- 	test_offload.py \
- 	test_sock_addr.sh \
- 	test_tunnel.sh \
-diff --git a/tools/testing/selftests/bpf/progs/xdp_redirect_map.c b/tools/testing/selftests/bpf/progs/xdp_redirect_map.c
-new file mode 100644
-index 0000000..e87a985
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/xdp_redirect_map.c
-@@ -0,0 +1,31 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include "bpf_helpers.h"
-+
-+struct bpf_map_def SEC("maps") tx_port = {
-+	.type = BPF_MAP_TYPE_DEVMAP,
-+	.key_size = sizeof(int),
-+	.value_size = sizeof(int),
-+	.max_entries = 8,
-+};
-+
-+SEC("redirect_map_0")
-+int xdp_redirect_map_0(struct xdp_md *xdp)
-+{
-+	return bpf_redirect_map(&tx_port, 0, 0);
-+}
-+
-+SEC("redirect_map_1")
-+int xdp_redirect_map_1(struct xdp_md *xdp)
-+{
-+	return bpf_redirect_map(&tx_port, 1, 0);
-+}
-+
-+SEC("redirect_map_2")
-+int xdp_redirect_map_2(struct xdp_md *xdp)
-+{
-+	return bpf_redirect_map(&tx_port, 2, 0);
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/xdp_tx.c b/tools/testing/selftests/bpf/progs/xdp_tx.c
-new file mode 100644
-index 0000000..57912e7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/xdp_tx.c
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include "bpf_helpers.h"
-+
-+SEC("tx")
-+int xdp_tx(struct xdp_md *xdp)
-+{
-+	return XDP_TX;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_xdp_veth.sh b/tools/testing/selftests/bpf/test_xdp_veth.sh
-new file mode 100755
-index 0000000..ba8ffcd
---- /dev/null
-+++ b/tools/testing/selftests/bpf/test_xdp_veth.sh
-@@ -0,0 +1,118 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Create 3 namespaces with 3 veth peers, and
-+# forward packets in-between using native XDP
-+#
-+#                      XDP_TX
-+# NS1(veth11)        NS2(veth22)        NS3(veth33)
-+#      |                  |                  |
-+#      |                  |                  |
-+#   (veth1,            (veth2,            (veth3,
-+#   id:111)            id:122)            id:133)
-+#     ^ |                ^ |                ^ |
-+#     | |  XDP_REDIRECT  | |  XDP_REDIRECT  | |
-+#     | ------------------ ------------------ |
-+#     -----------------------------------------
-+#                    XDP_REDIRECT
-+
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+
-+TESTNAME=xdp_veth
-+BPF_FS=$(awk '$3 == "bpf" {print $2; exit}' /proc/mounts)
-+BPF_DIR=$BPF_FS/test_$TESTNAME
-+
-+_cleanup()
-+{
-+	set +e
-+	ip link del veth1 2> /dev/null
-+	ip link del veth2 2> /dev/null
-+	ip link del veth3 2> /dev/null
-+	ip netns del ns1 2> /dev/null
-+	ip netns del ns2 2> /dev/null
-+	ip netns del ns3 2> /dev/null
-+	rm -rf $BPF_DIR 2> /dev/null
-+}
-+
-+cleanup_skip()
-+{
-+	echo "selftests: $TESTNAME [SKIP]"
-+	_cleanup
-+
-+	exit $ksft_skip
-+}
-+
-+cleanup()
-+{
-+	if [ "$?" = 0 ]; then
-+		echo "selftests: $TESTNAME [PASS]"
-+	else
-+		echo "selftests: $TESTNAME [FAILED]"
-+	fi
-+	_cleanup
-+}
-+
-+if [ $(id -u) -ne 0 ]; then
-+	echo "selftests: $TESTNAME [SKIP] Need root privileges"
-+	exit $ksft_skip
-+fi
-+
-+if ! ip link set dev lo xdp off > /dev/null 2>&1; then
-+	echo "selftests: $TESTNAME [SKIP] Could not run test without the ip xdp support"
-+	exit $ksft_skip
-+fi
-+
-+if [ -z "$BPF_FS" ]; then
-+	echo "selftests: $TESTNAME [SKIP] Could not run test without bpffs mounted"
-+	exit $ksft_skip
-+fi
-+
-+if ! bpftool version > /dev/null 2>&1; then
-+	echo "selftests: $TESTNAME [SKIP] Could not run test without bpftool"
-+	exit $ksft_skip
-+fi
-+
-+set -e
-+
-+trap cleanup_skip EXIT
-+
-+ip netns add ns1
-+ip netns add ns2
-+ip netns add ns3
-+
-+ip link add veth1 index 111 type veth peer name veth11 netns ns1
-+ip link add veth2 index 122 type veth peer name veth22 netns ns2
-+ip link add veth3 index 133 type veth peer name veth33 netns ns3
-+
-+ip link set veth1 up
-+ip link set veth2 up
-+ip link set veth3 up
-+
-+ip -n ns1 addr add 10.1.1.11/24 dev veth11
-+ip -n ns3 addr add 10.1.1.33/24 dev veth33
-+
-+ip -n ns1 link set dev veth11 up
-+ip -n ns2 link set dev veth22 up
-+ip -n ns3 link set dev veth33 up
-+
-+mkdir $BPF_DIR
-+bpftool prog loadall \
-+	xdp_redirect_map.o $BPF_DIR/progs type xdp \
-+	pinmaps $BPF_DIR/maps
-+bpftool map update pinned $BPF_DIR/maps/tx_port key 0 0 0 0 value 122 0 0 0
-+bpftool map update pinned $BPF_DIR/maps/tx_port key 1 0 0 0 value 133 0 0 0
-+bpftool map update pinned $BPF_DIR/maps/tx_port key 2 0 0 0 value 111 0 0 0
-+ip link set dev veth1 xdp pinned $BPF_DIR/progs/redirect_map_0
-+ip link set dev veth2 xdp pinned $BPF_DIR/progs/redirect_map_1
-+ip link set dev veth3 xdp pinned $BPF_DIR/progs/redirect_map_2
-+
-+ip -n ns1 link set dev veth11 xdp obj xdp_dummy.o sec xdp_dummy
-+ip -n ns2 link set dev veth22 xdp obj xdp_tx.o sec tx
-+ip -n ns3 link set dev veth33 xdp obj xdp_dummy.o sec xdp_dummy
-+
-+trap cleanup EXIT
-+
-+ip netns exec ns1 ping -c 1 -W 1 10.1.1.33
-+
-+exit 0
--- 
-1.8.3.1
+It's not in bpf-next yet :)
+Code reviews are appreciated at any time.
+Looks like we were just lucky with older clang.
+I haven't tracked which clang version became smarter.
+If you haven't seen this issue and haven't changed cilium C source
+to workaround that then there is chance you'll hit it as well.
+By "new clang" I meant version 9.0
+"old clang" is unknown. I just had cilium elf .o around that
+I kept using for testing without recompiling them.
+Just by chance I recompiled them to see annotated verifier line info
+messages with BTF and hit this interesting issue.
+See patch 9 backtracking logic that resolves this 'precision of scalar'
+issue for progs compiled with both new and old clangs.
 
