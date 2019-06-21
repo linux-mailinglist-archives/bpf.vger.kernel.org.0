@@ -2,137 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 577FC4EF3B
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2019 21:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 787344EFA7
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2019 21:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbfFUTGX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jun 2019 15:06:23 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:34424 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbfFUTGW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Jun 2019 15:06:22 -0400
-Received: by mail-qk1-f194.google.com with SMTP id t8so5256565qkt.1;
-        Fri, 21 Jun 2019 12:06:22 -0700 (PDT)
+        id S1726114AbfFUTwR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jun 2019 15:52:17 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:37389 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726137AbfFUTwR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Jun 2019 15:52:17 -0400
+Received: by mail-lj1-f193.google.com with SMTP id 131so7000920ljf.4
+        for <bpf@vger.kernel.org>; Fri, 21 Jun 2019 12:52:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2jabc8ETAM1tQvMfNwKY1jPA89l8aJAfxYNUpiE3MoE=;
-        b=ZIvKXK7NiPWeFdhSQgGe4TXu21NsATnkOG6MAI+0GP6gUGQQ1B43qTMbmUPBpFg1iM
-         8+P1XO8y2mIHUT+XKosHjiVJWm967yPC3isLKtVGsPcaYUwl5pa8T5UKif7CQo2+lFNA
-         1lYGrr/Va7xBneCcIN9PT8ECGxc+W7VdNFVpHR37k6qlgFUtfZUOaMWhRbiHerp35PyW
-         iYdi8rzrHWpwAjCfAgyBWSKvg6sbBOp1pJrmyUJKrT4ImPXVEe/21BrnC0WPggFSyyCH
-         4ilJq4Q/8q6fIvvKSfOGrvI1CRmgpxQnWUX2jKZ2AmGP8E83crMx171jna1tH3ojo52Q
-         CrCw==
+         :cc:content-transfer-encoding;
+        bh=EPSJqa3r1kdyeW63tEDVfee+BtIlOEavn4pUB+slDmE=;
+        b=FxvgRGtyu1GHn+LoCk6L7b9S6nnVEJp3In9a+9NdlESKonBgQGNXxtTcLCDGNZqg6F
+         DCqMNHj428Wv/9sYXFn2CchLvY/+N1Y/9qz7UP9fBQY6qN8pi3407yWqxxE1sm/g0+us
+         45iFIHBMz3SCku+NxzceHGk5ejHCaad47CGj3etT+fwZVcGjtls2XTrWUcLrIHkuAVUb
+         XwYMzgieQNSogPEkhAh0nBnz+QANVzF2m2YEh0PkZlGsUHR3aFLDE4XuhBP9omb8Ace6
+         NhKHqOegkITJgEPr9lp6fczKnbzepU2dhWH16ai78TcJeVcOOWhs2bqzjp8VbhZOzEQK
+         QRHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2jabc8ETAM1tQvMfNwKY1jPA89l8aJAfxYNUpiE3MoE=;
-        b=CDCcHu6VdyCTx7bPEdv3NdHhNvIYufdNc8InZz7etY+KXM/qRyg/GFdZL4VlsV5ZuW
-         K21NkrIrJlkOAAbZ00n0Yw9+cciWy670GKDqkU1yJ6VdqfPoHRTLCpWa7xbL80+cF4Jg
-         w653otrs2Hsut6tQ487EsfjHnVwCWLDcIOBEjDPekD6Xl/hZ38o8cLqP+hclvtKaz8bk
-         MXv4esh0mwz+iFP0GKi1QUFQjNFNvR61Db1R/DdxMqmP/q2ojWWEZkCvcFaj0h0kg/3C
-         hLV759FGSo8NYJNN4gU4Ky80JzExmSvRjJOVSl1AwzZUk7d7/ONfWrtFscptQ/aCaS6O
-         CHkA==
-X-Gm-Message-State: APjAAAUesxvt4aVVvI9RXmp1hyMSkNEfQ0/K7IN3j6n18dn1TzUX6Ms2
-        qcbIXg9JfijvMAgu5+J76/o8+pvniKWlX2lLmYc=
-X-Google-Smtp-Source: APXvYqxLZ8NKPxXhyyvt6UfjUaA7Z4LFeaGPCgUm8czG7YLC7JNrwybRkSuLO1g/RaEE8Lb26Bw7YXNCrIe03/ByHKw=
-X-Received: by 2002:ae9:d803:: with SMTP id u3mr7089513qkf.437.1561143981730;
- Fri, 21 Jun 2019 12:06:21 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EPSJqa3r1kdyeW63tEDVfee+BtIlOEavn4pUB+slDmE=;
+        b=eGju3VQ0niYC9KXcQPZR88tywc0iQy1xNTdM44pp7zLKHFRDPrZeWLkDcEskSDLAUc
+         g7u6VifQ+gsZM00HRnumNjDEIdsFRRYtPXoWaRWr60MYxmyNiMbCEHod5zLrgTdCaNxV
+         Cd8LJ/w4iQEDhXdb4pFDNmW5yjwwThNXV8l7fzipA5x0z5CUx62f55h/haY72WJRjOhR
+         aC4yAzilloE0VLYIBnTSQJrlPy3IzrWaDQzU+SHeyxrfd+fjaYsw/El5HKkMi3845PXC
+         9/biOSD49u4YmsfXcBb9cyYS2cRTDZAUHrVxMFwncLzR9UltFILitQpKNrOjFXMlRoEx
+         psGg==
+X-Gm-Message-State: APjAAAXQv+s/i0+Pyew1LhljNuuGUXtmtbRsHXg4uaqx8CKuTTuLiuNx
+        w+GlcwZVqN8CupkOgG8qraxYjN2++RLpxXYbQ0FbCA==
+X-Google-Smtp-Source: APXvYqwmgr6JVDpHjL3J2y/q0YsZxYtmOKk21hZ72BiolF78wfaNNrNM5R1VurDkz55ydTUUelxfcrPrq9vhsyfWjCU=
+X-Received: by 2002:a2e:8007:: with SMTP id j7mr28448543ljg.191.1561146734869;
+ Fri, 21 Jun 2019 12:52:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190621084040.GU7221@shao2-debian> <20190621161039.GF1383@mini-arch>
-In-Reply-To: <20190621161039.GF1383@mini-arch>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 21 Jun 2019 12:06:10 -0700
-Message-ID: <CAEf4Bzaajc27=YyMaOa8UFRz=xE7y6E+qLbPBPbvLADO2peXQg@mail.gmail.com>
-Subject: Re: [selftests/bpf] 69d96519db: kernel_selftests.bpf.test_socket_cookie.fail
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        Stanislav Fomichev <sdf@google.com>,
+References: <20190618120024.16788-1-maximmi@mellanox.com> <CAJ+HfNia-vUv7Eumfs8aMYGGkxPbbUQ++F+BQ=9C1NtP0Jt3hA@mail.gmail.com>
+In-Reply-To: <CAJ+HfNia-vUv7Eumfs8aMYGGkxPbbUQ++F+BQ=9C1NtP0Jt3hA@mail.gmail.com>
+From:   Saeed Mahameed <saeedm@dev.mellanox.co.il>
+Date:   Fri, 21 Jun 2019 12:52:03 -0700
+Message-ID: <CALzJLG-eCiYYshkm_op1PqkCmxTmdDdPSGbX7g2JMqTb8QXyJg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 00/16] AF_XDP infrastructure improvements and
+ mlx5e support
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        bpf <bpf@vger.kernel.org>, lkp@01.org
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Jonathan Lemon <bsd@fb.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-)
-
-On Fri, Jun 21, 2019 at 9:11 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
+On Thu, Jun 20, 2019 at 2:13 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.co=
+m> wrote:
 >
-> On 06/21, kernel test robot wrote:
-> > FYI, we noticed the following commit (built with gcc-7):
+> On Tue, 18 Jun 2019 at 14:00, Maxim Mikityanskiy <maximmi@mellanox.com> w=
+rote:
 > >
-> > commit: 69d96519dbf0bfa1868dc8597d4b9b2cdeb009d7 ("selftests/bpf: convert socket_cookie test to sk storage")
-> > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> > This series contains improvements to the AF_XDP kernel infrastructure
+> > and AF_XDP support in mlx5e. The infrastructure improvements are
+> > required for mlx5e, but also some of them benefit to all drivers, and
+> > some can be useful for other drivers that want to implement AF_XDP.
 > >
-> > in testcase: kernel_selftests
-> > with following parameters:
+> > The performance testing was performed on a machine with the following
+> > configuration:
 > >
-> >       group: kselftests-00
+> > - 24 cores of Intel Xeon E5-2620 v3 @ 2.40 GHz
+> > - Mellanox ConnectX-5 Ex with 100 Gbit/s link
 > >
-> > test-description: The kernel contains a set of "self tests" under the tools/testing/selftests/ directory. These are intended to be small unit tests to exercise individual code paths in the kernel.
-> > test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
+> > The results with retpoline disabled, single stream:
 > >
+> > txonly: 33.3 Mpps (21.5 Mpps with queue and app pinned to the same CPU)
+> > rxdrop: 12.2 Mpps
+> > l2fwd: 9.4 Mpps
 > >
-> > on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
+> > The results with retpoline enabled, single stream:
 > >
-> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> > txonly: 21.3 Mpps (14.1 Mpps with queue and app pinned to the same CPU)
+> > rxdrop: 9.9 Mpps
+> > l2fwd: 6.8 Mpps
 > >
+> > v2 changes:
 > >
-> > If you fix the issue, kindly add following tag
-> > Reported-by: kernel test robot <rong.a.chen@intel.com>
+> > Added patches for mlx5e and addressed the comments for v1. Rebased for
+> > bpf-next.
 > >
-> > # selftests: bpf: test_socket_cookie
-> > # libbpf: failed to create map (name: 'socket_cookies'): Invalid
-> > # argument
-> Another case of old clang trying to create a map that depends on BTF?
-> Should we maybe switch those BTF checks in the kernel to return
-> EOPNOTSUPP to make it easy to diagnose?
-
-For older compilers that don't generate DATASEC/VAR, you'll see a clear message:
-
-libbpf: DATASEC '.maps' not found.
-
-So this must be something else. I just confirmed with clang version
-7.0.20180201 that for ./test_socket_cookie that's the first line
-that's emitted on failure.
-
->
-> > # libbpf: failed to load object './socket_cookie_prog.o'
-> > # (test_socket_cookie.c:149: errno: Invalid argument) Failed to load
-> > # ./socket_cookie_prog.o
-> > # FAILED
-> > not ok 15 selftests: bpf: test_socket_cookie
+> > v3 changes:
 > >
+> > Rebased for the newer bpf-next, resolved conflicts in libbpf. Addressed
+> > Bj=C3=B6rn's comments for coding style. Fixed a bug in error handling f=
+low in
+> > mlx5e_open_xsk.
 > >
+> > v4 changes:
 > >
+> > UAPI is not changed, XSK RX queues are exposed to the kernel. The lower
+> > half of the available amount of RX queues are regular queues, and the
+> > upper half are XSK RX queues. The patch "xsk: Extend channels to suppor=
+t
+> > combined XSK/non-XSK traffic" was dropped. The final patch was reworked
+> > accordingly.
 > >
-> > To reproduce:
+> > Added "net/mlx5e: Attach/detach XDP program safely", as the changes
+> > introduced in the XSK patch base on the stuff from this one.
 > >
-> >         # build kernel
-> >       cd linux
-> >       cp config-5.2.0-rc2-00598-g69d9651 .config
-> >       make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 olddefconfig
-> >       make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 prepare
-> >       make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 modules_prepare
-> >       make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 SHELL=/bin/bash
-> >       make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 bzImage
+> > Added "libbpf: Support drivers with non-combined channels", which align=
+s
+> > the condition in libbpf with the condition in the kernel.
 > >
+> > Rebased over the newer bpf-next.
 > >
-> >         git clone https://github.com/intel/lkp-tests.git
-> >         cd lkp-tests
-> >         bin/lkp qemu -k <bzImage> job-script # job-script is attached in this email
+> > v5 changes:
 > >
+> > In v4, ethtool reports the number of channels as 'combined' and the
+> > number of XSK RX queues as 'rx' for mlx5e. It was changed, so that 'rx'
+> > is 0, and 'combined' reports the double amount of channels if there is
+> > an active UMEM - to make libbpf happy.
 > >
-> >
-> > Thanks,
-> > Rong Chen
+> > The patch for libbpf was dropped. Although it's still useful and fixes
+> > things, it raises some disagreement, so I'm dropping it - it's no longe=
+r
+> > useful for mlx5e anymore after the change above.
 > >
 >
+> Just a heads-up: There are some checkpatch warnings (>80 chars/line)
 
-<mega snip>
+Thanks Bjorn for your comment, in mlx5 we allow up to 95 chars per line,
+otherwise it is going to be an ugly zigzags.
+
+> for the mlnx5 driver parts, and the series didn't apply cleanly on
+> bpf-next for me.
+>
+> I haven't been able to test the mlnx5 parts.
+>
+> Parts of the series are unrelated/orthogonal, and could be submitted
+> as separate series, e.g. patches {1,7} and patches {3,4}. No blockers
+> for me, though.
+>
+> Thanks for the hard work!
+>
+> For the series:
+> Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
