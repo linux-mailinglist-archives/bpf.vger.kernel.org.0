@@ -2,124 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4284ECE9
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2019 18:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AED04ED4B
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2019 18:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbfFUQR4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jun 2019 12:17:56 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:47091 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726132AbfFUQRz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Jun 2019 12:17:55 -0400
-Received: by mail-io1-f68.google.com with SMTP id i10so464208iol.13
-        for <bpf@vger.kernel.org>; Fri, 21 Jun 2019 09:17:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Sw0tar4GKNYE+fKeYGxgNKh8+9qTX2z35GEBt1SVpc0=;
-        b=EkOlu8qlRhzBLmqK/JdjBqIW5qryF2RdLS3wOFZsu3n9PHhrG1wi6n0hFXLG1MFQ5/
-         KTBVBI7etM1aU/ONn6Qx3W6uNfI4Yqqc6fdLe5cj+t0vt2i/1/wqMnkttynIQB8/u5cO
-         IAm1ffnYDxs7vAskpJvZyQo38g5G44Rx2R77/kU2bM/oNK5GsXdJG5uhioKfysrK8Lm8
-         2OktVp8osiuoXqbOEL9B58NPIk3A4R/seH4kyi0MzEh7I3xwtNwX/a0GWSgv23582DWp
-         dHjg6Aw7vupuRHaqil5vjLFXql1/9Tc+p0qGWipiN27RVTQV9X4JNJKSd+NJpC5BQfeW
-         PZMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Sw0tar4GKNYE+fKeYGxgNKh8+9qTX2z35GEBt1SVpc0=;
-        b=mqw0oi7Rwfoz83AHm4ZEcqLWR8KAnBU9tRJ3tKsOtJ+ZhGeSLnKhXZmqJWe7PQL5qH
-         gCa23NVzwjwZvFv4CJTCbopOl3AtfF0X/hOUwhqwjConvZuPngSZ2KZ5LVTJEhdV8lQ4
-         g4vYnP5R/4RWHpzGaRwfPP5o5txAL/3NdcuZFzOQUFdxH9sstedmgrTcAFb/OerDdyNL
-         I2Ott4H4jPp5IOeyna9noTqeFRKR8bHYUL5dSzIjpU39ZyUpYuRuG/Fondvm/hqaxmQw
-         n2uYlFl6k9oGikUHn3It1or1pNHzfLuJy4CtqA4R8qnOM3qG+myJmMrPG9h12YBlBS84
-         396Q==
-X-Gm-Message-State: APjAAAUqkwEj3ZG0ckGR1F8CdgXJBD9CB05Y7tloFzfUbdU587Jo84xa
-        amJTpZ7865OqpauknTu/Wq7+tA==
-X-Google-Smtp-Source: APXvYqwrP5rrf+639Ym7wMFWZQdU1WfoVNcgUP+bsXyCprN6Jo1hWnpDosiQ8jA1YW4OBOu8ZR8yFw==
-X-Received: by 2002:a02:22c6:: with SMTP id o189mr3228179jao.35.1561133874834;
-        Fri, 21 Jun 2019 09:17:54 -0700 (PDT)
-Received: from localhost (c-73-24-4-37.hsd1.mn.comcast.net. [73.24.4.37])
-        by smtp.gmail.com with ESMTPSA id f20sm3921317ioh.17.2019.06.21.09.17.53
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 21 Jun 2019 09:17:53 -0700 (PDT)
-Date:   Fri, 21 Jun 2019 11:17:52 -0500
-From:   Dan Rue <dan.rue@linaro.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        xdp-newbies@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>, hawk@kernel.org,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Shuah Khan <shuah@kernel.org>
-Subject: Re: selftests: bpf: test_libbpf.sh failed at file test_l4lb.o
-Message-ID: <20190621161752.d7d7n4m5q67uivys@xps.therub.org>
-References: <CA+G9fYsMcdHmKY66CNhsrizO-gErkOQCkTcBSyOHLpOs+8g5=g@mail.gmail.com>
- <CAEf4BzbTD8G_zKkj-S3MOeG5Hq3_2zz3bGoXhQtpt0beG8nWJA@mail.gmail.com>
+        id S1725992AbfFUQle convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 21 Jun 2019 12:41:34 -0400
+Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:43922 "EHLO
+        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725985AbfFUQld (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 21 Jun 2019 12:41:33 -0400
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.89)
+        (envelope-from <fw@strlen.de>)
+        id 1heMbT-0000zX-1t; Fri, 21 Jun 2019 18:41:31 +0200
+Date:   Fri, 21 Jun 2019 18:41:31 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Jakub Sitnicki <jakub@cloudflare.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [RFC bpf-next 0/7] Programming socket lookup with BPF
+Message-ID: <20190621164131.6ghtx6b7dzivsfxk@breakpoint.cc>
+References: <20190618130050.8344-1-jakub@cloudflare.com>
+ <20190618135258.spo6c457h6dfknt2@breakpoint.cc>
+ <87sgs6ey43.fsf@cloudflare.com>
+ <20190621125155.2sdw7pugepj3ityx@breakpoint.cc>
+ <f373a4d7-c16b-bce2-739d-788525ea4f96@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzbTD8G_zKkj-S3MOeG5Hq3_2zz3bGoXhQtpt0beG8nWJA@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <f373a4d7-c16b-bce2-739d-788525ea4f96@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 20, 2019 at 10:17:04PM -0700, Andrii Nakryiko wrote:
-> On Thu, Jun 20, 2019 at 1:08 AM Naresh Kamboju
-> <naresh.kamboju@linaro.org> wrote:
-> >
-> > selftests: bpf test_libbpf.sh failed running Linux -next kernel
-> > 20190618 and 20190619.
-> >
-> > Here is the log from x86_64,
-> > # selftests bpf test_libbpf.sh
-> > bpf: test_libbpf.sh_ #
-> > # [0] libbpf BTF is required, but is missing or corrupted.
+Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> > AFAICS so far this would be enough:
+> > 
+> > 1. remove the BUG_ON() in skb_orphan, letting it clear skb->sk instead
+> > 2. in nf_queue_entry_get_refs(), if skb->sk and no destructor:
+> >    call nf_tproxy_assign_sock() so a reference gets taken.
+> > 3. change skb_steal_sock:
+> >    static inline struct sock *skb_steal_sock(struct sk_buff *skb, bool *refcounted)
+> >     [..]
+> >     *refcounted = skb->destructor != NULL;
+> > 4. make tproxy sk assign elide the destructor assigment in case of
+> >    a listening sk.
+> > 
 > 
-> You need at least clang-9.0.0 (not yet released) to run some of these
-> tests successfully, as they rely on Clang's support for
-> BTF_KIND_VAR/BTF_KIND_DATASEC.
+> Okay, but how do we make sure the skb->sk association does not leak from rcu section ?
 
-Can there be a runtime check for BTF that emits a skip instead of a fail
-in such a case?
+From netfilter pov the only escape point is nfqueue (and kfree_skb),
+so for tcp/udp it will end up in their respective rx path eventually.
+But you are right in that we need to also audit all NF_STOLEN users that
+can be invoked from PRE_ROUTING and INPUT hooks.
 
-Thanks,
-Dan
+OUTPUT/FORWARD/POSTROUTING are not relevant, in case skb enters IP forwarding,
+it will be dropped there (we have a check to toss skb with socket
+attached in forward).
 
-> 
-> > libbpf: BTF_is #
-> > # test_libbpf failed at file test_l4lb.o
-> > failed: at_file #
-> > # selftests test_libbpf [FAILED]
-> > test_libbpf: [FAILED]_ #
-> > [FAIL] 29 selftests bpf test_libbpf.sh
-> > selftests: bpf_test_libbpf.sh [FAIL]
-> >
-> > Full test log,
-> > https://qa-reports.linaro.org/lkft/linux-next-oe/build/next-20190619/testrun/781777/log
-> >
-> > Test results comparison,
-> > https://qa-reports.linaro.org/lkft/linux-next-oe/tests/kselftest/bpf_test_libbpf.sh
-> >
-> > Good linux -next tag: next-20190617
-> > Bad linux -next tag: next-20190618
-> > git branch     master
-> > git commit    1c6b40509daf5190b1fd2c758649f7df1da4827b
-> > git repo
-> > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> >
-> > Best regards
-> > Naresh Kamboju
+In recent hallway discussion Eric suggested to add a empty destructor
+stub, it would allow to do the needed annotation, i.e.
+no need to change skb_orphan(), *refcounted would be set via
+skb->destructor != noref_listen_skb_destructor check.
 
--- 
-Linaro - Kernel Validation
+> Note we have the noref/refcounted magic for skb_dst(), we might try to use something similar
+> for skb->sk
+
+Yes, would be more code churn because we have to replace skb->sk access
+by a helper to mask off NOREF bit (or we need to add a "noref" bit in
+sk_buff itself).
