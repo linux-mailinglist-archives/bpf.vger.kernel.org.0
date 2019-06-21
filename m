@@ -2,159 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF1404E5E6
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2019 12:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D05324E84A
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2019 14:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726289AbfFUK3z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jun 2019 06:29:55 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:35453 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbfFUK3y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Jun 2019 06:29:54 -0400
-Received: by mail-ot1-f68.google.com with SMTP id j19so5846137otq.2
-        for <bpf@vger.kernel.org>; Fri, 21 Jun 2019 03:29:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vABUrhDDlgLaEgsGYnr/fcBvwyUpWVTqO8p1TtDrOes=;
-        b=Ggf5g8mV1RaLfhmi+55Hhcpvg4Cp6BH2/Tcn+fpGfUQ9h9LUe6rCX8Xbe3OPSigdTZ
-         4xm0uQHwoNTm1xtFSfocJXBGHywpv0VddCYw+YWFKvG9RGnsgrEny61YAo6vpBmxaONq
-         kh9EaiVpkq4Ym4nj510rrp+CWDMtuDi2IzxmM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vABUrhDDlgLaEgsGYnr/fcBvwyUpWVTqO8p1TtDrOes=;
-        b=oJneI5E5ec1QAIbB29J6+FS4rc8DZ5PxCjzmV4mMXYsUVQVNxAIo/4eEPP1kSnzR40
-         aT5lyKtsZLEtKnD4HnVNv365bnl6ARjR8EmdV0OFMSXNDDdTPd4AdAEj4758kv7lJyDA
-         4Ud437/i85hWRlgPKVzCM0egdH1Q8YIpEWmhM7ieMU6PY8X+aKpbpAp2G/MQ+tkWBSyN
-         sbyJrSgP/hgb7YbQi4p/BLna68zJqRG2zIpNX/REWOn7pPllo0c0+pls4DYtQ4RvhDgZ
-         vd0rGTuowa7KvcFGbB94YdM61jllN9ntw4vcedwvZH5nW3lpJJ6B55x2CZ0enHWV3llP
-         kRsA==
-X-Gm-Message-State: APjAAAU51Zx2LLM14gzwgX9SVVk2X2mmK7ArxrQbH4S1EHvhX0dQkoAo
-        NtfHNtsZ0EyZ0qQWI3gmt4nWPDGpW1fnFxUB76VBOw==
-X-Google-Smtp-Source: APXvYqzTpSPH+cBe6LlLDSpKphkGr0r0xfPseC0JOnxcRKwD1PfhAR8nsM73tuVcqTixadrdxhwNYlNrXApm8Ndkppo=
-X-Received: by 2002:a9d:6548:: with SMTP id q8mr15942333otl.132.1561112993753;
- Fri, 21 Jun 2019 03:29:53 -0700 (PDT)
+        id S1726321AbfFUMv5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jun 2019 08:51:57 -0400
+Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:42660 "EHLO
+        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726299AbfFUMv5 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 21 Jun 2019 08:51:57 -0400
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.89)
+        (envelope-from <fw@strlen.de>)
+        id 1heJ1H-0007uu-2s; Fri, 21 Jun 2019 14:51:55 +0200
+Date:   Fri, 21 Jun 2019 14:51:55 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [RFC bpf-next 0/7] Programming socket lookup with BPF
+Message-ID: <20190621125155.2sdw7pugepj3ityx@breakpoint.cc>
+References: <20190618130050.8344-1-jakub@cloudflare.com>
+ <20190618135258.spo6c457h6dfknt2@breakpoint.cc>
+ <87sgs6ey43.fsf@cloudflare.com>
 MIME-Version: 1.0
-References: <20190617192700.2313445-1-andriin@fb.com> <30a2c470-5057-bd96-1889-e77fd5536960@iogearbox.net>
- <CAEf4Bzae1CPDkhPrESa2ZmiOH8Mqf0KA_4ty9z=xnYn=q7Frhw@mail.gmail.com>
- <CACAyw9-L0qx8d9O66SaYhJGjsyKo_6iozqLAQHEVa1AW-U=2Tg@mail.gmail.com> <CAEf4BzYaHG9Z_eFQCtwxA7t5GwQq2wr=AEeFWZpqx9vdQqKv1g@mail.gmail.com>
-In-Reply-To: <CAEf4BzYaHG9Z_eFQCtwxA7t5GwQq2wr=AEeFWZpqx9vdQqKv1g@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Fri, 21 Jun 2019 11:29:42 +0100
-Message-ID: <CACAyw98JqwZbcTdpRNcG_fT6A-ekEqn9D5Zx4myB8oiX73uZkw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 00/11] BTF-defined BPF map definitions
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Joe Stringer <joe@wand.net.nz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sgs6ey43.fsf@cloudflare.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 21 Jun 2019 at 05:20, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Jun 20, 2019 at 7:49 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> >
-> > On Tue, 18 Jun 2019 at 22:37, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >
-> > > > I would just drop the object-scope pinning. We avoided using it and I'm not
-> > > > aware if anyone else make use. It also has the ugly side-effect that this
-> > > > relies on AF_ALG which e.g. on some cloud provider shipped kernels is disabled.
-> > > > The pinning attribute should be part of the standard set of map attributes for
-> > > > libbpf though as it's generally useful for networking applications.
-> > >
-> > > Sounds good. I'll do some more surveying of use cases inside FB to see
-> > > if anyone needs object-scope pinning, just to be sure we are not
-> > > short-cutting anyone.
-> >
-> > I'm also curious what the use cases for declarative pinning are. From my
-> > limited POV it doesn't seem that useful? There are a couple of factors:
->
-> Cilium is using it pretty extensively, so there are clearly use cases.
-> The most straigtforward use case is using a map created and shared by
-> another BPF program (to communicate, read stats, what have you).
+Jakub Sitnicki <jakub@cloudflare.com> wrote:
+> > So, at least for this part I don't see a technical reason why this
+> > has to grab a reference for listener socket.
+> 
+> That's helpful, thanks! We rely on TPROXY, so I would like to help with
+> that. Let me see if I can get time to work on it.
 
-I think Cilium is in the quirky position that it has a persistent daemon, but
-shells out to tc for loading programs. They are probably also the most
-advanced (open-source) users of BPF out there. If I understood their comments
-correctly they want to move to using a library for loading their ELF. At that
-point whether something is possible in a declarative way is less important,
-because you have the much more powerful APIs at your disposal.
+AFAICS so far this would be enough:
 
-Maybe Daniel or someone else from the Cilium team can chime in here?
+1. remove the BUG_ON() in skb_orphan, letting it clear skb->sk instead
+2. in nf_queue_entry_get_refs(), if skb->sk and no destructor:
+   call nf_tproxy_assign_sock() so a reference gets taken.
+3. change skb_steal_sock:
+   static inline struct sock *skb_steal_sock(struct sk_buff *skb, bool *refcounted)
+    [..]
+    *refcounted = skb->destructor != NULL;
+4. make tproxy sk assign elide the destructor assigment in case of
+   a listening sk.
 
-> > * Systemd mounts the default location only accessible to root, so I have to
-> >   used my own bpffs mount.
-> > * Since I don't want to hard code that, I put it in a config file.
-> > * After loading the ELF we pin maps from the daemon managing the XDP.
->
-> So mounting root would be specified per bpf_object, before maps are
-> created, so user-land driving application will have an opportunity to
-> tune everything. Declarative is only the per-map decision of whether
-> that map should be exposed to outer world (for sharing) or not.
+This should work because TPROXY target is restricted to PRE_ROUTING, and
+__netif_receive_skb_core runs with rcu readlock already held.
 
-So `tc filter add bpf obj foo.elf pin-root /gobbledygook`?
+On a side note, it would also be interesting to see what breaks if the
+nf_tproxy_sk_is_transparent() check in the tprox eval function is
+removed -- if we need the transparent:1 marker only for output, i think
+it would be ok to raise the bit transparently in the kernel in case
+we assign skb->sk = found_sk; i.e.
+ if (unlikely(!sk_is_transparent(sk))
+	 make_sk_transparent(sk);
 
-> Then check tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-> for more crazy syntax ;)
->
-> typedef char * (* const (* const fn_ptr_arr2_t[5])())(char * (*)(int));
-
-Not on a Friday ;P
-
-> > What if this did
-> >
-> >   __type(value, struct my_value)[1000];
-> >   struct my_value __member(value)[1000]; // alternative
-> >
-> > instead, and skipped max_entries?
->
-> I considered that, but decided for now to keep all those attributes
-> orthogonal for more flexibility and uniformity. This syntax might be
-> considered a nice "syntax sugar" and can be added in the future, if
-> necessary.
-
-Ack.
-
-> > At that point you have to understand that value is a pointer so all of
-> > our efforts
-> > are for naught. I suspect there is other weirdness like this, but I need to play
-> > with it a little bit more.
->
-> Yes, C can let you do crazy stuff, if you wish, but I think that
-> shouldn't be a blocker for this proposal. I haven't seen any BPF
-> program doing that, usually you duplicate the type of inner value
-> inside your function anyway, so there is no point in taking
-> sizeof(map.value) from BPF program side. From outside, though, all the
-> types will make sense, as expected.
-
-Right, but in my mind that is a bit of a cop out. I like BTF map definitions,
-and I want them to be as unsurprising as possible, so that they are
-easy to use and adopt.
-
-If a type encodes all the information we need via the array dimension hack,
-couldn't we make the map variable itself a pointer, and drop the inner pointers?
-
-struct my_map_def {
-  int type[BPF_MAP_TYPE_HASH];
-  int value;
-  struct foo key;
-  ...
-}
-
-struct my_map_def *my_map;
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+I don't see a reason why we need the explicit setsockopt(IP_TRANSPARENT)
+from userspace.
