@@ -2,129 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9814DE01
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2019 02:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FEF74DF7D
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2019 06:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726017AbfFUAIV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Jun 2019 20:08:21 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:39929 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725936AbfFUAIV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Jun 2019 20:08:21 -0400
-Received: by mail-pg1-f195.google.com with SMTP id 196so2419838pgc.6
-        for <bpf@vger.kernel.org>; Thu, 20 Jun 2019 17:08:20 -0700 (PDT)
+        id S1725856AbfFUEFt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jun 2019 00:05:49 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:42255 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725818AbfFUEFs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Jun 2019 00:05:48 -0400
+Received: by mail-qk1-f193.google.com with SMTP id b18so3477666qkc.9;
+        Thu, 20 Jun 2019 21:05:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CtcKIxOBJDXb1YMFFIKUvp1vj9xeUODj/cxc0fShO6E=;
-        b=JR+vY5ckPMpLQTFRWE+dKEzucxSXr3U8cKh2SX70QW3oRIM5NQiQofHAHaqUcUin/w
-         JWhBfabLkE8q1TKlsVYB7wWIsp+xECyB/2hX0EEyvOZZNs9PDszBZSDS+ReRDNALQBmX
-         q+KICZEeoSs1v/HyBbxrlsS2b/tCrRCrmXcxFalgJs3mYr59KHQ+jEoQaaN6KgvVO2nJ
-         3PwCrM2LCwjPw2DLEO8rW+XihvpTWn9t2mdW1x4dpMJlDQF4Eo9vTKFYVLp/AaJw7WP5
-         M2RJ+xEui2m2Dc+LFRosM0LAyBGzfatBskHXexbDLX/k+LXmyRcAHgCyn4UkSXoGhs9i
-         VY2w==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6YmRrujmQ4lsaMmeiMiJdmMPnCKf9eM+r6csPeOuwgI=;
+        b=GV1BeA9CqHRlwnHcaNufk7UyhjRwrqLv9yckpZCmBQVyvcCc/WAYvbi4ju0L94QNfu
+         fH4/uiY+253kME+bQRCLKrQh4yUWD5fblBWJkezZXcaaxPIukVRInFPJyb5SQ701NnK2
+         KLEJyjvUAZln42bFRae9L3iFiCR2s3ovv8aYPhnVVYYxD3z75b1b0ydnRfcXWyHpLRm1
+         JY+E+9xf94ZdhoHjCJd/wq/jmSrI0myC26K7GjDPuTI2Kqn1ixHMgKtowZBFHHWyEGYD
+         /ANTmAHq6KEH6Agl8Yj0f6aQ6DzhDcT8IDgUjaCPvTtLLPHUEieRObqaDUvXsRyB/Hox
+         OsFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CtcKIxOBJDXb1YMFFIKUvp1vj9xeUODj/cxc0fShO6E=;
-        b=t2+LhENW/1F+P9sMzkg+Vb3T6BsXxOviUNBz9GSlTennmSUW/uktMmx/G2vYmx8Hb3
-         zoZP1qvwfhFqcCb3kxx0otyC+uhFloG9x0nJh4eWzNc2YWKqhyI/SBCmTPl/9tbYQTK2
-         X7wn/Hm3IM0bT9dn//LGWy70w66fJjrlObCvl8sd9T5CavA8TGBt5csJMcgCWf7N/gwO
-         LT6w88YGery+hO+IsCN6F5VeHsHbwaYPZLogZC1HnMlB2LU4ygBl/jrDfMnPxjR4AW08
-         FT1YgaHbuVNq5jMOsWk9mFqRFD/WnEEZDvPQgTSN/muQhcABIAcmV5p6fi93jr/hurcH
-         wGYw==
-X-Gm-Message-State: APjAAAWVTi1VLKL5hdfzL5cMEQWpVZ68y3o+nZgDpLx0qoI+i5LnWfWO
-        VYpOaaCiBm1S+FezQGAgnOF79w==
-X-Google-Smtp-Source: APXvYqxgYBWiFOrj5HNpz+/FCpzyLc7TZlx+EJAQx5cJoqMOCKZUY1H+JFA3fOapkxLNA+Ssa5evfg==
-X-Received: by 2002:a17:90a:216f:: with SMTP id a102mr2521250pje.29.1561075700506;
-        Thu, 20 Jun 2019 17:08:20 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id k13sm659448pgq.45.2019.06.20.17.08.19
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 20 Jun 2019 17:08:20 -0700 (PDT)
-Date:   Thu, 20 Jun 2019 17:08:19 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     andrii.nakryiko@gmail.com, ast@fb.com, daniel@iogearbox.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 5/7] selftests/bpf: switch test to new
- attach_perf_event API
-Message-ID: <20190621000819.GD1383@mini-arch>
-References: <20190620230951.3155955-1-andriin@fb.com>
- <20190620230951.3155955-6-andriin@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6YmRrujmQ4lsaMmeiMiJdmMPnCKf9eM+r6csPeOuwgI=;
+        b=NFyygKTvf0kjPtQFvXmCqrJH9C9OjLf5Xr5TZ5lXYNtKX3PPGa5rWrETjvGLMN3Y4V
+         ly4aVpixayBECFB+RjJUT+in0F80LBV0QYbPZghYXebmxs7JmS6e3zyqx+J5xfo2jlxr
+         prjR/0JklXyVPWwPBXXz72/zjr+9SAUcpfCnHgjh998ZQsu6ReVqG8FKFwWZPNRRh1cD
+         t4ahQGfJkt9fU/We3FqwdO6Gk87NRpTujTa2ntBJrkHDf552+pw5gc7f2bO5gPWDordI
+         QNylrE3QeUgNh7qTlJVxRDAVIFldZuetNv6hnCn76AMtgSRH3qKDglvfzH2dQ6DewHfy
+         Zjig==
+X-Gm-Message-State: APjAAAXy3qtocCowE3fXwWvhaRfZjvwuY+Dj1mcaJJzdft3z8glz1djd
+        UHTcH6ceATvXe+kjdFtc1EsWazg1DNRGPaC5AzA=
+X-Google-Smtp-Source: APXvYqwWP0hNCZUg9/nJ262moGsFzJfG+Ay6PyIgdB1jt8vK0CVxOg7pv2Q0VRkiPnUr8XM/HPg/OtWfRDzsG7552rI=
+X-Received: by 2002:a05:620a:16a6:: with SMTP id s6mr2421821qkj.39.1561089947171;
+ Thu, 20 Jun 2019 21:05:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190620230951.3155955-6-andriin@fb.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <20190531202132.379386-1-andriin@fb.com> <20190531202132.379386-7-andriin@fb.com>
+ <CACAyw99wD+7mXXeger6WoBTTu3aYHDW8EJV9_tP7MfXOnT0ODg@mail.gmail.com>
+ <CAEf4BzamSjSa-7ddzyVsqygbtT6WSwsWpCFGX-4Rav4Aev8UsA@mail.gmail.com>
+ <CACAyw9_Yr=pmvCRYsVHoQBrH7qBwmcaXZezmqafwJTxaCmDf6A@mail.gmail.com>
+ <CAEf4Bzbpm0pSvXU8gfSTL2xECTDb+Z9HKKO2Y-Ap=L6VTWL9MQ@mail.gmail.com> <CACAyw98hwj5hpT00P5JiW3V+QPdyddKfN_yQj=okXvg89eTgsA@mail.gmail.com>
+In-Reply-To: <CACAyw98hwj5hpT00P5JiW3V+QPdyddKfN_yQj=okXvg89eTgsA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 20 Jun 2019 21:05:35 -0700
+Message-ID: <CAEf4BzYMAkXVobfWppMtF1d9c_vSFFHEoXC8MdZPq-OXFrMzLA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 6/8] libbpf: allow specifying map definitions
+ using BTF
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/20, Andrii Nakryiko wrote:
-> Use new bpf_program__attach_perf_event() in test previously relying on
-> direct ioctl manipulations.
-Maybe use new detach/disable routine at the end of the
-test_stacktrace_build_id_nmi as well?
+On Thu, Jun 20, 2019 at 2:28 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+>
+> On Mon, 17 Jun 2019 at 22:00, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > > In my mind, BPF loaders should be able to pass through BTF to the kernel
+> > > as a binary blob as much as possible. That's why I want the format to
+> > > be "self describing". Compatibility then becomes a question of: what
+> > > feature are you using on which kernel. The kernel itself can then still be
+> > > strict-by-default or what have you.
+> >
+> > That would work in ideal world, where kernel is updated frequently
+> > (and BTF is self-describing, which it is not). In practice, though,
+> > libbpf is far more up-to-date and lends its hand on "sanitizing" .BTF
+> > from kernel-unsupported features (so far we manage to pull this off
+> > very reasonably). If you have a good proposal how to make .BTF
+> > self-describing, that would be great!
+>
+> I think sanitizing is going to become a problem, but we've been around
+> that argument a few times :)
 
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  .../bpf/prog_tests/stacktrace_build_id_nmi.c     | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-> index 1c1a2f75f3d8..1bbdb0b82ac5 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-> @@ -17,6 +17,7 @@ static __u64 read_perf_max_sample_freq(void)
->  void test_stacktrace_build_id_nmi(void)
->  {
->  	int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd;
-> +	const char *prog_name = "tracepoint/random/urandom_read";
->  	const char *file = "./test_stacktrace_build_id.o";
->  	int err, pmu_fd, prog_fd;
->  	struct perf_event_attr attr = {
-> @@ -25,6 +26,7 @@ void test_stacktrace_build_id_nmi(void)
->  		.config = PERF_COUNT_HW_CPU_CYCLES,
->  	};
->  	__u32 key, previous_key, val, duration = 0;
-> +	struct bpf_program *prog;
->  	struct bpf_object *obj;
->  	char buf[256];
->  	int i, j;
-> @@ -39,6 +41,10 @@ void test_stacktrace_build_id_nmi(void)
->  	if (CHECK(err, "prog_load", "err %d errno %d\n", err, errno))
->  		return;
->  
-> +	prog = bpf_object__find_program_by_title(obj, prog_name);
-> +	if (CHECK(!prog, "find_prog", "prog '%s' not found\n", prog_name))
-> +		goto close_prog;
-> +
->  	pmu_fd = syscall(__NR_perf_event_open, &attr, -1 /* pid */,
->  			 0 /* cpu 0 */, -1 /* group id */,
->  			 0 /* flags */);
-> @@ -47,16 +53,10 @@ void test_stacktrace_build_id_nmi(void)
->  		  pmu_fd, errno))
->  		goto close_prog;
->  
-> -	err = ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0);
-> -	if (CHECK(err, "perf_event_ioc_enable", "err %d errno %d\n",
-> -		  err, errno))
-> +	err = bpf_program__attach_perf_event(prog, pmu_fd);
-> +	if (CHECK(err, "attach_perf_event", "err %d\n", err))
->  		goto close_pmu;
->  
-> -	err = ioctl(pmu_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
-> -	if (CHECK(err, "perf_event_ioc_set_bpf", "err %d errno %d\n",
-> -		  err, errno))
-> -		goto disable_pmu;
-> -
->  	/* find map fds */
->  	control_map_fd = bpf_find_map(__func__, obj, "control_map");
->  	if (CHECK(control_map_fd < 0, "bpf_find_map control_map",
-> -- 
-> 2.17.1
-> 
+Yep :)
+
+>
+> Making .BTF self describing need at least adding length to certain fields,
+> as I mentioned in another thread. Plus an interface to interrogate the
+> kernel about a loaded BTF blob.
+>
+> > > I agree with you, the syntax probably has to be different. I'd just like it to
+> > > differ by more than a "*" in the struct definition, because that is too small
+> > > to notice.
+> >
+> > So let's lay out how it will be done in practice:
+> >
+> > 1. Simple map w/ custom key/value
+> >
+> > struct my_key { ... };
+> > struct my_value { ... };
+> >
+> > struct {
+> >     __u32 type;
+> >     __u32 max_entries;
+> >     struct my_key *key;
+> >     struct my_value *value;
+> > } my_simple_map BPF_MAP = {
+> >     .type = BPF_MAP_TYPE_ARRAY,
+> >     .max_entries = 16,
+> > };
+> >
+> > 2. Now map-in-map:
+> >
+> > struct {
+> >     __u32 type;
+> >     __u32 max_entries;
+> >     struct my_key *key;
+> >     struct {
+> >         __u32 type;
+> >         __u32 max_entries;
+> >         __u64 *key;
+> >         struct my_value *value;
+> >     } value;
+> > } my_map_in_map BPF_MAP = {
+> >     .type = BPF_MAP_TYPE_HASH_OF_MAPS,
+> >     .max_entries = 16,
+> >     .value = {
+> >         .type = BPF_MAP_TYPE_ARRAY,
+> >         .max_entries = 100,
+> >     },
+> > };
+> >
+> > It's clearly hard to misinterpret inner map definition for a custom
+> > anonymous struct type, right?
+>
+> That's not what I'm concerned about. My point is: sometimes you
+> have to use a pointer, sometimes you don't. Every user has to learn this.
+> Chance is, they'll probably get it wrong first. Is there a way to give a
+> reasonable error message for this?
+
+Right now pointer is always required. My initial intent for map-in-map
+was to not use pointer, but since then I've proposed a slightly
+different approach, which eliminates all these concerns you mentioned.
+As for messaging, yeah, that the simplest part, which can always be
+improved.
+
+>
+> > > I kind of assumed that BTF support for those maps would at some point
+> > > appear, maybe I should have checked that.
+> >
+> > It will. Current situation with maps not supporting specifying BTF for
+> > key and/or value looks more like a bug, than feature and we should fix
+> > that. But even if we fix it today, kernels are updated much slower
+> > than libbpf, so by not supporting key_size/value_size, we force people
+> > to get stuck with legacy bpf_map_def for a really long time.
+>
+> OK.
+>
+> I'll go and look at the newest revision of the patch set now :o)
+>
+> --
+> Lorenz Bauer  |  Systems Engineer
+> 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+>
+> www.cloudflare.com
