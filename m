@@ -2,172 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E21D14F10D
-	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2019 01:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB2F4F3CE
+	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2019 07:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbfFUXRO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jun 2019 19:17:14 -0400
-Received: from mail-pf1-f202.google.com ([209.85.210.202]:49899 "EHLO
-        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726264AbfFUXRO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Jun 2019 19:17:14 -0400
-Received: by mail-pf1-f202.google.com with SMTP id x9so5250247pfm.16
-        for <bpf@vger.kernel.org>; Fri, 21 Jun 2019 16:17:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=CUCPsO3jo98uPWQzYPGBmLbPJQj/PLpHh9qafy5RrRc=;
-        b=HZK8KCjJImIc7GaiInhM8ZZ/258RRA2Voe62DwCyvpjD8nA7Lw/bF+G4AkFymv2J6v
-         O7aN1jKPiR4BSV3MHpXtCQchPzekAqEtrsrSXMZfEF5kKtBtAiBUpFktqslwp1aJMqUX
-         E5jnTKGOvXz2fg6ObmERGenqiVYoud3ya1wWGbtPyHaNRaMr8OxpgHkLZdLBgNieLfP3
-         Z8AFI3kiGPnMKMGfrneLKhxmNMx7qKiqNYEyvt5vS3gmr72hAOChLjr5v6wHm31VXaKo
-         UiwoHxYa2hylnNqTX5YodwEF8MnkzhI5rcM9iJMrIu7Xxol/q/jD2wRVLRopeaoCZJAx
-         dnuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=CUCPsO3jo98uPWQzYPGBmLbPJQj/PLpHh9qafy5RrRc=;
-        b=iI5XrwuYFrA5+RUH8LgKIq/jaWofAWoBTCGKHffmxtqGahGS0ylQ0qHLHQ7ovGdzSF
-         VanFLidNGqKpbHfFpGlY4LSkBZ6NlBZPpKItClMGJcXNhDiENQka/f4F/2OXXabjULLR
-         4AvufcikXjFx7kWzpVb9H4qkrUuqrRuhAUS1068uVRv9sxEwzGAt9K+rVlZZMHU2mKL+
-         AOAalMazKQu+6m8xlAJWGhre57iieVhXD7PQsU8VTz1mmjNhNCqQj88eZfe55jy7X7j3
-         KBe+imzftubESfeZlgyloouyE22nGyRBukHWa7zwpbKcIbmOveiHmQPKLMx+DFxZgYvr
-         +xmw==
-X-Gm-Message-State: APjAAAXfyHFDJXuZLtOsWXr7Nf4ENpMrlQln8jDIO8vorqW3O1cN3VsW
-        YllmAeilEqDKXt+ULlr9vZNjPzPVuh37
-X-Google-Smtp-Source: APXvYqwFBmSJsBUFYd6ijdvz1XM4mXf7aPBuGASZP0bhWfFcnZlAzKCOnLFVEX3C8DsDYoYO/r1RMEZFS0AV
-X-Received: by 2002:a63:3f48:: with SMTP id m69mr20448994pga.17.1561159033052;
- Fri, 21 Jun 2019 16:17:13 -0700 (PDT)
-Date:   Fri, 21 Jun 2019 16:16:50 -0700
-In-Reply-To: <20190621231650.32073-1-brianvv@google.com>
-Message-Id: <20190621231650.32073-7-brianvv@google.com>
-Mime-Version: 1.0
-References: <20190621231650.32073-1-brianvv@google.com>
-X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
-Subject: [RFC PATCH 6/6] selftests/bpf: add test to measure performance of BPF_MAP_DUMP
-From:   Brian Vazquez <brianvv@google.com>
-To:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        id S1726132AbfFVFNU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 22 Jun 2019 01:13:20 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:41492 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725994AbfFVFNU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 22 Jun 2019 01:13:20 -0400
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id x5M5DDqi017299;
+        Sat, 22 Jun 2019 14:13:14 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com x5M5DDqi017299
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1561180394;
+        bh=KdIj9gfPTr+KrZ1sDxUOA4m0IeC48LHZH0YQxYceD7E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=vNXZk1hsI4XAgvzZbNpj3eEkuhbxR+xJUJgEQAfDLHUrThJBuGHZnQCO5vbNRFhY9
+         O6JJNTD2AoilsIhPpmAPLB1s4tU2y4wbYNdFvz73Ofj6mHBYw5ZRKRChdKtWhGqZDi
+         iBqeIGPFn9ldiGUmjSY9CUglghoeCgD3qPumjrBDSZNEKfDG9ZU7ueOhebEc+fo969
+         TgZY6+nM4I2xd4ajLhqTRGukFPJdLyN8D1rO1s1h9MYefCsRGBHweTxXGMXf846gEd
+         yNByTY3dWBt06CrMLnC6+MAxZ8qT1YpkX/lPVr2HSHKo/3ucD9voLty7ne2cwWjDPH
+         Jx7qcb82+RPrQ==
+X-Nifty-SrcIP: [209.85.221.169]
+Received: by mail-vk1-f169.google.com with SMTP id f68so1742819vkf.5;
+        Fri, 21 Jun 2019 22:13:14 -0700 (PDT)
+X-Gm-Message-State: APjAAAVeQWdYkqKNvJIsA4mA8ghhGCCWKN4H1uKX2jwXlCdWA6dxG5el
+        iu10ScYvznuXsFnP40/mV2q2vPEyZ9pYdqqsk3Y=
+X-Google-Smtp-Source: APXvYqzPInWk1IBu1alc9KP2LKnKvdXwjA7lll6wtO8cUk3YyTmS0WJGwLrcgnJ/Z+EOnHvGr4hhymNP3eUnWblqKus=
+X-Received: by 2002:a1f:aad2:: with SMTP id t201mr11091589vke.74.1561180393149;
+ Fri, 21 Jun 2019 22:13:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190604101409.2078-1-yamada.masahiro@socionext.com>
+ <20190604101409.2078-16-yamada.masahiro@socionext.com> <CAK8P3a08f25WYP5r57JHPcZWieS2+07=_qTphLosS4M2w8F0Zw@mail.gmail.com>
+In-Reply-To: <CAK8P3a08f25WYP5r57JHPcZWieS2+07=_qTphLosS4M2w8F0Zw@mail.gmail.com>
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+Date:   Sat, 22 Jun 2019 14:12:37 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATt8BSrMfrOVjZ_SbA0awsh4CvRhu6TF3gYYynirpviWw@mail.gmail.com>
+Message-ID: <CAK7LNATt8BSrMfrOVjZ_SbA0awsh4CvRhu6TF3gYYynirpviWw@mail.gmail.com>
+Subject: Re: [PATCH 15/15] kbuild: compile test UAPI headers to ensure they
+ are self-contained
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Song Liu <songliubraving@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv@lists.infradead.org,
+        Michal Marek <michal.lkml@markovi.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Palmer Dabbelt <palmer@sifive.com>, bpf@vger.kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Petar Penkov <ppenkov@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Brian Vazquez <brianvv@google.com>
+        Albert Ou <aou@eecs.berkeley.edu>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This tests compares the amount of time that takes to read an entire
-table of 100K elements on a bpf hashmap using both BPF_MAP_DUMP and
-BPF_MAP_GET_NEXT_KEY + BPF_MAP_LOOKUP_ELEM.
+On Sat, Jun 22, 2019 at 4:05 AM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Tue, Jun 4, 2019 at 12:16 PM Masahiro Yamada
+> <yamada.masahiro@socionext.com> wrote:
+>
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -1363,7 +1363,7 @@ CLEAN_DIRS  +=3D $(MODVERDIR) include/ksym
+> >  CLEAN_FILES +=3D modules.builtin.modinfo
+> >
+> >  # Directories & files removed with 'make mrproper'
+> > -MRPROPER_DIRS  +=3D include/config usr/include include/generated      =
+    \
+> > +MRPROPER_DIRS  +=3D include/config include/generated          \
+> >                   arch/$(SRCARCH)/include/generated .tmp_objdiff
+> >  MRPROPER_FILES +=3D .config .config.old .version \
+> >                   Module.symvers tags TAGS cscope* GPATH GTAGS GRTAGS G=
+SYMS \
+>
+> This change seems to have caused a minor regression:
+>
+> $ make clean ; make clean
+> find: =E2=80=98*=E2=80=99: No such file or directory
 
-Signed-off-by: Brian Vazquez <brianvv@google.com>
----
- tools/testing/selftests/bpf/test_maps.c | 71 +++++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+Hmm, I cannot reproduce this.
 
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index 3df72b46fd1d9..61050272c20ee 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -18,6 +18,7 @@
- #include <sys/socket.h>
- #include <netinet/in.h>
- #include <linux/bpf.h>
-+#include <linux/time64.h>
- 
- #include <bpf/bpf.h>
- #include <bpf/libbpf.h>
-@@ -376,6 +377,75 @@ static void test_hashmap_dump(void)
- 	close(fd);
- }
- 
-+static void test_hashmap_dump_perf(void)
-+{
-+	int fd, i, max_entries = 100000;
-+	uint64_t key, value, next_key;
-+	bool next_key_valid = true;
-+	void *buf;
-+	u32 buf_len, entries;
-+	int j, k = 0;
-+	int num_ent, off;
-+	int clk_id = CLOCK_MONOTONIC;
-+	struct timespec begin, end;
-+	long long time_spent, dump_time_spent;
-+	double res;
-+	int tests[] = {1, 2, 230, 5000, 73000, 100000, 234567};
-+	int test_len = ARRAY_SIZE(tests);
-+	const int elem_size = sizeof(key) + sizeof(value);
-+
-+	fd = helper_fill_hashmap(max_entries);
-+	// Alloc memory considering the largest buffer
-+	buf = malloc(elem_size * tests[test_len-1]);
-+	assert(buf != NULL);
-+
-+test:
-+	entries = tests[k];
-+	buf_len = elem_size*tests[k];
-+	k++;
-+	clock_gettime(clk_id, &begin);
-+	errno = 0;
-+	i = 0;
-+	while (errno == 0) {
-+		bpf_map_dump(fd, !i ? NULL : &key,
-+				  buf, &buf_len);
-+		if (errno)
-+			break;
-+		num_ent = buf_len / elem_size;
-+		for (j = 0, off = 0;  j < num_ent; j++) {
-+			key = *((uint64_t *)(buf + off));
-+			off += sizeof(key);
-+			value = *((uint64_t *)(buf + off));
-+			off += sizeof(value);
-+		}
-+		i += num_ent;
-+	}
-+	clock_gettime(clk_id, &end);
-+	assert(i  == max_entries);
-+	dump_time_spent = NSEC_PER_SEC * (end.tv_sec - begin.tv_sec) +
-+			  end.tv_nsec - begin.tv_nsec;
-+	next_key_valid = true;
-+	clock_gettime(clk_id, &begin);
-+	assert(bpf_map_get_next_key(fd, NULL, &key) == 0);
-+	for (i = 0; next_key_valid; i++) {
-+		next_key_valid = bpf_map_get_next_key(fd, &key, &next_key) == 0;
-+		assert(bpf_map_lookup_elem(fd, &key, &value) == 0);
-+		key = next_key;
-+	}
-+	clock_gettime(clk_id, &end);
-+	time_spent = NSEC_PER_SEC * (end.tv_sec - begin.tv_sec) +
-+		     end.tv_nsec - begin.tv_nsec;
-+	res = (1-((double)dump_time_spent/time_spent))*100;
-+	printf("buf_len_%u:\t %llu entry-by-entry: %llu improvement %lf\n",
-+	       entries, dump_time_spent, time_spent, res);
-+	assert(i  == max_entries);
-+
-+	if (k < test_len)
-+		goto test;
-+	free(buf);
-+	close(fd);
-+}
-+
- static void test_hashmap_zero_seed(void)
- {
- 	int i, first, second, old_flags;
-@@ -1736,6 +1806,7 @@ static void run_all_tests(void)
- 	test_hashmap_walk(0, NULL);
- 	test_hashmap_zero_seed();
- 	test_hashmap_dump();
-+	test_hashmap_dump_perf();
- 
- 	test_arraymap(0, NULL);
- 	test_arraymap_percpu(0, NULL);
--- 
-2.22.0.410.gd8fdbe21b5-goog
+I checked the latest linux-next.
 
+
+masahiro@grover:~/ref/linux-next$ git describe
+next-20190621
+masahiro@grover:~/ref/linux-next$ make clean; make clean
+masahiro@grover:~/ref/linux-next$
+
+
+
+
+
+> Any idea?
+>
+>       Arnd
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
