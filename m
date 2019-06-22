@@ -2,45 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB2F4F3CE
-	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2019 07:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAAD14F3E4
+	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2019 07:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726132AbfFVFNU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 22 Jun 2019 01:13:20 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:41492 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725994AbfFVFNU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 22 Jun 2019 01:13:20 -0400
-Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id x5M5DDqi017299;
-        Sat, 22 Jun 2019 14:13:14 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com x5M5DDqi017299
+        id S1726054AbfFVFkc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 22 Jun 2019 01:40:32 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:55098 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726049AbfFVFkc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 22 Jun 2019 01:40:32 -0400
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id x5M5eC9L014968;
+        Sat, 22 Jun 2019 14:40:13 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com x5M5eC9L014968
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1561180394;
-        bh=KdIj9gfPTr+KrZ1sDxUOA4m0IeC48LHZH0YQxYceD7E=;
+        s=dec2015msa; t=1561182013;
+        bh=JxBG390b3AdnCwZiQOKsk1HAVj5lXZJFRQcpOMWwHbY=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=vNXZk1hsI4XAgvzZbNpj3eEkuhbxR+xJUJgEQAfDLHUrThJBuGHZnQCO5vbNRFhY9
-         O6JJNTD2AoilsIhPpmAPLB1s4tU2y4wbYNdFvz73Ofj6mHBYw5ZRKRChdKtWhGqZDi
-         iBqeIGPFn9ldiGUmjSY9CUglghoeCgD3qPumjrBDSZNEKfDG9ZU7ueOhebEc+fo969
-         TgZY6+nM4I2xd4ajLhqTRGukFPJdLyN8D1rO1s1h9MYefCsRGBHweTxXGMXf846gEd
-         yNByTY3dWBt06CrMLnC6+MAxZ8qT1YpkX/lPVr2HSHKo/3ucD9voLty7ne2cwWjDPH
-         Jx7qcb82+RPrQ==
-X-Nifty-SrcIP: [209.85.221.169]
-Received: by mail-vk1-f169.google.com with SMTP id f68so1742819vkf.5;
-        Fri, 21 Jun 2019 22:13:14 -0700 (PDT)
-X-Gm-Message-State: APjAAAVeQWdYkqKNvJIsA4mA8ghhGCCWKN4H1uKX2jwXlCdWA6dxG5el
-        iu10ScYvznuXsFnP40/mV2q2vPEyZ9pYdqqsk3Y=
-X-Google-Smtp-Source: APXvYqzPInWk1IBu1alc9KP2LKnKvdXwjA7lll6wtO8cUk3YyTmS0WJGwLrcgnJ/Z+EOnHvGr4hhymNP3eUnWblqKus=
-X-Received: by 2002:a1f:aad2:: with SMTP id t201mr11091589vke.74.1561180393149;
- Fri, 21 Jun 2019 22:13:13 -0700 (PDT)
+        b=vfztd4BrukAdjcSvvO2e/ZaIiyZ9mx12XbkLTV+W2nuoyC48frSlNAvAwwbP73Vyr
+         Tn+tVvlKIzCwwccAQjVD1cg72WyVKXSwN1+zOr7lOr0xep66UxomKkozXKaAAqJ+CV
+         SfVa4bLXejWLmgX1RRFqEBQRb5vCW/M+iBtN1UirSWuQ9L3Xh33Fs3k5t2oCFMw6Ld
+         Z7kiY+Xf7S5QA3YRLzTg1M2Ye9HAaaVOTunAB6PxPorlGZDFETkls1kQhr8wgHXtMf
+         YjfN2RgtEjH09lnD0+PgldC7gF8hrf52UOZ7yY1R/DkdUlmXGwi5iBOm4amb4+aKnQ
+         LTT74SXqb15DQ==
+X-Nifty-SrcIP: [209.85.222.54]
+Received: by mail-ua1-f54.google.com with SMTP id v18so3739081uad.12;
+        Fri, 21 Jun 2019 22:40:13 -0700 (PDT)
+X-Gm-Message-State: APjAAAUuZhCGgH9XL0FGqr+jjF6Fh1RUhfsTRGXzsgdXdgTZS4cMprPS
+        afVQByBwbpOU9AaM+w1rJfdhJIl9V7gAVvOKBM4=
+X-Google-Smtp-Source: APXvYqzlKgWISF72/2l3BCTzXtxOrbxlLww7I4OL4+Gvksq0C26omqpvWWFe0eb5vghy8UgM0iBbJXyRxsNhrZQR8a0=
+X-Received: by 2002:ab0:5ea6:: with SMTP id y38mr48367542uag.40.1561182012133;
+ Fri, 21 Jun 2019 22:40:12 -0700 (PDT)
 MIME-Version: 1.0
 References: <20190604101409.2078-1-yamada.masahiro@socionext.com>
  <20190604101409.2078-16-yamada.masahiro@socionext.com> <CAK8P3a08f25WYP5r57JHPcZWieS2+07=_qTphLosS4M2w8F0Zw@mail.gmail.com>
-In-Reply-To: <CAK8P3a08f25WYP5r57JHPcZWieS2+07=_qTphLosS4M2w8F0Zw@mail.gmail.com>
+ <CAK7LNATt8BSrMfrOVjZ_SbA0awsh4CvRhu6TF3gYYynirpviWw@mail.gmail.com>
+In-Reply-To: <CAK7LNATt8BSrMfrOVjZ_SbA0awsh4CvRhu6TF3gYYynirpviWw@mail.gmail.com>
 From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-Date:   Sat, 22 Jun 2019 14:12:37 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATt8BSrMfrOVjZ_SbA0awsh4CvRhu6TF3gYYynirpviWw@mail.gmail.com>
-Message-ID: <CAK7LNATt8BSrMfrOVjZ_SbA0awsh4CvRhu6TF3gYYynirpviWw@mail.gmail.com>
+Date:   Sat, 22 Jun 2019 14:39:35 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATi1kX_j9-7CoT24hohgTCQB1dSc9j8DNdmjnmEg1-kRg@mail.gmail.com>
+Message-ID: <CAK7LNATi1kX_j9-7CoT24hohgTCQB1dSc9j8DNdmjnmEg1-kRg@mail.gmail.com>
 Subject: Re: [PATCH 15/15] kbuild: compile test UAPI headers to ensure they
  are self-contained
 To:     Arnd Bergmann <arnd@arndb.de>
@@ -66,47 +67,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 22, 2019 at 4:05 AM Arnd Bergmann <arnd@arndb.de> wrote:
+On Sat, Jun 22, 2019 at 2:12 PM Masahiro Yamada
+<yamada.masahiro@socionext.com> wrote:
 >
-> On Tue, Jun 4, 2019 at 12:16 PM Masahiro Yamada
-> <yamada.masahiro@socionext.com> wrote:
->
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -1363,7 +1363,7 @@ CLEAN_DIRS  +=3D $(MODVERDIR) include/ksym
-> >  CLEAN_FILES +=3D modules.builtin.modinfo
+> On Sat, Jun 22, 2019 at 4:05 AM Arnd Bergmann <arnd@arndb.de> wrote:
 > >
-> >  # Directories & files removed with 'make mrproper'
-> > -MRPROPER_DIRS  +=3D include/config usr/include include/generated      =
-    \
-> > +MRPROPER_DIRS  +=3D include/config include/generated          \
-> >                   arch/$(SRCARCH)/include/generated .tmp_objdiff
-> >  MRPROPER_FILES +=3D .config .config.old .version \
-> >                   Module.symvers tags TAGS cscope* GPATH GTAGS GRTAGS G=
-SYMS \
+> > On Tue, Jun 4, 2019 at 12:16 PM Masahiro Yamada
+> > <yamada.masahiro@socionext.com> wrote:
+> >
+> > > --- a/Makefile
+> > > +++ b/Makefile
+> > > @@ -1363,7 +1363,7 @@ CLEAN_DIRS  +=3D $(MODVERDIR) include/ksym
+> > >  CLEAN_FILES +=3D modules.builtin.modinfo
+> > >
+> > >  # Directories & files removed with 'make mrproper'
+> > > -MRPROPER_DIRS  +=3D include/config usr/include include/generated    =
+      \
+> > > +MRPROPER_DIRS  +=3D include/config include/generated          \
+> > >                   arch/$(SRCARCH)/include/generated .tmp_objdiff
+> > >  MRPROPER_FILES +=3D .config .config.old .version \
+> > >                   Module.symvers tags TAGS cscope* GPATH GTAGS GRTAGS=
+ GSYMS \
+> >
+> > This change seems to have caused a minor regression:
+> >
+> > $ make clean ; make clean
+> > find: =E2=80=98*=E2=80=99: No such file or directory
 >
-> This change seems to have caused a minor regression:
+> Hmm, I cannot reproduce this.
 >
-> $ make clean ; make clean
-> find: =E2=80=98*=E2=80=99: No such file or directory
-
-Hmm, I cannot reproduce this.
-
-I checked the latest linux-next.
-
-
-masahiro@grover:~/ref/linux-next$ git describe
-next-20190621
-masahiro@grover:~/ref/linux-next$ make clean; make clean
-masahiro@grover:~/ref/linux-next$
-
-
-
-
-
-> Any idea?
+> I checked the latest linux-next.
 >
->       Arnd
+>
+> masahiro@grover:~/ref/linux-next$ git describe
+> next-20190621
+> masahiro@grover:~/ref/linux-next$ make clean; make clean
+> masahiro@grover:~/ref/linux-next$
+>
+>
+
+Ah, now I was able to reproduce it.
+
+Will fix it soon. Thanks.
 
 
 
