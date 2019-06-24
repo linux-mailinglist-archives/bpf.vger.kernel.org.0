@@ -2,79 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD95502C5
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 09:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9F950371
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 09:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726340AbfFXHLz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jun 2019 03:11:55 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:51544 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727426AbfFXHLz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jun 2019 03:11:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=RQ35CdI7OgSCvNIJDvf1p+BfUv8hYylGCi0q85yv+Yw=; b=baaTIpENIFYajuYTAHyVtoJWM
-        a1DUikSr096fgOD3KX66qiitLLwEMKxstZe8F41v2bSIUYioz/6i/Vb3pW05jvnSnC5RPE6dMcTgk
-        FedZTCJIKdzczm2PnKEbJfSoyTfz35zM5fMJsM0iTkOxlNBkJIIR1i0sUUDu1qFJyoqUqf5O1fwMa
-        l74AR53sr2mYYr4dztHj0eXb6WjQaYg+uj0apZv4X+6qDpy7TCzvXnv803NPjM0irg441yMX68Br0
-        7M3ZzB6dbVUOAGX2i68AXvhyavS/LvKi+Yk7Gl2BqJiPyfGlLda1wsZU/Dj3y2X8MalupSjMainTx
-        eExFIV/+A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1hfJ8O-0002ZO-91; Mon, 24 Jun 2019 07:11:24 +0000
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D17A920A021ED; Mon, 24 Jun 2019 09:11:21 +0200 (CEST)
-Date:   Mon, 24 Jun 2019 09:11:21 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Phong Tran <tranmanphong@gmail.com>
-Cc:     mark.rutland@arm.com, kstewart@linuxfoundation.org,
-        songliubraving@fb.com, andrew@lunn.ch, nsekhar@ti.com,
+        id S1727958AbfFXHbz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jun 2019 03:31:55 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:36373 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727954AbfFXHbz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jun 2019 03:31:55 -0400
+Received: from localhost (alyon-656-1-672-152.w92-137.abo.wanadoo.fr [92.137.69.152])
+        (Authenticated sender: gregory.clement@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 846E8100010;
+        Mon, 24 Jun 2019 07:31:36 +0000 (UTC)
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Phong Tran <tranmanphong@gmail.com>, mark.rutland@arm.com,
+        kstewart@linuxfoundation.org, songliubraving@fb.com,
+        andrew@lunn.ch, peterz@infradead.org, nsekhar@ti.com,
         ast@kernel.org, jolsa@redhat.com, netdev@vger.kernel.org,
         gerg@uclinux.org, lorenzo.pieralisi@arm.com, will@kernel.org,
         linux-samsung-soc@vger.kernel.org, daniel@iogearbox.net,
-        festevam@gmail.com, gregory.clement@bootlin.com,
-        allison@lohutok.net, linux@armlinux.org.uk, krzk@kernel.org,
-        haojian.zhuang@gmail.com, bgolaszewski@baylibre.com,
-        tony@atomide.com, mingo@redhat.com, linux-imx@nxp.com, yhs@fb.com,
-        sebastian.hesselbarth@gmail.com, illusionist.neo@gmail.com,
-        jason@lakedaemon.net, liviu.dudau@arm.com, s.hauer@pengutronix.de,
-        acme@kernel.org, lkundrak@v3.sk, robert.jarzmik@free.fr,
-        dmg@turingmachine.org, swinslow@gmail.com, namhyung@kernel.org,
-        tglx@linutronix.de, linux-omap@vger.kernel.org,
-        alexander.sverdlin@gmail.com, linux-arm-kernel@lists.infradead.org,
-        info@metux.net, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, alexander.shishkin@linux.intel.com,
-        hsweeten@visionengravers.com, kgene@kernel.org,
-        kernel@pengutronix.de, sudeep.holla@arm.com, bpf@vger.kernel.org,
-        shawnguo@kernel.org, kafai@fb.com, daniel@zonque.org
-Subject: Re: [PATCH 01/15] arm: perf: cleanup cppcheck shifting error
-Message-ID: <20190624071121.GN3436@hirez.programming.kicks-ass.net>
-References: <20190623151313.970-1-tranmanphong@gmail.com>
- <20190623151313.970-2-tranmanphong@gmail.com>
+        tranmanphong@gmail.com, festevam@gmail.com, allison@lohutok.net,
+        linux@armlinux.org.uk, krzk@kernel.org, haojian.zhuang@gmail.com,
+        bgolaszewski@baylibre.com, tony@atomide.com, mingo@redhat.com,
+        linux-imx@nxp.com, yhs@fb.com, sebastian.hesselbarth@gmail.com,
+        illusionist.neo@gmail.com, jason@lakedaemon.net,
+        liviu.dudau@arm.com, s.hauer@pengutronix.de, acme@kernel.org,
+        lkundrak@v3.sk, robert.jarzmik@free.fr, dmg@turingmachine.org,
+        swinslow@gmail.com, namhyung@kernel.org, tglx@linutronix.de,
+        linux-omap@vger.kernel.org, alexander.sverdlin@gmail.com,
+        linux-arm-kernel@lists.infradead.org, info@metux.net,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        alexander.shishkin@linux.intel.com, hsweeten@visionengravers.com,
+        kgene@kernel.org, kernel@pengutronix.de, sudeep.holla@arm.com,
+        bpf@vger.kernel.org, shawnguo@kernel.org, kafai@fb.com,
+        daniel@zonque.org
+Subject: Re: [PATCH 10/15] ARM: orion5x: cleanup cppcheck shifting errors
+In-Reply-To: <20190623151313.970-11-tranmanphong@gmail.com>
+References: <20190623151313.970-1-tranmanphong@gmail.com> <20190623151313.970-11-tranmanphong@gmail.com>
+Date:   Mon, 24 Jun 2019 09:31:37 +0200
+Message-ID: <871rzjmobq.fsf@FE-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190623151313.970-2-tranmanphong@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jun 23, 2019 at 10:12:59PM +0700, Phong Tran wrote:
-> fix "Shifting signed 32-bit value by 31 bits is undefined behaviour
-> errors"
-> 
-> [arch/arm/kernel/perf_event_v7.c:1080]: (error) Shifting signed 32-bit
-> value by 31 bits is undefined behaviour
-> [arch/arm/kernel/perf_event_v7.c:1436]: (error) Shifting signed 32-bit
-> value by 31 bits is undefined behaviour
-> [arch/arm/kernel/perf_event_v7.c:1783]: (error) Shifting signed 32-bit
-> value by 31 bits is undefined behaviour
+Hi Phong,
 
-I don't think that is true; the kernel uses -fno-strict-overflow (which
-implies -fwrapv) and that takes away all the signed UB.
+> [arch/arm/mach-orion5x/pci.c:281]: (error) Shifting signed 32-bit value
+> by 31 bits is undefined behaviour
+> [arch/arm/mach-orion5x/pci.c:305]: (error) Shifting signed 32-bit value
+> by 31 bits is undefined behaviour
+>
+
+While Andrew was Ok with this version, I will wait for your v2 using
+BIT() marcro.
+
+Thanks,
+
+Gregory
+
+
+> Signed-off-by: Phong Tran <tranmanphong@gmail.com>
+> ---
+>  arch/arm/mach-orion5x/pci.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/arm/mach-orion5x/pci.c b/arch/arm/mach-orion5x/pci.c
+> index 76951bfbacf5..1b2c077ee7b8 100644
+> --- a/arch/arm/mach-orion5x/pci.c
+> +++ b/arch/arm/mach-orion5x/pci.c
+> @@ -200,13 +200,13 @@ static int __init pcie_setup(struct pci_sys_data *sys)
+>  /*
+>   * PCI_MODE bits
+>   */
+> -#define PCI_MODE_64BIT			(1 << 2)
+> -#define PCI_MODE_PCIX			((1 << 4) | (1 << 5))
+> +#define PCI_MODE_64BIT			(1U << 2)
+> +#define PCI_MODE_PCIX			((1U << 4) | (1U << 5))
+>  
+>  /*
+>   * PCI_CMD bits
+>   */
+> -#define PCI_CMD_HOST_REORDER		(1 << 29)
+> +#define PCI_CMD_HOST_REORDER		(1U << 29)
+>  
+>  /*
+>   * PCI_P2P_CONF bits
+> @@ -223,7 +223,7 @@ static int __init pcie_setup(struct pci_sys_data *sys)
+>  #define PCI_CONF_FUNC(func)		(((func) & 0x3) << 8)
+>  #define PCI_CONF_DEV(dev)		(((dev) & 0x1f) << 11)
+>  #define PCI_CONF_BUS(bus)		(((bus) & 0xff) << 16)
+> -#define PCI_CONF_ADDR_EN		(1 << 31)
+> +#define PCI_CONF_ADDR_EN		(1U << 31)
+>  
+>  /*
+>   * Internal configuration space
+> -- 
+> 2.11.0
+>
+
+-- 
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
