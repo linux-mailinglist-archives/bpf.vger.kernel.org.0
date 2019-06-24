@@ -2,80 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D15D51BD7
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 21:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B5D51BFE
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 22:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727282AbfFXT6a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jun 2019 15:58:30 -0400
-Received: from mail-lf1-f41.google.com ([209.85.167.41]:44186 "EHLO
-        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726263AbfFXT6a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jun 2019 15:58:30 -0400
-Received: by mail-lf1-f41.google.com with SMTP id r15so10916860lfm.11;
-        Mon, 24 Jun 2019 12:58:28 -0700 (PDT)
+        id S1729692AbfFXUIH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jun 2019 16:08:07 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:36633 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726909AbfFXUIH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jun 2019 16:08:07 -0400
+Received: by mail-qt1-f194.google.com with SMTP id p15so15914115qtl.3;
+        Mon, 24 Jun 2019 13:08:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zMA8++vd98/rlAwnVJntUv97lzDmhQiW1l9rW7+CeaE=;
-        b=mI729AlwP9R+qtDCGGEiExjDVIvwap0quVVCd9H1QOIWRGj2a6WmiQ7mpu9JynWiTl
-         MBiBgrlrd82Pib6+dBUqVzoYXHlnMsFn+0c97S+RiGADQ/yvqrXEbyWciynRJJ97H8lL
-         8os5EwwPZ6cGimvRB4Pma0lW9NVDHHNFC+WxfPoUZin2DrzmmFwfPVrdA2bwE7QHssub
-         Lac2zk2mktgSxkhAlDYnMi7tFkwVDhy2wScuhkYj+E2OZMYLN4WRSH7vvf7lIzbu8nDO
-         qhzuPX54QkJIunmLSN5yBHiHdPULEPX02Q8T0AZ1QIiUffaDMCfV7cdLPYvsEeRXFbxD
-         TZ/A==
+         :cc:content-transfer-encoding;
+        bh=jn/w53YJ4Q/KOGOCBKw6wUZlBtvSFROxiUctr/L28Ro=;
+        b=Uo42VIhnTbzCA4Ozzfe6YQOxoA3CFwPgWBgS2/smjKrbL8V70yQZaVcV7Dhz55IyFi
+         MDHwAuo0fbuNYqvyHZPKxi5HFAZ9eMZu40E05KpoxaEhoW2ym2bsGdI2AMmPsH2GbwaI
+         A8D5rxBt5QtnMGec03ZSf43TMVeCzjP1k4riaJXqCdwx9tSA29Zk5y4PfSEgb+C/tOn4
+         8/XxPI8IvH5Sz96v28xdsJS4r2jKwN3kB2hgGFL/oiYGW2LVy4lAiWashl/ra3omK0lo
+         q2AU+hNgmHQDS3dH6VdXdgcwxLFmKd25hnSmFvc5C7sve1yQV3fxNcHVf/397C5E82S0
+         3VHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zMA8++vd98/rlAwnVJntUv97lzDmhQiW1l9rW7+CeaE=;
-        b=dkvdBhTmTtAfIm/bXQKg+bCi1CggOY312oKYxNf1z3AdJjiXHNBmo3Ur7J7BgcbhWo
-         Dnq5emliy4YaO0EEkb9ACMh5vkVMkocpVLENx0VVx1zaYdp5E5VqnEhoFOOUlLBMPHI7
-         vAiYkHHkqJBuDsimC8LNqvpNLTa740oBh68zgq6aCgpQE5XxEfml9EDwqPtcmn9Y1Fgw
-         icFY8ufDbqPXmYdFlWFugHoWgzNlVwLTg26Te3qVQzAZAY2qdOVAaS7wc13YsoWnQJfY
-         +OB6VFc4bpZr588TJpqyBKluVuUahi52KMN4bIffFYCnTi1iSgDU+PzzLmmVEQ+2iJPY
-         iAJg==
-X-Gm-Message-State: APjAAAWFSd/yvj/bOnaWChaY8Tk1bQXxKBivUXZgH6mG0BUu0c3pS6iT
-        vcQ8XCVMcOV97M9VQ/EcM3qPa2IZjhMyHtUDrs0=
-X-Google-Smtp-Source: APXvYqxeWm1dY/BeGvUJ11kjU06uOztLuwFtzDS9B/aD8vqFftuGui5xb00hQr4+67JZuKerfwd3QqtMbTcAppnyMIY=
-X-Received: by 2002:a19:e05c:: with SMTP id g28mr63608637lfj.167.1561406307546;
- Mon, 24 Jun 2019 12:58:27 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jn/w53YJ4Q/KOGOCBKw6wUZlBtvSFROxiUctr/L28Ro=;
+        b=Dt3YeNUSeCdQd3t07QpFpT1ihgDtToB+++edSNBLDagaYu7LQVY0FG5R5VxdQtP2Yr
+         K9bZajZlsnVQwctXXol5d7lvxbGvNONDr6x0tT9f59Dz7DIxfHrn6ieMqjkZf419Otdw
+         Odp6DhyJdP5N+ptDv0UAw0Wz+gRGn27ch6J7KpSqFuN/lNaWAXKjg/abi5g1UHdF5hKz
+         D2//sZJUhbnHvWL2ZhPES+TkKp5+8XBeefktYegMDbUJ1yhVtMVKVTJeYDKf0UBw43oc
+         Erah5SrlE4b39QlKTcXE69JL4LKlif+sGya5TX1rp0Omyaehuu2qi3L72ok+AzRZ0mRv
+         us/w==
+X-Gm-Message-State: APjAAAVBWIJNGL7Tm1vC79lTmC2NPyrEqZVU8VnZou8dUHpw4G5+oX95
+        VIz4YdTv9yNrrc3jakCGqzki7HpVs2HjgWR96C4=
+X-Google-Smtp-Source: APXvYqzL9Aq6zBn7pr7JmJnrrDNTZgpzKLz/k4Ru5O5kpuz00LKqwQXw9OuJb4OT2je3tIIoAtXBTp6qQ7PnsEltOTg=
+X-Received: by 2002:ac8:25e7:: with SMTP id f36mr119795809qtf.139.1561406885830;
+ Mon, 24 Jun 2019 13:08:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <CA+G9fYsMcdHmKY66CNhsrizO-gErkOQCkTcBSyOHLpOs+8g5=g@mail.gmail.com>
- <CAEf4BzbTD8G_zKkj-S3MOeG5Hq3_2zz3bGoXhQtpt0beG8nWJA@mail.gmail.com>
- <20190621161752.d7d7n4m5q67uivys@xps.therub.org> <CAEf4BzaSoKA5H5rN=w+OAtUz4bD30-VOjjjY+Qv9tTAnhMweiA@mail.gmail.com>
- <20190624195336.nubi7n2np5vfjutr@xps.therub.org>
-In-Reply-To: <20190624195336.nubi7n2np5vfjutr@xps.therub.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 24 Jun 2019 12:58:15 -0700
-Message-ID: <CAADnVQKZycXgSw6C0qa7g0y=W3xRhM_4Rqcj7ZzL=rGh_n4mgA@mail.gmail.com>
-Subject: Re: selftests: bpf: test_libbpf.sh failed at file test_l4lb.o
-To:     Dan Rue <dan.rue@linaro.org>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Xdp <xdp-newbies@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+References: <20190624052455.10659-1-bjorn.topel@gmail.com>
+In-Reply-To: <20190624052455.10659-1-bjorn.topel@gmail.com>
+From:   Song Liu <liu.song.a23@gmail.com>
+Date:   Mon, 24 Jun 2019 13:07:54 -0700
+Message-ID: <CAPhsuW4yRnimgpqZxEU0t33epXnOVjKXsAU-bks=c21i7OdDsg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] MAINTAINERS: add reviewer to maintainers entry
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Shuah Khan <shuah@kernel.org>
+        Networking <netdev@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        jonathan.lemon@gmail.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 24, 2019 at 12:53 PM Dan Rue <dan.rue@linaro.org> wrote:
+On Sun, Jun 23, 2019 at 10:45 PM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.c=
+om> wrote:
 >
-> I would say if it's not possible to check at runtime, and it requires
-> clang 9.0, that this test should not be enabled by default.
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+>
+> Jonathan Lemon has volunteered as an official AF_XDP reviewer. Thank
+> you, Jonathan!
 
-The latest clang is the requirement.
-If environment has old clang or no clang at all these tests will be failing.
+Thanks Jonathan! Please reply with your Acked-by.
+
+Thanks,
+Song
+
+>
+> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 0cfe98a6761a..dd875578d53c 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -17284,6 +17284,7 @@ N:      xdp
+>  XDP SOCKETS (AF_XDP)
+>  M:     Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+>  M:     Magnus Karlsson <magnus.karlsson@intel.com>
+> +R:     Jonathan Lemon <jonathan.lemon@gmail.com>
+>  L:     netdev@vger.kernel.org
+>  L:     bpf@vger.kernel.org
+>  S:     Maintained
+> --
+> 2.20.1
+>
