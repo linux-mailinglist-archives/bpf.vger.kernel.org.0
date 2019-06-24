@@ -2,146 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4085151D07
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 23:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C9651CFF
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 23:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728353AbfFXVWV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jun 2019 17:22:21 -0400
-Received: from www62.your-server.de ([213.133.104.62]:42800 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726331AbfFXVWV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jun 2019 17:22:21 -0400
-Received: from [88.198.220.130] (helo=sslproxy01.your-server.de)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hfW4E-0002Kr-QH; Mon, 24 Jun 2019 22:59:58 +0200
-Received: from [178.199.41.31] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hfW4E-0007X2-GT; Mon, 24 Jun 2019 22:59:58 +0200
-Subject: Re: [PATCH V34 23/29] bpf: Restrict bpf when kernel lockdown is in
- confidentiality mode
-To:     Andy Lutomirski <luto@kernel.org>,
-        Matthew Garrett <mjg59@google.com>
-Cc:     James Morris <jmorris@namei.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        Chun-Yi Lee <jlee@suse.com>, Jann Horn <jannh@google.com>,
-        bpf@vger.kernel.org
-References: <20190622000358.19895-1-matthewgarrett@google.com>
- <20190622000358.19895-24-matthewgarrett@google.com>
- <739e21b5-9559-d588-3542-bf0bc81de1b2@iogearbox.net>
- <CACdnJuvR2bn3y3fYzg06GWXXgAGjgED2Dfa5g0oAwJ28qCCqBg@mail.gmail.com>
- <CALCETrWmZX3R1L88Gz9vLY68gcK8zSXL4cA4GqAzQoyqSR7rRQ@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7f36edf7-3120-975e-b643-3c0fa470bafd@iogearbox.net>
-Date:   Mon, 24 Jun 2019 22:59:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.3.0
+        id S1728106AbfFXVUD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jun 2019 17:20:03 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:34628 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726331AbfFXVUD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jun 2019 17:20:03 -0400
+Received: by mail-qt1-f196.google.com with SMTP id m29so16182141qtu.1;
+        Mon, 24 Jun 2019 14:20:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z1XEkKQQ4kQOXdYffh4+MsjiKPUgBbSin4ZmXxLUT3s=;
+        b=lHtoNFJVgt6ohOEc9mZ37e0yWZ6q+aG1oso8PxEP4JHGPNLt9OxXI5oSkuuw1NaAod
+         ZiraYdV9k7FN+/cDBRA3xUteWQF3m7osu6EYoeOIEb38sIHaGAvZZnHzGiOy2rczC9VR
+         hAkgIqQD3zEhQAJAIbbYKrCA9V0sZ257VYTfVbFzg361IyTXU8DriTfELg18DRexNrEh
+         Zi1M5q5pxqWR4thvfyeFFS3cObURgYyz9B6B7bSFujOB+JQyQFTAXpbPrxpmo/CDl5iY
+         IbvYzmAaYXRxF0w2FFxRXFAkhSyZM7Bi6U2bDAPvCnhZZv7XoasOK/UrQN/daTF+CJWZ
+         ZSew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z1XEkKQQ4kQOXdYffh4+MsjiKPUgBbSin4ZmXxLUT3s=;
+        b=lgwn+z+VdLhIV/MVgL6G/IQHYCH0DZQvSASBahxOQFej8QX/YTNkP15Ybx6yOVgm7a
+         qM7zg3wrgim0+4RMpKQl/fRCzLj0fiplalnJ4nSRSUO9QsdVH+O+IwqAL7akTqTBXLaP
+         tRcwBGvrRO0eNq9docIYJQZeDLy+ADFUeDLMxzp27xLOQNAwHNcvw5MkND9lOVRhWzMs
+         uewwD2gfFFYsXKPB/iWSij29+6g+kJyxG/TO3n7paRENFRx4TLqxS4dQUhhbXHHEtCNp
+         jqT3Suibx0IV2u9EMDdR6TY8tENGi6ZwqUeUfX2u6hIp1m6Sqc00MPDXvWU6WXi5uLqQ
+         r6og==
+X-Gm-Message-State: APjAAAVsLvaTrTsHK0sE7fIz1MRES3GVIVhsD36gw9YY+NQSaWqbfwA6
+        fvgMK9O2l57yqE9RCbznHsndDxvxjxUFJCZlQVg=
+X-Google-Smtp-Source: APXvYqzh3izkXzhVwgv9YrlZAOs9DZCL9u0QPdeVhlfI2ASrToj3o5v0LVe3JXHLBkKqo0G9cE2w09NJZ9duhvBZ7ZY=
+X-Received: by 2002:a0c:9e02:: with SMTP id p2mr58572748qve.150.1561411201895;
+ Mon, 24 Jun 2019 14:20:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CALCETrWmZX3R1L88Gz9vLY68gcK8zSXL4cA4GqAzQoyqSR7rRQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25490/Mon Jun 24 10:02:14 2019)
+References: <20190624162429.16367-1-sdf@google.com> <20190624162429.16367-2-sdf@google.com>
+In-Reply-To: <20190624162429.16367-2-sdf@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 24 Jun 2019 14:19:50 -0700
+Message-ID: <CAEf4BzbRi9AGt5gcnFCgJPPp-64TsB37bncBXXg7B_bzGYSVAQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 1/9] bpf: implement getsockopt and setsockopt hooks
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/24/2019 10:08 PM, Andy Lutomirski wrote:
-> On Mon, Jun 24, 2019 at 12:54 PM Matthew Garrett <mjg59@google.com> wrote:
->> On Mon, Jun 24, 2019 at 8:37 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>> On 06/22/2019 02:03 AM, Matthew Garrett wrote:
->>>> From: David Howells <dhowells@redhat.com>
->>>>
->>>> There are some bpf functions can be used to read kernel memory:
->>>
->>> Nit: that
->>
->> Fixed.
->>
->>>> bpf_probe_read, bpf_probe_write_user and bpf_trace_printk.  These allow
->>>
->>> Please explain how bpf_probe_write_user reads kernel memory ... ?!
->>
->> Ha.
->>
->>>> private keys in kernel memory (e.g. the hibernation image signing key) to
->>>> be read by an eBPF program and kernel memory to be altered without
->>>
->>> ... and while we're at it, also how they allow "kernel memory to be
->>> altered without restriction". I've been pointing this false statement
->>> out long ago.
->>
->> Yup. How's the following description:
->>
->>     bpf: Restrict bpf when kernel lockdown is in confidentiality mode
->>
->>     There are some bpf functions that can be used to read kernel memory and
->>     exfiltrate it to userland: bpf_probe_read, bpf_probe_write_user and
->>     bpf_trace_printk.  These could be abused to (eg) allow private
->> keys in kernel
->>     memory to be leaked. Disable them if the kernel has been locked
->> down in confidentiality
->>     mode.
-> 
-> I'm confused.  I understand why we're restricting bpf_probe_read().
-> Why are we restricting bpf_probe_write_user() and bpf_trace_printk(),
-> though?
+On Mon, Jun 24, 2019 at 1:11 PM Stanislav Fomichev <sdf@google.com> wrote:
+>
+> Implement new BPF_PROG_TYPE_CGROUP_SOCKOPT program type and
+> BPF_CGROUP_{G,S}ETSOCKOPT cgroup hooks.
+>
+> BPF_CGROUP_SETSOCKOPT get a read-only view of the setsockopt arguments.
+> BPF_CGROUP_GETSOCKOPT can modify the supplied buffer.
+> Both of them reuse existing PTR_TO_PACKET{,_END} infrastructure.
+>
+> The buffer memory is pre-allocated (because I don't think there is
+> a precedent for working with __user memory from bpf). This might be
+> slow to do for each {s,g}etsockopt call, that's why I've added
+> __cgroup_bpf_prog_array_is_empty that exits early if there is nothing
+> attached to a cgroup. Note, however, that there is a race between
+> __cgroup_bpf_prog_array_is_empty and BPF_PROG_RUN_ARRAY where cgroup
+> program layout might have changed; this should not be a problem
+> because in general there is a race between multiple calls to
+> {s,g}etsocktop and user adding/removing bpf progs from a cgroup.
+>
+> The return code of the BPF program is handled as follows:
+> * 0: EPERM
+> * 1: success, continue with next BPF program in the cgroup chain
+>
+> v8:
+> * use s32 for optlen (Andrii Nakryiko)
+>
+> v7:
+> * return only 0 or 1 (Alexei Starovoitov)
+> * always run all progs (Alexei Starovoitov)
+> * use optval=0 as kernel bypass in setsockopt (Alexei Starovoitov)
+>   (decided to use optval=-1 instead, optval=0 might be a valid input)
+> * call getsockopt hook after kernel handlers (Alexei Starovoitov)
+>
+> v6:
+> * rework cgroup chaining; stop as soon as bpf program returns
+>   0 or 2; see patch with the documentation for the details
+> * drop Andrii's and Martin's Acked-by (not sure they are comfortable
+>   with the new state of things)
+>
+> v5:
+> * skip copy_to_user() and put_user() when ret == 0 (Martin Lau)
+>
+> v4:
+> * don't export bpf_sk_fullsock helper (Martin Lau)
+> * size != sizeof(__u64) for uapi pointers (Martin Lau)
+> * offsetof instead of bpf_ctx_range when checking ctx access (Martin Lau)
+>
+> v3:
+> * typos in BPF_PROG_CGROUP_SOCKOPT_RUN_ARRAY comments (Andrii Nakryiko)
+> * reverse christmas tree in BPF_PROG_CGROUP_SOCKOPT_RUN_ARRAY (Andrii
+>   Nakryiko)
+> * use __bpf_md_ptr instead of __u32 for optval{,_end} (Martin Lau)
+> * use BPF_FIELD_SIZEOF() for consistency (Martin Lau)
+> * new CG_SOCKOPT_ACCESS macro to wrap repeated parts
+>
+> v2:
+> * moved bpf_sockopt_kern fields around to remove a hole (Martin Lau)
+> * aligned bpf_sockopt_kern->buf to 8 bytes (Martin Lau)
+> * bpf_prog_array_is_empty instead of bpf_prog_array_length (Martin Lau)
+> * added [0,2] return code check to verifier (Martin Lau)
+> * dropped unused buf[64] from the stack (Martin Lau)
+> * use PTR_TO_SOCKET for bpf_sockopt->sk (Martin Lau)
+> * dropped bpf_target_off from ctx rewrites (Martin Lau)
+> * use return code for kernel bypass (Martin Lau & Andrii Nakryiko)
+>
+> Cc: Martin Lau <kafai@fb.com>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
 
-Agree, for example, bpf_probe_write_user() can never write into
-kernel memory (only user one). Just thinking out loud, wouldn't it
-be cleaner and more generic to perform this check at the actual function
-which performs the kernel memory without faulting? All three of these
-are in mm/maccess.c, and the very few occasions that override the
-probe_kernel_read symbol are calling eventually into __probe_kernel_read(),
-so this would catch all of them wrt lockdown restrictions. Otherwise
-you'd need to keep tracking every bit of new code being merged that
-calls into one of these, no? That way you only need to do it once like
-below and are guaranteed that the check catches these in future as well.
-
-Thanks,
-Daniel
-
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 482d4d6..2c8220f 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -29,6 +29,9 @@ long __probe_kernel_read(void *dst, const void *src, size_t size)
- 	long ret;
- 	mm_segment_t old_fs = get_fs();
-
-+	if (security_locked_down(LOCKDOWN_KERNEL_READ))
-+		return -EFAULT;
-+
- 	set_fs(KERNEL_DS);
- 	pagefault_disable();
- 	ret = __copy_from_user_inatomic(dst,
-@@ -57,6 +60,9 @@ long __probe_kernel_write(void *dst, const void *src, size_t size)
- 	long ret;
- 	mm_segment_t old_fs = get_fs();
-
-+	if (security_locked_down(LOCKDOWN_KERNEL_WRITE))
-+		return -EFAULT;
-+
- 	set_fs(KERNEL_DS);
- 	pagefault_disable();
- 	ret = __copy_to_user_inatomic((__force void __user *)dst, src, size);
-@@ -90,6 +96,9 @@ long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
- 	const void *src = unsafe_addr;
- 	long ret;
-
-+	if (security_locked_down(LOCKDOWN_KERNEL_READ))
-+		return -EFAULT;
-+
- 	if (unlikely(count <= 0))
- 		return 0;
-
+Acked-by: Andrii Nakryiko <andriin@fb.com>
