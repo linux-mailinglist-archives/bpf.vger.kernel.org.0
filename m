@@ -2,52 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F975188C
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 18:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD57E5188E
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 18:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731838AbfFXQYw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jun 2019 12:24:52 -0400
-Received: from mail-pg1-f201.google.com ([209.85.215.201]:40206 "EHLO
-        mail-pg1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731998AbfFXQYw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jun 2019 12:24:52 -0400
-Received: by mail-pg1-f201.google.com with SMTP id i11so6858724pgt.7
-        for <bpf@vger.kernel.org>; Mon, 24 Jun 2019 09:24:51 -0700 (PDT)
+        id S1732074AbfFXQYy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jun 2019 12:24:54 -0400
+Received: from mail-pl1-f202.google.com ([209.85.214.202]:50404 "EHLO
+        mail-pl1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732073AbfFXQYy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jun 2019 12:24:54 -0400
+Received: by mail-pl1-f202.google.com with SMTP id 71so7575085pld.17
+        for <bpf@vger.kernel.org>; Mon, 24 Jun 2019 09:24:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=E3/NjGxZJZpjVUvabQp7xEgi3RwHvVFfByy3GxO1FAE=;
-        b=bvEA6RmxQCXJpGl6qQR2ZI1toOtawNiwlIVBlJT3aIXAUAwAF9zVWh5hPBTRlP/S+t
-         x/unxfVDszvFocLCqBPeHj2iBobxlYFJ/5SYct/AQvp2IYF3D9e1G7cdN3yZ1c/wsoI0
-         13Gy5/j85eDflK+YjrJRfRQugCxRo0FNP7m+gwqTvkoR4xsxkjgYST8Af/6+E1VODWGJ
-         +UlzU6XLsBA8QeeWy2i54X0A6IAKdQelyW/PC7CQIfGt1VHmM8yKW1PkDEuUeKxqG9R9
-         GLLIWDEMHdZ7hWvy/bdkd4hJZ/gafnKC5XLylkg1rvEWmE3AAplFdBLpPX88NBqNfuw4
-         Fovw==
+        bh=PScmwSK+K9IB8yZqW06OWrhD6812WTEkgOnr9yWmmf4=;
+        b=wEfx71v1btEOlvKmKmG4dkf1KGyws8CgL75i2MN8jxzFYdlqumo5TK3W+0T/ktO7k/
+         HwHeQ1f0wq9/FGsZMXF4PsxNBKLN0DQflEMUoIPj5MdFDnnAkZZtOtTo4fGx2a/4hT3c
+         Gev0bUeqtsRN1DCThef+94kIX01/oQ5bUsrLuXrFART5/z7+gOkArdXJDtyyGSSCs8rK
+         qRGBp8PF02XPgqBvvgVaE1vy+yodX0/bLieUqDu2Yi/rQgL0qsRUZE4mFapSn19Zx/2/
+         ah1UJZVEKEr1jOSK4F+1HbA0HSsKsLYtgBU9rKobFieW96WkuQL+3OGK6uLZ4Exli0V2
+         OunQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=E3/NjGxZJZpjVUvabQp7xEgi3RwHvVFfByy3GxO1FAE=;
-        b=kyWKaejnfQZPHMkTNydlZqc+l8VWc//6Ky/MpL8lZfIouzg+dy9sS+NZ0bgpwKaUNO
-         Ek9Ybrr2VpmEr+Bpr6DuwOykU2bpYFJz4475srVn1xjUerPvpF1lQXXNWsE7YjfRNZ6t
-         fnv2KkArV+nMANmS4gHZ0aDS0fUgHdq7bxwOpZa8AdhM0x1oq8TsLu2KwMJpmhxiZJSk
-         tNO3+btqxB5RZKKdVFXugwBnz9lJmn5W4yJzYGEaczmqFvQmuX5VrnhrHoBq2+Du6fjr
-         AtWE9xOKycSwFQYpSyXd99rwQalToCktgg1pZ88k1dD77TIyT9Kbv+mMMyI9lu4a3GE9
-         AvIQ==
-X-Gm-Message-State: APjAAAWr8FYjcqBWMZ6TWYGNDg35JEVQDy3EoDjJ24iDu3OvKDePbPvU
-        c5vnpqkXwf72vBLiDscAkCYwVyM=
-X-Google-Smtp-Source: APXvYqwVDwN93gfHbyzeT85nhhBw+5FCM/CEFExHEF8pqsum1gRmDKsIT6a986N4VSbhwPMRV3Oimac=
-X-Received: by 2002:a63:5508:: with SMTP id j8mr3385626pgb.278.1561393490721;
- Mon, 24 Jun 2019 09:24:50 -0700 (PDT)
-Date:   Mon, 24 Jun 2019 09:24:27 -0700
+        bh=PScmwSK+K9IB8yZqW06OWrhD6812WTEkgOnr9yWmmf4=;
+        b=SPHoG4O2OeQ0UIUz35q3EoC2OTi/bEmZUyIemtvH34nXdQIxy3S6mN21W1hOI8YvgX
+         y+RulnEEtQ9F1DLGR8ko8Y8s1h2/6dUVEfBkVxhbbIDscYz+x7iaPz0NSJDajhI/Dmxx
+         kpT62G133mD0JUB6FjJi7Xnv7ljFaI5S30e7eXlM3yfJLIB9+eaIG9sQN/oEQpAfKbs6
+         SPpSmmECG4snqjt/v378xkGDpQ7RsCEhPvqswRZG3V91sO9QddrBS/rAa1fy7BC3C5hZ
+         AL/aso8utoHJqt4IKPq5OqhcsAdCbuUqVoaIizNCEyWl1Z5HdkHiaLrPtD+Kd9mdtEwO
+         eqgg==
+X-Gm-Message-State: APjAAAUoFsRV0huScK6ntR1Gd8AY6+kgKCgRHMfYsyrOPXi/p+Iv/JTM
+        vHXDc8sD+zexNUWsXjWG7r96IKc=
+X-Google-Smtp-Source: APXvYqzMMHwmVqaFzQnYx7bu5yd1OmIKwA79DzoWPcErMHCvC7ljY+EnI7Uo/KFuXh+MSyIIpKQtQOU=
+X-Received: by 2002:a63:8043:: with SMTP id j64mr18485659pgd.216.1561393493248;
+ Mon, 24 Jun 2019 09:24:53 -0700 (PDT)
+Date:   Mon, 24 Jun 2019 09:24:28 -0700
 In-Reply-To: <20190624162429.16367-1-sdf@google.com>
-Message-Id: <20190624162429.16367-8-sdf@google.com>
+Message-Id: <20190624162429.16367-9-sdf@google.com>
 Mime-Version: 1.0
 References: <20190624162429.16367-1-sdf@google.com>
 X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
-Subject: [PATCH bpf-next v8 7/9] selftests/bpf: add sockopt test that
- exercises BPF_F_ALLOW_MULTI
+Subject: [PATCH bpf-next v8 8/9] bpf: add sockopt documentation
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
@@ -58,394 +57,125 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-sockopt test that verifies chaining behavior.
+Provide user documentation about sockopt prog type and cgroup hooks.
 
 v7:
-* rework the test to verify cgroup getsockopt chaining
+* add description for retval=0 and optlen=-1
+
+v6:
+* describe cgroup chaining, add example
+
+v2:
+* use return code 2 for kernel bypass
 
 Cc: Martin Lau <kafai@fb.com>
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- tools/testing/selftests/bpf/.gitignore        |   1 +
- tools/testing/selftests/bpf/Makefile          |   4 +-
- .../selftests/bpf/progs/sockopt_multi.c       |  53 ++++
- .../selftests/bpf/test_sockopt_multi.c        | 276 ++++++++++++++++++
- 4 files changed, 333 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/sockopt_multi.c
- create mode 100644 tools/testing/selftests/bpf/test_sockopt_multi.c
+ Documentation/bpf/index.rst               |  1 +
+ Documentation/bpf/prog_cgroup_sockopt.rst | 82 +++++++++++++++++++++++
+ 2 files changed, 83 insertions(+)
+ create mode 100644 Documentation/bpf/prog_cgroup_sockopt.rst
 
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index 8ac076c311d4..a2f7f79c7908 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -41,3 +41,4 @@ test_btf_dump
- xdping
- test_sockopt
- test_sockopt_sk
-+test_sockopt_multi
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 1210b4e98d27..5615a5f13ce4 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -26,7 +26,8 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
- 	test_sock test_btf test_sockmap get_cgroup_id_user test_socket_cookie \
- 	test_cgroup_storage test_select_reuseport test_section_names \
- 	test_netcnt test_tcpnotify_user test_sock_fields test_sysctl test_hashmap \
--	test_btf_dump test_cgroup_attach xdping test_sockopt test_sockopt_sk
-+	test_btf_dump test_cgroup_attach xdping test_sockopt test_sockopt_sk \
-+	test_sockopt_multi
+diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+index d3fe4cac0c90..801a6ed3f2e5 100644
+--- a/Documentation/bpf/index.rst
++++ b/Documentation/bpf/index.rst
+@@ -42,6 +42,7 @@ Program types
+ .. toctree::
+    :maxdepth: 1
  
- BPF_OBJ_FILES = $(patsubst %.c,%.o, $(notdir $(wildcard progs/*.c)))
- TEST_GEN_FILES = $(BPF_OBJ_FILES)
-@@ -105,6 +106,7 @@ $(OUTPUT)/test_sysctl: cgroup_helpers.c
- $(OUTPUT)/test_cgroup_attach: cgroup_helpers.c
- $(OUTPUT)/test_sockopt: cgroup_helpers.c
- $(OUTPUT)/test_sockopt_sk: cgroup_helpers.c
-+$(OUTPUT)/test_sockopt_multi: cgroup_helpers.c
++   prog_cgroup_sockopt
+    prog_cgroup_sysctl
+    prog_flow_dissector
  
- .PHONY: force
- 
-diff --git a/tools/testing/selftests/bpf/progs/sockopt_multi.c b/tools/testing/selftests/bpf/progs/sockopt_multi.c
+diff --git a/Documentation/bpf/prog_cgroup_sockopt.rst b/Documentation/bpf/prog_cgroup_sockopt.rst
 new file mode 100644
-index 000000000000..1529fe3afe9f
+index 000000000000..24985740711a
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/sockopt_multi.c
-@@ -0,0 +1,53 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <netinet/in.h>
-+#include <linux/bpf.h>
-+#include "bpf_helpers.h"
++++ b/Documentation/bpf/prog_cgroup_sockopt.rst
+@@ -0,0 +1,82 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
-+char _license[] SEC("license") = "GPL";
-+__u32 _version SEC("version") = 1;
++============================
++BPF_PROG_TYPE_CGROUP_SOCKOPT
++============================
 +
-+SEC("cgroup/getsockopt/child")
-+int _getsockopt_child(struct bpf_sockopt *ctx)
-+{
-+	__u8 *optval_end = ctx->optval_end;
-+	__u8 *optval = ctx->optval;
++``BPF_PROG_TYPE_CGROUP_SOCKOPT`` program type can be attached to two
++cgroup hooks:
 +
-+	if (ctx->level != SOL_IP || ctx->optname != IP_TOS)
-+		return 1;
++* ``BPF_CGROUP_GETSOCKOPT`` - called every time process executes ``getsockopt``
++  system call.
++* ``BPF_CGROUP_SETSOCKOPT`` - called every time process executes ``setsockopt``
++  system call.
 +
-+	if (optval + 1 > optval_end)
-+		return 0; /* EPERM, bounds check */
++The context (``struct bpf_sockopt``) has associated socket (``sk``) and
++all input arguments: ``level``, ``optname``, ``optval`` and ``optlen``.
 +
-+	if (optval[0] != 0x80)
-+		return 0; /* EPERM, unexpected optval from the kernel */
++BPF_CGROUP_SETSOCKOPT
++=====================
 +
-+	ctx->retval = 0; /* Reset system call return value to zero */
++``BPF_CGROUP_SETSOCKOPT`` is triggered *before* the kernel handling of
++sockopt and it has mostly read-only context (it can modify only ``optlen``).
++This hook has access to cgroup and socket local storage.
 +
-+	optval[0] = 0x90;
-+	ctx->optlen = 1;
++If BPF program sets ``optlen`` to -1, the control will be returned
++back to the userspace after all other BPF programs in the cgroup
++chain finish (i.e. kernel ``setsockopt`` handling will *not* be executed).
 +
-+	return 1;
-+}
++Note, that the only acceptable value to set to ``optlen`` is -1. Any
++other value will trigger ``EFAULT``.
 +
-+SEC("cgroup/getsockopt/parent")
-+int _getsockopt_parent(struct bpf_sockopt *ctx)
-+{
-+	__u8 *optval_end = ctx->optval_end;
-+	__u8 *optval = ctx->optval;
++Return Type
++-----------
 +
-+	if (ctx->level != SOL_IP || ctx->optname != IP_TOS)
-+		return 1;
++* ``0`` - reject the syscall, ``EPERM`` will be returned to the userspace.
++* ``1`` - success, continue with next BPF program in the cgroup chain.
 +
-+	if (optval + 1 > optval_end)
-+		return 0; /* EPERM, bounds check */
++BPF_CGROUP_GETSOCKOPT
++=====================
 +
-+	if (optval[0] != 0x90)
-+		return 0; /* EPERM, unexpected optval from the kernel */
++``BPF_CGROUP_GETSOCKOPT`` is triggered *after* the kernel handing of
++sockopt. The BPF hook can observe ``optval``, ``optlen`` and ``retval``
++if it's interested in whatever kernel has returned. BPF hook can override
++the values above, adjust ``optlen`` and reset ``retval`` to 0. If ``optlen``
++has been increased above initial ``setsockopt`` value (i.e. userspace
++buffer is too small), ``EFAULT`` is returned.
 +
-+	ctx->retval = 0; /* Reset system call return value to zero */
++Note, that the only acceptable value to set to ``retval`` is 0 and the
++original value that the kernel returned. Any other value will trigger
++``EFAULT``.
 +
-+	optval[0] = 0xA0;
-+	ctx->optlen = 1;
++Return Type
++-----------
 +
-+	return 1;
-+}
-diff --git a/tools/testing/selftests/bpf/test_sockopt_multi.c b/tools/testing/selftests/bpf/test_sockopt_multi.c
-new file mode 100644
-index 000000000000..71acdc861a55
---- /dev/null
-+++ b/tools/testing/selftests/bpf/test_sockopt_multi.c
-@@ -0,0 +1,276 @@
-+// SPDX-License-Identifier: GPL-2.0
++* ``0`` - reject the syscall, ``EPERM`` will be returned to the userspace.
++* ``1`` - success: copy ``optval`` and ``optlen`` to userspace, return
++  ``retval`` from the syscall (note that this can be overwritten by
++  the BPF program from the parent cgroup).
 +
-+#include <error.h>
-+#include <errno.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <netinet/in.h>
++Cgroup Inheritance
++==================
 +
-+#include <linux/filter.h>
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
++Suppose, there is the following cgroup hierarchy where each cgroup
++has ``BPF_CGROUP_GETSOCKOPT`` attached at each level with
++``BPF_F_ALLOW_MULTI`` flag::
 +
-+#include "bpf_rlimit.h"
-+#include "bpf_util.h"
-+#include "cgroup_helpers.h"
++  A (root, parent)
++   \
++    B (child)
 +
-+static int prog_attach(struct bpf_object *obj, int cgroup_fd, const char *title)
-+{
-+	enum bpf_attach_type attach_type;
-+	enum bpf_prog_type prog_type;
-+	struct bpf_program *prog;
-+	int err;
++When the application calls ``getsockopt`` syscall from the cgroup B,
++the programs are executed from the bottom up: B, A. First program
++(B) sees the result of kernel's ``getsockopt``. It can optionally
++adjust ``optval``, ``optlen`` and reset ``retval`` to 0. After that
++control will be passed to the second (A) program which will see the
++same context as B including any potential modifications.
 +
-+	err = libbpf_prog_type_by_name(title, &prog_type, &attach_type);
-+	if (err) {
-+		log_err("Failed to deduct types for %s BPF program", title);
-+		return -1;
-+	}
++Example
++=======
 +
-+	prog = bpf_object__find_program_by_title(obj, title);
-+	if (!prog) {
-+		log_err("Failed to find %s BPF program", title);
-+		return -1;
-+	}
-+
-+	err = bpf_prog_attach(bpf_program__fd(prog), cgroup_fd,
-+			      attach_type, BPF_F_ALLOW_MULTI);
-+	if (err) {
-+		log_err("Failed to attach %s BPF program", title);
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int prog_detach(struct bpf_object *obj, int cgroup_fd, const char *title)
-+{
-+	enum bpf_attach_type attach_type;
-+	enum bpf_prog_type prog_type;
-+	struct bpf_program *prog;
-+	int err;
-+
-+	err = libbpf_prog_type_by_name(title, &prog_type, &attach_type);
-+	if (err)
-+		return -1;
-+
-+	prog = bpf_object__find_program_by_title(obj, title);
-+	if (!prog)
-+		return -1;
-+
-+	err = bpf_prog_detach2(bpf_program__fd(prog), cgroup_fd,
-+			       attach_type);
-+	if (err)
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static int run_test(struct bpf_object *obj, int cg_parent, int cg_child,
-+		    int sock_fd)
-+{
-+	socklen_t optlen;
-+	__u8 buf;
-+	int err;
-+
-+	/* Set IP_TOS to the expected value (0x80). */
-+
-+	buf = 0x80;
-+	err = setsockopt(sock_fd, SOL_IP, IP_TOS, &buf, 1);
-+	if (err < 0) {
-+		log_err("Failed to call setsockopt(IP_TOS)");
-+		goto detach;
-+	}
-+
-+	buf = 0x00;
-+	optlen = 1;
-+	err = getsockopt(sock_fd, SOL_IP, IP_TOS, &buf, &optlen);
-+	if (err) {
-+		log_err("Failed to call getsockopt(IP_TOS)");
-+		goto detach;
-+	}
-+
-+	if (buf != 0x80) {
-+		log_err("Unexpected getsockopt 0x%x != 0x80 without BPF", buf);
-+		err = -1;
-+		goto detach;
-+	}
-+
-+	/* Attach child program and make sure it returns new value:
-+	 * - kernel:      -> 0x80
-+	 * - child:  0x80 -> 0x90
-+	 */
-+
-+	err = prog_attach(obj, cg_child, "cgroup/getsockopt/child");
-+	if (err)
-+		goto detach;
-+
-+	buf = 0x00;
-+	optlen = 1;
-+	err = getsockopt(sock_fd, SOL_IP, IP_TOS, &buf, &optlen);
-+	if (err) {
-+		log_err("Failed to call getsockopt(IP_TOS)");
-+		goto detach;
-+	}
-+
-+	if (buf != 0x90) {
-+		log_err("Unexpected getsockopt 0x%x != 0x90", buf);
-+		err = -1;
-+		goto detach;
-+	}
-+
-+	/* Attach parent program and make sure it returns new value:
-+	 * - kernel:      -> 0x80
-+	 * - child:  0x80 -> 0x90
-+	 * - parent: 0x90 -> 0xA0
-+	 */
-+
-+	err = prog_attach(obj, cg_parent, "cgroup/getsockopt/parent");
-+	if (err)
-+		goto detach;
-+
-+	buf = 0x00;
-+	optlen = 1;
-+	err = getsockopt(sock_fd, SOL_IP, IP_TOS, &buf, &optlen);
-+	if (err) {
-+		log_err("Failed to call getsockopt(IP_TOS)");
-+		goto detach;
-+	}
-+
-+	if (buf != 0xA0) {
-+		log_err("Unexpected getsockopt 0x%x != 0xA0", buf);
-+		err = -1;
-+		goto detach;
-+	}
-+
-+	/* Setting unexpected initial sockopt should return EPERM:
-+	 * - kernel: -> 0x40
-+	 * - child:  unexpected 0x40, EPERM
-+	 * - parent: unexpected 0x40, EPERM
-+	 */
-+
-+	buf = 0x40;
-+	if (setsockopt(sock_fd, SOL_IP, IP_TOS, &buf, 1) < 0) {
-+		log_err("Failed to call setsockopt(IP_TOS)");
-+		goto detach;
-+	}
-+
-+	buf = 0x00;
-+	optlen = 1;
-+	err = getsockopt(sock_fd, SOL_IP, IP_TOS, &buf, &optlen);
-+	if (!err) {
-+		log_err("Unexpected success from getsockopt(IP_TOS)");
-+		goto detach;
-+	}
-+
-+	/* Detach child program and make sure we still get EPERM:
-+	 * - kernel: -> 0x40
-+	 * - parent: unexpected 0x40, EPERM
-+	 */
-+
-+	err = prog_detach(obj, cg_child, "cgroup/getsockopt/child");
-+	if (err) {
-+		log_err("Failed to detach child program");
-+		goto detach;
-+	}
-+
-+	buf = 0x00;
-+	optlen = 1;
-+	err = getsockopt(sock_fd, SOL_IP, IP_TOS, &buf, &optlen);
-+	if (!err) {
-+		log_err("Unexpected success from getsockopt(IP_TOS)");
-+		goto detach;
-+	}
-+
-+	/* Set initial value to the one the parent program expects:
-+	 * - kernel:      -> 0x90
-+	 * - parent: 0x90 -> 0xA0
-+	 */
-+
-+	buf = 0x90;
-+	err = setsockopt(sock_fd, SOL_IP, IP_TOS, &buf, 1);
-+	if (err < 0) {
-+		log_err("Failed to call setsockopt(IP_TOS)");
-+		goto detach;
-+	}
-+
-+	buf = 0x00;
-+	optlen = 1;
-+	err = getsockopt(sock_fd, SOL_IP, IP_TOS, &buf, &optlen);
-+	if (err) {
-+		log_err("Failed to call getsockopt(IP_TOS)");
-+		goto detach;
-+	}
-+
-+	if (buf != 0xA0) {
-+		log_err("Unexpected getsockopt 0x%x != 0xA0", buf);
-+		err = -1;
-+		goto detach;
-+	}
-+
-+detach:
-+	prog_detach(obj, cg_child, "cgroup/getsockopt/child");
-+	prog_detach(obj, cg_parent, "cgroup/getsockopt/parent");
-+
-+	return err;
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	struct bpf_prog_load_attr attr = {
-+		.file = "./sockopt_multi.o",
-+	};
-+	int cg_parent = -1, cg_child = -1;
-+	struct bpf_object *obj = NULL;
-+	int sock_fd = -1;
-+	int err = -1;
-+	int ignored;
-+
-+	if (setup_cgroup_environment()) {
-+		log_err("Failed to setup cgroup environment\n");
-+		goto out;
-+	}
-+
-+	cg_parent = create_and_get_cgroup("/parent");
-+	if (cg_parent < 0) {
-+		log_err("Failed to create cgroup /parent\n");
-+		goto out;
-+	}
-+
-+	cg_child = create_and_get_cgroup("/parent/child");
-+	if (cg_child < 0) {
-+		log_err("Failed to create cgroup /parent/child\n");
-+		goto out;
-+	}
-+
-+	if (join_cgroup("/parent/child")) {
-+		log_err("Failed to join cgroup /parent/child\n");
-+		goto out;
-+	}
-+
-+	err = bpf_prog_load_xattr(&attr, &obj, &ignored);
-+	if (err) {
-+		log_err("Failed to load BPF object");
-+		goto out;
-+	}
-+
-+	sock_fd = socket(AF_INET, SOCK_STREAM, 0);
-+	if (sock_fd < 0) {
-+		log_err("Failed to create socket");
-+		goto out;
-+	}
-+
-+	if (run_test(obj, cg_parent, cg_child, sock_fd))
-+		err = -1;
-+
-+out:
-+	close(sock_fd);
-+	bpf_object__close(obj);
-+	close(cg_child);
-+	close(cg_parent);
-+
-+	printf("test_sockopt_multi: %s\n", err ? "FAILED" : "PASSED");
-+	return err ? EXIT_FAILURE : EXIT_SUCCESS;
-+}
++See ``tools/testing/selftests/bpf/progs/sockopt_sk.c`` for an example
++of BPF program that handles socket options.
 -- 
 2.22.0.410.gd8fdbe21b5-goog
 
