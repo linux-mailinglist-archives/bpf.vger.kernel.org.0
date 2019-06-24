@@ -2,84 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5083251D22
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 23:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E6E51D82
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 23:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728657AbfFXVa6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jun 2019 17:30:58 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:37153 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726383AbfFXVa6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jun 2019 17:30:58 -0400
-Received: by mail-io1-f68.google.com with SMTP id e5so364497iok.4
-        for <bpf@vger.kernel.org>; Mon, 24 Jun 2019 14:30:58 -0700 (PDT)
+        id S1730227AbfFXV63 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jun 2019 17:58:29 -0400
+Received: from mail-vk1-f202.google.com ([209.85.221.202]:49849 "EHLO
+        mail-vk1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730173AbfFXV63 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jun 2019 17:58:29 -0400
+Received: by mail-vk1-f202.google.com with SMTP id o202so6932579vko.16
+        for <bpf@vger.kernel.org>; Mon, 24 Jun 2019 14:58:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X1crQPJTAtGM5uUHM8HI5Md6CDkFNGlZyxi3sPcH+qY=;
-        b=GV/T5Ga4ZWk+3W3tqaFce2Ne2RQBxrSLyrhdSzfTB7LlQz8v8cPfHUnL0gw97i2ytW
-         U4a+Nfv1evzoydxm7+aE0QEItVbBUUIJG/3U7ZVO97sH5R/GBfQ/sK+TpOvu118vpAVE
-         5Ebmq730K8DfY367AGv9eK+RcSiWu/TKO7xNIlIMr46k+uacGMr0RWHh9AkvQlBwPQz/
-         3dK8NiOrmCOZBOFRnBLzpc7otO4y3P98/1Bzu4aZ7JDhtZf7jNuJnBC8VOF1BZHvZufo
-         L+R4LgK/I5cGCdrR41cI4yo5nDHrqGqdldJiFjF0OI44NEPptk1A10JIl1ioUUvMRyJx
-         zBBw==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Q0hyqVzuncQMFkIZhAOHJkIfbxm5sDRWMvyBXtcavoo=;
+        b=RhTI0VON+5np3cwB/7HOu3t/iTPn2XCK9u35az8zZzqwq33aR1/TRgDApIz75TYjeD
+         taeLRalcKhbhPepoAbvK52wnMDZ4a4X4rQyvghiYUBX6lvanbJlq1DeR0k4U1q7eFNYV
+         BF+JEeZCIrldZEWNpdVz2IUoRYv+zgxEMD/AiCGhXJwswmAgGA3GeNHqIk31m5cbt2l1
+         uwJ2HebPA8Tcrtk5Sq6k1GuOo6rkny49EjlVuC3wxvojrEBmBFbu3QlkfxniDohl6kCZ
+         KUcCvCDfB5huDAVj39axpBOZIQ0XycHOBqagQKH8BqMaTmCzE2FHM+KvrEaKpSm4zON1
+         p9Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X1crQPJTAtGM5uUHM8HI5Md6CDkFNGlZyxi3sPcH+qY=;
-        b=r+HXUuFkmhm6RozOWHUKrwBCiIdpsMa0HFU1yqEnj2j4ME3rySMif4isD1gHQKWCdn
-         xKYVnjh7wjVT6aDffRDwoIiTBzTHolbL/wBs8D1fIy8hEc82HwiZ4KmTN2U3wNNo+5qB
-         UgfoJBXC9hKAL7ZhX0VrtZvDzUdOGXqavXMSy3xx0jwHBY0hjfTl+tUbaGhr7WnwxOoB
-         prFFJ0/ACdP5kCLZ3gjaC2zSKJm3mSWX27VFO/+mjeGOSq5YsF4awULMRtWLciisRVS9
-         WNWBTSzgrEGly7qrbeT+oDhlhKZYJriUm11pVDhH2i4nV4M/51nXv4rqFj7p4kIRPUmV
-         qPSQ==
-X-Gm-Message-State: APjAAAWsAGnY7NjR1Z8PuB3LiWJ3QDEjcMuDDFcw0umt7NB2S8z3mQet
-        PUwQaCkzTR/hf7qM4zVWkPc3JpwbtShrJHeHMvBq5Q==
-X-Google-Smtp-Source: APXvYqwbJ6/OJ4cAqwtkSkNEdex1XxYWjuM6oISUMTZ0zxZxc1DgCYwtvFO6zbVNKmMolpTJMIfjoUOPVX3NdCWBiKk=
-X-Received: by 2002:a6b:f114:: with SMTP id e20mr39401495iog.169.1561411857221;
- Mon, 24 Jun 2019 14:30:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190622000358.19895-1-matthewgarrett@google.com>
- <20190622000358.19895-24-matthewgarrett@google.com> <739e21b5-9559-d588-3542-bf0bc81de1b2@iogearbox.net>
- <CACdnJuvR2bn3y3fYzg06GWXXgAGjgED2Dfa5g0oAwJ28qCCqBg@mail.gmail.com>
- <CALCETrWmZX3R1L88Gz9vLY68gcK8zSXL4cA4GqAzQoyqSR7rRQ@mail.gmail.com> <7f36edf7-3120-975e-b643-3c0fa470bafd@iogearbox.net>
-In-Reply-To: <7f36edf7-3120-975e-b643-3c0fa470bafd@iogearbox.net>
-From:   Matthew Garrett <mjg59@google.com>
-Date:   Mon, 24 Jun 2019 14:30:46 -0700
-Message-ID: <CACdnJuuHdX-y5VpqVFVDM3ORUXLNh+-XKxykxypvYKotHuk1mA@mail.gmail.com>
-Subject: Re: [PATCH V34 23/29] bpf: Restrict bpf when kernel lockdown is in
- confidentiality mode
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        Chun-Yi Lee <jlee@suse.com>, Jann Horn <jannh@google.com>,
-        bpf@vger.kernel.org
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Q0hyqVzuncQMFkIZhAOHJkIfbxm5sDRWMvyBXtcavoo=;
+        b=ozkre1OUqAWXy+fOi5u1xRoIT+QwsVYbDDvL6IoKKt+HVsvSg0tL9ZbuShzo1jvYAP
+         Zdr3TR5gtEoTpYiokKbWZYetY+UYPsEH3QHDNqxqyva+cOCb+aJfHTVzKqZwishrU3v9
+         hujv/BmQriSb0ussuY5+A463V2ux3uTcRQERi2V7SCtkmKWt+87xGG0//AVupUdftqRm
+         o+v4uVt8coAPa2NpuSYvPcmR/jF0Y1icMxnBvYPAkcNJXeRh6/QMZl/+gJj+BVE8ejxJ
+         82TKKxSuGPb6+JzR8Ha6xkgGY+MDgKps/8X02iGCjZ2GlLa4Jo6TCeUB4XqiIC9Ne0Vj
+         89hA==
+X-Gm-Message-State: APjAAAVB51ylIWf+bx3/D6c2Qe0TMc7kJ+Dy0H+9YIQEJMKAvnzG71qO
+        JbKZ5UZQk9RTqXUAP+oCa1lzWh4xPFfXFuMY
+X-Google-Smtp-Source: APXvYqysClsnN/4Bk4V5HqW6LruC+5/Q9jhmidRxur/KiP8HrehrQutBwAy9P5+/J7jI4WPt5SLBO8hZ4T+vVzyY
+X-Received: by 2002:a1f:4107:: with SMTP id o7mr4981084vka.34.1561413508074;
+ Mon, 24 Jun 2019 14:58:28 -0700 (PDT)
+Date:   Mon, 24 Jun 2019 14:58:22 -0700
+Message-Id: <20190624215824.118783-1-allanzhang@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
+Subject: [PATCH] bpf: Allow bpf_skb_event_output for a few prog types
+From:   allanzhang <allanzhang@google.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     allanzhang <allanzhang@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 24, 2019 at 2:22 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> Agree, for example, bpf_probe_write_user() can never write into
-> kernel memory (only user one). Just thinking out loud, wouldn't it
-> be cleaner and more generic to perform this check at the actual function
-> which performs the kernel memory without faulting? All three of these
-> are in mm/maccess.c, and the very few occasions that override the
-> probe_kernel_read symbol are calling eventually into __probe_kernel_read(),
-> so this would catch all of them wrt lockdown restrictions. Otherwise
-> you'd need to keep tracking every bit of new code being merged that
-> calls into one of these, no? That way you only need to do it once like
-> below and are guaranteed that the check catches these in future as well.
+Software event output is only enabled by a few prog types right now (TC,
+LWT out, XDP, sockops). Many other skb based prog types need
+bpf_skb_event_output to produce software event.
 
-Not all paths into probe_kernel_read/write are from entry points that
-need to be locked down (eg, as far as I can tell ftrace can't leak
-anything interesting here).
+Added socket_filter, cg_skb, sk_skb prog types to generate sw event.
+
+Test bpf code is generated from code snippet:
+
+struct TMP {
+    uint64_t tmp;
+} tt;
+tt.tmp = 5;
+bpf_perf_event_output(skb, &connection_tracking_event_map, 0,
+                      &tt, sizeof(tt));
+return 1;
+
+the bpf assembly from llvm is:
+       0:       b7 02 00 00 05 00 00 00         r2 = 5
+       1:       7b 2a f8 ff 00 00 00 00         *(u64 *)(r10 - 8) = r2
+       2:       bf a4 00 00 00 00 00 00         r4 = r10
+       3:       07 04 00 00 f8 ff ff ff         r4 += -8
+       4:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00    r2 = 0ll
+       6:       b7 03 00 00 00 00 00 00         r3 = 0
+       7:       b7 05 00 00 08 00 00 00         r5 = 8
+       8:       85 00 00 00 19 00 00 00         call 25
+       9:       b7 00 00 00 01 00 00 00         r0 = 1
+      10:       95 00 00 00 00 00 00 00         exit
+
+Patch 1 is enabling code.
+Patch 2 is fullly covered selftest code.
+
+Signed-off-by: allanzhang <allanzhang@google.com>
