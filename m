@@ -2,149 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3774FF04
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 04:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B034FF67
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 04:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbfFXCFB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Jun 2019 22:05:01 -0400
-Received: from mga07.intel.com ([134.134.136.100]:38790 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726647AbfFXCFA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Jun 2019 22:05:00 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 23 Jun 2019 17:59:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.63,410,1557212400"; 
-   d="scan'208";a="163444402"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.6]) ([10.239.13.6])
-  by orsmga003.jf.intel.com with ESMTP; 23 Jun 2019 17:59:28 -0700
-Subject: Re: [selftests/bpf] 69d96519db:
- kernel_selftests.bpf.test_socket_cookie.fail
-To:     Stanislav Fomichev <sdf@fomichev.me>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
+        id S1727095AbfFXCa6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 Jun 2019 22:30:58 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:13406 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727125AbfFXCa6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 23 Jun 2019 22:30:58 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5O2TQf2021156
+        for <bpf@vger.kernel.org>; Sun, 23 Jun 2019 19:30:57 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=bpILMdP2uBYpNaxU5hQBPe9bYg5iEeP0N6JPrK/Suf4=;
+ b=N+TLmvmbpp7d3MgSj0rYFpGOd5VNGfg+7XMXrub4SvwIdvKToaOzdxqPcKY9L5ccZIWj
+ vqmg/ubcQaz5hPx8Omte5oBMVAxlJJHlBtn/mP0dLGXOgVZuAkZekKCDfdW/gEjuzKPQ
+ YipN0rsHwjOIoXFKz5h2McnsFuj2nUW+idM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2t9gc0mmub-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Sun, 23 Jun 2019 19:30:56 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sun, 23 Jun 2019 19:30:55 -0700
+Received: by devvm2643.prn2.facebook.com (Postfix, from userid 111017)
+        id 7C8D6139E9C20; Sun, 23 Jun 2019 19:30:53 -0700 (PDT)
+Smtp-Origin-Hostprefix: devvm
+From:   Roman Gushchin <guro@fb.com>
+Smtp-Origin-Hostname: devvm2643.prn2.facebook.com
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        bpf <bpf@vger.kernel.org>, lkp@01.org
-References: <20190621084040.GU7221@shao2-debian>
- <20190621161039.GF1383@mini-arch>
- <CAEf4Bzaajc27=YyMaOa8UFRz=xE7y6E+qLbPBPbvLADO2peXQg@mail.gmail.com>
- <20190621222745.GH1383@mini-arch>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <f3aa0dc2-c959-1166-8b09-84781363f0e0@intel.com>
-Date:   Mon, 24 Jun 2019 08:59:37 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Tejun Heo <tj@kernel.org>, <bpf@vger.kernel.org>
+CC:     <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>,
+        Roman Gushchin <guro@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next] bpf: fix cgroup bpf release synchronization
+Date:   Sun, 23 Jun 2019 19:30:51 -0700
+Message-ID: <20190624023051.4168487-1-guro@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-In-Reply-To: <20190621222745.GH1383@mini-arch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-24_02:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=2 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=873 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906240019
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/22/19 6:27 AM, Stanislav Fomichev wrote:
-> On 06/21, Andrii Nakryiko wrote:
->> )
->>
->> On Fri, Jun 21, 2019 at 9:11 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
->>> On 06/21, kernel test robot wrote:
->>>> FYI, we noticed the following commit (built with gcc-7):
->>>>
->>>> commit: 69d96519dbf0bfa1868dc8597d4b9b2cdeb009d7 ("selftests/bpf: convert socket_cookie test to sk storage")
->>>> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
->>>>
->>>> in testcase: kernel_selftests
->>>> with following parameters:
->>>>
->>>>        group: kselftests-00
->>>>
->>>> test-description: The kernel contains a set of "self tests" under the tools/testing/selftests/ directory. These are intended to be small unit tests to exercise individual code paths in the kernel.
->>>> test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
->>>>
->>>>
->>>> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
->>>>
->>>> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
->>>>
->>>>
->>>> If you fix the issue, kindly add following tag
->>>> Reported-by: kernel test robot <rong.a.chen@intel.com>
->>>>
->>>> # selftests: bpf: test_socket_cookie
->>>> # libbpf: failed to create map (name: 'socket_cookies'): Invalid
->>>> # argument
->>> Another case of old clang trying to create a map that depends on BTF?
->>> Should we maybe switch those BTF checks in the kernel to return
->>> EOPNOTSUPP to make it easy to diagnose?
->> For older compilers that don't generate DATASEC/VAR, you'll see a clear message:
->>
->> libbpf: DATASEC '.maps' not found.
->>
->> So this must be something else. I just confirmed with clang version
->> 7.0.20180201 that for ./test_socket_cookie that's the first line
->> that's emitted on failure.
-> Thanks for checking, I also took a look at the attached kernel_selftests.xz,
-> here is what it has:
-> 2019-06-21 11:58:35 ln -sf /usr/bin/clang-6.0 /usr/bin/clang
-> 2019-06-21 11:58:35 ln -sf /usr/bin/llc-6.0 /usr/bin/llc
-> ...
-> # BTF libbpf test[1] (test_btf_haskv.o): SKIP. No ELF .BTF found
-> # BTF libbpf test[2] (test_btf_nokv.o): SKIP. No ELF .BTF found
-> ...
-> # Test case #0 (btf_dump_test_case_syntax): test_btf_dump_case:71:FAIL
-> # failed to load test BTF: -2
-> # Test case #1 (btf_dump_test_case_ordering): test_btf_dump_case:71:FAIL
-> # failed to load test BTF: -2
-> ...
->
-> And so on. So there is clearly an old clang that doesn't emit any
-> BTF. And I also don't see your recent abd29c931459 before 69d96519dbf0 in
-> linux-next, that's why it doesn't complain about missing/corrupt BTF.
->
-> We need to convince lkp people to upgrade clang, otherwise, I suppose,
-> we'll get more of these reportings after your recent df0b77925982 :-(
+Since commit 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf
+from cgroup itself"), cgroup_bpf release occurs asynchronously
+(from a worker context), and before the release of the cgroup itself.
 
-Thanks for the clarification, we'll upgrade clang asap.
+This introduced a previously non-existing race between the release
+and update paths. E.g. if a leaf's cgroup_bpf is released and a new
+bpf program is attached to the one of ancestor cgroups at the same
+time. The race may result in double-free and other memory corruptions.
 
-Best Regards,
-Rong Chen
+To fix the problem, let's protect the body of cgroup_bpf_release()
+with cgroup_mutex, as it was effectively previously, when all this
+code was called from the cgroup release path with cgroup mutex held.
 
+Also make sure, that we don't leave already freed pointers to the
+effective prog arrays. Otherwise, they can be released again by
+the update path. It wasn't necessary before, because previously
+the update path couldn't see such a cgroup, as cgroup_bpf and cgroup
+itself were released together.
 
->
->>>> # libbpf: failed to load object './socket_cookie_prog.o'
->>>> # (test_socket_cookie.c:149: errno: Invalid argument) Failed to load
->>>> # ./socket_cookie_prog.o
->>>> # FAILED
->>>> not ok 15 selftests: bpf: test_socket_cookie
->>>>
->>>>
->>>>
->>>>
->>>> To reproduce:
->>>>
->>>>          # build kernel
->>>>        cd linux
->>>>        cp config-5.2.0-rc2-00598-g69d9651 .config
->>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 olddefconfig
->>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 prepare
->>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 modules_prepare
->>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 SHELL=/bin/bash
->>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 bzImage
->>>>
->>>>
->>>>          git clone https://github.com/intel/lkp-tests.git
->>>>          cd lkp-tests
->>>>          bin/lkp qemu -k <bzImage> job-script # job-script is attached in this email
->>>>
->>>>
->>>>
->>>> Thanks,
->>>> Rong Chen
->>>>
->> <mega snip>
+Big thanks for Tejun Heo for discovering and debugging of this
+problem!
+
+Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf from
+cgroup itself")
+Reported-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Roman Gushchin <guro@fb.com>
+---
+ kernel/bpf/cgroup.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 1b65ab0df457..3128770c0f47 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -19,6 +19,8 @@
+ #include <linux/bpf-cgroup.h>
+ #include <net/sock.h>
+ 
++#include "../cgroup/cgroup-internal.h"
++
+ DEFINE_STATIC_KEY_FALSE(cgroup_bpf_enabled_key);
+ EXPORT_SYMBOL(cgroup_bpf_enabled_key);
+ 
+@@ -41,6 +43,8 @@ static void cgroup_bpf_release(struct work_struct *work)
+ 	struct bpf_prog_array *old_array;
+ 	unsigned int type;
+ 
++	mutex_lock(&cgroup_mutex);
++
+ 	for (type = 0; type < ARRAY_SIZE(cgrp->bpf.progs); type++) {
+ 		struct list_head *progs = &cgrp->bpf.progs[type];
+ 		struct bpf_prog_list *pl, *tmp;
+@@ -57,10 +61,13 @@ static void cgroup_bpf_release(struct work_struct *work)
+ 		}
+ 		old_array = rcu_dereference_protected(
+ 				cgrp->bpf.effective[type],
+-				percpu_ref_is_dying(&cgrp->bpf.refcnt));
++				lockdep_is_held(&cgroup_mutex));
++		RCU_INIT_POINTER(cgrp->bpf.effective[type], NULL);
+ 		bpf_prog_array_free(old_array);
+ 	}
+ 
++	mutex_unlock(&cgroup_mutex);
++
+ 	percpu_ref_exit(&cgrp->bpf.refcnt);
+ 	cgroup_put(cgrp);
+ }
+-- 
+2.21.0
+
