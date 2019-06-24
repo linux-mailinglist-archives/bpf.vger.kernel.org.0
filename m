@@ -2,122 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD7151EF9
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 01:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8630251F2A
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 01:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728155AbfFXXMt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jun 2019 19:12:49 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:41477 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726486AbfFXXMs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jun 2019 19:12:48 -0400
-Received: by mail-qk1-f196.google.com with SMTP id c11so11127373qkk.8;
-        Mon, 24 Jun 2019 16:12:48 -0700 (PDT)
+        id S1728473AbfFXXfT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jun 2019 19:35:19 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:37021 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726424AbfFXXfT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jun 2019 19:35:19 -0400
+Received: by mail-lj1-f196.google.com with SMTP id 131so14301585ljf.4;
+        Mon, 24 Jun 2019 16:35:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=O2BpkHRLSBohgPGQ4ppf93FA03SUHEa07ouP+tSwO48=;
-        b=M7faacAMOdA3UtkbfnR66SqX1uVWBeMdmzEutoPNOGenXO27y5b30qfb0X4JvjLZt4
-         poxIQ/ZeazW1K9QpWvLZeK2LtSBZcaya18wMtVq/Sucy3J22CvCWJrey8vWIBp5GK6ua
-         KnofJAi4/knG9jTjKy3o3EhwN4xnA/ia11Eps2JuQmntoWMOeFTGmvJRkALBtBK9Vadw
-         3nA4Hsk6tMH0MmL23tu8B+yj1Rx9U3Qhccr53UNQU5E4CfhdhE88rEtS5vixhCVHBAWV
-         xcqb1HWKjfOX4h7tYx82S8q9sPnGrlHmlJoOC5+xWb1yIPv2LrVwFgUHghhjaMQGVkkB
-         6pFg==
+        bh=IvGfUsEsPfILP2JsuYFvKK2rmUrap93sJGjxp5w61WY=;
+        b=ZexGESd2sbrcoHawQOWaaPxCngJqUh4OV23ETrO6o22YScx//Qbj3/ocqGOZGCIZUy
+         GcPca+zC8Su66++qVCX4TpMs09R0syQMTjIiTJ1pRuHX7QLOgmVrO3Q9Nu4R9rNkeDPV
+         hMibTNmHxr+H8W/p3iZdoQOocQehqUdjwdQvp61vga2WviZUNEqIUbp/q4dHrtLLQd5X
+         Fky8UBT+kRcLF7pcMANeuMYWvnW1SfpD0cI+Ti+cMwELgxMX7vigpZiec4T/yxfoE9wB
+         uedXRbL4KWsG7gYBhBigccWi/R6cCl68qR3obOdIbWTgnYD2rsUBwM3BsZk2WnGlsvrr
+         7oSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=O2BpkHRLSBohgPGQ4ppf93FA03SUHEa07ouP+tSwO48=;
-        b=m5EZBcV05KFPcH5Z73GzVuI/dgwOji7Vyy5qBWKHnR41xOf3YfB3LgxqJAEMQGba9q
-         PEgmgX8wMKvEnFoCzCu0B//ZsHav29OKljBO52ErdtGqWMEe580VhV7qZ5EmDCT593tS
-         JSP0U+s66DTk/4osEXdew0en51HnZ2jNPPIpY6GbX9/Dup3KjcyfhRQrADshBknOGmyW
-         KeayVARwofKvgwQo3P6o90R3vpH4FfhZG+grqEEPgpN1nZVJGfmyWifLA4J2g7wVvEN8
-         tfysKVFYNw6mMhMhZY2fFlwKpdEgsfB1ZWYOXO2n8uK6HZ28hSHVWPGt8uV9Wa8sFuyC
-         yTuA==
-X-Gm-Message-State: APjAAAU93r71YaoVqDgiB3K2BgMKC5m7q+9BYPDkDcBoZBL9ILcwFMts
-        xUJIxglthPuPbv7LtJiXmno9e+JA8HQd+GaGNuS5+1M6
-X-Google-Smtp-Source: APXvYqxlkmDdalJ3IzSQp8dpG58bSBDcWX2cxphQaV+wUwwTnU0D86G9VSSzr6Non/zDXcd1PIeNSmQUK8Ij1nyQUkw=
-X-Received: by 2002:a37:5cc3:: with SMTP id q186mr50378841qkb.74.1561417967710;
- Mon, 24 Jun 2019 16:12:47 -0700 (PDT)
+        bh=IvGfUsEsPfILP2JsuYFvKK2rmUrap93sJGjxp5w61WY=;
+        b=K7XTBp8pxOw62zx0najiSZ20/QpTT9VmGhmBJi+kahiSEqKiqVjHoRKfAcYtMM8AAZ
+         hm9btwLdDo+3eqsvuuvtl2xma6P81Ol24+Wq/x46iPqNT6rqhGK9Q77ZiomuhomQFY5y
+         u78E+3+1Z6rrl4yXUiiLfhE71c7jarKc4mUorjxjWoHHDToGDNz/uRqUYX2/HkOJ4E2M
+         hOE5+Z1pJQbyVGLEdQjQVDZCMdxaqWMcO5b4mJZtT0bT0OCMjTWkTSxeGdnHbaXDNHKd
+         P23AqqksU5eGmetpDxTr3RD2Zj4/j2QpEQ3o7TNLs9KXPg8RZp7/jH7h5HgrS9l0DjSP
+         m8Dw==
+X-Gm-Message-State: APjAAAUWgsXidzGfApbBvFRv96LDBBOXju7YbPrtMQiUhJw+Ky6ScT60
+        Q8i2Jjclvky4u05HOpEExSWcrvQrvEikOR3ZzZ8=
+X-Google-Smtp-Source: APXvYqziSryBpZbr4FqRjAhwFUa0RwgdClngxZGrqEXbOXHzWLAm2wr6tgY3okW5B8Ea57NLNHi94eFducexe72BgxI=
+X-Received: by 2002:a2e:b047:: with SMTP id d7mr10251853ljl.8.1561419316476;
+ Mon, 24 Jun 2019 16:35:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190624215824.118783-1-allanzhang@google.com> <CAPhsuW40c=CTdTo9YUbyj3AAL+A37TX1-Bty267bCYOaThJJ7w@mail.gmail.com>
-In-Reply-To: <CAPhsuW40c=CTdTo9YUbyj3AAL+A37TX1-Bty267bCYOaThJJ7w@mail.gmail.com>
-From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Mon, 24 Jun 2019 16:12:36 -0700
-Message-ID: <CAPhsuW7D=bn9R7TnWbEZyj-W-WgdErJVdY-1jQmGP_HtcdkPsw@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Allow bpf_skb_event_output for a few prog types
-To:     allanzhang <allanzhang@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+References: <20190621231650.32073-1-brianvv@google.com> <20190621231650.32073-3-brianvv@google.com>
+ <20190624154558.65c31561@cakuba.netronome.com>
+In-Reply-To: <20190624154558.65c31561@cakuba.netronome.com>
+From:   Brian Vazquez <brianvv.kernel@gmail.com>
+Date:   Mon, 24 Jun 2019 16:35:05 -0700
+Message-ID: <CABCgpaUhHmLaWUg-x_X+yYD6pnoAcMLw9jr1BPnv5vrM-NYmqQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/6] bpf: add BPF_MAP_DUMP command to access more than
+ one entry per call
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     Brian Vazquez <brianvv@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+        "David S . Miller" <davem@davemloft.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Petar Penkov <ppenkov@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 24, 2019 at 4:10 PM Song Liu <liu.song.a23@gmail.com> wrote:
+On Mon, Jun 24, 2019 at 3:46 PM Jakub Kicinski
+<jakub.kicinski@netronome.com> wrote:
 >
-> On Mon, Jun 24, 2019 at 3:08 PM allanzhang <allanzhang@google.com> wrote:
+> On Fri, 21 Jun 2019 16:16:46 -0700, Brian Vazquez wrote:
+> > @@ -385,6 +386,14 @@ union bpf_attr {
+> >               __u64           flags;
+> >       };
 > >
-> > Software event output is only enabled by a few prog types right now (TC,
-> > LWT out, XDP, sockops). Many other skb based prog types need
-> > bpf_skb_event_output to produce software event.
-> >
-> > Added socket_filter, cg_skb, sk_skb prog types to generate sw event.
-> >
-> > Test bpf code is generated from code snippet:
-> >
-> > struct TMP {
-> >     uint64_t tmp;
-> > } tt;
-> > tt.tmp = 5;
-> > bpf_perf_event_output(skb, &connection_tracking_event_map, 0,
-> >                       &tt, sizeof(tt));
-> > return 1;
-> >
-> > the bpf assembly from llvm is:
-> >        0:       b7 02 00 00 05 00 00 00         r2 = 5
-> >        1:       7b 2a f8 ff 00 00 00 00         *(u64 *)(r10 - 8) = r2
-> >        2:       bf a4 00 00 00 00 00 00         r4 = r10
-> >        3:       07 04 00 00 f8 ff ff ff         r4 += -8
-> >        4:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00    r2 = 0ll
-> >        6:       b7 03 00 00 00 00 00 00         r3 = 0
-> >        7:       b7 05 00 00 08 00 00 00         r5 = 8
-> >        8:       85 00 00 00 19 00 00 00         call 25
-> >        9:       b7 00 00 00 01 00 00 00         r0 = 1
-> >       10:       95 00 00 00 00 00 00 00         exit
-> >
-> > Patch 1 is enabling code.
-> > Patch 2 is fullly covered selftest code.
-> >
-> > Signed-off-by: allanzhang <allanzhang@google.com>
+> > +     struct { /* struct used by BPF_MAP_DUMP command */
+> > +             __u32           map_fd;
 >
-> A few logistics issues:
->
-> 1. The patch should be sent as a set, as
->    [PATCH bpf-next 0/2] ...
->    [PATCH bpf-next 1/2] ...
->    [PATCH bpf-next 2/2] ...
->
-> 2. You need to specify which tree this is targeting. In this case, bpf-next.
-> 3. Please use different commit log for each patch.
-> 4. No need for Signed-off-by in the cover letter.
->
-> Please resubmit. And generate the patches with git command similar to
-> the following:
->
-> git format-patch --cover-leter --subject_prefix "PATCH bpf-next v2" HEAD~2
->
-
-And your signed-of-by should probably look like:
-
-Signed-off-by: Allan Zhang <allanzhang@google.com>
-
-Thanks,
-Song
+> There is a hole here, perhaps flags don't have to be 64 bit?
+The command implementation is wrapping BPF_MAP_*_ELEM commands, I
+would expect this one to handle the same flags which are 64 bit.
+Note that there's a hole in the anonymous structure used by the other
+commands too:
+        struct { /* anonymous struct used by BPF_MAP_*_ELEM commands */
+                __u32           map_fd;
+                __aligned_u64   key;
+                union {
+                        __aligned_u64 value;
+                        __aligned_u64 next_key;
+                };
+                __u64           flags;
+        };
