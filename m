@@ -2,83 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BAC34FDCF
-	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2019 21:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0191C4FF01
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 04:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726289AbfFWTMw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Jun 2019 15:12:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57584 "EHLO mail.kernel.org"
+        id S1726766AbfFXCFA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 Jun 2019 22:05:00 -0400
+Received: from mga07.intel.com ([134.134.136.100]:38790 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbfFWTMw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Jun 2019 15:12:52 -0400
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E215B215EA;
-        Sun, 23 Jun 2019 19:12:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561317171;
-        bh=AsxupFvBvqb1mH3XUIHGLPhSXMlhWmiYztuijWSq/GQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uJbKaQIyzSWaWU00fx8r+BgyZH9qH3M1R9/GjS5amJxhq2/wMRfKlESl/AGt7ycXB
-         ha0lnIyzb/RrBbLBKIida0P9PPS0bf0gRIpgT8FKt2U21oHebm129KzlVwMeLB3caD
-         MszeI+AS46K1WmuMqEvYmziFe5DO20u0Zy+g9YF0=
-Received: by mail-lj1-f181.google.com with SMTP id 205so1667253ljj.8;
-        Sun, 23 Jun 2019 12:12:50 -0700 (PDT)
-X-Gm-Message-State: APjAAAVyih0uk2fF1U3ZGyOS4oqfIBKd5qK5QkrdweGrbLxmIV0Tl+Uj
-        faEJqYQYpRG+Xa1RhqE1inUDwF+9U5igdawMqbA=
-X-Google-Smtp-Source: APXvYqzc0BAAUk0GcaZ6RKalll+UsB43Pr/w/hhGJmdfj5xhmoT71i8jk/2UViGqeh/ujennhK/FVzPhSD/yw16ZWlw=
-X-Received: by 2002:a2e:8155:: with SMTP id t21mr26819194ljg.80.1561317169025;
- Sun, 23 Jun 2019 12:12:49 -0700 (PDT)
+        id S1726328AbfFXCFA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 Jun 2019 22:05:00 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 23 Jun 2019 17:43:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.63,410,1557212400"; 
+   d="scan'208";a="151793277"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.6]) ([10.239.13.6])
+  by orsmga007.jf.intel.com with ESMTP; 23 Jun 2019 17:43:19 -0700
+Subject: Re: 6c409a3aee: kernel_selftests.bpf.test_verifier.fail
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andreas Steinmetz <ast@domdv.de>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Edward Cree <ecree@solarflare.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>, LKP <lkp@01.org>
+References: <20190618214028.y2qzbtonozr5cc7a@ast-mbp.dhcp.thefacebook.com>
+ <20190621083658.GT7221@shao2-debian>
+ <CAADnVQ+frnYN6E5zyrNvbnhQ_XgvrEEtghiS7DOKoe6o_ErYRw@mail.gmail.com>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <6113e667-fd7c-decc-7d3f-893d7a3f000e@intel.com>
+Date:   Mon, 24 Jun 2019 08:43:28 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <20190623151313.970-1-tranmanphong@gmail.com> <20190623151313.970-5-tranmanphong@gmail.com>
-In-Reply-To: <20190623151313.970-5-tranmanphong@gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Sun, 23 Jun 2019 21:12:37 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPfCrgS_iJAK0cxm0-XyGt6P2vq1FH4v2_8LSbfUp8gwUw@mail.gmail.com>
-Message-ID: <CAJKOXPfCrgS_iJAK0cxm0-XyGt6P2vq1FH4v2_8LSbfUp8gwUw@mail.gmail.com>
-Subject: Re: [PATCH 04/15] ARM: exynos: cleanup cppcheck shifting error
-To:     Phong Tran <tranmanphong@gmail.com>
-Cc:     mark.rutland@arm.com, kstewart@linuxfoundation.org,
-        songliubraving@fb.com, andrew@lunn.ch, peterz@infradead.org,
-        nsekhar@ti.com, ast@kernel.org, jolsa@redhat.com,
-        netdev@vger.kernel.org, gerg@uclinux.org,
-        lorenzo.pieralisi@arm.com, will@kernel.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>, daniel@iogearbox.net,
-        festevam@gmail.com, gregory.clement@bootlin.com,
-        allison@lohutok.net, linux@armlinux.org.uk,
-        haojian.zhuang@gmail.com, bgolaszewski@baylibre.com,
-        tony@atomide.com, mingo@redhat.com, linux-imx@nxp.com, yhs@fb.com,
-        sebastian.hesselbarth@gmail.com, illusionist.neo@gmail.com,
-        jason@lakedaemon.net, liviu.dudau@arm.com, s.hauer@pengutronix.de,
-        acme@kernel.org, lkundrak@v3.sk, robert.jarzmik@free.fr,
-        dmg@turingmachine.org, swinslow@gmail.com, namhyung@kernel.org,
-        tglx@linutronix.de, linux-omap@vger.kernel.org,
-        alexander.sverdlin@gmail.com, linux-arm-kernel@lists.infradead.org,
-        info@metux.net, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, alexander.shishkin@linux.intel.com,
-        hsweeten@visionengravers.com, kgene@kernel.org,
-        kernel@pengutronix.de, sudeep.holla@arm.com, bpf@vger.kernel.org,
-        shawnguo@kernel.org, kafai@fb.com, daniel@zonque.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAADnVQ+frnYN6E5zyrNvbnhQ_XgvrEEtghiS7DOKoe6o_ErYRw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 23 Jun 2019 at 17:14, Phong Tran <tranmanphong@gmail.com> wrote:
+On 6/21/19 11:52 PM, Alexei Starovoitov wrote:
+> On Fri, Jun 21, 2019 at 1:36 AM kernel test robot <rong.a.chen@intel.com> wrote:
+>> # #340/p direct packet access: test22 (x += pkt_ptr, 3) OK
+>> # #341/p direct packet access: test23 (x += pkt_ptr, 4) FAIL
+>> # Unexpected success to load!
+>> # verification time 17 usec
+>> # stack depth 8
+>> # processed 18 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 0
+>> # #342/p direct packet access: test24 (x += pkt_ptr, 5) OK
+>> # #343/p direct packet access: test25 (marking on <, good access) OK
+> ..
+>> # #673/p meta access, test9 OK
+>> # #674/p meta access, test10 FAIL
+>> # Unexpected success to load!
+>> # verification time 29 usec
+>> # stack depth 8
+>> # processed 19 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 0
+>> # #675/p meta access, test11 OK
+> Hi Rong,
 >
-> [arch/arm/mach-exynos/suspend.c:288]: (error) Shifting signed 32-bit
-> value by 31 bits is undefined behaviour
+> the patch quoted is not in bpf-next/net-next.
+> This patch is work-in-progress that I posted to mailing list
+> and pushed into my own git branch on kernel.org.
+> It's awesome that build bot does this early testing.
+> I really like it.
+> Would be great if the bot can add a tag to email subject that it's testing
+> this not yet merged patch.
 >
-> Signed-off-by: Phong Tran <tranmanphong@gmail.com>
-> ---
->  arch/arm/mach-exynos/suspend.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Right now since the email says
+> commit: 6c409a3aee945e50c6dd4109689f52
+> it felt that this is real commit and my initial reaction
+> was that 'ohh something is broken in the merge code'
+> which wasn't the case :)
 
-Let's switch to BIT macro. It will solve the problem and is preferred
-way of coding.
 
-Best regards,
-Krzysztof
+Hi Alexei,
+
+Thanks for the advice, we'll improve the email subject.
+
+Best Regards,
+Rong Chen
+
+
+
