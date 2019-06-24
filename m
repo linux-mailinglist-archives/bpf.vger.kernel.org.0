@@ -2,126 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC4F510AB
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 17:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04D6517B0
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 17:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731056AbfFXPgf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jun 2019 11:36:35 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:37684 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726263AbfFXPge (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jun 2019 11:36:34 -0400
-Received: by mail-qt1-f196.google.com with SMTP id y57so14959806qtk.4;
-        Mon, 24 Jun 2019 08:36:34 -0700 (PDT)
+        id S1730557AbfFXPwR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jun 2019 11:52:17 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:36501 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729274AbfFXPwR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jun 2019 11:52:17 -0400
+Received: by mail-qk1-f193.google.com with SMTP id g18so10140774qkl.3
+        for <bpf@vger.kernel.org>; Mon, 24 Jun 2019 08:52:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2fedAY1L1btlfl2SG7dqkjpbIsEJBo2iKLbpPw9GTe0=;
-        b=DJzHvyiSbcQ6CRpXmTjpzIx9uYAQpj5lVFPLxsegvuhGQyCRdl6TKjWM2zXtplk3WP
-         Fkj+9Jqz2ekthKHqTahkaSfuA8J04SORbLkZBNpuBRotxnutKyWMTMhUICa3mUmKW1Jw
-         cwmYSOgbzkSjZxTqL1WY92md5GwcEqcLNf3lSEIG5wWqPeh9wMzEqIiMIEwOxDAhWJk0
-         2ScNOn0aYlmPuj+XfxxCOYEosZeGxoSLAaVMIpohGFbUxeNm/LWrJRjKKw9k/wOVqEl3
-         qPqVkTeDttiJngm7lIM1wDU8UJtDmKWfFhZjhxy52hQVkiB4s1psKwdWd9bPx/6dzb0m
-         bKaw==
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Px55vsxlWUa+5ZAUavHWxhk2yXQs9ETqoP8b6WxOkms=;
+        b=nMVpZ6t6yvkRI8JTB2fGMerawDsRhL0/iqvwIvHdoVXopMnMqU5PI/pn1syMvLqGms
+         Rw2EcKCOL3MuPgQ97OgUvIP4Ut8lxtGkmBXc55ysvSxoamyi1P4HLcsx39d+QMyY81xQ
+         2PQDgpcf2DGfbHVXO4YLvpkFB0G8WZeBEyQNI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2fedAY1L1btlfl2SG7dqkjpbIsEJBo2iKLbpPw9GTe0=;
-        b=RW0db+DqFWuxnpQWKU6GOERjUdYx1Ytp67tS/vhPe/iqU9gXh7u8Mgate5hxa+1oPi
-         NJtmoEh38kUXlEUm1/uOL9SSaAeKxU8bD3sc+gUwqw+PGTwOI5pQXwJYIrNF9vjRHY1k
-         HIjkNdwW8kwDDz2mLqY3xrrYOXYpiwj/hHTPwadVzvBjtqfXVoDHmRisv4YZmEaQ8asD
-         PkKtyU49b1SZftGULm6rrt7s+2rFxSOalfTwjttyy/w1Hij7HNHUrFCXpy9TAlv4Qj61
-         XM3O9xVtHMSKm4IObuUEW9Qm/KFbiks3kmVAy+R/yLn2VSDxxUxHmPobjRpJLym2Xn0J
-         9fDQ==
-X-Gm-Message-State: APjAAAXUGMWdrSvXyomC2U3aUDoar7pnpdtuWuvM1AXhDpQ6okSIKhYi
-        CoouKLFD6azUckJkZXIkEbnQmN5e6RE93THvbWbB173cRN4=
-X-Google-Smtp-Source: APXvYqzud0u4l0tPcVLp9FP9+zn+iA4HMLTOKUiEi4BNJZaHRZKQcOi8G59OLZHPyhRjvq3u8N9Nr43JjGfISkrKlwM=
-X-Received: by 2002:ac8:2f07:: with SMTP id j7mr118912618qta.359.1561390593748;
- Mon, 24 Jun 2019 08:36:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190620090958.2135-1-kevin.laatz@intel.com> <20190620090958.2135-11-kevin.laatz@intel.com>
-In-Reply-To: <20190620090958.2135-11-kevin.laatz@intel.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Mon, 24 Jun 2019 17:36:22 +0200
-Message-ID: <CAJ+HfNhkXmDJO7nZx2A0Gg9vj7s83iUOtkRtWi=wpi5446_NcQ@mail.gmail.com>
-Subject: Re: [PATCH 10/11] samples/bpf: use hugepages in xdpsock app
-To:     Kevin Laatz <kevin.laatz@intel.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Px55vsxlWUa+5ZAUavHWxhk2yXQs9ETqoP8b6WxOkms=;
+        b=o/cfG6zR+A5h6dpp4fcmIlBTKZ4Tb8xAqR/EGqDWDpPY2hfiXxLYpJTsNJKthn7qIu
+         6DIPk2tTEPYgvCkv4j5kZ0r1lV/iwr6QpC4/QpBCNjGMQAke9Z+6HamfY98kQFzxQvRH
+         AO/FhNtM4OrhDD3kUK3G40nw89zseJClO6bJCQvNGcSkPeKyXNFKrLw9rCCen5p9RFlH
+         0R8S3W9HYHVHi2OjoE4XGKJkZotc7lCrTJkNiCvK9vCpxI9ggKMqzw9G/q9ROJlOlpjt
+         KmGqecPFdCUX3coh400pOjoSlcvANkDvRQPkDKdFJZPRjDAjbHez27ilYm0egFEj659c
+         eT/A==
+X-Gm-Message-State: APjAAAW+nAJ/DHWZWC1LpJVnBqAbLYlPbGjKcPvVnScDah4T9QyHYgv7
+        1emuzs1F0Vze90CYtwxnK6N79w==
+X-Google-Smtp-Source: APXvYqz62x1HJVduMVLToA+9rhh8i9WHHNxECpdrbrsdb/x4cV/E3lswnR5g/BIEwSHX7AR5Oxy1Rg==
+X-Received: by 2002:a37:ac14:: with SMTP id e20mr120205143qkm.243.1561391535368;
+        Mon, 24 Jun 2019 08:52:15 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id k58sm7173879qtc.38.2019.06.24.08.52.14
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 24 Jun 2019 08:52:14 -0700 (PDT)
+Date:   Mon, 24 Jun 2019 11:52:13 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Frank Ch. Eigler" <fche@redhat.com>, Jessica Yu <jeyu@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, jikos@kernel.org,
+        mbenes@suse.cz, Petr Mladek <pmladek@suse.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Bruce Richardson <bruce.richardson@intel.com>,
-        ciara.loftus@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Andrew Morton <akpm@linux-foundation.org>,
+        Robert Richter <rric@kernel.org>,
+        rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        paulmck <paulmck@linux.ibm.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        oprofile-list@lists.sf.net, netdev <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 2/3] module: Fix up module_notifier return values.
+Message-ID: <20190624155213.GB261936@google.com>
+References: <20190624091843.859714294@infradead.org>
+ <20190624092109.805742823@infradead.org>
+ <320564860.243.1561384864186.JavaMail.zimbra@efficios.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <320564860.243.1561384864186.JavaMail.zimbra@efficios.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 20 Jun 2019 at 19:25, Kevin Laatz <kevin.laatz@intel.com> wrote:
->
-> This patch modifies xdpsock to use mmap instead of posix_memalign. With
-> this change, we can use hugepages when running the application in unalign=
-ed
-> chunks mode. Using hugepages makes it more likely that we have physically
-> contiguous memory, which supports the unaligned chunk mode better.
->
-> Signed-off-by: Kevin Laatz <kevin.laatz@intel.com>
+On Mon, Jun 24, 2019 at 10:01:04AM -0400, Mathieu Desnoyers wrote:
+> ----- On Jun 24, 2019, at 5:18 AM, Peter Zijlstra peterz@infradead.org wrote:
+> 
+> > While auditing all module notifiers I noticed a whole bunch of fail
+> > wrt the return value. Notifiers have a 'special' return semantics.
+> > 
+> > Cc: Robert Richter <rric@kernel.org>
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Alexei Starovoitov <ast@kernel.org>
+> > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > Cc: Martin KaFai Lau <kafai@fb.com>
+> > Cc: Song Liu <songliubraving@fb.com>
+> > Cc: Yonghong Song <yhs@fb.com>
+> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > Cc: "Paul E. McKenney" <paulmck@linux.ibm.com>
+> > Cc: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> > Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: oprofile-list@lists.sf.net
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: netdev@vger.kernel.org
+> > Cc: bpf@vger.kernel.org
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> 
+> Thanks Peter for looking into this, especially considering your
+> endless love for kernel modules! ;)
+> 
+> It's not directly related to your changes, but I notice that
+> kernel/trace/trace_printk.c:hold_module_trace_bprintk_format()
+> appears to leak memory. Am I missing something ?
 
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+Could you elaborate? Do you mean there is no MODULE_STATE_GOING notifier
+check? If that's what you mean then I agree, there should be some place
+where the format structures are freed when the module is unloaded no?
 
-> ---
->  samples/bpf/xdpsock_user.c | 14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
->
-> diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-> index 7b4ce047deb2..8ed63ad68428 100644
-> --- a/samples/bpf/xdpsock_user.c
-> +++ b/samples/bpf/xdpsock_user.c
-> @@ -74,6 +74,7 @@ static int opt_interval =3D 1;
->  static u64 opt_buffer_size =3D XSK_UMEM__DEFAULT_FRAME_SIZE;
->  static u32 opt_umem_flags;
->  static int opt_unaligned_chunks;
-> +static int opt_mmap_flags;
->  static u32 opt_xdp_bind_flags;
->  static __u32 prog_id;
->
-> @@ -438,6 +439,7 @@ static void parse_command_line(int argc, char **argv)
->                 case 'u':
->                         opt_umem_flags |=3D XDP_UMEM_UNALIGNED_CHUNKS;
->                         opt_unaligned_chunks =3D 1;
-> +                       opt_mmap_flags =3D MAP_HUGETLB;
->                         break;
->                 case 'b':
->                         opt_buffer_size =3D atoi(optarg);
-> @@ -707,11 +709,13 @@ int main(int argc, char **argv)
->                 exit(EXIT_FAILURE);
->         }
->
-> -       ret =3D posix_memalign(&bufs, getpagesize(), /* PAGE_SIZE aligned=
- */
-> -                            NUM_FRAMES * opt_buffer_size);
-> -       if (ret)
-> -               exit_with_error(ret);
-> -
-> +       /* Reserve memory for the umem. Use hugepages if unaligned chunk =
-mode */
-> +       bufs =3D mmap(NULL, NUM_FRAMES * opt_buffer_size, PROT_READ|PROT_=
-WRITE,
-> +                       MAP_PRIVATE|MAP_ANONYMOUS|opt_mmap_flags, -1, 0);
-> +       if (bufs =3D=3D MAP_FAILED) {
-> +               printf("ERROR: mmap failed\n");
-> +               exit(EXIT_FAILURE);
-> +       }
->         /* Create sockets... */
->         umem =3D xsk_configure_umem(bufs,
->                                   NUM_FRAMES * opt_buffer_size);
+> 
+> With respect to your changes:
+> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+
+Looks good to me too.
+
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+Could we CC stable so that the fix is propagated to older kernels?
+
+thanks,
+
+ - Joel
+
+
+> I have a similar erroneous module notifier return value pattern
+> in lttng-modules as well. I'll go fix it right away. CCing
+> Frank Eigler from SystemTAP which AFAIK use a copy of
+> lttng-tracepoint.c in their project, which should be fixed
+> as well. I'm pasting the lttng-modules fix below.
+> 
+> Thanks!
+> 
+> Mathieu
+> 
 > --
-> 2.17.1
->
+> 
+> commit 5eac9d146a7d947f0f314c4f7103c92cbccaeaf3
+> Author: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Date:   Mon Jun 24 09:43:45 2019 -0400
+> 
+>     Fix: lttng-tracepoint module notifier should return NOTIFY_OK
+>     
+>     Module notifiers should return NOTIFY_OK on success rather than the
+>     value 0. The return value 0 does not seem to have any ill side-effects
+>     in the notifier chain caller, but it is preferable to respect the API
+>     requirements in case this changes in the future.
+>     
+>     Notifiers can encapsulate a negative errno value with
+>     notifier_from_errno(), but this is not needed by the LTTng tracepoint
+>     notifier.
+>     
+>     The approach taken in this notifier is to just print a console warning
+>     on error, because tracing failure should not prevent loading a module.
+>     So we definitely do not want to stop notifier iteration. Returning
+>     an error without stopping iteration is not really that useful, because
+>     only the return value of the last callback is returned to notifier chain
+>     caller.
+>     
+>     Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> 
+> diff --git a/lttng-tracepoint.c b/lttng-tracepoint.c
+> index bbb2c7a4..8298b397 100644
+> --- a/lttng-tracepoint.c
+> +++ b/lttng-tracepoint.c
+> @@ -256,7 +256,7 @@ int lttng_tracepoint_coming(struct tp_module *tp_mod)
+>                 }
+>         }
+>         mutex_unlock(&lttng_tracepoint_mutex);
+> -       return 0;
+> +       return NOTIFY_OK;
+>  }
+>  
+>  static
+> 
+> 
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
