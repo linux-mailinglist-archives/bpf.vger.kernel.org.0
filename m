@@ -2,124 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E274519FE
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 19:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B08051A7B
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 20:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbfFXRu7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jun 2019 13:50:59 -0400
-Received: from mail.efficios.com ([167.114.142.138]:56186 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726451AbfFXRu6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jun 2019 13:50:58 -0400
-Received: from localhost (ip6-localhost [IPv6:::1])
-        by mail.efficios.com (Postfix) with ESMTP id 048B225B682;
-        Mon, 24 Jun 2019 13:50:57 -0400 (EDT)
-Received: from mail.efficios.com ([IPv6:::1])
-        by localhost (mail02.efficios.com [IPv6:::1]) (amavisd-new, port 10032)
-        with ESMTP id kubqiW463fQT; Mon, 24 Jun 2019 13:50:56 -0400 (EDT)
-Received: from localhost (ip6-localhost [IPv6:::1])
-        by mail.efficios.com (Postfix) with ESMTP id 7489F25B67D;
-        Mon, 24 Jun 2019 13:50:56 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 7489F25B67D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1561398656;
-        bh=YgTDjKzulnpRdHN03BOtIF36ow3kBCQn4Ff76WlCgv4=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=rLqqpYL/J/9XfjfblU5xlkvGWUSmihnJQ1Jj+o+LyOs12tFBNAr1nEfFtsTTbHkTC
-         z3JpCf3sxds6+xj+N6N+eAdu7PLH7IjyKqW4xBvTXwFly76m0Z2u1YBoTOLJczUkM0
-         af9cCewWfDNX+TUVdoyv4nYvprFyIJtB1nvenD1tXHWmGLa8EHo2puqwvwnu2QYy1W
-         PvyXm2wRevcjxansTh7n/NsUEb3gbqk1qJ6384uCbaMkHkEfq9bKz3fzKAtgks5juq
-         4N4+Q4+vUaz04xgJ2Fxkw02Rkug7uDoWxy7xwJKtj0Bu9sdZNz+g/zGn2CWy9wYqoC
-         9BAjlgFEQGuLA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([IPv6:::1])
-        by localhost (mail02.efficios.com [IPv6:::1]) (amavisd-new, port 10026)
-        with ESMTP id 6I-HKbAyDBuh; Mon, 24 Jun 2019 13:50:56 -0400 (EDT)
-Received: from mail02.efficios.com (mail02.efficios.com [167.114.142.138])
-        by mail.efficios.com (Postfix) with ESMTP id 575FD25B675;
-        Mon, 24 Jun 2019 13:50:56 -0400 (EDT)
-Date:   Mon, 24 Jun 2019 13:50:56 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     "Joel Fernandes, Google" <joel@joelfernandes.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Frank Ch. Eigler" <fche@redhat.com>, Jessica Yu <jeyu@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, jikos <jikos@kernel.org>,
-        mbenes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Robert Richter <rric@kernel.org>,
-        rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        paulmck <paulmck@linux.ibm.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        oprofile-list <oprofile-list@lists.sf.net>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Message-ID: <2125299316.352.1561398656224.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20190624155213.GB261936@google.com>
-References: <20190624091843.859714294@infradead.org> <20190624092109.805742823@infradead.org> <320564860.243.1561384864186.JavaMail.zimbra@efficios.com> <20190624155213.GB261936@google.com>
-Subject: Re: [PATCH 2/3] module: Fix up module_notifier return values.
+        id S1728444AbfFXS0M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jun 2019 14:26:12 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:36716 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726375AbfFXS0M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jun 2019 14:26:12 -0400
+Received: by mail-qt1-f195.google.com with SMTP id p15so15553823qtl.3;
+        Mon, 24 Jun 2019 11:26:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x9uoR+KIuE1II8mD60iebYIvLAFwPjD50xd1uMdBmX4=;
+        b=HsJf5K+XiynaUtH0EQHleY1DehgR5I73UNWc4B8ezA8f+JAS0PbGbiGzZgdWd6cQXy
+         wJmtHrGPeWD5KCUPKvtBWJfDuB93b+afyICO/Ix3bGKGbot2piuwd8nQckRFs3sVhv3F
+         4tr0dtv1KkJh9Efc5VGIWljCb4AHVAgdVcMcUwD5RSs6K70Hf539f0eJv7F8Mfe4Eux8
+         02kBt8M2tlsDqBN6o1CyI40spDnYU3pblJZF6PT2ITHApVLJR0wK5v8pERXKPTnFkTRb
+         jKzs9+7+ZRVHdZd047MqXUVhAaDM1vPpVYqXoHFdywewLzg1Jk6lDrdn/dlX178HBHBn
+         wsAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x9uoR+KIuE1II8mD60iebYIvLAFwPjD50xd1uMdBmX4=;
+        b=gilwWx9zS/qqUYYps17sgGvt/qPODa5UDc/+bafy6GEAtwZ6ofChpgE6Tlmz3F2Uxj
+         wboMAbjk4ijiYbTXcbAxBShonKEHNqa4AU0nfkAMuC6OswvSy1srVSvH7p4e19Ag48ka
+         Nd5FlvrhND6mbRNJbSXvZjb0fzIqjAZH29OXEXjieOMQbI7JatvJjHg/mham3b0dOmyc
+         aQ8cgVLKnCZbqw+fA1keFWj3yYlW31pv1TjHNF82iV7pKtVYgkpbaNm2CkvDtAKg6Gz1
+         kPQb9svCdIwWa7MJGzi5e/whrswDHUOFVXznuS9+WidOYsO/XVgaqJo4xXfHq+iLDMPa
+         2RQg==
+X-Gm-Message-State: APjAAAXr7DOJI8JyCBazS753vVKKagvw1w7p6X5VAgHTxyqQ9B8WDlah
+        K16UGvw6VYegYNSJ2zb2YSHUsIuRTU0H3uAZ9Eo=
+X-Google-Smtp-Source: APXvYqyX7Yqi62/9W21qqWsZBV0Zu1HZmK4IeRtasql6wmRV4UqjV0hD5sevr26Ix9vyKLwGEVpUKaKxqEg/Q5I8zVU=
+X-Received: by 2002:a0c:ae50:: with SMTP id z16mr57345303qvc.60.1561400771509;
+ Mon, 24 Jun 2019 11:26:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.142.138]
-X-Mailer: Zimbra 8.8.12_GA_3803 (ZimbraWebClient - FF67 (Linux)/8.8.12_GA_3794)
-Thread-Topic: module: Fix up module_notifier return values.
-Thread-Index: YqiVsEGYR43tan1IptAyCZzN3mIl4w==
+References: <20190621084040.GU7221@shao2-debian> <20190621161039.GF1383@mini-arch>
+ <CAEf4Bzaajc27=YyMaOa8UFRz=xE7y6E+qLbPBPbvLADO2peXQg@mail.gmail.com>
+ <20190621222745.GH1383@mini-arch> <f3aa0dc2-c959-1166-8b09-84781363f0e0@intel.com>
+In-Reply-To: <f3aa0dc2-c959-1166-8b09-84781363f0e0@intel.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 24 Jun 2019 11:26:00 -0700
+Message-ID: <CAEf4BzaNBboGeU8xOxyW-aDzEPUQq-LidRzj8V08O=_TynkQOQ@mail.gmail.com>
+Subject: Re: [selftests/bpf] 69d96519db: kernel_selftests.bpf.test_socket_cookie.fail
+To:     Rong Chen <rong.a.chen@intel.com>
+Cc:     Stanislav Fomichev <sdf@fomichev.me>,
+        Stanislav Fomichev <sdf@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        bpf <bpf@vger.kernel.org>, lkp@01.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
------ On Jun 24, 2019, at 11:52 AM, Joel Fernandes, Google joel@joelfernandes.org wrote:
+On Sun, Jun 23, 2019 at 5:59 PM Rong Chen <rong.a.chen@intel.com> wrote:
+>
+> On 6/22/19 6:27 AM, Stanislav Fomichev wrote:
+> > On 06/21, Andrii Nakryiko wrote:
+> >> )
+> >>
+> >> On Fri, Jun 21, 2019 at 9:11 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> >>> On 06/21, kernel test robot wrote:
+> >>>> FYI, we noticed the following commit (built with gcc-7):
+> >>>>
+> >>>> commit: 69d96519dbf0bfa1868dc8597d4b9b2cdeb009d7 ("selftests/bpf: convert socket_cookie test to sk storage")
+> >>>> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> >>>>
+> >>>> in testcase: kernel_selftests
+> >>>> with following parameters:
+> >>>>
+> >>>>        group: kselftests-00
+> >>>>
+> >>>> test-description: The kernel contains a set of "self tests" under the tools/testing/selftests/ directory. These are intended to be small unit tests to exercise individual code paths in the kernel.
+> >>>> test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
+> >>>>
+> >>>>
+> >>>> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
+> >>>>
+> >>>> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> >>>>
+> >>>>
+> >>>> If you fix the issue, kindly add following tag
+> >>>> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> >>>>
+> >>>> # selftests: bpf: test_socket_cookie
+> >>>> # libbpf: failed to create map (name: 'socket_cookies'): Invalid
+> >>>> # argument
+> >>> Another case of old clang trying to create a map that depends on BTF?
+> >>> Should we maybe switch those BTF checks in the kernel to return
+> >>> EOPNOTSUPP to make it easy to diagnose?
+> >> For older compilers that don't generate DATASEC/VAR, you'll see a clear message:
+> >>
+> >> libbpf: DATASEC '.maps' not found.
+> >>
+> >> So this must be something else. I just confirmed with clang version
+> >> 7.0.20180201 that for ./test_socket_cookie that's the first line
+> >> that's emitted on failure.
+> > Thanks for checking, I also took a look at the attached kernel_selftests.xz,
+> > here is what it has:
+> > 2019-06-21 11:58:35 ln -sf /usr/bin/clang-6.0 /usr/bin/clang
+> > 2019-06-21 11:58:35 ln -sf /usr/bin/llc-6.0 /usr/bin/llc
+> > ...
+> > # BTF libbpf test[1] (test_btf_haskv.o): SKIP. No ELF .BTF found
+> > # BTF libbpf test[2] (test_btf_nokv.o): SKIP. No ELF .BTF found
+> > ...
+> > # Test case #0 (btf_dump_test_case_syntax): test_btf_dump_case:71:FAIL
+> > # failed to load test BTF: -2
+> > # Test case #1 (btf_dump_test_case_ordering): test_btf_dump_case:71:FAIL
+> > # failed to load test BTF: -2
+> > ...
+> >
+> > And so on. So there is clearly an old clang that doesn't emit any
+> > BTF. And I also don't see your recent abd29c931459 before 69d96519dbf0 in
+> > linux-next, that's why it doesn't complain about missing/corrupt BTF.
 
-> On Mon, Jun 24, 2019 at 10:01:04AM -0400, Mathieu Desnoyers wrote:
->> ----- On Jun 24, 2019, at 5:18 AM, Peter Zijlstra peterz@infradead.org wrote:
->> 
->> > While auditing all module notifiers I noticed a whole bunch of fail
->> > wrt the return value. Notifiers have a 'special' return semantics.
->> > 
->> > Cc: Robert Richter <rric@kernel.org>
->> > Cc: Steven Rostedt <rostedt@goodmis.org>
->> > Cc: Ingo Molnar <mingo@redhat.com>
->> > Cc: Alexei Starovoitov <ast@kernel.org>
->> > Cc: Daniel Borkmann <daniel@iogearbox.net>
->> > Cc: Martin KaFai Lau <kafai@fb.com>
->> > Cc: Song Liu <songliubraving@fb.com>
->> > Cc: Yonghong Song <yhs@fb.com>
->> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->> > Cc: "Paul E. McKenney" <paulmck@linux.ibm.com>
->> > Cc: "Joel Fernandes (Google)" <joel@joelfernandes.org>
->> > Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
->> > Cc: Thomas Gleixner <tglx@linutronix.de>
->> > Cc: oprofile-list@lists.sf.net
->> > Cc: linux-kernel@vger.kernel.org
->> > Cc: netdev@vger.kernel.org
->> > Cc: bpf@vger.kernel.org
->> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->> 
->> Thanks Peter for looking into this, especially considering your
->> endless love for kernel modules! ;)
->> 
->> It's not directly related to your changes, but I notice that
->> kernel/trace/trace_printk.c:hold_module_trace_bprintk_format()
->> appears to leak memory. Am I missing something ?
-> 
-> Could you elaborate? Do you mean there is no MODULE_STATE_GOING notifier
-> check? If that's what you mean then I agree, there should be some place
-> where the format structures are freed when the module is unloaded no?
+Ah, ok, that would explain it. But in any case, clang 6&7 is too old.
+Clang 8 or better yet clang 9 (for global data, datasec/var-dependent
+stuff) would be great.
 
-Yes, the lack of GOING notifier is worrying considering that GOING
-performs memory allocation.
+> >
+> > We need to convince lkp people to upgrade clang, otherwise, I suppose,
+> > we'll get more of these reportings after your recent df0b77925982 :-(
+>
+> Thanks for the clarification, we'll upgrade clang asap.
 
-Thanks,
+Thanks Rong!
 
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+>
+> Best Regards,
+> Rong Chen
+>
+>
+> >
+> >>>> # libbpf: failed to load object './socket_cookie_prog.o'
+> >>>> # (test_socket_cookie.c:149: errno: Invalid argument) Failed to load
+> >>>> # ./socket_cookie_prog.o
+> >>>> # FAILED
+> >>>> not ok 15 selftests: bpf: test_socket_cookie
+> >>>>
+> >>>>
+> >>>>
+> >>>>
+> >>>> To reproduce:
+> >>>>
+> >>>>          # build kernel
+> >>>>        cd linux
+> >>>>        cp config-5.2.0-rc2-00598-g69d9651 .config
+> >>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 olddefconfig
+> >>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 prepare
+> >>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 modules_prepare
+> >>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 SHELL=/bin/bash
+> >>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 bzImage
+> >>>>
+> >>>>
+> >>>>          git clone https://github.com/intel/lkp-tests.git
+> >>>>          cd lkp-tests
+> >>>>          bin/lkp qemu -k <bzImage> job-script # job-script is attached in this email
+> >>>>
+> >>>>
+> >>>>
+> >>>> Thanks,
+> >>>> Rong Chen
+> >>>>
+> >> <mega snip>
