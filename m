@@ -2,130 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C9651CFF
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 23:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C9151D0C
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 23:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728106AbfFXVUD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jun 2019 17:20:03 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:34628 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726331AbfFXVUD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jun 2019 17:20:03 -0400
-Received: by mail-qt1-f196.google.com with SMTP id m29so16182141qtu.1;
-        Mon, 24 Jun 2019 14:20:02 -0700 (PDT)
+        id S1728573AbfFXVYZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jun 2019 17:24:25 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:39322 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728095AbfFXVYY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jun 2019 17:24:24 -0400
+Received: by mail-pl1-f195.google.com with SMTP id b7so7619577pls.6
+        for <bpf@vger.kernel.org>; Mon, 24 Jun 2019 14:24:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z1XEkKQQ4kQOXdYffh4+MsjiKPUgBbSin4ZmXxLUT3s=;
-        b=lHtoNFJVgt6ohOEc9mZ37e0yWZ6q+aG1oso8PxEP4JHGPNLt9OxXI5oSkuuw1NaAod
-         ZiraYdV9k7FN+/cDBRA3xUteWQF3m7osu6EYoeOIEb38sIHaGAvZZnHzGiOy2rczC9VR
-         hAkgIqQD3zEhQAJAIbbYKrCA9V0sZ257VYTfVbFzg361IyTXU8DriTfELg18DRexNrEh
-         Zi1M5q5pxqWR4thvfyeFFS3cObURgYyz9B6B7bSFujOB+JQyQFTAXpbPrxpmo/CDl5iY
-         IbvYzmAaYXRxF0w2FFxRXFAkhSyZM7Bi6U2bDAPvCnhZZv7XoasOK/UrQN/daTF+CJWZ
-         ZSew==
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lA2BtYvSKOorPxjN3wkABykmN5bMJyaABk+Tkrn5M9M=;
+        b=rn9KNk8S20uH5r2M0vrVL/qWRrEMeYBZPku7L5/IqFGCZs4mh6FwgsNLSVQUJypPac
+         0cjTXdwcR4XMDDdVUDIenIOL+dg7QhS8OHaQTiWDQcdqN5rwPKRubK8MceXXXmGF1IR2
+         Tye+Z5QjtdsCRavVwiT9/gFVjkpCYDsR/d4ZSttg428YIqIlYitrQnux4SevvxpaTfbF
+         fqrzwoeg7T44BuFSgJaS7pV4rjbAxAHVufqgb7sLCJ2mQQjeEB/CxOugRQ4OlXP5RkMi
+         Ze9VXvTdfh7yK506oiIO04hTGDHDwC5/nQpdB1jj4oVNaOAEV0fhgxfPipiajrJzcpwL
+         LdaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z1XEkKQQ4kQOXdYffh4+MsjiKPUgBbSin4ZmXxLUT3s=;
-        b=lgwn+z+VdLhIV/MVgL6G/IQHYCH0DZQvSASBahxOQFej8QX/YTNkP15Ybx6yOVgm7a
-         qM7zg3wrgim0+4RMpKQl/fRCzLj0fiplalnJ4nSRSUO9QsdVH+O+IwqAL7akTqTBXLaP
-         tRcwBGvrRO0eNq9docIYJQZeDLy+ADFUeDLMxzp27xLOQNAwHNcvw5MkND9lOVRhWzMs
-         uewwD2gfFFYsXKPB/iWSij29+6g+kJyxG/TO3n7paRENFRx4TLqxS4dQUhhbXHHEtCNp
-         jqT3Suibx0IV2u9EMDdR6TY8tENGi6ZwqUeUfX2u6hIp1m6Sqc00MPDXvWU6WXi5uLqQ
-         r6og==
-X-Gm-Message-State: APjAAAVsLvaTrTsHK0sE7fIz1MRES3GVIVhsD36gw9YY+NQSaWqbfwA6
-        fvgMK9O2l57yqE9RCbznHsndDxvxjxUFJCZlQVg=
-X-Google-Smtp-Source: APXvYqzh3izkXzhVwgv9YrlZAOs9DZCL9u0QPdeVhlfI2ASrToj3o5v0LVe3JXHLBkKqo0G9cE2w09NJZ9duhvBZ7ZY=
-X-Received: by 2002:a0c:9e02:: with SMTP id p2mr58572748qve.150.1561411201895;
- Mon, 24 Jun 2019 14:20:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190624162429.16367-1-sdf@google.com> <20190624162429.16367-2-sdf@google.com>
-In-Reply-To: <20190624162429.16367-2-sdf@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 24 Jun 2019 14:19:50 -0700
-Message-ID: <CAEf4BzbRi9AGt5gcnFCgJPPp-64TsB37bncBXXg7B_bzGYSVAQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 1/9] bpf: implement getsockopt and setsockopt hooks
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lA2BtYvSKOorPxjN3wkABykmN5bMJyaABk+Tkrn5M9M=;
+        b=cyBDBtdLMWb4kYNtEMNroEpVPSsAyhR6AalfKIBeYUDUwYai+vGcK3KQFsAxGElbgo
+         ahf7+OyizDlfytcF3/9KmR1iDZMHUDme2SjSKLOQOoCuuY7gNFXHVFhObtS4JNQ0JH1n
+         BcmZLMFs9xWMvX+xPOle+rfgLhb92gpbpug3WxSMWE0hQoTFdvoblSjiuPxqBiOEv+uj
+         +TgSZLsiIzyp4kStTLE86K/X9Iy94T0nNRF5gcJTP3Es9a4AbRRylCNTYgXajkEzwd+K
+         KyJV6F0+0M4tzui9TbB1yXqttn4ydzDgywJfuGi1TfVfIygF7iEmGBED7thcGtAAAY0h
+         sEWg==
+X-Gm-Message-State: APjAAAVnHEBwZ02Lwwk4oKGG1Y9LP3heMe/3SF/I46FrDIPPlT+UQOyc
+        zfpuhoI0W8lu6LWPBNGDrrTeTg==
+X-Google-Smtp-Source: APXvYqyvMk66Rf5ycyhu3IB320UGWolKywP0xaElkbebHMPYMxuGW69aJE/qpoaNNll2769FqtPNVA==
+X-Received: by 2002:a17:902:c83:: with SMTP id 3mr92076723plt.326.1561411464020;
+        Mon, 24 Jun 2019 14:24:24 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id n140sm14995682pfd.132.2019.06.24.14.24.23
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 24 Jun 2019 14:24:23 -0700 (PDT)
+Date:   Mon, 24 Jun 2019 14:24:22 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Rong Chen <rong.a.chen@intel.com>,
+        Stanislav Fomichev <sdf@google.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Martin Lau <kafai@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        bpf <bpf@vger.kernel.org>, lkp@01.org
+Subject: Re: [selftests/bpf] 69d96519db:
+ kernel_selftests.bpf.test_socket_cookie.fail
+Message-ID: <20190624212422.GA10487@mini-arch>
+References: <20190621084040.GU7221@shao2-debian>
+ <20190621161039.GF1383@mini-arch>
+ <CAEf4Bzaajc27=YyMaOa8UFRz=xE7y6E+qLbPBPbvLADO2peXQg@mail.gmail.com>
+ <20190621222745.GH1383@mini-arch>
+ <f3aa0dc2-c959-1166-8b09-84781363f0e0@intel.com>
+ <CAEf4BzaNBboGeU8xOxyW-aDzEPUQq-LidRzj8V08O=_TynkQOQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzaNBboGeU8xOxyW-aDzEPUQq-LidRzj8V08O=_TynkQOQ@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 24, 2019 at 1:11 PM Stanislav Fomichev <sdf@google.com> wrote:
->
-> Implement new BPF_PROG_TYPE_CGROUP_SOCKOPT program type and
-> BPF_CGROUP_{G,S}ETSOCKOPT cgroup hooks.
->
-> BPF_CGROUP_SETSOCKOPT get a read-only view of the setsockopt arguments.
-> BPF_CGROUP_GETSOCKOPT can modify the supplied buffer.
-> Both of them reuse existing PTR_TO_PACKET{,_END} infrastructure.
->
-> The buffer memory is pre-allocated (because I don't think there is
-> a precedent for working with __user memory from bpf). This might be
-> slow to do for each {s,g}etsockopt call, that's why I've added
-> __cgroup_bpf_prog_array_is_empty that exits early if there is nothing
-> attached to a cgroup. Note, however, that there is a race between
-> __cgroup_bpf_prog_array_is_empty and BPF_PROG_RUN_ARRAY where cgroup
-> program layout might have changed; this should not be a problem
-> because in general there is a race between multiple calls to
-> {s,g}etsocktop and user adding/removing bpf progs from a cgroup.
->
-> The return code of the BPF program is handled as follows:
-> * 0: EPERM
-> * 1: success, continue with next BPF program in the cgroup chain
->
-> v8:
-> * use s32 for optlen (Andrii Nakryiko)
->
-> v7:
-> * return only 0 or 1 (Alexei Starovoitov)
-> * always run all progs (Alexei Starovoitov)
-> * use optval=0 as kernel bypass in setsockopt (Alexei Starovoitov)
->   (decided to use optval=-1 instead, optval=0 might be a valid input)
-> * call getsockopt hook after kernel handlers (Alexei Starovoitov)
->
-> v6:
-> * rework cgroup chaining; stop as soon as bpf program returns
->   0 or 2; see patch with the documentation for the details
-> * drop Andrii's and Martin's Acked-by (not sure they are comfortable
->   with the new state of things)
->
-> v5:
-> * skip copy_to_user() and put_user() when ret == 0 (Martin Lau)
->
-> v4:
-> * don't export bpf_sk_fullsock helper (Martin Lau)
-> * size != sizeof(__u64) for uapi pointers (Martin Lau)
-> * offsetof instead of bpf_ctx_range when checking ctx access (Martin Lau)
->
-> v3:
-> * typos in BPF_PROG_CGROUP_SOCKOPT_RUN_ARRAY comments (Andrii Nakryiko)
-> * reverse christmas tree in BPF_PROG_CGROUP_SOCKOPT_RUN_ARRAY (Andrii
->   Nakryiko)
-> * use __bpf_md_ptr instead of __u32 for optval{,_end} (Martin Lau)
-> * use BPF_FIELD_SIZEOF() for consistency (Martin Lau)
-> * new CG_SOCKOPT_ACCESS macro to wrap repeated parts
->
-> v2:
-> * moved bpf_sockopt_kern fields around to remove a hole (Martin Lau)
-> * aligned bpf_sockopt_kern->buf to 8 bytes (Martin Lau)
-> * bpf_prog_array_is_empty instead of bpf_prog_array_length (Martin Lau)
-> * added [0,2] return code check to verifier (Martin Lau)
-> * dropped unused buf[64] from the stack (Martin Lau)
-> * use PTR_TO_SOCKET for bpf_sockopt->sk (Martin Lau)
-> * dropped bpf_target_off from ctx rewrites (Martin Lau)
-> * use return code for kernel bypass (Martin Lau & Andrii Nakryiko)
->
-> Cc: Martin Lau <kafai@fb.com>
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
+On 06/24, Andrii Nakryiko wrote:
+> On Sun, Jun 23, 2019 at 5:59 PM Rong Chen <rong.a.chen@intel.com> wrote:
+> >
+> > On 6/22/19 6:27 AM, Stanislav Fomichev wrote:
+> > > On 06/21, Andrii Nakryiko wrote:
+> > >> )
+> > >>
+> > >> On Fri, Jun 21, 2019 at 9:11 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> > >>> On 06/21, kernel test robot wrote:
+> > >>>> FYI, we noticed the following commit (built with gcc-7):
+> > >>>>
+> > >>>> commit: 69d96519dbf0bfa1868dc8597d4b9b2cdeb009d7 ("selftests/bpf: convert socket_cookie test to sk storage")
+> > >>>> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> > >>>>
+> > >>>> in testcase: kernel_selftests
+> > >>>> with following parameters:
+> > >>>>
+> > >>>>        group: kselftests-00
+> > >>>>
+> > >>>> test-description: The kernel contains a set of "self tests" under the tools/testing/selftests/ directory. These are intended to be small unit tests to exercise individual code paths in the kernel.
+> > >>>> test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
+> > >>>>
+> > >>>>
+> > >>>> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
+> > >>>>
+> > >>>> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> > >>>>
+> > >>>>
+> > >>>> If you fix the issue, kindly add following tag
+> > >>>> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> > >>>>
+> > >>>> # selftests: bpf: test_socket_cookie
+> > >>>> # libbpf: failed to create map (name: 'socket_cookies'): Invalid
+> > >>>> # argument
+> > >>> Another case of old clang trying to create a map that depends on BTF?
+> > >>> Should we maybe switch those BTF checks in the kernel to return
+> > >>> EOPNOTSUPP to make it easy to diagnose?
+> > >> For older compilers that don't generate DATASEC/VAR, you'll see a clear message:
+> > >>
+> > >> libbpf: DATASEC '.maps' not found.
+> > >>
+> > >> So this must be something else. I just confirmed with clang version
+> > >> 7.0.20180201 that for ./test_socket_cookie that's the first line
+> > >> that's emitted on failure.
+> > > Thanks for checking, I also took a look at the attached kernel_selftests.xz,
+> > > here is what it has:
+> > > 2019-06-21 11:58:35 ln -sf /usr/bin/clang-6.0 /usr/bin/clang
+> > > 2019-06-21 11:58:35 ln -sf /usr/bin/llc-6.0 /usr/bin/llc
+> > > ...
+> > > # BTF libbpf test[1] (test_btf_haskv.o): SKIP. No ELF .BTF found
+> > > # BTF libbpf test[2] (test_btf_nokv.o): SKIP. No ELF .BTF found
+> > > ...
+> > > # Test case #0 (btf_dump_test_case_syntax): test_btf_dump_case:71:FAIL
+> > > # failed to load test BTF: -2
+> > > # Test case #1 (btf_dump_test_case_ordering): test_btf_dump_case:71:FAIL
+> > > # failed to load test BTF: -2
+> > > ...
+> > >
+> > > And so on. So there is clearly an old clang that doesn't emit any
+> > > BTF. And I also don't see your recent abd29c931459 before 69d96519dbf0 in
+> > > linux-next, that's why it doesn't complain about missing/corrupt BTF.
+> 
+> Ah, ok, that would explain it. But in any case, clang 6&7 is too old.
+> Clang 8 or better yet clang 9 (for global data, datasec/var-dependent
+> stuff) would be great.
+While we are it: I think I have resolved the BTF story internally,
+so if you want to go ahead and convert the rest of the tests to
+BTF format, I would not object anymore ;-)
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+(I didn't expect it to be that easy initially, so sorry if I wasted
+everyones time arguing about it).
+
+> > >
+> > > We need to convince lkp people to upgrade clang, otherwise, I suppose,
+> > > we'll get more of these reportings after your recent df0b77925982 :-(
+> >
+> > Thanks for the clarification, we'll upgrade clang asap.
+> 
+> Thanks Rong!
+> 
+> >
+> > Best Regards,
+> > Rong Chen
+> >
+> >
+> > >
+> > >>>> # libbpf: failed to load object './socket_cookie_prog.o'
+> > >>>> # (test_socket_cookie.c:149: errno: Invalid argument) Failed to load
+> > >>>> # ./socket_cookie_prog.o
+> > >>>> # FAILED
+> > >>>> not ok 15 selftests: bpf: test_socket_cookie
+> > >>>>
+> > >>>>
+> > >>>>
+> > >>>>
+> > >>>> To reproduce:
+> > >>>>
+> > >>>>          # build kernel
+> > >>>>        cd linux
+> > >>>>        cp config-5.2.0-rc2-00598-g69d9651 .config
+> > >>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 olddefconfig
+> > >>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 prepare
+> > >>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 modules_prepare
+> > >>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 SHELL=/bin/bash
+> > >>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 bzImage
+> > >>>>
+> > >>>>
+> > >>>>          git clone https://github.com/intel/lkp-tests.git
+> > >>>>          cd lkp-tests
+> > >>>>          bin/lkp qemu -k <bzImage> job-script # job-script is attached in this email
+> > >>>>
+> > >>>>
+> > >>>>
+> > >>>> Thanks,
+> > >>>> Rong Chen
+> > >>>>
+> > >> <mega snip>
