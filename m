@@ -2,198 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CA451890
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 18:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA86518EA
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 18:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730421AbfFXQY6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jun 2019 12:24:58 -0400
-Received: from mail-pl1-f201.google.com ([209.85.214.201]:50405 "EHLO
-        mail-pl1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732090AbfFXQY5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jun 2019 12:24:57 -0400
-Received: by mail-pl1-f201.google.com with SMTP id 71so7575141pld.17
-        for <bpf@vger.kernel.org>; Mon, 24 Jun 2019 09:24:56 -0700 (PDT)
+        id S1728004AbfFXQpt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jun 2019 12:45:49 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:38147 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727982AbfFXQps (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jun 2019 12:45:48 -0400
+Received: by mail-wm1-f65.google.com with SMTP id s15so42627wmj.3
+        for <bpf@vger.kernel.org>; Mon, 24 Jun 2019 09:45:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=EfgnC8pfVZNk/KTc0n9v3CAEQ82DZ1hKaslBIVETbYc=;
-        b=qOtywTYcLpN2E24m0OZUY6Fv3nKPavGEYoCPfC70pIdnEmZoGd5Q3EDvHZDFwgNjkh
-         9JXqw+yfS3anhYpEhrJqjseagWH551SX1JcL931lDMN1GATiYfY8V3H1wyjxpBFhOhGn
-         XtQ2CpPk80jkyrrcdfGZ/NIHWTbCISYGiLKG5gCOh4huwcLPot2fylnqGcgsqDiBP+Gp
-         q9efGYEs3o+4vOeYxI7zUFM2ky/JEfiXJEZFyc0iAS1Rv45bZQEf9p71PUsI+7J2NbTm
-         Su+gkBdBO21zQCm4zkeua6LYRNVKOYljN7tXLHSk76abTlXbtw9dGbIXDQ69y2kAQClV
-         j4zw==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:message-id:in-reply-to
+         :date:mime-version;
+        bh=DzGlPYsIYshbD5peGKifO8l46y0lKsTTIsT4YjNzT5E=;
+        b=d6bKmA1qg0uC0Ie/B+rKeOICs7HZyVW8m4zo5CufVyG8tVEYsVvxLbE/SN124rH9p3
+         06yUcEvuoj+0PcroXaMiWv8HRvVCQeLqaMGAjw8YiGZA+5OdDouYUSYBBjcOtnTezmpB
+         mSev/yoU1rb28ZElCOVgrod/eoj6MrAaSrfoqh6HliP3cARmrjnP7lmUG96MesS3+Ku0
+         J5V5MSG5H8SsQIMgau0YDGSiMF5J1gZFIuklMrMYbGDIDGDq/l78UhoMTq3J/cwJ4v7X
+         mPdQecNR4EHgr/JIOVaSbkfVdT2FxX1qxupmrqOEyO1iKOT+/uX5o+xyqn6TbPQHpqBd
+         X2TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=EfgnC8pfVZNk/KTc0n9v3CAEQ82DZ1hKaslBIVETbYc=;
-        b=Qc1O4i0b3ak/S/OFm1NCRtQwXH7Js3aJ9Orilc7nP0j47Qzs6nTVurL2SRQL/QJE1E
-         4B0DsFYw+ZaLb0u97tzkz8Y1JM3HMhypxrjX+VbA4D1+8J5DrGvnGskHyRYPVjEUDyAB
-         aThCY52QY58R11GxCVTUupXvM77UCGBhfB131dJqH6bGRYCtcrG6ykDfmUQb2XOeK6IF
-         MAVnV6CWocRQ5bqRgvzT1RiDQ+iwLzudKag5K0Dps5NyoObU5tKP5lN09Y5M9oaCYU5B
-         k1azv/X0as3xHEFFgwTaH4GUPQvkRnGSpFDGr3NWfunIw1Hv6G1DnHtM4ULeBpmr2NqN
-         tbtg==
-X-Gm-Message-State: APjAAAVRqHP9Y7c2tRWB7sRUusSN1BIlTcrZqUORZXt2Awt7/57QkrhR
-        MStRuzzXuSQwBqcRv+HwW7qIlFs=
-X-Google-Smtp-Source: APXvYqzWyzaN31Nj0t4SY4KBuWHtwZgGnz5nQH7HeiV9VX8ELbLAbCHjGPEzT6e5spVj+TJPv73Wuc0=
-X-Received: by 2002:a63:1c59:: with SMTP id c25mr33275578pgm.395.1561393495760;
- Mon, 24 Jun 2019 09:24:55 -0700 (PDT)
-Date:   Mon, 24 Jun 2019 09:24:29 -0700
-In-Reply-To: <20190624162429.16367-1-sdf@google.com>
-Message-Id: <20190624162429.16367-10-sdf@google.com>
-Mime-Version: 1.0
-References: <20190624162429.16367-1-sdf@google.com>
-X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
-Subject: [PATCH bpf-next v8 9/9] bpftool: support cgroup sockopt
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>, Martin Lau <kafai@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :message-id:in-reply-to:date:mime-version;
+        bh=DzGlPYsIYshbD5peGKifO8l46y0lKsTTIsT4YjNzT5E=;
+        b=t9WSGMwvZPk6xF4rGMbYDaZry//pA3uHT66uvztwszqw3PLUTAX8Q27BJV8EvNsd39
+         swqHxP9LXG4sKZWJDGeSc7K7Q38SMmfAUtUgFyY2bE1lorLl855y06WxFUoAJZcSbzA6
+         rNcH2EJDN7Unz14NVdeD4RgbDikth6A/vJAzAkqlaNlAfKigWjHDgqt1D2xRUSEa3Hx1
+         VelXhuAa36c6vkskFYWY66L8JZfl+lQNxLhouYjnaXlkOKHG833HazoigT9YNeO3FPAe
+         ufVwwmzgJXhBbUohiZ/8meaLFFmfGbKfqIfDM74jJu2km/RAFSGtzGuQWKAMsbMUS26+
+         H1BQ==
+X-Gm-Message-State: APjAAAUrD8JH3853YlKN8H79ffrujjbSIcU+S4xrKXI8F3qP+4DbOd34
+        g03s76AnFAVcDAps2wksQdJPJgp7Nco=
+X-Google-Smtp-Source: APXvYqzCOhY6pbib85YShe2BKk3kBMiCErh/riJuTO+Y3VGhfakrMQj54c4JSjzoIeVurBCR7ItggQ==
+X-Received: by 2002:a1c:4d6:: with SMTP id 205mr15402634wme.148.1561394746919;
+        Mon, 24 Jun 2019 09:45:46 -0700 (PDT)
+Received: from LAPTOP-V3S7NLPL ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id 15sm21315wmk.34.2019.06.24.09.45.46
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 24 Jun 2019 09:45:46 -0700 (PDT)
+References: <20190621225938.27030-1-lukenels@cs.washington.edu>
+User-agent: mu4e 0.9.18; emacs 25.2.2
+From:   Jiong Wang <jiong.wang@netronome.com>
+To:     Luke Nelson <lukenels@cs.washington.edu>
+Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next] RV32G eBPF JIT
+Message-ID: <87h88f9bm3.fsf@netronome.com>
+In-reply-to: <20190621225938.27030-1-lukenels@cs.washington.edu>
+Date:   Mon, 24 Jun 2019 17:45:45 +0100
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Support sockopt prog type and cgroup hooks in the bpftool.
 
-Cc: Martin Lau <kafai@fb.com>
-Acked-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/bpf/bpftool/Documentation/bpftool-cgroup.rst | 7 +++++--
- tools/bpf/bpftool/Documentation/bpftool-prog.rst   | 3 ++-
- tools/bpf/bpftool/bash-completion/bpftool          | 9 ++++++---
- tools/bpf/bpftool/cgroup.c                         | 5 ++++-
- tools/bpf/bpftool/main.h                           | 1 +
- tools/bpf/bpftool/prog.c                           | 3 ++-
- 6 files changed, 20 insertions(+), 8 deletions(-)
+Luke Nelson writes:
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-index 324df15bf4cc..6ac98f08e9d0 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-@@ -30,7 +30,8 @@ CGROUP COMMANDS
- |	*PROG* := { **id** *PROG_ID* | **pinned** *FILE* | **tag** *PROG_TAG* }
- |	*ATTACH_TYPE* := { **ingress** | **egress** | **sock_create** | **sock_ops** | **device** |
- |		**bind4** | **bind6** | **post_bind4** | **post_bind6** | **connect4** | **connect6** |
--|		**sendmsg4** | **sendmsg6** | **recvmsg4** | **recvmsg6** | **sysctl** }
-+|		**sendmsg4** | **sendmsg6** | **recvmsg4** | **recvmsg6** | **sysctl** |
-+|		**getsockopt** | **setsockopt** }
- |	*ATTACH_FLAGS* := { **multi** | **override** }
- 
- DESCRIPTION
-@@ -91,7 +92,9 @@ DESCRIPTION
-                   an unconnected udp4 socket (since 5.2);
- 		  **recvmsg6** call to recvfrom(2), recvmsg(2), recvmmsg(2) for
-                   an unconnected udp6 socket (since 5.2);
--		  **sysctl** sysctl access (since 5.2).
-+		  **sysctl** sysctl access (since 5.2);
-+		  **getsockopt** call to getsockopt (since 5.3);
-+		  **setsockopt** call to setsockopt (since 5.3).
- 
- 	**bpftool cgroup detach** *CGROUP* *ATTACH_TYPE* *PROG*
- 		  Detach *PROG* from the cgroup *CGROUP* and attach type
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-index 55dd06517a3b..1df637f85f94 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-@@ -40,7 +40,8 @@ PROG COMMANDS
- |		**lwt_seg6local** | **sockops** | **sk_skb** | **sk_msg** | **lirc_mode2** |
- |		**cgroup/bind4** | **cgroup/bind6** | **cgroup/post_bind4** | **cgroup/post_bind6** |
- |		**cgroup/connect4** | **cgroup/connect6** | **cgroup/sendmsg4** | **cgroup/sendmsg6** |
--|		**cgroup/recvmsg4** | **cgroup/recvmsg6** | **cgroup/sysctl**
-+|		**cgroup/recvmsg4** | **cgroup/recvmsg6** | **cgroup/sysctl** |
-+|		**cgroup/getsockopt** | **cgroup/setsockopt**
- |	}
- |       *ATTACH_TYPE* := {
- |		**msg_verdict** | **stream_verdict** | **stream_parser** | **flow_dissector**
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index c98cb99867f6..08f35c787ab6 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -379,7 +379,8 @@ _bpftool()
-                                 cgroup/sendmsg4 cgroup/sendmsg6 \
-                                 cgroup/recvmsg4 cgroup/recvmsg6 \
-                                 cgroup/post_bind4 cgroup/post_bind6 \
--                                cgroup/sysctl" -- \
-+                                cgroup/sysctl cgroup/getsockopt \
-+                                cgroup/setsockopt" -- \
-                                                    "$cur" ) )
-                             return 0
-                             ;;
-@@ -689,7 +690,8 @@ _bpftool()
-                 attach|detach)
-                     local ATTACH_TYPES='ingress egress sock_create sock_ops \
-                         device bind4 bind6 post_bind4 post_bind6 connect4 \
--                        connect6 sendmsg4 sendmsg6 recvmsg4 recvmsg6 sysctl'
-+                        connect6 sendmsg4 sendmsg6 recvmsg4 recvmsg6 sysctl \
-+                        getsockopt setsockopt'
-                     local ATTACH_FLAGS='multi override'
-                     local PROG_TYPE='id pinned tag'
-                     case $prev in
-@@ -699,7 +701,8 @@ _bpftool()
-                             ;;
-                         ingress|egress|sock_create|sock_ops|device|bind4|bind6|\
-                         post_bind4|post_bind6|connect4|connect6|sendmsg4|\
--                        sendmsg6|recvmsg4|recvmsg6|sysctl)
-+                        sendmsg6|recvmsg4|recvmsg6|sysctl|getsockopt|\
-+                        setsockopt)
-                             COMPREPLY=( $( compgen -W "$PROG_TYPE" -- \
-                                 "$cur" ) )
-                             return 0
-diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
-index 1bb2a751107a..24937891bc48 100644
---- a/tools/bpf/bpftool/cgroup.c
-+++ b/tools/bpf/bpftool/cgroup.c
-@@ -26,7 +26,8 @@
- 	"                        sock_ops | device | bind4 | bind6 |\n"	       \
- 	"                        post_bind4 | post_bind6 | connect4 |\n"       \
- 	"                        connect6 | sendmsg4 | sendmsg6 |\n"           \
--	"                        recvmsg4 | recvmsg6 | sysctl }"
-+	"                        recvmsg4 | recvmsg6 | sysctl |\n"	       \
-+	"                        getsockopt | setsockopt }"
- 
- static const char * const attach_type_strings[] = {
- 	[BPF_CGROUP_INET_INGRESS] = "ingress",
-@@ -45,6 +46,8 @@ static const char * const attach_type_strings[] = {
- 	[BPF_CGROUP_SYSCTL] = "sysctl",
- 	[BPF_CGROUP_UDP4_RECVMSG] = "recvmsg4",
- 	[BPF_CGROUP_UDP6_RECVMSG] = "recvmsg6",
-+	[BPF_CGROUP_GETSOCKOPT] = "getsockopt",
-+	[BPF_CGROUP_SETSOCKOPT] = "setsockopt",
- 	[__MAX_BPF_ATTACH_TYPE] = NULL,
- };
- 
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index fddec15c454a..fb0ba77e6722 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -74,6 +74,7 @@ static const char * const prog_type_name[] = {
- 	[BPF_PROG_TYPE_SK_REUSEPORT]		= "sk_reuseport",
- 	[BPF_PROG_TYPE_FLOW_DISSECTOR]		= "flow_dissector",
- 	[BPF_PROG_TYPE_CGROUP_SYSCTL]		= "cgroup_sysctl",
-+	[BPF_PROG_TYPE_CGROUP_SOCKOPT]		= "cgroup_sockopt",
- };
- 
- extern const char * const map_type_name[];
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index f1a831f05010..9b0db5d14e31 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -1071,7 +1071,8 @@ static int do_help(int argc, char **argv)
- 		"                 cgroup/bind4 | cgroup/bind6 | cgroup/post_bind4 |\n"
- 		"                 cgroup/post_bind6 | cgroup/connect4 | cgroup/connect6 |\n"
- 		"                 cgroup/sendmsg4 | cgroup/sendmsg6 | cgroup/recvmsg4 |\n"
--		"                 cgroup/recvmsg6 }\n"
-+		"                 cgroup/recvmsg6 | cgroup/getsockopt |\n"
-+		"                 cgroup/setsockopt }\n"
- 		"       ATTACH_TYPE := { msg_verdict | stream_verdict | stream_parser |\n"
- 		"                        flow_dissector }\n"
- 		"       " HELP_SPEC_OPTIONS "\n"
--- 
-2.22.0.410.gd8fdbe21b5-goog
+> From: Luke Nelson <luke.r.nels@gmail.com>
+>
+> This is an eBPF JIT for RV32G, adapted from the JIT for RV64G.
+> Any feedback would be greatly appreciated.
+>
+> It passes 359 out of 378 tests in test_bpf.ko. The failing tests are
+> features that are not supported right now:
+>   - ALU64 DIV/MOD:
+>       These require loops to emulate on 32-bit hardware,
+>       and are not supported on other 32-bit JITs like
+>       ARM32.
+>   - BPF_XADD | BPF_DW:
+>       RV32G does not have atomic instructions for operating
+>       on double words. This is similar to ARM32.
+>   - Tail calls:
+>       I'm working on adding support for these now, but couldn't
+>       find any test cases that use them. What's the best way
+>       of testing tail call code?
+>   - Far branches
+>       These are not supported in RV64G either.
+>
+> There are two main changes required for this to work compared to the
+> RV64 JIT.
+>
+> First, eBPF registers are 64-bit, while RV32G registers are 32-bit.
+> I take an approach similar to ARM32: most BPF registers map directly to
+> 2 RISC-V registers, while some reside in stack scratch space and must
+> be saved / restored when used.
+>
+> Second, many 64-bit ALU operations do not trivially map to 32-bit
+> operations. Operations that move bits between high and low words, such
+> as ADD, LSH, MUL, and others must emulate the 64-bit behavior in terms
+> of 32-bit instructions.
+>
+> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+> Cc: Xi Wang <xi.wang@gmail.com>
+> ---
+>  arch/riscv/Kconfig              |    2 +-
+>  arch/riscv/net/Makefile         |    7 +-
+>  arch/riscv/net/bpf_jit_comp32.c | 1460 +++++++++++++++++++++++++++++++
+>  3 files changed, 1467 insertions(+), 2 deletions(-)
+>  create mode 100644 arch/riscv/net/bpf_jit_comp32.c
+>
+<snip>
+> +static void rv32_bpf_put_reg32(const s8 *reg, const s8 *src,
+> +			       struct rv_jit_context *ctx)
+> +{
+> +	if (is_stacked(reg[1])) {
+> +		emit(rv_sw(RV_REG_FP, reg[1], src[1]), ctx);
+> +		emit(rv_sw(RV_REG_FP, reg[0], RV_REG_ZERO), ctx);
+> +	} else {
+> +		emit(rv_addi(reg[0], RV_REG_ZERO, 0), ctx);
+> +	}
+> +}
+> +
 
+Looks to me 32-bit optimization is not enabled.
+
+If you define bpf_jit_needs_zext to return true
+
+  bool bpf_jit_needs_zext(void)
+  {
+        return true;
+  }
+
+Then you don't need to zero high 32-bit when writing 32-bit sub-register
+and you just need to implement the explicit zero extension insn which is a
+special variant of BPF_MOV. This can save quite a few instructions. RV64
+and arches like arm has implemented this, please search
+"aux->verifier_zext".
+
+And there is a doc for this optimization:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/Documentation/bpf/bpf_design_QA.rst#n168
+
+Regards,
+Jiong
