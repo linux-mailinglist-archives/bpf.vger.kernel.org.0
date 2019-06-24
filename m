@@ -2,183 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A04D6517B0
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 17:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2D05187D
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 18:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730557AbfFXPwR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jun 2019 11:52:17 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:36501 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729274AbfFXPwR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jun 2019 11:52:17 -0400
-Received: by mail-qk1-f193.google.com with SMTP id g18so10140774qkl.3
-        for <bpf@vger.kernel.org>; Mon, 24 Jun 2019 08:52:15 -0700 (PDT)
+        id S1727325AbfFXQYd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jun 2019 12:24:33 -0400
+Received: from mail-pf1-f201.google.com ([209.85.210.201]:44754 "EHLO
+        mail-pf1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725921AbfFXQYd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jun 2019 12:24:33 -0400
+Received: by mail-pf1-f201.google.com with SMTP id 5so9858494pff.11
+        for <bpf@vger.kernel.org>; Mon, 24 Jun 2019 09:24:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Px55vsxlWUa+5ZAUavHWxhk2yXQs9ETqoP8b6WxOkms=;
-        b=nMVpZ6t6yvkRI8JTB2fGMerawDsRhL0/iqvwIvHdoVXopMnMqU5PI/pn1syMvLqGms
-         Rw2EcKCOL3MuPgQ97OgUvIP4Ut8lxtGkmBXc55ysvSxoamyi1P4HLcsx39d+QMyY81xQ
-         2PQDgpcf2DGfbHVXO4YLvpkFB0G8WZeBEyQNI=
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=gJjoc/vA2MwOJQXfSjPAcEIAUZ/pXhZszpshpqeoUyA=;
+        b=Mvlzw0tXcjSCRt10cAQKg9EoR075HjNNgCpN3L6sFOvYVYY5u8dUyZdKmkTOJneNLc
+         oa4GPIe02DO+GaBB2ah084nojog4vvGO8nkIsff6EA38E4dSZRsLmdVGBCRUnnU3I4kc
+         FfmqjH6TXi0YfosUSvvVe8MwuOR1GSWYGgQwjnUQPsLXWbLC7QQ2xGiD+y4BfcU0Ocvc
+         geTjx0eIHXZ9J52rVBTx3yOE6QAB1kAdUXt2JCn2XKKA35d/0dw3re/58Fj/Fkkx/8hO
+         /i6OgxUhe02ZTBQoTvh7xcdFsjkVqprZaWRE5UUrZMu6xy+vIU14bKPq7gnRv/1JUQ+2
+         e+ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Px55vsxlWUa+5ZAUavHWxhk2yXQs9ETqoP8b6WxOkms=;
-        b=o/cfG6zR+A5h6dpp4fcmIlBTKZ4Tb8xAqR/EGqDWDpPY2hfiXxLYpJTsNJKthn7qIu
-         6DIPk2tTEPYgvCkv4j5kZ0r1lV/iwr6QpC4/QpBCNjGMQAke9Z+6HamfY98kQFzxQvRH
-         AO/FhNtM4OrhDD3kUK3G40nw89zseJClO6bJCQvNGcSkPeKyXNFKrLw9rCCen5p9RFlH
-         0R8S3W9HYHVHi2OjoE4XGKJkZotc7lCrTJkNiCvK9vCpxI9ggKMqzw9G/q9ROJlOlpjt
-         KmGqecPFdCUX3coh400pOjoSlcvANkDvRQPkDKdFJZPRjDAjbHez27ilYm0egFEj659c
-         eT/A==
-X-Gm-Message-State: APjAAAW+nAJ/DHWZWC1LpJVnBqAbLYlPbGjKcPvVnScDah4T9QyHYgv7
-        1emuzs1F0Vze90CYtwxnK6N79w==
-X-Google-Smtp-Source: APXvYqz62x1HJVduMVLToA+9rhh8i9WHHNxECpdrbrsdb/x4cV/E3lswnR5g/BIEwSHX7AR5Oxy1Rg==
-X-Received: by 2002:a37:ac14:: with SMTP id e20mr120205143qkm.243.1561391535368;
-        Mon, 24 Jun 2019 08:52:15 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id k58sm7173879qtc.38.2019.06.24.08.52.14
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 24 Jun 2019 08:52:14 -0700 (PDT)
-Date:   Mon, 24 Jun 2019 11:52:13 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Frank Ch. Eigler" <fche@redhat.com>, Jessica Yu <jeyu@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, jikos@kernel.org,
-        mbenes@suse.cz, Petr Mladek <pmladek@suse.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Robert Richter <rric@kernel.org>,
-        rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        paulmck <paulmck@linux.ibm.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        oprofile-list@lists.sf.net, netdev <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 2/3] module: Fix up module_notifier return values.
-Message-ID: <20190624155213.GB261936@google.com>
-References: <20190624091843.859714294@infradead.org>
- <20190624092109.805742823@infradead.org>
- <320564860.243.1561384864186.JavaMail.zimbra@efficios.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <320564860.243.1561384864186.JavaMail.zimbra@efficios.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=gJjoc/vA2MwOJQXfSjPAcEIAUZ/pXhZszpshpqeoUyA=;
+        b=BDDcWEfErJKJSQtA9QpUzObmL2Gup/3xT+tkbv8d2OWACYkUfihDEgnfETmKoUEKiZ
+         oIycYqRo2MEkbxsgiaCqP7XvWECUskoDtv0DCJdLNIbWE1bSNwFqoFbeASvNzcJ6Fawc
+         3utKGsDpRIyDt10ENG2esaLHvqlWfChkUaQMlAFz1bWweI2NgmShlVewGXJNH6z4Ydqi
+         D97FgjFHjJE6izqR5Yyj/Z0rQhKqPqlb2hHibC45hmQKbaiuGL5HGB33yzuIYayw6zew
+         r9iZGZCwYPheWVHNJCZuEFIw5dhlVW+7USAh1cfYrVOEsNktxlSLBwRvsbnvBzd7UAEy
+         MJKg==
+X-Gm-Message-State: APjAAAX9BXS7J1GTm7q117nZMq+TqPhqGO1GlIe9OvqWiE1EBE7Up0VL
+        g6sgayKboAgp4KLeIRBfVABh0Jk=
+X-Google-Smtp-Source: APXvYqxFjeI+OpY3olG9wgcR20HJBbFH39lZVOpBz6lgShOUJmHzLNE+XqeLbAOO4QseMqmtsJSsAqE=
+X-Received: by 2002:a65:42c3:: with SMTP id l3mr33742791pgp.372.1561393472209;
+ Mon, 24 Jun 2019 09:24:32 -0700 (PDT)
+Date:   Mon, 24 Jun 2019 09:24:20 -0700
+Message-Id: <20190624162429.16367-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
+Subject: [PATCH bpf-next v8 0/9] bpf: getsockopt and setsockopt hooks
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 24, 2019 at 10:01:04AM -0400, Mathieu Desnoyers wrote:
-> ----- On Jun 24, 2019, at 5:18 AM, Peter Zijlstra peterz@infradead.org wrote:
-> 
-> > While auditing all module notifiers I noticed a whole bunch of fail
-> > wrt the return value. Notifiers have a 'special' return semantics.
-> > 
-> > Cc: Robert Richter <rric@kernel.org>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Ingo Molnar <mingo@redhat.com>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: Martin KaFai Lau <kafai@fb.com>
-> > Cc: Song Liu <songliubraving@fb.com>
-> > Cc: Yonghong Song <yhs@fb.com>
-> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > Cc: "Paul E. McKenney" <paulmck@linux.ibm.com>
-> > Cc: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-> > Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: oprofile-list@lists.sf.net
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: netdev@vger.kernel.org
-> > Cc: bpf@vger.kernel.org
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> 
-> Thanks Peter for looking into this, especially considering your
-> endless love for kernel modules! ;)
-> 
-> It's not directly related to your changes, but I notice that
-> kernel/trace/trace_printk.c:hold_module_trace_bprintk_format()
-> appears to leak memory. Am I missing something ?
+This series implements two new per-cgroup hooks: getsockopt and
+setsockopt along with a new sockopt program type. The idea is pretty
+similar to recently introduced cgroup sysctl hooks, but
+implementation is simpler (no need to convert to/from strings).
 
-Could you elaborate? Do you mean there is no MODULE_STATE_GOING notifier
-check? If that's what you mean then I agree, there should be some place
-where the format structures are freed when the module is unloaded no?
+What this can be applied to:
+* move business logic of what tos/priority/etc can be set by
+  containers (either pass or reject)
+* handle existing options (or introduce new ones) differently by
+  propagating some information in cgroup/socket local storage
 
-> 
-> With respect to your changes:
-> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Compared to a simple syscall/{g,s}etsockopt tracepoint, those
+hooks are context aware. Meaning, they can access underlying socket
+and use cgroup and socket local storage.
 
-Looks good to me too.
+Stanislav Fomichev (9):
+  bpf: implement getsockopt and setsockopt hooks
+  bpf: sync bpf.h to tools/
+  libbpf: support sockopt hooks
+  selftests/bpf: test sockopt section name
+  selftests/bpf: add sockopt test
+  selftests/bpf: add sockopt test that exercises sk helpers
+  selftests/bpf: add sockopt test that exercises BPF_F_ALLOW_MULTI
+  bpf: add sockopt documentation
+  bpftool: support cgroup sockopt
 
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+ Documentation/bpf/index.rst                   |   1 +
+ Documentation/bpf/prog_cgroup_sockopt.rst     |  82 ++
+ include/linux/bpf-cgroup.h                    |  43 +
+ include/linux/bpf.h                           |   2 +
+ include/linux/bpf_types.h                     |   1 +
+ include/linux/filter.h                        |  14 +
+ include/uapi/linux/bpf.h                      |  14 +
+ kernel/bpf/cgroup.c                           | 317 +++++++
+ kernel/bpf/core.c                             |   9 +
+ kernel/bpf/syscall.c                          |  19 +
+ kernel/bpf/verifier.c                         |  13 +
+ net/core/filter.c                             |   2 +-
+ net/socket.c                                  |  16 +
+ .../bpftool/Documentation/bpftool-cgroup.rst  |   7 +-
+ .../bpftool/Documentation/bpftool-prog.rst    |   3 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |   9 +-
+ tools/bpf/bpftool/cgroup.c                    |   5 +-
+ tools/bpf/bpftool/main.h                      |   1 +
+ tools/bpf/bpftool/prog.c                      |   3 +-
+ tools/include/uapi/linux/bpf.h                |  14 +
+ tools/lib/bpf/libbpf.c                        |   5 +
+ tools/lib/bpf/libbpf_probes.c                 |   1 +
+ tools/testing/selftests/bpf/.gitignore        |   3 +
+ tools/testing/selftests/bpf/Makefile          |   6 +-
+ .../selftests/bpf/progs/sockopt_multi.c       |  53 ++
+ .../testing/selftests/bpf/progs/sockopt_sk.c  |  91 ++
+ .../selftests/bpf/test_section_names.c        |  10 +
+ tools/testing/selftests/bpf/test_sockopt.c    | 892 ++++++++++++++++++
+ .../selftests/bpf/test_sockopt_multi.c        | 276 ++++++
+ tools/testing/selftests/bpf/test_sockopt_sk.c | 185 ++++
+ 30 files changed, 2087 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/bpf/prog_cgroup_sockopt.rst
+ create mode 100644 tools/testing/selftests/bpf/progs/sockopt_multi.c
+ create mode 100644 tools/testing/selftests/bpf/progs/sockopt_sk.c
+ create mode 100644 tools/testing/selftests/bpf/test_sockopt.c
+ create mode 100644 tools/testing/selftests/bpf/test_sockopt_multi.c
+ create mode 100644 tools/testing/selftests/bpf/test_sockopt_sk.c
 
-Could we CC stable so that the fix is propagated to older kernels?
-
-thanks,
-
- - Joel
-
-
-> I have a similar erroneous module notifier return value pattern
-> in lttng-modules as well. I'll go fix it right away. CCing
-> Frank Eigler from SystemTAP which AFAIK use a copy of
-> lttng-tracepoint.c in their project, which should be fixed
-> as well. I'm pasting the lttng-modules fix below.
-> 
-> Thanks!
-> 
-> Mathieu
-> 
-> --
-> 
-> commit 5eac9d146a7d947f0f314c4f7103c92cbccaeaf3
-> Author: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Date:   Mon Jun 24 09:43:45 2019 -0400
-> 
->     Fix: lttng-tracepoint module notifier should return NOTIFY_OK
->     
->     Module notifiers should return NOTIFY_OK on success rather than the
->     value 0. The return value 0 does not seem to have any ill side-effects
->     in the notifier chain caller, but it is preferable to respect the API
->     requirements in case this changes in the future.
->     
->     Notifiers can encapsulate a negative errno value with
->     notifier_from_errno(), but this is not needed by the LTTng tracepoint
->     notifier.
->     
->     The approach taken in this notifier is to just print a console warning
->     on error, because tracing failure should not prevent loading a module.
->     So we definitely do not want to stop notifier iteration. Returning
->     an error without stopping iteration is not really that useful, because
->     only the return value of the last callback is returned to notifier chain
->     caller.
->     
->     Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> 
-> diff --git a/lttng-tracepoint.c b/lttng-tracepoint.c
-> index bbb2c7a4..8298b397 100644
-> --- a/lttng-tracepoint.c
-> +++ b/lttng-tracepoint.c
-> @@ -256,7 +256,7 @@ int lttng_tracepoint_coming(struct tp_module *tp_mod)
->                 }
->         }
->         mutex_unlock(&lttng_tracepoint_mutex);
-> -       return 0;
-> +       return NOTIFY_OK;
->  }
->  
->  static
-> 
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> http://www.efficios.com
+-- 
+2.22.0.410.gd8fdbe21b5-goog
