@@ -2,145 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D571050E73
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 16:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369F950EFD
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 16:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728954AbfFXOdL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jun 2019 10:33:11 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:36381 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728770AbfFXOdL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jun 2019 10:33:11 -0400
-Received: by mail-qk1-f195.google.com with SMTP id g18so9916307qkl.3;
-        Mon, 24 Jun 2019 07:33:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Y9Y2C5sAs+7ESo3yvMuycRT88EAj9a/XPg+oK6UXn8E=;
-        b=AAvZB0tJ+TlcBgquT4PTY6Is1MdjKBOhaoYpASqP8SVqMf0w1oof4avV7z7JovvO1S
-         LgWVyNQyWo3jd39ADq+ZiJIfcIdlrFI5pd+oR0608yOLcJs5CGNOd/D/7dIec0bNFR5U
-         t1Yh0nYR5EP+PAsFn6QmCWfQKdlPl1Zn9s9NPr7dRYBkFX2OyfGGpkpNN8OhTa9xpFa2
-         fn/+QDqLuv6Ytj7Mfi0eV0q0NQyKLcovkKIdP53Suoh7nwPaP0xCAfOJJvYyw3EcUJxT
-         WYBgeEZL6xOjVKiddZo0NV6tYn43Z2wvIs0SGsGo9mVmHuTVQWS3jYI8judBfBQcJ8Q0
-         jQ1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Y9Y2C5sAs+7ESo3yvMuycRT88EAj9a/XPg+oK6UXn8E=;
-        b=WHbGyxKxC3vpXynVGwbRxtiC0zRKbc3cRBzXTEUwt1nhPjiIMnBdF+R5CSZBWXNRG0
-         +KmvWv/bfJ37Iji15YwLL3Vskh+goRUkcxwMC3oByloD9mGVsX3/UQaFTEHcdwaAAntR
-         PIT4Lq4C9hKJykpxGsNsCiW2qCNBcEv/HP7ri/uLmEMNx4gCgM8HQ0AEhZGhlvshZtQu
-         6F0Q+LENyQiAr4b1KnYD409QPU1hObuQz4M4xyeSm2OCIJRM9TB6YU2ud4j5vTBnz2R/
-         6Fz6kxGRX2hlvg5DZGOruvC6mW4TwJWU3qIUBnbbcdJogcswrfphxnHqwg12ncJ+dmQN
-         4IYQ==
-X-Gm-Message-State: APjAAAXBee/q8K4+11uXRlE6WwwCZy3AWXU5tQphi/R+qeJ2BJNFaiMI
-        A+eihTn1OUunutPtJ5w9fgFKAczGkC8IjrpKNEQ=
-X-Google-Smtp-Source: APXvYqzpeMWaYgUjFY2oiWqgasi4EBY4BCU1lPGhcVFWMmJwsJoFyDMJa4XvPuFDReBSdr0tWjVYftj+nP6p62mqFn4=
-X-Received: by 2002:a05:620a:1270:: with SMTP id b16mr100549560qkl.333.1561386790244;
- Mon, 24 Jun 2019 07:33:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190620090958.2135-1-kevin.laatz@intel.com> <20190620090958.2135-6-kevin.laatz@intel.com>
-In-Reply-To: <20190620090958.2135-6-kevin.laatz@intel.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Mon, 24 Jun 2019 16:32:59 +0200
-Message-ID: <CAJ+HfNg9chx674Sc=Ht-UJ_iYoau=X6LJYn5w05rUQ85b9oyDg@mail.gmail.com>
-Subject: Re: [PATCH 05/11] ixgbe: add offset to zca_free
-To:     Kevin Laatz <kevin.laatz@intel.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S1729360AbfFXOsX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jun 2019 10:48:23 -0400
+Received: from www62.your-server.de ([213.133.104.62]:58502 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727385AbfFXOsW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jun 2019 10:48:22 -0400
+Received: from [78.46.172.2] (helo=sslproxy05.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hfQGR-0004JD-03; Mon, 24 Jun 2019 16:48:11 +0200
+Received: from [178.199.41.31] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hfQGQ-000NBz-Nx; Mon, 24 Jun 2019 16:48:10 +0200
+Subject: Re: [PATCH bpf-next v5 00/16] AF_XDP infrastructure improvements and
+ mlx5e support
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Bruce Richardson <bruce.richardson@intel.com>,
-        ciara.loftus@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Jonathan Lemon <bsd@fb.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
+References: <20190618120024.16788-1-maximmi@mellanox.com>
+ <CAJ+HfNia-vUv7Eumfs8aMYGGkxPbbUQ++F+BQ=9C1NtP0Jt3hA@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2f85cd4c-462f-8418-a4d1-a87782656c40@iogearbox.net>
+Date:   Mon, 24 Jun 2019 16:48:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
+MIME-Version: 1.0
+In-Reply-To: <CAJ+HfNia-vUv7Eumfs8aMYGGkxPbbUQ++F+BQ=9C1NtP0Jt3hA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25490/Mon Jun 24 10:02:14 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 20 Jun 2019 at 19:25, Kevin Laatz <kevin.laatz@intel.com> wrote:
->
-> This patch adds the offset param to for zero_copy_allocator to
-> ixgbe_zca_free. This change is required to calculate the handle, otherwis=
-e,
-> this function will not work in unaligned chunk mode since we can't easily=
- mask
-> back to the original handle in unaligned chunk mode.
->
-> Signed-off-by: Kevin Laatz <kevin.laatz@intel.com>
+On 06/20/2019 11:13 AM, Björn Töpel wrote:
+> On Tue, 18 Jun 2019 at 14:00, Maxim Mikityanskiy <maximmi@mellanox.com> wrote:
+>>
+>> This series contains improvements to the AF_XDP kernel infrastructure
+>> and AF_XDP support in mlx5e. The infrastructure improvements are
+>> required for mlx5e, but also some of them benefit to all drivers, and
+>> some can be useful for other drivers that want to implement AF_XDP.
+>>
+>> The performance testing was performed on a machine with the following
+>> configuration:
+>>
+>> - 24 cores of Intel Xeon E5-2620 v3 @ 2.40 GHz
+>> - Mellanox ConnectX-5 Ex with 100 Gbit/s link
+>>
+>> The results with retpoline disabled, single stream:
+>>
+>> txonly: 33.3 Mpps (21.5 Mpps with queue and app pinned to the same CPU)
+>> rxdrop: 12.2 Mpps
+>> l2fwd: 9.4 Mpps
+>>
+>> The results with retpoline enabled, single stream:
+>>
+>> txonly: 21.3 Mpps (14.1 Mpps with queue and app pinned to the same CPU)
+>> rxdrop: 9.9 Mpps
+>> l2fwd: 6.8 Mpps
+>>
+>> v2 changes:
+>>
+>> Added patches for mlx5e and addressed the comments for v1. Rebased for
+>> bpf-next.
+>>
+>> v3 changes:
+>>
+>> Rebased for the newer bpf-next, resolved conflicts in libbpf. Addressed
+>> Björn's comments for coding style. Fixed a bug in error handling flow in
+>> mlx5e_open_xsk.
+>>
+>> v4 changes:
+>>
+>> UAPI is not changed, XSK RX queues are exposed to the kernel. The lower
+>> half of the available amount of RX queues are regular queues, and the
+>> upper half are XSK RX queues. The patch "xsk: Extend channels to support
+>> combined XSK/non-XSK traffic" was dropped. The final patch was reworked
+>> accordingly.
+>>
+>> Added "net/mlx5e: Attach/detach XDP program safely", as the changes
+>> introduced in the XSK patch base on the stuff from this one.
+>>
+>> Added "libbpf: Support drivers with non-combined channels", which aligns
+>> the condition in libbpf with the condition in the kernel.
+>>
+>> Rebased over the newer bpf-next.
+>>
+>> v5 changes:
+>>
+>> In v4, ethtool reports the number of channels as 'combined' and the
+>> number of XSK RX queues as 'rx' for mlx5e. It was changed, so that 'rx'
+>> is 0, and 'combined' reports the double amount of channels if there is
+>> an active UMEM - to make libbpf happy.
+>>
+>> The patch for libbpf was dropped. Although it's still useful and fixes
+>> things, it raises some disagreement, so I'm dropping it - it's no longer
+>> useful for mlx5e anymore after the change above.
+> 
+> Just a heads-up: There are some checkpatch warnings (>80 chars/line)
+> for the mlnx5 driver parts, and the series didn't apply cleanly on
+> bpf-next for me.
+> 
+> I haven't been able to test the mlnx5 parts.
+> 
+> Parts of the series are unrelated/orthogonal, and could be submitted
+> as separate series, e.g. patches {1,7} and patches {3,4}. No blockers
+> for me, though.
+> 
+> Thanks for the hard work!
 
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
++1
 
+> For the series:
+> Acked-by: Björn Töpel <bjorn.topel@intel.com>
 
-> ---
->  drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h | 3 ++-
->  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c         | 8 ++++----
->  2 files changed, 6 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h b/drive=
-rs/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
-> index d93a690aff74..49702e2a4360 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
-> @@ -33,7 +33,8 @@ struct xdp_umem *ixgbe_xsk_umem(struct ixgbe_adapter *a=
-dapter,
->  int ixgbe_xsk_umem_setup(struct ixgbe_adapter *adapter, struct xdp_umem =
-*umem,
->                          u16 qid);
->
-> -void ixgbe_zca_free(struct zero_copy_allocator *alloc, unsigned long han=
-dle);
-> +void ixgbe_zca_free(struct zero_copy_allocator *alloc, unsigned long han=
-dle,
-> +               off_t off);
->
->  void ixgbe_alloc_rx_buffers_zc(struct ixgbe_ring *rx_ring, u16 cleaned_c=
-ount);
->  int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/e=
-thernet/intel/ixgbe/ixgbe_xsk.c
-> index 49536adafe8e..1ec02077ccb2 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> @@ -268,16 +268,16 @@ static void ixgbe_reuse_rx_buffer_zc(struct ixgbe_r=
-ing *rx_ring,
->         obi->skb =3D NULL;
->  }
->
-> -void ixgbe_zca_free(struct zero_copy_allocator *alloc, unsigned long han=
-dle)
-> +void ixgbe_zca_free(struct zero_copy_allocator *alloc, unsigned long han=
-dle,
-> +               off_t off)
->  {
->         struct ixgbe_rx_buffer *bi;
->         struct ixgbe_ring *rx_ring;
-> -       u64 hr, mask;
-> +       u64 hr;
->         u16 nta;
->
->         rx_ring =3D container_of(alloc, struct ixgbe_ring, zca);
->         hr =3D rx_ring->xsk_umem->headroom + XDP_PACKET_HEADROOM;
-> -       mask =3D rx_ring->xsk_umem->chunk_mask;
->
->         nta =3D rx_ring->next_to_alloc;
->         bi =3D rx_ring->rx_buffer_info;
-> @@ -285,7 +285,7 @@ void ixgbe_zca_free(struct zero_copy_allocator *alloc=
-, unsigned long handle)
->         nta++;
->         rx_ring->next_to_alloc =3D (nta < rx_ring->count) ? nta : 0;
->
-> -       handle &=3D mask;
-> +       handle -=3D off;
->
->         bi->dma =3D xdp_umem_get_dma(rx_ring->xsk_umem, handle);
->         bi->dma +=3D hr;
-> --
-> 2.17.1
->
+Looks good to me, but as Björn already indicated, there's one last rebase
+needed since it doesn't apply cleanly in the last one that adds the actual
+AF_XDP support, please take a look and rebase:
+
+[...]
+Applying: net/mlx5e: Attach/detach XDP program safely
+Applying: xsk: Add API to check for available entries in FQ
+Applying: xsk: Add getsockopt XDP_OPTIONS
+Applying: libbpf: Support getsockopt XDP_OPTIONS
+Applying: xsk: Change the default frame size to 4096 and allow controlling it
+Applying: xsk: Return the whole xdp_desc from xsk_umem_consume_tx
+Using index info to reconstruct a base tree...
+M	drivers/net/ethernet/intel/i40e/i40e_xsk.c
+M	drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+Falling back to patching base and 3-way merge...
+Auto-merging drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+Auto-merging drivers/net/ethernet/intel/i40e/i40e_xsk.c
+Applying: net/mlx5e: Replace deprecated PCI_DMA_TODEVICE
+Applying: net/mlx5e: Calculate linear RX frag size considering XSK
+Applying: net/mlx5e: Allow ICO SQ to be used by multiple RQs
+Applying: net/mlx5e: Refactor struct mlx5e_xdp_info
+Applying: net/mlx5e: Share the XDP SQ for XDP_TX between RQs
+Applying: net/mlx5e: XDP_TX from UMEM support
+Applying: net/mlx5e: Consider XSK in XDP MTU limit calculation
+Applying: net/mlx5e: Encapsulate open/close queues into a function
+Applying: net/mlx5e: Move queue param structs to en/params.h
+Applying: net/mlx5e: Add XSK zero-copy support
+fatal: sha1 information is lacking or useless (drivers/net/ethernet/mellanox/mlx5/core/en.h).
+error: could not build fake ancestor
+Patch failed at 0016 net/mlx5e: Add XSK zero-copy support
+
+Thanks,
+Daniel
