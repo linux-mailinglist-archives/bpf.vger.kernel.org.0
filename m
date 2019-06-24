@@ -2,160 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5113351BBD
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 21:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3386851BC1
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 21:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728549AbfFXTxj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jun 2019 15:53:39 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:40848 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728801AbfFXTxi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jun 2019 15:53:38 -0400
-Received: by mail-io1-f66.google.com with SMTP id n5so4859107ioc.7
-        for <bpf@vger.kernel.org>; Mon, 24 Jun 2019 12:53:38 -0700 (PDT)
+        id S1731048AbfFXTyN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jun 2019 15:54:13 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:39987 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728702AbfFXTyM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jun 2019 15:54:12 -0400
+Received: by mail-io1-f68.google.com with SMTP id n5so4862783ioc.7
+        for <bpf@vger.kernel.org>; Mon, 24 Jun 2019 12:54:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=YMFwihNHo7OoU9fBUp8dkQR9OeI1KVlYg3r8RMHNouU=;
-        b=YUEe1lTwVtb+DOhJURMX1uoBgDWN+caVMgYM0mRQSEPvY9MDm6EyX6nUOmffcdiwB8
-         l3gKaBDqLU5TrgeTvUaDhfMrLqsyGJXvfVurbP0SapG9Rg0Op9HS5JESWo7CdVAvOXsN
-         M4HeFRxWi677IebPmuvTslkAfO79BPpjPKmn1sh9iKt8ljj9DUUa1GLSVVHkaNYvkOBS
-         7Uqfgp4Lp2x0c7IrCgzKtm8HCKmSP4ftt01+1INbqdAxhri/F37Em/AL8PRCoIRnXCdJ
-         Hs+jJdUIfSKc1RSsCOintUFbBjnllYYJO1kIG352wbEcbyDEUk/m6ihhGnLOikYt5YzZ
-         D4Hw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YCg/MjFmfZjibFv1+zfjJ/08w0AqICIa/H9ziec7kII=;
+        b=T5bgSuFF2J0SClg2TX96KcIkt8PMoAR1G3u6wAV9ZlHT11IjSJBWqyLCR87fxH+c29
+         LTufoMIaOaS5RzlQZdhwIhVGqFpXAIChtxNsI8BWjtM0tF2pFRYeHCKuLi5czhKl6iw/
+         Kh4t45FA7uaBdu+cxYKWG6S4qqD66Wb7/01m2fvDCCMbfZCFA4qJWtcmCxfFo0R0UJYn
+         9RwhYjanjDxnX37mmFLMatT8eDcY+4IhBRCV/7mN+h5oZP/SOk7UlIo3kxh2grH6N1Aq
+         nB2By88uwy0THJJ3z/Iol2KMXK0mq8grrgUkxODb07Yba6xPmycLbGleHl0GH6KQvt/o
+         4a/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YMFwihNHo7OoU9fBUp8dkQR9OeI1KVlYg3r8RMHNouU=;
-        b=BgIBD6xyggp8eaHLJ/lP8KrIbLQVbySkN9lPcBBEmHPL0ldnVldQiqYHdJxLjLZ9C3
-         eEZYzvobnHThCZn7XbTVLWde9fg1j75TYu+kjG7r3gMWCE7r43OBFzVgkvia6qg2bswT
-         /wGU3Kwjg92jrAZvXrMZfOU262srOy/RrrccVquejoGc0fqUI6I1ecGjr7M+udA7hMNX
-         LS6D+E3rQ3CUaWxssU7LwqMK0pnLc1Pmlz+ofHVixlsep+78WqFHw3MtRWA9fMxQQyUH
-         VF1YZPIwjz1Z7gp7y60MK8Anqa/FcVJcsTbjExKMqtWy05UHXTLvIgrSim/AAx+M3RMW
-         9/ZQ==
-X-Gm-Message-State: APjAAAVllAg2CvKNbP+ebxahc6LGfpKATqVSiBnj7YCCfSn55FfnLC/y
-        4GIcBwnzFOHSiIy9F4Gjn/fQrg==
-X-Google-Smtp-Source: APXvYqyaV2Nl5FL9efERwaceXsxTHmeWZ9SGuXFiUT4e1Be7LEfhcPu4zsy8u8caL7PoN2Xs2SNyOg==
-X-Received: by 2002:a05:6638:6a3:: with SMTP id d3mr67515888jad.33.1561406017903;
-        Mon, 24 Jun 2019 12:53:37 -0700 (PDT)
-Received: from localhost (c-75-72-120-115.hsd1.mn.comcast.net. [75.72.120.115])
-        by smtp.gmail.com with ESMTPSA id x22sm13711381iob.84.2019.06.24.12.53.36
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 24 Jun 2019 12:53:36 -0700 (PDT)
-Date:   Mon, 24 Jun 2019 14:53:36 -0500
-From:   Dan Rue <dan.rue@linaro.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        xdp-newbies@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>, hawk@kernel.org,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Shuah Khan <shuah@kernel.org>
-Subject: Re: selftests: bpf: test_libbpf.sh failed at file test_l4lb.o
-Message-ID: <20190624195336.nubi7n2np5vfjutr@xps.therub.org>
-References: <CA+G9fYsMcdHmKY66CNhsrizO-gErkOQCkTcBSyOHLpOs+8g5=g@mail.gmail.com>
- <CAEf4BzbTD8G_zKkj-S3MOeG5Hq3_2zz3bGoXhQtpt0beG8nWJA@mail.gmail.com>
- <20190621161752.d7d7n4m5q67uivys@xps.therub.org>
- <CAEf4BzaSoKA5H5rN=w+OAtUz4bD30-VOjjjY+Qv9tTAnhMweiA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YCg/MjFmfZjibFv1+zfjJ/08w0AqICIa/H9ziec7kII=;
+        b=pW3/VASQRff5RGqPC2JIWP8A4aFIgWGCK/0/fE1j/WuxvUtYWdzu2K6biRdUuVaFEW
+         t66Fndwdwgmoscz8f39DnvWi4UCIEhvoqWAHB1WH9fJypo5xCVt//mYst+HWxKxQFUW+
+         ySwsEy8h1MFJbZL7WSi2mWW433Do7XSfQYfaZQ2ImUir+D/yaAByz5yt9SvfiilsPwzy
+         2VJ/3IkGUEHppAx3+YHM4IAMmbHa+1f/yfUnBnGhP6+P9AbghSIyA+04Eo/xIL0g5jhO
+         6Kr6wGLWMZcr9YHK3PN7ZY2KBmbTG9OFVrLTkMusb3QvIhAhkIk3v5BP00ZWw6W9vPG3
+         Rmug==
+X-Gm-Message-State: APjAAAUoQ+TxAK6//hPdrIm3dGLbvnjhmkJJuUUQ3lqR13/p6AkjhHyo
+        s73ormnqZdd0Jx1ICZmqrleNgAWjwLbyJEkZ9i2bCQ==
+X-Google-Smtp-Source: APXvYqyFU7p5SRJ6nKCqIZqMdeK3zYkp5IdfxuzZhylp6PCqxOOHmnAokMWRrX7K9YZRQdLi+tIxlDW1HYKDsttAmXA=
+X-Received: by 2002:a05:6638:3d3:: with SMTP id r19mr30442055jaq.53.1561406051539;
+ Mon, 24 Jun 2019 12:54:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzaSoKA5H5rN=w+OAtUz4bD30-VOjjjY+Qv9tTAnhMweiA@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+References: <20190622000358.19895-1-matthewgarrett@google.com>
+ <20190622000358.19895-24-matthewgarrett@google.com> <739e21b5-9559-d588-3542-bf0bc81de1b2@iogearbox.net>
+In-Reply-To: <739e21b5-9559-d588-3542-bf0bc81de1b2@iogearbox.net>
+From:   Matthew Garrett <mjg59@google.com>
+Date:   Mon, 24 Jun 2019 12:54:00 -0700
+Message-ID: <CACdnJuvR2bn3y3fYzg06GWXXgAGjgED2Dfa5g0oAwJ28qCCqBg@mail.gmail.com>
+Subject: Re: [PATCH V34 23/29] bpf: Restrict bpf when kernel lockdown is in
+ confidentiality mode
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     James Morris <jmorris@namei.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        Chun-Yi Lee <jlee@suse.com>, Jann Horn <jannh@google.com>,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 24, 2019 at 11:32:25AM -0700, Andrii Nakryiko wrote:
-> On Fri, Jun 21, 2019 at 9:17 AM Dan Rue <dan.rue@linaro.org> wrote:
+On Mon, Jun 24, 2019 at 8:37 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 06/22/2019 02:03 AM, Matthew Garrett wrote:
+> > From: David Howells <dhowells@redhat.com>
 > >
-> > On Thu, Jun 20, 2019 at 10:17:04PM -0700, Andrii Nakryiko wrote:
-> > > On Thu, Jun 20, 2019 at 1:08 AM Naresh Kamboju
-> > > <naresh.kamboju@linaro.org> wrote:
-> > > >
-> > > > selftests: bpf test_libbpf.sh failed running Linux -next kernel
-> > > > 20190618 and 20190619.
-> > > >
-> > > > Here is the log from x86_64,
-> > > > # selftests bpf test_libbpf.sh
-> > > > bpf: test_libbpf.sh_ #
-> > > > # [0] libbpf BTF is required, but is missing or corrupted.
-> > >
-> > > You need at least clang-9.0.0 (not yet released) to run some of these
-> > > tests successfully, as they rely on Clang's support for
-> > > BTF_KIND_VAR/BTF_KIND_DATASEC.
-> >
-> > Can there be a runtime check for BTF that emits a skip instead of a fail
-> > in such a case?
-> 
-> I'm not sure how to do this simply and minimally intrusively. The best
-> I can come up with is setting some envvar from Makefile and checking
-> for that in each inidividual test, which honestly sounds a bit gross.
-> 
-> How hard is it for you guys to upgrade compiler used to run these test?
+> > There are some bpf functions can be used to read kernel memory:
+>
+> Nit: that
 
-We should be able to run kselftest with any compiler that Linux
-supports, so that we can test with the toolchain that users actually run
-with.
+Fixed.
 
-I would say if it's not possible to check at runtime, and it requires
-clang 9.0, that this test should not be enabled by default.
+> > bpf_probe_read, bpf_probe_write_user and bpf_trace_printk.  These allow
+>
+> Please explain how bpf_probe_write_user reads kernel memory ... ?!
 
-Maybe something could be done in Makefile for that? Only add it to
-TEST_GEN_PROGS if the toolchain feature exists, otherwise add it to
-TEST_GEN_PROGS_EXTENDED. I don't know if this is a good idea.. but from
-kselftest.rst:
+Ha.
 
-   TEST_PROGS, TEST_GEN_PROGS mean it is the executable tested by
-   default.
-   ...
-   TEST_PROGS_EXTENDED, TEST_GEN_PROGS_EXTENDED mean it is the
-   executable which is not tested by default.
+> > private keys in kernel memory (e.g. the hibernation image signing key) to
+> > be read by an eBPF program and kernel memory to be altered without
+>
+> ... and while we're at it, also how they allow "kernel memory to be
+> altered without restriction". I've been pointing this false statement
+> out long ago.
 
-Dan
+Yup. How's the following description:
 
-> 
-> >
-> > Thanks,
-> > Dan
-> >
-> > >
-> > > > libbpf: BTF_is #
-> > > > # test_libbpf failed at file test_l4lb.o
-> > > > failed: at_file #
-> > > > # selftests test_libbpf [FAILED]
-> > > > test_libbpf: [FAILED]_ #
-> > > > [FAIL] 29 selftests bpf test_libbpf.sh
-> > > > selftests: bpf_test_libbpf.sh [FAIL]
-> > > >
-> > > > Full test log,
-> > > > https://qa-reports.linaro.org/lkft/linux-next-oe/build/next-20190619/testrun/781777/log
-> > > >
-> > > > Test results comparison,
-> > > > https://qa-reports.linaro.org/lkft/linux-next-oe/tests/kselftest/bpf_test_libbpf.sh
-> > > >
-> > > > Good linux -next tag: next-20190617
-> > > > Bad linux -next tag: next-20190618
-> > > > git branch     master
-> > > > git commit    1c6b40509daf5190b1fd2c758649f7df1da4827b
-> > > > git repo
-> > > > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> > > >
-> > > > Best regards
-> > > > Naresh Kamboju
-> >
-> > --
-> > Linaro - Kernel Validation
+    bpf: Restrict bpf when kernel lockdown is in confidentiality mode
 
--- 
-Linaro - Kernel Validation
+    There are some bpf functions that can be used to read kernel memory and
+    exfiltrate it to userland: bpf_probe_read, bpf_probe_write_user and
+    bpf_trace_printk.  These could be abused to (eg) allow private
+keys in kernel
+    memory to be leaked. Disable them if the kernel has been locked
+down in confidentiality
+    mode.
+
+> This whole thing is still buggy as has been pointed out before by
+> Jann. For helpers like above and few others below, error conditions
+> must clear the buffer ...
+
+Sorry, yes. My fault.
