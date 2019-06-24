@@ -2,173 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B08051A7B
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 20:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C5351A95
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2019 20:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728444AbfFXS0M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jun 2019 14:26:12 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:36716 "EHLO
+        id S1727011AbfFXSci (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jun 2019 14:32:38 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:45608 "EHLO
         mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726375AbfFXS0M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jun 2019 14:26:12 -0400
-Received: by mail-qt1-f195.google.com with SMTP id p15so15553823qtl.3;
-        Mon, 24 Jun 2019 11:26:12 -0700 (PDT)
+        with ESMTP id S1726381AbfFXSch (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jun 2019 14:32:37 -0400
+Received: by mail-qt1-f195.google.com with SMTP id j19so15531946qtr.12;
+        Mon, 24 Jun 2019 11:32:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=x9uoR+KIuE1II8mD60iebYIvLAFwPjD50xd1uMdBmX4=;
-        b=HsJf5K+XiynaUtH0EQHleY1DehgR5I73UNWc4B8ezA8f+JAS0PbGbiGzZgdWd6cQXy
-         wJmtHrGPeWD5KCUPKvtBWJfDuB93b+afyICO/Ix3bGKGbot2piuwd8nQckRFs3sVhv3F
-         4tr0dtv1KkJh9Efc5VGIWljCb4AHVAgdVcMcUwD5RSs6K70Hf539f0eJv7F8Mfe4Eux8
-         02kBt8M2tlsDqBN6o1CyI40spDnYU3pblJZF6PT2ITHApVLJR0wK5v8pERXKPTnFkTRb
-         jKzs9+7+ZRVHdZd047MqXUVhAaDM1vPpVYqXoHFdywewLzg1Jk6lDrdn/dlX178HBHBn
-         wsAg==
+        bh=J3jnGKxooPL3xDQZEUnhmGipQscWMmnQn6jkJBtpMqE=;
+        b=O9IwJyrfa9XVmop+4ZXUoyUKP/+LLFb2lX4NEpd0UW0+WZ59F9idc2Maywb8qEDhKr
+         8DlXiGcJ9nJtBlg30JV0dngS2CtvkKknvlLq1/OEMKbfcgxIgsKze5LZ1uXlgXrtt2dW
+         BfgphpRBzaNKHlcqCRYyrtDmTaKhdE+ozVhFow/CGn81+DH+zGOR/aZyRoAwjmTYSGyX
+         cCJO/bUkx61l0m00xbX5W2OvCh27klIV5dabCR0/nekB1hKK49emK9g/qy39yihT6mmL
+         R69tVdxxIOc4EG6YEWmX8n/Uaq/n3UJ7NByaqn4rLYpf+bkU+fSM8ZxTDJLaN4U/HoGC
+         OHJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=x9uoR+KIuE1II8mD60iebYIvLAFwPjD50xd1uMdBmX4=;
-        b=gilwWx9zS/qqUYYps17sgGvt/qPODa5UDc/+bafy6GEAtwZ6ofChpgE6Tlmz3F2Uxj
-         wboMAbjk4ijiYbTXcbAxBShonKEHNqa4AU0nfkAMuC6OswvSy1srVSvH7p4e19Ag48ka
-         Nd5FlvrhND6mbRNJbSXvZjb0fzIqjAZH29OXEXjieOMQbI7JatvJjHg/mham3b0dOmyc
-         aQ8cgVLKnCZbqw+fA1keFWj3yYlW31pv1TjHNF82iV7pKtVYgkpbaNm2CkvDtAKg6Gz1
-         kPQb9svCdIwWa7MJGzi5e/whrswDHUOFVXznuS9+WidOYsO/XVgaqJo4xXfHq+iLDMPa
-         2RQg==
-X-Gm-Message-State: APjAAAXr7DOJI8JyCBazS753vVKKagvw1w7p6X5VAgHTxyqQ9B8WDlah
-        K16UGvw6VYegYNSJ2zb2YSHUsIuRTU0H3uAZ9Eo=
-X-Google-Smtp-Source: APXvYqyX7Yqi62/9W21qqWsZBV0Zu1HZmK4IeRtasql6wmRV4UqjV0hD5sevr26Ix9vyKLwGEVpUKaKxqEg/Q5I8zVU=
-X-Received: by 2002:a0c:ae50:: with SMTP id z16mr57345303qvc.60.1561400771509;
- Mon, 24 Jun 2019 11:26:11 -0700 (PDT)
+        bh=J3jnGKxooPL3xDQZEUnhmGipQscWMmnQn6jkJBtpMqE=;
+        b=t/ojTEByeraMzqVinQiUm+E28X9Di6I0v45iUNcDdSzoKZDuBk36i3myopq9s05ACg
+         qjADypxUjgzI5XJiyYHR7cD5l4hjjI6NtuRXvNw3+KRdgn7nph/MzZUohdQHjrkZ+Lme
+         K7FUmIXVM4hT8pKE9helczBP+3PWemycI+eEFsTUKmWoIOoUwC0ocn/QyLnZHC6lZ1gB
+         HJdm4TlWBUfmKvTL3UELabJIfDjWYH3c6qq9x7DCTKcT3wq+V4nOmzsHkxM9+vNE5ECx
+         +gzWjQuQR5sc5wh22BpaYDUjXHN+O/tP1DbIyI9Yu/eQJ+v4Cdoo1L4xqcQblvTAoNaY
+         Qmuw==
+X-Gm-Message-State: APjAAAUcc8jJpdHCu9PLtxPifcfjHrzpzKSXXor2pQAVfMDOBbIpESDS
+        zpC3DXdueQuUmpNJ4Zm9Jav9LWjrKa5KkFk893btQAVnfkE=
+X-Google-Smtp-Source: APXvYqzu5wK0bFdVRmdS56gP0qOLmqSq0Ud6J6e0GpGfoPvJ1kW2Jlx7M9lC2spMz01sRl+RSWSecJ3WgVPxAQtbFug=
+X-Received: by 2002:ac8:2d56:: with SMTP id o22mr79429363qta.171.1561401156508;
+ Mon, 24 Jun 2019 11:32:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190621084040.GU7221@shao2-debian> <20190621161039.GF1383@mini-arch>
- <CAEf4Bzaajc27=YyMaOa8UFRz=xE7y6E+qLbPBPbvLADO2peXQg@mail.gmail.com>
- <20190621222745.GH1383@mini-arch> <f3aa0dc2-c959-1166-8b09-84781363f0e0@intel.com>
-In-Reply-To: <f3aa0dc2-c959-1166-8b09-84781363f0e0@intel.com>
+References: <CA+G9fYsMcdHmKY66CNhsrizO-gErkOQCkTcBSyOHLpOs+8g5=g@mail.gmail.com>
+ <CAEf4BzbTD8G_zKkj-S3MOeG5Hq3_2zz3bGoXhQtpt0beG8nWJA@mail.gmail.com> <20190621161752.d7d7n4m5q67uivys@xps.therub.org>
+In-Reply-To: <20190621161752.d7d7n4m5q67uivys@xps.therub.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 24 Jun 2019 11:26:00 -0700
-Message-ID: <CAEf4BzaNBboGeU8xOxyW-aDzEPUQq-LidRzj8V08O=_TynkQOQ@mail.gmail.com>
-Subject: Re: [selftests/bpf] 69d96519db: kernel_selftests.bpf.test_socket_cookie.fail
-To:     Rong Chen <rong.a.chen@intel.com>
-Cc:     Stanislav Fomichev <sdf@fomichev.me>,
-        Stanislav Fomichev <sdf@google.com>,
+Date:   Mon, 24 Jun 2019 11:32:25 -0700
+Message-ID: <CAEf4BzaSoKA5H5rN=w+OAtUz4bD30-VOjjjY+Qv9tTAnhMweiA@mail.gmail.com>
+Subject: Re: selftests: bpf: test_libbpf.sh failed at file test_l4lb.o
+To:     Dan Rue <dan.rue@linaro.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        xdp-newbies@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        bpf <bpf@vger.kernel.org>, lkp@01.org
+        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>, hawk@kernel.org,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Shuah Khan <shuah@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jun 23, 2019 at 5:59 PM Rong Chen <rong.a.chen@intel.com> wrote:
+On Fri, Jun 21, 2019 at 9:17 AM Dan Rue <dan.rue@linaro.org> wrote:
 >
-> On 6/22/19 6:27 AM, Stanislav Fomichev wrote:
-> > On 06/21, Andrii Nakryiko wrote:
-> >> )
-> >>
-> >> On Fri, Jun 21, 2019 at 9:11 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
-> >>> On 06/21, kernel test robot wrote:
-> >>>> FYI, we noticed the following commit (built with gcc-7):
-> >>>>
-> >>>> commit: 69d96519dbf0bfa1868dc8597d4b9b2cdeb009d7 ("selftests/bpf: convert socket_cookie test to sk storage")
-> >>>> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
-> >>>>
-> >>>> in testcase: kernel_selftests
-> >>>> with following parameters:
-> >>>>
-> >>>>        group: kselftests-00
-> >>>>
-> >>>> test-description: The kernel contains a set of "self tests" under the tools/testing/selftests/ directory. These are intended to be small unit tests to exercise individual code paths in the kernel.
-> >>>> test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
-> >>>>
-> >>>>
-> >>>> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
-> >>>>
-> >>>> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> >>>>
-> >>>>
-> >>>> If you fix the issue, kindly add following tag
-> >>>> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> >>>>
-> >>>> # selftests: bpf: test_socket_cookie
-> >>>> # libbpf: failed to create map (name: 'socket_cookies'): Invalid
-> >>>> # argument
-> >>> Another case of old clang trying to create a map that depends on BTF?
-> >>> Should we maybe switch those BTF checks in the kernel to return
-> >>> EOPNOTSUPP to make it easy to diagnose?
-> >> For older compilers that don't generate DATASEC/VAR, you'll see a clear message:
-> >>
-> >> libbpf: DATASEC '.maps' not found.
-> >>
-> >> So this must be something else. I just confirmed with clang version
-> >> 7.0.20180201 that for ./test_socket_cookie that's the first line
-> >> that's emitted on failure.
-> > Thanks for checking, I also took a look at the attached kernel_selftests.xz,
-> > here is what it has:
-> > 2019-06-21 11:58:35 ln -sf /usr/bin/clang-6.0 /usr/bin/clang
-> > 2019-06-21 11:58:35 ln -sf /usr/bin/llc-6.0 /usr/bin/llc
-> > ...
-> > # BTF libbpf test[1] (test_btf_haskv.o): SKIP. No ELF .BTF found
-> > # BTF libbpf test[2] (test_btf_nokv.o): SKIP. No ELF .BTF found
-> > ...
-> > # Test case #0 (btf_dump_test_case_syntax): test_btf_dump_case:71:FAIL
-> > # failed to load test BTF: -2
-> > # Test case #1 (btf_dump_test_case_ordering): test_btf_dump_case:71:FAIL
-> > # failed to load test BTF: -2
-> > ...
+> On Thu, Jun 20, 2019 at 10:17:04PM -0700, Andrii Nakryiko wrote:
+> > On Thu, Jun 20, 2019 at 1:08 AM Naresh Kamboju
+> > <naresh.kamboju@linaro.org> wrote:
+> > >
+> > > selftests: bpf test_libbpf.sh failed running Linux -next kernel
+> > > 20190618 and 20190619.
+> > >
+> > > Here is the log from x86_64,
+> > > # selftests bpf test_libbpf.sh
+> > > bpf: test_libbpf.sh_ #
+> > > # [0] libbpf BTF is required, but is missing or corrupted.
 > >
-> > And so on. So there is clearly an old clang that doesn't emit any
-> > BTF. And I also don't see your recent abd29c931459 before 69d96519dbf0 in
-> > linux-next, that's why it doesn't complain about missing/corrupt BTF.
-
-Ah, ok, that would explain it. But in any case, clang 6&7 is too old.
-Clang 8 or better yet clang 9 (for global data, datasec/var-dependent
-stuff) would be great.
-
-> >
-> > We need to convince lkp people to upgrade clang, otherwise, I suppose,
-> > we'll get more of these reportings after your recent df0b77925982 :-(
+> > You need at least clang-9.0.0 (not yet released) to run some of these
+> > tests successfully, as they rely on Clang's support for
+> > BTF_KIND_VAR/BTF_KIND_DATASEC.
 >
-> Thanks for the clarification, we'll upgrade clang asap.
+> Can there be a runtime check for BTF that emits a skip instead of a fail
+> in such a case?
 
-Thanks Rong!
+I'm not sure how to do this simply and minimally intrusively. The best
+I can come up with is setting some envvar from Makefile and checking
+for that in each inidividual test, which honestly sounds a bit gross.
+
+How hard is it for you guys to upgrade compiler used to run these test?
 
 >
-> Best Regards,
-> Rong Chen
->
+> Thanks,
+> Dan
 >
 > >
-> >>>> # libbpf: failed to load object './socket_cookie_prog.o'
-> >>>> # (test_socket_cookie.c:149: errno: Invalid argument) Failed to load
-> >>>> # ./socket_cookie_prog.o
-> >>>> # FAILED
-> >>>> not ok 15 selftests: bpf: test_socket_cookie
-> >>>>
-> >>>>
-> >>>>
-> >>>>
-> >>>> To reproduce:
-> >>>>
-> >>>>          # build kernel
-> >>>>        cd linux
-> >>>>        cp config-5.2.0-rc2-00598-g69d9651 .config
-> >>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 olddefconfig
-> >>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 prepare
-> >>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 modules_prepare
-> >>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 SHELL=/bin/bash
-> >>>>        make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 bzImage
-> >>>>
-> >>>>
-> >>>>          git clone https://github.com/intel/lkp-tests.git
-> >>>>          cd lkp-tests
-> >>>>          bin/lkp qemu -k <bzImage> job-script # job-script is attached in this email
-> >>>>
-> >>>>
-> >>>>
-> >>>> Thanks,
-> >>>> Rong Chen
-> >>>>
-> >> <mega snip>
+> > > libbpf: BTF_is #
+> > > # test_libbpf failed at file test_l4lb.o
+> > > failed: at_file #
+> > > # selftests test_libbpf [FAILED]
+> > > test_libbpf: [FAILED]_ #
+> > > [FAIL] 29 selftests bpf test_libbpf.sh
+> > > selftests: bpf_test_libbpf.sh [FAIL]
+> > >
+> > > Full test log,
+> > > https://qa-reports.linaro.org/lkft/linux-next-oe/build/next-20190619/testrun/781777/log
+> > >
+> > > Test results comparison,
+> > > https://qa-reports.linaro.org/lkft/linux-next-oe/tests/kselftest/bpf_test_libbpf.sh
+> > >
+> > > Good linux -next tag: next-20190617
+> > > Bad linux -next tag: next-20190618
+> > > git branch     master
+> > > git commit    1c6b40509daf5190b1fd2c758649f7df1da4827b
+> > > git repo
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> > >
+> > > Best regards
+> > > Naresh Kamboju
+>
+> --
+> Linaro - Kernel Validation
