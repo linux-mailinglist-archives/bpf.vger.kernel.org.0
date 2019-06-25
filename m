@@ -2,122 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C26255330
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 17:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550B255376
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 17:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730777AbfFYPTu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jun 2019 11:19:50 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:34896 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728199AbfFYPTt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jun 2019 11:19:49 -0400
-Received: by mail-lj1-f193.google.com with SMTP id x25so16702465ljh.2;
-        Tue, 25 Jun 2019 08:19:48 -0700 (PDT)
+        id S1732396AbfFYPcC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jun 2019 11:32:02 -0400
+Received: from mail-io1-f44.google.com ([209.85.166.44]:35047 "EHLO
+        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732384AbfFYPcC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jun 2019 11:32:02 -0400
+Received: by mail-io1-f44.google.com with SMTP id m24so886542ioo.2
+        for <bpf@vger.kernel.org>; Tue, 25 Jun 2019 08:32:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yrN/5+nIk9S5vTMVxcvBLKV3zzehKDZFkyMuquWsH68=;
-        b=S2bKsaLhKFOfEvS9Nl05a4NLWHGAZi7SsAJ3e9lFuzC77wlYf/07wx6SVRNPN056xC
-         rI91bQ2cL6eTqkhDpVjk6AfDbs5yMuPoZ/wHG5a1YyS5rPNErFuz1E6hYeQiPKCLIYQy
-         n0Du8a/WbIE/tU6mmh2vCwmOXIza5u9gdMtC+amXPu/nu9kWdj4iHayoO5fIZqR5oPvM
-         qZ6yP1WjWWqULpKGb6MUWAJj7d+5QFuy2K+lCHkVLH/iQuq8CwCi1JetYY7vfi9aOj4b
-         qJ+pYXmz23Z3DD07c7n5j/xsT02DJlyKtzu4StCu+e+ZuJhKAY3FJsCTJR5vAYfR/n6H
-         PuWw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=pl6j18xP2teXBCXiFz1+ekHc82RO1v4dtHxUKcwmnSI=;
+        b=xYnG3hJyz4khT/uJKxphyWjZQFQ//q3hlVe230M5KEJnEbld76vZxH0dhqV8TKmWJo
+         8zg7zuJTixxzeq6fETCF+7hxbRsPwcKAEkCZab4RmBRlN5IMuVc3B4C7pXw2hM4IWaoE
+         +viBxP25ebZesMJgXEzosY21FqBH7jtJfUlmzSk9Xqaf1KVqMPvFeGw9qYdI1FAyqUaT
+         zo13+vCCbXRgCJrm0BskV1m1GDyXrPUMogAFwWyI+mpp5Lh2zh74nwwVqsWMctY04xV2
+         VGsgpcQXYd/nJHwJT/YRiRjkz9nda3bfc/nAg3kYnlZZYJDQVbNjlIO8uYcb4Ckl6opv
+         hz6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yrN/5+nIk9S5vTMVxcvBLKV3zzehKDZFkyMuquWsH68=;
-        b=pfqfnwTdrWcnyY/E4OR+UeIAdZD5oK03J5lTKTZ8ABdJpnYyAQ2FexMs8O6gWbJBV0
-         JLeeRzBtVfTWqMpqjYPGdk3dM44r58/MxG2dAR5SOEEG4XB7Avw4M3j7RessBE3DflHI
-         lXAaJeIpDQMJUG6i8gGAx0QSOpwNoABrABjBt8DyuOiYZOCQQgPC6/RMs7W0ihvcG2sy
-         WnbvN6+7bH5LKJ4mGodfDLzzLYWjOsmHy0wkyrH9/IKU55aVnnfSSy+pIqSmJFgGlw6x
-         +0dFia0WWIunUK97+9v7jWvlc7PsEULy69TBx6CmTSpB6idX/n2BRGroBz40y3O2Rej8
-         OKMQ==
-X-Gm-Message-State: APjAAAUjyR1ntu5rvQ9WQbPBsB60g5i5r5ytPPaCEqy04+ZJ8C/R2/UZ
-        yWLEWNwa97P2c74bFqtJJFsascFRZSlfka2ZAck=
-X-Google-Smtp-Source: APXvYqzfMKg4ZO2wrQpg3S8XMaHhJqWEmlU38FuZYYbSRKWkwz+ztC+lsEWGkD1Hzi/yea7tiMjxyfLL5dtOyXMYFqA=
-X-Received: by 2002:a2e:a311:: with SMTP id l17mr64124534lje.214.1561475987379;
- Tue, 25 Jun 2019 08:19:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <a5fb2545a0cf151bc443efa10c16c5a4de6f2670.1561460681.git.baruch@tkos.co.il>
- <CAADnVQJ3MPVCL-0x2gDYbUQsrmu8WipnisqXoU8ja4vZ-5nTmA@mail.gmail.com> <20190625150835.GA24947@altlinux.org>
-In-Reply-To: <20190625150835.GA24947@altlinux.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 25 Jun 2019 08:19:35 -0700
-Message-ID: <CAADnVQJNLk7tAHRHr7V7ugvCX9iCjaH4_vS9YuNWcMpwnA6ZyA@mail.gmail.com>
-Subject: Re: [PATCH v2] bpf: fix uapi bpf_prog_info fields alignment
-To:     "Dmitry V. Levin" <ldv@altlinux.org>
-Cc:     Baruch Siach <baruch@tkos.co.il>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=pl6j18xP2teXBCXiFz1+ekHc82RO1v4dtHxUKcwmnSI=;
+        b=efcI6hkOx8F5lyC/HDdm9vRKskOjFTI5sPzhwBYpj6gBE1UudV39cthJRqyfvy+yeJ
+         DzTK0Svs/B6ZGZux2fv7hFGEECa7tUksv5RvGSfiXMVTJXvnJ/0fu9fbkPp5gkgV5fWK
+         FpzDg52PRKJ+JWXFjQd4IGtTU+M28w/jKshbblgN5bB+qNNIKttYezDjv1RMpFQ+iGzi
+         Uru/8XjOnwXpBKFPqHe1c87rp1kZ/3c1ZVU6GSKYjljLC8GCKMofcF9wEXBwfY1pjUtn
+         5qRn8DhVZLIPb18ENaT5zhz4qc4psjHmBQt2lVNB2YDhKv+4a1K3D44631QI+ZVckTLw
+         RaXQ==
+X-Gm-Message-State: APjAAAXzvgcR7jXhokF7qCUf8nwF1q1qElEtttGATKuUyVey2sQkS0BL
+        qjL0MszFP1yBfUmmB977VTy7EA==
+X-Google-Smtp-Source: APXvYqyYSRUYb1ugPr+PA2M18DdrwhkX5IV3FjKk+sfHRCpVUDQ/fPnQ7D2WX3PZI8HQcUgp3KoyyA==
+X-Received: by 2002:a02:bb05:: with SMTP id y5mr25232740jan.93.1561476721092;
+        Tue, 25 Jun 2019 08:32:01 -0700 (PDT)
+Received: from localhost (c-75-72-120-115.hsd1.mn.comcast.net. [75.72.120.115])
+        by smtp.gmail.com with ESMTPSA id c2sm11755771iok.53.2019.06.25.08.32.00
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 25 Jun 2019 08:32:00 -0700 (PDT)
+Date:   Tue, 25 Jun 2019 10:31:59 -0500
+From:   Dan Rue <dan.rue@linaro.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Xdp <xdp-newbies@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Shuah Khan <shuah@kernel.org>
+Subject: Re: selftests: bpf: test_libbpf.sh failed at file test_l4lb.o
+Message-ID: <20190625153159.5utnn36dgku5545n@xps.therub.org>
+References: <CA+G9fYsMcdHmKY66CNhsrizO-gErkOQCkTcBSyOHLpOs+8g5=g@mail.gmail.com>
+ <CAEf4BzbTD8G_zKkj-S3MOeG5Hq3_2zz3bGoXhQtpt0beG8nWJA@mail.gmail.com>
+ <20190621161752.d7d7n4m5q67uivys@xps.therub.org>
+ <CAEf4BzaSoKA5H5rN=w+OAtUz4bD30-VOjjjY+Qv9tTAnhMweiA@mail.gmail.com>
+ <20190624195336.nubi7n2np5vfjutr@xps.therub.org>
+ <CAADnVQKZycXgSw6C0qa7g0y=W3xRhM_4Rqcj7ZzL=rGh_n4mgA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQKZycXgSw6C0qa7g0y=W3xRhM_4Rqcj7ZzL=rGh_n4mgA@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 25, 2019 at 8:08 AM Dmitry V. Levin <ldv@altlinux.org> wrote:
->
-> On Tue, Jun 25, 2019 at 07:16:55AM -0700, Alexei Starovoitov wrote:
-> > On Tue, Jun 25, 2019 at 4:07 AM Baruch Siach <baruch@tkos.co.il> wrote:
-> > >
-> > > Merge commit 1c8c5a9d38f60 ("Merge
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next") undid the
-> > > fix from commit 36f9814a494 ("bpf: fix uapi hole for 32 bit compat
-> > > applications") by taking the gpl_compatible 1-bit field definition from
-> > > commit b85fab0e67b162 ("bpf: Add gpl_compatible flag to struct
-> > > bpf_prog_info") as is. That breaks architectures with 16-bit alignment
-> > > like m68k. Embed gpl_compatible into an anonymous union with 32-bit pad
-> > > member to restore alignment of following fields.
-> > >
-> > > Thanks to Dmitry V. Levin his analysis of this bug history.
-> > >
-> > > Cc: Jiri Olsa <jolsa@kernel.org>
-> > > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> > > Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> > > Signed-off-by: Baruch Siach <baruch@tkos.co.il>
-> > > ---
-> > > v2:
-> > > Use anonymous union with pad to make it less likely to break again in
-> > > the future.
-> > > ---
-> > >  include/uapi/linux/bpf.h       | 5 ++++-
-> > >  tools/include/uapi/linux/bpf.h | 5 ++++-
-> > >  2 files changed, 8 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index a8b823c30b43..766eae02d7ae 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -3142,7 +3142,10 @@ struct bpf_prog_info {
-> > >         __aligned_u64 map_ids;
-> > >         char name[BPF_OBJ_NAME_LEN];
-> > >         __u32 ifindex;
-> > > -       __u32 gpl_compatible:1;
-> > > +       union {
-> > > +               __u32 gpl_compatible:1;
-> > > +               __u32 pad;
-> > > +       };
+On Mon, Jun 24, 2019 at 12:58:15PM -0700, Alexei Starovoitov wrote:
+> On Mon, Jun 24, 2019 at 12:53 PM Dan Rue <dan.rue@linaro.org> wrote:
 > >
-> > Nack for the reasons explained in the previous thread
-> > on the same subject.
-> > Why cannot you go with earlier suggestion of _u32 :31; ?
->
-> By the way, why not use aligned types as suggested by Geert?
-> They are already used for other members of struct bpf_prog_info anyway.
->
-> FWIW, we use aligned types for bpf in strace and that approach
-> proved to be more robust than manual padding.
+> > I would say if it's not possible to check at runtime, and it requires
+> > clang 9.0, that this test should not be enabled by default.
+> 
+> The latest clang is the requirement.
+> If environment has old clang or no clang at all these tests will be failing.
 
-because __aligned_u64 is used for pointers.
+Hi Alexei!
+
+I'm not certain if I'm interpreting you as you intended, but it sounds
+like you're telling me that if the test build environment does not use
+'latest clang' (i guess latest as of today?), that these tests will
+fail, and that is how it is going to be. If I have that wrong, please
+correct me and disregard the rest of my message.
+
+Please understand where we are coming from. We (and many others) run
+thousands of tests from a lot of test frameworks, and so our environment
+often has mutually exclusive requirements when it comes to things like
+toolchain selection.
+
+We believe, strongly, that a test should not emit a "fail" for a missing
+requirement. Fail is a serious thing, and should be reserved for an
+actual issue that needs to be investigated, reported, and fixed.
+
+This is how we treat test failures - we investigate, report, and fix
+them when possible. When they're not real failures, we waste our time
+(and yours, in this case).
+
+By adding the tests to TEST_GEN_PROGS, you're adding them to the general
+test set that those of us running test farms try to run continuously
+across a wide range of hardware environments and kernel branches.
+
+My suggestion is that if you do not want us running them, don't add them
+to TEST_GEN_PROGS. I thought the suggestion of testing for adequate
+clang support and adding them conditionally at build-time was an idea
+worth consideration.
+
+Thanks,
+Dan
+
+-- 
+Linaro - Kernel Validation
