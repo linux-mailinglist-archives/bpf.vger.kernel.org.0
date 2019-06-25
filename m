@@ -2,107 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE5CD55064
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 15:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A45205513E
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 16:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729683AbfFYNbg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jun 2019 09:31:36 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:43296 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726506AbfFYNbg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jun 2019 09:31:36 -0400
-Received: by mail-qt1-f194.google.com with SMTP id w17so18326938qto.10;
-        Tue, 25 Jun 2019 06:31:35 -0700 (PDT)
+        id S1729693AbfFYOLt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jun 2019 10:11:49 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:41113 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727913AbfFYOLt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jun 2019 10:11:49 -0400
+Received: by mail-lf1-f65.google.com with SMTP id 136so12752194lfa.8
+        for <bpf@vger.kernel.org>; Tue, 25 Jun 2019 07:11:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mTryXtUWZqdyVYM1MueH/eKMt0k4lXrA890nDMjDJvw=;
-        b=gvDSZnncVmD2ytXixlXbMbg5H6QJllwyMAlYP37Q2Rh7uOK9Vik0GdWSC9NYc0glNG
-         ksFkbXFn5y8meUo/3FTCikNiJ2ctFCJ21jS3tddKbf2EbcRdLSjdbvkM7dHOEIszk6GX
-         nXaGWsIisFaSrjBFClP833Abn8KE+ZZi31CdEpju6znv5Wt29o3ZMufQD5lbRsG7jzfv
-         70TJ7MZvQrFYaAdRcyb4TQ3EGGqq/g3MjcSXnw/1aY5hf7wUQpR3wG3mG7lOtNcZAID/
-         z6JGINdlFulUlsRPvdAEPu5+/O9hyGqQi0K8Eo2b/BEsNeUL95uMFkW7FYUFw7QcQWg/
-         8EFA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=gYuJuPOZBk4Y/I55Xfw4nMllA34HbJMTlhwO9fs6sKE=;
+        b=RrGdRYr/3/VMp2ftn6ZpAtSc6E+i+LepBHyiDnqE/7RSQxXYyCk/+3N4RfHuaFPwBu
+         tIT+EtcczTiCbyoETK9FM7l3NGlIumcG6DYtRf3yuUjQSV7eqRrigrh+UhqQXjwI/r3U
+         bjZLIwU1ZHKJRXRetaNlUJOVk7rWnS43NZ62J+z3IbLnaZBQBMXcMAJ4C+ju6cBs/aTM
+         I9q/W4hvLc3xIQrLRpTUM7BNPSTU6K6BwCmHP3JfUAuE48Etj+TfO8o6DoYAAdGyw3v9
+         ZsUT2Xxnmc7jwRXmX6+6VY8PJcUE9q5Qg696QWBZkYlRbffGARZ+SgiXI8ceAwTc78bc
+         Ouzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mTryXtUWZqdyVYM1MueH/eKMt0k4lXrA890nDMjDJvw=;
-        b=C91MB5R9m/dNUYhpZrl1/7OrH7VeJWw9qlGcWVIdJXt4sEmlMZ9CIjk6sItIySLwTb
-         83qoGDVLrEVURgGRhg9+JJhbWw3AZ7WXA0cJHralpC2l3IsayR8sfJ88GsuGrFIQeWzk
-         a0oeAYglEblLcyL4gHYrmXcATrtIPr5C2Z4rad0+HNBFJq1QnwzwP4ERP0pHVEY56nh/
-         54QrZd5PRQ9uHxnLwfCpgLnaeTCdHvBe9iCTtNVF0j2DcOHKy6Iv7opmBwQhwEs0HxMH
-         BUN0lte5mIeuwpTEA1/Qfi/IWXlCzU0QztVMq0jdhMrCtDb9dxfInE8qEy+uHsvSFSWf
-         HHLw==
-X-Gm-Message-State: APjAAAV8/xwlPhHp6B+mE5Oud3cyUIVS2VEtjP6ccfBS+Y7/HvmDfk9U
-        Puil8H+D1LFGct8lY+88qMQ9E6xW224B8THJYCU=
-X-Google-Smtp-Source: APXvYqw93V5DoDhXhejhj7LdjZ9geUpk1V22E1asOy5waiHJJSohXy4kgAUk0THZBvXINDQz5eWHHsdu72HjzoJXjVc=
-X-Received: by 2002:aed:38c2:: with SMTP id k60mr59654852qte.83.1561469495259;
- Tue, 25 Jun 2019 06:31:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190625005536.2516-1-danieltimlee@gmail.com> <878stqdoc9.fsf@toke.dk>
- <20190625120543.12b25184@carbon>
-In-Reply-To: <20190625120543.12b25184@carbon>
-From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Tue, 25 Jun 2019 06:31:24 -0700
-Message-ID: <CAPhsuW4RaLzpfOtw4E3cah2PF5jiAmUnWRq1HQoEiKhVitBs5w@mail.gmail.com>
-Subject: Re: [PATCH v2] samples: bpf: make the use of xdp samples consistent
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        "Daniel T. Lee" <danieltimlee@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=gYuJuPOZBk4Y/I55Xfw4nMllA34HbJMTlhwO9fs6sKE=;
+        b=YtEAm6SUEHAsSE8mVyL7ER6eQHrWfkzMxmNBLrIF6++t4ygUPQzORUptpx6of5E85k
+         42kV7mfIvY2PIdEjxVPO6inBqA7AL0+xH6G4izUyrO17IJD+HvFH4c8O5+yUfMNZGFk/
+         aRLL0zoD+6wDHHzqPJvGz9iqutwEDVZioIM+1ZYYWOo4Ye1W/DlZ5QLkzef7MWSboLrA
+         30q2e0GhEb4huJmxZCFRqEnfL0cH02SY2xpDn9ubCu9fIUEndS4uM5SnSduC6r4UcWZh
+         HvxvVyVyn++2hNkSBRwXBB6Kr/oCdzwoOJ1DAEhjdfBupuu0CDzwaMphzt+wDAiYo0Gu
+         /O0Q==
+X-Gm-Message-State: APjAAAUGvLR/cPLRuWA1asBb6cL2/y+0FRjwHkRRY3DWLg8NbpT5ICdR
+        M0AbWp1y/jL+dvrRcGrN6eZkVA==
+X-Google-Smtp-Source: APXvYqymCGzBxYFBh6NDuxj2Z0bP9KTLDNIFnB0YdKzFofu+smjIUtjZXqAQj1DCj8d9p2R1wtj91w==
+X-Received: by 2002:ac2:4901:: with SMTP id n1mr2442751lfi.153.1561471906859;
+        Tue, 25 Jun 2019 07:11:46 -0700 (PDT)
+Received: from localhost.localdomain (59-201-94-178.pool.ukrtel.net. [178.94.201.59])
+        by smtp.gmail.com with ESMTPSA id z12sm1971522lfg.67.2019.06.25.07.11.45
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 25 Jun 2019 07:11:46 -0700 (PDT)
+From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+To:     ast@kernel.org, netdev@vger.kernel.org
+Cc:     daniel@iogearbox.net, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+Subject: [PATCH net-next] tools: lib: bpf: libbpf: fix max() type mistmatch for 32bit
+Date:   Tue, 25 Jun 2019 17:11:42 +0300
+Message-Id: <20190625141142.2378-1-ivan.khoronzhuk@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 25, 2019 at 5:09 AM Jesper Dangaard Brouer
-<brouer@redhat.com> wrote:
->
-> On Tue, 25 Jun 2019 11:08:22 +0200
-> Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
->
-> > "Daniel T. Lee" <danieltimlee@gmail.com> writes:
-> >
-> > > Currently, each xdp samples are inconsistent in the use.
-> > > Most of the samples fetch the interface with it's name.
-> > > (ex. xdp1, xdp2skb, xdp_redirect_cpu, xdp_sample_pkts, etc.)
-> > >
-> > > But some of the xdp samples are fetching the interface with
-> > > ifindex by command argument.
-> > >
-> > > This commit enables xdp samples to fetch interface with it's name
-> > > without changing the original index interface fetching.
-> > > (<ifname|ifindex> fetching in the same way as xdp_sample_pkts_user.c =
-does.)
-> > >
-> > > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+It fixes build error for 32bit coused by type mistmatch
+size_t/unsigned long.
 
-Acked-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+---
 
-> > > ---
-> > > Changes in v2:
-> > >   - added xdp_redirect_user.c, xdp_redirect_map_user.c
-> >
-> > Great, thanks!
-> >
-> > Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->
-> Great you basically solved one of our TODOs:
-> - TODO Change sample programs to accept ifnames as well as indexes
->
-> https://github.com/xdp-project/xdp-project/blob/master/xdp-project.org#ne=
-xt-change-sample-programs-to-accept-ifnames-as-well-as-indexes
->
-> Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
->
-> --
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
+Based on net-next/master
+
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 4259c9f0cfe7..d03016a559e2 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -778,7 +778,7 @@ static struct bpf_map *bpf_object__add_map(struct bpf_object *obj)
+ 	if (obj->nr_maps < obj->maps_cap)
+ 		return &obj->maps[obj->nr_maps++];
+ 
+-	new_cap = max(4ul, obj->maps_cap * 3 / 2);
++	new_cap = max((size_t)4, obj->maps_cap * 3 / 2);
+ 	new_maps = realloc(obj->maps, new_cap * sizeof(*obj->maps));
+ 	if (!new_maps) {
+ 		pr_warning("alloc maps for object failed\n");
+-- 
+2.17.1
+
