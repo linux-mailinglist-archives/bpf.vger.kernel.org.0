@@ -2,131 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B74F552620
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 10:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8F852785
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 11:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727770AbfFYIMD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jun 2019 04:12:03 -0400
-Received: from mail-lj1-f175.google.com ([209.85.208.175]:43433 "EHLO
-        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726663AbfFYIMD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jun 2019 04:12:03 -0400
-Received: by mail-lj1-f175.google.com with SMTP id 16so15265635ljv.10
-        for <bpf@vger.kernel.org>; Tue, 25 Jun 2019 01:12:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=TssOUjbGd5SYsb/yN6BqO3kY0oJLgMIeiNuXJ4cyD0k=;
-        b=o4neqAjDlr8FYHVYXZILGQkzpsL8XjC6wzX4fIz+dRwFZ4DmXsBQzvdIYYOtIInk4w
-         qw9fHrWxOpjVFp/Nh38LpcBLWFGtzB8DC/1bWVuDiAYXnFOwyPq9Vr6ACUNJJ5YUtadQ
-         gWimyQuIdpr3QzzM2dC8VnTOfNOyEBZQ7GJD8=
+        id S1729730AbfFYJIZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 25 Jun 2019 05:08:25 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:44770 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729164AbfFYJIY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jun 2019 05:08:24 -0400
+Received: by mail-ed1-f68.google.com with SMTP id k8so25999540edr.11
+        for <bpf@vger.kernel.org>; Tue, 25 Jun 2019 02:08:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=TssOUjbGd5SYsb/yN6BqO3kY0oJLgMIeiNuXJ4cyD0k=;
-        b=KLKEvPk3ln5Bdn02Hjnq2rF9UbcURNkOTM/nHo/GWSbzObMKKj/XcgBgoTy913KF70
-         nUM6KiUE/SksthzIkkv4xyTegMqKFXHbSnW64urlYPgL05ZimvcUh7dQDQRIutYbsxsf
-         wvgTwKtKW6lGmOrwvkvNcLzeFNzp+Xa7r4xTVE8eePxImj76iT4PMTIoPq0rdzfAqXhk
-         Js9IR2bEC5MNUgFMBnssMep4VkWD3LdW5Fvj7jLWfj+fT40iBHVhhxCJ97zCEHcUReum
-         SbhLDJ+6XNjIgjCSIDMiTMREH087dKt4VACEnjzTfTHJw0sk5gxb3UOqK8OE0mpIkAcO
-         E+QQ==
-X-Gm-Message-State: APjAAAWukwxYajLj7PcyyTYmg8q2dZHi/8A9o+gCTrqK2GmFIDzTlmlv
-        QhaG44sNmEW6NpKB9iwi7k3eng==
-X-Google-Smtp-Source: APXvYqyxu+O3OcdM8vwr3n8onQ4EyvySdbslZdkKIxtcVW6ejHEZOM2qMcit4+niHinuRKs6FY65JQ==
-X-Received: by 2002:a2e:890a:: with SMTP id d10mr41312773lji.145.1561450320764;
-        Tue, 25 Jun 2019 01:12:00 -0700 (PDT)
-Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id c12sm1826055lfj.58.2019.06.25.01.11.59
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=p826yz7xrmb/dtygzOjwnRJYVkCeMNGjVrwTiRVJZzU=;
+        b=MTRC7diTIfjMjsBpxyai059uL+WWmc9TINLNavwDxzTjQQHENAYxE/4HQTyEtsMiii
+         CJ7UImI3VBrmQs5jcV9ZGRQdPPgQDbfA02q5iKkTN184HJGpZ6LW2XBVn4tTkZcaKZaA
+         1F96bEuTSeii3S2YVHFQ7vEXnS1XtoF+LwSVsrQ30X+B9POvfbasYQY+Zwp1Ysng+dZG
+         Bu4R2Ht0eprUa9cBMfShG9lZRHsqjSpSUahl5Hfare+akWqclKd5V/hasNeQmH8a0MtY
+         AVFleG1nGqAHlY54OPDKheuOyRmIMWvd6Je9lwItlKq2N+rV7YuMR9nX+Ja5YSHQcMDe
+         AOrg==
+X-Gm-Message-State: APjAAAWlumD9abLkf6/UnPMJ3q11mxIbUcAP/TNGs7JJC4ERAjHvuTcA
+        yyhZX7DNuIAqc1eSC9kfp2zS6Q==
+X-Google-Smtp-Source: APXvYqyCdZoQKzpVGmDEkqwdoquR6Zo4COTDT/sVVSdAEBy6ZA14go0xVZPkihAf1uP+MoeTw/lBAA==
+X-Received: by 2002:a50:fb86:: with SMTP id e6mr43394900edq.203.1561453703247;
+        Tue, 25 Jun 2019 02:08:23 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id g16sm4598529edc.76.2019.06.25.02.08.22
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 25 Jun 2019 01:12:00 -0700 (PDT)
-References: <20190618130050.8344-1-jakub@cloudflare.com> <20190618135258.spo6c457h6dfknt2@breakpoint.cc> <87sgs6ey43.fsf@cloudflare.com> <CAOftzPj6NWyWnz4JL-mXBaQUKAvQDtKJTrjZmrN4W5rqoy-W0A@mail.gmail.com> <CAGn+7TUmgsA8oKw-mM6S5iR4rmNt6sWxjUgw8=qSCHb=m0ROyg@mail.gmail.com> <CAOftzPhGVeLpqbffLwBP8JCvY1t65-uXztEsZV0qJEQapywRgg@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 26.1
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Joe Stringer <joe@wand.net.nz>
-Cc:     Florian Westphal <fw@strlen.de>, netdev <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org, kernel-team@cloudflare.com
-Subject: Re: [RFC bpf-next 0/7] Programming socket lookup with BPF
-In-reply-to: <CAOftzPhGVeLpqbffLwBP8JCvY1t65-uXztEsZV0qJEQapywRgg@mail.gmail.com>
-Date:   Tue, 25 Jun 2019 10:11:59 +0200
-Message-ID: <875zouccds.fsf@cloudflare.com>
+        Tue, 25 Jun 2019 02:08:22 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 19CAB1800B0; Tue, 25 Jun 2019 11:08:22 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     "Daniel T. Lee" <danieltimlee@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2] samples: bpf: make the use of xdp samples consistent
+In-Reply-To: <20190625005536.2516-1-danieltimlee@gmail.com>
+References: <20190625005536.2516-1-danieltimlee@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 25 Jun 2019 11:08:22 +0200
+Message-ID: <878stqdoc9.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 21, 2019 at 06:50 PM CEST, Joe Stringer wrote:
-> On Fri, Jun 21, 2019 at 1:44 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->>
->> On Fri, Jun 21, 2019, 00:20 Joe Stringer <joe@wand.net.nz> wrote:
->>>
->>> On Wed, Jun 19, 2019 at 2:14 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->>> >
->>> > Hey Florian,
->>> >
->>> > Thanks for taking a look at it.
->>> >
->>> > On Tue, Jun 18, 2019 at 03:52 PM CEST, Florian Westphal wrote:
->>> > > Jakub Sitnicki <jakub@cloudflare.com> wrote:
->>> > >>  - XDP programs using bpf_sk_lookup helpers, like load balancers, can't
->>> > >>    find the listening socket to check for SYN cookies with TPROXY redirect.
->>> > >
->>> > > Sorry for the question, but where is the problem?
->>> > > (i.e., is it with TPROXY or bpf side)?
->>> >
->>> > The way I see it is that the problem is that we have mappings for
->>> > steering traffic into sockets split between two places: (1) the socket
->>> > lookup tables, and (2) the TPROXY rules.
->>> >
->>> > BPF programs that need to check if there is a socket the packet is
->>> > destined for have access to the socket lookup tables, via the mentioned
->>> > bpf_sk_lookup helper, but are unaware of TPROXY redirects.
->>> >
->>> > For TCP we're able to look up from BPF if there are any established,
->>> > request, and "normal" listening sockets. The listening sockets that
->>> > receive connections via TPROXY are invisible to BPF progs.
->>> >
->>> > Why are we interested in finding all listening sockets? To check if any
->>> > of them had SYN queue overflow recently and if we should honor SYN
->>> > cookies.
->>>
->>> Why are they invisible? Can't you look them up with bpf_skc_lookup_tcp()?
->>
->>
->> They are invisible in that sense that you can't look them up using the packet 4-tuple. You have to somehow make the XDP/TC progs aware of the TPROXY redirects to find the target sockets.
+"Daniel T. Lee" <danieltimlee@gmail.com> writes:
+
+> Currently, each xdp samples are inconsistent in the use.
+> Most of the samples fetch the interface with it's name.
+> (ex. xdp1, xdp2skb, xdp_redirect_cpu, xdp_sample_pkts, etc.)
 >
-> Isn't that what you're doing in the example from the cover letter
-> (reincluded below for reference), except with the new program type
-> rather than XDP/TC progs?
+> But some of the xdp samples are fetching the interface with
+> ifindex by command argument.
 >
->        switch (bpf_ntohl(ctx->local_ip4) >> 8) {
->         case NET1:
->                 ctx->local_ip4 = bpf_htonl(IP4(127, 0, 0, 1));
->                 ctx->local_port = 81;
->                 return BPF_REDIRECT;
->         case NET2:
->                 ctx->local_ip4 = bpf_htonl(IP4(127, 0, 0, 1));
->                 ctx->local_port = 82;
->                 return BPF_REDIRECT;
->         }
+> This commit enables xdp samples to fetch interface with it's name
+> without changing the original index interface fetching.
+> (<ifname|ifindex> fetching in the same way as xdp_sample_pkts_user.c does.)
 >
-> That said, I appreciate that even if you find the sockets from XDP,
-> you'd presumably need some way to retain the socket reference beyond
-> XDP execution to convince the stack to guide the traffic into that
-> socket, which would be a whole other effort. For your use case it may
-> or may not make the most sense.
+> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> ---
+> Changes in v2:
+>   - added xdp_redirect_user.c, xdp_redirect_map_user.c
 
-Granted we're just moving steering logic from one place to another, that
-is from TPROXY rules to a BPF program.
+Great, thanks!
 
-The key here is that the BPF prog runs during inet_lookup.  This let's
-"lower level" BPF progs like XDP or TC check if there is a destination
-socket, without having to know about steering rules.
-
-If there is a local socket, we don't need to do socket dispatch from
-BPF. Just pass the packet up the stack.
-
--Jakub
+Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
