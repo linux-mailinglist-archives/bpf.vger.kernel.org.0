@@ -2,106 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DB055541
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 18:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA76C555A4
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 19:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729336AbfFYQ44 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jun 2019 12:56:56 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:38115 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727763AbfFYQ4z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jun 2019 12:56:55 -0400
-Received: by mail-qk1-f194.google.com with SMTP id a27so13174440qkk.5
-        for <bpf@vger.kernel.org>; Tue, 25 Jun 2019 09:56:54 -0700 (PDT)
+        id S1729348AbfFYRON (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jun 2019 13:14:13 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:40428 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726274AbfFYROM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jun 2019 13:14:12 -0400
+Received: by mail-io1-f67.google.com with SMTP id n5so371924ioc.7
+        for <bpf@vger.kernel.org>; Tue, 25 Jun 2019 10:14:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=y2p8ityIDaupPl7/OXexNbNC6ZcejjBZ8haavOQvh10=;
-        b=B3QW+j4dYV2nDiavFkl+osTt9OxVdbFR3x8sQaa7rc6xmZLpVAexXY5PLGd7+OxnQD
-         6DkfaAQzbc74Xo8cvCnwB+PyrUo9HA+6jxfWgOm4C1GiPs9YilskOKlAC2HLPtyEHLrU
-         S+OR7s+E5R+KSVnMdF4IubmvXj3ZdP3ZEcwr1UC6HXsDuKRc0u0uLtvatuvoEVDVnhRU
-         T/mEGR2un4WCYee2oR8+BoR5j+nKhyvaqTyIUcD97kHzB6SxvKDmer4MAi/sk3hWi+3j
-         cEUVyBRY0x7JGdehxgyWHJehX7XgeWPw+3qilnuQCLNFy5I0y+IRAumMOT7w5TW6vLty
-         QMfw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rIEg9mImdLbOPWr5JcAO9mpGaP6d2/FlgncwQFfkJdw=;
+        b=iFw/1dYYVqRHgcAh1TpJFGK77tujLxqxZtyDQdAChfPK8J2o5Z35qj7HlPTvAoJDh0
+         0LUe8zRzcBUHlMIsII05VrtML3UOjVu/FQEjIrmezQ6XDdecyYt7zJPA5fpXIGdpt63p
+         DHUgZqIHhAHn5Y29772IQWcGUWCAZyj5Z2xwo8VQFeDUCFWyvp8tluEdpnBnrkD63QQv
+         TQwDL87DoNOU7cDCAPKgC+e7rxUyug338krujNQfqkEtiqWde1T1kd0ZNcLYKO+v1JaY
+         zr5Ga8ex+w/NpqHgnMXiK+QpBeUCEVe1JKHl6CYdS6u3bHTHx1BMwcVsbzZ5dFI0KiG1
+         qqsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=y2p8ityIDaupPl7/OXexNbNC6ZcejjBZ8haavOQvh10=;
-        b=XvRLWNSvce/PJ9P8Vq5zq9GwIo3Dta6Ove44ciKaYVGE+yUTCOldUKDxCnyYe06rJx
-         TRC7fIzRt2eNsCBwqEmu9aeTLd+MTbSeH9A5G5M3zGgwCkPttGDYpj/aXYr85KMofafk
-         SXKS0WD3Q2J5pafJQrUz4T/lRhRUKKDptg5KmurpOEeOTiwtF/cb2bAL47T4koAZqiSu
-         An2mL8RHgMBMoSkaIkQG+dNovr6c9yFQ49st1QKu+1YgC1OK+S7nP6rCEEb4PzwLKTlS
-         AlXafr0dA15d4ttzt52S2MSF2AEGTsSUzXqjFk0H5z0FKIQxBI5SZUJDtSgG7e8Td6Cw
-         o7ng==
-X-Gm-Message-State: APjAAAWkauHn9/hhD9Svy92sBWrUdWX8TpR1WTN8Mc44PzJXG/UGSYg+
-        olLknna6C+vmjreI43cMBISSpg==
-X-Google-Smtp-Source: APXvYqxMThCrqiaxhKvM4RAOvEqwYQ2c4112rcXOmOPufAT//6pHLk7iGImUXBfDkzx8CaPdEkAnsg==
-X-Received: by 2002:a37:6652:: with SMTP id a79mr40409380qkc.60.1561481814251;
-        Tue, 25 Jun 2019 09:56:54 -0700 (PDT)
-Received: from jkicinski-Precision-T1700.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id q9sm6704933qtn.86.2019.06.25.09.56.52
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 25 Jun 2019 09:56:53 -0700 (PDT)
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     alexei.starovoitov@gmail.com, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        oss-drivers@netronome.com, guro@fb.com, sdf@google.com,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>
-Subject: [PATCH bpf] tools: bpftool: use correct argument in cgroup errors
-Date:   Tue, 25 Jun 2019 09:56:31 -0700
-Message-Id: <20190625165631.18928-1-jakub.kicinski@netronome.com>
-X-Mailer: git-send-email 2.21.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rIEg9mImdLbOPWr5JcAO9mpGaP6d2/FlgncwQFfkJdw=;
+        b=MxpCvMW9pXFb+to+0FsgvG69WaHiMDPIioUGMidYetpwNrUMmr8byZB72lzr0BPV5u
+         GtZsUz7sXfZpe0Ycfbn8TeHd3ifHtTZtAgP2qPSihMaJWNLBi7pYOSz1zVB1HoGvlSku
+         6rEUk+cFQOEPI+kg3WFc1mgWUbQk75OGlWpzn9MFw4qBUZfwbpC23pqbFRtp5H73jvwJ
+         LyEIS37qIpEcB1mk145uhOu5QDOb9J7Z36sWRKqINk2z01ZIwA+i1vr3GHl53t+/kD5+
+         +Yej2fBeM3alYQcHzuQ9LRXPE3OJRW04B9bKG66GsYi6IfJrcoDkX5rrE1ry9s+nUJ80
+         Ihew==
+X-Gm-Message-State: APjAAAUYFXCLMrMCIfQH8yYfgtd6Rh08kXaeXXtndglAfmWJSpqzGG0v
+        RKSP8KDEjlV5DEx9AjZLfkE70tSb3TIO5h5gI3pHWA==
+X-Google-Smtp-Source: APXvYqxatAKGOw2Hd80AGbHfI0zoxMZ2N12wP/Os4mMS4dOimgUUQdghFbrjzzb/zt7brOd5o3IjqgB2yyjTx1aDKS8=
+X-Received: by 2002:a05:6638:3d6:: with SMTP id r22mr457862jaq.71.1561482851619;
+ Tue, 25 Jun 2019 10:14:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20190617150024.11787-1-leo.yan@linaro.org> <CANLsYkyMW=WG+=yWTLSyMT3JXqd_2kvsrx9c-EwCoKEnRZvErA@mail.gmail.com>
+ <20190620005829.GH24549@leoy-ThinkPad-X240s> <20190624190009.GE4181@kernel.org>
+In-Reply-To: <20190624190009.GE4181@kernel.org>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Tue, 25 Jun 2019 11:14:00 -0600
+Message-ID: <CANLsYkyOOS_ow_bRpok+V73_EBRg2yechwF0VHLtDBWB4VBEBw@mail.gmail.com>
+Subject: Re: [PATCH] perf cs-etm: Improve completeness for kernel address space
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Leo Yan <leo.yan@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Suzuki Poulouse <suzuki.poulose@arm.com>,
+        Coresight ML <coresight@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-cgroup code tries to use argv[0] as the cgroup path,
-but if it fails uses argv[1] to report errors.
+On Mon, 24 Jun 2019 at 13:00, Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
+>
+> Em Thu, Jun 20, 2019 at 08:58:29AM +0800, Leo Yan escreveu:
+> > Hi Mathieu,
+> >
+> > On Wed, Jun 19, 2019 at 11:49:44AM -0600, Mathieu Poirier wrote:
+> >
+> > [...]
+> >
+> > > > diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> > > > index 51dd00f65709..4776c2c1fb6d 100644
+> > > > --- a/tools/perf/Makefile.config
+> > > > +++ b/tools/perf/Makefile.config
+> > > > @@ -418,6 +418,30 @@ ifdef CORESIGHT
+> > > >      endif
+> > > >      LDFLAGS += $(LIBOPENCSD_LDFLAGS)
+> > > >      EXTLIBS += $(OPENCSDLIBS)
+> > > > +    ifneq ($(wildcard $(srctree)/arch/arm64/kernel/vmlinux.lds),)
+> > > > +      # Extract info from lds:
+> > > > +      #  . = ((((((((0xffffffffffffffff)) - (((1)) << (48)) + 1) + (0)) + (0x08000000))) + (0x08000000))) + 0x00080000;
+> > > > +      # ARM64_PRE_START_SIZE := (0x08000000 + 0x08000000 + 0x00080000)
+> > > > +      ARM64_PRE_START_SIZE := $(shell egrep ' \. \= \({8}0x[0-9a-fA-F]+\){2}' \
+> > > > +        $(srctree)/arch/arm64/kernel/vmlinux.lds | \
+> > > > +        sed -e 's/[(|)|.|=|+|<|;|-]//g' -e 's/ \+/ /g' -e 's/^[ \t]*//' | \
+> > > > +        awk -F' ' '{print "("$$6 "+"  $$7 "+" $$8")"}' 2>/dev/null)
+> > > > +    else
+> > > > +      ARM64_PRE_START_SIZE := 0
+> > > > +    endif
+> > > > +    CFLAGS += -DARM64_PRE_START_SIZE="$(ARM64_PRE_START_SIZE)"
+> > > > +    ifneq ($(wildcard $(srctree)/arch/arm/kernel/vmlinux.lds),)
+> > > > +      # Extract info from lds:
+> > > > +      #   . = ((0xC0000000)) + 0x00208000;
+> > > > +      # ARM_PRE_START_SIZE := 0x00208000
+> > > > +      ARM_PRE_START_SIZE := $(shell egrep ' \. \= \({2}0x[0-9a-fA-F]+\){2}' \
+> > > > +        $(srctree)/arch/arm/kernel/vmlinux.lds | \
+> > > > +        sed -e 's/[(|)|.|=|+|<|;|-]//g' -e 's/ \+/ /g' -e 's/^[ \t]*//' | \
+> > > > +        awk -F' ' '{print "("$$2")"}' 2>/dev/null)
+> > > > +    else
+> > > > +      ARM_PRE_START_SIZE := 0
+> > > > +    endif
+> > > > +    CFLAGS += -DARM_PRE_START_SIZE="$(ARM_PRE_START_SIZE)"
+> > > >      $(call detected,CONFIG_LIBOPENCSD)
+> > > >      ifdef CSTRACE_RAW
+> > > >        CFLAGS += -DCS_DEBUG_RAW
+> > > > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> > > > index 0c7776b51045..ae831f836c70 100644
+> > > > --- a/tools/perf/util/cs-etm.c
+> > > > +++ b/tools/perf/util/cs-etm.c
+> > > > @@ -613,10 +613,34 @@ static void cs_etm__free(struct perf_session *session)
+> > > >  static u8 cs_etm__cpu_mode(struct cs_etm_queue *etmq, u64 address)
+> > > >  {
+> > > >         struct machine *machine;
+> > > > +       u64 fixup_kernel_start = 0;
+> > > > +       const char *arch;
+> > > >
+> > > >         machine = etmq->etm->machine;
+> > > > +       arch = perf_env__arch(machine->env);
+> > > >
+> > > > -       if (address >= etmq->etm->kernel_start) {
+> > > > +       /*
+> > > > +        * Since arm and arm64 specify some memory regions prior to
+> > > > +        * 'kernel_start', kernel addresses can be less than 'kernel_start'.
+> > > > +        *
+> > > > +        * For arm architecture, the 16MB virtual memory space prior to
+> > > > +        * 'kernel_start' is allocated to device modules, a PMD table if
+> > > > +        * CONFIG_HIGHMEM is enabled and a PGD table.
+> > > > +        *
+> > > > +        * For arm64 architecture, the root PGD table, device module memory
+> > > > +        * region and BPF jit region are prior to 'kernel_start'.
+> > > > +        *
+> > > > +        * To reflect the complete kernel address space, compensate these
+> > > > +        * pre-defined regions for kernel start address.
+> > > > +        */
+> > > > +       if (!strcmp(arch, "arm64"))
+> > > > +               fixup_kernel_start = etmq->etm->kernel_start -
+> > > > +                                    ARM64_PRE_START_SIZE;
+> > > > +       else if (!strcmp(arch, "arm"))
+> > > > +               fixup_kernel_start = etmq->etm->kernel_start -
+> > > > +                                    ARM_PRE_START_SIZE;
+> > >
+> > > I will test your work but from a quick look wouldn't it be better to
+> > > have a single define name here?  From looking at the modifications you
+> > > did to Makefile.config there doesn't seem to be a reason to have two.
+> >
+> > Thanks for suggestion.  I changed to use single define
+> > ARM_PRE_START_SIZE and sent patch v2 [1].
+> >
+> > If possible, please test patch v2.
+> >
+> > Thanks,
+> > Leo Yan
+>
+> So just for the record, I'm waiting for Mathieu on this one, i.e. for
+> him to test/ack v3.
 
-Fixes: 5ccda64d38cc ("bpftool: implement cgroup bpf operations")
-Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
----
- tools/bpf/bpftool/cgroup.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Right, please give me some time to test this.  As Leo indicated the
+procedure is time consuming.
 
-diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
-index 73ec8ea33fb4..a13fb7265d1a 100644
---- a/tools/bpf/bpftool/cgroup.c
-+++ b/tools/bpf/bpftool/cgroup.c
-@@ -168,7 +168,7 @@ static int do_show(int argc, char **argv)
- 
- 	cgroup_fd = open(argv[0], O_RDONLY);
- 	if (cgroup_fd < 0) {
--		p_err("can't open cgroup %s", argv[1]);
-+		p_err("can't open cgroup %s", argv[0]);
- 		goto exit;
- 	}
- 
-@@ -356,7 +356,7 @@ static int do_attach(int argc, char **argv)
- 
- 	cgroup_fd = open(argv[0], O_RDONLY);
- 	if (cgroup_fd < 0) {
--		p_err("can't open cgroup %s", argv[1]);
-+		p_err("can't open cgroup %s", argv[0]);
- 		goto exit;
- 	}
- 
-@@ -414,7 +414,7 @@ static int do_detach(int argc, char **argv)
- 
- 	cgroup_fd = open(argv[0], O_RDONLY);
- 	if (cgroup_fd < 0) {
--		p_err("can't open cgroup %s", argv[1]);
-+		p_err("can't open cgroup %s", argv[0]);
- 		goto exit;
- 	}
- 
--- 
-2.21.0
+Thanks,
+Mathieu
 
+>
+> - Arnaldo
+>
+> > [1] https://lore.kernel.org/linux-arm-kernel/20190620005428.20883-1-leo.yan@linaro.org/T/#u
+> >
+> > > > +
+> > > > +       if (address >= fixup_kernel_start) {
+> > > >                 if (machine__is_host(machine))
+> > > >                         return PERF_RECORD_MISC_KERNEL;
+> > > >                 else
+> > > > --
+> > > > 2.17.1
+> > > >
+>
+> --
+>
+> - Arnaldo
