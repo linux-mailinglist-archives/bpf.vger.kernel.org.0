@@ -2,137 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF1B55998
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 23:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4152559CD
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 23:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726374AbfFYVBI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jun 2019 17:01:08 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:53180 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726009AbfFYVBH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 25 Jun 2019 17:01:07 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x5PKtDpA015002;
-        Tue, 25 Jun 2019 14:00:44 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=WvcjthRjL4FWsx608qG1Joz1LIM/hkQXeuIz3X6hFWE=;
- b=nBPGwte9OIUzLVxTmrPWsezsbGe/07+6Q5TKZWutIbL5GvBWBnyvOrIfiqkhPRkJgicq
- vprUeKC87JLmCZ+Wkym+CKlbeFmt3QB5h2MgOJS/Wfran8dkpBO726Ze31yzhqORfsIL
- 8gIf9tm/DSVPi+YdeFMAMwyMIEFForxB3fM= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by m0001303.ppops.net with ESMTP id 2tbpv812jn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 25 Jun 2019 14:00:44 -0700
-Received: from prn-mbx01.TheFacebook.com (2620:10d:c081:6::15) by
- prn-hub05.TheFacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Tue, 25 Jun 2019 14:00:11 -0700
-Received: from prn-hub04.TheFacebook.com (2620:10d:c081:35::128) by
- prn-mbx01.TheFacebook.com (2620:10d:c081:6::15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Tue, 25 Jun 2019 14:00:11 -0700
-Received: from NAM05-BY2-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.28) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Tue, 25 Jun 2019 14:00:11 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WvcjthRjL4FWsx608qG1Joz1LIM/hkQXeuIz3X6hFWE=;
- b=GgepuINEg1hML1GDntfRc8zeh1apOD0Eu/ZGwnlCnru399cFEQqDwWFBn4bQOOKJp/nevAEi21sFxpxCttNggVYkYeLAkkEBwJqZy93SemcE/3G0Pr1aWVJCR82p8p8c4q/BtZwc9GOl8Ftc81hOR3rYm/8PTWQgGdtc4+NsroI=
-Received: from BYAPR15MB2501.namprd15.prod.outlook.com (52.135.196.11) by
- BYAPR15MB3302.namprd15.prod.outlook.com (20.179.58.14) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1987.13; Tue, 25 Jun 2019 21:00:10 +0000
-Received: from BYAPR15MB2501.namprd15.prod.outlook.com
- ([fe80::60a3:8bdd:1ea2:3702]) by BYAPR15MB2501.namprd15.prod.outlook.com
- ([fe80::60a3:8bdd:1ea2:3702%7]) with mapi id 15.20.2008.014; Tue, 25 Jun 2019
- 21:00:10 +0000
-From:   Alexei Starovoitov <ast@fb.com>
-To:     Stanislav Fomichev <sdf@fomichev.me>,
-        Song Liu <songliubraving@fb.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        id S1726307AbfFYVTu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jun 2019 17:19:50 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:32844 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725782AbfFYVTu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jun 2019 17:19:50 -0400
+Received: by mail-pl1-f195.google.com with SMTP id c14so144895plo.0
+        for <bpf@vger.kernel.org>; Tue, 25 Jun 2019 14:19:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=318/F64MRVThD6drKvp6v4JpYRMrYpBkhrwSZcHYF8g=;
+        b=U17DEEigSUf+CD2yF2mdyA5DgVlbqsasZHiDw0pR5K2+kgyzPgRBt3UpRLTcziJXia
+         IKMSJ7A54jQz2SVVSEctjU/LE+IB/qTrA1X7zFnVKAT4VUCImIUb5WxMrWteKf9kJFqC
+         MAX8kK5dGct+kdvxS5nYVgcR3lX9pxVnZt6+zutB4Yj2Re3uzNGGMajKlFHaNBC+w+yP
+         mH4WJ6EoOE0SX0I5AXYVs61vmVxxKCmOe+bzfDpKPjgBvUmgOwD813mVUGU0dBAYJ6uV
+         fLWZv9PkeoLhrGlZ8Cy3yBVFcsrQFb03RNYa7aVBGX0p6w9uTmwimeLLWRq8/UAetELO
+         fO0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=318/F64MRVThD6drKvp6v4JpYRMrYpBkhrwSZcHYF8g=;
+        b=PIC2lDCL9mUiZXvPX933NuuHPWMy4f8HZR/8oXst3mUYoy9xHCq3Ys4GIG8szjPSiE
+         yHUeS10y/QVG03IrvaXAllxz1Xm3PktF1U6iw2CzkAgiM0PYtvwq829QiRL2jvI58xEu
+         atKSctX6k98omQJsZwngSC/6dfd6n4MiUIjJ9QEWbKe6xfJO4EKJXlalgpM/HLxTmgfl
+         bd7R4J+CRIEDS6QjEe2mbGK/BHzHjBnbBGJS9zK3jS6R8l8e9ZAgc047ChyLsYmwnLBi
+         hDlebq1zzfIc4zRlFTMHg4+DCeXkQ9ba8W0NugoOTOQfCmFvf6Ul9HrL75F/OncIFvb8
+         OaPw==
+X-Gm-Message-State: APjAAAW+Ysxal9Ohr1pygbnjHRDXOs4s47Owp3niNETuBtTiR0bKyhrt
+        IEsQM3RhRm0wV0+PJMcDnh4OBA==
+X-Google-Smtp-Source: APXvYqw7jLksEyjREhJ+ZuyrcdebDQn94Ed7i5dIPE6ifnX4os+NPpskM24MHLU7YKqaFzarMy7vDg==
+X-Received: by 2002:a17:902:76c3:: with SMTP id j3mr851172plt.116.1561497589998;
+        Tue, 25 Jun 2019 14:19:49 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id z20sm29887527pfk.72.2019.06.25.14.19.49
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 25 Jun 2019 14:19:49 -0700 (PDT)
+Date:   Tue, 25 Jun 2019 14:19:48 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Alexei Starovoitov <ast@fb.com>
+Cc:     Song Liu <songliubraving@fb.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         "ast@kernel.org" <ast@kernel.org>,
         "daniel@iogearbox.net" <daniel@iogearbox.net>,
         Kernel Team <Kernel-team@fb.com>
 Subject: Re: [PATCH bpf-next 0/4] sys_bpf() access control via /dev/bpf
-Thread-Topic: [PATCH bpf-next 0/4] sys_bpf() access control via /dev/bpf
-Thread-Index: AQHVK4MdyAZ0Ka1YIEmBVlfa/Cpneaas2J6AgAACRQA=
-Date:   Tue, 25 Jun 2019 21:00:10 +0000
-Message-ID: <59e56064-354c-d6b9-101a-c698976e6723@fb.com>
+Message-ID: <20190625211948.GE10487@mini-arch>
 References: <20190625182303.874270-1-songliubraving@fb.com>
  <20190625205155.GD10487@mini-arch>
-In-Reply-To: <20190625205155.GD10487@mini-arch>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR19CA0073.namprd19.prod.outlook.com
- (2603:10b6:320:1f::11) To BYAPR15MB2501.namprd15.prod.outlook.com
- (2603:10b6:a02:88::11)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [199.201.64.139]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 739b3c13-72d0-4fec-ccd2-08d6f9b01c19
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB3302;
-x-ms-traffictypediagnostic: BYAPR15MB3302:
-x-microsoft-antispam-prvs: <BYAPR15MB3302FEF9F9B4981BC8C60165D7E30@BYAPR15MB3302.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 0079056367
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(39860400002)(366004)(346002)(376002)(396003)(199004)(189003)(68736007)(52116002)(6246003)(71200400001)(4326008)(54906003)(81166006)(8676002)(102836004)(81156014)(7736002)(86362001)(110136005)(305945005)(14444005)(8936002)(186003)(2616005)(316002)(478600001)(71190400001)(256004)(26005)(53936002)(25786009)(476003)(486006)(11346002)(446003)(6506007)(5660300002)(99286004)(36756003)(66066001)(386003)(53546011)(31696002)(229853002)(6486002)(6512007)(76176011)(2906002)(73956011)(6116002)(6636002)(3846002)(66556008)(64756008)(66446008)(66476007)(66946007)(31686004)(6436002)(14454004);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3302;H:BYAPR15MB2501.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: St7lr8V/KF76eTPeIn8bIFue2mJllOPvZB4mU+ZDvlXVjS65atNolyi7K7cnmLVAkStfNChn6vYbDUYOfalPYJG8GoDmnAN3Tl4raSTLkHWIrh9vviG8FVZULWs5MH3qhh1HFOUTCO7f2VY9b7FCUnbgzipX2Z6Co5mZGty9WqdOrDBKk9TpkeWvWSxi+N+1i+MEUFTev2l7KJUkcTsfEc0R4mp3uZ+A0eyRwJbNE5QPs+nzshSsR5HxDOJicjuehx8aM6f25SWQHGUFF/wevB315cQ9SVOPfxgeJhPJFGtTzctFFrXeXWdIEfoHG2O2wilJ1PhIJYiTOFTHg/Y1v3DUqleCBc8oBFBFw/wjwGHDajxUet8W87d00r139lRZNqZyN9EF2PzuxP9WL6fz4lS62ZgJPAUS1b4RmvIcV0Q=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5B3D0DFE1B9A654F97769629C0B1E06A@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <59e56064-354c-d6b9-101a-c698976e6723@fb.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 739b3c13-72d0-4fec-ccd2-08d6f9b01c19
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jun 2019 21:00:10.3625
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ast@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3302
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-25_13:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=973 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906250160
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <59e56064-354c-d6b9-101a-c698976e6723@fb.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gNi8yNS8xOSAxOjUxIFBNLCBTdGFuaXNsYXYgRm9taWNoZXYgd3JvdGU6DQo+IE9uIDA2LzI1
-LCBTb25nIExpdSB3cm90ZToNCj4+IEN1cnJlbnRseSwgbW9zdCBhY2Nlc3MgdG8gc3lzX2JwZigp
-IGlzIGxpbWl0ZWQgdG8gcm9vdC4gSG93ZXZlciwgdGhlcmUgYXJlDQo+PiB1c2UgY2FzZXMgdGhh
-dCB3b3VsZCBiZW5lZml0IGZyb20gbm9uLXByaXZpbGVnZWQgdXNlIG9mIHN5c19icGYoKSwgZS5n
-Lg0KPj4gc3lzdGVtZC4NCj4+DQo+PiBUaGlzIHNldCBpbnRyb2R1Y2VzIGEgbmV3IG1vZGVsIHRv
-IGNvbnRyb2wgdGhlIGFjY2VzcyB0byBzeXNfYnBmKCkuIEENCj4+IHNwZWNpYWwgZGV2aWNlLCAv
-ZGV2L2JwZiwgaXMgaW50cm9kdWNlZCB0byBtYW5hZ2UgYWNjZXNzIHRvIHN5c19icGYoKS4NCj4+
-IFVzZXJzIHdpdGggYWNjZXNzIHRvIG9wZW4gL2Rldi9icGYgd2lsbCBiZSBhYmxlIHRvIGFjY2Vz
-cyBtb3N0IG9mDQo+PiBzeXNfYnBmKCkgZmVhdHVyZXMuIFRoZSB1c2UgY2FuIGdldCBhY2Nlc3Mg
-dG8gc3lzX2JwZigpIGJ5IG9wZW5pbmcgL2Rldi9icGYNCj4+IGFuZCB1c2UgaW9jdGwgdG8gZ2V0
-L3B1dCBwZXJtaXNzaW9uLg0KPj4NCj4+IFRoZSBwZXJtaXNzaW9uIHRvIGFjY2VzcyBzeXNfYnBm
-KCkgaXMgbWFya2VkIGJ5IGJpdCBUQVNLX0JQRl9GTEFHX1BFUk1JVFRFRA0KPj4gaW4gdGFza19z
-dHJ1Y3QuIER1cmluZyBmb3JrKCksIGNoaWxkIHdpbGwgbm90IGluaGVyaXQgdGhpcyBiaXQuDQo+
-IDJjOiBpZiB3ZSBhcmUgZ29pbmcgdG8gaGF2ZSBhbiBmZCwgSSdkIHZvdGUgZm9yIGEgcHJvcGVy
-IGZkIGJhc2VkIGFjY2Vzcw0KPiBjaGVja3MgaW5zdGVhZCBvZiBhIHBlci10YXNrIGZsYWcsIHNv
-IHdlIGNhbiBkbzoNCj4gCWlvY3RsKGZkLCBCUEZfTUFQX0NSRUFURSwgdWF0dHIsIHNpemVvZih1
-YXR0cikpDQo+IA0KPiAoYW5kIHBhc3MgdGhpcyBmZCBhcm91bmQpDQo+IA0KPiBJIGRvIHVuZGVy
-c3RhbmQgdGhhdCBpdCBicmVha3MgY3VycmVudCBhc3N1bXB0aW9ucyB0aGF0IGxpYmJwZiBoYXMs
-DQo+IGJ1dCBtYXliZSB3ZSBjYW4gZXh0ZW5kIF94YXR0ciB2YXJpYW50cyB0byBhY2NlcHQgb3B0
-aW5hbCBmZCAoYW5kIHRyeQ0KPiB0byBmYWxsYmFjayB0byBzeXNjdGwgaWYgaXQncyBhYnNlbnQv
-bm90IHdvcmtpbmcpPw0KDQpib3RoIG9mIHRoZXNlIGlkZWFzIHdlcmUgZGlzY3Vzc2VkIGF0IGxz
-Zm1tIHdoZXJlIHlvdSB3ZXJlIHByZXNlbnQuDQpJJ20gbm90IHN1cmUgd2h5IHlvdSdyZSBicmlu
-ZyBpdCB1cCBhZ2Fpbj8NCg==
+On 06/25, Alexei Starovoitov wrote:
+> On 6/25/19 1:51 PM, Stanislav Fomichev wrote:
+> > On 06/25, Song Liu wrote:
+> >> Currently, most access to sys_bpf() is limited to root. However, there are
+> >> use cases that would benefit from non-privileged use of sys_bpf(), e.g.
+> >> systemd.
+> >>
+> >> This set introduces a new model to control the access to sys_bpf(). A
+> >> special device, /dev/bpf, is introduced to manage access to sys_bpf().
+> >> Users with access to open /dev/bpf will be able to access most of
+> >> sys_bpf() features. The use can get access to sys_bpf() by opening /dev/bpf
+> >> and use ioctl to get/put permission.
+> >>
+> >> The permission to access sys_bpf() is marked by bit TASK_BPF_FLAG_PERMITTED
+> >> in task_struct. During fork(), child will not inherit this bit.
+> > 2c: if we are going to have an fd, I'd vote for a proper fd based access
+> > checks instead of a per-task flag, so we can do:
+> > 	ioctl(fd, BPF_MAP_CREATE, uattr, sizeof(uattr))
+> > 
+> > (and pass this fd around)
+> > 
+> > I do understand that it breaks current assumptions that libbpf has,
+> > but maybe we can extend _xattr variants to accept optinal fd (and try
+> > to fallback to sysctl if it's absent/not working)?
+> 
+> both of these ideas were discussed at lsfmm where you were present.
+> I'm not sure why you're bring it up again?
+Did we actually settle on anything? In that case feel free to ignore me,
+maybe I missed that. I remember there were pros/cons for both implementations.
