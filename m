@@ -2,82 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C91524A7
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 09:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6825250B
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 09:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728192AbfFYH3p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jun 2019 03:29:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57418 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727781AbfFYH3p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jun 2019 03:29:45 -0400
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5588A20652;
-        Tue, 25 Jun 2019 07:29:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561447784;
-        bh=R4jNzRQw37JgF7x95aIa/iCUdU/hLNUV6njbwOGFUoM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MHYNPRO/hinfLrR7z1SR0mHpmHIrfaRWS31ESWqPRJaJ8Ehpq9EOUe2Bb5a00iCi0
-         9/N26lribFV1OcOLiKsUZJepFIlOjVDFsbK8cqLDnZW7f49yMOOPPc/hec7bkMx0sa
-         UV3xp5worvMmtfKMzi1SJeJBIXvxvmJHzB2s2pzA=
-Date:   Tue, 25 Jun 2019 00:29:42 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     syzbot <syzbot+a861f52659ae2596492b@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com,
+        id S1728771AbfFYHnA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jun 2019 03:43:00 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:54378 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726668AbfFYHnA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jun 2019 03:43:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=3Woq6Ijx79j2u1qvlhauxGczuuE2pOnfE5TxDoYwUlo=; b=ZOsUs5qSf57Dj/Pk5RYzsxw59
+        UEljXgjEtZQvU9qf0h/H8kknIf7OPGmcSz8smyBFHiroy9ujI8Qo/4ckFOQzdG/uelI5b6DAirzy6
+        Deq5BLpWD9gsZsC0HfxvFd9u8xeHoKc6t3lE8UHCjzBetzSIdrTiNTZOKyfN2taQgp8CnXLEEPpno
+        0etHTcBjiIS3jz8xF40mDJIRn+dWXflSvl2dS9xAZScTCCvOTPrjD3oiNkgdt4nCj1//4PCBe4A8i
+        DbOAA+hulLsM7sGPx247bRBzMA47vpqf9vhJRSSqMrJxqdq+acP818QPbjp1s4nSdOzxTUwQMULTc
+        KwuD+LPhA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1hfg5n-0002my-Rq; Tue, 25 Jun 2019 07:42:16 +0000
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7C1BA20A0642F; Tue, 25 Jun 2019 09:42:14 +0200 (CEST)
+Date:   Tue, 25 Jun 2019 09:42:14 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Frank Ch. Eigler" <fche@redhat.com>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, jikos@kernel.org,
+        mbenes@suse.cz, Petr Mladek <pmladek@suse.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Robert Richter <rric@kernel.org>,
+        rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        paulmck <paulmck@linux.ibm.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [net/bpf] Re: WARNING in mark_lock
-Message-ID: <20190625072942.GB30940@sol.localdomain>
-References: <0000000000005aedf1058c1bf7e8@google.com>
- <alpine.DEB.2.21.1906250820060.32342@nanos.tec.linutronix.de>
+        oprofile-list@lists.sf.net, netdev <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 2/3] module: Fix up module_notifier return values.
+Message-ID: <20190625074214.GR3436@hirez.programming.kicks-ass.net>
+References: <20190624091843.859714294@infradead.org>
+ <20190624092109.805742823@infradead.org>
+ <320564860.243.1561384864186.JavaMail.zimbra@efficios.com>
+ <20190624205810.GD26422@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.1906250820060.32342@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20190624205810.GD26422@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[+bpf list]
-
-On Tue, Jun 25, 2019 at 08:20:56AM +0200, Thomas Gleixner wrote:
-> On Mon, 24 Jun 2019, syzbot wrote:
+On Mon, Jun 24, 2019 at 04:58:10PM -0400, Frank Ch. Eigler wrote:
+> Hi -
 > 
-> > Hello,
+> > > While auditing all module notifiers I noticed a whole bunch of fail
+> > > wrt the return value. Notifiers have a 'special' return semantics.
 > 
-> CC++ Peterz 
-> 
-> > 
-> > syzbot found the following crash on:
-> > 
-> > HEAD commit:    dc636f5d Add linux-next specific files for 20190620
-> > git tree:       linux-next
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=162b68b1a00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=99c104b0092a557b
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=a861f52659ae2596492b
-> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110b24f6a00000
-> > 
-> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > Reported-by: syzbot+a861f52659ae2596492b@syzkaller.appspotmail.com
+> From peterz's comments, the patches, it's not obvious to me how one is
+> to choose between 0 (NOTIFY_DONE) and 1 (NOTIFY_OK) in the case of a
+> routine success.
 
-The syz repro looks bpf related, and essentially the same repro is in lots of
-other open syzbot reports which I've assigned to the bpf subsystem...
-https://lore.kernel.org/lkml/20190624050114.GA30702@sol.localdomain/
+I'm not sure either; what I think I choice was:
 
-{"threaded":true,"repeat":true,"procs":6,"sandbox":"none","fault_call":-1,"tun":true,"netdev":true,"resetnet":true,"cgroups":true,"binfmt_misc":true,"close_fds":true,"tmpdir":true,"segv":true}
-bpf$MAP_CREATE(0x0, &(0x7f0000000280)={0xf, 0x4, 0x4, 0x400, 0x0, 0x1}, 0x3c)
-socket$rxrpc(0x21, 0x2, 0x800000000a)
-r0 = socket$inet6_tcp(0xa, 0x1, 0x0)
-setsockopt$inet6_tcp_int(r0, 0x6, 0x13, &(0x7f00000000c0)=0x100000001, 0x1d4)
-connect$inet6(r0, &(0x7f0000000140), 0x1c)
-bpf$MAP_CREATE(0x0, &(0x7f0000000000)={0x5}, 0xfffffffffffffdcb)
-bpf$MAP_CREATE(0x2, &(0x7f0000003000)={0x3, 0x0, 0x77fffb, 0x0, 0x10020000000, 0x0}, 0x2c)
-setsockopt$inet6_tcp_TCP_ULP(r0, 0x6, 0x1f, &(0x7f0000000040)='tls\x00', 0x4)
+ - if I want to completely ignore the callback, use DONE (per the
+   "Don't care" comment).
+
+ - if we finished the notifier without error, use OK or
+   notifier_from_errno(0).
+
+But yes, its a bit of a shit interface.
