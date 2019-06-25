@@ -2,154 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA5955A13
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 23:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA0F55B03
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 00:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726040AbfFYVjE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jun 2019 17:39:04 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:25762 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725914AbfFYVjE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 25 Jun 2019 17:39:04 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5PLcBxX012326
-        for <bpf@vger.kernel.org>; Tue, 25 Jun 2019 14:39:02 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=6Qb5WBexFT5B6u9rozg9q9FpGOZk1JNFFnUiYC37ZO0=;
- b=qmaiAvFnuImuVeLjJgMx1v57y1gAXNz7RDZZ85he53r+OlswPeTARhWR/O9bGEvUFM8/
- 7Jr0yXkTIJW/qkU5i3azXL40mWDYvvJwg8ROkmGrdygCrHjR3OzRFc565lKtgopK+Nhd
- MtsB3QnnDIminohubmbHpBZ04KQqgmoI07g= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2tbrn78qdb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 25 Jun 2019 14:39:02 -0700
-Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 25 Jun 2019 14:39:01 -0700
-Received: by devvm2643.prn2.facebook.com (Postfix, from userid 111017)
-        id D752013B668B9; Tue, 25 Jun 2019 14:38:59 -0700 (PDT)
-Smtp-Origin-Hostprefix: devvm
-From:   Roman Gushchin <guro@fb.com>
-Smtp-Origin-Hostname: devvm2643.prn2.facebook.com
-To:     Alexei Starovoitov <ast@kernel.org>, Tejun Heo <tj@kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v2 bpf-next] bpf: fix cgroup bpf release synchronization
-Date:   Tue, 25 Jun 2019 14:38:58 -0700
-Message-ID: <20190625213858.22459-1-guro@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1726464AbfFYWXi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jun 2019 18:23:38 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:36286 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726455AbfFYWXg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jun 2019 18:23:36 -0400
+Received: by mail-qk1-f194.google.com with SMTP id g18so56408qkl.3;
+        Tue, 25 Jun 2019 15:23:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sIswbHwSgwSuwLr12QK1wbcjOcRm9pBAZPfq0tTPI80=;
+        b=Kd+OIZ4ILZQeUT4uqYRzZCi57MzQutS8qVccTvXg3Y881AcKiY/VGcvk5Tnq7TJxsi
+         aTeNWHp/cE+chparMWuUSn9pfGUxuZL34U89IAbnDl+20fpCbMBC3A6YV5r+Tzb8Mp2r
+         Xz31U3gYgxprK+5DRzhxx9nv3bGmHzztjawhgFg2/6Sf42ISGyMlbSNf1ZC1UgZbaXA6
+         yfUHQDMWB5SE/j2FAFIqwdC2x6sPwXw+QLmlZqXeA7cvL4Bk/5x+XZQr3cieIjaVQ8SL
+         rbPa7m6v/XvLiMYwJ8UvpwE0RPuifekrcaaoh3wxXOroz7eYKe2L4QsFXE9x7+NI8edP
+         hRuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sIswbHwSgwSuwLr12QK1wbcjOcRm9pBAZPfq0tTPI80=;
+        b=nR9qRqxc+CmtthuxtB7Y0JBgiOIEKmQDG4BjgqeIrQtIsYNYXrsvttucspnoPtlRuZ
+         4xoejsXqmKF40VXMT1AT4Dae9ZmP2AuieYp8/DcAm8gfMsV0GsVLN3yScPb8tVx+8qjK
+         MCO4LiVYTH0UmntHsDpWvJ1AMRP97t7EY3je+xUNz/uqbtef/p/1P7FgVJAtjMvBrO1S
+         kizQtpoA8r8aqLZBnou5eqGUuLUYCCUdKGg6vqtpPxgmJl6RWL/KdVlnzeiMDl16JUfa
+         +K+eU2PC6hHWBGzZwhwG0JOBIfzeXhy2Zn7CibM2Z4NcUwPeQnhrWk30SIcwVcENe9Fo
+         qeNA==
+X-Gm-Message-State: APjAAAWQc6xbpqy41/w8tsigUrgiwDJMv6NxP1IjHJXKPhPx5X2g+UCD
+        lPrpwiPtTOCXUhPJ7YCXt5rp9KmpER7Jyw7Pwlk=
+X-Google-Smtp-Source: APXvYqyNaJzdwtghH1BJIpZux6J6aG6NzXOARLRHwdRwvCxVslZjvITlICUOdMwqZAi1K5yeWj6dSC47b+65ljYb6TY=
+X-Received: by 2002:a37:4d82:: with SMTP id a124mr995904qkb.72.1561501415343;
+ Tue, 25 Jun 2019 15:23:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-25_14:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=2 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=706 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906250167
-X-FB-Internal: deliver
+References: <20190625023137.29272-1-yuehaibing@huawei.com> <20190625112104.6654a048@carbon>
+In-Reply-To: <20190625112104.6654a048@carbon>
+From:   Song Liu <liu.song.a23@gmail.com>
+Date:   Tue, 25 Jun 2019 15:23:24 -0700
+Message-ID: <CAPhsuW7e8KLooD_ASwWE_dbJwNTcs5sqR66LTWxR-cH3SBzSJw@mail.gmail.com>
+Subject: Re: [PATCH net-next] xdp: Make __mem_id_disconnect static
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     YueHaibing <yuehaibing@huawei.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, xdp-newbies@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since commit 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf
-from cgroup itself"), cgroup_bpf release occurs asynchronously
-(from a worker context), and before the release of the cgroup itself.
+On Tue, Jun 25, 2019 at 4:52 AM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
+>
+> On Tue, 25 Jun 2019 10:31:37 +0800
+> YueHaibing <yuehaibing@huawei.com> wrote:
+>
+> > Fix sparse warning:
+> >
+> > net/core/xdp.c:88:6: warning:
+> >  symbol '__mem_id_disconnect' was not declared. Should it be static?
+>
+> I didn't declare it static as I didn't want it to get inlined.  As
+> during development I was using kprobes to inspect this function.  In
+> the end I added a tracepoint in this function as kprobes was not enough
+> to capture the state needed.
+>
+> So, I guess we can declare it static.
+>
+> Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
-This introduced a previously non-existing race between the release
-and update paths. E.g. if a leaf's cgroup_bpf is released and a new
-bpf program is attached to the one of ancestor cgroups at the same
-time. The race may result in double-free and other memory corruptions.
+I think the rule is, non-static function must be declared in a header.
 
-To fix the problem, let's protect the body of cgroup_bpf_release()
-with cgroup_mutex, as it was effectively previously, when all this
-code was called from the cgroup release path with cgroup mutex held.
+Acked-by: Song Liu <songliubraving@fb.com>
 
-Also let's skip cgroups, which have no chances to invoke a bpf
-program, on the update path. If the cgroup bpf refcnt reached 0,
-it means that the cgroup is offline (no attached processes), and
-there are no associated sockets left. It means there is no point
-in updating effective progs array! And it can lead to a leak,
-if it happens after the release. So, let's skip such cgroups.
-
-Big thanks for Tejun Heo for discovering and debugging of this
-problem!
-
-Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf from
-cgroup itself")
-Reported-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Roman Gushchin <guro@fb.com>
----
- kernel/bpf/cgroup.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index c225c42e114a..077ed3a19848 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -16,6 +16,8 @@
- #include <linux/bpf-cgroup.h>
- #include <net/sock.h>
- 
-+#include "../cgroup/cgroup-internal.h"
-+
- DEFINE_STATIC_KEY_FALSE(cgroup_bpf_enabled_key);
- EXPORT_SYMBOL(cgroup_bpf_enabled_key);
- 
-@@ -38,6 +40,8 @@ static void cgroup_bpf_release(struct work_struct *work)
- 	struct bpf_prog_array *old_array;
- 	unsigned int type;
- 
-+	mutex_lock(&cgroup_mutex);
-+
- 	for (type = 0; type < ARRAY_SIZE(cgrp->bpf.progs); type++) {
- 		struct list_head *progs = &cgrp->bpf.progs[type];
- 		struct bpf_prog_list *pl, *tmp;
-@@ -54,10 +58,12 @@ static void cgroup_bpf_release(struct work_struct *work)
- 		}
- 		old_array = rcu_dereference_protected(
- 				cgrp->bpf.effective[type],
--				percpu_ref_is_dying(&cgrp->bpf.refcnt));
-+				lockdep_is_held(&cgroup_mutex));
- 		bpf_prog_array_free(old_array);
- 	}
- 
-+	mutex_unlock(&cgroup_mutex);
-+
- 	percpu_ref_exit(&cgrp->bpf.refcnt);
- 	cgroup_put(cgrp);
- }
-@@ -229,6 +235,9 @@ static int update_effective_progs(struct cgroup *cgrp,
- 	css_for_each_descendant_pre(css, &cgrp->self) {
- 		struct cgroup *desc = container_of(css, struct cgroup, self);
- 
-+		if (percpu_ref_is_zero(&desc->bpf.refcnt))
-+			continue;
-+
- 		err = compute_effective_progs(desc, type, &desc->bpf.inactive);
- 		if (err)
- 			goto cleanup;
-@@ -238,6 +247,14 @@ static int update_effective_progs(struct cgroup *cgrp,
- 	css_for_each_descendant_pre(css, &cgrp->self) {
- 		struct cgroup *desc = container_of(css, struct cgroup, self);
- 
-+		if (percpu_ref_is_zero(&desc->bpf.refcnt)) {
-+			if (unlikely(desc->bpf.inactive)) {
-+				bpf_prog_array_free(desc->bpf.inactive);
-+				desc->bpf.inactive = NULL;
-+			}
-+			continue;
-+		}
-+
- 		activate_effective_progs(desc, type, desc->bpf.inactive);
- 		desc->bpf.inactive = NULL;
- 	}
--- 
-2.21.0
-
+>
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> > ---
+> >  net/core/xdp.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/net/core/xdp.c b/net/core/xdp.c
+> > index b29d7b5..829377c 100644
+> > --- a/net/core/xdp.c
+> > +++ b/net/core/xdp.c
+> > @@ -85,7 +85,7 @@ static void __xdp_mem_allocator_rcu_free(struct rcu_head *rcu)
+> >       kfree(xa);
+> >  }
+> >
+> > -bool __mem_id_disconnect(int id, bool force)
+> > +static bool __mem_id_disconnect(int id, bool force)
+> >  {
+> >       struct xdp_mem_allocator *xa;
+> >       bool safe_to_remove = true;
+>
+>
+> --
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
