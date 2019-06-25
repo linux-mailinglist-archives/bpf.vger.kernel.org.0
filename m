@@ -2,52 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CED81553BE
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 17:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDFA155458
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 18:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731182AbfFYPvt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jun 2019 11:51:49 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:57876 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726053AbfFYPvs (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 25 Jun 2019 11:51:48 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5PFikoB029025;
-        Tue, 25 Jun 2019 08:51:26 -0700
+        id S1727001AbfFYQW2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jun 2019 12:22:28 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:21444 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726740AbfFYQW2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 25 Jun 2019 12:22:28 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x5PGM5eU007735;
+        Tue, 25 Jun 2019 09:22:06 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : references : in-reply-to : content-type : content-id
  : content-transfer-encoding : mime-version; s=facebook;
- bh=ShlWxDXnNwxhdhV0gExeE5jp1UANRMAARZK/oP/4WyE=;
- b=TpxLW1C+1AdW1WJpLYldD6Hv7p/DNTiQbRW7VtA2MRj+9KJ+7zqzWJns5TIhzFH1XzwO
- Q+vYxr21heQXEomla8F882kenk1QVjb+Rbgprs3OMpDStPYwlqp2jMM8Xt7P4PhYJyzE
- xdA5fPG0lVdDvY9S4sexoWhDEgmsYmI42HI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2tbn4hrch4-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 25 Jun 2019 08:51:25 -0700
-Received: from ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) by
- ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 25 Jun 2019 08:50:59 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 25 Jun 2019 08:50:59 -0700
+ bh=YCML5necUsfJNPIv51NOFAaiSXK3LP1y7lW5gOB0Lho=;
+ b=cWAgHtwRlKs30MBUPIDNnAiw0t3TMR2+94ITaocFqL46fd17hIKhXxYddcNzFl/xxTd7
+ Muo/LuSlLAjn7HKSALLAGsuzCZhkk27Q9LOyitmgJvdLjb6XG2kGN9/ZmnoZ5vo9Unt9
+ e/64q7IJH8Q9lmsQ2QIHlcr/+AtasWZiJi4= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by m0001303.ppops.net with ESMTP id 2tbpv801r0-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 25 Jun 2019 09:22:06 -0700
+Received: from prn-mbx06.TheFacebook.com (2620:10d:c081:6::20) by
+ prn-hub06.TheFacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Tue, 25 Jun 2019 09:22:04 -0700
+Received: from prn-hub06.TheFacebook.com (2620:10d:c081:35::130) by
+ prn-mbx06.TheFacebook.com (2620:10d:c081:6::20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Tue, 25 Jun 2019 09:22:03 -0700
+Received: from NAM01-BN3-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.30) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Tue, 25 Jun 2019 09:22:03 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector1-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ShlWxDXnNwxhdhV0gExeE5jp1UANRMAARZK/oP/4WyE=;
- b=XcIDNptQiyeEJXNPAi88ieeUtHwg7KEWaBTX2S24LMbuc6blY8Z5R3+VqPjpjUTjRZCsYqdV5wMj/C8047f8w7W2nlxswzXJtVg24z9oLdar9oLHSWO5aPwXbrE5E9Y9n+a36bsshpPKxu1W3GF7lZ0TgmOBLLgqSVCXoa14OOk=
-Received: from BYAPR15MB2501.namprd15.prod.outlook.com (52.135.196.11) by
- BYAPR15MB2501.namprd15.prod.outlook.com (52.135.196.11) with Microsoft SMTP
+ bh=YCML5necUsfJNPIv51NOFAaiSXK3LP1y7lW5gOB0Lho=;
+ b=ITvEI3G1mw5ubRMK/7B/951u60wJuAZUQtwn2Tfc7ECsFC6llW26UEhNYOdn7cMrsLcrTVRXuC4uAhOCw/tMyZtQ+XvIDHCajauT1EH0+N7e1g3qSPDsPpNNIMzXWicF+pL1Gg0ibC/uGzlU3nUWOpUGnoKWjQutlUkZE7roW3Q=
+Received: from BN8PR15MB2626.namprd15.prod.outlook.com (20.179.137.220) by
+ BN8PR15MB2899.namprd15.prod.outlook.com (20.178.219.74) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2008.16; Tue, 25 Jun 2019 15:50:55 +0000
-Received: from BYAPR15MB2501.namprd15.prod.outlook.com
- ([fe80::60a3:8bdd:1ea2:3702]) by BYAPR15MB2501.namprd15.prod.outlook.com
- ([fe80::60a3:8bdd:1ea2:3702%7]) with mapi id 15.20.2008.014; Tue, 25 Jun 2019
- 15:50:55 +0000
-From:   Alexei Starovoitov <ast@fb.com>
-To:     Roman Gushchin <guro@fb.com>
+ 15.20.2008.16; Tue, 25 Jun 2019 16:22:01 +0000
+Received: from BN8PR15MB2626.namprd15.prod.outlook.com
+ ([fe80::e594:155f:a43:92ad]) by BN8PR15MB2626.namprd15.prod.outlook.com
+ ([fe80::e594:155f:a43:92ad%6]) with mapi id 15.20.2008.014; Tue, 25 Jun 2019
+ 16:22:01 +0000
+From:   Roman Gushchin <guro@fb.com>
+To:     Alexei Starovoitov <ast@fb.com>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Tejun Heo <tj@kernel.org>,
@@ -56,113 +60,152 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH bpf-next] bpf: fix cgroup bpf release synchronization
 Thread-Topic: [PATCH bpf-next] bpf: fix cgroup bpf release synchronization
-Thread-Index: AQHVKjTnfXTg4w17SUSy4+EivgF2L6apsEGAgAB+kgCAAlhLAA==
-Date:   Tue, 25 Jun 2019 15:50:55 +0000
-Message-ID: <6eedf3b7-d2db-7348-5969-d57376483961@fb.com>
+Thread-Index: AQHVKjTees07LGtTbkiqSncwtVU7j6aqJZyA//+T1wCAAs2vgIAACKoA
+Date:   Tue, 25 Jun 2019 16:22:00 +0000
+Message-ID: <20190625162156.GA6128@tower.DHCP.thefacebook.com>
 References: <20190624023051.4168487-1-guro@fb.com>
  <91017042-1b59-6110-dfdd-13cfbbec1ae1@fb.com>
  <20190624040211.GA10696@castle.dhcp.thefacebook.com>
-In-Reply-To: <20190624040211.GA10696@castle.dhcp.thefacebook.com>
+ <6eedf3b7-d2db-7348-5969-d57376483961@fb.com>
+In-Reply-To: <6eedf3b7-d2db-7348-5969-d57376483961@fb.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR04CA0060.namprd04.prod.outlook.com
- (2603:10b6:300:6c::22) To BYAPR15MB2501.namprd15.prod.outlook.com
- (2603:10b6:a02:88::11)
+x-clientproxiedby: BYAPR11CA0051.namprd11.prod.outlook.com
+ (2603:10b6:a03:80::28) To BN8PR15MB2626.namprd15.prod.outlook.com
+ (2603:10b6:408:c7::28)
 x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::1:ec57]
+x-originating-ip: [2620:10d:c090:200::40d1]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b1376b80-3690-48d2-e284-08d6f984e839
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB2501;
-x-ms-traffictypediagnostic: BYAPR15MB2501:
-x-microsoft-antispam-prvs: <BYAPR15MB250162A5C937B468BD56C47BD7E30@BYAPR15MB2501.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-office365-filtering-correlation-id: 7011730a-8bf0-4d98-7106-08d6f9894064
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BN8PR15MB2899;
+x-ms-traffictypediagnostic: BN8PR15MB2899:
+x-microsoft-antispam-prvs: <BN8PR15MB2899D17D42A0110D3F8976A1BEE30@BN8PR15MB2899.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3631;
 x-forefront-prvs: 0079056367
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(366004)(376002)(136003)(396003)(39860400002)(199004)(189003)(6636002)(46003)(6486002)(54906003)(229853002)(316002)(53936002)(6512007)(66556008)(478600001)(66476007)(6436002)(37006003)(66946007)(64756008)(73956011)(66446008)(99286004)(14444005)(5024004)(4326008)(6116002)(102836004)(76176011)(53546011)(52116002)(186003)(71190400001)(71200400001)(68736007)(6506007)(25786009)(11346002)(2616005)(31696002)(486006)(86362001)(305945005)(386003)(6862004)(256004)(8676002)(8936002)(81166006)(81156014)(476003)(14454004)(6246003)(36756003)(2906002)(5660300002)(31686004)(446003)(7736002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2501;H:BYAPR15MB2501.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(376002)(366004)(346002)(396003)(39860400002)(199004)(189003)(8676002)(81156014)(1076003)(53546011)(386003)(73956011)(6506007)(66446008)(66556008)(14444005)(66946007)(66476007)(64756008)(486006)(68736007)(81166006)(102836004)(54906003)(6246003)(478600001)(5024004)(11346002)(14454004)(476003)(446003)(46003)(33656002)(256004)(186003)(229853002)(71190400001)(86362001)(53936002)(6116002)(8936002)(6436002)(6512007)(9686003)(2906002)(316002)(25786009)(6486002)(5660300002)(6636002)(71200400001)(99286004)(7736002)(4326008)(305945005)(52116002)(6862004)(76176011);DIR:OUT;SFP:1102;SCL:1;SRVR:BN8PR15MB2899;H:BN8PR15MB2626.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: fb.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: WYKQDWnYDvTTEdIYyc91YbYDHr/wGxxNbCwFq0xqqgYMbMsDH2RO96VWKKvqWLRDSfidb71UnsRGQvg4/tylN5DZr/vzaJKbn05HibsL93aaob7nuDZU0bZrKNSCUgwz8xo9ZSKbpXPY23zAvbeELkiw6LShXBRTKsLpwTXIccFvV6Ua80c/gFDBc9wiZfFTRIeWPaoqmCP7Z8wwAlIzeaUOGEeflccv3jMBBUaX7JPmeHZTYyd1640uKMfjk5WwC0WtgxKuszSsJ/glqEQrpM8zVCL4MT0VetcLaoHDscIHoDV9ohCOj1JgQ/W3CeGXDudxVi7vbfDksl5Y/GWpainmFZ9Bsevror2btmfUlVdQRWv5VkqEuvCfnIXxQB0/mpCroQE+kTq0qUXp6TfE2FtDxChfKQmrSsM6EytX/ec=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5F25D1DDA3305544AC10EAD23F0859E5@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+x-microsoft-antispam-message-info: twCspLYAbz5yftZ+TT3RjsraGCjHASdlTPTIO4HTziK7OTQ7nzDch1iHC7pa6F9aBGqvwowQg6BWV8JbWixA+qefOTfOdDkFKt1IwB8mdWysvyPL2RsY5MReVs+3S6bscCRDGenfSvQa6hoU9XJ11gA21pdguEyqqsqYTd4vpnRWCw/uqf27kewNFLhijg50Q+wuI05hWFSWxUcpxKWtevDgtRtRXJUg3EBb719Qt0plv6BaTdYZPWLvK3D0zAqS51fsgoQ/7Gvgj9faQbTXqbCb7Z+hDYdgfzF67oq7x6dvgTwurhSNsUWZABe/0DABYmkhP8FafDbfnUUapiJGAMoeWz3FDD+ShA/CPJY2uSZhR38Wcns2vtsXUYu1bgiYk4+2FR0mV/jlB/mKXn8IDYklbNOBI5GQwq8ewtq7yfs=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <AB2F728A85C5834B8B7D15A3F538B8A1@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: b1376b80-3690-48d2-e284-08d6f984e839
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jun 2019 15:50:55.4206
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7011730a-8bf0-4d98-7106-08d6f9894064
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jun 2019 16:22:00.8632
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ast@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2501
+X-MS-Exchange-CrossTenant-userprincipalname: guro@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB2899
 X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-25_11:,,
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-25_12:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
  malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=823 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906250119
+ mlxlogscore=869 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906250124
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gNi8yMy8xOSA5OjAyIFBNLCBSb21hbiBHdXNoY2hpbiB3cm90ZToNCj4gT24gU3VuLCBKdW4g
-MjMsIDIwMTkgYXQgMDg6Mjk6MjFQTSAtMDcwMCwgQWxleGVpIFN0YXJvdm9pdG92IHdyb3RlOg0K
-Pj4gT24gNi8yMy8xOSA3OjMwIFBNLCBSb21hbiBHdXNoY2hpbiB3cm90ZToNCj4+PiBTaW5jZSBj
-b21taXQgNGJmYzBiYjJjNjBlICgiYnBmOiBkZWNvdXBsZSB0aGUgbGlmZXRpbWUgb2YgY2dyb3Vw
-X2JwZg0KPj4+IGZyb20gY2dyb3VwIGl0c2VsZiIpLCBjZ3JvdXBfYnBmIHJlbGVhc2Ugb2NjdXJz
-IGFzeW5jaHJvbm91c2x5DQo+Pj4gKGZyb20gYSB3b3JrZXIgY29udGV4dCksIGFuZCBiZWZvcmUg
-dGhlIHJlbGVhc2Ugb2YgdGhlIGNncm91cCBpdHNlbGYuDQo+Pj4NCj4+PiBUaGlzIGludHJvZHVj
-ZWQgYSBwcmV2aW91c2x5IG5vbi1leGlzdGluZyByYWNlIGJldHdlZW4gdGhlIHJlbGVhc2UNCj4+
-PiBhbmQgdXBkYXRlIHBhdGhzLiBFLmcuIGlmIGEgbGVhZidzIGNncm91cF9icGYgaXMgcmVsZWFz
-ZWQgYW5kIGEgbmV3DQo+Pj4gYnBmIHByb2dyYW0gaXMgYXR0YWNoZWQgdG8gdGhlIG9uZSBvZiBh
-bmNlc3RvciBjZ3JvdXBzIGF0IHRoZSBzYW1lDQo+Pj4gdGltZS4gVGhlIHJhY2UgbWF5IHJlc3Vs
-dCBpbiBkb3VibGUtZnJlZSBhbmQgb3RoZXIgbWVtb3J5IGNvcnJ1cHRpb25zLg0KPj4+DQo+Pj4g
-VG8gZml4IHRoZSBwcm9ibGVtLCBsZXQncyBwcm90ZWN0IHRoZSBib2R5IG9mIGNncm91cF9icGZf
-cmVsZWFzZSgpDQo+Pj4gd2l0aCBjZ3JvdXBfbXV0ZXgsIGFzIGl0IHdhcyBlZmZlY3RpdmVseSBw
-cmV2aW91c2x5LCB3aGVuIGFsbCB0aGlzDQo+Pj4gY29kZSB3YXMgY2FsbGVkIGZyb20gdGhlIGNn
-cm91cCByZWxlYXNlIHBhdGggd2l0aCBjZ3JvdXAgbXV0ZXggaGVsZC4NCj4+Pg0KPj4+IEFsc28g
-bWFrZSBzdXJlLCB0aGF0IHdlIGRvbid0IGxlYXZlIGFscmVhZHkgZnJlZWQgcG9pbnRlcnMgdG8g
-dGhlDQo+Pj4gZWZmZWN0aXZlIHByb2cgYXJyYXlzLiBPdGhlcndpc2UsIHRoZXkgY2FuIGJlIHJl
-bGVhc2VkIGFnYWluIGJ5DQo+Pj4gdGhlIHVwZGF0ZSBwYXRoLiBJdCB3YXNuJ3QgbmVjZXNzYXJ5
-IGJlZm9yZSwgYmVjYXVzZSBwcmV2aW91c2x5DQo+Pj4gdGhlIHVwZGF0ZSBwYXRoIGNvdWxkbid0
-IHNlZSBzdWNoIGEgY2dyb3VwLCBhcyBjZ3JvdXBfYnBmIGFuZCBjZ3JvdXANCj4+PiBpdHNlbGYg
-d2VyZSByZWxlYXNlZCB0b2dldGhlci4NCj4+DQo+PiBJIHRob3VnaHQgZHlpbmcgY2dyb3VwIHdv
-bid0IGhhdmUgYW55IGNoaWxkcmVuIGNncm91cHMgPw0KPiANCj4gSXQncyBub3QgY29tcGxldGVs
-eSB0cnVlLCBhIGR5aW5nIGNncm91cCBjYW4ndCBoYXZlIGxpdmluZyBjaGlsZHJlbi4NCj4gDQo+
-PiBJdCBzaG91bGQgaGF2ZSBiZWVuIGVtcHR5IHdpdGggbm8gdGFza3MgaW5zaWRlIGl0Pw0KPiAN
-Cj4gUmlnaHQuDQo+IA0KPj4gT25seSBzb21lIHJlc291cmNlcyBhcmUgc3RpbGwgaGVsZD8NCj4g
-DQo+IFJpZ2h0Lg0KPiANCj4+IG11dGV4IGFuZCB6ZXJvIGluaXQgYXJlIGhpZ2hseSBzdXNwaWNp
-b3VzLg0KPj4gSXQgZmVlbHMgdGhhdCBjZ3JvdXBfYnBmX3JlbGVhc2UgaXMgY2FsbGVkIHRvbyBl
-YXJseS4NCj4gDQo+IEFuIGFsdGVybmF0aXZlIHNvbHV0aW9uIGlzIHRvIGJ1bXAgdGhlIHJlZmNv
-dW50ZXIgb24NCj4gZXZlcnkgdXBkYXRlIHBhdGgsIGFuZCBleHBsaWNpdGx5IHNraXAgZGUtYnBm
-J2VkIGNncm91cHMuDQo+IA0KPj4NCj4+IFRoaW5raW5nIGZyb20gYW5vdGhlciBhbmdsZS4uLiBp
-ZiBjaGlsZCBjZ3JvdXBzIGNhbiBzdGlsbCBhdHRhY2ggdGhlbg0KPj4gdGhpcyBicGZfcmVsZWFz
-ZSBpcyBicm9rZW4uDQo+IA0KPiBIbSwgd2hhdCBkbyB5b3UgbWVhbiB1bmRlciBhdHRhY2g/IEl0
-J3Mgbm90IHBvc3NpYmxlIHRvIGF0dGFjaA0KPiBhIG5ldyBwcm9nLCBidXQgaWYgYSBwcm9nIGlz
-IGF0dGFjaGVkIHRvIGEgcGFyZW50IGNncm91cCwNCj4gYSBwb2ludGVyIGNhbiBzcGlsbCB0aHJv
-dWdoICJlZmZlY3RpdmUiIGFycmF5Lg0KPiANCj4gQnV0IEkgYWdyZWUsIGl0J3MgYnJva2VuLiBV
-cGRhdGUgcGF0aCBzaG91bGQgaWdub3JlIHN1Y2gNCj4gY2dyb3VwcyAoY2dyb3Vwcywgd2hpY2gg
-Y2dyb3VwX2JwZiB3YXMgcmVsZWFzZWQpLiBJJ2xsIHRha2UgYSBsb29rLg0KPiANCj4+IFRoZSBj
-b2RlIHNob3VsZCBiZQ0KPj4gY2FsbGluZyBfX2Nncm91cF9icGZfZGV0YWNoKCkgb25lIGJ5IG9u
-ZSB0byBtYWtlIHN1cmUNCj4+IHVwZGF0ZV9lZmZlY3RpdmVfcHJvZ3MoKSBpcyBjYWxsZWQsIHNp
-bmNlIGRlc2NlbmRhbnQgYXJlIHN0aWxsDQo+PiBzb3J0LW9mIGFsaXZlIGFuZCBjYW4gYXR0YWNo
-Pw0KPiANCj4gTm90IHN1cmUgSSBnZXQgeW91LiBEeWluZyBjZ3JvdXAgaXMgYSBsZWFmIGNncm91
-cC4NCj4gDQo+Pg0KPj4gTXkgbW9uZXkgaXMgb24gJ3RvbyBlYXJseScuDQo+PiBNYXkgYmUgY2dy
-b3VwIGlzIG5vdCBkeWluZyA/DQo+PiBKdXN0IGNncm91cF9za19mcmVlKCkgaXMgY2FsbGVkIG9u
-IHRoZSBsYXN0IHNvY2tldCBhbmQNCj4+IHRoaXMgYXV0by1kZXRhY2ggbG9naWMgZ290IHRyaWdn
-ZXJlZCBpbmNvcnJlY3RseT8NCj4gDQo+IFNvLCBvbmNlIGFnYWluLCB3aGF0J3MgbXkgcGljdHVy
-ZToNCj4gDQo+IEENCj4gQS9CDQo+IEEvQi9DDQo+IA0KPiBjcHUxOiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBjcHUyOg0KPiBybWRpciBDICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBhdHRhY2ggbmV3IHByb2cgdG8gQQ0KPiBDIGdvdCBkeWluZyAgICAgICAgICAgICAgICAgICAg
-ICAgICB1cGRhdGUgQSwgdXBkYXRlIEIsIHVwZGF0ZSBDLi4uDQo+IEMncyBjZ3JvdXBfYnBmIGlz
-IHJlbGVhc2VkICAgICAgICAgIEMncyBlZmZlY3RpdmUgcHJvZ3MgaXMgcmVwbGFjZWQgd2l0aCBu
-ZXcgb25lDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBvbGQgaXMgZG91
-YmxlIGZyZWVkDQo+IA0KPiBJdCBsb29rcyBsaWtlIGl0IGNhbiBiZSByZXByb2R1Y2VkIHdpdGhv
-dXQgYW55IHNvY2tldHMuDQoNCkkgc2VlLg0KRG9lcyBpdCBtZWFuIHRoYXQgY3NzX2Zvcl9lYWNo
-X2Rlc2NlbmRhbnQgd2Fsa3MgZHlpbmcgY2dyb3VwcyA/DQpJIGd1ZXNzIHRoZSBmaXggdGhlbiBp
-cyB0byBhdm9pZCB3YWxraW5nIHRoZW0gaW4gdXBkYXRlX2VmZmVjdGl2ZV9wcm9ncyA/DQoNCg==
+On Tue, Jun 25, 2019 at 08:50:55AM -0700, Alexei Starovoitov wrote:
+> On 6/23/19 9:02 PM, Roman Gushchin wrote:
+> > On Sun, Jun 23, 2019 at 08:29:21PM -0700, Alexei Starovoitov wrote:
+> >> On 6/23/19 7:30 PM, Roman Gushchin wrote:
+> >>> Since commit 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf
+> >>> from cgroup itself"), cgroup_bpf release occurs asynchronously
+> >>> (from a worker context), and before the release of the cgroup itself.
+> >>>
+> >>> This introduced a previously non-existing race between the release
+> >>> and update paths. E.g. if a leaf's cgroup_bpf is released and a new
+> >>> bpf program is attached to the one of ancestor cgroups at the same
+> >>> time. The race may result in double-free and other memory corruptions=
+.
+> >>>
+> >>> To fix the problem, let's protect the body of cgroup_bpf_release()
+> >>> with cgroup_mutex, as it was effectively previously, when all this
+> >>> code was called from the cgroup release path with cgroup mutex held.
+> >>>
+> >>> Also make sure, that we don't leave already freed pointers to the
+> >>> effective prog arrays. Otherwise, they can be released again by
+> >>> the update path. It wasn't necessary before, because previously
+> >>> the update path couldn't see such a cgroup, as cgroup_bpf and cgroup
+> >>> itself were released together.
+> >>
+> >> I thought dying cgroup won't have any children cgroups ?
+> >=20
+> > It's not completely true, a dying cgroup can't have living children.
+> >=20
+> >> It should have been empty with no tasks inside it?
+> >=20
+> > Right.
+> >=20
+> >> Only some resources are still held?
+> >=20
+> > Right.
+> >=20
+> >> mutex and zero init are highly suspicious.
+> >> It feels that cgroup_bpf_release is called too early.
+> >=20
+> > An alternative solution is to bump the refcounter on
+> > every update path, and explicitly skip de-bpf'ed cgroups.
+> >=20
+> >>
+> >> Thinking from another angle... if child cgroups can still attach then
+> >> this bpf_release is broken.
+> >=20
+> > Hm, what do you mean under attach? It's not possible to attach
+> > a new prog, but if a prog is attached to a parent cgroup,
+> > a pointer can spill through "effective" array.
+> >=20
+> > But I agree, it's broken. Update path should ignore such
+> > cgroups (cgroups, which cgroup_bpf was released). I'll take a look.
+> >=20
+> >> The code should be
+> >> calling __cgroup_bpf_detach() one by one to make sure
+> >> update_effective_progs() is called, since descendant are still
+> >> sort-of alive and can attach?
+> >=20
+> > Not sure I get you. Dying cgroup is a leaf cgroup.
+> >=20
+> >>
+> >> My money is on 'too early'.
+> >> May be cgroup is not dying ?
+> >> Just cgroup_sk_free() is called on the last socket and
+> >> this auto-detach logic got triggered incorrectly?
+> >=20
+> > So, once again, what's my picture:
+> >=20
+> > A
+> > A/B
+> > A/B/C
+> >=20
+> > cpu1:                               cpu2:
+> > rmdir C                             attach new prog to A
+> > C got dying                         update A, update B, update C...
+> > C's cgroup_bpf is released          C's effective progs is replaced wit=
+h new one
+> >                                      old is double freed
+> >=20
+> > It looks like it can be reproduced without any sockets.
+>=20
+> I see.
+> Does it mean that css_for_each_descendant walks dying cgroups ?
+
+Yes.
+
+> I guess the fix then is to avoid walking them in update_effective_progs ?
+>=20
+
+Yes, this is close to what I'm testing now. We basically need to skip cgrou=
+ps,
+which bpf refcounter is 0 (and in atomic mode). These cgroups can't invoke =
+bpf
+programs, so there is no point in updates.
