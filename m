@@ -2,125 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E35695596A
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 22:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6349455994
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 22:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbfFYUv6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jun 2019 16:51:58 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:41662 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726053AbfFYUv6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jun 2019 16:51:58 -0400
-Received: by mail-pl1-f195.google.com with SMTP id m7so89255pls.8
-        for <bpf@vger.kernel.org>; Tue, 25 Jun 2019 13:51:57 -0700 (PDT)
+        id S1726402AbfFYU7N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jun 2019 16:59:13 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:45797 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726418AbfFYU7N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jun 2019 16:59:13 -0400
+Received: by mail-qk1-f194.google.com with SMTP id s22so13797571qkj.12;
+        Tue, 25 Jun 2019 13:59:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wCQSXu82F8swe3D8zKchpQAEcIuhNWcT3wFgqF0lcmg=;
-        b=vvVvvYS1D6bTfm3V0SkI9Iu9XBsPCKVuGVYF9EfBh1rQy9pyK4a1HJ4ysUUvLfSNBw
-         zKwKahmHkHm35dGwS+QgphBZ/2KH3/BNlw68snLuSNdacu7xoVstFldlfLTk6ZHguud7
-         J3yXQs7Pev2UPaJuRlIDuXAF/ip3EuXT5ki9D7eg/tjoe3IVGO5+8I5W+jYGMi/I94lR
-         1onEJgmyMkyn46GCKqGbAuSVxudNnTxrpDnmfatxojUQ5cOHR6uVw3UF+H6pGuXSoHAD
-         Aqhgj1cD07x/mVk7q8ptYaLHqs+GvyEi/JeSXV/JAJTB3g2WBvVe/COeFTAVX6Dkb83G
-         X26A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SznKw/4Q28ISDx9MuOlgmkJn46xF24IKGcART6Ixvq8=;
+        b=lfQTZDQ/kP9ekFOxmvlvUp5GWvxZOZo/FX0rphMfIA1K9Pt7D6j3dsertBcTPvL8pt
+         sX7TyVfT634gAmfREbLFGtSt1doAudPUi+NX5cQ72t5BMBnR5Svb59m17F0YJJNquw5F
+         Ux8U+1DWQ5Gm93tCYbQBhLN55bG4avxUtzBZ2FDLhgyRqs715MDqHVVXgDAaCJrgWdxq
+         EbLTw5zbT3nFkGJ5A9xgRPtM0J02FFB230bPnr/J/rO9pVn5tmlYPAM5Y+qdv1js2odk
+         n2VviblY35OUHiPMDwZ5UvuiRcwjK5+BqRtw51lF7Gf5Tw9YabGlwR/o7SlM3ZaW2a+n
+         AJIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wCQSXu82F8swe3D8zKchpQAEcIuhNWcT3wFgqF0lcmg=;
-        b=gu9R5LO/7X4LCi39JZ037STPlZGbvBEYCtosErb5wjpzyWRsWZumcAtxGn+/A+eiyS
-         g3MioWdMievIiM5fcZ3g5YA/PzRzvaSAdtfUCgqtOxB4JtHyylqtfZ8zCeu7PWch5qOu
-         BqTnBOk/iqiBs++gEs6ubhd4BUt9kRviZ09kYWmh3cDMqVVvWt0GHCcfD4ejogn6qC0M
-         dZSrTCkEaWLt6jYzwjX7pGnu/bieAz845Jnw5Y/bcJB/XsOPWiGC3kb45UfKL14L5Joc
-         ckcXS3ovbmUych6FnvLprvgXXzndDTABJ0DBAGp6epm3cCp39WnTxiEZOsK4kv1ikGyE
-         uDpg==
-X-Gm-Message-State: APjAAAX9fkqxw57vNGoA55RACiEEhbZpUpIIZtLbOYH6uMZZL+Nr9uZk
-        32h9R5se8a74KbgH0NmrAxcWdw==
-X-Google-Smtp-Source: APXvYqxC/xbDefs4n8RaoUgrO9qzmlqNXunS97/ifDGMxA4uSeWxHh05FoEgboOrPn0EbHaW04nX5A==
-X-Received: by 2002:a17:902:d695:: with SMTP id v21mr670784ply.342.1561495917181;
-        Tue, 25 Jun 2019 13:51:57 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id b11sm12981846pfd.18.2019.06.25.13.51.56
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 25 Jun 2019 13:51:56 -0700 (PDT)
-Date:   Tue, 25 Jun 2019 13:51:55 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 0/4] sys_bpf() access control via /dev/bpf
-Message-ID: <20190625205155.GD10487@mini-arch>
-References: <20190625182303.874270-1-songliubraving@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SznKw/4Q28ISDx9MuOlgmkJn46xF24IKGcART6Ixvq8=;
+        b=m/M71ZFpl9kArvCaxjLFjymIh1ThM91hD/upCKcxqoV6zhBTMWAaAIqiKvMcFBWVLm
+         d43+hug/ITaycrRM3t5cRhVHCK8MxRViQCBQuvU1bdeGeilbEqnqZNOqw/3+C6ROZ51a
+         ujn6cLJPEDVcs7DdVU4mUNtCBAqm94/p+fjtpFM5SJspiubKOgl3IJqSw1FDodbbFK2+
+         3yiE8/D4s3bnPvgwsOza7XFMURLT9TPBZ+KchswilnVoF1pO0aIFNROGhpClZ8MOcD+p
+         6gZw4pEAaDZfhG0bXIMhcSa1fJ3fYFkbuCaYRcRgiVS0dow71AM1sfhwmis3MTKKEOSU
+         YUTQ==
+X-Gm-Message-State: APjAAAVjbfgJUZx2ZfHRw/BADKfQKCYT+5MubfFLYvoBNJvj9dTP9EgT
+        v6Ifvj0WLY9PRVU15zNOkWPHyCw1OtLkix+Uwmw=
+X-Google-Smtp-Source: APXvYqy1LxA7P6qsfPBp27nTqcQSeg6zwFYi/DWcjgaVs2kNIXoLU0bA0EpUcekN/vvd/2/0aXi3yeCDqhsmw5gwpHs=
+X-Received: by 2002:a37:4d82:: with SMTP id a124mr690103qkb.72.1561496351999;
+ Tue, 25 Jun 2019 13:59:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190625182303.874270-1-songliubraving@fb.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <20190625202700.28030-1-ivan.khoronzhuk@linaro.org>
+In-Reply-To: <20190625202700.28030-1-ivan.khoronzhuk@linaro.org>
+From:   Song Liu <liu.song.a23@gmail.com>
+Date:   Tue, 25 Jun 2019 13:59:00 -0700
+Message-ID: <CAPhsuW4w9oo=mNKo162apbw8rirQKWbJAnkcbjrcamNwfdUJNw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: fix max() type mismatch for 32bit
+To:     Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/25, Song Liu wrote:
-> Currently, most access to sys_bpf() is limited to root. However, there are
-> use cases that would benefit from non-privileged use of sys_bpf(), e.g.
-> systemd.
-> 
-> This set introduces a new model to control the access to sys_bpf(). A
-> special device, /dev/bpf, is introduced to manage access to sys_bpf().
-> Users with access to open /dev/bpf will be able to access most of
-> sys_bpf() features. The use can get access to sys_bpf() by opening /dev/bpf
-> and use ioctl to get/put permission.
-> 
-> The permission to access sys_bpf() is marked by bit TASK_BPF_FLAG_PERMITTED
-> in task_struct. During fork(), child will not inherit this bit.
-2c: if we are going to have an fd, I'd vote for a proper fd based access
-checks instead of a per-task flag, so we can do:
-	ioctl(fd, BPF_MAP_CREATE, uattr, sizeof(uattr))
+On Tue, Jun 25, 2019 at 1:28 PM Ivan Khoronzhuk
+<ivan.khoronzhuk@linaro.org> wrote:
+>
+> It fixes build error for 32bit caused by type mismatch
+> size_t/unsigned long.
+>
+> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
 
-(and pass this fd around)
+Acked-by: Song Liu <songliubraving@fb.com>
 
-I do understand that it breaks current assumptions that libbpf has,
-but maybe we can extend _xattr variants to accept optinal fd (and try
-to fallback to sysctl if it's absent/not working)?
-
-> libbpf APIs libbpf_[get|put]_bpf_permission() are added to help get and
-> put the permission. bpftool is updated to use these APIs.
-> 
-> Song Liu (4):
->   bpf: unprivileged BPF access via /dev/bpf
->   bpf: sync tools/include/uapi/linux/bpf.h
->   libbpf: add libbpf_[get|put]_bpf_permission()
->   bpftool: use libbpf_[get|put]_bpf_permission()
-> 
->  Documentation/ioctl/ioctl-number.txt |  1 +
->  include/linux/bpf.h                  | 12 +++++
->  include/linux/sched.h                |  8 ++++
->  include/uapi/linux/bpf.h             |  5 ++
->  kernel/bpf/arraymap.c                |  2 +-
->  kernel/bpf/cgroup.c                  |  2 +-
->  kernel/bpf/core.c                    |  4 +-
->  kernel/bpf/cpumap.c                  |  2 +-
->  kernel/bpf/devmap.c                  |  2 +-
->  kernel/bpf/hashtab.c                 |  4 +-
->  kernel/bpf/lpm_trie.c                |  2 +-
->  kernel/bpf/offload.c                 |  2 +-
->  kernel/bpf/queue_stack_maps.c        |  2 +-
->  kernel/bpf/reuseport_array.c         |  2 +-
->  kernel/bpf/stackmap.c                |  2 +-
->  kernel/bpf/syscall.c                 | 72 +++++++++++++++++++++-------
->  kernel/bpf/verifier.c                |  2 +-
->  kernel/bpf/xskmap.c                  |  2 +-
->  kernel/fork.c                        |  4 ++
->  net/core/filter.c                    |  6 +--
->  tools/bpf/bpftool/feature.c          |  2 +-
->  tools/bpf/bpftool/main.c             |  5 ++
->  tools/include/uapi/linux/bpf.h       |  5 ++
->  tools/lib/bpf/libbpf.c               | 54 +++++++++++++++++++++
->  tools/lib/bpf/libbpf.h               |  7 +++
->  tools/lib/bpf/libbpf.map             |  2 +
->  26 files changed, 178 insertions(+), 35 deletions(-)
-> 
+> ---
+>  tools/lib/bpf/libbpf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 68f45a96769f..5186b7710430 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -778,7 +778,7 @@ static struct bpf_map *bpf_object__add_map(struct bpf_object *obj)
+>         if (obj->nr_maps < obj->maps_cap)
+>                 return &obj->maps[obj->nr_maps++];
+>
+> -       new_cap = max(4ul, obj->maps_cap * 3 / 2);
+> +       new_cap = max((size_t)4, obj->maps_cap * 3 / 2);
+>         new_maps = realloc(obj->maps, new_cap * sizeof(*obj->maps));
+>         if (!new_maps) {
+>                 pr_warning("alloc maps for object failed\n");
 > --
 > 2.17.1
+>
