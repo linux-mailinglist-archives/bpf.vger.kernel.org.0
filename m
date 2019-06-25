@@ -2,159 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA33954F0E
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 14:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E41755004
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 15:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbfFYMka (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jun 2019 08:40:30 -0400
-Received: from www62.your-server.de ([213.133.104.62]:33672 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726414AbfFYMka (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jun 2019 08:40:30 -0400
-Received: from [78.46.172.2] (helo=sslproxy05.your-server.de)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hfkkF-0006gG-F0; Tue, 25 Jun 2019 14:40:19 +0200
-Received: from [178.199.41.31] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hfkkF-000KK9-8D; Tue, 25 Jun 2019 14:40:19 +0200
-Subject: Re: [PATCH v3 2/2] bpf: Add selftests for bpf_perf_event_output
-To:     allanzhang <allanzhang@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20190624235720.167067-1-allanzhang@google.com>
- <20190624235720.167067-3-allanzhang@google.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <260b127d-ee1b-3f62-5bc6-f9e7b339705f@iogearbox.net>
-Date:   Tue, 25 Jun 2019 14:40:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.3.0
+        id S1726871AbfFYNPD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jun 2019 09:15:03 -0400
+Received: from mga04.intel.com ([192.55.52.120]:64824 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726009AbfFYNPC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jun 2019 09:15:02 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 25 Jun 2019 06:15:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.63,416,1557212400"; 
+   d="scan'208";a="166673508"
+Received: from klaatz-mobl1.ger.corp.intel.com (HELO [10.237.221.70]) ([10.237.221.70])
+  by orsmga006.jf.intel.com with ESMTP; 25 Jun 2019 06:14:59 -0700
+Subject: Re: [PATCH 03/11] xdp: add offset param to zero_copy_allocator
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com,
+        bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        bruce.richardson@intel.com, ciara.loftus@intel.com
+References: <20190620090958.2135-1-kevin.laatz@intel.com>
+ <20190620090958.2135-4-kevin.laatz@intel.com>
+ <20190624122342.26c6a9b4@cakuba.netronome.com>
+From:   "Laatz, Kevin" <kevin.laatz@intel.com>
+Message-ID: <bf3e67de-b23a-fa69-4cbc-c53e9cc5e055@intel.com>
+Date:   Tue, 25 Jun 2019 14:14:59 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190624235720.167067-3-allanzhang@google.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20190624122342.26c6a9b4@cakuba.netronome.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25491/Tue Jun 25 10:02:48 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/25/2019 01:57 AM, allanzhang wrote:
-> Software event output is only enabled by a few prog types.
-> This test is to ensure that all supported types are enbled for
 
-Nit, typo: enbled
+On 24/06/2019 20:23, Jakub Kicinski wrote:
+> On Thu, 20 Jun 2019 09:09:50 +0000, Kevin Laatz wrote:
+>> diff --git a/include/net/xdp.h b/include/net/xdp.h
+>> index 0f25b3675c5c..ea801fd2bf98 100644
+>> --- a/include/net/xdp.h
+>> +++ b/include/net/xdp.h
+>> @@ -53,7 +53,8 @@ struct xdp_mem_info {
+>>  struct page_pool;
+>>
+>>  struct zero_copy_allocator {
+>> -    void (*free)(struct zero_copy_allocator *zca, unsigned long 
+>> handle);
+>> +    void (*free)(struct zero_copy_allocator *zca, unsigned long handle,
+>> +            off_t off);
+>>  };
+>
+> Please run checkpatch --strict on all your changes.  The code
+> formatting is incorrect in many ways in this series.
+>
+Thanks, will fix in the v2.
 
-> bpf_perf_event_output sucessfully.
 
-Nit, typo: sucessfully
-
-> Signed-off-by: allanzhang <allanzhang@google.com>
-
-For SOB, could you add proper formatted name before the email?
-
-> ---
->  tools/testing/selftests/bpf/test_verifier.c   | 33 ++++++-
->  .../selftests/bpf/verifier/event_output.c     | 94 +++++++++++++++++++
->  2 files changed, 126 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/bpf/verifier/event_output.c
-> 
-> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-> index c5514daf8865..901a188e1eea 100644
-> --- a/tools/testing/selftests/bpf/test_verifier.c
-> +++ b/tools/testing/selftests/bpf/test_verifier.c
-> @@ -50,7 +50,7 @@
->  #define MAX_INSNS	BPF_MAXINSNS
->  #define MAX_TEST_INSNS	1000000
->  #define MAX_FIXUPS	8
-> -#define MAX_NR_MAPS	18
-> +#define MAX_NR_MAPS	19
->  #define MAX_TEST_RUNS	8
->  #define POINTER_VALUE	0xcafe4all
->  #define TEST_DATA_LEN	64
-> @@ -84,6 +84,7 @@ struct bpf_test {
->  	int fixup_map_array_wo[MAX_FIXUPS];
->  	int fixup_map_array_small[MAX_FIXUPS];
->  	int fixup_sk_storage_map[MAX_FIXUPS];
-> +	int fixup_map_event_output[MAX_FIXUPS];
->  	const char *errstr;
->  	const char *errstr_unpriv;
->  	uint32_t retval, retval_unpriv, insn_processed;
-> @@ -604,6 +605,28 @@ static int create_sk_storage_map(void)
->  	return fd;
->  }
->  
-> +static int create_event_output_map(void)
-> +{
-> +	struct bpf_create_map_attr attr = {
-> +		.name = "test_map",
-> +		.map_type = BPF_MAP_TYPE_PERF_EVENT_ARRAY,
-> +		.key_size = 4,
-> +		.value_size = 4,
-> +		.max_entries = 1,
-> +	};
-> +	int fd, btf_fd;
-> +
-> +	btf_fd = load_btf();
-> +	if (btf_fd < 0)
-> +		return -1;
-> +	attr.btf_fd = btf_fd;
-> +	fd = bpf_create_map_xattr(&attr);
-
-This does not look correct, BTF for spinlock does not belong to perf event array.
-
-> +	close(attr.btf_fd);
-> +	if (fd < 0)
-> +		printf("Failed to create event_output\n");
-> +	return fd;
-> +}
-> +
->  static char bpf_vlog[UINT_MAX >> 8];
->  
->  static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
-> @@ -627,6 +650,7 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
->  	int *fixup_map_array_wo = test->fixup_map_array_wo;
->  	int *fixup_map_array_small = test->fixup_map_array_small;
->  	int *fixup_sk_storage_map = test->fixup_sk_storage_map;
-> +	int *fixup_map_event_output = test->fixup_map_event_output;
->  
->  	if (test->fill_helper) {
->  		test->fill_insns = calloc(MAX_TEST_INSNS, sizeof(struct bpf_insn));
-> @@ -788,6 +812,13 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
->  			fixup_sk_storage_map++;
->  		} while (*fixup_sk_storage_map);
->  	}
-> +	if (*fixup_map_event_output) {
-> +		map_fds[18] = create_event_output_map();
-> +		do {
-> +			prog[*fixup_map_event_output].imm = map_fds[18];
-> +			fixup_map_event_output++;
-> +		} while (*fixup_map_event_output);
-> +	}
->  }
->  
->  static int set_admin(bool admin)
-> diff --git a/tools/testing/selftests/bpf/verifier/event_output.c b/tools/testing/selftests/bpf/verifier/event_output.c
-> new file mode 100644
-> index 000000000000..b25eabcfaa56
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/verifier/event_output.c
-> @@ -0,0 +1,94 @@
-> +/* instructions used to output a skb based software event, produced
-> + * from code snippet:
-> +struct TMP {
-> +  uint64_t tmp;
-> +} tt;
-> +tt.tmp = 5;
-> +bpf_perf_event_output(skb, &connection_tracking_event_map, 0,
-> +		      &tt, sizeof(tt));
-> +return 1;
-[...]
+> Please include performance measurements proving the slow down
+> is negligible in the cover letter.
+>
+Good suggestion. Will add to the cover letter in the v2!
