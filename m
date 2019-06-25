@@ -2,290 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2FB51F95
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 02:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B480B51FB6
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 02:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729857AbfFYANg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jun 2019 20:13:36 -0400
-Received: from mail-qt1-f202.google.com ([209.85.160.202]:44956 "EHLO
-        mail-qt1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729838AbfFYANg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jun 2019 20:13:36 -0400
-Received: by mail-qt1-f202.google.com with SMTP id x10so18884215qti.11
-        for <bpf@vger.kernel.org>; Mon, 24 Jun 2019 17:13:35 -0700 (PDT)
+        id S1730037AbfFYAOX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jun 2019 20:14:23 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:41375 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730018AbfFYAOX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jun 2019 20:14:23 -0400
+Received: by mail-qk1-f196.google.com with SMTP id c11so11214679qkk.8
+        for <bpf@vger.kernel.org>; Mon, 24 Jun 2019 17:14:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=WM1PwngXUHJVIZUY5Hi5Z7Be1J3rGjgGma6FcVVihds=;
-        b=Y2qQBCHKOmQmTbwYwtaEyLiVQ5lcm1LEsApRQFltxdfzJG22p3bDtRbt7sToXVfMrm
-         L0qNe3D044H75y7dryiTkO246W4Yp8cEYpkTg3+jGRn4r9GVLFF9zdu+czN9/pAdpbsz
-         fLElAr6erDYLyNcwDkZZqdRHw5hl5xW/La1rkfYdHPjV3sCJhBGqeoD1TWmuZpdhv34b
-         VFD8r8uicI7O+F57XFFbFK6sjR5xo2hGKR96r+EVpAv9rIXmB4xWPvIbU9Mjv48GP7U5
-         YyO5I/udlA99qs45bhmf8EvI/k6Im9C8IdqMnjk2g+5NwgVQiEZy4FtfR/Qr8B9HiGYD
-         +xgA==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=idMODAcOv2Dt8ZWy2wPt4Z83ta1OwJTt0jsnz2NfzUI=;
+        b=oO6ZS5eqyA9LygqsicelqXcxs1lPMoD+hODhPKrOyskzS0p0gL80ydnDZrFAymyJQk
+         rzd7Tq31z91+DWytz5dz1NMQP7SexeLme2wMe62wSN8FxM2UxkVxnMx5u7cW2E8+o3fb
+         FEdGrmR8gQO/igyF70T5H0z9p29Fs5JZjqwAlqR3dmuNL2cQqMD9RWgknn/MYFMDMIcW
+         syZTrU8mWL3t0vlnX6LWJOIxY9ePxCFhVolT59fJfRSF+EcYaYfggmkqPT4ABF9IlQr4
+         WVdJeA+WNx3xGQdLAxckPCN24+7hdY5rHhpc3RL4Y5gsjzstgINbBtL3Mu0xYMm+LzbV
+         8JBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=WM1PwngXUHJVIZUY5Hi5Z7Be1J3rGjgGma6FcVVihds=;
-        b=W/ntg5B/hWSzPNwsvaJl0VLeJgYZZdhwf7nQOO9pN66aL65kpqIs174fVmBUqi9GSD
-         idp2OCL9IhNeEmTdi9Vvu8Ud7PdVuNHewxazZ+htOZddmGrnd4i0DYImpJ3bB7Wnp7Yn
-         5fQSc3bVTrDQ7IrupQu225AfcamATEujcTTlKfe+HeCp2sQRJ0nIwy8JntY8JM4Q/h1K
-         QIGeREHMcfBAJFGBDqKPfHTteCyH0WNQKyuHWb++w2lKv2EzLEzr/t3i5vuDl1k1gD9W
-         FevsxicCOraIpQ50QsN1Sz1PEbyvOdJG8/K5AvIPpQ2ZVSw0HY/NzHwP2OTT+H8Dx0xK
-         d0JA==
-X-Gm-Message-State: APjAAAWTSd1cAe4Pl0u30qEWuRaiNGDBzT3rzxDf+KHdQlGgLjRE5mF2
-        DemjVXX7/O6WKfEUkE6aD15p/WwS0L9PG9c0
-X-Google-Smtp-Source: APXvYqxZ/Np0NQ466g7aR2Hh5mOEdDcR4mZu8IVteHHXikwYVkpVne7iB9105uYMFLlfQkZhOy8Ny5OEZ5dTwjFU
-X-Received: by 2002:a0c:b902:: with SMTP id u2mr7312016qvf.15.1561421615042;
- Mon, 24 Jun 2019 17:13:35 -0700 (PDT)
-Date:   Mon, 24 Jun 2019 17:13:26 -0700
-In-Reply-To: <20190625001326.172280-1-allanzhang@google.com>
-Message-Id: <20190625001326.172280-3-allanzhang@google.com>
-Mime-Version: 1.0
-References: <20190625001326.172280-1-allanzhang@google.com>
-X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
-Subject: [PATCH]     bpf: Allow bpf_skb_event_output for a few prog types
-From:   allanzhang <allanzhang@google.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=idMODAcOv2Dt8ZWy2wPt4Z83ta1OwJTt0jsnz2NfzUI=;
+        b=kdn3S+DfjFzdFTyYLVhiRD5CG3BkF4kQVZFqW3B2nk4iD2sTs/jmSvjMJZpU8i6FKf
+         ta7rrAgLDwePzO4AHM08jj+7RpyoYIwDbZw0gjrD0bGk8LMj8sTWy4qwR/0FFVekV9/L
+         kz1FYcOx+wEDfygIF7tjGhj3UdlyCXs/VlvARGaHOAgzKxBbfm6pkKju3Om1PZdZtraV
+         757twgpSgdFcNGIEuh7AvRt96N8Z4bJRV64+8LKI7/HxoFu1EM4+fHV1xpJ68lKcbhdw
+         ZjxTO8bVdSG/+wkRjRUjU0ZUZbct1/HjfSfPxhp8BWuC845uBgkxsQYf9qzG1Zz5peh7
+         oD3Q==
+X-Gm-Message-State: APjAAAXmzAnIjdpZEgy399exvG1Lox0LG4Vyv1HIdNXyC46OLIH7RXEn
+        B8XHBMqZ/oz9pi69vCHSMJlz9w==
+X-Google-Smtp-Source: APXvYqz2RsO+/la3fEScy9M3DKQDzUV6J9+FET3PoqvNpTPp5INSNcc/ZnodbI3nQ0jwog296hUckA==
+X-Received: by 2002:a37:a2d8:: with SMTP id l207mr18964343qke.492.1561421661964;
+        Mon, 24 Jun 2019 17:14:21 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id s11sm7357466qte.49.2019.06.24.17.14.20
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 24 Jun 2019 17:14:21 -0700 (PDT)
+Date:   Mon, 24 Jun 2019 17:14:16 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Brian Vazquez <brianvv.kernel@gmail.com>
+Cc:     Brian Vazquez <brianvv@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     allanzhang <allanzhang@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        "David S . Miller" <davem@davemloft.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Petar Penkov <ppenkov@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [RFC PATCH 2/6] bpf: add BPF_MAP_DUMP command to access more
+ than one entry per call
+Message-ID: <20190624171416.2a39f4c7@cakuba.netronome.com>
+In-Reply-To: <CABCgpaUhHmLaWUg-x_X+yYD6pnoAcMLw9jr1BPnv5vrM-NYmqQ@mail.gmail.com>
+References: <20190621231650.32073-1-brianvv@google.com>
+        <20190621231650.32073-3-brianvv@google.com>
+        <20190624154558.65c31561@cakuba.netronome.com>
+        <CABCgpaUhHmLaWUg-x_X+yYD6pnoAcMLw9jr1BPnv5vrM-NYmqQ@mail.gmail.com>
+Organization: Netronome Systems, Ltd.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-    Software event output is only enabled by a few prog types right now (TC,
-    LWT out, XDP, sockops). Many other skb based prog types need
-    bpf_skb_event_output to produce software event.
+On Mon, 24 Jun 2019 16:35:05 -0700, Brian Vazquez wrote:
+> On Mon, Jun 24, 2019 at 3:46 PM Jakub Kicinski wrote:
+> > On Fri, 21 Jun 2019 16:16:46 -0700, Brian Vazquez wrote:  
+> > > @@ -385,6 +386,14 @@ union bpf_attr {
+> > >               __u64           flags;
+> > >       };
+> > >
+> > > +     struct { /* struct used by BPF_MAP_DUMP command */
+> > > +             __u32           map_fd;  
+> >
+> > There is a hole here, perhaps flags don't have to be 64 bit?  
+> The command implementation is wrapping BPF_MAP_*_ELEM commands, I
+> would expect this one to handle the same flags which are 64 bit.
+> Note that there's a hole in the anonymous structure used by the other
+> commands too:
+>         struct { /* anonymous struct used by BPF_MAP_*_ELEM commands */
+>                 __u32           map_fd;
+>                 __aligned_u64   key;
+>                 union {
+>                         __aligned_u64 value;
+>                         __aligned_u64 next_key;
+>                 };
+>                 __u64           flags;
+>         };
 
-    Added socket_filter, cg_skb, sk_skb prog types to generate sw event.
-
-    Test bpf code is generated from code snippet:
-
-    struct TMP {
-        uint64_t tmp;
-    } tt;
-    tt.tmp = 5;
-    bpf_perf_event_output(skb, &connection_tracking_event_map, 0,
-                          &tt, sizeof(tt));
-    return 1;
-
-    the bpf assembly from llvm is:
-           0:       b7 02 00 00 05 00 00 00         r2 = 5
-           1:       7b 2a f8 ff 00 00 00 00         *(u64 *)(r10 - 8) = r2
-           2:       bf a4 00 00 00 00 00 00         r4 = r10
-           3:       07 04 00 00 f8 ff ff ff         r4 += -8
-           4:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00    r2 = 0ll
-           6:       b7 03 00 00 00 00 00 00         r3 = 0
-           7:       b7 05 00 00 08 00 00 00         r5 = 8
-           8:       85 00 00 00 19 00 00 00         call 25
-           9:       b7 00 00 00 01 00 00 00         r0 = 1
-          10:       95 00 00 00 00 00 00 00         exit
-
-    Patch 1 is enabling code.
-    Patch 2 is fullly covered selftest code.
-
-Signed-off-by: allanzhang <allanzhang@google.com>
----
- tools/testing/selftests/bpf/test_verifier.c   | 38 +++++++-
- .../selftests/bpf/verifier/event_output.c     | 94 +++++++++++++++++++
- 2 files changed, 130 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/verifier/event_output.c
-
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index c5514daf8865..45ce9dd4323f 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -1,10 +1,13 @@
--// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * Testsuite for eBPF verifier
-  *
-  * Copyright (c) 2014 PLUMgrid, http://plumgrid.com
-  * Copyright (c) 2017 Facebook
-  * Copyright (c) 2018 Covalent IO, Inc. http://covalent.io
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-  */
- 
- #include <endian.h>
-@@ -50,7 +53,7 @@
- #define MAX_INSNS	BPF_MAXINSNS
- #define MAX_TEST_INSNS	1000000
- #define MAX_FIXUPS	8
--#define MAX_NR_MAPS	18
-+#define MAX_NR_MAPS	19
- #define MAX_TEST_RUNS	8
- #define POINTER_VALUE	0xcafe4all
- #define TEST_DATA_LEN	64
-@@ -84,6 +87,7 @@ struct bpf_test {
- 	int fixup_map_array_wo[MAX_FIXUPS];
- 	int fixup_map_array_small[MAX_FIXUPS];
- 	int fixup_sk_storage_map[MAX_FIXUPS];
-+	int fixup_map_event_output[MAX_FIXUPS];
- 	const char *errstr;
- 	const char *errstr_unpriv;
- 	uint32_t retval, retval_unpriv, insn_processed;
-@@ -604,6 +608,28 @@ static int create_sk_storage_map(void)
- 	return fd;
- }
- 
-+static int create_event_output_map(void)
-+{
-+	struct bpf_create_map_attr attr = {
-+		.name = "test_map",
-+		.map_type = BPF_MAP_TYPE_PERF_EVENT_ARRAY,
-+		.key_size = 4,
-+		.value_size = 4,
-+		.max_entries = 1,
-+	};
-+	int fd, btf_fd;
-+
-+	btf_fd = load_btf();
-+	if (btf_fd < 0)
-+		return -1;
-+	attr.btf_fd = btf_fd;
-+	fd = bpf_create_map_xattr(&attr);
-+	close(attr.btf_fd);
-+	if (fd < 0)
-+		printf("Failed to create event_output\n");
-+	return fd;
-+}
-+
- static char bpf_vlog[UINT_MAX >> 8];
- 
- static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
-@@ -627,6 +653,7 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
- 	int *fixup_map_array_wo = test->fixup_map_array_wo;
- 	int *fixup_map_array_small = test->fixup_map_array_small;
- 	int *fixup_sk_storage_map = test->fixup_sk_storage_map;
-+	int *fixup_map_event_output = test->fixup_map_event_output;
- 
- 	if (test->fill_helper) {
- 		test->fill_insns = calloc(MAX_TEST_INSNS, sizeof(struct bpf_insn));
-@@ -788,6 +815,13 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
- 			fixup_sk_storage_map++;
- 		} while (*fixup_sk_storage_map);
- 	}
-+	if (*fixup_map_event_output) {
-+		map_fds[18] = create_event_output_map();
-+		do {
-+			prog[*fixup_map_event_output].imm = map_fds[18];
-+			fixup_map_event_output++;
-+		} while (*fixup_map_event_output);
-+	}
- }
- 
- static int set_admin(bool admin)
-diff --git a/tools/testing/selftests/bpf/verifier/event_output.c b/tools/testing/selftests/bpf/verifier/event_output.c
-new file mode 100644
-index 000000000000..b25eabcfaa56
---- /dev/null
-+++ b/tools/testing/selftests/bpf/verifier/event_output.c
-@@ -0,0 +1,94 @@
-+/* instructions used to output a skb based software event, produced
-+ * from code snippet:
-+struct TMP {
-+  uint64_t tmp;
-+} tt;
-+tt.tmp = 5;
-+bpf_perf_event_output(skb, &connection_tracking_event_map, 0,
-+		      &tt, sizeof(tt));
-+return 1;
-+
-+the bpf assembly from llvm is:
-+       0:       b7 02 00 00 05 00 00 00         r2 = 5
-+       1:       7b 2a f8 ff 00 00 00 00         *(u64 *)(r10 - 8) = r2
-+       2:       bf a4 00 00 00 00 00 00         r4 = r10
-+       3:       07 04 00 00 f8 ff ff ff         r4 += -8
-+       4:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00    r2 = 0ll
-+       6:       b7 03 00 00 00 00 00 00         r3 = 0
-+       7:       b7 05 00 00 08 00 00 00         r5 = 8
-+       8:       85 00 00 00 19 00 00 00         call 25
-+       9:       b7 00 00 00 01 00 00 00         r0 = 1
-+      10:       95 00 00 00 00 00 00 00         exit
-+
-+    The reason I put the code here instead of fill_helpers is that map fixup is
-+    against the insns, instead of filled prog.
-+*/
-+
-+#define __PERF_EVENT_INSNS__					\
-+	BPF_MOV64_IMM(BPF_REG_2, 5),				\
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_2, -8),		\
-+	BPF_MOV64_REG(BPF_REG_4, BPF_REG_10),			\
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_4, -8),			\
-+	BPF_LD_MAP_FD(BPF_REG_2, 0),				\
-+	BPF_MOV64_IMM(BPF_REG_3, 0),				\
-+	BPF_MOV64_IMM(BPF_REG_5, 8),				\
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,		\
-+		     BPF_FUNC_perf_event_output),		\
-+	BPF_MOV64_IMM(BPF_REG_0, 1),				\
-+	BPF_EXIT_INSN(),
-+{
-+	"perfevent for sockops",
-+	.insns = { __PERF_EVENT_INSNS__ },
-+	.prog_type = BPF_PROG_TYPE_SOCK_OPS,
-+	.fixup_map_event_output = { 4 },
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
-+{
-+	"perfevent for tc",
-+	.insns =  { __PERF_EVENT_INSNS__ },
-+	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
-+	.fixup_map_event_output = { 4 },
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
-+{
-+	"perfevent for lwt out",
-+	.insns =  { __PERF_EVENT_INSNS__ },
-+	.prog_type = BPF_PROG_TYPE_LWT_OUT,
-+	.fixup_map_event_output = { 4 },
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
-+{
-+	"perfevent for xdp",
-+	.insns =  { __PERF_EVENT_INSNS__ },
-+	.prog_type = BPF_PROG_TYPE_XDP,
-+	.fixup_map_event_output = { 4 },
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
-+{
-+	"perfevent for socket filter",
-+	.insns =  { __PERF_EVENT_INSNS__ },
-+	.prog_type = BPF_PROG_TYPE_SOCKET_FILTER,
-+	.fixup_map_event_output = { 4 },
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
-+{
-+	"perfevent for sk_skb",
-+	.insns =  { __PERF_EVENT_INSNS__ },
-+	.prog_type = BPF_PROG_TYPE_SK_SKB,
-+	.fixup_map_event_output = { 4 },
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
-+{
-+	"perfevent for cgroup skb",
-+	.insns =  { __PERF_EVENT_INSNS__ },
-+	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
-+	.fixup_map_event_output = { 4 },
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
--- 
-2.22.0.410.gd8fdbe21b5-goog
-
+Ah, okay.
