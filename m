@@ -2,137 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C8552252
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 06:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8DF952471
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 09:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727275AbfFYEwB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jun 2019 00:52:01 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:40197 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726274AbfFYEwB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jun 2019 00:52:01 -0400
-Received: by mail-pf1-f196.google.com with SMTP id p184so8780902pfp.7
-        for <bpf@vger.kernel.org>; Mon, 24 Jun 2019 21:52:00 -0700 (PDT)
+        id S1726920AbfFYH2M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jun 2019 03:28:12 -0400
+Received: from mail-lj1-f173.google.com ([209.85.208.173]:37659 "EHLO
+        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726419AbfFYH2M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jun 2019 03:28:12 -0400
+Received: by mail-lj1-f173.google.com with SMTP id 131so15168521ljf.4
+        for <bpf@vger.kernel.org>; Tue, 25 Jun 2019 00:28:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=x++iS19w63sxgFVfWWLm5YJQFUHEat//0dXequQHgss=;
-        b=oPMATDOVDtVdhlOcqT7LD8rym0j7XNpvTqF81EmRDXevW5UrlQq+FYBUI8F5pOH+FV
-         vOoyEXA3YXGXBeBlycdLp9fk9MazJEIc9K+NxmzsuRCpDdG9h7TuhXujrTj6DMCN8h7T
-         Y6i84uBKUBG5O4vYCrqQ7eXupJwjwqHWx/1kMbOsHbWMGfZ3csvfmUoLMbgSOqMptbGf
-         KoVs3A8EU6eR5YM3Pxu8PVnJ2VOU/KlDIxEk6zJdxdxyl6DY0AMbUkIrpnJ78EvrnBFB
-         TlCzMdE1KIJzqUwkvzH5kvGPEsftIY/nqvyBzHUlz1SabNYgQiXNDdXCyqcmY9m38/Ky
-         tNlg==
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=fhMQBII1i8TqYdZm3nYoWajnTZAZNea+HydYBEMLSVM=;
+        b=q7YZtnD54QLv3xfmNo5Eh2f5de1f1Pn/CmtBc41D2ZV1hsTvS8LAaxX9KeoywEAGvt
+         ACDeyfWK5ucRxVu9C/Mp5q+M7DAai4JF7Gm0PaxBvL3tF06cHFOPuS6dY4ntdRP2jzof
+         cPXsG3Qx6luRRR+twILGKMwuMTdm7VOhuvWl4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=x++iS19w63sxgFVfWWLm5YJQFUHEat//0dXequQHgss=;
-        b=Pr1HZccWZRJoDQ7Y6TCt4NMhMSJVO+YqjJpeNW7G0NF22Z+AEGpXKGhlzuveqsfPiV
-         rSrKGQ6JoTThIeQChbGTE+ryFi42tAbT+CJNAAz/3gvlosKNUvbzpa5rxHHICD8sbwGb
-         M6OXYmWtpC4igmRDtfLgCxYQvAmHmiTQHXvQlDqgW8wbsKzSyRhEl0JikzubIsDxjTXT
-         QJKJncWdErwD7YOY8dqDXWd//kjibF6YtmWv/HukA6XuwCnlyFJdVhB/ttx3gJji9PjZ
-         VtrGfPuELhBk29QjyzCXbfbKBCSccWOc7q5SDQYGAdFqPM+MG/sqrEnO7jQm37VU475f
-         EvPg==
-X-Gm-Message-State: APjAAAUdiGzhW0lS8l5OeWwJsPv6L7hqe6sdVxCbOOu1ahCrwt2r0fn0
-        zo+tN+szUF2lPQzBTGUDcSltBw==
-X-Google-Smtp-Source: APXvYqwq+x8bjy217eJe6SW1wvSRPjFujvsZCYifDyTnFtr9gkiZuKb/hbegQMTzT8JlFrq6Jsu5Gg==
-X-Received: by 2002:a63:a046:: with SMTP id u6mr20953163pgn.122.1561438320211;
-        Mon, 24 Jun 2019 21:52:00 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([240e:e0:f087:f467:b43a:6fd7:87a2:c789])
-        by smtp.gmail.com with ESMTPSA id 22sm18808541pfu.179.2019.06.24.21.51.47
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 24 Jun 2019 21:51:59 -0700 (PDT)
-Date:   Tue, 25 Jun 2019 12:51:40 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suzuki Poulouse <suzuki.poulose@arm.com>,
-        Coresight ML <coresight@lists.linaro.org>
-Subject: Re: [PATCH] perf cs-etm: Improve completeness for kernel address
- space
-Message-ID: <20190625045140.GA7637@leoy-ThinkPad-X240s>
-References: <20190617150024.11787-1-leo.yan@linaro.org>
- <CANLsYkyMW=WG+=yWTLSyMT3JXqd_2kvsrx9c-EwCoKEnRZvErA@mail.gmail.com>
- <20190620005829.GH24549@leoy-ThinkPad-X240s>
- <20190624190009.GE4181@kernel.org>
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=fhMQBII1i8TqYdZm3nYoWajnTZAZNea+HydYBEMLSVM=;
+        b=tDcf0OMaoIWd4mkQW4+95RV25XEmS0aPnJx5hS5Zi4eFRH70jgpMjFvLf3AAme0sTX
+         EIgxqeZF38EgoEIIkht6W6N3eLPywhj8STbqX/sd2P5a8nv+5GfsCbmvB7IQoM6QxVas
+         b3ue2CWaaMhzS5fdQ60QdRVp2gEQPtACTfWTLTWLYCxrUzoIHgzXTc84gXIMcF7VRCZz
+         S3gce/UhfpFwDFm+d9fzlohRj/Quw/Z7CS25bvFKfSxaSMIjEI9K/iD5vUr5kBgA7TSx
+         oqdIcdj+P4/op9uQixqnW5cZmXPq3TM1im/YJEKLKQb9kpkPCu+CNwpHwaAguuT9UU37
+         sKgA==
+X-Gm-Message-State: APjAAAWRuM3JC6fc8dKiKGdkhBDIha5I+c7fCUGwRiQzecalUO4bIjjt
+        lzD4c4yAQ68x37Hmu4biPrq0nJfW2NQVaA==
+X-Google-Smtp-Source: APXvYqwLbVzuVMiOjlEqk+IiNo71mo2VcOIOWR5mITTFluF/RL+cOlVf/ykmsrWFCC3hJWEslyxXrg==
+X-Received: by 2002:a2e:2993:: with SMTP id p19mr54766840ljp.202.1561447690649;
+        Tue, 25 Jun 2019 00:28:10 -0700 (PDT)
+Received: from cloudflare.com ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id a9sm1796911lfj.79.2019.06.25.00.28.09
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 25 Jun 2019 00:28:09 -0700 (PDT)
+References: <20190618130050.8344-1-jakub@cloudflare.com> <20190618135258.spo6c457h6dfknt2@breakpoint.cc> <87sgs6ey43.fsf@cloudflare.com> <CAOftzPj6NWyWnz4JL-mXBaQUKAvQDtKJTrjZmrN4W5rqoy-W0A@mail.gmail.com>
+User-agent: mu4e 1.1.0; emacs 26.1
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Joe Stringer <joe@wand.net.nz>
+Cc:     Florian Westphal <fw@strlen.de>, netdev <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [RFC bpf-next 0/7] Programming socket lookup with BPF
+In-reply-to: <CAOftzPj6NWyWnz4JL-mXBaQUKAvQDtKJTrjZmrN4W5rqoy-W0A@mail.gmail.com>
+Date:   Tue, 25 Jun 2019 09:28:09 +0200
+Message-ID: <878stqceeu.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190624190009.GE4181@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Arnaldo,
+[Reposting with correct format this time. Sorry.]
 
-On Mon, Jun 24, 2019 at 04:00:09PM -0300, Arnaldo Carvalho de Melo wrote:
+On Fri, Jun 21, 2019 at 12:20 AM CEST, Joe Stringer wrote:
+> On Wed, Jun 19, 2019 at 2:14 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>>
+>> Hey Florian,
+>>
+>> Thanks for taking a look at it.
+>>
+>> On Tue, Jun 18, 2019 at 03:52 PM CEST, Florian Westphal wrote:
+>> > Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>> >>  - XDP programs using bpf_sk_lookup helpers, like load balancers, can't
+>> >>    find the listening socket to check for SYN cookies with TPROXY redirect.
+>> >
+>> > Sorry for the question, but where is the problem?
+>> > (i.e., is it with TPROXY or bpf side)?
+>>
+>> The way I see it is that the problem is that we have mappings for
+>> steering traffic into sockets split between two places: (1) the socket
+>> lookup tables, and (2) the TPROXY rules.
+>>
+>> BPF programs that need to check if there is a socket the packet is
+>> destined for have access to the socket lookup tables, via the mentioned
+>> bpf_sk_lookup helper, but are unaware of TPROXY redirects.
+>>
+>> For TCP we're able to look up from BPF if there are any established,
+>> request, and "normal" listening sockets. The listening sockets that
+>> receive connections via TPROXY are invisible to BPF progs.
+>>
+>> Why are we interested in finding all listening sockets? To check if any
+>> of them had SYN queue overflow recently and if we should honor SYN
+>> cookies.
+>
+> Why are they invisible? Can't you look them up with bpf_skc_lookup_tcp()?
 
-[...]
+They are invisible in that sense that you can't look them up using the
+packet 4-tuple. You have to somehow make the XDP/TC progs aware of the
+TPROXY redirects to find the target sockets.
 
-> > > > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> > > > index 0c7776b51045..ae831f836c70 100644
-> > > > --- a/tools/perf/util/cs-etm.c
-> > > > +++ b/tools/perf/util/cs-etm.c
-> > > > @@ -613,10 +613,34 @@ static void cs_etm__free(struct perf_session *session)
-> > > >  static u8 cs_etm__cpu_mode(struct cs_etm_queue *etmq, u64 address)
-> > > >  {
-> > > >         struct machine *machine;
-> > > > +       u64 fixup_kernel_start = 0;
-> > > > +       const char *arch;
-> > > >
-> > > >         machine = etmq->etm->machine;
-> > > > +       arch = perf_env__arch(machine->env);
-> > > >
-> > > > -       if (address >= etmq->etm->kernel_start) {
-> > > > +       /*
-> > > > +        * Since arm and arm64 specify some memory regions prior to
-> > > > +        * 'kernel_start', kernel addresses can be less than 'kernel_start'.
-> > > > +        *
-> > > > +        * For arm architecture, the 16MB virtual memory space prior to
-> > > > +        * 'kernel_start' is allocated to device modules, a PMD table if
-> > > > +        * CONFIG_HIGHMEM is enabled and a PGD table.
-> > > > +        *
-> > > > +        * For arm64 architecture, the root PGD table, device module memory
-> > > > +        * region and BPF jit region are prior to 'kernel_start'.
-> > > > +        *
-> > > > +        * To reflect the complete kernel address space, compensate these
-> > > > +        * pre-defined regions for kernel start address.
-> > > > +        */
-> > > > +       if (!strcmp(arch, "arm64"))
-> > > > +               fixup_kernel_start = etmq->etm->kernel_start -
-> > > > +                                    ARM64_PRE_START_SIZE;
-> > > > +       else if (!strcmp(arch, "arm"))
-> > > > +               fixup_kernel_start = etmq->etm->kernel_start -
-> > > > +                                    ARM_PRE_START_SIZE;
-> > > 
-> > > I will test your work but from a quick look wouldn't it be better to
-> > > have a single define name here?  From looking at the modifications you
-> > > did to Makefile.config there doesn't seem to be a reason to have two.
-> > 
-> > Thanks for suggestion.  I changed to use single define
-> > ARM_PRE_START_SIZE and sent patch v2 [1].
-> > 
-> > If possible, please test patch v2.
-> > 
-> > Thanks,
-> > Leo Yan
-> 
-> So just for the record, I'm waiting for Mathieu on this one, i.e. for
-> him to test/ack v3.
-
-Yes, this makes sense.  I'd like to get Mathieu's green light as well,
-it needs to take much time to build llvm/clang on SBC, so it's no rush.
-
-Thanks,
-Leo Yan
+-Jakub
