@@ -2,98 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E4152559CD
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 23:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA5955A13
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 23:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbfFYVTu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jun 2019 17:19:50 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:32844 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbfFYVTu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jun 2019 17:19:50 -0400
-Received: by mail-pl1-f195.google.com with SMTP id c14so144895plo.0
-        for <bpf@vger.kernel.org>; Tue, 25 Jun 2019 14:19:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=318/F64MRVThD6drKvp6v4JpYRMrYpBkhrwSZcHYF8g=;
-        b=U17DEEigSUf+CD2yF2mdyA5DgVlbqsasZHiDw0pR5K2+kgyzPgRBt3UpRLTcziJXia
-         IKMSJ7A54jQz2SVVSEctjU/LE+IB/qTrA1X7zFnVKAT4VUCImIUb5WxMrWteKf9kJFqC
-         MAX8kK5dGct+kdvxS5nYVgcR3lX9pxVnZt6+zutB4Yj2Re3uzNGGMajKlFHaNBC+w+yP
-         mH4WJ6EoOE0SX0I5AXYVs61vmVxxKCmOe+bzfDpKPjgBvUmgOwD813mVUGU0dBAYJ6uV
-         fLWZv9PkeoLhrGlZ8Cy3yBVFcsrQFb03RNYa7aVBGX0p6w9uTmwimeLLWRq8/UAetELO
-         fO0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=318/F64MRVThD6drKvp6v4JpYRMrYpBkhrwSZcHYF8g=;
-        b=PIC2lDCL9mUiZXvPX933NuuHPWMy4f8HZR/8oXst3mUYoy9xHCq3Ys4GIG8szjPSiE
-         yHUeS10y/QVG03IrvaXAllxz1Xm3PktF1U6iw2CzkAgiM0PYtvwq829QiRL2jvI58xEu
-         atKSctX6k98omQJsZwngSC/6dfd6n4MiUIjJ9QEWbKe6xfJO4EKJXlalgpM/HLxTmgfl
-         bd7R4J+CRIEDS6QjEe2mbGK/BHzHjBnbBGJS9zK3jS6R8l8e9ZAgc047ChyLsYmwnLBi
-         hDlebq1zzfIc4zRlFTMHg4+DCeXkQ9ba8W0NugoOTOQfCmFvf6Ul9HrL75F/OncIFvb8
-         OaPw==
-X-Gm-Message-State: APjAAAW+Ysxal9Ohr1pygbnjHRDXOs4s47Owp3niNETuBtTiR0bKyhrt
-        IEsQM3RhRm0wV0+PJMcDnh4OBA==
-X-Google-Smtp-Source: APXvYqw7jLksEyjREhJ+ZuyrcdebDQn94Ed7i5dIPE6ifnX4os+NPpskM24MHLU7YKqaFzarMy7vDg==
-X-Received: by 2002:a17:902:76c3:: with SMTP id j3mr851172plt.116.1561497589998;
-        Tue, 25 Jun 2019 14:19:49 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id z20sm29887527pfk.72.2019.06.25.14.19.49
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 25 Jun 2019 14:19:49 -0700 (PDT)
-Date:   Tue, 25 Jun 2019 14:19:48 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Alexei Starovoitov <ast@fb.com>
-Cc:     Song Liu <songliubraving@fb.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 0/4] sys_bpf() access control via /dev/bpf
-Message-ID: <20190625211948.GE10487@mini-arch>
-References: <20190625182303.874270-1-songliubraving@fb.com>
- <20190625205155.GD10487@mini-arch>
- <59e56064-354c-d6b9-101a-c698976e6723@fb.com>
+        id S1726040AbfFYVjE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jun 2019 17:39:04 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:25762 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725914AbfFYVjE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 25 Jun 2019 17:39:04 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5PLcBxX012326
+        for <bpf@vger.kernel.org>; Tue, 25 Jun 2019 14:39:02 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=6Qb5WBexFT5B6u9rozg9q9FpGOZk1JNFFnUiYC37ZO0=;
+ b=qmaiAvFnuImuVeLjJgMx1v57y1gAXNz7RDZZ85he53r+OlswPeTARhWR/O9bGEvUFM8/
+ 7Jr0yXkTIJW/qkU5i3azXL40mWDYvvJwg8ROkmGrdygCrHjR3OzRFc565lKtgopK+Nhd
+ MtsB3QnnDIminohubmbHpBZ04KQqgmoI07g= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2tbrn78qdb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 25 Jun 2019 14:39:02 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 25 Jun 2019 14:39:01 -0700
+Received: by devvm2643.prn2.facebook.com (Postfix, from userid 111017)
+        id D752013B668B9; Tue, 25 Jun 2019 14:38:59 -0700 (PDT)
+Smtp-Origin-Hostprefix: devvm
+From:   Roman Gushchin <guro@fb.com>
+Smtp-Origin-Hostname: devvm2643.prn2.facebook.com
+To:     Alexei Starovoitov <ast@kernel.org>, Tejun Heo <tj@kernel.org>,
+        <bpf@vger.kernel.org>
+CC:     Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH v2 bpf-next] bpf: fix cgroup bpf release synchronization
+Date:   Tue, 25 Jun 2019 14:38:58 -0700
+Message-ID: <20190625213858.22459-1-guro@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <59e56064-354c-d6b9-101a-c698976e6723@fb.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-25_14:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=2 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=706 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906250167
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/25, Alexei Starovoitov wrote:
-> On 6/25/19 1:51 PM, Stanislav Fomichev wrote:
-> > On 06/25, Song Liu wrote:
-> >> Currently, most access to sys_bpf() is limited to root. However, there are
-> >> use cases that would benefit from non-privileged use of sys_bpf(), e.g.
-> >> systemd.
-> >>
-> >> This set introduces a new model to control the access to sys_bpf(). A
-> >> special device, /dev/bpf, is introduced to manage access to sys_bpf().
-> >> Users with access to open /dev/bpf will be able to access most of
-> >> sys_bpf() features. The use can get access to sys_bpf() by opening /dev/bpf
-> >> and use ioctl to get/put permission.
-> >>
-> >> The permission to access sys_bpf() is marked by bit TASK_BPF_FLAG_PERMITTED
-> >> in task_struct. During fork(), child will not inherit this bit.
-> > 2c: if we are going to have an fd, I'd vote for a proper fd based access
-> > checks instead of a per-task flag, so we can do:
-> > 	ioctl(fd, BPF_MAP_CREATE, uattr, sizeof(uattr))
-> > 
-> > (and pass this fd around)
-> > 
-> > I do understand that it breaks current assumptions that libbpf has,
-> > but maybe we can extend _xattr variants to accept optinal fd (and try
-> > to fallback to sysctl if it's absent/not working)?
-> 
-> both of these ideas were discussed at lsfmm where you were present.
-> I'm not sure why you're bring it up again?
-Did we actually settle on anything? In that case feel free to ignore me,
-maybe I missed that. I remember there were pros/cons for both implementations.
+Since commit 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf
+from cgroup itself"), cgroup_bpf release occurs asynchronously
+(from a worker context), and before the release of the cgroup itself.
+
+This introduced a previously non-existing race between the release
+and update paths. E.g. if a leaf's cgroup_bpf is released and a new
+bpf program is attached to the one of ancestor cgroups at the same
+time. The race may result in double-free and other memory corruptions.
+
+To fix the problem, let's protect the body of cgroup_bpf_release()
+with cgroup_mutex, as it was effectively previously, when all this
+code was called from the cgroup release path with cgroup mutex held.
+
+Also let's skip cgroups, which have no chances to invoke a bpf
+program, on the update path. If the cgroup bpf refcnt reached 0,
+it means that the cgroup is offline (no attached processes), and
+there are no associated sockets left. It means there is no point
+in updating effective progs array! And it can lead to a leak,
+if it happens after the release. So, let's skip such cgroups.
+
+Big thanks for Tejun Heo for discovering and debugging of this
+problem!
+
+Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf from
+cgroup itself")
+Reported-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Roman Gushchin <guro@fb.com>
+---
+ kernel/bpf/cgroup.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index c225c42e114a..077ed3a19848 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -16,6 +16,8 @@
+ #include <linux/bpf-cgroup.h>
+ #include <net/sock.h>
+ 
++#include "../cgroup/cgroup-internal.h"
++
+ DEFINE_STATIC_KEY_FALSE(cgroup_bpf_enabled_key);
+ EXPORT_SYMBOL(cgroup_bpf_enabled_key);
+ 
+@@ -38,6 +40,8 @@ static void cgroup_bpf_release(struct work_struct *work)
+ 	struct bpf_prog_array *old_array;
+ 	unsigned int type;
+ 
++	mutex_lock(&cgroup_mutex);
++
+ 	for (type = 0; type < ARRAY_SIZE(cgrp->bpf.progs); type++) {
+ 		struct list_head *progs = &cgrp->bpf.progs[type];
+ 		struct bpf_prog_list *pl, *tmp;
+@@ -54,10 +58,12 @@ static void cgroup_bpf_release(struct work_struct *work)
+ 		}
+ 		old_array = rcu_dereference_protected(
+ 				cgrp->bpf.effective[type],
+-				percpu_ref_is_dying(&cgrp->bpf.refcnt));
++				lockdep_is_held(&cgroup_mutex));
+ 		bpf_prog_array_free(old_array);
+ 	}
+ 
++	mutex_unlock(&cgroup_mutex);
++
+ 	percpu_ref_exit(&cgrp->bpf.refcnt);
+ 	cgroup_put(cgrp);
+ }
+@@ -229,6 +235,9 @@ static int update_effective_progs(struct cgroup *cgrp,
+ 	css_for_each_descendant_pre(css, &cgrp->self) {
+ 		struct cgroup *desc = container_of(css, struct cgroup, self);
+ 
++		if (percpu_ref_is_zero(&desc->bpf.refcnt))
++			continue;
++
+ 		err = compute_effective_progs(desc, type, &desc->bpf.inactive);
+ 		if (err)
+ 			goto cleanup;
+@@ -238,6 +247,14 @@ static int update_effective_progs(struct cgroup *cgrp,
+ 	css_for_each_descendant_pre(css, &cgrp->self) {
+ 		struct cgroup *desc = container_of(css, struct cgroup, self);
+ 
++		if (percpu_ref_is_zero(&desc->bpf.refcnt)) {
++			if (unlikely(desc->bpf.inactive)) {
++				bpf_prog_array_free(desc->bpf.inactive);
++				desc->bpf.inactive = NULL;
++			}
++			continue;
++		}
++
+ 		activate_effective_progs(desc, type, desc->bpf.inactive);
+ 		desc->bpf.inactive = NULL;
+ 	}
+-- 
+2.21.0
+
