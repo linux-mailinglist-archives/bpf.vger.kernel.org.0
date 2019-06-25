@@ -2,85 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6825250B
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 09:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74F552620
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 10:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728771AbfFYHnA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jun 2019 03:43:00 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:54378 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726668AbfFYHnA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jun 2019 03:43:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=3Woq6Ijx79j2u1qvlhauxGczuuE2pOnfE5TxDoYwUlo=; b=ZOsUs5qSf57Dj/Pk5RYzsxw59
-        UEljXgjEtZQvU9qf0h/H8kknIf7OPGmcSz8smyBFHiroy9ujI8Qo/4ckFOQzdG/uelI5b6DAirzy6
-        Deq5BLpWD9gsZsC0HfxvFd9u8xeHoKc6t3lE8UHCjzBetzSIdrTiNTZOKyfN2taQgp8CnXLEEPpno
-        0etHTcBjiIS3jz8xF40mDJIRn+dWXflSvl2dS9xAZScTCCvOTPrjD3oiNkgdt4nCj1//4PCBe4A8i
-        DbOAA+hulLsM7sGPx247bRBzMA47vpqf9vhJRSSqMrJxqdq+acP818QPbjp1s4nSdOzxTUwQMULTc
-        KwuD+LPhA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1hfg5n-0002my-Rq; Tue, 25 Jun 2019 07:42:16 +0000
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7C1BA20A0642F; Tue, 25 Jun 2019 09:42:14 +0200 (CEST)
-Date:   Tue, 25 Jun 2019 09:42:14 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Frank Ch. Eigler" <fche@redhat.com>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, jikos@kernel.org,
-        mbenes@suse.cz, Petr Mladek <pmladek@suse.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Robert Richter <rric@kernel.org>,
-        rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        paulmck <paulmck@linux.ibm.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        oprofile-list@lists.sf.net, netdev <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 2/3] module: Fix up module_notifier return values.
-Message-ID: <20190625074214.GR3436@hirez.programming.kicks-ass.net>
-References: <20190624091843.859714294@infradead.org>
- <20190624092109.805742823@infradead.org>
- <320564860.243.1561384864186.JavaMail.zimbra@efficios.com>
- <20190624205810.GD26422@redhat.com>
+        id S1727770AbfFYIMD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jun 2019 04:12:03 -0400
+Received: from mail-lj1-f175.google.com ([209.85.208.175]:43433 "EHLO
+        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726663AbfFYIMD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jun 2019 04:12:03 -0400
+Received: by mail-lj1-f175.google.com with SMTP id 16so15265635ljv.10
+        for <bpf@vger.kernel.org>; Tue, 25 Jun 2019 01:12:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=TssOUjbGd5SYsb/yN6BqO3kY0oJLgMIeiNuXJ4cyD0k=;
+        b=o4neqAjDlr8FYHVYXZILGQkzpsL8XjC6wzX4fIz+dRwFZ4DmXsBQzvdIYYOtIInk4w
+         qw9fHrWxOpjVFp/Nh38LpcBLWFGtzB8DC/1bWVuDiAYXnFOwyPq9Vr6ACUNJJ5YUtadQ
+         gWimyQuIdpr3QzzM2dC8VnTOfNOyEBZQ7GJD8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=TssOUjbGd5SYsb/yN6BqO3kY0oJLgMIeiNuXJ4cyD0k=;
+        b=KLKEvPk3ln5Bdn02Hjnq2rF9UbcURNkOTM/nHo/GWSbzObMKKj/XcgBgoTy913KF70
+         nUM6KiUE/SksthzIkkv4xyTegMqKFXHbSnW64urlYPgL05ZimvcUh7dQDQRIutYbsxsf
+         wvgTwKtKW6lGmOrwvkvNcLzeFNzp+Xa7r4xTVE8eePxImj76iT4PMTIoPq0rdzfAqXhk
+         Js9IR2bEC5MNUgFMBnssMep4VkWD3LdW5Fvj7jLWfj+fT40iBHVhhxCJ97zCEHcUReum
+         SbhLDJ+6XNjIgjCSIDMiTMREH087dKt4VACEnjzTfTHJw0sk5gxb3UOqK8OE0mpIkAcO
+         E+QQ==
+X-Gm-Message-State: APjAAAWukwxYajLj7PcyyTYmg8q2dZHi/8A9o+gCTrqK2GmFIDzTlmlv
+        QhaG44sNmEW6NpKB9iwi7k3eng==
+X-Google-Smtp-Source: APXvYqyxu+O3OcdM8vwr3n8onQ4EyvySdbslZdkKIxtcVW6ejHEZOM2qMcit4+niHinuRKs6FY65JQ==
+X-Received: by 2002:a2e:890a:: with SMTP id d10mr41312773lji.145.1561450320764;
+        Tue, 25 Jun 2019 01:12:00 -0700 (PDT)
+Received: from cloudflare.com ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id c12sm1826055lfj.58.2019.06.25.01.11.59
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 25 Jun 2019 01:12:00 -0700 (PDT)
+References: <20190618130050.8344-1-jakub@cloudflare.com> <20190618135258.spo6c457h6dfknt2@breakpoint.cc> <87sgs6ey43.fsf@cloudflare.com> <CAOftzPj6NWyWnz4JL-mXBaQUKAvQDtKJTrjZmrN4W5rqoy-W0A@mail.gmail.com> <CAGn+7TUmgsA8oKw-mM6S5iR4rmNt6sWxjUgw8=qSCHb=m0ROyg@mail.gmail.com> <CAOftzPhGVeLpqbffLwBP8JCvY1t65-uXztEsZV0qJEQapywRgg@mail.gmail.com>
+User-agent: mu4e 1.1.0; emacs 26.1
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Joe Stringer <joe@wand.net.nz>
+Cc:     Florian Westphal <fw@strlen.de>, netdev <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [RFC bpf-next 0/7] Programming socket lookup with BPF
+In-reply-to: <CAOftzPhGVeLpqbffLwBP8JCvY1t65-uXztEsZV0qJEQapywRgg@mail.gmail.com>
+Date:   Tue, 25 Jun 2019 10:11:59 +0200
+Message-ID: <875zouccds.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190624205810.GD26422@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 24, 2019 at 04:58:10PM -0400, Frank Ch. Eigler wrote:
-> Hi -
-> 
-> > > While auditing all module notifiers I noticed a whole bunch of fail
-> > > wrt the return value. Notifiers have a 'special' return semantics.
-> 
-> From peterz's comments, the patches, it's not obvious to me how one is
-> to choose between 0 (NOTIFY_DONE) and 1 (NOTIFY_OK) in the case of a
-> routine success.
+On Fri, Jun 21, 2019 at 06:50 PM CEST, Joe Stringer wrote:
+> On Fri, Jun 21, 2019 at 1:44 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>>
+>> On Fri, Jun 21, 2019, 00:20 Joe Stringer <joe@wand.net.nz> wrote:
+>>>
+>>> On Wed, Jun 19, 2019 at 2:14 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>>> >
+>>> > Hey Florian,
+>>> >
+>>> > Thanks for taking a look at it.
+>>> >
+>>> > On Tue, Jun 18, 2019 at 03:52 PM CEST, Florian Westphal wrote:
+>>> > > Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>>> > >>  - XDP programs using bpf_sk_lookup helpers, like load balancers, can't
+>>> > >>    find the listening socket to check for SYN cookies with TPROXY redirect.
+>>> > >
+>>> > > Sorry for the question, but where is the problem?
+>>> > > (i.e., is it with TPROXY or bpf side)?
+>>> >
+>>> > The way I see it is that the problem is that we have mappings for
+>>> > steering traffic into sockets split between two places: (1) the socket
+>>> > lookup tables, and (2) the TPROXY rules.
+>>> >
+>>> > BPF programs that need to check if there is a socket the packet is
+>>> > destined for have access to the socket lookup tables, via the mentioned
+>>> > bpf_sk_lookup helper, but are unaware of TPROXY redirects.
+>>> >
+>>> > For TCP we're able to look up from BPF if there are any established,
+>>> > request, and "normal" listening sockets. The listening sockets that
+>>> > receive connections via TPROXY are invisible to BPF progs.
+>>> >
+>>> > Why are we interested in finding all listening sockets? To check if any
+>>> > of them had SYN queue overflow recently and if we should honor SYN
+>>> > cookies.
+>>>
+>>> Why are they invisible? Can't you look them up with bpf_skc_lookup_tcp()?
+>>
+>>
+>> They are invisible in that sense that you can't look them up using the packet 4-tuple. You have to somehow make the XDP/TC progs aware of the TPROXY redirects to find the target sockets.
+>
+> Isn't that what you're doing in the example from the cover letter
+> (reincluded below for reference), except with the new program type
+> rather than XDP/TC progs?
+>
+>        switch (bpf_ntohl(ctx->local_ip4) >> 8) {
+>         case NET1:
+>                 ctx->local_ip4 = bpf_htonl(IP4(127, 0, 0, 1));
+>                 ctx->local_port = 81;
+>                 return BPF_REDIRECT;
+>         case NET2:
+>                 ctx->local_ip4 = bpf_htonl(IP4(127, 0, 0, 1));
+>                 ctx->local_port = 82;
+>                 return BPF_REDIRECT;
+>         }
+>
+> That said, I appreciate that even if you find the sockets from XDP,
+> you'd presumably need some way to retain the socket reference beyond
+> XDP execution to convince the stack to guide the traffic into that
+> socket, which would be a whole other effort. For your use case it may
+> or may not make the most sense.
 
-I'm not sure either; what I think I choice was:
+Granted we're just moving steering logic from one place to another, that
+is from TPROXY rules to a BPF program.
 
- - if I want to completely ignore the callback, use DONE (per the
-   "Don't care" comment).
+The key here is that the BPF prog runs during inet_lookup.  This let's
+"lower level" BPF progs like XDP or TC check if there is a destination
+socket, without having to know about steering rules.
 
- - if we finished the notifier without error, use OK or
-   notifier_from_errno(0).
+If there is a local socket, we don't need to do socket dispatch from
+BPF. Just pass the packet up the stack.
 
-But yes, its a bit of a shit interface.
+-Jakub
