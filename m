@@ -2,98 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4FB54D41
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 13:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D75154E1A
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2019 14:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730380AbfFYLHO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jun 2019 07:07:14 -0400
-Received: from guitar.tcltek.co.il ([192.115.133.116]:34068 "EHLO
-        mx.tkos.co.il" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730314AbfFYLHN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jun 2019 07:07:13 -0400
-Received: from tarshish.tkos.co.il (unknown [10.0.8.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mx.tkos.co.il (Postfix) with ESMTPS id 4706844039B;
-        Tue, 25 Jun 2019 14:07:09 +0300 (IDT)
-From:   Baruch Siach <baruch@tkos.co.il>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, "Dmitry V . Levin" <ldv@altlinux.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
-        Baruch Siach <baruch@tkos.co.il>, Jiri Olsa <jolsa@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH v2] bpf: fix uapi bpf_prog_info fields alignment
-Date:   Tue, 25 Jun 2019 14:04:41 +0300
-Message-Id: <a5fb2545a0cf151bc443efa10c16c5a4de6f2670.1561460681.git.baruch@tkos.co.il>
-X-Mailer: git-send-email 2.20.1
+        id S1728247AbfFYMAg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jun 2019 08:00:36 -0400
+Received: from www62.your-server.de ([213.133.104.62]:51514 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726009AbfFYMAg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jun 2019 08:00:36 -0400
+Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hfk7l-0002Se-LS; Tue, 25 Jun 2019 14:00:33 +0200
+Received: from [178.199.41.31] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hfk7l-0005Do-CT; Tue, 25 Jun 2019 14:00:33 +0200
+Subject: Re: [PATCH bpf-next] MAINTAINERS: add reviewer to maintainers entry
+To:     Jonathan Lemon <jonathan.lemon@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     ast@kernel.org, netdev@vger.kernel.org,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        magnus.karlsson@intel.com, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20190624052455.10659-1-bjorn.topel@gmail.com>
+ <B5DAC105-8F88-43F7-9F6F-6C0B436C4F06@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <e0654342-7110-c1e3-53bc-cb9c303252e9@iogearbox.net>
+Date:   Tue, 25 Jun 2019 14:00:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
 MIME-Version: 1.0
+In-Reply-To: <B5DAC105-8F88-43F7-9F6F-6C0B436C4F06@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25491/Tue Jun 25 10:02:48 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Merge commit 1c8c5a9d38f60 ("Merge
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next") undid the
-fix from commit 36f9814a494 ("bpf: fix uapi hole for 32 bit compat
-applications") by taking the gpl_compatible 1-bit field definition from
-commit b85fab0e67b162 ("bpf: Add gpl_compatible flag to struct
-bpf_prog_info") as is. That breaks architectures with 16-bit alignment
-like m68k. Embed gpl_compatible into an anonymous union with 32-bit pad
-member to restore alignment of following fields.
+On 06/24/2019 10:54 PM, Jonathan Lemon wrote:
+> On 23 Jun 2019, at 22:24, Björn Töpel wrote:
+>> From: Björn Töpel <bjorn.topel@intel.com>
+>>
+>> Jonathan Lemon has volunteered as an official AF_XDP reviewer. Thank
+>> you, Jonathan!
+>>
+>> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+> Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
 
-Thanks to Dmitry V. Levin his analysis of this bug history.
-
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Baruch Siach <baruch@tkos.co.il>
----
-v2:
-Use anonymous union with pad to make it less likely to break again in
-the future.
----
- include/uapi/linux/bpf.h       | 5 ++++-
- tools/include/uapi/linux/bpf.h | 5 ++++-
- 2 files changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index a8b823c30b43..766eae02d7ae 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -3142,7 +3142,10 @@ struct bpf_prog_info {
- 	__aligned_u64 map_ids;
- 	char name[BPF_OBJ_NAME_LEN];
- 	__u32 ifindex;
--	__u32 gpl_compatible:1;
-+	union {
-+		__u32 gpl_compatible:1;
-+		__u32 pad;
-+	};
- 	__u64 netns_dev;
- 	__u64 netns_ino;
- 	__u32 nr_jited_ksyms;
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index a8b823c30b43..766eae02d7ae 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -3142,7 +3142,10 @@ struct bpf_prog_info {
- 	__aligned_u64 map_ids;
- 	char name[BPF_OBJ_NAME_LEN];
- 	__u32 ifindex;
--	__u32 gpl_compatible:1;
-+	union {
-+		__u32 gpl_compatible:1;
-+		__u32 pad;
-+	};
- 	__u64 netns_dev;
- 	__u64 netns_ino;
- 	__u32 nr_jited_ksyms;
--- 
-2.20.1
-
+Given it's a doc update, I've applied it to bpf, thanks!
