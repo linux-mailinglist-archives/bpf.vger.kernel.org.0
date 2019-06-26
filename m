@@ -2,75 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50188574DA
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 01:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA56574DC
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 01:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726399AbfFZXUw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jun 2019 19:20:52 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:33646 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726550AbfFZXUv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jun 2019 19:20:51 -0400
-Received: by mail-io1-f65.google.com with SMTP id u13so622875iop.0
-        for <bpf@vger.kernel.org>; Wed, 26 Jun 2019 16:20:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.washington.edu; s=goo201206;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=brea/2Qx9pBcYGaH6DB1Fc3qM+qPNzkSABIn8ioCvPU=;
-        b=ZaJnj72valkhOWXD57cAGw+gAAyEfQy/JR47wmIiwfnDtp1TQpOJwz7GpvJSXTUD0u
-         ZA/U+rG82kpbeH8Uqa6aoazQ8fD/ngaK2CVgNrTaqAQFz3f57WqXINxufX5TlzRjxCQa
-         xI8Ss8Ko+wdFKlJb0vWMvWfg8h0WPripGQ3EU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=brea/2Qx9pBcYGaH6DB1Fc3qM+qPNzkSABIn8ioCvPU=;
-        b=QhBMFpgm5AgsD1g8YuuqyHW4iMxo+QG7bGTj6V0c3lOEHVwxVLAwC+mFcdBDh16QuY
-         6uUgE84IOhlxVIS7Z2jyD1KLMchu8eIWH1uF3wwYxKlYiStCM3pJcW1hCJXSNe0Snd2o
-         X+a05sxKmXE2Is8uHXElZzlhtytXwQzJM+2mU2899MjfGAI8LgKakio2G1MIM4DvY3ye
-         195GUwASi3rwVQMVpf4PCmsMuqIhsWVNcvImP9zg8lP0b/GIf1bTZGyGcZO7IIVuxpvn
-         YGsUmJ1x6g9tRvOsFKmC8RddvrWp7dbIbkRX2zJaMukWMQO7qc+a/iIjw3ts+3ZLNeVS
-         C8QQ==
-X-Gm-Message-State: APjAAAUQhUNyRp2azTknXYXcCqQCbxlxftVcifne235lNYepMkI5s/nS
-        uh0YaaeQ08vX8TBjRbJVp50cfCd3mSX54PYV/oprQA==
-X-Google-Smtp-Source: APXvYqx4WUGRRdnDMn1qRC9QzduXjQrWAsPLCwLSndDqxI0ewueoPskdlrvCJKhtJLOzQy0pNf8LolgeC9PNFB3+1so=
-X-Received: by 2002:a6b:f90f:: with SMTP id j15mr894411iog.43.1561591247732;
- Wed, 26 Jun 2019 16:20:47 -0700 (PDT)
+        id S1726531AbfFZXVr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jun 2019 19:21:47 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:8372 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726399AbfFZXVr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 26 Jun 2019 19:21:47 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x5QNHDYi026854
+        for <bpf@vger.kernel.org>; Wed, 26 Jun 2019 16:21:46 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=utV/OPsKjU56Rv01qrcOoUQeKX+DVXwaTBWYtEhWa4c=;
+ b=LYb1cZhaRtVUbGrA3l0hWCXvvBM+8IQzOpz3U97mK6nzYp36YGGhomtF/nIS3UbzDo3F
+ 1CedZVyV7RqnR+RT6tuLQ+nqZ1rOqxoLLITWaJo6kHN1CBkhQEJfBiYMAbNlefOLsx2U
+ bcyNUX2FJOIkElH+1yjM4iQBFkje0S1zNjI= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by m0001303.ppops.net with ESMTP id 2tcc49sfyt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 26 Jun 2019 16:21:46 -0700
+Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Wed, 26 Jun 2019 16:21:44 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 716548618DB; Wed, 26 Jun 2019 16:21:44 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <andrii.nakryiko@gmail.com>, <ast@fb.com>, <daniel@iogearbox.net>,
+        <kernel-team@fb.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+CC:     Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next 0/3] capture integers in BTF type info for map defs
+Date:   Wed, 26 Jun 2019 16:21:30 -0700
+Message-ID: <20190626232133.3800637-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20190621225938.27030-1-lukenels@cs.washington.edu> <CAJ+HfNgHOt4gMSq_gufwxb=cKekCfLrk-uGJuGeDiOeQV1-wwQ@mail.gmail.com>
-In-Reply-To: <CAJ+HfNgHOt4gMSq_gufwxb=cKekCfLrk-uGJuGeDiOeQV1-wwQ@mail.gmail.com>
-From:   Luke Nelson <lukenels@cs.washington.edu>
-Date:   Wed, 26 Jun 2019 16:20:37 -0700
-Message-ID: <CADasFoC6ga_DuHL+RxLPzBhMHr+Jj5OgGkjuUgX0o6Rx5vsvdw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next] RV32G eBPF JIT
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        linux-riscv@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-26_13:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=787 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906260267
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 24, 2019 at 3:11 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.co=
-m> wrote:
-> >   - Far branches
-> >       These are not supported in RV64G either.
->
-> This would be really nice to have, now that the size of BPF programs
-> are getting larger.
+This patch set implements an update to how BTF-defined maps are specified. The
+change is in how integer attributes, e.g., type, max_entries, map_flags, are
+specified: now they are captured as part of map definition struct's BTF type
+information (using array dimension), eliminating the need for compile-time
+data initialization and keeping all the metadata in one place.
 
-I've sent out an updated version of the patch here, with support for
-far branches: https://patchwork.ozlabs.org/patch/1123052
+All existing selftests that were using BTF-defined maps are updated, along
+with some other selftests, that were switched to new syntax.
 
-Thanks!
+Andrii Nakryiko (3):
+  libbpf: capture value in BTF type info for BTF-defined map defs
+  selftests/bpf: convert selftests using BTF-defined maps to new syntax
+  selftests/bpf: convert legacy BPF maps to BTF-defined ones
+
+ tools/lib/bpf/libbpf.c                        |  58 +++++----
+ tools/testing/selftests/bpf/bpf_helpers.h     |   3 +
+ tools/testing/selftests/bpf/progs/bpf_flow.c  |  28 ++---
+ .../selftests/bpf/progs/get_cgroup_id_kern.c  |  26 ++---
+ .../testing/selftests/bpf/progs/netcnt_prog.c |  20 ++--
+ tools/testing/selftests/bpf/progs/pyperf.h    |  90 +++++++-------
+ .../selftests/bpf/progs/sample_map_ret0.c     |  24 ++--
+ .../selftests/bpf/progs/socket_cookie_prog.c  |  13 +--
+ .../bpf/progs/sockmap_verdict_prog.c          |  48 ++++----
+ .../testing/selftests/bpf/progs/strobemeta.h  |  68 +++++------
+ .../selftests/bpf/progs/test_btf_newkv.c      |  13 +--
+ .../bpf/progs/test_get_stack_rawtp.c          |  39 +++----
+ .../selftests/bpf/progs/test_global_data.c    |  37 +++---
+ tools/testing/selftests/bpf/progs/test_l4lb.c |  65 ++++-------
+ .../selftests/bpf/progs/test_l4lb_noinline.c  |  65 ++++-------
+ .../selftests/bpf/progs/test_map_in_map.c     |  30 ++---
+ .../selftests/bpf/progs/test_map_lock.c       |  26 ++---
+ .../testing/selftests/bpf/progs/test_obj_id.c |  12 +-
+ .../bpf/progs/test_select_reuseport_kern.c    |  67 ++++-------
+ .../bpf/progs/test_send_signal_kern.c         |  26 ++---
+ .../bpf/progs/test_sock_fields_kern.c         |  78 +++++--------
+ .../selftests/bpf/progs/test_spin_lock.c      |  36 +++---
+ .../bpf/progs/test_stacktrace_build_id.c      |  55 ++++-----
+ .../selftests/bpf/progs/test_stacktrace_map.c |  52 +++------
+ .../selftests/bpf/progs/test_tcp_estats.c     |  13 +--
+ .../selftests/bpf/progs/test_tcpbpf_kern.c    |  26 ++---
+ .../selftests/bpf/progs/test_tcpnotify_kern.c |  28 ++---
+ tools/testing/selftests/bpf/progs/test_xdp.c  |  26 ++---
+ .../selftests/bpf/progs/test_xdp_loop.c       |  26 ++---
+ .../selftests/bpf/progs/test_xdp_noinline.c   |  81 +++++--------
+ .../selftests/bpf/progs/xdp_redirect_map.c    |  12 +-
+ .../testing/selftests/bpf/progs/xdping_kern.c |  12 +-
+ .../selftests/bpf/test_queue_stack_map.h      |  30 ++---
+ .../testing/selftests/bpf/test_sockmap_kern.h | 110 +++++++++---------
+ 34 files changed, 571 insertions(+), 772 deletions(-)
+
+-- 
+2.17.1
+
