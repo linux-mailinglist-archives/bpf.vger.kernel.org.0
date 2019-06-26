@@ -2,101 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 85FD35736E
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 23:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 073CD57428
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 00:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbfFZVQS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jun 2019 17:16:18 -0400
-Received: from mail-qt1-f169.google.com ([209.85.160.169]:41407 "EHLO
-        mail-qt1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726223AbfFZVQS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jun 2019 17:16:18 -0400
-Received: by mail-qt1-f169.google.com with SMTP id d17so161583qtj.8;
-        Wed, 26 Jun 2019 14:16:17 -0700 (PDT)
+        id S1726416AbfFZWPr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jun 2019 18:15:47 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:44458 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbfFZWPr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jun 2019 18:15:47 -0400
+Received: by mail-qt1-f193.google.com with SMTP id x47so293405qtk.11;
+        Wed, 26 Jun 2019 15:15:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=4ZRMYDD6VXYHJ3yMoR9yk/ycrqO0+R7vuu/Js8ejT6o=;
-        b=bJQiVPJfaBNatgfnUw2XBVrpAdFC6MjIm0gbTy2KAEKrru7C2oC48pdBWgg9nExLb/
-         7qLhF/204uVK2JCY4Fd5bMaikbxLNaXl7fkTuDmsxL6r66Igx9fGORB5m+6q09u+CSBz
-         VB5bPHLNjsLlqIObmx3Lry+fM2Y6/ahifqXepf8/oLGLYiMc1WCy0lCszmjToc/C4GJY
-         KQPVksHOmGYmXbNMoCy7yzYkCUEt3eyZYPsfuasQ8QaJr3KtfCor66AjT6KJF4XUsofh
-         r5luqweMaeJVYGrmDzIKBxerpkV8QQUYfEWHXfd1oZ/5gOMmKC/1zLcYWTVcDMoTgRgn
-         zW+A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YqsrTlo+gcL4B4t7G2VP05OG6ppDqWg6u3t/7Le3dgU=;
+        b=UP/ZCqb5s0tOdnhdvJw7Fe0TSqgphP0+Q+5GdHWqQ/99+fBJEhOSstfgGAxHGWjp2k
+         vrr7ywq4P7HJLC0bWqcB+TzMDsSfA444WZNhMVPW41AvDeter62iDTgZxQ7OJgMAavcs
+         k14M+vlAzLpXcbk+UU8OLBBJD5GGzxmcGT3M33OqypIYozik86ZGwt5zvW6X4XELGBRr
+         0yu1iC2WGSMp7IVrY3vH9jTrelGx2sXJvPXM56b5oYBK2YrBAcsD0ZjUAVubjZqxVtOr
+         9WVn5055124Wy0nT2J26vE2zHNs/CUonP9jqNyeRo3sL98XTU6/sp8cxxY8ITEK2truG
+         U0VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=4ZRMYDD6VXYHJ3yMoR9yk/ycrqO0+R7vuu/Js8ejT6o=;
-        b=pVWc1Ld9/gme8C5V2XIb2C2F2MzbvarC2nOlbRlqI5QKCg3q9O0VDsCZGZWFcF4wnv
-         6tqYB8VL5R5tSKFe9cZGwieAHvQ6ikpl8EmXHB2yAeIhIWXdCSxqzbgmM8GtLlpwjMbh
-         JqykVtlFLFbTPxEJ5ZWVcrUzcP0oKVQ/Binju7IjomYFNHX7+TrFLPBUF8xzxxV0KH3H
-         9rKE2upW7MJvSX77rvyeJSDtHD8I6Tpn085wPxEdRRdfLF3ijYN0o2xE6b4pMUTQawC9
-         kL7wiWcCwshaVOuG857o3MbwBOGRy1h+wkU+2P/vQC+Jtj3s7z7T5m3EPYqZvTc380pN
-         hIrg==
-X-Gm-Message-State: APjAAAUGNdv9wXgG91qsdsHhjC/+8ruiAy35VA4cmy59LjTjqy448wb2
-        WCI8S91p41pyN8bFgID7FFI=
-X-Google-Smtp-Source: APXvYqwoqguGGXI4TpQM3iac73FV4MOcZ4DOAi594SuTbNqrfAuxV0KxH6IJL43f21pUqpg/4v+hnw==
-X-Received: by 2002:a05:6214:10c5:: with SMTP id r5mr5250487qvs.224.1561583777110;
-        Wed, 26 Jun 2019 14:16:17 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([177.159.13.12])
-        by smtp.gmail.com with ESMTPSA id d17sm6488qtp.84.2019.06.26.14.16.15
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 26 Jun 2019 14:16:16 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3E0C141153; Wed, 26 Jun 2019 18:16:13 -0300 (-03)
-Date:   Wed, 26 Jun 2019 18:16:13 -0300
-To:     dwarves@vger.kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Domenico Andreoli <cavok@debian.org>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        David Seifert <soap@gentoo.org>,
-        Pavel Borzenkov <pavel.borzenkov@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Wieelard <mjw@redhat.com>,
-        Clark Williams <williams@redhat.com>
-Subject: ANNOUNCE: pahole v1.14 (Bug fixes)
-Message-ID: <20190626211613.GE3902@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YqsrTlo+gcL4B4t7G2VP05OG6ppDqWg6u3t/7Le3dgU=;
+        b=rihv9yuus7vS9+rHSZTt/UgR1WJghFpaKOoahMoD9Jb6g0sc9Rv47yz1U21o5LdeI8
+         ctcY0tVW1O3h2jgfSTL0S3h5htPMWtzAyFrNW7kEi8EXpeya9/g3qyppVRq3CCgIbD2M
+         KkHzmEsg7/9gAQxR8FmmfJqtOjFcMtMFDLctV6n9Vnjy5Ip///SqOZKkoDSHRxQ4HNw4
+         bmtO0Z9DNelODTeE8Zl6VQ7G1ZT9rk49Dg8mZ1ssa5sQdXxXID9S+oOD/YYGGsFg/JrY
+         jRsr+mH7TPpxQmQ3Fyg4DnDyBPHmEiXmH3sUCKWfXxDd+xNJrGE8sMJPEiKyW5ViHx0t
+         Y/iQ==
+X-Gm-Message-State: APjAAAXw+/iPJiD3U1WXQMYYQdik7v0feuOpY1NZiVWLTKNvJyAaq7oP
+        0/UfHUty8I2niK/PAzXEimnDoD0qlJQoejsak1U=
+X-Google-Smtp-Source: APXvYqxgK8NBrIMk7RSclF2SVPR3il0nDfSR8eLdLdwFXEQ/rfesYSS9T2i24ZfnoSO1h1jP1jLxHYFqehDu+CUiy7Q=
+X-Received: by 2002:a0c:c107:: with SMTP id f7mr191115qvh.150.1561587346020;
+ Wed, 26 Jun 2019 15:15:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Url:  http://acmel.wordpress.com
-User-Agent: Mutt/1.11.3 (2019-02-01)
+References: <20190621045555.4152743-1-andriin@fb.com> <20190621045555.4152743-4-andriin@fb.com>
+ <a7780057-1d70-9ace-960b-ff65867dc277@iogearbox.net>
+In-Reply-To: <a7780057-1d70-9ace-960b-ff65867dc277@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 26 Jun 2019 15:15:34 -0700
+Message-ID: <CAEf4BzYy4Eorj0VxzArZg+V4muJCvDTX_VVfoouzZUcrBwTa1w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 3/7] libbpf: add kprobe/uprobe attach API
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
+        Stanislav Fomichev <sdf@fomichev.me>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
- 
-	The v1.14 release of pahole and its friends is out, available at
-the usual places:
- 
-Main git repo:
- 
-   git://git.kernel.org/pub/scm/devel/pahole/pahole.git
+On Wed, Jun 26, 2019 at 7:25 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 06/21/2019 06:55 AM, Andrii Nakryiko wrote:
+> > Add ability to attach to kernel and user probes and retprobes.
+> > Implementation depends on perf event support for kprobes/uprobes.
+> >
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
 
-Mirror git repo:
- 
-   https://github.com/acmel/dwarves.git
- 
-tarball + gpg signature:
- 
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.14.tar.xz
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.14.tar.bz2
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.14.tar.sign
- 
-Just some bugfixes, notably:
+<snip>
 
-3ed9a67967cf fprintf: Avoid null dereference with NULL configs
-568dae4bd498 printf: Fixup printing "const" early with "const void"
-68f261d8dfff fprintf: Fix recursively printing named structs in --expand_types
+> > +}
+>
+> I do like that we facilitate usage by adding these APIs to libbpf, but my $0.02
+> would be that they should be designed slightly different. See it as a nit, but
+> given it's exposed in libbpf.map and therefore immutable in future it's worth
+> considering; right now with this set here you have:
+>
+> int bpf_program__attach_kprobe(struct bpf_program *prog, bool retprobe,
+>                                const char *func_name)
+> int bpf_program__attach_uprobe(struct bpf_program *prog, bool retprobe,
+>                                pid_t pid, const char *binary_path,
+>                                size_t func_offset)
+> int bpf_program__attach_tracepoint(struct bpf_program *prog,
+>                                    const char *tp_category,
+>                                    const char *tp_name)
+> int bpf_program__attach_raw_tracepoint(struct bpf_program *prog,
+>                                        const char *tp_name)
+> int bpf_program__attach_perf_event(struct bpf_program *prog, int pfd)
+> int libbpf_perf_event_disable_and_close(int pfd)
+>
+> So the idea is that all the bpf_program__attach_*() APIs return an fd that you
+> can later on pass into libbpf_perf_event_disable_and_close(). I think there is
+> a bit of a disconnect in that the bpf_program__attach_*() APIs try to do too
+> many things at once. For example, the bpf_program__attach_raw_tracepoint() fd
+> has nothing to do with perf, so passing to libbpf_perf_event_disable_and_close()
+> kind of works, but is hacky since there's no PERF_EVENT_IOC_DISABLE for it so this
+> would always error if a user cares to check the return code. In the kernel, we
 
-Best Regards,
+Yeah, you are absolutely right, missed that it's not creating perf
+event under cover, to be honest.
 
-- Arnaldo
+> use anon inode for this kind of object. Also, if a user tries to add more than
+> one program to the same event, we need to recreate a new event fd every time.
+>
+> What this boils down to is that this should get a proper abstraction, e.g. as
+> in struct libbpf_event which holds the event object. There should be helper
+> functions like libbpf_event_create_{kprobe,uprobe,tracepoint,raw_tracepoint} returning
+> such an struct libbpf_event object on success, and a single libbpf_event_destroy()
+> that does the event specific teardown. bpf_program__attach_event() can then take
+> care of only attaching the program to it. Having an object for this is also more
+> extensible than just a fd number. Nice thing is that this can also be completely
+> internal to libbpf.c as with struct bpf_program and other abstractions where we
+> don't expose the internals in the public header.
+
+Yeah, I totally agree, I think this is a great idea! I don't
+particularly like "event" name, that seems very overloaded term. Do
+you mind if I call this "bpf_hook" instead of "libbpf_event"? I've
+always thought about these different points in the system to which one
+can attach BPF program as hooks exposed from kernel :)
+
+Would it also make sense to do attaching to non-tracing hooks using
+the same mechanism (e.g., all the per-cgroup stuff, sysctl, etc)? Not
+sure how people do that today, will check to see how it's done, but I
+think nothing should conceptually prevent doing that using the same
+abstract bpf_hook way, right?
+
+>
+> Thanks,
+> Daniel
