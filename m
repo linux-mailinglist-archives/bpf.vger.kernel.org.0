@@ -2,104 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F735717A
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 21:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BA0571E1
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 21:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbfFZTVc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jun 2019 15:21:32 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:40189 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726227AbfFZTVb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jun 2019 15:21:31 -0400
-Received: by mail-pl1-f194.google.com with SMTP id a93so1960917pla.7;
-        Wed, 26 Jun 2019 12:21:31 -0700 (PDT)
+        id S1726239AbfFZTjF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jun 2019 15:39:05 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:46913 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726104AbfFZTjF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jun 2019 15:39:05 -0400
+Received: by mail-lj1-f193.google.com with SMTP id v24so3400281ljg.13;
+        Wed, 26 Jun 2019 12:39:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NjiOBAgZ5o5AckUXhxHXSV2oj9IdH5jk7jVzEy13FIQ=;
-        b=eJ6h59ONAyItQUaibTIyV11/OFIMtmV/Sahp4ibvM/sFwtFgVUqZfptHelZ8hOgqEX
-         CnmvnbzoESMQxiphKzFJtHOnLJJnOt1C6eDRWz+PVJlQrs43G09/NMHOmwJs/wOfc4qG
-         tx5VDHnTSnmt+Co3Datw4i/HXxdGlqU0FJ0IhngZPV4yqOs37QweSvZYGFTyDzRSXnU9
-         O3wsDAZ8RWdvMmR5OKDbO3acC0B+EcGGugy4diPILuE6jI2uemfZIdKVBsynubZBtr6H
-         wCq8k6dXNM3FFho2SGYx0VSxGtb0Nwp81MyGtKIjO4281LIHhFqYfuHhaB1aqcLRFxtJ
-         N6xw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OwoNG4m2IYYirI4zXbKrZee7eUp1bry+PkusBaR3Dlo=;
+        b=MNsjQlSgCbds+6S99N2n2hklQ7yir8++9bjKrVHcImHo6bMsr1Xq70HULt9e/Tpfev
+         /YBvhWdWU+PaVd/dh/j38gIc19Xa/AqafHC9cgNRSSO287uXjuX4rZh4M4lzwyVSAVRk
+         NVfp0T444rl0/ZQO66IPQxMO3uQhKRWCqxLpmzzpeV5/VQcDbBc/KG0Wnn/O6TQ6y1qN
+         ARNrRwEmEKJg0cznYL8FCwhczdEC2EWEPur/9Nu7OaQTsTW/tkvCZKiH5KUe17hGXsYL
+         n6KToTTNnwIEJWEx+nFcmx0+ep9sn4Sa5WdnYoyBYkU67SpDF9Q3Dl86S7r13Y0jitsy
+         02xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NjiOBAgZ5o5AckUXhxHXSV2oj9IdH5jk7jVzEy13FIQ=;
-        b=RATRRzpqg0rveTeqXOd6Jir4mwzyAm7rNm+PwjeiuwLWKeJ9YMn51r0x0k12MdDhif
-         Gmt/kXYBEI7UUpCQrYfqIGcLRWjYYztmWM9jwqdo+dwzEUI17eS7kZy4C4PxkqiZavRT
-         dZDHwASG/94BNBNFcL7azPtHhimmOK6RdA9UFNYHX1t+YZ0gM12IIZwjcTR1x65IMJJi
-         xKOVo3qmcCz+nFrE+gmERQ2kXEYZ8A9KFFbgB2n8JgS/lke1NbVsfLqeAJywB+J/1KdX
-         OecpnPBzlrNhbV6Pb3fLcKb0JorGHybBLpT6S8raky6xut1Tb8Wz8eBGvbArk5MnLZOW
-         41NA==
-X-Gm-Message-State: APjAAAWgUDLL1yflFmQmb3JO5LTePXw48UVJqYiiRy5qKw1pkRimgeBF
-        damUR6dGGKaH94DBkUMLzK0=
-X-Google-Smtp-Source: APXvYqwa4kTGhHhHRJKP1vX78Iu2hF92lsVIKkc/OiXzrn5NkFxQX0WOMWwT64bsljopE0M6VCKdhQ==
-X-Received: by 2002:a17:902:2926:: with SMTP id g35mr7292780plb.269.1561576890866;
-        Wed, 26 Jun 2019 12:21:30 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::1:6c67])
-        by smtp.gmail.com with ESMTPSA id d4sm2517689pju.19.2019.06.26.12.21.29
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 Jun 2019 12:21:30 -0700 (PDT)
-Date:   Wed, 26 Jun 2019 12:21:28 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
-        daniel@iogearbox.net, Martin Lau <kafai@fb.com>
-Subject: Re: [PATCH bpf-next v8 1/9] bpf: implement getsockopt and setsockopt
- hooks
-Message-ID: <20190626192126.qkwr7hv2leich5tk@ast-mbp.dhcp.thefacebook.com>
-References: <20190624162429.16367-1-sdf@google.com>
- <20190624162429.16367-2-sdf@google.com>
- <20190626185420.wzsb7v6rawn4wtzd@ast-mbp.dhcp.thefacebook.com>
- <20190626191021.GB4866@mini-arch>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OwoNG4m2IYYirI4zXbKrZee7eUp1bry+PkusBaR3Dlo=;
+        b=G68sYAMEpnj5OuWQExyRizG2ZCh/6H+4jM0orGhTcce+wfdPaCjPLHnM22/QQgaGA9
+         1Hsxh0N9z0z3DXv6C0nelB5h4fuIMYtLJpjnUr9BuLWA3w5lEoPuVa7xxTcLesv2JWaG
+         G0kQk2z3ck7PVfhI0DWB0AhYUR7HsTX1arcA40xfZAbcMSX1scXcMPfJGZLHbZEQuhTn
+         w3ox6dY49wLss6FHY3zYc85kWWo+4jCd3FWhFwqyqnIIc4uHkKRa6RJl2tZjylsEZ/px
+         aqywrTjCHiFWWkK5QNZ+LiKWROAKBGyVW0ni//jQKe3wN/K0gmbnlTiXUsQdZXOgN6p8
+         YCvA==
+X-Gm-Message-State: APjAAAX7JH3//pF8FHWHAeAySxsCeDFm4uUxljDUpzKo77zC9H8zXQYR
+        58PaJ050U89n2xMFCvSvwHFT8j0lspM2bZPdFrk=
+X-Google-Smtp-Source: APXvYqyTgSuJ9l09zzVBv90eCkDdsdyNMDlOs1GtwSA+mEc9+my5ZocviC3yhybyQcr6TQZ/EAcpVyM117UzhUFti7M=
+X-Received: by 2002:a2e:a311:: with SMTP id l17mr3917113lje.214.1561577938378;
+ Wed, 26 Jun 2019 12:38:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190626191021.GB4866@mini-arch>
-User-Agent: NeoMutt/20180223
+References: <f0179a5f61ecd32efcea10ae05eb6aa3a151f791.camel@domdv.de>
+ <CAADnVQLmrF579H6-TAdMK8wDM9eUz2rP3F6LmhkSW4yuVKJnPg@mail.gmail.com>
+ <e9f7226d1066cb0e86b60ad3d84cf7908f12a1cc.camel@domdv.de> <CAADnVQKJr-=gZM2hAG-Zi3WA3oxSU_S6Nh54qG+z6Bi8m2e3PA@mail.gmail.com>
+ <9917583f188315a5e6f961146c65b3d8371cc05e.camel@domdv.de> <CAADnVQKe7RYNJXRQYuu4O_rL0YpAHe-ZrWPDL9gq_mRa6dkxMg@mail.gmail.com>
+ <CAADnVQ+wEdHKR2zR+E6vNQV_J8gfBmReYsLUQ2tegpX8ZFO=2A@mail.gmail.com> <20190618214028.y2qzbtonozr5cc7a@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20190618214028.y2qzbtonozr5cc7a@ast-mbp.dhcp.thefacebook.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 26 Jun 2019 12:38:46 -0700
+Message-ID: <CAADnVQ+CPP+tFR_9fh-omxQoJXqkuz3OV-MDSqjEDsVGnMXi3A@mail.gmail.com>
+Subject: Re: eBPF verifier slowness, more than 2 cpu seconds for about 600 instructions
+To:     Andreas Steinmetz <ast@domdv.de>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Edward Cree <ecree@solarflare.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 26, 2019 at 12:10:21PM -0700, Stanislav Fomichev wrote:
-> On 06/26, Alexei Starovoitov wrote:
-> > On Mon, Jun 24, 2019 at 09:24:21AM -0700, Stanislav Fomichev wrote:
-> > > Implement new BPF_PROG_TYPE_CGROUP_SOCKOPT program type and
-> > > BPF_CGROUP_{G,S}ETSOCKOPT cgroup hooks.
-> > > 
-> > > BPF_CGROUP_SETSOCKOPT get a read-only view of the setsockopt arguments.
-> > > BPF_CGROUP_GETSOCKOPT can modify the supplied buffer.
-> > > Both of them reuse existing PTR_TO_PACKET{,_END} infrastructure.
-> > 
-> > getsockopt side looks good to me.
-> > I tried to convince myself that readonly setsockopt is fine for now,
-> > but it feels we need to make it writeable from the start.
-> > I agree with your reasoning that doing copy_to_user is no good,
-> > but we can do certainly do set_fs(KERNEL_DS) game.
-> > The same way as kernel_setsockopt() is doing.
-> > It seems quite useful to modify 'optval' before passing it to kernel.
-> > Then bpf prog would be able to specify sane values for SO_SNDBUF
-> > instead of rejecting them.
-> > The alternative would be to allow bpf prog to call setsockopt
-> > from inside, but sock is locked when prog is running,
-> > so unlocking within helper is not going to be clean.
-> > wdyt?
-> Sure, I can take a look if you think that it would be useful in general.
-> Looks like set_fs should do the trick.
+On Tue, Jun 18, 2019 at 2:40 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Jun 17, 2019 at 11:26:28AM -0700, Alexei Starovoitov wrote:
+> > On Sun, Jun 16, 2019 at 11:59 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Thu, Jun 6, 2019 at 6:31 PM Andreas Steinmetz <ast@domdv.de> wrote:
+> > > >
+> > > > Below is the source in question. It may look a bit strange but I
+> > > > had to extract it from the project and preset parameters to fixed
+> > > > values.
+> > > > It takes from 2.8 to 4.5 seconds to load, depending on the processor.
+> > > > Just compile and run the code below.
+> > >
+> > > Thanks for the report.
+> > > It's interesting one indeed.
+> > > 600+ instructions consume
+> > > processed 280464 insns (limit 1000000) max_states_per_insn 15
+> > > total_states 87341 peak_states 580 mark_read 45
+> > >
+> > > The verifier finds a lot of different ways to go through branches
+> > > in the program and majority of the states are not equivalent and
+> > > do not help pruning, so it's doing full brute force walk of all possible
+> > > combinations.
+> > > We need to figure out whether there is a way to make it smarter.
+> >
+> > btw my pending backtracking logic helps it quite a bit:
+> > processed 164110 insns (limit 1000000) max_states_per_insn 11
+> > total_states 13398 peak_states 349 mark_read 10
+> >
+> > and it's 2x faster to verify, but 164k insns processed shows that
+> > there is still room for improvement.
+>
+> Hi Andreas,
+>
+> Could you please create selftests/bpf/verifier/.c out of it?
+> Currently we don't have a single test that exercises the verifier this way.
+> Could you also annotate instructions with comments like you did
+> at the top of your file?
 
-Thanks. I think it's useful.
-For example see the recent sack steam issue and Eric's workaround
-for older kernel to add 128k to sk_sndbuf.
-If we had an ability to do adjust SO_SNDBUF from cgroup-bpf prog
-when user space is doing setsockopt we could have mitigated it by
-rolling bpf prog instead of patching and rebooting the kernels.
-That's a bit of a stretch use case, of course.
-My feeling that if not today, but really soon people will find
-solid use cases for adjusting sockopt values via cgroup-bpf.
+Andreas, ping.
 
+> The program logic is interesting.
+> If my understanding of assembler is correct it has unrolled
+> parsing of ipv6 extension headers. Then unrolled parsing of tcp options.
+> The way the program is using packet pointers forces the verifier to try
+> all possible combinations of extension headers and tcp options.
+>
+> The precise backtracking logic helps to reduce amount of walking.
+> Also I think it's safe to reduce precision of variable part
+> of packet pointers. The following patch on top of bounded loop
+> series help to reduce it further.
+>
+> Original:
+>   processed 280464 insns (limit 1000000) max_states_per_insn 15
+>   total_states 87341 peak_states 580 mark_read 45
+>
+> Backtracking:
+>   processed 164110 insns (limit 1000000) max_states_per_insn 11
+>   total_states 13398 peak_states 349 mark_read 10
+>
+> Backtracking + pkt_ptr var precision:
+>   processed 96739 insns (limit 1000000) max_states_per_insn 11
+>   total_states 7891 peak_states 329 mark_read 10
+>
+> The patch helps w/o backtracking as well:
+>   processed 165254 insns (limit 1000000) max_states_per_insn 15
+>   total_states 51434 peak_states 572 mark_read 45
+>
+> Backtracking and bounded loop heuristics reduce total memory
+> consumption quite a bit. Which was nice to see.
+>
+> Anyway would be great if you could create a test out of it.
+> Would be even more awesome if you convert it to C code
+> and try to use bounded loops to parse extension headers
+> and tcp options. That would be a true test for both loops
+> and 'reduce precision' features.
+>
+> Thanks!
+>
+> From 4681224057af73335de0fdd629a2149bad91d59d Mon Sep 17 00:00:00 2001
+> From: Alexei Starovoitov <ast@kernel.org>
+> Date: Tue, 18 Jun 2019 13:40:29 -0700
+> Subject: [PATCH bpf-next] bpf: relax tracking of variable offset in packet pointers
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>  kernel/bpf/verifier.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index d2c8a6677ac4..e37c69ad57b3 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3730,6 +3730,27 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+>                         dst_reg->id = ++env->id_gen;
+>                         /* something was added to pkt_ptr, set range to zero */
+>                         dst_reg->raw = 0;
+> +                       if (bpf_prog_is_dev_bound(env->prog->aux))
+> +                               /* nfp offload needs accurate max_pkt_offset */
+> +                               break;
+> +                       if (env->strict_alignment)
+> +                               break;
+> +                       /* scalar added to pkt pointer is within BPF_MAX_VAR_OFF bounds.
+> +                        * 64-bit pkt_data pointer can be safely compared with pkt_data_end
+> +                        * even on 32-bit architectures.
+> +                        * In case this scalar was positive the verifier
+> +                        * doesn't need to track it precisely.
+> +                        */
+> +                       if (dst_reg->smin_value >= 0)
+> +                               /* clear variable part of pkt pointer */
+> +                               __mark_reg_known_zero(dst_reg);
+> +                               /* no need to clear dst_reg->off.
+> +                                * It's a known part of the pointer.
+> +                                * When this pkt_ptr compared with pkt_end
+> +                                * the 'range' will be initialized from 'off' and
+> +                                * *(u8*)(dst_reg - off) is still more than packet start,
+> +                                * since unknown value was positive.
+> +                                */
+>                 }
+>                 break;
+>         case BPF_SUB:
+> --
+> 2.20.0
+>
