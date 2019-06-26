@@ -2,91 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 825FB5722F
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 22:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B448F57291
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 22:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbfFZUFN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jun 2019 16:05:13 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:40806 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726227AbfFZUFN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jun 2019 16:05:13 -0400
-Received: by mail-lf1-f68.google.com with SMTP id a9so2440931lff.7;
-        Wed, 26 Jun 2019 13:05:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H2zmKJo2VtijLlWc4slNGMFioWOkeMTocZiK11ccxII=;
-        b=CjAsEbbCoxJByXYTLbRXo2DNrikWbe3orPG4AFaj5saY5KjaJjAGs17ilXPQKVVx9c
-         7rGMijHgtUBknkD6z5sL3OraKHsm1jtiHAVWXJvtdCE2gJ+SRkAltND8qHfVEhY/+aJ9
-         ja8juk+ss1Mdp5Al26LUgPEzfMrk1zWHiDAXJ0liif9hFo4zKIB/VElDOuUOlYSy8V6R
-         h93MANRtYoSUWpulyYaQPk2k6W1VLWgTpg9e7RHYz3y7pNsQyL4bhURmM82PuZMSxyMH
-         N1O5Vm5hSHUTm9tSZ4qNQIoCMH0cSWO6Ljoq4hH8BKqkWg9MIQhW+CWpZdmoUJQ3Hugl
-         KNbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H2zmKJo2VtijLlWc4slNGMFioWOkeMTocZiK11ccxII=;
-        b=GoxxCxRGVEypznW7oDLmtR0U6hUxSHIX1LrM6e56pFKBw9z3xd27Q0957obL+dTR2+
-         4/YGVvddPLt6ni89MNfY7kFQM+VFj9tMr6deK/4oeAkm6msiadPWDeTasACGLoL9/wHT
-         ugVnqHf/3mS6NjtTCxQwzqoIwD0i9bhEzABe/Ef9WqmuR0odd2JmUwc5+G+nZsPcsK4n
-         /I5KfkCbWaUKV2OdaI7yGNaC5oyo9JT/6QIaanLlHVUIhAykGep6zGqedMfK/+3YcWmi
-         /tmLmWpvxyH+8PJiS/47a8wUyoflHOORQkEHTJsFMmEScb0jO/g+nMbeCeqGUM16XZU1
-         kLXA==
-X-Gm-Message-State: APjAAAX4F9vbpYhdjAtZ88YtjzvK9zUqVQBJEc56BkJQnFpSYj8/pd/I
-        r70N2WzvkZvaF+U78e/BczduhvIxANJZSOCr/ZY=
-X-Google-Smtp-Source: APXvYqxzn8aLoF5ivVzptd25fkmnfutmDPv7fJI/F/I1IpUhl6t7Jye9DvgsU4wu9s1jYbque2urbRjt+UhTm5cPO2g=
-X-Received: by 2002:a19:ca0e:: with SMTP id a14mr3728351lfg.19.1561579511372;
- Wed, 26 Jun 2019 13:05:11 -0700 (PDT)
+        id S1726360AbfFZU0o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jun 2019 16:26:44 -0400
+Received: from www62.your-server.de ([213.133.104.62]:33222 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726227AbfFZU0n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jun 2019 16:26:43 -0400
+Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hgEV3-0007jc-2z; Wed, 26 Jun 2019 22:26:37 +0200
+Received: from [178.193.45.231] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hgEV2-00039f-Sc; Wed, 26 Jun 2019 22:26:36 +0200
+Subject: Re: [PATCH bpf-next V6 00/16] AF_XDP infrastructure improvements and
+ mlx5e support
+To:     Tariq Toukan <tariqt@mellanox.com>,
+        Alexei Starovoitov <ast@kernel.org>, bjorn.topel@intel.com,
+        Magnus Karlsson <magnus.karlsson@intel.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Jonathan Lemon <bsd@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>
+References: <1561559738-4213-1-git-send-email-tariqt@mellanox.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <577bb8f5-aa67-f0e2-0f5e-fdc72b18fd7e@iogearbox.net>
+Date:   Wed, 26 Jun 2019 22:26:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
 MIME-Version: 1.0
-References: <20190625213858.22459-1-guro@fb.com>
-In-Reply-To: <20190625213858.22459-1-guro@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 26 Jun 2019 13:04:59 -0700
-Message-ID: <CAADnVQLMG5_Liz_UkG7m3mN0r9ZOwkCdAOmWgbgdgir6t+tBfg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] bpf: fix cgroup bpf release synchronization
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, Tejun Heo <tj@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1561559738-4213-1-git-send-email-tariqt@mellanox.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25492/Wed Jun 26 10:00:16 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 25, 2019 at 2:39 PM Roman Gushchin <guro@fb.com> wrote:
->
-> Since commit 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf
-> from cgroup itself"), cgroup_bpf release occurs asynchronously
-> (from a worker context), and before the release of the cgroup itself.
->
-> This introduced a previously non-existing race between the release
-> and update paths. E.g. if a leaf's cgroup_bpf is released and a new
-> bpf program is attached to the one of ancestor cgroups at the same
-> time. The race may result in double-free and other memory corruptions.
->
-> To fix the problem, let's protect the body of cgroup_bpf_release()
-> with cgroup_mutex, as it was effectively previously, when all this
-> code was called from the cgroup release path with cgroup mutex held.
->
-> Also let's skip cgroups, which have no chances to invoke a bpf
-> program, on the update path. If the cgroup bpf refcnt reached 0,
-> it means that the cgroup is offline (no attached processes), and
-> there are no associated sockets left. It means there is no point
-> in updating effective progs array! And it can lead to a leak,
-> if it happens after the release. So, let's skip such cgroups.
->
-> Big thanks for Tejun Heo for discovering and debugging of this
-> problem!
->
-> Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf from
-> cgroup itself")
-> Reported-by: Tejun Heo <tj@kernel.org>
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+On 06/26/2019 04:35 PM, Tariq Toukan wrote:
+[...]
+> v6 changes:
+> 
+> As Maxim is out of office, I rebased the series on behalf of him,
+> solved some conflicts, and re-spinned.
 
-Applied. Thanks
+Thanks for taking over the rebase, Tariq!
+
+> Series generated against bpf-next commit:
+> 572a6928f9e3 xdp: Make __mem_id_disconnect static
+> 
+> 
+> Maxim Mikityanskiy (16):
+>   net/mlx5e: Attach/detach XDP program safely
+>   xsk: Add API to check for available entries in FQ
+>   xsk: Add getsockopt XDP_OPTIONS
+>   libbpf: Support getsockopt XDP_OPTIONS
+>   xsk: Change the default frame size to 4096 and allow controlling it
+>   xsk: Return the whole xdp_desc from xsk_umem_consume_tx
+>   net/mlx5e: Replace deprecated PCI_DMA_TODEVICE
+>   net/mlx5e: Calculate linear RX frag size considering XSK
+>   net/mlx5e: Allow ICO SQ to be used by multiple RQs
+>   net/mlx5e: Refactor struct mlx5e_xdp_info
+>   net/mlx5e: Share the XDP SQ for XDP_TX between RQs
+>   net/mlx5e: XDP_TX from UMEM support
+>   net/mlx5e: Consider XSK in XDP MTU limit calculation
+>   net/mlx5e: Encapsulate open/close queues into a function
+>   net/mlx5e: Move queue param structs to en/params.h
+>   net/mlx5e: Add XSK zero-copy support
+
+Series applied, thanks!
