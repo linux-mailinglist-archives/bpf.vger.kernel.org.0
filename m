@@ -2,202 +2,307 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA3F56228
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 08:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 582CD5655F
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 11:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbfFZGMz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jun 2019 02:12:55 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7086 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726807AbfFZGMy (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 26 Jun 2019 02:12:54 -0400
-Received: from pps.filterd (m0001255.ppops.net [127.0.0.1])
-        by mx0b-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5Q66oUX018769
-        for <bpf@vger.kernel.org>; Tue, 25 Jun 2019 23:12:53 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=x1RPdhllPL2fjYRdau13LKkJkGkc4FplSJk/ccpbNpc=;
- b=EutB/1CdW3m2x4jTcDosg9Fs17tGms/ieTKzS8kbkZur/PgblWqyoTdTBpHNstoZq7kF
- ZtL78M3jXRbk/U31IXSZgYAOM4H5vcUXNGaGW2m8Ttum1Hz4RHJGMKzu9I75ZE3bTbjy
- PlF6yPhmbWEvoprGhPmF/ia5PdE2mA1jZ9A= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0b-00082601.pphosted.com with ESMTP id 2tbqn22djp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 25 Jun 2019 23:12:53 -0700
-Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Tue, 25 Jun 2019 23:12:52 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id A4ABB861896; Tue, 25 Jun 2019 23:12:51 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <andrii.nakryiko@gmail.com>, <ast@fb.com>, <daniel@iogearbox.net>,
-        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <kernel-team@fb.com>
-CC:     Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v2 bpf-next 3/3] selftests/bpf: test perf buffer API
-Date:   Tue, 25 Jun 2019 23:12:35 -0700
-Message-ID: <20190626061235.602633-4-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190626061235.602633-1-andriin@fb.com>
-References: <20190626061235.602633-1-andriin@fb.com>
-X-FB-Internal: Safe
+        id S1726329AbfFZJKf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jun 2019 05:10:35 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:38513 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbfFZJKe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jun 2019 05:10:34 -0400
+Received: by mail-lf1-f65.google.com with SMTP id b11so1047810lfa.5
+        for <bpf@vger.kernel.org>; Wed, 26 Jun 2019 02:10:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kinvolk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YoeqkPyuuUAa89a437Y8XeIR94IijuVYW37iJHKjXro=;
+        b=QCubpUKtrVll90cGRqb8Cq97Ey09kXjAZfiiKTih+3YGW80RSglFZRnsPIjISll9ZD
+         qF2C2a7hL5SsTky9phPAVleo1aFYfPBRMpZjhlyXV4cytIZSXYVB2b5k8w4tppDHsymp
+         9B02eWOVWuM8UbYMO7eHrhMCLl3+KLJbZJRak=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YoeqkPyuuUAa89a437Y8XeIR94IijuVYW37iJHKjXro=;
+        b=oIpCEnOokBhiob/4upPN1Zl2MBen5S2HRqoLHYJvQb9l6L49ID3dDqFvPWOKKf/Pmm
+         0XcGuxsHs30k65rPKKEraqo1oQMA0Z03kUX9GayBkoNJmhBuggzzyLaWOulKvQyhyk+P
+         0nYu7ZNHUIvzZGh+bK1mnAh21FLNrCK5ZJaYQ5bW0A/QkqcYL7hbycanDoUrIU7E40e0
+         AnzSZG7hZ6bTJjqGta+5oOnaa1Rd5/JINFnQLAk7WQn2NIpZEHR1KMqwTrOtAwXpnH4B
+         CsWt189IrXTl3EsnWmwzmQgrZPFzhbG4kcsKSTLFmY/u92irUG3CPpWdSEm4hHCl8f83
+         gShA==
+X-Gm-Message-State: APjAAAUTrwKiW7bOexArX9A3uOId5gOik4sEiVCigdZUjXyizaSjWO33
+        1GVRXViOkfhI9F0ecoF+Gtj8NCu3jZ3JpeKrxKBGvA==
+X-Google-Smtp-Source: APXvYqymZ7lUVgJdBpBi6jtOw+JA7FkCqSjQ7i/H6+FJ0lYr8Np2FRYIbmUefQFTW6IHKYweDRBGVB5Ju2417aCZP40=
+X-Received: by 2002:ac2:418f:: with SMTP id z15mr1951625lfh.177.1561540231825;
+ Wed, 26 Jun 2019 02:10:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-26_02:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=2 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906260074
-X-FB-Internal: deliver
+References: <20190625194215.14927-1-krzesimir@kinvolk.io> <20190625194215.14927-9-krzesimir@kinvolk.io>
+ <20190625201220.GC10487@mini-arch>
+In-Reply-To: <20190625201220.GC10487@mini-arch>
+From:   Krzesimir Nowak <krzesimir@kinvolk.io>
+Date:   Wed, 26 Jun 2019 11:10:20 +0200
+Message-ID: <CAGGp+cE3m1+ZWFBmjTgKFEHYVJ-L1dE=+iVUXvXCxWAxRG9YTA@mail.gmail.com>
+Subject: Re: [bpf-next v2 08/10] bpf: Implement bpf_prog_test_run for perf
+ event programs
+To:     Stanislav Fomichev <sdf@fomichev.me>
+Cc:     netdev@vger.kernel.org, Alban Crequy <alban@kinvolk.io>,
+        =?UTF-8?Q?Iago_L=C3=B3pez_Galeiras?= <iago@kinvolk.io>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add test verifying perf buffer API functionality.
+On Tue, Jun 25, 2019 at 10:12 PM Stanislav Fomichev <sdf@fomichev.me> wrote=
+:
+>
+> On 06/25, Krzesimir Nowak wrote:
+> > As an input, test run for perf event program takes struct
+> > bpf_perf_event_data as ctx_in and struct bpf_perf_event_value as
+> > data_in. For an output, it basically ignores ctx_out and data_out.
+> >
+> > The implementation sets an instance of struct bpf_perf_event_data_kern
+> > in such a way that the BPF program reading data from context will
+> > receive what we passed to the bpf prog test run in ctx_in. Also BPF
+> > program can call bpf_perf_prog_read_value to receive what was passed
+> > in data_in.
+> >
+> > Signed-off-by: Krzesimir Nowak <krzesimir@kinvolk.io>
+> > ---
+> >  kernel/trace/bpf_trace.c                      | 107 ++++++++++++++++++
+> >  .../bpf/verifier/perf_event_sample_period.c   |   8 ++
+> >  2 files changed, 115 insertions(+)
+> >
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index c102c240bb0b..2fa49ea8a475 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -16,6 +16,8 @@
+> >
+> >  #include <asm/tlb.h>
+> >
+> > +#include <trace/events/bpf_test_run.h>
+> > +
+> >  #include "trace_probe.h"
+> >  #include "trace.h"
+> >
+> > @@ -1160,7 +1162,112 @@ const struct bpf_verifier_ops perf_event_verifi=
+er_ops =3D {
+> >       .convert_ctx_access     =3D pe_prog_convert_ctx_access,
+> >  };
+> >
+> > +static int pe_prog_test_run(struct bpf_prog *prog,
+> > +                         const union bpf_attr *kattr,
+> > +                         union bpf_attr __user *uattr)
+> > +{
+> > +     void __user *ctx_in =3D u64_to_user_ptr(kattr->test.ctx_in);
+> > +     void __user *data_in =3D u64_to_user_ptr(kattr->test.data_in);
+> > +     u32 data_size_in =3D kattr->test.data_size_in;
+> > +     u32 ctx_size_in =3D kattr->test.ctx_size_in;
+> > +     u32 repeat =3D kattr->test.repeat;
+> > +     u32 retval =3D 0, duration =3D 0;
+> > +     int err =3D -EINVAL;
+> > +     u64 time_start, time_spent =3D 0;
+> > +     int i;
+> > +     struct perf_sample_data sample_data =3D {0, };
+> > +     struct perf_event event =3D {0, };
+> > +     struct bpf_perf_event_data_kern real_ctx =3D {0, };
+> > +     struct bpf_perf_event_data fake_ctx =3D {0, };
+> > +     struct bpf_perf_event_value value =3D {0, };
+> > +
+> > +     if (ctx_size_in !=3D sizeof(fake_ctx))
+> > +             goto out;
+> > +     if (data_size_in !=3D sizeof(value))
+> > +             goto out;
+> > +
+> > +     if (copy_from_user(&fake_ctx, ctx_in, ctx_size_in)) {
+> > +             err =3D -EFAULT;
+> > +             goto out;
+> > +     }
+> Move this to net/bpf/test_run.c? I have a bpf_ctx_init helper to deal
+> with ctx input, might save you some code above wrt ctx size/etc.
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-Acked-by: Song Liu <songliubraving@fb.com>
----
- .../selftests/bpf/prog_tests/perf_buffer.c    | 86 +++++++++++++++++++
- .../selftests/bpf/progs/test_perf_buffer.c    | 29 +++++++
- 2 files changed, 115 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_buffer.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_perf_buffer.c
+My impression about net/bpf/test_run.c was that it was a collection of
+helpers for test runs of the network-related BPF programs, because
+they are so similar to each other. So kernel/trace/bpf_trace.c looked
+like an obvious place for the test_run implementation since other perf
+trace BPF stuff was already there.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/perf_buffer.c b/tools/testing/selftests/bpf/prog_tests/perf_buffer.c
-new file mode 100644
-index 000000000000..3ba3e26141ac
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/perf_buffer.c
-@@ -0,0 +1,86 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+#include <pthread.h>
-+#include <sched.h>
-+#include <sys/socket.h>
-+#include <test_progs.h>
-+
-+static void on_sample(void *ctx, void *data, __u32 size)
-+{
-+	cpu_set_t *cpu_seen = ctx;
-+	int cpu = *(int *)data;
-+
-+	CPU_SET(cpu, cpu_seen);
-+}
-+
-+void test_perf_buffer(void)
-+{
-+	int err, prog_fd, prog_pfd, nr_cpus, i, duration = 0;
-+	const char *prog_name = "kprobe/sys_nanosleep";
-+	const char *file = "./test_perf_buffer.o";
-+	struct bpf_map *perf_buf_map;
-+	cpu_set_t cpu_set, cpu_seen;
-+	struct bpf_program *prog;
-+	struct bpf_object *obj;
-+	struct perf_buffer *pb;
-+
-+	nr_cpus = libbpf_num_possible_cpus();
-+	if (CHECK(nr_cpus < 0, "nr_cpus", "err %d\n", nr_cpus))
-+		return;
-+
-+	/* load program */
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_KPROBE, &obj, &prog_fd);
-+	if (CHECK(err, "obj_load", "err %d errno %d\n", err, errno))
-+		return;
-+
-+	prog = bpf_object__find_program_by_title(obj, prog_name);
-+	if (CHECK(!prog, "find_probe", "prog '%s' not found\n", prog_name))
-+		goto out_close;
-+
-+	/* load map */
-+	perf_buf_map = bpf_object__find_map_by_name(obj, "perf_buf_map");
-+	if (CHECK(!perf_buf_map, "find_perf_buf_map", "not found\n"))
-+		goto out_close;
-+
-+	/* attach kprobe */
-+	prog_pfd = bpf_program__attach_kprobe(prog, false /* retprobe */,
-+					      "sys_nanosleep");
-+	if (CHECK(prog_pfd < 0, "attach_kprobe", "err %d\n", prog_pfd))
-+		goto out_close;
-+
-+	/* set up perf buffer */
-+	pb = perf_buffer__new(perf_buf_map, 1, on_sample, NULL, &cpu_seen);
-+	if (CHECK(IS_ERR(pb), "perf_buf__new", "err %ld\n", PTR_ERR(pb)))
-+		goto out_detach;
-+
-+	/* trigger kprobe on every CPU */
-+	CPU_ZERO(&cpu_seen);
-+	for (i = 0; i < nr_cpus; i++) {
-+		CPU_ZERO(&cpu_set);
-+		CPU_SET(i, &cpu_set);
-+
-+		err = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set),
-+					     &cpu_set);
-+		if (err && CHECK(err, "set_affinity", "cpu #%d, err %d\n",
-+				 i, err))
-+			goto out_detach;
-+
-+		usleep(1);
-+	}
-+
-+	/* read perf buffer */
-+	err = perf_buffer__poll(pb, 100);
-+	if (CHECK(err < 0, "perf_buffer__poll", "err %d\n", err))
-+		goto out_free_pb;
-+
-+	if (CHECK(CPU_COUNT(&cpu_seen) != nr_cpus, "seen_cpu_cnt",
-+		  "expect %d, seen %d\n", nr_cpus, CPU_COUNT(&cpu_seen)))
-+		goto out_free_pb;
-+
-+out_free_pb:
-+	perf_buffer__free(pb);
-+out_detach:
-+	libbpf_perf_event_disable_and_close(prog_pfd);
-+out_close:
-+	bpf_object__close(obj);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_perf_buffer.c b/tools/testing/selftests/bpf/progs/test_perf_buffer.c
-new file mode 100644
-index 000000000000..8609f0031bc0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_perf_buffer.c
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2019 Facebook
-+
-+#include <linux/ptrace.h>
-+#include <linux/bpf.h>
-+#include "bpf_helpers.h"
-+
-+struct {
-+	int type;
-+	int key_size;
-+	int value_size;
-+} perf_buf_map SEC(".maps") = {
-+	.type = BPF_MAP_TYPE_PERF_EVENT_ARRAY,
-+	.key_size = sizeof(int),
-+	.value_size = sizeof(int),
-+};
-+
-+SEC("kprobe/sys_nanosleep")
-+int handle_sys_nanosleep_entry(struct pt_regs *ctx)
-+{
-+	int cpu = bpf_get_smp_processor_id();
-+
-+	bpf_perf_event_output(ctx, &perf_buf_map, BPF_F_CURRENT_CPU,
-+			      &cpu, sizeof(cpu));
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-+__u32 _version SEC("version") = 1;
--- 
-2.17.1
+And about bpf_ctx_init - looks useful as it seems to me that it
+handles the scenario where the size of the ctx struct grows, but still
+allows passing older version of the struct (thus smaller) from
+userspace for compatibility. Maybe that checking and copying part of
+the function could be moved into some non-static helper function, so I
+could use it and still skip the need for allocating memory for the
+context?
 
+>
+> > +     if (copy_from_user(&value, data_in, data_size_in)) {
+> > +             err =3D -EFAULT;
+> > +             goto out;
+> > +     }
+> > +
+> > +     real_ctx.regs =3D &fake_ctx.regs;
+> > +     real_ctx.data =3D &sample_data;
+> > +     real_ctx.event =3D &event;
+> > +     perf_sample_data_init(&sample_data, fake_ctx.addr,
+> > +                           fake_ctx.sample_period);
+> > +     event.cpu =3D smp_processor_id();
+> > +     event.oncpu =3D -1;
+> > +     event.state =3D PERF_EVENT_STATE_OFF;
+> > +     local64_set(&event.count, value.counter);
+> > +     event.total_time_enabled =3D value.enabled;
+> > +     event.total_time_running =3D value.running;
+> > +     /* make self as a leader - it is used only for checking the
+> > +      * state field
+> > +      */
+> > +     event.group_leader =3D &event;
+> > +
+> > +     /* slightly changed copy pasta from bpf_test_run() in
+> > +      * net/bpf/test_run.c
+> > +      */
+> > +     if (!repeat)
+> > +             repeat =3D 1;
+> > +
+> > +     rcu_read_lock();
+> > +     preempt_disable();
+> > +     time_start =3D ktime_get_ns();
+> > +     for (i =3D 0; i < repeat; i++) {
+> Any reason for not using bpf_test_run?
+
+Two, mostly. One was that it is a static function and my code was
+elsewhere. Second was that it does some cgroup storage setup and I'm
+not sure if the perf event BPF program needs that.
+
+>
+> > +             retval =3D BPF_PROG_RUN(prog, &real_ctx);
+> > +
+> > +             if (signal_pending(current)) {
+> > +                     err =3D -EINTR;
+> > +                     preempt_enable();
+> > +                     rcu_read_unlock();
+> > +                     goto out;
+> > +             }
+> > +
+> > +             if (need_resched()) {
+> > +                     time_spent +=3D ktime_get_ns() - time_start;
+> > +                     preempt_enable();
+> > +                     rcu_read_unlock();
+> > +
+> > +                     cond_resched();
+> > +
+> > +                     rcu_read_lock();
+> > +                     preempt_disable();
+> > +                     time_start =3D ktime_get_ns();
+> > +             }
+> > +     }
+> > +     time_spent +=3D ktime_get_ns() - time_start;
+> > +     preempt_enable();
+> > +     rcu_read_unlock();
+> > +
+> > +     do_div(time_spent, repeat);
+> > +     duration =3D time_spent > U32_MAX ? U32_MAX : (u32)time_spent;
+> > +     /* end of slightly changed copy pasta from bpf_test_run() in
+> > +      * net/bpf/test_run.c
+> > +      */
+> > +
+> > +     if (copy_to_user(&uattr->test.retval, &retval, sizeof(retval))) {
+> > +             err =3D -EFAULT;
+> > +             goto out;
+> > +     }
+> > +     if (copy_to_user(&uattr->test.duration, &duration, sizeof(duratio=
+n))) {
+> > +             err =3D -EFAULT;
+> > +             goto out;
+> > +     }
+> Can BPF program modify fake_ctx? Do we need/want to copy it back?
+
+Reading the pe_prog_is_valid_access function tells me that it's not
+possible - the only type of valid access is read. So maybe I should be
+stricter about the requirements for the data_out and ctx_out sizes
+(should be zero or return -EINVAL).
+
+>
+> > +     err =3D 0;
+> > +out:
+> > +     trace_bpf_test_finish(&err);
+> > +     return err;
+> > +}
+> > +
+> >  const struct bpf_prog_ops perf_event_prog_ops =3D {
+> > +     .test_run       =3D pe_prog_test_run,
+> >  };
+> >
+> >  static DEFINE_MUTEX(bpf_event_mutex);
+> > diff --git a/tools/testing/selftests/bpf/verifier/perf_event_sample_per=
+iod.c b/tools/testing/selftests/bpf/verifier/perf_event_sample_period.c
+> > index 471c1a5950d8..16e9e5824d14 100644
+> > --- a/tools/testing/selftests/bpf/verifier/perf_event_sample_period.c
+> > +++ b/tools/testing/selftests/bpf/verifier/perf_event_sample_period.c
+> This should probably go in another patch.
+
+Yeah, I was wondering about it. These changes are here to avoid
+breaking the tests, since perf event program can actually be run now
+and the test_run for perf event required certain sizes for ctx and
+data.
+
+So, I will either move them to a separate patch or rework the test_run
+for perf event to accept the size between 0 and sizeof(struct
+something), so the changes in tests maybe will not be necessary.
+
+>
+> > @@ -13,6 +13,8 @@
+> >       },
+> >       .result =3D ACCEPT,
+> >       .prog_type =3D BPF_PROG_TYPE_PERF_EVENT,
+> > +     .ctx_len =3D sizeof(struct bpf_perf_event_data),
+> > +     .data_len =3D sizeof(struct bpf_perf_event_value),
+> >  },
+> >  {
+> >       "check bpf_perf_event_data->sample_period half load permitted",
+> > @@ -29,6 +31,8 @@
+> >       },
+> >       .result =3D ACCEPT,
+> >       .prog_type =3D BPF_PROG_TYPE_PERF_EVENT,
+> > +     .ctx_len =3D sizeof(struct bpf_perf_event_data),
+> > +     .data_len =3D sizeof(struct bpf_perf_event_value),
+> >  },
+> >  {
+> >       "check bpf_perf_event_data->sample_period word load permitted",
+> > @@ -45,6 +49,8 @@
+> >       },
+> >       .result =3D ACCEPT,
+> >       .prog_type =3D BPF_PROG_TYPE_PERF_EVENT,
+> > +     .ctx_len =3D sizeof(struct bpf_perf_event_data),
+> > +     .data_len =3D sizeof(struct bpf_perf_event_value),
+> >  },
+> >  {
+> >       "check bpf_perf_event_data->sample_period dword load permitted",
+> > @@ -56,4 +62,6 @@
+> >       },
+> >       .result =3D ACCEPT,
+> >       .prog_type =3D BPF_PROG_TYPE_PERF_EVENT,
+> > +     .ctx_len =3D sizeof(struct bpf_perf_event_data),
+> > +     .data_len =3D sizeof(struct bpf_perf_event_value),
+> >  },
+> > --
+> > 2.20.1
+> >
+
+
+
+--=20
+Kinvolk GmbH | Adalbertstr.6a, 10999 Berlin | tel: +491755589364
+Gesch=C3=A4ftsf=C3=BChrer/Directors: Alban Crequy, Chris K=C3=BChl, Iago L=
+=C3=B3pez Galeiras
+Registergericht/Court of registration: Amtsgericht Charlottenburg
+Registernummer/Registration number: HRB 171414 B
+Ust-ID-Nummer/VAT ID number: DE302207000
