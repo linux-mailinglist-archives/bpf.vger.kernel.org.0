@@ -2,233 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F57C56F0E
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 18:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9384E5705B
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 20:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbfFZQqM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jun 2019 12:46:12 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:37096 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726227AbfFZQqM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jun 2019 12:46:12 -0400
-Received: by mail-pl1-f195.google.com with SMTP id bh12so1757701plb.4;
-        Wed, 26 Jun 2019 09:46:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HZWgIioCqoR3+EXg/6PBiByFdV7tx27KPQAGYWlWonc=;
-        b=T0BVFMdDbc8R7blh1iIOJV40p/ZB3Noy5RKBNmCtxQIqYtAokoHoQGVAKcHKH93Ld0
-         TtZOJ7tVGJ/Q7gWkNPcNHECU3J940fReBUaAwnml7LyjjM91XvXAPHKaV48TGybGKDTy
-         7Jt6UEvJgLb6dqB8CaZkgV/z7LVN1St8o8aQGJj+uACG/4KcBNW62n8zPV7eBPpLzoIq
-         iGzslun7e2MVZboD50S6vpCS/c+evQivaXCsYOB0O0xJB5W2K5RSoiqKsYJmw7QuK5ie
-         8/sG9w/ofO2plxaymxmm5PdR1F1zdIu1BQ4NrJj698em+Kpw0ErKoZ5zOeWpg7kpVEAV
-         emSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HZWgIioCqoR3+EXg/6PBiByFdV7tx27KPQAGYWlWonc=;
-        b=QuEIdFWWGr4PZVFae66zyRwFzvnyUvwT7RgrpUCEgTdlyso88pnjG8Y9g+7wxoXtQd
-         e2cHXFN2eDbNuPGsIlpbOYaJdSHaqVia0Cw0KlY1Ni8ELScv5MRv1kPgCn9fCtb5ZxQU
-         zwHIio3Gfc6EvLJPr9I94yTlwIHZIzALuMjzOH/tOM38BDrxhBqhRIQXkIRKRQmejzeX
-         vLAkKIZ6ZseIOSMS5y39Bxr2ZU7GSC6wj1BerePuPmYj+RqowXHwgNFvQS7DW6eAmHsJ
-         ZZ0s7UR6FveEHyGFdFy++nie3lWimVa2akR8auh1LsLzYb+TYrziu4wNZXA+f0BVwq9r
-         IObQ==
-X-Gm-Message-State: APjAAAWF6FIGGvzUuJFLsBbsCh1rC7R0WOnupFs3tJY5skaTjTtccdC9
-        LIzHLQRfaLaUTZpxnOeV8Zk=
-X-Google-Smtp-Source: APXvYqzTYPUHPJ/HN4F8dqhfUuDuUNKBbFu4r0rAOkWzN46UrB0QNU4Bv9lF1H5/hGOXwZNJ6gwptA==
-X-Received: by 2002:a17:902:b487:: with SMTP id y7mr6358734plr.219.1561567571614;
-        Wed, 26 Jun 2019 09:46:11 -0700 (PDT)
-Received: from [172.26.110.73] ([2620:10d:c090:180::1:e729])
-        by smtp.gmail.com with ESMTPSA id j15sm21219436pfr.146.2019.06.26.09.46.10
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 Jun 2019 09:46:11 -0700 (PDT)
-From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
-To:     "Tariq Toukan" <tariqt@mellanox.com>
-Cc:     "Alexei Starovoitov" <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>, bjorn.topel@intel.com,
-        "Magnus Karlsson" <magnus.karlsson@intel.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        "Maxim Mikityanskiy" <maximmi@mellanox.com>
-Subject: Re: [PATCH bpf-next V6 00/16] AF_XDP infrastructure improvements and
- mlx5e support
-Date:   Wed, 26 Jun 2019 09:46:09 -0700
-X-Mailer: MailMate (1.12.5r5635)
-Message-ID: <25F8D83F-4287-4D87-B79D-33BEED35956B@gmail.com>
-In-Reply-To: <1561559738-4213-1-git-send-email-tariqt@mellanox.com>
-References: <1561559738-4213-1-git-send-email-tariqt@mellanox.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S1726359AbfFZSPY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jun 2019 14:15:24 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:40472 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726354AbfFZSPY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jun 2019 14:15:24 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20190626181522euoutp027b647a9eff421e040f068ca2c3b0415f~r0kyvQBHs0824508245euoutp02E
+        for <bpf@vger.kernel.org>; Wed, 26 Jun 2019 18:15:22 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20190626181522euoutp027b647a9eff421e040f068ca2c3b0415f~r0kyvQBHs0824508245euoutp02E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1561572922;
+        bh=SAjVXWVU+wN/bLQEdEYQ4VStpx/WPHw7CzyrLqzCoig=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=Bisy1OAYnpfhKL11dIJlF085onDtBeX46jzjM2sCApKz4pXBhOS0jP9+eMuCcSJ6k
+         /KsfOzdD4nAgbTm0tPTF8RdbbaA7m1Ckf63ZHuywYmKZrC/wmR8QFYEXWPUpM+ub6b
+         5R4SM7pRNd3/nfTF8g8V612+VvqwflLMPCdoUaoc=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20190626181521eucas1p2ba4b961787a9c429885d8bb3ffa158c8~r0kxclAcY3035230352eucas1p2S;
+        Wed, 26 Jun 2019 18:15:21 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id CE.BB.04298.836B31D5; Wed, 26
+        Jun 2019 19:15:20 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20190626181520eucas1p1817d31d958b8755600f0745e92edef5a~r0kwrobEp2194821948eucas1p1U;
+        Wed, 26 Jun 2019 18:15:20 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20190626181520eusmtrp2264b0ed253ef69b9931615ce8127cb08~r0kwdkFar2043720437eusmtrp2L;
+        Wed, 26 Jun 2019 18:15:20 +0000 (GMT)
+X-AuditID: cbfec7f2-f13ff700000010ca-3c-5d13b638801e
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 7D.34.04140.836B31D5; Wed, 26
+        Jun 2019 19:15:20 +0100 (BST)
+Received: from imaximets.rnd.samsung.ru (unknown [106.109.129.180]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20190626181519eusmtip2d493497d0d5fa4fc1a0b7c5c29712618~r0kvu_NFz0894308943eusmtip2D;
+        Wed, 26 Jun 2019 18:15:19 +0000 (GMT)
+From:   Ilya Maximets <i.maximets@samsung.com>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        xdp-newbies@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Ilya Maximets <i.maximets@samsung.com>
+Subject: [PATCH bpf v4 0/2] xdp: fix hang while unregistering device bound
+ to xdp socket
+Date:   Wed, 26 Jun 2019 21:15:13 +0300
+Message-Id: <20190626181515.1640-1-i.maximets@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA0WSbUhTYRTHe3a3u6u1uk7R0yaKU0ElNakPF5VqYDD6ZI4gJstuedGRm7r5
+        mlCrRE2pRViiCJqSr2RmQ91QyWGaZhrmB400XwqnoplmKTNt80769jv/F87h4SEwYQlPRKg0
+        GYxWQ6dIcFdue//2SCjV7q48uVMRRe0UtCJqo28Ap2qf/caoytF8LjVeuM2n+q35OGVuKceo
+        T+ZKnGqwvLNr1Z5Uh6EHnTssMzZOcmSmiim+rLZrkSMrnhjDZGUls5jsobEJyTbafGL5Ctfo
+        RCZFlcVow89cdU1++lme9grPWdra5OjRArcYuRBAnob5ykZeMXIlhGQDgumFeufwC4Hp4w+c
+        HTYQ3DVX8Q4q95cLcAcLyXoEY3OX2NAWguH+L/sGTp6AoeY+5GAPUgQ/Ozv4jhBGlmNgnC/d
+        X+5OKmBYX4E5mEsGgnlqju9gARkJq7VNOLvNF5pb32COMpA2HKwvTBzWiIE+g4XPsjssDRid
+        7A17pipn5jZ8zV9EbLkIQZll12mcBePyiL1A2E8KhpfmcFaWwve3E/sykEdhYsXNIWN2fNxe
+        hrGyAIoKhGw6AGy99RjLIphc3XBeIIM73TVc9oGU0Fk3ij9CPhX/d1Uj1IS8mEydOonRRWiY
+        7DAdrdZlapLCrqeq25D9i7zfHVjvRJtj1yyIJJDkiEDvK1QKeXSWLldtQUBgEg/Bc5pUCgWJ
+        dO5NRpuaoM1MYXQWJCa4Ei9B3qGZeCGZRGcwNxgmjdEeuBzCRaRHPq+j9HT7Mcn8+YvrNYr0
+        ANvMg6D4kLrL48H9M/Lj0T0mEb+3WlWo34mbVo+tWQOTGnc0f0J7/C8kdq907RFNynhv7Jtb
+        i/yeOCHI+GQkhuHb1rKHygct1nQ/qXRWGls6mGK4FReena7M8yzM+eBn+2sQq8RX6iZP+UdO
+        yxUSri6ZjgjBtDr6H5frnlUeAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrILMWRmVeSWpSXmKPExsVy+t/xe7oW24RjDdb8ZrP407aB0eLzkeNs
+        FosXfmO2mHO+hcXiSvtPdotjL1rYLHatm8lscXnXHDaLFYdOAMUWiFls79/H6MDtsWXlTSaP
+        nbPusnss3vOSyaPrxiVmj+ndD5k9+rasYvT4vEkugD1Kz6Yov7QkVSEjv7jEVina0MJIz9DS
+        Qs/IxFLP0Ng81srIVEnfziYlNSezLLVI3y5BL2PareCCjWwVr358ZWpgfM7SxcjJISFgItH5
+        uo2ti5GLQ0hgKaNEy85DbBAJKYkfvy6wQtjCEn+udUEVfWOUWHbiJDNIgk1AR+LU6iOMILYI
+        UMPHHdvZQWxmgYXMEl8mmYDYwgIRElvWrAGLswioSuy6+wjM5hWwkni3eBXUMnmJ1RsOME9g
+        5FnAyLCKUSS1tDg3PbfYSK84Mbe4NC9dLzk/dxMjMHi3Hfu5ZQdj17vgQ4wCHIxKPLwN8kKx
+        QqyJZcWVuYcYJTiYlUR4lyYKxArxpiRWVqUW5ccXleakFh9iNAVaPpFZSjQ5HxhZeSXxhqaG
+        5haWhubG5sZmFkrivB0CB2OEBNITS1KzU1MLUotg+pg4OKUaGM8x7HNwvfy7Oza2c1HvzowN
+        l5lU0sIvn91gtn4iT211rlnhOnfm3zOWaC//+qJ/RXap7bP/Fjs7Y389tG2eteDJ+9sLT2cw
+        NTPcrrjzU6RhxreDEjst3+cJbtwawjtPz1yteeV+ZYHsA4siU+76VPRJPzEV8+aqPRzF/sb+
+        ccDHqXanFnI+X63EUpyRaKjFXFScCAAneowpdAIAAA==
+X-CMS-MailID: 20190626181520eucas1p1817d31d958b8755600f0745e92edef5a
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20190626181520eucas1p1817d31d958b8755600f0745e92edef5a
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20190626181520eucas1p1817d31d958b8755600f0745e92edef5a
+References: <CGME20190626181520eucas1p1817d31d958b8755600f0745e92edef5a@eucas1p1.samsung.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Version 4:
 
+    * 'xdp_umem_clear_dev' exposed to be used while unregistering.
+    * Added XDP socket state to track if resources already unbinded.
+    * Splitted in two fixes.
 
-On 26 Jun 2019, at 7:35, Tariq Toukan wrote:
+Version 3:
 
-> This series contains improvements to the AF_XDP kernel infrastructure
-> and AF_XDP support in mlx5e. The infrastructure improvements are
-> required for mlx5e, but also some of them benefit to all drivers, and
-> some can be useful for other drivers that want to implement AF_XDP.
->
-> The performance testing was performed on a machine with the following
-> configuration:
->
-> - 24 cores of Intel Xeon E5-2620 v3 @ 2.40 GHz
-> - Mellanox ConnectX-5 Ex with 100 Gbit/s link
->
-> The results with retpoline disabled, single stream:
->
-> txonly: 33.3 Mpps (21.5 Mpps with queue and app pinned to the same 
-> CPU)
-> rxdrop: 12.2 Mpps
-> l2fwd: 9.4 Mpps
->
-> The results with retpoline enabled, single stream:
->
-> txonly: 21.3 Mpps (14.1 Mpps with queue and app pinned to the same 
-> CPU)
-> rxdrop: 9.9 Mpps
-> l2fwd: 6.8 Mpps
->
-> v2 changes:
->
-> Added patches for mlx5e and addressed the comments for v1. Rebased for
-> bpf-next.
->
-> v3 changes:
->
-> Rebased for the newer bpf-next, resolved conflicts in libbpf. 
-> Addressed
-> Björn's comments for coding style. Fixed a bug in error handling flow 
-> in
-> mlx5e_open_xsk.
->
-> v4 changes:
->
-> UAPI is not changed, XSK RX queues are exposed to the kernel. The 
-> lower
-> half of the available amount of RX queues are regular queues, and the
-> upper half are XSK RX queues. The patch "xsk: Extend channels to 
-> support
-> combined XSK/non-XSK traffic" was dropped. The final patch was 
-> reworked
-> accordingly.
->
-> Added "net/mlx5e: Attach/detach XDP program safely", as the changes
-> introduced in the XSK patch base on the stuff from this one.
->
-> Added "libbpf: Support drivers with non-combined channels", which 
-> aligns
-> the condition in libbpf with the condition in the kernel.
->
-> Rebased over the newer bpf-next.
->
-> v5 changes:
->
-> In v4, ethtool reports the number of channels as 'combined' and the
-> number of XSK RX queues as 'rx' for mlx5e. It was changed, so that 
-> 'rx'
-> is 0, and 'combined' reports the double amount of channels if there is
-> an active UMEM - to make libbpf happy.
->
-> The patch for libbpf was dropped. Although it's still useful and fixes
-> things, it raises some disagreement, so I'm dropping it - it's no 
-> longer
-> useful for mlx5e anymore after the change above.
->
-> v6 changes:
->
-> As Maxim is out of office, I rebased the series on behalf of him,
-> solved some conflicts, and re-spinned.
+    * Declaration lines ordered from longest to shortest.
+    * Checking of event type moved to the top to avoid unnecessary
+      locking.
 
-If this is just a re-spin, you can add back:
+Version 2:
 
-Tested-by: Jonathan Lemon <jonathan.lemon@gmail.com>
+    * Completely re-implemented using netdev event handler.
 
+Ilya Maximets (2):
+  xdp: hold device for umem regardless of zero-copy mode
+  xdp: fix hang while unregistering device bound to xdp socket
 
->
-> Series generated against bpf-next commit:
-> 572a6928f9e3 xdp: Make __mem_id_disconnect static
->
->
-> Maxim Mikityanskiy (16):
->   net/mlx5e: Attach/detach XDP program safely
->   xsk: Add API to check for available entries in FQ
->   xsk: Add getsockopt XDP_OPTIONS
->   libbpf: Support getsockopt XDP_OPTIONS
->   xsk: Change the default frame size to 4096 and allow controlling it
->   xsk: Return the whole xdp_desc from xsk_umem_consume_tx
->   net/mlx5e: Replace deprecated PCI_DMA_TODEVICE
->   net/mlx5e: Calculate linear RX frag size considering XSK
->   net/mlx5e: Allow ICO SQ to be used by multiple RQs
->   net/mlx5e: Refactor struct mlx5e_xdp_info
->   net/mlx5e: Share the XDP SQ for XDP_TX between RQs
->   net/mlx5e: XDP_TX from UMEM support
->   net/mlx5e: Consider XSK in XDP MTU limit calculation
->   net/mlx5e: Encapsulate open/close queues into a function
->   net/mlx5e: Move queue param structs to en/params.h
->   net/mlx5e: Add XSK zero-copy support
->
->  drivers/net/ethernet/intel/i40e/i40e_xsk.c         |  12 +-
->  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |  15 +-
->  drivers/net/ethernet/mellanox/mlx5/core/Makefile   |   2 +-
->  drivers/net/ethernet/mellanox/mlx5/core/en.h       | 155 ++++-
->  .../net/ethernet/mellanox/mlx5/core/en/params.c    | 108 +--
->  .../net/ethernet/mellanox/mlx5/core/en/params.h    | 118 +++-
->  drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c   | 231 +++++--
->  drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h   |  36 +-
->  .../ethernet/mellanox/mlx5/core/en/xsk/Makefile    |   1 +
->  .../net/ethernet/mellanox/mlx5/core/en/xsk/rx.c    | 192 ++++++
->  .../net/ethernet/mellanox/mlx5/core/en/xsk/rx.h    |  27 +
->  .../net/ethernet/mellanox/mlx5/core/en/xsk/setup.c | 223 +++++++
->  .../net/ethernet/mellanox/mlx5/core/en/xsk/setup.h |  25 +
->  .../net/ethernet/mellanox/mlx5/core/en/xsk/tx.c    | 111 ++++
->  .../net/ethernet/mellanox/mlx5/core/en/xsk/tx.h    |  15 +
->  .../net/ethernet/mellanox/mlx5/core/en/xsk/umem.c  | 267 ++++++++
->  .../net/ethernet/mellanox/mlx5/core/en/xsk/umem.h  |  31 +
->  .../net/ethernet/mellanox/mlx5/core/en_ethtool.c   |  25 +-
->  .../ethernet/mellanox/mlx5/core/en_fs_ethtool.c    |  18 +-
->  drivers/net/ethernet/mellanox/mlx5/core/en_main.c  | 730 
-> +++++++++++++--------
->  drivers/net/ethernet/mellanox/mlx5/core/en_rep.c   |  12 +-
->  drivers/net/ethernet/mellanox/mlx5/core/en_rx.c    | 104 ++-
->  drivers/net/ethernet/mellanox/mlx5/core/en_stats.c | 115 +++-
->  drivers/net/ethernet/mellanox/mlx5/core/en_stats.h |  30 +
->  drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c  |  42 +-
->  .../net/ethernet/mellanox/mlx5/core/ipoib/ipoib.c  |  14 +-
->  drivers/net/ethernet/mellanox/mlx5/core/wq.h       |   5 -
->  include/net/xdp_sock.h                             |  27 +-
->  include/uapi/linux/if_xdp.h                        |   8 +
->  net/xdp/xsk.c                                      |  36 +-
->  net/xdp/xsk_queue.h                                |  14 +
->  samples/bpf/xdpsock_user.c                         |  44 +-
->  tools/include/uapi/linux/if_xdp.h                  |   8 +
->  tools/lib/bpf/xsk.c                                |  12 +
->  tools/lib/bpf/xsk.h                                |   2 +-
->  35 files changed, 2331 insertions(+), 484 deletions(-)
->  create mode 100644 
-> drivers/net/ethernet/mellanox/mlx5/core/en/xsk/Makefile
->  create mode 100644 
-> drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
->  create mode 100644 
-> drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.h
->  create mode 100644 
-> drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
->  create mode 100644 
-> drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.h
->  create mode 100644 
-> drivers/net/ethernet/mellanox/mlx5/core/en/xsk/tx.c
->  create mode 100644 
-> drivers/net/ethernet/mellanox/mlx5/core/en/xsk/tx.h
->  create mode 100644 
-> drivers/net/ethernet/mellanox/mlx5/core/en/xsk/umem.c
->  create mode 100644 
-> drivers/net/ethernet/mellanox/mlx5/core/en/xsk/umem.h
->
-> -- 
-> 1.8.3.1
+ include/net/xdp_sock.h |  5 +++
+ net/xdp/xdp_umem.c     | 27 +++++++------
+ net/xdp/xdp_umem.h     |  1 +
+ net/xdp/xsk.c          | 88 ++++++++++++++++++++++++++++++++++++------
+ 4 files changed, 99 insertions(+), 22 deletions(-)
+
+-- 
+2.17.1
+
