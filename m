@@ -2,115 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 406C6570A1
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 20:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66FB4570DF
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 20:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726341AbfFZSee (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jun 2019 14:34:34 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:43832 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726227AbfFZSee (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jun 2019 14:34:34 -0400
-Received: by mail-qk1-f196.google.com with SMTP id m14so2509140qka.10
-        for <bpf@vger.kernel.org>; Wed, 26 Jun 2019 11:34:33 -0700 (PDT)
+        id S1726293AbfFZSmF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jun 2019 14:42:05 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:43826 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726227AbfFZSmF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jun 2019 14:42:05 -0400
+Received: by mail-qt1-f195.google.com with SMTP id w17so3500762qto.10;
+        Wed, 26 Jun 2019 11:42:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=bUsYiNyoZNoL9lby/1FtByidZxf9m7iN70pAJQ8cHC0=;
-        b=r5VP+hiPFDl1KT2oQBakfOd9mxdQI719XRPTQTYuuG50ZfGHKYHwHjMUsKt7nA5WaF
-         Ml3W+oex9LoGShtNebp+J8L3h3magpWY/DRmg1RCloe8suDVfKtVUzyNNZlNq473kJHC
-         28/KogVtHOP+FFbELPKWmrtSdx7SmbT6FKEtEsaqXVGH167iyJ73yvx8Wy9Hl585WwpP
-         DvFfZtVg8v/Wqd9rGYl1mN55dTe/HeWcIcawx0FeA3GTlmyNBEjPYjMkZfyuznbFHM/O
-         e59KtZnF3mQHBm9Ytx+AZb8EzpmC3YGuRJhGqQYl3uobg4plf1R6FzAO0DuczDGM1B2b
-         fR2A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Olj9NsjnjAh6Tgg1Gwb5/K9RkM45q8z0K/+i0cP8wzg=;
+        b=EvAnFbPEg0X7cpYb3EbofwUPNzzwsOui0ix43g0aW36mg6i5bi8mlxqtZmeCYtmCKg
+         nuoPHRFIH9H7Kdhf86icxQWknITSdksL1shAWdGNPUjLdJEEvzssXIQzvybyb2ej12uB
+         A1Cs8JWV0OcWuw7FML8QkcDKv6L7bomcktsue5WD3T9lagr0IQHTaJoXYQ0lNfNlZsjm
+         Nb00u3pFKs/OCjxYPIaKdo6LwA+LaX5+NDEMyFnEg7ke8CzYXBW0rnww1Xy09V4cmO7n
+         rtrZgW7yxYXgTo2ShM7OffuhYK3zsgAnxmOOj0AWOeT9Z/Q+nxR794R0jr7MnGPdyyt5
+         WYJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=bUsYiNyoZNoL9lby/1FtByidZxf9m7iN70pAJQ8cHC0=;
-        b=pKB9E/O/VtFlOLDLBovKcieZoTL15TQXflkzSejRWB6tsozsm3ZHA3hNlBcQQu5HzJ
-         N3IJKNCYjzBNJ5aLvaCKO2snjI0PmxuZ9dkTDLyet72l1F00OO1GvlGdK5JPCBE6BOOK
-         vEm8rZysGvuw2+EMK1w/rhskdMyyUTeN3VgNgTrD4U24KvfhXbkAGOUKt6lC3pmUaQJq
-         wvrSuSvqJHuzeG1gKFOJXNVPJ+x8kD/kGSitGJbcJoS/JnWaohpNRAt49MtCdWn3JkIP
-         Igbiyd/WhOkzyep1PyHoedXr546YuJKPD8fYY3noXF+0UnWb8sbTzOp1+1w60WQuCCXE
-         I90g==
-X-Gm-Message-State: APjAAAUYB0tmPR6ZmtLa5vW+wkzQD3T570VI+iMoID+SFdtyatJJw7X/
-        CqpciYLjPfcFozTvpSXLNcaDjg==
-X-Google-Smtp-Source: APXvYqwIjRK9ufTFUbOfPl6WKlxXXjYaqCKV8dx/pdoLrLKTUftM+rSEze3dcL/V4SGGMeFv9RhVsQ==
-X-Received: by 2002:a05:620a:1497:: with SMTP id w23mr5125682qkj.49.1561574072737;
-        Wed, 26 Jun 2019 11:34:32 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id d17sm8220627qtp.84.2019.06.26.11.34.31
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 26 Jun 2019 11:34:32 -0700 (PDT)
-Date:   Wed, 26 Jun 2019 11:34:27 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Ilya Maximets <i.maximets@samsung.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, xdp-newbies@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH bpf v4 2/2] xdp: fix hang while unregistering device
- bound to xdp socket
-Message-ID: <20190626113427.761cc845@cakuba.netronome.com>
-In-Reply-To: <20190626181515.1640-3-i.maximets@samsung.com>
-References: <20190626181515.1640-1-i.maximets@samsung.com>
-        <CGME20190626181528eucas1p190f20427a1d2a64f2efa6cedcfac0826@eucas1p1.samsung.com>
-        <20190626181515.1640-3-i.maximets@samsung.com>
-Organization: Netronome Systems, Ltd.
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Olj9NsjnjAh6Tgg1Gwb5/K9RkM45q8z0K/+i0cP8wzg=;
+        b=F3t7/QsdV0dg4S+odAqcL4GhIvNt5lwm8HLIzGtxXSg5spDqDdIQPFAv5eVp4wTYAR
+         PA1odMgarLGdWhQqT8LcUVvv0+LabA2Pq6+fwEbOXoWTKlA6LGQwBnoVRF0SWSECSmUH
+         ScnQVbPYvk22f62NBfX1m1EiyxZpJWZdVrTZ1i1ixuc6UlNCytPs2uZ87qfTpvlcmMdz
+         c5THCMLqAWun2g33VemklagneBemf7zTt/4r9Py6InguOvarHcRg6xvhTVuWYLpc/+w2
+         I4RO8yQiAo++D5pg/oQBfv0RYUl+RNcatr+QLwwXHK1lH7tFiwWTQjTX9+DxBruDVjgh
+         aftQ==
+X-Gm-Message-State: APjAAAURRXFSbL3QRD0PCDVqya/Zyi6k9H3FdJuO+G25vlkDsKJKh0cx
+        dSeXWvAtm8EZAdUhBMciLW9cRCd6/7jedvWcQKk=
+X-Google-Smtp-Source: APXvYqx9fJI7HkqIEv4QMf4ebGG5Xscc0XJezem0IoEEm+2aYGHpEDiuhFvZ4/rb1mqfZ5YGfTYjpgfzBbi83hdNsZQ=
+X-Received: by 2002:ac8:1725:: with SMTP id w34mr915626qtj.117.1561574524261;
+ Wed, 26 Jun 2019 11:42:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20190626061235.602633-1-andriin@fb.com> <877e98d0hp.fsf@toke.dk>
+In-Reply-To: <877e98d0hp.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 26 Jun 2019 11:41:53 -0700
+Message-ID: <CAEf4BzZozWBanXnjJguYT46v8huAS7Wz44MHFHJkAPBZbT-i6A@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 0/3] libbpf: add perf buffer abstraction and API
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 26 Jun 2019 21:15:15 +0300, Ilya Maximets wrote:
-> diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-> index 267b82a4cbcf..56729e74cbea 100644
-> --- a/net/xdp/xdp_umem.c
-> +++ b/net/xdp/xdp_umem.c
-> @@ -140,34 +140,38 @@ int xdp_umem_assign_dev(struct xdp_umem *umem, struct net_device *dev,
->  	return err;
->  }
->  
-> -static void xdp_umem_clear_dev(struct xdp_umem *umem)
-> +void xdp_umem_clear_dev(struct xdp_umem *umem)
->  {
-> +	bool lock = rtnl_is_locked();
+On Wed, Jun 26, 2019 at 4:55 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Andrii Nakryiko <andriin@fb.com> writes:
+>
+> > This patchset adds a high-level API for setting up and polling perf buf=
+fers
+> > associated with BPF_MAP_TYPE_PERF_EVENT_ARRAY map. Details of APIs are
+> > described in corresponding commit.
+> >
+> > Patch #1 adds a set of APIs to set up and work with perf buffer.
+> > Patch #2 enhances libbpf to supprot auto-setting PERF_EVENT_ARRAY map s=
+ize.
+> > Patch #3 adds test.
+>
+> Having this in libbpf is great! Do you have a usage example of how a
+> program is supposed to read events from the buffer? This is something we
+> would probably want to add to the XDP tutorial
 
-How do you know it's not just locked by someone else?  You need to pass
-the locked state in if this is called from different paths, some of
-which already hold rtnl.
+Did you check patch #3 with selftest? It's essentially an end-to-end
+example of how to set everything up and process data (in my case it's
+just simple int being sent as a sample, but it's exactly the same with
+more complicated structs). I didn't bother to handle lost samples
+notification, but it's just another optional callback with a single
+counter denoting how many samples were dropped.
 
-Preferably factor the code which needs the lock out into a separate
-function like this:
+Let me know if it's still unclear.
 
-void __function()
-{
-	do();
-	the();
-	things();
-	under();
-	the();
-	lock();
-}
-
-void function()
-{
-	rtnl_lock();
-	__function();
-	rtnl_unlock();
-}
-
->  	struct netdev_bpf bpf;
->  	int err;
->  
-> +	if (!lock)
-> +		rtnl_lock();
-
+>
+> -Toke
