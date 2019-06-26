@@ -2,76 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 213A356AFF
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 15:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793B956BC0
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 16:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727409AbfFZNpY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jun 2019 09:45:24 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:36134 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbfFZNpY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jun 2019 09:45:24 -0400
-Received: by mail-ot1-f66.google.com with SMTP id r6so2563445oti.3
-        for <bpf@vger.kernel.org>; Wed, 26 Jun 2019 06:45:24 -0700 (PDT)
+        id S1726628AbfFZOVW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jun 2019 10:21:22 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:44905 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727146AbfFZOVV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jun 2019 10:21:21 -0400
+Received: by mail-qt1-f193.google.com with SMTP id x47so2500635qtk.11
+        for <bpf@vger.kernel.org>; Wed, 26 Jun 2019 07:21:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YHFWUQ+R+XxnRQJJOUqJpjk7wSBUzKlBOHoUk7O0irU=;
-        b=cdmp2X1xhHglbhsZdcJ8yRfsAjXdswiMTIWmfU6q1VXqPPUgNT+TivwYZpI5F6RcNf
-         MKmD2nBOoE67fhqJvhwHqXWKr+Rg5KchGM2GxuE3sgOxQGDBnMHQmme/3ooayAoGHiCm
-         9tHtywRruw9DMhBK1Tt8vK2fQdhGQEsb23HQA=
+        bh=MCl3tpFEmKK0HQZH2Eap62wiPJfD46EgaEr3zzT9c2M=;
+        b=rTPp8xHQvRR1WlL9LKeu8k+ls6QVoa07QO2Hy/pt0RmMRc4WwVQjaawGH+JcBLKlqZ
+         l/APsMzNRtVvqE+wLo/F6DCsjCppYgdbJiO/Kzq23QnROLmrLEfxzxZ/NZ82yfuZoSdM
+         DllC/cYYCeiIoNJYaG5aKaETgZz1/BsWuplJLvol405gHDd92oc9SW0AlUlef4KJ2077
+         B7Bs6ta+IeGV22N6hW+xJF8ZSgNSp1tEKf4Vyv1h/od7u9soFh9lFBMWBVsCu8O9h7f/
+         +9U/4ovvW1qDiJyEQK5CQxXV19RP7wXcMxDU6ML0qI3yndOsSTDgiNjJknu1NWBbzVVN
+         9xrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YHFWUQ+R+XxnRQJJOUqJpjk7wSBUzKlBOHoUk7O0irU=;
-        b=IC6ppsg04rELfPk53HDkMtgnzahsScj4QjKtjaTuh1VWzJ9RRnEGO98Cg1ELUsEopo
-         mNl+RgqJ0G+PYvGQzbHc7BU6w/YC/pE9WE7Qlr2agVw36ZsmuJwl0pOYYDWzi1vrzmcM
-         rjk6hWkooBhv5CaExzEhhqHYs2TlQ+9JropxvbFJHvpDga4DicgmKazKDMP3XkmMyJ/3
-         bWBxOwg/ayMqKnjXxaNJEx+RrTDRFXq9LEhhZjwHMKXnUsSNWoF/YI7y/0Uh+I7wqJ9r
-         xyVlR9nRILXQWg71QaKSXyY7L5DnyI/WVAQ4EpPPxjeH1PcMg4RJ/IhgjWAuQ+MyFnVO
-         Lh/Q==
-X-Gm-Message-State: APjAAAUm6xFG7SLG9QXmeGvKhPMDx0j4twKF8L6pd8h5H+GzN1cjTcyb
-        hD5mzkRYYY9PNqfe8HXCS71aiR0uiIc/5vBY4uBVpQ==
-X-Google-Smtp-Source: APXvYqxiSvvfwHYrgXdyFyvunZdWv8OQCOZLiIhDoRnyCI5hqlYDmUcxSdljyNgiErgEAm6/gkd82XxPQgTpQp/m56Q=
-X-Received: by 2002:a9d:1b21:: with SMTP id l30mr3404935otl.5.1561556723877;
- Wed, 26 Jun 2019 06:45:23 -0700 (PDT)
+        bh=MCl3tpFEmKK0HQZH2Eap62wiPJfD46EgaEr3zzT9c2M=;
+        b=GV9+R0M459LR2rUG5ox9M0IrfaD4jQ73C6ipovUQkLxE5iNchWbiI3QMLkC6RLDo5o
+         4edxp3P030xsyVGBtKmP3zEPNaJj9HnXLBrwCHn1rxgihcSH4QXaLNtQYQO2XJfH4lN6
+         cgt/JVyhW2TWU/s0mQzPRSpL0qfFeH79dawJNmdiUj6YsKiRsoJ7gyOyKHnrgnGYPW1N
+         qInkrNeq/TjW8W9HxZSJG5ERfxkNmSM5W7M0cXWDtKYU6fMPrTb1ul2pyaxv08MPz6ja
+         JypsGFkItQ7dXpca/AGVLO8tLe6clCg6SI7uLj7HuKfCkaTDopOcwKizhlaXvupJaAR/
+         BWnQ==
+X-Gm-Message-State: APjAAAUfmQmTIkq/XuTfsUt8ERdBriWf9jdeks+RPJ4RTvGONRhxenkv
+        AWQD4fI5PoOSPoqMshs+VQcmKb8ulX/xwnxYo8PoNg==
+X-Google-Smtp-Source: APXvYqxOzzdaaHHfWmnWMdQEY3tUVS20gcBS77Nd8999M96SfELt8pCIZrtjVq+401zaYigoAwExiscIDvefEceYJMQ=
+X-Received: by 2002:aed:21f0:: with SMTP id m45mr3923648qtc.391.1561558880523;
+ Wed, 26 Jun 2019 07:21:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190625182303.874270-1-songliubraving@fb.com> <20190625182303.874270-2-songliubraving@fb.com>
-In-Reply-To: <20190625182303.874270-2-songliubraving@fb.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 26 Jun 2019 14:45:12 +0100
-Message-ID: <CACAyw99isFcFhnrmagmzPPR1vNGqcmDU+Pq7SWeeZV8RSpeBug@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <faaf8b1c-9552-a0ae-3088-2f4255dff857@codeaurora.org> <0bcdd38c-5cdb-0510-573a-9a6098ab2105@codeaurora.org>
+In-Reply-To: <0bcdd38c-5cdb-0510-573a-9a6098ab2105@codeaurora.org>
+From:   Joel Fernandes <joelaf@google.com>
+Date:   Wed, 26 Jun 2019 10:21:09 -0400
+Message-ID: <CAJWu+oo5zmdY9ywhbQTWi+YXRDF=XSJrAUEE0uJ9dV_9vZUSBA@mail.gmail.com>
+Subject: Re: samples/bpf compilation failures - 5.2.0
+To:     Srinivas Ramana <sramana@codeaurora.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 25 Jun 2019 at 19:23, Song Liu <songliubraving@fb.com> wrote:
+On Wed, Jun 26, 2019 at 1:41 AM Srinivas Ramana <sramana@codeaurora.org> wrote:
 >
-> This patch introduce unprivileged BPF access. The access control is
-> achieved via device /dev/bpf. Users with access to /dev/bpf are able
-> to access BPF syscall.
+> + Joel if he has seen this issue.
 >
-> Two ioctl command are added to /dev/bpf:
+
+I have not seen this issue and it has been some time since I built BPF
+samples, sorry. I am mostly building BPF programs through bcc/bpftrace
+and Android's build system.
+
+We ought to make samples easier to build though, I remember when I
+built it last year there were header related issues which should be
+fixed. It could be that new BPF features broke it again.
+
+ J.
+
+
+
+> On 5/28/2019 2:27 PM, Srinivas Ramana wrote:
+> > Hello,
+> >
+> > I am trying to build samples/bpf in kernel(5.2.0-rc1) but unsuccessful
+> > with below errors. Can you help to point what i am missing or if there
+> > is some known issue?
+> >
+> > ==============================8<===================================
+> > $ make samples/bpf/
+> > LLC=/local/mnt/workspace/tools/clang_ubuntu/clang/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-14.04/bin/llc
+> > CLANG=/local/mnt/workspace/tools/clang_ubuntu/clang/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-14.04/bin/clang
+> > V=1
+> > make -C /local/mnt/workspace/sramana/kdev_torvalds/kdev/kernel -f
+> > /local/mnt/workspace/sramana/kdev_torvalds/kdev/kernel/Makefile
+> > samples/bpf/
+> > ................
+> > ................
+> > ................
+> > make KBUILD_MODULES=1 -f ./scripts/Makefile.build obj=samples/bpf
+> > (cat /dev/null; ) > samples/bpf/modules.order
+> > make -C
+> > /local/mnt/workspace/sramana/kdev_torvalds/kdev/kernel/samples/bpf/../../tools/lib/bpf/
+> > RM='rm -rf' LDFLAGS=
+> > srctree=/local/mnt/workspace/sramana/kdev_torvalds/kdev/kernel/samples/bpf/../../
+> > O=
+> >
+> > Auto-detecting system features:
+> > ...                        libelf: [ on  ]
+> > ...                           bpf: [ on  ]
+> >
+> > make -C
+> > /local/mnt/workspace/sramana/kdev_torvalds/kdev/kernel/samples/bpf/../..//tools/build
+> > CFLAGS= LDFLAGS= fixdep
+> > make -f
+> > /local/mnt/workspace/sramana/kdev_torvalds/kdev/kernel/samples/bpf/../..//tools/build/Makefile.build
+> > dir=. obj=fixdep
+> >     ld -r -o fixdep-in.o  fixdep.o
+> > ld: fixdep.o: Relocations in generic ELF (EM: 183)
+> > ld: fixdep.o: Relocations in generic ELF (EM: 183)
+> > fixdep.o: error adding symbols: File in wrong format
+> > make[5]: *** [fixdep-in.o] Error 1
+> > make[4]: *** [fixdep-in.o] Error 2
+> > make[3]: *** [fixdep] Error 2
+> > make[2]: ***
+> > [/local/mnt/workspace/sramana/kdev_torvalds/kdev/kernel/samples/bpf/../../tools/lib/bpf/libbpf.a]
+> > Error 2
+> > make[1]: *** [samples/bpf/] Error 2
+> > make: *** [sub-make] Error 2
+> > ==============================>8=======================================
+> >
+> >
+> > I am using the below commands to build:
+> > ========================================================
+> > export ARCH=arm64
+> > export CROSS_COMPILE=<path>linaro-toolchain/5.1/bin/aarch64-linux-gnu-
+> > export CLANG_TRIPLE=arm64-linux-gnu-
+> >
+> > make
+> > CC=<path>/clang_ubuntu/clang/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-14.04/bin/clang
+> > defconfig
+> >
+> > make
+> > CC=<path>/clang_ubuntu/clang/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-14.04/bin/clang
+> > -j8
+> >
+> > make
+> > CC=<path>/clang_ubuntu/clang/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-14.04/bin/clang
+> > headers_install INSTALL_HDR_PATH=./usr
+> >
+> > make samples/bpf/
+> > LLC=<path>/clang_ubuntu/clang/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-14.04/bin/llc
+> > CLANG=<path>/clang_ubuntu/clang/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-14.04/bin/clang
+> > V=1
+> > CC=<path>/clang_ubuntu/clang/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-14.04/bin/clang
+> >
+> > ========================================================
+> >
+> > Thanks,
+> > -- Srinivas R
+> >
 >
-> The first two commands get/put permission to access sys_bpf. This
-> permission is noted by setting bit TASK_BPF_FLAG_PERMITTED of
-> current->bpf_flags. This permission cannot be inherited via fork().
-
-I know nothing about the scheduler, so pardon my ignorance. Does
-TASK_BPF_FLAG_PERMITTED apply per user-space process, or per thread?
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+>
+> --
+> Qualcomm India Private Limited, on behalf of Qualcomm Innovation
+> Center, Inc., is a member of Code Aurora Forum, a Linux Foundation
+> Collaborative Project
