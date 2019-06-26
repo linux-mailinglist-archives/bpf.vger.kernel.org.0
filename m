@@ -2,95 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8268B57440
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 00:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523D857450
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 00:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726347AbfFZWZB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jun 2019 18:25:01 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:37843 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726289AbfFZWZB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jun 2019 18:25:01 -0400
-Received: by mail-pf1-f194.google.com with SMTP id 19so158877pfa.4;
-        Wed, 26 Jun 2019 15:25:01 -0700 (PDT)
+        id S1726370AbfFZWbd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jun 2019 18:31:33 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:32861 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbfFZWbd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jun 2019 18:31:33 -0400
+Received: by mail-qt1-f196.google.com with SMTP id w40so402235qtk.0;
+        Wed, 26 Jun 2019 15:31:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=5oPhE3qEEt+RsciwWt3P6Fjbl5mc7GWFjnz4iQlRxp4=;
-        b=H4+gaLabIccSX6EPGUvDOCU/qUWZUMhDbwijJ4DRhclRYA8njNCIhVON5hmDAmRjyP
-         us29dx6wXrDFhkSBYtZP+QnMwkUxbt/b/NT9soEdmAxHwSGDaPDlwMwZgzNqXvOH3aso
-         2f9q6yIIHe7gJ8HNtc/aWgiuXhoX0rzuU/K2diGjE5ZK7pdDMd0B1uW+/Dqe1477OhVx
-         IrxhZdW9rbOcpZWyMwh65fNWDmD1Ll6t3XZRsVs/yuRwUQPPont7siNBs5QFWibv8n+w
-         EzcCqvqSOhG2s0daMmj+Bt+KKOTRXLXfDo7Yn5/MIDQw8qOb7G3VrVDpkXXeUeybpeyV
-         P4mA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1vmyR6e3j7gv9jCv+242q6EyeiqeIh/lmq7cYKwtFbQ=;
+        b=SHM+ELpzjzYllwEprCcVGXHmToZCm72nVeIzttAMWY79wYM8CA2ntgjrRaFhH/DXlx
+         UxqEy+S3JjTbIowrDWFJUKZqlQk3ZbhJl5JBwcC2vcF5zqTJCkTfYp19+B9Bj4h4y0QN
+         2YIHw7IFC04RKpf8hyCeLRSYk6SCNU7Ni86R6b7yMZ7BOYrQxC6ZnhqsL1ijNChuwzH1
+         qK1OE31tHNDyVHRjeHWVZcKG1XdrHd/4Jcn2VRrJRYvoVSRDwaVemcq2LA5IkQ8nsSz2
+         Gr/WTVYp+XQHbSMRl3Ke0+5mPlvc+pNG6Tzhqu/3qfPlB1nyg5aB/t8tS63Na3uWrmin
+         La+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=5oPhE3qEEt+RsciwWt3P6Fjbl5mc7GWFjnz4iQlRxp4=;
-        b=AQFuIdwD/VB9c0fhOZI4oHs8xSR5A4FvAkOygd5wihGNyPTU5urT8X5jIeCxVHwqeg
-         5oarCHHeDfU7fVvhpRfKU+G4OVEDx/nghtIbXnchRlpQAWKZJdIwEDIPhHmOYxh7k1uQ
-         UjdMBUfwc3OqEppaOa8AAm/Z1fWQQGFb1lji/CziRcdSmVfiFM3GRAiwzN/mqd7IbYWz
-         LBcvvGPVsLXKFPrCZo8cdBzOcCRvlMF5Nf6XOhMqx+/cZ6Z2HYR1dHm5WbLguExoDisD
-         NuF5B6G1kw3FatSyTwlOngxsWbAXYZjbAF5T8uks46H5HRxVCJhEEOfeUSRgmKwMcSZX
-         jJPw==
-X-Gm-Message-State: APjAAAWO2CeTGw8C4BSlRzVjT3DJQtNwExpx0M5Uq1WpOsvCUVTQORv5
-        FOq4QgSe1yVc6t4q8HPfsic=
-X-Google-Smtp-Source: APXvYqxmpsROUGAEqYL8EDVOV7OByHymtS0Mqk4ScvgHjMvlv0A3sn919heSyv/nLXtsc2sr0jMmeg==
-X-Received: by 2002:a63:e40a:: with SMTP id a10mr260601pgi.277.1561587899713;
-        Wed, 26 Jun 2019 15:24:59 -0700 (PDT)
-Received: from localhost ([67.136.128.119])
-        by smtp.gmail.com with ESMTPSA id u128sm297015pfu.26.2019.06.26.15.24.59
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 26 Jun 2019 15:24:59 -0700 (PDT)
-Date:   Wed, 26 Jun 2019 15:24:58 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Eric Biggers <ebiggers@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     syzbot <syzbot+8893700724999566d6a9@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, ast@kernel.org, cai@lca.pw,
-        crecklin@redhat.com, daniel@iogearbox.net, keescook@chromium.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Message-ID: <5d13f0ba3d1aa_25912acd0de805bcce@john-XPS-13-9370.notmuch>
-In-Reply-To: <20190625234808.GB116876@gmail.com>
-References: <000000000000e672c6058bd7ee45@google.com>
- <0000000000007724d6058c2dfc24@google.com>
- <20190625234808.GB116876@gmail.com>
-Subject: Re: KASAN: slab-out-of-bounds Write in validate_chain
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1vmyR6e3j7gv9jCv+242q6EyeiqeIh/lmq7cYKwtFbQ=;
+        b=Bpa7Ug3gBugY185tm7gKnYUv06SNLDBZRRRNBC2JXugr7O1Yyk3GVC4NMV1llbdbJh
+         2DrZqyWHC1LeGs2kggelMwo9/Ft9K8r3cVdbFg7yLfbBeCfOBG0/JF6+uKyBq8cebSYz
+         jydcEr257ovQF3pn9I2mReNYDTpJkJKC99puxafzf9xQKKEual2P8QU8GSNjb0iegALk
+         z7H9D8iKhYLup6kG8F6b0N+e2OtJcJjr/g4KvQazW8fIb1wYNNFddTHrWUFlohN1hLuJ
+         W89mXcAHeRJNs3avjounA5ZkyX70hfwOn+A+joL//D3XmBotFagtNMBsFsp+Z2wPlf3w
+         DOmg==
+X-Gm-Message-State: APjAAAVyV3U4kjM6g43R3aAbZeVdsAoo9FmFLNBk1yG3HdhXU3R/vMMf
+        yE24zzcdVwhAizeoN0j0guIqNC0ItjCPnfwKGx8=
+X-Google-Smtp-Source: APXvYqw5h9UZLxBvanVtR5QRBOdqDGzw8OpXbcBmy969J0MYTZV3wd2tVRzettw7lASytj9rPD0LobTq1lL7khvtoIQ=
+X-Received: by 2002:ac8:290c:: with SMTP id y12mr260429qty.141.1561588292336;
+ Wed, 26 Jun 2019 15:31:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190626061235.602633-1-andriin@fb.com> <20190626061235.602633-3-andriin@fb.com>
+ <3E535E64-3FD8-4B3D-BBBB-033057084319@fb.com>
+In-Reply-To: <3E535E64-3FD8-4B3D-BBBB-033057084319@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 26 Jun 2019 15:31:20 -0700
+Message-ID: <CAEf4BzZuQoN5PZv+223OZZORhDNxx_ZK8pCgS2R3p=aTLFRfNw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/3] libbpf: auto-set PERF_EVENT_ARRAY size to
+ number of CPUs
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Eric Biggers wrote:
-> Hi John,
-> 
-> On Tue, Jun 25, 2019 at 04:07:00PM -0700, syzbot wrote:
-> > syzbot has bisected this bug to:
-> > 
-> > commit e9db4ef6bf4ca9894bb324c76e01b8f1a16b2650
-> > Author: John Fastabend <john.fastabend@gmail.com>
-> > Date:   Sat Jun 30 13:17:47 2018 +0000
-> > 
-> >     bpf: sockhash fix omitted bucket lock in sock_close
-> > 
-> 
-> Are you working on this?  This is the 6th open syzbot report that has been
-> bisected to this commit, and I suspect it's the cause of many of the other
-> 30 open syzbot reports I assigned to the bpf subsystem too
-> (https://lore.kernel.org/bpf/20190624050114.GA30702@sol.localdomain/).
-> 
-> Also, this is happening in mainline (v5.2-rc6).
-> 
-> - Eric
+On Wed, Jun 26, 2019 at 11:57 AM Song Liu <songliubraving@fb.com> wrote:
+>
+>
+>
+> > On Jun 25, 2019, at 11:12 PM, Andrii Nakryiko <andriin@fb.com> wrote:
+> >
+> > For BPF_MAP_TYPE_PERF_EVENT_ARRAY typically correct size is number of
+> > possible CPUs. This is impossible to specify at compilation time. This
+> > change adds automatic setting of PERF_EVENT_ARRAY size to number of
+> > system CPUs, unless non-zero size is specified explicitly. This allows
+> > to adjust size for advanced specific cases, while providing convenient
+> > and logical defaults.
+> >
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> > tools/lib/bpf/libbpf.c | 17 ++++++++++++++++-
+> > 1 file changed, 16 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index c74cc535902a..8f2b8a081ba7 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -2114,6 +2114,7 @@ static int
+> > bpf_object__create_maps(struct bpf_object *obj)
+> > {
+> >       struct bpf_create_map_attr create_attr = {};
+> > +     int nr_cpus = 0;
+> >       unsigned int i;
+> >       int err;
+> >
+> > @@ -2136,7 +2137,21 @@ bpf_object__create_maps(struct bpf_object *obj)
+> >               create_attr.map_flags = def->map_flags;
+> >               create_attr.key_size = def->key_size;
+> >               create_attr.value_size = def->value_size;
+> > -             create_attr.max_entries = def->max_entries;
+> > +             if (def->type == BPF_MAP_TYPE_PERF_EVENT_ARRAY &&
+> > +                 !def->max_entries) {
+> > +                     if (!nr_cpus)
+> > +                             nr_cpus = libbpf_num_possible_cpus();
+> > +                     if (nr_cpus < 0) {
+> > +                             pr_warning("failed to determine number of system CPUs: %d\n",
+> > +                                        nr_cpus);
+> > +                             return nr_cpus;
+>
+> I think we need to goto err_out here.
 
-Should have a fix today. It seems syzbot has found this bug repeatedly.
+Absolutely, good catch, thanks!
 
-.John
+>
+> Thanks,
+> Song
+>
