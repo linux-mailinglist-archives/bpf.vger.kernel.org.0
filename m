@@ -2,307 +2,277 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 582CD5655F
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 11:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4385667A
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 12:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbfFZJKf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jun 2019 05:10:35 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:38513 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbfFZJKe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jun 2019 05:10:34 -0400
-Received: by mail-lf1-f65.google.com with SMTP id b11so1047810lfa.5
-        for <bpf@vger.kernel.org>; Wed, 26 Jun 2019 02:10:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YoeqkPyuuUAa89a437Y8XeIR94IijuVYW37iJHKjXro=;
-        b=QCubpUKtrVll90cGRqb8Cq97Ey09kXjAZfiiKTih+3YGW80RSglFZRnsPIjISll9ZD
-         qF2C2a7hL5SsTky9phPAVleo1aFYfPBRMpZjhlyXV4cytIZSXYVB2b5k8w4tppDHsymp
-         9B02eWOVWuM8UbYMO7eHrhMCLl3+KLJbZJRak=
+        id S1726970AbfFZKRG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jun 2019 06:17:06 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:33217 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbfFZKRG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jun 2019 06:17:06 -0400
+Received: by mail-io1-f70.google.com with SMTP id n4so2055554ioc.0
+        for <bpf@vger.kernel.org>; Wed, 26 Jun 2019 03:17:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YoeqkPyuuUAa89a437Y8XeIR94IijuVYW37iJHKjXro=;
-        b=oIpCEnOokBhiob/4upPN1Zl2MBen5S2HRqoLHYJvQb9l6L49ID3dDqFvPWOKKf/Pmm
-         0XcGuxsHs30k65rPKKEraqo1oQMA0Z03kUX9GayBkoNJmhBuggzzyLaWOulKvQyhyk+P
-         0nYu7ZNHUIvzZGh+bK1mnAh21FLNrCK5ZJaYQ5bW0A/QkqcYL7hbycanDoUrIU7E40e0
-         AnzSZG7hZ6bTJjqGta+5oOnaa1Rd5/JINFnQLAk7WQn2NIpZEHR1KMqwTrOtAwXpnH4B
-         CsWt189IrXTl3EsnWmwzmQgrZPFzhbG4kcsKSTLFmY/u92irUG3CPpWdSEm4hHCl8f83
-         gShA==
-X-Gm-Message-State: APjAAAUTrwKiW7bOexArX9A3uOId5gOik4sEiVCigdZUjXyizaSjWO33
-        1GVRXViOkfhI9F0ecoF+Gtj8NCu3jZ3JpeKrxKBGvA==
-X-Google-Smtp-Source: APXvYqymZ7lUVgJdBpBi6jtOw+JA7FkCqSjQ7i/H6+FJ0lYr8Np2FRYIbmUefQFTW6IHKYweDRBGVB5Ju2417aCZP40=
-X-Received: by 2002:ac2:418f:: with SMTP id z15mr1951625lfh.177.1561540231825;
- Wed, 26 Jun 2019 02:10:31 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=91FCmbybaGN9w/7LNvVmFsN27kOzGRkQsPRxpuyt5OM=;
+        b=XdgQOFqV6pRR0C0gLLMiXHrqOBGTxIgQE4E4dcd6Ke8w6lsr2ZP05Q47puUwP3zMaZ
+         FcLB3S9tlZDl00lIz0Hf+5sNexYJ4WH2LjaBNnhiDNv0caP3vVMunOuzzZG/BluqRB/V
+         72uX7eDLS+NEdCWZdgb2z0URd7Kn4x2hirDQwT1ajeZCC4T7idp7YqJUtUSK8Jho3uH3
+         qcxjqJliEapVA3FgxOgpbpsR9RvIGqI8XJQOMsGKv5+4EZyVoJrjJMFLEfg9RFiH4Lso
+         baMJ3Bq9T/RHa1gP2oPUTnPzpW8GV0FQDqO7cYDfV24qoVnEEvz+UdFPOH2Fc+y7RXyM
+         sWcQ==
+X-Gm-Message-State: APjAAAXn4C10ovEyG+0VkCwk1QBFlsK7Shk/EaAwPUTlKZ1L06FqJlK3
+        hPeO18rYoQED7DKrkKLC1k5nB47kfHpEaC2aJXDotDsArBSl
+X-Google-Smtp-Source: APXvYqwmMqFd7Zrv7uivTuMwUupMdddjh6PbrPVaFbpsDMCOcx01ndNPhgG6wQjoa8ok3+NaWrPgqrbxvmaOcJgAXCsu+mFRb7oD
 MIME-Version: 1.0
-References: <20190625194215.14927-1-krzesimir@kinvolk.io> <20190625194215.14927-9-krzesimir@kinvolk.io>
- <20190625201220.GC10487@mini-arch>
-In-Reply-To: <20190625201220.GC10487@mini-arch>
-From:   Krzesimir Nowak <krzesimir@kinvolk.io>
-Date:   Wed, 26 Jun 2019 11:10:20 +0200
-Message-ID: <CAGGp+cE3m1+ZWFBmjTgKFEHYVJ-L1dE=+iVUXvXCxWAxRG9YTA@mail.gmail.com>
-Subject: Re: [bpf-next v2 08/10] bpf: Implement bpf_prog_test_run for perf
- event programs
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     netdev@vger.kernel.org, Alban Crequy <alban@kinvolk.io>,
-        =?UTF-8?Q?Iago_L=C3=B3pez_Galeiras?= <iago@kinvolk.io>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a02:ca57:: with SMTP id i23mr3795303jal.25.1561544225173;
+ Wed, 26 Jun 2019 03:17:05 -0700 (PDT)
+Date:   Wed, 26 Jun 2019 03:17:05 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d7bcbb058c3758a1@google.com>
+Subject: BUG: unable to handle kernel paging request in tls_prots
+From:   syzbot <syzbot+4207c7f3a443366d8aa2@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, edumazet@google.com, john.fastabend@gmail.com,
+        kafai@fb.com, kuznet@ms2.inr.ac.ru, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 25, 2019 at 10:12 PM Stanislav Fomichev <sdf@fomichev.me> wrote=
-:
->
-> On 06/25, Krzesimir Nowak wrote:
-> > As an input, test run for perf event program takes struct
-> > bpf_perf_event_data as ctx_in and struct bpf_perf_event_value as
-> > data_in. For an output, it basically ignores ctx_out and data_out.
-> >
-> > The implementation sets an instance of struct bpf_perf_event_data_kern
-> > in such a way that the BPF program reading data from context will
-> > receive what we passed to the bpf prog test run in ctx_in. Also BPF
-> > program can call bpf_perf_prog_read_value to receive what was passed
-> > in data_in.
-> >
-> > Signed-off-by: Krzesimir Nowak <krzesimir@kinvolk.io>
-> > ---
-> >  kernel/trace/bpf_trace.c                      | 107 ++++++++++++++++++
-> >  .../bpf/verifier/perf_event_sample_period.c   |   8 ++
-> >  2 files changed, 115 insertions(+)
-> >
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index c102c240bb0b..2fa49ea8a475 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -16,6 +16,8 @@
-> >
-> >  #include <asm/tlb.h>
-> >
-> > +#include <trace/events/bpf_test_run.h>
-> > +
-> >  #include "trace_probe.h"
-> >  #include "trace.h"
-> >
-> > @@ -1160,7 +1162,112 @@ const struct bpf_verifier_ops perf_event_verifi=
-er_ops =3D {
-> >       .convert_ctx_access     =3D pe_prog_convert_ctx_access,
-> >  };
-> >
-> > +static int pe_prog_test_run(struct bpf_prog *prog,
-> > +                         const union bpf_attr *kattr,
-> > +                         union bpf_attr __user *uattr)
-> > +{
-> > +     void __user *ctx_in =3D u64_to_user_ptr(kattr->test.ctx_in);
-> > +     void __user *data_in =3D u64_to_user_ptr(kattr->test.data_in);
-> > +     u32 data_size_in =3D kattr->test.data_size_in;
-> > +     u32 ctx_size_in =3D kattr->test.ctx_size_in;
-> > +     u32 repeat =3D kattr->test.repeat;
-> > +     u32 retval =3D 0, duration =3D 0;
-> > +     int err =3D -EINVAL;
-> > +     u64 time_start, time_spent =3D 0;
-> > +     int i;
-> > +     struct perf_sample_data sample_data =3D {0, };
-> > +     struct perf_event event =3D {0, };
-> > +     struct bpf_perf_event_data_kern real_ctx =3D {0, };
-> > +     struct bpf_perf_event_data fake_ctx =3D {0, };
-> > +     struct bpf_perf_event_value value =3D {0, };
-> > +
-> > +     if (ctx_size_in !=3D sizeof(fake_ctx))
-> > +             goto out;
-> > +     if (data_size_in !=3D sizeof(value))
-> > +             goto out;
-> > +
-> > +     if (copy_from_user(&fake_ctx, ctx_in, ctx_size_in)) {
-> > +             err =3D -EFAULT;
-> > +             goto out;
-> > +     }
-> Move this to net/bpf/test_run.c? I have a bpf_ctx_init helper to deal
-> with ctx input, might save you some code above wrt ctx size/etc.
+Hello,
 
-My impression about net/bpf/test_run.c was that it was a collection of
-helpers for test runs of the network-related BPF programs, because
-they are so similar to each other. So kernel/trace/bpf_trace.c looked
-like an obvious place for the test_run implementation since other perf
-trace BPF stuff was already there.
+syzbot found the following crash on:
 
-And about bpf_ctx_init - looks useful as it seems to me that it
-handles the scenario where the size of the ctx struct grows, but still
-allows passing older version of the struct (thus smaller) from
-userspace for compatibility. Maybe that checking and copying part of
-the function could be moved into some non-static helper function, so I
-could use it and still skip the need for allocating memory for the
-context?
+HEAD commit:    904d88d7 qmi_wwan: Fix out-of-bounds read
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=14a8b865a00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=137ec2016ea3870d
+dashboard link: https://syzkaller.appspot.com/bug?extid=4207c7f3a443366d8aa2
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15576c71a00000
 
->
-> > +     if (copy_from_user(&value, data_in, data_size_in)) {
-> > +             err =3D -EFAULT;
-> > +             goto out;
-> > +     }
-> > +
-> > +     real_ctx.regs =3D &fake_ctx.regs;
-> > +     real_ctx.data =3D &sample_data;
-> > +     real_ctx.event =3D &event;
-> > +     perf_sample_data_init(&sample_data, fake_ctx.addr,
-> > +                           fake_ctx.sample_period);
-> > +     event.cpu =3D smp_processor_id();
-> > +     event.oncpu =3D -1;
-> > +     event.state =3D PERF_EVENT_STATE_OFF;
-> > +     local64_set(&event.count, value.counter);
-> > +     event.total_time_enabled =3D value.enabled;
-> > +     event.total_time_running =3D value.running;
-> > +     /* make self as a leader - it is used only for checking the
-> > +      * state field
-> > +      */
-> > +     event.group_leader =3D &event;
-> > +
-> > +     /* slightly changed copy pasta from bpf_test_run() in
-> > +      * net/bpf/test_run.c
-> > +      */
-> > +     if (!repeat)
-> > +             repeat =3D 1;
-> > +
-> > +     rcu_read_lock();
-> > +     preempt_disable();
-> > +     time_start =3D ktime_get_ns();
-> > +     for (i =3D 0; i < repeat; i++) {
-> Any reason for not using bpf_test_run?
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+4207c7f3a443366d8aa2@syzkaller.appspotmail.com
 
-Two, mostly. One was that it is a static function and my code was
-elsewhere. Second was that it does some cgroup storage setup and I'm
-not sure if the perf event BPF program needs that.
-
->
-> > +             retval =3D BPF_PROG_RUN(prog, &real_ctx);
-> > +
-> > +             if (signal_pending(current)) {
-> > +                     err =3D -EINTR;
-> > +                     preempt_enable();
-> > +                     rcu_read_unlock();
-> > +                     goto out;
-> > +             }
-> > +
-> > +             if (need_resched()) {
-> > +                     time_spent +=3D ktime_get_ns() - time_start;
-> > +                     preempt_enable();
-> > +                     rcu_read_unlock();
-> > +
-> > +                     cond_resched();
-> > +
-> > +                     rcu_read_lock();
-> > +                     preempt_disable();
-> > +                     time_start =3D ktime_get_ns();
-> > +             }
-> > +     }
-> > +     time_spent +=3D ktime_get_ns() - time_start;
-> > +     preempt_enable();
-> > +     rcu_read_unlock();
-> > +
-> > +     do_div(time_spent, repeat);
-> > +     duration =3D time_spent > U32_MAX ? U32_MAX : (u32)time_spent;
-> > +     /* end of slightly changed copy pasta from bpf_test_run() in
-> > +      * net/bpf/test_run.c
-> > +      */
-> > +
-> > +     if (copy_to_user(&uattr->test.retval, &retval, sizeof(retval))) {
-> > +             err =3D -EFAULT;
-> > +             goto out;
-> > +     }
-> > +     if (copy_to_user(&uattr->test.duration, &duration, sizeof(duratio=
-n))) {
-> > +             err =3D -EFAULT;
-> > +             goto out;
-> > +     }
-> Can BPF program modify fake_ctx? Do we need/want to copy it back?
-
-Reading the pe_prog_is_valid_access function tells me that it's not
-possible - the only type of valid access is read. So maybe I should be
-stricter about the requirements for the data_out and ctx_out sizes
-(should be zero or return -EINVAL).
-
->
-> > +     err =3D 0;
-> > +out:
-> > +     trace_bpf_test_finish(&err);
-> > +     return err;
-> > +}
-> > +
-> >  const struct bpf_prog_ops perf_event_prog_ops =3D {
-> > +     .test_run       =3D pe_prog_test_run,
-> >  };
-> >
-> >  static DEFINE_MUTEX(bpf_event_mutex);
-> > diff --git a/tools/testing/selftests/bpf/verifier/perf_event_sample_per=
-iod.c b/tools/testing/selftests/bpf/verifier/perf_event_sample_period.c
-> > index 471c1a5950d8..16e9e5824d14 100644
-> > --- a/tools/testing/selftests/bpf/verifier/perf_event_sample_period.c
-> > +++ b/tools/testing/selftests/bpf/verifier/perf_event_sample_period.c
-> This should probably go in another patch.
-
-Yeah, I was wondering about it. These changes are here to avoid
-breaking the tests, since perf event program can actually be run now
-and the test_run for perf event required certain sizes for ctx and
-data.
-
-So, I will either move them to a separate patch or rework the test_run
-for perf event to accept the size between 0 and sizeof(struct
-something), so the changes in tests maybe will not be necessary.
-
->
-> > @@ -13,6 +13,8 @@
-> >       },
-> >       .result =3D ACCEPT,
-> >       .prog_type =3D BPF_PROG_TYPE_PERF_EVENT,
-> > +     .ctx_len =3D sizeof(struct bpf_perf_event_data),
-> > +     .data_len =3D sizeof(struct bpf_perf_event_value),
-> >  },
-> >  {
-> >       "check bpf_perf_event_data->sample_period half load permitted",
-> > @@ -29,6 +31,8 @@
-> >       },
-> >       .result =3D ACCEPT,
-> >       .prog_type =3D BPF_PROG_TYPE_PERF_EVENT,
-> > +     .ctx_len =3D sizeof(struct bpf_perf_event_data),
-> > +     .data_len =3D sizeof(struct bpf_perf_event_value),
-> >  },
-> >  {
-> >       "check bpf_perf_event_data->sample_period word load permitted",
-> > @@ -45,6 +49,8 @@
-> >       },
-> >       .result =3D ACCEPT,
-> >       .prog_type =3D BPF_PROG_TYPE_PERF_EVENT,
-> > +     .ctx_len =3D sizeof(struct bpf_perf_event_data),
-> > +     .data_len =3D sizeof(struct bpf_perf_event_value),
-> >  },
-> >  {
-> >       "check bpf_perf_event_data->sample_period dword load permitted",
-> > @@ -56,4 +62,6 @@
-> >       },
-> >       .result =3D ACCEPT,
-> >       .prog_type =3D BPF_PROG_TYPE_PERF_EVENT,
-> > +     .ctx_len =3D sizeof(struct bpf_perf_event_data),
-> > +     .data_len =3D sizeof(struct bpf_perf_event_value),
-> >  },
-> > --
-> > 2.20.1
-> >
+BUG: unable to handle page fault for address: 000000004125973f
+#PF: supervisor write access in kernel mode
+#PF: error_code(0x0002) - not-present page
+PGD 92e1a067 P4D 92e1a067 PUD 0
+Thread overran stack, or stack corrupted
+Oops: 0002 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 9943 Comm: blkid Not tainted 5.2.0-rc5+ #62
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+RIP: 0010:tls_prots+0x1a8a/0x3520
+Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  
+00 00 00 00 00 00 00 00 00 70 0d 0f 86 ff ff ff ff 40 5d <28> 86 ff ff ff  
+ff 60 6e 28 86 ff ff ff ff 00 de ed 85 ff ff ff ff
+RSP: 0018:ffff888079bc7c10 EFLAGS: 00010082
+RAX: ffff88808c5226c0 RBX: ffff88808cb36100 RCX: 1ffffffff116885c
+RDX: 1ffff110118a44d8 RSI: 0000000041259740 RDI: ffff88808c523a70
+RBP: ffff888079bc7c38 R08: ffff88808c5226c0 R09: ffffed1015d26c70
+R10: ffffed1015d26c6f R11: ffff8880ae93637b R12: ffffffff860dd760
+R13: ffffffff860dda75 R14: ffff888079bc7c08 R15: ffffffff8b1da9a0
+FS:  00007fa341259740(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000004125973f CR3: 00000000907f6000 CR4: 00000000001406e0
+Call Trace:
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+  tcp_bpf_unhash net/ipv4/tcp_bpf.c:550 [inline]
+  tcp_bpf_unhash+0x315/0x390 net/ipv4/tcp_bpf.c:540
+WARNING: kernel stack frame pointer at 00000000e809d5dc in blkid:9943 has  
+bad value 000000009844d018
+unwind stack type:0 next_sp:000000005f927a44 mask:0x2 graph_idx:0
+000000002401cb95: ffff888079bc7c68 (0xffff888079bc7c68)
+00000000c24ed912: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+00000000db5b548d: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+00000000479aff76: ffff88808cb36100 (0xffff88808cb36100)
+000000004473e5aa: 0000000000000000 ...
+000000009d12a602: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+00000000ba44e25c: ffff888079bc7c98 (0xffff888079bc7c98)
+00000000e1eb23e4: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+00000000f7d29ffb: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+00000000dc871c27: ffff88808cb36100 (0xffff88808cb36100)
+000000003824545e: 0000000000000000 ...
+000000008a182c7c: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+000000001c7a51e7: ffff888079bc7cc8 (0xffff888079bc7cc8)
+0000000049da0237: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+000000009c31c0da: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+0000000024f3129d: ffff88808cb36100 (0xffff88808cb36100)
+0000000040823c88: 0000000000000000 ...
+000000004c33f42e: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+00000000fa38e5a4: ffff888079bc7cf8 (0xffff888079bc7cf8)
+0000000030a46a60: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+00000000313cd10c: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+000000003feafbe9: ffff88808cb36100 (0xffff88808cb36100)
+00000000b2d0344c: 0000000000000000 ...
+00000000a54c1af0: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+00000000d4027d6c: ffff888079bc7d28 (0xffff888079bc7d28)
+000000009ee98499: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+00000000cc716643: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+00000000f66028fc: ffff88808cb36100 (0xffff88808cb36100)
+00000000f1a9f4a4: 0000000000000000 ...
+0000000093e98749: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+0000000069764410: ffff888079bc7d58 (0xffff888079bc7d58)
+0000000099cc4d5e: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+000000008452556b: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+000000009d210107: ffff88808cb36100 (0xffff88808cb36100)
+000000000b3d1c61: 0000000000000000 ...
+0000000029482aba: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+000000000080c2ff: ffff888079bc7d88 (0xffff888079bc7d88)
+000000004e072bc8: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+00000000049c3c65: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+00000000b89e7d9b: ffff88808cb36100 (0xffff88808cb36100)
+000000004f6d4a66: 0000000000000000 ...
+0000000062d2c1b7: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+0000000064dd81c9: ffff888079bc7db8 (0xffff888079bc7db8)
+000000003089fca0: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+0000000080e7f1f9: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+00000000487c3ec3: ffff88808cb36100 (0xffff88808cb36100)
+00000000291b99a5: 0000000000000000 ...
+00000000879c3ace: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+0000000088f16e91: ffff888079bc7de8 (0xffff888079bc7de8)
+00000000feaf9900: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+00000000699d8a79: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+00000000ea800749: ffff88808cb36100 (0xffff88808cb36100)
+000000002c99629d: 0000000000000000 ...
+00000000f89aef64: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+000000008a8c9aec: ffff888079bc7e18 (0xffff888079bc7e18)
+0000000050ff6d78: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+000000008764d630: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+0000000091e33368: ffff88808cb36100 (0xffff88808cb36100)
+00000000e1a0ace5: 0000000000000000 ...
+00000000cbc751ab: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+00000000d4f9acf4: ffff888079bc7e48 (0xffff888079bc7e48)
+0000000081fc1715: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+00000000aa6f1bc2: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+00000000d2a9e7ce: ffff88808cb36100 (0xffff88808cb36100)
+000000006f96fab3: 0000000000000000 ...
+00000000aeaeead6: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+00000000f35f95f5: ffff888079bc7e78 (0xffff888079bc7e78)
+000000008c846b2f: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+000000001c6a7237: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+00000000799c1d50: ffff88808cb36100 (0xffff88808cb36100)
+00000000447f9e03: 0000000000000000 ...
+00000000ec08ab6f: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+0000000079b88671: ffff888079bc7ea8 (0xffff888079bc7ea8)
+0000000057ceab90: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+00000000a3af49c4: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+00000000c8233266: ffff88808cb36100 (0xffff88808cb36100)
+00000000a4346829: 0000000000000000 ...
+00000000a77b30e0: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+000000009289d9ef: ffff888079bc7ed8 (0xffff888079bc7ed8)
+0000000093a94b95: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+00000000bba52dcd: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+000000004ba72af3: ffff88808cb36100 (0xffff88808cb36100)
+000000002713380e: 0000000000000000 ...
+0000000082b4f5fe: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+00000000fd331aa8: ffff888079bc7f08 (0xffff888079bc7f08)
+00000000a125cb7a: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+00000000b176b5fe: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+0000000021b424c8: ffff88808cb36100 (0xffff88808cb36100)
+00000000c8aca3a7: 0000000000000000 ...
+00000000ae0e04d5: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+00000000218dfe2f: ffff888079bc7f38 (0xffff888079bc7f38)
+000000006f81db8c: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+000000005415d20a: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+00000000cd8b4d0d: ffff88808cb36100 (0xffff88808cb36100)
+0000000028dde223: 0000000000000000 ...
+00000000f1bac7a7: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+00000000819b4e09: ffff888079bc7f68 (0xffff888079bc7f68)
+0000000040faf187: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+00000000d40fc060: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+000000002efea550: ffff88808cb36100 (0xffff88808cb36100)
+0000000056721274: 0000000000000000 ...
+000000008c6a3097: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+0000000039ab3cf0: ffff888079bc7f98 (0xffff888079bc7f98)
+00000000b825c1f0: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+000000005d65596f: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+00000000a0cc451f: ffff88808cb36100 (0xffff88808cb36100)
+00000000e7f05b41: 0000000000000000 ...
+0000000049404ce5: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+000000001a81ddbb: ffff888079bc7fc8 (0xffff888079bc7fc8)
+000000003afd376f: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+0000000067da2263: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+00000000951815ed: ffff88808cb36100 (0xffff88808cb36100)
+00000000eb36eac9: 0000000000000000 ...
+0000000084ea5e52: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+00000000e809d5dc: ffff888079bc7ff8 (0xffff888079bc7ff8)
+00000000e50d63ae: ffffffff860dda75 (tcp_bpf_unhash+0x315/0x390)
+00000000d90e11b6: ffffffff860dd760 (tcp_bpf_recvmsg+0xa40/0xa40)
+000000000a06acca: ffff88808cb36100 (0xffff88808cb36100)
+000000006c7f5c3c: 0000000000000000 ...
+00000000e157dcd0: ffffffff8b1da9a0 (tls_prots+0x1a80/0x3520)
+000000009844d018: ffff888079bc8028 (0xffff888079bc8028)
+Modules linked in:
+CR2: 000000004125973f
+---[ end trace 79fdcdc2ec39f3e0 ]---
+RIP: 0010:tls_prots+0x1a8a/0x3520
+Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  
+00 00 00 00 00 00 00 00 00 70 0d 0f 86 ff ff ff ff 40 5d <28> 86 ff ff ff  
+ff 60 6e 28 86 ff ff ff ff 00 de ed 85 ff ff ff ff
+RSP: 0018:ffff888079bc7c10 EFLAGS: 00010082
+RAX: ffff88808c5226c0 RBX: ffff88808cb36100 RCX: 1ffffffff116885c
+RDX: 1ffff110118a44d8 RSI: 0000000041259740 RDI: ffff88808c523a70
+RBP: ffff888079bc7c38 R08: ffff88808c5226c0 R09: ffffed1015d26c70
+R10: ffffed1015d26c6f R11: ffff8880ae93637b R12: ffffffff860dd760
+R13: ffffffff860dda75 R14: ffff888079bc7c08 R15: ffffffff8b1da9a0
+FS:  00007fa341259740(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000004125973f CR3: 00000000907f6000 CR4: 00000000001406e0
 
 
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
---=20
-Kinvolk GmbH | Adalbertstr.6a, 10999 Berlin | tel: +491755589364
-Gesch=C3=A4ftsf=C3=BChrer/Directors: Alban Crequy, Chris K=C3=BChl, Iago L=
-=C3=B3pez Galeiras
-Registergericht/Court of registration: Amtsgericht Charlottenburg
-Registernummer/Registration number: HRB 171414 B
-Ust-ID-Nummer/VAT ID number: DE302207000
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
