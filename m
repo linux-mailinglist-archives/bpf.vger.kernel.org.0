@@ -2,136 +2,331 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E9C56E68
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 18:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DEC956E6C
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2019 18:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726447AbfFZQLK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jun 2019 12:11:10 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:22014 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725958AbfFZQLJ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 26 Jun 2019 12:11:09 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x5QG6cOc013714;
-        Wed, 26 Jun 2019 09:10:47 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=ooJa41z/jS049P7woVJSwgqKq63oCaBJ0uNKU12MvNk=;
- b=R40LjjDU0hS8Ci2qoBobXYnPyXFCgOn2E8ACVW//3ADSBemCb43Mcan2LW8Ae3ArO0Bv
- tk+VZmKMox6Rd9GN950hK0vgY230cbul/cdyp7JrC8Xs/8YByV24Tn7We7dWj6YnOymN
- VVckxwk0T8Pc8rB+hYb3ozysncapE7RwesA= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by m0001303.ppops.net with ESMTP id 2tbpv84but-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jun 2019 09:10:45 -0700
-Received: from prn-mbx07.TheFacebook.com (2620:10d:c081:6::21) by
- prn-hub03.TheFacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 26 Jun 2019 09:10:27 -0700
-Received: from prn-hub04.TheFacebook.com (2620:10d:c081:35::128) by
- prn-mbx07.TheFacebook.com (2620:10d:c081:6::21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 26 Jun 2019 09:10:26 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.28) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Wed, 26 Jun 2019 09:10:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ooJa41z/jS049P7woVJSwgqKq63oCaBJ0uNKU12MvNk=;
- b=Mc9Hxvkh0/preuS8NV3aW6ykIXKRJ8rXPsVjqOWAGbea78lv5IBcMmz0lpIh9k77Y6eWrcqmKyEtfiLELwJFWXfXfRQs6Xol82q5tJYNJFnTgievbNEt+yP711o30QlY+tij/OQhNRqMxmIo3Er1AT9ySMM+Rge3df1/XUs9unQ=
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
- MWHPR15MB1405.namprd15.prod.outlook.com (10.173.233.13) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2008.13; Wed, 26 Jun 2019 16:10:25 +0000
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::400e:e329:ea98:aa0d]) by MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::400e:e329:ea98:aa0d%6]) with mapi id 15.20.2008.018; Wed, 26 Jun 2019
- 16:10:25 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-CC:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
+        id S1726381AbfFZQMe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jun 2019 12:12:34 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:34186 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726271AbfFZQMe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jun 2019 12:12:34 -0400
+Received: by mail-pg1-f193.google.com with SMTP id p10so1449727pgn.1
+        for <bpf@vger.kernel.org>; Wed, 26 Jun 2019 09:12:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=6OFM3ZfAg+G8WIrD9XzsdlV6sbyJrFX2TeViApwcwRU=;
+        b=q6yaPJ168KFGL7DBURc+ogCgcCIo5BpRUiXDnV/wYUlQPeJt1RE88ob1VwR20fOeec
+         NX0mGqQr+mwWOOzIaj68EGY+ff9jSBGhgZtJTd9Hw0nilGmfTOMhu+enuzh8A3QGWdo4
+         QupvyeJcrKGzjyL9vkpD0zKok7zr/zddT7UcJJmtiKF+cn4pp96VhyzIzR0HReIwsD5m
+         qNkpF7bcxj34ZWrh9nUHdeefN02zChlQBAN3bCVXlsPhjfU35WIKGeGhbbF8g+gzK6xf
+         YvA+ljr7ZLsy3c7p7hiB19QryrON+Xx8QpJZHGKMU6HLInZccgeBc1yK90tDiAwZoPMY
+         /VTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=6OFM3ZfAg+G8WIrD9XzsdlV6sbyJrFX2TeViApwcwRU=;
+        b=twKPRbYlRYk0A9qBNc2lPKqxTWU6RxLGrQMeNlPlwleFxJ17/3ASVR1+wwMEHElZpM
+         H09d68bvceLCctbnPcvT1nnslrPOByde0MeYYX5SZalVqdzGjajQJEBSLEQC2FOr4V0l
+         hoBIWz+6pwOdG+0sZwMevMXlJ5WidSaFdN294J/O0rQ0PPrXr9w66q1tUkQc+XI93DuP
+         ITsr5SfaagM0vkF4ZrPuH/qUFFLrCUjdLInfjOv+ubq1hPnD+VqA6xjQb3ML/JInRXUu
+         4ccuHba9OF/V3HtTC1/r9QtxGQhNNFkGhKLP6V+klzYTQ3ca95tSsSbGfcw/IvGdOcKT
+         N9vA==
+X-Gm-Message-State: APjAAAUk27zwQ/xiQeJJpbHWU4VIhE8gkULwmdofk4zqd6Cd4dBYKlMu
+        8EVixkuiObcUQqBwfACt9QPU0A==
+X-Google-Smtp-Source: APXvYqwk1c14hxti86e1csk6ag5eahu2o+cdbuXKKv7hpJSj7huNmfEkcQA49kQ5nDLAzSeTxq8whQ==
+X-Received: by 2002:a17:90a:ad93:: with SMTP id s19mr5721600pjq.36.1561565553417;
+        Wed, 26 Jun 2019 09:12:33 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id f2sm15242028pgs.83.2019.06.26.09.12.32
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 26 Jun 2019 09:12:32 -0700 (PDT)
+Date:   Wed, 26 Jun 2019 09:12:31 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Krzesimir Nowak <krzesimir@kinvolk.io>
+Cc:     netdev@vger.kernel.org, Alban Crequy <alban@kinvolk.io>,
+        Iago =?iso-8859-1?Q?L=F3pez?= Galeiras <iago@kinvolk.io>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-Thread-Topic: [PATCH bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-Thread-Index: AQHVK4MfT15tn2gAREGxInrd8zK0eaat87oAgAAaNQCAAAIbAIAADEIA
-Date:   Wed, 26 Jun 2019 16:10:25 +0000
-Message-ID: <68BB91E5-B70C-4640-9550-8CAB62E5F6C6@fb.com>
-References: <20190625182303.874270-1-songliubraving@fb.com>
- <20190625182303.874270-2-songliubraving@fb.com>
- <CACAyw99isFcFhnrmagmzPPR1vNGqcmDU+Pq7SWeeZV8RSpeBug@mail.gmail.com>
- <3AE4213C-9DFA-407F-B8D4-DB00950E577D@fb.com>
- <CACAyw9-MAXOsAz7DnCBq+32yc575TEiwm_6P-3KWKmZWmAqUfg@mail.gmail.com>
-In-Reply-To: <CACAyw9-MAXOsAz7DnCBq+32yc575TEiwm_6P-3KWKmZWmAqUfg@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3445.104.11)
-x-originating-ip: [2620:10d:c090:180::1:6898]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1065a19a-480d-4cc1-68f6-08d6fa50cc7f
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:MWHPR15MB1405;
-x-ms-traffictypediagnostic: MWHPR15MB1405:
-x-microsoft-antispam-prvs: <MWHPR15MB14056140181A73BC31D03DE8B3E20@MWHPR15MB1405.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:862;
-x-forefront-prvs: 00808B16F3
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(136003)(366004)(376002)(39860400002)(346002)(199004)(189003)(76176011)(478600001)(99286004)(81166006)(6506007)(81156014)(53546011)(102836004)(186003)(57306001)(8676002)(2906002)(256004)(14454004)(4744005)(7736002)(6116002)(6916009)(305945005)(86362001)(5660300002)(8936002)(53936002)(66946007)(6486002)(73956011)(316002)(76116006)(6512007)(446003)(68736007)(33656002)(486006)(476003)(2616005)(229853002)(4326008)(71200400001)(71190400001)(50226002)(36756003)(64756008)(66556008)(66446008)(66476007)(25786009)(46003)(54906003)(6436002)(6246003)(11346002);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1405;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: HC+wx+5DBpQtjz6SY94N4IqBFjrr3EjiPa5FLignWtIYz4X+mnf24VsX+yzQJh1kUN/Fyk0UlilyyIBFBpEPJs3YOyS9Dd+0dBOq/PMpoLil5TUvMcnh60B11BDnIIM0tNPkkIothHUteHJQQakVMYrUdXySSrLZM8EFNeuxyEz97m8Tar7wdZh/e13QuQ30bI9Y2aRSMieTd3t6UrwFLM3BcNGR5d1B9uPQJLaq0+znu65tqidFixOZHsx3X2nTCi9dPn4Q5WKh2Ias9gYxRd28MriQKetSAwH/4i8jjFrMnD4+vk23vttbyiivQJgn+WTcbEABbzs1tauoYfsySZ84RWKNv9mJ6vAm8r5KHvwfrfCURi6+fRslK4lxzmxQiuQ9Kw+splImGuplcVDadstRd4u72vATAgH/IvwTJHY=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1395DC8E03F13B4EB8D881A20708B6CA@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [bpf-next v2 08/10] bpf: Implement bpf_prog_test_run for perf
+ event programs
+Message-ID: <20190626161231.GA4866@mini-arch>
+References: <20190625194215.14927-1-krzesimir@kinvolk.io>
+ <20190625194215.14927-9-krzesimir@kinvolk.io>
+ <20190625201220.GC10487@mini-arch>
+ <CAGGp+cE3m1+ZWFBmjTgKFEHYVJ-L1dE=+iVUXvXCxWAxRG9YTA@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1065a19a-480d-4cc1-68f6-08d6fa50cc7f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jun 2019 16:10:25.3582
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: songliubraving@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1405
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-26_08:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=881 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906260188
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGGp+cE3m1+ZWFBmjTgKFEHYVJ-L1dE=+iVUXvXCxWAxRG9YTA@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 06/26, Krzesimir Nowak wrote:
+> On Tue, Jun 25, 2019 at 10:12 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> >
+> > On 06/25, Krzesimir Nowak wrote:
+> > > As an input, test run for perf event program takes struct
+> > > bpf_perf_event_data as ctx_in and struct bpf_perf_event_value as
+> > > data_in. For an output, it basically ignores ctx_out and data_out.
+> > >
+> > > The implementation sets an instance of struct bpf_perf_event_data_kern
+> > > in such a way that the BPF program reading data from context will
+> > > receive what we passed to the bpf prog test run in ctx_in. Also BPF
+> > > program can call bpf_perf_prog_read_value to receive what was passed
+> > > in data_in.
+> > >
+> > > Signed-off-by: Krzesimir Nowak <krzesimir@kinvolk.io>
+> > > ---
+> > >  kernel/trace/bpf_trace.c                      | 107 ++++++++++++++++++
+> > >  .../bpf/verifier/perf_event_sample_period.c   |   8 ++
+> > >  2 files changed, 115 insertions(+)
+> > >
+> > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > > index c102c240bb0b..2fa49ea8a475 100644
+> > > --- a/kernel/trace/bpf_trace.c
+> > > +++ b/kernel/trace/bpf_trace.c
+> > > @@ -16,6 +16,8 @@
+> > >
+> > >  #include <asm/tlb.h>
+> > >
+> > > +#include <trace/events/bpf_test_run.h>
+> > > +
+> > >  #include "trace_probe.h"
+> > >  #include "trace.h"
+> > >
+> > > @@ -1160,7 +1162,112 @@ const struct bpf_verifier_ops perf_event_verifier_ops = {
+> > >       .convert_ctx_access     = pe_prog_convert_ctx_access,
+> > >  };
+> > >
+> > > +static int pe_prog_test_run(struct bpf_prog *prog,
+> > > +                         const union bpf_attr *kattr,
+> > > +                         union bpf_attr __user *uattr)
+> > > +{
+> > > +     void __user *ctx_in = u64_to_user_ptr(kattr->test.ctx_in);
+> > > +     void __user *data_in = u64_to_user_ptr(kattr->test.data_in);
+> > > +     u32 data_size_in = kattr->test.data_size_in;
+> > > +     u32 ctx_size_in = kattr->test.ctx_size_in;
+> > > +     u32 repeat = kattr->test.repeat;
+> > > +     u32 retval = 0, duration = 0;
+> > > +     int err = -EINVAL;
+> > > +     u64 time_start, time_spent = 0;
+> > > +     int i;
+> > > +     struct perf_sample_data sample_data = {0, };
+> > > +     struct perf_event event = {0, };
+> > > +     struct bpf_perf_event_data_kern real_ctx = {0, };
+> > > +     struct bpf_perf_event_data fake_ctx = {0, };
+> > > +     struct bpf_perf_event_value value = {0, };
+> > > +
+> > > +     if (ctx_size_in != sizeof(fake_ctx))
+> > > +             goto out;
+> > > +     if (data_size_in != sizeof(value))
+> > > +             goto out;
+> > > +
+> > > +     if (copy_from_user(&fake_ctx, ctx_in, ctx_size_in)) {
+> > > +             err = -EFAULT;
+> > > +             goto out;
+> > > +     }
+> > Move this to net/bpf/test_run.c? I have a bpf_ctx_init helper to deal
+> > with ctx input, might save you some code above wrt ctx size/etc.
+> 
+> My impression about net/bpf/test_run.c was that it was a collection of
+> helpers for test runs of the network-related BPF programs, because
+> they are so similar to each other. So kernel/trace/bpf_trace.c looked
+> like an obvious place for the test_run implementation since other perf
+> trace BPF stuff was already there.
+Maybe net/bpf/test_run.c should be renamed to kernel/bpf/test_run.c?
 
+> And about bpf_ctx_init - looks useful as it seems to me that it
+> handles the scenario where the size of the ctx struct grows, but still
+> allows passing older version of the struct (thus smaller) from
+> userspace for compatibility. Maybe that checking and copying part of
+> the function could be moved into some non-static helper function, so I
+> could use it and still skip the need for allocating memory for the
+> context?
+You can always make bpf_ctx_init non-static and export it.
+But, again, consider adding your stuff to the net/bpf/test_run.c
+and exporting only pe_prog_test_run. That way you can reuse
+bpf_ctx_init and bpf_test_run.
 
-> On Jun 26, 2019, at 8:26 AM, Lorenz Bauer <lmb@cloudflare.com> wrote:
->=20
-> On Wed, 26 Jun 2019 at 16:19, Song Liu <songliubraving@fb.com> wrote:
->>> I know nothing about the scheduler, so pardon my ignorance. Does
->>> TASK_BPF_FLAG_PERMITTED apply per user-space process, or per thread?
->>=20
->> It is per thread. clone() also clears the bit. I will make it more
->> clear int the commit log.
->=20
-> In that case this is going to be very hard if not impossible to use
-> from languages that
-> don't allow controlling threads, aka Go. I'm sure there are other
-> examples as well.
->=20
-> Is it possible to make this per-process instead?
+Why do you care about memory allocation though? It's a one time
+operation and doesn't affect the performance measurements.
 
-We can probably use CLONE_THREAD flag to differentiate clone() and=20
-fork(). I need to read it more carefully to determine whether this is=20
-accurate and safe.=20
+> > > +     if (copy_from_user(&value, data_in, data_size_in)) {
+> > > +             err = -EFAULT;
+> > > +             goto out;
+> > > +     }
+> > > +
+> > > +     real_ctx.regs = &fake_ctx.regs;
+> > > +     real_ctx.data = &sample_data;
+> > > +     real_ctx.event = &event;
+> > > +     perf_sample_data_init(&sample_data, fake_ctx.addr,
+> > > +                           fake_ctx.sample_period);
+> > > +     event.cpu = smp_processor_id();
+> > > +     event.oncpu = -1;
+> > > +     event.state = PERF_EVENT_STATE_OFF;
+> > > +     local64_set(&event.count, value.counter);
+> > > +     event.total_time_enabled = value.enabled;
+> > > +     event.total_time_running = value.running;
+> > > +     /* make self as a leader - it is used only for checking the
+> > > +      * state field
+> > > +      */
+> > > +     event.group_leader = &event;
+> > > +
+> > > +     /* slightly changed copy pasta from bpf_test_run() in
+> > > +      * net/bpf/test_run.c
+> > > +      */
+> > > +     if (!repeat)
+> > > +             repeat = 1;
+> > > +
+> > > +     rcu_read_lock();
+> > > +     preempt_disable();
+> > > +     time_start = ktime_get_ns();
+> > > +     for (i = 0; i < repeat; i++) {
+> > Any reason for not using bpf_test_run?
+> 
+> Two, mostly. One was that it is a static function and my code was
+> elsewhere. Second was that it does some cgroup storage setup and I'm
+> not sure if the perf event BPF program needs that.
+You can always make it non-static.
 
-Thanks,
-Song
+Regarding cgroup storage: do we care? If you can see it affecting
+your performance numbers, then yes, but you can try to measure to see
+if it gives you any noticeable overhead. Maybe add an argument to
+bpf_test_run to skip cgroup storage stuff?
+
+> > > +             retval = BPF_PROG_RUN(prog, &real_ctx);
+> > > +
+> > > +             if (signal_pending(current)) {
+> > > +                     err = -EINTR;
+> > > +                     preempt_enable();
+> > > +                     rcu_read_unlock();
+> > > +                     goto out;
+> > > +             }
+> > > +
+> > > +             if (need_resched()) {
+> > > +                     time_spent += ktime_get_ns() - time_start;
+> > > +                     preempt_enable();
+> > > +                     rcu_read_unlock();
+> > > +
+> > > +                     cond_resched();
+> > > +
+> > > +                     rcu_read_lock();
+> > > +                     preempt_disable();
+> > > +                     time_start = ktime_get_ns();
+> > > +             }
+> > > +     }
+> > > +     time_spent += ktime_get_ns() - time_start;
+> > > +     preempt_enable();
+> > > +     rcu_read_unlock();
+> > > +
+> > > +     do_div(time_spent, repeat);
+> > > +     duration = time_spent > U32_MAX ? U32_MAX : (u32)time_spent;
+> > > +     /* end of slightly changed copy pasta from bpf_test_run() in
+> > > +      * net/bpf/test_run.c
+> > > +      */
+> > > +
+> > > +     if (copy_to_user(&uattr->test.retval, &retval, sizeof(retval))) {
+> > > +             err = -EFAULT;
+> > > +             goto out;
+> > > +     }
+> > > +     if (copy_to_user(&uattr->test.duration, &duration, sizeof(duration))) {
+> > > +             err = -EFAULT;
+> > > +             goto out;
+> > > +     }
+> > Can BPF program modify fake_ctx? Do we need/want to copy it back?
+> 
+> Reading the pe_prog_is_valid_access function tells me that it's not
+> possible - the only type of valid access is read. So maybe I should be
+> stricter about the requirements for the data_out and ctx_out sizes
+> (should be zero or return -EINVAL).
+Yes, better to explicitly prohibit anything that we don't support.
+
+> > > +     err = 0;
+> > > +out:
+> > > +     trace_bpf_test_finish(&err);
+> > > +     return err;
+> > > +}
+> > > +
+> > >  const struct bpf_prog_ops perf_event_prog_ops = {
+> > > +     .test_run       = pe_prog_test_run,
+> > >  };
+> > >
+> > >  static DEFINE_MUTEX(bpf_event_mutex);
+> > > diff --git a/tools/testing/selftests/bpf/verifier/perf_event_sample_period.c b/tools/testing/selftests/bpf/verifier/perf_event_sample_period.c
+> > > index 471c1a5950d8..16e9e5824d14 100644
+> > > --- a/tools/testing/selftests/bpf/verifier/perf_event_sample_period.c
+> > > +++ b/tools/testing/selftests/bpf/verifier/perf_event_sample_period.c
+> > This should probably go in another patch.
+> 
+> Yeah, I was wondering about it. These changes are here to avoid
+> breaking the tests, since perf event program can actually be run now
+> and the test_run for perf event required certain sizes for ctx and
+> data.
+You need to make sure the context is optional, that way you don't break
+any existing tests out in the wild and can move those changes to
+another patch.
+
+> So, I will either move them to a separate patch or rework the test_run
+> for perf event to accept the size between 0 and sizeof(struct
+> something), so the changes in tests maybe will not be necessary.
+> 
+> >
+> > > @@ -13,6 +13,8 @@
+> > >       },
+> > >       .result = ACCEPT,
+> > >       .prog_type = BPF_PROG_TYPE_PERF_EVENT,
+> > > +     .ctx_len = sizeof(struct bpf_perf_event_data),
+> > > +     .data_len = sizeof(struct bpf_perf_event_value),
+> > >  },
+> > >  {
+> > >       "check bpf_perf_event_data->sample_period half load permitted",
+> > > @@ -29,6 +31,8 @@
+> > >       },
+> > >       .result = ACCEPT,
+> > >       .prog_type = BPF_PROG_TYPE_PERF_EVENT,
+> > > +     .ctx_len = sizeof(struct bpf_perf_event_data),
+> > > +     .data_len = sizeof(struct bpf_perf_event_value),
+> > >  },
+> > >  {
+> > >       "check bpf_perf_event_data->sample_period word load permitted",
+> > > @@ -45,6 +49,8 @@
+> > >       },
+> > >       .result = ACCEPT,
+> > >       .prog_type = BPF_PROG_TYPE_PERF_EVENT,
+> > > +     .ctx_len = sizeof(struct bpf_perf_event_data),
+> > > +     .data_len = sizeof(struct bpf_perf_event_value),
+> > >  },
+> > >  {
+> > >       "check bpf_perf_event_data->sample_period dword load permitted",
+> > > @@ -56,4 +62,6 @@
+> > >       },
+> > >       .result = ACCEPT,
+> > >       .prog_type = BPF_PROG_TYPE_PERF_EVENT,
+> > > +     .ctx_len = sizeof(struct bpf_perf_event_data),
+> > > +     .data_len = sizeof(struct bpf_perf_event_value),
+> > >  },
+> > > --
+> > > 2.20.1
+> > >
+> 
+> 
+> 
+> -- 
+> Kinvolk GmbH | Adalbertstr.6a, 10999 Berlin | tel: +491755589364
+> Geschäftsführer/Directors: Alban Crequy, Chris Kühl, Iago López Galeiras
+> Registergericht/Court of registration: Amtsgericht Charlottenburg
+> Registernummer/Registration number: HRB 171414 B
+> Ust-ID-Nummer/VAT ID number: DE302207000
