@@ -2,84 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF2057540
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 02:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1CA578AA
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 02:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbfF0AIe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jun 2019 20:08:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54952 "EHLO mail.kernel.org"
+        id S1726674AbfF0Aav (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jun 2019 20:30:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726385AbfF0AIe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jun 2019 20:08:34 -0400
-Received: from localhost (unknown [116.247.127.123])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726862AbfF0Aav (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jun 2019 20:30:51 -0400
+Received: from sasha-vm.mshome.net (unknown [107.242.116.147])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBABB20656;
-        Thu, 27 Jun 2019 00:08:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 179F1217D7;
+        Thu, 27 Jun 2019 00:30:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561594113;
-        bh=q7v/gBBs8kOpVWgP05UnkOe4D6KtGteYDyNxeIqq3Ek=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E38cVo0yKftkZyVpH9K5csvOnsYU7jUGK/tPP7/6QkGWTpBt8jH4VDHQouVRa31Vg
-         CgOTGr0r7dqoKPGVpmJnOx0ADMR7gUeO29DB8gYP3ARbACBstQkys074sfgW6jCTCa
-         CL7ZjuXp1NzNFTUwYt/SEjURi4Q2KoMeMRWkrB3Q=
-Date:   Thu, 27 Jun 2019 08:08:30 +0800
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "jannh@google.com" <jannh@google.com>
-Subject: Re: [PATCH bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-Message-ID: <20190627000830.GB527@kroah.com>
-References: <20190625182303.874270-1-songliubraving@fb.com>
- <20190625182303.874270-2-songliubraving@fb.com>
- <9bc166ca-1ef0-ee1e-6306-6850d4008174@iogearbox.net>
- <5A472047-F329-43C3-9DBC-9BCFC0A19F1C@fb.com>
+        s=default; t=1561595449;
+        bh=oLXxZ23PxMtr4AgajN54CECw/vg69hq/wtmyTzA3Ceg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=tSzfe2pZGD460EvkQ5deswGpqufFdpC6QNeBJYc55Kt8SbFK4tygbow6/AQvr9T2o
+         UMs2xZ8YHL8VKhsMoAEkMFczBosxOAqpnaibpgvzj0NYbAJNGzWh4IF9HiHRG+RlZW
+         YNCFmM1yDDqLVFpIB+9lNLD74SYV0KMWxPNf9Bwg=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Lorenz Bauer <lmb@cloudflare.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.1 08/95] bpf: fix out-of-bounds read in __bpf_skc_lookup
+Date:   Wed, 26 Jun 2019 20:28:53 -0400
+Message-Id: <20190627003021.19867-8-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190627003021.19867-1-sashal@kernel.org>
+References: <20190627003021.19867-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5A472047-F329-43C3-9DBC-9BCFC0A19F1C@fb.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 26, 2019 at 03:17:47PM +0000, Song Liu wrote:
-> >> +static struct miscdevice bpf_dev = {
-> >> +	.minor		= MISC_DYNAMIC_MINOR,
-> >> +	.name		= "bpf",
-> >> +	.fops		= &bpf_chardev_ops,
-> >> +	.mode		= 0440,
-> >> +	.nodename	= "bpf",
-> > 
-> > Here's what kvm does:
-> > 
-> > static struct miscdevice kvm_dev = {
-> >        KVM_MINOR,
-> >        "kvm",
-> >        &kvm_chardev_ops,
-> > };
+From: Lorenz Bauer <lmb@cloudflare.com>
 
-Ick, I thought we converted all of these to named initializers a long
-time ago :)
+[ Upstream commit 9b28ae243ef3b13d8a88b5451d025475c75ebdef ]
 
-> > Is there an actual reason that mode is not 0 by default in bpf case? Why
-> > we need to define nodename?
-> 
-> Based on my understanding, mode of 0440 is what we want. If we leave it 
-> as 0, it will use default value of 0600. I guess we can just set it to 
-> 0440, as user space can change it later anyway. 
+__bpf_skc_lookup takes a socket tuple and the length of the
+tuple as an argument. Based on the length, it decides which
+address family to pass to the helper function sk_lookup.
 
-Don't rely on userspace changing it, set it to what you want the
-permissions to be in the kernel here, otherwise you have to create a new
-udev rule and get it merged into all of the distros.  Just do it right
-the first time and there is no need for it.
+In case of AF_INET6, it fails to verify that the length
+of the tuple is long enough. sk_lookup may therefore access
+data past the end of the tuple.
 
-What is wrong with 0600 for this?  Why 0440?
+Fixes: 6acc9b432e67 ("bpf: Add helper to retrieve socket in BPF")
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/core/filter.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-thanks,
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 27e61ffd9039..85f9e960588b 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5173,7 +5173,13 @@ __bpf_sk_lookup(struct sk_buff *skb, struct bpf_sock_tuple *tuple, u32 len,
+ 	struct net *net;
+ 	int sdif;
+ 
+-	family = len == sizeof(tuple->ipv4) ? AF_INET : AF_INET6;
++	if (len == sizeof(tuple->ipv4))
++		family = AF_INET;
++	else if (len == sizeof(tuple->ipv6))
++		family = AF_INET6;
++	else
++		return NULL;
++
+ 	if (unlikely(family == AF_UNSPEC || flags ||
+ 		     !((s32)netns_id < 0 || netns_id <= S32_MAX)))
+ 		goto out;
+-- 
+2.20.1
 
-greg k-h
