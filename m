@@ -2,41 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A45578B6
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 02:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E328C57899
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 02:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727047AbfF0AbK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jun 2019 20:31:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34412 "EHLO mail.kernel.org"
+        id S1727248AbfF0Abn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jun 2019 20:31:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727016AbfF0AbJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jun 2019 20:31:09 -0400
+        id S1727222AbfF0Abf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jun 2019 20:31:35 -0400
 Received: from sasha-vm.mshome.net (unknown [107.242.116.147])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 298B62182B;
-        Thu, 27 Jun 2019 00:31:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EE5A217D7;
+        Thu, 27 Jun 2019 00:31:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561595468;
-        bh=zN0TGxXrD5/bzMCNdO4vsy9W1CNJ/1cwt84VuYv1oo8=;
+        s=default; t=1561595495;
+        bh=qrsJPgHBtxbzDoKBPZTVHY0Kv1gtUDUCCjRPB6wZcqI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IvETKflBLLTreiNvm2vxwexZUWCPBozjrhyrzesEEDsgrtrCoXqBhWcdWLEt8AYy7
-         Hr2pe+mr++eMtMdTvPyWt2EmxALjI49rNybjTjV4TDt1ZGr6urMMcNEJfeBgiS0Phd
-         8yzOMCkMLRnTkSWnCcP/WJMRLEmnSHj/3BjthlBk=
+        b=KfOLwn1q/M1yAUMXO5LEtRVgCNhhdd8xcxjCRgjx/HGcduTkAnet5orIpvZtJ091X
+         mQRlaLdJZ0Of/SaI2b3GHTnMSMhCj9TzWxazmwwSfCKYUhPXg7ijWv+5o8JkPAKE7i
+         N+v/SkimCbyifDvqLx7gAJhAjuVJsbrW+ReHpW4E=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
+        Song Liu <songliubraving@fb.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.1 14/95] bpf: sockmap, fix use after free from sleep in psock backlog workqueue
-Date:   Wed, 26 Jun 2019 20:28:59 -0400
-Message-Id: <20190627003021.19867-14-sashal@kernel.org>
+        linux-riscv@lists.infradead.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.1 24/95] bpf, riscv: clear high 32 bits for ALU32 add/sub/neg/lsh/rsh/arsh
+Date:   Wed, 26 Jun 2019 20:29:09 -0400
+Message-Id: <20190627003021.19867-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190627003021.19867-1-sashal@kernel.org>
 References: <20190627003021.19867-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,88 +48,103 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: John Fastabend <john.fastabend@gmail.com>
+From: Luke Nelson <luke.r.nels@gmail.com>
 
-[ Upstream commit bd95e678e0f6e18351ecdc147ca819145db9ed7b ]
+[ Upstream commit 1e692f09e091bf5c8b38384f297d6dae5dbf0f12 ]
 
-Backlog work for psock (sk_psock_backlog) might sleep while waiting
-for memory to free up when sending packets. However, while sleeping
-the socket may be closed and removed from the map by the user space
-side.
+In BPF, 32-bit ALU operations should zero-extend their results into
+the 64-bit registers.
 
-This breaks an assumption in sk_stream_wait_memory, which expects the
-wait queue to be still there when it wakes up resulting in a
-use-after-free shown below. To fix his mark sendmsg as MSG_DONTWAIT
-to avoid the sleep altogether. We already set the flag for the
-sendpage case but we missed the case were sendmsg is used.
-Sockmap is currently the only user of skb_send_sock_locked() so only
-the sockmap paths should be impacted.
+The current BPF JIT on RISC-V emits incorrect instructions that perform
+sign extension only (e.g., addw, subw) on 32-bit add, sub, lsh, rsh,
+arsh, and neg. This behavior diverges from the interpreter and JITs
+for other architectures.
 
-==================================================================
-BUG: KASAN: use-after-free in remove_wait_queue+0x31/0x70
-Write of size 8 at addr ffff888069a0c4e8 by task kworker/0:2/110
+This patch fixes the bugs by performing zero extension on the destination
+register of 32-bit ALU operations.
 
-CPU: 0 PID: 110 Comm: kworker/0:2 Not tainted 5.0.0-rc2-00335-g28f9d1a3d4fe-dirty #14
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-2.fc27 04/01/2014
-Workqueue: events sk_psock_backlog
-Call Trace:
- print_address_description+0x6e/0x2b0
- ? remove_wait_queue+0x31/0x70
- kasan_report+0xfd/0x177
- ? remove_wait_queue+0x31/0x70
- ? remove_wait_queue+0x31/0x70
- remove_wait_queue+0x31/0x70
- sk_stream_wait_memory+0x4dd/0x5f0
- ? sk_stream_wait_close+0x1b0/0x1b0
- ? wait_woken+0xc0/0xc0
- ? tcp_current_mss+0xc5/0x110
- tcp_sendmsg_locked+0x634/0x15d0
- ? tcp_set_state+0x2e0/0x2e0
- ? __kasan_slab_free+0x1d1/0x230
- ? kmem_cache_free+0x70/0x140
- ? sk_psock_backlog+0x40c/0x4b0
- ? process_one_work+0x40b/0x660
- ? worker_thread+0x82/0x680
- ? kthread+0x1b9/0x1e0
- ? ret_from_fork+0x1f/0x30
- ? check_preempt_curr+0xaf/0x130
- ? iov_iter_kvec+0x5f/0x70
- ? kernel_sendmsg_locked+0xa0/0xe0
- skb_send_sock_locked+0x273/0x3c0
- ? skb_splice_bits+0x180/0x180
- ? start_thread+0xe0/0xe0
- ? update_min_vruntime.constprop.27+0x88/0xc0
- sk_psock_backlog+0xb3/0x4b0
- ? strscpy+0xbf/0x1e0
- process_one_work+0x40b/0x660
- worker_thread+0x82/0x680
- ? process_one_work+0x660/0x660
- kthread+0x1b9/0x1e0
- ? __kthread_create_on_node+0x250/0x250
- ret_from_fork+0x1f/0x30
-
-Fixes: 20bf50de3028c ("skbuff: Function to send an skbuf on a socket")
-Reported-by: Jakub Sitnicki <jakub@cloudflare.com>
-Tested-by: Jakub Sitnicki <jakub@cloudflare.com>
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Fixes: 2353ecc6f91f ("bpf, riscv: add BPF JIT for RV64G")
+Cc: Xi Wang <xi.wang@gmail.com>
+Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+Acked-by: Song Liu <songliubraving@fb.com>
+Acked-by: Björn Töpel <bjorn.topel@gmail.com>
+Reviewed-by: Palmer Dabbelt <palmer@sifive.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/skbuff.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/riscv/net/bpf_jit_comp.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index e5bfd42fd083..4ea96fbf3b49 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -2309,6 +2309,7 @@ int skb_send_sock_locked(struct sock *sk, struct sk_buff *skb, int offset,
- 		kv.iov_base = skb->data + offset;
- 		kv.iov_len = slen;
- 		memset(&msg, 0, sizeof(msg));
-+		msg.msg_flags = MSG_DONTWAIT;
+diff --git a/arch/riscv/net/bpf_jit_comp.c b/arch/riscv/net/bpf_jit_comp.c
+index e5c8d675bd6e..426d5c33ea90 100644
+--- a/arch/riscv/net/bpf_jit_comp.c
++++ b/arch/riscv/net/bpf_jit_comp.c
+@@ -751,10 +751,14 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 	case BPF_ALU | BPF_ADD | BPF_X:
+ 	case BPF_ALU64 | BPF_ADD | BPF_X:
+ 		emit(is64 ? rv_add(rd, rd, rs) : rv_addw(rd, rd, rs), ctx);
++		if (!is64)
++			emit_zext_32(rd, ctx);
+ 		break;
+ 	case BPF_ALU | BPF_SUB | BPF_X:
+ 	case BPF_ALU64 | BPF_SUB | BPF_X:
+ 		emit(is64 ? rv_sub(rd, rd, rs) : rv_subw(rd, rd, rs), ctx);
++		if (!is64)
++			emit_zext_32(rd, ctx);
+ 		break;
+ 	case BPF_ALU | BPF_AND | BPF_X:
+ 	case BPF_ALU64 | BPF_AND | BPF_X:
+@@ -795,14 +799,20 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 	case BPF_ALU | BPF_LSH | BPF_X:
+ 	case BPF_ALU64 | BPF_LSH | BPF_X:
+ 		emit(is64 ? rv_sll(rd, rd, rs) : rv_sllw(rd, rd, rs), ctx);
++		if (!is64)
++			emit_zext_32(rd, ctx);
+ 		break;
+ 	case BPF_ALU | BPF_RSH | BPF_X:
+ 	case BPF_ALU64 | BPF_RSH | BPF_X:
+ 		emit(is64 ? rv_srl(rd, rd, rs) : rv_srlw(rd, rd, rs), ctx);
++		if (!is64)
++			emit_zext_32(rd, ctx);
+ 		break;
+ 	case BPF_ALU | BPF_ARSH | BPF_X:
+ 	case BPF_ALU64 | BPF_ARSH | BPF_X:
+ 		emit(is64 ? rv_sra(rd, rd, rs) : rv_sraw(rd, rd, rs), ctx);
++		if (!is64)
++			emit_zext_32(rd, ctx);
+ 		break;
  
- 		ret = kernel_sendmsg_locked(sk, &msg, &kv, 1, slen);
- 		if (ret <= 0)
+ 	/* dst = -dst */
+@@ -810,6 +820,8 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 	case BPF_ALU64 | BPF_NEG:
+ 		emit(is64 ? rv_sub(rd, RV_REG_ZERO, rd) :
+ 		     rv_subw(rd, RV_REG_ZERO, rd), ctx);
++		if (!is64)
++			emit_zext_32(rd, ctx);
+ 		break;
+ 
+ 	/* dst = BSWAP##imm(dst) */
+@@ -964,14 +976,20 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 	case BPF_ALU | BPF_LSH | BPF_K:
+ 	case BPF_ALU64 | BPF_LSH | BPF_K:
+ 		emit(is64 ? rv_slli(rd, rd, imm) : rv_slliw(rd, rd, imm), ctx);
++		if (!is64)
++			emit_zext_32(rd, ctx);
+ 		break;
+ 	case BPF_ALU | BPF_RSH | BPF_K:
+ 	case BPF_ALU64 | BPF_RSH | BPF_K:
+ 		emit(is64 ? rv_srli(rd, rd, imm) : rv_srliw(rd, rd, imm), ctx);
++		if (!is64)
++			emit_zext_32(rd, ctx);
+ 		break;
+ 	case BPF_ALU | BPF_ARSH | BPF_K:
+ 	case BPF_ALU64 | BPF_ARSH | BPF_K:
+ 		emit(is64 ? rv_srai(rd, rd, imm) : rv_sraiw(rd, rd, imm), ctx);
++		if (!is64)
++			emit_zext_32(rd, ctx);
+ 		break;
+ 
+ 	/* JUMP off */
 -- 
 2.20.1
 
