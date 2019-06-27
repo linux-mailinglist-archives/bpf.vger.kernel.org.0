@@ -2,389 +2,272 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECBAB58D92
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 00:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7893D58DB8
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 00:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbfF0WE7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Jun 2019 18:04:59 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:41640 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726498AbfF0WE7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Jun 2019 18:04:59 -0400
-Received: by mail-pl1-f194.google.com with SMTP id m7so2002492pls.8;
-        Thu, 27 Jun 2019 15:04:58 -0700 (PDT)
+        id S1726632AbfF0WM6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jun 2019 18:12:58 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:40826 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726445AbfF0WM6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Jun 2019 18:12:58 -0400
+Received: by mail-pf1-f196.google.com with SMTP id p184so1897229pfp.7;
+        Thu, 27 Jun 2019 15:12:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version;
-        bh=00evef/ayLM+dg1y18kUMmlFRCnU3hiwv5zN2enrdho=;
-        b=KIyQxRglox+IYjflq/aM/KfRvlAZ8LIosypDvq26rI97FIhP2XatmVJrNA8bHvPErH
-         TlBwmZBG8zsnXGGD6PSUfhG85rbbjmXOGiFGGjtU++qRaN7FJ1xPE3q79jxrvOvsWNJL
-         uzFQzAtrhAN4nILywZys4rIQ/CUWdTedZ5tuN1GFK5EIfrilIWCBINmJcSj1G+bz+efA
-         ETbzDuWrpcJzbqwIKl+Yi8mrlMJsWLnVEJW3pKtRiYGgiPbkNZgyGjKm8Bpizkz+Dy5/
-         kMam1qvCTWfcuaSLAKkgMuwyZpIG/hga0XX2BdsBSqG4f1IGGpt1LjjAl+8HpXgPsXIb
-         eEhg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=omKdG1SEf1DlswzrHROnkb/YaLBu8whubVZpGxqr6l8=;
+        b=IfwkWs04CvjvZHz2zqXh1HunR5OwmQp6SP1biIwYAvvU+WinKartoOziqTpmGokGj6
+         28ppdte+/P9oCjEab5YlLHDA073Ghwt/gAT2t7WbhlfLwpcGHU3pIMSuD3UC5mtsA5ee
+         y4G/3ZjGbvlCE6g90CC4JG4WuFgGxZ9XU0ux+XS+L1hn13MeRmq6/S2D9afvxk68tEZM
+         KS6k5IX08ZR/Jd6VeCbspPdxGF6n1I12sIOpU1fnaWhlzTPnFydiZu8ORpz1UrVxotTn
+         dQbw/YrYu1YB2jWB8zrlP+t5l63r4o4lB+EQC0FoZtOnpOg/cPVVhtPFkHWp/bfRvpLz
+         6U/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version;
-        bh=00evef/ayLM+dg1y18kUMmlFRCnU3hiwv5zN2enrdho=;
-        b=dKy+u9Dkf0Eh534bw8GtX1MVBcFyJRJf3iC0eCnCHGRCOl6oPX396+odxoQwEb95rT
-         HNMjqFNhwYX1Em8ltchTzBneWtecKUqrT67jPKPdj4jp+MU8umuY5C9bcifQjtLuM+Ww
-         2wotwFIaX3GKvdmC+I2N3kkpiWZG4Z058wDLOC43OnGDoCroef5TRFOec9XK4/DLhq0C
-         RdMTW/pGplG24FUmmdv0DGcRr6hjLjyoIUhLiidiX/gK5+i7tPhCyjT+8GmK8tfDwpC6
-         4Fxsy50EmgnW+JkQyZrM+ZH4+Xi1OMH4bbH6B6bcGoftv49uTCvTnA5Tb2ikHh6+4U4/
-         GKYA==
-X-Gm-Message-State: APjAAAV6kw5MDVm5cemKoySRqprJzfGXEwinuj9Zs5hs7Hb4k0xclYKP
-        gm8hfVuxkNm9flFu+ljZQbM=
-X-Google-Smtp-Source: APXvYqxGj028cy2iifwg6UKnYwLZozVXHOCO16yNwBas3fLOK1KxD8YiEH9jepBpKM89UDF8gguzmA==
-X-Received: by 2002:a17:902:8b82:: with SMTP id ay2mr6850510plb.164.1561673098595;
-        Thu, 27 Jun 2019 15:04:58 -0700 (PDT)
-Received: from [172.20.53.102] ([2620:10d:c090:200::6693])
-        by smtp.gmail.com with ESMTPSA id p2sm70688pfb.118.2019.06.27.15.04.57
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=omKdG1SEf1DlswzrHROnkb/YaLBu8whubVZpGxqr6l8=;
+        b=iYp5g6CV/Wxk/0LZYHyPf0QffqdpAh1DMGEXkL+kawy7BCriVZoEeuHtOZ0ZNtII1X
+         uh+PSP4zKlX5qmldjytiIz7nGhHGj10aa+RsOZ8l5nRP9VLJd0CL3a4Dh3XXKWvNRfsa
+         seGInBQTXp+LD438J0UkWWcQXJ1yIWTW9D2AInQnmgf4quuehsapk0YZQmbQGmgm5CBc
+         ftFNOnpdrauZMXuhN2RMknm3hkoacSOQJK6TU8Tx0Ws/KYwJkOTsiyKfzRbWu4782kEm
+         twBhvwP14gkjpza0jSwM70yeNzHCjNav0APnaUrSpN6HEul3kTVH7uasnjEs/wRzy6Rn
+         zjbQ==
+X-Gm-Message-State: APjAAAWR1F1YbInTm0HUWAZiNflop7T6pdx12YOLHrM3g4Bd1TZYz+1N
+        NZoiUixMSLDkMlIeDRBiBlQ=
+X-Google-Smtp-Source: APXvYqyGeZbkJiS0Dsn3QGHZ6jseIPkfjoJpd43nvrWs2aQ0x2IU3Bw2MKPpGVg19IoUoJ2+3kiGMA==
+X-Received: by 2002:a63:2020:: with SMTP id g32mr5946476pgg.90.1561673577422;
+        Thu, 27 Jun 2019 15:12:57 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::1:305a])
+        by smtp.gmail.com with ESMTPSA id t4sm127832pgj.20.2019.06.27.15.12.55
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 27 Jun 2019 15:04:58 -0700 (PDT)
-From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
-To:     "Ilya Maximets" <i.maximets@samsung.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, xdp-newbies@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        "=?utf-8?b?QmrDtnJuIFTDtnBlbA==?=" <bjorn.topel@intel.com>,
-        "Magnus Karlsson" <magnus.karlsson@intel.com>,
-        "Jakub Kicinski" <jakub.kicinski@netronome.com>,
-        "Daniel Borkmann" <daniel@iogearbox.net>
-Subject: Re: [PATCH bpf v5 2/2] xdp: fix hang while unregistering device bound
- to xdp socket
-Date:   Thu, 27 Jun 2019 15:04:57 -0700
-X-Mailer: MailMate (1.12.5r5635)
-Message-ID: <74C6C13C-651D-4CD1-BCA1-1B8998A4FA31@gmail.com>
-In-Reply-To: <20190627101529.11234-3-i.maximets@samsung.com>
-References: <20190627101529.11234-1-i.maximets@samsung.com>
- <CGME20190627101540eucas1p149805b39e12bf7ecf5864b7ff1b0c934@eucas1p1.samsung.com>
- <20190627101529.11234-3-i.maximets@samsung.com>
+        Thu, 27 Jun 2019 15:12:56 -0700 (PDT)
+Date:   Thu, 27 Jun 2019 15:12:54 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Brian Vazquez <brianvv@google.com>
+Cc:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Petar Penkov <ppenkov@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next v2 2/6] bpf: add BPF_MAP_DUMP command to
+ access more than one entry per call
+Message-ID: <20190627221253.fjsa2lzog2zs5nyz@ast-mbp.dhcp.thefacebook.com>
+References: <20190627202417.33370-1-brianvv@google.com>
+ <20190627202417.33370-3-brianvv@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190627202417.33370-3-brianvv@google.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 27 Jun 2019, at 3:15, Ilya Maximets wrote:
+On Thu, Jun 27, 2019 at 01:24:13PM -0700, Brian Vazquez wrote:
+> This introduces a new command to retrieve a variable number of entries
+> from a bpf map wrapping the existing bpf methods:
+> map_get_next_key and map_lookup_elem
+> 
+> Note that map_dump doesn't guarantee that reading the entire table is
+> consistent since this function is always racing with kernel and user code
+> but the same behaviour is found when the entire table is walked using
+> the current interfaces: map_get_next_key + map_lookup_elem.
+> It is also important to note that when a locked map is provided it is
+> consistent only for 1 entry at the time, meaning that the buf returned
+> might or might not be consistent.
 
-> Device that bound to XDP socket will not have zero refcount until the
-> userspace application will not close it. This leads to hang inside
-> 'netdev_wait_allrefs()' if device unregistering requested:
->
->   # ip link del p1
->   < hang on recvmsg on netlink socket >
->
->   # ps -x | grep ip
->   5126  pts/0    D+   0:00 ip link del p1
->
->   # journalctl -b
->
->   Jun 05 07:19:16 kernel:
->   unregister_netdevice: waiting for p1 to become free. Usage count = 1
->
->   Jun 05 07:19:27 kernel:
->   unregister_netdevice: waiting for p1 to become free. Usage count = 1
->   ...
->
-> Fix that by implementing NETDEV_UNREGISTER event notification handler
-> to properly clean up all the resources and unref device.
->
-> This should also allow socket killing via ss(8) utility.
->
-> Fixes: 965a99098443 ("xsk: add support for bind for Rx")
-> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
+Please explain the api behavior and corner cases in the commit log
+or in code comments.
+
+Would it make sense to return last key back into prev_key,
+so that next map_dump command doesn't need to copy it from the
+buffer?
+
+> Suggested-by: Stanislav Fomichev <sdf@google.com>
+> Signed-off-by: Brian Vazquez <brianvv@google.com>
 > ---
->  include/net/xdp_sock.h |  5 +++
->  net/xdp/xdp_umem.c     | 10 ++---
->  net/xdp/xdp_umem.h     |  1 +
->  net/xdp/xsk.c          | 87 
-> ++++++++++++++++++++++++++++++++++++------
->  4 files changed, 87 insertions(+), 16 deletions(-)
->
-> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> index d074b6d60f8a..82d153a637c7 100644
-> --- a/include/net/xdp_sock.h
-> +++ b/include/net/xdp_sock.h
-> @@ -61,6 +61,11 @@ struct xdp_sock {
->  	struct xsk_queue *tx ____cacheline_aligned_in_smp;
->  	struct list_head list;
->  	bool zc;
-> +	enum {
-> +		XSK_UNINITIALIZED = 0,
-> +		XSK_BINDED,
-> +		XSK_UNBINDED,
-> +	} state;
-
-I'd prefer that these were named better, perhaps:
-    XSK_READY,
-    XSK_BOUND,
-    XSK_UNBOUND,
-
-
-Other than that:
-Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
-
--- 
-Jonathan
-
-
-
->  	/* Protects multiple processes in the control path */
->  	struct mutex mutex;
->  	/* Mutual exclusion of NAPI TX thread and sendmsg error paths
-> diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-> index 267b82a4cbcf..20c91f02d3d8 100644
-> --- a/net/xdp/xdp_umem.c
-> +++ b/net/xdp/xdp_umem.c
-> @@ -140,11 +140,13 @@ int xdp_umem_assign_dev(struct xdp_umem *umem, 
-> struct net_device *dev,
->  	return err;
->  }
->
-> -static void xdp_umem_clear_dev(struct xdp_umem *umem)
-> +void xdp_umem_clear_dev(struct xdp_umem *umem)
->  {
->  	struct netdev_bpf bpf;
->  	int err;
->
-> +	ASSERT_RTNL();
-> +
->  	if (!umem->dev)
->  		return;
->
-> @@ -153,17 +155,13 @@ static void xdp_umem_clear_dev(struct xdp_umem 
-> *umem)
->  		bpf.xsk.umem = NULL;
->  		bpf.xsk.queue_id = umem->queue_id;
->
-> -		rtnl_lock();
->  		err = umem->dev->netdev_ops->ndo_bpf(umem->dev, &bpf);
-> -		rtnl_unlock();
->
->  		if (err)
->  			WARN(1, "failed to disable umem!\n");
->  	}
->
-> -	rtnl_lock();
->  	xdp_clear_umem_at_qid(umem->dev, umem->queue_id);
-> -	rtnl_unlock();
->
->  	dev_put(umem->dev);
->  	umem->dev = NULL;
-> @@ -195,7 +193,9 @@ static void xdp_umem_unaccount_pages(struct 
-> xdp_umem *umem)
->
->  static void xdp_umem_release(struct xdp_umem *umem)
->  {
-> +	rtnl_lock();
->  	xdp_umem_clear_dev(umem);
-> +	rtnl_unlock();
->
->  	ida_simple_remove(&umem_ida, umem->id);
->
-> diff --git a/net/xdp/xdp_umem.h b/net/xdp/xdp_umem.h
-> index 27603227601b..a63a9fb251f5 100644
-> --- a/net/xdp/xdp_umem.h
-> +++ b/net/xdp/xdp_umem.h
-> @@ -10,6 +10,7 @@
->
->  int xdp_umem_assign_dev(struct xdp_umem *umem, struct net_device 
-> *dev,
->  			u16 queue_id, u16 flags);
-> +void xdp_umem_clear_dev(struct xdp_umem *umem);
->  bool xdp_umem_validate_queues(struct xdp_umem *umem);
->  void xdp_get_umem(struct xdp_umem *umem);
->  void xdp_put_umem(struct xdp_umem *umem);
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index a14e8864e4fa..336723948a36 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -335,6 +335,22 @@ static int xsk_init_queue(u32 entries, struct 
-> xsk_queue **queue,
->  	return 0;
->  }
->
-> +static void xsk_unbind_dev(struct xdp_sock *xs)
-> +{
-> +	struct net_device *dev = xs->dev;
-> +
-> +	if (!dev || xs->state != XSK_BINDED)
-> +		return;
-> +
-> +	xs->state = XSK_UNBINDED;
-> +
-> +	/* Wait for driver to stop using the xdp socket. */
-> +	xdp_del_sk_umem(xs->umem, xs);
-> +	xs->dev = NULL;
-> +	synchronize_net();
-> +	dev_put(dev);
-> +}
-> +
->  static int xsk_release(struct socket *sock)
->  {
->  	struct sock *sk = sock->sk;
-> @@ -354,15 +370,7 @@ static int xsk_release(struct socket *sock)
->  	sock_prot_inuse_add(net, sk->sk_prot, -1);
->  	local_bh_enable();
->
-> -	if (xs->dev) {
-> -		struct net_device *dev = xs->dev;
-> -
-> -		/* Wait for driver to stop using the xdp socket. */
-> -		xdp_del_sk_umem(xs->umem, xs);
-> -		xs->dev = NULL;
-> -		synchronize_net();
-> -		dev_put(dev);
-> -	}
-> +	xsk_unbind_dev(xs);
->
->  	xskq_destroy(xs->rx);
->  	xskq_destroy(xs->tx);
-> @@ -412,7 +420,7 @@ static int xsk_bind(struct socket *sock, struct 
-> sockaddr *addr, int addr_len)
->  		return -EINVAL;
->
->  	mutex_lock(&xs->mutex);
-> -	if (xs->dev) {
-> +	if (xs->state != XSK_UNINITIALIZED) {
->  		err = -EBUSY;
->  		goto out_release;
->  	}
-> @@ -492,6 +500,8 @@ static int xsk_bind(struct socket *sock, struct 
-> sockaddr *addr, int addr_len)
->  out_unlock:
->  	if (err)
->  		dev_put(dev);
-> +	else
-> +		xs->state = XSK_BINDED;
->  out_release:
->  	mutex_unlock(&xs->mutex);
->  	return err;
-> @@ -520,6 +530,10 @@ static int xsk_setsockopt(struct socket *sock, 
-> int level, int optname,
->  			return -EFAULT;
->
->  		mutex_lock(&xs->mutex);
-> +		if (xs->state != XSK_UNINITIALIZED) {
-> +			mutex_unlock(&xs->mutex);
-> +			return -EBUSY;
-> +		}
->  		q = (optname == XDP_TX_RING) ? &xs->tx : &xs->rx;
->  		err = xsk_init_queue(entries, q, false);
->  		mutex_unlock(&xs->mutex);
-> @@ -534,7 +548,7 @@ static int xsk_setsockopt(struct socket *sock, int 
-> level, int optname,
->  			return -EFAULT;
->
->  		mutex_lock(&xs->mutex);
-> -		if (xs->umem) {
-> +		if (xs->state != XSK_UNINITIALIZED || xs->umem) {
->  			mutex_unlock(&xs->mutex);
->  			return -EBUSY;
->  		}
-> @@ -561,6 +575,10 @@ static int xsk_setsockopt(struct socket *sock, 
-> int level, int optname,
->  			return -EFAULT;
->
->  		mutex_lock(&xs->mutex);
-> +		if (xs->state != XSK_UNINITIALIZED) {
-> +			mutex_unlock(&xs->mutex);
-> +			return -EBUSY;
-> +		}
->  		if (!xs->umem) {
->  			mutex_unlock(&xs->mutex);
->  			return -EINVAL;
-> @@ -662,6 +680,9 @@ static int xsk_mmap(struct file *file, struct 
-> socket *sock,
->  	unsigned long pfn;
->  	struct page *qpg;
->
-> +	if (xs->state != XSK_UNINITIALIZED)
-> +		return -EBUSY;
-> +
->  	if (offset == XDP_PGOFF_RX_RING) {
->  		q = READ_ONCE(xs->rx);
->  	} else if (offset == XDP_PGOFF_TX_RING) {
-> @@ -693,6 +714,38 @@ static int xsk_mmap(struct file *file, struct 
-> socket *sock,
->  			       size, vma->vm_page_prot);
->  }
->
-> +static int xsk_notifier(struct notifier_block *this,
-> +			unsigned long msg, void *ptr)
-> +{
-> +	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
-> +	struct net *net = dev_net(dev);
-> +	struct sock *sk;
-> +
-> +	switch (msg) {
-> +	case NETDEV_UNREGISTER:
-> +		mutex_lock(&net->xdp.lock);
-> +		sk_for_each(sk, &net->xdp.list) {
-> +			struct xdp_sock *xs = xdp_sk(sk);
-> +
-> +			mutex_lock(&xs->mutex);
-> +			if (xs->dev == dev) {
-> +				sk->sk_err = ENETDOWN;
-> +				if (!sock_flag(sk, SOCK_DEAD))
-> +					sk->sk_error_report(sk);
-> +
-> +				xsk_unbind_dev(xs);
-> +
-> +				/* Clear device references in umem. */
-> +				xdp_umem_clear_dev(xs->umem);
-> +			}
-> +			mutex_unlock(&xs->mutex);
-> +		}
-> +		mutex_unlock(&net->xdp.lock);
-> +		break;
-> +	}
-> +	return NOTIFY_DONE;
-> +}
-> +
->  static struct proto xsk_proto = {
->  	.name =		"XDP",
->  	.owner =	THIS_MODULE,
-> @@ -764,6 +817,7 @@ static int xsk_create(struct net *net, struct 
-> socket *sock, int protocol,
->  	sock_set_flag(sk, SOCK_RCU_FREE);
->
->  	xs = xdp_sk(sk);
-> +	xs->state = XSK_UNINITIALIZED;
->  	mutex_init(&xs->mutex);
->  	spin_lock_init(&xs->tx_completion_lock);
->
-> @@ -784,6 +838,10 @@ static const struct net_proto_family 
-> xsk_family_ops = {
->  	.owner	= THIS_MODULE,
+>  include/uapi/linux/bpf.h |   9 ++++
+>  kernel/bpf/syscall.c     | 108 +++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 117 insertions(+)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index b077507efa3f3..1d753958874df 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -106,6 +106,7 @@ enum bpf_cmd {
+>  	BPF_TASK_FD_QUERY,
+>  	BPF_MAP_LOOKUP_AND_DELETE_ELEM,
+>  	BPF_MAP_FREEZE,
+> +	BPF_MAP_DUMP,
 >  };
->
-> +static struct notifier_block xsk_netdev_notifier = {
-> +	.notifier_call	= xsk_notifier,
-> +};
+>  
+>  enum bpf_map_type {
+> @@ -385,6 +386,14 @@ union bpf_attr {
+>  		__u64		flags;
+>  	};
+>  
+> +	struct { /* struct used by BPF_MAP_DUMP command */
+> +		__u32		map_fd;
+> +		__aligned_u64	prev_key;
+> +		__aligned_u64	buf;
+> +		__aligned_u64	buf_len; /* input/output: len of buf */
+> +		__u64		flags;
+> +	} dump;
 > +
->  static int __net_init xsk_net_init(struct net *net)
->  {
->  	mutex_init(&net->xdp.lock);
-> @@ -816,8 +874,15 @@ static int __init xsk_init(void)
->  	err = register_pernet_subsys(&xsk_net_ops);
->  	if (err)
->  		goto out_sk;
+>  	struct { /* anonymous struct used by BPF_PROG_LOAD command */
+>  		__u32		prog_type;	/* one of enum bpf_prog_type */
+>  		__u32		insn_cnt;
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index a1823a50f9be0..7653346b5cfd1 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -1097,6 +1097,111 @@ static int map_get_next_key(union bpf_attr *attr)
+>  	return err;
+>  }
+>  
+> +/* last field in 'union bpf_attr' used by this command */
+> +#define BPF_MAP_DUMP_LAST_FIELD dump.buf_len
 > +
-> +	err = register_netdevice_notifier(&xsk_netdev_notifier);
+> +static int map_dump(union bpf_attr *attr)
+> +{
+> +	void __user *ukey = u64_to_user_ptr(attr->dump.prev_key);
+> +	void __user *ubuf = u64_to_user_ptr(attr->dump.buf);
+> +	u32 __user *ubuf_len = u64_to_user_ptr(attr->dump.buf_len);
+> +	int ufd = attr->dump.map_fd;
+> +	struct bpf_map *map;
+> +	void *buf, *prev_key, *key, *value;
+> +	u32 value_size, elem_size, buf_len, cp_len;
+> +	struct fd f;
+> +	int err;
+> +
+> +	if (CHECK_ATTR(BPF_MAP_DUMP))
+> +		return -EINVAL;
+> +
+> +	attr->flags = 0;
+> +	if (attr->dump.flags & ~BPF_F_LOCK)
+> +		return -EINVAL;
+> +
+> +	f = fdget(ufd);
+> +	map = __bpf_map_get(f);
+> +	if (IS_ERR(map))
+> +		return PTR_ERR(map);
+> +	if (!(map_get_sys_perms(map, f) & FMODE_CAN_READ)) {
+> +		err = -EPERM;
+> +		goto err_put;
+> +	}
+> +
+> +	if ((attr->dump.flags & BPF_F_LOCK) &&
+> +	    !map_value_has_spin_lock(map)) {
+> +		err = -EINVAL;
+> +		goto err_put;
+> +	}
+> +
+> +	if (map->map_type == BPF_MAP_TYPE_QUEUE ||
+> +	    map->map_type == BPF_MAP_TYPE_STACK) {
+> +		err = -ENOTSUPP;
+> +		goto err_put;
+> +	}
+> +
+> +	value_size = bpf_map_value_size(map);
+> +
+> +	err = get_user(buf_len, ubuf_len);
 > +	if (err)
-> +		goto out_pernet;
+> +		goto err_put;
 > +
->  	return 0;
->
-> +out_pernet:
-> +	unregister_pernet_subsys(&xsk_net_ops);
->  out_sk:
->  	sock_unregister(PF_XDP);
->  out_proto:
+> +	elem_size = map->key_size + value_size;
+> +	if (buf_len < elem_size) {
+> +		err = -EINVAL;
+> +		goto err_put;
+> +	}
+> +
+> +	if (ukey) {
+> +		prev_key = __bpf_copy_key(ukey, map->key_size);
+> +		if (IS_ERR(prev_key)) {
+> +			err = PTR_ERR(prev_key);
+> +			goto err_put;
+> +		}
+> +	} else {
+> +		prev_key = NULL;
+> +	}
+> +
+> +	err = -ENOMEM;
+> +	buf = kmalloc(elem_size, GFP_USER | __GFP_NOWARN);
+> +	if (!buf)
+> +		goto err_put;
+> +
+> +	key = buf;
+> +	value = key + map->key_size;
+> +	for (cp_len = 0;  cp_len + elem_size <= buf_len ; cp_len += elem_size) {
+
+checkpatch.pl please.
+
+> +next:
+> +		if (signal_pending(current)) {
+> +			err = -EINTR;
+> +			break;
+> +		}
+> +
+> +		rcu_read_lock();
+> +		err = map->ops->map_get_next_key(map, prev_key, key);
+> +		rcu_read_unlock();
+> +
+> +		if (err)
+> +			break;
+
+should probably be only for ENOENT case?
+and other errors should be returned to user ?
+
+> +
+> +		if (bpf_map_copy_value(map, key, value, attr->dump.flags))
+> +			goto next;
+
+only for ENOENT as well?
+and instead of goto use continue and move cp_len+= to the end after prev_key=key?
+
+> +
+> +		if (copy_to_user(ubuf + cp_len, buf, elem_size))
+> +			break;
+
+return error to user?
+
+> +
+> +		prev_key = key;
+> +	}
+> +
+> +	if (cp_len)
+> +		err = 0;
+
+this will mask any above errors if there was at least one element copied.
+
+> +	if (copy_to_user(ubuf_len, &cp_len, sizeof(cp_len)))
+> +		err = -EFAULT;
+> +	kfree(buf);
+> +err_put:
+> +	fdput(f);
+> +	return err;
+> +}
+> +
+>  #define BPF_MAP_LOOKUP_AND_DELETE_ELEM_LAST_FIELD value
+>  
+>  static int map_lookup_and_delete_elem(union bpf_attr *attr)
+> @@ -2891,6 +2996,9 @@ SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr __user *, uattr, unsigned int, siz
+>  	case BPF_MAP_LOOKUP_AND_DELETE_ELEM:
+>  		err = map_lookup_and_delete_elem(&attr);
+>  		break;
+> +	case BPF_MAP_DUMP:
+> +		err = map_dump(&attr);
+> +		break;
+>  	default:
+>  		err = -EINVAL;
+>  		break;
 > -- 
-> 2.17.1
+> 2.22.0.410.gd8fdbe21b5-goog
+> 
