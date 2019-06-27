@@ -2,37 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D1D5787D
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 02:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09C3575C4
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 02:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727387AbfF0AcJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jun 2019 20:32:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35760 "EHLO mail.kernel.org"
+        id S1727409AbfF0AcR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jun 2019 20:32:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727358AbfF0AcI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jun 2019 20:32:08 -0400
+        id S1726881AbfF0AcP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jun 2019 20:32:15 -0400
 Received: from sasha-vm.mshome.net (unknown [107.242.116.147])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B10A216E3;
-        Thu, 27 Jun 2019 00:32:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64111216E3;
+        Thu, 27 Jun 2019 00:32:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561595527;
-        bh=F0tVFvq+X02u47THbUIaeZoDdioA+OyJKbrcND+Fc8g=;
+        s=default; t=1561595534;
+        bh=wjEIhQKHUhQNrYqK3cZWtemh2Vz/gHxG6Psmdl6mB1c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qSCRZYTeAR04YzHMG4lvaO66zeALErqpbX7Y2HNkDGdx9Br/DGhjNEiIEkB9N8TBk
-         yJ5V4voSaSy9Fe2ZMEa/EbKsWhJFRPB3D5/c18k1iclALpq+9jFTq/Hh4Juh3/JZmb
-         AKHIE9Y+dZMMvy1vwRhNKRy/hxnG/jCsLnh/JtOU=
+        b=TKxcJI3c3ZFwFX6Fm1GC88L2CKr8X+Q124E+stRHFgGsTal0ZUwBMu1yY4Rbxxfoh
+         +RqHMmmtCZ4xglKju0gmSd87tifKTJEysBqnUfrzt2zY7sfs4vr2WzSSjNnmeZ02xd
+         obIC5sqfgp+EzSSwdm9o/Xww1xSy0Wt+Ewj4yvx4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Martin KaFai Lau <kafai@fb.com>, Tom Herbert <tom@herbertland.com>,
-        Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     Krzesimir Nowak <krzesimir@kinvolk.io>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.1 31/95] bpf: udp: Avoid calling reuseport's bpf_prog from udp_gro
-Date:   Wed, 26 Jun 2019 20:29:16 -0400
-Message-Id: <20190627003021.19867-31-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.1 33/95] tools: bpftool: Fix JSON output when lookup fails
+Date:   Wed, 26 Jun 2019 20:29:18 -0400
+Message-Id: <20190627003021.19867-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190627003021.19867-1-sashal@kernel.org>
 References: <20190627003021.19867-1-sashal@kernel.org>
@@ -45,59 +46,78 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Martin KaFai Lau <kafai@fb.com>
+From: Krzesimir Nowak <krzesimir@kinvolk.io>
 
-[ Upstream commit 257a525fe2e49584842c504a92c27097407f778f ]
+[ Upstream commit 1884c066579a7a274dd981a4d9639ca63db66a23 ]
 
-When the commit a6024562ffd7 ("udp: Add GRO functions to UDP socket")
-added udp[46]_lib_lookup_skb to the udp_gro code path, it broke
-the reuseport_select_sock() assumption that skb->data is pointing
-to the transport header.
+In commit 9a5ab8bf1d6d ("tools: bpftool: turn err() and info() macros
+into functions") one case of error reporting was special cased, so it
+could report a lookup error for a specific key when dumping the map
+element. What the code forgot to do is to wrap the key and value keys
+into a JSON object, so an example output of pretty JSON dump of a
+sockhash map (which does not support looking up its values) is:
 
-This patch follows an earlier __udp6_lib_err() fix by
-passing a NULL skb to avoid calling the reuseport's bpf_prog.
+[
+    "key": ["0x0a","0x41","0x00","0x02","0x1f","0x78","0x00","0x00"
+    ],
+    "value": {
+        "error": "Operation not supported"
+    },
+    "key": ["0x0a","0x41","0x00","0x02","0x1f","0x78","0x00","0x01"
+    ],
+    "value": {
+        "error": "Operation not supported"
+    }
+]
 
-Fixes: a6024562ffd7 ("udp: Add GRO functions to UDP socket")
-Cc: Tom Herbert <tom@herbertland.com>
-Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-Acked-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Note the key-value pairs inside the toplevel array. They should be
+wrapped inside a JSON object, otherwise it is an invalid JSON. This
+commit fixes this, so the output now is:
+
+[{
+        "key": ["0x0a","0x41","0x00","0x02","0x1f","0x78","0x00","0x00"
+        ],
+        "value": {
+            "error": "Operation not supported"
+        }
+    },{
+        "key": ["0x0a","0x41","0x00","0x02","0x1f","0x78","0x00","0x01"
+        ],
+        "value": {
+            "error": "Operation not supported"
+        }
+    }
+]
+
+Fixes: 9a5ab8bf1d6d ("tools: bpftool: turn err() and info() macros into functions")
+Cc: Quentin Monnet <quentin.monnet@netronome.com>
+Signed-off-by: Krzesimir Nowak <krzesimir@kinvolk.io>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/udp.c | 6 +++++-
- net/ipv6/udp.c | 2 +-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ tools/bpf/bpftool/map.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 3b179ce6170f..2274d8ad8afa 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -503,7 +503,11 @@ static inline struct sock *__udp4_lib_lookup_skb(struct sk_buff *skb,
- struct sock *udp4_lib_lookup_skb(struct sk_buff *skb,
- 				 __be16 sport, __be16 dport)
- {
--	return __udp4_lib_lookup_skb(skb, sport, dport, &udp_table);
-+	const struct iphdr *iph = ip_hdr(skb);
-+
-+	return __udp4_lib_lookup(dev_net(skb->dev), iph->saddr, sport,
-+				 iph->daddr, dport, inet_iif(skb),
-+				 inet_sdif(skb), &udp_table, NULL);
- }
- EXPORT_SYMBOL_GPL(udp4_lib_lookup_skb);
+diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+index 994a7e0d16fb..14f581b562bd 100644
+--- a/tools/bpf/bpftool/map.c
++++ b/tools/bpf/bpftool/map.c
+@@ -713,12 +713,14 @@ static int dump_map_elem(int fd, void *key, void *value,
+ 		return 0;
  
-diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-index 767583c12bf2..874ee2954f53 100644
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -242,7 +242,7 @@ struct sock *udp6_lib_lookup_skb(struct sk_buff *skb,
- 
- 	return __udp6_lib_lookup(dev_net(skb->dev), &iph->saddr, sport,
- 				 &iph->daddr, dport, inet6_iif(skb),
--				 inet6_sdif(skb), &udp_table, skb);
-+				 inet6_sdif(skb), &udp_table, NULL);
- }
- EXPORT_SYMBOL_GPL(udp6_lib_lookup_skb);
- 
+ 	if (json_output) {
++		jsonw_start_object(json_wtr);
+ 		jsonw_name(json_wtr, "key");
+ 		print_hex_data_json(key, map_info->key_size);
+ 		jsonw_name(json_wtr, "value");
+ 		jsonw_start_object(json_wtr);
+ 		jsonw_string_field(json_wtr, "error", strerror(lookup_errno));
+ 		jsonw_end_object(json_wtr);
++		jsonw_end_object(json_wtr);
+ 	} else {
+ 		if (errno == ENOENT)
+ 			print_entry_plain(map_info, key, NULL);
 -- 
 2.20.1
 
