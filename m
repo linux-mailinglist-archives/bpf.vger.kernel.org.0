@@ -2,300 +2,272 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0305884F
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 19:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B898458858
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 19:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbfF0R2O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Jun 2019 13:28:14 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:20330 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726315AbfF0R2O (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 27 Jun 2019 13:28:14 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5RHP1ao017069;
-        Thu, 27 Jun 2019 10:27:54 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=tTJIK2Lr7P8tnwHcRPyoHTQzPlNCeWpFT/JkX6/uR+4=;
- b=LLmPssdRMU7DAcEDeE+X1yW/yaRVpX56WJuT0xAiQHuj6VRxLkN0Pcr5lt6Cman7isem
- 7+B2JCtNZ6AZmI6e8DGbJWP88KwQgn7dx0Rx2tNLRMl/Ru/+FwHuo/NLajZO8md94kza
- jwUQacO2ccgPTiluvbrv+zndyW3wBbnzG6Q= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2td0y50c8y-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 27 Jun 2019 10:27:53 -0700
-Received: from ash-exhub201.TheFacebook.com (2620:10d:c0a8:83::7) by
- ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 27 Jun 2019 10:27:51 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 27 Jun 2019 10:27:51 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=testarcselector01; d=microsoft.com; cv=none;
- b=qVnRU9EDpJ4R3wbEGin5YDweyhBOhYjzZ8/uWEUl/pHUQHc9hVN0GW31754q6bmEjO1VipnuQN2FlTJOFXnZpr+15YHyqMxGO6FNs0o5Aktja9gkhQ9CmuQ39g2zi5iTiXClMtoT47srasLaT4xCi00LHtup2+xImTVsptw94yQ=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=testarcselector01;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tTJIK2Lr7P8tnwHcRPyoHTQzPlNCeWpFT/JkX6/uR+4=;
- b=UTUbW+AuLzl2+zML/+hSvTSYMYWuCc0NY2mv3gxJO5PD2CxpV8wD1gO4mdFA8b5AxF4tABZ+Yv4mzD0rQITyYiIJDIzUOyAeWCdL8OTAx3BTJrpJ5d9GXNuqYtaFHU5KwxDSmMlFtCYeLqHTB7cTHLof5FDoqd78AKLnFJpLMWg=
-ARC-Authentication-Results: i=1; test.office365.com
- 1;spf=none;dmarc=none;dkim=none;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tTJIK2Lr7P8tnwHcRPyoHTQzPlNCeWpFT/JkX6/uR+4=;
- b=AxpDy+j/8ibV0xly/uh9vBiBFV2stnHfsr09nismtBF0v4GgepWqxzm3oUixlk6Y1h6K/7i6XPVnq510TYj3yDYurUI8aJqHMkFbn9XlNQg5oJUEZeJ/AJ0S5ZweMaeT008H2+kNe5AmOqDq+ErvEN0y6uBlsTKYtDHFLXA+QoI=
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
- MWHPR15MB1342.namprd15.prod.outlook.com (10.175.2.18) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2008.16; Thu, 27 Jun 2019 17:27:49 +0000
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::400e:e329:ea98:aa0d]) by MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::400e:e329:ea98:aa0d%6]) with mapi id 15.20.2008.018; Thu, 27 Jun 2019
- 17:27:49 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-CC:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/3] libbpf: capture value in BTF type info for
- BTF-defined map defs
-Thread-Topic: [PATCH bpf-next 1/3] libbpf: capture value in BTF type info for
- BTF-defined map defs
-Thread-Index: AQHVLHX5c/0tlkdQh02ogvUGijo9IKavwlqA
-Date:   Thu, 27 Jun 2019 17:27:48 +0000
-Message-ID: <E28D922F-9D97-4836-B687-B4CBC3549AE1@fb.com>
-References: <20190626232133.3800637-1-andriin@fb.com>
- <20190626232133.3800637-2-andriin@fb.com>
-In-Reply-To: <20190626232133.3800637-2-andriin@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3445.104.11)
-x-originating-ip: [2620:10d:c090:200::3:a913]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 670440ec-77b8-49a0-547f-08d6fb24c6be
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MWHPR15MB1342;
-x-ms-traffictypediagnostic: MWHPR15MB1342:
-x-microsoft-antispam-prvs: <MWHPR15MB134234E32D2F35CA892ADB68B3FD0@MWHPR15MB1342.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:24;
-x-forefront-prvs: 008184426E
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(39860400002)(366004)(136003)(346002)(376002)(189003)(199004)(478600001)(446003)(6116002)(14454004)(68736007)(2906002)(50226002)(229853002)(33656002)(476003)(486006)(53936002)(2616005)(46003)(6486002)(6636002)(6512007)(11346002)(6436002)(6862004)(186003)(6246003)(305945005)(7736002)(66476007)(99286004)(76116006)(71200400001)(71190400001)(66946007)(66446008)(57306001)(64756008)(66556008)(73956011)(91956017)(25786009)(53546011)(4326008)(102836004)(6506007)(76176011)(14444005)(37006003)(54906003)(256004)(81166006)(81156014)(8936002)(86362001)(316002)(8676002)(36756003)(5660300002);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1342;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: t5J5yXZZ9hdtkdyCZVbdSAjWQLaV0xezV5nXpzY0+Kp6q+921EILOo1U9JzhZGzQq9G5Z3jYGU0gWvTfuLzLwgFqZJLX57n/qw1aRYD5079RzB0L4jDRmmAbiQPz99v6Pnn7TfNfEc4PJsKSUekcryR5pWo6x2fO0FhMz8VFngCW77z1McfxoyXgVyPQCMmiZqV7YZaCYPsMj8t2DVCy4/z6HUvavv0RVlaklYiJxRGIbBSf6zTzDTk0wl7cwjSqq+NNdc75vTwySX1iyRx9DVXcIqvVb0TW52q3GD3W+JKXy4D00sbFzvCrOyvv88j9DRJtJSpNsqvrjRIgCKvQ7drtBJmUM7DSLua8s5U54ElNASmc+HtzBSpTK7vgzGIjGJ3pRQd8sp7mHC72awyLDwvqnfyuvQPZ3qfCxve9op0=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <7AED6A786211A340BD3ED3897977880D@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726480AbfF0R3g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jun 2019 13:29:36 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:34851 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726487AbfF0R3f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Jun 2019 13:29:35 -0400
+Received: by mail-pf1-f194.google.com with SMTP id d126so1575926pfd.2
+        for <bpf@vger.kernel.org>; Thu, 27 Jun 2019 10:29:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=pZclZUlp3DbNohQiiDxHEf4kCXR/EK6gn1QBjN9QMZ8=;
+        b=JwRibGPz7O+pDjNXa7BMcxx/Kr3ql+eqlkOSJJ9yN+JVVlfslMKjj0GYt5lq582STA
+         iLFJrjAddbG5LshT4mn96A6Y+vCDBT/ytAGNr62UMl9/TWuuA/FJgYN+Tf4F9OPhzPMA
+         nvDlc4HP1R+toWqyvewnLi+XjmKgjHThWJ6W+vn/AmAJrGPgE1GKnblS6hC5JGCqavmB
+         EUNh+UZfAYdWrnQARTwJbSuZ2RRCAuHc8nTmeEwz2Q2QUcnUzLzSYuaesicDvOpqOo+k
+         OpXGVZEvDu4WFvjsFIVQrZ55e8NGL+McdlFlDDX3qHUnnmD8yCyFWTIzjYGpGSlpkSJQ
+         YILg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=pZclZUlp3DbNohQiiDxHEf4kCXR/EK6gn1QBjN9QMZ8=;
+        b=Msne19zOjuFowBonII/t3r2n2Y99tn8zM2Y1s73bWq9hm/bYUYgzMbodFcxHyfV1sa
+         kjrJNL9VYbBwNzStII6QSOEzwVjKYRANOwmWFQxNYIiF8ENjyB/nBAl9AVgv+oyKVIyd
+         iwOovnfEdYUqNta6WE0wJz1rswz0aZIXSgjhkJESSP6svSLDmUma54IQPQuwhGLt/Lt/
+         KrrOyLfeHZoVluLXfLnM4dVTA7Rqu2yZ6CKHLQItjawTYH36+J0REzcfU8VVQBczZxf3
+         6rVlAXFpZgdhVYWKicbKn35QqL1WTNyH68dJ0xxzdvKu627CGH9Leurd22dyi/DoNaQe
+         UfTw==
+X-Gm-Message-State: APjAAAUGP7HF8zAhIdPqXJ5aCTt22GAN/I0adhO3swun1HjnP/BvTGbI
+        j6C+g1w+IyPcozf6dxOf4KLPbw==
+X-Google-Smtp-Source: APXvYqzlpYP5i2Nvb1QlbzWVeaa+gtB7Nl2q80f71Sk95FrZNAXdWSoIvp/fjmApAOJy39OA+xFApA==
+X-Received: by 2002:a63:b1d:: with SMTP id 29mr4815693pgl.103.1561656573821;
+        Thu, 27 Jun 2019 10:29:33 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id m13sm2562762pgv.89.2019.06.27.10.29.32
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 27 Jun 2019 10:29:33 -0700 (PDT)
+Date:   Thu, 27 Jun 2019 10:29:32 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     kernel test robot <rong.a.chen@intel.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, bpf@vger.kernel.org,
+        lkp@01.org
+Subject: Re: [bpf/tools] cd17d77705:
+ kernel_selftests.bpf.test_sock_addr.sh.fail
+Message-ID: <20190627172932.GD4866@mini-arch>
+References: <20190627090446.GG7221@shao2-debian>
+ <20190627155029.GC4866@mini-arch>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 670440ec-77b8-49a0-547f-08d6fb24c6be
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jun 2019 17:27:48.8918
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: songliubraving@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1342
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-27_11:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906270201
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190627155029.GC4866@mini-arch>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 06/27, Stanislav Fomichev wrote:
+> On 06/27, kernel test robot wrote:
+> > FYI, we noticed the following commit (built with gcc-7):
+> > 
+> > commit: cd17d77705780e2270937fb3cbd2b985adab3edc ("bpf/tools: sync bpf.h")
+> > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> > 
+> > in testcase: kernel_selftests
+> > with following parameters:
+> > 
+> > 	group: kselftests-00
+> > 
+> > test-description: The kernel contains a set of "self tests" under the tools/testing/selftests/ directory. These are intended to be small unit tests to exercise individual code paths in the kernel.
+> > test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
+> > 
+> > 
+> > on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
+> > 
+> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> > 
+> > # ; int connect_v6_prog(struct bpf_sock_addr *ctx)
+> > # 0: (bf) r6 = r1
+> > # 1: (18) r1 = 0x100000000000000
+> > # ; tuple.ipv6.daddr[0] = bpf_htonl(DST_REWRITE_IP6_0);
+> > # 3: (7b) *(u64 *)(r10 -16) = r1
+> > # 4: (b7) r1 = 169476096
+> > # ; memset(&tuple.ipv6.sport, 0, sizeof(tuple.ipv6.sport));
+> > # 5: (63) *(u32 *)(r10 -8) = r1
+> > # 6: (b7) r7 = 0
+> > # ; tuple.ipv6.daddr[0] = bpf_htonl(DST_REWRITE_IP6_0);
+> > # 7: (7b) *(u64 *)(r10 -24) = r7
+> > # 8: (7b) *(u64 *)(r10 -32) = r7
+> > # 9: (7b) *(u64 *)(r10 -40) = r7
+> > # ; if (ctx->type != SOCK_STREAM && ctx->type != SOCK_DGRAM)
+> > # 10: (61) r1 = *(u32 *)(r6 +32)
+> > # ; if (ctx->type != SOCK_STREAM && ctx->type != SOCK_DGRAM)
+> > # 11: (bf) r2 = r1
+> > # 12: (07) r2 += -1
+> > # 13: (67) r2 <<= 32
+> > # 14: (77) r2 >>= 32
+> > # 15: (25) if r2 > 0x1 goto pc+33
+> > #  R1=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2=inv(id=0,umax_value=1,var_off=(0x0; 0x1)) R6=ctx(id=0,off=0,imm=0) R7=inv0 R10=fp0,call_-1 fp-8=????mmmm fp-16=mmmmmmmm fp-24=00000000 fp-32=00000000 fp-40=00000000
+> > # ; else if (ctx->type == SOCK_STREAM)
+> > # 16: (55) if r1 != 0x1 goto pc+8
+> > #  R1=inv1 R2=inv(id=0,umax_value=1,var_off=(0x0; 0x1)) R6=ctx(id=0,off=0,imm=0) R7=inv0 R10=fp0,call_-1 fp-8=????mmmm fp-16=mmmmmmmm fp-24=00000000 fp-32=00000000 fp-40=00000000
+> > # 17: (bf) r2 = r10
+> > # ; sk = bpf_sk_lookup_tcp(ctx, &tuple, sizeof(tuple.ipv6),
+> > # 18: (07) r2 += -40
+> > # 19: (bf) r1 = r6
+> > # 20: (b7) r3 = 36
+> > # 21: (b7) r4 = -1
+> > # 22: (b7) r5 = 0
+> > # 23: (85) call bpf_sk_lookup_tcp#84
+> > # 24: (05) goto pc+7
+> > # ; if (!sk)
+> > # 32: (15) if r0 == 0x0 goto pc+16
+> > #  R0=sock(id=0,ref_obj_id=2,off=0,imm=0) R6=ctx(id=0,off=0,imm=0) R7=inv0 R10=fp0,call_-1 fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm refs=2
+> > # ; if (sk->src_ip6[0] != tuple.ipv6.daddr[0] ||
+> > # 33: (61) r1 = *(u32 *)(r0 +28)
+> > # ; if (sk->src_ip6[0] != tuple.ipv6.daddr[0] ||
+> > # 34: (61) r2 = *(u32 *)(r10 -24)
+> > # ; if (sk->src_ip6[0] != tuple.ipv6.daddr[0] ||
+> > # 35: (5d) if r1 != r2 goto pc+11
+> > #  R0=sock(id=0,ref_obj_id=2,off=0,imm=0) R1=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R6=ctx(id=0,off=0,imm=0) R7=inv0 R10=fp0,call_-1 fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm refs=2
+> > # ; sk->src_ip6[1] != tuple.ipv6.daddr[1] ||
+> > # 36: (61) r1 = *(u32 *)(r0 +32)
+> > # ; sk->src_ip6[1] != tuple.ipv6.daddr[1] ||
+> > # 37: (61) r2 = *(u32 *)(r10 -20)
+> > # ; sk->src_ip6[1] != tuple.ipv6.daddr[1] ||
+> > # 38: (5d) if r1 != r2 goto pc+8
+> > #  R0=sock(id=0,ref_obj_id=2,off=0,imm=0) R1=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R6=ctx(id=0,off=0,imm=0) R7=inv0 R10=fp0,call_-1 fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm refs=2
+> > # ; sk->src_ip6[2] != tuple.ipv6.daddr[2] ||
+> > # 39: (61) r1 = *(u32 *)(r0 +36)
+> > # ; sk->src_ip6[2] != tuple.ipv6.daddr[2] ||
+> > # 40: (61) r2 = *(u32 *)(r10 -16)
+> > # ; sk->src_ip6[2] != tuple.ipv6.daddr[2] ||
+> > # 41: (5d) if r1 != r2 goto pc+5
+> > #  R0=sock(id=0,ref_obj_id=2,off=0,imm=0) R1=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R6=ctx(id=0,off=0,imm=0) R7=inv0 R10=fp0,call_-1 fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm refs=2
+> > # ; sk->src_ip6[3] != tuple.ipv6.daddr[3] ||
+> > # 42: (61) r1 = *(u32 *)(r0 +40)
+> > # ; sk->src_ip6[3] != tuple.ipv6.daddr[3] ||
+> > # 43: (61) r2 = *(u32 *)(r10 -12)
+> > # ; sk->src_ip6[3] != tuple.ipv6.daddr[3] ||
+> > # 44: (5d) if r1 != r2 goto pc+2
+> > #  R0=sock(id=0,ref_obj_id=2,off=0,imm=0) R1=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R6=ctx(id=0,off=0,imm=0) R7=inv0 R10=fp0,call_-1 fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm refs=2
+> > # ; sk->src_port != DST_REWRITE_PORT6) {
+> > # 45: (61) r1 = *(u32 *)(r0 +44)
+> > # ; if (sk->src_ip6[0] != tuple.ipv6.daddr[0] ||
+> > # 46: (15) if r1 == 0x1a0a goto pc+4
+> > #  R0=sock(id=0,ref_obj_id=2,off=0,imm=0) R1=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R6=ctx(id=0,off=0,imm=0) R7=inv0 R10=fp0,call_-1 fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm refs=2
+> > # ; bpf_sk_release(sk);
+> > # 47: (bf) r1 = r0
+> > # 48: (85) call bpf_sk_release#86
+> > # ; }
+> > # 49: (bf) r0 = r7
+> > # 50: (95) exit
+> > # 
+> > # from 46 to 51: R0=sock(id=0,ref_obj_id=2,off=0,imm=0) R1=inv6666 R2=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R6=ctx(id=0,off=0,imm=0) R7=inv0 R10=fp0,call_-1 fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm refs=2
+> > # ; bpf_sk_release(sk);
+> > # 51: (bf) r1 = r0
+> > # 52: (85) call bpf_sk_release#86
+> > # 53: (b7) r1 = 2586
+> > # ; ctx->user_port = bpf_htons(DST_REWRITE_PORT6);
+> > # 54: (63) *(u32 *)(r6 +24) = r1
+> > # 55: (18) r1 = 0x100000000000000
+> > # ; ctx->user_ip6[2] = bpf_htonl(DST_REWRITE_IP6_2);
+> > # 57: (7b) *(u64 *)(r6 +16) = r1
+> > # invalid bpf_context access off=16 size=8
+> This looks like clang doing single u64 write for user_ip6[2] and
+> user_ip6[3] instead of two u32. I don't think we allow that.
+> 
+> I've seen this a couple of times myself while playing with some
+> progs, but not sure what's the right way to 'fix' it.
+> 
+Any thoughts about the patch below? Another way to "fix" it
+would be to mark context accesses 'volatile' in bpf progs, but that sounds
+a bit gross.
 
-
-> On Jun 26, 2019, at 4:21 PM, Andrii Nakryiko <andriin@fb.com> wrote:
->=20
-> Change BTF-defined map definitions to capture compile-time integer
-> values as part of BTF type definition, to avoid split of key/value type
-> information and actual type/size/flags initialization for maps.
-
-If I have an old bpf program and compiled it with new llvm, will it =20
-work with new libbpf?=20
-
-
->=20
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
-> tools/lib/bpf/libbpf.c                    | 58 +++++++++++------------
-> tools/testing/selftests/bpf/bpf_helpers.h |  3 ++
-> 2 files changed, 31 insertions(+), 30 deletions(-)
->=20
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 68f45a96769f..f2b02032a8e6 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -1028,40 +1028,40 @@ static const struct btf_type *skip_mods_and_typed=
-efs(const struct btf *btf,
-> 	}
-> }
->=20
-> -static bool get_map_field_int(const char *map_name,
-> -			      const struct btf *btf,
-> +/*
-> + * Fetch integer attribute of BTF map definition. Such attributes are
-> + * represented using a pointer to an array, in which dimensionality of a=
-rray
-> + * encodes specified integer value. E.g., int (*type)[BPF_MAP_TYPE_ARRAY=
-];
-> + * encodes `type =3D> BPF_MAP_TYPE_ARRAY` key/value pair completely usin=
-g BTF
-> + * type definition, while using only sizeof(void *) space in ELF data se=
-ction.
-> + */
-> +static bool get_map_field_int(const char *map_name, const struct btf *bt=
-f,
-> 			      const struct btf_type *def,
-> -			      const struct btf_member *m,
-> -			      const void *data, __u32 *res) {
-> +			      const struct btf_member *m, __u32 *res) {
-> 	const struct btf_type *t =3D skip_mods_and_typedefs(btf, m->type);
-> 	const char *name =3D btf__name_by_offset(btf, m->name_off);
-> -	__u32 int_info =3D *(const __u32 *)(const void *)(t + 1);
-> +	const struct btf_array *arr_info;
-> +	const struct btf_type *arr_t;
->=20
-> -	if (BTF_INFO_KIND(t->info) !=3D BTF_KIND_INT) {
-> -		pr_warning("map '%s': attr '%s': expected INT, got %u.\n",
-> +	if (BTF_INFO_KIND(t->info) !=3D BTF_KIND_PTR) {
-> +		pr_warning("map '%s': attr '%s': expected PTR, got %u.\n",
-> 			   map_name, name, BTF_INFO_KIND(t->info));
-> 		return false;
-> 	}
-> -	if (t->size !=3D 4 || BTF_INT_BITS(int_info) !=3D 32 ||
-> -	    BTF_INT_OFFSET(int_info)) {
-> -		pr_warning("map '%s': attr '%s': expected 32-bit non-bitfield integer,=
- "
-> -			   "got %u-byte (%d-bit) one with bit offset %d.\n",
-> -			   map_name, name, t->size, BTF_INT_BITS(int_info),
-> -			   BTF_INT_OFFSET(int_info));
-> -		return false;
-> -	}
-> -	if (BTF_INFO_KFLAG(def->info) && BTF_MEMBER_BITFIELD_SIZE(m->offset)) {
-> -		pr_warning("map '%s': attr '%s': bitfield is not supported.\n",
-> -			   map_name, name);
-> +
-> +	arr_t =3D btf__type_by_id(btf, t->type);
-> +	if (!arr_t) {
-> +		pr_warning("map '%s': attr '%s': type [%u] not found.\n",
-> +			   map_name, name, t->type);
-> 		return false;
-> 	}
-> -	if (m->offset % 32) {
-> -		pr_warning("map '%s': attr '%s': unaligned fields are not supported.\n=
-",
-> -			   map_name, name);
-> +	if (BTF_INFO_KIND(arr_t->info) !=3D BTF_KIND_ARRAY) {
-> +		pr_warning("map '%s': attr '%s': expected ARRAY, got %u.\n",
-> +			   map_name, name, BTF_INFO_KIND(arr_t->info));
-> 		return false;
-> 	}
-> -
-> -	*res =3D *(const __u32 *)(data + m->offset / 8);
-> +	arr_info =3D (const void *)(arr_t + 1);
-> +	*res =3D arr_info->nelems;
-> 	return true;
-> }
->=20
-> @@ -1074,7 +1074,6 @@ static int bpf_object__init_user_btf_map(struct bpf=
-_object *obj,
-> 	const struct btf_var_secinfo *vi;
-> 	const struct btf_var *var_extra;
-> 	const struct btf_member *m;
-> -	const void *def_data;
-> 	const char *map_name;
-> 	struct bpf_map *map;
-> 	int vlen, i;
-> @@ -1131,7 +1130,6 @@ static int bpf_object__init_user_btf_map(struct bpf=
-_object *obj,
-> 	pr_debug("map '%s': at sec_idx %d, offset %zu.\n",
-> 		 map_name, map->sec_idx, map->sec_offset);
->=20
-> -	def_data =3D data->d_buf + vi->offset;
-> 	vlen =3D BTF_INFO_VLEN(def->info);
-> 	m =3D (const void *)(def + 1);
-> 	for (i =3D 0; i < vlen; i++, m++) {
-> @@ -1144,19 +1142,19 @@ static int bpf_object__init_user_btf_map(struct b=
-pf_object *obj,
-> 		}
-> 		if (strcmp(name, "type") =3D=3D 0) {
-> 			if (!get_map_field_int(map_name, obj->btf, def, m,
-> -					       def_data, &map->def.type))
-> +					       &map->def.type))
-> 				return -EINVAL;
-> 			pr_debug("map '%s': found type =3D %u.\n",
-> 				 map_name, map->def.type);
-> 		} else if (strcmp(name, "max_entries") =3D=3D 0) {
-> 			if (!get_map_field_int(map_name, obj->btf, def, m,
-> -					       def_data, &map->def.max_entries))
-> +					       &map->def.max_entries))
-> 				return -EINVAL;
-> 			pr_debug("map '%s': found max_entries =3D %u.\n",
-> 				 map_name, map->def.max_entries);
-> 		} else if (strcmp(name, "map_flags") =3D=3D 0) {
-> 			if (!get_map_field_int(map_name, obj->btf, def, m,
-> -					       def_data, &map->def.map_flags))
-> +					       &map->def.map_flags))
-> 				return -EINVAL;
-> 			pr_debug("map '%s': found map_flags =3D %u.\n",
-> 				 map_name, map->def.map_flags);
-> @@ -1164,7 +1162,7 @@ static int bpf_object__init_user_btf_map(struct bpf=
-_object *obj,
-> 			__u32 sz;
->=20
-> 			if (!get_map_field_int(map_name, obj->btf, def, m,
-> -					       def_data, &sz))
-> +					       &sz))
-> 				return -EINVAL;
-> 			pr_debug("map '%s': found key_size =3D %u.\n",
-> 				 map_name, sz);
-> @@ -1207,7 +1205,7 @@ static int bpf_object__init_user_btf_map(struct bpf=
-_object *obj,
-> 			__u32 sz;
->=20
-> 			if (!get_map_field_int(map_name, obj->btf, def, m,
-> -					       def_data, &sz))
-> +					       &sz))
-> 				return -EINVAL;
-> 			pr_debug("map '%s': found value_size =3D %u.\n",
-> 				 map_name, sz);
-> diff --git a/tools/testing/selftests/bpf/bpf_helpers.h b/tools/testing/se=
-lftests/bpf/bpf_helpers.h
-> index 1a5b1accf091..aa5ddf58c088 100644
-> --- a/tools/testing/selftests/bpf/bpf_helpers.h
-> +++ b/tools/testing/selftests/bpf/bpf_helpers.h
-> @@ -8,6 +8,9 @@
->  */
-> #define SEC(NAME) __attribute__((section(NAME), used))
->=20
-> +#define __int(name, val) int (*name)[val]
-> +#define __type(name, val) val *name
-> +
-
-I think we need these two in libbpf.=20
-
-Thanks,
-Song
-
-> /* helper macro to print out debug messages */
-> #define bpf_printk(fmt, ...)				\
-> ({							\
-> --=20
-> 2.17.1
->=20
-
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 43b45d6db36d..34a14c950e60 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -746,6 +746,20 @@ bpf_ctx_narrow_access_ok(u32 off, u32 size, u32 size_default)
+ 	return size <= size_default && (size & (size - 1)) == 0;
+ }
+ 
++static inline bool __bpf_ctx_wide_store_ok(u32 off, u32 size)
++{
++	/* u64 access is aligned and fits into the field size */
++	return off % sizeof(__u64) == 0 && off + sizeof(__u64) <= size;
++}
++
++#define bpf_ctx_wide_store_ok(off, size, type, field) \
++	(size == sizeof(__u64) && \
++	 off >= offsetof(type, field) && \
++	 off < offsetofend(type, field) ? \
++	__bpf_ctx_wide_store_ok(off - offsetof(type, field), \
++				 FIELD_SIZEOF(type, field)) : 0)
++
++
+ #define bpf_classic_proglen(fprog) (fprog->len * sizeof(fprog->filter[0]))
+ 
+ static inline void bpf_prog_lock_ro(struct bpf_prog *fp)
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 2014d76e0d2a..2d3787a439ae 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -6849,6 +6849,16 @@ static bool sock_addr_is_valid_access(int off, int size,
+ 			if (!bpf_ctx_narrow_access_ok(off, size, size_default))
+ 				return false;
+ 		} else {
++			if (bpf_ctx_wide_store_ok(off, size,
++						  struct bpf_sock_addr,
++						  user_ip6))
++				return true;
++
++			if (bpf_ctx_wide_store_ok(off, size,
++						  struct bpf_sock_addr,
++						  msg_src_ip6))
++				return true;
++
+ 			if (size != size_default)
+ 				return false;
+ 		}
+@@ -7689,9 +7699,6 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+ /* SOCK_ADDR_STORE_NESTED_FIELD_OFF() has semantic similar to
+  * SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF() but for store operation.
+  *
+- * It doesn't support SIZE argument though since narrow stores are not
+- * supported for now.
+- *
+  * In addition it uses Temporary Field TF (member of struct S) as the 3rd
+  * "register" since two registers available in convert_ctx_access are not
+  * enough: we can't override neither SRC, since it contains value to store, nor
+@@ -7699,7 +7706,7 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+  * instructions. But we need a temporary place to save pointer to nested
+  * structure whose field we want to store to.
+  */
+-#define SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, OFF, TF)		       \
++#define SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, SIZE, OFF, TF)	       \
+ 	do {								       \
+ 		int tmp_reg = BPF_REG_9;				       \
+ 		if (si->src_reg == tmp_reg || si->dst_reg == tmp_reg)	       \
+@@ -7710,8 +7717,7 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+ 				      offsetof(S, TF));			       \
+ 		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(S, F), tmp_reg,	       \
+ 				      si->dst_reg, offsetof(S, F));	       \
+-		*insn++ = BPF_STX_MEM(					       \
+-			BPF_FIELD_SIZEOF(NS, NF), tmp_reg, si->src_reg,	       \
++		*insn++ = BPF_STX_MEM(SIZE, tmp_reg, si->src_reg,	       \
+ 			bpf_target_off(NS, NF, FIELD_SIZEOF(NS, NF),	       \
+ 				       target_size)			       \
+ 				+ OFF);					       \
+@@ -7723,8 +7729,8 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+ 						      TF)		       \
+ 	do {								       \
+ 		if (type == BPF_WRITE) {				       \
+-			SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, OFF,    \
+-							 TF);		       \
++			SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, SIZE,   \
++							 OFF, TF);	       \
+ 		} else {						       \
+ 			SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF(		       \
+ 				S, NS, F, NF, SIZE, OFF);  \
