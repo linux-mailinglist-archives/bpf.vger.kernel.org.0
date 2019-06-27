@@ -2,102 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E594458739
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 18:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B295876C
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 18:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726440AbfF0Qhd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Jun 2019 12:37:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726315AbfF0Qhd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Jun 2019 12:37:33 -0400
-Received: from localhost (unknown [89.205.136.226])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0F58208E3;
-        Thu, 27 Jun 2019 16:37:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561653452;
-        bh=KY/UJMcTJXGMQaBcjxINfMIIu2a6rYUw7n7Ve0Eub8w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dqZ3xjiJ9Jyjx6YPJHod2QEUsNradGsE9ClL2z7Gx54xGTjhkkHm25lz6oTh2BcWN
-         OTSPQEaef22gwB+NwdcZpNTNL4d+Nsf+Eos0Pqr/a9499DYGVkMHjvE5G6it2y7lvS
-         XOAWBiYTamYzNjhy9ll+XkB8vmqK+W7gjA9NbSZU=
-Date:   Fri, 28 Jun 2019 00:37:23 +0800
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "jannh@google.com" <jannh@google.com>
-Subject: Re: [PATCH bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-Message-ID: <20190627163723.GA9643@kroah.com>
-References: <20190625182303.874270-1-songliubraving@fb.com>
- <20190625182303.874270-2-songliubraving@fb.com>
- <9bc166ca-1ef0-ee1e-6306-6850d4008174@iogearbox.net>
- <5A472047-F329-43C3-9DBC-9BCFC0A19F1C@fb.com>
- <20190627000830.GB527@kroah.com>
- <94404006-0D7E-4226-9167-B1DFAF7FEB2A@fb.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <94404006-0D7E-4226-9167-B1DFAF7FEB2A@fb.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+        id S1726405AbfF0QmO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jun 2019 12:42:14 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:26335 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726470AbfF0QmN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Jun 2019 12:42:13 -0400
+Received: from grover.flets-west.jp (softbank126125154139.bbtec.net [126.125.154.139]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id x5RGdDPu001384;
+        Fri, 28 Jun 2019 01:39:13 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com x5RGdDPu001384
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1561653555;
+        bh=gmui0wDo25dBFORH/YJIka6km4EHEw6EORwEfx2o9yQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LHdsJdpohHEYXa83KNz44gcdbSGWwuH8/i52iXtlPRu1GaI0q1AIx+uhiZPjHD+z5
+         DuAejfYBz1ERCd2/UEO+AX31hXfRB+q54megCy3CibiEP6HvQxVWjnWOs45HCaF/1v
+         svegg5xjoWH1Nyji+k19J2kFhp8cBCa3WLF4tFizjrni8vK+F5L1uhpXRV3iLegiR5
+         10g+kzx64nxuVStvUP5W0JRs+1HhG7fKuerU2btKzoJvU2KSNdGHewmxZAQ7sXFeN6
+         9Ka0JHlHITKQRFO42QeQ+Z1F0cFcDwb6auRWANJTCWTkPeJI9xac1Jcl7bd/3v1Z3B
+         JmLIbr58SXI/Q==
+X-Nifty-SrcIP: [126.125.154.139]
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Jani Nikula <jani.nikula@intel.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Tony Luck <tony.luck@intel.com>, linux-doc@vger.kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        linux-riscv@lists.infradead.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        xdp-newbies@vger.kernel.org, Anton Vorontsov <anton@enomsg.org>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Colin Cross <ccross@android.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kees Cook <keescook@chromium.org>,
+        Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH v3 0/4] Compile-test UAPI and kernel headers
+Date:   Fri, 28 Jun 2019 01:38:58 +0900
+Message-Id: <20190627163903.28398-1-yamada.masahiro@socionext.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 27, 2019 at 01:00:03AM +0000, Song Liu wrote:
-> 
-> 
-> > On Jun 26, 2019, at 5:08 PM, Greg KH <gregkh@linuxfoundation.org> wrote:
-> > 
-> > On Wed, Jun 26, 2019 at 03:17:47PM +0000, Song Liu wrote:
-> >>>> +static struct miscdevice bpf_dev = {
-> >>>> +	.minor		= MISC_DYNAMIC_MINOR,
-> >>>> +	.name		= "bpf",
-> >>>> +	.fops		= &bpf_chardev_ops,
-> >>>> +	.mode		= 0440,
-> >>>> +	.nodename	= "bpf",
-> >>> 
-> >>> Here's what kvm does:
-> >>> 
-> >>> static struct miscdevice kvm_dev = {
-> >>>       KVM_MINOR,
-> >>>       "kvm",
-> >>>       &kvm_chardev_ops,
-> >>> };
-> > 
-> > Ick, I thought we converted all of these to named initializers a long
-> > time ago :)
-> > 
-> >>> Is there an actual reason that mode is not 0 by default in bpf case? Why
-> >>> we need to define nodename?
-> >> 
-> >> Based on my understanding, mode of 0440 is what we want. If we leave it 
-> >> as 0, it will use default value of 0600. I guess we can just set it to 
-> >> 0440, as user space can change it later anyway. 
-> > 
-> > Don't rely on userspace changing it, set it to what you want the
-> > permissions to be in the kernel here, otherwise you have to create a new
-> > udev rule and get it merged into all of the distros.  Just do it right
-> > the first time and there is no need for it.
-> > 
-> > What is wrong with 0600 for this?  Why 0440?
-> 
-> We would like root to own the device, and let users in a certain group 
-> to be able to open it. So 0440 is what we need. 
+1/4: Compile-test exported headers (reworked in v2)
 
-But you are doing a "write" ioctl here, right?  So don't you really need
-0660 at the least?  And if you "know" the group id, I think you can
-specify it too so udev doesn't have to do a ton of work, but that only
-works for groups that all distros number the same.
+2/4: fix a flaw I noticed when I was working on this series.
+     Avoid generating intermediate wrappers.
 
-And why again is this an ioctl instead of a syscall?  What is so magic
-about the file descriptor here?
+3/4: maybe useful for 4/4 and in some other places.
+     Add header-test-pattern-y syntax.
 
-thanks
+4/4: Compile-test kernel-space headers in include/.
+     v2: compile as many headers as possible.
+     v3: exclude more headers causing build errors
 
-greg k-h
+
+Masahiro Yamada (4):
+  kbuild: compile-test UAPI headers to ensure they are self-contained
+  kbuild: do not create wrappers for header-test-y
+  kbuild: support header-test-pattern-y
+  kbuild: compile-test kernel headers to ensure they are self-contained
+
+ .gitignore                         |    1 -
+ Documentation/dontdiff             |    1 -
+ Documentation/kbuild/makefiles.txt |   13 +-
+ Makefile                           |    4 +-
+ include/Kbuild                     | 1250 ++++++++++++++++++++++++++++
+ init/Kconfig                       |   22 +
+ scripts/Makefile.build             |   10 +-
+ scripts/Makefile.lib               |   13 +-
+ scripts/cc-system-headers.sh       |    8 +
+ usr/.gitignore                     |    1 -
+ usr/Makefile                       |    2 +
+ usr/include/.gitignore             |    3 +
+ usr/include/Makefile               |  134 +++
+ 13 files changed, 1449 insertions(+), 13 deletions(-)
+ create mode 100644 include/Kbuild
+ create mode 100755 scripts/cc-system-headers.sh
+ create mode 100644 usr/include/.gitignore
+ create mode 100644 usr/include/Makefile
+
+-- 
+2.17.1
+
