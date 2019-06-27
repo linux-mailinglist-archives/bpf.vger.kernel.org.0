@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFD858BA5
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 22:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 684E758BA1
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 22:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbfF0UZH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Jun 2019 16:25:07 -0400
-Received: from mail-pg1-f201.google.com ([209.85.215.201]:46788 "EHLO
-        mail-pg1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726614AbfF0UYl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Jun 2019 16:24:41 -0400
-Received: by mail-pg1-f201.google.com with SMTP id s195so1886699pgs.13
-        for <bpf@vger.kernel.org>; Thu, 27 Jun 2019 13:24:41 -0700 (PDT)
+        id S1726513AbfF0UZE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jun 2019 16:25:04 -0400
+Received: from mail-pf1-f202.google.com ([209.85.210.202]:54470 "EHLO
+        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726647AbfF0UYn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Jun 2019 16:24:43 -0400
+Received: by mail-pf1-f202.google.com with SMTP id c17so2257504pfb.21
+        for <bpf@vger.kernel.org>; Thu, 27 Jun 2019 13:24:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=ZJbz/C3e+sb5O/hI+5UE82UL50nEjTNC67t2N91YPtY=;
-        b=lCTviplsuxpS22jrClW1mL6aRTLXQXF+1uQJl4GrP6ELiwrIM8+E29QIF7dhjFLGfi
-         L6OYMLcLR2eAiHqKQuu83jwzMnjqC5d8Apw/sEF4B89WA6KsBhICw+c7ZFjW194I2AKo
-         vxPW6ly4lbZGqGoPxV6yi0G/Vr/JY/b2bQILBmVoE2LEgToG3BoC8Bms2fPRezw3FAs6
-         rs55e9Cxo/7e9nAqAkEepnKDI9q6NhBx6QmhfqaQ900R2wEifq7T8W4DPfu6MGZT+Khf
-         btHFXN3aHvhR6hYd745qdaYxuXS86cfNwyWHwJRzvRmhaRolW+lpmW328cecxh0/DACC
-         ucIQ==
+        bh=Qx6zTmWl7cnoAmaxAa2U3PPxEaWd7SQs0w5RBVcvKMg=;
+        b=ZnXGrg/aKIIKDp6JCvIE36LhXe8OA/r2R56GEOXCcPwriAo1jlO0FIzmIrwoTxDw76
+         ra+QLeGO+fg1Wv5c7XdTWn9tnRCQtDvJ42Rz8GNNADc7349KibWK6OiEdRjS1xBtVNfs
+         LCghjBV+8KURbqaWR0yjtXBT1MUJSZW1xLBAvvJcZeyt367gIvDQ2RCd/yNF7FhO3TTP
+         3utIh4ij4wqpttrTr5zHm4VNkKigjhsqPTyWCHsl/xKIa2sHteRRmGJC23g9rCVdHw20
+         APJXPEOAlAtyQMeCqidLrog+2jpeD+p9+U2QhaTmnvchzxrDKYMgFtqQMNogs1HzfYU0
+         EM0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=ZJbz/C3e+sb5O/hI+5UE82UL50nEjTNC67t2N91YPtY=;
-        b=dV9T+uO1wZohvFe7HfKM8ihqMYOJkWnlVyryOvVb8NvZ4K1FgLO9PcwyJXNoLtI2fF
-         uEHVUUB1fVjJFghLgBhCxo5JuYqf5qrfvwI2QbUc+KBOclQIZwU1hUn/KDk5DxODyr42
-         K9SyhTqpNrl9s9RvtbbdZB/tj6VuqHzXpGzI2VyQEeaPIDWGG2EY5shs+F4JDBrpudAG
-         KHh2V/3ybZBoGx/x9ywHf/ytfKn4psslPmz9bQNbHbVIKh7E0FuCipyZZpScFmzKR97p
-         +Uicv5pAkeiLQtnXP7fV9sMiENghGXvthLctd19JyAVyuoeKD5P8o2uok9AoOBIcCElw
-         6wgQ==
-X-Gm-Message-State: APjAAAWVkbeTLmUuCv002xoTUDijYdwbdnZMV/jVRts87OXplT8PVi4B
-        GiUWH8nTnyPelQ5IXywS50m2/81Zt7fa
-X-Google-Smtp-Source: APXvYqxPs9/hX31AxgdEdEA6GWdFRzA3e8KBAWPjSOpGxJSpn8o6xpvG+ON50dqck6rcViGHvFWvoMlbXgXp
-X-Received: by 2002:a63:5c1c:: with SMTP id q28mr5467792pgb.288.1561667080410;
- Thu, 27 Jun 2019 13:24:40 -0700 (PDT)
-Date:   Thu, 27 Jun 2019 13:24:14 -0700
+        bh=Qx6zTmWl7cnoAmaxAa2U3PPxEaWd7SQs0w5RBVcvKMg=;
+        b=GycqpeXEAXyvOWRcIN8AWXREEGq5N6nmYRzBQAq7rlOWMTozL2kkukxbdN+G/TGImF
+         0yAXSqAbzBBJ4yuVAuVDIYYbobo+O/cZhAW+4Mm0w+QKoQ9FGPDAwlEKYgQIkkYz6wW0
+         i5yHN7ENoCXMH4h9xSjDwq1Ly8W6iZKFCSB6kaChDivGjJCaqKJlPUnNgze3txDM/a4B
+         1Kl4t586YT1Jo6SWIyBuItTSP683yaxVLeMeUv70JeSBvxCN/XINmIuiZZO929NIap6w
+         lme0r1sbEQl7ek/b1TQe3rLhbcWngQ9Szg09CZsKxxgTZsWm0dP91qbOj5wjsEn1IFer
+         8YfA==
+X-Gm-Message-State: APjAAAXn6whjKgZUvptZZ9fKrUQE+kaLWe95WbkluJfiz+cjeP86VNee
+        39iB5PRO2dqYJYrcjdXPTtF7b3qi4ylR
+X-Google-Smtp-Source: APXvYqwO73/Wf8OjbR7AguARbIPpJbr9Skn1f30wxVASaYDnFEc20/KJItyzMesHlRyzSkcB+UUSWMjN07l/
+X-Received: by 2002:a63:d354:: with SMTP id u20mr5374534pgi.129.1561667082596;
+ Thu, 27 Jun 2019 13:24:42 -0700 (PDT)
+Date:   Thu, 27 Jun 2019 13:24:15 -0700
 In-Reply-To: <20190627202417.33370-1-brianvv@google.com>
-Message-Id: <20190627202417.33370-4-brianvv@google.com>
+Message-Id: <20190627202417.33370-5-brianvv@google.com>
 Mime-Version: 1.0
 References: <20190627202417.33370-1-brianvv@google.com>
 X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
-Subject: [RFC PATCH bpf-next v2 3/6] bpf: keep bpf.h in sync with tools/
+Subject: [RFC PATCH bpf-next v2 4/6] libbpf: support BPF_MAP_DUMP command
 From:   Brian Vazquez <brianvv@google.com>
 To:     Brian Vazquez <brianvv.kernel@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -63,41 +63,82 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adds bpf_attr.dump structure to libbpf.
+Make libbpf aware of new BPF_MAP_DUMP command and add bpf_map_dump and
+bpf_map_dump_flags to use them from the library.
 
 Suggested-by: Stanislav Fomichev <sdf@google.com>
 Signed-off-by: Brian Vazquez <brianvv@google.com>
 ---
- tools/include/uapi/linux/bpf.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ tools/lib/bpf/bpf.c      | 28 ++++++++++++++++++++++++++++
+ tools/lib/bpf/bpf.h      |  4 ++++
+ tools/lib/bpf/libbpf.map |  2 ++
+ 3 files changed, 34 insertions(+)
 
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index b077507efa3f3..1d753958874df 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -106,6 +106,7 @@ enum bpf_cmd {
- 	BPF_TASK_FD_QUERY,
- 	BPF_MAP_LOOKUP_AND_DELETE_ELEM,
- 	BPF_MAP_FREEZE,
-+	BPF_MAP_DUMP,
- };
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index c7d7993c44bb0..c1139b7db756a 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -368,6 +368,34 @@ int bpf_map_update_elem(int fd, const void *key, const void *value,
+ 	return sys_bpf(BPF_MAP_UPDATE_ELEM, &attr, sizeof(attr));
+ }
  
- enum bpf_map_type {
-@@ -385,6 +386,14 @@ union bpf_attr {
- 		__u64		flags;
- 	};
- 
-+	struct { /* struct used by BPF_MAP_DUMP command */
-+		__u32		map_fd;
-+		__aligned_u64	prev_key;
-+		__aligned_u64	buf;
-+		__aligned_u64	buf_len; /* input/output: len of buf */
-+		__u64		flags;
-+	} dump;
++int bpf_map_dump(int fd, const void *prev_key, void *buf, void *buf_len)
++{
++	union bpf_attr attr;
 +
- 	struct { /* anonymous struct used by BPF_PROG_LOAD command */
- 		__u32		prog_type;	/* one of enum bpf_prog_type */
- 		__u32		insn_cnt;
++	memset(&attr, 0, sizeof(attr));
++	attr.dump.map_fd = fd;
++	attr.dump.prev_key = ptr_to_u64(prev_key);
++	attr.dump.buf = ptr_to_u64(buf);
++	attr.dump.buf_len = ptr_to_u64(buf_len);
++
++	return sys_bpf(BPF_MAP_DUMP, &attr, sizeof(attr));
++}
++
++int bpf_map_dump_flags(int fd, const void *prev_key, void *buf, void *buf_len,
++		       __u64 flags)
++{
++	union bpf_attr attr;
++
++	memset(&attr, 0, sizeof(attr));
++	attr.dump.map_fd = fd;
++	attr.dump.prev_key = ptr_to_u64(prev_key);
++	attr.dump.buf = ptr_to_u64(buf);
++	attr.dump.buf_len = ptr_to_u64(buf_len);
++	attr.dump.flags = flags;
++
++	return sys_bpf(BPF_MAP_DUMP, &attr, sizeof(attr));
++}
++
+ int bpf_map_lookup_elem(int fd, const void *key, void *value)
+ {
+ 	union bpf_attr attr;
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index ff42ca043dc8f..86496443440e9 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -112,6 +112,10 @@ LIBBPF_API int bpf_verify_program(enum bpf_prog_type type,
+ LIBBPF_API int bpf_map_update_elem(int fd, const void *key, const void *value,
+ 				   __u64 flags);
+ 
++LIBBPF_API int bpf_map_dump(int fd, const void *prev_key, void *buf,
++				void *buf_len);
++LIBBPF_API int bpf_map_dump_flags(int fd, const void *prev_key, void *buf,
++				void *buf_len, __u64 flags);
+ LIBBPF_API int bpf_map_lookup_elem(int fd, const void *key, void *value);
+ LIBBPF_API int bpf_map_lookup_elem_flags(int fd, const void *key, void *value,
+ 					 __u64 flags);
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 2c6d835620d25..e7641773cfb0f 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -173,4 +173,6 @@ LIBBPF_0.0.4 {
+ 		btf__parse_elf;
+ 		bpf_object__load_xattr;
+ 		libbpf_num_possible_cpus;
++		bpf_map_dump;
++		bpf_map_dump_flags;
+ } LIBBPF_0.0.3;
 -- 
 2.22.0.410.gd8fdbe21b5-goog
 
