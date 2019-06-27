@@ -2,56 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 02AD9581B0
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 13:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D345825B
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 14:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbfF0Lgp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Jun 2019 07:36:45 -0400
-Received: from mga04.intel.com ([192.55.52.120]:32844 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726429AbfF0Lgp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Jun 2019 07:36:45 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Jun 2019 04:36:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.63,423,1557212400"; 
-   d="scan'208";a="183430789"
-Received: from jnikula-mobl3.fi.intel.com (HELO localhost) ([10.237.66.150])
-  by fmsmga001.fm.intel.com with ESMTP; 27 Jun 2019 04:36:37 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>,
-        linux-kbuild@vger.kernel.org
-Cc:     Sam Ravnborg <sam@ravnborg.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Tony Luck <tony.luck@intel.com>, linux-doc@vger.kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        linux-riscv@lists.infradead.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        xdp-newbies@vger.kernel.org, Anton Vorontsov <anton@enomsg.org>,
+        id S1726780AbfF0MSj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jun 2019 08:18:39 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:53820 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726725AbfF0MSj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Jun 2019 08:18:39 -0400
+Received: by mail-wm1-f66.google.com with SMTP id x15so5519817wmj.3
+        for <bpf@vger.kernel.org>; Thu, 27 Jun 2019 05:18:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=Zdd4Pp3dYlawoEQsjCTjL1Bm9eBCVbOZ/q37LUapnaQ=;
+        b=k8ywuutI5JJ1zOZBUSRsiA6wF2HW/8zzohHwXhnHqAE4EOXoGZ6iion4AWL7kpTwR6
+         qAY+CpaQo3wjcaUtdet5Ew+axkm4VjOnlrKl9HBABghASKurGPUynYSpaOP4PU+6mece
+         z7xORIC5BZJAMxRKJwKl4WQ6E0fiVnWmR9t39mGB2/DytymcTWatNM/SRNdT8DoCixeQ
+         eudI3hm86XZDcojtmkzCOfoFGiokZRxpQQutxIzHUgMQAA339QF1UW1S2h7QIsQlNetS
+         1vsloMKS2mL8TAN9kbK+Zjz8hEQZ7WBEOJKvJIoBDSTqwV5KXBqHBppJN9/PdbPQ+IiX
+         mvDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=Zdd4Pp3dYlawoEQsjCTjL1Bm9eBCVbOZ/q37LUapnaQ=;
+        b=uiwvCqHy2zineo01Xqmv8/Jnys1AjVyXG6Y0NB64fboiuHzjS6U0AA1wPn55FClfoM
+         mKV2rLShIh7Rm5dRLTf7ksuFCK82Apq7lOujfrhCYX/yEyR/u9umuPJJERoaA+/C9r1s
+         43X7gmZjrMbvZMg8GDyKWhbsk35ZV05Dc21CKYXoROEznm11jvpd0XmH5PaegoCUHCLW
+         2tbEua5ZbM1iTF6cLenelgpS+7O3Zd1lYN8b0WM1wy7KSbXAtgQ6D3cNI8oid3/KAAsg
+         SeJDKyINkF4W/sqql5qowLILy7S4UEA9d+OAqTjM2uQiyvhoao+v3tt4F503rxDIj1Mp
+         u06g==
+X-Gm-Message-State: APjAAAV3tiHXWjiu/xP2Epio6+nmGF9hT71hXK1xLPeUnz6BZpiVu0ED
+        9Bjp/JZoO40FF8wT9Y3w5qao8bMoQiA=
+X-Google-Smtp-Source: APXvYqwP5/KqbmGqmRh+sNx5VCR+6gZxpNd+GAZ3G0BUulrp4g0b6pfWHwk+3cirqW7BcslJWBkoWg==
+X-Received: by 2002:a1c:7a01:: with SMTP id v1mr3202693wmc.10.1561637917201;
+        Thu, 27 Jun 2019 05:18:37 -0700 (PDT)
+Received: from LAPTOP-V3S7NLPL ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id l19sm3291337wmj.33.2019.06.27.05.18.36
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 27 Jun 2019 05:18:36 -0700 (PDT)
+References: <20190626231257.14495-1-lukenels@cs.washington.edu>
+User-agent: mu4e 0.9.18; emacs 25.2.2
+From:   Jiong Wang <jiong.wang@netronome.com>
+To:     Luke Nelson <lukenels@cs.washington.edu>
+Cc:     linux-kernel@vger.kernel.org, Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>,
         Palmer Dabbelt <palmer@sifive.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
         Albert Ou <aou@eecs.berkeley.edu>,
-        Colin Cross <ccross@android.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kees Cook <keescook@chromium.org>,
-        Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] Compile-test UAPI and kernel headers
-In-Reply-To: <20190627014617.600-1-yamada.masahiro@socionext.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20190627014617.600-1-yamada.masahiro@socionext.com>
-Date:   Thu, 27 Jun 2019 14:39:24 +0300
-Message-ID: <87y31np89f.fsf@intel.com>
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        =?utf-8?B?QmrDtnJu?= =?utf-8?B?IFTDtnBlbA==?= 
+        <bjorn.topel@gmail.com>, linux-riscv@lists.infradead.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 bpf-next] RV32G eBPF JIT
+In-reply-to: <20190626231257.14495-1-lukenels@cs.washington.edu>
+Date:   Thu, 27 Jun 2019 13:18:35 +0100
+Message-ID: <87y31nuspw.fsf@netronome.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
@@ -59,71 +70,49 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 27 Jun 2019, Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
-> 1/4: reworked v2.
->
-> 2/4: fix a flaw I noticed when I was working on this series
->
-> 3/4: maybe useful for 4/4 and in some other places
->
-> 4/4: v2. compile as many headers as possible.
->
->
-> Changes in v2:
->  - Add CONFIG_CPU_{BIG,LITTLE}_ENDIAN guard to avoid build error
->  - Use 'header-test-' instead of 'no-header-test'
->  - Avoid weird 'find' warning when cleaning
->   - New patch
->   - New patch
->   - Add everything to test coverage, and exclude broken ones
->   - Rename 'Makefile' to 'Kbuild'
->   - Add CONFIG_KERNEL_HEADER_TEST option
->
-> Masahiro Yamada (4):
->   kbuild: compile-test UAPI headers to ensure they are self-contained
->   kbuild: do not create wrappers for header-test-y
->   kbuild: support header-test-pattern-y
->   kbuild: compile-test kernel headers to ensure they are self-contained
 
-[responding here because I didn't receive the actual patch]
+Luke Nelson writes:
 
-This looks like it's doing what it's supposed to, but I ran into a bunch
-of build fails with CONFIG_OF=n. Sent a fix to one [1], but stopped at
-the next. Looks like you'll have to exclude more. And I'm pretty sure
-we'll uncover more configurations where this will fail.
+<snip>
+> +
+> +static int emit_insn(const struct bpf_insn *insn,
+> +		     struct rv_jit_context *ctx,
+> +		     bool extra_pass)
+> +{
+> +	int rvoff, i = insn - ctx->prog->insnsi;
+> +	u8 code = insn->code;
+> +	s16 off = insn->off;
+> +	s32 imm = insn->imm;
+> +
+> +	const s8 *dst = bpf2rv32[insn->dst_reg];
+> +	const s8 *src = bpf2rv32[insn->src_reg];
+> +	const s8 *tmp1 = bpf2rv32[TMP_REG_1];
+> +	const s8 *tmp2 = bpf2rv32[TMP_REG_2];
+> +
+> +	switch (code) {
+> +	case BPF_ALU64 | BPF_MOV | BPF_X:
+> +		if (imm == 1) {
+> +			/* Special mov32 for zext */
+> +			emit_rv32_zext64(dst, ctx);
+> +			break;
+> +		}
 
-But I do applaud the goal, and I'm committed to making all include/drm
-headers self-contained. I wouldn't block this based on the issues, it's
-pretty much the only way to expose them and get them fixed/excluded, and
-it's behind a config knob after all.
+Thanks for adding the 32-bit opt!
 
-With the caveat that I didn't finish the build, but OTOH tested the
-rainy day scenario and had the patch find issues it's meant to find:
+Just want to mention ZEXT is a special mov32, see include/linux/filter.h:
 
-Tested-by: Jani Nikula <jani.nikula@intel.com>
+#define BPF_ZEXT_REG(DST)
+        ((struct bpf_insn) {
+                 .code  = BPF_ALU | BPF_MOV | BPF_X
 
+So it can't be BPF_ALU64. It is safe to remove this chunk of code.
 
-[1] http://patchwork.freedesktop.org/patch/msgid/20190627110103.7539-1-jani.nikula@intel.com
+For backend like arm, riscv etc, they are grouping several CASE label
+together and are sharing code. imm == 1 check is done inside the shared
+code to avoid moving code around given imm == 1 can't be true for ALU64 as
+if there is such insn (register format using imm) it should have been
+rejected by verifier. While mov32 variant is inserted by verifier at very
+late stage after main verification finished.
 
->
->  .gitignore                         |    1 -
->  Documentation/dontdiff             |    1 -
->  Documentation/kbuild/makefiles.txt |   13 +-
->  Makefile                           |    4 +-
->  include/Kbuild                     | 1134 ++++++++++++++++++++++++++++
->  init/Kconfig                       |   22 +
->  scripts/Makefile.build             |   10 +-
->  scripts/Makefile.lib               |   12 +-
->  scripts/cc-system-headers.sh       |    8 +
->  usr/.gitignore                     |    1 -
->  usr/Makefile                       |    2 +
->  usr/include/.gitignore             |    3 +
->  usr/include/Makefile               |  133 ++++
->  13 files changed, 1331 insertions(+), 13 deletions(-)
->  create mode 100644 include/Kbuild
->  create mode 100755 scripts/cc-system-headers.sh
->  create mode 100644 usr/include/.gitignore
->  create mode 100644 usr/include/Makefile
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Regards,
+Jiong
