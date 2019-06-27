@@ -2,44 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E328C57899
-	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 02:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA35457878
+	for <lists+bpf@lfdr.de>; Thu, 27 Jun 2019 02:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727248AbfF0Abn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jun 2019 20:31:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35014 "EHLO mail.kernel.org"
+        id S1727364AbfF0AcF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jun 2019 20:32:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727222AbfF0Abf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jun 2019 20:31:35 -0400
+        id S1727358AbfF0AcF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jun 2019 20:32:05 -0400
 Received: from sasha-vm.mshome.net (unknown [107.242.116.147])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EE5A217D7;
-        Thu, 27 Jun 2019 00:31:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BDF42083B;
+        Thu, 27 Jun 2019 00:32:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561595495;
-        bh=qrsJPgHBtxbzDoKBPZTVHY0Kv1gtUDUCCjRPB6wZcqI=;
+        s=default; t=1561595524;
+        bh=KdG4ys/EbdwGWGorWXkNHp73Xx5QtYhHJc3V328rR0o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KfOLwn1q/M1yAUMXO5LEtRVgCNhhdd8xcxjCRgjx/HGcduTkAnet5orIpvZtJ091X
-         mQRlaLdJZ0Of/SaI2b3GHTnMSMhCj9TzWxazmwwSfCKYUhPXg7ijWv+5o8JkPAKE7i
-         N+v/SkimCbyifDvqLx7gAJhAjuVJsbrW+ReHpW4E=
+        b=fFI43Isv7FKdohQyCaepzVXuiAcEw3XGY5FSjcdqf1uie2c3Ok6DDLTM9SXcMo0Z3
+         VpdjWX7keLe7DfRM3O1zFetNrBdOPSW4QfyQomhO/D4/Jjm9kDOjome8s5PnU7TwCR
+         CS8Cvpkja1jv4HqDqMS3Txv3+46fhogbzFel8NVc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
+Cc:     Martin KaFai Lau <kafai@fb.com>, Craig Gallek <kraig@google.com>,
         Song Liu <songliubraving@fb.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
-        Palmer Dabbelt <palmer@sifive.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-riscv@lists.infradead.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.1 24/95] bpf, riscv: clear high 32 bits for ALU32 add/sub/neg/lsh/rsh/arsh
-Date:   Wed, 26 Jun 2019 20:29:09 -0400
-Message-Id: <20190627003021.19867-24-sashal@kernel.org>
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.1 30/95] bpf: udp: ipv6: Avoid running reuseport's bpf_prog from __udp6_lib_err
+Date:   Wed, 26 Jun 2019 20:29:15 -0400
+Message-Id: <20190627003021.19867-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190627003021.19867-1-sashal@kernel.org>
 References: <20190627003021.19867-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -48,103 +45,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Luke Nelson <luke.r.nels@gmail.com>
+From: Martin KaFai Lau <kafai@fb.com>
 
-[ Upstream commit 1e692f09e091bf5c8b38384f297d6dae5dbf0f12 ]
+[ Upstream commit 4ac30c4b3659efac031818c418beb51e630d512d ]
 
-In BPF, 32-bit ALU operations should zero-extend their results into
-the 64-bit registers.
+__udp6_lib_err() may be called when handling icmpv6 message. For example,
+the icmpv6 toobig(type=2).  __udp6_lib_lookup() is then called
+which may call reuseport_select_sock().  reuseport_select_sock() will
+call into a bpf_prog (if there is one).
 
-The current BPF JIT on RISC-V emits incorrect instructions that perform
-sign extension only (e.g., addw, subw) on 32-bit add, sub, lsh, rsh,
-arsh, and neg. This behavior diverges from the interpreter and JITs
-for other architectures.
+reuseport_select_sock() is expecting the skb->data pointing to the
+transport header (udphdr in this case).  For example, run_bpf_filter()
+is pulling the transport header.
 
-This patch fixes the bugs by performing zero extension on the destination
-register of 32-bit ALU operations.
+However, in the __udp6_lib_err() path, the skb->data is pointing to the
+ipv6hdr instead of the udphdr.
 
-Fixes: 2353ecc6f91f ("bpf, riscv: add BPF JIT for RV64G")
-Cc: Xi Wang <xi.wang@gmail.com>
-Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+One option is to pull and push the ipv6hdr in __udp6_lib_err().
+Instead of doing this, this patch follows how the original
+commit 538950a1b752 ("soreuseport: setsockopt SO_ATTACH_REUSEPORT_[CE]BPF")
+was done in IPv4, which has passed a NULL skb pointer to
+reuseport_select_sock().
+
+Fixes: 538950a1b752 ("soreuseport: setsockopt SO_ATTACH_REUSEPORT_[CE]BPF")
+Cc: Craig Gallek <kraig@google.com>
+Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 Acked-by: Song Liu <songliubraving@fb.com>
-Acked-by: Björn Töpel <bjorn.topel@gmail.com>
-Reviewed-by: Palmer Dabbelt <palmer@sifive.com>
+Acked-by: Craig Gallek <kraig@google.com>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/net/bpf_jit_comp.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ net/ipv6/udp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/net/bpf_jit_comp.c b/arch/riscv/net/bpf_jit_comp.c
-index e5c8d675bd6e..426d5c33ea90 100644
---- a/arch/riscv/net/bpf_jit_comp.c
-+++ b/arch/riscv/net/bpf_jit_comp.c
-@@ -751,10 +751,14 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 	case BPF_ALU | BPF_ADD | BPF_X:
- 	case BPF_ALU64 | BPF_ADD | BPF_X:
- 		emit(is64 ? rv_add(rd, rd, rs) : rv_addw(rd, rd, rs), ctx);
-+		if (!is64)
-+			emit_zext_32(rd, ctx);
- 		break;
- 	case BPF_ALU | BPF_SUB | BPF_X:
- 	case BPF_ALU64 | BPF_SUB | BPF_X:
- 		emit(is64 ? rv_sub(rd, rd, rs) : rv_subw(rd, rd, rs), ctx);
-+		if (!is64)
-+			emit_zext_32(rd, ctx);
- 		break;
- 	case BPF_ALU | BPF_AND | BPF_X:
- 	case BPF_ALU64 | BPF_AND | BPF_X:
-@@ -795,14 +799,20 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 	case BPF_ALU | BPF_LSH | BPF_X:
- 	case BPF_ALU64 | BPF_LSH | BPF_X:
- 		emit(is64 ? rv_sll(rd, rd, rs) : rv_sllw(rd, rd, rs), ctx);
-+		if (!is64)
-+			emit_zext_32(rd, ctx);
- 		break;
- 	case BPF_ALU | BPF_RSH | BPF_X:
- 	case BPF_ALU64 | BPF_RSH | BPF_X:
- 		emit(is64 ? rv_srl(rd, rd, rs) : rv_srlw(rd, rd, rs), ctx);
-+		if (!is64)
-+			emit_zext_32(rd, ctx);
- 		break;
- 	case BPF_ALU | BPF_ARSH | BPF_X:
- 	case BPF_ALU64 | BPF_ARSH | BPF_X:
- 		emit(is64 ? rv_sra(rd, rd, rs) : rv_sraw(rd, rd, rs), ctx);
-+		if (!is64)
-+			emit_zext_32(rd, ctx);
- 		break;
+diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
+index 622eeaf5732b..767583c12bf2 100644
+--- a/net/ipv6/udp.c
++++ b/net/ipv6/udp.c
+@@ -516,7 +516,7 @@ int __udp6_lib_err(struct sk_buff *skb, struct inet6_skb_parm *opt,
+ 	struct net *net = dev_net(skb->dev);
  
- 	/* dst = -dst */
-@@ -810,6 +820,8 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 	case BPF_ALU64 | BPF_NEG:
- 		emit(is64 ? rv_sub(rd, RV_REG_ZERO, rd) :
- 		     rv_subw(rd, RV_REG_ZERO, rd), ctx);
-+		if (!is64)
-+			emit_zext_32(rd, ctx);
- 		break;
- 
- 	/* dst = BSWAP##imm(dst) */
-@@ -964,14 +976,20 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 	case BPF_ALU | BPF_LSH | BPF_K:
- 	case BPF_ALU64 | BPF_LSH | BPF_K:
- 		emit(is64 ? rv_slli(rd, rd, imm) : rv_slliw(rd, rd, imm), ctx);
-+		if (!is64)
-+			emit_zext_32(rd, ctx);
- 		break;
- 	case BPF_ALU | BPF_RSH | BPF_K:
- 	case BPF_ALU64 | BPF_RSH | BPF_K:
- 		emit(is64 ? rv_srli(rd, rd, imm) : rv_srliw(rd, rd, imm), ctx);
-+		if (!is64)
-+			emit_zext_32(rd, ctx);
- 		break;
- 	case BPF_ALU | BPF_ARSH | BPF_K:
- 	case BPF_ALU64 | BPF_ARSH | BPF_K:
- 		emit(is64 ? rv_srai(rd, rd, imm) : rv_sraiw(rd, rd, imm), ctx);
-+		if (!is64)
-+			emit_zext_32(rd, ctx);
- 		break;
- 
- 	/* JUMP off */
+ 	sk = __udp6_lib_lookup(net, daddr, uh->dest, saddr, uh->source,
+-			       inet6_iif(skb), inet6_sdif(skb), udptable, skb);
++			       inet6_iif(skb), inet6_sdif(skb), udptable, NULL);
+ 	if (!sk) {
+ 		/* No socket for error: try tunnels before discarding */
+ 		sk = ERR_PTR(-ENOENT);
 -- 
 2.20.1
 
