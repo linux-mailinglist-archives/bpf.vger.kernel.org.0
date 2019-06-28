@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C4A5A57C
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 21:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8E75A58B
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 21:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbfF1Tyn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jun 2019 15:54:43 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:36053 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726762AbfF1Tyn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jun 2019 15:54:43 -0400
-Received: by mail-qt1-f193.google.com with SMTP id p15so7715083qtl.3;
-        Fri, 28 Jun 2019 12:54:42 -0700 (PDT)
+        id S1727094AbfF1T7a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jun 2019 15:59:30 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:39140 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727042AbfF1T7a (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jun 2019 15:59:30 -0400
+Received: by mail-qk1-f196.google.com with SMTP id i125so5925744qkd.6;
+        Fri, 28 Jun 2019 12:59:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Qy8aMOGiDBOvv28OGN/tZqbRVccwkG+kNDj2nWReKTg=;
-        b=tqPYiEeeWx+U7r6aDfqWxIvb1Vt7NSCIAWp6AIIFlDWe+tgM8p6enIDAL27QwDupar
-         qkKRyW49q9m7eBrVClOREG2comgKqi60+85pHzQ8HzrTk7zXx6cTVzGESyyy9EkMTBn9
-         GVGlC178oDUUa1qBfAOylLDauE18AuB30FIlDToNvmiCJP83m3lbHn8A69aOSd/tuRpj
-         wuNtD+d3UDdkH/UEvN3SiGRn2b0Ld1+Rj2iCZUWzmfKDCs5m2W1+UF7hJ9Qsg/uWJlwI
-         RTN9Vf5bBc8jMg49DrUMfqYrZQKBYTDBHd7NmMz/hi05C8kJxWowumBuSP8cAjdwBwYm
-         IZZA==
+        bh=cJhgjCkZpHIUatP2nhlVnCZfaPWiUWPq7d2TqsqKWus=;
+        b=BSVgi8PCscqhEHzoUCCAj7fUlZMyc998nMRDauD0vNUgszL42IienlQOSaTT9ABnpF
+         tWMNstmsJ9IOUL1BVPRA+CEXJaNbAG6QftuHsH91izvjIpFHRQpKEByVaO/7qaA+8C0a
+         xCft1b8wJxJSmMf7SiZUANNkJotYl9HKBswY5guqDycPJ822XMkBqPnJZAg92+tQnQH6
+         MF6/ilhgE3DNE7iSE4EVbM+oUBpRzTpPTZjiSgQXhqsil36X4i+JLGnVcSwUN2R5s7he
+         /EICze3COW5YoLtGggZG7C283taOdk2LZ6h9feweg+uhZLEw3mHi8fgQ6VD3pYExOqnl
+         JRRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Qy8aMOGiDBOvv28OGN/tZqbRVccwkG+kNDj2nWReKTg=;
-        b=P6wUWYuszs2Ymld1Ujvhq09nZOTIxyjOK1XoDKK8gVul0ZBl1x+HLyGr6BYBrVnKam
-         7gSnGiybUXVogR24NhzPNvN1tmSlR6jgWeMvB/fbCDFRIDhFqTEpvsy7Uf5/kib/X4B/
-         y87Ow1vw3zafpprtvVa8r0Ubu6o0vGilyPgrFI3yiv2rIsSMc3ZZHfcJ4rC5E2363oXS
-         /K7eaiZLJGrW3Btm7EJEfSSHhP/lm3vLovNKrWm/4KgDPzjq2S5+aPEbgeUR+7Cvt4Mr
-         9AlThtdrorjyfDYP3vTiQUGcjlHbJxiX3/AiB7o8KwsP3sb2ogiIm1YtEInJHJRBd29c
-         VhPA==
-X-Gm-Message-State: APjAAAXajLETGBlfrMnj958M6Gu5XVvqP5RSSykfidelg+F1Al+EeHvm
-        C3S6elWQqt0HTSJmH5Yn68/CnkwXKipIBP190Xo=
-X-Google-Smtp-Source: APXvYqwt7AhVTJdE47VQiQolzNDoK57iBib/um8nZJEt9V3IGywi+FRFSadjqk3bAf1+fQBzL2iNDo8V7Cjy3pV1WB8=
-X-Received: by 2002:ac8:152:: with SMTP id f18mr9378180qtg.84.1561751682283;
- Fri, 28 Jun 2019 12:54:42 -0700 (PDT)
+        bh=cJhgjCkZpHIUatP2nhlVnCZfaPWiUWPq7d2TqsqKWus=;
+        b=G1K54SJgCnlCM/DZUD3kBNeLupXoOXnysU+2f+aRXIpV+XaC8hYVymQVPzoZHu9nRD
+         1/689s5NG6uumL2SkZgadCCoa8WmANPidVUDxbeXT9dFva7LRugD8xSb7AFP4gn42Otj
+         1TvKAHdKosYq6PK/QQvtoYtyIDu7wOs6aOaqYbYwj0mc05spB2jXobYwk0StxX22231k
+         OyqrjcnJp2/K31y/+vstFLIhU8m29UXuUKvfFeBlb/6einL7Pm8Je+rXjGQZqhCrHsr7
+         cnBIpn+TXSGHhYWzu7sXuWip3/QB4S5cBs61G3ysElLWCVJ1LSfR5NZAFfG1AdvVPXzL
+         yjFA==
+X-Gm-Message-State: APjAAAWT6nmhi/a2AoHpNuuBCJIs/opK9zauUzafQsz7pfOkZDKoBVwF
+        ySTnP20BLv5bSq9Me7NraJTLconOQxlcUisPN9g=
+X-Google-Smtp-Source: APXvYqzCvIa2qn9DpW0/gJespF+zH52O4x1JM0D2roahuugk6RBj3HMY61EYb2a/ScCqUhhRexAh3lXwW/bIHFuaYjA=
+X-Received: by 2002:a37:a643:: with SMTP id p64mr10549535qke.36.1561751968583;
+ Fri, 28 Jun 2019 12:59:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190628055303.1249758-1-andriin@fb.com> <20190628055303.1249758-7-andriin@fb.com>
-In-Reply-To: <20190628055303.1249758-7-andriin@fb.com>
-From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Fri, 28 Jun 2019 12:54:31 -0700
-Message-ID: <CAPhsuW4+T6JuRv4UjmvBBTPNQdjZX01VswVFMYaqGKNyBqpG2g@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 6/9] libbpf: add raw tracepoint attach API
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@fb.com>,
+References: <20190628055303.1249758-1-andriin@fb.com> <20190628055303.1249758-5-andriin@fb.com>
+ <CAPhsuW6UMdHidpmgRzM0sZaGc5gZAnT1B7vCJVt-MrLCMjOdig@mail.gmail.com>
+In-Reply-To: <CAPhsuW6UMdHidpmgRzM0sZaGc5gZAnT1B7vCJVt-MrLCMjOdig@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 28 Jun 2019 12:59:17 -0700
+Message-ID: <CAEf4Bzbo4r9=VZ2kYaOsZa7HHvjXeEw4uWXhpjcUDvazOcKrzw@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 4/9] libbpf: add kprobe/uprobe attach API
+To:     Song Liu <liu.song.a23@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Stanislav Fomichev <sdf@fomichev.me>,
@@ -60,11 +60,299 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 27, 2019 at 10:53 PM Andrii Nakryiko <andriin@fb.com> wrote:
+On Fri, Jun 28, 2019 at 12:46 PM Song Liu <liu.song.a23@gmail.com> wrote:
 >
-> Add a wrapper utilizing bpf_link "infrastructure" to allow attaching BPF
-> programs to raw tracepoints.
+> On Thu, Jun 27, 2019 at 10:53 PM Andrii Nakryiko <andriin@fb.com> wrote:
+> >
+> > Add ability to attach to kernel and user probes and retprobes.
+> > Implementation depends on perf event support for kprobes/uprobes.
+> >
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> >  tools/lib/bpf/libbpf.c   | 213 +++++++++++++++++++++++++++++++++++++++
+> >  tools/lib/bpf/libbpf.h   |   7 ++
+> >  tools/lib/bpf/libbpf.map |   2 +
+> >  3 files changed, 222 insertions(+)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 606705f878ba..65d2fef41003 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -4016,6 +4016,219 @@ struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog,
+> >         return (struct bpf_link *)link;
+> >  }
+> >
+> > +static int parse_uint(const char *buf)
+> > +{
+> > +       int ret;
+> > +
+> > +       errno = 0;
+> > +       ret = (int)strtol(buf, NULL, 10);
+> > +       if (errno) {
+> > +               ret = -errno;
+> > +               pr_debug("failed to parse '%s' as unsigned int\n", buf);
+> > +               return ret;
+> > +       }
+> > +       if (ret < 0) {
+> > +               pr_debug("failed to parse '%s' as unsigned int\n", buf);
+> > +               return -EINVAL;
+> > +       }
+> > +       return ret;
+> > +}
+> > +
+> > +static int parse_uint_from_file(const char* file)
+> > +{
+> > +       char buf[STRERR_BUFSIZE];
+> > +       int fd, ret;
+> > +
+> > +       fd = open(file, O_RDONLY);
+> > +       if (fd < 0) {
+> > +               ret = -errno;
+> > +               pr_debug("failed to open '%s': %s\n", file,
+> > +                        libbpf_strerror_r(ret, buf, sizeof(buf)));
+> > +               return ret;
+> > +       }
+> > +       ret = read(fd, buf, sizeof(buf));
+> > +       ret = ret < 0 ? -errno : ret;
+> > +       close(fd);
+> > +       if (ret < 0) {
+> > +               pr_debug("failed to read '%s': %s\n", file,
+> > +                       libbpf_strerror_r(ret, buf, sizeof(buf)));
+> > +               return ret;
+> > +       }
+> > +       if (ret == 0 || ret >= sizeof(buf)) {
+> > +               buf[sizeof(buf) - 1] = 0;
+> > +               pr_debug("unexpected input from '%s': '%s'\n", file, buf);
+> > +               return -EINVAL;
+> > +       }
+> > +       return parse_uint(buf);
+> > +}
+> > +
+> > +static int determine_kprobe_perf_type(void)
+> > +{
+> > +       const char *file = "/sys/bus/event_source/devices/kprobe/type";
+> > +       return parse_uint_from_file(file);
+> > +}
+> > +
+> > +static int determine_uprobe_perf_type(void)
+> > +{
+> > +       const char *file = "/sys/bus/event_source/devices/uprobe/type";
+> > +       return parse_uint_from_file(file);
+> > +}
+> > +
+> > +static int parse_config_from_file(const char *file)
+> > +{
+> > +       char buf[STRERR_BUFSIZE];
+> > +       int fd, ret;
+> > +
+> > +       fd = open(file, O_RDONLY);
+> > +       if (fd < 0) {
+> > +               ret = -errno;
+> > +               pr_debug("failed to open '%s': %s\n", file,
+> > +                        libbpf_strerror_r(ret, buf, sizeof(buf)));
+> > +               return ret;
+> > +       }
+> > +       ret = read(fd, buf, sizeof(buf));
+> > +       ret = ret < 0 ? -errno : ret;
+> > +       close(fd);
+> > +       if (ret < 0) {
+> > +               pr_debug("failed to read '%s': %s\n", file,
+> > +                       libbpf_strerror_r(ret, buf, sizeof(buf)));
+> > +               return ret;
+> > +       }
+> > +       if (ret == 0 || ret >= sizeof(buf)) {
+> > +               buf[sizeof(buf) - 1] = 0;
+> > +               pr_debug("unexpected input from '%s': '%s'\n", file, buf);
+> > +               return -EINVAL;
+> > +       }
+> > +       if (strncmp(buf, "config:", 7)) {
+> > +               pr_debug("expected 'config:' prefix, found '%s'\n", buf);
+> > +               return -EINVAL;
+> > +       }
+> > +       return parse_uint(buf + 7);
+> > +}
+> > +
+> > +static int determine_kprobe_retprobe_bit(void)
+> > +{
+> > +       const char *file = "/sys/bus/event_source/devices/kprobe/format/retprobe";
+> > +       return parse_config_from_file(file);
+> > +}
+> > +
+> > +static int determine_uprobe_retprobe_bit(void)
+> > +{
+> > +       const char *file = "/sys/bus/event_source/devices/uprobe/format/retprobe";
+> > +       return parse_config_from_file(file);
+> > +}
 >
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> Can we do the above with fscanf? Would that be easier?
 
-Acked-by: Song Liu <songliubraving@fb.com>
+It would be less code, but also less strict semantics. E.g., fscanf
+would happily leave out any garbage after number (e.g., 123blablabla,
+would still parse). Also, from brief googling, fscanf doesn't handle
+overflows well.
+
+So I guess I'd vote for this more verbose, but also more strict
+checking, unless you insist on fscanf.
+
+>
+> > +
+> > +static int perf_event_open_probe(bool uprobe, bool retprobe, const char* name,
+> > +                                uint64_t offset, int pid)
+> > +{
+> > +       struct perf_event_attr attr = {};
+> > +       char errmsg[STRERR_BUFSIZE];
+> > +       int type, pfd, err;
+> > +
+> > +       type = uprobe ? determine_uprobe_perf_type()
+> > +                     : determine_kprobe_perf_type();
+> > +       if (type < 0) {
+> > +               pr_warning("failed to determine %s perf type: %s\n",
+> > +                          uprobe ? "uprobe" : "kprobe",
+> > +                          libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
+> > +               return type;
+> > +       }
+> > +       if (retprobe) {
+> > +               int bit = uprobe ? determine_uprobe_retprobe_bit()
+> > +                                : determine_kprobe_retprobe_bit();
+> > +
+> > +               if (bit < 0) {
+> > +                       pr_warning("failed to determine %s retprobe bit: %s\n",
+> > +                                  uprobe ? "uprobe" : "kprobe",
+> > +                                  libbpf_strerror_r(bit, errmsg,
+> > +                                                    sizeof(errmsg)));
+> > +                       return bit;
+> > +               }
+> > +               attr.config |= 1 << bit;
+> > +       }
+> > +       attr.size = sizeof(attr);
+> > +       attr.type = type;
+> > +       attr.config1 = (uint64_t)(void *)name; /* kprobe_func or uprobe_path */
+> > +       attr.config2 = offset;                 /* kprobe_addr or probe_offset */
+> > +
+> > +       /* pid filter is meaningful only for uprobes */
+> > +       pfd = syscall(__NR_perf_event_open, &attr,
+> > +                     pid < 0 ? -1 : pid /* pid */,
+> > +                     pid == -1 ? 0 : -1 /* cpu */,
+> > +                     -1 /* group_fd */, PERF_FLAG_FD_CLOEXEC);
+> > +       if (pfd < 0) {
+> > +               err = -errno;
+> > +               pr_warning("%s perf_event_open() failed: %s\n",
+> > +                          uprobe ? "uprobe" : "kprobe",
+> > +                          libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
+>
+> We have another warning in bpf_program__attach_[k|u]probe(). I guess
+> we can remove this one here.
+
+This points specifically to perf_event_open() failing versus other
+possible failures. Messages in attach_{k,u}probe won't have that, they
+will repeat more generic "failed to attach" message. Believe me, if
+something goes wrong in libbpf, I'd rather have too much logging than
+too little :)
+
+>
+> > +               return err;
+> > +       }
+> > +       return pfd;
+> > +}
+> > +
+> > +struct bpf_link *bpf_program__attach_kprobe(struct bpf_program *prog,
+> > +                                           bool retprobe,
+> > +                                           const char *func_name)
+> > +{
+> > +       char errmsg[STRERR_BUFSIZE];
+> > +       struct bpf_link *link;
+> > +       int pfd, err;
+> > +
+> > +       pfd = perf_event_open_probe(false /* uprobe */, retprobe, func_name,
+> > +                                   0 /* offset */, -1 /* pid */);
+> > +       if (pfd < 0) {
+> > +               pr_warning("program '%s': failed to create %s '%s' perf event: %s\n",
+> > +                          bpf_program__title(prog, false),
+> > +                          retprobe ? "kretprobe" : "kprobe", func_name,
+> > +                          libbpf_strerror_r(pfd, errmsg, sizeof(errmsg)));
+> > +               return ERR_PTR(pfd);
+> > +       }
+> > +       link = bpf_program__attach_perf_event(prog, pfd);
+> > +       if (IS_ERR(link)) {
+> > +               close(pfd);
+> > +               err = PTR_ERR(link);
+> > +               pr_warning("program '%s': failed to attach to %s '%s': %s\n",
+> > +                          bpf_program__title(prog, false),
+> > +                          retprobe ? "kretprobe" : "kprobe", func_name,
+> > +                          libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
+> > +               return link;
+> > +       }
+> > +       return link;
+> > +}
+> > +
+> > +struct bpf_link *bpf_program__attach_uprobe(struct bpf_program *prog,
+> > +                                           bool retprobe, pid_t pid,
+> > +                                           const char *binary_path,
+> > +                                           size_t func_offset)
+> > +{
+> > +       char errmsg[STRERR_BUFSIZE];
+> > +       struct bpf_link *link;
+> > +       int pfd, err;
+> > +
+> > +       pfd = perf_event_open_probe(true /* uprobe */, retprobe,
+> > +                                   binary_path, func_offset, pid);
+> > +       if (pfd < 0) {
+> > +               pr_warning("program '%s': failed to create %s '%s:0x%zx' perf event: %s\n",
+> > +                          bpf_program__title(prog, false),
+> > +                          retprobe ? "uretprobe" : "uprobe",
+> > +                          binary_path, func_offset,
+> > +                          libbpf_strerror_r(pfd, errmsg, sizeof(errmsg)));
+> > +               return ERR_PTR(pfd);
+> > +       }
+> > +       link = bpf_program__attach_perf_event(prog, pfd);
+> > +       if (IS_ERR(link)) {
+> > +               close(pfd);
+> > +               err = PTR_ERR(link);
+> > +               pr_warning("program '%s': failed to attach to %s '%s:0x%zx': %s\n",
+> > +                          bpf_program__title(prog, false),
+> > +                          retprobe ? "uretprobe" : "uprobe",
+> > +                          binary_path, func_offset,
+> > +                          libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
+> > +               return link;
+> > +       }
+> > +       return link;
+> > +}
+> > +
+> >  enum bpf_perf_event_ret
+> >  bpf_perf_event_read_simple(void *mmap_mem, size_t mmap_size, size_t page_size,
+> >                            void **copy_mem, size_t *copy_size,
+> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > index 1bf66c4a9330..bd767cc11967 100644
+> > --- a/tools/lib/bpf/libbpf.h
+> > +++ b/tools/lib/bpf/libbpf.h
+> > @@ -171,6 +171,13 @@ LIBBPF_API int bpf_link__destroy(struct bpf_link *link);
+> >
+> >  LIBBPF_API struct bpf_link *
+> >  bpf_program__attach_perf_event(struct bpf_program *prog, int pfd);
+> > +LIBBPF_API struct bpf_link *
+> > +bpf_program__attach_kprobe(struct bpf_program *prog, bool retprobe,
+> > +                          const char *func_name);
+> > +LIBBPF_API struct bpf_link *
+> > +bpf_program__attach_uprobe(struct bpf_program *prog, bool retprobe,
+> > +                          pid_t pid, const char *binary_path,
+> > +                          size_t func_offset);
+> >
+> >  struct bpf_insn;
+> >
+> > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> > index 756f5aa802e9..57a40fb60718 100644
+> > --- a/tools/lib/bpf/libbpf.map
+> > +++ b/tools/lib/bpf/libbpf.map
+> > @@ -169,7 +169,9 @@ LIBBPF_0.0.4 {
+> >         global:
+> >                 bpf_link__destroy;
+> >                 bpf_object__load_xattr;
+> > +               bpf_program__attach_kprobe;
+> >                 bpf_program__attach_perf_event;
+> > +               bpf_program__attach_uprobe;
+> >                 btf_dump__dump_type;
+> >                 btf_dump__free;
+> >                 btf_dump__new;
+> > --
+> > 2.17.1
+> >
