@@ -2,278 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A2E593D3
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 07:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 092B059574
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 10:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727127AbfF1Fxc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jun 2019 01:53:32 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:63174 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727148AbfF1Fxb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 28 Jun 2019 01:53:31 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5S5qt62023091
-        for <bpf@vger.kernel.org>; Thu, 27 Jun 2019 22:53:30 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=eVqpAzGT2mc8Qf7ve0vs3Ia8oYraU/W6eYmPoEPY2W0=;
- b=T+1tQH09xGjOEgmhYSOYVYdGXCnPYOMwO+KOI7fyqQsyZIMmH8bHT1MqnGA+MKfcNRJ1
- 29IDIjvOXbo2rO65O8IdogrCKfm7bxO4QszWUkaNsHOQN9+N37IZE7Uw/7VXIbv9QeKZ
- Z9HXB0k8AoRMecZb0nQLYnRgivqyciAnu50= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2td03wtrv4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 27 Jun 2019 22:53:30 -0700
-Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::126) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Thu, 27 Jun 2019 22:53:28 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id D448D861468; Thu, 27 Jun 2019 22:53:27 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <andrii.nakryiko@gmail.com>, <ast@fb.com>, <daniel@iogearbox.net>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <sdf@fomichev.me>,
-        <kernel-team@fb.com>
-CC:     Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v3 bpf-next 9/9] selftests/bpf: convert existing tracepoint tests to new APIs
-Date:   Thu, 27 Jun 2019 22:53:03 -0700
-Message-ID: <20190628055303.1249758-10-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190628055303.1249758-1-andriin@fb.com>
-References: <20190628055303.1249758-1-andriin@fb.com>
-X-FB-Internal: Safe
+        id S1726487AbfF1IBU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jun 2019 04:01:20 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:51584 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726497AbfF1IBT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jun 2019 04:01:19 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20190628080116euoutp017ac5ac6816cab9155a0f02cc27eca1b4~sTfMFCuF91545715457euoutp01M
+        for <bpf@vger.kernel.org>; Fri, 28 Jun 2019 08:01:16 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20190628080116euoutp017ac5ac6816cab9155a0f02cc27eca1b4~sTfMFCuF91545715457euoutp01M
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1561708876;
+        bh=wcgcV0tJwUzmXVmNXDGn4ZkkEJhhcwPdUNLlNuG05po=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=Isr71j9HesydCcoiznul2/ciWyoO+fwx43KcVCXPSyOdn35acjST1AynKrYE3PERo
+         SSm532Whe7CydaWtK+3WWJ1HHkYsKh2aZQagUei1Lo8Gkf1NzaPMW1fjivAqIILnXe
+         dk4T82GoQ7HGC5WkeyX95tlFitQsFQSDLV4KbrwQ=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20190628080116eucas1p29b9b99feeba3a229e081a2cfcf916838~sTfLbq3vP1442914429eucas1p2M;
+        Fri, 28 Jun 2019 08:01:16 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 07.9B.04325.B49C51D5; Fri, 28
+        Jun 2019 09:01:15 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20190628080115eucas1p1edc82651728719c2413ffc16b576a0ed~sTfKrzTTu2969929699eucas1p1I;
+        Fri, 28 Jun 2019 08:01:15 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20190628080115eusmtrp12959d6a6fcc277d7fbac5bd93f35e34c~sTfKdtbt32149521495eusmtrp1r;
+        Fri, 28 Jun 2019 08:01:15 +0000 (GMT)
+X-AuditID: cbfec7f5-b8fff700000010e5-d8-5d15c94b888e
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id FC.D6.04146.B49C51D5; Fri, 28
+        Jun 2019 09:01:15 +0100 (BST)
+Received: from [106.109.129.180] (unknown [106.109.129.180]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20190628080114eusmtip1b8fee092190bf5f677ed1f155cc87b4f~sTfJ1ltX31983619836eusmtip11;
+        Fri, 28 Jun 2019 08:01:14 +0000 (GMT)
+Subject: Re: [PATCH bpf v5 2/2] xdp: fix hang while unregistering device
+ bound to xdp socket
+To:     Jonathan Lemon <jonathan.lemon@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, xdp-newbies@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+From:   Ilya Maximets <i.maximets@samsung.com>
+Message-ID: <2190070e-db72-6fbe-8dc9-7567847e48ff@samsung.com>
+Date:   Fri, 28 Jun 2019 11:01:09 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        Thunderbird/60.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-28_02:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906280066
-X-FB-Internal: deliver
+In-Reply-To: <74C6C13C-651D-4CD1-BCA1-1B8998A4FA31@gmail.com>
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKKsWRmVeSWpSXmKPExsWy7djPc7reJ0VjDTrXWFj8advAaPH5yHE2
+        i8ULvzFbzDnfwmJxpf0nu8WxFy1sFrvWzWS2uLxrDpvFikMngGILxCy29+9jdOD22LLyJpPH
+        zll32T0W73nJ5NF14xKzx/Tuh8wefVtWMXp83iQXwB7FZZOSmpNZllqkb5fAlbFneQt7wWOB
+        ir4dU5gaGG/wdjFyckgImEj8fnyOuYuRi0NIYAWjxOHL6xghnC+MEjdO32GDcD4zShzf/YwN
+        pmXqkSksILaQwHJGieYl5RBFHxklDsydBVYkLBAnsaz7HyOILSKgK7FvQyc7SBGzwG0mie3b
+        TrCCJNgEdCROrT4CVsQrYCfxYsVfoCIODhYBVYkf7aIgYVGBCInLW3ZBlQhKnJz5hAWkhFPA
+        VuLUpnKQMLOAuETTl5WsELa8RPPW2WDvSAhcY5e4cPQ4E8TRLhJb93yGsoUlXh3fwg5hy0ic
+        ntzDAmHXS9xveckI0dzBKDH90D+oBnuJLa/Pgd3GLKApsX6XPogpIeAocXimFoTJJ3HjrSDE
+        CXwSk7ZNZ4YI80p0tAlBzFCR+H1wOTOELSVx891n9gmMSrOQ/DULyTOzkDwzC2HtAkaWVYzi
+        qaXFuempxcZ5qeV6xYm5xaV56XrJ+bmbGIGJ6/S/4193MO77k3SIUYCDUYmHV2GnSKwQa2JZ
+        cWXuIUYJDmYlEV7Jc0Ah3pTEyqrUovz4otKc1OJDjNIcLErivNUMD6KFBNITS1KzU1MLUotg
+        skwcnFINjPu75nvNy5440ab22oWDJs/OW1xNl4tw+Xvh1YKN5tJTLHd3HJQtUahU+BQXGLFs
+        QdkBo/d6Lr9ElJ77xsf6PVQPbKuoWPzqXZ3xAfmlP55/8O1a8OqSYL+4lPpN5vPyLXmh3x5u
+        eCY1fzPX6qzYR2USHgn3BUUvG8kHKjGftJEx7bB/ovbIW4mlOCPRUIu5qDgRAH9MtJhYAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrBIsWRmVeSWpSXmKPExsVy+t/xu7reJ0VjDX5c47b407aB0eLzkeNs
+        FosXfmO2mHO+hcXiSvtPdotjL1rYLHatm8lscXnXHDaLFYdOAMUWiFls79/H6MDtsWXlTSaP
+        nbPusnss3vOSyaPrxiVmj+ndD5k9+rasYvT4vEkugD1Kz6Yov7QkVSEjv7jEVina0MJIz9DS
+        Qs/IxFLP0Ng81srIVEnfziYlNSezLLVI3y5BL2PP8hb2gscCFX07pjA1MN7g7WLk5JAQMJGY
+        emQKSxcjF4eQwFJGie/PprBBJKQkfvy6wAphC0v8udYFFhcSeM8o8eFtGogtLBAnMfXANGYQ
+        W0RAV2Lfhk52EJtZ4DaTxJStURBDvzBKLDr7FyzBJqAjcWr1EUYQm1fATuLFCpA4BweLgKrE
+        j3ZRkLCoQIREX9tsNogSQYmTM5+wgJRwCthKnNpUDjFeXeLPvEvMELa4RNOXlawQtrxE89bZ
+        zBMYhWYh6Z6FpGUWkpZZSFoWMLKsYhRJLS3OTc8tNtQrTswtLs1L10vOz93ECIzVbcd+bt7B
+        eGlj8CFGAQ5GJR5ehZ0isUKsiWXFlbmHGCU4mJVEeCXPAYV4UxIrq1KL8uOLSnNSiw8xmgK9
+        NpFZSjQ5H5hG8kriDU0NzS0sDc2NzY3NLJTEeTsEDsYICaQnlqRmp6YWpBbB9DFxcEo1MNYV
+        nn46o9+5wixU4XPYjiUZK+WUC/rZ3WvC9x398kuTq2DZAatDaSKiu478SWP4aMxzPCGpkLVr
+        979lgtoJwS+OZy8NPXMjdfOiN5Urttt+37Lo9euns75vUWK1ql0clnzpnw/vKn3Zaffb0/gn
+        m33jiaxzFFxqc2TpIzc9U/PI8K6gNSFOq5VYijMSDbWYi4oTAaZyV5HrAgAA
+X-CMS-MailID: 20190628080115eucas1p1edc82651728719c2413ffc16b576a0ed
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20190627101540eucas1p149805b39e12bf7ecf5864b7ff1b0c934
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20190627101540eucas1p149805b39e12bf7ecf5864b7ff1b0c934
+References: <20190627101529.11234-1-i.maximets@samsung.com>
+        <CGME20190627101540eucas1p149805b39e12bf7ecf5864b7ff1b0c934@eucas1p1.samsung.com>
+        <20190627101529.11234-3-i.maximets@samsung.com>
+        <74C6C13C-651D-4CD1-BCA1-1B8998A4FA31@gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Convert some existing tests that attach to tracepoints to use
-bpf_program__attach_tracepoint API instead.
+On 28.06.2019 1:04, Jonathan Lemon wrote:
+> On 27 Jun 2019, at 3:15, Ilya Maximets wrote:
+> 
+>> Device that bound to XDP socket will not have zero refcount until the
+>> userspace application will not close it. This leads to hang inside
+>> 'netdev_wait_allrefs()' if device unregistering requested:
+>>
+>>   # ip link del p1
+>>   < hang on recvmsg on netlink socket >
+>>
+>>   # ps -x | grep ip
+>>   5126  pts/0    D+   0:00 ip link del p1
+>>
+>>   # journalctl -b
+>>
+>>   Jun 05 07:19:16 kernel:
+>>   unregister_netdevice: waiting for p1 to become free. Usage count = 1
+>>
+>>   Jun 05 07:19:27 kernel:
+>>   unregister_netdevice: waiting for p1 to become free. Usage count = 1
+>>   ...
+>>
+>> Fix that by implementing NETDEV_UNREGISTER event notification handler
+>> to properly clean up all the resources and unref device.
+>>
+>> This should also allow socket killing via ss(8) utility.
+>>
+>> Fixes: 965a99098443 ("xsk: add support for bind for Rx")
+>> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
+>> ---
+>>  include/net/xdp_sock.h |  5 +++
+>>  net/xdp/xdp_umem.c     | 10 ++---
+>>  net/xdp/xdp_umem.h     |  1 +
+>>  net/xdp/xsk.c          | 87 ++++++++++++++++++++++++++++++++++++------
+>>  4 files changed, 87 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+>> index d074b6d60f8a..82d153a637c7 100644
+>> --- a/include/net/xdp_sock.h
+>> +++ b/include/net/xdp_sock.h
+>> @@ -61,6 +61,11 @@ struct xdp_sock {
+>>      struct xsk_queue *tx ____cacheline_aligned_in_smp;
+>>      struct list_head list;
+>>      bool zc;
+>> +    enum {
+>> +        XSK_UNINITIALIZED = 0,
+>> +        XSK_BINDED,
+>> +        XSK_UNBINDED,
+>> +    } state;
+> 
+> I'd prefer that these were named better, perhaps:
+>    XSK_READY,
+>    XSK_BOUND,
+>    XSK_UNBOUND,
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
----
- .../bpf/prog_tests/stacktrace_build_id.c      | 50 ++++---------------
- .../selftests/bpf/prog_tests/stacktrace_map.c | 43 ++++------------
- .../bpf/prog_tests/stacktrace_map_raw_tp.c    | 15 ++++--
- 3 files changed, 31 insertions(+), 77 deletions(-)
+Sure. Thanks for suggestion!
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
-index 3aab2b083c71..768883d838ea 100644
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
-@@ -4,11 +4,13 @@
- void test_stacktrace_build_id(void)
- {
- 	int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd;
-+	const char *prog_name = "tracepoint/random/urandom_read";
- 	const char *file = "./test_stacktrace_build_id.o";
--	int bytes, efd, err, pmu_fd, prog_fd, stack_trace_len;
--	struct perf_event_attr attr = {};
-+	int err, prog_fd, stack_trace_len;
- 	__u32 key, previous_key, val, duration = 0;
-+	struct bpf_program *prog;
- 	struct bpf_object *obj;
-+	struct bpf_link *link = NULL;
- 	char buf[256];
- 	int i, j;
- 	struct bpf_stack_build_id id_offs[PERF_MAX_STACK_DEPTH];
-@@ -20,42 +22,14 @@ void test_stacktrace_build_id(void)
- 	if (CHECK(err, "prog_load", "err %d errno %d\n", err, errno))
- 		goto out;
- 
--	/* Get the ID for the sched/sched_switch tracepoint */
--	snprintf(buf, sizeof(buf),
--		 "/sys/kernel/debug/tracing/events/random/urandom_read/id");
--	efd = open(buf, O_RDONLY, 0);
--	if (CHECK(efd < 0, "open", "err %d errno %d\n", efd, errno))
-+	prog = bpf_object__find_program_by_title(obj, prog_name);
-+	if (CHECK(!prog, "find_prog", "prog '%s' not found\n", prog_name))
- 		goto close_prog;
- 
--	bytes = read(efd, buf, sizeof(buf));
--	close(efd);
--	if (CHECK(bytes <= 0 || bytes >= sizeof(buf),
--		  "read", "bytes %d errno %d\n", bytes, errno))
-+	link = bpf_program__attach_tracepoint(prog, "random", "urandom_read");
-+	if (CHECK(IS_ERR(link), "attach_tp", "err %ld\n", PTR_ERR(link)))
- 		goto close_prog;
- 
--	/* Open the perf event and attach bpf progrram */
--	attr.config = strtol(buf, NULL, 0);
--	attr.type = PERF_TYPE_TRACEPOINT;
--	attr.sample_type = PERF_SAMPLE_RAW | PERF_SAMPLE_CALLCHAIN;
--	attr.sample_period = 1;
--	attr.wakeup_events = 1;
--	pmu_fd = syscall(__NR_perf_event_open, &attr, -1 /* pid */,
--			 0 /* cpu 0 */, -1 /* group id */,
--			 0 /* flags */);
--	if (CHECK(pmu_fd < 0, "perf_event_open", "err %d errno %d\n",
--		  pmu_fd, errno))
--		goto close_prog;
--
--	err = ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0);
--	if (CHECK(err, "perf_event_ioc_enable", "err %d errno %d\n",
--		  err, errno))
--		goto close_pmu;
--
--	err = ioctl(pmu_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
--	if (CHECK(err, "perf_event_ioc_set_bpf", "err %d errno %d\n",
--		  err, errno))
--		goto disable_pmu;
--
- 	/* find map fds */
- 	control_map_fd = bpf_find_map(__func__, obj, "control_map");
- 	if (CHECK(control_map_fd < 0, "bpf_find_map control_map",
-@@ -133,8 +107,7 @@ void test_stacktrace_build_id(void)
- 	 * try it one more time.
- 	 */
- 	if (build_id_matches < 1 && retry--) {
--		ioctl(pmu_fd, PERF_EVENT_IOC_DISABLE);
--		close(pmu_fd);
-+		bpf_link__destroy(link);
- 		bpf_object__close(obj);
- 		printf("%s:WARN:Didn't find expected build ID from the map, retrying\n",
- 		       __func__);
-@@ -152,10 +125,7 @@ void test_stacktrace_build_id(void)
- 	      "err %d errno %d\n", err, errno);
- 
- disable_pmu:
--	ioctl(pmu_fd, PERF_EVENT_IOC_DISABLE);
--
--close_pmu:
--	close(pmu_fd);
-+	bpf_link__destroy(link);
- 
- close_prog:
- 	bpf_object__close(obj);
-diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-index 2bfd50a0d6d1..fc539335c5b3 100644
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-@@ -4,50 +4,26 @@
- void test_stacktrace_map(void)
- {
- 	int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd;
-+	const char *prog_name = "tracepoint/sched/sched_switch";
-+	int err, prog_fd, stack_trace_len;
- 	const char *file = "./test_stacktrace_map.o";
--	int bytes, efd, err, pmu_fd, prog_fd, stack_trace_len;
--	struct perf_event_attr attr = {};
- 	__u32 key, val, duration = 0;
-+	struct bpf_program *prog;
- 	struct bpf_object *obj;
--	char buf[256];
-+	struct bpf_link *link;
- 
- 	err = bpf_prog_load(file, BPF_PROG_TYPE_TRACEPOINT, &obj, &prog_fd);
- 	if (CHECK(err, "prog_load", "err %d errno %d\n", err, errno))
- 		return;
- 
--	/* Get the ID for the sched/sched_switch tracepoint */
--	snprintf(buf, sizeof(buf),
--		 "/sys/kernel/debug/tracing/events/sched/sched_switch/id");
--	efd = open(buf, O_RDONLY, 0);
--	if (CHECK(efd < 0, "open", "err %d errno %d\n", efd, errno))
-+	prog = bpf_object__find_program_by_title(obj, prog_name);
-+	if (CHECK(!prog, "find_prog", "prog '%s' not found\n", prog_name))
- 		goto close_prog;
- 
--	bytes = read(efd, buf, sizeof(buf));
--	close(efd);
--	if (bytes <= 0 || bytes >= sizeof(buf))
-+	link = bpf_program__attach_tracepoint(prog, "sched", "sched_switch");
-+	if (CHECK(IS_ERR(link), "attach_tp", "err %ld\n", PTR_ERR(link)))
- 		goto close_prog;
- 
--	/* Open the perf event and attach bpf progrram */
--	attr.config = strtol(buf, NULL, 0);
--	attr.type = PERF_TYPE_TRACEPOINT;
--	attr.sample_type = PERF_SAMPLE_RAW | PERF_SAMPLE_CALLCHAIN;
--	attr.sample_period = 1;
--	attr.wakeup_events = 1;
--	pmu_fd = syscall(__NR_perf_event_open, &attr, -1 /* pid */,
--			 0 /* cpu 0 */, -1 /* group id */,
--			 0 /* flags */);
--	if (CHECK(pmu_fd < 0, "perf_event_open", "err %d errno %d\n",
--		  pmu_fd, errno))
--		goto close_prog;
--
--	err = ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0);
--	if (err)
--		goto disable_pmu;
--
--	err = ioctl(pmu_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
--	if (err)
--		goto disable_pmu;
--
- 	/* find map fds */
- 	control_map_fd = bpf_find_map(__func__, obj, "control_map");
- 	if (control_map_fd < 0)
-@@ -96,8 +72,7 @@ void test_stacktrace_map(void)
- disable_pmu:
- 	error_cnt++;
- disable_pmu_noerr:
--	ioctl(pmu_fd, PERF_EVENT_IOC_DISABLE);
--	close(pmu_fd);
-+	bpf_link__destroy(link);
- close_prog:
- 	bpf_object__close(obj);
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_map_raw_tp.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_map_raw_tp.c
-index 1f8387d80fd7..fbfa8e76cf63 100644
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_map_raw_tp.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_map_raw_tp.c
-@@ -3,18 +3,25 @@
- 
- void test_stacktrace_map_raw_tp(void)
- {
-+	const char *prog_name = "tracepoint/sched/sched_switch";
- 	int control_map_fd, stackid_hmap_fd, stackmap_fd;
- 	const char *file = "./test_stacktrace_map.o";
--	int efd, err, prog_fd;
- 	__u32 key, val, duration = 0;
-+	int err, prog_fd;
-+	struct bpf_program *prog;
- 	struct bpf_object *obj;
-+	struct bpf_link *link = NULL;
- 
- 	err = bpf_prog_load(file, BPF_PROG_TYPE_RAW_TRACEPOINT, &obj, &prog_fd);
- 	if (CHECK(err, "prog_load raw tp", "err %d errno %d\n", err, errno))
- 		return;
- 
--	efd = bpf_raw_tracepoint_open("sched_switch", prog_fd);
--	if (CHECK(efd < 0, "raw_tp_open", "err %d errno %d\n", efd, errno))
-+	prog = bpf_object__find_program_by_title(obj, prog_name);
-+	if (CHECK(!prog, "find_prog", "prog '%s' not found\n", prog_name))
-+		goto close_prog;
-+
-+	link = bpf_program__attach_raw_tracepoint(prog, "sched_switch");
-+	if (CHECK(IS_ERR(link), "attach_raw_tp", "err %ld\n", PTR_ERR(link)))
- 		goto close_prog;
- 
- 	/* find map fds */
-@@ -55,5 +62,7 @@ void test_stacktrace_map_raw_tp(void)
- close_prog:
- 	error_cnt++;
- close_prog_noerr:
-+	if (!IS_ERR_OR_NULL(link))
-+		bpf_link__destroy(link);
- 	bpf_object__close(obj);
- }
--- 
-2.17.1
+> 
+> Other than that:
+> Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
+> 
 
+I'll send a new version with the new state names keeping your ACK.
+
+Best regards, Ilya Maximets.
