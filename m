@@ -2,133 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 709CF5A5D9
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 22:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6175A5E3
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 22:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727148AbfF1UZW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jun 2019 16:25:22 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:42555 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727147AbfF1UZV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jun 2019 16:25:21 -0400
-Received: by mail-qt1-f194.google.com with SMTP id s15so7774085qtk.9
-        for <bpf@vger.kernel.org>; Fri, 28 Jun 2019 13:25:21 -0700 (PDT)
+        id S1727147AbfF1U3E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jun 2019 16:29:04 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:41724 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727042AbfF1U3E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jun 2019 16:29:04 -0400
+Received: by mail-pl1-f196.google.com with SMTP id m7so3844757pls.8;
+        Fri, 28 Jun 2019 13:29:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=YgOkvMRbAoBV9RdEWjxdL5LcNeoNsF2571Oh25CeOBw=;
-        b=QzE1KzevnHvw2DlPmsGsEfdOepxU79Es3UiyhdeOMln6yJzTbKeyitv9bFSDwj3Rx9
-         66XPQkE8+TsusPrbHla/JjYTLX/tFvHUMEutclrzhlEuVSjm0/nF2I4uaBKTVPhyVL/E
-         FS/05Djg9y/041KBPy3cgG/3AS3mxCiH7Vd5NSdENcfZ1SJ37dB0jpMoKuWYldGM+YBY
-         oXdQ/71UBOX2O+4V3A5uo2wezvd/0HCZbGB8lJ1LFl8VDGahWa6AJ/Ez8B/qf4j/Fk5y
-         Av+RrkoQc/kUXMvimtRI6d0CG/9Bks/3EpPvUMjPkmC5RWm8goEPdjw3b1PSCarr3TVg
-         Cz3Q==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bnEv+X6GYtFiiNujnuspHfQ9vua0ZpFbOcCMm5XfbHM=;
+        b=l+e/PGzpskxEFOlTnLnrRwwaulooIqK74WgIkScA6HRkwzfRCZ/7B1LKz5weRN4t/M
+         /YBioajcNC6WBbc8aulGwaVlaXzC48XHY3DoZ6FnoXctvndgSG8M3CY8m0Wdfs5PrMj+
+         wW5ZI+TVtOFxOmIEQayasbUFZUKDs+kYVwdaSY0eaSqv33hxy55JJzZO2v6z8Vfxclhy
+         usVo0Vtziyr4Y8oBufCzP7UpTj3mRnZBywhSYLP04QDr+ilYa4F9WzahhgX9HnUSXW5b
+         yGW68vIJqYpA/RLFrsvVWjkxizf/zFH2gBMXppKaDwstfC6UYSXnYzFZE43P7wzpl/k8
+         7N7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=YgOkvMRbAoBV9RdEWjxdL5LcNeoNsF2571Oh25CeOBw=;
-        b=f/nni0l8/liySwkB0ObekVX4g8HPn66/o4rLcVYFpsrf2D81QPI10gv2c+yVGIxLf5
-         nXjRIcn8tWpxdgPifLb9lsf68pboUOlSPhDcBJjJ0B0QOTovKbcKBrQJ/g8uhJZLksSg
-         438Mr+r+gsKhPvfR+WolNsOc2TZYOAyV38ky4p4N9kEamX7S2Q0GLZt5JcJDAIecSDsx
-         nMGMI64PV/bU70ZQctRk+Mnb3lCqgqwDEUcz8Zq2XT2HBv8pnAtJAGPuoB/2EibhlQa+
-         f50Aw3bTpG5og2DXHNFQiDbVHbPsJ9bBxU2jnNSuuUPdEMjWDd2/vAFEl5HV0WMbbskj
-         dUug==
-X-Gm-Message-State: APjAAAXdwKtYnNmhH1Is8e3QQ133CzyDTt6JhOQ6fs0kXaokH4SmmIr9
-        oYKQoLiWQqvDV94M8XrvPM21KHxIFv8=
-X-Google-Smtp-Source: APXvYqxYTPmzEj683koEfyjLlMd0M3Tt8zuPQO5h4/CE4XS5HzFO8KqqjrXRaM6yHId7odT4p28uog==
-X-Received: by 2002:a0c:b90a:: with SMTP id u10mr10012395qvf.201.1561753520824;
-        Fri, 28 Jun 2019 13:25:20 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id f132sm1519910qke.88.2019.06.28.13.25.19
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 28 Jun 2019 13:25:20 -0700 (PDT)
-Date:   Fri, 28 Jun 2019 13:25:16 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bnEv+X6GYtFiiNujnuspHfQ9vua0ZpFbOcCMm5XfbHM=;
+        b=mJSPfBp534AbUzaTbTKRe6xcKXEFU+uIxlhQ67aA6FF7kQ/0OuLhcsKB+fyWE/8+t3
+         I6GmhWuV/UlvW9cRLs+Y6Ce/kjLiE29PTN64AVds3FnttvpP7+dmkte4SRSeyeH5KjYL
+         C+nI2RGAVJoRgO9uP3txfl6Zv5sl1zS3KyT4aEdQNZPWi5u4RRN1GlYFSF53BSMCjEr0
+         cSMofM1D0m5qYShcSnlhjqU7RUiYVsXLO5MjRaex4rXdL4LywuXSjxLCgoxwycW/lm2a
+         VOztCzSR5zvF3mNSjgtBW9vd+Uq3+GyNiZyLsSJTK3VRNQeNSHl5m3w5B2jzWKfd7SCQ
+         hKTA==
+X-Gm-Message-State: APjAAAWXqR4+Jed5+BvExJJUNoYZGTx3MkDR8PPBzTqZ1lD4XexKnSIq
+        SDE9JAhWau+XQ7i+9gOJkyc=
+X-Google-Smtp-Source: APXvYqzWa8U43FknwvBkH/7zwA5fqURcefu1/ahKJcv8NB+c8DMHbs/Cdwiqmx9Ug400ur6gkg0Qcw==
+X-Received: by 2002:a17:902:8a8a:: with SMTP id p10mr14126514plo.88.1561753744049;
+        Fri, 28 Jun 2019 13:29:04 -0700 (PDT)
+Received: from [172.20.54.151] ([2620:10d:c090:200::e695])
+        by smtp.gmail.com with ESMTPSA id r15sm4509802pfc.162.2019.06.28.13.29.03
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 28 Jun 2019 13:29:03 -0700 (PDT)
+From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
 To:     "Laatz, Kevin" <kevin.laatz@intel.com>
-Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>, netdev@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, bjorn.topel@intel.com,
-        magnus.karlsson@intel.com, bpf@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, bruce.richardson@intel.com,
-        ciara.loftus@intel.com
+Cc:     "Jakub Kicinski" <jakub.kicinski@netronome.com>,
+        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com,
+        bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        bruce.richardson@intel.com, ciara.loftus@intel.com
 Subject: Re: [PATCH 00/11] XDP unaligned chunk placement support
-Message-ID: <20190628132516.723ef517@cakuba.netronome.com>
+Date:   Fri, 28 Jun 2019 13:29:02 -0700
+X-Mailer: MailMate (1.12.5r5635)
+Message-ID: <BAE24CBF-416D-4665-B2C9-CE1F5EAE28FF@gmail.com>
 In-Reply-To: <f0ca817a-02b4-df22-d01b-7bc07171a4dc@intel.com>
 References: <20190620083924.1996-1-kevin.laatz@intel.com>
-        <FA8389B9-F89C-4BFF-95EE-56F702BBCC6D@gmail.com>
-        <ef7e9469-e7be-647b-8bb1-da29bc01fa2e@intel.com>
-        <20190627142534.4f4b8995@cakuba.netronome.com>
-        <f0ca817a-02b4-df22-d01b-7bc07171a4dc@intel.com>
-Organization: Netronome Systems, Ltd.
+ <FA8389B9-F89C-4BFF-95EE-56F702BBCC6D@gmail.com>
+ <ef7e9469-e7be-647b-8bb1-da29bc01fa2e@intel.com>
+ <20190627142534.4f4b8995@cakuba.netronome.com>
+ <f0ca817a-02b4-df22-d01b-7bc07171a4dc@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8; format=flowed; markup=markdown
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 28 Jun 2019 17:19:09 +0100, Laatz, Kevin wrote:
+
+
+On 28 Jun 2019, at 9:19, Laatz, Kevin wrote:
+
 > On 27/06/2019 22:25, Jakub Kicinski wrote:
-> > On Thu, 27 Jun 2019 12:14:50 +0100, Laatz, Kevin wrote: =20
-> >> On the application side (xdpsock), we don't have to worry about the us=
-er
-> >> defined headroom, since it is 0, so we only need to account for the
-> >> XDP_PACKET_HEADROOM when computing the original address (in the default
-> >> scenario). =20
-> > That assumes specific layout for the data inside the buffer.  Some NICs
-> > will prepend information like timestamp to the packet, meaning the
-> > packet would start at offset XDP_PACKET_HEADROOM + metadata len.. =20
->=20
-> Yes, if NICs prepend extra data to the packet that would be a problem for
-> using this feature in isolation. However, if we also add in support for=20
-> in-order RX and TX rings, that would no longer be an issue.
+>> On Thu, 27 Jun 2019 12:14:50 +0100, Laatz, Kevin wrote:
+>>> On the application side (xdpsock), we don't have to worry about the 
+>>> user
+>>> defined headroom, since it is 0, so we only need to account for the
+>>> XDP_PACKET_HEADROOM when computing the original address (in the 
+>>> default
+>>> scenario).
+>> That assumes specific layout for the data inside the buffer.  Some 
+>> NICs
+>> will prepend information like timestamp to the packet, meaning the
+>> packet would start at offset XDP_PACKET_HEADROOM + metadata len..
+>
+> Yes, if NICs prepend extra data to the packet that would be a problem 
+> for
+> using this feature in isolation. However, if we also add in support 
+> for in-order
+> RX and TX rings, that would no longer be an issue. However, even for 
+> NICs
+> which do prepend data, this patchset should not break anything that is 
+> currently
+> working.
 
-Can you shed more light on in-order rings?  Do you mean that RX frames
-come in order buffers were placed in the fill queue?  That wouldn't
-make practical sense, no?  Even if the application does no
-reordering there is also XDP_DROP and XDP_TX.  Please explain :)
+I read this as "the correct buffer address is recovered from the shadow 
+ring".
+I'm not sure I'm comfortable with that, and I'm also not sold on 
+in-order completion
+for the RX/TX rings.
 
-> However, even for NICs which do prepend data, this patchset should
-> not break anything that is currently working.
 
-My understanding from the beginnings of AF_XDP was that we were
-searching for a format flexible enough to support most if not all NICs.
-Creating an ABI which will preclude vendors from supporting DPDK via
-AF_XDP would seriously undermine the neutrality aspect.
 
-> > I think that's very limiting.  What is the challenge in providing
-> > aligned addresses, exactly? =20
+>> I think that's very limiting.  What is the challenge in providing
+>> aligned addresses, exactly?
 > The challenges are two-fold:
-> 1) it prevents using arbitrary buffer sizes, which will be an issue=20
+> 1) it prevents using arbitrary buffer sizes, which will be an issue 
 > supporting e.g. jumbo frames in future.
-
-Presumably support for jumbos would require a multi-buffer setup, and
-therefore extensions to the ring format. Should we perhaps look into
-implementing unaligned chunks by extending ring format as well?
-
-> 2) higher level user-space frameworks which may want to use AF_XDP, such=
-=20
-> as DPDK, do not currently support having buffers with 'fixed' alignment.
->  =C2=A0=C2=A0=C2=A0 The reason that DPDK uses arbitrary placement is that:
->  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 - it would stop things working on =
-certain NICs which need the=20
-> actual writable space specified in units of 1k - therefore we need 2k +=20
-> metadata space.
->  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 - we place padding between buffers=
- to avoid constantly hitting=20
-> the same memory channels when accessing memory.
->  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 - it allows the application to cho=
-ose the actual buffer size it=20
-> wants to use.
->  =C2=A0=C2=A0=C2=A0 We make use of the above to allow us to speed up proc=
-essing=20
+> 2) higher level user-space frameworks which may want to use AF_XDP, 
+> such as DPDK, do not currently support having buffers with 'fixed' 
+> alignment.
+>     The reason that DPDK uses arbitrary placement is that:
+>         - it would stop things working on certain NICs which 
+> need the actual writable space specified in units of 1k - therefore we 
+> need 2k + metadata space.
+>         - we place padding between buffers to avoid constantly 
+> hitting the same memory channels when accessing memory.
+>         - it allows the application to choose the actual buffer 
+> size it wants to use.
+>     We make use of the above to allow us to speed up processing 
 > significantly and also reduce the packet buffer memory size.
->=20
->  =C2=A0=C2=A0=C2=A0 Not having arbitrary buffer alignment also means an A=
-F_XDP driver=20
-> for DPDK cannot be a drop-in replacement for existing drivers in those=20
-> frameworks. Even with a new capability to allow an arbitrary buffer=20
-> alignment, existing apps will need to be modified to use that new=20
-> capability.
+>
+>     Not having arbitrary buffer alignment also means an AF_XDP 
+> driver for DPDK cannot be a drop-in replacement for existing drivers 
+> in those frameworks. Even with a new capability to allow an arbitrary 
+> buffer alignment, existing apps will need to be modified to use that 
+> new capability.
+
+Since all buffers in the umem are the same chunk size, the original 
+buffer
+address can be recalculated with some multiply/shift math.  However, 
+this is
+more expensive than just a mask operation.
+-- 
+Jonathan
