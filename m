@@ -2,345 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A52B58F06
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 02:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5780458F88
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 03:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbfF1Adw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Jun 2019 20:33:52 -0400
-Received: from www62.your-server.de ([213.133.104.62]:43368 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726506AbfF1Adw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Jun 2019 20:33:52 -0400
-Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hgepl-0000CZ-SX; Fri, 28 Jun 2019 02:33:45 +0200
-Received: from [178.193.45.231] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hgepl-0000qg-MI; Fri, 28 Jun 2019 02:33:45 +0200
-Subject: Re: [PATCH bpf-next v3 1/2] xsk: remove AF_XDP socket from map when
- the socket is released
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        ast@kernel.org, netdev@vger.kernel.org
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, bruce.richardson@intel.com,
-        songliubraving@fb.com, bpf@vger.kernel.org
-References: <20190620100652.31283-1-bjorn.topel@gmail.com>
- <20190620100652.31283-2-bjorn.topel@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <2417e1ab-16fa-d3ed-564e-1a50c4cb6717@iogearbox.net>
-Date:   Fri, 28 Jun 2019 02:33:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.3.0
-MIME-Version: 1.0
-In-Reply-To: <20190620100652.31283-2-bjorn.topel@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25493/Thu Jun 27 10:06:16 2019)
+        id S1726686AbfF1BMg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jun 2019 21:12:36 -0400
+Received: from mail-pl1-f201.google.com ([209.85.214.201]:33580 "EHLO
+        mail-pl1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726579AbfF1BMg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Jun 2019 21:12:36 -0400
+Received: by mail-pl1-f201.google.com with SMTP id f2so2470269plr.0
+        for <bpf@vger.kernel.org>; Thu, 27 Jun 2019 18:12:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=Mv+Yt5661paO9K5dtP2dnQMy9o+sBxrbFhsWwSqJJcg=;
+        b=fDc2qQrbPMqyoUOaO3fNeaHuQ43ov0aOHxaebEouKgwpC4G3ev/jls3vwwSvcszWbX
+         IZhsE6K8dTrSEz1CjjdGtNBGq8zYfVJXg5VU2WUZ/F+IWp/I65K5chy6yMAk68bQtDey
+         zTJS2cLjFqPbp2c2gobLF0cfOmNwJaH35Q97uKkbW/RobR4QO+QjUE2JDw+egcR/F3zK
+         CcmOkhoizWftCW4vG+Y4wzzQnU5enejBy8l5dq+cLPtm/CZmAvaNECoZOYKmP1+caQqV
+         h8hx07T+KvLon+T1YmJMaxit3RNmhuzwIKHRPaG/r316wGeKL72f3iUwl4uemVSgHDwT
+         tIng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=Mv+Yt5661paO9K5dtP2dnQMy9o+sBxrbFhsWwSqJJcg=;
+        b=RxTngkDZB7cwCyZ6lTql/sVhvCibRSg1Pc+GASz3f55rtrbOmHencUjpr049JSV+7s
+         /J0xT92rE8uujf/YSxGRcGWEISHXhjBKYKBfWbjzGxwhkwpZL7j7nbNxyC5wEap3u1fu
+         2ny3yhyVWw+W8qjzFKIJnsh38pv9mPGtRe6iCovk4rgrmnlcy+atX3hJwKhn22GASeAo
+         2Os+fQTSaa/SL2/8t1tshU8rIjV2KriGPhi2UEQczbPqjTcWTxotzSJ95ERfdZ9uXZ+7
+         lLhVw/zmnfWF21gJm6VjpLKAqEfSQ7DCswRe8TdGFjqRGAJYajUzM2jVREMLH+CUPNWY
+         8sdA==
+X-Gm-Message-State: APjAAAXM0YVaoDW3NPgx9i/g/KHM3rcjYD9ozKBoaaTfVtfkZ9OjO7G6
+        R4RzxdODbLj9y4AjdoL2TAOjGB4=
+X-Google-Smtp-Source: APXvYqwkk6MBmmrk0+2fHEUEMJ52i+jfYv7vxan+bt8Qo3VylUxEwqZYZAx235/ZwaMa7oPZ2ZUgAwo=
+X-Received: by 2002:a63:de50:: with SMTP id y16mr6615587pgi.431.1561684355393;
+ Thu, 27 Jun 2019 18:12:35 -0700 (PDT)
+Date:   Thu, 27 Jun 2019 18:12:33 -0700
+Message-Id: <20190628011233.63680-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
+Subject: [PATCH bpf-next] selftests/bpf: fix -Wstrict-aliasing in test_sockopt_sk.c
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/20/2019 12:06 PM, Björn Töpel wrote:
-> From: Björn Töpel <bjorn.topel@intel.com>
-> 
-> When an AF_XDP socket is released/closed the XSKMAP still holds a
-> reference to the socket in a "released" state. The socket will still
-> use the netdev queue resource, and block newly created sockets from
-> attaching to that queue, but no user application can access the
-> fill/complete/rx/tx queues. This results in that all applications need
-> to explicitly clear the map entry from the old "zombie state"
-> socket. This should be done automatically.
-> 
-> After this patch, when a socket is released, it will remove itself
-> from all the XSKMAPs it resides in, allowing the socket application to
-> remove the code that cleans the XSKMAP entry.
-> 
-> This behavior is also closer to that of SOCKMAP, making the two socket
-> maps more consistent.
-> 
-> Suggested-by: Bruce Richardson <bruce.richardson@intel.com>
-> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+Let's use union with u8[4] and u32 members for sockopt buffer,
+that should fix any possible aliasing issues.
 
-Sorry for the bit of delay in reviewing, few comments inline:
+test_sockopt_sk.c: In function =E2=80=98getsetsockopt=E2=80=99:
+test_sockopt_sk.c:115:2: warning: dereferencing type-punned pointer will br=
+eak strict-aliasing rules [-Wstrict-aliasing]
+  if (*(__u32 *)buf !=3D 0x55AA*2) {
+  ^~
+test_sockopt_sk.c:116:3: warning: dereferencing type-punned pointer will br=
+eak strict-aliasing rules [-Wstrict-aliasing]
+   log_err("Unexpected getsockopt(SO_SNDBUF) 0x%x !=3D 0x55AA*2",
+   ^~~~~~~
 
-> ---
->  include/net/xdp_sock.h |   3 ++
->  kernel/bpf/xskmap.c    | 101 +++++++++++++++++++++++++++++++++++------
->  net/xdp/xsk.c          |  25 ++++++++++
->  3 files changed, 116 insertions(+), 13 deletions(-)
-> 
-> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> index ae0f368a62bb..011a1b08d7c9 100644
-> --- a/include/net/xdp_sock.h
-> +++ b/include/net/xdp_sock.h
-> @@ -68,6 +68,8 @@ struct xdp_sock {
->  	 */
->  	spinlock_t tx_completion_lock;
->  	u64 rx_dropped;
-> +	struct list_head map_list;
-> +	spinlock_t map_list_lock;
->  };
->  
->  struct xdp_buff;
-> @@ -87,6 +89,7 @@ struct xdp_umem_fq_reuse *xsk_reuseq_swap(struct xdp_umem *umem,
->  					  struct xdp_umem_fq_reuse *newq);
->  void xsk_reuseq_free(struct xdp_umem_fq_reuse *rq);
->  struct xdp_umem *xdp_get_umem_from_qid(struct net_device *dev, u16 queue_id);
-> +void xsk_map_delete_from_node(struct xdp_sock *xs, struct list_head *node);
->  
->  static inline char *xdp_umem_get_data(struct xdp_umem *umem, u64 addr)
->  {
-> diff --git a/kernel/bpf/xskmap.c b/kernel/bpf/xskmap.c
-> index ef7338cebd18..af802c89ebab 100644
-> --- a/kernel/bpf/xskmap.c
-> +++ b/kernel/bpf/xskmap.c
-> @@ -13,8 +13,58 @@ struct xsk_map {
->  	struct bpf_map map;
->  	struct xdp_sock **xsk_map;
->  	struct list_head __percpu *flush_list;
-> +	spinlock_t lock;
->  };
->  
-> +/* Nodes are linked in the struct xdp_sock map_list field, and used to
-> + * track which maps a certain socket reside in.
-> + */
-> +struct xsk_map_node {
-> +	struct list_head node;
-> +	struct xsk_map *map;
-> +	struct xdp_sock **map_entry;
-> +};
-> +
-> +static struct xsk_map_node *xsk_map_node_alloc(void)
-> +{
-> +	return kzalloc(sizeof(struct xsk_map_node), GFP_ATOMIC | __GFP_NOWARN);
-> +}
-> +
-> +static void xsk_map_node_free(struct xsk_map_node *node)
-> +{
-> +	kfree(node);
-> +}
-> +
-> +static void xsk_map_node_init(struct xsk_map_node *node,
-> +			      struct xsk_map *map,
-> +			      struct xdp_sock **map_entry)
-> +{
-> +	node->map = map;
-> +	node->map_entry = map_entry;
-> +}
-> +
-> +static void xsk_map_add_node(struct xdp_sock *xs, struct xsk_map_node *node)
-> +{
-> +	spin_lock_bh(&xs->map_list_lock);
-> +	list_add_tail(&node->node, &xs->map_list);
-> +	spin_unlock_bh(&xs->map_list_lock);
-> +}
-> +
-> +static void xsk_map_del_node(struct xdp_sock *xs, struct xdp_sock **map_entry)
-> +{
-> +	struct xsk_map_node *n, *tmp;
-> +
-> +	spin_lock_bh(&xs->map_list_lock);
-> +	list_for_each_entry_safe(n, tmp, &xs->map_list, node) {
-> +		if (map_entry == n->map_entry) {
-> +			list_del(&n->node);
-> +			xsk_map_node_free(n);
-> +		}
-> +	}
-> +	spin_unlock_bh(&xs->map_list_lock);
-> +
-> +}
-> +
->  static struct bpf_map *xsk_map_alloc(union bpf_attr *attr)
->  {
->  	struct xsk_map *m;
-> @@ -34,6 +84,7 @@ static struct bpf_map *xsk_map_alloc(union bpf_attr *attr)
->  		return ERR_PTR(-ENOMEM);
->  
->  	bpf_map_init_from_attr(&m->map, attr);
-> +	spin_lock_init(&m->lock);
->  
->  	cost = (u64)m->map.max_entries * sizeof(struct xdp_sock *);
->  	cost += sizeof(struct list_head) * num_possible_cpus();
-> @@ -76,15 +127,16 @@ static void xsk_map_free(struct bpf_map *map)
->  	bpf_clear_redirect_map(map);
->  	synchronize_net();
->  
-> +	spin_lock_bh(&m->lock);
->  	for (i = 0; i < map->max_entries; i++) {
-> -		struct xdp_sock *xs;
-> -
-> -		xs = m->xsk_map[i];
-> -		if (!xs)
-> -			continue;
-> +		struct xdp_sock **map_entry = &m->xsk_map[i];
-> +		struct xdp_sock *old_xs;
->  
-> -		sock_put((struct sock *)xs);
-> +		old_xs = xchg(map_entry, NULL);
-> +		if (old_xs)
-> +			xsk_map_del_node(old_xs, map_entry);
->  	}
-> +	spin_unlock_bh(&m->lock);
->  
->  	free_percpu(m->flush_list);
->  	bpf_map_area_free(m->xsk_map);
-> @@ -166,7 +218,8 @@ static int xsk_map_update_elem(struct bpf_map *map, void *key, void *value,
->  {
->  	struct xsk_map *m = container_of(map, struct xsk_map, map);
->  	u32 i = *(u32 *)key, fd = *(u32 *)value;
-> -	struct xdp_sock *xs, *old_xs;
-> +	struct xdp_sock *xs, *old_xs, **entry;
-> +	struct xsk_map_node *node;
->  	struct socket *sock;
->  	int err;
->  
-> @@ -193,11 +246,20 @@ static int xsk_map_update_elem(struct bpf_map *map, void *key, void *value,
->  		return -EOPNOTSUPP;
->  	}
->  
-> -	sock_hold(sock->sk);
-> +	node = xsk_map_node_alloc();
-> +	if (!node) {
-> +		sockfd_put(sock);
-> +		return -ENOMEM;
-> +	}
->  
-> -	old_xs = xchg(&m->xsk_map[i], xs);
-> +	spin_lock_bh(&m->lock);
-> +	entry = &m->xsk_map[i];
-> +	xsk_map_node_init(node, m, entry);
-> +	xsk_map_add_node(xs, node);
-> +	old_xs = xchg(entry, xs);
->  	if (old_xs)
-> -		sock_put((struct sock *)old_xs);
-> +		xsk_map_del_node(old_xs, entry);
-> +	spin_unlock_bh(&m->lock);
->  
->  	sockfd_put(sock);
->  	return 0;
-> @@ -206,19 +268,32 @@ static int xsk_map_update_elem(struct bpf_map *map, void *key, void *value,
->  static int xsk_map_delete_elem(struct bpf_map *map, void *key)
->  {
->  	struct xsk_map *m = container_of(map, struct xsk_map, map);
-> -	struct xdp_sock *old_xs;
-> +	struct xdp_sock *old_xs, **map_entry;
->  	int k = *(u32 *)key;
->  
->  	if (k >= map->max_entries)
->  		return -EINVAL;
->  
-> -	old_xs = xchg(&m->xsk_map[k], NULL);
-> +	spin_lock_bh(&m->lock);
-> +	map_entry = &m->xsk_map[k];
-> +	old_xs = xchg(map_entry, NULL);
->  	if (old_xs)
-> -		sock_put((struct sock *)old_xs);
-> +		xsk_map_del_node(old_xs, map_entry);
-> +	spin_unlock_bh(&m->lock);
->  
->  	return 0;
->  }
->  
-> +void xsk_map_delete_from_node(struct xdp_sock *xs, struct list_head *node)
-> +{
-> +	struct xsk_map_node *n = list_entry(node, struct xsk_map_node, node);
-> +
-> +	spin_lock_bh(&n->map->lock);
-> +	*n->map_entry = NULL;
-> +	spin_unlock_bh(&n->map->lock);
-> +	xsk_map_node_free(n);
-> +}
-> +
->  const struct bpf_map_ops xsk_map_ops = {
->  	.map_alloc = xsk_map_alloc,
->  	.map_free = xsk_map_free,
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index a14e8864e4fa..1931d98a7754 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -335,6 +335,27 @@ static int xsk_init_queue(u32 entries, struct xsk_queue **queue,
->  	return 0;
->  }
->  
-> +static struct list_head *xsk_map_list_pop(struct xdp_sock *xs)
-> +{
-> +	struct list_head *node = NULL;
-> +
-> +	spin_lock_bh(&xs->map_list_lock);
-> +	if (!list_empty(&xs->map_list)) {
-> +		node = xs->map_list.next;
-> +		list_del(node);
-> +	}
-> +	spin_unlock_bh(&xs->map_list_lock);
-> +	return node;
-> +}
-> +
-> +static void xsk_delete_from_maps(struct xdp_sock *xs)
-> +{
-> +	struct list_head *node;
-> +
-> +	while ((node = xsk_map_list_pop(xs)))
-> +		xsk_map_delete_from_node(xs, node);
-> +}
-> +
+Fixes: 8a027dc0d8f5 ("selftests/bpf: add sockopt test that exercises sk hel=
+pers")
+Reported-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ tools/testing/selftests/bpf/test_sockopt_sk.c | 51 +++++++++----------
+ 1 file changed, 24 insertions(+), 27 deletions(-)
 
-I stared at this set for a while and I think there are still two
-issues in the design unless I'm missing something obvious.
-
-1) xs teardown and parallel map update:
-
-- CPU0 is in xsk_release(), calls xsk_delete_from_maps().
-- CPU1 is in xsk_map_update_elem(), both access the same map slot.
-- CPU0 does the xsk_map_list_pop() for that given slot, gets
-  interrupted before calling into xsk_map_delete_from_node().
-- CPU1 takes m->lock in updates, *entry = xs to the new sock,
-  does xsk_map_del_node() to check on the xs (which CPU0 tears
-  down). Given this was popped off the list, it doesn't do
-  anything here, all good. It unlocks m->lock and succeeds.
-- CPU0 now continues in xsk_map_delete_from_node(), takes
-  m->lock, zeroes *n->map_entry, releases m->lock, and frees
-  n. However, at this point *n->map_entry contains the xs that
-  we've just updated on CPU1. So zero'ing it will 1) remove
-  the wrong entry, and ii) leak it since it goes out of reach.
-
-2) Inconsistent use of xchg() and friends:
-
-- AF_XDP fast-path is doing READ_ONCE(m->xsk_map[key]) without
-  taking m->lock. This is also why you have xchg() for example
-  inside m->lock region since both protect different things (should
-  probably be commented). However, this is not consistently used.
-  E.g. xsk_map_delete_from_node() or xsk_map_update_elem() have
-  plain assignment, so compiler could in theory happily perform
-  store tearing and the READ_ONCE() would see garbage. This needs
-  to be consistently paired.
-
->  static int xsk_release(struct socket *sock)
->  {
->  	struct sock *sk = sock->sk;
-> @@ -354,6 +375,7 @@ static int xsk_release(struct socket *sock)
->  	sock_prot_inuse_add(net, sk->sk_prot, -1);
->  	local_bh_enable();
->  
-> +	xsk_delete_from_maps(xs);
->  	if (xs->dev) {
->  		struct net_device *dev = xs->dev;
->  
-> @@ -767,6 +789,9 @@ static int xsk_create(struct net *net, struct socket *sock, int protocol,
->  	mutex_init(&xs->mutex);
->  	spin_lock_init(&xs->tx_completion_lock);
->  
-> +	INIT_LIST_HEAD(&xs->map_list);
-> +	spin_lock_init(&xs->map_list_lock);
-> +
->  	mutex_lock(&net->xdp.lock);
->  	sk_add_node_rcu(sk, &net->xdp.list);
->  	mutex_unlock(&net->xdp.lock);
-> 
+diff --git a/tools/testing/selftests/bpf/test_sockopt_sk.c b/tools/testing/=
+selftests/bpf/test_sockopt_sk.c
+index 12e79ed075ce..036b652e5ca9 100644
+--- a/tools/testing/selftests/bpf/test_sockopt_sk.c
++++ b/tools/testing/selftests/bpf/test_sockopt_sk.c
+@@ -22,7 +22,10 @@
+ static int getsetsockopt(void)
+ {
+ 	int fd, err;
+-	char buf[4] =3D {};
++	union {
++		char u8[4];
++		__u32 u32;
++	} buf =3D {};
+ 	socklen_t optlen;
+=20
+ 	fd =3D socket(AF_INET, SOCK_STREAM, 0);
+@@ -33,31 +36,31 @@ static int getsetsockopt(void)
+=20
+ 	/* IP_TOS - BPF bypass */
+=20
+-	buf[0] =3D 0x08;
+-	err =3D setsockopt(fd, SOL_IP, IP_TOS, buf, 1);
++	buf.u8[0] =3D 0x08;
++	err =3D setsockopt(fd, SOL_IP, IP_TOS, &buf, 1);
+ 	if (err) {
+ 		log_err("Failed to call setsockopt(IP_TOS)");
+ 		goto err;
+ 	}
+=20
+-	buf[0] =3D 0x00;
++	buf.u8[0] =3D 0x00;
+ 	optlen =3D 1;
+-	err =3D getsockopt(fd, SOL_IP, IP_TOS, buf, &optlen);
++	err =3D getsockopt(fd, SOL_IP, IP_TOS, &buf, &optlen);
+ 	if (err) {
+ 		log_err("Failed to call getsockopt(IP_TOS)");
+ 		goto err;
+ 	}
+=20
+-	if (buf[0] !=3D 0x08) {
++	if (buf.u8[0] !=3D 0x08) {
+ 		log_err("Unexpected getsockopt(IP_TOS) buf[0] 0x%02x !=3D 0x08",
+-			buf[0]);
++			buf.u8[0]);
+ 		goto err;
+ 	}
+=20
+ 	/* IP_TTL - EPERM */
+=20
+-	buf[0] =3D 1;
+-	err =3D setsockopt(fd, SOL_IP, IP_TTL, buf, 1);
++	buf.u8[0] =3D 1;
++	err =3D setsockopt(fd, SOL_IP, IP_TTL, &buf, 1);
+ 	if (!err || errno !=3D EPERM) {
+ 		log_err("Unexpected success from setsockopt(IP_TTL)");
+ 		goto err;
+@@ -65,16 +68,16 @@ static int getsetsockopt(void)
+=20
+ 	/* SOL_CUSTOM - handled by BPF */
+=20
+-	buf[0] =3D 0x01;
+-	err =3D setsockopt(fd, SOL_CUSTOM, 0, buf, 1);
++	buf.u8[0] =3D 0x01;
++	err =3D setsockopt(fd, SOL_CUSTOM, 0, &buf, 1);
+ 	if (err) {
+ 		log_err("Failed to call setsockopt");
+ 		goto err;
+ 	}
+=20
+-	buf[0] =3D 0x00;
++	buf.u32 =3D 0x00;
+ 	optlen =3D 4;
+-	err =3D getsockopt(fd, SOL_CUSTOM, 0, buf, &optlen);
++	err =3D getsockopt(fd, SOL_CUSTOM, 0, &buf, &optlen);
+ 	if (err) {
+ 		log_err("Failed to call getsockopt");
+ 		goto err;
+@@ -84,37 +87,31 @@ static int getsetsockopt(void)
+ 		log_err("Unexpected optlen %d !=3D 1", optlen);
+ 		goto err;
+ 	}
+-	if (buf[0] !=3D 0x01) {
+-		log_err("Unexpected buf[0] 0x%02x !=3D 0x01", buf[0]);
++	if (buf.u8[0] !=3D 0x01) {
++		log_err("Unexpected buf[0] 0x%02x !=3D 0x01", buf.u8[0]);
+ 		goto err;
+ 	}
+=20
+ 	/* SO_SNDBUF is overwritten */
+=20
+-	buf[0] =3D 0x01;
+-	buf[1] =3D 0x01;
+-	buf[2] =3D 0x01;
+-	buf[3] =3D 0x01;
+-	err =3D setsockopt(fd, SOL_SOCKET, SO_SNDBUF, buf, 4);
++	buf.u32 =3D 0x01010101;
++	err =3D setsockopt(fd, SOL_SOCKET, SO_SNDBUF, &buf, 4);
+ 	if (err) {
+ 		log_err("Failed to call setsockopt(SO_SNDBUF)");
+ 		goto err;
+ 	}
+=20
+-	buf[0] =3D 0x00;
+-	buf[1] =3D 0x00;
+-	buf[2] =3D 0x00;
+-	buf[3] =3D 0x00;
++	buf.u32 =3D 0x00;
+ 	optlen =3D 4;
+-	err =3D getsockopt(fd, SOL_SOCKET, SO_SNDBUF, buf, &optlen);
++	err =3D getsockopt(fd, SOL_SOCKET, SO_SNDBUF, &buf, &optlen);
+ 	if (err) {
+ 		log_err("Failed to call getsockopt(SO_SNDBUF)");
+ 		goto err;
+ 	}
+=20
+-	if (*(__u32 *)buf !=3D 0x55AA*2) {
++	if (buf.u32 !=3D 0x55AA*2) {
+ 		log_err("Unexpected getsockopt(SO_SNDBUF) 0x%x !=3D 0x55AA*2",
+-			*(__u32 *)buf);
++			buf.u32);
+ 		goto err;
+ 	}
+=20
+--=20
+2.22.0.410.gd8fdbe21b5-goog
 
