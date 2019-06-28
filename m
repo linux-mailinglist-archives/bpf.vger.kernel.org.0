@@ -2,201 +2,275 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2303E5A34A
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 20:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 258B95A352
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 20:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbfF1SPo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jun 2019 14:15:44 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:46864 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726498AbfF1SPo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jun 2019 14:15:44 -0400
-Received: by mail-qt1-f194.google.com with SMTP id h21so7275943qtn.13;
-        Fri, 28 Jun 2019 11:15:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8tyoV2DLPjbpVvs3pr7vwz3Iz7a3h78lHhdifv2ifuI=;
-        b=I8DagoX+GMMBE9v0KSmmkuD8qlgssDFj0n6ehTjs2lmZ75kK5LwW8dLn9lkMuHRRZh
-         c24Aq1U5H7U9CWC0TvJbtZmb52CriOEcgB2E7TMkRo01xvVM4H1mMoQ9Yf4N9Jdb04cf
-         TarXlRK8JdvL+eakmikJVC59maw8d9prA3oeLakBsL9SKUsEEVlYrwpMd5p6QGcoar66
-         sNZUkm1e0h3+SkFV3H2t4HCqi/21Li1LCco3AW55kSJiIVfJ4s2xA9UuWcwQwa47jaAb
-         OnZq8c/mN0Kwxp2iiNFVnveHzzl4l5JKpPPMiHfANMK8Ie8cnffZ5rdXQx8ZEatrR5+4
-         Wcsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8tyoV2DLPjbpVvs3pr7vwz3Iz7a3h78lHhdifv2ifuI=;
-        b=n8/NPGWLnAKXb5Oyr3yorApxqBtRrvraPo4kxWqmJpybZj6r8nUvg3F6cdZUgIHUX/
-         95K7utLrLPXYM9Q+eY1f8PHjEfaRaRCLt9GM9XkgW9aZn2v9sUJOf5ujI71X+l55fEUH
-         FjvzvhRBelbtyo7ZuAlNARnVwMWYJtl3ISp8f5RKqIxuMbGS/Y9YiKnhpM90tVJOAgda
-         zkclxcTmTu49Y1nfdBUn408mNubJoCW0wAKuwwgDHj+YWkWD4/OA0UVcGIpaha5BWp6C
-         uQip/UInmyKcvxMl5tXSzA9I6OG4/iS1q53l91G8bjoJEgP4hBsG26BZhksYdRwXtGma
-         erIQ==
-X-Gm-Message-State: APjAAAXG5rYTKuh6w0DFBUUSqF81qmOpjsI3jD0/HjyoIS2MP+t0qjAD
-        KdIDGsw4r75S7kHZjFsVk291lKiPDvmr46vxhMjnrKHmvic=
-X-Google-Smtp-Source: APXvYqwRFpRUJ4dadRIK2lWQghKcpRKh74Jo4GsVw0+DOKpCg5LshNBqYzag+ozK069Lk7W6j95nkwtWmiuOYGEV3A0=
-X-Received: by 2002:ac8:2fb7:: with SMTP id l52mr8837932qta.93.1561745743303;
- Fri, 28 Jun 2019 11:15:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190628055303.1249758-1-andriin@fb.com> <20190628055303.1249758-4-andriin@fb.com>
- <20190628180010.GA24308@mini-arch> <CAEf4BzZ_1-uSNRco91yZ4OJ2dV+G-yZ_uFPTbQDmPHoNLX9sPw@mail.gmail.com>
- <20190628181414.GC24308@mini-arch>
-In-Reply-To: <20190628181414.GC24308@mini-arch>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 28 Jun 2019 11:15:32 -0700
-Message-ID: <CAEf4BzaGOZZ19oR7+gtecVr+cag6YggQNG4BJwG+C7ksChfgPw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 3/9] libbpf: add ability to attach/detach BPF
- program to perf event
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
+        id S1726525AbfF1SRs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jun 2019 14:17:48 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:31660 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725783AbfF1SRs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 28 Jun 2019 14:17:48 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5SI8GdM023245;
+        Fri, 28 Jun 2019 11:17:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=rKLXyhwPJ8DvlDYBE04m+2fG0urhZpm8XuJRfzeN3Mg=;
+ b=USg9ryh81cBONbO6xUFlRqv0XZKzCpyqs1gmbG+P53fgW6eUe918Zd/EZUUNwdPiBe5L
+ hugLh0kc1fpMgodKRfsKTJMJKHIJ0U1J/cbwyPxYgxtQV806iCgr8xKPOKdqoAzdH+VS
+ CJSMYegC+Jz4OxGB/NVeKGN4l5CYsVBAnjA= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2tdgdkht2a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 28 Jun 2019 11:17:28 -0700
+Received: from ash-exhub102.TheFacebook.com (2620:10d:c0a8:82::f) by
+ ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 28 Jun 2019 11:17:26 -0700
+Received: from NAM05-BY2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Fri, 28 Jun 2019 11:17:26 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=testarcselector01; d=microsoft.com; cv=none;
+ b=BLO9N7wco1a3Det+aADrd5h/TLgDrGY5JhYp6jZ+/f4oNk3ZQNc5MqdxKjbcAden+JbBSXKq37oh2iIdj5Fr5ogOORXGeRnBCVwm1p6w2C0LTs58tAFFTzIQIBeKR1kYlqwhurhibm9r83qqfcTFtrl8H2M01xuV3pAknIKVdec=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=testarcselector01;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rKLXyhwPJ8DvlDYBE04m+2fG0urhZpm8XuJRfzeN3Mg=;
+ b=NqF6rFJ47d13gztLujM+dZgPbBlYLnmmCFc+dx2YAciLWEmnO55/Cb8rozzwazL5AvI1MkG4+RwokaVsgbzWBKP7/2nbHLuQVfFIDyGWJCyPFgxYppsRgf2s4LKXODFlfN+2W0vWlzNg3RB/GpynbLPqoJJDLANINZV1tBhrK0k=
+ARC-Authentication-Results: i=1; test.office365.com
+ 1;spf=none;dmarc=none;dkim=none;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rKLXyhwPJ8DvlDYBE04m+2fG0urhZpm8XuJRfzeN3Mg=;
+ b=pokMEbUFBhlBFvDbQdTI01EDWlKmPkPDZLiiSklplpfD8nOAslHOGh4RjHuFt0N71/E9DjXQemjBKQwqK6HyNRAB8NaYqDcJk+oec+iVa7iSHEw+8HLEwjf7dzMb4KD224/OOT61Q+deQIEZHxTAiC0dNFUZYhqX4WbG3lj07s8=
+Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
+ MWHPR15MB1677.namprd15.prod.outlook.com (10.175.135.150) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2008.16; Fri, 28 Jun 2019 18:17:25 +0000
+Received: from MWHPR15MB1165.namprd15.prod.outlook.com
+ ([fe80::400e:e329:ea98:aa0d]) by MWHPR15MB1165.namprd15.prod.outlook.com
+ ([fe80::400e:e329:ea98:aa0d%6]) with mapi id 15.20.2008.018; Fri, 28 Jun 2019
+ 18:17:25 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+CC:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH v2 bpf-next 1/4] libbpf: capture value in BTF type info
+ for BTF-defined map defs
+Thread-Topic: [PATCH v2 bpf-next 1/4] libbpf: capture value in BTF type info
+ for BTF-defined map defs
+Thread-Index: AQHVLcXFbLN1ePIFZUiVbnESdM/pZ6axX+wA
+Date:   Fri, 28 Jun 2019 18:17:25 +0000
+Message-ID: <EDAC3B34-D613-4169-9BEB-6FEDC9122A32@fb.com>
+References: <20190628152539.3014719-1-andriin@fb.com>
+ <20190628152539.3014719-2-andriin@fb.com>
+In-Reply-To: <20190628152539.3014719-2-andriin@fb.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3445.104.11)
+x-originating-ip: [2620:10d:c090:200::2127]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 52e7c636-4ac3-4a70-bf76-08d6fbf4df1e
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MWHPR15MB1677;
+x-ms-traffictypediagnostic: MWHPR15MB1677:
+x-microsoft-antispam-prvs: <MWHPR15MB16772D837A3AEB9B06BAC638B3FC0@MWHPR15MB1677.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:12;
+x-forefront-prvs: 00826B6158
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(346002)(136003)(366004)(396003)(376002)(199004)(189003)(73956011)(71190400001)(36756003)(11346002)(6862004)(8936002)(81166006)(6506007)(86362001)(486006)(81156014)(8676002)(57306001)(446003)(5660300002)(478600001)(76176011)(99286004)(6246003)(102836004)(53546011)(68736007)(476003)(4326008)(6116002)(6636002)(46003)(2906002)(305945005)(14454004)(7736002)(25786009)(229853002)(64756008)(66556008)(2616005)(186003)(66476007)(50226002)(6486002)(76116006)(6436002)(316002)(37006003)(66946007)(6512007)(256004)(14444005)(71200400001)(33656002)(66446008)(53936002)(54906003);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1677;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: nF4Uzs5UDQmg0lz4vHITqYBCMEmauk+pcTdySaAvdyjDzoiTRGyuDJu6f1Q47kXf31A3HES0HgOg2CCLbiZP1i5TCChgOkb4N1EZ6UW6ORuykGT9IK82jatu9p24GGluGwIKA36WwxiVo8nzKrCRkEX7OpssNR/ShuAAb5Va1uGbKudnoClX3Q5VT5+c10iCr57bnQg63Lnajtcc3iQm8EK3HSP0fQMhN1wyZzhvPHgMrwMR5ETu7VEWLdbGEU1UP/e8B63t6cb4YJGCY+EqZJZFt1nJA7/eR2v0P0Mzcm2dtgcEVYQucIPpYQ7Ot+Z/zq7N2FSeTHUKy0eCC6Mt9IZvgZNax0/AHk13WVf29A0FxDGlKTYmReqWLH16FqfRy3MwSvaVV8SWJ/jLwFUAyZSs0HBrL/54GfL6TGZow7w=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <721A5A6047E2F041A25B5727606553EF@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 52e7c636-4ac3-4a70-bf76-08d6fbf4df1e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jun 2019 18:17:25.1228
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: songliubraving@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1677
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-28_08:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906280206
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 28, 2019 at 11:14 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
->
-> On 06/28, Andrii Nakryiko wrote:
-> > On Fri, Jun 28, 2019 at 11:00 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
-> > >
-> > > On 06/27, Andrii Nakryiko wrote:
-> > > > bpf_program__attach_perf_event allows to attach BPF program to existing
-> > > > perf event hook, providing most generic and most low-level way to attach BPF
-> > > > programs. It returns struct bpf_link, which should be passed to
-> > > > bpf_link__destroy to detach and free resources, associated with a link.
-> > > >
-> > > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > > > ---
-> > > >  tools/lib/bpf/libbpf.c   | 58 ++++++++++++++++++++++++++++++++++++++++
-> > > >  tools/lib/bpf/libbpf.h   |  3 +++
-> > > >  tools/lib/bpf/libbpf.map |  1 +
-> > > >  3 files changed, 62 insertions(+)
-> > > >
-> > > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > > index 455795e6f8af..606705f878ba 100644
-> > > > --- a/tools/lib/bpf/libbpf.c
-> > > > +++ b/tools/lib/bpf/libbpf.c
-> > > > @@ -32,6 +32,7 @@
-> > > >  #include <linux/limits.h>
-> > > >  #include <linux/perf_event.h>
-> > > >  #include <linux/ring_buffer.h>
-> > > > +#include <sys/ioctl.h>
-> > > >  #include <sys/stat.h>
-> > > >  #include <sys/types.h>
-> > > >  #include <sys/vfs.h>
-> > > > @@ -3958,6 +3959,63 @@ int bpf_link__destroy(struct bpf_link *link)
-> > > >       return err;
-> > > >  }
-> > > >
-> > > > +struct bpf_link_fd {
-> > > > +     struct bpf_link link; /* has to be at the top of struct */
-> > > > +     int fd; /* hook FD */
-> > > > +};
-> > > > +
-> > > > +static int bpf_link__destroy_perf_event(struct bpf_link *link)
-> > > > +{
-> > > > +     struct bpf_link_fd *l = (void *)link;
-> > > > +     int err;
-> > > > +
-> > > > +     if (l->fd < 0)
-> > > > +             return 0;
-> > > > +
-> > > > +     err = ioctl(l->fd, PERF_EVENT_IOC_DISABLE, 0);
-> > > > +     close(l->fd);
-> > > > +     return err;
-> > > Why not return -errno from ioctl here (as you do elsewhere)?
-> >
-> > Good catch, will fix, thanks!
-> >
-> > As an aside, this whole returning error on close/destroy is a bit
-> > moot, as there is little one can do if any of teardown steps fail
-> > (except crash, which is not great response :) ). So the strategy would
-> > be to still free all memory and try to close all FDs, before returning
-> > error (again, which one, first, last? eh..).
-> Agreed, it's like nobody cares about close() return code. So don't
-> bother with this fix unless you'd do another respin for a different
-> reason.
 
-I still want something more meaningful than -1 :) Will renamed bpf_fd as well.
 
->
-> > > > +}
-> > > > +
-> > > > +struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog,
-> > > > +                                             int pfd)
-> > > > +{
-> > > > +     char errmsg[STRERR_BUFSIZE];
-> > > > +     struct bpf_link_fd *link;
-> > > > +     int bpf_fd, err;
-> > > > +
-> > > > +     bpf_fd = bpf_program__fd(prog);
-> > > > +     if (bpf_fd < 0) {
-> > > > +             pr_warning("program '%s': can't attach before loaded\n",
-> > > > +                        bpf_program__title(prog, false));
-> > > > +             return ERR_PTR(-EINVAL);
-> > > > +     }
-> > > > +
-> > > > +     link = malloc(sizeof(*link));
-> > > > +     if (!link)
-> > > > +             return ERR_PTR(-ENOMEM);
-> > > > +     link->link.destroy = &bpf_link__destroy_perf_event;
-> > > > +     link->fd = pfd;
-> > > > +
-> > > > +     if (ioctl(pfd, PERF_EVENT_IOC_SET_BPF, bpf_fd) < 0) {
-> > > > +             err = -errno;
-> > > > +             free(link);
-> > > > +             pr_warning("program '%s': failed to attach to pfd %d: %s\n",
-> > > > +                        bpf_program__title(prog, false), pfd,
-> > > > +                        libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-> > > > +             return ERR_PTR(err);
-> > > > +     }
-> > > > +     if (ioctl(pfd, PERF_EVENT_IOC_ENABLE, 0) < 0) {
-> > > > +             err = -errno;
-> > > > +             free(link);
-> > > > +             pr_warning("program '%s': failed to enable pfd %d: %s\n",
-> > > > +                        bpf_program__title(prog, false), pfd,
-> > > > +                        libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-> > > > +             return ERR_PTR(err);
-> > > > +     }
-> > > > +     return (struct bpf_link *)link;
-> > > > +}
-> > > > +
-> > > >  enum bpf_perf_event_ret
-> > > >  bpf_perf_event_read_simple(void *mmap_mem, size_t mmap_size, size_t page_size,
-> > > >                          void **copy_mem, size_t *copy_size,
-> > > > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> > > > index 5082a5ebb0c2..1bf66c4a9330 100644
-> > > > --- a/tools/lib/bpf/libbpf.h
-> > > > +++ b/tools/lib/bpf/libbpf.h
-> > > > @@ -169,6 +169,9 @@ struct bpf_link;
-> > > >
-> > > >  LIBBPF_API int bpf_link__destroy(struct bpf_link *link);
-> > > >
-> > > > +LIBBPF_API struct bpf_link *
-> > > > +bpf_program__attach_perf_event(struct bpf_program *prog, int pfd);
-> > > > +
-> > > >  struct bpf_insn;
-> > > >
-> > > >  /*
-> > > > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> > > > index 3cde850fc8da..756f5aa802e9 100644
-> > > > --- a/tools/lib/bpf/libbpf.map
-> > > > +++ b/tools/lib/bpf/libbpf.map
-> > > > @@ -169,6 +169,7 @@ LIBBPF_0.0.4 {
-> > > >       global:
-> > > >               bpf_link__destroy;
-> > > >               bpf_object__load_xattr;
-> > > > +             bpf_program__attach_perf_event;
-> > > >               btf_dump__dump_type;
-> > > >               btf_dump__free;
-> > > >               btf_dump__new;
-> > > > --
-> > > > 2.17.1
-> > > >
+> On Jun 28, 2019, at 8:25 AM, Andrii Nakryiko <andriin@fb.com> wrote:
+>=20
+> Change BTF-defined map definitions to capture compile-time integer
+> values as part of BTF type definition, to avoid split of key/value type
+> information and actual type/size/flags initialization for maps.
+>=20
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+
+Acked-by: Song Liu <songliubraving@fb.com>
+
+> ---
+> tools/lib/bpf/libbpf.c | 58 ++++++++++++++++++++----------------------
+> 1 file changed, 28 insertions(+), 30 deletions(-)
+>=20
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 6e6ebef11ba3..9e099ecb2c2b 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -1028,40 +1028,40 @@ static const struct btf_type *skip_mods_and_typed=
+efs(const struct btf *btf,
+> 	}
+> }
+>=20
+> -static bool get_map_field_int(const char *map_name,
+> -			      const struct btf *btf,
+> +/*
+> + * Fetch integer attribute of BTF map definition. Such attributes are
+> + * represented using a pointer to an array, in which dimensionality of a=
+rray
+> + * encodes specified integer value. E.g., int (*type)[BPF_MAP_TYPE_ARRAY=
+];
+> + * encodes `type =3D> BPF_MAP_TYPE_ARRAY` key/value pair completely usin=
+g BTF
+> + * type definition, while using only sizeof(void *) space in ELF data se=
+ction.
+> + */
+> +static bool get_map_field_int(const char *map_name, const struct btf *bt=
+f,
+> 			      const struct btf_type *def,
+> -			      const struct btf_member *m,
+> -			      const void *data, __u32 *res) {
+> +			      const struct btf_member *m, __u32 *res) {
+> 	const struct btf_type *t =3D skip_mods_and_typedefs(btf, m->type);
+> 	const char *name =3D btf__name_by_offset(btf, m->name_off);
+> -	__u32 int_info =3D *(const __u32 *)(const void *)(t + 1);
+> +	const struct btf_array *arr_info;
+> +	const struct btf_type *arr_t;
+>=20
+> -	if (BTF_INFO_KIND(t->info) !=3D BTF_KIND_INT) {
+> -		pr_warning("map '%s': attr '%s': expected INT, got %u.\n",
+> +	if (BTF_INFO_KIND(t->info) !=3D BTF_KIND_PTR) {
+> +		pr_warning("map '%s': attr '%s': expected PTR, got %u.\n",
+> 			   map_name, name, BTF_INFO_KIND(t->info));
+> 		return false;
+> 	}
+> -	if (t->size !=3D 4 || BTF_INT_BITS(int_info) !=3D 32 ||
+> -	    BTF_INT_OFFSET(int_info)) {
+> -		pr_warning("map '%s': attr '%s': expected 32-bit non-bitfield integer,=
+ "
+> -			   "got %u-byte (%d-bit) one with bit offset %d.\n",
+> -			   map_name, name, t->size, BTF_INT_BITS(int_info),
+> -			   BTF_INT_OFFSET(int_info));
+> -		return false;
+> -	}
+> -	if (BTF_INFO_KFLAG(def->info) && BTF_MEMBER_BITFIELD_SIZE(m->offset)) {
+> -		pr_warning("map '%s': attr '%s': bitfield is not supported.\n",
+> -			   map_name, name);
+> +
+> +	arr_t =3D btf__type_by_id(btf, t->type);
+> +	if (!arr_t) {
+> +		pr_warning("map '%s': attr '%s': type [%u] not found.\n",
+> +			   map_name, name, t->type);
+> 		return false;
+> 	}
+> -	if (m->offset % 32) {
+> -		pr_warning("map '%s': attr '%s': unaligned fields are not supported.\n=
+",
+> -			   map_name, name);
+> +	if (BTF_INFO_KIND(arr_t->info) !=3D BTF_KIND_ARRAY) {
+> +		pr_warning("map '%s': attr '%s': expected ARRAY, got %u.\n",
+> +			   map_name, name, BTF_INFO_KIND(arr_t->info));
+> 		return false;
+> 	}
+> -
+> -	*res =3D *(const __u32 *)(data + m->offset / 8);
+> +	arr_info =3D (const void *)(arr_t + 1);
+> +	*res =3D arr_info->nelems;
+> 	return true;
+> }
+>=20
+> @@ -1074,7 +1074,6 @@ static int bpf_object__init_user_btf_map(struct bpf=
+_object *obj,
+> 	const struct btf_var_secinfo *vi;
+> 	const struct btf_var *var_extra;
+> 	const struct btf_member *m;
+> -	const void *def_data;
+> 	const char *map_name;
+> 	struct bpf_map *map;
+> 	int vlen, i;
+> @@ -1131,7 +1130,6 @@ static int bpf_object__init_user_btf_map(struct bpf=
+_object *obj,
+> 	pr_debug("map '%s': at sec_idx %d, offset %zu.\n",
+> 		 map_name, map->sec_idx, map->sec_offset);
+>=20
+> -	def_data =3D data->d_buf + vi->offset;
+> 	vlen =3D BTF_INFO_VLEN(def->info);
+> 	m =3D (const void *)(def + 1);
+> 	for (i =3D 0; i < vlen; i++, m++) {
+> @@ -1144,19 +1142,19 @@ static int bpf_object__init_user_btf_map(struct b=
+pf_object *obj,
+> 		}
+> 		if (strcmp(name, "type") =3D=3D 0) {
+> 			if (!get_map_field_int(map_name, obj->btf, def, m,
+> -					       def_data, &map->def.type))
+> +					       &map->def.type))
+> 				return -EINVAL;
+> 			pr_debug("map '%s': found type =3D %u.\n",
+> 				 map_name, map->def.type);
+> 		} else if (strcmp(name, "max_entries") =3D=3D 0) {
+> 			if (!get_map_field_int(map_name, obj->btf, def, m,
+> -					       def_data, &map->def.max_entries))
+> +					       &map->def.max_entries))
+> 				return -EINVAL;
+> 			pr_debug("map '%s': found max_entries =3D %u.\n",
+> 				 map_name, map->def.max_entries);
+> 		} else if (strcmp(name, "map_flags") =3D=3D 0) {
+> 			if (!get_map_field_int(map_name, obj->btf, def, m,
+> -					       def_data, &map->def.map_flags))
+> +					       &map->def.map_flags))
+> 				return -EINVAL;
+> 			pr_debug("map '%s': found map_flags =3D %u.\n",
+> 				 map_name, map->def.map_flags);
+> @@ -1164,7 +1162,7 @@ static int bpf_object__init_user_btf_map(struct bpf=
+_object *obj,
+> 			__u32 sz;
+>=20
+> 			if (!get_map_field_int(map_name, obj->btf, def, m,
+> -					       def_data, &sz))
+> +					       &sz))
+> 				return -EINVAL;
+> 			pr_debug("map '%s': found key_size =3D %u.\n",
+> 				 map_name, sz);
+> @@ -1207,7 +1205,7 @@ static int bpf_object__init_user_btf_map(struct bpf=
+_object *obj,
+> 			__u32 sz;
+>=20
+> 			if (!get_map_field_int(map_name, obj->btf, def, m,
+> -					       def_data, &sz))
+> +					       &sz))
+> 				return -EINVAL;
+> 			pr_debug("map '%s': found value_size =3D %u.\n",
+> 				 map_name, sz);
+> --=20
+> 2.17.1
+>=20
+
