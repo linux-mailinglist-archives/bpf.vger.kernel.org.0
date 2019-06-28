@@ -2,303 +2,245 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 386155A5B2
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 22:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919715A5BA
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 22:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727079AbfF1UKN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jun 2019 16:10:13 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:35796 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727042AbfF1UKN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jun 2019 16:10:13 -0400
-Received: by mail-qk1-f195.google.com with SMTP id l128so5969211qke.2;
-        Fri, 28 Jun 2019 13:10:12 -0700 (PDT)
+        id S1727075AbfF1UNK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jun 2019 16:13:10 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:33329 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727094AbfF1UNH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jun 2019 16:13:07 -0400
+Received: by mail-pg1-f193.google.com with SMTP id m4so3071153pgk.0
+        for <bpf@vger.kernel.org>; Fri, 28 Jun 2019 13:13:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5r169CPPFzOHX0WqSks+dy0jqaPo+cYH0tY/52n5NPo=;
-        b=Y1+DREuzF5OqlROSwUQ5xbDryCCZTv9JC9CbRsCOA/RjbLsjqHofGyjFMXkZKnj4MO
-         AnjOTh7WdB9YoXCHAo8jWBLuZjQh8L6hPWs+1l8oy1wWv4kxp+yhluESBMJWs0WK3IQn
-         5b1pvKW9q5rpmq8fsSUmdPMDS/WRTN1csLY5uEQVPMHOhLfC49hpd/ivQi81cO2aWjIc
-         f4qxTjMo104RM8L3KhllNV/1QyMK715uq41Q92HV9jXyC9k0yiuSzKRCqgaOjOMuDEhF
-         yMNAr7km9xj6BXNonUC9wUNyo+Ed0irJBko77MM+uezMjhmSLIj56uTP3v05ZgZr+gbW
-         JbmQ==
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Amybm5wgl2x2y4DQCaMoG+V1yEtg0sPRIUl33wffDtM=;
+        b=mKRe8AlrdnV37n3R/e0SHNzE+3TaRdo7lnVjd4bk7zs18tyFuBsAGMZHZK9VXigKCu
+         R5iAFeyGORMt8fI4mpk1wAToBG3AU3HhUuMYUMx0Sso1lVU4mcDpfNSQJhRdkPscHDqX
+         Ml6S23r0uzZ8QaD9QdC77KfCUsiXhgo2cx8MRcf157hmjVV2hJjJM3rEwbCSeoDH9VZt
+         Hmq+tkQSuNw7cExfaeTka61npJLRDz2tbji/7zeexm8MvNyg0rdldyznTPoI8jtdD49A
+         7GeSioTJ8HINNRMJXfedXTJSLaaUkAYMcwq5aOLBGzug+T5YhID5mraITrUN4Ba9zAPc
+         V+0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5r169CPPFzOHX0WqSks+dy0jqaPo+cYH0tY/52n5NPo=;
-        b=UhZ2mai4Mmfe99Xho4lQIA4ta6IM3CHf1LHYA+EaHH5bX8d7s2RslnxWJP3lTJ2JW7
-         l56MVaxbjyzZJm2jd2kbi99VDFjOcbzJ0hKSOZ4BrDKp+Q8ZKVBgJcWFDIK+YeeEr1ut
-         52Vkr9tFqXE8DQREluaRdLAoapmh2m+spqaeCgWueFDnOLGZA9sdC8KQMPk0Nbc9V9hV
-         jGlK6FE3Dr2L3ztk/3JXf24lCA9k/8PANeF1W99h5P1Wqx9Y8tCrvUHlebFZcZUrZV/M
-         NVqp4YnW3jhN6bDgxHz8fqwiDip8RlP8gqd+2tOFAE1sRQcYI8r2/ku5rmigONYmj+yE
-         kTMA==
-X-Gm-Message-State: APjAAAUyZSX9i3ZpH7w93fNf3qIznx6QbP7wIhCB8WUW6sGHCZEm+k2s
-        kNTvbJSrROAjQwnzmpWjQY4+PO9Do2DMh4USPzs=
-X-Google-Smtp-Source: APXvYqz/Fu63JZlTBIvPUHlr8zmihwKDcyniSai/3NSSTg6BMm9gn3PetKDfVrhz4x7UFjmt9bcMxs8vYeu2scoeogA=
-X-Received: by 2002:a37:354:: with SMTP id 81mr10456750qkd.378.1561752612331;
- Fri, 28 Jun 2019 13:10:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190628055303.1249758-1-andriin@fb.com> <20190628055303.1249758-9-andriin@fb.com>
-In-Reply-To: <20190628055303.1249758-9-andriin@fb.com>
-From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Fri, 28 Jun 2019 13:10:01 -0700
-Message-ID: <CAPhsuW6HGpJJrjynRvOVJVf+zHeDmHbgVM7E0+cqqw8z8ChqMQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 8/9] selftests/bpf: add kprobe/uprobe selftests
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@fb.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Amybm5wgl2x2y4DQCaMoG+V1yEtg0sPRIUl33wffDtM=;
+        b=qy4qrMKwJUuqiuLquj6kuMr7rs+16rzJgGRDtHedZnYc0r/tzFLOtJxx/wgauBZsfn
+         F1FUtkkffmVMaoG4dyzGU8LHRwVezHU3IsRhOIryyM9VTbN6Grw2Azn/yPu34Uo7s0yM
+         ffhBQJOSo+bE301hVgA96/wbW11oDuYyVkqBEBZWPskL2fJXR1YPxfRSR3XYaUa2kPXL
+         0puke4GWfxGRq3ppsYIjk36ykxqT1Sh/ArCc4c5T7rY3ix7HuV4rB3RZZkKVnWqWUq80
+         0OJhV8XWJPpHzMhuWdRl9whnq68hKpGFvjafZErcDj8fO7SW/9xUho4oj2yIEAWmcTgu
+         3DeQ==
+X-Gm-Message-State: APjAAAVRSV2RMNiTHaFi3Blr47czZkU0hbT1ITBmrvrQEwjoqWjpWwlg
+        4daHEug0TvkiRlmHT5b8xGpGyQ==
+X-Google-Smtp-Source: APXvYqwQlwGbq08xmhQ85fDT2HBB2aE1HikF9eJeJ1GGjCpdJuPoVVznmuu95mz+s5u5C1T4GmGPlQ==
+X-Received: by 2002:a63:d006:: with SMTP id z6mr11354160pgf.364.1561752785884;
+        Fri, 28 Jun 2019 13:13:05 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id 30sm3217597pjk.17.2019.06.28.13.13.05
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Fri, 28 Jun 2019 13:13:05 -0700 (PDT)
+Date:   Fri, 28 Jun 2019 13:13:04 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     kernel test robot <rong.a.chen@intel.com>,
+        Stanislav Fomichev <sdf@google.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Stanislav Fomichev <sdf@fomichev.me>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Martin Lau <kafai@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        bpf <bpf@vger.kernel.org>, lkp@01.org
+Subject: Re: [bpf/tools] cd17d77705:
+ kernel_selftests.bpf.test_sock_addr.sh.fail
+Message-ID: <20190628201304.GA6757@mini-arch>
+References: <20190627090446.GG7221@shao2-debian>
+ <20190627155029.GC4866@mini-arch>
+ <20190627172932.GD4866@mini-arch>
+ <CAEf4Bzbf8OE9TUV2Pq7HZp3PYhoUgMzH-Gs+GMafTPwPc_jYxA@mail.gmail.com>
+ <20190628023810.GF4866@mini-arch>
+ <CAEf4BzbKkE0DYc0faaHThqyEbAu6qA1pFpUJ0uhX5xVd7Q7zSg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbKkE0DYc0faaHThqyEbAu6qA1pFpUJ0uhX5xVd7Q7zSg@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 27, 2019 at 10:54 PM Andrii Nakryiko <andriin@fb.com> wrote:
->
-> Add tests verifying kprobe/kretprobe/uprobe/uretprobe APIs work as
-> expected.
->
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> Reviewed-by: Stanislav Fomichev <sdf@google.com>
+On 06/28, Andrii Nakryiko wrote:
+> On Thu, Jun 27, 2019 at 7:38 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> >
+> > On 06/27, Andrii Nakryiko wrote:
+> > > On Thu, Jun 27, 2019 at 10:29 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> > > >
+> > > > On 06/27, Stanislav Fomichev wrote:
+> > > > > On 06/27, kernel test robot wrote:
+> > > > > > FYI, we noticed the following commit (built with gcc-7):
+> > > > > >
+> > > > > > commit: cd17d77705780e2270937fb3cbd2b985adab3edc ("bpf/tools: sync bpf.h")
+> > > > > > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> > > > > >
+> > > > > > in testcase: kernel_selftests
+> > > > > > with following parameters:
+> > > > > >
+> > > > > >     group: kselftests-00
+> > > > > >
+> > > > > > test-description: The kernel contains a set of "self tests" under the tools/testing/selftests/ directory. These are intended to be small unit tests to exercise individual code paths in the kernel.
+> > > > > > test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
+> > > > > >
+> > > > > >
+> > > > > > on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
+> > > > > >
+> > > > > > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> > > > > >
+> > > > > > # 55: (18) r1 = 0x100000000000000
+> > > > > > # ; ctx->user_ip6[2] = bpf_htonl(DST_REWRITE_IP6_2);
+> > > > > > # 57: (7b) *(u64 *)(r6 +16) = r1
+> > > > > > # invalid bpf_context access off=16 size=8
+> > > > > This looks like clang doing single u64 write for user_ip6[2] and
+> > > > > user_ip6[3] instead of two u32. I don't think we allow that.
+> > > > >
+> > > > > I've seen this a couple of times myself while playing with some
+> > > > > progs, but not sure what's the right way to 'fix' it.
+> > > > >
+> > > > Any thoughts about the patch below? Another way to "fix" it
+> > >
+> > > I'll give it a more thorough look a bit later, but see my comments below.
+> > >
+> > > > would be to mark context accesses 'volatile' in bpf progs, but that sounds
+> > > > a bit gross.
+> > > >
+> > > > diff --git a/include/linux/filter.h b/include/linux/filter.h
+> > > > index 43b45d6db36d..34a14c950e60 100644
+> > > > --- a/include/linux/filter.h
+> > > > +++ b/include/linux/filter.h
+> > > > @@ -746,6 +746,20 @@ bpf_ctx_narrow_access_ok(u32 off, u32 size, u32 size_default)
+> > > >         return size <= size_default && (size & (size - 1)) == 0;
+> > > >  }
+> > > >
+> > > > +static inline bool __bpf_ctx_wide_store_ok(u32 off, u32 size)
+> > >
+> > > It seems like bpf_ctx_wide_store_ok and __bpf_ctx_wide_store_ok are
+> > > used only inside net/core/filter.c, why declaring them in header file?
+> > I wanted it to be next to bpf_ctx_narrow_access_ok which does the
+> > reverse operation for reads.
+> 
+> Ah, ok, I see that bpf_ctx_narrow_access_ok is used in
+> kernel/bpf/cgroup.c as well and bpf_ctx_wide_store_ok might be useful
+> in some other contexts as well, let's keep it here.
+> 
+> >
+> > > > +{
+> > > > +       /* u64 access is aligned and fits into the field size */
+> > > > +       return off % sizeof(__u64) == 0 && off + sizeof(__u64) <= size;
+> > > > +}
+> > > > +
+> > > > +#define bpf_ctx_wide_store_ok(off, size, type, field) \
+> > > > +       (size == sizeof(__u64) && \
+> > > > +        off >= offsetof(type, field) && \
+> > > > +        off < offsetofend(type, field) ? \
+> > > > +       __bpf_ctx_wide_store_ok(off - offsetof(type, field), \
+> > > > +                                FIELD_SIZEOF(type, field)) : 0)
+> 
+> This would be sufficient, right?
+Thanks, that looks much better and is actually more correct than my
+implementation. We should really look at the off alignment, not
+the off-offsetof(type, field) as I did.
 
-Acked-by: Song Liu <songliubraving@fb.com>
-
-> ---
->  .../selftests/bpf/prog_tests/attach_probe.c   | 155 ++++++++++++++++++
->  .../selftests/bpf/progs/test_attach_probe.c   |  55 +++++++
->  2 files changed, 210 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/attach_probe.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_attach_probe.c
+> #define bpf_ctx_wide_store_ok(off, size, type, field) \
+>         size == sizeof(__u64) &&                      \
+>         off >= offsetof(type, field) &&               \
+>         off + size <= offsetofend(type, field) &&     \
+>         off % sizeof(__u64) == 0
+> 
+> > >
+> > > Why do you need ternary operator instead of just a chain of &&s?
+> > Good point. I didn't spend too much time on the patch tbh :-)
+> > If it looks good in general, I can add proper tests and do a
+> > proper submition, this patch is just to get the discussion started.
+> 
+> Consider it started. :) Talking with Yonghong about preventing this
+> from happening in the first place in Clang, it seems like that would
+> be harder and more cumbersome than supporting in BPF verifier. So
+> please go ahead and submit a proper patch.
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> new file mode 100644
-> index 000000000000..f22929063c58
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> @@ -0,0 +1,155 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +
-> +ssize_t get_base_addr() {
-> +       size_t start;
-> +       char buf[256];
-> +       FILE *f;
-> +
-> +       f = fopen("/proc/self/maps", "r");
-> +       if (!f)
-> +               return -errno;
-> +
-> +       while (fscanf(f, "%zx-%*x %s %*s\n", &start, buf) == 2) {
-> +               if (strcmp(buf, "r-xp") == 0) {
-> +                       fclose(f);
-> +                       return start;
-> +               }
-> +       }
-> +
-> +       fclose(f);
-> +       return -EINVAL;
-> +}
-> +
-> +void test_attach_probe(void)
-> +{
-> +       const char *kprobe_name = "kprobe/sys_nanosleep";
-> +       const char *kretprobe_name = "kretprobe/sys_nanosleep";
-> +       const char *uprobe_name = "uprobe/trigger_func";
-> +       const char *uretprobe_name = "uretprobe/trigger_func";
-> +       const int kprobe_idx = 0, kretprobe_idx = 1;
-> +       const int uprobe_idx = 2, uretprobe_idx = 3;
-> +       const char *file = "./test_attach_probe.o";
-> +       struct bpf_program *kprobe_prog, *kretprobe_prog;
-> +       struct bpf_program *uprobe_prog, *uretprobe_prog;
-> +       struct bpf_object *obj;
-> +       int err, prog_fd, duration = 0, res;
-> +       struct bpf_link *kprobe_link = NULL;
-> +       struct bpf_link *kretprobe_link = NULL;
-> +       struct bpf_link *uprobe_link = NULL;
-> +       struct bpf_link *uretprobe_link = NULL;
-> +       int results_map_fd;
-> +       size_t uprobe_offset;
-> +       ssize_t base_addr;
-> +
-> +       base_addr = get_base_addr();
-> +       if (CHECK(base_addr < 0, "get_base_addr",
-> +                 "failed to find base addr: %zd", base_addr))
-> +               return;
-> +       uprobe_offset = (size_t)&get_base_addr - base_addr;
-> +
-> +       /* load programs */
-> +       err = bpf_prog_load(file, BPF_PROG_TYPE_KPROBE, &obj, &prog_fd);
-> +       if (CHECK(err, "obj_load", "err %d errno %d\n", err, errno))
-> +               return;
-> +
-> +       kprobe_prog = bpf_object__find_program_by_title(obj, kprobe_name);
-> +       if (CHECK(!kprobe_prog, "find_probe",
-> +                 "prog '%s' not found\n", kprobe_name))
-> +               goto cleanup;
-> +       kretprobe_prog = bpf_object__find_program_by_title(obj, kretprobe_name);
-> +       if (CHECK(!kretprobe_prog, "find_probe",
-> +                 "prog '%s' not found\n", kretprobe_name))
-> +               goto cleanup;
-> +       uprobe_prog = bpf_object__find_program_by_title(obj, uprobe_name);
-> +       if (CHECK(!uprobe_prog, "find_probe",
-> +                 "prog '%s' not found\n", uprobe_name))
-> +               goto cleanup;
-> +       uretprobe_prog = bpf_object__find_program_by_title(obj, uretprobe_name);
-> +       if (CHECK(!uretprobe_prog, "find_probe",
-> +                 "prog '%s' not found\n", uretprobe_name))
-> +               goto cleanup;
-> +
-> +       /* load maps */
-> +       results_map_fd = bpf_find_map(__func__, obj, "results_map");
-> +       if (CHECK(results_map_fd < 0, "find_results_map",
-> +                 "err %d\n", results_map_fd))
-> +               goto cleanup;
-> +
-> +       kprobe_link = bpf_program__attach_kprobe(kprobe_prog,
-> +                                                false /* retprobe */,
-> +                                                "sys_nanosleep");
-> +       if (CHECK(IS_ERR(kprobe_link), "attach_kprobe",
-> +                 "err %ld\n", PTR_ERR(kprobe_link)))
-> +               goto cleanup;
-> +
-> +       kretprobe_link = bpf_program__attach_kprobe(kretprobe_prog,
-> +                                                   true /* retprobe */,
-> +                                                   "sys_nanosleep");
-> +       if (CHECK(IS_ERR(kretprobe_link), "attach_kretprobe",
-> +                 "err %ld\n", PTR_ERR(kretprobe_link)))
-> +               goto cleanup;
-> +
-> +       uprobe_link = bpf_program__attach_uprobe(uprobe_prog,
-> +                                                false /* retprobe */,
-> +                                                0 /* self pid */,
-> +                                                "/proc/self/exe",
-> +                                                uprobe_offset);
-> +       if (CHECK(IS_ERR(uprobe_link), "attach_uprobe",
-> +                 "err %ld\n", PTR_ERR(uprobe_link)))
-> +               goto cleanup;
-> +
-> +       uretprobe_link = bpf_program__attach_uprobe(uretprobe_prog,
-> +                                                   true /* retprobe */,
-> +                                                   -1 /* any pid */,
-> +                                                   "/proc/self/exe",
-> +                                                   uprobe_offset);
-> +       if (CHECK(IS_ERR(uretprobe_link), "attach_uretprobe",
-> +                 "err %ld\n", PTR_ERR(uretprobe_link)))
-> +               goto cleanup;
-> +
-> +       /* trigger & validate kprobe && kretprobe */
-> +       usleep(1);
-> +
-> +       err = bpf_map_lookup_elem(results_map_fd, &kprobe_idx, &res);
-> +       if (CHECK(err, "get_kprobe_res",
-> +                 "failed to get kprobe res: %d\n", err))
-> +               goto cleanup;
-> +       if (CHECK(res != kprobe_idx + 1, "check_kprobe_res",
-> +                 "wrong kprobe res: %d\n", res))
-> +               goto cleanup;
-> +
-> +       err = bpf_map_lookup_elem(results_map_fd, &kretprobe_idx, &res);
-> +       if (CHECK(err, "get_kretprobe_res",
-> +                 "failed to get kretprobe res: %d\n", err))
-> +               goto cleanup;
-> +       if (CHECK(res != kretprobe_idx + 1, "check_kretprobe_res",
-> +                 "wrong kretprobe res: %d\n", res))
-> +               goto cleanup;
-> +
-> +       /* trigger & validate uprobe & uretprobe */
-> +       get_base_addr();
-> +
-> +       err = bpf_map_lookup_elem(results_map_fd, &uprobe_idx, &res);
-> +       if (CHECK(err, "get_uprobe_res",
-> +                 "failed to get uprobe res: %d\n", err))
-> +               goto cleanup;
-> +       if (CHECK(res != uprobe_idx + 1, "check_uprobe_res",
-> +                 "wrong uprobe res: %d\n", res))
-> +               goto cleanup;
-> +
-> +       err = bpf_map_lookup_elem(results_map_fd, &uretprobe_idx, &res);
-> +       if (CHECK(err, "get_uretprobe_res",
-> +                 "failed to get uretprobe res: %d\n", err))
-> +               goto cleanup;
-> +       if (CHECK(res != uretprobe_idx + 1, "check_uretprobe_res",
-> +                 "wrong uretprobe res: %d\n", res))
-> +               goto cleanup;
-> +
-> +cleanup:
-> +       bpf_link__destroy(kprobe_link);
-> +       bpf_link__destroy(kretprobe_link);
-> +       bpf_link__destroy(uprobe_link);
-> +       bpf_link__destroy(uretprobe_link);
-> +       bpf_object__close(obj);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_attach_probe.c b/tools/testing/selftests/bpf/progs/test_attach_probe.c
-> new file mode 100644
-> index 000000000000..7a7c5cd728c8
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_attach_probe.c
-> @@ -0,0 +1,55 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2017 Facebook
-> +
-> +#include <linux/ptrace.h>
-> +#include <linux/bpf.h>
-> +#include "bpf_helpers.h"
-> +
-> +struct {
-> +       int type;
-> +       int max_entries;
-> +       int *key;
-> +       int *value;
-> +} results_map SEC(".maps") = {
-> +       .type = BPF_MAP_TYPE_ARRAY,
-> +       .max_entries = 4,
-> +};
-> +
-> +SEC("kprobe/sys_nanosleep")
-> +int handle_sys_nanosleep_entry(struct pt_regs *ctx)
-> +{
-> +       const int key = 0, value = 1;
-> +
-> +       bpf_map_update_elem(&results_map, &key, &value, 0);
-> +       return 0;
-> +}
-> +
-> +SEC("kretprobe/sys_nanosleep")
-> +int handle_sys_getpid_return(struct pt_regs *ctx)
-> +{
-> +       const int key = 1, value = 2;
-> +
-> +       bpf_map_update_elem(&results_map, &key, &value, 0);
-> +       return 0;
-> +}
-> +
-> +SEC("uprobe/trigger_func")
-> +int handle_uprobe_entry(struct pt_regs *ctx)
-> +{
-> +       const int key = 2, value = 3;
-> +
-> +       bpf_map_update_elem(&results_map, &key, &value, 0);
-> +       return 0;
-> +}
-> +
-> +SEC("uretprobe/trigger_func")
-> +int handle_uprobe_return(struct pt_regs *ctx)
-> +{
-> +       const int key = 3, value = 4;
-> +
-> +       bpf_map_update_elem(&results_map, &key, &value, 0);
-> +       return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> +__u32 _version SEC("version") = 1;
-> --
-> 2.17.1
->
+> >
+> > > It also seems like you can avoid macro and use plain function if
+> > > instead of providing (type, field) you provide values of offsetof and
+> > > offsetofend (offsetofend - offsetof should equal FIELD_SIZEOF(type,
+> > > field), shouldn't it?).
+> > But then I'd have to copy-paste the args of offsetof/offsetofend at
+> > the caller, right? I wanted the caller to be clean and simple.
+> 
+> Yeah, that's a bit verbose, I agree. I don't mind macro, so no worries.
+> 
+> >
+> > > >  #define bpf_classic_proglen(fprog) (fprog->len * sizeof(fprog->filter[0]))
+> > > >
+> > > >  static inline void bpf_prog_lock_ro(struct bpf_prog *fp)
+> > > > diff --git a/net/core/filter.c b/net/core/filter.c
+> > > > index 2014d76e0d2a..2d3787a439ae 100644
+> > > > --- a/net/core/filter.c
+> > > > +++ b/net/core/filter.c
+> > > > @@ -6849,6 +6849,16 @@ static bool sock_addr_is_valid_access(int off, int size,
+> > > >                         if (!bpf_ctx_narrow_access_ok(off, size, size_default))
+> > > >                                 return false;
+> > > >                 } else {
+> > > > +                       if (bpf_ctx_wide_store_ok(off, size,
+> > > > +                                                 struct bpf_sock_addr,
+> > > > +                                                 user_ip6))
+> > > > +                               return true;
+> > > > +
+> > > > +                       if (bpf_ctx_wide_store_ok(off, size,
+> > > > +                                                 struct bpf_sock_addr,
+> > > > +                                                 msg_src_ip6))
+> > > > +                               return true;
+> > > > +
+> > > >                         if (size != size_default)
+> > > >                                 return false;
+> > > >                 }
+> > > > @@ -7689,9 +7699,6 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+> > > >  /* SOCK_ADDR_STORE_NESTED_FIELD_OFF() has semantic similar to
+> > > >   * SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF() but for store operation.
+> > > >   *
+> > > > - * It doesn't support SIZE argument though since narrow stores are not
+> > > > - * supported for now.
+> > > > - *
+> > > >   * In addition it uses Temporary Field TF (member of struct S) as the 3rd
+> > > >   * "register" since two registers available in convert_ctx_access are not
+> > > >   * enough: we can't override neither SRC, since it contains value to store, nor
+> > > > @@ -7699,7 +7706,7 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+> > > >   * instructions. But we need a temporary place to save pointer to nested
+> > > >   * structure whose field we want to store to.
+> > > >   */
+> > > > -#define SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, OFF, TF)                       \
+> > > > +#define SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, SIZE, OFF, TF)         \
+> > > >         do {                                                                   \
+> > > >                 int tmp_reg = BPF_REG_9;                                       \
+> > > >                 if (si->src_reg == tmp_reg || si->dst_reg == tmp_reg)          \
+> > > > @@ -7710,8 +7717,7 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+> > > >                                       offsetof(S, TF));                        \
+> > > >                 *insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(S, F), tmp_reg,         \
+> > > >                                       si->dst_reg, offsetof(S, F));            \
+> > > > -               *insn++ = BPF_STX_MEM(                                         \
+> > > > -                       BPF_FIELD_SIZEOF(NS, NF), tmp_reg, si->src_reg,        \
+> > > > +               *insn++ = BPF_STX_MEM(SIZE, tmp_reg, si->src_reg,              \
+> > > >                         bpf_target_off(NS, NF, FIELD_SIZEOF(NS, NF),           \
+> > > >                                        target_size)                            \
+> > > >                                 + OFF);                                        \
+> > > > @@ -7723,8 +7729,8 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+> > > >                                                       TF)                      \
+> > > >         do {                                                                   \
+> > > >                 if (type == BPF_WRITE) {                                       \
+> > > > -                       SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, OFF,    \
+> > > > -                                                        TF);                  \
+> > > > +                       SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, SIZE,   \
+> > > > +                                                        OFF, TF);             \
+> > > >                 } else {                                                       \
+> > > >                         SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF(                  \
+> > > >                                 S, NS, F, NF, SIZE, OFF);  \
