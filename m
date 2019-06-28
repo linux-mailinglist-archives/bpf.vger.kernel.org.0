@@ -2,90 +2,282 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 299185A0AB
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 18:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F143E5A0B9
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 18:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbfF1QTO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jun 2019 12:19:14 -0400
-Received: from mga12.intel.com ([192.55.52.136]:20473 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726542AbfF1QTO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jun 2019 12:19:14 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 28 Jun 2019 09:19:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.63,428,1557212400"; 
-   d="scan'208";a="167801019"
-Received: from klaatz-mobl1.ger.corp.intel.com (HELO [10.252.3.92]) ([10.252.3.92])
-  by orsmga006.jf.intel.com with ESMTP; 28 Jun 2019 09:19:10 -0700
-Subject: Re: [PATCH 00/11] XDP unaligned chunk placement support
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>, netdev@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, bjorn.topel@intel.com,
-        magnus.karlsson@intel.com, bpf@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, bruce.richardson@intel.com,
-        ciara.loftus@intel.com
-References: <20190620083924.1996-1-kevin.laatz@intel.com>
- <FA8389B9-F89C-4BFF-95EE-56F702BBCC6D@gmail.com>
- <ef7e9469-e7be-647b-8bb1-da29bc01fa2e@intel.com>
- <20190627142534.4f4b8995@cakuba.netronome.com>
-From:   "Laatz, Kevin" <kevin.laatz@intel.com>
-Message-ID: <f0ca817a-02b4-df22-d01b-7bc07171a4dc@intel.com>
-Date:   Fri, 28 Jun 2019 17:19:09 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726873AbfF1QYU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 28 Jun 2019 12:24:20 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23994 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726667AbfF1QYU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 28 Jun 2019 12:24:20 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5SGO2x8005464
+        for <bpf@vger.kernel.org>; Fri, 28 Jun 2019 09:24:19 -0700
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2tdm8u0gnt-8
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 28 Jun 2019 09:24:19 -0700
+Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Fri, 28 Jun 2019 09:24:13 -0700
+Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
+        id 9D3CF760A39; Fri, 28 Jun 2019 09:24:09 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Alexei Starovoitov <ast@kernel.org>
+Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
+To:     <davem@davemloft.net>
+CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] bpf: fix precision tracking
+Date:   Fri, 28 Jun 2019 09:24:09 -0700
+Message-ID: <20190628162409.2513499-1-ast@kernel.org>
+X-Mailer: git-send-email 2.20.0
 MIME-Version: 1.0
-In-Reply-To: <20190627142534.4f4b8995@cakuba.netronome.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-28_07:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=907 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906280187
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 27/06/2019 22:25, Jakub Kicinski wrote:
-> On Thu, 27 Jun 2019 12:14:50 +0100, Laatz, Kevin wrote:
->> On the application side (xdpsock), we don't have to worry about the user
->> defined headroom, since it is 0, so we only need to account for the
->> XDP_PACKET_HEADROOM when computing the original address (in the default
->> scenario).
-> That assumes specific layout for the data inside the buffer.  Some NICs
-> will prepend information like timestamp to the packet, meaning the
-> packet would start at offset XDP_PACKET_HEADROOM + metadata len..
+When equivalent state is found the current state needs to propagate precision marks.
+Otherwise the verifier will prune the search incorrectly.
 
-Yes, if NICs prepend extra data to the packet that would be a problem for
-using this feature in isolation. However, if we also add in support for 
-in-order
-RX and TX rings, that would no longer be an issue. However, even for NICs
-which do prepend data, this patchset should not break anything that is 
-currently
-working.
+There is a price for correctness:
+                      before      before    broken    fixed
+                      cnst spill  precise   precise
+bpf_lb-DLB_L3.o       1923        8128      1863      1898
+bpf_lb-DLB_L4.o       3077        6707      2468      2666
+bpf_lb-DUNKNOWN.o     1062        1062      544       544
+bpf_lxc-DDROP_ALL.o   166729      380712    22629     36823
+bpf_lxc-DUNKNOWN.o    174607      440652    28805     45325
+bpf_netdev.o          8407        31904     6801      7002
+bpf_overlay.o         5420        23569     4754      4858
+bpf_lxc_jit.o         39389       359445    50925     69631
+Overall precision tracking is still very effective.
 
->
-> I think that's very limiting.  What is the challenge in providing
-> aligned addresses, exactly?
-The challenges are two-fold:
-1) it prevents using arbitrary buffer sizes, which will be an issue 
-supporting e.g. jumbo frames in future.
-2) higher level user-space frameworks which may want to use AF_XDP, such 
-as DPDK, do not currently support having buffers with 'fixed' alignment.
-     The reason that DPDK uses arbitrary placement is that:
-         - it would stop things working on certain NICs which need the 
-actual writable space specified in units of 1k - therefore we need 2k + 
-metadata space.
-         - we place padding between buffers to avoid constantly hitting 
-the same memory channels when accessing memory.
-         - it allows the application to choose the actual buffer size it 
-wants to use.
-     We make use of the above to allow us to speed up processing 
-significantly and also reduce the packet buffer memory size.
+Fixes: b5dc0163d8fd ("bpf: precise scalar_value tracking")
+Reported-by: Lawrence Brakmo <brakmo@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+Sending the fix early w/o tests, since I'm traveling.
+Will add proper tests when I'm back.
+---
+ kernel/bpf/verifier.c | 121 +++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 107 insertions(+), 14 deletions(-)
 
-     Not having arbitrary buffer alignment also means an AF_XDP driver 
-for DPDK cannot be a drop-in replacement for existing drivers in those 
-frameworks. Even with a new capability to allow an arbitrary buffer 
-alignment, existing apps will need to be modified to use that new 
-capability.
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 6b5623d320f9..62afc4058ced 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1659,16 +1659,18 @@ static void mark_all_scalars_precise(struct bpf_verifier_env *env,
+ 		}
+ }
+ 
+-static int mark_chain_precision(struct bpf_verifier_env *env, int regno)
++static int __mark_chain_precision(struct bpf_verifier_env *env, int regno,
++				  int spi)
+ {
+ 	struct bpf_verifier_state *st = env->cur_state;
+ 	int first_idx = st->first_insn_idx;
+ 	int last_idx = env->insn_idx;
+ 	struct bpf_func_state *func;
+ 	struct bpf_reg_state *reg;
+-	u32 reg_mask = 1u << regno;
+-	u64 stack_mask = 0;
++	u32 reg_mask = regno >= 0 ? 1u << regno : 0;
++	u64 stack_mask = spi >= 0 ? 1ull << spi : 0;
+ 	bool skip_first = true;
++	bool new_marks = false;
+ 	int i, err;
+ 
+ 	if (!env->allow_ptr_leaks)
+@@ -1676,18 +1678,43 @@ static int mark_chain_precision(struct bpf_verifier_env *env, int regno)
+ 		return 0;
+ 
+ 	func = st->frame[st->curframe];
+-	reg = &func->regs[regno];
+-	if (reg->type != SCALAR_VALUE) {
+-		WARN_ONCE(1, "backtracing misuse");
+-		return -EFAULT;
++	if (regno >= 0) {
++		reg = &func->regs[regno];
++		if (reg->type != SCALAR_VALUE) {
++			WARN_ONCE(1, "backtracing misuse");
++			return -EFAULT;
++		}
++		if (!reg->precise)
++			new_marks = true;
++		else
++			reg_mask = 0;
++		reg->precise = true;
+ 	}
+-	if (reg->precise)
+-		return 0;
+-	func->regs[regno].precise = true;
+ 
++	while (spi >= 0) {
++		if (func->stack[spi].slot_type[0] != STACK_SPILL) {
++			stack_mask = 0;
++			break;
++		}
++		reg = &func->stack[spi].spilled_ptr;
++		if (reg->type != SCALAR_VALUE) {
++			stack_mask = 0;
++			break;
++		}
++		if (!reg->precise)
++			new_marks = true;
++		else
++			stack_mask = 0;
++		reg->precise = true;
++		break;
++	}
++
++	if (!new_marks)
++		return 0;
++	if (!reg_mask && !stack_mask)
++		return 0;
+ 	for (;;) {
+ 		DECLARE_BITMAP(mask, 64);
+-		bool new_marks = false;
+ 		u32 history = st->jmp_history_cnt;
+ 
+ 		if (env->log.level & BPF_LOG_LEVEL)
+@@ -1730,12 +1757,15 @@ static int mark_chain_precision(struct bpf_verifier_env *env, int regno)
+ 		if (!st)
+ 			break;
+ 
++		new_marks = false;
+ 		func = st->frame[st->curframe];
+ 		bitmap_from_u64(mask, reg_mask);
+ 		for_each_set_bit(i, mask, 32) {
+ 			reg = &func->regs[i];
+-			if (reg->type != SCALAR_VALUE)
++			if (reg->type != SCALAR_VALUE) {
++				reg_mask &= ~(1u << i);
+ 				continue;
++			}
+ 			if (!reg->precise)
+ 				new_marks = true;
+ 			reg->precise = true;
+@@ -1756,11 +1786,15 @@ static int mark_chain_precision(struct bpf_verifier_env *env, int regno)
+ 				return -EFAULT;
+ 			}
+ 
+-			if (func->stack[i].slot_type[0] != STACK_SPILL)
++			if (func->stack[i].slot_type[0] != STACK_SPILL) {
++				stack_mask &= ~(1ull << i);
+ 				continue;
++			}
+ 			reg = &func->stack[i].spilled_ptr;
+-			if (reg->type != SCALAR_VALUE)
++			if (reg->type != SCALAR_VALUE) {
++				stack_mask &= ~(1ull << i);
+ 				continue;
++			}
+ 			if (!reg->precise)
+ 				new_marks = true;
+ 			reg->precise = true;
+@@ -1772,6 +1806,8 @@ static int mark_chain_precision(struct bpf_verifier_env *env, int regno)
+ 				reg_mask, stack_mask);
+ 		}
+ 
++		if (!reg_mask && !stack_mask)
++			break;
+ 		if (!new_marks)
+ 			break;
+ 
+@@ -1781,6 +1817,15 @@ static int mark_chain_precision(struct bpf_verifier_env *env, int regno)
+ 	return 0;
+ }
+ 
++static int mark_chain_precision(struct bpf_verifier_env *env, int regno)
++{
++	return __mark_chain_precision(env, regno, -1);
++}
++
++static int mark_chain_precision_stack(struct bpf_verifier_env *env, int spi)
++{
++	return __mark_chain_precision(env, -1, spi);
++}
+ 
+ static bool is_spillable_regtype(enum bpf_reg_type type)
+ {
+@@ -7114,6 +7159,46 @@ static int propagate_liveness(struct bpf_verifier_env *env,
+ 	return 0;
+ }
+ 
++/* find precise scalars in the previous equivalent state and
++ * propagate them into the current state
++ */
++static int propagate_precision(struct bpf_verifier_env *env,
++			       const struct bpf_verifier_state *old)
++{
++	struct bpf_reg_state *state_reg;
++	struct bpf_func_state *state;
++	int i, err = 0;
++
++	state = old->frame[old->curframe];
++	state_reg = state->regs;
++	for (i = 0; i < BPF_REG_FP; i++, state_reg++) {
++		if (state_reg->type != SCALAR_VALUE ||
++		    !state_reg->precise)
++			continue;
++		if (env->log.level & BPF_LOG_LEVEL2)
++			verbose(env, "propagating r%d\n", i);
++		err = mark_chain_precision(env, i);
++		if (err < 0)
++			return err;
++	}
++
++	for (i = 0; i < state->allocated_stack / BPF_REG_SIZE; i++) {
++		if (state->stack[i].slot_type[0] != STACK_SPILL)
++			continue;
++		state_reg = &state->stack[i].spilled_ptr;
++		if (state_reg->type != SCALAR_VALUE ||
++		    !state_reg->precise)
++			continue;
++		if (env->log.level & BPF_LOG_LEVEL2)
++			verbose(env, "propagating fp%d\n",
++				(-i - 1) * BPF_REG_SIZE);
++		err = mark_chain_precision_stack(env, i);
++		if (err < 0)
++			return err;
++	}
++	return 0;
++}
++
+ static bool states_maybe_looping(struct bpf_verifier_state *old,
+ 				 struct bpf_verifier_state *cur)
+ {
+@@ -7206,6 +7291,14 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ 			 * this state and will pop a new one.
+ 			 */
+ 			err = propagate_liveness(env, &sl->state, cur);
++
++			/* if previous state reached the exit with precision and
++			 * current state is equivalent to it (except precsion marks)
++			 * the precision needs to be propagated back in
++			 * the current state.
++			 */
++			err = err ? : push_jmp_history(env, cur);
++			err = err ? : propagate_precision(env, &sl->state);
+ 			if (err)
+ 				return err;
+ 			return 1;
+-- 
+2.20.0
 
