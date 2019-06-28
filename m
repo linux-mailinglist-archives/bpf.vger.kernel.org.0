@@ -2,89 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB639596B0
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 11:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0CC596E5
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 11:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbfF1JBi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jun 2019 05:01:38 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:34021 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726484AbfF1JBi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jun 2019 05:01:38 -0400
-Received: by mail-ot1-f65.google.com with SMTP id n5so5284117otk.1
-        for <bpf@vger.kernel.org>; Fri, 28 Jun 2019 02:01:37 -0700 (PDT)
+        id S1726502AbfF1JGH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jun 2019 05:06:07 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:34856 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726506AbfF1JGH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jun 2019 05:06:07 -0400
+Received: by mail-ot1-f67.google.com with SMTP id j19so5300763otq.2
+        for <bpf@vger.kernel.org>; Fri, 28 Jun 2019 02:06:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qUV4kfBHQVUIKfARtG5Yav4Y3FA4sBjhtv6NQ9Qeu8I=;
-        b=ivpGvcNMhyqcB3ec1oT53roHxf8bewZ3Phb32ULIMDyniG6NclUbjzZ+a+5XrNDs1b
-         SLblk5TVBOPR3Rjk/W0F5n+geCFzDrMLzbT1e9slOxgOjriNHnSCMTmE+dl4TjZUKuh0
-         XLHZASHT2NvQWoy5b66tH0j9TEahbD/9GO+J8=
+        bh=WeO5JTNTbN5Pes6w6eEphdcv7Qn+nFED7FaaFx6h1y0=;
+        b=Mwvl80FlXqJrzBLIksBsYc4hmQWvfdbeVOrWxZ9EiE4YINaFI9SRlFzEe/ADVBhK1T
+         ZOVxMGV5IPdP04SzIbZjp2e/YJZctbEN6dY+GNO5taUh3Gk/dR2fDLCNLbjhrPI//oAB
+         rtP8neVQWw+zpfkeDrqxuRTA0pd2/jfnXsZFw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qUV4kfBHQVUIKfARtG5Yav4Y3FA4sBjhtv6NQ9Qeu8I=;
-        b=pv9w3jyjWrmNbhKfWrJeoFDJ4rvf4JuVhmJVmvL2G/jY09k0vbX97QeWnSNQBAEb3n
-         6S8j4hEMMVS1UqzZss1s0q+0QXCzdJliem/BnBlYdDA98U5ds+wDhf3oR9wkLeYen53Y
-         ZcuJUv3qb8NNItFTldWwpepjtHpb679Q4m57ZgwA0fMVh9LSimDEu6iPOT2cbHRm3adb
-         OX4BjoPskMBvXOiPwxv1GPnbV0qz2FKqwmbPsfpcEuWAYiEZnA/OQfxSeG6981H1pH2h
-         HSr4QZh3CJ6Y+7ws8J1Ut7hY0cnnTLyvfQjnxWP+rKRt4t1+Lmf/vA4GBiimqc4JDRpW
-         NzVg==
-X-Gm-Message-State: APjAAAWG1kUa5unmV+IJatPAcz0TQq17RaXZaDcDhAybTSivpO+yD8HO
-        y7zxTjsMLJ3JmQBb0WPMl2HfAjT2nvaHHqaO/mc+vw==
-X-Google-Smtp-Source: APXvYqyzaKbGnEbZX82tZjeqdRHpKJO2uNGCf/NKctMgnNoP971VgVKcSpcqhzdqJ6FJf2DUKEU5RNJ8x0u4O2p9aIU=
-X-Received: by 2002:a05:6830:1485:: with SMTP id s5mr214548otq.132.1561712497511;
- Fri, 28 Jun 2019 02:01:37 -0700 (PDT)
+        bh=WeO5JTNTbN5Pes6w6eEphdcv7Qn+nFED7FaaFx6h1y0=;
+        b=LkHxkoEmQbyXBMwfYS3p9obvmb5H5WyOb0zCGA3Fk7XCrv8dIefaw4rrTKpbV7Y3kT
+         hn7EaFVbydPJu186N8Ws0eEg/v5kor9S6nqHdmGdvcmG2FLswhHBNWqOMRSsI8vYJHnM
+         tGL5BbGPbTgnPdTGMOlSVAen8qLy2zhYv4uRxl+NZ32QMo4TjdKFUmplwTXtr/tJuk60
+         yoVisVtqzcs6sSOR7XUZQetfYUuSPgzsDIOaj3HD8Ib0CyoLrh2Hd65Ck1LyynYE6Ggi
+         dRfRjnIBfzSaYP3xXlMj5M//5thOOAoqrf7U+cvjC1tiydHhb1uUYI65hG17bgZUvqfN
+         bbNw==
+X-Gm-Message-State: APjAAAU5prQ2RVNpgbqEwUaaVHEUOBGLA7MJpMPOSmTscI24FuaoytFY
+        ObElHg2SwjVD3xUEVRHBeH5NPtG5OR6thtIGMj/HIA==
+X-Google-Smtp-Source: APXvYqxS90VALAc1Mw4oeranbJW1WyAt33C8rQTBwVGMPDPAAt5uAUvioxxYy0/1pP2GXzfVZFDMHcSQbHewAlDBixw=
+X-Received: by 2002:a9d:28:: with SMTP id 37mr6901286ota.289.1561712767032;
+ Fri, 28 Jun 2019 02:06:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190627201923.2589391-1-songliubraving@fb.com> <20190627201923.2589391-2-songliubraving@fb.com>
-In-Reply-To: <20190627201923.2589391-2-songliubraving@fb.com>
+References: <20190627201923.2589391-1-songliubraving@fb.com>
+ <20190627201923.2589391-2-songliubraving@fb.com> <21894f45-70d8-dfca-8c02-044f776c5e05@kernel.org>
+In-Reply-To: <21894f45-70d8-dfca-8c02-044f776c5e05@kernel.org>
 From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Fri, 28 Jun 2019 10:01:26 +0100
-Message-ID: <CACAyw98RvDc+i3gpgnAtnM0ojAfQ-mHvzRXFRUcgkEPr3K4G-g@mail.gmail.com>
+Date:   Fri, 28 Jun 2019 10:05:56 +0100
+Message-ID: <CACAyw9-AXy9UFdGkDaaNxw9T8meB+NAH5Yp_0G3nuw1AN5impQ@mail.gmail.com>
 Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Song Liu <songliubraving@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>, Jann Horn <jannh@google.com>,
-        gregkh@linuxfoundation.org
+        gregkh@linuxfoundation.org, linux-abi@vger.kernel.org,
+        kees@chromium.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 27 Jun 2019 at 21:19, Song Liu <songliubraving@fb.com> wrote:
+On Fri, 28 Jun 2019 at 00:40, Andy Lutomirski <luto@kernel.org> wrote:
 >
-> This patch introduce unprivileged BPF access. The access control is
-> achieved via device /dev/bpf. Users with write access to /dev/bpf are able
-> to call sys_bpf().
->
-> Two ioctl command are added to /dev/bpf:
->
-> The two commands enable/disable permission to call sys_bpf() for current
-> task. This permission is noted by bpf_permitted in task_struct. This
-> permission is inherited during clone(CLONE_THREAD).
+> I have a bigger issue with this patch, though: it's a really awkward way
+> to pretend to have capabilities.  For bpf, it seems like you could make
+> this be a *real* capability without too much pain since there's only one
+> syscall there.  Just find a way to pass an fd to /dev/bpf into the
+> syscall.  If this means you need a new bpf_with_cap() syscall that takes
+> an extra argument, so be it.  The old bpf() syscall can just translate
+> to bpf_with_cap(..., -1).
 
-If I understand it correctly, a process would have to open /dev/bpf before
-spawning other threads for this to work?
+I agree, this seems nicer from my POV, since it evades the issues with
+the Go runtime I pointed out in the other message.
 
-That still wouldn't work for Go I'm afraid. The runtime creates and destroys
-threads on an ad-hoc basis, and there is no way to "initialize" in the
-first thread.
-With the API as is, any Go wrapper wishing to use this would have to do the
-following _for every BPF syscall_:
-
-1. Use runtime.LockOSThread() to prevent the scheduler from moving the
-    goroutine.
-2. Open /dev/bpf to set the bit in current_task
-3. Execute the syscall
-4. Call runtime.UnlockOSThread()
-
-Note that calling into C code via CGo doesn't change this. Is it not possible to
-set the bit on all processes in the current thread group?
+It also seems like this wouldn't have to create API churn in libbpf? We can
+"feature detect" the presence of the new syscall and use that instead. If
+you want you can even keep the semantics of having a "global" credential.
 
 -- 
 Lorenz Bauer  |  Systems Engineer
