@@ -2,274 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3392559F1B
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 17:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2405A028
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 18:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbfF1PoG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jun 2019 11:44:06 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:33727 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726657AbfF1PoD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jun 2019 11:44:03 -0400
-Received: from ravnborg.org (unknown [158.248.194.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 97FC720022;
-        Fri, 28 Jun 2019 17:43:52 +0200 (CEST)
-Date:   Fri, 28 Jun 2019 17:43:49 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     linux-kbuild@vger.kernel.org, Jani Nikula <jani.nikula@intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
-        Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Michal Marek <michal.lkml@markovi.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Palmer Dabbelt <palmer@sifive.com>, bpf@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v3 1/4] kbuild: compile-test UAPI headers to ensure they
- are self-contained
-Message-ID: <20190628154349.GA12826@ravnborg.org>
-References: <20190627163903.28398-1-yamada.masahiro@socionext.com>
- <20190627163903.28398-2-yamada.masahiro@socionext.com>
+        id S1726897AbfF1QCc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jun 2019 12:02:32 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:38769 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726864AbfF1QCc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jun 2019 12:02:32 -0400
+Received: by mail-pf1-f193.google.com with SMTP id y15so3210140pfn.5
+        for <bpf@vger.kernel.org>; Fri, 28 Jun 2019 09:02:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TLNrAB201YzCAcZmRuW/d296gbc5A6Q/Q8iWXVJPuJE=;
+        b=MZ/qw2CVooZO6WTDW/7pVCyicWfdJhtQAilQzFVNZFM9ZwoeDqwJ+ZbX3LfIch9wSc
+         NqY/Wp7L8HVY9XVqpfNFE3fMqimCec7UZjGPz+H6HNtqh+zEH4RqSVXl/+HiJJGCdKVX
+         x+k9CvrHoEam+Oqw2lMcMQncx8f19sV0punrWW6vrqZhY9L6WVgm0XjhlKkg0jKy5MtS
+         pWJVjTqG16Zy5iy/XFkWE491dR1dU5hkRYid3c6w3MAYPTpqvF0aRMV6U2HCLYd5cZDs
+         ajvMhxmnCXpRTakOx413rP8WhOT4cPSSTuIIXSe/+xD0HnOrpREBrAF1uZQ+VGLt+4Zc
+         iTBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TLNrAB201YzCAcZmRuW/d296gbc5A6Q/Q8iWXVJPuJE=;
+        b=Kayd0M1cSaUZO5czPBIeYryoQyXQFXVW43PGDKvOaNOGMTRVYdyHZlS0kln3uvwli0
+         KWqdC05LdQHyrMVRjqRpU/HRFwkZepME3KDA/Pr74cztAuMR5fzHzNyt+xAUrwLAnNKo
+         x/063Oc3JGQfpUUda+AT86AjAetOyES8btORay9myKNawg1BnCzPvkmvcTY2sDfgyHl0
+         0RzHogHUcgmu6qMdEJghI9Isl6tVcdLaqocaMDcSMs5A6VtOF8OFz62i35ca4lnoroOT
+         AUI6JP3iqwVd22zLdVAO/2ztSb2hBpIZWalNz2pTC3Fe8QMuvTiQSdzYitoDlZNFUxdz
+         X4xw==
+X-Gm-Message-State: APjAAAUy/GWwBztaV17f+NEGVJXrq8zorBG+kVKnAlQch5JSAru8dPpq
+        V9EKTpoeCy8RC7uKffeD5Ze2zw==
+X-Google-Smtp-Source: APXvYqxP2THTuwOO9kkZF/WH/xYdo4zCIIIeCgnfkd/4KMPRjBlzEESBZ7AWsYzy4EtBrDo+c73/YQ==
+X-Received: by 2002:a17:90a:2385:: with SMTP id g5mr14530889pje.12.1561737751540;
+        Fri, 28 Jun 2019 09:02:31 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id w132sm3045829pfd.78.2019.06.28.09.02.30
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Fri, 28 Jun 2019 09:02:31 -0700 (PDT)
+Date:   Fri, 28 Jun 2019 09:02:30 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     andrii.nakryiko@gmail.com, ast@fb.com, daniel@iogearbox.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v3 bpf-next 2/9] libbpf: introduce concept of bpf_link
+Message-ID: <20190628160230.GG4866@mini-arch>
+References: <20190628055303.1249758-1-andriin@fb.com>
+ <20190628055303.1249758-3-andriin@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190627163903.28398-2-yamada.masahiro@socionext.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=dqr19Wo4 c=1 sm=1 tr=0
-        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=7gkXJVJtAAAA:8
-        a=VwQbUJbxAAAA:8 a=c-n4J4-pAAAA:8 a=Z0GOsA-a0XePTZBfY68A:9
-        a=EPyczOORS10Pyz25:21 a=NOQbmmdwHI87PwOY:21 a=CjuIK1q_8ugA:10
-        a=fqMFh-b0cAUA:10 a=E9Po1WZjFZOl8hwRPBS3:22 a=AjGcO6oz07-iQ99wixmX:22
-        a=L0NDqeB7ZLmQzAogN4cw:22
+In-Reply-To: <20190628055303.1249758-3-andriin@fb.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Masahiro.
-
-On Fri, Jun 28, 2019 at 01:38:59AM +0900, Masahiro Yamada wrote:
-> Multiple people have suggested compile-testing UAPI headers to ensure
-> they can be really included from user-space. "make headers_check" is
-> obviously not enough to catch bugs, and we often leak references to
-> kernel-space definition to user-space.
+On 06/27, Andrii Nakryiko wrote:
+> bpf_link is and abstraction of an association of a BPF program and one
+> of many possible BPF attachment points (hooks). This allows to have
+> uniform interface for detaching BPF programs regardless of the nature of
+> link and how it was created. Details of creation and setting up of
+> a specific bpf_link is handled by corresponding attachment methods
+> (bpf_program__attach_xxx) added in subsequent commits. Once successfully
+> created, bpf_link has to be eventually destroyed with
+> bpf_link__destroy(), at which point BPF program is disassociated from
+> a hook and all the relevant resources are freed.
 > 
-> Use the new header-test-y syntax to implement it. Please note exported
-> headers are compile-tested with a completely different set of compiler
-> flags. The header search path is set to $(objtree)/usr/include since
-> exported headers should not include unexported ones.
-
-This patchset introduce a new set of tests for uapi headers.
-Can we somehow consolidate so we have only one way to verify the uapi
-headers?
-It can be confusing for users that they see errors from testing the
-uapi headers during normal build and a new class or error if they
-run a "make headers_check" sometimes later.
-
-This can be a next step to consolidate this.
-With the suggestions below considered you can add my:
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-
-> 
-> We use -std=gnu89 for the kernel space since the kernel code highly
-> depends on GNU extensions. On the other hand, UAPI headers should be
-> written in more standardized C, so they are compiled with -std=c90.
-> This will emit errors if C++ style comments, the keyword 'inline', etc.
-> are used. Please use C style comments (/* ... */), '__inline__', etc.
-> in UAPI headers.
-> 
-> There is additional compiler requirement to enable this test because
-> many of UAPI headers include <stdlib.h>, <sys/ioctl.h>, <sys/time.h>,
-> etc. directly or indirectly. You cannot use kernel.org pre-built
-> toolchains [1] since they lack <stdlib.h>.
-> 
-> I added scripts/cc-system-headers.sh to check the system header
-> availability, which CONFIG_UAPI_HEADER_TEST depends on.
-> 
-> For now, a lot of headers need to be excluded because they cannot
-> be compiled standalone, but this is a good start point.
-> 
-> [1] https://mirrors.edge.kernel.org/pub/tools/crosstool/index.html
-> 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 > ---
+>  tools/lib/bpf/libbpf.c   | 17 +++++++++++++++++
+>  tools/lib/bpf/libbpf.h   |  4 ++++
+>  tools/lib/bpf/libbpf.map |  3 ++-
+>  3 files changed, 23 insertions(+), 1 deletion(-)
 > 
-> Changes in v3: None
-> Changes in v2:
->  - Add CONFIG_CPU_{BIG,LITTLE}_ENDIAN guard to avoid build error
->  - Use 'header-test-' instead of 'no-header-test'
->  - Avoid weird 'find' warning when cleaning
-> 
->  Makefile                     |   2 +-
->  init/Kconfig                 |  11 +++
->  scripts/cc-system-headers.sh |   8 +++
->  usr/.gitignore               |   1 -
->  usr/Makefile                 |   2 +
->  usr/include/.gitignore       |   3 +
->  usr/include/Makefile         | 134 +++++++++++++++++++++++++++++++++++
->  7 files changed, 159 insertions(+), 2 deletions(-)
->  create mode 100755 scripts/cc-system-headers.sh
->  create mode 100644 usr/include/.gitignore
->  create mode 100644 usr/include/Makefile
-> 
-> diff --git a/Makefile b/Makefile
-> index 1f35aca4fe05..f23516980796 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1363,7 +1363,7 @@ CLEAN_DIRS  += $(MODVERDIR) include/ksym
->  CLEAN_FILES += modules.builtin.modinfo
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 6e6ebef11ba3..455795e6f8af 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -3941,6 +3941,23 @@ int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
+>  	return 0;
+>  }
 >  
->  # Directories & files removed with 'make mrproper'
-> -MRPROPER_DIRS  += include/config usr/include include/generated          \
-> +MRPROPER_DIRS  += include/config include/generated          \
->  		  arch/$(SRCARCH)/include/generated .tmp_objdiff
->  MRPROPER_FILES += .config .config.old .version \
->  		  Module.symvers tags TAGS cscope* GPATH GTAGS GRTAGS GSYMS \
-> diff --git a/init/Kconfig b/init/Kconfig
-> index df5bba27e3fe..667d68e1cdf4 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -105,6 +105,17 @@ config HEADER_TEST
->  	  If you are a developer or tester and want to ensure the requested
->  	  headers are self-contained, say Y here. Otherwise, choose N.
+> +struct bpf_link {
+Maybe call it bpf_attachment? You call the bpf_program__attach_to_blah
+and you get an attachment?
+
+> +	int (*destroy)(struct bpf_link *link);
+> +};
+> +
+> +int bpf_link__destroy(struct bpf_link *link)
+> +{
+> +	int err;
+> +
+> +	if (!link)
+> +		return 0;
+> +
+> +	err = link->destroy(link);
+> +	free(link);
+> +
+> +	return err;
+> +}
+> +
+>  enum bpf_perf_event_ret
+>  bpf_perf_event_read_simple(void *mmap_mem, size_t mmap_size, size_t page_size,
+>  			   void **copy_mem, size_t *copy_size,
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index d639f47e3110..5082a5ebb0c2 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -165,6 +165,10 @@ LIBBPF_API int bpf_program__pin(struct bpf_program *prog, const char *path);
+>  LIBBPF_API int bpf_program__unpin(struct bpf_program *prog, const char *path);
+>  LIBBPF_API void bpf_program__unload(struct bpf_program *prog);
 >  
-> +config UAPI_HEADER_TEST
-> +	bool "Compile test UAPI headers"
-> +	depends on HEADER_TEST && HEADERS_INSTALL
-> +	depends on $(success,$(srctree)/scripts/cc-system-headers.sh $(CC))
-> +	help
-> +	  Compile test headers exported to user-space to ensure they are
-> +	  self-contained, i.e. compilable as standalone units.
+> +struct bpf_link;
 > +
-> +	  If you are a developer or tester and want to ensure the exported
-> +	  headers are self-contained, say Y here. Otherwise, choose N.
+> +LIBBPF_API int bpf_link__destroy(struct bpf_link *link);
 > +
->  config LOCALVERSION
->  	string "Local version - append to kernel release"
->  	help
-> diff --git a/scripts/cc-system-headers.sh b/scripts/cc-system-headers.sh
-> new file mode 100755
-> index 000000000000..1b3db369828c
-> --- /dev/null
-> +++ b/scripts/cc-system-headers.sh
-> @@ -0,0 +1,8 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +
-> +cat << "END" | $@ -E -x c - -o /dev/null >/dev/null 2>&1
-> +#include <stdlib.h>
-> +#include <sys/ioctl.h>
-> +#include <sys/time.h>
-> +END
-
-Add comment to this file that explains that it is used to verify that the
-toolchain provides the minimal set of header-files required by uapi
-headers.
-
-> diff --git a/usr/.gitignore b/usr/.gitignore
-> index 8e48117a3f3d..be5eae1df7eb 100644
-> --- a/usr/.gitignore
-> +++ b/usr/.gitignore
-> @@ -7,4 +7,3 @@ initramfs_data.cpio.gz
->  initramfs_data.cpio.bz2
->  initramfs_data.cpio.lzma
->  initramfs_list
-> -include
-> diff --git a/usr/Makefile b/usr/Makefile
-> index 4a70ae43c9cb..6a89eb019275 100644
-> --- a/usr/Makefile
-> +++ b/usr/Makefile
-> @@ -56,3 +56,5 @@ $(deps_initramfs): klibcdirs
->  $(obj)/$(datafile_y): $(obj)/gen_init_cpio $(deps_initramfs) klibcdirs
->  	$(Q)$(initramfs) -l $(ramfs-input) > $(obj)/$(datafile_d_y)
->  	$(call if_changed,initfs)
-> +
-> +subdir-$(CONFIG_UAPI_HEADER_TEST) += include
-> diff --git a/usr/include/.gitignore b/usr/include/.gitignore
-> new file mode 100644
-> index 000000000000..a0991ff4402b
-> --- /dev/null
-> +++ b/usr/include/.gitignore
-> @@ -0,0 +1,3 @@
-> +*
-> +!.gitignore
-> +!Makefile
-> diff --git a/usr/include/Makefile b/usr/include/Makefile
-> new file mode 100644
-> index 000000000000..58ce96fa1701
-> --- /dev/null
-> +++ b/usr/include/Makefile
-> @@ -0,0 +1,134 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +
-> +# Unlike the kernel space, uapi headers are written in standard C.
-> +#  - Forbid C++ style comments
-> +#  - Use '__inline__', '__asm__' instead of 'inline', 'asm'
-> +#
-> +# -std=c90 (equivalent to -ansi) catches the violation of those.
-> +# We cannot go as far as adding -Wpedantic since it emits too many warnings.
-> +#
-> +# REVISIT: re-consider the proper set of compiler flags for uapi compile-test.
-> +
-> +UAPI_CFLAGS := -std=c90 -Wall -Werror=implicit-function-declaration
-> +
-> +override c_flags = $(UAPI_CFLAGS) -Wp,-MD,$(depfile) -I$(objtree)/usr/include
-> +
-> +# The following are excluded for now because they fail to build.
-> +# The cause of errors are mostly missing include directives.
-> +# Check one by one, and send a patch to each subsystem.
-> +#
-> +# Do not add a new header to the blacklist without legitimate reason.
-> +# Please consider to fix the header first.
-
-Maybe add comment that the alphabetical sort by filename must be preserved.
-Not too relevant, as we hopefully do not see files being added.
-
-> +header-test- += asm/ipcbuf.h
-> +header-test- += asm/msgbuf.h
-Consider same syntax like in include/Makefile where you use
-header-test-<tab><tab>...+= file
-
-Then the alignment looks betters.
-
-> +header-test- += asm/sembuf.h
-> +header-test- += asm/shmbuf.h
-> +header-test- += asm/signal.h
-> +header-test- += asm/ucontext.h
-> +header-test- += drm/vmwgfx_drm.h
-> +header-test- += linux/am437x-vpfe.h
-> +header-test- += linux/android/binderfs.h
-> +header-test- += linux/android/binder.h
-> +header-test-$(CONFIG_CPU_BIG_ENDIAN) += linux/byteorder/big_endian.h
-> +header-test-$(CONFIG_CPU_LITTLE_ENDIAN) += linux/byteorder/little_endian.h
-> +header-test- += linux/coda.h
-...
-List is shorter than I feared. Seems quite doable to get down to a
-small number of files.
-
-> +
-> +# more headers are broken in some architectures
-> +
-> +ifeq ($(SRCARCH),arc)
-> +header-test- += linux/bpf_perf_event.h
-> +endif
-Again a manageable number.
-
-> +
-> +
-> +# asm-generic/*.h is used by asm/*.h, and should not be included directly
-> +header-test- += asm-generic/%
-> +
-> +# The rest are compile-tested
-> +header-test-y += $(filter-out $(header-test-), \
-> +			$(patsubst $(obj)/%,%, $(wildcard \
-> +			$(addprefix $(obj)/, *.h */*.h */*/*.h */*/*/*.h))))
-Could you use header-test-pattern-y here?
-
-	Sam
+>  struct bpf_insn;
+>  
+>  /*
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 2c6d835620d2..3cde850fc8da 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -167,10 +167,11 @@ LIBBPF_0.0.3 {
+>  
+>  LIBBPF_0.0.4 {
+>  	global:
+> +		bpf_link__destroy;
+> +		bpf_object__load_xattr;
+>  		btf_dump__dump_type;
+>  		btf_dump__free;
+>  		btf_dump__new;
+>  		btf__parse_elf;
+> -		bpf_object__load_xattr;
+>  		libbpf_num_possible_cpus;
+>  } LIBBPF_0.0.3;
+> -- 
+> 2.17.1
+> 
