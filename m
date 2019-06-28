@@ -2,112 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 070645A308
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 20:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 787095A317
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 20:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbfF1SBF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jun 2019 14:01:05 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:45884 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726667AbfF1SBF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jun 2019 14:01:05 -0400
-Received: from ravnborg.org (unknown [158.248.194.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 8DED880348;
-        Fri, 28 Jun 2019 20:00:58 +0200 (CEST)
-Date:   Fri, 28 Jun 2019 20:00:57 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     linux-kbuild@vger.kernel.org, Jani Nikula <jani.nikula@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        xdp-newbies@vger.kernel.org, Anton Vorontsov <anton@enomsg.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Colin Cross <ccross@android.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kees Cook <keescook@chromium.org>,
-        Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v3 4/4] kbuild: compile-test kernel headers to ensure
- they are self-contained
-Message-ID: <20190628180057.GA22758@ravnborg.org>
-References: <20190627163903.28398-1-yamada.masahiro@socionext.com>
- <20190627163903.28398-5-yamada.masahiro@socionext.com>
+        id S1726791AbfF1SER (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jun 2019 14:04:17 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:41341 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726416AbfF1SEQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jun 2019 14:04:16 -0400
+Received: by mail-qk1-f195.google.com with SMTP id c11so5566284qkk.8;
+        Fri, 28 Jun 2019 11:04:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=stK9hhnvMlQm3QkvH5B79b/ZvbMxlXW1uK3dWcEPTw0=;
+        b=gqae7HbJqikHb6mar8LqKvDn1FE7eHhoOxVOG33MS6MuyaZJz+wig6QmrCeSKqEp6m
+         bA8W6/Fr6BnKRYFyAlG36V6LbsiG2f6QrXDZMxAtqpzgufUnz7PiVlmzete4ym0Zpj/b
+         iEOwqPyFdiBwBjPNmm5j2Vq0l1njRRg2T6kzNHUA/hN7bmmdXAOBV0kXEv7+lhLhqCKL
+         VFEFo91ElvmvtiqmcM+N34iNfmdKyo/ENPO1eJ+8NZuqTIzIyCSA8HIztaddYV5VwmQa
+         BIbtaLykFY9rPXx8M72ui64cW4ZjHOy43vMhvkCwDCFUz7fFMqULVTRHjXDgU3Sm+s49
+         706A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=stK9hhnvMlQm3QkvH5B79b/ZvbMxlXW1uK3dWcEPTw0=;
+        b=LmCXpimT8ElvX6tHHaUoWMfkX0sr7tH0nYHDpgeE2fbuVVKbDfsRaI1uQ96c9Qw1A7
+         Fo8Kk2ddm1mVznRhey7uloKj8aZ+jJ1NwswRbRl6P3xEPoYtQ9wCib+/PMy7oLsYHgyb
+         1hgz0CMxx2IG3Y9B8bAL1wRP3lzaf/0oyCP7MlLCkUsBbrCsud5aoB9e4G92ms3T5Ihe
+         CB/m28kAhZExwc6BkD48ryh/IQvlxm8iUcrGLKTNuFCdxXRbRBYK2KcF62kmKP9U9v/z
+         TJykuhEscKcYHBode8veJS+PCo2utR1Wnx8tHsY7NoHDULr8C+Z8O9IR75Ys5p9fmu/X
+         UXSA==
+X-Gm-Message-State: APjAAAWJw5D/pIx8/54bXkN2rUDCkOtIaekaoJzHXGtX+7g7tlcAJsdp
+        AG1pqHUles/aE9oosvYbpIAB2DGEGBc8klJBwvAL37h3As8=
+X-Google-Smtp-Source: APXvYqy/XZH+NvPY191BdBaPFBbxjjWvN6hzM11tB68onAdEPdKflQQZjPI4VxIDhb+hOOVgm/Te/8UWYsKBANmOIPE=
+X-Received: by 2002:a37:a095:: with SMTP id j143mr10277402qke.449.1561745055492;
+ Fri, 28 Jun 2019 11:04:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190627163903.28398-5-yamada.masahiro@socionext.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VcLZwmh9 c=1 sm=1 tr=0
-        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10
-        a=yXOKcWPwKYVsdpAgASMA:9 a=CjuIK1q_8ugA:10
+References: <20190628055303.1249758-1-andriin@fb.com> <20190628055303.1249758-4-andriin@fb.com>
+ <20190628180010.GA24308@mini-arch>
+In-Reply-To: <20190628180010.GA24308@mini-arch>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 28 Jun 2019 11:04:04 -0700
+Message-ID: <CAEf4BzZ_1-uSNRco91yZ4OJ2dV+G-yZ_uFPTbQDmPHoNLX9sPw@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 3/9] libbpf: add ability to attach/detach BPF
+ program to perf event
+To:     Stanislav Fomichev <sdf@fomichev.me>
+Cc:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Masahiro.
+On Fri, Jun 28, 2019 at 11:00 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
+>
+> On 06/27, Andrii Nakryiko wrote:
+> > bpf_program__attach_perf_event allows to attach BPF program to existing
+> > perf event hook, providing most generic and most low-level way to attach BPF
+> > programs. It returns struct bpf_link, which should be passed to
+> > bpf_link__destroy to detach and free resources, associated with a link.
+> >
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> >  tools/lib/bpf/libbpf.c   | 58 ++++++++++++++++++++++++++++++++++++++++
+> >  tools/lib/bpf/libbpf.h   |  3 +++
+> >  tools/lib/bpf/libbpf.map |  1 +
+> >  3 files changed, 62 insertions(+)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 455795e6f8af..606705f878ba 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -32,6 +32,7 @@
+> >  #include <linux/limits.h>
+> >  #include <linux/perf_event.h>
+> >  #include <linux/ring_buffer.h>
+> > +#include <sys/ioctl.h>
+> >  #include <sys/stat.h>
+> >  #include <sys/types.h>
+> >  #include <sys/vfs.h>
+> > @@ -3958,6 +3959,63 @@ int bpf_link__destroy(struct bpf_link *link)
+> >       return err;
+> >  }
+> >
+> > +struct bpf_link_fd {
+> > +     struct bpf_link link; /* has to be at the top of struct */
+> > +     int fd; /* hook FD */
+> > +};
+> > +
+> > +static int bpf_link__destroy_perf_event(struct bpf_link *link)
+> > +{
+> > +     struct bpf_link_fd *l = (void *)link;
+> > +     int err;
+> > +
+> > +     if (l->fd < 0)
+> > +             return 0;
+> > +
+> > +     err = ioctl(l->fd, PERF_EVENT_IOC_DISABLE, 0);
+> > +     close(l->fd);
+> > +     return err;
+> Why not return -errno from ioctl here (as you do elsewhere)?
 
-On Fri, Jun 28, 2019 at 01:39:02AM +0900, Masahiro Yamada wrote:
-> The headers in include/ are globally used in the kernel source tree
-> to provide common APIs. They are included from external modules, too.
-> 
-> It will be useful to make as many headers self-contained as possible
-> so that we do not have to rely on a specific include order.
-> 
-> There are more than 4000 headers in include/. In my rough analysis,
-> 70% of them are already self-contained. With efforts, most of them
-> can be self-contained.
-> 
-> For now, we must exclude more than 1000 headers just because they
-> cannot be compiled as standalone units. I added them to header-test-.
-> The black list was mostly generated by a script, so should be checked
-> later.
-The list is smaller than I had expected.
-And I see why you insisted on avoiding a maze ok Kbuild files.
-It looks good, except there is a few issues..
+Good catch, will fix, thanks!
 
+As an aside, this whole returning error on close/destroy is a bit
+moot, as there is little one can do if any of teardown steps fail
+(except crash, which is not great response :) ). So the strategy would
+be to still free all memory and try to close all FDs, before returning
+error (again, which one, first, last? eh..).
 
-The file kernel/kheaders_data.tar.xz includes all the .s files.
-Something needs to be done to exclude the .s files...
-
-When building a full kernel the build fails like this:
-  LD      vmlinux.o
-aarch64-linux-gnu-ld: cannot find include/lib.a: No such file or directory
-make[1]: *** [/home/sam/kernel/linux-kbuild.git/Makefile:1054: vmlinux] Error 1
-make[1]: Leaving directory '/home/sam/kernel/linux-kbuild.git/.build/arm64-allyesconfig'
-make: *** [Makefile:179: sub-make] Error 2
-
-
-include/uapi/linux/mman.h fails when building sparc64 allmodconfig.
-There is likely more header files that will fail when we start to
-throw this after diverse randconfigs.
-I have no good idea how to catch this.
-Unless your scripts could automate this across several architectures.
-
-I did not continue my testing futher.
-
-> +header-test-			+= uapi/drm/vmwgfx_drm.h
-> +header-test-			+= uapi/linux/a.out.h
-> +header-test-			+= uapi/linux/coda.h
-...
-> +header-test-			+= uapi/xen/evtchn.h
-> +header-test-			+= uapi/xen/gntdev.h
-> +header-test-			+= uapi/xen/privcmd.h
-
-I though uapi files were covered by another Makefile?
-If they are added because we pull them in using a pattern, maybe they
-should be removed using a specific filer-out?
-
-	Sam
+>
+> > +}
+> > +
+> > +struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog,
+> > +                                             int pfd)
+> > +{
+> > +     char errmsg[STRERR_BUFSIZE];
+> > +     struct bpf_link_fd *link;
+> > +     int bpf_fd, err;
+> > +
+> > +     bpf_fd = bpf_program__fd(prog);
+> > +     if (bpf_fd < 0) {
+> > +             pr_warning("program '%s': can't attach before loaded\n",
+> > +                        bpf_program__title(prog, false));
+> > +             return ERR_PTR(-EINVAL);
+> > +     }
+> > +
+> > +     link = malloc(sizeof(*link));
+> > +     if (!link)
+> > +             return ERR_PTR(-ENOMEM);
+> > +     link->link.destroy = &bpf_link__destroy_perf_event;
+> > +     link->fd = pfd;
+> > +
+> > +     if (ioctl(pfd, PERF_EVENT_IOC_SET_BPF, bpf_fd) < 0) {
+> > +             err = -errno;
+> > +             free(link);
+> > +             pr_warning("program '%s': failed to attach to pfd %d: %s\n",
+> > +                        bpf_program__title(prog, false), pfd,
+> > +                        libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
+> > +             return ERR_PTR(err);
+> > +     }
+> > +     if (ioctl(pfd, PERF_EVENT_IOC_ENABLE, 0) < 0) {
+> > +             err = -errno;
+> > +             free(link);
+> > +             pr_warning("program '%s': failed to enable pfd %d: %s\n",
+> > +                        bpf_program__title(prog, false), pfd,
+> > +                        libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
+> > +             return ERR_PTR(err);
+> > +     }
+> > +     return (struct bpf_link *)link;
+> > +}
+> > +
+> >  enum bpf_perf_event_ret
+> >  bpf_perf_event_read_simple(void *mmap_mem, size_t mmap_size, size_t page_size,
+> >                          void **copy_mem, size_t *copy_size,
+> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > index 5082a5ebb0c2..1bf66c4a9330 100644
+> > --- a/tools/lib/bpf/libbpf.h
+> > +++ b/tools/lib/bpf/libbpf.h
+> > @@ -169,6 +169,9 @@ struct bpf_link;
+> >
+> >  LIBBPF_API int bpf_link__destroy(struct bpf_link *link);
+> >
+> > +LIBBPF_API struct bpf_link *
+> > +bpf_program__attach_perf_event(struct bpf_program *prog, int pfd);
+> > +
+> >  struct bpf_insn;
+> >
+> >  /*
+> > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> > index 3cde850fc8da..756f5aa802e9 100644
+> > --- a/tools/lib/bpf/libbpf.map
+> > +++ b/tools/lib/bpf/libbpf.map
+> > @@ -169,6 +169,7 @@ LIBBPF_0.0.4 {
+> >       global:
+> >               bpf_link__destroy;
+> >               bpf_object__load_xattr;
+> > +             bpf_program__attach_perf_event;
+> >               btf_dump__dump_type;
+> >               btf_dump__free;
+> >               btf_dump__new;
+> > --
+> > 2.17.1
+> >
