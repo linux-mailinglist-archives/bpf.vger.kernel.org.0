@@ -2,93 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A6C59253
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 06:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FD659325
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 06:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbfF1EL0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jun 2019 00:11:26 -0400
-Received: from guitar.tcltek.co.il ([192.115.133.116]:34164 "EHLO
-        mx.tkos.co.il" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725792AbfF1EL0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jun 2019 00:11:26 -0400
-Received: from tarshish.tkos.co.il (unknown [10.0.8.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mx.tkos.co.il (Postfix) with ESMTPS id 7DD9F44030A;
-        Fri, 28 Jun 2019 07:11:23 +0300 (IDT)
-From:   Baruch Siach <baruch@tkos.co.il>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, "Dmitry V . Levin" <ldv@altlinux.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
-        Baruch Siach <baruch@tkos.co.il>, Jiri Olsa <jolsa@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH v3] bpf: fix uapi bpf_prog_info fields alignment
-Date:   Fri, 28 Jun 2019 07:08:45 +0300
-Message-Id: <02938ce219d535a8c7c29ce796b3d6ea59c3ed15.1561694925.git.baruch@tkos.co.il>
-X-Mailer: git-send-email 2.20.1
+        id S1726553AbfF1E6E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jun 2019 00:58:04 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:17874 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726240AbfF1E6E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jun 2019 00:58:04 -0400
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com [209.85.217.49]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id x5S4vmF1019231;
+        Fri, 28 Jun 2019 13:57:49 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com x5S4vmF1019231
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1561697869;
+        bh=SIK/nAM+sI54EJmk0mR1Usgw9j5vfYmGFrOtLjOZzLg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JxblWpm3C3r7r01gYCOajBSW84T6W3cnHh34fYXfzFs98o7YC0XLfQPjyIZJOe7wM
+         PY/Z814YyNy19enS/Ou211c5U7rm691JuQCgggAcE2sGPHLAj9wwCQolzRkbPaDRiu
+         FrTXIynHp8sn8Ga5l38WmMbWouAfZu8DxdTPzh8CSEslepOK3tMS5SQS+4VtUehZ9t
+         NSNHzUy1OY+BQNhszkLRTwslt4vvB1fQRAdLZXk9kVNL+2+OwXetOycQuOQ2VOQRtf
+         XghTnCtXDc6J9Kd7iUMUzD/WmoM3yPHVBRQHQLacTI0FvtiDEE2S7qU0bYPKqALUUD
+         5RDATmr7n88Ew==
+X-Nifty-SrcIP: [209.85.217.49]
+Received: by mail-vs1-f49.google.com with SMTP id m8so3223822vsj.0;
+        Thu, 27 Jun 2019 21:57:48 -0700 (PDT)
+X-Gm-Message-State: APjAAAVu7n6CngMno4scf2pMdH3Hmq9hLhKhaaiLPuIUzywdwnzZSMaq
+        //TzyUqqq0KFjBboz92i6ufgqEomdtaXqA+s3JY=
+X-Google-Smtp-Source: APXvYqyyvmsd8AAk5R7aaNFgntOJs2TjX0FeQ1b2WdSaf2T0LzzKUcfk9Z8oacISJcBzf5zvmHjL7/Pj9m8miFmaa6o=
+X-Received: by 2002:a67:d46:: with SMTP id 67mr4682467vsn.181.1561697868020;
+ Thu, 27 Jun 2019 21:57:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20190627163903.28398-1-yamada.masahiro@socionext.com>
+In-Reply-To: <20190627163903.28398-1-yamada.masahiro@socionext.com>
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+Date:   Fri, 28 Jun 2019 13:57:12 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARj+A1JDnUmA_ZFC5Shsy7Tg37LtXS27H7ZTgDbp5BO2w@mail.gmail.com>
+Message-ID: <CAK7LNARj+A1JDnUmA_ZFC5Shsy7Tg37LtXS27H7ZTgDbp5BO2w@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] Compile-test UAPI and kernel headers
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     Song Liu <songliubraving@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linux-riscv@lists.infradead.org, Sam Ravnborg <sam@ravnborg.org>,
+        Kees Cook <keescook@chromium.org>, xdp-newbies@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Anton Vorontsov <anton@enomsg.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Yonghong Song <yhs@fb.com>, Albert Ou <aou@eecs.berkeley.edu>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Colin Cross <ccross@android.com>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Merge commit 1c8c5a9d38f60 ("Merge
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next") undid the
-fix from commit 36f9814a494 ("bpf: fix uapi hole for 32 bit compat
-applications") by taking the gpl_compatible 1-bit field definition from
-commit b85fab0e67b162 ("bpf: Add gpl_compatible flag to struct
-bpf_prog_info") as is. That breaks architectures with 16-bit alignment
-like m68k. Add 31-bit pad after gpl_compatible to restore alignment of
-following fields.
+On Fri, Jun 28, 2019 at 1:41 AM Masahiro Yamada
+<yamada.masahiro@socionext.com> wrote:
+>
+> 1/4: Compile-test exported headers (reworked in v2)
+>
+> 2/4: fix a flaw I noticed when I was working on this series.
+>      Avoid generating intermediate wrappers.
+>
+> 3/4: maybe useful for 4/4 and in some other places.
+>      Add header-test-pattern-y syntax.
+>
+> 4/4: Compile-test kernel-space headers in include/.
+>      v2: compile as many headers as possible.
+>      v3: exclude more headers causing build errors
 
-Thanks to Dmitry V. Levin his analysis of this bug history.
 
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Baruch Siach <baruch@tkos.co.il>
----
-v3:
-Use alignment pad as Alexei Starovoitov suggested
+I push this series to
+ git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
+ header-test-v3
+for somebody who wants to test it.
 
-v2:
-Use anonymous union with pad to make it less likely to break again in
-the future.
----
- include/uapi/linux/bpf.h       | 1 +
- tools/include/uapi/linux/bpf.h | 1 +
- 2 files changed, 2 insertions(+)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index a8b823c30b43..29a5bc3d5c66 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -3143,6 +3143,7 @@ struct bpf_prog_info {
- 	char name[BPF_OBJ_NAME_LEN];
- 	__u32 ifindex;
- 	__u32 gpl_compatible:1;
-+	__u32 :31; /* alignment pad */
- 	__u64 netns_dev;
- 	__u64 netns_ino;
- 	__u32 nr_jited_ksyms;
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index a8b823c30b43..29a5bc3d5c66 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -3143,6 +3143,7 @@ struct bpf_prog_info {
- 	char name[BPF_OBJ_NAME_LEN];
- 	__u32 ifindex;
- 	__u32 gpl_compatible:1;
-+	__u32 :31; /* alignment pad */
- 	__u64 netns_dev;
- 	__u64 netns_ino;
- 	__u32 nr_jited_ksyms;
--- 
-2.20.1
 
+>
+> Masahiro Yamada (4):
+>   kbuild: compile-test UAPI headers to ensure they are self-contained
+>   kbuild: do not create wrappers for header-test-y
+>   kbuild: support header-test-pattern-y
+>   kbuild: compile-test kernel headers to ensure they are self-contained
+>
+>  .gitignore                         |    1 -
+>  Documentation/dontdiff             |    1 -
+>  Documentation/kbuild/makefiles.txt |   13 +-
+>  Makefile                           |    4 +-
+>  include/Kbuild                     | 1250 ++++++++++++++++++++++++++++
+>  init/Kconfig                       |   22 +
+>  scripts/Makefile.build             |   10 +-
+>  scripts/Makefile.lib               |   13 +-
+>  scripts/cc-system-headers.sh       |    8 +
+>  usr/.gitignore                     |    1 -
+>  usr/Makefile                       |    2 +
+>  usr/include/.gitignore             |    3 +
+>  usr/include/Makefile               |  134 +++
+>  13 files changed, 1449 insertions(+), 13 deletions(-)
+>  create mode 100644 include/Kbuild
+>  create mode 100755 scripts/cc-system-headers.sh
+>  create mode 100644 usr/include/.gitignore
+>  create mode 100644 usr/include/Makefile
+>
+> --
+> 2.17.1
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+
+
+--
+Best Regards
+Masahiro Yamada
