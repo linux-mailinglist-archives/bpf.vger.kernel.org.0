@@ -2,124 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F525A721
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2019 00:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0755A769
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2019 01:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbfF1Wsr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jun 2019 18:48:47 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:40276 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726620AbfF1Wsq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jun 2019 18:48:46 -0400
-Received: by mail-qt1-f194.google.com with SMTP id a15so8139388qtn.7
-        for <bpf@vger.kernel.org>; Fri, 28 Jun 2019 15:48:46 -0700 (PDT)
+        id S1726707AbfF1XKx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jun 2019 19:10:53 -0400
+Received: from mail-pg1-f201.google.com ([209.85.215.201]:55956 "EHLO
+        mail-pg1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726672AbfF1XKx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jun 2019 19:10:53 -0400
+Received: by mail-pg1-f201.google.com with SMTP id b10so3881303pgb.22
+        for <bpf@vger.kernel.org>; Fri, 28 Jun 2019 16:10:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=naoN9xO3VLnK7N3zhVakVrkwI0aVx9LZjd339bZJK3Y=;
-        b=LidnyyQnRNJ6JFsbmuD2KzXLFYOUgkq2l1ZpwEa4/9d/TdoZVEZ1V4oK8h1etVHWRx
-         AhxYE11BIWL5G3ltTqtbcGje62GIGrKDsEV4lQ40L5gQi5xliI/pTYgOEuuIGaEhKs2g
-         eizKN7Bo++MU6DzxdTpniDrYHUcQDolyYR0vnDuhU3k2NeO+qyHTd01SsXt7KmK6zOmQ
-         1b++0q3m9QcZEjrXsaZntDbombdBVTwjjrT9mWJLa9gekTQIBB5WZ4py/T9/1h3n6+oP
-         vkfTPFXNtkhlYE/os2nTjOcPF2qqyGwu2Z1Xmmbtz2wDHtgE2Ea1PAi+XqypkTWscmPl
-         9UGA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=H1uw8GNHqdne1YqmW30hQmg7ehvjJ07bgavin0v97FA=;
+        b=G1HGo98N06/C96ASXTRQ8Z8DwfpQ4rC88TZvh6R7AuL8Bb0uMCA64FgFwfWI2OrlW/
+         5ZYxVu3fBdgzsYk082oSaxiDQ7WI6m7GR2IhKVgd296VQNlZa+BcFhDzjqyLQLnd0w+L
+         M57d/1psVlxo/oszPG70J9CMX+jmcJJ2gLUQvTiB6ip2Q+CvmJTQGqXLGB1ixAhRqUKT
+         F3Mr4ZAHddLFcizilTx9AAtfz2fjcweEKNNWvgfpTQFGZe7ni46zS41PKUYchuqyinH6
+         pRRYoYS+1iYxRq1UBr2W3VIwYAixrTKZoj1rPtrdgkeHvlKwALMvpzQHM+axZXLsgE9q
+         U8OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=naoN9xO3VLnK7N3zhVakVrkwI0aVx9LZjd339bZJK3Y=;
-        b=dgMvGNtajuZGrLoapRV0HZXk4PxAZtmDyxLf8jSxVdLhxg6mk3otefguWwk7Rl5vPe
-         gRLapD/qoK31pIU7W9ghXEyjICDT8eYc4Ma5kQzYFNVBpAmqCw2VY4bxBaa8ibYDlwjZ
-         OTcoI7WOOzG8zoExvqJdL4Rk5Ba3fJfbw7LSfi1SMVS33usVk0fZFlOqqpuCI9jwj5NP
-         sxzeBR3Lv7+aGVm/1k6l2iknSbXHqy0K0R2xrzkM2rTjwZITIc1mKrqIxrSreUk7xv8f
-         OmYdwRI9o3BjD/RGX0Pvm7w/pmnBlRysugtW4soDWq2NWMOcIDzJYfX3QYFMaPa8Emkm
-         5nVw==
-X-Gm-Message-State: APjAAAUseJh8OMzWZ6ij1asBg+RPlePdSeid4vyBzkovhSrmTbWA8T4N
-        OXCWFOUUW7lVUXxK3NI2qoO+yQ==
-X-Google-Smtp-Source: APXvYqxQm03vHRDTjjXInJLdprCbt2w9mLeFMxdlR/vcgfzYjvUlzdeWGHlBfh8DBiBmPLW9JxjyvQ==
-X-Received: by 2002:a0c:d604:: with SMTP id c4mr10296987qvj.27.1561762125846;
-        Fri, 28 Jun 2019 15:48:45 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id q9sm1353291qkm.63.2019.06.28.15.48.44
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 28 Jun 2019 15:48:45 -0700 (PDT)
-Date:   Fri, 28 Jun 2019 15:48:41 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     daniel@iogearbox.io, ast@kernel.org, netdev@vger.kernel.org,
-        edumazet@google.com, bpf@vger.kernel.org
-Subject: Re: [PATCH 1/2] tls: remove close callback sock unlock/lock and
- flush_sync
-Message-ID: <20190628154841.32b96fb1@cakuba.netronome.com>
-In-Reply-To: <5d166d2deacfe_10452ad82c16e5c0a5@john-XPS-13-9370.notmuch>
-References: <156165697019.32598.7171757081688035707.stgit@john-XPS-13-9370>
-        <156165700197.32598.17496423044615153967.stgit@john-XPS-13-9370>
-        <20190627164402.31cbd466@cakuba.netronome.com>
-        <5d1620374694e_26962b1f6a4fa5c4f2@john-XPS-13-9370.notmuch>
-        <20190628113100.597bfbe6@cakuba.netronome.com>
-        <5d166d2deacfe_10452ad82c16e5c0a5@john-XPS-13-9370.notmuch>
-Organization: Netronome Systems, Ltd.
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=H1uw8GNHqdne1YqmW30hQmg7ehvjJ07bgavin0v97FA=;
+        b=TZSE+MDTVX258k5but39uh2aGYXrAJpXnnVO8HolJ8n+MDRbOm240obK7UV9wuFTB0
+         udtHeGWnywtwnAH8oHwq18csELhoQIqVhdgmDABENnD6eandAPpK8WJv3pwG496/nFu1
+         kKorw3Q1PJQrKG/P5fWGagkbPWuf3HdPp2clmijI24rD6fEIhsLB3ghnMd63swUub+R5
+         +GOUKX37gz1z7dnOx/9w54pYNjZZaOmm1JLX67uJWSRQrSqdbsCbzpoiflgDEmE0eUgf
+         i/h4an14Y+87GMHbh25Xvu1+jxbpoYRYe2gOfnoyUHtPc6TlWEwDVvDHXv4oqLiP9WRw
+         1WKA==
+X-Gm-Message-State: APjAAAVq5UUrvZiOQ1Mr3zFvkpV5WtiylYByZk1X3oxMWNNn0WIYfBmD
+        91UUNu+wWh+PbmRilVK+SFtEIu4=
+X-Google-Smtp-Source: APXvYqzn1y/EUNmYcU6bEtZmjhaAhzm9/gCbpGaC5ql1JodiKRqRZXv/A3SZQLptiFW84eM3ykNpngA=
+X-Received: by 2002:a63:a61:: with SMTP id z33mr11668815pgk.154.1561763451833;
+ Fri, 28 Jun 2019 16:10:51 -0700 (PDT)
+Date:   Fri, 28 Jun 2019 16:10:48 -0700
+Message-Id: <20190628231049.22149-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
+Subject: [PATCH bpf-next 1/2] bpf: allow wide (u64) aligned stores for some
+ fields of bpf_sock_addr
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        kernel test robot <rong.a.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 28 Jun 2019 12:40:29 -0700, John Fastabend wrote:
-> The lock() is already held when entering unhash() side so need to
-> handle this case as well,
-> 
-> CPU 0 (free)          CPU 1 (wq)
-> 
-> lock(sk)              ctx = tls_get_ctx(sk) <- need to be check null ptr
-> sk_prot->unhash()
->   set_bit()
->   cancel_work()
->   ...
->   kfree(ctx)
-> unlock(sk)
-> 
-> but using cancel and doing an unlikely(!ctx) check should be
-> sufficient to handle wq. 
+Since commit cd17d7770578 ("bpf/tools: sync bpf.h") clang decided
+that it can do a single u64 store into user_ip6[2] instead of two
+separate u32 ones:
 
-I'm not sure we can kfree ctx, the work struct itself is in it, no?
+ #  17: (18) r2 = 0x100000000000000
+ #  ; ctx->user_ip6[2] = bpf_htonl(DST_REWRITE_IP6_2);
+ #  19: (7b) *(u64 *)(r1 +16) = r2
+ #  invalid bpf_context access off=16 size=8
 
-> What I'm not sure how to solve now is
-> in patch 2 of this series unhash is still calling strp_done
-> with the sock lock. Maybe we need to do a deferred release
-> like sockmap side?
+From the compiler point of view it does look like a correct thing
+to do, so let's support it on the kernel side.
 
-Right, we can't do anything that sleeps in unhash, since we're holding
-the spinlock there, not the "owner" lock.
+Credit to Andrii Nakryiko for a proper implementation of
+bpf_ctx_wide_store_ok.
 
-> Trying to drop the lock and then grabbing it again doesn't
-> seem right to me seems based on comment in tcp_abort we
-> could potentially "race with userspace socket closes such
-> as tcp_close". iirc I think one of the tls splats from syzbot
-> looked something like this may have happened.
-> 
-> For now I'm considering adding a strp_cancel() op. Seeing
-> we are closing() the socket and tearkng down we can probably
-> be OK with throwing out strp results.
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: Yonghong Song <yhs@fb.com>
+Fixes: cd17d7770578 ("bpf/tools: sync bpf.h")
+Reported-by: kernel test robot <rong.a.chen@intel.com>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ include/linux/filter.h |  6 ++++++
+ net/core/filter.c      | 22 ++++++++++++++--------
+ 2 files changed, 20 insertions(+), 8 deletions(-)
 
-But don't we have to flush the work queues before we free ctx?  We'd
-need to alloc a workqueue and schedule a work to flush the other works
-and then free?
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 340f7d648974..3901007e36f1 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -746,6 +746,12 @@ bpf_ctx_narrow_access_ok(u32 off, u32 size, u32 size_default)
+ 	return size <= size_default && (size & (size - 1)) == 0;
+ }
+ 
++#define bpf_ctx_wide_store_ok(off, size, type, field)			\
++	(size == sizeof(__u64) &&					\
++	off >= offsetof(type, field) &&					\
++	off + sizeof(__u64) <= offsetofend(type, field) &&		\
++	off % sizeof(__u64) == 0)
++
+ #define bpf_classic_proglen(fprog) (fprog->len * sizeof(fprog->filter[0]))
+ 
+ static inline void bpf_prog_lock_ro(struct bpf_prog *fp)
+diff --git a/net/core/filter.c b/net/core/filter.c
+index dc8534be12fc..5d33f2146dab 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -6849,6 +6849,16 @@ static bool sock_addr_is_valid_access(int off, int size,
+ 			if (!bpf_ctx_narrow_access_ok(off, size, size_default))
+ 				return false;
+ 		} else {
++			if (bpf_ctx_wide_store_ok(off, size,
++						  struct bpf_sock_addr,
++						  user_ip6))
++				return true;
++
++			if (bpf_ctx_wide_store_ok(off, size,
++						  struct bpf_sock_addr,
++						  msg_src_ip6))
++				return true;
++
+ 			if (size != size_default)
+ 				return false;
+ 		}
+@@ -7689,9 +7699,6 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+ /* SOCK_ADDR_STORE_NESTED_FIELD_OFF() has semantic similar to
+  * SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF() but for store operation.
+  *
+- * It doesn't support SIZE argument though since narrow stores are not
+- * supported for now.
+- *
+  * In addition it uses Temporary Field TF (member of struct S) as the 3rd
+  * "register" since two registers available in convert_ctx_access are not
+  * enough: we can't override neither SRC, since it contains value to store, nor
+@@ -7699,7 +7706,7 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+  * instructions. But we need a temporary place to save pointer to nested
+  * structure whose field we want to store to.
+  */
+-#define SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, OFF, TF)		       \
++#define SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, SIZE, OFF, TF)	       \
+ 	do {								       \
+ 		int tmp_reg = BPF_REG_9;				       \
+ 		if (si->src_reg == tmp_reg || si->dst_reg == tmp_reg)	       \
+@@ -7710,8 +7717,7 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+ 				      offsetof(S, TF));			       \
+ 		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(S, F), tmp_reg,	       \
+ 				      si->dst_reg, offsetof(S, F));	       \
+-		*insn++ = BPF_STX_MEM(					       \
+-			BPF_FIELD_SIZEOF(NS, NF), tmp_reg, si->src_reg,	       \
++		*insn++ = BPF_STX_MEM(SIZE, tmp_reg, si->src_reg,	       \
+ 			bpf_target_off(NS, NF, FIELD_SIZEOF(NS, NF),	       \
+ 				       target_size)			       \
+ 				+ OFF);					       \
+@@ -7723,8 +7729,8 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+ 						      TF)		       \
+ 	do {								       \
+ 		if (type == BPF_WRITE) {				       \
+-			SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, OFF,    \
+-							 TF);		       \
++			SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, SIZE,   \
++							 OFF, TF);	       \
+ 		} else {						       \
+ 			SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF(		       \
+ 				S, NS, F, NF, SIZE, OFF);  \
+-- 
+2.22.0.410.gd8fdbe21b5-goog
 
-Why can't tls sockets exist outside of established state?  If shutdown
-doesn't call close, perhaps we can add a shutdown callback?  It doesn't
-seem to be called from BH?
-
-Sorry for all the questions, I'm not really able to fully wrap my head
-around this. I also feel like I'm missing the sockmap piece that may
-be why you prefer unhash over disconnect.
-
-FWIW Davide's ULP diag support patches will require us to most likely
-free ctx with kfree_rcu(). diag only has a ref on struct sock, so if 
-we want to access ctx we need RCU or to lock every socket. It's a
-little bit of an abuse of RCU, because the data under our feet may
-actually change, but the fields we dump will only get inited once
-after ulp is installed.
