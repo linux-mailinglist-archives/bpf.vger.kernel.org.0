@@ -2,137 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FD659325
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 06:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF06C593BE
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 07:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726553AbfF1E6E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jun 2019 00:58:04 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:17874 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726240AbfF1E6E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jun 2019 00:58:04 -0400
-Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com [209.85.217.49]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id x5S4vmF1019231;
-        Fri, 28 Jun 2019 13:57:49 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com x5S4vmF1019231
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1561697869;
-        bh=SIK/nAM+sI54EJmk0mR1Usgw9j5vfYmGFrOtLjOZzLg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JxblWpm3C3r7r01gYCOajBSW84T6W3cnHh34fYXfzFs98o7YC0XLfQPjyIZJOe7wM
-         PY/Z814YyNy19enS/Ou211c5U7rm691JuQCgggAcE2sGPHLAj9wwCQolzRkbPaDRiu
-         FrTXIynHp8sn8Ga5l38WmMbWouAfZu8DxdTPzh8CSEslepOK3tMS5SQS+4VtUehZ9t
-         NSNHzUy1OY+BQNhszkLRTwslt4vvB1fQRAdLZXk9kVNL+2+OwXetOycQuOQ2VOQRtf
-         XghTnCtXDc6J9Kd7iUMUzD/WmoM3yPHVBRQHQLacTI0FvtiDEE2S7qU0bYPKqALUUD
-         5RDATmr7n88Ew==
-X-Nifty-SrcIP: [209.85.217.49]
-Received: by mail-vs1-f49.google.com with SMTP id m8so3223822vsj.0;
-        Thu, 27 Jun 2019 21:57:48 -0700 (PDT)
-X-Gm-Message-State: APjAAAVu7n6CngMno4scf2pMdH3Hmq9hLhKhaaiLPuIUzywdwnzZSMaq
-        //TzyUqqq0KFjBboz92i6ufgqEomdtaXqA+s3JY=
-X-Google-Smtp-Source: APXvYqyyvmsd8AAk5R7aaNFgntOJs2TjX0FeQ1b2WdSaf2T0LzzKUcfk9Z8oacISJcBzf5zvmHjL7/Pj9m8miFmaa6o=
-X-Received: by 2002:a67:d46:: with SMTP id 67mr4682467vsn.181.1561697868020;
- Thu, 27 Jun 2019 21:57:48 -0700 (PDT)
+        id S1726622AbfF1FxN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jun 2019 01:53:13 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:18026 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726240AbfF1FxN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 28 Jun 2019 01:53:13 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x5S5pQLk016634
+        for <bpf@vger.kernel.org>; Thu, 27 Jun 2019 22:53:11 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=kcgVow+Japyl8OUCty1QMFRnOjHk+AjMfXWJmFW+drs=;
+ b=AeF/PWdLyyMBj+ZsDEU9RjFxo/Q29kVVTof2iV56hxbCcpKGqk1o5HPPnNExg2P+Pro2
+ 9cuCtuS98wtEL0qxDlYqZgNmyREGInD1YMxTsNevUkAPmfbEIz1H9BUKpACxK8RiA+KU
+ j5XS/DuCqNNFb6MRoBhdfrfgP2B1FsuZN8M= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by m0001303.ppops.net with ESMTP id 2tdabq8e8x-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 27 Jun 2019 22:53:11 -0700
+Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Thu, 27 Jun 2019 22:53:10 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 7D9FA861468; Thu, 27 Jun 2019 22:53:09 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <andrii.nakryiko@gmail.com>, <ast@fb.com>, <daniel@iogearbox.net>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <sdf@fomichev.me>,
+        <kernel-team@fb.com>
+CC:     Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH v3 bpf-next 0/9] libbpf: add bpf_link and tracing attach APIs
+Date:   Thu, 27 Jun 2019 22:52:54 -0700
+Message-ID: <20190628055303.1249758-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20190627163903.28398-1-yamada.masahiro@socionext.com>
-In-Reply-To: <20190627163903.28398-1-yamada.masahiro@socionext.com>
-From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-Date:   Fri, 28 Jun 2019 13:57:12 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARj+A1JDnUmA_ZFC5Shsy7Tg37LtXS27H7ZTgDbp5BO2w@mail.gmail.com>
-Message-ID: <CAK7LNARj+A1JDnUmA_ZFC5Shsy7Tg37LtXS27H7ZTgDbp5BO2w@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] Compile-test UAPI and kernel headers
-To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Cc:     Song Liu <songliubraving@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linux-riscv@lists.infradead.org, Sam Ravnborg <sam@ravnborg.org>,
-        Kees Cook <keescook@chromium.org>, xdp-newbies@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Anton Vorontsov <anton@enomsg.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Colin Cross <ccross@android.com>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-28_02:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906280066
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 28, 2019 at 1:41 AM Masahiro Yamada
-<yamada.masahiro@socionext.com> wrote:
->
-> 1/4: Compile-test exported headers (reworked in v2)
->
-> 2/4: fix a flaw I noticed when I was working on this series.
->      Avoid generating intermediate wrappers.
->
-> 3/4: maybe useful for 4/4 and in some other places.
->      Add header-test-pattern-y syntax.
->
-> 4/4: Compile-test kernel-space headers in include/.
->      v2: compile as many headers as possible.
->      v3: exclude more headers causing build errors
+This patchset adds the following APIs to allow attaching BPF programs to
+tracing entities:
+- bpf_program__attach_perf_event for attaching to any opened perf event FD,
+  allowing users full control;
+- bpf_program__attach_kprobe for attaching to kernel probes (both entry and
+  return probes);
+- bpf_program__attach_uprobe for attaching to user probes (both entry/return);
+- bpf_program__attach_tracepoint for attaching to kernel tracepoints;
+- bpf_program__attach_raw_tracepoint for attaching to raw kernel tracepoint
+  (wrapper around bpf_raw_tracepoint_open);
 
+This set of APIs makes libbpf more useful for tracing applications.
 
-I push this series to
- git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
- header-test-v3
-for somebody who wants to test it.
+All attach APIs return abstract struct bpf_link that encapsulates logic of
+detaching BPF program. See patch #2 for details. bpf_assoc was considered as
+an alternative name for this opaque "handle", but bpf_link seems to be
+appropriate semantically and is nice and short.
 
+Pre-patch #1 makes internal libbpf_strerror_r helper function work w/ negative
+error codes, lifting the burder off callers to keep track of error sign.
+Patch #2 adds bpf_link abstraction.
+Patch #3 adds attach_perf_event, which is the base for all other APIs.
+Patch #4 adds kprobe/uprobe APIs.
+Patch #5 adds tracepoint API.
+Patch #6 adds raw_tracepoint API.
+Patch #7 converts one existing test to use attach_perf_event.
+Patch #8 adds new kprobe/uprobe tests.
+Patch #9 converts some selftests currently using tracepoint to new APIs.
 
+v2->v3:
+- added bpf_link concept (Daniel);
+- didn't add generic bpf_link__attach_program for reasons described in [0];
+- dropped Stanislav's Reviewed-by from patches #2-#6, in case he doesn't like
+  the change;
 
->
-> Masahiro Yamada (4):
->   kbuild: compile-test UAPI headers to ensure they are self-contained
->   kbuild: do not create wrappers for header-test-y
->   kbuild: support header-test-pattern-y
->   kbuild: compile-test kernel headers to ensure they are self-contained
->
->  .gitignore                         |    1 -
->  Documentation/dontdiff             |    1 -
->  Documentation/kbuild/makefiles.txt |   13 +-
->  Makefile                           |    4 +-
->  include/Kbuild                     | 1250 ++++++++++++++++++++++++++++
->  init/Kconfig                       |   22 +
->  scripts/Makefile.build             |   10 +-
->  scripts/Makefile.lib               |   13 +-
->  scripts/cc-system-headers.sh       |    8 +
->  usr/.gitignore                     |    1 -
->  usr/Makefile                       |    2 +
->  usr/include/.gitignore             |    3 +
->  usr/include/Makefile               |  134 +++
->  13 files changed, 1449 insertions(+), 13 deletions(-)
->  create mode 100644 include/Kbuild
->  create mode 100755 scripts/cc-system-headers.sh
->  create mode 100644 usr/include/.gitignore
->  create mode 100644 usr/include/Makefile
->
-> --
-> 2.17.1
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+v1->v2:
+- preserve errno before close() call (Stanislav);
+- use libbpf_perf_event_disable_and_close in selftest (Stanislav);
+- remove unnecessary memset (Stanislav);
 
+[0] https://lore.kernel.org/bpf/CAEf4BzZ7EM5eP2eaZn7T2Yb5QgVRiwAs+epeLR1g01TTx-6m6Q@mail.gmail.com/
 
+Andrii Nakryiko (9):
+  libbpf: make libbpf_strerror_r agnostic to sign of error
+  libbpf: introduce concept of bpf_link
+  libbpf: add ability to attach/detach BPF program to perf event
+  libbpf: add kprobe/uprobe attach API
+  libbpf: add tracepoint attach API
+  libbpf: add raw tracepoint attach API
+  selftests/bpf: switch test to new attach_perf_event API
+  selftests/bpf: add kprobe/uprobe selftests
+  selftests/bpf: convert existing tracepoint tests to new APIs
 
---
-Best Regards
-Masahiro Yamada
+ tools/lib/bpf/libbpf.c                        | 402 ++++++++++++++++++
+ tools/lib/bpf/libbpf.h                        |  21 +
+ tools/lib/bpf/libbpf.map                      |   8 +-
+ tools/lib/bpf/str_error.c                     |   2 +-
+ .../selftests/bpf/prog_tests/attach_probe.c   | 155 +++++++
+ .../bpf/prog_tests/stacktrace_build_id.c      |  50 +--
+ .../bpf/prog_tests/stacktrace_build_id_nmi.c  |  31 +-
+ .../selftests/bpf/prog_tests/stacktrace_map.c |  43 +-
+ .../bpf/prog_tests/stacktrace_map_raw_tp.c    |  15 +-
+ .../selftests/bpf/progs/test_attach_probe.c   |  55 +++
+ 10 files changed, 687 insertions(+), 95 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/attach_probe.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_attach_probe.c
+
+-- 
+2.17.1
+
