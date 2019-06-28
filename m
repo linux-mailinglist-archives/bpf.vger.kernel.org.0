@@ -2,76 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C675A298
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 19:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 622095A2AF
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 19:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726902AbfF1Rlb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jun 2019 13:41:31 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:34099 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726894AbfF1Rla (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jun 2019 13:41:30 -0400
-Received: by mail-io1-f68.google.com with SMTP id k8so14296847iot.1
-        for <bpf@vger.kernel.org>; Fri, 28 Jun 2019 10:41:30 -0700 (PDT)
+        id S1726565AbfF1Rpg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jun 2019 13:45:36 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:34831 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726536AbfF1Rpg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jun 2019 13:45:36 -0400
+Received: by mail-pl1-f194.google.com with SMTP id w24so3631004plp.2
+        for <bpf@vger.kernel.org>; Fri, 28 Jun 2019 10:45:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.washington.edu; s=goo201206;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uqJ6r1Mjakiqpd0ZD9iGpyAkpv+xSUcUqESly9SnS30=;
-        b=lOFXls3FkwUg97CyPjvyXgrcjW6i3Y09TjD9O1sKjz+4VVLO0kGXwLk7Lh5Ks/8aAW
-         JijWwpKYFieazAh57d6dT1oO3AO01TZnC7WoBmE1OSNdS8W3PrRrtsH2CbmHSwhjVWw+
-         zeSbiFOvp9Kpu25n4n1vGhIUhGVzJdYcNha8A=
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=1Yi6cC2ImLjeEVWi1JuOhFeAoSHATbkcuixifmhPnYs=;
+        b=gmStBag0+4nvAbPtCe7omnAMsNY5yRDJ46Fd0VT3GwqqtYBhTmOmlT36z6IV5gcsFi
+         O5tih95sPdnyrQb1Tj3G9nwYm+6Yg4l8OPjWSrOgwQp1Mlxl2XH9BU4TD6MOD/AeAHn+
+         sKLiAtr55tEFXSj/nNqnav3Wk7r3fc2vATiYWz8vajTyqFy9AJ5aWR/LkkmPZ3hOY9WZ
+         qIAPllRyl0UG4CM5FLvffbhldn2/mkGFL0xFajIKnUMmvUbWN6lVWFL3bXKAedrWL/we
+         xX8kDvHtdUxDZgZq4W1ouwal4adlYVg7dCKKCFSaxPe1OOegsZ7qJ7yeUBExp6ZZ2QOp
+         SFyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uqJ6r1Mjakiqpd0ZD9iGpyAkpv+xSUcUqESly9SnS30=;
-        b=dVPzUT+W2BsLQRam5ty+y8W0Sy5l2CXrD18B4oImR7+2+vBJ7Otij7C+4h7NuCsHwG
-         XH6Na0SXt8d/oShpuMG3CqHpxFml5tUBNemZNWzG6RxEG+QwkiYsOCiDyDlI1JZsnfUQ
-         BMPK0QZRZJJDzPhcErLWJV4HatjbE+cPKn+G6kalrShCOKF14RFT5iTqwd2vGyOGKWuT
-         YZa+Gr8a1p8c0NJ0ZxBYe+R4hcF11feYCuFm1FeaGW57XwjAwEd1+TEJ24ndmtSa1l3v
-         hzJcbkBRKg5dBZFWlNqFwo3PxCKGG867elxUdIlvisiscQMaK4rE65zh/bztNYbeDY9Y
-         GMbw==
-X-Gm-Message-State: APjAAAVmN0FLu3HThnW/AF32boB3/slfkKsnHiIQ3QtrjtKlE7rO464e
-        4lvTTsdvdp4+iPOXnnrBecukb+pDTwhWHxHAYuOPgw==
-X-Google-Smtp-Source: APXvYqwcltk4JmdpNvtJF1qrqeEE0+mFopXztg8enMwMB7rkn3G9Vg90wC0+Jkas2dqkKaCJf2/GoPK0tBQW9eKSXf8=
-X-Received: by 2002:a6b:f90f:: with SMTP id j15mr12016235iog.43.1561743689556;
- Fri, 28 Jun 2019 10:41:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190626231257.14495-1-lukenels@cs.washington.edu> <87y31nuspw.fsf@netronome.com>
-In-Reply-To: <87y31nuspw.fsf@netronome.com>
-From:   Luke Nelson <lukenels@cs.washington.edu>
-Date:   Fri, 28 Jun 2019 10:41:18 -0700
-Message-ID: <CADasFoAqjZVnMFGZNgQMhXsBC78vbb-u1PPv_aZx3fMXeHBXKg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] RV32G eBPF JIT
-To:     Jiong Wang <jiong.wang@netronome.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1Yi6cC2ImLjeEVWi1JuOhFeAoSHATbkcuixifmhPnYs=;
+        b=FgOiSN2a8Z348/8ujY1XFsAw1F/xYMQpGJrNJgqK7km8eZgtBiB/H26/epFXbSea7d
+         bjEF/lHlzbmKDLWsiaMis/L2gbokNvFYzJcMPCMZ/mG42EdbYM5mE2W4dZ+v5uHlgVuf
+         jEHe3o1sw54v+HVXOgmvHoV95oH2/cyfA+Si8vV1NuyLitoDGxpmEOnbqLgShagvAf7B
+         X7WguZsC0cGJ0tjlimJYkWIlqElBaV9Dy8JjuXWS3eDQ/weF+Yo6vEyCZ608PZ6B9Lc3
+         TBA25zQ+Rw0pRh2X399fI9HiY8qZK61j//aOty1wtmX2qCQDUUVz4IGSh8DC8qUnPR3g
+         Fv8g==
+X-Gm-Message-State: APjAAAXoswqYGxLxKtwbIkv8mqJo5JUftIPfs1uiK1MfX8QPbDYnzqdq
+        vsGxZg2v9ykMge0bipSlrv9HKg==
+X-Google-Smtp-Source: APXvYqzKUF44Ry6FOh3etKOYVZLNfuf2mRuyikS1fJ1T/SJAUN1UGJx48K2XiksAueoMZp2Ikw68Ow==
+X-Received: by 2002:a17:902:86:: with SMTP id a6mr13159004pla.244.1561743935310;
+        Fri, 28 Jun 2019 10:45:35 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id s16sm2828387pfm.26.2019.06.28.10.45.34
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Fri, 28 Jun 2019 10:45:34 -0700 (PDT)
+Date:   Fri, 28 Jun 2019 10:45:33 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        linux-riscv@lists.infradead.org, Netdev <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH v3 bpf-next 2/9] libbpf: introduce concept of bpf_link
+Message-ID: <20190628174533.GI4866@mini-arch>
+References: <20190628055303.1249758-1-andriin@fb.com>
+ <20190628055303.1249758-3-andriin@fb.com>
+ <20190628160230.GG4866@mini-arch>
+ <CAEf4BzbB6G5jTvS+K0+0zPXWLFmAePHU2RtALogWrh7h7OV03A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbB6G5jTvS+K0+0zPXWLFmAePHU2RtALogWrh7h7OV03A@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 27, 2019 at 5:18 AM Jiong Wang <jiong.wang@netronome.com> wrote:
->
-> #define BPF_ZEXT_REG(DST)
->         ((struct bpf_insn) {
->                  .code  = BPF_ALU | BPF_MOV | BPF_X
->
-> So it can't be BPF_ALU64. It is safe to remove this chunk of code.
->
+On 06/28, Andrii Nakryiko wrote:
+> On Fri, Jun 28, 2019 at 9:02 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> >
+> > On 06/27, Andrii Nakryiko wrote:
+> > > bpf_link is and abstraction of an association of a BPF program and one
+> > > of many possible BPF attachment points (hooks). This allows to have
+> > > uniform interface for detaching BPF programs regardless of the nature of
+> > > link and how it was created. Details of creation and setting up of
+> > > a specific bpf_link is handled by corresponding attachment methods
+> > > (bpf_program__attach_xxx) added in subsequent commits. Once successfully
+> > > created, bpf_link has to be eventually destroyed with
+> > > bpf_link__destroy(), at which point BPF program is disassociated from
+> > > a hook and all the relevant resources are freed.
+> > >
+> > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > > ---
+> > >  tools/lib/bpf/libbpf.c   | 17 +++++++++++++++++
+> > >  tools/lib/bpf/libbpf.h   |  4 ++++
+> > >  tools/lib/bpf/libbpf.map |  3 ++-
+> > >  3 files changed, 23 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > index 6e6ebef11ba3..455795e6f8af 100644
+> > > --- a/tools/lib/bpf/libbpf.c
+> > > +++ b/tools/lib/bpf/libbpf.c
+> > > @@ -3941,6 +3941,23 @@ int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
+> > >       return 0;
+> > >  }
+> > >
+> > > +struct bpf_link {
+> > Maybe call it bpf_attachment? You call the bpf_program__attach_to_blah
+> > and you get an attachment?
+> 
+> I wanted to keep it as short as possible, bpf_attachment is way too
+> long (it's also why as an alternative I've proposed bpf_assoc, not
+> bpf_association, but bpf_attach isn't great shortening).
+Why do you want to keep it short? We have far longer names than
+bpf_attachment in libbpf. That shouldn't be a big concern.
 
-Thanks! I'll fix this in the next revision.
-
-- Luke
+> > > +     int (*destroy)(struct bpf_link *link);
+> > > +};
+> > > +
+> > > +int bpf_link__destroy(struct bpf_link *link)
+> > > +{
+> > > +     int err;
+> > > +
+> > > +     if (!link)
+> > > +             return 0;
+> > > +
+> > > +     err = link->destroy(link);
+> > > +     free(link);
+> > > +
+> > > +     return err;
+> > > +}
+> > > +
+> > >  enum bpf_perf_event_ret
+> > >  bpf_perf_event_read_simple(void *mmap_mem, size_t mmap_size, size_t page_size,
+> > >                          void **copy_mem, size_t *copy_size,
+> > > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > > index d639f47e3110..5082a5ebb0c2 100644
+> > > --- a/tools/lib/bpf/libbpf.h
+> > > +++ b/tools/lib/bpf/libbpf.h
+> > > @@ -165,6 +165,10 @@ LIBBPF_API int bpf_program__pin(struct bpf_program *prog, const char *path);
+> > >  LIBBPF_API int bpf_program__unpin(struct bpf_program *prog, const char *path);
+> > >  LIBBPF_API void bpf_program__unload(struct bpf_program *prog);
+> > >
+> > > +struct bpf_link;
+> > > +
+> > > +LIBBPF_API int bpf_link__destroy(struct bpf_link *link);
+> > > +
+> > >  struct bpf_insn;
+> > >
+> > >  /*
+> > > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> > > index 2c6d835620d2..3cde850fc8da 100644
+> > > --- a/tools/lib/bpf/libbpf.map
+> > > +++ b/tools/lib/bpf/libbpf.map
+> > > @@ -167,10 +167,11 @@ LIBBPF_0.0.3 {
+> > >
+> > >  LIBBPF_0.0.4 {
+> > >       global:
+> > > +             bpf_link__destroy;
+> > > +             bpf_object__load_xattr;
+> > >               btf_dump__dump_type;
+> > >               btf_dump__free;
+> > >               btf_dump__new;
+> > >               btf__parse_elf;
+> > > -             bpf_object__load_xattr;
+> > >               libbpf_num_possible_cpus;
+> > >  } LIBBPF_0.0.3;
+> > > --
+> > > 2.17.1
+> > >
