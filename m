@@ -2,161 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 622095A2AF
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 19:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24C05A2B5
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 19:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726565AbfF1Rpg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jun 2019 13:45:36 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:34831 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726536AbfF1Rpg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jun 2019 13:45:36 -0400
-Received: by mail-pl1-f194.google.com with SMTP id w24so3631004plp.2
-        for <bpf@vger.kernel.org>; Fri, 28 Jun 2019 10:45:35 -0700 (PDT)
+        id S1726537AbfF1RtS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jun 2019 13:49:18 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:35176 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726443AbfF1RtS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jun 2019 13:49:18 -0400
+Received: by mail-lj1-f195.google.com with SMTP id x25so6842990ljh.2;
+        Fri, 28 Jun 2019 10:49:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1Yi6cC2ImLjeEVWi1JuOhFeAoSHATbkcuixifmhPnYs=;
-        b=gmStBag0+4nvAbPtCe7omnAMsNY5yRDJ46Fd0VT3GwqqtYBhTmOmlT36z6IV5gcsFi
-         O5tih95sPdnyrQb1Tj3G9nwYm+6Yg4l8OPjWSrOgwQp1Mlxl2XH9BU4TD6MOD/AeAHn+
-         sKLiAtr55tEFXSj/nNqnav3Wk7r3fc2vATiYWz8vajTyqFy9AJ5aWR/LkkmPZ3hOY9WZ
-         qIAPllRyl0UG4CM5FLvffbhldn2/mkGFL0xFajIKnUMmvUbWN6lVWFL3bXKAedrWL/we
-         xX8kDvHtdUxDZgZq4W1ouwal4adlYVg7dCKKCFSaxPe1OOegsZ7qJ7yeUBExp6ZZ2QOp
-         SFyw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WJsIhY4wNQryIfT9KbxiILwrE7QAS+RQBKJnSZt1T4o=;
+        b=Crebc91lCSxk7TMCY8Q1U9io2/WLQpztGqZaL+13FtcWeRi8UJXcokTcvTshRXhiAy
+         ooXSPgCtrMzKcPJn8uvnBZ/S5mcan1t2Yp26dct8RVz4gDtlYd2umQbOrnnISeAY73Nu
+         Yxm0bUk7a1I3jh+MICpnPG5hUhr5bkrhGgENXucWLrn6NHZdrU2go6D7juVZ2Onm2AdT
+         Q/0m9W1o+8sEZSPPA6RjCWsVI4lB7xKMtzDt8mD0m+k0whGSPj5nCZF+JfL/h9qLVmvG
+         Voi6r8rKzQfVmq4IDwJOEzAJ0ILefENsWuhawHj8Y0xZMcPV8wOMLiYMEjHMqZwj69IW
+         bh/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1Yi6cC2ImLjeEVWi1JuOhFeAoSHATbkcuixifmhPnYs=;
-        b=FgOiSN2a8Z348/8ujY1XFsAw1F/xYMQpGJrNJgqK7km8eZgtBiB/H26/epFXbSea7d
-         bjEF/lHlzbmKDLWsiaMis/L2gbokNvFYzJcMPCMZ/mG42EdbYM5mE2W4dZ+v5uHlgVuf
-         jEHe3o1sw54v+HVXOgmvHoV95oH2/cyfA+Si8vV1NuyLitoDGxpmEOnbqLgShagvAf7B
-         X7WguZsC0cGJ0tjlimJYkWIlqElBaV9Dy8JjuXWS3eDQ/weF+Yo6vEyCZ608PZ6B9Lc3
-         TBA25zQ+Rw0pRh2X399fI9HiY8qZK61j//aOty1wtmX2qCQDUUVz4IGSh8DC8qUnPR3g
-         Fv8g==
-X-Gm-Message-State: APjAAAXoswqYGxLxKtwbIkv8mqJo5JUftIPfs1uiK1MfX8QPbDYnzqdq
-        vsGxZg2v9ykMge0bipSlrv9HKg==
-X-Google-Smtp-Source: APXvYqzKUF44Ry6FOh3etKOYVZLNfuf2mRuyikS1fJ1T/SJAUN1UGJx48K2XiksAueoMZp2Ikw68Ow==
-X-Received: by 2002:a17:902:86:: with SMTP id a6mr13159004pla.244.1561743935310;
-        Fri, 28 Jun 2019 10:45:35 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id s16sm2828387pfm.26.2019.06.28.10.45.34
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 28 Jun 2019 10:45:34 -0700 (PDT)
-Date:   Fri, 28 Jun 2019 10:45:33 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v3 bpf-next 2/9] libbpf: introduce concept of bpf_link
-Message-ID: <20190628174533.GI4866@mini-arch>
-References: <20190628055303.1249758-1-andriin@fb.com>
- <20190628055303.1249758-3-andriin@fb.com>
- <20190628160230.GG4866@mini-arch>
- <CAEf4BzbB6G5jTvS+K0+0zPXWLFmAePHU2RtALogWrh7h7OV03A@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WJsIhY4wNQryIfT9KbxiILwrE7QAS+RQBKJnSZt1T4o=;
+        b=U9Z5ToDjhEpMxLczmXzyo61zWM0Q5PCidhCAzB4CZrsAOo85/dl587khjzME+bCuUj
+         7qa7llJkdDPBoX2c9rcJt8SssOxVe7gILRjW7Bk3IdEACeMtOvqsI0M/oViimfxVwBYd
+         PdxRygJN/+BrNSUwQmuK9V3FAizjxbU6BuJFI04Nv/CB6WRZ1TrUxhhxiFGpJ0ZqxWCr
+         OH0uYiQjJGsSNyVvaDonh9kSEdp5P3aGYIGZd3BHK18tAklPvT4IOqHyb+sIu/nIQfnr
+         6XwyAsoNrS25eLJNBQXswyh1apNhw6QP7bSog3aSKKwgxFmPpa2ekP60iSQdjzmQLxfJ
+         7AxA==
+X-Gm-Message-State: APjAAAXpgN3dGe0Ty3dosvAmJuQq8CAMC6b7Q+adb1yI0LLWaJpaH2A1
+        8gOBdl29NlkIZ1Ry1MeeZPyStRb3k1s2PTm9oGI=
+X-Google-Smtp-Source: APXvYqw6pdfVVcV7F1MTFAKS4tN+8AmYdV0o5Pj1yHuZwF6xpDcLMBPIT5lVWVOeoG97nEquRE9MQNhAx1M38ZD5Ca0=
+X-Received: by 2002:a2e:6c07:: with SMTP id h7mr6983719ljc.177.1561744156739;
+ Fri, 28 Jun 2019 10:49:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbB6G5jTvS+K0+0zPXWLFmAePHU2RtALogWrh7h7OV03A@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <20190627202417.33370-1-brianvv@google.com> <20190627202417.33370-3-brianvv@google.com>
+ <20190627221253.fjsa2lzog2zs5nyz@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20190627221253.fjsa2lzog2zs5nyz@ast-mbp.dhcp.thefacebook.com>
+From:   Brian Vazquez <brianvv.kernel@gmail.com>
+Date:   Fri, 28 Jun 2019 10:49:05 -0700
+Message-ID: <CABCgpaWZKac+yAoohUbR0otv4EjBdj9ogA-oZJ2=mHkmqb8AVQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v2 2/6] bpf: add BPF_MAP_DUMP command to
+ access more than one entry per call
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Brian Vazquez <brianvv@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Petar Penkov <ppenkov@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/28, Andrii Nakryiko wrote:
-> On Fri, Jun 28, 2019 at 9:02 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
-> >
-> > On 06/27, Andrii Nakryiko wrote:
-> > > bpf_link is and abstraction of an association of a BPF program and one
-> > > of many possible BPF attachment points (hooks). This allows to have
-> > > uniform interface for detaching BPF programs regardless of the nature of
-> > > link and how it was created. Details of creation and setting up of
-> > > a specific bpf_link is handled by corresponding attachment methods
-> > > (bpf_program__attach_xxx) added in subsequent commits. Once successfully
-> > > created, bpf_link has to be eventually destroyed with
-> > > bpf_link__destroy(), at which point BPF program is disassociated from
-> > > a hook and all the relevant resources are freed.
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > > ---
-> > >  tools/lib/bpf/libbpf.c   | 17 +++++++++++++++++
-> > >  tools/lib/bpf/libbpf.h   |  4 ++++
-> > >  tools/lib/bpf/libbpf.map |  3 ++-
-> > >  3 files changed, 23 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > index 6e6ebef11ba3..455795e6f8af 100644
-> > > --- a/tools/lib/bpf/libbpf.c
-> > > +++ b/tools/lib/bpf/libbpf.c
-> > > @@ -3941,6 +3941,23 @@ int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
-> > >       return 0;
-> > >  }
-> > >
-> > > +struct bpf_link {
-> > Maybe call it bpf_attachment? You call the bpf_program__attach_to_blah
-> > and you get an attachment?
-> 
-> I wanted to keep it as short as possible, bpf_attachment is way too
-> long (it's also why as an alternative I've proposed bpf_assoc, not
-> bpf_association, but bpf_attach isn't great shortening).
-Why do you want to keep it short? We have far longer names than
-bpf_attachment in libbpf. That shouldn't be a big concern.
+> Please explain the api behavior and corner cases in the commit log
+> or in code comments.
 
-> > > +     int (*destroy)(struct bpf_link *link);
-> > > +};
-> > > +
-> > > +int bpf_link__destroy(struct bpf_link *link)
-> > > +{
-> > > +     int err;
-> > > +
-> > > +     if (!link)
-> > > +             return 0;
-> > > +
-> > > +     err = link->destroy(link);
-> > > +     free(link);
-> > > +
-> > > +     return err;
-> > > +}
-> > > +
-> > >  enum bpf_perf_event_ret
-> > >  bpf_perf_event_read_simple(void *mmap_mem, size_t mmap_size, size_t page_size,
-> > >                          void **copy_mem, size_t *copy_size,
-> > > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> > > index d639f47e3110..5082a5ebb0c2 100644
-> > > --- a/tools/lib/bpf/libbpf.h
-> > > +++ b/tools/lib/bpf/libbpf.h
-> > > @@ -165,6 +165,10 @@ LIBBPF_API int bpf_program__pin(struct bpf_program *prog, const char *path);
-> > >  LIBBPF_API int bpf_program__unpin(struct bpf_program *prog, const char *path);
-> > >  LIBBPF_API void bpf_program__unload(struct bpf_program *prog);
-> > >
-> > > +struct bpf_link;
-> > > +
-> > > +LIBBPF_API int bpf_link__destroy(struct bpf_link *link);
-> > > +
-> > >  struct bpf_insn;
-> > >
-> > >  /*
-> > > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> > > index 2c6d835620d2..3cde850fc8da 100644
-> > > --- a/tools/lib/bpf/libbpf.map
-> > > +++ b/tools/lib/bpf/libbpf.map
-> > > @@ -167,10 +167,11 @@ LIBBPF_0.0.3 {
-> > >
-> > >  LIBBPF_0.0.4 {
-> > >       global:
-> > > +             bpf_link__destroy;
-> > > +             bpf_object__load_xattr;
-> > >               btf_dump__dump_type;
-> > >               btf_dump__free;
-> > >               btf_dump__new;
-> > >               btf__parse_elf;
-> > > -             bpf_object__load_xattr;
-> > >               libbpf_num_possible_cpus;
-> > >  } LIBBPF_0.0.3;
-> > > --
-> > > 2.17.1
-> > >
+Ack, will prepare a new version adding those.
+
+> Would it make sense to return last key back into prev_key,
+> so that next map_dump command doesn't need to copy it from the
+> buffer?
+
+Actually that's a good idea.
+
+
+> checkpatch.pl please.
+
+ I did use the script and it didn't complain, are you seeing something?
+
+> > +next:
+> > +             if (signal_pending(current)) {
+> > +                     err = -EINTR;
+> > +                     break;
+> > +             }
+> > +
+> > +             rcu_read_lock();
+> > +             err = map->ops->map_get_next_key(map, prev_key, key);
+> > +             rcu_read_unlock();
+> > +
+> > +             if (err)
+> > +                     break;
+>
+> should probably be only for ENOENT case?
+
+Yes, this makes sense.
+
+> and other errors should be returned to user ?
+
+and what if the error happened when we had already copied some
+entries? Current behavior masks the error to 0 if we copied at least 1
+element
+
+>
+> > +
+> > +             if (bpf_map_copy_value(map, key, value, attr->dump.flags))
+> > +                     goto next;
+>
+> only for ENOENT as well?
+> and instead of goto use continue and move cp_len+= to the end after prev_key=key?
+
+Right
+
+>
+> > +
+> > +             if (copy_to_user(ubuf + cp_len, buf, elem_size))
+> > +                     break;
+>
+> return error to user?
+>
+> > +
+> > +             prev_key = key;
+> > +     }
+> > +
+> > +     if (cp_len)
+> > +             err = 0;
+>
+> this will mask any above errors if there was at least one element copied.
+
+So in general if we copied elements and suddenly we find and error we
+should return that error and maybe set cp_len to 0 to 'invalidate' the
+data that was already copied?
+Yes, I think that sounds like the correct thing to do, what do you think?
