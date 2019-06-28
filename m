@@ -2,137 +2,270 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6175A5E3
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 22:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C16D5A5EE
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 22:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727147AbfF1U3E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jun 2019 16:29:04 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:41724 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727042AbfF1U3E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jun 2019 16:29:04 -0400
-Received: by mail-pl1-f196.google.com with SMTP id m7so3844757pls.8;
-        Fri, 28 Jun 2019 13:29:04 -0700 (PDT)
+        id S1727197AbfF1Uez (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jun 2019 16:34:55 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:36436 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727199AbfF1Uey (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jun 2019 16:34:54 -0400
+Received: by mail-qk1-f196.google.com with SMTP id g18so6040101qkl.3;
+        Fri, 28 Jun 2019 13:34:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bnEv+X6GYtFiiNujnuspHfQ9vua0ZpFbOcCMm5XfbHM=;
-        b=l+e/PGzpskxEFOlTnLnrRwwaulooIqK74WgIkScA6HRkwzfRCZ/7B1LKz5weRN4t/M
-         /YBioajcNC6WBbc8aulGwaVlaXzC48XHY3DoZ6FnoXctvndgSG8M3CY8m0Wdfs5PrMj+
-         wW5ZI+TVtOFxOmIEQayasbUFZUKDs+kYVwdaSY0eaSqv33hxy55JJzZO2v6z8Vfxclhy
-         usVo0Vtziyr4Y8oBufCzP7UpTj3mRnZBywhSYLP04QDr+ilYa4F9WzahhgX9HnUSXW5b
-         yGW68vIJqYpA/RLFrsvVWjkxizf/zFH2gBMXppKaDwstfC6UYSXnYzFZE43P7wzpl/k8
-         7N7A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CIU0F+PgwUXXTEAgm0K90b16wtfjCcFDmmc/i2KN5ls=;
+        b=R3xFzJP7MioIMEvCFY401qjMpaG/hPDr5F2kh4mSEUutu81lfwYMxYbm5JpydgUl3s
+         IDbDkb00qacTE3JebdlvQjkCxTIQXnp3mYNVRxesKdX0wQ5+US5XmT1Za488346GOCWN
+         BKI+dVcKGL1Hrq0WJO43CfcLF79vsY4ayIwp4ojahH0QfmUDk2uRLDWujkBiQLCYRX0N
+         ro1Eyrlp28bDKz3j8tiHkPXeQFg0WPR0Vjj5TDb7On3smGX2MQ9xU/olo9vwceNRCaP4
+         3B4uZJMi9oO8mIuNYSnDoFVymoJ6h23d8IcTVF9V8QQ+yWCnL1gik03qjewz/y3W/Tfx
+         EpZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bnEv+X6GYtFiiNujnuspHfQ9vua0ZpFbOcCMm5XfbHM=;
-        b=mJSPfBp534AbUzaTbTKRe6xcKXEFU+uIxlhQ67aA6FF7kQ/0OuLhcsKB+fyWE/8+t3
-         I6GmhWuV/UlvW9cRLs+Y6Ce/kjLiE29PTN64AVds3FnttvpP7+dmkte4SRSeyeH5KjYL
-         C+nI2RGAVJoRgO9uP3txfl6Zv5sl1zS3KyT4aEdQNZPWi5u4RRN1GlYFSF53BSMCjEr0
-         cSMofM1D0m5qYShcSnlhjqU7RUiYVsXLO5MjRaex4rXdL4LywuXSjxLCgoxwycW/lm2a
-         VOztCzSR5zvF3mNSjgtBW9vd+Uq3+GyNiZyLsSJTK3VRNQeNSHl5m3w5B2jzWKfd7SCQ
-         hKTA==
-X-Gm-Message-State: APjAAAWXqR4+Jed5+BvExJJUNoYZGTx3MkDR8PPBzTqZ1lD4XexKnSIq
-        SDE9JAhWau+XQ7i+9gOJkyc=
-X-Google-Smtp-Source: APXvYqzWa8U43FknwvBkH/7zwA5fqURcefu1/ahKJcv8NB+c8DMHbs/Cdwiqmx9Ug400ur6gkg0Qcw==
-X-Received: by 2002:a17:902:8a8a:: with SMTP id p10mr14126514plo.88.1561753744049;
-        Fri, 28 Jun 2019 13:29:04 -0700 (PDT)
-Received: from [172.20.54.151] ([2620:10d:c090:200::e695])
-        by smtp.gmail.com with ESMTPSA id r15sm4509802pfc.162.2019.06.28.13.29.03
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 28 Jun 2019 13:29:03 -0700 (PDT)
-From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
-To:     "Laatz, Kevin" <kevin.laatz@intel.com>
-Cc:     "Jakub Kicinski" <jakub.kicinski@netronome.com>,
-        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        bjorn.topel@intel.com, magnus.karlsson@intel.com,
-        bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        bruce.richardson@intel.com, ciara.loftus@intel.com
-Subject: Re: [PATCH 00/11] XDP unaligned chunk placement support
-Date:   Fri, 28 Jun 2019 13:29:02 -0700
-X-Mailer: MailMate (1.12.5r5635)
-Message-ID: <BAE24CBF-416D-4665-B2C9-CE1F5EAE28FF@gmail.com>
-In-Reply-To: <f0ca817a-02b4-df22-d01b-7bc07171a4dc@intel.com>
-References: <20190620083924.1996-1-kevin.laatz@intel.com>
- <FA8389B9-F89C-4BFF-95EE-56F702BBCC6D@gmail.com>
- <ef7e9469-e7be-647b-8bb1-da29bc01fa2e@intel.com>
- <20190627142534.4f4b8995@cakuba.netronome.com>
- <f0ca817a-02b4-df22-d01b-7bc07171a4dc@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CIU0F+PgwUXXTEAgm0K90b16wtfjCcFDmmc/i2KN5ls=;
+        b=a3t+iBpqvUF/EJ+oYFsm+ahuaOptiR4rRUZd7KLcEcndOlFQ3QAKR9m3QkUfMgmtQ7
+         x6Ig0q92XO8eO0icDUA86EstOXx2ktsu6Mftgy+vJ3ZDQ0+n00S8qy7ykOsrZ9Sl04Kb
+         V2iu5CpxK9Yo75w2N6drVvGsD6J2Vdrw0rRWqMDN0vqMA5O83DVZoUOsPTuRAYzX/NGw
+         WrZmoikyfbwGxIxyV3aN5BvQROYZhlG/yZMcisDW0fguIo7W3PWJws4dKFNrrquUDum0
+         KGxHc+MBpu3pvHjUcK8HsNID2gFxMoNZhDJ4IRC310BfYR3j8FNjeds8IT9PR1m7vg+g
+         wdug==
+X-Gm-Message-State: APjAAAV6nvfyp0b97SUhwpYo7KeTPK22zrEwvBmkVfyDk2yJESALqW+h
+        MrB0SumFSevkR5sLV8BO/4Goda6Ng6p1zbCftP8=
+X-Google-Smtp-Source: APXvYqxI8sW+rgEr61vFpV7SS4PAWdokEnGxLBgsnR/eXIiDb9TMZxY0IasPXcdRt5EZyqlEJhnbq0YD5Brsj0Pmgxk=
+X-Received: by 2002:a37:a643:: with SMTP id p64mr10689815qke.36.1561754093718;
+ Fri, 28 Jun 2019 13:34:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed; markup=markdown
-Content-Transfer-Encoding: 8bit
+References: <20190628055303.1249758-1-andriin@fb.com> <20190628055303.1249758-5-andriin@fb.com>
+ <CAPhsuW6UMdHidpmgRzM0sZaGc5gZAnT1B7vCJVt-MrLCMjOdig@mail.gmail.com>
+ <CAEf4Bzbo4r9=VZ2kYaOsZa7HHvjXeEw4uWXhpjcUDvazOcKrzw@mail.gmail.com> <CAPhsuW4xbehq0SQdj_GwJcH++AWAqkYPg6GY3h6rSWMHUwBVFw@mail.gmail.com>
+In-Reply-To: <CAPhsuW4xbehq0SQdj_GwJcH++AWAqkYPg6GY3h6rSWMHUwBVFw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 28 Jun 2019 13:34:42 -0700
+Message-ID: <CAEf4Bzb00Q8GA7Nr_4KjUAUHaWWap8JRCzX60X4c6+YAbFPFCA@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 4/9] libbpf: add kprobe/uprobe attach API
+To:     Song Liu <liu.song.a23@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Stanislav Fomichev <sdf@fomichev.me>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 28 Jun 2019, at 9:19, Laatz, Kevin wrote:
-
-> On 27/06/2019 22:25, Jakub Kicinski wrote:
->> On Thu, 27 Jun 2019 12:14:50 +0100, Laatz, Kevin wrote:
->>> On the application side (xdpsock), we don't have to worry about the 
->>> user
->>> defined headroom, since it is 0, so we only need to account for the
->>> XDP_PACKET_HEADROOM when computing the original address (in the 
->>> default
->>> scenario).
->> That assumes specific layout for the data inside the buffer.  Some 
->> NICs
->> will prepend information like timestamp to the packet, meaning the
->> packet would start at offset XDP_PACKET_HEADROOM + metadata len..
+On Fri, Jun 28, 2019 at 1:09 PM Song Liu <liu.song.a23@gmail.com> wrote:
 >
-> Yes, if NICs prepend extra data to the packet that would be a problem 
-> for
-> using this feature in isolation. However, if we also add in support 
-> for in-order
-> RX and TX rings, that would no longer be an issue. However, even for 
-> NICs
-> which do prepend data, this patchset should not break anything that is 
-> currently
-> working.
-
-I read this as "the correct buffer address is recovered from the shadow 
-ring".
-I'm not sure I'm comfortable with that, and I'm also not sold on 
-in-order completion
-for the RX/TX rings.
-
-
-
->> I think that's very limiting.  What is the challenge in providing
->> aligned addresses, exactly?
-> The challenges are two-fold:
-> 1) it prevents using arbitrary buffer sizes, which will be an issue 
-> supporting e.g. jumbo frames in future.
-> 2) higher level user-space frameworks which may want to use AF_XDP, 
-> such as DPDK, do not currently support having buffers with 'fixed' 
-> alignment.
->     The reason that DPDK uses arbitrary placement is that:
->         - it would stop things working on certain NICs which 
-> need the actual writable space specified in units of 1k - therefore we 
-> need 2k + metadata space.
->         - we place padding between buffers to avoid constantly 
-> hitting the same memory channels when accessing memory.
->         - it allows the application to choose the actual buffer 
-> size it wants to use.
->     We make use of the above to allow us to speed up processing 
-> significantly and also reduce the packet buffer memory size.
+> On Fri, Jun 28, 2019 at 12:59 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Fri, Jun 28, 2019 at 12:46 PM Song Liu <liu.song.a23@gmail.com> wrote:
+> > >
+> > > On Thu, Jun 27, 2019 at 10:53 PM Andrii Nakryiko <andriin@fb.com> wrote:
+> > > >
+> > > > Add ability to attach to kernel and user probes and retprobes.
+> > > > Implementation depends on perf event support for kprobes/uprobes.
+> > > >
+> > > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > > > ---
+> > > >  tools/lib/bpf/libbpf.c   | 213 +++++++++++++++++++++++++++++++++++++++
+> > > >  tools/lib/bpf/libbpf.h   |   7 ++
+> > > >  tools/lib/bpf/libbpf.map |   2 +
+> > > >  3 files changed, 222 insertions(+)
+> > > >
+> > > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > > index 606705f878ba..65d2fef41003 100644
+> > > > --- a/tools/lib/bpf/libbpf.c
+> > > > +++ b/tools/lib/bpf/libbpf.c
+> > > > @@ -4016,6 +4016,219 @@ struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog,
+> > > >         return (struct bpf_link *)link;
+> > > >  }
+> > > >
+> > > > +static int parse_uint(const char *buf)
+> > > > +{
+> > > > +       int ret;
+> > > > +
+> > > > +       errno = 0;
+> > > > +       ret = (int)strtol(buf, NULL, 10);
+> > > > +       if (errno) {
+> > > > +               ret = -errno;
+> > > > +               pr_debug("failed to parse '%s' as unsigned int\n", buf);
+> > > > +               return ret;
+> > > > +       }
+> > > > +       if (ret < 0) {
+> > > > +               pr_debug("failed to parse '%s' as unsigned int\n", buf);
+> > > > +               return -EINVAL;
+> > > > +       }
+> > > > +       return ret;
+> > > > +}
+> > > > +
+> > > > +static int parse_uint_from_file(const char* file)
+> > > > +{
+> > > > +       char buf[STRERR_BUFSIZE];
+> > > > +       int fd, ret;
+> > > > +
+> > > > +       fd = open(file, O_RDONLY);
+> > > > +       if (fd < 0) {
+> > > > +               ret = -errno;
+> > > > +               pr_debug("failed to open '%s': %s\n", file,
+> > > > +                        libbpf_strerror_r(ret, buf, sizeof(buf)));
+> > > > +               return ret;
+> > > > +       }
+> > > > +       ret = read(fd, buf, sizeof(buf));
+> > > > +       ret = ret < 0 ? -errno : ret;
+> > > > +       close(fd);
+> > > > +       if (ret < 0) {
+> > > > +               pr_debug("failed to read '%s': %s\n", file,
+> > > > +                       libbpf_strerror_r(ret, buf, sizeof(buf)));
+> > > > +               return ret;
+> > > > +       }
+> > > > +       if (ret == 0 || ret >= sizeof(buf)) {
+> > > > +               buf[sizeof(buf) - 1] = 0;
+> > > > +               pr_debug("unexpected input from '%s': '%s'\n", file, buf);
+> > > > +               return -EINVAL;
+> > > > +       }
+> > > > +       return parse_uint(buf);
+> > > > +}
+> > > > +
+> > > > +static int determine_kprobe_perf_type(void)
+> > > > +{
+> > > > +       const char *file = "/sys/bus/event_source/devices/kprobe/type";
+> > > > +       return parse_uint_from_file(file);
+> > > > +}
+> > > > +
+> > > > +static int determine_uprobe_perf_type(void)
+> > > > +{
+> > > > +       const char *file = "/sys/bus/event_source/devices/uprobe/type";
+> > > > +       return parse_uint_from_file(file);
+> > > > +}
+> > > > +
+> > > > +static int parse_config_from_file(const char *file)
+> > > > +{
+> > > > +       char buf[STRERR_BUFSIZE];
+> > > > +       int fd, ret;
+> > > > +
+> > > > +       fd = open(file, O_RDONLY);
+> > > > +       if (fd < 0) {
+> > > > +               ret = -errno;
+> > > > +               pr_debug("failed to open '%s': %s\n", file,
+> > > > +                        libbpf_strerror_r(ret, buf, sizeof(buf)));
+> > > > +               return ret;
+> > > > +       }
+> > > > +       ret = read(fd, buf, sizeof(buf));
+> > > > +       ret = ret < 0 ? -errno : ret;
+> > > > +       close(fd);
+> > > > +       if (ret < 0) {
+> > > > +               pr_debug("failed to read '%s': %s\n", file,
+> > > > +                       libbpf_strerror_r(ret, buf, sizeof(buf)));
+> > > > +               return ret;
+> > > > +       }
+> > > > +       if (ret == 0 || ret >= sizeof(buf)) {
+> > > > +               buf[sizeof(buf) - 1] = 0;
+> > > > +               pr_debug("unexpected input from '%s': '%s'\n", file, buf);
+> > > > +               return -EINVAL;
+> > > > +       }
+> > > > +       if (strncmp(buf, "config:", 7)) {
+> > > > +               pr_debug("expected 'config:' prefix, found '%s'\n", buf);
+> > > > +               return -EINVAL;
+> > > > +       }
+> > > > +       return parse_uint(buf + 7);
+> > > > +}
+> > > > +
+> > > > +static int determine_kprobe_retprobe_bit(void)
+> > > > +{
+> > > > +       const char *file = "/sys/bus/event_source/devices/kprobe/format/retprobe";
+> > > > +       return parse_config_from_file(file);
+> > > > +}
+> > > > +
+> > > > +static int determine_uprobe_retprobe_bit(void)
+> > > > +{
+> > > > +       const char *file = "/sys/bus/event_source/devices/uprobe/format/retprobe";
+> > > > +       return parse_config_from_file(file);
+> > > > +}
+> > >
+> > > Can we do the above with fscanf? Would that be easier?
+> >
+> > It would be less code, but also less strict semantics. E.g., fscanf
+> > would happily leave out any garbage after number (e.g., 123blablabla,
+> > would still parse). Also, from brief googling, fscanf doesn't handle
+> > overflows well.
+> >
+> > So I guess I'd vote for this more verbose, but also more strict
+> > checking, unless you insist on fscanf.
 >
->     Not having arbitrary buffer alignment also means an AF_XDP 
-> driver for DPDK cannot be a drop-in replacement for existing drivers 
-> in those frameworks. Even with a new capability to allow an arbitrary 
-> buffer alignment, existing apps will need to be modified to use that 
-> new capability.
+> I don't think we need to worry about kernel giving garbage in sysfs.
+> Most common error gonna be the file doesn't exist. Error messages
+> like "Failed to parse <filename>" would be sufficient.
+>
+> Let's keep it simpler.
 
-Since all buffers in the umem are the same chunk size, the original 
-buffer
-address can be recalculated with some multiply/shift math.  However, 
-this is
-more expensive than just a mask operation.
--- 
-Jonathan
+Ok, will switch to fscanf.
+
+>
+> >
+> > >
+> > > > +
+> > > > +static int perf_event_open_probe(bool uprobe, bool retprobe, const char* name,
+> > > > +                                uint64_t offset, int pid)
+> > > > +{
+> > > > +       struct perf_event_attr attr = {};
+> > > > +       char errmsg[STRERR_BUFSIZE];
+> > > > +       int type, pfd, err;
+> > > > +
+> > > > +       type = uprobe ? determine_uprobe_perf_type()
+> > > > +                     : determine_kprobe_perf_type();
+> > > > +       if (type < 0) {
+> > > > +               pr_warning("failed to determine %s perf type: %s\n",
+> > > > +                          uprobe ? "uprobe" : "kprobe",
+> > > > +                          libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
+> > > > +               return type;
+> > > > +       }
+> > > > +       if (retprobe) {
+> > > > +               int bit = uprobe ? determine_uprobe_retprobe_bit()
+> > > > +                                : determine_kprobe_retprobe_bit();
+> > > > +
+> > > > +               if (bit < 0) {
+> > > > +                       pr_warning("failed to determine %s retprobe bit: %s\n",
+> > > > +                                  uprobe ? "uprobe" : "kprobe",
+> > > > +                                  libbpf_strerror_r(bit, errmsg,
+> > > > +                                                    sizeof(errmsg)));
+> > > > +                       return bit;
+> > > > +               }
+> > > > +               attr.config |= 1 << bit;
+> > > > +       }
+> > > > +       attr.size = sizeof(attr);
+> > > > +       attr.type = type;
+> > > > +       attr.config1 = (uint64_t)(void *)name; /* kprobe_func or uprobe_path */
+> > > > +       attr.config2 = offset;                 /* kprobe_addr or probe_offset */
+> > > > +
+> > > > +       /* pid filter is meaningful only for uprobes */
+> > > > +       pfd = syscall(__NR_perf_event_open, &attr,
+> > > > +                     pid < 0 ? -1 : pid /* pid */,
+> > > > +                     pid == -1 ? 0 : -1 /* cpu */,
+> > > > +                     -1 /* group_fd */, PERF_FLAG_FD_CLOEXEC);
+> > > > +       if (pfd < 0) {
+> > > > +               err = -errno;
+> > > > +               pr_warning("%s perf_event_open() failed: %s\n",
+> > > > +                          uprobe ? "uprobe" : "kprobe",
+> > > > +                          libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
+> > >
+> > > We have another warning in bpf_program__attach_[k|u]probe(). I guess
+> > > we can remove this one here.
+> >
+> > This points specifically to perf_event_open() failing versus other
+> > possible failures. Messages in attach_{k,u}probe won't have that, they
+> > will repeat more generic "failed to attach" message. Believe me, if
+> > something goes wrong in libbpf, I'd rather have too much logging than
+> > too little :)
+> >
+>
+> Fair enough. Let's be verbose here. :)
+>
+> Song
