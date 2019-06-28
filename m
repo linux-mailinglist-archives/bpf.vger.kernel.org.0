@@ -2,282 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F143E5A0B9
-	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 18:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30EF5A135
+	for <lists+bpf@lfdr.de>; Fri, 28 Jun 2019 18:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbfF1QYU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 28 Jun 2019 12:24:20 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23994 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726667AbfF1QYU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 28 Jun 2019 12:24:20 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5SGO2x8005464
-        for <bpf@vger.kernel.org>; Fri, 28 Jun 2019 09:24:19 -0700
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2tdm8u0gnt-8
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 28 Jun 2019 09:24:19 -0700
-Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Fri, 28 Jun 2019 09:24:13 -0700
-Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
-        id 9D3CF760A39; Fri, 28 Jun 2019 09:24:09 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Alexei Starovoitov <ast@kernel.org>
-Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
-To:     <davem@davemloft.net>
-CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] bpf: fix precision tracking
-Date:   Fri, 28 Jun 2019 09:24:09 -0700
-Message-ID: <20190628162409.2513499-1-ast@kernel.org>
-X-Mailer: git-send-email 2.20.0
+        id S1726667AbfF1Qmb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jun 2019 12:42:31 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:46093 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726605AbfF1Qma (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jun 2019 12:42:30 -0400
+Received: by mail-qt1-f196.google.com with SMTP id h21so6950661qtn.13;
+        Fri, 28 Jun 2019 09:42:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IUIwHUeXo4rhDTxunnx/s8IdsaR74Ym5bPh3s0R0vl0=;
+        b=YVk/9h48fxacUxC9NOzxh46x9oIYe+dLZ53LelHTKFlDZcO44F3bgxvLq0Wu3w5HzS
+         CTxyKUKlsiUOdnI4XVBP8D3kzPWVnLsfF02e/uia9kiiY1sBEWE5MkwgiL9ho2vBm/z/
+         xzNt1Evgb+vFvOkWs+97164UKPZpy00kHw/Ls1BF99oVseQOMHlEbCxJ+XN4bi0GlUDg
+         qweKsN8Qqf0YY4prAin7mSvWKbx9/Spss2bo/pTM9tvkB3KZOm65dZx/rFwCHOX5ia12
+         UDkQ5ADQXj/q5OtAQLct0in6zdyXFBtJL5392BngR8A1pekpcnbk8f1PtgI3IcT7+Co1
+         d67Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IUIwHUeXo4rhDTxunnx/s8IdsaR74Ym5bPh3s0R0vl0=;
+        b=hqEjnKtxqhrcTYERKkLf0seO+GKliEZJh+HePhq/1SIQHCTRjKLfIoJswjsEb6QPnF
+         vWRciBHVnLLznBBwLrUUBXjsiTJrBUN9EDmwDpYbH6Y26/NYnPcIdHCAdc4MpRz2F9G9
+         AtGgPO9a6o3emw06Aswgid91BDqdmaG8S4Rq0wEUt/r7okRAOX3E6t53AhI31ySvS3zk
+         QNH+ryMmLkoYCt6Gdv7896gm/yPTktlSY+jBM+VCoiyp0Cfie4M1lBaEQPI52q3vPiIk
+         M6ciUdSmcO2CgsVke4pVEW7bYPU9FzF2Yl+RcQ1DIgoaCdbDpDK53C+WV9//mwuk+5H7
+         CkmQ==
+X-Gm-Message-State: APjAAAVnLozUdwCXO+Zx+1rOB5o53i2xz4oFSS4Zts9RV4cz/WgV3Gai
+        bcpAmTcM87U5cSwd2AuvnDV52lMeRnalKKfs5EM=
+X-Google-Smtp-Source: APXvYqwK34YZBkcZnl3lTCKmgMftDydFY4admd5vzVXrUiezg/fBGFj/IILvzX61sS0a7XYtERE+np9pUG5HzNVkxZE=
+X-Received: by 2002:a0c:ae50:: with SMTP id z16mr9031077qvc.60.1561740149411;
+ Fri, 28 Jun 2019 09:42:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-28_07:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=907 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906280187
-X-FB-Internal: deliver
+References: <20190628055303.1249758-1-andriin@fb.com> <20190628055303.1249758-3-andriin@fb.com>
+ <20190628160230.GG4866@mini-arch>
+In-Reply-To: <20190628160230.GG4866@mini-arch>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 28 Jun 2019 09:42:18 -0700
+Message-ID: <CAEf4BzbB6G5jTvS+K0+0zPXWLFmAePHU2RtALogWrh7h7OV03A@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 2/9] libbpf: introduce concept of bpf_link
+To:     Stanislav Fomichev <sdf@fomichev.me>
+Cc:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When equivalent state is found the current state needs to propagate precision marks.
-Otherwise the verifier will prune the search incorrectly.
+On Fri, Jun 28, 2019 at 9:02 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
+>
+> On 06/27, Andrii Nakryiko wrote:
+> > bpf_link is and abstraction of an association of a BPF program and one
+> > of many possible BPF attachment points (hooks). This allows to have
+> > uniform interface for detaching BPF programs regardless of the nature of
+> > link and how it was created. Details of creation and setting up of
+> > a specific bpf_link is handled by corresponding attachment methods
+> > (bpf_program__attach_xxx) added in subsequent commits. Once successfully
+> > created, bpf_link has to be eventually destroyed with
+> > bpf_link__destroy(), at which point BPF program is disassociated from
+> > a hook and all the relevant resources are freed.
+> >
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> >  tools/lib/bpf/libbpf.c   | 17 +++++++++++++++++
+> >  tools/lib/bpf/libbpf.h   |  4 ++++
+> >  tools/lib/bpf/libbpf.map |  3 ++-
+> >  3 files changed, 23 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 6e6ebef11ba3..455795e6f8af 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -3941,6 +3941,23 @@ int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
+> >       return 0;
+> >  }
+> >
+> > +struct bpf_link {
+> Maybe call it bpf_attachment? You call the bpf_program__attach_to_blah
+> and you get an attachment?
 
-There is a price for correctness:
-                      before      before    broken    fixed
-                      cnst spill  precise   precise
-bpf_lb-DLB_L3.o       1923        8128      1863      1898
-bpf_lb-DLB_L4.o       3077        6707      2468      2666
-bpf_lb-DUNKNOWN.o     1062        1062      544       544
-bpf_lxc-DDROP_ALL.o   166729      380712    22629     36823
-bpf_lxc-DUNKNOWN.o    174607      440652    28805     45325
-bpf_netdev.o          8407        31904     6801      7002
-bpf_overlay.o         5420        23569     4754      4858
-bpf_lxc_jit.o         39389       359445    50925     69631
-Overall precision tracking is still very effective.
+I wanted to keep it as short as possible, bpf_attachment is way too
+long (it's also why as an alternative I've proposed bpf_assoc, not
+bpf_association, but bpf_attach isn't great shortening).
 
-Fixes: b5dc0163d8fd ("bpf: precise scalar_value tracking")
-Reported-by: Lawrence Brakmo <brakmo@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
-Sending the fix early w/o tests, since I'm traveling.
-Will add proper tests when I'm back.
----
- kernel/bpf/verifier.c | 121 +++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 107 insertions(+), 14 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 6b5623d320f9..62afc4058ced 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1659,16 +1659,18 @@ static void mark_all_scalars_precise(struct bpf_verifier_env *env,
- 		}
- }
- 
--static int mark_chain_precision(struct bpf_verifier_env *env, int regno)
-+static int __mark_chain_precision(struct bpf_verifier_env *env, int regno,
-+				  int spi)
- {
- 	struct bpf_verifier_state *st = env->cur_state;
- 	int first_idx = st->first_insn_idx;
- 	int last_idx = env->insn_idx;
- 	struct bpf_func_state *func;
- 	struct bpf_reg_state *reg;
--	u32 reg_mask = 1u << regno;
--	u64 stack_mask = 0;
-+	u32 reg_mask = regno >= 0 ? 1u << regno : 0;
-+	u64 stack_mask = spi >= 0 ? 1ull << spi : 0;
- 	bool skip_first = true;
-+	bool new_marks = false;
- 	int i, err;
- 
- 	if (!env->allow_ptr_leaks)
-@@ -1676,18 +1678,43 @@ static int mark_chain_precision(struct bpf_verifier_env *env, int regno)
- 		return 0;
- 
- 	func = st->frame[st->curframe];
--	reg = &func->regs[regno];
--	if (reg->type != SCALAR_VALUE) {
--		WARN_ONCE(1, "backtracing misuse");
--		return -EFAULT;
-+	if (regno >= 0) {
-+		reg = &func->regs[regno];
-+		if (reg->type != SCALAR_VALUE) {
-+			WARN_ONCE(1, "backtracing misuse");
-+			return -EFAULT;
-+		}
-+		if (!reg->precise)
-+			new_marks = true;
-+		else
-+			reg_mask = 0;
-+		reg->precise = true;
- 	}
--	if (reg->precise)
--		return 0;
--	func->regs[regno].precise = true;
- 
-+	while (spi >= 0) {
-+		if (func->stack[spi].slot_type[0] != STACK_SPILL) {
-+			stack_mask = 0;
-+			break;
-+		}
-+		reg = &func->stack[spi].spilled_ptr;
-+		if (reg->type != SCALAR_VALUE) {
-+			stack_mask = 0;
-+			break;
-+		}
-+		if (!reg->precise)
-+			new_marks = true;
-+		else
-+			stack_mask = 0;
-+		reg->precise = true;
-+		break;
-+	}
-+
-+	if (!new_marks)
-+		return 0;
-+	if (!reg_mask && !stack_mask)
-+		return 0;
- 	for (;;) {
- 		DECLARE_BITMAP(mask, 64);
--		bool new_marks = false;
- 		u32 history = st->jmp_history_cnt;
- 
- 		if (env->log.level & BPF_LOG_LEVEL)
-@@ -1730,12 +1757,15 @@ static int mark_chain_precision(struct bpf_verifier_env *env, int regno)
- 		if (!st)
- 			break;
- 
-+		new_marks = false;
- 		func = st->frame[st->curframe];
- 		bitmap_from_u64(mask, reg_mask);
- 		for_each_set_bit(i, mask, 32) {
- 			reg = &func->regs[i];
--			if (reg->type != SCALAR_VALUE)
-+			if (reg->type != SCALAR_VALUE) {
-+				reg_mask &= ~(1u << i);
- 				continue;
-+			}
- 			if (!reg->precise)
- 				new_marks = true;
- 			reg->precise = true;
-@@ -1756,11 +1786,15 @@ static int mark_chain_precision(struct bpf_verifier_env *env, int regno)
- 				return -EFAULT;
- 			}
- 
--			if (func->stack[i].slot_type[0] != STACK_SPILL)
-+			if (func->stack[i].slot_type[0] != STACK_SPILL) {
-+				stack_mask &= ~(1ull << i);
- 				continue;
-+			}
- 			reg = &func->stack[i].spilled_ptr;
--			if (reg->type != SCALAR_VALUE)
-+			if (reg->type != SCALAR_VALUE) {
-+				stack_mask &= ~(1ull << i);
- 				continue;
-+			}
- 			if (!reg->precise)
- 				new_marks = true;
- 			reg->precise = true;
-@@ -1772,6 +1806,8 @@ static int mark_chain_precision(struct bpf_verifier_env *env, int regno)
- 				reg_mask, stack_mask);
- 		}
- 
-+		if (!reg_mask && !stack_mask)
-+			break;
- 		if (!new_marks)
- 			break;
- 
-@@ -1781,6 +1817,15 @@ static int mark_chain_precision(struct bpf_verifier_env *env, int regno)
- 	return 0;
- }
- 
-+static int mark_chain_precision(struct bpf_verifier_env *env, int regno)
-+{
-+	return __mark_chain_precision(env, regno, -1);
-+}
-+
-+static int mark_chain_precision_stack(struct bpf_verifier_env *env, int spi)
-+{
-+	return __mark_chain_precision(env, -1, spi);
-+}
- 
- static bool is_spillable_regtype(enum bpf_reg_type type)
- {
-@@ -7114,6 +7159,46 @@ static int propagate_liveness(struct bpf_verifier_env *env,
- 	return 0;
- }
- 
-+/* find precise scalars in the previous equivalent state and
-+ * propagate them into the current state
-+ */
-+static int propagate_precision(struct bpf_verifier_env *env,
-+			       const struct bpf_verifier_state *old)
-+{
-+	struct bpf_reg_state *state_reg;
-+	struct bpf_func_state *state;
-+	int i, err = 0;
-+
-+	state = old->frame[old->curframe];
-+	state_reg = state->regs;
-+	for (i = 0; i < BPF_REG_FP; i++, state_reg++) {
-+		if (state_reg->type != SCALAR_VALUE ||
-+		    !state_reg->precise)
-+			continue;
-+		if (env->log.level & BPF_LOG_LEVEL2)
-+			verbose(env, "propagating r%d\n", i);
-+		err = mark_chain_precision(env, i);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	for (i = 0; i < state->allocated_stack / BPF_REG_SIZE; i++) {
-+		if (state->stack[i].slot_type[0] != STACK_SPILL)
-+			continue;
-+		state_reg = &state->stack[i].spilled_ptr;
-+		if (state_reg->type != SCALAR_VALUE ||
-+		    !state_reg->precise)
-+			continue;
-+		if (env->log.level & BPF_LOG_LEVEL2)
-+			verbose(env, "propagating fp%d\n",
-+				(-i - 1) * BPF_REG_SIZE);
-+		err = mark_chain_precision_stack(env, i);
-+		if (err < 0)
-+			return err;
-+	}
-+	return 0;
-+}
-+
- static bool states_maybe_looping(struct bpf_verifier_state *old,
- 				 struct bpf_verifier_state *cur)
- {
-@@ -7206,6 +7291,14 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
- 			 * this state and will pop a new one.
- 			 */
- 			err = propagate_liveness(env, &sl->state, cur);
-+
-+			/* if previous state reached the exit with precision and
-+			 * current state is equivalent to it (except precsion marks)
-+			 * the precision needs to be propagated back in
-+			 * the current state.
-+			 */
-+			err = err ? : push_jmp_history(env, cur);
-+			err = err ? : propagate_precision(env, &sl->state);
- 			if (err)
- 				return err;
- 			return 1;
--- 
-2.20.0
-
+>
+> > +     int (*destroy)(struct bpf_link *link);
+> > +};
+> > +
+> > +int bpf_link__destroy(struct bpf_link *link)
+> > +{
+> > +     int err;
+> > +
+> > +     if (!link)
+> > +             return 0;
+> > +
+> > +     err = link->destroy(link);
+> > +     free(link);
+> > +
+> > +     return err;
+> > +}
+> > +
+> >  enum bpf_perf_event_ret
+> >  bpf_perf_event_read_simple(void *mmap_mem, size_t mmap_size, size_t page_size,
+> >                          void **copy_mem, size_t *copy_size,
+> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > index d639f47e3110..5082a5ebb0c2 100644
+> > --- a/tools/lib/bpf/libbpf.h
+> > +++ b/tools/lib/bpf/libbpf.h
+> > @@ -165,6 +165,10 @@ LIBBPF_API int bpf_program__pin(struct bpf_program *prog, const char *path);
+> >  LIBBPF_API int bpf_program__unpin(struct bpf_program *prog, const char *path);
+> >  LIBBPF_API void bpf_program__unload(struct bpf_program *prog);
+> >
+> > +struct bpf_link;
+> > +
+> > +LIBBPF_API int bpf_link__destroy(struct bpf_link *link);
+> > +
+> >  struct bpf_insn;
+> >
+> >  /*
+> > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> > index 2c6d835620d2..3cde850fc8da 100644
+> > --- a/tools/lib/bpf/libbpf.map
+> > +++ b/tools/lib/bpf/libbpf.map
+> > @@ -167,10 +167,11 @@ LIBBPF_0.0.3 {
+> >
+> >  LIBBPF_0.0.4 {
+> >       global:
+> > +             bpf_link__destroy;
+> > +             bpf_object__load_xattr;
+> >               btf_dump__dump_type;
+> >               btf_dump__free;
+> >               btf_dump__new;
+> >               btf__parse_elf;
+> > -             bpf_object__load_xattr;
+> >               libbpf_num_possible_cpus;
+> >  } LIBBPF_0.0.3;
+> > --
+> > 2.17.1
+> >
