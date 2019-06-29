@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DDE75A9AA
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2019 10:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB125A9B8
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2019 10:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbfF2IuU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 29 Jun 2019 04:50:20 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:43246 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726839AbfF2IuU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 29 Jun 2019 04:50:20 -0400
-Received: by mail-qk1-f193.google.com with SMTP id m14so7032225qka.10;
-        Sat, 29 Jun 2019 01:50:19 -0700 (PDT)
+        id S1726843AbfF2I4H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 29 Jun 2019 04:56:07 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:36969 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726818AbfF2I4H (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 29 Jun 2019 04:56:07 -0400
+Received: by mail-qt1-f195.google.com with SMTP id y57so9182419qtk.4;
+        Sat, 29 Jun 2019 01:56:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kRCaPZUTNlS7a+mx62w/hxRGKkbBOJjALk1mlt6ypZY=;
-        b=Q26SSSteIECh9v3cROEI0AGN/KtJ6LihDFal40Ppds5cLo962l/9aTdp1VA+nyhoiY
-         jHu1r9dze84rI19Ft3K+pXx4S/hQADkTSWRXKkvPR713F3LtztNYL1SJRGzqIpyz6BJt
-         Wiz+3lz219UG7SA+tPYyrYiOs+lytkoL490dgDBQpQRVQl2FxrXnvSnvZhuanr7QjczE
-         vxvbolKbhO/sMo9ky4Kdc/MmPOycoG2c1unpis+qfZmnBL07uxxNRqM6s3Og1Yb86IxI
-         sW7SNCaT2tdZEnIhdmdaVIa76rK23YOtIrNkSaXz07qKInm64f9K+IrKIdFQ5PFVZXVS
-         ck6w==
+        bh=M3bT9EVpnV95c8ajVidkbIYok+0DnrnG9SJ3NNjWPDQ=;
+        b=QgvrW0fjnpuQrMySQlEFY3ORlsrC4yy9h2sdFiJ14Z9n5Vdx1A0Wgi2Tu9Pr42t/8y
+         vaXAWVTZ3pfu0zf0wpQoMl86Sm6QaZhng6obrw2Mp7g0r02a+jJm7xPs9s2tE8x5Hy8i
+         Tks5Q5a955acqQ/xHWXBLiRx+3tHrVPbBMwpDO1LbefRwoTtaPqBfcxtlwpQOqv5w8vs
+         aixJOzib9a2wcPRcOl6Q77n0f+6K+uvMPD3Gu75yQboRq6T8Nwd73Haj2XzDCcM9OcvG
+         EdxzIT7T1Pb4RRpFHnTYcVTCymbdNZNdYTTMzJBetS0jGQzQhyoyzzusneG6HXjYPUOF
+         0CzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kRCaPZUTNlS7a+mx62w/hxRGKkbBOJjALk1mlt6ypZY=;
-        b=JlIVtMDuEPmkckpr7t5M3fdQljkcDS3+qqGM6RJqbkMMv+0rpq2Q59rzsvNj5CDDXR
-         earRKedgJNRpousP4etxy96NmZ7y+ZErEFTt/BwQpvLEWZzLAHr++g17PftIqo3z+Tnw
-         V0Y6+PD6EOCZs2kmm1n/JrrFGaaj+CEN+ggaTnBfG4GbP7PqEm6TMb5CvFtD45OQrenl
-         asJx4dAEGEJc2Zr0gfS7sF81Jat/fdxziLYgFOU66hQpSk3mmEQBMkNBklCieC0SynU4
-         XNfI/zzKV+cRnN1JraNqNLRK8Qwg5lpXsS85gU404mSGL884jxSN7Bmp+cDSU2LBkkDY
-         Vgbw==
-X-Gm-Message-State: APjAAAWezNypPmO0LKSWhC97e/VyI3G1fOYbwl3jIV3zyvDbP9GKnpD1
-        onQVjDzr0PhlpScWaEez1CAd9jgeIfagDcVDhf8=
-X-Google-Smtp-Source: APXvYqwFGtClOquwzdwXU0rzZWXmX/Bq4+BGlgBrnI65uL7qt2P1B7Hrd3YMBiPfp12b0AdGGAo+Ui2DcQV113MFxMg=
-X-Received: by 2002:ae9:e40f:: with SMTP id q15mr11396108qkc.241.1561798219303;
- Sat, 29 Jun 2019 01:50:19 -0700 (PDT)
+        bh=M3bT9EVpnV95c8ajVidkbIYok+0DnrnG9SJ3NNjWPDQ=;
+        b=Q0aTbhWENW0PDqRZbL/qdjF3OhZHm98ciWoczS8eJIQtJ64OtrMzFQo23NmzJAwzZn
+         hOwaLn4ezunDxotUdBNzSvcdy4AUKhOd8LA6iM7XBGeKq45nhQeEs4JtfCOF48H9RS6M
+         RVzHcu6kBQXNvtrjW+XQKzh9XjbLygHXlX5s8vuJ+LBUep0uV9kzbFGOWgOz/xp9bHdh
+         lDekbqEJjFNZfzoaaoADsoP/ZzC9vflEFLhpacZVRUO6lLTPFmxc3sWpjXfIyDBQ6a5c
+         NZo5RWt+pVi/3GzMxPboey7xSp9tRVDHM1suSbErBuou1lzMgbQHjdHVrH9cNqV86ZzW
+         8BFg==
+X-Gm-Message-State: APjAAAUP9jImpcdesDyo7S+UFhtAcs4Dr/CalWwwYqlxEAP+fwiwPxRK
+        /CIrDqHG60VcbPzlOJKNq6m036N5uEu0EAvBSMo=
+X-Google-Smtp-Source: APXvYqzWZu46v2gW7RF4ZYeubet8Kbl36Bn9mFb9kFAw9r0OPCFeneWXiohFbbjCgiemjqgxfyf9mK0zHe/DZ+Cok0E=
+X-Received: by 2002:ac8:25e7:: with SMTP id f36mr11682012qtf.139.1561798566392;
+ Sat, 29 Jun 2019 01:56:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190629034906.1209916-1-andriin@fb.com> <20190629034906.1209916-5-andriin@fb.com>
-In-Reply-To: <20190629034906.1209916-5-andriin@fb.com>
+References: <20190629055309.1594755-1-andriin@fb.com> <20190629055309.1594755-3-andriin@fb.com>
+In-Reply-To: <20190629055309.1594755-3-andriin@fb.com>
 From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Sat, 29 Jun 2019 01:50:08 -0700
-Message-ID: <CAPhsuW6VUbGHYEW1egZv3R_L2wytME1CODfi2yijH_Bwe1S-3Q@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 4/9] libbpf: add kprobe/uprobe attach API
+Date:   Sat, 29 Jun 2019 01:55:55 -0700
+Message-ID: <CAPhsuW71yTbuRc7d2wGRfddy42_0CREnNqJiqdMkTre8dC+u-Q@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 2/4] libbpf: auto-set PERF_EVENT_ARRAY size to
+ number of CPUs
 To:     Andrii Nakryiko <andriin@fb.com>
 Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Kernel Team <kernel-team@fb.com>,
-        Stanislav Fomichev <sdf@fomichev.me>,
         Song Liu <songliubraving@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
@@ -61,10 +61,14 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 28, 2019 at 8:49 PM Andrii Nakryiko <andriin@fb.com> wrote:
+On Fri, Jun 28, 2019 at 10:55 PM Andrii Nakryiko <andriin@fb.com> wrote:
 >
-> Add ability to attach to kernel and user probes and retprobes.
-> Implementation depends on perf event support for kprobes/uprobes.
+> For BPF_MAP_TYPE_PERF_EVENT_ARRAY typically correct size is number of
+> possible CPUs. This is impossible to specify at compilation time. This
+> change adds automatic setting of PERF_EVENT_ARRAY size to number of
+> system CPUs, unless non-zero size is specified explicitly. This allows
+> to adjust size for advanced specific cases, while providing convenient
+> and logical defaults.
 >
 > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
