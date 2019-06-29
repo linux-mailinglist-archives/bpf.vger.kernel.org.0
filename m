@@ -2,74 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB125A9B8
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2019 10:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A38675ABC2
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2019 16:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726843AbfF2I4H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 29 Jun 2019 04:56:07 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:36969 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726818AbfF2I4H (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 29 Jun 2019 04:56:07 -0400
-Received: by mail-qt1-f195.google.com with SMTP id y57so9182419qtk.4;
-        Sat, 29 Jun 2019 01:56:06 -0700 (PDT)
+        id S1726828AbfF2OZb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 29 Jun 2019 10:25:31 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:33353 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726785AbfF2OZb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 29 Jun 2019 10:25:31 -0400
+Received: by mail-wm1-f68.google.com with SMTP id h19so11225072wme.0;
+        Sat, 29 Jun 2019 07:25:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M3bT9EVpnV95c8ajVidkbIYok+0DnrnG9SJ3NNjWPDQ=;
-        b=QgvrW0fjnpuQrMySQlEFY3ORlsrC4yy9h2sdFiJ14Z9n5Vdx1A0Wgi2Tu9Pr42t/8y
-         vaXAWVTZ3pfu0zf0wpQoMl86Sm6QaZhng6obrw2Mp7g0r02a+jJm7xPs9s2tE8x5Hy8i
-         Tks5Q5a955acqQ/xHWXBLiRx+3tHrVPbBMwpDO1LbefRwoTtaPqBfcxtlwpQOqv5w8vs
-         aixJOzib9a2wcPRcOl6Q77n0f+6K+uvMPD3Gu75yQboRq6T8Nwd73Haj2XzDCcM9OcvG
-         EdxzIT7T1Pb4RRpFHnTYcVTCymbdNZNdYTTMzJBetS0jGQzQhyoyzzusneG6HXjYPUOF
-         0CzA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tSfTfCg1RYrQS9+orWf92BVXcSGyjMupz270+2KJ+Us=;
+        b=Wmn42cCjIZF370922nlT8XBZNT0vFC3qdUoivrJz5yLafRIjdx1Vw+bUvno+QUBVO5
+         oMyQcmwqGx4DE3Y07CmSTM0IATWqZAW8kgg+hDEKwh+1CP4NznlAWonwVsCaGpQLaVCV
+         I2vA/VdkUZjqS9WvauRGJBO3Xjdwe01bpXzqQP8wAMh3LJ6yI1E5Z9SfpRw+TuNVA5cx
+         Mol2Xo2HUenKPsAtO6b1Hxjmm06+PdB0ii0cFoQihuSTWnRJjwjpf6NZuH7lsl3/21RK
+         LnPOrpaBytkjll+vsC5zrv5VKacw2e2sTlF82+ldUSC/dM1uFOjAFEnxgQGkqlBXSG7l
+         +TOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M3bT9EVpnV95c8ajVidkbIYok+0DnrnG9SJ3NNjWPDQ=;
-        b=Q0aTbhWENW0PDqRZbL/qdjF3OhZHm98ciWoczS8eJIQtJ64OtrMzFQo23NmzJAwzZn
-         hOwaLn4ezunDxotUdBNzSvcdy4AUKhOd8LA6iM7XBGeKq45nhQeEs4JtfCOF48H9RS6M
-         RVzHcu6kBQXNvtrjW+XQKzh9XjbLygHXlX5s8vuJ+LBUep0uV9kzbFGOWgOz/xp9bHdh
-         lDekbqEJjFNZfzoaaoADsoP/ZzC9vflEFLhpacZVRUO6lLTPFmxc3sWpjXfIyDBQ6a5c
-         NZo5RWt+pVi/3GzMxPboey7xSp9tRVDHM1suSbErBuou1lzMgbQHjdHVrH9cNqV86ZzW
-         8BFg==
-X-Gm-Message-State: APjAAAUP9jImpcdesDyo7S+UFhtAcs4Dr/CalWwwYqlxEAP+fwiwPxRK
-        /CIrDqHG60VcbPzlOJKNq6m036N5uEu0EAvBSMo=
-X-Google-Smtp-Source: APXvYqzWZu46v2gW7RF4ZYeubet8Kbl36Bn9mFb9kFAw9r0OPCFeneWXiohFbbjCgiemjqgxfyf9mK0zHe/DZ+Cok0E=
-X-Received: by 2002:ac8:25e7:: with SMTP id f36mr11682012qtf.139.1561798566392;
- Sat, 29 Jun 2019 01:56:06 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tSfTfCg1RYrQS9+orWf92BVXcSGyjMupz270+2KJ+Us=;
+        b=XaIdppMftJuD3uEwrow4pHAKBqgnJbPuLGiMRhssI+Hi3bgImFGA5HEdpi25c/1Fam
+         kfrGr6s4j2Ag2+IpaXvJQ1wqR9kj99rW1Z9mGEZZeACRq5S+FAzzSPBFWuPSYj3vdx5u
+         SAmYhMKCWKk4OFGZMo6NncAb3sIA1aEwgiIUCZ1Ub39EFQjYPGqyoLkYXSFqj7c7srzh
+         0aItlNF9bi+jesdKebazgVPOIH5IXFT/VtdhhVgTlSaTtOWT0jOG6xpphccPe6sNt1eS
+         I+tNrBI3fDFRZJHl55w9shqt07ZneFt5sQjQUSSVSer6qTCcpkTK8Duullqe0Kfgo8rx
+         J0iA==
+X-Gm-Message-State: APjAAAWpj2QdGaAcPzCg3ksEjKAX/RGqLpODhql+FbQWJxaANIrHIPHC
+        XgZFz2NOWutr2t8NaGyiQg==
+X-Google-Smtp-Source: APXvYqzYjeGlAIXCK0Otnr3tBdPOmwP6gFHgUXBBLaR5nRWD1D7mhQsGKJ7ZXMMjG4yeTA5UDqjZKg==
+X-Received: by 2002:a1c:dc46:: with SMTP id t67mr9957034wmg.159.1561818328264;
+        Sat, 29 Jun 2019 07:25:28 -0700 (PDT)
+Received: from avx2 ([46.53.248.49])
+        by smtp.gmail.com with ESMTPSA id g123sm3503855wme.12.2019.06.29.07.25.26
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 29 Jun 2019 07:25:27 -0700 (PDT)
+Date:   Sat, 29 Jun 2019 17:25:10 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shyam Saini <shyam.saini@amarulasolutions.com>,
+        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
+        keescook@chromium.org, linux-arm-kernel@lists.infradead.org,
+        linux-mips@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        netdev@vger.kernel.org, linux-ext4 <linux-ext4@vger.kernel.org>,
+        devel@lists.orangefs.org, linux-mm@kvack.org,
+        linux-sctp@vger.kernel.org, bpf@vger.kernel.org,
+        kvm@vger.kernel.org, mayhs11saini@gmail.com
+Subject: Re: [PATCH V2] include: linux: Regularise the use of FIELD_SIZEOF
+ macro
+Message-ID: <20190629142510.GA10629@avx2>
+References: <20190611193836.2772-1-shyam.saini@amarulasolutions.com>
+ <20190611134831.a60c11f4b691d14d04a87e29@linux-foundation.org>
+ <6DCAE4F8-3BEC-45F2-A733-F4D15850B7F3@dilger.ca>
 MIME-Version: 1.0
-References: <20190629055309.1594755-1-andriin@fb.com> <20190629055309.1594755-3-andriin@fb.com>
-In-Reply-To: <20190629055309.1594755-3-andriin@fb.com>
-From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Sat, 29 Jun 2019 01:55:55 -0700
-Message-ID: <CAPhsuW71yTbuRc7d2wGRfddy42_0CREnNqJiqdMkTre8dC+u-Q@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 2/4] libbpf: auto-set PERF_EVENT_ARRAY size to
- number of CPUs
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Song Liu <songliubraving@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6DCAE4F8-3BEC-45F2-A733-F4D15850B7F3@dilger.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 28, 2019 at 10:55 PM Andrii Nakryiko <andriin@fb.com> wrote:
->
-> For BPF_MAP_TYPE_PERF_EVENT_ARRAY typically correct size is number of
-> possible CPUs. This is impossible to specify at compilation time. This
-> change adds automatic setting of PERF_EVENT_ARRAY size to number of
-> system CPUs, unless non-zero size is specified explicitly. This allows
-> to adjust size for advanced specific cases, while providing convenient
-> and logical defaults.
->
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+On Tue, Jun 11, 2019 at 03:00:10PM -0600, Andreas Dilger wrote:
+> On Jun 11, 2019, at 2:48 PM, Andrew Morton <akpm@linux-foundation.org> wrote:
+> > 
+> > On Wed, 12 Jun 2019 01:08:36 +0530 Shyam Saini <shyam.saini@amarulasolutions.com> wrote:
 
-Acked-by: Song Liu <songliubraving@fb.com>
+> I did a check, and FIELD_SIZEOF() is used about 350x, while sizeof_field()
+> is about 30x, and SIZEOF_FIELD() is only about 5x.
+> 
+> That said, I'm much more in favour of "sizeof_field()" or "sizeof_member()"
+> than FIELD_SIZEOF().  Not only does that better match "offsetof()", with
+> which it is closely related, but is also closer to the original "sizeof()".
+> 
+> Since this is a rather trivial change, it can be split into a number of
+> patches to get approval/landing via subsystem maintainers, and there is no
+> huge urgency to remove the original macros until the users are gone.  It
+> would make sense to remove SIZEOF_FIELD() and sizeof_field() quickly so
+> they don't gain more users, and the remaining FIELD_SIZEOF() users can be
+> whittled away as the patches come through the maintainer trees.
+
+The signature should be
+
+	sizeof_member(T, m)
+
+it is proper English,
+it is lowercase, so is easier to type,
+it uses standard term (member, not field),
+it blends in with standard "sizeof" operator,
