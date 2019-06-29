@@ -2,186 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E39E5A93E
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2019 07:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06B25A9A8
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2019 10:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726872AbfF2F6o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 29 Jun 2019 01:58:44 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:36058 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726865AbfF2F6o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 29 Jun 2019 01:58:44 -0400
-Received: by mail-pg1-f193.google.com with SMTP id c13so3525543pgg.3
-        for <bpf@vger.kernel.org>; Fri, 28 Jun 2019 22:58:44 -0700 (PDT)
+        id S1726818AbfF2IsZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 29 Jun 2019 04:48:25 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:34149 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726789AbfF2IsZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 29 Jun 2019 04:48:25 -0400
+Received: by mail-qt1-f196.google.com with SMTP id m29so9195416qtu.1;
+        Sat, 29 Jun 2019 01:48:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.washington.edu; s=goo201206;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6saX9Hkf+VB72NbXyQ2NLowOYmfY1wBCp5L14Rva570=;
-        b=ZfaMJue7YllyxdUzRfCqixkMLs0ZyBVDc9J0DS6kqjtXrBZr5joCibB/Htn2qhsPy2
-         39c3gm8fLUX8N1YUpuJYVtnZoNkor9e6ujUwofQvnzRnxqMq6N58LwgTpR4xoWPD2XEI
-         DIa4r9hl174GIQIQXaFEfNw+8j6GqKbepNcHo=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mqydSDRSV0jWxwz7ugy91DJaCBTfJoUbnzwjCnmfAlE=;
+        b=d528cTJ2ry5mwUZWLLP+0bTACfDwdQRT1a+UXlmXQKpD0FqCHKynA4PRK+s1m7Wb0e
+         QDy/4Z73Fr7/NcZwhaVWiM/ItD38f2R7/AdAf9xX2M/D3zWfYUA+YCFCtjsSiW4+r/rR
+         E4Z/NyxGSM0kw8JHTxu8L7QTB2HbhrVRRixFhhbTxcCVk4fgZiLhbOiNdqkhn0Fc5kNk
+         aE8r3elp1S8Bi0CXBKdnlauqKmZYrF0o6Sf3DuNKXo1wHE1uA9tlJ/y7qOPtZFQV3B2I
+         Ir3Sqk9z+Q4yFSHjv1iuW497lQhonf5DukgJi9fS0dpmWrnnVpK95oHG+LA7SnYDsRUf
+         uHbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6saX9Hkf+VB72NbXyQ2NLowOYmfY1wBCp5L14Rva570=;
-        b=CbisyFxIa3O4313z7mDCoe/COwL22s7wceFQWVBSwo8FeLkevNHEay+UvFUgXv+u+W
-         fpwQOPSl6DjVaG3wUPoEVjsNLFOYrxR35afMyXefEjwzi7a35H40Rj3VcBGcHcTXBFdQ
-         cEQWz+SbHdOxVMKpZ/oJBkq93pahapIfwpizdFuYf4yvu+jPuNTXQxUkuZw58XrraQvM
-         Cka3w2paomu3gMlgNpPfnyfJddEwT4PKHd49Oksa0hROI8eklmdmv+5mEa9uUynrsa40
-         8rsdvsuHGpxo1X6EXg1twP+I64jrrN6aHyaZXoJi3WFQ0+SxN5LMsk+QjLEM2MHovgmw
-         v8aw==
-X-Gm-Message-State: APjAAAUXan+RmtDnOVP+Bsyds1TWti+0jVax0jb3qTTJC38M7AujeeOb
-        iKfrtllAsIlEtqwuIYBtS8jbSA==
-X-Google-Smtp-Source: APXvYqzLF98Gn4hCXY+LN83OIvB7YAMu+dLXiMmww7GUBIdRbxTzQwh0Y6YrTjXdxzQbRDh+PTL+ZQ==
-X-Received: by 2002:a17:90a:19d:: with SMTP id 29mr18061421pjc.71.1561787923558;
-        Fri, 28 Jun 2019 22:58:43 -0700 (PDT)
-Received: from ryzen.cs.washington.edu ([2607:4000:200:11:717c:64f7:ecd0:38c2])
-        by smtp.gmail.com with ESMTPSA id r3sm3272243pgp.51.2019.06.28.22.58.42
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 28 Jun 2019 22:58:43 -0700 (PDT)
-From:   Luke Nelson <lukenels@cs.washington.edu>
-X-Google-Original-From: Luke Nelson <luke.r.nels@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Wang YanQing <udknight@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Jiong Wang <jiong.wang@netronome.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf 3/3] selftests: bpf: add tests for shifts by zero
-Date:   Fri, 28 Jun 2019 22:57:51 -0700
-Message-Id: <20190629055759.28365-3-luke.r.nels@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190629055759.28365-1-luke.r.nels@gmail.com>
-References: <20190629055759.28365-1-luke.r.nels@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mqydSDRSV0jWxwz7ugy91DJaCBTfJoUbnzwjCnmfAlE=;
+        b=LBfDOzE/ZOBmKi8OZmy3sjgoGMYL7tbDC084hLDYoM8PKPDiYvCxpVErNm4deuNiFA
+         +7Bk2WXlpeDcrd3e5UEqtOMW6GrsZn/fNHZ3428QgtTZs6x3ZtDcANUh+rO0LmUyDm2F
+         /BDJsDI+bcTdGfc49Oz/xftD1FZTdhN9AFguTdIqFa4X8uUVHbl8EKuAW+80ahkQDudQ
+         WIZfGPe46jBb9zs6ra4ob3zpKg8+UQgqtoL8Ioufa1cRPEVqruA08utC7JDYjYFg8KKh
+         KIK4CLjjon0vHmqFI7f0slE7pOzQDmZqtfkI1RySRqm40tTCrWIk+6pJGbHgjjHfAF9m
+         au5Q==
+X-Gm-Message-State: APjAAAXRDk3O52BRSBULfMe5t4cYp6ER02Mm0PcD9wkVuPRGyaYw83MH
+        rKDc73ymI5BPSl2dhS5FXu64ySSGlCT4DFP0OhY=
+X-Google-Smtp-Source: APXvYqyotxknvu+ydYKQ85yBhyMNk1RTktPD13hpCO3XEanmQ9qYyBdGdtulq1SOkN1Eickep4yfCE2ydmuSubGorRQ=
+X-Received: by 2002:ac8:1af4:: with SMTP id h49mr11447153qtk.183.1561798103737;
+ Sat, 29 Jun 2019 01:48:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20190629034906.1209916-1-andriin@fb.com> <20190629034906.1209916-4-andriin@fb.com>
+In-Reply-To: <20190629034906.1209916-4-andriin@fb.com>
+From:   Song Liu <liu.song.a23@gmail.com>
+Date:   Sat, 29 Jun 2019 01:48:12 -0700
+Message-ID: <CAPhsuW460zkY6JzNUOsFQqVsezG1++nb1pKo-azwusrTJZumDg@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 3/9] libbpf: add ability to attach/detach BPF
+ program to perf event
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Stanislav Fomichev <sdf@fomichev.me>,
+        Song Liu <songliubraving@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There are currently no tests for ALU64 shift operations when the shift
-amount is 0. This adds 6 new tests to make sure they are equivalent
-to a no-op. The x32 JIT had such bugs that could have been caught by
-these tests.
+On Fri, Jun 28, 2019 at 8:49 PM Andrii Nakryiko <andriin@fb.com> wrote:
+>
+> bpf_program__attach_perf_event allows to attach BPF program to existing
+> perf event hook, providing most generic and most low-level way to attach BPF
+> programs. It returns struct bpf_link, which should be passed to
+> bpf_link__destroy to detach and free resources, associated with a link.
+>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
-Cc: Xi Wang <xi.wang@gmail.com>
-Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
----
- .../selftests/bpf/verifier/basic_instr.c      | 85 +++++++++++++++++++
- 1 file changed, 85 insertions(+)
+Acked-by: Song Liu <songliubraving@fb.com>
 
-diff --git a/tools/testing/selftests/bpf/verifier/basic_instr.c b/tools/testing/selftests/bpf/verifier/basic_instr.c
-index ed91a7b9a456..071dbc889e8c 100644
---- a/tools/testing/selftests/bpf/verifier/basic_instr.c
-+++ b/tools/testing/selftests/bpf/verifier/basic_instr.c
-@@ -90,6 +90,91 @@
- 	},
- 	.result = ACCEPT,
- },
-+{
-+	"lsh64 by 0 imm",
-+	.insns = {
-+	BPF_LD_IMM64(BPF_REG_0, 1),
-+	BPF_LD_IMM64(BPF_REG_1, 1),
-+	BPF_ALU64_IMM(BPF_LSH, BPF_REG_1, 0),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 1, 1),
-+	BPF_MOV64_IMM(BPF_REG_0, 2),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
-+{
-+	"rsh64 by 0 imm",
-+	.insns = {
-+	BPF_LD_IMM64(BPF_REG_0, 1),
-+	BPF_LD_IMM64(BPF_REG_1, 0x100000000LL),
-+	BPF_ALU64_REG(BPF_MOV, BPF_REG_2, BPF_REG_1),
-+	BPF_ALU64_IMM(BPF_RSH, BPF_REG_1, 0),
-+	BPF_JMP_REG(BPF_JEQ, BPF_REG_1, BPF_REG_2, 1),
-+	BPF_MOV64_IMM(BPF_REG_0, 2),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
-+{
-+	"arsh64 by 0 imm",
-+	.insns = {
-+	BPF_LD_IMM64(BPF_REG_0, 1),
-+	BPF_LD_IMM64(BPF_REG_1, 0x100000000LL),
-+	BPF_ALU64_REG(BPF_MOV, BPF_REG_2, BPF_REG_1),
-+	BPF_ALU64_IMM(BPF_ARSH, BPF_REG_1, 0),
-+	BPF_JMP_REG(BPF_JEQ, BPF_REG_1, BPF_REG_2, 1),
-+	BPF_MOV64_IMM(BPF_REG_0, 2),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
-+{
-+	"lsh64 by 0 reg",
-+	.insns = {
-+	BPF_LD_IMM64(BPF_REG_0, 1),
-+	BPF_LD_IMM64(BPF_REG_1, 1),
-+	BPF_LD_IMM64(BPF_REG_2, 0),
-+	BPF_ALU64_REG(BPF_LSH, BPF_REG_1, BPF_REG_2),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 1, 1),
-+	BPF_MOV64_IMM(BPF_REG_0, 2),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
-+{
-+	"rsh64 by 0 reg",
-+	.insns = {
-+	BPF_LD_IMM64(BPF_REG_0, 1),
-+	BPF_LD_IMM64(BPF_REG_1, 0x100000000LL),
-+	BPF_ALU64_REG(BPF_MOV, BPF_REG_2, BPF_REG_1),
-+	BPF_LD_IMM64(BPF_REG_3, 0),
-+	BPF_ALU64_REG(BPF_RSH, BPF_REG_1, BPF_REG_3),
-+	BPF_JMP_REG(BPF_JEQ, BPF_REG_1, BPF_REG_2, 1),
-+	BPF_MOV64_IMM(BPF_REG_0, 2),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
-+{
-+	"arsh64 by 0 reg",
-+	.insns = {
-+	BPF_LD_IMM64(BPF_REG_0, 1),
-+	BPF_LD_IMM64(BPF_REG_1, 0x100000000LL),
-+	BPF_ALU64_REG(BPF_MOV, BPF_REG_2, BPF_REG_1),
-+	BPF_LD_IMM64(BPF_REG_3, 0),
-+	BPF_ALU64_REG(BPF_ARSH, BPF_REG_1, BPF_REG_3),
-+	BPF_JMP_REG(BPF_JEQ, BPF_REG_1, BPF_REG_2, 1),
-+	BPF_MOV64_IMM(BPF_REG_0, 2),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
- {
- 	"invalid 64-bit BPF_END",
- 	.insns = {
--- 
-2.20.1
+With one nit below.
 
+> ---
+>  tools/lib/bpf/libbpf.c   | 61 ++++++++++++++++++++++++++++++++++++++++
+>  tools/lib/bpf/libbpf.h   |  3 ++
+>  tools/lib/bpf/libbpf.map |  1 +
+>  3 files changed, 65 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 455795e6f8af..98c155ec3bfa 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -32,6 +32,7 @@
+>  #include <linux/limits.h>
+>  #include <linux/perf_event.h>
+>  #include <linux/ring_buffer.h>
+> +#include <sys/ioctl.h>
+>  #include <sys/stat.h>
+>  #include <sys/types.h>
+>  #include <sys/vfs.h>
+> @@ -3958,6 +3959,66 @@ int bpf_link__destroy(struct bpf_link *link)
+>         return err;
+>  }
+>
+> +struct bpf_link_fd {
+> +       struct bpf_link link; /* has to be at the top of struct */
+> +       int fd; /* hook FD */
+> +};
+> +
+> +static int bpf_link__destroy_perf_event(struct bpf_link *link)
+> +{
+> +       struct bpf_link_fd *l = (void *)link;
+> +       int err;
+> +
+> +       if (l->fd < 0)
+> +               return 0;
+> +
+> +       err = ioctl(l->fd, PERF_EVENT_IOC_DISABLE, 0);
+> +       if (err)
+> +               err = -errno;
+> +
+> +       close(l->fd);
+> +       return err;
+> +}
+> +
+> +struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog,
+> +                                               int pfd)
+> +{
+> +       char errmsg[STRERR_BUFSIZE];
+> +       struct bpf_link_fd *link;
+> +       int prog_fd, err;
+> +
+> +       prog_fd = bpf_program__fd(prog);
+> +       if (prog_fd < 0) {
+> +               pr_warning("program '%s': can't attach before loaded\n",
+> +                          bpf_program__title(prog, false));
+
+This warning message is not very easy to follow.
+
+> +               return ERR_PTR(-EINVAL);
+> +       }
+> +
+> +       link = malloc(sizeof(*link));
+> +       if (!link)
+> +               return ERR_PTR(-ENOMEM);
+> +       link->link.destroy = &bpf_link__destroy_perf_event;
+> +       link->fd = pfd;
+> +
+> +       if (ioctl(pfd, PERF_EVENT_IOC_SET_BPF, prog_fd) < 0) {
+> +               err = -errno;
+> +               free(link);
+> +               pr_warning("program '%s': failed to attach to pfd %d: %s\n",
+> +                          bpf_program__title(prog, false), pfd,
+> +                          libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
+> +               return ERR_PTR(err);
+> +       }
+> +       if (ioctl(pfd, PERF_EVENT_IOC_ENABLE, 0) < 0) {
+> +               err = -errno;
+> +               free(link);
+> +               pr_warning("program '%s': failed to enable pfd %d: %s\n",
+> +                          bpf_program__title(prog, false), pfd,
+> +                          libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
+> +               return ERR_PTR(err);
+> +       }
+> +       return (struct bpf_link *)link;
+> +}
+> +
+>  enum bpf_perf_event_ret
+>  bpf_perf_event_read_simple(void *mmap_mem, size_t mmap_size, size_t page_size,
+>                            void **copy_mem, size_t *copy_size,
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 5082a5ebb0c2..1bf66c4a9330 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -169,6 +169,9 @@ struct bpf_link;
+>
+>  LIBBPF_API int bpf_link__destroy(struct bpf_link *link);
+>
+> +LIBBPF_API struct bpf_link *
+> +bpf_program__attach_perf_event(struct bpf_program *prog, int pfd);
+> +
+>  struct bpf_insn;
+>
+>  /*
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 3cde850fc8da..756f5aa802e9 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -169,6 +169,7 @@ LIBBPF_0.0.4 {
+>         global:
+>                 bpf_link__destroy;
+>                 bpf_object__load_xattr;
+> +               bpf_program__attach_perf_event;
+>                 btf_dump__dump_type;
+>                 btf_dump__free;
+>                 btf_dump__new;
+> --
+> 2.17.1
+>
