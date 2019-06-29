@@ -2,94 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBE25ACCD
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2019 20:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 288E75ACD9
+	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2019 20:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbfF2SFG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 29 Jun 2019 14:05:06 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:42548 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726864AbfF2SFG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 29 Jun 2019 14:05:06 -0400
-Received: by mail-qt1-f193.google.com with SMTP id s15so10054278qtk.9;
-        Sat, 29 Jun 2019 11:05:05 -0700 (PDT)
+        id S1726906AbfF2SY6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 29 Jun 2019 14:24:58 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:33239 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726882AbfF2SY6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 29 Jun 2019 14:24:58 -0400
+Received: by mail-pg1-f196.google.com with SMTP id m4so4044963pgk.0
+        for <bpf@vger.kernel.org>; Sat, 29 Jun 2019 11:24:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CefZKsmM2A6Zyc/zmiloyjitBBuWqZnhnX2Roepg/v8=;
-        b=SUqGZ9YI1laWgDHBPpMtlETbSWecwqPAxFGzkI2dkgJxfiGpOdW4Y/cRsqqTM1hnn+
-         tFDic0NyZ9pmOfFBdUAkSzwINjaNzfZs99qQjJoiH/P+/TOMPsZ/FBeHUXGoy9XQMsFr
-         ias1NsoZryElyJ2U7x1cDXtsuD5uXPCE66se4JWy390bmiVkLkjuRKyjcevpi+hlzc6d
-         g/rCIS+4J55HT6QPYCdentAxynH3fMJMrUo11WIvMXtyaSYmnNbkKeKeF1lrMrqp2NFP
-         n0U+sf+7ztTTAUz8wFc78ra53Xy2jYji3q1ooXUJxmntxwmr89bUSCE8gQ1R8OykHrPf
-         wMiQ==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=Xh+trNKBZ3WDbcJVq9m5LKHCXDOI3OQ3I7I7/hRT+jQ=;
+        b=ZhgplxuE2kzJvh/gaJY+58LsZKEXpJgAYiVUqd/BSCwLktPoUSrjNy8h1C9VEGJyB9
+         vXz51ki+RHwabDFFwgn9nCQjvieWZIA1ABZctewUHzc1sA5ZSSPbmKLS1JarEsYNg1M0
+         RvGNT8cVYZvhAmN07MFReAzCHUHlklz1jozuic7BeUgImIOOHVnHiSRiHQQXItgO/svG
+         XLwvFcoIr5+LBicH/0MHoGi/ff2MTSKxszPI4D04S8m8bvbmAuBVJgp6rhHDSE1UcXOE
+         FhD8WPCGghl0vsux7+uJjAohxRUQ4ymxvE/Hs3l5dN6jOzHFbUoTrjbjZEywytKDhGBN
+         RuHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CefZKsmM2A6Zyc/zmiloyjitBBuWqZnhnX2Roepg/v8=;
-        b=c3iAl1Xhco4pyJC5llOZSMzbxZ/C0oZ+mVc+/n1BDzg0r38z1ThhHWILyHhUZSEQ3Y
-         9Vu98aQPGM+Zj+fotAnXQgz3GodVglZo5uYlFGGBq8JS/fOW85pG5aWs+HayFU1V+hwj
-         wrxjPn9KweP5v011r6+HROqs1EoEauxkkz1j8fu/v/iwgTT27D/0OSxuTJuWxW+FWAdA
-         pM1VgC5AclvQpPDkyUxxAW3yd807alUpUZQ4Nwcjhg0YWr7kY8XziO+N4fAd5gxAVcgY
-         IIP/SuO09/DiDuoTnt947q9nUSH0K98x1EZi1zPh6ZbcagX/z2P5mgzDcKkAnWME1G3B
-         n1IQ==
-X-Gm-Message-State: APjAAAVkj9l72DUXAE/a0e9Bil/CXmZXIz8iSyqrS88U16j1mwjOems6
-        w2fmqGVc2i9P88sZWA/NmindJ/Jc9xhhfedd4e0=
-X-Google-Smtp-Source: APXvYqzCHulnQIYseBoHT9xQ4CY1pEKy79Fz7di/DyVOdQQlmHkUWlB0wY0CCW8rkw8RLEyfPWzM9wkfQYLIXw71Eo0=
-X-Received: by 2002:a0c:c68d:: with SMTP id d13mr13722232qvj.145.1561831505395;
- Sat, 29 Jun 2019 11:05:05 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=Xh+trNKBZ3WDbcJVq9m5LKHCXDOI3OQ3I7I7/hRT+jQ=;
+        b=Oh7TCnGIQqgzwLnXTI5FSF2CsatbYjNKctSRSt64NkNfo4kkIesjnOwe0oEj7k4SYI
+         XZe8Rm5tCIVkK2NFvhuywlbAiWDTVFjxNX2r/WWOLd9LrlRBS5Raxk+1f5ECgKm2nXIM
+         OoWhqx86X2hNS7XmyjgPhaLDC+kc1DsgHAnTKbdxVVyA9NP8jISug+OMspyS4UF7YPQl
+         5/gGW0wQRg4G+G6fXd6QADE486PuAzeyRO2ghx8+QElRUlB74R6Htbz9hiNWntGWC9FB
+         WS4OYMeh5PGQkjHGQ8RyLGT574l1Dyc2ZCax9gZ0yMeLQOsQbeX+bu2TgTfvbhLtyFox
+         q5TA==
+X-Gm-Message-State: APjAAAVVLo/Ldg59JmYEM77LA736wtfIpub7e0+X/pXV3vuNbrua7aHy
+        hwmSK0Malh/yuFpjD5v5F0GTmA==
+X-Google-Smtp-Source: APXvYqzz5dqymxb0wW5XzE71dRyZivy1BOQ4nQxD4XT9uL8VLBu5FlyclL3Ub1sa1Lo1Nd7HnPiMZw==
+X-Received: by 2002:a63:fd0d:: with SMTP id d13mr16086847pgh.423.1561832697043;
+        Sat, 29 Jun 2019 11:24:57 -0700 (PDT)
+Received: from cakuba.netronome.com (c-71-204-185-212.hsd1.ca.comcast.net. [71.204.185.212])
+        by smtp.gmail.com with ESMTPSA id e6sm5859917pfn.71.2019.06.29.11.24.56
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Sat, 29 Jun 2019 11:24:56 -0700 (PDT)
+Date:   Sat, 29 Jun 2019 11:24:53 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     <andrii.nakryiko@gmail.com>, <ast@fb.com>, <daniel@iogearbox.net>,
+        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <kernel-team@fb.com>, <songliubraving@fb.com>
+Subject: Re: [PATCH v3 bpf-next 4/4] tools/bpftool: switch map event_pipe to
+ libbpf's perf_buffer
+Message-ID: <20190629112453.2c46a114@cakuba.netronome.com>
+In-Reply-To: <20190629055309.1594755-5-andriin@fb.com>
+References: <20190629055309.1594755-1-andriin@fb.com>
+        <20190629055309.1594755-5-andriin@fb.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-References: <4fdda0547f90e96bd2ef5d5533ee286b02dd4ce2.1561819374.git.jbenc@redhat.com>
- <CAPhsuW4ncpfNCvbYHF36pb6ZEBJMX-iJP5sD0x3PbmAds+WGOQ@mail.gmail.com>
-In-Reply-To: <CAPhsuW4ncpfNCvbYHF36pb6ZEBJMX-iJP5sD0x3PbmAds+WGOQ@mail.gmail.com>
-From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Sat, 29 Jun 2019 11:04:54 -0700
-Message-ID: <CAPhsuW4Ric_nMGxpKf3mEJw3JDBZYpbeAQwTW_Nrsz79T2zisw@mail.gmail.com>
-Subject: Re: [PATCH bpf] selftests: bpf: fix inlines in test_lwt_seg6local
-To:     Jiri Benc <jbenc@redhat.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Mathieu Xhonneux <m.xhonneux@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 29, 2019 at 11:04 AM Song Liu <liu.song.a23@gmail.com> wrote:
->
-> On Sat, Jun 29, 2019 at 7:43 AM Jiri Benc <jbenc@redhat.com> wrote:
-> >
-> > Selftests are reporting this failure in test_lwt_seg6local.sh:
-> >
-> > + ip netns exec ns2 ip -6 route add fb00::6 encap bpf in obj test_lwt_seg6local.o sec encap_srh dev veth2
-> > Error fetching program/map!
-> > Failed to parse eBPF program: Operation not permitted
-> >
-> > The problem is __attribute__((always_inline)) alone is not enough to prevent
-> > clang from inserting those functions in .text. In that case, .text is not
-> > marked as relocateable.
-> >
-> > See the output of objdump -h test_lwt_seg6local.o:
-> >
-> > Idx Name          Size      VMA               LMA               File off  Algn
-> >   0 .text         00003530  0000000000000000  0000000000000000  00000040  2**3
-> >                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-> >
-> > This causes the iproute bpf loader to fail in bpf_fetch_prog_sec:
-> > bpf_has_call_data returns true but bpf_fetch_prog_relo fails as there's no
-> > relocateable .text section in the file.
-> >
-> > Add 'static inline' to fix this.
-> >
-> > Fixes: c99a84eac026 ("selftests/bpf: test for seg6local End.BPF action")
-> > Signed-off-by: Jiri Benc <jbenc@redhat.com>
->
-> Maybe use "__always_inline" as most other tests do?
+On Fri, 28 Jun 2019 22:53:09 -0700, Andrii Nakryiko wrote:
+>  	map_info_len =3D sizeof(map_info);
+>  	map_fd =3D map_parse_fd_and_info(&argc, &argv, &map_info, &map_info_len=
+);
+> -	if (map_fd < 0)
+> +	if (map_fd < 0) {
+> +		p_err("failed to get map info");
 
-I meant "static __always_inline".
+Can't do, map_parse_fd_and_info() prints an error already, we can't
+have multiple errors in JSON.
 
-Song
+>  		return -1;
+> +	}
+> =20
+>  	if (map_info.type !=3D BPF_MAP_TYPE_PERF_EVENT_ARRAY) {
+>  		p_err("map is not a perf event array");
+> @@ -205,7 +157,7 @@ int do_event_pipe(int argc, char **argv)
+>  			char *endptr;
+> =20
+>  			NEXT_ARG();
+> -			cpu =3D strtoul(*argv, &endptr, 0);
+> +			ctx.cpu =3D strtoul(*argv, &endptr, 0);
+>  			if (*endptr) {
+>  				p_err("can't parse %s as CPU ID", **argv);
+>  				goto err_close_map;
+> @@ -216,7 +168,7 @@ int do_event_pipe(int argc, char **argv)
+>  			char *endptr;
+> =20
+>  			NEXT_ARG();
+> -			index =3D strtoul(*argv, &endptr, 0);
+> +			ctx.idx =3D strtoul(*argv, &endptr, 0);
+>  			if (*endptr) {
+>  				p_err("can't parse %s as index", **argv);
+>  				goto err_close_map;
+> @@ -228,45 +180,32 @@ int do_event_pipe(int argc, char **argv)
+>  			goto err_close_map;
+>  		}
+> =20
+> -		do_all =3D false;
+> +		ctx.all_cpus =3D false;
+>  	}
+> =20
+> -	if (!do_all) {
+> -		if (index =3D=3D -1 || cpu =3D=3D -1) {
+> +	if (!ctx.all_cpus) {
+> +		if (ctx.idx =3D=3D -1 || ctx.cpu =3D=3D -1) {
+>  			p_err("cpu and index must be specified together");
+>  			goto err_close_map;
+
+Now that you look at err looks like we're missing an err =3D -1 assignment
+here?  but...
+
+>  		}
+> -
+> -		nfds =3D 1;
+>  	} else {
+> -		nfds =3D min(get_possible_cpus(), map_info.max_entries);
+> -		cpu =3D 0;
+> -		index =3D 0;
+> +		ctx.cpu =3D 0;
+> +		ctx.idx =3D 0;
+>  	}
+> =20
+> -	rings =3D calloc(nfds, sizeof(rings[0]));
+> -	if (!rings)
+> +	opts.attr =3D &perf_attr;
+> +	opts.event_cb =3D print_bpf_output;
+> +	opts.ctx =3D &ctx;
+> +	opts.cpu_cnt =3D ctx.all_cpus ? 0 : 1;
+> +	opts.cpus =3D &ctx.cpu;
+> +	opts.map_keys =3D &ctx.idx;
+> +
+> +	pb =3D perf_buffer__new_raw(map_fd, MMAP_PAGE_CNT, &opts);
+> +	err =3D libbpf_get_error(pb);
+> +	if (err) {
+> +		p_err("failed to create perf buffer: %s (%d)",
+> +		      strerror(err), err);
+>  		goto err_close_map;
+> -
+> -	pfds =3D calloc(nfds, sizeof(pfds[0]));
+> -	if (!pfds)
+> -		goto err_free_rings;
+> -
+> -	for (i =3D 0; i < nfds; i++) {
+> -		rings[i].cpu =3D cpu + i;
+> -		rings[i].key =3D index + i;
+> -
+> -		rings[i].fd =3D bpf_perf_event_open(map_fd, rings[i].key,
+> -						  rings[i].cpu);
+> -		if (rings[i].fd < 0)
+> -			goto err_close_fds_prev;
+> -
+> -		rings[i].mem =3D perf_event_mmap(rings[i].fd);
+> -		if (!rings[i].mem)
+> -			goto err_close_fds_current;
+> -
+> -		pfds[i].fd =3D rings[i].fd;
+> -		pfds[i].events =3D POLLIN;
+>  	}
+> =20
+>  	signal(SIGINT, int_exit);
+> @@ -277,35 +216,25 @@ int do_event_pipe(int argc, char **argv)
+>  		jsonw_start_array(json_wtr);
+> =20
+>  	while (!stop) {
+> -		poll(pfds, nfds, 200);
+> -		for (i =3D 0; i < nfds; i++)
+> -			perf_event_read(&rings[i], &tmp_buf, &tmp_buf_sz);
+> +		err =3D perf_buffer__poll(pb, 200);
+> +		if (err < 0 && err !=3D -EINTR) {
+> +			p_err("perf buffer polling failed: %s (%d)",
+> +			      strerror(err), err);
+> +			goto err_close_pb;
+> +		}
+>  	}
+> -	free(tmp_buf);
+> =20
+>  	if (json_output)
+>  		jsonw_end_array(json_wtr);
+> =20
+> -	for (i =3D 0; i < nfds; i++) {
+> -		perf_event_unmap(rings[i].mem);
+> -		close(rings[i].fd);
+> -	}
+> -	free(pfds);
+> -	free(rings);
+> +	perf_buffer__free(pb);
+>  	close(map_fd);
+> =20
+>  	return 0;
+> =20
+> -err_close_fds_prev:
+> -	while (i--) {
+> -		perf_event_unmap(rings[i].mem);
+> -err_close_fds_current:
+> -		close(rings[i].fd);
+> -	}
+> -	free(pfds);
+> -err_free_rings:
+> -	free(rings);
+> +err_close_pb:
+> +	perf_buffer__free(pb);
+>  err_close_map:
+>  	close(map_fd);
+> -	return -1;
+> +	return err ? -1 : 0;
+
+... how can we return 0 on the error path? =F0=9F=98=95
+
+>  }
+
