@@ -2,374 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D375AF22
-	for <lists+bpf@lfdr.de>; Sun, 30 Jun 2019 08:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D97D5AF4C
+	for <lists+bpf@lfdr.de>; Sun, 30 Jun 2019 09:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726659AbfF3GvY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 30 Jun 2019 02:51:24 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:8140 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726604AbfF3GvY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 30 Jun 2019 02:51:24 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5U6lo2Q014099
-        for <bpf@vger.kernel.org>; Sat, 29 Jun 2019 23:51:23 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=t5g8bHjRaIZMFxTROorZabVi100u7khkUvx+OsiWToA=;
- b=L+37A+Z6Wu3sjh/wSXuPyVtL/uaKSYJ9Hr3xzwse8+2u+N7VKyQn+LFj1X00Vgou3ns6
- VKmNv5wBFZsk0qdYluyosSI0ON4iH6NwQUUTYohhOq9DeLx6Wf1jzbPk7chhRn+9/OKa
- SfIVbSuSlmu8MVa1H6V+bqwe9YxJFZrtMV0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2te53ataaq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sat, 29 Jun 2019 23:51:22 -0700
-Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sat, 29 Jun 2019 23:51:21 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id E925F8614EA; Sat, 29 Jun 2019 23:51:18 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <andrii.nakryiko@gmail.com>, <ast@fb.com>, <daniel@iogearbox.net>,
-        <kernel-team@fb.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <jakub.kicinski@netronome.com>
-CC:     Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v4 bpf-next 4/4] tools/bpftool: switch map event_pipe to libbpf's perf_buffer
-Date:   Sat, 29 Jun 2019 23:51:09 -0700
-Message-ID: <20190630065109.1794420-5-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190630065109.1794420-1-andriin@fb.com>
-References: <20190630065109.1794420-1-andriin@fb.com>
-X-FB-Internal: Safe
+        id S1726531AbfF3H6Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 30 Jun 2019 03:58:25 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:19799 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725959AbfF3H6Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 30 Jun 2019 03:58:25 -0400
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id x5U7vxPV023007;
+        Sun, 30 Jun 2019 16:58:00 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com x5U7vxPV023007
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1561881480;
+        bh=+9brw8RpKfPCHLaNnVG0ALKGMwnUyxhWFifAcm1Jy9A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=zUawODtU0vhTiPl5qaNgEo9ByKy2yYb9HTAWd7jH5/KmRFRbCTqDf1r2buPkH6eY7
+         9KWkOkbCmnK9rkMatOmM0itxGnwHB/mMPuqRIjog1NzLgK//i1B3cXHhcTtE4pC6OU
+         VNXerozMf6mNDQ2YuNycgdEq1clJ5Ax3fRXt2Pykx7Eg5zzgtutbB8rwb3gug/dYXr
+         O98/bPfya6esIc3ETSzeD3199w5ae4W/Lwcu2gAXFoPoyufabN5ofgPBt7+mBFPuRl
+         yTH6VnFiqBpTquzJOkRU+fykLB1M8/iymSMC+5w1Mo4YIFRRu6hO3v+dQXWv3IKe2k
+         Skm8IrMNwnxoQ==
+X-Nifty-SrcIP: [209.85.222.49]
+Received: by mail-ua1-f49.google.com with SMTP id z13so3851870uaa.4;
+        Sun, 30 Jun 2019 00:58:00 -0700 (PDT)
+X-Gm-Message-State: APjAAAWysMbNscscgdcwsu+dZATRmuJuaguufvScETMbNbgnIXct6t2m
+        LqZIl0OYZjwAjoaIWjYoBL6cZFfUIYYY90xpG9I=
+X-Google-Smtp-Source: APXvYqzyVZpInW2H6+hLd4o8U+kv7ZbqLoJ5DBzo4XhAbsuYuwZv3Nes7LIrEN98cU8HrIW65l38Jgqlp5UdZQn0x3E=
+X-Received: by 2002:a9f:25e9:: with SMTP id 96mr10993006uaf.95.1561881479132;
+ Sun, 30 Jun 2019 00:57:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-30_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=2 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906300089
-X-FB-Internal: deliver
+References: <20190627163903.28398-1-yamada.masahiro@socionext.com>
+ <20190627163903.28398-5-yamada.masahiro@socionext.com> <20190628180057.GA22758@ravnborg.org>
+In-Reply-To: <20190628180057.GA22758@ravnborg.org>
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+Date:   Sun, 30 Jun 2019 16:57:23 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQDqtm5F_JoPAjPOuf6s3d0F1=Ctyq6s0u2DWNpbFr5vg@mail.gmail.com>
+Message-ID: <CAK7LNAQDqtm5F_JoPAjPOuf6s3d0F1=Ctyq6s0u2DWNpbFr5vg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] kbuild: compile-test kernel headers to ensure they
+ are self-contained
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        xdp-newbies@vger.kernel.org, Anton Vorontsov <anton@enomsg.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Colin Cross <ccross@android.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kees Cook <keescook@chromium.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Switch event_pipe implementation to rely on new libbpf perf buffer API
-(it's raw low-level variant).
+Hi Sam,
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/bpf/bpftool/map_perf_ring.c | 201 ++++++++++--------------------
- 1 file changed, 64 insertions(+), 137 deletions(-)
 
-diff --git a/tools/bpf/bpftool/map_perf_ring.c b/tools/bpf/bpftool/map_perf_ring.c
-index 0507dfaf7a8f..c291de8ef116 100644
---- a/tools/bpf/bpftool/map_perf_ring.c
-+++ b/tools/bpf/bpftool/map_perf_ring.c
-@@ -28,7 +28,7 @@
- 
- #define MMAP_PAGE_CNT	16
- 
--static bool stop;
-+static volatile bool stop;
- 
- struct event_ring_info {
- 	int fd;
-@@ -44,32 +44,44 @@ struct perf_event_sample {
- 	unsigned char data[];
- };
- 
-+struct perf_event_lost {
-+	struct perf_event_header header;
-+	__u64 id;
-+	__u64 lost;
-+};
-+
- static void int_exit(int signo)
- {
- 	fprintf(stderr, "Stopping...\n");
- 	stop = true;
- }
- 
-+struct event_pipe_ctx {
-+	bool all_cpus;
-+	int cpu;
-+	int idx;
-+};
-+
- static enum bpf_perf_event_ret
--print_bpf_output(struct perf_event_header *event, void *private_data)
-+print_bpf_output(void *private_data, int cpu, struct perf_event_header *event)
- {
--	struct perf_event_sample *e = container_of(event, struct perf_event_sample,
-+	struct perf_event_sample *e = container_of(event,
-+						   struct perf_event_sample,
- 						   header);
--	struct event_ring_info *ring = private_data;
--	struct {
--		struct perf_event_header header;
--		__u64 id;
--		__u64 lost;
--	} *lost = (typeof(lost))event;
-+	struct perf_event_lost *lost = container_of(event,
-+						    struct perf_event_lost,
-+						    header);
-+	struct event_pipe_ctx *ctx = private_data;
-+	int idx = ctx->all_cpus ? cpu : ctx->idx;
- 
- 	if (json_output) {
- 		jsonw_start_object(json_wtr);
- 		jsonw_name(json_wtr, "type");
- 		jsonw_uint(json_wtr, e->header.type);
- 		jsonw_name(json_wtr, "cpu");
--		jsonw_uint(json_wtr, ring->cpu);
-+		jsonw_uint(json_wtr, cpu);
- 		jsonw_name(json_wtr, "index");
--		jsonw_uint(json_wtr, ring->key);
-+		jsonw_uint(json_wtr, idx);
- 		if (e->header.type == PERF_RECORD_SAMPLE) {
- 			jsonw_name(json_wtr, "timestamp");
- 			jsonw_uint(json_wtr, e->time);
-@@ -89,7 +101,7 @@ print_bpf_output(struct perf_event_header *event, void *private_data)
- 		if (e->header.type == PERF_RECORD_SAMPLE) {
- 			printf("== @%lld.%09lld CPU: %d index: %d =====\n",
- 			       e->time / 1000000000ULL, e->time % 1000000000ULL,
--			       ring->cpu, ring->key);
-+			       cpu, idx);
- 			fprint_hex(stdout, e->data, e->size, " ");
- 			printf("\n");
- 		} else if (e->header.type == PERF_RECORD_LOST) {
-@@ -103,87 +115,25 @@ print_bpf_output(struct perf_event_header *event, void *private_data)
- 	return LIBBPF_PERF_EVENT_CONT;
- }
- 
--static void
--perf_event_read(struct event_ring_info *ring, void **buf, size_t *buf_len)
--{
--	enum bpf_perf_event_ret ret;
--
--	ret = bpf_perf_event_read_simple(ring->mem,
--					 MMAP_PAGE_CNT * get_page_size(),
--					 get_page_size(), buf, buf_len,
--					 print_bpf_output, ring);
--	if (ret != LIBBPF_PERF_EVENT_CONT) {
--		fprintf(stderr, "perf read loop failed with %d\n", ret);
--		stop = true;
--	}
--}
--
--static int perf_mmap_size(void)
--{
--	return get_page_size() * (MMAP_PAGE_CNT + 1);
--}
--
--static void *perf_event_mmap(int fd)
--{
--	int mmap_size = perf_mmap_size();
--	void *base;
--
--	base = mmap(NULL, mmap_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
--	if (base == MAP_FAILED) {
--		p_err("event mmap failed: %s\n", strerror(errno));
--		return NULL;
--	}
--
--	return base;
--}
--
--static void perf_event_unmap(void *mem)
--{
--	if (munmap(mem, perf_mmap_size()))
--		fprintf(stderr, "Can't unmap ring memory!\n");
--}
--
--static int bpf_perf_event_open(int map_fd, int key, int cpu)
-+int do_event_pipe(int argc, char **argv)
- {
--	struct perf_event_attr attr = {
-+	struct perf_event_attr perf_attr = {
- 		.sample_type = PERF_SAMPLE_RAW | PERF_SAMPLE_TIME,
- 		.type = PERF_TYPE_SOFTWARE,
- 		.config = PERF_COUNT_SW_BPF_OUTPUT,
-+		.sample_period = 1,
-+		.wakeup_events = 1,
- 	};
--	int pmu_fd;
--
--	pmu_fd = sys_perf_event_open(&attr, -1, cpu, -1, 0);
--	if (pmu_fd < 0) {
--		p_err("failed to open perf event %d for CPU %d", key, cpu);
--		return -1;
--	}
--
--	if (bpf_map_update_elem(map_fd, &key, &pmu_fd, BPF_ANY)) {
--		p_err("failed to update map for event %d for CPU %d", key, cpu);
--		goto err_close;
--	}
--	if (ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0)) {
--		p_err("failed to enable event %d for CPU %d", key, cpu);
--		goto err_close;
--	}
--
--	return pmu_fd;
--
--err_close:
--	close(pmu_fd);
--	return -1;
--}
--
--int do_event_pipe(int argc, char **argv)
--{
--	int i, nfds, map_fd, index = -1, cpu = -1;
- 	struct bpf_map_info map_info = {};
--	struct event_ring_info *rings;
--	size_t tmp_buf_sz = 0;
--	void *tmp_buf = NULL;
--	struct pollfd *pfds;
-+	struct perf_buffer_raw_opts opts;
-+	struct event_pipe_ctx ctx = {
-+		.all_cpus = true,
-+		.cpu = -1,
-+		.idx = -1,
-+	};
-+	struct perf_buffer *pb;
- 	__u32 map_info_len;
--	bool do_all = true;
-+	int err, map_fd;
- 
- 	map_info_len = sizeof(map_info);
- 	map_fd = map_parse_fd_and_info(&argc, &argv, &map_info, &map_info_len);
-@@ -205,7 +155,7 @@ int do_event_pipe(int argc, char **argv)
- 			char *endptr;
- 
- 			NEXT_ARG();
--			cpu = strtoul(*argv, &endptr, 0);
-+			ctx.cpu = strtoul(*argv, &endptr, 0);
- 			if (*endptr) {
- 				p_err("can't parse %s as CPU ID", **argv);
- 				goto err_close_map;
-@@ -216,7 +166,7 @@ int do_event_pipe(int argc, char **argv)
- 			char *endptr;
- 
- 			NEXT_ARG();
--			index = strtoul(*argv, &endptr, 0);
-+			ctx.idx = strtoul(*argv, &endptr, 0);
- 			if (*endptr) {
- 				p_err("can't parse %s as index", **argv);
- 				goto err_close_map;
-@@ -228,45 +178,32 @@ int do_event_pipe(int argc, char **argv)
- 			goto err_close_map;
- 		}
- 
--		do_all = false;
-+		ctx.all_cpus = false;
- 	}
- 
--	if (!do_all) {
--		if (index == -1 || cpu == -1) {
-+	if (!ctx.all_cpus) {
-+		if (ctx.idx == -1 || ctx.cpu == -1) {
- 			p_err("cpu and index must be specified together");
- 			goto err_close_map;
- 		}
--
--		nfds = 1;
- 	} else {
--		nfds = min(get_possible_cpus(), map_info.max_entries);
--		cpu = 0;
--		index = 0;
-+		ctx.cpu = 0;
-+		ctx.idx = 0;
- 	}
- 
--	rings = calloc(nfds, sizeof(rings[0]));
--	if (!rings)
-+	opts.attr = &perf_attr;
-+	opts.event_cb = print_bpf_output;
-+	opts.ctx = &ctx;
-+	opts.cpu_cnt = ctx.all_cpus ? 0 : 1;
-+	opts.cpus = &ctx.cpu;
-+	opts.map_keys = &ctx.idx;
-+
-+	pb = perf_buffer__new_raw(map_fd, MMAP_PAGE_CNT, &opts);
-+	err = libbpf_get_error(pb);
-+	if (err) {
-+		p_err("failed to create perf buffer: %s (%d)",
-+		      strerror(err), err);
- 		goto err_close_map;
--
--	pfds = calloc(nfds, sizeof(pfds[0]));
--	if (!pfds)
--		goto err_free_rings;
--
--	for (i = 0; i < nfds; i++) {
--		rings[i].cpu = cpu + i;
--		rings[i].key = index + i;
--
--		rings[i].fd = bpf_perf_event_open(map_fd, rings[i].key,
--						  rings[i].cpu);
--		if (rings[i].fd < 0)
--			goto err_close_fds_prev;
--
--		rings[i].mem = perf_event_mmap(rings[i].fd);
--		if (!rings[i].mem)
--			goto err_close_fds_current;
--
--		pfds[i].fd = rings[i].fd;
--		pfds[i].events = POLLIN;
- 	}
- 
- 	signal(SIGINT, int_exit);
-@@ -277,34 +214,24 @@ int do_event_pipe(int argc, char **argv)
- 		jsonw_start_array(json_wtr);
- 
- 	while (!stop) {
--		poll(pfds, nfds, 200);
--		for (i = 0; i < nfds; i++)
--			perf_event_read(&rings[i], &tmp_buf, &tmp_buf_sz);
-+		err = perf_buffer__poll(pb, 200);
-+		if (err < 0 && err != -EINTR) {
-+			p_err("perf buffer polling failed: %s (%d)",
-+			      strerror(err), err);
-+			goto err_close_pb;
-+		}
- 	}
--	free(tmp_buf);
- 
- 	if (json_output)
- 		jsonw_end_array(json_wtr);
- 
--	for (i = 0; i < nfds; i++) {
--		perf_event_unmap(rings[i].mem);
--		close(rings[i].fd);
--	}
--	free(pfds);
--	free(rings);
-+	perf_buffer__free(pb);
- 	close(map_fd);
- 
- 	return 0;
- 
--err_close_fds_prev:
--	while (i--) {
--		perf_event_unmap(rings[i].mem);
--err_close_fds_current:
--		close(rings[i].fd);
--	}
--	free(pfds);
--err_free_rings:
--	free(rings);
-+err_close_pb:
-+	perf_buffer__free(pb);
- err_close_map:
- 	close(map_fd);
- 	return -1;
+On Sat, Jun 29, 2019 at 3:01 AM Sam Ravnborg <sam@ravnborg.org> wrote:
+>
+> Hi Masahiro.
+>
+> On Fri, Jun 28, 2019 at 01:39:02AM +0900, Masahiro Yamada wrote:
+> > The headers in include/ are globally used in the kernel source tree
+> > to provide common APIs. They are included from external modules, too.
+> >
+> > It will be useful to make as many headers self-contained as possible
+> > so that we do not have to rely on a specific include order.
+> >
+> > There are more than 4000 headers in include/. In my rough analysis,
+> > 70% of them are already self-contained. With efforts, most of them
+> > can be self-contained.
+> >
+> > For now, we must exclude more than 1000 headers just because they
+> > cannot be compiled as standalone units. I added them to header-test-.
+> > The black list was mostly generated by a script, so should be checked
+> > later.
+> The list is smaller than I had expected.
+> And I see why you insisted on avoiding a maze ok Kbuild files.
+> It looks good, except there is a few issues..
+>
+>
+> The file kernel/kheaders_data.tar.xz includes all the .s files.
+> Something needs to be done to exclude the .s files...
+
+Good catch. I will change scripts/gen_kheaders.sh
+
+
+> When building a full kernel the build fails like this:
+>   LD      vmlinux.o
+> aarch64-linux-gnu-ld: cannot find include/lib.a: No such file or directory
+> make[1]: *** [/home/sam/kernel/linux-kbuild.git/Makefile:1054: vmlinux] Error 1
+> make[1]: Leaving directory '/home/sam/kernel/linux-kbuild.git/.build/arm64-allyesconfig'
+> make: *** [Makefile:179: sub-make] Error 2
+
+My bad - I built only include/,
+without testing full build.
+
+I will fix.
+
+
+>
+> include/uapi/linux/mman.h fails when building sparc64 allmodconfig.
+> There is likely more header files that will fail when we start to
+> throw this after diverse randconfigs.
+> I have no good idea how to catch this.
+> Unless your scripts could automate this across several architectures.
+
+Thanks. I excluded a little more headers.
+
+
+> I did not continue my testing futher.
+>
+> > +header-test-                 += uapi/drm/vmwgfx_drm.h
+> > +header-test-                 += uapi/linux/a.out.h
+> > +header-test-                 += uapi/linux/coda.h
+> ...
+> > +header-test-                 += uapi/xen/evtchn.h
+> > +header-test-                 += uapi/xen/gntdev.h
+> > +header-test-                 += uapi/xen/privcmd.h
+>
+> I though uapi files were covered by another Makefile?
+> If they are added because we pull them in using a pattern, maybe they
+> should be removed using a specific filer-out?
+
+I have not looked at this closely yet.
+
+usr/include/Makefile tests UAPI headers
+crafted by scripts/headers_install.sh
+
+Testing UAPI headers in their raw form
+makes sense, I think.
+
+
+
 -- 
-2.17.1
-
+Best Regards
+Masahiro Yamada
