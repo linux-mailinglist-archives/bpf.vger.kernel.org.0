@@ -2,254 +2,288 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E5E5ADD6
-	for <lists+bpf@lfdr.de>; Sun, 30 Jun 2019 02:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD5C5ADE4
+	for <lists+bpf@lfdr.de>; Sun, 30 Jun 2019 03:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726956AbfF3AMY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 29 Jun 2019 20:12:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726954AbfF3AMY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 29 Jun 2019 20:12:24 -0400
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17B86217F9
-        for <bpf@vger.kernel.org>; Sun, 30 Jun 2019 00:12:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561853542;
-        bh=dry21q7c7uLneW8C+7n+tBewFMAQGQg4xVKmjaoSQko=;
+        id S1726352AbfF3B23 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 29 Jun 2019 21:28:29 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:22995 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726240AbfF3B23 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 29 Jun 2019 21:28:29 -0400
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id x5U1SFL1008390;
+        Sun, 30 Jun 2019 10:28:16 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com x5U1SFL1008390
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1561858096;
+        bh=9t+j+2qxpi1qYQWB2ztMMr4ZoJ8TahdzyRde0BKsE4U=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Z110kg3Ic70AzYoTR5dCABspWFR19UTFe3C472D4aYeWL+gT9bEQBuVaVGlJg0vDg
-         4IUa2DU1+FW/I5HS2YNXOEAH76twSShNLWRGBNXWE7FvTHubHi3LQfxmd2RBuHqeuJ
-         08n8Hics4/bjToR8eSrlxyBGJxryJ/Vdo28kgy0M=
-Received: by mail-wr1-f51.google.com with SMTP id p11so9942570wre.7
-        for <bpf@vger.kernel.org>; Sat, 29 Jun 2019 17:12:22 -0700 (PDT)
-X-Gm-Message-State: APjAAAXfTIwyGTBY655AbCeuFnPjNfAviTvE9/MSvvPFA1htdVIVwwoi
-        sQfdqJaeGXY+aLoVp+1ByfHjhY5tznV9P08ba70VdA==
-X-Google-Smtp-Source: APXvYqz/ogITgPfao2eygdVo/OX1Tsk1zmulDyd+kPJV5IoCxQg4RCMhJBnu7BsQaK5PH1oq2tR3PEmP4qr6ml80KNw=
-X-Received: by 2002:adf:a143:: with SMTP id r3mr3437082wrr.352.1561853540531;
- Sat, 29 Jun 2019 17:12:20 -0700 (PDT)
+        b=uamTa9tUpIdp2/VClwdwBKsR5smoRO9z3UIhu+jzrwXCBXqNKmDYfJKMcVt/jIqXQ
+         VODsBvudfwLfPCxvSpcrnFU3qwR38MPFvKpJneyz8sKGd7Z7VmrKOwdeFG0ljINnVr
+         KWfiGscr3RZlMHxqOcEdb+mxwFuRgl5c6J3Q3QzMMbbEbHOT72Jj4GnNrpzPe7QVDk
+         lSeL7fY6plq4MT/Tuwvzu1335v32Xlqzjf2MoiC9LsYz81BpB4PJaadowMKYkN8rPQ
+         xXdmPBwpLHNLhtUyerkKLgjkUbWXdhGvWfczKaoOn8X4/ouzIoIrfvkQGMSlLERKsb
+         l1J/8GF+LCgcQ==
+X-Nifty-SrcIP: [209.85.217.41]
+Received: by mail-vs1-f41.google.com with SMTP id l125so6545099vsl.13;
+        Sat, 29 Jun 2019 18:28:15 -0700 (PDT)
+X-Gm-Message-State: APjAAAVWaT13O8ZZcZXwkT5rWUjnDWfTMTksFBLWR+KrpHvcIRJETCL9
+        BNsHzNXJHfHYI2/f0OlYrnhpXlWrLfiYx9jMKQQ=
+X-Google-Smtp-Source: APXvYqxJHvuIeMb9aSflMTQR0MYMhJMSqL/anwSqqbUEUAy4sD+ZRtuj9w5VwwaaRfb83oq7qE6yQ628iuIetguWLJo=
+X-Received: by 2002:a67:f495:: with SMTP id o21mr10547469vsn.54.1561858094875;
+ Sat, 29 Jun 2019 18:28:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190627201923.2589391-1-songliubraving@fb.com>
- <20190627201923.2589391-2-songliubraving@fb.com> <21894f45-70d8-dfca-8c02-044f776c5e05@kernel.org>
- <3C595328-3ABE-4421-9772-8D41094A4F57@fb.com>
-In-Reply-To: <3C595328-3ABE-4421-9772-8D41094A4F57@fb.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sat, 29 Jun 2019 17:12:09 -0700
-X-Gmail-Original-Message-ID: <CALCETrWBnH4Q43POU8cQ7YMjb9LioK28FDEQf7aHZbdf1eBZWg@mail.gmail.com>
-Message-ID: <CALCETrWBnH4Q43POU8cQ7YMjb9LioK28FDEQf7aHZbdf1eBZWg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-To:     Song Liu <songliubraving@fb.com>, linux-security@vger.kernel.org
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+References: <20190627163903.28398-1-yamada.masahiro@socionext.com>
+ <20190627163903.28398-2-yamada.masahiro@socionext.com> <20190628154349.GA12826@ravnborg.org>
+In-Reply-To: <20190628154349.GA12826@ravnborg.org>
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+Date:   Sun, 30 Jun 2019 10:27:38 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASWj5uvpfRW7PQfiZdTyG0J6YKviuW5TL+C9x6L4wRx8Q@mail.gmail.com>
+Message-ID: <CAK7LNASWj5uvpfRW7PQfiZdTyG0J6YKviuW5TL+C9x6L4wRx8Q@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] kbuild: compile-test UAPI headers to ensure they
+ are self-contained
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Song Liu <songliubraving@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv@lists.infradead.org,
+        Michal Marek <michal.lkml@markovi.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Palmer Dabbelt <palmer@sifive.com>, bpf@vger.kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Jann Horn <jannh@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "linux-abi@vger.kernel.org" <linux-abi@vger.kernel.org>,
-        "kees@chromium.org" <kees@chromium.org>
+        Albert Ou <aou@eecs.berkeley.edu>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 28, 2019 at 12:05 PM Song Liu <songliubraving@fb.com> wrote:
+Hi Sam,
+
+On Sat, Jun 29, 2019 at 12:44 AM Sam Ravnborg <sam@ravnborg.org> wrote:
 >
-> Hi Andy,
+> Hi Masahiro.
 >
-> > On Jun 27, 2019, at 4:40 PM, Andy Lutomirski <luto@kernel.org> wrote:
+> On Fri, Jun 28, 2019 at 01:38:59AM +0900, Masahiro Yamada wrote:
+> > Multiple people have suggested compile-testing UAPI headers to ensure
+> > they can be really included from user-space. "make headers_check" is
+> > obviously not enough to catch bugs, and we often leak references to
+> > kernel-space definition to user-space.
 > >
-> > On 6/27/19 1:19 PM, Song Liu wrote:
-> >> This patch introduce unprivileged BPF access. The access control is
-> >> achieved via device /dev/bpf. Users with write access to /dev/bpf are =
-able
-> >> to call sys_bpf().
-> >> Two ioctl command are added to /dev/bpf:
-> >> The two commands enable/disable permission to call sys_bpf() for curre=
-nt
-> >> task. This permission is noted by bpf_permitted in task_struct. This
-> >> permission is inherited during clone(CLONE_THREAD).
-> >> Helper function bpf_capable() is added to check whether the task has g=
-ot
-> >> permission via /dev/bpf.
-> >
-> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> >> index 0e079b2298f8..79dc4d641cf3 100644
-> >> --- a/kernel/bpf/verifier.c
-> >> +++ b/kernel/bpf/verifier.c
-> >> @@ -9134,7 +9134,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_=
-attr *attr,
-> >>              env->insn_aux_data[i].orig_idx =3D i;
-> >>      env->prog =3D *prog;
-> >>      env->ops =3D bpf_verifier_ops[env->prog->type];
-> >> -    is_priv =3D capable(CAP_SYS_ADMIN);
-> >> +    is_priv =3D bpf_capable(CAP_SYS_ADMIN);
-> >
-> > Huh?  This isn't a hardening measure -- the "is_priv" verifier mode all=
-ows straight-up leaks of private kernel state to user mode.
-> >
-> > (For that matter, the pending lockdown stuff should possibly consider t=
-his a "confidentiality" issue.)
-> >
-> >
-> > I have a bigger issue with this patch, though: it's a really awkward wa=
-y to pretend to have capabilities.  For bpf, it seems like you could make t=
-his be a *real* capability without too much pain since there's only one sys=
-call there.  Just find a way to pass an fd to /dev/bpf into the syscall.  I=
-f this means you need a new bpf_with_cap() syscall that takes an extra argu=
-ment, so be it.  The old bpf() syscall can just translate to bpf_with_cap(.=
-.., -1).
-> >
-> > For a while, I've considered a scheme I call "implicit rights".  There =
-would be a directory in /dev called /dev/implicit_rights.  This would eithe=
-r be part of devtmpfs or a whole new filesystem -- it would *not* be any ot=
-her filesystem.  The contents would be files that can't be read or written =
-and exist only in memory.  You create them with a privileged syscall.  Cert=
-ain actions that are sensitive but not at the level of CAP_SYS_ADMIN (use o=
-f large-attack-surface bpf stuff, creation of user namespaces, profiling th=
-e kernel, etc) could require an "implicit right".  When you do them, if you=
- don't have CAP_SYS_ADMIN, the kernel would do a path walk for, say, /dev/i=
-mplicit_rights/bpf and, if the object exists, can be opened, and actually r=
-efers to the "bpf" rights object, then the action is allowed.  Otherwise it=
-'s denied.
-> >
-> > This is extensible, and it doesn't require the rather ugly per-task sta=
-te of whether it's enabled.
-> >
-> > For things like creation of user namespaces, there's an existing API, a=
-nd the default is that it works without privilege.  Switching it to an impl=
-icit right has the benefit of not requiring code changes to programs that a=
-lready work as non-root.
-> >
-> > But, for BPF in particular, this type of compatibility issue doesn't ex=
-ist now.  You already can't use most eBPF functionality without privilege. =
- New bpf-using programs meant to run without privilege are *new*, so they c=
-an use a new improved API.  So, rather than adding this obnoxious ioctl, ju=
-st make the API explicit, please.
-> >
-> > Also, please cc: linux-abi next time.
+> > Use the new header-test-y syntax to implement it. Please note exported
+> > headers are compile-tested with a completely different set of compiler
+> > flags. The header search path is set to $(objtree)/usr/include since
+> > exported headers should not include unexported ones.
 >
-> Thanks for your inputs.
+> This patchset introduce a new set of tests for uapi headers.
+> Can we somehow consolidate so we have only one way to verify the uapi
+> headers?
+> It can be confusing for users that they see errors from testing the
+> uapi headers during normal build and a new class or error if they
+> run a "make headers_check" sometimes later.
+
+Good point. I had also noticed some over-wrap
+between this feature and scripts/headers_check.pl
+For example, check_include will be unneeded.
+
+I expect "make headers_check" will be deprecated
+sooner or later.
+
+
+> This can be a next step to consolidate this.
+> With the suggestions below considered you can add my:
+> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
 >
-> I think we need to clarify the use case here. In this case, we are NOT
-> thinking about creating new tools for unprivileged users. Instead, we
-> would like to use existing tools without root.
-
-I read patch 4, and I interpret it very differently.  Patches 2-4 are
-creating a new version of libbpf and a new version of bpftool.  Given
-this, I see no real justification for adding a new in-kernel per-task
-state instead of just pushing the complexity into libbpf.
-
-> On the kernel side, we are not planning provides a subset of safe
-> features for unprivileged users. The permission here is all-or-nothing.
-
-This may be a showstopper.  I think this series needs an extremely
-clear explanation of the security implications of providing access to
-/dev/bpf.  Is it just exposing more attack surface for kernel bugs, or
-is it, *by design*, exposing new privileges.  Given the is_priv change
-that I pointed out upthread, it appears to be the latter, and I'm
-wondering how this is a reasonable thing to do.
-
+> >
+> > We use -std=gnu89 for the kernel space since the kernel code highly
+> > depends on GNU extensions. On the other hand, UAPI headers should be
+> > written in more standardized C, so they are compiled with -std=c90.
+> > This will emit errors if C++ style comments, the keyword 'inline', etc.
+> > are used. Please use C style comments (/* ... */), '__inline__', etc.
+> > in UAPI headers.
+> >
+> > There is additional compiler requirement to enable this test because
+> > many of UAPI headers include <stdlib.h>, <sys/ioctl.h>, <sys/time.h>,
+> > etc. directly or indirectly. You cannot use kernel.org pre-built
+> > toolchains [1] since they lack <stdlib.h>.
+> >
+> > I added scripts/cc-system-headers.sh to check the system header
+> > availability, which CONFIG_UAPI_HEADER_TEST depends on.
+> >
+> > For now, a lot of headers need to be excluded because they cannot
+> > be compiled standalone, but this is a good start point.
+> >
+> > [1] https://mirrors.edge.kernel.org/pub/tools/crosstool/index.html
+> >
+> > Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> > ---
+> >
+> > Changes in v3: None
+> > Changes in v2:
+> >  - Add CONFIG_CPU_{BIG,LITTLE}_ENDIAN guard to avoid build error
+> >  - Use 'header-test-' instead of 'no-header-test'
+> >  - Avoid weird 'find' warning when cleaning
+> >
+> >  Makefile                     |   2 +-
+> >  init/Kconfig                 |  11 +++
+> >  scripts/cc-system-headers.sh |   8 +++
+> >  usr/.gitignore               |   1 -
+> >  usr/Makefile                 |   2 +
+> >  usr/include/.gitignore       |   3 +
+> >  usr/include/Makefile         | 134 +++++++++++++++++++++++++++++++++++
+> >  7 files changed, 159 insertions(+), 2 deletions(-)
+> >  create mode 100755 scripts/cc-system-headers.sh
+> >  create mode 100644 usr/include/.gitignore
+> >  create mode 100644 usr/include/Makefile
+> >
+> > diff --git a/Makefile b/Makefile
+> > index 1f35aca4fe05..f23516980796 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -1363,7 +1363,7 @@ CLEAN_DIRS  += $(MODVERDIR) include/ksym
+> >  CLEAN_FILES += modules.builtin.modinfo
+> >
+> >  # Directories & files removed with 'make mrproper'
+> > -MRPROPER_DIRS  += include/config usr/include include/generated          \
+> > +MRPROPER_DIRS  += include/config include/generated          \
+> >                 arch/$(SRCARCH)/include/generated .tmp_objdiff
+> >  MRPROPER_FILES += .config .config.old .version \
+> >                 Module.symvers tags TAGS cscope* GPATH GTAGS GRTAGS GSYMS \
+> > diff --git a/init/Kconfig b/init/Kconfig
+> > index df5bba27e3fe..667d68e1cdf4 100644
+> > --- a/init/Kconfig
+> > +++ b/init/Kconfig
+> > @@ -105,6 +105,17 @@ config HEADER_TEST
+> >         If you are a developer or tester and want to ensure the requested
+> >         headers are self-contained, say Y here. Otherwise, choose N.
+> >
+> > +config UAPI_HEADER_TEST
+> > +     bool "Compile test UAPI headers"
+> > +     depends on HEADER_TEST && HEADERS_INSTALL
+> > +     depends on $(success,$(srctree)/scripts/cc-system-headers.sh $(CC))
+> > +     help
+> > +       Compile test headers exported to user-space to ensure they are
+> > +       self-contained, i.e. compilable as standalone units.
+> > +
+> > +       If you are a developer or tester and want to ensure the exported
+> > +       headers are self-contained, say Y here. Otherwise, choose N.
+> > +
+> >  config LOCALVERSION
+> >       string "Local version - append to kernel release"
+> >       help
+> > diff --git a/scripts/cc-system-headers.sh b/scripts/cc-system-headers.sh
+> > new file mode 100755
+> > index 000000000000..1b3db369828c
+> > --- /dev/null
+> > +++ b/scripts/cc-system-headers.sh
+> > @@ -0,0 +1,8 @@
+> > +#!/bin/sh
+> > +# SPDX-License-Identifier: GPL-2.0-only
+> > +
+> > +cat << "END" | $@ -E -x c - -o /dev/null >/dev/null 2>&1
+> > +#include <stdlib.h>
+> > +#include <sys/ioctl.h>
+> > +#include <sys/time.h>
+> > +END
 >
-> Introducing bpf_with_cap() syscall means we need teach these tools to
-> manage the fd, and use the new API when necessary. This is clearly not
-> easy.
+> Add comment to this file that explains that it is used to verify that the
+> toolchain provides the minimal set of header-files required by uapi
+> headers.
 
-How hard can it be?  I looked the the libbpf sources, and there are
-really very few call sites of sys_bpf().  You could update all of them
-with a very small patch.
+Will do.
 
-Also, on a quick survey of kernel/bpf's capable() calls, I feel like
-this series may be misguided.  If you want to enable unprivileged or
-less privileged use of bpf(), how about going through all of the
-capable() calls and handling them one-by-one as appropriate.  Here's a
-random survey:
+> > diff --git a/usr/.gitignore b/usr/.gitignore
+> > index 8e48117a3f3d..be5eae1df7eb 100644
+> > --- a/usr/.gitignore
+> > +++ b/usr/.gitignore
+> > @@ -7,4 +7,3 @@ initramfs_data.cpio.gz
+> >  initramfs_data.cpio.bz2
+> >  initramfs_data.cpio.lzma
+> >  initramfs_list
+> > -include
+> > diff --git a/usr/Makefile b/usr/Makefile
+> > index 4a70ae43c9cb..6a89eb019275 100644
+> > --- a/usr/Makefile
+> > +++ b/usr/Makefile
+> > @@ -56,3 +56,5 @@ $(deps_initramfs): klibcdirs
+> >  $(obj)/$(datafile_y): $(obj)/gen_init_cpio $(deps_initramfs) klibcdirs
+> >       $(Q)$(initramfs) -l $(ramfs-input) > $(obj)/$(datafile_d_y)
+> >       $(call if_changed,initfs)
+> > +
+> > +subdir-$(CONFIG_UAPI_HEADER_TEST) += include
+> > diff --git a/usr/include/.gitignore b/usr/include/.gitignore
+> > new file mode 100644
+> > index 000000000000..a0991ff4402b
+> > --- /dev/null
+> > +++ b/usr/include/.gitignore
+> > @@ -0,0 +1,3 @@
+> > +*
+> > +!.gitignore
+> > +!Makefile
+> > diff --git a/usr/include/Makefile b/usr/include/Makefile
+> > new file mode 100644
+> > index 000000000000..58ce96fa1701
+> > --- /dev/null
+> > +++ b/usr/include/Makefile
+> > @@ -0,0 +1,134 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only
+> > +
+> > +# Unlike the kernel space, uapi headers are written in standard C.
+> > +#  - Forbid C++ style comments
+> > +#  - Use '__inline__', '__asm__' instead of 'inline', 'asm'
+> > +#
+> > +# -std=c90 (equivalent to -ansi) catches the violation of those.
+> > +# We cannot go as far as adding -Wpedantic since it emits too many warnings.
+> > +#
+> > +# REVISIT: re-consider the proper set of compiler flags for uapi compile-test.
+> > +
+> > +UAPI_CFLAGS := -std=c90 -Wall -Werror=implicit-function-declaration
+> > +
+> > +override c_flags = $(UAPI_CFLAGS) -Wp,-MD,$(depfile) -I$(objtree)/usr/include
+> > +
+> > +# The following are excluded for now because they fail to build.
+> > +# The cause of errors are mostly missing include directives.
+> > +# Check one by one, and send a patch to each subsystem.
+> > +#
+> > +# Do not add a new header to the blacklist without legitimate reason.
+> > +# Please consider to fix the header first.
+>
+> Maybe add comment that the alphabetical sort by filename must be preserved.
+> Not too relevant, as we hopefully do not see files being added.
+>
+> > +header-test- += asm/ipcbuf.h
+> > +header-test- += asm/msgbuf.h
+> Consider same syntax like in include/Makefile where you use
+> header-test-<tab><tab>...+= file
+>
+> Then the alignment looks betters.
 
-map_freeze(): It looks like the only reason for a capable() call is
-that there isn't a clear permission model right now defining who owns
-a map and therefore may freeze it.  Could you not use a check along
-the lines of capable_wrt_inode_uidgid() instead of capable()?
+Probably I can do that, but this is not so important
+because our ultimate goal is (almost) no blacklist.
 
-        if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) &&
-            (attr->prog_flags & BPF_F_ANY_ALIGNMENT) &&
-            !capable(CAP_SYS_ADMIN))
-                return -EPERM;
 
-I'm not sure why this is needed at all?  Is it a DoS mitigation?  If
-so, couldn't you find a way to acocunt for inefficient unaligned
-access similarly to how you account for complexity in general?
 
-        if (attr->insn_cnt =3D=3D 0 ||
-            attr->insn_cnt > (capable(CAP_SYS_ADMIN) ?
-BPF_COMPLEXITY_LIMIT_INSNS : BPF_MAXINSNS))
-                return -E2BIG;
 
-This is similar.  I could imagine a cgroup setting that limits bpf
-program complexity.  This is very, very different type of privilege
-than reading kernel memory.
+> > +
+> > +# The rest are compile-tested
+> > +header-test-y += $(filter-out $(header-test-), \
+> > +                     $(patsubst $(obj)/%,%, $(wildcard \
+> > +                     $(addprefix $(obj)/, *.h */*.h */*/*.h */*/*/*.h))))
+> Could you use header-test-pattern-y here?
 
-        if (type !=3D BPF_PROG_TYPE_SOCKET_FILTER &&
-            type !=3D BPF_PROG_TYPE_CGROUP_SKB &&
-            !capable(CAP_SYS_ADMIN))
-                return -EPERM;
+header-test-pattern-y does not work here
+because it only matches to $(srctree)/$(src)/*
 
-I suspect you could just delete this check or expand the allowable
-unprivileged program types after auditing that the other types have
-appropriately restrictive verifiers and require appropriate
-permissions to *run* the programs.
+All headers under usr/include/
+are generated one, and located in $(objtree)/$(obj)/.
 
-In bpf_prog_attach():
-        if (!capable(CAP_NET_ADMIN))
-                return -EPERM;
 
-This looks like it wants to be ns_capable() after you audit the code
-to make sure it's safe enough.
+Thanks.
 
-bpf_prog_get_fd_by_id(): I really think you just need a real
-permission model. Anyone can create a file on a filesystem, and there
-are reasonable policies that allow appropriate users to open existing
-files by name without CAP_SYS_ADMIN.  Similarly, anyone can create a
-key in the kernel keyring subsystem, and there are well-defined rules
-under which someone can access an existing key by name.  I think you
-should come up with a way to handle this for bpf.  Adding a bpffs for
-this seems like a decent approach.
-
-bpf_prog_get_info_by_id():
-
-        if (!capable(CAP_SYS_ADMIN)) {
-                info.jited_prog_len =3D 0;
-                info.xlated_prog_len =3D 0;
-                info.nr_jited_ksyms =3D 0;
-                info.nr_jited_func_lens =3D 0;
-                info.nr_func_info =3D 0;
-                info.nr_line_info =3D 0;
-                info.nr_jited_line_info =3D 0;
-                goto done;
-        }
-
-It looks like someone decided this information was sensitive if you
-query someone else's program.  Again, there are sensible ways to
-address this.
-
-Finally, in the verifier:
-
-is_priv =3D capable(CAP_SYS_ADMIN);
-
-That should just be left alone.  Arguably you could make a new
-capability CAP_BPF_LEAK_KERNEL_ADDRESSES or similar for this.
-
-As it stands, it seems like bpf() was designed under the assumption
-that the kind of security model needed to make it work well for
-unprivileged or differently-privileged users would be developed later.
-But, instead of developing such a security model, this patch is
-introducing a whole new Linux "capability" that just disables all
-security.  From my perspective, this seems like a bad idea.
-
-So, if anyone cares about my opinion, NAK to the whole concept.
-Please instead work on fixing this for real, one capable() check at a
-time.
+-- 
+Best Regards
+Masahiro Yamada
