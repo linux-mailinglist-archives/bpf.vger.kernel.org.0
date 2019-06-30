@@ -2,217 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 288E75ACD9
-	for <lists+bpf@lfdr.de>; Sat, 29 Jun 2019 20:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E5E5ADD6
+	for <lists+bpf@lfdr.de>; Sun, 30 Jun 2019 02:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbfF2SY6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 29 Jun 2019 14:24:58 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:33239 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726882AbfF2SY6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 29 Jun 2019 14:24:58 -0400
-Received: by mail-pg1-f196.google.com with SMTP id m4so4044963pgk.0
-        for <bpf@vger.kernel.org>; Sat, 29 Jun 2019 11:24:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=Xh+trNKBZ3WDbcJVq9m5LKHCXDOI3OQ3I7I7/hRT+jQ=;
-        b=ZhgplxuE2kzJvh/gaJY+58LsZKEXpJgAYiVUqd/BSCwLktPoUSrjNy8h1C9VEGJyB9
-         vXz51ki+RHwabDFFwgn9nCQjvieWZIA1ABZctewUHzc1sA5ZSSPbmKLS1JarEsYNg1M0
-         RvGNT8cVYZvhAmN07MFReAzCHUHlklz1jozuic7BeUgImIOOHVnHiSRiHQQXItgO/svG
-         XLwvFcoIr5+LBicH/0MHoGi/ff2MTSKxszPI4D04S8m8bvbmAuBVJgp6rhHDSE1UcXOE
-         FhD8WPCGghl0vsux7+uJjAohxRUQ4ymxvE/Hs3l5dN6jOzHFbUoTrjbjZEywytKDhGBN
-         RuHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=Xh+trNKBZ3WDbcJVq9m5LKHCXDOI3OQ3I7I7/hRT+jQ=;
-        b=Oh7TCnGIQqgzwLnXTI5FSF2CsatbYjNKctSRSt64NkNfo4kkIesjnOwe0oEj7k4SYI
-         XZe8Rm5tCIVkK2NFvhuywlbAiWDTVFjxNX2r/WWOLd9LrlRBS5Raxk+1f5ECgKm2nXIM
-         OoWhqx86X2hNS7XmyjgPhaLDC+kc1DsgHAnTKbdxVVyA9NP8jISug+OMspyS4UF7YPQl
-         5/gGW0wQRg4G+G6fXd6QADE486PuAzeyRO2ghx8+QElRUlB74R6Htbz9hiNWntGWC9FB
-         WS4OYMeh5PGQkjHGQ8RyLGT574l1Dyc2ZCax9gZ0yMeLQOsQbeX+bu2TgTfvbhLtyFox
-         q5TA==
-X-Gm-Message-State: APjAAAVVLo/Ldg59JmYEM77LA736wtfIpub7e0+X/pXV3vuNbrua7aHy
-        hwmSK0Malh/yuFpjD5v5F0GTmA==
-X-Google-Smtp-Source: APXvYqzz5dqymxb0wW5XzE71dRyZivy1BOQ4nQxD4XT9uL8VLBu5FlyclL3Ub1sa1Lo1Nd7HnPiMZw==
-X-Received: by 2002:a63:fd0d:: with SMTP id d13mr16086847pgh.423.1561832697043;
-        Sat, 29 Jun 2019 11:24:57 -0700 (PDT)
-Received: from cakuba.netronome.com (c-71-204-185-212.hsd1.ca.comcast.net. [71.204.185.212])
-        by smtp.gmail.com with ESMTPSA id e6sm5859917pfn.71.2019.06.29.11.24.56
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Sat, 29 Jun 2019 11:24:56 -0700 (PDT)
-Date:   Sat, 29 Jun 2019 11:24:53 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     <andrii.nakryiko@gmail.com>, <ast@fb.com>, <daniel@iogearbox.net>,
-        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <kernel-team@fb.com>, <songliubraving@fb.com>
-Subject: Re: [PATCH v3 bpf-next 4/4] tools/bpftool: switch map event_pipe to
- libbpf's perf_buffer
-Message-ID: <20190629112453.2c46a114@cakuba.netronome.com>
-In-Reply-To: <20190629055309.1594755-5-andriin@fb.com>
-References: <20190629055309.1594755-1-andriin@fb.com>
-        <20190629055309.1594755-5-andriin@fb.com>
-Organization: Netronome Systems, Ltd.
+        id S1726956AbfF3AMY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 29 Jun 2019 20:12:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726954AbfF3AMY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 29 Jun 2019 20:12:24 -0400
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17B86217F9
+        for <bpf@vger.kernel.org>; Sun, 30 Jun 2019 00:12:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1561853542;
+        bh=dry21q7c7uLneW8C+7n+tBewFMAQGQg4xVKmjaoSQko=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Z110kg3Ic70AzYoTR5dCABspWFR19UTFe3C472D4aYeWL+gT9bEQBuVaVGlJg0vDg
+         4IUa2DU1+FW/I5HS2YNXOEAH76twSShNLWRGBNXWE7FvTHubHi3LQfxmd2RBuHqeuJ
+         08n8Hics4/bjToR8eSrlxyBGJxryJ/Vdo28kgy0M=
+Received: by mail-wr1-f51.google.com with SMTP id p11so9942570wre.7
+        for <bpf@vger.kernel.org>; Sat, 29 Jun 2019 17:12:22 -0700 (PDT)
+X-Gm-Message-State: APjAAAXfTIwyGTBY655AbCeuFnPjNfAviTvE9/MSvvPFA1htdVIVwwoi
+        sQfdqJaeGXY+aLoVp+1ByfHjhY5tznV9P08ba70VdA==
+X-Google-Smtp-Source: APXvYqz/ogITgPfao2eygdVo/OX1Tsk1zmulDyd+kPJV5IoCxQg4RCMhJBnu7BsQaK5PH1oq2tR3PEmP4qr6ml80KNw=
+X-Received: by 2002:adf:a143:: with SMTP id r3mr3437082wrr.352.1561853540531;
+ Sat, 29 Jun 2019 17:12:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20190627201923.2589391-1-songliubraving@fb.com>
+ <20190627201923.2589391-2-songliubraving@fb.com> <21894f45-70d8-dfca-8c02-044f776c5e05@kernel.org>
+ <3C595328-3ABE-4421-9772-8D41094A4F57@fb.com>
+In-Reply-To: <3C595328-3ABE-4421-9772-8D41094A4F57@fb.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sat, 29 Jun 2019 17:12:09 -0700
+X-Gmail-Original-Message-ID: <CALCETrWBnH4Q43POU8cQ7YMjb9LioK28FDEQf7aHZbdf1eBZWg@mail.gmail.com>
+Message-ID: <CALCETrWBnH4Q43POU8cQ7YMjb9LioK28FDEQf7aHZbdf1eBZWg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
+To:     Song Liu <songliubraving@fb.com>, linux-security@vger.kernel.org
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Jann Horn <jannh@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "linux-abi@vger.kernel.org" <linux-abi@vger.kernel.org>,
+        "kees@chromium.org" <kees@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 28 Jun 2019 22:53:09 -0700, Andrii Nakryiko wrote:
->  	map_info_len =3D sizeof(map_info);
->  	map_fd =3D map_parse_fd_and_info(&argc, &argv, &map_info, &map_info_len=
-);
-> -	if (map_fd < 0)
-> +	if (map_fd < 0) {
-> +		p_err("failed to get map info");
+On Fri, Jun 28, 2019 at 12:05 PM Song Liu <songliubraving@fb.com> wrote:
+>
+> Hi Andy,
+>
+> > On Jun 27, 2019, at 4:40 PM, Andy Lutomirski <luto@kernel.org> wrote:
+> >
+> > On 6/27/19 1:19 PM, Song Liu wrote:
+> >> This patch introduce unprivileged BPF access. The access control is
+> >> achieved via device /dev/bpf. Users with write access to /dev/bpf are =
+able
+> >> to call sys_bpf().
+> >> Two ioctl command are added to /dev/bpf:
+> >> The two commands enable/disable permission to call sys_bpf() for curre=
+nt
+> >> task. This permission is noted by bpf_permitted in task_struct. This
+> >> permission is inherited during clone(CLONE_THREAD).
+> >> Helper function bpf_capable() is added to check whether the task has g=
+ot
+> >> permission via /dev/bpf.
+> >
+> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> >> index 0e079b2298f8..79dc4d641cf3 100644
+> >> --- a/kernel/bpf/verifier.c
+> >> +++ b/kernel/bpf/verifier.c
+> >> @@ -9134,7 +9134,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_=
+attr *attr,
+> >>              env->insn_aux_data[i].orig_idx =3D i;
+> >>      env->prog =3D *prog;
+> >>      env->ops =3D bpf_verifier_ops[env->prog->type];
+> >> -    is_priv =3D capable(CAP_SYS_ADMIN);
+> >> +    is_priv =3D bpf_capable(CAP_SYS_ADMIN);
+> >
+> > Huh?  This isn't a hardening measure -- the "is_priv" verifier mode all=
+ows straight-up leaks of private kernel state to user mode.
+> >
+> > (For that matter, the pending lockdown stuff should possibly consider t=
+his a "confidentiality" issue.)
+> >
+> >
+> > I have a bigger issue with this patch, though: it's a really awkward wa=
+y to pretend to have capabilities.  For bpf, it seems like you could make t=
+his be a *real* capability without too much pain since there's only one sys=
+call there.  Just find a way to pass an fd to /dev/bpf into the syscall.  I=
+f this means you need a new bpf_with_cap() syscall that takes an extra argu=
+ment, so be it.  The old bpf() syscall can just translate to bpf_with_cap(.=
+.., -1).
+> >
+> > For a while, I've considered a scheme I call "implicit rights".  There =
+would be a directory in /dev called /dev/implicit_rights.  This would eithe=
+r be part of devtmpfs or a whole new filesystem -- it would *not* be any ot=
+her filesystem.  The contents would be files that can't be read or written =
+and exist only in memory.  You create them with a privileged syscall.  Cert=
+ain actions that are sensitive but not at the level of CAP_SYS_ADMIN (use o=
+f large-attack-surface bpf stuff, creation of user namespaces, profiling th=
+e kernel, etc) could require an "implicit right".  When you do them, if you=
+ don't have CAP_SYS_ADMIN, the kernel would do a path walk for, say, /dev/i=
+mplicit_rights/bpf and, if the object exists, can be opened, and actually r=
+efers to the "bpf" rights object, then the action is allowed.  Otherwise it=
+'s denied.
+> >
+> > This is extensible, and it doesn't require the rather ugly per-task sta=
+te of whether it's enabled.
+> >
+> > For things like creation of user namespaces, there's an existing API, a=
+nd the default is that it works without privilege.  Switching it to an impl=
+icit right has the benefit of not requiring code changes to programs that a=
+lready work as non-root.
+> >
+> > But, for BPF in particular, this type of compatibility issue doesn't ex=
+ist now.  You already can't use most eBPF functionality without privilege. =
+ New bpf-using programs meant to run without privilege are *new*, so they c=
+an use a new improved API.  So, rather than adding this obnoxious ioctl, ju=
+st make the API explicit, please.
+> >
+> > Also, please cc: linux-abi next time.
+>
+> Thanks for your inputs.
+>
+> I think we need to clarify the use case here. In this case, we are NOT
+> thinking about creating new tools for unprivileged users. Instead, we
+> would like to use existing tools without root.
 
-Can't do, map_parse_fd_and_info() prints an error already, we can't
-have multiple errors in JSON.
+I read patch 4, and I interpret it very differently.  Patches 2-4 are
+creating a new version of libbpf and a new version of bpftool.  Given
+this, I see no real justification for adding a new in-kernel per-task
+state instead of just pushing the complexity into libbpf.
 
->  		return -1;
-> +	}
-> =20
->  	if (map_info.type !=3D BPF_MAP_TYPE_PERF_EVENT_ARRAY) {
->  		p_err("map is not a perf event array");
-> @@ -205,7 +157,7 @@ int do_event_pipe(int argc, char **argv)
->  			char *endptr;
-> =20
->  			NEXT_ARG();
-> -			cpu =3D strtoul(*argv, &endptr, 0);
-> +			ctx.cpu =3D strtoul(*argv, &endptr, 0);
->  			if (*endptr) {
->  				p_err("can't parse %s as CPU ID", **argv);
->  				goto err_close_map;
-> @@ -216,7 +168,7 @@ int do_event_pipe(int argc, char **argv)
->  			char *endptr;
-> =20
->  			NEXT_ARG();
-> -			index =3D strtoul(*argv, &endptr, 0);
-> +			ctx.idx =3D strtoul(*argv, &endptr, 0);
->  			if (*endptr) {
->  				p_err("can't parse %s as index", **argv);
->  				goto err_close_map;
-> @@ -228,45 +180,32 @@ int do_event_pipe(int argc, char **argv)
->  			goto err_close_map;
->  		}
-> =20
-> -		do_all =3D false;
-> +		ctx.all_cpus =3D false;
->  	}
-> =20
-> -	if (!do_all) {
-> -		if (index =3D=3D -1 || cpu =3D=3D -1) {
-> +	if (!ctx.all_cpus) {
-> +		if (ctx.idx =3D=3D -1 || ctx.cpu =3D=3D -1) {
->  			p_err("cpu and index must be specified together");
->  			goto err_close_map;
+> On the kernel side, we are not planning provides a subset of safe
+> features for unprivileged users. The permission here is all-or-nothing.
 
-Now that you look at err looks like we're missing an err =3D -1 assignment
-here?  but...
+This may be a showstopper.  I think this series needs an extremely
+clear explanation of the security implications of providing access to
+/dev/bpf.  Is it just exposing more attack surface for kernel bugs, or
+is it, *by design*, exposing new privileges.  Given the is_priv change
+that I pointed out upthread, it appears to be the latter, and I'm
+wondering how this is a reasonable thing to do.
 
->  		}
-> -
-> -		nfds =3D 1;
->  	} else {
-> -		nfds =3D min(get_possible_cpus(), map_info.max_entries);
-> -		cpu =3D 0;
-> -		index =3D 0;
-> +		ctx.cpu =3D 0;
-> +		ctx.idx =3D 0;
->  	}
-> =20
-> -	rings =3D calloc(nfds, sizeof(rings[0]));
-> -	if (!rings)
-> +	opts.attr =3D &perf_attr;
-> +	opts.event_cb =3D print_bpf_output;
-> +	opts.ctx =3D &ctx;
-> +	opts.cpu_cnt =3D ctx.all_cpus ? 0 : 1;
-> +	opts.cpus =3D &ctx.cpu;
-> +	opts.map_keys =3D &ctx.idx;
-> +
-> +	pb =3D perf_buffer__new_raw(map_fd, MMAP_PAGE_CNT, &opts);
-> +	err =3D libbpf_get_error(pb);
-> +	if (err) {
-> +		p_err("failed to create perf buffer: %s (%d)",
-> +		      strerror(err), err);
->  		goto err_close_map;
-> -
-> -	pfds =3D calloc(nfds, sizeof(pfds[0]));
-> -	if (!pfds)
-> -		goto err_free_rings;
-> -
-> -	for (i =3D 0; i < nfds; i++) {
-> -		rings[i].cpu =3D cpu + i;
-> -		rings[i].key =3D index + i;
-> -
-> -		rings[i].fd =3D bpf_perf_event_open(map_fd, rings[i].key,
-> -						  rings[i].cpu);
-> -		if (rings[i].fd < 0)
-> -			goto err_close_fds_prev;
-> -
-> -		rings[i].mem =3D perf_event_mmap(rings[i].fd);
-> -		if (!rings[i].mem)
-> -			goto err_close_fds_current;
-> -
-> -		pfds[i].fd =3D rings[i].fd;
-> -		pfds[i].events =3D POLLIN;
->  	}
-> =20
->  	signal(SIGINT, int_exit);
-> @@ -277,35 +216,25 @@ int do_event_pipe(int argc, char **argv)
->  		jsonw_start_array(json_wtr);
-> =20
->  	while (!stop) {
-> -		poll(pfds, nfds, 200);
-> -		for (i =3D 0; i < nfds; i++)
-> -			perf_event_read(&rings[i], &tmp_buf, &tmp_buf_sz);
-> +		err =3D perf_buffer__poll(pb, 200);
-> +		if (err < 0 && err !=3D -EINTR) {
-> +			p_err("perf buffer polling failed: %s (%d)",
-> +			      strerror(err), err);
-> +			goto err_close_pb;
-> +		}
->  	}
-> -	free(tmp_buf);
-> =20
->  	if (json_output)
->  		jsonw_end_array(json_wtr);
-> =20
-> -	for (i =3D 0; i < nfds; i++) {
-> -		perf_event_unmap(rings[i].mem);
-> -		close(rings[i].fd);
-> -	}
-> -	free(pfds);
-> -	free(rings);
-> +	perf_buffer__free(pb);
->  	close(map_fd);
-> =20
->  	return 0;
-> =20
-> -err_close_fds_prev:
-> -	while (i--) {
-> -		perf_event_unmap(rings[i].mem);
-> -err_close_fds_current:
-> -		close(rings[i].fd);
-> -	}
-> -	free(pfds);
-> -err_free_rings:
-> -	free(rings);
-> +err_close_pb:
-> +	perf_buffer__free(pb);
->  err_close_map:
->  	close(map_fd);
-> -	return -1;
-> +	return err ? -1 : 0;
+>
+> Introducing bpf_with_cap() syscall means we need teach these tools to
+> manage the fd, and use the new API when necessary. This is clearly not
+> easy.
 
-... how can we return 0 on the error path? =F0=9F=98=95
+How hard can it be?  I looked the the libbpf sources, and there are
+really very few call sites of sys_bpf().  You could update all of them
+with a very small patch.
 
->  }
+Also, on a quick survey of kernel/bpf's capable() calls, I feel like
+this series may be misguided.  If you want to enable unprivileged or
+less privileged use of bpf(), how about going through all of the
+capable() calls and handling them one-by-one as appropriate.  Here's a
+random survey:
 
+map_freeze(): It looks like the only reason for a capable() call is
+that there isn't a clear permission model right now defining who owns
+a map and therefore may freeze it.  Could you not use a check along
+the lines of capable_wrt_inode_uidgid() instead of capable()?
+
+        if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) &&
+            (attr->prog_flags & BPF_F_ANY_ALIGNMENT) &&
+            !capable(CAP_SYS_ADMIN))
+                return -EPERM;
+
+I'm not sure why this is needed at all?  Is it a DoS mitigation?  If
+so, couldn't you find a way to acocunt for inefficient unaligned
+access similarly to how you account for complexity in general?
+
+        if (attr->insn_cnt =3D=3D 0 ||
+            attr->insn_cnt > (capable(CAP_SYS_ADMIN) ?
+BPF_COMPLEXITY_LIMIT_INSNS : BPF_MAXINSNS))
+                return -E2BIG;
+
+This is similar.  I could imagine a cgroup setting that limits bpf
+program complexity.  This is very, very different type of privilege
+than reading kernel memory.
+
+        if (type !=3D BPF_PROG_TYPE_SOCKET_FILTER &&
+            type !=3D BPF_PROG_TYPE_CGROUP_SKB &&
+            !capable(CAP_SYS_ADMIN))
+                return -EPERM;
+
+I suspect you could just delete this check or expand the allowable
+unprivileged program types after auditing that the other types have
+appropriately restrictive verifiers and require appropriate
+permissions to *run* the programs.
+
+In bpf_prog_attach():
+        if (!capable(CAP_NET_ADMIN))
+                return -EPERM;
+
+This looks like it wants to be ns_capable() after you audit the code
+to make sure it's safe enough.
+
+bpf_prog_get_fd_by_id(): I really think you just need a real
+permission model. Anyone can create a file on a filesystem, and there
+are reasonable policies that allow appropriate users to open existing
+files by name without CAP_SYS_ADMIN.  Similarly, anyone can create a
+key in the kernel keyring subsystem, and there are well-defined rules
+under which someone can access an existing key by name.  I think you
+should come up with a way to handle this for bpf.  Adding a bpffs for
+this seems like a decent approach.
+
+bpf_prog_get_info_by_id():
+
+        if (!capable(CAP_SYS_ADMIN)) {
+                info.jited_prog_len =3D 0;
+                info.xlated_prog_len =3D 0;
+                info.nr_jited_ksyms =3D 0;
+                info.nr_jited_func_lens =3D 0;
+                info.nr_func_info =3D 0;
+                info.nr_line_info =3D 0;
+                info.nr_jited_line_info =3D 0;
+                goto done;
+        }
+
+It looks like someone decided this information was sensitive if you
+query someone else's program.  Again, there are sensible ways to
+address this.
+
+Finally, in the verifier:
+
+is_priv =3D capable(CAP_SYS_ADMIN);
+
+That should just be left alone.  Arguably you could make a new
+capability CAP_BPF_LEAK_KERNEL_ADDRESSES or similar for this.
+
+As it stands, it seems like bpf() was designed under the assumption
+that the kind of security model needed to make it work well for
+unprivileged or differently-privileged users would be developed later.
+But, instead of developing such a security model, this patch is
+introducing a whole new Linux "capability" that just disables all
+security.  From my perspective, this seems like a bad idea.
+
+So, if anyone cares about my opinion, NAK to the whole concept.
+Please instead work on fixing this for real, one capable() check at a
+time.
