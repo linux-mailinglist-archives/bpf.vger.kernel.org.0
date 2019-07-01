@@ -2,95 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2678B5BC64
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2019 15:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 312A45BED3
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2019 16:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727659AbfGANKy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jul 2019 09:10:54 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:39804 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbfGANKy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Jul 2019 09:10:54 -0400
-Received: by mail-qt1-f195.google.com with SMTP id i34so14518285qta.6;
-        Mon, 01 Jul 2019 06:10:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=hBqqOfAzGbzl/D2babDWeF0YoSFJC5IfACjSA3b99fU=;
-        b=pnVdNCENtriillJ7LrCzscnOug9P3F8gawxi3YesIVadbIXX3OYkjMkYhkVjIThMB6
-         9+gOpMJlUxfO0XGPHiT84pwW1yPO9LrhWJ9JfthJ7thu2Jb9aZ4N7Q269NM6vwBpzmwW
-         vvsJKF8iV75UxBr05Zu9GnCcKPXIyOLCZSW/mww7KBKmyWYt6lt0UkPRRx2SRoh9G7DR
-         37rUx1Z3f2Kr3NwKorztWUOpDQFoW7vUqI5ZoCqEuhhOXLDlRfs32aCdY1prSQwOXyi0
-         XvZdH0xbi3xvXOvkDR2xnHl92Qab9qIQeFJci3609+uHGETuBpFGjOB6EB1T8onbgG26
-         7rkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hBqqOfAzGbzl/D2babDWeF0YoSFJC5IfACjSA3b99fU=;
-        b=HSdx8LUYa5y2NY+nCdSZ7aR34fygje352gSxzKJyrFmbhQNRDlsH75e+Y9SDECZ2HW
-         VOCbU3Ln/2Z2Tga0Tr9Kt/RYoYIcIV7nhTL1h7gu8wDdZuhU+uNzDCO/yN2oEtc5D6Q8
-         fDP3DyWYeonGkWCCLy9bWNw4rhQILF04YLzg6BoAbJoSfmeknwo2rMbi4qUlvLToBYEs
-         xKhfaogZy7wyqLqtljhiPkP+PxxktulHxIdYuZCHv4sCQrbTvKnNZPvCqFyLgDlKLdtu
-         dqivNitk1Qh2tzjVVD+0cO7Z5KxatTIo6WZfi+x063HHMaPXyYNT6yrW/Aewi5naC9xD
-         IfOw==
-X-Gm-Message-State: APjAAAXcesRXPbx8UeAhw0HgDDVTdCKBl/Cf5ldF3Uy7x8/eOessWmSW
-        aOeBFPYXd9yk0oM/oM0t0XssebBe7xaEElmG17o=
-X-Google-Smtp-Source: APXvYqyK/Igd9RHCvatr9CYk9ik99HwYaCQLpSv/aNdEylvKwl0yJjjS7gUOwpUrW9hY3ikB8CEfUGcRBAblbDVujxw=
-X-Received: by 2002:ac8:4442:: with SMTP id m2mr20820589qtn.107.1561986653046;
- Mon, 01 Jul 2019 06:10:53 -0700 (PDT)
+        id S1728449AbfGAO6J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Jul 2019 10:58:09 -0400
+Received: from mga05.intel.com ([192.55.52.43]:18083 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726967AbfGAO6J (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Jul 2019 10:58:09 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 01 Jul 2019 07:58:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.63,439,1557212400"; 
+   d="scan'208";a="186506946"
+Received: from klaatz-mobl1.ger.corp.intel.com (HELO [10.237.221.70]) ([10.237.221.70])
+  by fmsmga004.fm.intel.com with ESMTP; 01 Jul 2019 07:58:06 -0700
+Subject: Re: [PATCH 00/11] XDP unaligned chunk placement support
+To:     Jonathan Lemon <jonathan.lemon@gmail.com>
+Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com,
+        bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        bruce.richardson@intel.com, ciara.loftus@intel.com
+References: <20190620083924.1996-1-kevin.laatz@intel.com>
+ <FA8389B9-F89C-4BFF-95EE-56F702BBCC6D@gmail.com>
+ <ef7e9469-e7be-647b-8bb1-da29bc01fa2e@intel.com>
+ <20190627142534.4f4b8995@cakuba.netronome.com>
+ <f0ca817a-02b4-df22-d01b-7bc07171a4dc@intel.com>
+ <BAE24CBF-416D-4665-B2C9-CE1F5EAE28FF@gmail.com>
+From:   "Laatz, Kevin" <kevin.laatz@intel.com>
+Message-ID: <c6c48475-c4c8-599f-8217-4bc0f4d26a90@intel.com>
+Date:   Mon, 1 Jul 2019 15:58:05 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <20190626155911.13574-1-ivan.khoronzhuk@linaro.org>
- <CAJ+HfNid3PntipAJHuPR-tQudf+E6UQK6mPDHdc0O=wCUSjEEA@mail.gmail.com> <20190629.105306.762888643756822083.davem@davemloft.net>
-In-Reply-To: <20190629.105306.762888643756822083.davem@davemloft.net>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Mon, 1 Jul 2019 15:10:40 +0200
-Message-ID: <CAJ+HfNi3+hu+D=nJOrtC_xVzE442BoYo4mXqT28rGPG83Dr_sw@mail.gmail.com>
-Subject: Re: [PATCH net-next] xdp: xdp_umem: fix umem pages mapping for 32bits systems
-To:     David Miller <davem@davemloft.net>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Xdp <xdp-newbies@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <BAE24CBF-416D-4665-B2C9-CE1F5EAE28FF@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 29 Jun 2019 at 19:53, David Miller <davem@davemloft.net> wrote:
+On 28/06/2019 21:29, Jonathan Lemon wrote:
+> On 28 Jun 2019, at 9:19, Laatz, Kevin wrote:
+>> On 27/06/2019 22:25, Jakub Kicinski wrote:
+>>> I think that's very limiting.  What is the challenge in providing
+>>> aligned addresses, exactly?
+>> The challenges are two-fold:
+>> 1) it prevents using arbitrary buffer sizes, which will be an issue 
+>> supporting e.g. jumbo frames in future.
+>> 2) higher level user-space frameworks which may want to use AF_XDP, 
+>> such as DPDK, do not currently support having buffers with 'fixed' 
+>> alignment.
+>>     The reason that DPDK uses arbitrary placement is that:
+>>         - it would stop things working on certain NICs which need the 
+>> actual writable space specified in units of 1k - therefore we need 2k 
+>> + metadata space.
+>>         - we place padding between buffers to avoid constantly 
+>> hitting the same memory channels when accessing memory.
+>>         - it allows the application to choose the actual buffer size 
+>> it wants to use.
+>>     We make use of the above to allow us to speed up processing 
+>> significantly and also reduce the packet buffer memory size.
+>>
+>>     Not having arbitrary buffer alignment also means an AF_XDP driver 
+>> for DPDK cannot be a drop-in replacement for existing drivers in 
+>> those frameworks. Even with a new capability to allow an arbitrary 
+>> buffer alignment, existing apps will need to be modified to use that 
+>> new capability.
 >
-> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
-> Date: Wed, 26 Jun 2019 22:50:23 +0200
->
-> > On Wed, 26 Jun 2019 at 17:59, Ivan Khoronzhuk
-> > <ivan.khoronzhuk@linaro.org> wrote:
-> >>
-> >> Use kmap instead of page_address as it's not always in low memory.
-> >>
-> >
-> > Ah, some 32-bit love. :-) Thanks for working on this!
-> >
-> > For future patches, please base AF_XDP patches on the bpf/bpf-next
-> > tree instead of net/net-next.
-> >
-> > Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
->
-> Alexei and Daniel, I'll let you guys take this one.
->
-> Thanks.
+> Since all buffers in the umem are the same chunk size, the original 
+> buffer
+> address can be recalculated with some multiply/shift math. However, 
+> this is
+> more expensive than just a mask operation.
 
-Ivan, kbuild reported some build issues. Faulty, or not; Please have a
-look at them.
 
+Yes, we can do this.
 
-Cheers,
-Bj=C3=B6rn
+Another option we have is to add a socket option for querying the 
+metadata length from the driver (assuming it doesn't vary per packet). 
+We can use that information to get back the original address using 
+subtraction.
+
+Alternatively, we can change the Rx descriptor format to include the 
+metadata length. We could do this in a couple of ways, for example, 
+rather than returning the address at the start of the packet, instead 
+return the buffer address that was passed in, and adding another 16-bit 
+field to specify the start of the packet offset with that buffer. Id 
+using 16-bits of descriptor space is not desirable, an alternative could 
+be to limit umem sizes to e.g. 2^48 bits (256 terabytes should be 
+enough, right :-) ) and use the remaining 16 bits of the address as a 
+packet offset. Other variations on these approaches are obviously 
+possible too.
+
