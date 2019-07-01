@@ -2,89 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5203E5B816
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2019 11:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A7E5BB00
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2019 13:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728252AbfGAJeh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jul 2019 05:34:37 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:38590 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728143AbfGAJeh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Jul 2019 05:34:37 -0400
-Received: by mail-oi1-f194.google.com with SMTP id v186so9416576oie.5
-        for <bpf@vger.kernel.org>; Mon, 01 Jul 2019 02:34:37 -0700 (PDT)
+        id S1728677AbfGALyR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Jul 2019 07:54:17 -0400
+Received: from mail-wr1-f51.google.com ([209.85.221.51]:35550 "EHLO
+        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728075AbfGALyR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Jul 2019 07:54:17 -0400
+Received: by mail-wr1-f51.google.com with SMTP id c27so5810415wrb.2
+        for <bpf@vger.kernel.org>; Mon, 01 Jul 2019 04:54:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yBOQL4AlA49bjQlqErsbDODVihHA5ZvWVTU0xteZNjM=;
-        b=sqgTYLC0jS+FvL1gHtpbAGC/SFNLb8Khi0zbul2zM9QIHbNFwew/u471bowmYEHrJl
-         h9EbSGIU/HYDlTleHv41zX4llIzx9RUen1vqGxeiNDKti/EDzikPP22JI2xXk05nNpqv
-         tdPXvDg2eEbYU9oP7lzvuB6AxCWLwVOrkGvHk=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=4l1OoRGJHKr+MWQVNEEoY4Tjxrzxl48tKVdN29VwLY0=;
+        b=qRz9hdlPoMqyZHQQvqF09N2wmlh7pAa9MaqTcojhJBXFy2vQx3qTwNlWIP6rNxxgnJ
+         eOLU3akvmQN5UnRNkjrNI1mPwzNW4dJSWdezuVbfZ5UBdGRH3yJw2J1d//b61J80Go/a
+         yMSW5K8zElIkKh0e706+eT0+SUbRiOS8q4y2zWs0xxReFxQbQvCzoT4WCpShfm01hrE5
+         PW2PniRGZnQxspVv4K+Ud5tUiwUSs3OCNiOaqgXFjN4YNhjQGuuB4cDZIW2RNah/KOMd
+         vxIEDtx3HEov4u5shZhuRJss1ubrpg6P5kZV96j4AUZ4obD+Z/lJK1ycU5v+zRmM/UXK
+         thDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yBOQL4AlA49bjQlqErsbDODVihHA5ZvWVTU0xteZNjM=;
-        b=hGDyq/8LAxU4Td5XdmC3SqvoQcFysuAIsDYrRvguL57ovBczcCgpn+LAz6Ay0NKwHd
-         mF123LnsKKlHpadEhP2ZO8AsI0qvcAES8Blp7ibw3i5kWqSOVC06i8Okhe95apHcasGG
-         0gV69hvfpOoa0PYeRQl4a5il+VosF56ET1+7rR3VlNyprIC059P6fzG9+kTUYBq4w3Im
-         PvGdXEZ2KBF5oZqVB7AhlX7v529PcazQooPlUc/HHXRYJnvHPgwmvplv+lxPFPATG27+
-         mFnNavGQFAo9jmlcDPnBj0Zq/rQZb2X0kFsjQ+5yVMlKQvMPU3FSfZ5L100gupnPPJVV
-         /HDw==
-X-Gm-Message-State: APjAAAXAf1MWTLtTrhfVFwOn3xzhbepHnPZWIJblkn8Et/zkZDVNmXwz
-        2WpdrZql7cYtwEMCfoF1ubqywxwTNeQMKomUigbqhw==
-X-Google-Smtp-Source: APXvYqwskeJabbHvnBxy9OrHFkf4zReo8vmmZTHqVVBtlsOL5J/ywx6cEEt9fZgNZ8oR/IU09XbV7Jctvx2AUgd5TkQ=
-X-Received: by 2002:aca:ea0b:: with SMTP id i11mr5961615oih.102.1561973676792;
- Mon, 01 Jul 2019 02:34:36 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=4l1OoRGJHKr+MWQVNEEoY4Tjxrzxl48tKVdN29VwLY0=;
+        b=IsWiXybz3upyu8OEaslCVPqvPYPtqw5F+aIdwehylkXlN4hivp8PUxzznn1Xo4xPVd
+         QZ0tbQCeTpSJSUAwyKMEN+qGRMJJc2rj9jgRxD564w7IDS8kVBG2g937Ic+bziSc0RLe
+         LjFgJ9mSR64L94cQmso5lNFqaB5b9MpnhF412ObESil7/F54eH2lkPHi1dmWzmWWMdeK
+         8g1gWhx55qRRuosIIG4vflYAY7gfVo74A8g8sekQ7OidLqDmUsJErxbbum+L8P51CYDf
+         9N4xntbbV3YwGLzB2ufmwI/NiWQoM+gxAfCInw4NDLxXWZoOe9UCbibdwRRrPi0/b9kf
+         59Fg==
+X-Gm-Message-State: APjAAAVjkQgkXKhIRcNKsD8HSZ5QK92fbKpvfxtOeGBGStM/zKdquBqc
+        QPv567ithpvBO5reM8/uX0I=
+X-Google-Smtp-Source: APXvYqyr9nafbHjUyLUebLlEjAC0ZnpkLOODa1nvfY87hI6ZAbt8b/HNS2Xog/YuHRQgTIcxV/qEzA==
+X-Received: by 2002:adf:ed41:: with SMTP id u1mr17884568wro.162.1561982055094;
+        Mon, 01 Jul 2019 04:54:15 -0700 (PDT)
+Received: from gmail.com (net-5-95-187-49.cust.vodafonedsl.it. [5.95.187.49])
+        by smtp.gmail.com with ESMTPSA id h9sm3334734wrw.85.2019.07.01.04.54.14
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Jul 2019 04:54:14 -0700 (PDT)
+Date:   Mon, 1 Jul 2019 13:54:14 +0200
+From:   Paolo Pisati <p.pisati@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org
+Subject: [RESEND] test_verifier #13 fails on arm64: "retval 65507 != -29"
+Message-ID: <20190701115414.GA4452@harukaze>
 MIME-Version: 1.0
-References: <20190627201923.2589391-1-songliubraving@fb.com>
- <20190627201923.2589391-2-songliubraving@fb.com> <CACAyw98RvDc+i3gpgnAtnM0ojAfQ-mHvzRXFRUcgkEPr3K4G-g@mail.gmail.com>
- <91C99EC0-C441-410E-A96F-D990045E4987@fb.com>
-In-Reply-To: <91C99EC0-C441-410E-A96F-D990045E4987@fb.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Mon, 1 Jul 2019 10:34:25 +0100
-Message-ID: <CACAyw98VyM8a-h_8jtsNdF0KfK69-AxzRR4K28HVsyUecb0a5Q@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>, Jann Horn <jannh@google.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 28 Jun 2019 at 20:10, Song Liu <songliubraving@fb.com> wrote:
-> There should be a master thread, no? Can we do that from the master threa=
-d at
-> the beginning of the execution?
+Full failure message:
 
-Unfortunately, no. The Go runtime has no such concept. This is all
-that is defined about program start up:
+...
+#13/p valid read map access into a read-only array 2 FAIL retval 65507 != -29 
+verification time 14 usec
+stack depth 8
+processed 14 insns (limit 1000000) max_states_per_insn 0 total_states 2
+peak_states 2 mark_read 1
+...
 
-  https://golang.org/ref/spec#Program_initialization_and_execution
+this on 5.2-rc6, arm64 defconfig + CONFIG_BPF* enabled (full config here [1]).
+Any idea what could be wrong?
 
-Salient section:
-
-  Package initialization=E2=80=94variable initialization and the invocation=
- of init
-  functions=E2=80=94happens in a single goroutine, sequentially, one packag=
-e at
-  a time. An init function may launch other goroutines, which can run
-  concurrently with the initialization code. However, initialization always
-  sequences the init functions: it will not invoke the next one until the
-  previous one has returned.
-
-This means that at the earliest possible moment for Go code to run,
-the scheduler is already active with at least GOMAXPROCS threads.
-
---=20
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+1: http://paste.ubuntu.com/p/tXXFGCPwbp/
+-- 
+bye,
+p.
