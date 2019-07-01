@@ -2,168 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD8B5C122
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2019 18:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86BFE5C178
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2019 18:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728591AbfGAQbO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jul 2019 12:31:14 -0400
-Received: from mail-pg1-f202.google.com ([209.85.215.202]:53705 "EHLO
-        mail-pg1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728501AbfGAQbN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Jul 2019 12:31:13 -0400
-Received: by mail-pg1-f202.google.com with SMTP id u4so4215881pgb.20
-        for <bpf@vger.kernel.org>; Mon, 01 Jul 2019 09:31:13 -0700 (PDT)
+        id S1727825AbfGAQyh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Jul 2019 12:54:37 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:39842 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727563AbfGAQyg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Jul 2019 12:54:36 -0400
+Received: by mail-qk1-f195.google.com with SMTP id i125so11555475qkd.6;
+        Mon, 01 Jul 2019 09:54:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GO4y5VtWIJEbI5Ri+PS4Rm7/vHbI8UMMA44QF3Z6uII=;
-        b=CQgHRv1itxK6dpYdG2eR2i9xxdgbtOIjp3iDrSrQvtO813s0R1oMsh4GWuOJi4WSlQ
-         FTgJPdzq0I7asWtuUeHFg/1wbU0t5SzSZTjsaptaw68Ss9To7Z1sHzz30kAPDcoKms6y
-         PGtI6i0qnfUDu3UQ/Ecxp21f1OElAa+m4GcOHmNYT96dmQDLmgHytOUbPqIfQ75+cl24
-         5VPlxbsoXFbccArMA9qWYtf6YmOx6ynmkgghwxqr33w83b2KrtKEcr50eEr4YyiQEoSS
-         hWutqgDqfHTh0JkD06t1o2LyBjWzPS8BSnRJNIZsptIbbvA1VDz9CAcA2DqPBnm8/7LM
-         tAqg==
+        bh=yqjjWJ80wfB2V95LiA7VZtkdNnbGbNC6jRcZqL+S+c0=;
+        b=oPK8TIEOv7t9CxQt53EhLEB+/Q8BNQo3wU/oEjM0DVcbOf2qABObXAzq5DhecRnQxM
+         1za0bYaCAooemB1otBGAmCZPM2AZhRh50CGq81k1QKsZKTTHlj0Ay8U94yYwCFLHMy3/
+         DSqij7kcFMy0EOZ8fIyLCc/wPk1u8oYz9welrz0+OyozEQAABc6EOozZzzuydgIETiSp
+         ekcSefvRL401L0+dzBRNwdk2tjz6MT+mYosfQrVm8i2OBbXMtJaGQPJjcOHJAGM28Y/x
+         2PhaRACeEUZ2lq6mRiZt3AGGqpaYFbiUzl5p+rJ+o0dgEPY13zJRVRBwxSoN5MdoD1m4
+         7ltg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=GO4y5VtWIJEbI5Ri+PS4Rm7/vHbI8UMMA44QF3Z6uII=;
-        b=UaruWl1KrvZTsLT0Yf96Gjo5JoaqotrM1oFZxjyvYRQQTPiBOF8fAFccZhwCYzXXmi
-         licqr8CGHQ0hTJ0H58H1Tgi6mLAHYWZuyaztO+2xcuA9Wvsf9iHU8ERipkqvQJzAmBs7
-         ILBcPJITD0Y2VJ5sbxP2hjQhhAN9omHdJK3ThWAKjRmDQvt679x+bRuoSBfzciduBzUO
-         NJSqrAF+2vu28zH+oDKKSYbtrSs0zR7hidIhI93dM1/ObKf6QUh2Qrveha5DrVgzmWho
-         EtG4VKLy9Fg24AQ71tjcnete2uDagTtJFChjjhzkAwY0iDiQs9Xd2dR9Yjz2vdTuKFHS
-         OkaA==
-X-Gm-Message-State: APjAAAUWS0YeSfib+GXw9RFsaEJpK0sQSccYqn2KAzEjTDh3saOwTyUT
-        w9dray1U++ho/Ek8eWYWwDMUbUc=
-X-Google-Smtp-Source: APXvYqwm20+Vv4BbUvIKFLK/ZbV4k9koXMB7IZXw08tBxzDHpkvDPgykcI/BFsoYzO6zdF2tLg/zxaE=
-X-Received: by 2002:a65:420c:: with SMTP id c12mr6037426pgq.125.1561998672771;
- Mon, 01 Jul 2019 09:31:12 -0700 (PDT)
-Date:   Mon,  1 Jul 2019 09:31:03 -0700
-In-Reply-To: <20190701163103.237550-1-sdf@google.com>
-Message-Id: <20190701163103.237550-4-sdf@google.com>
-Mime-Version: 1.0
-References: <20190701163103.237550-1-sdf@google.com>
-X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
-Subject: [PATCH bpf-next v2 3/3] selftests/bpf: add verifier tests for wide stores
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yqjjWJ80wfB2V95LiA7VZtkdNnbGbNC6jRcZqL+S+c0=;
+        b=CAf/dIBHKDRzaeJnEqUuRvKld+55/vWg4d6jmPib5HiahbgjiM9zilHYwUAKd7mKv5
+         3YxF4GCX4NzYxdeevNzWmx0pgtfEbu0VeVD2F34R1ydQf8LbXpiQUzBLLU2CW1sy6piI
+         JegBCKimtrrumtl8IXDwEehKnWMw4x3+4YCBGky4u72OQLGFoN4q0x7Cp7+Q39WcwFw9
+         Boy8qVv066jnQVYJfbAUWJsGd8/LtOj8Rm5vjslDF2SR9kv8qFJgVOTaxaMppj1mWoeI
+         1UnItYxZF6UibVXuUx9hpwqNIHV+qxIIivgiLuXemlgmJdmnDyyTCJQSMDcqtfR1N3et
+         jlfA==
+X-Gm-Message-State: APjAAAUMwdhrjsTvdxC7bF/FvGUJiyrGajIeeMhvvSzO+Y79euvyu1D+
+        h2Mi5Zw6Zw1f5IiXT220xhaDzjycJ135u+msUF4=
+X-Google-Smtp-Source: APXvYqx2+65aBphrq9jh7DG33NFKJFzLOlfdeKbTs82IBINXIFH14AeSEFO5Ochj9gp/1tiDLo+gaWynZvwTlQ9p3wc=
+X-Received: by 2002:a37:a643:: with SMTP id p64mr21969128qke.36.1562000075447;
+ Mon, 01 Jul 2019 09:54:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190701163103.237550-1-sdf@google.com> <20190701163103.237550-2-sdf@google.com>
+In-Reply-To: <20190701163103.237550-2-sdf@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 1 Jul 2019 09:54:24 -0700
+Message-ID: <CAEf4BzYRHjkuKKk+eR3-zbTFjjxae1Ks3SXr7kkAVgZxmVWU-A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/3] bpf: allow wide (u64) aligned stores for
+ some fields of bpf_sock_addr
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        kernel test robot <rong.a.chen@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Make sure that wide stores are allowed at proper (aligned) addresses.
-Note that user_ip6 is naturally aligned on 8-byte boundary, so
-correct addresses are user_ip6[0] and user_ip6[2]. msg_src_ip6 is,
-however, aligned on a 4-byte bondary, so only msg_src_ip6[1]
-can be wide-stored.
+On Mon, Jul 1, 2019 at 9:51 AM Stanislav Fomichev <sdf@google.com> wrote:
+>
+> Since commit cd17d7770578 ("bpf/tools: sync bpf.h") clang decided
+> that it can do a single u64 store into user_ip6[2] instead of two
+> separate u32 ones:
+>
+>  #  17: (18) r2 = 0x100000000000000
+>  #  ; ctx->user_ip6[2] = bpf_htonl(DST_REWRITE_IP6_2);
+>  #  19: (7b) *(u64 *)(r1 +16) = r2
+>  #  invalid bpf_context access off=16 size=8
+>
+> From the compiler point of view it does look like a correct thing
+> to do, so let's support it on the kernel side.
+>
+> Credit to Andrii Nakryiko for a proper implementation of
+> bpf_ctx_wide_store_ok.
+>
+> Cc: Andrii Nakryiko <andriin@fb.com>
+> Cc: Yonghong Song <yhs@fb.com>
+> Fixes: cd17d7770578 ("bpf/tools: sync bpf.h")
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> Acked-by: Yonghong Song <yhs@fb.com>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  include/linux/filter.h   |  6 ++++++
+>  include/uapi/linux/bpf.h |  4 ++--
+>  net/core/filter.c        | 22 ++++++++++++++--------
+>  3 files changed, 22 insertions(+), 10 deletions(-)
+>
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index 340f7d648974..3901007e36f1 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -746,6 +746,12 @@ bpf_ctx_narrow_access_ok(u32 off, u32 size, u32 size_default)
+>         return size <= size_default && (size & (size - 1)) == 0;
+>  }
+>
+> +#define bpf_ctx_wide_store_ok(off, size, type, field)                  \
+> +       (size == sizeof(__u64) &&                                       \
+> +       off >= offsetof(type, field) &&                                 \
+> +       off + sizeof(__u64) <= offsetofend(type, field) &&              \
+> +       off % sizeof(__u64) == 0)
+> +
+>  #define bpf_classic_proglen(fprog) (fprog->len * sizeof(fprog->filter[0]))
+>
+>  static inline void bpf_prog_lock_ro(struct bpf_prog *fp)
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index a396b516a2b2..586867fe6102 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3237,7 +3237,7 @@ struct bpf_sock_addr {
+>         __u32 user_ip4;         /* Allows 1,2,4-byte read and 4-byte write.
+>                                  * Stored in network byte order.
+>                                  */
+> -       __u32 user_ip6[4];      /* Allows 1,2,4-byte read an 4-byte write.
+> +       __u32 user_ip6[4];      /* Allows 1,2,4-byte read an 4,8-byte write.
 
-Cc: Andrii Nakryiko <andriin@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/testing/selftests/bpf/test_verifier.c   | 17 +++++++--
- .../selftests/bpf/verifier/wide_store.c       | 36 +++++++++++++++++++
- 2 files changed, 50 insertions(+), 3 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/verifier/wide_store.c
+typo: an -> and
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index c5514daf8865..b0773291012a 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -105,6 +105,7 @@ struct bpf_test {
- 			__u64 data64[TEST_DATA_LEN / 8];
- 		};
- 	} retvals[MAX_TEST_RUNS];
-+	enum bpf_attach_type expected_attach_type;
- };
- 
- /* Note we want this to be 64 bit aligned so that the end of our array is
-@@ -850,6 +851,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
- 	int fd_prog, expected_ret, alignment_prevented_execution;
- 	int prog_len, prog_type = test->prog_type;
- 	struct bpf_insn *prog = test->insns;
-+	struct bpf_load_program_attr attr;
- 	int run_errs, run_successes;
- 	int map_fds[MAX_NR_MAPS];
- 	const char *expected_err;
-@@ -881,8 +883,17 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
- 		pflags |= BPF_F_STRICT_ALIGNMENT;
- 	if (test->flags & F_NEEDS_EFFICIENT_UNALIGNED_ACCESS)
- 		pflags |= BPF_F_ANY_ALIGNMENT;
--	fd_prog = bpf_verify_program(prog_type, prog, prog_len, pflags,
--				     "GPL", 0, bpf_vlog, sizeof(bpf_vlog), 4);
-+
-+	memset(&attr, 0, sizeof(attr));
-+	attr.prog_type = prog_type;
-+	attr.expected_attach_type = test->expected_attach_type;
-+	attr.insns = prog;
-+	attr.insns_cnt = prog_len;
-+	attr.license = "GPL";
-+	attr.log_level = 4;
-+	attr.prog_flags = pflags;
-+
-+	fd_prog = bpf_load_program_xattr(&attr, bpf_vlog, sizeof(bpf_vlog));
- 	if (fd_prog < 0 && !bpf_probe_prog_type(prog_type, 0)) {
- 		printf("SKIP (unsupported program type %d)\n", prog_type);
- 		skips++;
-@@ -912,7 +923,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
- 			printf("FAIL\nUnexpected success to load!\n");
- 			goto fail_log;
- 		}
--		if (!strstr(bpf_vlog, expected_err)) {
-+		if (!expected_err || !strstr(bpf_vlog, expected_err)) {
- 			printf("FAIL\nUnexpected error message!\n\tEXP: %s\n\tRES: %s\n",
- 			      expected_err, bpf_vlog);
- 			goto fail_log;
-diff --git a/tools/testing/selftests/bpf/verifier/wide_store.c b/tools/testing/selftests/bpf/verifier/wide_store.c
-new file mode 100644
-index 000000000000..8fe99602ded4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/verifier/wide_store.c
-@@ -0,0 +1,36 @@
-+#define BPF_SOCK_ADDR(field, off, res, err) \
-+{ \
-+	"wide store to bpf_sock_addr." #field "[" #off "]", \
-+	.insns = { \
-+	BPF_MOV64_IMM(BPF_REG_0, 1), \
-+	BPF_STX_MEM(BPF_DW, BPF_REG_1, BPF_REG_0, \
-+		    offsetof(struct bpf_sock_addr, field[off])), \
-+	BPF_EXIT_INSN(), \
-+	}, \
-+	.result = res, \
-+	.prog_type = BPF_PROG_TYPE_CGROUP_SOCK_ADDR, \
-+	.expected_attach_type = BPF_CGROUP_UDP6_SENDMSG, \
-+	.errstr = err, \
-+}
-+
-+/* user_ip6[0] is u64 aligned */
-+BPF_SOCK_ADDR(user_ip6, 0, ACCEPT,
-+	      NULL),
-+BPF_SOCK_ADDR(user_ip6, 1, REJECT,
-+	      "invalid bpf_context access off=12 size=8"),
-+BPF_SOCK_ADDR(user_ip6, 2, ACCEPT,
-+	      NULL),
-+BPF_SOCK_ADDR(user_ip6, 3, REJECT,
-+	      "invalid bpf_context access off=20 size=8"),
-+
-+/* msg_src_ip6[0] is _not_ u64 aligned */
-+BPF_SOCK_ADDR(msg_src_ip6, 0, REJECT,
-+	      "invalid bpf_context access off=44 size=8"),
-+BPF_SOCK_ADDR(msg_src_ip6, 1, ACCEPT,
-+	      NULL),
-+BPF_SOCK_ADDR(msg_src_ip6, 2, REJECT,
-+	      "invalid bpf_context access off=52 size=8"),
-+BPF_SOCK_ADDR(msg_src_ip6, 3, REJECT,
-+	      "invalid bpf_context access off=56 size=8"),
-+
-+#undef BPF_SOCK_ADDR
--- 
-2.22.0.410.gd8fdbe21b5-goog
+>                                  * Stored in network byte order.
+>                                  */
+>         __u32 user_port;        /* Allows 4-byte read and write.
+> @@ -3249,7 +3249,7 @@ struct bpf_sock_addr {
+>         __u32 msg_src_ip4;      /* Allows 1,2,4-byte read an 4-byte write.
 
+same
+
+>                                  * Stored in network byte order.
+>                                  */
+> -       __u32 msg_src_ip6[4];   /* Allows 1,2,4-byte read an 4-byte write.
+> +       __u32 msg_src_ip6[4];   /* Allows 1,2,4-byte read an 4,8-byte write.
+
+the power of copy/paste! :)
+
+>                                  * Stored in network byte order.
+>                                  */
+>         __bpf_md_ptr(struct bpf_sock *, sk);
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index dc8534be12fc..5d33f2146dab 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -6849,6 +6849,16 @@ static bool sock_addr_is_valid_access(int off, int size,
+>                         if (!bpf_ctx_narrow_access_ok(off, size, size_default))
+>                                 return false;
+>                 } else {
+> +                       if (bpf_ctx_wide_store_ok(off, size,
+> +                                                 struct bpf_sock_addr,
+> +                                                 user_ip6))
+> +                               return true;
+> +
+> +                       if (bpf_ctx_wide_store_ok(off, size,
+> +                                                 struct bpf_sock_addr,
+> +                                                 msg_src_ip6))
+> +                               return true;
+> +
+>                         if (size != size_default)
+>                                 return false;
+>                 }
+> @@ -7689,9 +7699,6 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+>  /* SOCK_ADDR_STORE_NESTED_FIELD_OFF() has semantic similar to
+>   * SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF() but for store operation.
+>   *
+> - * It doesn't support SIZE argument though since narrow stores are not
+> - * supported for now.
+> - *
+>   * In addition it uses Temporary Field TF (member of struct S) as the 3rd
+>   * "register" since two registers available in convert_ctx_access are not
+>   * enough: we can't override neither SRC, since it contains value to store, nor
+> @@ -7699,7 +7706,7 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+>   * instructions. But we need a temporary place to save pointer to nested
+>   * structure whose field we want to store to.
+>   */
+> -#define SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, OFF, TF)                       \
+> +#define SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, SIZE, OFF, TF)         \
+>         do {                                                                   \
+>                 int tmp_reg = BPF_REG_9;                                       \
+>                 if (si->src_reg == tmp_reg || si->dst_reg == tmp_reg)          \
+> @@ -7710,8 +7717,7 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+>                                       offsetof(S, TF));                        \
+>                 *insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(S, F), tmp_reg,         \
+>                                       si->dst_reg, offsetof(S, F));            \
+> -               *insn++ = BPF_STX_MEM(                                         \
+> -                       BPF_FIELD_SIZEOF(NS, NF), tmp_reg, si->src_reg,        \
+> +               *insn++ = BPF_STX_MEM(SIZE, tmp_reg, si->src_reg,              \
+>                         bpf_target_off(NS, NF, FIELD_SIZEOF(NS, NF),           \
+>                                        target_size)                            \
+>                                 + OFF);                                        \
+> @@ -7723,8 +7729,8 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+>                                                       TF)                      \
+>         do {                                                                   \
+>                 if (type == BPF_WRITE) {                                       \
+> -                       SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, OFF,    \
+> -                                                        TF);                  \
+> +                       SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, SIZE,   \
+> +                                                        OFF, TF);             \
+>                 } else {                                                       \
+>                         SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF(                  \
+>                                 S, NS, F, NF, SIZE, OFF);  \
+> --
+> 2.22.0.410.gd8fdbe21b5-goog
+>
