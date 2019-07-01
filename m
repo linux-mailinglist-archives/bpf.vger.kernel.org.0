@@ -2,126 +2,233 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB735C24E
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2019 19:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B312F5C31F
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2019 20:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730031AbfGARvW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jul 2019 13:51:22 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:30588 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727270AbfGARvW (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 1 Jul 2019 13:51:22 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x61Hn15m016019;
-        Mon, 1 Jul 2019 10:50:59 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=8pYH+cts7tmfLcLJQ/BO2JDEecB3J2SfxCXteEWryLI=;
- b=clnWk60seB0thea5Y8bRm3+D3y32WibFJZzRi5BsvIMsDjfrMlbkm14gNQ9m2dPiInrE
- ZyFAdDEQWeEqxxsESZ4yEboltrMiecIeWzBmGOwlPP9wjHaOFYGMHsAj/1suJLn+QSSr
- G4YPzkALEw7fxEizApQziwwJCYpVG+RmelI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2tfjqkh193-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 01 Jul 2019 10:50:59 -0700
-Received: from ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) by
- ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 1 Jul 2019 10:50:55 -0700
-Received: from ash-exhub102.TheFacebook.com (2620:10d:c0a8:82::f) by
- ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 1 Jul 2019 10:50:55 -0700
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 1 Jul 2019 10:50:55 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8pYH+cts7tmfLcLJQ/BO2JDEecB3J2SfxCXteEWryLI=;
- b=AM269Y1tzNSus4EjlI6E6GQYr/SFO2B/m3jTFutw2Ob+s2ii3vM3CKWssfyr2zweUUeQ7R2Q8dKt0e/lEmseWZihaOJALvguJJ3z351IEartGcCeWRbxWVOJCDMotxMo/OoOuAGZFpf/MCCT+MLTSmfei8q+rnYn24/1uytHt18=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.59.17) by
- BYAPR15MB3190.namprd15.prod.outlook.com (20.179.56.92) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2032.18; Mon, 1 Jul 2019 17:50:54 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::850b:bed:29d5:ae79]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::850b:bed:29d5:ae79%7]) with mapi id 15.20.2032.019; Mon, 1 Jul 2019
- 17:50:54 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Stanislav Fomichev <sdf@google.com>,
+        id S1726668AbfGASjB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Jul 2019 14:39:01 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:45601 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725853AbfGASjA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Jul 2019 14:39:00 -0400
+Received: by mail-pf1-f196.google.com with SMTP id r1so6973031pfq.12
+        for <bpf@vger.kernel.org>; Mon, 01 Jul 2019 11:39:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=RRf0eUCxxn3FbgHDITTtmzXU4RmPjLL6N9CLVnn6gh0=;
+        b=wVaZdR12aI2J453cx9qn+HgdMdLDiMAVPJmhGsgVMxbVjb0V5g9FFfZkCP3/u3xnul
+         3Jlj19dqHLjn/JennIPmyS5rj/1e966ss/X3p2sNuWuWObbCpgDut9lHvxsU0BT2+Yhi
+         zKb+OfPD8eSCnEj02J1rcwS/SnX2ORDIVV/liNu2QG8qRio93GeA81L6vpSmZykkcluM
+         Fs2qhzrEMjzgPBPixBEMxUHBC7frXLdLGWm9uJ/qvbosbwgm8Zsn13L2Bk3R14nPza5w
+         YMIpKsNYzl01yskj3xOZy4gKGgaVaNBjgZMXOJ/blltft2IjiHczoW3tINThGXF9PobG
+         b1wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RRf0eUCxxn3FbgHDITTtmzXU4RmPjLL6N9CLVnn6gh0=;
+        b=o72NPQvRMYxVQIiu/9saXstNBGol+f60Fc4nmxzL9jEpjFeZA2x3+zCzz5tzd0FYJf
+         JeDSK9ZAmTiJ3lh7APH2uNr90M2fqoDfl2rOAiDl8UU88JCwzIl7jm2bAR53JrMmzgBS
+         /eet86hx69msFS49p0DopyB7gkgxd8KwsTJID24vRtTYdG62D5j1h9ITHbvYpLMcclVf
+         qbds19trtl8Iexo9gIXCjem2enk24wScwDsCGTQuilHNfKI0IE7H/Dx1OR8QsQpBgeOj
+         cGy5AOyMDtwjOICi0RKXOcMoIYBDIShkqJxF+G5ll8r+26l8e10vwYdkElKWQVx0x2mq
+         aUDg==
+X-Gm-Message-State: APjAAAXMW7TilU5kHSx6UBNb1/RtGwvCRMlDlWvDlUop5BGnFuLXBNtG
+        h98zwUvZPvkTWTPVAlQIx4BvJy+Z7vE=
+X-Google-Smtp-Source: APXvYqzb8xka721SFjsY18v+CIV+Abb1jz0ZMKrwtoAgdkqwU5pKOywSVXmtFp0wtXwc1vyt5Pm9rg==
+X-Received: by 2002:a63:545c:: with SMTP id e28mr27056557pgm.374.1562006339826;
+        Mon, 01 Jul 2019 11:38:59 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id b29sm23885969pfr.159.2019.07.01.11.38.59
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 01 Jul 2019 11:38:59 -0700 (PDT)
+Date:   Mon, 1 Jul 2019 11:38:58 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
         "ast@kernel.org" <ast@kernel.org>,
         "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "Andrii Nakryiko" <andriin@fb.com>
-Subject: Re: [PATCH bpf-next v3 3/3] selftests/bpf: add verifier tests for
- wide stores
-Thread-Topic: [PATCH bpf-next v3 3/3] selftests/bpf: add verifier tests for
- wide stores
-Thread-Index: AQHVMDPdAvF/IzTYrkmBVQBYiCC78qa2CqIA
-Date:   Mon, 1 Jul 2019 17:50:54 +0000
-Message-ID: <92b96eed-885f-6127-3f42-4810b4b30397@fb.com>
-References: <20190701173841.32249-1-sdf@google.com>
- <20190701173841.32249-4-sdf@google.com>
-In-Reply-To: <20190701173841.32249-4-sdf@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: CO2PR06CA0062.namprd06.prod.outlook.com
- (2603:10b6:104:3::20) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:10e::17)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::1:fe3a]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1edd448d-d921-4458-48eb-08d6fe4ca9b6
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB3190;
-x-ms-traffictypediagnostic: BYAPR15MB3190:
-x-microsoft-antispam-prvs: <BYAPR15MB3190E57635853C31B1954FEAD3F90@BYAPR15MB3190.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:203;
-x-forefront-prvs: 00851CA28B
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(39860400002)(136003)(376002)(396003)(366004)(199004)(189003)(73956011)(99286004)(316002)(110136005)(6116002)(7736002)(305945005)(81156014)(8676002)(102836004)(66946007)(2501003)(81166006)(52116002)(54906003)(76176011)(476003)(14454004)(256004)(46003)(86362001)(8936002)(64756008)(66556008)(486006)(11346002)(31696002)(66476007)(2201001)(2616005)(5660300002)(6506007)(386003)(186003)(53546011)(446003)(478600001)(6246003)(71190400001)(71200400001)(31686004)(229853002)(25786009)(68736007)(4326008)(6512007)(2906002)(53936002)(6436002)(36756003)(66446008)(4744005)(6486002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3190;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: Ev6I+YVJ5XWWxAsiCqsq2gDtLa6ifRhZ6EOF6H9Ju5Rt7z2ouJ/QeCG4Mv1A+Am8i3k2FQtR8Uuo3uNmx420bFJA97jbuk+djyP0hPR24k7VqkZJWInNHGn1rXksryqq3ToMQs5Bsr1qVByoIDoYTNlR5U2vPpYHq/X3rT5AP79foVsfBkUrPTkfx9SQfogLHpy5wUodnzobq03aWYCsBbPNg1vlr+pyA5ZasD5vCgIrA5cajNOhoHUI/uGFTcAjdYuJMWfZWaT+gS9CgXJiJdeHuQldeAieb/OqeOmOZsWrz2EmVDVsxAxpHEDgNsiTuGXfnJLDL4/hWjRedc+sOhAgdg6Sqoqf/5XKsr9SZCnjMkz9bGMCqb+qH7716mqFhrGJwFzGRhKPVR+cpP0m8zYt+ua5EcMUv2ZqDTzeqbI=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <713A2537D8348841861D64E290F293F3@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Andrii Nakryiko <andriin@fb.com>,
+        kernel test robot <rong.a.chen@intel.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: allow wide (u64) aligned stores for
+ some fields of bpf_sock_addr
+Message-ID: <20190701183858.GG6757@mini-arch>
+References: <20190628231049.22149-1-sdf@google.com>
+ <be223396-b181-e587-d63c-2b15eaca3721@fb.com>
+ <CAEf4BzbT7h2oDapgSwQr8gSMnunCssqu88KMdymMjgBGpZpA4Q@mail.gmail.com>
+ <20190701160434.GD6757@mini-arch>
+ <a66c937f-94c0-eaf8-5b37-8587d66c0c62@fb.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1edd448d-d921-4458-48eb-08d6fe4ca9b6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jul 2019 17:50:54.0377
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yhs@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3190
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-01_10:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=739 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907010210
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a66c937f-94c0-eaf8-5b37-8587d66c0c62@fb.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDcvMS8xOSAxMDozOCBBTSwgU3RhbmlzbGF2IEZvbWljaGV2IHdyb3RlOg0KPiBNYWtl
-IHN1cmUgdGhhdCB3aWRlIHN0b3JlcyBhcmUgYWxsb3dlZCBhdCBwcm9wZXIgKGFsaWduZWQpIGFk
-ZHJlc3Nlcy4NCj4gTm90ZSB0aGF0IHVzZXJfaXA2IGlzIG5hdHVyYWxseSBhbGlnbmVkIG9uIDgt
-Ynl0ZSBib3VuZGFyeSwgc28NCj4gY29ycmVjdCBhZGRyZXNzZXMgYXJlIHVzZXJfaXA2WzBdIGFu
-ZCB1c2VyX2lwNlsyXS4gbXNnX3NyY19pcDYgaXMsDQo+IGhvd2V2ZXIsIGFsaWduZWQgb24gYSA0
-LWJ5dGUgYm9uZGFyeSwgc28gb25seSBtc2dfc3JjX2lwNlsxXQ0KPiBjYW4gYmUgd2lkZS1zdG9y
-ZWQuDQo+IA0KPiBDYzogQW5kcmlpIE5ha3J5aWtvIDxhbmRyaWluQGZiLmNvbT4NCj4gQ2M6IFlv
-bmdob25nIFNvbmcgPHloc0BmYi5jb20+DQo+IEFja2VkLWJ5OiBBbmRyaWkgTmFrcnlpa28gPGFu
-ZHJpaW5AZmIuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBTdGFuaXNsYXYgRm9taWNoZXYgPHNkZkBn
-b29nbGUuY29tPg0KDQpBY2tlZC1ieTogWW9uZ2hvbmcgU29uZyA8eWhzQGZiLmNvbT4NCg0K
+On 07/01, Yonghong Song wrote:
+> 
+> 
+> On 7/1/19 9:04 AM, Stanislav Fomichev wrote:
+> > On 07/01, Andrii Nakryiko wrote:
+> >> On Sat, Jun 29, 2019 at 10:53 PM Yonghong Song <yhs@fb.com> wrote:
+> >>>
+> >>>
+> >>>
+> >>> On 6/28/19 4:10 PM, Stanislav Fomichev wrote:
+> >>>> Since commit cd17d7770578 ("bpf/tools: sync bpf.h") clang decided
+> >>>> that it can do a single u64 store into user_ip6[2] instead of two
+> >>>> separate u32 ones:
+> >>>>
+> >>>>    #  17: (18) r2 = 0x100000000000000
+> >>>>    #  ; ctx->user_ip6[2] = bpf_htonl(DST_REWRITE_IP6_2);
+> >>>>    #  19: (7b) *(u64 *)(r1 +16) = r2
+> >>>>    #  invalid bpf_context access off=16 size=8
+> >>>>
+> >>>>   From the compiler point of view it does look like a correct thing
+> >>>> to do, so let's support it on the kernel side.
+> >>>>
+> >>>> Credit to Andrii Nakryiko for a proper implementation of
+> >>>> bpf_ctx_wide_store_ok.
+> >>>>
+> >>>> Cc: Andrii Nakryiko <andriin@fb.com>
+> >>>> Cc: Yonghong Song <yhs@fb.com>
+> >>>> Fixes: cd17d7770578 ("bpf/tools: sync bpf.h")
+> >>>> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> >>>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> >>>
+> >>> The change looks good to me with the following nits:
+> >>>     1. could you add a cover letter for the patch set?
+> >>>        typically if the number of patches is more than one,
+> >>>        it would be a good practice with a cover letter.
+> >>>        See bpf_devel_QA.rst .
+> >>>     2. with this change, the comments in uapi bpf.h
+> >>>        are not accurate any more.
+> >>>           __u32 user_ip6[4];      /* Allows 1,2,4-byte read an 4-byte write.
+> >>>                                    * Stored in network byte order.
+> >>>
+> >>>                                    */
+> >>>           __u32 msg_src_ip6[4];   /* Allows 1,2,4-byte read an 4-byte write.
+> >>>                                    * Stored in network byte order.
+> >>>                                    */
+> >>>        now for stores, aligned 8-byte write is permitted.
+> >>>        could you update this as well?
+> >>>
+> >>>   From the typical usage pattern, I did not see a need
+> >>> for 8-tye read of user_ip6 and msg_src_ip6 yet. So let
+> >>> us just deal with write for now.
+> >>
+> >> But I guess it's still possible for clang to optimize two consecutive
+> >> 4-byte reads into single 8-byte read in some circumstances? If that's
+> >> the case, maybe it's a good idea to have corresponding read checks as
+> >> well?
+> > I guess clang can do those kinds of optimizations. I can put it on my
+> > todo and address later (or when we actually see it out in the wild).
+> 
+> Okay, I find a Facebook internal app. does trying to read the 4 bytes
+> and compare to a predefined loopback address. We may need to handle
+> read cases as well. But this can be a followup after actual tryout.
+Sounds good, will follow up on that.
+
+> > 
+> >> But overall this looks good to me:
+> >>
+> >> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> > Thanks for a review!
+> > 
+> >>>
+> >>> With the above two nits,
+> >>> Acked-by: Yonghong Song <yhs@fb.com>
+> >>>
+> >>>> ---
+> >>>>    include/linux/filter.h |  6 ++++++
+> >>>>    net/core/filter.c      | 22 ++++++++++++++--------
+> >>>>    2 files changed, 20 insertions(+), 8 deletions(-)
+> >>>>
+> >>>> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> >>>> index 340f7d648974..3901007e36f1 100644
+> >>>> --- a/include/linux/filter.h
+> >>>> +++ b/include/linux/filter.h
+> >>>> @@ -746,6 +746,12 @@ bpf_ctx_narrow_access_ok(u32 off, u32 size, u32 size_default)
+> >>>>        return size <= size_default && (size & (size - 1)) == 0;
+> >>>>    }
+> >>>>
+> >>>> +#define bpf_ctx_wide_store_ok(off, size, type, field)                        \
+> >>>> +     (size == sizeof(__u64) &&                                       \
+> >>>> +     off >= offsetof(type, field) &&                                 \
+> >>>> +     off + sizeof(__u64) <= offsetofend(type, field) &&              \
+> >>>> +     off % sizeof(__u64) == 0)
+> >>>> +
+> >>>>    #define bpf_classic_proglen(fprog) (fprog->len * sizeof(fprog->filter[0]))
+> >>>>
+> >>>>    static inline void bpf_prog_lock_ro(struct bpf_prog *fp)
+> >>>> diff --git a/net/core/filter.c b/net/core/filter.c
+> >>>> index dc8534be12fc..5d33f2146dab 100644
+> >>>> --- a/net/core/filter.c
+> >>>> +++ b/net/core/filter.c
+> >>>> @@ -6849,6 +6849,16 @@ static bool sock_addr_is_valid_access(int off, int size,
+> >>>>                        if (!bpf_ctx_narrow_access_ok(off, size, size_default))
+> >>>>                                return false;
+> >>>>                } else {
+> >>>> +                     if (bpf_ctx_wide_store_ok(off, size,
+> >>>> +                                               struct bpf_sock_addr,
+> >>>> +                                               user_ip6))
+> >>>> +                             return true;
+> >>>> +
+> >>>> +                     if (bpf_ctx_wide_store_ok(off, size,
+> >>>> +                                               struct bpf_sock_addr,
+> >>>> +                                               msg_src_ip6))
+> >>>> +                             return true;
+> >>>> +
+> >>>>                        if (size != size_default)
+> >>>>                                return false;
+> >>>>                }
+> >>>> @@ -7689,9 +7699,6 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+> >>>>    /* SOCK_ADDR_STORE_NESTED_FIELD_OFF() has semantic similar to
+> >>>>     * SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF() but for store operation.
+> >>>>     *
+> >>>> - * It doesn't support SIZE argument though since narrow stores are not
+> >>>> - * supported for now.
+> >>>> - *
+> >>>>     * In addition it uses Temporary Field TF (member of struct S) as the 3rd
+> >>>>     * "register" since two registers available in convert_ctx_access are not
+> >>>>     * enough: we can't override neither SRC, since it contains value to store, nor
+> >>>> @@ -7699,7 +7706,7 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+> >>>>     * instructions. But we need a temporary place to save pointer to nested
+> >>>>     * structure whose field we want to store to.
+> >>>>     */
+> >>>> -#define SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, OFF, TF)                     \
+> >>>> +#define SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, SIZE, OFF, TF)               \
+> >>>>        do {                                                                   \
+> >>>>                int tmp_reg = BPF_REG_9;                                       \
+> >>>>                if (si->src_reg == tmp_reg || si->dst_reg == tmp_reg)          \
+> >>>> @@ -7710,8 +7717,7 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+> >>>>                                      offsetof(S, TF));                        \
+> >>>>                *insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(S, F), tmp_reg,         \
+> >>>>                                      si->dst_reg, offsetof(S, F));            \
+> >>>> -             *insn++ = BPF_STX_MEM(                                         \
+> >>>> -                     BPF_FIELD_SIZEOF(NS, NF), tmp_reg, si->src_reg,        \
+> >>>> +             *insn++ = BPF_STX_MEM(SIZE, tmp_reg, si->src_reg,              \
+> >>>>                        bpf_target_off(NS, NF, FIELD_SIZEOF(NS, NF),           \
+> >>>>                                       target_size)                            \
+> >>>>                                + OFF);                                        \
+> >>>> @@ -7723,8 +7729,8 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+> >>>>                                                      TF)                      \
+> >>>>        do {                                                                   \
+> >>>>                if (type == BPF_WRITE) {                                       \
+> >>>> -                     SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, OFF,    \
+> >>>> -                                                      TF);                  \
+> >>>> +                     SOCK_ADDR_STORE_NESTED_FIELD_OFF(S, NS, F, NF, SIZE,   \
+> >>>> +                                                      OFF, TF);             \
+> >>>>                } else {                                                       \
+> >>>>                        SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF(                  \
+> >>>>                                S, NS, F, NF, SIZE, OFF);  \
+> >>>>
