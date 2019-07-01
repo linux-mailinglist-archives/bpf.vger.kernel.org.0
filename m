@@ -2,107 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F04B5B416
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2019 07:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8F95B460
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2019 07:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbfGAFcO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jul 2019 01:32:14 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:45617 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbfGAFcN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Jul 2019 01:32:13 -0400
-Received: by mail-io1-f67.google.com with SMTP id e3so25854168ioc.12;
-        Sun, 30 Jun 2019 22:32:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=bHwLGMVGeA5RZAQhouQu9TuLFrBTaeIaDSifyZUdLOo=;
-        b=HLYYdNKTnons4Refd7zSAfvhRwZxW4KdSMltv4C7TWzAJS8Oio5M6GtT9F3GUOyXa/
-         CKj/R64RZCm6rNX49Lu08qanJBXFIvNCgyoFgS68PKVicQNpADxFgCeSRPsADvP5JOKP
-         ocHh8kGB4uKpAJsQpxNqdoZyY+baCFmd02LtWibSvzlSCAl5fHBdUZ3vvqxPxtm4Cdyw
-         kdB5KRChd9lYgT2/pqu10m/8e7+v2wOl4vf19/AFPObKh3hAOCdz4YkMN8njvynYtBlb
-         rvhAGzCr9kB9ZugjHqCZJ+48MkW4iY1bQyRKHLYyOtFuxHZR2HMuXY0eeps1lVevJKT9
-         HjlQ==
+        id S1727404AbfGAFvC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Jul 2019 01:51:02 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:35028 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727390AbfGAFvB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Jul 2019 01:51:01 -0400
+Received: by mail-io1-f72.google.com with SMTP id w17so14071133iom.2
+        for <bpf@vger.kernel.org>; Sun, 30 Jun 2019 22:51:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=bHwLGMVGeA5RZAQhouQu9TuLFrBTaeIaDSifyZUdLOo=;
-        b=KIJQwd7cmdXIse9k7k7wM0yJ18/roU6hH9CLsLOTZBPjThs0bpzCHEiWDco8TNKsFN
-         xqnqUH3OEmD2HgDsp9e8PSGDJT93i87K5eXo7fHOg7mgAtPV5FnTqUkqBiQXVJqJ9A9G
-         WXm1P7fKH68HVFXeVFx+FIymuxfrCGkCW6aREH7PLgUdDaEtVXLKblSrWQNtJxPXL4Wb
-         2zxo8RjY9UJSlTZsoxgk124IT3ZgOGpuVuKQkFJAfqv5aFfJCM+bDzfyrAPUTl9mE5bG
-         pg0slE0OS0YforLk2z03s4sfum2rw1HrPuAmXRYtXSTzos+P0bbLwNTAaITaVpVBfsWj
-         QhQw==
-X-Gm-Message-State: APjAAAVy2f4QRq6yC3+y2S/H7cfYlI7Om/rXUxEsNMha61F1IfIe5WyT
-        0HMbnjsJvc2RKc0PSMuV1GKPqVi9Pr8=
-X-Google-Smtp-Source: APXvYqxjWRXI9LiYpyoUC93AFib9/B4amldRGx79u7c95Y8aWn4AueOnBg49wfZPHXPzRhHvU/UHIw==
-X-Received: by 2002:a02:c50a:: with SMTP id s10mr26966556jam.106.1561959133032;
-        Sun, 30 Jun 2019 22:32:13 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id c14sm9693438ioa.22.2019.06.30.22.32.09
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Sun, 30 Jun 2019 22:32:12 -0700 (PDT)
-Date:   Sun, 30 Jun 2019 22:32:04 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Eric Biggers <ebiggers@kernel.org>, bpf@vger.kernel.org
-Cc:     syzbot <syzbot+a861f52659ae2596492b@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Message-ID: <5d199ad457036_1dd62b219ced25b86e@john-XPS-13-9370.notmuch>
-In-Reply-To: <20190625072942.GB30940@sol.localdomain>
-References: <0000000000005aedf1058c1bf7e8@google.com>
- <alpine.DEB.2.21.1906250820060.32342@nanos.tec.linutronix.de>
- <20190625072942.GB30940@sol.localdomain>
-Subject: RE: [net/bpf] Re: WARNING in mark_lock
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=qCv6O8PlYg+ZT3/7zG6DuN2UhJzRl942UxJbgb+Ot2U=;
+        b=T1sfTOtXmnnMnP+ahbU5+BF4LfrJ+qnNdOUKPfuNnPf5TFUye7ch32cwgYymnQRvXo
+         w43LUl3PMzVBVCrL6nwz+QHx5or5fKv0T2j154OC6XLKNMdXv/6A0em1eHOB/gASWqqo
+         OxVrPkE5yrwg3OObPirdv6Ni43AVafDM5tNiu5K6zZS+U7VbT6gOZnQWDKaUhEpfJluM
+         oReb0becEvzInuXeRIkdDzkt2fq+OYGc0QX60ZE8HCju8mvGciW6KZ73ehdnvvXb24Sz
+         cYqwsIRt6KdHFxl9izAbZQRS6sm3HZJ0x4qgVjsWZdt//TbHsSpeCPxEjbZSCGz5xQVn
+         shnA==
+X-Gm-Message-State: APjAAAVPY0WGmJmSBHEn3n3eZpO0BOJC9sIjMDSFZYSV78Eo4EOym4kz
+        xF1I0Kar2SNifbJNkrrCjHX9r/oP0Mi1iINv0Fof4B55s8nT
+X-Google-Smtp-Source: APXvYqz9w2zVcH6kNVua0uWx+iYzOLbIPZQ+5rE5IxWvE2bRVxNupp6tM2dPKMXEakSe0K50uQHi7ZAYlzPAfHaFjnJqyTIn5ocg
+MIME-Version: 1.0
+X-Received: by 2002:a05:6638:3e4:: with SMTP id s4mr27121967jaq.141.1561960260741;
+ Sun, 30 Jun 2019 22:51:00 -0700 (PDT)
+Date:   Sun, 30 Jun 2019 22:51:00 -0700
+In-Reply-To: <5d199ad457036_1dd62b219ced25b86e@john-XPS-13-9370.notmuch>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007eb42d058c9836ac@google.com>
+Subject: Re: WARNING in mark_lock
+From:   syzbot <syzbot+a861f52659ae2596492b@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, ebiggers@kernel.org, john.fastabend@gmail.com,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Eric Biggers wrote:
-> [+bpf list]
-> 
-> On Tue, Jun 25, 2019 at 08:20:56AM +0200, Thomas Gleixner wrote:
-> > On Mon, 24 Jun 2019, syzbot wrote:
-> > 
-> > > Hello,
-> > 
-> > CC++ Peterz 
-> > 
-> > > 
-> > > syzbot found the following crash on:
-> > > 
-> > > HEAD commit:    dc636f5d Add linux-next specific files for 20190620
-> > > git tree:       linux-next
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=162b68b1a00000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=99c104b0092a557b
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=a861f52659ae2596492b
-> > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110b24f6a00000
-> > > 
-> > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > Reported-by: syzbot+a861f52659ae2596492b@syzkaller.appspotmail.com
-> 
-> The syz repro looks bpf related, and essentially the same repro is in lots of
-> other open syzbot reports which I've assigned to the bpf subsystem...
-> https://lore.kernel.org/lkml/20190624050114.GA30702@sol.localdomain/
-> 
-> {"threaded":true,"repeat":true,"procs":6,"sandbox":"none","fault_call":-1,"tun":true,"netdev":true,"resetnet":true,"cgroups":true,"binfmt_misc":true,"close_fds":true,"tmpdir":true,"segv":true}
-> bpf$MAP_CREATE(0x0, &(0x7f0000000280)={0xf, 0x4, 0x4, 0x400, 0x0, 0x1}, 0x3c)
-> socket$rxrpc(0x21, 0x2, 0x800000000a)
-> r0 = socket$inet6_tcp(0xa, 0x1, 0x0)
-> setsockopt$inet6_tcp_int(r0, 0x6, 0x13, &(0x7f00000000c0)=0x100000001, 0x1d4)
-> connect$inet6(r0, &(0x7f0000000140), 0x1c)
-> bpf$MAP_CREATE(0x0, &(0x7f0000000000)={0x5}, 0xfffffffffffffdcb)
-> bpf$MAP_CREATE(0x2, &(0x7f0000003000)={0x3, 0x0, 0x77fffb, 0x0, 0x10020000000, 0x0}, 0x2c)
-> setsockopt$inet6_tcp_TCP_ULP(r0, 0x6, 0x1f, &(0x7f0000000040)='tls\x00', 0x4)
+Hello,
 
-#syz test: git://github.com/cilium/linux ktls-unhash
+syzbot has tested the proposed patch but the reproducer still triggered  
+crash:
+KASAN: use-after-free Read in class_equal
+
+==================================================================
+BUG: KASAN: use-after-free in class_equal+0x40/0x50  
+kernel/locking/lockdep.c:1527
+Read of size 8 at addr ffff88808a268ba0 by task syz-executor.1/9270
+
+CPU: 0 PID: 9270 Comm: syz-executor.1 Not tainted 5.2.0-rc3+ #1
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+
+Allocated by task 2647419968:
+BUG: unable to handle page fault for address: ffffffff8c00b020
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 8a70067 P4D 8a70067 PUD 8a71063 PMD 0
+Thread overran stack, or stack corrupted
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 9270 Comm: syz-executor.1 Not tainted 5.2.0-rc3+ #1
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+RIP: 0010:stack_depot_fetch+0x10/0x30 lib/stackdepot.c:203
+Code: e9 7b fd ff ff 4c 89 ff e8 8d b4 62 fe e9 e6 fd ff ff 90 90 90 90 90  
+90 90 90 89 f8 c1 ef 11 25 ff ff 1f 00 81 e7 f0 3f 00 00 <48> 03 3c c5 20  
+6c 04 8b 48 8d 47 18 48 89 06 8b 47 0c c3 0f 1f 00
+RSP: 0018:ffff88808a2688e8 EFLAGS: 00010006
+RAX: 00000000001f8880 RBX: ffff88808a269304 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffff88808a2688f0 RDI: 0000000000003ff0
+RBP: ffff88808a268908 R08: 0000000000000020 R09: ffffed1015d044fa
+R10: ffffed1015d044f9 R11: ffff8880ae8227cf R12: ffffea0002289a00
+R13: ffff88808a268ba0 R14: ffff8880aa58ec40 R15: ffff88808a269300
+FS:  00005555570ba940(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffff8c00b020 CR3: 000000008dd00000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+Modules linked in:
+CR2: ffffffff8c00b020
+---[ end trace 4acfe4b59fbc9cdb ]---
+RIP: 0010:stack_depot_fetch+0x10/0x30 lib/stackdepot.c:203
+Code: e9 7b fd ff ff 4c 89 ff e8 8d b4 62 fe e9 e6 fd ff ff 90 90 90 90 90  
+90 90 90 89 f8 c1 ef 11 25 ff ff 1f 00 81 e7 f0 3f 00 00 <48> 03 3c c5 20  
+6c 04 8b 48 8d 47 18 48 89 06 8b 47 0c c3 0f 1f 00
+RSP: 0018:ffff88808a2688e8 EFLAGS: 00010006
+RAX: 00000000001f8880 RBX: ffff88808a269304 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffff88808a2688f0 RDI: 0000000000003ff0
+RBP: ffff88808a268908 R08: 0000000000000020 R09: ffffed1015d044fa
+R10: ffffed1015d044f9 R11: ffff8880ae8227cf R12: ffffea0002289a00
+R13: ffff88808a268ba0 R14: ffff8880aa58ec40 R15: ffff88808a269300
+FS:  00005555570ba940(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffff8c00b020 CR3: 000000008dd00000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+Tested on:
+
+commit:         0b58d013 bpf: tls, implement unhash to avoid transition ou..
+git tree:       git://github.com/cilium/linux ktls-unhash
+console output: https://syzkaller.appspot.com/x/log.txt?x=153368a3a00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2cc918d28ebd06b4
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+
