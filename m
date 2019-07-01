@@ -2,115 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9065B677
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2019 10:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FAF95B747
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2019 10:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727858AbfGAINB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jul 2019 04:13:01 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:32869 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727854AbfGAINB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Jul 2019 04:13:01 -0400
-Received: by mail-io1-f66.google.com with SMTP id u13so26818834iop.0
-        for <bpf@vger.kernel.org>; Mon, 01 Jul 2019 01:13:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qUhbyX1RWTd4BfNEHYNkuKcG+9XJwpPPUwcbHUdRQbQ=;
-        b=KwX1NONxfvEPzDdkK5Bzp5BRlXWzo93HEESKS/fCuSwv0Q6FyuhW39XEv6dh/ZEv8f
-         eg/nS+03AUFwBQ+AivQgXBuizDrb/aPWvIxH8mMhj218FmFanFkeHTXvghrKyPpHymy/
-         JNTE7tHyhseRsaihn0Mlx39rHyiobCzDj0zEIKPsCgIO+531jO1muLekNm4QB76Mbjpp
-         NBcVVHJY0ghpKR5VfJaqe5nGeCFLBlK4ZSaGAA0opfna7mORpsYF9DrFIWGbn5qmkzii
-         74iofXW8j7JQ4Dy8GTH9UTj/eSIZ58h4bmQJk32vXt5HahVTsJsxFf/c84aZbpju6hUR
-         4MoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qUhbyX1RWTd4BfNEHYNkuKcG+9XJwpPPUwcbHUdRQbQ=;
-        b=an/OQULaKc5zmRXvp2zOj1jCZ4fe8dXtiGKGJwcjnaca/elbDkwpM8TxxVZa0D6S7B
-         LLfhZyQbSrf4SkGX7IwxSVO5PmYSjdzDuw60WT9lXip557i3/qNJ65ngJmv2ooJuwNge
-         9b8HgiYrKYll6azB9UpmGH846VmIdsBWvrC2tdqzM/lGQJtHHuVc9qK8JMxRKT6GAkUi
-         mGUu0LAVkZd0cMMOLew4ZVmiwcWBr+NknWWI3xrMtNOeA5uL7cxheK5nUchRVdFq9wx5
-         bM9h0uAvN5+FpvRZBoDcZpmbsivvlgQ6+pP8udDt/PEbd1SsERrvxhGNHmXGMlfuxEUz
-         npuw==
-X-Gm-Message-State: APjAAAWPvaDsV9h/2u5F0YH5dDyn2JjER5VmKn1HeeqMecH2ctvmKmXW
-        fLYk+mPegTx+cAiOY9SsXyAqyOF3G6A15jlDAuagQ9AxCyU=
-X-Google-Smtp-Source: APXvYqzPzjlcALbL4I70FsM2fBv6D4ctBuoWiE4Qql9ljDR2Q+ye9ZqIJeQeDoFuZM8G9v1SfYOt9IFN+/YYzRu1UQk=
-X-Received: by 2002:a6b:b556:: with SMTP id e83mr16045211iof.94.1561968780377;
- Mon, 01 Jul 2019 01:13:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <000000000000104b00058c61eda4@google.com> <c0e440a1-30aa-a636-fe5c-44f71705857b@acm.org>
-In-Reply-To: <c0e440a1-30aa-a636-fe5c-44f71705857b@acm.org>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 1 Jul 2019 10:12:49 +0200
-Message-ID: <CACT4Y+Yb0mXOz=szuZ6P8X5bPzkgiDJ7+w0yb8ZG+hyRKSgN0g@mail.gmail.com>
-Subject: Re: WARNING in is_bpf_text_address
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     syzbot <syzbot+bd3bba6ff3fcea7a6ec6@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>, hawk@kernel.org,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Paul McKenney <paulmck@linux.vnet.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tejun Heo <tj@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>, xdp-newbies@vger.kernel.org,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728073AbfGAIzs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 1 Jul 2019 04:55:48 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58218 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726442AbfGAIzr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 1 Jul 2019 04:55:47 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x618rHuV030797
+        for <bpf@vger.kernel.org>; Mon, 1 Jul 2019 04:55:47 -0400
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2tfe97tt7x-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 01 Jul 2019 04:55:46 -0400
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Mon, 1 Jul 2019 09:55:44 +0100
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 1 Jul 2019 09:55:41 +0100
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x618teQS40960020
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Jul 2019 08:55:41 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C6E3B4C05A;
+        Mon,  1 Jul 2019 08:55:40 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A8BC04C050;
+        Mon,  1 Jul 2019 08:55:40 +0000 (GMT)
+Received: from dyn-9-152-98-98.boeblingen.de.ibm.com (unknown [9.152.98.98])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  1 Jul 2019 08:55:40 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Subject: Re: [PATCH bpf-next] selftests/bpf: do not ignore clang failures
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+In-Reply-To: <CAPhsuW5ToikpcEbJjC+JsxWSjgUBHKS97=hiTmt1EHmC9HFb8Q@mail.gmail.com>
+Date:   Mon, 1 Jul 2019 10:55:32 +0200
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+References: <20190627091450.78550-1-iii@linux.ibm.com>
+ <CAPhsuW5ToikpcEbJjC+JsxWSjgUBHKS97=hiTmt1EHmC9HFb8Q@mail.gmail.com>
+To:     Song Liu <liu.song.a23@gmail.com>
+X-Mailer: Apple Mail (2.3445.9.1)
+X-TM-AS-GCONF: 00
+x-cbid: 19070108-0028-0000-0000-0000037F414B
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19070108-0029-0000-0000-0000243F75E5
+Message-Id: <2EA9DD60-A922-4056-8775-3F556B9A0087@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-01_07:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907010111
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 28, 2019 at 5:17 PM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 6/28/19 6:05 AM, syzbot wrote:
-> > syzbot has bisected this bug to:
-> >
-> > commit a0b0fd53e1e67639b303b15939b9c653dbe7a8c4
-> > Author: Bart Van Assche <bvanassche@acm.org>
-> > Date:   Thu Feb 14 23:00:46 2019 +0000
-> >
-> >      locking/lockdep: Free lock classes that are no longer in use
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=152f6a9da00000
-> > start commit:   abf02e29 Merge tag 'pm-5.2-rc6' of
-> > git://git.kernel.org/pu..
-> > git tree:       upstream
-> > final crash:    https://syzkaller.appspot.com/x/report.txt?x=172f6a9da00000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=132f6a9da00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=28ec3437a5394ee0
-> > dashboard link:
-> > https://syzkaller.appspot.com/bug?extid=bd3bba6ff3fcea7a6ec6
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ae828aa00000
-> >
-> > Reported-by: syzbot+bd3bba6ff3fcea7a6ec6@syzkaller.appspotmail.com
-> > Fixes: a0b0fd53e1e6 ("locking/lockdep: Free lock classes that are no
-> > longer in use")
-> >
-> > For information about bisection process see:
-> > https://goo.gl/tpsmEJ#bisection
->
-> Dmitry, this bisection result does not make any sense to me. Can I mark
-> this bisection result myself as invalid?
+> Am 28.06.2019 um 22:35 schrieb Song Liu <liu.song.a23@gmail.com>:
+> 
+> On Thu, Jun 27, 2019 at 2:15 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>> 
+>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+>> index f2dbe2043067..2316fa2d5b3b 100644
+>> --- a/tools/testing/selftests/bpf/Makefile
+>> +++ b/tools/testing/selftests/bpf/Makefile
+>> @@ -1,5 +1,6 @@
+>> # SPDX-License-Identifier: GPL-2.0
+>> 
+>> +SHELL := /bin/bash
+> 
+> I am not sure whether it is ok to require bash. I don't see such requirements in
+> other Makefile's under tools/.
+> 
+> Can we enable some fall back when bash is not present?
+> 
+> Thanks,
+> Song
 
-Hi Bart,
+I think checking for bash presence would unnecessarily complicate
+things.  What do you think about having separate targets for
+clang-generated bitcode?
 
-syzbot does not use such bit of info for anything at the moment. So
-just saying that it is invalid in this thread is enough to "mark it is
-invalid" for all practical purposes. Let's consider it marked.
+Best regards,
+Ilya
