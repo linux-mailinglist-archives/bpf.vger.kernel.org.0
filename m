@@ -2,156 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D97D5AF4C
-	for <lists+bpf@lfdr.de>; Sun, 30 Jun 2019 09:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EAE85B2A6
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2019 03:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbfF3H6Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 30 Jun 2019 03:58:25 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:19799 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725959AbfF3H6Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 30 Jun 2019 03:58:25 -0400
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id x5U7vxPV023007;
-        Sun, 30 Jun 2019 16:58:00 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com x5U7vxPV023007
+        id S1727191AbfGABCZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 30 Jun 2019 21:02:25 -0400
+Received: from conuserg-12.nifty.com ([210.131.2.79]:64182 "EHLO
+        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726040AbfGABCZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 30 Jun 2019 21:02:25 -0400
+Received: from grover.flets-west.jp (softbank126125154139.bbtec.net [126.125.154.139]) (authenticated)
+        by conuserg-12.nifty.com with ESMTP id x610x4fr000634;
+        Mon, 1 Jul 2019 09:59:05 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com x610x4fr000634
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1561881480;
-        bh=+9brw8RpKfPCHLaNnVG0ALKGMwnUyxhWFifAcm1Jy9A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=zUawODtU0vhTiPl5qaNgEo9ByKy2yYb9HTAWd7jH5/KmRFRbCTqDf1r2buPkH6eY7
-         9KWkOkbCmnK9rkMatOmM0itxGnwHB/mMPuqRIjog1NzLgK//i1B3cXHhcTtE4pC6OU
-         VNXerozMf6mNDQ2YuNycgdEq1clJ5Ax3fRXt2Pykx7Eg5zzgtutbB8rwb3gug/dYXr
-         O98/bPfya6esIc3ETSzeD3199w5ae4W/Lwcu2gAXFoPoyufabN5ofgPBt7+mBFPuRl
-         yTH6VnFiqBpTquzJOkRU+fykLB1M8/iymSMC+5w1Mo4YIFRRu6hO3v+dQXWv3IKe2k
-         Skm8IrMNwnxoQ==
-X-Nifty-SrcIP: [209.85.222.49]
-Received: by mail-ua1-f49.google.com with SMTP id z13so3851870uaa.4;
-        Sun, 30 Jun 2019 00:58:00 -0700 (PDT)
-X-Gm-Message-State: APjAAAWysMbNscscgdcwsu+dZATRmuJuaguufvScETMbNbgnIXct6t2m
-        LqZIl0OYZjwAjoaIWjYoBL6cZFfUIYYY90xpG9I=
-X-Google-Smtp-Source: APXvYqzyVZpInW2H6+hLd4o8U+kv7ZbqLoJ5DBzo4XhAbsuYuwZv3Nes7LIrEN98cU8HrIW65l38Jgqlp5UdZQn0x3E=
-X-Received: by 2002:a9f:25e9:: with SMTP id 96mr10993006uaf.95.1561881479132;
- Sun, 30 Jun 2019 00:57:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190627163903.28398-1-yamada.masahiro@socionext.com>
- <20190627163903.28398-5-yamada.masahiro@socionext.com> <20190628180057.GA22758@ravnborg.org>
-In-Reply-To: <20190628180057.GA22758@ravnborg.org>
+        s=dec2015msa; t=1561942746;
+        bh=k6lypsY8EtklIWOXM9lo9DSpQkaOGO3EP2tLY2qrygs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RV7ivx/luT13tyKFQqp2bzeMpPuELrJCg9fzB9Izj3h9p/ZMwQ1dZT6LLW+TGOiia
+         y7GXNUCQeMJvbLyYJp4c6896ESTp4uj92EuSL6k9rlafDuvM+I5/D/zuLKRV7aX5Mr
+         hKleV/abWphBI55RVHfAyHVvem0AZalk/lBgfViVIVL2e3dI9lRxL0wq3+JfFGanC5
+         mv6ZNUnGJUBGxfJbiLw9xV/uRqek9ZvLivUrGDZ0JN/YI/Bxjikn/ddnD2lc99zBwI
+         nic+be8jWSUlygiFUgs6kWl8faUFT40BXRNmZSzifX/qacxH8tCcUgk4os320VPQke
+         eIRoc/XiFB7og==
+X-Nifty-SrcIP: [126.125.154.139]
 From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-Date:   Sun, 30 Jun 2019 16:57:23 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQDqtm5F_JoPAjPOuf6s3d0F1=Ctyq6s0u2DWNpbFr5vg@mail.gmail.com>
-Message-ID: <CAK7LNAQDqtm5F_JoPAjPOuf6s3d0F1=Ctyq6s0u2DWNpbFr5vg@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] kbuild: compile-test kernel headers to ensure they
- are self-contained
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
+To:     linux-kbuild@vger.kernel.org
+Cc:     Sam Ravnborg <sam@ravnborg.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Tony Luck <tony.luck@intel.com>, linux-doc@vger.kernel.org,
         John Fastabend <john.fastabend@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
+        linux-riscv@lists.infradead.org,
         Daniel Borkmann <daniel@iogearbox.net>,
         xdp-newbies@vger.kernel.org, Anton Vorontsov <anton@enomsg.org>,
+        Palmer Dabbelt <palmer@sifive.com>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Michal Marek <michal.lkml@markovi.net>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
         Colin Cross <ccross@android.com>,
         "David S. Miller" <davem@davemloft.net>,
         Kees Cook <keescook@chromium.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH 0/7] Compile-test UAPI and kernel headers
+Date:   Mon,  1 Jul 2019 09:58:38 +0900
+Message-Id: <20190701005845.12475-1-yamada.masahiro@socionext.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Sam,
+
+1/7: add CONFIG_CC_CAN_LINK to use it in 2/7
+
+2/7: Compile-test exported headers
+
+3/7: Do not generate intermediate wrappers.
+     This will avoid header search path issue.
+
+4/7: maybe useful for 7/7 and in some other places.
+     Add header-test-pattern-y syntax.
+
+5/7: Minor cleanup of gen_kheaders.sh
+
+6/7: Exclude all files without ".h" extension
+     from the kheaders_data.tar.xz
+     This will be needed by 7/7 because we need to
+     exclude "*.h.s" from the archive
+
+7/7: Compile-test kernel-space headers in include/.
 
 
-On Sat, Jun 29, 2019 at 3:01 AM Sam Ravnborg <sam@ravnborg.org> wrote:
->
-> Hi Masahiro.
->
-> On Fri, Jun 28, 2019 at 01:39:02AM +0900, Masahiro Yamada wrote:
-> > The headers in include/ are globally used in the kernel source tree
-> > to provide common APIs. They are included from external modules, too.
-> >
-> > It will be useful to make as many headers self-contained as possible
-> > so that we do not have to rely on a specific include order.
-> >
-> > There are more than 4000 headers in include/. In my rough analysis,
-> > 70% of them are already self-contained. With efforts, most of them
-> > can be self-contained.
-> >
-> > For now, we must exclude more than 1000 headers just because they
-> > cannot be compiled as standalone units. I added them to header-test-.
-> > The black list was mostly generated by a script, so should be checked
-> > later.
-> The list is smaller than I had expected.
-> And I see why you insisted on avoiding a maze ok Kbuild files.
-> It looks good, except there is a few issues..
->
->
-> The file kernel/kheaders_data.tar.xz includes all the .s files.
-> Something needs to be done to exclude the .s files...
+Masahiro Yamada (7):
+  init/Kconfig: add CONFIG_CC_CAN_LINK
+  kbuild: compile-test exported headers to ensure they are
+    self-contained
+  kbuild: do not create wrappers for header-test-y
+  kbuild: support header-test-pattern-y
+  kheaders: remove meaningless -R option of 'ls'
+  kheaders: include only headers into kheaders_data.tar.xz
+  kbuild: compile-test kernel headers to ensure they are self-contained
 
-Good catch. I will change scripts/gen_kheaders.sh
-
-
-> When building a full kernel the build fails like this:
->   LD      vmlinux.o
-> aarch64-linux-gnu-ld: cannot find include/lib.a: No such file or directory
-> make[1]: *** [/home/sam/kernel/linux-kbuild.git/Makefile:1054: vmlinux] Error 1
-> make[1]: Leaving directory '/home/sam/kernel/linux-kbuild.git/.build/arm64-allyesconfig'
-> make: *** [Makefile:179: sub-make] Error 2
-
-My bad - I built only include/,
-without testing full build.
-
-I will fix.
-
-
->
-> include/uapi/linux/mman.h fails when building sparc64 allmodconfig.
-> There is likely more header files that will fail when we start to
-> throw this after diverse randconfigs.
-> I have no good idea how to catch this.
-> Unless your scripts could automate this across several architectures.
-
-Thanks. I excluded a little more headers.
-
-
-> I did not continue my testing futher.
->
-> > +header-test-                 += uapi/drm/vmwgfx_drm.h
-> > +header-test-                 += uapi/linux/a.out.h
-> > +header-test-                 += uapi/linux/coda.h
-> ...
-> > +header-test-                 += uapi/xen/evtchn.h
-> > +header-test-                 += uapi/xen/gntdev.h
-> > +header-test-                 += uapi/xen/privcmd.h
->
-> I though uapi files were covered by another Makefile?
-> If they are added because we pull them in using a pattern, maybe they
-> should be removed using a specific filer-out?
-
-I have not looked at this closely yet.
-
-usr/include/Makefile tests UAPI headers
-crafted by scripts/headers_install.sh
-
-Testing UAPI headers in their raw form
-makes sense, I think.
-
-
+ .gitignore                         |    1 -
+ Documentation/dontdiff             |    1 -
+ Documentation/kbuild/makefiles.txt |   13 +-
+ Makefile                           |    4 +-
+ include/Kbuild                     | 1253 ++++++++++++++++++++++++++++
+ init/Kconfig                       |   24 +
+ kernel/gen_kheaders.sh             |   51 +-
+ net/bpfilter/Kconfig               |    2 +-
+ scripts/Makefile.build             |   10 +-
+ scripts/Makefile.lib               |   13 +-
+ usr/.gitignore                     |    1 -
+ usr/Makefile                       |    2 +
+ usr/include/.gitignore             |    3 +
+ usr/include/Makefile               |  131 +++
+ 14 files changed, 1462 insertions(+), 47 deletions(-)
+ create mode 100644 include/Kbuild
+ create mode 100644 usr/include/.gitignore
+ create mode 100644 usr/include/Makefile
 
 -- 
-Best Regards
-Masahiro Yamada
+2.17.1
+
