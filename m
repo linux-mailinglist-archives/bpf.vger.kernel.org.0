@@ -2,105 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 094625C32A
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2019 20:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B515C32C
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2019 20:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbfGASkE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jul 2019 14:40:04 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:45949 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725853AbfGASkE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Jul 2019 14:40:04 -0400
-Received: by mail-io1-f66.google.com with SMTP id e3so31034382ioc.12;
-        Mon, 01 Jul 2019 11:40:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uR2VCsJqLC5hH3BjSnUJ0SX9V/YuHMonqp4MnY/9zPo=;
-        b=uaa8j8RSEmdx+3hPTajoin94mcySFGsHxzTKGTJibTf9a7AM3CKalIzRPt8oZ+BuZ8
-         lPW79jsdsTQwCuiSZW5LYXQdI1qqz6tU8al2XR8vxEGkUTzUdPZZqur2sycNp4CqNr7p
-         Nb6W3E/B3Mbl6fhl7TBsrft5VijZ7socnxOWq1myo2/xJ5dh0j6nzwCx+VjSBQ1GrbBi
-         jp74Lc4wgv+Rb9dMuZ2LZ+sxqkLeDnH25SUQ+/Kp41YZD6pEeUtgT03iJIwFZVNoa07K
-         3Gvcq6CHak30W/adYe608APFUHQ+YXlBdYHZqwlaGbeL8UTyO+/1c8uXMsQ487M59aPi
-         aciA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uR2VCsJqLC5hH3BjSnUJ0SX9V/YuHMonqp4MnY/9zPo=;
-        b=iAqgXLThP/r3a1DhqanTdnQZGfsGKjCTrE3ILMLbGsALXuVDkXGN7KB1bAae7TqB6Y
-         UMAUt5P/SRspGmFzbbWiQUO1kYqrVWKFojLQ/yISUUtnA5ZXADvc7dC+WPY2mXTwNwTH
-         svylFKXIdpISFcGmwqgRUIrzE2L80WiBrnAaonFBatyBmN3CllIqn1JgEmP5CgMlGTkX
-         uYTawpBb688SzvS5xmUcqQdu0iTBPPu4JlHIbKQX2067IuvqYCIeCpy5jQohqL/CSs4K
-         53SpqFJT2bKb9bsmW0CyCgYSkZMF/YfmL3L0VKGXLRKgZv4eAVVD4DFB4qtnd/jaokgZ
-         skUw==
-X-Gm-Message-State: APjAAAWmabU4NCj0SGwf08lkpsRRI+OxVk4oTUoQR1PXBiOmT+B/x2DG
-        bZwNPAa+9x5n6c5Tfo18nNHXKr7bO8r7kA7dX+nc/O8D
-X-Google-Smtp-Source: APXvYqwla8PKg9TGHKwpnLVufFBMd6UK00uPhNWO+XkaWaCr1XWfD3GL8Sl2fVlvw24U9FqTr2COgeewneyc9f351nU=
-X-Received: by 2002:a5e:aa15:: with SMTP id s21mr26584810ioe.221.1562006403485;
- Mon, 01 Jul 2019 11:40:03 -0700 (PDT)
+        id S1726316AbfGASlT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Jul 2019 14:41:19 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49822 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726076AbfGASlT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 1 Jul 2019 14:41:19 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x61Ibc9v092144
+        for <bpf@vger.kernel.org>; Mon, 1 Jul 2019 14:41:18 -0400
+Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2tfnsxvvw7-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 01 Jul 2019 14:41:18 -0400
+Received: from localhost
+        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Mon, 1 Jul 2019 19:41:16 +0100
+Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
+        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 1 Jul 2019 19:41:15 +0100
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x61If3q428967222
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Jul 2019 18:41:03 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E94EBA404D;
+        Mon,  1 Jul 2019 18:41:13 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C6704A4040;
+        Mon,  1 Jul 2019 18:41:13 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.98.98])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  1 Jul 2019 18:41:13 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     bpf@vger.kernel.org, liu.song.a23@gmail.com,
+        andrii.nakryiko@gmail.com
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH v2 bpf-next] selftests/bpf: do not ignore clang failures
+Date:   Mon,  1 Jul 2019 20:40:26 +0200
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <CAEf4Bzb3BKoEcYiM3qQ6uqn+bZZ7kO2ogvZPba7679TWFT4fmw@mail.gmail.com>
+References: <CAEf4Bzb3BKoEcYiM3qQ6uqn+bZZ7kO2ogvZPba7679TWFT4fmw@mail.gmail.com>
 MIME-Version: 1.0
-References: <4fdda0547f90e96bd2ef5d5533ee286b02dd4ce2.1561819374.git.jbenc@redhat.com>
- <CAPhsuW4ncpfNCvbYHF36pb6ZEBJMX-iJP5sD0x3PbmAds+WGOQ@mail.gmail.com> <CAPhsuW4Ric_nMGxpKf3mEJw3JDBZYpbeAQwTW_Nrsz79T2zisw@mail.gmail.com>
-In-Reply-To: <CAPhsuW4Ric_nMGxpKf3mEJw3JDBZYpbeAQwTW_Nrsz79T2zisw@mail.gmail.com>
-From:   Y Song <ys114321@gmail.com>
-Date:   Mon, 1 Jul 2019 11:39:27 -0700
-Message-ID: <CAH3MdRUbkswKAYiDSmhe9cdd-Jd=YmC0_PSLhzfY7vKv-zxCCA@mail.gmail.com>
-Subject: Re: [PATCH bpf] selftests: bpf: fix inlines in test_lwt_seg6local
-To:     Song Liu <liu.song.a23@gmail.com>
-Cc:     Jiri Benc <jbenc@redhat.com>, Networking <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Mathieu Xhonneux <m.xhonneux@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19070118-0008-0000-0000-000002F8E123
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19070118-0009-0000-0000-000022662739
+Message-Id: <20190701184025.25731-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-01_11:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907010219
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 29, 2019 at 11:05 AM Song Liu <liu.song.a23@gmail.com> wrote:
->
-> On Sat, Jun 29, 2019 at 11:04 AM Song Liu <liu.song.a23@gmail.com> wrote:
-> >
-> > On Sat, Jun 29, 2019 at 7:43 AM Jiri Benc <jbenc@redhat.com> wrote:
-> > >
-> > > Selftests are reporting this failure in test_lwt_seg6local.sh:
-> > >
-> > > + ip netns exec ns2 ip -6 route add fb00::6 encap bpf in obj test_lwt_seg6local.o sec encap_srh dev veth2
-> > > Error fetching program/map!
-> > > Failed to parse eBPF program: Operation not permitted
-> > >
-> > > The problem is __attribute__((always_inline)) alone is not enough to prevent
-> > > clang from inserting those functions in .text. In that case, .text is not
-> > > marked as relocateable.
-> > >
-> > > See the output of objdump -h test_lwt_seg6local.o:
-> > >
-> > > Idx Name          Size      VMA               LMA               File off  Algn
-> > >   0 .text         00003530  0000000000000000  0000000000000000  00000040  2**3
-> > >                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-> > >
-> > > This causes the iproute bpf loader to fail in bpf_fetch_prog_sec:
-> > > bpf_has_call_data returns true but bpf_fetch_prog_relo fails as there's no
-> > > relocateable .text section in the file.
-> > >
-> > > Add 'static inline' to fix this.
-> > >
-> > > Fixes: c99a84eac026 ("selftests/bpf: test for seg6local End.BPF action")
-> > > Signed-off-by: Jiri Benc <jbenc@redhat.com>
-> >
-> > Maybe use "__always_inline" as most other tests do?
->
-> I meant "static __always_inline".
+Am 01.07.2019 um 17:31 schrieb Andrii Nakryiko <andrii.nakryiko@gmail.com>:
+> Do we still need clang | llc pipeline with new clang? Could the same
+> be achieved with single clang invocation? That would solve the problem
+> of not detecting pipeline failures.
 
-By default, we have
-# define __always_inline        inline __attribute__((always_inline))
+I’ve experimented with this a little, and found that new clang:
 
-So just use __always_inline should be less verbose in your patch.
+- Does not understand -march, but -target is sufficient.
+- Understands -mcpu.
+- Understands -Xclang -target-feature -Xclang +foo as a replacement for
+  -mattr=foo.
 
-BTW, what compiler did you use have this behavior?
-Did you have issues with `static __attribute__((always_inline))`?
+However, there are two issues with that:
 
->
-> Song
+- Don’t older clangs need to be supported? For example, right now alu32
+  progs are built conditionally.
+- It does not seem to be possible to build test_xdp.o without -target
+  bpf.
+
+For now I'm attaching the new version of this patch, which introduces
+intermediate targets for LLVM bitcode and does not require bash.
+
+---
+
+When compiling an eBPF prog fails, make still returns 0, because
+failing clang command's output is piped to llc and therefore its
+exit status is ignored.
+
+Create separate targets for clang and llc invocations, so that when
+clang fails, llc is not invoked at all, and make returns nonzero.
+Pull Kbuild.include for .SECONDARY target, which prevents make from
+deleting intermediate LLVM bitcode files.
+
+Adding .bc targets triggers the latent problem with depending on
+$(ALU32_BUILD_DIR): since directories are considered changed whenever a
+member is added or removed, now everything that depends on
+$(ALU32_BUILD_DIR) is always considered out-of-date.
+
+While removing $(ALU32_BUILD_DIR) target might be tempting, since most
+targets already depend on files inside it and therefore don't need it,
+it might create problems in the future, when such dependencies need to
+be removed.
+
+So, instead, add $(ALU32_BUILD_DIR) where needed as an order-only
+prerequisite. make provides this feature since version 3.80.
+
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ tools/testing/selftests/bpf/.gitignore |  1 +
+ tools/testing/selftests/bpf/Makefile   | 34 ++++++++++++++++----------
+ 2 files changed, 22 insertions(+), 13 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+index a2f7f79c7908..4604a54e3ff2 100644
+--- a/tools/testing/selftests/bpf/.gitignore
++++ b/tools/testing/selftests/bpf/.gitignore
+@@ -42,3 +42,4 @@ xdping
+ test_sockopt
+ test_sockopt_sk
+ test_sockopt_multi
++*.bc
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index de1754a8f5fe..d60fee59fbd1 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -1,4 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
++include ../../../../scripts/Kbuild.include
+ 
+ LIBDIR := ../../../lib
+ BPFDIR := $(LIBDIR)/bpf
+@@ -179,12 +180,12 @@ TEST_CUSTOM_PROGS += $(ALU32_BUILD_DIR)/test_progs_32
+ $(ALU32_BUILD_DIR):
+ 	mkdir -p $@
+ 
+-$(ALU32_BUILD_DIR)/urandom_read: $(OUTPUT)/urandom_read
++$(ALU32_BUILD_DIR)/urandom_read: $(OUTPUT)/urandom_read | $(ALU32_BUILD_DIR)
+ 	cp $< $@
+ 
+ $(ALU32_BUILD_DIR)/test_progs_32: test_progs.c $(OUTPUT)/libbpf.a\
+-						$(ALU32_BUILD_DIR) \
+-						$(ALU32_BUILD_DIR)/urandom_read
++						$(ALU32_BUILD_DIR)/urandom_read \
++						| $(ALU32_BUILD_DIR)
+ 	$(CC) $(TEST_PROGS_CFLAGS) $(CFLAGS) \
+ 		-o $(ALU32_BUILD_DIR)/test_progs_32 \
+ 		test_progs.c test_stub.c trace_helpers.c prog_tests/*.c \
+@@ -193,12 +194,15 @@ $(ALU32_BUILD_DIR)/test_progs_32: test_progs.c $(OUTPUT)/libbpf.a\
+ $(ALU32_BUILD_DIR)/test_progs_32: $(PROG_TESTS_H)
+ $(ALU32_BUILD_DIR)/test_progs_32: prog_tests/*.c
+ 
+-$(ALU32_BUILD_DIR)/%.o: progs/%.c $(ALU32_BUILD_DIR) \
+-					$(ALU32_BUILD_DIR)/test_progs_32
++$(ALU32_BUILD_DIR)/%.bc: progs/%.c $(ALU32_BUILD_DIR)/test_progs_32 \
++					| $(ALU32_BUILD_DIR)
+ 	$(CLANG) $(CLANG_FLAGS) \
+-		 -O2 -target bpf -emit-llvm -c $< -o - |      \
++		 -O2 -target bpf -emit-llvm -c $< -o $@
++
++$(ALU32_BUILD_DIR)/%.o: $(ALU32_BUILD_DIR)/%.bc \
++				| $(ALU32_BUILD_DIR)
+ 	$(LLC) -march=bpf -mattr=+alu32 -mcpu=$(CPU) $(LLC_FLAGS) \
+-		-filetype=obj -o $@
++		-filetype=obj -o $@ $<
+ ifeq ($(DWARF2BTF),y)
+ 	$(BTF_PAHOLE) -J $@
+ endif
+@@ -206,18 +210,22 @@ endif
+ 
+ # Have one program compiled without "-target bpf" to test whether libbpf loads
+ # it successfully
+-$(OUTPUT)/test_xdp.o: progs/test_xdp.c
++$(OUTPUT)/test_xdp.bc: progs/test_xdp.c
+ 	$(CLANG) $(CLANG_FLAGS) \
+-		-O2 -emit-llvm -c $< -o - | \
+-	$(LLC) -march=bpf -mcpu=$(CPU) $(LLC_FLAGS) -filetype=obj -o $@
++		-O2 -emit-llvm -c $< -o $@
++
++$(OUTPUT)/test_xdp.o: $(OUTPUT)/test_xdp.bc
++	$(LLC) -march=bpf -mcpu=$(CPU) $(LLC_FLAGS) -filetype=obj -o $@ $<
+ ifeq ($(DWARF2BTF),y)
+ 	$(BTF_PAHOLE) -J $@
+ endif
+ 
+-$(OUTPUT)/%.o: progs/%.c
++$(OUTPUT)/%.bc: progs/%.c
+ 	$(CLANG) $(CLANG_FLAGS) \
+-		 -O2 -target bpf -emit-llvm -c $< -o - |      \
+-	$(LLC) -march=bpf -mcpu=$(CPU) $(LLC_FLAGS) -filetype=obj -o $@
++		 -O2 -target bpf -emit-llvm -c $< -o $@
++
++$(OUTPUT)/%.o: $(OUTPUT)/%.bc
++	$(LLC) -march=bpf -mcpu=$(CPU) $(LLC_FLAGS) -filetype=obj -o $@ $<
+ ifeq ($(DWARF2BTF),y)
+ 	$(BTF_PAHOLE) -J $@
+ endif
+-- 
+2.21.0
+
