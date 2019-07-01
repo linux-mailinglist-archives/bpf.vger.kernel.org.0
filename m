@@ -2,66 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D01595C4C3
-	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2019 23:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5A35C4E1
+	for <lists+bpf@lfdr.de>; Mon,  1 Jul 2019 23:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbfGAVED (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jul 2019 17:04:03 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:35441 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726781AbfGAVEC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Jul 2019 17:04:02 -0400
-Received: by mail-wm1-f65.google.com with SMTP id c6so987743wml.0
-        for <bpf@vger.kernel.org>; Mon, 01 Jul 2019 14:04:01 -0700 (PDT)
+        id S1726686AbfGAVPl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Jul 2019 17:15:41 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:38366 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726586AbfGAVPk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Jul 2019 17:15:40 -0400
+Received: by mail-wr1-f68.google.com with SMTP id p11so4137156wro.5
+        for <bpf@vger.kernel.org>; Mon, 01 Jul 2019 14:15:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=m7g/Dtye8fNnmt4ZetsK+1jSDaLtAM8RMUVdLZaMuaI=;
-        b=jUMpQGnUtM6AyD0cqQp0onXdXcMRhHbYhnNIzrWWCz0rr9Go2YiWr0up+yNDFIeSHv
-         vdr6zbn9MP+xmEG8joKTqQw8E0B7JXXqSNEOZElb6ygI3CTdZ3XeBKKisU6jdoE7L9JV
-         f41UzPF9Jeo5g+yNHARAcsmyPbRHXOU4LkDDjvEuZLkHpbpw9G3qQq540Adm3l8MBlNw
-         /HgR3vNxO04QnsaBvUcbGG7sZGk7/GPngoafQlnqGncjSNxNJENAhKW81LLBsWnzTcJw
-         gsNTGwPvNg+Hb/ZPsftOtUiw8dhnWDvkbcS1T3VaqrWw/i40uG5SZynAlvsJ0Pry90Cu
-         3nig==
+        bh=/a65+MdTTdSdBoyvBlSDBgVlXptz3TszC1xKq1rrZ4g=;
+        b=KhxozAlXNmE4X2b0GWnExGYH9x81Fx/0Zb55BTWxbZL3WGhK/2dSinybewoJBJ4piD
+         mN5cWT5HqYZNAnA3FnY+0bs74ypG42hcrFEq4QMDCpdQ8WdR2U1cPF5/W86lyl7Cpytx
+         LRFkU5RuB1Dbl/hFyikfW8sVmi79jHzCbFldVzY5EMrpUocL6JkrFLAVFUlIbgLUHp8i
+         sfp371cvGVuf/PpK584mxCynC6JHOnaYyZGF/NqjJ18Iv+h5GvLF5gG98K53Ery14XZ3
+         Zv0ta4El2cb0zT7pG9tIeVI8V0x1KPsMuM/QXHdouEpobfdZWOIN5K9cnEpgyH1G2ABi
+         I1Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=m7g/Dtye8fNnmt4ZetsK+1jSDaLtAM8RMUVdLZaMuaI=;
-        b=IYwlNrtwYfYZPjpqZiQkY5oNGQDBDp1EzbtqlGdkQ2s6xGt0dn53fIq7E/VXlBIIIU
-         it1WgFfxrnMhkgteDwt1NDFVGn3kmWoaLFaAy/fCdLlecbwCWYh/Qoa5UTTKgghZb/Ga
-         gEOyZdcOaTdcLc3rxmNqN87xGU/nwKpY2kg+G433fsKkVnyYg1fF/uGtBYYPiZBFRrCn
-         HcwVquHbVkMGT1uBIXNWMz0Fohs5f+u0bgPgc+iWiAsZgcPCVBhvMEFC0qS0VpGLHXdP
-         63OXy3D+CH5dbhdiXIWp6YfaB39+0sjoTspXkOuPi/FwiAimlgFxdEAydmS8YIWJPgot
-         XGXQ==
-X-Gm-Message-State: APjAAAUzixuwYXWWnEqHf71b1RaryWTh4EqnZOU8oIObyWYQDHm9EA3v
-        eTJ3TMduRD9sBk2zJkt6LO02Gu1F4iEU6tDzAo8m3Q==
-X-Google-Smtp-Source: APXvYqwGLJbJrFZ0W2+FIb0PxdMx8+tntMLc4EGdjvZOL3sFHTjVNCN2PQF8V26njVbt0+EUH31CxoFhw2qcF7L+lFg=
-X-Received: by 2002:a05:600c:2205:: with SMTP id z5mr665485wml.175.1562015040340;
- Mon, 01 Jul 2019 14:04:00 -0700 (PDT)
+        bh=/a65+MdTTdSdBoyvBlSDBgVlXptz3TszC1xKq1rrZ4g=;
+        b=IsOeSVellL7WpvurKOqUr5F5RpsHWPmdSXT2GVMQ0SXcDuO46CoLQEhH0JinwZgY7c
+         OQfMGE2TSw3/wYKX1MuPqJj4dueP1cOxUOnfJnvQV5HJPgYjlkS3UrSBpWrrm2JJHxEJ
+         ZIRthA7d8xeRImCqx33LNYZDgmBBPN9GTSmgRjA5e++4XU9gB99j1LIDHMfp6+IU06Qi
+         a3nfzI/0IHcdDGfBqeRQYHj/STgjY5NDISMkRWb8NAr4o/QWXOv1nKXff3Hm/nB91TG6
+         IuzxTiZvLGiRXriqPOWOSYK1NPYcARPOvvImhxAGxa0ruNBk7kT/VLXqPu783/d68mYl
+         NBTQ==
+X-Gm-Message-State: APjAAAUgG0d/OwmvzBtXuXyaWmGwCQnHrSqd/6P5QdI5E16KZNGbnkPF
+        GJLEhMIftu6tAGzeJuaEcGbY2tX3oOsiaLILLY9tLQ==
+X-Google-Smtp-Source: APXvYqzXIwg8vxyYlSuq11Nd+k0/F2OO7kXfya+jfO9mqMFaOYUoO5ts/sLcf5iAG6y/UPW3omyL8tKROnI6VrlGfGA=
+X-Received: by 2002:adf:9d81:: with SMTP id p1mr20902001wre.294.1562015738231;
+ Mon, 01 Jul 2019 14:15:38 -0700 (PDT)
 MIME-Version: 1.0
 References: <20190701204821.44230-1-sdf@google.com>
 In-Reply-To: <20190701204821.44230-1-sdf@google.com>
-From:   Soheil Hassas Yeganeh <soheil@google.com>
-Date:   Mon, 1 Jul 2019 17:03:24 -0400
-Message-ID: <CACSApvaq+_dqQOHUSxHd+5r0FtL2duOOOP+GFKCDdVzpvUWaiw@mail.gmail.com>
+From:   Yuchung Cheng <ycheng@google.com>
+Date:   Mon, 1 Jul 2019 14:15:01 -0700
+Message-ID: <CAK6E8=dw67BbfL6spdzp+XzaGgieutXHU7stsMAvq6Sew+FCrA@mail.gmail.com>
 Subject: Re: [PATCH bpf-next 0/8] bpf: TCP RTT sock_ops bpf callback
 To:     Stanislav Fomichev <sdf@google.com>
 Cc:     netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        David Miller <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
         Eric Dumazet <edumazet@google.com>,
         Priyaranjan Jha <priyarjha@google.com>,
-        Yuchung Cheng <ycheng@google.com>
+        Soheil Hassas Yeganeh <soheil@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 1, 2019 at 4:48 PM Stanislav Fomichev <sdf@google.com> wrote:
+On Mon, Jul 1, 2019 at 1:48 PM Stanislav Fomichev <sdf@google.com> wrote:
 >
 > Congestion control team would like to have a periodic callback to
 > track some TCP statistics. Let's add a sock_ops callback that can be
@@ -77,13 +76,12 @@ On Mon, Jul 1, 2019 at 4:48 PM Stanislav Fomichev <sdf@google.com> wrote:
 > Cc: Eric Dumazet <edumazet@google.com>
 > Cc: Priyaranjan Jha <priyarjha@google.com>
 > Cc: Yuchung Cheng <ycheng@google.com>
+Acked-by: Yuchung Cheng <ycheng@google.com>
+
+Thanks!
+
 > Cc: Soheil Hassas Yeganeh <soheil@google.com>
-
-Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
-
-Thank you for the nice patch series!
-
-
+>
 > Stanislav Fomichev (8):
 >   bpf: add BPF_CGROUP_SOCK_OPS callback that is executed on every RTT
 >   bpf: split shared bpf_tcp_sock and bpf_sock_ops implementation
