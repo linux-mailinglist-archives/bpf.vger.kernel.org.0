@@ -2,286 +2,462 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A5C5C61E
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2019 01:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02085C633
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2019 02:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727065AbfGAX72 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jul 2019 19:59:28 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28838 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727035AbfGAX72 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 1 Jul 2019 19:59:28 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x61NxGTJ004753
-        for <bpf@vger.kernel.org>; Mon, 1 Jul 2019 16:59:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=u/HuWife6f9JIEaDnkOMoVeauTs6Sjl4LW+ZfFuG6Rw=;
- b=nYwmTWbxGe48rV/p6/eugTIJgHKuXInDZ5LOHICaRx6q+KjLFkQGYJWXaRQ02mQzjBXg
- aV6Y0kovWttPDSKIIXTycabZHWUSK2+FjvHBiqGIDU65LorNwyHHtwDgw+ho2bblJfm4
- w7HyKxRm8jc7sXi+H4T0TjDpJ785SX1jgIk= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2tfqa0s2d0-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 01 Jul 2019 16:59:26 -0700
-Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 1 Jul 2019 16:59:25 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id 23C2B86149D; Mon,  1 Jul 2019 16:59:23 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <andrii.nakryiko@gmail.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <ast@fb.com>, <daniel@iogearbox.net>,
-        <kernel-team@fb.com>, <yhs@fb.com>
-CC:     Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v5 bpf-next 9/9] selftests/bpf: convert existing tracepoint tests to new APIs
-Date:   Mon, 1 Jul 2019 16:59:03 -0700
-Message-ID: <20190701235903.660141-10-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190701235903.660141-1-andriin@fb.com>
-References: <20190701235903.660141-1-andriin@fb.com>
-X-FB-Internal: Safe
+        id S1727039AbfGBAHj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Jul 2019 20:07:39 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:39144 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727013AbfGBAHi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Jul 2019 20:07:38 -0400
+Received: by mail-pg1-f194.google.com with SMTP id 196so6757989pgc.6
+        for <bpf@vger.kernel.org>; Mon, 01 Jul 2019 17:07:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=+Ma9H81j4hMBxNMH2uPVvLNFxVhLg0vo/ogyRC9mka8=;
+        b=XexPuGm7eXhN5rJnmF3rmFYQgcabGrVVFrZMqk6+RJiRY1I8tQlSRulvrpgxnWAglP
+         mSttGYWiBTvB+JkOqD93x2CzgVXX44v9bD4A27K4tHXVi1kc6FEKdecXwbPXIOoBf3zj
+         27/6qzvlz8DSqRBPrhIrBIoee83/eOSE7Zw1PwoRXh0HynleIuEu2/FUMdzMytzG700O
+         UaM3y7dY/aZGUzOwnm1k0U2QwWUkkIzyb166t6qNHoIbi8hvkvRurGN84deH8Tr1bsJp
+         d35QsJLRVgYQ7EshawvsZ+d1kw2PvU86+ZDLq9hsWT5D3BXN4Yh4UOIkS38BmEV5lSfm
+         RTnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+Ma9H81j4hMBxNMH2uPVvLNFxVhLg0vo/ogyRC9mka8=;
+        b=X9VDTF+nN3n/AP47m26IjcPtNppaKgEzZfcsX2JSeZx3Cn62cB8QNkzPtevD5GWM8L
+         9lR4EDw2Hfnk23Z19FEc2RPFF3Ls603xtRsNJmU8otZYMAwBpq0qWc8zXdIA2tRKn2Cb
+         FMprHcXhChnwvvTWmOrPN1cZfttkD0n8ugWrysFdqZ5m7XQ8RBiyjkdT7byiPcGhsvUH
+         S2YDb4BuDtJbQYQiC4VMF+5yUkGqXBxP/3scvmL4Z9jcTCCFrc+ygBQ7Nr+qQSSwl05x
+         bYo9Dfxh998AB5ZKke0/0E8Jc0SFwTFvNqrvlcugG9IwqbKicBQWr0c7cWBuz/w5MKE3
+         P+NQ==
+X-Gm-Message-State: APjAAAVsMZo2CRBKcid2pwFChwPCJBdGS5awHaYK3PfusANAyhgRi3cG
+        Hh1Y/2LSKAcJLvKexcUDg/jEtQ==
+X-Google-Smtp-Source: APXvYqwRP+SYGVqGwymL7Wj2llY7yZQwNDX11jUEpVdOP53kyeDxyiJY9FuKeCu/KUQFkm4206y/5g==
+X-Received: by 2002:a17:90a:5806:: with SMTP id h6mr2109411pji.126.1562026057865;
+        Mon, 01 Jul 2019 17:07:37 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id j16sm503100pjz.31.2019.07.01.17.07.36
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 01 Jul 2019 17:07:37 -0700 (PDT)
+Date:   Mon, 1 Jul 2019 17:07:36 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Y Song <ys114321@gmail.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Priyaranjan Jha <priyarjha@google.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>
+Subject: Re: [PATCH bpf-next 6/8] selftests/bpf: test BPF_SOCK_OPS_RTT_CB
+Message-ID: <20190702000736.GH6757@mini-arch>
+References: <20190701204821.44230-1-sdf@google.com>
+ <20190701204821.44230-7-sdf@google.com>
+ <CAH3MdRXx4uO3pTFiLZk8j9ooO0gd1ppbSyT8zHMsVs01P6wKpA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-01_14:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907010280
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAH3MdRXx4uO3pTFiLZk8j9ooO0gd1ppbSyT8zHMsVs01P6wKpA@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Convert some existing tests that attach to tracepoints to use
-bpf_program__attach_tracepoint API instead.
+On 07/01, Y Song wrote:
+> On Mon, Jul 1, 2019 at 1:49 PM Stanislav Fomichev <sdf@google.com> wrote:
+> >
+> > Make sure the callback is invoked for syn-ack and data packet.
+> >
+> > Cc: Eric Dumazet <edumazet@google.com>
+> > Cc: Priyaranjan Jha <priyarjha@google.com>
+> > Cc: Yuchung Cheng <ycheng@google.com>
+> > Cc: Soheil Hassas Yeganeh <soheil@google.com>
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  tools/testing/selftests/bpf/Makefile        |   3 +-
+> >  tools/testing/selftests/bpf/progs/tcp_rtt.c |  61 +++++
+> >  tools/testing/selftests/bpf/test_tcp_rtt.c  | 253 ++++++++++++++++++++
+> >  3 files changed, 316 insertions(+), 1 deletion(-)
+> >  create mode 100644 tools/testing/selftests/bpf/progs/tcp_rtt.c
+> >  create mode 100644 tools/testing/selftests/bpf/test_tcp_rtt.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> > index de1754a8f5fe..2620406a53ec 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -27,7 +27,7 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
+> >         test_cgroup_storage test_select_reuseport test_section_names \
+> >         test_netcnt test_tcpnotify_user test_sock_fields test_sysctl test_hashmap \
+> >         test_btf_dump test_cgroup_attach xdping test_sockopt test_sockopt_sk \
+> > -       test_sockopt_multi
+> > +       test_sockopt_multi test_tcp_rtt
+> >
+> >  BPF_OBJ_FILES = $(patsubst %.c,%.o, $(notdir $(wildcard progs/*.c)))
+> >  TEST_GEN_FILES = $(BPF_OBJ_FILES)
+> > @@ -107,6 +107,7 @@ $(OUTPUT)/test_cgroup_attach: cgroup_helpers.c
+> >  $(OUTPUT)/test_sockopt: cgroup_helpers.c
+> >  $(OUTPUT)/test_sockopt_sk: cgroup_helpers.c
+> >  $(OUTPUT)/test_sockopt_multi: cgroup_helpers.c
+> > +$(OUTPUT)/test_tcp_rtt: cgroup_helpers.c
+> >
+> >  .PHONY: force
+> >
+> > diff --git a/tools/testing/selftests/bpf/progs/tcp_rtt.c b/tools/testing/selftests/bpf/progs/tcp_rtt.c
+> > new file mode 100644
+> > index 000000000000..233bdcb1659e
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/tcp_rtt.c
+> > @@ -0,0 +1,61 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <linux/bpf.h>
+> > +#include "bpf_helpers.h"
+> > +
+> > +char _license[] SEC("license") = "GPL";
+> > +__u32 _version SEC("version") = 1;
+> > +
+> > +struct tcp_rtt_storage {
+> > +       __u32 invoked;
+> > +       __u32 dsack_dups;
+> > +       __u32 delivered;
+> > +       __u32 delivered_ce;
+> > +       __u32 icsk_retransmits;
+> > +};
+> > +
+> > +struct bpf_map_def SEC("maps") socket_storage_map = {
+> > +       .type = BPF_MAP_TYPE_SK_STORAGE,
+> > +       .key_size = sizeof(int),
+> > +       .value_size = sizeof(struct tcp_rtt_storage),
+> > +       .map_flags = BPF_F_NO_PREALLOC,
+> > +};
+> > +BPF_ANNOTATE_KV_PAIR(socket_storage_map, int, struct tcp_rtt_storage);
+> > +
+> > +SEC("sockops")
+> > +int _sockops(struct bpf_sock_ops *ctx)
+> > +{
+> > +       struct tcp_rtt_storage *storage;
+> > +       struct bpf_tcp_sock *tcp_sk;
+> > +       int op = (int) ctx->op;
+> > +       struct bpf_sock *sk;
+> > +
+> > +       sk = ctx->sk;
+> > +       if (!sk)
+> > +               return 1;
+> > +
+> > +       storage = bpf_sk_storage_get(&socket_storage_map, sk, 0,
+> > +                                    BPF_SK_STORAGE_GET_F_CREATE);
+> > +       if (!storage)
+> > +               return 1;
+> > +
+> > +       if (op == BPF_SOCK_OPS_TCP_CONNECT_CB) {
+> > +               bpf_sock_ops_cb_flags_set(ctx, BPF_SOCK_OPS_RTT_CB_FLAG);
+> > +               return 1;
+> > +       }
+> > +
+> > +       if (op != BPF_SOCK_OPS_RTT_CB)
+> > +               return 1;
+> > +
+> > +       tcp_sk = bpf_tcp_sock(sk);
+> > +       if (!tcp_sk)
+> > +               return 1;
+> > +
+> > +       storage->invoked++;
+> > +
+> > +       storage->dsack_dups = tcp_sk->dsack_dups;
+> > +       storage->delivered = tcp_sk->delivered;
+> > +       storage->delivered_ce = tcp_sk->delivered_ce;
+> > +       storage->icsk_retransmits = tcp_sk->icsk_retransmits;
+> > +
+> > +       return 1;
+> > +}
+> > diff --git a/tools/testing/selftests/bpf/test_tcp_rtt.c b/tools/testing/selftests/bpf/test_tcp_rtt.c
+> > new file mode 100644
+> > index 000000000000..413fd8514adc
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/test_tcp_rtt.c
+> > @@ -0,0 +1,253 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <error.h>
+> > +#include <errno.h>
+> > +#include <stdio.h>
+> > +#include <unistd.h>
+> > +#include <sys/types.h>
+> > +#include <sys/socket.h>
+> > +#include <netinet/in.h>
+> > +#include <pthread.h>
+> > +
+> > +#include <linux/filter.h>
+> > +#include <bpf/bpf.h>
+> > +#include <bpf/libbpf.h>
+> > +
+> > +#include "bpf_rlimit.h"
+> > +#include "bpf_util.h"
+> > +#include "cgroup_helpers.h"
+> > +
+> > +#define CG_PATH                                "/tcp_rtt"
+> > +
+> > +struct tcp_rtt_storage {
+> > +       __u32 invoked;
+> > +       __u32 dsack_dups;
+> > +       __u32 delivered;
+> > +       __u32 delivered_ce;
+> > +       __u32 icsk_retransmits;
+> > +};
+> > +
+> > +static void send_byte(int fd)
+> > +{
+> > +       char b = 0x55;
+> > +
+> > +       if (write(fd, &b, sizeof(b)) != 1)
+> > +               error(1, errno, "Failed to send single byte");
+> > +}
+> > +
+> > +static int verify_sk(int map_fd, int client_fd, const char *msg, __u32 invoked,
+> > +                    __u32 dsack_dups, __u32 delivered, __u32 delivered_ce,
+> > +                    __u32 icsk_retransmits)
+> > +{
+> > +       int err = 0;
+> > +       struct tcp_rtt_storage val;
+> > +
+> > +       if (bpf_map_lookup_elem(map_fd, &client_fd, &val) < 0)
+> > +               error(1, errno, "Failed to read socket storage");
+> > +
+> > +       if (val.invoked != invoked) {
+> > +               log_err("%s: unexpected bpf_tcp_sock.invoked %d != %d",
+> > +                       msg, val.invoked, invoked);
+> > +               err++;
+> > +       }
+> > +
+> > +       if (val.dsack_dups != dsack_dups) {
+> > +               log_err("%s: unexpected bpf_tcp_sock.dsack_dups %d != %d",
+> > +                       msg, val.dsack_dups, dsack_dups);
+> > +               err++;
+> > +       }
+> > +
+> > +       if (val.delivered != delivered) {
+> > +               log_err("%s: unexpected bpf_tcp_sock.delivered %d != %d",
+> > +                       msg, val.delivered, delivered);
+> > +               err++;
+> > +       }
+> > +
+> > +       if (val.delivered_ce != delivered_ce) {
+> > +               log_err("%s: unexpected bpf_tcp_sock.delivered_ce %d != %d",
+> > +                       msg, val.delivered_ce, delivered_ce);
+> > +               err++;
+> > +       }
+> > +
+> > +       if (val.icsk_retransmits != icsk_retransmits) {
+> > +               log_err("%s: unexpected bpf_tcp_sock.icsk_retransmits %d != %d",
+> > +                       msg, val.icsk_retransmits, icsk_retransmits);
+> > +               err++;
+> > +       }
+> > +
+> > +       return err;
+> > +}
+> > +
+> > +static int connect_to_server(int server_fd)
+> > +{
+> > +       struct sockaddr_storage addr;
+> > +       socklen_t len = sizeof(addr);
+> > +       int fd;
+> > +
+> > +       fd = socket(AF_INET, SOCK_STREAM, 0);
+> > +       if (fd < 0) {
+> > +               log_err("Failed to create client socket");
+> > +               return -1;
+> > +       }
+> > +
+> > +       if (getsockname(server_fd, (struct sockaddr *)&addr, &len)) {
+> > +               log_err("Failed to get server addr");
+> > +               goto out;
+> > +       }
+> > +
+> > +       if (connect(fd, (const struct sockaddr *)&addr, len) < 0) {
+> > +               log_err("Fail to connect to server");
+> > +               goto out;
+> > +       }
+> > +
+> > +       return fd;
+> > +
+> > +out:
+> > +       close(fd);
+> > +       return -1;
+> > +}
+> > +
+> > +static int run_test(int cgroup_fd, int server_fd)
+> > +{
+> > +       struct bpf_prog_load_attr attr = {
+> > +               .prog_type = BPF_PROG_TYPE_SOCK_OPS,
+> > +               .file = "./tcp_rtt.o",
+> > +               .expected_attach_type = BPF_CGROUP_SOCK_OPS,
+> > +       };
+> > +       struct bpf_program *prog;
+> > +       struct bpf_object *obj;
+> > +       struct bpf_map *map;
+> > +       int client_fd;
+> > +       int ignored;
+> > +       int map_fd;
+> > +       int err;
+> > +
+> > +       err = bpf_prog_load_xattr(&attr, &obj, &ignored);
+> > +       if (err) {
+> > +               log_err("Failed to load BPF object");
+> > +               return -1;
+> > +       }
+> 
+> The third argument of bpf_prog_load_xattr is prog_fd.
+> If you have it, you do not need the below retrieving prog_fd
+> by bpf_program__fd(prog).
+Ack. I think I copy-pasted it from my other test where
+I have multiple progs in the object file and attach them
+manually by name. Will s/ignored/prog_fd/ in the v2.
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
-Acked-by: Song Liu <songliubraving@fb.com>
----
- .../bpf/prog_tests/stacktrace_build_id.c      | 55 ++++---------------
- .../selftests/bpf/prog_tests/stacktrace_map.c | 43 +++------------
- .../bpf/prog_tests/stacktrace_map_raw_tp.c    | 15 ++++-
- 3 files changed, 32 insertions(+), 81 deletions(-)
+> > +
+> > +       map = bpf_map__next(NULL, obj);
+> > +       map_fd = bpf_map__fd(map);
+> > +
+> > +       prog = bpf_program__next(NULL, obj);
+> > +       err = bpf_prog_attach(bpf_program__fd(prog), cgroup_fd,
+> > +                             BPF_CGROUP_SOCK_OPS, 0);
+> > +       if (err) {
+> > +               log_err("Failed to attach BPF program");
+> > +               goto close_bpf_object;
+> > +       }
+> > +
+> > +       client_fd = connect_to_server(server_fd);
+> > +       if (client_fd < 0) {
+> > +               err = -1;
+> > +               goto close_bpf_object;
+> > +       }
+> > +
+> > +       err += verify_sk(map_fd, client_fd, "syn-ack",
+> > +                        /*invoked=*/1,
+> > +                        /*dsack_dups=*/0,
+> > +                        /*delivered=*/1,
+> > +                        /*delivered_ce=*/0,
+> > +                        /*icsk_retransmits=*/0);
+> > +
+> > +       send_byte(client_fd);
+> > +
+> > +       err += verify_sk(map_fd, client_fd, "first payload byte",
+> > +                        /*invoked=*/2,
+> > +                        /*dsack_dups=*/0,
+> > +                        /*delivered=*/2,
+> > +                        /*delivered_ce=*/0,
+> > +                        /*icsk_retransmits=*/0);
+> > +
+> > +       close(client_fd);
+> > +
+> > +close_bpf_object:
+> > +       bpf_object__close(obj);
+> > +       return err;
+> > +}
+> > +
+> > +static int start_server(void)
+> > +{
+> > +       struct sockaddr_in addr = {
+> > +               .sin_family = AF_INET,
+> > +               .sin_addr.s_addr = htonl(INADDR_LOOPBACK),
+> > +       };
+> > +       int fd;
+> > +
+> > +       fd = socket(AF_INET, SOCK_STREAM, 0);
+> > +       if (fd < 0) {
+> > +               log_err("Failed to create server socket");
+> > +               return -1;
+> > +       }
+> > +
+> > +       if (bind(fd, (const struct sockaddr *)&addr, sizeof(addr)) < 0) {
+> > +               log_err("Failed to bind socket");
+> > +               close(fd);
+> > +               return -1;
+> > +       }
+> > +
+> > +       return fd;
+> > +}
+> > +
+> > +static void *server_thread(void *arg)
+> > +{
+> > +       struct sockaddr_storage addr;
+> > +       socklen_t len = sizeof(addr);
+> > +       int fd = *(int *)arg;
+> > +       int client_fd;
+> > +
+> > +       if (listen(fd, 1) < 0)
+> > +               error(1, errno, "Failed to listed on socket");
+> 
+> The error() here only reports the error, right? In case of error,
+> should the control jumps to the end of this function and return?
+> The same for several error() calls below.
+No, error() calls exit(), so the whole process should die. Do you think
+it's better to gracefully handle that with pthread_join?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
-index 3aab2b083c71..ac44fda84833 100644
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
-@@ -4,11 +4,13 @@
- void test_stacktrace_build_id(void)
- {
- 	int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd;
-+	const char *prog_name = "tracepoint/random/urandom_read";
- 	const char *file = "./test_stacktrace_build_id.o";
--	int bytes, efd, err, pmu_fd, prog_fd, stack_trace_len;
--	struct perf_event_attr attr = {};
-+	int err, prog_fd, stack_trace_len;
- 	__u32 key, previous_key, val, duration = 0;
-+	struct bpf_program *prog;
- 	struct bpf_object *obj;
-+	struct bpf_link *link = NULL;
- 	char buf[256];
- 	int i, j;
- 	struct bpf_stack_build_id id_offs[PERF_MAX_STACK_DEPTH];
-@@ -18,44 +20,16 @@ void test_stacktrace_build_id(void)
- retry:
- 	err = bpf_prog_load(file, BPF_PROG_TYPE_TRACEPOINT, &obj, &prog_fd);
- 	if (CHECK(err, "prog_load", "err %d errno %d\n", err, errno))
--		goto out;
-+		return;
- 
--	/* Get the ID for the sched/sched_switch tracepoint */
--	snprintf(buf, sizeof(buf),
--		 "/sys/kernel/debug/tracing/events/random/urandom_read/id");
--	efd = open(buf, O_RDONLY, 0);
--	if (CHECK(efd < 0, "open", "err %d errno %d\n", efd, errno))
-+	prog = bpf_object__find_program_by_title(obj, prog_name);
-+	if (CHECK(!prog, "find_prog", "prog '%s' not found\n", prog_name))
- 		goto close_prog;
- 
--	bytes = read(efd, buf, sizeof(buf));
--	close(efd);
--	if (CHECK(bytes <= 0 || bytes >= sizeof(buf),
--		  "read", "bytes %d errno %d\n", bytes, errno))
-+	link = bpf_program__attach_tracepoint(prog, "random", "urandom_read");
-+	if (CHECK(IS_ERR(link), "attach_tp", "err %ld\n", PTR_ERR(link)))
- 		goto close_prog;
- 
--	/* Open the perf event and attach bpf progrram */
--	attr.config = strtol(buf, NULL, 0);
--	attr.type = PERF_TYPE_TRACEPOINT;
--	attr.sample_type = PERF_SAMPLE_RAW | PERF_SAMPLE_CALLCHAIN;
--	attr.sample_period = 1;
--	attr.wakeup_events = 1;
--	pmu_fd = syscall(__NR_perf_event_open, &attr, -1 /* pid */,
--			 0 /* cpu 0 */, -1 /* group id */,
--			 0 /* flags */);
--	if (CHECK(pmu_fd < 0, "perf_event_open", "err %d errno %d\n",
--		  pmu_fd, errno))
--		goto close_prog;
--
--	err = ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0);
--	if (CHECK(err, "perf_event_ioc_enable", "err %d errno %d\n",
--		  err, errno))
--		goto close_pmu;
--
--	err = ioctl(pmu_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
--	if (CHECK(err, "perf_event_ioc_set_bpf", "err %d errno %d\n",
--		  err, errno))
--		goto disable_pmu;
--
- 	/* find map fds */
- 	control_map_fd = bpf_find_map(__func__, obj, "control_map");
- 	if (CHECK(control_map_fd < 0, "bpf_find_map control_map",
-@@ -133,8 +107,7 @@ void test_stacktrace_build_id(void)
- 	 * try it one more time.
- 	 */
- 	if (build_id_matches < 1 && retry--) {
--		ioctl(pmu_fd, PERF_EVENT_IOC_DISABLE);
--		close(pmu_fd);
-+		bpf_link__destroy(link);
- 		bpf_object__close(obj);
- 		printf("%s:WARN:Didn't find expected build ID from the map, retrying\n",
- 		       __func__);
-@@ -152,14 +125,8 @@ void test_stacktrace_build_id(void)
- 	      "err %d errno %d\n", err, errno);
- 
- disable_pmu:
--	ioctl(pmu_fd, PERF_EVENT_IOC_DISABLE);
--
--close_pmu:
--	close(pmu_fd);
-+	bpf_link__destroy(link);
- 
- close_prog:
- 	bpf_object__close(obj);
--
--out:
--	return;
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-index 2bfd50a0d6d1..fc539335c5b3 100644
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-@@ -4,50 +4,26 @@
- void test_stacktrace_map(void)
- {
- 	int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd;
-+	const char *prog_name = "tracepoint/sched/sched_switch";
-+	int err, prog_fd, stack_trace_len;
- 	const char *file = "./test_stacktrace_map.o";
--	int bytes, efd, err, pmu_fd, prog_fd, stack_trace_len;
--	struct perf_event_attr attr = {};
- 	__u32 key, val, duration = 0;
-+	struct bpf_program *prog;
- 	struct bpf_object *obj;
--	char buf[256];
-+	struct bpf_link *link;
- 
- 	err = bpf_prog_load(file, BPF_PROG_TYPE_TRACEPOINT, &obj, &prog_fd);
- 	if (CHECK(err, "prog_load", "err %d errno %d\n", err, errno))
- 		return;
- 
--	/* Get the ID for the sched/sched_switch tracepoint */
--	snprintf(buf, sizeof(buf),
--		 "/sys/kernel/debug/tracing/events/sched/sched_switch/id");
--	efd = open(buf, O_RDONLY, 0);
--	if (CHECK(efd < 0, "open", "err %d errno %d\n", efd, errno))
-+	prog = bpf_object__find_program_by_title(obj, prog_name);
-+	if (CHECK(!prog, "find_prog", "prog '%s' not found\n", prog_name))
- 		goto close_prog;
- 
--	bytes = read(efd, buf, sizeof(buf));
--	close(efd);
--	if (bytes <= 0 || bytes >= sizeof(buf))
-+	link = bpf_program__attach_tracepoint(prog, "sched", "sched_switch");
-+	if (CHECK(IS_ERR(link), "attach_tp", "err %ld\n", PTR_ERR(link)))
- 		goto close_prog;
- 
--	/* Open the perf event and attach bpf progrram */
--	attr.config = strtol(buf, NULL, 0);
--	attr.type = PERF_TYPE_TRACEPOINT;
--	attr.sample_type = PERF_SAMPLE_RAW | PERF_SAMPLE_CALLCHAIN;
--	attr.sample_period = 1;
--	attr.wakeup_events = 1;
--	pmu_fd = syscall(__NR_perf_event_open, &attr, -1 /* pid */,
--			 0 /* cpu 0 */, -1 /* group id */,
--			 0 /* flags */);
--	if (CHECK(pmu_fd < 0, "perf_event_open", "err %d errno %d\n",
--		  pmu_fd, errno))
--		goto close_prog;
--
--	err = ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0);
--	if (err)
--		goto disable_pmu;
--
--	err = ioctl(pmu_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
--	if (err)
--		goto disable_pmu;
--
- 	/* find map fds */
- 	control_map_fd = bpf_find_map(__func__, obj, "control_map");
- 	if (control_map_fd < 0)
-@@ -96,8 +72,7 @@ void test_stacktrace_map(void)
- disable_pmu:
- 	error_cnt++;
- disable_pmu_noerr:
--	ioctl(pmu_fd, PERF_EVENT_IOC_DISABLE);
--	close(pmu_fd);
-+	bpf_link__destroy(link);
- close_prog:
- 	bpf_object__close(obj);
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_map_raw_tp.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_map_raw_tp.c
-index 1f8387d80fd7..fbfa8e76cf63 100644
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_map_raw_tp.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_map_raw_tp.c
-@@ -3,18 +3,25 @@
- 
- void test_stacktrace_map_raw_tp(void)
- {
-+	const char *prog_name = "tracepoint/sched/sched_switch";
- 	int control_map_fd, stackid_hmap_fd, stackmap_fd;
- 	const char *file = "./test_stacktrace_map.o";
--	int efd, err, prog_fd;
- 	__u32 key, val, duration = 0;
-+	int err, prog_fd;
-+	struct bpf_program *prog;
- 	struct bpf_object *obj;
-+	struct bpf_link *link = NULL;
- 
- 	err = bpf_prog_load(file, BPF_PROG_TYPE_RAW_TRACEPOINT, &obj, &prog_fd);
- 	if (CHECK(err, "prog_load raw tp", "err %d errno %d\n", err, errno))
- 		return;
- 
--	efd = bpf_raw_tracepoint_open("sched_switch", prog_fd);
--	if (CHECK(efd < 0, "raw_tp_open", "err %d errno %d\n", efd, errno))
-+	prog = bpf_object__find_program_by_title(obj, prog_name);
-+	if (CHECK(!prog, "find_prog", "prog '%s' not found\n", prog_name))
-+		goto close_prog;
-+
-+	link = bpf_program__attach_raw_tracepoint(prog, "sched_switch");
-+	if (CHECK(IS_ERR(link), "attach_raw_tp", "err %ld\n", PTR_ERR(link)))
- 		goto close_prog;
- 
- 	/* find map fds */
-@@ -55,5 +62,7 @@ void test_stacktrace_map_raw_tp(void)
- close_prog:
- 	error_cnt++;
- close_prog_noerr:
-+	if (!IS_ERR_OR_NULL(link))
-+		bpf_link__destroy(link);
- 	bpf_object__close(obj);
- }
--- 
-2.17.1
+> > +
+> > +       client_fd = accept(fd, (struct sockaddr *)&addr, &len);
+> > +       if (client_fd < 0)
+> > +               error(1, errno, "Failed to accept client");
+> > +
+> > +       if (accept(fd, (struct sockaddr *)&addr, &len) >= 0)
+> > +               error(1, errno, "Unexpected success in second accept");
+> 
+> What is the purpose of this second default to-be-failed accept() call?
+So the server_thread waits here for the next client (that never arrives)
+and doesn't exit and call close(client_fd). I can add a comment here to
+clarify. Alternatively, I can just drop close(client_fd) and let
+the thread exit. WDYT?
 
+> > +
+> > +       close(client_fd);
+> > +
+> > +       return NULL;
+> > +}
+> > +
+> > +int main(int args, char **argv)
+> > +{
+> > +       int server_fd, cgroup_fd;
+> > +       int err = EXIT_SUCCESS;
+> > +       pthread_t tid;
+> > +
+> > +       if (setup_cgroup_environment())
+> > +               goto cleanup_obj;
+> > +
+> > +       cgroup_fd = create_and_get_cgroup(CG_PATH);
+> > +       if (cgroup_fd < 0)
+> > +               goto cleanup_cgroup_env;
+> > +
+> > +       if (join_cgroup(CG_PATH))
+> > +               goto cleanup_cgroup;
+> > +
+> > +       server_fd = start_server();
+> > +       if (server_fd < 0) {
+> > +               err = EXIT_FAILURE;
+> > +               goto cleanup_cgroup;
+> > +       }
+> > +
+> > +       pthread_create(&tid, NULL, server_thread, (void *)&server_fd);
+> > +
+> > +       if (run_test(cgroup_fd, server_fd))
+> > +               err = EXIT_FAILURE;
+> > +
+> > +       close(server_fd);
+> > +
+> > +       printf("test_sockopt_sk: %s\n",
+> > +              err == EXIT_SUCCESS ? "PASSED" : "FAILED");
+> > +
+> > +cleanup_cgroup:
+> > +       close(cgroup_fd);
+> > +cleanup_cgroup_env:
+> > +       cleanup_cgroup_environment();
+> > +cleanup_obj:
+> > +       return err;
+> > +}
+> > --
+> > 2.22.0.410.gd8fdbe21b5-goog
+> >
