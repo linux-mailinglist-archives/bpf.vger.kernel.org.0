@@ -2,138 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5649D5D48E
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2019 18:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAD25D4EB
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2019 18:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726358AbfGBQrP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jul 2019 12:47:15 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:44357 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726150AbfGBQrP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Jul 2019 12:47:15 -0400
-Received: by mail-pg1-f196.google.com with SMTP id i18so3292367pgl.11
-        for <bpf@vger.kernel.org>; Tue, 02 Jul 2019 09:47:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=AwqtYCgoVgMFd7zLHFhWGcqejisGWIssWVV7qBN5clA=;
-        b=fzB5MVLqWtyuS6TrHWjeVZWCRt7xTFDG2hc/XyaXBc42/GpMFNc0clWc7wyZC3/x9k
-         lKWMANDwnbugpxtIihI9PPsv7PZU6CAqFs74AAgSzug0hb03S3WTAXUqkf6OA2TLqj/F
-         lAVi3uicaXPR015jxEg0o8Lz9CCKLPKG65XS0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=AwqtYCgoVgMFd7zLHFhWGcqejisGWIssWVV7qBN5clA=;
-        b=RCGI9TC4+BOTesEUqBxAyJfjTvecZGQH6vqNTOGrK9udO0cYJB7OkkU+2OngVKUVTy
-         n5IGGjLB65pWnROBSpG4qIGauaGhn0M5psG87YltkaKfJnx0+uU5dYDR6iuUHeGIViUk
-         FHfyvPW47+EFnCjvXbawk5UyhCWzJwMyKAdukVvYpcAkTv6VMWgyhR73gG52SPXSIOjh
-         7joNIsmgSB/RCjyGphFNLP8L4rGk6s97tV6pOke42AJ8rqTciUcgafD9hJE9ySol9oVr
-         KBrimhakXZQV9nLlqoqr/d4uZ/8JecRIycY0FaK4b8Y+DJ1XNOxZ2duVladAl/ZXLnng
-         mH7g==
-X-Gm-Message-State: APjAAAWe6+gcwD5EQ42WqQE4zMe41HMhgDpPg3O45xxcjSuXqeW+1oXW
-        A+gkIG25AUjhw82xVtE3w+7wHQ==
-X-Google-Smtp-Source: APXvYqzQ8uHzZ6YNkTzdPuzkj3M5yMySr4CirEds9hca/3caI4D9NArfxglQSOD3nsK4x9A5ZVXEgQ==
-X-Received: by 2002:a63:bd0a:: with SMTP id a10mr17207509pgf.55.1562086034555;
-        Tue, 02 Jul 2019 09:47:14 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id q1sm20178917pfg.84.2019.07.02.09.47.13
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 02 Jul 2019 09:47:13 -0700 (PDT)
-Date:   Tue, 2 Jul 2019 12:47:12 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     linux-kbuild@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
-        Tony Luck <tony.luck@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        xdp-newbies@vger.kernel.org, Anton Vorontsov <anton@enomsg.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Colin Cross <ccross@android.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kees Cook <keescook@chromium.org>,
-        Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 7/7] kbuild: compile-test kernel headers to ensure they
- are self-contained
-Message-ID: <20190702164712.GA98338@google.com>
-References: <20190701005845.12475-1-yamada.masahiro@socionext.com>
- <20190701005845.12475-8-yamada.masahiro@socionext.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190701005845.12475-8-yamada.masahiro@socionext.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726303AbfGBQ6o convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 2 Jul 2019 12:58:44 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13906 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726252AbfGBQ6n (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 2 Jul 2019 12:58:43 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x62GvbTW038166
+        for <bpf@vger.kernel.org>; Tue, 2 Jul 2019 12:58:42 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2tg8fxyyf3-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 02 Jul 2019 12:58:41 -0400
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Tue, 2 Jul 2019 17:58:38 +0100
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 2 Jul 2019 17:58:35 +0100
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x62GwYLA39780482
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 2 Jul 2019 16:58:34 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C399FA4054;
+        Tue,  2 Jul 2019 16:58:34 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A2A49A405B;
+        Tue,  2 Jul 2019 16:58:34 +0000 (GMT)
+Received: from dyn-9-152-98-98.boeblingen.de.ibm.com (unknown [9.152.98.98])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  2 Jul 2019 16:58:34 +0000 (GMT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix compiling loop{1,2,3}.c on
+ s390
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+In-Reply-To: <CAH3MdRUk5x2D9yRuKpGpVuDMFF0JbYeB+Y0Qz6chtPgfm-1vxA@mail.gmail.com>
+Date:   Tue, 2 Jul 2019 18:58:34 +0200
+Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+References: <20190702153908.41562-1-iii@linux.ibm.com>
+ <CAH3MdRUk5x2D9yRuKpGpVuDMFF0JbYeB+Y0Qz6chtPgfm-1vxA@mail.gmail.com>
+To:     Y Song <ys114321@gmail.com>
+X-Mailer: Apple Mail (2.3445.9.1)
+X-TM-AS-GCONF: 00
+x-cbid: 19070216-0020-0000-0000-0000034F8CD6
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19070216-0021-0000-0000-000021A31F2A
+Message-Id: <1AE29825-8FB2-4682-8822-5F3D16965657@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-02_08:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907020185
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 01, 2019 at 09:58:45AM +0900, Masahiro Yamada wrote:
-> The headers in include/ are globally used in the kernel source tree
-> to provide common APIs. They are included from external modules, too.
+> Am 02.07.2019 um 18:42 schrieb Y Song <ys114321@gmail.com>:
 > 
-> It will be useful to make as many headers self-contained as possible
-> so that we do not have to rely on a specific include order.
+> On Tue, Jul 2, 2019 at 8:40 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>> 
+>> -#elif defined(__s390x__)
+>> -       #define bpf_target_s930x
 > 
-> There are more than 4000 headers in include/. In my rough analysis,
-> 70% of them are already self-contained. With efforts, most of them
-> can be self-contained.
-> 
-> For now, we must exclude more than 1000 headers just because they
-> cannot be compiled as standalone units. I added them to header-test-.
-> The blacklist was mostly generated by a script, so the reason of the
-> breakage should be checked later.
-> 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> Tested-by: Jani Nikula <jani.nikula@intel.com>
-> ---
-> 
-> Changes in v4:
->   - Fix vmlinux build error
->   - Exclude more headers for sparc
-> 
-> Changes in v3:
->   - Exclude more headers
->    (Tested for allnoconfig + CONFIG_HEADER_TEST=y)
-> 
-> Changes in v2:
->   - Add everything to test coverage, and exclude broken ones
->   - Rename 'Makefile' to 'Kbuild'
->   - Add CONFIG_KERNEL_HEADER_TEST option
-> 
->  Makefile       |    1 +
->  include/Kbuild | 1253 ++++++++++++++++++++++++++++++++++++++++++++++++
->  init/Kconfig   |   11 +
->  3 files changed, 1265 insertions(+)
->  create mode 100644 include/Kbuild
-[snip
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 74192de8ada6..e2e99544da8d 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -108,6 +108,17 @@ config HEADER_TEST
->  	  If you are a developer or tester and want to ensure the requested
->  	  headers are self-contained, say Y here. Otherwise, choose N.
->  
-> +config KERNEL_HEADER_TEST
-> +	bool "Compile test kernel headers"
-> +	depends on HEADER_TEST
-> +	help
-> +	  Headers in include/ are used to build external moduls.
+> I see in some other places (e.g., bcc) where
+> macro __s390x__ is also used to indicate a s390 architecture.
+> Could you explain the difference between __s390__ and
+> __s390x__?
 
-Nit:
-							 modules.
+__s390__ is defined for 32-bit and 64-bit variants, __s390x__ is defined
+for 64-bit variant only.
 
-Otherwise lgtm, thanks for the cc.
+>> #if defined(bpf_target_x86)
+>> 
+>> +#ifdef __KERNEL__
+> 
+> In samples/bpf/,  __KERNEL__ is defined at clang options and
+> in selftests/bpf/, the __KERNEL__ is not defined.
+> 
+> I checked x86 pt_regs definition with and without __KERNEL__.
+> They are identical except some register name difference.
+> I am wondering whether we can unify into all without
+> __KERNEL__. Is __KERNEL__ really needed?
 
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Right now removing it causes the build to fail, but the errors look
+fixable. However, I wonder whether there is a plan regarding this:
+should eBPF programs be built with user headers, kernel headers,
+or both? Status quo appears to be "both", so I’ve decided to stick with
+that in this patch.
 
+>> +/* s390 provides user_pt_regs instead of struct pt_regs to userspace */
+>> +struct pt_regs;
+>> +#define PT_REGS_PARM1(x) (((const volatile user_pt_regs *)(x))->gprs[2])
+> 
+> Is user_pt_regs a recent change or has been there for quite some time?
+> I am asking since bcc did not use user_pt_regs yet.
+
+It was added in late 2017 in commit 466698e654e8 ("s390/bpf: correct
+broken uapi for BPF_PROG_TYPE_PERF_EVENT program type“).
