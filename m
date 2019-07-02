@@ -2,146 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CA35DA02
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 02:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B6B5DA8F
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 03:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727152AbfGCA7F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jul 2019 20:59:05 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:46792 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727082AbfGCA7E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Jul 2019 20:59:04 -0400
-Received: by mail-oi1-f194.google.com with SMTP id 65so566185oid.13
-        for <bpf@vger.kernel.org>; Tue, 02 Jul 2019 17:59:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=luvfa0E4zTa+mcJld8jPAXpzZzjY7UmGrCwGyWHIIKA=;
-        b=vBhqzuKwMnBliLxQX82mcgQzgBRPjVwVRNTf9So0F6Iw1ac8vFdbRnThh74e2VubIw
-         bcaaZmHI5Wu2wEwr6RdbXuwahmLk9uKdjyL2FPQuBJFGXONMdqMoI4TjoDtpfy2Bd4C0
-         2iqlI0jNPehwk+PCirQ9IKCqvWoMy/uGGQK/m+Hu7HTKZopkdvaO6WF+UkbjLVGbFz2u
-         satGm4GPy2IpecjiugIzfQhB52L8q9gl8sE7Pd7Y9lx8Z7HcixG9TmekS8bOE485ek7h
-         pJFilLEUWfz4cFociy2GI+EfciWV+KV3JM1cblSdc2Qh1tufSHw+8ZDqWqpRa3Gmv4j/
-         Ia+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=luvfa0E4zTa+mcJld8jPAXpzZzjY7UmGrCwGyWHIIKA=;
-        b=Aoe9f3uK2dQlYTTlyJsvReqvS0Vrs2LhKEWH6lOPVwycuHutsqO0K/t3eOkwPetP9s
-         vODsrUqX5AC9I1ZW+GiV1pRJjDMf5ycAOMAi6hxwKKXLCXRu7Y/7MhfrK0ANgFau+6xl
-         conyPHmS42v7vzYlmVpvVAhZDvIxggWu6ioVDnn4Uz+GIf+eG7YMJjAV1qJjivTDz1Ae
-         klCkQ7uJx7v0Oj6yliNAeoVWSpVFpBidXvbVomHzu2lyUDXCbjBvVhEmbTVGl4hEKdQR
-         l/yVO7+gXR/goqYE7LfPbcl3BqwZhFesHDOQ7JBZ2ALtmNA9lmoYkcwBa5FdeJ+KZF5y
-         L5vA==
-X-Gm-Message-State: APjAAAVvexpvUVndPGg3TwNBavHpXXqM4vFcATmv7rJ8uy1Kgfd7CePc
-        MXAL1MKk1MOuj+eMuVCSxM8M10XsmTk=
-X-Google-Smtp-Source: APXvYqzzZNG5r04NQAuUMRk/9I0Mi+YDsPPb2b4hnbUE5RRRO15d3vWd1bYFPeaRWxU5kPD0YcyDiw==
-X-Received: by 2002:a63:5a0a:: with SMTP id o10mr33887668pgb.282.1562109510489;
-        Tue, 02 Jul 2019 16:18:30 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id 14sm173678pfj.36.2019.07.02.16.18.27
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 02 Jul 2019 16:18:28 -0700 (PDT)
-Date:   Tue, 2 Jul 2019 16:18:26 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, ast@fb.com, daniel@iogearbox.net,
-        kernel-team@fb.com
-Subject: Re: [PATCH v2 bpf-next 6/9] libbpf: use negative fd to specify
- missing BTF
-Message-ID: <20190702231826.GL6757@mini-arch>
-References: <20190529173611.4012579-1-andriin@fb.com>
- <20190529173611.4012579-7-andriin@fb.com>
- <20190702225733.GK6757@mini-arch>
+        id S1727108AbfGCBRw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jul 2019 21:17:52 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:51318 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726150AbfGCBRv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 2 Jul 2019 21:17:51 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x62NlW42012927;
+        Tue, 2 Jul 2019 16:48:31 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=JA6Ux3g7UbVB9PPNR905vQAYHuYo1ioH1lR1bEgTsvY=;
+ b=NLy+7iUdTFgSyQ/Yc+8q0v6DMuDYKbgc+zt7nOwRCCO+y0GK0erw4S2n7MMsMUYqwHPt
+ rAN5r2PWEq6ZGEST7vojejaeEcFV4H6MCyGgKYKEBwZg7i/5tKtPy82FRM6WPSELwrRg
+ VC0y/2XV0WX6LHXEnPOogSo8T12P39kqOOo= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2tga64st1b-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 02 Jul 2019 16:48:31 -0700
+Received: from prn-mbx03.TheFacebook.com (2620:10d:c081:6::17) by
+ prn-hub03.TheFacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Tue, 2 Jul 2019 16:48:29 -0700
+Received: from prn-hub02.TheFacebook.com (2620:10d:c081:35::126) by
+ prn-mbx03.TheFacebook.com (2620:10d:c081:6::17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Tue, 2 Jul 2019 16:48:29 -0700
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.26) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Tue, 2 Jul 2019 16:48:29 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JA6Ux3g7UbVB9PPNR905vQAYHuYo1ioH1lR1bEgTsvY=;
+ b=ff+hjI2nBtW8dTfDUvZ47vPafdZPsxI2iEI31yDgJoqbN35daGHYEIj6wBEcZlk1d34fnwA14SZzgafkNEirphGn3CRQfvSICgFE+8QOvDq9B3WFlBVe//bj0kboLtFDCZwSSuRpCmb6hlXAsGtr6V3ayinfR0YnmmbNICZFIq0=
+Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
+ MWHPR15MB1742.namprd15.prod.outlook.com (10.174.100.136) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2032.18; Tue, 2 Jul 2019 23:48:28 +0000
+Received: from MWHPR15MB1165.namprd15.prod.outlook.com
+ ([fe80::c804:a8f3:8e8b:3311]) by MWHPR15MB1165.namprd15.prod.outlook.com
+ ([fe80::c804:a8f3:8e8b:3311%8]) with mapi id 15.20.2032.019; Tue, 2 Jul 2019
+ 23:48:28 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Andy Lutomirski <luto@kernel.org>
+CC:     Kees Cook <keescook@chromium.org>,
+        "linux-security@vger.kernel.org" <linux-security@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Jann Horn <jannh@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
+Thread-Topic: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via
+ /dev/bpf
+Thread-Index: AQHVLSW5611trSWWQEuGSg4xXBva46awKSYAgAFFJoCAAehSgIACJsgAgAEbzICAARNPgIAANGYAgAAmF4A=
+Date:   Tue, 2 Jul 2019 23:48:28 +0000
+Message-ID: <69E09581-78ED-45A9-BD2C-616A3620BCB0@fb.com>
+References: <20190627201923.2589391-1-songliubraving@fb.com>
+ <20190627201923.2589391-2-songliubraving@fb.com>
+ <21894f45-70d8-dfca-8c02-044f776c5e05@kernel.org>
+ <3C595328-3ABE-4421-9772-8D41094A4F57@fb.com>
+ <CALCETrWBnH4Q43POU8cQ7YMjb9LioK28FDEQf7aHZbdf1eBZWg@mail.gmail.com>
+ <0DE7F23E-9CD2-4F03-82B5-835506B59056@fb.com>
+ <CALCETrWBWbNFJvsTCeUchu3BZJ3SH3dvtXLUB2EhnPrzFfsLNA@mail.gmail.com>
+ <201907021115.DCD56BBABB@keescook>
+ <CALCETrXTta26CTtEDnzvtd03-WOGdXcnsAogP8JjLkcj4-mHvg@mail.gmail.com>
+In-Reply-To: <CALCETrXTta26CTtEDnzvtd03-WOGdXcnsAogP8JjLkcj4-mHvg@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3445.104.11)
+x-originating-ip: [199.201.67.129]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 113b3a82-db04-4826-f9c4-08d6ff47c824
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MWHPR15MB1742;
+x-ms-traffictypediagnostic: MWHPR15MB1742:
+x-microsoft-antispam-prvs: <MWHPR15MB17424ADE63133954B2F236BCB3F80@MWHPR15MB1742.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1751;
+x-forefront-prvs: 008663486A
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(39860400002)(136003)(366004)(376002)(346002)(189003)(199004)(51444003)(5660300002)(33656002)(186003)(6246003)(76176011)(68736007)(57306001)(50226002)(14444005)(6486002)(99286004)(2616005)(26005)(14454004)(11346002)(54906003)(36756003)(66946007)(446003)(66476007)(66556008)(64756008)(66446008)(256004)(486006)(476003)(102836004)(86362001)(6436002)(478600001)(53546011)(6506007)(229853002)(6512007)(81166006)(3846002)(76116006)(6916009)(8676002)(71190400001)(7736002)(66066001)(73956011)(2906002)(71200400001)(4326008)(6116002)(25786009)(53936002)(8936002)(316002)(305945005)(81156014)(7416002);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1742;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: Jnp8MX3oCtYuHMBdWReMat9mrHwzuXntwzGxA/JoTty4DMgPmf9qYkfNC1WRfbty/GzkZlorq5IIVa1doHmChHuqsC/6ho5aAKAJh96zDz1xMlvUB3+rgxhUmjHjOXIh0yAmX7ZibB+T46Uc69gQKpEjjY7A7THhz0BAa4ijcnBGtt9Y7HLnVrgwk7ywSCcyOfMRLQy6hi5Wk4eKQwoJY7qgtnx9V9xK3pAXakq1g3et6phaia8nCmEAUz8wOB7towSUXCSlrSGUmkbq4CQ0i7d+TONs7b4ESBAfvMlXGLDzZcepQXC9LcJRQ8XYBC3vBHGZ/aBjgehcY2Gbpz5ed2HibSl5HyebPzm4PhufExU95XNPdvWi7FuClOvUzf38qqLTAR3HBene/v/S0wab0wAAdVGVfd/u6mKq1K8vIuQ=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <FB5FF07740E23E4E8327F92A60277096@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190702225733.GK6757@mini-arch>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 113b3a82-db04-4826-f9c4-08d6ff47c824
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jul 2019 23:48:28.4190
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: songliubraving@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1742
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-02_12:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=847 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907020266
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/02, Stanislav Fomichev wrote:
-> On 05/29, Andrii Nakryiko wrote:
-> > 0 is a valid FD, so it's better to initialize it to -1, as is done in
-> > other places. Also, technically, BTF type ID 0 is valid (it's a VOID
-> > type), so it's more reliable to check btf_fd, instead of
-> > btf_key_type_id, to determine if there is any BTF associated with a map.
-> > 
-> > Acked-by: Song Liu <songliubraving@fb.com>
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
-> >  tools/lib/bpf/libbpf.c | 13 +++++++------
-> >  1 file changed, 7 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index c972fa10271f..a27a0351e595 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -1751,7 +1751,7 @@ bpf_object__create_maps(struct bpf_object *obj)
-> >  		create_attr.key_size = def->key_size;
-> >  		create_attr.value_size = def->value_size;
-> >  		create_attr.max_entries = def->max_entries;
-> > -		create_attr.btf_fd = 0;
-> > +		create_attr.btf_fd = -1;
-> >  		create_attr.btf_key_type_id = 0;
-> >  		create_attr.btf_value_type_id = 0;
-> >  		if (bpf_map_type__is_map_in_map(def->type) &&
-> > @@ -1765,11 +1765,11 @@ bpf_object__create_maps(struct bpf_object *obj)
-> >  		}
-> >  
-> >  		*pfd = bpf_create_map_xattr(&create_attr);
-> > -		if (*pfd < 0 && create_attr.btf_key_type_id) {
-> > +		if (*pfd < 0 && create_attr.btf_fd >= 0) {
-> >  			cp = libbpf_strerror_r(errno, errmsg, sizeof(errmsg));
-> >  			pr_warning("Error in bpf_create_map_xattr(%s):%s(%d). Retrying without BTF.\n",
-> >  				   map->name, cp, errno);
-> > -			create_attr.btf_fd = 0;
-> > +			create_attr.btf_fd = -1;
-> This breaks libbpf compatibility with the older kernels. If the kernel
-> doesn't know about btf_fd and we set it to -1, then CHECK_ATTR
-> fails :-(
-> 
-> Any objections to converting BTF retries to bpf_capabilities and then
-> knowingly passing bft_fd==0 or proper fd?
-Oh, nevermind, it looks like you fixed it already in e55d54f43d3f.
 
-> >  			create_attr.btf_key_type_id = 0;
-> >  			create_attr.btf_value_type_id = 0;
-> >  			map->btf_key_type_id = 0;
-> > @@ -2053,6 +2053,9 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
-> >  	char *log_buf;
-> >  	int ret;
-> >  
-> > +	if (!insns || !insns_cnt)
-> > +		return -EINVAL;
-> > +
-> >  	memset(&load_attr, 0, sizeof(struct bpf_load_program_attr));
-> >  	load_attr.prog_type = prog->type;
-> >  	load_attr.expected_attach_type = prog->expected_attach_type;
-> > @@ -2063,7 +2066,7 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
-> >  	load_attr.license = license;
-> >  	load_attr.kern_version = kern_version;
-> >  	load_attr.prog_ifindex = prog->prog_ifindex;
-> > -	load_attr.prog_btf_fd = prog->btf_fd >= 0 ? prog->btf_fd : 0;
-> > +	load_attr.prog_btf_fd = prog->btf_fd;
-> >  	load_attr.func_info = prog->func_info;
-> >  	load_attr.func_info_rec_size = prog->func_info_rec_size;
-> >  	load_attr.func_info_cnt = prog->func_info_cnt;
-> > @@ -2072,8 +2075,6 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
-> >  	load_attr.line_info_cnt = prog->line_info_cnt;
-> >  	load_attr.log_level = prog->log_level;
-> >  	load_attr.prog_flags = prog->prog_flags;
-> > -	if (!load_attr.insns || !load_attr.insns_cnt)
-> > -		return -EINVAL;
-> >  
-> >  retry_load:
-> >  	log_buf = malloc(log_buf_size);
-> > -- 
-> > 2.17.1
-> > 
+
+> On Jul 3, 2019, at 5:32 AM, Andy Lutomirski <luto@kernel.org> wrote:
+>=20
+> On Tue, Jul 2, 2019 at 2:04 PM Kees Cook <keescook@chromium.org> wrote:
+>>=20
+>> On Mon, Jul 01, 2019 at 06:59:13PM -0700, Andy Lutomirski wrote:
+>>> I think I'm understanding your motivation.  You're not trying to make
+>>> bpf() generically usable without privilege -- you're trying to create
+>>> a way to allow certain users to access dangerous bpf functionality
+>>> within some limits.
+>>>=20
+>>> That's a perfectly fine goal, but I think you're reinventing the
+>>> wheel, and the wheel you're reinventing is quite complicated and
+>>> already exists.  I think you should teach bpftool to be secure when
+>>> installed setuid root or with fscaps enabled and put your policy in
+>>> bpftool.  If you want to harden this a little bit, it would seem
+>>> entirely reasonable to add a new CAP_BPF_ADMIN and change some, but
+>>> not all, of the capable() checks to check CAP_BPF_ADMIN instead of the
+>>> capabilities that they currently check.
+>>=20
+>> If finer grained controls are wanted, it does seem like the /dev/bpf
+>> path makes the most sense. open, request abilities, use fd. The open can
+>> be mediated by DAC and LSM. The request can be mediated by LSM. This
+>> provides a way to add policy at the LSM level and at the tool level.
+>> (i.e. For tool-level controls: leave LSM wide open, make /dev/bpf owned
+>> by "bpfadmin" and bpftool becomes setuid "bpfadmin". For fine-grained
+>> controls, leave /dev/bpf wide open and add policy to SELinux, etc.)
+>>=20
+>> With only a new CAP, you don't get the fine-grained controls. (The
+>> "request abilities" part is the key there.)
+>=20
+> Sure you do: the effective set.  It has somewhat bizarre defaults, but
+> I don't think that's a real problem.  Also, this wouldn't be like
+> CAP_DAC_READ_SEARCH -- you can't accidentally use your BPF caps.
+>=20
+> I think that a /dev capability-like object isn't totally nuts, but I
+> think we should do it well, and this patch doesn't really achieve
+> that.  But I don't think bpf wants fine-grained controls like this at
+> all -- as I pointed upthread, a fine-grained solution really wants
+> different treatment for the different capable() checks, and a bunch of
+> them won't resemble capabilities or /dev/bpf at all.
+
+Thanks everyone again for great inputs. We will discuss this again and=20
+respin the set.=20
+
+Best,
+Song
