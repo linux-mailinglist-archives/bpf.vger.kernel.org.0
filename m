@@ -2,128 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4BC5D564
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2019 19:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A5D5D5B7
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2019 19:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbfGBRlK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jul 2019 13:41:10 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:35192 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725996AbfGBRlJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Jul 2019 13:41:09 -0400
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 77106307C947;
-        Tue,  2 Jul 2019 17:41:09 +0000 (UTC)
-Received: from griffin.upir.cz (unknown [10.40.205.84])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C7CF360C43;
-        Tue,  2 Jul 2019 17:41:07 +0000 (UTC)
-From:   Jiri Benc <jbenc@redhat.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Mathieu Xhonneux <m.xhonneux@gmail.com>,
-        Song Liu <liu.song.a23@gmail.com>, Y Song <ys114321@gmail.com>
-Subject: [PATCH bpf v2] selftests: bpf: fix inlines in test_lwt_seg6local
-Date:   Tue,  2 Jul 2019 19:40:31 +0200
-Message-Id: <bf60860191c7d4ab0f50fe3143f3d175bd6ee112.1562089104.git.jbenc@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.46]); Tue, 02 Jul 2019 17:41:09 +0000 (UTC)
+        id S1726529AbfGBRyM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jul 2019 13:54:12 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:43685 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726150AbfGBRyL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Jul 2019 13:54:11 -0400
+Received: by mail-io1-f66.google.com with SMTP id k20so12739001ios.10;
+        Tue, 02 Jul 2019 10:54:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4SxTyhIcg3+qLl0diKxGNqrI+DVjZ+HIytvBevQdK5U=;
+        b=Y2KEZRxSiW1w+yzwKAx6dWbJE8qZYtTazVd++IzLk/ancCWwbOT54jM+m6I9m927vo
+         LvapFQdgY3Xpt3sGN5dXGGqsFpqCgzyQyYKzaNo2CoWtLUU+D0tEbsd8bIko24mq2En9
+         CjEA097rW1mTUa6iDmGaq9a53/yJBvrpJqlzWutZvyute8mndrQJKkNnE0DUk3/FufVZ
+         wu+wxHeMionfbQxnV+8BZq2G+xY5pWpRG3kc8zAUNP1cgVy8RefIvkZKWgh9t1LImlkU
+         EVAbx0g0A3IcVKy2BoVmyAlvMm7xx2haMedqGVB4bGzYvs1B76XtQeEVigIn1fwMX1hg
+         K2wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4SxTyhIcg3+qLl0diKxGNqrI+DVjZ+HIytvBevQdK5U=;
+        b=nIqjiZMgIq9J7arcBW6XbgUrPwC/giM4ApM1MAjVqMA+v5m2HFth+p6dp17BSs/xzm
+         1vqocYD++8GqTr0Jh2ljHCZiq1TgffyBIRcTcq7At6d5hQvAts+hJXU8pM/uaC9As/Pw
+         Mha1gmuv3Ut5Ho/M3bCwTW4PRf6hrzyVyosDfzNdMeVOkeVyfvvyHNiGoq19vXuudR4H
+         0fxQEOSzQyE59wYYbsmpyedvjJzmpKlJvZeo/deTmZrwYJXs4/yH0juWZ9q5poUS2vb5
+         hWdg5rmtkd7KKNCOngiOKt04zo4yxI8gp/nYTLfxnP1nENVLg+9IBKh6VcSApiEvCKK6
+         7JDg==
+X-Gm-Message-State: APjAAAXnqNsFq8/AVt0DZVs8617uNQVv5dqmnjZmkPW3CcJgF+IYF555
+        y73yC++e/If6Pqc8yQIk0LVekBpeajD1xGt8ANFvfSvA
+X-Google-Smtp-Source: APXvYqy12ib+QiknsniPWEIIgY9CVXdQwQpzSonBEkQvIzRrbW3iy5WZwl4EufLAsbYdA1blichu/7Z8NNCbWjNBwj8=
+X-Received: by 2002:a05:6638:199:: with SMTP id a25mr36733180jaq.18.1562090050662;
+ Tue, 02 Jul 2019 10:54:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190702153908.41562-1-iii@linux.ibm.com> <CAH3MdRUk5x2D9yRuKpGpVuDMFF0JbYeB+Y0Qz6chtPgfm-1vxA@mail.gmail.com>
+ <1AE29825-8FB2-4682-8822-5F3D16965657@linux.ibm.com>
+In-Reply-To: <1AE29825-8FB2-4682-8822-5F3D16965657@linux.ibm.com>
+From:   Y Song <ys114321@gmail.com>
+Date:   Tue, 2 Jul 2019 10:53:34 -0700
+Message-ID: <CAH3MdRXZtsiLNyJ2y3rf2XVfa+j=BJCQktARncgnzFvSAKo=-g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix compiling loop{1,2,3}.c on s390
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Selftests are reporting this failure in test_lwt_seg6local.sh:
+On Tue, Jul 2, 2019 at 9:58 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>
+> > Am 02.07.2019 um 18:42 schrieb Y Song <ys114321@gmail.com>:
+> >
+> > On Tue, Jul 2, 2019 at 8:40 AM Ilya Leoshkevich <iii@linux.ibm.com> wro=
+te:
+> >>
+> >> -#elif defined(__s390x__)
+> >> -       #define bpf_target_s930x
+> >
+> > I see in some other places (e.g., bcc) where
+> > macro __s390x__ is also used to indicate a s390 architecture.
+> > Could you explain the difference between __s390__ and
+> > __s390x__?
+>
+> __s390__ is defined for 32-bit and 64-bit variants, __s390x__ is defined
+> for 64-bit variant only.
 
-+ ip netns exec ns2 ip -6 route add fb00::6 encap bpf in obj test_lwt_seg6local.o sec encap_srh dev veth2
-Error fetching program/map!
-Failed to parse eBPF program: Operation not permitted
+Thanks.
 
-The problem is __attribute__((always_inline)) alone is not enough to prevent
-clang from inserting those functions in .text. In that case, .text is not
-marked as relocateable.
+>
+> >> #if defined(bpf_target_x86)
+> >>
+> >> +#ifdef __KERNEL__
+> >
+> > In samples/bpf/,  __KERNEL__ is defined at clang options and
+> > in selftests/bpf/, the __KERNEL__ is not defined.
+> >
+> > I checked x86 pt_regs definition with and without __KERNEL__.
+> > They are identical except some register name difference.
+> > I am wondering whether we can unify into all without
+> > __KERNEL__. Is __KERNEL__ really needed?
+>
+> Right now removing it causes the build to fail, but the errors look
+> fixable. However, I wonder whether there is a plan regarding this:
+> should eBPF programs be built with user headers, kernel headers,
+> or both? Status quo appears to be "both", so I=E2=80=99ve decided to stic=
+k with
+> that in this patch.
 
-See the output of objdump -h test_lwt_seg6local.o:
+Your patch is okay in the sense it maintains the current behavor.
+I think it is okay since user level and kernel pt_regs layout are the same
+except certain names are different.
 
-Idx Name          Size      VMA               LMA               File off  Algn
-  0 .text         00003530  0000000000000000  0000000000000000  00000040  2**3
-                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+>
+> >> +/* s390 provides user_pt_regs instead of struct pt_regs to userspace =
+*/
+> >> +struct pt_regs;
+> >> +#define PT_REGS_PARM1(x) (((const volatile user_pt_regs *)(x))->gprs[=
+2])
+> >
+> > Is user_pt_regs a recent change or has been there for quite some time?
+> > I am asking since bcc did not use user_pt_regs yet.
+>
+> It was added in late 2017 in commit 466698e654e8 ("s390/bpf: correct
+> broken uapi for BPF_PROG_TYPE_PERF_EVENT program type=E2=80=9C).
 
-This causes the iproute bpf loader to fail in bpf_fetch_prog_sec:
-bpf_has_call_data returns true but bpf_fetch_prog_relo fails as there's no
-relocateable .text section in the file.
-
-To fix this, convert to 'static __always_inline'.
-
-v2: Use 'static __always_inline' instead of 'static inline
-    __attribute__((always_inline))'
-
-Fixes: c99a84eac026 ("selftests/bpf: test for seg6local End.BPF action")
-Signed-off-by: Jiri Benc <jbenc@redhat.com>
----
- .../testing/selftests/bpf/progs/test_lwt_seg6local.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/test_lwt_seg6local.c b/tools/testing/selftests/bpf/progs/test_lwt_seg6local.c
-index 0575751bc1bc..e2f6ed0a583d 100644
---- a/tools/testing/selftests/bpf/progs/test_lwt_seg6local.c
-+++ b/tools/testing/selftests/bpf/progs/test_lwt_seg6local.c
-@@ -61,7 +61,7 @@ struct sr6_tlv_t {
- 	unsigned char value[0];
- } BPF_PACKET_HEADER;
- 
--__attribute__((always_inline)) struct ip6_srh_t *get_srh(struct __sk_buff *skb)
-+static __always_inline struct ip6_srh_t *get_srh(struct __sk_buff *skb)
- {
- 	void *cursor, *data_end;
- 	struct ip6_srh_t *srh;
-@@ -95,7 +95,7 @@ __attribute__((always_inline)) struct ip6_srh_t *get_srh(struct __sk_buff *skb)
- 	return srh;
- }
- 
--__attribute__((always_inline))
-+static __always_inline
- int update_tlv_pad(struct __sk_buff *skb, uint32_t new_pad,
- 		   uint32_t old_pad, uint32_t pad_off)
- {
-@@ -125,7 +125,7 @@ int update_tlv_pad(struct __sk_buff *skb, uint32_t new_pad,
- 	return 0;
- }
- 
--__attribute__((always_inline))
-+static __always_inline
- int is_valid_tlv_boundary(struct __sk_buff *skb, struct ip6_srh_t *srh,
- 			  uint32_t *tlv_off, uint32_t *pad_size,
- 			  uint32_t *pad_off)
-@@ -184,7 +184,7 @@ int is_valid_tlv_boundary(struct __sk_buff *skb, struct ip6_srh_t *srh,
- 	return 0;
- }
- 
--__attribute__((always_inline))
-+static __always_inline
- int add_tlv(struct __sk_buff *skb, struct ip6_srh_t *srh, uint32_t tlv_off,
- 	    struct sr6_tlv_t *itlv, uint8_t tlv_size)
- {
-@@ -228,7 +228,7 @@ int add_tlv(struct __sk_buff *skb, struct ip6_srh_t *srh, uint32_t tlv_off,
- 	return update_tlv_pad(skb, new_pad, pad_size, pad_off);
- }
- 
--__attribute__((always_inline))
-+static __always_inline
- int delete_tlv(struct __sk_buff *skb, struct ip6_srh_t *srh,
- 	       uint32_t tlv_off)
- {
-@@ -266,7 +266,7 @@ int delete_tlv(struct __sk_buff *skb, struct ip6_srh_t *srh,
- 	return update_tlv_pad(skb, new_pad, pad_size, pad_off);
- }
- 
--__attribute__((always_inline))
-+static __always_inline
- int has_egr_tlv(struct __sk_buff *skb, struct ip6_srh_t *srh)
- {
- 	int tlv_offset = sizeof(struct ip6_t) + sizeof(struct ip6_srh_t) +
--- 
-2.18.1
-
+Thanks.
