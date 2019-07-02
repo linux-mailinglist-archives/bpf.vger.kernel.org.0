@@ -2,99 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 120085DA4E
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 03:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E737A5D8FD
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 02:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727436AbfGCBIG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jul 2019 21:08:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727321AbfGCBIF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Jul 2019 21:08:05 -0400
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C7E8218D0
-        for <bpf@vger.kernel.org>; Tue,  2 Jul 2019 21:32:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562103141;
-        bh=oo48P7da1GzWeluudUYctbEpvdM/m1EpFSK8+9E2e2E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dHnq5JcwBwPzy+t1r9zUImCrtgzYH0YcYBctxd3dBGpNfM4KEyiIO86yL6PHkvKLX
-         pUQ/hXlzOCTEXvzoVxMw7HXPCc88EoXafejfTaK1fE+i4se82IB35KgyATM/s8VIsI
-         EvHefSsSjR0OEKsG86DrJrmyy9rsE21Oz+4VH3SE=
-Received: by mail-wm1-f42.google.com with SMTP id a15so73044wmj.5
-        for <bpf@vger.kernel.org>; Tue, 02 Jul 2019 14:32:21 -0700 (PDT)
-X-Gm-Message-State: APjAAAXr1tHdY0a+K1Vdl0LxrVSxGLWRuGvMtUGsnAKQrWz3G3OETtkT
-        4whN4yDagIgVYcA3bDdNMdnnD2c7KB6ZhxoMiIpU3w==
-X-Google-Smtp-Source: APXvYqwEYykzJyo2X3/CbH/kvAgSmUZebU6W1B7E+n5sQRNxQub2D4+Me5+8DrjgrkPBi0sxkT1a36it03xxJT340H8=
-X-Received: by 2002:a1c:9a53:: with SMTP id c80mr4339807wme.173.1562103139731;
- Tue, 02 Jul 2019 14:32:19 -0700 (PDT)
+        id S1727169AbfGCAcr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jul 2019 20:32:47 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:39964 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726736AbfGCAcr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Jul 2019 20:32:47 -0400
+Received: by mail-oi1-f193.google.com with SMTP id w196so554237oie.7
+        for <bpf@vger.kernel.org>; Tue, 02 Jul 2019 17:32:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=AQROqwlwlcVby5ek+TITqdH8ekWL+tjjpKHjhSfuljY=;
+        b=lFUew9t4SpqLIxVQ+b3pE5iaXJTXT08X0cavLhJcuwMTfGNb0JL6Jp6tSba7GvXgiz
+         8BOk4n+mWUpyaieRhh7VRz9maYwzMF6hUGu0bb6meTpYCEA/H4l2XrKsXrERKvuAeFd+
+         ew/+Qp75kxmr/HUbFhaHA+2Hc3cWFzzZJni6UDkp+H2BFaqUPlGeNr9RZ071MLnWlRxE
+         pTDOqL+r9IURWCY1bCupg1jqpx6tmjiUDqZ02Jr3+tznYt9Ogkt6apkyRgxAOXjG8Cb1
+         IMUmC7nXY0LXCTaazpKKUfzNdDD8PX+9sK93pK67RA3GNODLGLQYQ9ducIHjhD3NdCLX
+         dbEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=AQROqwlwlcVby5ek+TITqdH8ekWL+tjjpKHjhSfuljY=;
+        b=KEjF0q1Vw2D+2IqTIhh44/KhseUK2lkp5HKNi7jgBJpALyNGPNewI2Pwd9xSnTHEjx
+         37ILiy4090URdcjTguX45wgqZRux5lh1FgaC6cRT93bnbW+uCUmoATL7L2ml/l8DpNBG
+         bieGfalqen5H9IzSd+ECfDMdz/gHdKdPR3Qe+iqMAQGiQ5Tq3/LjM8UcnAuwThcwd9KJ
+         HcIYDwcy5SxFUDfoDybk6XgV5DOV7P917BXt+Og7eMj+KaFgel3OMYtfSsm728MyOz1t
+         D2SVUFMD1RyO+32wFwjdgV5o+RALsGFo2gLhKQ8VljWVrwe4FDp/a3DMNycg37wvH5VW
+         RXzw==
+X-Gm-Message-State: APjAAAXxYmy8cx4IunnqJKRe0dYEv6UoCXnhibLUGDxA2b4VfYjRvDD5
+        D3c/YL5iJmbYcHlFABHOFdIThVCL5ik=
+X-Google-Smtp-Source: APXvYqzMPmT8XF7jgNXjqqSd+W+mSY2cud3GxGux1xHIX0Cu8BaDs5Cw+2bRh6ydBB9E+FiObVDS0w==
+X-Received: by 2002:a63:1645:: with SMTP id 5mr32666498pgw.175.1562108260782;
+        Tue, 02 Jul 2019 15:57:40 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id t2sm116719pfh.166.2019.07.02.15.57.34
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 02 Jul 2019 15:57:39 -0700 (PDT)
+Date:   Tue, 2 Jul 2019 15:57:33 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, ast@fb.com, daniel@iogearbox.net,
+        kernel-team@fb.com
+Subject: Re: [PATCH v2 bpf-next 6/9] libbpf: use negative fd to specify
+ missing BTF
+Message-ID: <20190702225733.GK6757@mini-arch>
+References: <20190529173611.4012579-1-andriin@fb.com>
+ <20190529173611.4012579-7-andriin@fb.com>
 MIME-Version: 1.0
-References: <20190627201923.2589391-1-songliubraving@fb.com>
- <20190627201923.2589391-2-songliubraving@fb.com> <21894f45-70d8-dfca-8c02-044f776c5e05@kernel.org>
- <3C595328-3ABE-4421-9772-8D41094A4F57@fb.com> <CALCETrWBnH4Q43POU8cQ7YMjb9LioK28FDEQf7aHZbdf1eBZWg@mail.gmail.com>
- <0DE7F23E-9CD2-4F03-82B5-835506B59056@fb.com> <CALCETrWBWbNFJvsTCeUchu3BZJ3SH3dvtXLUB2EhnPrzFfsLNA@mail.gmail.com>
- <201907021115.DCD56BBABB@keescook>
-In-Reply-To: <201907021115.DCD56BBABB@keescook>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 2 Jul 2019 14:32:08 -0700
-X-Gmail-Original-Message-ID: <CALCETrXTta26CTtEDnzvtd03-WOGdXcnsAogP8JjLkcj4-mHvg@mail.gmail.com>
-Message-ID: <CALCETrXTta26CTtEDnzvtd03-WOGdXcnsAogP8JjLkcj4-mHvg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        "linux-security@vger.kernel.org" <linux-security@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Jann Horn <jannh@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190529173611.4012579-7-andriin@fb.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 2, 2019 at 2:04 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Mon, Jul 01, 2019 at 06:59:13PM -0700, Andy Lutomirski wrote:
-> > I think I'm understanding your motivation.  You're not trying to make
-> > bpf() generically usable without privilege -- you're trying to create
-> > a way to allow certain users to access dangerous bpf functionality
-> > within some limits.
-> >
-> > That's a perfectly fine goal, but I think you're reinventing the
-> > wheel, and the wheel you're reinventing is quite complicated and
-> > already exists.  I think you should teach bpftool to be secure when
-> > installed setuid root or with fscaps enabled and put your policy in
-> > bpftool.  If you want to harden this a little bit, it would seem
-> > entirely reasonable to add a new CAP_BPF_ADMIN and change some, but
-> > not all, of the capable() checks to check CAP_BPF_ADMIN instead of the
-> > capabilities that they currently check.
->
-> If finer grained controls are wanted, it does seem like the /dev/bpf
-> path makes the most sense. open, request abilities, use fd. The open can
-> be mediated by DAC and LSM. The request can be mediated by LSM. This
-> provides a way to add policy at the LSM level and at the tool level.
-> (i.e. For tool-level controls: leave LSM wide open, make /dev/bpf owned
-> by "bpfadmin" and bpftool becomes setuid "bpfadmin". For fine-grained
-> controls, leave /dev/bpf wide open and add policy to SELinux, etc.)
->
-> With only a new CAP, you don't get the fine-grained controls. (The
-> "request abilities" part is the key there.)
+On 05/29, Andrii Nakryiko wrote:
+> 0 is a valid FD, so it's better to initialize it to -1, as is done in
+> other places. Also, technically, BTF type ID 0 is valid (it's a VOID
+> type), so it's more reliable to check btf_fd, instead of
+> btf_key_type_id, to determine if there is any BTF associated with a map.
+> 
+> Acked-by: Song Liu <songliubraving@fb.com>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index c972fa10271f..a27a0351e595 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -1751,7 +1751,7 @@ bpf_object__create_maps(struct bpf_object *obj)
+>  		create_attr.key_size = def->key_size;
+>  		create_attr.value_size = def->value_size;
+>  		create_attr.max_entries = def->max_entries;
+> -		create_attr.btf_fd = 0;
+> +		create_attr.btf_fd = -1;
+>  		create_attr.btf_key_type_id = 0;
+>  		create_attr.btf_value_type_id = 0;
+>  		if (bpf_map_type__is_map_in_map(def->type) &&
+> @@ -1765,11 +1765,11 @@ bpf_object__create_maps(struct bpf_object *obj)
+>  		}
+>  
+>  		*pfd = bpf_create_map_xattr(&create_attr);
+> -		if (*pfd < 0 && create_attr.btf_key_type_id) {
+> +		if (*pfd < 0 && create_attr.btf_fd >= 0) {
+>  			cp = libbpf_strerror_r(errno, errmsg, sizeof(errmsg));
+>  			pr_warning("Error in bpf_create_map_xattr(%s):%s(%d). Retrying without BTF.\n",
+>  				   map->name, cp, errno);
+> -			create_attr.btf_fd = 0;
+> +			create_attr.btf_fd = -1;
+This breaks libbpf compatibility with the older kernels. If the kernel
+doesn't know about btf_fd and we set it to -1, then CHECK_ATTR
+fails :-(
 
-Sure you do: the effective set.  It has somewhat bizarre defaults, but
-I don't think that's a real problem.  Also, this wouldn't be like
-CAP_DAC_READ_SEARCH -- you can't accidentally use your BPF caps.
+Any objections to converting BTF retries to bpf_capabilities and then
+knowingly passing bft_fd==0 or proper fd?
 
-I think that a /dev capability-like object isn't totally nuts, but I
-think we should do it well, and this patch doesn't really achieve
-that.  But I don't think bpf wants fine-grained controls like this at
-all -- as I pointed upthread, a fine-grained solution really wants
-different treatment for the different capable() checks, and a bunch of
-them won't resemble capabilities or /dev/bpf at all.
+>  			create_attr.btf_key_type_id = 0;
+>  			create_attr.btf_value_type_id = 0;
+>  			map->btf_key_type_id = 0;
+> @@ -2053,6 +2053,9 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
+>  	char *log_buf;
+>  	int ret;
+>  
+> +	if (!insns || !insns_cnt)
+> +		return -EINVAL;
+> +
+>  	memset(&load_attr, 0, sizeof(struct bpf_load_program_attr));
+>  	load_attr.prog_type = prog->type;
+>  	load_attr.expected_attach_type = prog->expected_attach_type;
+> @@ -2063,7 +2066,7 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
+>  	load_attr.license = license;
+>  	load_attr.kern_version = kern_version;
+>  	load_attr.prog_ifindex = prog->prog_ifindex;
+> -	load_attr.prog_btf_fd = prog->btf_fd >= 0 ? prog->btf_fd : 0;
+> +	load_attr.prog_btf_fd = prog->btf_fd;
+>  	load_attr.func_info = prog->func_info;
+>  	load_attr.func_info_rec_size = prog->func_info_rec_size;
+>  	load_attr.func_info_cnt = prog->func_info_cnt;
+> @@ -2072,8 +2075,6 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
+>  	load_attr.line_info_cnt = prog->line_info_cnt;
+>  	load_attr.log_level = prog->log_level;
+>  	load_attr.prog_flags = prog->prog_flags;
+> -	if (!load_attr.insns || !load_attr.insns_cnt)
+> -		return -EINVAL;
+>  
+>  retry_load:
+>  	log_buf = malloc(log_buf_size);
+> -- 
+> 2.17.1
+> 
