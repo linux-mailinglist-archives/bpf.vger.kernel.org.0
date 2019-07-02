@@ -2,33 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5722C5D0F0
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2019 15:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E931D5D113
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2019 15:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726341AbfGBNrC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jul 2019 09:47:02 -0400
-Received: from mail-eopbgr70040.outbound.protection.outlook.com ([40.107.7.40]:63425
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726628AbfGBNrC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Jul 2019 09:47:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lgsYv+yX9sosOVaOrFSC6dyYyQYA+UkBCLw4P9YxESY=;
- b=NiV9kIbjK3YwXiDGF40QLT7nfATsdVTgxj+sdrFdNMBZDlUwurEC0UfNbTyesPxRVlpC/18/e2THAir4BwFXnm76fhjNhPaoq5ztfOgvih/6h4BwpiNPcDoPq75otjVKf+J2YHRPcAlhn+jMhv4cLIqfc3wwAKgko63Cf9b/aUY=
-Received: from AM6PR05MB5879.eurprd05.prod.outlook.com (20.179.0.76) by
- AM6PR05MB6261.eurprd05.prod.outlook.com (20.177.32.225) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2032.20; Tue, 2 Jul 2019 13:46:18 +0000
-Received: from AM6PR05MB5879.eurprd05.prod.outlook.com
- ([fe80::9527:fe9d:2a02:41d5]) by AM6PR05MB5879.eurprd05.prod.outlook.com
- ([fe80::9527:fe9d:2a02:41d5%5]) with mapi id 15.20.2032.019; Tue, 2 Jul 2019
- 13:46:18 +0000
-From:   Maxim Mikityanskiy <maximmi@mellanox.com>
-To:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        "ast@kernel.org" <ast@kernel.org>
-CC:     "bjorn.topel@intel.com" <bjorn.topel@intel.com>,
+        id S1726475AbfGBN6v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jul 2019 09:58:51 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:40533 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbfGBN6v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Jul 2019 09:58:51 -0400
+Received: by mail-oi1-f194.google.com with SMTP id w196so13091822oie.7;
+        Tue, 02 Jul 2019 06:58:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BsQb0987y7DGJiCbM+1oRL5bU8C7dXL+HPdc6nvVup8=;
+        b=BCjN6TDckKE5YwlGwOhJycynO81a7qTVY0qR/emABsFXko0iCkjX15mFts+Yoj7tnF
+         LGe5ZEBwT/YSOiXukqNuRtrFIjSHNS2dKomSABWgUKrZqEFQdftHc2s+nEeLBDVNmOvG
+         YJgC+t0yCbyTesZMNC45yauuRu8d4Hq/tbAPfd0DMzj8CWvXyw1JHAC0DUZ3vENbGLMg
+         pB4zE96mo9QopN8oKZfr5f7k5izKsm8w4oc7Q2D9Xx8LthVwwzLArBkqCc65CGfmeIJn
+         CoB2+CNytDOOv0dj9PN4Wb/u5ff5vnw9baPTjxOXsPWJSAdgdqD6q5YKC2UnQETtkP1o
+         BIhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BsQb0987y7DGJiCbM+1oRL5bU8C7dXL+HPdc6nvVup8=;
+        b=IQzGMbUY/DIG++UcAiAMT0nk04elXyhNkuxWWuKtRIz3Gu7L5Fv9nsuG2nedCzOgJF
+         lIMQaRQesySSrmURUZXLvr5V6j5rVM7svLDvragca6AbfwY5SBG2rS2VKmV2G23lBlpw
+         cVn7mAHCh4nQw4CAHJnAQG8wfl5MLLnMJQKJxjfd+KSA/WPc9yJ38i/tOjvds6vMULZr
+         hKwEIo5ZK81Hm51UtQFlVXjcQNW4uSyUaHbLxiaMB/mXRC/5fUD+treKPMTjNYjAKsGu
+         tSA+ruos7Lb3y+sn1pnupLyIUuJzPBbErl96nGpDj+JQnJ9E0bF0EPD5nu6PjxpUcvNu
+         RVMg==
+X-Gm-Message-State: APjAAAWMPZwge5o03ek6FffTUr6yNNOLMr2fWooPxBsusC0/zHy7RqO3
+        DQJJX7LgVDvtYD2ACQ9hRgNxetraqt1u/ZQau14=
+X-Google-Smtp-Source: APXvYqxN5xda1GqazGPAFddIWqo5p+zXSgrM8ZaqJVN2w4UvmWOrV5+NVonOsYljFi7ERJFMUVlcNFxhO/OmBpuZwtw=
+X-Received: by 2002:aca:4306:: with SMTP id q6mr3114545oia.39.1562075930038;
+ Tue, 02 Jul 2019 06:58:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <1562059288-26773-1-git-send-email-magnus.karlsson@intel.com>
+ <1562059288-26773-3-git-send-email-magnus.karlsson@intel.com> <d4318783-18a4-d5c1-1044-691aaebb2b0a@mellanox.com>
+In-Reply-To: <d4318783-18a4-d5c1-1044-691aaebb2b0a@mellanox.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Tue, 2 Jul 2019 15:58:38 +0200
+Message-ID: <CAJ8uoz0jnR99iVCK+f3U5=Xo7JQ1SRM=Os7A0J9cTb_=8bL_Mg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/6] xsk: add support for need_wakeup flag in
+ AF_XDP rings
+To:     Maxim Mikityanskiy <maximmi@mellanox.com>
+Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "bjorn.topel@intel.com" <bjorn.topel@intel.com>,
         "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "brouer@redhat.com" <brouer@redhat.com>,
@@ -46,91 +70,80 @@ CC:     "bjorn.topel@intel.com" <bjorn.topel@intel.com>,
         "maciej.fijalkowski@intel.com" <maciej.fijalkowski@intel.com>,
         "maciejromanfijalkowski@gmail.com" <maciejromanfijalkowski@gmail.com>,
         "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
-Subject: Re: [PATCH bpf-next v2 2/6] xsk: add support for need_wakeup flag in
- AF_XDP rings
-Thread-Topic: [PATCH bpf-next v2 2/6] xsk: add support for need_wakeup flag in
- AF_XDP rings
-Thread-Index: AQHVMLevUssjBLrxPEO5SaX/SuuNRaa3V5eA
-Date:   Tue, 2 Jul 2019 13:46:18 +0000
-Message-ID: <d4318783-18a4-d5c1-1044-691aaebb2b0a@mellanox.com>
-References: <1562059288-26773-1-git-send-email-magnus.karlsson@intel.com>
- <1562059288-26773-3-git-send-email-magnus.karlsson@intel.com>
-In-Reply-To: <1562059288-26773-3-git-send-email-magnus.karlsson@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: HE1PR05CA0254.eurprd05.prod.outlook.com
- (2603:10a6:3:fb::30) To AM6PR05MB5879.eurprd05.prod.outlook.com
- (2603:10a6:20b:a2::12)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=maximmi@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [95.67.35.250]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ff01408f-97f5-49c2-a32c-08d6fef3a8c3
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM6PR05MB6261;
-x-ms-traffictypediagnostic: AM6PR05MB6261:
-x-microsoft-antispam-prvs: <AM6PR05MB6261F74A050F59B77E62E851D1F80@AM6PR05MB6261.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 008663486A
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(376002)(346002)(366004)(396003)(39860400002)(199004)(189003)(486006)(2906002)(2616005)(476003)(71200400001)(31696002)(3846002)(6116002)(31686004)(36756003)(11346002)(446003)(110136005)(54906003)(316002)(478600001)(256004)(71190400001)(86362001)(8676002)(81156014)(53936002)(5660300002)(6246003)(52116002)(6506007)(386003)(14454004)(102836004)(26005)(76176011)(6512007)(7736002)(25786009)(305945005)(4326008)(2501003)(81166006)(8936002)(66066001)(66946007)(66446008)(64756008)(66556008)(66476007)(68736007)(6486002)(6436002)(186003)(73956011)(229853002)(53546011)(99286004)(7416002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB6261;H:AM6PR05MB5879.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 2BHbxKeVenFgcaJMF1B2RvcuP0yIYaz1uC+lPj4mFbCOh5iSP6G2LyNRC2K+UId+qYGQ4N87gx00CihH1pWrmjRaj2JqmSReWSn++azy/QT2xb/nnHRAQ9F9BerPimO9SCcuIuY4nZQY/+w1+F1chGSc8EoktP02DfyhB6V9C2ssBsFkyifv78raD77bvnkkxrrpurSgNFRssHHkqCD17VPWL5f7p4VfviW6x9TN0mf2hTKxBgdYX/OCsqzTmyLfBrRWFobQkvKCcr5PvyOZ8lCNFheHZNOGuWYqLUQuNXPLUFHbc8m69yUPUTWCq9K6jCBi4q8Jq0K8rev0/wx8FIaZW7eClT/0bAG3TWIxC8Z0RCFBWFwp5igaE6jAeFaLTFps4rHgaPJlaMGwOWCJ/o207L/am4eiKCyBYorbHac=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F60AE97F2E0EA24E81767672790595C7@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ff01408f-97f5-49c2-a32c-08d6fef3a8c3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jul 2019 13:46:18.6102
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: maximmi@mellanox.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB6261
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gMjAxOS0wNy0wMiAxMjoyMSwgTWFnbnVzIEthcmxzc29uIHdyb3RlOg0KPiAgIA0KPiArLyog
-WERQX1JJTkcgZmxhZ3MgKi8NCj4gKyNkZWZpbmUgWERQX1JJTkdfTkVFRF9XQUtFVVAgKDEgPDwg
-MCkNCj4gKw0KPiAgIHN0cnVjdCB4ZHBfcmluZ19vZmZzZXQgew0KPiAgIAlfX3U2NCBwcm9kdWNl
-cjsNCj4gICAJX191NjQgY29uc3VtZXI7DQo+ICAgCV9fdTY0IGRlc2M7DQo+ICsJX191NjQgZmxh
-Z3M7DQo+ICAgfTsNCj4gICANCj4gICBzdHJ1Y3QgeGRwX21tYXBfb2Zmc2V0cyB7DQoNCjxzbmlw
-Pg0KDQo+IEBAIC02MjEsOSArNjkyLDEyIEBAIHN0YXRpYyBpbnQgeHNrX2dldHNvY2tvcHQoc3Ry
-dWN0IHNvY2tldCAqc29jaywgaW50IGxldmVsLCBpbnQgb3B0bmFtZSwNCj4gICAJY2FzZSBYRFBf
-TU1BUF9PRkZTRVRTOg0KPiAgIAl7DQo+ICAgCQlzdHJ1Y3QgeGRwX21tYXBfb2Zmc2V0cyBvZmY7
-DQo+ICsJCWJvb2wgZmxhZ3Nfc3VwcG9ydGVkID0gdHJ1ZTsNCj4gICANCj4gLQkJaWYgKGxlbiA8
-IHNpemVvZihvZmYpKQ0KPiArCQlpZiAobGVuIDwgc2l6ZW9mKG9mZikgLSBzaXplb2Yob2ZmLnJ4
-LmZsYWdzKSkNCj4gICAJCQlyZXR1cm4gLUVJTlZBTDsNCj4gKwkJZWxzZSBpZiAobGVuIDwgc2l6
-ZW9mKG9mZikpDQo+ICsJCQlmbGFnc19zdXBwb3J0ZWQgPSBmYWxzZTsNCj4gICANCj4gICAJCW9m
-Zi5yeC5wcm9kdWNlciA9IG9mZnNldG9mKHN0cnVjdCB4ZHBfcnh0eF9yaW5nLCBwdHJzLnByb2R1
-Y2VyKTsNCj4gICAJCW9mZi5yeC5jb25zdW1lciA9IG9mZnNldG9mKHN0cnVjdCB4ZHBfcnh0eF9y
-aW5nLCBwdHJzLmNvbnN1bWVyKTsNCj4gQEAgLTYzOCw2ICs3MTIsMTYgQEAgc3RhdGljIGludCB4
-c2tfZ2V0c29ja29wdChzdHJ1Y3Qgc29ja2V0ICpzb2NrLCBpbnQgbGV2ZWwsIGludCBvcHRuYW1l
-LA0KPiAgIAkJb2ZmLmNyLnByb2R1Y2VyID0gb2Zmc2V0b2Yoc3RydWN0IHhkcF91bWVtX3Jpbmcs
-IHB0cnMucHJvZHVjZXIpOw0KPiAgIAkJb2ZmLmNyLmNvbnN1bWVyID0gb2Zmc2V0b2Yoc3RydWN0
-IHhkcF91bWVtX3JpbmcsIHB0cnMuY29uc3VtZXIpOw0KPiAgIAkJb2ZmLmNyLmRlc2MJPSBvZmZz
-ZXRvZihzdHJ1Y3QgeGRwX3VtZW1fcmluZywgZGVzYyk7DQo+ICsJCWlmIChmbGFnc19zdXBwb3J0
-ZWQpIHsNCj4gKwkJCW9mZi5yeC5mbGFncyA9IG9mZnNldG9mKHN0cnVjdCB4ZHBfcnh0eF9yaW5n
-LA0KPiArCQkJCQkJcHRycy5mbGFncyk7DQo+ICsJCQlvZmYudHguZmxhZ3MgPSBvZmZzZXRvZihz
-dHJ1Y3QgeGRwX3J4dHhfcmluZywNCj4gKwkJCQkJCXB0cnMuZmxhZ3MpOw0KPiArCQkJb2ZmLmZy
-LmZsYWdzID0gb2Zmc2V0b2Yoc3RydWN0IHhkcF91bWVtX3JpbmcsDQo+ICsJCQkJCQlwdHJzLmZs
-YWdzKTsNCj4gKwkJCW9mZi5jci5mbGFncyA9IG9mZnNldG9mKHN0cnVjdCB4ZHBfdW1lbV9yaW5n
-LA0KPiArCQkJCQkJcHRycy5mbGFncyk7DQo+ICsJCX0NCg0KQXMgZmFyIGFzIEkgdW5kZXJzdG9v
-ZCAoY29ycmVjdCBtZSBpZiBJJ20gd3JvbmcpLCB5b3UgYXJlIHRyeWluZyB0byANCnByZXNlcnZl
-IGJhY2t3YXJkIGNvbXBhdGliaWxpdHksIHNvIHRoYXQgaWYgdXNlcnNwYWNlIGRvZXNuJ3Qgc3Vw
-cG9ydCANCnRoZSBmbGFncyBmaWVsZCwgeW91IHdpbGwgZGV0ZXJtaW5lIHRoYXQgYnkgbG9va2lu
-ZyBhdCBsZW4gYW5kIGZhbGwgYmFjayANCnRvIHRoZSBvbGQgZm9ybWF0Lg0KDQpIb3dldmVyLCB0
-d28gdGhpbmdzIGFyZSBicm9rZW4gaGVyZToNCg0KMS4gVGhlIGNoZWNrIGBsZW4gPCBzaXplb2Yo
-b2ZmKSAtIHNpemVvZihvZmYucnguZmxhZ3MpYCBzaG91bGQgYmUgYGxlbiA8IA0Kc2l6ZW9mKG9m
-ZikgLSA0ICogc2l6ZW9mKGZsYWdzKWAsIGJlY2F1c2Ugc3RydWN0IHhkcF9tbWFwX29mZnNldHMg
-DQpjb25zaXN0cyBvZiA0IHN0cnVjdHMgeGRwX3Jpbmdfb2Zmc2V0Lg0KDQoyLiBUaGUgb2xkIGFu
-ZCBuZXcgZm9ybWF0cyBhcmUgbm90IGJpbmFyeSBjb21wYXRpYmxlLCBhcyBmbGFncyBhcmUgDQpp
-bnNlcnRlZCBpbiB0aGUgbWlkZGxlIG9mIHN0cnVjdCB4ZHBfbW1hcF9vZmZzZXRzLg0K
+On Tue, Jul 2, 2019 at 3:47 PM Maxim Mikityanskiy <maximmi@mellanox.com> wrote:
+>
+> On 2019-07-02 12:21, Magnus Karlsson wrote:
+> >
+> > +/* XDP_RING flags */
+> > +#define XDP_RING_NEED_WAKEUP (1 << 0)
+> > +
+> >   struct xdp_ring_offset {
+> >       __u64 producer;
+> >       __u64 consumer;
+> >       __u64 desc;
+> > +     __u64 flags;
+> >   };
+> >
+> >   struct xdp_mmap_offsets {
+>
+> <snip>
+>
+> > @@ -621,9 +692,12 @@ static int xsk_getsockopt(struct socket *sock, int level, int optname,
+> >       case XDP_MMAP_OFFSETS:
+> >       {
+> >               struct xdp_mmap_offsets off;
+> > +             bool flags_supported = true;
+> >
+> > -             if (len < sizeof(off))
+> > +             if (len < sizeof(off) - sizeof(off.rx.flags))
+> >                       return -EINVAL;
+> > +             else if (len < sizeof(off))
+> > +                     flags_supported = false;
+> >
+> >               off.rx.producer = offsetof(struct xdp_rxtx_ring, ptrs.producer);
+> >               off.rx.consumer = offsetof(struct xdp_rxtx_ring, ptrs.consumer);
+> > @@ -638,6 +712,16 @@ static int xsk_getsockopt(struct socket *sock, int level, int optname,
+> >               off.cr.producer = offsetof(struct xdp_umem_ring, ptrs.producer);
+> >               off.cr.consumer = offsetof(struct xdp_umem_ring, ptrs.consumer);
+> >               off.cr.desc     = offsetof(struct xdp_umem_ring, desc);
+> > +             if (flags_supported) {
+> > +                     off.rx.flags = offsetof(struct xdp_rxtx_ring,
+> > +                                             ptrs.flags);
+> > +                     off.tx.flags = offsetof(struct xdp_rxtx_ring,
+> > +                                             ptrs.flags);
+> > +                     off.fr.flags = offsetof(struct xdp_umem_ring,
+> > +                                             ptrs.flags);
+> > +                     off.cr.flags = offsetof(struct xdp_umem_ring,
+> > +                                             ptrs.flags);
+> > +             }
+>
+> As far as I understood (correct me if I'm wrong), you are trying to
+> preserve backward compatibility, so that if userspace doesn't support
+> the flags field, you will determine that by looking at len and fall back
+> to the old format.
+
+That was the intention yes.
+
+> However, two things are broken here:
+>
+> 1. The check `len < sizeof(off) - sizeof(off.rx.flags)` should be `len <
+> sizeof(off) - 4 * sizeof(flags)`, because struct xdp_mmap_offsets
+> consists of 4 structs xdp_ring_offset.
+>
+> 2. The old and new formats are not binary compatible, as flags are
+> inserted in the middle of struct xdp_mmap_offsets.
+
+You are correct. Since there are four copies of the xdp_ring_offset
+this simple scheme will not work. I will instead create an internal
+version 1 of the struct that I fill in and pass to user space if I
+detect that user space is asking for the v1 size.
+
+Thanks for catching Maxim. Keep'em coming.
+
+/Magnus
