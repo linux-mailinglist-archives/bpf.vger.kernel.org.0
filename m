@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0DE5D406
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2019 18:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A79CA5D408
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2019 18:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726960AbfGBQOR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jul 2019 12:14:17 -0400
-Received: from mail-pg1-f201.google.com ([209.85.215.201]:53535 "EHLO
-        mail-pg1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726831AbfGBQOR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Jul 2019 12:14:17 -0400
-Received: by mail-pg1-f201.google.com with SMTP id u4so6175699pgb.20
-        for <bpf@vger.kernel.org>; Tue, 02 Jul 2019 09:14:17 -0700 (PDT)
+        id S1727024AbfGBQOU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jul 2019 12:14:20 -0400
+Received: from mail-pl1-f201.google.com ([209.85.214.201]:54934 "EHLO
+        mail-pl1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727002AbfGBQOU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Jul 2019 12:14:20 -0400
+Received: by mail-pl1-f201.google.com with SMTP id u10so590030plq.21
+        for <bpf@vger.kernel.org>; Tue, 02 Jul 2019 09:14:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=fx7oqRWcTVImmRr+27+RVPds6kkpL0s9ZczahtxtKQE=;
-        b=hVMX4lsD1KrLKnsjgvwG+Dg8hsacRYNrn5d8zIbYvrO6YQBby8NJD0ZawAYYdg5LDm
-         sIHDSvhG01Tgx9ZOGwwhlqT+o3UPmFclsa5u4+x/vcRyPMrcUpLzEAT3zHRKOr7F1DJr
-         895ZMnx9KTZDErsZZzacKAAYmj1gT7ifo1dB/1CmWXFsYQu0qXfQZqJ3oyn/pomNKOcY
-         cmmnPPPMOKwwewR3QQtCNMyfZcn7IZpzFlEBe/QLJA6MldJ21GVI/2T58XPgmuSsBe8Y
-         gbljacppGBi3XgJm+Z6yBupDEolUJ58pDkQamjy/0fWsGS7NmvTYs8n51urdW2F2NbNP
-         OSPg==
+        bh=iX08Cq+hAin5aRe+l7YkBpA1Amc/tSXA9bkkEMMN9As=;
+        b=BkjxXUjYGgNYTb5UC+1dEi/UQspXS8PFMNKqFhmzJLfVaU6e0W+VkX3C/NWWAsh862
+         y5fDKAxnwY7TfTMeslC43t1s1+ihAZyGhWLpy7BZUx7uCeizWp1crJTy59ve1wOJXPZP
+         ylXXdNO4fhamkUVT6YzSOEave/ju/LI/IXMcn3osvKmZrtpvuaxS+r0JSzHHnEBQJ33N
+         ObkJm3MWmnv2Gezlq0Gct04xCIvnNjW7iKZm+Q55frBNXe29+rmv0qg0syMR670mumHW
+         XMD2pwYjJAFH51Ef8gZ5v23wPxLYx1dx928m3hT+hxVaSZ44ClEjAebQ2bo2Sbk1pa1I
+         +IHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=fx7oqRWcTVImmRr+27+RVPds6kkpL0s9ZczahtxtKQE=;
-        b=ZVzT6Rv9cdKsj7teAdWOg8HhdzhbAAsqN3Fuwg0S968K9N2QZhlmnQ2TkzMcPWMlwW
-         ck7OkPKQ0i4i1nI+U79ZcehIXKKh1htRD5GOkfl+fMVrodVgfiJrZqBwAf2Zf12C0ma9
-         VtOF+UTvgrMCgDtjBHcW49EPFTP1E8zUtJhmDXTLstcHkk29JjVsqxN/CPY9ubC+qNNS
-         1HVfHTjXINPbDfr7mTsio0HfXhs90nC3U3gOdjdQjTvD2zlliiBXA/JIKwsVYW+kHAEq
-         g98uZHhWiaynxWKBTpEcV40LtykJppV/o8Rt6riNa5xSMdajIdspgOEd2mAlNBgeM+w0
-         OUeQ==
-X-Gm-Message-State: APjAAAUQR27pMwQ9kcoP+vnGxs/8BrvjKoGVACBdM/n41+AxuskoFBRC
-        1PnoJtAXiw319pLOVz/LT98j2GE=
-X-Google-Smtp-Source: APXvYqzdq1ASB4tj88cMD8V1Vx93S0qw2hKfjDuMcK/89MROE5YgTzY7FAP1hBEaqx57izdQd/bJPC0=
-X-Received: by 2002:a63:6c4a:: with SMTP id h71mr31014251pgc.331.1562084056403;
- Tue, 02 Jul 2019 09:14:16 -0700 (PDT)
-Date:   Tue,  2 Jul 2019 09:13:59 -0700
+        bh=iX08Cq+hAin5aRe+l7YkBpA1Amc/tSXA9bkkEMMN9As=;
+        b=ezrc0BetQ/Ah6PtON8yC2gw3rK1IMj4h9ugZn4BSO0OYn5z3QrLoyullGxZC3mHF3x
+         SyZ8Q9qKCIMEZWK75dUSRagSb5x7DIPRfZ7bL0BY6xEUGTaWe2Hh9BNl98AaBT7OZgrZ
+         oGBLnqPQI8yU8B/Tt/lTuQOEDlXWjBnZOZqkBOXu9LJibNTOi3ilpSvpTqIarmbNmgvn
+         MIuiS7rJ8qEuhbGDHZ/OfASyLJDU8dX5LUK80bKr6M96MGMM2VeKh/XXRH9ElAX1iTPo
+         ugFcv2cPNsrWNLvXGYNyvcQ7da5iiTEQr7v29g4Y0TobSc3fBAAkusYZUQGB0BV48Oue
+         JYww==
+X-Gm-Message-State: APjAAAUHHX+oqbx7ddVrI6cFng+RlNbkZfoV3mxFan0uwQkx7+ChLyIg
+        lnb2emm4MGHtIVxxB6aNg4iKL7U=
+X-Google-Smtp-Source: APXvYqy0bc8bLkSqe4UG+op8kQb2Bc7TmnVBqvF5K7BLjKJbDKJSjmmJhKu3rSO3Kgf+d+RDedYIXXw=
+X-Received: by 2002:a63:5c19:: with SMTP id q25mr32067737pgb.215.1562084059019;
+ Tue, 02 Jul 2019 09:14:19 -0700 (PDT)
+Date:   Tue,  2 Jul 2019 09:14:00 -0700
 In-Reply-To: <20190702161403.191066-1-sdf@google.com>
-Message-Id: <20190702161403.191066-5-sdf@google.com>
+Message-Id: <20190702161403.191066-6-sdf@google.com>
 Mime-Version: 1.0
 References: <20190702161403.191066-1-sdf@google.com>
 X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
-Subject: [PATCH bpf-next v2 4/8] bpf: add icsk_retransmits to bpf_tcp_sock
+Subject: [PATCH bpf-next v2 5/8] bpf/tools: sync bpf.h
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
@@ -61,8 +61,7 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add some inet_connection_sock fields to bpf_tcp_sock that might be useful
-for debugging congestion control issues.
+Sync new bpf_tcp_sock fields and new BPF_PROG_TYPE_SOCK_OPS RTT callback.
 
 Cc: Eric Dumazet <edumazet@google.com>
 Cc: Priyaranjan Jha <priyarjha@google.com>
@@ -72,67 +71,53 @@ Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
 Acked-by: Yuchung Cheng <ycheng@google.com>
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- include/uapi/linux/bpf.h |  1 +
- net/core/filter.c        | 20 +++++++++++++++++++-
- 2 files changed, 20 insertions(+), 1 deletion(-)
+ tools/include/uapi/linux/bpf.h | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index bfb0b1a76684..ead27aebf491 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -3078,6 +3078,7 @@ struct bpf_tcp_sock {
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index a396b516a2b2..cecf42c871d4 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1767,6 +1767,7 @@ union bpf_attr {
+  * 		* **BPF_SOCK_OPS_RTO_CB_FLAG** (retransmission time out)
+  * 		* **BPF_SOCK_OPS_RETRANS_CB_FLAG** (retransmission)
+  * 		* **BPF_SOCK_OPS_STATE_CB_FLAG** (TCP state change)
++ * 		* **BPF_SOCK_OPS_RTT_CB_FLAG** (every RTT)
+  *
+  * 		Therefore, this function can be used to clear a callback flag by
+  * 		setting the appropriate bit to zero. e.g. to disable the RTO
+@@ -3069,6 +3070,12 @@ struct bpf_tcp_sock {
+ 				 * sum(delta(snd_una)), or how many bytes
+ 				 * were acked.
  				 */
- 	__u32 delivered;	/* Total data packets delivered incl. rexmits */
- 	__u32 delivered_ce;	/* Like the above but only ECE marked packets */
++	__u32 dsack_dups;	/* RFC4898 tcpEStatsStackDSACKDups
++				 * total number of DSACK blocks received
++				 */
++	__u32 delivered;	/* Total data packets delivered incl. rexmits */
++	__u32 delivered_ce;	/* Like the above but only ECE marked packets */
 +	__u32 icsk_retransmits;	/* Number of unrecovered [RTO] timeouts */
  };
  
  struct bpf_sock_tuple {
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 3da4b6c38b46..089aaea0ccc6 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -5544,7 +5544,8 @@ static const struct bpf_func_proto bpf_sock_addr_sk_lookup_udp_proto = {
- bool bpf_tcp_sock_is_valid_access(int off, int size, enum bpf_access_type type,
- 				  struct bpf_insn_access_aux *info)
- {
--	if (off < 0 || off >= offsetofend(struct bpf_tcp_sock, delivered_ce))
-+	if (off < 0 || off >= offsetofend(struct bpf_tcp_sock,
-+					  icsk_retransmits))
- 		return false;
+@@ -3311,7 +3318,8 @@ struct bpf_sock_ops {
+ #define BPF_SOCK_OPS_RTO_CB_FLAG	(1<<0)
+ #define BPF_SOCK_OPS_RETRANS_CB_FLAG	(1<<1)
+ #define BPF_SOCK_OPS_STATE_CB_FLAG	(1<<2)
+-#define BPF_SOCK_OPS_ALL_CB_FLAGS       0x7		/* Mask of all currently
++#define BPF_SOCK_OPS_RTT_CB_FLAG	(1<<3)
++#define BPF_SOCK_OPS_ALL_CB_FLAGS       0xF		/* Mask of all currently
+ 							 * supported cb flags
+ 							 */
  
- 	if (off % size != 0)
-@@ -5575,6 +5576,20 @@ u32 bpf_tcp_sock_convert_ctx_access(enum bpf_access_type type,
- 				      offsetof(struct tcp_sock, FIELD)); \
- 	} while (0)
+@@ -3366,6 +3374,8 @@ enum {
+ 	BPF_SOCK_OPS_TCP_LISTEN_CB,	/* Called on listen(2), right after
+ 					 * socket transition to LISTEN state.
+ 					 */
++	BPF_SOCK_OPS_RTT_CB,		/* Called on every RTT.
++					 */
+ };
  
-+#define BPF_INET_SOCK_GET_COMMON(FIELD)					\
-+	do {								\
-+		BUILD_BUG_ON(FIELD_SIZEOF(struct inet_connection_sock,	\
-+					  FIELD) >			\
-+			     FIELD_SIZEOF(struct bpf_tcp_sock, FIELD));	\
-+		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(			\
-+					struct inet_connection_sock,	\
-+					FIELD),				\
-+				      si->dst_reg, si->src_reg,		\
-+				      offsetof(				\
-+					struct inet_connection_sock,	\
-+					FIELD));			\
-+	} while (0)
-+
- 	if (insn > insn_buf)
- 		return insn - insn_buf;
- 
-@@ -5661,6 +5676,9 @@ u32 bpf_tcp_sock_convert_ctx_access(enum bpf_access_type type,
- 	case offsetof(struct bpf_tcp_sock, delivered_ce):
- 		BPF_TCP_SOCK_GET_COMMON(delivered_ce);
- 		break;
-+	case offsetof(struct bpf_tcp_sock, icsk_retransmits):
-+		BPF_INET_SOCK_GET_COMMON(icsk_retransmits);
-+		break;
- 	}
- 
- 	return insn - insn_buf;
+ /* List of TCP states. There is a build check in net/ipv4/tcp.c to detect
 -- 
 2.22.0.410.gd8fdbe21b5-goog
 
