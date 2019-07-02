@@ -2,234 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C543D5D30E
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2019 17:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585FB5D391
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2019 17:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726283AbfGBPjY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Jul 2019 11:39:24 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12472 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725868AbfGBPjX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 2 Jul 2019 11:39:23 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x62Fc0vZ045906
-        for <bpf@vger.kernel.org>; Tue, 2 Jul 2019 11:39:22 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2tg9vh0nke-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 02 Jul 2019 11:39:22 -0400
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Tue, 2 Jul 2019 16:39:20 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 2 Jul 2019 16:39:19 +0100
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x62Fd78Q38404482
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 2 Jul 2019 15:39:07 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E7EFAA4055;
-        Tue,  2 Jul 2019 15:39:17 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C0D48A4053;
-        Tue,  2 Jul 2019 15:39:17 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.152.98.98])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  2 Jul 2019 15:39:17 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next] selftests/bpf: fix compiling loop{1,2,3}.c on s390
-Date:   Tue,  2 Jul 2019 17:39:08 +0200
-X-Mailer: git-send-email 2.21.0
+        id S1726404AbfGBPxS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jul 2019 11:53:18 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:36893 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbfGBPxS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Jul 2019 11:53:18 -0400
+Received: by mail-pg1-f193.google.com with SMTP id g15so5988297pgi.4
+        for <bpf@vger.kernel.org>; Tue, 02 Jul 2019 08:53:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cl0v8wIi5ckV/JFTMr62z9IJnCBwgq6PTLXNZySJFKE=;
+        b=BshvCv0z48GDRlOe7wUUakEQ7WtAa6qqMxNiKS5VyGMORJhmGXBbwBb3fYxkLSIwfX
+         t3IY+Mm2FOv7fSzVA361hclrSmxT8ykILSHq5gdRKnLKWyOJwW5DRfLgN+tmGPAIgLuG
+         wmCaW/nIZWD2mwm+1eysoj200TWQVJlqjSVQyUWDGcu7jJ28U0LWQPX8MCz98yPjtdki
+         cHC8f2S4FcWmxWZLQ64JzUEfcyy2zjRNbdtlFomOuWkANc47lZIA5LstyjRrI1imqOlJ
+         j2DSqs9//sFGOHphCtCfUYZ7XwQxNIHYojoMsnGXdXNwAltpmEdUXzp9fd65+7EkV5ry
+         ApdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cl0v8wIi5ckV/JFTMr62z9IJnCBwgq6PTLXNZySJFKE=;
+        b=n2ROpWL6GbzU4fltXWpvHud5T+k5UBfZUXykNqKaLgP0Gl4zxwcHnYr9+CgjzjE07M
+         03MHvqzQ1khLL5vyKDHo5kUVr3ZX41rLW6pPw+e3QhSQn0smc1wBVlxZey4c2uC3JJ0b
+         5oJ1/DVFFRTCQiHuxJGgQ08TSYyY9LqgxtKbBNNh56oOBbw/Z2e7Aq1Tticfomg2nO2b
+         YZm+e8PuYcCnwTN+9nLMfqylboubi8UsmYUt+g1tLZCX1Z0SoEAI4eOUZSSAfVIxRccd
+         zzZvin4zW23M35CiPk/ozhBvUYic6pKeC/VeMcoETG/D7oIKSKQdBANVfWy0p3QbF2TT
+         2uIA==
+X-Gm-Message-State: APjAAAWVY9dG8foQkI47clT3+LdEeBQMDfWYv9WCvy+pSGaeLWIg0y8m
+        wbnp/nbPZz4Fivmeos3NtEy/hw==
+X-Google-Smtp-Source: APXvYqycrzymxcdSRUPnb+KLUWdFvBSdBC/+ZeideYCH3ZcxbIG30pYV4vOVAAIvgC9L4pK46S5UKA==
+X-Received: by 2002:a63:d301:: with SMTP id b1mr207334pgg.379.1562082797621;
+        Tue, 02 Jul 2019 08:53:17 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id m13sm11837936pgv.89.2019.07.02.08.53.16
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 02 Jul 2019 08:53:17 -0700 (PDT)
+Date:   Tue, 2 Jul 2019 08:53:16 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, sdf@google.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next] bpf: cgroup: Fix build error without CONFIG_NET
+Message-ID: <20190702155316.GJ6757@mini-arch>
+References: <20190702132913.26060-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19070215-0008-0000-0000-000002F92A8B
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19070215-0009-0000-0000-0000226674A5
-Message-Id: <20190702153908.41562-1-iii@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-02_08:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=799 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907020169
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190702132913.26060-1-yuehaibing@huawei.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use PT_REGS_RC(ctx) instead of ctx->rax, which is not present on s390.
+On 07/02, YueHaibing wrote:
+> If CONFIG_NET is not set, gcc building fails:
+> 
+> kernel/bpf/cgroup.o: In function `cg_sockopt_func_proto':
+> cgroup.c:(.text+0x237e): undefined reference to `bpf_sk_storage_get_proto'
+> cgroup.c:(.text+0x2394): undefined reference to `bpf_sk_storage_delete_proto'
+> kernel/bpf/cgroup.o: In function `__cgroup_bpf_run_filter_getsockopt':
+> (.text+0x2a1f): undefined reference to `lock_sock_nested'
+> (.text+0x2ca2): undefined reference to `release_sock'
+> kernel/bpf/cgroup.o: In function `__cgroup_bpf_run_filter_setsockopt':
+> (.text+0x3006): undefined reference to `lock_sock_nested'
+> (.text+0x32bb): undefined reference to `release_sock'
+> 
+> Add CONFIG_NET dependency to fix this.
+Can you share the config? Do I understand correctly that you have
+CONFIG_NET=n and CONFIG_BPF=y? What parts of BPF do you expect to
+work in this case?
 
-Pass -D__TARGET_ARCH_$(ARCH) to selftests in order to choose a proper
-PT_REGS_RC variant.
+Less invasive fix would be something along the lines:
 
-Fix s930 -> s390 typo.
-
-On s390, provide the forward declaration of struct pt_regs and cast it
-to user_pt_regs in PT_REGS_* macros. This is necessary, because instead
-of the full struct pt_regs, s390 exposes only its first field
-user_pt_regs to userspace, and bpf_helpers.h is used with both userspace
-(in selftests) and kernel (in samples) headers.
-
-On x86, provide userspace versions of PT_REGS_* macros. Unlike s390, x86
-provides struct pt_regs to both userspace and kernel, however, with
-different field names.
-
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- tools/testing/selftests/bpf/Makefile      |  4 +-
- tools/testing/selftests/bpf/bpf_helpers.h | 46 +++++++++++++++--------
- tools/testing/selftests/bpf/progs/loop1.c |  2 +-
- tools/testing/selftests/bpf/progs/loop2.c |  2 +-
- tools/testing/selftests/bpf/progs/loop3.c |  2 +-
- 5 files changed, 37 insertions(+), 19 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index d60fee59fbd1..599b320bef65 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- include ../../../../scripts/Kbuild.include
-+include ../../../scripts/Makefile.arch
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 76fa0076f20d..0a00eaca6fae 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -939,6 +939,7 @@ int __cgroup_bpf_run_filter_sysctl(struct ctl_table_header *head,
+ }
+ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sysctl);
  
- LIBDIR := ../../../lib
- BPFDIR := $(LIBDIR)/bpf
-@@ -138,7 +139,8 @@ CLANG_SYS_INCLUDES := $(shell $(CLANG) -v -E - </dev/null 2>&1 \
- 
- CLANG_FLAGS = -I. -I./include/uapi -I../../../include/uapi \
- 	      $(CLANG_SYS_INCLUDES) \
--	      -Wno-compare-distinct-pointer-types
-+	      -Wno-compare-distinct-pointer-types \
-+	      -D__TARGET_ARCH_$(ARCH)
- 
- $(OUTPUT)/test_l4lb_noinline.o: CLANG_FLAGS += -fno-inline
- $(OUTPUT)/test_xdp_noinline.o: CLANG_FLAGS += -fno-inline
-diff --git a/tools/testing/selftests/bpf/bpf_helpers.h b/tools/testing/selftests/bpf/bpf_helpers.h
-index 1a5b1accf091..faf86d83301a 100644
---- a/tools/testing/selftests/bpf/bpf_helpers.h
-+++ b/tools/testing/selftests/bpf/bpf_helpers.h
-@@ -312,8 +312,8 @@ static int (*bpf_skb_adjust_room)(void *ctx, __s32 len_diff, __u32 mode,
- #if defined(__TARGET_ARCH_x86)
- 	#define bpf_target_x86
- 	#define bpf_target_defined
--#elif defined(__TARGET_ARCH_s930x)
--	#define bpf_target_s930x
-+#elif defined(__TARGET_ARCH_s390)
-+	#define bpf_target_s390
- 	#define bpf_target_defined
- #elif defined(__TARGET_ARCH_arm)
- 	#define bpf_target_arm
-@@ -338,8 +338,8 @@ static int (*bpf_skb_adjust_room)(void *ctx, __s32 len_diff, __u32 mode,
- #ifndef bpf_target_defined
- #if defined(__x86_64__)
- 	#define bpf_target_x86
--#elif defined(__s390x__)
--	#define bpf_target_s930x
-+#elif defined(__s390__)
-+	#define bpf_target_s390
- #elif defined(__arm__)
- 	#define bpf_target_arm
- #elif defined(__aarch64__)
-@@ -355,6 +355,7 @@ static int (*bpf_skb_adjust_room)(void *ctx, __s32 len_diff, __u32 mode,
- 
- #if defined(bpf_target_x86)
- 
-+#ifdef __KERNEL__
- #define PT_REGS_PARM1(x) ((x)->di)
- #define PT_REGS_PARM2(x) ((x)->si)
- #define PT_REGS_PARM3(x) ((x)->dx)
-@@ -365,19 +366,34 @@ static int (*bpf_skb_adjust_room)(void *ctx, __s32 len_diff, __u32 mode,
- #define PT_REGS_RC(x) ((x)->ax)
- #define PT_REGS_SP(x) ((x)->sp)
- #define PT_REGS_IP(x) ((x)->ip)
-+#else
-+#define PT_REGS_PARM1(x) ((x)->rdi)
-+#define PT_REGS_PARM2(x) ((x)->rsi)
-+#define PT_REGS_PARM3(x) ((x)->rdx)
-+#define PT_REGS_PARM4(x) ((x)->rcx)
-+#define PT_REGS_PARM5(x) ((x)->r8)
-+#define PT_REGS_RET(x) ((x)->rsp)
-+#define PT_REGS_FP(x) ((x)->rbp)
-+#define PT_REGS_RC(x) ((x)->rax)
-+#define PT_REGS_SP(x) ((x)->rsp)
-+#define PT_REGS_IP(x) ((x)->rip)
++#ifdef CONFIG_NET
+ static bool __cgroup_bpf_prog_array_is_empty(struct cgroup *cgrp,
+ 					     enum bpf_attach_type attach_type)
+ {
+@@ -1120,6 +1121,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
+ 	return ret;
+ }
+ EXPORT_SYMBOL(__cgroup_bpf_run_filter_getsockopt);
 +#endif
  
--#elif defined(bpf_target_s390x)
-+#elif defined(bpf_target_s390)
- 
--#define PT_REGS_PARM1(x) ((x)->gprs[2])
--#define PT_REGS_PARM2(x) ((x)->gprs[3])
--#define PT_REGS_PARM3(x) ((x)->gprs[4])
--#define PT_REGS_PARM4(x) ((x)->gprs[5])
--#define PT_REGS_PARM5(x) ((x)->gprs[6])
--#define PT_REGS_RET(x) ((x)->gprs[14])
--#define PT_REGS_FP(x) ((x)->gprs[11]) /* Works only with CONFIG_FRAME_POINTER */
--#define PT_REGS_RC(x) ((x)->gprs[2])
--#define PT_REGS_SP(x) ((x)->gprs[15])
--#define PT_REGS_IP(x) ((x)->psw.addr)
-+/* s390 provides user_pt_regs instead of struct pt_regs to userspace */
-+struct pt_regs;
-+#define PT_REGS_PARM1(x) (((const volatile user_pt_regs *)(x))->gprs[2])
-+#define PT_REGS_PARM2(x) (((const volatile user_pt_regs *)(x))->gprs[3])
-+#define PT_REGS_PARM3(x) (((const volatile user_pt_regs *)(x))->gprs[4])
-+#define PT_REGS_PARM4(x) (((const volatile user_pt_regs *)(x))->gprs[5])
-+#define PT_REGS_PARM5(x) (((const volatile user_pt_regs *)(x))->gprs[6])
-+#define PT_REGS_RET(x) (((const volatile user_pt_regs *)(x))->gprs[14])
-+/* Works only with CONFIG_FRAME_POINTER */
-+#define PT_REGS_FP(x) (((const volatile user_pt_regs *)(x))->gprs[11])
-+#define PT_REGS_RC(x) (((const volatile user_pt_regs *)(x))->gprs[2])
-+#define PT_REGS_SP(x) (((const volatile user_pt_regs *)(x))->gprs[15])
-+#define PT_REGS_IP(x) (((const volatile user_pt_regs *)(x))->psw.addr)
- 
- #elif defined(bpf_target_arm)
- 
-diff --git a/tools/testing/selftests/bpf/progs/loop1.c b/tools/testing/selftests/bpf/progs/loop1.c
-index dea395af9ea9..7cdb7f878310 100644
---- a/tools/testing/selftests/bpf/progs/loop1.c
-+++ b/tools/testing/selftests/bpf/progs/loop1.c
-@@ -18,7 +18,7 @@ int nested_loops(volatile struct pt_regs* ctx)
- 	for (j = 0; j < 300; j++)
- 		for (i = 0; i < j; i++) {
- 			if (j & 1)
--				m = ctx->rax;
-+				m = PT_REGS_RC(ctx);
- 			else
- 				m = j;
- 			sum += i * m;
-diff --git a/tools/testing/selftests/bpf/progs/loop2.c b/tools/testing/selftests/bpf/progs/loop2.c
-index 0637bd8e8bcf..9b2f808a2863 100644
---- a/tools/testing/selftests/bpf/progs/loop2.c
-+++ b/tools/testing/selftests/bpf/progs/loop2.c
-@@ -16,7 +16,7 @@ int while_true(volatile struct pt_regs* ctx)
- 	int i = 0;
- 
- 	while (true) {
--		if (ctx->rax & 1)
-+		if (PT_REGS_RC(ctx) & 1)
- 			i += 3;
- 		else
- 			i += 7;
-diff --git a/tools/testing/selftests/bpf/progs/loop3.c b/tools/testing/selftests/bpf/progs/loop3.c
-index 30a0f6cba080..d727657d51e2 100644
---- a/tools/testing/selftests/bpf/progs/loop3.c
-+++ b/tools/testing/selftests/bpf/progs/loop3.c
-@@ -16,7 +16,7 @@ int while_true(volatile struct pt_regs* ctx)
- 	__u64 i = 0, sum = 0;
- 	do {
- 		i++;
--		sum += ctx->rax;
-+		sum += PT_REGS_RC(ctx);
- 	} while (i < 0x100000000ULL);
- 	return sum;
- }
--- 
-2.21.0
+ static ssize_t sysctl_cpy_dir(const struct ctl_dir *dir, char **bufp,
+ 			      size_t *lenp)
+@@ -1386,10 +1388,12 @@ static const struct bpf_func_proto *
+ cg_sockopt_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
+ 	switch (func_id) {
++#ifdef CONFIG_NET
+ 	case BPF_FUNC_sk_storage_get:
+ 		return &bpf_sk_storage_get_proto;
+ 	case BPF_FUNC_sk_storage_delete:
+ 		return &bpf_sk_storage_delete_proto;
++#endif
+ #ifdef CONFIG_INET
+ 	case BPF_FUNC_tcp_sock:
+ 		return &bpf_tcp_sock_proto;
 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  init/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/init/Kconfig b/init/Kconfig
+> index e2e51b5..341cf2a 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -998,6 +998,7 @@ config CGROUP_PERF
+>  config CGROUP_BPF
+>  	bool "Support for eBPF programs attached to cgroups"
+>  	depends on BPF_SYSCALL
+> +	depends on NET
+>  	select SOCK_CGROUP_DATA
+>  	help
+>  	  Allow attaching eBPF programs to a cgroup using the bpf(2)
+> -- 
+> 2.7.4
+> 
+> 
