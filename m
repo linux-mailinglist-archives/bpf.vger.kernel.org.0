@@ -2,193 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9D95C6DA
-	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2019 03:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33875C8F1
+	for <lists+bpf@lfdr.de>; Tue,  2 Jul 2019 07:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbfGBB72 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Jul 2019 21:59:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726957AbfGBB71 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Jul 2019 21:59:27 -0400
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7972621848
-        for <bpf@vger.kernel.org>; Tue,  2 Jul 2019 01:59:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562032766;
-        bh=vfBqxjBFiv4f2Mh6w2VjvKxzYfLG/G8MOOehI4eM1Uc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nkjEXELg0rCs3JkahPXhkWW6EzViUeJoi5Tv2L/pOtrLwWonVWt8noxz06g4cfFlO
-         rxUgkfqRm1bSLTUZ81McgdZ8Z5lS7S5XR3she+E9wOAF+auHn/a2TYsPW9MWdbd+OU
-         YReF4BpLlVklhrAbV5WG9GfEMh81O7RJuBVVpBj4=
-Received: by mail-wm1-f53.google.com with SMTP id s15so1433513wmj.3
-        for <bpf@vger.kernel.org>; Mon, 01 Jul 2019 18:59:26 -0700 (PDT)
-X-Gm-Message-State: APjAAAX0eXeVjzS9vE6rhue0jI6Ta4chZqzR/PrOxORZjtfs5H2IAn4Z
-        i6uQ6HwrclJviFNeIGHGw4XV3TQI/y0n5UvlTC8RTQ==
-X-Google-Smtp-Source: APXvYqxpnFWG683UJYpQwkpoYGb8geVG3M89fbVIJgxolQRP/j11U6qBqV/yYKmR+T9Z2qM7N9f7wEcMr/WxN5zmj6Q=
-X-Received: by 2002:a7b:c450:: with SMTP id l16mr1276782wmi.0.1562032764995;
- Mon, 01 Jul 2019 18:59:24 -0700 (PDT)
+        id S1725802AbfGBFqy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Jul 2019 01:46:54 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:41712 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725775AbfGBFqy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 2 Jul 2019 01:46:54 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x625jIh1010633
+        for <bpf@vger.kernel.org>; Mon, 1 Jul 2019 22:46:53 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=F7DB+7gf0K3QCbq7V50rpdH9bvZe2aJ1bU7On+a3fmk=;
+ b=ZOqCnAawg77EGx4nq61uQNHM0Cwho3IRgp8F0n5o0I4xHxCPq6c6f4mWuBJ898GJ1ZiG
+ /B+FHgz2uLu+z8qX/EFETvTrPd3hXEqBzvhqZgIXIwwzWwsASWew1FWv5/4KOmS9m6VQ
+ +hUMFkUVKx8jRSPq7OA0w1BTb0+v4S76E+U= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2tfns4a9rn-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 01 Jul 2019 22:46:53 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 1 Jul 2019 22:46:52 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id A6CBE8614A2; Mon,  1 Jul 2019 22:46:49 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <andrii.nakryiko@gmail.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <ast@fb.com>, <daniel@iogearbox.net>
+CC:     Andrii Nakryiko <andriin@fb.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next] libbpf: fix GCC8 warning for strncpy
+Date:   Mon, 1 Jul 2019 22:46:47 -0700
+Message-ID: <20190702054647.1686489-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20190627201923.2589391-1-songliubraving@fb.com>
- <20190627201923.2589391-2-songliubraving@fb.com> <21894f45-70d8-dfca-8c02-044f776c5e05@kernel.org>
- <3C595328-3ABE-4421-9772-8D41094A4F57@fb.com> <CALCETrWBnH4Q43POU8cQ7YMjb9LioK28FDEQf7aHZbdf1eBZWg@mail.gmail.com>
- <0DE7F23E-9CD2-4F03-82B5-835506B59056@fb.com>
-In-Reply-To: <0DE7F23E-9CD2-4F03-82B5-835506B59056@fb.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 1 Jul 2019 18:59:13 -0700
-X-Gmail-Original-Message-ID: <CALCETrWBWbNFJvsTCeUchu3BZJ3SH3dvtXLUB2EhnPrzFfsLNA@mail.gmail.com>
-Message-ID: <CALCETrWBWbNFJvsTCeUchu3BZJ3SH3dvtXLUB2EhnPrzFfsLNA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "linux-security@vger.kernel.org" <linux-security@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Jann Horn <jannh@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-02_03:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907020064
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 1, 2019 at 2:03 AM Song Liu <songliubraving@fb.com> wrote:
->
-> Hi Andy,
->
-> Thanks for these detailed analysis.
->
-> > On Jun 30, 2019, at 8:12 AM, Andy Lutomirski <luto@kernel.org> wrote:
-> >
-> > On Fri, Jun 28, 2019 at 12:05 PM Song Liu <songliubraving@fb.com> wrote=
-:
-> >>
-> >> Hi Andy,
-> >>
-> >>> On Jun 27, 2019, at 4:40 PM, Andy Lutomirski <luto@kernel.org> wrote:
-> >>>
-> >>> On 6/27/19 1:19 PM, Song Liu wrote:
-> >>>> This patch introduce unprivileged BPF access. The access control is
-> >>>> achieved via device /dev/bpf. Users with write access to /dev/bpf ar=
-e able
-> >>>> to call sys_bpf().
-> >>>> Two ioctl command are added to /dev/bpf:
-> >>>> The two commands enable/disable permission to call sys_bpf() for cur=
-rent
-> >>>> task. This permission is noted by bpf_permitted in task_struct. This
-> >>>> permission is inherited during clone(CLONE_THREAD).
-> >>>> Helper function bpf_capable() is added to check whether the task has=
- got
-> >>>> permission via /dev/bpf.
-> >>>
-> >>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> >>>> index 0e079b2298f8..79dc4d641cf3 100644
-> >>>> --- a/kernel/bpf/verifier.c
-> >>>> +++ b/kernel/bpf/verifier.c
-> >>>> @@ -9134,7 +9134,7 @@ int bpf_check(struct bpf_prog **prog, union bp=
-f_attr *attr,
-> >>>>             env->insn_aux_data[i].orig_idx =3D i;
-> >>>>     env->prog =3D *prog;
-> >>>>     env->ops =3D bpf_verifier_ops[env->prog->type];
-> >>>> -    is_priv =3D capable(CAP_SYS_ADMIN);
-> >>>> +    is_priv =3D bpf_capable(CAP_SYS_ADMIN);
-> >>>
-> >>> Huh?  This isn't a hardening measure -- the "is_priv" verifier mode a=
-llows straight-up leaks of private kernel state to user mode.
-> >>>
-> >>> (For that matter, the pending lockdown stuff should possibly consider=
- this a "confidentiality" issue.)
-> >>>
-> >>>
-> >>> I have a bigger issue with this patch, though: it's a really awkward =
-way to pretend to have capabilities. For bpf, it seems like you could make =
-this be a *real* capability without too much pain since there's only one sy=
-scall there.  Just find a way to pass an fd to /dev/bpf into the syscall.  =
-If this means you need a new bpf_with_cap() syscall that takes an extra arg=
-ument, so be it.  The old bpf() syscall can just translate to bpf_with_cap(=
-..., -1).
-> >>>
-> >>> For a while, I've considered a scheme I call "implicit rights".  Ther=
-e would be a directory in /dev called /dev/implicit_rights.  This would eit=
-her be part of devtmpfs or a whole new filesystem -- it would *not* be any =
-other filesystem.  The contents would be files that can't be read or writte=
-n and exist only in memory. You create them with a privileged syscall.  Cer=
-tain actions that are sensitive but not at the level of CAP_SYS_ADMIN (use =
-of large-attack-surface bpf stuff, creation of user namespaces, profiling t=
-he kernel, etc) could require an "implicit right".  When you do them, if yo=
-u don't have CAP_SYS_ADMIN, the kernel would do a path walk for, say, /dev/=
-implicit_rights/bpf and, if the object exists, can be opened, and actually =
-refers to the "bpf" rights object, then the action is allowed.  Otherwise i=
-t's denied.
-> >>>
-> >>> This is extensible, and it doesn't require the rather ugly per-task s=
-tate of whether it's enabled.
-> >>>
-> >>> For things like creation of user namespaces, there's an existing API,=
- and the default is that it works without privilege.  Switching it to an im=
-plicit right has the benefit of not requiring code changes to programs that=
- already work as non-root.
-> >>>
-> >>> But, for BPF in particular, this type of compatibility issue doesn't =
-exist now.  You already can't use most eBPF functionality without privilege=
-.  New bpf-using programs meant to run without privilege are *new*, so they=
- can use a new improved API.  So, rather than adding this obnoxious ioctl, =
-just make the API explicit, please.
-> >>>
-> >>> Also, please cc: linux-abi next time.
-> >>
-> >> Thanks for your inputs.
-> >>
-> >> I think we need to clarify the use case here. In this case, we are NOT
-> >> thinking about creating new tools for unprivileged users. Instead, we
-> >> would like to use existing tools without root.
-> >
-> > I read patch 4, and I interpret it very differently.  Patches 2-4 are
-> > creating a new version of libbpf and a new version of bpftool.  Given
-> > this, I see no real justification for adding a new in-kernel per-task
-> > state instead of just pushing the complexity into libbpf.
->
-> I am not sure whether we are on the same page. Let me try an example,
-> say we have application A, which calls sys_bpf().
->
-> Before the series: we have to run A with root;
-> After the series:  we add a special user with access to /dev/bpf, and
->                    run A with this special user.
->
-> If we look at the whole system, I would say we are more secure after
-> the series.
->
-> I am not trying to make an extreme example here, because this use case
-> is the motivation here.
->
-> To stay safe, we have to properly manage the permission of /dev/bpf.
-> This is just like we need to properly manage access to /etc/sudoers and
-> /dev/mem.
->
-> Does this make sense?
->
+GCC8 started emitting warning about using strncpy with number of bytes
+exactly equal destination size, which is generally unsafe, as can lead
+to non-zero terminated string being copied. Use IFNAMSIZ - 1 as number
+of bytes to ensure name is always zero-terminated.
 
-I think I'm understanding your motivation.  You're not trying to make
-bpf() generically usable without privilege -- you're trying to create
-a way to allow certain users to access dangerous bpf functionality
-within some limits.
+Cc: Magnus Karlsson <magnus.karlsson@intel.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/xsk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-That's a perfectly fine goal, but I think you're reinventing the
-wheel, and the wheel you're reinventing is quite complicated and
-already exists.  I think you should teach bpftool to be secure when
-installed setuid root or with fscaps enabled and put your policy in
-bpftool.  If you want to harden this a little bit, it would seem
-entirely reasonable to add a new CAP_BPF_ADMIN and change some, but
-not all, of the capable() checks to check CAP_BPF_ADMIN instead of the
-capabilities that they currently check.
+diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+index bf15a80a37c2..9588e7f87d0b 100644
+--- a/tools/lib/bpf/xsk.c
++++ b/tools/lib/bpf/xsk.c
+@@ -327,7 +327,7 @@ static int xsk_get_max_queues(struct xsk_socket *xsk)
+ 
+ 	channels.cmd = ETHTOOL_GCHANNELS;
+ 	ifr.ifr_data = (void *)&channels;
+-	strncpy(ifr.ifr_name, xsk->ifname, IFNAMSIZ);
++	strncpy(ifr.ifr_name, xsk->ifname, IFNAMSIZ - 1);
+ 	err = ioctl(fd, SIOCETHTOOL, &ifr);
+ 	if (err && errno != EOPNOTSUPP) {
+ 		ret = -errno;
+-- 
+2.17.1
 
-Your example of /etc/sudoers is apt, and it does not involve any
-kernel support :)
