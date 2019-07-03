@@ -2,198 +2,294 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CB75E380
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 14:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B6E5E415
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 14:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbfGCMJZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jul 2019 08:09:25 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:51048 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725847AbfGCMJY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jul 2019 08:09:24 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20190703120923euoutp0181e4553c6191027a842d7fa0dc24face~t5GPeLytS1827018270euoutp01g
-        for <bpf@vger.kernel.org>; Wed,  3 Jul 2019 12:09:23 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20190703120923euoutp0181e4553c6191027a842d7fa0dc24face~t5GPeLytS1827018270euoutp01g
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1562155763;
-        bh=EAaWlzGCbN7kuloDJblzBSkq9mB9Yb8loWEXFJ3x8FI=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=sfKBvO91Rk8zEsNoNvXvmUKReQkWWNqQ5dFfL/mHD25v9Y7j0Jdwg9fa3K8kpBVW1
-         easiqLv9iCK2S3SiacnFiYA7qV8yQE7duQU9t+0JuOTPnUjvofT6+6dehovlupvqjl
-         nOi+VM8LqVdrmSaRerm/WLfFujeFd5eYjA9LEydo=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20190703120922eucas1p201a9328a62ca5bea1866462f64378890~t5GPB9HYc3132631326eucas1p2l;
-        Wed,  3 Jul 2019 12:09:22 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 2D.00.04298.2FA9C1D5; Wed,  3
-        Jul 2019 13:09:22 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20190703120922eucas1p2d97e3b994425ecdd2dadd13744ac2a77~t5GOUX1Ih1247312473eucas1p2L;
-        Wed,  3 Jul 2019 12:09:22 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20190703120921eusmtrp172fc4f66baa50e60c702a594de8995ac~t5GOAMQZh0630506305eusmtrp1a;
-        Wed,  3 Jul 2019 12:09:21 +0000 (GMT)
-X-AuditID: cbfec7f2-f13ff700000010ca-71-5d1c9af2960e
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id DB.57.04140.1FA9C1D5; Wed,  3
-        Jul 2019 13:09:21 +0100 (BST)
-Received: from imaximets.rnd.samsung.ru (unknown [106.109.129.180]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20190703120921eusmtip23925ada6b9adf7ce371179cdbfec550d~t5GNS7MlP1386113861eusmtip2a;
-        Wed,  3 Jul 2019 12:09:20 +0000 (GMT)
-From:   Ilya Maximets <i.maximets@samsung.com>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        xdp-newbies@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Ilya Maximets <i.maximets@samsung.com>
-Subject: [PATCH bpf v2] xdp: fix race on generic receive path
-Date:   Wed,  3 Jul 2019 15:09:16 +0300
-Message-Id: <20190703120916.19973-1-i.maximets@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA0VSW0hTYRzv25lnx+HkNG9f8xINw4rSBB8OZFbkw3mIWFQPlmLHPHhJN9lx
-        mgkmat7xsoqVLTUtXTNU5vAapcO0stSckVdaoTG7mU4tUaxtZ9Lb78r/x8eHIUKVkwhLkKbS
-        cimVJEb53PaB9eFDy1U+UYctXf7Eyvo0j9jMbwWEpX8QJeofrCGEeiSPS4wXrPOIAXMeSnQ3
-        30UIY7caJTSGl1at1pPoKH8GjruQ+seTHLKrapZH1j9d4JDFE2MIqdMWoaSq5BNClum1gLTo
-        /CTYBX5oLJ2UkEbLg8Iu8eOrlfWclDyPq6U9o2g2yN1ZDJwxiIfA6gKLUzHgY0JcA6D6TpWD
-        rADYPD7CY4kFwO+vlNztyi/jksNoBPC2aZTDkj8ANrR95thSKH4Qvm7qBzbsjovgUmeHvYHg
-        vQjsGaxGbIYbfhRW1H6wh7j4Xqh5lGM/IcCPwJq1945zu2FTay9iK0O8nAff1RlR1giH86YZ
-        B3aDXwf1PBb7wKGbpY7ydfgxbwGw5UIAVYYtDmscg/pvw9YCZp20H7Z0B7HyCajRtAGbDHFX
-        OPHD/kqIFSrbVQgrC2BhvpBN+8ONvkaExSI4+dPiWEDCF7lz9gVCPAp+aZzhVAC/qv+3agHQ
-        Ai9awSTH0UywlE4PZKhkRiGNC7wsS9YB63cZ2hpc7gSrYzEGgGNA7CKolXhHCZ2oNCYj2QAg
-        hojdBc81u6KEglgq4xotl0XLFUk0YwDeGFfsJcjcYbooxOOoVPoKTafQ8m2XgzmLsoG+xHUt
-        MnsidfpWi0+l2VdVlhk+y482JSqyRKVlIEKSDTZbFk8XmU/lyJbeuJw8Jzmz2hAgo1buSbWe
-        kqkwl76pzLfhEcZWZbqgjoxJFEcvPvFVV6rP7zvbEVkzT4SGzLXd9/DVibdK8CxJ6MYeU4R5
-        z4zsb3dz/u+AG2MhD8VcJp4KPoDIGeof08Y9NSoDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLLMWRmVeSWpSXmKPExsVy+t/xe7ofZ8nEGnx5pGvx5edtdos/bRsY
-        LT4fOc5msXjhN2aLOedbWCyutP9ktzj2ooXNYte6mcwWl3fNYbNYcegEUGyBmMX2/n2MDjwe
-        W1beZPLYOesuu8fiPS+ZPLpuXGL22LSqk81jevdDZo++LasYPT5vkgvgiNKzKcovLUlVyMgv
-        LrFVija0MNIztLTQMzKx1DM0No+1MjJV0rezSUnNySxLLdK3S9DLmDdpMVNBi2hFz+4LbA2M
-        zYJdjJwcEgImEh8uf2TvYuTiEBJYyijxec9adoiElMSPXxdYIWxhiT/Xutggir4xSvROm80M
-        kmAT0JE4tfoII4gtAtTwccd2sEnMAieYJb7P+swEkhAWsJWYsOA6WBGLgKrEiqVNLCA2r4C1
-        xPxvV1kgNshLrN5wgHkCI88CRoZVjCKppcW56bnFRnrFibnFpXnpesn5uZsYgUG97djPLTsY
-        u94FH2IU4GBU4uH18JOOFWJNLCuuzD3EKMHBrCTCu3+FZKwQb0piZVVqUX58UWlOavEhRlOg
-        5ROZpUST84ERl1cSb2hqaG5haWhubG5sZqEkztshcDBGSCA9sSQ1OzW1ILUIpo+Jg1OqgfGg
-        sNpV6VVxEy42vpyzqYD5T3zS1etu+zet3Pb07I8s+cJCl3Khx8HRc40lPK6mBH49cqO9jCPP
-        Mzk1vPn63Dlx7gZqF1bJTT/1xlH8e8usI8/MmKbtYnyoPqO7ec6bdp7mffMT2pjkjX+kOi1t
-        93jJvu6uhc+yc4FnvDcLiaZxRU96znKNNU2JpTgj0VCLuag4EQA7azZxgAIAAA==
-X-CMS-MailID: 20190703120922eucas1p2d97e3b994425ecdd2dadd13744ac2a77
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20190703120922eucas1p2d97e3b994425ecdd2dadd13744ac2a77
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20190703120922eucas1p2d97e3b994425ecdd2dadd13744ac2a77
-References: <CGME20190703120922eucas1p2d97e3b994425ecdd2dadd13744ac2a77@eucas1p2.samsung.com>
+        id S1725933AbfGCMju (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jul 2019 08:39:50 -0400
+Received: from www62.your-server.de ([213.133.104.62]:56294 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725847AbfGCMju (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Jul 2019 08:39:50 -0400
+Received: from [78.46.172.2] (helo=sslproxy05.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hieY6-0006bh-7R; Wed, 03 Jul 2019 14:39:46 +0200
+Received: from [2a02:1205:5054:6d70:b45c:ec96:516a:e956] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hieY5-000LVg-Ve; Wed, 03 Jul 2019 14:39:46 +0200
+Subject: Re: [PATCH v5 bpf-next 4/9] libbpf: add kprobe/uprobe attach API
+To:     Andrii Nakryiko <andriin@fb.com>, andrii.nakryiko@gmail.com,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        kernel-team@fb.com, yhs@fb.com
+References: <20190701235903.660141-1-andriin@fb.com>
+ <20190701235903.660141-5-andriin@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5e494d84-5db9-3d57-ccb3-c619cbae7833@iogearbox.net>
+Date:   Wed, 3 Jul 2019 14:39:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
+MIME-Version: 1.0
+In-Reply-To: <20190701235903.660141-5-andriin@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25499/Wed Jul  3 10:03:10 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Unlike driver mode, generic xdp receive could be triggered
-by different threads on different CPU cores at the same time
-leading to the fill and rx queue breakage. For example, this
-could happen while sending packets from two processes to the
-first interface of veth pair while the second part of it is
-open with AF_XDP socket.
+On 07/02/2019 01:58 AM, Andrii Nakryiko wrote:
+> Add ability to attach to kernel and user probes and retprobes.
+> Implementation depends on perf event support for kprobes/uprobes.
+> 
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> Reviewed-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  tools/lib/bpf/libbpf.c   | 169 +++++++++++++++++++++++++++++++++++++++
+>  tools/lib/bpf/libbpf.h   |   7 ++
+>  tools/lib/bpf/libbpf.map |   2 +
+>  3 files changed, 178 insertions(+)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index bcaa294f819d..7b6142408b15 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -4021,6 +4021,175 @@ struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog,
+>  	return (struct bpf_link *)link;
+>  }
+>  
+> +/*
+> + * this function is expected to parse integer in the range of [0, 2^31-1] from
+> + * given file using scanf format string fmt. If actual parsed value is
+> + * negative, the result might be indistinguishable from error
+> + */
+> +static int parse_uint_from_file(const char *file, const char *fmt)
+> +{
+> +	char buf[STRERR_BUFSIZE];
+> +	int err, ret;
+> +	FILE *f;
+> +
+> +	f = fopen(file, "r");
+> +	if (!f) {
+> +		err = -errno;
+> +		pr_debug("failed to open '%s': %s\n", file,
+> +			 libbpf_strerror_r(err, buf, sizeof(buf)));
+> +		return err;
+> +	}
+> +	err = fscanf(f, fmt, &ret);
+> +	if (err != 1) {
+> +		err = err == EOF ? -EIO : -errno;
+> +		pr_debug("failed to parse '%s': %s\n", file,
+> +			libbpf_strerror_r(err, buf, sizeof(buf)));
+> +		fclose(f);
+> +		return err;
+> +	}
+> +	fclose(f);
+> +	return ret;
+> +}
+> +
+> +static int determine_kprobe_perf_type(void)
+> +{
+> +	const char *file = "/sys/bus/event_source/devices/kprobe/type";
+> +
+> +	return parse_uint_from_file(file, "%d\n");
+> +}
+> +
+> +static int determine_uprobe_perf_type(void)
+> +{
+> +	const char *file = "/sys/bus/event_source/devices/uprobe/type";
+> +
+> +	return parse_uint_from_file(file, "%d\n");
+> +}
+> +
+> +static int determine_kprobe_retprobe_bit(void)
+> +{
+> +	const char *file = "/sys/bus/event_source/devices/kprobe/format/retprobe";
+> +
+> +	return parse_uint_from_file(file, "config:%d\n");
+> +}
+> +
+> +static int determine_uprobe_retprobe_bit(void)
+> +{
+> +	const char *file = "/sys/bus/event_source/devices/uprobe/format/retprobe";
+> +
+> +	return parse_uint_from_file(file, "config:%d\n");
+> +}
+> +
+> +static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+> +				 uint64_t offset, int pid)
+> +{
+> +	struct perf_event_attr attr = {};
+> +	char errmsg[STRERR_BUFSIZE];
+> +	int type, pfd, err;
+> +
+> +	type = uprobe ? determine_uprobe_perf_type()
+> +		      : determine_kprobe_perf_type();
+> +	if (type < 0) {
+> +		pr_warning("failed to determine %s perf type: %s\n",
+> +			   uprobe ? "uprobe" : "kprobe",
+> +			   libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
+> +		return type;
+> +	}
+> +	if (retprobe) {
+> +		int bit = uprobe ? determine_uprobe_retprobe_bit()
+> +				 : determine_kprobe_retprobe_bit();
+> +
+> +		if (bit < 0) {
+> +			pr_warning("failed to determine %s retprobe bit: %s\n",
+> +				   uprobe ? "uprobe" : "kprobe",
+> +				   libbpf_strerror_r(bit, errmsg,
+> +						     sizeof(errmsg)));
+> +			return bit;
+> +		}
+> +		attr.config |= 1 << bit;
+> +	}
+> +	attr.size = sizeof(attr);
+> +	attr.type = type;
+> +	attr.config1 = (uint64_t)(void *)name; /* kprobe_func or uprobe_path */
+> +	attr.config2 = offset;		       /* kprobe_addr or probe_offset */
+> +
+> +	/* pid filter is meaningful only for uprobes */
+> +	pfd = syscall(__NR_perf_event_open, &attr,
+> +		      pid < 0 ? -1 : pid /* pid */,
+> +		      pid == -1 ? 0 : -1 /* cpu */,
+> +		      -1 /* group_fd */, PERF_FLAG_FD_CLOEXEC);
+> +	if (pfd < 0) {
+> +		err = -errno;
+> +		pr_warning("%s perf_event_open() failed: %s\n",
+> +			   uprobe ? "uprobe" : "kprobe",
+> +			   libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
+> +		return err;
+> +	}
+> +	return pfd;
+> +}
+> +
+> +struct bpf_link *bpf_program__attach_kprobe(struct bpf_program *prog,
+> +					    bool retprobe,
+> +					    const char *func_name)
+> +{
+> +	char errmsg[STRERR_BUFSIZE];
+> +	struct bpf_link *link;
+> +	int pfd, err;
+> +
+> +	pfd = perf_event_open_probe(false /* uprobe */, retprobe, func_name,
+> +				    0 /* offset */, -1 /* pid */);
+> +	if (pfd < 0) {
+> +		pr_warning("program '%s': failed to create %s '%s' perf event: %s\n",
+> +			   bpf_program__title(prog, false),
+> +			   retprobe ? "kretprobe" : "kprobe", func_name,
+> +			   libbpf_strerror_r(pfd, errmsg, sizeof(errmsg)));
+> +		return ERR_PTR(pfd);
+> +	}
+> +	link = bpf_program__attach_perf_event(prog, pfd);
+> +	if (IS_ERR(link)) {
+> +		close(pfd);
+> +		err = PTR_ERR(link);
+> +		pr_warning("program '%s': failed to attach to %s '%s': %s\n",
+> +			   bpf_program__title(prog, false),
+> +			   retprobe ? "kretprobe" : "kprobe", func_name,
+> +			   libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
+> +		return link;
+> +	}
+> +	return link;
+> +}
+> +
+> +struct bpf_link *bpf_program__attach_uprobe(struct bpf_program *prog,
+> +					    bool retprobe, pid_t pid,
+> +					    const char *binary_path,
+> +					    size_t func_offset)
+> +{
+> +	char errmsg[STRERR_BUFSIZE];
+> +	struct bpf_link *link;
+> +	int pfd, err;
+> +
+> +	pfd = perf_event_open_probe(true /* uprobe */, retprobe,
+> +				    binary_path, func_offset, pid);
+> +	if (pfd < 0) {
+> +		pr_warning("program '%s': failed to create %s '%s:0x%zx' perf event: %s\n",
+> +			   bpf_program__title(prog, false),
+> +			   retprobe ? "uretprobe" : "uprobe",
+> +			   binary_path, func_offset,
+> +			   libbpf_strerror_r(pfd, errmsg, sizeof(errmsg)));
+> +		return ERR_PTR(pfd);
+> +	}
+> +	link = bpf_program__attach_perf_event(prog, pfd);
+> +	if (IS_ERR(link)) {
+> +		close(pfd);
+> +		err = PTR_ERR(link);
+> +		pr_warning("program '%s': failed to attach to %s '%s:0x%zx': %s\n",
+> +			   bpf_program__title(prog, false),
+> +			   retprobe ? "uretprobe" : "uprobe",
+> +			   binary_path, func_offset,
+> +			   libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
+> +		return link;
+> +	}
+> +	return link;
+> +}
 
-Need to take a lock for each generic receive to avoid race.
+Hm, this only addresses half the feedback I had in prior version [0]. Patch 2/9
+with bpf_link with destructor looks good to me, but my feedback from back then was
+that all the kprobe/uprobe/tracepoint/raw_tracepoint should be split API-wise, so
+you'll end up with something like the below, that is, 1) a set of functions that
+only /create/ the bpf_link handle /once/, and 2) a helper that allows /attaching/
+progs to one or multiple bpf_links. The set of APIs would look like:
 
-Fixes: c497176cb2e4 ("xsk: add Rx receive functions and poll support")
-Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
----
+struct bpf_link *bpf_link__create_kprobe(bool retprobe, const char *func_name);
+struct bpf_link *bpf_link__create_uprobe(bool retprobe, pid_t pid,
+					 const char *binary_path,
+					 size_t func_offset);
+int bpf_program__attach_to_link(struct bpf_link *link, struct bpf_program *prog);
+int bpf_link__destroy(struct bpf_link *link);
 
-Version 2:
-    * spin_lock_irqsave --> spin_lock_bh.
+This seems much more natural to me. Right now you sort of do both in one single API.
+Detangling the bpf_program__attach_{uprobe,kprobe}() would also avoid that you have
+to redo all the perf_event_open_probe() work over and over in order to get the pfd
+context where you can later attach something to. Given bpf_program__attach_to_link()
+API, you also wouldn't need to expose the bpf_program__attach_perf_event() from
+patch 3/9. Thoughts?
 
- include/net/xdp_sock.h |  2 ++
- net/xdp/xsk.c          | 31 ++++++++++++++++++++++---------
- 2 files changed, 24 insertions(+), 9 deletions(-)
+  [0] https://lore.kernel.org/bpf/a7780057-1d70-9ace-960b-ff65867dc277@iogearbox.net/
 
-diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-index d074b6d60f8a..ac3c047d058c 100644
---- a/include/net/xdp_sock.h
-+++ b/include/net/xdp_sock.h
-@@ -67,6 +67,8 @@ struct xdp_sock {
- 	 * in the SKB destructor callback.
- 	 */
- 	spinlock_t tx_completion_lock;
-+	/* Protects generic receive. */
-+	spinlock_t rx_lock;
- 	u64 rx_dropped;
- };
- 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index a14e8864e4fa..5e0637db92ea 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -123,13 +123,17 @@ int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp)
- 	u64 addr;
- 	int err;
- 
--	if (xs->dev != xdp->rxq->dev || xs->queue_id != xdp->rxq->queue_index)
--		return -EINVAL;
-+	spin_lock_bh(&xs->rx_lock);
-+
-+	if (xs->dev != xdp->rxq->dev || xs->queue_id != xdp->rxq->queue_index) {
-+		err = -EINVAL;
-+		goto out_unlock;
-+	}
- 
- 	if (!xskq_peek_addr(xs->umem->fq, &addr) ||
- 	    len > xs->umem->chunk_size_nohr - XDP_PACKET_HEADROOM) {
--		xs->rx_dropped++;
--		return -ENOSPC;
-+		err = -ENOSPC;
-+		goto out_drop;
- 	}
- 
- 	addr += xs->umem->headroom;
-@@ -138,13 +142,21 @@ int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp)
- 	memcpy(buffer, xdp->data_meta, len + metalen);
- 	addr += metalen;
- 	err = xskq_produce_batch_desc(xs->rx, addr, len);
--	if (!err) {
--		xskq_discard_addr(xs->umem->fq);
--		xsk_flush(xs);
--		return 0;
--	}
-+	if (err)
-+		goto out_drop;
-+
-+	xskq_discard_addr(xs->umem->fq);
-+	xskq_produce_flush_desc(xs->rx);
- 
-+	spin_unlock_bh(&xs->rx_lock);
-+
-+	xs->sk.sk_data_ready(&xs->sk);
-+	return 0;
-+
-+out_drop:
- 	xs->rx_dropped++;
-+out_unlock:
-+	spin_unlock_bh(&xs->rx_lock);
- 	return err;
- }
- 
-@@ -765,6 +777,7 @@ static int xsk_create(struct net *net, struct socket *sock, int protocol,
- 
- 	xs = xdp_sk(sk);
- 	mutex_init(&xs->mutex);
-+	spin_lock_init(&xs->rx_lock);
- 	spin_lock_init(&xs->tx_completion_lock);
- 
- 	mutex_lock(&net->xdp.lock);
--- 
-2.17.1
+>  enum bpf_perf_event_ret
+>  bpf_perf_event_read_simple(void *mmap_mem, size_t mmap_size, size_t page_size,
+>  			   void **copy_mem, size_t *copy_size,
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 1bf66c4a9330..bd767cc11967 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -171,6 +171,13 @@ LIBBPF_API int bpf_link__destroy(struct bpf_link *link);
+>  
+>  LIBBPF_API struct bpf_link *
+>  bpf_program__attach_perf_event(struct bpf_program *prog, int pfd);
+> +LIBBPF_API struct bpf_link *
+> +bpf_program__attach_kprobe(struct bpf_program *prog, bool retprobe,
+> +			   const char *func_name);
+> +LIBBPF_API struct bpf_link *
+> +bpf_program__attach_uprobe(struct bpf_program *prog, bool retprobe,
+> +			   pid_t pid, const char *binary_path,
+> +			   size_t func_offset);
+>  
+>  struct bpf_insn;
+>  
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 756f5aa802e9..57a40fb60718 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -169,7 +169,9 @@ LIBBPF_0.0.4 {
+>  	global:
+>  		bpf_link__destroy;
+>  		bpf_object__load_xattr;
+> +		bpf_program__attach_kprobe;
+>  		bpf_program__attach_perf_event;
+> +		bpf_program__attach_uprobe;
+>  		btf_dump__dump_type;
+>  		btf_dump__free;
+>  		btf_dump__new;
+> 
 
