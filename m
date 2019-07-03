@@ -2,144 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6C25E327
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 13:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71DE25E364
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 14:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726404AbfGCLum (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jul 2019 07:50:42 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56224 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726473AbfGCLum (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 3 Jul 2019 07:50:42 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x63BlW2X054979
-        for <bpf@vger.kernel.org>; Wed, 3 Jul 2019 07:50:41 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tgufurs7y-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 03 Jul 2019 07:50:40 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Wed, 3 Jul 2019 12:50:38 +0100
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 3 Jul 2019 12:50:36 +0100
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x63BoZqh57409556
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 3 Jul 2019 11:50:35 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 45634A4053;
-        Wed,  3 Jul 2019 11:50:35 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1F724A4040;
-        Wed,  3 Jul 2019 11:50:35 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.152.98.248])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  3 Jul 2019 11:50:35 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next] selftests/bpf: fix test_reuseport_array on s390
-Date:   Wed,  3 Jul 2019 13:50:34 +0200
-X-Mailer: git-send-email 2.21.0
+        id S1726605AbfGCMDM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jul 2019 08:03:12 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:39952 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725820AbfGCMDM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Jul 2019 08:03:12 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20190703120310euoutp028df468be483546336def2ed989399b6c~t5Az8gOY51838718387euoutp02h
+        for <bpf@vger.kernel.org>; Wed,  3 Jul 2019 12:03:10 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20190703120310euoutp028df468be483546336def2ed989399b6c~t5Az8gOY51838718387euoutp02h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1562155390;
+        bh=g8Riy6JBS+t00x7n3nd88i1ZZjkYP71PaA1lf7IyZE0=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=Rtsa2R8hcZC2ZXWp67y92qkRZiNa/9JtfEfBYvpe0/Z2nhv8yMAvu2wNdMpfIqzA1
+         q5MfxR6PXP590ZrlXKtJFq6aOIDeeZkadElOFdALzE5cOWHhLX+57Vk5vKChZKNSQ7
+         AACUj4Z3dp15ppP6BCO7GUEnrHPzknya2GdP4h9M=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20190703120309eucas1p169076bd06a70cadfa0f188d0a79b7ae0~t5AzSj98D2486124861eucas1p1w;
+        Wed,  3 Jul 2019 12:03:09 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id DC.95.04377.D799C1D5; Wed,  3
+        Jul 2019 13:03:09 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20190703120308eucas1p1e9619a56372825de84067a786f13a91b~t5AyirDjM2545525455eucas1p1v;
+        Wed,  3 Jul 2019 12:03:08 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20190703120308eusmtrp1fd1c76b35df1bd02aae85c768adaefd9~t5AyUgexL0302803028eusmtrp1K;
+        Wed,  3 Jul 2019 12:03:08 +0000 (GMT)
+X-AuditID: cbfec7f4-12dff70000001119-d8-5d1c997d9a0f
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 03.A6.04140.C799C1D5; Wed,  3
+        Jul 2019 13:03:08 +0100 (BST)
+Received: from [106.109.129.180] (unknown [106.109.129.180]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20190703120307eusmtip2181ec3e2a1c80f7d9b9abb0678a7db22~t5AxqCEQV1327713277eusmtip27;
+        Wed,  3 Jul 2019 12:03:07 +0000 (GMT)
+Subject: Re: [PATCH bpf] xdp: fix race on generic receive path
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, xdp-newbies@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+From:   Ilya Maximets <i.maximets@samsung.com>
+Message-ID: <687d9498-87a9-11e5-dc53-f09f42d6371b@samsung.com>
+Date:   Wed, 3 Jul 2019 15:03:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        Thunderbird/60.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19070311-0020-0000-0000-0000034FCB2B
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19070311-0021-0000-0000-000021A361C6
-Message-Id: <20190703115034.53984-1-iii@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-03_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=674 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907030143
+In-Reply-To: <20190702174014.005a3166@cakuba.netronome.com>
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIKsWRmVeSWpSXmKPExsWy7djP87q1M2ViDeYt4LP48vM2u8Wftg2M
+        Fp+PHGezWLzwG7PFnPMtLBZX2n+yWxx70cJmsWvdTGaLy7vmsFmsOHQCKLZAzGJ7/z5GBx6P
+        LStvMnnsnHWX3WPxnpdMHl03LjF7bFrVyeYxvfshs0ffllWMHp83yQVwRHHZpKTmZJalFunb
+        JXBlHD7+kb3gFG/F8rtf2BsYb3N1MXJySAiYSDx89JCli5GLQ0hgBaPEsqdNUM4XRomNd64x
+        QjifGSW+b2hhhmn5tH0zG0RiOaPEsZ0rWSGcj4wSG26sZQKpEhawkzjdd5EVxBYRMJT4dWMK
+        mM0s8IdJ4uJrUxCbTUBH4tTqI4wgNi9Q/dIN91lAbBYBFYmXzw6yg9iiAhESl7fsgqoRlDg5
+        8wlYDaeAtcTpKxAXMQuISzR9WQk1X15i+9s5zCAHSQi8ZZe496GVDeJsF4mHXRuYIGxhiVfH
+        t7BD2DISpyf3sEDY9RL3W14yQjR3MEpMP/QPqsFeYsvrc0ANHEAbNCXW79IHMSUEHCXe7/WC
+        MPkkbrwVhDiBT2LStunMEGFeiY42IYgZKhK/Dy6HhqGUxM13n9knMCrNQvLYLCTPzELyzCyE
+        tQsYWVYxiqeWFuempxYb5aWW6xUn5haX5qXrJefnbmIEJrTT/45/2cG460/SIUYBDkYlHt4F
+        AdKxQqyJZcWVuYcYJTiYlUR496+QjBXiTUmsrEotyo8vKs1JLT7EKM3BoiTOW83wIFpIID2x
+        JDU7NbUgtQgmy8TBKdXAGKejp3Du8rs9TqWlj0S19otc2pqrICkqP2fBJXN++3/5Vsf4t0kX
+        t6btW+b1+pvKG6eF+d5B1k7zfzRWMnwTt5ve+Xijpdy5xJim3ocT5pm/urzTp2Hiqg+M03Xm
+        9JSWHpmgWTdFOFSl6p+jl/u9pCexJzurXrBftGm9nLK+fnvf+rBL+3z3K7EUZyQaajEXFScC
+        ADJUi7JkAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKIsWRmVeSWpSXmKPExsVy+t/xe7o1M2ViDS5tkrL48vM2u8Wftg2M
+        Fp+PHGezWLzwG7PFnPMtLBZX2n+yWxx70cJmsWvdTGaLy7vmsFmsOHQCKLZAzGJ7/z5GBx6P
+        LStvMnnsnHWX3WPxnpdMHl03LjF7bFrVyeYxvfshs0ffllWMHp83yQVwROnZFOWXlqQqZOQX
+        l9gqRRtaGOkZWlroGZlY6hkam8daGZkq6dvZpKTmZJalFunbJehlHD7+kb3gFG/F8rtf2BsY
+        b3N1MXJySAiYSHzavpmti5GLQ0hgKaPE0eu3mCESUhI/fl1ghbCFJf5c62IDsYUE3jNKvGr0
+        ALGFBewkTvddBKsRETCU+HVjCivIIGaBP0wSf5adYISYeoBR4uSWp2BVbAI6EqdWH2EEsXmB
+        upduuM8CYrMIqEi8fHaQHcQWFYiQ6GubzQZRIyhxcuYTsBpOAWuJ01dawK5jFlCX+DPvEpQt
+        LtH0ZSUrhC0vsf3tHOYJjEKzkLTPQtIyC0nLLCQtCxhZVjGKpJYW56bnFhvpFSfmFpfmpesl
+        5+duYgRG8bZjP7fsYOx6F3yIUYCDUYmH18NPOlaINbGsuDL3EKMEB7OSCO/+FZKxQrwpiZVV
+        qUX58UWlOanFhxhNgZ6byCwlmpwPTDB5JfGGpobmFpaG5sbmxmYWSuK8HQIHY4QE0hNLUrNT
+        UwtSi2D6mDg4pRoYDzfyrPrc/+a5r87M48yOItFOsy32zDd62v7QSsB87aYZr5++W6+e+K6w
+        IC3eYMYH5viAo1cfXe0JMl/fblZTd3l26BXDwsTn2lt7rJ5pHmoXYXJqOPe0ziZ97fN2732n
+        H7090Dz37H6PC9YVa2YtmuA+59ZK12kRG7v2n9r95ZjGIyf1qTKXjJRYijMSDbWYi4oTAQ/L
+        3Hn4AgAA
+X-CMS-MailID: 20190703120308eucas1p1e9619a56372825de84067a786f13a91b
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20190702143639eucas1p2b168c68c35b70aac75cad6c72ccc81ad
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20190702143639eucas1p2b168c68c35b70aac75cad6c72ccc81ad
+References: <CGME20190702143639eucas1p2b168c68c35b70aac75cad6c72ccc81ad@eucas1p2.samsung.com>
+        <20190702143634.19688-1-i.maximets@samsung.com>
+        <20190702174014.005a3166@cakuba.netronome.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix endianness issue: passing a pointer to 64-bit fd as a 32-bit key
-does not work on big-endian architectures. So cast fd to 32-bits when
-necessary.
+On 03.07.2019 3:40, Jakub Kicinski wrote:
+> On Tue,  2 Jul 2019 17:36:34 +0300, Ilya Maximets wrote:
+>> Unlike driver mode, generic xdp receive could be triggered
+>> by different threads on different CPU cores at the same time
+>> leading to the fill and rx queue breakage. For example, this
+>> could happen while sending packets from two processes to the
+>> first interface of veth pair while the second part of it is
+>> open with AF_XDP socket.
+>>
+>> Need to take a lock for each generic receive to avoid race.
+>>
+>> Fixes: c497176cb2e4 ("xsk: add Rx receive functions and poll support")
+>> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
+> 
+>> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+>> index a14e8864e4fa..19f41d2b670c 100644
+>> --- a/net/xdp/xsk.c
+>> +++ b/net/xdp/xsk.c
+>> @@ -119,17 +119,22 @@ int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp)
+>>  {
+>>  	u32 metalen = xdp->data - xdp->data_meta;
+>>  	u32 len = xdp->data_end - xdp->data;
+>> +	unsigned long flags;
+>>  	void *buffer;
+>>  	u64 addr;
+>>  	int err;
+>>  
+>> -	if (xs->dev != xdp->rxq->dev || xs->queue_id != xdp->rxq->queue_index)
+>> -		return -EINVAL;
+>> +	spin_lock_irqsave(&xs->rx_lock, flags);
+> 
+> Why _irqsave, rather than _bh?
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- tools/testing/selftests/bpf/test_maps.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+Yes, spin_lock_bh() is enough here. Will change in v2.
+Thanks.
 
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index a3fbc571280a..5443b9bd75ed 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -1418,7 +1418,7 @@ static void test_map_wronly(void)
- 	assert(bpf_map_get_next_key(fd, &key, &value) == -1 && errno == EPERM);
- }
- 
--static void prepare_reuseport_grp(int type, int map_fd,
-+static void prepare_reuseport_grp(int type, int map_fd, size_t map_elem_size,
- 				  __s64 *fds64, __u64 *sk_cookies,
- 				  unsigned int n)
- {
-@@ -1428,6 +1428,8 @@ static void prepare_reuseport_grp(int type, int map_fd,
- 	const int optval = 1;
- 	unsigned int i;
- 	u64 sk_cookie;
-+	void *value;
-+	__s32 fd32;
- 	__s64 fd64;
- 	int err;
- 
-@@ -1449,8 +1451,14 @@ static void prepare_reuseport_grp(int type, int map_fd,
- 		      "err:%d errno:%d\n", err, errno);
- 
- 		/* reuseport_array does not allow unbound sk */
--		err = bpf_map_update_elem(map_fd, &index0, &fd64,
--					  BPF_ANY);
-+		if (map_elem_size == sizeof(__u64))
-+			value = &fd64;
-+		else {
-+			assert(map_elem_size == sizeof(__u32));
-+			fd32 = (__s32)fd64;
-+			value = &fd32;
-+		}
-+		err = bpf_map_update_elem(map_fd, &index0, value, BPF_ANY);
- 		CHECK(err != -1 || errno != EINVAL,
- 		      "reuseport array update unbound sk",
- 		      "sock_type:%d err:%d errno:%d\n",
-@@ -1478,7 +1486,7 @@ static void prepare_reuseport_grp(int type, int map_fd,
- 			 * reuseport_array does not allow
- 			 * non-listening tcp sk.
- 			 */
--			err = bpf_map_update_elem(map_fd, &index0, &fd64,
-+			err = bpf_map_update_elem(map_fd, &index0, value,
- 						  BPF_ANY);
- 			CHECK(err != -1 || errno != EINVAL,
- 			      "reuseport array update non-listening sk",
-@@ -1541,7 +1549,7 @@ static void test_reuseport_array(void)
- 	for (t = 0; t < ARRAY_SIZE(types); t++) {
- 		type = types[t];
- 
--		prepare_reuseport_grp(type, map_fd, grpa_fds64,
-+		prepare_reuseport_grp(type, map_fd, sizeof(__u64), grpa_fds64,
- 				      grpa_cookies, ARRAY_SIZE(grpa_fds64));
- 
- 		/* Test BPF_* update flags */
-@@ -1649,7 +1657,8 @@ static void test_reuseport_array(void)
- 				sizeof(__u32), sizeof(__u32), array_size, 0);
- 	CHECK(map_fd == -1, "reuseport array create",
- 	      "map_fd:%d, errno:%d\n", map_fd, errno);
--	prepare_reuseport_grp(SOCK_STREAM, map_fd, &fd64, &sk_cookie, 1);
-+	prepare_reuseport_grp(SOCK_STREAM, map_fd, sizeof(__u32), &fd64,
-+			      &sk_cookie, 1);
- 	fd = fd64;
- 	err = bpf_map_update_elem(map_fd, &index3, &fd, BPF_NOEXIST);
- 	CHECK(err == -1, "reuseport array update 32 bit fd",
--- 
-2.21.0
-
+> 
+>> +	if (xs->dev != xdp->rxq->dev || xs->queue_id != xdp->rxq->queue_index) {
+>> +		err = -EINVAL;
+>> +		goto out_unlock;
+>> +	}
+>>  
+>>  	if (!xskq_peek_addr(xs->umem->fq, &addr) ||
+>>  	    len > xs->umem->chunk_size_nohr - XDP_PACKET_HEADROOM) {
+>> -		xs->rx_dropped++;
+>> -		return -ENOSPC;
+>> +		err = -ENOSPC;
+>> +		goto out_drop;
+>>  	}
+>>  
+>>  	addr += xs->umem->headroom;
+> 
+> 
+> 
