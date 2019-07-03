@@ -2,54 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A25975E15B
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 11:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 396325E162
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 11:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbfGCJuD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jul 2019 05:50:03 -0400
-Received: from www62.your-server.de ([213.133.104.62]:51416 "EHLO
+        id S1727046AbfGCJu3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jul 2019 05:50:29 -0400
+Received: from www62.your-server.de ([213.133.104.62]:51502 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726434AbfGCJuD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jul 2019 05:50:03 -0400
+        with ESMTP id S1727056AbfGCJu3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Jul 2019 05:50:29 -0400
 Received: from [88.198.220.130] (helo=sslproxy01.your-server.de)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1hibtd-0006bp-Bc; Wed, 03 Jul 2019 11:49:49 +0200
+        id 1hibuD-0006fs-Se; Wed, 03 Jul 2019 11:50:26 +0200
 Received: from [2a02:1205:5054:6d70:b45c:ec96:516a:e956] (helo=linux.home)
         by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89)
         (envelope-from <daniel@iogearbox.net>)
-        id 1hibtd-0000Zx-1y; Wed, 03 Jul 2019 11:49:49 +0200
-Subject: Re: [PATCH bpf 1/3] bpf, x32: Fix bug with ALU64 {LSH,RSH,ARSH} BPF_X
- shift by 0
-To:     Luke Nelson <lukenels@cs.washington.edu>,
-        linux-kernel@vger.kernel.org
-Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
-        Wang YanQing <udknight@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jiong Wang <jiong.wang@netronome.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-References: <20190629055759.28365-1-luke.r.nels@gmail.com>
+        id 1hibuD-00035D-IW; Wed, 03 Jul 2019 11:50:25 +0200
+Subject: Re: [PATCH bpf-next] bpf: fix precision tracking
+To:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+References: <20190628162409.2513499-1-ast@kernel.org>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <5c2080f4-532e-d239-13b1-4a5a620f6c33@iogearbox.net>
-Date:   Wed, 3 Jul 2019 11:49:47 +0200
+Message-ID: <3e2dfbf7-6b44-1a41-bc0f-d2810157ef09@iogearbox.net>
+Date:   Wed, 3 Jul 2019 11:50:24 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.3.0
 MIME-Version: 1.0
-In-Reply-To: <20190629055759.28365-1-luke.r.nels@gmail.com>
+In-Reply-To: <20190628162409.2513499-1-ast@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -60,33 +42,25 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/29/2019 07:57 AM, Luke Nelson wrote:
-> The current x32 BPF JIT for shift operations is not correct when the
-> shift amount in a register is 0. The expected behavior is a no-op, whereas
-> the current implementation changes bits in the destination register.
+On 06/28/2019 06:24 PM, Alexei Starovoitov wrote:
+> When equivalent state is found the current state needs to propagate precision marks.
+> Otherwise the verifier will prune the search incorrectly.
 > 
-> The following example demonstrates the bug. The expected result of this
-> program is 1, but the current JITed code returns 2.
+> There is a price for correctness:
+>                       before      before    broken    fixed
+>                       cnst spill  precise   precise
+> bpf_lb-DLB_L3.o       1923        8128      1863      1898
+> bpf_lb-DLB_L4.o       3077        6707      2468      2666
+> bpf_lb-DUNKNOWN.o     1062        1062      544       544
+> bpf_lxc-DDROP_ALL.o   166729      380712    22629     36823
+> bpf_lxc-DUNKNOWN.o    174607      440652    28805     45325
+> bpf_netdev.o          8407        31904     6801      7002
+> bpf_overlay.o         5420        23569     4754      4858
+> bpf_lxc_jit.o         39389       359445    50925     69631
+> Overall precision tracking is still very effective.
 > 
->   r0 = 1
->   r1 = 1
->   r2 = 0
->   r1 <<= r2
->   if r1 == 1 goto end
->   r0 = 2
-> end:
->   exit
-> 
-> The bug is caused by an incorrect assumption by the JIT that a shift by
-> 32 clear the register. On x32 however, shifts use the lower 5 bits of
-> the source, making a shift by 32 equivalent to a shift by 0.
-> 
-> This patch fixes the bug using double-precision shifts, which also
-> simplifies the code.
-> 
-> Fixes: 03f5781be2c7 ("bpf, x86_32: add eBPF JIT compiler for ia32")
-> Co-developed-by: Xi Wang <xi.wang@gmail.com>
-> Signed-off-by: Xi Wang <xi.wang@gmail.com>
-> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+> Fixes: b5dc0163d8fd ("bpf: precise scalar_value tracking")
+> Reported-by: Lawrence Brakmo <brakmo@fb.com>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
-Series applied, thanks!
+Applied, thanks!
