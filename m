@@ -2,38 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 637335E121
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 11:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25975E15B
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 11:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbfGCJgT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jul 2019 05:36:19 -0400
-Received: from www62.your-server.de ([213.133.104.62]:49120 "EHLO
+        id S1726473AbfGCJuD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jul 2019 05:50:03 -0400
+Received: from www62.your-server.de ([213.133.104.62]:51416 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726308AbfGCJgT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jul 2019 05:36:19 -0400
-Received: from [78.46.172.2] (helo=sslproxy05.your-server.de)
+        with ESMTP id S1726434AbfGCJuD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Jul 2019 05:50:03 -0400
+Received: from [88.198.220.130] (helo=sslproxy01.your-server.de)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1hibgW-0005es-Iy; Wed, 03 Jul 2019 11:36:16 +0200
+        id 1hibtd-0006bp-Bc; Wed, 03 Jul 2019 11:49:49 +0200
 Received: from [2a02:1205:5054:6d70:b45c:ec96:516a:e956] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89)
         (envelope-from <daniel@iogearbox.net>)
-        id 1hibgW-000UNG-CN; Wed, 03 Jul 2019 11:36:16 +0200
-Subject: Re: [PATCH v4 bpf-next 0/4] libbpf: add perf buffer abstraction and
- API
-To:     Andrii Nakryiko <andriin@fb.com>, andrii.nakryiko@gmail.com,
-        ast@fb.com, kernel-team@fb.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, jakub.kicinski@netronome.com
-References: <20190630065109.1794420-1-andriin@fb.com>
+        id 1hibtd-0000Zx-1y; Wed, 03 Jul 2019 11:49:49 +0200
+Subject: Re: [PATCH bpf 1/3] bpf, x32: Fix bug with ALU64 {LSH,RSH,ARSH} BPF_X
+ shift by 0
+To:     Luke Nelson <lukenels@cs.washington.edu>,
+        linux-kernel@vger.kernel.org
+Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
+        Wang YanQing <udknight@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jiong Wang <jiong.wang@netronome.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+References: <20190629055759.28365-1-luke.r.nels@gmail.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <5a48c2f1-2abc-2deb-6863-c9f20e4ac03b@iogearbox.net>
-Date:   Wed, 3 Jul 2019 11:36:15 +0200
+Message-ID: <5c2080f4-532e-d239-13b1-4a5a620f6c33@iogearbox.net>
+Date:   Wed, 3 Jul 2019 11:49:47 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.3.0
 MIME-Version: 1.0
-In-Reply-To: <20190630065109.1794420-1-andriin@fb.com>
+In-Reply-To: <20190629055759.28365-1-luke.r.nels@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -44,46 +60,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/30/2019 08:51 AM, Andrii Nakryiko wrote:
-> This patchset adds a high-level API for setting up and polling perf buffers
-> associated with BPF_MAP_TYPE_PERF_EVENT_ARRAY map. Details of APIs are
-> described in corresponding commit.
+On 06/29/2019 07:57 AM, Luke Nelson wrote:
+> The current x32 BPF JIT for shift operations is not correct when the
+> shift amount in a register is 0. The expected behavior is a no-op, whereas
+> the current implementation changes bits in the destination register.
 > 
-> Patch #1 adds a set of APIs to set up and work with perf buffer.
-> Patch #2 enhances libbpf to support auto-setting PERF_EVENT_ARRAY map size.
-> Patch #3 adds test.
-> Patch #4 converts bpftool map event_pipe to new API.
+> The following example demonstrates the bug. The expected result of this
+> program is 1, but the current JITed code returns 2.
 > 
-> v3->v4:
-> - fixed bpftool event_pipe cmd error handling (Jakub);
+>   r0 = 1
+>   r1 = 1
+>   r2 = 0
+>   r1 <<= r2
+>   if r1 == 1 goto end
+>   r0 = 2
+> end:
+>   exit
 > 
-> v2->v3:
-> - added perf_buffer__new_raw for more low-level control;
-> - converted bpftool map event_pipe to new API (Daniel);
-> - fixed bug with error handling in create_maps (Song);
+> The bug is caused by an incorrect assumption by the JIT that a shift by
+> 32 clear the register. On x32 however, shifts use the lower 5 bits of
+> the source, making a shift by 32 equivalent to a shift by 0.
 > 
-> v1->v2:
-> - add auto-sizing of PERF_EVENT_ARRAY maps;
+> This patch fixes the bug using double-precision shifts, which also
+> simplifies the code.
 > 
-> Andrii Nakryiko (4):
->   libbpf: add perf buffer API
->   libbpf: auto-set PERF_EVENT_ARRAY size to number of CPUs
->   selftests/bpf: test perf buffer API
->   tools/bpftool: switch map event_pipe to libbpf's perf_buffer
-> 
->  tools/bpf/bpftool/map_perf_ring.c             | 201 +++------
->  tools/lib/bpf/libbpf.c                        | 397 +++++++++++++++++-
->  tools/lib/bpf/libbpf.h                        |  49 +++
->  tools/lib/bpf/libbpf.map                      |   4 +
->  .../selftests/bpf/prog_tests/perf_buffer.c    |  94 +++++
->  .../selftests/bpf/progs/test_perf_buffer.c    |  29 ++
->  6 files changed, 630 insertions(+), 144 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_buffer.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_perf_buffer.c
+> Fixes: 03f5781be2c7 ("bpf, x86_32: add eBPF JIT compiler for ia32")
+> Co-developed-by: Xi Wang <xi.wang@gmail.com>
+> Signed-off-by: Xi Wang <xi.wang@gmail.com>
+> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
 
-Hm, set looks good, but this does not apply cleanly. Please rebase against
-bpf-next and resubmit. Please also update tools/lib/bpf/README.rst with regards
-to the perf_buffer__ prefix. While at it, you could also address Jakub's comment.
-
-Thanks,
-Daniel
+Series applied, thanks!
