@@ -2,98 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2C45DFBF
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 10:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1DF5E0F1
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 11:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727307AbfGCI06 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jul 2019 04:26:58 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8690 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727241AbfGCI06 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jul 2019 04:26:58 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 02220F79422AA3A77CC8;
-        Wed,  3 Jul 2019 16:26:56 +0800 (CST)
-Received: from localhost (10.133.213.239) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.439.0; Wed, 3 Jul 2019
- 16:26:49 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <ast@kernel.org>, <daniel@iogearbox.net>, <kafai@fb.com>,
-        <songliubraving@fb.com>, <yhs@fb.com>, <sdf@google.com>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH v2 bpf-next] bpf: cgroup: Fix build error without CONFIG_NET
-Date:   Wed, 3 Jul 2019 16:26:30 +0800
-Message-ID: <20190703082630.51104-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-In-Reply-To: <fd312c26-db8e-cae3-1c14-869d8e3a62ae@fb.com>
-References: <fd312c26-db8e-cae3-1c14-869d8e3a62ae@fb.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.133.213.239]
-X-CFilter-Loop: Reflected
+        id S1727012AbfGCJXL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jul 2019 05:23:11 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61526 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727004AbfGCJXL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 3 Jul 2019 05:23:11 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x639N6Ob106906
+        for <bpf@vger.kernel.org>; Wed, 3 Jul 2019 05:23:10 -0400
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2tgrajued1-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 03 Jul 2019 05:23:08 -0400
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Wed, 3 Jul 2019 10:22:17 +0100
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 3 Jul 2019 10:22:15 +0100
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x639MEBF53608496
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 3 Jul 2019 09:22:14 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 857AFAE055;
+        Wed,  3 Jul 2019 09:22:14 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 284AAAE04D;
+        Wed,  3 Jul 2019 09:22:14 +0000 (GMT)
+Received: from dyn-9-152-98-248.boeblingen.de.ibm.com (unknown [9.152.98.248])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  3 Jul 2019 09:22:14 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Subject: Re: bpf: jit: s390 64/32 bits for index in tail call
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+In-Reply-To: <xuny36jxppso.fsf@redhat.com>
+Date:   Wed, 3 Jul 2019 11:22:13 +0200
+Cc:     Michael Holzheu <holzheu@linux.vnet.ibm.com>,
+        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@redhat.com>
+Content-Transfer-Encoding: 7bit
+References: <xuny36jxppso.fsf@redhat.com>
+To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+X-Mailer: Apple Mail (2.3445.9.1)
+X-TM-AS-GCONF: 00
+x-cbid: 19070309-0028-0000-0000-0000037FEE3C
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19070309-0029-0000-0000-000024402BAF
+Message-Id: <44F2B8D1-6636-4ACE-9C83-98C978FBA104@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-03_03:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=779 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907030111
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If CONFIG_NET is not set and CONFIG_CGROUP_BPF=y,
-gcc building fails:
+> ```
+>    With this patch a tail call generates the following code on s390x:
+> 
+>     if (index >= array->map.max_entries)
+>             goto out
+>     000003ff8001c7e4: e31030100016   llgf    %r1,16(%r3)
+>     000003ff8001c7ea: ec41001fa065   clgrj   %r4,%r1,10,3ff8001c828
+> ```
+> 
+> Do I understand corretly, that it uses 64 bit index value?
+> 
+> "runtime/jit: pass > 32bit index to tail_call"
+> test_verifier's test fails for me and I see, for example,
+> /* mov edx, edx */  in the x86 implementation
 
-kernel/bpf/cgroup.o: In function `cg_sockopt_func_proto':
-cgroup.c:(.text+0x237e): undefined reference to `bpf_sk_storage_get_proto'
-cgroup.c:(.text+0x2394): undefined reference to `bpf_sk_storage_delete_proto'
-kernel/bpf/cgroup.o: In function `__cgroup_bpf_run_filter_getsockopt':
-(.text+0x2a1f): undefined reference to `lock_sock_nested'
-(.text+0x2ca2): undefined reference to `release_sock'
-kernel/bpf/cgroup.o: In function `__cgroup_bpf_run_filter_setsockopt':
-(.text+0x3006): undefined reference to `lock_sock_nested'
-(.text+0x32bb): undefined reference to `release_sock'
+Hi Yauheni,
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Suggested-by: Stanislav Fomichev <sdf@fomichev.me>
-Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
-v2: use ifdef macro
----
- kernel/bpf/cgroup.c | 4 ++++
- 1 file changed, 4 insertions(+)
+llgf zero-extends a 32-bit value and puts it into a register, so I would
+expect index to be a 32-bit value here. This test passes for me:
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 76fa007..0a00eac 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -939,6 +939,7 @@ int __cgroup_bpf_run_filter_sysctl(struct ctl_table_header *head,
- }
- EXPORT_SYMBOL(__cgroup_bpf_run_filter_sysctl);
- 
-+#ifdef CONFIG_NET
- static bool __cgroup_bpf_prog_array_is_empty(struct cgroup *cgrp,
- 					     enum bpf_attach_type attach_type)
- {
-@@ -1120,6 +1121,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 	return ret;
- }
- EXPORT_SYMBOL(__cgroup_bpf_run_filter_getsockopt);
-+#endif
- 
- static ssize_t sysctl_cpy_dir(const struct ctl_dir *dir, char **bufp,
- 			      size_t *lenp)
-@@ -1386,10 +1388,12 @@ static const struct bpf_func_proto *
- cg_sockopt_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- {
- 	switch (func_id) {
-+#ifdef CONFIG_NET
- 	case BPF_FUNC_sk_storage_get:
- 		return &bpf_sk_storage_get_proto;
- 	case BPF_FUNC_sk_storage_delete:
- 		return &bpf_sk_storage_delete_proto;
-+#endif
- #ifdef CONFIG_INET
- 	case BPF_FUNC_tcp_sock:
- 		return &bpf_tcp_sock_proto;
--- 
-2.7.4
+#752/u runtime/jit: pass > 32bit index to tail_call OK
+#752/p runtime/jit: pass > 32bit index to tail_call OK
 
+Which machine are you using for testing? I tried that on z14 (3906).
+
+Best regards,
+Ilya
 
