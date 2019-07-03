@@ -2,88 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 475BC5ED40
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 22:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C540B5EDE2
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 22:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726581AbfGCUMZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jul 2019 16:12:25 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:42712 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726550AbfGCUMZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jul 2019 16:12:25 -0400
-Received: by mail-qt1-f194.google.com with SMTP id h18so3251696qtm.9;
-        Wed, 03 Jul 2019 13:12:25 -0700 (PDT)
+        id S1727164AbfGCUvE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jul 2019 16:51:04 -0400
+Received: from mail-qt1-f202.google.com ([209.85.160.202]:39472 "EHLO
+        mail-qt1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726821AbfGCUvE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Jul 2019 16:51:04 -0400
+Received: by mail-qt1-f202.google.com with SMTP id o16so4569281qtj.6
+        for <bpf@vger.kernel.org>; Wed, 03 Jul 2019 13:51:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u2Am3pNf0gtX0xa8NrVXo9X+EbqqfHNPKIbtbcAOF3c=;
-        b=o51SQ9wIEcN6+t9gJiEvVcm14339rBtS+QftvXvuphLgPizb50/772XEasXs7ZNhmB
-         pbYjhF7OGVS1Ud3UFZS4oO4W8l1ABIyNs7Y+vdYdGdVyOpCFY+9o8XHFbwQZWXD5OPjm
-         40uwpsKFGWZAMPHoDCPTh0bJ2Ph+7FLV7wcASw3YT2wLsfWEZCWWNOA10tAc60hQOjgM
-         07RiQ/HGTy43ySW4uO989eiY0D4030lHSXMxvqLQAmmzSVEThZkbTmuARyKRvMtpqF+G
-         gEXYAaIBaSi/X93VzLRK93NSorXjeVvFnVwZXFSDGlQTRuWMgL5rW/SK2TNGGp1DjgBO
-         RjBA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=EQHLSuPIc/oYvaB2vk7M21m/1+VQk4KM7GLfnO/In8U=;
+        b=jne86OKJc9ev0L5z/69jJWMmW0vRt1Vj8LQYaiqrWqU1n2uGE4UUz2ml42d/yMwcTe
+         Uh6quJ7A9GtIgEO+GMUTRiq4fZ2LH6+zEG7TnBH+1ypCBaqFCrAwij2mENW9SyYaheaX
+         MFVKf1gN0PBI2BgbUJKsstwkQOXWOhonKcJ3EwzMrEQfAmfHLveQeQac23upkHPYYJh9
+         NR13nw39IRHZTJ2rTe4aklq4C8/8CW1iCaWXGqp/lbXFeSLxLOjS7GvPF5fkVhsClsd/
+         imXol9vsQRhMDEeoDszmqsvRnlqgvzXydpq/VYt+rTIinJymdIULM1hN338J1iqmg5iR
+         PUKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u2Am3pNf0gtX0xa8NrVXo9X+EbqqfHNPKIbtbcAOF3c=;
-        b=Bu+kfGpsFwVEbm09XurMd12dOzcHiP3omynoSAdNqncHW7SN6burG9mvpldDlx7fES
-         U63ldZOMGC11eybJ2R7gMbb6LFJ9dn2UApLNhqC2KBSCHSVoOAq9GblJ8L1ULrl2u9wA
-         V8iYWbUh8Xl+j57bAMSt/tg8ZRIQzEAEwDmKVdFGP5rmjMccAaRoiZSxzJ2vnittWgwn
-         8qR5H8BTphktN6zomg4fgz0zqqDXg9c79odGUxqdyVtkfw3sgLedAF6dRcqqkblwMW6g
-         iRL1pzCIrkqNiq0NISSIIRdYPH4K/5YjjNyeC5DWSEkrBgQlTENARFviaQ3MovIV0fDv
-         rN1g==
-X-Gm-Message-State: APjAAAW024fXtM1Xw+EJ312/0/bp0qv0SuMbyfEjcqA5zWtvz9m8XyqW
-        ZbkOe2ZU5M9aYtLljh3mUWVbKyPIpOnq0yrWmxU=
-X-Google-Smtp-Source: APXvYqx4TX63x1dlMWyifXLqO5LyaRa6a0+CChkSJuswItxelAyZsCAeIWwEj0nLxAEi9a9Xw51sbs4hrBHyT1Ih/K8=
-X-Received: by 2002:a0c:d0fc:: with SMTP id b57mr34092840qvh.78.1562184744489;
- Wed, 03 Jul 2019 13:12:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190703200952.159728-1-sdf@google.com>
-In-Reply-To: <20190703200952.159728-1-sdf@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 3 Jul 2019 13:12:13 -0700
-Message-ID: <CAEf4BzbOFmxKoA8qFs=SN-0AKKZRoyDSZhAe5kw8jRgzGgn3bg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: add test_tcp_rtt to .gitignore
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=EQHLSuPIc/oYvaB2vk7M21m/1+VQk4KM7GLfnO/In8U=;
+        b=TFh0RiALzJafa4AUaaAVkP8Vf3wpTSyp7+imE3XgAOOLIO1bDKd/y2RjTMgIsZ1KCS
+         y+AKuqtFf+lddEyysHOKjA0/9bTKytoDu4CI4O78VFsoNKzs72wiOM4vqN7QLekkrfGb
+         8nY7vIcmDL2fUA8/fiYM6Ox35QLinA+texsMYDm1txcr2VpzbS7k/c+s1tOc1u1ynAkp
+         2DSmkClcJs2ckOUI7ig/IQEkIondrg1q2tTK8qZJ9sYepDLTcbXkQG2Zvb7Bfi9USFwD
+         6rQBEnjRyqDtFAZ72De+FN68YE/QSn4xECfep09vilQZyZoLFQAD2xmKDq3X9QB3nCrE
+         DGSQ==
+X-Gm-Message-State: APjAAAWqtJmgkZQe4idA7Jult8/ffb58ZeFhoZ52iijjJyLxM+kJ7KXj
+        W3G6Rp9pKagBQSpb1cu2V8xscIs=
+X-Google-Smtp-Source: APXvYqxWHXP6E82FZJ9VF1npsQLmXvY6v2JOFrt3HrrdzjYjqH2xgqUKBg0mleRT5x/Eu21KDBOAoy4=
+X-Received: by 2002:a37:9944:: with SMTP id b65mr33607864qke.105.1562187062968;
+ Wed, 03 Jul 2019 13:51:02 -0700 (PDT)
+Date:   Wed,  3 Jul 2019 13:51:00 -0700
+Message-Id: <20190703205100.142904-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
+Subject: [PATCH bpf-next] selftests/bpf: make verifier loop tests arch independent
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 3, 2019 at 1:10 PM Stanislav Fomichev <sdf@google.com> wrote:
->
-> Forgot to add it in the original patch.
->
-> Fixes: b55873984dab ("selftests/bpf: test BPF_SOCK_OPS_RTT_CB")
-> Reported-by: Andrii Nakryiko <andriin@fb.com>
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
+Take the first x bytes of pt_regs for scalability tests, there is
+no real reason we need x86 specific rax.
 
-Thanks!
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ tools/testing/selftests/bpf/progs/loop1.c | 3 ++-
+ tools/testing/selftests/bpf/progs/loop2.c | 3 ++-
+ tools/testing/selftests/bpf/progs/loop3.c | 3 ++-
+ 3 files changed, 6 insertions(+), 3 deletions(-)
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+diff --git a/tools/testing/selftests/bpf/progs/loop1.c b/tools/testing/selftests/bpf/progs/loop1.c
+index dea395af9ea9..d530c61d2517 100644
+--- a/tools/testing/selftests/bpf/progs/loop1.c
++++ b/tools/testing/selftests/bpf/progs/loop1.c
+@@ -14,11 +14,12 @@ SEC("raw_tracepoint/kfree_skb")
+ int nested_loops(volatile struct pt_regs* ctx)
+ {
+ 	int i, j, sum = 0, m;
++	volatile int *any_reg = (volatile int *)ctx;
+ 
+ 	for (j = 0; j < 300; j++)
+ 		for (i = 0; i < j; i++) {
+ 			if (j & 1)
+-				m = ctx->rax;
++				m = *any_reg;
+ 			else
+ 				m = j;
+ 			sum += i * m;
+diff --git a/tools/testing/selftests/bpf/progs/loop2.c b/tools/testing/selftests/bpf/progs/loop2.c
+index 0637bd8e8bcf..91bb89d901e3 100644
+--- a/tools/testing/selftests/bpf/progs/loop2.c
++++ b/tools/testing/selftests/bpf/progs/loop2.c
+@@ -14,9 +14,10 @@ SEC("raw_tracepoint/consume_skb")
+ int while_true(volatile struct pt_regs* ctx)
+ {
+ 	int i = 0;
++	volatile int *any_reg = (volatile int *)ctx;
+ 
+ 	while (true) {
+-		if (ctx->rax & 1)
++		if (*any_reg & 1)
+ 			i += 3;
+ 		else
+ 			i += 7;
+diff --git a/tools/testing/selftests/bpf/progs/loop3.c b/tools/testing/selftests/bpf/progs/loop3.c
+index 30a0f6cba080..3a7f12d7186c 100644
+--- a/tools/testing/selftests/bpf/progs/loop3.c
++++ b/tools/testing/selftests/bpf/progs/loop3.c
+@@ -14,9 +14,10 @@ SEC("raw_tracepoint/consume_skb")
+ int while_true(volatile struct pt_regs* ctx)
+ {
+ 	__u64 i = 0, sum = 0;
++	volatile __u64 *any_reg = (volatile __u64 *)ctx;
+ 	do {
+ 		i++;
+-		sum += ctx->rax;
++		sum += *any_reg;
+ 	} while (i < 0x100000000ULL);
+ 	return sum;
+ }
+-- 
+2.22.0.410.gd8fdbe21b5-goog
 
->  tools/testing/selftests/bpf/.gitignore | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-> index a2f7f79c7908..90f70d2c7c22 100644
-> --- a/tools/testing/selftests/bpf/.gitignore
-> +++ b/tools/testing/selftests/bpf/.gitignore
-> @@ -42,3 +42,4 @@ xdping
->  test_sockopt
->  test_sockopt_sk
->  test_sockopt_multi
-> +test_tcp_rtt
-> --
-> 2.22.0.410.gd8fdbe21b5-goog
->
