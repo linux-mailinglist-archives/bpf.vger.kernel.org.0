@@ -2,39 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 396325E162
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 11:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6995E1B7
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 12:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbfGCJu3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jul 2019 05:50:29 -0400
-Received: from www62.your-server.de ([213.133.104.62]:51502 "EHLO
+        id S1726605AbfGCKJz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jul 2019 06:09:55 -0400
+Received: from www62.your-server.de ([213.133.104.62]:54970 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727056AbfGCJu3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jul 2019 05:50:29 -0400
-Received: from [88.198.220.130] (helo=sslproxy01.your-server.de)
+        with ESMTP id S1726486AbfGCKJz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Jul 2019 06:09:55 -0400
+Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1hibuD-0006fs-Se; Wed, 03 Jul 2019 11:50:26 +0200
+        id 1hicD2-0008UY-FK; Wed, 03 Jul 2019 12:09:52 +0200
 Received: from [2a02:1205:5054:6d70:b45c:ec96:516a:e956] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89)
         (envelope-from <daniel@iogearbox.net>)
-        id 1hibuD-00035D-IW; Wed, 03 Jul 2019 11:50:25 +0200
-Subject: Re: [PATCH bpf-next] bpf: fix precision tracking
-To:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-References: <20190628162409.2513499-1-ast@kernel.org>
+        id 1hicD2-000Chv-8q; Wed, 03 Jul 2019 12:09:52 +0200
+Subject: Re: [PATCH] bpf: Replace a seq_printf() call by seq_puts() in
+ btf_enum_seq_show()
+To:     Markus Elfring <Markus.Elfring@web.de>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+References: <93898abe-9a7d-0c64-0856-094b62e07ba2@web.de>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <3e2dfbf7-6b44-1a41-bc0f-d2810157ef09@iogearbox.net>
-Date:   Wed, 3 Jul 2019 11:50:24 +0200
+Message-ID: <e0c9978f-7304-8a25-1bc9-b2be8a038382@iogearbox.net>
+Date:   Wed, 3 Jul 2019 12:09:51 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.3.0
 MIME-Version: 1.0
-In-Reply-To: <20190628162409.2513499-1-ast@kernel.org>
+In-Reply-To: <93898abe-9a7d-0c64-0856-094b62e07ba2@web.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.100.3/25499/Wed Jul  3 10:03:10 2019)
 Sender: bpf-owner@vger.kernel.org
@@ -42,25 +47,15 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/28/2019 06:24 PM, Alexei Starovoitov wrote:
-> When equivalent state is found the current state needs to propagate precision marks.
-> Otherwise the verifier will prune the search incorrectly.
+On 07/02/2019 07:13 PM, Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Tue, 2 Jul 2019 19:04:08 +0200
 > 
-> There is a price for correctness:
->                       before      before    broken    fixed
->                       cnst spill  precise   precise
-> bpf_lb-DLB_L3.o       1923        8128      1863      1898
-> bpf_lb-DLB_L4.o       3077        6707      2468      2666
-> bpf_lb-DUNKNOWN.o     1062        1062      544       544
-> bpf_lxc-DDROP_ALL.o   166729      380712    22629     36823
-> bpf_lxc-DUNKNOWN.o    174607      440652    28805     45325
-> bpf_netdev.o          8407        31904     6801      7002
-> bpf_overlay.o         5420        23569     4754      4858
-> bpf_lxc_jit.o         39389       359445    50925     69631
-> Overall precision tracking is still very effective.
+> A string which did not contain a data format specification should be put
+> into a sequence. Thus use the corresponding function “seq_puts”.
 > 
-> Fixes: b5dc0163d8fd ("bpf: precise scalar_value tracking")
-> Reported-by: Lawrence Brakmo <brakmo@fb.com>
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> This issue was detected by using the Coccinelle software.
+> 
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 
-Applied, thanks!
+The code is fine as is, I'm not applying this.
