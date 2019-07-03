@@ -2,122 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A955E314
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 13:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6C25E327
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 13:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbfGCLqd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jul 2019 07:46:33 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:44352 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726743AbfGCLqd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jul 2019 07:46:33 -0400
-Received: by mail-oi1-f194.google.com with SMTP id e189so1768078oib.11
-        for <bpf@vger.kernel.org>; Wed, 03 Jul 2019 04:46:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=mYCFppVyTLYn4jIWsRodglihiRKb1A76Dy+J8v19wzc=;
-        b=D/9AaR+4ugUBBoe5/1T1+ZEwBrg3e3P4WhtXCOVCc7lRsXoCa76A7XhNR0j7h1SCJU
-         ZhQ8En4MthdgoIQtVTcxsKV/bApkPtLlwcJ7GYSPzh9P2IRq9NzjA7PEu9sC7TNSCddQ
-         FVvPmsxBtpYPwOsdA74BIXEpzq0OmWT1vx6C7YBcT8fF7hzaXA0Evginy/jJI1uJ9zbC
-         zL14fynQYfCMydKMRLXIb73eCcvdkGE1i8pa7xeIfaAn1Do9Z6Lx7tGQms0O637oz/Ix
-         yU+KnN7NhgWUn+dUA/5/VSg5HNp4LXLUkLG4jEQupWEZuDvgWX9pjdSSX8PdvbNW8/Hq
-         xwqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mYCFppVyTLYn4jIWsRodglihiRKb1A76Dy+J8v19wzc=;
-        b=KFIYJbcuevpoKDbFDKt+E85rads1cWf9YlY7M+FRIT+3zOWQDaTHBBgc2WkwxUA0Q3
-         xPxB+/JpdHW/PC8w1/+OgJC+IWmSjkF9qc0rahxCHaKSBD9ht0nbKO8wWeL+RQZ9P65C
-         H+HUBoEgnJX1yY9WBo9zXeFS6dqLiZhB038qNbfKCsfMxFiT7vdNuj3SelsXN1oI7JR2
-         Uzfll+o6/MVnhF8I7MvHxU+50OhyZ/kAv8ffadH4INUZlQLZfE2vTzX5M04196cw7lNC
-         Xtd8wJpEBQhSwKXZ2pL1Tu/BC1qW7ba5yOc9VFr8i+D3WBdzUXLiNxWGu71CGWYQgKBA
-         uVEA==
-X-Gm-Message-State: APjAAAVSkiLxDC/EqHi0gwUlm83bZdtsp/EERfxNLmSKr76GRSaTAF8Z
-        56JzEAolAWBBHVAWa6Nkk4Y+aQ==
-X-Google-Smtp-Source: APXvYqwX7as5iFvdGwU6iDuxDN356j60jVpv0gxRnDRYGhYLxaoZipVDwgA728jdYwbcktjADrrxZw==
-X-Received: by 2002:aca:c715:: with SMTP id x21mr3307037oif.142.1562154392368;
-        Wed, 03 Jul 2019 04:46:32 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s (li964-79.members.linode.com. [45.33.10.79])
-        by smtp.gmail.com with ESMTPSA id 198sm692180oie.13.2019.07.03.04.46.28
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 03 Jul 2019 04:46:31 -0700 (PDT)
-Date:   Wed, 3 Jul 2019 19:46:25 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH] bpf, libbpf: Smatch: Fix potential NULL pointer
- dereference
-Message-ID: <20190703114625.GG6852@leoy-ThinkPad-X240s>
-References: <20190702102531.23512-1-leo.yan@linaro.org>
- <b834fba1-5b2c-4406-8275-1cf8383655e3@iogearbox.net>
+        id S1726404AbfGCLum (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jul 2019 07:50:42 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56224 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726473AbfGCLum (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 3 Jul 2019 07:50:42 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x63BlW2X054979
+        for <bpf@vger.kernel.org>; Wed, 3 Jul 2019 07:50:41 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2tgufurs7y-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 03 Jul 2019 07:50:40 -0400
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Wed, 3 Jul 2019 12:50:38 +0100
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 3 Jul 2019 12:50:36 +0100
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x63BoZqh57409556
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 3 Jul 2019 11:50:35 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 45634A4053;
+        Wed,  3 Jul 2019 11:50:35 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1F724A4040;
+        Wed,  3 Jul 2019 11:50:35 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.98.248])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  3 Jul 2019 11:50:35 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next] selftests/bpf: fix test_reuseport_array on s390
+Date:   Wed,  3 Jul 2019 13:50:34 +0200
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b834fba1-5b2c-4406-8275-1cf8383655e3@iogearbox.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19070311-0020-0000-0000-0000034FCB2B
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19070311-0021-0000-0000-000021A361C6
+Message-Id: <20190703115034.53984-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-03_03:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=674 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907030143
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 03, 2019 at 12:23:05PM +0200, Daniel Borkmann wrote:
-> On 07/02/2019 12:25 PM, Leo Yan wrote:
-> > Based on the following report from Smatch, fix the potential
-> > NULL pointer dereference check.
-> > 
-> >   tools/lib/bpf/libbpf.c:3493
-> >   bpf_prog_load_xattr() warn: variable dereferenced before check 'attr'
-> >   (see line 3483)
-> > 
-> > 3479 int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
-> > 3480                         struct bpf_object **pobj, int *prog_fd)
-> > 3481 {
-> > 3482         struct bpf_object_open_attr open_attr = {
-> > 3483                 .file           = attr->file,
-> > 3484                 .prog_type      = attr->prog_type,
-> >                                        ^^^^^^
-> > 3485         };
-> > 
-> > At the head of function, it directly access 'attr' without checking if
-> > it's NULL pointer.  This patch moves the values assignment after
-> > validating 'attr' and 'attr->file'.
-> > 
-> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> > ---
-> >  tools/lib/bpf/libbpf.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 197b574406b3..809b633fa3d9 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -3479,10 +3479,7 @@ int bpf_prog_load(const char *file, enum bpf_prog_type type,
-> >  int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
-> >  			struct bpf_object **pobj, int *prog_fd)
-> >  {
-> > -	struct bpf_object_open_attr open_attr = {
-> > -		.file		= attr->file,
-> > -		.prog_type	= attr->prog_type,
-> > -	};
-> 
-> Applied, thanks! Fyi, I retained the zeroing of open_attr as otherwise if we ever
-> extend struct bpf_object_open_attr in future, we'll easily miss this and pass in
-> garbage to bpf_object__open_xattr().
+Fix endianness issue: passing a pointer to 64-bit fd as a 32-bit key
+does not work on big-endian architectures. So cast fd to 32-bits when
+necessary.
 
-Thanks for the info, Daniel.
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ tools/testing/selftests/bpf/test_maps.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-I checked the link [1] and thanks for the improvement when applied this
-patch.
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index a3fbc571280a..5443b9bd75ed 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -1418,7 +1418,7 @@ static void test_map_wronly(void)
+ 	assert(bpf_map_get_next_key(fd, &key, &value) == -1 && errno == EPERM);
+ }
+ 
+-static void prepare_reuseport_grp(int type, int map_fd,
++static void prepare_reuseport_grp(int type, int map_fd, size_t map_elem_size,
+ 				  __s64 *fds64, __u64 *sk_cookies,
+ 				  unsigned int n)
+ {
+@@ -1428,6 +1428,8 @@ static void prepare_reuseport_grp(int type, int map_fd,
+ 	const int optval = 1;
+ 	unsigned int i;
+ 	u64 sk_cookie;
++	void *value;
++	__s32 fd32;
+ 	__s64 fd64;
+ 	int err;
+ 
+@@ -1449,8 +1451,14 @@ static void prepare_reuseport_grp(int type, int map_fd,
+ 		      "err:%d errno:%d\n", err, errno);
+ 
+ 		/* reuseport_array does not allow unbound sk */
+-		err = bpf_map_update_elem(map_fd, &index0, &fd64,
+-					  BPF_ANY);
++		if (map_elem_size == sizeof(__u64))
++			value = &fd64;
++		else {
++			assert(map_elem_size == sizeof(__u32));
++			fd32 = (__s32)fd64;
++			value = &fd32;
++		}
++		err = bpf_map_update_elem(map_fd, &index0, value, BPF_ANY);
+ 		CHECK(err != -1 || errno != EINVAL,
+ 		      "reuseport array update unbound sk",
+ 		      "sock_type:%d err:%d errno:%d\n",
+@@ -1478,7 +1486,7 @@ static void prepare_reuseport_grp(int type, int map_fd,
+ 			 * reuseport_array does not allow
+ 			 * non-listening tcp sk.
+ 			 */
+-			err = bpf_map_update_elem(map_fd, &index0, &fd64,
++			err = bpf_map_update_elem(map_fd, &index0, value,
+ 						  BPF_ANY);
+ 			CHECK(err != -1 || errno != EINVAL,
+ 			      "reuseport array update non-listening sk",
+@@ -1541,7 +1549,7 @@ static void test_reuseport_array(void)
+ 	for (t = 0; t < ARRAY_SIZE(types); t++) {
+ 		type = types[t];
+ 
+-		prepare_reuseport_grp(type, map_fd, grpa_fds64,
++		prepare_reuseport_grp(type, map_fd, sizeof(__u64), grpa_fds64,
+ 				      grpa_cookies, ARRAY_SIZE(grpa_fds64));
+ 
+ 		/* Test BPF_* update flags */
+@@ -1649,7 +1657,8 @@ static void test_reuseport_array(void)
+ 				sizeof(__u32), sizeof(__u32), array_size, 0);
+ 	CHECK(map_fd == -1, "reuseport array create",
+ 	      "map_fd:%d, errno:%d\n", map_fd, errno);
+-	prepare_reuseport_grp(SOCK_STREAM, map_fd, &fd64, &sk_cookie, 1);
++	prepare_reuseport_grp(SOCK_STREAM, map_fd, sizeof(__u32), &fd64,
++			      &sk_cookie, 1);
+ 	fd = fd64;
+ 	err = bpf_map_update_elem(map_fd, &index3, &fd, BPF_NOEXIST);
+ 	CHECK(err == -1, "reuseport array update 32 bit fd",
+-- 
+2.21.0
 
-Thanks,
-Leo Yan
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=33bae185f74d49a0d7b1bfaafb8e959efce0f243
