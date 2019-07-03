@@ -2,70 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5505E245
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 12:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A955E314
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 13:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbfGCKnd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jul 2019 06:43:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726486AbfGCKnd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jul 2019 06:43:33 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0292D218A0;
-        Wed,  3 Jul 2019 10:43:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562150612;
-        bh=rtDwzSnNcOQGNWFdCc1Bop63mTOkGYGEB+m7tqXFlm8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zJuASnOIQ3MT+bbM+Sz0FCw91geKA+AuC/9yWArXtPEJXVCPJ+lqQh1JUR4d/wtPU
-         lXB+SORru4EBjr/Q+Dy+4LF6VSUuUaaFw2XtYeJ/Bt3dH9Pc3pJnX7w+sRP1qJEGNY
-         CotA44WUtO/aOvwVu0vfu6T3E1frrWEhgG+rSYJk=
-Date:   Wed, 3 Jul 2019 12:43:30 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
+        id S1727116AbfGCLqd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jul 2019 07:46:33 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:44352 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726743AbfGCLqd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Jul 2019 07:46:33 -0400
+Received: by mail-oi1-f194.google.com with SMTP id e189so1768078oib.11
+        for <bpf@vger.kernel.org>; Wed, 03 Jul 2019 04:46:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mYCFppVyTLYn4jIWsRodglihiRKb1A76Dy+J8v19wzc=;
+        b=D/9AaR+4ugUBBoe5/1T1+ZEwBrg3e3P4WhtXCOVCc7lRsXoCa76A7XhNR0j7h1SCJU
+         ZhQ8En4MthdgoIQtVTcxsKV/bApkPtLlwcJ7GYSPzh9P2IRq9NzjA7PEu9sC7TNSCddQ
+         FVvPmsxBtpYPwOsdA74BIXEpzq0OmWT1vx6C7YBcT8fF7hzaXA0Evginy/jJI1uJ9zbC
+         zL14fynQYfCMydKMRLXIb73eCcvdkGE1i8pa7xeIfaAn1Do9Z6Lx7tGQms0O637oz/Ix
+         yU+KnN7NhgWUn+dUA/5/VSg5HNp4LXLUkLG4jEQupWEZuDvgWX9pjdSSX8PdvbNW8/Hq
+         xwqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mYCFppVyTLYn4jIWsRodglihiRKb1A76Dy+J8v19wzc=;
+        b=KFIYJbcuevpoKDbFDKt+E85rads1cWf9YlY7M+FRIT+3zOWQDaTHBBgc2WkwxUA0Q3
+         xPxB+/JpdHW/PC8w1/+OgJC+IWmSjkF9qc0rahxCHaKSBD9ht0nbKO8wWeL+RQZ9P65C
+         H+HUBoEgnJX1yY9WBo9zXeFS6dqLiZhB038qNbfKCsfMxFiT7vdNuj3SelsXN1oI7JR2
+         Uzfll+o6/MVnhF8I7MvHxU+50OhyZ/kAv8ffadH4INUZlQLZfE2vTzX5M04196cw7lNC
+         Xtd8wJpEBQhSwKXZ2pL1Tu/BC1qW7ba5yOc9VFr8i+D3WBdzUXLiNxWGu71CGWYQgKBA
+         uVEA==
+X-Gm-Message-State: APjAAAVSkiLxDC/EqHi0gwUlm83bZdtsp/EERfxNLmSKr76GRSaTAF8Z
+        56JzEAolAWBBHVAWa6Nkk4Y+aQ==
+X-Google-Smtp-Source: APXvYqwX7as5iFvdGwU6iDuxDN356j60jVpv0gxRnDRYGhYLxaoZipVDwgA728jdYwbcktjADrrxZw==
+X-Received: by 2002:aca:c715:: with SMTP id x21mr3307037oif.142.1562154392368;
+        Wed, 03 Jul 2019 04:46:32 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s (li964-79.members.linode.com. [45.33.10.79])
+        by smtp.gmail.com with ESMTPSA id 198sm692180oie.13.2019.07.03.04.46.28
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 03 Jul 2019 04:46:31 -0700 (PDT)
+Date:   Wed, 3 Jul 2019 19:46:25 +0800
+From:   Leo Yan <leo.yan@linaro.org>
 To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Markus Elfring <Markus.Elfring@web.de>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] bpf: Replace a seq_printf() call by seq_puts() in
- btf_enum_seq_show()
-Message-ID: <20190703104330.GA8931@kroah.com>
-References: <93898abe-9a7d-0c64-0856-094b62e07ba2@web.de>
- <e0c9978f-7304-8a25-1bc9-b2be8a038382@iogearbox.net>
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH] bpf, libbpf: Smatch: Fix potential NULL pointer
+ dereference
+Message-ID: <20190703114625.GG6852@leoy-ThinkPad-X240s>
+References: <20190702102531.23512-1-leo.yan@linaro.org>
+ <b834fba1-5b2c-4406-8275-1cf8383655e3@iogearbox.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e0c9978f-7304-8a25-1bc9-b2be8a038382@iogearbox.net>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <b834fba1-5b2c-4406-8275-1cf8383655e3@iogearbox.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 03, 2019 at 12:09:51PM +0200, Daniel Borkmann wrote:
-> On 07/02/2019 07:13 PM, Markus Elfring wrote:
-> > From: Markus Elfring <elfring@users.sourceforge.net>
-> > Date: Tue, 2 Jul 2019 19:04:08 +0200
+On Wed, Jul 03, 2019 at 12:23:05PM +0200, Daniel Borkmann wrote:
+> On 07/02/2019 12:25 PM, Leo Yan wrote:
+> > Based on the following report from Smatch, fix the potential
+> > NULL pointer dereference check.
 > > 
-> > A string which did not contain a data format specification should be put
-> > into a sequence. Thus use the corresponding function “seq_puts”.
+> >   tools/lib/bpf/libbpf.c:3493
+> >   bpf_prog_load_xattr() warn: variable dereferenced before check 'attr'
+> >   (see line 3483)
 > > 
-> > This issue was detected by using the Coccinelle software.
+> > 3479 int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
+> > 3480                         struct bpf_object **pobj, int *prog_fd)
+> > 3481 {
+> > 3482         struct bpf_object_open_attr open_attr = {
+> > 3483                 .file           = attr->file,
+> > 3484                 .prog_type      = attr->prog_type,
+> >                                        ^^^^^^
+> > 3485         };
 > > 
-> > Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> > At the head of function, it directly access 'attr' without checking if
+> > it's NULL pointer.  This patch moves the values assignment after
+> > validating 'attr' and 'attr->file'.
+> > 
+> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> > ---
+> >  tools/lib/bpf/libbpf.c | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 197b574406b3..809b633fa3d9 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -3479,10 +3479,7 @@ int bpf_prog_load(const char *file, enum bpf_prog_type type,
+> >  int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
+> >  			struct bpf_object **pobj, int *prog_fd)
+> >  {
+> > -	struct bpf_object_open_attr open_attr = {
+> > -		.file		= attr->file,
+> > -		.prog_type	= attr->prog_type,
+> > -	};
 > 
-> The code is fine as is, I'm not applying this.
+> Applied, thanks! Fyi, I retained the zeroing of open_attr as otherwise if we ever
+> extend struct bpf_object_open_attr in future, we'll easily miss this and pass in
+> garbage to bpf_object__open_xattr().
 
-Just a heads up, this person/bot is in my kill-file, making it easier to
-ignore crazy things like this.  I recommend it for other maintainers to
-also do as well.
+Thanks for the info, Daniel.
 
-thanks,
+I checked the link [1] and thanks for the improvement when applied this
+patch.
 
-greg k-h
+Thanks,
+Leo Yan
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=33bae185f74d49a0d7b1bfaafb8e959efce0f243
