@@ -2,90 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C494F5ECAF
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 21:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3355ED03
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 21:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbfGCTTm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jul 2019 15:19:42 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:35675 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726550AbfGCTTl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jul 2019 15:19:41 -0400
-Received: by mail-qk1-f196.google.com with SMTP id r21so3459924qke.2;
-        Wed, 03 Jul 2019 12:19:41 -0700 (PDT)
+        id S1726821AbfGCTyk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jul 2019 15:54:40 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:38441 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726805AbfGCTyk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Jul 2019 15:54:40 -0400
+Received: by mail-pl1-f196.google.com with SMTP id 9so1790808ple.5
+        for <bpf@vger.kernel.org>; Wed, 03 Jul 2019 12:54:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hNl5ZX5J27jMosmQSFv4tnQm5p4tErR59+V8oVIIhu4=;
-        b=NF1Rbl9cJ+V1ZXDlYniJXzMUjgm2PhmXRm/p1wcPGvPRdVH9CYsXlZdhZEYDie/wgl
-         bl25GxEXzeWrTbSgBmLY2vErEJcyVUc3RAywupYjYoHuyn4JfOEa84b3sZNJ1ZQTPTnA
-         VUfJ2gWAa2BhAeCQdAv8WOQegWpH06zs7t4yiPELDbgV/scoPNKmw8Osk3e9JjOL0YG0
-         t1UekSE6L5DlSCq+48tOcuv2v7OwhTjbAsfVMGcSRuKnD4s1RRXMsPyJck7gE4skQi2c
-         BYBrHY5c9DBZr5Epyb0/E3I1PkO1+WMFMSyK+xj0PZdAx664BtSdH68N7oS68kct9Nla
-         +YTg==
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=K9b45FRKzrUcD1ARvm02L/3QoVbWczPOEnA4S5/BQE0=;
+        b=qtg6d6jk1lDaCzQ+HSTsI3e09Aj5zJ1lvioZQoceoBcNFMP/m/DrG7NkDNXI3Be23t
+         oslb3H08nPY+pGj2+HHCxLe/jz49d0wW1fpd3k5fBoKVeP290J45WPV0MXBLSbhlS9se
+         gry8vnETYsloSyNcOMIqWG0aGPinqeutggOxFuTnY0PpByWzu+/pDt/wrGItCpUmOvXj
+         SpxTjBtoUcWvQx4gHtpVBC4gXrvlmNvMJgdp6x/pma3QJfnrRnJxrFtioitlZROThMtS
+         95xzPAZwK3UpaM8LvS50FijWE42QVVf3unBlzERXR2x/UgNR52c+xlCtPRkSP8WYicqr
+         t9jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hNl5ZX5J27jMosmQSFv4tnQm5p4tErR59+V8oVIIhu4=;
-        b=AykP3A4xmvGoV44q4ZD9gflboZ7Zv2DmUGrbCD4iZL1AQoxM+lrRoEhuy+NCnBPB3p
-         GZv2PvK5sBr0duU5CpOjVy1DEQZ6ODuCR0fAWKRy29BWyo0Y0fe5OGS5Y5oD1ZoeZy1T
-         RcNTI8vnbmkPS/nuc9l409dveRKJ1Oq3MQjW1aMlwdVWmzGqjzAGu0Vw4qv2wow+GHNw
-         g+P3Lf5O6xbYMq7sJvDp1uXddbGfI+pwOc40uzCr0BMkTheuOn48v8Az6XBA32l7/Syn
-         ar/EesKIPg5n+jocsHsNRws2y1Mc9Q9YbRHtLxaT6tshfDyeObE2iU5ZDpOeYiknknuN
-         X5Zg==
-X-Gm-Message-State: APjAAAXMc2jcK5MP9FmOQCdrg8dVpCFJKRIEjRHBQku5HQV9sO9mBjLD
-        wUqDqks1fQAbR4sx2VB+/BM9YFdqX2i+dKzpSX0=
-X-Google-Smtp-Source: APXvYqxDKm2ISSLJUoq+4Zqo1iYVlVP4ojM6OFHjGb7Af9LIfSjkE2hYJB0B5Jng9utDM49ZtBy23HdtI8y+temgp08=
-X-Received: by 2002:a37:660d:: with SMTP id a13mr4087545qkc.36.1562181580647;
- Wed, 03 Jul 2019 12:19:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190703190604.4173641-1-andriin@fb.com>
-In-Reply-To: <20190703190604.4173641-1-andriin@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 3 Jul 2019 12:19:29 -0700
-Message-ID: <CAEf4BzZSxpDS7KNupKXz8d+RS0LSynK7ZMK-HqJoDBwzR1u0ew@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 0/4] capture integers in BTF type info for map defs
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     Alexei Starovoitov <ast@fb.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=K9b45FRKzrUcD1ARvm02L/3QoVbWczPOEnA4S5/BQE0=;
+        b=kQGv25QLvOwlxue7W1ZesJCDRHD729jVmuqVH6dUV06xqlxc5lj9aWvFwWQ9MvWwGs
+         x3Hf1T4Xmz6XguNllqZ4vSsyhvh4mLEf63DBBPgnHVTI37l+JXV0mlRZbC2UT/Pb3Pkp
+         4vqxxg49R0kEVTjNjSQGrE8m+Ej/qaMs4XRJWTTnum+7AIXDncaE+uTvWHrlkvBQzxLz
+         rZKoVpQB8cj+wJMwO0TtmI7NnkKWzhgNwdh3RPOmoEJau3XknnaZRpJbgDSNGOHe5hhL
+         9iQI4/DEl41BG+411GuHejYhU90Ezk4boHYqSTO+FX8dDtQVaLJ1IWGS/Cgz1jycqj7M
+         3GFw==
+X-Gm-Message-State: APjAAAWlqgt5wV0YIpBsVlosnwWd5QmMhl4fNr5vgTpOoDSUYP0S6ya3
+        WV8hQexLA1LFc5eAfxcSZyFX1A==
+X-Google-Smtp-Source: APXvYqzK77v5bhd2zVi69lR9/dc2eztpoHo/Aojc1eeyJ+9KnwUeCppE9m7iAu3YoPcZ5pryL3Qn2g==
+X-Received: by 2002:a17:902:9a85:: with SMTP id w5mr42793300plp.221.1562183679819;
+        Wed, 03 Jul 2019 12:54:39 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id 191sm3503421pfu.177.2019.07.03.12.54.39
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 03 Jul 2019 12:54:39 -0700 (PDT)
+Date:   Wed, 3 Jul 2019 12:54:38 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Eric Dumazet <edumazet@google.com>,
+        Priyaranjan Jha <priyarjha@google.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>
+Subject: Re: [PATCH bpf-next v2 6/8] selftests/bpf: test BPF_SOCK_OPS_RTT_CB
+Message-ID: <20190703195438.GA29524@mini-arch>
+References: <20190702161403.191066-1-sdf@google.com>
+ <20190702161403.191066-7-sdf@google.com>
+ <CAEf4Bzak755ixqVetwaPOi96-aNbGwshO3anrP_i_dvPG_quQw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bzak755ixqVetwaPOi96-aNbGwshO3anrP_i_dvPG_quQw@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 3, 2019 at 12:06 PM Andrii Nakryiko <andriin@fb.com> wrote:
->
-> This patch set implements an update to how BTF-defined maps are specified. The
-> change is in how integer attributes, e.g., type, max_entries, map_flags, are
-> specified: now they are captured as part of map definition struct's BTF type
-> information (using array dimension), eliminating the need for compile-time
-> data initialization and keeping all the metadata in one place.
->
-> All existing selftests that were using BTF-defined maps are updated, along
-> with some other selftests, that were switched to new syntax.
->
-> v2->v3:
-> - rename __int into __uint (Yonghong);
-> v1->v2:
-> - split bpf_helpers.h change from libbpf change (Song).
->
-> Andrii Nakryiko (4):
->   libbpf: capture value in BTF type info for BTF-defined map defs
->   selftests/bpf: add __int and __type macro for BTF-defined maps
->   selftests/bpf: convert selftests using BTF-defined maps to new syntax
->   selftests/bpf: convert legacy BPF maps to BTF-defined ones
-
-
-Forgot to add Song's:
-
-Acked-by: Song Liu <songliubraving@fb.com>
-
-Daniel, if there will be no more feedback, do you mind adding it
-before landing? If not, I can submit new version with Acks added.
-
-Thanks!
+On 07/03, Andrii Nakryiko wrote:
+> On Tue, Jul 2, 2019 at 9:14 AM Stanislav Fomichev <sdf@google.com> wrote:
+> >
+> > Make sure the callback is invoked for syn-ack and data packet.
+> >
+> > Cc: Eric Dumazet <edumazet@google.com>
+> > Cc: Priyaranjan Jha <priyarjha@google.com>
+> > Cc: Yuchung Cheng <ycheng@google.com>
+> > Cc: Soheil Hassas Yeganeh <soheil@google.com>
+> > Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
+> > Acked-by: Yuchung Cheng <ycheng@google.com>
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  tools/testing/selftests/bpf/Makefile        |   3 +-
+> >  tools/testing/selftests/bpf/progs/tcp_rtt.c |  61 +++++
+> >  tools/testing/selftests/bpf/test_tcp_rtt.c  | 254 ++++++++++++++++++++
+> >  3 files changed, 317 insertions(+), 1 deletion(-)
+> >  create mode 100644 tools/testing/selftests/bpf/progs/tcp_rtt.c
+> >  create mode 100644 tools/testing/selftests/bpf/test_tcp_rtt.c
+> 
+> Can you please post a follow-up patch to add test_tcp_rtt to .gitignore?
+Sure, will do, thanks for a report!
