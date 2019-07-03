@@ -2,94 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3355ED03
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 21:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37175ED39
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 22:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbfGCTyk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jul 2019 15:54:40 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:38441 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726805AbfGCTyk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jul 2019 15:54:40 -0400
-Received: by mail-pl1-f196.google.com with SMTP id 9so1790808ple.5
-        for <bpf@vger.kernel.org>; Wed, 03 Jul 2019 12:54:40 -0700 (PDT)
+        id S1726656AbfGCUJ4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jul 2019 16:09:56 -0400
+Received: from mail-pf1-f201.google.com ([209.85.210.201]:53739 "EHLO
+        mail-pf1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726490AbfGCUJz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Jul 2019 16:09:55 -0400
+Received: by mail-pf1-f201.google.com with SMTP id y5so2108933pfb.20
+        for <bpf@vger.kernel.org>; Wed, 03 Jul 2019 13:09:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=K9b45FRKzrUcD1ARvm02L/3QoVbWczPOEnA4S5/BQE0=;
-        b=qtg6d6jk1lDaCzQ+HSTsI3e09Aj5zJ1lvioZQoceoBcNFMP/m/DrG7NkDNXI3Be23t
-         oslb3H08nPY+pGj2+HHCxLe/jz49d0wW1fpd3k5fBoKVeP290J45WPV0MXBLSbhlS9se
-         gry8vnETYsloSyNcOMIqWG0aGPinqeutggOxFuTnY0PpByWzu+/pDt/wrGItCpUmOvXj
-         SpxTjBtoUcWvQx4gHtpVBC4gXrvlmNvMJgdp6x/pma3QJfnrRnJxrFtioitlZROThMtS
-         95xzPAZwK3UpaM8LvS50FijWE42QVVf3unBlzERXR2x/UgNR52c+xlCtPRkSP8WYicqr
-         t9jg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=BN89+k9094WqEXxXChOvHBZDOQJA6yhrhv3VMUQMnEM=;
+        b=K8MRzRIBJbBaW47J3sMChiokQJ5Pbl6uK6L1v+1m6VjrDYU2D0BpHF1co/tBMTFBCE
+         U0f/ZTBKtbSoqP8D3RULSdYg6l3f32kqusK1tV+qZYvyHw39EGoyj50GoInl7tqeuq0L
+         50ZEVsdAMk/OER11a8EVu0s0cOVqzpMf6xawwuOg2fPpmpEonS626ZOWiobyKAe7Z8GL
+         FPx+jCVgLIHhZEfTbLsLyaantLnMZhGVQ4kDl1P1bQoEA6Sa8BKq7lYAheQQsKFNQtVv
+         7ZTqsFBJixUAm6/68fj86Afm643qMsSjna3xJZsEN3K3YVBWJX94GK0vjg+0u3PZlY9v
+         UyyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=K9b45FRKzrUcD1ARvm02L/3QoVbWczPOEnA4S5/BQE0=;
-        b=kQGv25QLvOwlxue7W1ZesJCDRHD729jVmuqVH6dUV06xqlxc5lj9aWvFwWQ9MvWwGs
-         x3Hf1T4Xmz6XguNllqZ4vSsyhvh4mLEf63DBBPgnHVTI37l+JXV0mlRZbC2UT/Pb3Pkp
-         4vqxxg49R0kEVTjNjSQGrE8m+Ej/qaMs4XRJWTTnum+7AIXDncaE+uTvWHrlkvBQzxLz
-         rZKoVpQB8cj+wJMwO0TtmI7NnkKWzhgNwdh3RPOmoEJau3XknnaZRpJbgDSNGOHe5hhL
-         9iQI4/DEl41BG+411GuHejYhU90Ezk4boHYqSTO+FX8dDtQVaLJ1IWGS/Cgz1jycqj7M
-         3GFw==
-X-Gm-Message-State: APjAAAWlqgt5wV0YIpBsVlosnwWd5QmMhl4fNr5vgTpOoDSUYP0S6ya3
-        WV8hQexLA1LFc5eAfxcSZyFX1A==
-X-Google-Smtp-Source: APXvYqzK77v5bhd2zVi69lR9/dc2eztpoHo/Aojc1eeyJ+9KnwUeCppE9m7iAu3YoPcZ5pryL3Qn2g==
-X-Received: by 2002:a17:902:9a85:: with SMTP id w5mr42793300plp.221.1562183679819;
-        Wed, 03 Jul 2019 12:54:39 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id 191sm3503421pfu.177.2019.07.03.12.54.39
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 03 Jul 2019 12:54:39 -0700 (PDT)
-Date:   Wed, 3 Jul 2019 12:54:38 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Priyaranjan Jha <priyarjha@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>
-Subject: Re: [PATCH bpf-next v2 6/8] selftests/bpf: test BPF_SOCK_OPS_RTT_CB
-Message-ID: <20190703195438.GA29524@mini-arch>
-References: <20190702161403.191066-1-sdf@google.com>
- <20190702161403.191066-7-sdf@google.com>
- <CAEf4Bzak755ixqVetwaPOi96-aNbGwshO3anrP_i_dvPG_quQw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzak755ixqVetwaPOi96-aNbGwshO3anrP_i_dvPG_quQw@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=BN89+k9094WqEXxXChOvHBZDOQJA6yhrhv3VMUQMnEM=;
+        b=GHeyo4XifsVF9wRkh0W+JNLsvKk45QTr+Mla+GW3bhSEiVLdQUfW0zlwgQ0I6lsPyA
+         sq1iIIzlF1oZDILVJMqpE3Bn+5wOlUIVgy0zOIP8rcKfJr+GqbK2vV59FfvN0vfVrn6z
+         TR20Yy0BQBrjG2iUrpPyVCWRbjOeEpvWxdEyW+nFAJs9bnIaL+HZ/Pq9whdau15B2LDJ
+         /LxVgATs/Ki/3vkPr0hEscaz5Pks2QensXJvcc14gVAuywGiiKiljaeNAs9uaRnHGfay
+         BgvKiKQ9nhkUVWxC2wy4uVl6bX07bBbN4/4wnBfDDSQsybo654QQj3eVzid5ROMqigst
+         Ol8g==
+X-Gm-Message-State: APjAAAXYiwLDZbkqJt6crmE81Kz0U7Mu7+jLVngAZFWjZDtOf3B50XyI
+        AnbEJtTYCr/9E+DPVVqzr3nelJ4=
+X-Google-Smtp-Source: APXvYqyzj3pNZUq0lUUOOru49jBq4TYaogDc0IKpUqW1iz6p8mOMJldp9NLgBKyIwQXi5rZ+90Jpkbw=
+X-Received: by 2002:a65:6656:: with SMTP id z22mr37400171pgv.197.1562184594830;
+ Wed, 03 Jul 2019 13:09:54 -0700 (PDT)
+Date:   Wed,  3 Jul 2019 13:09:52 -0700
+Message-Id: <20190703200952.159728-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
+Subject: [PATCH bpf-next] selftests/bpf: add test_tcp_rtt to .gitignore
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/03, Andrii Nakryiko wrote:
-> On Tue, Jul 2, 2019 at 9:14 AM Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > Make sure the callback is invoked for syn-ack and data packet.
-> >
-> > Cc: Eric Dumazet <edumazet@google.com>
-> > Cc: Priyaranjan Jha <priyarjha@google.com>
-> > Cc: Yuchung Cheng <ycheng@google.com>
-> > Cc: Soheil Hassas Yeganeh <soheil@google.com>
-> > Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
-> > Acked-by: Yuchung Cheng <ycheng@google.com>
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  tools/testing/selftests/bpf/Makefile        |   3 +-
-> >  tools/testing/selftests/bpf/progs/tcp_rtt.c |  61 +++++
-> >  tools/testing/selftests/bpf/test_tcp_rtt.c  | 254 ++++++++++++++++++++
-> >  3 files changed, 317 insertions(+), 1 deletion(-)
-> >  create mode 100644 tools/testing/selftests/bpf/progs/tcp_rtt.c
-> >  create mode 100644 tools/testing/selftests/bpf/test_tcp_rtt.c
-> 
-> Can you please post a follow-up patch to add test_tcp_rtt to .gitignore?
-Sure, will do, thanks for a report!
+Forgot to add it in the original patch.
+
+Fixes: b55873984dab ("selftests/bpf: test BPF_SOCK_OPS_RTT_CB")
+Reported-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ tools/testing/selftests/bpf/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+index a2f7f79c7908..90f70d2c7c22 100644
+--- a/tools/testing/selftests/bpf/.gitignore
++++ b/tools/testing/selftests/bpf/.gitignore
+@@ -42,3 +42,4 @@ xdping
+ test_sockopt
+ test_sockopt_sk
+ test_sockopt_multi
++test_tcp_rtt
+-- 
+2.22.0.410.gd8fdbe21b5-goog
+
