@@ -2,124 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 772925E810
-	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 17:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 748805E851
+	for <lists+bpf@lfdr.de>; Wed,  3 Jul 2019 18:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbfGCPpq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jul 2019 11:45:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49816 "EHLO mail.kernel.org"
+        id S1726811AbfGCQBk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jul 2019 12:01:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725847AbfGCPpq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jul 2019 11:45:46 -0400
+        id S1726574AbfGCQBk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Jul 2019 12:01:40 -0400
 Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A45E4218A0;
-        Wed,  3 Jul 2019 15:45:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A821F2189E;
+        Wed,  3 Jul 2019 16:01:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562168745;
-        bh=nkSctcmSSLmZlOfUl/F8SiptTEAf+xXUe9V+zp4RRj8=;
+        s=default; t=1562169699;
+        bh=sEHptRbLdsEYKSwjvY3/qz3IvFgJjdcb8qCsSzdw0vY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mAVdCxcjl7wPz5882RmuJ8WHrloDryJ0ZpPtZoci2yc5CaV0chm9E43gkl5v+0fqo
-         HwZHZM3w44hSYssUIoHV+r5+SnTAP0Lf/UB9Kb/QQGJhxuGhx6dCpKpUgfmLzQBC1d
-         WypMUPV7VkScFWInLcWD1p1yeObEOlAXZ4P8CKl0=
-Date:   Wed, 3 Jul 2019 08:45:43 -0700
+        b=CR/aA+HR1zGuRCS/ctRotaVzni53LoFZ77UI7OI9cYOVYeUKMDl3Ed1l2w3VRH9EZ
+         MYVEp+cWb34lbTInhOsRIKWeByf8P2aSr02Akc0V4iC76iRrlxqTmKFkMVKaTl+Cxh
+         f5/Tput0fGNikRUjsD6//pJ98OcGBcTLCjfz48So=
+Date:   Wed, 3 Jul 2019 09:01:37 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+d88a977731a9888db7ba@syzkaller.appspotmail.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, Boris Pismenny <borisp@mellanox.com>,
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Boris Pismenny <borisp@mellanox.com>,
         Aviad Yehezkel <aviadye@mellanox.com>,
         Dave Watson <davejwatson@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: kernel panic: corrupted stack end in dput
-Message-ID: <20190703154543.GA21629@sol.localdomain>
-References: <20190703064307.13740-1-hdanton@sina.com>
- <20190703144000.GH17978@ZenIV.linux.org.uk>
- <20190703152334.GI17978@ZenIV.linux.org.uk>
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        davem@davemloft.net, glider@google.com,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        bpf@vger.kernel.org,
+        syzbot <syzbot+6f50c99e8f6194bf363f@syzkaller.appspotmail.com>
+Subject: Re: [net/tls] Re: KMSAN: uninit-value in aesti_encrypt
+Message-ID: <20190703160137.GB21629@sol.localdomain>
+References: <000000000000a97a15058c50c52e@google.com>
+ <20190627164627.GF686@sol.localdomain>
+ <5d1508c79587a_e392b1ee39f65b45b@john-XPS-13-9370.notmuch>
+ <20190627190123.GA669@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190703152334.GI17978@ZenIV.linux.org.uk>
+In-Reply-To: <20190627190123.GA669@sol.localdomain>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[+bpf and tls maintainers]
-
-On Wed, Jul 03, 2019 at 04:23:34PM +0100, Al Viro wrote:
-> On Wed, Jul 03, 2019 at 03:40:00PM +0100, Al Viro wrote:
-> > On Wed, Jul 03, 2019 at 02:43:07PM +0800, Hillf Danton wrote:
-> > 
-> > > > This is very much *NOT* fine.
-> > > > 	1) trylock can fail from any number of reasons, starting
-> > > > with "somebody is going through the hash chain doing a lookup on
-> > > > something completely unrelated"
+On Thu, Jun 27, 2019 at 12:01:23PM -0700, Eric Biggers wrote:
+> On Thu, Jun 27, 2019 at 11:19:51AM -0700, John Fastabend wrote:
+> > Eric Biggers wrote:
+> > > [+TLS maintainers]
 > > > 
-> > > They are also a red light that we need to bail out of spiraling up
-> > > the directory hierarchy imho.
-> > 
-> > Translation: "let's leak the reference to parent, shall we?"
-> > 
-> > > > 	2) whoever had been holding the lock and whatever they'd
-> > > > been doing might be over right after we get the return value from
-> > > > spin_trylock().
+> > > Very likely a net/tls bug, not a crypto bug.
 > > > 
-> > > Or after we send a mail using git. I don't know.
+> > > Possibly a duplicate of other reports such as "KMSAN: uninit-value in gf128mul_4k_lle (3)"
 > > > 
-> > > > 	3) even had that been really somebody adding children in
-> > > > the same parent *AND* even if they really kept doing that, rather
-> > > > than unlocking and buggering off, would you care to explain why
-> > > > dentry_unlist() called by __dentry_kill() and removing the victim
-> > > > from the list of children would be safe to do in parallel with that?
-> > > >
-> > > My bad. I have to walk around that unsafety.
+> > > See https://lore.kernel.org/netdev/20190625055019.GD17703@sol.localdomain/ for
+> > > the list of 17 other open syzbot bugs I've assigned to the TLS subsystem.  TLS
+> > > maintainers, when are you planning to look into these?
+> > > 
+> > > On Thu, Jun 27, 2019 at 09:37:05AM -0700, syzbot wrote:
 > > 
-> > WHAT unsafety?  Can you explain what are you seeing and how to
-> > reproduce it, whatever it is?
+> > I'm looking at this issue now. There is a series on bpf list now to address
+> > many of those 17 open issues but this is a separate issue. I can reproduce
+> > it locally so should have a fix soon.
+> > 
 > 
-> BTW, what makes you think that it's something inside dput() itself?
-> All I see is that at some point in the beginning of the loop body
-> in dput() we observe a buggered stack.
+> Okay, great!  However, just to clarify, the 17 syzbot bugs I assigned to TLS are
+> in addition to the 30 I assigned to BPF
+> (https://lore.kernel.org/lkml/20190624050114.GA30702@sol.localdomain/).
+> (Well, since I sent that it's actually up to 35 now.)
 > 
-> Is that the first iteration through the loop?  IOW, is that just
-> the place where we first notice preexisting corruption, or is
-> that something the code called from that loop does?  If it's
-> a stack overflow, I would be very surprised to see it here -
-> dput() is iterative and it's called on a very shallow stack in
-> those traces.
-> 
-> What happens if you e.g. turn that
-> 	dput(dentry);
-> in __fput() into
-> 	rcu_read_lock(); rcu_read_unlock(); // trigger the check
-> 	dput(dentry);
-> 
-> and run your reporducer?
+> I do expect most of these are duplicates, so when you are fixing the bugs, it
+> would be really helpful (for everyone, including you in the future :-) ) if you
+> would include the corresponding Reported-by syzbot line for *every* syzbot
+> report you think is addressed, so they get closed.
 > 
 
-Please don't waste your time on this, it looks like just another report from the
-massive memory corruption in BPF and/or TLS.  Look at reproducer:
+Hi John, there's no activity on your patch thread
+(https://lore.kernel.org/bpf/5d1507e7b3eb6_e392b1ee39f65b463@john-XPS-13-9370.notmuch/T/#t)
+this week yet, nor do the patches seem to be applied anywhere.  What is the ETA
+on actually fixing the bug(s)?  There are now like 20 syzbot reports for
+seemingly the same bug, since it's apparently causing massive memory corruption;
+and this is wasting a lot of other kernel developers' time.  This has been going
+on for over a month; any reason why it's taking so long to fix?
 
-bpf$MAP_CREATE(0x0, &(0x7f0000000280)={0xf, 0x4, 0x4, 0x400, 0x0, 0x1}, 0x3c)
-socket$rxrpc(0x21, 0x2, 0x800000000a)
-r0 = socket$inet6_tcp(0xa, 0x1, 0x0)
-setsockopt$inet6_tcp_int(r0, 0x6, 0x13, &(0x7f00000000c0)=0x100000001, 0x1d4)
-connect$inet6(r0, &(0x7f0000000140), 0x1c)
-bpf$MAP_CREATE(0x0, &(0x7f0000000000)={0x5}, 0xfffffffffffffdcb)
-bpf$MAP_CREATE(0x2, &(0x7f0000003000)={0x3, 0x0, 0x77fffb, 0x0, 0x10020000000, 0x0}, 0x2c)
-setsockopt$inet6_tcp_TCP_ULP(r0, 0x6, 0x1f, &(0x7f0000000040)='tls\x00', 0x4)
-
-It's the same as like 20 other syzbot reports.
+Also, have you written a regression test for this bug so it doesn't happen
+again?
 
 - Eric
