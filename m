@@ -2,117 +2,235 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9935F885
-	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2019 14:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD7E5F8CC
+	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2019 15:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726016AbfGDMse (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Jul 2019 08:48:34 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:34750 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbfGDMse (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Jul 2019 08:48:34 -0400
-Received: by mail-lj1-f193.google.com with SMTP id p17so6084561ljg.1;
-        Thu, 04 Jul 2019 05:48:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NGIpyvEtEXEdDEsWs3lSyzCAiq7xG0Rb+r1M3Ty+FsY=;
-        b=pDpFgsi+MRZvsLbFOTZirUCzaMgToeUcdKHFWL3XJYy8ALaLEYw+QKonY3vgjjPEpU
-         kotOLWqILgWdgwngvGZC+zSdI5k8unTWHjCgVDhLACdiMe6T30sVobNtoIresjTbRLnU
-         iyhq5JhhwyTw86gmG7N3kzz6XGwVHVkrKNWFhlxizIvxP7Uvu/638Qgz+IR1V/eMCoWY
-         uJnHxwZAuy1ysmCo4ZmMDtva3YmCjLPjOh72aPrWm1+bnzgB1fZesQmgiZaK9F57CkuX
-         MpFB+zBauMqdY7PhUTAC2d/mmWg0SDw+qY22XpkZFNY12CBTPUxo0ULJ6x/tYhjc1noT
-         Dy7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NGIpyvEtEXEdDEsWs3lSyzCAiq7xG0Rb+r1M3Ty+FsY=;
-        b=NcNb+Z0W4hTrtbVHw3p7iZXnHMYczRSyGoQ5BBYCRFd1gTwABu/V6CfAHtMF28XSoa
-         oCuhRj5meKCY9Eocak0THjPIqRIBaO4D99atbro1mWfdA0AguqWvJnkNVO/0+1lKCLfv
-         fhxjYBIz5ky/VVOQt4dL1JdeI2Qt+pJB1hyILj96YwB0sTRhQ3nzTbfhH1AhqR91Cz4t
-         j7lYgFnH53R/GLkaZxy4kw83wzrRIdU2c+RwbRjQ17JgTv1znClHjV8mfFa1vhMKUy/n
-         jmKpShhEtML8L9DsX3inf7JFYktwX1PWbTOHk/u3DKLuNhT7RxDDrFPeFFvjGnu9pKih
-         c/eg==
-X-Gm-Message-State: APjAAAVl5DfLbx/cd/FyPuBXX7M8M5vG12IuebnXqdtvsEATbuSlw66X
-        luCIr6cnGadmcmXvGGCmpcM=
-X-Google-Smtp-Source: APXvYqwjHC1uKAdinYH43yQIrLge10HErloqumUI+ywI0nseKWZP7Ywk5EoVemKvNYgjVhjXCjYNfQ==
-X-Received: by 2002:a2e:9950:: with SMTP id r16mr25211593ljj.173.1562244512214;
-        Thu, 04 Jul 2019 05:48:32 -0700 (PDT)
-Received: from rric.localdomain (83-233-147-164.cust.bredband2.com. [83.233.147.164])
-        by smtp.gmail.com with ESMTPSA id 89sm1126324ljs.48.2019.07.04.05.48.29
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 04 Jul 2019 05:48:31 -0700 (PDT)
-Date:   Thu, 4 Jul 2019 14:48:27 +0200
-From:   Robert Richter <rric@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Frank Ch. Eigler" <fche@redhat.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, jikos@kernel.org,
-        mbenes@suse.cz, Petr Mladek <pmladek@suse.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        paulmck <paulmck@linux.ibm.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        oprofile-list@lists.sf.net, netdev <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 2/3] module: Fix up module_notifier return values.
-Message-ID: <20190704124827.hsuse5g3x5bgdgb3@rric.localdomain>
-References: <20190624091843.859714294@infradead.org>
- <20190624092109.805742823@infradead.org>
- <320564860.243.1561384864186.JavaMail.zimbra@efficios.com>
- <20190624205810.GD26422@redhat.com>
- <20190625074214.GR3436@hirez.programming.kicks-ass.net>
+        id S1726994AbfGDNEC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Jul 2019 09:04:02 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:34140 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725945AbfGDNEC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Jul 2019 09:04:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=A8lube6VOC1n1Ro1DrRjg3Qay/jXwcb/kBxaGnfYb1I=; b=oP1/IB8pNI0kgtZF9ZuO6yzAf
+        eeY2wLSdG3wfbjwRQnM0MsivnnKwO2DskCit2dD/Dr5mEpwttnCy59J576LlVL2vPJUNFGoibScb/
+        dSZiBrJ2Kp6plaXBrKRseaj743DHcaBNXdsqHjAMUOe2Yezcx/sTn5DsuT/g9wnHOuB2c1L1de1Jz
+        UmS5SQZawetrsQWgQRoHKXQFKZxqulrpSTQVT4lBHs8Be0/8GBO7aoMNW3dFAjPhN0IzqNnafPV9i
+        zknuO2fWe31eQauOYZRxLdDqRmI5S248Ohx7yl3hrRGFkPxIsBoDEjbpERXxGnd8MUk0cjUcaH5OE
+        XnttOPwFg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1hj1Ok-0002Bb-Vm; Thu, 04 Jul 2019 13:03:39 +0000
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3D10820AF0743; Thu,  4 Jul 2019 15:03:36 +0200 (CEST)
+Date:   Thu, 4 Jul 2019 15:03:36 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kris Van Hees <kris.van.hees@oracle.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        dtrace-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+        rostedt@goodmis.org, mhiramat@kernel.org, acme@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, Chris Mason <clm@fb.com>
+Subject: Re: [PATCH 1/1] tools/dtrace: initial implementation of DTrace
+Message-ID: <20190704130336.GN3402@hirez.programming.kicks-ass.net>
+References: <201907040313.x643D8Pg025951@userv0121.oracle.com>
+ <201907040314.x643EUoA017906@aserv0122.oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190625074214.GR3436@hirez.programming.kicks-ass.net>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <201907040314.x643EUoA017906@aserv0122.oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 25.06.19 09:42:14, Peter Zijlstra wrote:
-> On Mon, Jun 24, 2019 at 04:58:10PM -0400, Frank Ch. Eigler wrote:
+On Wed, Jul 03, 2019 at 08:14:30PM -0700, Kris Van Hees wrote:
+> +/*
+> + * Read the data_head offset from the header page of the ring buffer.  The
+> + * argument is declared 'volatile' because it references a memory mapped page
+> + * that the kernel may be writing to while we access it here.
+> + */
+> +static u64 read_rb_head(volatile struct perf_event_mmap_page *rb_page)
+> +{
+> +	u64	head = rb_page->data_head;
+> +
+> +	asm volatile("" ::: "memory");
+> +
+> +	return head;
+> +}
+> +
+> +/*
+> + * Write the data_tail offset in the header page of the ring buffer.  The
+> + * argument is declared 'volatile' because it references a memory mapped page
+> + * that the kernel may be writing to while we access it here.
 
-> > From peterz's comments, the patches, it's not obvious to me how one is
-> > to choose between 0 (NOTIFY_DONE) and 1 (NOTIFY_OK) in the case of a
-> > routine success.
-> 
-> I'm not sure either; what I think I choice was:
-> 
->  - if I want to completely ignore the callback, use DONE (per the
->    "Don't care" comment).
-> 
->  - if we finished the notifier without error, use OK or
->    notifier_from_errno(0).
-> 
-> But yes, its a bit of a shit interface.
+s/writing/reading/
 
-It looks like it was rarely used in earlier kernels as some sort of
-error detection for the notifier calls, e.g.:
+> + */
+> +static void write_rb_tail(volatile struct perf_event_mmap_page *rb_page,
+> +			  u64 tail)
+> +{
+> +	asm volatile("" ::: "memory");
+> +
+> +	rb_page->data_tail = tail;
+> +}
 
-1da177e4c3f41524e886b7f1b8a0c1fc7321cac2:kernel/profile.c-int profile_handoff_task(struct task_struct * task)
-1da177e4c3f41524e886b7f1b8a0c1fc7321cac2:kernel/profile.c-{
-1da177e4c3f41524e886b7f1b8a0c1fc7321cac2:kernel/profile.c-      int ret;
-1da177e4c3f41524e886b7f1b8a0c1fc7321cac2:kernel/profile.c-      read_lock(&handoff_lock);
-1da177e4c3f41524e886b7f1b8a0c1fc7321cac2:kernel/profile.c-      ret = notifier_call_chain(&task_free_notifier, 0, task);
-1da177e4c3f41524e886b7f1b8a0c1fc7321cac2:kernel/profile.c-      read_unlock(&handoff_lock);
-1da177e4c3f41524e886b7f1b8a0c1fc7321cac2:kernel/profile.c:      return (ret == NOTIFY_OK) ? 1 : 0;
-1da177e4c3f41524e886b7f1b8a0c1fc7321cac2:kernel/profile.c-}
+That volatile usage is atrocious (kernel style would have you use
+{READ,WRITE}_ONCE()). Also your comments fail to mark these as
+load_acquire and store_release. And by only using a compiler barrier
+you're hard assuming TSO, which is somewhat fragile at best.
 
-So NOTIFY_OK was used to state there is no error, while NOTIFY_DONE
-says the notifier was executed and there might have been errors. The
-caller may distinguish the results then.
+Alternatively, you can use the C11 bits and write:
 
--Robert
+	return __atomic_load_n(&rb_page->data_head, __ATOMIC_ACQUIRE);
+
+	__atomic_store_n(&rb_page->data_tail, tail, __ATOMIC_RELEASE);
+
+> +/*
+> + * Process and output the probe data at the supplied address.
+> + */
+> +static int output_event(int cpu, u64 *buf)
+> +{
+> +	u8				*data = (u8 *)buf;
+> +	struct perf_event_header	*hdr;
+> +
+> +	hdr = (struct perf_event_header *)data;
+> +	data += sizeof(struct perf_event_header);
+> +
+> +	if (hdr->type == PERF_RECORD_SAMPLE) {
+> +		u8		*ptr = data;
+> +		u32		i, size, probe_id;
+> +
+> +		/*
+> +		 * struct {
+> +		 *	struct perf_event_header	header;
+> +		 *	u32				size;
+> +		 *	u32				probe_id;
+> +		 *	u32				gap;
+> +		 *	u64				data[n];
+> +		 * }
+> +		 * and data points to the 'size' member at this point.
+> +		 */
+> +		if (ptr > (u8 *)buf + hdr->size) {
+> +			fprintf(stderr, "BAD: corrupted sample header\n");
+> +			goto out;
+> +		}
+> +
+> +		size = *(u32 *)data;
+> +		data += sizeof(size);
+> +		ptr += sizeof(size) + size;
+> +		if (ptr != (u8 *)buf + hdr->size) {
+> +			fprintf(stderr, "BAD: invalid sample size\n");
+> +			goto out;
+> +		}
+> +
+> +		probe_id = *(u32 *)data;
+> +		data += sizeof(probe_id);
+> +		size -= sizeof(probe_id);
+> +		data += sizeof(u32);		/* skip 32-bit gap */
+> +		size -= sizeof(u32);
+> +		buf = (u64 *)data;
+> +
+> +		printf("%3d %6d ", cpu, probe_id);
+> +		for (i = 0, size /= sizeof(u64); i < size; i++)
+> +			printf("%#016lx ", buf[i]);
+> +		printf("\n");
+> +	} else if (hdr->type == PERF_RECORD_LOST) {
+> +		u64	lost;
+> +
+> +		/*
+> +		 * struct {
+> +		 *	struct perf_event_header	header;
+> +		 *	u64				id;
+> +		 *	u64				lost;
+> +		 * }
+> +		 * and data points to the 'id' member at this point.
+> +		 */
+> +		lost = *(u64 *)(data + sizeof(u64));
+> +
+> +		printf("[%ld probes dropped]\n", lost);
+> +	} else
+> +		fprintf(stderr, "UNKNOWN: record type %d\n", hdr->type);
+> +
+> +out:
+> +	return hdr->size;
+> +}
+
+I see a distinct lack of wrapping support. AFAICT when buf+hdr->size
+wraps you're doing out-of-bounds accesses.
+
+> +/*
+> + * Process the available probe data in the given buffer.
+> + */
+> +static void process_data(struct dtrace_buffer *buf)
+> +{
+> +	/* This is volatile because the kernel may be updating the content. */
+> +	volatile struct perf_event_mmap_page	*rb_page = buf->base;
+> +	u8					*base = (u8 *)buf->base +
+> +							buf->page_size;
+> +	u64					head = read_rb_head(rb_page);
+> +
+> +	while (rb_page->data_tail != head) {
+> +		u64	tail = rb_page->data_tail;
+> +		u64	*ptr = (u64 *)(base + tail % buf->data_size);
+> +		int	len;
+> +
+> +		len = output_event(buf->cpu, ptr);
+> +
+> +		write_rb_tail(rb_page, tail + len);
+> +		head = read_rb_head(rb_page);
+> +	}
+> +}
+
+more volatile yuck.
+
+Also:
+
+	for (;;) {
+		head = __atomic_load_n(&rb_page->data_head, __ATOMIC_ACQUIRE);
+		tail = __atomic_load_n(&rb_page->data_tail, __ATOMIC_RELAXED);
+
+		if (head == tail)
+			break;
+
+		do {
+			hdr = buf->base + (tail & ((1UL << buf->data_shift) - 1));
+			if ((tail >> buf->data_shift) !=
+			    ((tail + hdr->size) >> buf->data_shift))
+				/* handle wrap case */
+			else
+				/* normal case */
+
+			tail += hdr->size;
+		} while (tail != head);
+
+		__atomic_store_n(&rb_page->data_tail, tail, __ATOMIC_RELEASE);
+	}
+
+Or something.
+
+> +/*
+> + * Wait for data to become available in any of the buffers.
+> + */
+> +int dt_buffer_poll(int epoll_fd, int timeout)
+> +{
+> +	struct epoll_event	events[dt_numcpus];
+> +	int			i, cnt;
+> +
+> +	cnt = epoll_wait(epoll_fd, events, dt_numcpus, timeout);
+> +	if (cnt < 0)
+> +		return -errno;
+> +
+> +	for (i = 0; i < cnt; i++)
+> +		process_data((struct dtrace_buffer *)events[i].data.ptr);
+> +
+> +	return cnt;
+> +}
+
+Or make sure to read on the CPU by having a poll thread per CPU, then
+you can do away with the memory barriers.
