@@ -2,119 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B062A5FC4A
-	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2019 19:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB78C5FC82
+	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2019 19:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726991AbfGDRNf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Jul 2019 13:13:35 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:52415 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbfGDRNe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Jul 2019 13:13:34 -0400
-Received: by mail-wm1-f65.google.com with SMTP id s3so6395995wms.2;
-        Thu, 04 Jul 2019 10:13:33 -0700 (PDT)
+        id S1726851AbfGDR3e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Jul 2019 13:29:34 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:34330 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726601AbfGDR3e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Jul 2019 13:29:34 -0400
+Received: by mail-io1-f65.google.com with SMTP id k8so14235589iot.1;
+        Thu, 04 Jul 2019 10:29:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bVkyOsnwbLJnvov8gKU5rdvTrE1Z1ljmL0ULAFvpbeg=;
-        b=bGG9ggHK/zW4uS7jJqgIgO+nREbqlh4Ev3uIK7HHlROlCbzGlJshPiqPNofyKOE88S
-         CMzUglWE1UfZiR+IyiGgZVAbmVf/VvDqirzBJXXRpQMEUuQVUtywXc/M+NuYvYoIk3FX
-         dpEO1rgNJ3rAiujbOWsaGln5p03adEPu8SUGw8LdAygow3wdWtZZSJBm7JzBtduparMQ
-         eFxV1XOwaCdM8Kp9P0pU4axlHiZ78dzFzY5ci6AE7JByAHXECRPrFZR6yddUJEOOgZeg
-         nnBPg09c7oFyBVwKFia/9KOF1YWLNps8jZQGbkWPMtkdH3JsWwbM/nyJP3efUlZyXPeP
-         uwNw==
+        bh=lLCSF8cfSBS06fyUsvl3Ma9Eka4rupliBxowIgB3I+c=;
+        b=aT6zFgCwCjsjhmnqPbNhGoACjZclPbULGwzOG1i/I+A8GqBMtzkgwssOPTvBA0QODu
+         +0AhuXYTBXnXEUInKegtWIRN3mn0FbA4D08XinGOxsVO5GCY9nQmH9qBn0dLJ/Gfm7xy
+         3QdJ4oseNpbycdvm/EPumdd2jrv3icVlcKFYf2MnklLmPdUVhMQTesg8WwrEkWR5erx7
+         ohX0Vj0ZuABkrUNg8V9Trl8RgbPUWTUCfFskfC0jOrDWIhRBz+mLxKgzArneePz81QzU
+         dEc7BIBUBUnbetDWcqSad2sUrTYUt++wcaxXy2RL4eXDRvEc4m54ggWnA8PefCTZa11q
+         rtmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bVkyOsnwbLJnvov8gKU5rdvTrE1Z1ljmL0ULAFvpbeg=;
-        b=rAEObOvk3WVK4jmzKbmEC2Zn2dDxMjQFdJJIKYGo9pIL20Sl9BQ6KTKhKwnKOLHyDs
-         XI1rkrB/S+Gzb7mdqNHWjgGM63BjkHW5nRxdzY5HMJgYr1PWdff83oVnudKDEJ+gd6iQ
-         at/M4wSmwRdoLy1sQCsOOatFkHy/KgfolM0PYhfGGX+QQ7AUuyD/fjgNksXko6MPmc55
-         iQMMdKCek9y7ZS+EAVrpS4G+xGaXKBxb89Uvaqd5gght/wl+S+NhWuLtxs8SbssM1A3D
-         Hyc0QBPG+AtO1h/+n39rbDsdplIECmbK3zNvHmyvCZGYNEF1YipXXYxAtNFgpFAUxp/m
-         f/7A==
-X-Gm-Message-State: APjAAAV9B/JRu4boUnbhIJqSvdgSI6wabWz+aas2gwd2vwUdP133z1mf
-        CPR7BlijC+d90GLH2ViVC0SBUQHHDJ+RMfwnbgc=
-X-Google-Smtp-Source: APXvYqwRvtnSu8SXq9oMh7dpaCOtxaaM6f9X7CsV89vnYM7FnXZ6Fkl7GffIv1GaVqztG7YdU1Op7iZ7usEStfXSNfc=
-X-Received: by 2002:a7b:c106:: with SMTP id w6mr419153wmi.80.1562260412563;
- Thu, 04 Jul 2019 10:13:32 -0700 (PDT)
+        bh=lLCSF8cfSBS06fyUsvl3Ma9Eka4rupliBxowIgB3I+c=;
+        b=JA6SPfZCpO+i0exy+Vb/9RxZXbaLo9YJkL1ovXBIDo7kBMPa7JAsUHYEZXwJW5Zahx
+         2RGfwv8Z6mzF1fBgDYUMYh7G9cTCgxW+FcFNBqyOgRT5pYoZHutv/aEPcJucQ87A2RQH
+         o8B7B6LA+e47crIYhhXAQMBnEomB3r+g8I4UupF80IqPO9oRZXm/G0wEs1nK9MPnbVjv
+         80RMFz8dAsl30TJkWNwabqNyMZ/GhnDEDnSHNq9hbCqeChZCrLG//aJ+++BTBfZcHoIy
+         mzpLqBmVmxZB8fkHDDHvJzaBQWpp6cW4vp/D88T7Eyx6RWwY6kTINR2WtDCWr/P+17PF
+         3b9A==
+X-Gm-Message-State: APjAAAXUugg+rYB+t1BrdIh9PDsAgyS8KpEigM6ZULh7JL3M92ZCX1LD
+        oA2ZXZr3y+hdWvdQ4kKYUlkQOiGZ3+DmTXLLSzg2fWKq
+X-Google-Smtp-Source: APXvYqzTsNDZYFlm/oOaf4pJhy/vccK7B9WZebiuSX+/tsMaLp4DoqKquNyj6voUzwdeQ2zPMgd/fa3zhkjJF3WbSH4=
+X-Received: by 2002:a5e:8b43:: with SMTP id z3mr5923306iom.287.1562261373359;
+ Thu, 04 Jul 2019 10:29:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <201907040313.x643D8Pg025951@userv0121.oracle.com> <201907040314.x643EUoA017906@aserv0122.oracle.com>
-In-Reply-To: <201907040314.x643EUoA017906@aserv0122.oracle.com>
-From:   Brendan Gregg <brendan.d.gregg@gmail.com>
-Date:   Thu, 4 Jul 2019 10:13:06 -0700
-Message-ID: <CAE40pdeSfJBpbBHTmwz1xZ+MW02=kJ0krq1mN+EkjSLqf2GX_w@mail.gmail.com>
-Subject: Re: [PATCH 1/1] tools/dtrace: initial implementation of DTrace
-To:     Kris Van Hees <kris.van.hees@oracle.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        dtrace-devel@oss.oracle.com, LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Zijlstra <peterz@infradead.org>, Chris Mason <clm@fb.com>
+References: <20190704085224.65223-1-iii@linux.ibm.com>
+In-Reply-To: <20190704085224.65223-1-iii@linux.ibm.com>
+From:   Y Song <ys114321@gmail.com>
+Date:   Thu, 4 Jul 2019 10:28:57 -0700
+Message-ID: <CAH3MdRUWzvSFx2+1Qsd0hty8=Tb71t9nCg872a5-dtvh8DKDLA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] selftests/bpf: fix "alu with different
+ scalars 1" on s390
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 3, 2019 at 8:17 PM Kris Van Hees <kris.van.hees@oracle.com> wrote:
+On Thu, Jul 4, 2019 at 1:52 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> This initial implementation of a tiny subset of DTrace functionality
-> provides the following options:
+> BPF_LDX_MEM is used to load the least significant byte of the retrieved
+> test_val.index, however, on big-endian machines it ends up retrieving
+> the most significant byte.
 >
->         dtrace [-lvV] [-b bufsz] -s script
->             -b  set trace buffer size
->             -l  list probes (only works with '-s script' for now)
->             -s  enable or list probes for the specified BPF program
->             -V  report DTrace API version
+> Use the correct least significant byte offset on big-endian machines.
 >
-> The patch comprises quite a bit of code due to DTrace requiring a few
-> crucial components, even in its most basic form.
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
-This patchset has moved from adding tests (which actually belong in
-selftests, not tools/dtrace), to the start of adding a giant tracer to
-the kernel code base.
+Acked-by: Yonghong Song <yhs@fb.com>
 
-First, in some ways you're doing this for me -- I've been the number
-one user of DTrace for 15 years -- and thanks, but no thanks. I don't
-need this anymore. I needed this 6 years ago, and I would have helped
-you build it, but in the meantime Linux has built something better,
-built from the ground up for BPF: bpftrace.
-
-Second, you argued that DTrace was needed because of speculative
-tracing (a feature I never used), as you had customers who wanted it.
-Those customers aren't going to be happy with this initial tiny
-implementation of DTrace -- this is really the start of adding a large
-and complex tracer to the kernel.
-
-We've all been working under the assumption that these user-space
-tracers did not belong in the kernel, and so far that's been working
-fine for us. Is it now open season for tracers in the kernel? Let's
-have:
-
-tools/bpftrace
-tools/ply
-tools/systemtap
-tools/LTTng
-tools/sysdig
-tools/ktap
-etc
-
-Yes, that's ridiculous. If there's only going to be one, let's have
-the best one, bpftrace. We'll offer a version that is GPL, C, and has
-no dependencies.
-
-But it would be news to us all that we're allowed to have even one.
-
-There are more things that don't make sense about this, but I'll stop
-here for now.
-
-
-
-
-Brendan
+> ---
+>
+> v1->v2:
+> - use __BYTE_ORDER instead of __BYTE_ORDER__.
+>
+>  tools/testing/selftests/bpf/verifier/value_ptr_arith.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/verifier/value_ptr_arith.c b/tools/testing/selftests/bpf/verifier/value_ptr_arith.c
+> index c3de1a2c9dc5..e5940c4e8b8f 100644
+> --- a/tools/testing/selftests/bpf/verifier/value_ptr_arith.c
+> +++ b/tools/testing/selftests/bpf/verifier/value_ptr_arith.c
+> @@ -183,7 +183,11 @@
+>         BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
+>         BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
+>         BPF_EXIT_INSN(),
+> +#if __BYTE_ORDER == __LITTLE_ENDIAN
+>         BPF_LDX_MEM(BPF_B, BPF_REG_1, BPF_REG_0, 0),
+> +#else
+> +       BPF_LDX_MEM(BPF_B, BPF_REG_1, BPF_REG_0, sizeof(int) - 1),
+> +#endif
+>         BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0, 3),
+>         BPF_MOV64_IMM(BPF_REG_2, 0),
+>         BPF_MOV64_IMM(BPF_REG_3, 0x100000),
+> --
+> 2.21.0
+>
