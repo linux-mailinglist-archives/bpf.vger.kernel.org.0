@@ -2,213 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFB35F0DB
-	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2019 02:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9715F1BA
+	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2019 05:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726928AbfGDA5S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jul 2019 20:57:18 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:43844 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726955AbfGDA5S (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jul 2019 20:57:18 -0400
-Received: by mail-qk1-f195.google.com with SMTP id m14so4343881qka.10;
-        Wed, 03 Jul 2019 17:57:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wbnlr4MNFbOiQmkaqdz81ucGEMdNpAtp6Omr2DXzS1A=;
-        b=r9cm42hDEDamyfQq03HnoYxq5A/NtpR2+vwXsbAYhLmk+mMFJbzemzVBLg5IG2mIiX
-         6WJauX8HE1PP+GJOnsG8X/Kf1M+FiIBHHqYORKLulKUMSUx0sXIy+QJAmClpkrmpWp6K
-         ueB+6E0LMuCAVatH5C3Bii1E9zR1K2ETYM2DM2NWCdn3dpXRtVmcYxpoipUOJ813RuFr
-         uesT15HQLYpglOOwje+K3VwehgzT6DG+4G6pikW8j/SXuTOjPSpY8pR93jbJX7wZKshy
-         PT/3ePAx6KPNPXeC+Ynef16J7U32xZF2EFxLLyjoZy67XEo5L7083J/fPFEc4+4bFqT9
-         O5oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wbnlr4MNFbOiQmkaqdz81ucGEMdNpAtp6Omr2DXzS1A=;
-        b=Ozb6r+YHw9JmzjRaiPdLKwZcMpHteUoCOaF0iOM6L0A/oG3/zAh9F368s+/Ex2hP5M
-         6WJCU6kMRX65AKN0yJbgyK7eCG1UnaQCJ+Ag5hnXpPHjXbn2XxtP6+Z+8IxmxZCw0KwE
-         wzUo4ecJGRxvS9+vmc9zexoZUA7wmCkb7zIjSv5pJvAnFD0vGilk5hbu0PwmoQ2/Qejh
-         sMrqPyYoJJZyxG9IRNIBui2KVvBgJalXarlfu+4jfMv1VJDFUPuUregyQej8d86JCK7/
-         p3qqwdZ1mN2pF4BpENNV8l51ZDzWKQ0Xx3KxmRGySv2vIKthCmvtLGtL6Cod21snIrJA
-         sJPA==
-X-Gm-Message-State: APjAAAVG/iIsJX8PfGrdJKX5vRn43ODRgQOW+7zMPgN7yMDwM5iD/C6u
-        Bpwm6ZbK2Quzhb+lpyCGVaOhqgzae+vrBpLShdI=
-X-Google-Smtp-Source: APXvYqyydUyicQXwFhHFIzpqJzxR5LFTIWtKSGu9NgEXyBc62LbXNHs5gIO5T0EoL77LB9FBZB6Lwk3WSJy56T1Pspw=
-X-Received: by 2002:a37:660d:: with SMTP id a13mr5149124qkc.36.1562201836524;
- Wed, 03 Jul 2019 17:57:16 -0700 (PDT)
+        id S1727102AbfGDDOP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jul 2019 23:14:15 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:40194 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726696AbfGDDOP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Jul 2019 23:14:15 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6434PWP193276;
+        Thu, 4 Jul 2019 03:13:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id :
+ mime-version : date : from : to : cc : subject : content-type :
+ content-transfer-encoding; s=corp-2018-07-02;
+ bh=pNCu0QyzDiiTDwZZZKKayKgr5kYJuplRGSbV94S6ShA=;
+ b=HuMdgSIOPHRfop6AhhMizUBhYrNRwFbNZP3xDXJk3ndC4o7mMZV4REy+dkuq0Kl36Mdz
+ hIo5HVGOhUfrdvriwr31vxpwRZ7H7xrGkfY/PVs0wFvBVsQWvR/4Y2iDXJanD7KI9Efy
+ +ORXCVcmVy4h7JKLvCCXN4mHW6RRY+WMUJb+I8K+uVUY+xWqLfIMnWdSwMg3PlKMbjr2
+ fDFK/GM6QBawJEumMR3ht8lBlj7qe+SpNqEM+esk75MLFlXzX7NRZQF7lZWCvFE/yUNz
+ Gzd/0ET6UcUkkuI42C2bV38vPkL//c4Cp1FKQewzwiwq8oT6ZFXI104R0qUY0T8TSM4C LA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 2te5tbvebx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Jul 2019 03:13:12 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6433LU4087344;
+        Thu, 4 Jul 2019 03:13:11 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 2tebbkpsbn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 04 Jul 2019 03:13:11 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x643DBUV104313;
+        Thu, 4 Jul 2019 03:13:11 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 2tebbkpsbk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Jul 2019 03:13:11 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x643D8Pg025951;
+        Thu, 4 Jul 2019 03:13:08 GMT
+Message-Id: <201907040313.x643D8Pg025951@userv0121.oracle.com>
+Received: from localhost (/10.159.211.102) by default (Oracle Beehive Gateway
+ v4.0) with ESMTP ; Wed, 03 Jul 2019 20:13:08 -0700
 MIME-Version: 1.0
-References: <20190701235903.660141-1-andriin@fb.com> <20190701235903.660141-5-andriin@fb.com>
- <5e494d84-5db9-3d57-ccb3-c619cbae7833@iogearbox.net> <CAEf4BzaHM5432VS-1wDxKJXr7U-9zkM+A_XsU+1p77YCd8VRgg@mail.gmail.com>
-In-Reply-To: <CAEf4BzaHM5432VS-1wDxKJXr7U-9zkM+A_XsU+1p77YCd8VRgg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 3 Jul 2019 17:57:04 -0700
-Message-ID: <CAEf4BzaUeLDgwzBc0EbXnzahe8wxf9CNVFa_isgRp8rwJ0OSjQ@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 4/9] libbpf: add kprobe/uprobe attach API
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Date:   Wed, 3 Jul 2019 20:13:08 -0700 (PDT)
+From:   Kris Van Hees <kris.van.hees@oracle.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        dtrace-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Cc:     rostedt@goodmis.org, mhiramat@kernel.org, acme@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net,
+        Peter Zijlstra <peterz@infradead.org>, Chris Mason <clm@fb.com>
+Subject: [PATCH 0/1] tools/dtrace: initial implementation of DTrace
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9307 signatures=668688
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1907040040
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 3, 2019 at 9:47 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Jul 3, 2019 at 5:39 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >
-> > On 07/02/2019 01:58 AM, Andrii Nakryiko wrote:
-> > > Add ability to attach to kernel and user probes and retprobes.
-> > > Implementation depends on perf event support for kprobes/uprobes.
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > > Reviewed-by: Stanislav Fomichev <sdf@google.com>
-> > > ---
+This patch is also available, applied to bpf-next, at the following URL:
 
-<snip>
+	https://github.com/oracle/dtrace-linux-kernel/tree/dtrace-bpf
 
-> > > +}
-> >
-> > Hm, this only addresses half the feedback I had in prior version [0]. Patch 2/9
->
-> Hi Daniel,
->
-> Yes, and I explained why in reply to your original email, please see [1].
->
-> I've started with exactly separation you wanted, but it turned out to
-> be cumbersome and harder to use user API, while also somewhat more
-> complicated to implement. Mostly because in that design bpf_link
-> exists in two states: created-but-not-attached and attached. Which
-> forces user to do additional clean ups if creation succeeded, but
-> attachment failed. It also makes it a bit harder to provide good
-> contextual error logging if something goes wrong, because not all
-> original parameters are preserved, as some of them might be needed
-> only for creation, but not attachment (or we'll have to allocate and
-> copy extra stuff just for logging purposes).
->
-> On the other hand, having separate generic attach_event method doesn't
-> help that much, as there is little common functionality to reuse
-> across all kinds of possible bpf_link types.
->
->
->   [1] https://lore.kernel.org/bpf/20190621045555.4152743-4-andriin@fb.com/T/#m6cfc141e7b57970bc948134bf671a46972b95134
->
-> > with bpf_link with destructor looks good to me, but my feedback from back then was
-> > that all the kprobe/uprobe/tracepoint/raw_tracepoint should be split API-wise, so
-> > you'll end up with something like the below, that is, 1) a set of functions that
-> > only /create/ the bpf_link handle /once/, and 2) a helper that allows /attaching/
-> > progs to one or multiple bpf_links. The set of APIs would look like:
-> >
-> > struct bpf_link *bpf_link__create_kprobe(bool retprobe, const char *func_name);
-> > struct bpf_link *bpf_link__create_uprobe(bool retprobe, pid_t pid,
-> >                                          const char *binary_path,
-> >                                          size_t func_offset);
-> > int bpf_program__attach_to_link(struct bpf_link *link, struct bpf_program *prog);
-> > int bpf_link__destroy(struct bpf_link *link);
-> >
-> > This seems much more natural to me. Right now you sort of do both in one single API.
->
-> It felt that way for me as well, until I implemented it and used it in
-> selftests. And then it felt unnecessarily verbose without giving any
-> benefit. I still have a local patchset with that change, I can post it
-> as RFC, if you don't trust my judgement. Please let me know.
->
-> > Detangling the bpf_program__attach_{uprobe,kprobe}() would also avoid that you have
-> > to redo all the perf_event_open_probe() work over and over in order to get the pfd
+As suggested in feedback to my earlier patch submissions, this code takes an
+approach to avoid kernel code changes as much as possible.  The current patch
+does not involve any kernel code changes.  Further development of this code
+will continue with this approach, incrementally adding features to this first
+minimal implementation.  The goal is a fully featured and functional DTrace
+implementation involving kernel changes only when strictly necessary.
 
-So re-reading this again, I wonder if you meant that with separate
-bpf_link (or rather bpf_hook in that case) creation and attachment
-operations, one would be able to create single bpf_hook for same
-kprobe and then attach multiple BPF programs to that single pfd
-representing that specific probe.
+The code presented here supports two very basic functions:
 
-If that's how I should have read it, I agree that it probably would be
-possible for some types of hooks, but not for every type of hook. But
-furthermore, how often in practice same application attaches many
-different BPF programs to the same hook? And it's also hard to imagine
-that hook creation (i.e., creating such FD for BPF hook), would ever
-be a bottleneck.
+1. Listing probes that are used in BPF programs
 
-So I still think it's not a strong reason to go with API that's harder
-to use for typical use cases just because of hypothetical benefits in
-some extreme cases.
+   # dtrace -l -s bpf_sample.o
+      ID   PROVIDER            MODULE                          FUNCTION NAME
+   18876        fbt           vmlinux                        ksys_write entry
+   70423    syscall           vmlinux                             write entry
 
->
-> What do you mean by "redo all the perf_event_open_probe work"? In
-> terms of code, I just reuse the same function, so there is no
-> duplicate code. And in either design you'll have to open that
-> perf_event, so that work will have to be done one way or another.
->
-> > context where you can later attach something to. Given bpf_program__attach_to_link()
-> > API, you also wouldn't need to expose the bpf_program__attach_perf_event() from
->
-> I'd expose attach_perf_event either way, it's high-level API I want to
-> provide, we have use cases where user is creating some specific
-> non-kprobe/non-tracepoint perf events and wants to attach to it. E.g.,
-> HW counter overflow events for CPU profilers. So that API is not some
-> kind of leaked abstraction, it's something I want to have anyway.
->
->
-> > patch 3/9. Thoughts?
->
-> I believe this hybrid approach provides better usability without
-> compromising anything. The only theoretical benefit of complete
-> separation of bpf_link creation and attachment is that user code would
-> be able to separate those two steps code organization-wise. But it's
-> easily doable through custom application code (just encapsulate all
-> the parameters and type of attachment and pass it around until you
-> actually need to attach), but I don't think it's necessary in practice
-> (so far I never needed anything like that).
->
-> Hope I convinced you that while elegant, it's not that practical. Also
-> hybrid approach isn't inelegant either and doesn't produce code
-> duplication (it actually eliminates some unnecessary allocations,
-> e.g., for storing tp_name for raw_tracepoint attach) :)
->
-> >
-> >   [0] https://lore.kernel.org/bpf/a7780057-1d70-9ace-960b-ff65867dc277@iogearbox.net/
-> >
-> > >  enum bpf_perf_event_ret
-> > >  bpf_perf_event_read_simple(void *mmap_mem, size_t mmap_size, size_t page_size,
-> > >                          void **copy_mem, size_t *copy_size,
-> > > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> > > index 1bf66c4a9330..bd767cc11967 100644
-> > > --- a/tools/lib/bpf/libbpf.h
-> > > +++ b/tools/lib/bpf/libbpf.h
-> > > @@ -171,6 +171,13 @@ LIBBPF_API int bpf_link__destroy(struct bpf_link *link);
-> > >
-> > >  LIBBPF_API struct bpf_link *
-> > >  bpf_program__attach_perf_event(struct bpf_program *prog, int pfd);
-> > > +LIBBPF_API struct bpf_link *
-> > > +bpf_program__attach_kprobe(struct bpf_program *prog, bool retprobe,
-> > > +                        const char *func_name);
-> > > +LIBBPF_API struct bpf_link *
-> > > +bpf_program__attach_uprobe(struct bpf_program *prog, bool retprobe,
-> > > +                        pid_t pid, const char *binary_path,
-> > > +                        size_t func_offset);
-> > >
-> > >  struct bpf_insn;
-> > >
-> > > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> > > index 756f5aa802e9..57a40fb60718 100644
-> > > --- a/tools/lib/bpf/libbpf.map
-> > > +++ b/tools/lib/bpf/libbpf.map
-> > > @@ -169,7 +169,9 @@ LIBBPF_0.0.4 {
-> > >       global:
-> > >               bpf_link__destroy;
-> > >               bpf_object__load_xattr;
-> > > +             bpf_program__attach_kprobe;
-> > >               bpf_program__attach_perf_event;
-> > > +             bpf_program__attach_uprobe;
-> > >               btf_dump__dump_type;
-> > >               btf_dump__free;
-> > >               btf_dump__new;
-> > >
-> >
+2. Loading BPF tracing programs and collecting data that they generate
+
+   # dtrace -s bpf_sample.o
+   CPU     ID
+    15  70423 0xffff8c0968bf8ec0 0x00000000000001 0x0055e019eb3f60 0x0000000000002c
+    15  18876 0xffff8c0968bf8ec0 0x00000000000001 0x0055e019eb3f60 0x0000000000002c
+   ...
+
+Only kprobes and syscall tracepoints are supported since this is an initial
+patch.  It does show the use of a generic BPF function to implement the actual
+probe action, called from two distinct probe types.  Follow-up patches will
+add more probe types, add more tracing features from the D language, add
+support for D script compilation to BPF, etc.
+
+The implementation makes use of libbpf for handling BPF ELF objects, and uses
+the perf event output ring buffer (supported through BPF) to retrieve the
+tracing data.  The next step in development will be adding support to libbpf
+for programs using shared functions from a collection of functions included in
+the BPF ELF object (as suggested by Alexei).  
+
+The code is structured as follows:
+ tools/dtrace/dtrace.c      = command line utility
+ tools/dtrace/dt_bpf.c      = interface to libbpf
+ tools/dtrace/dt_buffer.c   = perf event output buffer handling
+ tools/dtrace/dt_fbt.c      = kprobes probe provider
+ tools/dtrace/dt_syscall.c  = syscall tracepoint probe provider
+ tools/dtrace/dt_probe.c    = generic probe and probe provider handling code
+                              This implements a generic interface to the actual
+                              probe providers (dt_fbt and dt_syscall).
+ tools/dtrace/dt_hash.c     = general probe hashing implementation
+ tools/dtrace/dt_utils.c    = support code (manage list of online CPUs)
+ tools/dtrace/dtrace.h      = API header file (used by BPF program source code)
+ tools/dtrace/dtrace_impl.h = implementation header file
+ tools/dtrace/bpf_sample.c  = sample BPF program using two probe types
+
+I included an entry for the MAINTAINERS file.  I offer to actively maintain
+this code, and to keep advancing its development.
+
+	Cheers,
+	Kris Van Hees
