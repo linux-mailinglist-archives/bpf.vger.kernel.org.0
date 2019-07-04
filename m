@@ -2,116 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B51985F50F
-	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2019 10:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671D65F836
+	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2019 14:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbfGDI7A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Jul 2019 04:59:00 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:17397 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726993AbfGDI67 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Jul 2019 04:58:59 -0400
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 2CD8530BCCE2;
-        Thu,  4 Jul 2019 08:58:59 +0000 (UTC)
-Received: from krava.brq.redhat.com (unknown [10.43.17.81])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 903B888F04;
-        Thu,  4 Jul 2019 08:58:57 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Michael Petlan <mpetlan@redhat.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>
-Subject: [PATCH] tools bpftool: Fix json dump crash on powerpc
-Date:   Thu,  4 Jul 2019 10:58:56 +0200
-Message-Id: <20190704085856.17502-1-jolsa@kernel.org>
+        id S1727720AbfGDMeM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Jul 2019 08:34:12 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:44343 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727714AbfGDMeM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Jul 2019 08:34:12 -0400
+Received: by mail-lf1-f66.google.com with SMTP id r15so4126489lfm.11;
+        Thu, 04 Jul 2019 05:34:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WZGgIFqntPiBjka+Oo35Sy0erf1ztfXIu7MoeeCl7sI=;
+        b=U9w9DXvX6ZI9Ka2kloHxm/f4bFuu9xySWFoJtdxm/VYD4Rkc+XAKcMy5K7CBhciu02
+         SEq/+/Pio+BB9Rco4ZaD6BQbo6UwGX6CfbA1orS2o/JIML3G8areymFCYg7SLLSgm3y2
+         Cnp97gucU6HsG/BSS9GfAu2abg4TzfWCJELRa/XBgL1f/xeIB3En/q4vqN48n5X6v7fy
+         x47DQ9CxjWYjlNCwtb+lMVZAz1Xj+t38c8RSSwnnzhmdHJu6mqPPM6G7fucCRDrfcmjN
+         htaCUlrr8Pu2JHWIcLLuzeYPjlMTFg3a3UkK9gM+OPsHnkqzEMY4VnSl/1mq6NmYB0cV
+         MwFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WZGgIFqntPiBjka+Oo35Sy0erf1ztfXIu7MoeeCl7sI=;
+        b=anVep3fciviRt4QnTG02L59A3HEUgknfjws8vkkqY765ZbYNB6T1InsRm/kpBcOlVD
+         T+gbDHxCtyK7j1wsKAp4Lkq068MJhe8Cy64gOVqLghaoKXPEwUe+dLZ6UjFmEgye1bEX
+         AehmWzsAUPz508fJw4FINQfqPBXmWhoG9Z066XUXwvIqDhnNE0OEwdQlaY1pZ2CQcGjt
+         8kuNez7tEPk2tmELCbhppzaxqqy0kgCZSvBHiFZayaQO6HYT7QWldKp7Su28/uGwwj1D
+         xFqih3a4Zati+vVJLktTU98BCmBfAAM0KN4rwsJaM4AmIsBNnRlwiuXRbpeD1rRiP1Ne
+         NYbA==
+X-Gm-Message-State: APjAAAXVBkqAcYg7FBQZ0u+yAwA/UTpPPfOW0bRWRp1oSS3XkIB7lFkW
+        f9/WHfU2pyV9MwwZILbF6zI=
+X-Google-Smtp-Source: APXvYqySbtfjf5ef9HvwH/IVOxIOPBsJfR47YKZt5UHXpmB0NuOgbexAL27Jj/lAMUuPKodQ3L6YNA==
+X-Received: by 2002:ac2:4351:: with SMTP id o17mr1633834lfl.100.1562243649805;
+        Thu, 04 Jul 2019 05:34:09 -0700 (PDT)
+Received: from rric.localdomain (83-233-147-164.cust.bredband2.com. [83.233.147.164])
+        by smtp.gmail.com with ESMTPSA id b25sm866069lfq.11.2019.07.04.05.34.07
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 04 Jul 2019 05:34:08 -0700 (PDT)
+Date:   Thu, 4 Jul 2019 14:34:00 +0200
+From:   Robert Richter <rric@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org,
+        jpoimboe@redhat.com, jikos@kernel.org, mbenes@suse.cz,
+        pmladek@suse.com, ast@kernel.org, daniel@iogearbox.net,
+        akpm@linux-foundation.org, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        oprofile-list@lists.sf.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 2/3] module: Fix up module_notifier return values.
+Message-ID: <20190704123359.jumjke6p7p5r7wbx@rric.localdomain>
+References: <20190624091843.859714294@infradead.org>
+ <20190624092109.805742823@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.42]); Thu, 04 Jul 2019 08:58:59 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190624092109.805742823@infradead.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Michael reported crash with by bpf program in json mode on powerpc:
+On 24.06.19 11:18:45, Peter Zijlstra wrote:
+> While auditing all module notifiers I noticed a whole bunch of fail
+> wrt the return value. Notifiers have a 'special' return semantics.
+> 
+> Cc: Robert Richter <rric@kernel.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Martin KaFai Lau <kafai@fb.com>
+> Cc: Song Liu <songliubraving@fb.com>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: "Paul E. McKenney" <paulmck@linux.ibm.com>
+> Cc: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: oprofile-list@lists.sf.net
+> Cc: linux-kernel@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: bpf@vger.kernel.org
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  drivers/oprofile/buffer_sync.c |    4 ++--
+>  kernel/module.c                |    9 +++++----
+>  kernel/trace/bpf_trace.c       |    8 ++++++--
+>  kernel/trace/trace.c           |    2 +-
+>  kernel/trace/trace_events.c    |    2 +-
+>  kernel/trace/trace_printk.c    |    4 ++--
+>  kernel/tracepoint.c            |    2 +-
+>  7 files changed, 18 insertions(+), 13 deletions(-)
 
-  # bpftool prog -p dump jited id 14
-  [{
-        "name": "0xd00000000a9aa760",
-        "insns": [{
-                "pc": "0x0",
-                "operation": "nop",
-                "operands": [null
-                ]
-            },{
-                "pc": "0x4",
-                "operation": "nop",
-                "operands": [null
-                ]
-            },{
-                "pc": "0x8",
-                "operation": "mflr",
-  Segmentation fault (core dumped)
-
-The code is assuming char pointers in format, which is not always
-true at least for powerpc. Fixing this by dumping the whole string
-into buffer based on its format.
-
-Please note that libopcodes code does not check return values from
-fprintf callback, so there's no point to return error in case of
-allocation failure.
-
-Reported-by: Michael Petlan <mpetlan@redhat.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/bpf/bpftool/jit_disasm.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/tools/bpf/bpftool/jit_disasm.c b/tools/bpf/bpftool/jit_disasm.c
-index 3ef3093560ba..05fa6dc970f8 100644
---- a/tools/bpf/bpftool/jit_disasm.c
-+++ b/tools/bpf/bpftool/jit_disasm.c
-@@ -11,6 +11,8 @@
-  * Licensed under the GNU General Public License, version 2.0 (GPLv2)
-  */
- 
-+#define _GNU_SOURCE
-+#include <stdio.h>
- #include <stdarg.h>
- #include <stdint.h>
- #include <stdio.h>
-@@ -44,11 +46,13 @@ static int fprintf_json(void *out, const char *fmt, ...)
- 	char *s;
- 
- 	va_start(ap, fmt);
-+	if (vasprintf(&s, fmt, ap) < 0)
-+		return 0;
-+	va_end(ap);
-+
- 	if (!oper_count) {
- 		int i;
- 
--		s = va_arg(ap, char *);
--
- 		/* Strip trailing spaces */
- 		i = strlen(s) - 1;
- 		while (s[i] == ' ')
-@@ -61,11 +65,10 @@ static int fprintf_json(void *out, const char *fmt, ...)
- 	} else if (!strcmp(fmt, ",")) {
- 		   /* Skip */
- 	} else {
--		s = va_arg(ap, char *);
- 		jsonw_string(json_wtr, s);
- 		oper_count++;
- 	}
--	va_end(ap);
-+	free(s);
- 	return 0;
- }
- 
--- 
-2.21.0
-
+Reviewed-by: Robert Richter <rric@kernel.org>
