@@ -2,137 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 537A25EFAD
-	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2019 01:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C115F0CC
+	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2019 02:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726988AbfGCXjv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jul 2019 19:39:51 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:36309 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726562AbfGCXjv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jul 2019 19:39:51 -0400
-Received: by mail-io1-f68.google.com with SMTP id h6so9039359ioh.3;
-        Wed, 03 Jul 2019 16:39:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sC1hWLWPHtDF7lICnZ0xHZ7zLIO7+HLBlu2ZrIyAjDY=;
-        b=Ro7acgfcoM6HFmkSr2x43kSg1YzhjWscPdw2+opYOGkjySPv6eB6CM4x0OGJsVM9F8
-         MB15FBOqXmr+U0kP657Okfl1ufm5ZxS3JmGaX3MRJcZ8CnmBBPsnybAYjbC2SEa019Xr
-         wc+9F3GFQK2Dqs3rKPfqHBVlhVA+Et5vWjKtaJ3QNlQRl+Ed6iKLU0N7cyrXy1C7XwTt
-         GunmxgML0piOrWfzyvrwjGxH3XKDCUKNWo2ReD53PHKwFO3V6HUHGLMvrjiM/S0BlhIx
-         nUQsUIu0LuPJJk8CMeE4iUtg3pIufYhPvjRGg3PIrmGY+D3zsKGlFc1FCdlgIHduLINJ
-         4FQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sC1hWLWPHtDF7lICnZ0xHZ7zLIO7+HLBlu2ZrIyAjDY=;
-        b=F/mIcCtuASOioOVlK/sh91XeaBZYb7MjNzgmCukX+6FWS42ioUCxOSlhioSTsiLmsP
-         MYZn1MfumwMP0pS9Mj6+bycL4RiUMAgMybkTi4UV/8NMxvp2Fm8PMrZyH12OxPRoUJpd
-         hgyfkURO5r4aHcYoY2wj9VDsUqxnUQbCdKxKUbZxNBSdAoz+gxUcuOnaRp+beCQWz04e
-         4YK4XCUd7iNDBgIOdbXHmNhX19UqY5ohTl4hfOKKfSclcvZDMBu5snMP+V2yPc8rsUsa
-         ePNDZdDKk/CLi8Y3NIxgZVefTJPY7tdgSRwgE/hP5dvuA1lfJ2LWXLLsIIpTd7QEUBIS
-         5a8A==
-X-Gm-Message-State: APjAAAXzTILhoutfIb3bPmSgm7GG71FOuQE4vLQALkJkQ0mGCOzNy/Z3
-        9dXaXNKrW4xaoG2XhSv96nLUq88Iwx4mhRK6F90=
-X-Google-Smtp-Source: APXvYqworXYV7mXzgAu6WEW5Gt7vDxcAgOdG/buODsHxK+ENH/51Bx5vgNiAQxLaq38KUGaStYHPBZfaT9Kb2hMJaL4=
-X-Received: by 2002:a6b:bf01:: with SMTP id p1mr7790287iof.181.1562197190332;
- Wed, 03 Jul 2019 16:39:50 -0700 (PDT)
+        id S1726652AbfGDAtR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Jul 2019 20:49:17 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:33444 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726736AbfGDAtR (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 3 Jul 2019 20:49:17 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x640jMaQ026137
+        for <bpf@vger.kernel.org>; Wed, 3 Jul 2019 17:49:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=1d7uT0KzLdfGw41aios/F7xzsYFqjGCTO2PlZK5qDiE=;
+ b=CQvB3LhFnYJ/rgKgvIZWbhbIavv1LrV6g5X5nKErA4b9sD4CJzb9FvKxTi7gC/u4173k
+ wIUV0z+ogDcbrebqRuNWZxexkvH0luPSGskZIHTvMt+kqRP1nNaMqdAVI8ittLiL1fSq
+ jGnJlUdNKcQGKTNft4ztaEHVVCYqfHOSGeg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2tgxvksvsv-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 03 Jul 2019 17:49:15 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 3 Jul 2019 17:49:13 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 3182C861589; Wed,  3 Jul 2019 17:49:12 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH v4 bpf-next 0/4] capture integers in BTF type info for map defs
+Date:   Wed, 3 Jul 2019 17:49:07 -0700
+Message-ID: <20190704004911.978460-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20190703205100.142904-1-sdf@google.com>
-In-Reply-To: <20190703205100.142904-1-sdf@google.com>
-From:   Y Song <ys114321@gmail.com>
-Date:   Wed, 3 Jul 2019 16:39:14 -0700
-Message-ID: <CAH3MdRWePmAZNRfGNcBdjKAJ+D33=4Vgg1STYC3khNps8AmaHQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: make verifier loop tests arch independent
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-03_06:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907040008
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 3, 2019 at 1:51 PM Stanislav Fomichev <sdf@google.com> wrote:
->
-> Take the first x bytes of pt_regs for scalability tests, there is
-> no real reason we need x86 specific rax.
->
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
->  tools/testing/selftests/bpf/progs/loop1.c | 3 ++-
->  tools/testing/selftests/bpf/progs/loop2.c | 3 ++-
->  tools/testing/selftests/bpf/progs/loop3.c | 3 ++-
->  3 files changed, 6 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/progs/loop1.c b/tools/testing/selftests/bpf/progs/loop1.c
-> index dea395af9ea9..d530c61d2517 100644
-> --- a/tools/testing/selftests/bpf/progs/loop1.c
-> +++ b/tools/testing/selftests/bpf/progs/loop1.c
-> @@ -14,11 +14,12 @@ SEC("raw_tracepoint/kfree_skb")
->  int nested_loops(volatile struct pt_regs* ctx)
->  {
->         int i, j, sum = 0, m;
-> +       volatile int *any_reg = (volatile int *)ctx;
->
->         for (j = 0; j < 300; j++)
->                 for (i = 0; i < j; i++) {
->                         if (j & 1)
-> -                               m = ctx->rax;
-> +                               m = *any_reg;
+This patch set implements an update to how BTF-defined maps are specified. The
+change is in how integer attributes, e.g., type, max_entries, map_flags, are
+specified: now they are captured as part of map definition struct's BTF type
+information (using array dimension), eliminating the need for compile-time
+data initialization and keeping all the metadata in one place.
 
-I agree. ctx->rax here is only to generate some operations, which
-cannot be optimized away by the compiler. dereferencing a volatile
-pointee may just serve that purpose.
+All existing selftests that were using BTF-defined maps are updated, along
+with some other selftests, that were switched to new syntax.
 
-Comparing the byte code generated with ctx->rax and *any_reg, they are
-slightly different. Using *any_reg is slighly worse, but this should
-be still okay for the test.
+v3->v4:
+- add acks;
+- fix int -> uint type in commit message;
+v2->v3:
+- rename __int into __uint (Yonghong);
+v1->v2:
+- split bpf_helpers.h change from libbpf change (Song).
 
->                         else
->                                 m = j;
->                         sum += i * m;
-> diff --git a/tools/testing/selftests/bpf/progs/loop2.c b/tools/testing/selftests/bpf/progs/loop2.c
-> index 0637bd8e8bcf..91bb89d901e3 100644
-> --- a/tools/testing/selftests/bpf/progs/loop2.c
-> +++ b/tools/testing/selftests/bpf/progs/loop2.c
-> @@ -14,9 +14,10 @@ SEC("raw_tracepoint/consume_skb")
->  int while_true(volatile struct pt_regs* ctx)
->  {
->         int i = 0;
-> +       volatile int *any_reg = (volatile int *)ctx;
->
->         while (true) {
-> -               if (ctx->rax & 1)
-> +               if (*any_reg & 1)
->                         i += 3;
->                 else
->                         i += 7;
-> diff --git a/tools/testing/selftests/bpf/progs/loop3.c b/tools/testing/selftests/bpf/progs/loop3.c
-> index 30a0f6cba080..3a7f12d7186c 100644
-> --- a/tools/testing/selftests/bpf/progs/loop3.c
-> +++ b/tools/testing/selftests/bpf/progs/loop3.c
-> @@ -14,9 +14,10 @@ SEC("raw_tracepoint/consume_skb")
->  int while_true(volatile struct pt_regs* ctx)
->  {
->         __u64 i = 0, sum = 0;
-> +       volatile __u64 *any_reg = (volatile __u64 *)ctx;
->         do {
->                 i++;
-> -               sum += ctx->rax;
-> +               sum += *any_reg;
->         } while (i < 0x100000000ULL);
->         return sum;
->  }
-> --
-> 2.22.0.410.gd8fdbe21b5-goog
+Andrii Nakryiko (4):
+  libbpf: capture value in BTF type info for BTF-defined map defs
+  selftests/bpf: add __uint and __type macro for BTF-defined maps
+  selftests/bpf: convert selftests using BTF-defined maps to new syntax
+  selftests/bpf: convert legacy BPF maps to BTF-defined ones
 
-Ilya Leoshkevich (iii@linux.ibm.com, cc'ed) has another patch set
-trying to solve this problem by introducing s360 arch register access
-macros. I guess for now that patch set is not needed any more?
+ tools/lib/bpf/libbpf.c                        |  58 +++++----
+ tools/testing/selftests/bpf/bpf_helpers.h     |   3 +
+ tools/testing/selftests/bpf/progs/bpf_flow.c  |  28 ++---
+ .../selftests/bpf/progs/get_cgroup_id_kern.c  |  26 ++---
+ .../testing/selftests/bpf/progs/netcnt_prog.c |  20 ++--
+ tools/testing/selftests/bpf/progs/pyperf.h    |  90 +++++++-------
+ .../selftests/bpf/progs/sample_map_ret0.c     |  24 ++--
+ .../selftests/bpf/progs/socket_cookie_prog.c  |  13 +--
+ .../bpf/progs/sockmap_verdict_prog.c          |  48 ++++----
+ .../testing/selftests/bpf/progs/strobemeta.h  |  68 +++++------
+ .../selftests/bpf/progs/test_btf_newkv.c      |  13 +--
+ .../bpf/progs/test_get_stack_rawtp.c          |  39 +++----
+ .../selftests/bpf/progs/test_global_data.c    |  37 +++---
+ tools/testing/selftests/bpf/progs/test_l4lb.c |  65 ++++-------
+ .../selftests/bpf/progs/test_l4lb_noinline.c  |  65 ++++-------
+ .../selftests/bpf/progs/test_map_in_map.c     |  30 ++---
+ .../selftests/bpf/progs/test_map_lock.c       |  26 ++---
+ .../testing/selftests/bpf/progs/test_obj_id.c |  12 +-
+ .../bpf/progs/test_select_reuseport_kern.c    |  67 ++++-------
+ .../bpf/progs/test_send_signal_kern.c         |  26 ++---
+ .../bpf/progs/test_sock_fields_kern.c         |  78 +++++--------
+ .../selftests/bpf/progs/test_spin_lock.c      |  36 +++---
+ .../bpf/progs/test_stacktrace_build_id.c      |  55 ++++-----
+ .../selftests/bpf/progs/test_stacktrace_map.c |  52 +++------
+ .../selftests/bpf/progs/test_tcp_estats.c     |  13 +--
+ .../selftests/bpf/progs/test_tcpbpf_kern.c    |  26 ++---
+ .../selftests/bpf/progs/test_tcpnotify_kern.c |  28 ++---
+ tools/testing/selftests/bpf/progs/test_xdp.c  |  26 ++---
+ .../selftests/bpf/progs/test_xdp_loop.c       |  26 ++---
+ .../selftests/bpf/progs/test_xdp_noinline.c   |  81 +++++--------
+ .../selftests/bpf/progs/xdp_redirect_map.c    |  12 +-
+ .../testing/selftests/bpf/progs/xdping_kern.c |  12 +-
+ .../selftests/bpf/test_queue_stack_map.h      |  30 ++---
+ .../testing/selftests/bpf/test_sockmap_kern.h | 110 +++++++++---------
+ 34 files changed, 571 insertions(+), 772 deletions(-)
+
+-- 
+2.17.1
+
