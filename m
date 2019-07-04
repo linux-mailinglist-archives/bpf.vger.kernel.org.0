@@ -2,58 +2,232 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C69FC5FDE5
-	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2019 22:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDA35FE1E
+	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2019 23:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726916AbfGDUto (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Jul 2019 16:49:44 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:53394 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726892AbfGDUto (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Jul 2019 16:49:44 -0400
-Received: from localhost (unknown [IPv6:2601:601:9f80:35cd::d71])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 36B06146A4B60;
-        Thu,  4 Jul 2019 13:49:43 -0700 (PDT)
-Date:   Thu, 04 Jul 2019 13:49:40 -0700 (PDT)
-Message-Id: <20190704.134940.462462778251829402.davem@davemloft.net>
-To:     daniel@iogearbox.net
-Cc:     ast@kernel.org, saeedm@mellanox.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: pull-request: bpf-next 2019-07-03
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20190703224740.15354-1-daniel@iogearbox.net>
-References: <20190703224740.15354-1-daniel@iogearbox.net>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 04 Jul 2019 13:49:43 -0700 (PDT)
+        id S1727093AbfGDV1H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Jul 2019 17:27:07 -0400
+Received: from mail-wr1-f41.google.com ([209.85.221.41]:45723 "EHLO
+        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727190AbfGDV1H (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Jul 2019 17:27:07 -0400
+Received: by mail-wr1-f41.google.com with SMTP id f9so7836958wre.12
+        for <bpf@vger.kernel.org>; Thu, 04 Jul 2019 14:27:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=Bu29TzmUk2drkOkTMs3d2hr+pj0BaeOOKmBc8wkppTw=;
+        b=L25WLc2gVfOM7jMB54dR6hYXVTkbmU51btB64ZE/1doE4XqMy4+/5ZgBZ+C9UxxUYD
+         GBFM9spoJ4XQtQNq3GHlch27/jAAMZDl0nACTwejtDzCCYCRgy+q4mydeHTmYJm/Z1xG
+         NZ0gWnRIbRrTWtvzH5W9bnUlVxBFE5imGjUITn3LjfkUyCmW1LFZx9xLf00Atmn75WR0
+         pSb7agTj2x0cJ4m+uWKniTbQLKdAej/EQnV3TlPWSMw8ALe5swImtvtFHFjoCMw2qabS
+         9DQ5YECpkxoKzr7y2c5cUsI6ZkAkBP2nibIUl+tjwiCTaX/RwGw51GmuaooiANJ9eFRI
+         45Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Bu29TzmUk2drkOkTMs3d2hr+pj0BaeOOKmBc8wkppTw=;
+        b=UcPrdnbgit01rIQk2L42+SQhAptcU0k0p7yo3BvP6ITEBg+e/g/Vxa3vDjDovwF122
+         0TXNZ1gL/SaW8cuZMky0c5k7TI1uGCKwvK1W8M0SW5z8mo1eZ8VQcG4RTcW57rfwEc9k
+         UQwapIrEXQ6uGix+yxsra3gsORcJSs9JrINvnnYjSqYSQNe5jc6IE8Wl6yOWofk4YeP0
+         FdcmsZkvsIzdteD4TMZTZXZA9Y2pguEuxbMBl0Hi7v7WLU48jX6an6Kp1blVd9POqqyy
+         XuZnNCHWySrdzB+UdYM8NdalJervJVfnHi8UEUQErp0sD5QePK5NFvSQ33bnBGZOMWFn
+         D3LA==
+X-Gm-Message-State: APjAAAWrbvuMlDA9m6zxQxZoj5Cx3KD9j6GyVdCbrMGfffkEiRhSVXLd
+        t8IMKRp76XKQ12irq8zrNz0LDQ==
+X-Google-Smtp-Source: APXvYqzQa3QUiZR0GoFf9lB3wg/Q1ec4x0Ro6wBGruDAVYZhglqlQnOvkj7ECPEkf3qDCXIxKS4x+w==
+X-Received: by 2002:adf:e78b:: with SMTP id n11mr339457wrm.191.1562275623888;
+        Thu, 04 Jul 2019 14:27:03 -0700 (PDT)
+Received: from cbtest28.netronome.com ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id t17sm9716654wrs.45.2019.07.04.14.27.02
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Thu, 04 Jul 2019 14:27:03 -0700 (PDT)
+From:   Jiong Wang <jiong.wang@netronome.com>
+To:     alexei.starovoitov@gmail.com, daniel@iogearbox.net
+Cc:     ecree@solarflare.com, naveen.n.rao@linux.vnet.ibm.com,
+        andriin@fb.com, jakub.kicinski@netronome.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, oss-drivers@netronome.com,
+        Jiong Wang <jiong.wang@netronome.com>
+Subject: [RFC bpf-next 0/8] bpf: accelerate insn patching speed
+Date:   Thu,  4 Jul 2019 22:26:43 +0100
+Message-Id: <1562275611-31790-1-git-send-email-jiong.wang@netronome.com>
+X-Mailer: git-send-email 2.7.4
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
-Date: Thu,  4 Jul 2019 00:47:40 +0200
+This is an RFC based on latest bpf-next about acclerating insn patching
+speed, it is now near the shape of final PATCH set, and we could see the
+changes migrating to list patching would brings, so send out for
+comments. Most of the info are in cover letter. I splitted the code in a
+way to show API migration more easily.
 
-> The following pull-request contains BPF updates for your *net-next* tree.
-> 
-> There is a minor merge conflict in mlx5 due to 8960b38932be ("linux/dim:
-> Rename externally used net_dim members") which has been pulled into your
-> tree in the meantime, but resolution seems not that bad ... getting current
-> bpf-next out now before there's coming more on mlx5. ;) I'm Cc'ing Saeed
-> just so he's aware of the resolution below:
- ...
+Test Results
+===
+  - Full pass on test_verifier/test_prog/test_prog_32 under all three
+    modes (interpreter, JIT, JIT with blinding).
 
-Thanks for the detailed merge resolution guidance, it helps a lot.
+  - Benchmarking shows 10 ~ 15x faster on medium sized prog, and reduce
+    patching time from 5100s (nearly one and a half hour) to less than
+    0.5s for 1M insn patching.
 
-> Let me know if you run into any issues. Anyway, the main changes are:
- ...
-> Please consider pulling these changes from:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+Known Issues
+===
+  - The following warning is triggered when running scale test which
+    contains 1M insns and patching:
+      warning of mm/page_alloc.c:4639 __alloc_pages_nodemask+0x29e/0x330
 
-Pulled.
+    This is caused by existing code, it can be reproduced on bpf-next
+    master with jit blinding enabled, then run scale unit test, it will
+    shown up after half an hour. After this set, patching is very fast, so
+    it shows up quickly.
+
+  - No line info adjustment support when doing insn delete, subprog adj
+    is with bug when doing insn delete as well. Generally, removal of insns
+    could possibly cause remove of entire line or subprog, therefore
+    entries of prog->aux->linfo or env->subprog needs to be deleted. I
+    don't have good idea and clean code for integrating this into the
+    linearization code at the moment, will do more experimenting,
+    appreciate ideas and suggestions on this.
+     
+    Insn delete doesn't happen on normal programs, for example Cilium
+    benchmarks, and happens rarely on test_progs, so the test coverage is
+    not good. That's also why this RFC have a full pass on selftest with
+    this known issue.
+
+  - Could further use mem pool to accelerate the speed, changes are trivial
+    on top of this RFC, and could be 2x extra faster. Not included in this
+    RFC as reducing the algo complexity from quadratic to linear of insn
+    number is the first step.
+
+Background
+===
+This RFC aims to accelerate BPF insn patching speed, patching means expand
+one bpf insn at any offset inside bpf prog into a set of new insns, or
+remove insns.
+
+At the moment, insn patching is quadratic of insn number, this is due to
+branch targets of jump insns needs to be adjusted, and the algo used is:
+
+  for insn inside prog
+    patch insn + regeneate bpf prog
+    for insn inside new prog
+      adjust jump target
+
+This is causing significant time spending when a bpf prog requires large
+amount of patching on different insns. Benchmarking shows it could take
+more than half minutes to finish patching when patching number is more
+than 50K, and the time spent could be more than one hour when patching
+number is around 1M.
+
+  15000   :    3s
+  45000   :   29s
+  95000   :  125s
+  195000  :  712s
+  1000000 : 5100s
+
+This RFC introduces new patching infrastructure. Before doing insn
+patching, insns in bpf prog are turned into a singly linked list, insert
+new insns just insert new list node, delete insns just set delete flag.
+And finally, the list is linearized back into array, and branch target
+adjustment is done for all jump insns during linearization. This algo
+brings the time complexity from quadratic to linear of insn number.
+
+Benchmarking shows the new patching infrastructure could be 10 ~ 15x faster
+on medium sized prog, and for a 1M patching it reduce the time from 5100s
+to less than 0.5s.
+
+Patching API
+===
+Insn patching could happen on two layers inside BPF. One is "core layer"
+where only BPF insns are patched. The other is "verification layer" where
+insns have corresponding aux info as well high level subprog info, so
+insn patching means aux info needs to be patched as well, and subprog info
+needs to be adjusted. BPF prog also has debug info associated, so line info
+should always be updated after insn patching.
+
+So, list creation, destroy, insert, delete is the same for both layer,
+but lineration is different. "verification layer" patching require extra
+work. Therefore the patch APIs are:
+
+   list creation:                bpf_create_list_insn
+   list patch:                   bpf_patch_list_insn
+   list pre-patch:               bpf_prepatch_list_insn
+   list lineration (core layer): prog = bpf_linearize_list_insn(prog, list)
+   list lineration (veri layer): env = verifier_linearize_list_insn(env, list)
+   list destroy:                 bpf_destroy_list_insn
+
+list patch could change the insn at patch point, it will invalid the aux
+info at patching point. list pre-patch insert new insns before patch point
+where the insn and associated aux info are not touched, it is used for
+example in convert_ctx_access when generating prologue. 
+
+Typical API sequence for one patching pass:
+
+   struct bpf_list_insn list = bpf_create_list_insn(struct bpf_prog);
+   for (elem = list; elem; elem = elem->next)
+      patch_buf = gen_patch_buf_logic;
+      elem = bpf_patch_list_insn(elem, patch_buf, cnt);
+   bpf_prog = bpf_linearize_list_insn(list)
+   bpf_destroy_list_insn(list)
+  
+Several patching passes could also share the same list:
+
+   struct bpf_list_insn list = bpf_create_list_insn(struct bpf_prog);
+   for (elem = list; elem; elem = elem->next)
+      patch_buf = gen_patch_buf_logic1;
+      elem = bpf_patch_list_insn(elem, patch_buf, cnt);
+   for (elem = list; elem; elem = elem->next)
+      patch_buf = gen_patch_buf_logic2;
+      elem = bpf_patch_list_insn(elem, patch_buf, cnt);
+   bpf_prog = bpf_linearize_list_insn(list)
+   bpf_destroy_list_insn(list)
+
+but note new inserted insns int early passes won't have aux info except
+zext info. So, if one patch pass requires all aux info updated and
+recalculated for all insns including those pathced, it should first
+linearize the old list, then re-create the list. The RFC always create and
+linearize the list for each migrated patching pass separately.
+
+Compared with old patching code, this new infrastructure has much less core
+code, even though the final code has a couple of extra lines but that is
+mostly due to for list based infrastructure, we need to do more error
+checks, so the list and associated aux data structure could be freed when
+errors happens.
+
+Patching Restrictions
+===
+  - For core layer, the linearization assume no new jumps inside patch buf.
+    Currently, the only user of this layer is jit blinding.
+  - For verifier layer, there could be new jumps inside patch buf, but
+    they should have branch target resolved themselves, meaning new jumps
+    doesn't jump to insns out of the patch buf. This is the case for all
+    existing verifier layer users.
+  - bpf_insn_aux_data for all patched insns including the one at patch
+    point are invalidated, only 32-bit zext info will be recalcuated.
+    If the aux data of insn at patch point needs to be retained, it is
+    purely insn insertion, so need to use the pre-patch API.
+
+I plan to send out a PATCH set once I finished insn deletion line info adj
+support, please have a looks at this RFC, and appreciate feedbacks.
+
+Jiong Wang (8):
+  bpf: introducing list based insn patching infra to core layer
+  bpf: extend list based insn patching infra to verification layer
+  bpf: migrate jit blinding to list patching infra
+  bpf: migrate convert_ctx_accesses to list patching infra
+  bpf: migrate fixup_bpf_calls to list patching infra
+  bpf: migrate zero extension opt to list patching infra
+  bpf: migrate insn remove to list patching infra
+  bpf: delete all those code around old insn patching infrastructure
+
+ include/linux/bpf_verifier.h |   1 -
+ include/linux/filter.h       |  27 +-
+ kernel/bpf/core.c            | 431 +++++++++++++++++-----------
+ kernel/bpf/verifier.c        | 649 +++++++++++++++++++------------------------
+ 4 files changed, 580 insertions(+), 528 deletions(-)
+
+-- 
+2.7.4
+
