@@ -2,85 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9879B5F1CF
-	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2019 05:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 453885F4F6
+	for <lists+bpf@lfdr.de>; Thu,  4 Jul 2019 10:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbfGDDb0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Jul 2019 23:31:26 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8692 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726696AbfGDDb0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Jul 2019 23:31:26 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 45656930A83C8CE4AB25;
-        Thu,  4 Jul 2019 11:31:23 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.439.0; Thu, 4 Jul 2019 11:31:16 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     Jassi Brar <jaswinder.singh@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Jakub Kicinski" <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-CC:     YueHaibing <yuehaibing@huawei.com>, <netdev@vger.kernel.org>,
-        <xdp-newbies@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>
-Subject: [PATCH v3 net-next] net: socionext: remove set but not used variable 'pkts'
-Date:   Thu, 4 Jul 2019 03:37:45 +0000
-Message-ID: <20190704033745.1758-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190704032129.169282-1-yuehaibing@huawei.com>
-References: <20190704032129.169282-1-yuehaibing@huawei.com>
+        id S1727068AbfGDIwh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Jul 2019 04:52:37 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56842 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727071AbfGDIwg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 4 Jul 2019 04:52:36 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x648pui9076917
+        for <bpf@vger.kernel.org>; Thu, 4 Jul 2019 04:52:35 -0400
+Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2thdk51sb6-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 04 Jul 2019 04:52:35 -0400
+Received: from localhost
+        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Thu, 4 Jul 2019 09:52:33 +0100
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
+        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 4 Jul 2019 09:52:30 +0100
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x648qUMU50593822
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 4 Jul 2019 08:52:30 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EDAA85204F;
+        Thu,  4 Jul 2019 08:52:29 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.98.248])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id B429F52050;
+        Thu,  4 Jul 2019 08:52:29 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org, ys114321@gmail.com
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH v2 bpf-next] selftests/bpf: fix "alu with different scalars 1" on s390
+Date:   Thu,  4 Jul 2019 10:52:24 +0200
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19070408-4275-0000-0000-000003490E47
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19070408-4276-0000-0000-000038592C83
+Message-Id: <20190704085224.65223-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-04_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=716 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907040116
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+BPF_LDX_MEM is used to load the least significant byte of the retrieved
+test_val.index, however, on big-endian machines it ends up retrieving
+the most significant byte.
 
-drivers/net/ethernet/socionext/netsec.c: In function 'netsec_clean_tx_dring':
-drivers/net/ethernet/socionext/netsec.c:637:15: warning:
- variable 'pkts' set but not used [-Wunused-but-set-variable]
+Use the correct least significant byte offset on big-endian machines.
 
-It is not used since commit ba2b232108d3 ("net: netsec: add XDP support")
-
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
-v3: remove misplaced cc in patch log
-v2: keep reverse christmas-tree ordering of the local variables
----
- drivers/net/ethernet/socionext/netsec.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/socionext/netsec.c b/drivers/net/ethernet/socionext/netsec.c
-index 5544a722543f..d8d640b01119 100644
---- a/drivers/net/ethernet/socionext/netsec.c
-+++ b/drivers/net/ethernet/socionext/netsec.c
-@@ -634,15 +634,14 @@ static void netsec_set_rx_de(struct netsec_priv *priv,
- static bool netsec_clean_tx_dring(struct netsec_priv *priv)
- {
- 	struct netsec_desc_ring *dring = &priv->desc_ring[NETSEC_RING_TX];
--	unsigned int pkts, bytes;
- 	struct netsec_de *entry;
- 	int tail = dring->tail;
-+	unsigned int bytes;
- 	int cnt = 0;
- 
- 	if (dring->is_xdp)
- 		spin_lock(&dring->lock);
- 
--	pkts = 0;
- 	bytes = 0;
- 	entry = dring->vaddr + DESC_SZ * tail;
+v1->v2:
+- use __BYTE_ORDER instead of __BYTE_ORDER__.
 
+ tools/testing/selftests/bpf/verifier/value_ptr_arith.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
+diff --git a/tools/testing/selftests/bpf/verifier/value_ptr_arith.c b/tools/testing/selftests/bpf/verifier/value_ptr_arith.c
+index c3de1a2c9dc5..e5940c4e8b8f 100644
+--- a/tools/testing/selftests/bpf/verifier/value_ptr_arith.c
++++ b/tools/testing/selftests/bpf/verifier/value_ptr_arith.c
+@@ -183,7 +183,11 @@
+ 	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
+ 	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
+ 	BPF_EXIT_INSN(),
++#if __BYTE_ORDER == __LITTLE_ENDIAN
+ 	BPF_LDX_MEM(BPF_B, BPF_REG_1, BPF_REG_0, 0),
++#else
++	BPF_LDX_MEM(BPF_B, BPF_REG_1, BPF_REG_0, sizeof(int) - 1),
++#endif
+ 	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0, 3),
+ 	BPF_MOV64_IMM(BPF_REG_2, 0),
+ 	BPF_MOV64_IMM(BPF_REG_3, 0x100000),
+-- 
+2.21.0
 
