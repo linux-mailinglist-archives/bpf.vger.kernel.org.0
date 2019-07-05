@@ -2,295 +2,315 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C1284609E7
-	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2019 18:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7D760A29
+	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2019 18:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728223AbfGEQDa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Jul 2019 12:03:30 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:46471 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727251AbfGEQDa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Jul 2019 12:03:30 -0400
-Received: by mail-wr1-f66.google.com with SMTP id z1so5811558wru.13
-        for <bpf@vger.kernel.org>; Fri, 05 Jul 2019 09:03:27 -0700 (PDT)
+        id S1725730AbfGEQW5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Jul 2019 12:22:57 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:35848 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728368AbfGEQW4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Jul 2019 12:22:56 -0400
+Received: by mail-io1-f66.google.com with SMTP id o9so4658822iom.3;
+        Fri, 05 Jul 2019 09:22:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:references:from:openpgp:autocrypt:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xfdS3GKUhM1w8zqXsHIdm7Qeg5J+OW96uoi4TIfpQoo=;
-        b=rKeAsWzyigtgVdlU22c9ESPchHftpVnYdZ/qi0i1ODTZYvtfMY6S+HSWumpCNhDRBT
-         5EOgvC4IAjbi/NvGsZ23VjXGsIYWlisv4JZBFA/T3d6ba/IEQTMGcpKjYiWdMZbCJSTK
-         PITylDgIfMW23eapYpnAuCRIvcF5Nl2IOp1qwOaWQU0a2mxUh1+Ye5KMfUBny6+Xtah1
-         W4jXMqoqJhD1rzKP7Rw31liQ/1/Lb31kw0DhVO7FJnoUwX3sLoVpCOk/wBCS1Mq630r7
-         f+qiI8rsQ5vNZSaWGGAX8a2qdZKasOIEDA2K/cYeEIzhncnh1d+OHR8KjIL+hiW5lKgx
-         4rmQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3wQNeBFGdF1nQw7LpAoGt6bfTmmmJ7AdVeXNyOERX+Y=;
+        b=uvIrqEddJ5eNmcSrvDrsHeg92EsGBMqWo8tug4JmU1Xw8N3j2IPhIOPf012GHbdZuk
+         D5150qmM3bhAspc2aPHscYEfetbgsnTRbtCtl0X17w7J5yYRgG1MT2DKrMG51++7jNxJ
+         a152+bk8o/4fIvkGMwrifrAxPyRhv7gfNnorBBZspHc+dNhTCpVSw1PnEL+967jP2OeH
+         t3BBwQFrNVH+KELjsrsIT0/YGdH64L6x9FvPxK2dXzcgmSTT/1/J8mhv2SCMyhowyaWa
+         wskSMzUI86aq6cbsg006hJl5YIOy4l6cZ5pNtdDpleI+7VVrvm3knYKptuigyABEyjwX
+         4RXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:openpgp:autocrypt:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=xfdS3GKUhM1w8zqXsHIdm7Qeg5J+OW96uoi4TIfpQoo=;
-        b=FsQp57PESGzZagGa3JJAhtru6Xz07xUMVXJTsr/KqZUjeUJIIFcwnZSzVyNu3iZ5ty
-         HF9SNarHZmAoWeGlO8SMruf0Xtfc0Kxr3ANDBbmPSY2IMwsuFCZNWoa4QE+BN2+JhU9o
-         5PPx9C7/QXr7+pTAN9AeG5P2jSPjU2oib7M/fD4MCkpOy5ntwFskXY3tuog692cogb5P
-         FHSRno6nEQx+x+imM3myVWZ5qMoZ66tdUJqx/tnoyhf41uIQbbFiAzOhxKvlc0UGT9kQ
-         5eX9Y5zfFhJ8dhLG4SY0X2+0cHRS/vaOX7NyqxyhZMPXu5w8kAMvLXs2qvdmWDobb8At
-         2QPw==
-X-Gm-Message-State: APjAAAXVQrk4vA4xd48LRtK0IOB+0cCLooOJinFGJ1oAfp9EyiYy3PQk
-        gONe07Tsj2UKE7mw5UjQ73xXzw==
-X-Google-Smtp-Source: APXvYqwDFI3Sbamhkt/WJ7ME6zsAXgs7kcZJV43wZWO7ptyP1rO2/AYuUeXynsXkGFpYDNY2WobWvw==
-X-Received: by 2002:a5d:428c:: with SMTP id k12mr4912024wrq.81.1562342606909;
-        Fri, 05 Jul 2019 09:03:26 -0700 (PDT)
-Received: from [172.20.1.254] ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id f1sm6383750wml.28.2019.07.05.09.03.26
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Jul 2019 09:03:26 -0700 (PDT)
-To:     Y Song <ys114321@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        oss-drivers@netronome.com
-References: <20190704085646.12406-1-quentin.monnet@netronome.com>
- <CAH3MdRXuDmXobkXESZg0+VV=FrBLsiAYPC61xQsjx2smKQKUtQ@mail.gmail.com>
- <b4bbb342-1f77-8669-ec51-8d5542f7e7b4@netronome.com>
- <CAH3MdRWcU9=YCO6WuLY2e2-kixE7E8yLBS+fJH4ASh94oHcK-A@mail.gmail.com>
-From:   Quentin Monnet <quentin.monnet@netronome.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quentin.monnet@netronome.com; prefer-encrypt=mutual; keydata=
- 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
- RHhSHGnKaQ6MfrTge5Q0h5A=
-Subject: Re: [PATCH bpf-next] tools: bpftool: add "prog run" subcommand to
- test-run programs
-Message-ID: <4e7a66b8-8c4b-58cc-61a8-9ec6568d4df7@netronome.com>
-Date:   Fri, 5 Jul 2019 17:03:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3wQNeBFGdF1nQw7LpAoGt6bfTmmmJ7AdVeXNyOERX+Y=;
+        b=dnQJPJvCJBNa6F8GF/f5DNDO97BzIIweSeZltstkxrDLzgRmPzJrg02fpEcdi1giSb
+         rYVa/teXJWi6dyL7ZzQxfN8Cv6gFeKpWhLlrcV5zMdbq+r1lt+VIbDo7ckQjSDOD5IsT
+         2FYJEXiOJXv9vUdD5nE+Iv3SCpMUdFUU29dDjdS8PYe76GXm1bv3IrUoKmj1yVrdeTcO
+         F+NJWrHwshVzVDlZ6Q0v3n4s75k+XLzmSwxcfCWMxLympgXeTr/94RSF0eMgMW+ZQk/y
+         Y81ktUyhEF2ZBEMTRgZtJiIGt8qXLaIXBAP1eNA914QUCX8ST4IuKZBTMasKSlD9BVT4
+         q5VA==
+X-Gm-Message-State: APjAAAXU1L9GIW7+zO4r47VaPK/GMRAYKdEWyiPTgbNheYyaicVFXRuj
+        PeUb2q50WXHW5h/E2t481B3jybsIAjeEVrFX9p8=
+X-Google-Smtp-Source: APXvYqyt1RcZvgV1yxmaP1a3dEd9X5H3DDSSsTfQ2sPLmUCekConRSATkDLicdiMnbaWBStMPSswm/l90kozSsfX7H4=
+X-Received: by 2002:a6b:dd18:: with SMTP id f24mr3572565ioc.97.1562343775606;
+ Fri, 05 Jul 2019 09:22:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAH3MdRWcU9=YCO6WuLY2e2-kixE7E8yLBS+fJH4ASh94oHcK-A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <20190703170118.196552-1-brianvv@google.com> <20190703170118.196552-3-brianvv@google.com>
+In-Reply-To: <20190703170118.196552-3-brianvv@google.com>
+From:   Y Song <ys114321@gmail.com>
+Date:   Fri, 5 Jul 2019 09:22:19 -0700
+Message-ID: <CAH3MdRU505Er44m460c7y5nxtZxmDmVY4jDrWOYt2=OdP2d5Ow@mail.gmail.com>
+Subject: Re: [PATCH bpf-next RFC v3 2/6] bpf: add BPF_MAP_DUMP command to dump
+ more than one entry per call
+To:     Brian Vazquez <brianvv@google.com>
+Cc:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Petar Penkov <ppenkov@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2019-07-05 08:42 UTC-0700 ~ Y Song <ys114321@gmail.com>
-> On Fri, Jul 5, 2019 at 1:21 AM Quentin Monnet
-> <quentin.monnet@netronome.com> wrote:
->>
->> 2019-07-04 22:49 UTC-0700 ~ Y Song <ys114321@gmail.com>
->>> On Thu, Jul 4, 2019 at 1:58 AM Quentin Monnet
->>> <quentin.monnet@netronome.com> wrote:
->>>>
->>>> Add a new "bpftool prog run" subcommand to run a loaded program on input
->>>> data (and possibly with input context) passed by the user.
->>>>
->>>> Print output data (and output context if relevant) into a file or into
->>>> the console. Print return value and duration for the test run into the
->>>> console.
->>>>
->>>> A "repeat" argument can be passed to run the program several times in a
->>>> row.
->>>>
->>>> The command does not perform any kind of verification based on program
->>>> type (Is this program type allowed to use an input context?) or on data
->>>> consistency (Can I work with empty input data?), this is left to the
->>>> kernel.
->>>>
->>>> Example invocation:
->>>>
->>>>     # perl -e 'print "\x0" x 14' | ./bpftool prog run \
->>>>             pinned /sys/fs/bpf/sample_ret0 \
->>>>             data_in - data_out - repeat 5
->>>>     0000000 0000 0000 0000 0000 0000 0000 0000      | ........ ......
->>>>     Return value: 0, duration (average): 260ns
->>>>
->>>> When one of data_in or ctx_in is "-", bpftool reads from standard input,
->>>> in binary format. Other formats (JSON, hexdump) might be supported (via
->>>> an optional command line keyword like "data_fmt_in") in the future if
->>>> relevant, but this would require doing more parsing in bpftool.
->>>>
->>>> Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
->>>> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
->>>> ---
->>
->> [...]
->>
->>>> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
->>>> index 9b0db5d14e31..8dcbaa0a8ab1 100644
->>>> --- a/tools/bpf/bpftool/prog.c
->>>> +++ b/tools/bpf/bpftool/prog.c
->>>> @@ -15,6 +15,7 @@
->>>>  #include <sys/stat.h>
->>>>
->>>>  #include <linux/err.h>
->>>> +#include <linux/sizes.h>
->>>>
->>>>  #include <bpf.h>
->>>>  #include <btf.h>
->>>> @@ -748,6 +749,344 @@ static int do_detach(int argc, char **argv)
->>>>         return 0;
->>>>  }
->>>>
->>>> +static int check_single_stdin(char *file_in, char *other_file_in)
->>>> +{
->>>> +       if (file_in && other_file_in &&
->>>> +           !strcmp(file_in, "-") && !strcmp(other_file_in, "-")) {
->>>> +               p_err("cannot use standard input for both data_in and ctx_in");
->>>
->>> The error message says data_in and ctx_in.
->>> Maybe the input parameter should be file_data_in and file_ctx_in?
->>
->>
->> Hi Yonghong,
->>
->> It's true those parameters should be file names. But having
->> "file_data_in", "file_data_out", "file_ctx_in" and "file_ctx_out" on a
->> command line seems a bit heavy to me? (And relying on keyword prefixing
->> for typing the command won't help much.)
->>
->> My opinion is that it should be clear from the man page or the "help"
->> command that the parameters are file names. What do you think? I can
->> prefix all four arguments with "file_" if you believe this is better.
-> 
-> I think you misunderstood my question above.
+On Wed, Jul 3, 2019 at 10:03 AM Brian Vazquez <brianvv@google.com> wrote:
+>
+> This introduces a new command to retrieve a variable number of entries
+> from a bpf map wrapping the existing bpf methods:
+> map_get_next_key and map_lookup_elem
+>
+> To start dumping the map from the beginning you must specify NULL as
+> the prev_key.
+>
+> The new API returns 0 when it successfully copied all the elements
+> requested or it copied less because there weren't more elements to
+> retrieved (err == -ENOENT). In last scenario err will be masked to 0.
+>
+> On a successful call buf and buf_len will contain correct data and in
+> case prev_key was provided (not for the first walk, since prev_key is
+> NULL) it will contain the last_key copied into the buf which will simplify
+> next call.
+>
+> Only when it can't find a single element it will return -ENOENT meaning
+> that the map has been entirely walked. When an error is return buf,
+> buf_len and prev_key shouldn't be read nor used.
+>
+> Because maps can be called from userspace and kernel code, this function
+> can have a scenario where the next_key was found but by the time we
+> try to retrieve the value the element is not there, in this case the
+> function continues and tries to get a new next_key value, skipping the
+> deleted key. If at some point the function find itself trap in a loop,
+> it will return -EINTR.
+>
+> The function will try to fit as much as possible in the buf provided and
+> will return -EINVAL if buf_len is smaller than elem_size.
+>
+> QUEUE and STACK maps are not supported.
+>
+> Note that map_dump doesn't guarantee that reading the entire table is
+> consistent since this function is always racing with kernel and user code
+> but the same behaviour is found when the entire table is walked using
+> the current interfaces: map_get_next_key + map_lookup_elem.
+> It is also important to note that when a locked map the lock is grabbed for
+> 1 entry at the time, meaning that the buf returned might or might not be
+> consistent.
 
-Totally did, sorry :/.
+First, thanks for the RFC. I do think there are use cases where
+batch dumping helps.
+Some comments below.
 
-> The command line parameters are fine.
-> I am talking about the function parameter names. Since in the error message,
-> the input parameters are referred for data_in and ctx_in
->    p_err("cannot use standard input for both data_in and ctx_in")
-> maybe the function signature should be
->   static int check_single_stdin(char *file_data_in, char *file_ctx_in)
-> 
-> If you are worried that later on the same function can be used in different
-> contexts, then alternatively, you can have signature like
->   static int check_single_stdin(char *file_in, char *other_file_in,
-> const char *file_in_arg, const char *other_file_in_arg)
-> where file_in_arg will be passed in as "data_in" and other_file_in_arg
-> as "ctx_in".
-> I think we could delay this until it is really needed.
+>
+> Suggested-by: Stanislav Fomichev <sdf@google.com>
+> Signed-off-by: Brian Vazquez <brianvv@google.com>
+> ---
+>  include/uapi/linux/bpf.h |   9 +++
+>  kernel/bpf/syscall.c     | 118 +++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 127 insertions(+)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index cffea1826a1f..cc589570a639 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -106,6 +106,7 @@ enum bpf_cmd {
+>         BPF_TASK_FD_QUERY,
+>         BPF_MAP_LOOKUP_AND_DELETE_ELEM,
+>         BPF_MAP_FREEZE,
+> +       BPF_MAP_DUMP,
+>  };
+>
+>  enum bpf_map_type {
+> @@ -388,6 +389,14 @@ union bpf_attr {
+>                 __u64           flags;
+>         };
+>
+> +       struct { /* struct used by BPF_MAP_DUMP command */
+> +               __u32           map_fd;
+> +               __aligned_u64   prev_key;
+> +               __aligned_u64   buf;
+> +               __aligned_u64   buf_len; /* input/output: len of buf */
+> +               __u64           flags;
+> +       } dump;
 
-As a matter of fact, the opposite thing happened. I first used the
-function for data_in/ctx_in, and also for data_out/ctx_out. But I
-changed my mind eventually because there is no real reason not to print
-both data_out and ctx_out to stdout if we want to do so. So I updated
-the name of the parameters in the error messages, but forgot to change
-the arguments for the function. Silly me.
+Maybe you can swap map_fd and flags?
+This way, you won't have hole right after map_fd?
 
-So I totally agree, I'll respin and change the argument names for the
-function. And yes, we could also pass the names to print in the error
-message, but I agree that this is not needed, and not helpful at the moment.
+> +
+>         struct { /* anonymous struct used by BPF_PROG_LOAD command */
+>                 __u32           prog_type;      /* one of enum bpf_prog_type */
+>                 __u32           insn_cnt;
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index d200d2837ade..78d55463fc76 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -1097,6 +1097,121 @@ static int map_get_next_key(union bpf_attr *attr)
+>         return err;
+>  }
+>
+> +/* last field in 'union bpf_attr' used by this command */
+> +#define BPF_MAP_DUMP_LAST_FIELD dump.buf_len
+> +
+> +static int map_dump(union bpf_attr *attr)
+> +{
+> +       void __user *ukey = u64_to_user_ptr(attr->dump.prev_key);
+> +       void __user *ubuf = u64_to_user_ptr(attr->dump.buf);
+> +       u32 __user *ubuf_len = u64_to_user_ptr(attr->dump.buf_len);
+> +       int ufd = attr->dump.map_fd;
+> +       struct bpf_map *map;
+> +       void *buf, *prev_key, *key, *value;
+> +       u32 value_size, elem_size, buf_len, cp_len;
+> +       struct fd f;
+> +       int err;
+> +       bool first_key = false;
+> +
+> +       if (CHECK_ATTR(BPF_MAP_DUMP))
+> +               return -EINVAL;
+> +
+> +       attr->flags = 0;
 
-Thanks for catching this!
+Why do you want attr->flags? This is to modify anonumous struct used by
+BPF_MAP_*_ELEM commands.
 
->>
->> [...]
->>
->>>> +static int do_run(int argc, char **argv)
->>>> +{
->>>> +       char *data_fname_in = NULL, *data_fname_out = NULL;
->>>> +       char *ctx_fname_in = NULL, *ctx_fname_out = NULL;
->>>> +       struct bpf_prog_test_run_attr test_attr = {0};
->>>> +       const unsigned int default_size = SZ_32K;
->>>> +       void *data_in = NULL, *data_out = NULL;
->>>> +       void *ctx_in = NULL, *ctx_out = NULL;
->>>> +       unsigned int repeat = 1;
->>>> +       int fd, err;
->>>> +
->>>> +       if (!REQ_ARGS(4))
->>>> +               return -1;
->>>> +
->>>> +       fd = prog_parse_fd(&argc, &argv);
->>>> +       if (fd < 0)
->>>> +               return -1;
->>>> +
->>>> +       while (argc) {
->>>> +               if (detect_common_prefix(*argv, "data_in", "data_out",
->>>> +                                        "data_size_out", NULL))
->>>> +                       return -1;
->>>> +               if (detect_common_prefix(*argv, "ctx_in", "ctx_out",
->>>> +                                        "ctx_size_out", NULL))
->>>> +                       return -1;
->>>> +
->>>> +               if (is_prefix(*argv, "data_in")) {
->>>> +                       NEXT_ARG();
->>>> +                       if (!REQ_ARGS(1))
->>>> +                               return -1;
->>>> +
->>>> +                       data_fname_in = GET_ARG();
->>>> +                       if (check_single_stdin(data_fname_in, ctx_fname_in))
->>>> +                               return -1;
->>>> +               } else if (is_prefix(*argv, "data_out")) {
->>>
->>> Here, we all use is_prefix() to match "data_in", "data_out",
->>> "data_size_out" etc.
->>> That means users can use "data_i" instead of "data_in" as below
->>>    ... | ./bpftool prog run id 283 data_i - data_out - repeat 5
->>> is this expected?
->> Yes, this is expected. We use prefix matching as we do pretty much
->> everywhere else in bpftool. It's not as useful here because most of the
->> strings for the names are similar. I agree that typing "data_i" instead
->> of "data_in" brings little advantage, but I see no reason why we should
->> reject prefixing for those keywords. And we accept "data_s" instead of
->> "data_size_out", which is still shorter to type than the complete keyword.
-> 
-> This makes sense. Thanks for explanation.
-> 
-> Another question. Currently, you are proposing "./bpftool prog run ...",
-> but actually it is just a test_run. Do you think we should rename it
-> to "./bpftool prog test_run ..." to make it clear for its intention?
+> +       if (attr->dump.flags & ~BPF_F_LOCK)
+> +               return -EINVAL;
+> +
+> +       f = fdget(ufd);
+> +       map = __bpf_map_get(f);
+> +       if (IS_ERR(map))
+> +               return PTR_ERR(map);
+> +       if (!(map_get_sys_perms(map, f) & FMODE_CAN_READ)) {
+> +               err = -EPERM;
+> +               goto err_put;
+> +       }
+> +
+> +       if ((attr->dump.flags & BPF_F_LOCK) &&
+> +           !map_value_has_spin_lock(map)) {
+> +               err = -EINVAL;
+> +               goto err_put;
+> +       }
+> +
+> +       if (map->map_type == BPF_MAP_TYPE_QUEUE ||
+> +           map->map_type == BPF_MAP_TYPE_STACK) {
+> +               err = -ENOTSUPP;
+> +               goto err_put;
+> +       }
+> +
+> +       value_size = bpf_map_value_size(map);
+> +
+> +       err = get_user(buf_len, ubuf_len);
+> +       if (err)
+> +               goto err_put;
+> +
+> +       elem_size = map->key_size + value_size;
+> +       if (buf_len < elem_size) {
+> +               err = -EINVAL;
+> +               goto err_put;
+> +       }
+> +
+> +       if (ukey) {
+> +               prev_key = __bpf_copy_key(ukey, map->key_size);
+> +               if (IS_ERR(prev_key)) {
+> +                       err = PTR_ERR(prev_key);
+> +                       goto err_put;
+> +               }
+> +       } else {
+> +               prev_key = NULL;
+> +               first_key = true;
+> +       }
+> +
+> +       err = -ENOMEM;
+> +       buf = kmalloc(elem_size, GFP_USER | __GFP_NOWARN);
+> +       if (!buf)
+> +               goto err_put;
+> +
+> +       key = buf;
+> +       value = key + map->key_size;
+> +       for (cp_len = 0; cp_len + elem_size <= buf_len;) {
+> +               if (signal_pending(current)) {
+> +                       err = -EINTR;
+> +                       break;
+> +               }
+> +
+> +               rcu_read_lock();
+> +               err = map->ops->map_get_next_key(map, prev_key, key);
+> +               rcu_read_unlock();
+> +
+> +               if (err)
+> +                       break;
+> +
+> +               err = bpf_map_copy_value(map, key, value, attr->dump.flags);
+> +
+> +               if (err == -ENOENT)
+> +                       continue;
+> +               if (err)
+> +                       goto free_buf;
+> +
+> +               if (copy_to_user(ubuf + cp_len, buf, elem_size)) {
+> +                       err = -EFAULT;
+> +                       goto free_buf;
+> +               }
+> +
+> +               prev_key = key;
+> +               cp_len += elem_size;
+> +       }
+> +
+> +       if (err == -ENOENT && cp_len)
+> +               err = 0;
+> +       if (!err && (copy_to_user(ubuf_len, &cp_len, sizeof(cp_len)) ||
+> +                   (!first_key && copy_to_user(ukey, key, map->key_size))))
+> +               err = -EFAULT;
+> +free_buf:
+> +       kfree(buf);
+> +err_put:
+> +       fdput(f);
+> +       return err;
+> +}
+> +
+>  #define BPF_MAP_LOOKUP_AND_DELETE_ELEM_LAST_FIELD value
+>
+>  static int map_lookup_and_delete_elem(union bpf_attr *attr)
+> @@ -2910,6 +3025,9 @@ SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr __user *, uattr, unsigned int, siz
+>         case BPF_MAP_LOOKUP_AND_DELETE_ELEM:
+>                 err = map_lookup_and_delete_elem(&attr);
+>                 break;
+> +       case BPF_MAP_DUMP:
+> +               err = map_dump(&attr);
+> +               break;
 
-Good question. Hmm. It would make it more explicit that we use the
-BPF_PROG_TEST_RUN command, but at the same time, from the point of view
-of the user, there is nothing in particular that makes it a test run, is
-it? I mean, you provide input data, you get output data and return
-value, that makes it a real BPF run somehow, except that it's not on a
-packet or anything. Do you think it is ambiguous and people may confuse
-it with something like "attach"?
+In bcc, we have use cases like this. At a certain time interval (e.g.,
+every 2 seconds),
+we get all key/value pairs for a map, we format and print out map
+key/values on the screen,
+and then delete all key/value pairs we retrieved earlier.
 
-Thanks,
-Quentin
+Currently, bpf_get_next_key() is used to get all key/value pairs, and
+deletion also happened
+at each key level.
+
+Your batch dump command should help retrieving map key/value pairs.
+What do you think deletions of those just retrieved map entries?
+With an additional flag and fold into BPF_MAP_DUMP?
+or implement a new BPF_MAP_DUMP_AND_DELETE?
+
+I mentioned this so that we can start discussion now.
+You do not need to implement batch deletion part, but let us
+have a design extensible for that.
+
+Thanks.
+
+>         default:
+>                 err = -EINVAL;
+>                 break;
+> --
+> 2.22.0.410.gd8fdbe21b5-goog
+>
