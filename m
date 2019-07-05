@@ -2,167 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4341960308
-	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2019 11:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F066605BB
+	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2019 14:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728226AbfGEJY3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Jul 2019 05:24:29 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:41300 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727383AbfGEJY2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Jul 2019 05:24:28 -0400
-Received: by mail-wr1-f65.google.com with SMTP id c2so9154294wrm.8
-        for <bpf@vger.kernel.org>; Fri, 05 Jul 2019 02:24:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=HHbqpLTt/UqK8u8skkn9x9YIdY8wkJ4ttRxZXF6EinY=;
-        b=yp5yQJh8jtfYUPLuGlLq2DfqpPBdGGO494xChqpf9zNWBSsXLE5a0248/NAxkoBO4/
-         0BsVaDdF03YgBQ/EiWOMx+7i4XiuJ0zQf7XlokIV1VYWJHiMZ3PDkE/KfYOab4VzMB+J
-         f/pVJLRXx+gS9twTb1Pgz2EXRdaLuXqYybXQVVic64Dl6MDkktWQB7g1huoxjSF5Uleo
-         KWEaVwh/WkLIXcfSUgaE+apFuFz8i+7Qp7PYmwtsyWVa2Ym0Ym+UO3OF2ienlhikB0yc
-         b4nd6B6ytLHgVQbS9mVjQWCRJczLAl4BYGmiNDVXuTYnaPhD6JUOdm5tiGTCbXBzkVMF
-         YL4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=HHbqpLTt/UqK8u8skkn9x9YIdY8wkJ4ttRxZXF6EinY=;
-        b=blR44ski+5JOBwMCw6bf5daSAEhoODpvdxklXHux8JqzimePWiKBWTHJnJZMrmsDQG
-         DXH0En5n+9XQjXaKp2vgIOLGAaawPdO8AOTgFUkWJ8mF7yiMwrFsh24Zf8afoMqyo3QY
-         urLRa+t/eZRqN/QQM9qdUOetNoCuzkWCW3AfqhMdGbcoEGvTUj9Cd/gMExHhxLJ+Kmj+
-         hir53f09VDJ55uF9YXFbu4HwmOGPPppsUmJ+O9YtG78YRq4tHSA1iJZUrwqnhNqlrw28
-         xixBBy/LQQD2r7YImnQLq8rTVPNfQKBg8qBFnCkxyItos+FBczIfLt01qQjdGfMVOLXz
-         NvUA==
-X-Gm-Message-State: APjAAAWNw37P7tsX0ZqgBRXLqarAdBPOho9ktouNfRvBb+yrn/81FrZx
-        JolvOngt8eM0P2rJVbXdPqkwbHx1OxY=
-X-Google-Smtp-Source: APXvYqwfVWZ2uyQrHtW79irxr4cfhJhTkvjPeAqMQ25Qa5108rnUpXmlpdEPv1K0U4PAXpWDPp+JbQ==
-X-Received: by 2002:adf:e50c:: with SMTP id j12mr3191191wrm.117.1562318666604;
-        Fri, 05 Jul 2019 02:24:26 -0700 (PDT)
-Received: from LAPTOP-V3S7NLPL ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id o126sm7447501wmo.1.2019.07.05.02.24.25
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 05 Jul 2019 02:24:25 -0700 (PDT)
-References: <20190705001803.30094-1-luke.r.nels@gmail.com>
-User-agent: mu4e 0.9.18; emacs 25.2.2
-From:   Jiong Wang <jiong.wang@netronome.com>
-To:     Luke Nelson <lukenels@cs.washington.edu>
-Cc:     linux-kernel@vger.kernel.org, Luke Nelson <luke.r.nels@gmail.com>,
-        Song Liu <liu.song.a23@gmail.com>,
-        Jiong Wang <jiong.wang@netronome.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1728123AbfGEMKe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Jul 2019 08:10:34 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:47918 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726005AbfGEMKe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Jul 2019 08:10:34 -0400
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id E2316C01F28C;
+        Fri,  5 Jul 2019 12:10:33 +0000 (UTC)
+Received: from krava (unknown [10.43.17.81])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4B7C16961D;
+        Fri,  5 Jul 2019 12:10:32 +0000 (UTC)
+Date:   Fri, 5 Jul 2019 14:10:31 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        netdev@vger.kernel.org, linux-riscv@lists.infradead.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next] Enable zext optimization for more RV64G ALU ops
-In-reply-to: <20190705001803.30094-1-luke.r.nels@gmail.com>
-Date:   Fri, 05 Jul 2019 10:24:22 +0100
-Message-ID: <8736jk4ywp.fsf@netronome.com>
+        Michael Petlan <mpetlan@redhat.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>
+Subject: [PATCHv2] tools bpftool: Fix json dump crash on powerpc
+Message-ID: <20190705121031.GA10777@krava>
+References: <20190704085856.17502-1-jolsa@kernel.org>
+ <20190704134210.17b8407c@cakuba.netronome.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190704134210.17b8407c@cakuba.netronome.com>
+User-Agent: Mutt/1.12.0 (2019-05-25)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.31]); Fri, 05 Jul 2019 12:10:34 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Jul 04, 2019 at 01:42:10PM -0700, Jakub Kicinski wrote:
+> On Thu,  4 Jul 2019 10:58:56 +0200, Jiri Olsa wrote:
+> > Michael reported crash with by bpf program in json mode on powerpc:
+> > 
+> >   # bpftool prog -p dump jited id 14
+> >   [{
+> >         "name": "0xd00000000a9aa760",
+> >         "insns": [{
+> >                 "pc": "0x0",
+> >                 "operation": "nop",
+> >                 "operands": [null
+> >                 ]
+> >             },{
+> >                 "pc": "0x4",
+> >                 "operation": "nop",
+> >                 "operands": [null
+> >                 ]
+> >             },{
+> >                 "pc": "0x8",
+> >                 "operation": "mflr",
+> >   Segmentation fault (core dumped)
+> > 
+> > The code is assuming char pointers in format, which is not always
+> > true at least for powerpc. Fixing this by dumping the whole string
+> > into buffer based on its format.
+> > 
+> > Please note that libopcodes code does not check return values from
+> > fprintf callback, so there's no point to return error in case of
+> > allocation failure.
+> 
+> Well, it doesn't check it today, it may perhaps do it in the future?
+> Let's flip the question - since it doesn't check it today, why not
+> propagate the error? :)  We should stay close to how fprintf would
+> behave, IMHO.
+> 
+> Fixes: 107f041212c1 ("tools: bpftool: add JSON output for `bpftool prog dump jited *` command")
 
-Luke Nelson writes:
+ok fair enough, v2 attached
 
-> commit 66d0d5a854a6 ("riscv: bpf: eliminate zero extension code-gen")
-> added the new zero-extension optimization for some BPF ALU operations.
->
-> Since then, bugs in the JIT that have been fixed in the bpf tree require
-> this optimization to be added to other operations: commit 1e692f09e091
-> ("bpf, riscv: clear high 32 bits for ALU32 add/sub/neg/lsh/rsh/arsh"),
-> and commit fe121ee531d1 ("bpf, riscv: clear target register high 32-bits
-> for and/or/xor on ALU32")
->
-> Now that these have been merged to bpf-next, the zext optimization can
-> be enabled for the fixed operations.
+thanks,
+jirka
 
-LGTM, thanks.
 
-Acked-by: Jiong Wang <jiong.wang@netronome.com>
+---
+Michael reported crash with by bpf program in json mode on powerpc:
 
->
-> Cc: Song Liu <liu.song.a23@gmail.com>
-> Cc: Jiong Wang <jiong.wang@netronome.com>
-> Cc: Xi Wang <xi.wang@gmail.com>
-> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
-> ---
->  arch/riscv/net/bpf_jit_comp.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
->
-> diff --git a/arch/riscv/net/bpf_jit_comp.c b/arch/riscv/net/bpf_jit_comp.c
-> index 876cb9c705ce..5451ef3845f2 100644
-> --- a/arch/riscv/net/bpf_jit_comp.c
-> +++ b/arch/riscv/net/bpf_jit_comp.c
-> @@ -757,31 +757,31 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->  	case BPF_ALU | BPF_ADD | BPF_X:
->  	case BPF_ALU64 | BPF_ADD | BPF_X:
->  		emit(is64 ? rv_add(rd, rd, rs) : rv_addw(rd, rd, rs), ctx);
-> -		if (!is64)
-> +		if (!is64 && !aux->verifier_zext)
->  			emit_zext_32(rd, ctx);
->  		break;
->  	case BPF_ALU | BPF_SUB | BPF_X:
->  	case BPF_ALU64 | BPF_SUB | BPF_X:
->  		emit(is64 ? rv_sub(rd, rd, rs) : rv_subw(rd, rd, rs), ctx);
-> -		if (!is64)
-> +		if (!is64 && !aux->verifier_zext)
->  			emit_zext_32(rd, ctx);
->  		break;
->  	case BPF_ALU | BPF_AND | BPF_X:
->  	case BPF_ALU64 | BPF_AND | BPF_X:
->  		emit(rv_and(rd, rd, rs), ctx);
-> -		if (!is64)
-> +		if (!is64 && !aux->verifier_zext)
->  			emit_zext_32(rd, ctx);
->  		break;
->  	case BPF_ALU | BPF_OR | BPF_X:
->  	case BPF_ALU64 | BPF_OR | BPF_X:
->  		emit(rv_or(rd, rd, rs), ctx);
-> -		if (!is64)
-> +		if (!is64 && !aux->verifier_zext)
->  			emit_zext_32(rd, ctx);
->  		break;
->  	case BPF_ALU | BPF_XOR | BPF_X:
->  	case BPF_ALU64 | BPF_XOR | BPF_X:
->  		emit(rv_xor(rd, rd, rs), ctx);
-> -		if (!is64)
-> +		if (!is64 && !aux->verifier_zext)
->  			emit_zext_32(rd, ctx);
->  		break;
->  	case BPF_ALU | BPF_MUL | BPF_X:
-> @@ -811,13 +811,13 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->  	case BPF_ALU | BPF_RSH | BPF_X:
->  	case BPF_ALU64 | BPF_RSH | BPF_X:
->  		emit(is64 ? rv_srl(rd, rd, rs) : rv_srlw(rd, rd, rs), ctx);
-> -		if (!is64)
-> +		if (!is64 && !aux->verifier_zext)
->  			emit_zext_32(rd, ctx);
->  		break;
->  	case BPF_ALU | BPF_ARSH | BPF_X:
->  	case BPF_ALU64 | BPF_ARSH | BPF_X:
->  		emit(is64 ? rv_sra(rd, rd, rs) : rv_sraw(rd, rd, rs), ctx);
-> -		if (!is64)
-> +		if (!is64 && !aux->verifier_zext)
->  			emit_zext_32(rd, ctx);
->  		break;
->  
-> @@ -826,7 +826,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->  	case BPF_ALU64 | BPF_NEG:
->  		emit(is64 ? rv_sub(rd, RV_REG_ZERO, rd) :
->  		     rv_subw(rd, RV_REG_ZERO, rd), ctx);
-> -		if (!is64)
-> +		if (!is64 && !aux->verifier_zext)
->  			emit_zext_32(rd, ctx);
->  		break;
+  # bpftool prog -p dump jited id 14
+  [{
+        "name": "0xd00000000a9aa760",
+        "insns": [{
+                "pc": "0x0",
+                "operation": "nop",
+                "operands": [null
+                ]
+            },{
+                "pc": "0x4",
+                "operation": "nop",
+                "operands": [null
+                ]
+            },{
+                "pc": "0x8",
+                "operation": "mflr",
+  Segmentation fault (core dumped)
+
+The code is assuming char pointers in format, which is not always
+true at least for powerpc. Fixing this by dumping the whole string
+into buffer based on its format.
+
+Please note that libopcodes code does not check return values from
+fprintf callback, but as per Jakub suggestion returning -1 on allocation
+failure so we do the best effort to propagate the error. 
+
+Reported-by: Michael Petlan <mpetlan@redhat.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ tools/bpf/bpftool/jit_disasm.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/tools/bpf/bpftool/jit_disasm.c b/tools/bpf/bpftool/jit_disasm.c
+index 3ef3093560ba..bfed711258ce 100644
+--- a/tools/bpf/bpftool/jit_disasm.c
++++ b/tools/bpf/bpftool/jit_disasm.c
+@@ -11,6 +11,8 @@
+  * Licensed under the GNU General Public License, version 2.0 (GPLv2)
+  */
+ 
++#define _GNU_SOURCE
++#include <stdio.h>
+ #include <stdarg.h>
+ #include <stdint.h>
+ #include <stdio.h>
+@@ -44,11 +46,13 @@ static int fprintf_json(void *out, const char *fmt, ...)
+ 	char *s;
+ 
+ 	va_start(ap, fmt);
++	if (vasprintf(&s, fmt, ap) < 0)
++		return -1;
++	va_end(ap);
++
+ 	if (!oper_count) {
+ 		int i;
+ 
+-		s = va_arg(ap, char *);
+-
+ 		/* Strip trailing spaces */
+ 		i = strlen(s) - 1;
+ 		while (s[i] == ' ')
+@@ -61,11 +65,10 @@ static int fprintf_json(void *out, const char *fmt, ...)
+ 	} else if (!strcmp(fmt, ",")) {
+ 		   /* Skip */
+ 	} else {
+-		s = va_arg(ap, char *);
+ 		jsonw_string(json_wtr, s);
+ 		oper_count++;
+ 	}
+-	va_end(ap);
++	free(s);
+ 	return 0;
+ }
+ 
+-- 
+2.21.0
 
