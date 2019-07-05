@@ -2,60 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D28660B11
-	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2019 19:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B45460B2C
+	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2019 19:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727321AbfGER0o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Jul 2019 13:26:44 -0400
-Received: from mail-wr1-f41.google.com ([209.85.221.41]:46366 "EHLO
-        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbfGER0o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Jul 2019 13:26:44 -0400
-Received: by mail-wr1-f41.google.com with SMTP id z1so6027429wru.13
-        for <bpf@vger.kernel.org>; Fri, 05 Jul 2019 10:26:42 -0700 (PDT)
+        id S1725882AbfGERuY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Jul 2019 13:50:24 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:45852 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725791AbfGERuY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Jul 2019 13:50:24 -0400
+Received: by mail-wr1-f65.google.com with SMTP id f9so10690170wre.12
+        for <bpf@vger.kernel.org>; Fri, 05 Jul 2019 10:50:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:openpgp:autocrypt:message-id:date
+        h=to:cc:references:from:openpgp:autocrypt:subject:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=TeYeBcfv24B0DakZR049hsv/5IqJieRYrN3VQLpo+Yk=;
-        b=PjPImhCJHJQkYzVczllMDRFvOFJM+GIwvPmHN6fb0JypDtWJNPbxPUNfF/GC5yIZLC
-         59A3I9FmGdvxe0Q9TsG9Ad/qXZfPuc+QaQvzZ+klzPUtN6vwwDAHP7X/LQR2oKArN7DN
-         pe+A2jK+gW1012FvWUnKigUGAETva+Au3iW64EG0olCvJEQh57zOhCKQZQ999a7QU85s
-         Sxdz9drEzCdaWpooOprPh9PKCQzXLB3enTkYp/oA78so/MTL+qi8/7kMM/pCL2XbtnYP
-         f7/kEeVtJFfV79/1JX70kiYe3k2RVnFsFBizfjfxpevZIzvjcmJWAxlZiCAR6T6PQDb0
-         0mvQ==
+        bh=fYSiUZQ46tzuVJG06HbeoKh26AHcQ4NUNe/J9kwHZgI=;
+        b=ftf3uKha77HVxtn5FHJNMp9K+1gcVMaClZlJkP5aklBIXh6OHdcuINGUkdZzU1snoj
+         bUY78oQMJ1JPQXtntNsvSbi2xw4yIc/4hLZaH6RZwtL1lM/UBONbgwCVe5a4ga+7gk9Y
+         dxU1GKo7ehREKZ/u07X+/qbVUqT3xYO/YLL7+/QKXZSlbCVVkBWtBVia4udpMrsqBl48
+         hP+6Sy1FDqTm6ZTGhkW/WwF1JrDBWBUJ9D17TIOsTgDZ6MjP/6HKADfH2YzMWFX4l3mZ
+         kug3MRvQVMsVDtlyg9on58Du7BaxqppoQk1Ywb9oMu5SWaS7yDDqinCHJ6uu8p9eDDlP
+         twpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
+        h=x-gm-message-state:to:cc:references:from:openpgp:autocrypt:subject
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=TeYeBcfv24B0DakZR049hsv/5IqJieRYrN3VQLpo+Yk=;
-        b=aLv+5q1W4S40DcfwETDnQYXGNe6tMp1/n469dd61MQOAmLpJPWJ/W3TEVI8HM2Q7fo
-         o34ZOw+/IcNQs+//Hdp/2e886Cd3fNrXFx6F3DomsrF9YoZS81rYGsJleXHA8hnF0cK3
-         FpHHxD64lJU8sY0hMR3jKDlRoA0QrmKK6wdVeGgjwucs+Ihsf2lstj6bPGR6ppdR/FyL
-         aUpuznkFYno9N9pS1sNNtf/xbFj6CZLvAA+H0TM8z7mop8xevodOBhArZVp2/vMdCkNw
-         8Q1r67u5i77oe1HNRgKbKA5AL7kvic5D2qxnFsLY21h5oJJZGSnVsdo4gI1oJ8gzv9HC
-         1kEA==
-X-Gm-Message-State: APjAAAVqvwSLL7QxZRbuhkXt2xZkEdj15IT3NotSxB33LqRcC7AIRX/v
-        K5UJm6cTY/7kKlJFBZE3VGiEyg==
-X-Google-Smtp-Source: APXvYqyBZC38NsIrIMPcdT3/9zOoKV0bdg4yIdb9lij6Wlnwz3qcl/M0UPy6xsXNpbIhqjXucchKYA==
-X-Received: by 2002:a5d:4d10:: with SMTP id z16mr4895854wrt.112.1562347601895;
-        Fri, 05 Jul 2019 10:26:41 -0700 (PDT)
+        bh=fYSiUZQ46tzuVJG06HbeoKh26AHcQ4NUNe/J9kwHZgI=;
+        b=AOaiY810OAkq17m44wteDbKn0Ea5eNGmqS/MIdwB2jZXi2LS4cKiUHSL0XxunzRqVW
+         19RIzDpGurXAfTkUANofVFEBwvRbjidA3+mocYXNDj9R2Katrf11mpNXTJJsCK7gCAJg
+         QiFnYjjnXK7jC7j77Tk2jRdiaIcF33P5HjUBjo3SXQULk7yIVy+TEdefZ1dDRXtdrT1d
+         jj5/qP1tcufB3aCho5nNs974y7T9/v1riZ4rJgh2rrbjHgoh0lRjdcOHhcYGSkF0FGMp
+         vrJc9s7Zg+Z3c9VwqiD/tCwYPIG2XGEiwvXUM4xKxsgjF8AyoFfWhrZZQMlYs1ns+DeN
+         ehzA==
+X-Gm-Message-State: APjAAAVzMbg/uI6tlRVGWQL+VIu/9kSUxo0He6UOEjksGpzLCe3CUeIG
+        3pBrOwUd06hqKax0TdwlDrleuw==
+X-Google-Smtp-Source: APXvYqxNwuT5Yj5jDbx5KyDxsQV9abHyxhLW9K8EqC451um3BgFwOG0TfNr6vYdGViZBkHbIcaNZAg==
+X-Received: by 2002:a5d:4284:: with SMTP id k4mr4799977wrq.194.1562349020535;
+        Fri, 05 Jul 2019 10:50:20 -0700 (PDT)
 Received: from [172.20.1.254] ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id x11sm7631232wmi.26.2019.07.05.10.26.41
+        by smtp.gmail.com with ESMTPSA id y16sm10120107wru.28.2019.07.05.10.50.19
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Jul 2019 10:26:41 -0700 (PDT)
-Subject: Re: [PATCHv2] tools bpftool: Fix json dump crash on powerpc
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Fri, 05 Jul 2019 10:50:19 -0700 (PDT)
+To:     Y Song <ys114321@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Michael Petlan <mpetlan@redhat.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>
-References: <20190704085856.17502-1-jolsa@kernel.org>
- <20190704134210.17b8407c@cakuba.netronome.com> <20190705121031.GA10777@krava>
- <20190705102452.0831942a@cakuba.netronome.com>
+        bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        oss-drivers@netronome.com
+References: <20190704085646.12406-1-quentin.monnet@netronome.com>
+ <CAH3MdRXuDmXobkXESZg0+VV=FrBLsiAYPC61xQsjx2smKQKUtQ@mail.gmail.com>
+ <b4bbb342-1f77-8669-ec51-8d5542f7e7b4@netronome.com>
+ <CAH3MdRWcU9=YCO6WuLY2e2-kixE7E8yLBS+fJH4ASh94oHcK-A@mail.gmail.com>
+ <4e7a66b8-8c4b-58cc-61a8-9ec6568d4df7@netronome.com>
+ <CAH3MdRX3LLjcwi72tW_5TEj9sHvVqVE88xqX5Ud6MOZf83jUmw@mail.gmail.com>
 From:   Quentin Monnet <quentin.monnet@netronome.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quentin.monnet@netronome.com; prefer-encrypt=mutual; keydata=
@@ -101,61 +102,216 @@ Autocrypt: addr=quentin.monnet@netronome.com; prefer-encrypt=mutual; keydata=
  oHhplrRgXwPBSOkMMlLKu+FJsmYVFeLAJ81sfmFuTTliRb3Fl2Q27cEr7kNKlsz/t6vLSEN2
  j8x+tWD8x53SEOSn94g2AyJA9Txh2xBhWGuZ9CpBuXjtPrnRSd8xdrw36AL53goTt/NiLHUd
  RHhSHGnKaQ6MfrTge5Q0h5A=
-Message-ID: <83d18af0-8efa-c8d5-3d99-01aed29915df@netronome.com>
-Date:   Fri, 5 Jul 2019 18:26:40 +0100
+Subject: Re: [PATCH bpf-next] tools: bpftool: add "prog run" subcommand to
+ test-run programs
+Message-ID: <cbd2b293-3eb7-960b-84a0-26d59b065253@netronome.com>
+Date:   Fri, 5 Jul 2019 18:50:19 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20190705102452.0831942a@cakuba.netronome.com>
+In-Reply-To: <CAH3MdRX3LLjcwi72tW_5TEj9sHvVqVE88xqX5Ud6MOZf83jUmw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2019-07-05 10:24 UTC-0700 ~ Jakub Kicinski <jakub.kicinski@netronome.com>
-> On Fri, 5 Jul 2019 14:10:31 +0200, Jiri Olsa wrote:
->> Michael reported crash with by bpf program in json mode on powerpc:
+2019-07-05 10:08 UTC-0700 ~ Y Song <ys114321@gmail.com>
+> On Fri, Jul 5, 2019 at 9:03 AM Quentin Monnet
+> <quentin.monnet@netronome.com> wrote:
 >>
->>   # bpftool prog -p dump jited id 14
->>   [{
->>         "name": "0xd00000000a9aa760",
->>         "insns": [{
->>                 "pc": "0x0",
->>                 "operation": "nop",
->>                 "operands": [null
->>                 ]
->>             },{
->>                 "pc": "0x4",
->>                 "operation": "nop",
->>                 "operands": [null
->>                 ]
->>             },{
->>                 "pc": "0x8",
->>                 "operation": "mflr",
->>   Segmentation fault (core dumped)
+>> 2019-07-05 08:42 UTC-0700 ~ Y Song <ys114321@gmail.com>
+>>> On Fri, Jul 5, 2019 at 1:21 AM Quentin Monnet
+>>> <quentin.monnet@netronome.com> wrote:
+>>>>
+>>>> 2019-07-04 22:49 UTC-0700 ~ Y Song <ys114321@gmail.com>
+>>>>> On Thu, Jul 4, 2019 at 1:58 AM Quentin Monnet
+>>>>> <quentin.monnet@netronome.com> wrote:
+>>>>>>
+>>>>>> Add a new "bpftool prog run" subcommand to run a loaded program on input
+>>>>>> data (and possibly with input context) passed by the user.
+>>>>>>
+>>>>>> Print output data (and output context if relevant) into a file or into
+>>>>>> the console. Print return value and duration for the test run into the
+>>>>>> console.
+>>>>>>
+>>>>>> A "repeat" argument can be passed to run the program several times in a
+>>>>>> row.
+>>>>>>
+>>>>>> The command does not perform any kind of verification based on program
+>>>>>> type (Is this program type allowed to use an input context?) or on data
+>>>>>> consistency (Can I work with empty input data?), this is left to the
+>>>>>> kernel.
+>>>>>>
+>>>>>> Example invocation:
+>>>>>>
+>>>>>>     # perl -e 'print "\x0" x 14' | ./bpftool prog run \
+>>>>>>             pinned /sys/fs/bpf/sample_ret0 \
+>>>>>>             data_in - data_out - repeat 5
+>>>>>>     0000000 0000 0000 0000 0000 0000 0000 0000      | ........ ......
+>>>>>>     Return value: 0, duration (average): 260ns
+>>>>>>
+>>>>>> When one of data_in or ctx_in is "-", bpftool reads from standard input,
+>>>>>> in binary format. Other formats (JSON, hexdump) might be supported (via
+>>>>>> an optional command line keyword like "data_fmt_in") in the future if
+>>>>>> relevant, but this would require doing more parsing in bpftool.
+>>>>>>
+>>>>>> Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
+>>>>>> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+>>>>>> ---
+>>>>
+>>>> [...]
+>>>>
+>>>>>> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+>>>>>> index 9b0db5d14e31..8dcbaa0a8ab1 100644
+>>>>>> --- a/tools/bpf/bpftool/prog.c
+>>>>>> +++ b/tools/bpf/bpftool/prog.c
+>>>>>> @@ -15,6 +15,7 @@
+>>>>>>  #include <sys/stat.h>
+>>>>>>
+>>>>>>  #include <linux/err.h>
+>>>>>> +#include <linux/sizes.h>
+>>>>>>
+>>>>>>  #include <bpf.h>
+>>>>>>  #include <btf.h>
+>>>>>> @@ -748,6 +749,344 @@ static int do_detach(int argc, char **argv)
+>>>>>>         return 0;
+>>>>>>  }
+>>>>>>
+>>>>>> +static int check_single_stdin(char *file_in, char *other_file_in)
+>>>>>> +{
+>>>>>> +       if (file_in && other_file_in &&
+>>>>>> +           !strcmp(file_in, "-") && !strcmp(other_file_in, "-")) {
+>>>>>> +               p_err("cannot use standard input for both data_in and ctx_in");
+>>>>>
+>>>>> The error message says data_in and ctx_in.
+>>>>> Maybe the input parameter should be file_data_in and file_ctx_in?
+>>>>
+>>>>
+>>>> Hi Yonghong,
+>>>>
+>>>> It's true those parameters should be file names. But having
+>>>> "file_data_in", "file_data_out", "file_ctx_in" and "file_ctx_out" on a
+>>>> command line seems a bit heavy to me? (And relying on keyword prefixing
+>>>> for typing the command won't help much.)
+>>>>
+>>>> My opinion is that it should be clear from the man page or the "help"
+>>>> command that the parameters are file names. What do you think? I can
+>>>> prefix all four arguments with "file_" if you believe this is better.
+>>>
+>>> I think you misunderstood my question above.
 >>
->> The code is assuming char pointers in format, which is not always
->> true at least for powerpc. Fixing this by dumping the whole string
->> into buffer based on its format.
+>> Totally did, sorry :/.
 >>
->> Please note that libopcodes code does not check return values from
->> fprintf callback, but as per Jakub suggestion returning -1 on allocation
->> failure so we do the best effort to propagate the error. 
+>>> The command line parameters are fine.
+>>> I am talking about the function parameter names. Since in the error message,
+>>> the input parameters are referred for data_in and ctx_in
+>>>    p_err("cannot use standard input for both data_in and ctx_in")
+>>> maybe the function signature should be
+>>>   static int check_single_stdin(char *file_data_in, char *file_ctx_in)
+>>>
+>>> If you are worried that later on the same function can be used in different
+>>> contexts, then alternatively, you can have signature like
+>>>   static int check_single_stdin(char *file_in, char *other_file_in,
+>>> const char *file_in_arg, const char *other_file_in_arg)
+>>> where file_in_arg will be passed in as "data_in" and other_file_in_arg
+>>> as "ctx_in".
+>>> I think we could delay this until it is really needed.
 >>
->> Reported-by: Michael Petlan <mpetlan@redhat.com>
->> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+>> As a matter of fact, the opposite thing happened. I first used the
+>> function for data_in/ctx_in, and also for data_out/ctx_out. But I
+>> changed my mind eventually because there is no real reason not to print
+>> both data_out and ctx_out to stdout if we want to do so. So I updated
+>> the name of the parameters in the error messages, but forgot to change
+>> the arguments for the function. Silly me.
+>>
+>> So I totally agree, I'll respin and change the argument names for the
+>> function. And yes, we could also pass the names to print in the error
+>> message, but I agree that this is not needed, and not helpful at the moment.
+>>
+>> Thanks for catching this!
+>>
+>>>>
+>>>> [...]
+>>>>
+>>>>>> +static int do_run(int argc, char **argv)
+>>>>>> +{
+>>>>>> +       char *data_fname_in = NULL, *data_fname_out = NULL;
+>>>>>> +       char *ctx_fname_in = NULL, *ctx_fname_out = NULL;
+>>>>>> +       struct bpf_prog_test_run_attr test_attr = {0};
+>>>>>> +       const unsigned int default_size = SZ_32K;
+>>>>>> +       void *data_in = NULL, *data_out = NULL;
+>>>>>> +       void *ctx_in = NULL, *ctx_out = NULL;
+>>>>>> +       unsigned int repeat = 1;
+>>>>>> +       int fd, err;
+>>>>>> +
+>>>>>> +       if (!REQ_ARGS(4))
+>>>>>> +               return -1;
+>>>>>> +
+>>>>>> +       fd = prog_parse_fd(&argc, &argv);
+>>>>>> +       if (fd < 0)
+>>>>>> +               return -1;
+>>>>>> +
+>>>>>> +       while (argc) {
+>>>>>> +               if (detect_common_prefix(*argv, "data_in", "data_out",
+>>>>>> +                                        "data_size_out", NULL))
+>>>>>> +                       return -1;
+>>>>>> +               if (detect_common_prefix(*argv, "ctx_in", "ctx_out",
+>>>>>> +                                        "ctx_size_out", NULL))
+>>>>>> +                       return -1;
+>>>>>> +
+>>>>>> +               if (is_prefix(*argv, "data_in")) {
+>>>>>> +                       NEXT_ARG();
+>>>>>> +                       if (!REQ_ARGS(1))
+>>>>>> +                               return -1;
+>>>>>> +
+>>>>>> +                       data_fname_in = GET_ARG();
+>>>>>> +                       if (check_single_stdin(data_fname_in, ctx_fname_in))
+>>>>>> +                               return -1;
+>>>>>> +               } else if (is_prefix(*argv, "data_out")) {
+>>>>>
+>>>>> Here, we all use is_prefix() to match "data_in", "data_out",
+>>>>> "data_size_out" etc.
+>>>>> That means users can use "data_i" instead of "data_in" as below
+>>>>>    ... | ./bpftool prog run id 283 data_i - data_out - repeat 5
+>>>>> is this expected?
+>>>> Yes, this is expected. We use prefix matching as we do pretty much
+>>>> everywhere else in bpftool. It's not as useful here because most of the
+>>>> strings for the names are similar. I agree that typing "data_i" instead
+>>>> of "data_in" brings little advantage, but I see no reason why we should
+>>>> reject prefixing for those keywords. And we accept "data_s" instead of
+>>>> "data_size_out", which is still shorter to type than the complete keyword.
+>>>
+>>> This makes sense. Thanks for explanation.
+>>>
+>>> Another question. Currently, you are proposing "./bpftool prog run ...",
+>>> but actually it is just a test_run. Do you think we should rename it
+>>> to "./bpftool prog test_run ..." to make it clear for its intention?
+>>
+>> Good question. Hmm. It would make it more explicit that we use the
+>> BPF_PROG_TEST_RUN command, but at the same time, from the point of view
+>> of the user, there is nothing in particular that makes it a test run, is
+>> it? I mean, you provide input data, you get output data and return
+>> value, that makes it a real BPF run somehow, except that it's not on a
+>> packet or anything. Do you think it is ambiguous and people may confuse
+>> it with something like "attach"?
 > 
-> Thanks, let me repost all the tags (Quentin, please shout if you're
-> not ok with this :)):
-
-I confirm it's all good for me, thanks :)
-
+> I am more thinking about whether we could have a real "bpftool prog run ..."
+> in the future which could really run the program in some kind of production
+> environment...
 > 
-> Fixes: 107f041212c1 ("tools: bpftool: add JSON output for `bpftool prog dump jited *` command")
-> Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
-> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+> But I could be wrong since after "bpf prog attach" it may already just start
+> to run in production, so "bpf prog run ..." not really needed for it.
 > 
+> So "bpf prog run ..." is probably fine.
 
+Ok, I'll stick to "prog run" unless someone else comments, then. I
+suppose we can find something else, like "bpftool prog start", if we
+need something like the feature you describe someday.
+
+I'll send a v2 with the fix for the arguments in check_single_stdin().
+
+Thanks,
+Quentin
