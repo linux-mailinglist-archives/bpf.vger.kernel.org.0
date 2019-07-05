@@ -2,166 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F066605BB
-	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2019 14:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0770D607BF
+	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2019 16:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728123AbfGEMKe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Jul 2019 08:10:34 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:47918 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726005AbfGEMKe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Jul 2019 08:10:34 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id E2316C01F28C;
-        Fri,  5 Jul 2019 12:10:33 +0000 (UTC)
-Received: from krava (unknown [10.43.17.81])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 4B7C16961D;
-        Fri,  5 Jul 2019 12:10:32 +0000 (UTC)
-Date:   Fri, 5 Jul 2019 14:10:31 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Michael Petlan <mpetlan@redhat.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>
-Subject: [PATCHv2] tools bpftool: Fix json dump crash on powerpc
-Message-ID: <20190705121031.GA10777@krava>
-References: <20190704085856.17502-1-jolsa@kernel.org>
- <20190704134210.17b8407c@cakuba.netronome.com>
+        id S1725763AbfGEOWH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Jul 2019 10:22:07 -0400
+Received: from www62.your-server.de ([213.133.104.62]:51766 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725497AbfGEOWH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Jul 2019 10:22:07 -0400
+Received: from [78.46.172.2] (helo=sslproxy05.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hjP6D-00046A-OJ; Fri, 05 Jul 2019 16:22:05 +0200
+Received: from [2a02:1205:5069:fce0:c5f9:cd68:79d4:446d] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hjP6D-000NNK-Ey; Fri, 05 Jul 2019 16:22:05 +0200
+Subject: Re: [PATCH v2 bpf-next] selftests/bpf: do not ignore clang failures
+To:     Ilya Leoshkevich <iii@linux.ibm.com>, bpf@vger.kernel.org,
+        liu.song.a23@gmail.com, andrii.nakryiko@gmail.com
+References: <CAEf4Bzb3BKoEcYiM3qQ6uqn+bZZ7kO2ogvZPba7679TWFT4fmw@mail.gmail.com>
+ <20190701184025.25731-1-iii@linux.ibm.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <cc418117-32a7-b7aa-3570-29b1b3421303@iogearbox.net>
+Date:   Fri, 5 Jul 2019 16:22:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190704134210.17b8407c@cakuba.netronome.com>
-User-Agent: Mutt/1.12.0 (2019-05-25)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.31]); Fri, 05 Jul 2019 12:10:34 +0000 (UTC)
+In-Reply-To: <20190701184025.25731-1-iii@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25501/Fri Jul  5 10:01:52 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 04, 2019 at 01:42:10PM -0700, Jakub Kicinski wrote:
-> On Thu,  4 Jul 2019 10:58:56 +0200, Jiri Olsa wrote:
-> > Michael reported crash with by bpf program in json mode on powerpc:
-> > 
-> >   # bpftool prog -p dump jited id 14
-> >   [{
-> >         "name": "0xd00000000a9aa760",
-> >         "insns": [{
-> >                 "pc": "0x0",
-> >                 "operation": "nop",
-> >                 "operands": [null
-> >                 ]
-> >             },{
-> >                 "pc": "0x4",
-> >                 "operation": "nop",
-> >                 "operands": [null
-> >                 ]
-> >             },{
-> >                 "pc": "0x8",
-> >                 "operation": "mflr",
-> >   Segmentation fault (core dumped)
-> > 
-> > The code is assuming char pointers in format, which is not always
-> > true at least for powerpc. Fixing this by dumping the whole string
-> > into buffer based on its format.
-> > 
-> > Please note that libopcodes code does not check return values from
-> > fprintf callback, so there's no point to return error in case of
-> > allocation failure.
+On 07/01/2019 08:40 PM, Ilya Leoshkevich wrote:
+> Am 01.07.2019 um 17:31 schrieb Andrii Nakryiko <andrii.nakryiko@gmail.com>:
+>> Do we still need clang | llc pipeline with new clang? Could the same
+>> be achieved with single clang invocation? That would solve the problem
+>> of not detecting pipeline failures.
 > 
-> Well, it doesn't check it today, it may perhaps do it in the future?
-> Let's flip the question - since it doesn't check it today, why not
-> propagate the error? :)  We should stay close to how fprintf would
-> behave, IMHO.
+> I’ve experimented with this a little, and found that new clang:
 > 
-> Fixes: 107f041212c1 ("tools: bpftool: add JSON output for `bpftool prog dump jited *` command")
+> - Does not understand -march, but -target is sufficient.
+> - Understands -mcpu.
+> - Understands -Xclang -target-feature -Xclang +foo as a replacement for
+>   -mattr=foo.
+> 
+> However, there are two issues with that:
+> 
+> - Don’t older clangs need to be supported? For example, right now alu32
+>   progs are built conditionally.
 
-ok fair enough, v2 attached
+We usually require latest clang to be able to test most recent features like
+BTF such that it helps to catch potential bugs in either of the projects
+before release.
 
-thanks,
-jirka
+> - It does not seem to be possible to build test_xdp.o without -target
+>   bpf.
 
+For everything non-tracing, it does not make sense to invoke clang w/o
+the -target bpf flag, see also Documentation/bpf/bpf_devel_QA.rst +573
+for more explanation, so this needs to be present for building test_xdp.o.
 
----
-Michael reported crash with by bpf program in json mode on powerpc:
-
-  # bpftool prog -p dump jited id 14
-  [{
-        "name": "0xd00000000a9aa760",
-        "insns": [{
-                "pc": "0x0",
-                "operation": "nop",
-                "operands": [null
-                ]
-            },{
-                "pc": "0x4",
-                "operation": "nop",
-                "operands": [null
-                ]
-            },{
-                "pc": "0x8",
-                "operation": "mflr",
-  Segmentation fault (core dumped)
-
-The code is assuming char pointers in format, which is not always
-true at least for powerpc. Fixing this by dumping the whole string
-into buffer based on its format.
-
-Please note that libopcodes code does not check return values from
-fprintf callback, but as per Jakub suggestion returning -1 on allocation
-failure so we do the best effort to propagate the error. 
-
-Reported-by: Michael Petlan <mpetlan@redhat.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/bpf/bpftool/jit_disasm.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/tools/bpf/bpftool/jit_disasm.c b/tools/bpf/bpftool/jit_disasm.c
-index 3ef3093560ba..bfed711258ce 100644
---- a/tools/bpf/bpftool/jit_disasm.c
-+++ b/tools/bpf/bpftool/jit_disasm.c
-@@ -11,6 +11,8 @@
-  * Licensed under the GNU General Public License, version 2.0 (GPLv2)
-  */
- 
-+#define _GNU_SOURCE
-+#include <stdio.h>
- #include <stdarg.h>
- #include <stdint.h>
- #include <stdio.h>
-@@ -44,11 +46,13 @@ static int fprintf_json(void *out, const char *fmt, ...)
- 	char *s;
- 
- 	va_start(ap, fmt);
-+	if (vasprintf(&s, fmt, ap) < 0)
-+		return -1;
-+	va_end(ap);
-+
- 	if (!oper_count) {
- 		int i;
- 
--		s = va_arg(ap, char *);
--
- 		/* Strip trailing spaces */
- 		i = strlen(s) - 1;
- 		while (s[i] == ' ')
-@@ -61,11 +65,10 @@ static int fprintf_json(void *out, const char *fmt, ...)
- 	} else if (!strcmp(fmt, ",")) {
- 		   /* Skip */
- 	} else {
--		s = va_arg(ap, char *);
- 		jsonw_string(json_wtr, s);
- 		oper_count++;
- 	}
--	va_end(ap);
-+	free(s);
- 	return 0;
- }
- 
--- 
-2.21.0
-
+Thanks,
+Daniel
