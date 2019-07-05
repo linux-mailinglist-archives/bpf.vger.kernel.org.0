@@ -2,130 +2,197 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CEB60118
-	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2019 08:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075AA60208
+	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2019 10:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725983AbfGEGnJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Jul 2019 02:43:09 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:43966 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725894AbfGEGnJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Jul 2019 02:43:09 -0400
-Received: by mail-qt1-f196.google.com with SMTP id w17so7020002qto.10;
-        Thu, 04 Jul 2019 23:43:08 -0700 (PDT)
+        id S1727074AbfGEIVU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Jul 2019 04:21:20 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:42441 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726116AbfGEIVU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Jul 2019 04:21:20 -0400
+Received: by mail-wr1-f68.google.com with SMTP id a10so7876840wrp.9
+        for <bpf@vger.kernel.org>; Fri, 05 Jul 2019 01:21:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=swKFyl1Mf/5O9xSZN9816MAkarsTElOMsmp/B3xHLTU=;
-        b=OixdgawKakxbcPW/B3nm7ThpZyyj4849Rnwe/iKe6lB80wLa40HwpnUrxCsRGl6Ash
-         zcAcLIFNx7/BKKBMLaBVHcGSpM2x2ftivGOyJl8vvpcGbngHirGf1eWGWYbL+SkxJmDR
-         Zoj4XxGzsMMgIdCC7WGMK6n8L/M8Yq+M03WJSwBBFFSrF/jL3a8Kig33BOLn2SHCTqEk
-         eTr8QpBIAZwVL8l6BqLS28vZROqCwMWvinF17JRj0NymczehVXtSfgE2WuGHf1GXHVKW
-         IZzhF852T3dmqYyFaJ0quAlSnkLn9O4vgD6mCGwSQ3zakPkASfGmJh4bRiZvh7SHB2+u
-         FV9Q==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AZ+xp1XexP5IT9024QnXjkh9NZlQyC9GI6IM2t8wHAI=;
+        b=zCygwcevPqnMlXoX518iHLJ+RxFS6+s87b7/J44Gth9SDOeHSqebrk1M1Pn4kFgC/V
+         jMakN82JJkcuHcfHbLCJ47F2wCRxPRTOwZIzL9nahOHOZoKwe+86Lba4DO3kERtDkF7x
+         zkVmei/JDbPW65VOlCEmYZAFMUakL/3cdFFkeVbPREKGBX9XlhVhB0guS46RUs64bLhM
+         oRZM6YGCxB3g7fWzCEtJhxNEDQceh6flM0mVl3hJ2qY7eCSbzpHGm4McvDLXKdnly4Wk
+         4MVi4qzH5mtATQz7+4TwZwaxR1UETOs6liho+yjMCYe12/SRLZA6WWNG/SkKBQbIEwNl
+         y8hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=swKFyl1Mf/5O9xSZN9816MAkarsTElOMsmp/B3xHLTU=;
-        b=a+AGc+dBvT6HFt8ib7E39dhO+qxye9yglDbFuDCBmDt2LOJ0rw/3AJmWm2m4JG/Uqr
-         X7PbfxEiwdUwUQ2pzDsNB06pASxkgpkr2tTHcJcFH65n/yB1cX/+5fMEet+pdm7KnyZG
-         sqbSA54yk0vwTYK83daDmkAGRtS/b8rv2H2NxsB6HAR+URHyvNaM+tgIcELDYtWMriNy
-         mRTYs1GjKVAty1NuZLLJYW+A9PkPMKMoO7xBhwh2iYVk48NXQ4N2ZymVT7+G0mbMi4Hz
-         BlNhrPnHwp9H2dTQw0rwLSJGWtTXmWBbj3il6BSrG6SG7ciylaDlCpTil8jo1GIVDC/F
-         vUuw==
-X-Gm-Message-State: APjAAAWsLCDQd9+E9XyGrwTKspJ6CQYGE03DxGTb0h2Z0tU7M0B8V67E
-        59u80GR6OVM5JVt5n3d/N4m9x93p2v4yEAxpSnOYjZGr4vg=
-X-Google-Smtp-Source: APXvYqxg01UgjLVPz8TDzoJ+bYdZ1P/W5rf+cEyou/FudaS8d+puT2sC/p+LMi1+18Te/UmqV50+hwhIBKA1ngwgE2I=
-X-Received: by 2002:ac8:4442:: with SMTP id m2mr1375964qtn.107.1562308987980;
- Thu, 04 Jul 2019 23:43:07 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AZ+xp1XexP5IT9024QnXjkh9NZlQyC9GI6IM2t8wHAI=;
+        b=V+uEAsPORG6Ux98lFxtu+ZxsbJwBdnJfF7fRsa+XFVLaOvAD3l79wmkObC63oB6QiD
+         Sz/wt6IbLDCplDfnIZhhyigb1tV35Doat+JFPyA60fWJKBFHsm6ptPVhFLHQ+STpVkGC
+         pISZz9n+HptuS0+x40T0l1X9B5Q8Dp7Vte19w3IDKNsIGia21G3Fcp6tOX8hX7UGSFF8
+         dodmMj6fbmgqrlPN+TSW1R77CCHYaTa8RGjYoC9XlAKJj4bKplEaEC+d8EF32Pcwzx7U
+         a6/LBc4QYqFyPvyG3UtLyDftCvlmtlzntRoJTfIc1Qgi6/jBzOLbGS91ubBwGdUSA49K
+         cIXg==
+X-Gm-Message-State: APjAAAVaNNgTH9AY2grw5DQw2uTtrF7bsOQSYUbB3eSkAPOsK+tr+gLN
+        qoXL1nXl2zb9y9US8TRGMsgdHA==
+X-Google-Smtp-Source: APXvYqy7xwXN10UR/cnM70Na74Mq3O/S6NmBjxkFNxBUS74MU/CWppXxi4jnn7x479qMNh3W/G6VKA==
+X-Received: by 2002:adf:e748:: with SMTP id c8mr2591008wrn.46.1562314877569;
+        Fri, 05 Jul 2019 01:21:17 -0700 (PDT)
+Received: from [192.168.1.2] ([194.53.187.142])
+        by smtp.gmail.com with ESMTPSA id n14sm16401269wra.75.2019.07.05.01.21.16
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Jul 2019 01:21:17 -0700 (PDT)
+Subject: Re: [PATCH bpf-next] tools: bpftool: add "prog run" subcommand to
+ test-run programs
+To:     Y Song <ys114321@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        oss-drivers@netronome.com
+References: <20190704085646.12406-1-quentin.monnet@netronome.com>
+ <CAH3MdRXuDmXobkXESZg0+VV=FrBLsiAYPC61xQsjx2smKQKUtQ@mail.gmail.com>
+From:   Quentin Monnet <quentin.monnet@netronome.com>
+Message-ID: <b4bbb342-1f77-8669-ec51-8d5542f7e7b4@netronome.com>
+Date:   Fri, 5 Jul 2019 09:21:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <CGME20190704142509eucas1p268eb9ca87bcc0bffb60891f88f3f6642@eucas1p2.samsung.com>
- <20190704142503.23501-1-i.maximets@samsung.com>
-In-Reply-To: <20190704142503.23501-1-i.maximets@samsung.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Fri, 5 Jul 2019 08:42:56 +0200
-Message-ID: <CAJ+HfNi2EdLwtq9SfccZBymDMv_cW5+vxB-JLqxyvYS_TG3ScA@mail.gmail.com>
-Subject: Re: [PATCH bpf] xdp: fix possible cq entry leak
-To:     Ilya Maximets <i.maximets@samsung.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Xdp <xdp-newbies@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAH3MdRXuDmXobkXESZg0+VV=FrBLsiAYPC61xQsjx2smKQKUtQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 4 Jul 2019 at 16:25, Ilya Maximets <i.maximets@samsung.com> wrote:
->
-> Completion queue address reservation could not be undone.
-> In case of bad 'queue_id' or skb allocation failure, reserved entry
-> will be leaked reducing the total capacity of completion queue.
->
-> Fix that by moving reservation to the point where failure is not
-> possible. Additionally, 'queue_id' checking moved out from the loop
-> since there is no point to check it there.
->
+2019-07-04 22:49 UTC-0700 ~ Y Song <ys114321@gmail.com>
+> On Thu, Jul 4, 2019 at 1:58 AM Quentin Monnet
+> <quentin.monnet@netronome.com> wrote:
+>>
+>> Add a new "bpftool prog run" subcommand to run a loaded program on input
+>> data (and possibly with input context) passed by the user.
+>>
+>> Print output data (and output context if relevant) into a file or into
+>> the console. Print return value and duration for the test run into the
+>> console.
+>>
+>> A "repeat" argument can be passed to run the program several times in a
+>> row.
+>>
+>> The command does not perform any kind of verification based on program
+>> type (Is this program type allowed to use an input context?) or on data
+>> consistency (Can I work with empty input data?), this is left to the
+>> kernel.
+>>
+>> Example invocation:
+>>
+>>     # perl -e 'print "\x0" x 14' | ./bpftool prog run \
+>>             pinned /sys/fs/bpf/sample_ret0 \
+>>             data_in - data_out - repeat 5
+>>     0000000 0000 0000 0000 0000 0000 0000 0000      | ........ ......
+>>     Return value: 0, duration (average): 260ns
+>>
+>> When one of data_in or ctx_in is "-", bpftool reads from standard input,
+>> in binary format. Other formats (JSON, hexdump) might be supported (via
+>> an optional command line keyword like "data_fmt_in") in the future if
+>> relevant, but this would require doing more parsing in bpftool.
+>>
+>> Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
+>> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+>> ---
 
-Good catch, Ilya! Thanks for the patch!
+[...]
 
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+>> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+>> index 9b0db5d14e31..8dcbaa0a8ab1 100644
+>> --- a/tools/bpf/bpftool/prog.c
+>> +++ b/tools/bpf/bpftool/prog.c
+>> @@ -15,6 +15,7 @@
+>>  #include <sys/stat.h>
+>>
+>>  #include <linux/err.h>
+>> +#include <linux/sizes.h>
+>>
+>>  #include <bpf.h>
+>>  #include <btf.h>
+>> @@ -748,6 +749,344 @@ static int do_detach(int argc, char **argv)
+>>         return 0;
+>>  }
+>>
+>> +static int check_single_stdin(char *file_in, char *other_file_in)
+>> +{
+>> +       if (file_in && other_file_in &&
+>> +           !strcmp(file_in, "-") && !strcmp(other_file_in, "-")) {
+>> +               p_err("cannot use standard input for both data_in and ctx_in");
+> 
+> The error message says data_in and ctx_in.
+> Maybe the input parameter should be file_data_in and file_ctx_in?
 
-> Fixes: 35fcde7f8deb ("xsk: support for Tx")
-> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
-> ---
->  net/xdp/xsk.c | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
->
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index f53a6ef7c155..703cf5ea448b 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -226,6 +226,9 @@ static int xsk_generic_xmit(struct sock *sk, struct m=
-sghdr *m,
->
->         mutex_lock(&xs->mutex);
->
-> +       if (xs->queue_id >=3D xs->dev->real_num_tx_queues)
-> +               goto out;
-> +
->         while (xskq_peek_desc(xs->tx, &desc)) {
->                 char *buffer;
->                 u64 addr;
-> @@ -236,12 +239,6 @@ static int xsk_generic_xmit(struct sock *sk, struct =
-msghdr *m,
->                         goto out;
->                 }
->
-> -               if (xskq_reserve_addr(xs->umem->cq))
-> -                       goto out;
-> -
-> -               if (xs->queue_id >=3D xs->dev->real_num_tx_queues)
-> -                       goto out;
-> -
->                 len =3D desc.len;
->                 skb =3D sock_alloc_send_skb(sk, len, 1, &err);
->                 if (unlikely(!skb)) {
-> @@ -253,7 +250,7 @@ static int xsk_generic_xmit(struct sock *sk, struct m=
-sghdr *m,
->                 addr =3D desc.addr;
->                 buffer =3D xdp_umem_get_data(xs->umem, addr);
->                 err =3D skb_store_bits(skb, 0, buffer, len);
-> -               if (unlikely(err)) {
-> +               if (unlikely(err) || xskq_reserve_addr(xs->umem->cq)) {
->                         kfree_skb(skb);
->                         goto out;
->                 }
-> --
-> 2.17.1
->
+
+Hi Yonghong,
+
+It's true those parameters should be file names. But having
+"file_data_in", "file_data_out", "file_ctx_in" and "file_ctx_out" on a
+command line seems a bit heavy to me? (And relying on keyword prefixing
+for typing the command won't help much.)
+
+My opinion is that it should be clear from the man page or the "help"
+command that the parameters are file names. What do you think? I can
+prefix all four arguments with "file_" if you believe this is better.
+
+[...]
+
+>> +static int do_run(int argc, char **argv)
+>> +{
+>> +       char *data_fname_in = NULL, *data_fname_out = NULL;
+>> +       char *ctx_fname_in = NULL, *ctx_fname_out = NULL;
+>> +       struct bpf_prog_test_run_attr test_attr = {0};
+>> +       const unsigned int default_size = SZ_32K;
+>> +       void *data_in = NULL, *data_out = NULL;
+>> +       void *ctx_in = NULL, *ctx_out = NULL;
+>> +       unsigned int repeat = 1;
+>> +       int fd, err;
+>> +
+>> +       if (!REQ_ARGS(4))
+>> +               return -1;
+>> +
+>> +       fd = prog_parse_fd(&argc, &argv);
+>> +       if (fd < 0)
+>> +               return -1;
+>> +
+>> +       while (argc) {
+>> +               if (detect_common_prefix(*argv, "data_in", "data_out",
+>> +                                        "data_size_out", NULL))
+>> +                       return -1;
+>> +               if (detect_common_prefix(*argv, "ctx_in", "ctx_out",
+>> +                                        "ctx_size_out", NULL))
+>> +                       return -1;
+>> +
+>> +               if (is_prefix(*argv, "data_in")) {
+>> +                       NEXT_ARG();
+>> +                       if (!REQ_ARGS(1))
+>> +                               return -1;
+>> +
+>> +                       data_fname_in = GET_ARG();
+>> +                       if (check_single_stdin(data_fname_in, ctx_fname_in))
+>> +                               return -1;
+>> +               } else if (is_prefix(*argv, "data_out")) {
+> 
+> Here, we all use is_prefix() to match "data_in", "data_out",
+> "data_size_out" etc.
+> That means users can use "data_i" instead of "data_in" as below
+>    ... | ./bpftool prog run id 283 data_i - data_out - repeat 5
+> is this expected?
+Yes, this is expected. We use prefix matching as we do pretty much
+everywhere else in bpftool. It's not as useful here because most of the
+strings for the names are similar. I agree that typing "data_i" instead
+of "data_in" brings little advantage, but I see no reason why we should
+reject prefixing for those keywords. And we accept "data_s" instead of
+"data_size_out", which is still shorter to type than the complete keyword.
+
+Thanks for the review!
+Quentin
