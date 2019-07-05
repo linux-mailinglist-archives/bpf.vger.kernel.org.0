@@ -2,197 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 075AA60208
-	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2019 10:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4341960308
+	for <lists+bpf@lfdr.de>; Fri,  5 Jul 2019 11:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbfGEIVU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Jul 2019 04:21:20 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:42441 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726116AbfGEIVU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Jul 2019 04:21:20 -0400
-Received: by mail-wr1-f68.google.com with SMTP id a10so7876840wrp.9
-        for <bpf@vger.kernel.org>; Fri, 05 Jul 2019 01:21:18 -0700 (PDT)
+        id S1728226AbfGEJY3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Jul 2019 05:24:29 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:41300 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727383AbfGEJY2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Jul 2019 05:24:28 -0400
+Received: by mail-wr1-f65.google.com with SMTP id c2so9154294wrm.8
+        for <bpf@vger.kernel.org>; Fri, 05 Jul 2019 02:24:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AZ+xp1XexP5IT9024QnXjkh9NZlQyC9GI6IM2t8wHAI=;
-        b=zCygwcevPqnMlXoX518iHLJ+RxFS6+s87b7/J44Gth9SDOeHSqebrk1M1Pn4kFgC/V
-         jMakN82JJkcuHcfHbLCJ47F2wCRxPRTOwZIzL9nahOHOZoKwe+86Lba4DO3kERtDkF7x
-         zkVmei/JDbPW65VOlCEmYZAFMUakL/3cdFFkeVbPREKGBX9XlhVhB0guS46RUs64bLhM
-         oRZM6YGCxB3g7fWzCEtJhxNEDQceh6flM0mVl3hJ2qY7eCSbzpHGm4McvDLXKdnly4Wk
-         4MVi4qzH5mtATQz7+4TwZwaxR1UETOs6liho+yjMCYe12/SRLZA6WWNG/SkKBQbIEwNl
-         y8hg==
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=HHbqpLTt/UqK8u8skkn9x9YIdY8wkJ4ttRxZXF6EinY=;
+        b=yp5yQJh8jtfYUPLuGlLq2DfqpPBdGGO494xChqpf9zNWBSsXLE5a0248/NAxkoBO4/
+         0BsVaDdF03YgBQ/EiWOMx+7i4XiuJ0zQf7XlokIV1VYWJHiMZ3PDkE/KfYOab4VzMB+J
+         f/pVJLRXx+gS9twTb1Pgz2EXRdaLuXqYybXQVVic64Dl6MDkktWQB7g1huoxjSF5Uleo
+         KWEaVwh/WkLIXcfSUgaE+apFuFz8i+7Qp7PYmwtsyWVa2Ym0Ym+UO3OF2ienlhikB0yc
+         b4nd6B6ytLHgVQbS9mVjQWCRJczLAl4BYGmiNDVXuTYnaPhD6JUOdm5tiGTCbXBzkVMF
+         YL4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AZ+xp1XexP5IT9024QnXjkh9NZlQyC9GI6IM2t8wHAI=;
-        b=V+uEAsPORG6Ux98lFxtu+ZxsbJwBdnJfF7fRsa+XFVLaOvAD3l79wmkObC63oB6QiD
-         Sz/wt6IbLDCplDfnIZhhyigb1tV35Doat+JFPyA60fWJKBFHsm6ptPVhFLHQ+STpVkGC
-         pISZz9n+HptuS0+x40T0l1X9B5Q8Dp7Vte19w3IDKNsIGia21G3Fcp6tOX8hX7UGSFF8
-         dodmMj6fbmgqrlPN+TSW1R77CCHYaTa8RGjYoC9XlAKJj4bKplEaEC+d8EF32Pcwzx7U
-         a6/LBc4QYqFyPvyG3UtLyDftCvlmtlzntRoJTfIc1Qgi6/jBzOLbGS91ubBwGdUSA49K
-         cIXg==
-X-Gm-Message-State: APjAAAVaNNgTH9AY2grw5DQw2uTtrF7bsOQSYUbB3eSkAPOsK+tr+gLN
-        qoXL1nXl2zb9y9US8TRGMsgdHA==
-X-Google-Smtp-Source: APXvYqy7xwXN10UR/cnM70Na74Mq3O/S6NmBjxkFNxBUS74MU/CWppXxi4jnn7x479qMNh3W/G6VKA==
-X-Received: by 2002:adf:e748:: with SMTP id c8mr2591008wrn.46.1562314877569;
-        Fri, 05 Jul 2019 01:21:17 -0700 (PDT)
-Received: from [192.168.1.2] ([194.53.187.142])
-        by smtp.gmail.com with ESMTPSA id n14sm16401269wra.75.2019.07.05.01.21.16
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Jul 2019 01:21:17 -0700 (PDT)
-Subject: Re: [PATCH bpf-next] tools: bpftool: add "prog run" subcommand to
- test-run programs
-To:     Y Song <ys114321@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=HHbqpLTt/UqK8u8skkn9x9YIdY8wkJ4ttRxZXF6EinY=;
+        b=blR44ski+5JOBwMCw6bf5daSAEhoODpvdxklXHux8JqzimePWiKBWTHJnJZMrmsDQG
+         DXH0En5n+9XQjXaKp2vgIOLGAaawPdO8AOTgFUkWJ8mF7yiMwrFsh24Zf8afoMqyo3QY
+         urLRa+t/eZRqN/QQM9qdUOetNoCuzkWCW3AfqhMdGbcoEGvTUj9Cd/gMExHhxLJ+Kmj+
+         hir53f09VDJ55uF9YXFbu4HwmOGPPppsUmJ+O9YtG78YRq4tHSA1iJZUrwqnhNqlrw28
+         xixBBy/LQQD2r7YImnQLq8rTVPNfQKBg8qBFnCkxyItos+FBczIfLt01qQjdGfMVOLXz
+         NvUA==
+X-Gm-Message-State: APjAAAWNw37P7tsX0ZqgBRXLqarAdBPOho9ktouNfRvBb+yrn/81FrZx
+        JolvOngt8eM0P2rJVbXdPqkwbHx1OxY=
+X-Google-Smtp-Source: APXvYqwfVWZ2uyQrHtW79irxr4cfhJhTkvjPeAqMQ25Qa5108rnUpXmlpdEPv1K0U4PAXpWDPp+JbQ==
+X-Received: by 2002:adf:e50c:: with SMTP id j12mr3191191wrm.117.1562318666604;
+        Fri, 05 Jul 2019 02:24:26 -0700 (PDT)
+Received: from LAPTOP-V3S7NLPL ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id o126sm7447501wmo.1.2019.07.05.02.24.25
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 05 Jul 2019 02:24:25 -0700 (PDT)
+References: <20190705001803.30094-1-luke.r.nels@gmail.com>
+User-agent: mu4e 0.9.18; emacs 25.2.2
+From:   Jiong Wang <jiong.wang@netronome.com>
+To:     Luke Nelson <lukenels@cs.washington.edu>
+Cc:     linux-kernel@vger.kernel.org, Luke Nelson <luke.r.nels@gmail.com>,
+        Song Liu <liu.song.a23@gmail.com>,
+        Jiong Wang <jiong.wang@netronome.com>,
+        Xi Wang <xi.wang@gmail.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        oss-drivers@netronome.com
-References: <20190704085646.12406-1-quentin.monnet@netronome.com>
- <CAH3MdRXuDmXobkXESZg0+VV=FrBLsiAYPC61xQsjx2smKQKUtQ@mail.gmail.com>
-From:   Quentin Monnet <quentin.monnet@netronome.com>
-Message-ID: <b4bbb342-1f77-8669-ec51-8d5542f7e7b4@netronome.com>
-Date:   Fri, 5 Jul 2019 09:21:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        netdev@vger.kernel.org, linux-riscv@lists.infradead.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next] Enable zext optimization for more RV64G ALU ops
+In-reply-to: <20190705001803.30094-1-luke.r.nels@gmail.com>
+Date:   Fri, 05 Jul 2019 10:24:22 +0100
+Message-ID: <8736jk4ywp.fsf@netronome.com>
 MIME-Version: 1.0
-In-Reply-To: <CAH3MdRXuDmXobkXESZg0+VV=FrBLsiAYPC61xQsjx2smKQKUtQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2019-07-04 22:49 UTC-0700 ~ Y Song <ys114321@gmail.com>
-> On Thu, Jul 4, 2019 at 1:58 AM Quentin Monnet
-> <quentin.monnet@netronome.com> wrote:
->>
->> Add a new "bpftool prog run" subcommand to run a loaded program on input
->> data (and possibly with input context) passed by the user.
->>
->> Print output data (and output context if relevant) into a file or into
->> the console. Print return value and duration for the test run into the
->> console.
->>
->> A "repeat" argument can be passed to run the program several times in a
->> row.
->>
->> The command does not perform any kind of verification based on program
->> type (Is this program type allowed to use an input context?) or on data
->> consistency (Can I work with empty input data?), this is left to the
->> kernel.
->>
->> Example invocation:
->>
->>     # perl -e 'print "\x0" x 14' | ./bpftool prog run \
->>             pinned /sys/fs/bpf/sample_ret0 \
->>             data_in - data_out - repeat 5
->>     0000000 0000 0000 0000 0000 0000 0000 0000      | ........ ......
->>     Return value: 0, duration (average): 260ns
->>
->> When one of data_in or ctx_in is "-", bpftool reads from standard input,
->> in binary format. Other formats (JSON, hexdump) might be supported (via
->> an optional command line keyword like "data_fmt_in") in the future if
->> relevant, but this would require doing more parsing in bpftool.
->>
->> Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
->> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
->> ---
 
-[...]
+Luke Nelson writes:
 
->> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
->> index 9b0db5d14e31..8dcbaa0a8ab1 100644
->> --- a/tools/bpf/bpftool/prog.c
->> +++ b/tools/bpf/bpftool/prog.c
->> @@ -15,6 +15,7 @@
->>  #include <sys/stat.h>
->>
->>  #include <linux/err.h>
->> +#include <linux/sizes.h>
->>
->>  #include <bpf.h>
->>  #include <btf.h>
->> @@ -748,6 +749,344 @@ static int do_detach(int argc, char **argv)
->>         return 0;
->>  }
->>
->> +static int check_single_stdin(char *file_in, char *other_file_in)
->> +{
->> +       if (file_in && other_file_in &&
->> +           !strcmp(file_in, "-") && !strcmp(other_file_in, "-")) {
->> +               p_err("cannot use standard input for both data_in and ctx_in");
-> 
-> The error message says data_in and ctx_in.
-> Maybe the input parameter should be file_data_in and file_ctx_in?
+> commit 66d0d5a854a6 ("riscv: bpf: eliminate zero extension code-gen")
+> added the new zero-extension optimization for some BPF ALU operations.
+>
+> Since then, bugs in the JIT that have been fixed in the bpf tree require
+> this optimization to be added to other operations: commit 1e692f09e091
+> ("bpf, riscv: clear high 32 bits for ALU32 add/sub/neg/lsh/rsh/arsh"),
+> and commit fe121ee531d1 ("bpf, riscv: clear target register high 32-bits
+> for and/or/xor on ALU32")
+>
+> Now that these have been merged to bpf-next, the zext optimization can
+> be enabled for the fixed operations.
 
+LGTM, thanks.
 
-Hi Yonghong,
+Acked-by: Jiong Wang <jiong.wang@netronome.com>
 
-It's true those parameters should be file names. But having
-"file_data_in", "file_data_out", "file_ctx_in" and "file_ctx_out" on a
-command line seems a bit heavy to me? (And relying on keyword prefixing
-for typing the command won't help much.)
+>
+> Cc: Song Liu <liu.song.a23@gmail.com>
+> Cc: Jiong Wang <jiong.wang@netronome.com>
+> Cc: Xi Wang <xi.wang@gmail.com>
+> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+> ---
+>  arch/riscv/net/bpf_jit_comp.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/arch/riscv/net/bpf_jit_comp.c b/arch/riscv/net/bpf_jit_comp.c
+> index 876cb9c705ce..5451ef3845f2 100644
+> --- a/arch/riscv/net/bpf_jit_comp.c
+> +++ b/arch/riscv/net/bpf_jit_comp.c
+> @@ -757,31 +757,31 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+>  	case BPF_ALU | BPF_ADD | BPF_X:
+>  	case BPF_ALU64 | BPF_ADD | BPF_X:
+>  		emit(is64 ? rv_add(rd, rd, rs) : rv_addw(rd, rd, rs), ctx);
+> -		if (!is64)
+> +		if (!is64 && !aux->verifier_zext)
+>  			emit_zext_32(rd, ctx);
+>  		break;
+>  	case BPF_ALU | BPF_SUB | BPF_X:
+>  	case BPF_ALU64 | BPF_SUB | BPF_X:
+>  		emit(is64 ? rv_sub(rd, rd, rs) : rv_subw(rd, rd, rs), ctx);
+> -		if (!is64)
+> +		if (!is64 && !aux->verifier_zext)
+>  			emit_zext_32(rd, ctx);
+>  		break;
+>  	case BPF_ALU | BPF_AND | BPF_X:
+>  	case BPF_ALU64 | BPF_AND | BPF_X:
+>  		emit(rv_and(rd, rd, rs), ctx);
+> -		if (!is64)
+> +		if (!is64 && !aux->verifier_zext)
+>  			emit_zext_32(rd, ctx);
+>  		break;
+>  	case BPF_ALU | BPF_OR | BPF_X:
+>  	case BPF_ALU64 | BPF_OR | BPF_X:
+>  		emit(rv_or(rd, rd, rs), ctx);
+> -		if (!is64)
+> +		if (!is64 && !aux->verifier_zext)
+>  			emit_zext_32(rd, ctx);
+>  		break;
+>  	case BPF_ALU | BPF_XOR | BPF_X:
+>  	case BPF_ALU64 | BPF_XOR | BPF_X:
+>  		emit(rv_xor(rd, rd, rs), ctx);
+> -		if (!is64)
+> +		if (!is64 && !aux->verifier_zext)
+>  			emit_zext_32(rd, ctx);
+>  		break;
+>  	case BPF_ALU | BPF_MUL | BPF_X:
+> @@ -811,13 +811,13 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+>  	case BPF_ALU | BPF_RSH | BPF_X:
+>  	case BPF_ALU64 | BPF_RSH | BPF_X:
+>  		emit(is64 ? rv_srl(rd, rd, rs) : rv_srlw(rd, rd, rs), ctx);
+> -		if (!is64)
+> +		if (!is64 && !aux->verifier_zext)
+>  			emit_zext_32(rd, ctx);
+>  		break;
+>  	case BPF_ALU | BPF_ARSH | BPF_X:
+>  	case BPF_ALU64 | BPF_ARSH | BPF_X:
+>  		emit(is64 ? rv_sra(rd, rd, rs) : rv_sraw(rd, rd, rs), ctx);
+> -		if (!is64)
+> +		if (!is64 && !aux->verifier_zext)
+>  			emit_zext_32(rd, ctx);
+>  		break;
+>  
+> @@ -826,7 +826,7 @@ static int emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+>  	case BPF_ALU64 | BPF_NEG:
+>  		emit(is64 ? rv_sub(rd, RV_REG_ZERO, rd) :
+>  		     rv_subw(rd, RV_REG_ZERO, rd), ctx);
+> -		if (!is64)
+> +		if (!is64 && !aux->verifier_zext)
+>  			emit_zext_32(rd, ctx);
+>  		break;
 
-My opinion is that it should be clear from the man page or the "help"
-command that the parameters are file names. What do you think? I can
-prefix all four arguments with "file_" if you believe this is better.
-
-[...]
-
->> +static int do_run(int argc, char **argv)
->> +{
->> +       char *data_fname_in = NULL, *data_fname_out = NULL;
->> +       char *ctx_fname_in = NULL, *ctx_fname_out = NULL;
->> +       struct bpf_prog_test_run_attr test_attr = {0};
->> +       const unsigned int default_size = SZ_32K;
->> +       void *data_in = NULL, *data_out = NULL;
->> +       void *ctx_in = NULL, *ctx_out = NULL;
->> +       unsigned int repeat = 1;
->> +       int fd, err;
->> +
->> +       if (!REQ_ARGS(4))
->> +               return -1;
->> +
->> +       fd = prog_parse_fd(&argc, &argv);
->> +       if (fd < 0)
->> +               return -1;
->> +
->> +       while (argc) {
->> +               if (detect_common_prefix(*argv, "data_in", "data_out",
->> +                                        "data_size_out", NULL))
->> +                       return -1;
->> +               if (detect_common_prefix(*argv, "ctx_in", "ctx_out",
->> +                                        "ctx_size_out", NULL))
->> +                       return -1;
->> +
->> +               if (is_prefix(*argv, "data_in")) {
->> +                       NEXT_ARG();
->> +                       if (!REQ_ARGS(1))
->> +                               return -1;
->> +
->> +                       data_fname_in = GET_ARG();
->> +                       if (check_single_stdin(data_fname_in, ctx_fname_in))
->> +                               return -1;
->> +               } else if (is_prefix(*argv, "data_out")) {
-> 
-> Here, we all use is_prefix() to match "data_in", "data_out",
-> "data_size_out" etc.
-> That means users can use "data_i" instead of "data_in" as below
->    ... | ./bpftool prog run id 283 data_i - data_out - repeat 5
-> is this expected?
-Yes, this is expected. We use prefix matching as we do pretty much
-everywhere else in bpftool. It's not as useful here because most of the
-strings for the names are similar. I agree that typing "data_i" instead
-of "data_in" brings little advantage, but I see no reason why we should
-reject prefixing for those keywords. And we accept "data_s" instead of
-"data_size_out", which is still shorter to type than the complete keyword.
-
-Thanks for the review!
-Quentin
