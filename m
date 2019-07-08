@@ -2,172 +2,219 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B9662A37
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 22:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB02162A72
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 22:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729283AbfGHUPF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 8 Jul 2019 16:15:05 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14746 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727774AbfGHUPF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 8 Jul 2019 16:15:05 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x68KCRZW131043
-        for <bpf@vger.kernel.org>; Mon, 8 Jul 2019 16:15:03 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tm99mq9md-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 08 Jul 2019 16:15:03 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Mon, 8 Jul 2019 21:15:02 +0100
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 8 Jul 2019 21:14:57 +0100
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x68KEuv534144328
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 8 Jul 2019 20:14:56 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D1AD54C046;
-        Mon,  8 Jul 2019 20:14:56 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 43A5A4C044;
-        Mon,  8 Jul 2019 20:14:56 +0000 (GMT)
-Received: from [9.145.50.9] (unknown [9.145.50.9])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  8 Jul 2019 20:14:56 +0000 (GMT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [PATCH bpf-next] selftests/bpf: make verifier loop tests arch
- independent
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-In-Reply-To: <20190708161338.GC29524@mini-arch>
-Date:   Mon, 8 Jul 2019 22:14:41 +0200
-Cc:     Y Song <ys114321@gmail.com>, Stanislav Fomichev <sdf@google.com>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
+        id S2404943AbfGHUhz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jul 2019 16:37:55 -0400
+Received: from mail-vs1-f65.google.com ([209.85.217.65]:34093 "EHLO
+        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728778AbfGHUhy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jul 2019 16:37:54 -0400
+Received: by mail-vs1-f65.google.com with SMTP id m23so9147528vso.1;
+        Mon, 08 Jul 2019 13:37:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Xoa10/Gq2LsbDcHbD/zmcjTEfAiOzl03k2kvaddEK8I=;
+        b=If51vIsL7yPZW21MtnWt+bTp4RSPcdYSmTPezAYqyAmyKdGplWPwpjHGv/R17U4DRl
+         wbulsoepnOHaV+pXXYLHOM+7mPS9+nWIZ7kYqin7Whau62E3xp5ub0m0wOhNzsLq7KPK
+         jQ+FrWq+chu4WuY6k/J9N3/4LgbFu9xQuX6Uq6cWu2MWtZL2sidO+jh65yhSy5QgM2xb
+         AM3iPXxAf6w0QTYFoYERB0MjMNF27QBC+Si0+aU0CoFIWxnjLK2M40F5hlyePRzitUAo
+         LuMkEkfYjvONaLhN1MV1l/q8wrQx1DOCz83IUlGKqT79Gm3QyxocY1q8HinLy52/w5cc
+         pNKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Xoa10/Gq2LsbDcHbD/zmcjTEfAiOzl03k2kvaddEK8I=;
+        b=TbaRMyBB9pNqFFmwSbP8UB+fneUzCgNERXdoVDLfqz8pyrzR7bUg0yIuKk3bi27k+J
+         imy/NyqSszL4P1VwzykSeBS1LmhbY18Ij/41ha0K85XPXFjxxyEKA+74Z0AJf6E3QPpQ
+         /j6WXDl+wleBtSjpdBTLo5eT4R2EejlebgWsSHIHOvBdUWwmiLSrzYKnvQSKlyAWIvkc
+         BZUzzEVh4oIIPcAtJ9Bz++aOKxTiR6gKC7X89/dyfoR5wLteTXzpzzEJv0YkiPTZ7Pby
+         PInTsPqGu9WCszS62M2TBgedDSExdoaAgJmwtsnmZCkHYpBqDyAOCxQHpX0TeBF93hJ0
+         3oWw==
+X-Gm-Message-State: APjAAAVexHnF6rC/sy5EUDSEe7WW5kKAiXkf6R1bDGHZzmj+AIU/VWpl
+        3xeHRWHVsE8Ol75dRfQrQT0ELqIA9Ge2kvwCFIE=
+X-Google-Smtp-Source: APXvYqyKUAyDAUmKtQRJrzk8olKBT8tNX2An90vKRAXEJbU4YNiOrXP7FJ+rifu8ESxHw5/FbEjihG9YUmIZnnfWuzA=
+X-Received: by 2002:a67:eb19:: with SMTP id a25mr11726259vso.109.1562618273573;
+ Mon, 08 Jul 2019 13:37:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1562359091.git.a.s.protopopov@gmail.com>
+ <e183c0af99056f8ea4de06acb358ace7f3a3d6ae.1562359091.git.a.s.protopopov@gmail.com>
+ <734dd45a-95b0-a7fd-9e1d-0535ef4d3e12@iogearbox.net> <CAEf4BzaGGVv2z8jB8MnT7=gnn4nG0cp7DGYxfnnnpohOT=ujCA@mail.gmail.com>
+In-Reply-To: <CAEf4BzaGGVv2z8jB8MnT7=gnn4nG0cp7DGYxfnnnpohOT=ujCA@mail.gmail.com>
+From:   Anton Protopopov <a.s.protopopov@gmail.com>
+Date:   Mon, 8 Jul 2019 16:37:42 -0400
+Message-ID: <CAGn_itw=BqWXn7ibg6M7j4r2T5CMo0paBhBoQQv7b+x7D2g2ww@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf, libbpf: add a new API bpf_object__reuse_maps()
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Transfer-Encoding: 8BIT
-References: <20190703205100.142904-1-sdf@google.com>
- <CAH3MdRWePmAZNRfGNcBdjKAJ+D33=4Vgg1STYC3khNps8AmaHQ@mail.gmail.com>
- <20190708161338.GC29524@mini-arch>
-To:     Stanislav Fomichev <sdf@fomichev.me>
-X-Mailer: Apple Mail (2.3445.9.1)
-X-TM-AS-GCONF: 00
-x-cbid: 19070820-0020-0000-0000-000003516770
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19070820-0021-0000-0000-000021A5134C
-Message-Id: <99593C98-5DEC-4B18-AE6D-271DD8A8A7F6@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-08_07:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907080252
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+=D0=BF=D0=BD, 8 =D0=B8=D1=8E=D0=BB. 2019 =D0=B3. =D0=B2 13:54, Andrii Nakry=
+iko <andrii.nakryiko@gmail.com>:
+>
+> On Fri, Jul 5, 2019 at 2:53 PM Daniel Borkmann <daniel@iogearbox.net> wro=
+te:
+> >
+> > On 07/05/2019 10:44 PM, Anton Protopopov wrote:
+> > > Add a new API bpf_object__reuse_maps() which can be used to replace a=
+ll maps in
+> > > an object by maps pinned to a directory provided in the path argument=
+.  Namely,
+> > > each map M in the object will be replaced by a map pinned to path/M.n=
+ame.
+> > >
+> > > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+> > > ---
+> > >  tools/lib/bpf/libbpf.c   | 34 ++++++++++++++++++++++++++++++++++
+> > >  tools/lib/bpf/libbpf.h   |  2 ++
+> > >  tools/lib/bpf/libbpf.map |  1 +
+> > >  3 files changed, 37 insertions(+)
+> > >
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > index 4907997289e9..84c9e8f7bfd3 100644
+> > > --- a/tools/lib/bpf/libbpf.c
+> > > +++ b/tools/lib/bpf/libbpf.c
+> > > @@ -3144,6 +3144,40 @@ int bpf_object__unpin_maps(struct bpf_object *=
+obj, const char *path)
+> > >       return 0;
+> > >  }
+> > >
+> > > +int bpf_object__reuse_maps(struct bpf_object *obj, const char *path)
+>
+> As is, bpf_object__reuse_maps() can be easily implemented by user
+> applications, as it's only using public libbpf APIs, so I'm not 100%
+> sure we need to add method like that to libbpf.
 
+The bpf_object__reuse_maps() can definitely be implemented by user
+applications, however, to use it a user also needs to re-implement the
+bpf_prog_load_xattr funciton, so it seemed to me that adding this
+functionality to the library is a better way.
 
-> Am 08.07.2019 um 18:13 schrieb Stanislav Fomichev <sdf@fomichev.me>:
-> 
-> On 07/03, Y Song wrote:
->> On Wed, Jul 3, 2019 at 1:51 PM Stanislav Fomichev <sdf@google.com> wrote:
->>> 
->>> Take the first x bytes of pt_regs for scalability tests, there is
->>> no real reason we need x86 specific rax.
->>> 
->>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
->>> ---
->>> tools/testing/selftests/bpf/progs/loop1.c | 3 ++-
->>> tools/testing/selftests/bpf/progs/loop2.c | 3 ++-
->>> tools/testing/selftests/bpf/progs/loop3.c | 3 ++-
->>> 3 files changed, 6 insertions(+), 3 deletions(-)
->>> 
->>> diff --git a/tools/testing/selftests/bpf/progs/loop1.c b/tools/testing/selftests/bpf/progs/loop1.c
->>> index dea395af9ea9..d530c61d2517 100644
->>> --- a/tools/testing/selftests/bpf/progs/loop1.c
->>> +++ b/tools/testing/selftests/bpf/progs/loop1.c
->>> @@ -14,11 +14,12 @@ SEC("raw_tracepoint/kfree_skb")
->>> int nested_loops(volatile struct pt_regs* ctx)
->>> {
->>>        int i, j, sum = 0, m;
->>> +       volatile int *any_reg = (volatile int *)ctx;
->>> 
->>>        for (j = 0; j < 300; j++)
->>>                for (i = 0; i < j; i++) {
->>>                        if (j & 1)
->>> -                               m = ctx->rax;
->>> +                               m = *any_reg;
->> 
->> I agree. ctx->rax here is only to generate some operations, which
->> cannot be optimized away by the compiler. dereferencing a volatile
->> pointee may just serve that purpose.
->> 
->> Comparing the byte code generated with ctx->rax and *any_reg, they are
->> slightly different. Using *any_reg is slighly worse, but this should
->> be still okay for the test.
->> 
->>>                        else
->>>                                m = j;
->>>                        sum += i * m;
->>> diff --git a/tools/testing/selftests/bpf/progs/loop2.c b/tools/testing/selftests/bpf/progs/loop2.c
->>> index 0637bd8e8bcf..91bb89d901e3 100644
->>> --- a/tools/testing/selftests/bpf/progs/loop2.c
->>> +++ b/tools/testing/selftests/bpf/progs/loop2.c
->>> @@ -14,9 +14,10 @@ SEC("raw_tracepoint/consume_skb")
->>> int while_true(volatile struct pt_regs* ctx)
->>> {
->>>        int i = 0;
->>> +       volatile int *any_reg = (volatile int *)ctx;
->>> 
->>>        while (true) {
->>> -               if (ctx->rax & 1)
->>> +               if (*any_reg & 1)
->>>                        i += 3;
->>>                else
->>>                        i += 7;
->>> diff --git a/tools/testing/selftests/bpf/progs/loop3.c b/tools/testing/selftests/bpf/progs/loop3.c
->>> index 30a0f6cba080..3a7f12d7186c 100644
->>> --- a/tools/testing/selftests/bpf/progs/loop3.c
->>> +++ b/tools/testing/selftests/bpf/progs/loop3.c
->>> @@ -14,9 +14,10 @@ SEC("raw_tracepoint/consume_skb")
->>> int while_true(volatile struct pt_regs* ctx)
->>> {
->>>        __u64 i = 0, sum = 0;
->>> +       volatile __u64 *any_reg = (volatile __u64 *)ctx;
->>>        do {
->>>                i++;
->>> -               sum += ctx->rax;
->>> +               sum += *any_reg;
->>>        } while (i < 0x100000000ULL);
->>>        return sum;
->>> }
->>> --
->>> 2.22.0.410.gd8fdbe21b5-goog
->> 
->> Ilya Leoshkevich (iii@linux.ibm.com, cc'ed) has another patch set
->> trying to solve this problem by introducing s360 arch register access
->> macros. I guess for now that patch set is not needed any more?
-> Oh, I missed them. Do they fix the tests for other (non-s360) arches as
-> well? I was trying to fix the issue by not depending on any arch
-> specific stuff because the test really doesn't care :-)
+>
+> > > +{
+> > > +     struct bpf_map *map;
+> > > +
+> > > +     if (!obj)
+> > > +             return -ENOENT;
+> > > +
+> > > +     if (!path)
+> > > +             return -EINVAL;
+> > > +
+> > > +     bpf_object__for_each_map(map, obj) {
+> > > +             int len, err;
+> > > +             int pinned_map_fd;
+> > > +             char buf[PATH_MAX];
+> >
+> > We'd need to skip the case of bpf_map__is_internal(map) since they are =
+always
+> > recreated for the given object.
+> >
+> > > +             len =3D snprintf(buf, PATH_MAX, "%s/%s", path, bpf_map_=
+_name(map));
+> > > +             if (len < 0) {
+> > > +                     return -EINVAL;
+> > > +             } else if (len >=3D PATH_MAX) {
+> > > +                     return -ENAMETOOLONG;
+> > > +             }
+> > > +
+> > > +             pinned_map_fd =3D bpf_obj_get(buf);
+> > > +             if (pinned_map_fd < 0)
+> > > +                     return pinned_map_fd;
+> >
+> > Should we rather have a new map definition attribute that tells to reus=
+e
+> > the map if it's pinned in bpf fs, and if not, we create it and later on
+> > pin it? This is what iproute2 is doing and which we're making use of he=
+avily.
+>
+> I'd like something like that as well. This would play nicely with
+> recently added BTF-defined maps as well.
+>
+> I think it should be not just pin/don't pin flag, but rather pinning
+> strategy, to accommodate various typical strategies of handling maps
+> that are already pinned. So something like this:
+>
+> 1. BPF_PIN_NOTHING - default, don't pin;
+> 2. BPF_PIN_EXCLUSIVE - pin, but if map is already pinned - fail;
+> 3. BPF_PIN_SET - pin; if existing map exists, reset its state to be
+> exact state of object's map;
+> 4. BPF_PIN_MERGE - pin, if map exists, fill in NULL entries only (this
+> is how Cilium is pinning PROG_ARRAY maps, if I understand correctly);
+> 5. BPF_PIN_MERGE_OVERWRITE - pin, if map exists, overwrite non-NULL value=
+s.
+>
+> This list is only for illustrative purposes, ideally people that have
+> a lot of experience using pinning for real-world use cases would chime
+> in on what strategies are useful and make sense.
 
-They are supposed to work for everything that defines PT_REGS_RC in
-bpf_helpers.h, but I have to admit I tested only x86_64 and s390.
+My case was simply to reuse existing maps when reloading a program.
+Does it make sense for you to add only the simplest cases of listed above?
 
-The main source of problems with my approach were mismatching definitions
-of struct pt_regs for userspace and kernel, and because of that there was
-some tweaking required for both arches. I will double check how it looks
-for others (arm, mips, ppc, sparc) tomorrow.
+Also, libbpf doesn't use standard naming conventions for pinning maps.
+Does it make sense to provide a list of already open maps to the
+bpf_prog_load_xattr function as an attribute? In this case a user
+can execute his own policy on pinning, but still will have an option
+to reuse, reset, and merge maps.
 
-Best regards,
-Ilya
+>
+> > In bpf_object__reuse_maps() bailing out if bpf_obj_get() fails is perha=
+ps
+> > too limiting for a generic API as new version of an object file may con=
+tain
+> > new maps which are not yet present in bpf fs at that point.
+> >
+> > > +             err =3D bpf_map__reuse_fd(map, pinned_map_fd);
+> > > +             if (err)
+> > > +                     return err;
+> > > +     }
+> > > +
+> > > +     return 0;
+> > > +}
+> > > +
+> > >  int bpf_object__pin_programs(struct bpf_object *obj, const char *pat=
+h)
+> > >  {
+> > >       struct bpf_program *prog;
+> > > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > > index d639f47e3110..7fe465a1be76 100644
+> > > --- a/tools/lib/bpf/libbpf.h
+> > > +++ b/tools/lib/bpf/libbpf.h
+> > > @@ -82,6 +82,8 @@ int bpf_object__variable_offset(const struct bpf_ob=
+ject *obj, const char *name,
+> > >  LIBBPF_API int bpf_object__pin_maps(struct bpf_object *obj, const ch=
+ar *path);
+> > >  LIBBPF_API int bpf_object__unpin_maps(struct bpf_object *obj,
+> > >                                     const char *path);
+> > > +LIBBPF_API int bpf_object__reuse_maps(struct bpf_object *obj,
+> > > +                                   const char *path);
+> > >  LIBBPF_API int bpf_object__pin_programs(struct bpf_object *obj,
+> > >                                       const char *path);
+> > >  LIBBPF_API int bpf_object__unpin_programs(struct bpf_object *obj,
+> > > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> > > index 2c6d835620d2..66a30be6696c 100644
+> > > --- a/tools/lib/bpf/libbpf.map
+> > > +++ b/tools/lib/bpf/libbpf.map
+> > > @@ -172,5 +172,6 @@ LIBBPF_0.0.4 {
+> > >               btf_dump__new;
+> > >               btf__parse_elf;
+> > >               bpf_object__load_xattr;
+> > > +             bpf_object__reuse_maps;
+> > >               libbpf_num_possible_cpus;
+> > >  } LIBBPF_0.0.3;
+> > >
+> >
