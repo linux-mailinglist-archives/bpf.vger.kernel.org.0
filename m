@@ -2,109 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 282F761FE4
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 15:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD676205C
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 16:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731531AbfGHNzv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jul 2019 09:55:51 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:52551 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731382AbfGHNzu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jul 2019 09:55:50 -0400
-Received: by mail-wm1-f67.google.com with SMTP id s3so15913407wms.2
-        for <bpf@vger.kernel.org>; Mon, 08 Jul 2019 06:55:49 -0700 (PDT)
+        id S1726684AbfGHOVI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jul 2019 10:21:08 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:37065 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728596AbfGHOVI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jul 2019 10:21:08 -0400
+Received: by mail-pf1-f194.google.com with SMTP id 19so7707340pfa.4;
+        Mon, 08 Jul 2019 07:21:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9sp/tZgDFKZU93dnNpAW0b42FyVjdurtoOYWEUaBdt4=;
-        b=MNqwKhb54VaXXVvgOIOJY1T5x7WYZBPhD3LvMNi4dxS18G0fkn22x/kmi92jSG5P0R
-         mlLrlJZjU3VGoquvDlACk8vmjE2c3NYlXMaYzWRlQr0k3sAy1PI7irBbB2OGRwyAKO5x
-         8GiOEucxVVhTVEZ42wAFrSJgQl1cm6CkIZW1SPxiuaa5GPpBswiU7/RgHhzT1//iU54I
-         w1O1Ie6zZhst9ZqvSCysxAOvg4ELDX8gRm5SWzvvhkurPMCMOCzom+ybHb9BSeQr7U+0
-         4eAaZKLU0RYwTW+jXOBOJ+GqATqgegWOseaSCWLwNFKo4IBLJY04hBCYRuW7sUp2+uQS
-         KngA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=r0uciddUbrYB675XnBhSdwuvsW7gK3pQurz+1tUBwU0=;
+        b=pDfQjIQOg6v5OIMJZjtvSI4rQ9nm+0bSXGZMDSYhrzkdw2x0TLwVcl2Ak7v2UAtStb
+         63YtNfgc/puBCqx9VcKrq/y8FBxtoPvSZAdr42I3IM+3zkUdUvo62URIXyGH9J/Es2oO
+         RsPKgd0L1Rr9KBGmnlHCw587RqNCYZQS6eG7/uqI8KjjZGg3BllZcvdcBkJTBvUHqcfY
+         bQMUflu5lAbYvH8fYAwqG41vIIgeezU5BgQt1zN4obeGeiG4e4x8FIfgRxYfz4OnlYRG
+         yampkbdJmxp8KkkiENM0+i9pNDGaWv8B8PHthcXYxDrdumwQNBkLeNk56czeAhh7CvJy
+         0FYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9sp/tZgDFKZU93dnNpAW0b42FyVjdurtoOYWEUaBdt4=;
-        b=o/swKMuRDu8/OMmTXP8F+Tw3Mi91leLCcjH+xSD1RPWT0ZIun51d4qOmm67VB19VMm
-         610F1A5dwZaJJRk0UX0R+VNig0vOceVZeedYWQpYPxBzpEVzc4vMMqAqdJFnaZsm7nA+
-         8ELzfeDQugO0nenT0Fnr8Ffwijj6UlzOSGdCyegWNYvs3rYMydYoeBEEoOxb+BzroY79
-         i4CL67342nSHchHxUUAAm/ZZdgA+JWclhx+hQ94vDYq/s6/MGxlQJsQ3ifxaBEDmQzxA
-         h53HOcy/G7nIhK2PL1NdbvglRJ6T/MG9lX/3d7wKGMVPUlrS5VYxF8LFL/N3mdTzRLKk
-         CFZQ==
-X-Gm-Message-State: APjAAAXq/EyKDzEL/1Aw6KTiz7KGxX+BxdgILqqt7MP0aLpLTiRKla+B
-        194WyDXzkWCV6XKnbwuVCL4EPFpWITO/6LoYMrpsew==
-X-Google-Smtp-Source: APXvYqz3MLRLCiixcvJvT3c2PGSq0SN54PM/2CAHZS15T8aReVMNTcEdEHh6jTbUrUhw1ziE6ph6GPSVI0zEdXHDvhA=
-X-Received: by 2002:a05:600c:1008:: with SMTP id c8mr17201666wmc.133.1562594147798;
- Mon, 08 Jul 2019 06:55:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190708125733.3944836-1-arnd@arndb.de> <20190708125733.3944836-2-arnd@arndb.de>
-In-Reply-To: <20190708125733.3944836-2-arnd@arndb.de>
-From:   Soheil Hassas Yeganeh <soheil@google.com>
-Date:   Mon, 8 Jul 2019 09:55:11 -0400
-Message-ID: <CACSApvYkWwjzOhu+rvv1LOkcFYbU8Jgw=Q1f+HrCReEeKBLuuA@mail.gmail.com>
-Subject: Re: [PATCH net-next 2/2] bpf: avoid unused variable warning in tcp_bpf_rtt()
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Eric Dumazet <edumazet@google.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=r0uciddUbrYB675XnBhSdwuvsW7gK3pQurz+1tUBwU0=;
+        b=QC2c+TmfCd1r0ASA8pWvjgnIVC393VuQ/8C5ND9Mz3XPX/MsllikWlF9SmRjgAWg48
+         l5647wGAkNyNFWAZkQEXCr4aRDN5yltJ/984Gsa1vc5dwDbMDoDXZtnG+NQbKzmEPA57
+         C9XIErG6q8KpksbVr864YumRziJHsRtpa5wgApBQWhCW/WrH2PxvQPYlkwJjuaYMd/5V
+         +vr/tBrU2G2bzua1D9fu4aqNf4DAbyTm+zGrlsk7n22mB9za50ZrCPp2FOnHHEdgiYnI
+         50xioU8Un4ABosjpTPnWjJDPUXQCVK8SW1XZhOaYl2e0upbdEFDKH0dNpAh0cQ3UhzaC
+         cwqw==
+X-Gm-Message-State: APjAAAWCJg61GPuykwQBukGuo0weHX+iSjzVO8AbM0elYQPD10Oe+yT0
+        nz9S05nisvjaHapeoyd3t6E=
+X-Google-Smtp-Source: APXvYqxMJMh0UDniT45bAPaZb98umldlVKp/e/8Kk08/6HPtJZwnxDa7zY6Vd+3nv/5wvv7EHZADAQ==
+X-Received: by 2002:a17:90a:22aa:: with SMTP id s39mr25953680pjc.39.1562595667805;
+        Mon, 08 Jul 2019 07:21:07 -0700 (PDT)
+Received: from [172.20.95.170] ([2620:10d:c090:180::1:c37b])
+        by smtp.gmail.com with ESMTPSA id p68sm29668205pfb.80.2019.07.08.07.21.06
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Jul 2019 07:21:07 -0700 (PDT)
+From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
+To:     "Ilya Maximets" <i.maximets@samsung.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, xdp-newbies@vger.kernel.org,
         "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Priyaranjan Jha <priyarjha@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        "=?utf-8?b?QmrDtnJuIFTDtnBlbA==?=" <bjorn.topel@intel.com>,
+        "Magnus Karlsson" <magnus.karlsson@intel.com>,
+        "Jakub Kicinski" <jakub.kicinski@netronome.com>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf] xdp: fix potential deadlock on socket mutex
+Date:   Mon, 08 Jul 2019 07:21:05 -0700
+X-Mailer: MailMate (1.12.5r5635)
+Message-ID: <0617EEA7-7883-4800-B1E2-5D59D8120C67@gmail.com>
+In-Reply-To: <20190708110344.23278-1-i.maximets@samsung.com>
+References: <CGME20190708110350eucas1p16357da1f812ff8309b1edc98d4cdacc1@eucas1p1.samsung.com>
+ <20190708110344.23278-1-i.maximets@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 8, 2019 at 8:57 AM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> When CONFIG_BPF is disabled, we get a warning for an unused
-> variable:
->
-> In file included from drivers/target/target_core_device.c:26:
-> include/net/tcp.h:2226:19: error: unused variable 'tp' [-Werror,-Wunused-variable]
->         struct tcp_sock *tp = tcp_sk(sk);
->
-> The variable is only used in one place, so it can be
-> replaced with its value there to avoid the warning.
->
-> Fixes: 23729ff23186 ("bpf: add BPF_CGROUP_SOCK_OPS callback that is executed on every RTT")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On 8 Jul 2019, at 4:03, Ilya Maximets wrote:
 
-Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
+> There are 2 call chains:
+>
+>   a) xsk_bind --> xdp_umem_assign_dev
+>   b) unregister_netdevice_queue --> xsk_notifier
+>
+> with the following locking order:
+>
+>   a) xs->mutex --> rtnl_lock
+>   b) rtnl_lock --> xdp.lock --> xs->mutex
+>
+> Different order of taking 'xs->mutex' and 'rtnl_lock' could produce a
+> deadlock here. Fix that by moving the 'rtnl_lock' before 'xs->lock' in
+> the bind call chain (a).
+>
+> Reported-by: syzbot+bf64ec93de836d7f4c2c@syzkaller.appspotmail.com
+> Fixes: 455302d1c9ae ("xdp: fix hang while unregistering device bound 
+> to xdp socket")
+> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
 
-> ---
->  include/net/tcp.h | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+Thanks, Ilya!
+
+I think in the long run the locking needs to be revisited,
+but this should fix the deadlock for now.
+
+Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
+
+
+
+> This patch is a fix for patch that is not yet in mainline, but
+> already in 'net' tree. I'm not sure what is the correct process
+> for applying such fixes.
 >
-> diff --git a/include/net/tcp.h b/include/net/tcp.h
-> index e16d8a3fd3b4..cca3c59b98bf 100644
-> --- a/include/net/tcp.h
-> +++ b/include/net/tcp.h
-> @@ -2223,9 +2223,7 @@ static inline bool tcp_bpf_ca_needs_ecn(struct sock *sk)
+>  net/xdp/xdp_umem.c | 16 ++++++----------
+>  net/xdp/xsk.c      |  2 ++
+>  2 files changed, 8 insertions(+), 10 deletions(-)
 >
->  static inline void tcp_bpf_rtt(struct sock *sk)
->  {
-> -       struct tcp_sock *tp = tcp_sk(sk);
-> -
-> -       if (BPF_SOCK_OPS_TEST_FLAG(tp, BPF_SOCK_OPS_RTT_CB_FLAG))
-> +       if (BPF_SOCK_OPS_TEST_FLAG(tcp_sk(sk), BPF_SOCK_OPS_RTT_CB_FLAG))
->                 tcp_call_bpf(sk, BPF_SOCK_OPS_RTT_CB, 0, NULL);
+> diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
+> index 20c91f02d3d8..83de74ca729a 100644
+> --- a/net/xdp/xdp_umem.c
+> +++ b/net/xdp/xdp_umem.c
+> @@ -87,21 +87,20 @@ int xdp_umem_assign_dev(struct xdp_umem *umem, 
+> struct net_device *dev,
+>  	struct netdev_bpf bpf;
+>  	int err = 0;
+>
+> +	ASSERT_RTNL();
+> +
+>  	force_zc = flags & XDP_ZEROCOPY;
+>  	force_copy = flags & XDP_COPY;
+>
+>  	if (force_zc && force_copy)
+>  		return -EINVAL;
+>
+> -	rtnl_lock();
+> -	if (xdp_get_umem_from_qid(dev, queue_id)) {
+> -		err = -EBUSY;
+> -		goto out_rtnl_unlock;
+> -	}
+> +	if (xdp_get_umem_from_qid(dev, queue_id))
+> +		return -EBUSY;
+>
+>  	err = xdp_reg_umem_at_qid(dev, umem, queue_id);
+>  	if (err)
+> -		goto out_rtnl_unlock;
+> +		return err;
+>
+>  	umem->dev = dev;
+>  	umem->queue_id = queue_id;
+> @@ -110,7 +109,7 @@ int xdp_umem_assign_dev(struct xdp_umem *umem, 
+> struct net_device *dev,
+>
+>  	if (force_copy)
+>  		/* For copy-mode, we are done. */
+> -		goto out_rtnl_unlock;
+> +		return 0;
+>
+>  	if (!dev->netdev_ops->ndo_bpf ||
+>  	    !dev->netdev_ops->ndo_xsk_async_xmit) {
+> @@ -125,7 +124,6 @@ int xdp_umem_assign_dev(struct xdp_umem *umem, 
+> struct net_device *dev,
+>  	err = dev->netdev_ops->ndo_bpf(dev, &bpf);
+>  	if (err)
+>  		goto err_unreg_umem;
+> -	rtnl_unlock();
+>
+>  	umem->zc = true;
+>  	return 0;
+> @@ -135,8 +133,6 @@ int xdp_umem_assign_dev(struct xdp_umem *umem, 
+> struct net_device *dev,
+>  		err = 0; /* fallback to copy mode */
+>  	if (err)
+>  		xdp_clear_umem_at_qid(dev, queue_id);
+> -out_rtnl_unlock:
+> -	rtnl_unlock();
+>  	return err;
 >  }
 >
-> --
-> 2.20.0
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 703cf5ea448b..2aa6072a3e55 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -416,6 +416,7 @@ static int xsk_bind(struct socket *sock, struct 
+> sockaddr *addr, int addr_len)
+>  	if (flags & ~(XDP_SHARED_UMEM | XDP_COPY | XDP_ZEROCOPY))
+>  		return -EINVAL;
 >
+> +	rtnl_lock();
+>  	mutex_lock(&xs->mutex);
+>  	if (xs->state != XSK_READY) {
+>  		err = -EBUSY;
+> @@ -501,6 +502,7 @@ static int xsk_bind(struct socket *sock, struct 
+> sockaddr *addr, int addr_len)
+>  		xs->state = XSK_BOUND;
+>  out_release:
+>  	mutex_unlock(&xs->mutex);
+> +	rtnl_unlock();
+>  	return err;
+>  }
+>
+> -- 
+> 2.17.1
