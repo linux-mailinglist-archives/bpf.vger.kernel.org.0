@@ -2,287 +2,352 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AE00D6269A
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 18:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A96A3626A1
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 18:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389529AbfGHQtJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jul 2019 12:49:09 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:60566 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727947AbfGHQtI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jul 2019 12:49:08 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x68GXiNe119534;
-        Mon, 8 Jul 2019 16:48:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=cEtJkchxm/CjuC6l1G66NpijImPVQgkeETLZuKZJEv8=;
- b=TP6ivQdEDPaBTCKTPnY4jtIQ7t+jdzPpUfUR9/h8jVU2k1B4HC/4a+NDLflTtSyR5pJO
- jMp9C39FkhUffmBePCWibW3lo8w0k0mYJ1js3D5aTPqIOAriC59+ynAe5nauqnsZjLta
- p8uWNgarIZaHxeheYLNHFiHJHMq2+w+iUFDy+QtJIAVhTV9fHs5B6NSl/DotaBxryHuM
- 2FgLpFvICPVAwbxOtaqRuSrHBf18nA/b5v46y/FWWSErWEI2NnUXj1R5/UmLDitdijcg
- xHs8d1sGR/jsijyzQGE6Vt/mfVMXqsNTkcEi+yFrZ9NT8NB7HMewEzZYMijdgm7BME8e Pg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 2tjk2tfkpf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Jul 2019 16:48:15 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x68Gm8aK056663;
-        Mon, 8 Jul 2019 16:48:14 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 2tjhpckdb1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 08 Jul 2019 16:48:14 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x68GmEqI057135;
-        Mon, 8 Jul 2019 16:48:14 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 2tjhpckdat-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 08 Jul 2019 16:48:14 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x68GmDMb022507;
-        Mon, 8 Jul 2019 16:48:13 GMT
-Received: from localhost (/10.159.211.102)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 08 Jul 2019 09:48:13 -0700
-Date:   Mon, 8 Jul 2019 12:48:10 -0400
-From:   Kris Van Hees <kris.van.hees@oracle.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Kris Van Hees <kris.van.hees@oracle.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, dtrace-devel@oss.oracle.com,
-        linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, acme@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, Chris Mason <clm@fb.com>
-Subject: Re: [PATCH 1/1] tools/dtrace: initial implementation of DTrace
-Message-ID: <20190708164810.GC20847@oracle.com>
-References: <201907040313.x643D8Pg025951@userv0121.oracle.com>
- <201907040314.x643EUoA017906@aserv0122.oracle.com>
- <20190704130336.GN3402@hirez.programming.kicks-ass.net>
+        id S2390148AbfGHQvw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jul 2019 12:51:52 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:34920 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727947AbfGHQvv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jul 2019 12:51:51 -0400
+Received: by mail-lj1-f195.google.com with SMTP id x25so9897070ljh.2
+        for <bpf@vger.kernel.org>; Mon, 08 Jul 2019 09:51:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kinvolk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=JiyfBxDrUpJwKDj5qRxHMNcBMneqQ8dyhv4/1WSz/nM=;
+        b=IvFIKtChvtNohLTnMgGzxoRkIk+WcVdktFHEk4p20NBTSlwCluMT2Rg8RV1y5cfgKC
+         9F77cauh2pamKTgc+4qnvO5FE/9K9JuiJ70HP4vepUvSpemgQtlNIiT5WYkuY+ZGKgj5
+         U4KBeOYrlbAFPAHcM1nfSm7ICNujoPJyL32us=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JiyfBxDrUpJwKDj5qRxHMNcBMneqQ8dyhv4/1WSz/nM=;
+        b=PfFfZ8hG2L086cjUsqr3a9UGDMKx6fHJQyUGOTLv36XkF6jqac5XeLin8ZFSNCdtiK
+         C0oYfG6yn36UNr89IKwbWrYFFKgrhroV/3JChb2oQd93bQN/CxT9q5vPJes1pqyms3rp
+         CEMuTwPIawCMjk00lPkhWVpsfq9UFnPY58SArRQOI1RIMkHC9C09mi//egHKg+lxqvEU
+         HUYTaf2dFvZiWAsclu6gcZmCUtCaNqE7V0HMJDW2weahQx4pPiJecwByygRFyshEqcIP
+         9/IMGTbkrzCfjxTrLUCr65wcu9E09POjBtP2yJyDxBzO6cZcPvLgU3cOqY3IGPfYwYRI
+         DAqg==
+X-Gm-Message-State: APjAAAVyS8bpFu+qRSWsWLGAp+jtw66Rd8hBQfmpP9jIdAlEJdbT2+/r
+        0X+I2PWgmwzx+e2t2I3dnaX5ncQywIxV0OXuI855Eg==
+X-Google-Smtp-Source: APXvYqyjUhCe+SlbocNI+sCV28D/05h38efmPoCXwgGs4skkGvEhFtgWw6YEi51RuUhiIliigG6xljsuTmDeiRubFCk=
+X-Received: by 2002:a2e:9754:: with SMTP id f20mr10715874ljj.151.1562604708948;
+ Mon, 08 Jul 2019 09:51:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190704130336.GN3402@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9312 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1907080206
+References: <20190625194215.14927-1-krzesimir@kinvolk.io> <20190625194215.14927-9-krzesimir@kinvolk.io>
+ <20190625201220.GC10487@mini-arch> <CAGGp+cE3m1+ZWFBmjTgKFEHYVJ-L1dE=+iVUXvXCxWAxRG9YTA@mail.gmail.com>
+ <20190626161231.GA4866@mini-arch>
+In-Reply-To: <20190626161231.GA4866@mini-arch>
+From:   Krzesimir Nowak <krzesimir@kinvolk.io>
+Date:   Mon, 8 Jul 2019 18:51:38 +0200
+Message-ID: <CAGGp+cGXaOAYNgz4VPbNwaVf3ZBHJ3XaOn=rN9hMdcAAPDY7bQ@mail.gmail.com>
+Subject: Re: [bpf-next v2 08/10] bpf: Implement bpf_prog_test_run for perf
+ event programs
+To:     Stanislav Fomichev <sdf@fomichev.me>
+Cc:     netdev@vger.kernel.org, Alban Crequy <alban@kinvolk.io>,
+        =?UTF-8?Q?Iago_L=C3=B3pez_Galeiras?= <iago@kinvolk.io>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 04, 2019 at 03:03:36PM +0200, Peter Zijlstra wrote:
-> On Wed, Jul 03, 2019 at 08:14:30PM -0700, Kris Van Hees wrote:
-> > +/*
-> > + * Read the data_head offset from the header page of the ring buffer.  The
-> > + * argument is declared 'volatile' because it references a memory mapped page
-> > + * that the kernel may be writing to while we access it here.
-> > + */
-> > +static u64 read_rb_head(volatile struct perf_event_mmap_page *rb_page)
-> > +{
-> > +	u64	head = rb_page->data_head;
-> > +
-> > +	asm volatile("" ::: "memory");
-> > +
-> > +	return head;
-> > +}
-> > +
-> > +/*
-> > + * Write the data_tail offset in the header page of the ring buffer.  The
-> > + * argument is declared 'volatile' because it references a memory mapped page
-> > + * that the kernel may be writing to while we access it here.
-> 
-> s/writing/reading/
+On Wed, Jun 26, 2019 at 6:12 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+>
+> On 06/26, Krzesimir Nowak wrote:
+> > On Tue, Jun 25, 2019 at 10:12 PM Stanislav Fomichev <sdf@fomichev.me> w=
+rote:
+> > >
+> > > On 06/25, Krzesimir Nowak wrote:
+> > > > As an input, test run for perf event program takes struct
+> > > > bpf_perf_event_data as ctx_in and struct bpf_perf_event_value as
+> > > > data_in. For an output, it basically ignores ctx_out and data_out.
+> > > >
+> > > > The implementation sets an instance of struct bpf_perf_event_data_k=
+ern
+> > > > in such a way that the BPF program reading data from context will
+> > > > receive what we passed to the bpf prog test run in ctx_in. Also BPF
+> > > > program can call bpf_perf_prog_read_value to receive what was passe=
+d
+> > > > in data_in.
+> > > >
+> > > > Signed-off-by: Krzesimir Nowak <krzesimir@kinvolk.io>
+> > > > ---
+> > > >  kernel/trace/bpf_trace.c                      | 107 ++++++++++++++=
+++++
+> > > >  .../bpf/verifier/perf_event_sample_period.c   |   8 ++
+> > > >  2 files changed, 115 insertions(+)
+> > > >
+> > > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > > > index c102c240bb0b..2fa49ea8a475 100644
+> > > > --- a/kernel/trace/bpf_trace.c
+> > > > +++ b/kernel/trace/bpf_trace.c
+> > > > @@ -16,6 +16,8 @@
+> > > >
+> > > >  #include <asm/tlb.h>
+> > > >
+> > > > +#include <trace/events/bpf_test_run.h>
+> > > > +
+> > > >  #include "trace_probe.h"
+> > > >  #include "trace.h"
+> > > >
+> > > > @@ -1160,7 +1162,112 @@ const struct bpf_verifier_ops perf_event_ve=
+rifier_ops =3D {
+> > > >       .convert_ctx_access     =3D pe_prog_convert_ctx_access,
+> > > >  };
+> > > >
+> > > > +static int pe_prog_test_run(struct bpf_prog *prog,
+> > > > +                         const union bpf_attr *kattr,
+> > > > +                         union bpf_attr __user *uattr)
+> > > > +{
+> > > > +     void __user *ctx_in =3D u64_to_user_ptr(kattr->test.ctx_in);
+> > > > +     void __user *data_in =3D u64_to_user_ptr(kattr->test.data_in)=
+;
+> > > > +     u32 data_size_in =3D kattr->test.data_size_in;
+> > > > +     u32 ctx_size_in =3D kattr->test.ctx_size_in;
+> > > > +     u32 repeat =3D kattr->test.repeat;
+> > > > +     u32 retval =3D 0, duration =3D 0;
+> > > > +     int err =3D -EINVAL;
+> > > > +     u64 time_start, time_spent =3D 0;
+> > > > +     int i;
+> > > > +     struct perf_sample_data sample_data =3D {0, };
+> > > > +     struct perf_event event =3D {0, };
+> > > > +     struct bpf_perf_event_data_kern real_ctx =3D {0, };
+> > > > +     struct bpf_perf_event_data fake_ctx =3D {0, };
+> > > > +     struct bpf_perf_event_value value =3D {0, };
+> > > > +
+> > > > +     if (ctx_size_in !=3D sizeof(fake_ctx))
+> > > > +             goto out;
+> > > > +     if (data_size_in !=3D sizeof(value))
+> > > > +             goto out;
+> > > > +
+> > > > +     if (copy_from_user(&fake_ctx, ctx_in, ctx_size_in)) {
+> > > > +             err =3D -EFAULT;
+> > > > +             goto out;
+> > > > +     }
+> > > Move this to net/bpf/test_run.c? I have a bpf_ctx_init helper to deal
+> > > with ctx input, might save you some code above wrt ctx size/etc.
+> >
+> > My impression about net/bpf/test_run.c was that it was a collection of
+> > helpers for test runs of the network-related BPF programs, because
+> > they are so similar to each other. So kernel/trace/bpf_trace.c looked
+> > like an obvious place for the test_run implementation since other perf
+> > trace BPF stuff was already there.
+> Maybe net/bpf/test_run.c should be renamed to kernel/bpf/test_run.c?
 
-Thanks!
+Just sent another version of this patch series. I went with slightly
+different approach - moved some functions to kernel/bpf/test_run.c and
+left the network specific stuff in net/bpf/test_run.c.
 
-> > + */
-> > +static void write_rb_tail(volatile struct perf_event_mmap_page *rb_page,
-> > +			  u64 tail)
-> > +{
-> > +	asm volatile("" ::: "memory");
-> > +
-> > +	rb_page->data_tail = tail;
-> > +}
-> 
-> That volatile usage is atrocious (kernel style would have you use
-> {READ,WRITE}_ONCE()). Also your comments fail to mark these as
-> load_acquire and store_release. And by only using a compiler barrier
-> you're hard assuming TSO, which is somewhat fragile at best.
-> 
-> Alternatively, you can use the C11 bits and write:
-> 
-> 	return __atomic_load_n(&rb_page->data_head, __ATOMIC_ACQUIRE);
-> 
-> 	__atomic_store_n(&rb_page->data_tail, tail, __ATOMIC_RELEASE);
+>
+> > And about bpf_ctx_init - looks useful as it seems to me that it
+> > handles the scenario where the size of the ctx struct grows, but still
+> > allows passing older version of the struct (thus smaller) from
+> > userspace for compatibility. Maybe that checking and copying part of
+> > the function could be moved into some non-static helper function, so I
+> > could use it and still skip the need for allocating memory for the
+> > context?
+> You can always make bpf_ctx_init non-static and export it.
+> But, again, consider adding your stuff to the net/bpf/test_run.c
+> and exporting only pe_prog_test_run. That way you can reuse
+> bpf_ctx_init and bpf_test_run.
+>
+> Why do you care about memory allocation though? It's a one time
+> operation and doesn't affect the performance measurements.
+>
+> > > > +     if (copy_from_user(&value, data_in, data_size_in)) {
+> > > > +             err =3D -EFAULT;
+> > > > +             goto out;
+> > > > +     }
+> > > > +
+> > > > +     real_ctx.regs =3D &fake_ctx.regs;
+> > > > +     real_ctx.data =3D &sample_data;
+> > > > +     real_ctx.event =3D &event;
+> > > > +     perf_sample_data_init(&sample_data, fake_ctx.addr,
+> > > > +                           fake_ctx.sample_period);
+> > > > +     event.cpu =3D smp_processor_id();
+> > > > +     event.oncpu =3D -1;
+> > > > +     event.state =3D PERF_EVENT_STATE_OFF;
+> > > > +     local64_set(&event.count, value.counter);
+> > > > +     event.total_time_enabled =3D value.enabled;
+> > > > +     event.total_time_running =3D value.running;
+> > > > +     /* make self as a leader - it is used only for checking the
+> > > > +      * state field
+> > > > +      */
+> > > > +     event.group_leader =3D &event;
+> > > > +
+> > > > +     /* slightly changed copy pasta from bpf_test_run() in
+> > > > +      * net/bpf/test_run.c
+> > > > +      */
+> > > > +     if (!repeat)
+> > > > +             repeat =3D 1;
+> > > > +
+> > > > +     rcu_read_lock();
+> > > > +     preempt_disable();
+> > > > +     time_start =3D ktime_get_ns();
+> > > > +     for (i =3D 0; i < repeat; i++) {
+> > > Any reason for not using bpf_test_run?
+> >
+> > Two, mostly. One was that it is a static function and my code was
+> > elsewhere. Second was that it does some cgroup storage setup and I'm
+> > not sure if the perf event BPF program needs that.
+> You can always make it non-static.
+>
+> Regarding cgroup storage: do we care? If you can see it affecting
+> your performance numbers, then yes, but you can try to measure to see
+> if it gives you any noticeable overhead. Maybe add an argument to
+> bpf_test_run to skip cgroup storage stuff?
+>
+> > > > +             retval =3D BPF_PROG_RUN(prog, &real_ctx);
+> > > > +
+> > > > +             if (signal_pending(current)) {
+> > > > +                     err =3D -EINTR;
+> > > > +                     preempt_enable();
+> > > > +                     rcu_read_unlock();
+> > > > +                     goto out;
+> > > > +             }
+> > > > +
+> > > > +             if (need_resched()) {
+> > > > +                     time_spent +=3D ktime_get_ns() - time_start;
+> > > > +                     preempt_enable();
+> > > > +                     rcu_read_unlock();
+> > > > +
+> > > > +                     cond_resched();
+> > > > +
+> > > > +                     rcu_read_lock();
+> > > > +                     preempt_disable();
+> > > > +                     time_start =3D ktime_get_ns();
+> > > > +             }
+> > > > +     }
+> > > > +     time_spent +=3D ktime_get_ns() - time_start;
+> > > > +     preempt_enable();
+> > > > +     rcu_read_unlock();
+> > > > +
+> > > > +     do_div(time_spent, repeat);
+> > > > +     duration =3D time_spent > U32_MAX ? U32_MAX : (u32)time_spent=
+;
+> > > > +     /* end of slightly changed copy pasta from bpf_test_run() in
+> > > > +      * net/bpf/test_run.c
+> > > > +      */
+> > > > +
+> > > > +     if (copy_to_user(&uattr->test.retval, &retval, sizeof(retval)=
+)) {
+> > > > +             err =3D -EFAULT;
+> > > > +             goto out;
+> > > > +     }
+> > > > +     if (copy_to_user(&uattr->test.duration, &duration, sizeof(dur=
+ation))) {
+> > > > +             err =3D -EFAULT;
+> > > > +             goto out;
+> > > > +     }
+> > > Can BPF program modify fake_ctx? Do we need/want to copy it back?
+> >
+> > Reading the pe_prog_is_valid_access function tells me that it's not
+> > possible - the only type of valid access is read. So maybe I should be
+> > stricter about the requirements for the data_out and ctx_out sizes
+> > (should be zero or return -EINVAL).
+> Yes, better to explicitly prohibit anything that we don't support.
+>
+> > > > +     err =3D 0;
+> > > > +out:
+> > > > +     trace_bpf_test_finish(&err);
+> > > > +     return err;
+> > > > +}
+> > > > +
+> > > >  const struct bpf_prog_ops perf_event_prog_ops =3D {
+> > > > +     .test_run       =3D pe_prog_test_run,
+> > > >  };
+> > > >
+> > > >  static DEFINE_MUTEX(bpf_event_mutex);
+> > > > diff --git a/tools/testing/selftests/bpf/verifier/perf_event_sample=
+_period.c b/tools/testing/selftests/bpf/verifier/perf_event_sample_period.c
+> > > > index 471c1a5950d8..16e9e5824d14 100644
+> > > > --- a/tools/testing/selftests/bpf/verifier/perf_event_sample_period=
+.c
+> > > > +++ b/tools/testing/selftests/bpf/verifier/perf_event_sample_period=
+.c
+> > > This should probably go in another patch.
+> >
+> > Yeah, I was wondering about it. These changes are here to avoid
+> > breaking the tests, since perf event program can actually be run now
+> > and the test_run for perf event required certain sizes for ctx and
+> > data.
+> You need to make sure the context is optional, that way you don't break
+> any existing tests out in the wild and can move those changes to
+> another patch.
+>
+> > So, I will either move them to a separate patch or rework the test_run
+> > for perf event to accept the size between 0 and sizeof(struct
+> > something), so the changes in tests maybe will not be necessary.
+> >
+> > >
+> > > > @@ -13,6 +13,8 @@
+> > > >       },
+> > > >       .result =3D ACCEPT,
+> > > >       .prog_type =3D BPF_PROG_TYPE_PERF_EVENT,
+> > > > +     .ctx_len =3D sizeof(struct bpf_perf_event_data),
+> > > > +     .data_len =3D sizeof(struct bpf_perf_event_value),
+> > > >  },
+> > > >  {
+> > > >       "check bpf_perf_event_data->sample_period half load permitted=
+",
+> > > > @@ -29,6 +31,8 @@
+> > > >       },
+> > > >       .result =3D ACCEPT,
+> > > >       .prog_type =3D BPF_PROG_TYPE_PERF_EVENT,
+> > > > +     .ctx_len =3D sizeof(struct bpf_perf_event_data),
+> > > > +     .data_len =3D sizeof(struct bpf_perf_event_value),
+> > > >  },
+> > > >  {
+> > > >       "check bpf_perf_event_data->sample_period word load permitted=
+",
+> > > > @@ -45,6 +49,8 @@
+> > > >       },
+> > > >       .result =3D ACCEPT,
+> > > >       .prog_type =3D BPF_PROG_TYPE_PERF_EVENT,
+> > > > +     .ctx_len =3D sizeof(struct bpf_perf_event_data),
+> > > > +     .data_len =3D sizeof(struct bpf_perf_event_value),
+> > > >  },
+> > > >  {
+> > > >       "check bpf_perf_event_data->sample_period dword load permitte=
+d",
+> > > > @@ -56,4 +62,6 @@
+> > > >       },
+> > > >       .result =3D ACCEPT,
+> > > >       .prog_type =3D BPF_PROG_TYPE_PERF_EVENT,
+> > > > +     .ctx_len =3D sizeof(struct bpf_perf_event_data),
+> > > > +     .data_len =3D sizeof(struct bpf_perf_event_value),
+> > > >  },
+> > > > --
+> > > > 2.20.1
+> > > >
+> >
+> >
+> >
+> > --
+> > Kinvolk GmbH | Adalbertstr.6a, 10999 Berlin | tel: +491755589364
+> > Gesch=C3=A4ftsf=C3=BChrer/Directors: Alban Crequy, Chris K=C3=BChl, Iag=
+o L=C3=B3pez Galeiras
+> > Registergericht/Court of registration: Amtsgericht Charlottenburg
+> > Registernummer/Registration number: HRB 171414 B
+> > Ust-ID-Nummer/VAT ID number: DE302207000
 
-Perhaps I should just use ring_buffer_read_head() and ring_buffer_write_tail()
-since they are provided in tools/include/linux/ring_buffer.h?  I expect that
-would be even more preferable over __atomic_load_n() and __atomic_store_n()?
 
-> > +/*
-> > + * Process and output the probe data at the supplied address.
-> > + */
-> > +static int output_event(int cpu, u64 *buf)
-> > +{
-> > +	u8				*data = (u8 *)buf;
-> > +	struct perf_event_header	*hdr;
-> > +
-> > +	hdr = (struct perf_event_header *)data;
-> > +	data += sizeof(struct perf_event_header);
-> > +
-> > +	if (hdr->type == PERF_RECORD_SAMPLE) {
-> > +		u8		*ptr = data;
-> > +		u32		i, size, probe_id;
-> > +
-> > +		/*
-> > +		 * struct {
-> > +		 *	struct perf_event_header	header;
-> > +		 *	u32				size;
-> > +		 *	u32				probe_id;
-> > +		 *	u32				gap;
-> > +		 *	u64				data[n];
-> > +		 * }
-> > +		 * and data points to the 'size' member at this point.
-> > +		 */
-> > +		if (ptr > (u8 *)buf + hdr->size) {
-> > +			fprintf(stderr, "BAD: corrupted sample header\n");
-> > +			goto out;
-> > +		}
-> > +
-> > +		size = *(u32 *)data;
-> > +		data += sizeof(size);
-> > +		ptr += sizeof(size) + size;
-> > +		if (ptr != (u8 *)buf + hdr->size) {
-> > +			fprintf(stderr, "BAD: invalid sample size\n");
-> > +			goto out;
-> > +		}
-> > +
-> > +		probe_id = *(u32 *)data;
-> > +		data += sizeof(probe_id);
-> > +		size -= sizeof(probe_id);
-> > +		data += sizeof(u32);		/* skip 32-bit gap */
-> > +		size -= sizeof(u32);
-> > +		buf = (u64 *)data;
-> > +
-> > +		printf("%3d %6d ", cpu, probe_id);
-> > +		for (i = 0, size /= sizeof(u64); i < size; i++)
-> > +			printf("%#016lx ", buf[i]);
-> > +		printf("\n");
-> > +	} else if (hdr->type == PERF_RECORD_LOST) {
-> > +		u64	lost;
-> > +
-> > +		/*
-> > +		 * struct {
-> > +		 *	struct perf_event_header	header;
-> > +		 *	u64				id;
-> > +		 *	u64				lost;
-> > +		 * }
-> > +		 * and data points to the 'id' member at this point.
-> > +		 */
-> > +		lost = *(u64 *)(data + sizeof(u64));
-> > +
-> > +		printf("[%ld probes dropped]\n", lost);
-> > +	} else
-> > +		fprintf(stderr, "UNKNOWN: record type %d\n", hdr->type);
-> > +
-> > +out:
-> > +	return hdr->size;
-> > +}
-> 
-> I see a distinct lack of wrapping support. AFAICT when buf+hdr->size
-> wraps you're doing out-of-bounds accesses.
 
-Yes, that is correct.  I'm actually trying to figure out why it didn't actually
-cause a SEGV when I tested this because I'm clearly reading past the end of
-the mmap'd memory.  Thank you for noticing this - I was trying to be too
-minimal in the code I was putting out and really didn't pay attention to this.
-
-Fixed in the V2 I am preparing.
-
-> > +/*
-> > + * Process the available probe data in the given buffer.
-> > + */
-> > +static void process_data(struct dtrace_buffer *buf)
-> > +{
-> > +	/* This is volatile because the kernel may be updating the content. */
-> > +	volatile struct perf_event_mmap_page	*rb_page = buf->base;
-> > +	u8					*base = (u8 *)buf->base +
-> > +							buf->page_size;
-> > +	u64					head = read_rb_head(rb_page);
-> > +
-> > +	while (rb_page->data_tail != head) {
-> > +		u64	tail = rb_page->data_tail;
-> > +		u64	*ptr = (u64 *)(base + tail % buf->data_size);
-> > +		int	len;
-> > +
-> > +		len = output_event(buf->cpu, ptr);
-> > +
-> > +		write_rb_tail(rb_page, tail + len);
-> > +		head = read_rb_head(rb_page);
-> > +	}
-> > +}
-> 
-> more volatile yuck.
-> 
-> Also:
-> 
-> 	for (;;) {
-> 		head = __atomic_load_n(&rb_page->data_head, __ATOMIC_ACQUIRE);
-> 		tail = __atomic_load_n(&rb_page->data_tail, __ATOMIC_RELAXED);
-> 
-> 		if (head == tail)
-> 			break;
-> 
-> 		do {
-> 			hdr = buf->base + (tail & ((1UL << buf->data_shift) - 1));
-> 			if ((tail >> buf->data_shift) !=
-> 			    ((tail + hdr->size) >> buf->data_shift))
-> 				/* handle wrap case */
-> 			else
-> 				/* normal case */
-> 
-> 			tail += hdr->size;
-> 		} while (tail != head);
-> 
-> 		__atomic_store_n(&rb_page->data_tail, tail, __ATOMIC_RELEASE);
-> 	}
-> 
-> Or something.
-
-Thank you for this suggestion.  As mentioned above, I lean towards using the
-provided ring_buffer_(read_head,write_tail) implementations since that is the
-'other end' of the ring buffer head/tail mechanism that is going to be kept
-in sync with any changes that might happen on the kernel side, right?
-
-> > +/*
-> > + * Wait for data to become available in any of the buffers.
-> > + */
-> > +int dt_buffer_poll(int epoll_fd, int timeout)
-> > +{
-> > +	struct epoll_event	events[dt_numcpus];
-> > +	int			i, cnt;
-> > +
-> > +	cnt = epoll_wait(epoll_fd, events, dt_numcpus, timeout);
-> > +	if (cnt < 0)
-> > +		return -errno;
-> > +
-> > +	for (i = 0; i < cnt; i++)
-> > +		process_data((struct dtrace_buffer *)events[i].data.ptr);
-> > +
-> > +	return cnt;
-> > +}
-> 
-> Or make sure to read on the CPU by having a poll thread per CPU, then
-> you can do away with the memory barriers.
-
-That is definitely something for the todo list for future optimizations.
-
-Thanks for your review and code suggestions.
-
-	Kris
+--=20
+Kinvolk GmbH | Adalbertstr.6a, 10999 Berlin | tel: +491755589364
+Gesch=C3=A4ftsf=C3=BChrer/Directors: Alban Crequy, Chris K=C3=BChl, Iago L=
+=C3=B3pez Galeiras
+Registergericht/Court of registration: Amtsgericht Charlottenburg
+Registernummer/Registration number: HRB 171414 B
+Ust-ID-Nummer/VAT ID number: DE302207000
