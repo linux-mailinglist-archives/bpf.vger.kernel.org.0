@@ -2,339 +2,337 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5D4626EB
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 19:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F9A62747
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 19:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728704AbfGHRPu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jul 2019 13:15:50 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:39276 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbfGHRPu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jul 2019 13:15:50 -0400
-Received: by mail-qt1-f196.google.com with SMTP id l9so10528548qtu.6;
-        Mon, 08 Jul 2019 10:15:49 -0700 (PDT)
+        id S2388695AbfGHReM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jul 2019 13:34:12 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:43984 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388182AbfGHReL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jul 2019 13:34:11 -0400
+Received: by mail-io1-f67.google.com with SMTP id k20so37062047ios.10
+        for <bpf@vger.kernel.org>; Mon, 08 Jul 2019 10:34:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=MBlubbU0R5XFJCwlDpOx2qjTnessXq3omSttHg+Xzyc=;
-        b=oXt2PJIQ/dBE0txvV7Dyh6C+enhe4trh97ibz0Rvtxa5NXu8QmVlCILQS3evg0WQA4
-         SXX07Ygwd8p5STAY7Z5f02gXQm9saH6X3EJABWC/CQQsF2LMe451ki6kZ719tyHNmLwT
-         5Z9hRQgR6KpV+l2Q8DDPD/tlQDbpNIfkzAv1mdBgqKJTZObDAPMZWvfFo4HchalagwF3
-         sSt6ZRlgo6FTZdTszWLDEZwnFw0Uis2HSytxdG8hIfi/Z+1oBefU9y5FSDWI/DVlEXq+
-         smZLpgfzutmz+00x372Vp78MVYxYos01ngv/jkxNoXvyyA+xw9f4GGf6igizNw2A/iX0
-         pm7g==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=E09i/YUwdjXE+zo+DlBVwd0NYopalsR3eUNo0Jmptng=;
+        b=VgimgcdvvuaagysekxqyiAFNn6FzQEgkoEVZR6OnGOhGuHCDV3YPYViEL8XFMnFO30
+         34dU9OQXaAiYdl0GJZGXDj7KCI/cC16xjW6duojoMXWMPxbb3OLrgmDyHg8OM4GO8fyo
+         cHZpir4Q4OMZMfqKSIaIWtXU0TCeLIZnCII8JOO4yiQ4/yG/7p+N0kVjxjeTB6eayIDq
+         mq5vmZaivs4zREBp4jV3fDnvgiXgD5Ug75N8g5dbWmUTp4c96uqeEZhwHWfH9Sg1/H7D
+         Jc1KkAckFKRk6amhbaqu1uz/Xji3ykKJ2frePRYLM0V6/GJL2X02zbh8lzpG5kFA/IX5
+         329w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MBlubbU0R5XFJCwlDpOx2qjTnessXq3omSttHg+Xzyc=;
-        b=EPACDr21QWEi6JgiTmoAvd2IyNLw9pxhc9szF7N8MZZeugXIby3oQPYpGmBCQm6/iy
-         /ElvEI8VgHcWMxZAuBdhkN+pCwykXcEAMW6ERmLJxj6ap5XyOcQ7v25AZ+6cbe8jSupL
-         8rsdSgu5jIGVvt/RFqWhYeM68KLllH7rXTzFzDyDto61O+XfnDhtAmpGPqo9InIcUmc2
-         jw0mnzRla7vgypvwWUVf1JHXwatRNeL+Wh3sW04eTxdXP1o/88N8fKm8/4NpRLJD81Un
-         574/6TXVe5K7KdQXGtro2a07HcjbjLu2sG/GqlVuvzmv0ta8XRrnQ1ad26L8DhVZrq7a
-         6EfA==
-X-Gm-Message-State: APjAAAXUEW8z4NgGUwJeIKNYioIx1O9J9+ZSuv0R8G7r5A8+ivTUJedn
-        ZBJ5H5tNMOn7zpoz0VKO2yk=
-X-Google-Smtp-Source: APXvYqz6x6JXW16TCNSVO7lwn8WNf66n+kLKcO6caiauw+YJLKFAwMyW03a1AyXHYiORzzPNDDNnGw==
-X-Received: by 2002:a0c:acfb:: with SMTP id n56mr16088170qvc.87.1562606148442;
-        Mon, 08 Jul 2019 10:15:48 -0700 (PDT)
-Received: from quaco.ghostprotocols.net (179-240-135-35.3g.claro.net.br. [179.240.135.35])
-        by smtp.gmail.com with ESMTPSA id i16sm7405001qkk.1.2019.07.08.10.15.45
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 08 Jul 2019 10:15:46 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9E43840340; Mon,  8 Jul 2019 14:15:37 -0300 (-03)
-Date:   Mon, 8 Jul 2019 14:15:37 -0300
-To:     Kris Van Hees <kris.van.hees@oracle.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        dtrace-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        rostedt@goodmis.org, mhiramat@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, Peter Zijlstra <peterz@infradead.org>,
-        Chris Mason <clm@fb.com>
-Subject: Re: [PATCH 1/1] tools/dtrace: initial implementation of DTrace
-Message-ID: <20190708171537.GA11960@kernel.org>
-References: <201907040313.x643D8Pg025951@userv0121.oracle.com>
- <201907040314.x643EUoA017906@aserv0122.oracle.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=E09i/YUwdjXE+zo+DlBVwd0NYopalsR3eUNo0Jmptng=;
+        b=stvU+FUniLhXP6F9Ezp44iNt3tyqFtcFN6XAYZ7apHlC7yPHFWA7icVGNiSiAuG/uE
+         byE1Aq3w1CtvI2Y61JwYjnO0v4FZlXP9k9a9eSakM6WCT3c4ETZWQNhv/Obncrg/l/21
+         zwkl5CEToX5VZ02zDPSYFW/JwbhR8/hCRxNe0c7agpeAq7PCnnylituMeaprJRkVp1IJ
+         axk4n8lSDo/RwIcX6HIyNjxV0kAJArTtoo6xv5+v0PCbfCdpaP8MJji8r7jJKzTDjqgI
+         jJca/e4V2V/G47+AM8UcbyCCxxa/JnJ37mGGAbiORRU9ZW6+v5TKpFRIeHZs9yilcW4c
+         odMA==
+X-Gm-Message-State: APjAAAUMa93pGTCnRkC1KdcLzVDfU7VtqVwuMWb7mPPUU+kt15SEsdHS
+        ji+XBO1Gzz2dOVil/xmuCJtPS4Csi7o8FFTDALB1qQ==
+X-Google-Smtp-Source: APXvYqwrTeFpeJfKhWrPqeVS2WnW9G1OY3V4ftQkqRCW+JMD3tb0Mg4O0PEkcMIIu8DZXDEe45lalIuI+L2dK3e1gQg=
+X-Received: by 2002:a5d:8e08:: with SMTP id e8mr2766517iod.139.1562607250441;
+ Mon, 08 Jul 2019 10:34:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <201907040314.x643EUoA017906@aserv0122.oracle.com>
-X-Url:  http://acmel.wordpress.com
-User-Agent: Mutt/1.12.0 (2019-05-25)
+References: <20190620034446.25561-1-leo.yan@linaro.org>
+In-Reply-To: <20190620034446.25561-1-leo.yan@linaro.org>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Mon, 8 Jul 2019 11:33:59 -0600
+Message-ID: <CANLsYkwjJ57RWEqS9suLm1+JKicG1LzcHtP8k5qTK1d7bw=1MA@mail.gmail.com>
+Subject: Re: [PATCH v3] perf cs-etm: Improve completeness for kernel address space
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Jul 03, 2019 at 08:14:30PM -0700, Kris Van Hees escreveu:
-> This initial implementation of a tiny subset of DTrace functionality
-> provides the following options:
-> 
-> 	dtrace [-lvV] [-b bufsz] -s script
-> 	    -b  set trace buffer size
-> 	    -l  list probes (only works with '-s script' for now)
-> 	    -s  enable or list probes for the specified BPF program
-> 	    -V  report DTrace API version
-> 
-> The patch comprises quite a bit of code due to DTrace requiring a few
-> crucial components, even in its most basic form.
-> 
-> The code is structured around the command line interface implemented in
-> dtrace.c.  It provides option parsing and drives the three modes of
-> operation that are currently implemented:
-> 
-> 1. Report DTrace API version information.
-> 	Report the version information and terminate.
-> 
-> 2. List probes in BPF programs.
-> 	Initialize the list of probes that DTrace recognizes, load BPF
-> 	programs, parse all BPF ELF section names, resolve them into
-> 	known probes, and emit the probe names.  Then terminate.
-> 
-> 3. Load BPF programs and collect tracing data.
-> 	Initialize the list of probes that DTrace recognizes, load BPF
-> 	programs and attach them to their corresponding probes, set up
-> 	perf event output buffers, and start processing tracing data.
-> 
-> This implementation makes extensive use of BPF (handled by dt_bpf.c) and
-> the perf event output ring buffer (handled by dt_buffer.c).  DTrace-style
-> probe handling (dt_probe.c) offers an interface to probes that hides the
-> implementation details of the individual probe types by provider (dt_fbt.c
-> and dt_syscall.c).  Probe lookup by name uses a hashtable implementation
-> (dt_hash.c).  The dt_utils.c code populates a list of online CPU ids, so
-> we know what CPUs we can obtain tracing data from.
-> 
-> Building the tool is trivial because its only dependency (libbpf) is in
-> the kernel tree under tools/lib/bpf.  A simple 'make' in the tools/dtrace
-> directory suffices.
-> 
-> The 'dtrace' executable needs to run as root because BPF programs cannot
-> be loaded by non-root users.
-> 
-> Signed-off-by: Kris Van Hees <kris.van.hees@oracle.com>
-> Reviewed-by: David Mc Lean <david.mclean@oracle.com>
-> Reviewed-by: Eugene Loh <eugene.loh@oracle.com>
+On Wed, 19 Jun 2019 at 21:45, Leo Yan <leo.yan@linaro.org> wrote:
+>
+> Arm and arm64 architecture reserve some memory regions prior to the
+> symbol '_stext' and these memory regions later will be used by device
+> module and BPF jit.  The current code misses to consider these memory
+> regions thus any address in the regions will be taken as user space
+> mode, but perf cannot find the corresponding dso with the wrong CPU
+> mode so we misses to generate samples for device module and BPF
+> related trace data.
+>
+> This patch parse the link scripts to get the memory size prior to start
+> address and reduce this size from 'etmq->etm->kernel_start', then can
+> get a fixed up kernel start address which contain memory regions for
+> device module and BPF.  Finally, cs_etm__cpu_mode() can return right
+> mode for these memory regions and perf can successfully generate
+> samples.
+>
+> The reason for parsing the link scripts is Arm architecture changes text
+> offset dependent on different platforms, which define multiple text
+> offsets in $kernel/arch/arm/Makefile.  This offset is decided when build
+> kernel and the final value is extended in the link script, so we can
+> extract the used value from the link script.  We use the same way to
+> parse arm64 link script as well.  If fail to find the link script, the
+> pre start memory size is assumed as zero, in this case it has no any
+> change caused with this patch.
+>
+> Below is detailed info for testing this patch:
+>
+> - Build LLVM/Clang 8.0 or later version;
+>
+> - Configure perf with ~/.perfconfig:
+>
+>   root@debian:~# cat ~/.perfconfig
+>   # this file is auto-generated.
+>   [llvm]
+>           clang-path =3D /mnt/build/llvm-build/build/install/bin/clang
+>           kbuild-dir =3D /mnt/linux-kernel/linux-cs-dev/
+>           clang-opt =3D "-g"
+>           dump-obj =3D true
+>
+>   [trace]
+>           show_zeros =3D yes
+>           show_duration =3D no
+>           no_inherit =3D yes
+>           show_timestamp =3D no
+>           show_arg_names =3D no
+>           args_alignment =3D 40
+>           show_prefix =3D yes
+>
+> - Run 'perf trace' command with eBPF event:
+>
+>   root@debian:~# perf trace -e string \
+>       -e $kernel/tools/perf/examples/bpf/augmented_raw_syscalls.c
+>
+> - Read eBPF program memory mapping in kernel:
+>
+>   root@debian:~# echo 1 > /proc/sys/net/core/bpf_jit_kallsyms
+>   root@debian:~# cat /proc/kallsyms | grep -E "bpf_prog_.+_sys_[enter|exi=
+t]"
+>   ffff000000086a84 t bpf_prog_f173133dc38ccf87_sys_enter  [bpf]
+>   ffff000000088618 t bpf_prog_c1bd85c092d6e4aa_sys_exit   [bpf]
+>
+> - Launch any program which accesses file system frequently so can hit
+>   the system calls trace flow with eBPF event;
+>
+> - Capture CoreSight trace data with filtering eBPF program:
+>
+>   root@debian:~# perf record -e cs_etm/@20070000.etr/ \
+>           --filter 'filter 0xffff000000086a84/0x800' -a sleep 5s
+>
+> - Annotate for symbol 'bpf_prog_f173133dc38ccf87_sys_enter':
+>
+>   root@debian:~# perf report
+>   Then select 'branches' samples and press 'a' to annotate symbol
+>   'bpf_prog_f173133dc38ccf87_sys_enter', press 'P' to print to the
+>   bpf_prog_f173133dc38ccf87_sys_enter.annotation file:
+>
+>   root@debian:~# cat bpf_prog_f173133dc38ccf87_sys_enter.annotation
+>
+>   bpf_prog_f173133dc38ccf87_sys_enter() bpf_prog_f173133dc38ccf87_sys_ent=
+er
+>   Event: branches
+>
+>   Percent      int sys_enter(struct syscall_enter_args *args)
+>                  stp  x29, x30, [sp, #-16]!
+>
+>                 int key =3D 0;
+>                  mov  x29, sp
+>
+>                        augmented_args =3D bpf_map_lookup_elem(&augmented_=
+filename_map, &key);
+>                  stp  x19, x20, [sp, #-16]!
+>
+>                        augmented_args =3D bpf_map_lookup_elem(&augmented_=
+filename_map, &key);
+>                  stp  x21, x22, [sp, #-16]!
+>
+>                  stp  x25, x26, [sp, #-16]!
+>
+>                 return bpf_get_current_pid_tgid();
+>                  mov  x25, sp
+>
+>                 return bpf_get_current_pid_tgid();
+>                  mov  x26, #0x0                         // #0
+>
+>                  sub  sp, sp, #0x10
+>
+>                 return bpf_map_lookup_elem(pids, &pid) !=3D NULL;
+>                  add  x19, x0, #0x0
+>
+>                  mov  x0, #0x0                          // #0
+>
+>                  mov  x10, #0xfffffffffffffff8          // #-8
+>
+>                 if (pid_filter__has(&pids_filtered, getpid()))
+>                  str  w0, [x25, x10]
+>
+>                 probe_read(&augmented_args->args, sizeof(augmented_args->=
+args), args);
+>                  add  x1, x25, #0x0
+>
+>                 probe_read(&augmented_args->args, sizeof(augmented_args->=
+args), args);
+>                  mov  x10, #0xfffffffffffffff8          // #-8
+>
+>                 syscall =3D bpf_map_lookup_elem(&syscalls, &augmented_arg=
+s->args.syscall_nr);
+>                  add  x1, x1, x10
+>
+>                 syscall =3D bpf_map_lookup_elem(&syscalls, &augmented_arg=
+s->args.syscall_nr);
+>                  mov  x0, #0xffff8009ffffffff           // #-140694538682=
+369
+>
+>                  movk x0, #0x6698, lsl #16
+>
+>                  movk x0, #0x3e00
+>
+>                  mov  x10, #0xffffffffffff1040          // #-61376
+>
+>                 if (syscall =3D=3D NULL || !syscall->enabled)
+>                  movk x10, #0x1023, lsl #16
+>
+>                 if (syscall =3D=3D NULL || !syscall->enabled)
+>                  movk x10, #0x0, lsl #32
+>
+>                 loop_iter_first()
+>     3.69       =E2=86=92 blr  bpf_prog_f173133dc38ccf87_sys_enter
+>                 loop_iter_first()
+>                  add  x7, x0, #0x0
+>
+>                 loop_iter_first()
+>                  add  x20, x7, #0x0
+>
+>                 int size =3D probe_read_str(&augmented_filename->value, f=
+ilename_len, filename_arg);
+>                  mov  x0, #0x1                          // #1
+
+I'm not sure all this information about annotation should be in the
+changelog.  This patch is about being able to decode traces that
+executed outside the current kernel addresse range and as such simply
+using "perf report" or "perf script" successfully is enough to test
+this set.  Any information that goes beyond that muddies the water.
+
+>
+>   [...]
+>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Suzuki Poulouse <suzuki.poulose@arm.com>
+> Cc: coresight@lists.linaro.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 > ---
->  MAINTAINERS                |   6 +
->  tools/dtrace/Makefile      |  88 ++++++++++
->  tools/dtrace/bpf_sample.c  | 145 ++++++++++++++++
->  tools/dtrace/dt_bpf.c      | 188 +++++++++++++++++++++
->  tools/dtrace/dt_buffer.c   | 331 +++++++++++++++++++++++++++++++++++++
->  tools/dtrace/dt_fbt.c      | 201 ++++++++++++++++++++++
->  tools/dtrace/dt_hash.c     | 211 +++++++++++++++++++++++
->  tools/dtrace/dt_probe.c    | 230 ++++++++++++++++++++++++++
->  tools/dtrace/dt_syscall.c  | 179 ++++++++++++++++++++
->  tools/dtrace/dt_utils.c    | 132 +++++++++++++++
->  tools/dtrace/dtrace.c      | 249 ++++++++++++++++++++++++++++
->  tools/dtrace/dtrace.h      |  13 ++
->  tools/dtrace/dtrace_impl.h | 101 +++++++++++
->  13 files changed, 2074 insertions(+)
->  create mode 100644 tools/dtrace/Makefile
->  create mode 100644 tools/dtrace/bpf_sample.c
->  create mode 100644 tools/dtrace/dt_bpf.c
->  create mode 100644 tools/dtrace/dt_buffer.c
->  create mode 100644 tools/dtrace/dt_fbt.c
->  create mode 100644 tools/dtrace/dt_hash.c
->  create mode 100644 tools/dtrace/dt_probe.c
->  create mode 100644 tools/dtrace/dt_syscall.c
->  create mode 100644 tools/dtrace/dt_utils.c
->  create mode 100644 tools/dtrace/dtrace.c
->  create mode 100644 tools/dtrace/dtrace.h
->  create mode 100644 tools/dtrace/dtrace_impl.h
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 606d1f80bc49..668468834865 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5474,6 +5474,12 @@ W:	https://linuxtv.org
->  S:	Odd Fixes
->  F:	drivers/media/pci/dt3155/
->  
-> +DTRACE
-> +M:	Kris Van Hees <kris.van.hees@oracle.com>
-> +L:	dtrace-devel@oss.oracle.com
-> +S:	Maintained
-> +F:	tools/dtrace/
-> +
->  DVB_USB_AF9015 MEDIA DRIVER
->  M:	Antti Palosaari <crope@iki.fi>
->  L:	linux-media@vger.kernel.org
-> diff --git a/tools/dtrace/Makefile b/tools/dtrace/Makefile
-> new file mode 100644
-> index 000000000000..99fd0f9dd1d6
-> --- /dev/null
-> +++ b/tools/dtrace/Makefile
-> @@ -0,0 +1,88 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# This Makefile is based on samples/bpf.
-> +#
-> +# Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
-> +
-> +DT_VERSION		:= 2.0.0
-> +DT_GIT_VERSION		:= $(shell git rev-parse HEAD 2>/dev/null || \
-> +				   echo Unknown)
-> +
-> +DTRACE_PATH		?= $(abspath $(srctree)/$(src))
-> +TOOLS_PATH		:= $(DTRACE_PATH)/..
-> +SAMPLES_PATH		:= $(DTRACE_PATH)/../../samples
-> +
-> +hostprogs-y		:= dtrace
-> +
-> +LIBBPF			:= $(TOOLS_PATH)/lib/bpf/libbpf.a
-> +OBJS			:= dt_bpf.o dt_buffer.o dt_utils.o dt_probe.o \
-> +			   dt_hash.o \
-> +			   dt_fbt.o dt_syscall.o
-> +
-> +dtrace-objs		:= $(OBJS) dtrace.o
-> +
-> +always			:= $(hostprogs-y)
-> +always			+= bpf_sample.o
-> +
-> +KBUILD_HOSTCFLAGS	+= -DDT_VERSION=\"$(DT_VERSION)\"
-> +KBUILD_HOSTCFLAGS	+= -DDT_GIT_VERSION=\"$(DT_GIT_VERSION)\"
-> +KBUILD_HOSTCFLAGS	+= -I$(srctree)/tools/lib
-> +KBUILD_HOSTCFLAGS	+= -I$(srctree)/tools/perf
+>  tools/perf/Makefile.config | 22 ++++++++++++++++++++++
+>  tools/perf/util/cs-etm.c   | 19 ++++++++++++++++++-
+>  2 files changed, 40 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> index 51dd00f65709..a58cd5a43a98 100644
+> --- a/tools/perf/Makefile.config
+> +++ b/tools/perf/Makefile.config
+> @@ -418,6 +418,28 @@ ifdef CORESIGHT
+>      endif
+>      LDFLAGS +=3D $(LIBOPENCSD_LDFLAGS)
+>      EXTLIBS +=3D $(OPENCSDLIBS)
+> +    PRE_START_SIZE :=3D 0
+> +    ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/kernel/vmlinux.lds),)
+> +      ifeq ($(SRCARCH),arm64)
+> +        # Extract info from lds:
+> +        #  . =3D ((((((((0xffffffffffffffff)) - (((1)) << (48)) + 1) + (=
+0)) + (0x08000000))) + (0x08000000))) + 0x00080000;
+> +        # PRE_START_SIZE :=3D (0x08000000 + 0x08000000 + 0x00080000) =3D=
+ 0x10080000
+> +        PRE_START_SIZE :=3D $(shell egrep ' \. \=3D \({8}0x[0-9a-fA-F]+\=
+){2}' \
+> +          $(srctree)/arch/$(SRCARCH)/kernel/vmlinux.lds | \
+> +          sed -e 's/[(|)|.|=3D|+|<|;|-]//g' -e 's/ \+/ /g' -e 's/^[ \t]*=
+//' | \
+> +          awk -F' ' '{printf "0x%x", $$6+$$7+$$8}' 2>/dev/null)
+> +      endif
+> +      ifeq ($(SRCARCH),arm)
+> +        # Extract info from lds:
+> +        #   . =3D ((0xC0000000)) + 0x00208000;
+> +        # PRE_START_SIZE :=3D 0x00208000
+> +        PRE_START_SIZE :=3D $(shell egrep ' \. \=3D \({2}0x[0-9a-fA-F]+\=
+){2}' \
+> +          $(srctree)/arch/$(SRCARCH)/kernel/vmlinux.lds | \
+> +          sed -e 's/[(|)|.|=3D|+|<|;|-]//g' -e 's/ \+/ /g' -e 's/^[ \t]*=
+//' | \
+> +          awk -F' ' '{printf "0x%x", $$2}' 2>/dev/null)
+> +      endif
+> +    endif
+> +    CFLAGS +=3D -DARM_PRE_START_SIZE=3D$(PRE_START_SIZE)
 
-Interesting, what are you using from tools/perf/? So that we can move to
-tools/{include,lib,arch}.
+It might be useful to do this for arm and arm64 regardless of
+CoreSight but I'll let Arnaldo decide on this.
 
-> +KBUILD_HOSTCFLAGS	+= -I$(srctree)/tools/include/uapi
-> +KBUILD_HOSTCFLAGS	+= -I$(srctree)/tools/include/
-> +KBUILD_HOSTCFLAGS	+= -I$(srctree)/usr/include
+>      $(call detected,CONFIG_LIBOPENCSD)
+>      ifdef CSTRACE_RAW
+>        CFLAGS +=3D -DCS_DEBUG_RAW
+> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> index 0c7776b51045..5fa0be3a3904 100644
+> --- a/tools/perf/util/cs-etm.c
+> +++ b/tools/perf/util/cs-etm.c
+> @@ -613,10 +613,27 @@ static void cs_etm__free(struct perf_session *sessi=
+on)
+>  static u8 cs_etm__cpu_mode(struct cs_etm_queue *etmq, u64 address)
+>  {
+>         struct machine *machine;
+> +       u64 fixup_kernel_start =3D 0;
+>
+>         machine =3D etmq->etm->machine;
+>
+> -       if (address >=3D etmq->etm->kernel_start) {
+> +       /*
+> +        * Since arm and arm64 specify some memory regions prior to
+> +        * 'kernel_start', kernel addresses can be less than 'kernel_star=
+t'.
+> +        *
+> +        * For arm architecture, the 16MB virtual memory space prior to
+> +        * 'kernel_start' is allocated to device modules, a PMD table if
+> +        * CONFIG_HIGHMEM is enabled and a PGD table.
+> +        *
+> +        * For arm64 architecture, the root PGD table, device module memo=
+ry
+> +        * region and BPF jit region are prior to 'kernel_start'.
+> +        *
+> +        * To reflect the complete kernel address space, compensate these
+> +        * pre-defined regions for kernel start address.
+> +        */
+> +       fixup_kernel_start =3D etmq->etm->kernel_start - ARM_PRE_START_SI=
+ZE;
 > +
-> +KBUILD_HOSTLDLIBS	:= $(LIBBPF) -lelf
-> +
-> +LLC			?= llc
-> +CLANG			?= clang
-> +LLVM_OBJCOPY		?= llvm-objcopy
-> +
-> +ifdef CROSS_COMPILE
-> +HOSTCC			= $(CROSS_COMPILE)gcc
-> +CLANG_ARCH_ARGS		= -target $(ARCH)
-> +endif
-> +
-> +all:
-> +	$(MAKE) -C ../../ $(CURDIR)/ DTRACE_PATH=$(CURDIR)
-> +
-> +clean:
-> +	$(MAKE) -C ../../ M=$(CURDIR) clean
-> +	@rm -f *~
-> +
-> +$(LIBBPF): FORCE
-> +	$(MAKE) -C $(dir $@) RM='rm -rf' LDFLAGS= srctree=$(DTRACE_PATH)/../../ O=
-> +
-> +FORCE:
-> +
-> +.PHONY: verify_cmds verify_target_bpf $(CLANG) $(LLC)
-> +
-> +verify_cmds: $(CLANG) $(LLC)
-> +	@for TOOL in $^ ; do \
-> +		if ! (which -- "$${TOOL}" > /dev/null 2>&1); then \
-> +			echo "*** ERROR: Cannot find LLVM tool $${TOOL}" ;\
-> +			exit 1; \
-> +		else true; fi; \
-> +	done
-> +
-> +verify_target_bpf: verify_cmds
-> +	@if ! (${LLC} -march=bpf -mattr=help > /dev/null 2>&1); then \
-> +		echo "*** ERROR: LLVM (${LLC}) does not support 'bpf' target" ;\
-> +		echo "   NOTICE: LLVM version >= 3.7.1 required" ;\
-> +		exit 2; \
-> +	else true; fi
-> +
-> +$(DTRACE_PATH)/*.c: verify_target_bpf $(LIBBPF)
-> +$(src)/*.c: verify_target_bpf $(LIBBPF)
-> +
-> +$(obj)/%.o: $(src)/%.c
-> +	@echo "  CLANG-bpf " $@
-> +	$(Q)$(CLANG) $(NOSTDINC_FLAGS) $(LINUXINCLUDE) $(EXTRA_CFLAGS) -I$(obj) \
-> +		-I$(srctree)/tools/testing/selftests/bpf/ \
-> +		-D__KERNEL__ -D__BPF_TRACING__ -Wno-unused-value -Wno-pointer-sign \
-> +		-D__TARGET_ARCH_$(ARCH) -Wno-compare-distinct-pointer-types \
-> +		-Wno-gnu-variable-sized-type-not-at-end \
-> +		-Wno-address-of-packed-member -Wno-tautological-compare \
-> +		-Wno-unknown-warning-option $(CLANG_ARCH_ARGS) \
-> +		-I$(srctree)/samples/bpf/ -include asm_goto_workaround.h \
-> +		-O2 -emit-llvm -c $< -o -| $(LLC) -march=bpf $(LLC_FLAGS) -filetype=obj -o $@
+> +       if (address >=3D fixup_kernel_start) {
+>                 if (machine__is_host(machine))
+>                         return PERF_RECORD_MISC_KERNEL;
+>                 else
 
+Tested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-We have the above in tools/perf/util/llvm-utils.c, perhaps we need to
-move it to some place in lib/ to share?
-
-> diff --git a/tools/dtrace/bpf_sample.c b/tools/dtrace/bpf_sample.c
-> new file mode 100644
-> index 000000000000..49f350390b5f
-> --- /dev/null
-> +++ b/tools/dtrace/bpf_sample.c
-> @@ -0,0 +1,145 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * This sample DTrace BPF tracing program demonstrates how actions can be
-> + * associated with different probe types.
-> + *
-> + * The kprobe/ksys_write probe is a Function Boundary Tracing (FBT) entry probe
-> + * on the ksys_write(fd, buf, count) function in the kernel.  Arguments to the
-> + * function can be retrieved from the CPU registers (struct pt_regs).
-> + *
-> + * The tracepoint/syscalls/sys_enter_write probe is a System Call entry probe
-> + * for the write(d, buf, count) system call.  Arguments to the system call can
-> + * be retrieved from the tracepoint data passed to the BPF program as context
-> + * struct syscall_data) when the probe fires.
-> + *
-> + * The BPF program associated with each probe prepares a DTrace BPF context
-> + * (struct dt_bpf_context) that stores the probe ID and up to 10 arguments.
-> + * Only 3 arguments are used in this sample.  Then the prorgams call a shared
-> + * BPF function (bpf_action) that implements the actual action to be taken when
-> + * a probe fires.  It prepares a data record to be stored in the tracing buffer
-> + * and submits it to the buffer.  The data in the data record is obtained from
-> + * the DTrace BPF context.
-> + *
-> + * Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
-> + */
-> +#include <uapi/linux/bpf.h>
-> +#include <linux/ptrace.h>
-> +#include <linux/version.h>
-> +#include <uapi/linux/unistd.h>
-> +#include "bpf_helpers.h"
-> +
-> +#include "dtrace.h"
-> +
-> +struct syscall_data {
-> +	struct pt_regs *regs;
-> +	long syscall_nr;
-> +	long arg[6];
-> +};
-> +
-> +struct bpf_map_def SEC("maps") buffers = {
-> +	.type = BPF_MAP_TYPE_PERF_EVENT_ARRAY,
-> +	.key_size = sizeof(u32),
-> +	.value_size = sizeof(u32),
-> +	.max_entries = NR_CPUS,
-> +};
-> +
-> +#if defined(__amd64)
-> +# define GET_REGS_ARG0(regs)	((regs)->di)
-> +# define GET_REGS_ARG1(regs)	((regs)->si)
-> +# define GET_REGS_ARG2(regs)	((regs)->dx)
-> +# define GET_REGS_ARG3(regs)	((regs)->cx)
-> +# define GET_REGS_ARG4(regs)	((regs)->r8)
-> +# define GET_REGS_ARG5(regs)	((regs)->r9)
-> +#else
-> +# warning Argument retrieval from pt_regs is not supported yet on this arch.
-> +# define GET_REGS_ARG0(regs)	0
-> +# define GET_REGS_ARG1(regs)	0
-> +# define GET_REGS_ARG2(regs)	0
-> +# define GET_REGS_ARG3(regs)	0
-> +# define GET_REGS_ARG4(regs)	0
-> +# define GET_REGS_ARG5(regs)	0
-> +#endif
-
-We have this in tools/testing/selftests/bpf/bpf_helpers.h, probably need
-to move to some other place in tools/include/ where this can be shared.
-
-- Arnaldo
+> --
+> 2.17.1
+>
