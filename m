@@ -2,145 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F60561F0E
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 14:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B3261F22
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 14:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730979AbfGHM4Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jul 2019 08:56:24 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:57603 "EHLO
+        id S1731128AbfGHM6G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jul 2019 08:58:06 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:37735 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728892AbfGHM4Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jul 2019 08:56:24 -0400
+        with ESMTP id S1731040AbfGHM6G (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jul 2019 08:58:06 -0400
 Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MbBQU-1iLzrJ3Egy-00bXQy; Mon, 08 Jul 2019 14:55:57 +0200
+ (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1Mum6l-1iaeG21g8p-00rq0e; Mon, 08 Jul 2019 14:57:37 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
-To:     Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Tariq Toukan <tariqt@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xdp-newbies@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH] [net-next] net/mlx5e: xsk: dynamically allocate mlx5e_channel_param
-Date:   Mon,  8 Jul 2019 14:55:41 +0200
-Message-Id: <20190708125554.3863901-1-arnd@arndb.de>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Andrii Nakryiko <andriin@fb.com>,
+        Martin Lau <kafai@fb.com>, Stanislav Fomichev <sdf@google.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Mauricio Vasquez B <mauricio.vasquez@polito.it>,
+        Roman Gushchin <guro@fb.com>, Matt Mullins <mmullins@fb.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Andrey Ignatov <rdna@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 1/2] bpf: skip sockopt hooks without CONFIG_NET
+Date:   Mon,  8 Jul 2019 14:57:20 +0200
+Message-Id: <20190708125733.3944836-1-arnd@arndb.de>
 X-Mailer: git-send-email 2.20.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:4ftv1gHczqjAf8xH9IXsCPbra/fMKRspDTr8cIcpEuGznocAdGy
- iZhmNDyoSPnpnBZOyDHtT8Ynn4XQ9kQfpsqHva0dKZA5Ld4hMScUjAMHEbG6PrAbwLC6ASg
- g539BORMN8W974gKpYHP5K9v2Y2f956yutZO9dA6870giJkCXQ71FrqA8iO4eyLCZFzDhgI
- VQdm2P+yiXXKN+C7144Mw==
+X-Provags-ID: V03:K1:VrGP90r317E+s+6oz2WhDCGWJPQqPhdlxp6EpqxIk9C3kEmwIzs
+ nLRM3xVjN7Zuqn+sBWKdmizbsrCbzbKwwOqlaljyycaUGCNzy9rV6hV9Bx+j37Iwt/XN27b
+ Bw/44BXMzSEKz7UopYgpb8dNFsSi8O4W/NnTshCXfLeVLG/Y6KvaxAh7yKH+S6kXkt31Tl3
+ Dxlpi23Syxtz7fBjE4xXQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:S7/kq/cX7g0=:jQ0xc1zhHRNbrh7x+xMeHd
- cA/orRXHrovfvXEwHXZJ26K0GbHxI2WZd/m4ZhxS4FbYUQCEDMUNy2qB1IFuJjaqe4Ok79Rw+
- xsVajdjRZLKA8iteii1S1tU6D3sQnjcMYzK9cBDLynaRMXbMijhwmTSSWvoElvXCgDhCTHqgW
- w0ZKb8UsaLYUJXJV+rtGWcvRINaruEIKSrH6zyPkiFs/7W8mhOpuPxnLYfSic/nmn9RqgeY16
- 9PpuKCJVcOTuXrv7FXqdCpcEkbg09EeepsRjKkKsJ9YvEiTXd49QbJ9EalG6aIK2+5SXA2OCH
- FfCwVe4ZWBH2Bf3cWn+IvsRaj/wv13R9p3joz6YNOZAPX0H5LLXq2sA6ckW2FC+QvSKaef0FP
- IGttL7qBy2wgExG+3GFBaWQHx5wWeH3fnAslbBWvM6JvbHjCUMueZa6l/jnSzleM8dgP1n2dF
- 3Kb7dt3tQKmc2ANAboFjOqOfOZqzpiye/4XZ1aBxc0wFo6nao0p9Xw+RjcYWxsEBKIY+2US1E
- Q7A0Ivd4/DgYN0zZDRXUko+thJnndO3/iuaeeJi9C0fcbmplbWvxWHZqPB94wdycirbrWGTbF
- 4BEHT3RgOKgOABrcp2tsqgnipoNcJTPr1Bq+Up14Mf3MERyrLi7AS4bXJNtz9L2BBMWBbtb/D
- pVfYxu7EZc+0WEYxD2gQWQwH4ouF7OYRnkAuotdjafrWCeio59oFCnNdU4D/4x9PfSKA6DpwF
- 7+b1dGFK0pTWht8vSCelCEwDbGj1EbJRNNE0DA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bL4qJrT3mgk=:RQAROGmY0HunZUona7GTgx
+ uLRbBC8O2LoUaRweQqa28Eh5usWoDfAPA1c5eorEgkv+b/Z38FjfdbqJvaxr9UPzvvAiiAwRi
+ yn8wzn9w0vzTTjW5QvTNORYJ4TvC/neGLWMzLr5C/VV74iPsyn5r7vtBdfsZ/YqhnFusxhE4Y
+ qjFgEykkP7QY9l7mp77MbTE+fwS3o3Lf//wraNloFVvsbvUsVB+lGcBgNUcBjBa0beSAKxZEu
+ TS8g75zsKJ6OyECzrxHY83bgw02K9CaaRKoeqSFWiV5nr/RlMx1rdZgdvkghd2NSUhp1iW741
+ SrmL9fZTS0XJhVBn4DiHCr6PpNIXVNpR26ZIbn4i3Ou00ATjKEkHBRSOj85JY+7+j7FALf4Fq
+ jHPpyLsQCpChXIpo7RLfO4FROIGHtsjhl5UJgCHixdIhpA4yNG8T5kSY4lxqQNdMaJWXYc820
+ 8YjopQY6IuZ3M5su8Pw8mBfOyRjyetWRr5F5aJ/cuZtkMMHAnRwl+d4kEOnKcA7xGlSQ6z8QG
+ xfnFSKzbhPTAV2B4f4hH0TDWNjKybnpwDFUQa9fmTRhCxx1EHz/r5pOmXpAMz8aibDC1R1ZNQ
+ rBGRhCip+M+DUFqolTaI3cuuZtnyf5oTsJZ3V3e3q4RpqLJ+VBkQdWw00XqVmQcU2ypaZQoir
+ /5btpBE1w4cgnfiJzodR7bv5DaDkxu2BzxZWeLXzceapDBdG0zRPE4Ic/oDkrKv9+pNLv3W/l
+ s5CXgjbL8gOk7o1S3a3McrEEQtDaWdjqRtJyfQ==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The structure is too large to put on the stack, resulting in a
-warning on 32-bit ARM:
+When CONFIG_NET is disabled, we get a link error:
 
-drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c:59:5: error: stack frame size of 1344 bytes in function
-      'mlx5e_open_xsk' [-Werror,-Wframe-larger-than=]
+kernel/bpf/cgroup.o: In function `__cgroup_bpf_run_filter_setsockopt':
+cgroup.c:(.text+0x3010): undefined reference to `lock_sock_nested'
+cgroup.c:(.text+0x3258): undefined reference to `release_sock'
+kernel/bpf/cgroup.o: In function `__cgroup_bpf_run_filter_getsockopt':
+cgroup.c:(.text+0x3568): undefined reference to `lock_sock_nested'
+cgroup.c:(.text+0x3870): undefined reference to `release_sock'
+kernel/bpf/cgroup.o: In function `cg_sockopt_func_proto':
+cgroup.c:(.text+0x41d8): undefined reference to `bpf_sk_storage_delete_proto'
 
-Use kzalloc() instead.
+None of this code is useful in this configuration anyway, so we can
+simply hide it in an appropriate #ifdef.
 
-Fixes: a038e9794541 ("net/mlx5e: Add XSK zero-copy support")
+Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- .../mellanox/mlx5/core/en/xsk/setup.c         | 25 ++++++++++++-------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+ include/linux/bpf_types.h | 2 ++
+ kernel/bpf/cgroup.c       | 6 ++++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
-index aaffa6f68dc0..db9bbec68dbf 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
-@@ -60,24 +60,28 @@ int mlx5e_open_xsk(struct mlx5e_priv *priv, struct mlx5e_params *params,
- 		   struct mlx5e_xsk_param *xsk, struct xdp_umem *umem,
- 		   struct mlx5e_channel *c)
- {
--	struct mlx5e_channel_param cparam = {};
-+	struct mlx5e_channel_param *cparam;
- 	struct dim_cq_moder icocq_moder = {};
- 	int err;
- 
- 	if (!mlx5e_validate_xsk_param(params, xsk, priv->mdev))
- 		return -EINVAL;
- 
--	mlx5e_build_xsk_cparam(priv, params, xsk, &cparam);
-+	cparam = kzalloc(sizeof(*cparam), GFP_KERNEL);
-+	if (!cparam)
-+		return -ENOMEM;
- 
--	err = mlx5e_open_cq(c, params->rx_cq_moderation, &cparam.rx_cq, &c->xskrq.cq);
-+	mlx5e_build_xsk_cparam(priv, params, xsk, cparam);
-+
-+	err = mlx5e_open_cq(c, params->rx_cq_moderation, &cparam->rx_cq, &c->xskrq.cq);
- 	if (unlikely(err))
--		return err;
-+		goto err_kfree_cparam;
- 
--	err = mlx5e_open_rq(c, params, &cparam.rq, xsk, umem, &c->xskrq);
-+	err = mlx5e_open_rq(c, params, &cparam->rq, xsk, umem, &c->xskrq);
- 	if (unlikely(err))
- 		goto err_close_rx_cq;
- 
--	err = mlx5e_open_cq(c, params->tx_cq_moderation, &cparam.tx_cq, &c->xsksq.cq);
-+	err = mlx5e_open_cq(c, params->tx_cq_moderation, &cparam->tx_cq, &c->xsksq.cq);
- 	if (unlikely(err))
- 		goto err_close_rq;
- 
-@@ -87,18 +91,18 @@ int mlx5e_open_xsk(struct mlx5e_priv *priv, struct mlx5e_params *params,
- 	 * is disabled and then reenabled, but the SQ continues receiving CQEs
- 	 * from the old UMEM.
- 	 */
--	err = mlx5e_open_xdpsq(c, params, &cparam.xdp_sq, umem, &c->xsksq, true);
-+	err = mlx5e_open_xdpsq(c, params, &cparam->xdp_sq, umem, &c->xsksq, true);
- 	if (unlikely(err))
- 		goto err_close_tx_cq;
- 
--	err = mlx5e_open_cq(c, icocq_moder, &cparam.icosq_cq, &c->xskicosq.cq);
-+	err = mlx5e_open_cq(c, icocq_moder, &cparam->icosq_cq, &c->xskicosq.cq);
- 	if (unlikely(err))
- 		goto err_close_sq;
- 
- 	/* Create a dedicated SQ for posting NOPs whenever we need an IRQ to be
- 	 * triggered and NAPI to be called on the correct CPU.
- 	 */
--	err = mlx5e_open_icosq(c, params, &cparam.icosq, &c->xskicosq);
-+	err = mlx5e_open_icosq(c, params, &cparam->icosq, &c->xskicosq);
- 	if (unlikely(err))
- 		goto err_close_icocq;
- 
-@@ -123,6 +127,9 @@ int mlx5e_open_xsk(struct mlx5e_priv *priv, struct mlx5e_params *params,
- err_close_rx_cq:
- 	mlx5e_close_cq(&c->xskrq.cq);
- 
-+err_kfree_cparam:
-+	kfree(cparam);
-+
- 	return err;
+diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+index eec5aeeeaf92..3c7222b2db96 100644
+--- a/include/linux/bpf_types.h
++++ b/include/linux/bpf_types.h
+@@ -30,8 +30,10 @@ BPF_PROG_TYPE(BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE, raw_tracepoint_writable)
+ #ifdef CONFIG_CGROUP_BPF
+ BPF_PROG_TYPE(BPF_PROG_TYPE_CGROUP_DEVICE, cg_dev)
+ BPF_PROG_TYPE(BPF_PROG_TYPE_CGROUP_SYSCTL, cg_sysctl)
++#ifdef CONFIG_NET
+ BPF_PROG_TYPE(BPF_PROG_TYPE_CGROUP_SOCKOPT, cg_sockopt)
+ #endif
++#endif
+ #ifdef CONFIG_BPF_LIRC_MODE2
+ BPF_PROG_TYPE(BPF_PROG_TYPE_LIRC_MODE2, lirc_mode2)
+ #endif
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 76fa0076f20d..7be44460bd93 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -590,6 +590,7 @@ int cgroup_bpf_prog_query(const union bpf_attr *attr,
+ 	return ret;
  }
  
++#ifdef CONFIG_NET
+ /**
+  * __cgroup_bpf_run_filter_skb() - Run a program for packet filtering
+  * @sk: The socket sending or receiving traffic
+@@ -750,6 +751,7 @@ int __cgroup_bpf_run_filter_sock_ops(struct sock *sk,
+ 	return ret == 1 ? 0 : -EPERM;
+ }
+ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sock_ops);
++#endif
+ 
+ int __cgroup_bpf_check_dev_permission(short dev_type, u32 major, u32 minor,
+ 				      short access, enum bpf_attach_type type)
+@@ -939,6 +941,7 @@ int __cgroup_bpf_run_filter_sysctl(struct ctl_table_header *head,
+ }
+ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sysctl);
+ 
++#ifdef CONFIG_NET
+ static bool __cgroup_bpf_prog_array_is_empty(struct cgroup *cgrp,
+ 					     enum bpf_attach_type attach_type)
+ {
+@@ -1120,6 +1123,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
+ 	return ret;
+ }
+ EXPORT_SYMBOL(__cgroup_bpf_run_filter_getsockopt);
++#endif
+ 
+ static ssize_t sysctl_cpy_dir(const struct ctl_dir *dir, char **bufp,
+ 			      size_t *lenp)
+@@ -1382,6 +1386,7 @@ const struct bpf_verifier_ops cg_sysctl_verifier_ops = {
+ const struct bpf_prog_ops cg_sysctl_prog_ops = {
+ };
+ 
++#ifdef CONFIG_NET
+ static const struct bpf_func_proto *
+ cg_sockopt_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
+@@ -1531,3 +1536,4 @@ const struct bpf_verifier_ops cg_sockopt_verifier_ops = {
+ 
+ const struct bpf_prog_ops cg_sockopt_prog_ops = {
+ };
++#endif
 -- 
 2.20.0
 
