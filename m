@@ -2,184 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A4815627BA
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 19:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C7E627CD
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 19:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727601AbfGHRy0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jul 2019 13:54:26 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:41846 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727576AbfGHRy0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jul 2019 13:54:26 -0400
-Received: by mail-qk1-f193.google.com with SMTP id v22so13986429qkj.8;
-        Mon, 08 Jul 2019 10:54:25 -0700 (PDT)
+        id S2388817AbfGHR60 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jul 2019 13:58:26 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:45018 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729052AbfGHR60 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jul 2019 13:58:26 -0400
+Received: by mail-qt1-f193.google.com with SMTP id 44so15059000qtg.11;
+        Mon, 08 Jul 2019 10:58:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u4F7C/sV/odeCH+W9PMSNpHsM7J09hRexHDNA3lJNWc=;
-        b=XgYD1/u95qUNmWA4XvhmxxBgEdAaBIVnMwRm4+DSEOBZbmdJamzoE+0YkZ4RW20plL
-         l7mPfcanv4k/hXnC06/cfo8GKSsDhVNjdD9fljXFsYvHpI/HHRQVbs6PkHdsF7K4j/x0
-         eVn/7mH0T012NU+0Cb0MBG93yGNWGgZ9kQ18nfmqPjn5krdmEDRaS527yF/TldrWN698
-         FdXOuMY7H32piU8YTMitD+LnlA1CGSvKguzFkJu4Hs3ATX4Oa3IrYOpWe+i1xQz3KWa4
-         CU13m0knRWeDbwy6I1fqYTZh22Lk1K+HoicaItk97fcf3LeERFT/j/W7gHiov2P8zgNt
-         QSmQ==
+         :cc:content-transfer-encoding;
+        bh=DXpdoTfcMjqdZs/kMrwaOv0ehGSPPA6c8mOe+DaQM6A=;
+        b=fK/eF7tTQHTpoWKBc82dbKoNvCfA3uxxH5nAW23leewCt0vW3JIgNJSEM0h9+edkAD
+         hn5or9/VENE+iEZ3CTr0QCC4O9tYWsiNynwR2PfPy5PyzxDYpFbbSA+O/qZySDUgqe9M
+         PyxJokqh6/N+Mn0AG/gk/5fWXL8PcGgzpcycCDu0o3jfXo6AtOszI5BzCPNlSE9+dWdI
+         +mC1SCdUCR5BLG95nqMt+eMQdjqXqY1yL07D9Kw8c5E1gMeABFu2LSxRpZ9E4srOpfbn
+         QZy084U1+WlJfEyCLohrVnEVVnBpc/zSpoIVqXLEwtv6vXW6LOnjiUCSy3dTezCuiFQf
+         wNDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u4F7C/sV/odeCH+W9PMSNpHsM7J09hRexHDNA3lJNWc=;
-        b=tnUih2wTsCXloQosXGNvLpWNqPtAtItRgiSfuaPJErfzJt0nw5dB3pP35noXxT6NC5
-         tF4qn38LI4dEsbsJnV1g2whES4TTDasGGdPdDpToTQZ1WDDvSk1yjLZ2NaT6gS20iWBC
-         s90fF98MPP3+whlolysTeuN/ehLRCzyxTDcao8ARGgetruXglBKnfq8Zd3TjkVbgBL7r
-         lV90KFH8UEX8XDrYdal2L6XqCqrsHPn91oWlPSON6OSvQc579DS5wjtQrV7S0y7uxMoH
-         9hqlUjkB0XbjFVrZOYKQi+HX/Z0ZlTLKqtUFsSyOWtOKBJ2AanfwPJ/2YDXUFwuoxpma
-         R9eQ==
-X-Gm-Message-State: APjAAAXr4OPT2X3YKjTssMidsyeLhZanWhPc4A9+8qmA70nUGNc9TPbG
-        ++0SyELZ3crioiyvT1u6x09ZYQJfwj5unGWxV6M=
-X-Google-Smtp-Source: APXvYqyQ45p40cTwBps+eik6OzNyUlDBNZXh1tfc4f5IiVk6V7Vmbj9v0jH5hkQF+F9w/LQgGBst9wOgU7+dlp1u0vA=
-X-Received: by 2002:a37:9b48:: with SMTP id d69mr13551030qke.449.1562608464860;
- Mon, 08 Jul 2019 10:54:24 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DXpdoTfcMjqdZs/kMrwaOv0ehGSPPA6c8mOe+DaQM6A=;
+        b=ZlcESWpxD/AQamGlcl1PhS8zYiURwz38awIFps7D04Sbedsn05eeI/jUGbcDSSjEPi
+         zItMtQdnLS+Lop+/y3DGP2XOnADQy8F8Pwo1cKMKC3FTpkSB9zx8m4ve4vsrYxJJTBU8
+         XB5Lzrj6zaR4rw/HBKRQfXSfgY+Z3/yXvh11SiYjisKJqdipz5T+sRVKJ5Bp9mf/W8R2
+         Pd0hm9T1WA/M94lwPOLD5urDJB18ruqmbQ+3jCNNLFcqTeUT4oyazPvfly3ci9uBzuEV
+         dAw9iZlInvELmB++wkphQ82ZTTS2W1S5t4mPz35vcYu767tlAfqgFQe782jfVyXlBMcu
+         BUwg==
+X-Gm-Message-State: APjAAAWNpQFdP8s2iTV78JyMauaE0fuLBhl+5sX7PxlY7dzP5dgtItAy
+        VK1PLJB5DjcTUFHsbJ1mJwQ6QNxzO8oyaCvFCfINUuozvUM5GVbd
+X-Google-Smtp-Source: APXvYqxAEvi3WalOd9E7g982oDgX3nFv/Z84EKiOOXZxsmT9pYwmDis0TUBze2jaZ1celBz7+367c3Kct2TFEvw0hfU=
+X-Received: by 2002:ac8:290c:: with SMTP id y12mr14726137qty.141.1562608704941;
+ Mon, 08 Jul 2019 10:58:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1562359091.git.a.s.protopopov@gmail.com>
- <e183c0af99056f8ea4de06acb358ace7f3a3d6ae.1562359091.git.a.s.protopopov@gmail.com>
- <734dd45a-95b0-a7fd-9e1d-0535ef4d3e12@iogearbox.net>
-In-Reply-To: <734dd45a-95b0-a7fd-9e1d-0535ef4d3e12@iogearbox.net>
+References: <CAH+k93FQkiwRXwgRGrUJEpmAGZBL03URKDmx8uVA9MnLrDKn0Q@mail.gmail.com>
+In-Reply-To: <CAH+k93FQkiwRXwgRGrUJEpmAGZBL03URKDmx8uVA9MnLrDKn0Q@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 8 Jul 2019 10:54:13 -0700
-Message-ID: <CAEf4BzaGGVv2z8jB8MnT7=gnn4nG0cp7DGYxfnnnpohOT=ujCA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf, libbpf: add a new API bpf_object__reuse_maps()
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Anton Protopopov <a.s.protopopov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>
+Date:   Mon, 8 Jul 2019 10:58:14 -0700
+Message-ID: <CAEf4Bzb-EM41TLAkshQa=nVwiVuYnEYyhVL38gcaG=OaHoJJ6Q@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 4/9] libbpf: add kprobe/uprobe attach API
+To:     Matt Hart <matthew.hart@linaro.org>
+Cc:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>,
+        Stanislav Fomichev <sdf@fomichev.me>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 5, 2019 at 2:53 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Mon, Jul 8, 2019 at 8:11 AM Matt Hart <matthew.hart@linaro.org> wrote:
 >
-> On 07/05/2019 10:44 PM, Anton Protopopov wrote:
-> > Add a new API bpf_object__reuse_maps() which can be used to replace all maps in
-> > an object by maps pinned to a directory provided in the path argument.  Namely,
-> > each map M in the object will be replaced by a map pinned to path/M.name.
-> >
-> > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> > ---
-> >  tools/lib/bpf/libbpf.c   | 34 ++++++++++++++++++++++++++++++++++
-> >  tools/lib/bpf/libbpf.h   |  2 ++
-> >  tools/lib/bpf/libbpf.map |  1 +
-> >  3 files changed, 37 insertions(+)
-> >
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 4907997289e9..84c9e8f7bfd3 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -3144,6 +3144,40 @@ int bpf_object__unpin_maps(struct bpf_object *obj, const char *path)
-> >       return 0;
-> >  }
-> >
-> > +int bpf_object__reuse_maps(struct bpf_object *obj, const char *path)
-
-As is, bpf_object__reuse_maps() can be easily implemented by user
-applications, as it's only using public libbpf APIs, so I'm not 100%
-sure we need to add method like that to libbpf.
-
-> > +{
-> > +     struct bpf_map *map;
-> > +
-> > +     if (!obj)
-> > +             return -ENOENT;
-> > +
-> > +     if (!path)
-> > +             return -EINVAL;
-> > +
-> > +     bpf_object__for_each_map(map, obj) {
-> > +             int len, err;
-> > +             int pinned_map_fd;
-> > +             char buf[PATH_MAX];
+> Hi all,
 >
-> We'd need to skip the case of bpf_map__is_internal(map) since they are always
-> recreated for the given object.
+> I bisected a perf build error on ARMv7 to this patch:
+> libbpf.c: In function =E2=80=98perf_event_open_probe=E2=80=99:
+> libbpf.c:4112:17: error: cast from pointer to integer of different
+> size [-Werror=3Dpointer-to-int-cast]
+>   attr.config1 =3D (uint64_t)(void *)name; /* kprobe_func or uprobe_path =
+*/
+>                  ^
 >
-> > +             len = snprintf(buf, PATH_MAX, "%s/%s", path, bpf_map__name(map));
-> > +             if (len < 0) {
-> > +                     return -EINVAL;
-> > +             } else if (len >= PATH_MAX) {
-> > +                     return -ENAMETOOLONG;
-> > +             }
-> > +
-> > +             pinned_map_fd = bpf_obj_get(buf);
-> > +             if (pinned_map_fd < 0)
-> > +                     return pinned_map_fd;
->
-> Should we rather have a new map definition attribute that tells to reuse
-> the map if it's pinned in bpf fs, and if not, we create it and later on
-> pin it? This is what iproute2 is doing and which we're making use of heavily.
+> Is this a known issue?
 
-I'd like something like that as well. This would play nicely with
-recently added BTF-defined maps as well.
+No, thanks for reporting!
 
-I think it should be not just pin/don't pin flag, but rather pinning
-strategy, to accommodate various typical strategies of handling maps
-that are already pinned. So something like this:
+It should be
 
-1. BPF_PIN_NOTHING - default, don't pin;
-2. BPF_PIN_EXCLUSIVE - pin, but if map is already pinned - fail;
-3. BPF_PIN_SET - pin; if existing map exists, reset its state to be
-exact state of object's map;
-4. BPF_PIN_MERGE - pin, if map exists, fill in NULL entries only (this
-is how Cilium is pinning PROG_ARRAY maps, if I understand correctly);
-5. BPF_PIN_MERGE_OVERWRITE - pin, if map exists, overwrite non-NULL values.
+attr.config1 =3D (uint64_t)(uintptr_t)(void *)name;
 
-This list is only for illustrative purposes, ideally people that have
-a lot of experience using pinning for real-world use cases would chime
-in on what strategies are useful and make sense.
+to avoid warning on 32-bit architectures.
 
-> In bpf_object__reuse_maps() bailing out if bpf_obj_get() fails is perhaps
-> too limiting for a generic API as new version of an object file may contain
-> new maps which are not yet present in bpf fs at that point.
->
-> > +             err = bpf_map__reuse_fd(map, pinned_map_fd);
-> > +             if (err)
-> > +                     return err;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> >  int bpf_object__pin_programs(struct bpf_object *obj, const char *path)
-> >  {
-> >       struct bpf_program *prog;
-> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> > index d639f47e3110..7fe465a1be76 100644
-> > --- a/tools/lib/bpf/libbpf.h
-> > +++ b/tools/lib/bpf/libbpf.h
-> > @@ -82,6 +82,8 @@ int bpf_object__variable_offset(const struct bpf_object *obj, const char *name,
-> >  LIBBPF_API int bpf_object__pin_maps(struct bpf_object *obj, const char *path);
-> >  LIBBPF_API int bpf_object__unpin_maps(struct bpf_object *obj,
-> >                                     const char *path);
-> > +LIBBPF_API int bpf_object__reuse_maps(struct bpf_object *obj,
-> > +                                   const char *path);
-> >  LIBBPF_API int bpf_object__pin_programs(struct bpf_object *obj,
-> >                                       const char *path);
-> >  LIBBPF_API int bpf_object__unpin_programs(struct bpf_object *obj,
-> > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> > index 2c6d835620d2..66a30be6696c 100644
-> > --- a/tools/lib/bpf/libbpf.map
-> > +++ b/tools/lib/bpf/libbpf.map
-> > @@ -172,5 +172,6 @@ LIBBPF_0.0.4 {
-> >               btf_dump__new;
-> >               btf__parse_elf;
-> >               bpf_object__load_xattr;
-> > +             bpf_object__reuse_maps;
-> >               libbpf_num_possible_cpus;
-> >  } LIBBPF_0.0.3;
-> >
->
+I'll post a fix later today, but if you could verify this fixes
+warning for you, I'd really appreciate that! Thanks!
