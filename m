@@ -2,141 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F06BB625BD
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 18:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9EE625E1
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 18:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389192AbfGHQHH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jul 2019 12:07:07 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:33394 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389090AbfGHQHG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jul 2019 12:07:06 -0400
-Received: by mail-io1-f69.google.com with SMTP id 132so16920764iou.0
-        for <bpf@vger.kernel.org>; Mon, 08 Jul 2019 09:07:06 -0700 (PDT)
+        id S1728845AbfGHQNl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jul 2019 12:13:41 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:40493 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726690AbfGHQNl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jul 2019 12:13:41 -0400
+Received: by mail-pf1-f196.google.com with SMTP id p184so7833743pfp.7
+        for <bpf@vger.kernel.org>; Mon, 08 Jul 2019 09:13:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8t0LI8f5d2yC1Ell37KaoDAT1u2qrCk09hV1h5m1t5o=;
+        b=14SwpmVCFEAW+QYYzXuCkYAQ31/ZEp78hlPwaiSPUKrN4JJ9b93kY0cHVk5zrKg1mS
+         Y+wixUDWvAa6udSGUeqVUFtLlpYCueOfp7RVv/y8B0vBpiiuxjJytcJjbBQ5tSioI7TU
+         IbMOe4xa94Fnc9zkULY0FE4Ewj9dYx3e+jrKrtuA/RgBXV6PjaVNX1h73YWdzpNY/SXI
+         KBajHmyGxkW5CSYXo8xrGXxZAJ6aMA4OAzAPgwL/Cq7l7Y0mVjrI5HJKE8juhGbsQYi6
+         HWTBQaN6dIckCIaMDmoilaY48HRpold/lJw7MILvMdUlKfNMt91Kc4MSZGApw6zaqMYt
+         Hhlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=TqFO65CoYLM07AC5TqXO+GX7mf0SUZmV5q2ij7PT9gI=;
-        b=CT0B61oJQ6VxdXoDq0CelaFrnotpWNBdFVPwnnavfL/HTNKoQ2yTpEolPTlYny43zp
-         XAeEq5mBiLj6Emvn2Eu+n9wC1cInXNBv3fXt9uY121uzq97Ca6eigKs+GHoJLEVaaySP
-         1q1SRVSQSrqN/7X8h8IdgH59WwozUrmS3gK13YMUcqLmNb+vw2GPzmzFE5uGjw+j/Uge
-         nPrn3G1Z582KPX1QNX9baBcWDwrB0zdex0BGpdySpddWBj+3vX6UhQLiIaji233Aq2AH
-         BC+yYSg0aMHphCB94llK3V8s/T9ZokmbbMisxmloEEfBGLPLklCDaDqetRxhOwRSx6L+
-         YA0A==
-X-Gm-Message-State: APjAAAX1g+1V1kyxBJPUD28e57HSSSm3wcOC8IVzubwuPIaS4FtB0Mka
-        V0ywOTEDXYzMP1ew/7VBZNl8Coaq9hhoafJFy2iXrI9RkoGg
-X-Google-Smtp-Source: APXvYqypjVO3/nyV1s38LzoFPnqLPNAQGQ7ftNO2UBebL5TEyMxaB3ToQ/6UR4tEu4oPYBSPQYTZN6TXG7nCBB9KomBKcJj3Mxnt
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8t0LI8f5d2yC1Ell37KaoDAT1u2qrCk09hV1h5m1t5o=;
+        b=UTtgS8HnfPBVfMh0NNd9ewrwA3mX2+dBqYer8T1lzQ9KLKxF5mDjZuFHVFBTn/Gvww
+         jiCFdY5fsdPV9tzWOjal6Z8UXnM8duZvxf6xHuL1flXFrZWGa7/+z2/BXPohFeHSkKgz
+         N7pQdwmZhGoYUcyHkRB+vHfPdixyZ3r9tB5AUpPzpWK1eWe4MkWYW291tt2AXwSjEMpu
+         H/iRZjVF+UiOX0FkqWNtJmxdTrtho+C7iwh8fmSIPrDtszPBsAuqrKfcdlWRtrkxSAKW
+         CHLXYzX38jDB+1hvZY5U7zMrXxEPsxO0xt/TTKT6wCxl2RpsPhIlcGnfjdB6e6HUK1+j
+         rJvg==
+X-Gm-Message-State: APjAAAVC3/Ly0yh7kuHesfTO/C1QIcmLMxY0N9GlBFAaXQmHZClvyOAY
+        vunwrEcZCCiBn+w6p3FPEjy+cA==
+X-Google-Smtp-Source: APXvYqxTCeIzZ2W/qBHTEFfMqxCwVIiy/cRoCD7v0m1Vc7OhF130e0EtJ36LUm3tpYyvtyjhFdZYGQ==
+X-Received: by 2002:a63:89c2:: with SMTP id v185mr24693864pgd.241.1562602420513;
+        Mon, 08 Jul 2019 09:13:40 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id j15sm18527333pfr.146.2019.07.08.09.13.39
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 08 Jul 2019 09:13:39 -0700 (PDT)
+Date:   Mon, 8 Jul 2019 09:13:38 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Y Song <ys114321@gmail.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: make verifier loop tests arch
+ independent
+Message-ID: <20190708161338.GC29524@mini-arch>
+References: <20190703205100.142904-1-sdf@google.com>
+ <CAH3MdRWePmAZNRfGNcBdjKAJ+D33=4Vgg1STYC3khNps8AmaHQ@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:cd86:: with SMTP id d128mr19903340iog.234.1562602026120;
- Mon, 08 Jul 2019 09:07:06 -0700 (PDT)
-Date:   Mon, 08 Jul 2019 09:07:06 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b13e1d058d2da276@google.com>
-Subject: WARNING in mark_chain_precision
-From:   syzbot <syzbot+f21251a7468cd46efc60@syzkaller.appspotmail.com>
-To:     aaron.f.brown@intel.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        intel-wired-lan@lists.osuosl.org, jakub.kicinski@netronome.com,
-        jeffrey.t.kirsher@intel.com, john.fastabend@gmail.com,
-        kafai@fb.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        sasha.neftin@intel.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, xdp-newbies@vger.kernel.org,
-        yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAH3MdRWePmAZNRfGNcBdjKAJ+D33=4Vgg1STYC3khNps8AmaHQ@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    a51df9f8 gve: fix -ENOMEM null check on a page allocation
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17e64325a00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6bb3e6e7997c14f9
-dashboard link: https://syzkaller.appspot.com/bug?extid=f21251a7468cd46efc60
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=114f842da00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1630a5aba00000
-
-The bug was bisected to:
-
-commit 55fdbeaa2db8b271db767240fba24a60bd232528
-Author: Sasha Neftin <sasha.neftin@intel.com>
-Date:   Mon Jan 7 14:40:17 2019 +0000
-
-     igc: Remove unused code
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15c205b9a00000
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=17c205b9a00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13c205b9a00000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+f21251a7468cd46efc60@syzkaller.appspotmail.com
-Fixes: 55fdbeaa2db8 ("igc: Remove unused code")
-
-------------[ cut here ]------------
-verifier backtracking bug
-WARNING: CPU: 0 PID: 8846 at kernel/bpf/verifier.c:1755  
-mark_chain_precision+0x15c2/0x18e0 kernel/bpf/verifier.c:1755
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 8846 Comm: syz-executor835 Not tainted 5.2.0-rc6+ #56
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
-  panic+0x2cb/0x744 kernel/panic.c:219
-  __warn.cold+0x20/0x4d kernel/panic.c:576
-  report_bug+0x263/0x2b0 lib/bug.c:186
-  fixup_bug arch/x86/kernel/traps.c:179 [inline]
-  fixup_bug arch/x86/kernel/traps.c:174 [inline]
-  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:272
-  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:291
-  invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:986
-RIP: 0010:mark_chain_precision+0x15c2/0x18e0 kernel/bpf/verifier.c:1755
-Code: e9 55 f2 ff ff 48 89 df e8 4b 0a 2c 00 e9 3a f3 ff ff e8 61 cb f2 ff  
-48 c7 c7 e0 43 91 87 c6 05 40 2b 1f 08 01 e8 1c 03 c5 ff <0f> 0b 41 be f2  
-ff ff ff e9 eb f7 ff ff e8 3c cb f2 ff 45 31 f6 e9
-RSP: 0018:ffff8880a01ef378 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff815adb06 RDI: ffffed101403de61
-RBP: ffff8880a01ef4d0 R08: ffff88808e26c400 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff8880a14e8440 R14: 0000000000000001 R15: dffffc0000000000
-  check_cond_jmp_op+0xcce/0x3c20 kernel/bpf/verifier.c:5793
-  do_check+0x61cf/0x8930 kernel/bpf/verifier.c:7684
-  bpf_check+0x6f99/0x9950 kernel/bpf/verifier.c:9195
-  bpf_prog_load+0xec8/0x1670 kernel/bpf/syscall.c:1690
-  __do_sys_bpf+0xa20/0x42c0 kernel/bpf/syscall.c:2830
-  __se_sys_bpf kernel/bpf/syscall.c:2789 [inline]
-  __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:2789
-  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x440369
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 fb 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffccb952af8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440369
-RDX: 0000000000000048 RSI: 0000000020000200 RDI: 0000000000000005
-RBP: 00000000006ca018 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000401bf0
-R13: 0000000000401c80 R14: 0000000000000000 R15: 0000000000000000
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+On 07/03, Y Song wrote:
+> On Wed, Jul 3, 2019 at 1:51 PM Stanislav Fomichev <sdf@google.com> wrote:
+> >
+> > Take the first x bytes of pt_regs for scalability tests, there is
+> > no real reason we need x86 specific rax.
+> >
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  tools/testing/selftests/bpf/progs/loop1.c | 3 ++-
+> >  tools/testing/selftests/bpf/progs/loop2.c | 3 ++-
+> >  tools/testing/selftests/bpf/progs/loop3.c | 3 ++-
+> >  3 files changed, 6 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/progs/loop1.c b/tools/testing/selftests/bpf/progs/loop1.c
+> > index dea395af9ea9..d530c61d2517 100644
+> > --- a/tools/testing/selftests/bpf/progs/loop1.c
+> > +++ b/tools/testing/selftests/bpf/progs/loop1.c
+> > @@ -14,11 +14,12 @@ SEC("raw_tracepoint/kfree_skb")
+> >  int nested_loops(volatile struct pt_regs* ctx)
+> >  {
+> >         int i, j, sum = 0, m;
+> > +       volatile int *any_reg = (volatile int *)ctx;
+> >
+> >         for (j = 0; j < 300; j++)
+> >                 for (i = 0; i < j; i++) {
+> >                         if (j & 1)
+> > -                               m = ctx->rax;
+> > +                               m = *any_reg;
+> 
+> I agree. ctx->rax here is only to generate some operations, which
+> cannot be optimized away by the compiler. dereferencing a volatile
+> pointee may just serve that purpose.
+> 
+> Comparing the byte code generated with ctx->rax and *any_reg, they are
+> slightly different. Using *any_reg is slighly worse, but this should
+> be still okay for the test.
+> 
+> >                         else
+> >                                 m = j;
+> >                         sum += i * m;
+> > diff --git a/tools/testing/selftests/bpf/progs/loop2.c b/tools/testing/selftests/bpf/progs/loop2.c
+> > index 0637bd8e8bcf..91bb89d901e3 100644
+> > --- a/tools/testing/selftests/bpf/progs/loop2.c
+> > +++ b/tools/testing/selftests/bpf/progs/loop2.c
+> > @@ -14,9 +14,10 @@ SEC("raw_tracepoint/consume_skb")
+> >  int while_true(volatile struct pt_regs* ctx)
+> >  {
+> >         int i = 0;
+> > +       volatile int *any_reg = (volatile int *)ctx;
+> >
+> >         while (true) {
+> > -               if (ctx->rax & 1)
+> > +               if (*any_reg & 1)
+> >                         i += 3;
+> >                 else
+> >                         i += 7;
+> > diff --git a/tools/testing/selftests/bpf/progs/loop3.c b/tools/testing/selftests/bpf/progs/loop3.c
+> > index 30a0f6cba080..3a7f12d7186c 100644
+> > --- a/tools/testing/selftests/bpf/progs/loop3.c
+> > +++ b/tools/testing/selftests/bpf/progs/loop3.c
+> > @@ -14,9 +14,10 @@ SEC("raw_tracepoint/consume_skb")
+> >  int while_true(volatile struct pt_regs* ctx)
+> >  {
+> >         __u64 i = 0, sum = 0;
+> > +       volatile __u64 *any_reg = (volatile __u64 *)ctx;
+> >         do {
+> >                 i++;
+> > -               sum += ctx->rax;
+> > +               sum += *any_reg;
+> >         } while (i < 0x100000000ULL);
+> >         return sum;
+> >  }
+> > --
+> > 2.22.0.410.gd8fdbe21b5-goog
+> 
+> Ilya Leoshkevich (iii@linux.ibm.com, cc'ed) has another patch set
+> trying to solve this problem by introducing s360 arch register access
+> macros. I guess for now that patch set is not needed any more?
+Oh, I missed them. Do they fix the tests for other (non-s360) arches as
+well? I was trying to fix the issue by not depending on any arch
+specific stuff because the test really doesn't care :-)
