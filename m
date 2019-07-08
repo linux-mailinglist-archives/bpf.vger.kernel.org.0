@@ -2,180 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B511362134
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 17:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A648F62130
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 17:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725872AbfGHPLl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jul 2019 11:11:41 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:21760 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732146AbfGHPLk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 8 Jul 2019 11:11:40 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x68FAiZD030205;
-        Mon, 8 Jul 2019 08:11:13 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=/nEbWEPtVr8ackokbZo+Ca8TyEJfWHAsItin4SJI944=;
- b=ZiQfFoYTletkreFopFAmrT3OIkEsN24VhA3o7ZZ3XQzFCQEz5tumBRPD1FYTq/36lQXY
- z1kBJA0Ee6lygOxb7IJpVFqDzCxmTs/T9jDA1yRf90wljjl7hnMIw9XCdfCw/S3pyO3T
- Jr7oGYwKiV1gyLF4JLZAS5+DcZJYhEN1pHc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 2tm7jtg4kf-10
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 08 Jul 2019 08:11:12 -0700
-Received: from ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) by
- ash-exhub201.TheFacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 8 Jul 2019 08:06:33 -0700
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 8 Jul 2019 08:06:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/nEbWEPtVr8ackokbZo+Ca8TyEJfWHAsItin4SJI944=;
- b=icy886oIKaHukfleZRrzrSyVJU9ZXmrWai2dmJ6mgz2p2kY+IRvjQh2gxAATsfbt4acmkD9Ll1pMT3O9QsKDC2w+TvEGzlD2cnmDf2gAtK6d1TklLHDD231+hLMoOfr2ozE+gfO/RoLrB4fkKVcrMew4RF/fV12XDRqRAJtmj4o=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.59.17) by
- BYAPR15MB3477.namprd15.prod.outlook.com (20.179.60.17) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2052.15; Mon, 8 Jul 2019 15:06:31 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::e499:ecba:ec04:abac]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::e499:ecba:ec04:abac%5]) with mapi id 15.20.2052.020; Mon, 8 Jul 2019
- 15:06:31 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>
-CC:     Andrii Nakryiko <andriin@fb.com>, Martin Lau <kafai@fb.com>,
-        "Stanislav Fomichev" <sdf@google.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Mauricio Vasquez B" <mauricio.vasquez@polito.it>,
-        Roman Gushchin <guro@fb.com>, Matt Mullins <mmullins@fb.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 1/2] bpf: skip sockopt hooks without CONFIG_NET
-Thread-Topic: [PATCH net-next 1/2] bpf: skip sockopt hooks without CONFIG_NET
-Thread-Index: AQHVNYzDbnvqiSRlzUOESszKQb6SnabA0lKA
-Date:   Mon, 8 Jul 2019 15:06:31 +0000
-Message-ID: <0e7cf1b5-579f-5fcd-0966-8760148b00de@fb.com>
-References: <20190708125733.3944836-1-arnd@arndb.de>
-In-Reply-To: <20190708125733.3944836-1-arnd@arndb.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BYAPR04CA0002.namprd04.prod.outlook.com
- (2603:10b6:a03:40::15) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:10e::17)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::1:34ce]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b4e9b64f-6f00-4aad-7241-08d703b5dbff
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB3477;
-x-ms-traffictypediagnostic: BYAPR15MB3477:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <BYAPR15MB34777D3680CEF87538A47A3BD3F60@BYAPR15MB3477.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2657;
-x-forefront-prvs: 00922518D8
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(979002)(366004)(376002)(39860400002)(346002)(136003)(396003)(189003)(199004)(52314003)(31686004)(53936002)(6306002)(6512007)(110136005)(99286004)(54906003)(6436002)(229853002)(6486002)(316002)(966005)(46003)(2616005)(11346002)(476003)(486006)(14444005)(256004)(5024004)(6506007)(386003)(6246003)(52116002)(8676002)(66476007)(14454004)(6116002)(76176011)(86362001)(186003)(446003)(102836004)(53546011)(66946007)(4326008)(73956011)(5660300002)(36756003)(66446008)(64756008)(66556008)(81166006)(81156014)(7736002)(31696002)(25786009)(71190400001)(71200400001)(68736007)(8936002)(478600001)(2906002)(305945005)(969003)(989001)(999001)(1009001)(1019001);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3477;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: OoYW6sygFIArLok8ZLt8EAP6wOUfKZccot5LkgSVXwd63cdi4yiM8vK3lE9cA5qA4tMCtR/BpWfbuoGTlcgknJzs6bGEmNJO+blhXJF/K8yVyCJh/wlEzeqpA998QMFAhsTbpAw9XBjXHuXb2yGg8OI5HUUxnHtrt31uhsdMgFxE8+0x6iNUllsNHIEWdcgph2p7cetcA6T0xnww29xGJlizDCowsk4KOBdT76a4rlt3gYSGWjiK6KymtWYVYyzP14dM8S2Yb7f3LxQEN6ZfGbJSPM0sEj2pBBRbLfbwliSVCcMD72HWP1ekcJZ5NoLQ9b9RW8NyoDi6mYArMWYJmgCN2n0hS1uHrkq5gPvRaaJLjmglrfgeoYl7SrUxXQPCgBqNqi7TFS6orQikLBJd60rM8tbHXovQXxpA7luvnW4=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3E1806D1C344524C92038F3B8EDE225C@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1732119AbfGHPLh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jul 2019 11:11:37 -0400
+Received: from mail-vs1-f68.google.com ([209.85.217.68]:44342 "EHLO
+        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725872AbfGHPLg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jul 2019 11:11:36 -0400
+Received: by mail-vs1-f68.google.com with SMTP id v129so8427569vsb.11;
+        Mon, 08 Jul 2019 08:11:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qSkBAdk5oddBWH4Q77bK0k0/VBqaR/5vSGHDXEvy3Mg=;
+        b=Yg1gpVNhkSvcLwybUOoLKF2S1WwFjaI6l060S2PdgedWdRlwmh9jgvrggY7u7mrqeo
+         Wx8+0gjT0IhrC2qM1HkVy7Ma7fdnAUbqNJeyizySg3SETmjiPK30ZiC9bMUkMD3URzE7
+         oiICrfiI1SL+ZbLKh7MVUV8asbLVPQKCHnDHmXTgV0da458kGp+26T843jIJ4vKCv6JO
+         F7ASYTSgPSUPVYBlk4w9f8lX2ooXvwcbcE9q8HWgflyS81NZDzjWGdhW8cyNGdl5XPJl
+         mjK4UDRbc2ZKzyBva7WSvAhDs3ZEvDQb3PUeJ0XwuBfUnWt4rj815FTI9lMIUC6162kh
+         rh7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qSkBAdk5oddBWH4Q77bK0k0/VBqaR/5vSGHDXEvy3Mg=;
+        b=RDaCqm0J+R5V5G7br8Vl4ghq8y3OX115J039bHb8kkDPQKMLgYJ0lk3R0ELDjmLY0w
+         PuKNp5NSvQi4G4fbyMTNQdVFXZO3wQ+D4UUVIsxQERuzHWn6cN9uwWvbIb2Oi+gpcQdv
+         MC0+S82USK8wPk+pDlhxa+ppPpa4xijXVXMS+aj3S8ugtUzTgGT1Ky0WBrgRRWV5Nisn
+         8xUTCEMYujiV5H4NagjcmWoERjyG8Q29WnUq35ifd3SHN6wV3BeSv51T3UqKpLueX29X
+         VyEb2YqwOlORAeHk/OyqxmkGYwWcC8Frw5yRlt6Dea7Fp5vdR7iBXMSTqZhKgREGByYH
+         VeQA==
+X-Gm-Message-State: APjAAAWAygnbaOcazXQhgKHKqHcPknImc5gbSEhqCUNZI8bAJ3eg8U1L
+        DJnhNbAwN1VQNkBk8+kv729A22zKPlxCGgvejeKgpodxhU4=
+X-Google-Smtp-Source: APXvYqwPepGr97TYpU7TehuCAXGqVyYS9jfuD56GdqWIPRKMWtFRb+MQrh6kmqt0fCsCpeDiPaMSdk/Dr8YGUwvNJZI=
+X-Received: by 2002:a67:f7c6:: with SMTP id a6mr10651087vsp.120.1562598695231;
+ Mon, 08 Jul 2019 08:11:35 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4e9b64f-6f00-4aad-7241-08d703b5dbff
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jul 2019 15:06:31.4697
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yhs@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3477
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-08_05:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907080189
-X-FB-Internal: deliver
+References: <cover.1562359091.git.a.s.protopopov@gmail.com>
+ <e183c0af99056f8ea4de06acb358ace7f3a3d6ae.1562359091.git.a.s.protopopov@gmail.com>
+ <734dd45a-95b0-a7fd-9e1d-0535ef4d3e12@iogearbox.net>
+In-Reply-To: <734dd45a-95b0-a7fd-9e1d-0535ef4d3e12@iogearbox.net>
+From:   Anton Protopopov <a.s.protopopov@gmail.com>
+Date:   Mon, 8 Jul 2019 11:11:24 -0400
+Message-ID: <CAGn_itzJkW8uR-y92oU+jKKLRsAfsHcqJ+Cm0+KRZxJ-zaqMNA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf, libbpf: add a new API bpf_object__reuse_maps()
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, andriin@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDcvOC8xOSA1OjU3IEFNLCBBcm5kIEJlcmdtYW5uIHdyb3RlOg0KPiBXaGVuIENPTkZJ
-R19ORVQgaXMgZGlzYWJsZWQsIHdlIGdldCBhIGxpbmsgZXJyb3I6DQo+IA0KPiBrZXJuZWwvYnBm
-L2Nncm91cC5vOiBJbiBmdW5jdGlvbiBgX19jZ3JvdXBfYnBmX3J1bl9maWx0ZXJfc2V0c29ja29w
-dCc6DQo+IGNncm91cC5jOigudGV4dCsweDMwMTApOiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBs
-b2NrX3NvY2tfbmVzdGVkJw0KPiBjZ3JvdXAuYzooLnRleHQrMHgzMjU4KTogdW5kZWZpbmVkIHJl
-ZmVyZW5jZSB0byBgcmVsZWFzZV9zb2NrJw0KPiBrZXJuZWwvYnBmL2Nncm91cC5vOiBJbiBmdW5j
-dGlvbiBgX19jZ3JvdXBfYnBmX3J1bl9maWx0ZXJfZ2V0c29ja29wdCc6DQo+IGNncm91cC5jOigu
-dGV4dCsweDM1NjgpOiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBsb2NrX3NvY2tfbmVzdGVkJw0K
-PiBjZ3JvdXAuYzooLnRleHQrMHgzODcwKTogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgcmVsZWFz
-ZV9zb2NrJw0KPiBrZXJuZWwvYnBmL2Nncm91cC5vOiBJbiBmdW5jdGlvbiBgY2dfc29ja29wdF9m
-dW5jX3Byb3RvJzoNCj4gY2dyb3VwLmM6KC50ZXh0KzB4NDFkOCk6IHVuZGVmaW5lZCByZWZlcmVu
-Y2UgdG8gYGJwZl9za19zdG9yYWdlX2RlbGV0ZV9wcm90bycNCj4gDQo+IE5vbmUgb2YgdGhpcyBj
-b2RlIGlzIHVzZWZ1bCBpbiB0aGlzIGNvbmZpZ3VyYXRpb24gYW55d2F5LCBzbyB3ZSBjYW4NCj4g
-c2ltcGx5IGhpZGUgaXQgaW4gYW4gYXBwcm9wcmlhdGUgI2lmZGVmLg0KPiANCj4gRml4ZXM6IDBk
-MDFkYTZhZmM1NCAoImJwZjogaW1wbGVtZW50IGdldHNvY2tvcHQgYW5kIHNldHNvY2tvcHQgaG9v
-a3MiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPg0KDQpG
-WUkuDQoNClRoZXJlIGlzIGFscmVhZHkgYSBwYXRjaCB0byBmaXggdGhlIHNhbWUgaXNzdWUsDQpo
-dHRwczovL2xvcmUua2VybmVsLm9yZy9icGYvZTllNDg5ZmUtZmVlYy1hMjExLTgyYWEtNWRmMGM2
-YTMwOGQxQGh1YXdlaS5jb20vVC8jdA0KDQp3aGljaCBoYXMgYmVlbiBhY2tlZCBhbmQgbm90IG1l
-cmdlZCB5ZXQuDQoNCj4gLS0tDQo+ICAgaW5jbHVkZS9saW51eC9icGZfdHlwZXMuaCB8IDIgKysN
-Cj4gICBrZXJuZWwvYnBmL2Nncm91cC5jICAgICAgIHwgNiArKysrKysNCj4gICAyIGZpbGVzIGNo
-YW5nZWQsIDggaW5zZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgv
-YnBmX3R5cGVzLmggYi9pbmNsdWRlL2xpbnV4L2JwZl90eXBlcy5oDQo+IGluZGV4IGVlYzVhZWVl
-YWY5Mi4uM2M3MjIyYjJkYjk2IDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL2xpbnV4L2JwZl90eXBl
-cy5oDQo+ICsrKyBiL2luY2x1ZGUvbGludXgvYnBmX3R5cGVzLmgNCj4gQEAgLTMwLDggKzMwLDEw
-IEBAIEJQRl9QUk9HX1RZUEUoQlBGX1BST0dfVFlQRV9SQVdfVFJBQ0VQT0lOVF9XUklUQUJMRSwg
-cmF3X3RyYWNlcG9pbnRfd3JpdGFibGUpDQo+ICAgI2lmZGVmIENPTkZJR19DR1JPVVBfQlBGDQo+
-ICAgQlBGX1BST0dfVFlQRShCUEZfUFJPR19UWVBFX0NHUk9VUF9ERVZJQ0UsIGNnX2RldikNCj4g
-ICBCUEZfUFJPR19UWVBFKEJQRl9QUk9HX1RZUEVfQ0dST1VQX1NZU0NUTCwgY2dfc3lzY3RsKQ0K
-PiArI2lmZGVmIENPTkZJR19ORVQNCj4gICBCUEZfUFJPR19UWVBFKEJQRl9QUk9HX1RZUEVfQ0dS
-T1VQX1NPQ0tPUFQsIGNnX3NvY2tvcHQpDQo+ICAgI2VuZGlmDQo+ICsjZW5kaWYNCj4gICAjaWZk
-ZWYgQ09ORklHX0JQRl9MSVJDX01PREUyDQo+ICAgQlBGX1BST0dfVFlQRShCUEZfUFJPR19UWVBF
-X0xJUkNfTU9ERTIsIGxpcmNfbW9kZTIpDQo+ICAgI2VuZGlmDQo+IGRpZmYgLS1naXQgYS9rZXJu
-ZWwvYnBmL2Nncm91cC5jIGIva2VybmVsL2JwZi9jZ3JvdXAuYw0KPiBpbmRleCA3NmZhMDA3NmYy
-MGQuLjdiZTQ0NDYwYmQ5MyAxMDA2NDQNCj4gLS0tIGEva2VybmVsL2JwZi9jZ3JvdXAuYw0KPiAr
-KysgYi9rZXJuZWwvYnBmL2Nncm91cC5jDQo+IEBAIC01OTAsNiArNTkwLDcgQEAgaW50IGNncm91
-cF9icGZfcHJvZ19xdWVyeShjb25zdCB1bmlvbiBicGZfYXR0ciAqYXR0ciwNCj4gICAJcmV0dXJu
-IHJldDsNCj4gICB9DQo+ICAgDQo+ICsjaWZkZWYgQ09ORklHX05FVA0KPiAgIC8qKg0KPiAgICAq
-IF9fY2dyb3VwX2JwZl9ydW5fZmlsdGVyX3NrYigpIC0gUnVuIGEgcHJvZ3JhbSBmb3IgcGFja2V0
-IGZpbHRlcmluZw0KPiAgICAqIEBzazogVGhlIHNvY2tldCBzZW5kaW5nIG9yIHJlY2VpdmluZyB0
-cmFmZmljDQo+IEBAIC03NTAsNiArNzUxLDcgQEAgaW50IF9fY2dyb3VwX2JwZl9ydW5fZmlsdGVy
-X3NvY2tfb3BzKHN0cnVjdCBzb2NrICpzaywNCj4gICAJcmV0dXJuIHJldCA9PSAxID8gMCA6IC1F
-UEVSTTsNCj4gICB9DQo+ICAgRVhQT1JUX1NZTUJPTChfX2Nncm91cF9icGZfcnVuX2ZpbHRlcl9z
-b2NrX29wcyk7DQo+ICsjZW5kaWYNCj4gICANCj4gICBpbnQgX19jZ3JvdXBfYnBmX2NoZWNrX2Rl
-dl9wZXJtaXNzaW9uKHNob3J0IGRldl90eXBlLCB1MzIgbWFqb3IsIHUzMiBtaW5vciwNCj4gICAJ
-CQkJICAgICAgc2hvcnQgYWNjZXNzLCBlbnVtIGJwZl9hdHRhY2hfdHlwZSB0eXBlKQ0KPiBAQCAt
-OTM5LDYgKzk0MSw3IEBAIGludCBfX2Nncm91cF9icGZfcnVuX2ZpbHRlcl9zeXNjdGwoc3RydWN0
-IGN0bF90YWJsZV9oZWFkZXIgKmhlYWQsDQo+ICAgfQ0KPiAgIEVYUE9SVF9TWU1CT0woX19jZ3Jv
-dXBfYnBmX3J1bl9maWx0ZXJfc3lzY3RsKTsNCj4gICANCj4gKyNpZmRlZiBDT05GSUdfTkVUDQo+
-ICAgc3RhdGljIGJvb2wgX19jZ3JvdXBfYnBmX3Byb2dfYXJyYXlfaXNfZW1wdHkoc3RydWN0IGNn
-cm91cCAqY2dycCwNCj4gICAJCQkJCSAgICAgZW51bSBicGZfYXR0YWNoX3R5cGUgYXR0YWNoX3R5
-cGUpDQo+ICAgew0KPiBAQCAtMTEyMCw2ICsxMTIzLDcgQEAgaW50IF9fY2dyb3VwX2JwZl9ydW5f
-ZmlsdGVyX2dldHNvY2tvcHQoc3RydWN0IHNvY2sgKnNrLCBpbnQgbGV2ZWwsDQo+ICAgCXJldHVy
-biByZXQ7DQo+ICAgfQ0KPiAgIEVYUE9SVF9TWU1CT0woX19jZ3JvdXBfYnBmX3J1bl9maWx0ZXJf
-Z2V0c29ja29wdCk7DQo+ICsjZW5kaWYNCj4gICANCj4gICBzdGF0aWMgc3NpemVfdCBzeXNjdGxf
-Y3B5X2Rpcihjb25zdCBzdHJ1Y3QgY3RsX2RpciAqZGlyLCBjaGFyICoqYnVmcCwNCj4gICAJCQkg
-ICAgICBzaXplX3QgKmxlbnApDQo+IEBAIC0xMzgyLDYgKzEzODYsNyBAQCBjb25zdCBzdHJ1Y3Qg
-YnBmX3ZlcmlmaWVyX29wcyBjZ19zeXNjdGxfdmVyaWZpZXJfb3BzID0gew0KPiAgIGNvbnN0IHN0
-cnVjdCBicGZfcHJvZ19vcHMgY2dfc3lzY3RsX3Byb2dfb3BzID0gew0KPiAgIH07DQo+ICAgDQo+
-ICsjaWZkZWYgQ09ORklHX05FVA0KPiAgIHN0YXRpYyBjb25zdCBzdHJ1Y3QgYnBmX2Z1bmNfcHJv
-dG8gKg0KPiAgIGNnX3NvY2tvcHRfZnVuY19wcm90byhlbnVtIGJwZl9mdW5jX2lkIGZ1bmNfaWQs
-IGNvbnN0IHN0cnVjdCBicGZfcHJvZyAqcHJvZykNCj4gICB7DQo+IEBAIC0xNTMxLDMgKzE1MzYs
-NCBAQCBjb25zdCBzdHJ1Y3QgYnBmX3ZlcmlmaWVyX29wcyBjZ19zb2Nrb3B0X3ZlcmlmaWVyX29w
-cyA9IHsNCj4gICANCj4gICBjb25zdCBzdHJ1Y3QgYnBmX3Byb2dfb3BzIGNnX3NvY2tvcHRfcHJv
-Z19vcHMgPSB7DQo+ICAgfTsNCj4gKyNlbmRpZg0KPiANCg==
+=D0=BF=D1=82, 5 =D0=B8=D1=8E=D0=BB. 2019 =D0=B3. =D0=B2 17:44, Daniel Borkm=
+ann <daniel@iogearbox.net>:
+>
+> On 07/05/2019 10:44 PM, Anton Protopopov wrote:
+> > Add a new API bpf_object__reuse_maps() which can be used to replace all=
+ maps in
+> > an object by maps pinned to a directory provided in the path argument. =
+ Namely,
+> > each map M in the object will be replaced by a map pinned to path/M.nam=
+e.
+> >
+> > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+> > ---
+> >  tools/lib/bpf/libbpf.c   | 34 ++++++++++++++++++++++++++++++++++
+> >  tools/lib/bpf/libbpf.h   |  2 ++
+> >  tools/lib/bpf/libbpf.map |  1 +
+> >  3 files changed, 37 insertions(+)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 4907997289e9..84c9e8f7bfd3 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -3144,6 +3144,40 @@ int bpf_object__unpin_maps(struct bpf_object *ob=
+j, const char *path)
+> >       return 0;
+> >  }
+> >
+> > +int bpf_object__reuse_maps(struct bpf_object *obj, const char *path)
+> > +{
+> > +     struct bpf_map *map;
+> > +
+> > +     if (!obj)
+> > +             return -ENOENT;
+> > +
+> > +     if (!path)
+> > +             return -EINVAL;
+> > +
+> > +     bpf_object__for_each_map(map, obj) {
+> > +             int len, err;
+> > +             int pinned_map_fd;
+> > +             char buf[PATH_MAX];
+>
+> We'd need to skip the case of bpf_map__is_internal(map) since they are al=
+ways
+> recreated for the given object.
+>
+> > +             len =3D snprintf(buf, PATH_MAX, "%s/%s", path, bpf_map__n=
+ame(map));
+> > +             if (len < 0) {
+> > +                     return -EINVAL;
+> > +             } else if (len >=3D PATH_MAX) {
+> > +                     return -ENAMETOOLONG;
+> > +             }
+> > +
+> > +             pinned_map_fd =3D bpf_obj_get(buf);
+> > +             if (pinned_map_fd < 0)
+> > +                     return pinned_map_fd;
+>
+> Should we rather have a new map definition attribute that tells to reuse
+> the map if it's pinned in bpf fs, and if not, we create it and later on
+> pin it? This is what iproute2 is doing and which we're making use of heav=
+ily.
+
+What do you think about adding a new generic field, say load_flags,
+to the bpf_map_def structure and a particular flag, say LOAD_F_STICKY
+for this purpose? And it will be cleared for internal maps, so we will skip
+them as well.
+
+> In bpf_object__reuse_maps() bailing out if bpf_obj_get() fails is perhaps
+> too limiting for a generic API as new version of an object file may conta=
+in
+> new maps which are not yet present in bpf fs at that point.
+
+How permissive should it be? Is it ok to just print a warning on any
+bpf_obj_get()
+failure? Or does it make sense to skip some specific error (ENOENT) and rej=
+ect
+on other errors?
+
+>
+> > +             err =3D bpf_map__reuse_fd(map, pinned_map_fd);
+> > +             if (err)
+> > +                     return err;
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >  int bpf_object__pin_programs(struct bpf_object *obj, const char *path)
+> >  {
+> >       struct bpf_program *prog;
+> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > index d639f47e3110..7fe465a1be76 100644
+> > --- a/tools/lib/bpf/libbpf.h
+> > +++ b/tools/lib/bpf/libbpf.h
+> > @@ -82,6 +82,8 @@ int bpf_object__variable_offset(const struct bpf_obje=
+ct *obj, const char *name,
+> >  LIBBPF_API int bpf_object__pin_maps(struct bpf_object *obj, const char=
+ *path);
+> >  LIBBPF_API int bpf_object__unpin_maps(struct bpf_object *obj,
+> >                                     const char *path);
+> > +LIBBPF_API int bpf_object__reuse_maps(struct bpf_object *obj,
+> > +                                   const char *path);
+> >  LIBBPF_API int bpf_object__pin_programs(struct bpf_object *obj,
+> >                                       const char *path);
+> >  LIBBPF_API int bpf_object__unpin_programs(struct bpf_object *obj,
+> > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> > index 2c6d835620d2..66a30be6696c 100644
+> > --- a/tools/lib/bpf/libbpf.map
+> > +++ b/tools/lib/bpf/libbpf.map
+> > @@ -172,5 +172,6 @@ LIBBPF_0.0.4 {
+> >               btf_dump__new;
+> >               btf__parse_elf;
+> >               bpf_object__load_xattr;
+> > +             bpf_object__reuse_maps;
+> >               libbpf_num_possible_cpus;
+> >  } LIBBPF_0.0.3;
+> >
+>
