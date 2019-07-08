@@ -2,86 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E52E61EB7
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 14:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F60561F0E
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 14:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729878AbfGHMqZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jul 2019 08:46:25 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:40887 "EHLO
+        id S1730979AbfGHM4Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jul 2019 08:56:24 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:57603 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727052AbfGHMqY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jul 2019 08:46:24 -0400
+        with ESMTP id S1728892AbfGHM4Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jul 2019 08:56:24 -0400
 Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue109 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MMoXC-1i3ErY1LKW-00Ikwr; Mon, 08 Jul 2019 14:45:48 +0200
+ (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MbBQU-1iLzrJ3Egy-00bXQy; Mon, 08 Jul 2019 14:55:57 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <kafai@fb.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] [RFC] Revert "bpf: Fix ORC unwinding in non-JIT BPF code"
-Date:   Mon,  8 Jul 2019 14:45:23 +0200
-Message-Id: <20190708124547.3515538-1-arnd@arndb.de>
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Tariq Toukan <tariqt@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xdp-newbies@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH] [net-next] net/mlx5e: xsk: dynamically allocate mlx5e_channel_param
+Date:   Mon,  8 Jul 2019 14:55:41 +0200
+Message-Id: <20190708125554.3863901-1-arnd@arndb.de>
 X-Mailer: git-send-email 2.20.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:dpxQFSIW823RM1QEm3jyJ5Ha9S1hG/XgAyEwAb3Bq2BvwHXqmM/
- IMvuMeO0a9ZBslErXc907kOvrpZhGClXPWQ0MV/6wEMhDCIPsSZvjkEVXkhWrGM0uB572cV
- I1EsBb6U3wlPhkXTdSAOzNmpNgkNIliOOeruG1o7av3v/bs0YBkmJ4LELIHhHO6CvrN1tNH
- yDwqfhVgZr6YvA0uE5VAw==
+X-Provags-ID: V03:K1:4ftv1gHczqjAf8xH9IXsCPbra/fMKRspDTr8cIcpEuGznocAdGy
+ iZhmNDyoSPnpnBZOyDHtT8Ynn4XQ9kQfpsqHva0dKZA5Ld4hMScUjAMHEbG6PrAbwLC6ASg
+ g539BORMN8W974gKpYHP5K9v2Y2f956yutZO9dA6870giJkCXQ71FrqA8iO4eyLCZFzDhgI
+ VQdm2P+yiXXKN+C7144Mw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:eJXlBJYTykY=:SOrJNMR1+bV+vkq0dCEYi3
- 9wdptLA35N9QnDbxnKJ8XlfW01u3+UZR71IYehoLlQGqlp6yxRvgKjfM0wRAX41aWiTk6vrI7
- jLnS5/Zsk5Omaxtg+ovyWkZadQs0oKJwQmuPzwiIFIAK2K30wQNgEs1Wy9NzXG2rijFKpUC8O
- xgVlz2c2bOcZbZPjrpEgZGgN8avGEen+RI0QoW1gngnkN8SQj6R2WflkAVtFti7tvATzospdj
- 0APFlxxT0HCtClop/Fl2ug7gS0KnDNF5PCJL88+YLQD4NtuX2wTzMugnUbcs3vVHkcyOMUhmP
- SKStL8u5kyRJJelounUII8CjBLEST1q358hMnABRsJHPpzY+pj9on0bKJig+DWGzC7g3OV7wi
- 5XfVnIX5M9V2Fw1UoFjrF2svlUSL/Ss/vYszc7WwLMM6BJMANY61OfRZpktc8Q/9F0QUAau3M
- OBBoRsZDZLkv13OgSyjwzTe0/apm3BT4gTmv79ddRHuRau3GJy6e3DJTc3dWMqXlt9o4cAuuD
- uFwWJBUXNsu5T+y2lNu6BcLRVVZtIvA0YcwvPTwgrE8tDYkgh+WZhJxvtfztzHOg5SThJGP7q
- 4Piu6LAjQ0EQNidgovzkoKEfbpa5koKHhSFs5YSPLrgFnzpStx2AHdMCOfUS6FbWhmL8hUqi3
- 6PKIJMkD4fZVS8lXYbU4wBoty9nYPvp8EhuBYHyT53Ab6LATBIAJnDIc4yGNS8o9bN2eGtOBd
- oZ+b4mrmMoSdLhr/iB2xH7uq8G0+s1WE96epGw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:S7/kq/cX7g0=:jQ0xc1zhHRNbrh7x+xMeHd
+ cA/orRXHrovfvXEwHXZJ26K0GbHxI2WZd/m4ZhxS4FbYUQCEDMUNy2qB1IFuJjaqe4Ok79Rw+
+ xsVajdjRZLKA8iteii1S1tU6D3sQnjcMYzK9cBDLynaRMXbMijhwmTSSWvoElvXCgDhCTHqgW
+ w0ZKb8UsaLYUJXJV+rtGWcvRINaruEIKSrH6zyPkiFs/7W8mhOpuPxnLYfSic/nmn9RqgeY16
+ 9PpuKCJVcOTuXrv7FXqdCpcEkbg09EeepsRjKkKsJ9YvEiTXd49QbJ9EalG6aIK2+5SXA2OCH
+ FfCwVe4ZWBH2Bf3cWn+IvsRaj/wv13R9p3joz6YNOZAPX0H5LLXq2sA6ckW2FC+QvSKaef0FP
+ IGttL7qBy2wgExG+3GFBaWQHx5wWeH3fnAslbBWvM6JvbHjCUMueZa6l/jnSzleM8dgP1n2dF
+ 3Kb7dt3tQKmc2ANAboFjOqOfOZqzpiye/4XZ1aBxc0wFo6nao0p9Xw+RjcYWxsEBKIY+2US1E
+ Q7A0Ivd4/DgYN0zZDRXUko+thJnndO3/iuaeeJi9C0fcbmplbWvxWHZqPB94wdycirbrWGTbF
+ 4BEHT3RgOKgOABrcp2tsqgnipoNcJTPr1Bq+Up14Mf3MERyrLi7AS4bXJNtz9L2BBMWBbtb/D
+ pVfYxu7EZc+0WEYxD2gQWQwH4ouF7OYRnkAuotdjafrWCeio59oFCnNdU4D/4x9PfSKA6DpwF
+ 7+b1dGFK0pTWht8vSCelCEwDbGj1EbJRNNE0DA==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Apparently this was a bit premature, at least I still get this
-warning with gcc-8.1:
+The structure is too large to put on the stack, resulting in a
+warning on 32-bit ARM:
 
-kernel/bpf/core.o: warning: objtool: ___bpf_prog_run()+0x44d2: sibling call from callable instruction with modified stack frame
+drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c:59:5: error: stack frame size of 1344 bytes in function
+      'mlx5e_open_xsk' [-Werror,-Wframe-larger-than=]
 
-This reverts commit b22cf36c189f31883ad0238a69ccf82aa1f3b16b.
+Use kzalloc() instead.
 
+Fixes: a038e9794541 ("net/mlx5e: Add XSK zero-copy support")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- kernel/bpf/core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ .../mellanox/mlx5/core/en/xsk/setup.c         | 25 ++++++++++++-------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 7e98f36a14e2..16079550db6d 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1299,7 +1299,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
+index aaffa6f68dc0..db9bbec68dbf 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
+@@ -60,24 +60,28 @@ int mlx5e_open_xsk(struct mlx5e_priv *priv, struct mlx5e_params *params,
+ 		   struct mlx5e_xsk_param *xsk, struct xdp_umem *umem,
+ 		   struct mlx5e_channel *c)
  {
- #define BPF_INSN_2_LBL(x, y)    [BPF_##x | BPF_##y] = &&x##_##y
- #define BPF_INSN_3_LBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] = &&x##_##y##_##z
--	static const void * const jumptable[256] __annotate_jump_table = {
-+	static const void *jumptable[256] = {
- 		[0 ... 255] = &&default_label,
- 		/* Now overwrite non-defaults ... */
- 		BPF_INSN_MAP(BPF_INSN_2_LBL, BPF_INSN_3_LBL),
-@@ -1558,6 +1558,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
- 		BUG_ON(1);
- 		return 0;
- }
-+STACK_FRAME_NON_STANDARD(___bpf_prog_run); /* jump table */
+-	struct mlx5e_channel_param cparam = {};
++	struct mlx5e_channel_param *cparam;
+ 	struct dim_cq_moder icocq_moder = {};
+ 	int err;
  
- #define PROG_NAME(stack_size) __bpf_prog_run##stack_size
- #define DEFINE_BPF_PROG_RUN(stack_size) \
+ 	if (!mlx5e_validate_xsk_param(params, xsk, priv->mdev))
+ 		return -EINVAL;
+ 
+-	mlx5e_build_xsk_cparam(priv, params, xsk, &cparam);
++	cparam = kzalloc(sizeof(*cparam), GFP_KERNEL);
++	if (!cparam)
++		return -ENOMEM;
+ 
+-	err = mlx5e_open_cq(c, params->rx_cq_moderation, &cparam.rx_cq, &c->xskrq.cq);
++	mlx5e_build_xsk_cparam(priv, params, xsk, cparam);
++
++	err = mlx5e_open_cq(c, params->rx_cq_moderation, &cparam->rx_cq, &c->xskrq.cq);
+ 	if (unlikely(err))
+-		return err;
++		goto err_kfree_cparam;
+ 
+-	err = mlx5e_open_rq(c, params, &cparam.rq, xsk, umem, &c->xskrq);
++	err = mlx5e_open_rq(c, params, &cparam->rq, xsk, umem, &c->xskrq);
+ 	if (unlikely(err))
+ 		goto err_close_rx_cq;
+ 
+-	err = mlx5e_open_cq(c, params->tx_cq_moderation, &cparam.tx_cq, &c->xsksq.cq);
++	err = mlx5e_open_cq(c, params->tx_cq_moderation, &cparam->tx_cq, &c->xsksq.cq);
+ 	if (unlikely(err))
+ 		goto err_close_rq;
+ 
+@@ -87,18 +91,18 @@ int mlx5e_open_xsk(struct mlx5e_priv *priv, struct mlx5e_params *params,
+ 	 * is disabled and then reenabled, but the SQ continues receiving CQEs
+ 	 * from the old UMEM.
+ 	 */
+-	err = mlx5e_open_xdpsq(c, params, &cparam.xdp_sq, umem, &c->xsksq, true);
++	err = mlx5e_open_xdpsq(c, params, &cparam->xdp_sq, umem, &c->xsksq, true);
+ 	if (unlikely(err))
+ 		goto err_close_tx_cq;
+ 
+-	err = mlx5e_open_cq(c, icocq_moder, &cparam.icosq_cq, &c->xskicosq.cq);
++	err = mlx5e_open_cq(c, icocq_moder, &cparam->icosq_cq, &c->xskicosq.cq);
+ 	if (unlikely(err))
+ 		goto err_close_sq;
+ 
+ 	/* Create a dedicated SQ for posting NOPs whenever we need an IRQ to be
+ 	 * triggered and NAPI to be called on the correct CPU.
+ 	 */
+-	err = mlx5e_open_icosq(c, params, &cparam.icosq, &c->xskicosq);
++	err = mlx5e_open_icosq(c, params, &cparam->icosq, &c->xskicosq);
+ 	if (unlikely(err))
+ 		goto err_close_icocq;
+ 
+@@ -123,6 +127,9 @@ int mlx5e_open_xsk(struct mlx5e_priv *priv, struct mlx5e_params *params,
+ err_close_rx_cq:
+ 	mlx5e_close_cq(&c->xskrq.cq);
+ 
++err_kfree_cparam:
++	kfree(cparam);
++
+ 	return err;
+ }
+ 
 -- 
 2.20.0
 
