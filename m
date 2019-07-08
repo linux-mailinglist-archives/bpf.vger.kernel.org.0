@@ -2,337 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F9A62747
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 19:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4815627BA
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 19:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388695AbfGHReM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jul 2019 13:34:12 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:43984 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388182AbfGHReL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jul 2019 13:34:11 -0400
-Received: by mail-io1-f67.google.com with SMTP id k20so37062047ios.10
-        for <bpf@vger.kernel.org>; Mon, 08 Jul 2019 10:34:11 -0700 (PDT)
+        id S1727601AbfGHRy0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jul 2019 13:54:26 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:41846 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727576AbfGHRy0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jul 2019 13:54:26 -0400
+Received: by mail-qk1-f193.google.com with SMTP id v22so13986429qkj.8;
+        Mon, 08 Jul 2019 10:54:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=E09i/YUwdjXE+zo+DlBVwd0NYopalsR3eUNo0Jmptng=;
-        b=VgimgcdvvuaagysekxqyiAFNn6FzQEgkoEVZR6OnGOhGuHCDV3YPYViEL8XFMnFO30
-         34dU9OQXaAiYdl0GJZGXDj7KCI/cC16xjW6duojoMXWMPxbb3OLrgmDyHg8OM4GO8fyo
-         cHZpir4Q4OMZMfqKSIaIWtXU0TCeLIZnCII8JOO4yiQ4/yG/7p+N0kVjxjeTB6eayIDq
-         mq5vmZaivs4zREBp4jV3fDnvgiXgD5Ug75N8g5dbWmUTp4c96uqeEZhwHWfH9Sg1/H7D
-         Jc1KkAckFKRk6amhbaqu1uz/Xji3ykKJ2frePRYLM0V6/GJL2X02zbh8lzpG5kFA/IX5
-         329w==
+         :cc;
+        bh=u4F7C/sV/odeCH+W9PMSNpHsM7J09hRexHDNA3lJNWc=;
+        b=XgYD1/u95qUNmWA4XvhmxxBgEdAaBIVnMwRm4+DSEOBZbmdJamzoE+0YkZ4RW20plL
+         l7mPfcanv4k/hXnC06/cfo8GKSsDhVNjdD9fljXFsYvHpI/HHRQVbs6PkHdsF7K4j/x0
+         eVn/7mH0T012NU+0Cb0MBG93yGNWGgZ9kQ18nfmqPjn5krdmEDRaS527yF/TldrWN698
+         FdXOuMY7H32piU8YTMitD+LnlA1CGSvKguzFkJu4Hs3ATX4Oa3IrYOpWe+i1xQz3KWa4
+         CU13m0knRWeDbwy6I1fqYTZh22Lk1K+HoicaItk97fcf3LeERFT/j/W7gHiov2P8zgNt
+         QSmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=E09i/YUwdjXE+zo+DlBVwd0NYopalsR3eUNo0Jmptng=;
-        b=stvU+FUniLhXP6F9Ezp44iNt3tyqFtcFN6XAYZ7apHlC7yPHFWA7icVGNiSiAuG/uE
-         byE1Aq3w1CtvI2Y61JwYjnO0v4FZlXP9k9a9eSakM6WCT3c4ETZWQNhv/Obncrg/l/21
-         zwkl5CEToX5VZ02zDPSYFW/JwbhR8/hCRxNe0c7agpeAq7PCnnylituMeaprJRkVp1IJ
-         axk4n8lSDo/RwIcX6HIyNjxV0kAJArTtoo6xv5+v0PCbfCdpaP8MJji8r7jJKzTDjqgI
-         jJca/e4V2V/G47+AM8UcbyCCxxa/JnJ37mGGAbiORRU9ZW6+v5TKpFRIeHZs9yilcW4c
-         odMA==
-X-Gm-Message-State: APjAAAUMa93pGTCnRkC1KdcLzVDfU7VtqVwuMWb7mPPUU+kt15SEsdHS
-        ji+XBO1Gzz2dOVil/xmuCJtPS4Csi7o8FFTDALB1qQ==
-X-Google-Smtp-Source: APXvYqwrTeFpeJfKhWrPqeVS2WnW9G1OY3V4ftQkqRCW+JMD3tb0Mg4O0PEkcMIIu8DZXDEe45lalIuI+L2dK3e1gQg=
-X-Received: by 2002:a5d:8e08:: with SMTP id e8mr2766517iod.139.1562607250441;
- Mon, 08 Jul 2019 10:34:10 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=u4F7C/sV/odeCH+W9PMSNpHsM7J09hRexHDNA3lJNWc=;
+        b=tnUih2wTsCXloQosXGNvLpWNqPtAtItRgiSfuaPJErfzJt0nw5dB3pP35noXxT6NC5
+         tF4qn38LI4dEsbsJnV1g2whES4TTDasGGdPdDpToTQZ1WDDvSk1yjLZ2NaT6gS20iWBC
+         s90fF98MPP3+whlolysTeuN/ehLRCzyxTDcao8ARGgetruXglBKnfq8Zd3TjkVbgBL7r
+         lV90KFH8UEX8XDrYdal2L6XqCqrsHPn91oWlPSON6OSvQc579DS5wjtQrV7S0y7uxMoH
+         9hqlUjkB0XbjFVrZOYKQi+HX/Z0ZlTLKqtUFsSyOWtOKBJ2AanfwPJ/2YDXUFwuoxpma
+         R9eQ==
+X-Gm-Message-State: APjAAAXr4OPT2X3YKjTssMidsyeLhZanWhPc4A9+8qmA70nUGNc9TPbG
+        ++0SyELZ3crioiyvT1u6x09ZYQJfwj5unGWxV6M=
+X-Google-Smtp-Source: APXvYqyQ45p40cTwBps+eik6OzNyUlDBNZXh1tfc4f5IiVk6V7Vmbj9v0jH5hkQF+F9w/LQgGBst9wOgU7+dlp1u0vA=
+X-Received: by 2002:a37:9b48:: with SMTP id d69mr13551030qke.449.1562608464860;
+ Mon, 08 Jul 2019 10:54:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190620034446.25561-1-leo.yan@linaro.org>
-In-Reply-To: <20190620034446.25561-1-leo.yan@linaro.org>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Mon, 8 Jul 2019 11:33:59 -0600
-Message-ID: <CANLsYkwjJ57RWEqS9suLm1+JKicG1LzcHtP8k5qTK1d7bw=1MA@mail.gmail.com>
-Subject: Re: [PATCH v3] perf cs-etm: Improve completeness for kernel address space
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
+References: <cover.1562359091.git.a.s.protopopov@gmail.com>
+ <e183c0af99056f8ea4de06acb358ace7f3a3d6ae.1562359091.git.a.s.protopopov@gmail.com>
+ <734dd45a-95b0-a7fd-9e1d-0535ef4d3e12@iogearbox.net>
+In-Reply-To: <734dd45a-95b0-a7fd-9e1d-0535ef4d3e12@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 8 Jul 2019 10:54:13 -0700
+Message-ID: <CAEf4BzaGGVv2z8jB8MnT7=gnn4nG0cp7DGYxfnnnpohOT=ujCA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf, libbpf: add a new API bpf_object__reuse_maps()
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Anton Protopopov <a.s.protopopov@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Coresight ML <coresight@lists.linaro.org>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 19 Jun 2019 at 21:45, Leo Yan <leo.yan@linaro.org> wrote:
+On Fri, Jul 5, 2019 at 2:53 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> Arm and arm64 architecture reserve some memory regions prior to the
-> symbol '_stext' and these memory regions later will be used by device
-> module and BPF jit.  The current code misses to consider these memory
-> regions thus any address in the regions will be taken as user space
-> mode, but perf cannot find the corresponding dso with the wrong CPU
-> mode so we misses to generate samples for device module and BPF
-> related trace data.
->
-> This patch parse the link scripts to get the memory size prior to start
-> address and reduce this size from 'etmq->etm->kernel_start', then can
-> get a fixed up kernel start address which contain memory regions for
-> device module and BPF.  Finally, cs_etm__cpu_mode() can return right
-> mode for these memory regions and perf can successfully generate
-> samples.
->
-> The reason for parsing the link scripts is Arm architecture changes text
-> offset dependent on different platforms, which define multiple text
-> offsets in $kernel/arch/arm/Makefile.  This offset is decided when build
-> kernel and the final value is extended in the link script, so we can
-> extract the used value from the link script.  We use the same way to
-> parse arm64 link script as well.  If fail to find the link script, the
-> pre start memory size is assumed as zero, in this case it has no any
-> change caused with this patch.
->
-> Below is detailed info for testing this patch:
->
-> - Build LLVM/Clang 8.0 or later version;
->
-> - Configure perf with ~/.perfconfig:
->
->   root@debian:~# cat ~/.perfconfig
->   # this file is auto-generated.
->   [llvm]
->           clang-path =3D /mnt/build/llvm-build/build/install/bin/clang
->           kbuild-dir =3D /mnt/linux-kernel/linux-cs-dev/
->           clang-opt =3D "-g"
->           dump-obj =3D true
->
->   [trace]
->           show_zeros =3D yes
->           show_duration =3D no
->           no_inherit =3D yes
->           show_timestamp =3D no
->           show_arg_names =3D no
->           args_alignment =3D 40
->           show_prefix =3D yes
->
-> - Run 'perf trace' command with eBPF event:
->
->   root@debian:~# perf trace -e string \
->       -e $kernel/tools/perf/examples/bpf/augmented_raw_syscalls.c
->
-> - Read eBPF program memory mapping in kernel:
->
->   root@debian:~# echo 1 > /proc/sys/net/core/bpf_jit_kallsyms
->   root@debian:~# cat /proc/kallsyms | grep -E "bpf_prog_.+_sys_[enter|exi=
-t]"
->   ffff000000086a84 t bpf_prog_f173133dc38ccf87_sys_enter  [bpf]
->   ffff000000088618 t bpf_prog_c1bd85c092d6e4aa_sys_exit   [bpf]
->
-> - Launch any program which accesses file system frequently so can hit
->   the system calls trace flow with eBPF event;
->
-> - Capture CoreSight trace data with filtering eBPF program:
->
->   root@debian:~# perf record -e cs_etm/@20070000.etr/ \
->           --filter 'filter 0xffff000000086a84/0x800' -a sleep 5s
->
-> - Annotate for symbol 'bpf_prog_f173133dc38ccf87_sys_enter':
->
->   root@debian:~# perf report
->   Then select 'branches' samples and press 'a' to annotate symbol
->   'bpf_prog_f173133dc38ccf87_sys_enter', press 'P' to print to the
->   bpf_prog_f173133dc38ccf87_sys_enter.annotation file:
->
->   root@debian:~# cat bpf_prog_f173133dc38ccf87_sys_enter.annotation
->
->   bpf_prog_f173133dc38ccf87_sys_enter() bpf_prog_f173133dc38ccf87_sys_ent=
-er
->   Event: branches
->
->   Percent      int sys_enter(struct syscall_enter_args *args)
->                  stp  x29, x30, [sp, #-16]!
->
->                 int key =3D 0;
->                  mov  x29, sp
->
->                        augmented_args =3D bpf_map_lookup_elem(&augmented_=
-filename_map, &key);
->                  stp  x19, x20, [sp, #-16]!
->
->                        augmented_args =3D bpf_map_lookup_elem(&augmented_=
-filename_map, &key);
->                  stp  x21, x22, [sp, #-16]!
->
->                  stp  x25, x26, [sp, #-16]!
->
->                 return bpf_get_current_pid_tgid();
->                  mov  x25, sp
->
->                 return bpf_get_current_pid_tgid();
->                  mov  x26, #0x0                         // #0
->
->                  sub  sp, sp, #0x10
->
->                 return bpf_map_lookup_elem(pids, &pid) !=3D NULL;
->                  add  x19, x0, #0x0
->
->                  mov  x0, #0x0                          // #0
->
->                  mov  x10, #0xfffffffffffffff8          // #-8
->
->                 if (pid_filter__has(&pids_filtered, getpid()))
->                  str  w0, [x25, x10]
->
->                 probe_read(&augmented_args->args, sizeof(augmented_args->=
-args), args);
->                  add  x1, x25, #0x0
->
->                 probe_read(&augmented_args->args, sizeof(augmented_args->=
-args), args);
->                  mov  x10, #0xfffffffffffffff8          // #-8
->
->                 syscall =3D bpf_map_lookup_elem(&syscalls, &augmented_arg=
-s->args.syscall_nr);
->                  add  x1, x1, x10
->
->                 syscall =3D bpf_map_lookup_elem(&syscalls, &augmented_arg=
-s->args.syscall_nr);
->                  mov  x0, #0xffff8009ffffffff           // #-140694538682=
-369
->
->                  movk x0, #0x6698, lsl #16
->
->                  movk x0, #0x3e00
->
->                  mov  x10, #0xffffffffffff1040          // #-61376
->
->                 if (syscall =3D=3D NULL || !syscall->enabled)
->                  movk x10, #0x1023, lsl #16
->
->                 if (syscall =3D=3D NULL || !syscall->enabled)
->                  movk x10, #0x0, lsl #32
->
->                 loop_iter_first()
->     3.69       =E2=86=92 blr  bpf_prog_f173133dc38ccf87_sys_enter
->                 loop_iter_first()
->                  add  x7, x0, #0x0
->
->                 loop_iter_first()
->                  add  x20, x7, #0x0
->
->                 int size =3D probe_read_str(&augmented_filename->value, f=
-ilename_len, filename_arg);
->                  mov  x0, #0x1                          // #1
+> On 07/05/2019 10:44 PM, Anton Protopopov wrote:
+> > Add a new API bpf_object__reuse_maps() which can be used to replace all maps in
+> > an object by maps pinned to a directory provided in the path argument.  Namely,
+> > each map M in the object will be replaced by a map pinned to path/M.name.
+> >
+> > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+> > ---
+> >  tools/lib/bpf/libbpf.c   | 34 ++++++++++++++++++++++++++++++++++
+> >  tools/lib/bpf/libbpf.h   |  2 ++
+> >  tools/lib/bpf/libbpf.map |  1 +
+> >  3 files changed, 37 insertions(+)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 4907997289e9..84c9e8f7bfd3 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -3144,6 +3144,40 @@ int bpf_object__unpin_maps(struct bpf_object *obj, const char *path)
+> >       return 0;
+> >  }
+> >
+> > +int bpf_object__reuse_maps(struct bpf_object *obj, const char *path)
 
-I'm not sure all this information about annotation should be in the
-changelog.  This patch is about being able to decode traces that
-executed outside the current kernel addresse range and as such simply
-using "perf report" or "perf script" successfully is enough to test
-this set.  Any information that goes beyond that muddies the water.
+As is, bpf_object__reuse_maps() can be easily implemented by user
+applications, as it's only using public libbpf APIs, so I'm not 100%
+sure we need to add method like that to libbpf.
 
+> > +{
+> > +     struct bpf_map *map;
+> > +
+> > +     if (!obj)
+> > +             return -ENOENT;
+> > +
+> > +     if (!path)
+> > +             return -EINVAL;
+> > +
+> > +     bpf_object__for_each_map(map, obj) {
+> > +             int len, err;
+> > +             int pinned_map_fd;
+> > +             char buf[PATH_MAX];
 >
->   [...]
+> We'd need to skip the case of bpf_map__is_internal(map) since they are always
+> recreated for the given object.
 >
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Suzuki Poulouse <suzuki.poulose@arm.com>
-> Cc: coresight@lists.linaro.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/Makefile.config | 22 ++++++++++++++++++++++
->  tools/perf/util/cs-etm.c   | 19 ++++++++++++++++++-
->  2 files changed, 40 insertions(+), 1 deletion(-)
+> > +             len = snprintf(buf, PATH_MAX, "%s/%s", path, bpf_map__name(map));
+> > +             if (len < 0) {
+> > +                     return -EINVAL;
+> > +             } else if (len >= PATH_MAX) {
+> > +                     return -ENAMETOOLONG;
+> > +             }
+> > +
+> > +             pinned_map_fd = bpf_obj_get(buf);
+> > +             if (pinned_map_fd < 0)
+> > +                     return pinned_map_fd;
 >
-> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> index 51dd00f65709..a58cd5a43a98 100644
-> --- a/tools/perf/Makefile.config
-> +++ b/tools/perf/Makefile.config
-> @@ -418,6 +418,28 @@ ifdef CORESIGHT
->      endif
->      LDFLAGS +=3D $(LIBOPENCSD_LDFLAGS)
->      EXTLIBS +=3D $(OPENCSDLIBS)
-> +    PRE_START_SIZE :=3D 0
-> +    ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/kernel/vmlinux.lds),)
-> +      ifeq ($(SRCARCH),arm64)
-> +        # Extract info from lds:
-> +        #  . =3D ((((((((0xffffffffffffffff)) - (((1)) << (48)) + 1) + (=
-0)) + (0x08000000))) + (0x08000000))) + 0x00080000;
-> +        # PRE_START_SIZE :=3D (0x08000000 + 0x08000000 + 0x00080000) =3D=
- 0x10080000
-> +        PRE_START_SIZE :=3D $(shell egrep ' \. \=3D \({8}0x[0-9a-fA-F]+\=
-){2}' \
-> +          $(srctree)/arch/$(SRCARCH)/kernel/vmlinux.lds | \
-> +          sed -e 's/[(|)|.|=3D|+|<|;|-]//g' -e 's/ \+/ /g' -e 's/^[ \t]*=
-//' | \
-> +          awk -F' ' '{printf "0x%x", $$6+$$7+$$8}' 2>/dev/null)
-> +      endif
-> +      ifeq ($(SRCARCH),arm)
-> +        # Extract info from lds:
-> +        #   . =3D ((0xC0000000)) + 0x00208000;
-> +        # PRE_START_SIZE :=3D 0x00208000
-> +        PRE_START_SIZE :=3D $(shell egrep ' \. \=3D \({2}0x[0-9a-fA-F]+\=
-){2}' \
-> +          $(srctree)/arch/$(SRCARCH)/kernel/vmlinux.lds | \
-> +          sed -e 's/[(|)|.|=3D|+|<|;|-]//g' -e 's/ \+/ /g' -e 's/^[ \t]*=
-//' | \
-> +          awk -F' ' '{printf "0x%x", $$2}' 2>/dev/null)
-> +      endif
-> +    endif
-> +    CFLAGS +=3D -DARM_PRE_START_SIZE=3D$(PRE_START_SIZE)
+> Should we rather have a new map definition attribute that tells to reuse
+> the map if it's pinned in bpf fs, and if not, we create it and later on
+> pin it? This is what iproute2 is doing and which we're making use of heavily.
 
-It might be useful to do this for arm and arm64 regardless of
-CoreSight but I'll let Arnaldo decide on this.
+I'd like something like that as well. This would play nicely with
+recently added BTF-defined maps as well.
 
->      $(call detected,CONFIG_LIBOPENCSD)
->      ifdef CSTRACE_RAW
->        CFLAGS +=3D -DCS_DEBUG_RAW
-> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> index 0c7776b51045..5fa0be3a3904 100644
-> --- a/tools/perf/util/cs-etm.c
-> +++ b/tools/perf/util/cs-etm.c
-> @@ -613,10 +613,27 @@ static void cs_etm__free(struct perf_session *sessi=
-on)
->  static u8 cs_etm__cpu_mode(struct cs_etm_queue *etmq, u64 address)
->  {
->         struct machine *machine;
-> +       u64 fixup_kernel_start =3D 0;
+I think it should be not just pin/don't pin flag, but rather pinning
+strategy, to accommodate various typical strategies of handling maps
+that are already pinned. So something like this:
+
+1. BPF_PIN_NOTHING - default, don't pin;
+2. BPF_PIN_EXCLUSIVE - pin, but if map is already pinned - fail;
+3. BPF_PIN_SET - pin; if existing map exists, reset its state to be
+exact state of object's map;
+4. BPF_PIN_MERGE - pin, if map exists, fill in NULL entries only (this
+is how Cilium is pinning PROG_ARRAY maps, if I understand correctly);
+5. BPF_PIN_MERGE_OVERWRITE - pin, if map exists, overwrite non-NULL values.
+
+This list is only for illustrative purposes, ideally people that have
+a lot of experience using pinning for real-world use cases would chime
+in on what strategies are useful and make sense.
+
+> In bpf_object__reuse_maps() bailing out if bpf_obj_get() fails is perhaps
+> too limiting for a generic API as new version of an object file may contain
+> new maps which are not yet present in bpf fs at that point.
 >
->         machine =3D etmq->etm->machine;
->
-> -       if (address >=3D etmq->etm->kernel_start) {
-> +       /*
-> +        * Since arm and arm64 specify some memory regions prior to
-> +        * 'kernel_start', kernel addresses can be less than 'kernel_star=
-t'.
-> +        *
-> +        * For arm architecture, the 16MB virtual memory space prior to
-> +        * 'kernel_start' is allocated to device modules, a PMD table if
-> +        * CONFIG_HIGHMEM is enabled and a PGD table.
-> +        *
-> +        * For arm64 architecture, the root PGD table, device module memo=
-ry
-> +        * region and BPF jit region are prior to 'kernel_start'.
-> +        *
-> +        * To reflect the complete kernel address space, compensate these
-> +        * pre-defined regions for kernel start address.
-> +        */
-> +       fixup_kernel_start =3D etmq->etm->kernel_start - ARM_PRE_START_SI=
-ZE;
-> +
-> +       if (address >=3D fixup_kernel_start) {
->                 if (machine__is_host(machine))
->                         return PERF_RECORD_MISC_KERNEL;
->                 else
-
-Tested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-
-> --
-> 2.17.1
+> > +             err = bpf_map__reuse_fd(map, pinned_map_fd);
+> > +             if (err)
+> > +                     return err;
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >  int bpf_object__pin_programs(struct bpf_object *obj, const char *path)
+> >  {
+> >       struct bpf_program *prog;
+> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > index d639f47e3110..7fe465a1be76 100644
+> > --- a/tools/lib/bpf/libbpf.h
+> > +++ b/tools/lib/bpf/libbpf.h
+> > @@ -82,6 +82,8 @@ int bpf_object__variable_offset(const struct bpf_object *obj, const char *name,
+> >  LIBBPF_API int bpf_object__pin_maps(struct bpf_object *obj, const char *path);
+> >  LIBBPF_API int bpf_object__unpin_maps(struct bpf_object *obj,
+> >                                     const char *path);
+> > +LIBBPF_API int bpf_object__reuse_maps(struct bpf_object *obj,
+> > +                                   const char *path);
+> >  LIBBPF_API int bpf_object__pin_programs(struct bpf_object *obj,
+> >                                       const char *path);
+> >  LIBBPF_API int bpf_object__unpin_programs(struct bpf_object *obj,
+> > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> > index 2c6d835620d2..66a30be6696c 100644
+> > --- a/tools/lib/bpf/libbpf.map
+> > +++ b/tools/lib/bpf/libbpf.map
+> > @@ -172,5 +172,6 @@ LIBBPF_0.0.4 {
+> >               btf_dump__new;
+> >               btf__parse_elf;
+> >               bpf_object__load_xattr;
+> > +             bpf_object__reuse_maps;
+> >               libbpf_num_possible_cpus;
+> >  } LIBBPF_0.0.3;
+> >
 >
