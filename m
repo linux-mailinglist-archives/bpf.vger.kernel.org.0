@@ -2,97 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E2861F25
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 14:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C41361F42
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 15:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731144AbfGHM6U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jul 2019 08:58:20 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:40755 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731040AbfGHM6U (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jul 2019 08:58:20 -0400
-Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MOz8O-1i9o621wUu-00PODH; Mon, 08 Jul 2019 14:57:46 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1729076AbfGHNF5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jul 2019 09:05:57 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:55831 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731234AbfGHNF5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jul 2019 09:05:57 -0400
+Received: by mail-wm1-f68.google.com with SMTP id a15so15723120wmj.5
+        for <bpf@vger.kernel.org>; Mon, 08 Jul 2019 06:05:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=kBezTPnTqCdw/0P9uielP/zWUgvOGL03R8LDl/7B9T8=;
+        b=NSP2kfayAA1WDdyujC07ifgcQM5x8ZXh/o54O8PTO9r5iuP7Ho/45raHRYY2iWccaa
+         3R82z13r+qtV1wSU6hzPhaHO2EgiB51XB6rLIZ3g2GfLu5f/dOEeC/lLTUerFzFSuzvw
+         q0PHmefmB2A7FwLqDHUg6x8TwWUHkNfNRQGYL6RtktvoKYE58iuj/cF6LhjFe4MgQDI5
+         MFDCmCy+QbBUpvL1ywd5bIutSMcm57oid1Uw9M1shjnHy/+nt3ln54rfVtxcJrvWtnm9
+         LOfCrYkWbsbX8mXp2ZC6uy6Au17R52zHE/Gx1etJGoUPRhJu1jv1RrG5tW8M4MqtbgPl
+         J4Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=kBezTPnTqCdw/0P9uielP/zWUgvOGL03R8LDl/7B9T8=;
+        b=p77u0gXyAHZ6zJ1ZRIUexrFOsvqB0tH2YyLcvEtClu71wngZmfLmAteLXETEbrh44v
+         4J7lEdnxGZ6xOIV3tyF1WgLL82ccq3nucrDUAPGdwy+SpUqwlXkcwSBuLQl1vhCwyMvD
+         KxEY5PAsxRUaUKwPe5zKbP6sNBvylwP22DfFbYuHGWfySdXaTmqkoJwRhPKmsMKuUpo+
+         vsq2mqm4uk4P9G4Gk7bkJnh60P4z65c93vmJNfRjaKo4TljZWZ6otYtOGoCzm9XG3i7b
+         5PgnPxQ2VkEfESe/aIJqTnvMObyl59qEVymPtcAEAZm3XyK3u3YJjqY++q8OxUWVLGUx
+         RqYw==
+X-Gm-Message-State: APjAAAV5OlMdrN9TWRvDEOgB56C6g88UdhcSTz8peE5cSdN7YpkpRKZ3
+        tpi6udr4G5kJiEDpwJgrmYs1MQ==
+X-Google-Smtp-Source: APXvYqxhyXd5o6GGE395XRWyVBg429XqKT+TCdbjcC21qLXaWyUeiWfiFWIA0RhNJlXSJXlFWHGWpQ==
+X-Received: by 2002:a1c:1a4c:: with SMTP id a73mr12568041wma.109.1562591155504;
+        Mon, 08 Jul 2019 06:05:55 -0700 (PDT)
+Received: from cbtest32.netronome.com ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id e7sm16059575wmd.0.2019.07.08.06.05.54
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 08 Jul 2019 06:05:54 -0700 (PDT)
+From:   Quentin Monnet <quentin.monnet@netronome.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Priyaranjan Jha <priyarjha@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH net-next 2/2] bpf: avoid unused variable warning in tcp_bpf_rtt()
-Date:   Mon,  8 Jul 2019 14:57:21 +0200
-Message-Id: <20190708125733.3944836-2-arnd@arndb.de>
-X-Mailer: git-send-email 2.20.0
-In-Reply-To: <20190708125733.3944836-1-arnd@arndb.de>
-References: <20190708125733.3944836-1-arnd@arndb.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:dI4LQODlR+/sYKWbgedywQqye07I8NlA3mUgYMxxT+wgW+CUrcV
- 0zvx/lBQ45HY1KIOI8Cfub13DGqUILRkHK98BazQS981rGHESAasKmwd9poT76wcJmC/cee
- x2onzLs9P8O/aWPlvOYPjABJWDmrOa3nIUAPIz8jTtS2kOIp87/rJSIUE36gkyVfKecvWUx
- DRAuyQEuOSJhN4mWH+xtA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vDZFZPrEgQw=:pflKz3N+bgPLHDuz8gxf0r
- bbY+3ymbKnAvcg/qM0YYxPHS5Ki7NzKpqgf34Jv2vskCkP/jNMrSMc0vIRIzqJEO6UQLqhNXJ
- dAvdugMBkVnywngGmJYnXMvvnzQ1QplYZZSvqIjF4QKj8ntUWj6V58RMin68zetN2d9XjymyS
- v/VYKbXk2+LKCEarSrV3dxGNkfcstPC4D0lCPQenxYfEUVhbV1x86GZi+9GU7hefFd7WGa8+0
- BJTSAk1C7PqbcoceGNPPD/gKPUbDeT1XTr2hOVrvIuOTQQCwaey2Qy+TP9PM5y6OHbYiQfve8
- ebYktbo3wlqHw5X9RR1o5gsrmeAY0WFC5ZFMa/wj3pS4f84ZEEApz1KZzwsl241YQnxGquJ0F
- UP8Lf8qly2y+m4XR2r1lfv02kM7exUiKo9AyWDO/JrBo8i/qGa4Z6F+nyrncq31FJhr9vw3DI
- rsPxDNNVJbKZlghb7QwF2hdWM9hQAtsWcC/V2TGi6PDypV/bHWy/FeF7xaIpe+VZvU/KZOueB
- CtBR8756GXUtkIyz+c0h3sCZvg5XNV5ZfI2LZhdz4lOBjvl/XP4l2B6jfWQ9nYBXW4+RfQ5AW
- OQxizhG8bEhRms2mnK3j7E9Tec0uS+AW1j5pTro2wVeRqBQDFjghfhJfpiaW9W/AtGt5wdP91
- Xew3WCbEGcT/18gKxcd+VVX2ZeEbC36VXkl0qNJcreqiX5UWpmYequ+TBkbEEhEb/+niSfyJH
- Z/xQaOpchVbcHcHLhPSWmEhA7BPg3ipud9PqtA==
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        oss-drivers@netronome.com,
+        Quentin Monnet <quentin.monnet@netronome.com>
+Subject: [PATCH bpf-next] tools: bpftool: add completion for bpftool prog "loadall"
+Date:   Mon,  8 Jul 2019 14:05:46 +0100
+Message-Id: <20190708130546.7518-1-quentin.monnet@netronome.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When CONFIG_BPF is disabled, we get a warning for an unused
-variable:
+Bash completion for proposing the "loadall" subcommand is missing. Let's
+add it to the completion script.
 
-In file included from drivers/target/target_core_device.c:26:
-include/net/tcp.h:2226:19: error: unused variable 'tp' [-Werror,-Wunused-variable]
-        struct tcp_sock *tp = tcp_sk(sk);
+Add a specific case to propose "load" and "loadall" for completing:
 
-The variable is only used in one place, so it can be
-replaced with its value there to avoid the warning.
+    $ bpftool prog load
+                       ^ cursor is here
 
-Fixes: 23729ff23186 ("bpf: add BPF_CGROUP_SOCK_OPS callback that is executed on every RTT")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Otherwise, completion considers that $command is in load|loadall and
+starts making related completions (file or directory names, as the
+number of words on the command line is below 6), when the only suggested
+keywords should be "load" and "loadall" until one has been picked and a
+space entered after that to move to the next word.
+
+Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
+Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
 ---
- include/net/tcp.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ tools/bpf/bpftool/bash-completion/bpftool | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index e16d8a3fd3b4..cca3c59b98bf 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -2223,9 +2223,7 @@ static inline bool tcp_bpf_ca_needs_ecn(struct sock *sk)
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index 965a8658cca3..c8f42e1fcbc9 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -342,6 +342,13 @@ _bpftool()
+                 load|loadall)
+                     local obj
  
- static inline void tcp_bpf_rtt(struct sock *sk)
- {
--	struct tcp_sock *tp = tcp_sk(sk);
--
--	if (BPF_SOCK_OPS_TEST_FLAG(tp, BPF_SOCK_OPS_RTT_CB_FLAG))
-+	if (BPF_SOCK_OPS_TEST_FLAG(tcp_sk(sk), BPF_SOCK_OPS_RTT_CB_FLAG))
- 		tcp_call_bpf(sk, BPF_SOCK_OPS_RTT_CB, 0, NULL);
- }
- 
++                    # Propose "load/loadall" to complete "bpftool prog load",
++                    # or bash tries to complete "load" as a filename below.
++                    if [[ ${#words[@]} -eq 3 ]]; then
++                        COMPREPLY=( $( compgen -W "load loadall" -- "$cur" ) )
++                        return 0
++                    fi
++
+                     if [[ ${#words[@]} -lt 6 ]]; then
+                         _filedir
+                         return 0
+@@ -435,7 +442,7 @@ _bpftool()
+                 *)
+                     [[ $prev == $object ]] && \
+                         COMPREPLY=( $( compgen -W 'dump help pin attach detach \
+-                            load show list tracelog run' -- "$cur" ) )
++                            load loadall show list tracelog run' -- "$cur" ) )
+                     ;;
+             esac
+             ;;
 -- 
-2.20.0
+2.17.1
 
