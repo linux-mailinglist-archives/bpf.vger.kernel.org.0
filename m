@@ -2,150 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9EE625E1
-	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 18:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC02962611
+	for <lists+bpf@lfdr.de>; Mon,  8 Jul 2019 18:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728845AbfGHQNl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jul 2019 12:13:41 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:40493 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726690AbfGHQNl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jul 2019 12:13:41 -0400
-Received: by mail-pf1-f196.google.com with SMTP id p184so7833743pfp.7
-        for <bpf@vger.kernel.org>; Mon, 08 Jul 2019 09:13:40 -0700 (PDT)
+        id S1732374AbfGHQV0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Jul 2019 12:21:26 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:46960 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730848AbfGHQVZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Jul 2019 12:21:25 -0400
+Received: by mail-io1-f65.google.com with SMTP id i10so36501177iol.13;
+        Mon, 08 Jul 2019 09:21:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8t0LI8f5d2yC1Ell37KaoDAT1u2qrCk09hV1h5m1t5o=;
-        b=14SwpmVCFEAW+QYYzXuCkYAQ31/ZEp78hlPwaiSPUKrN4JJ9b93kY0cHVk5zrKg1mS
-         Y+wixUDWvAa6udSGUeqVUFtLlpYCueOfp7RVv/y8B0vBpiiuxjJytcJjbBQ5tSioI7TU
-         IbMOe4xa94Fnc9zkULY0FE4Ewj9dYx3e+jrKrtuA/RgBXV6PjaVNX1h73YWdzpNY/SXI
-         KBajHmyGxkW5CSYXo8xrGXxZAJ6aMA4OAzAPgwL/Cq7l7Y0mVjrI5HJKE8juhGbsQYi6
-         HWTBQaN6dIckCIaMDmoilaY48HRpold/lJw7MILvMdUlKfNMt91Kc4MSZGApw6zaqMYt
-         Hhlg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:message-id:in-reply-to:references:subject:mime-version
+         :content-transfer-encoding;
+        bh=SmN5EFIMBB9EcBNdZWlkN540cp3oExz4pb0qA9L1qq0=;
+        b=C8s8BDKlkCJFkRR5YpKL5tKi67LYuNipSHTx3qPwA1l1k/ZvVkNibT8UrpI3XNyNo/
+         CluZ44BMK/ziV5W7KzBNH0NXzmoX2Jq6jeIyEm4qaJAbwonTJu9c0JLcDxIOyeqqLKAj
+         mACxKh062/YsxNYiByf54n9NWqIxfJGoCu2X+yE3DqP4XOmSEbCnqADGtU/ydWJK+naG
+         4CNjv13KimDZJwuQ9Q4cNsNaQHJwuximAIrITUj0tZQRk4RV7Vc9/OY4F6nZ4zDre93Y
+         vjhd/EoSWSIv2CBNs7UuMO1Ueo7nEe3xUJyu3RisUWi92iFMOXGeGgC4SP9PXFXUfBDe
+         sqdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8t0LI8f5d2yC1Ell37KaoDAT1u2qrCk09hV1h5m1t5o=;
-        b=UTtgS8HnfPBVfMh0NNd9ewrwA3mX2+dBqYer8T1lzQ9KLKxF5mDjZuFHVFBTn/Gvww
-         jiCFdY5fsdPV9tzWOjal6Z8UXnM8duZvxf6xHuL1flXFrZWGa7/+z2/BXPohFeHSkKgz
-         N7pQdwmZhGoYUcyHkRB+vHfPdixyZ3r9tB5AUpPzpWK1eWe4MkWYW291tt2AXwSjEMpu
-         H/iRZjVF+UiOX0FkqWNtJmxdTrtho+C7iwh8fmSIPrDtszPBsAuqrKfcdlWRtrkxSAKW
-         CHLXYzX38jDB+1hvZY5U7zMrXxEPsxO0xt/TTKT6wCxl2RpsPhIlcGnfjdB6e6HUK1+j
-         rJvg==
-X-Gm-Message-State: APjAAAVC3/Ly0yh7kuHesfTO/C1QIcmLMxY0N9GlBFAaXQmHZClvyOAY
-        vunwrEcZCCiBn+w6p3FPEjy+cA==
-X-Google-Smtp-Source: APXvYqxTCeIzZ2W/qBHTEFfMqxCwVIiy/cRoCD7v0m1Vc7OhF130e0EtJ36LUm3tpYyvtyjhFdZYGQ==
-X-Received: by 2002:a63:89c2:: with SMTP id v185mr24693864pgd.241.1562602420513;
-        Mon, 08 Jul 2019 09:13:40 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id j15sm18527333pfr.146.2019.07.08.09.13.39
+        h=x-gm-message-state:date:from:to:message-id:in-reply-to:references
+         :subject:mime-version:content-transfer-encoding;
+        bh=SmN5EFIMBB9EcBNdZWlkN540cp3oExz4pb0qA9L1qq0=;
+        b=gXamSzP3aN7DT2nSKOzN1nx8Qs5XWv83vMxXh8i26LI6641kQo5+ycg37oD7mSSIkl
+         wM60akWDNOQQib4GQazh4KNsRk+41nMA7mpmfFBayQqaNam1nia+ua3sK5oJKyT0qLAu
+         u+NEBYE4ZiddUYgOmD7xoF8NxTybFMhroq0LSXCLDzyiEf4excif1ddwZtmY18nU0tv1
+         qhfd0o+TExCzW2cZnTIrX/oHHDv1pvqHyZpyeCmv3x37UqeG238+0z6LEddAlVMjHKV3
+         d4qtFW97CcxvdrF6FJD2oP8lh7vl0YKyg6bQVRbWaiEDp1nb2v2HTozGttg+sluTZ695
+         ciNQ==
+X-Gm-Message-State: APjAAAVmWeB62vCExQJQ/QKvmJ/4bt3hZYf52+HY7YEXOQQ1tyJuUSea
+        5b7yJ2xttAfNCcvYhhjD+kQ=
+X-Google-Smtp-Source: APXvYqzxYEml55UqQKfbWptdyh8ixilXO5dGlZCem+0W98DhejyZCoJ3/cmypwI1xnh3L3ZN/AdIyQ==
+X-Received: by 2002:a6b:7b07:: with SMTP id l7mr15646304iop.225.1562602884883;
+        Mon, 08 Jul 2019 09:21:24 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id d25sm16525839iom.52.2019.07.08.09.21.23
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 08 Jul 2019 09:13:39 -0700 (PDT)
-Date:   Mon, 8 Jul 2019 09:13:38 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Y Song <ys114321@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: make verifier loop tests arch
- independent
-Message-ID: <20190708161338.GC29524@mini-arch>
-References: <20190703205100.142904-1-sdf@google.com>
- <CAH3MdRWePmAZNRfGNcBdjKAJ+D33=4Vgg1STYC3khNps8AmaHQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAH3MdRWePmAZNRfGNcBdjKAJ+D33=4Vgg1STYC3khNps8AmaHQ@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+        Mon, 08 Jul 2019 09:21:24 -0700 (PDT)
+Date:   Mon, 08 Jul 2019 09:21:17 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     syzbot <syzbot+a861f52659ae2596492b@syzkaller.appspotmail.com>,
+        bpf@vger.kernel.org, ebiggers@kernel.org, john.fastabend@gmail.com,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Message-ID: <5d236d7dc1db6_75f52af7c83505bcc3@john-XPS-13-9370.notmuch>
+In-Reply-To: <0000000000007eb42d058c9836ac@google.com>
+References: <5d199ad457036_1dd62b219ced25b86e@john-XPS-13-9370.notmuch>
+ <0000000000007eb42d058c9836ac@google.com>
+Subject: Re: WARNING in mark_lock
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/03, Y Song wrote:
-> On Wed, Jul 3, 2019 at 1:51 PM Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > Take the first x bytes of pt_regs for scalability tests, there is
-> > no real reason we need x86 specific rax.
-> >
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  tools/testing/selftests/bpf/progs/loop1.c | 3 ++-
-> >  tools/testing/selftests/bpf/progs/loop2.c | 3 ++-
-> >  tools/testing/selftests/bpf/progs/loop3.c | 3 ++-
-> >  3 files changed, 6 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/progs/loop1.c b/tools/testing/selftests/bpf/progs/loop1.c
-> > index dea395af9ea9..d530c61d2517 100644
-> > --- a/tools/testing/selftests/bpf/progs/loop1.c
-> > +++ b/tools/testing/selftests/bpf/progs/loop1.c
-> > @@ -14,11 +14,12 @@ SEC("raw_tracepoint/kfree_skb")
-> >  int nested_loops(volatile struct pt_regs* ctx)
-> >  {
-> >         int i, j, sum = 0, m;
-> > +       volatile int *any_reg = (volatile int *)ctx;
-> >
-> >         for (j = 0; j < 300; j++)
-> >                 for (i = 0; i < j; i++) {
-> >                         if (j & 1)
-> > -                               m = ctx->rax;
-> > +                               m = *any_reg;
+syzbot wrote:
+> Hello,
 > 
-> I agree. ctx->rax here is only to generate some operations, which
-> cannot be optimized away by the compiler. dereferencing a volatile
-> pointee may just serve that purpose.
+> syzbot has tested the proposed patch but the reproducer still triggered  
+> crash:
+> KASAN: use-after-free Read in class_equal
 > 
-> Comparing the byte code generated with ctx->rax and *any_reg, they are
-> slightly different. Using *any_reg is slighly worse, but this should
-> be still okay for the test.
+> ==================================================================
+> BUG: KASAN: use-after-free in class_equal+0x40/0x50  
+> kernel/locking/lockdep.c:1527
+> Read of size 8 at addr ffff88808a268ba0 by task syz-executor.1/9270
 > 
-> >                         else
-> >                                 m = j;
-> >                         sum += i * m;
-> > diff --git a/tools/testing/selftests/bpf/progs/loop2.c b/tools/testing/selftests/bpf/progs/loop2.c
-> > index 0637bd8e8bcf..91bb89d901e3 100644
-> > --- a/tools/testing/selftests/bpf/progs/loop2.c
-> > +++ b/tools/testing/selftests/bpf/progs/loop2.c
-> > @@ -14,9 +14,10 @@ SEC("raw_tracepoint/consume_skb")
-> >  int while_true(volatile struct pt_regs* ctx)
-> >  {
-> >         int i = 0;
-> > +       volatile int *any_reg = (volatile int *)ctx;
-> >
-> >         while (true) {
-> > -               if (ctx->rax & 1)
-> > +               if (*any_reg & 1)
-> >                         i += 3;
-> >                 else
-> >                         i += 7;
-> > diff --git a/tools/testing/selftests/bpf/progs/loop3.c b/tools/testing/selftests/bpf/progs/loop3.c
-> > index 30a0f6cba080..3a7f12d7186c 100644
-> > --- a/tools/testing/selftests/bpf/progs/loop3.c
-> > +++ b/tools/testing/selftests/bpf/progs/loop3.c
-> > @@ -14,9 +14,10 @@ SEC("raw_tracepoint/consume_skb")
-> >  int while_true(volatile struct pt_regs* ctx)
-> >  {
-> >         __u64 i = 0, sum = 0;
-> > +       volatile __u64 *any_reg = (volatile __u64 *)ctx;
-> >         do {
-> >                 i++;
-> > -               sum += ctx->rax;
-> > +               sum += *any_reg;
-> >         } while (i < 0x100000000ULL);
-> >         return sum;
-> >  }
-> > --
-> > 2.22.0.410.gd8fdbe21b5-goog
+> CPU: 0 PID: 9270 Comm: syz-executor.1 Not tainted 5.2.0-rc3+ #1
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+> Google 01/01/2011
+> Call Trace:
 > 
-> Ilya Leoshkevich (iii@linux.ibm.com, cc'ed) has another patch set
-> trying to solve this problem by introducing s360 arch register access
-> macros. I guess for now that patch set is not needed any more?
-Oh, I missed them. Do they fix the tests for other (non-s360) arches as
-well? I was trying to fix the issue by not depending on any arch
-specific stuff because the test really doesn't care :-)
+> Allocated by task 2647419968:
+> BUG: unable to handle page fault for address: ffffffff8c00b020
+> #PF: supervisor read access in kernel mode
+> #PF: error_code(0x0000) - not-present page
+> PGD 8a70067 P4D 8a70067 PUD 8a71063 PMD 0
+> Thread overran stack, or stack corrupted
+> Oops: 0000 [#1] PREEMPT SMP KASAN
+> CPU: 0 PID: 9270 Comm: syz-executor.1 Not tainted 5.2.0-rc3+ #1
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+> Google 01/01/2011
+> RIP: 0010:stack_depot_fetch+0x10/0x30 lib/stackdepot.c:203
+> Code: e9 7b fd ff ff 4c 89 ff e8 8d b4 62 fe e9 e6 fd ff ff 90 90 90 90 90  
+> 90 90 90 89 f8 c1 ef 11 25 ff ff 1f 00 81 e7 f0 3f 00 00 <48> 03 3c c5 20  
+> 6c 04 8b 48 8d 47 18 48 89 06 8b 47 0c c3 0f 1f 00
+> RSP: 0018:ffff88808a2688e8 EFLAGS: 00010006
+> RAX: 00000000001f8880 RBX: ffff88808a269304 RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: ffff88808a2688f0 RDI: 0000000000003ff0
+> RBP: ffff88808a268908 R08: 0000000000000020 R09: ffffed1015d044fa
+> R10: ffffed1015d044f9 R11: ffff8880ae8227cf R12: ffffea0002289a00
+> R13: ffff88808a268ba0 R14: ffff8880aa58ec40 R15: ffff88808a269300
+> FS:  00005555570ba940(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffffff8c00b020 CR3: 000000008dd00000 CR4: 00000000001406f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+> Modules linked in:
+> CR2: ffffffff8c00b020
+> ---[ end trace 4acfe4b59fbc9cdb ]---
+> RIP: 0010:stack_depot_fetch+0x10/0x30 lib/stackdepot.c:203
+> Code: e9 7b fd ff ff 4c 89 ff e8 8d b4 62 fe e9 e6 fd ff ff 90 90 90 90 90  
+> 90 90 90 89 f8 c1 ef 11 25 ff ff 1f 00 81 e7 f0 3f 00 00 <48> 03 3c c5 20  
+> 6c 04 8b 48 8d 47 18 48 89 06 8b 47 0c c3 0f 1f 00
+> RSP: 0018:ffff88808a2688e8 EFLAGS: 00010006
+> RAX: 00000000001f8880 RBX: ffff88808a269304 RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: ffff88808a2688f0 RDI: 0000000000003ff0
+> RBP: ffff88808a268908 R08: 0000000000000020 R09: ffffed1015d044fa
+> R10: ffffed1015d044f9 R11: ffff8880ae8227cf R12: ffffea0002289a00
+> R13: ffff88808a268ba0 R14: ffff8880aa58ec40 R15: ffff88808a269300
+> FS:  00005555570ba940(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffffff8c00b020 CR3: 000000008dd00000 CR4: 00000000001406f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> 
+> 
+> Tested on:
+> 
+> commit:         0b58d013 bpf: tls, implement unhash to avoid transition ou..
+> git tree:       git://github.com/cilium/linux ktls-unhash
+> console output: https://syzkaller.appspot.com/x/log.txt?x=153368a3a00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=2cc918d28ebd06b4
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> 
+
+#syz test: git://github.com/cilium/linux fix-unhash
