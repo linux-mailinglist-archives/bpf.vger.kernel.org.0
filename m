@@ -2,106 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B87A638B1
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2019 17:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B3A638C8
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2019 17:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726133AbfGIPeZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jul 2019 11:34:25 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:45239 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726060AbfGIPeY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jul 2019 11:34:24 -0400
-Received: by mail-lf1-f66.google.com with SMTP id u10so13716557lfm.12;
-        Tue, 09 Jul 2019 08:34:23 -0700 (PDT)
+        id S1726115AbfGIPkZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jul 2019 11:40:25 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:38512 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726055AbfGIPkZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Jul 2019 11:40:25 -0400
+Received: by mail-io1-f66.google.com with SMTP id j6so44126484ioa.5;
+        Tue, 09 Jul 2019 08:40:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XldrumkAgmzEzxgr2Bcv/W7MnrtFEO21Trg6QIY5k84=;
-        b=BVh3b0bBJ8vh+cbfAE1PPxlD2zb/+DWuI9G4Wtyh3ITaGL2D9FqMGozHfb1aaI02WV
-         ZTlXfMRbRIaF9f3x4uz3kUZHECth7ftSAK7Jrerx5Psp6tVSStd+0UCW41LnbUREBKxt
-         vAhywaDHaaHaItpu7fXme4HVUKJtcQz2fS0CmcRab8SfYlBpHCejckEK0GeSFZgasyQQ
-         CYyZoLpkS4Fn93kNK4uw7bxmnbbkpLAl99vL2A3vkrh5cQbCjK6iI0RicvAie7ayQJKY
-         EywTtOe5759BFFnumbj2P+z7DQYnU2QfTF/wqyJjbEDl1b0gsje/3phHX/QKj6QugLwA
-         FZ+Q==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=lBGHvOhuEXhBOTWSFCxq6KmZhMlzdxSO+iRbbFomrS8=;
+        b=Tdqn0m9aB9JaMlVevOX+vJfjMEmQ9j6EISYMkEIR7n8OmgOSNE0QbpbgEEgpZU6Pjl
+         RvAZq6rP39Ku9mvbiwUZ7126GAxBXLT/uhIflgfQCuL/lVEIEn0waJBRaJpppd0lxfwP
+         p4gI/8Nyw7NiwvQRw+ib8SSk6ZHwzmVF4PGqchd10+kURHbjyVpjmJKvpp16fitvKz28
+         qDExyg/6pWog2gYjlrKJjovWdznIVaEwgjRRm6a9Yv+xIdgFEFDchzGZ6XA9NGoGdkUr
+         cLRWGzdVFyTKiNWXgKJm08zNGTSmJebCSoyj7RNPyLOI5UqkhvBA/YNsouhODI5D9iEF
+         X4Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XldrumkAgmzEzxgr2Bcv/W7MnrtFEO21Trg6QIY5k84=;
-        b=cgmvdi0OO7tCcVOHicu0WvZADhDtZ5ld8O8MvoJcxzPTs1u1gm5riYY0S3LjsGk4i4
-         4g0Bo2ILNkN58wZIIydrH1JSBjQ49y7qMUACqmSWk9Qy7kMxN9Cm9GPhuZOVi+3OXUaO
-         Iwu1VP7dz8SoBgGw+J4UjP10mBhAeJ2xBvOZFogsL25SFIg3JU9zTg2fQ0ayFTXYEupz
-         kNgacxO6WrAV28iUg/5xZndlceB3GD436Nw5b3MnkAoFS8Ce7+KrWEM2U8S9Drnh7IZv
-         vnao1ijSOV6UPpI47fxfJa6R4I7E1HY4Df3OGFmJFhLWyHChPQeZQd6OGT/mvFg6DPrZ
-         nu0g==
-X-Gm-Message-State: APjAAAXfaPoXg4S3IuUC/Ieo7nNoHTBZnj6iIugwLHSJJhhBvIJLlQkX
-        /B7wYflJM8l4BJLxPqrnWkGuyc1jHrCxvYr+UrM=
-X-Google-Smtp-Source: APXvYqzRxvwVIQVCdYryBBCbyZSV+GA8BjIWzect/o4kWLCLUJtoHLajB5JkQJAcIVflMA6QTClU8Xt3pMYR+CHnCbo=
-X-Received: by 2002:a19:6b0e:: with SMTP id d14mr11779539lfa.174.1562686462634;
- Tue, 09 Jul 2019 08:34:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190703170118.196552-1-brianvv@google.com> <20190703170118.196552-3-brianvv@google.com>
- <CAH3MdRU505Er44m460c7y5nxtZxmDmVY4jDrWOYt2=OdP2d5Ow@mail.gmail.com>
-In-Reply-To: <CAH3MdRU505Er44m460c7y5nxtZxmDmVY4jDrWOYt2=OdP2d5Ow@mail.gmail.com>
-From:   Brian Vazquez <brianvv.kernel@gmail.com>
-Date:   Tue, 9 Jul 2019 08:34:11 -0700
-Message-ID: <CABCgpaU=H+qOUAx+yRHJjBMqmeAtp5iQL_yv9cXB6HTqB0jXcA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next RFC v3 2/6] bpf: add BPF_MAP_DUMP command to dump
- more than one entry per call
-To:     Y Song <ys114321@gmail.com>
-Cc:     Brian Vazquez <brianvv@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Petar Penkov <ppenkov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=lBGHvOhuEXhBOTWSFCxq6KmZhMlzdxSO+iRbbFomrS8=;
+        b=n0HoNf/iWX+WsP8l15kU3S1ZTJvMtUBT0Llf3euxWccOo+IfeDfc+46m2ACmxrFjOM
+         HIoJ5TFaj2wqmn80SRYToScnO5vOXCW5ZupH7RjMU+XUWuaVMeCAVjUmxsDPygIreIQE
+         fRmtJfBOtR+WMSqmD76ExglN6LgPU/NutRXHuZepJKxgbARykgfO9Meq3Xo1gkRvPaYG
+         h5PirTIG4mv4MtO4BusmT9BJ6OsbcSXH/RtoRrjMBbuJijZFi9O8ltFy2BhNKX9cqPBZ
+         rQmOja5YkzQvLb9PGFatQhII2ufTzAc8eIrbeAgSLXlLA5lJQx1Gh0vqcExFaskdBL6z
+         sukg==
+X-Gm-Message-State: APjAAAX8iICWt4pKyONhYlJeIFOZjVqDQy/1ZHCoLwgiAIIAfQRIWqAF
+        VBAsxsszXeDvviWROL3FTlk=
+X-Google-Smtp-Source: APXvYqxV55F7G567Fl3WDffkOaXOB5+felKggg5k/fMdZgmDx2IOvxWZmK2eug243DFdxuhx+52SMw==
+X-Received: by 2002:a05:6602:1d2:: with SMTP id w18mr4793051iot.157.1562686824847;
+        Tue, 09 Jul 2019 08:40:24 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id n21sm15753542ioh.30.2019.07.09.08.40.21
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 09 Jul 2019 08:40:23 -0700 (PDT)
+Date:   Tue, 09 Jul 2019 08:40:14 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        edumazet@google.com, bpf@vger.kernel.org
+Message-ID: <5d24b55e8b868_3b162ae67af425b43e@john-XPS-13-9370.notmuch>
+In-Reply-To: <20190708231318.1a721ce8@cakuba.netronome.com>
+References: <156261310104.31108.4569969631798277807.stgit@ubuntu3-kvm1>
+ <20190708231318.1a721ce8@cakuba.netronome.com>
+Subject: Re: [bpf PATCH v2 0/6] bpf: sockmap/tls fixes
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Maybe you can swap map_fd and flags?
-> This way, you won't have hole right after map_fd?
+Jakub Kicinski wrote:
+> On Mon, 08 Jul 2019 19:13:29 +0000, John Fastabend wrote:
+> > Resolve a series of splats discovered by syzbot and an unhash
+> > TLS issue noted by Eric Dumazet.
+> > 
+> > The main issues revolved around interaction between TLS and
+> > sockmap tear down. TLS and sockmap could both reset sk->prot
+> > ops creating a condition where a close or unhash op could be
+> > called forever. A rare race condition resulting from a missing
+> > rcu sync operation was causing a use after free. Then on the
+> > TLS side dropping the sock lock and re-acquiring it during the
+> > close op could hang. Finally, sockmap must be deployed before
+> > tls for current stack assumptions to be met. This is enforced
+> > now. A feature series can enable it.
+> > 
+> > To fix this first refactor TLS code so the lock is held for the
+> > entire teardown operation. Then add an unhash callback to ensure
+> > TLS can not transition from ESTABLISHED to LISTEN state. This
+> > transition is a similar bug to the one found and fixed previously
+> > in sockmap. Then apply three fixes to sockmap to fix up races
+> > on tear down around map free and close. Finally, if sockmap
+> > is destroyed before TLS we add a new ULP op update to inform
+> > the TLS stack it should not call sockmap ops. This last one
+> > appears to be the most commonly found issue from syzbot.
+> 
+> Looks like strparser is not done'd for offload?
 
-Makes sense.
+Right so if rx_conf != TLS_SW then the hardware needs to do
+the strparser functionality.
 
-> > +       attr->flags = 0;
-> Why do you want attr->flags? This is to modify anonumous struct used by
-> BPF_MAP_*_ELEM commands.
+> 
+> About patch 6 - I was recently wondering about the "impossible" syzbot
+> report where context is not freed and my conclusion was that there
+> can be someone sitting at lock_sock() in tcp_close() already by the
+> time we start installing the ULP, so TLS's close will never get called.
+> The entire replacing of callbacks business is really shaky :(
 
-Nice catch! This was a mistake I forgot to delete that line.
+Well replacing callbacks is the ULP model. The race we are fixing in
+patch 6 is sockmap being free'd which removes psock and resets proto ops
+with tcp_close() path.
 
-> In bcc, we have use cases like this. At a certain time interval (e.g.,
-> every 2 seconds),
-> we get all key/value pairs for a map, we format and print out map
-> key/values on the screen,
-> and then delete all key/value pairs we retrieved earlier.
->
-> Currently, bpf_get_next_key() is used to get all key/value pairs, and
-> deletion also happened
-> at each key level.
->
-> Your batch dump command should help retrieving map key/value pairs.
-> What do you think deletions of those just retrieved map entries?
-> With an additional flag and fold into BPF_MAP_DUMP?
-> or implement a new BPF_MAP_DUMP_AND_DELETE?
->
-> I mentioned this so that we can start discussion now.
-> You do not need to implement batch deletion part, but let us
-> have a design extensible for that.
->
-> Thanks.
+I don't think there is another race like you describe because tcp_set_ulp
+is called from do_tcp_setsockopt which holds the lock and tcp state is
+checked to ensure its ESTABLISHED. A closing sock wont be in ESTABLISHED
+state so any setup will be aborted. Before patch 1 though I definately
+saw this race because we dropped the lock mid-close.
 
-With a additional flag, code could be racy where you copy an old value
-and delete the newest one.
-So maybe we could implement BPF_MAP_DUMP_AND_DELETE as a wrapper of
-map_get_next_key + map_lookup_and_delete_elem. Last function already
-exists but it has not been implemented for maps other than stack and
-queue.
+With this series I've been running those syzbot programs over night
+without issue on 4 cores. Also selftests pass in ./net/tls and ./bpf/
+so I think its stable and resolves many of the issues syzbot has been
+stomping around.
 
-Thanks for reviewing it!
+> 
+> Perhaps I'm rumbling, I will take a close look after I get some sleep :)
+
+Yes please do ;)
