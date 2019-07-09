@@ -2,70 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C27B762F0C
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2019 05:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF26E62F1F
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2019 06:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727346AbfGIDti (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Jul 2019 23:49:38 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:44748 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727340AbfGIDth (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Jul 2019 23:49:37 -0400
-Received: by mail-qk1-f196.google.com with SMTP id d79so10731996qke.11;
-        Mon, 08 Jul 2019 20:49:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KskYFE/Ug0iwkacs3vqwqivOLXYCEi71ZnQKnzUX30M=;
-        b=cIPz3WCgEnb0VMxGUsvqL96sOL9BnY0u5UhIhfuMiadfYLJnB528+qruGwr0ZaHgQ2
-         Qe+wyJ78woji2ZfoTBDiEgz/JCwRuzcLC3qAqOqVYrPG+nMgSYRZjX8RLqYJ6bFYyjfw
-         dA54FcvAlWqoRgA/v26irblTCRQK/q6PlR3rOM6o66b9KrkN2qNfjduUEQLkoDQL6T/Z
-         BHc3ZV3jjRVZd+i0/hF49PLAaTib/RsC00xGy/hZ5O+Bnd5oUgYCI8aDCkYzNbuQYUdI
-         lOLNsLdzBBpwi712iaaq3cqH0NWj7cgrjD+Ec7U4lShSWfBE+ZS7SXvXt/Lz+PwBi65p
-         dJWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KskYFE/Ug0iwkacs3vqwqivOLXYCEi71ZnQKnzUX30M=;
-        b=BDLjCxgtOtym8FlqLx2YRZktLmnWDle4KqMOYUXxsSuu2elONAORodgvrgOM8oB0oz
-         Z8fR1WOuIxV9ipYSIXkpVJghYJB2lFHyHPQAxFIc5GOnytO7alEqCg6Z3pLqUzFtxZuT
-         bb5TCmRkE6U81HA8fuq3hQ+xJFqdnVPXdS2CEYvdmGXD4Sa8mR/QD9j5AoPU9D86eoKM
-         reBfKsiOWa3TDLAsdlWxQOZxk30BBJGcrS4vZ0pGRf+o/pS7ePnEWuvVBWDhVncOQBRd
-         Q1kWlcQ0m+hfm2fjegGgLbGD9q6bYJJ/eH4/ahf9ZDBhrYL6Bo7m3pnTyhyqSSHoWDGS
-         lzDg==
-X-Gm-Message-State: APjAAAWdYs33t5zOohULLq/Qb5wkNLnXj8pl1LUjLTLYWO8CMJzSYsxo
-        0o2PqgcHzIt3yuQ5Aepolh+rNNRmwNVZsZM1Pvw=
-X-Google-Smtp-Source: APXvYqzjbKB8azSowHGtx9AS51EbPcJglyrtLqksfB1ogI0ZeH6D2CKl94ZNbdBM9ZNpiQydQYeVO7NEm1xV0pXMIfk=
-X-Received: by 2002:a37:bf42:: with SMTP id p63mr17248085qkf.437.1562644176501;
- Mon, 08 Jul 2019 20:49:36 -0700 (PDT)
+        id S1725832AbfGIEAP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jul 2019 00:00:15 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:61382 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725818AbfGIEAP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 9 Jul 2019 00:00:15 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x693tfdE032539
+        for <bpf@vger.kernel.org>; Mon, 8 Jul 2019 21:00:14 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=facebook;
+ bh=VAGd0gf1ncmepyOLs6mYxhFEODiYCDILer/9l6YHMHA=;
+ b=cvWKv2mY11KzGVTkr7qwEixT2SuyhAsI7HvBa6fLYXX/VjwcYZMLBfPW1WjRot5yslZA
+ z4Cqi7gCPmKj2shs6f8OBvQYOa1VVRCfdtiogj/Oyob6lbJGGGwSa4Anu0HinLThpXCl
+ 7keCzLXsuRGAwYJTuSTWuOh28eaxYWJv+sk= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2tmebu0ue6-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 08 Jul 2019 21:00:14 -0700
+Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Mon, 8 Jul 2019 21:00:11 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 6E86A8615B1; Mon,  8 Jul 2019 21:00:11 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <andrii.nakryiko@gmail.com>, <ast@fb.com>, <daniel@iogearbox.net>,
+        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <kernel-team@fb.com>
+CC:     Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next] libbpf: fix ptr to u64 conversion warning on 32-bit platforms
+Date:   Mon, 8 Jul 2019 21:00:07 -0700
+Message-ID: <20190709040007.1665882-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <000000000000b13e1d058d2da276@google.com>
-In-Reply-To: <000000000000b13e1d058d2da276@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 8 Jul 2019 20:49:25 -0700
-Message-ID: <CAEf4BzaUEWwGL3k0VeiFYFqyJexQU9cDZWN69jSDpBjP1ZEcpw@mail.gmail.com>
-Subject: Re: WARNING in mark_chain_precision
-To:     syzbot <syzbot+f21251a7468cd46efc60@syzkaller.appspotmail.com>
-Cc:     aaron.f.brown@intel.com, Alexei Starovoitov <ast@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>, hawk@kernel.org,
-        intel-wired-lan@lists.osuosl.org,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        jeffrey.t.kirsher@intel.com,
-        john fastabend <john.fastabend@gmail.com>,
-        Martin Lau <kafai@fb.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, sasha.neftin@intel.com,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs@googlegroups.com, xdp-newbies@vger.kernel.org,
-        Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-09_02:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907090045
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-#syz test: https://github.com/anakryiko/linux bpf-fix-precise-bpf_st
+On 32-bit platforms compiler complains about conversion:
+
+libbpf.c: In function =E2=80=98perf_event_open_probe=E2=80=99:
+libbpf.c:4112:17: error: cast from pointer to integer of different
+size [-Werror=3Dpointer-to-int-cast]
+  attr.config1 =3D (uint64_t)(void *)name; /* kprobe_func or uprobe_path =
+*/
+                 ^
+
+Reported-by: Matt Hart <matthew.hart@linaro.org>
+Fixes: b26500274767 ("libbpf: add kprobe/uprobe attach API")
+Tested-by: Matt Hart <matthew.hart@linaro.org>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/libbpf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index ed07789b3e62..794dd5064ae8 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4126,8 +4126,8 @@ static int perf_event_open_probe(bool uprobe, bool =
+retprobe, const char *name,
+ 	}
+ 	attr.size =3D sizeof(attr);
+ 	attr.type =3D type;
+-	attr.config1 =3D (uint64_t)(void *)name; /* kprobe_func or uprobe_path =
+*/
+-	attr.config2 =3D offset;		       /* kprobe_addr or probe_offset */
++	attr.config1 =3D ptr_to_u64(name); /* kprobe_func or uprobe_path */
++	attr.config2 =3D offset;		 /* kprobe_addr or probe_offset */
+=20
+ 	/* pid filter is meaningful only for uprobes */
+ 	pfd =3D syscall(__NR_perf_event_open, &attr,
+--=20
+2.17.1
+
