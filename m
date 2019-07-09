@@ -2,141 +2,340 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F82562FA2
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2019 06:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B4962FE1
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2019 07:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725911AbfGIEak (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jul 2019 00:30:40 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:34638 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725818AbfGIEaj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 9 Jul 2019 00:30:39 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x694U61v026823;
-        Mon, 8 Jul 2019 21:30:18 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : subject :
- date : message-id : references : in-reply-to : content-type : content-id :
- content-transfer-encoding : mime-version; s=facebook;
- bh=9SxiEg7OUT+fwjTunUhPh0zZNz/vBuGzbUoAnka1mI8=;
- b=e0QTIdLJT0sgomkCMqd7hUMh5b4bgtw2UvcGOcJu/bUBsKewf9jF6rZUTlPzbp01T/2X
- 8/VQEr912iilg3Y467tFnamjdOb7LRstIprcbtoq2ObE8ISAal2dfYiCCBQBH6uG4Vvs
- 05bAaZKLyOPgsHpQ4LZacXc9xQL/Cax/LV0= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2tmebu0wrc-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 08 Jul 2019 21:30:18 -0700
-Received: from prn-mbx04.TheFacebook.com (2620:10d:c081:6::18) by
- prn-hub02.TheFacebook.com (2620:10d:c081:35::126) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Mon, 8 Jul 2019 21:30:17 -0700
-Received: from prn-hub05.TheFacebook.com (2620:10d:c081:35::129) by
- prn-mbx04.TheFacebook.com (2620:10d:c081:6::18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Mon, 8 Jul 2019 21:30:17 -0700
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.29) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Mon, 8 Jul 2019 21:30:17 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9SxiEg7OUT+fwjTunUhPh0zZNz/vBuGzbUoAnka1mI8=;
- b=nB1gPQ0/YXF/AebYMEHJ6xVW065/DxXM75iNLZ8NxqaFMn98VO7KuatNafVJVk3iMvUOpCfjwYKhlTZiBXWOrDNYDGGh1U4FJ022osxyjNXdti0X7EVneK3NFRGcoDssy53cokSmBA5MCpOp60OkGSJpxxw+lP4nsGrKkHh78hQ=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.59.17) by
- BYAPR15MB2423.namprd15.prod.outlook.com (52.135.198.151) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2052.20; Tue, 9 Jul 2019 04:30:15 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::e499:ecba:ec04:abac]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::e499:ecba:ec04:abac%5]) with mapi id 15.20.2052.020; Tue, 9 Jul 2019
- 04:30:15 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>,
-        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next] libbpf: fix ptr to u64 conversion warning on
- 32-bit platforms
-Thread-Topic: [PATCH bpf-next] libbpf: fix ptr to u64 conversion warning on
- 32-bit platforms
-Thread-Index: AQHVNgric3OeXG06AkuEFVGe9Esrg6bBseYA
-Date:   Tue, 9 Jul 2019 04:30:15 +0000
-Message-ID: <b4b00fad-3f99-c36a-a510-0b281a1f2bd7@fb.com>
-References: <20190709040007.1665882-1-andriin@fb.com>
-In-Reply-To: <20190709040007.1665882-1-andriin@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MW2PR16CA0069.namprd16.prod.outlook.com
- (2603:10b6:907:1::46) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:10e::17)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::1:a38d]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d906593c-fef1-4e4f-d339-08d7042623cc
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB2423;
-x-ms-traffictypediagnostic: BYAPR15MB2423:
-x-microsoft-antispam-prvs: <BYAPR15MB24234D3B3B897CB9FBAF806DD3F10@BYAPR15MB2423.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2512;
-x-forefront-prvs: 0093C80C01
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(376002)(346002)(136003)(396003)(366004)(39860400002)(199004)(189003)(36756003)(478600001)(7736002)(73956011)(6116002)(5024004)(256004)(46003)(5660300002)(14454004)(66556008)(64756008)(71190400001)(6636002)(71200400001)(52116002)(305945005)(66476007)(8676002)(66446008)(66946007)(81156014)(229853002)(86362001)(31696002)(6512007)(6486002)(81166006)(2906002)(53546011)(6506007)(386003)(102836004)(53936002)(186003)(6246003)(2201001)(6436002)(8936002)(99286004)(110136005)(2501003)(31686004)(25786009)(11346002)(446003)(68736007)(76176011)(316002)(486006)(2616005)(476003);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2423;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: d/UddKsmdDX3EiqdYX8r/GBntyOF+H5/fy1qlD2qQUVprD0lGyo/JprPP4AdKhPL/st0eAR4zVdQ845Sx31X236SUth1mfxuk4szf4yjEbA8cE9sMFJfe4reSM+/nLmaBrnKS68PgqIt5kQnkj9FIdmon1wJxrf/Wbqi/us8OmK2fwuavxR4deSpEXpANnfip7FycHEeoILPKV1kCjYEsdOVKtaq/+Iza3kFXnm23nwzdltU6VglJrMiGhG7xVNac/TR4cqUuIBuvzuBKpMeMvLV+wgnd69NuV1Xg7Tzi7WcxxF4eF3Z3gtjmbaB8Ztq+Ll46v2pQQnzP6JWx80YYrclyASJo3jQmlRqHS9AJxl/9BshU204bim44E8+zGgU7n+PIy53Ekq7tBXhXPM07NHpAwD4B0zdI6I9REfkzz0=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C5C2CB38EAD3B74BA25DEB8491CC34AB@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727215AbfGIFMK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jul 2019 01:12:10 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:44232 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725985AbfGIFMK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Jul 2019 01:12:10 -0400
+Received: by mail-oi1-f193.google.com with SMTP id e189so14373139oib.11
+        for <bpf@vger.kernel.org>; Mon, 08 Jul 2019 22:12:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=vRMFcZUxaE5NaysvUG7XXbAGbdtg6RMeYvr75dgW7dg=;
+        b=vbgR7Jh3lG7BTkMNCT79qoJOK3JQdsT9vKQr7udRfu651qt7DA4aKiFPbDhcetLV9d
+         uHRSyAKUzs2qubejCkFlbnm6x2CC0jATYEYGYklOsMzPnzlAAYLFiloNKi3WGnHMuBwX
+         M2Udp1R+UDTsYMOR5m4GCLdXzWaihncp3HCqkmOybMaHX3nWsRK2NhPGJGgCg92VNjFS
+         OfA0WpnLHUy6D2ZsmK9xjU0493yhrx+wHy/WEFvbtKhIW39IBMMGhtCTy6dTeYlQx4SW
+         qqU4lxzBRC0St0wL/zal3z7T6jNvWTAnJbnyikZP4DSmVbrlDcKje1T5xzfbT/s/0CZI
+         FYOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=vRMFcZUxaE5NaysvUG7XXbAGbdtg6RMeYvr75dgW7dg=;
+        b=Jyi5pJ5sAHXw9F0w3q0/iPrnxNZWHcQ9RsSzj+5a9/BEr6JBczBFxcTtcbKAMnLjcW
+         ArsQastbTB9GoighyHPH/LGLYlXQoihwPlxrtYqy6z0euaNv/fs3tpBj8uJkOlkKVA+Z
+         k2jIamJq6mIwu74YB8OiLuqO30nmG1fCmUrKA4SVubQ6r+3Ngr01DPOu3rJkITG+NypK
+         qM7SQC9EhncopLjeAUb2u/HWvCiwwFpI2gsQ7qljuBEbMg9iAWH1m7rQCm0TOMgIgtZb
+         G+MKT3xA8R1tcTBwkPrw231Jk7dBIBuYw9IUMpQMBbCh14szeMRP4yG194o6GLJ1NyOT
+         kyXQ==
+X-Gm-Message-State: APjAAAWczs6DRcT3D6T0Zu2h0Z3CpwS8Bb/wQkvcmPW0+vqUoOftfdV9
+        PS9BJFK5N5LFOGPjViGbE9toDg==
+X-Google-Smtp-Source: APXvYqyje2+6rPLC/CAsU6LJzHhZEAoFO3MhlFmWa7z3kvGDPltUUFdaYOEQ/xd2Eo/a49U8WU4imw==
+X-Received: by 2002:a05:6808:6c5:: with SMTP id m5mr11486922oih.89.1562649129349;
+        Mon, 08 Jul 2019 22:12:09 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s (li964-79.members.linode.com. [45.33.10.79])
+        by smtp.gmail.com with ESMTPSA id 65sm4220642otw.2.2019.07.08.22.12.00
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 08 Jul 2019 22:12:08 -0700 (PDT)
+Date:   Tue, 9 Jul 2019 13:11:54 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>
+Subject: Re: [PATCH v3] perf cs-etm: Improve completeness for kernel address
+ space
+Message-ID: <20190709051154.GA11549@leoy-ThinkPad-X240s>
+References: <20190620034446.25561-1-leo.yan@linaro.org>
+ <CANLsYkwjJ57RWEqS9suLm1+JKicG1LzcHtP8k5qTK1d7bw=1MA@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: d906593c-fef1-4e4f-d339-08d7042623cc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jul 2019 04:30:15.4297
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yhs@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2423
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-09_02:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907090053
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANLsYkwjJ57RWEqS9suLm1+JKicG1LzcHtP8k5qTK1d7bw=1MA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDcvOC8xOSA5OjAwIFBNLCBBbmRyaWkgTmFrcnlpa28gd3JvdGU6DQo+IE9uIDMyLWJp
-dCBwbGF0Zm9ybXMgY29tcGlsZXIgY29tcGxhaW5zIGFib3V0IGNvbnZlcnNpb246DQo+IA0KPiBs
-aWJicGYuYzogSW4gZnVuY3Rpb24g4oCYcGVyZl9ldmVudF9vcGVuX3Byb2Jl4oCZOg0KPiBsaWJi
-cGYuYzo0MTEyOjE3OiBlcnJvcjogY2FzdCBmcm9tIHBvaW50ZXIgdG8gaW50ZWdlciBvZiBkaWZm
-ZXJlbnQNCj4gc2l6ZSBbLVdlcnJvcj1wb2ludGVyLXRvLWludC1jYXN0XQ0KPiAgICBhdHRyLmNv
-bmZpZzEgPSAodWludDY0X3QpKHZvaWQgKiluYW1lOyAvKiBrcHJvYmVfZnVuYyBvciB1cHJvYmVf
-cGF0aCAqLw0KPiAgICAgICAgICAgICAgICAgICBeDQo+IA0KPiBSZXBvcnRlZC1ieTogTWF0dCBI
-YXJ0IDxtYXR0aGV3LmhhcnRAbGluYXJvLm9yZz4NCj4gRml4ZXM6IGIyNjUwMDI3NDc2NyAoImxp
-YmJwZjogYWRkIGtwcm9iZS91cHJvYmUgYXR0YWNoIEFQSSIpDQo+IFRlc3RlZC1ieTogTWF0dCBI
-YXJ0IDxtYXR0aGV3LmhhcnRAbGluYXJvLm9yZz4NCj4gU2lnbmVkLW9mZi1ieTogQW5kcmlpIE5h
-a3J5aWtvIDxhbmRyaWluQGZiLmNvbT4NCg0KQWNrZWQtYnk6IFlvbmdob25nIFNvbmcgPHloc0Bm
-Yi5jb20+DQoNCj4gLS0tDQo+ICAgdG9vbHMvbGliL2JwZi9saWJicGYuYyB8IDQgKystLQ0KPiAg
-IDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+IA0KPiBk
-aWZmIC0tZ2l0IGEvdG9vbHMvbGliL2JwZi9saWJicGYuYyBiL3Rvb2xzL2xpYi9icGYvbGliYnBm
-LmMNCj4gaW5kZXggZWQwNzc4OWIzZTYyLi43OTRkZDUwNjRhZTggMTAwNjQ0DQo+IC0tLSBhL3Rv
-b2xzL2xpYi9icGYvbGliYnBmLmMNCj4gKysrIGIvdG9vbHMvbGliL2JwZi9saWJicGYuYw0KPiBA
-QCAtNDEyNiw4ICs0MTI2LDggQEAgc3RhdGljIGludCBwZXJmX2V2ZW50X29wZW5fcHJvYmUoYm9v
-bCB1cHJvYmUsIGJvb2wgcmV0cHJvYmUsIGNvbnN0IGNoYXIgKm5hbWUsDQo+ICAgCX0NCj4gICAJ
-YXR0ci5zaXplID0gc2l6ZW9mKGF0dHIpOw0KPiAgIAlhdHRyLnR5cGUgPSB0eXBlOw0KPiAtCWF0
-dHIuY29uZmlnMSA9ICh1aW50NjRfdCkodm9pZCAqKW5hbWU7IC8qIGtwcm9iZV9mdW5jIG9yIHVw
-cm9iZV9wYXRoICovDQo+IC0JYXR0ci5jb25maWcyID0gb2Zmc2V0OwkJICAgICAgIC8qIGtwcm9i
-ZV9hZGRyIG9yIHByb2JlX29mZnNldCAqLw0KPiArCWF0dHIuY29uZmlnMSA9IHB0cl90b191NjQo
-bmFtZSk7IC8qIGtwcm9iZV9mdW5jIG9yIHVwcm9iZV9wYXRoICovDQo+ICsJYXR0ci5jb25maWcy
-ID0gb2Zmc2V0OwkJIC8qIGtwcm9iZV9hZGRyIG9yIHByb2JlX29mZnNldCAqLw0KPiAgIA0KPiAg
-IAkvKiBwaWQgZmlsdGVyIGlzIG1lYW5pbmdmdWwgb25seSBmb3IgdXByb2JlcyAqLw0KPiAgIAlw
-ZmQgPSBzeXNjYWxsKF9fTlJfcGVyZl9ldmVudF9vcGVuLCAmYXR0ciwNCj4gDQo=
+Hi Mathieu,
+
+On Mon, Jul 08, 2019 at 11:33:59AM -0600, Mathieu Poirier wrote:
+> On Wed, 19 Jun 2019 at 21:45, Leo Yan <leo.yan@linaro.org> wrote:
+> >
+> > Arm and arm64 architecture reserve some memory regions prior to the
+> > symbol '_stext' and these memory regions later will be used by device
+> > module and BPF jit.  The current code misses to consider these memory
+> > regions thus any address in the regions will be taken as user space
+> > mode, but perf cannot find the corresponding dso with the wrong CPU
+> > mode so we misses to generate samples for device module and BPF
+> > related trace data.
+> >
+> > This patch parse the link scripts to get the memory size prior to start
+> > address and reduce this size from 'etmq->etm->kernel_start', then can
+> > get a fixed up kernel start address which contain memory regions for
+> > device module and BPF.  Finally, cs_etm__cpu_mode() can return right
+> > mode for these memory regions and perf can successfully generate
+> > samples.
+> >
+> > The reason for parsing the link scripts is Arm architecture changes text
+> > offset dependent on different platforms, which define multiple text
+> > offsets in $kernel/arch/arm/Makefile.  This offset is decided when build
+> > kernel and the final value is extended in the link script, so we can
+> > extract the used value from the link script.  We use the same way to
+> > parse arm64 link script as well.  If fail to find the link script, the
+> > pre start memory size is assumed as zero, in this case it has no any
+> > change caused with this patch.
+> >
+> > Below is detailed info for testing this patch:
+> >
+> > - Build LLVM/Clang 8.0 or later version;
+> >
+> > - Configure perf with ~/.perfconfig:
+> >
+> >   root@debian:~# cat ~/.perfconfig
+> >   # this file is auto-generated.
+> >   [llvm]
+> >           clang-path = /mnt/build/llvm-build/build/install/bin/clang
+> >           kbuild-dir = /mnt/linux-kernel/linux-cs-dev/
+> >           clang-opt = "-g"
+> >           dump-obj = true
+> >
+> >   [trace]
+> >           show_zeros = yes
+> >           show_duration = no
+> >           no_inherit = yes
+> >           show_timestamp = no
+> >           show_arg_names = no
+> >           args_alignment = 40
+> >           show_prefix = yes
+> >
+> > - Run 'perf trace' command with eBPF event:
+> >
+> >   root@debian:~# perf trace -e string \
+> >       -e $kernel/tools/perf/examples/bpf/augmented_raw_syscalls.c
+> >
+> > - Read eBPF program memory mapping in kernel:
+> >
+> >   root@debian:~# echo 1 > /proc/sys/net/core/bpf_jit_kallsyms
+> >   root@debian:~# cat /proc/kallsyms | grep -E "bpf_prog_.+_sys_[enter|exit]"
+> >   ffff000000086a84 t bpf_prog_f173133dc38ccf87_sys_enter  [bpf]
+> >   ffff000000088618 t bpf_prog_c1bd85c092d6e4aa_sys_exit   [bpf]
+> >
+> > - Launch any program which accesses file system frequently so can hit
+> >   the system calls trace flow with eBPF event;
+> >
+> > - Capture CoreSight trace data with filtering eBPF program:
+> >
+> >   root@debian:~# perf record -e cs_etm/@20070000.etr/ \
+> >           --filter 'filter 0xffff000000086a84/0x800' -a sleep 5s
+> >
+> > - Annotate for symbol 'bpf_prog_f173133dc38ccf87_sys_enter':
+> >
+> >   root@debian:~# perf report
+> >   Then select 'branches' samples and press 'a' to annotate symbol
+> >   'bpf_prog_f173133dc38ccf87_sys_enter', press 'P' to print to the
+> >   bpf_prog_f173133dc38ccf87_sys_enter.annotation file:
+> >
+> >   root@debian:~# cat bpf_prog_f173133dc38ccf87_sys_enter.annotation
+> >
+> >   bpf_prog_f173133dc38ccf87_sys_enter() bpf_prog_f173133dc38ccf87_sys_enter
+> >   Event: branches
+> >
+> >   Percent      int sys_enter(struct syscall_enter_args *args)
+> >                  stp  x29, x30, [sp, #-16]!
+> >
+> >                 int key = 0;
+> >                  mov  x29, sp
+> >
+> >                        augmented_args = bpf_map_lookup_elem(&augmented_filename_map, &key);
+> >                  stp  x19, x20, [sp, #-16]!
+> >
+> >                        augmented_args = bpf_map_lookup_elem(&augmented_filename_map, &key);
+> >                  stp  x21, x22, [sp, #-16]!
+> >
+> >                  stp  x25, x26, [sp, #-16]!
+> >
+> >                 return bpf_get_current_pid_tgid();
+> >                  mov  x25, sp
+> >
+> >                 return bpf_get_current_pid_tgid();
+> >                  mov  x26, #0x0                         // #0
+> >
+> >                  sub  sp, sp, #0x10
+> >
+> >                 return bpf_map_lookup_elem(pids, &pid) != NULL;
+> >                  add  x19, x0, #0x0
+> >
+> >                  mov  x0, #0x0                          // #0
+> >
+> >                  mov  x10, #0xfffffffffffffff8          // #-8
+> >
+> >                 if (pid_filter__has(&pids_filtered, getpid()))
+> >                  str  w0, [x25, x10]
+> >
+> >                 probe_read(&augmented_args->args, sizeof(augmented_args->args), args);
+> >                  add  x1, x25, #0x0
+> >
+> >                 probe_read(&augmented_args->args, sizeof(augmented_args->args), args);
+> >                  mov  x10, #0xfffffffffffffff8          // #-8
+> >
+> >                 syscall = bpf_map_lookup_elem(&syscalls, &augmented_args->args.syscall_nr);
+> >                  add  x1, x1, x10
+> >
+> >                 syscall = bpf_map_lookup_elem(&syscalls, &augmented_args->args.syscall_nr);
+> >                  mov  x0, #0xffff8009ffffffff           // #-140694538682369
+> >
+> >                  movk x0, #0x6698, lsl #16
+> >
+> >                  movk x0, #0x3e00
+> >
+> >                  mov  x10, #0xffffffffffff1040          // #-61376
+> >
+> >                 if (syscall == NULL || !syscall->enabled)
+> >                  movk x10, #0x1023, lsl #16
+> >
+> >                 if (syscall == NULL || !syscall->enabled)
+> >                  movk x10, #0x0, lsl #32
+> >
+> >                 loop_iter_first()
+> >     3.69       → blr  bpf_prog_f173133dc38ccf87_sys_enter
+> >                 loop_iter_first()
+> >                  add  x7, x0, #0x0
+> >
+> >                 loop_iter_first()
+> >                  add  x20, x7, #0x0
+> >
+> >                 int size = probe_read_str(&augmented_filename->value, filename_len, filename_arg);
+> >                  mov  x0, #0x1                          // #1
+> 
+> I'm not sure all this information about annotation should be in the
+> changelog.  This patch is about being able to decode traces that
+> executed outside the current kernel addresse range and as such simply
+> using "perf report" or "perf script" successfully is enough to test
+> this set.  Any information that goes beyond that muddies the water.
+
+Agree.  Will remove this in the new patch.
+
+> >   [...]
+> >
+> > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> > Cc: Jiri Olsa <jolsa@redhat.com>
+> > Cc: Namhyung Kim <namhyung@kernel.org>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Suzuki Poulouse <suzuki.poulose@arm.com>
+> > Cc: coresight@lists.linaro.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> > ---
+> >  tools/perf/Makefile.config | 22 ++++++++++++++++++++++
+> >  tools/perf/util/cs-etm.c   | 19 ++++++++++++++++++-
+> >  2 files changed, 40 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> > index 51dd00f65709..a58cd5a43a98 100644
+> > --- a/tools/perf/Makefile.config
+> > +++ b/tools/perf/Makefile.config
+> > @@ -418,6 +418,28 @@ ifdef CORESIGHT
+> >      endif
+> >      LDFLAGS += $(LIBOPENCSD_LDFLAGS)
+> >      EXTLIBS += $(OPENCSDLIBS)
+> > +    PRE_START_SIZE := 0
+> > +    ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/kernel/vmlinux.lds),)
+> > +      ifeq ($(SRCARCH),arm64)
+> > +        # Extract info from lds:
+> > +        #  . = ((((((((0xffffffffffffffff)) - (((1)) << (48)) + 1) + (0)) + (0x08000000))) + (0x08000000))) + 0x00080000;
+> > +        # PRE_START_SIZE := (0x08000000 + 0x08000000 + 0x00080000) = 0x10080000
+> > +        PRE_START_SIZE := $(shell egrep ' \. \= \({8}0x[0-9a-fA-F]+\){2}' \
+> > +          $(srctree)/arch/$(SRCARCH)/kernel/vmlinux.lds | \
+> > +          sed -e 's/[(|)|.|=|+|<|;|-]//g' -e 's/ \+/ /g' -e 's/^[ \t]*//' | \
+> > +          awk -F' ' '{printf "0x%x", $$6+$$7+$$8}' 2>/dev/null)
+> > +      endif
+> > +      ifeq ($(SRCARCH),arm)
+> > +        # Extract info from lds:
+> > +        #   . = ((0xC0000000)) + 0x00208000;
+> > +        # PRE_START_SIZE := 0x00208000
+> > +        PRE_START_SIZE := $(shell egrep ' \. \= \({2}0x[0-9a-fA-F]+\){2}' \
+> > +          $(srctree)/arch/$(SRCARCH)/kernel/vmlinux.lds | \
+> > +          sed -e 's/[(|)|.|=|+|<|;|-]//g' -e 's/ \+/ /g' -e 's/^[ \t]*//' | \
+> > +          awk -F' ' '{printf "0x%x", $$2}' 2>/dev/null)
+> > +      endif
+> > +    endif
+> > +    CFLAGS += -DARM_PRE_START_SIZE=$(PRE_START_SIZE)
+> 
+> It might be useful to do this for arm and arm64 regardless of
+> CoreSight but I'll let Arnaldo decide on this.
+
+Ah, good point!  On Arm/arm64 platforms, if we want to parse kernel
+address space with considering eBPF/module, the kernel start address
+needs to be compensated in the function machine__get_kernel_start(),
+so this can let PMU or other events to work correctly.
+
+Will wait a bit if Arnaldo could give out guidance.
+
+> >      $(call detected,CONFIG_LIBOPENCSD)
+> >      ifdef CSTRACE_RAW
+> >        CFLAGS += -DCS_DEBUG_RAW
+> > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> > index 0c7776b51045..5fa0be3a3904 100644
+> > --- a/tools/perf/util/cs-etm.c
+> > +++ b/tools/perf/util/cs-etm.c
+> > @@ -613,10 +613,27 @@ static void cs_etm__free(struct perf_session *session)
+> >  static u8 cs_etm__cpu_mode(struct cs_etm_queue *etmq, u64 address)
+> >  {
+> >         struct machine *machine;
+> > +       u64 fixup_kernel_start = 0;
+> >
+> >         machine = etmq->etm->machine;
+> >
+> > -       if (address >= etmq->etm->kernel_start) {
+> > +       /*
+> > +        * Since arm and arm64 specify some memory regions prior to
+> > +        * 'kernel_start', kernel addresses can be less than 'kernel_start'.
+> > +        *
+> > +        * For arm architecture, the 16MB virtual memory space prior to
+> > +        * 'kernel_start' is allocated to device modules, a PMD table if
+> > +        * CONFIG_HIGHMEM is enabled and a PGD table.
+> > +        *
+> > +        * For arm64 architecture, the root PGD table, device module memory
+> > +        * region and BPF jit region are prior to 'kernel_start'.
+> > +        *
+> > +        * To reflect the complete kernel address space, compensate these
+> > +        * pre-defined regions for kernel start address.
+> > +        */
+> > +       fixup_kernel_start = etmq->etm->kernel_start - ARM_PRE_START_SIZE;
+> > +
+> > +       if (address >= fixup_kernel_start) {
+> >                 if (machine__is_host(machine))
+> >                         return PERF_RECORD_MISC_KERNEL;
+> >                 else
+> 
+> Tested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+Thanks a lot for the reviewing & testing; and very appreciate your much
+consumed time :)
+
+Thanks,
+Leo Yan
