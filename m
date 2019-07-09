@@ -2,121 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B3A638C8
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2019 17:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F766390D
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2019 18:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726115AbfGIPkZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jul 2019 11:40:25 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:38512 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726055AbfGIPkZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jul 2019 11:40:25 -0400
-Received: by mail-io1-f66.google.com with SMTP id j6so44126484ioa.5;
-        Tue, 09 Jul 2019 08:40:25 -0700 (PDT)
+        id S1726444AbfGIQHj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jul 2019 12:07:39 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:38649 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725816AbfGIQHj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Jul 2019 12:07:39 -0400
+Received: by mail-pf1-f194.google.com with SMTP id y15so9521810pfn.5
+        for <bpf@vger.kernel.org>; Tue, 09 Jul 2019 09:07:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=lBGHvOhuEXhBOTWSFCxq6KmZhMlzdxSO+iRbbFomrS8=;
-        b=Tdqn0m9aB9JaMlVevOX+vJfjMEmQ9j6EISYMkEIR7n8OmgOSNE0QbpbgEEgpZU6Pjl
-         RvAZq6rP39Ku9mvbiwUZ7126GAxBXLT/uhIflgfQCuL/lVEIEn0waJBRaJpppd0lxfwP
-         p4gI/8Nyw7NiwvQRw+ib8SSk6ZHwzmVF4PGqchd10+kURHbjyVpjmJKvpp16fitvKz28
-         qDExyg/6pWog2gYjlrKJjovWdznIVaEwgjRRm6a9Yv+xIdgFEFDchzGZ6XA9NGoGdkUr
-         cLRWGzdVFyTKiNWXgKJm08zNGTSmJebCSoyj7RNPyLOI5UqkhvBA/YNsouhODI5D9iEF
-         X4Jw==
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=a2DLaUEaOKgGOvV8tI8UdDVB4ztPQnYhRDfhaHbkhuo=;
+        b=jUZr6JEk1SwQqMONTF5QUie+BJhtzUnrCR8GCX9UnpIWphlIgeOS0IqIks1lHH2py0
+         udJN9Aer8lPdFtGZ883viqBmr3Y+ml4Ncn3zPGbWozWMKVSkQnf5pEklY0iSDnU8jXJB
+         cUobhJhicRnk7eQakAozSgBryzEW+zQ/bhu2CRuOFqr6+D2TcSZLQ2FIEvIgKYxruzXX
+         /olexdKZqBVh7YInjzURXuBmniGs6Me2HPwvYjr5eZbQXj4J1S2WdoNFN37O8M22h7p0
+         9eY3OiZXQKRehjaQYp3cV8bZrIe+KYpRG6q2B8HUe1cQqvcmX8f8c6FIclNNDbk7v46s
+         3QwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=lBGHvOhuEXhBOTWSFCxq6KmZhMlzdxSO+iRbbFomrS8=;
-        b=n0HoNf/iWX+WsP8l15kU3S1ZTJvMtUBT0Llf3euxWccOo+IfeDfc+46m2ACmxrFjOM
-         HIoJ5TFaj2wqmn80SRYToScnO5vOXCW5ZupH7RjMU+XUWuaVMeCAVjUmxsDPygIreIQE
-         fRmtJfBOtR+WMSqmD76ExglN6LgPU/NutRXHuZepJKxgbARykgfO9Meq3Xo1gkRvPaYG
-         h5PirTIG4mv4MtO4BusmT9BJ6OsbcSXH/RtoRrjMBbuJijZFi9O8ltFy2BhNKX9cqPBZ
-         rQmOja5YkzQvLb9PGFatQhII2ufTzAc8eIrbeAgSLXlLA5lJQx1Gh0vqcExFaskdBL6z
-         sukg==
-X-Gm-Message-State: APjAAAX8iICWt4pKyONhYlJeIFOZjVqDQy/1ZHCoLwgiAIIAfQRIWqAF
-        VBAsxsszXeDvviWROL3FTlk=
-X-Google-Smtp-Source: APXvYqxV55F7G567Fl3WDffkOaXOB5+felKggg5k/fMdZgmDx2IOvxWZmK2eug243DFdxuhx+52SMw==
-X-Received: by 2002:a05:6602:1d2:: with SMTP id w18mr4793051iot.157.1562686824847;
-        Tue, 09 Jul 2019 08:40:24 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id n21sm15753542ioh.30.2019.07.09.08.40.21
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=a2DLaUEaOKgGOvV8tI8UdDVB4ztPQnYhRDfhaHbkhuo=;
+        b=K8+hGXrixjGpZXidoGQHVDIbuXe8qreayp7ZuAt8P5pQOfkA+LnFelIF8cR2TNFn83
+         gq2u9S6EU1XA2Hp/m/6ZDa2NyRO4SygiT936Lc7hFcd8hcMUB6awazuqwN9yIGgK4XXg
+         d4diiz8m/yuFTYHtYeHK4G9Chh1Rfqf3F0zkWOjpecEuon6H1PJVUyXpN2uPr2Liiu5f
+         JrHR2vCRovwbpp32SB4oEwNG0LN4YxqsryKrBV2IWE11frHif8C+a9VbLKBUmFTgKEsG
+         F9CWeG9VorfQ9jo4cvgpb4xv+jvYDOVOCJFXAM/UKNpWrN+vezf9NJM/Phajp6iWT40G
+         8O9w==
+X-Gm-Message-State: APjAAAWPOk6EbK7mIGHMy6EsVTeRJUKSZTAR7gTgvJDDLRX6EmCCM5pg
+        YSaJ44LNGdDp7bk/2PCMpTluAA==
+X-Google-Smtp-Source: APXvYqxt5OpKGxNnpvl9UGD+HaosbKnw16D4fMAgwdfS3YVx15plA0HwzRmgFXXG2wQm8J5VxtqfCQ==
+X-Received: by 2002:a17:90a:338b:: with SMTP id n11mr908432pjb.21.1562688458622;
+        Tue, 09 Jul 2019 09:07:38 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id o15sm21894671pgj.18.2019.07.09.09.07.37
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 09 Jul 2019 08:40:23 -0700 (PDT)
-Date:   Tue, 09 Jul 2019 08:40:14 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        edumazet@google.com, bpf@vger.kernel.org
-Message-ID: <5d24b55e8b868_3b162ae67af425b43e@john-XPS-13-9370.notmuch>
-In-Reply-To: <20190708231318.1a721ce8@cakuba.netronome.com>
-References: <156261310104.31108.4569969631798277807.stgit@ubuntu3-kvm1>
- <20190708231318.1a721ce8@cakuba.netronome.com>
-Subject: Re: [bpf PATCH v2 0/6] bpf: sockmap/tls fixes
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Tue, 09 Jul 2019 09:07:37 -0700 (PDT)
+Date:   Tue, 9 Jul 2019 09:07:37 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ys114321@gmail.com,
+        davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net
+Subject: Re: [PATCH v3 bpf-next 0/4] selftests/bpf: fix compiling
+ loop{1,2,3}.c on s390
+Message-ID: <20190709160737.GA22061@mini-arch>
+References: <20190709151809.37539-1-iii@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190709151809.37539-1-iii@linux.ibm.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Kicinski wrote:
-> On Mon, 08 Jul 2019 19:13:29 +0000, John Fastabend wrote:
-> > Resolve a series of splats discovered by syzbot and an unhash
-> > TLS issue noted by Eric Dumazet.
-> > 
-> > The main issues revolved around interaction between TLS and
-> > sockmap tear down. TLS and sockmap could both reset sk->prot
-> > ops creating a condition where a close or unhash op could be
-> > called forever. A rare race condition resulting from a missing
-> > rcu sync operation was causing a use after free. Then on the
-> > TLS side dropping the sock lock and re-acquiring it during the
-> > close op could hang. Finally, sockmap must be deployed before
-> > tls for current stack assumptions to be met. This is enforced
-> > now. A feature series can enable it.
-> > 
-> > To fix this first refactor TLS code so the lock is held for the
-> > entire teardown operation. Then add an unhash callback to ensure
-> > TLS can not transition from ESTABLISHED to LISTEN state. This
-> > transition is a similar bug to the one found and fixed previously
-> > in sockmap. Then apply three fixes to sockmap to fix up races
-> > on tear down around map free and close. Finally, if sockmap
-> > is destroyed before TLS we add a new ULP op update to inform
-> > the TLS stack it should not call sockmap ops. This last one
-> > appears to be the most commonly found issue from syzbot.
+On 07/09, Ilya Leoshkevich wrote:
+> Use PT_REGS_RC(ctx) instead of ctx->rax, which is not present on s390.
 > 
-> Looks like strparser is not done'd for offload?
-
-Right so if rx_conf != TLS_SW then the hardware needs to do
-the strparser functionality.
-
+> This patch series consists of three preparatory commits, which make it
+> possible to use PT_REGS_RC in BPF selftests, followed by the actual fix.
 > 
-> About patch 6 - I was recently wondering about the "impossible" syzbot
-> report where context is not freed and my conclusion was that there
-> can be someone sitting at lock_sock() in tcp_close() already by the
-> time we start installing the ULP, so TLS's close will never get called.
-> The entire replacing of callbacks business is really shaky :(
-
-Well replacing callbacks is the ULP model. The race we are fixing in
-patch 6 is sockmap being free'd which removes psock and resets proto ops
-with tcp_close() path.
-
-I don't think there is another race like you describe because tcp_set_ulp
-is called from do_tcp_setsockopt which holds the lock and tcp state is
-checked to ensure its ESTABLISHED. A closing sock wont be in ESTABLISHED
-state so any setup will be aborted. Before patch 1 though I definately
-saw this race because we dropped the lock mid-close.
-
-With this series I've been running those syzbot programs over night
-without issue on 4 cores. Also selftests pass in ./net/tls and ./bpf/
-so I think its stable and resolves many of the issues syzbot has been
-stomping around.
-
+> Since the last time, I've tested it with x86_64-linux-gnu-,
+> aarch64-linux-gnu-, arm-linux-gnueabihf-, mips64el-linux-gnuabi64-,
+> powerpc64le-linux-gnu-, s390x-linux-gnu- and sparc64-linux-gnu-
+> compilers, and found that I also need to add arm64 support.
 > 
-> Perhaps I'm rumbling, I will take a close look after I get some sleep :)
+> Like s390, arm64 exports user_pt_regs instead of struct pt_regs to
+> userspace.
+> 
+> I've also made fixes for a few unrelated build problems, which I will
+> post separately.
+> 
+> v1->v2: Split into multiple patches.
+> v2->v3: Added arm64 support.
+For the whole series:
 
-Yes please do ;)
+Reviewed-by: Stanislav Fomichev <sdf@google.com>
+
+This should probably go to bpf, not bpf-next since it fixes the
+existing compilation problem.
+
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> 
+> 
