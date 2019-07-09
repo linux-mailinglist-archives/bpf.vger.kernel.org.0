@@ -2,89 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 81AA863887
-	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2019 17:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B87A638B1
+	for <lists+bpf@lfdr.de>; Tue,  9 Jul 2019 17:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbfGIPVf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jul 2019 11:21:35 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12052 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726133AbfGIPVf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 9 Jul 2019 11:21:35 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x69FDeL3117398
-        for <bpf@vger.kernel.org>; Tue, 9 Jul 2019 11:21:34 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2tmwaj8mta-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 09 Jul 2019 11:21:33 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Tue, 9 Jul 2019 16:21:32 +0100
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 9 Jul 2019 16:21:30 +0100
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x69FLSfO49152010
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 9 Jul 2019 15:21:28 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 785E842047;
-        Tue,  9 Jul 2019 15:21:28 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4C3BF4204C;
-        Tue,  9 Jul 2019 15:21:28 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.145.146.163])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  9 Jul 2019 15:21:28 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf] selftests/bpf: fix bpf_target_sparc check
-Date:   Tue,  9 Jul 2019 17:21:26 +0200
-X-Mailer: git-send-email 2.21.0
+        id S1726133AbfGIPeZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jul 2019 11:34:25 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:45239 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726060AbfGIPeY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Jul 2019 11:34:24 -0400
+Received: by mail-lf1-f66.google.com with SMTP id u10so13716557lfm.12;
+        Tue, 09 Jul 2019 08:34:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XldrumkAgmzEzxgr2Bcv/W7MnrtFEO21Trg6QIY5k84=;
+        b=BVh3b0bBJ8vh+cbfAE1PPxlD2zb/+DWuI9G4Wtyh3ITaGL2D9FqMGozHfb1aaI02WV
+         ZTlXfMRbRIaF9f3x4uz3kUZHECth7ftSAK7Jrerx5Psp6tVSStd+0UCW41LnbUREBKxt
+         vAhywaDHaaHaItpu7fXme4HVUKJtcQz2fS0CmcRab8SfYlBpHCejckEK0GeSFZgasyQQ
+         CYyZoLpkS4Fn93kNK4uw7bxmnbbkpLAl99vL2A3vkrh5cQbCjK6iI0RicvAie7ayQJKY
+         EywTtOe5759BFFnumbj2P+z7DQYnU2QfTF/wqyJjbEDl1b0gsje/3phHX/QKj6QugLwA
+         FZ+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XldrumkAgmzEzxgr2Bcv/W7MnrtFEO21Trg6QIY5k84=;
+        b=cgmvdi0OO7tCcVOHicu0WvZADhDtZ5ld8O8MvoJcxzPTs1u1gm5riYY0S3LjsGk4i4
+         4g0Bo2ILNkN58wZIIydrH1JSBjQ49y7qMUACqmSWk9Qy7kMxN9Cm9GPhuZOVi+3OXUaO
+         Iwu1VP7dz8SoBgGw+J4UjP10mBhAeJ2xBvOZFogsL25SFIg3JU9zTg2fQ0ayFTXYEupz
+         kNgacxO6WrAV28iUg/5xZndlceB3GD436Nw5b3MnkAoFS8Ce7+KrWEM2U8S9Drnh7IZv
+         vnao1ijSOV6UPpI47fxfJa6R4I7E1HY4Df3OGFmJFhLWyHChPQeZQd6OGT/mvFg6DPrZ
+         nu0g==
+X-Gm-Message-State: APjAAAXfaPoXg4S3IuUC/Ieo7nNoHTBZnj6iIugwLHSJJhhBvIJLlQkX
+        /B7wYflJM8l4BJLxPqrnWkGuyc1jHrCxvYr+UrM=
+X-Google-Smtp-Source: APXvYqzRxvwVIQVCdYryBBCbyZSV+GA8BjIWzect/o4kWLCLUJtoHLajB5JkQJAcIVflMA6QTClU8Xt3pMYR+CHnCbo=
+X-Received: by 2002:a19:6b0e:: with SMTP id d14mr11779539lfa.174.1562686462634;
+ Tue, 09 Jul 2019 08:34:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19070915-0020-0000-0000-00000351B088
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19070915-0021-0000-0000-000021A560BC
-Message-Id: <20190709152126.37853-1-iii@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-09_06:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907090180
+References: <20190703170118.196552-1-brianvv@google.com> <20190703170118.196552-3-brianvv@google.com>
+ <CAH3MdRU505Er44m460c7y5nxtZxmDmVY4jDrWOYt2=OdP2d5Ow@mail.gmail.com>
+In-Reply-To: <CAH3MdRU505Er44m460c7y5nxtZxmDmVY4jDrWOYt2=OdP2d5Ow@mail.gmail.com>
+From:   Brian Vazquez <brianvv.kernel@gmail.com>
+Date:   Tue, 9 Jul 2019 08:34:11 -0700
+Message-ID: <CABCgpaU=H+qOUAx+yRHJjBMqmeAtp5iQL_yv9cXB6HTqB0jXcA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next RFC v3 2/6] bpf: add BPF_MAP_DUMP command to dump
+ more than one entry per call
+To:     Y Song <ys114321@gmail.com>
+Cc:     Brian Vazquez <brianvv@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Petar Penkov <ppenkov@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_helpers.h fails to compile on sparc: the code should be checking
-for defined(bpf_target_sparc), but checks simply for bpf_target_sparc.
+> Maybe you can swap map_fd and flags?
+> This way, you won't have hole right after map_fd?
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- tools/testing/selftests/bpf/bpf_helpers.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Makes sense.
 
-diff --git a/tools/testing/selftests/bpf/bpf_helpers.h b/tools/testing/selftests/bpf/bpf_helpers.h
-index 5f6f9e7aba2a..a8fea087aa90 100644
---- a/tools/testing/selftests/bpf/bpf_helpers.h
-+++ b/tools/testing/selftests/bpf/bpf_helpers.h
-@@ -443,7 +443,7 @@ static int (*bpf_skb_adjust_room)(void *ctx, __s32 len_diff, __u32 mode,
- #ifdef bpf_target_powerpc
- #define BPF_KPROBE_READ_RET_IP(ip, ctx)		({ (ip) = (ctx)->link; })
- #define BPF_KRETPROBE_READ_RET_IP		BPF_KPROBE_READ_RET_IP
--#elif bpf_target_sparc
-+#elif defined(bpf_target_sparc)
- #define BPF_KPROBE_READ_RET_IP(ip, ctx)		({ (ip) = PT_REGS_RET(ctx); })
- #define BPF_KRETPROBE_READ_RET_IP		BPF_KPROBE_READ_RET_IP
- #else
--- 
-2.21.0
+> > +       attr->flags = 0;
+> Why do you want attr->flags? This is to modify anonumous struct used by
+> BPF_MAP_*_ELEM commands.
 
+Nice catch! This was a mistake I forgot to delete that line.
+
+> In bcc, we have use cases like this. At a certain time interval (e.g.,
+> every 2 seconds),
+> we get all key/value pairs for a map, we format and print out map
+> key/values on the screen,
+> and then delete all key/value pairs we retrieved earlier.
+>
+> Currently, bpf_get_next_key() is used to get all key/value pairs, and
+> deletion also happened
+> at each key level.
+>
+> Your batch dump command should help retrieving map key/value pairs.
+> What do you think deletions of those just retrieved map entries?
+> With an additional flag and fold into BPF_MAP_DUMP?
+> or implement a new BPF_MAP_DUMP_AND_DELETE?
+>
+> I mentioned this so that we can start discussion now.
+> You do not need to implement batch deletion part, but let us
+> have a design extensible for that.
+>
+> Thanks.
+
+With a additional flag, code could be racy where you copy an old value
+and delete the newest one.
+So maybe we could implement BPF_MAP_DUMP_AND_DELETE as a wrapper of
+map_get_next_key + map_lookup_and_delete_elem. Last function already
+exists but it has not been implemented for maps other than stack and
+queue.
+
+Thanks for reviewing it!
