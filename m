@@ -2,152 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ABA5646EC
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 15:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 526C5647F4
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 16:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbfGJNZY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 10 Jul 2019 09:25:24 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36636 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726708AbfGJNZY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 10 Jul 2019 09:25:24 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6ADNm7v040452
-        for <bpf@vger.kernel.org>; Wed, 10 Jul 2019 09:25:22 -0400
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2tnfq5uh3r-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 10 Jul 2019 09:25:22 -0400
-Received: from localhost
-        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Wed, 10 Jul 2019 14:25:20 +0100
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
-        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 10 Jul 2019 14:25:18 +0100
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6ADPHXR53215306
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Jul 2019 13:25:17 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1A1B042042;
-        Wed, 10 Jul 2019 13:25:17 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E1F374203F;
-        Wed, 10 Jul 2019 13:25:16 +0000 (GMT)
-Received: from dyn-9-152-97-237.boeblingen.de.ibm.com (unknown [9.152.97.237])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 10 Jul 2019 13:25:16 +0000 (GMT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [PATCH v2 bpf-next] selftests/bpf: do not ignore clang failures
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-In-Reply-To: <CAEf4BzZEs24=Cp8CdQiXtGXCcMtW430ER7wDHND7YA7OVfz3XA@mail.gmail.com>
-Date:   Wed, 10 Jul 2019 15:25:16 +0200
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Song Liu <liu.song.a23@gmail.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>
-Content-Transfer-Encoding: 8BIT
-References: <CAEf4Bzb3BKoEcYiM3qQ6uqn+bZZ7kO2ogvZPba7679TWFT4fmw@mail.gmail.com>
- <20190701184025.25731-1-iii@linux.ibm.com>
- <cc418117-32a7-b7aa-3570-29b1b3421303@iogearbox.net>
- <59B1630A-537D-43A1-B75C-87BE80709F93@linux.ibm.com>
- <CAEf4BzZEs24=Cp8CdQiXtGXCcMtW430ER7wDHND7YA7OVfz3XA@mail.gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-X-Mailer: Apple Mail (2.3445.9.1)
-X-TM-AS-GCONF: 00
-x-cbid: 19071013-4275-0000-0000-0000034B5D23
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19071013-4276-0000-0000-0000385B6122
-Message-Id: <AAD094D8-EB0A-4464-B180-0293816B8DF8@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-10_05:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907100156
+        id S1727402AbfGJOP6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Jul 2019 10:15:58 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:34627 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727095AbfGJOP5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Jul 2019 10:15:57 -0400
+Received: by mail-pf1-f193.google.com with SMTP id b13so1184653pfo.1
+        for <bpf@vger.kernel.org>; Wed, 10 Jul 2019 07:15:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8u/8oBvwls3TmHDIAgdRr1iO5w1leafBhE5nzfgIbNY=;
+        b=ik/txIOzI2+TUrsUL2ZoXzZa7twvPZdk3u9E2bYRIL99Lvfh0YdEPjD/zeLFzop8nI
+         dz+tENQ7uf96nUYOS7DKtU7tYereh/giq76H0nt6EdsZLxNVhJac+smvmQ0qoLhDSLkO
+         gydAI8tKn+4b+GYSIRTIbLPCYVtIOwL6NJwNY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8u/8oBvwls3TmHDIAgdRr1iO5w1leafBhE5nzfgIbNY=;
+        b=MmO4rVHubHCw9V8+AMmRHowRbTjJqlATxcZmpRR1rQ4h4tbn+bUXNNe+RSfj2hY7a2
+         2psdh6omn80oLRWlRfiVxQLtrHdTMwl9zB9SPBW4insSH31nj6DjojudGXu4kNC7ykkh
+         rcEWatFztyD9ryCy8f0Sd/i5mwA95vv/Pm0qAeZseAEQsr3j4s9Nm6XsKrilmIX2AwJL
+         fy9vQGLhmHQI/lXVUUOmrrnbGvpfSHtbtZX+l5C16hnRn2GBS+omF59aTrjj2ddBen+x
+         /onSHKlJ61h8DaVDdyAx9SK2/wVjPYZow+i+8P9Nbd4NxA8YuEZmufziMHZMg5dkgCaz
+         l2TQ==
+X-Gm-Message-State: APjAAAWODzMSVA32OxDVMYDD+oG+rLHb+XxhdApUninBbijGXF04jXjA
+        C34PTa3LbgJWoB25l2vz6GMfaA==
+X-Google-Smtp-Source: APXvYqwWrgLgXgQwACA2VuP7IqF8CPk7WQxKdd5MI3KP8MV596Wrwf2m53X+vAoh9by7zbDtkvjKkg==
+X-Received: by 2002:a63:4b02:: with SMTP id y2mr26565686pga.135.1562768156934;
+        Wed, 10 Jul 2019 07:15:56 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id l124sm2589249pgl.54.2019.07.10.07.15.53
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 10 Jul 2019 07:15:56 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Brendan Gregg <brendan.d.gregg@gmail.com>, connoro@google.com,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        duyuchao <yuchao.du@unisoc.com>, Ingo Molnar <mingo@redhat.com>,
+        jeffv@google.com, Karim Yaghmour <karim.yaghmour@opersys.com>,
+        kernel-team@android.com, linux-kselftest@vger.kernel.org,
+        Manali Shukla <manalishukla14@gmail.com>,
+        Manjo Raja Rao <linux@manojrajarao.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Matt Mullins <mmullins@fb.com>,
+        Michal Gregorczyk <michalgr@fb.com>,
+        Michal Gregorczyk <michalgr@live.com>,
+        Mohammad Husain <russoue@gmail.com>, namhyung@google.com,
+        namhyung@kernel.org, netdev@vger.kernel.org,
+        paul.chaignon@gmail.com, primiano@google.com,
+        Qais Yousef <qais.yousef@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tamir Carmeli <carmeli.tamir@gmail.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: [PATCH RFC 0/4] Add support to directly attach BPF program to ftrace
+Date:   Wed, 10 Jul 2019 10:15:44 -0400
+Message-Id: <20190710141548.132193-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Am 09.07.2019 um 20:14 schrieb Andrii Nakryiko <andrii.nakryiko@gmail.com>:
-> 
-> On Mon, Jul 8, 2019 at 8:01 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
->> 
->>> Am 05.07.2019 um 16:22 schrieb Daniel Borkmann <daniel@iogearbox.net>:
->>> 
->>> On 07/01/2019 08:40 PM, Ilya Leoshkevich wrote:
->>>> Am 01.07.2019 um 17:31 schrieb Andrii Nakryiko <andrii.nakryiko@gmail.com>:
->>>>> Do we still need clang | llc pipeline with new clang? Could the same
->>>>> be achieved with single clang invocation? That would solve the problem
->>>>> of not detecting pipeline failures.
->>>> 
->>>> I’ve experimented with this a little, and found that new clang:
->>>> 
->>>> - Does not understand -march, but -target is sufficient.
->>>> - Understands -mcpu.
->>>> - Understands -Xclang -target-feature -Xclang +foo as a replacement for
->>>> -mattr=foo.
->>>> 
->>>> However, there are two issues with that:
->>>> 
->>>> - Don’t older clangs need to be supported? For example, right now alu32
->>>> progs are built conditionally.
->>> 
->>> We usually require latest clang to be able to test most recent features like
->>> BTF such that it helps to catch potential bugs in either of the projects
->>> before release.
->>> 
->>>> - It does not seem to be possible to build test_xdp.o without -target
->>>> bpf.
->>> 
->>> For everything non-tracing, it does not make sense to invoke clang w/o
->>> the -target bpf flag, see also Documentation/bpf/bpf_devel_QA.rst +573
->>> for more explanation, so this needs to be present for building test_xdp.o.
->> 
->> I'm referring to the test introduced in [1]. test_xdp.o might not be an
->> ideal target, but even if it's replaced with a more suitable one, the
->> llc invocation would still be required. So I could redo the patch as
->> follows:
->> 
->> - Replace test_xdp.o with get_cgroup_id_kern.o, use an intermediate .bc
->>  file.
->> - Use clang without llc for all other eBPF programs.
->> - Split out Kbuild include and order-only prerequisites.
->> 
->> What do you think?
-> 
-> How about just forcing llc to fail as well like this:
-> 
-> (clang <whatever> || echo "clain failed") | llc <whatever>
-> 
-> While not pretty, it will get us what we need with very clear
-> messaging as well. E.g.:
-> 
-> progs/test_btf_newkv.c:21:37: error: expected identifier
-> PF_ANNOTATE_KV_PAIR(btf_map_legacy, int, struct ipv_counts);
->                                    ^
-> progs/test_btf_newkv.c:21:1: warning: type specifier missing, defaults
-> to 'int' [-Wimplicit-int]
-> PF_ANNOTATE_KV_PAIR(btf_map_legacy, int, struct ipv_counts);
-> ^
-> 1 warning and 1 error generated.
-> llc: error: llc: <stdin>:1:1: error: expected top-level entity
-> clang failed
-> ^
+Hi,
+These patches make it possible to attach BPF programs directly to tracepoints
+using ftrace (/sys/kernel/debug/tracing) without needing the process doing the
+attach to be alive. This has the following benefits:
 
-While this would definitely work at least in my scenario, what about the
-following hypothetical cases?
+1. Simplified Security: In Android, we have finer-grained security controls to
+specific ftrace trace events using SELinux labels. We control precisely who is
+allowed to enable an ftrace event already. By adding a node to ftrace for
+attaching BPF programs, we can use the same mechanism to further control who is
+allowed to attach to a trace event.
 
-- clang manages to output something before exiting with nonzero rc
-- future llc version exits with zero rc when given "clang failed" or any
-  other arbitrary string as an input (perhaps, with just a warning?)
+2. Process lifetime: In Android we are adding usecases where a tracing program
+needs to be attached all the time to a tracepoint, for the full life time of
+the system. Such as to gather statistics where there no need for a detach for
+the full system lifetime. With perf or bpf(2)'s BPF_RAW_TRACEPOINT_OPEN, this
+means keeping a process alive all the time.  However, in Android our BPF loader
+currently (for hardeneded security) involves just starting a process at boot
+time, doing the BPF program loading, and then pinning them to /sys/fs/bpf.  We
+don't keep this process alive all the time. It is more suitable to do a
+one-shot attach of the program using ftrace and not need to have a process
+alive all the time anymore for this. Such process also needs elevated
+privileges since tracepoint program loading currently requires CAP_SYS_ADMIN
+anyway so by design Android's bpfloader runs once at init and exits.
 
-Come to think of it, what are the downsides of having intermediate
-bitcode files? While I did not run into this yet, I could imagine it
-might be even useful from time to time to inspect them.
+This series add a new bpf file to /sys/kernel/debug/tracing/events/X/Y/bpf
+The following commands can be written into it:
+attach:<fd>     Attaches BPF prog fd to tracepoint
+detach:<fd>     Detaches BPF prog fd to tracepoint
+
+Reading the bpf file will show all the attached programs to the tracepoint.
+
+Joel Fernandes (Google) (4):
+Move bpf_raw_tracepoint functionality into bpf_trace.c
+trace/bpf: Add support for attach/detach of ftrace events to BPF
+lib/bpf: Add support for ftrace event attach and detach
+selftests/bpf: Add test for ftrace-based BPF attach/detach
+
+include/linux/bpf_trace.h                     |  16 ++
+include/linux/trace_events.h                  |   1 +
+kernel/bpf/syscall.c                          |  69 +-----
+kernel/trace/bpf_trace.c                      | 225 ++++++++++++++++++
+kernel/trace/trace.h                          |   1 +
+kernel/trace/trace_events.c                   |   8 +
+tools/lib/bpf/bpf.c                           |  53 +++++
+tools/lib/bpf/bpf.h                           |   4 +
+tools/lib/bpf/libbpf.map                      |   2 +
+.../raw_tp_writable_test_ftrace_run.c         |  89 +++++++
+10 files changed, 410 insertions(+), 58 deletions(-)
+create mode 100644 tools/testing/selftests/bpf/prog_tests/raw_tp_writable_test_ftrace_run.c
+
+--
+2.22.0.410.gd8fdbe21b5-goog
 
