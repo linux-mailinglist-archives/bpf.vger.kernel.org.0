@@ -2,118 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DDB663FAA
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 05:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895E064359
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 10:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726043AbfGJDje (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jul 2019 23:39:34 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:45697 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725899AbfGJDje (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jul 2019 23:39:34 -0400
-Received: by mail-io1-f67.google.com with SMTP id g20so1571905ioc.12;
-        Tue, 09 Jul 2019 20:39:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=vkNxhhQqx2DW45+FHUIITX7YT1t53rI6RXHcYiqJqUY=;
-        b=Gai7FgBXUObMFo5yxa6ei+wlGGkCup2IlAsRVx2gdETCfRDXr0APA+24yIuewcqbop
-         bTr1mMCVSR85ixRdN8cw+z2BAsjFFyT0/b8kfxD83Klk0lClbPTmrT8cuYtUpqKQacxv
-         XFvuR/m/9sTjiNA/sv8nOJ1CkKOfx4uVfcVmlKVB6aJ6zMxDcmgTYWqE5lrZ9f2D1N/s
-         Tb55zA6rXZKzikPzq04I1YC+juPaq3tV25cHWIqYzQ7/ChHQ71C7q2KM94bMnmpYGJyh
-         HadTVbRuqHkYmv+1aKIbgbX3jIFjYCMcE2sU9H17mGZ0oWLbhVKY+FK5iK6Iy0ajyobE
-         gtTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=vkNxhhQqx2DW45+FHUIITX7YT1t53rI6RXHcYiqJqUY=;
-        b=f2GWS/iBKejF5LON4pfe/dSKsQiGWkn0ebU3+rndkZSmWIJ3BWKRyZH06Zte1BJ41b
-         7Iri6YkHM6Uaq+fSxiutFMQhFIEzIOycE4ByMGUySCVQDXgBYrpvsjhUcyyJGvq236YI
-         8+U599wjsozPm0hd+eXlAFeF77poI1wVLyCd+zwqSoKLDiK1FZb9iUWtbPDOL7eel+J/
-         7oTFD5homI40qd5i90vocODHgWjX+2SQVyCDYIbI098Z0XP0ttHfEFk+Welwgx+NKyh9
-         waiwH7jr/F0DEUdO6cfap3jmY5RJcFgyS88/+yOz3XgTiamZzduXxaw+kl/T3Tfdlb5m
-         Dzww==
-X-Gm-Message-State: APjAAAUrBrIPq1+oumgNP3w8T2olPWJ8Sk+2MdSLLWVzBdzt9Gs1FR+J
-        JIXV4PGthtnRG4nwU6DqfAM=
-X-Google-Smtp-Source: APXvYqxKBBKdf5Rv/MFREUAYs4D56vMeUuLkn1LIREaOMxu0g3X3ef7J+Mulg9G7PYDlh7uZJs6lEA==
-X-Received: by 2002:a5d:9d42:: with SMTP id k2mr10439691iok.45.1562729973786;
-        Tue, 09 Jul 2019 20:39:33 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id m10sm1286950ioj.75.2019.07.09.20.39.30
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 09 Jul 2019 20:39:33 -0700 (PDT)
-Date:   Tue, 09 Jul 2019 20:39:24 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        edumazet@google.com, bpf@vger.kernel.org
-Message-ID: <5d255dececd33_1b7a2aec940d65b45@john-XPS-13-9370.notmuch>
-In-Reply-To: <20190709194525.0d4c15a6@cakuba.netronome.com>
-References: <156261310104.31108.4569969631798277807.stgit@ubuntu3-kvm1>
- <156261324561.31108.14410711674221391677.stgit@ubuntu3-kvm1>
- <20190709194525.0d4c15a6@cakuba.netronome.com>
-Subject: Re: [bpf PATCH v2 2/6] bpf: tls fix transition through disconnect
- with close
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1727222AbfGJIIv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Jul 2019 04:08:51 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:21150 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726134AbfGJIIv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 10 Jul 2019 04:08:51 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6A7soa0006693
+        for <bpf@vger.kernel.org>; Wed, 10 Jul 2019 01:08:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=PDY+EhkXjha7DMzrL7RSVazSHo0QDYayuvq4vc2hvvM=;
+ b=GaChb78XG+JhNSVybUnusvZr5jgnjE4YbnbIlFyULSiWfz1bBUxDZQKocRWS6L2e6dfc
+ YYZulKj53qCNePslegMkDRUPKq7qFcqK8wFD7lNcYFilRSsyXVZjejjS3v0Tt5EEwGuG
+ Wo/yx0UChkF0GH3tTBr2XUFB8qNcdc8mNIc= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2tn6n8ruy6-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 10 Jul 2019 01:08:50 -0700
+Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Wed, 10 Jul 2019 01:08:49 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id E43B88616EE; Wed, 10 Jul 2019 01:08:48 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <andrii.nakryiko@gmail.com>, <ast@fb.com>, <daniel@iogearbox.net>,
+        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <kernel-team@fb.com>
+CC:     Andrii Nakryiko <andriin@fb.com>, Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf] bpf: fix BTF verifier size resolution logic
+Date:   Wed, 10 Jul 2019 01:08:40 -0700
+Message-ID: <20190710080840.2613160-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-10_03:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=2 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=680 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907100098
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Kicinski wrote:
-> On Mon, 08 Jul 2019 19:14:05 +0000, John Fastabend wrote:
-> > @@ -287,6 +313,27 @@ static void tls_sk_proto_cleanup(struct sock *sk,
-> >  #endif
-> >  }
-> >  
-> > +static void tls_sk_proto_unhash(struct sock *sk)
-> > +{
-> > +	struct inet_connection_sock *icsk = inet_csk(sk);
-> > +	long timeo = sock_sndtimeo(sk, 0);
-> > +	struct tls_context *ctx;
-> > +
-> > +	if (unlikely(!icsk->icsk_ulp_data)) {
-> 
-> Is this for when sockmap is stacked on top of TLS and TLS got removed
-> without letting sockmap know?
+BTF verifier has Different logic depending on whether we are following
+a PTR or STRUCT/ARRAY (or something else). This is an optimization to
+stop early in DFS traversal while resolving BTF types. But it also
+results in a size resolution bug, when there is a chain, e.g., of PTR ->
+TYPEDEF -> ARRAY, in which case due to being in pointer context ARRAY
+size won't be resolved, as it is considered to be a sink for pointer,
+leading to TYPEDEF being in RESOLVED state with zero size, which is
+completely wrong.
 
-Right its a pattern I used on the sockmap side and put here. But
-I dropped the patch to let sockmap stack on top of TLS because
-it was more than a fix IMO. We could probably drop this check on
-the other hand its harmless.
-> 
-> > +		if (sk->sk_prot->unhash)
-> > +			sk->sk_prot->unhash(sk);
-> > +	}
-> > +
-> > +	ctx = tls_get_ctx(sk);
-> > +	if (ctx->tx_conf == TLS_SW || ctx->rx_conf == TLS_SW)
-> > +		tls_sk_proto_cleanup(sk, ctx, timeo);
-> > +	icsk->icsk_ulp_data = NULL;
-> 
-> I think close only starts checking if ctx is NULL in patch 6.
-> Looks like some chunks of ctx checking/clearing got spread to
-> patch 1 and some to patch 6.
+Optimization is doubtful, though, as btf_check_all_types() will iterate
+over all BTF types anyways, so the only saving is a potentially slightly
+shorter stack. But correctness is more important that tiny savings.
 
-Yeah, I thought the patches were easier to read this way but
-maybe not. Could add something in the commit log.
+This bug manifests itself in rejecting BTF-defined maps that use array
+typedef as a value type:
 
-> 
-> > +	tls_ctx_free_wq(ctx);
-> > +
-> > +	if (ctx->unhash)
-> > +		ctx->unhash(sk);
-> > +}
-> > +
-> >  static void tls_sk_proto_close(struct sock *sk, long timeout)
-> >  {
-> >  	struct tls_context *ctx = tls_get_ctx(sk);
-> 
+typedef int array_t[16];
 
+struct {
+	__uint(type, BPF_MAP_TYPE_ARRAY);
+	__type(value, array_t); /* i.e., array_t *value; */
+} test_map SEC(".maps");
+
+Fixes: eb3f595dab40 ("bpf: btf: Validate type reference")
+Cc: Martin KaFai Lau <kafai@fb.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ kernel/bpf/btf.c | 42 +++---------------------------------------
+ 1 file changed, 3 insertions(+), 39 deletions(-)
+
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index cad09858a5f2..c68c7e73b0d1 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -231,14 +231,6 @@ enum visit_state {
+ 	RESOLVED,
+ };
+ 
+-enum resolve_mode {
+-	RESOLVE_TBD,	/* To Be Determined */
+-	RESOLVE_PTR,	/* Resolving for Pointer */
+-	RESOLVE_STRUCT_OR_ARRAY,	/* Resolving for struct/union
+-					 * or array
+-					 */
+-};
+-
+ #define MAX_RESOLVE_DEPTH 32
+ 
+ struct btf_sec_info {
+@@ -254,7 +246,6 @@ struct btf_verifier_env {
+ 	u32 log_type_id;
+ 	u32 top_stack;
+ 	enum verifier_phase phase;
+-	enum resolve_mode resolve_mode;
+ };
+ 
+ static const char * const btf_kind_str[NR_BTF_KINDS] = {
+@@ -964,26 +955,7 @@ static void btf_verifier_env_free(struct btf_verifier_env *env)
+ static bool env_type_is_resolve_sink(const struct btf_verifier_env *env,
+ 				     const struct btf_type *next_type)
+ {
+-	switch (env->resolve_mode) {
+-	case RESOLVE_TBD:
+-		/* int, enum or void is a sink */
+-		return !btf_type_needs_resolve(next_type);
+-	case RESOLVE_PTR:
+-		/* int, enum, void, struct, array, func or func_proto is a sink
+-		 * for ptr
+-		 */
+-		return !btf_type_is_modifier(next_type) &&
+-			!btf_type_is_ptr(next_type);
+-	case RESOLVE_STRUCT_OR_ARRAY:
+-		/* int, enum, void, ptr, func or func_proto is a sink
+-		 * for struct and array
+-		 */
+-		return !btf_type_is_modifier(next_type) &&
+-			!btf_type_is_array(next_type) &&
+-			!btf_type_is_struct(next_type);
+-	default:
+-		BUG();
+-	}
++	return !btf_type_needs_resolve(next_type);
+ }
+ 
+ static bool env_type_is_resolved(const struct btf_verifier_env *env,
+@@ -1010,13 +982,6 @@ static int env_stack_push(struct btf_verifier_env *env,
+ 	v->type_id = type_id;
+ 	v->next_member = 0;
+ 
+-	if (env->resolve_mode == RESOLVE_TBD) {
+-		if (btf_type_is_ptr(t))
+-			env->resolve_mode = RESOLVE_PTR;
+-		else if (btf_type_is_struct(t) || btf_type_is_array(t))
+-			env->resolve_mode = RESOLVE_STRUCT_OR_ARRAY;
+-	}
+-
+ 	return 0;
+ }
+ 
+@@ -1038,7 +1003,7 @@ static void env_stack_pop_resolved(struct btf_verifier_env *env,
+ 	env->visit_states[type_id] = RESOLVED;
+ }
+ 
+-static const struct resolve_vertex *env_stack_peak(struct btf_verifier_env *env)
++static const struct resolve_vertex *env_stack_peek(struct btf_verifier_env *env)
+ {
+ 	return env->top_stack ? &env->stack[env->top_stack - 1] : NULL;
+ }
+@@ -3030,9 +2995,8 @@ static int btf_resolve(struct btf_verifier_env *env,
+ 	const struct resolve_vertex *v;
+ 	int err = 0;
+ 
+-	env->resolve_mode = RESOLVE_TBD;
+ 	env_stack_push(env, t, type_id);
+-	while (!err && (v = env_stack_peak(env))) {
++	while (!err && (v = env_stack_peek(env))) {
+ 		env->log_type_id = v->type_id;
+ 		err = btf_type_ops(v->t)->resolve(env, v);
+ 	}
+-- 
+2.17.1
 
