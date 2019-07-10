@@ -2,104 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5352263F6E
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 04:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1D163FA2
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 05:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726284AbfGJCpa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jul 2019 22:45:30 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:41555 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbfGJCpa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jul 2019 22:45:30 -0400
-Received: by mail-qk1-f194.google.com with SMTP id v22so751618qkj.8
-        for <bpf@vger.kernel.org>; Tue, 09 Jul 2019 19:45:30 -0700 (PDT)
+        id S1725875AbfGJD2h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jul 2019 23:28:37 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:36728 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725840AbfGJD2h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Jul 2019 23:28:37 -0400
+Received: by mail-io1-f67.google.com with SMTP id o9so1632246iom.3;
+        Tue, 09 Jul 2019 20:28:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=5MlFoEiTtYSTVJEd0HMKdj+ihpPJtAa4d5q9E1NXRJI=;
-        b=Wt+9y0JGXadhEj9HiS2rfKl4+ms0KC+UhtzLXL6LPYEcXsujxEn8/JjRSRafjWv/iI
-         GHfQYe9pYJ08iodBeu9FgA781m55PnAP+OBdl5hURTlSEh3nVOLip0evvIFFC8FjxkkV
-         9eEkAYDemnt8UtsExQckSO4ivW2588WONe6gz8ZpYASBfoyml2ogqYEdSBfqSgApRVWH
-         +GlnxhWjEpeMmgZA53HX1lJQ4HscXmnfRhMFevpqKT6xg6KOmvXP33Z0gISVS57rdWWk
-         qsDhZ8eKv+uIRfw3sgG3Ha9E/vk5Ah31TttUV0+vKUjhE3uH2Hg1/0p0IE6e/koeUXkT
-         153w==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=y++2NOiqCMguDknkQiXa12j8nNvRVL4zn7Iko7nn4Xo=;
+        b=nzV6tzvC1Lxup+L4XiL5KBuvvUZhs13EyZi5NlD/1Mm1kF5KNDsz41aMsiayUp2ydO
+         emdAKJBgVFFWECezHXR+lqIXim5GuXqauHo5xip7uhuUCSnrGiVZo9cCpPU6Ty8D7EXI
+         JxyvlRqotJwocw5uy3EwJlg5mExhXH72k4GeUaugdvSFe6o0TVuTSeNT3fZjvtDy5RUF
+         /K7wsjkqrS2uofL/u8rnyFAiWJ/3G3DjrBXsEivc/FHRsO2plfVaNhNVKVTcwiUSrNcH
+         n04pYc/TuSjNvBsVlqSEScV4MMmpYPLTJ5fivnDk8YcFM5XYbqvsVNsiMqAYxqlNWKih
+         aEOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=5MlFoEiTtYSTVJEd0HMKdj+ihpPJtAa4d5q9E1NXRJI=;
-        b=DNewKW32Nu2RJR4HCWQsUarKiXdSU4YRXdWHPF2I9qb0WtrS8Q93qXMMEPbKC4OsgF
-         OQRUmQaOgQBUuKhJHNWb4QP03WxUlbZJ9C/T6Y6UdBXv8TqU+2bxrq/10rU2/VSthG8B
-         9nkD9Fqrgce9VpR3z1teWYDpxin5ZwpwHZ87zV3KrnEGzOOIJoIuNjtbbPjED8MVnwh0
-         H++BqAhLAdbZv1MvffZLjgiPwBAsVkSfZikHEMKzm07OyAC8P5ERKuF04Sia4hAw68Yp
-         wkM4JIrOXUkk0lacbkkYb5VPY6g4hWAQvWmdzT5nqn5ADhhv5TaUwrM+DR3qJuynobfg
-         XiaA==
-X-Gm-Message-State: APjAAAW9YiF0o4ft65qdt1gvkrap4f0BmTj0IykyawYiQ9WhkyulLifJ
-        9QmQGeCvSY2Y8EmIUt03e5CNqw==
-X-Google-Smtp-Source: APXvYqyuQt1e1waxiE9pFUL/sKhb/WjW8PONZ9WRuZlEEo+yY3XRXB3qpliQv9i1hpvmwbhogS9q7w==
-X-Received: by 2002:a05:620a:11af:: with SMTP id c15mr19958626qkk.488.1562726729717;
-        Tue, 09 Jul 2019 19:45:29 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id 42sm402397qtm.27.2019.07.09.19.45.28
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=y++2NOiqCMguDknkQiXa12j8nNvRVL4zn7Iko7nn4Xo=;
+        b=O0/+52XjVxdZR0G/vn6D/DL0+ttd7N7JEAHMGprZ3uwKbrY/dwlUu+2syvG/S38Uo/
+         zySmBS3kNhxE5rNRun3cbNaUJfxXGnK714MfSaE36/VM5cwuVDPdGlu+60THhyi39EcJ
+         DzXZrxMJHH1mc+vcFKpVwuvM14END208+s4wnQ3LWcfIBkb07ionymga9a4KNDj0v0IF
+         mwmc0p1UyiZR+AA7buyuRvcJNeyZJ518hGdb1Y3dg7JQroNtxkAHMg5S96hEvp+clKO/
+         b0kBcENbMa8sJXRvp74Xvks8AZsb98WapZdd2uH93gOjRmpJJ1t/qO8Mx+5QACZ4ymYI
+         IC7A==
+X-Gm-Message-State: APjAAAWvkAb9Tvkc+Slh2ug6lOAQJA4WR0QmfV3UI2QtXy1YO224eYqN
+        fP0dk60SuKSbZvVww7rbAL0=
+X-Google-Smtp-Source: APXvYqwE0v6A2033SbRiSUeuJdUCGbaIjXvvCprigEquCL7OQhhLESFnMm0OXOd1Gsz2+IqHep6ggg==
+X-Received: by 2002:a05:6602:cc:: with SMTP id z12mr10234647ioe.86.1562729316861;
+        Tue, 09 Jul 2019 20:28:36 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id r7sm569188ioa.71.2019.07.09.20.28.35
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 09 Jul 2019 19:45:29 -0700 (PDT)
-Date:   Tue, 9 Jul 2019 19:45:25 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     John Fastabend <john.fastabend@gmail.com>
+        Tue, 09 Jul 2019 20:28:36 -0700 (PDT)
+Date:   Tue, 09 Jul 2019 20:28:24 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        John Fastabend <john.fastabend@gmail.com>
 Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
         edumazet@google.com, bpf@vger.kernel.org
-Subject: Re: [bpf PATCH v2 2/6] bpf: tls fix transition through disconnect
- with close
-Message-ID: <20190709194525.0d4c15a6@cakuba.netronome.com>
-In-Reply-To: <156261324561.31108.14410711674221391677.stgit@ubuntu3-kvm1>
+Message-ID: <5d255b58e38e_1b7a2aec940d65b42f@john-XPS-13-9370.notmuch>
+In-Reply-To: <20190709192145.473d2d80@cakuba.netronome.com>
 References: <156261310104.31108.4569969631798277807.stgit@ubuntu3-kvm1>
-        <156261324561.31108.14410711674221391677.stgit@ubuntu3-kvm1>
-Organization: Netronome Systems, Ltd.
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+ <20190708231318.1a721ce8@cakuba.netronome.com>
+ <5d24b55e8b868_3b162ae67af425b43e@john-XPS-13-9370.notmuch>
+ <20190709170459.387bced6@cakuba.netronome.com>
+ <20190709192145.473d2d80@cakuba.netronome.com>
+Subject: Re: [bpf PATCH v2 0/6] bpf: sockmap/tls fixes
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 08 Jul 2019 19:14:05 +0000, John Fastabend wrote:
-> @@ -287,6 +313,27 @@ static void tls_sk_proto_cleanup(struct sock *sk,
->  #endif
->  }
->  
-> +static void tls_sk_proto_unhash(struct sock *sk)
-> +{
-> +	struct inet_connection_sock *icsk = inet_csk(sk);
-> +	long timeo = sock_sndtimeo(sk, 0);
-> +	struct tls_context *ctx;
-> +
-> +	if (unlikely(!icsk->icsk_ulp_data)) {
+Jakub Kicinski wrote:
+> On Tue, 9 Jul 2019 17:04:59 -0700, Jakub Kicinski wrote:
+> > On Tue, 09 Jul 2019 08:40:14 -0700, John Fastabend wrote:
+> > > Jakub Kicinski wrote:  
+> > > > Looks like strparser is not done'd for offload?    
+> > > 
+> > > Right so if rx_conf != TLS_SW then the hardware needs to do
+> > > the strparser functionality.  
+> > 
+> > Can I just take a stab at fixing the HW part?
+> > 
+> > Can I rebase this onto net-next?  There are a few patches from net
+> > missing in the bpf tree.
+> 
+> I think I fixed patch 1 for offload, I need to test it a little more
+> and I'll send it back to you. In the meantime, let me ask some
+> questions about the other two :)
 
-Is this for when sockmap is stacked on top of TLS and TLS got removed
-without letting sockmap know?
-
-> +		if (sk->sk_prot->unhash)
-> +			sk->sk_prot->unhash(sk);
-> +	}
-> +
-> +	ctx = tls_get_ctx(sk);
-> +	if (ctx->tx_conf == TLS_SW || ctx->rx_conf == TLS_SW)
-> +		tls_sk_proto_cleanup(sk, ctx, timeo);
-> +	icsk->icsk_ulp_data = NULL;
-
-I think close only starts checking if ctx is NULL in patch 6.
-Looks like some chunks of ctx checking/clearing got spread to
-patch 1 and some to patch 6.
-
-> +	tls_ctx_free_wq(ctx);
-> +
-> +	if (ctx->unhash)
-> +		ctx->unhash(sk);
-> +}
-> +
->  static void tls_sk_proto_close(struct sock *sk, long timeout)
->  {
->  	struct tls_context *ctx = tls_get_ctx(sk);
-
+Great thanks. When your ready push it back and I'll retest in
+my setup.
