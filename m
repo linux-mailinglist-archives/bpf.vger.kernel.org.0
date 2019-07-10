@@ -2,251 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 941FF64BAC
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 19:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B0964BD9
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 20:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727381AbfGJRuo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Jul 2019 13:50:44 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:45417 "EHLO
+        id S1727414AbfGJSFN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Jul 2019 14:05:13 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:39346 "EHLO
         mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727102AbfGJRuo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Jul 2019 13:50:44 -0400
-Received: by mail-qt1-f194.google.com with SMTP id j19so3337278qtr.12;
-        Wed, 10 Jul 2019 10:50:42 -0700 (PDT)
+        with ESMTP id S1725994AbfGJSFM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Jul 2019 14:05:12 -0400
+Received: by mail-qt1-f194.google.com with SMTP id l9so3429706qtu.6;
+        Wed, 10 Jul 2019 11:05:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vpqZMyx9fS91Ki5E5jfyTvPfpgHhsJ3qxO6I+BJgf80=;
-        b=mfBIJYIkHVI8YkE6RHNoVC6VD7G19zYVWJpS3V2xbeyTC5OXTRb/CZWA79sB4zJFUN
-         OQF0NpKE7SwNNdXVe3WP4zm3IBEiDHWQLuO7pQFFfUTfGfDvfyHuM3xT5/b+WFFQXEQn
-         256ThavZN8r6xl0ufjRbJsObYdrzJwleVbGYs2TXMKViwxxpPUP2n0u8+8Imvg3V5+eN
-         M3b/rnPHV8ekOnQkVNTeEDS0//WLs7ne6Ka5IMD+gxLZ9bmH1wZ6jvUrol5OaGxXJTE1
-         3SVxKoyncqPX4wN0lvqW2I4/azO/psL6uCtSl8z7NfrX+oTwMXZ7Jk7eJcAYRqt5sxxq
-         1jQA==
+        bh=lG0qUUr5/Z/mwUfmND13kN55kIlfQbjEMe/rizbF9b8=;
+        b=qvIRVpv0FO+/41p1JnXFbAQCUMHzxeWRDejDgBibVnhYyAehG1T/sqerngar3rVwKf
+         c2AFzj9oGfzZsI2KWemKU/hwgp7qAbxa/R1vz9FrrZHeEiQlxerQz96M9tQ5FER4iEZe
+         0Jruwq4Hkx8yj/gF8c9Ii8lVoW424mkcF1Hf02OPqWM/5LXEXF2yjz2ggstZXpKDudvt
+         ML5xWnWRCozCH4flZlikr3A36I9nGqtbk7/3qcPSlg0SIK7QqOpJD1B7OYOPPSk+j51U
+         zVBssBKkn2TV7NDbfSabj3f6JxSsy+3609XW/iqQJMFIPzUGdxYQjHP2ZHHyrfIwPIbp
+         gv9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vpqZMyx9fS91Ki5E5jfyTvPfpgHhsJ3qxO6I+BJgf80=;
-        b=QVqcKXlYc7RZ+2Qh1UqnEXqUAF+PeIfuSpyBhGrm7yC1hZLVWZ+y6fLqFKFhVfB/yL
-         655RjUJjxx2LWUuw+V3SB7zABe9m9Vz7Za6oVMQt1TuzLvzx2qrvKnhmS+OYmGkX0jvz
-         SNvQgDqreRG2iWMqAQhfybfwBavfr1cYJs691LDS5r4lrPUzLFItfBLajIylLdwizzdq
-         OlRf4V1eGmKDcG2Hn4pJjdoQZd+qvEgjJD7xwLhnS3HfnqJQzSNpLeqXqJcn95XqCq+C
-         EEjRngYCe4zV9+YaW7rTkPdSC/ZzUs4What7Q6QE4+ApriitMQSuJQpFswqzqhY9nOjI
-         2wdA==
-X-Gm-Message-State: APjAAAX/lxexVpqoeVHvqyYqH6mZHRQmN4ZxWcI1P7A876DfnvjZu+Tf
-        B/l1K9cOcwGvOae6C83UYXSxtaBu+EDcuWHWR3k=
-X-Google-Smtp-Source: APXvYqzLthSNCQxVPW/dYTge3A/Ck5cahx++JPnW60Xdfi/vuD9iyOecxKOnERekS6adqtlzCJqPGttGVyhnLkgS5Nw=
-X-Received: by 2002:a0c:d0fc:: with SMTP id b57mr26085985qvh.78.1562781042110;
- Wed, 10 Jul 2019 10:50:42 -0700 (PDT)
+        bh=lG0qUUr5/Z/mwUfmND13kN55kIlfQbjEMe/rizbF9b8=;
+        b=Af4kNVtsiRVOIWJ89p8m1cVU3diuHhdHcQ1qQhpp0gPQiebhLy8eFT54ijCpsDuRlk
+         HDCHmtC60vnv4Moahhl9KLlwyAmWaKFGtpCYXozDrRoc2ofaeIidgzGxFryybJ2K15JQ
+         v+FBbEuYoosSQwJkLkVWppzeSqGqyT0IOLRyic8zpqxA7gMyQf5DKb9BK9bMOR4dD9uT
+         UKeyCZKRHW3BsHybc5Lvn+aUM2sHCESoEftlvqhDQc0Hx6W+E4nG7bPfevArpKvPXTp4
+         t4GNAbUrqqsIXrs66RJYJ/mYq4sR7QOgx3XZ5Vt7AFiiluuxkEVHl0sGuWK91Cswdk6Q
+         1aUA==
+X-Gm-Message-State: APjAAAUe9hqVN6hVF6vdSWVzJi4cpyjXE9W70Shd2KqWyPpV/eNaavV7
+        1x/DrldgEfdYZXGmqjgaJkQwo1UG0aO+sBdh+ag=
+X-Google-Smtp-Source: APXvYqzHaFJKtRl+rv/gz7gP4RVht6WJ2jWi6kNLPvhpttOU3IAXT0r2exFcmKdbHuKmGQBjWs7mrUWrcJI0bSa3u0U=
+X-Received: by 2002:a05:6214:1306:: with SMTP id a6mr26429977qvv.38.1562781911655;
+ Wed, 10 Jul 2019 11:05:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <1562275611-31790-1-git-send-email-jiong.wang@netronome.com> <1562275611-31790-3-git-send-email-jiong.wang@netronome.com>
-In-Reply-To: <1562275611-31790-3-git-send-email-jiong.wang@netronome.com>
+References: <20190709180005.33406-1-allanzhang@google.com>
+In-Reply-To: <20190709180005.33406-1-allanzhang@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 10 Jul 2019 10:50:30 -0700
-Message-ID: <CAEf4BzaF-Bvj9veA1EYu5GWQrWOu=ttX064YTrB4yNQ4neJZOQ@mail.gmail.com>
-Subject: Re: [RFC bpf-next 2/8] bpf: extend list based insn patching infra to
- verification layer
-To:     Jiong Wang <jiong.wang@netronome.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+Date:   Wed, 10 Jul 2019 11:05:00 -0700
+Message-ID: <CAEf4BzYbOCYUsgAtOcUwO7_rFosfdhBPPLpq5ppj=f5foGWHzA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 0/2] bpf: Allow bpf_skb_event_output for more
+ prog types
+To:     Allan Zhang <allanzhang@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Edward Cree <ecree@solarflare.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        oss-drivers@netronome.com
+        Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 4, 2019 at 2:32 PM Jiong Wang <jiong.wang@netronome.com> wrote:
+On Tue, Jul 9, 2019 at 11:03 AM Allan Zhang <allanzhang@google.com> wrote:
 >
-> Verification layer also needs to handle auxiliar info as well as adjusting
-> subprog start.
+> Software event output is only enabled by a few prog types right now (TC,
+> LWT out, XDP, sockops). Many other skb based prog types need
+> bpf_skb_event_output to produce software event.
 >
-> At this layer, insns inside patch buffer could be jump, but they should
-> have been resolved, meaning they shouldn't jump to insn outside of the
-> patch buffer. Lineration function for this layer won't touch insns inside
-> patch buffer.
+> More prog types are enabled to access bpf_skb_event_output in this
+> patch.
 >
-> Adjusting subprog is finished along with adjusting jump target when the
-> input will cover bpf to bpf call insn, re-register subprog start is cheap.
-> But adjustment when there is insn deleteion is not considered yet.
->
-> Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
-> ---
->  kernel/bpf/verifier.c | 150 ++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 150 insertions(+)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index a2e7637..2026d64 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -8350,6 +8350,156 @@ static void opt_hard_wire_dead_code_branches(struct bpf_verifier_env *env)
->         }
->  }
->
-> +/* Linearize bpf list insn to array (verifier layer). */
-> +static struct bpf_verifier_env *
-> +verifier_linearize_list_insn(struct bpf_verifier_env *env,
-> +                            struct bpf_list_insn *list)
+> v8 changes:
+> No actual change, just cc to netdev@vger.kernel.org and
+> bpf@vger.kernel.org.
+> v7 patches are acked by Song Liu.
 
-It's unclear why this returns env back? It's not allocating a new env,
-so it's weird and unnecessary. Just return error code.
+You forgot to include Song's Acked-by into your patch commit messages. Just add
 
-> +{
-> +       u32 *idx_map, idx, orig_cnt, fini_cnt = 0;
-> +       struct bpf_subprog_info *new_subinfo;
-> +       struct bpf_insn_aux_data *new_data;
-> +       struct bpf_prog *prog = env->prog;
-> +       struct bpf_verifier_env *ret_env;
-> +       struct bpf_insn *insns, *insn;
-> +       struct bpf_list_insn *elem;
-> +       int ret;
-> +
-> +       /* Calculate final size. */
-> +       for (elem = list; elem; elem = elem->next)
-> +               if (!(elem->flag & LIST_INSN_FLAG_REMOVED))
-> +                       fini_cnt++;
-> +
-> +       orig_cnt = prog->len;
-> +       insns = prog->insnsi;
-> +       /* If prog length remains same, nothing else to do. */
-> +       if (fini_cnt == orig_cnt) {
-> +               for (insn = insns, elem = list; elem; elem = elem->next, insn++)
-> +                       *insn = elem->insn;
-> +               return env;
-> +       }
-> +       /* Realloc insn buffer when necessary. */
-> +       if (fini_cnt > orig_cnt)
-> +               prog = bpf_prog_realloc(prog, bpf_prog_size(fini_cnt),
-> +                                       GFP_USER);
-> +       if (!prog)
-> +               return ERR_PTR(-ENOMEM);
-> +       insns = prog->insnsi;
-> +       prog->len = fini_cnt;
-> +       ret_env = env;
-> +
-> +       /* idx_map[OLD_IDX] = NEW_IDX */
-> +       idx_map = kvmalloc(orig_cnt * sizeof(u32), GFP_KERNEL);
-> +       if (!idx_map)
-> +               return ERR_PTR(-ENOMEM);
-> +       memset(idx_map, 0xff, orig_cnt * sizeof(u32));
-> +
-> +       /* Use the same alloc method used when allocating env->insn_aux_data. */
-> +       new_data = vzalloc(array_size(sizeof(*new_data), fini_cnt));
-> +       if (!new_data) {
-> +               kvfree(idx_map);
-> +               return ERR_PTR(-ENOMEM);
-> +       }
-> +
-> +       /* Copy over insn + calculate idx_map. */
-> +       for (idx = 0, elem = list; elem; elem = elem->next) {
-> +               int orig_idx = elem->orig_idx - 1;
-> +
-> +               if (orig_idx >= 0) {
-> +                       idx_map[orig_idx] = idx;
-> +
-> +                       if (elem->flag & LIST_INSN_FLAG_REMOVED)
-> +                               continue;
-> +
-> +                       new_data[idx] = env->insn_aux_data[orig_idx];
-> +
-> +                       if (elem->flag & LIST_INSN_FLAG_PATCHED)
-> +                               new_data[idx].zext_dst =
-> +                                       insn_has_def32(env, &elem->insn);
-> +               } else {
-> +                       new_data[idx].seen = true;
-> +                       new_data[idx].zext_dst = insn_has_def32(env,
-> +                                                               &elem->insn);
-> +               }
-> +               insns[idx++] = elem->insn;
-> +       }
-> +
-> +       new_subinfo = kvzalloc(sizeof(env->subprog_info), GFP_KERNEL);
-> +       if (!new_subinfo) {
-> +               kvfree(idx_map);
-> +               vfree(new_data);
-> +               return ERR_PTR(-ENOMEM);
-> +       }
-> +       memcpy(new_subinfo, env->subprog_info, sizeof(env->subprog_info));
-> +       memset(env->subprog_info, 0, sizeof(env->subprog_info));
-> +       env->subprog_cnt = 0;
-> +       env->prog = prog;
-> +       ret = add_subprog(env, 0);
-> +       if (ret < 0) {
-> +               ret_env = ERR_PTR(ret);
-> +               goto free_all_ret;
-> +       }
-> +       /* Relocate jumps using idx_map.
-> +        *   old_dst = jmp_insn.old_target + old_pc + 1;
-> +        *   new_dst = idx_map[old_dst] = jmp_insn.new_target + new_pc + 1;
-> +        *   jmp_insn.new_target = new_dst - new_pc - 1;
-> +        */
-> +       for (idx = 0, elem = list; elem; elem = elem->next) {
-> +               int orig_idx = elem->orig_idx;
-> +
-> +               if (elem->flag & LIST_INSN_FLAG_REMOVED)
-> +                       continue;
-> +               if ((elem->flag & LIST_INSN_FLAG_PATCHED) || !orig_idx) {
-> +                       idx++;
-> +                       continue;
-> +               }
-> +
-> +               ret = bpf_jit_adj_imm_off(&insns[idx], orig_idx - 1, idx,
-> +                                         idx_map);
-> +               if (ret < 0) {
-> +                       ret_env = ERR_PTR(ret);
-> +                       goto free_all_ret;
-> +               }
-> +               /* Recalculate subprog start as we are at bpf2bpf call insn. */
-> +               if (ret > 0) {
-> +                       ret = add_subprog(env, idx + insns[idx].imm + 1);
-> +                       if (ret < 0) {
-> +                               ret_env = ERR_PTR(ret);
-> +                               goto free_all_ret;
-> +                       }
-> +               }
-> +               idx++;
-> +       }
-> +       if (ret < 0) {
-> +               ret_env = ERR_PTR(ret);
-> +               goto free_all_ret;
-> +       }
-> +
-> +       env->subprog_info[env->subprog_cnt].start = fini_cnt;
-> +       for (idx = 0; idx <= env->subprog_cnt; idx++)
-> +               new_subinfo[idx].start = env->subprog_info[idx].start;
-> +       memcpy(env->subprog_info, new_subinfo, sizeof(env->subprog_info));
-> +
-> +       /* Adjust linfo.
-> +        * FIXME: no support for insn removal at the moment.
-> +        */
-> +       if (prog->aux->nr_linfo) {
-> +               struct bpf_line_info *linfo = prog->aux->linfo;
-> +               u32 nr_linfo = prog->aux->nr_linfo;
-> +
-> +               for (idx = 0; idx < nr_linfo; idx++)
-> +                       linfo[idx].insn_off = idx_map[linfo[idx].insn_off];
-> +       }
-> +       vfree(env->insn_aux_data);
-> +       env->insn_aux_data = new_data;
-> +       goto free_mem_list_ret;
-> +free_all_ret:
-> +       vfree(new_data);
-> +free_mem_list_ret:
-> +       kvfree(new_subinfo);
-> +       kvfree(idx_map);
-> +       return ret_env;
-> +}
-> +
->  static int opt_remove_dead_code(struct bpf_verifier_env *env)
->  {
->         struct bpf_insn_aux_data *aux_data = env->insn_aux_data;
+Acked-by: Song Liu <songliubraving@fb.com>
+
+to both patches after your Signed-off-by.
+
+>
+> v7 changes:
+> Reformat from hints by scripts/checkpatch.pl, including Song's comment
+> on signed-off-by name to captical case in cover letter.
+> 3 of hints are ignored:
+> 1. new file mode.
+> 2. SPDX-License-Identifier for event_output.c since all files under
+>    this dir have no such line.
+> 3. "Macros ... enclosed in parentheses" for macro in event_output.c
+>    due to code's nature.
+>
+> Change patch 02 subject "bpf:..." to "selftests/bpf:..."
+>
+> v6 changes:
+> Fix Signed-off-by, fix fixup map creation.
+>
+> v5 changes:
+> Fix typos, reformat comments in event_output.c, move revision history to
+> cover letter.
+>
+> v4 changes:
+> Reformating log message.
+>
+> v3 changes:
+> Reformating log message.
+>
+> v2 changes:
+> Reformating log message.
+>
+> Allan Zhang (2):
+>   bpf: Allow bpf_skb_event_output for a few prog types
+>   selftests/bpf: Add selftests for bpf_perf_event_output
+>
+>  net/core/filter.c                             |  6 ++
+>  tools/testing/selftests/bpf/test_verifier.c   | 12 ++-
+>  .../selftests/bpf/verifier/event_output.c     | 94 +++++++++++++++++++
+>  3 files changed, 111 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/verifier/event_output.c
+>
 > --
-> 2.7.4
+> 2.22.0.410.gd8fdbe21b5-goog
 >
