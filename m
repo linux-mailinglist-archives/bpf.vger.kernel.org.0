@@ -2,110 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE19D64BF7
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 20:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBA964BF9
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 20:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727923AbfGJSSQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Jul 2019 14:18:16 -0400
-Received: from mail-qt1-f202.google.com ([209.85.160.202]:33912 "EHLO
-        mail-qt1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727893AbfGJSSQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Jul 2019 14:18:16 -0400
-Received: by mail-qt1-f202.google.com with SMTP id p34so3082857qtp.1
-        for <bpf@vger.kernel.org>; Wed, 10 Jul 2019 11:18:15 -0700 (PDT)
+        id S1728186AbfGJSST (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Jul 2019 14:18:19 -0400
+Received: from mail-pl1-f202.google.com ([209.85.214.202]:34583 "EHLO
+        mail-pl1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727004AbfGJSSS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Jul 2019 14:18:18 -0400
+Received: by mail-pl1-f202.google.com with SMTP id 71so1730489pld.1
+        for <bpf@vger.kernel.org>; Wed, 10 Jul 2019 11:18:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=zmcA7W2KIeWO/NRsKmCZUnKStbXYZh1rptXN3dSxoGk=;
-        b=oWd53YTo5cXnFyc67/rtOEqvGwbEId1VE1PQPGJhU8CKOgf4Vv/SNsbavZfUUTyr1y
-         /pb7memZyEcxVieTJr965Nysph/Cy1XHGB+HglRD3BS4ktw06PQiKQuxCS2znsQHwZuo
-         Ibd9pSm5enLMl/Z5tVobkSQvQiCqngIdJvmCA9h4xsQY274CixMyoNLVKN5jPSqF9N54
-         JDftuBvKnX4ozurkmHC8jbBObl1UF806LmTpvvY704E+JrfuP62H+btlRB0IGhKZOTEf
-         /3So4SXi2H7NSW6SUFie8lB0fVZm8/+Cahpx9r6I736NIU2ZqLBGQnjLQ1i005j9BesQ
-         O5WQ==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=CoB9liE3EbOvg+QhUkmIi9lXsQFgqf0bkDVpuEXwtJY=;
+        b=gwh+NYaJzQ+2xBLucBxpPwkNsciOhEmM3V6OY7UwVr6/Cv34uDgQdnMcfqqeYek89X
+         /SZk9LY+3T/cyPMI8JbBHw+HKGX5QvCjwmINEE+TRuM1LpBf6OjpqzHLpQW2uCLiqsvS
+         T5K7KuFaDg2NbuOae27XtVaj/6IfrJqMtYgPAEYjGIWn3J27vR+4ZB2a2fFafVe7uXUh
+         OofyU4WOSbQcm6WBnQQWOAKuwgU/Bf2/8uS5It9xaOYOhBIwSwbgwPZCuH48VSvrCv+6
+         L4XaEvv3+6IK/3DxcsbuQwtX2GZQgraLIsmTyCpIfI12Mq9W86KGGJGyi5Rf5xLuNSR+
+         MTLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=zmcA7W2KIeWO/NRsKmCZUnKStbXYZh1rptXN3dSxoGk=;
-        b=srTkufEYdS+nHBQ7UjI5AXt71Q10TLlNmOPOqsP4SIXu2/AAoUng0EKxj6reoyVH2u
-         ZUG6qnm+7CYIdgfZTWT0lThk118i8qRuK7+nLwT416+J0ImR1vMF4ozUU88JoIAbHqyZ
-         NmYW7kODi1SJlRT2xNSvYNqXu6a6TNA4pfRhyuIU16XKP4yG5FIvd+vetXW0xzyKY/ya
-         6FgC+OvLcU75bAWn8PhaMuf6Z/3YwUFZedlkZCJal1a2dNnjoisRmKAJ44YMJWPUXRHr
-         4IXaGuAVw1z42/4+/16/yZ3Ux7IY3V6Esm+UYcWXacJFrEMNFSdDSf/L3h0Ayuy2xMKf
-         /GHw==
-X-Gm-Message-State: APjAAAXI5vSx6zOkFdAf2JX2zFNJ1JoZCdhjTGAnD9mpdfHpfAp7JBUS
-        OrdguM5SMvG/d/sqULXvrByhjYuquFfu2DsD
-X-Google-Smtp-Source: APXvYqzzFyw+K6sxOQVmsH6H8jXDOEOA5ORTIx2e1KL4UqEY5vJ8rRqqR5eSVRBZbWNMQDaDyZyvjZAjWlHCEAff
-X-Received: by 2002:ac8:1410:: with SMTP id k16mr24525137qtj.335.1562782695250;
- Wed, 10 Jul 2019 11:18:15 -0700 (PDT)
-Date:   Wed, 10 Jul 2019 11:18:09 -0700
-Message-Id: <20190710181811.127374-1-allanzhang@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=CoB9liE3EbOvg+QhUkmIi9lXsQFgqf0bkDVpuEXwtJY=;
+        b=lhcKyAAhuwcRY4VSx/sJ2INC6a7i2FGh5e9CjLuGh1NoHlClXJddn8ukch3O4oibMJ
+         MAjOb/74m9fpV5lvpF10BIEFXLNtahlrYIg9067iWgSHI3NImS4awesI8iVLXx2BjbZR
+         N2uvSOU6MkHycvv7r73iF/wQW17RP+qwj2Qa5FE1IxQ7rjDzB7cIRTTDHgHdJVlxpruJ
+         Du3JR3P4h5+N4ZtIByHdBIqLCnR7dGr2pG7ba8KZfkqBknoobO1+1zj/vwK3vF+/Fk/K
+         XgJgLEkUbqhQehaRizA5vTKARXWWCGUXdqUH2YCzp7KFDWspJesV9+BX/lQXpEgbuJI7
+         A0tQ==
+X-Gm-Message-State: APjAAAVOQbeJB3NJ2deln8MWCF0kPx6gi3LaqI1LA5WEGov39K4lTvTA
+        a4YCnptN64n5aJcyNy8o9hYYRsyOReaOil1H
+X-Google-Smtp-Source: APXvYqz48ZYwhnpuG0hZC5LF81vRRaawzpki7vhQPvCjDkIgKgd8/4ungpaGlfrEpKO/bi8JWkuAzBL0ysmRomW9
+X-Received: by 2002:a63:e907:: with SMTP id i7mr3904359pgh.84.1562782697620;
+ Wed, 10 Jul 2019 11:18:17 -0700 (PDT)
+Date:   Wed, 10 Jul 2019 11:18:10 -0700
+In-Reply-To: <20190710181811.127374-1-allanzhang@google.com>
+Message-Id: <20190710181811.127374-2-allanzhang@google.com>
 Mime-Version: 1.0
+References: <20190710181811.127374-1-allanzhang@google.com>
 X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
-Subject: [PATCH bpf-next v9 0/2] bpf: Allow bpf_skb_event_output for more prog types
+Subject: [PATCH bpf-next v9 1/2] bpf: Allow bpf_skb_event_output for a few
+ prog types
 From:   Allan Zhang <allanzhang@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org, songliubraving@fb.com,
         daniel@iogearbox.net, andrii.nakryiko@gmail.com
-Cc:     ast@kernel.org, Allan Zhang <allanzhang@google.com>
+Cc:     ast@kernel.org, allanzhang <allanzhang@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: allanzhang <allanzhang@google.com>
+
 Software event output is only enabled by a few prog types right now (TC,
 LWT out, XDP, sockops). Many other skb based prog types need
 bpf_skb_event_output to produce software event.
 
-More prog types are enabled to access bpf_skb_event_output in this
-patch.
+Added socket_filter, cg_skb, sk_skb prog types to generate sw event.
 
-v9 changes:
-add "Acked-by" field.
+Test bpf code is generated from code snippet:
 
-v8 changes:
-No actual change, just cc to netdev@vger.kernel.org and
-bpf@vger.kernel.org.
-v7 patches are acked by Song Liu.
+struct TMP {
+    uint64_t tmp;
+} tt;
+tt.tmp = 5;
+bpf_perf_event_output(skb, &connection_tracking_event_map, 0,
+                      &tt, sizeof(tt));
+return 1;
 
-v7 changes:
-Reformat from hints by scripts/checkpatch.pl, including Song's comment
-on signed-off-by name to captical case in cover letter.
-3 of hints are ignored:
-1. new file mode.
-2. SPDX-License-Identifier for event_output.c since all files under
-   this dir have no such line.
-3. "Macros ... enclosed in parentheses" for macro in event_output.c
-   due to code's nature.
+the bpf assembly from llvm is:
+       0:       b7 02 00 00 05 00 00 00         r2 = 5
+       1:       7b 2a f8 ff 00 00 00 00         *(u64 *)(r10 - 8) = r2
+       2:       bf a4 00 00 00 00 00 00         r4 = r10
+       3:       07 04 00 00 f8 ff ff ff         r4 += -8
+       4:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00    r2 = 0ll
+       6:       b7 03 00 00 00 00 00 00         r3 = 0
+       7:       b7 05 00 00 08 00 00 00         r5 = 8
+       8:       85 00 00 00 19 00 00 00         call 25
+       9:       b7 00 00 00 01 00 00 00         r0 = 1
+      10:       95 00 00 00 00 00 00 00         exit
 
-Change patch 02 subject "bpf:..." to "selftests/bpf:..."
+Signed-off-by: Allan Zhang <allanzhang@google.com>
+Acked-by: Song Liu <songliubraving@fb.com>
+---
+ net/core/filter.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-v6 changes:
-Fix Signed-off-by, fix fixup map creation.
-
-v5 changes:
-Fix typos, reformat comments in event_output.c, move revision history to
-cover letter.
-
-v4 changes:
-Reformating log message.
-
-v3 changes:
-Reformating log message.
-
-v2 changes:
-Reformating log message.
-
-Allan Zhang (2):
-  bpf: Allow bpf_skb_event_output for a few prog types
-  selftests/bpf: Add selftests for bpf_perf_event_output
-
- net/core/filter.c                             |  6 ++
- tools/testing/selftests/bpf/test_verifier.c   | 12 ++-
- .../selftests/bpf/verifier/event_output.c     | 94 +++++++++++++++++++
- 3 files changed, 111 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/verifier/event_output.c
-
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 2014d76e0d2a..b75fcf412628 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5958,6 +5958,8 @@ sk_filter_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_get_socket_cookie_proto;
+ 	case BPF_FUNC_get_socket_uid:
+ 		return &bpf_get_socket_uid_proto;
++	case BPF_FUNC_perf_event_output:
++		return &bpf_skb_event_output_proto;
+ 	default:
+ 		return bpf_base_func_proto(func_id);
+ 	}
+@@ -5978,6 +5980,8 @@ cg_skb_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_sk_storage_get_proto;
+ 	case BPF_FUNC_sk_storage_delete:
+ 		return &bpf_sk_storage_delete_proto;
++	case BPF_FUNC_perf_event_output:
++		return &bpf_skb_event_output_proto;
+ #ifdef CONFIG_SOCK_CGROUP_DATA
+ 	case BPF_FUNC_skb_cgroup_id:
+ 		return &bpf_skb_cgroup_id_proto;
+@@ -6226,6 +6230,8 @@ sk_skb_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_sk_redirect_map_proto;
+ 	case BPF_FUNC_sk_redirect_hash:
+ 		return &bpf_sk_redirect_hash_proto;
++	case BPF_FUNC_perf_event_output:
++		return &bpf_skb_event_output_proto;
+ #ifdef CONFIG_INET
+ 	case BPF_FUNC_sk_lookup_tcp:
+ 		return &bpf_sk_lookup_tcp_proto;
 -- 
 2.22.0.410.gd8fdbe21b5-goog
 
