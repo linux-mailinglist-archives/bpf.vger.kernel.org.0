@@ -2,124 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 059D064C82
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 21:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAF2F64CD2
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 21:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727920AbfGJTGD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Jul 2019 15:06:03 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:37199 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727636AbfGJTGD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Jul 2019 15:06:03 -0400
-Received: by mail-qt1-f194.google.com with SMTP id y26so3654579qto.4;
-        Wed, 10 Jul 2019 12:06:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9RyvAPs2B+lDGaQg0pJ3zzhP2875uGIFH6pz6Jrbd7s=;
-        b=SlvGPtFiC6Ous3m7W7XIGLkIyN1fTOW0YK1Jeagc97fmtsOTIHNWt/+vnSR1fZB1zy
-         /26pZGxrRfYVHmfeSD7y38I86+RulVTUmJv4bAES0Ah0h0sm0t5yvdcTDKghC4Ezznqv
-         kxagQn44Y7MEfHx+RsYDVTVtRHzAPNfuUSXA9agha+JY1ATTEddjCy/0sX1qXF2dg7GQ
-         w+QZ4rkYKRebtx35djwTJoxpY/ik3yolTj5CbeLHzBAPEXpzOWjVGJm6C89ssoJYQ+o4
-         02VhULXgXEnfsA7laRaRyaBuZs5liX0Bl+SaJP9DbQXv9pdLqdxY8fTEB889rYUTGIYp
-         jbmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9RyvAPs2B+lDGaQg0pJ3zzhP2875uGIFH6pz6Jrbd7s=;
-        b=GbtVk9NzvptGhlUzjADQoc62woCJ64rjGUTxrk5tLbJXtAhNPgeex4tyb0rb0Pqfaa
-         baRt99P6hnzxr4x78s1XC1DmEBx5ipUecFT6JYCmO/MbcUI4llkoyUi/WzKU5TK8JdY5
-         jdgxuRo6gqcEat72xNp3w85c+MTtGVmBWK0MKGY/vnp3Mr/cCOYT6WbMnUi8xwSN3lpl
-         7WnOssVtW92kW02A+3QySkqOx241w9N60aEDmIHg9Qx1OhSo5CA7PASRuxWlHYy+Y5m9
-         tIgDv2RdTnKoyDuh2oavyH4Z46byb7314CxYUjhZzUAjYJdK3rMEWhhmiXe9snfR4bFm
-         WTBw==
-X-Gm-Message-State: APjAAAUXARRu2x8K42Qga7mjctofnk1wqTL5rxOTeRwslo01XyKekrU7
-        EZ+nRCSASr8rvap9C5gz9KaRo+TvS7rqigoVgng=
-X-Google-Smtp-Source: APXvYqzyjWCkV/G1WZOc2k5rWHtwPGl5jTpONIv0/teJjB65PhCpPL7EZgV2SLvpjP0KB2tJ+T3sHTJXFQvN9i3gO3M=
-X-Received: by 2002:ac8:32a1:: with SMTP id z30mr15020986qta.117.1562785562303;
- Wed, 10 Jul 2019 12:06:02 -0700 (PDT)
+        id S1727268AbfGJTcc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Jul 2019 15:32:32 -0400
+Received: from www62.your-server.de ([213.133.104.62]:54536 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727148AbfGJTcc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Jul 2019 15:32:32 -0400
+Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hlIKI-0003Sy-QL; Wed, 10 Jul 2019 21:32:26 +0200
+Received: from [178.193.45.231] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hlIKI-000Dcz-JO; Wed, 10 Jul 2019 21:32:26 +0200
+Subject: Re: [PATCH V2 1/1 (was 0/1 by accident)] tools/dtrace: initial
+ implementation of DTrace
+To:     Kris Van Hees <kris.van.hees@oracle.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        dtrace-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+        rostedt@goodmis.org, mhiramat@kernel.org, acme@kernel.org,
+        ast@kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Chris Mason <clm@fb.com>, brendan.d.gregg@gmail.com,
+        davem@davemloft.net
+References: <201907101537.x6AFboMR015946@aserv0122.oracle.com>
+ <201907101542.x6AFgOO9012232@userv0121.oracle.com>
+ <20190710181227.GA9925@oracle.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c7f15d1d-1696-4d95-1729-4c4e97bdc43e@iogearbox.net>
+Date:   Wed, 10 Jul 2019 21:32:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
 MIME-Version: 1.0
-References: <20190710181811.127374-1-allanzhang@google.com>
-In-Reply-To: <20190710181811.127374-1-allanzhang@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 10 Jul 2019 12:05:51 -0700
-Message-ID: <CAEf4BzbkVPk_Ugktgi+6NUmQzLxNsBN_MO48dPKA8qCF+28RTA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 0/2] bpf: Allow bpf_skb_event_output for more
- prog types
-To:     Allan Zhang <allanzhang@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20190710181227.GA9925@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25506/Wed Jul 10 10:11:44 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 10, 2019 at 11:18 AM Allan Zhang <allanzhang@google.com> wrote:
->
-> Software event output is only enabled by a few prog types right now (TC,
-> LWT out, XDP, sockops). Many other skb based prog types need
-> bpf_skb_event_output to produce software event.
->
-> More prog types are enabled to access bpf_skb_event_output in this
-> patch.
->
-> v9 changes:
-> add "Acked-by" field.
+Hello Kris,
 
-Thanks! This looks good to me. Just FYI. Not sure if you followed, but
-bpf-next is closed, so this can't go in until it's open. Maintainers
-might ask you to resubmit at that time, if patches don't apply
-cleanly.
+On 07/10/2019 08:12 PM, Kris Van Hees wrote:
+> This patch's subject should of course be [PATCH V2 1/1] rather than 0/1.
+> Sorry about that.
+> 
+> On Wed, Jul 10, 2019 at 08:42:24AM -0700, Kris Van Hees wrote:
+>> This initial implementation of a tiny subset of DTrace functionality
+>> provides the following options:
+>>
+>> 	dtrace [-lvV] [-b bufsz] -s script
+>> 	    -b  set trace buffer size
+>> 	    -l  list probes (only works with '-s script' for now)
+>> 	    -s  enable or list probes for the specified BPF program
+>> 	    -V  report DTrace API version
+>>
+>> The patch comprises quite a bit of code due to DTrace requiring a few
+>> crucial components, even in its most basic form.
+>>
+>> The code is structured around the command line interface implemented in
+>> dtrace.c.  It provides option parsing and drives the three modes of
+>> operation that are currently implemented:
+>>
+>> 1. Report DTrace API version information.
+>> 	Report the version information and terminate.
+>>
+>> 2. List probes in BPF programs.
+>> 	Initialize the list of probes that DTrace recognizes, load BPF
+>> 	programs, parse all BPF ELF section names, resolve them into
+>> 	known probes, and emit the probe names.  Then terminate.
+>>
+>> 3. Load BPF programs and collect tracing data.
+>> 	Initialize the list of probes that DTrace recognizes, load BPF
+>> 	programs and attach them to their corresponding probes, set up
+>> 	perf event output buffers, and start processing tracing data.
+>>
+>> This implementation makes extensive use of BPF (handled by dt_bpf.c) and
+>> the perf event output ring buffer (handled by dt_buffer.c).  DTrace-style
+>> probe handling (dt_probe.c) offers an interface to probes that hides the
+>> implementation details of the individual probe types by provider (dt_fbt.c
+>> and dt_syscall.c).  Probe lookup by name uses a hashtable implementation
+>> (dt_hash.c).  The dt_utils.c code populates a list of online CPU ids, so
+>> we know what CPUs we can obtain tracing data from.
+>>
+>> Building the tool is trivial because its only dependency (libbpf) is in
+>> the kernel tree under tools/lib/bpf.  A simple 'make' in the tools/dtrace
+>> directory suffices.
+>>
+>> The 'dtrace' executable needs to run as root because BPF programs cannot
+>> be loaded by non-root users.
+>>
+>> Signed-off-by: Kris Van Hees <kris.van.hees@oracle.com>
+>> Reviewed-by: David Mc Lean <david.mclean@oracle.com>
+>> Reviewed-by: Eugene Loh <eugene.loh@oracle.com>
+>> ---
+>> Changes in v2:
+>>         - Use ring_buffer_read_head() and ring_buffer_write_tail() to
+>>           avoid use of volatile.
+>>         - Handle perf events that wrap around the ring buffer boundary.
+>>         - Remove unnecessary PERF_EVENT_IOC_ENABLE.
+>>         - Remove -I$(srctree)/tools/perf from KBUILD_HOSTCFLAGS since it
+>>           is not actually used.
+>>         - Use PT_REGS_PARM1(x), etc instead of my own macros.  Adding 
+>>           PT_REGS_PARM6(x) in bpf_sample.c because we need to be able to
+>>           support up to 6 arguments passed by registers.
 
->
-> v8 changes:
-> No actual change, just cc to netdev@vger.kernel.org and
-> bpf@vger.kernel.org.
-> v7 patches are acked by Song Liu.
->
-> v7 changes:
-> Reformat from hints by scripts/checkpatch.pl, including Song's comment
-> on signed-off-by name to captical case in cover letter.
-> 3 of hints are ignored:
-> 1. new file mode.
-> 2. SPDX-License-Identifier for event_output.c since all files under
->    this dir have no such line.
-> 3. "Macros ... enclosed in parentheses" for macro in event_output.c
->    due to code's nature.
->
-> Change patch 02 subject "bpf:..." to "selftests/bpf:..."
->
-> v6 changes:
-> Fix Signed-off-by, fix fixup map creation.
->
-> v5 changes:
-> Fix typos, reformat comments in event_output.c, move revision history to
-> cover letter.
->
-> v4 changes:
-> Reformating log message.
->
-> v3 changes:
-> Reformating log message.
->
-> v2 changes:
-> Reformating log message.
->
-> Allan Zhang (2):
->   bpf: Allow bpf_skb_event_output for a few prog types
->   selftests/bpf: Add selftests for bpf_perf_event_output
->
->  net/core/filter.c                             |  6 ++
->  tools/testing/selftests/bpf/test_verifier.c   | 12 ++-
->  .../selftests/bpf/verifier/event_output.c     | 94 +++++++++++++++++++
->  3 files changed, 111 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/bpf/verifier/event_output.c
->
-> --
-> 2.22.0.410.gd8fdbe21b5-goog
->
+Looks like you missed Brendan Gregg's prior feedback from v1 [0]. I haven't
+seen a strong compelling argument for why this needs to reside in the kernel
+tree given we also have all the other tracing tools and many of which also
+rely on BPF such as bcc, bpftrace, ply, systemtap, sysdig, lttng to just name
+a few. Given all the other tracers manage to live outside the kernel tree just
+fine, so can dtrace as well; it's _not_ special in this regard in any way. It
+will be tons of code in long term which is better off in its separate project,
+and if we add tools/dtrace/, other projects will come as well asking for kernel
+tree inclusion 'because tools/dtrace' is now there, too. While it totally makes
+sense to extend the missing kernel bits where needed, it doesn't make sense to
+have another big tracing project similar to perf in the tree. Therefore, I'm
+not applying this patch, sorry.
+
+Thanks,
+Daniel
+
+  [0] https://lore.kernel.org/bpf/CAE40pdeSfJBpbBHTmwz1xZ+MW02=kJ0krq1mN+EkjSLqf2GX_w@mail.gmail.com/
+
+>> ---
+>>  MAINTAINERS                |   6 +
+>>  tools/dtrace/Makefile      |  87 ++++++++++
+>>  tools/dtrace/bpf_sample.c  | 146 ++++++++++++++++
+>>  tools/dtrace/dt_bpf.c      | 185 ++++++++++++++++++++
+>>  tools/dtrace/dt_buffer.c   | 338 +++++++++++++++++++++++++++++++++++++
+>>  tools/dtrace/dt_fbt.c      | 201 ++++++++++++++++++++++
+>>  tools/dtrace/dt_hash.c     | 211 +++++++++++++++++++++++
+>>  tools/dtrace/dt_probe.c    | 230 +++++++++++++++++++++++++
+>>  tools/dtrace/dt_syscall.c  | 179 ++++++++++++++++++++
+>>  tools/dtrace/dt_utils.c    | 132 +++++++++++++++
+>>  tools/dtrace/dtrace.c      | 249 +++++++++++++++++++++++++++
+>>  tools/dtrace/dtrace.h      |  13 ++
+>>  tools/dtrace/dtrace_impl.h | 101 +++++++++++
+>>  13 files changed, 2078 insertions(+)
+>>  create mode 100644 tools/dtrace/Makefile
+>>  create mode 100644 tools/dtrace/bpf_sample.c
+>>  create mode 100644 tools/dtrace/dt_bpf.c
+>>  create mode 100644 tools/dtrace/dt_buffer.c
+>>  create mode 100644 tools/dtrace/dt_fbt.c
+>>  create mode 100644 tools/dtrace/dt_hash.c
+>>  create mode 100644 tools/dtrace/dt_probe.c
+>>  create mode 100644 tools/dtrace/dt_syscall.c
+>>  create mode 100644 tools/dtrace/dt_utils.c
+>>  create mode 100644 tools/dtrace/dtrace.c
+>>  create mode 100644 tools/dtrace/dtrace.h
+>>  create mode 100644 tools/dtrace/dtrace_impl.h
