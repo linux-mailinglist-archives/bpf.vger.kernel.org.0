@@ -2,93 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D17F7643FB
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 11:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB902644D7
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 12:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727644AbfGJJAF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 10 Jul 2019 05:00:05 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4756 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727841AbfGJJAB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 10 Jul 2019 05:00:01 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6A8vInR091616
-        for <bpf@vger.kernel.org>; Wed, 10 Jul 2019 05:00:00 -0400
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2tn9nyqa1p-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 10 Jul 2019 05:00:00 -0400
-Received: from localhost
-        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Wed, 10 Jul 2019 09:59:58 +0100
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
-        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 10 Jul 2019 09:59:57 +0100
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6A8xu7L50725092
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Jul 2019 08:59:56 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6EE825204E;
-        Wed, 10 Jul 2019 08:59:56 +0000 (GMT)
-Received: from dyn-9-152-97-237.boeblingen.de.ibm.com (unknown [9.152.97.237])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 4E52F5204F;
-        Wed, 10 Jul 2019 08:59:56 +0000 (GMT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [PATCH bpf] selftests/bpf: fix bpf_target_sparc check
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-In-Reply-To: <CAEf4BzZswDkvPbhNnovLjWWmmhR2VBWtrCJkpMXM8M_5Ztn4-w@mail.gmail.com>
-Date:   Wed, 10 Jul 2019 10:59:39 +0200
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-References: <20190709152126.37853-1-iii@linux.ibm.com>
- <CAEf4BzZswDkvPbhNnovLjWWmmhR2VBWtrCJkpMXM8M_5Ztn4-w@mail.gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-X-Mailer: Apple Mail (2.3445.9.1)
-X-TM-AS-GCONF: 00
-x-cbid: 19071008-4275-0000-0000-0000034B4AA2
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19071008-4276-0000-0000-0000385B4D6F
-Message-Id: <D784EE92-0B53-4D9F-BBD0-46DDA1483573@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-10_04:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907100106
+        id S1726130AbfGJKCw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Jul 2019 06:02:52 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:38055 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725994AbfGJKCw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Jul 2019 06:02:52 -0400
+Received: by mail-wr1-f67.google.com with SMTP id g17so1772531wrr.5;
+        Wed, 10 Jul 2019 03:02:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=i6Bo+HB26VqH9FnLFoi7Kz1iw9L0sl0k/UgsoCrhljo=;
+        b=jHZNfrGmGLxti1qytpnzE+zd8Av3wSKbpMqx1uUJACFoYLGjKSAWLGOl+dhNlxTy9q
+         hpybGCybE5qlKNVdQdM/O/czhr1GVFHCPkSJHNR50SUAU3bry7G7VdEFQqE4xolfqV9l
+         pcEposDPsTFxdqOnoiqBM99JGO4zhLfPnOp71pfptQ0jgrcc48hoXua+YbcZLLExXI03
+         yq5RnMRn6yOHoJBBynWi/8sEHz41XwGCz/adtSEP7+NsOYKpTu05sqB8jN5PurptejnG
+         WsswonRiMLbKqnxtvcq35QwJUSfXldv8r+6UvYhL1ecbT5gnM8ebQGbtzrDXP/MrRyzL
+         A5oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=i6Bo+HB26VqH9FnLFoi7Kz1iw9L0sl0k/UgsoCrhljo=;
+        b=s8+CyIMyIJu+owM0W1Ca0gd6acE5aqFgKiAZpGOGsPtPKb+h2iopjRc6ZBqWrySmlG
+         Ozu1RwVofYTZXCVRvSnhNCGpBJH7SB9SkX4zQtECyillISo3TbERGxTclUZ1pDBrHlji
+         a4Ug7thuG504xLvAi4YFFDHrKklTgABcX1n11T559nWAbGi5DU+o6H/S03bqG633RVYJ
+         9n2kWYDJo5o3uZ7KjUg7zjAl7AlNafam6ED5YWaf+ikj269bom54tEfG0i7vre7NH9tm
+         XcuoHuRiKr6d+Dg82GS6RmtGsJjbSIuu0G3SlSQy4c2+5wN+PVHHho/dJgVO9xGw9PsG
+         3rfw==
+X-Gm-Message-State: APjAAAVUwSsRZeJmXDLgsgMR3rNOjZAgEOIzSVFJnIXbYaNlUYaOEX7X
+        cuKP635oxMLVtB9XuIBXg9o=
+X-Google-Smtp-Source: APXvYqx+yrzwKY6jr1rw4+kJTSm6xQasgSnz8Qf2UMJaSRWx9nrgoUVz7RkLe0slZyVgIHOVy5ihyw==
+X-Received: by 2002:adf:e446:: with SMTP id t6mr31002849wrm.115.1562752969370;
+        Wed, 10 Jul 2019 03:02:49 -0700 (PDT)
+Received: from gmail.com (net-5-95-187-49.cust.vodafonedsl.it. [5.95.187.49])
+        by smtp.gmail.com with ESMTPSA id w67sm2022820wma.24.2019.07.10.03.02.48
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 10 Jul 2019 03:02:48 -0700 (PDT)
+Date:   Wed, 10 Jul 2019 12:02:48 +0200
+From:   Paolo Pisati <p.pisati@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Paolo Pisati <p.pisati@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>, netdev@vger.kernel.org
+Subject: Re: [RESEND] test_verifier #13 fails on arm64: "retval 65507 != -29"
+Message-ID: <20190710100248.GA32281@harukaze>
+References: <20190701115414.GA4452@harukaze>
+ <68248069-bcf6-69dd-b0a9-f4ec11e50092@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <68248069-bcf6-69dd-b0a9-f4ec11e50092@fb.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Am 09.07.2019 um 19:56 schrieb Andrii Nakryiko <andrii.nakryiko@gmail.com>:
+On Mon, Jul 01, 2019 at 09:51:25PM +0000, Yonghong Song wrote:
 > 
-> On Tue, Jul 9, 2019 at 8:22 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
->> 
->> bpf_helpers.h fails to compile on sparc: the code should be checking
->> for defined(bpf_target_sparc), but checks simply for bpf_target_sparc.
->> 
->> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
->> ---
->> tools/testing/selftests/bpf/bpf_helpers.h | 2 +-
->> 1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> diff --git a/tools/testing/selftests/bpf/bpf_helpers.h b/tools/testing/selftests/bpf/bpf_helpers.h
->> index 5f6f9e7aba2a..a8fea087aa90 100644
->> --- a/tools/testing/selftests/bpf/bpf_helpers.h
->> +++ b/tools/testing/selftests/bpf/bpf_helpers.h
->> @@ -443,7 +443,7 @@ static int (*bpf_skb_adjust_room)(void *ctx, __s32 len_diff, __u32 mode,
->> #ifdef bpf_target_powerpc
+> Below is the test case.
+> {
+>          "valid read map access into a read-only array 2",
+>          .insns = {
+>          BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
+>          BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
+>          BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
+>          BPF_LD_MAP_FD(BPF_REG_1, 0),
+>          BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, 
+> BPF_FUNC_map_lookup_elem),
+>          BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 6),
 > 
-> While at it, can you please also fix this one?
+>          BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
+>          BPF_MOV64_IMM(BPF_REG_2, 4),
+>          BPF_MOV64_IMM(BPF_REG_3, 0),
+>          BPF_MOV64_IMM(BPF_REG_4, 0),
+>          BPF_MOV64_IMM(BPF_REG_5, 0),
+>          BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
+>                       BPF_FUNC_csum_diff),
+>          BPF_EXIT_INSN(),
+>          },
+>          .prog_type = BPF_PROG_TYPE_SCHED_CLS,
+>          .fixup_map_array_ro = { 3 },
+>          .result = ACCEPT,
+>          .retval = -29,
+> },
+> 
+> The issue may be with helper bpf_csum_diff().
+> Maybe you can check bpf_csum_diff() helper return value
+> to confirm and take a further look at bpf_csum_diff implementations
+> between x64 and amd64.
 
-Do you mean #ifdef bpf_target_powerpc? I think it’s correct, because it’s #ifdef, not #if.
-But I could change it to #if defined() for consistency.
+Indeed, the different result comes from csum_partial() or, more precisely,
+do_csum().
 
-Best regards,
-Ilya
+x86-64 uses an asm optimized version residing in arch/x86/lib/csum-partial_64.c,
+while the generic version is in lib/checksum.c.
+
+I replaced the x86-64 csum_partial() / do_csum() code, with the one in
+lib/checksum.c and by doing so i reproduced the same error on x86-64 (thus, it's
+not an arch dependent issue).
+
+I added some debugging to bpf_csum_diff(), and here are the results with different
+checksum implementation code:
+
+http://paste.debian.net/1091037/
+
+lib/checksum.c:
+...
+[  206.084537] ____bpf_csum_diff from_size: 1 to_size: 0
+[  206.085274] ____bpf_csum_diff from[0]: 28
+[  206.085276] ____bpf_csum_diff diff[0]: 4294967267
+[  206.085277] ____bpf_csum_diff diff_size: 4 seed: 0
+
+After csum_partial() call:
+
+[  206.086059] ____bpf_csum_diff csum: 65507 - 0xffe3
+
+arch/x86/lib/csum-partial_64.c
+...
+[   40.467308] ____bpf_csum_diff from_size: 1 to_size: 0
+[   40.468141] ____bpf_csum_diff from[0]: 28
+[   40.468143] ____bpf_csum_diff diff[0]: 4294967267
+[   40.468144] ____bpf_csum_diff diff_size: 4 seed: 0
+
+After csum_partial() call:
+
+[   40.468937] ____bpf_csum_diff csum: -29 - 0xffffffe3
+
+One thing that i noticed, x86-64 csum-partial_64.c::do_csum() doesn't reduce the
+calculated checksum to 16bit before returning it (unless the input value is
+odd - *):
+
+arch/x86/lib/csum-partial_64.c::do_csum()
+		...
+        if (unlikely(odd)) { 
+                result = from32to16(result);
+                result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
+        }
+        return result;
+}
+
+contrary to all the other do_csum() implementations (that i could understand):
+
+lib/checksum.c::do_csum()
+arch/alpha/lib/checksum.c::do_csum()
+arch/parisc/lib/checksum.c::do_csum()
+
+Apparently even ia64 does the folding (arch/ia64/lib/do_csum.S see a comment right
+before .do_csum_exit:), and arch/c6x/lib/csum_64plus.S too (see
+arch/c6x/lib/csum_64plus.S).
+
+Funnily enough, if i change do_csum() for x86-64, folding the
+checksum to 16 bit (following all the other implementations):
+
+--- a/arch/x86/lib/csum-partial_64.c
++++ b/arch/x86/lib/csum-partial_64.c
+@@ -112,8 +112,8 @@ static unsigned do_csum(const unsigned char *buff, unsigned
+len)
+        if (len & 1)
+                result += *buff;
+        result = add32_with_carry(result>>32, result & 0xffffffff); 
++       result = from32to16(result);
+        if (unlikely(odd)) { 
+-               result = from32to16(result);
+                result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
+        }
+        return result;
+
+then, the x86-64 result match the others: 65507 or 0xffe3.
+
+As a last attempt, i tried running the bpf test_verifier on an armhf platform,
+and i got a completely different number:
+
+[   57.667999] ____bpf_csum_diff from_size: 1 to_size: 0
+[   57.668016] ____bpf_csum_diff from[0]: 28
+[   57.668028] ____bpf_csum_diff diff[0]: 4294967267
+[   57.668039] ____bpf_csum_diff diff_size: 4 seed: 0
+
+After csum_partial() call:
+
+[   57.668052] ____bpf_csum_diff::2002 csum: 131042 - 0x0001ffe2
+
+Not sure what to make of these number, but i have a question: whats is the
+correct checksum of the memory chunk passed to csum_partial()? Is it really -29?
+
+Because, at least 2 other implementations i tested (the arm assembly code and
+the c implementation in lib/checksum.c) computes a different value, so either
+there's a bug in checksum calcution (2 out of 3???), or we are interpreting the
+returned value from csum_partial() somehow wrongly.
+
+*: originally, the x86-64 did the 16bit folding, but the logic was changed to
+what we have today during a big rewrite - search for:
+
+commit 3ef076bb685a461bbaff37a1f06010fc4d7ce733
+Author: Andi Kleen <ak@suse.de>
+Date:   Fri Jun 13 04:27:34 2003 -0700
+
+    [PATCH] x86-64 merge
+
+in this historic repo:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
+-- 
+bye,
+p.
