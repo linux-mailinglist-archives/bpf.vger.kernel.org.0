@@ -2,60 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C298263F3F
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 04:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF3F63F5B
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 04:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725937AbfGJCVw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Jul 2019 22:21:52 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:34079 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725880AbfGJCVv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Jul 2019 22:21:51 -0400
-Received: by mail-qk1-f194.google.com with SMTP id t8so754069qkt.1
-        for <bpf@vger.kernel.org>; Tue, 09 Jul 2019 19:21:51 -0700 (PDT)
+        id S1725912AbfGJCgP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Jul 2019 22:36:15 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:42353 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725840AbfGJCgP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Jul 2019 22:36:15 -0400
+Received: by mail-qk1-f196.google.com with SMTP id 201so731846qkm.9
+        for <bpf@vger.kernel.org>; Tue, 09 Jul 2019 19:36:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:in-reply-to:references
          :organization:mime-version:content-transfer-encoding;
-        bh=unvZDjN9kre6psmsB+/DO8sq0hzYLAmdGDNLpsXbVH0=;
-        b=E5gpuJLjFkfovVsP6Ax5iGhesnoLJeEcchd7fuqXH1PfcxfYiTcpgLeb3nVB9kWDGe
-         0QN8/CNulZ9xbze4R10L11mIAZM5cqwkpsLcHi2800RvQ4TWRDMAXibRXVR4NaX/yAiP
-         IxaFn8AiOYrJvyvtQz9Iqtq1PygO9ZWq1LWucpratJUCkdw5+fhccWls3nd0xEkWRWQ5
-         NWOmaSElulZQ17RbioHSICoIKK+n6uT2M15TatxDsFV1FOxOwV6z46T3rWVlnALXHwMN
-         Hip7yWXmg7T4ycaKQPo+mG3Cl7l208x9raO4ujB7zTb+hfAVU91ll9p78Q98K839eM0R
-         qnwA==
+        bh=Zlch6bLWAifHmhuVeVobSr22tj+vbfDoRuAccvPZYEY=;
+        b=DwXvjqOcMWJodwGfmICVyRxcGFVv2G4GxXUNDEiIev6Y8Mp3NGs+URSdPLnLH6xYTB
+         FPRf6zMnTitqLkgXjuKw8PytmtpsmL9+Tz7ZDhJgv6vZTQcc+IdaXQ5KgdB4OflT4oKD
+         YYdCACSLIuxFbUQ/OWFIpqYTHGZuLPcJyvBZu1zBaWOK0JT9FrZ9WQkoYTRCQRLCoVfS
+         3iLCyI2FZu3ZbXPnrJptv1MLNFKTGPTyWy7/dL+fg8woM9HN7d/L5iZcEs8OWqwbmcZR
+         gwnG3dxYKC+b0A50PpxhSvCerbYhDIAQ8tRVxzca5uWYYCnXOBnqjQ5u9bWjre7Ud+m0
+         //mQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
          :references:organization:mime-version:content-transfer-encoding;
-        bh=unvZDjN9kre6psmsB+/DO8sq0hzYLAmdGDNLpsXbVH0=;
-        b=q2kQlTjP5LuvMQ8B4lURvr46UEACx4RgaS2u7+KyCi7y3flH8m8MCc3g0Qe1c8UU1/
-         d8I2E/9MWvHctOeJvXMzjKpnzDw9MW7ih6raKbCcuHITrjKjLgfmqCACoGngA62jV/Q+
-         fU66cZlHvrX7aupcAiWhit+ZjR7Da5IpCmYPytGs0uSxKBI5wA/sGT1jX20Re0fJuBFg
-         2FWySLNlTbRLulSHGnZnwLAdTqx/sJhAqc2gXDzoHTvIvNqtUVBaCw4rQiaYK/DDGx9N
-         5Cl/HNLLgzPdsfy5stEvriBRIcWokGRZwmC87+Buk+z1WpqQWhrj0n34NyTlTZJYkaUt
-         SHDg==
-X-Gm-Message-State: APjAAAXDOhdv/VWFv55qR2tJA5PmlR5WF3MHnlH93cwHEeSK9qbFHaQz
-        12Hhgwsa+iOvKRuuA4Jo+IPExw==
-X-Google-Smtp-Source: APXvYqxCjy5HfKU5iLOE3RPYTY9mZicl5S0/RRVQ5hl4qopBDJc2zNqZ93acRVRcnkU/jmx97KBoeA==
-X-Received: by 2002:a37:a94:: with SMTP id 142mr19619112qkk.89.1562725310958;
-        Tue, 09 Jul 2019 19:21:50 -0700 (PDT)
+        bh=Zlch6bLWAifHmhuVeVobSr22tj+vbfDoRuAccvPZYEY=;
+        b=i5BC/mA+LLuajHm49gzbZ3YxTBihcmXlqOS3fDiHZB9YvHPMjfqPsxAB8et2LbE7uY
+         ArH0Gs/DqUrkmnF3NAsdQiguFiIdcpB4WrltyOEAhgOn+JYCbI+25P58dXALMRjJVGDc
+         6YOD3n3V2e0Zbd/Io5ZJqKTAWm06AODAq5bmnhd4uNGXmFFC74orETK3UjuJDCnJ7FU/
+         YtxDrg66abo6zY5eOvkO2F+juXoRoUkjLg6ql/FXH4TCMWtjI73+ObYwW9NSF+liCnjF
+         YCTRqvv5DhhnPdoZfMfLucyh9eLOTWC/g1zFLtLtOmJBpGg7fbUZ8CdaiYZoggw/23Nk
+         gBKA==
+X-Gm-Message-State: APjAAAWKR5sOikq4xtTmiAsa2vdw3gDImWQ9EUEZc//CKTSKJWHq+M22
+        m4NM/WLNuxldvULJ5nMOp/MNAQ==
+X-Google-Smtp-Source: APXvYqze8B2LgCM6gWk6hkhN3SDNfnfmd9Q1xReDmcqVezU30xFZaMwOsM7JiiQ75Zo0gTJxqXt2ww==
+X-Received: by 2002:a37:e40b:: with SMTP id y11mr21406593qkf.88.1562726174572;
+        Tue, 09 Jul 2019 19:36:14 -0700 (PDT)
 Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id r189sm445843qkc.60.2019.07.09.19.21.50
+        by smtp.gmail.com with ESMTPSA id g22sm276484qtr.95.2019.07.09.19.36.13
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 09 Jul 2019 19:21:50 -0700 (PDT)
-Date:   Tue, 9 Jul 2019 19:21:45 -0700
+        Tue, 09 Jul 2019 19:36:14 -0700 (PDT)
+Date:   Tue, 9 Jul 2019 19:36:10 -0700
 From:   Jakub Kicinski <jakub.kicinski@netronome.com>
 To:     John Fastabend <john.fastabend@gmail.com>
 Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
         edumazet@google.com, bpf@vger.kernel.org
-Subject: Re: [bpf PATCH v2 0/6] bpf: sockmap/tls fixes
-Message-ID: <20190709192145.473d2d80@cakuba.netronome.com>
-In-Reply-To: <20190709170459.387bced6@cakuba.netronome.com>
+Subject: Re: [bpf PATCH v2 6/6] bpf: sockmap/tls, close can race with map
+ free
+Message-ID: <20190709193610.1f090ed4@cakuba.netronome.com>
+In-Reply-To: <156261331866.31108.6405316261950259075.stgit@ubuntu3-kvm1>
 References: <156261310104.31108.4569969631798277807.stgit@ubuntu3-kvm1>
-        <20190708231318.1a721ce8@cakuba.netronome.com>
-        <5d24b55e8b868_3b162ae67af425b43e@john-XPS-13-9370.notmuch>
-        <20190709170459.387bced6@cakuba.netronome.com>
+        <156261331866.31108.6405316261950259075.stgit@ubuntu3-kvm1>
 Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -65,19 +64,31 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 9 Jul 2019 17:04:59 -0700, Jakub Kicinski wrote:
-> On Tue, 09 Jul 2019 08:40:14 -0700, John Fastabend wrote:
-> > Jakub Kicinski wrote:  
-> > > Looks like strparser is not done'd for offload?    
-> > 
-> > Right so if rx_conf != TLS_SW then the hardware needs to do
-> > the strparser functionality.  
-> 
-> Can I just take a stab at fixing the HW part?
-> 
-> Can I rebase this onto net-next?  There are a few patches from net
-> missing in the bpf tree.
+On Mon, 08 Jul 2019 19:15:18 +0000, John Fastabend wrote:
+> @@ -836,22 +841,39 @@ static int tls_init(struct sock *sk)
 
-I think I fixed patch 1 for offload, I need to test it a little more
-and I'll send it back to you. In the meantime, let me ask some
-questions about the other two :)
+There is a goto out above this which has to be turned into return 0;
+if out now releases the lock.
+
+>  	if (sk->sk_state != TCP_ESTABLISHED)
+>  		return -ENOTSUPP;
+>  
+> +	tls_build_proto(sk);
+> +
+>  	/* allocate tls context */
+> +	write_lock_bh(&sk->sk_callback_lock);
+>  	ctx = create_ctx(sk);
+>  	if (!ctx) {
+>  		rc = -ENOMEM;
+>  		goto out;
+>  	}
+>  
+> -	tls_build_proto(sk);
+>  	ctx->tx_conf = TLS_BASE;
+>  	ctx->rx_conf = TLS_BASE;
+>  	ctx->sk_proto = sk->sk_prot;
+>  	update_sk_prot(sk, ctx);
+>  out:
+> +	write_unlock_bh(&sk->sk_callback_lock);
+>  	return rc;
+>  }
