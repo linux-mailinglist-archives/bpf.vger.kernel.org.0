@@ -2,181 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 895E064359
-	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 10:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D17F7643FB
+	for <lists+bpf@lfdr.de>; Wed, 10 Jul 2019 11:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727222AbfGJIIv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Jul 2019 04:08:51 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:21150 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726134AbfGJIIv (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 10 Jul 2019 04:08:51 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6A7soa0006693
-        for <bpf@vger.kernel.org>; Wed, 10 Jul 2019 01:08:50 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=PDY+EhkXjha7DMzrL7RSVazSHo0QDYayuvq4vc2hvvM=;
- b=GaChb78XG+JhNSVybUnusvZr5jgnjE4YbnbIlFyULSiWfz1bBUxDZQKocRWS6L2e6dfc
- YYZulKj53qCNePslegMkDRUPKq7qFcqK8wFD7lNcYFilRSsyXVZjejjS3v0Tt5EEwGuG
- Wo/yx0UChkF0GH3tTBr2XUFB8qNcdc8mNIc= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2tn6n8ruy6-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 10 Jul 2019 01:08:50 -0700
-Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Wed, 10 Jul 2019 01:08:49 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id E43B88616EE; Wed, 10 Jul 2019 01:08:48 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <andrii.nakryiko@gmail.com>, <ast@fb.com>, <daniel@iogearbox.net>,
-        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <kernel-team@fb.com>
-CC:     Andrii Nakryiko <andriin@fb.com>, Martin KaFai Lau <kafai@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH bpf] bpf: fix BTF verifier size resolution logic
-Date:   Wed, 10 Jul 2019 01:08:40 -0700
-Message-ID: <20190710080840.2613160-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-10_03:,,
+        id S1727644AbfGJJAF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 10 Jul 2019 05:00:05 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4756 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727841AbfGJJAB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 10 Jul 2019 05:00:01 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6A8vInR091616
+        for <bpf@vger.kernel.org>; Wed, 10 Jul 2019 05:00:00 -0400
+Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2tn9nyqa1p-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 10 Jul 2019 05:00:00 -0400
+Received: from localhost
+        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Wed, 10 Jul 2019 09:59:58 +0100
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 10 Jul 2019 09:59:57 +0100
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6A8xu7L50725092
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Jul 2019 08:59:56 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6EE825204E;
+        Wed, 10 Jul 2019 08:59:56 +0000 (GMT)
+Received: from dyn-9-152-97-237.boeblingen.de.ibm.com (unknown [9.152.97.237])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 4E52F5204F;
+        Wed, 10 Jul 2019 08:59:56 +0000 (GMT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Subject: Re: [PATCH bpf] selftests/bpf: fix bpf_target_sparc check
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+In-Reply-To: <CAEf4BzZswDkvPbhNnovLjWWmmhR2VBWtrCJkpMXM8M_5Ztn4-w@mail.gmail.com>
+Date:   Wed, 10 Jul 2019 10:59:39 +0200
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+References: <20190709152126.37853-1-iii@linux.ibm.com>
+ <CAEf4BzZswDkvPbhNnovLjWWmmhR2VBWtrCJkpMXM8M_5Ztn4-w@mail.gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+X-Mailer: Apple Mail (2.3445.9.1)
+X-TM-AS-GCONF: 00
+x-cbid: 19071008-4275-0000-0000-0000034B4AA2
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19071008-4276-0000-0000-0000385B4D6F
+Message-Id: <D784EE92-0B53-4D9F-BBD0-46DDA1483573@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-10_04:,,
  signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=2 phishscore=0 bulkscore=0 spamscore=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=680 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907100098
-X-FB-Internal: deliver
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907100106
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BTF verifier has Different logic depending on whether we are following
-a PTR or STRUCT/ARRAY (or something else). This is an optimization to
-stop early in DFS traversal while resolving BTF types. But it also
-results in a size resolution bug, when there is a chain, e.g., of PTR ->
-TYPEDEF -> ARRAY, in which case due to being in pointer context ARRAY
-size won't be resolved, as it is considered to be a sink for pointer,
-leading to TYPEDEF being in RESOLVED state with zero size, which is
-completely wrong.
+> Am 09.07.2019 um 19:56 schrieb Andrii Nakryiko <andrii.nakryiko@gmail.com>:
+> 
+> On Tue, Jul 9, 2019 at 8:22 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>> 
+>> bpf_helpers.h fails to compile on sparc: the code should be checking
+>> for defined(bpf_target_sparc), but checks simply for bpf_target_sparc.
+>> 
+>> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+>> ---
+>> tools/testing/selftests/bpf/bpf_helpers.h | 2 +-
+>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/tools/testing/selftests/bpf/bpf_helpers.h b/tools/testing/selftests/bpf/bpf_helpers.h
+>> index 5f6f9e7aba2a..a8fea087aa90 100644
+>> --- a/tools/testing/selftests/bpf/bpf_helpers.h
+>> +++ b/tools/testing/selftests/bpf/bpf_helpers.h
+>> @@ -443,7 +443,7 @@ static int (*bpf_skb_adjust_room)(void *ctx, __s32 len_diff, __u32 mode,
+>> #ifdef bpf_target_powerpc
+> 
+> While at it, can you please also fix this one?
 
-Optimization is doubtful, though, as btf_check_all_types() will iterate
-over all BTF types anyways, so the only saving is a potentially slightly
-shorter stack. But correctness is more important that tiny savings.
+Do you mean #ifdef bpf_target_powerpc? I think it’s correct, because it’s #ifdef, not #if.
+But I could change it to #if defined() for consistency.
 
-This bug manifests itself in rejecting BTF-defined maps that use array
-typedef as a value type:
-
-typedef int array_t[16];
-
-struct {
-	__uint(type, BPF_MAP_TYPE_ARRAY);
-	__type(value, array_t); /* i.e., array_t *value; */
-} test_map SEC(".maps");
-
-Fixes: eb3f595dab40 ("bpf: btf: Validate type reference")
-Cc: Martin KaFai Lau <kafai@fb.com>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- kernel/bpf/btf.c | 42 +++---------------------------------------
- 1 file changed, 3 insertions(+), 39 deletions(-)
-
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index cad09858a5f2..c68c7e73b0d1 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -231,14 +231,6 @@ enum visit_state {
- 	RESOLVED,
- };
- 
--enum resolve_mode {
--	RESOLVE_TBD,	/* To Be Determined */
--	RESOLVE_PTR,	/* Resolving for Pointer */
--	RESOLVE_STRUCT_OR_ARRAY,	/* Resolving for struct/union
--					 * or array
--					 */
--};
--
- #define MAX_RESOLVE_DEPTH 32
- 
- struct btf_sec_info {
-@@ -254,7 +246,6 @@ struct btf_verifier_env {
- 	u32 log_type_id;
- 	u32 top_stack;
- 	enum verifier_phase phase;
--	enum resolve_mode resolve_mode;
- };
- 
- static const char * const btf_kind_str[NR_BTF_KINDS] = {
-@@ -964,26 +955,7 @@ static void btf_verifier_env_free(struct btf_verifier_env *env)
- static bool env_type_is_resolve_sink(const struct btf_verifier_env *env,
- 				     const struct btf_type *next_type)
- {
--	switch (env->resolve_mode) {
--	case RESOLVE_TBD:
--		/* int, enum or void is a sink */
--		return !btf_type_needs_resolve(next_type);
--	case RESOLVE_PTR:
--		/* int, enum, void, struct, array, func or func_proto is a sink
--		 * for ptr
--		 */
--		return !btf_type_is_modifier(next_type) &&
--			!btf_type_is_ptr(next_type);
--	case RESOLVE_STRUCT_OR_ARRAY:
--		/* int, enum, void, ptr, func or func_proto is a sink
--		 * for struct and array
--		 */
--		return !btf_type_is_modifier(next_type) &&
--			!btf_type_is_array(next_type) &&
--			!btf_type_is_struct(next_type);
--	default:
--		BUG();
--	}
-+	return !btf_type_needs_resolve(next_type);
- }
- 
- static bool env_type_is_resolved(const struct btf_verifier_env *env,
-@@ -1010,13 +982,6 @@ static int env_stack_push(struct btf_verifier_env *env,
- 	v->type_id = type_id;
- 	v->next_member = 0;
- 
--	if (env->resolve_mode == RESOLVE_TBD) {
--		if (btf_type_is_ptr(t))
--			env->resolve_mode = RESOLVE_PTR;
--		else if (btf_type_is_struct(t) || btf_type_is_array(t))
--			env->resolve_mode = RESOLVE_STRUCT_OR_ARRAY;
--	}
--
- 	return 0;
- }
- 
-@@ -1038,7 +1003,7 @@ static void env_stack_pop_resolved(struct btf_verifier_env *env,
- 	env->visit_states[type_id] = RESOLVED;
- }
- 
--static const struct resolve_vertex *env_stack_peak(struct btf_verifier_env *env)
-+static const struct resolve_vertex *env_stack_peek(struct btf_verifier_env *env)
- {
- 	return env->top_stack ? &env->stack[env->top_stack - 1] : NULL;
- }
-@@ -3030,9 +2995,8 @@ static int btf_resolve(struct btf_verifier_env *env,
- 	const struct resolve_vertex *v;
- 	int err = 0;
- 
--	env->resolve_mode = RESOLVE_TBD;
- 	env_stack_push(env, t, type_id);
--	while (!err && (v = env_stack_peak(env))) {
-+	while (!err && (v = env_stack_peek(env))) {
- 		env->log_type_id = v->type_id;
- 		err = btf_type_ops(v->t)->resolve(env, v);
- 	}
--- 
-2.17.1
-
+Best regards,
+Ilya
