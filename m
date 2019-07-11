@@ -2,87 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 88FC6659DE
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2019 17:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 174C265DBB
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2019 18:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728736AbfGKPBA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 11 Jul 2019 11:01:00 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:65042 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728725AbfGKPBA (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 11 Jul 2019 11:01:00 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6BExOvP033996
-        for <bpf@vger.kernel.org>; Thu, 11 Jul 2019 11:00:59 -0400
-Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tp6s41jt7-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 11 Jul 2019 11:00:54 -0400
-Received: from localhost
-        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Thu, 11 Jul 2019 16:00:42 +0100
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
-        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 11 Jul 2019 16:00:38 +0100
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6BF0bkp12648538
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Jul 2019 15:00:38 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D23A64204C;
-        Thu, 11 Jul 2019 15:00:37 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B08C44203F;
-        Thu, 11 Jul 2019 15:00:37 +0000 (GMT)
-Received: from dyn-9-152-97-237.boeblingen.de.ibm.com (unknown [9.152.97.237])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 11 Jul 2019 15:00:37 +0000 (GMT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [PATCH v3 bpf] selftests/bpf: do not ignore clang failures
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-In-Reply-To: <CAEf4Bzb6mY-F-wUNNimS+hMSRbJetTKXNcGDQbsJXhXDywA+tg@mail.gmail.com>
-Date:   Thu, 11 Jul 2019 17:00:37 +0200
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        id S1728405AbfGKQn1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Jul 2019 12:43:27 -0400
+Received: from gateway36.websitewelcome.com ([192.185.187.5]:40372 "EHLO
+        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728294AbfGKQn1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 11 Jul 2019 12:43:27 -0400
+X-Greylist: delayed 1252 seconds by postgrey-1.27 at vger.kernel.org; Thu, 11 Jul 2019 12:43:27 EDT
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway36.websitewelcome.com (Postfix) with ESMTP id 6CE17400C5A3D
+        for <bpf@vger.kernel.org>; Thu, 11 Jul 2019 10:45:36 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id lbq7h04huYTGMlbq7hrVux; Thu, 11 Jul 2019 11:22:35 -0500
+X-Authority-Reason: nr=8
+Received: from cablelink-187-160-61-213.pcs.intercable.net ([187.160.61.213]:24662 helo=embeddedor)
+        by gator4166.hostgator.com with esmtpa (Exim 4.92)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1hlbq6-002Yit-1g; Thu, 11 Jul 2019 11:22:34 -0500
+Date:   Thu, 11 Jul 2019 11:22:33 -0500
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <liu.song.a23@gmail.com>
-Content-Transfer-Encoding: 8BIT
-References: <20190711091249.59865-1-iii@linux.ibm.com>
- <CAEf4Bzb6mY-F-wUNNimS+hMSRbJetTKXNcGDQbsJXhXDywA+tg@mail.gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-X-Mailer: Apple Mail (2.3445.9.1)
-X-TM-AS-GCONF: 00
-x-cbid: 19071115-0016-0000-0000-00000291CE55
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19071115-0017-0000-0000-000032EF8E88
-Message-Id: <51821F5F-A70F-485B-B6E7-CAE6D49B6D1D@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-11_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=889 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907110170
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Lawrence Brakmo <brakmo@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH][bpf-next] bpf: verifier: avoid fall-through warnings
+Message-ID: <20190711162233.GA6977@embeddedor>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.160.61.213
+X-Source-L: No
+X-Exim-ID: 1hlbq6-002Yit-1g
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: cablelink-187-160-61-213.pcs.intercable.net (embeddedor) [187.160.61.213]:24662
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 14
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Am 11.07.2019 um 16:55 schrieb Andrii Nakryiko <andrii.nakryiko@gmail.com>:
-> 
-> On Thu, Jul 11, 2019 at 2:14 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
->> 
->> 
->> In addition, pull Kbuild.include in order to get .DELETE_ON_ERROR target,
-> 
-> In your original patch you explicitly declared .DELETE_ON_ERROR, but
-> in this one you just include Kbuild.include.
-> Is it enough to just include that file to get desired behavior or your
-> forgot to add .DELETE_ON_ERROR?
+In preparation to enabling -Wimplicit-fallthrough, this patch silences
+the following warning:
 
-It’s enough to just include Kbuild.include. I grepped the source tree
-and found that no one else declares .DELETE_ON_ERROR explicitly, so I've
-decided to avoid doing this as well.
+kernel/bpf/verifier.c: In function ‘check_return_code’:
+kernel/bpf/verifier.c:6106:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
+   if (env->prog->expected_attach_type == BPF_CGROUP_UDP4_RECVMSG ||
+      ^
+kernel/bpf/verifier.c:6109:2: note: here
+  case BPF_PROG_TYPE_CGROUP_SKB:
+  ^~~~
+
+Warning level 3 was used: -Wimplicit-fallthrough=3
+
+Notice that is much clearer to explicitly add breaks in each case
+statement (that actually contains some code), rather than letting
+the code to fall through.
+
+This patch is part of the ongoing efforts to enable
+-Wimplicit-fallthrough.
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+
+NOTE: -Wimplicit-fallthrough will be enabled globally in v5.3. So, I
+      suggest you to take this patch for 5.3-rc1.
+
+ kernel/bpf/verifier.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index a2e763703c30..44c3b947400e 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -6106,11 +6106,13 @@ static int check_return_code(struct bpf_verifier_env *env)
+ 		if (env->prog->expected_attach_type == BPF_CGROUP_UDP4_RECVMSG ||
+ 		    env->prog->expected_attach_type == BPF_CGROUP_UDP6_RECVMSG)
+ 			range = tnum_range(1, 1);
++		break;
+ 	case BPF_PROG_TYPE_CGROUP_SKB:
+ 		if (env->prog->expected_attach_type == BPF_CGROUP_INET_EGRESS) {
+ 			range = tnum_range(0, 3);
+ 			enforce_attach_type_range = tnum_range(2, 3);
+ 		}
++		break;
+ 	case BPF_PROG_TYPE_CGROUP_SOCK:
+ 	case BPF_PROG_TYPE_SOCK_OPS:
+ 	case BPF_PROG_TYPE_CGROUP_DEVICE:
+-- 
+2.21.0
+
