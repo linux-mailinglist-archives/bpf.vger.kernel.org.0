@@ -2,128 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B90B6538F
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2019 11:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE6D653CE
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2019 11:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727595AbfGKJNP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Jul 2019 05:13:15 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50974 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726997AbfGKJNP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 11 Jul 2019 05:13:15 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6B9D42b138226
-        for <bpf@vger.kernel.org>; Thu, 11 Jul 2019 05:13:14 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tp0canh3j-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 11 Jul 2019 05:13:11 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Thu, 11 Jul 2019 10:12:54 +0100
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 11 Jul 2019 10:12:51 +0100
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6B9Cof951707962
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Jul 2019 09:12:50 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CF94C52052;
-        Thu, 11 Jul 2019 09:12:50 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.152.97.237])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 9864052050;
-        Thu, 11 Jul 2019 09:12:50 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     andrii.nakryiko@gmail.com, daniel@iogearbox.net,
-        liu.song.a23@gmail.com, Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH v3 bpf] selftests/bpf: do not ignore clang failures
-Date:   Thu, 11 Jul 2019 11:12:49 +0200
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19071109-0020-0000-0000-00000352A5E6
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19071109-0021-0000-0000-000021A65E50
-Message-Id: <20190711091249.59865-1-iii@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-11_01:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907110109
+        id S1727946AbfGKJb6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Jul 2019 05:31:58 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:41026 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726088AbfGKJb6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Jul 2019 05:31:58 -0400
+Received: by mail-wr1-f67.google.com with SMTP id c2so2289640wrm.8;
+        Thu, 11 Jul 2019 02:31:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=l4bEEAxzGIGnFBD/3jElNFp34ehWwPy0iGMb60Ja/qM=;
+        b=LGEXirOw0aMcPgnorDYhAX95/V+nn+qMQkpvwFvcG/FKF+nsqfqBtq+YBr9sTW7cs+
+         bicPHQ2DJeSeAt6FDWRizzeeEA0VSBSdFMdFN+GDwcL1yoln61rRciCl6pqBOlYWjOGD
+         x1jm8zjeksPQFNvU0SzDa78BuYHqjMKZ8FUaj+IzVIWNN76JyIgFR/cAf4m7KpdCD2HX
+         aeFCy8aUdVcvd/S+QZURH1POYFXsDHEF+8cxBT0ZBUZJXNNCJvDh5Q06q7cMUrKeRkyX
+         0eVVCePqlrXqanKMOhDOuQf4ZQ5tRCUBsavFILtljXTueQGq3oA+0TsS2UkuXe4e7bVg
+         oTEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=l4bEEAxzGIGnFBD/3jElNFp34ehWwPy0iGMb60Ja/qM=;
+        b=F3H350j8dZdyREHovHQ6zb4iU67gsi2H8IqmhouhtajueAP+dTlPQJu9ZnyYMETNEb
+         spoqk0zacQdqRGockF8NNTCWhyUQ3FrKajML0CcIdPUlt9reqU956Qa9/BOdlGmCCb+9
+         BL+GpYvxQG83ZIyaVW+Uq7029xMDIosx9uDSQ8ln5ttPBJZA6WFnu4Dmu6ciiTM0vPPY
+         zEwTc+bzIOVY4unw+IV0EZYKuMn58pB+cxuW0K4fPWsfUpux8hWcx6sqv1u6cpairX6C
+         gngge1arf++FjFjGOZ1HFQPNpzYVKWec1FrAthFFvg4bKNPJTQey6pHuhM4rOAI5brIB
+         4cOQ==
+X-Gm-Message-State: APjAAAVKSSWjpGF5WKBuBRwW/UKLUrPUiJRde9nGQ/Ia9SVLZRuPqyDX
+        eNnFWISnomEbU82isgJuiavQ+X44b6I=
+X-Google-Smtp-Source: APXvYqz0OXD69emcOGH46hrtIm+cwY/xRJ7bJg/E0Xtb/ywPVDEIQWoLL7zGB5vyW+suzm7/ZgNwZw==
+X-Received: by 2002:adf:db0b:: with SMTP id s11mr3967901wri.7.1562837515183;
+        Thu, 11 Jul 2019 02:31:55 -0700 (PDT)
+Received: from gmail.com (net-5-95-187-49.cust.vodafonedsl.it. [5.95.187.49])
+        by smtp.gmail.com with ESMTPSA id r123sm5074455wme.7.2019.07.11.02.31.54
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 11 Jul 2019 02:31:54 -0700 (PDT)
+From:   Paolo Pisati <p.pisati@gmail.com>
+To:     --in-reply-to= <20190710231439.GD32439@tassilo.jf.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jiong Wang <jiong.wang@netronome.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Fold checksum at the end of bpf_csum_diff and fix
+Date:   Thu, 11 Jul 2019 11:31:51 +0200
+Message-Id: <1562837513-745-1-git-send-email-p.pisati@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When compiling an eBPF prog fails, make still returns 0, because
-failing clang command's output is piped to llc and therefore its
-exit status is ignored.
+From: Paolo Pisati <paolo.pisati@canonical.com>
 
-When clang fails, pipe the string "clang failed" to llc. This will make
-llc fail with an informative error message. This solution was chosen
-over using pipefail, having separate targets or getting rid of llc
-invocation due to its simplicity.
+After applying patch 0001, all checksum implementations i could test (x86-64, arm64 and
+arm), now agree on the return value.
 
-In addition, pull Kbuild.include in order to get .DELETE_ON_ERROR target,
-which would cause partial .o files to be removed.
+Patch 0002 fix the expected return value for test #13: i did the calculation manually,
+and it correspond.
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
-v1->v2: use intermediate targets instead of pipefail
-v2->v3: pipe "clang failed" instead of using intermediate targets
+Unfortunately, after applying patch 0001, other test cases now fail in
+test_verifier:
 
-tools/testing/selftests/bpf/Makefile | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+$ sudo ./tools/testing/selftests/bpf/test_verifier
+...
+#417/p helper access to variable memory: size = 0 allowed on NULL (ARG_PTR_TO_MEM_OR_NULL) FAIL retval 65535 != 0 
+#419/p helper access to variable memory: size = 0 allowed on != NULL stack pointer (ARG_PTR_TO_MEM_OR_NULL) FAIL retval 65535 != 0 
+#423/p helper access to variable memory: size possible = 0 allowed on != NULL packet pointer (ARG_PTR_TO_MEM_OR_NULL) FAIL retval 65535 != 0 
+...
+Summary: 1500 PASSED, 0 SKIPPED, 3 FAILED
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index e36356e2377e..e375f399b7a6 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
-+include ../../../../scripts/Kbuild.include
- 
- LIBDIR := ../../../lib
- BPFDIR := $(LIBDIR)/bpf
-@@ -185,8 +186,8 @@ $(ALU32_BUILD_DIR)/test_progs_32: prog_tests/*.c
- 
- $(ALU32_BUILD_DIR)/%.o: progs/%.c $(ALU32_BUILD_DIR) \
- 					$(ALU32_BUILD_DIR)/test_progs_32
--	$(CLANG) $(CLANG_FLAGS) \
--		 -O2 -target bpf -emit-llvm -c $< -o - |      \
-+	($(CLANG) $(CLANG_FLAGS) -O2 -target bpf -emit-llvm -c $< -o - || \
-+		echo "clang failed") | \
- 	$(LLC) -march=bpf -mattr=+alu32 -mcpu=$(CPU) $(LLC_FLAGS) \
- 		-filetype=obj -o $@
- ifeq ($(DWARF2BTF),y)
-@@ -197,16 +198,16 @@ endif
- # Have one program compiled without "-target bpf" to test whether libbpf loads
- # it successfully
- $(OUTPUT)/test_xdp.o: progs/test_xdp.c
--	$(CLANG) $(CLANG_FLAGS) \
--		-O2 -emit-llvm -c $< -o - | \
-+	($(CLANG) $(CLANG_FLAGS) -O2 -emit-llvm -c $< -o - || \
-+		echo "clang failed") | \
- 	$(LLC) -march=bpf -mcpu=$(CPU) $(LLC_FLAGS) -filetype=obj -o $@
- ifeq ($(DWARF2BTF),y)
- 	$(BTF_PAHOLE) -J $@
- endif
- 
- $(OUTPUT)/%.o: progs/%.c
--	$(CLANG) $(CLANG_FLAGS) \
--		 -O2 -target bpf -emit-llvm -c $< -o - |      \
-+	($(CLANG) $(CLANG_FLAGS) -O2 -target bpf -emit-llvm -c $< -o - || \
-+		echo "clang failed") | \
- 	$(LLC) -march=bpf -mcpu=$(CPU) $(LLC_FLAGS) -filetype=obj -o $@
- ifeq ($(DWARF2BTF),y)
- 	$(BTF_PAHOLE) -J $@
+And there are probably other fallouts in other selftests - someone familiar
+should take a look before applying these patches.
+
+Paolo Pisati (2):
+  bpf: bpf_csum_diff: fold the checksum before returning the
+    value
+  bpf, selftest: fix checksum value for test #13
+
+ net/core/filter.c                                   | 2 +-
+ tools/testing/selftests/bpf/verifier/array_access.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
 -- 
-2.21.0
+2.17.1
 
