@@ -2,491 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CDBE64F8D
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2019 02:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C1264F94
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2019 02:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbfGKA3h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Jul 2019 20:29:37 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:43226 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726627AbfGKA3h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Jul 2019 20:29:37 -0400
-Received: by mail-qt1-f195.google.com with SMTP id w17so4510935qto.10;
-        Wed, 10 Jul 2019 17:29:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pdFy1oYuF+2988TflbgaAqBXBgAWd2V809ovyhykIzE=;
-        b=pFYq36uZcLxE6ARZQu9x86GdDJYBKtiaWXG93LxhzSlTkQFsunZDUAF7oHDvRYEHbK
-         XQ2GBlLrObWtPjV+fjYfaK4PhICZoO85fOrMMq2DCpkCIwZ2xUmXlDeGxD00lPJ54KNY
-         B/KnmSAQp+hFzCW44S0bbRmHP4/hS+U2x0R33J4as2xUsmldRIGkJJzT+qL4iUFw5v9U
-         9j4j0VZHthdlBi/lmkH/BDagQtTPDrTSDd0deCAys4uVO+2X1c8r2v9lhpZucLCwORo6
-         OjPNdwGNe5usntXPuemGHQraw3bLpcP0dsMc3dVQ3KXv+W74i3o6sq92Qk2xAqjFBUZ3
-         rFbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pdFy1oYuF+2988TflbgaAqBXBgAWd2V809ovyhykIzE=;
-        b=SycUW6xYX+tNXecscg6WsV/Vtg5h5L/9Qr4mL/7WYxbnvtZ8LXdNPIfNqzUmKjTP2Q
-         1Mdm6P5rE20TqP0JUvrdwg3hwmZUR8/qSY8VBduuCBv17lW2MtQHVHDm/oXXbBetQgQh
-         Mo5hGHAU2XRsKkFwTn4IK7ZDS3xwnzBFgQQfIlT3+oUQcg4jIRagkfdqQ6BxOgy2ggfo
-         moWAKsRwi1km08CIvY5NI76JfrWI/jEmR4NyG61txuvk6Z3Ezf/vP4TOadv+HHqO7g/M
-         XefZjt3AZIpsJ3CyYJ9xjnsgdS8biVdgmh3DvD3pM8JIqSOM8xwXb7RSWkw5o4w7uaWw
-         1nqg==
-X-Gm-Message-State: APjAAAWKvOjYuqEtr/EiZ25aJ1gGS2ncjSKBNBhJrSTNEOYYo2WQG2gU
-        eWJuj7kG9kclt/YaXBy57LAOb9D0djR6ywagU7s=
-X-Google-Smtp-Source: APXvYqxuk7skt4KIjrDXOLI4T1Lcl7pJBdTa7ad746v+GO2dJ4+htkboTME3vmTKOPsQWfH21zttkyOPuO/XtXSGkWA=
-X-Received: by 2002:ac8:290c:: with SMTP id y12mr668035qty.141.1562804975058;
- Wed, 10 Jul 2019 17:29:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190710080840.2613160-1-andriin@fb.com> <f6bc7a95-e8e1-eec4-9728-3b9e36b434fa@fb.com>
-In-Reply-To: <f6bc7a95-e8e1-eec4-9728-3b9e36b434fa@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 10 Jul 2019 17:29:24 -0700
-Message-ID: <CAEf4BzaVouFd=3whC1EjhQ9mit62b-C+NhQuW4RiXW02Rq_1Ug@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
+        id S1727188AbfGKAhQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Jul 2019 20:37:16 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:51472 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726627AbfGKAhQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 10 Jul 2019 20:37:16 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x6B0W8gp018518;
+        Wed, 10 Jul 2019 17:36:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=TjZGCnodWjgnXR1ZQDzyNaKTiHTW//DSfuyANWnyGzg=;
+ b=lrtx3p1MhYpOziQQPg2of/x8LhNtmLFlP80j/VrJBs6FbPqV31/9ccJxiAhj8fGc2t86
+ auofECM+/28idZ44dzwXE2h1Qt0n3pRhPyWYsl6ppXZDVpMZho70EteewatH+gRCbQ+z
+ UUiAb5s5eTuaC5LFUwjv88wvdMXNVrWlabE= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by m0001303.ppops.net with ESMTP id 2tmxrb5y8n-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 10 Jul 2019 17:36:54 -0700
+Received: from prn-mbx03.TheFacebook.com (2620:10d:c081:6::17) by
+ prn-hub01.TheFacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Wed, 10 Jul 2019 17:36:52 -0700
+Received: from prn-hub01.TheFacebook.com (2620:10d:c081:35::125) by
+ prn-mbx03.TheFacebook.com (2620:10d:c081:6::17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Wed, 10 Jul 2019 17:36:52 -0700
+Received: from NAM03-BY2-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Wed, 10 Jul 2019 17:36:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TjZGCnodWjgnXR1ZQDzyNaKTiHTW//DSfuyANWnyGzg=;
+ b=D19kxCQErEC6u4fQ0OHHI2RhvnKiwa2Hf/6iNPx+BPxRxSM79arg+2CDjTk3cHrPrTuSuFNPN6rbvrzA/ncCdiSG0JZXL5ajCjS8+FS0rdYc0o8ZdnvzUNa49nBksvLdB8dCGkRvOBiEcD91EZklNiFOfBPPrfLiqnvYQri9wRM=
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.59.17) by
+ BYAPR15MB2855.namprd15.prod.outlook.com (20.178.206.84) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2052.18; Thu, 11 Jul 2019 00:36:36 +0000
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::e499:ecba:ec04:abac]) by BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::e499:ecba:ec04:abac%5]) with mapi id 15.20.2073.008; Thu, 11 Jul 2019
+ 00:36:35 +0000
+From:   Yonghong Song <yhs@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
         "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         Kernel Team <Kernel-team@fb.com>, Martin Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic
+Thread-Topic: [PATCH bpf] bpf: fix BTF verifier size resolution logic
+Thread-Index: AQHVNvb9OTRSXZV6J0yyn1q3qDFOw6bEGJAAgAB44wCAAAH/gA==
+Date:   Thu, 11 Jul 2019 00:36:35 +0000
+Message-ID: <304d8535-5043-836d-2933-1a5efb7aec72@fb.com>
+References: <20190710080840.2613160-1-andriin@fb.com>
+ <f6bc7a95-e8e1-eec4-9728-3b9e36b434fa@fb.com>
+ <CAEf4BzaVouFd=3whC1EjhQ9mit62b-C+NhQuW4RiXW02Rq_1Ug@mail.gmail.com>
+In-Reply-To: <CAEf4BzaVouFd=3whC1EjhQ9mit62b-C+NhQuW4RiXW02Rq_1Ug@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MW2PR16CA0022.namprd16.prod.outlook.com (2603:10b6:907::35)
+ To BYAPR15MB3384.namprd15.prod.outlook.com (2603:10b6:a03:10e::17)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::2:e95c]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b1d84ca0-043d-49f2-5a0c-08d70597d451
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB2855;
+x-ms-traffictypediagnostic: BYAPR15MB2855:
+x-microsoft-antispam-prvs: <BYAPR15MB2855A3D1FF7462BF3EBB9EE4D3F30@BYAPR15MB2855.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0095BCF226
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(366004)(396003)(136003)(346002)(376002)(199004)(189003)(81166006)(66946007)(99286004)(81156014)(316002)(31696002)(7736002)(54906003)(86362001)(8936002)(14444005)(102836004)(446003)(8676002)(6436002)(186003)(386003)(305945005)(52116002)(76176011)(66446008)(64756008)(66556008)(66476007)(14454004)(6506007)(53546011)(2906002)(68736007)(6512007)(6916009)(25786009)(53936002)(6486002)(256004)(486006)(4326008)(6116002)(36756003)(46003)(6246003)(11346002)(476003)(229853002)(2616005)(478600001)(71190400001)(71200400001)(5660300002)(31686004);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2855;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: cJJH44yUJFTotH1txrn+b7Jfhe3vPqtXfiZrWwUHTwZ77yTJ9d6jWDf9V/UM/tSrqA1W4A67gLyEFSSFN4RSsBEFwReTwA6PqztDCyam6qspPqHIc/yq5noIMEPNuKqesyRs3pkoq5BAyuPTuBtINXeSWGEnS+p0dBgv8ELclWOoCLn/nT1qR57L0gK50LE0sMDg/IJSR3XkdjrnI+jSGKn6IZzxlS6hSZZV7TBaga4VSX88/QOWcLCYO6yRGwzXcDDD04nl+PHDUPaIRuigoH2S0kTBV7e2cyVfuVCmZTIvP1Xkjwyhp5+ImDCxO32LazHg5xd3g80clFN7D35ia4rtbbeyCx0wx2fpCEv+D+1qyHoZTANy0JpWh53s7uYSfVseDmOrI7pjP/4Fq2IQ0OMiWQyqpFUPz+rl9snvExQ=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4C019581B6C66747B4309DA4FF93BB6B@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: b1d84ca0-043d-49f2-5a0c-08d70597d451
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jul 2019 00:36:35.8645
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yhs@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2855
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-10_08:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=795 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907110005
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 10, 2019 at 5:16 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 7/10/19 1:08 AM, Andrii Nakryiko wrote:
-> > BTF verifier has Different logic depending on whether we are following
-> > a PTR or STRUCT/ARRAY (or something else). This is an optimization to
-> > stop early in DFS traversal while resolving BTF types. But it also
-> > results in a size resolution bug, when there is a chain, e.g., of PTR ->
-> > TYPEDEF -> ARRAY, in which case due to being in pointer context ARRAY
-> > size won't be resolved, as it is considered to be a sink for pointer,
-> > leading to TYPEDEF being in RESOLVED state with zero size, which is
-> > completely wrong.
-> >
-> > Optimization is doubtful, though, as btf_check_all_types() will iterate
-> > over all BTF types anyways, so the only saving is a potentially slightly
-> > shorter stack. But correctness is more important that tiny savings.
-> >
-> > This bug manifests itself in rejecting BTF-defined maps that use array
-> > typedef as a value type:
-> >
-> > typedef int array_t[16];
-> >
-> > struct {
-> >       __uint(type, BPF_MAP_TYPE_ARRAY);
-> >       __type(value, array_t); /* i.e., array_t *value; */
-> > } test_map SEC(".maps");
-> >
-> > Fixes: eb3f595dab40 ("bpf: btf: Validate type reference")
-> > Cc: Martin KaFai Lau <kafai@fb.com>
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->
-> The change seems okay to me. Currently, looks like intermediate
-> modifier type will carry size = 0 (in the internal data structure).
-
-Yes, which is totally wrong, especially that we use that size in some
-cases to reject map with specified BTF.
-
->
-> If we remove RESOLVE logic, we probably want to double check
-> whether we handle circular types correctly or not. Maybe we will
-> be okay if all self tests pass.
-
-I checked, it does. We'll attempt to add referenced type unless it's a
-"resolve sink" (where size is immediately known) or is already
-resolved (it's state is RESOLVED). In other cases, we'll attempt to
-env_stack_push(), which check that the state of that type is
-NOT_VISITED. If it's RESOLVED or VISITED, it returns -EEXISTS. When
-type is added into the stack, it's resolve state goes from NOT_VISITED
-to VISITED.
-
-So, if there is a loop, then we'll detect it as soon as we'll attempt
-to add the same type onto the stack second time.
-
->
-> I may still be worthwhile to qualify the RESOLVE optimization benefit
-> before removing it.
-
-I don't think there is any, because every type will be visited exactly
-once, due to DFS nature of algorithm. The only difference is that if
-we have a long chain of modifiers, we can technically reach the max
-limit and fail. But at 32 I think it's pretty unrealistic to have such
-a long chain of PTR/TYPEDEF/CONST/VOLATILE/RESTRICTs :)
-
->
-> Another possible change is, for external usage, removing
-> modifiers, before checking the size, something like below.
-> Note that I am not strongly advocating my below patch as
-> it has the same shortcoming that maintained modifier type
-> size may not be correct.
-
-I don't think your patch helps, it can actually confuse things even
-more. It skips modifiers until underlying type is found, but you still
-don't guarantee that at that time that underlying type will have its
-size resolved.
-
->
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 546ebee39e2a..6f927c3e0a89 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -620,6 +620,54 @@ static bool btf_type_int_is_regular(const struct
-> btf_type *t)
->          return true;
->   }
->
-> +static const struct btf_type *__btf_type_id_size(const struct btf *btf,
-> +                                                u32 *type_id, u32
-> *ret_size,
-> +                                                bool skip_modifier)
-> +{
-> +       const struct btf_type *size_type;
-> +       u32 size_type_id = *type_id;
-> +       u32 size = 0;
-> +
-> +       size_type = btf_type_by_id(btf, size_type_id);
-> +       if (size_type && skip_modifier) {
-> +               while (btf_type_is_modifier(size_type))
-> +                       size_type = btf_type_by_id(btf, size_type->type);
-> +       }
-> +
-> +       if (btf_type_nosize_or_null(size_type))
-> +               return NULL;
-> +
-> +       if (btf_type_has_size(size_type)) {
-> +               size = size_type->size;
-> +       } else if (btf_type_is_array(size_type)) {
-> +               size = btf->resolved_sizes[size_type_id];
-> +       } else if (btf_type_is_ptr(size_type)) {
-> +               size = sizeof(void *);
-> +       } else {
-> +               if (WARN_ON_ONCE(!btf_type_is_modifier(size_type) &&
-> +                                !btf_type_is_var(size_type)))
-> +                       return NULL;
-> +
-> +               size = btf->resolved_sizes[size_type_id];
-> +               size_type_id = btf->resolved_ids[size_type_id];
-> +               size_type = btf_type_by_id(btf, size_type_id);
-> +               if (btf_type_nosize_or_null(size_type))
-> +                       return NULL;
-> +       }
-> +
-> +       *type_id = size_type_id;
-> +       if (ret_size)
-> +               *ret_size = size;
-> +
-> +       return size_type;
-> +}
-> +
-> +const struct btf_type *btf_type_id_size(const struct btf *btf,
-> +                                       u32 *type_id, u32 *ret_size)
-> +{
-> +       return __btf_type_id_size(btf, type_id, ret_size, true);
-> +}
-> +
->   /*
->    * Check that given struct member is a regular int with expected
->    * offset and size.
-> @@ -633,7 +681,7 @@ bool btf_member_is_reg_int(const struct btf *btf,
-> const struct btf_type *s,
->          u8 nr_bits;
->
->          id = m->type;
-> -       t = btf_type_id_size(btf, &id, NULL);
-> +       t = __btf_type_id_size(btf, &id, NULL, false);
->          if (!t || !btf_type_is_int(t))
->                  return false;
->
-> @@ -1051,42 +1099,6 @@ static const struct btf_type
-> *btf_type_id_resolve(const struct btf *btf,
->          return btf_type_by_id(btf, *type_id);
->   }
->
-> -const struct btf_type *btf_type_id_size(const struct btf *btf,
-> -                                       u32 *type_id, u32 *ret_size)
-> -{
-> -       const struct btf_type *size_type;
-> -       u32 size_type_id = *type_id;
-> -       u32 size = 0;
-> -
-> -       size_type = btf_type_by_id(btf, size_type_id);
-> -       if (btf_type_nosize_or_null(size_type))
-> -               return NULL;
-> -
-> -       if (btf_type_has_size(size_type)) {
-> -               size = size_type->size;
-> -       } else if (btf_type_is_array(size_type)) {
-> -               size = btf->resolved_sizes[size_type_id];
-> -       } else if (btf_type_is_ptr(size_type)) {
-> -               size = sizeof(void *);
-> -       } else {
-> -               if (WARN_ON_ONCE(!btf_type_is_modifier(size_type) &&
-> -                                !btf_type_is_var(size_type)))
-> -                       return NULL;
-> -
-> -               size = btf->resolved_sizes[size_type_id];
-> -               size_type_id = btf->resolved_ids[size_type_id];
-> -               size_type = btf_type_by_id(btf, size_type_id);
-> -               if (btf_type_nosize_or_null(size_type))
-> -                       return NULL;
-> -       }
-> -
-> -       *type_id = size_type_id;
-> -       if (ret_size)
-> -               *ret_size = size;
-> -
-> -       return size_type;
-> -}
-> -
->   static int btf_df_check_member(struct btf_verifier_env *env,
->                                 const struct btf_type *struct_type,
->                                 const struct btf_member *member,
-> @@ -1489,7 +1501,7 @@ static int btf_modifier_check_member(struct
-> btf_verifier_env *env,
->          struct btf_member resolved_member;
->          struct btf *btf = env->btf;
->
-> -       resolved_type = btf_type_id_size(btf, &resolved_type_id, NULL);
-> +       resolved_type = __btf_type_id_size(btf, &resolved_type_id, NULL,
-> false);
->          if (!resolved_type) {
->                  btf_verifier_log_member(env, struct_type, member,
->                                          "Invalid member");
-> @@ -1514,7 +1526,7 @@ static int btf_modifier_check_kflag_member(struct
-> btf_verifier_env *env,
->          struct btf_member resolved_member;
->          struct btf *btf = env->btf;
->
-> -       resolved_type = btf_type_id_size(btf, &resolved_type_id, NULL);
-> +       resolved_type = __btf_type_id_size(btf, &resolved_type_id, NULL,
-> false);
->          if (!resolved_type) {
->                  btf_verifier_log_member(env, struct_type, member,
->                                          "Invalid member");
-> @@ -1620,7 +1632,7 @@ static int btf_modifier_resolve(struct
-> btf_verifier_env *env,
->           * save us a few type-following when we use it later (e.g. in
->           * pretty print).
->           */
-> -       if (!btf_type_id_size(btf, &next_type_id, &next_type_size)) {
-> +       if (!__btf_type_id_size(btf, &next_type_id, &next_type_size,
-> false)) {
->                  if (env_type_is_resolved(env, next_type_id))
->                          next_type = btf_type_id_resolve(btf,
-> &next_type_id);
->
-> @@ -1675,7 +1687,7 @@ static int btf_var_resolve(struct btf_verifier_env
-> *env,
->           * forward types or similar that would resolve to size of
->           * zero is allowed.
->           */
-> -       if (!btf_type_id_size(btf, &next_type_id, &next_type_size)) {
-> +       if (!__btf_type_id_size(btf, &next_type_id, &next_type_size,
-> false)) {
->                  btf_verifier_log_type(env, v->t, "Invalid type_id");
->                  return -EINVAL;
->          }
-> @@ -1725,7 +1737,7 @@ static int btf_ptr_resolve(struct btf_verifier_env
-> *env,
->                                                resolved_type_id);
->          }
->
-> -       if (!btf_type_id_size(btf, &next_type_id, NULL)) {
-> +       if (!__btf_type_id_size(btf, &next_type_id, NULL, false)) {
->                  if (env_type_is_resolved(env, next_type_id))
->                          next_type = btf_type_id_resolve(btf,
-> &next_type_id);
->
-> @@ -1851,7 +1863,7 @@ static int btf_array_check_member(struct
-> btf_verifier_env *env,
->          }
->
->          array_type_id = member->type;
-> -       btf_type_id_size(btf, &array_type_id, &array_size);
-> +       __btf_type_id_size(btf, &array_type_id, &array_size, false);
->          struct_size = struct_type->size;
->          bytes_offset = BITS_ROUNDDOWN_BYTES(struct_bits_off);
->          if (struct_size - bytes_offset < array_size) {
-> @@ -1938,7 +1950,7 @@ static int btf_array_resolve(struct
-> btf_verifier_env *env,
->              !env_type_is_resolved(env, index_type_id))
->                  return env_stack_push(env, index_type, index_type_id);
->
-> -       index_type = btf_type_id_size(btf, &index_type_id, NULL);
-> +       index_type = __btf_type_id_size(btf, &index_type_id, NULL, false);
->          if (!index_type || !btf_type_is_int(index_type) ||
->              !btf_type_int_is_regular(index_type)) {
->                  btf_verifier_log_type(env, v->t, "Invalid index");
-> @@ -1959,7 +1971,7 @@ static int btf_array_resolve(struct
-> btf_verifier_env *env,
->              !env_type_is_resolved(env, elem_type_id))
->                  return env_stack_push(env, elem_type, elem_type_id);
->
-> -       elem_type = btf_type_id_size(btf, &elem_type_id, &elem_size);
-> +       elem_type = __btf_type_id_size(btf, &elem_type_id, &elem_size,
-> false);
->          if (!elem_type) {
->                  btf_verifier_log_type(env, v->t, "Invalid elem");
->                  return -EINVAL;
-> @@ -2000,7 +2012,7 @@ static void btf_array_seq_show(const struct btf
-> *btf, const struct btf_type *t,
->          u32 i, elem_size, elem_type_id;
->
->          elem_type_id = array->type;
-> -       elem_type = btf_type_id_size(btf, &elem_type_id, &elem_size);
-> +       elem_type = __btf_type_id_size(btf, &elem_type_id, &elem_size,
-> false);
->          elem_ops = btf_type_ops(elem_type);
->          seq_puts(m, "[");
->          for (i = 0; i < array->nelems; i++) {
-> @@ -2732,7 +2744,7 @@ static int btf_datasec_resolve(struct
-> btf_verifier_env *env,
->                  }
->
->                  type_id = var_type->type;
-> -               if (!btf_type_id_size(btf, &type_id, &type_size)) {
-> +               if (!__btf_type_id_size(btf, &type_id, &type_size, false)) {
->                          btf_verifier_log_vsi(env, v->t, vsi, "Invalid
-> type");
->                          return -EINVAL;
->                  }
-> @@ -2813,7 +2825,7 @@ static int btf_func_proto_check(struct
-> btf_verifier_env *env,
->                  }
->
->                  /* Ensure the return type is a type that has a size */
-> -               if (!btf_type_id_size(btf, &ret_type_id, NULL)) {
-> +               if (!__btf_type_id_size(btf, &ret_type_id, NULL, false)) {
->                          btf_verifier_log_type(env, t, "Invalid return
-> type");
->                          return -EINVAL;
->                  }
-> @@ -2861,7 +2873,7 @@ static int btf_func_proto_check(struct
-> btf_verifier_env *env,
->                                  break;
->                  }
->
-> -               if (!btf_type_id_size(btf, &arg_type_id, NULL)) {
-> +               if (!__btf_type_id_size(btf, &arg_type_id, NULL, false)) {
->                          btf_verifier_log_type(env, t, "Invalid arg#%u",
-> i + 1);
->                          err = -EINVAL;
->                          break;
-> @@ -3014,7 +3026,7 @@ static bool btf_resolve_valid(struct
-> btf_verifier_env *env,
->                  u32 elem_type_id = array->type;
->                  u32 elem_size;
->
-> -               elem_type = btf_type_id_size(btf, &elem_type_id,
-> &elem_size);
-> +               elem_type = __btf_type_id_size(btf, &elem_type_id,
-> &elem_size, false);
->                  return elem_type && !btf_type_is_modifier(elem_type) &&
->                          (array->nelems * elem_size ==
->                           btf->resolved_sizes[type_id]);
->
->
-> > ---
-> >   kernel/bpf/btf.c | 42 +++---------------------------------------
-> >   1 file changed, 3 insertions(+), 39 deletions(-)
-> >
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index cad09858a5f2..c68c7e73b0d1 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -231,14 +231,6 @@ enum visit_state {
-> >       RESOLVED,
-> >   };
-> >
-> > -enum resolve_mode {
-> > -     RESOLVE_TBD,    /* To Be Determined */
-> > -     RESOLVE_PTR,    /* Resolving for Pointer */
-> > -     RESOLVE_STRUCT_OR_ARRAY,        /* Resolving for struct/union
-> > -                                      * or array
-> > -                                      */
-> > -};
-> > -
-> >   #define MAX_RESOLVE_DEPTH 32
-> >
-> >   struct btf_sec_info {
-> > @@ -254,7 +246,6 @@ struct btf_verifier_env {
-> >       u32 log_type_id;
-> >       u32 top_stack;
-> >       enum verifier_phase phase;
-> > -     enum resolve_mode resolve_mode;
-> >   };
-> >
-> >   static const char * const btf_kind_str[NR_BTF_KINDS] = {
-> > @@ -964,26 +955,7 @@ static void btf_verifier_env_free(struct btf_verifier_env *env)
-> >   static bool env_type_is_resolve_sink(const struct btf_verifier_env *env,
-> >                                    const struct btf_type *next_type)
-> >   {
-> > -     switch (env->resolve_mode) {
-> > -     case RESOLVE_TBD:
-> > -             /* int, enum or void is a sink */
-> > -             return !btf_type_needs_resolve(next_type);
-> > -     case RESOLVE_PTR:
-> > -             /* int, enum, void, struct, array, func or func_proto is a sink
-> > -              * for ptr
-> > -              */
-> > -             return !btf_type_is_modifier(next_type) &&
-> > -                     !btf_type_is_ptr(next_type);
-> > -     case RESOLVE_STRUCT_OR_ARRAY:
-> > -             /* int, enum, void, ptr, func or func_proto is a sink
-> > -              * for struct and array
-> > -              */
-> > -             return !btf_type_is_modifier(next_type) &&
-> > -                     !btf_type_is_array(next_type) &&
-> > -                     !btf_type_is_struct(next_type);
-> > -     default:
-> > -             BUG();
-> > -     }
-> > +     return !btf_type_needs_resolve(next_type);
-> >   }
-> >
-> >   static bool env_type_is_resolved(const struct btf_verifier_env *env,
-> > @@ -1010,13 +982,6 @@ static int env_stack_push(struct btf_verifier_env *env,
-> >       v->type_id = type_id;
-> >       v->next_member = 0;
-> >
-> > -     if (env->resolve_mode == RESOLVE_TBD) {
-> > -             if (btf_type_is_ptr(t))
-> > -                     env->resolve_mode = RESOLVE_PTR;
-> > -             else if (btf_type_is_struct(t) || btf_type_is_array(t))
-> > -                     env->resolve_mode = RESOLVE_STRUCT_OR_ARRAY;
-> > -     }
-> > -
-> >       return 0;
-> >   }
-> >
-> > @@ -1038,7 +1003,7 @@ static void env_stack_pop_resolved(struct btf_verifier_env *env,
-> >       env->visit_states[type_id] = RESOLVED;
-> >   }
-> >
-> > -static const struct resolve_vertex *env_stack_peak(struct btf_verifier_env *env)
-> > +static const struct resolve_vertex *env_stack_peek(struct btf_verifier_env *env)
-> >   {
-> >       return env->top_stack ? &env->stack[env->top_stack - 1] : NULL;
-> >   }
-> > @@ -3030,9 +2995,8 @@ static int btf_resolve(struct btf_verifier_env *env,
-> >       const struct resolve_vertex *v;
-> >       int err = 0;
-> >
-> > -     env->resolve_mode = RESOLVE_TBD;
-> >       env_stack_push(env, t, type_id);
-> > -     while (!err && (v = env_stack_peak(env))) {
-> > +     while (!err && (v = env_stack_peek(env))) {
-> >               env->log_type_id = v->type_id;
-> >               err = btf_type_ops(v->t)->resolve(env, v);
-> >       }
-> >
+DQoNCk9uIDcvMTAvMTkgNToyOSBQTSwgQW5kcmlpIE5ha3J5aWtvIHdyb3RlOg0KPiBPbiBXZWQs
+IEp1bCAxMCwgMjAxOSBhdCA1OjE2IFBNIFlvbmdob25nIFNvbmcgPHloc0BmYi5jb20+IHdyb3Rl
+Og0KPj4NCj4+DQo+Pg0KPj4gT24gNy8xMC8xOSAxOjA4IEFNLCBBbmRyaWkgTmFrcnlpa28gd3Jv
+dGU6DQo+Pj4gQlRGIHZlcmlmaWVyIGhhcyBEaWZmZXJlbnQgbG9naWMgZGVwZW5kaW5nIG9uIHdo
+ZXRoZXIgd2UgYXJlIGZvbGxvd2luZw0KPj4+IGEgUFRSIG9yIFNUUlVDVC9BUlJBWSAob3Igc29t
+ZXRoaW5nIGVsc2UpLiBUaGlzIGlzIGFuIG9wdGltaXphdGlvbiB0bw0KPj4+IHN0b3AgZWFybHkg
+aW4gREZTIHRyYXZlcnNhbCB3aGlsZSByZXNvbHZpbmcgQlRGIHR5cGVzLiBCdXQgaXQgYWxzbw0K
+Pj4+IHJlc3VsdHMgaW4gYSBzaXplIHJlc29sdXRpb24gYnVnLCB3aGVuIHRoZXJlIGlzIGEgY2hh
+aW4sIGUuZy4sIG9mIFBUUiAtPg0KPj4+IFRZUEVERUYgLT4gQVJSQVksIGluIHdoaWNoIGNhc2Ug
+ZHVlIHRvIGJlaW5nIGluIHBvaW50ZXIgY29udGV4dCBBUlJBWQ0KPj4+IHNpemUgd29uJ3QgYmUg
+cmVzb2x2ZWQsIGFzIGl0IGlzIGNvbnNpZGVyZWQgdG8gYmUgYSBzaW5rIGZvciBwb2ludGVyLA0K
+Pj4+IGxlYWRpbmcgdG8gVFlQRURFRiBiZWluZyBpbiBSRVNPTFZFRCBzdGF0ZSB3aXRoIHplcm8g
+c2l6ZSwgd2hpY2ggaXMNCj4+PiBjb21wbGV0ZWx5IHdyb25nLg0KPj4+DQo+Pj4gT3B0aW1pemF0
+aW9uIGlzIGRvdWJ0ZnVsLCB0aG91Z2gsIGFzIGJ0Zl9jaGVja19hbGxfdHlwZXMoKSB3aWxsIGl0
+ZXJhdGUNCj4+PiBvdmVyIGFsbCBCVEYgdHlwZXMgYW55d2F5cywgc28gdGhlIG9ubHkgc2F2aW5n
+IGlzIGEgcG90ZW50aWFsbHkgc2xpZ2h0bHkNCj4+PiBzaG9ydGVyIHN0YWNrLiBCdXQgY29ycmVj
+dG5lc3MgaXMgbW9yZSBpbXBvcnRhbnQgdGhhdCB0aW55IHNhdmluZ3MuDQo+Pj4NCj4+PiBUaGlz
+IGJ1ZyBtYW5pZmVzdHMgaXRzZWxmIGluIHJlamVjdGluZyBCVEYtZGVmaW5lZCBtYXBzIHRoYXQg
+dXNlIGFycmF5DQo+Pj4gdHlwZWRlZiBhcyBhIHZhbHVlIHR5cGU6DQo+Pj4NCj4+PiB0eXBlZGVm
+IGludCBhcnJheV90WzE2XTsNCj4+Pg0KPj4+IHN0cnVjdCB7DQo+Pj4gICAgICAgIF9fdWludCh0
+eXBlLCBCUEZfTUFQX1RZUEVfQVJSQVkpOw0KPj4+ICAgICAgICBfX3R5cGUodmFsdWUsIGFycmF5
+X3QpOyAvKiBpLmUuLCBhcnJheV90ICp2YWx1ZTsgKi8NCj4+PiB9IHRlc3RfbWFwIFNFQygiLm1h
+cHMiKTsNCj4+Pg0KPj4+IEZpeGVzOiBlYjNmNTk1ZGFiNDAgKCJicGY6IGJ0ZjogVmFsaWRhdGUg
+dHlwZSByZWZlcmVuY2UiKQ0KPj4+IENjOiBNYXJ0aW4gS2FGYWkgTGF1IDxrYWZhaUBmYi5jb20+
+DQo+Pj4gU2lnbmVkLW9mZi1ieTogQW5kcmlpIE5ha3J5aWtvIDxhbmRyaWluQGZiLmNvbT4NCj4+
+DQo+PiBUaGUgY2hhbmdlIHNlZW1zIG9rYXkgdG8gbWUuIEN1cnJlbnRseSwgbG9va3MgbGlrZSBp
+bnRlcm1lZGlhdGUNCj4+IG1vZGlmaWVyIHR5cGUgd2lsbCBjYXJyeSBzaXplID0gMCAoaW4gdGhl
+IGludGVybmFsIGRhdGEgc3RydWN0dXJlKS4NCj4gDQo+IFllcywgd2hpY2ggaXMgdG90YWxseSB3
+cm9uZywgZXNwZWNpYWxseSB0aGF0IHdlIHVzZSB0aGF0IHNpemUgaW4gc29tZQ0KPiBjYXNlcyB0
+byByZWplY3QgbWFwIHdpdGggc3BlY2lmaWVkIEJURi4NCj4gDQo+Pg0KPj4gSWYgd2UgcmVtb3Zl
+IFJFU09MVkUgbG9naWMsIHdlIHByb2JhYmx5IHdhbnQgdG8gZG91YmxlIGNoZWNrDQo+PiB3aGV0
+aGVyIHdlIGhhbmRsZSBjaXJjdWxhciB0eXBlcyBjb3JyZWN0bHkgb3Igbm90LiBNYXliZSB3ZSB3
+aWxsDQo+PiBiZSBva2F5IGlmIGFsbCBzZWxmIHRlc3RzIHBhc3MuDQo+IA0KPiBJIGNoZWNrZWQs
+IGl0IGRvZXMuIFdlJ2xsIGF0dGVtcHQgdG8gYWRkIHJlZmVyZW5jZWQgdHlwZSB1bmxlc3MgaXQn
+cyBhDQo+ICJyZXNvbHZlIHNpbmsiICh3aGVyZSBzaXplIGlzIGltbWVkaWF0ZWx5IGtub3duKSBv
+ciBpcyBhbHJlYWR5DQo+IHJlc29sdmVkIChpdCdzIHN0YXRlIGlzIFJFU09MVkVEKS4gSW4gb3Ro
+ZXIgY2FzZXMsIHdlJ2xsIGF0dGVtcHQgdG8NCj4gZW52X3N0YWNrX3B1c2goKSwgd2hpY2ggY2hl
+Y2sgdGhhdCB0aGUgc3RhdGUgb2YgdGhhdCB0eXBlIGlzDQo+IE5PVF9WSVNJVEVELiBJZiBpdCdz
+IFJFU09MVkVEIG9yIFZJU0lURUQsIGl0IHJldHVybnMgLUVFWElTVFMuIFdoZW4NCj4gdHlwZSBp
+cyBhZGRlZCBpbnRvIHRoZSBzdGFjaywgaXQncyByZXNvbHZlIHN0YXRlIGdvZXMgZnJvbSBOT1Rf
+VklTSVRFRA0KPiB0byBWSVNJVEVELg0KPiANCj4gU28sIGlmIHRoZXJlIGlzIGEgbG9vcCwgdGhl
+biB3ZSdsbCBkZXRlY3QgaXQgYXMgc29vbiBhcyB3ZSdsbCBhdHRlbXB0DQo+IHRvIGFkZCB0aGUg
+c2FtZSB0eXBlIG9udG8gdGhlIHN0YWNrIHNlY29uZCB0aW1lLg0KPiANCj4+DQo+PiBJIG1heSBz
+dGlsbCBiZSB3b3J0aHdoaWxlIHRvIHF1YWxpZnkgdGhlIFJFU09MVkUgb3B0aW1pemF0aW9uIGJl
+bmVmaXQNCj4+IGJlZm9yZSByZW1vdmluZyBpdC4NCj4gDQo+IEkgZG9uJ3QgdGhpbmsgdGhlcmUg
+aXMgYW55LCBiZWNhdXNlIGV2ZXJ5IHR5cGUgd2lsbCBiZSB2aXNpdGVkIGV4YWN0bHkNCj4gb25j
+ZSwgZHVlIHRvIERGUyBuYXR1cmUgb2YgYWxnb3JpdGhtLiBUaGUgb25seSBkaWZmZXJlbmNlIGlz
+IHRoYXQgaWYNCj4gd2UgaGF2ZSBhIGxvbmcgY2hhaW4gb2YgbW9kaWZpZXJzLCB3ZSBjYW4gdGVj
+aG5pY2FsbHkgcmVhY2ggdGhlIG1heA0KPiBsaW1pdCBhbmQgZmFpbC4gQnV0IGF0IDMyIEkgdGhp
+bmsgaXQncyBwcmV0dHkgdW5yZWFsaXN0aWMgdG8gaGF2ZSBzdWNoDQo+IGEgbG9uZyBjaGFpbiBv
+ZiBQVFIvVFlQRURFRi9DT05TVC9WT0xBVElMRS9SRVNUUklDVHMgOikNCj4gDQo+Pg0KPj4gQW5v
+dGhlciBwb3NzaWJsZSBjaGFuZ2UgaXMsIGZvciBleHRlcm5hbCB1c2FnZSwgcmVtb3ZpbmcNCj4+
+IG1vZGlmaWVycywgYmVmb3JlIGNoZWNraW5nIHRoZSBzaXplLCBzb21ldGhpbmcgbGlrZSBiZWxv
+dy4NCj4+IE5vdGUgdGhhdCBJIGFtIG5vdCBzdHJvbmdseSBhZHZvY2F0aW5nIG15IGJlbG93IHBh
+dGNoIGFzDQo+PiBpdCBoYXMgdGhlIHNhbWUgc2hvcnRjb21pbmcgdGhhdCBtYWludGFpbmVkIG1v
+ZGlmaWVyIHR5cGUNCj4+IHNpemUgbWF5IG5vdCBiZSBjb3JyZWN0Lg0KPiANCj4gSSBkb24ndCB0
+aGluayB5b3VyIHBhdGNoIGhlbHBzLCBpdCBjYW4gYWN0dWFsbHkgY29uZnVzZSB0aGluZ3MgZXZl
+bg0KPiBtb3JlLiBJdCBza2lwcyBtb2RpZmllcnMgdW50aWwgdW5kZXJseWluZyB0eXBlIGlzIGZv
+dW5kLCBidXQgeW91IHN0aWxsDQo+IGRvbid0IGd1YXJhbnRlZSB0aGF0IGF0IHRoYXQgdGltZSB0
+aGF0IHVuZGVybHlpbmcgdHlwZSB3aWxsIGhhdmUgaXRzDQo+IHNpemUgcmVzb2x2ZWQuDQoNCkl0
+IGFjdHVhbGx5IGRvZXMgaGVscC4gSXQgZG9lcyBub3QgY2hhbmdlIHRoZSBpbnRlcm5hbCBidGYg
+dHlwZQ0KdHJhdmVyc2FsIGFsZ29yaXRobXMuIEl0IG9ubHkgY2hhbmdlIHRoZSBpbXBsZW1lbnRh
+dGlvbiBvZg0KYW4gZXh0ZXJuYWwgQVBJIGJ0Zl90eXBlX2lkX3NpemUoKS4gUHJldmlvdXNseSwg
+dGhpcyBmdW5jdGlvbg0KaXMgdXNlZCBieSBleHRlcm5hbHMgYW5kIGludGVybmFsIGJ0Zi5jLiBJ
+IGJyb2tlIGl0IGludG8gdHdvLA0Kb25lIGludGVybmFsIF9fYnRmX3R5cGVfaWRfc2l6ZSgpLCBh
+bmQgYW5vdGhlciBleHRlcm5hbA0KYnRmX3R5cGVfaWRfc2l6ZSgpLiBUaGUgZXh0ZXJuYWwgb25l
+IHJlbW92ZXMgbW9kaWZpZXIgYmVmb3JlDQpmaW5kaW5nIHR5cGUgc2l6ZS4gVGhlIGV4dGVybmFs
+IG9uZSBpcyB0eXBpY2FsbHkgdXNlZCBvbmx5DQphZnRlciBidGYgaXMgdmFsaWRhdGVkLg0KDQpX
+aWxsIGdvIHRocm91Z2ggeW91ciBvdGhlciBjb21tZW50cyBsYXRlci4NCg0KPiANCj4+DQo+PiBk
+aWZmIC0tZ2l0IGEva2VybmVsL2JwZi9idGYuYyBiL2tlcm5lbC9icGYvYnRmLmMNCj4+IGluZGV4
+IDU0NmViZWUzOWUyYS4uNmY5MjdjM2UwYTg5IDEwMDY0NA0KPj4gLS0tIGEva2VybmVsL2JwZi9i
+dGYuYw0KPj4gKysrIGIva2VybmVsL2JwZi9idGYuYw0KPj4gQEAgLTYyMCw2ICs2MjAsNTQgQEAg
+c3RhdGljIGJvb2wgYnRmX3R5cGVfaW50X2lzX3JlZ3VsYXIoY29uc3Qgc3RydWN0DQo+PiBidGZf
+dHlwZSAqdCkNCj4+ICAgICAgICAgICByZXR1cm4gdHJ1ZTsNCj4+ICAgIH0NCj4+DQo+PiArc3Rh
+dGljIGNvbnN0IHN0cnVjdCBidGZfdHlwZSAqX19idGZfdHlwZV9pZF9zaXplKGNvbnN0IHN0cnVj
+dCBidGYgKmJ0ZiwNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICB1MzIgKnR5cGVfaWQsIHUzMg0KPj4gKnJldF9zaXplLA0KPj4gKyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJvb2wgc2tpcF9tb2RpZmllcikN
+Cj4+ICt7DQo+PiArICAgICAgIGNvbnN0IHN0cnVjdCBidGZfdHlwZSAqc2l6ZV90eXBlOw0KPj4g
+KyAgICAgICB1MzIgc2l6ZV90eXBlX2lkID0gKnR5cGVfaWQ7DQo+PiArICAgICAgIHUzMiBzaXpl
+ID0gMDsNCj4+ICsNCj4+ICsgICAgICAgc2l6ZV90eXBlID0gYnRmX3R5cGVfYnlfaWQoYnRmLCBz
+aXplX3R5cGVfaWQpOw0KPj4gKyAgICAgICBpZiAoc2l6ZV90eXBlICYmIHNraXBfbW9kaWZpZXIp
+IHsNCj4+ICsgICAgICAgICAgICAgICB3aGlsZSAoYnRmX3R5cGVfaXNfbW9kaWZpZXIoc2l6ZV90
+eXBlKSkNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgIHNpemVfdHlwZSA9IGJ0Zl90eXBlX2J5
+X2lkKGJ0Ziwgc2l6ZV90eXBlLT50eXBlKTsNCj4+ICsgICAgICAgfQ0KPj4gKw0KPj4gKyAgICAg
+ICBpZiAoYnRmX3R5cGVfbm9zaXplX29yX251bGwoc2l6ZV90eXBlKSkNCj4+ICsgICAgICAgICAg
+ICAgICByZXR1cm4gTlVMTDsNCj4+ICsNCj4+ICsgICAgICAgaWYgKGJ0Zl90eXBlX2hhc19zaXpl
+KHNpemVfdHlwZSkpIHsNCj4+ICsgICAgICAgICAgICAgICBzaXplID0gc2l6ZV90eXBlLT5zaXpl
+Ow0KPj4gKyAgICAgICB9IGVsc2UgaWYgKGJ0Zl90eXBlX2lzX2FycmF5KHNpemVfdHlwZSkpIHsN
+Cj4+ICsgICAgICAgICAgICAgICBzaXplID0gYnRmLT5yZXNvbHZlZF9zaXplc1tzaXplX3R5cGVf
+aWRdOw0KPj4gKyAgICAgICB9IGVsc2UgaWYgKGJ0Zl90eXBlX2lzX3B0cihzaXplX3R5cGUpKSB7
+DQo+PiArICAgICAgICAgICAgICAgc2l6ZSA9IHNpemVvZih2b2lkICopOw0KPj4gKyAgICAgICB9
+IGVsc2Ugew0KPj4gKyAgICAgICAgICAgICAgIGlmIChXQVJOX09OX09OQ0UoIWJ0Zl90eXBlX2lz
+X21vZGlmaWVyKHNpemVfdHlwZSkgJiYNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICFidGZfdHlwZV9pc192YXIoc2l6ZV90eXBlKSkpDQo+PiArICAgICAgICAgICAgICAgICAg
+ICAgICByZXR1cm4gTlVMTDsNCj4+ICsNCj4+ICsgICAgICAgICAgICAgICBzaXplID0gYnRmLT5y
+ZXNvbHZlZF9zaXplc1tzaXplX3R5cGVfaWRdOw0KPj4gKyAgICAgICAgICAgICAgIHNpemVfdHlw
+ZV9pZCA9IGJ0Zi0+cmVzb2x2ZWRfaWRzW3NpemVfdHlwZV9pZF07DQo+PiArICAgICAgICAgICAg
+ICAgc2l6ZV90eXBlID0gYnRmX3R5cGVfYnlfaWQoYnRmLCBzaXplX3R5cGVfaWQpOw0KPj4gKyAg
+ICAgICAgICAgICAgIGlmIChidGZfdHlwZV9ub3NpemVfb3JfbnVsbChzaXplX3R5cGUpKQ0KPj4g
+KyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIE5VTEw7DQo+PiArICAgICAgIH0NCj4+ICsN
+Cj4+ICsgICAgICAgKnR5cGVfaWQgPSBzaXplX3R5cGVfaWQ7DQo+PiArICAgICAgIGlmIChyZXRf
+c2l6ZSkNCj4+ICsgICAgICAgICAgICAgICAqcmV0X3NpemUgPSBzaXplOw0KPj4gKw0KPj4gKyAg
+ICAgICByZXR1cm4gc2l6ZV90eXBlOw0KPj4gK30NCj4+ICsNClsuLi5dDQo=
