@@ -2,380 +2,491 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C4A64F7A
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2019 02:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CDBE64F8D
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2019 02:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbfGKARO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Jul 2019 20:17:14 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:16840 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727325AbfGKARO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 10 Jul 2019 20:17:14 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6B07thZ013494;
-        Wed, 10 Jul 2019 17:16:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=dFbqFP+M1mkY/XtPw8+OEfmkbuKpr75rjLwOO6wazUc=;
- b=fwrCiTQqpTaQRtrTYfDS96G3854DjT++s7HbnsM1YX13Ih8l1mqM4CyKoAYf30a9F6Fl
- +h/lcjIqVpBNx+uEv13QoWOb6n5rFxXxLq137K+/ChflfTihKlQZBg9c0e5QYbXcLBcJ
- 1z371AXWg72llpTGiFBwjH6OztDJDUIPv30= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2tnktgswep-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 10 Jul 2019 17:16:51 -0700
-Received: from prn-hub01.TheFacebook.com (2620:10d:c081:35::125) by
- prn-hub04.TheFacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 10 Jul 2019 17:16:49 -0700
-Received: from NAM03-CO1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Wed, 10 Jul 2019 17:16:49 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dFbqFP+M1mkY/XtPw8+OEfmkbuKpr75rjLwOO6wazUc=;
- b=rzgt5ZM3B3dyX4J2dNuhvGDyeGFXpoAJQm2H6E6o9C19c4B8Ws4FbDmu+jttqtxLg8Y0V5T0w+pangH3J+gRwc4PAgmGnwXgXWgdlrGmJH8FEiUV2Ueqt75NEzUkeB/kAzDTACLzlhRZgKlmCyHUK40qRMH5MQUBmdoZlSFt9xo=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.59.17) by
- BYAPR15MB2582.namprd15.prod.outlook.com (20.179.155.139) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2052.19; Thu, 11 Jul 2019 00:16:48 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::e499:ecba:ec04:abac]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::e499:ecba:ec04:abac%5]) with mapi id 15.20.2073.008; Thu, 11 Jul 2019
- 00:16:48 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>,
-        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@fb.com>,
+        id S1727779AbfGKA3h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Jul 2019 20:29:37 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:43226 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726627AbfGKA3h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Jul 2019 20:29:37 -0400
+Received: by mail-qt1-f195.google.com with SMTP id w17so4510935qto.10;
+        Wed, 10 Jul 2019 17:29:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pdFy1oYuF+2988TflbgaAqBXBgAWd2V809ovyhykIzE=;
+        b=pFYq36uZcLxE6ARZQu9x86GdDJYBKtiaWXG93LxhzSlTkQFsunZDUAF7oHDvRYEHbK
+         XQ2GBlLrObWtPjV+fjYfaK4PhICZoO85fOrMMq2DCpkCIwZ2xUmXlDeGxD00lPJ54KNY
+         B/KnmSAQp+hFzCW44S0bbRmHP4/hS+U2x0R33J4as2xUsmldRIGkJJzT+qL4iUFw5v9U
+         9j4j0VZHthdlBi/lmkH/BDagQtTPDrTSDd0deCAys4uVO+2X1c8r2v9lhpZucLCwORo6
+         OjPNdwGNe5usntXPuemGHQraw3bLpcP0dsMc3dVQ3KXv+W74i3o6sq92Qk2xAqjFBUZ3
+         rFbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pdFy1oYuF+2988TflbgaAqBXBgAWd2V809ovyhykIzE=;
+        b=SycUW6xYX+tNXecscg6WsV/Vtg5h5L/9Qr4mL/7WYxbnvtZ8LXdNPIfNqzUmKjTP2Q
+         1Mdm6P5rE20TqP0JUvrdwg3hwmZUR8/qSY8VBduuCBv17lW2MtQHVHDm/oXXbBetQgQh
+         Mo5hGHAU2XRsKkFwTn4IK7ZDS3xwnzBFgQQfIlT3+oUQcg4jIRagkfdqQ6BxOgy2ggfo
+         moWAKsRwi1km08CIvY5NI76JfrWI/jEmR4NyG61txuvk6Z3Ezf/vP4TOadv+HHqO7g/M
+         XefZjt3AZIpsJ3CyYJ9xjnsgdS8biVdgmh3DvD3pM8JIqSOM8xwXb7RSWkw5o4w7uaWw
+         1nqg==
+X-Gm-Message-State: APjAAAWKvOjYuqEtr/EiZ25aJ1gGS2ncjSKBNBhJrSTNEOYYo2WQG2gU
+        eWJuj7kG9kclt/YaXBy57LAOb9D0djR6ywagU7s=
+X-Google-Smtp-Source: APXvYqxuk7skt4KIjrDXOLI4T1Lcl7pJBdTa7ad746v+GO2dJ4+htkboTME3vmTKOPsQWfH21zttkyOPuO/XtXSGkWA=
+X-Received: by 2002:ac8:290c:: with SMTP id y12mr668035qty.141.1562804975058;
+ Wed, 10 Jul 2019 17:29:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190710080840.2613160-1-andriin@fb.com> <f6bc7a95-e8e1-eec4-9728-3b9e36b434fa@fb.com>
+In-Reply-To: <f6bc7a95-e8e1-eec4-9728-3b9e36b434fa@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 10 Jul 2019 17:29:24 -0700
+Message-ID: <CAEf4BzaVouFd=3whC1EjhQ9mit62b-C+NhQuW4RiXW02Rq_1Ug@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
         "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-CC:     Martin Lau <kafai@fb.com>
-Subject: Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic
-Thread-Topic: [PATCH bpf] bpf: fix BTF verifier size resolution logic
-Thread-Index: AQHVNvb9OTRSXZV6J0yyn1q3qDFOw6bEjekA
-Date:   Thu, 11 Jul 2019 00:16:47 +0000
-Message-ID: <f6bc7a95-e8e1-eec4-9728-3b9e36b434fa@fb.com>
-References: <20190710080840.2613160-1-andriin@fb.com>
-In-Reply-To: <20190710080840.2613160-1-andriin@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR13CA0020.namprd13.prod.outlook.com
- (2603:10b6:300:16::30) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:10e::17)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::2:e95c]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3590da73-23dc-4b92-9e2d-08d70595102b
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB2582;
-x-ms-traffictypediagnostic: BYAPR15MB2582:
-x-microsoft-antispam-prvs: <BYAPR15MB2582BE4D956E4D4D7FA88478D3F30@BYAPR15MB2582.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2733;
-x-forefront-prvs: 0095BCF226
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(346002)(39860400002)(396003)(376002)(366004)(189003)(199004)(256004)(11346002)(446003)(14444005)(486006)(476003)(2616005)(2501003)(6512007)(53946003)(6246003)(110136005)(31686004)(30864003)(68736007)(6636002)(53936002)(6436002)(14454004)(5660300002)(316002)(6486002)(66946007)(229853002)(71200400001)(71190400001)(186003)(52116002)(99286004)(66476007)(31696002)(64756008)(386003)(2201001)(102836004)(76176011)(6506007)(66556008)(66446008)(53546011)(46003)(4326008)(6116002)(478600001)(25786009)(81156014)(8676002)(81166006)(8936002)(2906002)(36756003)(86362001)(305945005)(7736002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2582;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: vN2PVxRwMu5NmWplewPxCmmF8B2qGVdrMw/WOKtWB12a/M+maxLHU4vytnt/12rG7/r+93IKG3ebSX+qMBqh1GzMI7pfL3uy6Pp0hsDrW51zRydZFxXx77Ri2QuESnV8FUWq3HOZYl/FX3ybv0EgMCjILm80Ej1goCM60ByYkW9oTOmF+7FTxLxEXwied6qlwUrdsNdjGnguUV9aijzfZUBiYOw8AjK/jB2Wz/HuHpxSsg4lR0C2wQgiitKXCFEDC4LagQ0bG5olhfTU197vTo9ThHBQF9qMP0gLKYwILXW1RsWvp8oyY6/vBFoo46SJtsh7X33slzf4VXWEpqtJWgCKxhSdRbj3Mzf1xHaJC6ja/9hFe/o2rSydfkRqGoktBU+BV2aQzi8evbIAacw3r8jw/bWikE/zW6EPUWdQoTo=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C99B4FFF2CC27249812FC59BAB7B947B@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3590da73-23dc-4b92-9e2d-08d70595102b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jul 2019 00:16:47.8992
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yhs@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2582
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-10_08:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907110000
-X-FB-Internal: deliver
+        Kernel Team <Kernel-team@fb.com>, Martin Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDcvMTAvMTkgMTowOCBBTSwgQW5kcmlpIE5ha3J5aWtvIHdyb3RlOg0KPiBCVEYgdmVy
-aWZpZXIgaGFzIERpZmZlcmVudCBsb2dpYyBkZXBlbmRpbmcgb24gd2hldGhlciB3ZSBhcmUgZm9s
-bG93aW5nDQo+IGEgUFRSIG9yIFNUUlVDVC9BUlJBWSAob3Igc29tZXRoaW5nIGVsc2UpLiBUaGlz
-IGlzIGFuIG9wdGltaXphdGlvbiB0bw0KPiBzdG9wIGVhcmx5IGluIERGUyB0cmF2ZXJzYWwgd2hp
-bGUgcmVzb2x2aW5nIEJURiB0eXBlcy4gQnV0IGl0IGFsc28NCj4gcmVzdWx0cyBpbiBhIHNpemUg
-cmVzb2x1dGlvbiBidWcsIHdoZW4gdGhlcmUgaXMgYSBjaGFpbiwgZS5nLiwgb2YgUFRSIC0+DQo+
-IFRZUEVERUYgLT4gQVJSQVksIGluIHdoaWNoIGNhc2UgZHVlIHRvIGJlaW5nIGluIHBvaW50ZXIg
-Y29udGV4dCBBUlJBWQ0KPiBzaXplIHdvbid0IGJlIHJlc29sdmVkLCBhcyBpdCBpcyBjb25zaWRl
-cmVkIHRvIGJlIGEgc2luayBmb3IgcG9pbnRlciwNCj4gbGVhZGluZyB0byBUWVBFREVGIGJlaW5n
-IGluIFJFU09MVkVEIHN0YXRlIHdpdGggemVybyBzaXplLCB3aGljaCBpcw0KPiBjb21wbGV0ZWx5
-IHdyb25nLg0KPiANCj4gT3B0aW1pemF0aW9uIGlzIGRvdWJ0ZnVsLCB0aG91Z2gsIGFzIGJ0Zl9j
-aGVja19hbGxfdHlwZXMoKSB3aWxsIGl0ZXJhdGUNCj4gb3ZlciBhbGwgQlRGIHR5cGVzIGFueXdh
-eXMsIHNvIHRoZSBvbmx5IHNhdmluZyBpcyBhIHBvdGVudGlhbGx5IHNsaWdodGx5DQo+IHNob3J0
-ZXIgc3RhY2suIEJ1dCBjb3JyZWN0bmVzcyBpcyBtb3JlIGltcG9ydGFudCB0aGF0IHRpbnkgc2F2
-aW5ncy4NCj4gDQo+IFRoaXMgYnVnIG1hbmlmZXN0cyBpdHNlbGYgaW4gcmVqZWN0aW5nIEJURi1k
-ZWZpbmVkIG1hcHMgdGhhdCB1c2UgYXJyYXkNCj4gdHlwZWRlZiBhcyBhIHZhbHVlIHR5cGU6DQo+
-IA0KPiB0eXBlZGVmIGludCBhcnJheV90WzE2XTsNCj4gDQo+IHN0cnVjdCB7DQo+IAlfX3VpbnQo
-dHlwZSwgQlBGX01BUF9UWVBFX0FSUkFZKTsNCj4gCV9fdHlwZSh2YWx1ZSwgYXJyYXlfdCk7IC8q
-IGkuZS4sIGFycmF5X3QgKnZhbHVlOyAqLw0KPiB9IHRlc3RfbWFwIFNFQygiLm1hcHMiKTsNCj4g
-DQo+IEZpeGVzOiBlYjNmNTk1ZGFiNDAgKCJicGY6IGJ0ZjogVmFsaWRhdGUgdHlwZSByZWZlcmVu
-Y2UiKQ0KPiBDYzogTWFydGluIEthRmFpIExhdSA8a2FmYWlAZmIuY29tPg0KPiBTaWduZWQtb2Zm
-LWJ5OiBBbmRyaWkgTmFrcnlpa28gPGFuZHJpaW5AZmIuY29tPg0KDQpUaGUgY2hhbmdlIHNlZW1z
-IG9rYXkgdG8gbWUuIEN1cnJlbnRseSwgbG9va3MgbGlrZSBpbnRlcm1lZGlhdGUNCm1vZGlmaWVy
-IHR5cGUgd2lsbCBjYXJyeSBzaXplID0gMCAoaW4gdGhlIGludGVybmFsIGRhdGEgc3RydWN0dXJl
-KS4NCg0KSWYgd2UgcmVtb3ZlIFJFU09MVkUgbG9naWMsIHdlIHByb2JhYmx5IHdhbnQgdG8gZG91
-YmxlIGNoZWNrDQp3aGV0aGVyIHdlIGhhbmRsZSBjaXJjdWxhciB0eXBlcyBjb3JyZWN0bHkgb3Ig
-bm90LiBNYXliZSB3ZSB3aWxsDQpiZSBva2F5IGlmIGFsbCBzZWxmIHRlc3RzIHBhc3MuDQoNCkkg
-bWF5IHN0aWxsIGJlIHdvcnRod2hpbGUgdG8gcXVhbGlmeSB0aGUgUkVTT0xWRSBvcHRpbWl6YXRp
-b24gYmVuZWZpdA0KYmVmb3JlIHJlbW92aW5nIGl0Lg0KDQpBbm90aGVyIHBvc3NpYmxlIGNoYW5n
-ZSBpcywgZm9yIGV4dGVybmFsIHVzYWdlLCByZW1vdmluZw0KbW9kaWZpZXJzLCBiZWZvcmUgY2hl
-Y2tpbmcgdGhlIHNpemUsIHNvbWV0aGluZyBsaWtlIGJlbG93Lg0KTm90ZSB0aGF0IEkgYW0gbm90
-IHN0cm9uZ2x5IGFkdm9jYXRpbmcgbXkgYmVsb3cgcGF0Y2ggYXMNCml0IGhhcyB0aGUgc2FtZSBz
-aG9ydGNvbWluZyB0aGF0IG1haW50YWluZWQgbW9kaWZpZXIgdHlwZQ0Kc2l6ZSBtYXkgbm90IGJl
-IGNvcnJlY3QuDQoNCmRpZmYgLS1naXQgYS9rZXJuZWwvYnBmL2J0Zi5jIGIva2VybmVsL2JwZi9i
-dGYuYw0KaW5kZXggNTQ2ZWJlZTM5ZTJhLi42ZjkyN2MzZTBhODkgMTAwNjQ0DQotLS0gYS9rZXJu
-ZWwvYnBmL2J0Zi5jDQorKysgYi9rZXJuZWwvYnBmL2J0Zi5jDQpAQCAtNjIwLDYgKzYyMCw1NCBA
-QCBzdGF0aWMgYm9vbCBidGZfdHlwZV9pbnRfaXNfcmVndWxhcihjb25zdCBzdHJ1Y3QgDQpidGZf
-dHlwZSAqdCkNCiAgICAgICAgIHJldHVybiB0cnVlOw0KICB9DQoNCitzdGF0aWMgY29uc3Qgc3Ry
-dWN0IGJ0Zl90eXBlICpfX2J0Zl90eXBlX2lkX3NpemUoY29uc3Qgc3RydWN0IGJ0ZiAqYnRmLA0K
-KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHUzMiAqdHlw
-ZV9pZCwgdTMyIA0KKnJldF9zaXplLA0KKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIGJvb2wgc2tpcF9tb2RpZmllcikNCit7DQorICAgICAgIGNvbnN0IHN0
-cnVjdCBidGZfdHlwZSAqc2l6ZV90eXBlOw0KKyAgICAgICB1MzIgc2l6ZV90eXBlX2lkID0gKnR5
-cGVfaWQ7DQorICAgICAgIHUzMiBzaXplID0gMDsNCisNCisgICAgICAgc2l6ZV90eXBlID0gYnRm
-X3R5cGVfYnlfaWQoYnRmLCBzaXplX3R5cGVfaWQpOw0KKyAgICAgICBpZiAoc2l6ZV90eXBlICYm
-IHNraXBfbW9kaWZpZXIpIHsNCisgICAgICAgICAgICAgICB3aGlsZSAoYnRmX3R5cGVfaXNfbW9k
-aWZpZXIoc2l6ZV90eXBlKSkNCisgICAgICAgICAgICAgICAgICAgICAgIHNpemVfdHlwZSA9IGJ0
-Zl90eXBlX2J5X2lkKGJ0Ziwgc2l6ZV90eXBlLT50eXBlKTsNCisgICAgICAgfQ0KKw0KKyAgICAg
-ICBpZiAoYnRmX3R5cGVfbm9zaXplX29yX251bGwoc2l6ZV90eXBlKSkNCisgICAgICAgICAgICAg
-ICByZXR1cm4gTlVMTDsNCisNCisgICAgICAgaWYgKGJ0Zl90eXBlX2hhc19zaXplKHNpemVfdHlw
-ZSkpIHsNCisgICAgICAgICAgICAgICBzaXplID0gc2l6ZV90eXBlLT5zaXplOw0KKyAgICAgICB9
-IGVsc2UgaWYgKGJ0Zl90eXBlX2lzX2FycmF5KHNpemVfdHlwZSkpIHsNCisgICAgICAgICAgICAg
-ICBzaXplID0gYnRmLT5yZXNvbHZlZF9zaXplc1tzaXplX3R5cGVfaWRdOw0KKyAgICAgICB9IGVs
-c2UgaWYgKGJ0Zl90eXBlX2lzX3B0cihzaXplX3R5cGUpKSB7DQorICAgICAgICAgICAgICAgc2l6
-ZSA9IHNpemVvZih2b2lkICopOw0KKyAgICAgICB9IGVsc2Ugew0KKyAgICAgICAgICAgICAgIGlm
-IChXQVJOX09OX09OQ0UoIWJ0Zl90eXBlX2lzX21vZGlmaWVyKHNpemVfdHlwZSkgJiYNCisgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICFidGZfdHlwZV9pc192YXIoc2l6ZV90eXBlKSkp
-DQorICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gTlVMTDsNCisNCisgICAgICAgICAgICAg
-ICBzaXplID0gYnRmLT5yZXNvbHZlZF9zaXplc1tzaXplX3R5cGVfaWRdOw0KKyAgICAgICAgICAg
-ICAgIHNpemVfdHlwZV9pZCA9IGJ0Zi0+cmVzb2x2ZWRfaWRzW3NpemVfdHlwZV9pZF07DQorICAg
-ICAgICAgICAgICAgc2l6ZV90eXBlID0gYnRmX3R5cGVfYnlfaWQoYnRmLCBzaXplX3R5cGVfaWQp
-Ow0KKyAgICAgICAgICAgICAgIGlmIChidGZfdHlwZV9ub3NpemVfb3JfbnVsbChzaXplX3R5cGUp
-KQ0KKyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIE5VTEw7DQorICAgICAgIH0NCisNCisg
-ICAgICAgKnR5cGVfaWQgPSBzaXplX3R5cGVfaWQ7DQorICAgICAgIGlmIChyZXRfc2l6ZSkNCisg
-ICAgICAgICAgICAgICAqcmV0X3NpemUgPSBzaXplOw0KKw0KKyAgICAgICByZXR1cm4gc2l6ZV90
-eXBlOw0KK30NCisNCitjb25zdCBzdHJ1Y3QgYnRmX3R5cGUgKmJ0Zl90eXBlX2lkX3NpemUoY29u
-c3Qgc3RydWN0IGJ0ZiAqYnRmLA0KKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHUzMiAqdHlwZV9pZCwgdTMyICpyZXRfc2l6ZSkNCit7DQorICAgICAgIHJldHVybiBfX2J0
-Zl90eXBlX2lkX3NpemUoYnRmLCB0eXBlX2lkLCByZXRfc2l6ZSwgdHJ1ZSk7DQorfQ0KKw0KICAv
-Kg0KICAgKiBDaGVjayB0aGF0IGdpdmVuIHN0cnVjdCBtZW1iZXIgaXMgYSByZWd1bGFyIGludCB3
-aXRoIGV4cGVjdGVkDQogICAqIG9mZnNldCBhbmQgc2l6ZS4NCkBAIC02MzMsNyArNjgxLDcgQEAg
-Ym9vbCBidGZfbWVtYmVyX2lzX3JlZ19pbnQoY29uc3Qgc3RydWN0IGJ0ZiAqYnRmLCANCmNvbnN0
-IHN0cnVjdCBidGZfdHlwZSAqcywNCiAgICAgICAgIHU4IG5yX2JpdHM7DQoNCiAgICAgICAgIGlk
-ID0gbS0+dHlwZTsNCi0gICAgICAgdCA9IGJ0Zl90eXBlX2lkX3NpemUoYnRmLCAmaWQsIE5VTEwp
-Ow0KKyAgICAgICB0ID0gX19idGZfdHlwZV9pZF9zaXplKGJ0ZiwgJmlkLCBOVUxMLCBmYWxzZSk7
-DQogICAgICAgICBpZiAoIXQgfHwgIWJ0Zl90eXBlX2lzX2ludCh0KSkNCiAgICAgICAgICAgICAg
-ICAgcmV0dXJuIGZhbHNlOw0KDQpAQCAtMTA1MSw0MiArMTA5OSw2IEBAIHN0YXRpYyBjb25zdCBz
-dHJ1Y3QgYnRmX3R5cGUgDQoqYnRmX3R5cGVfaWRfcmVzb2x2ZShjb25zdCBzdHJ1Y3QgYnRmICpi
-dGYsDQogICAgICAgICByZXR1cm4gYnRmX3R5cGVfYnlfaWQoYnRmLCAqdHlwZV9pZCk7DQogIH0N
-Cg0KLWNvbnN0IHN0cnVjdCBidGZfdHlwZSAqYnRmX3R5cGVfaWRfc2l6ZShjb25zdCBzdHJ1Y3Qg
-YnRmICpidGYsDQotICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdTMyICp0
-eXBlX2lkLCB1MzIgKnJldF9zaXplKQ0KLXsNCi0gICAgICAgY29uc3Qgc3RydWN0IGJ0Zl90eXBl
-ICpzaXplX3R5cGU7DQotICAgICAgIHUzMiBzaXplX3R5cGVfaWQgPSAqdHlwZV9pZDsNCi0gICAg
-ICAgdTMyIHNpemUgPSAwOw0KLQ0KLSAgICAgICBzaXplX3R5cGUgPSBidGZfdHlwZV9ieV9pZChi
-dGYsIHNpemVfdHlwZV9pZCk7DQotICAgICAgIGlmIChidGZfdHlwZV9ub3NpemVfb3JfbnVsbChz
-aXplX3R5cGUpKQ0KLSAgICAgICAgICAgICAgIHJldHVybiBOVUxMOw0KLQ0KLSAgICAgICBpZiAo
-YnRmX3R5cGVfaGFzX3NpemUoc2l6ZV90eXBlKSkgew0KLSAgICAgICAgICAgICAgIHNpemUgPSBz
-aXplX3R5cGUtPnNpemU7DQotICAgICAgIH0gZWxzZSBpZiAoYnRmX3R5cGVfaXNfYXJyYXkoc2l6
-ZV90eXBlKSkgew0KLSAgICAgICAgICAgICAgIHNpemUgPSBidGYtPnJlc29sdmVkX3NpemVzW3Np
-emVfdHlwZV9pZF07DQotICAgICAgIH0gZWxzZSBpZiAoYnRmX3R5cGVfaXNfcHRyKHNpemVfdHlw
-ZSkpIHsNCi0gICAgICAgICAgICAgICBzaXplID0gc2l6ZW9mKHZvaWQgKik7DQotICAgICAgIH0g
-ZWxzZSB7DQotICAgICAgICAgICAgICAgaWYgKFdBUk5fT05fT05DRSghYnRmX3R5cGVfaXNfbW9k
-aWZpZXIoc2l6ZV90eXBlKSAmJg0KLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIWJ0
-Zl90eXBlX2lzX3ZhcihzaXplX3R5cGUpKSkNCi0gICAgICAgICAgICAgICAgICAgICAgIHJldHVy
-biBOVUxMOw0KLQ0KLSAgICAgICAgICAgICAgIHNpemUgPSBidGYtPnJlc29sdmVkX3NpemVzW3Np
-emVfdHlwZV9pZF07DQotICAgICAgICAgICAgICAgc2l6ZV90eXBlX2lkID0gYnRmLT5yZXNvbHZl
-ZF9pZHNbc2l6ZV90eXBlX2lkXTsNCi0gICAgICAgICAgICAgICBzaXplX3R5cGUgPSBidGZfdHlw
-ZV9ieV9pZChidGYsIHNpemVfdHlwZV9pZCk7DQotICAgICAgICAgICAgICAgaWYgKGJ0Zl90eXBl
-X25vc2l6ZV9vcl9udWxsKHNpemVfdHlwZSkpDQotICAgICAgICAgICAgICAgICAgICAgICByZXR1
-cm4gTlVMTDsNCi0gICAgICAgfQ0KLQ0KLSAgICAgICAqdHlwZV9pZCA9IHNpemVfdHlwZV9pZDsN
-Ci0gICAgICAgaWYgKHJldF9zaXplKQ0KLSAgICAgICAgICAgICAgICpyZXRfc2l6ZSA9IHNpemU7
-DQotDQotICAgICAgIHJldHVybiBzaXplX3R5cGU7DQotfQ0KLQ0KICBzdGF0aWMgaW50IGJ0Zl9k
-Zl9jaGVja19tZW1iZXIoc3RydWN0IGJ0Zl92ZXJpZmllcl9lbnYgKmVudiwNCiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgY29uc3Qgc3RydWN0IGJ0Zl90eXBlICpzdHJ1Y3RfdHlwZSwN
-CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29uc3Qgc3RydWN0IGJ0Zl9tZW1iZXIg
-Km1lbWJlciwNCkBAIC0xNDg5LDcgKzE1MDEsNyBAQCBzdGF0aWMgaW50IGJ0Zl9tb2RpZmllcl9j
-aGVja19tZW1iZXIoc3RydWN0IA0KYnRmX3ZlcmlmaWVyX2VudiAqZW52LA0KICAgICAgICAgc3Ry
-dWN0IGJ0Zl9tZW1iZXIgcmVzb2x2ZWRfbWVtYmVyOw0KICAgICAgICAgc3RydWN0IGJ0ZiAqYnRm
-ID0gZW52LT5idGY7DQoNCi0gICAgICAgcmVzb2x2ZWRfdHlwZSA9IGJ0Zl90eXBlX2lkX3NpemUo
-YnRmLCAmcmVzb2x2ZWRfdHlwZV9pZCwgTlVMTCk7DQorICAgICAgIHJlc29sdmVkX3R5cGUgPSBf
-X2J0Zl90eXBlX2lkX3NpemUoYnRmLCAmcmVzb2x2ZWRfdHlwZV9pZCwgTlVMTCwgDQpmYWxzZSk7
-DQogICAgICAgICBpZiAoIXJlc29sdmVkX3R5cGUpIHsNCiAgICAgICAgICAgICAgICAgYnRmX3Zl
-cmlmaWVyX2xvZ19tZW1iZXIoZW52LCBzdHJ1Y3RfdHlwZSwgbWVtYmVyLA0KICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiSW52YWxpZCBtZW1iZXIiKTsNCkBAIC0xNTE0
-LDcgKzE1MjYsNyBAQCBzdGF0aWMgaW50IGJ0Zl9tb2RpZmllcl9jaGVja19rZmxhZ19tZW1iZXIo
-c3RydWN0IA0KYnRmX3ZlcmlmaWVyX2VudiAqZW52LA0KICAgICAgICAgc3RydWN0IGJ0Zl9tZW1i
-ZXIgcmVzb2x2ZWRfbWVtYmVyOw0KICAgICAgICAgc3RydWN0IGJ0ZiAqYnRmID0gZW52LT5idGY7
-DQoNCi0gICAgICAgcmVzb2x2ZWRfdHlwZSA9IGJ0Zl90eXBlX2lkX3NpemUoYnRmLCAmcmVzb2x2
-ZWRfdHlwZV9pZCwgTlVMTCk7DQorICAgICAgIHJlc29sdmVkX3R5cGUgPSBfX2J0Zl90eXBlX2lk
-X3NpemUoYnRmLCAmcmVzb2x2ZWRfdHlwZV9pZCwgTlVMTCwgDQpmYWxzZSk7DQogICAgICAgICBp
-ZiAoIXJlc29sdmVkX3R5cGUpIHsNCiAgICAgICAgICAgICAgICAgYnRmX3ZlcmlmaWVyX2xvZ19t
-ZW1iZXIoZW52LCBzdHJ1Y3RfdHlwZSwgbWVtYmVyLA0KICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAiSW52YWxpZCBtZW1iZXIiKTsNCkBAIC0xNjIwLDcgKzE2MzIsNyBA
-QCBzdGF0aWMgaW50IGJ0Zl9tb2RpZmllcl9yZXNvbHZlKHN0cnVjdCANCmJ0Zl92ZXJpZmllcl9l
-bnYgKmVudiwNCiAgICAgICAgICAqIHNhdmUgdXMgYSBmZXcgdHlwZS1mb2xsb3dpbmcgd2hlbiB3
-ZSB1c2UgaXQgbGF0ZXIgKGUuZy4gaW4NCiAgICAgICAgICAqIHByZXR0eSBwcmludCkuDQogICAg
-ICAgICAgKi8NCi0gICAgICAgaWYgKCFidGZfdHlwZV9pZF9zaXplKGJ0ZiwgJm5leHRfdHlwZV9p
-ZCwgJm5leHRfdHlwZV9zaXplKSkgew0KKyAgICAgICBpZiAoIV9fYnRmX3R5cGVfaWRfc2l6ZShi
-dGYsICZuZXh0X3R5cGVfaWQsICZuZXh0X3R5cGVfc2l6ZSwgDQpmYWxzZSkpIHsNCiAgICAgICAg
-ICAgICAgICAgaWYgKGVudl90eXBlX2lzX3Jlc29sdmVkKGVudiwgbmV4dF90eXBlX2lkKSkNCiAg
-ICAgICAgICAgICAgICAgICAgICAgICBuZXh0X3R5cGUgPSBidGZfdHlwZV9pZF9yZXNvbHZlKGJ0
-ZiwgDQombmV4dF90eXBlX2lkKTsNCg0KQEAgLTE2NzUsNyArMTY4Nyw3IEBAIHN0YXRpYyBpbnQg
-YnRmX3Zhcl9yZXNvbHZlKHN0cnVjdCBidGZfdmVyaWZpZXJfZW52IA0KKmVudiwNCiAgICAgICAg
-ICAqIGZvcndhcmQgdHlwZXMgb3Igc2ltaWxhciB0aGF0IHdvdWxkIHJlc29sdmUgdG8gc2l6ZSBv
-Zg0KICAgICAgICAgICogemVybyBpcyBhbGxvd2VkLg0KICAgICAgICAgICovDQotICAgICAgIGlm
-ICghYnRmX3R5cGVfaWRfc2l6ZShidGYsICZuZXh0X3R5cGVfaWQsICZuZXh0X3R5cGVfc2l6ZSkp
-IHsNCisgICAgICAgaWYgKCFfX2J0Zl90eXBlX2lkX3NpemUoYnRmLCAmbmV4dF90eXBlX2lkLCAm
-bmV4dF90eXBlX3NpemUsIA0KZmFsc2UpKSB7DQogICAgICAgICAgICAgICAgIGJ0Zl92ZXJpZmll
-cl9sb2dfdHlwZShlbnYsIHYtPnQsICJJbnZhbGlkIHR5cGVfaWQiKTsNCiAgICAgICAgICAgICAg
-ICAgcmV0dXJuIC1FSU5WQUw7DQogICAgICAgICB9DQpAQCAtMTcyNSw3ICsxNzM3LDcgQEAgc3Rh
-dGljIGludCBidGZfcHRyX3Jlc29sdmUoc3RydWN0IGJ0Zl92ZXJpZmllcl9lbnYgDQoqZW52LA0K
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXNvbHZlZF90
-eXBlX2lkKTsNCiAgICAgICAgIH0NCg0KLSAgICAgICBpZiAoIWJ0Zl90eXBlX2lkX3NpemUoYnRm
-LCAmbmV4dF90eXBlX2lkLCBOVUxMKSkgew0KKyAgICAgICBpZiAoIV9fYnRmX3R5cGVfaWRfc2l6
-ZShidGYsICZuZXh0X3R5cGVfaWQsIE5VTEwsIGZhbHNlKSkgew0KICAgICAgICAgICAgICAgICBp
-ZiAoZW52X3R5cGVfaXNfcmVzb2x2ZWQoZW52LCBuZXh0X3R5cGVfaWQpKQ0KICAgICAgICAgICAg
-ICAgICAgICAgICAgIG5leHRfdHlwZSA9IGJ0Zl90eXBlX2lkX3Jlc29sdmUoYnRmLCANCiZuZXh0
-X3R5cGVfaWQpOw0KDQpAQCAtMTg1MSw3ICsxODYzLDcgQEAgc3RhdGljIGludCBidGZfYXJyYXlf
-Y2hlY2tfbWVtYmVyKHN0cnVjdCANCmJ0Zl92ZXJpZmllcl9lbnYgKmVudiwNCiAgICAgICAgIH0N
-Cg0KICAgICAgICAgYXJyYXlfdHlwZV9pZCA9IG1lbWJlci0+dHlwZTsNCi0gICAgICAgYnRmX3R5
-cGVfaWRfc2l6ZShidGYsICZhcnJheV90eXBlX2lkLCAmYXJyYXlfc2l6ZSk7DQorICAgICAgIF9f
-YnRmX3R5cGVfaWRfc2l6ZShidGYsICZhcnJheV90eXBlX2lkLCAmYXJyYXlfc2l6ZSwgZmFsc2Up
-Ow0KICAgICAgICAgc3RydWN0X3NpemUgPSBzdHJ1Y3RfdHlwZS0+c2l6ZTsNCiAgICAgICAgIGJ5
-dGVzX29mZnNldCA9IEJJVFNfUk9VTkRET1dOX0JZVEVTKHN0cnVjdF9iaXRzX29mZik7DQogICAg
-ICAgICBpZiAoc3RydWN0X3NpemUgLSBieXRlc19vZmZzZXQgPCBhcnJheV9zaXplKSB7DQpAQCAt
-MTkzOCw3ICsxOTUwLDcgQEAgc3RhdGljIGludCBidGZfYXJyYXlfcmVzb2x2ZShzdHJ1Y3QgDQpi
-dGZfdmVyaWZpZXJfZW52ICplbnYsDQogICAgICAgICAgICAgIWVudl90eXBlX2lzX3Jlc29sdmVk
-KGVudiwgaW5kZXhfdHlwZV9pZCkpDQogICAgICAgICAgICAgICAgIHJldHVybiBlbnZfc3RhY2tf
-cHVzaChlbnYsIGluZGV4X3R5cGUsIGluZGV4X3R5cGVfaWQpOw0KDQotICAgICAgIGluZGV4X3R5
-cGUgPSBidGZfdHlwZV9pZF9zaXplKGJ0ZiwgJmluZGV4X3R5cGVfaWQsIE5VTEwpOw0KKyAgICAg
-ICBpbmRleF90eXBlID0gX19idGZfdHlwZV9pZF9zaXplKGJ0ZiwgJmluZGV4X3R5cGVfaWQsIE5V
-TEwsIGZhbHNlKTsNCiAgICAgICAgIGlmICghaW5kZXhfdHlwZSB8fCAhYnRmX3R5cGVfaXNfaW50
-KGluZGV4X3R5cGUpIHx8DQogICAgICAgICAgICAgIWJ0Zl90eXBlX2ludF9pc19yZWd1bGFyKGlu
-ZGV4X3R5cGUpKSB7DQogICAgICAgICAgICAgICAgIGJ0Zl92ZXJpZmllcl9sb2dfdHlwZShlbnYs
-IHYtPnQsICJJbnZhbGlkIGluZGV4Iik7DQpAQCAtMTk1OSw3ICsxOTcxLDcgQEAgc3RhdGljIGlu
-dCBidGZfYXJyYXlfcmVzb2x2ZShzdHJ1Y3QgDQpidGZfdmVyaWZpZXJfZW52ICplbnYsDQogICAg
-ICAgICAgICAgIWVudl90eXBlX2lzX3Jlc29sdmVkKGVudiwgZWxlbV90eXBlX2lkKSkNCiAgICAg
-ICAgICAgICAgICAgcmV0dXJuIGVudl9zdGFja19wdXNoKGVudiwgZWxlbV90eXBlLCBlbGVtX3R5
-cGVfaWQpOw0KDQotICAgICAgIGVsZW1fdHlwZSA9IGJ0Zl90eXBlX2lkX3NpemUoYnRmLCAmZWxl
-bV90eXBlX2lkLCAmZWxlbV9zaXplKTsNCisgICAgICAgZWxlbV90eXBlID0gX19idGZfdHlwZV9p
-ZF9zaXplKGJ0ZiwgJmVsZW1fdHlwZV9pZCwgJmVsZW1fc2l6ZSwgDQpmYWxzZSk7DQogICAgICAg
-ICBpZiAoIWVsZW1fdHlwZSkgew0KICAgICAgICAgICAgICAgICBidGZfdmVyaWZpZXJfbG9nX3R5
-cGUoZW52LCB2LT50LCAiSW52YWxpZCBlbGVtIik7DQogICAgICAgICAgICAgICAgIHJldHVybiAt
-RUlOVkFMOw0KQEAgLTIwMDAsNyArMjAxMiw3IEBAIHN0YXRpYyB2b2lkIGJ0Zl9hcnJheV9zZXFf
-c2hvdyhjb25zdCBzdHJ1Y3QgYnRmIA0KKmJ0ZiwgY29uc3Qgc3RydWN0IGJ0Zl90eXBlICp0LA0K
-ICAgICAgICAgdTMyIGksIGVsZW1fc2l6ZSwgZWxlbV90eXBlX2lkOw0KDQogICAgICAgICBlbGVt
-X3R5cGVfaWQgPSBhcnJheS0+dHlwZTsNCi0gICAgICAgZWxlbV90eXBlID0gYnRmX3R5cGVfaWRf
-c2l6ZShidGYsICZlbGVtX3R5cGVfaWQsICZlbGVtX3NpemUpOw0KKyAgICAgICBlbGVtX3R5cGUg
-PSBfX2J0Zl90eXBlX2lkX3NpemUoYnRmLCAmZWxlbV90eXBlX2lkLCAmZWxlbV9zaXplLCANCmZh
-bHNlKTsNCiAgICAgICAgIGVsZW1fb3BzID0gYnRmX3R5cGVfb3BzKGVsZW1fdHlwZSk7DQogICAg
-ICAgICBzZXFfcHV0cyhtLCAiWyIpOw0KICAgICAgICAgZm9yIChpID0gMDsgaSA8IGFycmF5LT5u
-ZWxlbXM7IGkrKykgew0KQEAgLTI3MzIsNyArMjc0NCw3IEBAIHN0YXRpYyBpbnQgYnRmX2RhdGFz
-ZWNfcmVzb2x2ZShzdHJ1Y3QgDQpidGZfdmVyaWZpZXJfZW52ICplbnYsDQogICAgICAgICAgICAg
-ICAgIH0NCg0KICAgICAgICAgICAgICAgICB0eXBlX2lkID0gdmFyX3R5cGUtPnR5cGU7DQotICAg
-ICAgICAgICAgICAgaWYgKCFidGZfdHlwZV9pZF9zaXplKGJ0ZiwgJnR5cGVfaWQsICZ0eXBlX3Np
-emUpKSB7DQorICAgICAgICAgICAgICAgaWYgKCFfX2J0Zl90eXBlX2lkX3NpemUoYnRmLCAmdHlw
-ZV9pZCwgJnR5cGVfc2l6ZSwgZmFsc2UpKSB7DQogICAgICAgICAgICAgICAgICAgICAgICAgYnRm
-X3ZlcmlmaWVyX2xvZ192c2koZW52LCB2LT50LCB2c2ksICJJbnZhbGlkIA0KdHlwZSIpOw0KICAg
-ICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOw0KICAgICAgICAgICAgICAgICB9
-DQpAQCAtMjgxMyw3ICsyODI1LDcgQEAgc3RhdGljIGludCBidGZfZnVuY19wcm90b19jaGVjayhz
-dHJ1Y3QgDQpidGZfdmVyaWZpZXJfZW52ICplbnYsDQogICAgICAgICAgICAgICAgIH0NCg0KICAg
-ICAgICAgICAgICAgICAvKiBFbnN1cmUgdGhlIHJldHVybiB0eXBlIGlzIGEgdHlwZSB0aGF0IGhh
-cyBhIHNpemUgKi8NCi0gICAgICAgICAgICAgICBpZiAoIWJ0Zl90eXBlX2lkX3NpemUoYnRmLCAm
-cmV0X3R5cGVfaWQsIE5VTEwpKSB7DQorICAgICAgICAgICAgICAgaWYgKCFfX2J0Zl90eXBlX2lk
-X3NpemUoYnRmLCAmcmV0X3R5cGVfaWQsIE5VTEwsIGZhbHNlKSkgew0KICAgICAgICAgICAgICAg
-ICAgICAgICAgIGJ0Zl92ZXJpZmllcl9sb2dfdHlwZShlbnYsIHQsICJJbnZhbGlkIHJldHVybiAN
-CnR5cGUiKTsNCiAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsNCiAgICAg
-ICAgICAgICAgICAgfQ0KQEAgLTI4NjEsNyArMjg3Myw3IEBAIHN0YXRpYyBpbnQgYnRmX2Z1bmNf
-cHJvdG9fY2hlY2soc3RydWN0IA0KYnRmX3ZlcmlmaWVyX2VudiAqZW52LA0KICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgYnJlYWs7DQogICAgICAgICAgICAgICAgIH0NCg0KLSAgICAg
-ICAgICAgICAgIGlmICghYnRmX3R5cGVfaWRfc2l6ZShidGYsICZhcmdfdHlwZV9pZCwgTlVMTCkp
-IHsNCisgICAgICAgICAgICAgICBpZiAoIV9fYnRmX3R5cGVfaWRfc2l6ZShidGYsICZhcmdfdHlw
-ZV9pZCwgTlVMTCwgZmFsc2UpKSB7DQogICAgICAgICAgICAgICAgICAgICAgICAgYnRmX3Zlcmlm
-aWVyX2xvZ190eXBlKGVudiwgdCwgIkludmFsaWQgYXJnIyV1IiwgDQppICsgMSk7DQogICAgICAg
-ICAgICAgICAgICAgICAgICAgZXJyID0gLUVJTlZBTDsNCiAgICAgICAgICAgICAgICAgICAgICAg
-ICBicmVhazsNCkBAIC0zMDE0LDcgKzMwMjYsNyBAQCBzdGF0aWMgYm9vbCBidGZfcmVzb2x2ZV92
-YWxpZChzdHJ1Y3QgDQpidGZfdmVyaWZpZXJfZW52ICplbnYsDQogICAgICAgICAgICAgICAgIHUz
-MiBlbGVtX3R5cGVfaWQgPSBhcnJheS0+dHlwZTsNCiAgICAgICAgICAgICAgICAgdTMyIGVsZW1f
-c2l6ZTsNCg0KLSAgICAgICAgICAgICAgIGVsZW1fdHlwZSA9IGJ0Zl90eXBlX2lkX3NpemUoYnRm
-LCAmZWxlbV90eXBlX2lkLCANCiZlbGVtX3NpemUpOw0KKyAgICAgICAgICAgICAgIGVsZW1fdHlw
-ZSA9IF9fYnRmX3R5cGVfaWRfc2l6ZShidGYsICZlbGVtX3R5cGVfaWQsIA0KJmVsZW1fc2l6ZSwg
-ZmFsc2UpOw0KICAgICAgICAgICAgICAgICByZXR1cm4gZWxlbV90eXBlICYmICFidGZfdHlwZV9p
-c19tb2RpZmllcihlbGVtX3R5cGUpICYmDQogICAgICAgICAgICAgICAgICAgICAgICAgKGFycmF5
-LT5uZWxlbXMgKiBlbGVtX3NpemUgPT0NCiAgICAgICAgICAgICAgICAgICAgICAgICAgYnRmLT5y
-ZXNvbHZlZF9zaXplc1t0eXBlX2lkXSk7DQoNCg0KPiAtLS0NCj4gICBrZXJuZWwvYnBmL2J0Zi5j
-IHwgNDIgKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+ICAgMSBm
-aWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMzkgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZm
-IC0tZ2l0IGEva2VybmVsL2JwZi9idGYuYyBiL2tlcm5lbC9icGYvYnRmLmMNCj4gaW5kZXggY2Fk
-MDk4NThhNWYyLi5jNjhjN2U3M2IwZDEgMTAwNjQ0DQo+IC0tLSBhL2tlcm5lbC9icGYvYnRmLmMN
-Cj4gKysrIGIva2VybmVsL2JwZi9idGYuYw0KPiBAQCAtMjMxLDE0ICsyMzEsNiBAQCBlbnVtIHZp
-c2l0X3N0YXRlIHsNCj4gICAJUkVTT0xWRUQsDQo+ICAgfTsNCj4gICANCj4gLWVudW0gcmVzb2x2
-ZV9tb2RlIHsNCj4gLQlSRVNPTFZFX1RCRCwJLyogVG8gQmUgRGV0ZXJtaW5lZCAqLw0KPiAtCVJF
-U09MVkVfUFRSLAkvKiBSZXNvbHZpbmcgZm9yIFBvaW50ZXIgKi8NCj4gLQlSRVNPTFZFX1NUUlVD
-VF9PUl9BUlJBWSwJLyogUmVzb2x2aW5nIGZvciBzdHJ1Y3QvdW5pb24NCj4gLQkJCQkJICogb3Ig
-YXJyYXkNCj4gLQkJCQkJICovDQo+IC19Ow0KPiAtDQo+ICAgI2RlZmluZSBNQVhfUkVTT0xWRV9E
-RVBUSCAzMg0KPiAgIA0KPiAgIHN0cnVjdCBidGZfc2VjX2luZm8gew0KPiBAQCAtMjU0LDcgKzI0
-Niw2IEBAIHN0cnVjdCBidGZfdmVyaWZpZXJfZW52IHsNCj4gICAJdTMyIGxvZ190eXBlX2lkOw0K
-PiAgIAl1MzIgdG9wX3N0YWNrOw0KPiAgIAllbnVtIHZlcmlmaWVyX3BoYXNlIHBoYXNlOw0KPiAt
-CWVudW0gcmVzb2x2ZV9tb2RlIHJlc29sdmVfbW9kZTsNCj4gICB9Ow0KPiAgIA0KPiAgIHN0YXRp
-YyBjb25zdCBjaGFyICogY29uc3QgYnRmX2tpbmRfc3RyW05SX0JURl9LSU5EU10gPSB7DQo+IEBA
-IC05NjQsMjYgKzk1NSw3IEBAIHN0YXRpYyB2b2lkIGJ0Zl92ZXJpZmllcl9lbnZfZnJlZShzdHJ1
-Y3QgYnRmX3ZlcmlmaWVyX2VudiAqZW52KQ0KPiAgIHN0YXRpYyBib29sIGVudl90eXBlX2lzX3Jl
-c29sdmVfc2luayhjb25zdCBzdHJ1Y3QgYnRmX3ZlcmlmaWVyX2VudiAqZW52LA0KPiAgIAkJCQkg
-ICAgIGNvbnN0IHN0cnVjdCBidGZfdHlwZSAqbmV4dF90eXBlKQ0KPiAgIHsNCj4gLQlzd2l0Y2gg
-KGVudi0+cmVzb2x2ZV9tb2RlKSB7DQo+IC0JY2FzZSBSRVNPTFZFX1RCRDoNCj4gLQkJLyogaW50
-LCBlbnVtIG9yIHZvaWQgaXMgYSBzaW5rICovDQo+IC0JCXJldHVybiAhYnRmX3R5cGVfbmVlZHNf
-cmVzb2x2ZShuZXh0X3R5cGUpOw0KPiAtCWNhc2UgUkVTT0xWRV9QVFI6DQo+IC0JCS8qIGludCwg
-ZW51bSwgdm9pZCwgc3RydWN0LCBhcnJheSwgZnVuYyBvciBmdW5jX3Byb3RvIGlzIGEgc2luaw0K
-PiAtCQkgKiBmb3IgcHRyDQo+IC0JCSAqLw0KPiAtCQlyZXR1cm4gIWJ0Zl90eXBlX2lzX21vZGlm
-aWVyKG5leHRfdHlwZSkgJiYNCj4gLQkJCSFidGZfdHlwZV9pc19wdHIobmV4dF90eXBlKTsNCj4g
-LQljYXNlIFJFU09MVkVfU1RSVUNUX09SX0FSUkFZOg0KPiAtCQkvKiBpbnQsIGVudW0sIHZvaWQs
-IHB0ciwgZnVuYyBvciBmdW5jX3Byb3RvIGlzIGEgc2luaw0KPiAtCQkgKiBmb3Igc3RydWN0IGFu
-ZCBhcnJheQ0KPiAtCQkgKi8NCj4gLQkJcmV0dXJuICFidGZfdHlwZV9pc19tb2RpZmllcihuZXh0
-X3R5cGUpICYmDQo+IC0JCQkhYnRmX3R5cGVfaXNfYXJyYXkobmV4dF90eXBlKSAmJg0KPiAtCQkJ
-IWJ0Zl90eXBlX2lzX3N0cnVjdChuZXh0X3R5cGUpOw0KPiAtCWRlZmF1bHQ6DQo+IC0JCUJVRygp
-Ow0KPiAtCX0NCj4gKwlyZXR1cm4gIWJ0Zl90eXBlX25lZWRzX3Jlc29sdmUobmV4dF90eXBlKTsN
-Cj4gICB9DQo+ICAgDQo+ICAgc3RhdGljIGJvb2wgZW52X3R5cGVfaXNfcmVzb2x2ZWQoY29uc3Qg
-c3RydWN0IGJ0Zl92ZXJpZmllcl9lbnYgKmVudiwNCj4gQEAgLTEwMTAsMTMgKzk4Miw2IEBAIHN0
-YXRpYyBpbnQgZW52X3N0YWNrX3B1c2goc3RydWN0IGJ0Zl92ZXJpZmllcl9lbnYgKmVudiwNCj4g
-ICAJdi0+dHlwZV9pZCA9IHR5cGVfaWQ7DQo+ICAgCXYtPm5leHRfbWVtYmVyID0gMDsNCj4gICAN
-Cj4gLQlpZiAoZW52LT5yZXNvbHZlX21vZGUgPT0gUkVTT0xWRV9UQkQpIHsNCj4gLQkJaWYgKGJ0
-Zl90eXBlX2lzX3B0cih0KSkNCj4gLQkJCWVudi0+cmVzb2x2ZV9tb2RlID0gUkVTT0xWRV9QVFI7
-DQo+IC0JCWVsc2UgaWYgKGJ0Zl90eXBlX2lzX3N0cnVjdCh0KSB8fCBidGZfdHlwZV9pc19hcnJh
-eSh0KSkNCj4gLQkJCWVudi0+cmVzb2x2ZV9tb2RlID0gUkVTT0xWRV9TVFJVQ1RfT1JfQVJSQVk7
-DQo+IC0JfQ0KPiAtDQo+ICAgCXJldHVybiAwOw0KPiAgIH0NCj4gICANCj4gQEAgLTEwMzgsNyAr
-MTAwMyw3IEBAIHN0YXRpYyB2b2lkIGVudl9zdGFja19wb3BfcmVzb2x2ZWQoc3RydWN0IGJ0Zl92
-ZXJpZmllcl9lbnYgKmVudiwNCj4gICAJZW52LT52aXNpdF9zdGF0ZXNbdHlwZV9pZF0gPSBSRVNP
-TFZFRDsNCj4gICB9DQo+ICAgDQo+IC1zdGF0aWMgY29uc3Qgc3RydWN0IHJlc29sdmVfdmVydGV4
-ICplbnZfc3RhY2tfcGVhayhzdHJ1Y3QgYnRmX3ZlcmlmaWVyX2VudiAqZW52KQ0KPiArc3RhdGlj
-IGNvbnN0IHN0cnVjdCByZXNvbHZlX3ZlcnRleCAqZW52X3N0YWNrX3BlZWsoc3RydWN0IGJ0Zl92
-ZXJpZmllcl9lbnYgKmVudikNCj4gICB7DQo+ICAgCXJldHVybiBlbnYtPnRvcF9zdGFjayA/ICZl
-bnYtPnN0YWNrW2Vudi0+dG9wX3N0YWNrIC0gMV0gOiBOVUxMOw0KPiAgIH0NCj4gQEAgLTMwMzAs
-OSArMjk5NSw4IEBAIHN0YXRpYyBpbnQgYnRmX3Jlc29sdmUoc3RydWN0IGJ0Zl92ZXJpZmllcl9l
-bnYgKmVudiwNCj4gICAJY29uc3Qgc3RydWN0IHJlc29sdmVfdmVydGV4ICp2Ow0KPiAgIAlpbnQg
-ZXJyID0gMDsNCj4gICANCj4gLQllbnYtPnJlc29sdmVfbW9kZSA9IFJFU09MVkVfVEJEOw0KPiAg
-IAllbnZfc3RhY2tfcHVzaChlbnYsIHQsIHR5cGVfaWQpOw0KPiAtCXdoaWxlICghZXJyICYmICh2
-ID0gZW52X3N0YWNrX3BlYWsoZW52KSkpIHsNCj4gKwl3aGlsZSAoIWVyciAmJiAodiA9IGVudl9z
-dGFja19wZWVrKGVudikpKSB7DQo+ICAgCQllbnYtPmxvZ190eXBlX2lkID0gdi0+dHlwZV9pZDsN
-Cj4gICAJCWVyciA9IGJ0Zl90eXBlX29wcyh2LT50KS0+cmVzb2x2ZShlbnYsIHYpOw0KPiAgIAl9
-DQo+IA0K
+On Wed, Jul 10, 2019 at 5:16 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 7/10/19 1:08 AM, Andrii Nakryiko wrote:
+> > BTF verifier has Different logic depending on whether we are following
+> > a PTR or STRUCT/ARRAY (or something else). This is an optimization to
+> > stop early in DFS traversal while resolving BTF types. But it also
+> > results in a size resolution bug, when there is a chain, e.g., of PTR ->
+> > TYPEDEF -> ARRAY, in which case due to being in pointer context ARRAY
+> > size won't be resolved, as it is considered to be a sink for pointer,
+> > leading to TYPEDEF being in RESOLVED state with zero size, which is
+> > completely wrong.
+> >
+> > Optimization is doubtful, though, as btf_check_all_types() will iterate
+> > over all BTF types anyways, so the only saving is a potentially slightly
+> > shorter stack. But correctness is more important that tiny savings.
+> >
+> > This bug manifests itself in rejecting BTF-defined maps that use array
+> > typedef as a value type:
+> >
+> > typedef int array_t[16];
+> >
+> > struct {
+> >       __uint(type, BPF_MAP_TYPE_ARRAY);
+> >       __type(value, array_t); /* i.e., array_t *value; */
+> > } test_map SEC(".maps");
+> >
+> > Fixes: eb3f595dab40 ("bpf: btf: Validate type reference")
+> > Cc: Martin KaFai Lau <kafai@fb.com>
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+>
+> The change seems okay to me. Currently, looks like intermediate
+> modifier type will carry size = 0 (in the internal data structure).
+
+Yes, which is totally wrong, especially that we use that size in some
+cases to reject map with specified BTF.
+
+>
+> If we remove RESOLVE logic, we probably want to double check
+> whether we handle circular types correctly or not. Maybe we will
+> be okay if all self tests pass.
+
+I checked, it does. We'll attempt to add referenced type unless it's a
+"resolve sink" (where size is immediately known) or is already
+resolved (it's state is RESOLVED). In other cases, we'll attempt to
+env_stack_push(), which check that the state of that type is
+NOT_VISITED. If it's RESOLVED or VISITED, it returns -EEXISTS. When
+type is added into the stack, it's resolve state goes from NOT_VISITED
+to VISITED.
+
+So, if there is a loop, then we'll detect it as soon as we'll attempt
+to add the same type onto the stack second time.
+
+>
+> I may still be worthwhile to qualify the RESOLVE optimization benefit
+> before removing it.
+
+I don't think there is any, because every type will be visited exactly
+once, due to DFS nature of algorithm. The only difference is that if
+we have a long chain of modifiers, we can technically reach the max
+limit and fail. But at 32 I think it's pretty unrealistic to have such
+a long chain of PTR/TYPEDEF/CONST/VOLATILE/RESTRICTs :)
+
+>
+> Another possible change is, for external usage, removing
+> modifiers, before checking the size, something like below.
+> Note that I am not strongly advocating my below patch as
+> it has the same shortcoming that maintained modifier type
+> size may not be correct.
+
+I don't think your patch helps, it can actually confuse things even
+more. It skips modifiers until underlying type is found, but you still
+don't guarantee that at that time that underlying type will have its
+size resolved.
+
+>
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 546ebee39e2a..6f927c3e0a89 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -620,6 +620,54 @@ static bool btf_type_int_is_regular(const struct
+> btf_type *t)
+>          return true;
+>   }
+>
+> +static const struct btf_type *__btf_type_id_size(const struct btf *btf,
+> +                                                u32 *type_id, u32
+> *ret_size,
+> +                                                bool skip_modifier)
+> +{
+> +       const struct btf_type *size_type;
+> +       u32 size_type_id = *type_id;
+> +       u32 size = 0;
+> +
+> +       size_type = btf_type_by_id(btf, size_type_id);
+> +       if (size_type && skip_modifier) {
+> +               while (btf_type_is_modifier(size_type))
+> +                       size_type = btf_type_by_id(btf, size_type->type);
+> +       }
+> +
+> +       if (btf_type_nosize_or_null(size_type))
+> +               return NULL;
+> +
+> +       if (btf_type_has_size(size_type)) {
+> +               size = size_type->size;
+> +       } else if (btf_type_is_array(size_type)) {
+> +               size = btf->resolved_sizes[size_type_id];
+> +       } else if (btf_type_is_ptr(size_type)) {
+> +               size = sizeof(void *);
+> +       } else {
+> +               if (WARN_ON_ONCE(!btf_type_is_modifier(size_type) &&
+> +                                !btf_type_is_var(size_type)))
+> +                       return NULL;
+> +
+> +               size = btf->resolved_sizes[size_type_id];
+> +               size_type_id = btf->resolved_ids[size_type_id];
+> +               size_type = btf_type_by_id(btf, size_type_id);
+> +               if (btf_type_nosize_or_null(size_type))
+> +                       return NULL;
+> +       }
+> +
+> +       *type_id = size_type_id;
+> +       if (ret_size)
+> +               *ret_size = size;
+> +
+> +       return size_type;
+> +}
+> +
+> +const struct btf_type *btf_type_id_size(const struct btf *btf,
+> +                                       u32 *type_id, u32 *ret_size)
+> +{
+> +       return __btf_type_id_size(btf, type_id, ret_size, true);
+> +}
+> +
+>   /*
+>    * Check that given struct member is a regular int with expected
+>    * offset and size.
+> @@ -633,7 +681,7 @@ bool btf_member_is_reg_int(const struct btf *btf,
+> const struct btf_type *s,
+>          u8 nr_bits;
+>
+>          id = m->type;
+> -       t = btf_type_id_size(btf, &id, NULL);
+> +       t = __btf_type_id_size(btf, &id, NULL, false);
+>          if (!t || !btf_type_is_int(t))
+>                  return false;
+>
+> @@ -1051,42 +1099,6 @@ static const struct btf_type
+> *btf_type_id_resolve(const struct btf *btf,
+>          return btf_type_by_id(btf, *type_id);
+>   }
+>
+> -const struct btf_type *btf_type_id_size(const struct btf *btf,
+> -                                       u32 *type_id, u32 *ret_size)
+> -{
+> -       const struct btf_type *size_type;
+> -       u32 size_type_id = *type_id;
+> -       u32 size = 0;
+> -
+> -       size_type = btf_type_by_id(btf, size_type_id);
+> -       if (btf_type_nosize_or_null(size_type))
+> -               return NULL;
+> -
+> -       if (btf_type_has_size(size_type)) {
+> -               size = size_type->size;
+> -       } else if (btf_type_is_array(size_type)) {
+> -               size = btf->resolved_sizes[size_type_id];
+> -       } else if (btf_type_is_ptr(size_type)) {
+> -               size = sizeof(void *);
+> -       } else {
+> -               if (WARN_ON_ONCE(!btf_type_is_modifier(size_type) &&
+> -                                !btf_type_is_var(size_type)))
+> -                       return NULL;
+> -
+> -               size = btf->resolved_sizes[size_type_id];
+> -               size_type_id = btf->resolved_ids[size_type_id];
+> -               size_type = btf_type_by_id(btf, size_type_id);
+> -               if (btf_type_nosize_or_null(size_type))
+> -                       return NULL;
+> -       }
+> -
+> -       *type_id = size_type_id;
+> -       if (ret_size)
+> -               *ret_size = size;
+> -
+> -       return size_type;
+> -}
+> -
+>   static int btf_df_check_member(struct btf_verifier_env *env,
+>                                 const struct btf_type *struct_type,
+>                                 const struct btf_member *member,
+> @@ -1489,7 +1501,7 @@ static int btf_modifier_check_member(struct
+> btf_verifier_env *env,
+>          struct btf_member resolved_member;
+>          struct btf *btf = env->btf;
+>
+> -       resolved_type = btf_type_id_size(btf, &resolved_type_id, NULL);
+> +       resolved_type = __btf_type_id_size(btf, &resolved_type_id, NULL,
+> false);
+>          if (!resolved_type) {
+>                  btf_verifier_log_member(env, struct_type, member,
+>                                          "Invalid member");
+> @@ -1514,7 +1526,7 @@ static int btf_modifier_check_kflag_member(struct
+> btf_verifier_env *env,
+>          struct btf_member resolved_member;
+>          struct btf *btf = env->btf;
+>
+> -       resolved_type = btf_type_id_size(btf, &resolved_type_id, NULL);
+> +       resolved_type = __btf_type_id_size(btf, &resolved_type_id, NULL,
+> false);
+>          if (!resolved_type) {
+>                  btf_verifier_log_member(env, struct_type, member,
+>                                          "Invalid member");
+> @@ -1620,7 +1632,7 @@ static int btf_modifier_resolve(struct
+> btf_verifier_env *env,
+>           * save us a few type-following when we use it later (e.g. in
+>           * pretty print).
+>           */
+> -       if (!btf_type_id_size(btf, &next_type_id, &next_type_size)) {
+> +       if (!__btf_type_id_size(btf, &next_type_id, &next_type_size,
+> false)) {
+>                  if (env_type_is_resolved(env, next_type_id))
+>                          next_type = btf_type_id_resolve(btf,
+> &next_type_id);
+>
+> @@ -1675,7 +1687,7 @@ static int btf_var_resolve(struct btf_verifier_env
+> *env,
+>           * forward types or similar that would resolve to size of
+>           * zero is allowed.
+>           */
+> -       if (!btf_type_id_size(btf, &next_type_id, &next_type_size)) {
+> +       if (!__btf_type_id_size(btf, &next_type_id, &next_type_size,
+> false)) {
+>                  btf_verifier_log_type(env, v->t, "Invalid type_id");
+>                  return -EINVAL;
+>          }
+> @@ -1725,7 +1737,7 @@ static int btf_ptr_resolve(struct btf_verifier_env
+> *env,
+>                                                resolved_type_id);
+>          }
+>
+> -       if (!btf_type_id_size(btf, &next_type_id, NULL)) {
+> +       if (!__btf_type_id_size(btf, &next_type_id, NULL, false)) {
+>                  if (env_type_is_resolved(env, next_type_id))
+>                          next_type = btf_type_id_resolve(btf,
+> &next_type_id);
+>
+> @@ -1851,7 +1863,7 @@ static int btf_array_check_member(struct
+> btf_verifier_env *env,
+>          }
+>
+>          array_type_id = member->type;
+> -       btf_type_id_size(btf, &array_type_id, &array_size);
+> +       __btf_type_id_size(btf, &array_type_id, &array_size, false);
+>          struct_size = struct_type->size;
+>          bytes_offset = BITS_ROUNDDOWN_BYTES(struct_bits_off);
+>          if (struct_size - bytes_offset < array_size) {
+> @@ -1938,7 +1950,7 @@ static int btf_array_resolve(struct
+> btf_verifier_env *env,
+>              !env_type_is_resolved(env, index_type_id))
+>                  return env_stack_push(env, index_type, index_type_id);
+>
+> -       index_type = btf_type_id_size(btf, &index_type_id, NULL);
+> +       index_type = __btf_type_id_size(btf, &index_type_id, NULL, false);
+>          if (!index_type || !btf_type_is_int(index_type) ||
+>              !btf_type_int_is_regular(index_type)) {
+>                  btf_verifier_log_type(env, v->t, "Invalid index");
+> @@ -1959,7 +1971,7 @@ static int btf_array_resolve(struct
+> btf_verifier_env *env,
+>              !env_type_is_resolved(env, elem_type_id))
+>                  return env_stack_push(env, elem_type, elem_type_id);
+>
+> -       elem_type = btf_type_id_size(btf, &elem_type_id, &elem_size);
+> +       elem_type = __btf_type_id_size(btf, &elem_type_id, &elem_size,
+> false);
+>          if (!elem_type) {
+>                  btf_verifier_log_type(env, v->t, "Invalid elem");
+>                  return -EINVAL;
+> @@ -2000,7 +2012,7 @@ static void btf_array_seq_show(const struct btf
+> *btf, const struct btf_type *t,
+>          u32 i, elem_size, elem_type_id;
+>
+>          elem_type_id = array->type;
+> -       elem_type = btf_type_id_size(btf, &elem_type_id, &elem_size);
+> +       elem_type = __btf_type_id_size(btf, &elem_type_id, &elem_size,
+> false);
+>          elem_ops = btf_type_ops(elem_type);
+>          seq_puts(m, "[");
+>          for (i = 0; i < array->nelems; i++) {
+> @@ -2732,7 +2744,7 @@ static int btf_datasec_resolve(struct
+> btf_verifier_env *env,
+>                  }
+>
+>                  type_id = var_type->type;
+> -               if (!btf_type_id_size(btf, &type_id, &type_size)) {
+> +               if (!__btf_type_id_size(btf, &type_id, &type_size, false)) {
+>                          btf_verifier_log_vsi(env, v->t, vsi, "Invalid
+> type");
+>                          return -EINVAL;
+>                  }
+> @@ -2813,7 +2825,7 @@ static int btf_func_proto_check(struct
+> btf_verifier_env *env,
+>                  }
+>
+>                  /* Ensure the return type is a type that has a size */
+> -               if (!btf_type_id_size(btf, &ret_type_id, NULL)) {
+> +               if (!__btf_type_id_size(btf, &ret_type_id, NULL, false)) {
+>                          btf_verifier_log_type(env, t, "Invalid return
+> type");
+>                          return -EINVAL;
+>                  }
+> @@ -2861,7 +2873,7 @@ static int btf_func_proto_check(struct
+> btf_verifier_env *env,
+>                                  break;
+>                  }
+>
+> -               if (!btf_type_id_size(btf, &arg_type_id, NULL)) {
+> +               if (!__btf_type_id_size(btf, &arg_type_id, NULL, false)) {
+>                          btf_verifier_log_type(env, t, "Invalid arg#%u",
+> i + 1);
+>                          err = -EINVAL;
+>                          break;
+> @@ -3014,7 +3026,7 @@ static bool btf_resolve_valid(struct
+> btf_verifier_env *env,
+>                  u32 elem_type_id = array->type;
+>                  u32 elem_size;
+>
+> -               elem_type = btf_type_id_size(btf, &elem_type_id,
+> &elem_size);
+> +               elem_type = __btf_type_id_size(btf, &elem_type_id,
+> &elem_size, false);
+>                  return elem_type && !btf_type_is_modifier(elem_type) &&
+>                          (array->nelems * elem_size ==
+>                           btf->resolved_sizes[type_id]);
+>
+>
+> > ---
+> >   kernel/bpf/btf.c | 42 +++---------------------------------------
+> >   1 file changed, 3 insertions(+), 39 deletions(-)
+> >
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index cad09858a5f2..c68c7e73b0d1 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -231,14 +231,6 @@ enum visit_state {
+> >       RESOLVED,
+> >   };
+> >
+> > -enum resolve_mode {
+> > -     RESOLVE_TBD,    /* To Be Determined */
+> > -     RESOLVE_PTR,    /* Resolving for Pointer */
+> > -     RESOLVE_STRUCT_OR_ARRAY,        /* Resolving for struct/union
+> > -                                      * or array
+> > -                                      */
+> > -};
+> > -
+> >   #define MAX_RESOLVE_DEPTH 32
+> >
+> >   struct btf_sec_info {
+> > @@ -254,7 +246,6 @@ struct btf_verifier_env {
+> >       u32 log_type_id;
+> >       u32 top_stack;
+> >       enum verifier_phase phase;
+> > -     enum resolve_mode resolve_mode;
+> >   };
+> >
+> >   static const char * const btf_kind_str[NR_BTF_KINDS] = {
+> > @@ -964,26 +955,7 @@ static void btf_verifier_env_free(struct btf_verifier_env *env)
+> >   static bool env_type_is_resolve_sink(const struct btf_verifier_env *env,
+> >                                    const struct btf_type *next_type)
+> >   {
+> > -     switch (env->resolve_mode) {
+> > -     case RESOLVE_TBD:
+> > -             /* int, enum or void is a sink */
+> > -             return !btf_type_needs_resolve(next_type);
+> > -     case RESOLVE_PTR:
+> > -             /* int, enum, void, struct, array, func or func_proto is a sink
+> > -              * for ptr
+> > -              */
+> > -             return !btf_type_is_modifier(next_type) &&
+> > -                     !btf_type_is_ptr(next_type);
+> > -     case RESOLVE_STRUCT_OR_ARRAY:
+> > -             /* int, enum, void, ptr, func or func_proto is a sink
+> > -              * for struct and array
+> > -              */
+> > -             return !btf_type_is_modifier(next_type) &&
+> > -                     !btf_type_is_array(next_type) &&
+> > -                     !btf_type_is_struct(next_type);
+> > -     default:
+> > -             BUG();
+> > -     }
+> > +     return !btf_type_needs_resolve(next_type);
+> >   }
+> >
+> >   static bool env_type_is_resolved(const struct btf_verifier_env *env,
+> > @@ -1010,13 +982,6 @@ static int env_stack_push(struct btf_verifier_env *env,
+> >       v->type_id = type_id;
+> >       v->next_member = 0;
+> >
+> > -     if (env->resolve_mode == RESOLVE_TBD) {
+> > -             if (btf_type_is_ptr(t))
+> > -                     env->resolve_mode = RESOLVE_PTR;
+> > -             else if (btf_type_is_struct(t) || btf_type_is_array(t))
+> > -                     env->resolve_mode = RESOLVE_STRUCT_OR_ARRAY;
+> > -     }
+> > -
+> >       return 0;
+> >   }
+> >
+> > @@ -1038,7 +1003,7 @@ static void env_stack_pop_resolved(struct btf_verifier_env *env,
+> >       env->visit_states[type_id] = RESOLVED;
+> >   }
+> >
+> > -static const struct resolve_vertex *env_stack_peak(struct btf_verifier_env *env)
+> > +static const struct resolve_vertex *env_stack_peek(struct btf_verifier_env *env)
+> >   {
+> >       return env->top_stack ? &env->stack[env->top_stack - 1] : NULL;
+> >   }
+> > @@ -3030,9 +2995,8 @@ static int btf_resolve(struct btf_verifier_env *env,
+> >       const struct resolve_vertex *v;
+> >       int err = 0;
+> >
+> > -     env->resolve_mode = RESOLVE_TBD;
+> >       env_stack_push(env, t, type_id);
+> > -     while (!err && (v = env_stack_peak(env))) {
+> > +     while (!err && (v = env_stack_peek(env))) {
+> >               env->log_type_id = v->type_id;
+> >               err = btf_type_ops(v->t)->resolve(env, v);
+> >       }
+> >
