@@ -2,148 +2,462 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E63655D3
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2019 13:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F196562D
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2019 13:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728434AbfGKLgU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Jul 2019 07:36:20 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:45767 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728412AbfGKLgU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Jul 2019 07:36:20 -0400
-Received: by mail-lj1-f195.google.com with SMTP id m23so5385643lje.12
-        for <bpf@vger.kernel.org>; Thu, 11 Jul 2019 04:36:18 -0700 (PDT)
+        id S1728497AbfGKLxS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Jul 2019 07:53:18 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:35562 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728342AbfGKLxS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Jul 2019 07:53:18 -0400
+Received: by mail-wm1-f66.google.com with SMTP id l2so5422079wmg.0
+        for <bpf@vger.kernel.org>; Thu, 11 Jul 2019 04:53:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gowXtkeVITMmhGMj1myvSJOoQpKoOyUOuod6NvEyUrE=;
-        b=Hi3T9qq9ZX2sD6OlJP2ck97V/bj59SRLuwSyxxvXrRXXQ7MdIFdmokLyXz1I3YuyMI
-         OjeEYxUSQP/RtaA9jySG2RYRwt5j0L9EebWyTCfzAaXTdb0N0G4UlYRz3gun5bdokWfp
-         xfRZrdk7ROnWHkyDLzvFZItkw9P76vDvWIOIQ=
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=AnoHQgw3Fry1yokdT7HoLduWy5dPO7qy6W8Vc2wGU4I=;
+        b=GCk0F3q2MBsCOU5/yx095pyMeczs5GKiSqT2E5LOF/zf/NGKjevWwyoV0wfV3MC0A+
+         m6ZjF7cPNv8qBB5OD2xlxp0hAg42a35Jx6Ae4Ajc7gPACSw3zZUzz97YJYoXKPTdEj9B
+         l2ak9szISghyinYGcrIeuXtNWO1nyyVpMMXOKnSfz69DohzEdvIZBJ9+atIx+pGyxbBe
+         i65Q7wH7C5QsIX+COm7ETyBoODhCTjQtaa/aQoE3izQXUYTE/3newT8a6CqIRgPmtTaH
+         hMg/4qXFedpAbxN5Fs2sqwkU/hwNJiZt6ImPAudjVFYh6hlwE7K4Di8Uzbrs4q8+YbWA
+         C4KA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gowXtkeVITMmhGMj1myvSJOoQpKoOyUOuod6NvEyUrE=;
-        b=DZy2BHPQeekz2aWBWySdXsgpPns7PjB6qjQIQSbw+GVyqwjyVD4vBCHsaIB0rOpLJP
-         kjUVDl/xh67yWVL1ehOcoziBZhH+EERyACa8BRZeR8xD4sKPpJmH8iDx65lEne/CZaR8
-         8gtj8wNuJ8IryHPZRP2SFKCpukVIrCZ+VCc061MmhqTc5/32ivcYI6mmgYShGdILziWO
-         6GaGsMNYiiBJW5Vh1I5jGO2xGM5JHqAlN2xdUj1AwrWG9oV0TAVaWzXzwmBgSdMzVG+9
-         /A7CD4Os9WNWpYWvXog2bAmzo9LLcpQYdS4Dhss7jTcMAlJY4bty6WfdeST7paR8k959
-         TFKg==
-X-Gm-Message-State: APjAAAV6IuGD3s/XMrD/fIUagPW62OYqEUhGOipTGs9g9+sZFCfw4dAu
-        G3VmYh/RVg4ygBo2RQ6OaJQTvmtJgMS10kBNZ1s4Mg==
-X-Google-Smtp-Source: APXvYqw5kNwuodXhvfXQH8fkFgdYYPfLmFnNga2XZAN6tMleSYRmWD7F5IxzAkKPtB74MWYBqSNrYa4ydBrrUmyskFE=
-X-Received: by 2002:a2e:9188:: with SMTP id f8mr2224230ljg.33.1562844977640;
- Thu, 11 Jul 2019 04:36:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190708163121.18477-1-krzesimir@kinvolk.io> <20190708163121.18477-2-krzesimir@kinvolk.io>
- <CAEf4BzYDOyU52wdCinm9cxxvNijpTJgQbCg9UxcO1QKk6vWhNA@mail.gmail.com>
-In-Reply-To: <CAEf4BzYDOyU52wdCinm9cxxvNijpTJgQbCg9UxcO1QKk6vWhNA@mail.gmail.com>
-From:   Krzesimir Nowak <krzesimir@kinvolk.io>
-Date:   Thu, 11 Jul 2019 13:36:06 +0200
-Message-ID: <CAGGp+cEaGphDCuZL+sbo2aCVumk2jrq9_Lshifg-Ewphfm40Wg@mail.gmail.com>
-Subject: Re: [bpf-next v3 01/12] selftests/bpf: Print a message when tester
- could not run a program
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=AnoHQgw3Fry1yokdT7HoLduWy5dPO7qy6W8Vc2wGU4I=;
+        b=MCXQV76tia4Ah+leKMQvchlvuFKvh8izT52b9i6Wh/LFYL8MetxI3K/N8AOd1/e/UI
+         Uy6NC52E+2N9wREeAjS/kNq+F0xc0zdWTRzgU4oXpFJnDIRGKjWnWHAgVPTLGJx/zELx
+         Llr9bEDSS1kVROEETx2FtqZh/n/NKRdBwjqP97WTbNRIdbyasFlV+LCZmTsiBfveQxpJ
+         gGGcQnEhMpOca+5zHU5xRx4eGOKRFkaoxHnZPRqeTwYs5H+uehww5uI27KYB8n5TcAkm
+         AwuP7cjLsi1j3UbPLhNtpUokSiaHxf1rfFujqBgpWpjvO/+NhtfidDxJKLvzuGlBABri
+         lH7w==
+X-Gm-Message-State: APjAAAU8wf7/nxOzFJmbVhY27Fp8UFqGdRf5o6eI0ZdznTo1vHEBTVLg
+        H5cqbwhWfNE3iTBzOayq+RnA6w==
+X-Google-Smtp-Source: APXvYqxBEKZJwLOBqs/QJq20Jql5x0HatPAsYixSAdolALsEgStB/GtwCGu+ts5vTmKp15lqqoUrsA==
+X-Received: by 2002:a7b:cb51:: with SMTP id v17mr3987635wmj.20.1562845994732;
+        Thu, 11 Jul 2019 04:53:14 -0700 (PDT)
+Received: from LAPTOP-V3S7NLPL ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id u6sm6990070wml.9.2019.07.11.04.53.13
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 11 Jul 2019 04:53:14 -0700 (PDT)
+References: <1562275611-31790-1-git-send-email-jiong.wang@netronome.com> <1562275611-31790-2-git-send-email-jiong.wang@netronome.com> <CAEf4BzbR-MQa=TTVir0m-kMeWOxtgnZx+XqAB6neEW+RMBrKEA@mail.gmail.com>
+User-agent: mu4e 0.9.18; emacs 25.2.2
+From:   Jiong Wang <jiong.wang@netronome.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Alban Crequy <alban@kinvolk.io>,
-        =?UTF-8?Q?Iago_L=C3=B3pez_Galeiras?= <iago@kinvolk.io>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     Jiong Wang <jiong.wang@netronome.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Edward Cree <ecree@solarflare.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        xdp-newbies@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        oss-drivers@netronome.com
+Subject: Re: [RFC bpf-next 1/8] bpf: introducing list based insn patching infra to core layer
+In-reply-to: <CAEf4BzbR-MQa=TTVir0m-kMeWOxtgnZx+XqAB6neEW+RMBrKEA@mail.gmail.com>
+Date:   Thu, 11 Jul 2019 12:53:11 +0100
+Message-ID: <87pnmg23fc.fsf@netronome.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 11, 2019 at 1:45 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+
+Andrii Nakryiko writes:
+
+> On Thu, Jul 4, 2019 at 2:32 PM Jiong Wang <jiong.wang@netronome.com> wrote:
+>>
+>> This patch introduces list based bpf insn patching infra to bpf core layer
+>> which is lower than verification layer.
+>>
+>> This layer has bpf insn sequence as the solo input, therefore the tasks
+>> to be finished during list linerization is:
+>>   - copy insn
+>>   - relocate jumps
+>>   - relocation line info.
+>>
+>> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+>> Suggested-by: Edward Cree <ecree@solarflare.com>
+>> Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
+>> ---
+>>  include/linux/filter.h |  25 +++++
+>>  kernel/bpf/core.c      | 268 +++++++++++++++++++++++++++++++++++++++++++++++++
+>>  2 files changed, 293 insertions(+)
+>>
+>> diff --git a/include/linux/filter.h b/include/linux/filter.h
+>> index 1fe53e7..1fea68c 100644
+>> --- a/include/linux/filter.h
+>> +++ b/include/linux/filter.h
+>> @@ -842,6 +842,31 @@ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
+>>                                        const struct bpf_insn *patch, u32 len);
+>>  int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt);
+>>
+>> +int bpf_jit_adj_imm_off(struct bpf_insn *insn, int old_idx, int new_idx,
+>> +                       int idx_map[]);
+>> +
+>> +#define LIST_INSN_FLAG_PATCHED 0x1
+>> +#define LIST_INSN_FLAG_REMOVED 0x2
+>> +struct bpf_list_insn {
+>> +       struct bpf_insn insn;
+>> +       struct bpf_list_insn *next;
+>> +       s32 orig_idx;
+>> +       u32 flag;
+>> +};
+>> +
+>> +struct bpf_list_insn *bpf_create_list_insn(struct bpf_prog *prog);
+>> +void bpf_destroy_list_insn(struct bpf_list_insn *list);
+>> +/* Replace LIST_INSN with new list insns generated from PATCH. */
+>> +struct bpf_list_insn *bpf_patch_list_insn(struct bpf_list_insn *list_insn,
+>> +                                         const struct bpf_insn *patch,
+>> +                                         u32 len);
+>> +/* Pre-patch list_insn with insns inside PATCH, meaning LIST_INSN is not
+>> + * touched. New list insns are inserted before it.
+>> + */
+>> +struct bpf_list_insn *bpf_prepatch_list_insn(struct bpf_list_insn *list_insn,
+>> +                                            const struct bpf_insn *patch,
+>> +                                            u32 len);
+>> +
+>>  void bpf_clear_redirect_map(struct bpf_map *map);
+>>
+>>  static inline bool xdp_return_frame_no_direct(void)
+>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>> index e2c1b43..e60703e 100644
+>> --- a/kernel/bpf/core.c
+>> +++ b/kernel/bpf/core.c
+>> @@ -502,6 +502,274 @@ int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt)
+>>         return WARN_ON_ONCE(bpf_adj_branches(prog, off, off + cnt, off, false));
+>>  }
+>>
+>> +int bpf_jit_adj_imm_off(struct bpf_insn *insn, int old_idx, int new_idx,
+>> +                       s32 idx_map[])
+>> +{
+>> +       u8 code = insn->code;
+>> +       s64 imm;
+>> +       s32 off;
+>> +
+>> +       if (BPF_CLASS(code) != BPF_JMP && BPF_CLASS(code) != BPF_JMP32)
+>> +               return 0;
+>> +
+>> +       if (BPF_CLASS(code) == BPF_JMP &&
+>> +           (BPF_OP(code) == BPF_EXIT ||
+>> +            (BPF_OP(code) == BPF_CALL && insn->src_reg != BPF_PSEUDO_CALL)))
+>> +               return 0;
+>> +
+>> +       /* BPF to BPF call. */
+>> +       if (BPF_OP(code) == BPF_CALL) {
+>> +               imm = idx_map[old_idx + insn->imm + 1] - new_idx - 1;
+>> +               if (imm < S32_MIN || imm > S32_MAX)
+>> +                       return -ERANGE;
+>> +               insn->imm = imm;
+>> +               return 1;
+>> +       }
+>> +
+>> +       /* Jump. */
+>> +       off = idx_map[old_idx + insn->off + 1] - new_idx - 1;
+>> +       if (off < S16_MIN || off > S16_MAX)
+>> +               return -ERANGE;
+>> +       insn->off = off;
+>> +       return 0;
+>> +}
+>> +
+>> +void bpf_destroy_list_insn(struct bpf_list_insn *list)
+>> +{
+>> +       struct bpf_list_insn *elem, *next;
+>> +
+>> +       for (elem = list; elem; elem = next) {
+>> +               next = elem->next;
+>> +               kvfree(elem);
+>> +       }
+>> +}
+>> +
+>> +struct bpf_list_insn *bpf_create_list_insn(struct bpf_prog *prog)
+>> +{
+>> +       unsigned int idx, len = prog->len;
+>> +       struct bpf_list_insn *hdr, *prev;
+>> +       struct bpf_insn *insns;
+>> +
+>> +       hdr = kvzalloc(sizeof(*hdr), GFP_KERNEL);
+>> +       if (!hdr)
+>> +               return ERR_PTR(-ENOMEM);
+>> +
+>> +       insns = prog->insnsi;
+>> +       hdr->insn = insns[0];
+>> +       hdr->orig_idx = 1;
+>> +       prev = hdr;
 >
-> On Mon, Jul 8, 2019 at 3:42 PM Krzesimir Nowak <krzesimir@kinvolk.io> wro=
-te:
-> >
-> > This prints a message when the error is about program type being not
-> > supported by the test runner or because of permissions problem. This
-> > is to see if the program we expected to run was actually executed.
-> >
-> > The messages are open-coded because strerror(ENOTSUPP) returns
-> > "Unknown error 524".
-> >
-> > Changes since v2:
-> > - Also print "FAIL" on an unexpected bpf_prog_test_run error, so there
-> >   is a corresponding "FAIL" message for each failed test.
-> >
-> > Signed-off-by: Krzesimir Nowak <krzesimir@kinvolk.io>
-> > ---
-> >  tools/testing/selftests/bpf/test_verifier.c | 17 +++++++++++++----
-> >  1 file changed, 13 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testin=
-g/selftests/bpf/test_verifier.c
-> > index c5514daf8865..b8d065623ead 100644
-> > --- a/tools/testing/selftests/bpf/test_verifier.c
-> > +++ b/tools/testing/selftests/bpf/test_verifier.c
-> > @@ -831,11 +831,20 @@ static int do_prog_test_run(int fd_prog, bool unp=
-riv, uint32_t expected_val,
-> >                                 tmp, &size_tmp, &retval, NULL);
-> >         if (unpriv)
-> >                 set_admin(false);
-> > -       if (err && errno !=3D 524/*ENOTSUPP*/ && errno !=3D EPERM) {
-> > -               printf("Unexpected bpf_prog_test_run error ");
-> > -               return err;
-> > +       if (err) {
-> > +               switch (errno) {
-> > +               case 524/*ENOTSUPP*/:
-> > +                       printf("Did not run the program (not supported)=
- ");
-> > +                       return 0;
-> > +               case EPERM:
-> > +                       printf("Did not run the program (no permission)=
- ");
+> I'm not sure why you need this "prologue" instead of handling first
+> instruction uniformly in for loop below?
+
+It is because the head of the list doesn't have precessor, so no need of
+the prev->next assignment, not could do a check inside the loop to rule the
+head out when doing it.
+
+>> +
+>> +       for (idx = 1; idx < len; idx++) {
+>> +               struct bpf_list_insn *node = kvzalloc(sizeof(*node),
+>> +                                                     GFP_KERNEL);
+>> +
+>> +               if (!node) {
+>> +                       /* Destroy what has been allocated. */
+>> +                       bpf_destroy_list_insn(hdr);
+>> +                       return ERR_PTR(-ENOMEM);
+>> +               }
+>> +               node->insn = insns[idx];
+>> +               node->orig_idx = idx + 1;
 >
-> Let's add "SKIP: " prefix to these?
+> Why orig_idx is 1-based? It's really confusing.
 
-Not sure about it. The important part of the test (the program being
-verified by the kernel's verifier) was still executed, so the test is
-not really skipped.
+orig_idx == 0 means one insn is without original insn, means it is an new
+insn generated for patching purpose.
 
+While the LIST_INSN_FLAG_PATCHED in the RFC means one insn in original prog
+is patched.
+
+I had been trying to differenciate above two cases, but yes, they are
+confusing and differenciating them might be useless, if an insn in original
+prog is patched, all its info could be treated as clobbered and needing
+re-calculating or should do conservative assumption.
 
 >
-> > +                       return 0;
-> > +               default:
-> > +                       printf("FAIL: Unexpected bpf_prog_test_run erro=
-r (%s) ", strerror(saved_errno));
-> > +                       return err;
-> > +               }
-> >         }
-> > -       if (!err && retval !=3D expected_val &&
-> > +       if (retval !=3D expected_val &&
-> >             expected_val !=3D POINTER_VALUE) {
-> >                 printf("FAIL retval %d !=3D %d ", retval, expected_val)=
-;
-> >                 return 1;
-> > --
-> > 2.20.1
-> >
+>> +               prev->next = node;
+>> +               prev = node;
+>> +       }
+>> +
+>> +       return hdr;
+>> +}
+>> +
+>> +/* Linearize bpf list insn to array. */
+>> +static struct bpf_prog *bpf_linearize_list_insn(struct bpf_prog *prog,
+>> +                                               struct bpf_list_insn *list)
+>> +{
+>> +       u32 *idx_map, idx, prev_idx, fini_cnt = 0, orig_cnt = prog->len;
+>> +       struct bpf_insn *insns, *insn;
+>> +       struct bpf_list_insn *elem;
+>> +
+>> +       /* Calculate final size. */
+>> +       for (elem = list; elem; elem = elem->next)
+>> +               if (!(elem->flag & LIST_INSN_FLAG_REMOVED))
+>> +                       fini_cnt++;
+>> +
+>> +       insns = prog->insnsi;
+>> +       /* If prog length remains same, nothing else to do. */
+>> +       if (fini_cnt == orig_cnt) {
+>> +               for (insn = insns, elem = list; elem; elem = elem->next, insn++)
+>> +                       *insn = elem->insn;
+>> +               return prog;
+>> +       }
+>> +       /* Realloc insn buffer when necessary. */
+>> +       if (fini_cnt > orig_cnt)
+>> +               prog = bpf_prog_realloc(prog, bpf_prog_size(fini_cnt),
+>> +                                       GFP_USER);
+>> +       if (!prog)
+>> +               return ERR_PTR(-ENOMEM);
+>> +       insns = prog->insnsi;
+>> +       prog->len = fini_cnt;
+>> +
+>> +       /* idx_map[OLD_IDX] = NEW_IDX */
+>> +       idx_map = kvmalloc(orig_cnt * sizeof(u32), GFP_KERNEL);
+>> +       if (!idx_map)
+>> +               return ERR_PTR(-ENOMEM);
+>> +       memset(idx_map, 0xff, orig_cnt * sizeof(u32));
+>> +
+>> +       /* Copy over insn + calculate idx_map. */
+>> +       for (idx = 0, elem = list; elem; elem = elem->next) {
+>> +               int orig_idx = elem->orig_idx - 1;
+>> +
+>> +               if (orig_idx >= 0) {
+>> +                       idx_map[orig_idx] = idx;
+>> +
+>> +                       if (elem->flag & LIST_INSN_FLAG_REMOVED)
+>> +                               continue;
+>> +               }
+>> +               insns[idx++] = elem->insn;
+>> +       }
+>> +
+>> +       /* Relocate jumps using idx_map.
+>> +        *   old_dst = jmp_insn.old_target + old_pc + 1;
+>> +        *   new_dst = idx_map[old_dst] = jmp_insn.new_target + new_pc + 1;
+>> +        *   jmp_insn.new_target = new_dst - new_pc - 1;
+>> +        */
+>> +       for (idx = 0, prev_idx = 0, elem = list; elem; elem = elem->next) {
+>> +               int ret, orig_idx;
+>> +
+>> +               /* A removed insn doesn't increase new_pc */
+>> +               if (elem->flag & LIST_INSN_FLAG_REMOVED)
+>> +                       continue;
+>> +
+>> +               orig_idx = elem->orig_idx - 1;
+>> +               ret = bpf_jit_adj_imm_off(&insns[idx],
+>> +                                         orig_idx >= 0 ? orig_idx : prev_idx,
+>> +                                         idx, idx_map);
+>> +               idx++;
+>> +               if (ret < 0) {
+>> +                       kvfree(idx_map);
+>> +                       return ERR_PTR(ret);
+>> +               }
+>> +               if (orig_idx >= 0)
+>> +                       /* Record prev_idx. it is used for relocating jump insn
+>> +                        * inside patch buffer. For example, when doing jit
+>> +                        * blinding, a jump could be moved to some other
+>> +                        * positions inside the patch buffer, and its old_dst
+>> +                        * could be calculated using prev_idx.
+>> +                        */
+>> +                       prev_idx = orig_idx;
+>> +       }
+>> +
+>> +       /* Adjust linfo.
+>> +        *
+>> +        * NOTE: the prog reached core layer has been adjusted to contain insns
+>> +        *       for single function, however linfo contains information for
+>> +        *       whole program, so we need to make sure linfo beyond current
+>> +        *       function is handled properly.
+>> +        */
+>> +       if (prog->aux->nr_linfo) {
+>> +               u32 linfo_idx, insn_start, insn_end, nr_linfo, idx, delta;
+>> +               struct bpf_line_info *linfo;
+>> +
+>> +               linfo_idx = prog->aux->linfo_idx;
+>> +               linfo = &prog->aux->linfo[linfo_idx];
+>> +               insn_start = linfo[0].insn_off;
+>> +               insn_end = insn_start + orig_cnt;
+>> +               nr_linfo = prog->aux->nr_linfo - linfo_idx;
+>> +               delta = fini_cnt - orig_cnt;
+>> +               for (idx = 0; idx < nr_linfo; idx++) {
+>> +                       int adj_off;
+>> +
+>> +                       if (linfo[idx].insn_off >= insn_end) {
+>> +                               linfo[idx].insn_off += delta;
+>> +                               continue;
+>> +                       }
+>> +
+>> +                       adj_off = linfo[idx].insn_off - insn_start;
+>> +                       linfo[idx].insn_off = idx_map[adj_off] + insn_start;
+>> +               }
+>> +       }
+>> +       kvfree(idx_map);
+>> +
+>> +       return prog;
+>> +}
+>> +
+>> +struct bpf_list_insn *bpf_patch_list_insn(struct bpf_list_insn *list_insn,
+>> +                                         const struct bpf_insn *patch,
+>> +                                         u32 len)
+>> +{
+>> +       struct bpf_list_insn *prev, *next;
+>> +       u32 insn_delta = len - 1;
+>> +       u32 idx;
+>> +
+>> +       list_insn->insn = *patch;
+>> +       list_insn->flag |= LIST_INSN_FLAG_PATCHED;
+>> +
+>> +       /* Since our patchlet doesn't expand the image, we're done. */
+>> +       if (insn_delta == 0)
+>> +               return list_insn;
+>> +
+>> +       len--;
+>> +       patch++;
+>> +
+>> +       prev = list_insn;
+>> +       next = list_insn->next;
+>> +       for (idx = 0; idx < len; idx++) {
+>> +               struct bpf_list_insn *node = kvzalloc(sizeof(*node),
+>> +                                                     GFP_KERNEL);
+>> +
+>> +               if (!node) {
+>> +                       /* Link what's allocated, so list destroyer could
+>> +                        * free them.
+>> +                        */
+>> +                       prev->next = next;
+>
+> Why this special handling, if you can just insert element so that list
+> is well-formed after each instruction?
 
+Good idea, just always do "node->next = next", the "prev->next = node" in
+next round will fix it.
 
+>
+>> +                       return ERR_PTR(-ENOMEM);
+>> +               }
+>> +
+>> +               node->insn = patch[idx];
+>> +               prev->next = node;
+>> +               prev = node;
+>
+> E.g.,
+>
+> node->next = next;
+> prev->next = node;
+> prev = node;
+>
+>> +       }
+>> +
+>> +       prev->next = next;
+>
+> And no need for this either.
+>
+>> +       return prev;
+>> +}
+>> +
+>> +struct bpf_list_insn *bpf_prepatch_list_insn(struct bpf_list_insn *list_insn,
+>> +                                            const struct bpf_insn *patch,
+>> +                                            u32 len)
+>
+> prepatch and patch functions should share the same logic.
+>
+> Prepend is just that - insert all instructions from buffer before current insns.
+> Patch -> replace current one with first instriction in a buffer, then
+> prepend remaining ones before the next instruction (so patch should
+> call info prepend, with adjusted count and array pointer).
 
---
-Kinvolk GmbH | Adalbertstr.6a, 10999 Berlin | tel: +491755589364
-Gesch=C3=A4ftsf=C3=BChrer/Directors: Alban Crequy, Chris K=C3=BChl, Iago L=
-=C3=B3pez Galeiras
-Registergericht/Court of registration: Amtsgericht Charlottenburg
-Registernummer/Registration number: HRB 171414 B
-Ust-ID-Nummer/VAT ID number: DE302207000
+Ack, there indeed has quite a few things to simplify.
+
+>
+>> +{
+>> +       struct bpf_list_insn *prev, *node, *begin_node;
+>> +       u32 idx;
+>> +
+>> +       if (!len)
+>> +               return list_insn;
+>> +
+>> +       node = kvzalloc(sizeof(*node), GFP_KERNEL);
+>> +       if (!node)
+>> +               return ERR_PTR(-ENOMEM);
+>> +       node->insn = patch[0];
+>> +       begin_node = node;
+>> +       prev = node;
+>> +
+>> +       for (idx = 1; idx < len; idx++) {
+>> +               node = kvzalloc(sizeof(*node), GFP_KERNEL);
+>> +               if (!node) {
+>> +                       node = begin_node;
+>> +                       /* Release what's has been allocated. */
+>> +                       while (node) {
+>> +                               struct bpf_list_insn *next = node->next;
+>> +
+>> +                               kvfree(node);
+>> +                               node = next;
+>> +                       }
+>> +                       return ERR_PTR(-ENOMEM);
+>> +               }
+>> +               node->insn = patch[idx];
+>> +               prev->next = node;
+>> +               prev = node;
+>> +       }
+>> +
+>> +       prev->next = list_insn;
+>> +       return begin_node;
+>> +}
+>> +
+>>  void bpf_prog_kallsyms_del_subprogs(struct bpf_prog *fp)
+>>  {
+>>         int i;
+>> --
+>> 2.7.4
+>>
+
