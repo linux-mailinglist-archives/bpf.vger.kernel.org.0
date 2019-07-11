@@ -2,120 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7406590D
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2019 16:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B64336593B
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2019 16:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728595AbfGKObC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Jul 2019 10:31:02 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27830 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728634AbfGKObC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 11 Jul 2019 10:31:02 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6BESvOu081883
-        for <bpf@vger.kernel.org>; Thu, 11 Jul 2019 10:31:01 -0400
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tp5w9u1y8-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 11 Jul 2019 10:31:01 -0400
-Received: from localhost
-        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Thu, 11 Jul 2019 15:30:59 +0100
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
-        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 11 Jul 2019 15:30:56 +0100
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6BEUtrj50331696
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Jul 2019 14:30:55 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 132EF42056;
-        Thu, 11 Jul 2019 14:30:55 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C6FD042047;
-        Thu, 11 Jul 2019 14:30:54 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.152.97.237])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 11 Jul 2019 14:30:54 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     ys114321@gmail.com, daniel@iogearbox.net, sdf@fomichev.me,
-        davem@davemloft.net, ast@kernel.org,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH v4 bpf-next 4/4] selftests/bpf: fix compiling loop{1,2,3}.c on s390
-Date:   Thu, 11 Jul 2019 16:29:30 +0200
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190711142930.68809-1-iii@linux.ibm.com>
-References: <20190711142930.68809-1-iii@linux.ibm.com>
+        id S1728543AbfGKOnl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Jul 2019 10:43:41 -0400
+Received: from mail-yw1-f68.google.com ([209.85.161.68]:39403 "EHLO
+        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728471AbfGKOnl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Jul 2019 10:43:41 -0400
+Received: by mail-yw1-f68.google.com with SMTP id x74so3898434ywx.6;
+        Thu, 11 Jul 2019 07:43:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vmOGsoHiM6XG/FkzWHR9Ptf7rpGEwowGLGGHPi+MFsE=;
+        b=RvsrKGQe/7jfHw8K7xiEdsTUT8bBicNHtbkmlf24QpA/mMlhxLyhxQzmcXwOUdkaC5
+         6MaTcaVvSzZuVeiSxQKlfZp7haBTum0QA2r7Lmry4iQzs3e7D1qEeMSx5P4M03ATijW4
+         PkJhsxICIVvyxfqkj8FJOXJQ0RhRpPmHwAUrfOigfd0qcBu4eafWOmXeEj7dyGsmbaIJ
+         9x595aooLQoSF0KpWc4nfbABIJhCkzsvDld2BrIZcINq3PkmYA7hTd9FlYsho49BO+4k
+         so/vqc0BmjIwVWb6ZAJTNu1ZMHpXD3m2I2a09WvdQDgIQbP+szMKJ4xX062d8EEB+E2q
+         JmQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vmOGsoHiM6XG/FkzWHR9Ptf7rpGEwowGLGGHPi+MFsE=;
+        b=mE8X9KwyLRDxL4YbzwA4UCUSuVx/UK+AZChmF3Y3tHh+NpYRJ0jK+XD5rpuwPkMXyd
+         r+o6/+kDwp4g/ycMrS/Heg1B51vPqwG6ncY/8wH35SkxcLZfgP5dUvPmZrsaWlCUkUMx
+         mkpLTX8uaZXzlRFApJfq2Uj9p2Arx6ay3hUnGHmY5SZviTa/YChtKQ+PJATM6gcSP8vN
+         /lKMr87yIlx9iISFtdXVFP/cXq5XL72o432kpMP/UFfp50g/m5V9vDdj5P3SxyQPGcgJ
+         DAggjBtnaZTpulqSAX/8fso9WR54b89DaO3QhxjNc4KVPSGNh/RCEBUIPc03+uhWyFh4
+         O4Lg==
+X-Gm-Message-State: APjAAAVbDVb243wGhYpHRXIxHOfe5EoMCARxLYEOnGF8puFkueSwnuJm
+        cMrFvImEyvA50Bb7wTxKgHJvRei26PbOoO++yGA=
+X-Google-Smtp-Source: APXvYqxYeX4hW5tYT/9KOKvI3xx9itOx+7MawBSLTgvaZ6T8c+c/LfMSHizMD8KUu6fS3zd1zVuVcLLamIkyb5uRe5Q=
+X-Received: by 2002:a05:620a:16a6:: with SMTP id s6mr2321074qkj.39.1562856219891;
+ Thu, 11 Jul 2019 07:43:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19071114-4275-0000-0000-0000034C3824
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19071114-4276-0000-0000-0000385C3F8D
-Message-Id: <20190711142930.68809-5-iii@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-11_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=591 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907110163
+References: <20190711010844.1285018-1-andriin@fb.com> <CAGGp+cETuvWUwET=6Mq5sWTJhi5+Rs2bw8xNP2NYZXAAuc6-Og@mail.gmail.com>
+In-Reply-To: <CAGGp+cETuvWUwET=6Mq5sWTJhi5+Rs2bw8xNP2NYZXAAuc6-Og@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 11 Jul 2019 07:43:28 -0700
+Message-ID: <CAEf4Bzb1kE_jCbyye07-pVMT=914_Nrdh+R=QXA2qMssYP5brA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: remove logic duplication in test_verifier.c
+To:     Krzesimir Nowak <krzesimir@kinvolk.io>
+Cc:     Andrii Nakryiko <andriin@fb.com>, Kernel Team <kernel-team@fb.com>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use PT_REGS_RC(ctx) instead of ctx->rax, which is not present on s390.
+On Thu, Jul 11, 2019 at 5:13 AM Krzesimir Nowak <krzesimir@kinvolk.io> wrot=
+e:
+>
+> On Thu, Jul 11, 2019 at 3:08 AM Andrii Nakryiko <andriin@fb.com> wrote:
+> >
+> > test_verifier tests can specify single- and multi-runs tests. Internall=
+y
+> > logic of handling them is duplicated. Get rid of it by making single ru=
+n
+> > retval specification to be a first retvals spec.
+> >
+> > Cc: Krzesimir Nowak <krzesimir@kinvolk.io>
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+>
+> Looks good, one nit below.
+>
+> Acked-by: Krzesimir Nowak <krzesimir@kinvolk.io>
+>
+> > ---
+> >  tools/testing/selftests/bpf/test_verifier.c | 37 ++++++++++-----------
+> >  1 file changed, 18 insertions(+), 19 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testin=
+g/selftests/bpf/test_verifier.c
+> > index b0773291012a..120ecdf4a7db 100644
+> > --- a/tools/testing/selftests/bpf/test_verifier.c
+> > +++ b/tools/testing/selftests/bpf/test_verifier.c
+> > @@ -86,7 +86,7 @@ struct bpf_test {
+> >         int fixup_sk_storage_map[MAX_FIXUPS];
+> >         const char *errstr;
+> >         const char *errstr_unpriv;
+> > -       uint32_t retval, retval_unpriv, insn_processed;
+> > +       uint32_t insn_processed;
+> >         int prog_len;
+> >         enum {
+> >                 UNDEF,
+> > @@ -95,16 +95,24 @@ struct bpf_test {
+> >         } result, result_unpriv;
+> >         enum bpf_prog_type prog_type;
+> >         uint8_t flags;
+> > -       __u8 data[TEST_DATA_LEN];
+> >         void (*fill_helper)(struct bpf_test *self);
+> >         uint8_t runs;
+> > -       struct {
+> > -               uint32_t retval, retval_unpriv;
+> > -               union {
+> > -                       __u8 data[TEST_DATA_LEN];
+> > -                       __u64 data64[TEST_DATA_LEN / 8];
+> > +       union {
+> > +               struct {
+>
+> Maybe consider moving the struct definition outside to further the
+> removal of the duplication?
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- tools/testing/selftests/bpf/progs/loop1.c | 2 +-
- tools/testing/selftests/bpf/progs/loop2.c | 2 +-
- tools/testing/selftests/bpf/progs/loop3.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+Can't do that because then retval/retval_unpriv/data won't be
+accessible as a normal field of struct bpf_test. It has to be in
+anonymous structs/unions, unfortunately.
 
-diff --git a/tools/testing/selftests/bpf/progs/loop1.c b/tools/testing/selftests/bpf/progs/loop1.c
-index dea395af9ea9..7cdb7f878310 100644
---- a/tools/testing/selftests/bpf/progs/loop1.c
-+++ b/tools/testing/selftests/bpf/progs/loop1.c
-@@ -18,7 +18,7 @@ int nested_loops(volatile struct pt_regs* ctx)
- 	for (j = 0; j < 300; j++)
- 		for (i = 0; i < j; i++) {
- 			if (j & 1)
--				m = ctx->rax;
-+				m = PT_REGS_RC(ctx);
- 			else
- 				m = j;
- 			sum += i * m;
-diff --git a/tools/testing/selftests/bpf/progs/loop2.c b/tools/testing/selftests/bpf/progs/loop2.c
-index 0637bd8e8bcf..9b2f808a2863 100644
---- a/tools/testing/selftests/bpf/progs/loop2.c
-+++ b/tools/testing/selftests/bpf/progs/loop2.c
-@@ -16,7 +16,7 @@ int while_true(volatile struct pt_regs* ctx)
- 	int i = 0;
- 
- 	while (true) {
--		if (ctx->rax & 1)
-+		if (PT_REGS_RC(ctx) & 1)
- 			i += 3;
- 		else
- 			i += 7;
-diff --git a/tools/testing/selftests/bpf/progs/loop3.c b/tools/testing/selftests/bpf/progs/loop3.c
-index 30a0f6cba080..d727657d51e2 100644
---- a/tools/testing/selftests/bpf/progs/loop3.c
-+++ b/tools/testing/selftests/bpf/progs/loop3.c
-@@ -16,7 +16,7 @@ int while_true(volatile struct pt_regs* ctx)
- 	__u64 i = 0, sum = 0;
- 	do {
- 		i++;
--		sum += ctx->rax;
-+		sum += PT_REGS_RC(ctx);
- 	} while (i < 0x100000000ULL);
- 	return sum;
- }
--- 
-2.21.0
+I tried the following, but that also didn't work:
 
+union {
+    struct bpf_test_retval {
+        uint32_t retval, retval_unpriv;
+        union {
+            __u8 data[TEST_DATA_LEN];
+            __u64 data64[TEST_DATA_LEN / 8];
+        };
+    };
+    struct bpf_test_retval retvals[MAX_TEST_RUNS];
+};
+
+This also made retval/retval_unpriv to not behave as normal fields of
+struct bpf_test.
+
+
+>
+> > +                       uint32_t retval, retval_unpriv;
+> > +                       union {
+> > +                               __u8 data[TEST_DATA_LEN];
+> > +                               __u64 data64[TEST_DATA_LEN / 8];
+> > +                       };
+> >                 };
+> > -       } retvals[MAX_TEST_RUNS];
+> > +               struct {
+> > +                       uint32_t retval, retval_unpriv;
+> > +                       union {
+> > +                               __u8 data[TEST_DATA_LEN];
+> > +                               __u64 data64[TEST_DATA_LEN / 8];
+> > +                       };
+> > +               } retvals[MAX_TEST_RUNS];
+> > +       };
+> >         enum bpf_attach_type expected_attach_type;
+> >  };
+> >
+> > @@ -949,17 +957,8 @@ static void do_test_single(struct bpf_test *test, =
+bool unpriv,
+> >                 uint32_t expected_val;
+> >                 int i;
+> >
+> > -               if (!test->runs) {
+> > -                       expected_val =3D unpriv && test->retval_unpriv =
+?
+> > -                               test->retval_unpriv : test->retval;
+> > -
+> > -                       err =3D do_prog_test_run(fd_prog, unpriv, expec=
+ted_val,
+> > -                                              test->data, sizeof(test-=
+>data));
+> > -                       if (err)
+> > -                               run_errs++;
+> > -                       else
+> > -                               run_successes++;
+> > -               }
+> > +               if (!test->runs)
+> > +                       test->runs =3D 1;
+> >
+> >                 for (i =3D 0; i < test->runs; i++) {
+> >                         if (unpriv && test->retvals[i].retval_unpriv)
+> > --
+> > 2.17.1
+> >
+>
+>
+> --
+> Kinvolk GmbH | Adalbertstr.6a, 10999 Berlin | tel: +491755589364
+> Gesch=C3=A4ftsf=C3=BChrer/Directors: Alban Crequy, Chris K=C3=BChl, Iago =
+L=C3=B3pez Galeiras
+> Registergericht/Court of registration: Amtsgericht Charlottenburg
+> Registernummer/Registration number: HRB 171414 B
+> Ust-ID-Nummer/VAT ID number: DE302207000
