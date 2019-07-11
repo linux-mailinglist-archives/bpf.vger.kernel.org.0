@@ -2,104 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A84660B8
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2019 22:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B2166116
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2019 23:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731274AbfGKUfL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Jul 2019 16:35:11 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:39694 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731262AbfGKUfL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Jul 2019 16:35:11 -0400
-Received: by mail-pg1-f194.google.com with SMTP id u17so3483079pgi.6
-        for <bpf@vger.kernel.org>; Thu, 11 Jul 2019 13:35:10 -0700 (PDT)
+        id S1728583AbfGKV0D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Jul 2019 17:26:03 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:41435 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726446AbfGKV0D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Jul 2019 17:26:03 -0400
+Received: by mail-pf1-f193.google.com with SMTP id m30so3330710pff.8;
+        Thu, 11 Jul 2019 14:26:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=uzejW6SFWbN3L3KZoDC9nTb3ZhvphpGEogU+EB/2Irc=;
-        b=mzbmrf+fddukWbjz84vx/egC2BsjJhpBLZ3HLwKLmN2XjiY75b+nrcqUXDNoiKaaT2
-         Ryexulp7bneomYExeY26g/7C+ofh+dR/vkdoAAma0IYdyRygk76D0sZ2yh/MNUiQ8Zj/
-         knJCngR4UUUmpzF5HfQCyIRsqb+cQHkr/piOJkUZUGX2FY/Mfdw1MPv9o+pmaghnFspo
-         lVrvFRIz2YQBPgESW8ZdateqKuZZFkdilNdrfUxRcrNezjIV/Hps9Ven+6i9tIv3lGhf
-         U0hynwpt/Xv/dSTCIvYZPZtPZ/RTqC4h2ct+6o8Zq51J0uFe2BmXgtwHePWrGjxhVzDw
-         iurA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=4N9aDBIH/e3s3OQv1dn/ZnQPSIncvFaSYm1vrdk9LBQ=;
+        b=KvhOy2GNY8piigP8gfonlFUwqz7T4Z6XOX7jfSXMew3IRxTYNGCXgclfS+oxUn7KBa
+         OzX3hkOErVQmwHAiMwD4YKHx3qnXfNscsTT3JtLmBylHiULQLf5kwooABQf1i+kRKMjs
+         dno/uvXGi29aKQMqKss7DuxDbULxadZ5lzBnTQs9U1UE0ax73aWSo3913J0Z6sy9DKKb
+         KVMfr4YPPoPA9YuJJ7kGurc5Yd398EW5UGEFqYt8d8vLECMb0KTdysmTroKlUVLsnCrM
+         o60JhszozuGX1UZv1p/zuKBHdlv/S5V2ZY98RcaX5jcU18nWHMCp4zLPz1NXMk9gJafp
+         xOhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=uzejW6SFWbN3L3KZoDC9nTb3ZhvphpGEogU+EB/2Irc=;
-        b=qPj/w69Mxh/ul8fmrOItlaIgBMUefqprsa2MdhereIHIQjOX4lfjOA6RcesEgxI5d+
-         A6DNbdoNwbdc0DHgglf5BRW+uVn9kzmjjYX6NZPR7pbK2gIAa+txfzMtuNxlC34G1U8K
-         D4mdeZPccG9CTGJAF9cA5PdqvFXbaWq9xlQCSldoBIVJZ/iLV5aZPAch3MRRuJeaQllY
-         lKEOgdTiHPZmmBGIUjYmRP3gzKV/9BH8ldhZuOoXlZcCwx1GxNE9w55EsVwKCngu16H5
-         yLn30HTjVGLKvxKdVVvdworPUvsOZRE8xDWwXYPPsSXsJgAZRAmM1CdjLS9mJDa691iY
-         shNw==
-X-Gm-Message-State: APjAAAUnloxSv7oi7JTH9SMAYY74G+Wdx+TQzRoCy+h204pO1hUDVBtU
-        R2xBwgDBlYYPjqq/LD3JgPw=
-X-Google-Smtp-Source: APXvYqw8usqf0XAg/bT0fCmnMRScD2DXRrjDSMGe5TkYGY23cENwnrdQfhC2M82dOQinH/FqgiPFIQ==
-X-Received: by 2002:a63:3387:: with SMTP id z129mr6321977pgz.177.1562877310350;
-        Thu, 11 Jul 2019 13:35:10 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id h12sm9912061pje.12.2019.07.11.13.35.09
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=4N9aDBIH/e3s3OQv1dn/ZnQPSIncvFaSYm1vrdk9LBQ=;
+        b=dn7hRAR8N0KN6WmJhIBzzMyKh9AEtKtBoWOD3iygFCCchINuYcMpQmOXM/x15dGdLX
+         t81Mz+TAd00MiwnuE/SOZxJMe3aq7r2XIsSzWSC3UYWBHq3UQEj8/beZAhGtOYf78A2r
+         JwLRwRqCuW7RiprGurxIhGzM9SzYIoQpyX6Kvx4riJcVQOukjD6e/NN2VYiW8LuYaXZx
+         VCwS20/Gby2RpbwqaLWmTM0n/wRqC/IP4Lp2kz5zqIG7MhdJTZ+ktTO+TlRWMVCBZAyG
+         q7n5gg65KJicz2kcM2nnh9L4o2l0gBdPcnJThoA29wbYPOrfiGa90KWEsXSCXKYFpMHj
+         lCqw==
+X-Gm-Message-State: APjAAAVX1I4p7kjUD3PuC+wMlYOdYEN7Y4m6XU6eeKoMx6GHONrLbHdy
+        A6ys79RzPPFuIWlDyn48s34=
+X-Google-Smtp-Source: APXvYqx0EMLl2Jk94p2LsOhcSkQFs61ZQAU/GV0vr4p/EKyNeBN5HvRFIkwPlI6agbaCZMnAsXYEDA==
+X-Received: by 2002:a17:90a:7d04:: with SMTP id g4mr7264410pjl.41.1562880362423;
+        Thu, 11 Jul 2019 14:26:02 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id 14sm6008410pgp.37.2019.07.11.14.26.00
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 11 Jul 2019 13:35:09 -0700 (PDT)
-Date:   Thu, 11 Jul 2019 13:35:08 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ys114321@gmail.com,
-        daniel@iogearbox.net, davem@davemloft.net, ast@kernel.org
-Subject: Re: [PATCH v4 bpf-next 0/4] selftests/bpf: fix compiling
- loop{1,2,3}.c on s390
-Message-ID: <20190711203508.GC16709@mini-arch>
-References: <20190711142930.68809-1-iii@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190711142930.68809-1-iii@linux.ibm.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+        Thu, 11 Jul 2019 14:26:01 -0700 (PDT)
+Date:   Thu, 11 Jul 2019 14:25:54 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        edumazet@google.com, bpf@vger.kernel.org
+Message-ID: <5d27a9627b092_19762abc80ff85b856@john-XPS-13-9370.notmuch>
+In-Reply-To: <20190711113218.2f0b8c1f@cakuba.netronome.com>
+References: <156261310104.31108.4569969631798277807.stgit@ubuntu3-kvm1>
+ <156261324561.31108.14410711674221391677.stgit@ubuntu3-kvm1>
+ <20190709194525.0d4c15a6@cakuba.netronome.com>
+ <5d255dececd33_1b7a2aec940d65b45@john-XPS-13-9370.notmuch>
+ <20190710123417.2157a459@cakuba.netronome.com>
+ <20190710130411.08c54ddd@cakuba.netronome.com>
+ <5d276814a76ad_698f2aaeaaf925bc8a@john-XPS-13-9370.notmuch>
+ <20190711113218.2f0b8c1f@cakuba.netronome.com>
+Subject: Re: [bpf PATCH v2 2/6] bpf: tls fix transition through disconnect
+ with close
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/11, Ilya Leoshkevich wrote:
-> Use PT_REGS_RC(ctx) instead of ctx->rax, which is not present on s390.
-> 
-> This patch series consists of three preparatory commits, which make it
-> possible to use PT_REGS_RC in BPF selftests, followed by the actual fix.
-> 
-> > > Will this also work for 32-bit x86?
-> > Thanks, this is a good catch: this builds, but makes 64-bit accesses, as
-> > if it used the 64-bit variant of pt_regs. I will fix this.
-> I found four problems in this area:
-> 
-> 1. Selftest tracing progs are built with -target bpf, leading to struct
->    pt_regs and friends being interpreted incorrectly.
-> 2. When the Makefile is adjusted to build them without -target bpf, it
->    still lacks -m32/-m64, leading to a similar issue.
-> 3. There is no __i386__ define, leading to incorrect userspace struct
->    pt_regs variant being chosen for x86.
-> 4. Finally, there is an issue in my patch: when 1-3 are fixed, it fails
->    to build, since i386 defines yet another set of field names.
-> 
-> I will send fixes for problems 1-3 separately, I believe for this patch
-> series to be correct, it's enough to fix #4 (which I did by adding
-> another #ifdef).
-> 
-> I've also changed ARCH to SRCARCH in patch #1, since while ARCH can be
-> e.g. "i386", SRCARCH always corresponds to directory names under arch/.
-> 
-> v1->v2: Split into multiple patches.
-> v2->v3: Added arm64 support.
-> v3->v4: Added i386 support, use SRCARCH instead of ARCH.
-Still looks good to me, thanks!
+Jakub Kicinski wrote:
+> On Thu, 11 Jul 2019 09:47:16 -0700, John Fastabend wrote:
+> > Jakub Kicinski wrote:
+> > > On Wed, 10 Jul 2019 12:34:17 -0700, Jakub Kicinski wrote:  =
 
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
+> > > > > > > +		if (sk->sk_prot->unhash)
+> > > > > > > +			sk->sk_prot->unhash(sk);
+> > > > > > > +	}
+> > > > > > > +
+> > > > > > > +	ctx =3D tls_get_ctx(sk);
+> > > > > > > +	if (ctx->tx_conf =3D=3D TLS_SW || ctx->rx_conf =3D=3D TLS=
+_SW)
+> > > > > > > +		tls_sk_proto_cleanup(sk, ctx, timeo);  =
 
-Again, should probably go via bpf to fix the existing tests, not bpf-next
-(but I see bpf tree is not synced with net tree yet).
+> > > =
 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> 
-> 
+> > > Do we still need to hook into unhash? With patch 6 in place perhaps=
+ we
+> > > can just do disconnect =F0=9F=A5=BA  =
+
+> > =
+
+> > ?? "can just do a disconnect", not sure I folow. We still need unhash=
+
+> > in cases where we have a TLS socket transition from ESTABLISHED
+> > to LISTEN state without calling close(). This is independent of if
+> > sockmap is running or not.
+> > =
+
+> > Originally, I thought this would be extremely rare but I did see it
+> > in real applications on the sockmap side so presumably it is possible=
+
+> > here as well.
+> =
+
+> Ugh, sorry, I meant shutdown. Instead of replacing the unhash callback
+> replace the shutdown callback. We probably shouldn't release the socket=
+
+> lock either there, but we can sleep, so I'll be able to run the device
+> connection remove callback (which sleep).
+> =
+
+
+ah OK seems doable to me. Do you want to write that on top of this
+series? Or would you like to push it onto your branch and I can pull
+it in push the rest of the patches on top and send it out? I think
+if you can get to it in the next few days then it makes sense to wait.
+
+I can't test the hardware side so probably makes more sense for
+you to do it if you can.
+
+
+> > > cleanup is going to kick off TX but also:
+> > > =
+
+> > > 	if (unlikely(sk->sk_write_pending) &&
+> > > 	    !wait_on_pending_writer(sk, &timeo))
+> > > 		tls_handle_open_record(sk, 0);
+> > > =
+
+> > > Are we guaranteed that sk_write_pending is 0?  Otherwise
+> > > wait_on_pending_writer is hiding yet another release_sock() :(  =
+
+> > =
+
+> > Not seeing the path to release_sock() at the moment?
+> > =
+
+> >    tls_handle_open_record
+> >      push_pending_record
+> >       tls_sw_push_pending_record
+> >         bpf_exec_tx_verdict
+> =
+
+> wait_on_pending_writer
+>   sk_wait_event
+>     release_sock
+> =
+
+
+ah OK. I'll check on sk_write_pending...
+
+> > If bpf_exec_tx_verdict does a redirect we could hit a relase but that=
+
+> > is another fix I have to get queued up shortly. I think we can fix
+> > that in another series.
+> =
+
+> Ugh.
+
+
