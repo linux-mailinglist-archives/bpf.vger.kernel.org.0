@@ -2,294 +2,239 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7400764FD1
-	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2019 03:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69CD864FF5
+	for <lists+bpf@lfdr.de>; Thu, 11 Jul 2019 03:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727595AbfGKBRe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Jul 2019 21:17:34 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:41371 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727463AbfGKBRe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Jul 2019 21:17:34 -0400
-Received: by mail-qk1-f194.google.com with SMTP id v22so3495499qkj.8;
-        Wed, 10 Jul 2019 18:17:32 -0700 (PDT)
+        id S1727622AbfGKBpZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Jul 2019 21:45:25 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:43796 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727463AbfGKBpY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Jul 2019 21:45:24 -0400
+Received: by mail-qk1-f196.google.com with SMTP id m14so3522814qka.10;
+        Wed, 10 Jul 2019 18:45:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LKDlCucLV7xEgqUUBNafyvGAb9YZ9mMSdHY5cR1gldI=;
-        b=qZ+aGuiiEnrmrZoOVc4y2ZMSOcLlAw1pinPQTW2GJjvB0Ltip3YhYZQDsAF8SiQ1uB
-         VuKv9InO4KPhq6DdbYpkeC1zxfvzfe5bDOCdSVPgToK1OEQhAnWTUGo2hXYhDjbEvm7C
-         pfCZqIQuZRjXDTwr8OR/4FiQVLWaUY+hactRB2mgSBSe6nNHEK8sgCS8a9rEi7QlWlQK
-         NGpvRuK/ksXw7CiBZFXc8N0CkqnTJJ1aOdbnMzTVU800OnMRq2//Xg+3I6PcmYDTg2+H
-         GLDfBPhlXJ8F6JyjBvQ9rHqyO1I2rm20DaI8aIyJF+gLce47dp4FcQILjXzDrJG18emp
-         Zcvg==
+        bh=5K81MBLH00J2kPIBYEvDIWJr5eCVy3Vqr9oFm8Prox0=;
+        b=TUaTL55wLcx1xfbTjhZdQfKoHy7pjivxQgi06Pj0HON7KChhTV+IXd14KO8b7UCqGR
+         t00mUCcswM7tRhBV0n/k9yeIhokVVPSK4QzY/EgZCpzECwcSfpM8xDs8wkMXZ2uq9Hl3
+         6JN/VIaA9jE1zLrBTocWAJvr8uHDOYtBVnRjwyvESG33YZ9RNeezb1NGO4c9uMSU/KzF
+         SxvBEBoM2Vll4y8MuKgx8QgE4ysWU2Wd7qVO9nFen1omzKZI18Eji3bLYQrXgNL8GYKJ
+         cOwP8lSzn3om67I1X12sBFOZgA+2Hm4CMOyqa3u8DqOFVMAzgOdjLbX7lWlz+1Z1HJMU
+         zfnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LKDlCucLV7xEgqUUBNafyvGAb9YZ9mMSdHY5cR1gldI=;
-        b=JPYlRTYt2lAt5We8t6lRRDTVNA+FZeTmeWIbKbhmBOdyNJ0UIKUtTjNv6kI50uDSz+
-         QdswmSunIlBiMjbF7k0iu9zV7bVXmbCeR2w6BFPkdHqXFhMZs4NB5cg2G8kni5lPTxrw
-         i9Pu/qvciVMxKRn87iU4llsfqX1WZuW4pcrrGyHFtfm/U1tbPYcoyye85xm09XigR4Qi
-         yjReJI1oN8RRJQkS+ntiRvPZy9lzkkM56tdK/xVUTen9fThtYvZNgQ+03QKwobTiJBbw
-         dV7swEO5OTLEiQwFZsqRKdWEyubQ4G2JbUPRstJfa3QKzSWPFbTJLSHYnhN6bOMmabKR
-         cYWg==
-X-Gm-Message-State: APjAAAW17xJaPczJRADMy+BfBvdlwEn8QK/v8a0TvMFCY0MVLK2UPizV
-        WMLgjpN3gh6KnRAWH8MD5ejoU5Wsbf8hxrH0E3Q=
-X-Google-Smtp-Source: APXvYqw6qCezp0TnaQMDe72AthAmqSkLdTzpRxGOnEixfkCIwGBDW7s3UNpUl9A2f8lPFNejUS7g2Ky2ueXT2zelvmE=
-X-Received: by 2002:a37:660d:: with SMTP id a13mr1016590qkc.36.1562807852247;
- Wed, 10 Jul 2019 18:17:32 -0700 (PDT)
+        bh=5K81MBLH00J2kPIBYEvDIWJr5eCVy3Vqr9oFm8Prox0=;
+        b=UDXJfJCe5FmLIExJOnwvItzSDjBI4xlIIxetV+1VItIzV44ATgsDsNeduVhPjY+fYY
+         dycc++Aw3OjAIOBsqUsKk7h8qW7dh/UjVn2sBf7cO+uhlAUQNtQ3Xy0grC+DfrsdC53I
+         6AWqkqP3z+KNFM7+DCKFnUDAYGpUbgY2LQlZmkEf7xANoxivymUEZ3QM8UIgLmiKkz2f
+         tK6XI0+tk+UI6/6GzHiiI3QK6M1Q/gwFXDbfLUKA9KtAFFQJpzku2xr/oWvSrH0kOocw
+         27cPZfKyb+A5HGKczBg0icVeFocbZc3odeTE3L5fA5jVxZ5U7k81zwVGI+EOSuj1Tt/R
+         XZJw==
+X-Gm-Message-State: APjAAAXDdS2lXxQcqNihN0kNHLkkL6Y5u/vfEW9XdeCCAR8IHDKPYhen
+        P75N6wxV2SDxI+scTm0f4T0QcozEKbtU1HPHbjs=
+X-Google-Smtp-Source: APXvYqzhu01utxChvReSL5YYaHLLnxISsUDDaAs0enEbEotLAL5LAfr5rOzglI3nvvskRVMb5wS6w6SeMR2qZMImFJE=
+X-Received: by 2002:a37:660d:: with SMTP id a13mr1097416qkc.36.1562809523195;
+ Wed, 10 Jul 2019 18:45:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190708163121.18477-1-krzesimir@kinvolk.io> <20190708163121.18477-6-krzesimir@kinvolk.io>
-In-Reply-To: <20190708163121.18477-6-krzesimir@kinvolk.io>
+References: <20190710080840.2613160-1-andriin@fb.com> <f6bc7a95-e8e1-eec4-9728-3b9e36b434fa@fb.com>
+ <CAEf4BzaVouFd=3whC1EjhQ9mit62b-C+NhQuW4RiXW02Rq_1Ug@mail.gmail.com> <304d8535-5043-836d-2933-1a5efb7aec72@fb.com>
+In-Reply-To: <304d8535-5043-836d-2933-1a5efb7aec72@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 10 Jul 2019 18:17:20 -0700
-Message-ID: <CAEf4BzYYdrcwJKg271ZL7kPJNYyZEGdxQeuUNbfPk=EjewuHeQ@mail.gmail.com>
-Subject: Re: [bpf-next v3 05/12] selftests/bpf: Allow passing more information
- to BPF prog test run
-To:     Krzesimir Nowak <krzesimir@kinvolk.io>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Alban Crequy <alban@kinvolk.io>,
-        =?UTF-8?Q?Iago_L=C3=B3pez_Galeiras?= <iago@kinvolk.io>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        xdp-newbies@vger.kernel.org
+Date:   Wed, 10 Jul 2019 18:45:12 -0700
+Message-ID: <CAEf4Bza6Y87C2_Fobj9CwU-2YRTU32S61f8_8CQdhMPenJiJZQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: fix BTF verifier size resolution logic
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>, Martin Lau <kafai@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 8, 2019 at 3:42 PM Krzesimir Nowak <krzesimir@kinvolk.io> wrote:
+On Wed, Jul 10, 2019 at 5:36 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> The test case can now specify a custom length of the data member,
-> context data and its length, which will be passed to
-> bpf_prog_test_run_xattr. For backward compatilibity, if the data
-> length is 0 (which is what will happen when the field is left
-> unspecified in the designated initializer of a struct), then the
-> length passed to the bpf_prog_test_run_xattr is TEST_DATA_LEN.
 >
-> Also for backward compatilibity, if context data length is 0, NULL is
-> passed as a context to bpf_prog_test_run_xattr. This is to avoid
-> breaking other tests, where context data being NULL and context data
-> length being 0 is handled differently from the case where context data
-> is not NULL and context data length is 0.
 >
-> Custom lengths still can't be greater than hardcoded 64 bytes for data
-> and 192 for context data.
+> On 7/10/19 5:29 PM, Andrii Nakryiko wrote:
+> > On Wed, Jul 10, 2019 at 5:16 PM Yonghong Song <yhs@fb.com> wrote:
+> >>
+> >>
+> >>
+> >> On 7/10/19 1:08 AM, Andrii Nakryiko wrote:
+> >>> BTF verifier has Different logic depending on whether we are following
+> >>> a PTR or STRUCT/ARRAY (or something else). This is an optimization to
+> >>> stop early in DFS traversal while resolving BTF types. But it also
+> >>> results in a size resolution bug, when there is a chain, e.g., of PTR ->
+> >>> TYPEDEF -> ARRAY, in which case due to being in pointer context ARRAY
+> >>> size won't be resolved, as it is considered to be a sink for pointer,
+> >>> leading to TYPEDEF being in RESOLVED state with zero size, which is
+> >>> completely wrong.
+> >>>
+> >>> Optimization is doubtful, though, as btf_check_all_types() will iterate
+> >>> over all BTF types anyways, so the only saving is a potentially slightly
+> >>> shorter stack. But correctness is more important that tiny savings.
+> >>>
+> >>> This bug manifests itself in rejecting BTF-defined maps that use array
+> >>> typedef as a value type:
+> >>>
+> >>> typedef int array_t[16];
+> >>>
+> >>> struct {
+> >>>        __uint(type, BPF_MAP_TYPE_ARRAY);
+> >>>        __type(value, array_t); /* i.e., array_t *value; */
+> >>> } test_map SEC(".maps");
+> >>>
+> >>> Fixes: eb3f595dab40 ("bpf: btf: Validate type reference")
+> >>> Cc: Martin KaFai Lau <kafai@fb.com>
+> >>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> >>
+> >> The change seems okay to me. Currently, looks like intermediate
+> >> modifier type will carry size = 0 (in the internal data structure).
+> >
+> > Yes, which is totally wrong, especially that we use that size in some
+> > cases to reject map with specified BTF.
+> >
+> >>
+> >> If we remove RESOLVE logic, we probably want to double check
+> >> whether we handle circular types correctly or not. Maybe we will
+> >> be okay if all self tests pass.
+> >
+> > I checked, it does. We'll attempt to add referenced type unless it's a
+> > "resolve sink" (where size is immediately known) or is already
+> > resolved (it's state is RESOLVED). In other cases, we'll attempt to
+> > env_stack_push(), which check that the state of that type is
+> > NOT_VISITED. If it's RESOLVED or VISITED, it returns -EEXISTS. When
+> > type is added into the stack, it's resolve state goes from NOT_VISITED
+> > to VISITED.
+> >
+> > So, if there is a loop, then we'll detect it as soon as we'll attempt
+> > to add the same type onto the stack second time.
+> >
+> >>
+> >> I may still be worthwhile to qualify the RESOLVE optimization benefit
+> >> before removing it.
+> >
+> > I don't think there is any, because every type will be visited exactly
+> > once, due to DFS nature of algorithm. The only difference is that if
+> > we have a long chain of modifiers, we can technically reach the max
+> > limit and fail. But at 32 I think it's pretty unrealistic to have such
+> > a long chain of PTR/TYPEDEF/CONST/VOLATILE/RESTRICTs :)
+> >
+> >>
+> >> Another possible change is, for external usage, removing
+> >> modifiers, before checking the size, something like below.
+> >> Note that I am not strongly advocating my below patch as
+> >> it has the same shortcoming that maintained modifier type
+> >> size may not be correct.
+> >
+> > I don't think your patch helps, it can actually confuse things even
+> > more. It skips modifiers until underlying type is found, but you still
+> > don't guarantee that at that time that underlying type will have its
+> > size resolved.
 >
-> 192 for context data was picked to allow passing struct
-> bpf_perf_event_data as a context for perf event programs. The struct
-> is quite large, because it contains struct pt_regs.
->
-> Test runs for perf event programs will not allow the copying the data
-> back to data_out buffer, so they require data_out_size to be zero and
-> data_out to be NULL. Since test_verifier hardcodes it, make it
-> possible to override the size. Overriding the size to zero will cause
-> the buffer to be NULL.
->
-> Changes since v2:
-> - Allow overriding the data out size and buffer.
->
-> Signed-off-by: Krzesimir Nowak <krzesimir@kinvolk.io>
-> ---
->  tools/testing/selftests/bpf/test_verifier.c | 105 +++++++++++++++++---
->  1 file changed, 93 insertions(+), 12 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-> index 1640ba9f12c1..6f124cc4ee34 100644
-> --- a/tools/testing/selftests/bpf/test_verifier.c
-> +++ b/tools/testing/selftests/bpf/test_verifier.c
-> @@ -54,6 +54,7 @@
->  #define MAX_TEST_RUNS  8
->  #define POINTER_VALUE  0xcafe4all
->  #define TEST_DATA_LEN  64
-> +#define TEST_CTX_LEN   192
->
->  #define F_NEEDS_EFFICIENT_UNALIGNED_ACCESS     (1 << 0)
->  #define F_LOAD_WITH_STRICT_ALIGNMENT           (1 << 1)
-> @@ -96,7 +97,12 @@ struct bpf_test {
->         enum bpf_prog_type prog_type;
->         uint8_t flags;
->         __u8 data[TEST_DATA_LEN];
-> +       __u32 data_len;
-> +       __u8 ctx[TEST_CTX_LEN];
-> +       __u32 ctx_len;
->         void (*fill_helper)(struct bpf_test *self);
-> +       bool override_data_out_len;
-> +       __u32 overridden_data_out_len;
->         uint8_t runs;
->         struct {
->                 uint32_t retval, retval_unpriv;
-> @@ -104,6 +110,9 @@ struct bpf_test {
->                         __u8 data[TEST_DATA_LEN];
->                         __u64 data64[TEST_DATA_LEN / 8];
->                 };
-> +               __u32 data_len;
-> +               __u8 ctx[TEST_CTX_LEN];
-> +               __u32 ctx_len;
->         } retvals[MAX_TEST_RUNS];
->  };
->
-> @@ -818,21 +827,35 @@ static int set_admin(bool admin)
->  }
->
->  static int do_prog_test_run(int fd_prog, bool unpriv, uint32_t expected_val,
-> -                           void *data, size_t size_data)
-> +                           void *data, size_t size_data, void *ctx,
-> +                           size_t size_ctx, u32 *overridden_data_out_size)
->  {
-> -       __u8 tmp[TEST_DATA_LEN << 2];
-> -       __u32 size_tmp = sizeof(tmp);
-> -       int saved_errno;
-> -       int err;
->         struct bpf_prog_test_run_attr attr = {
->                 .prog_fd = fd_prog,
->                 .repeat = 1,
->                 .data_in = data,
->                 .data_size_in = size_data,
-> -               .data_out = tmp,
-> -               .data_size_out = size_tmp,
-> +               .ctx_in = ctx,
-> +               .ctx_size_in = size_ctx,
->         };
-> +       __u8 tmp[TEST_DATA_LEN << 2];
-> +       __u32 size_tmp = sizeof(tmp);
-> +       __u32 size_buf = size_tmp;
-> +       __u8 *buf = tmp;
-> +       int saved_errno;
-> +       int err;
->
-> +       if (overridden_data_out_size)
-> +               size_buf = *overridden_data_out_size;
-> +       if (size_buf > size_tmp) {
-> +               printf("FAIL: out data size (%d) greater than a buffer size (%d) ",
-> +                      size_buf, size_tmp);
-> +               return -EINVAL;
-> +       }
-> +       if (!size_buf)
-> +               buf = NULL;
-> +       attr.data_size_out = size_buf;
-> +       attr.data_out = buf;
->         if (unpriv)
->                 set_admin(true);
->         err = bpf_prog_test_run_xattr(&attr);
-> @@ -956,13 +979,45 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
->         if (!alignment_prevented_execution && fd_prog >= 0) {
->                 uint32_t expected_val;
->                 int i;
-> +               __u32 size_data;
-> +               __u32 size_ctx;
-> +               bool bad_size;
-> +               void *ctx;
-> +               __u32 *overridden_data_out_size;
->
->                 if (!test->runs) {
-> +                       if (test->data_len > 0)
-> +                               size_data = test->data_len;
-> +                       else
-> +                               size_data = sizeof(test->data);
-> +                       if (test->override_data_out_len)
-> +                               overridden_data_out_size = &test->overridden_data_out_len;
-> +                       else
-> +                               overridden_data_out_size = NULL;
-> +                       size_ctx = test->ctx_len;
-> +                       bad_size = false;
+> It actually does help. It does not change the internal btf type
+> traversal algorithms. It only change the implementation of
+> an external API btf_type_id_size(). Previously, this function
+> is used by externals and internal btf.c. I broke it into two,
+> one internal __btf_type_id_size(), and another external
+> btf_type_id_size(). The external one removes modifier before
+> finding type size. The external one is typically used only
+> after btf is validated.
 
-I hated all this duplication of logic, which with this patch becomes
-even more expansive, so I removed it. Please see [0]. Can you please
-apply that patch and add all this new logic only once?
+Sure, for external callers yes, it solves the problem. But there is
+deeper problem: we mark modifier types RESOLVED before types they
+ultimately point to are resolved. Then in all those btf_xxx_resolve()
+functions we have check:
 
-  [0] https://patchwork.ozlabs.org/patch/1130601/
+if (!env_type_is_resolve_sink && !env_type_is_resolved)
+  return env_stack_push();
+else {
 
->                         expected_val = unpriv && test->retval_unpriv ?
->                                 test->retval_unpriv : test->retval;
+  /* here we assume that we can calculate size of the type */
+  /* so even if we traverse through all the modifiers and find
+underlying type */
+  /* that type will have resolved_size = 0, because we haven't
+processed it yet */
+  /* but we will just incorrectly assume that zero is *final* size */
+}
+
+So I think that your patch is still just hiding the problem, not solving it.
+
+BTW, I've also identified part of btf_ptr_resolve() logic that can be
+now safely removed (it's a special case that "restarts" DFS traversal
+for modifiers, because they could have been prematurely marked
+resolved). This is another sign that there is something wrong in an
+algorithm.
+
+I'd rather remove unnecessary complexity and fix underlying problem,
+especially given that there is no performance or correctness penalty.
+
+I'll post v2 soon.
+
 >
-> -                       err = do_prog_test_run(fd_prog, unpriv, expected_val,
-> -                                              test->data, sizeof(test->data));
-> +                       if (size_data > sizeof(test->data)) {
-> +                               printf("FAIL: data size (%u) greater than TEST_DATA_LEN (%lu) ", size_data, sizeof(test->data));
-> +                               bad_size = true;
-> +                       }
-> +                       if (size_ctx > sizeof(test->ctx)) {
-> +                               printf("FAIL: ctx size (%u) greater than TEST_CTX_LEN (%lu) ", size_ctx, sizeof(test->ctx));
-
-These look like way too long lines, wrap them?
-
-> +                               bad_size = true;
-> +                       }
-> +                       if (size_ctx)
-> +                               ctx = test->ctx;
-> +                       else
-> +                               ctx = NULL;
-
-nit: single line:
-
-ctx = size_ctx ? test->ctx : NULL;
-
-> +                       if (bad_size)
-> +                               err = 1;
-> +                       else
-> +                               err = do_prog_test_run(fd_prog, unpriv, expected_val,
-> +                                                      test->data, size_data,
-> +                                                      ctx, size_ctx,
-> +                                                      overridden_data_out_size);
->                         if (err)
->                                 run_errs++;
->                         else
-> @@ -970,14 +1025,40 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
->                 }
+> Will go through your other comments later.
 >
->                 for (i = 0; i < test->runs; i++) {
-> +                       if (test->retvals[i].data_len > 0)
-> +                               size_data = test->retvals[i].data_len;
-> +                       else
-> +                               size_data = sizeof(test->retvals[i].data);
-> +                       if (test->override_data_out_len)
-> +                               overridden_data_out_size = &test->overridden_data_out_len;
-> +                       else
-> +                               overridden_data_out_size = NULL;
-> +                       size_ctx = test->retvals[i].ctx_len;
-> +                       bad_size = false;
->                         if (unpriv && test->retvals[i].retval_unpriv)
->                                 expected_val = test->retvals[i].retval_unpriv;
->                         else
->                                 expected_val = test->retvals[i].retval;
->
-> -                       err = do_prog_test_run(fd_prog, unpriv, expected_val,
-> -                                              test->retvals[i].data,
-> -                                              sizeof(test->retvals[i].data));
-> +                       if (size_data > sizeof(test->retvals[i].data)) {
-> +                               printf("FAIL: data size (%u) at run %i greater than TEST_DATA_LEN (%lu) ", size_data, i + 1, sizeof(test->retvals[i].data));
-> +                               bad_size = true;
-> +                       }
-> +                       if (size_ctx > sizeof(test->retvals[i].ctx)) {
-> +                               printf("FAIL: ctx size (%u) at run %i greater than TEST_CTX_LEN (%lu) ", size_ctx, i + 1, sizeof(test->retvals[i].ctx));
-> +                               bad_size = true;
-> +                       }
-> +                       if (size_ctx)
-> +                               ctx = test->retvals[i].ctx;
-> +                       else
-> +                               ctx = NULL;
-> +                       if (bad_size)
-> +                               err = 1;
-> +                       else
-> +                               err = do_prog_test_run(fd_prog, unpriv, expected_val,
-> +                                                      test->retvals[i].data, size_data,
-> +                                                      ctx, size_ctx,
-> +                                                      overridden_data_out_size);
->                         if (err) {
->                                 printf("(run %d/%d) ", i + 1, test->runs);
->                                 run_errs++;
-> --
-> 2.20.1
->
+> >
+> >>
+> >> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> >> index 546ebee39e2a..6f927c3e0a89 100644
+> >> --- a/kernel/bpf/btf.c
+> >> +++ b/kernel/bpf/btf.c
+> >> @@ -620,6 +620,54 @@ static bool btf_type_int_is_regular(const struct
+> >> btf_type *t)
+> >>           return true;
+> >>    }
+> >>
+> >> +static const struct btf_type *__btf_type_id_size(const struct btf *btf,
+> >> +                                                u32 *type_id, u32
+> >> *ret_size,
+> >> +                                                bool skip_modifier)
+> >> +{
+> >> +       const struct btf_type *size_type;
+> >> +       u32 size_type_id = *type_id;
+> >> +       u32 size = 0;
+> >> +
+> >> +       size_type = btf_type_by_id(btf, size_type_id);
+> >> +       if (size_type && skip_modifier) {
+> >> +               while (btf_type_is_modifier(size_type))
+> >> +                       size_type = btf_type_by_id(btf, size_type->type);
+> >> +       }
+> >> +
+> >> +       if (btf_type_nosize_or_null(size_type))
+> >> +               return NULL;
+> >> +
+> >> +       if (btf_type_has_size(size_type)) {
+> >> +               size = size_type->size;
+> >> +       } else if (btf_type_is_array(size_type)) {
+> >> +               size = btf->resolved_sizes[size_type_id];
+> >> +       } else if (btf_type_is_ptr(size_type)) {
+> >> +               size = sizeof(void *);
+> >> +       } else {
+> >> +               if (WARN_ON_ONCE(!btf_type_is_modifier(size_type) &&
+> >> +                                !btf_type_is_var(size_type)))
+> >> +                       return NULL;
+> >> +
+> >> +               size = btf->resolved_sizes[size_type_id];
+> >> +               size_type_id = btf->resolved_ids[size_type_id];
+> >> +               size_type = btf_type_by_id(btf, size_type_id);
+> >> +               if (btf_type_nosize_or_null(size_type))
+> >> +                       return NULL;
+> >> +       }
+> >> +
+> >> +       *type_id = size_type_id;
+> >> +       if (ret_size)
+> >> +               *ret_size = size;
+> >> +
+> >> +       return size_type;
+> >> +}
+> >> +
+> [...]
