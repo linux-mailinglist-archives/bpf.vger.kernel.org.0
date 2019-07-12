@@ -2,115 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB62F66985
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2019 11:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0715566EB8
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2019 14:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbfGLJAF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 12 Jul 2019 05:00:05 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56294 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725935AbfGLJAD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 12 Jul 2019 05:00:03 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6C8v9gf139260
-        for <bpf@vger.kernel.org>; Fri, 12 Jul 2019 05:00:02 -0400
-Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tpnggc8e0-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 12 Jul 2019 05:00:01 -0400
-Received: from localhost
-        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Fri, 12 Jul 2019 09:59:59 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 12 Jul 2019 09:59:57 +0100
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6C8xheg40763698
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Jul 2019 08:59:43 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 15329AE053;
-        Fri, 12 Jul 2019 08:59:56 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CDD8EAE045;
-        Fri, 12 Jul 2019 08:59:55 +0000 (GMT)
-Received: from dyn-9-152-97-237.boeblingen.de.ibm.com (unknown [9.152.97.237])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 12 Jul 2019 08:59:55 +0000 (GMT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [PATCH v4 bpf-next 1/4] selftests/bpf: compile progs with
- -D__TARGET_ARCH_$(SRCARCH)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-In-Reply-To: <CAEf4BzYwwqn9ATwPyVcJ8nBQM+rvaFp7KBFjqbYY4GKda3G8jA@mail.gmail.com>
-Date:   Fri, 12 Jul 2019 10:59:55 +0200
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Y Song <ys114321@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@fomichev.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Transfer-Encoding: 8BIT
-References: <20190711142930.68809-1-iii@linux.ibm.com>
- <20190711142930.68809-2-iii@linux.ibm.com>
- <CAEf4BzYwwqn9ATwPyVcJ8nBQM+rvaFp7KBFjqbYY4GKda3G8jA@mail.gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-X-Mailer: Apple Mail (2.3445.9.1)
-X-TM-AS-GCONF: 00
-x-cbid: 19071208-0016-0000-0000-000002920156
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19071208-0017-0000-0000-000032EFC4B9
-Message-Id: <6E5C9DDE-FF1D-4BFA-813E-7A0C3232B5F0@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-12_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=840 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907120095
+        id S1728552AbfGLMkg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Jul 2019 08:40:36 -0400
+Received: from www62.your-server.de ([213.133.104.62]:45642 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727896AbfGLMkf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Jul 2019 08:40:35 -0400
+Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hluqf-0003sE-Uz; Fri, 12 Jul 2019 14:40:26 +0200
+Received: from [2a02:1205:5069:fce0:c5f9:cd68:79d4:446d] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hluqf-000Wv3-Nh; Fri, 12 Jul 2019 14:40:25 +0200
+Subject: Re: [PATCH] MAINTAINERS: update BPF JIT S390 maintainers
+To:     David Miller <davem@davemloft.net>, gor@linux.ibm.com
+Cc:     ast@kernel.org, heiko.carstens@de.ibm.com, borntraeger@de.ibm.com,
+        iii@linux.ibm.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-s390@vger.kernel.org
+References: <patch.git-d365382dfc69.your-ad-here.call-01562755343-ext-3127@work.hours>
+ <your-ad-here.call-01562758494-ext-2794@work.hours>
+ <20190711.113343.906691840255971211.davem@davemloft.net>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <aff5da65-ea70-43dd-1fb2-b731a343ce74@iogearbox.net>
+Date:   Fri, 12 Jul 2019 14:40:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.3.0
+MIME-Version: 1.0
+In-Reply-To: <20190711.113343.906691840255971211.davem@davemloft.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25508/Fri Jul 12 10:10:04 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Am 12.07.2019 um 02:53 schrieb Andrii Nakryiko <andrii.nakryiko@gmail.com>:
+On 07/11/2019 08:33 PM, David Miller wrote:
+> From: Vasily Gorbik <gor@linux.ibm.com>
+> Date: Wed, 10 Jul 2019 13:34:54 +0200
 > 
-> On Thu, Jul 11, 2019 at 7:32 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
->> 
->> This opens up the possibility of accessing registers in an
->> arch-independent way.
->> 
->> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
->> ---
->> tools/testing/selftests/bpf/Makefile | 4 +++-
->> 1 file changed, 3 insertions(+), 1 deletion(-)
->> 
->> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
->> index 2620406a53ec..ad84450e4ab8 100644
->> --- a/tools/testing/selftests/bpf/Makefile
->> +++ b/tools/testing/selftests/bpf/Makefile
->> @@ -1,4 +1,5 @@
->> # SPDX-License-Identifier: GPL-2.0
->> +include ../../../scripts/Makefile.arch
->> 
->> LIBDIR := ../../../lib
->> BPFDIR := $(LIBDIR)/bpf
->> @@ -138,7 +139,8 @@ CLANG_SYS_INCLUDES := $(shell $(CLANG) -v -E - </dev/null 2>&1 \
->> 
->> CLANG_FLAGS = -I. -I./include/uapi -I../../../include/uapi \
->>              $(CLANG_SYS_INCLUDES) \
->> -             -Wno-compare-distinct-pointer-types
->> +             -Wno-compare-distinct-pointer-types \
->> +             -D__TARGET_ARCH_$(SRCARCH)
+>> Dave, Alexei, Daniel,
+>> would you take it via one of your trees? Or should I take it via s390?
 > 
-> samples/bpf/Makefile uses $(ARCH), why does it work for samples?
-> Should we update samples/bpf/Makefile as well?
+> I think it can go via the bpf tree.
 
-I believe that in common cases both are okay, but judging by
-linux:Makefile and linux:tools/scripts/Makefile.arch, one could use e.g.
-ARCH=i686, and that would be converted to SRCARCH=x86. So IMHO SRCARCH
-is safer, and we should change bpf/samples/Makefile. I could send a
-patch separately.
+Yep, just applied to bpf, thanks!
