@@ -2,91 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 450D26696A
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2019 10:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB62F66985
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2019 11:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725877AbfGLI4E convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 12 Jul 2019 04:56:04 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46152 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726118AbfGLI4D (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 12 Jul 2019 04:56:03 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6C8rJ6o113333
-        for <bpf@vger.kernel.org>; Fri, 12 Jul 2019 04:56:01 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2tpm4tfdne-1
+        id S1726330AbfGLJAF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 12 Jul 2019 05:00:05 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56294 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725935AbfGLJAD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 12 Jul 2019 05:00:03 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6C8v9gf139260
+        for <bpf@vger.kernel.org>; Fri, 12 Jul 2019 05:00:02 -0400
+Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2tpnggc8e0-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 12 Jul 2019 04:56:01 -0400
+        for <bpf@vger.kernel.org>; Fri, 12 Jul 2019 05:00:01 -0400
 Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Fri, 12 Jul 2019 09:55:58 +0100
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        Fri, 12 Jul 2019 09:59:59 +0100
+Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
+        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 12 Jul 2019 09:55:54 +0100
+        Fri, 12 Jul 2019 09:59:57 +0100
 Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6C8trdj49741978
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6C8xheg40763698
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Jul 2019 08:55:53 GMT
+        Fri, 12 Jul 2019 08:59:43 GMT
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6C97BAE059;
-        Fri, 12 Jul 2019 08:55:53 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 15329AE053;
+        Fri, 12 Jul 2019 08:59:56 +0000 (GMT)
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 344EDAE055;
-        Fri, 12 Jul 2019 08:55:53 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id CDD8EAE045;
+        Fri, 12 Jul 2019 08:59:55 +0000 (GMT)
 Received: from dyn-9-152-97-237.boeblingen.de.ibm.com (unknown [9.152.97.237])
         by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 12 Jul 2019 08:55:53 +0000 (GMT)
+        Fri, 12 Jul 2019 08:59:55 +0000 (GMT)
 Content-Type: text/plain;
-        charset=utf-8
+        charset=us-ascii
 Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [PATCH v4 bpf-next 0/4] selftests/bpf: fix compiling
- loop{1,2,3}.c on s390
+Subject: Re: [PATCH v4 bpf-next 1/4] selftests/bpf: compile progs with
+ -D__TARGET_ARCH_$(SRCARCH)
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
-In-Reply-To: <20190711203508.GC16709@mini-arch>
-Date:   Fri, 12 Jul 2019 10:55:52 +0200
+In-Reply-To: <CAEf4BzYwwqn9ATwPyVcJ8nBQM+rvaFp7KBFjqbYY4GKda3G8jA@mail.gmail.com>
+Date:   Fri, 12 Jul 2019 10:59:55 +0200
 Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Y Song <ys114321@gmail.com>, daniel@iogearbox.net,
-        davem@davemloft.net, ast@kernel.org
+        Y Song <ys114321@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@fomichev.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>
 Content-Transfer-Encoding: 8BIT
 References: <20190711142930.68809-1-iii@linux.ibm.com>
- <20190711203508.GC16709@mini-arch>
-To:     Stanislav Fomichev <sdf@fomichev.me>
+ <20190711142930.68809-2-iii@linux.ibm.com>
+ <CAEf4BzYwwqn9ATwPyVcJ8nBQM+rvaFp7KBFjqbYY4GKda3G8jA@mail.gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 X-Mailer: Apple Mail (2.3445.9.1)
 X-TM-AS-GCONF: 00
-x-cbid: 19071208-0020-0000-0000-0000035307CD
+x-cbid: 19071208-0016-0000-0000-000002920156
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19071208-0021-0000-0000-000021A6C586
-Message-Id: <994CF53F-3E84-4CE8-92C5-B2983AD50EB8@linux.ibm.com>
+x-cbparentid: 19071208-0017-0000-0000-000032EFC4B9
+Message-Id: <6E5C9DDE-FF1D-4BFA-813E-7A0C3232B5F0@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-12_03:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=663 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907120094
+ mlxlogscore=840 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907120095
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Am 11.07.2019 um 22:35 schrieb Stanislav Fomichev <sdf@fomichev.me>:
+> Am 12.07.2019 um 02:53 schrieb Andrii Nakryiko <andrii.nakryiko@gmail.com>:
 > 
-> On 07/11, Ilya Leoshkevich wrote:
->> Use PT_REGS_RC(ctx) instead of ctx->rax, which is not present on s390.
+> On Thu, Jul 11, 2019 at 7:32 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >> 
->> This patch series consists of three preparatory commits, which make it
->> possible to use PT_REGS_RC in BPF selftests, followed by the actual fix.
+>> This opens up the possibility of accessing registers in an
+>> arch-independent way.
 >> 
-> Still looks good to me, thanks!
+>> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+>> ---
+>> tools/testing/selftests/bpf/Makefile | 4 +++-
+>> 1 file changed, 3 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+>> index 2620406a53ec..ad84450e4ab8 100644
+>> --- a/tools/testing/selftests/bpf/Makefile
+>> +++ b/tools/testing/selftests/bpf/Makefile
+>> @@ -1,4 +1,5 @@
+>> # SPDX-License-Identifier: GPL-2.0
+>> +include ../../../scripts/Makefile.arch
+>> 
+>> LIBDIR := ../../../lib
+>> BPFDIR := $(LIBDIR)/bpf
+>> @@ -138,7 +139,8 @@ CLANG_SYS_INCLUDES := $(shell $(CLANG) -v -E - </dev/null 2>&1 \
+>> 
+>> CLANG_FLAGS = -I. -I./include/uapi -I../../../include/uapi \
+>>              $(CLANG_SYS_INCLUDES) \
+>> -             -Wno-compare-distinct-pointer-types
+>> +             -Wno-compare-distinct-pointer-types \
+>> +             -D__TARGET_ARCH_$(SRCARCH)
 > 
-> Reviewed-by: Stanislav Fomichev <sdf@google.com>
-> 
-> Again, should probably go via bpf to fix the existing tests, not bpf-next
-> (but I see bpf tree is not synced with net tree yet).
+> samples/bpf/Makefile uses $(ARCH), why does it work for samples?
+> Should we update samples/bpf/Makefile as well?
 
-Sorry, I missed your comment the last time. You are right - that’s the
-reason I’ve been sending this to bpf-next so far — loop*.c don’t even
-exist in the bpf tree.
+I believe that in common cases both are okay, but judging by
+linux:Makefile and linux:tools/scripts/Makefile.arch, one could use e.g.
+ARCH=i686, and that would be converted to SRCARCH=x86. So IMHO SRCARCH
+is safer, and we should change bpf/samples/Makefile. I could send a
+patch separately.
