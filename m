@@ -2,170 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 904E06632F
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2019 02:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1FD8664DD
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2019 05:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729036AbfGLA76 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Jul 2019 20:59:58 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:33953 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbfGLA76 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Jul 2019 20:59:58 -0400
-Received: by mail-qt1-f194.google.com with SMTP id k10so6501567qtq.1;
-        Thu, 11 Jul 2019 17:59:57 -0700 (PDT)
+        id S1728955AbfGLDQi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Jul 2019 23:16:38 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:37151 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728497AbfGLDQi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Jul 2019 23:16:38 -0400
+Received: by mail-pl1-f196.google.com with SMTP id b3so4059174plr.4
+        for <bpf@vger.kernel.org>; Thu, 11 Jul 2019 20:16:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=vyRvdglp9w3WMAVwpZ8V5acwRWpsWl+iTtdEW4rvar4=;
-        b=txxE7X8WbuCKhCRBQru177MjuZze+pZCDz3RdJ4rEwr3Eb96rvgOhODAT0S/Xjmp9e
-         Gni8eX3BUNl8IyyKLVNknIJmMObUbzLUuNH/mDHhD6JyPrICshHweZEWKFuAaN4pXJqu
-         dKSFAFdAYFPnXuC05uU0QeDj2E2cDBR920oDu4WAC2m0w63JVhMS6umkNXSJoKcIvO7E
-         GtDhanc7eUXsVAQN8rpwJALT0FWxmqPXAmW7RpsJ9suJEVumWCIqt8BIIrVLFyRHY3Ax
-         nsj1kcysn/Rrm7zxT6MKFnlsKE+P7PXWYbTFGdeuXzwp1L7E1R9ryUtnWXFEsMXxuoE3
-         8IeQ==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=L2ZlgrviDZAu+KG18DKdk+AEwyCr1OMiF1fBg7CHNjo=;
+        b=aB8qxRhhcE7/K5/38IozESLERV0k8+CAR+CZ5yH+nE45g9y7utpjm2LGJsc0G/GJny
+         GgEQt9m6fmeGeBLIdyp3C0dVMKo5BhvuicSktgyBwsLilaC6XRakEsL7CAnXb+8KBPvO
+         rZf3qxXowgv2RQQvc06Aamgkf9K/E4N7grMHrF2LDXycXc0DjxMt5ZzngFdbjh0NPtce
+         hWPofTOu2VOxJ2z4PW+fZft7TsHxwn0ybnWU+n25yAoAVk9OeoC87qdp4x9T4Yh9gxXX
+         D06hbonLKcLwYfLw8aizWTMEWYY82/mIB+vuaFSqC1Cwj4odsppKr2VNvtU58bQr8ldM
+         FyWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vyRvdglp9w3WMAVwpZ8V5acwRWpsWl+iTtdEW4rvar4=;
-        b=SssxtIbtCDllkKez6ptjmVSp0H372ZQvY+Z63xCNV/UIF9B90kt31nH9MrcslffUPE
-         S0X4ZpXwuERvmnBJl8j0lX653ByYS7JRylfffgxsh79Mmm85TunNOESS1DOpAsUnxgJG
-         Gxh5mWfnRWqk3rbRAkBfSRI7dx1ezsJ3vv2i0Vtzp/5EhuXwze0yOR2u8WlfiRIwShX7
-         2olgKjo4eO+RHnc878J6YSYKeV88/uoB2RA+j0d6L7hod8sIYLvRo3yrxQpOg/hdzOnl
-         uaoEX20k9WCk4xyY35t/qsPOtK+OdWzXtD/NNoPinLm7KgFaEHDEGC6z2zPzWYRLP0zL
-         OVrw==
-X-Gm-Message-State: APjAAAWob6Jad1/6pK5Gy4+3rWWG/vdkYx04FOhr3JLkcrwfZfSsVfyD
-        gAVYQEtR477eLf7Nf6VT8rUukmAg9Nfme3XjKKM=
-X-Google-Smtp-Source: APXvYqx/nmtN0ibOY1gKjWppu+MVnXd5hpjXGLRUTESB0ttPXoJNPVWlFkEp6N20LfxCuAlfqEqOIkKtHWjb2rkA+5M=
-X-Received: by 2002:ac8:6601:: with SMTP id c1mr3869170qtp.93.1562893196956;
- Thu, 11 Jul 2019 17:59:56 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=L2ZlgrviDZAu+KG18DKdk+AEwyCr1OMiF1fBg7CHNjo=;
+        b=T5T8x8SKZ9RzSXlBfZZuM9MsRxPwd8I7NRr5EqJfIzI9WMbNtoepOn6vfAD7rSfXfW
+         Tfrp4MDewfTXBu8/n0PQbIXPtlFz8Kgw6NssrKno3Lkn5MvQn9DpOa3VMe18KpdzuPG1
+         pRoiVs9aXbLXU6m+UkStIcI5zMQ6JLGa7ewZdU1xiXHemLe9XeS4Wi+JUhNWcKW6SLGO
+         jWjGojAvuGExKUHpm74UNh0yCkm84PcTW1dri5mVgB+u3FnlrMg7+8GDwA+OX6joM3KQ
+         K3deR3GHp0vSUyYPR+lKVaRjrbnHbF+hN/Epq3UbqkZhoXgCikcNSyG3dcFKAoam9CJo
+         dePA==
+X-Gm-Message-State: APjAAAW7uKwezFdjch1t8f9dECNZCJXFiVpzUC6t9SyXxDZBEeMb7k7Q
+        jIhmbI5Owc4EfjKvHzEN5bqYrw==
+X-Google-Smtp-Source: APXvYqzUeXIg5BMgJdpJ518ux2Do8xqdnTS13t0+Ilsm/IaZdDiJYgYkRjMlBrqylXVi44kzASPy4Q==
+X-Received: by 2002:a17:902:2be6:: with SMTP id l93mr8711188plb.0.1562901397369;
+        Thu, 11 Jul 2019 20:16:37 -0700 (PDT)
+Received: from cakuba.netronome.com (c-71-204-185-212.hsd1.ca.comcast.net. [71.204.185.212])
+        by smtp.gmail.com with ESMTPSA id i14sm12405404pfk.0.2019.07.11.20.16.36
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 11 Jul 2019 20:16:37 -0700 (PDT)
+Date:   Thu, 11 Jul 2019 20:16:33 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        edumazet@google.com, bpf@vger.kernel.org
+Subject: Re: [bpf PATCH v2 2/6] bpf: tls fix transition through disconnect
+ with close
+Message-ID: <20190711201633.552292e6@cakuba.netronome.com>
+In-Reply-To: <5d27a9627b092_19762abc80ff85b856@john-XPS-13-9370.notmuch>
+References: <156261310104.31108.4569969631798277807.stgit@ubuntu3-kvm1>
+        <156261324561.31108.14410711674221391677.stgit@ubuntu3-kvm1>
+        <20190709194525.0d4c15a6@cakuba.netronome.com>
+        <5d255dececd33_1b7a2aec940d65b45@john-XPS-13-9370.notmuch>
+        <20190710123417.2157a459@cakuba.netronome.com>
+        <20190710130411.08c54ddd@cakuba.netronome.com>
+        <5d276814a76ad_698f2aaeaaf925bc8a@john-XPS-13-9370.notmuch>
+        <20190711113218.2f0b8c1f@cakuba.netronome.com>
+        <5d27a9627b092_19762abc80ff85b856@john-XPS-13-9370.notmuch>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-References: <20190708163121.18477-1-krzesimir@kinvolk.io> <20190708163121.18477-3-krzesimir@kinvolk.io>
- <CAEf4BzYra9njHOB8t6kxRu6n5NJdjjAG541OLt8ci=0zbbcUSg@mail.gmail.com> <CAGGp+cGnEBFoPAuhTPa_JFCW6Vbjp2NN0ZPqC3qGfWEXwTyVOQ@mail.gmail.com>
-In-Reply-To: <CAGGp+cGnEBFoPAuhTPa_JFCW6Vbjp2NN0ZPqC3qGfWEXwTyVOQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 11 Jul 2019 17:59:46 -0700
-Message-ID: <CAEf4Bzb-KW+p1zFcz39OSUuH0=DLFRNLa3NYT4V_-zz0Q_TJ5g@mail.gmail.com>
-Subject: Re: [bpf-next v3 02/12] selftests/bpf: Avoid a clobbering of errno
-To:     Krzesimir Nowak <krzesimir@kinvolk.io>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Alban Crequy <alban@kinvolk.io>,
-        =?UTF-8?Q?Iago_L=C3=B3pez_Galeiras?= <iago@kinvolk.io>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        xdp-newbies@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 11, 2019 at 5:04 AM Krzesimir Nowak <krzesimir@kinvolk.io> wrot=
-e:
->
-> On Thu, Jul 11, 2019 at 1:52 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Mon, Jul 8, 2019 at 3:42 PM Krzesimir Nowak <krzesimir@kinvolk.io> w=
-rote:
-> > >
-> > > Save errno right after bpf_prog_test_run returns, so we later check
-> > > the error code actually set by bpf_prog_test_run, not by some libcap
-> > > function.
-> > >
-> > > Changes since v1:
-> > > - Fix the "Fixes:" tag to mention actual commit that introduced the
-> > >   bug
-> > >
-> > > Changes since v2:
-> > > - Move the declaration so it fits the reverse christmas tree style.
-> > >
-> > > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > > Fixes: 832c6f2c29ec ("bpf: test make sure to run unpriv test cases in=
- test_verifier")
-> > > Signed-off-by: Krzesimir Nowak <krzesimir@kinvolk.io>
-> > > ---
-> > >  tools/testing/selftests/bpf/test_verifier.c | 4 +++-
-> > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/test=
-ing/selftests/bpf/test_verifier.c
-> > > index b8d065623ead..3fe126e0083b 100644
-> > > --- a/tools/testing/selftests/bpf/test_verifier.c
-> > > +++ b/tools/testing/selftests/bpf/test_verifier.c
-> > > @@ -823,16 +823,18 @@ static int do_prog_test_run(int fd_prog, bool u=
-npriv, uint32_t expected_val,
-> > >         __u8 tmp[TEST_DATA_LEN << 2];
-> > >         __u32 size_tmp =3D sizeof(tmp);
-> > >         uint32_t retval;
-> > > +       int saved_errno;
-> > >         int err;
-> > >
-> > >         if (unpriv)
-> > >                 set_admin(true);
-> > >         err =3D bpf_prog_test_run(fd_prog, 1, data, size_data,
-> > >                                 tmp, &size_tmp, &retval, NULL);
-> >
-> > Given err is either 0 or -1, how about instead making err useful right
-> > here without extra variable?
-> >
-> > if (bpf_prog_test_run(...))
-> >         err =3D errno;
->
-> I change it later to bpf_prog_test_run_xattr, which can also return
-> -EINVAL and then errno is not set. But this one probably should not be
+On Thu, 11 Jul 2019 14:25:54 -0700, John Fastabend wrote:
+> Jakub Kicinski wrote:
+> > On Thu, 11 Jul 2019 09:47:16 -0700, John Fastabend wrote: =20
+> > > Jakub Kicinski wrote: =20
+> > > > On Wed, 10 Jul 2019 12:34:17 -0700, Jakub Kicinski wrote:   =20
+> > > > > > > > +		if (sk->sk_prot->unhash)
+> > > > > > > > +			sk->sk_prot->unhash(sk);
+> > > > > > > > +	}
+> > > > > > > > +
+> > > > > > > > +	ctx =3D tls_get_ctx(sk);
+> > > > > > > > +	if (ctx->tx_conf =3D=3D TLS_SW || ctx->rx_conf =3D=3D TLS=
+_SW)
+> > > > > > > > +		tls_sk_proto_cleanup(sk, ctx, timeo);   =20
+> > > >=20
+> > > > Do we still need to hook into unhash? With patch 6 in place perhaps=
+ we
+> > > > can just do disconnect =F0=9F=A5=BA   =20
+> > >=20
+> > > ?? "can just do a disconnect", not sure I folow. We still need unhash
+> > > in cases where we have a TLS socket transition from ESTABLISHED
+> > > to LISTEN state without calling close(). This is independent of if
+> > > sockmap is running or not.
+> > >=20
+> > > Originally, I thought this would be extremely rare but I did see it
+> > > in real applications on the sockmap side so presumably it is possible
+> > > here as well. =20
+> >=20
+> > Ugh, sorry, I meant shutdown. Instead of replacing the unhash callback
+> > replace the shutdown callback. We probably shouldn't release the socket
+> > lock either there, but we can sleep, so I'll be able to run the device
+> > connection remove callback (which sleep).
+>=20
+> ah OK seems doable to me. Do you want to write that on top of this
+> series? Or would you like to push it onto your branch and I can pull
+> it in push the rest of the patches on top and send it out? I think
+> if you can get to it in the next few days then it makes sense to wait.
 
-This is wrong. bpf_prog_test_run/bpf_prog_test_run_xattr should either
-always return -1 and set errno to actual error (like syscalls do), or
-always use return code with proper error. Give they are pretending to
-be just pure syscall, it's probably better to set errno to EINVAL and
-return -1 on invalid input args?
+Mm.. perhaps its easiest if we forget about HW for now and get SW=20
+to work? Once you get the SW to 100% I can probably figure out what=20
+to do for HW, but I feel like we got too many moving parts ATM.
 
-> triggered by the test code. So not sure, probably would be better to
-> keep it as is for consistency?
+> I can't test the hardware side so probably makes more sense for
+> you to do it if you can.
 >
-> >
-> > > +       saved_errno =3D errno;
-> > >         if (unpriv)
-> > >                 set_admin(false);
-> > >         if (err) {
-> > > -               switch (errno) {
-> > > +               switch (saved_errno) {
-> > >                 case 524/*ENOTSUPP*/:
-> >
-> > ENOTSUPP is defined in include/linux/errno.h, is there any problem
-> > with using this in selftests?
->
-> I just used whatever there was earlier. Seems like <linux/errno.h> is
-> not copied to tools include directory.
-
-Ok, let's leave it as is, thanks!
-
->
-> >
-> > >                         printf("Did not run the program (not supporte=
-d) ");
-> > >                         return 0;
-> > > --
-> > > 2.20.1
-> > >
->
->
->
-> --
-> Kinvolk GmbH | Adalbertstr.6a, 10999 Berlin | tel: +491755589364
-> Gesch=C3=A4ftsf=C3=BChrer/Directors: Alban Crequy, Chris K=C3=BChl, Iago =
-L=C3=B3pez Galeiras
-> Registergericht/Court of registration: Amtsgericht Charlottenburg
-> Registernummer/Registration number: HRB 171414 B
-> Ust-ID-Nummer/VAT ID number: DE302207000
+> > > > cleanup is going to kick off TX but also:
+> > > >=20
+> > > > 	if (unlikely(sk->sk_write_pending) &&
+> > > > 	    !wait_on_pending_writer(sk, &timeo))
+> > > > 		tls_handle_open_record(sk, 0);
+> > > >=20
+> > > > Are we guaranteed that sk_write_pending is 0?  Otherwise
+> > > > wait_on_pending_writer is hiding yet another release_sock() :(   =20
+> > >=20
+> > > Not seeing the path to release_sock() at the moment?
+> > >=20
+> > >    tls_handle_open_record
+> > >      push_pending_record
+> > >       tls_sw_push_pending_record
+> > >         bpf_exec_tx_verdict =20
+> >=20
+> > wait_on_pending_writer
+> >   sk_wait_event
+> >     release_sock
+> >  =20
+>=20
+> ah OK. I'll check on sk_write_pending...
