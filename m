@@ -2,145 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3796721F
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2019 17:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81C367287
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2019 17:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbfGLPPM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Jul 2019 11:15:12 -0400
-Received: from www62.your-server.de ([213.133.104.62]:45880 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726266AbfGLPPM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Jul 2019 11:15:12 -0400
-Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hlxGJ-0007bi-K7; Fri, 12 Jul 2019 17:15:03 +0200
-Received: from [2a02:1205:5069:fce0:c5f9:cd68:79d4:446d] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hlxGJ-000X25-CS; Fri, 12 Jul 2019 17:15:03 +0200
-Subject: Re: [PATCH 0/2] Fold checksum at the end of bpf_csum_diff and fix
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Paolo Pisati <p.pisati@gmail.com>
-Cc:     20190710231439.GD32439@tassilo.jf.intel.com,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Shuah Khan <shuah@kernel.org>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jiong Wang <jiong.wang@netronome.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1562837513-745-1-git-send-email-p.pisati@gmail.com>
- <CAEf4BzbGLmuZ48vFUCrDW6VC7_YrkW_0NpgpgXNQEzF_dEqgnA@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <8bd99845-4d59-f0a4-3b50-ab6d539b36bc@iogearbox.net>
-Date:   Fri, 12 Jul 2019 17:15:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.3.0
+        id S1726602AbfGLPgg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Jul 2019 11:36:36 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:35539 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726318AbfGLPgf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Jul 2019 11:36:35 -0400
+Received: by mail-qt1-f193.google.com with SMTP id d23so8525829qto.2;
+        Fri, 12 Jul 2019 08:36:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RrvS7bEh76/zJeNy/Nf4LO9s3z7qhZywLwmks5DUWmQ=;
+        b=AhITGNctYGSoHOhZTcOK0YFmZWw1m7te6syOFq6juFeKFaiSIuAQgjp8Hzpng7XeRl
+         qzy5pPUsu/hAJI99Kf/IJaD5k6LcsXl3Xzao88FHRgzYJV294893ffgJnyK0YZJRSNvy
+         OGCVW/b1SbKAM9fUSRWwKkVyWPj3+rdSIN2lDAv+r3jxkpY/SDzq4eOhybwD/x3jcMZ9
+         ALFIosAjSrEyN7p2IvoD56ojQ3YlGHv8K2gTvdBiJYTaiwnEBW2BIORLcNRI4Tqq+YfP
+         Nfrf+rvTxZdHjA62ry3iVeFHsY5FcioJ/I+fqb844nqUgH38vG/RDtT/mTHmItSWsGYZ
+         L5LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RrvS7bEh76/zJeNy/Nf4LO9s3z7qhZywLwmks5DUWmQ=;
+        b=YX/NY7JFkiFlXwSV8clzkOcJVCW2VNFDn2IUjE3N2zJ7TlNynA0U0MIkOxnL1o9jdb
+         K6m3/a/rGesBKpxHNCXeBjm+VgcTR/Dt+4m3UyK6J4BBXZkAqlNC/AWcpwbufcXMFZ6a
+         BVhvi4jr3OE88bgEP5dweNlFxa22kyNfu/h2n/v1oMmzrBzXDYzmegmWouVqdBrDqbhS
+         CEvgYgl5o76LseBYG4DCU8c3ElXdxrNDKuWd74p/NYE2oZuf49fBXgijmiJTw9Krju4Q
+         kk8eyUK7Qarmu0F4yHWzfQjLfjQRWW2nHC+V1e5gKKOE8+ca8RHoMhIrnOUWRaWHGBNj
+         SX8Q==
+X-Gm-Message-State: APjAAAWSN6JOX4UCCDBuXAuo7VSsWgE5Rie9foze35zJ8+oJ12QNYMDb
+        yaR6lvmIPQey1IW1oPmgR9y4BVXq+OwCdC3b2pg=
+X-Google-Smtp-Source: APXvYqzW96KoNS3t3yhDF4pqgpcOjFOFWrszWiWAD0q9GPUG/nXxM4Z0zP9F/WvDLVYTmQdMFR60zL55FTRR1swqTKE=
+X-Received: by 2002:a0c:c107:: with SMTP id f7mr7149946qvh.150.1562945794317;
+ Fri, 12 Jul 2019 08:36:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzbGLmuZ48vFUCrDW6VC7_YrkW_0NpgpgXNQEzF_dEqgnA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25508/Fri Jul 12 10:10:04 2019)
+References: <20190711065307.2425636-1-andriin@fb.com> <20190711065307.2425636-2-andriin@fb.com>
+ <ad29872e-a127-f21e-5581-03df5a388a55@fb.com>
+In-Reply-To: <ad29872e-a127-f21e-5581-03df5a388a55@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 12 Jul 2019 08:36:23 -0700
+Message-ID: <CAEf4Bzb4vzwRVPegF51Kv6oqTXUAWqnhK-jAVs8SESyh74+XTA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/3] bpf: fix BTF verifier size resolution logic
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>, Martin Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/12/2019 01:50 AM, Andrii Nakryiko wrote:
-> On Thu, Jul 11, 2019 at 2:32 AM Paolo Pisati <p.pisati@gmail.com> wrote:
->> From: Paolo Pisati <paolo.pisati@canonical.com>
->>
->> After applying patch 0001, all checksum implementations i could test (x86-64, arm64 and
->> arm), now agree on the return value.
->>
->> Patch 0002 fix the expected return value for test #13: i did the calculation manually,
->> and it correspond.
->>
->> Unfortunately, after applying patch 0001, other test cases now fail in
->> test_verifier:
+On Thu, Jul 11, 2019 at 10:59 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 7/10/19 11:53 PM, Andrii Nakryiko wrote:
+> > BTF verifier has a size resolution bug which in some circumstances leads to
+> > invalid size resolution for, e.g., TYPEDEF modifier.  This happens if we have
+> > [1] PTR -> [2] TYPEDEF -> [3] ARRAY, in which case due to being in pointer
+> > context ARRAY size won't be resolved (because for pointer it doesn't matter, so
+> > it's a sink in pointer context), but it will be permanently remembered as zero
+> > for TYPEDEF and TYPEDEF will be marked as RESOLVED. Eventually ARRAY size will
+> > be resolved correctly, but TYPEDEF resolved_size won't be updated anymore.
+> > This, subsequently, will lead to erroneous map creation failure, if that
+> > TYPEDEF is specified as either key or value, as key_size/value_size won't
+> > correspond to resolved size of TYPEDEF (kernel will believe it's zero).
+> >
+> > Note, that if BTF was ordered as [1] ARRAY <- [2] TYPEDEF <- [3] PTR, this
+> > won't be a problem, as by the time we get to TYPEDEF, ARRAY's size is already
+> > calculated and stored.
+> >
+> > This bug manifests itself in rejecting BTF-defined maps that use array
+> > typedef as a value type:
+> >
+> > typedef int array_t[16];
+> >
+> > struct {
+> >      __uint(type, BPF_MAP_TYPE_ARRAY);
+> >      __type(value, array_t); /* i.e., array_t *value; */
+> > } test_map SEC(".maps");
+> >
+> > The fix consists on not relying on modifier's resolved_size and instead using
+> > modifier's resolved_id (type ID for "concrete" type to which modifier
+> > eventually resolves) and doing size determination for that resolved type. This
+> > allow to preserve existing "early DFS termination" logic for PTR or
+> > STRUCT_OR_ARRAY contexts, but still do correct size determination for modifier
+> > types.
+> >
+> > Fixes: eb3f595dab40 ("bpf: btf: Validate type reference")
+> > Cc: Martin KaFai Lau <kafai@fb.com>
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> >   kernel/bpf/btf.c | 14 ++++++++++----
+> >   1 file changed, 10 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index cad09858a5f2..22fe8b155e51 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -1073,11 +1073,18 @@ const struct btf_type *btf_type_id_size(const struct btf *btf,
+> >                                !btf_type_is_var(size_type)))
+> >                       return NULL;
+> >
+> > -             size = btf->resolved_sizes[size_type_id];
+> >               size_type_id = btf->resolved_ids[size_type_id];
+> >               size_type = btf_type_by_id(btf, size_type_id);
+> >               if (btf_type_nosize_or_null(size_type))
+> >                       return NULL;
+> > +             else if (btf_type_has_size(size_type))
+> > +                     size = size_type->size;
+> > +             else if (btf_type_is_array(size_type))
+> > +                     size = btf->resolved_sizes[size_type_id];
+> > +             else if (btf_type_is_ptr(size_type))
+> > +                     size = sizeof(void *);
+> > +             else
+> > +                     return NULL;
+>
+> Looks good to me. Not sure whether we need to do any adjustment for
+> var kind or not. Maybe we can do similar change in btf_var_resolve()
 
-Thanks for catching, sigh. :/
+I don't think btf_var_resolve() needs any change. btf_var_resolve
+can't be referenced by modifier, so it doesn't have any problem. It's
+similar to array in that it's size will be determined correctly.
 
->> $ sudo ./tools/testing/selftests/bpf/test_verifier
->> ...
->> #417/p helper access to variable memory: size = 0 allowed on NULL (ARG_PTR_TO_MEM_OR_NULL) FAIL retval 65535 != 0
->> #419/p helper access to variable memory: size = 0 allowed on != NULL stack pointer (ARG_PTR_TO_MEM_OR_NULL) FAIL retval 65535 != 0
->> #423/p helper access to variable memory: size possible = 0 allowed on != NULL packet pointer (ARG_PTR_TO_MEM_OR_NULL) FAIL retval 65535 != 0
-> 
-> I'm not entirely sure this fix is correct, given these failures, to be honest.
-> 
-> Let's wait for someone who understands intended semantics for
-> bpf_csum_diff, before changing returned value so drastically.
-> 
-> But in any case, fixes for these test failures should be in your patch
-> series as well.
+But I think btf_type_id_size() doesn't handle var case correctly, I'll do
 
-Your change would actually break applications. The bpf_csum_diff() helper is
-heavily used with cascading so one result can be fed into another bpf_csum_diff()
-call as seed. Quick test on x86-64:
++             else if (btf_type_is_array(size_type) ||
+btf_type_is_var(size_type))
++                     size = btf->resolved_sizes[size_type_id];
 
-static int __init foo(void)
-{
-        u8 data[32 * sizeof(u32)];
-        u32 res1, res2, res3;
-        int i;
+to fix that.
 
-        prandom_bytes(data, sizeof(data));
-        res1 = csum_fold(csum_partial(data, sizeof(data), 0));
-        for (i = sizeof(u32); i < sizeof(data); i += sizeof(u32)) {
-                res2 = csum_fold(csum_partial(data, i, 0));
-                res2 = csum_fold(csum_partial(data+i, sizeof(data)-i, res2));
-                res3 = csum_partial(data, i, 0);
-                res3 = csum_fold(csum_partial(data+i, sizeof(data)-i, res3));
-                printk("%8d: [%4x (reference), %4x (unfolded), %4x (folded)]\n", i, res1, res3, res2);
-        }
-        return -1;
-}
-
-Gives for all three:
-
-[19113.233942]        4: [6b70 (reference), 6b70 (unfolded), 223d (folded)]
-[19113.233943]        8: [6b70 (reference), 6b70 (unfolded), a812 (folded)]
-[19113.233943]       12: [6b70 (reference), 6b70 (unfolded), 1c26 (folded)]
-[19113.233944]       16: [6b70 (reference), 6b70 (unfolded), 4f76 (folded)]
-[19113.233944]       20: [6b70 (reference), 6b70 (unfolded), 2801 (folded)]
-[19113.233945]       24: [6b70 (reference), 6b70 (unfolded),  b63 (folded)]
-[19113.233945]       28: [6b70 (reference), 6b70 (unfolded), 2fe0 (folded)]
-[19113.233946]       32: [6b70 (reference), 6b70 (unfolded), 18a2 (folded)]
-[19113.233946]       36: [6b70 (reference), 6b70 (unfolded), 2597 (folded)]
-[19113.233947]       40: [6b70 (reference), 6b70 (unfolded), 2f8e (folded)]
-[19113.233947]       44: [6b70 (reference), 6b70 (unfolded), b8af (folded)]
-[19113.233948]       48: [6b70 (reference), 6b70 (unfolded), fb8b (folded)]
-[19113.233948]       52: [6b70 (reference), 6b70 (unfolded), e9c0 (folded)]
-[19113.233949]       56: [6b70 (reference), 6b70 (unfolded), 6af1 (folded)]
-[19113.233949]       60: [6b70 (reference), 6b70 (unfolded), d7f4 (folded)]
-[19113.233949]       64: [6b70 (reference), 6b70 (unfolded), 8bc6 (folded)]
-[19113.233950]       68: [6b70 (reference), 6b70 (unfolded), 8718 (folded)]
-[19113.233950]       72: [6b70 (reference), 6b70 (unfolded), 27d8 (folded)]
-[19113.233951]       76: [6b70 (reference), 6b70 (unfolded), a2db (folded)]
-[19113.233952]       80: [6b70 (reference), 6b70 (unfolded),  3fd (folded)]
-[19113.233952]       84: [6b70 (reference), 6b70 (unfolded), 4be5 (folded)]
-[19113.233952]       88: [6b70 (reference), 6b70 (unfolded), 41ad (folded)]
-[19113.233953]       92: [6b70 (reference), 6b70 (unfolded), ca9b (folded)]
-[19113.233953]       96: [6b70 (reference), 6b70 (unfolded), f8ec (folded)]
-[19113.233954]      100: [6b70 (reference), 6b70 (unfolded), 5451 (folded)]
-[19113.233954]      104: [6b70 (reference), 6b70 (unfolded),  763 (folded)]
-[19113.233955]      108: [6b70 (reference), 6b70 (unfolded), e37c (folded)]
-[19113.233955]      112: [6b70 (reference), 6b70 (unfolded), 4ee6 (folded)]
-[19113.233956]      116: [6b70 (reference), 6b70 (unfolded), 4f73 (folded)]
-[19113.233956]      120: [6b70 (reference), 6b70 (unfolded), 1cfd (folded)]
-[19113.233957]      124: [6b70 (reference), 6b70 (unfolded), 7d1a (folded)]
-
-I'll take a look next week wrt fixing this uniformly for all archs.
-
-Thanks,
-Daniel
+> to btf_modifier_resolve()? But I do not think it impacts correctness
+> similar to btf_modifier_resolve() below as you changed
+> btf_type_id_size() implementation in the above.
+>
+> >       }
+> >
+> >       *type_id = size_type_id;
+> > @@ -1602,7 +1609,6 @@ static int btf_modifier_resolve(struct btf_verifier_env *env,
+> >       const struct btf_type *next_type;
+> >       u32 next_type_id = t->type;
+> >       struct btf *btf = env->btf;
+> > -     u32 next_type_size = 0;
+> >
+> >       next_type = btf_type_by_id(btf, next_type_id);
+> >       if (!next_type || btf_type_is_resolve_source_only(next_type)) {
+> > @@ -1620,7 +1626,7 @@ static int btf_modifier_resolve(struct btf_verifier_env *env,
+> >        * save us a few type-following when we use it later (e.g. in
+> >        * pretty print).
+> >        */
+> > -     if (!btf_type_id_size(btf, &next_type_id, &next_type_size)) {
+> > +     if (!btf_type_id_size(btf, &next_type_id, NULL)) {
+> >               if (env_type_is_resolved(env, next_type_id))
+> >                       next_type = btf_type_id_resolve(btf, &next_type_id);
+> >
+> > @@ -1633,7 +1639,7 @@ static int btf_modifier_resolve(struct btf_verifier_env *env,
+> >               }
+> >       }
+> >
+> > -     env_stack_pop_resolved(env, next_type_id, next_type_size);
+> > +     env_stack_pop_resolved(env, next_type_id, 0);
+> >
+> >       return 0;
+> >   }
+> >
