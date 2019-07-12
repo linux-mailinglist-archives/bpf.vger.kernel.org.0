@@ -2,135 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F41306747C
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2019 19:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6798D67488
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2019 19:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727371AbfGLRoq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Jul 2019 13:44:46 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:34776 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727366AbfGLRoq (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 12 Jul 2019 13:44:46 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6CHea9B017834
-        for <bpf@vger.kernel.org>; Fri, 12 Jul 2019 10:44:45 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=F2kypec0aiFOGfeY/idKL2YE6RLoUTl4k6zi81gvxIw=;
- b=DLDJICJEO+spuCj3DgEJ7dvLEdptXigTCXUBy4yglVgx2flEjmixdfua895vp4MkboQ2
- IjOPrkH2lWcb4QboTXOnGTsyWIzXEiSV7T73uHpjpbbfA/PdIhDBSKNBXexeZV86RDEt
- eiqOCAAjzhlo13mOnvPTR9jp0U2ZIlj2Dik= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2tptq7s0bp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 12 Jul 2019 10:44:44 -0700
-Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Fri, 12 Jul 2019 10:44:44 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id 8CE648616EB; Fri, 12 Jul 2019 10:44:43 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Krzesimir Nowak <krzesimir@kinvolk.io>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v2 bpf-next] selftests/bpf: remove logic duplication in test_verifier.c
-Date:   Fri, 12 Jul 2019 10:44:41 -0700
-Message-ID: <20190712174441.4089282-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1727226AbfGLRpj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Jul 2019 13:45:39 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:57434 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727362AbfGLRpj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 12 Jul 2019 13:45:39 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6CHgYqx033619
+        for <bpf@vger.kernel.org>; Fri, 12 Jul 2019 13:45:38 -0400
+Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2tpxugr2am-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 12 Jul 2019 13:45:37 -0400
+Received: from localhost
+        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Fri, 12 Jul 2019 18:45:36 +0100
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
+        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Fri, 12 Jul 2019 18:45:34 +0100
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6CHjWEG50790502
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 12 Jul 2019 17:45:33 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E09A5AE05F;
+        Fri, 12 Jul 2019 17:45:32 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A6FA2AE05D;
+        Fri, 12 Jul 2019 17:45:32 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.97.237])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 12 Jul 2019 17:45:32 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     gor@linux.ibm.com, heiko.carstens@de.ibm.com,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf] selftests/bpf: fix test_send_signal_nmi on s390
+Date:   Fri, 12 Jul 2019 19:45:28 +0200
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19071217-0016-0000-0000-000002921FE8
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19071217-0017-0000-0000-000032EFE59E
+Message-Id: <20190712174528.1767-1-iii@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-12_05:,,
  signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
  malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=939 adultscore=0 classifier=spam adjust=0 reason=mlx
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.0.1-1810050000 definitions=main-1907120179
-X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-test_verifier tests can specify single- and multi-runs tests. Internally
-logic of handling them is duplicated. Get rid of it by making single run
-retval/data specification to be a first run spec.
+Many s390 setups (most notably, KVM guests) do not have access to
+hardware performance events.
 
-Cc: Krzesimir Nowak <krzesimir@kinvolk.io>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Therefore, use the software event instead.
+
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Acked-by: Vasily Gorbik <gor@linux.ibm.com>
 ---
- tools/testing/selftests/bpf/test_verifier.c | 35 +++++++++------------
- 1 file changed, 15 insertions(+), 20 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/send_signal.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index b0773291012a..84135d5f4b35 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -86,7 +86,7 @@ struct bpf_test {
- 	int fixup_sk_storage_map[MAX_FIXUPS];
- 	const char *errstr;
- 	const char *errstr_unpriv;
--	uint32_t retval, retval_unpriv, insn_processed;
-+	uint32_t insn_processed;
- 	int prog_len;
- 	enum {
- 		UNDEF,
-@@ -95,16 +95,20 @@ struct bpf_test {
- 	} result, result_unpriv;
- 	enum bpf_prog_type prog_type;
- 	uint8_t flags;
--	__u8 data[TEST_DATA_LEN];
- 	void (*fill_helper)(struct bpf_test *self);
- 	uint8_t runs;
--	struct {
--		uint32_t retval, retval_unpriv;
--		union {
--			__u8 data[TEST_DATA_LEN];
--			__u64 data64[TEST_DATA_LEN / 8];
--		};
--	} retvals[MAX_TEST_RUNS];
-+#define bpf_testdata_struct_t					\
-+	struct {						\
-+		uint32_t retval, retval_unpriv;			\
-+		union {						\
-+			__u8 data[TEST_DATA_LEN];		\
-+			__u64 data64[TEST_DATA_LEN / 8];	\
-+		};						\
-+	}
-+	union {
-+		bpf_testdata_struct_t;
-+		bpf_testdata_struct_t retvals[MAX_TEST_RUNS];
-+	};
- 	enum bpf_attach_type expected_attach_type;
- };
+diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
+index 67cea1686305..4a45ea0b8448 100644
+--- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
++++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
+@@ -176,10 +176,19 @@ static int test_send_signal_tracepoint(void)
+ static int test_send_signal_nmi(void)
+ {
+ 	struct perf_event_attr attr = {
++#if defined(__s390__)
++		/* Many s390 setups (most notably, KVM guests) do not have
++		 * access to hardware performance events.
++		 */
++		.sample_period = 1,
++		.type = PERF_TYPE_SOFTWARE,
++		.config = PERF_COUNT_SW_CPU_CLOCK,
++#else
+ 		.sample_freq = 50,
+ 		.freq = 1,
+ 		.type = PERF_TYPE_HARDWARE,
+ 		.config = PERF_COUNT_HW_CPU_CYCLES,
++#endif
+ 	};
  
-@@ -949,17 +953,8 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
- 		uint32_t expected_val;
- 		int i;
- 
--		if (!test->runs) {
--			expected_val = unpriv && test->retval_unpriv ?
--				test->retval_unpriv : test->retval;
--
--			err = do_prog_test_run(fd_prog, unpriv, expected_val,
--					       test->data, sizeof(test->data));
--			if (err)
--				run_errs++;
--			else
--				run_successes++;
--		}
-+		if (!test->runs)
-+			test->runs = 1;
- 
- 		for (i = 0; i < test->runs; i++) {
- 			if (unpriv && test->retvals[i].retval_unpriv)
+ 	return test_send_signal_common(&attr, BPF_PROG_TYPE_PERF_EVENT, "perf_event");
 -- 
-2.17.1
+2.21.0
 
