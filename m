@@ -2,144 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C1104666BA
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2019 08:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C78667FE
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2019 09:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725840AbfGLGDo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Jul 2019 02:03:44 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:64268 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725807AbfGLGDo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 12 Jul 2019 02:03:44 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x6C62DjO010875;
-        Thu, 11 Jul 2019 23:03:22 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=15gAhCCoNvFMx4Fc3AR0OjP+hRuR2Juf4ipucdBgHKE=;
- b=R5M01xMdWq7Fmnv9vuJsu/ZKfmfN4LX02cywmjgzxbrY2kLX0nwIblsgKDDbps4yPwBj
- 1peVb0lwtvsrVHjm7EM3YdyxChB5VRcY5ytQVkVY5iJZKklu67pNqyghbpiJLmD8TF+Y
- DVM84w7D0w70zTDvkoU2OzVcgjNux8+iTAg= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 2tpk9u86nm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 11 Jul 2019 23:03:22 -0700
-Received: from ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) by
- ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 11 Jul 2019 23:03:16 -0700
-Received: from NAM01-BY2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 11 Jul 2019 23:03:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lfnMmJevbVgZRgYOMKlurZ3Y/K+hXWRSUMA/rNXyxe9/GyHi/Bzqe90fGWlYn2BVnpjftPaELe1oBtDFoCXsEn4IKbvsqOKODcK/FrJq7zhiHSWI5CoUpVKK5CBg9q1nvuS6irjKMRA2veOtCoHb6Pb4UDMhMpc6kjYfbDpgvEbHNZYGmxQNQytSNPMhngsNoNZxLaywIlP4ThgTHv2UrXZ5i8jVZEJLfPzds4fI4BrFrJaxElhyDzsdOGPAzqEd9OoA+uybGdBc0MAK6v+RxHt9CXafI1I//yjUJPgf4gm+9KoSs2Rsyx5f6MJk73/WcQSacs4pq7CenBgM97CJFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=15gAhCCoNvFMx4Fc3AR0OjP+hRuR2Juf4ipucdBgHKE=;
- b=TBb+Dof4NBVuje5VgrVlk0pITpBdaNS6xN9P/U0zLyp/UjywwRWFEj2QGrNje0jYYVvbPAGchi/jLCL6+XScUcJiRVR6oNZQH2+vS6i816aaSfHK6aGdu3rMyAik9kvvRDBIyqWJkMo2/QcitnyBX2WSotN+GVX3ZlF+/02c1dEFmfyBVUOoGRp57gdNMbOWmMJohafCksy6x2S8VM0D37v60az93vZ0U/hENg3EgTqMX5B8ha+GnO0tJcZ/dksrlwDTdjeunlABCTlWIJgizzR5HXTVsBFupq0Cxyqc5UnQzFZ5NxM9JuYVIlw3RX7IFPzpRNRDhDHESFFxH62aBw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=fb.com;dmarc=pass action=none header.from=fb.com;dkim=pass
- header.d=fb.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=15gAhCCoNvFMx4Fc3AR0OjP+hRuR2Juf4ipucdBgHKE=;
- b=T3Bd0HQ6JPZxCrRgWrUzCYMkV13FIvsCCEKyNgV6Cl++6jFLXLJu0fTeEZD/w4t0UiBrq1LGIo76mUUv/8wN/i/L4Fk+eg3XDbTVvbaTugU3QLxSQa3/7ZpPyn1uVw4eZWS+ZI+TKcnCkTxzlIhaKgGypNsKCyqny3ME9BKdy4Q=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.59.17) by
- BYAPR15MB3045.namprd15.prod.outlook.com (20.178.238.150) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2073.11; Fri, 12 Jul 2019 06:03:15 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::e499:ecba:ec04:abac]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::e499:ecba:ec04:abac%5]) with mapi id 15.20.2073.008; Fri, 12 Jul 2019
- 06:03:15 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>
-CC:     "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 0/3] fix BTF verification size resolution
-Thread-Topic: [PATCH v2 bpf-next 0/3] fix BTF verification size resolution
-Thread-Index: AQHVN7VqFgBTrNrCl0inh6kPvaNE/KbGf42A
-Date:   Fri, 12 Jul 2019 06:03:14 +0000
-Message-ID: <0143c2e9-ac0d-33de-3019-85016d771c76@fb.com>
-References: <20190711065307.2425636-1-andriin@fb.com>
-In-Reply-To: <20190711065307.2425636-1-andriin@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR20CA0035.namprd20.prod.outlook.com
- (2603:10b6:300:ed::21) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:10e::17)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::1:bc57]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3417fd29-c136-4906-9ca2-08d7068ea0a4
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB3045;
-x-ms-traffictypediagnostic: BYAPR15MB3045:
-x-microsoft-antispam-prvs: <BYAPR15MB30457CEA28F8364DD34D3999D3F20@BYAPR15MB3045.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 00963989E5
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(366004)(39860400002)(376002)(396003)(136003)(189003)(199004)(86362001)(99286004)(2201001)(31696002)(305945005)(66946007)(31686004)(2501003)(81166006)(4326008)(8676002)(81156014)(5660300002)(7736002)(8936002)(25786009)(71200400001)(71190400001)(76176011)(68736007)(14454004)(6116002)(486006)(102836004)(386003)(53546011)(478600001)(66446008)(2906002)(36756003)(229853002)(52116002)(316002)(6436002)(6486002)(256004)(6246003)(6506007)(476003)(46003)(53936002)(66476007)(66556008)(11346002)(186003)(446003)(2616005)(54906003)(64756008)(110136005)(6512007);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3045;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: XyaSgF544gc/ktVkiI1Dh7rogw0ILFfMOMxRpR8b6zb8hiewvVybx2GiYa83ZfwIBhPCF4P+hyzR4j2xzdldYMzSfTKrHVNRPLXU0OaV9TnYFiFdrXU3RwC/qAv+xy3AGqFWuTWLNDbXhcyFiAnr9HHEhW1CgkCrLme5shpyG3SMvSSQvBZA8bWvUTJTwwjRMS72x7HeN7NtVDWe6NYAORuXPGY9Dx+23JaA/THEp6POGbzGNoFaGy5xTC+OcvkoDmcqKxbyuLUp/CI+p9VheiXIgvN8YlqH5FtPgv7IrGeKckNJSpsPa9gNHTo46gmy65xGM0B+vZedzJOmm4SGB4rt6DLLZpmNWFIEvDo07170cOhjzjvtl3Oy/fYTasvvtq4/BVQLfo8U7v5GjLw3YUOqFzLZSVywEBi//01ik2k=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8CDEB4ABFA54724FB14940F8432CA0DC@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726085AbfGLHxZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Jul 2019 03:53:25 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:41603 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726047AbfGLHxZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Jul 2019 03:53:25 -0400
+Received: by mail-lj1-f194.google.com with SMTP id d24so8409414ljg.8
+        for <bpf@vger.kernel.org>; Fri, 12 Jul 2019 00:53:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kinvolk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=N14VhMtw4nxYPnjI4trplrlqCxWIy2L/etQTQPyfrho=;
+        b=FxhdyRHbpu8lEDRGri3kEp9qecmd7WXeACmTGRQMjU0g0DqvZPnxyZfXWRacYiex4Q
+         zmxrgxHb3kXb6UBF/7oOMk438KVsnW/DeUTWBUilhWsuD8PEYpqXfKVo0nBFFOeYQNK8
+         ZZm9CdMSRPomyrb+LFAGxthlf56iy8Rw5Wsp4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=N14VhMtw4nxYPnjI4trplrlqCxWIy2L/etQTQPyfrho=;
+        b=qmUKy3Q0FbqRSaIzjJS8cEmA7Yi7lQHcUntuphQ3X+mSPTOI9rLHQwHs4PUg9CS0r6
+         b4/hLxxf5dlyFo5AVG+OuNIY3uMLYmMQGTU1OwxpCKJnn8wvgEygV1uKhIMYtENqp1Zf
+         P3vxKb5BcJPmajdFrGpd/wO2vbOnwihAaTBjBVKlQJikv5g3hrV0TAZNJMd8kSWVTC23
+         y2rauaU3B25NsLzjkxxUBno1hJVVa9G/CviWyktoBps5xBOLiw5A3tYtTtP5CO5FOPjN
+         GcoBEiX+QYzhaoe7KYeuWEVQs5kAoT6VT0e+Tw8bdl4ejipPSDiQjuLNP/096IRgt4pL
+         YKjQ==
+X-Gm-Message-State: APjAAAVeUCa1HH1u3N5BoFGbfEKS62xLR0yyd0MxQmM35YF4J/D5ZYW3
+        4x8CWn4DxdzpU+OzZrpH7asCEHSBoa9wtABx9GS5Sg==
+X-Google-Smtp-Source: APXvYqyVArAnXPKGWQj2yioNmerFWk7zPojj8A/RcIlFiFYo6P6hMnP+MpksjmjX0hn0HTU8pt79mncpTJcBlrqp2U4=
+X-Received: by 2002:a2e:89c8:: with SMTP id c8mr5174637ljk.70.1562918002887;
+ Fri, 12 Jul 2019 00:53:22 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3417fd29-c136-4906-9ca2-08d7068ea0a4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jul 2019 06:03:14.8288
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yhs@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3045
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-12_02:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=998 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907120063
-X-FB-Internal: deliver
+References: <20190711010844.1285018-1-andriin@fb.com> <CAGGp+cETuvWUwET=6Mq5sWTJhi5+Rs2bw8xNP2NYZXAAuc6-Og@mail.gmail.com>
+ <CAEf4Bzb1kE_jCbyye07-pVMT=914_Nrdh+R=QXA2qMssYP5brA@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb1kE_jCbyye07-pVMT=914_Nrdh+R=QXA2qMssYP5brA@mail.gmail.com>
+From:   Krzesimir Nowak <krzesimir@kinvolk.io>
+Date:   Fri, 12 Jul 2019 09:53:12 +0200
+Message-ID: <CAGGp+cHaV1EMXqeQvKN-p5gEZWcSgGfcbKimcS+C8u=dfeU=1Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: remove logic duplication in test_verifier.c
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, Kernel Team <kernel-team@fb.com>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDcvMTAvMTkgMTE6NTMgUE0sIEFuZHJpaSBOYWtyeWlrbyB3cm90ZToNCj4gQlRGIHNp
-emUgcmVzb2x1dGlvbiBsb2dpYyBpc24ndCBhbHdheXMgcmVzb2x2aW5nIHR5cGUgc2l6ZSBjb3Jy
-ZWN0bHksIGxlYWRpbmcNCj4gdG8gZXJyb25lb3VzIG1hcCBjcmVhdGlvbiBmYWlsdXJlcyBkdWUg
-dG8gdmFsdWUgc2l6ZSBtaXNtYXRjaC4NCj4gDQo+IFRoaXMgcGF0Y2ggc2V0Og0KPiAxLiBmaXhl
-cyB0aGUgaXNzdWUgKHBhdGNoICMxKTsNCj4gMi4gYWRkcyB0ZXN0cyBmb3IgdHJpY2tpZXIgY2Fz
-ZXMgKHBhdGNoICMyKTsNCj4gMy4gYW5kIGNvbnZlcnRzIGZldyB0ZXN0IGNhc2VzIHV0aWxpemlu
-ZyBCVEYtZGVmaW5lZCBtYXBzLCB0aGF0IHByZXZpb3VzbHkNCj4gICAgIGNvdWxkbid0IHVzZSB0
-eXBlZGVmJ2VkIGFycmF5cyBkdWUgdG8ga2VybmVsIGJ1ZyAocGF0Y2ggIzMpLg0KPiANCj4gUGF0
-Y2ggIzEgY2FuIGJlIGFwcGxpZWQgYWdhaW5zdCBicGYgdHJlZSwgYnV0IHNlbGZ0ZXN0IG9uZXMg
-KCMyIGFuZCAjMykgaGF2ZQ0KPiB0byBnbyBhZ2FpbnN0IGJwZi1uZXh0IGZvciBub3cuDQoNCldo
-eSAjMiBhbmQgIzMgaGF2ZSB0byBnbyB0byBicGYtbmV4dD8gYnBmIHRyZWUgYWxzbyBhY2NlcHRz
-IHRlc3RzLCANCkFGQUlLLiBNYXliZSBsZWF2ZSBmb3IgRGFuaWVsIGFuZCBBbGV4ZWkgdG8gZGVj
-aWRlIGluIHRoaXMgcGFydGljdWxhciBjYXNlLg0KDQo+IA0KPiBBbmRyaWkgTmFrcnlpa28gKDMp
-Og0KPiAgICBicGY6IGZpeCBCVEYgdmVyaWZpZXIgc2l6ZSByZXNvbHV0aW9uIGxvZ2ljDQo+ICAg
-IHNlbGZ0ZXN0cy9icGY6IGFkZCB0cmlja2llciBzaXplIHJlc29sdXRpb24gdGVzdHMNCj4gICAg
-c2VsZnRlc3RzL2JwZjogdXNlIHR5cGVkZWYnZWQgYXJyYXlzIGFzIG1hcCB2YWx1ZXMNCg0KTG9v
-a3MgZ29vZCB0byBtZS4gRXhjZXB0IG1pbm9yIGNvbW1lbnRzIGluIHBhdGNoIDEvMywgQWNrIHRo
-ZSBzZXJpZXMuDQpBY2tlZC1ieTogWW9uZ2hvbmcgU29uZyA8eWhzQGZiLmNvbT4NCg0KPiANCj4g
-ICBrZXJuZWwvYnBmL2J0Zi5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxNCArKy0N
-Cj4gICAuLi4vYnBmL3Byb2dzL3Rlc3RfZ2V0X3N0YWNrX3Jhd3RwLmMgICAgICAgICAgfCAgMyAr
-LQ0KPiAgIC4uLi9icGYvcHJvZ3MvdGVzdF9zdGFja3RyYWNlX2J1aWxkX2lkLmMgICAgICB8ICAz
-ICstDQo+ICAgLi4uL3NlbGZ0ZXN0cy9icGYvcHJvZ3MvdGVzdF9zdGFja3RyYWNlX21hcC5jIHwg
-IDIgKy0NCj4gICB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvdGVzdF9idGYuYyAgICAgICAg
-fCA4OCArKysrKysrKysrKysrKysrKysrDQo+ICAgNSBmaWxlcyBjaGFuZ2VkLCAxMDIgaW5zZXJ0
-aW9ucygrKSwgOCBkZWxldGlvbnMoLSkNCj4gDQo=
+On Thu, Jul 11, 2019 at 4:43 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Jul 11, 2019 at 5:13 AM Krzesimir Nowak <krzesimir@kinvolk.io> wr=
+ote:
+> >
+> > On Thu, Jul 11, 2019 at 3:08 AM Andrii Nakryiko <andriin@fb.com> wrote:
+> > >
+> > > test_verifier tests can specify single- and multi-runs tests. Interna=
+lly
+> > > logic of handling them is duplicated. Get rid of it by making single =
+run
+> > > retval specification to be a first retvals spec.
+> > >
+> > > Cc: Krzesimir Nowak <krzesimir@kinvolk.io>
+> > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> >
+> > Looks good, one nit below.
+> >
+> > Acked-by: Krzesimir Nowak <krzesimir@kinvolk.io>
+> >
+> > > ---
+> > >  tools/testing/selftests/bpf/test_verifier.c | 37 ++++++++++---------=
+--
+> > >  1 file changed, 18 insertions(+), 19 deletions(-)
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/test=
+ing/selftests/bpf/test_verifier.c
+> > > index b0773291012a..120ecdf4a7db 100644
+> > > --- a/tools/testing/selftests/bpf/test_verifier.c
+> > > +++ b/tools/testing/selftests/bpf/test_verifier.c
+> > > @@ -86,7 +86,7 @@ struct bpf_test {
+> > >         int fixup_sk_storage_map[MAX_FIXUPS];
+> > >         const char *errstr;
+> > >         const char *errstr_unpriv;
+> > > -       uint32_t retval, retval_unpriv, insn_processed;
+> > > +       uint32_t insn_processed;
+> > >         int prog_len;
+> > >         enum {
+> > >                 UNDEF,
+> > > @@ -95,16 +95,24 @@ struct bpf_test {
+> > >         } result, result_unpriv;
+> > >         enum bpf_prog_type prog_type;
+> > >         uint8_t flags;
+> > > -       __u8 data[TEST_DATA_LEN];
+> > >         void (*fill_helper)(struct bpf_test *self);
+> > >         uint8_t runs;
+> > > -       struct {
+> > > -               uint32_t retval, retval_unpriv;
+> > > -               union {
+> > > -                       __u8 data[TEST_DATA_LEN];
+> > > -                       __u64 data64[TEST_DATA_LEN / 8];
+> > > +       union {
+> > > +               struct {
+> >
+> > Maybe consider moving the struct definition outside to further the
+> > removal of the duplication?
+>
+> Can't do that because then retval/retval_unpriv/data won't be
+> accessible as a normal field of struct bpf_test. It has to be in
+> anonymous structs/unions, unfortunately.
+>
+
+Ah, right.
+
+Meh.
+
+I tried something like this:
+
+#define BPF_DATA_STRUCT \
+    struct { \
+        uint32_t retval, retval_unpriv; \
+        union { \
+            __u8 data[TEST_DATA_LEN]; \
+            __u64 data64[TEST_DATA_LEN / 8]; \
+        }; \
+    }
+
+and then:
+
+    union {
+        BPF_DATA_STRUCT;
+        BPF_DATA_STRUCT retvals[MAX_TEST_RUNS];
+    };
+
+And that seems to compile at least. But question is: is this
+acceptably ugly or unacceptably ugly? :)
+
+> I tried the following, but that also didn't work:
+>
+> union {
+>     struct bpf_test_retval {
+>         uint32_t retval, retval_unpriv;
+>         union {
+>             __u8 data[TEST_DATA_LEN];
+>             __u64 data64[TEST_DATA_LEN / 8];
+>         };
+>     };
+>     struct bpf_test_retval retvals[MAX_TEST_RUNS];
+> };
+>
+> This also made retval/retval_unpriv to not behave as normal fields of
+> struct bpf_test.
+>
+>
+> >
+> > > +                       uint32_t retval, retval_unpriv;
+> > > +                       union {
+> > > +                               __u8 data[TEST_DATA_LEN];
+> > > +                               __u64 data64[TEST_DATA_LEN / 8];
+> > > +                       };
+> > >                 };
+> > > -       } retvals[MAX_TEST_RUNS];
+> > > +               struct {
+> > > +                       uint32_t retval, retval_unpriv;
+> > > +                       union {
+> > > +                               __u8 data[TEST_DATA_LEN];
+> > > +                               __u64 data64[TEST_DATA_LEN / 8];
+> > > +                       };
+> > > +               } retvals[MAX_TEST_RUNS];
+> > > +       };
+> > >         enum bpf_attach_type expected_attach_type;
+> > >  };
+> > >
+> > > @@ -949,17 +957,8 @@ static void do_test_single(struct bpf_test *test=
+, bool unpriv,
+> > >                 uint32_t expected_val;
+> > >                 int i;
+> > >
+> > > -               if (!test->runs) {
+> > > -                       expected_val =3D unpriv && test->retval_unpri=
+v ?
+> > > -                               test->retval_unpriv : test->retval;
+> > > -
+> > > -                       err =3D do_prog_test_run(fd_prog, unpriv, exp=
+ected_val,
+> > > -                                              test->data, sizeof(tes=
+t->data));
+> > > -                       if (err)
+> > > -                               run_errs++;
+> > > -                       else
+> > > -                               run_successes++;
+> > > -               }
+> > > +               if (!test->runs)
+> > > +                       test->runs =3D 1;
+> > >
+> > >                 for (i =3D 0; i < test->runs; i++) {
+> > >                         if (unpriv && test->retvals[i].retval_unpriv)
+> > > --
+> > > 2.17.1
+> > >
+> >
+> >
+> > --
+> > Kinvolk GmbH | Adalbertstr.6a, 10999 Berlin | tel: +491755589364
+> > Gesch=C3=A4ftsf=C3=BChrer/Directors: Alban Crequy, Chris K=C3=BChl, Iag=
+o L=C3=B3pez Galeiras
+> > Registergericht/Court of registration: Amtsgericht Charlottenburg
+> > Registernummer/Registration number: HRB 171414 B
+> > Ust-ID-Nummer/VAT ID number: DE302207000
+
+
+
+--=20
+Kinvolk GmbH | Adalbertstr.6a, 10999 Berlin | tel: +491755589364
+Gesch=C3=A4ftsf=C3=BChrer/Directors: Alban Crequy, Chris K=C3=BChl, Iago L=
+=C3=B3pez Galeiras
+Registergericht/Court of registration: Amtsgericht Charlottenburg
+Registernummer/Registration number: HRB 171414 B
+Ust-ID-Nummer/VAT ID number: DE302207000
