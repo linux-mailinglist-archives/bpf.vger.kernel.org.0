@@ -2,71 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5C167062
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2019 15:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09DB0670AC
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2019 15:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727355AbfGLNoM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Jul 2019 09:44:12 -0400
-Received: from www62.your-server.de ([213.133.104.62]:57056 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727271AbfGLNoM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Jul 2019 09:44:12 -0400
-Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hlvqJ-00011k-76; Fri, 12 Jul 2019 15:44:07 +0200
-Received: from [2a02:1205:5069:fce0:c5f9:cd68:79d4:446d] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hlvqJ-000Ia2-0Z; Fri, 12 Jul 2019 15:44:07 +0200
-Subject: Re: [PATCH v4 bpf-next 0/4] selftests/bpf: fix compiling
- loop{1,2,3}.c on s390
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Stanislav Fomichev <sdf@fomichev.me>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Y Song <ys114321@gmail.com>, davem@davemloft.net,
-        ast@kernel.org
-References: <20190711142930.68809-1-iii@linux.ibm.com>
- <20190711203508.GC16709@mini-arch>
- <994CF53F-3E84-4CE8-92C5-B2983AD50EB8@linux.ibm.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <2e6eabde-b584-5241-5368-d2ba58cb482f@iogearbox.net>
-Date:   Fri, 12 Jul 2019 15:44:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.3.0
+        id S1727066AbfGLN4p (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Jul 2019 09:56:45 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59342 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726987AbfGLN4p (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 12 Jul 2019 09:56:45 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6CDpVbj130692
+        for <bpf@vger.kernel.org>; Fri, 12 Jul 2019 09:56:44 -0400
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2tpu7w0vvd-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 12 Jul 2019 09:56:43 -0400
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Fri, 12 Jul 2019 14:56:41 +0100
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Fri, 12 Jul 2019 14:56:39 +0100
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6CDubMJ47710400
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 12 Jul 2019 13:56:37 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A1D314C04E;
+        Fri, 12 Jul 2019 13:56:37 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 70D8B4C044;
+        Fri, 12 Jul 2019 13:56:37 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.97.237])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 12 Jul 2019 13:56:37 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     gor@linux.ibm.com, heiko.carstens@de.ibm.com,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf] selftests/bpf: make directory prerequisites order-only
+Date:   Fri, 12 Jul 2019 15:56:31 +0200
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <994CF53F-3E84-4CE8-92C5-B2983AD50EB8@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25508/Fri Jul 12 10:10:04 2019)
+X-TM-AS-GCONF: 00
+x-cbid: 19071213-0028-0000-0000-00000383C033
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19071213-0029-0000-0000-00002443D86B
+Message-Id: <20190712135631.91398-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-12_04:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907120150
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/12/2019 10:55 AM, Ilya Leoshkevich wrote:
->> Am 11.07.2019 um 22:35 schrieb Stanislav Fomichev <sdf@fomichev.me>:
->>
->> On 07/11, Ilya Leoshkevich wrote:
->>> Use PT_REGS_RC(ctx) instead of ctx->rax, which is not present on s390.
->>>
->>> This patch series consists of three preparatory commits, which make it
->>> possible to use PT_REGS_RC in BPF selftests, followed by the actual fix.
->>>
->> Still looks good to me, thanks!
->>
->> Reviewed-by: Stanislav Fomichev <sdf@google.com>
->>
->> Again, should probably go via bpf to fix the existing tests, not bpf-next
->> (but I see bpf tree is not synced with net tree yet).
-> 
-> Sorry, I missed your comment the last time. You are right - that’s the
-> reason I’ve been sending this to bpf-next so far — loop*.c don’t even
-> exist in the bpf tree.
+When directories are used as prerequisites in Makefiles, they can cause
+a lot of unnecessary rebuilds, because a directory is considered changed
+whenever a file in this directory is added, removed or modified.
 
-Applied to bpf tree (and also added Stanislav's Tested-by to the last
-one), thanks!
+If the only thing a target is interested in is the existence of the
+directory it depends on, which is the case for selftests/bpf, this
+directory should be specified as an order-only prerequisite: it would
+still be created in case it does not exist, but it would not trigger a
+rebuild of a target in case it's considered changed.
+
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ tools/testing/selftests/bpf/Makefile | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 277d8605e340..0e003fb6641b 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -183,12 +183,12 @@ TEST_CUSTOM_PROGS += $(ALU32_BUILD_DIR)/test_progs_32
+ $(ALU32_BUILD_DIR):
+ 	mkdir -p $@
+ 
+-$(ALU32_BUILD_DIR)/urandom_read: $(OUTPUT)/urandom_read
++$(ALU32_BUILD_DIR)/urandom_read: $(OUTPUT)/urandom_read | $(ALU32_BUILD_DIR)
+ 	cp $< $@
+ 
+ $(ALU32_BUILD_DIR)/test_progs_32: test_progs.c $(OUTPUT)/libbpf.a\
+-						$(ALU32_BUILD_DIR) \
+-						$(ALU32_BUILD_DIR)/urandom_read
++						$(ALU32_BUILD_DIR)/urandom_read \
++						| $(ALU32_BUILD_DIR)
+ 	$(CC) $(TEST_PROGS_CFLAGS) $(CFLAGS) \
+ 		-o $(ALU32_BUILD_DIR)/test_progs_32 \
+ 		test_progs.c test_stub.c trace_helpers.c prog_tests/*.c \
+@@ -197,8 +197,8 @@ $(ALU32_BUILD_DIR)/test_progs_32: test_progs.c $(OUTPUT)/libbpf.a\
+ $(ALU32_BUILD_DIR)/test_progs_32: $(PROG_TESTS_H)
+ $(ALU32_BUILD_DIR)/test_progs_32: prog_tests/*.c
+ 
+-$(ALU32_BUILD_DIR)/%.o: progs/%.c $(ALU32_BUILD_DIR) \
+-					$(ALU32_BUILD_DIR)/test_progs_32
++$(ALU32_BUILD_DIR)/%.o: progs/%.c $(ALU32_BUILD_DIR)/test_progs_32 \
++					| $(ALU32_BUILD_DIR)
+ 	($(CLANG) $(CLANG_FLAGS) -O2 -target bpf -emit-llvm -c $< -o - || \
+ 		echo "clang failed") | \
+ 	$(LLC) -march=bpf -mattr=+alu32 -mcpu=$(CPU) $(LLC_FLAGS) \
+@@ -236,7 +236,7 @@ $(PROG_TESTS_DIR):
+ 	mkdir -p $@
+ 
+ PROG_TESTS_FILES := $(wildcard prog_tests/*.c)
+-$(PROG_TESTS_H): $(PROG_TESTS_DIR) $(PROG_TESTS_FILES)
++$(PROG_TESTS_H): $(PROG_TESTS_FILES) | $(PROG_TESTS_DIR)
+ 	$(shell ( cd prog_tests/; \
+ 		  echo '/* Generated header, do not edit */'; \
+ 		  echo '#ifdef DECLARE'; \
+@@ -257,7 +257,7 @@ MAP_TESTS_H := $(MAP_TESTS_DIR)/tests.h
+ test_maps.c: $(MAP_TESTS_H)
+ $(OUTPUT)/test_maps: CFLAGS += $(TEST_MAPS_CFLAGS)
+ MAP_TESTS_FILES := $(wildcard map_tests/*.c)
+-$(MAP_TESTS_H): $(MAP_TESTS_DIR) $(MAP_TESTS_FILES)
++$(MAP_TESTS_H): $(MAP_TESTS_FILES) | $(MAP_TESTS_DIR)
+ 	$(shell ( cd map_tests/; \
+ 		  echo '/* Generated header, do not edit */'; \
+ 		  echo '#ifdef DECLARE'; \
+@@ -279,7 +279,7 @@ $(VERIFIER_TESTS_DIR):
+ 	mkdir -p $@
+ 
+ VERIFIER_TEST_FILES := $(wildcard verifier/*.c)
+-$(OUTPUT)/verifier/tests.h: $(VERIFIER_TESTS_DIR) $(VERIFIER_TEST_FILES)
++$(OUTPUT)/verifier/tests.h: $(VERIFIER_TEST_FILES) | $(VERIFIER_TESTS_DIR)
+ 	$(shell ( cd verifier/; \
+ 		  echo '/* Generated header, do not edit */'; \
+ 		  echo '#ifdef FILL_ARRAY'; \
+-- 
+2.21.0
+
