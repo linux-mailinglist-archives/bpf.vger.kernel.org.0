@@ -2,114 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F1B66289
-	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2019 01:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B56BC662A9
+	for <lists+bpf@lfdr.de>; Fri, 12 Jul 2019 02:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728574AbfGKXup (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Jul 2019 19:50:45 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:45757 "EHLO
+        id S1729549AbfGLAK3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Jul 2019 20:10:29 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:45122 "EHLO
         mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728532AbfGKXuo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Jul 2019 19:50:44 -0400
-Received: by mail-qt1-f196.google.com with SMTP id x22so1415314qtp.12;
-        Thu, 11 Jul 2019 16:50:44 -0700 (PDT)
+        with ESMTP id S1728582AbfGLAK3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Jul 2019 20:10:29 -0400
+Received: by mail-qt1-f196.google.com with SMTP id x22so1456503qtp.12;
+        Thu, 11 Jul 2019 17:10:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wuTNjs1AJzVSPfomxhglY+rjhXorfZWV3dSJ2jI2rn8=;
-        b=lHNjCuU//O0PYvZcPHyNlgDrIP/JmdlwJkCURyOzv2OTxDzyJ5F9OV+LxvO1YgNcTd
-         3badbLyWNUwSh/hhUC12gInEmr9Az7jKuOSEhOn7IqECEFnfXc4JM1WfAwQnLh8MJL4n
-         SZ8QQ09G4hEI0DmHcXjFAfQEiMpEDmBsXcbjb/bzM7JLVxFD1FmR2pV27sIT58nkpW5H
-         Fi6oSphodQTJK/sJ7oFnFp5HSsLlYI5cdGw9pIbmqzR5qBEtbohHoq8IlYgpfK8LnO/8
-         ZFU8DUicggdmlWtcF3oCOz4Ebjv/m9NBB8Aysg0kOsLkr1L8QVUcrrmqY18WY/2JDdvl
-         PVNA==
+         :cc:content-transfer-encoding;
+        bh=WzVqjz+ovYVJRN1UL9XOiaqyrDBmch5lCBZzUwHfOaY=;
+        b=uXGCVxnBJH+IrTUQWBZvqNDA8TsqpMaP2yszpAVamWVilZL18N18DcsOAbwo/fDSq8
+         668wNSevaj6G+5reko3+9dXNspY6ji0n4wgsyXk/tWCgzWSGH8u59bStJr2imP0XlgIk
+         Krcnp+3YHvYdG88eAdcEs0wxIwBCnC7rvUwVhKjYbvRXxqBYVYYbYeKWjrouvpO9DGb3
+         zXQiyAV07LL/OJMLs80rctj8ApHvW5XsodGmBl6vZlA1W5XmjXeRxS+BplegUHl7bzey
+         4vOTWQoIxYQvWJEbw4iEgA/6fdlt8rDdjTTB0FiqFH4E8hPfjEDubUGS0aV2FEWNArUH
+         0XrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wuTNjs1AJzVSPfomxhglY+rjhXorfZWV3dSJ2jI2rn8=;
-        b=V8q53Yql8cOg+8gk5+ppmG343Ns3oZh/U5EIQq5pk2oDf+lSWZkXP0eUmj189wWhma
-         8B5em/ROhji2htFbel4DFxIROS1WqEoPT0zy4A6HNDHKgEY4hfAI2XWTtRgIoE8WrU9p
-         /svIKoPoPej2Fwkzl1o9DNrS+uVvfOmWH3231pcCHzSb3cXTNyMOdFpJO0nT6VEm+xvB
-         f7R76R7r8ZBkn9ze62OgCN6J9mMAlXQ/jBu9pdvjdaRVWRMr1ZfVu3zU9lPpXTGNwMYF
-         H0Se9JmFfgcelT2+nGQ8azAvUvFd1I6Q7OwDJP+jhWiGdREj22gUnCUfwbFtHDHtqNKb
-         Jk6g==
-X-Gm-Message-State: APjAAAX0S4327S9hOdPhemzDVyTeTYS/7a2SMGqD7x3ctXtXTmbiQq0h
-        nQw+hkhRL9PToC4GPDyvMot/9mTMtcB+F8XcydM=
-X-Google-Smtp-Source: APXvYqxi5uC3T9mdtDBKrfzoMfUO2bPhfXojvxDD1+S09q+TEBQcHeoRdC3Rji4gs+Y+3hL1bahWQt+YEvRtNbQD8Y0=
-X-Received: by 2002:ac8:2d56:: with SMTP id o22mr3917172qta.171.1562889043498;
- Thu, 11 Jul 2019 16:50:43 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WzVqjz+ovYVJRN1UL9XOiaqyrDBmch5lCBZzUwHfOaY=;
+        b=TpETizw8vMuX45v2nH1FpLjEAvq2Ou1kf7m2BsQEQLX1V+osM/Xmst9hgQpiMDjaJJ
+         XrhJHiHf+EJ4U4V1CGpu9SD+7wFgQlXLCTRhayRZgSSfl1/2JORIK0xkB/PJJeV2i04+
+         vIwsdyj2sxJi0zc26t3W7fwNqqeyoo9x0D3yIOfRnfc8iwHsaTaau3iAk2hvnDVOfZ8F
+         xGleSZKsy3gRdGmGVIfQ477YemngclIfqAEprUAHh3WQ1+lcQ/u02772/zP8CQGNEcNF
+         2nNQ7/NdArWRPpET09vt2evXeandcXcEtHNGoIz/Yc89DyUawCXTSt0y/RXgEqurreoB
+         4K7w==
+X-Gm-Message-State: APjAAAWDJYg8nOslMq02nJMF1R0wjPuDqjW7cB95ml1IdauO5AXI6VgE
+        rwc6Vyxke18A3miylgFowH7kZW9K+zeDRWeXvaE=
+X-Google-Smtp-Source: APXvYqzIg0sY6zjxpBd9of08XzWu259C1MQr+I7Q2VLBe3mYWznBjpvBpc3EEJAwziLsMwYtKdePvkRWzPSihHrP7y8=
+X-Received: by 2002:ac8:290c:: with SMTP id y12mr3876880qty.141.1562890227759;
+ Thu, 11 Jul 2019 17:10:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <1562837513-745-1-git-send-email-p.pisati@gmail.com>
-In-Reply-To: <1562837513-745-1-git-send-email-p.pisati@gmail.com>
+References: <20190708163121.18477-1-krzesimir@kinvolk.io> <20190708163121.18477-2-krzesimir@kinvolk.io>
+ <CAEf4BzYDOyU52wdCinm9cxxvNijpTJgQbCg9UxcO1QKk6vWhNA@mail.gmail.com> <CAGGp+cEaGphDCuZL+sbo2aCVumk2jrq9_Lshifg-Ewphfm40Wg@mail.gmail.com>
+In-Reply-To: <CAGGp+cEaGphDCuZL+sbo2aCVumk2jrq9_Lshifg-Ewphfm40Wg@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 11 Jul 2019 16:50:32 -0700
-Message-ID: <CAEf4BzbGLmuZ48vFUCrDW6VC7_YrkW_0NpgpgXNQEzF_dEqgnA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Fold checksum at the end of bpf_csum_diff and fix
-To:     Paolo Pisati <p.pisati@gmail.com>
-Cc:     "--in-reply-to=" <20190710231439.GD32439@tassilo.jf.intel.com>,
+Date:   Thu, 11 Jul 2019 17:10:16 -0700
+Message-ID: <CAEf4BzZBzreJOvEzm-OzVPNfwHOhuQ4nh4P04Nh5-u24sjFEcA@mail.gmail.com>
+Subject: Re: [bpf-next v3 01/12] selftests/bpf: Print a message when tester
+ could not run a program
+To:     Krzesimir Nowak <krzesimir@kinvolk.io>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Alban Crequy <alban@kinvolk.io>,
+        =?UTF-8?Q?Iago_L=C3=B3pez_Galeiras?= <iago@kinvolk.io>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jiong Wang <jiong.wang@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+        xdp-newbies@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 11, 2019 at 2:32 AM Paolo Pisati <p.pisati@gmail.com> wrote:
+On Thu, Jul 11, 2019 at 4:36 AM Krzesimir Nowak <krzesimir@kinvolk.io> wrot=
+e:
 >
-> From: Paolo Pisati <paolo.pisati@canonical.com>
+> On Thu, Jul 11, 2019 at 1:45 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Jul 8, 2019 at 3:42 PM Krzesimir Nowak <krzesimir@kinvolk.io> w=
+rote:
+> > >
+> > > This prints a message when the error is about program type being not
+> > > supported by the test runner or because of permissions problem. This
+> > > is to see if the program we expected to run was actually executed.
+> > >
+> > > The messages are open-coded because strerror(ENOTSUPP) returns
+> > > "Unknown error 524".
+> > >
+> > > Changes since v2:
+> > > - Also print "FAIL" on an unexpected bpf_prog_test_run error, so ther=
+e
+> > >   is a corresponding "FAIL" message for each failed test.
+> > >
+> > > Signed-off-by: Krzesimir Nowak <krzesimir@kinvolk.io>
+> > > ---
+> > >  tools/testing/selftests/bpf/test_verifier.c | 17 +++++++++++++----
+> > >  1 file changed, 13 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/test=
+ing/selftests/bpf/test_verifier.c
+> > > index c5514daf8865..b8d065623ead 100644
+> > > --- a/tools/testing/selftests/bpf/test_verifier.c
+> > > +++ b/tools/testing/selftests/bpf/test_verifier.c
+> > > @@ -831,11 +831,20 @@ static int do_prog_test_run(int fd_prog, bool u=
+npriv, uint32_t expected_val,
+> > >                                 tmp, &size_tmp, &retval, NULL);
+> > >         if (unpriv)
+> > >                 set_admin(false);
+> > > -       if (err && errno !=3D 524/*ENOTSUPP*/ && errno !=3D EPERM) {
+> > > -               printf("Unexpected bpf_prog_test_run error ");
+> > > -               return err;
+> > > +       if (err) {
+> > > +               switch (errno) {
+> > > +               case 524/*ENOTSUPP*/:
+> > > +                       printf("Did not run the program (not supporte=
+d) ");
+> > > +                       return 0;
+> > > +               case EPERM:
+> > > +                       printf("Did not run the program (no permissio=
+n) ");
+> >
+> > Let's add "SKIP: " prefix to these?
 >
-> After applying patch 0001, all checksum implementations i could test (x86-64, arm64 and
-> arm), now agree on the return value.
->
-> Patch 0002 fix the expected return value for test #13: i did the calculation manually,
-> and it correspond.
->
-> Unfortunately, after applying patch 0001, other test cases now fail in
-> test_verifier:
->
-> $ sudo ./tools/testing/selftests/bpf/test_verifier
-> ...
-> #417/p helper access to variable memory: size = 0 allowed on NULL (ARG_PTR_TO_MEM_OR_NULL) FAIL retval 65535 != 0
-> #419/p helper access to variable memory: size = 0 allowed on != NULL stack pointer (ARG_PTR_TO_MEM_OR_NULL) FAIL retval 65535 != 0
-> #423/p helper access to variable memory: size possible = 0 allowed on != NULL packet pointer (ARG_PTR_TO_MEM_OR_NULL) FAIL retval 65535 != 0
+> Not sure about it. The important part of the test (the program being
+> verified by the kernel's verifier) was still executed, so the test is
+> not really skipped.
 
-I'm not entirely sure this fix is correct, given these failures, to be honest.
 
-Let's wait for someone who understands intended semantics for
-bpf_csum_diff, before changing returned value so drastically.
+Ah, I see. So the program was loaded/verifierd, but wasn't test-run.
 
-But in any case, fixes for these test failures should be in your patch
-series as well.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-
-> ...
-> Summary: 1500 PASSED, 0 SKIPPED, 3 FAILED
 >
-> And there are probably other fallouts in other selftests - someone familiar
-> should take a look before applying these patches.
 >
-> Paolo Pisati (2):
->   bpf: bpf_csum_diff: fold the checksum before returning the
->     value
->   bpf, selftest: fix checksum value for test #13
+> >
+> > > +                       return 0;
+> > > +               default:
+> > > +                       printf("FAIL: Unexpected bpf_prog_test_run er=
+ror (%s) ", strerror(saved_errno));
+> > > +                       return err;
+> > > +               }
+> > >         }
+> > > -       if (!err && retval !=3D expected_val &&
+> > > +       if (retval !=3D expected_val &&
+> > >             expected_val !=3D POINTER_VALUE) {
+> > >                 printf("FAIL retval %d !=3D %d ", retval, expected_va=
+l);
+> > >                 return 1;
+> > > --
+> > > 2.20.1
+> > >
 >
->  net/core/filter.c                                   | 2 +-
->  tools/testing/selftests/bpf/verifier/array_access.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+>
 >
 > --
-> 2.17.1
->
+> Kinvolk GmbH | Adalbertstr.6a, 10999 Berlin | tel: +491755589364
+> Gesch=C3=A4ftsf=C3=BChrer/Directors: Alban Crequy, Chris K=C3=BChl, Iago =
+L=C3=B3pez Galeiras
+> Registergericht/Court of registration: Amtsgericht Charlottenburg
+> Registernummer/Registration number: HRB 171414 B
+> Ust-ID-Nummer/VAT ID number: DE302207000
