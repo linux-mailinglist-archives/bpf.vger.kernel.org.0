@@ -2,312 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA35686CC
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 12:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2063468B0A
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 15:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729541AbfGOKCi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Jul 2019 06:02:38 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:36163 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729518AbfGOKCi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Jul 2019 06:02:38 -0400
-Received: by mail-wm1-f65.google.com with SMTP id g67so10431562wme.1
-        for <bpf@vger.kernel.org>; Mon, 15 Jul 2019 03:02:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=V49ekLNJhbPZ70LZ2vlhBGBo+qLrtBHVLG9eEKRbfA0=;
-        b=D8Yf7H4ZpW7lBn2B5Ci5GOGKt5W/ZgtMBfVxJqcQvlqP3BKSXNb7W/eBG1z4dHye8F
-         NLbkjxb3BBMOMLsbNPo+ALNkRc7VtI23P4DPxZrNxR+WIvAFCQSH7vZXvIzNPJGxKE4l
-         SF3Wjr7IZ1KFmXH5rHjoPUmxpyWmWEhcupi3t/EQi3VGD6MQ1KaZEjJU4mze+mN2x9T7
-         ttpzCfjIdiTIgBrlXUt0NOabXYEtgzV5Y5wY3KWr9nAzGmmvK0YWiwj9i0E8wgNu2Oed
-         vQAInwPPNAdiPyeyRlJXuH/JyJFvJef42g1l+yiHcZmea50X1WVeeo0jxWNnFuldMOUx
-         lLnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=V49ekLNJhbPZ70LZ2vlhBGBo+qLrtBHVLG9eEKRbfA0=;
-        b=DMJIPY432KCZNKV/fQh9T0dmZHsFvTKxGttX3tXRl6XpFyvFR2ofwDHRKUrlmHaZSz
-         VmiN9UHORZbV15TlWRMR5TYaIagrixwvMu4VBPpmPpW/TUQ8J+U7uGWPrxR4PiNtCDb1
-         ZN4zJCJpzL/P4rIZoLa1sO33aY7JrPlB07yhggcYRBpWzh1p+NcC9uRXRqyRgqFwhsKZ
-         m/zmvpV258Ax7jnhpQ4L544psB8gj6DqKjawyvQcoUUEZ44bb7HA7JbqVSp5ZpqP5Juf
-         WYbWRn2ooGClakBJcOmFANZBvNgf0adTIL3wmawO71YMgKwQO4naDYmasD+bm3cHuyxn
-         +6dQ==
-X-Gm-Message-State: APjAAAUYbtjJeHH/15Fua1ZEiwKLHCyC0cZBferwBiX8ncSkFYq+uhpU
-        B8Ikk36chMBNYE8TMQ+x4m/TBw==
-X-Google-Smtp-Source: APXvYqzGtXbhDltqNgrLCThXwRzi5tHJ2G9QZwgOaGh/Fubi2YxF1A2ZAUkM5WKtfeFXVtPbdiQZSQ==
-X-Received: by 2002:a1c:7e90:: with SMTP id z138mr23098146wmc.128.1563184955375;
-        Mon, 15 Jul 2019 03:02:35 -0700 (PDT)
-Received: from LAPTOP-V3S7NLPL ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id n1sm13289896wrx.39.2019.07.15.03.02.30
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 15 Jul 2019 03:02:31 -0700 (PDT)
-References: <1562275611-31790-1-git-send-email-jiong.wang@netronome.com> <1562275611-31790-3-git-send-email-jiong.wang@netronome.com> <CAEf4BzaF-Bvj9veA1EYu5GWQrWOu=ttX064YTrB4yNQ4neJZOQ@mail.gmail.com> <87o920235d.fsf@netronome.com> <87muhk2264.fsf@netronome.com> <CAEf4BzZX45+QJLnHdwW-Cmo1uAFd+4zzds0jJoQVWFLrUVABgA@mail.gmail.com>
-User-agent: mu4e 0.9.18; emacs 25.2.2
-From:   Jiong Wang <jiong.wang@netronome.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiong Wang <jiong.wang@netronome.com>,
+        id S1730408AbfGONiH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Jul 2019 09:38:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36984 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730412AbfGONiD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Jul 2019 09:38:03 -0400
+Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2981D212F5;
+        Mon, 15 Jul 2019 13:38:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1563197882;
+        bh=iZvB6N1TYcEga3h3leOTeZdDimayVtYAMRUH2QVd3Y8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=fPiwbUhuUPv/bLAPAKo1VGTU5ASolJ+Rnh3WvdkZ8ZZDkBNxz7jbhBgLfiTA0mXza
+         8NCFxOEacNgUOa6RNuUQzRGgrzn6gYaQ88vaoGpENHV9StFXKQSd0OeAC7E7OekDDb
+         YF0SeGHZRQREE/6ksuocRHgpgbCbhKkF/rNMlcRk=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Edward Cree <ecree@solarflare.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        oss-drivers@netronome.com
-Subject: Re: [oss-drivers] Re: [RFC bpf-next 2/8] bpf: extend list based insn patching infra to verification layer
-In-reply-to: <CAEf4BzZX45+QJLnHdwW-Cmo1uAFd+4zzds0jJoQVWFLrUVABgA@mail.gmail.com>
-Date:   Mon, 15 Jul 2019 11:02:28 +0100
-Message-ID: <87h87n39aj.fsf@netronome.com>
+        Sasha Levin <sashal@kernel.org>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.2 024/249] selftests/bpf: adjust verifier scale test
+Date:   Mon, 15 Jul 2019 09:32:05 -0400
+Message-Id: <20190715133550.1772-24-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190715133550.1772-1-sashal@kernel.org>
+References: <20190715133550.1772-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Alexei Starovoitov <ast@kernel.org>
 
-Andrii Nakryiko writes:
+[ Upstream commit 7c0c6095d48dcd0e67c917aa73cdbb2715aafc36 ]
 
-> On Thu, Jul 11, 2019 at 5:20 AM Jiong Wang <jiong.wang@netronome.com> wrote:
->>
->>
->> Jiong Wang writes:
->>
->> > Andrii Nakryiko writes:
->> >
->> >> On Thu, Jul 4, 2019 at 2:32 PM Jiong Wang <jiong.wang@netronome.com> wrote:
->> >>>
->> >>> Verification layer also needs to handle auxiliar info as well as adjusting
->> >>> subprog start.
->> >>>
->> >>> At this layer, insns inside patch buffer could be jump, but they should
->> >>> have been resolved, meaning they shouldn't jump to insn outside of the
->> >>> patch buffer. Lineration function for this layer won't touch insns inside
->> >>> patch buffer.
->> >>>
->> >>> Adjusting subprog is finished along with adjusting jump target when the
->> >>> input will cover bpf to bpf call insn, re-register subprog start is cheap.
->> >>> But adjustment when there is insn deleteion is not considered yet.
->> >>>
->> >>> Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
->> >>> ---
->> >>>  kernel/bpf/verifier.c | 150 ++++++++++++++++++++++++++++++++++++++++++++++++++
->> >>>  1 file changed, 150 insertions(+)
->> >>>
->> >>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> >>> index a2e7637..2026d64 100644
->> >>> --- a/kernel/bpf/verifier.c
->> >>> +++ b/kernel/bpf/verifier.c
->> >>> @@ -8350,6 +8350,156 @@ static void opt_hard_wire_dead_code_branches(struct bpf_verifier_env *env)
->> >>>         }
->> >>>  }
->> >>>
->> >>> +/* Linearize bpf list insn to array (verifier layer). */
->> >>> +static struct bpf_verifier_env *
->> >>> +verifier_linearize_list_insn(struct bpf_verifier_env *env,
->> >>> +                            struct bpf_list_insn *list)
->> >>
->> >> It's unclear why this returns env back? It's not allocating a new env,
->> >> so it's weird and unnecessary. Just return error code.
->> >
->> > The reason is I was thinking we have two layers in BPF, the core and the
->> > verifier.
->> >
->> > For core layer (the relevant file is core.c), when doing patching, the
->> > input is insn list and bpf_prog, the linearization should linearize the
->> > insn list into insn array, and also whatever others affect inside bpf_prog
->> > due to changing on insns, for example line info inside prog->aux. So the
->> > return value is bpf_prog for core layer linearization hook.
->> >
->> > For verifier layer, it is similar, but the context if bpf_verifier_env, the
->> > linearization hook should linearize the insn list, and also those affected
->> > inside env, for example bpf_insn_aux_data, so the return value is
->> > bpf_verifier_env, meaning returning an updated verifier context
->> > (bpf_verifier_env) after insn list linearization.
->>
->> Realized your point is no new env is allocated, so just return error
->> code. Yes, the env pointer is not changed, just internal data is
->> updated. Return bpf_verifier_env mostly is trying to make the hook more
->> clear that it returns an updated "context" where the linearization happens,
->> for verifier layer, it is bpf_verifier_env, and for core layer, it is
->> bpf_prog, so return value was designed to return these two types.
->
-> Oh, I missed that core layer returns bpf_prog*. I think this is
-> confusing as hell and is very contrary to what one would expect. If
-> the function doesn't allocate those objects, it shouldn't return them,
-> except for rare cases of some accessor functions. Me reading this,
-> I'll always be suprised and will have to go skim code just to check
-> whether those functions really return new bpf_prog or
-> bpf_verifier_env, respectively.
+Adjust scale tests to check for new jmp sequence limit.
 
-bpf_prog_realloc do return new bpf_prog, so we will need to return bpf_prog
-* for core layer.
+BPF_JGT had to be changed to BPF_JEQ because the verifier was
+too smart. It tracked the known safe range of R0 values
+and pruned the search earlier before hitting exact 8192 limit.
+bpf_semi_rand_get() was too (un)?lucky.
 
->
-> Please change them both to just return error code.
->
->>
->> >
->> > Make sense?
->> >
->> > Regards,
->> > Jiong
->> >
->> >>
->> >>> +{
->> >>> +       u32 *idx_map, idx, orig_cnt, fini_cnt = 0;
->> >>> +       struct bpf_subprog_info *new_subinfo;
->> >>> +       struct bpf_insn_aux_data *new_data;
->> >>> +       struct bpf_prog *prog = env->prog;
->> >>> +       struct bpf_verifier_env *ret_env;
->> >>> +       struct bpf_insn *insns, *insn;
->> >>> +       struct bpf_list_insn *elem;
->> >>> +       int ret;
->> >>> +
->> >>> +       /* Calculate final size. */
->> >>> +       for (elem = list; elem; elem = elem->next)
->> >>> +               if (!(elem->flag & LIST_INSN_FLAG_REMOVED))
->> >>> +                       fini_cnt++;
->> >>> +
->> >>> +       orig_cnt = prog->len;
->> >>> +       insns = prog->insnsi;
->> >>> +       /* If prog length remains same, nothing else to do. */
->> >>> +       if (fini_cnt == orig_cnt) {
->> >>> +               for (insn = insns, elem = list; elem; elem = elem->next, insn++)
->> >>> +                       *insn = elem->insn;
->> >>> +               return env;
->> >>> +       }
->> >>> +       /* Realloc insn buffer when necessary. */
->> >>> +       if (fini_cnt > orig_cnt)
->> >>> +               prog = bpf_prog_realloc(prog, bpf_prog_size(fini_cnt),
->> >>> +                                       GFP_USER);
->> >>> +       if (!prog)
->> >>> +               return ERR_PTR(-ENOMEM);
->> >>> +       insns = prog->insnsi;
->> >>> +       prog->len = fini_cnt;
->> >>> +       ret_env = env;
->> >>> +
->> >>> +       /* idx_map[OLD_IDX] = NEW_IDX */
->> >>> +       idx_map = kvmalloc(orig_cnt * sizeof(u32), GFP_KERNEL);
->> >>> +       if (!idx_map)
->> >>> +               return ERR_PTR(-ENOMEM);
->> >>> +       memset(idx_map, 0xff, orig_cnt * sizeof(u32));
->> >>> +
->> >>> +       /* Use the same alloc method used when allocating env->insn_aux_data. */
->> >>> +       new_data = vzalloc(array_size(sizeof(*new_data), fini_cnt));
->> >>> +       if (!new_data) {
->> >>> +               kvfree(idx_map);
->> >>> +               return ERR_PTR(-ENOMEM);
->> >>> +       }
->> >>> +
->> >>> +       /* Copy over insn + calculate idx_map. */
->> >>> +       for (idx = 0, elem = list; elem; elem = elem->next) {
->> >>> +               int orig_idx = elem->orig_idx - 1;
->> >>> +
->> >>> +               if (orig_idx >= 0) {
->> >>> +                       idx_map[orig_idx] = idx;
->> >>> +
->> >>> +                       if (elem->flag & LIST_INSN_FLAG_REMOVED)
->> >>> +                               continue;
->> >>> +
->> >>> +                       new_data[idx] = env->insn_aux_data[orig_idx];
->> >>> +
->> >>> +                       if (elem->flag & LIST_INSN_FLAG_PATCHED)
->> >>> +                               new_data[idx].zext_dst =
->> >>> +                                       insn_has_def32(env, &elem->insn);
->> >>> +               } else {
->> >>> +                       new_data[idx].seen = true;
->> >>> +                       new_data[idx].zext_dst = insn_has_def32(env,
->> >>> +                                                               &elem->insn);
->> >>> +               }
->> >>> +               insns[idx++] = elem->insn;
->> >>> +       }
->> >>> +
->> >>> +       new_subinfo = kvzalloc(sizeof(env->subprog_info), GFP_KERNEL);
->> >>> +       if (!new_subinfo) {
->> >>> +               kvfree(idx_map);
->> >>> +               vfree(new_data);
->> >>> +               return ERR_PTR(-ENOMEM);
->> >>> +       }
->> >>> +       memcpy(new_subinfo, env->subprog_info, sizeof(env->subprog_info));
->> >>> +       memset(env->subprog_info, 0, sizeof(env->subprog_info));
->> >>> +       env->subprog_cnt = 0;
->> >>> +       env->prog = prog;
->> >>> +       ret = add_subprog(env, 0);
->> >>> +       if (ret < 0) {
->> >>> +               ret_env = ERR_PTR(ret);
->> >>> +               goto free_all_ret;
->> >>> +       }
->> >>> +       /* Relocate jumps using idx_map.
->> >>> +        *   old_dst = jmp_insn.old_target + old_pc + 1;
->> >>> +        *   new_dst = idx_map[old_dst] = jmp_insn.new_target + new_pc + 1;
->> >>> +        *   jmp_insn.new_target = new_dst - new_pc - 1;
->> >>> +        */
->> >>> +       for (idx = 0, elem = list; elem; elem = elem->next) {
->> >>> +               int orig_idx = elem->orig_idx;
->> >>> +
->> >>> +               if (elem->flag & LIST_INSN_FLAG_REMOVED)
->> >>> +                       continue;
->> >>> +               if ((elem->flag & LIST_INSN_FLAG_PATCHED) || !orig_idx) {
->> >>> +                       idx++;
->> >>> +                       continue;
->> >>> +               }
->> >>> +
->> >>> +               ret = bpf_jit_adj_imm_off(&insns[idx], orig_idx - 1, idx,
->> >>> +                                         idx_map);
->> >>> +               if (ret < 0) {
->> >>> +                       ret_env = ERR_PTR(ret);
->> >>> +                       goto free_all_ret;
->> >>> +               }
->> >>> +               /* Recalculate subprog start as we are at bpf2bpf call insn. */
->> >>> +               if (ret > 0) {
->> >>> +                       ret = add_subprog(env, idx + insns[idx].imm + 1);
->> >>> +                       if (ret < 0) {
->> >>> +                               ret_env = ERR_PTR(ret);
->> >>> +                               goto free_all_ret;
->> >>> +                       }
->> >>> +               }
->> >>> +               idx++;
->> >>> +       }
->> >>> +       if (ret < 0) {
->> >>> +               ret_env = ERR_PTR(ret);
->> >>> +               goto free_all_ret;
->> >>> +       }
->> >>> +
->> >>> +       env->subprog_info[env->subprog_cnt].start = fini_cnt;
->> >>> +       for (idx = 0; idx <= env->subprog_cnt; idx++)
->> >>> +               new_subinfo[idx].start = env->subprog_info[idx].start;
->> >>> +       memcpy(env->subprog_info, new_subinfo, sizeof(env->subprog_info));
->> >>> +
->> >>> +       /* Adjust linfo.
->> >>> +        * FIXME: no support for insn removal at the moment.
->> >>> +        */
->> >>> +       if (prog->aux->nr_linfo) {
->> >>> +               struct bpf_line_info *linfo = prog->aux->linfo;
->> >>> +               u32 nr_linfo = prog->aux->nr_linfo;
->> >>> +
->> >>> +               for (idx = 0; idx < nr_linfo; idx++)
->> >>> +                       linfo[idx].insn_off = idx_map[linfo[idx].insn_off];
->> >>> +       }
->> >>> +       vfree(env->insn_aux_data);
->> >>> +       env->insn_aux_data = new_data;
->> >>> +       goto free_mem_list_ret;
->> >>> +free_all_ret:
->> >>> +       vfree(new_data);
->> >>> +free_mem_list_ret:
->> >>> +       kvfree(new_subinfo);
->> >>> +       kvfree(idx_map);
->> >>> +       return ret_env;
->> >>> +}
->> >>> +
->> >>>  static int opt_remove_dead_code(struct bpf_verifier_env *env)
->> >>>  {
->> >>>         struct bpf_insn_aux_data *aux_data = env->insn_aux_data;
->> >>> --
->> >>> 2.7.4
->> >>>
->>
+k = 0; was missing in bpf_fill_scale2.
+It was testing a bit shorter sequence of jumps than intended.
+
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/testing/selftests/bpf/test_verifier.c | 31 +++++++++++----------
+ 1 file changed, 17 insertions(+), 14 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+index 288cb740e005..6438d4dc8ae1 100644
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -207,33 +207,35 @@ static void bpf_fill_rand_ld_dw(struct bpf_test *self)
+ 	self->retval = (uint32_t)res;
+ }
+ 
+-/* test the sequence of 1k jumps */
++#define MAX_JMP_SEQ 8192
++
++/* test the sequence of 8k jumps */
+ static void bpf_fill_scale1(struct bpf_test *self)
+ {
+ 	struct bpf_insn *insn = self->fill_insns;
+ 	int i = 0, k = 0;
+ 
+ 	insn[i++] = BPF_MOV64_REG(BPF_REG_6, BPF_REG_1);
+-	/* test to check that the sequence of 1024 jumps is acceptable */
+-	while (k++ < 1024) {
++	/* test to check that the long sequence of jumps is acceptable */
++	while (k++ < MAX_JMP_SEQ) {
+ 		insn[i++] = BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
+ 					 BPF_FUNC_get_prandom_u32);
+-		insn[i++] = BPF_JMP_IMM(BPF_JGT, BPF_REG_0, bpf_semi_rand_get(), 2);
++		insn[i++] = BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, bpf_semi_rand_get(), 2);
+ 		insn[i++] = BPF_MOV64_REG(BPF_REG_1, BPF_REG_10);
+ 		insn[i++] = BPF_STX_MEM(BPF_DW, BPF_REG_1, BPF_REG_6,
+ 					-8 * (k % 64 + 1));
+ 	}
+-	/* every jump adds 1024 steps to insn_processed, so to stay exactly
+-	 * within 1m limit add MAX_TEST_INSNS - 1025 MOVs and 1 EXIT
++	/* every jump adds 1 step to insn_processed, so to stay exactly
++	 * within 1m limit add MAX_TEST_INSNS - MAX_JMP_SEQ - 1 MOVs and 1 EXIT
+ 	 */
+-	while (i < MAX_TEST_INSNS - 1025)
++	while (i < MAX_TEST_INSNS - MAX_JMP_SEQ - 1)
+ 		insn[i++] = BPF_ALU32_IMM(BPF_MOV, BPF_REG_0, 42);
+ 	insn[i] = BPF_EXIT_INSN();
+ 	self->prog_len = i + 1;
+ 	self->retval = 42;
+ }
+ 
+-/* test the sequence of 1k jumps in inner most function (function depth 8)*/
++/* test the sequence of 8k jumps in inner most function (function depth 8)*/
+ static void bpf_fill_scale2(struct bpf_test *self)
+ {
+ 	struct bpf_insn *insn = self->fill_insns;
+@@ -245,19 +247,20 @@ static void bpf_fill_scale2(struct bpf_test *self)
+ 		insn[i++] = BPF_EXIT_INSN();
+ 	}
+ 	insn[i++] = BPF_MOV64_REG(BPF_REG_6, BPF_REG_1);
+-	/* test to check that the sequence of 1024 jumps is acceptable */
+-	while (k++ < 1024) {
++	/* test to check that the long sequence of jumps is acceptable */
++	k = 0;
++	while (k++ < MAX_JMP_SEQ) {
+ 		insn[i++] = BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
+ 					 BPF_FUNC_get_prandom_u32);
+-		insn[i++] = BPF_JMP_IMM(BPF_JGT, BPF_REG_0, bpf_semi_rand_get(), 2);
++		insn[i++] = BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, bpf_semi_rand_get(), 2);
+ 		insn[i++] = BPF_MOV64_REG(BPF_REG_1, BPF_REG_10);
+ 		insn[i++] = BPF_STX_MEM(BPF_DW, BPF_REG_1, BPF_REG_6,
+ 					-8 * (k % (64 - 4 * FUNC_NEST) + 1));
+ 	}
+-	/* every jump adds 1024 steps to insn_processed, so to stay exactly
+-	 * within 1m limit add MAX_TEST_INSNS - 1025 MOVs and 1 EXIT
++	/* every jump adds 1 step to insn_processed, so to stay exactly
++	 * within 1m limit add MAX_TEST_INSNS - MAX_JMP_SEQ - 1 MOVs and 1 EXIT
+ 	 */
+-	while (i < MAX_TEST_INSNS - 1025)
++	while (i < MAX_TEST_INSNS - MAX_JMP_SEQ - 1)
+ 		insn[i++] = BPF_ALU32_IMM(BPF_MOV, BPF_REG_0, 42);
+ 	insn[i] = BPF_EXIT_INSN();
+ 	self->prog_len = i + 1;
+-- 
+2.20.1
 
