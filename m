@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 399EB692C0
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 16:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052BC6953D
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 16:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392123AbfGOOiy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Jul 2019 10:38:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37696 "EHLO mail.kernel.org"
+        id S2390349AbfGOOVi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Jul 2019 10:21:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392109AbfGOOiy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Jul 2019 10:38:54 -0400
+        id S2390342AbfGOOVh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Jul 2019 10:21:37 -0400
 Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54A892086C;
-        Mon, 15 Jul 2019 14:38:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 550E9217F4;
+        Mon, 15 Jul 2019 14:21:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563201533;
-        bh=gMYCMlIE9JhAmkeJS4THrWdhMpnJObwv71M4jlxwzgo=;
+        s=default; t=1563200497;
+        bh=tOpREwC9ptswgJC0xfpd7gAJ0c2qFXk1QPaIcgZfPME=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CnqwdXCsz3QjrP8XfVDrZcV90yUh4RGLO9ucpRh9FN0AQ3rpRjdhq/PhhHNFtSK4X
-         Z7yv2UYelcREXzaCe87cRzsKE9tyzsh6nupRFol1v6DRQvr7cLAvYHu/+YFxzJSMbi
-         A5fux5555aop6ituxdo3POfWxGIeG09WaEDAnljk=
+        b=efPimlsdyQpU1K1xRjqytuRC8/acwVtNrhpSyBnJIjtF3Oymo3pveE37dXXT5HNHb
+         eS5LpbchMmqMvseU+bQgZNJOt9YUgQsQ2fK+2E2coxpQJXPA07pxmEAyKNY7u+cYvA
+         +FdFGvBaasuhTfK7xW8BdQSJt2+QMLZUZ/vTzJo4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
@@ -30,12 +30,12 @@ Cc:     =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 36/73] bpf: silence warning messages in core
-Date:   Mon, 15 Jul 2019 10:35:52 -0400
-Message-Id: <20190715143629.10893-36-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 062/158] bpf: silence warning messages in core
+Date:   Mon, 15 Jul 2019 10:16:33 -0400
+Message-Id: <20190715141809.8445-62-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190715143629.10893-1-sashal@kernel.org>
-References: <20190715143629.10893-1-sashal@kernel.org>
+In-Reply-To: <20190715141809.8445-1-sashal@kernel.org>
+References: <20190715141809.8445-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -86,15 +86,16 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index eed911d091da..5a590f22b4d4 100644
+index 0488b8258321..ffc39a7e028d 100644
 --- a/kernel/bpf/Makefile
 +++ b/kernel/bpf/Makefile
-@@ -1,4 +1,5 @@
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
  obj-y := core.o
 +CFLAGS_core.o += $(call cc-disable-warning, override-init)
  
- obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o
- obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o
+ obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o
+ obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
 -- 
 2.20.1
 
