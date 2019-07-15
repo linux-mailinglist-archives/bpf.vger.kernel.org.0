@@ -2,135 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75720696FC
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 17:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF5069663
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 17:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733000AbfGON7b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Jul 2019 09:59:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39974 "EHLO mail.kernel.org"
+        id S2388558AbfGOOIk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Jul 2019 10:08:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732859AbfGON7b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Jul 2019 09:59:31 -0400
+        id S2388555AbfGOOIk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Jul 2019 10:08:40 -0400
 Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86811212F5;
-        Mon, 15 Jul 2019 13:59:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F6FB2083D;
+        Mon, 15 Jul 2019 14:08:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563199170;
-        bh=l+KSIYQEqq15Fcn9n8hpaoJD6mSHtZ5jwXcCxUMCPTE=;
+        s=default; t=1563199719;
+        bh=ZdbnfVsO+QWddwSs2T2SECs1mmxbuL1FjvRE+RRAlxM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s355ZXxllee2Snj3E53YLbBzd7nP4ZyCGDF9w+NPoKe9Y1vT5I2OXPzFST+wnR//e
-         QgYCzvpMuOsB6w1yadMKlk6ndhKkuLrwwnREFJP+uIMWhjl2nk/UZJ+FFgWTS7CZ73
-         ARLVNvYy+I3wosVchEm1eaDiLwz5u4+7kvByaQ9s=
+        b=EIItXOCVXOqmh0dB9Uu7r6/wlMvSmBA29WiZfTzhtNTLy52mh31hfcOB7YsHZOwo+
+         k5nLgS6iiH6jwk90tBkbTy5at+ET99+tXwbjaPfiF/rW3kWwzUMSBkSNKVDkLAdkjS
+         rlVxw+T91ErgcEs4DfE7Q0O0eACi24XdBSGNSJqM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dann Frazier <dann.frazier@canonical.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Andrew Bowers <andrewx.bowers@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+Cc:     =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 207/249] ixgbe: Avoid NULL pointer dereference with VF on non-IPsec hw
-Date:   Mon, 15 Jul 2019 09:46:12 -0400
-Message-Id: <20190715134655.4076-207-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.1 083/219] bpf: silence warning messages in core
+Date:   Mon, 15 Jul 2019 10:01:24 -0400
+Message-Id: <20190715140341.6443-83-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190715134655.4076-1-sashal@kernel.org>
-References: <20190715134655.4076-1-sashal@kernel.org>
+In-Reply-To: <20190715140341.6443-1-sashal@kernel.org>
+References: <20190715140341.6443-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Dann Frazier <dann.frazier@canonical.com>
+From: Valdis Klētnieks <valdis.kletnieks@vt.edu>
 
-[ Upstream commit 92924064106e410cdc015f1dbfc0499309f9f5b1 ]
+[ Upstream commit aee450cbe482a8c2f6fa5b05b178ef8b8ff107ca ]
 
-An ipsec structure will not be allocated if the hardware does not support
-offload. Fixes the following Oops:
+Compiling kernel/bpf/core.c with W=1 causes a flood of warnings:
 
-[  191.045452] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-[  191.054232] Mem abort info:
-[  191.057014]   ESR = 0x96000004
-[  191.060057]   Exception class = DABT (current EL), IL = 32 bits
-[  191.065963]   SET = 0, FnV = 0
-[  191.069004]   EA = 0, S1PTW = 0
-[  191.072132] Data abort info:
-[  191.074999]   ISV = 0, ISS = 0x00000004
-[  191.078822]   CM = 0, WnR = 0
-[  191.081780] user pgtable: 4k pages, 48-bit VAs, pgdp = 0000000043d9e467
-[  191.088382] [0000000000000000] pgd=0000000000000000
-[  191.093252] Internal error: Oops: 96000004 [#1] SMP
-[  191.098119] Modules linked in: vhost_net vhost tap vfio_pci vfio_virqfd vfio_iommu_type1 vfio xt_CHECKSUM iptable_mangle ipt_MASQUERADE iptable_nat nf_nat_ipv4 nf_nat xt_conntrack nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ipt_REJECT nf_reject_ipv4 xt_tcpudp bridge stp llc ebtable_filter devlink ebtables ip6table_filter ip6_tables iptable_filter bpfilter ipmi_ssif nls_iso8859_1 input_leds joydev ipmi_si hns_roce_hw_v2 ipmi_devintf hns_roce ipmi_msghandler cppc_cpufreq sch_fq_codel ib_iser rdma_cm iw_cm ib_cm ib_core iscsi_tcp libiscsi_tcp libiscsi scsi_transport_iscsi ip_tables x_tables autofs4 ses enclosure btrfs zstd_compress raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor hid_generic usbhid hid raid6_pq libcrc32c raid1 raid0 multipath linear ixgbevf hibmc_drm ttm
-[  191.168607]  drm_kms_helper aes_ce_blk aes_ce_cipher syscopyarea crct10dif_ce sysfillrect ghash_ce qla2xxx sysimgblt sha2_ce sha256_arm64 hisi_sas_v3_hw fb_sys_fops sha1_ce uas nvme_fc mpt3sas ixgbe drm hisi_sas_main nvme_fabrics usb_storage hclge scsi_transport_fc ahci libsas hnae3 raid_class libahci xfrm_algo scsi_transport_sas mdio aes_neon_bs aes_neon_blk crypto_simd cryptd aes_arm64
-[  191.202952] CPU: 94 PID: 0 Comm: swapper/94 Not tainted 4.19.0-rc1+ #11
-[  191.209553] Hardware name: Huawei D06 /D06, BIOS Hisilicon D06 UEFI RC0 - V1.20.01 04/26/2019
-[  191.218064] pstate: 20400089 (nzCv daIf +PAN -UAO)
-[  191.222873] pc : ixgbe_ipsec_vf_clear+0x60/0xd0 [ixgbe]
-[  191.228093] lr : ixgbe_msg_task+0x2d0/0x1088 [ixgbe]
-[  191.233044] sp : ffff000009b3bcd0
-[  191.236346] x29: ffff000009b3bcd0 x28: 0000000000000000
-[  191.241647] x27: ffff000009628000 x26: 0000000000000000
-[  191.246946] x25: ffff803f652d7600 x24: 0000000000000004
-[  191.252246] x23: ffff803f6a718900 x22: 0000000000000000
-[  191.257546] x21: 0000000000000000 x20: 0000000000000000
-[  191.262845] x19: 0000000000000000 x18: 0000000000000000
-[  191.268144] x17: 0000000000000000 x16: 0000000000000000
-[  191.273443] x15: 0000000000000000 x14: 0000000100000026
-[  191.278742] x13: 0000000100000025 x12: ffff8a5f7fbe0df0
-[  191.284042] x11: 000000010000000b x10: 0000000000000040
-[  191.289341] x9 : 0000000000001100 x8 : ffff803f6a824fd8
-[  191.294640] x7 : ffff803f6a825098 x6 : 0000000000000001
-[  191.299939] x5 : ffff000000f0ffc0 x4 : 0000000000000000
-[  191.305238] x3 : ffff000028c00000 x2 : ffff803f652d7600
-[  191.310538] x1 : 0000000000000000 x0 : ffff000000f205f0
-[  191.315838] Process swapper/94 (pid: 0, stack limit = 0x00000000addfed5a)
-[  191.322613] Call trace:
-[  191.325055]  ixgbe_ipsec_vf_clear+0x60/0xd0 [ixgbe]
-[  191.329927]  ixgbe_msg_task+0x2d0/0x1088 [ixgbe]
-[  191.334536]  ixgbe_msix_other+0x274/0x330 [ixgbe]
-[  191.339233]  __handle_irq_event_percpu+0x78/0x270
-[  191.343924]  handle_irq_event_percpu+0x40/0x98
-[  191.348355]  handle_irq_event+0x50/0xa8
-[  191.352180]  handle_fasteoi_irq+0xbc/0x148
-[  191.356263]  generic_handle_irq+0x34/0x50
-[  191.360259]  __handle_domain_irq+0x68/0xc0
-[  191.364343]  gic_handle_irq+0x84/0x180
-[  191.368079]  el1_irq+0xe8/0x180
-[  191.371208]  arch_cpu_idle+0x30/0x1a8
-[  191.374860]  do_idle+0x1dc/0x2a0
-[  191.378077]  cpu_startup_entry+0x2c/0x30
-[  191.381988]  secondary_start_kernel+0x150/0x1e0
-[  191.386506] Code: 6b15003f 54000320 f1404a9f 54000060 (79400260)
+kernel/bpf/core.c:1198:65: warning: initialized field overwritten [-Woverride-init]
+ 1198 | #define BPF_INSN_3_TBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] = true
+      |                                                                 ^~~~
+kernel/bpf/core.c:1087:2: note: in expansion of macro 'BPF_INSN_3_TBL'
+ 1087 |  INSN_3(ALU, ADD,  X),   \
+      |  ^~~~~~
+kernel/bpf/core.c:1202:3: note: in expansion of macro 'BPF_INSN_MAP'
+ 1202 |   BPF_INSN_MAP(BPF_INSN_2_TBL, BPF_INSN_3_TBL),
+      |   ^~~~~~~~~~~~
+kernel/bpf/core.c:1198:65: note: (near initialization for 'public_insntable[12]')
+ 1198 | #define BPF_INSN_3_TBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] = true
+      |                                                                 ^~~~
+kernel/bpf/core.c:1087:2: note: in expansion of macro 'BPF_INSN_3_TBL'
+ 1087 |  INSN_3(ALU, ADD,  X),   \
+      |  ^~~~~~
+kernel/bpf/core.c:1202:3: note: in expansion of macro 'BPF_INSN_MAP'
+ 1202 |   BPF_INSN_MAP(BPF_INSN_2_TBL, BPF_INSN_3_TBL),
+      |   ^~~~~~~~~~~~
 
-Fixes: eda0333ac2930 ("ixgbe: add VF IPsec management")
-Signed-off-by: Dann Frazier <dann.frazier@canonical.com>
-Acked-by: Shannon Nelson <snelson@pensando.io>
-Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+98 copies of the above.
+
+The attached patch silences the warnings, because we *know* we're overwriting
+the default initializer. That leaves bpf/core.c with only 6 other warnings,
+which become more visible in comparison.
+
+Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c | 3 +++
- 1 file changed, 3 insertions(+)
+ kernel/bpf/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c
-index ff85ce5791a3..31629fc7e820 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c
-@@ -842,6 +842,9 @@ void ixgbe_ipsec_vf_clear(struct ixgbe_adapter *adapter, u32 vf)
- 	struct ixgbe_ipsec *ipsec = adapter->ipsec;
- 	int i;
+diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+index 4c2fa3ac56f6..29d781061cd5 100644
+--- a/kernel/bpf/Makefile
++++ b/kernel/bpf/Makefile
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ obj-y := core.o
++CFLAGS_core.o += $(call cc-disable-warning, override-init)
  
-+	if (!ipsec)
-+		return;
-+
- 	/* search rx sa table */
- 	for (i = 0; i < IXGBE_IPSEC_MAX_SA_COUNT && ipsec->num_rx_sa; i++) {
- 		if (!ipsec->rx_tbl[i].used)
+ obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o
+ obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
 -- 
 2.20.1
 
