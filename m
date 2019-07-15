@@ -2,39 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E99CB68FB6
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 16:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0A268FF0
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 16:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389488AbfGOOQU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Jul 2019 10:16:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33284 "EHLO mail.kernel.org"
+        id S2389176AbfGOORr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Jul 2019 10:17:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388662AbfGOOQT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Jul 2019 10:16:19 -0400
+        id S2389465AbfGOORq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Jul 2019 10:17:46 -0400
 Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 09A6E20651;
-        Mon, 15 Jul 2019 14:16:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 726DA21530;
+        Mon, 15 Jul 2019 14:17:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563200178;
-        bh=tKvy5JbcZXx6YWzfQrPDW5p7WMo9r0DbLOyr2sIo3UE=;
+        s=default; t=1563200265;
+        bh=saYp66UYcTDDQpWG5VhqspncKjwKOnk1Hdx4A4GhGMU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t5wPOZV+MM3KRk0kWc7R9qaiW7JJ49vxMibDBfllGG+glGlquUVfQq2n7b8d0Ia9d
-         cW9zYiDLOMZZXTD/VJSWTJuLn2gP4MCkyw0sJQF+ZnZaj42vY7zlUVPcjN+MbdYpVp
-         nmShuIVhbugVLkduwZ0lKnc7YmYdqB1E0EOoOGQo=
+        b=RKiIxMhw9Vr22xuYJFOsurKxG3utMQr24e0BXn4PlvKlkNBhwESB4f/V7JGJJJO0E
+         K/kekWK4tf5kxJoLeNXwFWbQtTTUl26ghoPLPToZOUTqsMHOY/Pqjs5Hmaa4gv+IpA
+         affrXxyxa6BB9szAMfOv7WFVxEIGHVm+tuoY/mbU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jiri Olsa <jolsa@redhat.com>, Michael Petlan <mpetlan@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
+Cc:     Ilya Maximets <i.maximets@samsung.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        William Tu <u9012063@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.1 202/219] tools: bpftool: Fix json dump crash on powerpc
-Date:   Mon, 15 Jul 2019 10:03:23 -0400
-Message-Id: <20190715140341.6443-202-sashal@kernel.org>
+        xdp-newbies@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.1 218/219] xdp: fix race on generic receive path
+Date:   Mon, 15 Jul 2019 10:03:39 -0400
+Message-Id: <20190715140341.6443-218-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190715140341.6443-1-sashal@kernel.org>
 References: <20190715140341.6443-1-sashal@kernel.org>
@@ -47,91 +46,104 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jiri Olsa <jolsa@redhat.com>
+From: Ilya Maximets <i.maximets@samsung.com>
 
-[ Upstream commit aa52bcbe0e72fac36b1862db08b9c09c4caefae3 ]
+[ Upstream commit bf0bdd1343efbbf65b4d53aef1fce14acbd79d50 ]
 
-Michael reported crash with by bpf program in json mode on powerpc:
+Unlike driver mode, generic xdp receive could be triggered
+by different threads on different CPU cores at the same time
+leading to the fill and rx queue breakage. For example, this
+could happen while sending packets from two processes to the
+first interface of veth pair while the second part of it is
+open with AF_XDP socket.
 
-  # bpftool prog -p dump jited id 14
-  [{
-        "name": "0xd00000000a9aa760",
-        "insns": [{
-                "pc": "0x0",
-                "operation": "nop",
-                "operands": [null
-                ]
-            },{
-                "pc": "0x4",
-                "operation": "nop",
-                "operands": [null
-                ]
-            },{
-                "pc": "0x8",
-                "operation": "mflr",
-  Segmentation fault (core dumped)
+Need to take a lock for each generic receive to avoid race.
 
-The code is assuming char pointers in format, which is not always
-true at least for powerpc. Fixing this by dumping the whole string
-into buffer based on its format.
-
-Please note that libopcodes code does not check return values from
-fprintf callback, but as per Jakub suggestion returning -1 on allocation
-failure so we do the best effort to propagate the error.
-
-Fixes: 107f041212c1 ("tools: bpftool: add JSON output for `bpftool prog dump jited *` command")
-Reported-by: Michael Petlan <mpetlan@redhat.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
-Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+Fixes: c497176cb2e4 ("xsk: add Rx receive functions and poll support")
+Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Tested-by: William Tu <u9012063@gmail.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/bpftool/jit_disasm.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ include/net/xdp_sock.h |  2 ++
+ net/xdp/xsk.c          | 31 ++++++++++++++++++++++---------
+ 2 files changed, 24 insertions(+), 9 deletions(-)
 
-diff --git a/tools/bpf/bpftool/jit_disasm.c b/tools/bpf/bpftool/jit_disasm.c
-index 3ef3093560ba..bfed711258ce 100644
---- a/tools/bpf/bpftool/jit_disasm.c
-+++ b/tools/bpf/bpftool/jit_disasm.c
-@@ -11,6 +11,8 @@
-  * Licensed under the GNU General Public License, version 2.0 (GPLv2)
-  */
+diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+index d074b6d60f8a..ac3c047d058c 100644
+--- a/include/net/xdp_sock.h
++++ b/include/net/xdp_sock.h
+@@ -67,6 +67,8 @@ struct xdp_sock {
+ 	 * in the SKB destructor callback.
+ 	 */
+ 	spinlock_t tx_completion_lock;
++	/* Protects generic receive. */
++	spinlock_t rx_lock;
+ 	u64 rx_dropped;
+ };
  
-+#define _GNU_SOURCE
-+#include <stdio.h>
- #include <stdarg.h>
- #include <stdint.h>
- #include <stdio.h>
-@@ -44,11 +46,13 @@ static int fprintf_json(void *out, const char *fmt, ...)
- 	char *s;
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index a14e8864e4fa..5e0637db92ea 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -123,13 +123,17 @@ int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp)
+ 	u64 addr;
+ 	int err;
  
- 	va_start(ap, fmt);
-+	if (vasprintf(&s, fmt, ap) < 0)
-+		return -1;
-+	va_end(ap);
+-	if (xs->dev != xdp->rxq->dev || xs->queue_id != xdp->rxq->queue_index)
+-		return -EINVAL;
++	spin_lock_bh(&xs->rx_lock);
 +
- 	if (!oper_count) {
- 		int i;
++	if (xs->dev != xdp->rxq->dev || xs->queue_id != xdp->rxq->queue_index) {
++		err = -EINVAL;
++		goto out_unlock;
++	}
  
--		s = va_arg(ap, char *);
--
- 		/* Strip trailing spaces */
- 		i = strlen(s) - 1;
- 		while (s[i] == ' ')
-@@ -61,11 +65,10 @@ static int fprintf_json(void *out, const char *fmt, ...)
- 	} else if (!strcmp(fmt, ",")) {
- 		   /* Skip */
- 	} else {
--		s = va_arg(ap, char *);
- 		jsonw_string(json_wtr, s);
- 		oper_count++;
+ 	if (!xskq_peek_addr(xs->umem->fq, &addr) ||
+ 	    len > xs->umem->chunk_size_nohr - XDP_PACKET_HEADROOM) {
+-		xs->rx_dropped++;
+-		return -ENOSPC;
++		err = -ENOSPC;
++		goto out_drop;
  	}
--	va_end(ap);
-+	free(s);
- 	return 0;
+ 
+ 	addr += xs->umem->headroom;
+@@ -138,13 +142,21 @@ int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp)
+ 	memcpy(buffer, xdp->data_meta, len + metalen);
+ 	addr += metalen;
+ 	err = xskq_produce_batch_desc(xs->rx, addr, len);
+-	if (!err) {
+-		xskq_discard_addr(xs->umem->fq);
+-		xsk_flush(xs);
+-		return 0;
+-	}
++	if (err)
++		goto out_drop;
++
++	xskq_discard_addr(xs->umem->fq);
++	xskq_produce_flush_desc(xs->rx);
+ 
++	spin_unlock_bh(&xs->rx_lock);
++
++	xs->sk.sk_data_ready(&xs->sk);
++	return 0;
++
++out_drop:
+ 	xs->rx_dropped++;
++out_unlock:
++	spin_unlock_bh(&xs->rx_lock);
+ 	return err;
  }
  
+@@ -765,6 +777,7 @@ static int xsk_create(struct net *net, struct socket *sock, int protocol,
+ 
+ 	xs = xdp_sk(sk);
+ 	mutex_init(&xs->mutex);
++	spin_lock_init(&xs->rx_lock);
+ 	spin_lock_init(&xs->tx_completion_lock);
+ 
+ 	mutex_lock(&net->xdp.lock);
 -- 
 2.20.1
 
