@@ -2,308 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FA669D1E
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 22:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A0B69D30
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 22:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732768AbfGOUt7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Jul 2019 16:49:59 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:38001 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731609AbfGOUt7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Jul 2019 16:49:59 -0400
-Received: by mail-ot1-f66.google.com with SMTP id d17so18562109oth.5;
-        Mon, 15 Jul 2019 13:49:57 -0700 (PDT)
+        id S1729875AbfGOU6t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Jul 2019 16:58:49 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:35590 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729640AbfGOU6t (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Jul 2019 16:58:49 -0400
+Received: by mail-oi1-f195.google.com with SMTP id a127so13804733oii.2;
+        Mon, 15 Jul 2019 13:58:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=9UvQoo287w1iW6qT7DydtKV+4jTrc/vB0yeHkxw35KI=;
-        b=E7rGehBdseKUpnNuR+ll7UhuZw0TrFmXXTbEwbssCa8570fBycnpo5sYa8AuRL7HeI
-         1MF52ChCdPvQ4AXDU1NjDHfTtdmHcOPLDvmpUpWqYYkDvlLZIQQrTV7OwRIs8eTPxiSv
-         CqBMOl5Kx8VTY46uOq8rUJC2Qpf3sBQHh7a+Za+SEVO1vxNkPlBeXO4hXHAmYiWSRPf8
-         mxYQA6pfYJS4r/MFTpzU/0Os+DVZxo0bIVYykLJyx8umiU/M6D1+YB5NEZR7BAWglVq1
-         ++70xSTsPm/WZrkBKfxgqlSxIF9lKYFibGUjyyTFIX9ckSJsIMsb7i+r8BWkX9+MfMpr
-         jv0g==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=MCzU/WMkxkdv3seXO1CtWBOCZdI8seyWxMpeV6ILxPM=;
+        b=n/DcGixstP8vOcoFRzdudc00pT/rHSsxBRZ7R1BoGktUPgSXGdYcy4ajXkV+05oUKz
+         GR6hARvV6Nkvuy8ZgD7PZLOMcxRSSPUwdmH+m1vNQL+L0VtNoIDGJoS4omuFDQuIqNfI
+         XCmwRx+tGSUpxv+EddyPwFsFh5m3+YV0wbrTXQ59FEX8Yv+wSGtcnfT/0Hsa5ODoinJg
+         GmFJN+fiWVwXuWbPe17xa1K1jHFt7eApUpWSVBArd8BN5nHpFTdMz77uGwg9bsS/5qPN
+         +Wcb3aH+W0HZUVm04apqIHY/zDAQO6tbGJSBGyngbcEup24Hn7vLMHvH0cMv3Sbfk0pD
+         4b/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=9UvQoo287w1iW6qT7DydtKV+4jTrc/vB0yeHkxw35KI=;
-        b=L8WzdZzBuxKfqvAyYHCriGKUXuYsXTQANNz2EurSPBn38HbkRw5CfNyIlLy5kQDALJ
-         2GgMOIAovuwUtbxsRb7fesYnrBXT9138hnPU3CE7rIKdwvn+lN80ksFoMMC7aioDVrh1
-         L677DfNMZDTWgLm0jNRN8wDdk+XY671Cr67NE3hg51/1LVAUusvH8a+zlu/+r+i5bOuF
-         R1NYVBPSGI224xhHYw1VeGj2Mbt12JxIe0/uMlLerMSlst9Gdxoskdmyh5Mc3xlpLiKp
-         VK7g/YwX0D+Ks9XGUBkrPKjq6amG9wgDJTeDENCBYltSCgjKqUk5e153KED6uaZMpHMe
-         D40A==
-X-Gm-Message-State: APjAAAWRSgyuugLoGHoBwucGoHumKiVmNTa/krvsHxrqCLVyC4SU2FYy
-        TqyBkPMvdos0XCz9hAmvThw=
-X-Google-Smtp-Source: APXvYqwqF3Ph/Fob6FXf+ShI5iIePe/5KAa6pV/aZArpBMxKFL2kN+2s3xm+w9ZROkCkHZdn62hGgQ==
-X-Received: by 2002:a9d:69cd:: with SMTP id v13mr581553oto.89.1563223797552;
-        Mon, 15 Jul 2019 13:49:57 -0700 (PDT)
-Received: from [127.0.1.1] ([99.0.85.34])
-        by smtp.gmail.com with ESMTPSA id i11sm6506202oia.9.2019.07.15.13.49.56
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=MCzU/WMkxkdv3seXO1CtWBOCZdI8seyWxMpeV6ILxPM=;
+        b=e5ao2v+a8LtxcvfdVXML1idjBbasa5e49uXgc4Eje4XK9O3tejKtDVHLsK0f5Nvzfa
+         ISzadcW7BAIKCqbbiQiXpLb3YOVr0XlvyOqrFHulq1uzqeG+BWHom2/saSCiO4r3i6tc
+         gEOHaL3bgHDnLvS5BHifcMQ12uVG2aocsCYcoGoj3gLh2tZLrenyNklnrFTyb6K2A8XT
+         GSQX2sU2XanojV7dBr5v+/LzGhy7jr6bL0PqyzPc6CONqe1LPv9wd0JMvsff+WaNFlIz
+         bmRA+yc1Qp6Ar5CJv+SmVe7bR4ImwF/Tm4xaYaUPuTl/pWaB79cKpk/NZtGIU3Kg/hMu
+         U4jQ==
+X-Gm-Message-State: APjAAAWvY47F22nVye9/NQ6kELY9yGzjGivOqDxaiJF0w+FdZw4pnGEU
+        NT6TbhdaNu4jWq9c8bHfn3Q=
+X-Google-Smtp-Source: APXvYqwoBb7Et3ZVKtXcT4k0fukPE8zlAdYcWoulCi+xqrDp6YXdoCwmdPm/tbl44NDcOr4i/OdLnQ==
+X-Received: by 2002:aca:4806:: with SMTP id v6mr14714890oia.133.1563224328332;
+        Mon, 15 Jul 2019 13:58:48 -0700 (PDT)
+Received: from localhost ([99.0.85.34])
+        by smtp.gmail.com with ESMTPSA id m21sm6837898otn.12.2019.07.15.13.58.47
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 15 Jul 2019 13:49:57 -0700 (PDT)
-Subject: [bpf PATCH v3 8/8] bpf: sockmap/tls, close can race with map free
+        Mon, 15 Jul 2019 13:58:47 -0700 (PDT)
+Date:   Mon, 15 Jul 2019 13:58:46 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     jakub.kicinski@netronome.com, ast@kernel.org, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, edumazet@google.com,
-        john.fastabend@gmail.com, bpf@vger.kernel.org
-Date:   Mon, 15 Jul 2019 13:49:56 -0700
-Message-ID: <156322379603.18678.372458877012213332.stgit@john-XPS-13-9370>
-In-Reply-To: <156322373173.18678.6003379631139659856.stgit@john-XPS-13-9370>
-References: <156322373173.18678.6003379631139659856.stgit@john-XPS-13-9370>
-User-Agent: StGit/0.17.1-dirty
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        edumazet@google.com, bpf@vger.kernel.org
+Message-ID: <5d2ce906c0bb2_4e792ad8fc6505b8d5@john-XPS-13-9370.notmuch>
+In-Reply-To: <20190711201633.552292e6@cakuba.netronome.com>
+References: <156261310104.31108.4569969631798277807.stgit@ubuntu3-kvm1>
+ <156261324561.31108.14410711674221391677.stgit@ubuntu3-kvm1>
+ <20190709194525.0d4c15a6@cakuba.netronome.com>
+ <5d255dececd33_1b7a2aec940d65b45@john-XPS-13-9370.notmuch>
+ <20190710123417.2157a459@cakuba.netronome.com>
+ <20190710130411.08c54ddd@cakuba.netronome.com>
+ <5d276814a76ad_698f2aaeaaf925bc8a@john-XPS-13-9370.notmuch>
+ <20190711113218.2f0b8c1f@cakuba.netronome.com>
+ <5d27a9627b092_19762abc80ff85b856@john-XPS-13-9370.notmuch>
+ <20190711201633.552292e6@cakuba.netronome.com>
+Subject: Re: [bpf PATCH v2 2/6] bpf: tls fix transition through disconnect
+ with close
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When a map free is called and in parallel a socket is closed we
-have two paths that can potentially reset the socket prot ops, the
-bpf close() path and the map free path. This creates a problem
-with which prot ops should be used from the socket closed side.
+Jakub Kicinski wrote:
+> On Thu, 11 Jul 2019 14:25:54 -0700, John Fastabend wrote:
+> > Jakub Kicinski wrote:
+> > > On Thu, 11 Jul 2019 09:47:16 -0700, John Fastabend wrote:  =
 
-If the map_free side completes first then we want to call the
-original lowest level ops. However, if the tls path runs first
-we want to call the sockmap ops. Additionally there was no locking
-around prot updates in TLS code paths so the prot ops could
-be changed multiple times once from TLS path and again from sockmap
-side potentially leaving ops pointed at either TLS or sockmap
-when psock and/or tls context have already been destroyed.
+> > > > Jakub Kicinski wrote:  =
 
-To fix this race first only update ops inside callback lock
-so that TLS, sockmap and lowest level all agree on prot state.
-Second and a ULP callback update() so that lower layers can
-inform the upper layer when they are being removed allowing the
-upper layer to reset prot ops.
+> > > > > On Wed, 10 Jul 2019 12:34:17 -0700, Jakub Kicinski wrote:    =
 
-This gets us close to allowing sockmap and tls to be stacked
-in arbitrary order but will save that patch for *next trees.
+> > > > > > > > > +		if (sk->sk_prot->unhash)
+> > > > > > > > > +			sk->sk_prot->unhash(sk);
+> > > > > > > > > +	}
+> > > > > > > > > +
+> > > > > > > > > +	ctx =3D tls_get_ctx(sk);
+> > > > > > > > > +	if (ctx->tx_conf =3D=3D TLS_SW || ctx->rx_conf =3D=3D=
+ TLS_SW)
+> > > > > > > > > +		tls_sk_proto_cleanup(sk, ctx, timeo);    =
 
-Reported-by: syzbot+06537213db7ba2745c4a@syzkaller.appspotmail.com
-Fixes: 02c558b2d5d6 ("bpf: sockmap, support for msg_peek in sk_msg with redirect ingress")
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- include/linux/skmsg.h |    8 +++++++-
- include/net/tcp.h     |    3 +++
- net/core/skmsg.c      |    4 ++--
- net/ipv4/tcp_ulp.c    |   13 +++++++++++++
- net/tls/tls_main.c    |   48 ++++++++++++++++++++++++++++++++++++------------
- 5 files changed, 61 insertions(+), 15 deletions(-)
+> > > > > =
 
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index 50ced8aba9db..e4b3fb4bb77c 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -354,7 +354,13 @@ static inline void sk_psock_restore_proto(struct sock *sk,
- 	sk->sk_write_space = psock->saved_write_space;
- 
- 	if (psock->sk_proto) {
--		sk->sk_prot = psock->sk_proto;
-+		struct inet_connection_sock *icsk = inet_csk(sk);
-+		bool has_ulp = !!icsk->icsk_ulp_data;
-+
-+		if (has_ulp)
-+			tcp_update_ulp(sk, psock->sk_proto);
-+		else
-+			sk->sk_prot = psock->sk_proto;
- 		psock->sk_proto = NULL;
- 	}
- }
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index cca3c59b98bf..f4702c8b9b8c 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -2102,6 +2102,8 @@ struct tcp_ulp_ops {
- 
- 	/* initialize ulp */
- 	int (*init)(struct sock *sk);
-+	/* update ulp */
-+	void (*update)(struct sock *sk, struct proto *p);
- 	/* cleanup ulp */
- 	void (*release)(struct sock *sk);
- 
-@@ -2113,6 +2115,7 @@ void tcp_unregister_ulp(struct tcp_ulp_ops *type);
- int tcp_set_ulp(struct sock *sk, const char *name);
- void tcp_get_available_ulp(char *buf, size_t len);
- void tcp_cleanup_ulp(struct sock *sk);
-+void tcp_update_ulp(struct sock *sk, struct proto *p);
- 
- #define MODULE_ALIAS_TCP_ULP(name)				\
- 	__MODULE_INFO(alias, alias_userspace, name);		\
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 93bffaad2135..6832eeb4b785 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -585,12 +585,12 @@ EXPORT_SYMBOL_GPL(sk_psock_destroy);
- 
- void sk_psock_drop(struct sock *sk, struct sk_psock *psock)
- {
--	rcu_assign_sk_user_data(sk, NULL);
- 	sk_psock_cork_free(psock);
- 	sk_psock_zap_ingress(psock);
--	sk_psock_restore_proto(sk, psock);
- 
- 	write_lock_bh(&sk->sk_callback_lock);
-+	sk_psock_restore_proto(sk, psock);
-+	rcu_assign_sk_user_data(sk, NULL);
- 	if (psock->progs.skb_parser)
- 		sk_psock_stop_strp(sk, psock);
- 	write_unlock_bh(&sk->sk_callback_lock);
-diff --git a/net/ipv4/tcp_ulp.c b/net/ipv4/tcp_ulp.c
-index 3d8a1d835471..4849edb62d52 100644
---- a/net/ipv4/tcp_ulp.c
-+++ b/net/ipv4/tcp_ulp.c
-@@ -96,6 +96,19 @@ void tcp_get_available_ulp(char *buf, size_t maxlen)
- 	rcu_read_unlock();
- }
- 
-+void tcp_update_ulp(struct sock *sk, struct proto *proto)
-+{
-+	struct inet_connection_sock *icsk = inet_csk(sk);
-+
-+	if (!icsk->icsk_ulp_ops) {
-+		sk->sk_prot = proto;
-+		return;
-+	}
-+
-+	if (icsk->icsk_ulp_ops->update)
-+		icsk->icsk_ulp_ops->update(sk, proto);
-+}
-+
- void tcp_cleanup_ulp(struct sock *sk)
- {
- 	struct inet_connection_sock *icsk = inet_csk(sk);
-diff --git a/net/tls/tls_main.c b/net/tls/tls_main.c
-index f4cb0522fa95..e67e687f79a2 100644
---- a/net/tls/tls_main.c
-+++ b/net/tls/tls_main.c
-@@ -323,15 +323,16 @@ static void tls_sk_proto_unhash(struct sock *sk)
- 	long timeo = sock_sndtimeo(sk, 0);
- 	struct tls_context *ctx;
- 
--	if (unlikely(!icsk->icsk_ulp_data)) {
--		if (sk->sk_prot->unhash)
--			sk->sk_prot->unhash(sk);
--	}
--
- 	ctx = tls_get_ctx(sk);
- 	if (ctx->tx_conf == TLS_SW || ctx->rx_conf == TLS_SW)
- 		tls_sk_proto_cleanup(sk, ctx, timeo);
-+
-+	write_lock_bh(&sk->sk_callback_lock);
- 	icsk->icsk_ulp_data = NULL;
-+	if (sk->sk_prot->unhash == tls_sk_proto_unhash)
-+		sk->sk_prot = ctx->sk_proto;
-+	write_unlock_bh(&sk->sk_callback_lock);
-+
- 	tls_ctx_free_wq(ctx);
- 
- 	if (ctx->unhash)
-@@ -340,15 +341,17 @@ static void tls_sk_proto_unhash(struct sock *sk)
- 
- static void tls_sk_proto_close(struct sock *sk, long timeout)
- {
--	void (*sk_proto_close)(struct sock *sk, long timeout);
-+	struct inet_connection_sock *icsk = inet_csk(sk);
- 	struct tls_context *ctx = tls_get_ctx(sk);
- 	long timeo = sock_sndtimeo(sk, 0);
- 
-+	if (unlikely(!ctx))
-+		return;
-+
- 	if (ctx->tx_conf == TLS_SW)
- 		tls_sw_cancel_work_tx(ctx);
- 
- 	lock_sock(sk);
--	sk_proto_close = ctx->sk_proto_close;
- 
- 	if (ctx->tx_conf == TLS_HW_RECORD && ctx->rx_conf == TLS_HW_RECORD)
- 		goto skip_tx_cleanup;
-@@ -356,17 +359,20 @@ static void tls_sk_proto_close(struct sock *sk, long timeout)
- 	if (ctx->tx_conf == TLS_BASE && ctx->rx_conf == TLS_BASE)
- 		goto skip_tx_cleanup;
- 
--	sk->sk_prot = ctx->sk_proto;
- 	tls_sk_proto_cleanup(sk, ctx, timeo);
- 
- skip_tx_cleanup:
-+	write_lock_bh(&sk->sk_callback_lock);
-+	icsk->icsk_ulp_data = NULL;
-+	if (sk->sk_prot->close == tls_sk_proto_close)
-+		sk->sk_prot = ctx->sk_proto;
-+	write_unlock_bh(&sk->sk_callback_lock);
- 	release_sock(sk);
- 	if (ctx->rx_conf == TLS_SW || ctx->rx_conf == TLS_HW)
- 		tls_sw_strparser_done(ctx);
- 	if (ctx->rx_conf == TLS_SW)
- 		tls_sw_free_ctx_rx(ctx);
--	sk_proto_close(sk, timeout);
--
-+	ctx->sk_proto_close(sk, timeout);
- 	if (ctx->tx_conf != TLS_HW && ctx->rx_conf != TLS_HW &&
- 	    ctx->tx_conf != TLS_HW_RECORD && ctx->rx_conf != TLS_HW_RECORD)
- 		tls_ctx_free(ctx);
-@@ -833,7 +839,7 @@ static int tls_init(struct sock *sk)
- 	int rc = 0;
- 
- 	if (tls_hw_prot(sk))
--		goto out;
-+		return 0;
- 
- 	/* The TLS ulp is currently supported only for TCP sockets
- 	 * in ESTABLISHED state.
-@@ -844,22 +850,39 @@ static int tls_init(struct sock *sk)
- 	if (sk->sk_state != TCP_ESTABLISHED)
- 		return -ENOTSUPP;
- 
-+	tls_build_proto(sk);
-+
- 	/* allocate tls context */
-+	write_lock_bh(&sk->sk_callback_lock);
- 	ctx = create_ctx(sk);
- 	if (!ctx) {
- 		rc = -ENOMEM;
- 		goto out;
- 	}
- 
--	tls_build_proto(sk);
- 	ctx->tx_conf = TLS_BASE;
- 	ctx->rx_conf = TLS_BASE;
- 	ctx->sk_proto = sk->sk_prot;
- 	update_sk_prot(sk, ctx);
- out:
-+	write_unlock_bh(&sk->sk_callback_lock);
- 	return rc;
- }
- 
-+static void tls_update(struct sock *sk, struct proto *p)
-+{
-+	struct tls_context *ctx;
-+
-+	ctx = tls_get_ctx(sk);
-+	if (likely(ctx)) {
-+		ctx->sk_proto_close = p->close;
-+		ctx->unhash = p->unhash;
-+		ctx->sk_proto = p;
-+	} else {
-+		sk->sk_prot = p;
-+	}
-+}
-+
- void tls_register_device(struct tls_device *device)
- {
- 	spin_lock_bh(&device_spinlock);
-@@ -880,6 +903,7 @@ static struct tcp_ulp_ops tcp_tls_ulp_ops __read_mostly = {
- 	.name			= "tls",
- 	.owner			= THIS_MODULE,
- 	.init			= tls_init,
-+	.update			= tls_update,
- };
- 
- static int __init tls_register(void)
+> > > > > Do we still need to hook into unhash? With patch 6 in place per=
+haps we
+> > > > > can just do disconnect =F0=9F=A5=BA    =
 
+> > > > =
+
+> > > > ?? "can just do a disconnect", not sure I folow. We still need un=
+hash
+> > > > in cases where we have a TLS socket transition from ESTABLISHED
+> > > > to LISTEN state without calling close(). This is independent of i=
+f
+> > > > sockmap is running or not.
+> > > > =
+
+> > > > Originally, I thought this would be extremely rare but I did see =
+it
+> > > > in real applications on the sockmap side so presumably it is poss=
+ible
+> > > > here as well.  =
+
+> > > =
+
+> > > Ugh, sorry, I meant shutdown. Instead of replacing the unhash callb=
+ack
+> > > replace the shutdown callback. We probably shouldn't release the so=
+cket
+> > > lock either there, but we can sleep, so I'll be able to run the dev=
+ice
+> > > connection remove callback (which sleep).
+> > =
+
+> > ah OK seems doable to me. Do you want to write that on top of this
+> > series? Or would you like to push it onto your branch and I can pull
+> > it in push the rest of the patches on top and send it out? I think
+> > if you can get to it in the next few days then it makes sense to wait=
+.
+> =
+
+> Mm.. perhaps its easiest if we forget about HW for now and get SW =
+
+> to work? Once you get the SW to 100% I can probably figure out what =
+
+> to do for HW, but I feel like we got too many moving parts ATM.
+
+Hi Jack,
+
+I went ahead and pushed a v3 with your patches at the front. This resolve=
+s
+a set of issues for me so I think it makes sense to push now and look
+to resolve any further issues later. I'll look into the close with pendin=
+g
+data potential issue to see if it is/is-not a real issue.
+
+Thanks,
+John=
