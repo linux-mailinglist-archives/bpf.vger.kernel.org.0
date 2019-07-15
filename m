@@ -2,49 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA5C68637
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 11:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3703E686BA
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 11:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729512AbfGOJWA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Jul 2019 05:22:00 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:40265 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729496AbfGOJWA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Jul 2019 05:22:00 -0400
-Received: by mail-wm1-f66.google.com with SMTP id v19so14409263wmj.5
-        for <bpf@vger.kernel.org>; Mon, 15 Jul 2019 02:21:56 -0700 (PDT)
+        id S1729689AbfGOJ6j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Jul 2019 05:58:39 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:39921 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729541AbfGOJ6j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Jul 2019 05:58:39 -0400
+Received: by mail-wr1-f65.google.com with SMTP id x4so16356295wrt.6
+        for <bpf@vger.kernel.org>; Mon, 15 Jul 2019 02:58:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=references:user-agent:from:to:cc:subject:in-reply-to:date
          :message-id:mime-version;
-        bh=GoRhmkbjLzpojd246Bcqtxk5gu2MXuopT4PrS5lzH18=;
-        b=dHg6JBhGxnOfeP59a/a727/UEuzHpEB4ytFKAlcxYt4o0oE7Dm9yk0yPbtQxuNDCJW
-         4z+y6FLMnwhf7yjyluveCTlEQdj+B0mACk3BsyBO9v3HKUVFt7SVu5jp5hlmME2DpeY9
-         ZXP518/dbGfCn1GRN0fcQpXgLHoX4lY3MJatH9t6rOnAcLM3h66Hy1tdMeIuGNfgHWyi
-         lyulY6tZyHHSi/w/8s7WdVxiYLKth0H6r4Q+1ZE/+lrsAwilKqVEoqKC28QKmaJhbMb6
-         RaVdLvRoOEtOPAkuxueKyRnfApfZ4/XYpX+khP97fJ2lX0vvYnWCvecYHnBBrnhaP7Ra
-         IuNw==
+        bh=HG6jS1CTVRrjoOwtaOmLMkvPvVzOtpXN9oiShDcdEFU=;
+        b=R6RyAIGVGb/STDll/x/MZn+BF9RPQ8JZXPN8jRxLh03eW4NeMxzzbN2fBQjUUg6bpA
+         OWB0ihXVFV5kFHpsO+6iNGwUaQvhC9Z83mqmWPC4YEpxuz/6MW26zW2AWsRs7Pqm7HZK
+         Ia6UDcqJtPrYAmWTtW/N7sX3um/TeU6m/H7njGDf8Luk1X9SjbVEQEvLJyWmfPV7viXL
+         xDtsCcFbt98QZzVoi8cMDf4H9MQIwGWLeVXAlolF1B1ebmqQUg28yMc40xOHXeCDiD2k
+         MdcY5pYUgQMFFcj3YdDKTviELPB+so85INmRqx2SzbjlW5psc+HKtY5/GmC2JwbsjKBX
+         MFFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:references:user-agent:from:to:cc:subject
          :in-reply-to:date:message-id:mime-version;
-        bh=GoRhmkbjLzpojd246Bcqtxk5gu2MXuopT4PrS5lzH18=;
-        b=nzeuKlic8VyZJtD9Vd+MUlrH7dlGf8EgB7azhLxZxKrqeGP88zvFEt0UAJOg26m3Oo
-         br4NGK5pNjng9rR323364+jMenp3Iri2xQnM85mmzWFNGVqtAAr96xJxDoK2vQ+1vEgo
-         ZZHhBEaFpkt6Y9z4V4SEcIhtWbWNlQLo+KKtjrC4tuMnJ2BLoIuiBm3I6/6w+Sgd6GB8
-         jHSssMrGMbOL/EyppuM/AW4/epSzgHxecS6m9jgal5t7INvpgFtzz0XjT2fraUJwV4tT
-         3QdR4m/SqfbxNyJ7T1hFt9nhISGRATbR7aU8EpbybQefoQ6xBHlfGH9SvZx3vo2b4zTk
-         R+Jw==
-X-Gm-Message-State: APjAAAUu7o1rxarR8hlvPwDH52OZXLZhBcbPl1X5a1w2V2Vd3ZhPGgrl
-        1oXPBY8xm9T8Y0JES8WLAi3/Hw==
-X-Google-Smtp-Source: APXvYqzGx2O8qSmg7lZxrILeax7ltKkthyfvSWUzyCMKOjtSpC5T4KxuaGOWpNOm4o9R45z1unb3HQ==
-X-Received: by 2002:a1c:e108:: with SMTP id y8mr23166302wmg.65.1563182515563;
-        Mon, 15 Jul 2019 02:21:55 -0700 (PDT)
+        bh=HG6jS1CTVRrjoOwtaOmLMkvPvVzOtpXN9oiShDcdEFU=;
+        b=hEw24nWW3+r2+W/4NibP3Asudq853n2NX3UYBj1M6U6nHcoxHcLNDi63wWOs0f32fO
+         KxH4ae0ei32VRImJZ3kmBoqD3AC47DgW6xpHDicBTTAXWPFxQ4p7Jv2kGAMDOIR+RP9s
+         kPinTrm7gW2S38Y2I2/enwpRlT4oUrvFxI9JrImZH06AANHK7cCW/q7ZZ2jxep4mpVTK
+         QkOfWjzsbAJ2c7cixdrlfRtuzUdq1jO0jxZSldUnIpXBV3xRnpm0HbYtR23CYJ7EgjE2
+         67S/ezDf45gkdRyNSDTTvL8MHo9z2wjVsriAcWjU/OxAa7TbDjrhhIz1EX1ZwTA6Z4m2
+         PU6g==
+X-Gm-Message-State: APjAAAVlF1c6k2qF3vfIn6xhOhx06RJJ9g3iA/nPNs9nDLCdJX4vthXH
+        eTHDrv0skQSwf9KNu7iSweh9iQ==
+X-Google-Smtp-Source: APXvYqyml9UQglU+ll8/BDGOBOXRNjegXN09nCvghERdotZ99lwnrQoTe5fXQtCxbUbwOdwl4erebw==
+X-Received: by 2002:adf:e446:: with SMTP id t6mr28587884wrm.115.1563184716578;
+        Mon, 15 Jul 2019 02:58:36 -0700 (PDT)
 Received: from LAPTOP-V3S7NLPL ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id d10sm19045873wro.18.2019.07.15.02.21.54
+        by smtp.gmail.com with ESMTPSA id o4sm13751664wmh.35.2019.07.15.02.58.31
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 15 Jul 2019 02:21:54 -0700 (PDT)
-References: <1562275611-31790-1-git-send-email-jiong.wang@netronome.com> <CAEf4BzavePpW-C+zORN1kwSUJAWuJ3LxZ6QGxqaE9msxCq8ZLA@mail.gmail.com> <87r26w24v4.fsf@netronome.com> <CAEf4BzaPFbYKUQzu7VoRd7idrqPDMEFF=UEmT2pGf+Lxz06+sA@mail.gmail.com>
+        Mon, 15 Jul 2019 02:58:32 -0700 (PDT)
+References: <1562275611-31790-1-git-send-email-jiong.wang@netronome.com> <1562275611-31790-2-git-send-email-jiong.wang@netronome.com> <CAEf4BzbR-MQa=TTVir0m-kMeWOxtgnZx+XqAB6neEW+RMBrKEA@mail.gmail.com> <87pnmg23fc.fsf@netronome.com> <CAEf4BzbR_ieGmaOTjCrN6jQRo=QoEJNz1zVeFizZbzGBGaF=Cg@mail.gmail.com>
 User-agent: mu4e 0.9.18; emacs 25.2.2
 From:   Jiong Wang <jiong.wang@netronome.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
@@ -56,11 +56,11 @@ Cc:     Jiong Wang <jiong.wang@netronome.com>,
         Andrii Nakryiko <andriin@fb.com>,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
         bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        oss-drivers@netronome.com, Yonghong Song <yhs@fb.com>
-Subject: Re: [RFC bpf-next 0/8] bpf: accelerate insn patching speed
-In-reply-to: <CAEf4BzaPFbYKUQzu7VoRd7idrqPDMEFF=UEmT2pGf+Lxz06+sA@mail.gmail.com>
-Date:   Mon, 15 Jul 2019 10:21:50 +0100
-Message-ID: <87k1cj3b69.fsf@netronome.com>
+        oss-drivers@netronome.com
+Subject: Re: [RFC bpf-next 1/8] bpf: introducing list based insn patching infra to core layer
+In-reply-to: <CAEf4BzbR_ieGmaOTjCrN6jQRo=QoEJNz1zVeFizZbzGBGaF=Cg@mail.gmail.com>
+Date:   Mon, 15 Jul 2019 10:58:30 +0100
+Message-ID: <87ims339h5.fsf@netronome.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
@@ -71,548 +71,300 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Andrii Nakryiko writes:
 
-> On Thu, Jul 11, 2019 at 4:22 AM Jiong Wang <jiong.wang@netronome.com> wrote:
+> On Thu, Jul 11, 2019 at 4:53 AM Jiong Wang <jiong.wang@netronome.com> wrote:
 >>
 >>
 >> Andrii Nakryiko writes:
 >>
->> > On Thu, Jul 4, 2019 at 2:31 PM Jiong Wang <jiong.wang@netronome.com> wrote:
+>> > On Thu, Jul 4, 2019 at 2:32 PM Jiong Wang <jiong.wang@netronome.com> wrote:
 >> >>
->> >> This is an RFC based on latest bpf-next about acclerating insn patching
->> >> speed, it is now near the shape of final PATCH set, and we could see the
->> >> changes migrating to list patching would brings, so send out for
->> >> comments. Most of the info are in cover letter. I splitted the code in a
->> >> way to show API migration more easily.
+>> >> This patch introduces list based bpf insn patching infra to bpf core layer
+>> >> which is lower than verification layer.
+>> >>
+>> >> This layer has bpf insn sequence as the solo input, therefore the tasks
+>> >> to be finished during list linerization is:
+>> >>   - copy insn
+>> >>   - relocate jumps
+>> >>   - relocation line info.
+>> >>
+>> >> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+>> >> Suggested-by: Edward Cree <ecree@solarflare.com>
+>> >> Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
+>> >> ---
+>> >>  include/linux/filter.h |  25 +++++
+>> >>  kernel/bpf/core.c      | 268 +++++++++++++++++++++++++++++++++++++++++++++++++
+>> >>  2 files changed, 293 insertions(+)
+>> >>
+>> >> diff --git a/include/linux/filter.h b/include/linux/filter.h
+>> >> index 1fe53e7..1fea68c 100644
+>> >> --- a/include/linux/filter.h
+>> >> +++ b/include/linux/filter.h
+>> >> @@ -842,6 +842,31 @@ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
+>> >>                                        const struct bpf_insn *patch, u32 len);
+>> >>  int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt);
+>> >>
+>> >> +int bpf_jit_adj_imm_off(struct bpf_insn *insn, int old_idx, int new_idx,
+>> >> +                       int idx_map[]);
+>> >> +
+>> >> +#define LIST_INSN_FLAG_PATCHED 0x1
+>> >> +#define LIST_INSN_FLAG_REMOVED 0x2
+>> >> +struct bpf_list_insn {
+>> >> +       struct bpf_insn insn;
+>> >> +       struct bpf_list_insn *next;
+>> >> +       s32 orig_idx;
+>> >> +       u32 flag;
+>> >> +};
+>> >> +
+>> >> +struct bpf_list_insn *bpf_create_list_insn(struct bpf_prog *prog);
+>> >> +void bpf_destroy_list_insn(struct bpf_list_insn *list);
+>> >> +/* Replace LIST_INSN with new list insns generated from PATCH. */
+>> >> +struct bpf_list_insn *bpf_patch_list_insn(struct bpf_list_insn *list_insn,
+>> >> +                                         const struct bpf_insn *patch,
+>> >> +                                         u32 len);
+>> >> +/* Pre-patch list_insn with insns inside PATCH, meaning LIST_INSN is not
+>> >> + * touched. New list insns are inserted before it.
+>> >> + */
+>> >> +struct bpf_list_insn *bpf_prepatch_list_insn(struct bpf_list_insn *list_insn,
+>> >> +                                            const struct bpf_insn *patch,
+>> >> +                                            u32 len);
+>> >> +
+>> >>  void bpf_clear_redirect_map(struct bpf_map *map);
+>> >>
+>> >>  static inline bool xdp_return_frame_no_direct(void)
+>> >> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>> >> index e2c1b43..e60703e 100644
+>> >> --- a/kernel/bpf/core.c
+>> >> +++ b/kernel/bpf/core.c
+>> >> @@ -502,6 +502,274 @@ int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt)
+>> >>         return WARN_ON_ONCE(bpf_adj_branches(prog, off, off + cnt, off, false));
+>> >>  }
+>> >>
+>> >> +int bpf_jit_adj_imm_off(struct bpf_insn *insn, int old_idx, int new_idx,
+>> >> +                       s32 idx_map[])
+>> >> +{
+>> >> +       u8 code = insn->code;
+>> >> +       s64 imm;
+>> >> +       s32 off;
+>> >> +
+>> >> +       if (BPF_CLASS(code) != BPF_JMP && BPF_CLASS(code) != BPF_JMP32)
+>> >> +               return 0;
+>> >> +
+>> >> +       if (BPF_CLASS(code) == BPF_JMP &&
+>> >> +           (BPF_OP(code) == BPF_EXIT ||
+>> >> +            (BPF_OP(code) == BPF_CALL && insn->src_reg != BPF_PSEUDO_CALL)))
+>> >> +               return 0;
+>> >> +
+>> >> +       /* BPF to BPF call. */
+>> >> +       if (BPF_OP(code) == BPF_CALL) {
+>> >> +               imm = idx_map[old_idx + insn->imm + 1] - new_idx - 1;
+>> >> +               if (imm < S32_MIN || imm > S32_MAX)
+>> >> +                       return -ERANGE;
+>> >> +               insn->imm = imm;
+>> >> +               return 1;
+>> >> +       }
+>> >> +
+>> >> +       /* Jump. */
+>> >> +       off = idx_map[old_idx + insn->off + 1] - new_idx - 1;
+>> >> +       if (off < S16_MIN || off > S16_MAX)
+>> >> +               return -ERANGE;
+>> >> +       insn->off = off;
+>> >> +       return 0;
+>> >> +}
+>> >> +
+>> >> +void bpf_destroy_list_insn(struct bpf_list_insn *list)
+>> >> +{
+>> >> +       struct bpf_list_insn *elem, *next;
+>> >> +
+>> >> +       for (elem = list; elem; elem = next) {
+>> >> +               next = elem->next;
+>> >> +               kvfree(elem);
+>> >> +       }
+>> >> +}
+>> >> +
+>> >> +struct bpf_list_insn *bpf_create_list_insn(struct bpf_prog *prog)
+>> >> +{
+>> >> +       unsigned int idx, len = prog->len;
+>> >> +       struct bpf_list_insn *hdr, *prev;
+>> >> +       struct bpf_insn *insns;
+>> >> +
+>> >> +       hdr = kvzalloc(sizeof(*hdr), GFP_KERNEL);
+>> >> +       if (!hdr)
+>> >> +               return ERR_PTR(-ENOMEM);
+>> >> +
+>> >> +       insns = prog->insnsi;
+>> >> +       hdr->insn = insns[0];
+>> >> +       hdr->orig_idx = 1;
+>> >> +       prev = hdr;
 >> >
->> >
->> > Hey Jiong,
->> >
->> >
->> > Sorry, took me a while to get to this and learn more about instruction
->> > patching. Overall this looks good and I think is a good direction.
->> > I'll post high-level feedback here, and some more
->> > implementation-specific ones in corresponding patches.
+>> > I'm not sure why you need this "prologue" instead of handling first
+>> > instruction uniformly in for loop below?
 >>
->> Great, thanks very much for the feedbacks. Most of your feedbacks are
->> hitting those pain points I exactly had ran into. For some of them, I
->> thought similar solutions like yours, but failed due to various
->> reasons. Let's go through them again, I could have missed some important
->> things.
->>
->> Please see my replies below.
+>> It is because the head of the list doesn't have precessor, so no need of
+>> the prev->next assignment, not could do a check inside the loop to rule the
+>> head out when doing it.
 >
-> Thanks for thoughtful reply :)
+> yeah, prev = NULL initially. Then
+>
+> if (prev) prev->next = node;
+>
+> Or see my suggestiong about having patchabel_insns_list wrapper struct
+> (in cover letter thread).
 >
 >>
->> >>
->> >> Test Results
->> >> ===
->> >>   - Full pass on test_verifier/test_prog/test_prog_32 under all three
->> >>     modes (interpreter, JIT, JIT with blinding).
->> >>
->> >>   - Benchmarking shows 10 ~ 15x faster on medium sized prog, and reduce
->> >>     patching time from 5100s (nearly one and a half hour) to less than
->> >>     0.5s for 1M insn patching.
->> >>
->> >> Known Issues
->> >> ===
->> >>   - The following warning is triggered when running scale test which
->> >>     contains 1M insns and patching:
->> >>       warning of mm/page_alloc.c:4639 __alloc_pages_nodemask+0x29e/0x330
->> >>
->> >>     This is caused by existing code, it can be reproduced on bpf-next
->> >>     master with jit blinding enabled, then run scale unit test, it will
->> >>     shown up after half an hour. After this set, patching is very fast, so
->> >>     it shows up quickly.
->> >>
->> >>   - No line info adjustment support when doing insn delete, subprog adj
->> >>     is with bug when doing insn delete as well. Generally, removal of insns
->> >>     could possibly cause remove of entire line or subprog, therefore
->> >>     entries of prog->aux->linfo or env->subprog needs to be deleted. I
->> >>     don't have good idea and clean code for integrating this into the
->> >>     linearization code at the moment, will do more experimenting,
->> >>     appreciate ideas and suggestions on this.
+>> >> +
+>> >> +       for (idx = 1; idx < len; idx++) {
+>> >> +               struct bpf_list_insn *node = kvzalloc(sizeof(*node),
+>> >> +                                                     GFP_KERNEL);
+>> >> +
+>> >> +               if (!node) {
+>> >> +                       /* Destroy what has been allocated. */
+>> >> +                       bpf_destroy_list_insn(hdr);
+>> >> +                       return ERR_PTR(-ENOMEM);
+>> >> +               }
+>> >> +               node->insn = insns[idx];
+>> >> +               node->orig_idx = idx + 1;
 >> >
->> > Is there any specific problem to detect which line info to delete? Or
->> > what am I missing besides careful implementation?
+>> > Why orig_idx is 1-based? It's really confusing.
 >>
->> Mostly line info and subprog info are range info which covers a range of
->> insns. Deleting insns could causing you adjusting the range or removing one
->> range entirely. subprog info could be fully recalcuated during
->> linearization while line info I need some careful implementation and I
->> failed to have clean code for this during linearization also as said no
->> unit tests to help me understand whether the code is correct or not.
+>> orig_idx == 0 means one insn is without original insn, means it is an new
+>> insn generated for patching purpose.
 >>
+>> While the LIST_INSN_FLAG_PATCHED in the RFC means one insn in original prog
+>> is patched.
+>>
+>> I had been trying to differenciate above two cases, but yes, they are
+>> confusing and differenciating them might be useless, if an insn in original
+>> prog is patched, all its info could be treated as clobbered and needing
+>> re-calculating or should do conservative assumption.
 >
-> Ok, that's good that it's just about clean implementation. Try to
-> implement it as clearly as possible. Then post it here, and if it can
-> be improved someone (me?) will try to help to clean it up further.
->
-> Not a big expert on line info, so can't comment on that,
-> unfortunately. Maybe Yonghong can chime in (cc'ed)
->
->
->> I will described this latter, spent too much time writing the following
->> reply. Might worth an separate discussion thread.
->>
->> >>
->> >>     Insn delete doesn't happen on normal programs, for example Cilium
->> >>     benchmarks, and happens rarely on test_progs, so the test coverage is
->> >>     not good. That's also why this RFC have a full pass on selftest with
->> >>     this known issue.
->> >
->> > I hope you'll add test for deletion (and w/ corresponding line info)
->> > in final patch set :)
->>
->> Will try. Need to spend some time on BTF format.
->> >
->> >>
->> >>   - Could further use mem pool to accelerate the speed, changes are trivial
->> >>     on top of this RFC, and could be 2x extra faster. Not included in this
->> >>     RFC as reducing the algo complexity from quadratic to linear of insn
->> >>     number is the first step.
->> >
->> > Honestly, I think that would add more complexity than necessary, and I
->> > think we can further speed up performance without that, see below.
->> >
->> >>
->> >> Background
->> >> ===
->> >> This RFC aims to accelerate BPF insn patching speed, patching means expand
->> >> one bpf insn at any offset inside bpf prog into a set of new insns, or
->> >> remove insns.
->> >>
->> >> At the moment, insn patching is quadratic of insn number, this is due to
->> >> branch targets of jump insns needs to be adjusted, and the algo used is:
->> >>
->> >>   for insn inside prog
->> >>     patch insn + regeneate bpf prog
->> >>     for insn inside new prog
->> >>       adjust jump target
->> >>
->> >> This is causing significant time spending when a bpf prog requires large
->> >> amount of patching on different insns. Benchmarking shows it could take
->> >> more than half minutes to finish patching when patching number is more
->> >> than 50K, and the time spent could be more than one hour when patching
->> >> number is around 1M.
->> >>
->> >>   15000   :    3s
->> >>   45000   :   29s
->> >>   95000   :  125s
->> >>   195000  :  712s
->> >>   1000000 : 5100s
->> >>
->> >> This RFC introduces new patching infrastructure. Before doing insn
->> >> patching, insns in bpf prog are turned into a singly linked list, insert
->> >> new insns just insert new list node, delete insns just set delete flag.
->> >> And finally, the list is linearized back into array, and branch target
->> >> adjustment is done for all jump insns during linearization. This algo
->> >> brings the time complexity from quadratic to linear of insn number.
->> >>
->> >> Benchmarking shows the new patching infrastructure could be 10 ~ 15x faster
->> >> on medium sized prog, and for a 1M patching it reduce the time from 5100s
->> >> to less than 0.5s.
->> >>
->> >> Patching API
->> >> ===
->> >> Insn patching could happen on two layers inside BPF. One is "core layer"
->> >> where only BPF insns are patched. The other is "verification layer" where
->> >> insns have corresponding aux info as well high level subprog info, so
->> >> insn patching means aux info needs to be patched as well, and subprog info
->> >> needs to be adjusted. BPF prog also has debug info associated, so line info
->> >> should always be updated after insn patching.
->> >>
->> >> So, list creation, destroy, insert, delete is the same for both layer,
->> >> but lineration is different. "verification layer" patching require extra
->> >> work. Therefore the patch APIs are:
->> >>
->> >>    list creation:                bpf_create_list_insn
->> >>    list patch:                   bpf_patch_list_insn
->> >>    list pre-patch:               bpf_prepatch_list_insn
->> >
->> > I think pre-patch name is very confusing, until I read full
->> > description I couldn't understand what it's supposed to be used for.
->> > Speaking of bpf_patch_list_insn, patch is also generic enough to leave
->> > me wondering whether instruction buffer is inserted after instruction,
->> > or instruction is replaced with a bunch of instructions.
->> >
->> > So how about two more specific names:
->> > bpf_patch_list_insn -> bpf_list_insn_replace (meaning replace given
->> > instruction with a list of patch instructions)
->> > bpf_prepatch_list_insn -> bpf_list_insn_prepend (well, I think this
->> > one is pretty clear).
->>
->> My sense on English word is not great, will switch to above which indeed
->> reads more clear.
->>
->> >>    list lineration (core layer): prog = bpf_linearize_list_insn(prog, list)
->> >>    list lineration (veri layer): env = verifier_linearize_list_insn(env, list)
->> >
->> > These two functions are both quite involved, as well as share a lot of
->> > common code. I'd rather have one linearize instruction, that takes env
->> > as an optional parameter. If env is specified (which is the case for
->> > all cases except for constant blinding pass), then adjust aux_data and
->> > subprogs along the way.
->>
->> Two version of lineration and how to unify them was a painpoint to me. I
->> thought to factor out some of the common code out, but it actually doesn't
->> count much, the final size counting + insnsi resize parts are the same,
->> then things start to diverge since the "Copy over insn" loop.
->>
->> verifier layer needs to copy and initialize aux data etc. And jump
->> relocation is different. At core layer, the use case is JIT blinding which
->> could expand an jump_imm insn into a and/or/jump_reg sequence, and the
->
-> Sorry, I didn't get what "could expand an jump_imm insn into a
-> and/or/jump_reg sequence", maybe you can clarify if I'm missing
-> something.
->
-> But from your cover letter description, core layer has no jumps at
-> all, while verifier has jumps inside patch buffer. So, if you support
-> jumps inside of patch buffer, it will automatically work for core
-> layer. Or what am I missing?
+> Instruction will be new and not patched only in patch_buffer. Once you
+> add them to the list, they are patched, no? Not sure what's the
+> distinction you are trying to maintain here.
 
-I meant in core layer (JIT blinding), there is the following patching:
+Never mind, the reason I was trying to differenciating them is because I
+had some strange preference on the insn patched.
 
-input:
-  insn 0             insn 0
-  insn 1             insn 1
-  jmp_imm   >>       mov_imm  \
-  insn 2             xor_imm    insn seq expanded from jmp_imm
-  insn 3             jmp_reg  /
-                     insn 2
-                     insn 3
+insn 1          insn 1
+insn 2   >>     insn 2.1
+insn 3          insn 2.2
+                insn 2.3
+                insn 3
 
+I kind of thinking the it is better to maintain the original info of one
+patched insn, that is to say insn 2 above is patched and expanded into insn
+2.1/2.2/2.3, then I slightly felt better to copy the aux info of insn to
+insn 2.1 and only rebuilt those we are sure needs to be updated, for
+example zext because the insn is changed.
 
-jmp_imm is the insn that will be patched, and the actually transformation
-is to expand it into mov_imm/xor_imm/jmp_reg sequence. "jmp_reg", sitting
-at the end of the patch buffer, must jump to the same destination as the
-original jmp_imm, so "jmp_reg" is an insn inside patch buffer but should
-be relocated, and the jump destination is outside of patch buffer.
-
-This means for core layer (jit blinding), it needs to take care of insn
-inside patch buffer.
-  
-> Just compared two version of linearize side by side. From what I can
-> see, unified version could look like this, high-level:
+>> >
+>> >> +               prev->next = node;
+>> >> +               prev = node;
+>> >> +       }
+>> >> +
+>> >> +       return hdr;
+>> >> +}
+>> >> +
 >
-> 1. Count final insn count (but see my other suggestions how to avoid
-> that altogether). If not changed - exit.
-> 2. Realloc insn buffer, copy just instructions (not aux_data yet).
-> Build idx_map, if necessary.
-> 3. (if env) then bpf_patchable_insn has aux_data, so now do another
-> pass and copy it into resulting array.
-> 4. (if env) Copy sub info. Though I'd see if we can just reuse old
-> ones and just adjust offsets. I'm not sure why we need to allocate new
-> array, subprogram count shouldn't change, right?
-
-If there is no dead insn elimination opt, then we could just adjust
-offsets. When there is insn deleting, I feel the logic becomes more
-complex. One subprog could be completely deleted or partially deleted, so
-I feel just recalculate the whole subprog info as a side-product is
-much simpler.
-
-> 5. (common) Relocate jumps. Not clear why core layer doesn't care
-> about PATCHED (or, alternatively, why verifier layer cares).
-
-See above, in this RFC, core layer care PATCHED during relocating jumps,
-and verifier layer doesn't.
-
-> And again, with targets pointer it will look totally different (and
-> simpler).
-
-Yes, will see how the code looks.
-
-> 6. (if env) adjust subprogs
-> 7. (common) Adjust prog's line info.
+> [...]
 >
-> The devil is in the details, but I think this will still be better if
-> contained in one function if a bunch of `if (env)` checks. Still
-> pretty linear.
->
->> jump_reg is at the end of the patch buffer, it should be relocated. While
->> all use case in verifier layer, no jump in the prog will be patched and all
->> new jumps in patch buffer will jump inside the buffer locally so no need to
->> resolve.
+>> >> +
+>> >> +       len--;
+>> >> +       patch++;
+>> >> +
+>> >> +       prev = list_insn;
+>> >> +       next = list_insn->next;
+>> >> +       for (idx = 0; idx < len; idx++) {
+>> >> +               struct bpf_list_insn *node = kvzalloc(sizeof(*node),
+>> >> +                                                     GFP_KERNEL);
+>> >> +
+>> >> +               if (!node) {
+>> >> +                       /* Link what's allocated, so list destroyer could
+>> >> +                        * free them.
+>> >> +                        */
+>> >> +                       prev->next = next;
+>> >
+>> > Why this special handling, if you can just insert element so that list
+>> > is well-formed after each instruction?
 >>
->> And yes we could unify them into one and control the diverge using
->> argument, but then where to place the function is an issue. My
->> understanding is verifier.c is designed to be on top of core.c and core.c
->> should not reference and no need to be aware of any verifier specific data
->> structures, for example env or bpf_aux_insn_data etc.
->
-> Func prototype where it is. Maybe forward-declare verifier env struct.
-> Implementation in verifier.c?
->
->>
->> So, in this RFC, I had choosed to write separate linerization function for
->> core and verifier layer. Does this make sense?
->
-> See above. Let's still try to make it better.
->
+>> Good idea, just always do "node->next = next", the "prev->next = node" in
+>> next round will fix it.
 >>
 >> >
->> > This would keep logic less duplicated and shouldn't complexity beyond
->> > few null checks in few places.
+>> >> +                       return ERR_PTR(-ENOMEM);
+>> >> +               }
+>> >> +
+>> >> +               node->insn = patch[idx];
+>> >> +               prev->next = node;
+>> >> +               prev = node;
 >> >
->> >>    list destroy:                 bpf_destroy_list_insn
->> >>
+>> > E.g.,
 >> >
->> > I'd also add a macro foreach_list_insn instead of explicit for loops
->> > in multiple places. That would also allow to skip deleted instructions
->> > transparently.
+>> > node->next = next;
+>> > prev->next = node;
+>> > prev = node;
 >> >
->> >> list patch could change the insn at patch point, it will invalid the aux
+>> >> +       }
+>> >> +
+>> >> +       prev->next = next;
 >> >
->> > typo: invalid -> invalidate
+>> > And no need for this either.
+>> >
+>> >> +       return prev;
+>> >> +}
+>> >> +
+>> >> +struct bpf_list_insn *bpf_prepatch_list_insn(struct bpf_list_insn *list_insn,
+>> >> +                                            const struct bpf_insn *patch,
+>> >> +                                            u32 len)
+>> >
+>> > prepatch and patch functions should share the same logic.
+>> >
+>> > Prepend is just that - insert all instructions from buffer before current insns.
+>> > Patch -> replace current one with first instriction in a buffer, then
+>> > prepend remaining ones before the next instruction (so patch should
+>> > call info prepend, with adjusted count and array pointer).
 >>
->> Ack.
+>> Ack, there indeed has quite a few things to simplify.
 >>
 >> >
->> >> info at patching point. list pre-patch insert new insns before patch point
->> >> where the insn and associated aux info are not touched, it is used for
->> >> example in convert_ctx_access when generating prologue.
->> >>
->> >> Typical API sequence for one patching pass:
->> >>
->> >>    struct bpf_list_insn list = bpf_create_list_insn(struct bpf_prog);
->> >>    for (elem = list; elem; elem = elem->next)
->> >>       patch_buf = gen_patch_buf_logic;
->> >>       elem = bpf_patch_list_insn(elem, patch_buf, cnt);
->> >>    bpf_prog = bpf_linearize_list_insn(list)
->> >>    bpf_destroy_list_insn(list)
->> >>
->> >> Several patching passes could also share the same list:
->> >>
->> >>    struct bpf_list_insn list = bpf_create_list_insn(struct bpf_prog);
->> >>    for (elem = list; elem; elem = elem->next)
->> >>       patch_buf = gen_patch_buf_logic1;
->> >>       elem = bpf_patch_list_insn(elem, patch_buf, cnt);
->> >>    for (elem = list; elem; elem = elem->next)
->> >>       patch_buf = gen_patch_buf_logic2;
->> >>       elem = bpf_patch_list_insn(elem, patch_buf, cnt);
->> >>    bpf_prog = bpf_linearize_list_insn(list)
->> >>    bpf_destroy_list_insn(list)
->> >>
->> >> but note new inserted insns int early passes won't have aux info except
->> >> zext info. So, if one patch pass requires all aux info updated and
->> >> recalculated for all insns including those pathced, it should first
->> >> linearize the old list, then re-create the list. The RFC always create and
->> >> linearize the list for each migrated patching pass separately.
->> >
->> > I think we should do just one list creation, few passes of patching
->> > and then linearize once. That will save quite a lot of memory
->> > allocation and will speed up a lot of things. All the verifier
->> > patching happens one after the other without any other functionality
->> > in between, so there shouldn't be any problem.
->>
->> Yes, as mentioned above, it is possible and I had tried to do it in an very
->> initial impl. IIRC convert_ctx_access + fixup_bpf_calls could share the
->> same list, but then the 32-bit zero extension insertion pass requires
->> aux.zext_dst set properly for all instructions including those patched
->
-> So zext_dst. Seems like it's easily calculatable, so doesn't seem like
-> it even needs to be accessed from aux_data.
->
-> But. I can see at least two ways to do this:
-> 1. those patching passes that care about aux_data, should just do
-> extra check for NULL. Because when we adjust insns now, we just leave
-> zero-initialized aux_data, except for zext_dst and seen. So it's easy
-> to default to them if aux_data is NULL for patchable_insn.
-> 2. just allocate and fill them out them when applying patch insns
-> buffer. It's not a duplication, we already fill them out during
-> patching today. So just do the same, except through malloc()'ed
-> pointer instead. At the end they will be copied into linear resulting
-> array during linearization (uniformly with non-patched insns).
->
->> one which we need to linearize the list first (as we set zext_dst during
->> linerization), or the other choice is we do the zext_dst initialization
->> during bpf_patch_list_insn, but this then make bpf_patch_list_insn diverge
->> between core and verifier layer.
->
-> List construction is much simpler, even if we have to have extra
-> check, similar to `if (env) { do_extra(); }`, IMO, it's fine.
->
->>
->> > As for aux_data. We can solve that even more simply and reliably by
->> > storing a pointer along the struct bpf_list_insn
->>
->> This is exactly what I had implemented initially, but then the issue is how
->> to handle aux_data for patched insn? IIRC I was leave it as a NULL pointer,
->> but later found zext_dst info is required for all insns, so I end up
->> duplicating zext_dst in bpf_list_insn.
->
-> See above. No duplication. You have a pointer. Whether aux_data is in
-> original array or was malloc()'ed, doesn't matter. But no duplication
-> of fields.
->
->>
->> This leads me worrying we need to keep duplicating fields there as soon as
->> there is new similar requirements in future patching pass and I thought it
->> might be better to just reference the aux_data inside env using orig_idx,
->> this avoids duplicating information, but we need to make sure used fields
->> inside aux_data for patched insn update-to-date during linearization or
->> patching list.
->>
->> > (btw, how about calling it bpf_patchable_insn?).
->>
->> No preference, will use this one.
->>
->> > Here's how I propose to represent this patchable instruction:
->> >
->> > struct bpf_list_insn {
->> >        struct bpf_insn insn;
->> >        struct bpf_list_insn *next;
->> >        struct bpf_list_insn *target;
->> >        struct bpf_insn_aux_data *aux_data;
->> >        s32 orig_idx; // can repurpose this to have three meanings:
->> >                      // -2 - deleted
->> >                      // -1 - patched/inserted insn
->> >                      // >=0 - original idx
->>
->> I actually had experimented the -2/-1/0 trick, exactly the same number
->> assignment :) IIRC the code was not clear compared with using flag, the
->> reason seems to be:
->>   1. we still need orig_idx of an patched insn somehow, meaning negate the
->>      index.
->
-> Not following, original index with be >=0, no?
->
->>   2. somehow somecode need to know whether one insn is deleted or patched
->>      after the negation, so I end up with some ugly code.
->
-> So that's why you'll have constants with descriptive name for -2 and -1.
->
->>
->> Anyway, I might had not thought hard enough on this, I will retry using the
->> special index instead of flag, hopefully I could have clean code this time.
->>
->
-> Yeah, please try again. All those `orig_idx = insn->orig_idx - 1; if
-> (orig_idx >= 0) { ... }` are very confusing.
->
->> > };
->> >
->> > The idea would be as follows:
->> > 1. when creating original list, target pointer will point directly to
->> > a patchable instruction wrapper for jumps/calls. This will allow to
->> > stop tracking and re-calculating jump offsets and instruction indicies
->> > until linearization.
->>
->> Not sure I have followed the idea of "target" pointer. At the moment we are
->> using index mapping array (generated as by-product during coping insn).
->>
->> While the "target" pointer means to during list initialization, each jump
->> insn will have target initialized to the list node of the converted jump
->> destination insn, and all those non-jump insns are with NULL? Then during
->> linearization you assign index to each list node (could be done as
->> by-product of other pass) before insn coping which could then relocate the
->> insn during the coping as the "target" would have final index calculated?
->> Am I following correctly?
->
-> Yes, I think you are understanding correctly what I'm saying. For
-> implementation, you can do it in few ways, through few passes or with
-> some additional data, is less important. See what's cleanest.
->
->>
->> > 2. aux_data is also filled at that point. Later at linearization time
->> > you'd just iterate over all the instructions in final order and copy
->> > original aux_data, if it's present. And then just repace env's
->> > aux_data array at the end, should be very simple and fast.
->>
->> As explained, I am worried making aux_data a pointer will causing
->> duplicating some fields into list_insn if the fields are required for
->> patched insns.
->
-> Addressed above, I don't think there will be any duplication, because
-> we pass aux_data by pointer.
->
->>
->> > 3. during fix_bpf_calls, zext, ctx rewrite passes, we'll reuse the
->> > same list of instructions and those passes will just keep inserting
->> > instruction buffers. Given we have restriction that all the jumps are
->> > only within patch buffer, it will be trivial to construct proper
->> > patchable instruction wrappers for newly added instructions, with NULL
->> > for aux_data and possibly non-NULL target (if it's a JMP insn).
->> > 4. After those passes, linearize, adjust subprogs (for this you'll
->> > probably still need to create index mapping, right?), copy or create
->> > new aux_data.
->> > 5. Done.
->> >
->> > What do you think? I think this should be overall simpler and faster.
->> > But let me know if I'm missing something.
->>
->> Thanks for all these thoughts, they are very good suggestions and reminds
->> me to revisit some points I had forgotten. I will do the following things:
->>
->>   1. retry the negative index solution to eliminate flag if the result code
->>      could be clean.
->>   2. the "target" pointer seems make sense, it makes list_insn bigger but
->>      normally space trade with time, so I will try to implement it to see
->>      how the code looks like.
->>   3. I still have concerns on making aux_data as pointer. Mostly due to
->>      patched insn will have NULL pointer and in case aux info of patched
->>      insn is required, we need to duplicate info inside list_insn. For
->>      example 32-bit zext opt requires zext_dst.
->>
->
->
-> So one more thing I wanted to suggest. I'll try to keep high-level
-> suggestions here.
->
-> What about having a wrapper for patchable_insn list, where you can
-> store some additional data, like final count and whatever else. It
-> will eliminate some passes (counting) and will make list handling
-> easier (because you can have a dummy head pointer, so no special
-> handling of first element
-
-Will try it.
-
-> you had this concern in patch #1, I
-> believe). But it will be clear if it's beneficial once implemented.
-
->> Regards,
->> Jiong
->>
->> >>
->> >> Compared with old patching code, this new infrastructure has much less core
->> >> code, even though the final code has a couple of extra lines but that is
->> >> mostly due to for list based infrastructure, we need to do more error
->> >> checks, so the list and associated aux data structure could be freed when
->> >> errors happens.
->> >>
->> >> Patching Restrictions
->> >> ===
->> >>   - For core layer, the linearization assume no new jumps inside patch buf.
->> >>     Currently, the only user of this layer is jit blinding.
->> >>   - For verifier layer, there could be new jumps inside patch buf, but
->> >>     they should have branch target resolved themselves, meaning new jumps
->> >>     doesn't jump to insns out of the patch buf. This is the case for all
->> >>     existing verifier layer users.
->> >>   - bpf_insn_aux_data for all patched insns including the one at patch
->> >>     point are invalidated, only 32-bit zext info will be recalcuated.
->> >>     If the aux data of insn at patch point needs to be retained, it is
->> >>     purely insn insertion, so need to use the pre-patch API.
->> >>
->> >> I plan to send out a PATCH set once I finished insn deletion line info adj
->> >> support, please have a looks at this RFC, and appreciate feedbacks.
->> >>
->> >> Jiong Wang (8):
->> >>   bpf: introducing list based insn patching infra to core layer
->> >>   bpf: extend list based insn patching infra to verification layer
->> >>   bpf: migrate jit blinding to list patching infra
->> >>   bpf: migrate convert_ctx_accesses to list patching infra
->> >>   bpf: migrate fixup_bpf_calls to list patching infra
->> >>   bpf: migrate zero extension opt to list patching infra
->> >>   bpf: migrate insn remove to list patching infra
->> >>   bpf: delete all those code around old insn patching infrastructure
->> >>
->> >>  include/linux/bpf_verifier.h |   1 -
->> >>  include/linux/filter.h       |  27 +-
->> >>  kernel/bpf/core.c            | 431 +++++++++++++++++-----------
->> >>  kernel/bpf/verifier.c        | 649 +++++++++++++++++++------------------------
->> >>  4 files changed, 580 insertions(+), 528 deletions(-)
->> >>
+>> >> +{
+>> >> +       struct bpf_list_insn *prev, *node, *begin_node;
+>> >> +       u32 idx;
+>> >> +
+>> >> +       if (!len)
+>> >> +               return list_insn;
+>> >> +
+>> >> +       node = kvzalloc(sizeof(*node), GFP_KERNEL);
+>> >> +       if (!node)
+>> >> +               return ERR_PTR(-ENOMEM);
+>> >> +       node->insn = patch[0];
+>> >> +       begin_node = node;
+>> >> +       prev = node;
+>> >> +
+>> >> +       for (idx = 1; idx < len; idx++) {
+>> >> +               node = kvzalloc(sizeof(*node), GFP_KERNEL);
+>> >> +               if (!node) {
+>> >> +                       node = begin_node;
+>> >> +                       /* Release what's has been allocated. */
+>> >> +                       while (node) {
+>> >> +                               struct bpf_list_insn *next = node->next;
+>> >> +
+>> >> +                               kvfree(node);
+>> >> +                               node = next;
+>> >> +                       }
+>> >> +                       return ERR_PTR(-ENOMEM);
+>> >> +               }
+>> >> +               node->insn = patch[idx];
+>> >> +               prev->next = node;
+>> >> +               prev = node;
+>> >> +       }
+>> >> +
+>> >> +       prev->next = list_insn;
+>> >> +       return begin_node;
+>> >> +}
+>> >> +
+>> >>  void bpf_prog_kallsyms_del_subprogs(struct bpf_prog *fp)
+>> >>  {
+>> >>         int i;
 >> >> --
 >> >> 2.7.4
 >> >>
