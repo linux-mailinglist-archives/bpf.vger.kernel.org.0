@@ -2,36 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F41668FA9
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 16:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E99CB68FB6
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 16:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731641AbfGOOP5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Jul 2019 10:15:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60568 "EHLO mail.kernel.org"
+        id S2389488AbfGOOQU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Jul 2019 10:16:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389638AbfGOOP5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Jul 2019 10:15:57 -0400
+        id S2388662AbfGOOQT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Jul 2019 10:16:19 -0400
 Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 99F642083D;
-        Mon, 15 Jul 2019 14:15:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09A6E20651;
+        Mon, 15 Jul 2019 14:16:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563200156;
-        bh=Or5fkyrHCu6o0bcEQBO1LjvdT2tSsXdqbmk9EnRmhg0=;
+        s=default; t=1563200178;
+        bh=tKvy5JbcZXx6YWzfQrPDW5p7WMo9r0DbLOyr2sIo3UE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=chxTZAmRjqXCfCB9ibC3jKSVro6nUfBuF6ePdSb+QWcjpidq1+Kh14ImgrMgGYnn2
-         EFn/hUZ5Kk2gnXDVL6icILsAeZDDz3wpqc9MDeF5Lls3HfhUZbbfTkZEMrVooJUSbr
-         bmLCkzec+l0BMM/1+g7VPzEb0n3OcSUDybH5k8gU=
+        b=t5wPOZV+MM3KRk0kWc7R9qaiW7JJ49vxMibDBfllGG+glGlquUVfQq2n7b8d0Ia9d
+         cW9zYiDLOMZZXTD/VJSWTJuLn2gP4MCkyw0sJQF+ZnZaj42vY7zlUVPcjN+MbdYpVp
+         nmShuIVhbugVLkduwZ0lKnc7YmYdqB1E0EOoOGQo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>, Yonghong Song <yhs@fb.com>,
+Cc:     Jiri Olsa <jolsa@redhat.com>, Michael Petlan <mpetlan@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.1 197/219] bpf, libbpf, smatch: Fix potential NULL pointer dereference
-Date:   Mon, 15 Jul 2019 10:03:18 -0400
-Message-Id: <20190715140341.6443-197-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.1 202/219] tools: bpftool: Fix json dump crash on powerpc
+Date:   Mon, 15 Jul 2019 10:03:23 -0400
+Message-Id: <20190715140341.6443-202-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190715140341.6443-1-sashal@kernel.org>
 References: <20190715140341.6443-1-sashal@kernel.org>
@@ -44,64 +47,91 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Leo Yan <leo.yan@linaro.org>
+From: Jiri Olsa <jolsa@redhat.com>
 
-[ Upstream commit 33bae185f74d49a0d7b1bfaafb8e959efce0f243 ]
+[ Upstream commit aa52bcbe0e72fac36b1862db08b9c09c4caefae3 ]
 
-Based on the following report from Smatch, fix the potential NULL
-pointer dereference check:
+Michael reported crash with by bpf program in json mode on powerpc:
 
-  tools/lib/bpf/libbpf.c:3493
-  bpf_prog_load_xattr() warn: variable dereferenced before check 'attr'
-  (see line 3483)
+  # bpftool prog -p dump jited id 14
+  [{
+        "name": "0xd00000000a9aa760",
+        "insns": [{
+                "pc": "0x0",
+                "operation": "nop",
+                "operands": [null
+                ]
+            },{
+                "pc": "0x4",
+                "operation": "nop",
+                "operands": [null
+                ]
+            },{
+                "pc": "0x8",
+                "operation": "mflr",
+  Segmentation fault (core dumped)
 
-  3479 int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
-  3480                         struct bpf_object **pobj, int *prog_fd)
-  3481 {
-  3482         struct bpf_object_open_attr open_attr = {
-  3483                 .file           = attr->file,
-  3484                 .prog_type      = attr->prog_type,
-                                         ^^^^^^
-  3485         };
+The code is assuming char pointers in format, which is not always
+true at least for powerpc. Fixing this by dumping the whole string
+into buffer based on its format.
 
-At the head of function, it directly access 'attr' without checking
-if it's NULL pointer. This patch moves the values assignment after
-validating 'attr' and 'attr->file'.
+Please note that libopcodes code does not check return values from
+fprintf callback, but as per Jakub suggestion returning -1 on allocation
+failure so we do the best effort to propagate the error.
 
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Acked-by: Yonghong Song <yhs@fb.com>
+Fixes: 107f041212c1 ("tools: bpftool: add JSON output for `bpftool prog dump jited *` command")
+Reported-by: Michael Petlan <mpetlan@redhat.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
+Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ tools/bpf/bpftool/jit_disasm.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 11c25d9ea431..43dc8a8e9105 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -2897,10 +2897,7 @@ int bpf_prog_load(const char *file, enum bpf_prog_type type,
- int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
- 			struct bpf_object **pobj, int *prog_fd)
- {
--	struct bpf_object_open_attr open_attr = {
--		.file		= attr->file,
--		.prog_type	= attr->prog_type,
--	};
-+	struct bpf_object_open_attr open_attr = {};
- 	struct bpf_program *prog, *first_prog = NULL;
- 	enum bpf_attach_type expected_attach_type;
- 	enum bpf_prog_type prog_type;
-@@ -2913,6 +2910,9 @@ int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
- 	if (!attr->file)
- 		return -EINVAL;
+diff --git a/tools/bpf/bpftool/jit_disasm.c b/tools/bpf/bpftool/jit_disasm.c
+index 3ef3093560ba..bfed711258ce 100644
+--- a/tools/bpf/bpftool/jit_disasm.c
++++ b/tools/bpf/bpftool/jit_disasm.c
+@@ -11,6 +11,8 @@
+  * Licensed under the GNU General Public License, version 2.0 (GPLv2)
+  */
  
-+	open_attr.file = attr->file;
-+	open_attr.prog_type = attr->prog_type;
++#define _GNU_SOURCE
++#include <stdio.h>
+ #include <stdarg.h>
+ #include <stdint.h>
+ #include <stdio.h>
+@@ -44,11 +46,13 @@ static int fprintf_json(void *out, const char *fmt, ...)
+ 	char *s;
+ 
+ 	va_start(ap, fmt);
++	if (vasprintf(&s, fmt, ap) < 0)
++		return -1;
++	va_end(ap);
 +
- 	obj = bpf_object__open_xattr(&open_attr);
- 	if (IS_ERR_OR_NULL(obj))
- 		return -ENOENT;
+ 	if (!oper_count) {
+ 		int i;
+ 
+-		s = va_arg(ap, char *);
+-
+ 		/* Strip trailing spaces */
+ 		i = strlen(s) - 1;
+ 		while (s[i] == ' ')
+@@ -61,11 +65,10 @@ static int fprintf_json(void *out, const char *fmt, ...)
+ 	} else if (!strcmp(fmt, ",")) {
+ 		   /* Skip */
+ 	} else {
+-		s = va_arg(ap, char *);
+ 		jsonw_string(json_wtr, s);
+ 		oper_count++;
+ 	}
+-	va_end(ap);
++	free(s);
+ 	return 0;
+ }
+ 
 -- 
 2.20.1
 
