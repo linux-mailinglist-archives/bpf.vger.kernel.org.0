@@ -2,38 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EEB568BFB
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 15:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 245FD68D4F
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 15:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731111AbfGONsM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Jul 2019 09:48:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58074 "EHLO mail.kernel.org"
+        id S1732979AbfGON5j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Jul 2019 09:57:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731389AbfGONsL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Jul 2019 09:48:11 -0400
+        id S1732973AbfGON5j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Jul 2019 09:57:39 -0400
 Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E79B421841;
-        Mon, 15 Jul 2019 13:48:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A3F57212F5;
+        Mon, 15 Jul 2019 13:57:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563198490;
-        bh=iZvB6N1TYcEga3h3leOTeZdDimayVtYAMRUH2QVd3Y8=;
+        s=default; t=1563199058;
+        bh=EF9gBj3ANZWN266C3vBbahB5lj/m+UxlSc0GzWSqjbw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jz0XqH2xQpmHGIwKBxZXdh+YI4jqI3Py/hs6rlbISbN0ZpngaVJb2T3Tb+kUZrtgc
-         YTbG3R4xFfvv6vFVALyeQnUAP4hTFLuXKMwhlVaGZbVbrYNUvytJe84GjJ2dHDIQHB
-         wbMkIfLQYzFG05ay95TeNCs44ewqC2mgdOowPErU=
+        b=fxp4nKeXITN6ZuLakDZbkrk0SXVFffQ03W6q3HiOJL/5hb78rzU4pS/ejAa8dl5Zm
+         7UV/W3BTATDIVZAio0x4N7eG6K8lKDeolAsODAJ1a2G40DEke23JnBNAATEeiJ2ViD
+         162t7dsG5JbAqg2lYXN3ZZr6HtaPrGJ+JRq93Xa0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
+Cc:     Jiong Wang <jiong.wang@netronome.com>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        Song Liu <songliubraving@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 024/249] selftests/bpf: adjust verifier scale test
-Date:   Mon, 15 Jul 2019 09:43:09 -0400
-Message-Id: <20190715134655.4076-24-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.2 177/249] bpf: fix BPF_ALU32 | BPF_ARSH on BE arches
+Date:   Mon, 15 Jul 2019 09:45:42 -0400
+Message-Id: <20190715134655.4076-177-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190715134655.4076-1-sashal@kernel.org>
 References: <20190715134655.4076-1-sashal@kernel.org>
@@ -46,103 +48,56 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+From: Jiong Wang <jiong.wang@netronome.com>
 
-[ Upstream commit 7c0c6095d48dcd0e67c917aa73cdbb2715aafc36 ]
+[ Upstream commit 75672dda27bd00109a84cd975c17949ad9c45663 ]
 
-Adjust scale tests to check for new jmp sequence limit.
+Yauheni reported the following code do not work correctly on BE arches:
 
-BPF_JGT had to be changed to BPF_JEQ because the verifier was
-too smart. It tracked the known safe range of R0 values
-and pruned the search earlier before hitting exact 8192 limit.
-bpf_semi_rand_get() was too (un)?lucky.
+       ALU_ARSH_X:
+               DST = (u64) (u32) ((*(s32 *) &DST) >> SRC);
+               CONT;
+       ALU_ARSH_K:
+               DST = (u64) (u32) ((*(s32 *) &DST) >> IMM);
+               CONT;
 
-k = 0; was missing in bpf_fill_scale2.
-It was testing a bit shorter sequence of jumps than intended.
+and are causing failure of test_verifier test 'arsh32 on imm 2' on BE
+arches.
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+The code is taking address and interpreting memory directly, so is not
+endianness neutral. We should instead perform standard C type casting on
+the variable. A u64 to s32 conversion will drop the high 32-bit and reserve
+the low 32-bit as signed integer, this is all we want.
+
+Fixes: 2dc6b100f928 ("bpf: interpreter support BPF_ALU | BPF_ARSH")
+Reported-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
+Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
+Acked-by: Song Liu <songliubraving@fb.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/test_verifier.c | 31 +++++++++++----------
- 1 file changed, 17 insertions(+), 14 deletions(-)
+ kernel/bpf/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 288cb740e005..6438d4dc8ae1 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -207,33 +207,35 @@ static void bpf_fill_rand_ld_dw(struct bpf_test *self)
- 	self->retval = (uint32_t)res;
- }
- 
--/* test the sequence of 1k jumps */
-+#define MAX_JMP_SEQ 8192
-+
-+/* test the sequence of 8k jumps */
- static void bpf_fill_scale1(struct bpf_test *self)
- {
- 	struct bpf_insn *insn = self->fill_insns;
- 	int i = 0, k = 0;
- 
- 	insn[i++] = BPF_MOV64_REG(BPF_REG_6, BPF_REG_1);
--	/* test to check that the sequence of 1024 jumps is acceptable */
--	while (k++ < 1024) {
-+	/* test to check that the long sequence of jumps is acceptable */
-+	while (k++ < MAX_JMP_SEQ) {
- 		insn[i++] = BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
- 					 BPF_FUNC_get_prandom_u32);
--		insn[i++] = BPF_JMP_IMM(BPF_JGT, BPF_REG_0, bpf_semi_rand_get(), 2);
-+		insn[i++] = BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, bpf_semi_rand_get(), 2);
- 		insn[i++] = BPF_MOV64_REG(BPF_REG_1, BPF_REG_10);
- 		insn[i++] = BPF_STX_MEM(BPF_DW, BPF_REG_1, BPF_REG_6,
- 					-8 * (k % 64 + 1));
- 	}
--	/* every jump adds 1024 steps to insn_processed, so to stay exactly
--	 * within 1m limit add MAX_TEST_INSNS - 1025 MOVs and 1 EXIT
-+	/* every jump adds 1 step to insn_processed, so to stay exactly
-+	 * within 1m limit add MAX_TEST_INSNS - MAX_JMP_SEQ - 1 MOVs and 1 EXIT
- 	 */
--	while (i < MAX_TEST_INSNS - 1025)
-+	while (i < MAX_TEST_INSNS - MAX_JMP_SEQ - 1)
- 		insn[i++] = BPF_ALU32_IMM(BPF_MOV, BPF_REG_0, 42);
- 	insn[i] = BPF_EXIT_INSN();
- 	self->prog_len = i + 1;
- 	self->retval = 42;
- }
- 
--/* test the sequence of 1k jumps in inner most function (function depth 8)*/
-+/* test the sequence of 8k jumps in inner most function (function depth 8)*/
- static void bpf_fill_scale2(struct bpf_test *self)
- {
- 	struct bpf_insn *insn = self->fill_insns;
-@@ -245,19 +247,20 @@ static void bpf_fill_scale2(struct bpf_test *self)
- 		insn[i++] = BPF_EXIT_INSN();
- 	}
- 	insn[i++] = BPF_MOV64_REG(BPF_REG_6, BPF_REG_1);
--	/* test to check that the sequence of 1024 jumps is acceptable */
--	while (k++ < 1024) {
-+	/* test to check that the long sequence of jumps is acceptable */
-+	k = 0;
-+	while (k++ < MAX_JMP_SEQ) {
- 		insn[i++] = BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
- 					 BPF_FUNC_get_prandom_u32);
--		insn[i++] = BPF_JMP_IMM(BPF_JGT, BPF_REG_0, bpf_semi_rand_get(), 2);
-+		insn[i++] = BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, bpf_semi_rand_get(), 2);
- 		insn[i++] = BPF_MOV64_REG(BPF_REG_1, BPF_REG_10);
- 		insn[i++] = BPF_STX_MEM(BPF_DW, BPF_REG_1, BPF_REG_6,
- 					-8 * (k % (64 - 4 * FUNC_NEST) + 1));
- 	}
--	/* every jump adds 1024 steps to insn_processed, so to stay exactly
--	 * within 1m limit add MAX_TEST_INSNS - 1025 MOVs and 1 EXIT
-+	/* every jump adds 1 step to insn_processed, so to stay exactly
-+	 * within 1m limit add MAX_TEST_INSNS - MAX_JMP_SEQ - 1 MOVs and 1 EXIT
- 	 */
--	while (i < MAX_TEST_INSNS - 1025)
-+	while (i < MAX_TEST_INSNS - MAX_JMP_SEQ - 1)
- 		insn[i++] = BPF_ALU32_IMM(BPF_MOV, BPF_REG_0, 42);
- 	insn[i] = BPF_EXIT_INSN();
- 	self->prog_len = i + 1;
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 080e2bb644cc..f2148db91439 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1364,10 +1364,10 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+ 		insn++;
+ 		CONT;
+ 	ALU_ARSH_X:
+-		DST = (u64) (u32) ((*(s32 *) &DST) >> SRC);
++		DST = (u64) (u32) (((s32) DST) >> SRC);
+ 		CONT;
+ 	ALU_ARSH_K:
+-		DST = (u64) (u32) ((*(s32 *) &DST) >> IMM);
++		DST = (u64) (u32) (((s32) DST) >> IMM);
+ 		CONT;
+ 	ALU64_ARSH_X:
+ 		(*(s64 *) &DST) >>= SRC;
 -- 
 2.20.1
 
