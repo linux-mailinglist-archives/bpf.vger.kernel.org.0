@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A5068D63
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 15:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F68068D93
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 16:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732858AbfGON6Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Jul 2019 09:58:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37372 "EHLO mail.kernel.org"
+        id S1732391AbfGON7m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Jul 2019 09:59:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733106AbfGON6O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Jul 2019 09:58:14 -0400
+        id S1732859AbfGON7l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Jul 2019 09:59:41 -0400
 Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91A52212F5;
-        Mon, 15 Jul 2019 13:58:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A98392083D;
+        Mon, 15 Jul 2019 13:59:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563199093;
-        bh=Dods9Xqg4wn68YBG3bujgJMAonGAUVFm9QOofA2/0RI=;
+        s=default; t=1563199180;
+        bh=E0mZCellLnI4mSzb8gAZK0NodVlvBSsI+mrsa56zcg4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YuSsyK3ADSmpR/96j/H6rAVzHkrXXReKVnkpQlI+hs/ycap1znhcRH4WNn4esskHZ
-         K5ZI0p3NmEP1ckbovQuSHS8AbF4P6hlOU5eAdS4zh7iKqpXX2ogS2ZWjTXSjo6gCDb
-         DnVrkqp8xFqeKiM3QJFoJO7rC4tnZlwkkhV4wu2k=
+        b=rTLOXd4fsqJi0Ge/mcQFG16Jn4zm0r4LlhpRgRg/KjBFOxQMeg3YnzEZIxb8c3LaY
+         Iz2j6oRK5d972JxWkl9PYH5b8H47duMEIoxiNOR+6AkVEunwWa409cO+vVd6q4u1ie
+         mMkOlD+PQuN1fVM8/JMfoHL0df5hwHB7Bikupn8k=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
+Cc:     Baruch Siach <baruch@tkos.co.il>, Song Liu <songliubraving@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, xdp-newbies@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 189/249] net/mlx5e: Attach/detach XDP program safely
-Date:   Mon, 15 Jul 2019 09:45:54 -0400
-Message-Id: <20190715134655.4076-189-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.2 209/249] bpf: fix uapi bpf_prog_info fields alignment
+Date:   Mon, 15 Jul 2019 09:46:14 -0400
+Message-Id: <20190715134655.4076-209-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190715134655.4076-1-sashal@kernel.org>
 References: <20190715134655.4076-1-sashal@kernel.org>
@@ -47,86 +47,58 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maxim Mikityanskiy <maximmi@mellanox.com>
+From: Baruch Siach <baruch@tkos.co.il>
 
-[ Upstream commit e18953240de8b46360a67090c87ee1ef8160b35d ]
+[ Upstream commit 0472301a28f6cf53a6bc5783e48a2d0bbff4682f ]
 
-When an XDP program is set, a full reopen of all channels happens in two
-cases:
+Merge commit 1c8c5a9d38f60 ("Merge
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next") undid the
+fix from commit 36f9814a494 ("bpf: fix uapi hole for 32 bit compat
+applications") by taking the gpl_compatible 1-bit field definition from
+commit b85fab0e67b162 ("bpf: Add gpl_compatible flag to struct
+bpf_prog_info") as is. That breaks architectures with 16-bit alignment
+like m68k. Add 31-bit pad after gpl_compatible to restore alignment of
+following fields.
 
-1. When there was no program set, and a new one is being set.
+Thanks to Dmitry V. Levin his analysis of this bug history.
 
-2. When there was a program set, but it's being unset.
-
-The full reopen is necessary, because the channel parameters may change
-if XDP is enabled or disabled. However, it's performed in an unsafe way:
-if the new channels fail to open, the old ones are already closed, and
-the interface goes down. Use the safe way to switch channels instead.
-The same way is already used for other configuration changes.
-
-Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
-Signed-off-by: Tariq Toukan <tariqt@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+Acked-by: Song Liu <songliubraving@fb.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/mellanox/mlx5/core/en_main.c | 31 ++++++++++++-------
- 1 file changed, 20 insertions(+), 11 deletions(-)
+ include/uapi/linux/bpf.h       | 1 +
+ tools/include/uapi/linux/bpf.h | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index a8e8350b38aa..8db9fdbc03ea 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -4192,8 +4192,6 @@ static int mlx5e_xdp_set(struct net_device *netdev, struct bpf_prog *prog)
- 	/* no need for full reset when exchanging programs */
- 	reset = (!priv->channels.params.xdp_prog || !prog);
- 
--	if (was_opened && reset)
--		mlx5e_close_locked(netdev);
- 	if (was_opened && !reset) {
- 		/* num_channels is invariant here, so we can take the
- 		 * batched reference right upfront.
-@@ -4205,20 +4203,31 @@ static int mlx5e_xdp_set(struct net_device *netdev, struct bpf_prog *prog)
- 		}
- 	}
- 
--	/* exchange programs, extra prog reference we got from caller
--	 * as long as we don't fail from this point onwards.
--	 */
--	old_prog = xchg(&priv->channels.params.xdp_prog, prog);
-+	if (was_opened && reset) {
-+		struct mlx5e_channels new_channels = {};
-+
-+		new_channels.params = priv->channels.params;
-+		new_channels.params.xdp_prog = prog;
-+		mlx5e_set_rq_type(priv->mdev, &new_channels.params);
-+		old_prog = priv->channels.params.xdp_prog;
-+
-+		err = mlx5e_safe_switch_channels(priv, &new_channels, NULL);
-+		if (err)
-+			goto unlock;
-+	} else {
-+		/* exchange programs, extra prog reference we got from caller
-+		 * as long as we don't fail from this point onwards.
-+		 */
-+		old_prog = xchg(&priv->channels.params.xdp_prog, prog);
-+	}
-+
- 	if (old_prog)
- 		bpf_prog_put(old_prog);
- 
--	if (reset) /* change RQ type according to priv->xdp_prog */
-+	if (!was_opened && reset) /* change RQ type according to priv->xdp_prog */
- 		mlx5e_set_rq_type(priv->mdev, &priv->channels.params);
- 
--	if (was_opened && reset)
--		err = mlx5e_open_locked(netdev);
--
--	if (!test_bit(MLX5E_STATE_OPENED, &priv->state) || reset)
-+	if (!was_opened || reset)
- 		goto unlock;
- 
- 	/* exchanging programs w/o reset, we update ref counts on behalf
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index a8b823c30b43..29a5bc3d5c66 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3143,6 +3143,7 @@ struct bpf_prog_info {
+ 	char name[BPF_OBJ_NAME_LEN];
+ 	__u32 ifindex;
+ 	__u32 gpl_compatible:1;
++	__u32 :31; /* alignment pad */
+ 	__u64 netns_dev;
+ 	__u64 netns_ino;
+ 	__u32 nr_jited_ksyms;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index a8b823c30b43..29a5bc3d5c66 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -3143,6 +3143,7 @@ struct bpf_prog_info {
+ 	char name[BPF_OBJ_NAME_LEN];
+ 	__u32 ifindex;
+ 	__u32 gpl_compatible:1;
++	__u32 :31; /* alignment pad */
+ 	__u64 netns_dev;
+ 	__u64 netns_ino;
+ 	__u32 nr_jited_ksyms;
 -- 
 2.20.1
 
