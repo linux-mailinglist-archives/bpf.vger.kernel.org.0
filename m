@@ -2,104 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E50A6977B
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 17:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2F669793
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 17:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732516AbfGONyc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Jul 2019 09:54:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732510AbfGONyc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Jul 2019 09:54:32 -0400
-Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A2E0212F5;
-        Mon, 15 Jul 2019 13:54:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563198871;
-        bh=n73p8DBpdjQlzx+8hMTru8jM9tAEpZHBxzQSMiPsO38=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M1wrskseJNElrV18oIHpV0dWJqm2d0cCEx2jxa4xIFWN6bon5KVaUYBabX9eVexiC
-         68b2Yw3G/FS6YUScNynlgT1JyRE4coypVtCV8ZrABrsjLsHIzBcbQCd2OMIXAf/1pw
-         tQTmyjpF5ewH1dprWdbzkkmDL0Xj+phU9BPiYcOA=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 124/249] bpf: fix callees pruning callers
-Date:   Mon, 15 Jul 2019 09:44:49 -0400
-Message-Id: <20190715134655.4076-124-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190715134655.4076-1-sashal@kernel.org>
-References: <20190715134655.4076-1-sashal@kernel.org>
+        id S1730630AbfGOPLr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Jul 2019 11:11:47 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:42346 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731667AbfGOPLo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Jul 2019 11:11:44 -0400
+Received: by mail-qk1-f195.google.com with SMTP id 201so11855239qkm.9;
+        Mon, 15 Jul 2019 08:11:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=obT241NE0xGOXdIPu6PnSNQNubI9lc5VVpLNN9jbZPs=;
+        b=rP4oVEnnurCqv7lMvDdDiqbxUqBGAfXAmVaTDNJW7/ac/tX03HH1xs4Sx8sQnRXKxL
+         XbJeGlW0kwt/fF4bXWRwCCEUDo84hxF78ZzK6IJ6MiKpfZoF+Ny6OmcsYMzCe/hFZFmG
+         qBNSLiQ2aJ5WEhVH94QLWF8B92cWkcVEDJT9o+xfASLEYGugM3izmazOpfkyyijfefk0
+         YArNqJoP/Pn3N1wIXWxm4O9tE32qw94kprulhPYbnYuPe9tVTqgW4z+WuAEbYAdk2dmd
+         S3Ov9+B0Qx4k1cwTwMEbhfsJeBeANkNfBqwvqWDt9jM6K366CB9V4VmqnLwl8dezhyfo
+         HHMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=obT241NE0xGOXdIPu6PnSNQNubI9lc5VVpLNN9jbZPs=;
+        b=cRIuY9BT3Mse05KDxmU8rYRD1v27slFsta3RxRBBh2SJeuGKeIrOWXKfkZc4+ZkE2C
+         MvlIoNG7ezGdpclhCmXTQWAYcrB6cqV/SYDQbo5C8dxjt0H8JROc9c8G4yIVBUyOHhWl
+         4LDwEMXBRlW4jUVKdVOsHgKDEuCHkRXMmSwZpvDeoGc9BDpwrw6w2QF12lm+1jodGzeb
+         Pk9qMDsSrSK528V9k34rQPTOHsBRZ6ept0dKDVC7ypNqtm/l6rJ/TaKQnvLx3tmlRe1L
+         ETXLGYOPeJE4SVRo2Xc45j/M/2GjhKiScLwlqZbOzXSt5X+Uc8aAbtWCUwXDSyhgBnSI
+         iwDg==
+X-Gm-Message-State: APjAAAXyPAG0axkrMP4AsP63Ce+mAa52EEiGNZcm9BFvWcwH9pBBk5uI
+        aqRA8a9TpZKlM9+M41CmE7ZIEWuXL/wyxFedJeE9abvm
+X-Google-Smtp-Source: APXvYqyZL2lm5AIzOLcpNgGzPpUAqU9zlfkN6pc052CC/Akm7TXhtA3X1fRroPCXrTXJNgwRvJfjDdwRAzOoEb3eUbk=
+X-Received: by 2002:a37:b646:: with SMTP id g67mr16659507qkf.92.1563203503210;
+ Mon, 15 Jul 2019 08:11:43 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20190715091103.4030-1-iii@linux.ibm.com>
+In-Reply-To: <20190715091103.4030-1-iii@linux.ibm.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 15 Jul 2019 08:11:27 -0700
+Message-ID: <CAEf4BzY-pcuiwyZ874yWiYFEK0kU6wytXRVNsegTUny5GChxEQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] samples/bpf: build with -D__TARGET_ARCH_$(SRCARCH)
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        gor@linux.ibm.com, heiko.carstens@de.ibm.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+On Mon, Jul 15, 2019 at 2:11 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>
+> While $ARCH can be relatively flexible (see Makefile and
+> tools/scripts/Makefile.arch), $SRCARCH always corresponds to a directory
+> name under arch/.
+>
+> Therefore, build samples with -D__TARGET_ARCH_$(SRCARCH), since that
+> matches the expectations of bpf_helpers.h.
+>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> Acked-by: Vasily Gorbik <gor@linux.ibm.com>
+> ---
 
-[ Upstream commit eea1c227b9e9bad295e8ef984004a9acf12bb68c ]
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-The commit 7640ead93924 partially resolved the issue of callees
-incorrectly pruning the callers.
-With introduction of bounded loops and jmps_processed heuristic
-single verifier state may contain multiple branches and calls.
-It's possible that new verifier state (for future pruning) will be
-allocated inside callee. Then callee will exit (still within the same
-verifier state). It will go back to the caller and there R6-R9 registers
-will be read and will trigger mark_reg_read. But the reg->live for all frames
-but the top frame is not set to LIVE_NONE. Hence mark_reg_read will fail
-to propagate liveness into parent and future walking will incorrectly
-conclude that the states are equivalent because LIVE_READ is not set.
-In other words the rule for parent/live should be:
-whenever register parentage chain is set the reg->live should be set to LIVE_NONE.
-is_state_visited logic already follows this rule for spilled registers.
 
-Fixes: 7640ead93924 ("bpf: verifier: make sure callees don't prune with caller differences")
-Fixes: f4d7e40a5b71 ("bpf: introduce function calls (verification)")
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/bpf/verifier.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a5c369e60343..11528bdaa9dc 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -6456,17 +6456,18 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
- 	 * the state of the call instruction (with WRITTEN set), and r0 comes
- 	 * from callee with its full parentage chain, anyway.
- 	 */
--	for (j = 0; j <= cur->curframe; j++)
--		for (i = j < cur->curframe ? BPF_REG_6 : 0; i < BPF_REG_FP; i++)
--			cur->frame[j]->regs[i].parent = &new->frame[j]->regs[i];
- 	/* clear write marks in current state: the writes we did are not writes
- 	 * our child did, so they don't screen off its reads from us.
- 	 * (There are no read marks in current state, because reads always mark
- 	 * their parent and current state never has children yet.  Only
- 	 * explored_states can get read marks.)
- 	 */
--	for (i = 0; i < BPF_REG_FP; i++)
--		cur->frame[cur->curframe]->regs[i].live = REG_LIVE_NONE;
-+	for (j = 0; j <= cur->curframe; j++) {
-+		for (i = j < cur->curframe ? BPF_REG_6 : 0; i < BPF_REG_FP; i++)
-+			cur->frame[j]->regs[i].parent = &new->frame[j]->regs[i];
-+		for (i = 0; i < BPF_REG_FP; i++)
-+			cur->frame[j]->regs[i].live = REG_LIVE_NONE;
-+	}
- 
- 	/* all stack frames are accessible from callee, clear them all */
- 	for (j = 0; j <= cur->curframe; j++) {
--- 
-2.20.1
-
+>  samples/bpf/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> index f90daadfbc89..1d9be26b4edd 100644
+> --- a/samples/bpf/Makefile
+> +++ b/samples/bpf/Makefile
+> @@ -284,7 +284,7 @@ $(obj)/%.o: $(src)/%.c
+>         $(Q)$(CLANG) $(NOSTDINC_FLAGS) $(LINUXINCLUDE) $(EXTRA_CFLAGS) -I$(obj) \
+>                 -I$(srctree)/tools/testing/selftests/bpf/ \
+>                 -D__KERNEL__ -D__BPF_TRACING__ -Wno-unused-value -Wno-pointer-sign \
+> -               -D__TARGET_ARCH_$(ARCH) -Wno-compare-distinct-pointer-types \
+> +               -D__TARGET_ARCH_$(SRCARCH) -Wno-compare-distinct-pointer-types \
+>                 -Wno-gnu-variable-sized-type-not-at-end \
+>                 -Wno-address-of-packed-member -Wno-tautological-compare \
+>                 -Wno-unknown-warning-option $(CLANG_ARCH_ARGS) \
+> --
+> 2.21.0
+>
