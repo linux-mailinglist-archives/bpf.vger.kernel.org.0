@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A85F6947B
-	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 16:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA3B6942F
+	for <lists+bpf@lfdr.de>; Mon, 15 Jul 2019 16:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391041AbfGOOb2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Jul 2019 10:31:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45258 "EHLO mail.kernel.org"
+        id S2404778AbfGOOtp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Jul 2019 10:49:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391792AbfGOObZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Jul 2019 10:31:25 -0400
+        id S2392128AbfGOOrT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Jul 2019 10:47:19 -0400
 Received: from sasha-vm.mshome.net (unknown [73.61.17.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B049221537;
-        Mon, 15 Jul 2019 14:31:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BD2DC21537;
+        Mon, 15 Jul 2019 14:47:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563201084;
-        bh=/uiIlwgGYuoMy8LSVF0CpVjdN/gR/zSBu46b8OgFjfs=;
+        s=default; t=1563202038;
+        bh=S2eBUgf9xGvZ/9aLduwJ89yzz6C+jZsDnJr7fwmIXMY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y8lgDqA9la4nV+dDkA13inCg3ARZNa3TJNmQILNoURFY9ODYrwwaMI8vua7VMZohF
-         qH5eiN9XLq77QbBnO4fPsmO+9SRpZLygXzEkmrd/SWoCp+BbNgL1lKuPso5lnByVcq
-         +du1qfS5CQES3MWdx+CMe+YxUfL1SDnrgf5SSfos=
+        b=vjUM1EAVz07mfiUuAtCYQEq7xj2mRMOoUPvmhxyyrpkMfBFkDPm7kf7NeA+cjXefO
+         FhzIJdgPWCD6y3eK4XRHrd6tKPUCDs7NdIFJYsioRjjukG+Xl5F9O4xN+KCgfDUjDc
+         w206pOK+Yh1/fKIHd6+7rY7JGA7hmtiaSUMntUy0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
@@ -30,12 +30,12 @@ Cc:     =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 047/105] bpf: silence warning messages in core
-Date:   Mon, 15 Jul 2019 10:27:41 -0400
-Message-Id: <20190715142839.9896-47-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 29/53] bpf: silence warning messages in core
+Date:   Mon, 15 Jul 2019 10:45:11 -0400
+Message-Id: <20190715144535.11636-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190715142839.9896-1-sashal@kernel.org>
-References: <20190715142839.9896-1-sashal@kernel.org>
+In-Reply-To: <20190715144535.11636-1-sashal@kernel.org>
+References: <20190715144535.11636-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -86,16 +86,15 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index af3ab6164ff5..be282c135a66 100644
+index 13272582eee0..677991f29d66 100644
 --- a/kernel/bpf/Makefile
 +++ b/kernel/bpf/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
+@@ -1,4 +1,5 @@
  obj-y := core.o
 +CFLAGS_core.o += $(call cc-disable-warning, override-init)
  
- obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o
- obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
+ obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o
+ obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o
 -- 
 2.20.1
 
