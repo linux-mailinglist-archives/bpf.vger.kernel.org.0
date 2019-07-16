@@ -2,91 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFAB6AB27
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2019 16:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B406AC91
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2019 18:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728573AbfGPO5R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Jul 2019 10:57:17 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:45703 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727849AbfGPO5Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Jul 2019 10:57:16 -0400
-Received: by mail-qk1-f194.google.com with SMTP id s22so14795560qkj.12;
-        Tue, 16 Jul 2019 07:57:16 -0700 (PDT)
+        id S1728390AbfGPQRG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Jul 2019 12:17:06 -0400
+Received: from mail-pl1-f176.google.com ([209.85.214.176]:37548 "EHLO
+        mail-pl1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727796AbfGPQRG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Jul 2019 12:17:06 -0400
+Received: by mail-pl1-f176.google.com with SMTP id b3so10366049plr.4;
+        Tue, 16 Jul 2019 09:17:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BgJZu+NFX+3jW29/vzjk0xHEUBkPIVmYlV4knfrZMYY=;
-        b=hgEn46oZ3bHawcazIGOWXHJp3ac7X5lJf2TkApVies62XXejcmrCpK27KLi5gt7PQC
-         KeaPYKm3uB7OaD7kuzebXBqKLb0NTdwpMQ1f+1bdm5UWsFnj94wrbGk9Mu6q6Qj7PE6E
-         Fu00YJXqrWr9jvx8Lp0vbSLd3CPUhnr0gQtxXtbiTb8EhUGAacHwswIH+uH+8jHUMrzx
-         fDCK/+os/ibtby/yswLq66gsv6YMhwFlsIhpXoDkLMlicQWldyai3YUrHls31w+sSKN8
-         mUcvu4PcrwMPLbTISarBtzNFxJliyhffoeR59whhqcgP2tBi6pZO0788DwMwN5Vl1Et9
-         y1Eg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=471pmIh3LX9u0h9TelKOd0JUS/NmfxeCjVSYlSHX1vA=;
+        b=BHX96+CtyC/9UyJM8geZzQCl7YMjdyWxXBFUNJ3ogMqlbkTBDOFiTBPxve9ANcOPjM
+         RTj3pZiOzdzp9Fk8e6EyKYcalLqfw6d2XY2JIzRhxCc4zLLewI8JiDvCCdBGTyiWSVoo
+         PTv+EI518GZW01V4SNUikUs6E6rLPuB3m9VEOsXOJW4U+5GwJmW7fZlMC3mTs/5Xq4Xo
+         kwS+McI9N1Md40nhqGAJPoXGrDMXbDqT6j08NBZycgDC399ih7+PxhI7cH3lGDsoy3tV
+         HJiiR+uEdzFpFQLQMKKLAz541QIqrfP0lCjPXmdXTzSV5h2Qv4/j/jqhCL4iQaUJV8od
+         mN8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BgJZu+NFX+3jW29/vzjk0xHEUBkPIVmYlV4knfrZMYY=;
-        b=pG1SuB2mdIUoU+M/it+UNkZU9paIz/syBGxr2ZOZYLr0041++RStfUH5mVQKcCdi+P
-         aXyzw2MfyIJE7xL4sgaeD+pdkgIqhy3lpvhz9FY0B+eOX6j5FISQ+QIcYfERJFzIFFJ7
-         fn/LYdmtaa/1+WDb89xaVQ5gSd3fI5TanoNY7PMCEUmkSuMvf5Lava7TYQap5VvksjvR
-         kGqJzcjFtHZGBk3VFgBpc2tJOh/CT2KMZN/EuAxtK2mkClE1zHjOOEmouyCjaxbH2DDj
-         b2gePrQOAlEyO9yLBEbn7Ino00jQE/YtXZAGpEHI6EyaKAyZT8txbYD4MdKYNGHepXlc
-         5eKg==
-X-Gm-Message-State: APjAAAXsFJwRZK7tuIBQHXbUYkKJ7OyRBvRf40nCGDiHKWB/ulcOS7sy
-        4rT5X21z134/MbRlJ/i8gn4OdCAJZIifpuaYsI4=
-X-Google-Smtp-Source: APXvYqzkDSEW1hkEpUcsLQ6eQGMS3XvP1qb9mygmQAuAhWWj9OAm/FFcdMlsjW3RnVUENlep93Cm85ypH1q1Uyh12os=
-X-Received: by 2002:a37:bf42:: with SMTP id p63mr22418264qkf.437.1563289035793;
- Tue, 16 Jul 2019 07:57:15 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=471pmIh3LX9u0h9TelKOd0JUS/NmfxeCjVSYlSHX1vA=;
+        b=VB7db/eINkCQFBhPpyyzLEE/8TP6srpnUGCnyhv3IgqfaTzZId/aeIP9ND7xcSf+Zn
+         I1JuHwnwsbjEcD1V7dCGTg+HDJqRN5FiIxZmW/8ZbVMgIhKVUPUxW5MDarBGjT83JzjR
+         Y1lPWG/QzbF7s7f3dacSfVozGeZxaY0SOvsGvg/XiL0D+yGI4SHVNovx5IKce1o34Jvl
+         mujUjr0Q0b2dTAx1wcuBpV1Nm/IO6ABEWwtPtfp6zQNiWhAxCqiickgCVhEqqYSi+x5K
+         /1VyvHqRZr41VbMIbyaXgoLXMgndx4/uWAvCd3dk4Hwjl6ecZwExODXGOJmxBCPlR/OV
+         QSkg==
+X-Gm-Message-State: APjAAAUg1t3g0gwmb3DKi10vh8UFIqnoIZHiVpz9C+oKfnmShm4VGZdG
+        rTu/7iu/vyqNkN33BoLu3AU=
+X-Google-Smtp-Source: APXvYqwN+pc0Y9LsKyVNpNsE27R6cpG/jC7EJi86D4SSuxhw4CiTszbvDUbJ5/XWBhFv7A+TqT17gQ==
+X-Received: by 2002:a17:902:724a:: with SMTP id c10mr34374635pll.298.1563293825493;
+        Tue, 16 Jul 2019 09:17:05 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::c7d4])
+        by smtp.gmail.com with ESMTPSA id j12sm10852106pff.4.2019.07.16.09.17.03
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Jul 2019 09:17:04 -0700 (PDT)
+Date:   Tue, 16 Jul 2019 09:17:03 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jiong Wang <jiong.wang@netronome.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Edward Cree <ecree@solarflare.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        oss-drivers@netronome.com, Yonghong Song <yhs@fb.com>
+Subject: Re: [RFC bpf-next 0/8] bpf: accelerate insn patching speed
+Message-ID: <20190716161701.mk5ye47aj2slkdjp@ast-mbp.dhcp.thefacebook.com>
+References: <1562275611-31790-1-git-send-email-jiong.wang@netronome.com>
+ <CAEf4BzavePpW-C+zORN1kwSUJAWuJ3LxZ6QGxqaE9msxCq8ZLA@mail.gmail.com>
+ <87r26w24v4.fsf@netronome.com>
+ <CAEf4BzaPFbYKUQzu7VoRd7idrqPDMEFF=UEmT2pGf+Lxz06+sA@mail.gmail.com>
+ <87k1cj3b69.fsf@netronome.com>
+ <CAEf4BzYDAVUgajz4=dRTu5xQDddp5pi2s=T1BdFmRLZjOwGypQ@mail.gmail.com>
+ <87wogitlbi.fsf@netronome.com>
 MIME-Version: 1.0
-References: <20190716105634.21827-1-iii@linux.ibm.com>
-In-Reply-To: <20190716105634.21827-1-iii@linux.ibm.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 16 Jul 2019 07:57:04 -0700
-Message-ID: <CAEf4Bzaf2Ys6H4h0rk6z+QhP-anonz=MBej5CaShXKL453MB4A@mail.gmail.com>
-Subject: Re: [PATCH bpf v2] selftests/bpf: skip nmi test when perf hw events
- are disabled
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        gor@linux.ibm.com, heiko.carstens@de.ibm.com,
-        Y Song <ys114321@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wogitlbi.fsf@netronome.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 16, 2019 at 3:56 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
->
-> Some setups (e.g. virtual machines) might run with hardware perf events
-> disabled. If this is the case, skip the test_send_signal_nmi test.
->
-> Add a separate test involving a software perf event. This allows testing
-> the perf event path regardless of hardware perf event support.
->
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
+On Tue, Jul 16, 2019 at 09:50:25AM +0100, Jiong Wang wrote:
+> 
+> Let me digest a little bit and do some coding, then I will come back. Some
+> issues can only shown up during in-depth coding. I kind of feel handling
+> aux reference in verifier layer is the part that will still introduce some
+> un-clean code.
 
-LGTM!
+I'm still internalizing this discussion. Only want to point out
+that I think it's better to have simpler algorithm that consumes more
+memory and slower than more complex algorithm that is more cpu/memory efficient.
+Here we're aiming at 10x improvement anyway, so extra cpu and memory
+here and there are good trade-off to make.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+> >> If there is no dead insn elimination opt, then we could just adjust
+> >> offsets. When there is insn deleting, I feel the logic becomes more
+> >> complex. One subprog could be completely deleted or partially deleted, so
+> >> I feel just recalculate the whole subprog info as a side-product is
+> >> much simpler.
+> >
+> > What's the situation where entirety of subprog can be deleted?
+> 
+> Suppose you have conditional jmp_imm, true path calls one subprog, false
+> path calls the other. If insn walker later found it is also true, then the
+> subprog at false path won't be marked as "seen", so it is entirely deleted.
+> 
+> I actually thought it is in theory one subprog could be deleted entirely,
+> so if we support insn deletion inside verifier, then range info like
+> line_info/subprog_info needs to consider one range is deleted.
 
->
-> v1->v2: Skip the test instead of using a software event.
-> Add a separate test with a software event.
->
->  .../selftests/bpf/prog_tests/send_signal.c    | 33 ++++++++++++++++++-
->  1 file changed, 32 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-> index 67cea1686305..54218ee3c004 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-> @@ -173,6 +173,18 @@ static int test_send_signal_tracepoint(void)
->         return test_send_signal_common(&attr, BPF_PROG_TYPE_TRACEPOINT, "tracepoint");
->  }
->
+I don't think dead code elim can remove subprogs.
+cfg check rejects code with dead progs.
+I don't think we have a test for such 'dead prog only due to verifier walk'
+situation. I wonder what happens :)
 
-[...]
