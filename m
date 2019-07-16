@@ -2,173 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B67586A71F
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2019 13:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6954F6A749
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2019 13:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387675AbfGPLNc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Jul 2019 07:13:32 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:40773 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387445AbfGPLNc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Jul 2019 07:13:32 -0400
-Received: by mail-pf1-f193.google.com with SMTP id p184so8951427pfp.7
-        for <bpf@vger.kernel.org>; Tue, 16 Jul 2019 04:13:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=8NFJGPVlVAuYMPwOwTl0aBkcJ7/1gJuCLWe4ZLruxuU=;
-        b=eFbk7M92HouroEKZP0msAOxYiaXaS/2dbFJatwM4kpmpNxCG2xYCHSOShlXhHmfE/y
-         HGkpLzpVjnxwwgeoDQJJKFh0lBYkIHTQa7SmPAqKRACozyFI1kfcxgyGAhe+PYMgiKoV
-         TxyhCnO8KPyvyLcGu/qiDr7sGSerQN8PJUUr+ZQITlUAG3FZs1YFtHMqvb5GXWip8Cd6
-         x879/KTZqwwgfqf8qTL/8Fhu2rsWdmSFSKgR7tTOmxeuPB4LV1h8KvWPxzLdT/FYmbzt
-         Re6WG4jGnGzfkzfMqkQE+3p6FC6FWaId7hHmYWWVkEQiHCKVqOeGmEHXPEfk69iWGxsa
-         1r6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=8NFJGPVlVAuYMPwOwTl0aBkcJ7/1gJuCLWe4ZLruxuU=;
-        b=o2D+jRR6jgnAYzKoStCCR0gmn1R0fQfSsE556pzxowsYtETrpfgfqOjDQf/6ZlwjTX
-         WcsOXHfd32VnKz+aHG4Thq8oD5ON7eR5KsNGfNAwdxDW9uYjEaRnHig0iqSEcfvdx+SR
-         B75TAXl7MJr4uhaLtFcjTXWEwZ76gyJxTwiFRojMhbvx1gw58O70wjx95IPjkRsn9voO
-         O81ahOyb3TexrkvaMb9F7xvy3Tzx6W4pq85J0kkNayP00jreQeopOOZuI8SEgtIS1exo
-         31LlmU1HcVFa1p6Dd1TNU2tq0mqZRu9uuFqenaFhSvSj0+AYyE141rbqkXwL9Z1xMcYu
-         DGIg==
-X-Gm-Message-State: APjAAAXM1azHevNJuP7r35xpZ0w1J8+PCMXM4vWPh3HdKCS5jsn9IeQj
-        GcGY85ie716JFUZDUDcZEaNV5g==
-X-Google-Smtp-Source: APXvYqxM/EzG6XkGwFUq5lCZpCu7Qc8I2MK4CsmMFswEozlWGhc+DzYVPw/ySuvYYAujJtb6hXwP4Q==
-X-Received: by 2002:a17:90a:db52:: with SMTP id u18mr35690859pjx.107.1563275611836;
-        Tue, 16 Jul 2019 04:13:31 -0700 (PDT)
-Received: from localhost.localdomain (li1433-81.members.linode.com. [45.33.106.81])
-        by smtp.gmail.com with ESMTPSA id 21sm19324907pjh.25.2019.07.16.04.13.25
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 16 Jul 2019 04:13:31 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Russell King <linux@armlinux.org.uk>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Justin He <Justin.He@arm.com>
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH 2/2] arm: Add support for function error injection
-Date:   Tue, 16 Jul 2019 19:13:01 +0800
-Message-Id: <20190716111301.1855-3-leo.yan@linaro.org>
+        id S2387582AbfGPLVr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Jul 2019 07:21:47 -0400
+Received: from mga01.intel.com ([192.55.52.88]:34168 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733200AbfGPLVr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Jul 2019 07:21:47 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Jul 2019 04:21:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.63,498,1557212400"; 
+   d="scan'208";a="366631399"
+Received: from silpixa00399838.ir.intel.com (HELO silpixa00399838.ger.corp.intel.com) ([10.237.223.10])
+  by fmsmga006.fm.intel.com with ESMTP; 16 Jul 2019 04:21:44 -0700
+From:   Kevin Laatz <kevin.laatz@intel.com>
+To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com,
+        jakub.kicinski@netronome.com, jonathan.lemon@gmail.com
+Cc:     bruce.richardson@intel.com, ciara.loftus@intel.com,
+        bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        Kevin Laatz <kevin.laatz@intel.com>
+Subject: [PATCH v2 00/10] XDP unaligned chunk placement support
+Date:   Tue, 16 Jul 2019 03:06:27 +0000
+Message-Id: <20190716030637.5634-1-kevin.laatz@intel.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190716111301.1855-1-leo.yan@linaro.org>
-References: <20190716111301.1855-1-leo.yan@linaro.org>
+In-Reply-To: <20190620090958.2135-1-kevin.laatz@intel.com>
+References: <20190620090958.2135-1-kevin.laatz@intel.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch implement regs_set_return_value() and
-override_function_with_return() to support function error injection
-for arm.
+This patch set adds the ability to use unaligned chunks in the XDP umem.
 
-In the exception flow, we can update pt_regs::ARM_pc with
-pt_regs::ARM_lr so that can override the probed function return.
+Currently, all chunk addresses passed to the umem are masked to be chunk
+size aligned (default is 2k, max is PAGE_SIZE). This limits where we can
+place chunks within the umem as well as limiting the packet sizes that are
+supported.
 
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
+The changes in this patch set removes these restrictions, allowing XDP to
+be more flexible in where it can place a chunk within a umem. By relaxing
+where the chunks can be placed, it allows us to use an arbitrary buffer
+size and place that wherever we have a free address in the umem. These
+changes add the ability to support arbitrary frame sizes up to 4k
+(PAGE_SIZE) and make it easy to integrate with other existing frameworks
+that have their own memory management systems, such as DPDK.
+
+Since we are now dealing with arbitrary frame sizes, we need also need to
+update how we pass around addresses. Currently, the addresses can simply be
+masked to 2k to get back to the original address. This becomes less trivial
+when using frame sizes that are not a 'power of 2' size. This patch set
+modifies the Rx/Tx descriptor format to use the upper 16-bits of the addr
+field for an offset value, leaving the lower 48-bits for the address (this
+leaves us with 256 Terabytes, which should be enough!). We only need to use
+the upper 16-bits to store the offset when running in unaligned mode.
+Rather than adding the offset (headroom etc) to the address, we will store
+it in the upper 16-bits of the address field. This way, we can easily add
+the offset to the address where we need it, using some bit manipulation and
+addition, and we can also easily get the original address wherever we need
+it (for example in i40e_zca_free) by simply masking to get the lower
+48-bits of the address field.
+
+The numbers below were recorded with the following set up:
+  - Intel(R) Xeon(R) Gold 6140 CPU @ 2.30GHz
+  - Intel Corporation Ethernet Controller XXV710 for 25GbE SFP28 (rev 02)
+  - Driver: i40e
+  - Application: xdpsock with l2fwd (single interface)
+
+These are solely for comparing performance with and without the patches.
+The largest drop was ~1% (in zero-copy mode).
+
++-------------------------+------------+-----------------+-------------+
+| Buffer size: 2048       | SKB mode   | Zero-copy       | Copy        |
++-------------------------+------------+-----------------+-------------+
+| Aligned (baseline)      | 1.7 Mpps   | 15.3 Mpps       | 2.08 Mpps   |
++-------------------------+------------+-----------------+-------------+
+| Aligned (with patches)  | 1.7 Mpps   | 15.1 Mpps       | 2.08 Mpps   |
++-------------------------+------------+-----------------+-------------+
+| Unaligned               | 1.7 Mpps   | 14.5 Mpps       | 2.08 Mpps   |
++-------------------------+------------+-----------------+-------------+ 
+
+NOTE: We are currently working on the changes required in the Mellanox
+driver. We will include these in the v3.
+
+Structure of the patchset:
+Patch 1:
+  - Remove unnecessary masking and headroom addition during zero-copy Rx
+    buffer recycling in i40e. This change is required in order for the
+    buffer recycling to work in the unaligned chunk mode.
+
+Patch 2:
+  - Remove unnecessary masking and headroom addition during
+    zero-copy Rx buffer recycling in ixgbe. This change is required in
+    order for the  buffer recycling to work in the unaligned chunk mode.
+
+Patch 3:
+  - Add infrastructure for unaligned chunks. Since we are dealing with
+    unaligned chunks that could potentially cross a physical page boundary,
+    we add checks to keep track of that information. We can later use this
+    information to correctly handle buffers that are placed at an address
+    where they cross a page boundary.  This patch also modifies the
+    existing Rx and Tx functions to use the new descriptor format. To
+    handle addresses correctly, we need to mask appropriately based on
+    whether we are in aligned or unaligned mode.
+
+Patch 4:
+  - This patch updates the i40e driver to make use of the new descriptor
+    format. The new format is particularly useful here since we can now
+    retrieve the original address in places like i40e_zca_free with ease.
+    This saves us doing various calculations to get the original address
+    back.
+
+Patch 5:
+  - This patch updates the ixgbe driver to make use of the new descriptor
+    format. The new format is particularly useful here since we can now
+    retrieve the original address in places like ixgbe_zca_free with ease.
+    This saves us doing various calculations to get the original address
+    back.
+
+Patch 6:
+  - Add flags for umem configuration to libbpf
+
+Patch 7:
+  - Modify xdpsock application to add a command line option for
+    unaligned chunks
+
+Patch 8:
+  - Since we can now run the application in unaligned chunk mode, we need
+    to make sure we recycle the buffers appropriately.
+
+Patch 9:
+  - Adds hugepage support to the xdpsock application
+
+Patch 10:
+  - Documentation update to include the unaligned chunk scenario. We need
+    to explicitly state that the incoming addresses are only masked in the
+    aligned chunk mode and not the unaligned chunk mode.
+
 ---
- arch/arm/Kconfig                       |  1 +
- arch/arm/include/asm/error-injection.h | 13 +++++++++++++
- arch/arm/include/asm/ptrace.h          |  5 +++++
- arch/arm/lib/Makefile                  |  2 ++
- arch/arm/lib/error-inject.c            | 19 +++++++++++++++++++
- 5 files changed, 40 insertions(+)
- create mode 100644 arch/arm/include/asm/error-injection.h
- create mode 100644 arch/arm/lib/error-inject.c
+v2:
+  - fixed checkpatch issues
+  - fixed Rx buffer recycling for unaligned chunks in xdpsock
+  - removed unused defines
+  - fixed how chunk_size is calculated in xsk_diag.c
+  - added some performance numbers to cover letter
+  - modified descriptor format to make it easier to retrieve original
+    address
+  - removed patch adding off_t off to the zero copy allocator. This is no
+    longer needed with the new descriptor format.
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 8869742a85df..f7932a5e29ea 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -74,6 +74,7 @@ config ARM
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS if (CPU_V6 || CPU_V6K || CPU_V7) && MMU
- 	select HAVE_EXIT_THREAD
- 	select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
-+	select HAVE_FUNCTION_ERROR_INJECTION if !THUMB2_KERNEL
- 	select HAVE_FUNCTION_GRAPH_TRACER if !THUMB2_KERNEL && !CC_IS_CLANG
- 	select HAVE_FUNCTION_TRACER if !XIP_KERNEL
- 	select HAVE_GCC_PLUGINS
-diff --git a/arch/arm/include/asm/error-injection.h b/arch/arm/include/asm/error-injection.h
-new file mode 100644
-index 000000000000..da057e8ed224
---- /dev/null
-+++ b/arch/arm/include/asm/error-injection.h
-@@ -0,0 +1,13 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+
-+#ifndef __ASM_ERROR_INJECTION_H_
-+#define __ASM_ERROR_INJECTION_H_
-+
-+#include <linux/compiler.h>
-+#include <linux/linkage.h>
-+#include <asm/ptrace.h>
-+#include <asm-generic/error-injection.h>
-+
-+void override_function_with_return(struct pt_regs *regs);
-+
-+#endif /* __ASM_ERROR_INJECTION_H_ */
-diff --git a/arch/arm/include/asm/ptrace.h b/arch/arm/include/asm/ptrace.h
-index 91d6b7856be4..3b41f37b361a 100644
---- a/arch/arm/include/asm/ptrace.h
-+++ b/arch/arm/include/asm/ptrace.h
-@@ -89,6 +89,11 @@ static inline long regs_return_value(struct pt_regs *regs)
- 	return regs->ARM_r0;
- }
- 
-+static inline void regs_set_return_value(struct pt_regs *regs, unsigned long rc)
-+{
-+	regs->ARM_r0 = rc;
-+}
-+
- #define instruction_pointer(regs)	(regs)->ARM_pc
- 
- #ifdef CONFIG_THUMB2_KERNEL
-diff --git a/arch/arm/lib/Makefile b/arch/arm/lib/Makefile
-index 0bff0176db2c..d3d7430ecd76 100644
---- a/arch/arm/lib/Makefile
-+++ b/arch/arm/lib/Makefile
-@@ -43,3 +43,5 @@ ifeq ($(CONFIG_KERNEL_MODE_NEON),y)
-   CFLAGS_xor-neon.o		+= $(NEON_FLAGS)
-   obj-$(CONFIG_XOR_BLOCKS)	+= xor-neon.o
- endif
-+
-+obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
-diff --git a/arch/arm/lib/error-inject.c b/arch/arm/lib/error-inject.c
-new file mode 100644
-index 000000000000..96319d017114
---- /dev/null
-+++ b/arch/arm/lib/error-inject.c
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/error-injection.h>
-+#include <linux/kprobes.h>
-+
-+void override_function_with_return(struct pt_regs *regs)
-+{
-+	/*
-+	 * 'regs' represents the state on entry of a predefined function in
-+	 * the kernel/module and which is captured on a kprobe.
-+	 *
-+	 * 'regs->ARM_lr' contains the the link register for the probed
-+	 * function and assign it to 'regs->ARM_pc', so when kprobe returns
-+	 * back from exception it will override the end of probed function
-+	 * and drirectly return to the predefined function's caller.
-+	 */
-+	regs->ARM_pc = regs->ARM_lr;
-+}
-+NOKPROBE_SYMBOL(override_function_with_return);
+Kevin Laatz (10):
+  i40e: simplify Rx buffer recycle
+  ixgbe: simplify Rx buffer recycle
+  xsk: add support to allow unaligned chunk placement
+  i40e: modify driver for handling offsets
+  ixgbe: modify driver for handling offsets
+  libbpf: add flags to umem config
+  samples/bpf: add unaligned chunks mode support to xdpsock
+  samples/bpf: add buffer recycling for unaligned chunks to xdpsock
+  samples/bpf: use hugepages in xdpsock app
+  doc/af_xdp: include unaligned chunk case
+
+ Documentation/networking/af_xdp.rst          | 10 ++-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c   | 39 +++++----
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c | 39 +++++----
+ include/net/xdp_sock.h                       |  2 +
+ include/uapi/linux/if_xdp.h                  |  9 ++
+ net/xdp/xdp_umem.c                           | 17 ++--
+ net/xdp/xsk.c                                | 89 ++++++++++++++++----
+ net/xdp/xsk_diag.c                           |  2 +-
+ net/xdp/xsk_queue.h                          | 70 +++++++++++++--
+ samples/bpf/xdpsock_user.c                   | 61 ++++++++++----
+ tools/include/uapi/linux/if_xdp.h            |  4 +
+ tools/lib/bpf/xsk.c                          |  3 +
+ tools/lib/bpf/xsk.h                          |  2 +
+ 13 files changed, 266 insertions(+), 81 deletions(-)
+
 -- 
 2.17.1
 
