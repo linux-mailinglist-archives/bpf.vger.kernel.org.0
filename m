@@ -2,208 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF0C6B119
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2019 23:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638A06B13F
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2019 23:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728405AbfGPVaz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Jul 2019 17:30:55 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:33691 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728469AbfGPVaz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Jul 2019 17:30:55 -0400
-Received: by mail-pf1-f195.google.com with SMTP id g2so9738862pfq.0
-        for <bpf@vger.kernel.org>; Tue, 16 Jul 2019 14:30:54 -0700 (PDT)
+        id S1728235AbfGPVk7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Jul 2019 17:40:59 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:37662 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726794AbfGPVk7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Jul 2019 17:40:59 -0400
+Received: by mail-qk1-f196.google.com with SMTP id d15so15825114qkl.4;
+        Tue, 16 Jul 2019 14:40:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=6kokd9urqLvw9xwd+5O0M4O8FIkMVqne6oLchOnowAo=;
-        b=ibh8wssZe0klgvCEqtGL5SQYOhiDO0uXhSwtj8BIDydBS/3FWbCP2DMLOIemRLeltT
-         6QDu7NnPUf1dtPT4XHSPqhDA6hcF4aXFo11wvy1b8U6H/wvgF+hSctwPbOQhSv0jpsbp
-         fhcGESGlAlBkev0SBC+CEsGGSRfNnL1GJ8ZlQ=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O86ZpFw0TkhJylopJ7ym1zEkxJQZTmt3EOoPGiMPUNA=;
+        b=I6zFZ6nT2chfBxKdNBkfoiBJOTZWs7/RA5E62y5ACSoLu2VAMC9evx41JAyoqEDbt8
+         9+yqskKY1biqIS3X5mQqUsRhA9Ym/yMTow8bAmdu8lZfIf7YUp14Xshad8nWFUiF+FWi
+         rHITEflz2cb6zH41jHB0GpA0Ot7EJjEJITUZggC34fTGNy6igoz4ilHTq8h372jrEQ6O
+         xmr0QMA3sbx6mutg6/n1MAwRgUfDfDKWCbgCPx8JmDEDH0uoL0mtdIGRB3xd36HtQvak
+         ubt6KrHkbQrYzPhKKrvSxmcXWGp0Unq4p5Ior1bgpDRs6Cljj08W2v89hXLjO1w9ghA9
+         ejsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6kokd9urqLvw9xwd+5O0M4O8FIkMVqne6oLchOnowAo=;
-        b=NnbZr7KIomghoEfpYWayRfdz1hfQuu0ZdcmvwNvOUNs1FigDJRf41iWaAFsZUiQZSR
-         ofMule68Wyotr9ToCN+wcJYX62swpzvD2pqqThheo3Jp3pB90Vd7RG8juljeTj4ffDNy
-         7Pm7EKYfNCpns5ZkxkNhmbLByx9okMAb9vQfIeYSAQelEpBVswpY9yBcuzrUqsz0aO18
-         u12DOUsgRvMg242ROaDpH4aMnC+VqSMqEaWsCFO5HtUcZ3Iq//t2m3MIi34BU6oD/tSn
-         c7HbFDai9F6l/0ZH4j/3lfz3ARQOMbJVW1NPjCsPJChy58s2IevwqRwd1/tRQkT7HsjH
-         dXlQ==
-X-Gm-Message-State: APjAAAXTI8VBzGQoJPgyvrBa3XTOaFiRtbpmimFCR/aQ58hHsDSo/V/S
-        UNoLnq7K9hHviwLJClV1gtI=
-X-Google-Smtp-Source: APXvYqzP8aGlzyfvDVIxVivD9Z3lMgtTzbpkjETtCBTYCZiV8fxcj98GUhamPPzgUeCiezYOCwcypg==
-X-Received: by 2002:a63:4612:: with SMTP id t18mr27566053pga.85.1563312653706;
-        Tue, 16 Jul 2019 14:30:53 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id 21sm10450343pfj.76.2019.07.16.14.30.51
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 16 Jul 2019 14:30:52 -0700 (PDT)
-Date:   Tue, 16 Jul 2019 17:30:50 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Brendan Gregg <brendan.d.gregg@gmail.com>, connoro@google.com,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        duyuchao <yuchao.du@unisoc.com>, Ingo Molnar <mingo@redhat.com>,
-        jeffv@google.com, Karim Yaghmour <karim.yaghmour@opersys.com>,
-        kernel-team@android.com, linux-kselftest@vger.kernel.org,
-        Manali Shukla <manalishukla14@gmail.com>,
-        Manjo Raja Rao <linux@manojrajarao.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Matt Mullins <mmullins@fb.com>,
-        Michal Gregorczyk <michalgr@fb.com>,
-        Michal Gregorczyk <michalgr@live.com>,
-        Mohammad Husain <russoue@gmail.com>, namhyung@google.com,
-        namhyung@kernel.org, netdev@vger.kernel.org,
-        paul.chaignon@gmail.com, primiano@google.com,
-        Qais Yousef <qais.yousef@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tamir Carmeli <carmeli.tamir@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH RFC 0/4] Add support to directly attach BPF program to
- ftrace
-Message-ID: <20190716213050.GA161922@google.com>
-References: <20190710141548.132193-1-joel@joelfernandes.org>
- <20190716205455.iimn3pqpvsc3k4ry@ast-mbp.dhcp.thefacebook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O86ZpFw0TkhJylopJ7ym1zEkxJQZTmt3EOoPGiMPUNA=;
+        b=dYJ0H99n7LHUZtRyHh+QiIv/24RLEo4Hu1RDz2maUCEZlgB9amdWz/I4Gw0z3r72nF
+         FR00L7E6k+rh+VCTrf0S5SIWKhqDYJlFwllVch+p9xrph8HbvPiQL6rSEy/VaW6mZ+7Q
+         8NaoTD1HlrwBWXm6OYHJC36cSyizJuyXF+sAtNCwyqfO6esdyUoamHI6aOeWskLzrBeC
+         I3wQsT9R/duOzQ6DcZGtR9LDLb/mgtmeMQisjE8wLXGe2EjL7vK4RmXSzW41dtD86qlf
+         7VHdD0W6ZEZCBk0Dg6uD3QdIJ3Zt6gmknYYks8y49HKSj8NoR6RyrlM9FWIPHDjitCBp
+         K2TA==
+X-Gm-Message-State: APjAAAUvUqGALsx0O9HrRqkJBU9EEtWpp/Waqs4q3VZQwYQUoI+4MfXi
+        XoItlcWBS+yncat6DCJwqLNAahH2JXf06JXEC54=
+X-Google-Smtp-Source: APXvYqxlzRJv6yW5nAkxyKDCmWiCV5c/sA3DcmhVVQWuVwAVud+64m65zAbEy50NrGlRe/HvpWgyN8/gp1Xhnl4OHDw=
+X-Received: by 2002:a37:bf42:: with SMTP id p63mr23897974qkf.437.1563313257975;
+ Tue, 16 Jul 2019 14:40:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190716205455.iimn3pqpvsc3k4ry@ast-mbp.dhcp.thefacebook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190716193837.2808971-1-andriin@fb.com> <20190716195544.GB14834@mini-arch>
+In-Reply-To: <20190716195544.GB14834@mini-arch>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 16 Jul 2019 14:40:46 -0700
+Message-ID: <CAEf4BzZ4XAdjasYq+JGFHnhwEV3G5UYWBuqKMK1yu1KRLn19MQ@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] selftests/bpf: fix test_verifier/test_maps make dependencies
+To:     Stanislav Fomichev <sdf@fomichev.me>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>,
+        Kernel Team <kernel-team@fb.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 16, 2019 at 01:54:57PM -0700, Alexei Starovoitov wrote:
-> On Wed, Jul 10, 2019 at 10:15:44AM -0400, Joel Fernandes (Google) wrote:
-> > Hi,
-> 
-> why are you cc-ing the whole world for this patch set?
+On Tue, Jul 16, 2019 at 12:55 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+>
+> On 07/16, Andrii Nakryiko wrote:
+> > e46fc22e60a4 ("selftests/bpf: make directory prerequisites order-only")
+> > exposed existing problem in Makefile for test_verifier and test_maps tests:
+> > their dependency on auto-generated header file with a list of all tests wasn't
+> > recorded explicitly. This patch fixes these issues.
+> Why adding it explicitly fixes it? At least for test_verifier, we have
+> the following rule:
+>
+>         test_verifier.c: $(VERIFIER_TESTS_H)
+>
+> And there should be implicit/builtin test_verifier -> test_verifier.c
+> dependency rule.
+>
+> Same for maps, I guess:
+>
+>         $(OUTPUT)/test_maps: map_tests/*.c
+>         test_maps.c: $(MAP_TESTS_H)
+>
+> So why is it not working as is? What I'm I missing?
 
-Well, the whole world happens to be interested in BPF on Android.
+I don't know exactly why it's not working, but it's clearly because of
+that. It's the only difference between how test_progs are set up,
+which didn't break, and test_maps/test_verifier, which did.
 
-> I'll reply to all as well, but I suspect a bunch of folks consider it spam.
-> Please read Documentation/bpf/bpf_devel_QA.rst
-
-Ok, I'll read it.
-
-> Also, I think, netdev@vger rejects emails with 80+ characters in cc as spam,
-> so I'm not sure this set reached public mailing lists.
-
-Certainly the CC list here is not added to folks who consider it spam. All
-the folks added have been interested in BPF on Android at various points of
-time. Is this CC list really that large? It has around 24 email addresses or
-so. I can trim it a bit if needed. Also, you sound like as if people are
-screaming at me to stop emailing them, certainly that's not the case and no
-one has told me it is spam.
-
-And, it did reach the public archive btw:
-https://lore.kernel.org/netdev/20190716205455.iimn3pqpvsc3k4ry@ast-mbp.dhcp.thefacebook.com/T/#m1460ba463b78312e38b68b8c118f673d2ead9446
-
-> > These patches make it possible to attach BPF programs directly to tracepoints
-> > using ftrace (/sys/kernel/debug/tracing) without needing the process doing the
-> > attach to be alive. This has the following benefits:
-> > 
-> > 1. Simplified Security: In Android, we have finer-grained security controls to
-> > specific ftrace trace events using SELinux labels. We control precisely who is
-> > allowed to enable an ftrace event already. By adding a node to ftrace for
-> > attaching BPF programs, we can use the same mechanism to further control who is
-> > allowed to attach to a trace event.
-> > 
-> > 2. Process lifetime: In Android we are adding usecases where a tracing program
-> > needs to be attached all the time to a tracepoint, for the full life time of
-> > the system. Such as to gather statistics where there no need for a detach for
-> > the full system lifetime. With perf or bpf(2)'s BPF_RAW_TRACEPOINT_OPEN, this
-> > means keeping a process alive all the time.  However, in Android our BPF loader
-> > currently (for hardeneded security) involves just starting a process at boot
-> > time, doing the BPF program loading, and then pinning them to /sys/fs/bpf.  We
-> > don't keep this process alive all the time. It is more suitable to do a
-> > one-shot attach of the program using ftrace and not need to have a process
-> > alive all the time anymore for this. Such process also needs elevated
-> > privileges since tracepoint program loading currently requires CAP_SYS_ADMIN
-> > anyway so by design Android's bpfloader runs once at init and exits.
-> > 
-> > This series add a new bpf file to /sys/kernel/debug/tracing/events/X/Y/bpf
-> > The following commands can be written into it:
-> > attach:<fd>     Attaches BPF prog fd to tracepoint
-> > detach:<fd>     Detaches BPF prog fd to tracepoint
-> 
-> Looks like, to detach a program the user needs to read a text file,
-> parse bpf prog id from text into binary. Then call fd_from_id bpf syscall,
-> get a binary FD, convert it back to text and write as a text back into this file.
-> I think this is just a single example why text based apis are not accepted
-> in bpf anymore.
-
-This can also be considered a tracefs API.
-
-And we can certainly change the detach to accept program ids as well if
-that's easier. 'detach:prog:<prog_id>' and 'detach:fd:<fd>'.
-
-By the way, I can also list the set of cumbersome steps needed to attach a
-BPF program using perf and I bet it will be longer ;-)
-
-> Through the patch set you call it ftrace. As far as I can see, this set
-> has zero overlap with ftrace. There is no ftrace-bpf connection here at all
-> that we discussed in the past Steven. It's all quite confusing.
-
-It depends on what you mean by ftrace, may be I can call it 'trace events' or
-something if it is less ambiguious. All of this has been collectively called
-ftrace before.
-
-I am not sure if you you are making sense actually, trace_events mechanism is
-a part of ftrace. See the documentation: Documentation/trace/ftrace.rst. Even
-the documentation file name has the word ftrace in it.
-
-I have also spoken to Steven before about this, I don't think he ever told me
-there is no connection so again I am a bit lost at your comments.
-
-> I suggest android to solve sticky raw_tracepoint problem with user space deamon.
-> The reasons, you point out why user daemon cannot be used, sound weak to me.
-
-I don't think it is weak. It seems overkill to have a daemon for a trace
-event that is say supposed to be attached to all the time for the lifetime of
-the system. Why should there be a daemon consuming resources if it is active
-all the time?
-
-In Android, we are very careful about spawning useless processes and leaving
-them alive for the lifetime of the system - for no good reason. Our security
-teams also don't like this, and they can comment more.
-
-> Another acceptable solution would be to introduce pinning of raw_tp objects.
-> bpf progs and maps can be pinned in bpffs already. Pinning raw_tp would
-> be natural extension.
-
-I don't think the pinning solves the security problem, it just solves the
-process lifetime problem. Currently, attaching trace events through perf
-requires CAP_SYS_ADMIN. However, with ftrace events, we already control
-security of events by labeling the nodes in tracefs and granting access to
-the labeled context through the selinux policies. Having a 'bpf' node in
-tracefs for events, and granting access to the labels is a natural extension.
-
-I also thought about the pinning idea before, but we also want to add support
-for not just raw tracepoints, but also regular tracepoints (events if you
-will). I am hesitant to add a new BPF API just for creating regular
-tracepoints and then pinning those as well.
-
-I don't see why a new bpf node for a trace event is a bad idea, really.
-tracefs is how we deal with trace events on Android. We do it in production
-systems. This is a natural extension to that and fits with the security model
-well.
-
-thanks,
-
- - Joel
-
-
-
-
+Feel free to figure it out through a maze of Makefiles why it didn't
+work as expected, but this definitely fixed a breakage (at least for
+me).
