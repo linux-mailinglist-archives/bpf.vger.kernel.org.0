@@ -2,89 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3059F6A7C1
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2019 13:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824F96A7DA
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2019 13:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728137AbfGPL41 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Jul 2019 07:56:27 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:38551 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727796AbfGPL41 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Jul 2019 07:56:27 -0400
-Received: by mail-ot1-f50.google.com with SMTP id d17so20759960oth.5
-        for <bpf@vger.kernel.org>; Tue, 16 Jul 2019 04:56:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XA0Tw3m9nPCTlyx5u3HFpZCSs2AM6cW6PSGoJjPSveE=;
-        b=DQ9tSmUCQStpjrEN600n7lRKfRZeP94cOt9bQBsIpqRCUBQmV3JKECYwQuOF+7ilao
-         mjjDEH5pwSzKuxsL8kg5Kz7juWCl56zNRByhpJk403tjn1mTjeQPp+qZCcKCYTYSOCj6
-         tLJV/dEg5dzgVulGDTRpUg2sGYtfYntCgWF6w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XA0Tw3m9nPCTlyx5u3HFpZCSs2AM6cW6PSGoJjPSveE=;
-        b=LVOL9iVoPCzo21od1oAfhNEq2ILbTF1KbUYFbFz63P1wJOs/pvPrbjwbXVzGcgHCKv
-         jKi4qqsloiKncOq5NV9D2dLqrahoiEV4eYOXkN4LijNitp+XUPwhVkPFkVkjsmAzr4Bf
-         b2h2dxRiqRfKBx5BpcifRduMc9ipwYulg8Mq/+5zvGMYkdf3bEbhO9f7dAVuNTdBqUqq
-         3b+F3NjsOavvm7+R99nTJkhDi8Ty4iXpyDHp5DMlhfcnh5ZAD+wewu7iIdHRdmDJYS+k
-         pazbgGjFPH3enafd6YpL1jgAcdMBFbPKvQc7axSmj6z1fvslZ+EI0RbDPLmDinQKQx09
-         BeLQ==
-X-Gm-Message-State: APjAAAV6gxtdMMDrFm6P957bcBz+hsAIGyzIr9odqAbqqe8rf4swGBwz
-        VzYINPrIuccEHM+pt9pKez21VVbv3Kj8NBYKRil//g==
-X-Google-Smtp-Source: APXvYqxn/1n9yccyaizqgW0lyNzrFT0OG6ONAqxeTvwmWoQvYzG6UxPVmDSpu8/XPO9n3l4drJHgHkHLJJte7Aw8GfM=
-X-Received: by 2002:a05:6830:1485:: with SMTP id s5mr23445908otq.132.1563278186261;
- Tue, 16 Jul 2019 04:56:26 -0700 (PDT)
+        id S1728387AbfGPL7T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Jul 2019 07:59:19 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4974 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727929AbfGPL7T (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 16 Jul 2019 07:59:19 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6GBv90P181534
+        for <bpf@vger.kernel.org>; Tue, 16 Jul 2019 07:59:18 -0400
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2tsd90a53s-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 16 Jul 2019 07:59:17 -0400
+Received: from localhost
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Tue, 16 Jul 2019 12:59:16 +0100
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 16 Jul 2019 12:59:14 +0100
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6GBxDSr60227812
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Jul 2019 11:59:13 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E991F11C05E;
+        Tue, 16 Jul 2019 11:59:12 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ACBFF11C058;
+        Tue, 16 Jul 2019 11:59:12 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.96.205])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 16 Jul 2019 11:59:12 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     gor@linux.ibm.com, heiko.carstens@de.ibm.com,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf] bpf: fix narrower loads on s390
+Date:   Tue, 16 Jul 2019 13:59:10 +0200
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <20190716002650.154729-1-ppenkov.kernel@gmail.com>
- <20190716002650.154729-4-ppenkov.kernel@gmail.com> <b6ef24b0-0415-c67d-5a66-21f1c2530414@gmail.com>
-In-Reply-To: <b6ef24b0-0415-c67d-5a66-21f1c2530414@gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Tue, 16 Jul 2019 12:56:15 +0100
-Message-ID: <CACAyw9_5+3cznRspLJ2ZDcK22keLVtQQHbQOypSs4sx-F=ajow@mail.gmail.com>
-Subject: Re: [bpf-next RFC 3/6] bpf: add bpf_tcp_gen_syncookie helper
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Petar Penkov <ppenkov.kernel@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        davem@davemloft.net, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>, sdf@google.com,
-        Petar Penkov <ppenkov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19071611-0012-0000-0000-000003330B5C
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19071611-0013-0000-0000-0000216C84C1
+Message-Id: <20190716115910.23093-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-16_03:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=600 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907160150
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 16 Jul 2019 at 08:59, Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> > +             return -EINVAL;
-> > +
-> > +     if (sk->sk_protocol != IPPROTO_TCP || sk->sk_state != TCP_LISTEN)
-> > +             return -EINVAL;
-> > +
-> > +     if (!sock_net(sk)->ipv4.sysctl_tcp_syncookies)
-> > +             return -EINVAL;
-> > +
-> > +     if (!th->syn || th->ack || th->fin || th->rst)
-> > +             return -EINVAL;
-> > +
-> > +     switch (sk->sk_family) {
->
-> This is strange, because a dual stack listener will have sk->sk_family set to AF_INET6.
->
-> What really matters here is if the packet is IPv4 or IPv6.
->
-> So you need to look at iph->version instead.
->
-> Then look if the socket family allows this packet to be processed
-> (For example AF_INET6 sockets might prevent IPv4 packets, see sk->sk_ipv6only )
+test_pkt_md_access is failing on s390, since the associated eBPF prog
+returns TC_ACT_SHOT, which in turn happens because loading a part of a
+struct __sk_buff field produces an incorrect result.
 
-Does this apply for (the existing) tcp_check_syn_cookie as well?
+The problem is that when verifier emits the code to replace partial load
+of a field with a full load, a shift and a bitwise AND, it assumes that
+the machine is little endian.
 
+Adjust shift count calculation to account for endianness.
+
+Fixes: 31fd85816dbe ("bpf: permits narrower load from bpf program context fields")
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ kernel/bpf/verifier.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 5900cbb966b1..3f9353653558 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -8616,8 +8616,12 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ 		}
+ 
+ 		if (is_narrower_load && size < target_size) {
+-			u8 shift = (off & (size_default - 1)) * 8;
+-
++			u8 load_off = off & (size_default - 1);
++#ifdef __LITTLE_ENDIAN
++			u8 shift = load_off * 8;
++#else
++			u8 shift = (size_default - (load_off + size)) * 8;
++#endif
+ 			if (ctx_field_size <= 4) {
+ 				if (shift)
+ 					insn_buf[cnt++] = BPF_ALU32_IMM(BPF_RSH,
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+2.21.0
 
-www.cloudflare.com
