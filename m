@@ -2,144 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71FD86A6D8
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2019 12:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E0F6A718
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2019 13:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733067AbfGPK4s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Jul 2019 06:56:48 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3916 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1733037AbfGPK4s (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 16 Jul 2019 06:56:48 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6GArqvN136975
-        for <bpf@vger.kernel.org>; Tue, 16 Jul 2019 06:56:47 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tsa18gkn8-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 16 Jul 2019 06:56:46 -0400
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Tue, 16 Jul 2019 11:56:45 +0100
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 16 Jul 2019 11:56:42 +0100
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6GAufMr56033436
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Jul 2019 10:56:41 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 583A411C052;
-        Tue, 16 Jul 2019 10:56:41 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 191EC11C054;
-        Tue, 16 Jul 2019 10:56:41 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.152.96.205])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 16 Jul 2019 10:56:41 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     gor@linux.ibm.com, heiko.carstens@de.ibm.com,
-        andrii.nakryiko@gmail.com, ys114321@gmail.com,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf v2] selftests/bpf: skip nmi test when perf hw events are disabled
-Date:   Tue, 16 Jul 2019 12:56:34 +0200
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19071610-0008-0000-0000-000002FDA41C
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19071610-0009-0000-0000-0000226B199E
-Message-Id: <20190716105634.21827-1-iii@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-16_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907160137
+        id S2387554AbfGPLNU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Jul 2019 07:13:20 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:34099 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387493AbfGPLNU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Jul 2019 07:13:20 -0400
+Received: by mail-pg1-f193.google.com with SMTP id n9so3059241pgc.1
+        for <bpf@vger.kernel.org>; Tue, 16 Jul 2019 04:13:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=l8lUDijBiyY5cnjhjm2bVu88mH5lRLrGchTwxKmKfRM=;
+        b=n+WcafFy/24JXY2LfhO+hw1ngbjN1W/bcJu99Sy2jNXlHMVIp+hq+Kw0Z8D3nCpVu3
+         p615sFT47ypPa/pyRofK9aC5YX4c9pUMTqeia6e2T3YfaHhYc+/Qt/zfpomkHJCaqUIs
+         Wa3K+jFwzvvLdB4h0f0p454uZScZX3rew/arPvBW6/L4VybGE25GvXdNvixCxHe4AZIL
+         b0bAxU83fAlmu7KERFHiUOtHyA3bG7H+ByV4pFA9tuojhnFXGGBzvpkK7kPhO+KCbAEm
+         5fcmvjoiCZmwESd8VfOcMHf0txSN7uCQOGKcgWmHgCdDKMFNNj5ed8K2ZlMvVyPzifGd
+         Fkbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=l8lUDijBiyY5cnjhjm2bVu88mH5lRLrGchTwxKmKfRM=;
+        b=B7LP1kOMXscH+xZ+nJ4zTO4ofrR2RmHjciPOXFp+NA6w+7kRHB1FAetVBOQb/DklNY
+         eFUNc5Pltv+hYsdgMwZk6SE4Nzgmh1TR5dRBx1HyX4usrmDk6uepezoRyM17VR+kp/SZ
+         uzBBLOgTQcyuLCYHMckdKZrYRXImyfat6f+LS5JLzMIvzAGR5lLBLoXnLKCwbRqGtHJn
+         n4qjo5dYJXBB/9LPYtk8DGI1FRyn6gJBmc8lfh1L8AVmTvyM3CawslYL5YXtvWnAoM9v
+         IHTz/Q6rquDxzyd8m3FJ6cF8AQQwh/NkLyNA3Xnwb4bxYVCCcohRucgZYw72MePZcqwA
+         h7bA==
+X-Gm-Message-State: APjAAAV41FOReTKBfieDHnMCBnXM3NDqqMR+Lpm/iYjSLNnK8P/P3R3W
+        W6mwrifpS6wSsPLadg/bOaou0g==
+X-Google-Smtp-Source: APXvYqx2luVpK2SH0RmMNrxXQpvln9vKdfadl33zXwjMdrs+FXh/PcBB7WUo0CD3twBTUWfaiHb80g==
+X-Received: by 2002:a63:e356:: with SMTP id o22mr32978109pgj.150.1563275599407;
+        Tue, 16 Jul 2019 04:13:19 -0700 (PDT)
+Received: from localhost.localdomain (li1433-81.members.linode.com. [45.33.106.81])
+        by smtp.gmail.com with ESMTPSA id 21sm19324907pjh.25.2019.07.16.04.13.15
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Jul 2019 04:13:18 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Russell King <linux@armlinux.org.uk>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Justin He <Justin.He@arm.com>
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH 0/2] arm/arm64: Add support for function error injection
+Date:   Tue, 16 Jul 2019 19:12:59 +0800
+Message-Id: <20190716111301.1855-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Some setups (e.g. virtual machines) might run with hardware perf events
-disabled. If this is the case, skip the test_send_signal_nmi test.
+This small patch set is to add support for function error injection;
+this can be used to eanble more advanced debugging feature, e.g.
+CONFIG_BPF_KPROBE_OVERRIDE.
 
-Add a separate test involving a software perf event. This allows testing
-the perf event path regardless of hardware perf event support.
+I only tested the first patch on arm64 platform Juno-r2 with below
+steps; the second patch is for arm arch, but I absent the platform
+for the testing so only pass compilation.
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
+- Enable kernel configuration:
+  CONFIG_BPF_KPROBE_OVERRIDE
+  CONFIG_BTRFS_FS
+  CONFIG_BPF_EVENTS=y
+  CONFIG_KPROBES=y
+  CONFIG_KPROBE_EVENTS=y
+  CONFIG_BPF_KPROBE_OVERRIDE=y
+- Build samples/bpf on Juno-r2 board with Debian rootFS:
+  # cd $kernel
+  # make headers_install
+  # make samples/bpf/ LLC=llc-7 CLANG=clang-7
+- Run the sample tracex7:
+  # ./tracex7 /dev/sdb1
+  [ 1975.211781] BTRFS error (device (efault)): open_ctree failed
+  mount: /mnt/linux-kernel/linux-cs-dev/samples/bpf/tmpmnt: mount(2) system call failed: Cannot allocate memory.
 
-v1->v2: Skip the test instead of using a software event.
-Add a separate test with a software event.
 
- .../selftests/bpf/prog_tests/send_signal.c    | 33 ++++++++++++++++++-
- 1 file changed, 32 insertions(+), 1 deletion(-)
+Leo Yan (2):
+  arm64: Add support for function error injection
+  arm: Add support for function error injection
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-index 67cea1686305..54218ee3c004 100644
---- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
-+++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-@@ -173,6 +173,18 @@ static int test_send_signal_tracepoint(void)
- 	return test_send_signal_common(&attr, BPF_PROG_TYPE_TRACEPOINT, "tracepoint");
- }
- 
-+static int test_send_signal_perf(void)
-+{
-+	struct perf_event_attr attr = {
-+		.sample_period = 1,
-+		.type = PERF_TYPE_SOFTWARE,
-+		.config = PERF_COUNT_SW_CPU_CLOCK,
-+	};
-+
-+	return test_send_signal_common(&attr, BPF_PROG_TYPE_PERF_EVENT,
-+				       "perf_sw_event");
-+}
-+
- static int test_send_signal_nmi(void)
- {
- 	struct perf_event_attr attr = {
-@@ -181,8 +193,26 @@ static int test_send_signal_nmi(void)
- 		.type = PERF_TYPE_HARDWARE,
- 		.config = PERF_COUNT_HW_CPU_CYCLES,
- 	};
-+	int pmu_fd;
-+
-+	/* Some setups (e.g. virtual machines) might run with hardware
-+	 * perf events disabled. If this is the case, skip this test.
-+	 */
-+	pmu_fd = syscall(__NR_perf_event_open, &attr, 0 /* pid */,
-+			 -1 /* cpu */, -1 /* group_fd */, 0 /* flags */);
-+	if (pmu_fd == -1) {
-+		if (errno == ENOENT) {
-+			printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n",
-+				__func__);
-+			return 0;
-+		}
-+		/* Let the test fail with a more informative message */
-+	} else {
-+		close(pmu_fd);
-+	}
- 
--	return test_send_signal_common(&attr, BPF_PROG_TYPE_PERF_EVENT, "perf_event");
-+	return test_send_signal_common(&attr, BPF_PROG_TYPE_PERF_EVENT,
-+				       "perf_hw_event");
- }
- 
- void test_send_signal(void)
-@@ -190,6 +220,7 @@ void test_send_signal(void)
- 	int ret = 0;
- 
- 	ret |= test_send_signal_tracepoint();
-+	ret |= test_send_signal_perf();
- 	ret |= test_send_signal_nmi();
- 	if (!ret)
- 		printf("test_send_signal:OK\n");
+ arch/arm/Kconfig                         |  1 +
+ arch/arm/include/asm/error-injection.h   | 13 +++++++++++++
+ arch/arm/include/asm/ptrace.h            |  5 +++++
+ arch/arm/lib/Makefile                    |  2 ++
+ arch/arm/lib/error-inject.c              | 19 +++++++++++++++++++
+ arch/arm64/Kconfig                       |  1 +
+ arch/arm64/include/asm/error-injection.h | 13 +++++++++++++
+ arch/arm64/include/asm/ptrace.h          |  5 +++++
+ arch/arm64/lib/Makefile                  |  2 ++
+ arch/arm64/lib/error-inject.c            | 19 +++++++++++++++++++
+ 10 files changed, 80 insertions(+)
+ create mode 100644 arch/arm/include/asm/error-injection.h
+ create mode 100644 arch/arm/lib/error-inject.c
+ create mode 100644 arch/arm64/include/asm/error-injection.h
+ create mode 100644 arch/arm64/lib/error-inject.c
+
 -- 
-2.21.0
+2.17.1
 
