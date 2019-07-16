@@ -2,266 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 528CE6AD7D
-	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2019 19:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A09B6ADAB
+	for <lists+bpf@lfdr.de>; Tue, 16 Jul 2019 19:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728619AbfGPROj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Jul 2019 13:14:39 -0400
-Received: from mail-vs1-f67.google.com ([209.85.217.67]:33404 "EHLO
-        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728124AbfGPROj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Jul 2019 13:14:39 -0400
-Received: by mail-vs1-f67.google.com with SMTP id m8so14489329vsj.0;
-        Tue, 16 Jul 2019 10:14:38 -0700 (PDT)
+        id S1728190AbfGPRb3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Jul 2019 13:31:29 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:40083 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728121AbfGPRb3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Jul 2019 13:31:29 -0400
+Received: by mail-ot1-f68.google.com with SMTP id y20so6013893otk.7;
+        Tue, 16 Jul 2019 10:31:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=K2T5hXZ28GqFjDQWKXNnzayNSQkWAA4ayrA9/eIoHIk=;
-        b=ML7ZtHIqMEKlSdOcxsPF6riTTSqgesIeZrKbGD7HrTze3FDhjzRu0lyA0WD/PsVoJC
-         5V1ApPny/eRhwmxTsXfDdtoB8ZJ1IOnkyzM1dlSSRhXRozCnWJMgViCjapPaLNiUk8sM
-         PEe4Fl7nN786ZlgCTheHo339pxzCOOtLvTpyPosnfDbyzFjsyGY2JWcw51zTkKqcplma
-         PP5Ldrkl8+7IcMW6bJCTUpkofmk/m4EzkWeKp7OZ0ax30N3KyTd2COWhM+X8Sm6qP9Fn
-         ZvBrrHRiO0iz376Y2iKNFP0/PsTbJPi7xuNOVbuKnM+1PqhJ+5M4q7o56br3LxuUZCYN
-         bMGA==
+         :cc;
+        bh=R8MXJuGF3VOe2xZoC5VvvRqzCcRzeJc9EL52ma0h3wk=;
+        b=pkeMXSDqN2AuOf+CI3wtG6jXLNbk/7yZiXpE6G3pQn/bxpxmE2OckES17ovbbe6FTE
+         qhOMtQBieXjMFM5inG8vQmwmWIqP4CyAk1wSUoCwX7bEROQZi9YiGR1id6HKy3k+augq
+         RXpboXrWFQf7mRAAEPL22n4mbLdf6nuvdSlp29kGo1eyO29juxa329MM3WBSHuG3yXG5
+         9EQ+LwZ6DOpiD4Q+WNJzB0zI2zu69N/OuFC2MHFNHfPBqa2p+4L0SijhhExaJgPmZr5K
+         YGCyTJ0r1kzqedh5xSK9/KiwvzMvZ658FhCNDgbdIzfhQwyMxxFZaOQj4VkJWA7kNu6/
+         FGKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=K2T5hXZ28GqFjDQWKXNnzayNSQkWAA4ayrA9/eIoHIk=;
-        b=c5zO7F1/8VZxceI8AHpDT/WjyeeeLg6RcTDCPgQsODu2D6hW1aOsWNSQ9A8pnwHmNL
-         egzJO5NcjxT4OhVsBFET1uIY1OlIPgr4tajxDDjh8HIGuZaiUHzJtdpEGrktToDyvasQ
-         tYLCN1jcm1cjgUT3fFs7TVOA/Ae/bQmNepu2ogin1aWsDn8hYYg3QcR+tj+mVkawKG62
-         nL6Z0/gqR6gEWADQ6HR5cjrz17JiAHrzxOxJWPyEfnEGkOZoK1RWTStQIJnQs03BBGuy
-         Uu6IHUQrDW3Bpm8+8HcIQjnn3Piw5CIn90yoD35c2WoNxwOqYPdMmRqwRtK4bKmdSP3k
-         nZbQ==
-X-Gm-Message-State: APjAAAV7BTpqSOS5zBRQ06jonVzLbO31rYKr2E2oyoWDWZfgoC6w7TWL
-        oaI2vD1CkdMOJZdtnepGXwsp/3WqYS84WouklEc=
-X-Google-Smtp-Source: APXvYqxXMpdpp/7OzarEqZ8xGCio3PDPPIctuqs1PADOnXX2pUlVTIkJp3otcLCkxittg89fOlESkG1r20Y9Mrv5vzs=
-X-Received: by 2002:a67:d082:: with SMTP id s2mr18848597vsi.96.1563297277785;
- Tue, 16 Jul 2019 10:14:37 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=R8MXJuGF3VOe2xZoC5VvvRqzCcRzeJc9EL52ma0h3wk=;
+        b=ljB46PFgiiUiEk1KDcPtns4MxJ4MI6vEweHdUS/vy4uqFGZweSi4uQ1tmmNwBns0uw
+         tUSM62rATo7roju+qQ4FlWYCQn0wQ4uAQ+r/8jZI3kwDv6d1UgjDIstzW5ftw6LpHnwE
+         jKubvyKIIkTJsDexJpmsNS+vFUfEFXhElsmmxEYSx838TnS8+1FeQeqGgWpPs/eN79o5
+         g77zuxCmRf+cI1SC5henWacAdXNhcg5X1ACXcXfKttXKyWTkmzT9ydJfMLQUaPHNbMJS
+         FjqTjkR0MIe6lCbOClROcthSn+R0A6R6aT7RK8mbGDAy+LfAqkP++BqOeGQ2vtsElVm7
+         7HhQ==
+X-Gm-Message-State: APjAAAVBzjtaVGjbNLQ5fRvw1GKWtxnxjHZ4ksivSs7s67IA8ha6I5CA
+        DLYXD/9F4MV8Pe35sp67Lyavbf5NYRXU5dtm3V0=
+X-Google-Smtp-Source: APXvYqw4H6ZI+T2+e3De+4DO8KgkxjwHTwxXoh/MhCemQNhZu+srPj2SGa6XVYN/IWVGfNmJGjFtdtVlnBHZKSXB7qc=
+X-Received: by 2002:a9d:6256:: with SMTP id i22mr3583179otk.139.1563298288252;
+ Tue, 16 Jul 2019 10:31:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1562359091.git.a.s.protopopov@gmail.com>
- <e183c0af99056f8ea4de06acb358ace7f3a3d6ae.1562359091.git.a.s.protopopov@gmail.com>
- <734dd45a-95b0-a7fd-9e1d-0535ef4d3e12@iogearbox.net> <CAEf4BzaGGVv2z8jB8MnT7=gnn4nG0cp7DGYxfnnnpohOT=ujCA@mail.gmail.com>
- <CAGn_itw=BqWXn7ibg6M7j4r2T5CMo0paBhBoQQv7b+x7D2g2ww@mail.gmail.com> <CAEf4BzYaiH_GhSJJjkGv4dGF7CbBrusTyShPP9DXvXjCLcmK+w@mail.gmail.com>
-In-Reply-To: <CAEf4BzYaiH_GhSJJjkGv4dGF7CbBrusTyShPP9DXvXjCLcmK+w@mail.gmail.com>
-From:   Anton Protopopov <a.s.protopopov@gmail.com>
-Date:   Tue, 16 Jul 2019 13:14:26 -0400
-Message-ID: <CAGn_itxPjTEHsnBik+KPxc+EGh5fT670nD=u_xZXBzBZq2jrvQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf, libbpf: add a new API bpf_object__reuse_maps()
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>
+References: <20190716035704.948081-1-andriin@fb.com>
+In-Reply-To: <20190716035704.948081-1-andriin@fb.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Tue, 16 Jul 2019 19:31:17 +0200
+Message-ID: <CAJ8uoz03xFA4TW7GNmLAw_A0wMjHUjYU2rG3pRWsEX-sAX8BFw@mail.gmail.com>
+Subject: Re: [PATCH bpf] libbpf: fix another GCC8 warning for strncpy
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        kernel-team@fb.com, Magnus Karlsson <magnus.karlsson@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-=D0=B2=D1=82, 9 =D0=B8=D1=8E=D0=BB. 2019 =D0=B3. =D0=B2 13:40, Andrii Nakry=
-iko <andrii.nakryiko@gmail.com>:
+On Tue, Jul 16, 2019 at 5:59 AM Andrii Nakryiko <andriin@fb.com> wrote:
 >
-> On Mon, Jul 8, 2019 at 1:37 PM Anton Protopopov
-> <a.s.protopopov@gmail.com> wrote:
-> >
-> > =D0=BF=D0=BD, 8 =D0=B8=D1=8E=D0=BB. 2019 =D0=B3. =D0=B2 13:54, Andrii N=
-akryiko <andrii.nakryiko@gmail.com>:
-> > >
-> > > On Fri, Jul 5, 2019 at 2:53 PM Daniel Borkmann <daniel@iogearbox.net>=
- wrote:
-> > > >
-> > > > On 07/05/2019 10:44 PM, Anton Protopopov wrote:
-> > > > > Add a new API bpf_object__reuse_maps() which can be used to repla=
-ce all maps in
-> > > > > an object by maps pinned to a directory provided in the path argu=
-ment.  Namely,
-> > > > > each map M in the object will be replaced by a map pinned to path=
-/M.name.
-> > > > >
-> > > > > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
-> > > > > ---
-> > > > >  tools/lib/bpf/libbpf.c   | 34 ++++++++++++++++++++++++++++++++++
-> > > > >  tools/lib/bpf/libbpf.h   |  2 ++
-> > > > >  tools/lib/bpf/libbpf.map |  1 +
-> > > > >  3 files changed, 37 insertions(+)
-> > > > >
-> > > > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > > > index 4907997289e9..84c9e8f7bfd3 100644
-> > > > > --- a/tools/lib/bpf/libbpf.c
-> > > > > +++ b/tools/lib/bpf/libbpf.c
-> > > > > @@ -3144,6 +3144,40 @@ int bpf_object__unpin_maps(struct bpf_obje=
-ct *obj, const char *path)
-> > > > >       return 0;
-> > > > >  }
-> > > > >
-> > > > > +int bpf_object__reuse_maps(struct bpf_object *obj, const char *p=
-ath)
-> > >
-> > > As is, bpf_object__reuse_maps() can be easily implemented by user
-> > > applications, as it's only using public libbpf APIs, so I'm not 100%
-> > > sure we need to add method like that to libbpf.
-> >
-> > The bpf_object__reuse_maps() can definitely be implemented by user
-> > applications, however, to use it a user also needs to re-implement the
-> > bpf_prog_load_xattr funciton, so it seemed to me that adding this
-> > functionality to the library is a better way.
->
-> I'm still not convinced. Looking at bpf_prog_load_xattr, I think some
-> of what it's doing should be part of bpf_object__object_xattr anyway
-> (all the expected type setting for programs).
->
-> Besides that, there isn't much more than just bpf_object__open and
-> bpf_object__load, to be honest. By doing open and load explicitly,
-> user gets an opportunity to do whatever adjustment they need: reuse
-> maps, adjust map sizes, etc. So I think we should improve
-> bpf_object__open to "guess" program attach types and add map
-> definition flags to allow reuse declaratively.
->
->
-> >
-> > >
-> > > > > +{
-> > > > > +     struct bpf_map *map;
-> > > > > +
-> > > > > +     if (!obj)
-> > > > > +             return -ENOENT;
-> > > > > +
-> > > > > +     if (!path)
-> > > > > +             return -EINVAL;
-> > > > > +
-> > > > > +     bpf_object__for_each_map(map, obj) {
-> > > > > +             int len, err;
-> > > > > +             int pinned_map_fd;
-> > > > > +             char buf[PATH_MAX];
-> > > >
-> > > > We'd need to skip the case of bpf_map__is_internal(map) since they =
-are always
-> > > > recreated for the given object.
-> > > >
-> > > > > +             len =3D snprintf(buf, PATH_MAX, "%s/%s", path, bpf_=
-map__name(map));
-> > > > > +             if (len < 0) {
-> > > > > +                     return -EINVAL;
-> > > > > +             } else if (len >=3D PATH_MAX) {
-> > > > > +                     return -ENAMETOOLONG;
-> > > > > +             }
-> > > > > +
-> > > > > +             pinned_map_fd =3D bpf_obj_get(buf);
-> > > > > +             if (pinned_map_fd < 0)
-> > > > > +                     return pinned_map_fd;
-> > > >
-> > > > Should we rather have a new map definition attribute that tells to =
-reuse
-> > > > the map if it's pinned in bpf fs, and if not, we create it and late=
-r on
-> > > > pin it? This is what iproute2 is doing and which we're making use o=
-f heavily.
-> > >
-> > > I'd like something like that as well. This would play nicely with
-> > > recently added BTF-defined maps as well.
-> > >
-> > > I think it should be not just pin/don't pin flag, but rather pinning
-> > > strategy, to accommodate various typical strategies of handling maps
-> > > that are already pinned. So something like this:
-> > >
-> > > 1. BPF_PIN_NOTHING - default, don't pin;
-> > > 2. BPF_PIN_EXCLUSIVE - pin, but if map is already pinned - fail;
-> > > 3. BPF_PIN_SET - pin; if existing map exists, reset its state to be
-> > > exact state of object's map;
-> > > 4. BPF_PIN_MERGE - pin, if map exists, fill in NULL entries only (thi=
-s
-> > > is how Cilium is pinning PROG_ARRAY maps, if I understand correctly);
-> > > 5. BPF_PIN_MERGE_OVERWRITE - pin, if map exists, overwrite non-NULL v=
-alues.
-> > >
-> > > This list is only for illustrative purposes, ideally people that have
-> > > a lot of experience using pinning for real-world use cases would chim=
-e
-> > > in on what strategies are useful and make sense.
-> >
-> > My case was simply to reuse existing maps when reloading a program.
-> > Does it make sense for you to add only the simplest cases of listed abo=
-ve?
->
-> Of course, it's enum, so we can start with few clearly useful ones and
-> then expand more if we ever have a need. But I think we still need a
-> bit wider discussion and let people who use pinning to chime in.
->
-> >
-> > Also, libbpf doesn't use standard naming conventions for pinning maps.
->
-> We talked about this in another thread related to BTF-defined maps. I
-> think the way to go with this is to actually define a default pinning
-> root path, but allow to override it on bpf_object__open, if user needs
-> a different one.
->
-> > Does it make sense to provide a list of already open maps to the
-> > bpf_prog_load_xattr function as an attribute? In this case a user
-> > can execute his own policy on pinning, but still will have an option
-> > to reuse, reset, and merge maps.
->
-> As explained above, I don't think there isn't much added value in
-> bpf_prog_load, so I'd advise to just switch to explicit
-> bpf_object__open + bpf_object__load and get maximum control and
-> flexibility.
+> Similar issue was fixed in cdfc7f888c2a ("libbpf: fix GCC8 warning for
+> strncpy") already. This one was missed. Fixing now.
 
-Thanks for your comments. I can see now that using
-bpf_object__open/bpf_object__load makes better sense.
+Thanks Andrii.
 
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+
+> Cc: Magnus Karlsson <magnus.karlsson@intel.com>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
+>  tools/lib/bpf/xsk.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> >
-> > >
-> > > > In bpf_object__reuse_maps() bailing out if bpf_obj_get() fails is p=
-erhaps
-> > > > too limiting for a generic API as new version of an object file may=
- contain
-> > > > new maps which are not yet present in bpf fs at that point.
-> > > >
-> > > > > +             err =3D bpf_map__reuse_fd(map, pinned_map_fd);
-> > > > > +             if (err)
-> > > > > +                     return err;
-> > > > > +     }
-> > > > > +
-> > > > > +     return 0;
-> > > > > +}
-> > > > > +
-> > > > >  int bpf_object__pin_programs(struct bpf_object *obj, const char =
-*path)
-> > > > >  {
-> > > > >       struct bpf_program *prog;
-> > > > > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> > > > > index d639f47e3110..7fe465a1be76 100644
-> > > > > --- a/tools/lib/bpf/libbpf.h
-> > > > > +++ b/tools/lib/bpf/libbpf.h
-> > > > > @@ -82,6 +82,8 @@ int bpf_object__variable_offset(const struct bp=
-f_object *obj, const char *name,
-> > > > >  LIBBPF_API int bpf_object__pin_maps(struct bpf_object *obj, cons=
-t char *path);
-> > > > >  LIBBPF_API int bpf_object__unpin_maps(struct bpf_object *obj,
-> > > > >                                     const char *path);
-> > > > > +LIBBPF_API int bpf_object__reuse_maps(struct bpf_object *obj,
-> > > > > +                                   const char *path);
-> > > > >  LIBBPF_API int bpf_object__pin_programs(struct bpf_object *obj,
-> > > > >                                       const char *path);
-> > > > >  LIBBPF_API int bpf_object__unpin_programs(struct bpf_object *obj=
-,
-> > > > > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> > > > > index 2c6d835620d2..66a30be6696c 100644
-> > > > > --- a/tools/lib/bpf/libbpf.map
-> > > > > +++ b/tools/lib/bpf/libbpf.map
-> > > > > @@ -172,5 +172,6 @@ LIBBPF_0.0.4 {
-> > > > >               btf_dump__new;
-> > > > >               btf__parse_elf;
-> > > > >               bpf_object__load_xattr;
-> > > > > +             bpf_object__reuse_maps;
-> > > > >               libbpf_num_possible_cpus;
-> > > > >  } LIBBPF_0.0.3;
-> > > > >
-> > > >
+> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> index b33740221b7e..5007b5d4fd2c 100644
+> --- a/tools/lib/bpf/xsk.c
+> +++ b/tools/lib/bpf/xsk.c
+> @@ -517,7 +517,8 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
+>                 err = -errno;
+>                 goto out_socket;
+>         }
+> -       strncpy(xsk->ifname, ifname, IFNAMSIZ);
+> +       strncpy(xsk->ifname, ifname, IFNAMSIZ - 1);
+> +       xsk->ifname[IFNAMSIZ - 1] = '\0';
+>
+>         err = xsk_set_xdp_socket_config(&xsk->config, usr_config);
+>         if (err)
+> --
+> 2.17.1
+>
