@@ -2,153 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0DC6BA5E
-	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2019 12:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD90E6BC40
+	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2019 14:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbfGQKgl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 17 Jul 2019 06:36:41 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63616 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725873AbfGQKgl (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 17 Jul 2019 06:36:41 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6HAVjkK043781
-        for <bpf@vger.kernel.org>; Wed, 17 Jul 2019 06:36:40 -0400
-Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tt0w1kgvx-1
+        id S1726880AbfGQM0a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Jul 2019 08:26:30 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39746 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726889AbfGQM03 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 17 Jul 2019 08:26:29 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6HCLC3L182222
+        for <bpf@vger.kernel.org>; Wed, 17 Jul 2019 08:26:28 -0400
+Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2tt0bxgrw3-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 17 Jul 2019 06:36:39 -0400
+        for <bpf@vger.kernel.org>; Wed, 17 Jul 2019 08:26:27 -0400
 Received: from localhost
-        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Wed, 17 Jul 2019 11:36:37 +0100
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
-        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        Wed, 17 Jul 2019 13:26:25 +0100
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
+        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 17 Jul 2019 11:36:35 +0100
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6HAaYPA42598592
+        Wed, 17 Jul 2019 13:26:23 +0100
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6HCQMlb62783544
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Jul 2019 10:36:34 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 93008A4055;
-        Wed, 17 Jul 2019 10:36:34 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 66101A4053;
-        Wed, 17 Jul 2019 10:36:34 +0000 (GMT)
-Received: from dyn-9-152-96-15.boeblingen.de.ibm.com (unknown [9.152.96.15])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 17 Jul 2019 10:36:34 +0000 (GMT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [PATCH bpf] bpf: fix narrower loads on s390
+        Wed, 17 Jul 2019 12:26:22 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ED91742041;
+        Wed, 17 Jul 2019 12:26:21 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BB2CF42042;
+        Wed, 17 Jul 2019 12:26:21 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.96.15])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 17 Jul 2019 12:26:21 +0000 (GMT)
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
-In-Reply-To: <98C6AA13-A44D-4FF1-BA73-1BD446BD773A@linux.ibm.com>
-Date:   Wed, 17 Jul 2019 12:36:34 +0200
-Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        gor@linux.ibm.com, heiko.carstens@de.ibm.com
-Content-Transfer-Encoding: 8BIT
-References: <20190716115910.23093-1-iii@linux.ibm.com>
- <CAH3MdRWGVDjW8cA9EbnFjK8ko1EqeyDyC_LoRTsxhLsYn1fZtw@mail.gmail.com>
- <CAH3MdRU-u1Gn6uj2D=mzXvdC2RDWas3Ec0QXObKsLac1GwuREQ@mail.gmail.com>
- <98C6AA13-A44D-4FF1-BA73-1BD446BD773A@linux.ibm.com>
-To:     Y Song <ys114321@gmail.com>
-X-Mailer: Apple Mail (2.3445.9.1)
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     gor@linux.ibm.com, heiko.carstens@de.ibm.com,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf] selftests/bpf: fix test_xdp_noinline on s390
+Date:   Wed, 17 Jul 2019 14:26:20 +0200
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-x-cbid: 19071710-0016-0000-0000-00000293A12A
+x-cbid: 19071712-0008-0000-0000-000002FE5109
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19071710-0017-0000-0000-000032F17815
-Message-Id: <4311B5C3-8D1B-4958-9CDE-450662A7851D@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-17_03:,,
+x-cbparentid: 19071712-0009-0000-0000-0000226BCB84
+Message-Id: <20190717122620.58792-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-17_05:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
+ malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=988 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907170128
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907170151
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Am 17.07.2019 um 11:21 schrieb Ilya Leoshkevich <iii@linux.ibm.com>:
-> 
->> Am 17.07.2019 um 07:11 schrieb Y Song <ys114321@gmail.com>:
->> 
->> [sorry, resend again as previous one has come text messed out due to
->> networking issues]
->> 
->> On Tue, Jul 16, 2019 at 10:08 PM Y Song <ys114321@gmail.com> wrote:
->>> 
->>> On Tue, Jul 16, 2019 at 4:59 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
->>>> 
->>>> test_pkt_md_access is failing on s390, since the associated eBPF prog
->>>> returns TC_ACT_SHOT, which in turn happens because loading a part of a
->>>> struct __sk_buff field produces an incorrect result.
->>>> 
->>>> The problem is that when verifier emits the code to replace partial load
->>>> of a field with a full load, a shift and a bitwise AND, it assumes that
->>>> the machine is little endian.
->>>> 
->>>> Adjust shift count calculation to account for endianness.
->>>> 
->>>> Fixes: 31fd85816dbe ("bpf: permits narrower load from bpf program context fields")
->>>> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
->>>> ---
->>>> kernel/bpf/verifier.c | 8 ++++++--
->>>> 1 file changed, 6 insertions(+), 2 deletions(-)
->>>> 
->>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>>> index 5900cbb966b1..3f9353653558 100644
->>>> --- a/kernel/bpf/verifier.c
->>>> +++ b/kernel/bpf/verifier.c
->>>> @@ -8616,8 +8616,12 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
->>>>               }
->>>> 
->>>>               if (is_narrower_load && size < target_size) {
->>>> -                       u8 shift = (off & (size_default - 1)) * 8;
->>>> -
->>>> +                       u8 load_off = off & (size_default - 1);
->>>> +#ifdef __LITTLE_ENDIAN
->>>> +                       u8 shift = load_off * 8;
->>>> +#else
->>>> +                       u8 shift = (size_default - (load_off + size)) * 8;
->>>> +#endif
->>> 
->> All the values are in register. The shifting operations should be the
->> same for big endian and little endian, e.g., value 64 >> 2 = 16 when
->> value "64" is in register. So I did not see a problem here.
->> 
->> Could you elaborate which field access in test_pkt_md_access
->> caused problem?
-> 
-> The very first one: TEST_FIELD(__u8,  len, 0xFF);
-> 
->> It would be good if you can give detailed memory layout and register values
->> to illustrate the problem.
-> 
-> Suppose len = 0x11223344. On a big endian system, this would be
-> 
-> 11 22 33 44
-> 
-> Now, we would like to do *(u8 *)&len, the desired result is 0x11.
-> Verifier should emit the following: ((*(u32 *)&len) >> 24) & 0xff, but as
-> of today it misses the shift.
-> 
-> On a little endian system the layout is:
-> 
-> 44 33 22 11
-> 
-> and the desired result is different - 0x44. Verifier correctly emits
-> (*(u32 *)&len) & 0xff.
+test_xdp_noinline fails on s390 due to a handful of endianness issues.
+Use ntohs for parsing eth_proto.
+Replace bswaps with ntohs/htons.
 
-I’ve just realized, that this example does not reflect what the test is
-doing on big-endian systems (there is an #ifdef for those).
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Acked-by: Vasily Gorbik <gor@linux.ibm.com>
+---
+ .../selftests/bpf/progs/test_xdp_noinline.c     | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-Here is a better one: len=0x11223344 and we would like to do
-((u8 *)&len)[3].
+diff --git a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
+index dad8a7e33eaa..e88d7b9d65ab 100644
+--- a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
++++ b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
+@@ -14,6 +14,7 @@
+ #include <linux/tcp.h>
+ #include <linux/udp.h>
+ #include "bpf_helpers.h"
++#include "bpf_endian.h"
+ 
+ static __u32 rol32(__u32 word, unsigned int shift)
+ {
+@@ -305,7 +306,7 @@ bool encap_v6(struct xdp_md *xdp, struct ctl_value *cval,
+ 	ip6h->nexthdr = IPPROTO_IPV6;
+ 	ip_suffix = pckt->flow.srcv6[3] ^ pckt->flow.port16[0];
+ 	ip6h->payload_len =
+-	    __builtin_bswap16(pkt_bytes + sizeof(struct ipv6hdr));
++	    bpf_htons(pkt_bytes + sizeof(struct ipv6hdr));
+ 	ip6h->hop_limit = 4;
+ 
+ 	ip6h->saddr.in6_u.u6_addr32[0] = 1;
+@@ -322,7 +323,7 @@ bool encap_v4(struct xdp_md *xdp, struct ctl_value *cval,
+ 	      struct real_definition *dst, __u32 pkt_bytes)
+ {
+ 
+-	__u32 ip_suffix = __builtin_bswap16(pckt->flow.port16[0]);
++	__u32 ip_suffix = bpf_ntohs(pckt->flow.port16[0]);
+ 	struct eth_hdr *new_eth;
+ 	struct eth_hdr *old_eth;
+ 	__u16 *next_iph_u16;
+@@ -352,7 +353,7 @@ bool encap_v4(struct xdp_md *xdp, struct ctl_value *cval,
+ 	iph->protocol = IPPROTO_IPIP;
+ 	iph->check = 0;
+ 	iph->tos = 1;
+-	iph->tot_len = __builtin_bswap16(pkt_bytes + sizeof(struct iphdr));
++	iph->tot_len = bpf_htons(pkt_bytes + sizeof(struct iphdr));
+ 	/* don't update iph->daddr, since it will overwrite old eth_proto
+ 	 * and multiple iterations of bpf_prog_run() will fail
+ 	 */
+@@ -639,7 +640,7 @@ static int process_l3_headers_v6(struct packet_description *pckt,
+ 	iph_len = sizeof(struct ipv6hdr);
+ 	*protocol = ip6h->nexthdr;
+ 	pckt->flow.proto = *protocol;
+-	*pkt_bytes = __builtin_bswap16(ip6h->payload_len);
++	*pkt_bytes = bpf_ntohs(ip6h->payload_len);
+ 	off += iph_len;
+ 	if (*protocol == 45) {
+ 		return XDP_DROP;
+@@ -671,7 +672,7 @@ static int process_l3_headers_v4(struct packet_description *pckt,
+ 		return XDP_DROP;
+ 	*protocol = iph->protocol;
+ 	pckt->flow.proto = *protocol;
+-	*pkt_bytes = __builtin_bswap16(iph->tot_len);
++	*pkt_bytes = bpf_ntohs(iph->tot_len);
+ 	off += 20;
+ 	if (iph->frag_off & 65343)
+ 		return XDP_DROP;
+@@ -808,10 +809,10 @@ int balancer_ingress(struct xdp_md *ctx)
+ 	nh_off = sizeof(struct eth_hdr);
+ 	if (data + nh_off > data_end)
+ 		return XDP_DROP;
+-	eth_proto = eth->eth_proto;
+-	if (eth_proto == 8)
++	eth_proto = bpf_ntohs(eth->eth_proto);
++	if (eth_proto == ETH_P_IP)
+ 		return process_packet(data, nh_off, data_end, 0, ctx);
+-	else if (eth_proto == 56710)
++	else if (eth_proto == ETH_P_IPV6)
+ 		return process_packet(data, nh_off, data_end, 1, ctx);
+ 	else
+ 		return XDP_DROP;
+-- 
+2.21.0
 
-len is represented as `11 22 33 44` in memory, so the desired result is
-0x44. It can be obtained by doing (*(u32 *)&len) & 0xff, but today the
-verifier does ((*(u32 *)&len) >> 24) & 0xff instead.
