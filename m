@@ -2,141 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB6E6B7F4
-	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2019 10:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CA26B8F7
+	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2019 11:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728016AbfGQIPI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Jul 2019 04:15:08 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:34391 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726166AbfGQIPH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Jul 2019 04:15:07 -0400
-Received: by mail-pf1-f196.google.com with SMTP id b13so10458869pfo.1
-        for <bpf@vger.kernel.org>; Wed, 17 Jul 2019 01:15:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/f7OgW0o9ZNPt/YPHVcf8OqBFwXKG1xblF9Y+OGzR2k=;
-        b=sl76CQFtTSyOEUptCth+jHwbMqlZmCIAocfmi0GCg+JJXWyhblEVpA2LXBPnuKd3ay
-         8nobOMYKh5otbxtdX3YNfmnKOeno4Ghi3VtlQ+Sh7sMHvb2gub4hQuu+m5rnzcwgf4jg
-         Hv06Kxh5DjiVaGX3sqyMbOwiK9DNVgQQuX+Ak/IR8xafBC0k8Kxbfvr6JRExUVZ81lbQ
-         pfyNhfLDli3+ak7+l29GxDmLl1SAKj0e1iEnSbcN7jw08+H7e6B6yBD5WAXdWRTe71/s
-         mToP0O/aoAyYNCf1qq+4q5xIT4z29Wh+e0Ezt9LZjSzIgd7xJL7Nd00q0vB4RAW7K1xp
-         9xlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/f7OgW0o9ZNPt/YPHVcf8OqBFwXKG1xblF9Y+OGzR2k=;
-        b=DmbpSj//dT/pstnGEDOx8+2iGKDydDovzFflPOdjx9/P3N//BZh30txUYoFlJVth3j
-         WlXaVNulkum+XjmEbYCxJJN+gqBgJEUZ4KL4Ugl+Ygo+qksWAVdsj2CeLRixgxej6N9Q
-         k0zP67bcZqXmYpeLWyWu1wxMhTbQd7PQTzRZAPjVez2HJ0ZL42ivUJ+4p3YDHZJZtkr3
-         cJASJsMxqJpTWnYlF036yxdjL6+izl0CxLmYYF3P5RZIuI92KBOa12HRffKvB7ZCD+bH
-         XPbwlItOre3ShGjOeVU6HkB1EZXqWvDUVt1tpc4vIjOHPxnsM7R3DTkapTj13u5F0VvS
-         0ZMg==
-X-Gm-Message-State: APjAAAWqDEQvA04xc05DuwXR0rAXG/C6SQoElj3j2JfyOi3mR5HVIekM
-        2HwZ3d7IONRMKpvp6ivVq4nv/g==
-X-Google-Smtp-Source: APXvYqzgdiIVllIB6gK3z9eWoDbarHp7QJmWt/6467XBsUeepEGOHlQwrRVdLlQz0IiaL2qSMN0sWA==
-X-Received: by 2002:a65:518a:: with SMTP id h10mr39032287pgq.117.1563351307012;
-        Wed, 17 Jul 2019 01:15:07 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s (li1433-81.members.linode.com. [45.33.106.81])
-        by smtp.gmail.com with ESMTPSA id a6sm21429043pjs.31.2019.07.17.01.15.02
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 17 Jul 2019 01:15:06 -0700 (PDT)
-Date:   Wed, 17 Jul 2019 16:14:56 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Justin He <Justin.He@arm.com>
-Subject: Re: [PATCH 0/2] arm/arm64: Add support for function error injection
-Message-ID: <20190717081456.GB20476@leoy-ThinkPad-X240s>
-References: <20190716111301.1855-1-leo.yan@linaro.org>
- <20190717165222.62e02b99ebc16e23c3b81de2@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190717165222.62e02b99ebc16e23c3b81de2@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726391AbfGQJKI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 17 Jul 2019 05:10:08 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41654 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725948AbfGQJKI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 17 Jul 2019 05:10:08 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6H97tQd113180
+        for <bpf@vger.kernel.org>; Wed, 17 Jul 2019 05:10:06 -0400
+Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2tsytgaxxs-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 17 Jul 2019 05:10:06 -0400
+Received: from localhost
+        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Wed, 17 Jul 2019 10:10:04 +0100
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
+        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 17 Jul 2019 10:10:02 +0100
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6H9A1Y039059480
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Jul 2019 09:10:01 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9643611C066;
+        Wed, 17 Jul 2019 09:10:01 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5DB3C11C052;
+        Wed, 17 Jul 2019 09:10:01 +0000 (GMT)
+Received: from dyn-9-152-96-15.boeblingen.de.ibm.com (unknown [9.152.96.15])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 17 Jul 2019 09:10:01 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Subject: Re: [PATCH bpf] selftests/bpf: make directory prerequisites
+ order-only
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+In-Reply-To: <CAADnVQKzZQ_mbaMHEU6HA-JEy=1jXvBWULg8yKQY_2zwSmU86g@mail.gmail.com>
+Date:   Wed, 17 Jul 2019 11:10:01 +0200
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Content-Transfer-Encoding: 8BIT
+References: <20190712135631.91398-1-iii@linux.ibm.com>
+ <a3823fec-3816-9c38-bb2d-a8391766e64d@iogearbox.net>
+ <CAADnVQKzZQ_mbaMHEU6HA-JEy=1jXvBWULg8yKQY_2zwSmU86g@mail.gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+X-Mailer: Apple Mail (2.3445.9.1)
+X-TM-AS-GCONF: 00
+x-cbid: 19071709-0008-0000-0000-000002FE4348
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19071709-0009-0000-0000-0000226BBD1F
+Message-Id: <FEFC7321-F112-4194-AF5E-0C237F351A04@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-17_03:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907170110
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 17, 2019 at 04:52:22PM +0900, Masami Hiramatsu wrote:
-> On Tue, 16 Jul 2019 19:12:59 +0800
-> Leo Yan <leo.yan@linaro.org> wrote:
+> Am 16.07.2019 um 19:49 schrieb Alexei Starovoitov <alexei.starovoitov@gmail.com>:
 > 
-> > This small patch set is to add support for function error injection;
-> > this can be used to eanble more advanced debugging feature, e.g.
-> > CONFIG_BPF_KPROBE_OVERRIDE.
-> > 
-> > I only tested the first patch on arm64 platform Juno-r2 with below
-> > steps; the second patch is for arm arch, but I absent the platform
-> > for the testing so only pass compilation.
-> > 
-> > - Enable kernel configuration:
-> >   CONFIG_BPF_KPROBE_OVERRIDE
-> >   CONFIG_BTRFS_FS
-> >   CONFIG_BPF_EVENTS=y
-> >   CONFIG_KPROBES=y
-> >   CONFIG_KPROBE_EVENTS=y
-> >   CONFIG_BPF_KPROBE_OVERRIDE=y
-> > - Build samples/bpf on Juno-r2 board with Debian rootFS:
-> >   # cd $kernel
-> >   # make headers_install
-> >   # make samples/bpf/ LLC=llc-7 CLANG=clang-7
-> > - Run the sample tracex7:
-> >   # ./tracex7 /dev/sdb1
-> >   [ 1975.211781] BTRFS error (device (efault)): open_ctree failed
-> >   mount: /mnt/linux-kernel/linux-cs-dev/samples/bpf/tmpmnt: mount(2) system call failed: Cannot allocate memory.
+> On Mon, Jul 15, 2019 at 3:22 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> 
+>> On 7/12/19 3:56 PM, Ilya Leoshkevich wrote:
+>>> When directories are used as prerequisites in Makefiles, they can cause
+>>> a lot of unnecessary rebuilds, because a directory is considered changed
+>>> whenever a file in this directory is added, removed or modified.
+>>> 
+>>> If the only thing a target is interested in is the existence of the
+>>> directory it depends on, which is the case for selftests/bpf, this
+>>> directory should be specified as an order-only prerequisite: it would
+>>> still be created in case it does not exist, but it would not trigger a
+>>> rebuild of a target in case it's considered changed.
+>>> 
+>>> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+>> 
+>> Applied, thanks!
 > 
-> This series looks good to me from the view point of override usage :)
+> Hi Ilya,
 > 
-> Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-> 
-> For this series.
-> 
-> Thank you,
+> this commit breaks map_tests.
+> To reproduce:
+> rm map_tests/tests.h
+> make
+> tests.h will not be regenerated.
+> Please provide a fix asap.
+> We cannot ship bpf tree with such failure.
 
-Thank you for reviewing, Masami.
+Hi Alexei,
 
-> > 
-> > 
-> > Leo Yan (2):
-> >   arm64: Add support for function error injection
-> >   arm: Add support for function error injection
-> > 
-> >  arch/arm/Kconfig                         |  1 +
-> >  arch/arm/include/asm/error-injection.h   | 13 +++++++++++++
-> >  arch/arm/include/asm/ptrace.h            |  5 +++++
-> >  arch/arm/lib/Makefile                    |  2 ++
-> >  arch/arm/lib/error-inject.c              | 19 +++++++++++++++++++
-> >  arch/arm64/Kconfig                       |  1 +
-> >  arch/arm64/include/asm/error-injection.h | 13 +++++++++++++
-> >  arch/arm64/include/asm/ptrace.h          |  5 +++++
-> >  arch/arm64/lib/Makefile                  |  2 ++
-> >  arch/arm64/lib/error-inject.c            | 19 +++++++++++++++++++
-> >  10 files changed, 80 insertions(+)
-> >  create mode 100644 arch/arm/include/asm/error-injection.h
-> >  create mode 100644 arch/arm/lib/error-inject.c
-> >  create mode 100644 arch/arm64/include/asm/error-injection.h
-> >  create mode 100644 arch/arm64/lib/error-inject.c
-> > 
-> > -- 
-> > 2.17.1
-> > 
-> 
-> 
-> -- 
-> Masami Hiramatsu <mhiramat@kernel.org>
+Sorry about this! I actually had the following in my local tree:
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index f1f2b82b8fb8..95795cf5805c 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -231,7 +231,7 @@ ifeq ($(DWARF2BTF),y)
+ endif
+
+ PROG_TESTS_H := $(OUTPUT)/prog_tests/tests.h
+-test_progs.c: $(PROG_TESTS_H)
++$(OUTPUT)/test_progs: $(PROG_TESTS_H)
+ $(OUTPUT)/test_progs: CFLAGS += $(TEST_PROGS_CFLAGS)
+ $(OUTPUT)/test_progs: prog_tests/*.c
+
+@@ -258,7 +258,7 @@ MAP_TESTS_DIR = $(OUTPUT)/map_tests
+ $(MAP_TESTS_DIR):
+ <------>mkdir -p $@
+ MAP_TESTS_H := $(MAP_TESTS_DIR)/tests.h
+-test_maps.c: $(MAP_TESTS_H)
++$(OUTPUT)/test_maps: $(MAP_TESTS_H)
+ $(OUTPUT)/test_maps: CFLAGS += $(TEST_MAPS_CFLAGS)
+ MAP_TESTS_FILES := $(wildcard map_tests/*.c)
+ $(MAP_TESTS_H): $(MAP_TESTS_FILES) | $(MAP_TESTS_DIR)
+@@ -275,7 +275,7 @@ $(MAP_TESTS_H): $(MAP_TESTS_FILES) | $(MAP_TESTS_DIR)
+ <------><------> ) > $(MAP_TESTS_H))
+
+ VERIFIER_TESTS_H := $(OUTPUT)/verifier/tests.h
+-test_verifier.c: $(VERIFIER_TESTS_H)
++$(OUTPUT)/test_verifier: $(VERIFIER_TESTS_H)
+ $(OUTPUT)/test_verifier: CFLAGS += $(TEST_VERIFIER_CFLAGS)
+
+ VERIFIER_TESTS_DIR = $(OUTPUT)/verifier
+
+but did not realise that this is a pre-requisite for my directories change.
+I should have tested it separately, then I would have noticed.
+
+Andrii,
+Thanks for helping out and providing the fix!
+
+Best regards,
+Ilya
