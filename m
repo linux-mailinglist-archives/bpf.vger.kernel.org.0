@@ -2,137 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37EF46BCB7
-	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2019 15:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6D26BF93
+	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2019 18:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbfGQNBX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Jul 2019 09:01:23 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:33265 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725980AbfGQNBW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Jul 2019 09:01:22 -0400
-Received: by mail-pg1-f195.google.com with SMTP id f20so1908135pgj.0
-        for <bpf@vger.kernel.org>; Wed, 17 Jul 2019 06:01:22 -0700 (PDT)
+        id S1726620AbfGQQ0A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Jul 2019 12:26:00 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:34762 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726081AbfGQQ0A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Jul 2019 12:26:00 -0400
+Received: by mail-io1-f67.google.com with SMTP id k8so46774822iot.1;
+        Wed, 17 Jul 2019 09:25:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/2kZjQOSWU81kHquRCCTS3R2h91VV4bpIT1uTfaQV5o=;
-        b=af1ZzoQSHrqVDDWQrA4VASz5++0JDUGwmcQd31ADjyOhdWK/pICy2eNdyY7iNr5pqV
-         NaPEcXn/twlQE6dChS+rDBe/c9Qno+5OAYnYvg80MvabLRJQ6EOwm2cMF7rJS05j9kSd
-         oZwEH7sW7elIJT6hLNlXxYjzbIuI+PrKdwaWQ=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=q85Vqz3W3GGbylK1esF8kHL+MDaJe7lgEUVgXvvv680=;
+        b=UIZqLy36FrzuqzlSij4fpKHyCDQbyeWmZivDxFkWEHq6TiXCi050zbeQLW+BZ21cCq
+         L//0M6e6DLd9c+44KMMxoX01rjvpVgjJc8kSNT6uNMOZFHqwXLgWaGf7J8gAlYN0TBPf
+         ySMjgAl2sLyKhIBiDlHlih7OV2WUb1PWSGAgZw8j5NrVE88STnXefzpk7FWqfJye9IGp
+         b+u5Ch3Z7YpQmK7zB8TCHps2EAA4DmQKjmho25XfVU9gq3v2m5Ww+LobYQVDUz9ba4Fw
+         y2gPW9/RCpphkL83XWalymMZR9vwhPwXmdvZsRiMPuI6KVOEnDz3J3O8NQhXtP0k2Ayg
+         mFpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/2kZjQOSWU81kHquRCCTS3R2h91VV4bpIT1uTfaQV5o=;
-        b=Xw+/ruyVFc+2vEQnhkiG7y5XHeXvTAhnb0XwaJ4bR1nPYDtiEUl69PfNMI0PLg1ysD
-         2wNysZtatg26wnyXeuypwZvcY8VjaNem0DXwB0GzZEUO3ht355p4mhF62/R+UfTqM8ib
-         6NHQEG7qwAM15qeM/nrJggffArXsKo1oQcYA+DfAwEqSMulBSOliYTVuFwUmLQ3q5/Ng
-         k7+sw3egjRWdGmwj63A1M9WTvhusL/XvcodP9JE55Wnrs8EFbhtz5lLFeUcWmUxBcPUl
-         UCOkzrM0Vy3PFW+CvcjO0ZbeSmJt3F/vL6Hi4VBxrRXNzxG/DWfrR3rmfEutDMBFNH2Y
-         v+CA==
-X-Gm-Message-State: APjAAAUAy+6czQEZevKrl5tx3aP6XQwLbSUpM3cXOZvjuW6XJOUsqjQj
-        ctUg721/JyNDq7Xm9k0ttfU=
-X-Google-Smtp-Source: APXvYqwtWhnOZOF45C6Cr5hs9BpPPXwsXrITYeTQ/PuXCt4p+AvM15okMMCqiFsrp/ZD/fCo3ObANA==
-X-Received: by 2002:a17:90a:8984:: with SMTP id v4mr43650667pjn.133.1563368481782;
-        Wed, 17 Jul 2019 06:01:21 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id l189sm28147054pfl.7.2019.07.17.06.01.20
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 17 Jul 2019 06:01:20 -0700 (PDT)
-Date:   Wed, 17 Jul 2019 09:01:19 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Brendan Gregg <brendan.d.gregg@gmail.com>, connoro@google.com,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        duyuchao <yuchao.du@unisoc.com>, Ingo Molnar <mingo@redhat.com>,
-        jeffv@google.com, Karim Yaghmour <karim.yaghmour@opersys.com>,
-        kernel-team@android.com, linux-kselftest@vger.kernel.org,
-        Manali Shukla <manalishukla14@gmail.com>,
-        Manjo Raja Rao <linux@manojrajarao.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Matt Mullins <mmullins@fb.com>,
-        Michal Gregorczyk <michalgr@fb.com>,
-        Michal Gregorczyk <michalgr@live.com>,
-        Mohammad Husain <russoue@gmail.com>, namhyung@google.com,
-        namhyung@kernel.org, netdev@vger.kernel.org,
-        paul.chaignon@gmail.com, primiano@google.com,
-        Qais Yousef <qais.yousef@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tamir Carmeli <carmeli.tamir@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH RFC 0/4] Add support to directly attach BPF program to
- ftrace
-Message-ID: <20190717130119.GA138030@google.com>
-References: <20190710141548.132193-1-joel@joelfernandes.org>
- <20190716205455.iimn3pqpvsc3k4ry@ast-mbp.dhcp.thefacebook.com>
- <20190716213050.GA161922@google.com>
- <20190716222650.tk2coihjtsxszarf@ast-mbp.dhcp.thefacebook.com>
- <20190716224150.GC172157@google.com>
- <20190716235500.GA199237@google.com>
- <20190717012406.lugqemvubixfdd6v@ast-mbp.dhcp.thefacebook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=q85Vqz3W3GGbylK1esF8kHL+MDaJe7lgEUVgXvvv680=;
+        b=ukCntUIAtWNPd/wltpQwNCURn6sIKovh7aR8cP3GzKw5qj4rcMspoopm877fc6nX9e
+         bHlPfVFjmzjBTxOXJSx6qymvkatirUUNBfIDAAJwFXiHRONtzm05Py8RvwC5O2QB2Ydo
+         g4cEDb8uRGAv6+gt9Ws6PpBaqrvJP3aQtO9OYvshm572vTasepnEEZDwXDvtuZGVG8Am
+         pQnBrI4IPfTRvvulHQAeDRbK8jVl5z/tQHRRA3pVf9TswHT7/2feRhcKiz9SkMJ+CIMv
+         Wdgfg4RDStK+/7JNQ+HW/eXx1CxvZDGcAIHrrW0xWgTs9yClXFodg8nziIXbU98berg2
+         S9lg==
+X-Gm-Message-State: APjAAAXovKHeBcNvLOODf9HNNZmTEe8834h0vLDk2bDwfvGhtaEVQU0d
+        F56yIE3BcAV0pmzkhxvdl2RHwPbgs69MFjb5y31yJ1KS
+X-Google-Smtp-Source: APXvYqwNeyrP61LXt+3XiReh2rpcBk7k2Hir60riIrD3lHk0660TDaWEorO+QAW82L9mtPy2hcFVi3ISWDfPEdKO1IY=
+X-Received: by 2002:a5d:9d58:: with SMTP id k24mr37098017iok.116.1563380759162;
+ Wed, 17 Jul 2019 09:25:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190717012406.lugqemvubixfdd6v@ast-mbp.dhcp.thefacebook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190716115910.23093-1-iii@linux.ibm.com> <CAH3MdRWGVDjW8cA9EbnFjK8ko1EqeyDyC_LoRTsxhLsYn1fZtw@mail.gmail.com>
+ <CAH3MdRU-u1Gn6uj2D=mzXvdC2RDWas3Ec0QXObKsLac1GwuREQ@mail.gmail.com>
+ <98C6AA13-A44D-4FF1-BA73-1BD446BD773A@linux.ibm.com> <4311B5C3-8D1B-4958-9CDE-450662A7851D@linux.ibm.com>
+In-Reply-To: <4311B5C3-8D1B-4958-9CDE-450662A7851D@linux.ibm.com>
+From:   Y Song <ys114321@gmail.com>
+Date:   Wed, 17 Jul 2019 09:25:23 -0700
+Message-ID: <CAH3MdRV-qsJnyZVV1GnxRZ4=3KXTvKSgETp90fyevxycmAiHmA@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: fix narrower loads on s390
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        gor@linux.ibm.com, heiko.carstens@de.ibm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 16, 2019 at 06:24:07PM -0700, Alexei Starovoitov wrote:
-[snip]
-> > > > > I don't see why a new bpf node for a trace event is a bad idea, really.
-> > > > 
-> > > > See the patches for kprobe/uprobe FD-based api and the reasons behind it.
-> > > > tldr: text is racy, doesn't scale, poor security, etc.
-> > > 
-> > > Is it possible to use perf without CAP_SYS_ADMIN and control security at the
-> > > per-event level? We are selective about who can access which event, using
-> > > selinux. That's how our ftrace-based tracers work. Its fine grained per-event
-> > > control. That's where I was going with the tracefs approach since we get that
-> > > granularity using the file system.
-> 
-> android's choice of selinux is not a factor in deciding kernel apis.
-> It's completely separate discusion wether disallowing particular tracepoints
-> for given user make sense at all.
-> Just because you can hack it in via selinux blocking particular
-> /sys/debug/tracing/ directory and convince yourself that it's somehow
-> makes android more secure. It doesn't mean that all new api should fit
-> into this model.
+On Wed, Jul 17, 2019 at 3:36 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>
+> > Am 17.07.2019 um 11:21 schrieb Ilya Leoshkevich <iii@linux.ibm.com>:
+> >
+> >> Am 17.07.2019 um 07:11 schrieb Y Song <ys114321@gmail.com>:
+> >>
+> >> [sorry, resend again as previous one has come text messed out due to
+> >> networking issues]
+> >>
+> >> On Tue, Jul 16, 2019 at 10:08 PM Y Song <ys114321@gmail.com> wrote:
+> >>>
+> >>> On Tue, Jul 16, 2019 at 4:59 AM Ilya Leoshkevich <iii@linux.ibm.com> =
+wrote:
+> >>>>
+> >>>> test_pkt_md_access is failing on s390, since the associated eBPF pro=
+g
+> >>>> returns TC_ACT_SHOT, which in turn happens because loading a part of=
+ a
+> >>>> struct __sk_buff field produces an incorrect result.
+> >>>>
+> >>>> The problem is that when verifier emits the code to replace partial =
+load
+> >>>> of a field with a full load, a shift and a bitwise AND, it assumes t=
+hat
+> >>>> the machine is little endian.
+> >>>>
+> >>>> Adjust shift count calculation to account for endianness.
+> >>>>
+> >>>> Fixes: 31fd85816dbe ("bpf: permits narrower load from bpf program co=
+ntext fields")
+> >>>> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> >>>> ---
+> >>>> kernel/bpf/verifier.c | 8 ++++++--
+> >>>> 1 file changed, 6 insertions(+), 2 deletions(-)
+> >>>>
+> >>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> >>>> index 5900cbb966b1..3f9353653558 100644
+> >>>> --- a/kernel/bpf/verifier.c
+> >>>> +++ b/kernel/bpf/verifier.c
+> >>>> @@ -8616,8 +8616,12 @@ static int convert_ctx_accesses(struct bpf_ve=
+rifier_env *env)
+> >>>>               }
+> >>>>
+> >>>>               if (is_narrower_load && size < target_size) {
+> >>>> -                       u8 shift =3D (off & (size_default - 1)) * 8;
+> >>>> -
+> >>>> +                       u8 load_off =3D off & (size_default - 1);
+> >>>> +#ifdef __LITTLE_ENDIAN
+> >>>> +                       u8 shift =3D load_off * 8;
+> >>>> +#else
+> >>>> +                       u8 shift =3D (size_default - (load_off + siz=
+e)) * 8;
+> >>>> +#endif
+> >>>
+> >> All the values are in register. The shifting operations should be the
+> >> same for big endian and little endian, e.g., value 64 >> 2 =3D 16 when
+> >> value "64" is in register. So I did not see a problem here.
+> >>
+> >> Could you elaborate which field access in test_pkt_md_access
+> >> caused problem?
+> >
+> > The very first one: TEST_FIELD(__u8,  len, 0xFF);
+> >
+> >> It would be good if you can give detailed memory layout and register v=
+alues
+> >> to illustrate the problem.
+> >
+> > Suppose len =3D 0x11223344. On a big endian system, this would be
+> >
+> > 11 22 33 44
+> >
+> > Now, we would like to do *(u8 *)&len, the desired result is 0x11.
+> > Verifier should emit the following: ((*(u32 *)&len) >> 24) & 0xff, but =
+as
+> > of today it misses the shift.
+> >
+> > On a little endian system the layout is:
+> >
+> > 44 33 22 11
+> >
+> > and the desired result is different - 0x44. Verifier correctly emits
+> > (*(u32 *)&len) & 0xff.
+>
+> I=E2=80=99ve just realized, that this example does not reflect what the t=
+est is
+> doing on big-endian systems (there is an #ifdef for those).
+>
+> Here is a better one: len=3D0x11223344 and we would like to do
+> ((u8 *)&len)[3].
+>
+> len is represented as `11 22 33 44` in memory, so the desired result is
+> 0x44. It can be obtained by doing (*(u32 *)&len) & 0xff, but today the
+> verifier does ((*(u32 *)&len) >> 24) & 0xff instead.
 
-Its not like a hack, it is just control of which tracefs node can be
-accessed and which cannot be since the tracing can run on production systems
-out in the field and there are several concerns to address like security,
-privacy etc. It is not just for debugging usecases. We do collect traces out
-in the field where these issues are real and cannot be ignored.
+What you described above for the memory layout all makes sense.
+The root cause is for big endian, we should do *((u8 *)&len + 3).
+This is exactly what macros in test_pkt_md_access.c tries to do.
 
-SELinux model is deny everything, and then selectively grant access to what
-is needed. The VFS and security LSM hooks provide this control quite well. I am
-not sure if such control is possible through perf hence I asked the question.
+if  __BYTE_ORDER__ =3D=3D __ORDER_LITTLE_ENDIAN__
+#define TEST_FIELD(TYPE, FIELD, MASK)                                   \
+        {                                                               \
+                TYPE tmp =3D *(volatile TYPE *)&skb->FIELD;               \
+                if (tmp !=3D ((*(volatile __u32 *)&skb->FIELD) & MASK))   \
+                        return TC_ACT_SHOT;                             \
+        }
+#else
+#define TEST_FIELD_OFFSET(a, b) ((sizeof(a) - sizeof(b)) / sizeof(b))
+#define TEST_FIELD(TYPE, FIELD, MASK)                                   \
+        {                                                               \
+                TYPE tmp =3D *((volatile TYPE *)&skb->FIELD +             \
+                              TEST_FIELD_OFFSET(skb->FIELD, TYPE));     \
+                if (tmp !=3D ((*(volatile __u32 *)&skb->FIELD) & MASK))   \
+                        return TC_ACT_SHOT;                             \
+        }
+#endif
 
-> I think allowing one tracepoint and disallowing another is pointless
-> from security point of view. Tracing bpf program can do bpf_probe_read
-> of anything.
-
-I think the assumption here is the user controls the program instructions at
-runtime, but that's not the case. The BPF program we are loading is not
-dynamically generated, it is built at build time and it is loaded from a
-secure verified partition, so even though it can do bpf_probe_read, it is
-still not something that the user can change. And, we are planning to make it
-even more secure by making it kernel verify the program at load time as well
-(you were on some discussions about that a few months ago).
-
-thanks,
-
- - Joel
-
+Could you check whether your __BYTE_ORDER__ is set
+correctly or not for this case? You may need to tweak Makefile
+if you are doing cross compilation, I am not sure how as I
+did not have environment.
