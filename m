@@ -2,150 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD90E6BC40
-	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2019 14:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EF46BCB7
+	for <lists+bpf@lfdr.de>; Wed, 17 Jul 2019 15:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbfGQM0a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Jul 2019 08:26:30 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39746 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726889AbfGQM03 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 17 Jul 2019 08:26:29 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6HCLC3L182222
-        for <bpf@vger.kernel.org>; Wed, 17 Jul 2019 08:26:28 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2tt0bxgrw3-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 17 Jul 2019 08:26:27 -0400
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Wed, 17 Jul 2019 13:26:25 +0100
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 17 Jul 2019 13:26:23 +0100
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6HCQMlb62783544
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Jul 2019 12:26:22 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ED91742041;
-        Wed, 17 Jul 2019 12:26:21 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BB2CF42042;
-        Wed, 17 Jul 2019 12:26:21 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.152.96.15])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 17 Jul 2019 12:26:21 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     gor@linux.ibm.com, heiko.carstens@de.ibm.com,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf] selftests/bpf: fix test_xdp_noinline on s390
-Date:   Wed, 17 Jul 2019 14:26:20 +0200
-X-Mailer: git-send-email 2.21.0
+        id S1726260AbfGQNBX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Jul 2019 09:01:23 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:33265 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725980AbfGQNBW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Jul 2019 09:01:22 -0400
+Received: by mail-pg1-f195.google.com with SMTP id f20so1908135pgj.0
+        for <bpf@vger.kernel.org>; Wed, 17 Jul 2019 06:01:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=/2kZjQOSWU81kHquRCCTS3R2h91VV4bpIT1uTfaQV5o=;
+        b=af1ZzoQSHrqVDDWQrA4VASz5++0JDUGwmcQd31ADjyOhdWK/pICy2eNdyY7iNr5pqV
+         NaPEcXn/twlQE6dChS+rDBe/c9Qno+5OAYnYvg80MvabLRJQ6EOwm2cMF7rJS05j9kSd
+         oZwEH7sW7elIJT6hLNlXxYjzbIuI+PrKdwaWQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/2kZjQOSWU81kHquRCCTS3R2h91VV4bpIT1uTfaQV5o=;
+        b=Xw+/ruyVFc+2vEQnhkiG7y5XHeXvTAhnb0XwaJ4bR1nPYDtiEUl69PfNMI0PLg1ysD
+         2wNysZtatg26wnyXeuypwZvcY8VjaNem0DXwB0GzZEUO3ht355p4mhF62/R+UfTqM8ib
+         6NHQEG7qwAM15qeM/nrJggffArXsKo1oQcYA+DfAwEqSMulBSOliYTVuFwUmLQ3q5/Ng
+         k7+sw3egjRWdGmwj63A1M9WTvhusL/XvcodP9JE55Wnrs8EFbhtz5lLFeUcWmUxBcPUl
+         UCOkzrM0Vy3PFW+CvcjO0ZbeSmJt3F/vL6Hi4VBxrRXNzxG/DWfrR3rmfEutDMBFNH2Y
+         v+CA==
+X-Gm-Message-State: APjAAAUAy+6czQEZevKrl5tx3aP6XQwLbSUpM3cXOZvjuW6XJOUsqjQj
+        ctUg721/JyNDq7Xm9k0ttfU=
+X-Google-Smtp-Source: APXvYqwtWhnOZOF45C6Cr5hs9BpPPXwsXrITYeTQ/PuXCt4p+AvM15okMMCqiFsrp/ZD/fCo3ObANA==
+X-Received: by 2002:a17:90a:8984:: with SMTP id v4mr43650667pjn.133.1563368481782;
+        Wed, 17 Jul 2019 06:01:21 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id l189sm28147054pfl.7.2019.07.17.06.01.20
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 17 Jul 2019 06:01:20 -0700 (PDT)
+Date:   Wed, 17 Jul 2019 09:01:19 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Brendan Gregg <brendan.d.gregg@gmail.com>, connoro@google.com,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        duyuchao <yuchao.du@unisoc.com>, Ingo Molnar <mingo@redhat.com>,
+        jeffv@google.com, Karim Yaghmour <karim.yaghmour@opersys.com>,
+        kernel-team@android.com, linux-kselftest@vger.kernel.org,
+        Manali Shukla <manalishukla14@gmail.com>,
+        Manjo Raja Rao <linux@manojrajarao.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Matt Mullins <mmullins@fb.com>,
+        Michal Gregorczyk <michalgr@fb.com>,
+        Michal Gregorczyk <michalgr@live.com>,
+        Mohammad Husain <russoue@gmail.com>, namhyung@google.com,
+        namhyung@kernel.org, netdev@vger.kernel.org,
+        paul.chaignon@gmail.com, primiano@google.com,
+        Qais Yousef <qais.yousef@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tamir Carmeli <carmeli.tamir@gmail.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH RFC 0/4] Add support to directly attach BPF program to
+ ftrace
+Message-ID: <20190717130119.GA138030@google.com>
+References: <20190710141548.132193-1-joel@joelfernandes.org>
+ <20190716205455.iimn3pqpvsc3k4ry@ast-mbp.dhcp.thefacebook.com>
+ <20190716213050.GA161922@google.com>
+ <20190716222650.tk2coihjtsxszarf@ast-mbp.dhcp.thefacebook.com>
+ <20190716224150.GC172157@google.com>
+ <20190716235500.GA199237@google.com>
+ <20190717012406.lugqemvubixfdd6v@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19071712-0008-0000-0000-000002FE5109
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19071712-0009-0000-0000-0000226BCB84
-Message-Id: <20190717122620.58792-1-iii@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-17_05:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907170151
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190717012406.lugqemvubixfdd6v@ast-mbp.dhcp.thefacebook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-test_xdp_noinline fails on s390 due to a handful of endianness issues.
-Use ntohs for parsing eth_proto.
-Replace bswaps with ntohs/htons.
+On Tue, Jul 16, 2019 at 06:24:07PM -0700, Alexei Starovoitov wrote:
+[snip]
+> > > > > I don't see why a new bpf node for a trace event is a bad idea, really.
+> > > > 
+> > > > See the patches for kprobe/uprobe FD-based api and the reasons behind it.
+> > > > tldr: text is racy, doesn't scale, poor security, etc.
+> > > 
+> > > Is it possible to use perf without CAP_SYS_ADMIN and control security at the
+> > > per-event level? We are selective about who can access which event, using
+> > > selinux. That's how our ftrace-based tracers work. Its fine grained per-event
+> > > control. That's where I was going with the tracefs approach since we get that
+> > > granularity using the file system.
+> 
+> android's choice of selinux is not a factor in deciding kernel apis.
+> It's completely separate discusion wether disallowing particular tracepoints
+> for given user make sense at all.
+> Just because you can hack it in via selinux blocking particular
+> /sys/debug/tracing/ directory and convince yourself that it's somehow
+> makes android more secure. It doesn't mean that all new api should fit
+> into this model.
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Acked-by: Vasily Gorbik <gor@linux.ibm.com>
----
- .../selftests/bpf/progs/test_xdp_noinline.c     | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+Its not like a hack, it is just control of which tracefs node can be
+accessed and which cannot be since the tracing can run on production systems
+out in the field and there are several concerns to address like security,
+privacy etc. It is not just for debugging usecases. We do collect traces out
+in the field where these issues are real and cannot be ignored.
 
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-index dad8a7e33eaa..e88d7b9d65ab 100644
---- a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-@@ -14,6 +14,7 @@
- #include <linux/tcp.h>
- #include <linux/udp.h>
- #include "bpf_helpers.h"
-+#include "bpf_endian.h"
- 
- static __u32 rol32(__u32 word, unsigned int shift)
- {
-@@ -305,7 +306,7 @@ bool encap_v6(struct xdp_md *xdp, struct ctl_value *cval,
- 	ip6h->nexthdr = IPPROTO_IPV6;
- 	ip_suffix = pckt->flow.srcv6[3] ^ pckt->flow.port16[0];
- 	ip6h->payload_len =
--	    __builtin_bswap16(pkt_bytes + sizeof(struct ipv6hdr));
-+	    bpf_htons(pkt_bytes + sizeof(struct ipv6hdr));
- 	ip6h->hop_limit = 4;
- 
- 	ip6h->saddr.in6_u.u6_addr32[0] = 1;
-@@ -322,7 +323,7 @@ bool encap_v4(struct xdp_md *xdp, struct ctl_value *cval,
- 	      struct real_definition *dst, __u32 pkt_bytes)
- {
- 
--	__u32 ip_suffix = __builtin_bswap16(pckt->flow.port16[0]);
-+	__u32 ip_suffix = bpf_ntohs(pckt->flow.port16[0]);
- 	struct eth_hdr *new_eth;
- 	struct eth_hdr *old_eth;
- 	__u16 *next_iph_u16;
-@@ -352,7 +353,7 @@ bool encap_v4(struct xdp_md *xdp, struct ctl_value *cval,
- 	iph->protocol = IPPROTO_IPIP;
- 	iph->check = 0;
- 	iph->tos = 1;
--	iph->tot_len = __builtin_bswap16(pkt_bytes + sizeof(struct iphdr));
-+	iph->tot_len = bpf_htons(pkt_bytes + sizeof(struct iphdr));
- 	/* don't update iph->daddr, since it will overwrite old eth_proto
- 	 * and multiple iterations of bpf_prog_run() will fail
- 	 */
-@@ -639,7 +640,7 @@ static int process_l3_headers_v6(struct packet_description *pckt,
- 	iph_len = sizeof(struct ipv6hdr);
- 	*protocol = ip6h->nexthdr;
- 	pckt->flow.proto = *protocol;
--	*pkt_bytes = __builtin_bswap16(ip6h->payload_len);
-+	*pkt_bytes = bpf_ntohs(ip6h->payload_len);
- 	off += iph_len;
- 	if (*protocol == 45) {
- 		return XDP_DROP;
-@@ -671,7 +672,7 @@ static int process_l3_headers_v4(struct packet_description *pckt,
- 		return XDP_DROP;
- 	*protocol = iph->protocol;
- 	pckt->flow.proto = *protocol;
--	*pkt_bytes = __builtin_bswap16(iph->tot_len);
-+	*pkt_bytes = bpf_ntohs(iph->tot_len);
- 	off += 20;
- 	if (iph->frag_off & 65343)
- 		return XDP_DROP;
-@@ -808,10 +809,10 @@ int balancer_ingress(struct xdp_md *ctx)
- 	nh_off = sizeof(struct eth_hdr);
- 	if (data + nh_off > data_end)
- 		return XDP_DROP;
--	eth_proto = eth->eth_proto;
--	if (eth_proto == 8)
-+	eth_proto = bpf_ntohs(eth->eth_proto);
-+	if (eth_proto == ETH_P_IP)
- 		return process_packet(data, nh_off, data_end, 0, ctx);
--	else if (eth_proto == 56710)
-+	else if (eth_proto == ETH_P_IPV6)
- 		return process_packet(data, nh_off, data_end, 1, ctx);
- 	else
- 		return XDP_DROP;
--- 
-2.21.0
+SELinux model is deny everything, and then selectively grant access to what
+is needed. The VFS and security LSM hooks provide this control quite well. I am
+not sure if such control is possible through perf hence I asked the question.
+
+> I think allowing one tracepoint and disallowing another is pointless
+> from security point of view. Tracing bpf program can do bpf_probe_read
+> of anything.
+
+I think the assumption here is the user controls the program instructions at
+runtime, but that's not the case. The BPF program we are loading is not
+dynamically generated, it is built at build time and it is loaded from a
+secure verified partition, so even though it can do bpf_probe_read, it is
+still not something that the user can change. And, we are planning to make it
+even more secure by making it kernel verify the program at load time as well
+(you were on some discussions about that a few months ago).
+
+thanks,
+
+ - Joel
 
