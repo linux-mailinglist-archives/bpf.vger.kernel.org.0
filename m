@@ -2,118 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6DA6CE8E
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2019 15:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E156CF4C
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2019 16:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727810AbfGRNEm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jul 2019 09:04:42 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:17475 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727730AbfGRNEl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Jul 2019 09:04:41 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id BB1ED3CBCF;
-        Thu, 18 Jul 2019 13:04:40 +0000 (UTC)
-Received: from redhat.com (ovpn-120-147.rdu2.redhat.com [10.10.120.147])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 94621611DB;
-        Thu, 18 Jul 2019 13:04:35 +0000 (UTC)
-Date:   Thu, 18 Jul 2019 09:04:34 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     ? jiang <jiangkidd@hotmail.com>
-Cc:     "jasowang@redhat.com" <jasowang@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "yhs@fb.com" <yhs@fb.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "xdp-newbies@vger.kernel.org" <xdp-newbies@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "jiangran.jr@alibaba-inc.com" <jiangran.jr@alibaba-inc.com>
-Subject: Re: [PATCH] virtio-net: parameterize min ring num_free for virtio
- receive
-Message-ID: <20190718085836-mutt-send-email-mst@kernel.org>
-References: <BYAPR14MB32056583C4963342F5D817C4A6C80@BYAPR14MB3205.namprd14.prod.outlook.com>
+        id S1727839AbfGRN7j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jul 2019 09:59:39 -0400
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:39871 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726608AbfGRN7i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Jul 2019 09:59:38 -0400
+Received: by mail-oi1-f180.google.com with SMTP id m202so21559099oig.6
+        for <bpf@vger.kernel.org>; Thu, 18 Jul 2019 06:59:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=y8kCzYlR4BHltGQQxG5gSm0AfTbAwfNGeHMBSL9acLY=;
+        b=AFw7nV3QViT7KAEreEYxj3eSmZb7vfQsQ9/L0/sy39TJoOB8YZc/Nyp4HdoYXg3wW+
+         eTODhKhkU2jzrXDtuRF3nuYmMuHANB18/iNyqY6pM/0osyzNwusLkF5g+h1dZ7TC8wnE
+         7zwmMV9bkXQCh7sBpVcW5d572/UXl6JIhcKhw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=y8kCzYlR4BHltGQQxG5gSm0AfTbAwfNGeHMBSL9acLY=;
+        b=H4D2aOoTgAQU9k3qQYTb932WozuTR46vmOTH27NJLFS6gJkti0ZCfSKYA+I6JmveBw
+         lsuh44aG2MZyc22zzdLRvKvhtHItFufkTqkd26MACyT2fRGtGkiUvq/Vdkwl7QI4GhoD
+         hqWODV+jC/bmBEEroShuVWxvGiK430xqs3pOSD31DznCYdMDjySP6iQOnwlxr3V6g0cp
+         JtT/T9XuHexXZoIzVszxnX7JYFR5Yo1CmOs7ayiYgEOT0y4qmyhg/97LXIv4t+TH5wcg
+         nALP5cjQGtSlxAawhmTgnOTTcKfTo8CH9vESLn1EE8pKeZvucoIfAPhAaBq8UlOUmyR3
+         w6pQ==
+X-Gm-Message-State: APjAAAX+cfyVnken1z8GDfB7RbeiZC1hmdSXkvwBQJbO4ZV1TzYjdQd5
+        o+t27sBCUhSbfy3t7p1wYzq1m95mb6II4sPOA9kt20D88Ho=
+X-Google-Smtp-Source: APXvYqyjw139XO/Kh/1GUC0tiur0AfIJZsWc9m+R54+XVAQYJcEnL/Eybg6u2EdKLzzA4fpaChKwnFWW914VF58DPI0=
+X-Received: by 2002:aca:6104:: with SMTP id v4mr23608975oib.172.1563458377379;
+ Thu, 18 Jul 2019 06:59:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BYAPR14MB32056583C4963342F5D817C4A6C80@BYAPR14MB3205.namprd14.prod.outlook.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.39]); Thu, 18 Jul 2019 13:04:40 +0000 (UTC)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Thu, 18 Jul 2019 14:59:26 +0100
+Message-ID: <CACAyw9-CWRHVH3TJ=Tke2x8YiLsH47sLCijdp=V+5M836R9aAA@mail.gmail.com>
+Subject: Building bpftool with OUTPUT set breaks
+To:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 18, 2019 at 12:55:50PM +0000, ? jiang wrote:
-> This change makes ring buffer reclaim threshold num_free configurable
-> for better performance, while it's hard coded as 1/2 * queue now.
-> According to our test with qemu + dpdk, packet dropping happens when
-> the guest is not able to provide free buffer in avail ring timely.
-> Smaller value of num_free does decrease the number of packet dropping
-> during our test as it makes virtio_net reclaim buffer earlier.
-> 
-> At least, we should leave the value changeable to user while the
-> default value as 1/2 * queue is kept.
-> 
-> Signed-off-by: jiangkidd <jiangkidd@hotmail.com>
+Hello,
 
-That would be one reason, but I suspect it's not the
-true one. If you need more buffer due to jitter
-then just increase the queue size. Would be cleaner.
+On 5.2 and current bpf-next, the following fails:
 
+$ make -C tools/bpf/bpftool OUTPUT=/tmp/tmp.NUSttIbAYw/
+make: Entering directory '/home/lorenz/dev/bpf-next/tools/bpf/bpftool'
 
-However are you sure this is the reason for
-packet drops? Do you see them dropped by dpdk
-due to lack of space in the ring? As opposed to
-by guest?
+Auto-detecting system features:
+...                        libbfd: OFF
+...        disassembler-four-args: OFF
 
+  CC       /tmp/tmp.NUSttIbAYw/map_perf_ring.o
+<snip>
+  CC       /tmp/tmp.NUSttIbAYw/disasm.o
+make[1]: Entering directory '/home/lorenz/dev/bpf-next/tools/lib/bpf'
 
-> ---
->  drivers/net/virtio_net.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 0d4115c9e20b..bc190dec6084 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -26,6 +26,9 @@
->  static int napi_weight = NAPI_POLL_WEIGHT;
->  module_param(napi_weight, int, 0444);
->  
-> +static int min_numfree;
-> +module_param(min_numfree, int, 0444);
-> +
->  static bool csum = true, gso = true, napi_tx;
->  module_param(csum, bool, 0444);
->  module_param(gso, bool, 0444);
-> @@ -1315,6 +1318,9 @@ static int virtnet_receive(struct receive_queue *rq, int budget,
->  	void *buf;
->  	int i;
->  
-> +	if (!min_numfree)
-> +		min_numfree = virtqueue_get_vring_size(rq->vq) / 2;
-> +
->  	if (!vi->big_packets || vi->mergeable_rx_bufs) {
->  		void *ctx;
->  
-> @@ -1331,7 +1337,7 @@ static int virtnet_receive(struct receive_queue *rq, int budget,
->  		}
->  	}
->  
-> -	if (rq->vq->num_free > virtqueue_get_vring_size(rq->vq) / 2) {
-> +	if (rq->vq->num_free > min_numfree) {
->  		if (!try_fill_recv(vi, rq, GFP_ATOMIC))
->  			schedule_delayed_work(&vi->refill, 0);
->  	}
-> -- 
-> 2.11.0
+Auto-detecting system features:
+...                        libelf: on
+...                           bpf: on
+
+  CC       /tmp/tmp.NUSttIbAYw/libbpf.o
+<snip>
+  CC       /tmp/tmp.NUSttIbAYw/btf_dump.o
+  LD       /tmp/tmp.NUSttIbAYw/libbpf-in.o
+  LINK     /tmp/tmp.NUSttIbAYw/libbpf.a
+make[1]: Leaving directory '/home/lorenz/dev/bpf-next/tools/lib/bpf'
+  LINK     /tmp/tmp.NUSttIbAYw/bpftool
+/usr/bin/ld: /tmp/tmp.NUSttIbAYw/libbpf.a(libbpf-in.o): in function `do_btf':
+(.text+0x105b0): multiple definition of `do_btf';
+/tmp/tmp.NUSttIbAYw/btf.o:btf.c:(.text+0x11f0): first defined here
+<snip>
+
+I think the problem is that objects for both bpftool and libbpf end up
+in the same directory
+if OUTPUT is set. Does anybody know how to fix this?
+
+Best
+Lorenz
+
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
