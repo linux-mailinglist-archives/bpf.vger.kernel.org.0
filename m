@@ -2,93 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C51956CB96
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2019 11:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6DA6CE8E
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2019 15:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727592AbfGRJNq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jul 2019 05:13:46 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38028 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726482AbfGRJNq (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 18 Jul 2019 05:13:46 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6I98NKb011934
-        for <bpf@vger.kernel.org>; Thu, 18 Jul 2019 05:13:45 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2ttm6cca43-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 18 Jul 2019 05:13:45 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Thu, 18 Jul 2019 10:13:43 +0100
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 18 Jul 2019 10:13:42 +0100
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6I9DeZ950790514
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Jul 2019 09:13:40 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ADCBE4C04E;
-        Thu, 18 Jul 2019 09:13:40 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 718414C050;
-        Thu, 18 Jul 2019 09:13:40 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.152.99.77])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 18 Jul 2019 09:13:40 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     gor@linux.ibm.com, heiko.carstens@de.ibm.com,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf] selftests/bpf: fix "valid read map access into a read-only array 1" on s390
-Date:   Thu, 18 Jul 2019 11:13:35 +0200
-X-Mailer: git-send-email 2.21.0
+        id S1727810AbfGRNEm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jul 2019 09:04:42 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:17475 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727730AbfGRNEl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Jul 2019 09:04:41 -0400
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id BB1ED3CBCF;
+        Thu, 18 Jul 2019 13:04:40 +0000 (UTC)
+Received: from redhat.com (ovpn-120-147.rdu2.redhat.com [10.10.120.147])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 94621611DB;
+        Thu, 18 Jul 2019 13:04:35 +0000 (UTC)
+Date:   Thu, 18 Jul 2019 09:04:34 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     ? jiang <jiangkidd@hotmail.com>
+Cc:     "jasowang@redhat.com" <jasowang@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "xdp-newbies@vger.kernel.org" <xdp-newbies@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "jiangran.jr@alibaba-inc.com" <jiangran.jr@alibaba-inc.com>
+Subject: Re: [PATCH] virtio-net: parameterize min ring num_free for virtio
+ receive
+Message-ID: <20190718085836-mutt-send-email-mst@kernel.org>
+References: <BYAPR14MB32056583C4963342F5D817C4A6C80@BYAPR14MB3205.namprd14.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19071809-0020-0000-0000-00000354FB9A
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19071809-0021-0000-0000-000021A8D23A
-Message-Id: <20190718091335.73695-1-iii@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-18_05:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=743 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907180104
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BYAPR14MB32056583C4963342F5D817C4A6C80@BYAPR14MB3205.namprd14.prod.outlook.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.39]); Thu, 18 Jul 2019 13:04:40 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This test looks up a 32-bit map element and then loads it using a 64-bit
-load. This does not work on s390, which is a big-endian machine.
+On Thu, Jul 18, 2019 at 12:55:50PM +0000, ? jiang wrote:
+> This change makes ring buffer reclaim threshold num_free configurable
+> for better performance, while it's hard coded as 1/2 * queue now.
+> According to our test with qemu + dpdk, packet dropping happens when
+> the guest is not able to provide free buffer in avail ring timely.
+> Smaller value of num_free does decrease the number of packet dropping
+> during our test as it makes virtio_net reclaim buffer earlier.
+> 
+> At least, we should leave the value changeable to user while the
+> default value as 1/2 * queue is kept.
+> 
+> Signed-off-by: jiangkidd <jiangkidd@hotmail.com>
 
-Since the point of this test doesn't seem to be loading a smaller value
-using a larger load, simply use a 32-bit load.
+That would be one reason, but I suspect it's not the
+true one. If you need more buffer due to jitter
+then just increase the queue size. Would be cleaner.
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- tools/testing/selftests/bpf/verifier/array_access.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/verifier/array_access.c b/tools/testing/selftests/bpf/verifier/array_access.c
-index bcb83196e459..f3c33e128709 100644
---- a/tools/testing/selftests/bpf/verifier/array_access.c
-+++ b/tools/testing/selftests/bpf/verifier/array_access.c
-@@ -226,7 +226,7 @@
- 	BPF_LD_MAP_FD(BPF_REG_1, 0),
- 	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
- 	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 1),
--	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_0, 0),
- 	BPF_EXIT_INSN(),
- 	},
- 	.fixup_map_array_ro = { 3 },
--- 
-2.21.0
+However are you sure this is the reason for
+packet drops? Do you see them dropped by dpdk
+due to lack of space in the ring? As opposed to
+by guest?
 
+
+> ---
+>  drivers/net/virtio_net.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 0d4115c9e20b..bc190dec6084 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -26,6 +26,9 @@
+>  static int napi_weight = NAPI_POLL_WEIGHT;
+>  module_param(napi_weight, int, 0444);
+>  
+> +static int min_numfree;
+> +module_param(min_numfree, int, 0444);
+> +
+>  static bool csum = true, gso = true, napi_tx;
+>  module_param(csum, bool, 0444);
+>  module_param(gso, bool, 0444);
+> @@ -1315,6 +1318,9 @@ static int virtnet_receive(struct receive_queue *rq, int budget,
+>  	void *buf;
+>  	int i;
+>  
+> +	if (!min_numfree)
+> +		min_numfree = virtqueue_get_vring_size(rq->vq) / 2;
+> +
+>  	if (!vi->big_packets || vi->mergeable_rx_bufs) {
+>  		void *ctx;
+>  
+> @@ -1331,7 +1337,7 @@ static int virtnet_receive(struct receive_queue *rq, int budget,
+>  		}
+>  	}
+>  
+> -	if (rq->vq->num_free > virtqueue_get_vring_size(rq->vq) / 2) {
+> +	if (rq->vq->num_free > min_numfree) {
+>  		if (!try_fill_recv(vi, rq, GFP_ATOMIC))
+>  			schedule_delayed_work(&vi->refill, 0);
+>  	}
+> -- 
+> 2.11.0
