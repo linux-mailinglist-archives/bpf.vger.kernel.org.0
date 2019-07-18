@@ -2,111 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D8C6D010
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2019 16:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4AA66D0A1
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2019 17:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390618AbfGROn4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jul 2019 10:43:56 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:38860 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390574AbfGROn4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Jul 2019 10:43:56 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 83C208A004;
-        Thu, 18 Jul 2019 14:43:55 +0000 (UTC)
-Received: from redhat.com (ovpn-120-147.rdu2.redhat.com [10.10.120.147])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2BF4B6056F;
-        Thu, 18 Jul 2019 14:43:47 +0000 (UTC)
-Date:   Thu, 18 Jul 2019 10:43:46 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     ? jiang <jiangkidd@hotmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "yhs@fb.com" <yhs@fb.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "xdp-newbies@vger.kernel.org" <xdp-newbies@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "jiangran.jr@alibaba-inc.com" <jiangran.jr@alibaba-inc.com>
-Subject: Re: [PATCH] virtio-net: parameterize min ring num_free for virtio
- receive
-Message-ID: <20190718104307-mutt-send-email-mst@kernel.org>
-References: <BYAPR14MB32056583C4963342F5D817C4A6C80@BYAPR14MB3205.namprd14.prod.outlook.com>
- <20190718085836-mutt-send-email-mst@kernel.org>
- <bdd30ef5-4f69-8218-eed0-38c6daac42db@redhat.com>
- <20190718103641-mutt-send-email-mst@kernel.org>
+        id S1727730AbfGRPBN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jul 2019 11:01:13 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33412 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727848AbfGRPBN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 18 Jul 2019 11:01:13 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6IF1CNY025952
+        for <bpf@vger.kernel.org>; Thu, 18 Jul 2019 11:01:12 -0400
+Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2ttt5a2m89-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 18 Jul 2019 11:01:12 -0400
+Received: from localhost
+        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Thu, 18 Jul 2019 16:01:10 +0100
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
+        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 18 Jul 2019 16:01:07 +0100
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6IF16ST62783622
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Jul 2019 15:01:06 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 00F6C11C050;
+        Thu, 18 Jul 2019 15:01:06 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C764011C04C;
+        Thu, 18 Jul 2019 15:01:05 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.99.77])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 18 Jul 2019 15:01:05 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org, ys114321@gmail.com
+Cc:     gor@linux.ibm.com, heiko.carstens@de.ibm.com,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf v2] bpf: fix narrower loads on s390
+Date:   Thu, 18 Jul 2019 17:01:03 +0200
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190718103641-mutt-send-email-mst@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.26]); Thu, 18 Jul 2019 14:43:55 +0000 (UTC)
+X-TM-AS-GCONF: 00
+x-cbid: 19071815-0008-0000-0000-000002FEB53C
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19071815-0009-0000-0000-0000226C340D
+Message-Id: <20190718150103.84837-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-18_07:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=627 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907180156
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 18, 2019 at 10:42:47AM -0400, Michael S. Tsirkin wrote:
-> On Thu, Jul 18, 2019 at 10:01:05PM +0800, Jason Wang wrote:
-> > 
-> > On 2019/7/18 下午9:04, Michael S. Tsirkin wrote:
-> > > On Thu, Jul 18, 2019 at 12:55:50PM +0000, ? jiang wrote:
-> > > > This change makes ring buffer reclaim threshold num_free configurable
-> > > > for better performance, while it's hard coded as 1/2 * queue now.
-> > > > According to our test with qemu + dpdk, packet dropping happens when
-> > > > the guest is not able to provide free buffer in avail ring timely.
-> > > > Smaller value of num_free does decrease the number of packet dropping
-> > > > during our test as it makes virtio_net reclaim buffer earlier.
-> > > > 
-> > > > At least, we should leave the value changeable to user while the
-> > > > default value as 1/2 * queue is kept.
-> > > > 
-> > > > Signed-off-by: jiangkidd<jiangkidd@hotmail.com>
-> > > That would be one reason, but I suspect it's not the
-> > > true one. If you need more buffer due to jitter
-> > > then just increase the queue size. Would be cleaner.
-> > > 
-> > > 
-> > > However are you sure this is the reason for
-> > > packet drops? Do you see them dropped by dpdk
-> > > due to lack of space in the ring? As opposed to
-> > > by guest?
-> > > 
-> > > 
-> > 
-> > Besides those, this patch depends on the user to choose a suitable threshold
-> > which is not good. You need either a good value with demonstrated numbers or
-> > something smarter.
-> > 
-> > Thanks
-> 
-> I do however think that we have a problem right now: try_fill_recv can
-> take up a long time during which net stack does not run at all. Imagine
-> a 1K queue - we are talking 512 packets. That's exceessive.  napi poll
-> weight solves a similar problem, so it might make sense to cap this at
-> napi_poll_weight.
-> 
-> Which will allow tweaking it through a module parameter as a
-> side effect :) Maybe just do NAPI_POLL_WEIGHT.
+The very first check in test_pkt_md_access is failing on s390, which
+happens because loading a part of a struct __sk_buff field produces
+an incorrect result.
 
-Or maybe NAPI_POLL_WEIGHT/2 like we do at half the queue ;). Please
-experiment, measure performance and let the list know
+The preprocessed code of the check is:
 
-> Need to be careful though: queues can also be small and I don't think we
-> want to exceed queue size / 2, or maybe queue size - napi_poll_weight.
-> Definitely must not exceed the full queue size.
-> 
-> -- 
-> MST
+{
+	__u8 tmp = *((volatile __u8 *)&skb->len +
+		((sizeof(skb->len) - sizeof(__u8)) / sizeof(__u8)));
+	if (tmp != ((*(volatile __u32 *)&skb->len) & 0xFF)) return 2;
+};
+
+clang generates the following code for it:
+
+      0:	71 21 00 03 00 00 00 00	r2 = *(u8 *)(r1 + 3)
+      1:	61 31 00 00 00 00 00 00	r3 = *(u32 *)(r1 + 0)
+      2:	57 30 00 00 00 00 00 ff	r3 &= 255
+      3:	5d 23 00 1d 00 00 00 00	if r2 != r3 goto +29 <LBB0_10>
+
+Finally, verifier transforms it to:
+
+  0: (61) r2 = *(u32 *)(r1 +104)
+  1: (bc) w2 = w2
+  2: (74) w2 >>= 24
+  3: (bc) w2 = w2
+  4: (54) w2 &= 255
+  5: (bc) w2 = w2
+
+The problem is that when verifier emits the code to replace a partial
+load of a struct __sk_buff field (*(u8 *)(r1 + 3)) with a full load of
+struct sk_buff field (*(u32 *)(r1 + 104)), an optional shift and a
+bitwise AND, it assumes that the machine is little endian and
+incorrectly decides to use a shift.
+
+Adjust shift count calculation to account for endianness.
+
+Fixes: 31fd85816dbe ("bpf: permits narrower load from bpf program context fields")
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ include/linux/filter.h | 13 +++++++++++++
+ kernel/bpf/verifier.c  |  4 ++--
+ 2 files changed, 15 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index ff65d22cf336..4fe88e43f0fe 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -24,6 +24,8 @@
+ 
+ #include <net/sch_generic.h>
+ 
++#include <asm/byteorder.h>
++
+ #include <uapi/linux/filter.h>
+ #include <uapi/linux/bpf.h>
+ 
+@@ -1216,4 +1218,15 @@ struct bpf_sockopt_kern {
+ 	s32		retval;
+ };
+ 
++static inline u8 bpf_narrower_load_shift(u32 size_default, u32 size, u32 off)
++{
++	u8 load_off = off & (size_default - 1);
++
++#ifdef __LITTLE_ENDIAN
++	return load_off * 8;
++#else
++	return (size_default - (load_off + size)) * 8;
++#endif
++}
++
+ #endif /* __LINUX_FILTER_H__ */
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 5900cbb966b1..48edc9c9a879 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -8616,8 +8616,8 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ 		}
+ 
+ 		if (is_narrower_load && size < target_size) {
+-			u8 shift = (off & (size_default - 1)) * 8;
+-
++			u8 shift = bpf_narrower_load_shift(size_default, size,
++							   off);
+ 			if (ctx_field_size <= 4) {
+ 				if (shift)
+ 					insn_buf[cnt++] = BPF_ALU32_IMM(BPF_RSH,
+-- 
+2.21.0
+
