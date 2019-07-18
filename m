@@ -2,56 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4886C9FC
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2019 09:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C51956CB96
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2019 11:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbfGRHhB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jul 2019 03:37:01 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:49432 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726397AbfGRHhA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Jul 2019 03:37:00 -0400
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 7F92B300CB25;
-        Thu, 18 Jul 2019 07:37:00 +0000 (UTC)
-Received: from localhost (unknown [10.40.205.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2822360C44;
-        Thu, 18 Jul 2019 07:36:55 +0000 (UTC)
-Date:   Thu, 18 Jul 2019 09:36:54 +0200
-From:   Jiri Benc <jbenc@redhat.com>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH AUTOSEL 5.2 226/249] selftests: bpf: fix inlines in
- test_lwt_seg6local
-Message-ID: <20190718093654.0a3426f5@redhat.com>
-In-Reply-To: <20190717234757.GD3079@sasha-vm>
-References: <20190715134655.4076-1-sashal@kernel.org>
-        <20190715134655.4076-226-sashal@kernel.org>
-        <20190717114334.5556a14e@redhat.com>
-        <20190717234757.GD3079@sasha-vm>
+        id S1727592AbfGRJNq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jul 2019 05:13:46 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38028 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726482AbfGRJNq (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 18 Jul 2019 05:13:46 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6I98NKb011934
+        for <bpf@vger.kernel.org>; Thu, 18 Jul 2019 05:13:45 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2ttm6cca43-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 18 Jul 2019 05:13:45 -0400
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Thu, 18 Jul 2019 10:13:43 +0100
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 18 Jul 2019 10:13:42 +0100
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6I9DeZ950790514
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Jul 2019 09:13:40 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ADCBE4C04E;
+        Thu, 18 Jul 2019 09:13:40 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 718414C050;
+        Thu, 18 Jul 2019 09:13:40 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.99.77])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 18 Jul 2019 09:13:40 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     gor@linux.ibm.com, heiko.carstens@de.ibm.com,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf] selftests/bpf: fix "valid read map access into a read-only array 1" on s390
+Date:   Thu, 18 Jul 2019 11:13:35 +0200
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.46]); Thu, 18 Jul 2019 07:37:00 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19071809-0020-0000-0000-00000354FB9A
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19071809-0021-0000-0000-000021A8D23A
+Message-Id: <20190718091335.73695-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-18_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=743 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907180104
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 17 Jul 2019 19:47:57 -0400, Sasha Levin wrote:
-> It fixes a bug, right?
+This test looks up a 32-bit map element and then loads it using a 64-bit
+load. This does not work on s390, which is a big-endian machine.
 
-A bug in selftests. And quite likely, it probably happens only with
-some compiler versions.
+Since the point of this test doesn't seem to be loading a smaller value
+using a larger load, simply use a 32-bit load.
 
-I don't think patches only touching tools/testing/selftests/ qualify
-for stable in general. They don't affect the end users.
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ tools/testing/selftests/bpf/verifier/array_access.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- Jiri
+diff --git a/tools/testing/selftests/bpf/verifier/array_access.c b/tools/testing/selftests/bpf/verifier/array_access.c
+index bcb83196e459..f3c33e128709 100644
+--- a/tools/testing/selftests/bpf/verifier/array_access.c
++++ b/tools/testing/selftests/bpf/verifier/array_access.c
+@@ -226,7 +226,7 @@
+ 	BPF_LD_MAP_FD(BPF_REG_1, 0),
+ 	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
+ 	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 1),
+-	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0),
++	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_0, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
+ 	.fixup_map_array_ro = { 3 },
+-- 
+2.21.0
+
