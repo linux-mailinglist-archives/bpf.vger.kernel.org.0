@@ -2,138 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4112A6CF94
-	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2019 16:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CBC6D001
+	for <lists+bpf@lfdr.de>; Thu, 18 Jul 2019 16:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726649AbfGROUw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Jul 2019 10:20:52 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24686 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727687AbfGROUw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 18 Jul 2019 10:20:52 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6IEI3Vo090691
-        for <bpf@vger.kernel.org>; Thu, 18 Jul 2019 10:20:51 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2ttt5492bw-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 18 Jul 2019 10:20:50 -0400
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Thu, 18 Jul 2019 15:20:49 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 18 Jul 2019 15:20:46 +0100
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6IEKVW037224742
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Jul 2019 14:20:31 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D697FA4060;
-        Thu, 18 Jul 2019 14:20:44 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A07BFA4054;
-        Thu, 18 Jul 2019 14:20:44 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.152.99.77])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 18 Jul 2019 14:20:44 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org, lmb@cloudflare.com
-Cc:     gor@linux.ibm.com, heiko.carstens@de.ibm.com,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf] tools/bpf: fix bpftool build with OUTPUT set
-Date:   Thu, 18 Jul 2019 16:20:41 +0200
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <CACAyw9-CWRHVH3TJ=Tke2x8YiLsH47sLCijdp=V+5M836R9aAA@mail.gmail.com>
-References: <CACAyw9-CWRHVH3TJ=Tke2x8YiLsH47sLCijdp=V+5M836R9aAA@mail.gmail.com>
+        id S1727730AbfGROm5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Jul 2019 10:42:57 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:37236 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726040AbfGROm5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Jul 2019 10:42:57 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 35C6DC065134;
+        Thu, 18 Jul 2019 14:42:56 +0000 (UTC)
+Received: from redhat.com (ovpn-120-147.rdu2.redhat.com [10.10.120.147])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 972C45D739;
+        Thu, 18 Jul 2019 14:42:48 +0000 (UTC)
+Date:   Thu, 18 Jul 2019 10:42:47 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     ? jiang <jiangkidd@hotmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "xdp-newbies@vger.kernel.org" <xdp-newbies@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "jiangran.jr@alibaba-inc.com" <jiangran.jr@alibaba-inc.com>
+Subject: Re: [PATCH] virtio-net: parameterize min ring num_free for virtio
+ receive
+Message-ID: <20190718103641-mutt-send-email-mst@kernel.org>
+References: <BYAPR14MB32056583C4963342F5D817C4A6C80@BYAPR14MB3205.namprd14.prod.outlook.com>
+ <20190718085836-mutt-send-email-mst@kernel.org>
+ <bdd30ef5-4f69-8218-eed0-38c6daac42db@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19071814-0008-0000-0000-000002FEB310
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19071814-0009-0000-0000-0000226C31C1
-Message-Id: <20190718142041.83342-1-iii@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-18_06:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907180149
+In-Reply-To: <bdd30ef5-4f69-8218-eed0-38c6daac42db@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.31]); Thu, 18 Jul 2019 14:42:56 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Lorenz,
+On Thu, Jul 18, 2019 at 10:01:05PM +0800, Jason Wang wrote:
+> 
+> On 2019/7/18 下午9:04, Michael S. Tsirkin wrote:
+> > On Thu, Jul 18, 2019 at 12:55:50PM +0000, ? jiang wrote:
+> > > This change makes ring buffer reclaim threshold num_free configurable
+> > > for better performance, while it's hard coded as 1/2 * queue now.
+> > > According to our test with qemu + dpdk, packet dropping happens when
+> > > the guest is not able to provide free buffer in avail ring timely.
+> > > Smaller value of num_free does decrease the number of packet dropping
+> > > during our test as it makes virtio_net reclaim buffer earlier.
+> > > 
+> > > At least, we should leave the value changeable to user while the
+> > > default value as 1/2 * queue is kept.
+> > > 
+> > > Signed-off-by: jiangkidd<jiangkidd@hotmail.com>
+> > That would be one reason, but I suspect it's not the
+> > true one. If you need more buffer due to jitter
+> > then just increase the queue size. Would be cleaner.
+> > 
+> > 
+> > However are you sure this is the reason for
+> > packet drops? Do you see them dropped by dpdk
+> > due to lack of space in the ring? As opposed to
+> > by guest?
+> > 
+> > 
+> 
+> Besides those, this patch depends on the user to choose a suitable threshold
+> which is not good. You need either a good value with demonstrated numbers or
+> something smarter.
+> 
+> Thanks
 
-I've been using the following patch for quite some time now.
-Please let me know if it works for you.
+I do however think that we have a problem right now: try_fill_recv can
+take up a long time during which net stack does not run at all. Imagine
+a 1K queue - we are talking 512 packets. That's exceessive.  napi poll
+weight solves a similar problem, so it might make sense to cap this at
+napi_poll_weight.
 
-Best regards,
-Ilya
+Which will allow tweaking it through a module parameter as a
+side effect :) Maybe just do NAPI_POLL_WEIGHT.
 
----
+Need to be careful though: queues can also be small and I don't think we
+want to exceed queue size / 2, or maybe queue size - napi_poll_weight.
+Definitely must not exceed the full queue size.
 
-When OUTPUT is set, bpftool and libbpf put their objects into the same
-directory, and since some of them have the same names, the collision
-happens.
-
-Fix by invoking libbpf build in a manner similar to $(call descend) -
-descend itself cannot be used, since libbpf is a sibling, and not a
-child, of bpftool.
-
-Also, don't link bpftool with libbpf.a twice.
-
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- tools/bpf/bpftool/Makefile | 17 ++++++-----------
- 1 file changed, 6 insertions(+), 11 deletions(-)
-
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index a7afea4dec47..2cbc3c166f44 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -15,23 +15,18 @@ else
- endif
- 
- BPF_DIR = $(srctree)/tools/lib/bpf/
--
--ifneq ($(OUTPUT),)
--  BPF_PATH = $(OUTPUT)
--else
--  BPF_PATH = $(BPF_DIR)
--endif
--
--LIBBPF = $(BPF_PATH)libbpf.a
-+BPF_PATH = $(objtree)/tools/lib/bpf
-+LIBBPF = $(BPF_PATH)/libbpf.a
- 
- BPFTOOL_VERSION := $(shell make --no-print-directory -sC ../../.. kernelversion)
- 
- $(LIBBPF): FORCE
--	$(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(OUTPUT) $(OUTPUT)libbpf.a
-+	$(Q)mkdir -p $(BPF_PATH)
-+	$(Q)$(MAKE) $(COMMAND_O) subdir=tools/lib/bpf -C $(BPF_DIR) $(LIBBPF)
- 
- $(LIBBPF)-clean:
- 	$(call QUIET_CLEAN, libbpf)
--	$(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(OUTPUT) clean >/dev/null
-+	$(Q)$(MAKE) $(COMMAND_O) subdir=tools/lib/bpf -C $(BPF_DIR) clean >/dev/null
- 
- prefix ?= /usr/local
- bash_compdir ?= /usr/share/bash-completion/completions
-@@ -112,7 +107,7 @@ $(OUTPUT)disasm.o: $(srctree)/kernel/bpf/disasm.c
- 	$(QUIET_CC)$(COMPILE.c) -MMD -o $@ $<
- 
- $(OUTPUT)bpftool: $(OBJS) $(LIBBPF)
--	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
-+	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
- 
- $(OUTPUT)%.o: %.c
- 	$(QUIET_CC)$(COMPILE.c) -MMD -o $@ $<
 -- 
-2.21.0
-
+MST
