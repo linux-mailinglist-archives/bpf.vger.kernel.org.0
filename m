@@ -2,126 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E24A66EB5A
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2019 21:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B665A6EB6F
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2019 22:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728328AbfGSTue (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Jul 2019 15:50:34 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:8810 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727602AbfGSTud (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 19 Jul 2019 15:50:33 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6JJihQl005279;
-        Fri, 19 Jul 2019 12:50:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=NSUUlEIKSAsQfrTanc7ZDg56vrZAwG3wZjZ2qwTlFmA=;
- b=i/LCraQbQ5JIGK25DidEFi4f/b2l6OCwOlbzKUdlkSZ5TCwaV/eUFkrQIQg2zlNIX3dN
- DIDuyoLEu60qkuA8GQQUSOs4wRJZQvBAYlw+wqMd1WnsC5cV6dTnJ+LiGLepRxHysni2
- A6q5hs7YBSQQE//oI2U0AjVsXfvGHWexMnk= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2tufjh96qb-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 19 Jul 2019 12:50:09 -0700
-Received: from ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) by
- ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 19 Jul 2019 12:50:07 -0700
-Received: from NAM05-DM3-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Fri, 19 Jul 2019 12:50:06 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G/qH84ENPrlrg4RDEgQpn1SyzoF/FcNYLsmmi6SaIeZ05aicEsJ5XR4rZJTrDQ0ZtN9QOqe0bKM+EACfB3ANz6QtAA47cETiOcqX++lRQqeAJnA5sB3IR5n1HeGXF1ySmvDaucYgjZoG1GHpLu0jS4uyAhMpvwBoU9yg5TDMTMCmmpgnw/wJQdtYbCl+6JD+QF9Qec7HjQ7/EhngwFUsddkpdC+kWxefeA1OUBjiMvaCAQ+imqztXxwOpkvUll4uuyyLP0iVnJSW42M+VUN/M1AnObtZgm5iqUnDQ/S6mRGm2C/GtHrq+eeavketItJWKU0hngxZniAlWumdfx8yZg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NSUUlEIKSAsQfrTanc7ZDg56vrZAwG3wZjZ2qwTlFmA=;
- b=YQOCs4AEr6ch7396EOuQBCj8X4UVcTzAJUTA7aBKLXbF4IJaV9NgqXdivzNFpTYKlq4SKVpZHEcdAwTtrJem9G8WVSGltJh+YmZJLJzEbD03mPDnj3cIhgJfYJB/rbfpz/nYL4rEymuSAWia0X6ayuTa3mYz+yUWR9O6ID0/DVggA2k202dFdk3WqETwz0e9vDtsqakl3vzoWuHThCCqQ6C6QcNH9ewFAoeRQ25zhH6AFNOWxlYQ2KUPucp4YUcwfY82Lht4Ozu96Lm6/OFZL6dNvbCIrRiC6V6OzqJrDSAa/+St4Z9fxRoDGc7h4tZwRPj22lMBzu4sBaREqhTYQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=fb.com;dmarc=pass action=none header.from=fb.com;dkim=pass
- header.d=fb.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NSUUlEIKSAsQfrTanc7ZDg56vrZAwG3wZjZ2qwTlFmA=;
- b=LdqmtUNq6Z7uK7+vOToQnPV5RNP9IYpb31S1hhWrfR2bQMLRJ54O6aMnJ/G/TkGY37o5BOW9a+pANoWHib/KvgNFqtmy9UJuDKkINMG9qzzY4TwoXANlNraee22N/YAMFSkvHgTzyEEj4EqkLqOsWX8ITa3gLYkouGs7t5xi/tw=
-Received: from BYAPR15MB2501.namprd15.prod.outlook.com (52.135.196.11) by
- BYAPR15MB3319.namprd15.prod.outlook.com (20.179.58.77) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2094.11; Fri, 19 Jul 2019 19:50:05 +0000
-Received: from BYAPR15MB2501.namprd15.prod.outlook.com
- ([fe80::b964:e4e:5b14:fa7]) by BYAPR15MB2501.namprd15.prod.outlook.com
- ([fe80::b964:e4e:5b14:fa7%6]) with mapi id 15.20.2073.012; Fri, 19 Jul 2019
- 19:50:05 +0000
-From:   Alexei Starovoitov <ast@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Andrey Ignatov <rdna@fb.com>
-CC:     "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf] libbpf: sanitize VAR to conservative 1-byte INT
-Thread-Topic: [PATCH bpf] libbpf: sanitize VAR to conservative 1-byte INT
-Thread-Index: AQHVPmqe/LplmdIpI0iDkI4qqXFKeqbSWXqA
-Date:   Fri, 19 Jul 2019 19:50:05 +0000
-Message-ID: <3ef85585-5f6b-9556-6896-536090b16f0a@fb.com>
-References: <20190719194603.2704713-1-andriin@fb.com>
-In-Reply-To: <20190719194603.2704713-1-andriin@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR02CA0025.namprd02.prod.outlook.com
- (2603:10b6:301:60::14) To BYAPR15MB2501.namprd15.prod.outlook.com
- (2603:10b6:a02:88::11)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::2:a5f3]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 25a4de96-f75a-4571-4c41-08d70c824bad
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB3319;
-x-ms-traffictypediagnostic: BYAPR15MB3319:
-x-microsoft-antispam-prvs: <BYAPR15MB331945057B5DD883D3D03E4FD7CB0@BYAPR15MB3319.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3631;
-x-forefront-prvs: 01039C93E4
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(346002)(376002)(366004)(396003)(39860400002)(199004)(189003)(6506007)(386003)(53546011)(4326008)(4744005)(486006)(316002)(76176011)(478600001)(2201001)(71200400001)(71190400001)(66946007)(8676002)(2906002)(6512007)(66476007)(476003)(2616005)(31696002)(6636002)(11346002)(46003)(6436002)(86362001)(446003)(256004)(6486002)(14444005)(229853002)(6246003)(110136005)(66446008)(66556008)(31686004)(186003)(14454004)(68736007)(36756003)(81166006)(305945005)(25786009)(81156014)(52116002)(8936002)(99286004)(6116002)(64756008)(5660300002)(54906003)(2501003)(102836004)(53936002)(7736002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3319;H:BYAPR15MB2501.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: syARVtYHrfuotcvNcOBKFXdk72gcDlPr9oh1HjETUN3sEe2Xeg9akeO8CGMbKE/dfxWb/KYy4gtrCGDJoDN4BMZ8eDfJzhFMfLQRnxjvZTPCXKVjn6SEgVGFWe5M+PBggMqbilqzIbKeKyZnoElOsYf1ruCJWH40DvUyHLqaBLx40+YbAzY5WjzOi0m4ELsi2b6Ze27AmLwXdyrAQtgd/xihP7EPQQFt7JKEKex+j2TPFXZPEMdtWZ0rbADDRefSGgswYPVxqad/k6/A409VEG1ei1CHGw8Ez/XWZm+uAxzqG26EK112qJyTEebPrQEp25lKHnuCiUZktr+l08wPvOwBaAASIvtGXig6CsOaZdUXZ4xF6Rx8PmQwbebwCg7iT3CXtXPKpqwlU05ksNVANVBRXnUb16v0Fd4O1rTaQYc=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A40536B537CA5C4B80CE15B8256EF44E@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1730366AbfGSUEp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Jul 2019 16:04:45 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:38664 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727497AbfGSUEo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Jul 2019 16:04:44 -0400
+Received: by mail-qk1-f194.google.com with SMTP id a27so24161378qkk.5;
+        Fri, 19 Jul 2019 13:04:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KgzbnyihRsw5YwTm7SdiFF/zXhcaOpif95Kf3MqJxBY=;
+        b=P0+v4hJrU8jqZSNngmeP7/FXPteQB0Dx84Z0ggbNG42+cxT84wlm6NRuIGK3mkqLxG
+         ofS9GFmbUExt7b5uNYvs+83qh/XXFlQz/1MA9VQQ3Ocu9tNpZ5r4pWlX5WnLHlQV7toQ
+         jNW1KaP0GQ4azRxarWFymz2vu+mldivdMuouHnGRq8xsuQGNxtI6GBQWmeN/9JMZ+nkc
+         JG2W8Nd3qj4ew5YX1rakVmCuZKjOxl/+keUVxgwPIMo7VTjPcJvfYH3wwigx00M/F0PL
+         mWwjKfUPHhLSC44oLDrlRqBx8b9SCIntDdqbyt7YBPzNHiMbw2oZ9Tnm0+6UQGXZM7BG
+         BvFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KgzbnyihRsw5YwTm7SdiFF/zXhcaOpif95Kf3MqJxBY=;
+        b=sefcYwPVvg0KI/rt5qL61h3yLlU9QH5HD7EDcYLA65RR6r9I4ZTg593veZGcixiMnw
+         7AfV1ZSox+3dazqFFCGxVDYrCzkRnMKZcM4TSVPs1JD21gr4RDernfr5us6w/onz4a5Z
+         3WQM9XaQU/7at8md+5L08QXn6hjfk1D8gZqMpvdR6Z0yWK9dMB6BIODkKvbhDhXP5+0N
+         ZzIbpx1AIBxTxOIGuXUrOrtfucc5L1bkCPFoNpcRvclPWF1N/55HUnhumPKitGX6MMTJ
+         xjZdQG0HyPYIyzw9iyHAisNK1pmChE+X36nN8wfPBt9/yYpZQq9uOrea5J9m+qcLogbq
+         Rx3w==
+X-Gm-Message-State: APjAAAW3T+qIwcyya0wIc9OdFm1l6Qz5skOxJIBMn9o+XqScwFhVFHWV
+        wNSO3CxtGwthCEkgs6jn9PpsTYF3BOKXIiaFSdQucO3S
+X-Google-Smtp-Source: APXvYqzeRSpz2YxRkp57icEpaASDSR1b/c8uGpQ5DxBVTEvjIKmj+n5EoFQT33OMXuUkApGXQEmNTekrxUxC3fPkLec=
+X-Received: by 2002:a37:9b48:: with SMTP id d69mr38532135qke.449.1563566683627;
+ Fri, 19 Jul 2019 13:04:43 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 25a4de96-f75a-4571-4c41-08d70c824bad
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jul 2019 19:50:05.3923
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ast@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3319
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-19_12:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=887 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907190212
-X-FB-Internal: deliver
+References: <20190718172513.2394157-1-andriin@fb.com> <20190718175533.GG2093@redhat.com>
+ <CAEf4BzaPySx-hBwD5Lxo1tD7F_8ejA9qFjC0-ag56cakweqcbA@mail.gmail.com>
+ <20190718185619.GL3624@kernel.org> <20190718191452.GM3624@kernel.org>
+ <CAEf4BzburdiRTYSJUSpSFAxKmf6ELpvEeNW502eKskzyyMaUxQ@mail.gmail.com>
+ <20190719011644.GN3624@kernel.org> <CAEf4BzaKDTnqe4QYebNSoCLfhcUJbhzgXC5sG+y+c4JLc9PFqg@mail.gmail.com>
+ <20190719181423.GO3624@kernel.org> <CAEf4BzZtYnVG3tnn25-TTJLOmeevv9fSZnAf7S2pG3VA+dMM+Q@mail.gmail.com>
+ <20190719183417.GQ3624@kernel.org>
+In-Reply-To: <20190719183417.GQ3624@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 19 Jul 2019 13:04:32 -0700
+Message-ID: <CAEf4Bzb6Dfup+aRuWLyTj3=-Nyq3wWGsLXRSX7s=aMVs8WBiWQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] libbpf: fix missing __WORDSIZE definition
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>,
+        Kernel Team <kernel-team@fb.com>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gNy8xOS8xOSAxMjo0NiBQTSwgQW5kcmlpIE5ha3J5aWtvIHdyb3RlOg0KPiBJZiBWQVIgaW4g
-bm9uLXNhbml0aXplZCBCVEYgd2FzIHNpemUgbGVzcyB0aGFuIDQsIGNvbnZlcnRpbmcgc3VjaCBW
-QVINCj4gaW50byBhbiBJTlQgd2l0aCBzaXplPTQgd2lsbCBjYXVzZSBCVEYgdmFsaWRhdGlvbiBm
-YWlsdXJlIGR1ZSB0bw0KPiB2aW9sYXRpb25nIG9mIFNUUlVDVCAoaW50byB3aGljaCBEQVRBU0VD
-IHdhcyBjb252ZXJ0ZWQpIG1lbWJlciBzaXplLg0KPiBGaXggYnkgY29uc2VydmF0aXZlbHkgdXNp
-bmcgc2l6ZT0xLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQW5kcmlpIE5ha3J5aWtvIDxhbmRyaWlu
-QGZiLmNvbT4NCg0KQXBwbGllZC4gVGhhbmtzDQo=
+On Fri, Jul 19, 2019 at 11:34 AM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
+>
+> Em Fri, Jul 19, 2019 at 11:26:50AM -0700, Andrii Nakryiko escreveu:
+> > On Fri, Jul 19, 2019 at 11:14 AM Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
+> > > Em Fri, Jul 19, 2019 at 10:54:44AM -0700, Andrii Nakryiko escreveu:
+> > > > Ok, did some more googling. This warning (turned error in your setup)
+> > > > is emitted when -Wshadow option is enabled for GCC/clang. It appears
+> > > > to be disabled by default, so it must be enabled somewhere for perf
+> > > > build or something.
+>
+> > > Right, I came to the exact same conclusion, doing tests here:
+>
+> > > [perfbuilder@3a58896a648d tmp]$ gcc -Wshadow shadow_global_decl.c   -o shadow_global_decl
+> > > shadow_global_decl.c: In function 'main':
+> > > shadow_global_decl.c:9: warning: declaration of 'link' shadows a global declaration
+> > > shadow_global_decl.c:4: warning: shadowed declaration is here
+> > > [perfbuilder@3a58896a648d tmp]$ gcc --version |& head -1
+> > > gcc (GCC) 4.4.7 20120313 (Red Hat 4.4.7-23)
+> > > [perfbuilder@3a58896a648d tmp]$ gcc shadow_global_decl.c   -o shadow_global_decl
+> > > [perfbuilder@3a58896a648d tmp]$
+>
+> > > So I'm going to remove this warning from the places where it causes
+> > > problems.
+>
+> > > > Would it be possible to disable it at least for libbpf when building
+> > > > from perf either everywhere or for those systems where you see this
+> > > > warning? I don't think this warning is useful, to be honest, just
+> > > > random name conflict between any local and global variables will cause
+> > > > this.
+>
+> > > Yeah, I might end up having this applied.
+>
+> > Thanks!
+>
+> So, I'm ending up with the patch below, there is some value after all in
+> Wshadow, that is, from gcc 4.8 onwards :-)
+
+I agree with the intent, but see below.
+
+>
+> - Arnaldo
+>
+> diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
+> index 495066bafbe3..ded7a950dc40 100644
+> --- a/tools/scripts/Makefile.include
+> +++ b/tools/scripts/Makefile.include
+> @@ -32,7 +32,6 @@ EXTRA_WARNINGS += -Wno-system-headers
+>  EXTRA_WARNINGS += -Wold-style-definition
+>  EXTRA_WARNINGS += -Wpacked
+>  EXTRA_WARNINGS += -Wredundant-decls
+> -EXTRA_WARNINGS += -Wshadow
+>  EXTRA_WARNINGS += -Wstrict-prototypes
+>  EXTRA_WARNINGS += -Wswitch-default
+>  EXTRA_WARNINGS += -Wswitch-enum
+> @@ -69,8 +68,16 @@ endif
+>  # will do for now and keep the above -Wstrict-aliasing=3 in place
+>  # in newer systems.
+>  # Needed for the __raw_cmpxchg in tools/arch/x86/include/asm/cmpxchg.h
+> +#
+> +# See https://lkml.org/lkml/2006/11/28/253 and https://gcc.gnu.org/gcc-4.8/changes.html,
+> +# that takes into account Linus's comments (search for Wshadow) for the reasoning about
+> +# -Wshadow not being interesting before gcc 4.8.
+> +
+>  ifneq ($(filter 3.%,$(MAKE_VERSION)),)  # make-3
+
+This is checking make version, not GCC version. So code comment and
+configurations are not in sync?
+
+>  EXTRA_WARNINGS += -fno-strict-aliasing
+> +EXTRA_WARNINGS += -Wno-shadow
+> +else
+> +EXTRA_WARNINGS += -Wshadow
+>  endif
+>
+>  ifneq ($(findstring $(MAKEFLAGS), w),w)
