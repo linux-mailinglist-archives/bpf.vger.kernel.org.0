@@ -2,94 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE9E6E61A
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2019 15:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 927B96E76C
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2019 16:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbfGSNMc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 19 Jul 2019 09:12:32 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41752 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728152AbfGSNMc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 19 Jul 2019 09:12:32 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6JD8vwQ177787
-        for <bpf@vger.kernel.org>; Fri, 19 Jul 2019 09:12:30 -0400
-Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2tucp4cx45-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 19 Jul 2019 09:12:30 -0400
-Received: from localhost
-        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Fri, 19 Jul 2019 14:12:28 +0100
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
-        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 19 Jul 2019 14:12:25 +0100
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6JDCOLa48234528
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Jul 2019 13:12:24 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B600311C054;
-        Fri, 19 Jul 2019 13:12:24 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8C50811C04A;
-        Fri, 19 Jul 2019 13:12:24 +0000 (GMT)
-Received: from dyn-9-152-98-35.boeblingen.de.ibm.com (unknown [9.152.98.35])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 19 Jul 2019 13:12:24 +0000 (GMT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [PATCH bpf] tools/bpf: fix bpftool build with OUTPUT set
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-In-Reply-To: <20190718115111.643027cf@cakuba.netronome.com>
-Date:   Fri, 19 Jul 2019 15:12:24 +0200
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, lmb@cloudflare.com,
-        gor@linux.ibm.com, heiko.carstens@de.ibm.com
-Content-Transfer-Encoding: 8BIT
-References: <CACAyw9-CWRHVH3TJ=Tke2x8YiLsH47sLCijdp=V+5M836R9aAA@mail.gmail.com>
- <20190718142041.83342-1-iii@linux.ibm.com>
- <20190718115111.643027cf@cakuba.netronome.com>
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-X-Mailer: Apple Mail (2.3445.9.1)
-X-TM-AS-GCONF: 00
-x-cbid: 19071913-0016-0000-0000-000002945E8E
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19071913-0017-0000-0000-000032F23FEE
-Message-Id: <43FB794B-6200-4560-BF10-BBF4B9247913@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-19_09:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907190150
+        id S1729582AbfGSOeU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Jul 2019 10:34:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729578AbfGSOeU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Jul 2019 10:34:20 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.35.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8936120873;
+        Fri, 19 Jul 2019 14:34:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1563546860;
+        bh=tPjDSWbg+gh4E6JTk+VjmFG/HZmbcKxjGtHOPOqQZbE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GUuxD+ojrcH47bblQleT6Tfm88nHUidz46c+sJc9wArewT/KRILFvuduM4ZFpE8ko
+         Prn5jSkp0s0VOz7axfCm+K6Td9FDqwpnM5gkRXmWl27cc2IKqhM9FUY7M40Pd9+Qtc
+         f8Fj0bAzMfKaX0lqkcbpXhYFT94GRAGdD0AGmVzI=
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     Clark Williams <williams@redhat.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: [GIT PULL 0/2] libbpf build fixes
+Date:   Fri, 19 Jul 2019 11:34:05 -0300
+Message-Id: <20190719143407.20847-1-acme@kernel.org>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Am 18.07.2019 um 20:51 schrieb Jakub Kicinski <jakub.kicinski@netronome.com>:
-> 
-> We should probably make a script with all the ways of calling make
-> should work. Otherwise we can lose track too easily.
+Hi Daniel,
 
-Thanks for the script!
+	Please consider pulling or applying from the patches, if someone
+has any issues, please holler,
 
-I’m trying to make it all pass now, and hitting a weird issue in the
-Kbuild case. The build prints "No rule to make target
-'scripts/Makefile.ubsan.o'" and proceeds with an empty BPFTOOL_VERSION,
-which causes problems later on.
+- Arnaldo
 
-I've found that this is caused by sub_make_done=1 environment variable,
-and unsetting it indeed fixes the problem, since the root Makefile no
-longer uses the implicit %.o rule.
+Arnaldo Carvalho de Melo (2):
+  libbpf: Fix endianness macro usage for some compilers
+  libbpf: Avoid designated initializers for unnamed union members
 
-However, I wonder if that would be acceptable in the final version of
-the patch, and whether there is a cleaner way to achieve the same
-effect?
+ tools/lib/bpf/btf.c    |  5 +++--
+ tools/lib/bpf/libbpf.c | 19 ++++++++++---------
+ 2 files changed, 13 insertions(+), 11 deletions(-)
 
-Best regards,
-Ilya
+-- 
+2.21.0
+
+The following changes since commit 9b3d15e6b05e0b916be5fbd915f90300a403098b:
+
+  bnxt_en: Fix VNIC accounting when enabling aRFS on 57500 chips. (2019-07-18 16:33:27 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git libbpf
+
+for you to fetch changes up to 5443fc23eb80e7cd03f9111fb16fb9aaa76fedc9:
+
+  libbpf: Avoid designated initializers for unnamed union members (2019-07-19 11:21:33 -0300)
+
+----------------------------------------------------------------
+Arnaldo Carvalho de Melo (2):
+      libbpf: Fix endianness macro usage for some compilers
+      libbpf: Avoid designated initializers for unnamed union members
+
+ tools/lib/bpf/btf.c    |  5 +++--
+ tools/lib/bpf/libbpf.c | 19 ++++++++++---------
+ 2 files changed, 13 insertions(+), 11 deletions(-)
