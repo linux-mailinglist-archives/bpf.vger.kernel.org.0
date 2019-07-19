@@ -2,55 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C10E96E1FF
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2019 09:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E246E320
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2019 11:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbfGSHyR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Jul 2019 03:54:17 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:48286 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726036AbfGSHyQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Jul 2019 03:54:16 -0400
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 90EED317917B;
-        Fri, 19 Jul 2019 07:54:16 +0000 (UTC)
-Received: from localhost (unknown [10.40.205.122])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6493A610A3;
-        Fri, 19 Jul 2019 07:54:14 +0000 (UTC)
-Date:   Fri, 19 Jul 2019 09:54:12 +0200
-From:   Jiri Benc <jbenc@redhat.com>
-To:     David Miller <davem@davemloft.net>
-Cc:     sashal@kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, yhs@fb.com, daniel@iogearbox.net,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH AUTOSEL 5.2 226/249] selftests: bpf: fix inlines in
- test_lwt_seg6local
-Message-ID: <20190719095412.1b4fe444@redhat.com>
-In-Reply-To: <20190718.115534.1778444973119064345.davem@davemloft.net>
-References: <20190717114334.5556a14e@redhat.com>
-        <20190717234757.GD3079@sasha-vm>
-        <20190718093654.0a3426f5@redhat.com>
-        <20190718.115534.1778444973119064345.davem@davemloft.net>
+        id S1726316AbfGSJHI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Jul 2019 05:07:08 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23550 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726029AbfGSJHI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 19 Jul 2019 05:07:08 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6J97474080358
+        for <bpf@vger.kernel.org>; Fri, 19 Jul 2019 05:07:06 -0400
+Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2tu9upjnv8-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 19 Jul 2019 05:07:05 -0400
+Received: from localhost
+        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Fri, 19 Jul 2019 10:06:51 +0100
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
+        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Fri, 19 Jul 2019 10:06:47 +0100
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6J96j5N57016560
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Jul 2019 09:06:45 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BD768AE051;
+        Fri, 19 Jul 2019 09:06:45 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7CDB2AE053;
+        Fri, 19 Jul 2019 09:06:45 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.98.35])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 19 Jul 2019 09:06:45 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     gor@linux.ibm.com, heiko.carstens@de.ibm.com, rdna@fb.com,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf] selftests/bpf: fix sendmsg6_prog on s390
+Date:   Fri, 19 Jul 2019 11:06:11 +0200
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.41]); Fri, 19 Jul 2019 07:54:16 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19071909-0016-0000-0000-000002944ACF
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19071909-0017-0000-0000-000032F22AE9
+Message-Id: <20190719090611.91743-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-19_06:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907190106
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 18 Jul 2019 11:55:34 -0700 (PDT), David Miller wrote:
-> It has a significant impact on automated testing which lots of
-> individuals and entities perform, therefore I think it very much is
-> -stable material.
+"sendmsg6: rewrite IP & port (C)" fails on s390, because the code in
+sendmsg_v6_prog() assumes that (ctx->user_ip6[0] & 0xFFFF) refers to
+leading IPv6 address digits, which is not the case on big-endian
+machines.
 
-Okay.
+Since checking bitwise operations doesn't seem to be the point of the
+test, replace two short comparisons with a single int comparison.
 
-Thanks,
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ tools/testing/selftests/bpf/progs/sendmsg6_prog.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
- Jiri
+diff --git a/tools/testing/selftests/bpf/progs/sendmsg6_prog.c b/tools/testing/selftests/bpf/progs/sendmsg6_prog.c
+index 5aeaa284fc47..a68062820410 100644
+--- a/tools/testing/selftests/bpf/progs/sendmsg6_prog.c
++++ b/tools/testing/selftests/bpf/progs/sendmsg6_prog.c
+@@ -41,8 +41,7 @@ int sendmsg_v6_prog(struct bpf_sock_addr *ctx)
+ 	}
+ 
+ 	/* Rewrite destination. */
+-	if ((ctx->user_ip6[0] & 0xFFFF) == bpf_htons(0xFACE) &&
+-	     ctx->user_ip6[0] >> 16 == bpf_htons(0xB00C)) {
++	if (ctx->user_ip6[0] == bpf_htonl(0xFACEB00C)) {
+ 		ctx->user_ip6[0] = bpf_htonl(DST_REWRITE_IP6_0);
+ 		ctx->user_ip6[1] = bpf_htonl(DST_REWRITE_IP6_1);
+ 		ctx->user_ip6[2] = bpf_htonl(DST_REWRITE_IP6_2);
+-- 
+2.21.0
+
