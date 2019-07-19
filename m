@@ -2,294 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9839B6E881
-	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2019 18:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A2E6E8A5
+	for <lists+bpf@lfdr.de>; Fri, 19 Jul 2019 18:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729010AbfGSQOC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Jul 2019 12:14:02 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:40934 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729912AbfGSQOC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Jul 2019 12:14:02 -0400
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 6948B3CA08;
-        Fri, 19 Jul 2019 16:14:01 +0000 (UTC)
-Received: from redhat.com (ovpn-120-192.rdu2.redhat.com [10.10.120.192])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 81CEF67139;
-        Fri, 19 Jul 2019 16:13:54 +0000 (UTC)
-Date:   Fri, 19 Jul 2019 12:13:53 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     =?utf-8?B?5YaJ?= jiang <jiangkidd@hotmail.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "yhs@fb.com" <yhs@fb.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
+        id S1730908AbfGSQVg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Jul 2019 12:21:36 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23826 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728051AbfGSQVg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 19 Jul 2019 12:21:36 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6JGINdV024857;
+        Fri, 19 Jul 2019 09:21:34 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=1+3hbKjGfYgN3/4Z+axz9ZUE2Wiy0PGTF/X9jCscLTU=;
+ b=ClOcBnrw1FgWDITrg60AUbijgmWqUg0FUMK05gsI6xfMB7EpuUmobFmSjpGRrdiGENkV
+ u9b78ZAQiiz3gQrelLirOSMJh7XNRhl+L8+AFulxuvufet17S7XRq7eXcG0LtI8cqI2I
+ 9B8qHehyiPKFl6uX4OnKUQYGODiyVzC90w4= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2tubxdh5wn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Fri, 19 Jul 2019 09:21:34 -0700
+Received: from prn-mbx07.TheFacebook.com (2620:10d:c081:6::21) by
+ prn-hub03.TheFacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Fri, 19 Jul 2019 09:21:33 -0700
+Received: from prn-hub02.TheFacebook.com (2620:10d:c081:35::126) by
+ prn-mbx07.TheFacebook.com (2620:10d:c081:6::21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Fri, 19 Jul 2019 09:21:32 -0700
+Received: from NAM01-BN3-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.26) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Fri, 19 Jul 2019 09:21:32 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jS36d+UySDBbO7RYPFDkcDwMyzwdDKjgCZ3XyWYzx9scQKPxuKAuVRZh6468g+V69nbTKu/tU22+u+i/ZUeDNJpVe/JwP2UH1qPmjfKN1UP4nnbtPsKaExHTatL/zUitbacpNZi+fi/j4FxjyjrTtbhn0rxemNqfhXiuy5ezQY8lOKYk5iQSOb1wvzuifJi/SyvYt2QYlLFT9kGdKeWrMJHsXF4ORSVdU3E473A0t/ijnBczorurBjql5bkVOf7b+L/YvXEbUFaymUHxSrHh/Yi7CRK+vVy0j0gVCYvJXAohrsNJSthq1vaJDK4T8Wtj9P2OX/KXS4jWlvMJnnqf+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1+3hbKjGfYgN3/4Z+axz9ZUE2Wiy0PGTF/X9jCscLTU=;
+ b=SHWmcxSxaJUeaj6onIzu5/AOtVwkVKFsZXuQYUBoZPQChSUfTbMK1jNqQF71JNf7FkLAP8evKXgUIOK1lBtjPlu+zcIYXSwLC6W2MyenznBQJYRypHV/nKwmSa+KVGF3/BIAvuT51umwfXPTknCr/BvGTIxmIizUW5k8ZFY7lrVembsyQYMHxpVHEtEXyE7SyoRFINoah4wt/YQkK8VXJyB9KBviFRU4VBmofSDKULlMmah7IQ72uG06DYBzIyPZPTlLWA5tiGGeAwFWcIkpmdHYajPW6MYQXsYu+dPdHTfbjd7jY9tJEbZHEgEZzpG4meZENZ69EoR3AYNAt9Tw8w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
+ smtp.mailfrom=fb.com;dmarc=pass action=none header.from=fb.com;dkim=pass
+ header.d=fb.com;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1+3hbKjGfYgN3/4Z+axz9ZUE2Wiy0PGTF/X9jCscLTU=;
+ b=dPlJoTyHRWRmmyi/sah/K6+w5twirWHHUDXTYI66Gw6KvV6qIVNmtY5Voq9upcjrnv8QGLhQVZeW/NfrHL5yyTKj0rvyDmQ0Ikc+pdspqgKokIoic5l/qRvGniCZC9Gp1VcMcpawVuXKkSBHUCyO2r1BGiryWjd/gv/IhqoDSAs=
+Received: from CY4PR15MB1366.namprd15.prod.outlook.com (10.172.157.148) by
+ CY4PR15MB1559.namprd15.prod.outlook.com (10.172.161.17) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2073.14; Fri, 19 Jul 2019 16:21:31 +0000
+Received: from CY4PR15MB1366.namprd15.prod.outlook.com
+ ([fe80::84cf:a2a8:4070:2ce8]) by CY4PR15MB1366.namprd15.prod.outlook.com
+ ([fe80::84cf:a2a8:4070:2ce8%12]) with mapi id 15.20.2073.012; Fri, 19 Jul
+ 2019 16:21:31 +0000
+From:   Andrey Ignatov <rdna@fb.com>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "xdp-newbies@vger.kernel.org" <xdp-newbies@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "jiangran.jr@alibaba-inc.com" <jiangran.jr@alibaba-inc.com>
-Subject: Re: [PATCH] virtio-net: parameterize min ring num_free for virtio
- receive
-Message-ID: <20190719121243-mutt-send-email-mst@kernel.org>
-References: <BYAPR14MB32056583C4963342F5D817C4A6C80@BYAPR14MB3205.namprd14.prod.outlook.com>
- <20190718085836-mutt-send-email-mst@kernel.org>
- <bdd30ef5-4f69-8218-eed0-38c6daac42db@redhat.com>
- <20190718103641-mutt-send-email-mst@kernel.org>
- <20190718104307-mutt-send-email-mst@kernel.org>
- <d1faa33a-6c4c-1190-8430-f0639edc3b96@redhat.com>
- <9c1bdbc5-e2c1-8dd7-52f9-1a4b43b86ff0@hotmail.com>
- <BYAPR14MB3205CA9A194A3828D869E2E5A6CB0@BYAPR14MB3205.namprd14.prod.outlook.com>
+        "gor@linux.ibm.com" <gor@linux.ibm.com>,
+        "heiko.carstens@de.ibm.com" <heiko.carstens@de.ibm.com>
+Subject: Re: [PATCH bpf] selftests/bpf: fix sendmsg6_prog on s390
+Thread-Topic: [PATCH bpf] selftests/bpf: fix sendmsg6_prog on s390
+Thread-Index: AQHVPhFWgrU01ARfIEagaLKVJzFWY6bSH+YA
+Date:   Fri, 19 Jul 2019 16:21:30 +0000
+Message-ID: <20190719162128.GA36225@rdna-mbp.dhcp.thefacebook.com>
+References: <20190719090611.91743-1-iii@linux.ibm.com>
+In-Reply-To: <20190719090611.91743-1-iii@linux.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BYAPR06CA0056.namprd06.prod.outlook.com
+ (2603:10b6:a03:14b::33) To CY4PR15MB1366.namprd15.prod.outlook.com
+ (2603:10b6:903:f7::20)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::1:cf0e]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4e466891-5f5c-4348-363c-08d70c652843
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:CY4PR15MB1559;
+x-ms-traffictypediagnostic: CY4PR15MB1559:
+x-microsoft-antispam-prvs: <CY4PR15MB1559D65E6F0A293C4F0D4F30A8CB0@CY4PR15MB1559.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 01039C93E4
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(346002)(376002)(39860400002)(396003)(366004)(51914003)(189003)(199004)(316002)(76176011)(186003)(25786009)(53936002)(6506007)(102836004)(46003)(6246003)(8676002)(66476007)(8936002)(305945005)(33656002)(81156014)(6916009)(52116002)(7736002)(6116002)(386003)(229853002)(81166006)(6486002)(2906002)(476003)(11346002)(6436002)(486006)(9686003)(256004)(1076003)(446003)(6512007)(478600001)(99286004)(68736007)(5660300002)(64756008)(66446008)(66946007)(86362001)(71190400001)(4326008)(14454004)(54906003)(71200400001)(66556008);DIR:OUT;SFP:1102;SCL:1;SRVR:CY4PR15MB1559;H:CY4PR15MB1366.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: UVx83vc3pdvtMrZdppKgfN7J3gjI7hNOLKxjiXFtLgyzA3giWLvTs2bmcjsVAgTb5h+h4XEEojPpqMfiEpBRjD3dc/91GMrMawp7CCAl4NU4BgH0KaOzht3kxMFz3AMMaYBeoldXT/iidvfvYkaP6F3jNrP3oeOiexKils6NC41luuF5icxGZRBsqJ7QJq9u92Z/dlx8pi/MGhQSX92SHxSMGMhtiAtJzaUsxLEaOrDM7ZblLgREfiVAecgqCLF+HzqRJnFK2H2cT4sRTcpON4Qw3e3/Q4fUCI8LaFIr9J8BTnENwrO/NTtk00GB6qzkTdtmqVC9wqOHT5F1DMTmWvl0AmO3UrPY1Pub/yd0XBLRYHMOVuObzPSnclaQ+le/eq17WYuB0st26p4RPc2rd6dbrP2xOyD60N4DWzpy8Fg=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <498AF0DEF71F0549A23FC69747C081EA@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BYAPR14MB3205CA9A194A3828D869E2E5A6CB0@BYAPR14MB3205.namprd14.prod.outlook.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.39]); Fri, 19 Jul 2019 16:14:02 +0000 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4e466891-5f5c-4348-363c-08d70c652843
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jul 2019 16:21:31.0474
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rdna@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR15MB1559
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-19_11:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907190177
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 19, 2019 at 03:31:29PM +0000, 冉 jiang wrote:
-> 
-> On 2019/7/19 22:29, Jiang wrote:
-> >
-> > On 2019/7/19 10:36, Jason Wang wrote:
-> >>
-> >> On 2019/7/18 下午10:43, Michael S. Tsirkin wrote:
-> >>> On Thu, Jul 18, 2019 at 10:42:47AM -0400, Michael S. Tsirkin wrote:
-> >>>> On Thu, Jul 18, 2019 at 10:01:05PM +0800, Jason Wang wrote:
-> >>>>> On 2019/7/18 下午9:04, Michael S. Tsirkin wrote:
-> >>>>>> On Thu, Jul 18, 2019 at 12:55:50PM +0000, ? jiang wrote:
-> >>>>>>> This change makes ring buffer reclaim threshold num_free 
-> >>>>>>> configurable
-> >>>>>>> for better performance, while it's hard coded as 1/2 * queue now.
-> >>>>>>> According to our test with qemu + dpdk, packet dropping happens 
-> >>>>>>> when
-> >>>>>>> the guest is not able to provide free buffer in avail ring timely.
-> >>>>>>> Smaller value of num_free does decrease the number of packet 
-> >>>>>>> dropping
-> >>>>>>> during our test as it makes virtio_net reclaim buffer earlier.
-> >>>>>>>
-> >>>>>>> At least, we should leave the value changeable to user while the
-> >>>>>>> default value as 1/2 * queue is kept.
-> >>>>>>>
-> >>>>>>> Signed-off-by: jiangkidd<jiangkidd@hotmail.com>
-> >>>>>> That would be one reason, but I suspect it's not the
-> >>>>>> true one. If you need more buffer due to jitter
-> >>>>>> then just increase the queue size. Would be cleaner.
-> >>>>>>
-> >>>>>>
-> >>>>>> However are you sure this is the reason for
-> >>>>>> packet drops? Do you see them dropped by dpdk
-> >>>>>> due to lack of space in the ring? As opposed to
-> >>>>>> by guest?
-> >>>>>>
-> >>>>>>
-> >>>>> Besides those, this patch depends on the user to choose a suitable 
-> >>>>> threshold
-> >>>>> which is not good. You need either a good value with demonstrated 
-> >>>>> numbers or
-> >>>>> something smarter.
-> >>>>>
-> >>>>> Thanks
-> >>>> I do however think that we have a problem right now: try_fill_recv can
-> >>>> take up a long time during which net stack does not run at all. 
-> >>>> Imagine
-> >>>> a 1K queue - we are talking 512 packets. That's exceessive.
-> >>
-> >>
-> >> Yes, we will starve a fast host in this case.
-> >>
-> >>
-> >>>>    napi poll
-> >>>> weight solves a similar problem, so it might make sense to cap this at
-> >>>> napi_poll_weight.
-> >>>>
-> >>>> Which will allow tweaking it through a module parameter as a
-> >>>> side effect :) Maybe just do NAPI_POLL_WEIGHT.
-> >>> Or maybe NAPI_POLL_WEIGHT/2 like we do at half the queue ;). Please
-> >>> experiment, measure performance and let the list know
-> >>>
-> >>>> Need to be careful though: queues can also be small and I don't 
-> >>>> think we
-> >>>> want to exceed queue size / 2, or maybe queue size - napi_poll_weight.
-> >>>> Definitely must not exceed the full queue size.
-> >>
-> >>
-> >> Looking at intel, it uses 16 and i40e uses 32.  It looks to me 
-> >> NAPI_POLL_WEIGHT/2 is better.
-> >>
-> >> Jiang, want to try that and post a new patch?
-> >>
-> >> Thanks
-> >>
-> >>
-> >>>>
-> >>>> -- 
-> >>>> MST
-> >
-> > We did have completed several rounds of test with setting the value to 
-> > budget (64 as the default value). It does improve a lot with pps is 
-> > below 400pps for a single stream. Let me consolidate the data and will 
-> > send it soon. Actually, we are confident that it runs out of free 
-> > buffer in avail ring when packet dropping happens with below systemtap:
-> >
-> > Just a snippet:
-> >
-> > probe module("virtio_ring").function("virtqueue_get_buf")
-> > {
-> >     x = (@cast($_vq, "vring_virtqueue")->vring->used->idx)- 
-> > (@cast($_vq, "vring_virtqueue")->last_used_idx) ---> we use this one 
-> > to verify if the queue is full, which means guest is not able to take 
-> > buffer from the queue timely
-> >
-> >     if (x<0 && (x+65535)<4096)
-> >         x = x+65535
-> >
-> >     if((x==1024) && @cast($_vq, "vring_virtqueue")->vq->callback == 
-> > callback_addr)
-> >         netrxcount[x] <<< gettimeofday_s()
-> > }
-> >
-> >
-> > probe module("virtio_ring").function("virtqueue_add_inbuf")
-> > {
-> >     y = (@cast($vq, "vring_virtqueue")->vring->avail->idx)- 
-> > (@cast($vq, "vring_virtqueue")->vring->used->idx) ---> we use this one 
-> > to verify if we run out of free buffer in avail ring
-> >     if (y<0 && (y+65535)<4096)
-> >         y = y+65535
-> >
-> >     if(@2=="debugon")
-> >     {
-> >         if(y==0 && @cast($vq, "vring_virtqueue")->vq->callback == 
-> > callback_addr)
-> >         {
-> >             netrxfreecount[y] <<< gettimeofday_s()
-> >
-> >             printf("no avail ring left seen, printing most recent 5 
-> > num free, vq: %lx, current index: %d\n", $vq, recentfreecount)
-> >             for(i=recentfreecount; i!=((recentfreecount+4) % 5); 
-> > i=((i+1) % 5))
-> >             {
-> >                 printf("index: %d, num free: %d\n", i, recentfree[$vq, 
-> > i])
-> >             }
-> >
-> >             printf("index: %d, num free: %d\n", i, recentfree[$vq, i])
-> >             //exit()
-> >         }
-> >     }
-> > }
-> >
-> >
-> > probe 
-> > module("virtio_net").statement("virtnet_receive@drivers/net/virtio_net.c:732")
-> > {
-> >     recentfreecount++
-> >     recentfreecount = recentfreecount % 5
-> >     recentfree[$rq->vq, recentfreecount] = $rq->vq->num_free ---> 
-> > record the num_free for the last 5 calls to virtnet_receive, so we can 
-> > see if lowering the bar helps.
-> > }
-> >
-> >
-> > Here is the result:
-> >
-> > no avail ring left seen, printing most recent 5 num free, vq: 
-> > ffff9c13c1200000, current index: 1
-> > index: 1, num free: 561
-> > index: 2, num free: 305
-> > index: 3, num free: 369
-> > index: 4, num free: 433
-> > index: 0, num free: 497
-> > no avail ring left seen, printing most recent 5 num free, vq: 
-> > ffff9c13c1200000, current index: 1
-> > index: 1, num free: 543
-> > index: 2, num free: 463
-> > index: 3, num free: 469
-> > index: 4, num free: 476
-> > index: 0, num free: 479
-> > no avail ring left seen, printing most recent 5 num free, vq: 
-> > ffff9c13c1200000, current index: 2
-> > index: 2, num free: 555
-> > index: 3, num free: 414
-> > index: 4, num free: 420
-> > index: 0, num free: 427
-> > index: 1, num free: 491
-> >
-> > You can see in the last 4 calls to virtnet_receive before we run out 
-> > of free buffer and start to relaim, num_free is quite high. So if we 
-> > can do the reclaim earlier, it will certainly help.
-> >
-> > Meanwhile, the patch I proposed actually keeps the default value as 
-> > 1/2 * queue. So the default behavior remains and only leave the 
-> > interface to advanced users, who really understands what they are 
-> > doing. Also, the best value may vary in different environment. Do you 
-> > still think hardcoding this is better option?
-> >
-> >
-> > Jiang
-> >
-> Here is the snippet from our test result. Test1 was done with default 
-> driver with the value of 1/2 * queue, while test2 is with my patch and 
-> min_numfree set to 64 (the default budget value). We can see average 
-> drop packets do decrease a lot in test2. Let me know if you need the 
-> full testing data.
-> 
-> test1Time    avgDropPackets    test2Time    avgDropPackets    pps
-> 
-> > 16:21.0    12.295    56:50.4    0    300k
-> > 17:19.1    15.244    56:50.4    0    300k
-> > 18:17.5    18.789    56:50.4    0    300k
-> > 19:15.1    14.208    56:50.4    0    300k
-> > 20:13.2    20.818    56:50.4    0.267    300k
-> > 21:11.2    12.397    56:50.4    0    300k
-> > 22:09.3    12.599    56:50.4    0    300k
-> > 23:07.3    15.531    57:48.4    0    300k
-> > 24:05.5    13.664    58:46.5    0    300k
-> > 25:03.7    13.158    59:44.5    4.73    300k
-> > 26:01.1    2.486    00:42.6    0    300k
-> > 26:59.1    11.241    01:40.6    0    300k
-> > 27:57.2    20.521    02:38.6    0    300k
-> > 28:55.2    30.094    03:36.7    0    300k
-> > 29:53.3    16.828    04:34.7    0.963    300k
-> > 30:51.3    46.916    05:32.8    0    400k
-> > 31:49.3    56.214    05:32.8    0    400k
-> > 32:47.3    58.69    05:32.8    0    400k
-> > 33:45.3    61.486    05:32.8    0    400k
-> > 34:43.3    72.175    05:32.8    0.598    400k
-> > 35:41.3    56.699    05:32.8    0    400k
-> > 36:39.3    61.071    05:32.8    0    400k
-> > 37:37.3    43.355    06:30.8    0    400k
-> > 38:35.4    44.644    06:30.8    0    400k
-> > 39:33.4    72.336    06:30.8    0    400k
-> > 40:31.4    70.676    06:30.8    0    400k
-> > 41:29.4    108.009    06:30.8    0    400k
-> > 42:27.4    65.216    06:30.8    0    400k
-> 
-> 
-> Jiang
-
-
-OK I find this surprising but I accept what you see.
-I'm inclined not to add a tunable and just select
-a value ourselves.
-I'm also fine with using the napi poll module parameter
-which will give you a bit of tunability.
-
--- 
-MST
+SWx5YSBMZW9zaGtldmljaCA8aWlpQGxpbnV4LmlibS5jb20+IFtGcmksIDIwMTktMDctMTkgMDI6
+MDcgLTA3MDBdOg0KPiAic2VuZG1zZzY6IHJld3JpdGUgSVAgJiBwb3J0IChDKSIgZmFpbHMgb24g
+czM5MCwgYmVjYXVzZSB0aGUgY29kZSBpbg0KPiBzZW5kbXNnX3Y2X3Byb2coKSBhc3N1bWVzIHRo
+YXQgKGN0eC0+dXNlcl9pcDZbMF0gJiAweEZGRkYpIHJlZmVycyB0bw0KPiBsZWFkaW5nIElQdjYg
+YWRkcmVzcyBkaWdpdHMsIHdoaWNoIGlzIG5vdCB0aGUgY2FzZSBvbiBiaWctZW5kaWFuDQo+IG1h
+Y2hpbmVzLg0KPiANCj4gU2luY2UgY2hlY2tpbmcgYml0d2lzZSBvcGVyYXRpb25zIGRvZXNuJ3Qg
+c2VlbSB0byBiZSB0aGUgcG9pbnQgb2YgdGhlDQo+IHRlc3QsIHJlcGxhY2UgdHdvIHNob3J0IGNv
+bXBhcmlzb25zIHdpdGggYSBzaW5nbGUgaW50IGNvbXBhcmlzb24uDQo+IA0KPiBTaWduZWQtb2Zm
+LWJ5OiBJbHlhIExlb3Noa2V2aWNoIDxpaWlAbGludXguaWJtLmNvbT4NCg0KQWNrZWQtYnk6IEFu
+ZHJleSBJZ25hdG92IDxyZG5hQGZiLmNvbT4NCg0KSUlSQyBJIGRpZCBpdCB0aGlzIHdheSB0byB0
+ZXN0IDE2Yml0IGxvYWRzIGZyb20gQyBwcm9ncmFtLCBidXQgc3VjaA0KbG9hZHMgYXJlIGFscmVh
+ZHkgdGVzdGVkIGJ5IGFzbSBwcm9nIGluIHRlc3Rfc29ja19hZGRyLmMuDQoNClRoYW5rcyBmb3Ig
+dGhlIGZpeCENCg0KPiAtLS0NCj4gIHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9ncy9z
+ZW5kbXNnNl9wcm9nLmMgfCAzICstLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCsp
+LCAyIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRl
+c3RzL2JwZi9wcm9ncy9zZW5kbXNnNl9wcm9nLmMgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9i
+cGYvcHJvZ3Mvc2VuZG1zZzZfcHJvZy5jDQo+IGluZGV4IDVhZWFhMjg0ZmM0Ny4uYTY4MDYyODIw
+NDEwIDEwMDY0NA0KPiAtLS0gYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ3Mvc2Vu
+ZG1zZzZfcHJvZy5jDQo+ICsrKyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9ncy9z
+ZW5kbXNnNl9wcm9nLmMNCj4gQEAgLTQxLDggKzQxLDcgQEAgaW50IHNlbmRtc2dfdjZfcHJvZyhz
+dHJ1Y3QgYnBmX3NvY2tfYWRkciAqY3R4KQ0KPiAgCX0NCj4gIA0KPiAgCS8qIFJld3JpdGUgZGVz
+dGluYXRpb24uICovDQo+IC0JaWYgKChjdHgtPnVzZXJfaXA2WzBdICYgMHhGRkZGKSA9PSBicGZf
+aHRvbnMoMHhGQUNFKSAmJg0KPiAtCSAgICAgY3R4LT51c2VyX2lwNlswXSA+PiAxNiA9PSBicGZf
+aHRvbnMoMHhCMDBDKSkgew0KPiArCWlmIChjdHgtPnVzZXJfaXA2WzBdID09IGJwZl9odG9ubCgw
+eEZBQ0VCMDBDKSkgew0KPiAgCQljdHgtPnVzZXJfaXA2WzBdID0gYnBmX2h0b25sKERTVF9SRVdS
+SVRFX0lQNl8wKTsNCj4gIAkJY3R4LT51c2VyX2lwNlsxXSA9IGJwZl9odG9ubChEU1RfUkVXUklU
+RV9JUDZfMSk7DQo+ICAJCWN0eC0+dXNlcl9pcDZbMl0gPSBicGZfaHRvbmwoRFNUX1JFV1JJVEVf
+SVA2XzIpOw0KPiAtLSANCj4gMi4yMS4wDQo+IA0KDQotLSANCkFuZHJleSBJZ25hdG92DQo=
