@@ -2,84 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E817046E
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2019 17:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D3B708F0
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2019 20:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729746AbfGVPsS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Jul 2019 11:48:18 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:33173 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727309AbfGVPsS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Jul 2019 11:48:18 -0400
-Received: by mail-pl1-f194.google.com with SMTP id c14so19323071plo.0;
-        Mon, 22 Jul 2019 08:48:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=v9CeHsrmNK4u791PGt6HLt7yZpY8YH1M1iihgCmbeEo=;
-        b=j1dj7TjAWLbPfTqESS9vwcj4duHRd9TFsFSVyuqXnaY8X5E+xBCCF9MKSx/pFL33N/
-         UNNgWfOulFWmWqz62vJCxun4FFlgg9H7F13OtTY5mT8jTmGRsy8tPfDbBQCOAejMVB7t
-         RvgqfrQjO3Vgu4PtuRUB4ByypEbWTxRVHumcqeQizbp/WoFpI1bNf/Y1GggwyeZ0EKP1
-         ybmwAoCNRuuckX3MqZOyz7xcyEt9yb4jHEPW4IE7Tr06o9rSgn1XEvNDPczMz6tewm7Z
-         t32xPt+wbAVujaLiMyR9D8pAK6FAMA4tSgixMAdL8dpJZVFxnDQODpBYwTPIw7jZFLp9
-         m/qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=v9CeHsrmNK4u791PGt6HLt7yZpY8YH1M1iihgCmbeEo=;
-        b=T3JpCgp7IceJ0sKt4RNbtEcaoznls34Z4/uevBAScqUUw8rhmB8ZjO84/zx8ohVRgS
-         DOR/g6F3r+E8IGDIFCvkVedjQlGkCtiVCiHcu4ZjU6f4SKoaic4Xt3G40qu4AtiAXmBq
-         mK9Rt97EbcJhVRD3cLYYds57UB6aXamWxPSGniflC9fBSTZoSo9kayNVVfZvKYoaf+Aw
-         ClVCII9gU/CtHyhMYUWqpcFhOc7PHKEtSwCE6uSYe/JFdEkiHCMtC5hlaNZWW5ZkecYV
-         ckC88gHfmju2keHqhf5szcTkLhnqSgGR8gaw+4rhDsPCIlRPJ9Vx6endp5/EaYBehDkj
-         FgOg==
-X-Gm-Message-State: APjAAAWe79C24/bnYh9EW6UeRTopKoHDR/4CSg1acQUUSa20qi4oPrMB
-        +hxFvf4g2Fi93zYTiyWbZgw=
-X-Google-Smtp-Source: APXvYqyZSc9krNvFfN+EEqb8WQ3eDD7gaJMKUDpZmhq6o2o/7CLargLgebHOrdManbHZ5rOmW8/53A==
-X-Received: by 2002:a17:902:9689:: with SMTP id n9mr77044735plp.241.1563810497490;
-        Mon, 22 Jul 2019 08:48:17 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id h26sm43201717pfq.64.2019.07.22.08.48.14
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 22 Jul 2019 08:48:17 -0700 (PDT)
-Date:   Mon, 22 Jul 2019 08:48:09 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        john.fastabend@gmail.com, alexei.starovoitov@gmail.com
-Cc:     edumazet@google.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        oss-drivers@netronome.com
-Message-ID: <5d35dab9cea9_7cd82abccab905bc13@john-XPS-13-9370.notmuch>
-In-Reply-To: <3c97d252-37ad-302f-b917-e7ea6e819318@iogearbox.net>
-References: <20190719172927.18181-1-jakub.kicinski@netronome.com>
- <20190719103721.558d9e7d@cakuba.netronome.com>
- <3c97d252-37ad-302f-b917-e7ea6e819318@iogearbox.net>
-Subject: Re: [PATCH bpf v4 00/14] sockmap/tls fixes
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        id S1730831AbfGVSx4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Jul 2019 14:53:56 -0400
+Received: from hqemgate16.nvidia.com ([216.228.121.65]:3507 "EHLO
+        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727821AbfGVSx4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Jul 2019 14:53:56 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5d3606400002>; Mon, 22 Jul 2019 11:53:52 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 22 Jul 2019 11:53:55 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 22 Jul 2019 11:53:55 -0700
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 22 Jul
+ 2019 18:53:54 +0000
+Subject: Re: [PATCH 1/3] drivers/gpu/drm/via: convert put_page() to
+ put_user_page*()
+To:     Christoph Hellwig <hch@lst.de>, <john.hubbard@gmail.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Boaz Harrosh <boaz@plexistor.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Yan Zheng <zyan@redhat.com>, <netdev@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-mm@kvack.org>,
+        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20190722043012.22945-1-jhubbard@nvidia.com>
+ <20190722043012.22945-2-jhubbard@nvidia.com> <20190722093355.GB29538@lst.de>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <397ff3e4-e857-037a-1aee-ff6242e024b2@nvidia.com>
+Date:   Mon, 22 Jul 2019 11:53:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20190722093355.GB29538@lst.de>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1563821632; bh=dVEAb2CGI+Rcq3kPxf1ySX9mPnHE1aqM1bmhIjbORUc=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=HArRmCgkrni3Mv1zhHNTOrkORst1xu/RkKpSHN9NJ6eHvsCKnyilmR14o7Vu/72+2
+         KzGoGeJ5LPaTaA997Z1lTeEX5TN0QxgL9zU0E1stVph1kaJP/CjI3G/fZC7Su8uSDP
+         zQdMp40Hd3vz1tqkE44dAhr5RuD9olYTaUe61D28D1sEpt/q0j8DDbdv6B2ii7KaIW
+         3XKa/T3Q4mkn6zgOvtasGsucgAaQQ3F4SWgLkmtCnVrJI8UW8FhQBhBRF+eCjxAZDo
+         DjdQKgIytgBgEr6BmAqoJ/KeCGoQ826d60sYBB87S4A1fHrwdDnuUDjUmWCd/fqdhR
+         fU5s088Wpq8BA==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann wrote:
-> On 7/19/19 7:37 PM, Jakub Kicinski wrote:
-> > On Fri, 19 Jul 2019 10:29:13 -0700, Jakub Kicinski wrote:
-> >> John says:
-> >>
-> >> Resolve a series of splats discovered by syzbot and an unhash
-> >> TLS issue noted by Eric Dumazet.
-> > 
-> > Sorry for the delay, this code is quite tricky. According to my testing
-> > TLS SW and HW should now work, I hope I didn't regress things on the
-> > sockmap side.
+On 7/22/19 2:33 AM, Christoph Hellwig wrote:
+> On Sun, Jul 21, 2019 at 09:30:10PM -0700, john.hubbard@gmail.com wrote:
+>>  		for (i = 0; i < vsg->num_pages; ++i) {
+>>  			if (NULL != (page = vsg->pages[i])) {
+>>  				if (!PageReserved(page) && (DMA_FROM_DEVICE == vsg->direction))
+>> -					SetPageDirty(page);
+>> -				put_page(page);
+>> +					put_user_pages_dirty(&page, 1);
+>> +				else
+>> +					put_user_page(page);
+>>  			}
 > 
-> Applied, thanks everyone!
+> Can't just pass a dirty argument to put_user_pages?  Also do we really
 
-Thanks Jakub, for the patches without my signed-off already
+Yes, and in fact that would help a lot more than the single page case,
+which is really just cosmetic after all.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+> need a separate put_user_page for the single page case?
+> put_user_pages_dirty?
+
+Not really. I'm still zeroing in on the ideal API for all these call sites,
+and I agree that the approach below is cleaner.
+
+> 
+> Also the PageReserved check looks bogus, as I can't see how a reserved
+> page can end up here.  So IMHO the above snippled should really look
+> something like this:
+> 
+> 	put_user_pages(vsg->pages[i], vsg->num_pages,
+> 			vsg->direction == DMA_FROM_DEVICE);
+> 
+> in the end.
+> 
+
+Agreed.
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
