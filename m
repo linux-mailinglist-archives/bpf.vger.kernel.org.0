@@ -2,68 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8996FC43
-	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2019 11:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2384E7022B
+	for <lists+bpf@lfdr.de>; Mon, 22 Jul 2019 16:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728117AbfGVJea (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Jul 2019 05:34:30 -0400
-Received: from verein.lst.de ([213.95.11.211]:58780 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726236AbfGVJea (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Jul 2019 05:34:30 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 5F1B668B20; Mon, 22 Jul 2019 11:34:28 +0200 (CEST)
-Date:   Mon, 22 Jul 2019 11:34:28 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     john.hubbard@gmail.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Boaz Harrosh <boaz@plexistor.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Yan Zheng <zyan@redhat.com>, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [PATCH 2/3] net/xdp: convert put_page() to put_user_page*()
-Message-ID: <20190722093428.GC29538@lst.de>
-References: <20190722043012.22945-1-jhubbard@nvidia.com> <20190722043012.22945-3-jhubbard@nvidia.com>
+        id S1728887AbfGVOWK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Jul 2019 10:22:10 -0400
+Received: from www62.your-server.de ([213.133.104.62]:39890 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728228AbfGVOWK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Jul 2019 10:22:10 -0400
+Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hpZCZ-00016W-NZ; Mon, 22 Jul 2019 16:22:07 +0200
+Received: from [178.193.45.231] (helo=pc-63.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hpZCZ-000SrB-Fu; Mon, 22 Jul 2019 16:22:07 +0200
+Subject: Re: [PATCH bpf v4 00/14] sockmap/tls fixes
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        john.fastabend@gmail.com, alexei.starovoitov@gmail.com
+Cc:     edumazet@google.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        oss-drivers@netronome.com
+References: <20190719172927.18181-1-jakub.kicinski@netronome.com>
+ <20190719103721.558d9e7d@cakuba.netronome.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <3c97d252-37ad-302f-b917-e7ea6e819318@iogearbox.net>
+Date:   Mon, 22 Jul 2019 16:22:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190722043012.22945-3-jhubbard@nvidia.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20190719103721.558d9e7d@cakuba.netronome.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25518/Mon Jul 22 10:12:39 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-> index 83de74ca729a..9cbbb96c2a32 100644
-> --- a/net/xdp/xdp_umem.c
-> +++ b/net/xdp/xdp_umem.c
-> @@ -171,8 +171,7 @@ static void xdp_umem_unpin_pages(struct xdp_umem *umem)
->  	for (i = 0; i < umem->npgs; i++) {
->  		struct page *page = umem->pgs[i];
->  
-> -		set_page_dirty_lock(page);
-> -		put_page(page);
-> +		put_user_pages_dirty_lock(&page, 1);
+On 7/19/19 7:37 PM, Jakub Kicinski wrote:
+> On Fri, 19 Jul 2019 10:29:13 -0700, Jakub Kicinski wrote:
+>> John says:
+>>
+>> Resolve a series of splats discovered by syzbot and an unhash
+>> TLS issue noted by Eric Dumazet.
+> 
+> Sorry for the delay, this code is quite tricky. According to my testing
+> TLS SW and HW should now work, I hope I didn't regress things on the
+> sockmap side.
 
-Same here, we really should avoid the need for the loop here and
-do the looping inside the helper.
+Applied, thanks everyone!
