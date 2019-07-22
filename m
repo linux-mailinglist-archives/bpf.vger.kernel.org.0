@@ -2,127 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F8170CC0
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2019 00:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C49BF70DC9
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2019 01:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733276AbfGVWee (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Jul 2019 18:34:34 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:45556 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733248AbfGVWeX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Jul 2019 18:34:23 -0400
-Received: by mail-pg1-f195.google.com with SMTP id o13so18325311pgp.12;
-        Mon, 22 Jul 2019 15:34:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/ofa5EhPy5N+KM7nweAsOE7rWC5Duznu1d2IMlN4I/Y=;
-        b=Sw0HvJJTDmzbJlbRnGPA0tEKa9wBsoXOpSBSyyCpXXoTDy/oLlPojLp975N/iZT3Rt
-         8jfBQuYyMJoyHlJ2fyV7WUkxYIldTegTihpxRiAvNY8zRba3PO9qS3NZSvTUxei06Rk0
-         uOGdeG1FwadWsIBYlsr2yV0g+UwUeH2FEFiAyASHNNXam+5nvwUOaLXqS8GitFl6ninp
-         eVYAIz6e9bu5JJNLX4jLtYsSme3OBg4qojzmnb1QA+ka0SBTx6a2p/N+h2SdySOnbmnd
-         qH6vvH98sRnmJjM2M9uSzbppXdvFGZyQFLd9B0l+ZOt4ywhtBFZH/zZ3Y6U5IOl5jKuB
-         XGJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/ofa5EhPy5N+KM7nweAsOE7rWC5Duznu1d2IMlN4I/Y=;
-        b=nQt9Bnhijl78wihrIrOnFKmCFYUnu+x8HxtHt8m4TeO104UJziZrGVWZY0UAXs0KOO
-         XO8/WVxyHVBG5ixf98t40r1P1DrSt7NUE3UunuVsWXwoIP8LT3p0aR43V/aW8Op+N4H5
-         cbpl2BjeuTbAaLOgiRwBeMlfYIeZtjTgcaMMAtPX5J2lfmAEG0eHEM1iuRndHZ83e0yq
-         eh4QWL8UMx3bwRsCu/eAPYJ69TUIsqvnOoeAt/NNUihVWOHoOAYFFsLgLbrsrEEq3ecQ
-         0VJ39BxrEeER1ZWG7f/dLjEUlsv5larFeIKBe9DtHORW4ia7N35IdXGA8NDzts0g5qpg
-         TkMA==
-X-Gm-Message-State: APjAAAW1RyKoMQ6V4NLv/JvmQv8m7v8pLLu5MxYdd8N7Ae+zTAHwZRFE
-        KiGi45FnS1H7Byuw4PJFVsY=
-X-Google-Smtp-Source: APXvYqwVaJn+EzirdPn13F0RFZ1U5rQgVF9dbTt0Dcd+iQUjCIySQADzRQKVKnRyYTBRNLHQ9Mrw9A==
-X-Received: by 2002:a62:7990:: with SMTP id u138mr2390135pfc.191.1563834863230;
-        Mon, 22 Jul 2019 15:34:23 -0700 (PDT)
-Received: from blueforge.nvidia.com (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id r18sm30597570pfg.77.2019.07.22.15.34.21
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 22 Jul 2019 15:34:22 -0700 (PDT)
-From:   john.hubbard@gmail.com
-X-Google-Original-From: jhubbard@nvidia.com
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Boaz Harrosh <boaz@plexistor.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Yan Zheng <zyan@redhat.com>, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH 3/3] net/xdp: convert put_page() to put_user_page*()
-Date:   Mon, 22 Jul 2019 15:34:15 -0700
-Message-Id: <20190722223415.13269-4-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190722223415.13269-1-jhubbard@nvidia.com>
-References: <20190722223415.13269-1-jhubbard@nvidia.com>
+        id S2387552AbfGVX5D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Jul 2019 19:57:03 -0400
+Received: from www62.your-server.de ([213.133.104.62]:34448 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726070AbfGVX5D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Jul 2019 19:57:03 -0400
+Received: from [78.46.172.3] (helo=sslproxy06.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hpiAv-0004Ji-LK; Tue, 23 Jul 2019 01:57:01 +0200
+Received: from [178.193.45.231] (helo=pc-63.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hpiAv-000CJ9-G7; Tue, 23 Jul 2019 01:57:01 +0200
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, alexei.starovoitov@gmail.com
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Subject: bpf-next is OPEN
+Message-ID: <6d85b9d6-aafc-bb21-0646-1447ff0204fe@iogearbox.net>
+Date:   Tue, 23 Jul 2019 01:57:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25518/Mon Jul 22 10:12:39 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: John Hubbard <jhubbard@nvidia.com>
+Merge window is closed, therefore new round begins.
 
-For pages that were retained via get_user_pages*(), release those pages
-via the new put_user_page*() routines, instead of via put_page() or
-release_pages().
-
-This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
-("mm: introduce put_user_page*(), placeholder versions").
-
-Cc: Björn Töpel <bjorn.topel@intel.com>
-Cc: Magnus Karlsson <magnus.karlsson@intel.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- net/xdp/xdp_umem.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
-
-diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-index 83de74ca729a..0325a17915de 100644
---- a/net/xdp/xdp_umem.c
-+++ b/net/xdp/xdp_umem.c
-@@ -166,14 +166,7 @@ void xdp_umem_clear_dev(struct xdp_umem *umem)
- 
- static void xdp_umem_unpin_pages(struct xdp_umem *umem)
- {
--	unsigned int i;
--
--	for (i = 0; i < umem->npgs; i++) {
--		struct page *page = umem->pgs[i];
--
--		set_page_dirty_lock(page);
--		put_page(page);
--	}
-+	put_user_pages_dirty_lock(umem->pgs, umem->npgs);
- 
- 	kfree(umem->pgs);
- 	umem->pgs = NULL;
--- 
-2.22.0
-
+Thanks everyone,
+Daniel
