@@ -2,72 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4718372161
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2019 23:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74AB57219B
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2019 23:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728657AbfGWVPu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jul 2019 17:15:50 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:34469 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726995AbfGWVPt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jul 2019 17:15:49 -0400
-Received: by mail-lj1-f195.google.com with SMTP id p17so42441210ljg.1;
-        Tue, 23 Jul 2019 14:15:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hhyvluOoTz6hgw5ip4v2KxMbz6NbJ07oc61JlnqjEM8=;
-        b=ag+X+s84YWEie1fceAUy2++meeB+kSxP0+mhhMtmwXyYSptozBvB6gKWmx4eKUO0An
-         N4j7zQ12U8Xl3itWlVj867Ter9FEgfhO7Uyg7EwwbrLx3zzC3GdooxdHYxfW7zUe+E9A
-         99E4bvB6/1R9cPHsWKfNYkan8P829LuRkhe/tqg6e5cEl0/RAksoB8IjtY9pKPiUQo3k
-         gBu/U1Sx6emat87lHT18hk8hv1nx05EGwiZoyk+dkSIO9/rOVzstO7gEw80bcEYuIt8m
-         if5LeGMkiMdMrO+I5scU3Ld4NUMjcIRvzvnxDnUhmA11ZBXRWZfEEehs5TE4h4Cy/ige
-         aYig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hhyvluOoTz6hgw5ip4v2KxMbz6NbJ07oc61JlnqjEM8=;
-        b=hhTYuSPyoCj1HcDJuP99jSLvtVoC3pdEGFZZqcLQ6YJAIvm7XG1dNEeVSCdrjH/qX6
-         hEwYKRx5t7BH/NlbZ7SVQMISOuT5xpi1hBT9AJZSmfZxfTTQ+2jBA/A/kh6h/8dWNbiT
-         rrAA9W4vcApEDDhyX9P8lTpg4E7642D8FGMxA8MSGIqRpqhyMbpkvX87zkU5sPxlGMAb
-         xFoL5W6SCR2oF7+6rV4MqqmONfWbdXYc5Q51V22DfZ2Lpl0w0AEfLBpO/zodwUIGegM0
-         l3y5B6P4n9yXMLwrQJ09OLFlIDnwtfotmTtKvBspc61Oos3I43xUFbaT0Af+BRQDn9Az
-         SPYw==
-X-Gm-Message-State: APjAAAVx0Mcedv0ri6WiCjXaH3rxb4wHxz/o58g0os0MFgqBlIjL36At
-        SYRrP0t5DBs3KJEOwlf+CHJLpUG5EL6/ZEDNY6U=
-X-Google-Smtp-Source: APXvYqxetMwDuTg7iLYPc0l3vXIDU8F3o18xFNIxn45uS1oWNqEZCabVnUBOS14oqsHptNk5Yh/PX5IUXbwp/dYakF4=
-X-Received: by 2002:a2e:7818:: with SMTP id t24mr13714260ljc.210.1563916547604;
- Tue, 23 Jul 2019 14:15:47 -0700 (PDT)
+        id S2392107AbfGWVfA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jul 2019 17:35:00 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:61234 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729084AbfGWVfA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Jul 2019 17:35:00 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6NLQIiP003980
+        for <bpf@vger.kernel.org>; Tue, 23 Jul 2019 14:34:59 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=facebook;
+ bh=l59IJz/Pl3i3Po1J3KD9hdZaTUSN4axyc7V+n1XtiLM=;
+ b=f61xOV9/u93CKU7x2YVsr5kZrVswrJJzziCKtSWZfvHE8d8vx9GlNfPeS64rKtCRsXUi
+ LgsRk1uy9KJIvRA2gM5RKRnxKmXmYx48YqPlBeCbn/xoUF2FJLW1q7J0OP0qoaIJK1DN
+ saVvkIHynEk9eeW37C5wq0IzN/gIJd+kDc8= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2tx61p13en-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 23 Jul 2019 14:34:59 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 23 Jul 2019 14:34:57 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 2AE218615A2; Tue, 23 Jul 2019 14:34:56 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <songliubraving@fb.com>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH v2 bpf-next 0/5] switch samples and tests to libbpf perf buffer API
+Date:   Tue, 23 Jul 2019 14:34:40 -0700
+Message-ID: <20190723213445.1732339-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20190723101538.136328-1-edumazet@google.com>
-In-Reply-To: <20190723101538.136328-1-edumazet@google.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 23 Jul 2019 14:15:36 -0700
-Message-ID: <CAADnVQLZoTTcD11V69snu6=SHgLUW97tenHrcCa2w_3gmw=29Q@mail.gmail.com>
-Subject: Re: [PATCH bpf 0/2] bpf: gso_segs fixes
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-23_09:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=872 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1907230216
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 23, 2019 at 3:15 AM Eric Dumazet <edumazet@google.com> wrote:
->
-> First patch changes the kernel, second patch
-> adds a new test.
->
-> Note that other patches might be needed to take
-> care of similar issues in sock_ops_convert_ctx_access()
-> and SOCK_OPS_GET_FIELD()
+There were few more tests and samples that were using custom perf buffer =
+setup
+code from trace_helpers.h. This patch set gets rid of all the usages of t=
+hose
+and removes helpers themselves. Libbpf provides nicer, but equally powerf=
+ul
+set of APIs to work with perf ring buffers, so let's have all the samples=
+ use
 
-Nice catch!
-Applied to bpf tree. Thanks
+v1->v2:
+- make logging message one long line instead of two (Song).
+
+Andrii Nakryiko (5):
+  selftests/bpf: convert test_get_stack_raw_tp to perf_buffer API
+  selftests/bpf: switch test_tcpnotify to perf_buffer API
+  samples/bpf: convert xdp_sample_pkts_user to perf_buffer API
+  samples/bpf: switch trace_output sample to perf_buffer API
+  selftests/bpf: remove perf buffer helpers
+
+ samples/bpf/trace_output_user.c               |  43 ++----
+ samples/bpf/xdp_sample_pkts_user.c            |  61 +++------
+ .../bpf/prog_tests/get_stack_raw_tp.c         |  78 ++++++-----
+ .../bpf/progs/test_get_stack_rawtp.c          |   2 +-
+ .../selftests/bpf/test_tcpnotify_user.c       |  90 +++++--------
+ tools/testing/selftests/bpf/trace_helpers.c   | 125 ------------------
+ tools/testing/selftests/bpf/trace_helpers.h   |   9 --
+ 7 files changed, 111 insertions(+), 297 deletions(-)
+
+--=20
+2.17.1
+
