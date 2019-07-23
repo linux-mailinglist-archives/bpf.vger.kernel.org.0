@@ -2,125 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B6C70E1E
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2019 02:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD3A7105E
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2019 06:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728481AbfGWAZh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Jul 2019 20:25:37 -0400
-Received: from mga04.intel.com ([192.55.52.120]:52276 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727627AbfGWAZh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Jul 2019 20:25:37 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 Jul 2019 17:25:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,297,1559545200"; 
-   d="scan'208";a="180568074"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga002.jf.intel.com with ESMTP; 22 Jul 2019 17:25:34 -0700
-Date:   Mon, 22 Jul 2019 17:25:34 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     john.hubbard@gmail.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Boaz Harrosh <boaz@plexistor.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Yan Zheng <zyan@redhat.com>, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [PATCH 3/3] net/xdp: convert put_page() to put_user_page*()
-Message-ID: <20190723002534.GA10284@iweiny-DESK2.sc.intel.com>
-References: <20190722223415.13269-1-jhubbard@nvidia.com>
- <20190722223415.13269-4-jhubbard@nvidia.com>
+        id S1726583AbfGWEXi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jul 2019 00:23:38 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:12348 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725827AbfGWEXi (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Jul 2019 00:23:38 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x6N4FTcH022289
+        for <bpf@vger.kernel.org>; Mon, 22 Jul 2019 21:23:36 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=gif5mUEG+0Cpj9RcnrI69dTjmIX6eZCTOWvfBfJo/zA=;
+ b=cCq3OFw8AOI/8JauoGnPa4pL0SnvE0A035JxWj0f9zunHUUXnFw6u5/XUuVci0MN2VgF
+ +dABT6yWYdTnICfGzFNYiOMfABQX57sKAZGClCNl6HJqP12etJM2FVcvuI6tPioDaKhs
+ Mgak7D7VWGdL1ajRNBbN6gOdf6pmNgEVS/I= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 2twg4djae9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 22 Jul 2019 21:23:36 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 22 Jul 2019 21:23:35 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 1DBB18614ED; Mon, 22 Jul 2019 21:23:33 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next] libbpf: provide more helpful message on uninitialized global var
+Date:   Mon, 22 Jul 2019 21:23:29 -0700
+Message-ID: <20190723042329.3121956-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190722223415.13269-4-jhubbard@nvidia.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-23_03:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=602 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907230037
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 22, 2019 at 03:34:15PM -0700, john.hubbard@gmail.com wrote:
-> From: John Hubbard <jhubbard@nvidia.com>
-> 
-> For pages that were retained via get_user_pages*(), release those pages
-> via the new put_user_page*() routines, instead of via put_page() or
-> release_pages().
-> 
-> This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
-> ("mm: introduce put_user_page*(), placeholder versions").
-> 
-> Cc: Björn Töpel <bjorn.topel@intel.com>
-> Cc: Magnus Karlsson <magnus.karlsson@intel.com>
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  net/xdp/xdp_umem.c | 9 +--------
->  1 file changed, 1 insertion(+), 8 deletions(-)
-> 
-> diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-> index 83de74ca729a..0325a17915de 100644
-> --- a/net/xdp/xdp_umem.c
-> +++ b/net/xdp/xdp_umem.c
-> @@ -166,14 +166,7 @@ void xdp_umem_clear_dev(struct xdp_umem *umem)
->  
->  static void xdp_umem_unpin_pages(struct xdp_umem *umem)
->  {
-> -	unsigned int i;
-> -
-> -	for (i = 0; i < umem->npgs; i++) {
-> -		struct page *page = umem->pgs[i];
-> -
-> -		set_page_dirty_lock(page);
-> -		put_page(page);
-> -	}
-> +	put_user_pages_dirty_lock(umem->pgs, umem->npgs);
+When BPF program defines uninitialized global variable, it's put into
+a special COMMON section. Libbpf will reject such programs, but will
+provide very unhelpful message with garbage-looking section index.
 
-What is the difference between this and
+This patch detects special section cases and gives more explicit error
+message.
 
-__put_user_pages(umem->pgs, umem->npgs, PUP_FLAGS_DIRTY_LOCK);
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/libbpf.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-?
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 794dd5064ae8..5f9e7eedb134 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1760,15 +1760,23 @@ bpf_program__collect_reloc(struct bpf_program *prog, GElf_Shdr *shdr,
+ 			 (long long) sym.st_value, sym.st_name, name);
+ 
+ 		shdr_idx = sym.st_shndx;
++		insn_idx = rel.r_offset / sizeof(struct bpf_insn);
++		pr_debug("relocation: insn_idx=%u, shdr_idx=%u\n",
++			 insn_idx, shdr_idx);
++
++		if (shdr_idx >= SHN_LORESERVE) {
++			pr_warning("relocation: not yet supported relo for non-static global \'%s\' variable "
++				   "in special section (0x%x) found in insns[%d].code 0x%x\n",
++				   name, shdr_idx, insn_idx,
++				   insns[insn_idx].code);
++			return -LIBBPF_ERRNO__RELOC;
++		}
+ 		if (!bpf_object__relo_in_known_section(obj, shdr_idx)) {
+ 			pr_warning("Program '%s' contains unrecognized relo data pointing to section %u\n",
+ 				   prog->section_name, shdr_idx);
+ 			return -LIBBPF_ERRNO__RELOC;
+ 		}
+ 
+-		insn_idx = rel.r_offset / sizeof(struct bpf_insn);
+-		pr_debug("relocation: insn_idx=%u\n", insn_idx);
+-
+ 		if (insns[insn_idx].code == (BPF_JMP | BPF_CALL)) {
+ 			if (insns[insn_idx].src_reg != BPF_PSEUDO_CALL) {
+ 				pr_warning("incorrect bpf_call opcode\n");
+-- 
+2.17.1
 
-I'm a bit concerned with adding another form of the same interface.  We should
-either have 1 call with flags (enum in this case) or multiple calls.  Given the
-previous discussion lets move in the direction of having the enum but don't
-introduce another caller of the "old" interface.
-
-So I think on this patch NAK from me.
-
-I also don't like having a __* call in the exported interface but there is a
-__get_user_pages_fast() call so I guess there is precedent.  :-/
-
-Ira
-
->  
->  	kfree(umem->pgs);
->  	umem->pgs = NULL;
-> -- 
-> 2.22.0
-> 
