@@ -2,185 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D82FA71B22
-	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2019 17:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFCA571B37
+	for <lists+bpf@lfdr.de>; Tue, 23 Jul 2019 17:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388475AbfGWPLa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jul 2019 11:11:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58316 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388480AbfGWPLa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jul 2019 11:11:30 -0400
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0ABDF227C1
-        for <bpf@vger.kernel.org>; Tue, 23 Jul 2019 15:11:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563894689;
-        bh=7j1bpwOtchxmNmpyJwIt/hzbvJKG5hZjfYmVjkpnc/I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rFXu+sTWkD/54l70rzbB+dUx4OauzntmqViEq/zcU2+O2D80EbxIRyrdyerywJBPR
-         GMQvKxx0TIk1MtBG6b+6ZDNsBtjkbPRapdXfPScETmsEK2q2YZ3dEN6eSPfAjq4FJT
-         VHnBzKNRB2zBoAYaJX2rLGp9Ssx4hmHZO0EFuVMY=
-Received: by mail-wr1-f49.google.com with SMTP id g17so43609082wrr.5
-        for <bpf@vger.kernel.org>; Tue, 23 Jul 2019 08:11:28 -0700 (PDT)
-X-Gm-Message-State: APjAAAUfJuWEyWjQDLRIWLDM2TMFMx/N31df8lDnG93mafPnm7Z3LPO9
-        fNOx/+2glEN+dKJfBNrCrigD3jaqOv2Mk8NI4WHj7A==
-X-Google-Smtp-Source: APXvYqx2W1npMbyvmugkZS82BmvrcI+iJu+ihy6mqs7TXZ2QycMn1wC9RACywYA+kE8/OO3iaRcMH0r6tsUUtWyiHXE=
-X-Received: by 2002:adf:cf02:: with SMTP id o2mr62485122wrj.352.1563894687396;
- Tue, 23 Jul 2019 08:11:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190627201923.2589391-1-songliubraving@fb.com>
- <20190627201923.2589391-2-songliubraving@fb.com> <21894f45-70d8-dfca-8c02-044f776c5e05@kernel.org>
- <3C595328-3ABE-4421-9772-8D41094A4F57@fb.com> <CALCETrWBnH4Q43POU8cQ7YMjb9LioK28FDEQf7aHZbdf1eBZWg@mail.gmail.com>
- <0DE7F23E-9CD2-4F03-82B5-835506B59056@fb.com> <CALCETrWBWbNFJvsTCeUchu3BZJ3SH3dvtXLUB2EhnPrzFfsLNA@mail.gmail.com>
- <201907021115.DCD56BBABB@keescook> <CALCETrXTta26CTtEDnzvtd03-WOGdXcnsAogP8JjLkcj4-mHvg@mail.gmail.com>
- <4A7A225A-6C23-4C0F-9A95-7C6C56B281ED@fb.com>
-In-Reply-To: <4A7A225A-6C23-4C0F-9A95-7C6C56B281ED@fb.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 23 Jul 2019 08:11:15 -0700
-X-Gmail-Original-Message-ID: <CALCETrX2bMnwC6_t4b_G-hzJSfMPrkK4YKs5ebcecv2LJ0rt3w@mail.gmail.com>
-Message-ID: <CALCETrX2bMnwC6_t4b_G-hzJSfMPrkK4YKs5ebcecv2LJ0rt3w@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "linux-security@vger.kernel.org" <linux-security@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Jann Horn <jannh@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S2390617AbfGWPOj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 23 Jul 2019 11:14:39 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20394 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729004AbfGWPOi (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Jul 2019 11:14:38 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6NFBL2k100199
+        for <bpf@vger.kernel.org>; Tue, 23 Jul 2019 11:14:36 -0400
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2tx3tmtt7q-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 23 Jul 2019 11:14:36 -0400
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Tue, 23 Jul 2019 16:14:28 +0100
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 23 Jul 2019 16:14:25 +0100
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6NFEOGA33226826
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Jul 2019 15:14:24 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AC4DDA405C;
+        Tue, 23 Jul 2019 15:14:24 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 48507A4054;
+        Tue, 23 Jul 2019 15:14:24 +0000 (GMT)
+Received: from [9.145.183.72] (unknown [9.145.183.72])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 23 Jul 2019 15:14:24 +0000 (GMT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Subject: Re: [PATCH bpf] tools/bpf: fix bpftool build with OUTPUT set
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+In-Reply-To: <20190719111716.1cbf62d1@cakuba.netronome.com>
+Date:   Tue, 23 Jul 2019 17:14:23 +0200
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, lmb@cloudflare.com,
+        gor@linux.ibm.com, heiko.carstens@de.ibm.com,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Content-Transfer-Encoding: 8BIT
+References: <CACAyw9-CWRHVH3TJ=Tke2x8YiLsH47sLCijdp=V+5M836R9aAA@mail.gmail.com>
+ <20190718142041.83342-1-iii@linux.ibm.com>
+ <20190718115111.643027cf@cakuba.netronome.com>
+ <43FB794B-6200-4560-BF10-BBF4B9247913@linux.ibm.com>
+ <20190719111716.1cbf62d1@cakuba.netronome.com>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+X-Mailer: Apple Mail (2.3445.9.1)
+X-TM-AS-GCONF: 00
+x-cbid: 19072315-0028-0000-0000-0000038721BA
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19072315-0029-0000-0000-000024475A5C
+Message-Id: <06890ADF-E310-41D1-9A4A-26755296F525@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-23_06:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907230152
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 22, 2019 at 1:54 PM Song Liu <songliubraving@fb.com> wrote:
->
-> Hi Andy, Lorenz, and all,
->
-> > On Jul 2, 2019, at 2:32 PM, Andy Lutomirski <luto@kernel.org> wrote:
-> >
-> > On Tue, Jul 2, 2019 at 2:04 PM Kees Cook <keescook@chromium.org> wrote:
-> >>
-> >> On Mon, Jul 01, 2019 at 06:59:13PM -0700, Andy Lutomirski wrote:
-> >>> I think I'm understanding your motivation.  You're not trying to make
-> >>> bpf() generically usable without privilege -- you're trying to create
-> >>> a way to allow certain users to access dangerous bpf functionality
-> >>> within some limits.
-> >>>
-> >>> That's a perfectly fine goal, but I think you're reinventing the
-> >>> wheel, and the wheel you're reinventing is quite complicated and
-> >>> already exists.  I think you should teach bpftool to be secure when
-> >>> installed setuid root or with fscaps enabled and put your policy in
-> >>> bpftool.  If you want to harden this a little bit, it would seem
-> >>> entirely reasonable to add a new CAP_BPF_ADMIN and change some, but
-> >>> not all, of the capable() checks to check CAP_BPF_ADMIN instead of the
-> >>> capabilities that they currently check.
-> >>
-> >> If finer grained controls are wanted, it does seem like the /dev/bpf
-> >> path makes the most sense. open, request abilities, use fd. The open can
-> >> be mediated by DAC and LSM. The request can be mediated by LSM. This
-> >> provides a way to add policy at the LSM level and at the tool level.
-> >> (i.e. For tool-level controls: leave LSM wide open, make /dev/bpf owned
-> >> by "bpfadmin" and bpftool becomes setuid "bpfadmin". For fine-grained
-> >> controls, leave /dev/bpf wide open and add policy to SELinux, etc.)
-> >>
-> >> With only a new CAP, you don't get the fine-grained controls. (The
-> >> "request abilities" part is the key there.)
-> >
-> > Sure you do: the effective set.  It has somewhat bizarre defaults, but
-> > I don't think that's a real problem.  Also, this wouldn't be like
-> > CAP_DAC_READ_SEARCH -- you can't accidentally use your BPF caps.
-> >
-> > I think that a /dev capability-like object isn't totally nuts, but I
-> > think we should do it well, and this patch doesn't really achieve
-> > that.  But I don't think bpf wants fine-grained controls like this at
-> > all -- as I pointed upthread, a fine-grained solution really wants
-> > different treatment for the different capable() checks, and a bunch of
-> > them won't resemble capabilities or /dev/bpf at all.
->
-> With 5.3-rc1 out, I am back on this. :)
->
-> How about we modify the set as:
->   1. Introduce sys_bpf_with_cap() that takes fd of /dev/bpf.
+> Am 19.07.2019 um 20:17 schrieb Jakub Kicinski <jakub.kicinski@netronome.com>:
+> 
+> On Fri, 19 Jul 2019 15:12:24 +0200, Ilya Leoshkevich wrote:
+>>> Am 18.07.2019 um 20:51 schrieb Jakub Kicinski <jakub.kicinski@netronome.com>:
+>>> 
+>>> We should probably make a script with all the ways of calling make
+>>> should work. Otherwise we can lose track too easily.  
+>> 
+>> Thanks for the script!
+>> 
+>> I’m trying to make it all pass now, and hitting a weird issue in the
+>> Kbuild case. The build prints "No rule to make target
+>> 'scripts/Makefile.ubsan.o'" and proceeds with an empty BPFTOOL_VERSION,
+>> which causes problems later on.
+> 
+> Does it only break with UBSAN enabled?
 
-I'm fine with this in principle, but:
+No, all the time. I think this is a coincidence - make happens to scan
+scripts/Makefile.ubsan first.
 
->   2. Better handling of capable() calls through bpf code. I guess the
->      biggest problem here is is_priv in verifier.c:bpf_check().
+> 
+>> I've found that this is caused by sub_make_done=1 environment variable,
+>> and unsetting it indeed fixes the problem, since the root Makefile no
+>> longer uses the implicit %.o rule.
+>> 
+>> However, I wonder if that would be acceptable in the final version of
+>> the patch, and whether there is a cleaner way to achieve the same
+>> effect?
+> 
+> I'm not sure to be honest. Did you check how perf deals with that?
 
-I think it would be good to understand exactly what /dev/bpf will
-enable one to do.  Without some care, it would just become the next
-CAP_SYS_ADMIN: if you can open it, sure, you're not root, but you can
-intercept network traffic, modify cgroup behavior, and do plenty of
-other things, any of which can probably be used to completely take
-over the system.
+perf obtains the version using "git describe". However, if we are
+building it from a tarball, it falls back to "make kernelversion" and
+fails in a similar way:
 
-It would also be nice to understand why you can't do what you need to
-do entirely in user code using setuid or fscaps.
+linux-5.3-rc1$ make defconfig
+linux-5.3-rc1$ make tools/perf
+<snip>
+make[6]: Circular scripts/Makefile.ubsan.mod <- scripts/Makefile.ubsan.o dependency dropped.
+make[6]: m2c: Command not found
+make[6]: *** [<builtin>: scripts/Makefile.ubsan.o] Error 127
+make[5]: *** [Makefile:1765: scripts/Makefile.ubsan.o] Error 2
+<snip>
 
-Finally, at risk of rehashing some old arguments, I'll point out that
-the bpf() syscall is an unusual design to begin with.  As an example,
-consider bpf_prog_attach().  Outside of bpf(), if I want to change the
-behavior of a cgroup, I would write to a file in
-/sys/kernel/cgroup/unified/whatever/, and normal DAC and MAC rules
-apply.  With bpf(), however, I just call bpf() to attach a program to
-the cgroup.  bpf() says "oh, you are capable(CAP_NET_ADMIN) -- go for
-it!".  Unless I missed something major, and I just re-read the code,
-there is no check that the caller has write or LSM permission to
-anything at all in cgroupfs, and the existing API would make it very
-awkward to impose any kind of DAC rules here.
+The same trick helps:
 
-So I think it might actually be time to repay some techincal debt and
-come up with a real fix.  As a less intrusive approach, you could see
-about requiring ownership of the cgroup directory instead of
-CAP_NET_ADMIN.  As a more intrusive but perhaps better approach, you
-could invert the logic to to make it work like everything outside of
-cgroup: add pseudo-files like bpf.inet_ingress to the cgroup
-directories, and require a writable fd to *that* to a new improved
-attach API.  If a user could do:
-
-int fd = open("/sys/fs/cgroup/.../bpf.inet_attach", O_RDWR);  /* usual
-DAC and MAC policy applies */
-int bpf_fd = setup the bpf stuff;  /* no privilege required, unless
-the program is huge or needs is_priv */
-bpf(BPF_IMPROVED_ATTACH, target = fd, program = bpf_fd);
-
-there would be no capabilities or global privilege at all required for
-this.  It would just work with cgroup delegation, containers, etc.
-
-I think you could even pull off this type of API change with only
-libbpf changes.  In particular, there's this code:
-
-int bpf_prog_attach(int prog_fd, int target_fd, enum bpf_attach_type type,
-                    unsigned int flags)
-{
-        union bpf_attr attr;
-
-        memset(&attr, 0, sizeof(attr));
-        attr.target_fd     = target_fd;
-        attr.attach_bpf_fd = prog_fd;
-        attr.attach_type   = type;
-        attr.attach_flags  = flags;
-
-        return sys_bpf(BPF_PROG_ATTACH, &attr, sizeof(attr));
-}
-
-This would instead do something like:
-
-int specific_target_fd = openat(target_fd, bpf_type_to_target[type], O_RDWR);
-attr.target_fd = specific_target_fd;
-...
-
-return sys_bpf(BPF_PROG_IMPROVED_ATTACH, &attr, sizeof(attr));
-
-Would this solve your problem without needing /dev/bpf at all?
-
---Andy
+--- tools/perf/util/PERF-VERSION-GEN.orig	2019-07-23 17:12:07.621123187 +0200
++++ tools/perf/util/PERF-VERSION-GEN	2019-07-23 17:12:33.441133619 +0200
+@@ -26,7 +26,7 @@
+ fi
+ if test -z "$TAG"
+ then
+-	TAG=$(MAKEFLAGS= make -sC ../.. kernelversion)
++	TAG=$(MAKEFLAGS= sub_make_done= make -sC ../.. kernelversion)
+ fi
+ VN="$TAG$CID"
+ if test -n "$CID"
