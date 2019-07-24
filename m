@@ -2,268 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B76CB723D0
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 03:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91276726E1
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 06:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728423AbfGXBkd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jul 2019 21:40:33 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:46745 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726339AbfGXBkc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jul 2019 21:40:32 -0400
-Received: by mail-pl1-f196.google.com with SMTP id c2so21284382plz.13
-        for <bpf@vger.kernel.org>; Tue, 23 Jul 2019 18:40:32 -0700 (PDT)
+        id S1726031AbfGXEpo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jul 2019 00:45:44 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:43417 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725810AbfGXEpn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jul 2019 00:45:43 -0400
+Received: by mail-pf1-f196.google.com with SMTP id i189so20258683pfg.10;
+        Tue, 23 Jul 2019 21:45:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=fugMyQialasQg77i1MwbSB/hy058oIuvmQv9Y6tRr8I=;
-        b=hferate5+QJcLPj2tAGig4LvzjyxwA7qbAq+ZZYnyGQsHCf0vtfGC2nYAcoCq/ubtt
-         g9J065NnEX5JYfhjXkzw+JksQc3nSV+fUISqXdOjqNIM3o471s6CIOD9nN4ZqmuCv+t2
-         cjKhj4jA4OBb6VxlsCkziQ99TueAg0cXav6rh6Eqemal0op1Ua63R+nYU0R66gL+T7Z4
-         3te++RkMDL0hFZf8QI6GQvddpT14rjbTeLdK/zad5CMPRrVpqaMGl08KZnhsi7ap41u9
-         w28qSz8DnrLLiG25UPaQtkN5trn9t4tnn8TyXb5Crr+/S6JgBin4OpZnVE7+UFZZZOnX
-         rWOA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a82RGTEXPGUxT9wrhIl0SGm+IUg23fG0znFClaoZF2M=;
+        b=Kd6PSC/URd7UIKcw58+fxXgQ892se8NpHm4OEg6NafKMnFMjvCAiIWdHCoPlLPqc8L
+         aJ2qPkFGF7rV4DRVYtDw+kzTyKz++lpvKqFQcAl7iCYllE6k6lUQW6B8w5u+byvfT5Fa
+         Q+WPYT0yXJJOYRou8VbShLD+Gu3cc60uHbegYi/Y7R4SDcQBKGF+uJ9+OtewKzKdHYa4
+         mDkxAnsVFsH5foR59Pl19TCg37A2eC/JUZHs5kG/6JwxZW5fVI4ecC6e+3X2Ighkd2ts
+         XemnURq3vKLirIn4/+d6ODT0qlTyYo8BgEmwVl9sISBYhC7Lqlq4LZICijaj0IvIIAaT
+         a7IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=fugMyQialasQg77i1MwbSB/hy058oIuvmQv9Y6tRr8I=;
-        b=R6wQZxG/c4PBs9GNLlYK6JklF05QNsX3qB7KKPpRdS04nBfYVItL/J6KkDev/dHYqN
-         UcQUmiO83hSgubvpjB7brB0gzBq1nMzUe3s115HquZLCpSO+MOCvnzXwd3DlGZTxO4b8
-         z/gIJxro0RBzxKv7x3169pQl67KYh4QGv1P2UNfUxEDnIrcHRpnN1kDPHB5D8IM/Eipk
-         Hj1Nzfk1Qcq9jgIrqmVBXL6JT3MA5MPjaZXlVGSpBcIwGBkaMWXG3Rcu5RPXbSDFcUlN
-         I12KK38gt7mT/eZAX6cSQxsF9m1/uOprV/DLoVqV3hAgsJVJjD9+9KsadkS/qY/mXNdN
-         NVrQ==
-X-Gm-Message-State: APjAAAXe1XrHFGMP6nb9NDXlItcKHoL2tvwoUuV7IqiB1pVYwE5q7RK7
-        RfhdM3Z1kIPDnPxOu+nLA3HcDaBtcTE=
-X-Google-Smtp-Source: APXvYqxDgG1VQC8Z4Kl+Efc0w8MxVrAvet4CeE5c0galulRK0so/jOD5qMSdZrhm0Y2qhb3f7NJ4QA==
-X-Received: by 2002:a17:902:1486:: with SMTP id k6mr81977059pla.177.1563932431622;
-        Tue, 23 Jul 2019 18:40:31 -0700 (PDT)
-Received: from ?IPv6:2600:1010:b055:19e0:81e6:db78:9a51:8f05? ([2600:1010:b055:19e0:81e6:db78:9a51:8f05])
-        by smtp.gmail.com with ESMTPSA id t8sm48118442pfq.31.2019.07.23.18.40.30
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Jul 2019 18:40:30 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-From:   Andy Lutomirski <luto@amacapital.net>
-X-Mailer: iPhone Mail (16F203)
-In-Reply-To: <514D5453-0AEE-420F-AEB6-3F4F58C62E7E@fb.com>
-Date:   Tue, 23 Jul 2019 18:40:28 -0700
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "linux-security@vger.kernel.org" <linux-security@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Jann Horn <jannh@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <1DE886F3-3982-45DE-B545-67AD6A4871AB@amacapital.net>
-References: <20190627201923.2589391-1-songliubraving@fb.com> <20190627201923.2589391-2-songliubraving@fb.com> <21894f45-70d8-dfca-8c02-044f776c5e05@kernel.org> <3C595328-3ABE-4421-9772-8D41094A4F57@fb.com> <CALCETrWBnH4Q43POU8cQ7YMjb9LioK28FDEQf7aHZbdf1eBZWg@mail.gmail.com> <0DE7F23E-9CD2-4F03-82B5-835506B59056@fb.com> <CALCETrWBWbNFJvsTCeUchu3BZJ3SH3dvtXLUB2EhnPrzFfsLNA@mail.gmail.com> <201907021115.DCD56BBABB@keescook> <CALCETrXTta26CTtEDnzvtd03-WOGdXcnsAogP8JjLkcj4-mHvg@mail.gmail.com> <4A7A225A-6C23-4C0F-9A95-7C6C56B281ED@fb.com> <CALCETrX2bMnwC6_t4b_G-hzJSfMPrkK4YKs5ebcecv2LJ0rt3w@mail.gmail.com> <514D5453-0AEE-420F-AEB6-3F4F58C62E7E@fb.com>
-To:     Song Liu <songliubraving@fb.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a82RGTEXPGUxT9wrhIl0SGm+IUg23fG0znFClaoZF2M=;
+        b=FRE7a5aR//GVD+LMfnaWDexQH/FwXBnzPOBvwAI+11t+Dg9fluuayZGU7zQDcKnXJV
+         6aixU8fQ2HD5oRE+p1FtxGzP6eJZlv+KBKzxoVZeRJLhQgC++q0swsp0Zs12Z9j2SRMI
+         BuQ0IAatLMxsJ1BMgBgUu7WSqmTiSawfiW3YKKt5r/7Sd7wnPX1QpiitehUPlGkzcYNZ
+         OIJcHsH+lpzeZwvNz4qlCRfpGld7HFR28VJL0lFKJLT2r/IpP0+sZxbhoOi2omgMaMTH
+         g3zQdpIokcJbhl7HK8aFrevWdLyxsLFOLv18uJdVxrcL5r9o1HYJ3OL23luOp/Ilr4iY
+         Umxg==
+X-Gm-Message-State: APjAAAUs6LbTQPxGLoExDJ1RihAYNWP4213TTnr8wpq0e/nNPO0oXG/b
+        KKTx05BXxwzbNATJTMiy0hc=
+X-Google-Smtp-Source: APXvYqxX+DOW07WMhb+fJsFbx0LQzjFWgiNXaRMsjDo7bpqayKueY9DMdaxKoauo3MlhyMuoWNYR+w==
+X-Received: by 2002:a63:1749:: with SMTP id 9mr27042805pgx.0.1563943543120;
+        Tue, 23 Jul 2019 21:45:43 -0700 (PDT)
+Received: from blueforge.nvidia.com (searspoint.nvidia.com. [216.228.112.21])
+        by smtp.gmail.com with ESMTPSA id b30sm65685861pfr.117.2019.07.23.21.45.41
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 23 Jul 2019 21:45:42 -0700 (PDT)
+From:   john.hubbard@gmail.com
+X-Google-Original-From: jhubbard@nvidia.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Boaz Harrosh <boaz@plexistor.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Yan Zheng <zyan@redhat.com>, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH v3 0/3] mm/gup: add make_dirty arg to put_user_pages_dirty_lock()
+Date:   Tue, 23 Jul 2019 21:45:34 -0700
+Message-Id: <20190724044537.10458-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.22.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: John Hubbard <jhubbard@nvidia.com>
 
+Hi,
 
-> On Jul 23, 2019, at 3:56 PM, Song Liu <songliubraving@fb.com> wrote:
->=20
->=20
->=20
->> On Jul 23, 2019, at 8:11 AM, Andy Lutomirski <luto@kernel.org> wrote:
->>=20
->> On Mon, Jul 22, 2019 at 1:54 PM Song Liu <songliubraving@fb.com> wrote:
->>>=20
->>> Hi Andy, Lorenz, and all,
->>>=20
->>>> On Jul 2, 2019, at 2:32 PM, Andy Lutomirski <luto@kernel.org> wrote:
->>>>=20
->>>> On Tue, Jul 2, 2019 at 2:04 PM Kees Cook <keescook@chromium.org> wrote:=
+I apologize for the extra emails (v2 was sent pretty recently), but I
+didn't want to leave a known-broken version sitting out there, creating
+problems.
 
->>>>>=20
->>>>>> On Mon, Jul 01, 2019 at 06:59:13PM -0700, Andy Lutomirski wrote:
->>>>>> I think I'm understanding your motivation.  You're not trying to make=
+Changes since v2:
 
->>>>>> bpf() generically usable without privilege -- you're trying to create=
+* Critical bug fix: remove a stray "break;" from the new routine.
 
->>>>>> a way to allow certain users to access dangerous bpf functionality
->>>>>> within some limits.
->>>>>>=20
->>>>>> That's a perfectly fine goal, but I think you're reinventing the
->>>>>> wheel, and the wheel you're reinventing is quite complicated and
->>>>>> already exists.  I think you should teach bpftool to be secure when
->>>>>> installed setuid root or with fscaps enabled and put your policy in
->>>>>> bpftool.  If you want to harden this a little bit, it would seem
->>>>>> entirely reasonable to add a new CAP_BPF_ADMIN and change some, but
->>>>>> not all, of the capable() checks to check CAP_BPF_ADMIN instead of th=
-e
->>>>>> capabilities that they currently check.
->>>>>=20
->>>>> If finer grained controls are wanted, it does seem like the /dev/bpf
->>>>> path makes the most sense. open, request abilities, use fd. The open c=
-an
->>>>> be mediated by DAC and LSM. The request can be mediated by LSM. This
->>>>> provides a way to add policy at the LSM level and at the tool level.
->>>>> (i.e. For tool-level controls: leave LSM wide open, make /dev/bpf owne=
-d
->>>>> by "bpfadmin" and bpftool becomes setuid "bpfadmin". For fine-grained
->>>>> controls, leave /dev/bpf wide open and add policy to SELinux, etc.)
->>>>>=20
->>>>> With only a new CAP, you don't get the fine-grained controls. (The
->>>>> "request abilities" part is the key there.)
->>>>=20
->>>> Sure you do: the effective set.  It has somewhat bizarre defaults, but
->>>> I don't think that's a real problem.  Also, this wouldn't be like
->>>> CAP_DAC_READ_SEARCH -- you can't accidentally use your BPF caps.
->>>>=20
->>>> I think that a /dev capability-like object isn't totally nuts, but I
->>>> think we should do it well, and this patch doesn't really achieve
->>>> that.  But I don't think bpf wants fine-grained controls like this at
->>>> all -- as I pointed upthread, a fine-grained solution really wants
->>>> different treatment for the different capable() checks, and a bunch of
->>>> them won't resemble capabilities or /dev/bpf at all.
->>>=20
->>> With 5.3-rc1 out, I am back on this. :)
->>>=20
->>> How about we modify the set as:
->>> 1. Introduce sys_bpf_with_cap() that takes fd of /dev/bpf.
->>=20
->> I'm fine with this in principle, but:
->>=20
->>> 2. Better handling of capable() calls through bpf code. I guess the
->>>    biggest problem here is is_priv in verifier.c:bpf_check().
->>=20
->> I think it would be good to understand exactly what /dev/bpf will
->> enable one to do.  Without some care, it would just become the next
->> CAP_SYS_ADMIN: if you can open it, sure, you're not root, but you can
->> intercept network traffic, modify cgroup behavior, and do plenty of
->> other things, any of which can probably be used to completely take
->> over the system.
->=20
-> Well, yes. sys_bpf() is pretty powerful.=20
->=20
-> The goal of /dev/bpf is to enable special users to call sys_bpf(). In=20
-> the meanwhile, such users should not take down the whole system easily
-> by accident, e.g., with rm -rf /.
+Changes since v1:
 
-That=E2=80=99s easy, though =E2=80=94 bpftool could learn to read /etc/bpfus=
-ers before allowing ruid !=3D 0.
+* Instead of providing __put_user_pages(), add an argument to
+  put_user_pages_dirty_lock(), and delete put_user_pages_dirty().
+  This is based on the following points:
 
->=20
-> It is similar to CAP_BPF_ADMIN, without really adding the CAP_. =20
->=20
-> I think adding new CAP_ requires much more effort.=20
->=20
+    1. Lots of call sites become simpler if a bool is passed
+    into put_user_page*(), instead of making the call site
+    choose which put_user_page*() variant to call.
 
-A new CAP_ is straightforward =E2=80=94 add the definition and change the ma=
-x cap.
+    2. Christoph Hellwig's observation that set_page_dirty_lock()
+    is usually correct, and set_page_dirty() is usually a
+    bug, or at least questionable, within a put_user_page*()
+    calling chain.
 
->>=20
->> It would also be nice to understand why you can't do what you need to
->> do entirely in user code using setuid or fscaps.
->=20
-> It is not very easy to achieve the same control: only certain users can
-> run certain tools (bpftool, etc.).=20
->=20
-> The closest approach I can find is:
->  1. use libcap (pam_cap) to give CAP_SETUID to certain users;
->  2. add setuid(0) to bpftool.
->=20
-> The difference between this approach and /dev/bpf is that certain users
-> would be able to run other tools that call setuid(). Though I am not=20
-> sure how many tools call setuid(), and how risky they are.=20
+* Added the Infiniband driver back to the patch series, because it is
+  a caller of put_user_pages_dirty_lock().
 
-I think you=E2=80=99re misunderstanding me. Install bpftool with either the s=
-etuid (S_ISUID) mode or with an appropriate fscap bit =E2=80=94 see the setc=
-ap(8) manpage.
+Unchanged parts from the v1 cover letter (except for the diffstat):
 
-The downside of this approach is that it won=E2=80=99t work well in a contai=
-ner, and containers are cool these days :)
+Notes about the remaining patches to come:
 
->=20
->>=20
->> Finally, at risk of rehashing some old arguments, I'll point out that
->> the bpf() syscall is an unusual design to begin with.  As an example,
->> consider bpf_prog_attach().  Outside of bpf(), if I want to change the
->> behavior of a cgroup, I would write to a file in
->> /sys/kernel/cgroup/unified/whatever/, and normal DAC and MAC rules
->> apply.  With bpf(), however, I just call bpf() to attach a program to
->> the cgroup.  bpf() says "oh, you are capable(CAP_NET_ADMIN) -- go for
->> it!".  Unless I missed something major, and I just re-read the code,
->> there is no check that the caller has write or LSM permission to
->> anything at all in cgroupfs, and the existing API would make it very
->> awkward to impose any kind of DAC rules here.
->>=20
->> So I think it might actually be time to repay some techincal debt and
->> come up with a real fix.  As a less intrusive approach, you could see
->> about requiring ownership of the cgroup directory instead of
->> CAP_NET_ADMIN.  As a more intrusive but perhaps better approach, you
->> could invert the logic to to make it work like everything outside of
->> cgroup: add pseudo-files like bpf.inet_ingress to the cgroup
->> directories, and require a writable fd to *that* to a new improved
->> attach API.  If a user could do:
->>=20
->> int fd =3D open("/sys/fs/cgroup/.../bpf.inet_attach", O_RDWR);  /* usual
->> DAC and MAC policy applies */
->> int bpf_fd =3D setup the bpf stuff;  /* no privilege required, unless
->> the program is huge or needs is_priv */
->> bpf(BPF_IMPROVED_ATTACH, target =3D fd, program =3D bpf_fd);
->>=20
->> there would be no capabilities or global privilege at all required for
->> this.  It would just work with cgroup delegation, containers, etc.
->>=20
->> I think you could even pull off this type of API change with only
->> libbpf changes.  In particular, there's this code:
->>=20
->> int bpf_prog_attach(int prog_fd, int target_fd, enum bpf_attach_type type=
-,
->>                   unsigned int flags)
->> {
->>       union bpf_attr attr;
->>=20
->>       memset(&attr, 0, sizeof(attr));
->>       attr.target_fd     =3D target_fd;
->>       attr.attach_bpf_fd =3D prog_fd;
->>       attr.attach_type   =3D type;
->>       attr.attach_flags  =3D flags;
->>=20
->>       return sys_bpf(BPF_PROG_ATTACH, &attr, sizeof(attr));
->> }
->>=20
->> This would instead do something like:
->>=20
->> int specific_target_fd =3D openat(target_fd, bpf_type_to_target[type], O_=
-RDWR);
->> attr.target_fd =3D specific_target_fd;
->> ...
->>=20
->> return sys_bpf(BPF_PROG_IMPROVED_ATTACH, &attr, sizeof(attr));
->>=20
->> Would this solve your problem without needing /dev/bpf at all?
->=20
-> This gives fine grain access control. I think it solves the problem.=20
-> But it also requires a lot of rework to sys_bpf(). And it may also=20
-> break backward/forward compatibility?
->=20
+There are about 50+ patches in my tree [2], and I'll be sending out the
+remaining ones in a few more groups:
 
-I think the compatibility issue is manageable. The current bpf() interface w=
-ould be supported for at least several years, and libbpf could detect that t=
-he new interface isn=E2=80=99t supported and fall back the old interface
+    * The block/bio related changes (Jerome mostly wrote those, but I've
+      had to move stuff around extensively, and add a little code)
 
-> Personally, I think it is an overkill for the original motivation:=20
-> call sys_bpf() with special user instead of root.=20
+    * mm/ changes
 
-It=E2=80=99s overkill for your specific use case, but I=E2=80=99m trying to e=
-ncourage you to either solve your problem entirely in userspace or to solve a=
- more general problem in the kernel :)
+    * other subsystem patches
 
-In furtherance of bpf=E2=80=99s goal of world domination, I think it would b=
-e great if it Just Worked in a container. My proposal does this.
+    * an RFC that shows the current state of the tracking patch set. That
+      can only be applied after all call sites are converted, but it's
+      good to get an early look at it.
+
+This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
+("mm: introduce put_user_page*(), placeholder versions").
+
+John Hubbard (3):
+  mm/gup: add make_dirty arg to put_user_pages_dirty_lock()
+  drivers/gpu/drm/via: convert put_page() to put_user_page*()
+  net/xdp: convert put_page() to put_user_page*()
+
+ drivers/gpu/drm/via/via_dmablit.c          |  10 +-
+ drivers/infiniband/core/umem.c             |   5 +-
+ drivers/infiniband/hw/hfi1/user_pages.c    |   5 +-
+ drivers/infiniband/hw/qib/qib_user_pages.c |   5 +-
+ drivers/infiniband/hw/usnic/usnic_uiom.c   |   5 +-
+ drivers/infiniband/sw/siw/siw_mem.c        |   8 +-
+ include/linux/mm.h                         |   5 +-
+ mm/gup.c                                   | 115 +++++++++------------
+ net/xdp/xdp_umem.c                         |   9 +-
+ 9 files changed, 61 insertions(+), 106 deletions(-)
+
+-- 
+2.22.0
+
