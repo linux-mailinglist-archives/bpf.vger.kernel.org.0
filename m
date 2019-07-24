@@ -2,146 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D55607415B
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2019 00:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAFBA7416F
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2019 00:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728922AbfGXW0T (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jul 2019 18:26:19 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:43133 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726796AbfGXW0S (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jul 2019 18:26:18 -0400
-Received: by mail-lj1-f196.google.com with SMTP id y17so21466530ljk.10;
-        Wed, 24 Jul 2019 15:26:17 -0700 (PDT)
+        id S1728930AbfGXWcN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jul 2019 18:32:13 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:34368 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728826AbfGXWcN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jul 2019 18:32:13 -0400
+Received: by mail-pg1-f193.google.com with SMTP id n9so15689495pgc.1
+        for <bpf@vger.kernel.org>; Wed, 24 Jul 2019 15:32:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NpDJrirAU6J86zmzabuWEnhe0+gl0qHG+YR8aafVBDI=;
-        b=m2DjP/k7Q2J39wDkWM1klxd+sDq2MGRYC9T2wAYVvYuSlY9BW8xMKQS8U7FukwEB5w
-         oHGaso9Zioery3GBjA/DfjnwtTza9zvpycb315hOrb1RblZ1BlQ5Dk6cnluWvVanCi+/
-         3NPnEkqRhW4ihK9cg89G0kXPWDurIJUeBP6sdbMXXd2r9kpmZ2bpn2vChOIvmbUhoHva
-         d1S9ZMdWoFzbXVBikuXOkr+NormyqgbnpqyObwWocER5kuWIb3wP1Te+STy7O8Tk7DX+
-         zkx0ybVWycWo6Z3m1tKxRwRm1GML+ThIehgf2AHy/yKMOphft7GQyAEKSVB7NkKUxj6T
-         uMvg==
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=661OL/iR1qoYlwUkzlekgkKWwDhi9Py/1hATN7T3Ahc=;
+        b=qmdbW9TGbpD4u+r2iyOlnYVTL9rTlUFPcF5T5BCUPblJVVLGwqa0ii9UlX6PZXMplF
+         v7/LjVjosR4oJWqlCcoVdbSmX6oBThkQ8hDeS69QzbPU71D7qbczM+it2tgA9ZKcc9U9
+         ioRvfcp2MwlD3oVgJPjHBHZpBH8dwnfHgxOuiAm7RRaYYCI+M+MhXcc+KHfU9I5jaOr9
+         uJdmRixV5IqK83nYNDnHoxU0efIdPG9MphzBhEMqMILFU+AtTkdbFd27R9PId7li7smf
+         OvFYDnNmr3pAyXhRvRBHo9lbwLRxQWN185/+Ljhq4QNrvePhYWFatx45NAEFqoaZLdOS
+         ySSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NpDJrirAU6J86zmzabuWEnhe0+gl0qHG+YR8aafVBDI=;
-        b=h7EDdknI3RsppATwQLE1BQkSeTR7JLpHqCsYfl53N/TUwSLHZx4q2HrnePronpNtTf
-         VxRfiD/psCkXYmWzkcYk+nim7JTFDN6PvEHmig8dzFJJWXacIGoa7sI/GPE7/Cs5xwrk
-         0CwjsXa5rBoGQyHTyYIz5UJQvaGfDfxY5Nz2sgRijNngwZx9ekB21runesa/9KLG4MzI
-         PeHWK4ODiPzHSyr0aazbhA3TLCLJxG0hF3GS2ZrRvL2mFRanVJjTKmqOonoAxISCur3w
-         dOBXO7wAZSnhJHWJc5Rxh3IWDobH558hwYfKNYPkSHqeJ4RW8uRnG1Ds6iuj8YjTQaeT
-         tTNw==
-X-Gm-Message-State: APjAAAVlg7RSM7QK9xiuvPr0/PU4MyuNBVowiIGUZuQ70lews/A9Uqiz
-        6gftvtQpbxbVVdMGGmb7rgPvzbzhPSTyzDPsWemVQA==
-X-Google-Smtp-Source: APXvYqwioRVRlVoayRFRYTmlYqDLp5RvxXEPtSS2/RMXGEmjjHalEtyvoNJOkEKSC27RM5pkqs5QeGvBcul6NMZsaEo=
-X-Received: by 2002:a2e:1459:: with SMTP id 25mr43207432lju.153.1564007176324;
- Wed, 24 Jul 2019 15:26:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190724165803.87470-1-brianvv@google.com> <20190724165803.87470-3-brianvv@google.com>
- <CAF=yD-+a=t_YizdJpb_Q+zxR7iP-V-EarNsp9tjnFTRBjOtFvA@mail.gmail.com>
-In-Reply-To: <CAF=yD-+a=t_YizdJpb_Q+zxR7iP-V-EarNsp9tjnFTRBjOtFvA@mail.gmail.com>
-From:   Brian Vazquez <brianvv.kernel@gmail.com>
-Date:   Wed, 24 Jul 2019 15:26:05 -0700
-Message-ID: <CABCgpaWCLJtDx8kHNiQZneqYZkZ3fzRGnipT5__kmwMhu01g=w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/6] bpf: add BPF_MAP_DUMP command to dump more
- than one entry per call
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Brian Vazquez <brianvv@google.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=661OL/iR1qoYlwUkzlekgkKWwDhi9Py/1hATN7T3Ahc=;
+        b=eGZ6RVftmYT3OWHz7JG69gRnB5qNixtiVrLFlfZzMq7yaiwMl2whgu6Vd14pMvCvYz
+         w6S0WqWRfChAd+yGitbBHBq0xoj/7E8iJH4ds6jU7938NYZ/hiC4euJcG/BZrecdEyR9
+         Tcr2CWb4vOE0QxJq86gUOYqvQl7tJVhx3o1eL9OxXpVSO3uCOSW3Cx5gvq6Xv++xmv9E
+         yEi1rjoT2sfhHux5Zy+fJ8tk5DIlrV9oshvSBP8cIlCY1OuWapN7w9aE1NnNT9LXxz71
+         3QHyZ8Vx4Obbc1ILsmbYNQ2hXLrnWG1j0nbzYs1Uz2Ikh/vNOgabeG122VwAoKuKjwYg
+         VglA==
+X-Gm-Message-State: APjAAAWW8pxK6gB2sMpAXrgVGtSVXevR/JlVZTtNIqmeRPNvw2naHTpv
+        L2xMnkOqyP1yJKV4GEq6hbM=
+X-Google-Smtp-Source: APXvYqwYGuSVzdaYps1FpPZOx447i2vB+efYxBYoZ554d2jsFTYzKkVFH52RIDtsgb3p918sVmq9Qg==
+X-Received: by 2002:a63:61cd:: with SMTP id v196mr2365471pgb.210.1564007532269;
+        Wed, 24 Jul 2019 15:32:12 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id q1sm56690279pfg.84.2019.07.24.15.32.11
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 24 Jul 2019 15:32:11 -0700 (PDT)
+Date:   Wed, 24 Jul 2019 15:32:10 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Song Liu <liu.song.a23@gmail.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stanislav Fomichev <sdf@google.com>,
         Willem de Bruijn <willemb@google.com>,
-        Petar Penkov <ppenkov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Petar Penkov <ppenkov@google.com>
+Subject: Re: [PATCH bpf-next 1/7] bpf/flow_dissector: pass input flags to BPF
+ flow dissector program
+Message-ID: <20190724223210.GA3500@mini-arch>
+References: <20190724170018.96659-1-sdf@google.com>
+ <20190724170018.96659-2-sdf@google.com>
+ <CAPhsuW6wq_6Pf80yV7oEb0uW7Xv9=UKAbTm4XJLyKAtSmDzCBQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPhsuW6wq_6Pf80yV7oEb0uW7Xv9=UKAbTm4XJLyKAtSmDzCBQ@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 24, 2019 at 12:55 PM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> On Wed, Jul 24, 2019 at 1:10 PM Brian Vazquez <brianvv@google.com> wrote:
+On 07/24, Song Liu wrote:
+> On Wed, Jul 24, 2019 at 10:11 AM Stanislav Fomichev <sdf@google.com> wrote:
 > >
-> > This introduces a new command to retrieve multiple number of entries
-> > from a bpf map, wrapping the existing bpf methods:
-> > map_get_next_key and map_lookup_elem
+> > C flow dissector supports input flags that tell it to customize parsing
+> > by either stopping early or trying to parse as deep as possible. Pass
+> > those flags to the BPF flow dissector so it can make the same
+> > decisions. In the next commits I'll add support for those flags to
+> > our reference bpf_flow.c
 > >
-> > To start dumping the map from the beginning you must specify NULL as
-> > the prev_key.
+> > Cc: Willem de Bruijn <willemb@google.com>
+> > Cc: Petar Penkov <ppenkov@google.com>
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  include/linux/skbuff.h       | 2 +-
+> >  include/net/flow_dissector.h | 4 ----
+> >  include/uapi/linux/bpf.h     | 5 +++++
+> >  net/bpf/test_run.c           | 2 +-
+> >  net/core/flow_dissector.c    | 5 +++--
+> >  5 files changed, 10 insertions(+), 8 deletions(-)
 > >
-> > The new API returns 0 when it successfully copied all the elements
-> > requested or it copied less because there weren't more elements to
-> > retrieved (i.e err == -ENOENT). In last scenario err will be masked to 0.
->
-> I think I understand this, but perhaps it can be explained a bit more
-> concisely without reference to ENOENT and error masking. The function
-> returns the min of the number of requested elements and the number of
-> remaining elements in the map from the given starting point
-> (prev_key).
-
-That sounds better to me. Thanks!
-
-> > On a successful call buf and buf_len will contain correct data and in
-> > case prev_key was provided (not for the first walk, since prev_key is
-> > NULL) it will contain the last_key copied into the prev_key which will
-> > simplify next call.
+> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> > index 718742b1c505..9b7a8038beec 100644
+> > --- a/include/linux/skbuff.h
+> > +++ b/include/linux/skbuff.h
+> > @@ -1271,7 +1271,7 @@ static inline int skb_flow_dissector_bpf_prog_detach(const union bpf_attr *attr)
 > >
-> > Only when it can't find a single element it will return -ENOENT meaning
-> > that the map has been entirely walked. When an error is return buf,
-> > buf_len and prev_key shouldn't be read nor used.
->
-> That's common for error handling. No need to state explicitly.
-
- Ack
-
->
-> > Because maps can be called from userspace and kernel code, this function
-> > can have a scenario where the next_key was found but by the time we
-> > try to retrieve the value the element is not there, in this case the
-> > function continues and tries to get a new next_key value, skipping the
-> > deleted key. If at some point the function find itself trap in a loop,
-> > it will return -EINTR.
->
-> Good to point this out! I don't think that unbounded continue;
-> statements until an interrupt happens is sufficient. Please bound the
-> number of retries to a low number.
-
-And what would it be a good number? Maybe 3 attempts? And in that case
-what error should be reported?
->
-> > The function will try to fit as much as possible in the buf provided and
-> > will return -EINVAL if buf_len is smaller than elem_size.
+> >  struct bpf_flow_dissector;
+> >  bool bpf_flow_dissect(struct bpf_prog *prog, struct bpf_flow_dissector *ctx,
+> > -                     __be16 proto, int nhoff, int hlen);
+> > +                     __be16 proto, int nhoff, int hlen, unsigned int flags);
 > >
-> > QUEUE and STACK maps are not supported.
+> >  bool __skb_flow_dissect(const struct net *net,
+> >                         const struct sk_buff *skb,
+> > diff --git a/include/net/flow_dissector.h b/include/net/flow_dissector.h
+> > index 90bd210be060..3e2642587b76 100644
+> > --- a/include/net/flow_dissector.h
+> > +++ b/include/net/flow_dissector.h
+> > @@ -253,10 +253,6 @@ enum flow_dissector_key_id {
+> >         FLOW_DISSECTOR_KEY_MAX,
+> >  };
 > >
-> > Note that map_dump doesn't guarantee that reading the entire table is
-> > consistent since this function is always racing with kernel and user code
-> > but the same behaviour is found when the entire table is walked using
-> > the current interfaces: map_get_next_key + map_lookup_elem.
->
-> > It is also important to note that with  a locked map, the lock is grabbed
-> > for 1 entry at the time, meaning that the returned buf might or might not
-> > be consistent.
->
-> Would it be informative to signal to the caller if the read was
-> complete and consistent (because the entire table was read while the
-> lock was held)?
+> > -#define FLOW_DISSECTOR_F_PARSE_1ST_FRAG                BIT(0)
+> > -#define FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL    BIT(1)
+> > -#define FLOW_DISSECTOR_F_STOP_AT_ENCAP         BIT(2)
+> > -
+> >  struct flow_dissector_key {
+> >         enum flow_dissector_key_id key_id;
+> >         size_t offset; /* offset of struct flow_dissector_key_*
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index fa1c753dcdbc..b4ad19bd6aa8 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -3507,6 +3507,10 @@ enum bpf_task_fd_type {
+> >         BPF_FD_TYPE_URETPROBE,          /* filename + offset */
+> >  };
+> >
+> > +#define FLOW_DISSECTOR_F_PARSE_1ST_FRAG                (1U << 0)
+> > +#define FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL    (1U << 1)
+> > +#define FLOW_DISSECTOR_F_STOP_AT_ENCAP         (1U << 2)
+> 
+> Do we have to move these?
+These have to be a part of UAPI one way or another. The easiest thing
+we can do is to call the existing flags a UAPI and move them into
+exported headers. Alternatively, we can introduce new set of UAPI flags
+and do some kind of conversion between exported and internal ones.
 
-Mmm.. not sure how we could signal that to the caller.  But I don't
-think there's a way to know it was consistent (i.e. one element was
-removed in bucket 20 and you are copying the keys in bucket 15, when
-you get to bucket 20 there's no way to know that some entries were
-removed when you traversed them). The lock is held for just 1 single
-entry not the entire table.
-Maybe clarify more that in the commit message?
-
-Thanks for reviewing!
+Since it's pretty easy to add/deprecate them (see cover letter), I've
+decided to just move them instead of adding another set and doing
+conversion. I'm open to suggestions if you think otherwise.
