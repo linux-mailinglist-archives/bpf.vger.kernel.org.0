@@ -2,111 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A7609740FE
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 23:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C8074107
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 23:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726108AbfGXVmi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jul 2019 17:42:38 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:37595 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725851AbfGXVmi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jul 2019 17:42:38 -0400
-Received: by mail-qk1-f193.google.com with SMTP id d15so34901607qkl.4;
-        Wed, 24 Jul 2019 14:42:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HZecLEH3fh0u72aj+FlumozN0dlA54Qjp5RbC1GUW3M=;
-        b=HBb7Sx2nTydx1Xs7au8P9ycmUMfkql/zvOTiHShcK5ySXl29egug2h0oBna8mAYCCe
-         aQklM4wML5Pseurf6p9UzQz1elnNjQHQaW5eYCjB1V8SIMOEjgaGXGVEqBq+ppBM75DB
-         UyBRbzAKs+8xVzjZPjOI9e2P46yDHDn1145ek0Yo7Snh07RWjcTTKQjiqLeK4ccxHgpp
-         HgrFpt5UWXdbzUEIsVNFzfQ+krpZezgVR6GhVOguOnQuJG0zSnbHZfzl7mP7Q4bkV9X0
-         kDxnAAGcNIIjUWSOG6vWaS8B7P1H5ziy84hiWzpIMfp+5sNZFinDojqrGCOSUQPUemBg
-         bxCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HZecLEH3fh0u72aj+FlumozN0dlA54Qjp5RbC1GUW3M=;
-        b=Vd+8eHsK+zPUardMtWwEuKRvHW5KwzBTWSOj+FJmhqdrE07rph+HFoYx752hoA2LIg
-         qGYpeUvd5K9bF2+mq4T/O3uOaWJFnqXmY8lbWBKwlq2kkoioKORNKlK8YS9JHkdXsC3O
-         gEa6FsZriA9N9FGc17gwWW9R2uttlX6gMVrS5eahj4oOvDyRtB9zmaf81vvIaCKP6p0D
-         6AfklTypeYbkRrYWuVH5Nl9DR72wWXJyrcbYBBmO+ziI5Y0oSMHm9kEQS0AzKmRZ7bCI
-         kOA829HUcOzUtJEtDnXZcNDIwcrL7PhTHdVqxxkPdZCgED55UPJkQX/ZHcUKOpgzIenB
-         KTOA==
-X-Gm-Message-State: APjAAAWi5FIA+96/w7Pb+cbTI/oQ+xJK4/F3HlbDaBgoWPmtRIJuXdQn
-        Id4ZmmRB2/POqHDn0ks//QCrQR9u32vyVmeKad8=
-X-Google-Smtp-Source: APXvYqzc56kw32pWlCfAaEqy1DLArh0SSnzsngtqtn8bjTi4909EE7Tcd+aORmBYnpPCcVIbtVLmsQEWW3bbKTPJLu0=
-X-Received: by 2002:a37:9b48:: with SMTP id d69mr58952846qke.449.1564004557037;
- Wed, 24 Jul 2019 14:42:37 -0700 (PDT)
+        id S1726894AbfGXVsg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jul 2019 17:48:36 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:13128 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725851AbfGXVsg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 24 Jul 2019 17:48:36 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6OLmGsH024535
+        for <bpf@vger.kernel.org>; Wed, 24 Jul 2019 14:48:35 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=vIYOJ8GFUHIG0Z6RRTPyodtUTdV1z6zUK00ElCW6/EE=;
+ b=eLFTHQoVgkta5/hakWnl739UtWnjnqnOH8Bo6CAFbdYW/ULG1wCM61IDp70bMh6Lds3i
+ MPLPiNJNf0MIWQxvIhtgPW53YINznUfAVbRIdK1I4jr5JegKltvPpuYRa8gbOX5+zSg4
+ gK5IrcT/b7wb6hAd5/AHVgVug3mblS745Q8= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2txs429seu-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 24 Jul 2019 14:48:35 -0700
+Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Wed, 24 Jul 2019 14:48:33 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id C8F228615C6; Wed, 24 Jul 2019 14:48:32 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH v2 bpf] libbpf: silence GCC8 warning about string truncation
+Date:   Wed, 24 Jul 2019 14:47:53 -0700
+Message-ID: <20190724214753.1816451-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20190724192742.1419254-1-andriin@fb.com> <20190724192742.1419254-2-andriin@fb.com>
-In-Reply-To: <20190724192742.1419254-2-andriin@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 24 Jul 2019 14:42:25 -0700
-Message-ID: <CAEf4Bzbrm0mrteuK=jFs6gdfLceMkjLDJ=UhOg1x8JeRfai07A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 01/10] libbpf: add .BTF.ext offset relocation
- section loading
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-24_08:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1907240232
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 24, 2019 at 12:28 PM Andrii Nakryiko <andriin@fb.com> wrote:
->
-> Add support for BPF CO-RE offset relocations. Add section/record
-> iteration macros for .BTF.ext. These macro are useful for iterating over
-> each .BTF.ext record, either for dumping out contents or later for BPF
-> CO-RE relocation handling.
->
-> To enable other parts of libbpf to work with .BTF.ext contents, moved
-> a bunch of type definitions into libbpf_internal.h.
->
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
+Despite a proper NULL-termination after strncpy(..., ..., IFNAMSIZ - 1),
+GCC8 still complains about *expected* string truncation:
 
-[...]
+  xsk.c:330:2: error: 'strncpy' output may be truncated copying 15 bytes
+  from a string of length 15 [-Werror=stringop-truncation]
+    strncpy(ifr.ifr_name, xsk->ifname, IFNAMSIZ - 1);
 
-> + *
-> + * Example to provide a better feel.
-> + *
-> + *   struct sample {
-> + *       int a;
-> + *       struct {
-> + *           int b[10];
-> + *       };
-> + *   };
-> + *
-> + *   struct sample *s = ...;
-> + *   int x = &s->a;     // encoded as "0:0" (a is field #0)
-> + *   int y = &s->b[5];  // encoded as "0:1:5" (b is field #1, arr elem #5)
+This patch gets rid of the issue altogether by using memcpy instead.
+There is no performance regression, as strncpy will still copy and fill
+all of the bytes anyway.
 
-This should be "0:1:0:5", actually. Anon struct is field #1 in BTF, b
-is field #0 inside that anon struct + array index 5.
-Will update it locally and incorporate into next version once the rest
-of patch set is reviewed.
+v1->v2:
+- rebase against bpf tree.
 
-> + *   int z = &s[10]->b; // encoded as "10:1" (ptr is used as an array)
-> + *
-> + * type_id for all relocs in this example  will capture BTF type id of
-> + * `struct sample`.
-> + *
-> + *   [0] https://llvm.org/docs/LangRef.html#getelementptr-instruction
-> + */
-> +struct bpf_offset_reloc {
-> +       __u32   insn_off;
-> +       __u32   type_id;
-> +       __u32   access_str_off;
-> +};
-> +
->  #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
-> --
-> 2.17.1
->
+Cc: Magnus Karlsson <magnus.karlsson@intel.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Acked-by: Song Liu <songliubraving@fb.com>
+---
+ tools/lib/bpf/xsk.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+index e02025bbe36d..680e63066cf3 100644
+--- a/tools/lib/bpf/xsk.c
++++ b/tools/lib/bpf/xsk.c
+@@ -326,7 +326,7 @@ static int xsk_get_max_queues(struct xsk_socket *xsk)
+ 		return -errno;
+ 
+ 	ifr.ifr_data = (void *)&channels;
+-	strncpy(ifr.ifr_name, xsk->ifname, IFNAMSIZ - 1);
++	memcpy(ifr.ifr_name, xsk->ifname, IFNAMSIZ - 1);
+ 	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
+ 	err = ioctl(fd, SIOCETHTOOL, &ifr);
+ 	if (err && errno != EOPNOTSUPP) {
+@@ -516,7 +516,7 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
+ 		err = -errno;
+ 		goto out_socket;
+ 	}
+-	strncpy(xsk->ifname, ifname, IFNAMSIZ - 1);
++	memcpy(xsk->ifname, ifname, IFNAMSIZ - 1);
+ 	xsk->ifname[IFNAMSIZ - 1] = '\0';
+ 
+ 	err = xsk_set_xdp_socket_config(&xsk->config, usr_config);
+-- 
+2.17.1
+
