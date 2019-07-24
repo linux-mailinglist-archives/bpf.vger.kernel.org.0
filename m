@@ -2,109 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB80D72FEA
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 15:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE977305B
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 15:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725870AbfGXN1u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jul 2019 09:27:50 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:33879 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbfGXN1t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jul 2019 09:27:49 -0400
-Received: by mail-oi1-f195.google.com with SMTP id l12so35013167oil.1;
-        Wed, 24 Jul 2019 06:27:49 -0700 (PDT)
+        id S1727337AbfGXN5S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jul 2019 09:57:18 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:40043 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727367AbfGXN5S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jul 2019 09:57:18 -0400
+Received: by mail-pl1-f193.google.com with SMTP id a93so22006161pla.7
+        for <bpf@vger.kernel.org>; Wed, 24 Jul 2019 06:57:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D3nfT2AYfvcWNX6C4tYDq8AelH7LpYUNw5f6JDGcCi4=;
-        b=Ts5E6cak4gKsQtDuVaUoYQjfi4Fars7QGaODnzf0sOIdoq+M22ArMpqO7gL0uMrp+x
-         HayWpfOmKyV/GOJJwStOFUxL1tU1Kj5egy1KPy0HToxYGVTyNhFQnuzBl+d/VWBpUhRi
-         eYI245UPkW2i4qB3zGlnCcnT1ZH2hZqGoMsmlHOkwmazcNw0YvhspKZGiN3sOZJXEO/5
-         nQRXruRU91Yv0UBiNZ4bMgDwN0/203grFc+T28EQZ3f362gJ7j2uy/LwA0G0GBDBinQP
-         umV9ebvHg64TIE8+TzfjqeNYwmsEFi88lUIgCrBP0JOveJNXXiQ2cE707TGOz+jckAvW
-         fqyw==
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=GWkx98bFDu9RaP8hXcQFr0cSnvxus1MNG1rYGNPKfj4=;
+        b=f1iUHU7mfd95p5DaM48MTArJN0KA8hNbkOFJVlgyUnrb/78qa+cD2lYXF1taZ5A3w+
+         jTBsKU8XtNlJ0FA5qQnn2rYXSjxYAxTNu4B3JBDIY2q4soRuoJlSDmldDOn7kUhg7EWV
+         UejidEDKpkWkdO2YN/gAnVxUE9sPMOTwqkTck=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D3nfT2AYfvcWNX6C4tYDq8AelH7LpYUNw5f6JDGcCi4=;
-        b=IR1/INbvTjdEePbQ+LxgmSWkEkPTqHkV39ngjD/MUU6sx4eKM4N7dedwXM987gHw5o
-         0TausBoIuCZlSO8YNAJqS7NOnuPFIM5JDp1x6gK6Y/py5bfZCzNb1oNHYkwlZrnNgMNq
-         ggsKKphLiStiEsVHEDB48eS+LYqSllZa1W5EDXQrkEuGmL4HnvbP1Dsd7dujRKG5zHUk
-         7Pti3vSnCnjgaoi10GpodA2LcXx+FSuNWZtOkaS39Db5ylxu4qArVytpBmYjZJXwBYZH
-         HzgNmoO0zCgSLTOrr/gcczO9oEXjtpD+IopYQaugdHmNc4fWeqLSk38OPSfTHzgIbKR5
-         Ry4g==
-X-Gm-Message-State: APjAAAVhPEoiSccbp8MsM16x+4OVXArcHyNG1skqfhtKiGg09DwaZhL/
-        4m7j5amg2FyqapcKBYblX/txP+aYfDQkWCwMPmLc5ltYlwqmHw==
-X-Google-Smtp-Source: APXvYqxAgeTd/a8HBW6CBSZcAe9204R7/yTv8UddJqu5NB1wOBZ3N1Co6fGgk4bDSNrfK73xA0M3ZeAncwYoCpDOBuY=
-X-Received: by 2002:aca:f441:: with SMTP id s62mr41989789oih.109.1563974868904;
- Wed, 24 Jul 2019 06:27:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190723220127.1815913-1-andriin@fb.com>
-In-Reply-To: <20190723220127.1815913-1-andriin@fb.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 24 Jul 2019 15:27:38 +0200
-Message-ID: <CAJ8uoz17j9hzDFaYXRmLc0ziC5mwRCAYvvjmCkfUKHbMtcAwcQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: silence GCC8 warning about string truncation
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=GWkx98bFDu9RaP8hXcQFr0cSnvxus1MNG1rYGNPKfj4=;
+        b=eyyUO2fjJLlcJ7tmbCnGKse1t0gk9yWW8SFQ7AUpcs+4v/kMS4q2omNMl+PaMn83gJ
+         jOt+9gWv1bO13ONssdJlGLsCcZ+FSEwn2178pnwMo0YQDIEDMwJrvL/K+PZJUBmZPaDu
+         weqoVVbEWZx1PIcJip7rrgz7djDqHXdrEVeK5k17dGm0N+tZqNkpl/wAa/eqpyBa6Hly
+         Q0AgyIV42TPwnFJ3CxQkdqIG11AuOswWYv0+oVyJT5lBvIbLIP2y6B1ffaYBRGFX3zAC
+         dRFY5+pJEJOODhUg1bCQCMiCa4ZmUJETFld0KzKQ4lFxLb4AIGjasqoxEJOJUEJ3Z/+1
+         gZ1g==
+X-Gm-Message-State: APjAAAWS8GbhBbqETdI/OQkOEAJK9Em0sq9wZgTHcEkp4DnimDwVAXxl
+        9mp9FGMNqA12PczKBsDcfRk=
+X-Google-Smtp-Source: APXvYqw2WoPLa2BcLQKDe4FWqERz0Muga9t0KUBGeFNngqIvIyv/zLAljwsauZ98iAIOeica29bXcQ==
+X-Received: by 2002:a17:902:2aea:: with SMTP id j97mr73752045plb.153.1563976637094;
+        Wed, 24 Jul 2019 06:57:17 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id k6sm56084171pfi.12.2019.07.24.06.57.15
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 24 Jul 2019 06:57:15 -0700 (PDT)
+Date:   Wed, 24 Jul 2019 09:57:14 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        kernel-team@fb.com, Magnus Karlsson <magnus.karlsson@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Network Development <netdev@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>, kernel-team@android.com
+Subject: Re: [PATCH RFC 0/4] Add support to directly attach BPF program to
+ ftrace
+Message-ID: <20190724135714.GA9945@google.com>
+References: <20190716205455.iimn3pqpvsc3k4ry@ast-mbp.dhcp.thefacebook.com>
+ <20190716213050.GA161922@google.com>
+ <20190716222650.tk2coihjtsxszarf@ast-mbp.dhcp.thefacebook.com>
+ <20190716224150.GC172157@google.com>
+ <20190716235500.GA199237@google.com>
+ <20190717012406.lugqemvubixfdd6v@ast-mbp.dhcp.thefacebook.com>
+ <20190717130119.GA138030@google.com>
+ <CAADnVQJY_=yeY0C3k1ZKpRFu5oNbB4zhQf5tQnLr=Mi8i6cgeQ@mail.gmail.com>
+ <20190718025143.GB153617@google.com>
+ <20190723221108.gamojemj5lorol7k@ast-mbp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190723221108.gamojemj5lorol7k@ast-mbp>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 24, 2019 at 4:33 AM Andrii Nakryiko <andriin@fb.com> wrote:
->
-> Despite a proper NULL-termination after strncpy(..., ..., IFNAMSIZ - 1),
-> GCC8 still complains about *expected* string truncation:
->
->   xsk.c:330:2: error: 'strncpy' output may be truncated copying 15 bytes
->   from a string of length 15 [-Werror=stringop-truncation]
->     strncpy(ifr.ifr_name, xsk->ifname, IFNAMSIZ - 1);
->
-> This patch gets rid of the issue altogether by using memcpy instead.
-> There is no performance regression, as strncpy will still copy and fill
-> all of the bytes anyway.
+On Tue, Jul 23, 2019 at 03:11:10PM -0700, Alexei Starovoitov wrote:
+> > > > > I think allowing one tracepoint and disallowing another is pointless
+> > > > > from security point of view. Tracing bpf program can do bpf_probe_read
+> > > > > of anything.
+> > > >
+> > > > I think the assumption here is the user controls the program instructions at
+> > > > runtime, but that's not the case. The BPF program we are loading is not
+> > > > dynamically generated, it is built at build time and it is loaded from a
+> > > > secure verified partition, so even though it can do bpf_probe_read, it is
+> > > > still not something that the user can change.
+> > > 
+> > > so you're saying that by having a set of signed bpf programs which
+> > > instructions are known to be non-malicious and allowed set of tracepoints
+> > > to attach via selinux whitelist, such setup will be safe?
+> > > Have you considered how mix and match will behave?
+> > 
+> > Do you mean the effect of mixing tracepoints and programs? I have not
+> > considered this. I am Ok with further enforcing of this (only certain
+> > tracepoints can be attached to certain programs) if needed. What do
+> > you think? We could have a new bpf(2) syscall attribute specify which
+> > tracepoint is expected, or similar.
+> > 
+> > I wanted to walk you through our 2 usecases we are working on:
+> 
+> thanks for sharing the use case details. Appreciate it.
 
-Let us make GCC8 happy then :-). Thanks Andrii.
+No problem and thanks for your thoughts.
 
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > 1. timeinstate: By hooking 2 programs onto sched_switch and cpu_frequency
+> > tracepoints, we are able to collect CPU power per-UID (specific app). Connor
+> > O'Brien is working on that.
+> > 
+> > 2. inode to file path mapping: By hooking onto VFS tracepoints we are adding to
+> > the android kernels, we can collect data when the kernel resolves a file path
+> > to a inode/device number. A BPF map stores the inode/dev number (key) and the
+> > path (value). We have usecases where we need a high speed lookup of this
+> > without having to scan all the files in the filesystem.
+> 
+> Can you share the link to vfs tracepoints you're adding?
+> Sounds like you're not going to attempt to upstream them knowing
+> Al's stance towards them?
+> May be there is a way we can do the feature you need, but w/o tracepoints?
 
-> Cc: Magnus Karlsson <magnus.karlsson@intel.com>
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  tools/lib/bpf/xsk.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> index 5007b5d4fd2c..65f5dd556f99 100644
-> --- a/tools/lib/bpf/xsk.c
-> +++ b/tools/lib/bpf/xsk.c
-> @@ -327,7 +327,7 @@ static int xsk_get_max_queues(struct xsk_socket *xsk)
->
->         channels.cmd = ETHTOOL_GCHANNELS;
->         ifr.ifr_data = (void *)&channels;
-> -       strncpy(ifr.ifr_name, xsk->ifname, IFNAMSIZ - 1);
-> +       memcpy(ifr.ifr_name, xsk->ifname, IFNAMSIZ - 1);
->         ifr.ifr_name[IFNAMSIZ - 1] = '\0';
->         err = ioctl(fd, SIOCETHTOOL, &ifr);
->         if (err && errno != EOPNOTSUPP) {
-> @@ -517,7 +517,7 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
->                 err = -errno;
->                 goto out_socket;
->         }
-> -       strncpy(xsk->ifname, ifname, IFNAMSIZ - 1);
-> +       memcpy(xsk->ifname, ifname, IFNAMSIZ - 1);
->         xsk->ifname[IFNAMSIZ - 1] = '\0';
->
->         err = xsk_set_xdp_socket_config(&xsk->config, usr_config);
-> --
-> 2.17.1
->
+Yes, given Al's stance I understand the patch is not upstreamable. The patch
+is here:
+For tracepoint:
+https://android.googlesource.com/kernel/common/+/27d3bfe20558d279041af403a887e7bdbdcc6f24%5E%21/
+For bpf program:
+https://android.googlesource.com/platform/system/bpfprogs/+/908f6cd718fab0de7a944f84628c56f292efeb17%5E%21/
+
+I intended to submit the tracepoint only for the Android kernels, however if
+there is an upstream solution to this then that's even better since upstream can
+benefit. Were you thinking of a BPF helper function to get this data?
+
+> 
+> > For the first usecase, the BPF program will be loaded and attached to the
+> > scheduler and cpufreq tracepoints at boot time and will stay attached
+> > forever.  This is why I was saying having a daemon to stay alive all the time
+> > is pointless. However, if since you are completely against using tracefs
+> > which it sounds like, then we can do a daemon that is always alive.
+> 
+> As I said earlier this use case can be solved by pinning raw_tp object
+> into bpffs. Such patches are welcomed.
+
+Ok will think more about it.
+
+> > For the second usecase, the program attach is needed on-demand unlike the
+> > first usecase, and then after the usecase completes, it is detached to avoid
+> > overhead.
+> > 
+> > For the second usecase, privacy is important and we want the data to not be
+> > available to any process. So we want to make sure only selected processes can
+> > attach to that tracepoint. This is the reason why I was doing working on
+> > these patches which use the tracefs as well, since we get that level of
+> > control.
+> 
+> It's hard to recommend anything w/o seeing the actual tracepoints you're adding
+> to vfs and type of data bpf program extracts from there.
+> Sounds like it's some sort of cache of inode->file name ?
+
+Yes, that's what it is.
+
+> If so, why is it privacy related?
+
+The reasoning is the file paths could reveal user activity (such as an app
+that opens a document) and Android has requirements to control/restrict that.
+
+thanks,
+
+ - Joel
+
