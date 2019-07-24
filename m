@@ -2,132 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF097414B
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2019 00:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19BC574154
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2019 00:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726673AbfGXWP5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jul 2019 18:15:57 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:36445 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726645AbfGXWP5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jul 2019 18:15:57 -0400
-Received: by mail-lj1-f194.google.com with SMTP id i21so46033965ljj.3;
-        Wed, 24 Jul 2019 15:15:56 -0700 (PDT)
+        id S1726814AbfGXWWA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jul 2019 18:22:00 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:46003 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726029AbfGXWWA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jul 2019 18:22:00 -0400
+Received: by mail-qk1-f196.google.com with SMTP id s22so35010191qkj.12;
+        Wed, 24 Jul 2019 15:21:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=UBF6bNBt/PemNw217in5S9v8lFOv59SFC9xNcgdoU6Y=;
-        b=s+uv8qpFxE+t54WGQJxNv5PYL7LjIriR64oc1BJyj1009oNYg6lzg+rMYzQQOCEQ/4
-         QMO4FRyZCOuroPUbx/6MBgHUdMdnEQwtfxh2xCc2q4kRbiUdpUyvMegZrChhGGNgJUAy
-         Avf8nJfUygtP6hrUCLBQbNyAPWmEHblYOzgfDrxZOYT4sb7wUIbwDdogK+r6+C7bntd1
-         +4WqbjfwD6gUnOOpW6Dx9tKsZJRXETh89NSOLtFpz6P4uu6xdSRhH1vM8s0lTRrSfEjw
-         GorBm5VsmBWs/7Jx2ZCSLyDT5+kidDNLZJ2dWq9ruL3lc9uDai+Qh4U0qR+mrnSPTidp
-         qRfw==
+        bh=uTlIMXz8vE0R0watOd38b3ZihZqTqNBzw3sHVo5+R3I=;
+        b=efSZKX7LrCLzTnYO0h2Xl9j3bI0QwbBnv2Nz9EcUk4WGfYKeoAtsN+VbuQpFmYGNBB
+         j21/mF3OFs6tLeVXtyCcC2OlPr2cz0uhpjmMQwdbO6EYelcFb0JVoCHyeeWdiebOkJls
+         iMAqTnthcpl1clWhZUdUBnbcg1q9sLzQknK62qNmBbRkEdSnQhi2eDuroxBqEkmg2QqE
+         vPc6wS59iGtCGqkf1FNaYjSzbvnsiZLob6ScXsyXSdsXkhNmk4hDkV8XiJIaF23CU/pR
+         jXLYsAedsefaYLXOCk7lS29Ds9CB7L9Wq5PmL508TabNKnk+Y9kAi+9Y0ypdr4o4Gx0B
+         Lc8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=UBF6bNBt/PemNw217in5S9v8lFOv59SFC9xNcgdoU6Y=;
-        b=fUGyCmD8sMc7BsJPqMr1azO6Hv/2CBZ0CGdOKUeys9APJZBHraNOk1H5mWgFieXks9
-         M9O8YAaS0WtjcoZISEEKTKHLd3dPAFF+M+Csq+/9w03roWcJeaOoJkRaGExL5aM+nGo8
-         J2RgQR+UWcuNre9PAoFPLZKZPoayfKc/qYnVEDJD5wdjCqyt404IFz+Zrn38E1SJ3Ilj
-         gLafZRl4rwCIizadG/5PabG7gs5ex1okVSZqjcl15up/9IjjaAPSvlw20ghgYQaQyx4r
-         yZFX7iQb24eDwlC9hKrRdk6L7Ay+jrlh4B/GqfAR5P6FL/Sfio9OWRCE3Vojw5TJ0gDT
-         6IIA==
-X-Gm-Message-State: APjAAAXPaesB7+s8PpzShWpa6Xr4H84lwzIKA8DoQJRLeqop+Vv4Xr9/
-        2yepAZmDetNvoW49A/X5K9/L8HnN+tUIBKnSJRs=
-X-Google-Smtp-Source: APXvYqwM9LPq8IoQDhPWPLNNHxpyCL3AuIe6TPRs7D3NajHezX5f401oHxVeqFYuSFlyCQnR0SrW8LZ2qREKv7Tmk+o=
-X-Received: by 2002:a2e:9a82:: with SMTP id p2mr45445949lji.64.1564006555385;
- Wed, 24 Jul 2019 15:15:55 -0700 (PDT)
+        bh=uTlIMXz8vE0R0watOd38b3ZihZqTqNBzw3sHVo5+R3I=;
+        b=oVcB8k0dhknCog4IMeS5IS5+Q+JyzlNUBd1+e5eCv40WgSbDHU0P0ALPXOVi4Mn6f5
+         +6JUjvy1mPhF95EfOPGo6IHUKiBuwZbXmTCa60hkq6MNrAS6ZU7sySVBQENV87+ryosG
+         GPhcdQ6L2CoXNjk9Rkmbgf5/MILKLArSPz12E0idKBXipS43wRwtLsRnneJzDQKCbULo
+         Zi+syb23GmEyU2RrAJ77xOfBVfKx+MCbMZAIA3jCcq30IhMSLHoHci/lzJqb+tttg2aN
+         qsrKjUbIQbU4FxNVCXMJ3XNo/uxe1AWjhGOiPwQY+5+gNmMtmZabvtzkpyMqSETvw/nA
+         ltQg==
+X-Gm-Message-State: APjAAAVkJs5JYrjry+OPS1Z/zDFbC8uGORcaKMUasq2BRz+YQyX6Fzpu
+        VepAls8+t2eZ6fKhCIzWQdjlQ4R9Yfj3tSPuBr8=
+X-Google-Smtp-Source: APXvYqx3HfS93c0iWKEj8ryYIjN4oCoNxNRRTYKQ6f2bYJvjcflpGchAYif6mqPfzbiG3DPBSfDRAaTQMIUBS8uyaCc=
+X-Received: by 2002:a37:6984:: with SMTP id e126mr54980217qkc.487.1564006919222;
+ Wed, 24 Jul 2019 15:21:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190724165803.87470-1-brianvv@google.com> <CAPhsuW7PU1PP91e8vD2diwhBAwGJHWu6wAKOoBThT86f4r5OJw@mail.gmail.com>
-In-Reply-To: <CAPhsuW7PU1PP91e8vD2diwhBAwGJHWu6wAKOoBThT86f4r5OJw@mail.gmail.com>
-From:   Brian Vazquez <brianvv.kernel@gmail.com>
-Date:   Wed, 24 Jul 2019 15:15:44 -0700
-Message-ID: <CABCgpaU3xxX6CMMxD+1knApivtc2jLBHysDXw-0E9bQEL0qC3A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/6] bpf: add BPF_MAP_DUMP command to dump more
- than one entry per call
-To:     Song Liu <liu.song.a23@gmail.com>
-Cc:     Brian Vazquez <brianvv@google.com>,
+References: <20190724170018.96659-1-sdf@google.com> <20190724170018.96659-2-sdf@google.com>
+In-Reply-To: <20190724170018.96659-2-sdf@google.com>
+From:   Song Liu <liu.song.a23@gmail.com>
+Date:   Wed, 24 Jul 2019 15:21:47 -0700
+Message-ID: <CAPhsuW6wq_6Pf80yV7oEb0uW7Xv9=UKAbTm4XJLyKAtSmDzCBQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/7] bpf/flow_dissector: pass input flags to BPF
+ flow dissector program
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stanislav Fomichev <sdf@google.com>,
         Willem de Bruijn <willemb@google.com>,
-        Petar Penkov <ppenkov@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        Petar Penkov <ppenkov@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 24, 2019 at 12:20 PM Song Liu <liu.song.a23@gmail.com> wrote:
+On Wed, Jul 24, 2019 at 10:11 AM Stanislav Fomichev <sdf@google.com> wrote:
 >
-> On Wed, Jul 24, 2019 at 10:09 AM Brian Vazquez <brianvv@google.com> wrote:
-> >
-> > This introduces a new command to retrieve multiple number of entries
-> > from a bpf map.
-> >
-> > This new command can be executed from the existing BPF syscall as
-> > follows:
-> >
-> > err =  bpf(BPF_MAP_DUMP, union bpf_attr *attr, u32 size)
-> > using attr->dump.map_fd, attr->dump.prev_key, attr->dump.buf,
-> > attr->dump.buf_len
-> > returns zero or negative error, and populates buf and buf_len on
-> > succees
-> >
-> > This implementation is wrapping the existing bpf methods:
-> > map_get_next_key and map_lookup_elem
-> >
-> > Note that this implementation can be extended later to do dump and
-> > delete by extending map_lookup_and_delete_elem (currently it only works
-> > for bpf queue/stack maps) and either use a new flag in map_dump or a new
-> > command map_dump_and_delete.
-> >
-> > Results show that even with a 1-elem_size buffer, it runs ~40 faster
+> C flow dissector supports input flags that tell it to customize parsing
+> by either stopping early or trying to parse as deep as possible. Pass
+> those flags to the BPF flow dissector so it can make the same
+> decisions. In the next commits I'll add support for those flags to
+> our reference bpf_flow.c
 >
-> Why is the new command 40% faster with 1-elem_size buffer?
-
-The test is using a really simple map structure: uint64_t key,val.
-Which makes the lookup_elem logic faster since it doesn't spend too
-much time copying the value. My conclusion with the 40% was that this
-new implementation only needs 1 syscall per elem compare to the 2
-syscalls that we needed with previous implementation so in this
-particular case the number of ops that we are doing is almost halved.
-I did one experiment increasing the value_size (448*64B) and it was
-only 14% faster with 1-elem_size buffer.
-
-> > than the current implementation, improvements of ~85% are reported when
-> > the buffer size is increased, although, after the buffer size is around
-> > 5% of the total number of entries there's no huge difference in
-> > increasing it.
-> >
-> > Tested:
-> > Tried different size buffers to handle case where the bulk is bigger, or
-> > the elements to retrieve are less than the existing ones, all runs read
-> > a map of 100K entries. Below are the results(in ns) from the different
-> > runs:
-> >
-> > buf_len_1:       69038725 entry-by-entry: 112384424 improvement
-> > 38.569134
-> > buf_len_2:       40897447 entry-by-entry: 111030546 improvement
-> > 63.165590
-> > buf_len_230:     13652714 entry-by-entry: 111694058 improvement
-> > 87.776687
-> > buf_len_5000:    13576271 entry-by-entry: 111101169 improvement
-> > 87.780263
-> > buf_len_73000:   14694343 entry-by-entry: 111740162 improvement
-> > 86.849542
-> > buf_len_100000:  13745969 entry-by-entry: 114151991 improvement
-> > 87.958187
-> > buf_len_234567:  14329834 entry-by-entry: 114427589 improvement
-> > 87.476941
+> Cc: Willem de Bruijn <willemb@google.com>
+> Cc: Petar Penkov <ppenkov@google.com>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  include/linux/skbuff.h       | 2 +-
+>  include/net/flow_dissector.h | 4 ----
+>  include/uapi/linux/bpf.h     | 5 +++++
+>  net/bpf/test_run.c           | 2 +-
+>  net/core/flow_dissector.c    | 5 +++--
+>  5 files changed, 10 insertions(+), 8 deletions(-)
 >
-> It took me a while to figure out the meaning of 87.476941. It is probably
-> a good idea to say 87.5% instead.
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index 718742b1c505..9b7a8038beec 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -1271,7 +1271,7 @@ static inline int skb_flow_dissector_bpf_prog_detach(const union bpf_attr *attr)
+>
+>  struct bpf_flow_dissector;
+>  bool bpf_flow_dissect(struct bpf_prog *prog, struct bpf_flow_dissector *ctx,
+> -                     __be16 proto, int nhoff, int hlen);
+> +                     __be16 proto, int nhoff, int hlen, unsigned int flags);
+>
+>  bool __skb_flow_dissect(const struct net *net,
+>                         const struct sk_buff *skb,
+> diff --git a/include/net/flow_dissector.h b/include/net/flow_dissector.h
+> index 90bd210be060..3e2642587b76 100644
+> --- a/include/net/flow_dissector.h
+> +++ b/include/net/flow_dissector.h
+> @@ -253,10 +253,6 @@ enum flow_dissector_key_id {
+>         FLOW_DISSECTOR_KEY_MAX,
+>  };
+>
+> -#define FLOW_DISSECTOR_F_PARSE_1ST_FRAG                BIT(0)
+> -#define FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL    BIT(1)
+> -#define FLOW_DISSECTOR_F_STOP_AT_ENCAP         BIT(2)
+> -
+>  struct flow_dissector_key {
+>         enum flow_dissector_key_id key_id;
+>         size_t offset; /* offset of struct flow_dissector_key_*
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index fa1c753dcdbc..b4ad19bd6aa8 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3507,6 +3507,10 @@ enum bpf_task_fd_type {
+>         BPF_FD_TYPE_URETPROBE,          /* filename + offset */
+>  };
+>
+> +#define FLOW_DISSECTOR_F_PARSE_1ST_FRAG                (1U << 0)
+> +#define FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL    (1U << 1)
+> +#define FLOW_DISSECTOR_F_STOP_AT_ENCAP         (1U << 2)
 
-right, will change it in next version.
+Do we have to move these?
+
+Thanks,
+Song
