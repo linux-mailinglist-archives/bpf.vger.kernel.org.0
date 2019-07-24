@@ -2,189 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 24EFB7347C
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 19:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2D7737AD
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 21:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727962AbfGXRAk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jul 2019 13:00:40 -0400
-Received: from mail-pg1-f202.google.com ([209.85.215.202]:46735 "EHLO
-        mail-pg1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727789AbfGXRAj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jul 2019 13:00:39 -0400
-Received: by mail-pg1-f202.google.com with SMTP id u1so28680093pgr.13
-        for <bpf@vger.kernel.org>; Wed, 24 Jul 2019 10:00:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=FRNcRu6lDB1xBr2PsV6vHeQry9zflSkPR0VRFovMcCM=;
-        b=sKogE6EVxLd6hnxUxXZdL1LW5vrdjutf18p7yL1gwUisRRpBpS+19pGtYqKj8uHZCv
-         8Ecis7k9yKgG9GKiBpUftao5xZYoCcCBhWrDC5JRH6RMPLFaElXgHOedMrvdX0bI+GB+
-         +8afVrxJkxfACUEqwUMbntYetKv4GT2I9hdkvUhWKmPVa7f+S4PMOq5Mb001cs5THkRk
-         P53hyCeK2+94SqdSR2xuNR8fWki3PXp9iaubEmHpFGTER8j5Emh6WQ8V1sQ2t+wWunon
-         dnE9giUuDVzBxdgt3/l2YdRWX3pnd/jZgxLjsSP0paUHw4zJzWHqP1QJ3E62+dvWO4VB
-         4wow==
+        id S1726431AbfGXTSb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jul 2019 15:18:31 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:50944 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728974AbfGXTSJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jul 2019 15:18:09 -0400
+Received: by mail-io1-f72.google.com with SMTP id m26so52127846ioh.17
+        for <bpf@vger.kernel.org>; Wed, 24 Jul 2019 12:18:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=FRNcRu6lDB1xBr2PsV6vHeQry9zflSkPR0VRFovMcCM=;
-        b=I9cr/lHGk5Pp0bzP5jJPXtDJOmFf6s4Lt7iY5bNsFSym5GOXwgAO6sURZ8rH488h+M
-         FcSwR2TPYlv+kZTm+9uBAE0l2Zg+1XdkKJM/H9TxFHYmrnIFNtDO+OSP6GB1lGtx4hFv
-         4XQaMrRpu8FX6rlN+Q2QBtIW/DQ9ljRwIjKc8mL2x+I+5jo+5eUPS+Ff/mN+FSjK2d45
-         VhCLrt+F5rILlOMTH1cI/ufPRKy9LLfjAPvpDj0u7lnbcTtOvoM4wDMu139LCiA2wGFe
-         2BNvUVPdaCs4RGBKDa1itY3PKNXa6n8IGWtL4tgiss6wwTBXeyOL94p7fimcszgLqESo
-         lTOA==
-X-Gm-Message-State: APjAAAUvs6tXuUcRiG6HZF92jJXqOwM+v0dQh/jc39bg8zbYzcYlum6F
-        Sr+wDs6iUaXpGKpV9PmFfnqqLrk=
-X-Google-Smtp-Source: APXvYqzOVy+j7WJJns5lw5LsSY3MEvQu+tIk4RP4vIyx02wnzV6/OK2b2A7bLI+5DN7lwsNrYgxKJ1g=
-X-Received: by 2002:a65:4489:: with SMTP id l9mr84811810pgq.207.1563987638862;
- Wed, 24 Jul 2019 10:00:38 -0700 (PDT)
-Date:   Wed, 24 Jul 2019 10:00:18 -0700
-In-Reply-To: <20190724170018.96659-1-sdf@google.com>
-Message-Id: <20190724170018.96659-8-sdf@google.com>
-Mime-Version: 1.0
-References: <20190724170018.96659-1-sdf@google.com>
-X-Mailer: git-send-email 2.22.0.657.g960e92d24f-goog
-Subject: [PATCH bpf-next 7/7] selftests/bpf: support FLOW_DISSECTOR_F_STOP_AT_ENCAP
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Petar Penkov <ppenkov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+12BGyfj5tbWX5WuoPOq9y3PhelyQ+8mPqbDPnhEVzo=;
+        b=BJA++rYKwHyQhdvlKcBrnT691yPDE+v3p0lm7+IEdLioSm4puXqNNXn92AZ2r72+j0
+         G86RHYJJ7M2VXWZ4o9NJ84eO9z2D9sdMKGOMDpQcI/EScktlIirfG7/A40xHO1R86W7N
+         HreNM/a0YWbHsQ0brAL9n7l7oJZq1uj31//IZCtcJP5tSqFo9Vwdm6ARIYqrHIwoijZp
+         bPMk9e6KLzBgyWzudd9jPc2vXlWv/xMRp72t9PmKPFKMY7VlHns6N73psaySQDJziw94
+         uEvX/4VglRFbWb9dxh4wKRE3SzOSksSMpbjiJlV/XgKlLCwANOZtECTw2v9tYd5qauy+
+         T1aA==
+X-Gm-Message-State: APjAAAVUKtJwJ9c7dJlCWsN2Grk5qrsHxePhudLpTiFmyrP8ccrd8IXq
+        tibaKCV9bMclfzztc5Pj7LVQtvDWNqT/i59JJY2Z2u05g5Oj
+X-Google-Smtp-Source: APXvYqzrveDnVjWnhpRCtNoBbE6aQKt12eCs95S1sUGbzWHPCDnySGIySR0fc/DvrPbVKh2/fY3zZXKGAAKFP9BkQi2Ea14TJJKw
+MIME-Version: 1.0
+X-Received: by 2002:a6b:b497:: with SMTP id d145mr54785605iof.17.1563995888091;
+ Wed, 24 Jul 2019 12:18:08 -0700 (PDT)
+Date:   Wed, 24 Jul 2019 12:18:08 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000057102e058e722bba@google.com>
+Subject: INFO: task hung in perf_event_free_task
+From:   syzbot <syzbot+7692cea7450c97fa2a0a@syzkaller.appspotmail.com>
+To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
+        ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        jolsa@redhat.com, kafai@fb.com, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, namhyung@kernel.org, netdev@vger.kernel.org,
+        peterz@infradead.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Exit as soon as we found that packet is encapped when
-FLOW_DISSECTOR_F_STOP_AT_ENCAP is passed.
-Add appropriate selftest cases.
+Hello,
 
-Cc: Willem de Bruijn <willemb@google.com>
-Cc: Petar Penkov <ppenkov@google.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
+syzbot found the following crash on:
+
+HEAD commit:    c6dd78fc Merge branch 'x86-urgent-for-linus' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10b33b58600000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7937b718ddac333b
+dashboard link: https://syzkaller.appspot.com/bug?extid=7692cea7450c97fa2a0a
+compiler:       clang version 9.0.0 (/home/glider/llvm/clang  
+80fee25776c2fb61e74c1ecb1a523375c2500b69)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17e888cc600000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+7692cea7450c97fa2a0a@syzkaller.appspotmail.com
+
+INFO: task syz-executor.0:9658 blocked for more than 143 seconds.
+       Not tainted 5.2.0+ #37
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+syz-executor.0  D25992  9658   7837 0x00004006
+Call Trace:
+  context_switch kernel/sched/core.c:3254 [inline]
+  __schedule+0x8b7/0xcd0 kernel/sched/core.c:3880
+  schedule+0x12f/0x1d0 kernel/sched/core.c:3944
+  perf_event_free_task+0x52a/0x630 kernel/events/core.c:11606
+  copy_process+0x39bb/0x5a00 kernel/fork.c:2283
+  _do_fork+0x179/0x630 kernel/fork.c:2369
+  __do_sys_clone kernel/fork.c:2524 [inline]
+  __se_sys_clone kernel/fork.c:2505 [inline]
+  __x64_sys_clone+0x247/0x2b0 kernel/fork.c:2505
+  do_syscall_64+0xfe/0x140 arch/x86/entry/common.c:296
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x459829
+Code: dd fe ff ff cc cc cc cc cc cc cc cc cc cc cc cc cc 64 48 8b 0c 25 f8  
+ff ff ff 48 3b 61 10 76 68 48 83 ec 28 48 89 6c 24 20 48 <8d> 6c 24 20 48  
+8b 44 24 30 48 89 04 24 48 8b 4c 24 38 48 89 4c 24
+RSP: 002b:00007f2b371d8c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 0000000000459829
+RDX: 9999999999999999 RSI: 0000000000000000 RDI: 0000002102001ffe
+RBP: 000000000075bf20 R08: ffffffffffffffff R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f2b371d96d4
+R13: 00000000004bfce6 R14: 00000000004d17f8 R15: 00000000ffffffff
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/1056:
+  #0: 000000004ef21d86 (rcu_read_lock){....}, at: rcu_lock_acquire+0x4/0x30  
+include/linux/rcupdate.h:207
+1 lock held by rsyslogd/7708:
+  #0: 000000001dbc8cee (&f->f_pos_lock){+.+.}, at: __fdget_pos+0x243/0x2e0  
+fs/file.c:801
+2 locks held by getty/7798:
+  #0: 00000000ad2eb6b3 (&tty->ldisc_sem){++++}, at:  
+tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:272
+  #1: 0000000067bda1b9 (&ldata->atomic_read_lock){+.+.}, at:  
+n_tty_read+0x2ee/0x1c80 drivers/tty/n_tty.c:2156
+2 locks held by getty/7799:
+  #0: 00000000e86f0102 (&tty->ldisc_sem){++++}, at:  
+tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:272
+  #1: 00000000f10c3522 (&ldata->atomic_read_lock){+.+.}, at:  
+n_tty_read+0x2ee/0x1c80 drivers/tty/n_tty.c:2156
+2 locks held by getty/7800:
+  #0: 00000000f4a9ed02 (&tty->ldisc_sem){++++}, at:  
+tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:272
+  #1: 00000000759669da (&ldata->atomic_read_lock){+.+.}, at:  
+n_tty_read+0x2ee/0x1c80 drivers/tty/n_tty.c:2156
+2 locks held by getty/7801:
+  #0: 00000000c998e0d2 (&tty->ldisc_sem){++++}, at:  
+tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:272
+  #1: 000000007c9ea7de (&ldata->atomic_read_lock){+.+.}, at:  
+n_tty_read+0x2ee/0x1c80 drivers/tty/n_tty.c:2156
+2 locks held by getty/7802:
+  #0: 00000000398be820 (&tty->ldisc_sem){++++}, at:  
+tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:272
+  #1: 00000000deef3632 (&ldata->atomic_read_lock){+.+.}, at:  
+n_tty_read+0x2ee/0x1c80 drivers/tty/n_tty.c:2156
+2 locks held by getty/7803:
+  #0: 00000000fa979d44 (&tty->ldisc_sem){++++}, at:  
+tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:272
+  #1: 000000003715a25d (&ldata->atomic_read_lock){+.+.}, at:  
+n_tty_read+0x2ee/0x1c80 drivers/tty/n_tty.c:2156
+2 locks held by getty/7804:
+  #0: 000000009d01c162 (&tty->ldisc_sem){++++}, at:  
+tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:272
+  #1: 0000000010022d29 (&ldata->atomic_read_lock){+.+.}, at:  
+n_tty_read+0x2ee/0x1c80 drivers/tty/n_tty.c:2156
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 PID: 1056 Comm: khungtaskd Not tainted 5.2.0+ #37
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x1d8/0x2f8 lib/dump_stack.c:113
+  nmi_cpu_backtrace+0xb0/0x1a0 lib/nmi_backtrace.c:101
+  nmi_trigger_cpumask_backtrace+0x14c/0x240 lib/nmi_backtrace.c:62
+  arch_trigger_cpumask_backtrace+0x10/0x20 arch/x86/kernel/apic/hw_nmi.c:38
+  trigger_all_cpu_backtrace+0x17/0x20 include/linux/nmi.h:146
+  check_hung_uninterruptible_tasks kernel/hung_task.c:205 [inline]
+  watchdog+0xbcc/0xbe0 kernel/hung_task.c:289
+  kthread+0x332/0x350 kernel/kthread.c:255
+  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1 skipped: idling at native_safe_halt+0xe/0x10  
+arch/x86/include/asm/irqflags.h:60
+
+
 ---
- .../selftests/bpf/prog_tests/flow_dissector.c | 60 +++++++++++++++++++
- tools/testing/selftests/bpf/progs/bpf_flow.c  |  8 +++
- 2 files changed, 68 insertions(+)
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-index 1ea921c4cdc0..e382264fbc40 100644
---- a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-+++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
-@@ -41,6 +41,13 @@ struct ipv4_pkt {
- 	struct tcphdr tcp;
- } __packed;
- 
-+struct ipip_pkt {
-+	struct ethhdr eth;
-+	struct iphdr iph;
-+	struct iphdr iph_inner;
-+	struct tcphdr tcp;
-+} __packed;
-+
- struct svlan_ipv4_pkt {
- 	struct ethhdr eth;
- 	__u16 vlan_tci;
-@@ -82,6 +89,7 @@ struct test {
- 	union {
- 		struct ipv4_pkt ipv4;
- 		struct svlan_ipv4_pkt svlan_ipv4;
-+		struct ipip_pkt ipip;
- 		struct ipv6_pkt ipv6;
- 		struct ipv6_frag_pkt ipv6_frag;
- 		struct dvlan_ipv6_pkt dvlan_ipv6;
-@@ -303,6 +311,58 @@ struct test tests[] = {
- 		},
- 		.flags = FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL,
- 	},
-+	{
-+		.name = "ipip-encap",
-+		.pkt.ipip = {
-+			.eth.h_proto = __bpf_constant_htons(ETH_P_IP),
-+			.iph.ihl = 5,
-+			.iph.protocol = IPPROTO_IPIP,
-+			.iph.tot_len = __bpf_constant_htons(MAGIC_BYTES),
-+			.iph_inner.ihl = 5,
-+			.iph_inner.protocol = IPPROTO_TCP,
-+			.iph_inner.tot_len = __bpf_constant_htons(MAGIC_BYTES),
-+			.tcp.doff = 5,
-+			.tcp.source = 80,
-+			.tcp.dest = 8080,
-+		},
-+		.keys = {
-+			.nhoff = 0,
-+			.nhoff = ETH_HLEN,
-+			.thoff = ETH_HLEN + sizeof(struct iphdr) +
-+				sizeof(struct iphdr),
-+			.addr_proto = ETH_P_IP,
-+			.ip_proto = IPPROTO_TCP,
-+			.n_proto = __bpf_constant_htons(ETH_P_IP),
-+			.is_encap = true,
-+			.sport = 80,
-+			.dport = 8080,
-+		},
-+	},
-+	{
-+		.name = "ipip-no-encap",
-+		.pkt.ipip = {
-+			.eth.h_proto = __bpf_constant_htons(ETH_P_IP),
-+			.iph.ihl = 5,
-+			.iph.protocol = IPPROTO_IPIP,
-+			.iph.tot_len = __bpf_constant_htons(MAGIC_BYTES),
-+			.iph_inner.ihl = 5,
-+			.iph_inner.protocol = IPPROTO_TCP,
-+			.iph_inner.tot_len = __bpf_constant_htons(MAGIC_BYTES),
-+			.tcp.doff = 5,
-+			.tcp.source = 80,
-+			.tcp.dest = 8080,
-+		},
-+		.keys = {
-+			.flags = FLOW_DISSECTOR_F_STOP_AT_ENCAP,
-+			.nhoff = ETH_HLEN,
-+			.thoff = ETH_HLEN + sizeof(struct iphdr),
-+			.addr_proto = ETH_P_IP,
-+			.ip_proto = IPPROTO_IPIP,
-+			.n_proto = __bpf_constant_htons(ETH_P_IP),
-+			.is_encap = true,
-+		},
-+		.flags = FLOW_DISSECTOR_F_STOP_AT_ENCAP,
-+	},
- };
- 
- static int create_tap(const char *ifname)
-diff --git a/tools/testing/selftests/bpf/progs/bpf_flow.c b/tools/testing/selftests/bpf/progs/bpf_flow.c
-index 7d73b7bfe609..b6236cdf8564 100644
---- a/tools/testing/selftests/bpf/progs/bpf_flow.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_flow.c
-@@ -167,9 +167,15 @@ static __always_inline int parse_ip_proto(struct __sk_buff *skb, __u8 proto)
- 		return export_flow_keys(keys, BPF_OK);
- 	case IPPROTO_IPIP:
- 		keys->is_encap = true;
-+		if (keys->flags & FLOW_DISSECTOR_F_STOP_AT_ENCAP)
-+			return export_flow_keys(keys, BPF_OK);
-+
- 		return parse_eth_proto(skb, bpf_htons(ETH_P_IP));
- 	case IPPROTO_IPV6:
- 		keys->is_encap = true;
-+		if (keys->flags & FLOW_DISSECTOR_F_STOP_AT_ENCAP)
-+			return export_flow_keys(keys, BPF_OK);
-+
- 		return parse_eth_proto(skb, bpf_htons(ETH_P_IPV6));
- 	case IPPROTO_GRE:
- 		gre = bpf_flow_dissect_get_header(skb, sizeof(*gre), &_gre);
-@@ -189,6 +195,8 @@ static __always_inline int parse_ip_proto(struct __sk_buff *skb, __u8 proto)
- 			keys->thoff += 4; /* Step over sequence number */
- 
- 		keys->is_encap = true;
-+		if (keys->flags & FLOW_DISSECTOR_F_STOP_AT_ENCAP)
-+			return export_flow_keys(keys, BPF_OK);
- 
- 		if (gre->proto == bpf_htons(ETH_P_TEB)) {
- 			eth = bpf_flow_dissect_get_header(skb, sizeof(*eth),
--- 
-2.22.0.657.g960e92d24f-goog
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
