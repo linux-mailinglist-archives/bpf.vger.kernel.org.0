@@ -2,257 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8040772357
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 02:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39C3723A9
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 03:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726991AbfGXAQK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jul 2019 20:16:10 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:36726 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726633AbfGXAQK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jul 2019 20:16:10 -0400
-Received: by mail-qt1-f193.google.com with SMTP id z4so43797443qtc.3
-        for <bpf@vger.kernel.org>; Tue, 23 Jul 2019 17:16:08 -0700 (PDT)
+        id S1728077AbfGXB0L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jul 2019 21:26:11 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:46897 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727398AbfGXB0L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jul 2019 21:26:11 -0400
+Received: by mail-pg1-f196.google.com with SMTP id k189so1257617pgk.13;
+        Tue, 23 Jul 2019 18:26:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DlN9QRCV3ElFQ7B7e0ZjlaYwOT8vcTapNg7jJk2jCok=;
-        b=BQ5jtww4150q+ZhrghI3hTl6vrPLVlLZTuVHoEgLMuMZLAmNixfF9IUtQs9X4HrCJW
-         sPrp6fFbnGW906vj92XkvtoAFkk9wCM62C/8hxRpiiDKra8ZI9J4tX3zOim6XjWuUiNw
-         k75i8VtnuXViUhocFvbX8Hkl3ACJx9eUKcF8eIiqTr+u2B+UTBIvdS51i1OFbUAbNvKo
-         hzbVSXDZe8nBhGhxfzXqChLzheHw2NBmzHkb8zn/FQKUool5kyzT9L5TrqvZ0dRCyZyH
-         AxGJirzm3oKvlUm11932QI11NtpKMeqN0ryxVIll5anLgve01+kYSlOiUnSiiNY6ctGW
-         f7Zg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZQ3b3+gTPmIEd6M8rc0OL/oIvyoPA2pZ++cTTSt4GKc=;
+        b=VecBxXs5rJxIUXj5tAX6w+Hu36MM21fpWyIYdvzDbaV5EtbHPF+1+bu2YHIo2FoU+h
+         qgdi6MriW4QsnS2XTxhZ3CT9hHBmc1EVrlmoNyXHkWprvBI+Yn65R2PNVIuyQj7C+uon
+         nfiSugQzYYHYckLsUa6rRl7irNjE5w2jdXZw55VW7ABnrd4ZUv6TxGXUQO6u5cvjdexn
+         tPG75hjNwSOtjk7bSxDRlH3uvppfjJjUfzoCSGVP1Fe1uh8JE829or5noA5IrKenAWjY
+         MKbFlG+EhvoMwVq1OJV+07GqhN9qs3wTDTL/YhnOg1Or6Ml8smZa2ujck3hWINs1JfYu
+         58Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DlN9QRCV3ElFQ7B7e0ZjlaYwOT8vcTapNg7jJk2jCok=;
-        b=nFHyzYloFn5/fib8Zf9nqtLmyNiPjLgLcFT9HCcWc1o/YY/VAGhpvjTssQpwt4bVM0
-         uykidZ3FMpus9CQYMeg4X8K4gpTS+rfbq09PwBpT7SGNS0coGPhpC0hCKcSYd9s85OcI
-         j7nuYaW+2e0EISweTf/y5egZ9wLIrXVWYkDro7T+J3CvsrL/f/COAclqnG14XTKsuqO3
-         P6iDLp2+2F7lBQFJK8vrBCHdMrfPv+dhfi44+IRM48YmsOEZ3jmx0WbrAM76ozYjOFjF
-         QGndMUxnA05nxCOTqx+5v9PNKyz5DtgQjIiey8LnNCBAIoM0MNXpkgng5v8owUzUkbYT
-         R7mw==
-X-Gm-Message-State: APjAAAVFBtOsKgI9M7T9GG8d2e5iJrltv9flWyPjIOd41y//KRCvpyKS
-        7hG9GvjlhCkMjbltj285YTPXMbQFq1JT3qvSTKlBTA==
-X-Google-Smtp-Source: APXvYqxXUrLhbjaVUyp3x6qUcQKcLde73DUotek3MzAk9h2EyV7UIPYozg7b97yo99TnMpk0idlCLrL48Xshh7WanOM=
-X-Received: by 2002:ac8:7549:: with SMTP id b9mr13406706qtr.198.1563927368322;
- Tue, 23 Jul 2019 17:16:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190723002042.105927-1-ppenkov.kernel@gmail.com>
- <20190723002042.105927-4-ppenkov.kernel@gmail.com> <8736ix3p8h.fsf@toke.dk>
-In-Reply-To: <8736ix3p8h.fsf@toke.dk>
-From:   Petar Penkov <ppenkov@google.com>
-Date:   Tue, 23 Jul 2019 17:15:57 -0700
-Message-ID: <CAG4SDVUnPxtRVJ3XisuEuOBWFfYJrFj-5srDvDBVKdq3-dGPnw@mail.gmail.com>
-Subject: Re: [bpf-next 3/6] bpf: add bpf_tcp_gen_syncookie helper
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Petar Penkov <ppenkov.kernel@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZQ3b3+gTPmIEd6M8rc0OL/oIvyoPA2pZ++cTTSt4GKc=;
+        b=EvqATfmwbyMpaIMVAvYBK76tnRlM4UV//9rvCkTugQf8oEOc8SSAK7bd+DiwF0Omio
+         4X1VsBZcfJRrhaYlh/AY8GEKjphb0Gu/r1hS8whl4dosXSfff2OpfF2G5OScrvL5ldlY
+         zwWD523DKkEcaeCr/I9hGPAIVSWzxt0PsA1By91mgSACVWCR5PXo+fjsVXrofVUWRqbF
+         ttbQ6vQ9mMdqM9eZds52XmzP8Nw6o2cTSyozwU+iBeovJ2npfzCUz2YUWENZbAPLMM+w
+         /i1Bs9fUbMHHMwqRgaVTrSK/QMF9CIxqeFSh7drV7nzLe2Jc0APWcm2Ni0x4V52KfNOq
+         UyQQ==
+X-Gm-Message-State: APjAAAVE2F/bnbFjNCytyGexakunuuBc9o4aVYIYHvC4K7nh1ebDqXV4
+        KobCW312sTFOAo+MaIbkP/go84/u
+X-Google-Smtp-Source: APXvYqzuP5FE7dHH/rrJY8+GDem6uPH4CkCkgfNEStXt8Z11+GRlVjtJCHbhttMVX4qqkHRdu6Qg0Q==
+X-Received: by 2002:a17:90a:bc42:: with SMTP id t2mr84709587pjv.121.1563931570150;
+        Tue, 23 Jul 2019 18:26:10 -0700 (PDT)
+Received: from blueforge.nvidia.com (searspoint.nvidia.com. [216.228.112.21])
+        by smtp.gmail.com with ESMTPSA id k36sm45950119pgl.42.2019.07.23.18.26.08
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 23 Jul 2019 18:26:09 -0700 (PDT)
+From:   john.hubbard@gmail.com
+X-Google-Original-From: jhubbard@nvidia.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Boaz Harrosh <boaz@plexistor.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
         "David S . Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>, lmb@cloudflare.com,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Yan Zheng <zyan@redhat.com>, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH v2 0/3] mm/gup: add make_dirty arg to put_user_pages_dirty_lock()
+Date:   Tue, 23 Jul 2019 18:26:03 -0700
+Message-Id: <20190724012606.25844-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.22.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 23, 2019 at 5:33 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Petar Penkov <ppenkov.kernel@gmail.com> writes:
->
-> > From: Petar Penkov <ppenkov@google.com>
-> >
-> > This helper function allows BPF programs to try to generate SYN
-> > cookies, given a reference to a listener socket. The function works
-> > from XDP and with an skb context since bpf_skc_lookup_tcp can lookup a
-> > socket in both cases.
-> >
-> > Signed-off-by: Petar Penkov <ppenkov@google.com>
-> > Suggested-by: Eric Dumazet <edumazet@google.com>
-> > ---
-> >  include/uapi/linux/bpf.h | 30 ++++++++++++++++-
-> >  net/core/filter.c        | 73 ++++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 102 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 6f68438aa4ed..20baee7b2219 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -2713,6 +2713,33 @@ union bpf_attr {
-> >   *           **-EPERM** if no permission to send the *sig*.
-> >   *
-> >   *           **-EAGAIN** if bpf program can try again.
-> > + *
-> > + * s64 bpf_tcp_gen_syncookie(struct bpf_sock *sk, void *iph, u32 iph_l=
-en, struct tcphdr *th, u32 th_len)
-> > + *   Description
-> > + *           Try to issue a SYN cookie for the packet with correspondi=
-ng
-> > + *           IP/TCP headers, *iph* and *th*, on the listening socket i=
-n *sk*.
-> > + *
-> > + *           *iph* points to the start of the IPv4 or IPv6 header, whi=
-le
-> > + *           *iph_len* contains **sizeof**\ (**struct iphdr**) or
-> > + *           **sizeof**\ (**struct ip6hdr**).
-> > + *
-> > + *           *th* points to the start of the TCP header, while *th_len=
-*
-> > + *           contains the length of the TCP header.
-> > + *
-> > + *   Return
-> > + *           On success, lower 32 bits hold the generated SYN cookie i=
-n
-> > + *           followed by 16 bits which hold the MSS value for that coo=
-kie,
-> > + *           and the top 16 bits are unused.
-> > + *
-> > + *           On failure, the returned value is one of the following:
-> > + *
-> > + *           **-EINVAL** SYN cookie cannot be issued due to error
-> > + *
-> > + *           **-ENOENT** SYN cookie should not be issued (no SYN flood=
-)
-> > + *
-> > + *           **-ENOTSUPP** kernel configuration does not enable SYN
-> > cookies
->
-> nit: This should be EOPNOTSUPP - the other one is for NFS...
-Will correct this in a v2, thanks for catching that!
+From: John Hubbard <jhubbard@nvidia.com>
 
->
-> > + *
-> > + *           **-EPROTONOSUPPORT** IP packet version is not 4 or 6
-> >   */
-> >  #define __BPF_FUNC_MAPPER(FN)                \
-> >       FN(unspec),                     \
-> > @@ -2824,7 +2851,8 @@ union bpf_attr {
-> >       FN(strtoul),                    \
-> >       FN(sk_storage_get),             \
-> >       FN(sk_storage_delete),          \
-> > -     FN(send_signal),
-> > +     FN(send_signal),                \
-> > +     FN(tcp_gen_syncookie),
-> >
-> >  /* integer value in 'imm' field of BPF_CALL instruction selects which =
-helper
-> >   * function eBPF program intends to call
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 47f6386fb17a..92114271eff6 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -5850,6 +5850,75 @@ static const struct bpf_func_proto bpf_tcp_check=
-_syncookie_proto =3D {
-> >       .arg5_type      =3D ARG_CONST_SIZE,
-> >  };
-> >
-> > +BPF_CALL_5(bpf_tcp_gen_syncookie, struct sock *, sk, void *, iph, u32,=
- iph_len,
-> > +        struct tcphdr *, th, u32, th_len)
-> > +{
-> > +#ifdef CONFIG_SYN_COOKIES
-> > +     u32 cookie;
-> > +     u16 mss;
-> > +
-> > +     if (unlikely(th_len < sizeof(*th) || th_len !=3D th->doff * 4))
-> > +             return -EINVAL;
-> > +
-> > +     if (sk->sk_protocol !=3D IPPROTO_TCP || sk->sk_state !=3D TCP_LIS=
-TEN)
-> > +             return -EINVAL;
-> > +
-> > +     if (!sock_net(sk)->ipv4.sysctl_tcp_syncookies)
-> > +             return -ENOENT;
-> > +
-> > +     if (!th->syn || th->ack || th->fin || th->rst)
-> > +             return -EINVAL;
-> > +
-> > +     if (unlikely(iph_len < sizeof(struct iphdr)))
-> > +             return -EINVAL;
-> > +
-> > +     /* Both struct iphdr and struct ipv6hdr have the version field at=
- the
-> > +      * same offset so we can cast to the shorter header (struct iphdr=
-).
-> > +      */
-> > +     switch (((struct iphdr *)iph)->version) {
-> > +     case 4:
-> > +             if (sk->sk_family =3D=3D AF_INET6 && sk->sk_ipv6only)
-> > +                     return -EINVAL;
-> > +
-> > +             mss =3D tcp_v4_get_syncookie(sk, iph, th, &cookie);
-> > +             break;
-> > +
-> > +#if IS_BUILTIN(CONFIG_IPV6)
-> > +     case 6:
-> > +             if (unlikely(iph_len < sizeof(struct ipv6hdr)))
-> > +                     return -EINVAL;
-> > +
-> > +             if (sk->sk_family !=3D AF_INET6)
-> > +                     return -EINVAL;
-> > +
-> > +             mss =3D tcp_v6_get_syncookie(sk, iph, th, &cookie);
-> > +             break;
-> > +#endif /* CONFIG_IPV6 */
-> > +
-> > +     default:
-> > +             return -EPROTONOSUPPORT;
-> > +     }
-> > +     if (mss <=3D 0)
-> > +             return -ENOENT;
-> > +
-> > +     return cookie | ((u64)mss << 32);
-> > +#else
-> > +     return -ENOTSUPP;
->
-> See above
->
-> > +#endif /* CONFIG_SYN_COOKIES */
-> > +}
-> > +
-> > +static const struct bpf_func_proto bpf_tcp_gen_syncookie_proto =3D {
-> > +     .func           =3D bpf_tcp_gen_syncookie,
-> > +     .gpl_only       =3D true, /* __cookie_v*_init_sequence() is GPL *=
-/
-> > +     .pkt_access     =3D true,
-> > +     .ret_type       =3D RET_INTEGER,
-> > +     .arg1_type      =3D ARG_PTR_TO_SOCK_COMMON,
-> > +     .arg2_type      =3D ARG_PTR_TO_MEM,
-> > +     .arg3_type      =3D ARG_CONST_SIZE,
-> > +     .arg4_type      =3D ARG_PTR_TO_MEM,
-> > +     .arg5_type      =3D ARG_CONST_SIZE,
-> > +};
-> > +
-> >  #endif /* CONFIG_INET */
-> >
-> >  bool bpf_helper_changes_pkt_data(void *func)
-> > @@ -6135,6 +6204,8 @@ tc_cls_act_func_proto(enum bpf_func_id func_id, c=
-onst struct bpf_prog *prog)
-> >               return &bpf_tcp_check_syncookie_proto;
-> >       case BPF_FUNC_skb_ecn_set_ce:
-> >               return &bpf_skb_ecn_set_ce_proto;
-> > +     case BPF_FUNC_tcp_gen_syncookie:
-> > +             return &bpf_tcp_gen_syncookie_proto;
-> >  #endif
-> >       default:
-> >               return bpf_base_func_proto(func_id);
-> > @@ -6174,6 +6245,8 @@ xdp_func_proto(enum bpf_func_id func_id, const st=
-ruct bpf_prog *prog)
-> >               return &bpf_xdp_skc_lookup_tcp_proto;
-> >       case BPF_FUNC_tcp_check_syncookie:
-> >               return &bpf_tcp_check_syncookie_proto;
-> > +     case BPF_FUNC_tcp_gen_syncookie:
-> > +             return &bpf_tcp_gen_syncookie_proto;
-> >  #endif
-> >       default:
-> >               return bpf_base_func_proto(func_id);
-> > --
-> > 2.22.0.657.g960e92d24f-goog
+Changes since v1:
+
+* Instead of providing __put_user_pages(), add an argument to
+  put_user_pages_dirty_lock(), and delete put_user_pages_dirty().
+  This is based on the following points:
+
+    1. Lots of call sites become simpler if a bool is passed
+    into put_user_page*(), instead of making the call site
+    choose which put_user_page*() variant to call.
+
+    2. Christoph Hellwig's observation that set_page_dirty_lock()
+    is usually correct, and set_page_dirty() is usually a
+    bug, or at least questionable, within a put_user_page*()
+    calling chain.
+
+* Added the Infiniband driver back to the patch series, because it is
+  a caller of put_user_pages_dirty_lock().
+
+Unchanged parts from the v1 cover letter (except for the diffstat):
+
+Notes about the remaining patches to come:
+
+There are about 50+ patches in my tree [2], and I'll be sending out the
+remaining ones in a few more groups:
+
+    * The block/bio related changes (Jerome mostly wrote those, but I've
+      had to move stuff around extensively, and add a little code)
+
+    * mm/ changes
+
+    * other subsystem patches
+
+    * an RFC that shows the current state of the tracking patch set. That
+      can only be applied after all call sites are converted, but it's
+      good to get an early look at it.
+
+This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
+("mm: introduce put_user_page*(), placeholder versions").
+
+John Hubbard (3):
+  mm/gup: add make_dirty arg to put_user_pages_dirty_lock()
+  drivers/gpu/drm/via: convert put_page() to put_user_page*()
+  net/xdp: convert put_page() to put_user_page*()
+
+ drivers/gpu/drm/via/via_dmablit.c          |  10 +-
+ drivers/infiniband/core/umem.c             |   5 +-
+ drivers/infiniband/hw/hfi1/user_pages.c    |   5 +-
+ drivers/infiniband/hw/qib/qib_user_pages.c |   5 +-
+ drivers/infiniband/hw/usnic/usnic_uiom.c   |   5 +-
+ drivers/infiniband/sw/siw/siw_mem.c        |   8 +-
+ include/linux/mm.h                         |   5 +-
+ mm/gup.c                                   | 116 +++++++++------------
+ net/xdp/xdp_umem.c                         |   9 +-
+ 9 files changed, 62 insertions(+), 106 deletions(-)
+
+-- 
+2.22.0
+
