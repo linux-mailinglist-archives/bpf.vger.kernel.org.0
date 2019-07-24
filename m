@@ -2,124 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFD4722F0
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 01:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE367233E
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 02:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbfGWXY0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jul 2019 19:24:26 -0400
-Received: from hqemgate14.nvidia.com ([216.228.121.143]:19509 "EHLO
-        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726438AbfGWXYZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jul 2019 19:24:25 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5d3797290000>; Tue, 23 Jul 2019 16:24:25 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 23 Jul 2019 16:24:24 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 23 Jul 2019 16:24:24 -0700
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 23 Jul
- 2019 23:24:24 +0000
-Subject: Re: [PATCH 3/3] net/xdp: convert put_page() to put_user_page*()
-To:     Ira Weiny <ira.weiny@intel.com>
-CC:     <john.hubbard@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Boaz Harrosh <boaz@plexistor.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Yan Zheng <zyan@redhat.com>, <netdev@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-mm@kvack.org>,
-        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20190722223415.13269-1-jhubbard@nvidia.com>
- <20190722223415.13269-4-jhubbard@nvidia.com>
- <20190723002534.GA10284@iweiny-DESK2.sc.intel.com>
- <a4e9b293-11f8-6b3c-cf4d-308e3b32df34@nvidia.com>
- <20190723180612.GB29729@iweiny-DESK2.sc.intel.com>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <69540e85-b527-0252-7b29-8932660af72d@nvidia.com>
-Date:   Tue, 23 Jul 2019 16:24:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20190723180612.GB29729@iweiny-DESK2.sc.intel.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1563924265; bh=Dc+54X4TKuVoIQ6IGOnhUFUhE0Dy4dW4jkSZ2LHVHns=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=FMl+YlnDhGCsZKKh1L0ErV+31siNAXGqpbM4Ti099eQ263WNqONoZoDhA6w28dloW
-         DANKq7E2Y7kdWPUACeMGcsz7IGCwEWqiwPgDnX3E9DHqqaxxYj9TrmIKWYGcLWA8z9
-         HaYbTpYicIHv06kxhQ58/gdGYse2x3h25DFKRTKYtQq+80JPY4IzGMpBTYSaFvHkoA
-         7F9/p/2HEcQ7syxo9toMK0sf5uUtUlNauO/KxNX+D2TkcJKNWZP3//+ZXgl5mcNywg
-         K1EWHc3E5G7xnnEUtcQBaKfZD5VJFBdwU+bLpLJtcvUt/rKIgSGElbmpHYwBZFPLKu
-         YnW6V/fpJl4Ag==
+        id S1726527AbfGXAHa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jul 2019 20:07:30 -0400
+Received: from mail-pf1-f201.google.com ([209.85.210.201]:54956 "EHLO
+        mail-pf1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726260AbfGXAHa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jul 2019 20:07:30 -0400
+Received: by mail-pf1-f201.google.com with SMTP id y66so27281580pfb.21
+        for <bpf@vger.kernel.org>; Tue, 23 Jul 2019 17:07:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=NxZhietoTxqmHe7rhjQcGEBlG21hpAW5k0nWsJXcXr4=;
+        b=wOarilnMKZx4cITmPTK6cSjWrdOahcgXqFP1HIM05QQIGN6xajWlMfEHips/l2h3KT
+         Y2RBWVJc5NsEq9qvzKsW9H4x/RQjAkwa832tcCNtSOZdO3CLIlwLWEOkJb9Qy1Ad/J40
+         JL7RA1tZxgECFkzQiLNw3wvfd7BxXBv32uXA9nbLJWXZQmcFrUrsta5sAJb1V1CWvdJd
+         qFD2Lgnp3WeQA/xf6Th58gpZ8sJ7dybG5/CQz9Viv29TPw9zT6wAYkMDlSUKqB40nYFg
+         LZ3KGqny1zAKazPvmql1ZdJinKfsXFcRmJvWsw0A9ay54eIvPbrNUuov7ZwLH2yAm3cz
+         +3xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=NxZhietoTxqmHe7rhjQcGEBlG21hpAW5k0nWsJXcXr4=;
+        b=DIIOMPbZLXEB00R19hUDG3iNNZNDG2B6Pnt+DKEk03eVXyA20LA0t7d0PjxO7STuPL
+         KWY2F/Y5KgaX68tCfNp/QcZpLmXZ3Q+uBvVeZGhVoAUkI0JUJVn9d0iJTSeLzZ0JjJOT
+         MJgMI/sdUBcvYIuwYpn5w/SW0PrB6iIB+KEqKiqcnFUYO37TT9J9WFfinWc1KAqRSHgw
+         lduQh/tyMfOufKoLKqhG4mfppBfykc4+c8ACIe9lC86hylFZ7q0IDoSgIqBInjWGeRJK
+         9J7FtpfVNKM9lau0nA3m6e2bYyfqfkKcWvSXPcnuqMUk4r/vie9Lsu/blD88H0yqUmvX
+         fAjQ==
+X-Gm-Message-State: APjAAAVmUgyL2JsIILbs9MbbvPBsoYyIXicboE7JeGzltjbF2d4J5s3a
+        7yP3kfqbZNtk0+4OU+KjrHCRFnKUmYEPXoln
+X-Google-Smtp-Source: APXvYqxqwVH+wUgI7kJKRoRGynBiBbLyVCYeeu36YD5QY4xlH72vjCuk/pzuVz7PHeu8kqdqm6wepAHHcP9fZ9aH
+X-Received: by 2002:a65:6846:: with SMTP id q6mr39921085pgt.150.1563926849500;
+ Tue, 23 Jul 2019 17:07:29 -0700 (PDT)
+Date:   Tue, 23 Jul 2019 17:07:23 -0700
+Message-Id: <20190724000725.15634-1-allanzhang@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.22.0.709.g102302147b-goog
+Subject: [PATCH bpf-next v10 0/2] bpf: Allow bpf_skb_event_output for more
+ prog types
+From:   Allan Zhang <allanzhang@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org, songliubraving@fb.com,
+        daniel@iogearbox.net, andrii.nakryiko@gmail.com
+Cc:     ast@kernel.org, Allan Zhang <allanzhang@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/23/19 11:06 AM, Ira Weiny wrote:
-> On Mon, Jul 22, 2019 at 09:41:34PM -0700, John Hubbard wrote:
->> On 7/22/19 5:25 PM, Ira Weiny wrote:
->>> On Mon, Jul 22, 2019 at 03:34:15PM -0700, john.hubbard@gmail.com wrote:
-...
->> Obviously, this stuff is all subject to a certain amount of opinion, but I
->> think I'm on really solid ground as far as precedent goes. So I'm pushing
->> back on the NAK... :)
-> 
-> Fair enough...  However, we have discussed in the past how GUP can be a
-> confusing interface to use.
-> 
-> So I'd like to see it be more directed.  Only using the __put_user_pages()
-> version allows us to ID callers easier through a grep of PUP_FLAGS_DIRTY_LOCK
-> in addition to directing users to use that interface rather than having to read
-> the GUP code to figure out that the 2 calls above are equal.  It is not a huge
-> deal but...
-> 
+Software event output is only enabled by a few prog types right now (TC,
+LWT out, XDP, sockops). Many other skb based prog types need
+bpf_skb_event_output to produce software event.
 
-OK, combining all the feedback to date, which is:
+More prog types are enabled to access bpf_skb_event_output in this
+patch.
 
-* the leading double underscore is unloved,
+v10 changes:
+Resubmit (v9 is submitted when bpf branch is closed).
 
-* set_page_dirty() is under investigation, but likely guilty of incitement
-  to cause bugs,
+v9 changes:
+add "Acked-by" field.
 
+v8 changes:
+No actual change, just cc to netdev@vger.kernel.org and
+bpf@vger.kernel.org.
+v7 patches are acked by Song Liu.
 
-...we end up with this:
+v7 changes:
+Reformat from hints by scripts/checkpatch.pl, including Song's comment
+on signed-off-by name to captical case in cover letter.
+3 of hints are ignored:
+1. new file mode.
+2. SPDX-License-Identifier for event_output.c since all files under
+   this dir have no such line.
+3. "Macros ... enclosed in parentheses" for macro in event_output.c
+   due to code's nature.
 
-void put_user_pages_dirty_lock(struct page **pages, unsigned long npages,
-			       bool make_dirty)
+Change patch 02 subject "bpf:..." to "selftests/bpf:..."
 
-...which I have a v2 patchset for, ready to send out. It makes IB all pretty 
-too. :)
+v6 changes:
+Fix Signed-off-by, fix fixup map creation.
 
+v5 changes:
+Fix typos, reformat comments in event_output.c, move revision history to
+cover letter.
 
-thanks,
+v4 changes:
+Reformating log message.
+
+v3 changes:
+Reformating log message.
+
+v2 changes:
+Reformating log message.
+
+Allan Zhang (2):
+  bpf: Allow bpf_skb_event_output for a few prog types
+  selftests/bpf: Add selftests for bpf_perf_event_output
+
+ net/core/filter.c                             |  6 ++
+ tools/testing/selftests/bpf/test_verifier.c   | 12 ++-
+ .../selftests/bpf/verifier/event_output.c     | 94 +++++++++++++++++++
+ 3 files changed, 111 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/verifier/event_output.c
+
 -- 
-John Hubbard
-NVIDIA
+2.22.0.410.gd8fdbe21b5-goog
+
