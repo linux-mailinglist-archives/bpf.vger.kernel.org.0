@@ -2,217 +2,257 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F1872342
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 02:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8040772357
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 02:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727469AbfGXAHg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jul 2019 20:07:36 -0400
-Received: from mail-pf1-f202.google.com ([209.85.210.202]:47313 "EHLO
-        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727461AbfGXAHf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jul 2019 20:07:35 -0400
-Received: by mail-pf1-f202.google.com with SMTP id f25so27234956pfk.14
-        for <bpf@vger.kernel.org>; Tue, 23 Jul 2019 17:07:35 -0700 (PDT)
+        id S1726991AbfGXAQK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jul 2019 20:16:10 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:36726 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726633AbfGXAQK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jul 2019 20:16:10 -0400
+Received: by mail-qt1-f193.google.com with SMTP id z4so43797443qtc.3
+        for <bpf@vger.kernel.org>; Tue, 23 Jul 2019 17:16:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=r+USz0pzpObxba6xUu8Vis4c7obvCOFtBC2ZdXPveWI=;
-        b=gaZThDVa36BUHcjvi0sMz50iqzQKIfcqogCe51+hlUqPl1M2IwAHJiW3Y+MGNU6Dke
-         FoV8UNqScbMnfQzA8dj6wrdzD9Wl3Pssup0sdqwtkUgjxaEk0V7nG8TaRpu+yVQNb9X3
-         94SFa4JNKUJXrh/bcIJOoQL107GtVJV6IFZ2UJDxJyViphj7kLMjeQS4EMFl4Px763ej
-         g9fG3HjrS5RwNEZ5QxhToDrTYKBLzELL2mEbNJobPscNv7fbMM82nBNyaPwDqkogVX2j
-         fRlteE6++cdAHSTt8l+tJGg2O0uv38OOGQj9ZhXLb5rbTcu6ZIpZsUbW+Hsf3nYC9cYA
-         xG9w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DlN9QRCV3ElFQ7B7e0ZjlaYwOT8vcTapNg7jJk2jCok=;
+        b=BQ5jtww4150q+ZhrghI3hTl6vrPLVlLZTuVHoEgLMuMZLAmNixfF9IUtQs9X4HrCJW
+         sPrp6fFbnGW906vj92XkvtoAFkk9wCM62C/8hxRpiiDKra8ZI9J4tX3zOim6XjWuUiNw
+         k75i8VtnuXViUhocFvbX8Hkl3ACJx9eUKcF8eIiqTr+u2B+UTBIvdS51i1OFbUAbNvKo
+         hzbVSXDZe8nBhGhxfzXqChLzheHw2NBmzHkb8zn/FQKUool5kyzT9L5TrqvZ0dRCyZyH
+         AxGJirzm3oKvlUm11932QI11NtpKMeqN0ryxVIll5anLgve01+kYSlOiUnSiiNY6ctGW
+         f7Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=r+USz0pzpObxba6xUu8Vis4c7obvCOFtBC2ZdXPveWI=;
-        b=pAYjtlKRvfOxt9zMj1HnFpw1Zq2BXhNE2uOQXOKd/agEB7PY3Q5HOFta+ESCM8OfzC
-         Qj5p41Q54qM3wSK1IGimEFz5F4uytYwyIjf0UCdZ1rS2x+HfcgTzHl6anpd0CT++mOkM
-         uJB6JgMORFYEBuUZOKwVYIM2e4YKr7WBGnI4E7pmFg9jlOTbL66X7lPkLtil5W2RYBV4
-         OXx6b7OpjUdrhHsqRPw6EZ+kifecgJiKWYDHJ663u+SreFi+ndFOHidhtLQmEcoEZ4+L
-         22LLWHWsnQ6ZPMnwU46kU0cahKFrT394/FAIZ0CNGp35pnXA0FFdPwowxgh2zrSOLaI1
-         ZRyg==
-X-Gm-Message-State: APjAAAUHzAoA4+yDLDtrXgA49bmCeGTC3mWiOpg2LOnbi1GqFFvo6vBH
-        LLH6SGpwaIndCvJSDwdwsrP9RogIrXHrDoss
-X-Google-Smtp-Source: APXvYqyOpkzd41NduTUl3Nk6c4XCsRhs9A/i1HRzkYa1tFvvXkBJyhWrkU6QRPyuwjLYRfi6zsLvv/R0vF6KRHXo
-X-Received: by 2002:a63:4f58:: with SMTP id p24mr14638770pgl.50.1563926854486;
- Tue, 23 Jul 2019 17:07:34 -0700 (PDT)
-Date:   Tue, 23 Jul 2019 17:07:25 -0700
-In-Reply-To: <20190724000725.15634-1-allanzhang@google.com>
-Message-Id: <20190724000725.15634-3-allanzhang@google.com>
-Mime-Version: 1.0
-References: <20190724000725.15634-1-allanzhang@google.com>
-X-Mailer: git-send-email 2.22.0.709.g102302147b-goog
-Subject: [PATCH bpf-next v10 2/2] selftests/bpf: Add selftests for bpf_perf_event_output
-From:   Allan Zhang <allanzhang@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org, songliubraving@fb.com,
-        daniel@iogearbox.net, andrii.nakryiko@gmail.com
-Cc:     ast@kernel.org, Allan Zhang <allanzhang@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DlN9QRCV3ElFQ7B7e0ZjlaYwOT8vcTapNg7jJk2jCok=;
+        b=nFHyzYloFn5/fib8Zf9nqtLmyNiPjLgLcFT9HCcWc1o/YY/VAGhpvjTssQpwt4bVM0
+         uykidZ3FMpus9CQYMeg4X8K4gpTS+rfbq09PwBpT7SGNS0coGPhpC0hCKcSYd9s85OcI
+         j7nuYaW+2e0EISweTf/y5egZ9wLIrXVWYkDro7T+J3CvsrL/f/COAclqnG14XTKsuqO3
+         P6iDLp2+2F7lBQFJK8vrBCHdMrfPv+dhfi44+IRM48YmsOEZ3jmx0WbrAM76ozYjOFjF
+         QGndMUxnA05nxCOTqx+5v9PNKyz5DtgQjIiey8LnNCBAIoM0MNXpkgng5v8owUzUkbYT
+         R7mw==
+X-Gm-Message-State: APjAAAVFBtOsKgI9M7T9GG8d2e5iJrltv9flWyPjIOd41y//KRCvpyKS
+        7hG9GvjlhCkMjbltj285YTPXMbQFq1JT3qvSTKlBTA==
+X-Google-Smtp-Source: APXvYqxXUrLhbjaVUyp3x6qUcQKcLde73DUotek3MzAk9h2EyV7UIPYozg7b97yo99TnMpk0idlCLrL48Xshh7WanOM=
+X-Received: by 2002:ac8:7549:: with SMTP id b9mr13406706qtr.198.1563927368322;
+ Tue, 23 Jul 2019 17:16:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190723002042.105927-1-ppenkov.kernel@gmail.com>
+ <20190723002042.105927-4-ppenkov.kernel@gmail.com> <8736ix3p8h.fsf@toke.dk>
+In-Reply-To: <8736ix3p8h.fsf@toke.dk>
+From:   Petar Penkov <ppenkov@google.com>
+Date:   Tue, 23 Jul 2019 17:15:57 -0700
+Message-ID: <CAG4SDVUnPxtRVJ3XisuEuOBWFfYJrFj-5srDvDBVKdq3-dGPnw@mail.gmail.com>
+Subject: Re: [bpf-next 3/6] bpf: add bpf_tcp_gen_syncookie helper
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Petar Penkov <ppenkov.kernel@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Eric Dumazet <edumazet@google.com>, lmb@cloudflare.com,
+        Stanislav Fomichev <sdf@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Software event output is only enabled by a few prog types.
-This test is to ensure that all supported types are enabled for
-bpf_perf_event_output successfully.
+On Tue, Jul 23, 2019 at 5:33 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Petar Penkov <ppenkov.kernel@gmail.com> writes:
+>
+> > From: Petar Penkov <ppenkov@google.com>
+> >
+> > This helper function allows BPF programs to try to generate SYN
+> > cookies, given a reference to a listener socket. The function works
+> > from XDP and with an skb context since bpf_skc_lookup_tcp can lookup a
+> > socket in both cases.
+> >
+> > Signed-off-by: Petar Penkov <ppenkov@google.com>
+> > Suggested-by: Eric Dumazet <edumazet@google.com>
+> > ---
+> >  include/uapi/linux/bpf.h | 30 ++++++++++++++++-
+> >  net/core/filter.c        | 73 ++++++++++++++++++++++++++++++++++++++++
+> >  2 files changed, 102 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 6f68438aa4ed..20baee7b2219 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -2713,6 +2713,33 @@ union bpf_attr {
+> >   *           **-EPERM** if no permission to send the *sig*.
+> >   *
+> >   *           **-EAGAIN** if bpf program can try again.
+> > + *
+> > + * s64 bpf_tcp_gen_syncookie(struct bpf_sock *sk, void *iph, u32 iph_l=
+en, struct tcphdr *th, u32 th_len)
+> > + *   Description
+> > + *           Try to issue a SYN cookie for the packet with correspondi=
+ng
+> > + *           IP/TCP headers, *iph* and *th*, on the listening socket i=
+n *sk*.
+> > + *
+> > + *           *iph* points to the start of the IPv4 or IPv6 header, whi=
+le
+> > + *           *iph_len* contains **sizeof**\ (**struct iphdr**) or
+> > + *           **sizeof**\ (**struct ip6hdr**).
+> > + *
+> > + *           *th* points to the start of the TCP header, while *th_len=
+*
+> > + *           contains the length of the TCP header.
+> > + *
+> > + *   Return
+> > + *           On success, lower 32 bits hold the generated SYN cookie i=
+n
+> > + *           followed by 16 bits which hold the MSS value for that coo=
+kie,
+> > + *           and the top 16 bits are unused.
+> > + *
+> > + *           On failure, the returned value is one of the following:
+> > + *
+> > + *           **-EINVAL** SYN cookie cannot be issued due to error
+> > + *
+> > + *           **-ENOENT** SYN cookie should not be issued (no SYN flood=
+)
+> > + *
+> > + *           **-ENOTSUPP** kernel configuration does not enable SYN
+> > cookies
+>
+> nit: This should be EOPNOTSUPP - the other one is for NFS...
+Will correct this in a v2, thanks for catching that!
 
-Signed-off-by: Allan Zhang <allanzhang@google.com>
-Acked-by: Song Liu <songliubraving@fb.com>
----
- tools/testing/selftests/bpf/test_verifier.c   | 12 ++-
- .../selftests/bpf/verifier/event_output.c     | 94 +++++++++++++++++++
- 2 files changed, 105 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/verifier/event_output.c
-
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 84135d5f4b35..44e2d640b088 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -50,7 +50,7 @@
- #define MAX_INSNS	BPF_MAXINSNS
- #define MAX_TEST_INSNS	1000000
- #define MAX_FIXUPS	8
--#define MAX_NR_MAPS	18
-+#define MAX_NR_MAPS	19
- #define MAX_TEST_RUNS	8
- #define POINTER_VALUE	0xcafe4all
- #define TEST_DATA_LEN	64
-@@ -84,6 +84,7 @@ struct bpf_test {
- 	int fixup_map_array_wo[MAX_FIXUPS];
- 	int fixup_map_array_small[MAX_FIXUPS];
- 	int fixup_sk_storage_map[MAX_FIXUPS];
-+	int fixup_map_event_output[MAX_FIXUPS];
- 	const char *errstr;
- 	const char *errstr_unpriv;
- 	uint32_t insn_processed;
-@@ -632,6 +633,7 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
- 	int *fixup_map_array_wo = test->fixup_map_array_wo;
- 	int *fixup_map_array_small = test->fixup_map_array_small;
- 	int *fixup_sk_storage_map = test->fixup_sk_storage_map;
-+	int *fixup_map_event_output = test->fixup_map_event_output;
- 
- 	if (test->fill_helper) {
- 		test->fill_insns = calloc(MAX_TEST_INSNS, sizeof(struct bpf_insn));
-@@ -793,6 +795,14 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
- 			fixup_sk_storage_map++;
- 		} while (*fixup_sk_storage_map);
- 	}
-+	if (*fixup_map_event_output) {
-+		map_fds[18] = __create_map(BPF_MAP_TYPE_PERF_EVENT_ARRAY,
-+					   sizeof(int), sizeof(int), 1, 0);
-+		do {
-+			prog[*fixup_map_event_output].imm = map_fds[18];
-+			fixup_map_event_output++;
-+		} while (*fixup_map_event_output);
-+	}
- }
- 
- static int set_admin(bool admin)
-diff --git a/tools/testing/selftests/bpf/verifier/event_output.c b/tools/testing/selftests/bpf/verifier/event_output.c
-new file mode 100644
-index 000000000000..130553e19eca
---- /dev/null
-+++ b/tools/testing/selftests/bpf/verifier/event_output.c
-@@ -0,0 +1,94 @@
-+/* instructions used to output a skb based software event, produced
-+ * from code snippet:
-+ * struct TMP {
-+ *  uint64_t tmp;
-+ * } tt;
-+ * tt.tmp = 5;
-+ * bpf_perf_event_output(skb, &connection_tracking_event_map, 0,
-+ *			 &tt, sizeof(tt));
-+ * return 1;
-+ *
-+ * the bpf assembly from llvm is:
-+ *        0:       b7 02 00 00 05 00 00 00         r2 = 5
-+ *        1:       7b 2a f8 ff 00 00 00 00         *(u64 *)(r10 - 8) = r2
-+ *        2:       bf a4 00 00 00 00 00 00         r4 = r10
-+ *        3:       07 04 00 00 f8 ff ff ff         r4 += -8
-+ *        4:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00    r2 = 0ll
-+ *        6:       b7 03 00 00 00 00 00 00         r3 = 0
-+ *        7:       b7 05 00 00 08 00 00 00         r5 = 8
-+ *        8:       85 00 00 00 19 00 00 00         call 25
-+ *        9:       b7 00 00 00 01 00 00 00         r0 = 1
-+ *       10:       95 00 00 00 00 00 00 00         exit
-+ *
-+ *     The reason I put the code here instead of fill_helpers is that map fixup
-+ *     is against the insns, instead of filled prog.
-+ */
-+
-+#define __PERF_EVENT_INSNS__					\
-+	BPF_MOV64_IMM(BPF_REG_2, 5),				\
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_2, -8),		\
-+	BPF_MOV64_REG(BPF_REG_4, BPF_REG_10),			\
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_4, -8),			\
-+	BPF_LD_MAP_FD(BPF_REG_2, 0),				\
-+	BPF_MOV64_IMM(BPF_REG_3, 0),				\
-+	BPF_MOV64_IMM(BPF_REG_5, 8),				\
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,		\
-+		     BPF_FUNC_perf_event_output),		\
-+	BPF_MOV64_IMM(BPF_REG_0, 1),				\
-+	BPF_EXIT_INSN(),
-+{
-+	"perfevent for sockops",
-+	.insns = { __PERF_EVENT_INSNS__ },
-+	.prog_type = BPF_PROG_TYPE_SOCK_OPS,
-+	.fixup_map_event_output = { 4 },
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
-+{
-+	"perfevent for tc",
-+	.insns =  { __PERF_EVENT_INSNS__ },
-+	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
-+	.fixup_map_event_output = { 4 },
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
-+{
-+	"perfevent for lwt out",
-+	.insns =  { __PERF_EVENT_INSNS__ },
-+	.prog_type = BPF_PROG_TYPE_LWT_OUT,
-+	.fixup_map_event_output = { 4 },
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
-+{
-+	"perfevent for xdp",
-+	.insns =  { __PERF_EVENT_INSNS__ },
-+	.prog_type = BPF_PROG_TYPE_XDP,
-+	.fixup_map_event_output = { 4 },
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
-+{
-+	"perfevent for socket filter",
-+	.insns =  { __PERF_EVENT_INSNS__ },
-+	.prog_type = BPF_PROG_TYPE_SOCKET_FILTER,
-+	.fixup_map_event_output = { 4 },
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
-+{
-+	"perfevent for sk_skb",
-+	.insns =  { __PERF_EVENT_INSNS__ },
-+	.prog_type = BPF_PROG_TYPE_SK_SKB,
-+	.fixup_map_event_output = { 4 },
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
-+{
-+	"perfevent for cgroup skb",
-+	.insns =  { __PERF_EVENT_INSNS__ },
-+	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
-+	.fixup_map_event_output = { 4 },
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
--- 
-2.22.0.709.g102302147b-goog
-
+>
+> > + *
+> > + *           **-EPROTONOSUPPORT** IP packet version is not 4 or 6
+> >   */
+> >  #define __BPF_FUNC_MAPPER(FN)                \
+> >       FN(unspec),                     \
+> > @@ -2824,7 +2851,8 @@ union bpf_attr {
+> >       FN(strtoul),                    \
+> >       FN(sk_storage_get),             \
+> >       FN(sk_storage_delete),          \
+> > -     FN(send_signal),
+> > +     FN(send_signal),                \
+> > +     FN(tcp_gen_syncookie),
+> >
+> >  /* integer value in 'imm' field of BPF_CALL instruction selects which =
+helper
+> >   * function eBPF program intends to call
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 47f6386fb17a..92114271eff6 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -5850,6 +5850,75 @@ static const struct bpf_func_proto bpf_tcp_check=
+_syncookie_proto =3D {
+> >       .arg5_type      =3D ARG_CONST_SIZE,
+> >  };
+> >
+> > +BPF_CALL_5(bpf_tcp_gen_syncookie, struct sock *, sk, void *, iph, u32,=
+ iph_len,
+> > +        struct tcphdr *, th, u32, th_len)
+> > +{
+> > +#ifdef CONFIG_SYN_COOKIES
+> > +     u32 cookie;
+> > +     u16 mss;
+> > +
+> > +     if (unlikely(th_len < sizeof(*th) || th_len !=3D th->doff * 4))
+> > +             return -EINVAL;
+> > +
+> > +     if (sk->sk_protocol !=3D IPPROTO_TCP || sk->sk_state !=3D TCP_LIS=
+TEN)
+> > +             return -EINVAL;
+> > +
+> > +     if (!sock_net(sk)->ipv4.sysctl_tcp_syncookies)
+> > +             return -ENOENT;
+> > +
+> > +     if (!th->syn || th->ack || th->fin || th->rst)
+> > +             return -EINVAL;
+> > +
+> > +     if (unlikely(iph_len < sizeof(struct iphdr)))
+> > +             return -EINVAL;
+> > +
+> > +     /* Both struct iphdr and struct ipv6hdr have the version field at=
+ the
+> > +      * same offset so we can cast to the shorter header (struct iphdr=
+).
+> > +      */
+> > +     switch (((struct iphdr *)iph)->version) {
+> > +     case 4:
+> > +             if (sk->sk_family =3D=3D AF_INET6 && sk->sk_ipv6only)
+> > +                     return -EINVAL;
+> > +
+> > +             mss =3D tcp_v4_get_syncookie(sk, iph, th, &cookie);
+> > +             break;
+> > +
+> > +#if IS_BUILTIN(CONFIG_IPV6)
+> > +     case 6:
+> > +             if (unlikely(iph_len < sizeof(struct ipv6hdr)))
+> > +                     return -EINVAL;
+> > +
+> > +             if (sk->sk_family !=3D AF_INET6)
+> > +                     return -EINVAL;
+> > +
+> > +             mss =3D tcp_v6_get_syncookie(sk, iph, th, &cookie);
+> > +             break;
+> > +#endif /* CONFIG_IPV6 */
+> > +
+> > +     default:
+> > +             return -EPROTONOSUPPORT;
+> > +     }
+> > +     if (mss <=3D 0)
+> > +             return -ENOENT;
+> > +
+> > +     return cookie | ((u64)mss << 32);
+> > +#else
+> > +     return -ENOTSUPP;
+>
+> See above
+>
+> > +#endif /* CONFIG_SYN_COOKIES */
+> > +}
+> > +
+> > +static const struct bpf_func_proto bpf_tcp_gen_syncookie_proto =3D {
+> > +     .func           =3D bpf_tcp_gen_syncookie,
+> > +     .gpl_only       =3D true, /* __cookie_v*_init_sequence() is GPL *=
+/
+> > +     .pkt_access     =3D true,
+> > +     .ret_type       =3D RET_INTEGER,
+> > +     .arg1_type      =3D ARG_PTR_TO_SOCK_COMMON,
+> > +     .arg2_type      =3D ARG_PTR_TO_MEM,
+> > +     .arg3_type      =3D ARG_CONST_SIZE,
+> > +     .arg4_type      =3D ARG_PTR_TO_MEM,
+> > +     .arg5_type      =3D ARG_CONST_SIZE,
+> > +};
+> > +
+> >  #endif /* CONFIG_INET */
+> >
+> >  bool bpf_helper_changes_pkt_data(void *func)
+> > @@ -6135,6 +6204,8 @@ tc_cls_act_func_proto(enum bpf_func_id func_id, c=
+onst struct bpf_prog *prog)
+> >               return &bpf_tcp_check_syncookie_proto;
+> >       case BPF_FUNC_skb_ecn_set_ce:
+> >               return &bpf_skb_ecn_set_ce_proto;
+> > +     case BPF_FUNC_tcp_gen_syncookie:
+> > +             return &bpf_tcp_gen_syncookie_proto;
+> >  #endif
+> >       default:
+> >               return bpf_base_func_proto(func_id);
+> > @@ -6174,6 +6245,8 @@ xdp_func_proto(enum bpf_func_id func_id, const st=
+ruct bpf_prog *prog)
+> >               return &bpf_xdp_skc_lookup_tcp_proto;
+> >       case BPF_FUNC_tcp_check_syncookie:
+> >               return &bpf_tcp_check_syncookie_proto;
+> > +     case BPF_FUNC_tcp_gen_syncookie:
+> > +             return &bpf_tcp_gen_syncookie_proto;
+> >  #endif
+> >       default:
+> >               return bpf_base_func_proto(func_id);
+> > --
+> > 2.22.0.657.g960e92d24f-goog
