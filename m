@@ -2,53 +2,30 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 179EC723A7
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 03:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 283E5723B8
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 03:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728211AbfGXB0V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Jul 2019 21:26:21 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:37519 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727398AbfGXB0P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Jul 2019 21:26:15 -0400
-Received: by mail-pf1-f194.google.com with SMTP id 19so20022821pfa.4;
-        Tue, 23 Jul 2019 18:26:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zIg1AeRgD/CqkmVywbx+SzJM6fRrXplz7aYhAvptzng=;
-        b=BXqsh80Nl4cDZcRUa+Nux4yM46naJJQtkxKxn8QzLhVcqDBWMLcxIvpEfojCwCxmNb
-         KDP337fhhZiSsUY+ie+iYwy+2LsmwUDrAbCBafzWMLvZeUwJrYtszfn5BpBMhwbZRXEE
-         ls7+Qu+a79sZuQw2/Y85G/uzux5nCGoCZnl7NXJeaNUrSOxj+wZ3LMZFEs4kUib49d55
-         f/aP9kCOfXD7XfWhkmk5SMVUXE+iny9dOyzsBMo4r1sLMn0DtURnoVBQNLDjNrhOdtJB
-         ZaPsyiQ+nd6BdhyOicPLzNhKQsZJ8Wv5E16OYyRJt7ANMgAFPyceIosc6BbyNvMrTUAr
-         XRYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zIg1AeRgD/CqkmVywbx+SzJM6fRrXplz7aYhAvptzng=;
-        b=o9ApCmXhiFgJiYyWqh0UTPqIhAVZMkcOsAa4oPUZqJJ2pO3HSh+t2MW1X2HXTI8Dzm
-         2Djfk0e7lxZe6xi11b9Ar3lVGk3nD7ZNDEu65SoIzC05MQMYlpiBxgCZz94FY0PsHD22
-         tRswGkD6nSpSQFmT/oelTs2j8lc7P9MMMNO6ZgAL4HuMKMK5DMbgHstzEN6c6b7NxlqB
-         smriQ0pBX3CdDY6sGdZHZWIDOglctNByPXOdj7zPN7xuM3PhqqdWejXdW1XafF6rvXQV
-         nV88OC5MYLsEQ7u8jYhnnVjVqBlTkQ8ng/fMx5B7GHutC3uFWVYO95TvV7igp3RPnU3o
-         NKew==
-X-Gm-Message-State: APjAAAWq+JF7l1MuqRwDKtkTfPh9gJCmBuWmu+O/lOKKV6GkGsSasE8g
-        o5hIi0huKOoPUxvzIDeP91c=
-X-Google-Smtp-Source: APXvYqyCk61wnabNIK4Jxvfw+l2b6WmoUqrtPcNhmtW2WxlaOXFDgcDVuADNCkU4wpAGaRv/63OqTA==
-X-Received: by 2002:a17:90a:db08:: with SMTP id g8mr82170764pjv.39.1563931574192;
-        Tue, 23 Jul 2019 18:26:14 -0700 (PDT)
-Received: from blueforge.nvidia.com (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id k36sm45950119pgl.42.2019.07.23.18.26.12
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 23 Jul 2019 18:26:13 -0700 (PDT)
-From:   john.hubbard@gmail.com
-X-Google-Original-From: jhubbard@nvidia.com
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        id S1727398AbfGXBbn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Jul 2019 21:31:43 -0400
+Received: from hqemgate15.nvidia.com ([216.228.121.64]:5085 "EHLO
+        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725837AbfGXBbn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Jul 2019 21:31:43 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5d37b5040000>; Tue, 23 Jul 2019 18:31:48 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 23 Jul 2019 18:31:41 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 23 Jul 2019 18:31:41 -0700
+Received: from [10.110.48.28] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 24 Jul
+ 2019 01:31:40 +0000
+Subject: Re: [PATCH v2 1/3] mm/gup: add make_dirty arg to
+ put_user_pages_dirty_lock()
+To:     <john.hubbard@gmail.com>, Andrew Morton <akpm@linux-foundation.org>
+CC:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         Boaz Harrosh <boaz@plexistor.com>,
         Christoph Hellwig <hch@lst.de>,
         Daniel Vetter <daniel@ffwll.ch>,
@@ -58,71 +35,75 @@ Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         "David S . Miller" <davem@davemloft.net>,
         Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
         Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
         Johannes Thumshirn <jthumshirn@suse.de>,
         Magnus Karlsson <magnus.karlsson@intel.com>,
         Matthew Wilcox <willy@infradead.org>,
         Miklos Szeredi <miklos@szeredi.hu>,
         Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
         Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Yan Zheng <zyan@redhat.com>, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        Yan Zheng <zyan@redhat.com>, <netdev@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-mm@kvack.org>,
+        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v2 3/3] net/xdp: convert put_page() to put_user_page*()
-Date:   Tue, 23 Jul 2019 18:26:06 -0700
-Message-Id: <20190724012606.25844-4-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190724012606.25844-1-jhubbard@nvidia.com>
+        Ira Weiny <ira.weiny@intel.com>
 References: <20190724012606.25844-1-jhubbard@nvidia.com>
+ <20190724012606.25844-2-jhubbard@nvidia.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <5c303c80-57fd-d278-44d5-942597051c9b@nvidia.com>
+Date:   Tue, 23 Jul 2019 18:31:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190724012606.25844-2-jhubbard@nvidia.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1563931908; bh=81R/Z2rovzmAa3O7DCJ8y2Mm5lAz4O2B1wbIdVhO0d8=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=L8+8TSTfHtIkC1xowWnZPPItlJoP+leFf6ucvU5E2owqzMuOQ9jIZ8vvOAmRE48gG
+         nJc2BkzeiefBvFmLrdVIpofi+FqWCxnLVVCD8Km+TEsxK75nMF86BzzMDvJhOtd4Sv
+         tv/oBJtf5JB77EfsmMmPFfjUqHdF8FrA9NTbWBGktbrAYnfNv/v7rTGnTIY6IQINWA
+         7KWjSbQNfLlkpCFtMta3TS57pn2JgRvHM6UCjTP01IAnW414t4BHJWGwnR2xyxPuNo
+         ve66cppddE8vW2LUpVK1xyY3WfDsi+6f6NZZzv7rod362wLBdY3VFm9CgxAGyrUul/
+         iXE/3sT5XunbA==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: John Hubbard <jhubbard@nvidia.com>
+On 7/23/19 6:26 PM, john.hubbard@gmail.com wrote:
+> From: John Hubbard <jhubbard@nvidia.com>
+...
+> +		 * 2) This code sees the page as clean, so it calls
+> +		 * set_page_dirty(). The page stays dirty, despite being
+> +		 * written back, so it gets written back again in the
+> +		 * next writeback cycle. This is harmless.
+> +		 */
+> +		if (!PageDirty(page))
+> +			set_page_dirty_lock(page);
+> +		break;
 
-For pages that were retained via get_user_pages*(), release those pages
-via the new put_user_page*() routines, instead of via put_page() or
-release_pages().
+ahem, the above "break" should not be there, it's an artifact, sorry about 
+that. Will correct on the next iteration.
 
-This is part a tree-wide conversion, as described in commit fc1d8e7cca2d
-("mm: introduce put_user_page*(), placeholder versions").
-
-Cc: Björn Töpel <bjorn.topel@intel.com>
-Cc: Magnus Karlsson <magnus.karlsson@intel.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: netdev@vger.kernel.org
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- net/xdp/xdp_umem.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
-
-diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-index 83de74ca729a..17c4b3d3dc34 100644
---- a/net/xdp/xdp_umem.c
-+++ b/net/xdp/xdp_umem.c
-@@ -166,14 +166,7 @@ void xdp_umem_clear_dev(struct xdp_umem *umem)
- 
- static void xdp_umem_unpin_pages(struct xdp_umem *umem)
- {
--	unsigned int i;
--
--	for (i = 0; i < umem->npgs; i++) {
--		struct page *page = umem->pgs[i];
--
--		set_page_dirty_lock(page);
--		put_page(page);
--	}
-+	put_user_pages_dirty_lock(umem->pgs, umem->npgs, true);
- 
- 	kfree(umem->pgs);
- 	umem->pgs = NULL;
+thanks,
 -- 
-2.22.0
+John Hubbard
+NVIDIA
 
+
+> +		put_user_page(page);
+> +	}
+>  }
+>  EXPORT_SYMBOL(put_user_pages_dirty_lock);
+>  
+> 
