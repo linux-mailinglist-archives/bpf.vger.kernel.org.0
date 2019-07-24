@@ -2,163 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE977305B
-	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 15:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D65773395
+	for <lists+bpf@lfdr.de>; Wed, 24 Jul 2019 18:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727337AbfGXN5S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jul 2019 09:57:18 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:40043 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727367AbfGXN5S (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jul 2019 09:57:18 -0400
-Received: by mail-pl1-f193.google.com with SMTP id a93so22006161pla.7
-        for <bpf@vger.kernel.org>; Wed, 24 Jul 2019 06:57:17 -0700 (PDT)
+        id S1726601AbfGXQWg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Jul 2019 12:22:36 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:34157 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726004AbfGXQWg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Jul 2019 12:22:36 -0400
+Received: by mail-pg1-f193.google.com with SMTP id n9so15255859pgc.1;
+        Wed, 24 Jul 2019 09:22:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=GWkx98bFDu9RaP8hXcQFr0cSnvxus1MNG1rYGNPKfj4=;
-        b=f1iUHU7mfd95p5DaM48MTArJN0KA8hNbkOFJVlgyUnrb/78qa+cD2lYXF1taZ5A3w+
-         jTBsKU8XtNlJ0FA5qQnn2rYXSjxYAxTNu4B3JBDIY2q4soRuoJlSDmldDOn7kUhg7EWV
-         UejidEDKpkWkdO2YN/gAnVxUE9sPMOTwqkTck=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=8HMIhpVktcQhLcnMlnSaMxrwzTT+wDaUZPtys8u8fmw=;
+        b=Nb+QKuyfZCPgjcPcKYb70rJP06rSomXYL96XBqGn5uwG+aPhQOUW7JWY+ULGJSxE4c
+         NI3ItO2Y9gXpAQK0whGKfKhodO1Iz+bnSeIixWjDbzJwNo1f264USDdHmE/g034mNcUe
+         Le9IOlBtvAykhqNIZeC3VigzQBzk+VHJZDHZr2E3rI9pL4iwvxexiMfVrAs99zMQZgFY
+         MfncWSTWtjEUVs5K3FBLnhcPIxe/BprBx2BbAZvVh8wkhzK5ivmICs08vuvpnqKaGhgA
+         O6+icuuP33Hlu1OHPvh8+kHqExvi57GSYzoO2dSODYlwt5J/4RJVaX7IiOlxYvb588D+
+         8ihQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=GWkx98bFDu9RaP8hXcQFr0cSnvxus1MNG1rYGNPKfj4=;
-        b=eyyUO2fjJLlcJ7tmbCnGKse1t0gk9yWW8SFQ7AUpcs+4v/kMS4q2omNMl+PaMn83gJ
-         jOt+9gWv1bO13ONssdJlGLsCcZ+FSEwn2178pnwMo0YQDIEDMwJrvL/K+PZJUBmZPaDu
-         weqoVVbEWZx1PIcJip7rrgz7djDqHXdrEVeK5k17dGm0N+tZqNkpl/wAa/eqpyBa6Hly
-         Q0AgyIV42TPwnFJ3CxQkdqIG11AuOswWYv0+oVyJT5lBvIbLIP2y6B1ffaYBRGFX3zAC
-         dRFY5+pJEJOODhUg1bCQCMiCa4ZmUJETFld0KzKQ4lFxLb4AIGjasqoxEJOJUEJ3Z/+1
-         gZ1g==
-X-Gm-Message-State: APjAAAWS8GbhBbqETdI/OQkOEAJK9Em0sq9wZgTHcEkp4DnimDwVAXxl
-        9mp9FGMNqA12PczKBsDcfRk=
-X-Google-Smtp-Source: APXvYqw2WoPLa2BcLQKDe4FWqERz0Muga9t0KUBGeFNngqIvIyv/zLAljwsauZ98iAIOeica29bXcQ==
-X-Received: by 2002:a17:902:2aea:: with SMTP id j97mr73752045plb.153.1563976637094;
-        Wed, 24 Jul 2019 06:57:17 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id k6sm56084171pfi.12.2019.07.24.06.57.15
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=8HMIhpVktcQhLcnMlnSaMxrwzTT+wDaUZPtys8u8fmw=;
+        b=qcvSd5hMAVzHl87hxdcdxnKlfimcDImOB1NNPm1gYlJVxPeEKSI+s2KBvFVJ3Oh3M9
+         zvwNXd1fcZPmb0Mvk6exQ1TBqLb189D5pzcjrxHVHm217l3FMlCMJ5lW3F3ItZcdGXey
+         P8tu2HVPwKZ91ZkRzI5AoU04a//GnYU7e7a4YMKy5/GvPM1Ygl5aU53HENwJM8SaSOJu
+         oDDKsGpi1mfIZKRJ+Xm1D7clvL72q31Vl/F3A+Mn+qrbL7FuIcbiWYyNLEi0Eesyl3Y0
+         FFkkAFn424uEK4ESKX0KhfCF2+jUZBhH74r+ggItFieVtUAXGy7Ux+xRL8KMarOBAylH
+         KWMw==
+X-Gm-Message-State: APjAAAXtv/vsVPhcsfvf/QLYffLCgcbfzUWPAMUckQiERTb11X/JwU+g
+        IMpx+nyCvW3MmYC+aP0GuWg=
+X-Google-Smtp-Source: APXvYqws5GAAL0AstDH8/4fyQ3x/GSONd0VZXKS14G9KUgQ4IflPjwyD4xUKd8HXv4SFO3MhmvN10A==
+X-Received: by 2002:a63:8c0e:: with SMTP id m14mr66910923pgd.219.1563985355520;
+        Wed, 24 Jul 2019 09:22:35 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id b3sm61556650pfp.65.2019.07.24.09.22.33
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 24 Jul 2019 06:57:15 -0700 (PDT)
-Date:   Wed, 24 Jul 2019 09:57:14 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>, kernel-team@android.com
-Subject: Re: [PATCH RFC 0/4] Add support to directly attach BPF program to
- ftrace
-Message-ID: <20190724135714.GA9945@google.com>
-References: <20190716205455.iimn3pqpvsc3k4ry@ast-mbp.dhcp.thefacebook.com>
- <20190716213050.GA161922@google.com>
- <20190716222650.tk2coihjtsxszarf@ast-mbp.dhcp.thefacebook.com>
- <20190716224150.GC172157@google.com>
- <20190716235500.GA199237@google.com>
- <20190717012406.lugqemvubixfdd6v@ast-mbp.dhcp.thefacebook.com>
- <20190717130119.GA138030@google.com>
- <CAADnVQJY_=yeY0C3k1ZKpRFu5oNbB4zhQf5tQnLr=Mi8i6cgeQ@mail.gmail.com>
- <20190718025143.GB153617@google.com>
- <20190723221108.gamojemj5lorol7k@ast-mbp>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190723221108.gamojemj5lorol7k@ast-mbp>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Wed, 24 Jul 2019 09:22:34 -0700 (PDT)
+Date:   Wed, 24 Jul 2019 09:22:26 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     syzbot <syzbot+79f5f028005a77ecb6bb@syzkaller.appspotmail.com>,
+        bpf <bpf@vger.kernel.org>, David Airlie <airlied@linux.ie>,
+        alexander.deucher@amd.com, amd-gfx@lists.freedesktop.org,
+        Alexei Starovoitov <ast@kernel.org>, christian.koenig@amd.com,
+        Daniel Borkmann <daniel@iogearbox.net>, david1.zhou@amd.com,
+        DRI <dri-devel@lists.freedesktop.org>, leo.liu@amd.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Marco Elver <elver@google.com>
+Message-ID: <5d3885c2e2e20_73c32aebc43b65c08@john-XPS-13-9370.notmuch>
+In-Reply-To: <CACT4Y+ZbPmRB9T9ZzhE79VnKKD3+ieHeLpaDGRkcQ72nADKH_g@mail.gmail.com>
+References: <0000000000001a51c4058ddcb1b6@google.com>
+ <CACT4Y+ZGwKP+f4esJdx60AywO9b3Y5Bxb4zLtH6EEkaHpP6Zag@mail.gmail.com>
+ <5d37433a832d_3aba2ae4f6ec05bc3a@john-XPS-13-9370.notmuch>
+ <CACT4Y+ZbPmRB9T9ZzhE79VnKKD3+ieHeLpaDGRkcQ72nADKH_g@mail.gmail.com>
+Subject: Re: kernel panic: stack is corrupted in pointer
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 23, 2019 at 03:11:10PM -0700, Alexei Starovoitov wrote:
-> > > > > I think allowing one tracepoint and disallowing another is pointless
-> > > > > from security point of view. Tracing bpf program can do bpf_probe_read
-> > > > > of anything.
+Dmitry Vyukov wrote:
+> On Tue, Jul 23, 2019 at 7:26 PM John Fastabend <john.fastabend@gmail.com> wrote:
+> >
+> > Dmitry Vyukov wrote:
+> > > On Wed, Jul 17, 2019 at 10:58 AM syzbot
+> > > <syzbot+79f5f028005a77ecb6bb@syzkaller.appspotmail.com> wrote:
 > > > >
-> > > > I think the assumption here is the user controls the program instructions at
-> > > > runtime, but that's not the case. The BPF program we are loading is not
-> > > > dynamically generated, it is built at build time and it is loaded from a
-> > > > secure verified partition, so even though it can do bpf_probe_read, it is
-> > > > still not something that the user can change.
-> > > 
-> > > so you're saying that by having a set of signed bpf programs which
-> > > instructions are known to be non-malicious and allowed set of tracepoints
-> > > to attach via selinux whitelist, such setup will be safe?
-> > > Have you considered how mix and match will behave?
-> > 
-> > Do you mean the effect of mixing tracepoints and programs? I have not
-> > considered this. I am Ok with further enforcing of this (only certain
-> > tracepoints can be attached to certain programs) if needed. What do
-> > you think? We could have a new bpf(2) syscall attribute specify which
-> > tracepoint is expected, or similar.
-> > 
-> > I wanted to walk you through our 2 usecases we are working on:
+> > > > Hello,
+> > > >
+> > > > syzbot found the following crash on:
+> > > >
+> > > > HEAD commit:    1438cde7 Add linux-next specific files for 20190716
+> > > > git tree:       linux-next
+> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=13988058600000
+> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3430a151e1452331
+> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=79f5f028005a77ecb6bb
+> > > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111fc8afa00000
+> > >
+> > > From the repro it looks like the same bpf stack overflow bug. +John
+> > > We need to dup them onto some canonical report for this bug, or this
+> > > becomes unmanageable.
+> >
+> > Fixes in bpf tree should fix this. Hopefully, we will squash this once fixes
+> > percolate up.
+> >
+> > #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
 > 
-> thanks for sharing the use case details. Appreciate it.
+> Cool! What is the fix?
 
-No problem and thanks for your thoughts.
+It took a series of patches here,
 
-> > 1. timeinstate: By hooking 2 programs onto sched_switch and cpu_frequency
-> > tracepoints, we are able to collect CPU power per-UID (specific app). Connor
-> > O'Brien is working on that.
-> > 
-> > 2. inode to file path mapping: By hooking onto VFS tracepoints we are adding to
-> > the android kernels, we can collect data when the kernel resolves a file path
-> > to a inode/device number. A BPF map stores the inode/dev number (key) and the
-> > path (value). We have usecases where we need a high speed lookup of this
-> > without having to scan all the files in the filesystem.
+https://www.spinics.net/lists/netdev/msg586986.html
+
+The fix commits from bpf tree are,
+
+(git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git) 
+
+318892ac068397f40ff81d9155898da01493b1d2
+ac78fc148d8249dbf382c2127456dd08ec5b161c
+f87e62d45e51b12d48d2cb46b5cde8f83b866bc4
+313ab004805cf52a42673b15852b3842474ccd87
+32857cf57f920cdc03b5095f08febec94cf9c36b
+45a4521dcbd92e71c9e53031b40e34211d3b4feb
+2bb90e5cc90e1d09f631aeab041a9cf913a5bbe5
+0e858739c2d2eedeeac1d35bfa0ec3cc2a7190d8
+95fa145479fbc0a0c1fd3274ceb42ec03c042a4a
+
+The last commit fixes this paticular syzbot issue,
+
+commit 95fa145479fbc0a0c1fd3274ceb42ec03c042a4a
+Author: John Fastabend <john.fastabend@gmail.com>
+Date:   Fri Jul 19 10:29:22 2019 -0700
+
+    bpf: sockmap/tls, close can race with map free
+
+The other commits address some other issues found while testing.
+
+> We don't need to wait for the fix to percolate up (and then down
+> too!). syzbot gracefully handles when a patch is not yet present
+> everywhere (it happens all the time).
+
+Great. By the way the above should fix many of the outstanding
+reports against bpf sockmap and tls side. I'll have to walk through
+each one individually to double check though. I guess we can mark
+them as dup reports and syzbot should sort it out?
+
 > 
-> Can you share the link to vfs tracepoints you're adding?
-> Sounds like you're not going to attempt to upstream them knowing
-> Al's stance towards them?
-> May be there is a way we can do the feature you need, but w/o tracepoints?
+> Btw, this was due to a stack overflow, right? Or something else?
 
-Yes, given Al's stance I understand the patch is not upstreamable. The patch
-is here:
-For tracepoint:
-https://android.googlesource.com/kernel/common/+/27d3bfe20558d279041af403a887e7bdbdcc6f24%5E%21/
-For bpf program:
-https://android.googlesource.com/platform/system/bpfprogs/+/908f6cd718fab0de7a944f84628c56f292efeb17%5E%21/
+Right, stack overflow due to race in updating sock ops where build a
+circular call chain.
 
-I intended to submit the tracepoint only for the Android kernels, however if
-there is an upstream solution to this then that's even better since upstream can
-benefit. Were you thinking of a BPF helper function to get this data?
-
+> We are trying to make KASAN configuration detect stack overflows too,
+> so that it does not cause havoc next time. But it turns out to be
+> non-trivial and our current attempt seems to fail:
+> https://groups.google.com/forum/#!topic/kasan-dev/IhYv7QYhLfY
 > 
-> > For the first usecase, the BPF program will be loaded and attached to the
-> > scheduler and cpufreq tracepoints at boot time and will stay attached
-> > forever.  This is why I was saying having a daemon to stay alive all the time
-> > is pointless. However, if since you are completely against using tracefs
-> > which it sounds like, then we can do a daemon that is always alive.
 > 
-> As I said earlier this use case can be solved by pinning raw_tp object
-> into bpffs. Such patches are welcomed.
-
-Ok will think more about it.
-
-> > For the second usecase, the program attach is needed on-demand unlike the
-> > first usecase, and then after the usecase completes, it is detached to avoid
-> > overhead.
-> > 
-> > For the second usecase, privacy is important and we want the data to not be
-> > available to any process. So we want to make sure only selected processes can
-> > attach to that tracepoint. This is the reason why I was doing working on
-> > these patches which use the tracefs as well, since we get that level of
-> > control.
-> 
-> It's hard to recommend anything w/o seeing the actual tracepoints you're adding
-> to vfs and type of data bpf program extracts from there.
-> Sounds like it's some sort of cache of inode->file name ?
-
-Yes, that's what it is.
-
-> If so, why is it privacy related?
-
-The reasoning is the file paths could reveal user activity (such as an app
-that opens a document) and Android has requirements to control/restrict that.
-
-thanks,
-
- - Joel
-
