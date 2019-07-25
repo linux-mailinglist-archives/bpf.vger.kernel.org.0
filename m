@@ -2,350 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7283374335
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2019 04:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A22F744CF
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2019 07:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728749AbfGYCXA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Jul 2019 22:23:00 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:44124 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726238AbfGYCW7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Jul 2019 22:22:59 -0400
-Received: by mail-qk1-f193.google.com with SMTP id d79so35293831qke.11
-        for <bpf@vger.kernel.org>; Wed, 24 Jul 2019 19:22:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=NKYTsuIimoJRcwCLBpynwSIwok8mraTqdraw0y1obf8=;
-        b=MdHx9ZPzbYhL0ouFUzLeF2yRAtTrBWJvT/u0BMydH/akV9UY4GKWXtCSNLdhj1rVFW
-         E/zz6IPlumSR1cW5p3ZNysBMiB9XzwQEP3WzbdJrTu0X/hZ+xfmIbA29oGAij7pjvytl
-         Ew0g66T4GWhp+97HTiWmhV7Km1ytRwtPCqw9CSmeNTJGRiaH+SDIF72/OljH+8/6Dx5Z
-         kzTE9U0uMVFy4n8WZRRgX+/n07dyLREC1FeTyA7jVFe6DS77hpGkFOC+MqDRacQTRLpI
-         LfgAId5q88qWXVFp40TE6XpEcZ92aQr3+VzFepeBw9/Y2PbZW53ADfsEIoc2XefAfiIp
-         A27g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=NKYTsuIimoJRcwCLBpynwSIwok8mraTqdraw0y1obf8=;
-        b=SoCKlCOA2JliWdrq3X7VBIDVswiv190/q/0bIve23OFUOE4CYKOBHAafJvFd45kR6K
-         QljUzgkcVRkmll8cLoQ/uLwewdMisHMjnkcGWP9zyPU/imV8qXBUZAMnJRH7U/qKAPBf
-         p0tlAKrN0onYHnfarCWACsK2g2EYZQ36jOScH5PiL2o7+jMszb4nyXPJR2z7S/5pbBxf
-         5jcJQzBi0BvmXQrn4IwWq0hhLdWiIVdX83jAYIXe/KvBYmE93vfe2fEpAjcEtPrpjMfq
-         EcKTO6uQfSDjaM70vF07cReJQnbXKW4GNwpyQIGoejQm4OBg51JnSGVAXwm0twtsx4Xf
-         K/Zw==
-X-Gm-Message-State: APjAAAW2rFFk33+pP9t1d9CZc/fSVQ7sLCSWtzVmglLTW6E+qRF/98SN
-        ERj6aGEkcbugx4+7GPace2ATGQ==
-X-Google-Smtp-Source: APXvYqxjL/fCzteDppzrYfEW+BuLdEmA/I0+uz9x6p9C28tZS1OlLbuGzoLy/TuCMMy/3k5ubgOHqQ==
-X-Received: by 2002:ae9:e84b:: with SMTP id a72mr58546912qkg.355.1564021378597;
-        Wed, 24 Jul 2019 19:22:58 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id s8sm20178154qkg.64.2019.07.24.19.22.56
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 24 Jul 2019 19:22:58 -0700 (PDT)
-Date:   Wed, 24 Jul 2019 19:22:53 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Kevin Laatz <kevin.laatz@intel.com>
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        bjorn.topel@intel.com, magnus.karlsson@intel.com,
-        jonathan.lemon@gmail.com, saeedm@mellanox.com,
-        maximmi@mellanox.com, stephen@networkplumber.org,
-        bruce.richardson@intel.com, ciara.loftus@intel.com,
-        bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH bpf-next v3 03/11] xsk: add support to allow unaligned
- chunk placement
-Message-ID: <20190724192253.00ac07bd@cakuba.netronome.com>
-In-Reply-To: <20190724051043.14348-4-kevin.laatz@intel.com>
-References: <20190716030637.5634-1-kevin.laatz@intel.com>
-        <20190724051043.14348-1-kevin.laatz@intel.com>
-        <20190724051043.14348-4-kevin.laatz@intel.com>
-Organization: Netronome Systems, Ltd.
+        id S2390536AbfGYFVH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Jul 2019 01:21:07 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:50942 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387743AbfGYFVG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 25 Jul 2019 01:21:06 -0400
+Received: from pps.filterd (m0001255.ppops.net [127.0.0.1])
+        by mx0b-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6P5H8JQ022716;
+        Wed, 24 Jul 2019 22:20:47 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=dXUg+kmjxfKrnSKffgzxyQUZvpkd5Tu//GAVYU5BGgE=;
+ b=TtgSBXr9wIbRDtilQxUuS6FWJ5qvaIIkkgGEaeDnXmzU+mgJBOQ9Jw+CfOv70jvDhSQ+
+ 2+3ZAsOB/NU0vHMRWmJ3BEBOxcbI1cbVYQ7Ss6OFDIynediorC3ZC6hzVZM53wKF4cNy
+ Ff3yyH5+YQ+t1sS78znwQUvIL3Ea1rCUIM4= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0b-00082601.pphosted.com with ESMTP id 2txu1ujeaq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jul 2019 22:20:47 -0700
+Received: from prn-mbx06.TheFacebook.com (2620:10d:c081:6::20) by
+ prn-hub03.TheFacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Wed, 24 Jul 2019 22:20:46 -0700
+Received: from prn-hub06.TheFacebook.com (2620:10d:c081:35::130) by
+ prn-mbx06.TheFacebook.com (2620:10d:c081:6::20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Wed, 24 Jul 2019 22:20:45 -0700
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.30) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Wed, 24 Jul 2019 22:20:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WSnWYJePUdoLVMytgdwFM8GEZ0QUrpuD1j4LG6jR0yWqhcDfOzyo3ajO5iEeAO3JLe/KjmfDxzx0qYp9AWQKaR3UYuj8dckT0llCgMbLKUIsYY9yyk5vsW4AHDDcVOBSHR1X1RFy8k+q+uot9zLD+U0y/D1FlWi5OntpiysavcYBKAC7wtTUk4ct4CvX2mD7c26guBKt/2S6Rvph8K+EBc+DNc5Zq+y/ihCWfafhLVugR0cErlylska/z2rjfDcLfGob3t1Bz1yInig9vAqe3M/G05fPmWEUk5LqtTwk9SMrPKrIJ9ekuDInHZ4nTeNftUNd5efgloijKYtepcmXIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dXUg+kmjxfKrnSKffgzxyQUZvpkd5Tu//GAVYU5BGgE=;
+ b=cD/MNDNsBc6aNolTmzOPuARXtr7Zm3/3s4AoVvprCL/cGuwclM0GbrKda9Ydn/1qeHvNNA002ZJwA9dKmHK2tERz3COJOYBxWjF8hedlGqm9UJvYr1xPEHeAPBn3lJmjkp/mgiTY0jsLI7587rQx9BZS31K/WE8NBhzAX63p57iEgXqAEyeL7i3CRv5DApVpditfix02mU9CnKXVsv+04NrF+2gnLKLQA/B/FgNgkLFgur4XguvO4VeSvw9juzW8ab0TMWaDjVZ7pLWc8p1TV6ynzdTTV1LJixKrc6R204lFvM40ry20iVOkufV1SY6Qc1x+hUu+FGvZlw/TU8q+ww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
+ smtp.mailfrom=fb.com;dmarc=pass action=none header.from=fb.com;dkim=pass
+ header.d=fb.com;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dXUg+kmjxfKrnSKffgzxyQUZvpkd5Tu//GAVYU5BGgE=;
+ b=aMoVRJ6TMKjsZlMGQODm0tnd6oGcci1WErqDH1cVtJFrXp4CDgotV1b8DS92C2UjD52cxmo6BRC2eR+OkdMeaC29fvtCFSHSEAh6GffrB91xOkrvIfrBwGlnCbiMTdPeutXIJ0wCLMBip2PjZucQyD1Q0l8oblakbhtDlFoSbzc=
+Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
+ MWHPR15MB1439.namprd15.prod.outlook.com (10.173.235.20) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2094.16; Thu, 25 Jul 2019 05:20:44 +0000
+Received: from MWHPR15MB1165.namprd15.prod.outlook.com
+ ([fe80::4066:b41c:4397:27b7]) by MWHPR15MB1165.namprd15.prod.outlook.com
+ ([fe80::4066:b41c:4397:27b7%7]) with mapi id 15.20.2094.013; Thu, 25 Jul 2019
+ 05:20:44 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 01/10] libbpf: add .BTF.ext offset relocation
+ section loading
+Thread-Topic: [PATCH bpf-next 01/10] libbpf: add .BTF.ext offset relocation
+ section loading
+Thread-Index: AQHVQlYK69qsehsdP0Kkd9QeaocpJKbacyeAgAAKZACAAE8ygA==
+Date:   Thu, 25 Jul 2019 05:20:43 +0000
+Message-ID: <B01B98E5-CDFB-4E3A-BD58-DBA3113C3C3F@fb.com>
+References: <20190724192742.1419254-1-andriin@fb.com>
+ <20190724192742.1419254-2-andriin@fb.com>
+ <B5E772A5-C0D9-4697-ADE2-2A94C4AD37B5@fb.com>
+ <CAEf4BzZsU8qXa08neQ=nrFFTXpSWsxrZuZz=kVjS2BXNUoofUw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZsU8qXa08neQ=nrFFTXpSWsxrZuZz=kVjS2BXNUoofUw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3445.104.11)
+x-originating-ip: [2620:10d:c090:180::1:7bbf]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b452b5d7-fbb0-4b3b-b807-08d710bfd7b9
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MWHPR15MB1439;
+x-ms-traffictypediagnostic: MWHPR15MB1439:
+x-microsoft-antispam-prvs: <MWHPR15MB143920C3995C50EC0E5D43DAB3C10@MWHPR15MB1439.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-forefront-prvs: 0109D382B0
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(366004)(136003)(376002)(396003)(346002)(189003)(199004)(50226002)(229853002)(86362001)(186003)(33656002)(81166006)(2906002)(476003)(66476007)(446003)(8676002)(11346002)(6506007)(2616005)(6512007)(102836004)(53546011)(76116006)(5660300002)(316002)(53936002)(54906003)(81156014)(36756003)(486006)(8936002)(57306001)(99286004)(14454004)(256004)(46003)(6916009)(7736002)(6436002)(6486002)(66446008)(66556008)(25786009)(6116002)(4326008)(6246003)(71200400001)(71190400001)(68736007)(305945005)(66946007)(478600001)(76176011)(64756008)(142923001);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1439;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: FLi+e8mgigv3K91UssFksjeDiSkm5LNsg9bE6vE4sKOdpqMCXyo3XDybUl6MFEc2EdBsmIs9s4AOod1jyHTIggAZNtjp+K0V4KYN2YgAiKicOHHj6eJm++5PbfNv9JREdtuBk3gj2f0yoWB2DATs2VktBaiR5EkgWwe96T0R5gI4GxDSKvAxB9syyji7wsV2wKXiXFU77fQExYcBfsBS8As+nYNsiNmTEfMMdp0DahAqvqf9tGUDvTjH9BeHbatlLQ2t9ObH35ZFnflWrb9VC/5vKs5OkU7NbPQdtbfcWT14OkU9iDbtP1/hRRI2bxyAZF8/G9PLL2SxflYiJFJBSFfsp8MhuEMQ396nQMICRvMFEUP0B0BGV5eBI3IzfW/IdrDJJ7pqUOC2fuk50zIre3fKJux4Q1yiHCbKrBkKkWU=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1926CAE9DF055B409FC16029DD1F202C@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-Network-Message-Id: b452b5d7-fbb0-4b3b-b807-08d710bfd7b9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jul 2019 05:20:43.6772
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: songliubraving@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1439
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-25_03:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1907250063
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 24 Jul 2019 05:10:35 +0000, Kevin Laatz wrote:
-> Currently, addresses are chunk size aligned. This means, we are very
-> restricted in terms of where we can place chunk within the umem. For
-> example, if we have a chunk size of 2k, then our chunks can only be placed
-> at 0,2k,4k,6k,8k... and so on (ie. every 2k starting from 0).
-> 
-> This patch introduces the ability to use unaligned chunks. With these
-> changes, we are no longer bound to having to place chunks at a 2k (or
-> whatever your chunk size is) interval. Since we are no longer dealing with
-> aligned chunks, they can now cross page boundaries. Checks for page
-> contiguity have been added in order to keep track of which pages are
-> followed by a physically contiguous page.
-> 
-> Signed-off-by: Kevin Laatz <kevin.laatz@intel.com>
-> Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
-> Signed-off-by: Bruce Richardson <bruce.richardson@intel.com>
-> 
-> ---
-> v2:
->   - Add checks for the flags coming from userspace
->   - Fix how we get chunk_size in xsk_diag.c
->   - Add defines for masking the new descriptor format
->   - Modified the rx functions to use new descriptor format
->   - Modified the tx functions to use new descriptor format
-> 
-> v3:
->   - Add helper function to do address/offset masking/addition
-> ---
->  include/net/xdp_sock.h      | 17 ++++++++
->  include/uapi/linux/if_xdp.h |  9 ++++
->  net/xdp/xdp_umem.c          | 18 +++++---
->  net/xdp/xsk.c               | 86 ++++++++++++++++++++++++++++++-------
->  net/xdp/xsk_diag.c          |  2 +-
->  net/xdp/xsk_queue.h         | 68 +++++++++++++++++++++++++----
->  6 files changed, 170 insertions(+), 30 deletions(-)
-> 
-> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> index 69796d264f06..738996c0f995 100644
-> --- a/include/net/xdp_sock.h
-> +++ b/include/net/xdp_sock.h
-> @@ -19,6 +19,7 @@ struct xsk_queue;
->  struct xdp_umem_page {
->  	void *addr;
->  	dma_addr_t dma;
-> +	bool next_pg_contig;
 
-IIRC accesses to xdp_umem_page case a lot of cache misses, so having
-this structure grow from 16 to 24B is a little unfortunate :(
-Can we try to steal lower bits of addr or dma? Or perhaps not pre
-compute this info at all?
 
->  };
->  
->  struct xdp_umem_fq_reuse {
-> @@ -48,6 +49,7 @@ struct xdp_umem {
->  	bool zc;
->  	spinlock_t xsk_list_lock;
->  	struct list_head xsk_list;
-> +	u32 flags;
->  };
->  
->  struct xdp_sock {
-> @@ -144,6 +146,15 @@ static inline void xsk_umem_fq_reuse(struct xdp_umem *umem, u64 addr)
->  
->  	rq->handles[rq->length++] = addr;
->  }
-> +
-> +static inline u64 xsk_umem_handle_offset(struct xdp_umem *umem, u64 handle,
-> +					 u64 offset)
-> +{
-> +	if (umem->flags & XDP_UMEM_UNALIGNED_CHUNKS)
-> +		return handle |= (offset << XSK_UNALIGNED_BUF_OFFSET_SHIFT);
-> +	else
-> +		return handle += offset;
-> +}
->  #else
->  static inline int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp)
->  {
-> @@ -241,6 +252,12 @@ static inline void xsk_umem_fq_reuse(struct xdp_umem *umem, u64 addr)
->  {
->  }
->  
-> +static inline u64 xsk_umem_handle_offset(struct xdp_umem *umem, u64 handle,
-> +					 u64 offset)
-> +{
-> +	return NULL;
+> On Jul 24, 2019, at 5:37 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> =
+wrote:
+>=20
+> On Wed, Jul 24, 2019 at 5:00 PM Song Liu <songliubraving@fb.com> wrote:
+>>=20
+>>=20
+>>=20
+>>> On Jul 24, 2019, at 12:27 PM, Andrii Nakryiko <andriin@fb.com> wrote:
+>>>=20
+>>> Add support for BPF CO-RE offset relocations. Add section/record
+>>> iteration macros for .BTF.ext. These macro are useful for iterating ove=
+r
+>>> each .BTF.ext record, either for dumping out contents or later for BPF
+>>> CO-RE relocation handling.
+>>>=20
+>>> To enable other parts of libbpf to work with .BTF.ext contents, moved
+>>> a bunch of type definitions into libbpf_internal.h.
+>>>=20
+>>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+>>> ---
+>>> tools/lib/bpf/btf.c             | 64 +++++++++--------------
+>>> tools/lib/bpf/btf.h             |  4 ++
+>>> tools/lib/bpf/libbpf_internal.h | 91 +++++++++++++++++++++++++++++++++
+>>> 3 files changed, 118 insertions(+), 41 deletions(-)
+>>>=20
+>=20
+> [...]
+>=20
+>>> +
+>>> static int btf_ext_parse_hdr(__u8 *data, __u32 data_size)
+>>> {
+>>>      const struct btf_ext_header *hdr =3D (struct btf_ext_header *)data=
+;
+>>> @@ -1004,6 +979,13 @@ struct btf_ext *btf_ext__new(__u8 *data, __u32 si=
+ze)
+>>>      if (err)
+>>>              goto done;
+>>>=20
+>>> +     /* check if there is offset_reloc_off/offset_reloc_len fields */
+>>> +     if (btf_ext->hdr->hdr_len < sizeof(struct btf_ext_header))
+>>=20
+>> This check will break when we add more optional sections to btf_ext_head=
+er.
+>> Maybe use offsetof() instead?
+>=20
+> I didn't do it, because there are no fields after offset_reloc_len.
+> But now I though that maybe it would be ok to add zero-sized marker
+> field, kind of like marking off various versions of btf_ext header?
+>=20
+> Alternatively, I can add offsetofend() macro somewhere in libbpf_internal=
+.h.
+>=20
+> Do you have any preference?
 
-	return 0?
+We only need a stable number to compare against. offsetofend() works.=20
+Or we can simply have something like
 
-> +}
-> +
->  #endif /* CONFIG_XDP_SOCKETS */
->  
->  #endif /* _LINUX_XDP_SOCK_H */
-> diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
-> index faaa5ca2a117..f8dc68fcdf78 100644
-> --- a/include/uapi/linux/if_xdp.h
-> +++ b/include/uapi/linux/if_xdp.h
-> @@ -17,6 +17,9 @@
->  #define XDP_COPY	(1 << 1) /* Force copy-mode */
->  #define XDP_ZEROCOPY	(1 << 2) /* Force zero-copy mode */
->  
-> +/* Flags for xsk_umem_config flags */
-> +#define XDP_UMEM_UNALIGNED_CHUNKS (1 << 0)
-> +
->  struct sockaddr_xdp {
->  	__u16 sxdp_family;
->  	__u16 sxdp_flags;
-> @@ -53,6 +56,7 @@ struct xdp_umem_reg {
->  	__u64 len; /* Length of packet data area */
->  	__u32 chunk_size;
->  	__u32 headroom;
-> +	__u32 flags;
->  };
->  
->  struct xdp_statistics {
-> @@ -74,6 +78,11 @@ struct xdp_options {
->  #define XDP_UMEM_PGOFF_FILL_RING	0x100000000ULL
->  #define XDP_UMEM_PGOFF_COMPLETION_RING	0x180000000ULL
->  
-> +/* Masks for unaligned chunks mode */
-> +#define XSK_UNALIGNED_BUF_OFFSET_SHIFT 48
-> +#define XSK_UNALIGNED_BUF_ADDR_MASK \
-> +	((1ULL << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1)
-> +
->  /* Rx/Tx descriptor */
->  struct xdp_desc {
->  	__u64 addr;
-> diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-> index 83de74ca729a..952ca22103e9 100644
-> --- a/net/xdp/xdp_umem.c
-> +++ b/net/xdp/xdp_umem.c
-> @@ -299,6 +299,7 @@ static int xdp_umem_account_pages(struct xdp_umem *umem)
->  
->  static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
->  {
-> +	bool unaligned_chunks = mr->flags & XDP_UMEM_UNALIGNED_CHUNKS;
->  	u32 chunk_size = mr->chunk_size, headroom = mr->headroom;
->  	unsigned int chunks, chunks_per_page;
->  	u64 addr = mr->addr, size = mr->len;
-> @@ -314,7 +315,10 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
->  		return -EINVAL;
->  	}
->  
-> -	if (!is_power_of_2(chunk_size))
-> +	if (mr->flags & ~(XDP_UMEM_UNALIGNED_CHUNKS))
+    if (btf_ext->hdr->hdr_len <=3D offsetof(struct btf_ext_header, offset_r=
+eloc_off))
+          goto done;
+or=20
+    if (btf_ext->hdr->hdr_len < offsetof(struct btf_ext_header, offset_relo=
+c_len))
+          goto done;
 
-parens unnecessary, consider adding a define for known flags.
+Does this make sense?
 
-> +		return -EINVAL;
-> +
-> +	if (!unaligned_chunks && !is_power_of_2(chunk_size))
->  		return -EINVAL;
->  
->  	if (!PAGE_ALIGNED(addr)) {
-> @@ -331,9 +335,11 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
->  	if (chunks == 0)
->  		return -EINVAL;
->  
-> -	chunks_per_page = PAGE_SIZE / chunk_size;
-> -	if (chunks < chunks_per_page || chunks % chunks_per_page)
-> -		return -EINVAL;
-> +	if (!unaligned_chunks) {
-> +		chunks_per_page = PAGE_SIZE / chunk_size;
-> +		if (chunks < chunks_per_page || chunks % chunks_per_page)
-> +			return -EINVAL;
-> +	}
->  
->  	headroom = ALIGN(headroom, 64);
->  
-> @@ -342,13 +348,15 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
->  		return -EINVAL;
->  
->  	umem->address = (unsigned long)addr;
-> -	umem->chunk_mask = ~((u64)chunk_size - 1);
-> +	umem->chunk_mask = unaligned_chunks ? XSK_UNALIGNED_BUF_ADDR_MASK
-> +					    : ~((u64)chunk_size - 1);
->  	umem->size = size;
->  	umem->headroom = headroom;
->  	umem->chunk_size_nohr = chunk_size - headroom;
->  	umem->npgs = size / PAGE_SIZE;
->  	umem->pgs = NULL;
->  	umem->user = NULL;
-> +	umem->flags = mr->flags;
->  	INIT_LIST_HEAD(&umem->xsk_list);
->  	spin_lock_init(&umem->xsk_list_lock);
->  
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index 59b57d708697..b3ab653091c4 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -45,7 +45,7 @@ EXPORT_SYMBOL(xsk_umem_has_addrs);
->  
->  u64 *xsk_umem_peek_addr(struct xdp_umem *umem, u64 *addr)
->  {
-> -	return xskq_peek_addr(umem->fq, addr);
-> +	return xskq_peek_addr(umem->fq, addr, umem);
->  }
->  EXPORT_SYMBOL(xsk_umem_peek_addr);
->  
-> @@ -55,21 +55,42 @@ void xsk_umem_discard_addr(struct xdp_umem *umem)
->  }
->  EXPORT_SYMBOL(xsk_umem_discard_addr);
->  
-> +/* If a buffer crosses a page boundary, we need to do 2 memcpy's, one for
-> + * each page. This is only required in copy mode.
-> + */
-> +static void __xsk_rcv_memcpy(struct xdp_umem *umem, u64 addr, void *from_buf,
-> +			     u32 len, u32 metalen)
-> +{
-> +	void *to_buf = xdp_umem_get_data(umem, addr);
-> +
-> +	if (xskq_crosses_non_contig_pg(umem, addr, len + metalen)) {
-> +		void *next_pg_addr = umem->pages[(addr >> PAGE_SHIFT) + 1].addr;
-> +		u64 page_start = addr & (PAGE_SIZE - 1);
-> +		u64 first_len = PAGE_SIZE - (addr - page_start);
-> +
-> +		memcpy(to_buf, from_buf, first_len + metalen);
-> +		memcpy(next_pg_addr, from_buf + first_len, len - first_len);
-> +
-> +		return;
-> +	}
-> +
-> +	memcpy(to_buf, from_buf, len + metalen);
-> +}
-
-Why handle this case gracefully? Real XSK use is the zero copy mode,
-having extra code to make copy mode more permissive seems a little
-counter productive IMHO.
-
->  static int __xsk_rcv(struct xdp_sock *xs, struct xdp_buff *xdp, u32 len)
->  {
-> -	void *to_buf, *from_buf;
-> +	u64 offset = xs->umem->headroom;
-> +	void *from_buf;
->  	u32 metalen;
->  	u64 addr;
->  	int err;
->  
-> -	if (!xskq_peek_addr(xs->umem->fq, &addr) ||
-> +	if (!xskq_peek_addr(xs->umem->fq, &addr, xs->umem) ||
->  	    len > xs->umem->chunk_size_nohr - XDP_PACKET_HEADROOM) {
->  		xs->rx_dropped++;
->  		return -ENOSPC;
->  	}
->  
-> -	addr += xs->umem->headroom;
-> -
->  	if (unlikely(xdp_data_meta_unsupported(xdp))) {
->  		from_buf = xdp->data;
->  		metalen = 0;
-> @@ -78,9 +99,13 @@ static int __xsk_rcv(struct xdp_sock *xs, struct xdp_buff *xdp, u32 len)
->  		metalen = xdp->data - xdp->data_meta;
->  	}
->  
-> -	to_buf = xdp_umem_get_data(xs->umem, addr);
-> -	memcpy(to_buf, from_buf, len + metalen);
-> -	addr += metalen;
-> +	__xsk_rcv_memcpy(xs->umem, addr + offset, from_buf, len, metalen);
-> +
-> +	offset += metalen;
-> +	if (xs->umem->flags & XDP_UMEM_UNALIGNED_CHUNKS)
-> +		addr |= offset << XSK_UNALIGNED_BUF_OFFSET_SHIFT;
-> +	else
-> +		addr += offset;
->  	err = xskq_produce_batch_desc(xs->rx, addr, len);
->  	if (!err) {
->  		xskq_discard_addr(xs->umem->fq);
-> @@ -127,6 +152,7 @@ int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp)
->  	u32 len = xdp->data_end - xdp->data;
->  	void *buffer;
->  	u64 addr;
-> +	u64 offset = xs->umem->headroom;
-
-reverse xmas tree, please
-
->  	int err;
->  
->  	spin_lock_bh(&xs->rx_lock);
-
+Thanks,
+Song=
