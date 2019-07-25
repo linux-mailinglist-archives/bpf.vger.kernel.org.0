@@ -2,146 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE7E75893
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2019 22:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D78759C9
+	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2019 23:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbfGYUDI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Jul 2019 16:03:08 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:33353 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726586AbfGYUDI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Jul 2019 16:03:08 -0400
-Received: by mail-pf1-f195.google.com with SMTP id g2so23286944pfq.0
-        for <bpf@vger.kernel.org>; Thu, 25 Jul 2019 13:03:08 -0700 (PDT)
+        id S1726835AbfGYVji (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Jul 2019 17:39:38 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:43267 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726817AbfGYVji (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Jul 2019 17:39:38 -0400
+Received: by mail-qt1-f193.google.com with SMTP id w17so6273249qto.10
+        for <bpf@vger.kernel.org>; Thu, 25 Jul 2019 14:39:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ELFFJ5+DQu+7PdqP+9PAJKn4mLKKH11jszvBCpwl7yo=;
-        b=lXTFrBifFbTgf1V8v7UIncz0q97uwDlfS/8kSCHkNKkZMbeOkefOlPHEDpb8Towlnt
-         eSYOogpOhUKzUS/pjBGJDzw2O+dIDXCv/O66vjf2lXKX6aSaRnqoMX/lj10Lbgjj5xEQ
-         4hwD5FXNBoMC53tXdH21X9W2t9YIU2NslQfnNtQ/FF2l/skqjSDeMFj1iMI3fBWUZ5Wo
-         Ygps0umplBHJGHUXtX+Cii8gjUCjnQoXlwpKE+Q+hicRyhbcpzKff6Ins84pQVSi3DJO
-         nhmp4uQZkngJKu1rPrkkr8G5jaU+7MsjTdRcuZaY4HyK7nbGoHG697ZJLlkONYIBAy3H
-         Adpw==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=CSygOM7YhBnAy6MsNYv6TaOG2ZVJz0P5wm8bU+ygO/4=;
+        b=he8sVU6r0LuORP3V5bECPCNh4zTrWW+c+9YByWiA/m4wVPzKwS4rxcjYhtNb8XAtCr
+         vPhn6X9s1m9Ea721keeZtJtM6n6D0w70kDoKdR2eXi7pykvlO3oDfajbvt21kgOXIyGm
+         A6wer3iU+3tejiUzRkwfva1C7JpiU9qVgnqDbvw67NKyV8AlfL00gNGijmy61Q6m+CDe
+         +J86Y/mXfWPrI/ewTSTpr6yeebWZTELAR6B8EWA6I1CyIafedvBEDfCDTVJyy/aiP3hW
+         pGbDNqi5ZJe8rms1lBSBS8vg1Lt8dAaSeB8qhTDq+z4AWvhEKkggpKF3dSELmZ2IW5g8
+         WkSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ELFFJ5+DQu+7PdqP+9PAJKn4mLKKH11jszvBCpwl7yo=;
-        b=mRReMpDeADh5To3Z/8KlGalh5z9FpxIyR+nldk46eeOQWg2OmaBYJ/upeVAe9En2bK
-         Bpyg9toVV6Y9jBkF8qJtJfC/eDb+xJ4eDNtY/7jQb9vzIZ/wtvOjsPEuAh3nUPN3K+Ss
-         I38LnZdfoYCEltaPYTGSofNhBQj8lytY3bt8Csym9bOvkDVpDqu+RhyirV+2s7Cuubtr
-         7/lBx58Ah0t2362qcLjVPT/XYg4sIDcuVl4r1DddA6sW5YUsfDVIowkMAJAJcgUKSB+o
-         td9qsEw3k4oNloB7uwFqnuXomlnzrEzWVDqdLcngE2618282pKR3C1VY7//cf36QeRDx
-         RbRQ==
-X-Gm-Message-State: APjAAAVh+cwffxrTKI8tyPf5y1yLk05rOCf0tHl7HYX36nMVnbztJfry
-        /fH5NVF1aI45YPQ+3xLKWMs=
-X-Google-Smtp-Source: APXvYqyFXu08COcZf2CxFFdBmTkjybldYV+jwndT7YT21ok4Uh2aLkNLqMhjXyqjI/LaFNeK79y+fA==
-X-Received: by 2002:a17:90a:c70c:: with SMTP id o12mr68966969pjt.62.1564084987741;
-        Thu, 25 Jul 2019 13:03:07 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id z68sm46416555pgz.88.2019.07.25.13.03.07
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=CSygOM7YhBnAy6MsNYv6TaOG2ZVJz0P5wm8bU+ygO/4=;
+        b=k8f/x+yZHN/1Gv6AxVPjRlvipOLIbgLvQBk68eSHf2rLYOKZTCC4TMMLD1Qsn9eLGz
+         ZdGhlbJlPSC365MuOvsKMSZxT9KZKCvA4ojoh7HcmuRoKI9KnGpwfnH22V3b5d8YGzex
+         C1ObdraSJgfm3sipeVtomrBafCZ9EwHhbbIe4YqIg0DqTuQdUrv8EtPdkThZTmO+7opU
+         ftL/nDjYNNoo9fnijef3iEbvtnDWjzpqyNT4qn5GWV+8UMfPJ/hgIHHBf25YPDc1EooD
+         n6Ldfbho68bXVUPoWejtG6gJu2Gy9kGaPGvsEV79wOSkZByT6hNxGYYqcr2HGYfwCeGE
+         aQ6g==
+X-Gm-Message-State: APjAAAUcSLyHlW7CTM76RjJNzKkCk0dwRrJKi1o31NcxFb4e2FA1UhdI
+        sRa4YHCgWuHRGXszvCng6K8HmQ==
+X-Google-Smtp-Source: APXvYqyYasGQHoqJBwR2mvO8Ts9j5uUl2Sqix4ffDGoTkQFRVGfQzVPXJ95YOGNCYmaWD71TU8x+Dg==
+X-Received: by 2002:a0c:c93c:: with SMTP id r57mr49389143qvj.226.1564090776809;
+        Thu, 25 Jul 2019 14:39:36 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id z33sm23385643qtc.56.2019.07.25.14.39.35
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 25 Jul 2019 13:03:07 -0700 (PDT)
-Date:   Thu, 25 Jul 2019 13:03:06 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
-        daniel@iogearbox.net, Willem de Bruijn <willemb@google.com>,
-        Song Liu <songliubraving@fb.com>,
-        Petar Penkov <ppenkov@google.com>
-Subject: Re: [PATCH bpf-next v2 1/7] bpf/flow_dissector: pass input flags to
- BPF flow dissector program
-Message-ID: <20190725200306.GC3500@mini-arch>
-References: <20190725153342.3571-1-sdf@google.com>
- <20190725153342.3571-2-sdf@google.com>
- <20190725195856.ttdt75dxwhawjqvi@ast-mbp>
+        Thu, 25 Jul 2019 14:39:36 -0700 (PDT)
+Date:   Thu, 25 Jul 2019 14:39:32 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     syzbot <syzbot+0e0fedcad708d12d3032@syzkaller.appspotmail.com>
+Cc:     ast@kernel.org, aviadye@mellanox.com, borisp@mellanox.com,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davejwatson@fb.com,
+        davem@davemloft.net, john.fastabend@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Subject: Re: general protection fault in tls_trim_both_msgs
+Message-ID: <20190725143932.78705103@cakuba.netronome.com>
+In-Reply-To: <0000000000002b4896058e7abf78@google.com>
+References: <0000000000002b4896058e7abf78@google.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190725195856.ttdt75dxwhawjqvi@ast-mbp>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/25, Alexei Starovoitov wrote:
-> On Thu, Jul 25, 2019 at 08:33:36AM -0700, Stanislav Fomichev wrote:
-> > C flow dissector supports input flags that tell it to customize parsing
-> > by either stopping early or trying to parse as deep as possible. Pass
-> > those flags to the BPF flow dissector so it can make the same
-> > decisions. In the next commits I'll add support for those flags to
-> > our reference bpf_flow.c
-> > 
-> > Acked-by: Willem de Bruijn <willemb@google.com>
-> > Acked-by: Song Liu <songliubraving@fb.com>
-> > Cc: Song Liu <songliubraving@fb.com>
-> > Cc: Willem de Bruijn <willemb@google.com>
-> > Cc: Petar Penkov <ppenkov@google.com>
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  include/linux/skbuff.h       | 2 +-
-> >  include/net/flow_dissector.h | 4 ----
-> >  include/uapi/linux/bpf.h     | 5 +++++
-> >  net/bpf/test_run.c           | 2 +-
-> >  net/core/flow_dissector.c    | 5 +++--
-> >  5 files changed, 10 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> > index 718742b1c505..9b7a8038beec 100644
-> > --- a/include/linux/skbuff.h
-> > +++ b/include/linux/skbuff.h
-> > @@ -1271,7 +1271,7 @@ static inline int skb_flow_dissector_bpf_prog_detach(const union bpf_attr *attr)
-> >  
-> >  struct bpf_flow_dissector;
-> >  bool bpf_flow_dissect(struct bpf_prog *prog, struct bpf_flow_dissector *ctx,
-> > -		      __be16 proto, int nhoff, int hlen);
-> > +		      __be16 proto, int nhoff, int hlen, unsigned int flags);
-> >  
-> >  bool __skb_flow_dissect(const struct net *net,
-> >  			const struct sk_buff *skb,
-> > diff --git a/include/net/flow_dissector.h b/include/net/flow_dissector.h
-> > index 90bd210be060..3e2642587b76 100644
-> > --- a/include/net/flow_dissector.h
-> > +++ b/include/net/flow_dissector.h
-> > @@ -253,10 +253,6 @@ enum flow_dissector_key_id {
-> >  	FLOW_DISSECTOR_KEY_MAX,
-> >  };
-> >  
-> > -#define FLOW_DISSECTOR_F_PARSE_1ST_FRAG		BIT(0)
-> > -#define FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL	BIT(1)
-> > -#define FLOW_DISSECTOR_F_STOP_AT_ENCAP		BIT(2)
-> > -
-> >  struct flow_dissector_key {
-> >  	enum flow_dissector_key_id key_id;
-> >  	size_t offset; /* offset of struct flow_dissector_key_*
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index fa1c753dcdbc..b4ad19bd6aa8 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -3507,6 +3507,10 @@ enum bpf_task_fd_type {
-> >  	BPF_FD_TYPE_URETPROBE,		/* filename + offset */
-> >  };
-> >  
-> > +#define FLOW_DISSECTOR_F_PARSE_1ST_FRAG		(1U << 0)
-> > +#define FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL	(1U << 1)
-> > +#define FLOW_DISSECTOR_F_STOP_AT_ENCAP		(1U << 2)
-> > +
+On Wed, 24 Jul 2019 22:32:07 -0700, syzbot wrote:
+> Hello,
 > 
-> I'm a bit concerned with direct move.
-> Last time we were in similar situation we've created:
-> enum {
->         BPF_TCP_ESTABLISHED = 1,
->         BPF_TCP_SYN_SENT,
+> syzbot found the following crash on:
 > 
-> and added:
->         BUILD_BUG_ON((int)BPF_TCP_ESTABLISHED != (int)TCP_ESTABLISHED);
->         BUILD_BUG_ON((int)BPF_TCP_SYN_SENT != (int)TCP_SYN_SENT);
+> HEAD commit:    9e6dfe80 Add linux-next specific files for 20190724
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1046971fa00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=6cbb8fc2cf2842d7
+> dashboard link: https://syzkaller.appspot.com/bug?extid=0e0fedcad708d12d3032
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
 > 
-> It may be overkill here, but feels safer than direct move.
-> Adding BPF_ prefix also feels necessary to avoid very unlikely
-> (but still theoretically possible) conflicts.
-Sounds good, thanks for the pointers, will do the same here!
+> Unfortunately, I don't have any reproducer for this crash yet.
+
+Looks very like the issue we mentioned in the cover letter for unhash
+fixes. TX is waiting for mem, the connection dies, we free ctx, TX
+wakes up with a now stale ctx pointer. I'm testing a fix for this,
+Netronome team was actually able to trigger a NULL-deref on the RX
+side, because there ctx is reloaded but not NULL-checked.
+
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+0e0fedcad708d12d3032@syzkaller.appspotmail.com
+> 
+> kasan: CONFIG_KASAN_INLINE enabled
+> kasan: GPF could be caused by NULL-ptr deref or user memory access
+> general protection fault: 0000 [#1] PREEMPT SMP KASAN
+> CPU: 1 PID: 15517 Comm: syz-executor.4 Not tainted 5.3.0-rc1-next-20190724  
+> #50
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+> Google 01/01/2011
+> RIP: 0010:tls_trim_both_msgs+0x54/0x130 net/tls/tls_sw.c:268
+> Code: 48 c1 ea 03 80 3c 02 00 0f 85 e3 00 00 00 4d 8b b5 b0 06 00 00 48 b8  
+> 00 00 00 00 00 fc ff df 49 8d 7e 28 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f  
+> 85 b3 00 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b
+> RSP: 0018:ffff8880612cfac0 EFLAGS: 00010206
+> RAX: dffffc0000000000 RBX: ffff8880a8794340 RCX: ffffc9000e7b9000
+> RDX: 0000000000000005 RSI: ffffffff86298656 RDI: 0000000000000028
+> RBP: ffff8880612cfae0 R08: ffff88805ae4c580 R09: fffffbfff14a8155
+> R10: fffffbfff14a8154 R11: ffffffff8a540aa7 R12: 0000000000000000
+> R13: ffff888061d82e00 R14: 0000000000000000 R15: 00000000ffffffe0
+> FS:  00007f7d33516700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000001b2fa2f000 CR3: 000000009fcf1000 CR4: 00000000001406e0
+> Call Trace:
+>   tls_sw_sendmsg+0xe38/0x17b0 net/tls/tls_sw.c:1057
+>   inet6_sendmsg+0x9e/0xe0 net/ipv6/af_inet6.c:576
+>   sock_sendmsg_nosec net/socket.c:637 [inline]
+>   sock_sendmsg+0xd7/0x130 net/socket.c:657
+>   __sys_sendto+0x262/0x380 net/socket.c:1952
+>   __do_sys_sendto net/socket.c:1964 [inline]
+>   __se_sys_sendto net/socket.c:1960 [inline]
+>   __x64_sys_sendto+0xe1/0x1a0 net/socket.c:1960
+>   do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+>   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> RIP: 0033:0x459829
+> Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
+> 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+> ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+> RSP: 002b:00007f7d33515c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+> RAX: ffffffffffffffda RBX: 0000000000000006 RCX: 0000000000459829
+> RDX: ffffffffffffffc1 RSI: 00000000200005c0 RDI: 0000000000000003
+> RBP: 000000000075bf20 R08: 0000000000000000 R09: 1201000000003618
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00007f7d335166d4
+> R13: 00000000004c7669 R14: 00000000004dcc70 R15: 00000000ffffffff
+> Modules linked in:
+> ---[ end trace 2dd728cceb39a185 ]---
+> RIP: 0010:tls_trim_both_msgs+0x54/0x130 net/tls/tls_sw.c:268
+> Code: 48 c1 ea 03 80 3c 02 00 0f 85 e3 00 00 00 4d 8b b5 b0 06 00 00 48 b8  
+> 00 00 00 00 00 fc ff df 49 8d 7e 28 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f  
+> 85 b3 00 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b
+> RSP: 0018:ffff8880612cfac0 EFLAGS: 00010206
+> RAX: dffffc0000000000 RBX: ffff8880a8794340 RCX: ffffc9000e7b9000
+> RDX: 0000000000000005 RSI: ffffffff86298656 RDI: 0000000000000028
+> RBP: ffff8880612cfae0 R08: ffff88805ae4c580 R09: fffffbfff14a8155
+> R10: fffffbfff14a8154 R11: ffffffff8a540aa7 R12: 0000000000000000
+> R13: ffff888061d82e00 R14: 0000000000000000 R15: 00000000ffffffe0
+> FS:  00007f7d33516700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000019dbe80 CR3: 000000009fcf1000 CR4: 00000000001406e0
+> 
+> 
+> ---
+> This bug is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this bug report. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
