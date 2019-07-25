@@ -2,155 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D78759C9
-	for <lists+bpf@lfdr.de>; Thu, 25 Jul 2019 23:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1EF975AED
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2019 00:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726835AbfGYVji (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Jul 2019 17:39:38 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:43267 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726817AbfGYVji (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Jul 2019 17:39:38 -0400
-Received: by mail-qt1-f193.google.com with SMTP id w17so6273249qto.10
-        for <bpf@vger.kernel.org>; Thu, 25 Jul 2019 14:39:37 -0700 (PDT)
+        id S1726999AbfGYWwe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Jul 2019 18:52:34 -0400
+Received: from mail-pg1-f202.google.com ([209.85.215.202]:39506 "EHLO
+        mail-pg1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726803AbfGYWwe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Jul 2019 18:52:34 -0400
+Received: by mail-pg1-f202.google.com with SMTP id t19so31643850pgh.6
+        for <bpf@vger.kernel.org>; Thu, 25 Jul 2019 15:52:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=CSygOM7YhBnAy6MsNYv6TaOG2ZVJz0P5wm8bU+ygO/4=;
-        b=he8sVU6r0LuORP3V5bECPCNh4zTrWW+c+9YByWiA/m4wVPzKwS4rxcjYhtNb8XAtCr
-         vPhn6X9s1m9Ea721keeZtJtM6n6D0w70kDoKdR2eXi7pykvlO3oDfajbvt21kgOXIyGm
-         A6wer3iU+3tejiUzRkwfva1C7JpiU9qVgnqDbvw67NKyV8AlfL00gNGijmy61Q6m+CDe
-         +J86Y/mXfWPrI/ewTSTpr6yeebWZTELAR6B8EWA6I1CyIafedvBEDfCDTVJyy/aiP3hW
-         pGbDNqi5ZJe8rms1lBSBS8vg1Lt8dAaSeB8qhTDq+z4AWvhEKkggpKF3dSELmZ2IW5g8
-         WkSw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=RGRTCXArW2hVY3/09YdwcpCHYV4EEC+TbEhEFhWGqDY=;
+        b=qxRoM/isL5rvTIVAwYUsmGwkKqHnfDLgxNla/G8WoF5D6/qrwGouaDMpYiVOyg6tia
+         PXtAKesVgGN/UfD2DnHLyymPwakHzhZ8wO0o8MevAlOB2oF+WtrCEZxLVzyHtjlfHuZ6
+         Ih3KtdgGRjQoYPZmm6FI1AmoiGAZCrrmWbIyvxKzHL/gj0flJmbNwag6moe/uhyeFPUj
+         e9H899uHPinNhJ/xeQtlCOAFW9z7F4YlzpIoPie9+16BPA7JQXpXTVi8BW5TNE3tY5fs
+         XvDbdayVw+O4Q9qZpfh9uKn+TOF8smZ/S9uxYTPPt/gaUqAzwlAiPrMBQB2N3He2UWcD
+         NZLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=CSygOM7YhBnAy6MsNYv6TaOG2ZVJz0P5wm8bU+ygO/4=;
-        b=k8f/x+yZHN/1Gv6AxVPjRlvipOLIbgLvQBk68eSHf2rLYOKZTCC4TMMLD1Qsn9eLGz
-         ZdGhlbJlPSC365MuOvsKMSZxT9KZKCvA4ojoh7HcmuRoKI9KnGpwfnH22V3b5d8YGzex
-         C1ObdraSJgfm3sipeVtomrBafCZ9EwHhbbIe4YqIg0DqTuQdUrv8EtPdkThZTmO+7opU
-         ftL/nDjYNNoo9fnijef3iEbvtnDWjzpqyNT4qn5GWV+8UMfPJ/hgIHHBf25YPDc1EooD
-         n6Ldfbho68bXVUPoWejtG6gJu2Gy9kGaPGvsEV79wOSkZByT6hNxGYYqcr2HGYfwCeGE
-         aQ6g==
-X-Gm-Message-State: APjAAAUcSLyHlW7CTM76RjJNzKkCk0dwRrJKi1o31NcxFb4e2FA1UhdI
-        sRa4YHCgWuHRGXszvCng6K8HmQ==
-X-Google-Smtp-Source: APXvYqyYasGQHoqJBwR2mvO8Ts9j5uUl2Sqix4ffDGoTkQFRVGfQzVPXJ95YOGNCYmaWD71TU8x+Dg==
-X-Received: by 2002:a0c:c93c:: with SMTP id r57mr49389143qvj.226.1564090776809;
-        Thu, 25 Jul 2019 14:39:36 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id z33sm23385643qtc.56.2019.07.25.14.39.35
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 25 Jul 2019 14:39:36 -0700 (PDT)
-Date:   Thu, 25 Jul 2019 14:39:32 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     syzbot <syzbot+0e0fedcad708d12d3032@syzkaller.appspotmail.com>
-Cc:     ast@kernel.org, aviadye@mellanox.com, borisp@mellanox.com,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davejwatson@fb.com,
-        davem@davemloft.net, john.fastabend@gmail.com, kafai@fb.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Subject: Re: general protection fault in tls_trim_both_msgs
-Message-ID: <20190725143932.78705103@cakuba.netronome.com>
-In-Reply-To: <0000000000002b4896058e7abf78@google.com>
-References: <0000000000002b4896058e7abf78@google.com>
-Organization: Netronome Systems, Ltd.
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=RGRTCXArW2hVY3/09YdwcpCHYV4EEC+TbEhEFhWGqDY=;
+        b=klk8Z9WKn4v8b/KPZ+h5C2pc+nNY89QmnWs2gcanLArk+x7KXJSVS29KPeE2U+SYwM
+         BRj36pk0zWDQ8QgrLNxffqWeGYqCMd9sw8YRYVWW/bW7QnC0PkWNJLiyX3EHDnTHn1U8
+         CAlAdZun9k66Zjm95uef/RbKbqM6qeOD5PY5k6DIDuU9VPU+34PVVWqKIUDD6jIhjCCp
+         RTQkdnkpIlN5ZtKT1PAWEf+JP/QFLvMJbkRHE1OzVaalsT8iyEJeuGQM1C5V76+ye/Wc
+         6g9yoKcQ3DZnyd8yJeLnjrHWNvYMq7JQVshmADUFcfADdtSBREu3AZod3P6TR3yxl89h
+         xQnw==
+X-Gm-Message-State: APjAAAWdo5rXZplkPujIA6DJfg0tCAYSRH5QOWkUSasYhxLM8gXE+TNK
+        ++cB4h3ObsAdovdZhA+uv1hVTjs=
+X-Google-Smtp-Source: APXvYqxQwwQxO3ISgdXKDCJNAmpuriAtcV6U+EL1KG3zk0i/fuY/tv3d8GPh97CMB/f7OMKc+kWsmK4=
+X-Received: by 2002:a63:2b8e:: with SMTP id r136mr54790874pgr.216.1564095153316;
+ Thu, 25 Jul 2019 15:52:33 -0700 (PDT)
+Date:   Thu, 25 Jul 2019 15:52:24 -0700
+Message-Id: <20190725225231.195090-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.22.0.709.g102302147b-goog
+Subject: [PATCH bpf-next v3 0/7] bpf/flow_dissector: support input flags
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Petar Penkov <ppenkov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 24 Jul 2019 22:32:07 -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following crash on:
-> 
-> HEAD commit:    9e6dfe80 Add linux-next specific files for 20190724
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1046971fa00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=6cbb8fc2cf2842d7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=0e0fedcad708d12d3032
-> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> 
-> Unfortunately, I don't have any reproducer for this crash yet.
+C flow dissector supports input flags that tell it to customize parsing
+by either stopping early or trying to parse as deep as possible.
+BPF flow dissector always parses as deep as possible which is sub-optimal.
+Pass input flags to the BPF flow dissector as well so it can make the same
+decisions.
 
-Looks very like the issue we mentioned in the cover letter for unhash
-fixes. TX is waiting for mem, the connection dies, we free ctx, TX
-wakes up with a now stale ctx pointer. I'm testing a fix for this,
-Netronome team was actually able to trigger a NULL-deref on the RX
-side, because there ctx is reloaded but not NULL-checked.
+Series outline:
+* remove unused FLOW_DISSECTOR_F_STOP_AT_L3 flag
+* export FLOW_DISSECTOR_F_XXX flags as uapi and pass them to BPF
+  flow dissector
+* add documentation for the export flags
+* support input flags in BPF_PROG_TEST_RUN via ctx_{in,out}
+* sync uapi to tools
+* support FLOW_DISSECTOR_F_PARSE_1ST_FRAG in selftest
+* support FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL in kernel and selftest
+* support FLOW_DISSECTOR_F_STOP_AT_ENCAP in selftest
 
-> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: syzbot+0e0fedcad708d12d3032@syzkaller.appspotmail.com
-> 
-> kasan: CONFIG_KASAN_INLINE enabled
-> kasan: GPF could be caused by NULL-ptr deref or user memory access
-> general protection fault: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 1 PID: 15517 Comm: syz-executor.4 Not tainted 5.3.0-rc1-next-20190724  
-> #50
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-> Google 01/01/2011
-> RIP: 0010:tls_trim_both_msgs+0x54/0x130 net/tls/tls_sw.c:268
-> Code: 48 c1 ea 03 80 3c 02 00 0f 85 e3 00 00 00 4d 8b b5 b0 06 00 00 48 b8  
-> 00 00 00 00 00 fc ff df 49 8d 7e 28 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f  
-> 85 b3 00 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b
-> RSP: 0018:ffff8880612cfac0 EFLAGS: 00010206
-> RAX: dffffc0000000000 RBX: ffff8880a8794340 RCX: ffffc9000e7b9000
-> RDX: 0000000000000005 RSI: ffffffff86298656 RDI: 0000000000000028
-> RBP: ffff8880612cfae0 R08: ffff88805ae4c580 R09: fffffbfff14a8155
-> R10: fffffbfff14a8154 R11: ffffffff8a540aa7 R12: 0000000000000000
-> R13: ffff888061d82e00 R14: 0000000000000000 R15: 00000000ffffffe0
-> FS:  00007f7d33516700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000001b2fa2f000 CR3: 000000009fcf1000 CR4: 00000000001406e0
-> Call Trace:
->   tls_sw_sendmsg+0xe38/0x17b0 net/tls/tls_sw.c:1057
->   inet6_sendmsg+0x9e/0xe0 net/ipv6/af_inet6.c:576
->   sock_sendmsg_nosec net/socket.c:637 [inline]
->   sock_sendmsg+0xd7/0x130 net/socket.c:657
->   __sys_sendto+0x262/0x380 net/socket.c:1952
->   __do_sys_sendto net/socket.c:1964 [inline]
->   __se_sys_sendto net/socket.c:1960 [inline]
->   __x64_sys_sendto+0xe1/0x1a0 net/socket.c:1960
->   do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
->   entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> RIP: 0033:0x459829
-> Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-> 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-> ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-> RSP: 002b:00007f7d33515c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
-> RAX: ffffffffffffffda RBX: 0000000000000006 RCX: 0000000000459829
-> RDX: ffffffffffffffc1 RSI: 00000000200005c0 RDI: 0000000000000003
-> RBP: 000000000075bf20 R08: 0000000000000000 R09: 1201000000003618
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00007f7d335166d4
-> R13: 00000000004c7669 R14: 00000000004dcc70 R15: 00000000ffffffff
-> Modules linked in:
-> ---[ end trace 2dd728cceb39a185 ]---
-> RIP: 0010:tls_trim_both_msgs+0x54/0x130 net/tls/tls_sw.c:268
-> Code: 48 c1 ea 03 80 3c 02 00 0f 85 e3 00 00 00 4d 8b b5 b0 06 00 00 48 b8  
-> 00 00 00 00 00 fc ff df 49 8d 7e 28 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f  
-> 85 b3 00 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b
-> RSP: 0018:ffff8880612cfac0 EFLAGS: 00010206
-> RAX: dffffc0000000000 RBX: ffff8880a8794340 RCX: ffffc9000e7b9000
-> RDX: 0000000000000005 RSI: ffffffff86298656 RDI: 0000000000000028
-> RBP: ffff8880612cfae0 R08: ffff88805ae4c580 R09: fffffbfff14a8155
-> R10: fffffbfff14a8154 R11: ffffffff8a540aa7 R12: 0000000000000000
-> R13: ffff888061d82e00 R14: 0000000000000000 R15: 00000000ffffffe0
-> FS:  00007f7d33516700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000019dbe80 CR3: 000000009fcf1000 CR4: 00000000001406e0
-> 
-> 
-> ---
-> This bug is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this bug report. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Pros:
+* makes BPF flow dissector faster by avoiding burning extra cycles
+* existing BPF progs continue to work by ignoring the flags and always
+  parsing as deep as possible
 
+Cons:
+* new UAPI which we need to support (OTOH, if we need to deprecate some
+  flags, we can just stop setting them upon calling BPF programs)
+
+Some numbers (with .repeat = 4000000 in test_flow_dissector):
+        test_flow_dissector:PASS:ipv4-frag 35 nsec
+        test_flow_dissector:PASS:ipv4-frag 35 nsec
+        test_flow_dissector:PASS:ipv4-no-frag 32 nsec
+        test_flow_dissector:PASS:ipv4-no-frag 32 nsec
+
+        test_flow_dissector:PASS:ipv6-frag 39 nsec
+        test_flow_dissector:PASS:ipv6-frag 39 nsec
+        test_flow_dissector:PASS:ipv6-no-frag 36 nsec
+        test_flow_dissector:PASS:ipv6-no-frag 36 nsec
+
+        test_flow_dissector:PASS:ipv6-flow-label 36 nsec
+        test_flow_dissector:PASS:ipv6-flow-label 36 nsec
+        test_flow_dissector:PASS:ipv6-no-flow-label 33 nsec
+        test_flow_dissector:PASS:ipv6-no-flow-label 33 nsec
+
+        test_flow_dissector:PASS:ipip-encap 38 nsec
+        test_flow_dissector:PASS:ipip-encap 38 nsec
+        test_flow_dissector:PASS:ipip-no-encap 32 nsec
+        test_flow_dissector:PASS:ipip-no-encap 32 nsec
+
+The improvement is around 10%, but it's in a tight cache-hot
+BPF_PROG_TEST_RUN loop.
+
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Petar Penkov <ppenkov@google.com>
+
+Stanislav Fomichev (7):
+  bpf/flow_dissector: pass input flags to BPF flow dissector program
+  bpf/flow_dissector: document flags
+  bpf/flow_dissector: support flags in BPF_PROG_TEST_RUN
+  tools/bpf: sync bpf_flow_keys flags
+  selftests/bpf: support BPF_FLOW_DISSECTOR_F_PARSE_1ST_FRAG
+  bpf/flow_dissector: support ipv6 flow_label and
+    BPF_FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL
+  selftests/bpf: support BPF_FLOW_DISSECTOR_F_STOP_AT_ENCAP
+
+ Documentation/bpf/prog_flow_dissector.rst     |  18 ++
+ include/linux/skbuff.h                        |   2 +-
+ include/uapi/linux/bpf.h                      |   6 +
+ net/bpf/test_run.c                            |  39 ++-
+ net/core/flow_dissector.c                     |  21 +-
+ tools/include/uapi/linux/bpf.h                |   6 +
+ .../selftests/bpf/prog_tests/flow_dissector.c | 243 +++++++++++++++++-
+ tools/testing/selftests/bpf/progs/bpf_flow.c  |  47 +++-
+ 8 files changed, 368 insertions(+), 14 deletions(-)
+
+-- 
+2.22.0.709.g102302147b-goog
