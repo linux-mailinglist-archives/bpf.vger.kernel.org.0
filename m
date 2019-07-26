@@ -2,67 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E97C77344
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2019 23:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6AE37734E
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2019 23:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728293AbfGZVLY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jul 2019 17:11:24 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:35620 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726102AbfGZVLX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Jul 2019 17:11:23 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x6QL7eOG012382;
-        Fri, 26 Jul 2019 14:10:42 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=LNS8OR6Ncvjj6Sdz3ZTCLrdR89334qCIClQZK3jYVUU=;
- b=Kv0dWHri8vjcqJpyGQ+xo/O+LTvEfswcGalFIrrusn4HRHugPAsQoVFRx1CocXVW9eCi
- EE7xqWoHt5IA9dgtqf49jOt2zCvFOR9NSZE8bGkitO/LILHrPpyoEYSKiQ8TzRkfQ8Vs
- LC0yeZEPGT0bllSPFDWL6o8j2ju/IX8aSnU= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by m0001303.ppops.net with ESMTP id 2u04gfs56r-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 26 Jul 2019 14:10:42 -0700
-Received: from prn-mbx05.TheFacebook.com (2620:10d:c081:6::19) by
- prn-hub04.TheFacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Fri, 26 Jul 2019 14:10:37 -0700
-Received: from prn-hub02.TheFacebook.com (2620:10d:c081:35::126) by
- prn-mbx05.TheFacebook.com (2620:10d:c081:6::19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Fri, 26 Jul 2019 14:10:37 -0700
-Received: from NAM04-SN1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.26) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Fri, 26 Jul 2019 14:10:37 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n3h+7/Nc2BN5NW7PolaubSJfpoW64hbxf7EV3+0Hhd8Mm3reS/YFHhO8vlEbbX8X7fCz+S1kBy+k+Kju8VIz44/eNhLLevUd75t1aD5Zn8kvNXlhScSeQ44NzEoOrEuXZ05Cj/q+2io6Fxau85HUL48Xzj7zbtyDso+NmjoiWzhyDhT9I3IMgerLfTP8l5dhGLygmBsATwUT1dGB+a7MIchMxrLUz92LaxZxMAfOkHBEXxPTd6OfIvI5yp/gb8rCklxZzBecg/R9F8VbZ3OReVOQDp0Jm4XgC0mSuUSF8wO6ZJj8yoc6SNlCmCCXMdS5MI51pXqbH0w8XSyUXXpMYQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LNS8OR6Ncvjj6Sdz3ZTCLrdR89334qCIClQZK3jYVUU=;
- b=FeO+04ZDExmqNPygFidB305ZTgKnvj0fnd2MP7zH3uMFrTLkVZQUkxdsb2pulFLR7pCVqfxy/b46qGt9yagZdIhfaA/JjFDYanEAEasdU6hphgAjqmRYW6i5qss8wQedLfXuO6CWQAinOscPFs0VxYxMjSD0Nndc5BAvW8eVksfmFDUNGCB1RjDAtxegZqMsUvDC1ZLEHWUQgUbhwM8Fly2ct3RL3fa/M2HIAJ7cKrJv9q/eGZZwFLwBWFSxfXH1vOXlyVuBOxC0CXB+LLZq4zwqTi/cr2p8ebExczngGioCN2YEE6+ISw1mfxvoRzsUYmGKc3Km1dGcKCOPN1KFjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=fb.com;dmarc=pass action=none header.from=fb.com;dkim=pass
- header.d=fb.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LNS8OR6Ncvjj6Sdz3ZTCLrdR89334qCIClQZK3jYVUU=;
- b=bivArwaiL1nwyNSXuhvJDTxqymEg6kjiIuqaCfnJwjha/Mqzbox3r4mJT64i1b+cxa9AapNpp+Rbd7TkHordFGS1+N8IxCxoRsLLFOmfnemTKteYlzeO/C/dj+YpgUo1TmEtLIBdq68Jmip83Mvs2nkcPiHZJtUKqfd2Yvr1CLs=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.59.17) by
- BYAPR15MB3143.namprd15.prod.outlook.com (20.178.239.216) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2115.14; Fri, 26 Jul 2019 21:10:35 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::e499:ecba:ec04:abac]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::e499:ecba:ec04:abac%5]) with mapi id 15.20.2115.005; Fri, 26 Jul 2019
- 21:10:35 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     "sedat.dilek@gmail.com" <sedat.dilek@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        id S1727244AbfGZVT7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jul 2019 17:19:59 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:33062 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726102AbfGZVT7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jul 2019 17:19:59 -0400
+Received: by mail-wr1-f68.google.com with SMTP id n9so55841726wru.0;
+        Fri, 26 Jul 2019 14:19:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=EJ4jcCbbCaX8bSsgyjyBTjyhupWPsOIBLRvIrJhGCzc=;
+        b=CfjUjEIXpFwJ4gM7VImYU8pKwZB0mJkD1frrh9VAFpF0Y8rUzTK8ngM01LL/mnLVDE
+         ze8ispkD9D2wgjn0/McptVOiKdf+vwTO95+TGDR/C3QAtzdg950ZlwRUJUtM2hc/DxzU
+         7DYnLPLMSL3bGZbdj2SP3hpuUQ+Am6+gIFuhY8R2DM7e2TpkqdWkb6ODRRrYlqnQqkmV
+         XTmSgTGSnSRSX1PxciqiZ+EdXYI9sPQUD9XafZJvoJppBnMnY+ghkj2/FzX+Grt70xDR
+         ronO935G1Nk+WUI7fg218IgXlhLgoSUbbr6rGzc0ZL504CGTDBHVk4qAjSZHcuECqZWE
+         kObg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=EJ4jcCbbCaX8bSsgyjyBTjyhupWPsOIBLRvIrJhGCzc=;
+        b=dBs98+gHUhZiWSQXaGqbLd3G1MAtX00gGYB2xRQ7mAYnVazZBc7D/kYYnhGflh074o
+         7O0QkbbTyV2uPK7TFuyKLD/ITlgX1MPBYwyz4HBOnCMttV6B0wSRpb9CGAQcl0jVdQFr
+         v0rc/vPsKHgcW1w7lms46RaRdeDSN+2tKmZkdQIwbHJfwxea0JpwhHANJV/hBxUYuQlG
+         4M8IBmQ7+c9NgbU5yxYTZbvQG/aGZGLRxDqtNjdEjXi319yTDhsLXPEm7vWZ2HBbv55r
+         aws1LyH0EoKlhkdkR7/NGxVSS6OEN4pMxXRdSvVbsYbV3FS1FcpJVGLy0F29e8rnR4PX
+         eeQQ==
+X-Gm-Message-State: APjAAAUIZofFRp0jbYFihzljiR2dSIO2roYVaJnDtZEqJLFFypeIw0Fy
+        VrLI33IOC3fsCuC6/wnz3wVWQatOKAs3iZl5cPE=
+X-Google-Smtp-Source: APXvYqxSj9CahzIg0mF6wBo6On47PcZ0jUg4kqF4jtirnik0vtIp2Z+2M+a6HT5+YowzSupGwj6k8jkZ3WEfu5iPBpg=
+X-Received: by 2002:a5d:4212:: with SMTP id n18mr100661786wrq.261.1564175995131;
+ Fri, 26 Jul 2019 14:19:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <CA+icZUWF=B_phP8eGD3v2d9jSSK6Y-N65y-T6xewZnY91vc2_Q@mail.gmail.com>
+ <c2524c96-d71c-d7db-22ec-12da905dc180@fb.com> <CA+icZUXYp=Jx+8aGrZmkCbSFp-cSPcoRzRdRJsPj4yYNs_mJQw@mail.gmail.com>
+ <CA+icZUXsPRWmH3i-9=TK-=2HviubRqpAeDJGriWHgK1fkFhgUg@mail.gmail.com> <295d2acd-0844-9a40-3f94-5bcbb13871d2@fb.com>
+In-Reply-To: <295d2acd-0844-9a40-3f94-5bcbb13871d2@fb.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 26 Jul 2019 23:19:44 +0200
+Message-ID: <CA+icZUUe0QE9QGMom1iQwuG8nM7Oi4Mq0GKqrLvebyxfUmj6RQ@mail.gmail.com>
+Subject: Re: next-20190723: bpf/seccomp - systemd/journald issue?
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
@@ -71,282 +60,292 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Kees Cook <keescook@chromium.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Nathan Chancellor <natechancellor@gmail.com>
-Subject: Re: next-20190723: bpf/seccomp - systemd/journald issue?
-Thread-Topic: next-20190723: bpf/seccomp - systemd/journald issue?
-Thread-Index: AQHVQ4xS9PP3XA7/nkqulb+RBeHJq6bcleMAgADHHgCAAAbMgIAAAjgA
-Date:   Fri, 26 Jul 2019 21:10:35 +0000
-Message-ID: <295d2acd-0844-9a40-3f94-5bcbb13871d2@fb.com>
-References: <CA+icZUWF=B_phP8eGD3v2d9jSSK6Y-N65y-T6xewZnY91vc2_Q@mail.gmail.com>
- <c2524c96-d71c-d7db-22ec-12da905dc180@fb.com>
- <CA+icZUXYp=Jx+8aGrZmkCbSFp-cSPcoRzRdRJsPj4yYNs_mJQw@mail.gmail.com>
- <CA+icZUXsPRWmH3i-9=TK-=2HviubRqpAeDJGriWHgK1fkFhgUg@mail.gmail.com>
-In-Reply-To: <CA+icZUXsPRWmH3i-9=TK-=2HviubRqpAeDJGriWHgK1fkFhgUg@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: CO2PR05CA0060.namprd05.prod.outlook.com
- (2603:10b6:102:2::28) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:10e::17)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::81eb]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: db99f531-8b1b-4600-d581-08d7120db3c7
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB3143;
-x-ms-traffictypediagnostic: BYAPR15MB3143:
-x-microsoft-antispam-prvs: <BYAPR15MB314313E8E4E4708B4CAF175CD3C00@BYAPR15MB3143.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 01106E96F6
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(39860400002)(376002)(136003)(346002)(396003)(45914002)(31014005)(189003)(199004)(6436002)(2906002)(6116002)(86362001)(478600001)(36756003)(45080400002)(5640700003)(31696002)(6916009)(31686004)(14454004)(4326008)(229853002)(6486002)(30864003)(66556008)(5660300002)(305945005)(66476007)(66946007)(66446008)(64756008)(8936002)(81156014)(81166006)(6246003)(25786009)(71200400001)(71190400001)(6512007)(486006)(54906003)(53936002)(446003)(99286004)(52116002)(2351001)(76176011)(11346002)(68736007)(256004)(102836004)(5024004)(14444005)(186003)(386003)(2501003)(8676002)(6506007)(53546011)(7736002)(2616005)(476003)(46003)(1361003)(316002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3143;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: ubaXfoAt6cEMwM5h22XWCKZgZCQHdK11efxYUoOx7vqSIllwOnrpsS+LPFG2e+CvmbHZuWTKJU8Pv9CBKLtBuWtLkYpcO4W3OpTHy4vetF67lCccrhPKdfytAexL+2ukZEazTJeaEVQK9dcM0GEOir5FZvLfaSB3uZp8sRN+Ds/upuLCfatxVbMrRhd2rUGB/8c42iGPeBrFQQ5FeGd7/gRZq9vxruf6B5XLbK+UhOM9xoWE/1xvMgVuppTy7mX4ekXchlHJYThb0w/bu0gf6B4bR5d49EHVPbviqhgnlKQLfLFu86QMdyhFONKcwheeBmKbu8eEpEkAr4p+aJ5K359qmATZJ7WmJ9sa3Re+jLIwiMwZZqwcZ2kecZja2mEGbs45LFZ/ajtSqPHIxBB5JrIDN99ccZzP9by3rRMZoGU=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <ED4C068772D152418FC541B37CAF5AFB@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: db99f531-8b1b-4600-d581-08d7120db3c7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jul 2019 21:10:35.7866
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yhs@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3143
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-26_15:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1907260239
-X-FB-Internal: deliver
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDcvMjYvMTkgMjowMiBQTSwgU2VkYXQgRGlsZWsgd3JvdGU6DQo+IE9uIEZyaSwgSnVs
-IDI2LCAyMDE5IGF0IDEwOjM4IFBNIFNlZGF0IERpbGVrIDxzZWRhdC5kaWxla0BnbWFpbC5jb20+
-IHdyb3RlOg0KPj4NCj4+IEhpIFlvbmdob25nIFNvbmcsDQo+Pg0KPj4gT24gRnJpLCBKdWwgMjYs
-IDIwMTkgYXQgNTo0NSBQTSBZb25naG9uZyBTb25nIDx5aHNAZmIuY29tPiB3cm90ZToNCj4+Pg0K
-Pj4+DQo+Pj4NCj4+PiBPbiA3LzI2LzE5IDE6MjYgQU0sIFNlZGF0IERpbGVrIHdyb3RlOg0KPj4+
-PiBIaSwNCj4+Pj4NCj4+Pj4gSSBoYXZlIG9wZW5lZCBhIG5ldyBpc3N1ZSBpbiB0aGUgQ2xhbmdC
-dWlsdExpbnV4IGlzc3VlIHRyYWNrZXIuDQo+Pj4NCj4+PiBHbGFkIHRvIGtub3cgY2xhbmcgOSBo
-YXMgYXNtIGdvdG8gc3VwcG9ydCBhbmQgbm93IEl0IGNhbiBjb21waWxlDQo+Pj4ga2VybmVsIGFn
-YWluLg0KPj4+DQo+Pg0KPj4gWXVwcC4NCj4+DQo+Pj4+DQo+Pj4+IEkgYW0gc2VlaW5nIGEgcHJv
-YmxlbSBpbiB0aGUgYXJlYSBicGYvc2VjY29tcCBjYXVzaW5nDQo+Pj4+IHN5c3RlbWQvam91cm5h
-bGQvdWRldmQgc2VydmljZXMgdG8gZmFpbC4NCj4+Pj4NCj4+Pj4gW0ZyaSBKdWwgMjYgMDg6MDg6
-NDMgMjAxOV0gc3lzdGVtZFs0NTNdOiBzeXN0ZW1kLXVkZXZkLnNlcnZpY2U6IEZhaWxlZA0KPj4+
-PiB0byBjb25uZWN0IHN0ZG91dCB0byB0aGUgam91cm5hbCBzb2NrZXQsIGlnbm9yaW5nOiBDb25u
-ZWN0aW9uIHJlZnVzZWQNCj4+Pj4NCj4+Pj4gVGhpcyBoYXBwZW5zIHdoZW4gSSB1c2UgdGhlIChM
-TFZNKSBMTEQgbGQubGxkLTkgbGlua2VyIGJ1dCBub3Qgd2l0aA0KPj4+PiBCRkQgbGlua2VyIGxk
-LmJmZCBvbiBEZWJpYW4vYnVzdGVyIEFNRDY0Lg0KPj4+PiBJbiBib3RoIGNhc2VzIEkgdXNlIGNs
-YW5nLTkgKHByZXJlbGVhc2UpLg0KPj4+DQo+Pj4gTG9va3MgbGlrZSBpdCBpcyBhIGxsZCBidWcu
-DQo+Pj4NCj4+PiBJIHNlZSB0aGUgc3RhY2sgdHJhY2UgaGFzIF9fYnBmX3Byb2dfcnVuMzIoKSB3
-aGljaCBpcyB1c2VkIGJ5DQo+Pj4ga2VybmVsIGJwZiBpbnRlcnByZXRlci4gQ291bGQgeW91IHRy
-eSB0byBlbmFibGUgYnBmIGppdA0KPj4+ICAgICBzeXNjdGwgbmV0LmNvcmUuYnBmX2ppdF9lbmFi
-bGUgPSAxDQo+Pj4gSWYgdGhpcyBwYXNzZWQsIGl0IHdpbGwgcHJvdmUgaXQgaXMgaW50ZXJwcmV0
-ZXIgcmVsYXRlZC4NCj4+Pg0KPj4NCj4+IEFmdGVyLi4uDQo+Pg0KPj4gc3lzY3RsIC13IG5ldC5j
-b3JlLmJwZl9qaXRfZW5hYmxlPTENCj4+DQo+PiBJIGNhbiBzdGFydCBhbGwgZmFpbGVkIHN5c3Rl
-bWQgc2VydmljZXMuDQo+Pg0KPj4gc3lzdGVtZC1qb3VybmFsZC5zZXJ2aWNlDQo+PiBzeXN0ZW1k
-LXVkZXZkLnNlcnZpY2UNCj4+IGhhdmVnZWQuc2VydmljZQ0KPj4NCj4+IFRoaXMgaXMgaW4gbWFp
-bnRlbmFuY2UgbW9kZS4NCj4+DQo+PiBXaGF0IGlzIG5leHQ6IERvIHNldCBhIHBlcm1hbmVudCBz
-eXNjdGwgc2V0dGluZyBmb3IgbmV0LmNvcmUuYnBmX2ppdF9lbmFibGU/DQo+Pg0KPiANCj4gVGhp
-cyBpcyB3aGF0IEkgZGlkOg0KDQpJIHByb2JhYmx5IHdvbid0IGhhdmUgY3ljbGVzIHRvIGRlYnVn
-IHRoaXMgcG90ZW50aWFsIGxsZCBpc3N1ZS4NCk1heWJlIHlvdSBhbHJlYWR5IGRpZCwgSSBzdWdn
-ZXN0IHlvdSBwdXQgZW5vdWdoIHJlcHJvZHVjaWJsZQ0KZGV0YWlscyBpbiB0aGUgYnVnIHlvdSBm
-aWxlZCBhZ2FpbnN0IGxsZCBzbyB0aGV5IGNhbiB0YWtlIGEgbG9vay4NCg0KPiANCj4gSnVsIDI2
-IDIyOjQzOjA2IGluaXphIGtlcm5lbDogQlVHOiB1bmFibGUgdG8gaGFuZGxlIHBhZ2UgZmF1bHQg
-Zm9yDQo+IGFkZHJlc3M6IGZmZmZmZmZmYTgyMDMzNzANCj4gSnVsIDI2IDIyOjQzOjA2IGluaXph
-IGtlcm5lbDogI1BGOiBzdXBlcnZpc29yIHJlYWQgYWNjZXNzIGluIGtlcm5lbCBtb2RlDQo+IEp1
-bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6ICNQRjogZXJyb3JfY29kZSgweDAwMDApIC0gbm90
-LXByZXNlbnQgcGFnZQ0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiBQR0QgMmNmYTBl
-MDY3IFA0RCAyY2ZhMGUwNjcgUFVEDQo+IDJjZmEwZjA2MyBQTUQgNDUwODI5MDYzIFBURSA4MDBm
-ZmZmZDMwYmZjMDYyDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IE9vcHM6IDAwMDAg
-WyMzXSBTTVAgUFRJDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IENQVTogMyBQSUQ6
-IDQzNiBDb21tOiBzeXN0ZW1kLXVkZXZkDQo+IFRhaW50ZWQ6IEcgICAgICBEICAgICAgICAgICA1
-LjMuMC1yYzEtNy1hbWQ2NC1jYmwtYXNtZ290bw0KPiAjN35idXN0ZXIrZGlsZWtzMQ0KPiBKdWwg
-MjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiBIYXJkd2FyZSBuYW1lOiBMRU5PVk8NCj4gMjBIRENU
-TzFXVy8yMEhEQ1RPMVdXLCBCSU9TIE4xUUVUODNXICgxLjU4ICkgMDQvMTgvMjAxOQ0KPiBKdWwg
-MjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiBSSVA6IDAwMTA6X19fYnBmX3Byb2dfcnVuKzB4NDAv
-MHgxNGYwDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IENvZGU6IGYzIGViIDI0IDQ4
-IDgzIGY4IDM4IDBmIDg0IGE5IDBjDQo+IDAwIDAwIDQ4IDgzIGY4IDM5IDBmIDg1IDhhIDE0IDAw
-IDAwIDBmIDFmIDAwIDQ4IDBmIGJmIDQzIDAyIDQ4IDhkIDFjDQo+IGMzIDQ4IDgzIGMzIDA4IDBm
-IGI2DQo+ICAgMzMgPDQ4PiA4YiAwNCBmNSAxMCAyZSAyMCBhOCA0OCA4MyBmOCAzYiA3ZiA2MiA0
-OCA4MyBmOCAxZSAwZiA4ZiBjOCAwMA0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiBS
-U1A6IDAwMTg6ZmZmZmIzY2VjMDMyN2E4OCBFRkxBR1M6IDAwMDEwMjQ2DQo+IEp1bCAyNiAyMjo0
-MzowNiBpbml6YSBrZXJuZWw6IFJBWDogZmZmZmIzY2VjMDMyN2IzMCBSQlg6DQo+IGZmZmZiM2Nl
-YzAwZDEwMzggUkNYOiAwMDAwMDAwMDAwMDAwMDAwDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBr
-ZXJuZWw6IFJEWDogZmZmZmIzY2VjMDMyN2IxMCBSU0k6DQo+IDAwMDAwMDAwMDAwMDAwYWMgUkRJ
-OiBmZmZmYjNjZWMwMzI3YWIwDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IFJCUDog
-ZmZmZmIzY2VjMDMyN2FhMCBSMDg6DQo+IGZmZmY5YjMzYzk0YzBhMDAgUjA5OiAwMDAwMDAwMDAw
-MDAwMDAwDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IFIxMDogZmZmZjliMzNjZmUx
-NGUwMCBSMTE6DQo+IGZmZmZmZmZmYTc3YjgyMTAgUjEyOiAwMDAwMDAwMDAwMDAwMDAwDQo+IEp1
-bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IFIxMzogZmZmZmIzY2VjMDBkMTAwMCBSMTQ6DQo+
-IDAwMDAwMDAwMDAwMDAwMDAgUjE1OiBmZmZmYjNjZWMwMzI3YWIwDQo+IEp1bCAyNiAyMjo0Mzow
-NiBpbml6YSBrZXJuZWw6IEZTOiAgMDAwMDdmN2FjMmQyOGQ0MCgwMDAwKQ0KPiBHUzpmZmZmOWIz
-M2QyNTgwMDAwKDAwMDApIGtubEdTOjAwMDAwMDAwMDAwMDAwMDANCj4gSnVsIDI2IDIyOjQzOjA2
-IGluaXphIGtlcm5lbDogQ1M6ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4
-MDA1MDAzMw0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiBDUjI6IGZmZmZmZmZmYTgy
-MDMzNzAgQ1IzOg0KPiAwMDAwMDAwNDRmM2VhMDA2IENSNDogMDAwMDAwMDAwMDM2MDZlMA0KPiBK
-dWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiBDYWxsIFRyYWNlOg0KPiBKdWwgMjYgMjI6NDM6
-MDYgaW5pemEga2VybmVsOiAgX19icGZfcHJvZ19ydW4zMisweDQ0LzB4NzANCj4gSnVsIDI2IDIy
-OjQzOjA2IGluaXphIGtlcm5lbDogID8gc2VjdXJpdHlfc29ja19yY3Zfc2tiKzB4M2YvMHg2MA0K
-PiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiAgc2tfZmlsdGVyX3RyaW1fY2FwKzB4ZTQv
-MHgyMjANCj4gSnVsIDI2IDIyOjQzOjA2IGluaXphIGtlcm5lbDogID8gX19za2JfY2xvbmUrMHgy
-ZS8weDEwMA0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiAgbmV0bGlua19icm9hZGNh
-c3RfZmlsdGVyZWQrMHgyZGYvMHg0ZjANCj4gSnVsIDI2IDIyOjQzOjA2IGluaXphIGtlcm5lbDog
-IG5ldGxpbmtfc2VuZG1zZysweDM0Zi8weDNjMA0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2Vy
-bmVsOiAgX19fc3lzX3NlbmRtc2crMHgzMTUvMHgzMzANCj4gSnVsIDI2IDIyOjQzOjA2IGluaXph
-IGtlcm5lbDogID8gc2VjY29tcF9ydW5fZmlsdGVycysweDU0LzB4MTEwDQo+IEp1bCAyNiAyMjo0
-MzowNiBpbml6YSBrZXJuZWw6ICA/IGZpbGVuYW1lX3BhcmVudGF0KzB4MjEwLzB4NDkwDQo+IEp1
-bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6ICA/IF9fc2VjY29tcF9maWx0ZXIrMHhmNy8weDZl
-MA0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiAgPyBfX2RfYWxsb2MrMHgxNTkvMHgx
-YzANCj4gSnVsIDI2IDIyOjQzOjA2IGluaXphIGtlcm5lbDogID8ga21lbV9jYWNoZV9mcmVlKzB4
-MWUvMHg1YzANCj4gSnVsIDI2IDIyOjQzOjA2IGluaXphIGtlcm5lbDogID8gZmFzdF9kcHV0KzB4
-NzMvMHhiMA0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiAgX194NjRfc3lzX3NlbmRt
-c2crMHg5Ny8weGUwDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6ICBkb19zeXNjYWxs
-XzY0KzB4NTkvMHg5MA0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiAgZW50cnlfU1lT
-Q0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4NDQvMHhhOQ0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEg
-a2VybmVsOiBSSVA6IDAwMzM6MHg3ZjdhYzM1MTk5MTQNCj4gSnVsIDI2IDIyOjQzOjA2IGluaXph
-IGtlcm5lbDogQ29kZTogMDAgZjcgZDggNjQgODkgMDIgNDggYzcgYzAgZmYgZmYNCj4gZmYgZmYg
-ZWIgYjUgMGYgMWYgODAgMDAgMDAgMDAgMDAgNDggOGQgMDUgZTkgNWQgMGMgMDAgOGIgMDAgODUg
-YzAgNzUNCj4gMTMgYjggMmUgMDAgMDAgMDAgMGYgMDUgPDQ4PiAzZCAwMCBmMCBmZiBmZiA3NyA1
-NCBjMyAwZiAxZiAwMCA0MSA1NCA0MQ0KPiA4OSBkNCA1NSA0OCA4OSBmNSA1Mw0KPiBKdWwgMjYg
-MjI6NDM6MDYgaW5pemEga2VybmVsOiBSU1A6IDAwMmI6MDAwMDdmZmNmYjY2YTQ3OCBFRkxBR1M6
-DQo+IDAwMDAwMjQ2IE9SSUdfUkFYOiAwMDAwMDAwMDAwMDAwMDJlDQo+IEp1bCAyNiAyMjo0Mzow
-NiBpbml6YSBrZXJuZWw6IFJBWDogZmZmZmZmZmZmZmZmZmZkYSBSQlg6DQo+IDAwMDA1NjFlMjhh
-YzkzOTAgUkNYOiAwMDAwN2Y3YWMzNTE5OTE0DQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJu
-ZWw6IFJEWDogMDAwMDAwMDAwMDAwMDAwMCBSU0k6DQo+IDAwMDA3ZmZjZmI2NmE0YTAgUkRJOiAw
-MDAwMDAwMDAwMDAwMDBkDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IFJCUDogMDAw
-MDU2MWUyOGFjZDIxMCBSMDg6DQo+IDAwMDA1NjFlMjg5OTAxNDAgUjA5OiAwMDAwMDAwMDAwMDAw
-MDAyDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IFIxMDogMDAwMDAwMDAwMDAwMDAw
-MCBSMTE6DQo+IDAwMDAwMDAwMDAwMDAyNDYgUjEyOiAwMDAwMDAwMDAwMDAwMDAwDQo+IEp1bCAy
-NiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IFIxMzogMDAwMDAwMDAwMDAwMDAwMCBSMTQ6DQo+IDAw
-MDAwMDAwMDAwMDAwNWUgUjE1OiAwMDAwN2ZmY2ZiNjZhNDkwDQo+IEp1bCAyNiAyMjo0MzowNiBp
-bml6YSBrZXJuZWw6IE1vZHVsZXMgbGlua2VkIGluOiBuZnNkIGF1dGhfcnBjZ3NzDQo+IG5mc19h
-Y2wgbG9ja2QgZ3JhY2UgaTJjX2RldiBwYXJwb3J0X3BjIHBwZGV2IGxwIHBhcnBvcnQgc3VucnBj
-DQo+IGVmaXZhcmZzIGlwX3RhYmxlcyB4X3RhYmxlcyBhdXRvZnM0IGV4dDQgY3JjMzJjX2dlbmVy
-aWMgbWJjYWNoZSBjcmMxNg0KPiBqYmQyIGJ0cmZzIHpzdGRfZGVjb21wcmVzcyB6c3RkX2NvbXBy
-ZXNzIGFsZ2lmX3NrY2lwaGVyIGFmX2FsZyBzZF9tb2QNCj4gdWFzIHVzYl9zdG9yYWdlIHNjc2lf
-bW9kIGhpZF9nZW5lcmljIHVzYmhpZCBoaWQgZG1fY3J5cHQgZG1fbW9kIHJhaWQxMA0KPiByYWlk
-NDU2IGFzeW5jX3JhaWQ2X3JlY292IGFzeW5jX21lbWNweSBhc3luY19wcSBhc3luY194b3IgYXN5
-bmNfdHggeG9yDQo+IHJhaWQ2X3BxIGxpYmNyYzMyYyByYWlkMSByYWlkMCBtdWx0aXBhdGggbGlu
-ZWFyIG1kX21vZA0KPiBjcmN0MTBkaWZfcGNsbXVsIGNyYzMyX3BjbG11bCBjcmMzMmNfaW50ZWwg
-Z2hhc2hfY2xtdWxuaV9pbnRlbA0KPiBhZXNuaV9pbnRlbCBpOTE1IGludGVsX2xwc3NfcGNpIG52
-bWUgYWVzX3g4Nl82NCBnbHVlX2hlbHBlcg0KPiBpMmNfYWxnb19iaXQgY3J5cHRvX3NpbWQgY3J5
-cHRkIHhoY2lfcGNpIHBzbW91c2UgZTEwMDBlIGRybV9rbXNfaGVscGVyDQo+IHhoY2lfaGNkIGky
-Y19pODAxIG52bWVfY29yZSBpbnRlbF9scHNzIGRybSB1c2Jjb3JlIHRoZXJtYWwgd21pIHZpZGVv
-DQo+IGJ1dHRvbg0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiBDUjI6IGZmZmZmZmZm
-YTgyMDMzNzANCj4gSnVsIDI2IDIyOjQzOjA2IGluaXphIGtlcm5lbDogLS0tWyBlbmQgdHJhY2Ug
-MzEyNjcwYjA2M2JkMDM5MSBdLS0tDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IFJJ
-UDogMDAxMDpfX19icGZfcHJvZ19ydW4rMHg0MC8weDE0ZjANCj4gSnVsIDI2IDIyOjQzOjA2IGlu
-aXphIGtlcm5lbDogQ29kZTogZjMgZWIgMjQgNDggODMgZjggMzggMGYgODQgYTkgMGMNCj4gMDAg
-MDAgNDggODMgZjggMzkgMGYgODUgOGEgMTQgMDAgMDAgMGYgMWYgMDAgNDggMGYgYmYgNDMgMDIg
-NDggOGQgMWMNCj4gYzMgNDggODMgYzMgMDggMGYgYjYgMzMgPDQ4PiA4YiAwNCBmNSAxMCAyZSAy
-MCBhOCA0OCA4MyBmOCAzYiA3ZiA2MiA0OA0KPiA4MyBmOCAxZSAwZiA4ZiBjOCAwMA0KPiBKdWwg
-MjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiBSU1A6IDAwMTg6ZmZmZmIzY2VjMDI1M2NiOCBFRkxB
-R1M6IDAwMDEwMjQ2DQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IFJBWDogZmZmZmIz
-Y2VjMDI1M2Q2MCBSQlg6DQo+IGZmZmZiM2NlYzAwZTkwMzggUkNYOiAwMDAwMDAwMDAwMDAwMDAy
-DQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IFJEWDogZmZmZmIzY2VjMDI1M2Q0MCBS
-U0k6DQo+IDAwMDAwMDAwMDAwMDAwYWMgUkRJOiBmZmZmYjNjZWMwMjUzY2UwDQo+IEp1bCAyNiAy
-Mjo0MzowNiBpbml6YSBrZXJuZWw6IFJCUDogZmZmZmIzY2VjMDI1M2NkMCBSMDg6DQo+IDAwMDAw
-MDAwMDAwMDAwMDAgUjA5OiBmZmZmYjNjZWMwMjUzZjU4DQo+IEp1bCAyNiAyMjo0MzowNiBpbml6
-YSBrZXJuZWw6IFIxMDogMDAwMDAwMDAwMDAwMDAwMCBSMTE6DQo+IGZmZmZmZmZmYTc3YjgyMTAg
-UjEyOiAwMDAwMDAwMDdmZmYwMDAwDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IFIx
-MzogZmZmZmIzY2VjMDI1M2ViOCBSMTQ6DQo+IDAwMDAwMDAwMDAwMDAwMDAgUjE1OiBmZmZmYjNj
-ZWMwMjUzY2UwDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IEZTOiAgMDAwMDdmN2Fj
-MmQyOGQ0MCgwMDAwKQ0KPiBHUzpmZmZmOWIzM2QyNTgwMDAwKDAwMDApIGtubEdTOjAwMDAwMDAw
-MDAwMDAwMDANCj4gSnVsIDI2IDIyOjQzOjA2IGluaXphIGtlcm5lbDogQ1M6ICAwMDEwIERTOiAw
-MDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMw0KPiBKdWwgMjYgMjI6NDM6MDYgaW5p
-emEga2VybmVsOiBDUjI6IGZmZmZmZmZmYTgyMDMzNzAgQ1IzOg0KPiAwMDAwMDAwNDRmM2VhMDA2
-IENSNDogMDAwMDAwMDAwMDM2MDZlMA0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiBC
-VUc6IHVuYWJsZSB0byBoYW5kbGUgcGFnZSBmYXVsdCBmb3INCj4gYWRkcmVzczogZmZmZmZmZmZh
-ODIwMzM3MA0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiAjUEY6IHN1cGVydmlzb3Ig
-cmVhZCBhY2Nlc3MgaW4ga2VybmVsIG1vZGUNCj4gSnVsIDI2IDIyOjQzOjA2IGluaXphIGtlcm5l
-bDogI1BGOiBlcnJvcl9jb2RlKDB4MDAwMCkgLSBub3QtcHJlc2VudCBwYWdlDQo+IEp1bCAyNiAy
-Mjo0MzowNiBpbml6YSBrZXJuZWw6IFBHRCAyY2ZhMGUwNjcgUDREIDJjZmEwZTA2NyBQVUQNCj4g
-MmNmYTBmMDYzIFBNRCA0NTA4MjkwNjMgUFRFIDgwMGZmZmZkMzBiZmMwNjINCj4gSnVsIDI2IDIy
-OjQzOjA2IGluaXphIGtlcm5lbDogT29wczogMDAwMCBbIzRdIFNNUCBQVEkNCj4gSnVsIDI2IDIy
-OjQzOjA2IGluaXphIGtlcm5lbDogQ1BVOiAwIFBJRDogNDM3IENvbW06IHN5c3RlbWQtdWRldmQN
-Cj4gVGFpbnRlZDogRyAgICAgIEQgICAgICAgICAgIDUuMy4wLXJjMS03LWFtZDY0LWNibC1hc21n
-b3RvDQo+ICM3fmJ1c3RlcitkaWxla3MxDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6
-IEhhcmR3YXJlIG5hbWU6IExFTk9WTw0KPiAyMEhEQ1RPMVdXLzIwSERDVE8xV1csIEJJT1MgTjFR
-RVQ4M1cgKDEuNTggKSAwNC8xOC8yMDE5DQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6
-IFJJUDogMDAxMDpfX19icGZfcHJvZ19ydW4rMHg0MC8weDE0ZjANCj4gSnVsIDI2IDIyOjQzOjA2
-IGluaXphIGtlcm5lbDogQ29kZTogZjMgZWIgMjQgNDggODMgZjggMzggMGYgODQgYTkgMGMNCj4g
-MDAgMDAgNDggODMgZjggMzkgMGYgODUgOGEgMTQgMDAgMDAgMGYgMWYgMDAgNDggMGYgYmYgNDMg
-MDIgNDggOGQgMWMNCj4gYzMgNDggODMgYzMgMDggMGYgYjYgMzMgPDQ4PiA4YiAwNCBmNSAxMCAy
-ZSAyMCBhOCA0OCA4MyBmOCAzYiA3ZiA2MiA0OA0KPiA4MyBmOCAxZSAwZiA4ZiBjOCAwMA0KPiBK
-dWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiBSU1A6IDAwMTg6ZmZmZmIzY2VjMDMyZmE4OCBF
-RkxBR1M6IDAwMDEwMjQ2DQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IFJBWDogZmZm
-ZmIzY2VjMDMyZmIzMCBSQlg6DQo+IGZmZmZiM2NlYzAwZDEwMzggUkNYOiAwMDAwMDAwMDAwMDAw
-MDAwDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IFJEWDogZmZmZmIzY2VjMDMyZmIx
-MCBSU0k6DQo+IDAwMDAwMDAwMDAwMDAwYWMgUkRJOiBmZmZmYjNjZWMwMzJmYWIwDQo+IEp1bCAy
-NiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IFJCUDogZmZmZmIzY2VjMDMyZmFhMCBSMDg6DQo+IGZm
-ZmY5YjMzY2YzNGIwMDAgUjA5OiAwMDAwMDAwMDAwMDAwMDAwDQo+IEp1bCAyNiAyMjo0MzowNiBp
-bml6YSBrZXJuZWw6IFIxMDogZmZmZjliMzNjZjNhMzQwMCBSMTE6DQo+IGZmZmZmZmZmYTc3Yjgy
-MTAgUjEyOiAwMDAwMDAwMDAwMDAwMDAwDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6
-IFIxMzogZmZmZmIzY2VjMDBkMTAwMCBSMTQ6DQo+IDAwMDAwMDAwMDAwMDAwMDAgUjE1OiBmZmZm
-YjNjZWMwMzJmYWIwDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IEZTOiAgMDAwMDdm
-N2FjMmQyOGQ0MCgwMDAwKQ0KPiBHUzpmZmZmOWIzM2QyNDAwMDAwKDAwMDApIGtubEdTOjAwMDAw
-MDAwMDAwMDAwMDANCj4gSnVsIDI2IDIyOjQzOjA2IGluaXphIGtlcm5lbDogQ1M6ICAwMDEwIERT
-OiAwMDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMw0KPiBKdWwgMjYgMjI6NDM6MDYg
-aW5pemEga2VybmVsOiBDUjI6IGZmZmZmZmZmYTgyMDMzNzAgQ1IzOg0KPiAwMDAwMDAwNDQ3MjRh
-MDAxIENSNDogMDAwMDAwMDAwMDM2MDZmMA0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVs
-OiBDYWxsIFRyYWNlOg0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiAgX19icGZfcHJv
-Z19ydW4zMisweDQ0LzB4NzANCj4gSnVsIDI2IDIyOjQzOjA2IGluaXphIGtlcm5lbDogID8gcHJl
-cF9uZXdfcGFnZSsweDQ3LzB4MWEwDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6ICA/
-IHNlY3VyaXR5X3NvY2tfcmN2X3NrYisweDNmLzB4NjANCj4gSnVsIDI2IDIyOjQzOjA2IGluaXph
-IGtlcm5lbDogIHNrX2ZpbHRlcl90cmltX2NhcCsweGU0LzB4MjIwDQo+IEp1bCAyNiAyMjo0Mzow
-NiBpbml6YSBrZXJuZWw6ICA/IF9fc2tiX2Nsb25lKzB4MmUvMHgxMDANCj4gSnVsIDI2IDIyOjQz
-OjA2IGluaXphIGtlcm5lbDogIG5ldGxpbmtfYnJvYWRjYXN0X2ZpbHRlcmVkKzB4MmRmLzB4NGYw
-DQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6ICBuZXRsaW5rX3NlbmRtc2crMHgzNGYv
-MHgzYzANCj4gSnVsIDI2IDIyOjQzOjA2IGluaXphIGtlcm5lbDogIF9fX3N5c19zZW5kbXNnKzB4
-MzE1LzB4MzMwDQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6ICA/IHNlY2NvbXBfcnVu
-X2ZpbHRlcnMrMHg1NC8weDExMA0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiAgPyBm
-aWxlbmFtZV9wYXJlbnRhdCsweDIxMC8weDQ5MA0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2Vy
-bmVsOiAgPyBfX3NlY2NvbXBfZmlsdGVyKzB4ZjcvMHg2ZTANCj4gSnVsIDI2IDIyOjQzOjA2IGlu
-aXphIGtlcm5lbDogID8gX19kX2FsbG9jKzB4MTU5LzB4MWMwDQo+IEp1bCAyNiAyMjo0MzowNiBp
-bml6YSBrZXJuZWw6ICA/IGttZW1fY2FjaGVfZnJlZSsweDFlLzB4NWMwDQo+IEp1bCAyNiAyMjo0
-MzowNiBpbml6YSBrZXJuZWw6ICA/IGZhc3RfZHB1dCsweDczLzB4YjANCj4gSnVsIDI2IDIyOjQz
-OjA2IGluaXphIGtlcm5lbDogIF9feDY0X3N5c19zZW5kbXNnKzB4OTcvMHhlMA0KPiBKdWwgMjYg
-MjI6NDM6MDYgaW5pemEga2VybmVsOiAgZG9fc3lzY2FsbF82NCsweDU5LzB4OTANCj4gSnVsIDI2
-IDIyOjQzOjA2IGluaXphIGtlcm5lbDogIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFtZSsw
-eDQ0LzB4YTkNCj4gSnVsIDI2IDIyOjQzOjA2IGluaXphIGtlcm5lbDogUklQOiAwMDMzOjB4N2Y3
-YWMzNTE5OTE0DQo+IEp1bCAyNiAyMjo0MzowNiBpbml6YSBrZXJuZWw6IENvZGU6IDAwIGY3IGQ4
-IDY0IDg5IDAyIDQ4IGM3IGMwIGZmIGZmDQo+IGZmIGZmIGViIGI1IDBmIDFmIDgwIDAwIDAwIDAw
-IDAwIDQ4IDhkIDA1IGU5IDVkIDBjIDAwIDhiIDAwIDg1IGMwIDc1DQo+IDEzIGI4IDJlIDAwIDAw
-IDAwIDBmIDA1IDw0OD4gM2QgMDAgZjAgZmYgZmYgNzcgNTQgYzMgMGYgMWYgMDAgNDEgNTQgNDEN
-Cj4gODkgZDQgNTUgNDggODkgZjUgNTMNCj4gSnVsIDI2IDIyOjQzOjA2IGluaXphIGtlcm5lbDog
-UlNQOiAwMDJiOjAwMDA3ZmZjZmI2NmE0NzggRUZMQUdTOg0KPiAwMDAwMDI0NiBPUklHX1JBWDog
-MDAwMDAwMDAwMDAwMDAyZQ0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiBSQVg6IGZm
-ZmZmZmZmZmZmZmZmZGEgUkJYOg0KPiAwMDAwNTYxZTI4YWFhNjAwIFJDWDogMDAwMDdmN2FjMzUx
-OTkxNA0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiBSRFg6IDAwMDAwMDAwMDAwMDAw
-MDAgUlNJOg0KPiAwMDAwN2ZmY2ZiNjZhNGEwIFJESTogMDAwMDAwMDAwMDAwMDAwZQ0KPiBKdWwg
-MjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiBSQlA6IDAwMDA1NjFlMjhhYWFhYzAgUjA4Og0KPiAw
-MDAwNTYxZTI4OTkwMTQwIFIwOTogMDAwMDAwMDAwMDAwMDAwMg0KPiBKdWwgMjYgMjI6NDM6MDYg
-aW5pemEga2VybmVsOiBSMTA6IDAwMDAwMDAwMDAwMDAwMDAgUjExOg0KPiAwMDAwMDAwMDAwMDAw
-MjQ2IFIxMjogMDAwMDAwMDAwMDAwMDAwMA0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVs
-OiBSMTM6IDAwMDAwMDAwMDAwMDAwMDAgUjE0Og0KPiAwMDAwMDAwMDAwMDAwMDVkIFIxNTogMDAw
-MDdmZmNmYjY2YTQ5MA0KPiBKdWwgMjYgMjI6NDM6MDYgaW5pemEga2VybmVsOiBNb2R1bGVzIGxp
-bmtlZCBpbjogbmZzZCBhdXRoX3JwY2dzcw0KPiBuZnNfYWNsIGxvY2tkIGdyYWNlIGkyY19kZXYg
-cGFycG9ydF9wYyBwcGRldiBscCBwYXJwb3J0IHN1bnJwYw0KPiBlZml2YXJmcyBpcF90YWJsZXMg
-eF90YWJsZXMgYXV0b2ZzNCBleHQ0IGNyYzMyY19nZW5lcmljIG1iY2FjaGUgY3JjMTYNCj4gamJk
-MiBidHJmcyB6c3RkX2RlY29tcHJlc3MgenN0ZF9jb21wcmVzcyBhbGdpZl9za2NpcGhlciBhZl9h
-bGcgc2RfbW9kDQo+IHVhcyB1c2Jfc3RvcmFnZSBzY3NpX21vZCBoaWRfZ2VuZXJpYyB1c2JoaWQg
-aGlkIGRtX2NyeXB0IGRtX21vZCByYWlkMTANCj4gcmFpZDQ1NiBhc3luY19yYWlkNl9yZWNvdiBh
-c3luY19tZW1jcHkgYXN5bmNfcHEgYXN5bmNfeG9yIGFzeW5jX3R4IHhvcg0KPiByYWlkNl9wcSBs
-aWJjcmMzMmMgcmFpZDEgcmFpZDAgbXVsdGlwYXRoIGxpbmVhciBtZF9tb2QNCj4gY3JjdDEwZGlm
-X3BjbG11bCBjcmMzMl9wY2xtdWwgY3JjMzJjX2ludGVsIGdoYXNoX2NsbXVsbmlfaW50ZWwNCj4g
-YWVzbmlfaW50ZWwgaTkxNSBpbnRlbF9scHNzX3BjaSBudm1lIGFlc194ODZfNjQgZ2x1ZV9oZWxw
-ZXINCj4gaTJjX2FsZ29fYml0IGNyeXB0b19zaW1kIGNyeXB0ZCB4aGNpX3BjaSBwc21vdXNlIGUx
-MDAwZSBkcm1fa21zX2hlbHBlcg0KPiB4aGNpX2hjZCBpMmNfaTgwMSBudm1lX2NvcmUgaW50ZWxf
-bHBzcyBkcm0gdXNiY29yZSB0aGVybWFsIHdtaSB2aWRlbw0KPiBidXR0b24NCj4gSnVsIDI2IDIy
-OjQzOjA2IGluaXphIGtlcm5lbDogQ1IyOiBmZmZmZmZmZmE4MjAzMzcwDQo+IEp1bCAyNiAyMjo0
-MzowNiBpbml6YSBrZXJuZWw6IC0tLVsgZW5kIHRyYWNlIDMxMjY3MGIwNjNiZDAzOTIgXS0tLQ0K
-PiANCj4gRnVsbCBgam91cm5hbGN0bCAteGJgIGF0dGFjaGVkLg0KPiANCj4gLSBTZWRhdCAtDQo+
-IA0K
+On Fri, Jul 26, 2019 at 11:10 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 7/26/19 2:02 PM, Sedat Dilek wrote:
+> > On Fri, Jul 26, 2019 at 10:38 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> >>
+> >> Hi Yonghong Song,
+> >>
+> >> On Fri, Jul 26, 2019 at 5:45 PM Yonghong Song <yhs@fb.com> wrote:
+> >>>
+> >>>
+> >>>
+> >>> On 7/26/19 1:26 AM, Sedat Dilek wrote:
+> >>>> Hi,
+> >>>>
+> >>>> I have opened a new issue in the ClangBuiltLinux issue tracker.
+> >>>
+> >>> Glad to know clang 9 has asm goto support and now It can compile
+> >>> kernel again.
+> >>>
+> >>
+> >> Yupp.
+> >>
+> >>>>
+> >>>> I am seeing a problem in the area bpf/seccomp causing
+> >>>> systemd/journald/udevd services to fail.
+> >>>>
+> >>>> [Fri Jul 26 08:08:43 2019] systemd[453]: systemd-udevd.service: Failed
+> >>>> to connect stdout to the journal socket, ignoring: Connection refused
+> >>>>
+> >>>> This happens when I use the (LLVM) LLD ld.lld-9 linker but not with
+> >>>> BFD linker ld.bfd on Debian/buster AMD64.
+> >>>> In both cases I use clang-9 (prerelease).
+> >>>
+> >>> Looks like it is a lld bug.
+> >>>
+> >>> I see the stack trace has __bpf_prog_run32() which is used by
+> >>> kernel bpf interpreter. Could you try to enable bpf jit
+> >>>     sysctl net.core.bpf_jit_enable = 1
+> >>> If this passed, it will prove it is interpreter related.
+> >>>
+> >>
+> >> After...
+> >>
+> >> sysctl -w net.core.bpf_jit_enable=1
+> >>
+> >> I can start all failed systemd services.
+> >>
+> >> systemd-journald.service
+> >> systemd-udevd.service
+> >> haveged.service
+> >>
+> >> This is in maintenance mode.
+> >>
+> >> What is next: Do set a permanent sysctl setting for net.core.bpf_jit_enable?
+> >>
+> >
+> > This is what I did:
+>
+> I probably won't have cycles to debug this potential lld issue.
+> Maybe you already did, I suggest you put enough reproducible
+> details in the bug you filed against lld so they can take a look.
+>
+
+I understand and will put the journalctl-log into the CBL issue
+tracker and update informations.
+
+Thanks for your help understanding the BPF correlations.
+
+Is setting 'net.core.bpf_jit_enable = 2' helpful here?
+
+Values :
+0 - disable the JIT (default value)
+1 - enable the JIT
+2 - enable the JIT and ask the compiler to emit traces on kernel log.
+
+Which files should LLD folks look at?
+
+cd linux
+ find ./ -name '*bpf*.o' | grep jit
+./arch/x86/net/bpf_jit_comp.o
+
+Compare the objdumps?
+
+I have archived the full build-dirs of clang9+ld.bfd and clang9+ld.lld-9.
+
+Thanks for your help!
+
+- sed@ -
+
+[1] https://sysctl-explorer.net/net/core/bpf_jit_enable/
+
+> >
+> > Jul 26 22:43:06 iniza kernel: BUG: unable to handle page fault for
+> > address: ffffffffa8203370
+> > Jul 26 22:43:06 iniza kernel: #PF: supervisor read access in kernel mode
+> > Jul 26 22:43:06 iniza kernel: #PF: error_code(0x0000) - not-present page
+> > Jul 26 22:43:06 iniza kernel: PGD 2cfa0e067 P4D 2cfa0e067 PUD
+> > 2cfa0f063 PMD 450829063 PTE 800ffffd30bfc062
+> > Jul 26 22:43:06 iniza kernel: Oops: 0000 [#3] SMP PTI
+> > Jul 26 22:43:06 iniza kernel: CPU: 3 PID: 436 Comm: systemd-udevd
+> > Tainted: G      D           5.3.0-rc1-7-amd64-cbl-asmgoto
+> > #7~buster+dileks1
+> > Jul 26 22:43:06 iniza kernel: Hardware name: LENOVO
+> > 20HDCTO1WW/20HDCTO1WW, BIOS N1QET83W (1.58 ) 04/18/2019
+> > Jul 26 22:43:06 iniza kernel: RIP: 0010:___bpf_prog_run+0x40/0x14f0
+> > Jul 26 22:43:06 iniza kernel: Code: f3 eb 24 48 83 f8 38 0f 84 a9 0c
+> > 00 00 48 83 f8 39 0f 85 8a 14 00 00 0f 1f 00 48 0f bf 43 02 48 8d 1c
+> > c3 48 83 c3 08 0f b6
+> >   33 <48> 8b 04 f5 10 2e 20 a8 48 83 f8 3b 7f 62 48 83 f8 1e 0f 8f c8 00
+> > Jul 26 22:43:06 iniza kernel: RSP: 0018:ffffb3cec0327a88 EFLAGS: 00010246
+> > Jul 26 22:43:06 iniza kernel: RAX: ffffb3cec0327b30 RBX:
+> > ffffb3cec00d1038 RCX: 0000000000000000
+> > Jul 26 22:43:06 iniza kernel: RDX: ffffb3cec0327b10 RSI:
+> > 00000000000000ac RDI: ffffb3cec0327ab0
+> > Jul 26 22:43:06 iniza kernel: RBP: ffffb3cec0327aa0 R08:
+> > ffff9b33c94c0a00 R09: 0000000000000000
+> > Jul 26 22:43:06 iniza kernel: R10: ffff9b33cfe14e00 R11:
+> > ffffffffa77b8210 R12: 0000000000000000
+> > Jul 26 22:43:06 iniza kernel: R13: ffffb3cec00d1000 R14:
+> > 0000000000000000 R15: ffffb3cec0327ab0
+> > Jul 26 22:43:06 iniza kernel: FS:  00007f7ac2d28d40(0000)
+> > GS:ffff9b33d2580000(0000) knlGS:0000000000000000
+> > Jul 26 22:43:06 iniza kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > Jul 26 22:43:06 iniza kernel: CR2: ffffffffa8203370 CR3:
+> > 000000044f3ea006 CR4: 00000000003606e0
+> > Jul 26 22:43:06 iniza kernel: Call Trace:
+> > Jul 26 22:43:06 iniza kernel:  __bpf_prog_run32+0x44/0x70
+> > Jul 26 22:43:06 iniza kernel:  ? security_sock_rcv_skb+0x3f/0x60
+> > Jul 26 22:43:06 iniza kernel:  sk_filter_trim_cap+0xe4/0x220
+> > Jul 26 22:43:06 iniza kernel:  ? __skb_clone+0x2e/0x100
+> > Jul 26 22:43:06 iniza kernel:  netlink_broadcast_filtered+0x2df/0x4f0
+> > Jul 26 22:43:06 iniza kernel:  netlink_sendmsg+0x34f/0x3c0
+> > Jul 26 22:43:06 iniza kernel:  ___sys_sendmsg+0x315/0x330
+> > Jul 26 22:43:06 iniza kernel:  ? seccomp_run_filters+0x54/0x110
+> > Jul 26 22:43:06 iniza kernel:  ? filename_parentat+0x210/0x490
+> > Jul 26 22:43:06 iniza kernel:  ? __seccomp_filter+0xf7/0x6e0
+> > Jul 26 22:43:06 iniza kernel:  ? __d_alloc+0x159/0x1c0
+> > Jul 26 22:43:06 iniza kernel:  ? kmem_cache_free+0x1e/0x5c0
+> > Jul 26 22:43:06 iniza kernel:  ? fast_dput+0x73/0xb0
+> > Jul 26 22:43:06 iniza kernel:  __x64_sys_sendmsg+0x97/0xe0
+> > Jul 26 22:43:06 iniza kernel:  do_syscall_64+0x59/0x90
+> > Jul 26 22:43:06 iniza kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > Jul 26 22:43:06 iniza kernel: RIP: 0033:0x7f7ac3519914
+> > Jul 26 22:43:06 iniza kernel: Code: 00 f7 d8 64 89 02 48 c7 c0 ff ff
+> > ff ff eb b5 0f 1f 80 00 00 00 00 48 8d 05 e9 5d 0c 00 8b 00 85 c0 75
+> > 13 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 54 c3 0f 1f 00 41 54 41
+> > 89 d4 55 48 89 f5 53
+> > Jul 26 22:43:06 iniza kernel: RSP: 002b:00007ffcfb66a478 EFLAGS:
+> > 00000246 ORIG_RAX: 000000000000002e
+> > Jul 26 22:43:06 iniza kernel: RAX: ffffffffffffffda RBX:
+> > 0000561e28ac9390 RCX: 00007f7ac3519914
+> > Jul 26 22:43:06 iniza kernel: RDX: 0000000000000000 RSI:
+> > 00007ffcfb66a4a0 RDI: 000000000000000d
+> > Jul 26 22:43:06 iniza kernel: RBP: 0000561e28acd210 R08:
+> > 0000561e28990140 R09: 0000000000000002
+> > Jul 26 22:43:06 iniza kernel: R10: 0000000000000000 R11:
+> > 0000000000000246 R12: 0000000000000000
+> > Jul 26 22:43:06 iniza kernel: R13: 0000000000000000 R14:
+> > 000000000000005e R15: 00007ffcfb66a490
+> > Jul 26 22:43:06 iniza kernel: Modules linked in: nfsd auth_rpcgss
+> > nfs_acl lockd grace i2c_dev parport_pc ppdev lp parport sunrpc
+> > efivarfs ip_tables x_tables autofs4 ext4 crc32c_generic mbcache crc16
+> > jbd2 btrfs zstd_decompress zstd_compress algif_skcipher af_alg sd_mod
+> > uas usb_storage scsi_mod hid_generic usbhid hid dm_crypt dm_mod raid10
+> > raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor
+> > raid6_pq libcrc32c raid1 raid0 multipath linear md_mod
+> > crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel
+> > aesni_intel i915 intel_lpss_pci nvme aes_x86_64 glue_helper
+> > i2c_algo_bit crypto_simd cryptd xhci_pci psmouse e1000e drm_kms_helper
+> > xhci_hcd i2c_i801 nvme_core intel_lpss drm usbcore thermal wmi video
+> > button
+> > Jul 26 22:43:06 iniza kernel: CR2: ffffffffa8203370
+> > Jul 26 22:43:06 iniza kernel: ---[ end trace 312670b063bd0391 ]---
+> > Jul 26 22:43:06 iniza kernel: RIP: 0010:___bpf_prog_run+0x40/0x14f0
+> > Jul 26 22:43:06 iniza kernel: Code: f3 eb 24 48 83 f8 38 0f 84 a9 0c
+> > 00 00 48 83 f8 39 0f 85 8a 14 00 00 0f 1f 00 48 0f bf 43 02 48 8d 1c
+> > c3 48 83 c3 08 0f b6 33 <48> 8b 04 f5 10 2e 20 a8 48 83 f8 3b 7f 62 48
+> > 83 f8 1e 0f 8f c8 00
+> > Jul 26 22:43:06 iniza kernel: RSP: 0018:ffffb3cec0253cb8 EFLAGS: 00010246
+> > Jul 26 22:43:06 iniza kernel: RAX: ffffb3cec0253d60 RBX:
+> > ffffb3cec00e9038 RCX: 0000000000000002
+> > Jul 26 22:43:06 iniza kernel: RDX: ffffb3cec0253d40 RSI:
+> > 00000000000000ac RDI: ffffb3cec0253ce0
+> > Jul 26 22:43:06 iniza kernel: RBP: ffffb3cec0253cd0 R08:
+> > 0000000000000000 R09: ffffb3cec0253f58
+> > Jul 26 22:43:06 iniza kernel: R10: 0000000000000000 R11:
+> > ffffffffa77b8210 R12: 000000007fff0000
+> > Jul 26 22:43:06 iniza kernel: R13: ffffb3cec0253eb8 R14:
+> > 0000000000000000 R15: ffffb3cec0253ce0
+> > Jul 26 22:43:06 iniza kernel: FS:  00007f7ac2d28d40(0000)
+> > GS:ffff9b33d2580000(0000) knlGS:0000000000000000
+> > Jul 26 22:43:06 iniza kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > Jul 26 22:43:06 iniza kernel: CR2: ffffffffa8203370 CR3:
+> > 000000044f3ea006 CR4: 00000000003606e0
+> > Jul 26 22:43:06 iniza kernel: BUG: unable to handle page fault for
+> > address: ffffffffa8203370
+> > Jul 26 22:43:06 iniza kernel: #PF: supervisor read access in kernel mode
+> > Jul 26 22:43:06 iniza kernel: #PF: error_code(0x0000) - not-present page
+> > Jul 26 22:43:06 iniza kernel: PGD 2cfa0e067 P4D 2cfa0e067 PUD
+> > 2cfa0f063 PMD 450829063 PTE 800ffffd30bfc062
+> > Jul 26 22:43:06 iniza kernel: Oops: 0000 [#4] SMP PTI
+> > Jul 26 22:43:06 iniza kernel: CPU: 0 PID: 437 Comm: systemd-udevd
+> > Tainted: G      D           5.3.0-rc1-7-amd64-cbl-asmgoto
+> > #7~buster+dileks1
+> > Jul 26 22:43:06 iniza kernel: Hardware name: LENOVO
+> > 20HDCTO1WW/20HDCTO1WW, BIOS N1QET83W (1.58 ) 04/18/2019
+> > Jul 26 22:43:06 iniza kernel: RIP: 0010:___bpf_prog_run+0x40/0x14f0
+> > Jul 26 22:43:06 iniza kernel: Code: f3 eb 24 48 83 f8 38 0f 84 a9 0c
+> > 00 00 48 83 f8 39 0f 85 8a 14 00 00 0f 1f 00 48 0f bf 43 02 48 8d 1c
+> > c3 48 83 c3 08 0f b6 33 <48> 8b 04 f5 10 2e 20 a8 48 83 f8 3b 7f 62 48
+> > 83 f8 1e 0f 8f c8 00
+> > Jul 26 22:43:06 iniza kernel: RSP: 0018:ffffb3cec032fa88 EFLAGS: 00010246
+> > Jul 26 22:43:06 iniza kernel: RAX: ffffb3cec032fb30 RBX:
+> > ffffb3cec00d1038 RCX: 0000000000000000
+> > Jul 26 22:43:06 iniza kernel: RDX: ffffb3cec032fb10 RSI:
+> > 00000000000000ac RDI: ffffb3cec032fab0
+> > Jul 26 22:43:06 iniza kernel: RBP: ffffb3cec032faa0 R08:
+> > ffff9b33cf34b000 R09: 0000000000000000
+> > Jul 26 22:43:06 iniza kernel: R10: ffff9b33cf3a3400 R11:
+> > ffffffffa77b8210 R12: 0000000000000000
+> > Jul 26 22:43:06 iniza kernel: R13: ffffb3cec00d1000 R14:
+> > 0000000000000000 R15: ffffb3cec032fab0
+> > Jul 26 22:43:06 iniza kernel: FS:  00007f7ac2d28d40(0000)
+> > GS:ffff9b33d2400000(0000) knlGS:0000000000000000
+> > Jul 26 22:43:06 iniza kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > Jul 26 22:43:06 iniza kernel: CR2: ffffffffa8203370 CR3:
+> > 000000044724a001 CR4: 00000000003606f0
+> > Jul 26 22:43:06 iniza kernel: Call Trace:
+> > Jul 26 22:43:06 iniza kernel:  __bpf_prog_run32+0x44/0x70
+> > Jul 26 22:43:06 iniza kernel:  ? prep_new_page+0x47/0x1a0
+> > Jul 26 22:43:06 iniza kernel:  ? security_sock_rcv_skb+0x3f/0x60
+> > Jul 26 22:43:06 iniza kernel:  sk_filter_trim_cap+0xe4/0x220
+> > Jul 26 22:43:06 iniza kernel:  ? __skb_clone+0x2e/0x100
+> > Jul 26 22:43:06 iniza kernel:  netlink_broadcast_filtered+0x2df/0x4f0
+> > Jul 26 22:43:06 iniza kernel:  netlink_sendmsg+0x34f/0x3c0
+> > Jul 26 22:43:06 iniza kernel:  ___sys_sendmsg+0x315/0x330
+> > Jul 26 22:43:06 iniza kernel:  ? seccomp_run_filters+0x54/0x110
+> > Jul 26 22:43:06 iniza kernel:  ? filename_parentat+0x210/0x490
+> > Jul 26 22:43:06 iniza kernel:  ? __seccomp_filter+0xf7/0x6e0
+> > Jul 26 22:43:06 iniza kernel:  ? __d_alloc+0x159/0x1c0
+> > Jul 26 22:43:06 iniza kernel:  ? kmem_cache_free+0x1e/0x5c0
+> > Jul 26 22:43:06 iniza kernel:  ? fast_dput+0x73/0xb0
+> > Jul 26 22:43:06 iniza kernel:  __x64_sys_sendmsg+0x97/0xe0
+> > Jul 26 22:43:06 iniza kernel:  do_syscall_64+0x59/0x90
+> > Jul 26 22:43:06 iniza kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > Jul 26 22:43:06 iniza kernel: RIP: 0033:0x7f7ac3519914
+> > Jul 26 22:43:06 iniza kernel: Code: 00 f7 d8 64 89 02 48 c7 c0 ff ff
+> > ff ff eb b5 0f 1f 80 00 00 00 00 48 8d 05 e9 5d 0c 00 8b 00 85 c0 75
+> > 13 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 54 c3 0f 1f 00 41 54 41
+> > 89 d4 55 48 89 f5 53
+> > Jul 26 22:43:06 iniza kernel: RSP: 002b:00007ffcfb66a478 EFLAGS:
+> > 00000246 ORIG_RAX: 000000000000002e
+> > Jul 26 22:43:06 iniza kernel: RAX: ffffffffffffffda RBX:
+> > 0000561e28aaa600 RCX: 00007f7ac3519914
+> > Jul 26 22:43:06 iniza kernel: RDX: 0000000000000000 RSI:
+> > 00007ffcfb66a4a0 RDI: 000000000000000e
+> > Jul 26 22:43:06 iniza kernel: RBP: 0000561e28aaaac0 R08:
+> > 0000561e28990140 R09: 0000000000000002
+> > Jul 26 22:43:06 iniza kernel: R10: 0000000000000000 R11:
+> > 0000000000000246 R12: 0000000000000000
+> > Jul 26 22:43:06 iniza kernel: R13: 0000000000000000 R14:
+> > 000000000000005d R15: 00007ffcfb66a490
+> > Jul 26 22:43:06 iniza kernel: Modules linked in: nfsd auth_rpcgss
+> > nfs_acl lockd grace i2c_dev parport_pc ppdev lp parport sunrpc
+> > efivarfs ip_tables x_tables autofs4 ext4 crc32c_generic mbcache crc16
+> > jbd2 btrfs zstd_decompress zstd_compress algif_skcipher af_alg sd_mod
+> > uas usb_storage scsi_mod hid_generic usbhid hid dm_crypt dm_mod raid10
+> > raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor
+> > raid6_pq libcrc32c raid1 raid0 multipath linear md_mod
+> > crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel
+> > aesni_intel i915 intel_lpss_pci nvme aes_x86_64 glue_helper
+> > i2c_algo_bit crypto_simd cryptd xhci_pci psmouse e1000e drm_kms_helper
+> > xhci_hcd i2c_i801 nvme_core intel_lpss drm usbcore thermal wmi video
+> > button
+> > Jul 26 22:43:06 iniza kernel: CR2: ffffffffa8203370
+> > Jul 26 22:43:06 iniza kernel: ---[ end trace 312670b063bd0392 ]---
+> >
+> > Full `journalctl -xb` attached.
+> >
+> > - Sedat -
+> >
