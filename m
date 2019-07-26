@@ -2,113 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A838774C2
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2019 01:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7942774F5
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2019 01:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727368AbfGZXBX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jul 2019 19:01:23 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:32806 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726871AbfGZXBX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jul 2019 19:01:23 -0400
-Received: by mail-qt1-f194.google.com with SMTP id r6so49998049qtt.0;
-        Fri, 26 Jul 2019 16:01:23 -0700 (PDT)
+        id S1726765AbfGZX3O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jul 2019 19:29:14 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:36014 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726167AbfGZX3O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jul 2019 19:29:14 -0400
+Received: by mail-qt1-f193.google.com with SMTP id z4so54321896qtc.3;
+        Fri, 26 Jul 2019 16:29:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CKsWoGEut8VHetzBmSR/YVPbFmV89D59h03uCfQZ1gE=;
-        b=P6Sj5GOvpc41bLPnATC8ZU55ZltoeXIjh7EZl8FHLcMJcxcaK9L0lQJ/SLFtRJWVMO
-         VvuRrgzeRLT4+TEomDS8pFXleIzik0MshOCbkicF0ODFKzkzpV82Y795ohN4plXRZK8m
-         I8CjyHdyM2nj9VuNKuOh1U9AEjRjrzOWZ9QYpuVTliBdUnGMzamutUCUIAb/xHZvdbWR
-         JUXa/7c0QUqlyndMzrlrYkIC8591y3KdUYfioQHqQYwvJgti+GJq5BWZmaujDN1qsTHr
-         cL4UEQkG1GRFVmRScSQrpKGSRDSbbFDtH0gxeU5tLx1j5xtQw8Zq0L08iIfPzmPPytfb
-         IZKQ==
+        bh=iP+4tXpLLeYulkhr0ZU6hQTrNg2JblROEAiYyRg4WR0=;
+        b=tYVEYEgZYyhQJFBs8/vhITB4QTXcU+Ii5yBrep0rH0JawtIPtvAqHbsfjwoqc1FKWZ
+         Gqh5zpyOCjO99KzLjY8Sgwa5p3yDktPb17gOWNky7v9UzlaEE4nJ3yWPjBHQI7ATKsDf
+         RroR13NVs72Awy5hpSqMF1EAEkJyG6xcKsAKg0GRHW3FTHYq67NeqYu5pBqRO5a9kiDy
+         4sTH855lj/4nlRRq3YitQV986y+K+Fu4lZhG/64I1+7awhkwZ/nAJGscmBe4awl+naN7
+         cRmO/UXB/y0oDfGjc2GcBA4O5lMTv2/3nQaLo53u0IHFjeCXg/IkDb82hH+CQJ8T3DdD
+         Gk4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CKsWoGEut8VHetzBmSR/YVPbFmV89D59h03uCfQZ1gE=;
-        b=cc8a1cfsuv72ZFC4+DyFXiPwuTRnSGS6vkWCvZe+omWSjlOzvGvt89ReM2A+SJaFMM
-         72o/3+6tYuAl9wKAPCk+x4va2wn+pgRmNsPmgd1oBSg51moNW0qcJ8rIJCZhZgHOgmHr
-         W4LjZuzlHRMtuqlHa7P+wKS9JCJDJGCQyp8RB5Ff7v9HWh6yywiSN7QhIgtNzDaUnVIc
-         jY3+4rgmyIE7Sp3GRYvGjzJWTuEoyGNK+Qd7WTXScXdyAQReFXEd8fZkpAXgMAZaiOWZ
-         bD1G6eFa77om+tMjUNZxhuOUIgKomZzVFYbxTwZo/+nFD1SUhlp9BSry/RweWdBYNmFJ
-         i8Yg==
-X-Gm-Message-State: APjAAAWuOyttARsdbmHCc+zIijGP5l5vEK5l6Cu6TwBFKfKrlpbQ56xb
-        CUlMCjG0vMyQ7aWlgIQLU/hvyF2fFXvB4AQL7rk=
-X-Google-Smtp-Source: APXvYqx+hA48hqlGGwbHwfF4p4DjRkqbYOIfXMQkDHmfcd7qOH5bW+OtLZtrnaom31JmdfegSTJNYCsf7omBa/ZSNe8=
-X-Received: by 2002:a0c:c107:: with SMTP id f7mr69050945qvh.150.1564182082438;
- Fri, 26 Jul 2019 16:01:22 -0700 (PDT)
+        bh=iP+4tXpLLeYulkhr0ZU6hQTrNg2JblROEAiYyRg4WR0=;
+        b=o0Rx7WC96bi6Gl3FIRh9UosPMFimJoHT8LG/nSuzY+pI8sa+7Xl6Siza3yzKT3q8gL
+         yvVQ4QrBtFVW9VqodCipBcPEeL6wd4aNUN4utbsInPr9Q56lpf1ERczntD8RhyZgmzxC
+         4IBkbHz3MjDp2BGx8vvhqXDMB1hgygvUhnwRaujmwotZf4AYrm/mQtJOxJRDFQeI2RUZ
+         KJHR3pGgvslfC8mIbb/j0UZ1Fzg1VXu4eGju9irJd27fcEUdpQMPRo0FiQigOYU+0AIk
+         eybKO1xwiLVXdJlT6CmZlrq1JIR5gSgalAQmiEeVa0ACifneud2EMRD34DmQ+D+VZF9i
+         6rjA==
+X-Gm-Message-State: APjAAAWeoLQ9vycbVo9s8EzLNs8IrYc+TouNb+RCZNgh7qosVrgolRS5
+        q0P7o0U6FwjTTzHrfJixmRXNEtuSBO8Mi4cxSQA=
+X-Google-Smtp-Source: APXvYqxjTpZCnXWPYVPXCFLjhJEDGo6+SOZ7ZKkwTfEcfUTdPhr5mOG8NIob9UXiDZTDtVzOfwDIRl0l8pTL02MRlTo=
+X-Received: by 2002:ac8:6601:: with SMTP id c1mr63893457qtp.93.1564183752890;
+ Fri, 26 Jul 2019 16:29:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190718173021.2418606-1-andriin@fb.com> <20190726204937.GD24867@kernel.org>
-In-Reply-To: <20190726204937.GD24867@kernel.org>
+References: <20190724192742.1419254-1-andriin@fb.com> <20190724192742.1419254-7-andriin@fb.com>
+ <20190725232633.zt6fxixq72xqwwmz@ast-mbp>
+In-Reply-To: <20190725232633.zt6fxixq72xqwwmz@ast-mbp>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 26 Jul 2019 16:01:10 -0700
-Message-ID: <CAEf4BzYZT3fmQUuGp45+Mn6hLLyWnT2NE3PxfpD88sThX8JS_w@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf] libbpf: fix missing __WORDSIZE definition
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+Date:   Fri, 26 Jul 2019 16:29:02 -0700
+Message-ID: <CAEf4Bzbhk1-L4iktq-0=hTQdTrzzoWRhjt93wVWb+EQBQK8Pqw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 06/10] selftests/bpf: add CO-RE relocs array tests
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Kernel Team <kernel-team@fb.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 26, 2019 at 1:49 PM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
+On Thu, Jul 25, 2019 at 4:26 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Em Thu, Jul 18, 2019 at 10:30:21AM -0700, Andrii Nakryiko escreveu:
-> > hashmap.h depends on __WORDSIZE being defined. It is defined by
-> > glibc/musl in different headers. It's an explicit goal for musl to be
-> > "non-detectable" at compilation time, so instead include glibc header if
-> > glibc is explicitly detected and fall back to musl header otherwise.
+> On Wed, Jul 24, 2019 at 12:27:38PM -0700, Andrii Nakryiko wrote:
+> > Add tests for various array handling/relocation scenarios.
 > >
-> > Fixes: e3b924224028 ("libbpf: add resizable non-thread safe internal hashmap")
-> > Reported-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ...
+> > +
+> > +#define CORE_READ(dst, src) \
+> > +     bpf_probe_read(dst, sizeof(*src), __builtin_preserve_access_index(src))
 >
-> Couldn't find ths in the bpf tree, please consider applying it:
->
-> Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> This is the key accessor that all progs will use.
+> Please split just this single macro into individual commit and add
+> detailed comment about its purpose and
+> what __builtin_preserve_access_index() does underneath.
 
-Arnaldo, I somehow got impression that you were going to pull this
-into your perf tree. Can you please confirm that it wasn't pulled into
-your tree, so that Alexei can apply it to bpf tree? Thanks!
+I'm planning to add more powerful and flexible set of macros to
+support BCC style a->b->c->d accesses using single macro. Something
+like BPF_CORE_READ(&dst, sizeof(dst), a, b, c, d). I want to move
+bpf_helpers.h into libbpf itself first, after some clean up. How about
+I write all that at that time and for now just add this simpler
+CORE_READ into bpf_helpers.h?
 
+Relocations recorded by __builtin_preserve_access_index() are
+described pretty well in patch #1, which adds bpf_offset_reloc. I'll
+double check if I mention this built-in there, and if not - will add
+that.
 
 >
->
-> - Arnaldo
->
-> > ---
-> >  tools/lib/bpf/hashmap.h | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
-> > index 03748a742146..bae8879cdf58 100644
-> > --- a/tools/lib/bpf/hashmap.h
-> > +++ b/tools/lib/bpf/hashmap.h
-> > @@ -10,6 +10,11 @@
-> >
-> >  #include <stdbool.h>
-> >  #include <stddef.h>
-> > +#ifdef __GLIBC__
-> > +#include <bits/wordsize.h>
-> > +#else
-> > +#include <bits/reg.h>
-> > +#endif
-> >  #include "libbpf_internal.h"
-> >
-> >  static inline size_t hash_bits(size_t h, int bits)
-> > --
-> > 2.17.1
->
-> --
->
-> - Arnaldo
+> > +SEC("raw_tracepoint/sys_enter")
+> > +int test_core_nesting(void *ctx)
+> > +{
+> > +     struct core_reloc_arrays *in = (void *)&data.in;
+> > +     struct core_reloc_arrays_output *out = (void *)&data.out;
+> > +
+> > +     /* in->a[2] */
+> > +     if (CORE_READ(&out->a2, &in->a[2]))
+> > +             return 1;
+> > +     /* in->b[1][2][3] */
+> > +     if (CORE_READ(&out->b123, &in->b[1][2][3]))
+> > +             return 1;
