@@ -2,60 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B860D77158
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2019 20:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFE6771F5
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2019 21:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387442AbfGZSkB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jul 2019 14:40:01 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:40876 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387434AbfGZSkB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jul 2019 14:40:01 -0400
-Received: by mail-pf1-f195.google.com with SMTP id p184so24905194pfp.7;
-        Fri, 26 Jul 2019 11:40:00 -0700 (PDT)
+        id S2388529AbfGZTS5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jul 2019 15:18:57 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:36930 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388524AbfGZTS5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jul 2019 15:18:57 -0400
+Received: by mail-pg1-f196.google.com with SMTP id i70so14470288pgd.4
+        for <bpf@vger.kernel.org>; Fri, 26 Jul 2019 12:18:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=bY4xnD9VEBuMVQmfTHfPZt8vwC6Vj5uTPYAbzW3F/j4=;
-        b=r2LYzePY0p1lz7qwyh9m7J8u6+UVqedhCQ7BKobVOg1zauDSAKbok5ceFZRuNp2VFf
-         lX/4BDr8lMTXFrfSeA0Op5MpsCZYnTg97r/E85vHuBuuKbkvll4YhTyjAU5YtmA0YfYi
-         3KN/k8jdDTyKs4BWRUh+VTETT++7zIU/khvMxnp8IjNmpTSFZDwCi7cQAqeyCTdCiegT
-         f4oor9KFs6N9V0FWfGlOcVzy0OlGKexfdAmTY8oCDgKlKh+cvcZFhvCJj6/CUG9BLPLb
-         nW6VTyq9P/MBwWVndBBdFnXhACkGNtbgaoLicUBHDJrL9AjJjHbTdq0du8q5IIgzqVUa
-         MJXQ==
+        bh=aaLCO9rquW8zOfKrWz3ON/6AgObn6JUEqFdlb0biVXs=;
+        b=t7xuzeqrfaBvKuIzgMGqiBiJ+bNKXpm0hav9D4RB0YlIt0j3Ja5TcPtOdARR8OOKXv
+         R8skIXSww2dlvw1KwWGssW8pAcTrO0mxapnzlplUyC+8320bpsICCvBR4p/oYgIW/hxO
+         TWmLmhivSt+2Q5v6AU6uj2TpMtH6HN72fyR+E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bY4xnD9VEBuMVQmfTHfPZt8vwC6Vj5uTPYAbzW3F/j4=;
-        b=sVIkUmNTzPdwwd6L/YGQm/fmdc3DV9vaWQx44tOISw352lMJVwHkd0igkwXBoeKbHq
-         DgtUCz20X6il+u1yChY5Bexfvhydtc+CPN8ee9TeO/aZlhBd0wmPPcVkSz1f71g/AQno
-         WYco9rpsUxBIhSjVXIL2ZHhLjSwUbjRKYYxzKoLXdSamBgcG+107XtIJbRyWKWhYantv
-         teBddUPH/j9czeo+d6hC4wuv3oBpDZPkmC88zabQ4gvYkf4q6aRWoqk2f8IiRPPAB/Jf
-         3MGrU3n6jhbYahr1Ka0sZKCES1gWMRIzD36Fks0rSqImu/oz4H88WSQPv9LstQ/Gn+Yv
-         0cQw==
-X-Gm-Message-State: APjAAAVEcb98W1HGpjlRTH6KtsRysmnN6D0xL7kWwjonzs0BYGm6j0Hl
-        ZqVJr4h+Mb6lxSvPvww7Z0c=
-X-Google-Smtp-Source: APXvYqwAa7f6KrCivJT9i9iP+Ljnbnzh9F83yxbeML6KsVRnVjPFn3zX0egbZMn28CCYbk40FWxZ9w==
-X-Received: by 2002:a62:1b0c:: with SMTP id b12mr23337721pfb.17.1564166400088;
-        Fri, 26 Jul 2019 11:40:00 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::2:2eeb])
-        by smtp.gmail.com with ESMTPSA id u7sm47886990pgr.94.2019.07.26.11.39.58
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Jul 2019 11:39:59 -0700 (PDT)
-Date:   Fri, 26 Jul 2019 11:39:56 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
+        bh=aaLCO9rquW8zOfKrWz3ON/6AgObn6JUEqFdlb0biVXs=;
+        b=gTzZRLZGaO1ol1ouxf88nPMoStn36GIhBL3tLCabAAD7K+Spahbb/OxY9ZBIU7sbhS
+         GGxZ5d4Zppel9NrzjJtZyS6h2ehYrRzPL50cIyxJ+Z8FgNVKyZ/x8H8Oaw5zCcFtGo0X
+         ovGOp9rkY9BJmVSRapgeTJCN+XiyneJP1lz9v7AmIvswhogfh/AiVoEN0cUB/cYpoPFg
+         8uHMyFopbIv+7PFbuisQZgqHH1EQ0WqAKba55jFaqV2myJd/hYzI84ZD0njKOI4WGw4U
+         mgDlQoyWrUtH5MEK9jcb9dTDllw/up/Pra0zMyiZRffPsJ2f285NbdNIJxsXVfjPilqm
+         GGDg==
+X-Gm-Message-State: APjAAAXIgR+Lezpst7zZwRjj4ljbnHVfN9MoDOwDl/CDlERi4gZDJckM
+        YbPWa+GjsSHANQdIFiEpvI8=
+X-Google-Smtp-Source: APXvYqzchn27cAzocnBFE1KDl/j92iJMV04GePHVAx4gM5q3wTu5qdEQzK08hGWd1BxpCIg6dSLdxQ==
+X-Received: by 2002:a65:5b8e:: with SMTP id i14mr91573307pgr.188.1564168736216;
+        Fri, 26 Jul 2019 12:18:56 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id j12sm45814793pff.4.2019.07.26.12.18.54
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Fri, 26 Jul 2019 12:18:55 -0700 (PDT)
+Date:   Fri, 26 Jul 2019 15:18:53 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Network Development <netdev@vger.kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>, kernel-team@android.com
 Subject: Re: [PATCH RFC 0/4] Add support to directly attach BPF program to
  ftrace
-Message-ID: <20190726183954.oxzhkrwt4uhgl4gl@ast-mbp.dhcp.thefacebook.com>
-References: <20190716213050.GA161922@google.com>
- <20190716222650.tk2coihjtsxszarf@ast-mbp.dhcp.thefacebook.com>
+Message-ID: <20190726191853.GA196514@google.com>
+References: <20190716222650.tk2coihjtsxszarf@ast-mbp.dhcp.thefacebook.com>
  <20190716224150.GC172157@google.com>
  <20190716235500.GA199237@google.com>
  <20190717012406.lugqemvubixfdd6v@ast-mbp.dhcp.thefacebook.com>
@@ -64,87 +60,72 @@ References: <20190716213050.GA161922@google.com>
  <20190718025143.GB153617@google.com>
  <20190723221108.gamojemj5lorol7k@ast-mbp>
  <20190724135714.GA9945@google.com>
+ <20190726183954.oxzhkrwt4uhgl4gl@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190724135714.GA9945@google.com>
-User-Agent: NeoMutt/20180223
+In-Reply-To: <20190726183954.oxzhkrwt4uhgl4gl@ast-mbp.dhcp.thefacebook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 24, 2019 at 09:57:14AM -0400, Joel Fernandes wrote:
-> On Tue, Jul 23, 2019 at 03:11:10PM -0700, Alexei Starovoitov wrote:
-> > > > > > I think allowing one tracepoint and disallowing another is pointless
-> > > > > > from security point of view. Tracing bpf program can do bpf_probe_read
-> > > > > > of anything.
-> > > > >
-> > > > > I think the assumption here is the user controls the program instructions at
-> > > > > runtime, but that's not the case. The BPF program we are loading is not
-> > > > > dynamically generated, it is built at build time and it is loaded from a
-> > > > > secure verified partition, so even though it can do bpf_probe_read, it is
-> > > > > still not something that the user can change.
+On Fri, Jul 26, 2019 at 11:39:56AM -0700, Alexei Starovoitov wrote:
+[snip]
+> > > > 1. timeinstate: By hooking 2 programs onto sched_switch and cpu_frequency
+> > > > tracepoints, we are able to collect CPU power per-UID (specific app). Connor
+> > > > O'Brien is working on that.
 > > > > 
-> > > > so you're saying that by having a set of signed bpf programs which
-> > > > instructions are known to be non-malicious and allowed set of tracepoints
-> > > > to attach via selinux whitelist, such setup will be safe?
-> > > > Have you considered how mix and match will behave?
+> > > > 2. inode to file path mapping: By hooking onto VFS tracepoints we are adding to
+> > > > the android kernels, we can collect data when the kernel resolves a file path
+> > > > to a inode/device number. A BPF map stores the inode/dev number (key) and the
+> > > > path (value). We have usecases where we need a high speed lookup of this
+> > > > without having to scan all the files in the filesystem.
 > > > 
-> > > Do you mean the effect of mixing tracepoints and programs? I have not
-> > > considered this. I am Ok with further enforcing of this (only certain
-> > > tracepoints can be attached to certain programs) if needed. What do
-> > > you think? We could have a new bpf(2) syscall attribute specify which
-> > > tracepoint is expected, or similar.
-> > > 
-> > > I wanted to walk you through our 2 usecases we are working on:
+> > > Can you share the link to vfs tracepoints you're adding?
+> > > Sounds like you're not going to attempt to upstream them knowing
+> > > Al's stance towards them?
+> > > May be there is a way we can do the feature you need, but w/o tracepoints?
 > > 
-> > thanks for sharing the use case details. Appreciate it.
+> > Yes, given Al's stance I understand the patch is not upstreamable. The patch
+> > is here:
+> > For tracepoint:
+> > https://android.googlesource.com/kernel/common/+/27d3bfe20558d279041af403a887e7bdbdcc6f24%5E%21/
 > 
-> No problem and thanks for your thoughts.
+> this is way more than tracepoint.
+
+True there is some code that calls the tracepoint. I want to optimize it more
+but lets see I am ready to think more about it before doing it this way,
+based on your suggestions.
+
+> > For bpf program:
+> > https://android.googlesource.com/platform/system/bpfprogs/+/908f6cd718fab0de7a944f84628c56f292efeb17%5E%21/
 > 
-> > > 1. timeinstate: By hooking 2 programs onto sched_switch and cpu_frequency
-> > > tracepoints, we are able to collect CPU power per-UID (specific app). Connor
-> > > O'Brien is working on that.
-> > > 
-> > > 2. inode to file path mapping: By hooking onto VFS tracepoints we are adding to
-> > > the android kernels, we can collect data when the kernel resolves a file path
-> > > to a inode/device number. A BPF map stores the inode/dev number (key) and the
-> > > path (value). We have usecases where we need a high speed lookup of this
-> > > without having to scan all the files in the filesystem.
-> > 
-> > Can you share the link to vfs tracepoints you're adding?
-> > Sounds like you're not going to attempt to upstream them knowing
-> > Al's stance towards them?
-> > May be there is a way we can do the feature you need, but w/o tracepoints?
+> what is unsafe_bpf_map_update_elem() in there?
+> The verifier comment sounds odd.
+> Could you describe the issue you see with the verifier?
+
+Will dig out the verifier issue I was seeing. I was just trying to get a
+prototype working so I did not go into verifier details much.
+
+> > I intended to submit the tracepoint only for the Android kernels, however if
+> > there is an upstream solution to this then that's even better since upstream can
+> > benefit. Were you thinking of a BPF helper function to get this data?
 > 
-> Yes, given Al's stance I understand the patch is not upstreamable. The patch
-> is here:
-> For tracepoint:
-> https://android.googlesource.com/kernel/common/+/27d3bfe20558d279041af403a887e7bdbdcc6f24%5E%21/
+> I think the best way to evaluate the patches is whether they are upstreamable or not.
+> If they're not (like this case), it means that there is something wrong with their design
+> and if android decides to go with such approach it will only create serious issues long term.
+> Starting with the whole idea of dev+inode -> filepath cache.
+> dev+inode is not a unique identifier of the file.
+> In some filesystems two different files may have the same ino integer value.
+> Have you looked at 'struct file_handle' ? and name_to_handle_at ?
+> I think fhandle is the only way to get unique identifier of the file.
+> Could you please share more details why android needs this cache of dev+ino->path?
 
-this is way more than tracepoint.
+I will follow-up with you on this by email off the list, thanks.
 
-> For bpf program:
-> https://android.googlesource.com/platform/system/bpfprogs/+/908f6cd718fab0de7a944f84628c56f292efeb17%5E%21/
+thanks,
 
-what is unsafe_bpf_map_update_elem() in there?
-The verifier comment sounds odd.
-Could you describe the issue you see with the verifier?
-
-> I intended to submit the tracepoint only for the Android kernels, however if
-> there is an upstream solution to this then that's even better since upstream can
-> benefit. Were you thinking of a BPF helper function to get this data?
-
-I think the best way to evaluate the patches is whether they are upstreamable or not.
-If they're not (like this case), it means that there is something wrong with their design
-and if android decides to go with such approach it will only create serious issues long term.
-Starting with the whole idea of dev+inode -> filepath cache.
-dev+inode is not a unique identifier of the file.
-In some filesystems two different files may have the same ino integer value.
-Have you looked at 'struct file_handle' ? and name_to_handle_at ?
-I think fhandle is the only way to get unique identifier of the file.
-Could you please share more details why android needs this cache of dev+ino->path?
-I guess something uses ino to find paths?
-Sort of faster version of 'find -inum' ?
+ - Joel
 
