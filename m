@@ -2,149 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E51AB773FF
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2019 00:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A838774C2
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2019 01:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727833AbfGZW0z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jul 2019 18:26:55 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:36339 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727487AbfGZW0y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jul 2019 18:26:54 -0400
-Received: by mail-pf1-f194.google.com with SMTP id r7so25143602pfl.3
-        for <bpf@vger.kernel.org>; Fri, 26 Jul 2019 15:26:54 -0700 (PDT)
+        id S1727368AbfGZXBX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jul 2019 19:01:23 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:32806 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726871AbfGZXBX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jul 2019 19:01:23 -0400
+Received: by mail-qt1-f194.google.com with SMTP id r6so49998049qtt.0;
+        Fri, 26 Jul 2019 16:01:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=UTijqTalaHjEMl8XOEIA/Zh+v74r2+x8ZUdX+8Ud+6Q=;
-        b=U/P/dN31lbJIBpvcaz8y7Cb1Ibe97EfU1muwLVRY6tQCC4EkPlIwP1Rn9Ii5gfoHO5
-         9n3Cu/v277SX79h+l0uwjDnSVZrA/AKxxO3Gy9UeOCFkqcsFdl8eRRc2OnHL3u4qFRD/
-         DTOInQyjfqROxRZrCsikkw/U4vVsB/bER3aeT7c9exgz1WYW76r/+eyX1jjC+AHoJRcT
-         0Gxud8B2MQQVwGg7w93xgOiyNw6QzOrt8DbxFaCYDZLI42BST+6sZ1nLR56WmSn3yVBb
-         6IRl+miawVboIlxa6Xaqtlv9JWjHlFR7d9HycTWqXXkzUYj+r8YRwlsz4jh1Sa3NX4tS
-         kepA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CKsWoGEut8VHetzBmSR/YVPbFmV89D59h03uCfQZ1gE=;
+        b=P6Sj5GOvpc41bLPnATC8ZU55ZltoeXIjh7EZl8FHLcMJcxcaK9L0lQJ/SLFtRJWVMO
+         VvuRrgzeRLT4+TEomDS8pFXleIzik0MshOCbkicF0ODFKzkzpV82Y795ohN4plXRZK8m
+         I8CjyHdyM2nj9VuNKuOh1U9AEjRjrzOWZ9QYpuVTliBdUnGMzamutUCUIAb/xHZvdbWR
+         JUXa/7c0QUqlyndMzrlrYkIC8591y3KdUYfioQHqQYwvJgti+GJq5BWZmaujDN1qsTHr
+         cL4UEQkG1GRFVmRScSQrpKGSRDSbbFDtH0gxeU5tLx1j5xtQw8Zq0L08iIfPzmPPytfb
+         IZKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UTijqTalaHjEMl8XOEIA/Zh+v74r2+x8ZUdX+8Ud+6Q=;
-        b=ZZIMwvf8ebE7qQLULB3OOPQMqqgFQDC8hz7ak7ecbzTp4pgVps1d3onmMWNFJ/Puhm
-         ovpTjmEeGgipHJz1zzCbleO3rTHjnJZ8Mhx4R8nSQ63lWPjDPsBbJiSXXGcr0JaU+0ZE
-         j0RLFPzMUOktDauiQEJSLoKWEKVv1yYrfVqNvu07vEe3qxJR/r0NhkDby7ihIpXf9AmB
-         yE2SxxF5ZvGL89FOktpnBZZ0A3O93WKtwyhaLc0V+R3eZpxyTFgAFBzIFz9UCQbmnjKe
-         CUhxzx1Es5w66Chx5zziy11iqAMK6pTb9cI6bevZwCaHgzeu/qvcyvzAXOYuf3ATNe3w
-         PcAA==
-X-Gm-Message-State: APjAAAW4oU+/Q8imWOf9DRnTvf2YVrj4CALRb7utQpl5PHt4a5A7ch6K
-        yT54uvvCX6CdQHwZCS//0ZQ=
-X-Google-Smtp-Source: APXvYqwjA3WWW1QgAJolExsTKW0fkunyFpH/kPU79FwVkPJjqEnKDgqS8bbcVG+bQr4A0C3rfOhJ9w==
-X-Received: by 2002:aa7:8752:: with SMTP id g18mr23678771pfo.201.1564180014246;
-        Fri, 26 Jul 2019 15:26:54 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id s67sm55454275pjb.8.2019.07.26.15.26.53
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 26 Jul 2019 15:26:53 -0700 (PDT)
-Date:   Fri, 26 Jul 2019 15:26:52 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CKsWoGEut8VHetzBmSR/YVPbFmV89D59h03uCfQZ1gE=;
+        b=cc8a1cfsuv72ZFC4+DyFXiPwuTRnSGS6vkWCvZe+omWSjlOzvGvt89ReM2A+SJaFMM
+         72o/3+6tYuAl9wKAPCk+x4va2wn+pgRmNsPmgd1oBSg51moNW0qcJ8rIJCZhZgHOgmHr
+         W4LjZuzlHRMtuqlHa7P+wKS9JCJDJGCQyp8RB5Ff7v9HWh6yywiSN7QhIgtNzDaUnVIc
+         jY3+4rgmyIE7Sp3GRYvGjzJWTuEoyGNK+Qd7WTXScXdyAQReFXEd8fZkpAXgMAZaiOWZ
+         bD1G6eFa77om+tMjUNZxhuOUIgKomZzVFYbxTwZo/+nFD1SUhlp9BSry/RweWdBYNmFJ
+         i8Yg==
+X-Gm-Message-State: APjAAAWuOyttARsdbmHCc+zIijGP5l5vEK5l6Cu6TwBFKfKrlpbQ56xb
+        CUlMCjG0vMyQ7aWlgIQLU/hvyF2fFXvB4AQL7rk=
+X-Google-Smtp-Source: APXvYqx+hA48hqlGGwbHwfF4p4DjRkqbYOIfXMQkDHmfcd7qOH5bW+OtLZtrnaom31JmdfegSTJNYCsf7omBa/ZSNe8=
+X-Received: by 2002:a0c:c107:: with SMTP id f7mr69050945qvh.150.1564182082438;
+ Fri, 26 Jul 2019 16:01:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190718173021.2418606-1-andriin@fb.com> <20190726204937.GD24867@kernel.org>
+In-Reply-To: <20190726204937.GD24867@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 26 Jul 2019 16:01:10 -0700
+Message-ID: <CAEf4BzYZT3fmQUuGp45+Mn6hLLyWnT2NE3PxfpD88sThX8JS_w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf] libbpf: fix missing __WORDSIZE definition
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 6/9] selftests/bpf: abstract away test log output
-Message-ID: <20190726222652.GG24397@mini-arch>
-References: <20190726203747.1124677-1-andriin@fb.com>
- <20190726203747.1124677-7-andriin@fb.com>
- <20190726213104.GD24397@mini-arch>
- <CAEf4BzaVCdHT_U+m7niJLsSmbf+M9DrFjf_PNOmQQZvuHsr9Xg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzaVCdHT_U+m7niJLsSmbf+M9DrFjf_PNOmQQZvuHsr9Xg@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/26, Andrii Nakryiko wrote:
-> On Fri, Jul 26, 2019 at 2:31 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+On Fri, Jul 26, 2019 at 1:49 PM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
+>
+> Em Thu, Jul 18, 2019 at 10:30:21AM -0700, Andrii Nakryiko escreveu:
+> > hashmap.h depends on __WORDSIZE being defined. It is defined by
+> > glibc/musl in different headers. It's an explicit goal for musl to be
+> > "non-detectable" at compilation time, so instead include glibc header if
+> > glibc is explicitly detected and fall back to musl header otherwise.
 > >
-> > On 07/26, Andrii Nakryiko wrote:
-> > > This patch changes how test output is printed out. By default, if test
-> > > had no errors, the only output will be a single line with test number,
-> > > name, and verdict at the end, e.g.:
-> > >
-> > >   #31 xdp:OK
-> > >
-> > > If test had any errors, all log output captured during test execution
-> > > will be output after test completes.
-> > >
-> > > It's possible to force output of log with `-v` (`--verbose`) option, in
-> > > which case output won't be buffered and will be output immediately.
-> > >
-> > > To support this, individual tests are required to use helper methods for
-> > > logging: `test__printf()` and `test__vprintf()`.
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > > ---
-> > >  .../selftests/bpf/prog_tests/bpf_obj_id.c     |   6 +-
-> > >  .../bpf/prog_tests/bpf_verif_scale.c          |  31 ++--
-> > >  .../bpf/prog_tests/get_stack_raw_tp.c         |   4 +-
-> > >  .../selftests/bpf/prog_tests/l4lb_all.c       |   2 +-
-> > >  .../selftests/bpf/prog_tests/map_lock.c       |  10 +-
-> > >  .../selftests/bpf/prog_tests/send_signal.c    |   8 +-
-> > >  .../selftests/bpf/prog_tests/spinlock.c       |   2 +-
-> > >  .../bpf/prog_tests/stacktrace_build_id.c      |   4 +-
-> > >  .../bpf/prog_tests/stacktrace_build_id_nmi.c  |   4 +-
-> > >  .../selftests/bpf/prog_tests/xdp_noinline.c   |   3 +-
-> > >  tools/testing/selftests/bpf/test_progs.c      | 135 +++++++++++++-----
-> > >  tools/testing/selftests/bpf/test_progs.h      |  37 ++++-
-> > >  12 files changed, 173 insertions(+), 73 deletions(-)
-> > >
-> 
-> [...]
-> 
-> > >               error_cnt++;
-> > > -             printf("test_l4lb:FAIL:stats %lld %lld\n", bytes, pkts);
-> > > +             test__printf("test_l4lb:FAIL:stats %lld %lld\n", bytes, pkts);
-> > #define printf(...) test__printf(...) in tests.h?
+> > Fixes: e3b924224028 ("libbpf: add resizable non-thread safe internal hashmap")
+> > Reported-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+>
+> Couldn't find ths in the bpf tree, please consider applying it:
+>
+> Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+Arnaldo, I somehow got impression that you were going to pull this
+into your perf tree. Can you please confirm that it wasn't pulled into
+your tree, so that Alexei can apply it to bpf tree? Thanks!
+
+
+>
+>
+> - Arnaldo
+>
+> > ---
+> >  tools/lib/bpf/hashmap.h | 5 +++++
+> >  1 file changed, 5 insertions(+)
 > >
-> > A bit ugly, but no need to retrain everyone to use new printf wrappers.
-> 
-> I try to reduce amount of magic and surprising things, not add new
-> ones :) I also led by example and converted all current instances of
-> printf usage to test__printf, so anyone new will just copy/paste good
-> example, hopefully. Even if not, this non-buffered output will be
-> immediately obvious to anyone who just runs `sudo ./test_progs`.
-
-[..]
-> And
-> author of new test with this problem should hopefully be the first and
-> the only one to catch and fix this.
-Yeah, that is my only concern, that regular printfs will eventually
-creep in. It's already confusing to go to/from printf/printk.
-
-2c:
-
-I'm coming from a perspective of tools/testing/selftests/kselftest.h
-which is supposed to be a generic framework with custom
-printf variants (ksft_print_msg), but I still see a bunch of tests
-calling printf :-/
-
-	grep -ril ksft_exit_fail_msg selftests/ | xargs -n1 grep -w printf
-
-Since we don't expect regular buffered io from the tests anyway
-it might be easier just to add a bit of magic and call it a day.
-
-> > >       }
-> > >  out:
-> > >       bpf_object__close(obj);
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/map_lock.c b/tools/testing/selftests/bpf/prog_tests/map_lock.c
-> > > index ee99368c595c..2e78217ed3fd 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/map_lock.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/map_lock.c
-> > > @@ -9,12 +9,12 @@ static void *parallel_map_access(void *arg)
-> 
-> [...]
+> > diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
+> > index 03748a742146..bae8879cdf58 100644
+> > --- a/tools/lib/bpf/hashmap.h
+> > +++ b/tools/lib/bpf/hashmap.h
+> > @@ -10,6 +10,11 @@
+> >
+> >  #include <stdbool.h>
+> >  #include <stddef.h>
+> > +#ifdef __GLIBC__
+> > +#include <bits/wordsize.h>
+> > +#else
+> > +#include <bits/reg.h>
+> > +#endif
+> >  #include "libbpf_internal.h"
+> >
+> >  static inline size_t hash_bits(size_t h, int bits)
+> > --
+> > 2.17.1
+>
+> --
+>
+> - Arnaldo
