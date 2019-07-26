@@ -2,618 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 187ED7737B
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2019 23:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA98677392
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2019 23:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387552AbfGZVbH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jul 2019 17:31:07 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:34801 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387550AbfGZVbG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jul 2019 17:31:06 -0400
-Received: by mail-pf1-f195.google.com with SMTP id b13so25090788pfo.1
-        for <bpf@vger.kernel.org>; Fri, 26 Jul 2019 14:31:05 -0700 (PDT)
+        id S1726999AbfGZVmh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jul 2019 17:42:37 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:40597 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726366AbfGZVmg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jul 2019 17:42:36 -0400
+Received: by mail-qt1-f196.google.com with SMTP id a15so54042671qtn.7;
+        Fri, 26 Jul 2019 14:42:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ft+Zgf/N/McM1bTFcUkHaoQ+AE8eBJgjohe+CYPI4Ok=;
-        b=T98a4ma7D5n2tDhYTaSmnBVOLjwa2iovGvFZe9RwhuP+BY8qRfipp7Pfh4/N3eb/Yi
-         i9i+a/qbBVIXh3KV+tXB4nDaLsaBe2apgFywj8uHUcSbtN/C58YuI/OumfSg4VxQS7U9
-         1Sp2G59zdE4CYIg588foXz6Rpiz2AiFC9wk++G8dT5SxXjv34n0Rxp9dBLBXYQveT8jA
-         XEMtWXJioyo2YEznjwNlmfOST4YVTJsJpCy3ZMPLptGKllWa5BS5KadSPmKjmbq6n3w/
-         H4fwebjpJCVbjzFD66ve4MsFvaHO9zD3A8KuGc7dVB1QpwhsU7xQ+ZNi5Eq2IK85+C9h
-         mAmA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SCTKIdPrtnXrsQ9utu/qLU47WG+4TA5IDdCWht7vPsA=;
+        b=cp3JhUiKDq7bySxu3vj6uNzV+rKX39vs8VgudglyqYDY2cLkdJPhldnfHo8pfp8dGU
+         UvbB4rRIKnUMsexsju7detoq0+wdS26MXvlrwh8ne5NC/MHEn4lIjc1sRx0qV1mvj3a0
+         8WS4nITvwP6jQGNWlYH4FBU/DY6E2Y+lFbRkoXs9nMVjEx98A7kx8hS57Zfx/ZFfSH4S
+         jpr4L1yGvP7lc1/npfSkPpYBPE8mHVFVq/RmnzPL6vb8jpdVkBlZrQqugY4USnED+O2A
+         ewRPy01ybhaJjRuP3U9m97oV0iNw3MgrBdFJzTqrGQANr9mzFMhDmp5S8wdXeO2jl7Hd
+         P94w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ft+Zgf/N/McM1bTFcUkHaoQ+AE8eBJgjohe+CYPI4Ok=;
-        b=kluqx39oU25G2Z4O0C+XAlAptCV/mgMFzXS+b0VEbjR8+yDuNGuM7IqlwgfYv0Hosu
-         MlHggD5Fki2yKeQz/SFd3rOzu/hynXe8rOKhBoBMg1MOFMYs1/xaGvIUBgW0+/1UA+xz
-         GSuk4nDooPO7wxg/JwZbETFD08UD9+uE+OzVzWTY9knlKr9Xo0vbo3jAd/Q15vlJAAG/
-         x7NIgVgiq+xcwm7i7ZOCQjuJkrDxZvtxNXFxM7tR4Q/bptvgFo19B4z3YOIkHjV/JFgS
-         Irkk4eTp8Jc6+ronGiAxOQ0VGoPQwFo9uzNSQlpt3BlEHlZ+Pdpe4A7d62YBq7eCGr3d
-         1YSw==
-X-Gm-Message-State: APjAAAVagABYG2XVNbFRVCeHQZ1mOmzPisxWm0AZfDugzjnDZZwsn76W
-        PT/wG9z+OYJNinxBB2g+2RE=
-X-Google-Smtp-Source: APXvYqylkfMKG9RAQR8o9CBD5ct4vFsYNIT2oYnagykSv+XNxYvU8mHVqem4UnvkDN5DygFENmWfBQ==
-X-Received: by 2002:a63:4404:: with SMTP id r4mr91888205pga.245.1564176665228;
-        Fri, 26 Jul 2019 14:31:05 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id 30sm122825499pjk.17.2019.07.26.14.31.04
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 26 Jul 2019 14:31:04 -0700 (PDT)
-Date:   Fri, 26 Jul 2019 14:31:04 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 6/9] selftests/bpf: abstract away test log output
-Message-ID: <20190726213104.GD24397@mini-arch>
-References: <20190726203747.1124677-1-andriin@fb.com>
- <20190726203747.1124677-7-andriin@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SCTKIdPrtnXrsQ9utu/qLU47WG+4TA5IDdCWht7vPsA=;
+        b=Kf9vau5+d5CEEShvqf9OFR3OX7raaml2tqXuTTmv9OlIb89HfxQFgFyZu2DRVJeOZj
+         D+nSya72uccamSAVSLlz/Ltb1Po7dK46RdLT3aNvAMNM5r7mAsK19U/JSM+R7KWVmjlN
+         wBJAXOzBPFhHxPYTmjE42iW4a7r0yvLw6mYMrxFVrVKpaL+fH6G3Qsy2V3C0o/UXsiBP
+         LlNX33YbCS3r/d8c0irUGeUfyTJOycQW3bj3p/wEM6K/6DDbAB/1+pwBhA8I1mHBki+Z
+         lQ5fVU06Zz9P54OwPkVYLYCwZREfwmkX9WuivWltKaVZ7qEgL6gHToI+ACzg2uXN31Tc
+         Gx1Q==
+X-Gm-Message-State: APjAAAXW7j7fAvJhzMmWb57jQeCxGH2T2VXlgnibcn/PUFCUK990lz5Q
+        MauGIBxWFsiPCbysDEWiaTJw8C4c4xzHKjq75pySgtb+
+X-Google-Smtp-Source: APXvYqzP3bc9YAD1iIfXsgedjEger2H2VAxiUluVM2RFMZnP38IHeNISI9dRwRqkOQzHGQ8xW8uXUJb4JYEhDVua6os=
+X-Received: by 2002:a0c:818f:: with SMTP id 15mr66177739qvd.162.1564177355370;
+ Fri, 26 Jul 2019 14:42:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190726203747.1124677-7-andriin@fb.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <20190726203747.1124677-1-andriin@fb.com> <20190726203747.1124677-2-andriin@fb.com>
+ <20190726212152.GA24397@mini-arch>
+In-Reply-To: <20190726212152.GA24397@mini-arch>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 26 Jul 2019 14:42:23 -0700
+Message-ID: <CAEf4BzYDvZENJqrT0KKpHbfHNCdObB9p4ZcJqQj3+rM_1ESF3g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/9] selftests/bpf: prevent headers to be
+ compiled as C code
+To:     Stanislav Fomichev <sdf@fomichev.me>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/26, Andrii Nakryiko wrote:
-> This patch changes how test output is printed out. By default, if test
-> had no errors, the only output will be a single line with test number,
-> name, and verdict at the end, e.g.:
-> 
->   #31 xdp:OK
-> 
-> If test had any errors, all log output captured during test execution
-> will be output after test completes.
-> 
-> It's possible to force output of log with `-v` (`--verbose`) option, in
-> which case output won't be buffered and will be output immediately.
-> 
-> To support this, individual tests are required to use helper methods for
-> logging: `test__printf()` and `test__vprintf()`.
-> 
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  .../selftests/bpf/prog_tests/bpf_obj_id.c     |   6 +-
->  .../bpf/prog_tests/bpf_verif_scale.c          |  31 ++--
->  .../bpf/prog_tests/get_stack_raw_tp.c         |   4 +-
->  .../selftests/bpf/prog_tests/l4lb_all.c       |   2 +-
->  .../selftests/bpf/prog_tests/map_lock.c       |  10 +-
->  .../selftests/bpf/prog_tests/send_signal.c    |   8 +-
->  .../selftests/bpf/prog_tests/spinlock.c       |   2 +-
->  .../bpf/prog_tests/stacktrace_build_id.c      |   4 +-
->  .../bpf/prog_tests/stacktrace_build_id_nmi.c  |   4 +-
->  .../selftests/bpf/prog_tests/xdp_noinline.c   |   3 +-
->  tools/testing/selftests/bpf/test_progs.c      | 135 +++++++++++++-----
->  tools/testing/selftests/bpf/test_progs.h      |  37 ++++-
->  12 files changed, 173 insertions(+), 73 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c b/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c
-> index cb827383db4d..fb5840a62548 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c
-> @@ -106,8 +106,8 @@ void test_bpf_obj_id(void)
->  		if (CHECK(err ||
->  			  prog_infos[i].type != BPF_PROG_TYPE_SOCKET_FILTER ||
->  			  info_len != sizeof(struct bpf_prog_info) ||
-> -			  (jit_enabled && !prog_infos[i].jited_prog_len) ||
-> -			  (jit_enabled &&
-> +			  (env.jit_enabled && !prog_infos[i].jited_prog_len) ||
-> +			  (env.jit_enabled &&
->  			   !memcmp(jited_insns, zeros, sizeof(zeros))) ||
->  			  !prog_infos[i].xlated_prog_len ||
->  			  !memcmp(xlated_insns, zeros, sizeof(zeros)) ||
-> @@ -121,7 +121,7 @@ void test_bpf_obj_id(void)
->  			  err, errno, i,
->  			  prog_infos[i].type, BPF_PROG_TYPE_SOCKET_FILTER,
->  			  info_len, sizeof(struct bpf_prog_info),
-> -			  jit_enabled,
-> +			  env.jit_enabled,
->  			  prog_infos[i].jited_prog_len,
->  			  prog_infos[i].xlated_prog_len,
->  			  !!memcmp(jited_insns, zeros, sizeof(zeros)),
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-> index 2c4d9ef099b4..95f012c417fe 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-> @@ -4,12 +4,15 @@
->  static int libbpf_debug_print(enum libbpf_print_level level,
->  			      const char *format, va_list args)
->  {
-> -	if (level != LIBBPF_DEBUG)
-> -		return vfprintf(stderr, format, args);
-> +	if (level != LIBBPF_DEBUG) {
-> +		test__vprintf(format, args);
-> +		return 0;
-> +	}
->  
->  	if (!strstr(format, "verifier log"))
->  		return 0;
-> -	return vfprintf(stderr, "%s", args);
-> +	test__vprintf("%s", args);
-> +	return 0;
->  }
->  
->  static int check_load(const char *file, enum bpf_prog_type type)
-> @@ -73,32 +76,38 @@ void test_bpf_verif_scale(void)
->  	libbpf_print_fn_t old_print_fn = NULL;
->  	int err, i;
->  
-> -	if (verifier_stats)
-> +	if (env.verifier_stats) {
-> +		test__force_log();
->  		old_print_fn = libbpf_swap_print(libbpf_debug_print);
-> +	}
->  
->  	err = check_load("./loop3.o", BPF_PROG_TYPE_RAW_TRACEPOINT);
-> -	printf("test_scale:loop3:%s\n", err ? (error_cnt--, "OK") : "FAIL");
-> +	test__printf("test_scale:loop3:%s\n",
-> +		     err ? (error_cnt--, "OK") : "FAIL");
->  
->  	for (i = 0; i < ARRAY_SIZE(sched_cls); i++) {
->  		err = check_load(sched_cls[i], BPF_PROG_TYPE_SCHED_CLS);
-> -		printf("test_scale:%s:%s\n", sched_cls[i], err ? "FAIL" : "OK");
-> +		test__printf("test_scale:%s:%s\n", sched_cls[i],
-> +			     err ? "FAIL" : "OK");
->  	}
->  
->  	for (i = 0; i < ARRAY_SIZE(raw_tp); i++) {
->  		err = check_load(raw_tp[i], BPF_PROG_TYPE_RAW_TRACEPOINT);
-> -		printf("test_scale:%s:%s\n", raw_tp[i], err ? "FAIL" : "OK");
-> +		test__printf("test_scale:%s:%s\n", raw_tp[i],
-> +			     err ? "FAIL" : "OK");
->  	}
->  
->  	for (i = 0; i < ARRAY_SIZE(cg_sysctl); i++) {
->  		err = check_load(cg_sysctl[i], BPF_PROG_TYPE_CGROUP_SYSCTL);
-> -		printf("test_scale:%s:%s\n", cg_sysctl[i], err ? "FAIL" : "OK");
-> +		test__printf("test_scale:%s:%s\n", cg_sysctl[i],
-> +			     err ? "FAIL" : "OK");
->  	}
->  	err = check_load("./test_xdp_loop.o", BPF_PROG_TYPE_XDP);
-> -	printf("test_scale:test_xdp_loop:%s\n", err ? "FAIL" : "OK");
-> +	test__printf("test_scale:test_xdp_loop:%s\n", err ? "FAIL" : "OK");
->  
->  	err = check_load("./test_seg6_loop.o", BPF_PROG_TYPE_LWT_SEG6LOCAL);
-> -	printf("test_scale:test_seg6_loop:%s\n", err ? "FAIL" : "OK");
-> +	test__printf("test_scale:test_seg6_loop:%s\n", err ? "FAIL" : "OK");
->  
-> -	if (verifier_stats)
-> +	if (env.verifier_stats)
->  		libbpf_set_print(old_print_fn);
->  }
-> diff --git a/tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c b/tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c
-> index 9d73a8f932ac..3d59b3c841fe 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c
-> @@ -41,7 +41,7 @@ static void get_stack_print_output(void *ctx, int cpu, void *data, __u32 size)
->  		 * just assume it is good if the stack is not empty.
->  		 * This could be improved in the future.
->  		 */
-> -		if (jit_enabled) {
-> +		if (env.jit_enabled) {
->  			found = num_stack > 0;
->  		} else {
->  			for (i = 0; i < num_stack; i++) {
-> @@ -58,7 +58,7 @@ static void get_stack_print_output(void *ctx, int cpu, void *data, __u32 size)
->  		}
->  	} else {
->  		num_stack = e->kern_stack_size / sizeof(__u64);
-> -		if (jit_enabled) {
-> +		if (env.jit_enabled) {
->  			good_kern_stack = num_stack > 0;
->  		} else {
->  			for (i = 0; i < num_stack; i++) {
-> diff --git a/tools/testing/selftests/bpf/prog_tests/l4lb_all.c b/tools/testing/selftests/bpf/prog_tests/l4lb_all.c
-> index 20ddca830e68..5ce572c03a5f 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/l4lb_all.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/l4lb_all.c
-> @@ -74,7 +74,7 @@ static void test_l4lb(const char *file)
->  	}
->  	if (bytes != MAGIC_BYTES * NUM_ITER * 2 || pkts != NUM_ITER * 2) {
->  		error_cnt++;
-> -		printf("test_l4lb:FAIL:stats %lld %lld\n", bytes, pkts);
-> +		test__printf("test_l4lb:FAIL:stats %lld %lld\n", bytes, pkts);
-#define printf(...) test__printf(...) in tests.h?
+On Fri, Jul 26, 2019 at 2:21 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+>
+> On 07/26, Andrii Nakryiko wrote:
+> > Apprently listing header as a normal dependency for a binary output
+> > makes it go through compilation as if it was C code. This currently
+> > works without a problem, but in subsequent commits causes problems for
+> > differently generated test.h for test_progs. Marking those headers as
+> > order-only dependency solves the issue.
+> Are you sure it will not result in a situation where
+> test_progs/test_maps is not regenerated if tests.h is updated.
+>
+> If I read the following doc correctly, order deps make sense for
+> directories only:
+> https://www.gnu.org/software/make/manual/html_node/Prerequisite-Types.html
+>
+> Can you maybe double check it with:
+> * make
+> * add new prog_tests/test_something.c
+> * make
+> to see if the binary is regenerated with test_something.c?
 
-A bit ugly, but no need to retrain everyone to use new printf wrappers.
+Yeah, tested that, it triggers test_progs rebuild.
 
->  	}
->  out:
->  	bpf_object__close(obj);
-> diff --git a/tools/testing/selftests/bpf/prog_tests/map_lock.c b/tools/testing/selftests/bpf/prog_tests/map_lock.c
-> index ee99368c595c..2e78217ed3fd 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/map_lock.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/map_lock.c
-> @@ -9,12 +9,12 @@ static void *parallel_map_access(void *arg)
->  	for (i = 0; i < 10000; i++) {
->  		err = bpf_map_lookup_elem_flags(map_fd, &key, vars, BPF_F_LOCK);
->  		if (err) {
-> -			printf("lookup failed\n");
-> +			test__printf("lookup failed\n");
->  			error_cnt++;
->  			goto out;
->  		}
->  		if (vars[0] != 0) {
-> -			printf("lookup #%d var[0]=%d\n", i, vars[0]);
-> +			test__printf("lookup #%d var[0]=%d\n", i, vars[0]);
->  			error_cnt++;
->  			goto out;
->  		}
-> @@ -22,8 +22,8 @@ static void *parallel_map_access(void *arg)
->  		for (j = 2; j < 17; j++) {
->  			if (vars[j] == rnd)
->  				continue;
-> -			printf("lookup #%d var[1]=%d var[%d]=%d\n",
-> -			       i, rnd, j, vars[j]);
-> +			test__printf("lookup #%d var[1]=%d var[%d]=%d\n",
-> +				     i, rnd, j, vars[j]);
->  			error_cnt++;
->  			goto out;
->  		}
-> @@ -43,7 +43,7 @@ void test_map_lock(void)
->  
->  	err = bpf_prog_load(file, BPF_PROG_TYPE_CGROUP_SKB, &obj, &prog_fd);
->  	if (err) {
-> -		printf("test_map_lock:bpf_prog_load errno %d\n", errno);
-> +		test__printf("test_map_lock:bpf_prog_load errno %d\n", errno);
->  		goto close_prog;
->  	}
->  	map_fd[0] = bpf_find_map(__func__, obj, "hash_map");
-> diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-> index 54218ee3c004..d950f4558897 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-> @@ -202,8 +202,8 @@ static int test_send_signal_nmi(void)
->  			 -1 /* cpu */, -1 /* group_fd */, 0 /* flags */);
->  	if (pmu_fd == -1) {
->  		if (errno == ENOENT) {
-> -			printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n",
-> -				__func__);
-> +			test__printf("%s:SKIP:no PERF_COUNT_HW_CPU_CYCLES\n",
-> +				     __func__);
->  			return 0;
->  		}
->  		/* Let the test fail with a more informative message */
-> @@ -222,8 +222,4 @@ void test_send_signal(void)
->  	ret |= test_send_signal_tracepoint();
->  	ret |= test_send_signal_perf();
->  	ret |= test_send_signal_nmi();
-> -	if (!ret)
-> -		printf("test_send_signal:OK\n");
-> -	else
-> -		printf("test_send_signal:FAIL\n");
->  }
-> diff --git a/tools/testing/selftests/bpf/prog_tests/spinlock.c b/tools/testing/selftests/bpf/prog_tests/spinlock.c
-> index 114ebe6a438e..deb2db5b85b0 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/spinlock.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/spinlock.c
-> @@ -12,7 +12,7 @@ void test_spinlock(void)
->  
->  	err = bpf_prog_load(file, BPF_PROG_TYPE_CGROUP_SKB, &obj, &prog_fd);
->  	if (err) {
-> -		printf("test_spin_lock:bpf_prog_load errno %d\n", errno);
-> +		test__printf("test_spin_lock:bpf_prog_load errno %d\n", errno);
->  		goto close_prog;
->  	}
->  	for (i = 0; i < 4; i++)
-> diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
-> index ac44fda84833..356d2c017a9c 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
-> @@ -109,8 +109,8 @@ void test_stacktrace_build_id(void)
->  	if (build_id_matches < 1 && retry--) {
->  		bpf_link__destroy(link);
->  		bpf_object__close(obj);
-> -		printf("%s:WARN:Didn't find expected build ID from the map, retrying\n",
-> -		       __func__);
-> +		test__printf("%s:WARN:Didn't find expected build ID from the map, retrying\n",
-> +			     __func__);
->  		goto retry;
->  	}
->  
-> diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-> index 9557b7dfb782..f44f2c159714 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-> @@ -140,8 +140,8 @@ void test_stacktrace_build_id_nmi(void)
->  	if (build_id_matches < 1 && retry--) {
->  		bpf_link__destroy(link);
->  		bpf_object__close(obj);
-> -		printf("%s:WARN:Didn't find expected build ID from the map, retrying\n",
-> -		       __func__);
-> +		test__printf("%s:WARN:Didn't find expected build ID from the map, retrying\n",
-> +			     __func__);
->  		goto retry;
->  	}
->  
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_noinline.c b/tools/testing/selftests/bpf/prog_tests/xdp_noinline.c
-> index 09e6b46f5515..b5404494b8aa 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/xdp_noinline.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_noinline.c
-> @@ -75,7 +75,8 @@ void test_xdp_noinline(void)
->  	}
->  	if (bytes != MAGIC_BYTES * NUM_ITER * 2 || pkts != NUM_ITER * 2) {
->  		error_cnt++;
-> -		printf("test_xdp_noinline:FAIL:stats %lld %lld\n", bytes, pkts);
-> +		test__printf("test_xdp_noinline:FAIL:stats %lld %lld\n",
-> +			     bytes, pkts);
->  	}
->  out:
->  	bpf_object__close(obj);
-> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-> index 94b6951b90b3..3cf3ebda1d31 100644
-> --- a/tools/testing/selftests/bpf/test_progs.c
-> +++ b/tools/testing/selftests/bpf/test_progs.c
-> @@ -6,9 +6,75 @@
->  #include <argp.h>
->  #include <string.h>
->  
-> +/* defined in test_progs.h */
-> +struct test_env env = {
-> +	.test_num_selector = -1,
-> +};
->  int error_cnt, pass_cnt;
-> -bool jit_enabled;
-> -bool verifier_stats = false;
-> +
-> +struct prog_test_def {
-> +	const char *test_name;
-> +	int test_num;
-> +	void (*run_test)(void);
-> +	bool force_log;
-> +	int pass_cnt;
-> +	int error_cnt;
-> +	bool tested;
-> +};
-> +
-> +void test__force_log() {
-> +	env.test->force_log = true;
-> +}
-> +
-> +void test__vprintf(const char *fmt, va_list args)
-> +{
-> +	size_t rem_sz;
-> +	int ret;
-> +
-> +	if (env.verbose || (env.test && env.test->force_log)) {
-> +		vfprintf(stderr, fmt, args);
-> +		return;
-> +	}
-> +
-> +try_again:
-> +	rem_sz = env.log_cap - env.log_cnt;
-> +	if (rem_sz) {
-> +		ret = vsnprintf(env.log_buf + env.log_cnt, rem_sz, fmt, args);
-> +		if (ret < 0) {
-> +			fprintf(stderr, "failed to log message w/ fmt '%s'\n", fmt);
-> +			return;
-> +		}
-> +	}
-> +
-> +	if (ret >= rem_sz) {
-> +		size_t new_sz = env.log_cap * 3 / 2;
-> +		char *new_buf;
-> +
-> +		if (new_sz < 4096)
-> +			new_sz = 4096;
-> +
-> +		new_buf = realloc(env.log_buf, new_sz);
-> +		if (!new_buf) {
-> +			fprintf(stderr, "failed to realloc log buffer: %d\n",
-> +				errno);
-> +			return;
-> +		}
-> +		env.log_buf = new_buf;
-> +		env.log_cap = new_sz;
-> +		goto try_again;
-> +	}
-> +
-> +	env.log_cnt += ret + 1;
-> +}
-> +
-> +void test__printf(const char *fmt, ...)
-> +{
-> +	va_list args;
-> +
-> +	va_start(args, fmt);
-> +	test__vprintf(fmt, args);
-> +	va_end(args);
-> +}
->  
->  struct ipv4_packet pkt_v4 = {
->  	.eth.h_proto = __bpf_constant_htons(ETH_P_IP),
-> @@ -163,20 +229,15 @@ void *spin_lock_thread(void *arg)
->  #include <prog_tests/tests.h>
->  #undef DEFINE_TEST
->  
-> -struct prog_test_def {
-> -	const char *test_name;
-> -	int test_num;
-> -	void (*run_test)(void);
-> -};
-> -
->  static struct prog_test_def prog_test_defs[] = {
-> -#define DEFINE_TEST(name) {	      \
-> -	.test_name = #name,	      \
-> -	.run_test = &test_##name,   \
-> +#define DEFINE_TEST(name) {		\
-> +	.test_name = #name,		\
-> +	.run_test = &test_##name,	\
->  },
->  #include <prog_tests/tests.h>
->  #undef DEFINE_TEST
->  };
-> +const int prog_test_cnt = ARRAY_SIZE(prog_test_defs);
->  
->  const char *argp_program_version = "test_progs 0.1";
->  const char *argp_program_bug_address = "<bpf@vger.kernel.org>";
-> @@ -186,7 +247,6 @@ enum ARG_KEYS {
->  	ARG_TEST_NUM = 'n',
->  	ARG_TEST_NAME = 't',
->  	ARG_VERIFIER_STATS = 's',
-> -
->  	ARG_VERBOSE = 'v',
->  };
->  	
-> @@ -202,24 +262,13 @@ static const struct argp_option opts[] = {
->  	{},
->  };
->  
-> -struct test_env {
-> -	int test_num_selector;
-> -	const char *test_name_selector;
-> -	bool verifier_stats;
-> -	bool verbose;
-> -	bool very_verbose;
-> -};
-> -
-> -static struct test_env env = {
-> -	.test_num_selector = -1,
-> -};
-> -
->  static int libbpf_print_fn(enum libbpf_print_level level,
->  			   const char *format, va_list args)
->  {
->  	if (!env.very_verbose && level == LIBBPF_DEBUG)
->  		return 0;
-> -	return vfprintf(stderr, format, args);
-> +	test__vprintf(format, args);
-> +	return 0;
->  }
->  
->  static error_t parse_arg(int key, char *arg, struct argp_state *state)
-> @@ -267,7 +316,6 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
->  	return 0;
->  }
->  
-> -
->  int main(int argc, char **argv)
->  {
->  	static const struct argp argp = {
-> @@ -275,7 +323,6 @@ int main(int argc, char **argv)
->  		.parser = parse_arg,
->  		.doc = argp_program_doc,
->  	};
-> -	struct prog_test_def *test;
->  	int err, i;
->  
->  	err = argp_parse(&argp, argc, argv, 0, NULL, &env);
-> @@ -286,13 +333,14 @@ int main(int argc, char **argv)
->  
->  	srand(time(NULL));
->  
-> -	jit_enabled = is_jit_enabled();
-> +	env.jit_enabled = is_jit_enabled();
->  
-> -	verifier_stats = env.verifier_stats;
-> -
-> -	for (i = 0; i < ARRAY_SIZE(prog_test_defs); i++) {
-> -		test = &prog_test_defs[i];
-> +	for (i = 0; i < prog_test_cnt; i++) {
-> +		struct prog_test_def *test = &prog_test_defs[i];
-> +		int old_pass_cnt = pass_cnt;
-> +		int old_error_cnt = error_cnt;
->  
-> +		env.test = test;
->  		test->test_num = i + 1;
->  
->  		if (env.test_num_selector >= 0 &&
-> @@ -303,8 +351,29 @@ int main(int argc, char **argv)
->  			continue;
->  
->  		test->run_test();
-> +		test->tested = true;
-> +		test->pass_cnt = pass_cnt - old_pass_cnt;
-> +		test->error_cnt = error_cnt - old_error_cnt;
-> +		if (test->error_cnt)
-> +			env.fail_cnt++;
-> +		else
-> +			env.succ_cnt++;
-> +
-> +		if (env.verbose || test->force_log || test->error_cnt) {
-> +			if (env.log_cnt) {
-> +				fprintf(stdout, "%s", env.log_buf);
-> +				if (env.log_buf[env.log_cnt - 1] != '\n')
-> +					fprintf(stdout, "\n");
-> +			}
-> +		}
-> +		env.log_cnt = 0;
-> +
-> +		printf("#%d %s:%s\n", test->test_num, test->test_name,
-> +		       test->error_cnt ? "FAIL" : "OK");
->  	}
-> +	printf("Summary: %d PASSED, %d FAILED\n", env.succ_cnt, env.fail_cnt);
-> +
-> +	free(env.log_buf);
->  
-> -	printf("Summary: %d PASSED, %d FAILED\n", pass_cnt, error_cnt);
->  	return error_cnt ? EXIT_FAILURE : EXIT_SUCCESS;
->  }
-> diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
-> index 49e0f7d85643..62f55a4231e9 100644
-> --- a/tools/testing/selftests/bpf/test_progs.h
-> +++ b/tools/testing/selftests/bpf/test_progs.h
-> @@ -38,9 +38,33 @@ typedef __u16 __sum16;
->  #include "trace_helpers.h"
->  #include "flow_dissector_load.h"
->  
-> -extern int error_cnt, pass_cnt;
-> -extern bool jit_enabled;
-> -extern bool verifier_stats;
-> +struct prog_test_def;
-> +
-> +struct test_env {
-> +	int test_num_selector;
-> +	const char *test_name_selector;
-> +	bool verifier_stats;
-> +	bool verbose;
-> +	bool very_verbose;
-> +
-> +	bool jit_enabled;
-> +
-> +	struct prog_test_def *test;
-> +	char *log_buf;
-> +	size_t log_cnt;
-> +	size_t log_cap;
-> +
-> +	int succ_cnt;
-> +	int fail_cnt;
-> +};
-> +
-> +extern int error_cnt;
-> +extern int pass_cnt;
-> +extern struct test_env env;
-> +
-> +extern void test__printf(const char *fmt, ...);
-> +extern void test__vprintf(const char *fmt, va_list args);
-> +extern void test__force_log();
->  
->  #define MAGIC_BYTES 123
->  
-> @@ -64,11 +88,12 @@ extern struct ipv6_packet pkt_v6;
->  	int __ret = !!(condition);					\
->  	if (__ret) {							\
->  		error_cnt++;						\
-> -		printf("%s:FAIL:%s ", __func__, tag);			\
-> -		printf(format);						\
-> +		test__printf("%s:FAIL:%s ", __func__, tag);		\
-> +		test__printf(format);					\
->  	} else {							\
->  		pass_cnt++;						\
-> -		printf("%s:PASS:%s %d nsec\n", __func__, tag, duration);\
-> +		test__printf("%s:PASS:%s %d nsec\n",			\
-> +			      __func__, tag, duration);			\
->  	}								\
->  	__ret;								\
->  })
-> -- 
-> 2.17.1
-> 
+Ordering is still preserved, because test.h is dependency of
+test_progs.c, which is dependency of test_progs binary, so that's why
+it works.
+
+As to why .h file is compiled as C file, I have no idea and ideally
+that should be fixed somehow.
+
+I also started with just removing header as dependency completely
+(because it's indirect dependency of test_progs.c), but that broke the
+build logic. Dunno, too much magic... This works, tested many-many
+times, so I was satisfied enough :)
+
+>
+> Maybe fix the problem of header compilation by having '#ifndef
+> DECLARE_TEST #define DECLARE_TEST() #endif' in tests.h instead?
+
+That's ugly, I'd like to avoid doing that.
+
+>
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> >  tools/testing/selftests/bpf/Makefile | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> > index 11c9c62c3362..bb66cc4a7f34 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -235,7 +235,7 @@ PROG_TESTS_H := $(PROG_TESTS_DIR)/tests.h
+> >  PROG_TESTS_FILES := $(wildcard prog_tests/*.c)
+> >  test_progs.c: $(PROG_TESTS_H)
+> >  $(OUTPUT)/test_progs: CFLAGS += $(TEST_PROGS_CFLAGS)
+> > -$(OUTPUT)/test_progs: test_progs.c $(PROG_TESTS_H) $(PROG_TESTS_FILES)
+> > +$(OUTPUT)/test_progs: test_progs.c $(PROG_TESTS_FILES) | $(PROG_TESTS_H)
+> >  $(PROG_TESTS_H): $(PROG_TESTS_FILES) | $(PROG_TESTS_DIR)
+> >       $(shell ( cd prog_tests/; \
+> >                 echo '/* Generated header, do not edit */'; \
+> > @@ -256,7 +256,7 @@ MAP_TESTS_H := $(MAP_TESTS_DIR)/tests.h
+> >  MAP_TESTS_FILES := $(wildcard map_tests/*.c)
+> >  test_maps.c: $(MAP_TESTS_H)
+> >  $(OUTPUT)/test_maps: CFLAGS += $(TEST_MAPS_CFLAGS)
+> > -$(OUTPUT)/test_maps: test_maps.c $(MAP_TESTS_H) $(MAP_TESTS_FILES)
+> > +$(OUTPUT)/test_maps: test_maps.c $(MAP_TESTS_FILES) | $(MAP_TESTS_H)
+> >  $(MAP_TESTS_H): $(MAP_TESTS_FILES) | $(MAP_TESTS_DIR)
+> >       $(shell ( cd map_tests/; \
+> >                 echo '/* Generated header, do not edit */'; \
+> > @@ -277,7 +277,7 @@ VERIFIER_TESTS_H := $(VERIFIER_TESTS_DIR)/tests.h
+> >  VERIFIER_TEST_FILES := $(wildcard verifier/*.c)
+> >  test_verifier.c: $(VERIFIER_TESTS_H)
+> >  $(OUTPUT)/test_verifier: CFLAGS += $(TEST_VERIFIER_CFLAGS)
+> > -$(OUTPUT)/test_verifier: test_verifier.c $(VERIFIER_TESTS_H)
+> > +$(OUTPUT)/test_verifier: test_verifier.c | $(VERIFIER_TEST_FILES) $(VERIFIER_TESTS_H)
+> >  $(VERIFIER_TESTS_H): $(VERIFIER_TEST_FILES) | $(VERIFIER_TESTS_DIR)
+> >       $(shell ( cd verifier/; \
+> >                 echo '/* Generated header, do not edit */'; \
+> > --
+> > 2.17.1
+> >
