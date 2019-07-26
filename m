@@ -2,105 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6601677262
-	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2019 21:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934E4772D0
+	for <lists+bpf@lfdr.de>; Fri, 26 Jul 2019 22:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727977AbfGZTto (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jul 2019 15:49:44 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:39493 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727598AbfGZTtn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jul 2019 15:49:43 -0400
-Received: by mail-qt1-f195.google.com with SMTP id l9so53747332qtu.6
-        for <bpf@vger.kernel.org>; Fri, 26 Jul 2019 12:49:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZTgTHrN6B+JKK0bxUfsBC3AuqiptBA1np1rV+FpgXS8=;
-        b=vYpaC/nQschTK08XZSTMuyTP3F9LCSSLlQ5cEHAh/JYkSCAQpCwO2qAf+uDX5wRKL9
-         LkqFzpFb9AFA81VV8y49VzYJoviYcKA30KipAxG8gZLkXJ5j5xh3B8Xi6aSdwoMi6oRx
-         3s0D7Zc4HRIA9zMtJW7TUfjcqKuy25q4PrhL8e0ryE4jS8J2MriT/lR1/AtMBZstXOiF
-         YLGiazPW+EdBnTFOJbYGhgpigK2fvlAU/1PjLFGHbuDsUjCLV2sYaHVNHApIkW5xrhYO
-         lbcF9hW040vXQ/LQYIao27ZqqNxRZLvxgvhoMBZU66B9XE8IQ39LuD1WWC+AwQBwyJkl
-         T8TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZTgTHrN6B+JKK0bxUfsBC3AuqiptBA1np1rV+FpgXS8=;
-        b=J73K6mT+WZE4fSunJzR8NuGvaMNGsXRi7mqvgKEchhWaVdSLIcr+ykjxKd5VPegZ9R
-         fccwO1jWp8fRO6t9+CefqUW3CLo0cPeq/NTLmY8JjbXUyjKRcqd9JGxItMC2wKqR7CaY
-         Hi2DJg7NNqewMyxUxAUeTNSwrUKwgqnACVuzxs1Rxnt06I8AUTYQMX/lrQjSp87jXErr
-         t8pN1JHWsCrX210xRKV0/Yq4yFPyZdCXu5Y5xDJGrl8LBcj/3RRy3phr4ShMIm2xm0ZT
-         c2jZfTRbr/o0gQ2jN0Lc44kjEMl2nXKe2p7fhUxpEsK50RzzS3ykAUKAQGwLlHJc+YYR
-         s2jA==
-X-Gm-Message-State: APjAAAW7UrT+a344T/AH2Ay4x1WFcoSUYeg2Dlc7NKjB28tkqOjDfvi4
-        UDH8vtbLvqkQ2C8yDAH41WBN0I/bSLCVPEiNdqdx4g==
-X-Google-Smtp-Source: APXvYqyz+HZo+hz+50oIUBT+Ci74ViWrpTikyXGqsAjt2avy5pzWrJYRGhJgiJyHNg0NzKoxh7dEaZwnmnKE17vZF0Q=
-X-Received: by 2002:ac8:1ba9:: with SMTP id z38mr69008671qtj.176.1564170582398;
- Fri, 26 Jul 2019 12:49:42 -0700 (PDT)
+        id S1726554AbfGZUhz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jul 2019 16:37:55 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:54572 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726400AbfGZUhz (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Jul 2019 16:37:55 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6QKTFuA011225
+        for <bpf@vger.kernel.org>; Fri, 26 Jul 2019 13:37:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=VdZqT49/ay0o0Kgz1NPOxtjgssHjlm3z8/vB2LgHSmw=;
+ b=PzVBHO9xmcBAoWec8s8GNCK3uXsT+0ULWKqLUkaZgKojpaqSxDhmhZPwZmdbB2G4XJYz
+ rwRkhA+fHH5YTPmOXwm+wCW0jx3acA5G1vlwxdR6KCr4T/bI3nW4uNhtr54f9Mp+XUei
+ 4/UI8BoydZ/p03ZKAbz1NaIh6KEe/dAvxtI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2u07fq891f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 26 Jul 2019 13:37:54 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 26 Jul 2019 13:37:53 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id BA80D861663; Fri, 26 Jul 2019 13:37:52 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next 0/9] Revamp test_progs as a test running framework
+Date:   Fri, 26 Jul 2019 13:37:38 -0700
+Message-ID: <20190726203747.1124677-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20190716222650.tk2coihjtsxszarf@ast-mbp.dhcp.thefacebook.com>
- <20190716224150.GC172157@google.com> <20190716235500.GA199237@google.com>
- <20190717012406.lugqemvubixfdd6v@ast-mbp.dhcp.thefacebook.com>
- <20190717130119.GA138030@google.com> <CAADnVQJY_=yeY0C3k1ZKpRFu5oNbB4zhQf5tQnLr=Mi8i6cgeQ@mail.gmail.com>
- <20190718025143.GB153617@google.com> <20190723221108.gamojemj5lorol7k@ast-mbp>
- <20190724135714.GA9945@google.com> <20190726183954.oxzhkrwt4uhgl4gl@ast-mbp.dhcp.thefacebook.com>
- <20190726191853.GA196514@google.com>
-In-Reply-To: <20190726191853.GA196514@google.com>
-From:   Joel Fernandes <joelaf@google.com>
-Date:   Fri, 26 Jul 2019 15:49:30 -0400
-Message-ID: <CAJWu+opEckc++G6btY6Muhi6ToJQYSW7HfxPYdrJkXiAoy4Fww@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/4] Add support to directly attach BPF program to ftrace
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-26_15:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=930 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1907260234
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 26, 2019 at 3:18 PM Joel Fernandes <joel@joelfernandes.org> wrote:
->
-> On Fri, Jul 26, 2019 at 11:39:56AM -0700, Alexei Starovoitov wrote:
-[snip]
-> > > For bpf program:
-> > > https://android.googlesource.com/platform/system/bpfprogs/+/908f6cd718fab0de7a944f84628c56f292efeb17%5E%21/
-> >
-> > what is unsafe_bpf_map_update_elem() in there?
-> > The verifier comment sounds odd.
-> > Could you describe the issue you see with the verifier?
->
-> Will dig out the verifier issue I was seeing. I was just trying to get a
-> prototype working so I did not go into verifier details much.
+This patch set makes a number of changes to test_progs selftest, which is
+a collection of many other tests (and sometimes sub-tests as well), to provide
+better testing experience and allow to start convering many individual test
+programs under selftests/bpf into a single and convenient test runner.
 
-This is actually slightly old code, the actual function name is
-bpf_map_update_elem_unsafe() .
- https://android.googlesource.com/platform/system/bpf/+/refs/heads/master/progs/include/bpf_helpers.h#39
+Patch #1 fixes issue with Makefile, which makes prog_tests/test.h compiled as
+a C code. This fix allows to change how test.h is generated, providing ability
+to have more control on what and how tests are run.
 
-This function came about because someone added a DEFINE_BPF_MAP macro
-which defines BPF map accessors based on the type of the key and
-value. So that's the "safe" variant:
-https://android.googlesource.com/platform/system/bpf/+/refs/heads/master/progs/include/bpf_helpers.h#54
-(added in commit
-https://android.googlesource.com/platform/system/bpf/+/6564b8eac46fc27dde807a39856386d98d2471c3)
+Patch #2 changes how test.h is auto-generated, which allows to have test
+definitions, instead of just running test functions. This gives ability to do
+more complicated test run policies.
 
-So the "safe" variant of the bpf_map_update_elem for us became a map
-specific version with a prototype:
-static inline __always_inline __unused int
-bpf_##the_map##_update_elem(TypeOfKey* k, TypeOfValue* v, unsigned
-long long flags)
+Patch #3 adds `-t <test-name>` and `-n <test-num>` selectors to run only
+subset of tests.
 
-Since I had not upgraded my BPF program to the "safe" variant, I had
-to use the internal "unsafe" variant of the API (if that makes
-sense..).
+Patch #4 adds libbpf_swap_print() API allowing to temporarily replace current
+print callback and then set it back. This is necessary for some tests that
+want more control over libbpf logging.
 
-thanks Alexei!
+Patch #5 sets up and takes over libbpf logging from individual tests to
+test_prog runner, adding -vv verbosity to capture debug output from libbpf.
+This is useful when debugging failing tests.
 
-- Joel
+Patch #6 furthers test output management and buffers it by default, emitting
+log output only if test fails. This give succinct and clean default test
+output. It's possible to bypass this behavior with -v flag, which will turn
+off test output buffering.
+
+Patch #7 adds support for sub-tests. It also enhances -t and -n selectors to
+both support ability to specify sub-test selectors, as well as enhancing
+number selector to accept sets of test, instead of just individual test
+number.
+
+Patch #8 converts bpf_verif_scale.c test to use sub-test APIs.
+
+Patch #9 converts send_signal.c tests to use sub-test APIs.
+
+Andrii Nakryiko (9):
+  selftests/bpf: prevent headers to be compiled as C code
+  selftests/bpf: revamp test_progs to allow more control
+  selftests/bpf: add test selectors by number and name to test_progs
+  libbpf: add libbpf_swap_print to get previous print func
+  selftest/bpf: centralize libbpf logging management for test_progs
+  selftests/bpf: abstract away test log output
+  selftests/bpf: add sub-tests support for test_progs
+  selftests/bpf: convert bpf_verif_scale.c to sub-tests API
+  selftests/bpf: convert send_signal.c to use subtests
+
+ tools/lib/bpf/libbpf.c                        |   8 +
+ tools/lib/bpf/libbpf.h                        |   1 +
+ tools/lib/bpf/libbpf.map                      |   5 +
+ tools/testing/selftests/bpf/Makefile          |  14 +-
+ .../selftests/bpf/prog_tests/bpf_obj_id.c     |   6 +-
+ .../bpf/prog_tests/bpf_verif_scale.c          |  90 +++--
+ .../bpf/prog_tests/get_stack_raw_tp.c         |   4 +-
+ .../selftests/bpf/prog_tests/l4lb_all.c       |   2 +-
+ .../selftests/bpf/prog_tests/map_lock.c       |  10 +-
+ .../bpf/prog_tests/reference_tracking.c       |  15 +-
+ .../selftests/bpf/prog_tests/send_signal.c    |  17 +-
+ .../selftests/bpf/prog_tests/spinlock.c       |   2 +-
+ .../bpf/prog_tests/stacktrace_build_id.c      |   4 +-
+ .../bpf/prog_tests/stacktrace_build_id_nmi.c  |   4 +-
+ .../selftests/bpf/prog_tests/xdp_noinline.c   |   3 +-
+ tools/testing/selftests/bpf/test_progs.c      | 373 +++++++++++++++++-
+ tools/testing/selftests/bpf/test_progs.h      |  45 ++-
+ 17 files changed, 501 insertions(+), 102 deletions(-)
+
+-- 
+2.17.1
+
