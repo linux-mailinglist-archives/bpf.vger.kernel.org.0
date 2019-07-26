@@ -2,49 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C530A773CE
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2019 00:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6BB773D2
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2019 00:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728217AbfGZWBW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jul 2019 18:01:22 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:39188 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727160AbfGZWBV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jul 2019 18:01:21 -0400
-Received: by mail-pg1-f193.google.com with SMTP id u17so25373505pgi.6
-        for <bpf@vger.kernel.org>; Fri, 26 Jul 2019 15:01:21 -0700 (PDT)
+        id S1728012AbfGZWDM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jul 2019 18:03:12 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:42764 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727692AbfGZWDM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jul 2019 18:03:12 -0400
+Received: by mail-pl1-f195.google.com with SMTP id ay6so25265882plb.9
+        for <bpf@vger.kernel.org>; Fri, 26 Jul 2019 15:03:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=fomichev-me.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=VCURgvPO2uyeKeMOwC50fJGBqS/hafAAfd0wm72aLhg=;
-        b=fdamLSpQuFpmYWW7UddSqVwixOZTD5C9FelqbpUZnFR1hb7GGfk1kAf0hWjs7/iSjr
-         mzQyJyVWD9heKK2bKmuQHblyvI1qFRbnwP36Xm4YPsP+6kGvrEbpJpk3mlBIcp/XIRxG
-         9k2P0MkCR0O6KdiRU9ZBc1kdvaMYa8JuYaCfiJgsw6QdBwNEFx2Gsul9oeQvOXHKVbsQ
-         gecx++tkt3UUiNbCZgDiLqofNr4ZLkHc7C7k0clmKQnOaaVALVXOlI9H73+FWksa4lLN
-         4FV14QEfE/Jb3eBvTB5gbWkOn1+cPey54bxRUyN92aRqdvQvqJigWfOfg5gg4+tn6O8J
-         A3Ew==
+        bh=Y2EaceivpPGt8tDzibFOfdzSu5pFd1YNagQKgCkoktY=;
+        b=XGK7F09dH81zlMemHPw+as+1ltSBvfAFlIy9/qZF0825oTSH8vrxoNEqTykiI4TzM5
+         4+BkkgWsFi/D1povB1lcURB2a1BiZR3H2B0X2HOS8dq98Y0OxRKFS1gOG2W81+uTa+bg
+         wd0JJkL2H7lDrbAFEaGP7h0oWBLKMsnVeGV3PfJca9SZmAS4OG9oIcBgXYhUacX8OQzh
+         SghUWU3xK6/mXl/NYBzjobvHEtXQq8gndlLqkqdEqMQHCisPfSsQQkvqZpUofC6/wM61
+         0QXZB4KGsG8EZa7WAMDroW20Th7L0dcxHXxkdj/Kc3qJfNz0zkEWw5Q51MienNxbHUre
+         6PaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VCURgvPO2uyeKeMOwC50fJGBqS/hafAAfd0wm72aLhg=;
-        b=ledRELHZ9sKKbqL1mx1zoTZ8kKju6vUJVYPR+F7cbfD0Utkmj3e4/ttAs4UO8OQzlp
-         jUGEVtGCUWfET4TFvGfdNC1kS4RP+jFby9MWbzeur9RiC4zYrNGSV34vMVRmT6QXhCks
-         aKHGe4gsaOE/tuS2rT16RkasDDxU/QBeZAFdUMfhsKTkwOXp40OJD2r1QeT7U6x3kWll
-         GU4GGna0SIzUvJGDiGBRlf7fS7jFO+N+jxK+HQvjplb3svNA7yaqWZt7wcQ3TaIUmc4k
-         zLfBJjyRe5OgaFY+EJBQL+IogQr3KhisYckwOiFW/NIu6m4IYNW+hGwXW/xTiljjzes1
-         Y+Fw==
-X-Gm-Message-State: APjAAAX4wfAgpZUn+QWH3pI+kpGhYrbOciRslBhXc6G82zGU+eup2oTB
-        wsRUWD6YGOTgVaP0dYBxYkg=
-X-Google-Smtp-Source: APXvYqxQr8en+h0Ls9Ch/mblDkNAUysruAtUjO9g3XiMTINHvVLrdAh1dhuojb6yUvXmkbL1DmkgBw==
-X-Received: by 2002:a65:6256:: with SMTP id q22mr92925007pgv.408.1564178480847;
-        Fri, 26 Jul 2019 15:01:20 -0700 (PDT)
+        bh=Y2EaceivpPGt8tDzibFOfdzSu5pFd1YNagQKgCkoktY=;
+        b=VlGMDWZLDjt67WvIulNWoChW2zUvzyWwYjcMh3/hOSBAYSOrXsf2jmRR7ys28QV/Wx
+         pIQRidAvR9RdzbWdn89ofJqHIB94UGyq5vNPTRZI4YSI2+JdclqI85Lhza5OabQRRt/k
+         F1nuCvtcCEMP8gvncfkixL0L+SxupS1zJ2RXBuj3caOYo7tvgW2bsH7C9dlJst7A5Nxm
+         92IgVX2AZiLfVQvwsMBZqcatYJ7f84RVEpmiTYQKXPYL0l8oSMuFc561M+oSzz8L/5OW
+         Jf16YYFtdAN2yhg1IQjV3vX8ySnC2QZBp8nRergPDDuO9L5x4a2AG1YKXWBdxxu9b3cG
+         WVlw==
+X-Gm-Message-State: APjAAAWlXa8f6Vp1vFP1CNneq7ohSKgDchEV5TtWfIRibRXtHDxXGiLt
+        H0PnDZV+2bRN0xaS0X3tjYc=
+X-Google-Smtp-Source: APXvYqyp8fTYGDI5SmNc6IzKnUc2u3FfY0s/iIkLGiVoeGi2V6DkAy0TwwoAscGPsRBh7vC3TokaoQ==
+X-Received: by 2002:a17:902:b70c:: with SMTP id d12mr94656740pls.314.1564178591410;
+        Fri, 26 Jul 2019 15:03:11 -0700 (PDT)
 Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id x25sm77450829pfa.90.2019.07.26.15.01.20
+        by smtp.gmail.com with ESMTPSA id h70sm49255807pgc.36.2019.07.26.15.03.10
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 26 Jul 2019 15:01:20 -0700 (PDT)
-Date:   Fri, 26 Jul 2019 15:01:19 -0700
+        Fri, 26 Jul 2019 15:03:11 -0700 (PDT)
+Date:   Fri, 26 Jul 2019 15:03:10 -0700
 From:   Stanislav Fomichev <sdf@fomichev.me>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
@@ -52,17 +52,17 @@ Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 1/9] selftests/bpf: prevent headers to be
- compiled as C code
-Message-ID: <20190726220119.GE24397@mini-arch>
+Subject: Re: [PATCH bpf-next 3/9] selftests/bpf: add test selectors by number
+ and name to test_progs
+Message-ID: <20190726220310.GF24397@mini-arch>
 References: <20190726203747.1124677-1-andriin@fb.com>
- <20190726203747.1124677-2-andriin@fb.com>
- <20190726212152.GA24397@mini-arch>
- <CAEf4BzYDvZENJqrT0KKpHbfHNCdObB9p4ZcJqQj3+rM_1ESF3g@mail.gmail.com>
+ <20190726203747.1124677-4-andriin@fb.com>
+ <20190726212547.GB24397@mini-arch>
+ <CAEf4BzZRhHTo+vUFkmLnjPxTL8oi6Fi0zrhvhA6JbY_afU3_Nw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzYDvZENJqrT0KKpHbfHNCdObB9p4ZcJqQj3+rM_1ESF3g@mail.gmail.com>
+In-Reply-To: <CAEf4BzZRhHTo+vUFkmLnjPxTL8oi6Fi0zrhvhA6JbY_afU3_Nw@mail.gmail.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -70,97 +70,103 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On 07/26, Andrii Nakryiko wrote:
-> On Fri, Jul 26, 2019 at 2:21 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> On Fri, Jul 26, 2019 at 2:25 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
 > >
 > > On 07/26, Andrii Nakryiko wrote:
-> > > Apprently listing header as a normal dependency for a binary output
-> > > makes it go through compilation as if it was C code. This currently
-> > > works without a problem, but in subsequent commits causes problems for
-> > > differently generated test.h for test_progs. Marking those headers as
-> > > order-only dependency solves the issue.
-> > Are you sure it will not result in a situation where
-> > test_progs/test_maps is not regenerated if tests.h is updated.
-> >
-> > If I read the following doc correctly, order deps make sense for
-> > directories only:
-> > https://www.gnu.org/software/make/manual/html_node/Prerequisite-Types.html
-> >
-> > Can you maybe double check it with:
-> > * make
-> > * add new prog_tests/test_something.c
-> > * make
-> > to see if the binary is regenerated with test_something.c?
-> 
-> Yeah, tested that, it triggers test_progs rebuild.
-> 
-> Ordering is still preserved, because test.h is dependency of
-> test_progs.c, which is dependency of test_progs binary, so that's why
-> it works.
-> 
-> As to why .h file is compiled as C file, I have no idea and ideally
-> that should be fixed somehow.
-I guess that's because it's a prerequisite and we have a target that
-puts all prerequisites when calling CC:
-
-test_progs: a.c b.c tests.h
-	gcc a.c b.c tests.h -o test_progs
-
-So gcc compiles each input file.
-
-I'm not actually sure why default dependency system that uses 'gcc -M'
-is not working for us (see scripts/Kbuild.include) and we need to manually
-add tests.h dependency. But that's outside of the scope..
-
-> I also started with just removing header as dependency completely
-> (because it's indirect dependency of test_progs.c), but that broke the
-> build logic. Dunno, too much magic... This works, tested many-many
-> times, so I was satisfied enough :)
-Yeah, that's my only concern, too much magic already and we add
-quite a bit more.
-
-> > Maybe fix the problem of header compilation by having '#ifndef
-> > DECLARE_TEST #define DECLARE_TEST() #endif' in tests.h instead?
-> 
-> That's ugly, I'd like to avoid doing that.
-That's your call, but I'm not sure what's uglier: complicating already
-complex make rules or making a header self contained.
-
+> > > Add ability to specify either test number or test name substring to
+> > > narrow down a set of test to run.
+> > >
+> > > Usage:
+> > > sudo ./test_progs -n 1
+> > > sudo ./test_progs -t attach_probe
+> > >
 > > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 > > > ---
-> > >  tools/testing/selftests/bpf/Makefile | 6 +++---
-> > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > >  tools/testing/selftests/bpf/test_progs.c | 43 +++++++++++++++++++++---
+> > >  1 file changed, 39 insertions(+), 4 deletions(-)
 > > >
-> > > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > > index 11c9c62c3362..bb66cc4a7f34 100644
-> > > --- a/tools/testing/selftests/bpf/Makefile
-> > > +++ b/tools/testing/selftests/bpf/Makefile
-> > > @@ -235,7 +235,7 @@ PROG_TESTS_H := $(PROG_TESTS_DIR)/tests.h
-> > >  PROG_TESTS_FILES := $(wildcard prog_tests/*.c)
-> > >  test_progs.c: $(PROG_TESTS_H)
-> > >  $(OUTPUT)/test_progs: CFLAGS += $(TEST_PROGS_CFLAGS)
-> > > -$(OUTPUT)/test_progs: test_progs.c $(PROG_TESTS_H) $(PROG_TESTS_FILES)
-> > > +$(OUTPUT)/test_progs: test_progs.c $(PROG_TESTS_FILES) | $(PROG_TESTS_H)
-> > >  $(PROG_TESTS_H): $(PROG_TESTS_FILES) | $(PROG_TESTS_DIR)
-> > >       $(shell ( cd prog_tests/; \
-> > >                 echo '/* Generated header, do not edit */'; \
-> > > @@ -256,7 +256,7 @@ MAP_TESTS_H := $(MAP_TESTS_DIR)/tests.h
-> > >  MAP_TESTS_FILES := $(wildcard map_tests/*.c)
-> > >  test_maps.c: $(MAP_TESTS_H)
-> > >  $(OUTPUT)/test_maps: CFLAGS += $(TEST_MAPS_CFLAGS)
-> > > -$(OUTPUT)/test_maps: test_maps.c $(MAP_TESTS_H) $(MAP_TESTS_FILES)
-> > > +$(OUTPUT)/test_maps: test_maps.c $(MAP_TESTS_FILES) | $(MAP_TESTS_H)
-> > >  $(MAP_TESTS_H): $(MAP_TESTS_FILES) | $(MAP_TESTS_DIR)
-> > >       $(shell ( cd map_tests/; \
-> > >                 echo '/* Generated header, do not edit */'; \
-> > > @@ -277,7 +277,7 @@ VERIFIER_TESTS_H := $(VERIFIER_TESTS_DIR)/tests.h
-> > >  VERIFIER_TEST_FILES := $(wildcard verifier/*.c)
-> > >  test_verifier.c: $(VERIFIER_TESTS_H)
-> > >  $(OUTPUT)/test_verifier: CFLAGS += $(TEST_VERIFIER_CFLAGS)
-> > > -$(OUTPUT)/test_verifier: test_verifier.c $(VERIFIER_TESTS_H)
-> > > +$(OUTPUT)/test_verifier: test_verifier.c | $(VERIFIER_TEST_FILES) $(VERIFIER_TESTS_H)
-> > >  $(VERIFIER_TESTS_H): $(VERIFIER_TEST_FILES) | $(VERIFIER_TESTS_DIR)
-> > >       $(shell ( cd verifier/; \
-> > >                 echo '/* Generated header, do not edit */'; \
+> > > diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+> > > index eea88ba59225..6e04b9f83777 100644
+> > > --- a/tools/testing/selftests/bpf/test_progs.c
+> > > +++ b/tools/testing/selftests/bpf/test_progs.c
+> > > @@ -4,6 +4,7 @@
+> 
+> [...]
+> 
+> > >
+> > >  static error_t parse_arg(int key, char *arg, struct argp_state *state)
+> > >  {
+> > >       struct test_env *env = state->input;
+> > >
+> > >       switch (key) {
+> > [..]
+> > > +     case ARG_TEST_NUM: {
+> > > +             int test_num;
+> > > +
+> > > +             errno = 0;
+> > > +             test_num = strtol(arg, NULL, 10);
+> > > +             if (errno)
+> > > +                     return -errno;
+> > > +             env->test_num_selector = test_num;
+> > > +             break;
+> > > +     }
+> > Do you think it's really useful? I agree about running by name (I
+> 
+> Special request from Alexei :) But in one of the follow up patches, I
+> extended this to allow to specify arbitrary subset of tests, e.g.:
+> 1,2,5-10,7-8. So in that regard, it's more powerful than selecting by
+> name and gives you ultimate freedom.
+I guess I didn't read the series close enough; that '1,2,3' mode does seem
+quite useful indeed!
+
+> 
+> > usually used grep -v in the Makefile :-), but I'm not sure about running
+> > by number.
+> >
+> > Or is the idea is that you can just copy-paste this number from the
+> > test_progs output to rerun the tests? In this case, why not copy-paste
+> > the name instead?
+> 
+> Both were simple to support, I didn't want to dictate one right way to
+> do this :)
+> 
+> >
+> > > +     case ARG_TEST_NAME:
+> > > +             env->test_name_selector = arg;
+> > > +             break;
+> > >       case ARG_VERIFIER_STATS:
+> > >               env->verifier_stats = true;
+> > >               break;
+> > > @@ -223,7 +248,7 @@ int main(int argc, char **argv)
+> > >               .parser = parse_arg,
+> > >               .doc = argp_program_doc,
+> > >       };
+> > > -     const struct prog_test_def *def;
+> > > +     struct prog_test_def *test;
+> > >       int err, i;
+> > >
+> > >       err = argp_parse(&argp, argc, argv, 0, NULL, &env);
+> > > @@ -237,8 +262,18 @@ int main(int argc, char **argv)
+> > >       verifier_stats = env.verifier_stats;
+> > >
+> > >       for (i = 0; i < ARRAY_SIZE(prog_test_defs); i++) {
+> > > -             def = &prog_test_defs[i];
+> > > -             def->run_test();
+> > > +             test = &prog_test_defs[i];
+> > > +
+> > > +             test->test_num = i + 1;
+> > > +
+> > > +             if (env.test_num_selector >= 0 &&
+> > > +                 test->test_num != env.test_num_selector)
+> > > +                     continue;
+> > > +             if (env.test_name_selector &&
+> > > +                 !strstr(test->test_name, env.test_name_selector))
+> > > +                     continue;
+> > > +
+> > > +             test->run_test();
+> > >       }
+> > >
+> > >       printf("Summary: %d PASSED, %d FAILED\n", pass_cnt, error_cnt);
 > > > --
 > > > 2.17.1
 > > >
