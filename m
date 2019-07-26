@@ -2,49 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB6BB773D2
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2019 00:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E51AB773FF
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2019 00:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728012AbfGZWDM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jul 2019 18:03:12 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:42764 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727692AbfGZWDM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jul 2019 18:03:12 -0400
-Received: by mail-pl1-f195.google.com with SMTP id ay6so25265882plb.9
-        for <bpf@vger.kernel.org>; Fri, 26 Jul 2019 15:03:11 -0700 (PDT)
+        id S1727833AbfGZW0z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jul 2019 18:26:55 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:36339 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727487AbfGZW0y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jul 2019 18:26:54 -0400
+Received: by mail-pf1-f194.google.com with SMTP id r7so25143602pfl.3
+        for <bpf@vger.kernel.org>; Fri, 26 Jul 2019 15:26:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=fomichev-me.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Y2EaceivpPGt8tDzibFOfdzSu5pFd1YNagQKgCkoktY=;
-        b=XGK7F09dH81zlMemHPw+as+1ltSBvfAFlIy9/qZF0825oTSH8vrxoNEqTykiI4TzM5
-         4+BkkgWsFi/D1povB1lcURB2a1BiZR3H2B0X2HOS8dq98Y0OxRKFS1gOG2W81+uTa+bg
-         wd0JJkL2H7lDrbAFEaGP7h0oWBLKMsnVeGV3PfJca9SZmAS4OG9oIcBgXYhUacX8OQzh
-         SghUWU3xK6/mXl/NYBzjobvHEtXQq8gndlLqkqdEqMQHCisPfSsQQkvqZpUofC6/wM61
-         0QXZB4KGsG8EZa7WAMDroW20Th7L0dcxHXxkdj/Kc3qJfNz0zkEWw5Q51MienNxbHUre
-         6PaA==
+        bh=UTijqTalaHjEMl8XOEIA/Zh+v74r2+x8ZUdX+8Ud+6Q=;
+        b=U/P/dN31lbJIBpvcaz8y7Cb1Ibe97EfU1muwLVRY6tQCC4EkPlIwP1Rn9Ii5gfoHO5
+         9n3Cu/v277SX79h+l0uwjDnSVZrA/AKxxO3Gy9UeOCFkqcsFdl8eRRc2OnHL3u4qFRD/
+         DTOInQyjfqROxRZrCsikkw/U4vVsB/bER3aeT7c9exgz1WYW76r/+eyX1jjC+AHoJRcT
+         0Gxud8B2MQQVwGg7w93xgOiyNw6QzOrt8DbxFaCYDZLI42BST+6sZ1nLR56WmSn3yVBb
+         6IRl+miawVboIlxa6Xaqtlv9JWjHlFR7d9HycTWqXXkzUYj+r8YRwlsz4jh1Sa3NX4tS
+         kepA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Y2EaceivpPGt8tDzibFOfdzSu5pFd1YNagQKgCkoktY=;
-        b=VlGMDWZLDjt67WvIulNWoChW2zUvzyWwYjcMh3/hOSBAYSOrXsf2jmRR7ys28QV/Wx
-         pIQRidAvR9RdzbWdn89ofJqHIB94UGyq5vNPTRZI4YSI2+JdclqI85Lhza5OabQRRt/k
-         F1nuCvtcCEMP8gvncfkixL0L+SxupS1zJ2RXBuj3caOYo7tvgW2bsH7C9dlJst7A5Nxm
-         92IgVX2AZiLfVQvwsMBZqcatYJ7f84RVEpmiTYQKXPYL0l8oSMuFc561M+oSzz8L/5OW
-         Jf16YYFtdAN2yhg1IQjV3vX8ySnC2QZBp8nRergPDDuO9L5x4a2AG1YKXWBdxxu9b3cG
-         WVlw==
-X-Gm-Message-State: APjAAAWlXa8f6Vp1vFP1CNneq7ohSKgDchEV5TtWfIRibRXtHDxXGiLt
-        H0PnDZV+2bRN0xaS0X3tjYc=
-X-Google-Smtp-Source: APXvYqyp8fTYGDI5SmNc6IzKnUc2u3FfY0s/iIkLGiVoeGi2V6DkAy0TwwoAscGPsRBh7vC3TokaoQ==
-X-Received: by 2002:a17:902:b70c:: with SMTP id d12mr94656740pls.314.1564178591410;
-        Fri, 26 Jul 2019 15:03:11 -0700 (PDT)
+        bh=UTijqTalaHjEMl8XOEIA/Zh+v74r2+x8ZUdX+8Ud+6Q=;
+        b=ZZIMwvf8ebE7qQLULB3OOPQMqqgFQDC8hz7ak7ecbzTp4pgVps1d3onmMWNFJ/Puhm
+         ovpTjmEeGgipHJz1zzCbleO3rTHjnJZ8Mhx4R8nSQ63lWPjDPsBbJiSXXGcr0JaU+0ZE
+         j0RLFPzMUOktDauiQEJSLoKWEKVv1yYrfVqNvu07vEe3qxJR/r0NhkDby7ihIpXf9AmB
+         yE2SxxF5ZvGL89FOktpnBZZ0A3O93WKtwyhaLc0V+R3eZpxyTFgAFBzIFz9UCQbmnjKe
+         CUhxzx1Es5w66Chx5zziy11iqAMK6pTb9cI6bevZwCaHgzeu/qvcyvzAXOYuf3ATNe3w
+         PcAA==
+X-Gm-Message-State: APjAAAW4oU+/Q8imWOf9DRnTvf2YVrj4CALRb7utQpl5PHt4a5A7ch6K
+        yT54uvvCX6CdQHwZCS//0ZQ=
+X-Google-Smtp-Source: APXvYqwjA3WWW1QgAJolExsTKW0fkunyFpH/kPU79FwVkPJjqEnKDgqS8bbcVG+bQr4A0C3rfOhJ9w==
+X-Received: by 2002:aa7:8752:: with SMTP id g18mr23678771pfo.201.1564180014246;
+        Fri, 26 Jul 2019 15:26:54 -0700 (PDT)
 Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id h70sm49255807pgc.36.2019.07.26.15.03.10
+        by smtp.gmail.com with ESMTPSA id s67sm55454275pjb.8.2019.07.26.15.26.53
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 26 Jul 2019 15:03:11 -0700 (PDT)
-Date:   Fri, 26 Jul 2019 15:03:10 -0700
+        Fri, 26 Jul 2019 15:26:53 -0700 (PDT)
+Date:   Fri, 26 Jul 2019 15:26:52 -0700
 From:   Stanislav Fomichev <sdf@fomichev.me>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
@@ -52,17 +52,16 @@ Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 3/9] selftests/bpf: add test selectors by number
- and name to test_progs
-Message-ID: <20190726220310.GF24397@mini-arch>
+Subject: Re: [PATCH bpf-next 6/9] selftests/bpf: abstract away test log output
+Message-ID: <20190726222652.GG24397@mini-arch>
 References: <20190726203747.1124677-1-andriin@fb.com>
- <20190726203747.1124677-4-andriin@fb.com>
- <20190726212547.GB24397@mini-arch>
- <CAEf4BzZRhHTo+vUFkmLnjPxTL8oi6Fi0zrhvhA6JbY_afU3_Nw@mail.gmail.com>
+ <20190726203747.1124677-7-andriin@fb.com>
+ <20190726213104.GD24397@mini-arch>
+ <CAEf4BzaVCdHT_U+m7niJLsSmbf+M9DrFjf_PNOmQQZvuHsr9Xg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzZRhHTo+vUFkmLnjPxTL8oi6Fi0zrhvhA6JbY_afU3_Nw@mail.gmail.com>
+In-Reply-To: <CAEf4BzaVCdHT_U+m7niJLsSmbf+M9DrFjf_PNOmQQZvuHsr9Xg@mail.gmail.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -70,103 +69,82 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On 07/26, Andrii Nakryiko wrote:
-> On Fri, Jul 26, 2019 at 2:25 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> On Fri, Jul 26, 2019 at 2:31 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
 > >
 > > On 07/26, Andrii Nakryiko wrote:
-> > > Add ability to specify either test number or test name substring to
-> > > narrow down a set of test to run.
+> > > This patch changes how test output is printed out. By default, if test
+> > > had no errors, the only output will be a single line with test number,
+> > > name, and verdict at the end, e.g.:
 > > >
-> > > Usage:
-> > > sudo ./test_progs -n 1
-> > > sudo ./test_progs -t attach_probe
+> > >   #31 xdp:OK
+> > >
+> > > If test had any errors, all log output captured during test execution
+> > > will be output after test completes.
+> > >
+> > > It's possible to force output of log with `-v` (`--verbose`) option, in
+> > > which case output won't be buffered and will be output immediately.
+> > >
+> > > To support this, individual tests are required to use helper methods for
+> > > logging: `test__printf()` and `test__vprintf()`.
 > > >
 > > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 > > > ---
-> > >  tools/testing/selftests/bpf/test_progs.c | 43 +++++++++++++++++++++---
-> > >  1 file changed, 39 insertions(+), 4 deletions(-)
+> > >  .../selftests/bpf/prog_tests/bpf_obj_id.c     |   6 +-
+> > >  .../bpf/prog_tests/bpf_verif_scale.c          |  31 ++--
+> > >  .../bpf/prog_tests/get_stack_raw_tp.c         |   4 +-
+> > >  .../selftests/bpf/prog_tests/l4lb_all.c       |   2 +-
+> > >  .../selftests/bpf/prog_tests/map_lock.c       |  10 +-
+> > >  .../selftests/bpf/prog_tests/send_signal.c    |   8 +-
+> > >  .../selftests/bpf/prog_tests/spinlock.c       |   2 +-
+> > >  .../bpf/prog_tests/stacktrace_build_id.c      |   4 +-
+> > >  .../bpf/prog_tests/stacktrace_build_id_nmi.c  |   4 +-
+> > >  .../selftests/bpf/prog_tests/xdp_noinline.c   |   3 +-
+> > >  tools/testing/selftests/bpf/test_progs.c      | 135 +++++++++++++-----
+> > >  tools/testing/selftests/bpf/test_progs.h      |  37 ++++-
+> > >  12 files changed, 173 insertions(+), 73 deletions(-)
 > > >
-> > > diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-> > > index eea88ba59225..6e04b9f83777 100644
-> > > --- a/tools/testing/selftests/bpf/test_progs.c
-> > > +++ b/tools/testing/selftests/bpf/test_progs.c
-> > > @@ -4,6 +4,7 @@
 > 
 > [...]
 > 
-> > >
-> > >  static error_t parse_arg(int key, char *arg, struct argp_state *state)
-> > >  {
-> > >       struct test_env *env = state->input;
-> > >
-> > >       switch (key) {
-> > [..]
-> > > +     case ARG_TEST_NUM: {
-> > > +             int test_num;
-> > > +
-> > > +             errno = 0;
-> > > +             test_num = strtol(arg, NULL, 10);
-> > > +             if (errno)
-> > > +                     return -errno;
-> > > +             env->test_num_selector = test_num;
-> > > +             break;
-> > > +     }
-> > Do you think it's really useful? I agree about running by name (I
+> > >               error_cnt++;
+> > > -             printf("test_l4lb:FAIL:stats %lld %lld\n", bytes, pkts);
+> > > +             test__printf("test_l4lb:FAIL:stats %lld %lld\n", bytes, pkts);
+> > #define printf(...) test__printf(...) in tests.h?
+> >
+> > A bit ugly, but no need to retrain everyone to use new printf wrappers.
 > 
-> Special request from Alexei :) But in one of the follow up patches, I
-> extended this to allow to specify arbitrary subset of tests, e.g.:
-> 1,2,5-10,7-8. So in that regard, it's more powerful than selecting by
-> name and gives you ultimate freedom.
-I guess I didn't read the series close enough; that '1,2,3' mode does seem
-quite useful indeed!
+> I try to reduce amount of magic and surprising things, not add new
+> ones :) I also led by example and converted all current instances of
+> printf usage to test__printf, so anyone new will just copy/paste good
+> example, hopefully. Even if not, this non-buffered output will be
+> immediately obvious to anyone who just runs `sudo ./test_progs`.
 
-> 
-> > usually used grep -v in the Makefile :-), but I'm not sure about running
-> > by number.
-> >
-> > Or is the idea is that you can just copy-paste this number from the
-> > test_progs output to rerun the tests? In this case, why not copy-paste
-> > the name instead?
-> 
-> Both were simple to support, I didn't want to dictate one right way to
-> do this :)
-> 
-> >
-> > > +     case ARG_TEST_NAME:
-> > > +             env->test_name_selector = arg;
-> > > +             break;
-> > >       case ARG_VERIFIER_STATS:
-> > >               env->verifier_stats = true;
-> > >               break;
-> > > @@ -223,7 +248,7 @@ int main(int argc, char **argv)
-> > >               .parser = parse_arg,
-> > >               .doc = argp_program_doc,
-> > >       };
-> > > -     const struct prog_test_def *def;
-> > > +     struct prog_test_def *test;
-> > >       int err, i;
-> > >
-> > >       err = argp_parse(&argp, argc, argv, 0, NULL, &env);
-> > > @@ -237,8 +262,18 @@ int main(int argc, char **argv)
-> > >       verifier_stats = env.verifier_stats;
-> > >
-> > >       for (i = 0; i < ARRAY_SIZE(prog_test_defs); i++) {
-> > > -             def = &prog_test_defs[i];
-> > > -             def->run_test();
-> > > +             test = &prog_test_defs[i];
-> > > +
-> > > +             test->test_num = i + 1;
-> > > +
-> > > +             if (env.test_num_selector >= 0 &&
-> > > +                 test->test_num != env.test_num_selector)
-> > > +                     continue;
-> > > +             if (env.test_name_selector &&
-> > > +                 !strstr(test->test_name, env.test_name_selector))
-> > > +                     continue;
-> > > +
-> > > +             test->run_test();
+[..]
+> And
+> author of new test with this problem should hopefully be the first and
+> the only one to catch and fix this.
+Yeah, that is my only concern, that regular printfs will eventually
+creep in. It's already confusing to go to/from printf/printk.
+
+2c:
+
+I'm coming from a perspective of tools/testing/selftests/kselftest.h
+which is supposed to be a generic framework with custom
+printf variants (ksft_print_msg), but I still see a bunch of tests
+calling printf :-/
+
+	grep -ril ksft_exit_fail_msg selftests/ | xargs -n1 grep -w printf
+
+Since we don't expect regular buffered io from the tests anyway
+it might be easier just to add a bit of magic and call it a day.
+
 > > >       }
-> > >
-> > >       printf("Summary: %d PASSED, %d FAILED\n", pass_cnt, error_cnt);
-> > > --
-> > > 2.17.1
-> > >
+> > >  out:
+> > >       bpf_object__close(obj);
+> > > diff --git a/tools/testing/selftests/bpf/prog_tests/map_lock.c b/tools/testing/selftests/bpf/prog_tests/map_lock.c
+> > > index ee99368c595c..2e78217ed3fd 100644
+> > > --- a/tools/testing/selftests/bpf/prog_tests/map_lock.c
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/map_lock.c
+> > > @@ -9,12 +9,12 @@ static void *parallel_map_access(void *arg)
+> 
+> [...]
