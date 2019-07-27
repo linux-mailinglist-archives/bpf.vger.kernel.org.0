@@ -2,146 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F297756D
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2019 02:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E0F775F3
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2019 04:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728362AbfG0AeM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Jul 2019 20:34:12 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:33461 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728320AbfG0AeM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Jul 2019 20:34:12 -0400
-Received: by mail-pg1-f194.google.com with SMTP id f20so16266599pgj.0;
-        Fri, 26 Jul 2019 17:34:12 -0700 (PDT)
+        id S1727317AbfG0CYe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Jul 2019 22:24:34 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:46264 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726806AbfG0CYe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Jul 2019 22:24:34 -0400
+Received: by mail-lf1-f66.google.com with SMTP id z15so34071962lfh.13;
+        Fri, 26 Jul 2019 19:24:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=6pYHIy+mwaL68SKcFjWoeaZSFpVYov6pJP+2mUZ7+R4=;
-        b=mp99quU7VQHfZ/ouxJTnIB9CB7nPFgtXepGd0jMtElhLSpgiuiqBqB8Zz3PZKebUis
-         dqp4EesgNS9PYdE4murHzHBPPBd0irqXok8F+78VbTml3ObpWNkqajU/cA73ysU9J3H2
-         uwVI6ksP8NLn+xIAjsFwAWYSF01vu9tLchr8bv3H01aV/sKjy0ZAUKZg0sguk5b4dWLS
-         9jRVsRGHNOP/n8CxpPh1NVWzhQxBDwsc9nFgbS29IOeUUIne7JVUzDwwg67JGbT29uJo
-         ASDGahSn45/PlvyrYjZz5KaP+nQ+CU2rK1IWYVlVq5lS2Eha6y8JLTinUANeTBcfgtMf
-         I2YA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dBSGvoN0c2FHrhYCgc5hOl319yWYWmBdFzMKxGL9ZAQ=;
+        b=JvYfiJXaqJP8aN9j2HHocVEG0CLr3zCePc3HOARxUZQIKPSYalbxTIbMO5a5piCDoa
+         6NkHB3I/WaVK31x0e5KGK5v9M+SBgQypa1XSSrDLCEYEtnwuP+zHCgNu2MFHBRZkZxtR
+         iVAmBVNnJQslDwSg3VROZc8g/KahJU452gVegCkT+SBavOU6z1cvmQG4evb02o7yj6wm
+         xVklA0IEalyN/qnqcp2RlJTUcNVpVfqzxrsY7Uao5QZ39kCd8iAJXkieWTVg0Ftxv1sV
+         w0pSP2AQjiwbhSDtdMJYyPJRv/odFrtNaxuntyqlakx5kv2D3NLrjcHUBvkWLapZXWbd
+         8Vkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6pYHIy+mwaL68SKcFjWoeaZSFpVYov6pJP+2mUZ7+R4=;
-        b=fTOOb8DWB5cKe3NjZ13cVht/83O2NQKkGSGf4UtgtvKEiK6DxRtlyfH5X7dHjkRjLj
-         h/r5whwL3f1k30z40oc4k2wIlwK6EHOiAE8osuVg1CwL2I0t8w7YUrr1ttkgvMVS7qPF
-         8gnRDm47/H9uXtXnKv5HhODG/oc7s2NrOxeNhxDgLRjXdCPy3zxTzgl8zTu7pKDVFzyw
-         PYagCT8rvlnCRNs+UfZkb2bTC/+fAxHZCaR0DdDXRF99GMxSRoSRwpDGNBoHbzPLMHJO
-         86d+Ps+FWwwmNUCHQjhlEkwvgYQLRWLnJMqQ11yKnB/2IQTN5e57NJ5WycXGCz+dPSG8
-         /SCA==
-X-Gm-Message-State: APjAAAWs1luFthdLkTrWybZSvaauY3EFMDPF1t7sdmCJ8yTb9r5CVz9d
-        /TguImuujPEuLMxIJG775DY=
-X-Google-Smtp-Source: APXvYqxIuSxJqCDbqK3XsXrMhQSdNIiMA7kPLBsMKXW78E6Rmbvac62R1Mh4fsYeAC/qBAs7BZkDkw==
-X-Received: by 2002:a62:7552:: with SMTP id q79mr25165052pfc.71.1564187651739;
-        Fri, 26 Jul 2019 17:34:11 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::2:2eeb])
-        by smtp.gmail.com with ESMTPSA id 185sm62403024pfa.170.2019.07.26.17.34.10
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Jul 2019 17:34:10 -0700 (PDT)
-Date:   Fri, 26 Jul 2019 17:34:09 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 6/9] selftests/bpf: abstract away test log output
-Message-ID: <20190727003408.5hgu5prcz2mwqv22@ast-mbp.dhcp.thefacebook.com>
-References: <20190726203747.1124677-1-andriin@fb.com>
- <20190726203747.1124677-7-andriin@fb.com>
- <20190726213104.GD24397@mini-arch>
- <CAEf4BzaVCdHT_U+m7niJLsSmbf+M9DrFjf_PNOmQQZvuHsr9Xg@mail.gmail.com>
- <20190726222652.GG24397@mini-arch>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dBSGvoN0c2FHrhYCgc5hOl319yWYWmBdFzMKxGL9ZAQ=;
+        b=EHN2Up1f5dPLvP3LXrDmPBFZ7YQCe5nHpvkcP15T+PV/myDbL4YJXk1DDCDhNAMnZA
+         3S+TvR4QXUVhSKWPLZzM9sdpDnMLEyL4VZgQ/kaX8M0UOSJTdD490asLZavEzRSn9YUp
+         WnPpntySeF1nEU5oaOeWZ1xLG5Bzu5hgeLnt7QlLaymG7VNILnRgtis0qnjIUQr/8pfg
+         B4GxaVr5p1HgRDOBO02UCnAvGCioiF2RKvHxRgX4oLuctRTDzbHdDtXcqAwG2EBRg+kv
+         zu52uhxTcCTmMhAUttH9iSeG8Bgxnft8Ps6/m+9k6e+z1PTWEs7PcpBeUt4Cb+pp0ffj
+         U0IQ==
+X-Gm-Message-State: APjAAAUz4hTm81XuJT9heZgO5clQVeX1Njht2yv1eg68efL6ZgI+UW3X
+        673nMVOyJ6R33WVMCg7UwKxRupWn4XkVsFrKhJg=
+X-Google-Smtp-Source: APXvYqxInzEYX2yEEOAkZcjndwudEf4QiSz2GOn2kNhb78TsRJSQPw2FjUEGszb6HcKMGNZtGcBrAbr0R/affKO0J/M=
+X-Received: by 2002:a05:6512:288:: with SMTP id j8mr50127136lfp.181.1564194271869;
+ Fri, 26 Jul 2019 19:24:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190726222652.GG24397@mini-arch>
-User-Agent: NeoMutt/20180223
+References: <CA+icZUWF=B_phP8eGD3v2d9jSSK6Y-N65y-T6xewZnY91vc2_Q@mail.gmail.com>
+ <c2524c96-d71c-d7db-22ec-12da905dc180@fb.com> <CA+icZUXYp=Jx+8aGrZmkCbSFp-cSPcoRzRdRJsPj4yYNs_mJQw@mail.gmail.com>
+ <CA+icZUXsPRWmH3i-9=TK-=2HviubRqpAeDJGriWHgK1fkFhgUg@mail.gmail.com>
+ <295d2acd-0844-9a40-3f94-5bcbb13871d2@fb.com> <CA+icZUUe0QE9QGMom1iQwuG8nM7Oi4Mq0GKqrLvebyxfUmj6RQ@mail.gmail.com>
+In-Reply-To: <CA+icZUUe0QE9QGMom1iQwuG8nM7Oi4Mq0GKqrLvebyxfUmj6RQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 26 Jul 2019 19:24:20 -0700
+Message-ID: <CAADnVQLhymu8YqtfM1NHD5LMgO6a=FZYaeaYS1oCyfGoBDE_BQ@mail.gmail.com>
+Subject: Re: next-20190723: bpf/seccomp - systemd/journald issue?
+To:     sedat.dilek@gmail.com
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 26, 2019 at 03:26:52PM -0700, Stanislav Fomichev wrote:
-> On 07/26, Andrii Nakryiko wrote:
-> > On Fri, Jul 26, 2019 at 2:31 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+On Fri, Jul 26, 2019 at 2:19 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Fri, Jul 26, 2019 at 11:10 PM Yonghong Song <yhs@fb.com> wrote:
+> >
+> >
+> >
+> > On 7/26/19 2:02 PM, Sedat Dilek wrote:
+> > > On Fri, Jul 26, 2019 at 10:38 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > >>
+> > >> Hi Yonghong Song,
+> > >>
+> > >> On Fri, Jul 26, 2019 at 5:45 PM Yonghong Song <yhs@fb.com> wrote:
+> > >>>
+> > >>>
+> > >>>
+> > >>> On 7/26/19 1:26 AM, Sedat Dilek wrote:
+> > >>>> Hi,
+> > >>>>
+> > >>>> I have opened a new issue in the ClangBuiltLinux issue tracker.
+> > >>>
+> > >>> Glad to know clang 9 has asm goto support and now It can compile
+> > >>> kernel again.
+> > >>>
+> > >>
+> > >> Yupp.
+> > >>
+> > >>>>
+> > >>>> I am seeing a problem in the area bpf/seccomp causing
+> > >>>> systemd/journald/udevd services to fail.
+> > >>>>
+> > >>>> [Fri Jul 26 08:08:43 2019] systemd[453]: systemd-udevd.service: Failed
+> > >>>> to connect stdout to the journal socket, ignoring: Connection refused
+> > >>>>
+> > >>>> This happens when I use the (LLVM) LLD ld.lld-9 linker but not with
+> > >>>> BFD linker ld.bfd on Debian/buster AMD64.
+> > >>>> In both cases I use clang-9 (prerelease).
+> > >>>
+> > >>> Looks like it is a lld bug.
+> > >>>
+> > >>> I see the stack trace has __bpf_prog_run32() which is used by
+> > >>> kernel bpf interpreter. Could you try to enable bpf jit
+> > >>>     sysctl net.core.bpf_jit_enable = 1
+> > >>> If this passed, it will prove it is interpreter related.
+> > >>>
+> > >>
+> > >> After...
+> > >>
+> > >> sysctl -w net.core.bpf_jit_enable=1
+> > >>
+> > >> I can start all failed systemd services.
+> > >>
+> > >> systemd-journald.service
+> > >> systemd-udevd.service
+> > >> haveged.service
+> > >>
+> > >> This is in maintenance mode.
+> > >>
+> > >> What is next: Do set a permanent sysctl setting for net.core.bpf_jit_enable?
+> > >>
 > > >
-> > > On 07/26, Andrii Nakryiko wrote:
-> > > > This patch changes how test output is printed out. By default, if test
-> > > > had no errors, the only output will be a single line with test number,
-> > > > name, and verdict at the end, e.g.:
-> > > >
-> > > >   #31 xdp:OK
-> > > >
-> > > > If test had any errors, all log output captured during test execution
-> > > > will be output after test completes.
-> > > >
-> > > > It's possible to force output of log with `-v` (`--verbose`) option, in
-> > > > which case output won't be buffered and will be output immediately.
-> > > >
-> > > > To support this, individual tests are required to use helper methods for
-> > > > logging: `test__printf()` and `test__vprintf()`.
-> > > >
-> > > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > > > ---
-> > > >  .../selftests/bpf/prog_tests/bpf_obj_id.c     |   6 +-
-> > > >  .../bpf/prog_tests/bpf_verif_scale.c          |  31 ++--
-> > > >  .../bpf/prog_tests/get_stack_raw_tp.c         |   4 +-
-> > > >  .../selftests/bpf/prog_tests/l4lb_all.c       |   2 +-
-> > > >  .../selftests/bpf/prog_tests/map_lock.c       |  10 +-
-> > > >  .../selftests/bpf/prog_tests/send_signal.c    |   8 +-
-> > > >  .../selftests/bpf/prog_tests/spinlock.c       |   2 +-
-> > > >  .../bpf/prog_tests/stacktrace_build_id.c      |   4 +-
-> > > >  .../bpf/prog_tests/stacktrace_build_id_nmi.c  |   4 +-
-> > > >  .../selftests/bpf/prog_tests/xdp_noinline.c   |   3 +-
-> > > >  tools/testing/selftests/bpf/test_progs.c      | 135 +++++++++++++-----
-> > > >  tools/testing/selftests/bpf/test_progs.h      |  37 ++++-
-> > > >  12 files changed, 173 insertions(+), 73 deletions(-)
-> > > >
-> > 
-> > [...]
-> > 
-> > > >               error_cnt++;
-> > > > -             printf("test_l4lb:FAIL:stats %lld %lld\n", bytes, pkts);
-> > > > +             test__printf("test_l4lb:FAIL:stats %lld %lld\n", bytes, pkts);
-> > > #define printf(...) test__printf(...) in tests.h?
-> > >
-> > > A bit ugly, but no need to retrain everyone to use new printf wrappers.
-> > 
-> > I try to reduce amount of magic and surprising things, not add new
-> > ones :) I also led by example and converted all current instances of
-> > printf usage to test__printf, so anyone new will just copy/paste good
-> > example, hopefully. Even if not, this non-buffered output will be
-> > immediately obvious to anyone who just runs `sudo ./test_progs`.
-> 
-> [..]
-> > And
-> > author of new test with this problem should hopefully be the first and
-> > the only one to catch and fix this.
-> Yeah, that is my only concern, that regular printfs will eventually
-> creep in. It's already confusing to go to/from printf/printk.
-> 
-> 2c:
-> 
-> I'm coming from a perspective of tools/testing/selftests/kselftest.h
-> which is supposed to be a generic framework with custom
-> printf variants (ksft_print_msg), but I still see a bunch of tests
-> calling printf :-/
-> 
-> 	grep -ril ksft_exit_fail_msg selftests/ | xargs -n1 grep -w printf
-> 
-> Since we don't expect regular buffered io from the tests anyway
-> it might be easier just to add a bit of magic and call it a day.
+> > > This is what I did:
+> >
+> > I probably won't have cycles to debug this potential lld issue.
+> > Maybe you already did, I suggest you put enough reproducible
+> > details in the bug you filed against lld so they can take a look.
+> >
+>
+> I understand and will put the journalctl-log into the CBL issue
+> tracker and update informations.
+>
+> Thanks for your help understanding the BPF correlations.
+>
+> Is setting 'net.core.bpf_jit_enable = 2' helpful here?
 
-I think #define printf()
-is not a good style in general.
-glibc functions should never be #define-d.
+jit_enable=1 is enough.
+Or use CONFIG_BPF_JIT_ALWAYS_ON to workaround.
 
+It sounds like clang miscompiles interpreter.
+modprobe test_bpf
+should be able to point out which part of interpreter is broken.
