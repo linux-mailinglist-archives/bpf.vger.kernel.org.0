@@ -2,202 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF60F77795
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2019 10:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26AEE7787A
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2019 13:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726197AbfG0IQh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Jul 2019 04:16:37 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:36659 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728347AbfG0IQg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 27 Jul 2019 04:16:36 -0400
-Received: by mail-wr1-f67.google.com with SMTP id n4so56712944wrs.3;
-        Sat, 27 Jul 2019 01:16:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=76rL5iz1eRzr5KitnsEreILjrU7y5lITzKiCAHJ8VEY=;
-        b=QEXihd9uQzvpUue7hGkwAlr9ICErBB4oKYYS+g4/KGJ5wBpNiRw4QkxeyTDeDhYH5+
-         /k5SNh65HKMMk1suzYtGm7Tarca3zmPu50NvHgFd17X3OVBQT6QI3Z2ooejJiCYs5gmq
-         +vZFa8M9quXlFKraBh1eomrrzbq0bgDNEVkJSoauxKeRe6LMf8zsIsqJhlXAdk/aZ0xt
-         g+JORzEIRsg0o6tYzEgQDoI4paJejFLVJePK6VRWxa4bILG0CnirhNjm88/aj3IkRSie
-         gCSwKHUVwXIiA3sQ4gA1LpycEpZbIi3iPZRISwyYqQydKyV5dAE7jK8QA/MPHBMQyoFI
-         P55w==
+        id S1728874AbfG0LkH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Jul 2019 07:40:07 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:43749 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728862AbfG0LkG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Jul 2019 07:40:06 -0400
+Received: by mail-io1-f72.google.com with SMTP id q26so61720414ioi.10
+        for <bpf@vger.kernel.org>; Sat, 27 Jul 2019 04:40:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=76rL5iz1eRzr5KitnsEreILjrU7y5lITzKiCAHJ8VEY=;
-        b=BJiq5Spum9rOb283M8B3kEHq9xNi5SwgZgPBdQWYDZeFdHAUeq6P5dzhX26kHTsjlg
-         tgv0gPPqb0slGYEZmJyAfd7o7QKIGr8b9ufjp83soeo+Nhc9M/f0gWP0wJUGD3THlVR8
-         56YogVmgYk+r5wHVOWH8LN0yvMq6SiMLqf6ixvz3ryuW7VTFM0tBM66XipRTe+lL6ltC
-         xrPYfLbdzYlKSZJ1VdZBXL/TnuT4poqThMgJ2U92lwoSlNRuxDZZs7lY/izYTAcVbgXk
-         l5B0KWU+TRGHImjWp4+ygbRhFPKv+kihoDRkwiC3nbJ/lXPvf6dNRFErHHwyoWc2yy0e
-         qDUw==
-X-Gm-Message-State: APjAAAWILuNDJP2DZGE2dSMRcW1rZD4AS8MzQBTUAF4gxmc8j63l/e4N
-        Zl44QarswdTa2GwymhHfL+q1UQCXQDwvIqhPdg0=
-X-Google-Smtp-Source: APXvYqx7/IxvBOy5UgQX7aBlYajcmAp/kCJ5LhlRmCHrjnL/Vq1J1RSLOsBd+rI21yWR46IBMboNvxfaDJ4cDw8xYxo=
-X-Received: by 2002:a5d:498f:: with SMTP id r15mr100608236wrq.353.1564215393799;
- Sat, 27 Jul 2019 01:16:33 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=4hE5MFlcvCrluUJqG4iGcm5nKHlJDnOlC6mpPTKYzN8=;
+        b=JMqjEQrIOvUtlkWjzWFxc6LDRyhVJBU3xf2XBEi3vBJKP5tIKazqJMRCB6TTSBo1vz
+         hPtz9tnD2519uGQr/kuuzb/n7dYrwekuFlnaqNGZecWGHufh2rkBgoh2XR2u4aIjN4Wf
+         LtAOBM31Fbea9r4xBF0+SC3oQ33Oww/gfNUgueHI7lOtx+Gw2lA0lnmrrloWi9sfaq9h
+         ejt8Cktmi150GaWBHehLBkFyZ8+ojzWVfxpxkLM/zDkZbzzjxr22BWz4PaqWNs4Luciz
+         wmtFLD/yxDPm7H39WxUrjHfqBL0iHiHbYPfFg0NOXWosLSSD6ao0SE6HoT5+9EeLnN5n
+         ESHg==
+X-Gm-Message-State: APjAAAVPjSJEqZd9YaPjheO3njUTGdLNgozHLqDccXdzRVRcgjFEdf/o
+        wzMgWECdTgT+ZFOOcmQxGBT0B39+SmnzEKGlDDe/w9+lht+T
+X-Google-Smtp-Source: APXvYqzROQXiyDS5c/uLW2dsKoaCgTkYKi/WKjtywPIJN4f1/0PgmEZsC292WWXMeFNK8gSs9jBIlV1Cv7tMp2g6pnNdNGvmyGVm
 MIME-Version: 1.0
-References: <CA+icZUWF=B_phP8eGD3v2d9jSSK6Y-N65y-T6xewZnY91vc2_Q@mail.gmail.com>
- <c2524c96-d71c-d7db-22ec-12da905dc180@fb.com> <CA+icZUXYp=Jx+8aGrZmkCbSFp-cSPcoRzRdRJsPj4yYNs_mJQw@mail.gmail.com>
- <CA+icZUXsPRWmH3i-9=TK-=2HviubRqpAeDJGriWHgK1fkFhgUg@mail.gmail.com>
- <295d2acd-0844-9a40-3f94-5bcbb13871d2@fb.com> <CA+icZUUe0QE9QGMom1iQwuG8nM7Oi4Mq0GKqrLvebyxfUmj6RQ@mail.gmail.com>
- <CAADnVQLhymu8YqtfM1NHD5LMgO6a=FZYaeaYS1oCyfGoBDE_BQ@mail.gmail.com> <CA+icZUXGPCgdJzxTO+8W0EzNLZEQ88J_wusp7fPfEkNE2RoXJA@mail.gmail.com>
-In-Reply-To: <CA+icZUXGPCgdJzxTO+8W0EzNLZEQ88J_wusp7fPfEkNE2RoXJA@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sat, 27 Jul 2019 10:16:21 +0200
-Message-ID: <CA+icZUWVf6AK3bxfWBZ7iM1QTyk_G-4+1_LyK0jkoBDkDzvx4Q@mail.gmail.com>
-Subject: Re: next-20190723: bpf/seccomp - systemd/journald issue?
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Received: by 2002:a05:6638:691:: with SMTP id i17mr102984038jab.70.1564227605925;
+ Sat, 27 Jul 2019 04:40:05 -0700 (PDT)
+Date:   Sat, 27 Jul 2019 04:40:05 -0700
+In-Reply-To: <0000000000002b4896058e7abf78@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cc977f058ea81e82@google.com>
+Subject: Re: general protection fault in tls_trim_both_msgs
+From:   syzbot <syzbot+0e0fedcad708d12d3032@syzkaller.appspotmail.com>
+To:     ast@kernel.org, aviadye@mellanox.com, borisp@mellanox.com,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davejwatson@fb.com,
+        davem@davemloft.net, jakub.kicinski@netronome.com,
+        john.fastabend@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jul 27, 2019 at 9:36 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Sat, Jul 27, 2019 at 4:24 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Fri, Jul 26, 2019 at 2:19 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > >
-> > > On Fri, Jul 26, 2019 at 11:10 PM Yonghong Song <yhs@fb.com> wrote:
-> > > >
-> > > >
-> > > >
-> > > > On 7/26/19 2:02 PM, Sedat Dilek wrote:
-> > > > > On Fri, Jul 26, 2019 at 10:38 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > > >>
-> > > > >> Hi Yonghong Song,
-> > > > >>
-> > > > >> On Fri, Jul 26, 2019 at 5:45 PM Yonghong Song <yhs@fb.com> wrote:
-> > > > >>>
-> > > > >>>
-> > > > >>>
-> > > > >>> On 7/26/19 1:26 AM, Sedat Dilek wrote:
-> > > > >>>> Hi,
-> > > > >>>>
-> > > > >>>> I have opened a new issue in the ClangBuiltLinux issue tracker.
-> > > > >>>
-> > > > >>> Glad to know clang 9 has asm goto support and now It can compile
-> > > > >>> kernel again.
-> > > > >>>
-> > > > >>
-> > > > >> Yupp.
-> > > > >>
-> > > > >>>>
-> > > > >>>> I am seeing a problem in the area bpf/seccomp causing
-> > > > >>>> systemd/journald/udevd services to fail.
-> > > > >>>>
-> > > > >>>> [Fri Jul 26 08:08:43 2019] systemd[453]: systemd-udevd.service: Failed
-> > > > >>>> to connect stdout to the journal socket, ignoring: Connection refused
-> > > > >>>>
-> > > > >>>> This happens when I use the (LLVM) LLD ld.lld-9 linker but not with
-> > > > >>>> BFD linker ld.bfd on Debian/buster AMD64.
-> > > > >>>> In both cases I use clang-9 (prerelease).
-> > > > >>>
-> > > > >>> Looks like it is a lld bug.
-> > > > >>>
-> > > > >>> I see the stack trace has __bpf_prog_run32() which is used by
-> > > > >>> kernel bpf interpreter. Could you try to enable bpf jit
-> > > > >>>     sysctl net.core.bpf_jit_enable = 1
-> > > > >>> If this passed, it will prove it is interpreter related.
-> > > > >>>
-> > > > >>
-> > > > >> After...
-> > > > >>
-> > > > >> sysctl -w net.core.bpf_jit_enable=1
-> > > > >>
-> > > > >> I can start all failed systemd services.
-> > > > >>
-> > > > >> systemd-journald.service
-> > > > >> systemd-udevd.service
-> > > > >> haveged.service
-> > > > >>
-> > > > >> This is in maintenance mode.
-> > > > >>
-> > > > >> What is next: Do set a permanent sysctl setting for net.core.bpf_jit_enable?
-> > > > >>
-> > > > >
-> > > > > This is what I did:
-> > > >
-> > > > I probably won't have cycles to debug this potential lld issue.
-> > > > Maybe you already did, I suggest you put enough reproducible
-> > > > details in the bug you filed against lld so they can take a look.
-> > > >
-> > >
-> > > I understand and will put the journalctl-log into the CBL issue
-> > > tracker and update informations.
-> > >
-> > > Thanks for your help understanding the BPF correlations.
-> > >
-> > > Is setting 'net.core.bpf_jit_enable = 2' helpful here?
-> >
-> > jit_enable=1 is enough.
-> > Or use CONFIG_BPF_JIT_ALWAYS_ON to workaround.
-> >
-> > It sounds like clang miscompiles interpreter.
+syzbot has found a reproducer for the following crash on:
 
-Just to clarify:
-This does not happen with clang-9 + ld.bfd (GNU/ld linker).
+HEAD commit:    fde50b96 Add linux-next specific files for 20190726
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=142826cc600000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4b58274564b354c1
+dashboard link: https://syzkaller.appspot.com/bug?extid=0e0fedcad708d12d3032
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14779d64600000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1587c842600000
 
-> > modprobe test_bpf
-> > should be able to point out which part of interpreter is broken.
->
-> Maybe we need something like...
->
-> "bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()"
->
-> ...for clang?
->
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+0e0fedcad708d12d3032@syzkaller.appspotmail.com
 
-Not sure if something like GCC's...
+kasan: CONFIG_KASAN_INLINE enabled
+kasan: GPF could be caused by NULL-ptr deref or user memory access
+general protection fault: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 10205 Comm: syz-executor265 Not tainted 5.3.0-rc1-next-20190726  
+#53
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+RIP: 0010:tls_trim_both_msgs+0x54/0x130 net/tls/tls_sw.c:268
+Code: 48 c1 ea 03 80 3c 02 00 0f 85 e3 00 00 00 4d 8b b5 b0 06 00 00 48 b8  
+00 00 00 00 00 fc ff df 49 8d 7e 28 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f  
+85 b3 00 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b
+RSP: 0018:ffff88809037fac0 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: ffff8880a8c0eec0 RCX: ffffffff862f4eef
+RDX: 0000000000000005 RSI: ffffffff862e9016 RDI: 0000000000000028
+RBP: ffff88809037fae0 R08: ffff8880944a8040 R09: ffffed10125e7d51
+R10: ffffed10125e7d50 R11: ffff888092f3ea83 R12: 0000000000000000
+R13: ffff8880a9560c80 R14: 0000000000000000 R15: 00000000ffffffe0
+FS:  000055555717a880(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc5f44109c0 CR3: 000000008b1cc000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+  tls_sw_sendmsg+0xe38/0x17b0 net/tls/tls_sw.c:1057
+  inet6_sendmsg+0x9e/0xe0 net/ipv6/af_inet6.c:576
+  sock_sendmsg_nosec net/socket.c:637 [inline]
+  sock_sendmsg+0xd7/0x130 net/socket.c:657
+  __sys_sendto+0x262/0x380 net/socket.c:1952
+  __do_sys_sendto net/socket.c:1964 [inline]
+  __se_sys_sendto net/socket.c:1960 [inline]
+  __x64_sys_sendto+0xe1/0x1a0 net/socket.c:1960
+  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x441339
+Code: e8 fc ab 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 9b 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffef90e4908 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000441339
+RDX: ffffffffffffffc1 RSI: 00000000200005c0 RDI: 0000000000000003
+RBP: 00000000006cb018 R08: 0000000000000000 R09: 1201000000003618
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402160
+R13: 00000000004021f0 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace 94e33101f438b014 ]---
+RIP: 0010:tls_trim_both_msgs+0x54/0x130 net/tls/tls_sw.c:268
+Code: 48 c1 ea 03 80 3c 02 00 0f 85 e3 00 00 00 4d 8b b5 b0 06 00 00 48 b8  
+00 00 00 00 00 fc ff df 49 8d 7e 28 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f  
+85 b3 00 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b
+RSP: 0018:ffff88809037fac0 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: ffff8880a8c0eec0 RCX: ffffffff862f4eef
+RDX: 0000000000000005 RSI: ffffffff862e9016 RDI: 0000000000000028
+RBP: ffff88809037fae0 R08: ffff8880944a8040 R09: ffffed10125e7d51
+R10: ffffed10125e7d50 R11: ffff888092f3ea83 R12: 0000000000000000
+R13: ffff8880a9560c80 R14: 0000000000000000 R15: 00000000ffffffe0
+FS:  000055555717a880(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc5f44109c0 CR3: 000000008b1cc000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
--fgcse
-
-Perform a global common subexpression elimination pass. This pass also
-performs global constant and copy propagation.
-
-Note: When compiling a program using computed gotos, a GCC extension,
-you may get better run-time performance if you disable the global
-common subexpression elimination pass by adding -fno-gcse to the
-command line.
-
-Enabled at levels -O2, -O3, -Os.
-
-...is available for clang.
-
-I tried with hopping to turn off "global common subexpression elimination":
-
-diff --git a/arch/x86/net/Makefile b/arch/x86/net/Makefile
-index 383c87300b0d..92f934a1e9ff 100644
---- a/arch/x86/net/Makefile
-+++ b/arch/x86/net/Makefile
-@@ -3,6 +3,8 @@
- # Arch-specific network modules
- #
-
-+KBUILD_CFLAGS += -O0
-+
- ifeq ($(CONFIG_X86_32),y)
-         obj-$(CONFIG_BPF_JIT) += bpf_jit_comp32.o
- else
-
-Still see...
-BROKEN: test_bpf: #294 BPF_MAXINSNS: Jump, gap, jump, ... jited:0
-
-- Sedat -
