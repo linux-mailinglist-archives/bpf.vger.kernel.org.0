@@ -2,225 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 535867773C
-	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2019 08:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED79377778
+	for <lists+bpf@lfdr.de>; Sat, 27 Jul 2019 09:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728290AbfG0GZs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Jul 2019 02:25:48 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:46334 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725905AbfG0GZs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 27 Jul 2019 02:25:48 -0400
-Received: by mail-qk1-f196.google.com with SMTP id r4so40629013qkm.13;
-        Fri, 26 Jul 2019 23:25:47 -0700 (PDT)
+        id S1727614AbfG0Hge (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Jul 2019 03:36:34 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:38777 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726197AbfG0Hge (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Jul 2019 03:36:34 -0400
+Received: by mail-wr1-f65.google.com with SMTP id g17so56580539wrr.5;
+        Sat, 27 Jul 2019 00:36:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rJOu94qjfiAZ9L2kBdJOUILcF5P3phV9aH56/+2xTnA=;
-        b=t1YjTRH1lCVXXZjfpz6Hr2Y5+wNA63/bKQAgnB5O/hfSqxYcriJCi0NeXlpmJu39TU
-         XsvzUcKZYMMPxuIn9UD75CsnaSALHjxoHR+5CtQMVQXqfif0Hvtrwj8VFmDnIC2Iw4By
-         SAFu42gpU9mLAoYPIhclqqCj5AkjUhx9141j7pfvMdGWWPL0jOFSNxW4rUJd4DxHXYbV
-         EfnEpgMiGwGUo7Iu8OsjklCN//jdMSq/+bfonPaXImU106XGaChJLQN3LCKsm10Dg9/R
-         CIQX5mbV9jAhvjNgFVhgyO8u35kB5NNMjBLinfYVcj9TlhRfzfrtsgoFu6NHZPpHN/Jf
-         Qttg==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=76ws4qemCbK8PdXmvOPFqC7qosVhVH8+4Ya0bG6HZyU=;
+        b=fAWCaJ1iAvmLQfjZi/HMIwN+ytyy2n4tTQpgr/FGuNMhF9qeAWCCSx8t3/6OMu8GSS
+         k/74shZx9E0KhapiK0TH+XP+h69DjxFMvFFLmlyHEwGhmbdowfk1iv9PpNzCvlG+zTa7
+         87HHwy26rVnjJ1mw++sisyoFRKdQicBbvdgTaWEduLOFlmxrICVyYIPAsDKxNWDKs8Y5
+         9jeY9qnSBywQF7xQ2Sw2izpzDKdjuLnJBYh8lSwH1KhyfGh2FCwk1xhP1F6UOAv8IUhy
+         5OnfQtNIsWKzyHkNeHpTVAMU/sQe2MhXdgQlB+zxpxizHL+Z3UfTsJcxZV5tKS5tbAEw
+         XFmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rJOu94qjfiAZ9L2kBdJOUILcF5P3phV9aH56/+2xTnA=;
-        b=tkHuk8LgCgE8zfAQRoB2iruE8sh51wKYjiZHOmlLNE8SYSZjpW2Q7KOCuwgbsUMUMN
-         S7rNC1i2sNugUN5GTSznKhXrMubSqPZm06H2aSQNqUg/mx6BTFjfcTVSjzmCK1OAU6u4
-         9rGlrzI4tTmyAIa/3/ZUedJdqyULwZCmGi1+uiXgSJbhDew2oiu9wNXXsqeW+gh4vKyH
-         Owof2yCN4GVbIxJljk2D6m0Hqz0OwC8MG2Wd+3HVKl3GRKtd0CMvmYBMcYIEGBzGOiVF
-         QNkxA1VlGHnkkOHXGKN57e4BoedU9ITfu+cjO9k1t73t4Fm5XxH/Hs7Q1tyTPVN+N6Jc
-         AzoA==
-X-Gm-Message-State: APjAAAWggV+JYPZrU12LrdXnJpwy0PeluXn37mKu3QwpoFM3cI7jup6e
-        Y0SOcOnW88q795Tz4jHLCM5fdNBVic4BauI7eF0=
-X-Google-Smtp-Source: APXvYqxg4kHfID+IINdNTgoepLtyOSPF+bA4JNrAdJk9N2BMBVFoGd0i/L+c8vGzxj6dP36/enSjs/QH2kHQQG3elns=
-X-Received: by 2002:a05:620a:16a6:: with SMTP id s6mr65265820qkj.39.1564208747000;
- Fri, 26 Jul 2019 23:25:47 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=76ws4qemCbK8PdXmvOPFqC7qosVhVH8+4Ya0bG6HZyU=;
+        b=nmLB9pX1V+bilDtKeFDDPijX1tnQYqBhdoevkJQ+POOF1Z+ZP3fRs7sDM+TwR1tGVS
+         V2Q9+hjo0nbFKjrQF3W6cS3KZZPYEMB45Cg6CCXkzYUDyJ4WaA3EF0ezWdUi05OtFka0
+         Wc+k6olH8bw8ygabFMnP5h+rdjy/ODXhgg2c6K8piA4rMJEmn1bs+H+ap8Qu3CxPELQ8
+         vPIBV/bLrCkP1NvZb+9sHQMKYrymnOwUrH+3kh/GfhDgXIUWxz+5QXhl/edKOM2euFux
+         L7hsH6GNG6zXpVa6/4cGgvGM8szFIcavxTbRduJuggizrlUjW1dhMF93FpDi+e0ljXVy
+         JLUg==
+X-Gm-Message-State: APjAAAWA+Z3a8xT8wx4F8iNiLfV4mHZ4NVq4lpPOeQ9aF0vjP0pYI23c
+        6rqS72h2Fe9VTyr+Dc3zShcuZdQOEsT1flgeK0w=
+X-Google-Smtp-Source: APXvYqxroH+KmlWgRBo+HzQxhgLvRnbBgWmKuDR+aiS23pQ4whB2EoPIjXLGsovY6+QMmmEzNblRBH0uQi5koKnIFPM=
+X-Received: by 2002:a5d:4101:: with SMTP id l1mr52631955wrp.202.1564212991777;
+ Sat, 27 Jul 2019 00:36:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190724192742.1419254-1-andriin@fb.com> <20190724192742.1419254-3-andriin@fb.com>
- <20190725231831.7v7mswluomcymy2l@ast-mbp>
-In-Reply-To: <20190725231831.7v7mswluomcymy2l@ast-mbp>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 26 Jul 2019 23:25:36 -0700
-Message-ID: <CAEf4BzZxPgAh4PGSWyD0tPOd1wh=DGZuSe1fzxc-Sgyk4D5vDg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 02/10] libbpf: implement BPF CO-RE offset
- relocation algorithm
+References: <CA+icZUWF=B_phP8eGD3v2d9jSSK6Y-N65y-T6xewZnY91vc2_Q@mail.gmail.com>
+ <c2524c96-d71c-d7db-22ec-12da905dc180@fb.com> <CA+icZUXYp=Jx+8aGrZmkCbSFp-cSPcoRzRdRJsPj4yYNs_mJQw@mail.gmail.com>
+ <CA+icZUXsPRWmH3i-9=TK-=2HviubRqpAeDJGriWHgK1fkFhgUg@mail.gmail.com>
+ <295d2acd-0844-9a40-3f94-5bcbb13871d2@fb.com> <CA+icZUUe0QE9QGMom1iQwuG8nM7Oi4Mq0GKqrLvebyxfUmj6RQ@mail.gmail.com>
+ <CAADnVQLhymu8YqtfM1NHD5LMgO6a=FZYaeaYS1oCyfGoBDE_BQ@mail.gmail.com>
+In-Reply-To: <CAADnVQLhymu8YqtfM1NHD5LMgO6a=FZYaeaYS1oCyfGoBDE_BQ@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sat, 27 Jul 2019 09:36:20 +0200
+Message-ID: <CA+icZUXGPCgdJzxTO+8W0EzNLZEQ88J_wusp7fPfEkNE2RoXJA@mail.gmail.com>
+Subject: Re: next-20190723: bpf/seccomp - systemd/journald issue?
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Kernel Team <kernel-team@fb.com>
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 25, 2019 at 4:18 PM Alexei Starovoitov
+On Sat, Jul 27, 2019 at 4:24 AM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> On Wed, Jul 24, 2019 at 12:27:34PM -0700, Andrii Nakryiko wrote:
-> > This patch implements the core logic for BPF CO-RE offsets relocations.
-> > All the details are described in code comments.
+> On Fri, Jul 26, 2019 at 2:19 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
 > >
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
-> >  tools/lib/bpf/libbpf.c | 866 ++++++++++++++++++++++++++++++++++++++++-
-> >  tools/lib/bpf/libbpf.h |   1 +
-> >  2 files changed, 861 insertions(+), 6 deletions(-)
+> > On Fri, Jul 26, 2019 at 11:10 PM Yonghong Song <yhs@fb.com> wrote:
+> > >
+> > >
+> > >
+> > > On 7/26/19 2:02 PM, Sedat Dilek wrote:
+> > > > On Fri, Jul 26, 2019 at 10:38 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > > >>
+> > > >> Hi Yonghong Song,
+> > > >>
+> > > >> On Fri, Jul 26, 2019 at 5:45 PM Yonghong Song <yhs@fb.com> wrote:
+> > > >>>
+> > > >>>
+> > > >>>
+> > > >>> On 7/26/19 1:26 AM, Sedat Dilek wrote:
+> > > >>>> Hi,
+> > > >>>>
+> > > >>>> I have opened a new issue in the ClangBuiltLinux issue tracker.
+> > > >>>
+> > > >>> Glad to know clang 9 has asm goto support and now It can compile
+> > > >>> kernel again.
+> > > >>>
+> > > >>
+> > > >> Yupp.
+> > > >>
+> > > >>>>
+> > > >>>> I am seeing a problem in the area bpf/seccomp causing
+> > > >>>> systemd/journald/udevd services to fail.
+> > > >>>>
+> > > >>>> [Fri Jul 26 08:08:43 2019] systemd[453]: systemd-udevd.service: Failed
+> > > >>>> to connect stdout to the journal socket, ignoring: Connection refused
+> > > >>>>
+> > > >>>> This happens when I use the (LLVM) LLD ld.lld-9 linker but not with
+> > > >>>> BFD linker ld.bfd on Debian/buster AMD64.
+> > > >>>> In both cases I use clang-9 (prerelease).
+> > > >>>
+> > > >>> Looks like it is a lld bug.
+> > > >>>
+> > > >>> I see the stack trace has __bpf_prog_run32() which is used by
+> > > >>> kernel bpf interpreter. Could you try to enable bpf jit
+> > > >>>     sysctl net.core.bpf_jit_enable = 1
+> > > >>> If this passed, it will prove it is interpreter related.
+> > > >>>
+> > > >>
+> > > >> After...
+> > > >>
+> > > >> sysctl -w net.core.bpf_jit_enable=1
+> > > >>
+> > > >> I can start all failed systemd services.
+> > > >>
+> > > >> systemd-journald.service
+> > > >> systemd-udevd.service
+> > > >> haveged.service
+> > > >>
+> > > >> This is in maintenance mode.
+> > > >>
+> > > >> What is next: Do set a permanent sysctl setting for net.core.bpf_jit_enable?
+> > > >>
+> > > >
+> > > > This is what I did:
+> > >
+> > > I probably won't have cycles to debug this potential lld issue.
+> > > Maybe you already did, I suggest you put enough reproducible
+> > > details in the bug you filed against lld so they can take a look.
+> > >
 > >
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 8741c39adb1c..86d87bf10d46 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -38,6 +38,7 @@
-> >  #include <sys/stat.h>
-> >  #include <sys/types.h>
-> >  #include <sys/vfs.h>
-> > +#include <sys/utsname.h>
-> >  #include <tools/libc_compat.h>
-> >  #include <libelf.h>
-> >  #include <gelf.h>
-> > @@ -47,6 +48,7 @@
-> >  #include "btf.h"
-> >  #include "str_error.h"
-> >  #include "libbpf_internal.h"
-> > +#include "hashmap.h"
+> > I understand and will put the journalctl-log into the CBL issue
+> > tracker and update informations.
 > >
-> >  #ifndef EM_BPF
-> >  #define EM_BPF 247
-> > @@ -1013,16 +1015,22 @@ static int bpf_object__init_user_maps(struct bpf_object *obj, bool strict)
-> >  }
+> > Thanks for your help understanding the BPF correlations.
 > >
-> >  static const struct btf_type *skip_mods_and_typedefs(const struct btf *btf,
-> > -                                                  __u32 id)
-> > +                                                  __u32 id,
-> > +                                                  __u32 *res_id)
+> > Is setting 'net.core.bpf_jit_enable = 2' helpful here?
 >
-> I think it would be more readable to format it like:
-> static const struct btf_type *
-> skip_mods_and_typedefs(const struct btf *btf, __u32 id, __u32 *res_id)
-
-Ok.
-
+> jit_enable=1 is enough.
+> Or use CONFIG_BPF_JIT_ALWAYS_ON to workaround.
 >
-> > +     } else if (class == BPF_ST && BPF_MODE(insn->code) == BPF_MEM) {
-> > +             if (insn->imm != orig_off)
-> > +                     return -EINVAL;
-> > +             insn->imm = new_off;
-> > +             pr_debug("prog '%s': patched insn #%d (ST | MEM) imm %d -> %d\n",
-> > +                      bpf_program__title(prog, false),
-> > +                      insn_idx, orig_off, new_off);
->
-> I'm pretty sure llvm was not capable of emitting BPF_ST insn.
-> When did that change?
+> It sounds like clang miscompiles interpreter.
+> modprobe test_bpf
+> should be able to point out which part of interpreter is broken.
 
-I just looked at possible instructions that could have 32-bit
-immediate value. This is `*(rX) = offsetof(struct s, field)`, which I
-though is conceivable. Do you think I should drop it?
+Maybe we need something like...
 
->
-> > +/*
-> > + * CO-RE relocate single instruction.
-> > + *
-> > + * The outline and important points of the algorithm:
-> > + * 1. For given local type, find corresponding candidate target types.
-> > + *    Candidate type is a type with the same "essential" name, ignoring
-> > + *    everything after last triple underscore (___). E.g., `sample`,
-> > + *    `sample___flavor_one`, `sample___flavor_another_one`, are all candidates
-> > + *    for each other. Names with triple underscore are referred to as
-> > + *    "flavors" and are useful, among other things, to allow to
-> > + *    specify/support incompatible variations of the same kernel struct, which
-> > + *    might differ between different kernel versions and/or build
-> > + *    configurations.
->
-> "flavors" is a convention of bpftool btf2c converter, right?
-> May be mention it here with pointer to the code?
+"bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()"
 
-Yes, btf2c converter generates "flavors" on type name conflict (adding
-___2, ___3), but it's not the only use case. It's a general way to
-have independent incompatible definitions for the same target type.
-E.g., locally in your BPF program you can define two thread_structs to
-accommodate field rename between kernel version changes:
+...for clang?
 
-struct thread_struct___before_47 {
-    long fs;
-};
+- Sedat -
 
-struct thread_struct___after_47 {
-    long fsbase;
-};
-
-Then with conditional relocations you'll use one of them to "extract"
-it from real kernel's thread_struct:
-
-void *fsbase;
-
-if (LINUX_VERSION < 407)
-    BPF_CORE_READ(&fsbase, sizeof(fsbase),
-                  &((struct thread_struct___before_47 *)&thread)->fs);
-else
-    BPF_CORE_READ(&fsbase, sizeof(fsbase),
-                  &((struct thread_struct___after_47 *)&thread)->fsbase);
-
-So it works both ways (for local and target types) by design. I can
-mention that btf2c converter uses this convention for types with
-conflicting names, but btf2c is not a definition of what flavor is.
-
->
-> > +     pr_debug("prog '%s': relo #%d: insn_off=%d, [%d] (%s) + %s\n",
-> > +              prog_name, relo_idx, relo->insn_off,
-> > +              local_id, local_name, spec_str);
-> > +
-> > +     err = bpf_core_spec_parse(local_btf, local_id, spec_str, &local_spec);
-> > +     if (err) {
-> > +             pr_warning("prog '%s': relo #%d: parsing [%d] (%s) + %s failed: %d\n",
-> > +                        prog_name, relo_idx, local_id, local_name, spec_str,
-> > +                        err);
-> > +             return -EINVAL;
-> > +     }
-> > +     pr_debug("prog '%s': relo #%d: [%d] (%s) + %s is off %u, len %d, raw_len %d\n",
-> > +              prog_name, relo_idx, local_id, local_name, spec_str,
-> > +              local_spec.offset, local_spec.len, local_spec.raw_len);
->
-> one warn and two debug that print more or less the same info seems like overkill.
-
-Only one of them will ever be emitted, though. And this information is
-and will be invaluable to debug issues/explain behavior in the future
-once adoption starts. So I'm inclined to keep them, at least for now.
-But I think I'll extract spec formatting into a separate reusable
-function, which will make this significantly less verbose.
-
->
-> > +     for (i = 0, j = 0; i < cand_ids->len; i++) {
-> > +             cand_id = cand_ids->data[j];
-> > +             cand_type = btf__type_by_id(targ_btf, cand_id);
-> > +             cand_name = btf__name_by_offset(targ_btf, cand_type->name_off);
-> > +
-> > +             err = bpf_core_spec_match(&local_spec, targ_btf,
-> > +                                       cand_id, &cand_spec);
-> > +             if (err < 0) {
-> > +                     pr_warning("prog '%s': relo #%d: failed to match spec [%d] (%s) + %s to candidate #%d [%d] (%s): %d\n",
-> > +                                prog_name, relo_idx, local_id, local_name,
-> > +                                spec_str, i, cand_id, cand_name, err);
-> > +                     return err;
-> > +             }
-> > +             if (err == 0) {
-> > +                     pr_debug("prog '%s': relo #%d: candidate #%d [%d] (%s) doesn't match spec\n",
-> > +                              prog_name, relo_idx, i, cand_id, cand_name);
-> > +                     continue;
-> > +             }
-> > +
-> > +             pr_debug("prog '%s': relo #%d: candidate #%d ([%d] %s) is off %u, len %d, raw_len %d\n",
-> > +                      prog_name, relo_idx, i, cand_id, cand_name,
-> > +                      cand_spec.offset, cand_spec.len, cand_spec.raw_len);
->
-> have the same feeling about 3 printfs above.
->
-
-Same as above.
+[1] https://git.kernel.org/linus/3193c0836f203a91bef96d88c64cccf0be090d9c
