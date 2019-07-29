@@ -2,73 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A3075782A2
-	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2019 02:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEBB178B92
+	for <lists+bpf@lfdr.de>; Mon, 29 Jul 2019 14:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726432AbfG2AIQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 28 Jul 2019 20:08:16 -0400
-Received: from mail-vs1-f66.google.com ([209.85.217.66]:40929 "EHLO
-        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbfG2AIP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 28 Jul 2019 20:08:15 -0400
-Received: by mail-vs1-f66.google.com with SMTP id a186so38027978vsd.7
-        for <bpf@vger.kernel.org>; Sun, 28 Jul 2019 17:08:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=BrTkYGT/CoRQ7U7g4N9efxmX5N2ln4oVBYUSCIHtobA=;
-        b=Hrbix6Ncwndj0/ZhLdg0qekQEb+2Kgjc0SeRBr4FoeMFiX6XHGMMMukOQcIKSRIyn6
-         1FLJR6mLR/vulQ1VtBLTJl0Lda2nbHDXGla8f4MZapoFNxChdOqG0oC2RV/IR5Di4VyD
-         grjfPw7UAkWugiyvS9Gl1hDt40Nvloz7Q8hFS7wLEsjTOSX4W7lFPW9PhND4JzOEZ+VX
-         SBGYCM0giRSd8L6L/uLWJrYqn2I37qhpbbuqonQi3s5AF+bCkD88dzpmwDbsGmVCx0VK
-         YxQyZe0oSBHMaPJJxMQFY+Lj0j7LLb7a1Ztlp5dpJ58wOiotopzo5wS6I3+UonrsS7ek
-         PqTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=BrTkYGT/CoRQ7U7g4N9efxmX5N2ln4oVBYUSCIHtobA=;
-        b=pREvBDsLDNGzVMbva5mK+XKB9CGrPqZOBEhXyc1gN+knsk5WXFfk1pBiInGwltPCGp
-         1/irGOiUt71+eVC7BhmKgRCsK7on/4oa8XtS8QGnpKN8Ox2TOmaBqFdngkbg+oZg8mvu
-         soUbFYHjIPXd7azIIa5HopQb5UWZu0H3Fmi5x+AnnwURXJQFBnutsnmGe2Xs8mw1Qo4t
-         CLEgAMqqIlA+2H2Z+pq3KNrpBid0zQ2ZXdjwxJTgxRhun/touSpUVs5lgBr77+Mlc11k
-         oVe6cErM/00azvJAWt9bcrPcaXdYafILr1lYrQG/CBS7yg54Nt011o1QALDoSBVkMX+B
-         4AEg==
-X-Gm-Message-State: APjAAAXn7aS5yAk6RiyHq6EG77GY6+CC4tUrEtpPt1cVbAxl8gWUalK3
-        UxrjPBYTeP4LsEey7TK9Y3E+aoUuXZiOh3rulPo=
-X-Google-Smtp-Source: APXvYqz5Tv/G3ojzOIebxdxZc+D3VZ7ztK4AVBhaXkUwSAzoovp0N7wtTAf+Vftj4yT+nLwP2EIhs0O9djQd9MpIws8=
-X-Received: by 2002:a67:eb19:: with SMTP id a25mr65238884vso.109.1564358894898;
- Sun, 28 Jul 2019 17:08:14 -0700 (PDT)
+        id S1727631AbfG2MQp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Jul 2019 08:16:45 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:62911 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726818AbfG2MQo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Jul 2019 08:16:44 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id A4796C049E12;
+        Mon, 29 Jul 2019 12:16:44 +0000 (UTC)
+Received: from [192.168.42.247] (ovpn-200-29.brq.redhat.com [10.40.200.29])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5FE266012A;
+        Mon, 29 Jul 2019 12:16:39 +0000 (UTC)
+Subject: [PATCH net-next] MAINTAINERS: Remove mailing-list entry for XDP
+ (eXpress Data Path)
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        xdp-newbies@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, jakub.kicinski@netronome.com,
+        john.fastabend@gmail.com
+Date:   Mon, 29 Jul 2019 14:16:37 +0200
+Message-ID: <156440259790.6123.1563221733550893420.stgit@carbon>
+User-Agent: StGit/unknown-version
 MIME-Version: 1.0
-Received: by 2002:a67:80c8:0:0:0:0:0 with HTTP; Sun, 28 Jul 2019 17:08:14
- -0700 (PDT)
-Reply-To: williamrobert416@gmail.com
-From:   "Mr. Robert William" <officialuse87@gmail.com>
-Date:   Mon, 29 Jul 2019 01:08:14 +0100
-Message-ID: <CAD00q0_sEF2SnzFkOGUBd7uFGZugFRAOygkgQE-c=-i01FWC-w@mail.gmail.com>
-Subject: Please listen
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.31]); Mon, 29 Jul 2019 12:16:44 +0000 (UTC)
+To:     unlisted-recipients:; (no To-header on input)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
--- 
-Hello,
+This removes the mailing list xdp-newbies@vger.kernel.org from the XDP
+kernel maintainers entry.
 
-I am Eng. Robert William, a retired Marine Engineer residing in
-Trinidad & Tobago.
-Unfortunately i am admitted to the hospital for a cancer (Sickness)
-over a year now,my doctor reported that i have only few months to pass
-away. Please i need your consent to invest my money (USD$1.8 Million)
-in any business of your
+Being in the kernel MAINTAINERS file successfully caused the list to
+receive kbuild bot warnings, syzbot reports and sometimes developer
+patches. The level of details in these messages, doesn't match the
+target audience of the XDP-newbies list. This is based on a survey on
+the mailing list, where 73% voted for removal from MAINTAINERS file.
 
-choice in your country before i die, i have no other relatives not
-even children because i lost my family in a fire disaster in 2005.
-Please i need your urgent and
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+---
+ MAINTAINERS |    1 -
+ 1 file changed, 1 deletion(-)
 
-kind response to enable me send you more information on how to contact
-my bank as my next of kin to process the fund into your bank account.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9cc156c58f0c..45cb4237eddc 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -17560,7 +17560,6 @@ M:	Jakub Kicinski <jakub.kicinski@netronome.com>
+ M:	Jesper Dangaard Brouer <hawk@kernel.org>
+ M:	John Fastabend <john.fastabend@gmail.com>
+ L:	netdev@vger.kernel.org
+-L:	xdp-newbies@vger.kernel.org
+ L:	bpf@vger.kernel.org
+ S:	Supported
+ F:	net/core/xdp.c
 
-Mr Robert William
