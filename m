@@ -2,77 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A3F7AF22
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2019 19:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08E47B056
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2019 19:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730179AbfG3RKO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jul 2019 13:10:14 -0400
-Received: from mga05.intel.com ([192.55.52.43]:33179 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729895AbfG3RKN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Jul 2019 13:10:13 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 30 Jul 2019 10:10:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,327,1559545200"; 
-   d="scan'208";a="183192748"
-Received: from silpixa00399838.ir.intel.com (HELO silpixa00399838.ger.corp.intel.com) ([10.237.223.140])
-  by orsmga002.jf.intel.com with ESMTP; 30 Jul 2019 10:10:10 -0700
-From:   Kevin Laatz <kevin.laatz@intel.com>
-To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        bjorn.topel@intel.com, magnus.karlsson@intel.com,
-        jakub.kicinski@netronome.com, jonathan.lemon@gmail.com,
-        saeedm@mellanox.com, maximmi@mellanox.com,
-        stephen@networkplumber.org
-Cc:     bruce.richardson@intel.com, ciara.loftus@intel.com,
-        bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        Kevin Laatz <kevin.laatz@intel.com>
-Subject: [PATCH bpf-next v4 11/11] doc/af_xdp: include unaligned chunk case
-Date:   Tue, 30 Jul 2019 08:54:00 +0000
-Message-Id: <20190730085400.10376-12-kevin.laatz@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190730085400.10376-1-kevin.laatz@intel.com>
-References: <20190724051043.14348-1-kevin.laatz@intel.com>
- <20190730085400.10376-1-kevin.laatz@intel.com>
+        id S1729068AbfG3Rlg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jul 2019 13:41:36 -0400
+Received: from shards.monkeyblade.net ([23.128.96.9]:52644 "EHLO
+        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726432AbfG3Rlg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jul 2019 13:41:36 -0400
+Received: from localhost (unknown [IPv6:2601:601:9f80:35cd::d71])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id A73501265A210;
+        Tue, 30 Jul 2019 10:41:35 -0700 (PDT)
+Date:   Tue, 30 Jul 2019 10:41:35 -0700 (PDT)
+Message-Id: <20190730.104135.1391040196178361165.davem@davemloft.net>
+To:     netdev@vger.kernel.org, daniel@iogearbox.net
+CC:     linux-wireless@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, lwn@lwn.net
+Subject: [FINAL REMINDER!!] LPC 2019 Networking Track CFP
+From:   David Miller <davem@davemloft.net>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 30 Jul 2019 10:41:35 -0700 (PDT)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The addition of unaligned chunks mode, the documentation needs to be
-updated to indicate that the incoming addr to the fill ring will only be
-masked if the user application is run in the aligned chunk mode. This patch
-also adds a line to explicitly indicate that the incoming addr will not be
-masked if running the user application in the unaligned chunk mode.
 
-Signed-off-by: Kevin Laatz <kevin.laatz@intel.com>
----
- Documentation/networking/af_xdp.rst | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+The deadline is this Friday, please get your proposals in as soon as
+possible and do not procrastinate.  The deadline absolutely cannot be
+extended.
 
-diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networking/af_xdp.rst
-index eeedc2e826aa..83f7ae5fc045 100644
---- a/Documentation/networking/af_xdp.rst
-+++ b/Documentation/networking/af_xdp.rst
-@@ -153,10 +153,12 @@ an example, if the UMEM is 64k and each chunk is 4k, then the UMEM has
- 
- Frames passed to the kernel are used for the ingress path (RX rings).
- 
--The user application produces UMEM addrs to this ring. Note that the
--kernel will mask the incoming addr. E.g. for a chunk size of 2k, the
--log2(2048) LSB of the addr will be masked off, meaning that 2048, 2050
--and 3000 refers to the same chunk.
-+The user application produces UMEM addrs to this ring. Note that, if
-+running the application with aligned chunk mode, the kernel will mask
-+the incoming addr.  E.g. for a chunk size of 2k, the log2(2048) LSB of
-+the addr will be masked off, meaning that 2048, 2050 and 3000 refers
-+to the same chunk. If the user application is run in the unaligned
-+chunks mode, then the incoming addr will be left untouched.
- 
- 
- UMEM Completion Ring
--- 
-2.17.1
+This is a call for proposals for the 3 day networking track at the
+Linux Plumbers Conference in Lisbon, which will be happening on
+September 9th-11th, 2019.
 
+We are seeking talks of 40 minutes in length (including Q & A),
+optionally accompanied by papers of 2 to 10 pages in length.  The
+papers, while not required, are very strongly encouraged by the
+committee.  The submitters intention to provide a paper will be taken
+into consideration as a criteria when deciding which proposals to
+accept.
+
+Any kind of advanced networking-related topic will be considered.
+
+Please submit your proposals on the LPC website at:
+
+	https://www.linuxplumbersconf.org/event/4/abstracts/#submit-abstract
+
+And be sure to select "Networking Summit Track" in the Track pulldown
+menu.
+
+Proposals must be submitted by August 2nd, and submitters will be
+notified of acceptance by August 9th.
+
+Final slides and papers (as PDF) are due on September 2nd.
+
+Looking forward to seeing you all in Lisbon in September!
