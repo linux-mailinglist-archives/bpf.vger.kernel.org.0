@@ -2,113 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F9C7B50D
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2019 23:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4F87B56B
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2019 00:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728740AbfG3VeS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jul 2019 17:34:18 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:38624 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726426AbfG3VeS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 30 Jul 2019 17:34:18 -0400
-Received: from pps.filterd (m0001255.ppops.net [127.0.0.1])
-        by mx0b-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6ULVopV028663;
-        Tue, 30 Jul 2019 14:33:58 -0700
+        id S2387457AbfG3WBd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jul 2019 18:01:33 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:54698 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387561AbfG3WBd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 30 Jul 2019 18:01:33 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6ULvbf1027576;
+        Tue, 30 Jul 2019 15:01:08 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : references : in-reply-to : content-type : content-id
  : content-transfer-encoding : mime-version; s=facebook;
- bh=c7fW76zsJDRgIUYUVInZsgOFpu165fw3z8wmfA60isA=;
- b=lXCr5FcJq+ggWObAOok1x+hQ8veZ8+ffJ857/1+ov/4yAwI098wWbu/Xz3Fsg4rlHWlj
- Ir6lb9dQyx9+SEEpO2aLJFt1ItDlZ8gUmlS4I25wtU2rM5jL7kQSNddDawKxeVlvXvxK
- oKS8DfXs6jP/oCRa95nIr3RKX4+ESiaAapE= 
+ bh=cpL2smeGy6qNc/w9NBA67muGPiTV79geblZBI66d+A8=;
+ b=IDhuSRSwVVWYz1x+vd+IVDZf0VtBbmtsOiRukjG2SH58D7+MdSJ/IskCX21ASHckS56x
+ aKmnqdQbvOCUnQS1mWn1vnuAfFNwgcO7IDBdpNgAbRqIBaBsQkGbpeOagTlwQMZWVIa8
+ 8aEUl5zbgko3RcVpCUxFRvauSNWNsv/ctuE= 
 Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0b-00082601.pphosted.com with ESMTP id 2u2uy0rdvu-9
+        by mx0a-00082601.pphosted.com with ESMTP id 2u2ty50svb-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 30 Jul 2019 14:33:58 -0700
-Received: from prn-mbx07.TheFacebook.com (2620:10d:c081:6::21) by
- prn-hub01.TheFacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server
+        Tue, 30 Jul 2019 15:01:08 -0700
+Received: from prn-hub03.TheFacebook.com (2620:10d:c081:35::127) by
+ prn-hub02.TheFacebook.com (2620:10d:c081:35::126) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Tue, 30 Jul 2019 14:33:17 -0700
-Received: from prn-hub05.TheFacebook.com (2620:10d:c081:35::129) by
- prn-mbx07.TheFacebook.com (2620:10d:c081:6::21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Tue, 30 Jul 2019 14:33:16 -0700
-Received: from NAM03-CO1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.29) with Microsoft SMTP Server
+ 15.1.1713.5; Tue, 30 Jul 2019 15:01:07 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.27) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Tue, 30 Jul 2019 14:33:16 -0700
+ via Frontend Transport; Tue, 30 Jul 2019 15:01:06 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W64m2H4emBiD9XHsReV6s9VexPJjcjmoUOeig50l/ypE+gfvhoQEzJTOky+2bE/qj4dp/sCleGqYFAOwkYmeAaZkcs8WH5MYEGUXhV9iuDhskFVD6a5KElARGKw6p0pdOFFHyn+cMn29jCxPGRdso8ZBqQugAYDBfIji8SLu8hH14qtnnWjeyGt/4LCP2nQSa7MrF/pL3bfff1WIzb6fBgQXQjJr841Po/5PlaqT4o4TmPR1CBGsdvGXNDZVg+IiHwupROlO1zjSuO8XA0oKqPiEYTsyxG5zMbOjOIyl9fiZ8nt2YzhPD/DfLkLGqogU7DUB/8FEmLSXC0Z5eHRJlA==
+ b=ZtSdhKpSNGpcBZSBE2gaOpvURPeWvXvhOXxcH5WMJzAsZ5QFS1tJztAS7+AOmrTkOTi3y2AA/sKTLc6PyXQJmrbiUGg6zZ6GJwJ7H5cawX2pGRB3HLcQB4Z5H3By3oyh2HSVW6gR1gUPSLuBWNhDysgwtJFG6IWGCLBrCLPgYt1jZsy6PJNUFCMPpDeNLSyz2Kep0KMDuHHxW1wo1LoSZEHecVGpPIiDd6R19Xfio1sVaWFR/bZtY8/46bfJCb8wZF3epwpldmXiShTm1w/DKRlnWghlbbbxRiT5FQl1tnjZvDxZNnNilBEqb8VnPY6z4GtV7JSW0qeUsBcTOsdeww==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c7fW76zsJDRgIUYUVInZsgOFpu165fw3z8wmfA60isA=;
- b=OnRECaOkWUaNsmp8bgm1+Alixacw0MDOARbzqMJGKuuXuKhn07B/vsbPnF80LTzEOLGaspGiCGE5PDcZ6dELdCdqhT/CbJ2FmdMA9Bh99+NDt1P62jTWwqOwhsbl4RPla0irXPtO+hnVPOOSJT1AYJ6FUTYiUSN/y7jVDScWmZnDUlMU8AJPKRblAghDlgviS1CZbXIqUa9i0nn6ZgzIIgklX+nmgf9UbiENeOVhOBojUBS4B2fGlUUsCvBf99zmO7v8rfSkIIjlGiqOCgtouDv0g/l4R/ALBAM3/C+sm7eCDp1VpXc2U3IW++ff82vyXUqVA5lFyp6Mpbm61NdCDw==
+ bh=cpL2smeGy6qNc/w9NBA67muGPiTV79geblZBI66d+A8=;
+ b=BFDIFtYQHboPCyGc25eFzwjfSk54QesoTU6+p85p8/QYhgCKVUeBRI9nyrWPDkn7dD5jRWy8r5yKRafEweE0zwfWH93v5/TTgALR2WyAl18eHVhM+6HAkdEiQSeyUbY1feO/dxIEoIx7bxGDdZPwp5DBiyw7Rei48HM/MB2w5Xrr9FETc/+2O69e5Rr4l+D3fcZ/TqbLdcKfZN81TtF6lavKrrlPJuPGOKU5jxjwbLpPzOVLmpk2+lqaTGWKGqQCMl0oVUSHgMi83g784RCF4xU1ThbUwWJECC2SpHvpTv1nOTMZEa8JYfc8dplFUAMzanqaG3RoS5lHtdQ/n4c53A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
  smtp.mailfrom=fb.com;dmarc=pass action=none header.from=fb.com;dkim=pass
  header.d=fb.com;arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c7fW76zsJDRgIUYUVInZsgOFpu165fw3z8wmfA60isA=;
- b=FZ3fbUH7rp1EPfzCnP+ccsKmsDIMx/z8+qQN/tj/lfCIw8pKO2+UEDsPF5MnkjJowgbUamvQUm9uOdDiBrkctcjEeo/wSbDsK/se5iCsejA49+iAZ93rzFhIAJmRxsPR27jpYw7Nc7A1IYP4SQFAVBZ5epGap5oAwAG3pkZ/wm4=
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
- MWHPR15MB1840.namprd15.prod.outlook.com (10.174.99.149) with Microsoft SMTP
+ bh=cpL2smeGy6qNc/w9NBA67muGPiTV79geblZBI66d+A8=;
+ b=NlAj/cSzPyzyeo7r6nj4XuWKujQ3LbSIwHe4EYnaS1jwvwNqoEF0TekRJZyW/bJtk1yWwmlpuliWEeNLmtOfSjeXIU9esVMANjbWl86kXPOGpaDsKi+84RrU2BG5xtqBRBw8NgZ8w9wQudLmf5TMHnWTLUQXJApY48MVwEA7Sus=
+Received: from BYAPR15MB3128.namprd15.prod.outlook.com (20.178.239.159) by
+ BYAPR15MB2693.namprd15.prod.outlook.com (20.179.156.222) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2115.11; Tue, 30 Jul 2019 21:33:15 +0000
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::d4fc:70c0:79a5:f41b]) by MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::d4fc:70c0:79a5:f41b%2]) with mapi id 15.20.2115.005; Tue, 30 Jul 2019
- 21:33:15 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+ 15.20.2115.10; Tue, 30 Jul 2019 22:01:04 +0000
+Received: from BYAPR15MB3128.namprd15.prod.outlook.com
+ ([fe80::99e:cade:56c3:74a3]) by BYAPR15MB3128.namprd15.prod.outlook.com
+ ([fe80::99e:cade:56c3:74a3%4]) with mapi id 15.20.2115.005; Tue, 30 Jul 2019
+ 22:01:04 +0000
+From:   Takshak Chahande <ctakshak@fb.com>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+CC:     "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>,
         "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 03/12] selftests/bpf: add BPF_CORE_READ
- relocatable read macro
-Thread-Topic: [PATCH v2 bpf-next 03/12] selftests/bpf: add BPF_CORE_READ
- relocatable read macro
-Thread-Index: AQHVRxC5ijGhYs8+0EOSm0twzvUWnKbjrD4AgAAAcACAAAH6gA==
-Date:   Tue, 30 Jul 2019 21:33:15 +0000
-Message-ID: <505D545B-4BAF-4278-A36F-92F455A169D1@fb.com>
-References: <20190730195408.670063-1-andriin@fb.com>
- <20190730195408.670063-4-andriin@fb.com>
- <87422673-525B-461B-B487-EB16386CAB25@fb.com>
- <CAEf4BzakowCqkCkBdGPJCZNU3MpDf1yBhzOXL2pos1tPiUH0mQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzakowCqkCkBdGPJCZNU3MpDf1yBhzOXL2pos1tPiUH0mQ@mail.gmail.com>
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "oss-drivers@netronome.com" <oss-drivers@netronome.com>,
+        Kernel Team <Kernel-team@fb.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>
+Subject: Re: [PATCH bpf-next v2] tools: bpftool: add support for reporting the
+ effective cgroup progs
+Thread-Topic: [PATCH bpf-next v2] tools: bpftool: add support for reporting
+ the effective cgroup progs
+Thread-Index: AQHVRxo2uTWxGIQYaEuHTrJGkU+a/Kbjtk6A
+Date:   Tue, 30 Jul 2019 22:01:03 +0000
+Message-ID: <20190730220053.GA69301@ctakshak-mbp.dhcp.thefacebook.com>
+References: <20190730210300.13113-1-jakub.kicinski@netronome.com>
+In-Reply-To: <20190730210300.13113-1-jakub.kicinski@netronome.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3445.104.11)
-x-originating-ip: [2620:10d:c090:200::3:5cb8]
+x-clientproxiedby: MWHPR04CA0036.namprd04.prod.outlook.com
+ (2603:10b6:300:ee::22) To BYAPR15MB3128.namprd15.prod.outlook.com
+ (2603:10b6:a03:b0::31)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::1:2b97]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 025be03b-12d1-47aa-608a-08d71535883c
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MWHPR15MB1840;
-x-ms-traffictypediagnostic: MWHPR15MB1840:
-x-microsoft-antispam-prvs: <MWHPR15MB1840165CE64978A18CF25FA8B3DC0@MWHPR15MB1840.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-office365-filtering-correlation-id: 1b912204-d921-4d31-150f-08d715396a38
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:BYAPR15MB2693;
+x-ms-traffictypediagnostic: BYAPR15MB2693:
+x-microsoft-antispam-prvs: <BYAPR15MB26937F6099DBDEB3C601FDEFBDDC0@BYAPR15MB2693.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3513;
 x-forefront-prvs: 0114FF88F6
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(346002)(376002)(366004)(136003)(396003)(199004)(189003)(66476007)(81156014)(476003)(25786009)(81166006)(64756008)(102836004)(6512007)(76116006)(66446008)(8676002)(8936002)(6246003)(66946007)(2906002)(4326008)(14454004)(446003)(53936002)(256004)(66556008)(99286004)(6916009)(14444005)(76176011)(36756003)(71190400001)(11346002)(46003)(486006)(57306001)(86362001)(186003)(2616005)(68736007)(6116002)(71200400001)(50226002)(316002)(7736002)(305945005)(6506007)(6486002)(53546011)(5660300002)(54906003)(6436002)(33656002)(229853002)(478600001);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1840;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(346002)(39860400002)(136003)(376002)(396003)(199004)(189003)(66446008)(6436002)(33656002)(486006)(256004)(2906002)(6246003)(478600001)(8676002)(5024004)(46003)(476003)(6116002)(25786009)(14454004)(71200400001)(71190400001)(446003)(4326008)(6486002)(81156014)(81166006)(186003)(6512007)(53936002)(9686003)(8936002)(316002)(66556008)(54906003)(86362001)(99286004)(11346002)(305945005)(7736002)(6916009)(1076003)(5660300002)(68736007)(76176011)(229853002)(386003)(52116002)(102836004)(6506007)(66946007)(64756008)(66476007);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2693;H:BYAPR15MB3128.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: fb.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: tNwrICLPxcxPnxOI3N2jjeg0pmeHjX9u94KmX7oh4o6E2PpIvrB8wV5PuKW/mqzBC14nwHW1oXKDBIZdhxz5zmjQkHBFRqMILc5wqC5dbMDOktgLazAOQkRVhRGZB1zEk6p6B2ZkaWDpsxRJMQL5WKORZbWGAop/oP0umuEngaq2FyhfQOpnMnQ1/suYDgWJDFcpYte1kNEhGgOtXJCpD02uiOaBZ5SPAtDkwcBc+q34uod3Ojz4mRVk6fgR/h4H7Rou0AXim00uDj+s2GyODHN7M7AeLYeCFztMT2BFHwVb6Nh79aGN0ud2+Ap1uFVRB8+ijzLMQMubonncwQq50ZlSXFCfFTUgGWpeedI5lqqiL7m+pmTl7HPesceW/mDSzv6tWn73JNxxrORVMtH79rZ/XirluqhDyWDjwXGUkeI=
+x-microsoft-antispam-message-info: paGXr1ryycjxFNI6yhh8GViywLmNpN3E4JueBL/MMaDwiQRyrOT9f+heh3RFSMuha7nP5xg/sTkVDxLwR4n/YCBZRJrXzUiH1y8egFFcYHF56My8tOYlP/+6iq4l4ymeX4Xe72rrPYw5DAMVIspPpxfkBLKKFbbRcU0Ui66xQtBBX/xp8dI4pdoO4qVZsoaitgbyYZQ3xBa3xo7wUDg3s/O0josxFuVjS/c5292kHZMm7/WZNcvd4eIXB7+sDdtDHeKpg+EChj8AVSUerHS5xlh6ryDTtxeAmgtvHW1k8dbryIkw9Q7052xvr4btuyzXQZR3GiY9wBQOgOWYSC/QqFCcHfhKpcab2fqwAf6RibI+fpub5DVA4Np5GTmq3EXE83VcHOxpdD9A8/J1DgfOKjHjIvGj9NNFCQ+1XYAQcQY=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <9E9DB73162339A4680782CBF2F653BCE@namprd15.prod.outlook.com>
+Content-ID: <3DF13380FB5864408192986BA5F849F8@namprd15.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 025be03b-12d1-47aa-608a-08d71535883c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jul 2019 21:33:15.6620
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b912204-d921-4d31-150f-08d715396a38
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jul 2019 22:01:03.8692
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: songliubraving@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1840
+X-MS-Exchange-CrossTenant-userprincipalname: ctakshak@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2693
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-30_10:,,
  signatures=0
@@ -116,75 +114,312 @@ X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 pri
  malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
  mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1907300214
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1907300219
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-> On Jul 30, 2019, at 2:26 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> =
-wrote:
+Jakub Kicinski <jakub.kicinski@netronome.com> wrote on Tue [2019-Jul-30 14:=
+03:00 -0700]:
+> Takshak said in the original submission:
 >=20
-> On Tue, Jul 30, 2019 at 2:24 PM Song Liu <songliubraving@fb.com> wrote:
->>=20
->>=20
->>=20
->>> On Jul 30, 2019, at 12:53 PM, Andrii Nakryiko <andriin@fb.com> wrote:
->>>=20
->>> Add BPF_CORE_READ macro used in tests to do bpf_core_read(), which
->>> automatically captures offset relocation.
->>>=20
->>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->>> ---
->>> tools/testing/selftests/bpf/bpf_helpers.h | 19 +++++++++++++++++++
->>> 1 file changed, 19 insertions(+)
->>>=20
->>> diff --git a/tools/testing/selftests/bpf/bpf_helpers.h b/tools/testing/=
-selftests/bpf/bpf_helpers.h
->>> index f804f210244e..81bc51293d11 100644
->>> --- a/tools/testing/selftests/bpf/bpf_helpers.h
->>> +++ b/tools/testing/selftests/bpf/bpf_helpers.h
->>> @@ -501,4 +501,23 @@ struct pt_regs;
->>>                              (void *)(PT_REGS_FP(ctx) + sizeof(ip))); }=
-)
->>> #endif
->>>=20
->>> +/*
->>> + * BPF_CORE_READ abstracts away bpf_probe_read() call and captures off=
-set
->>> + * relocation for source address using __builtin_preserve_access_index=
-()
->>> + * built-in, provided by Clang.
->>> + *
->>> + * __builtin_preserve_access_index() takes as an argument an expressio=
-n of
->>> + * taking an address of a field within struct/union. It makes compiler=
- emit
->>> + * a relocation, which records BTF type ID describing root struct/unio=
-n and an
->>> + * accessor string which describes exact embedded field that was used =
-to take
->>> + * an address. See detailed description of this relocation format and
->>> + * semantics in comments to struct bpf_offset_reloc in libbpf_internal=
-.h.
->>> + *
->>> + * This relocation allows libbpf to adjust BPF instruction to use corr=
-ect
->>> + * actual field offset, based on target kernel BTF type that matches o=
-riginal
->>> + * (local) BTF, used to record relocation.
->>> + */
->>> +#define BPF_CORE_READ(dst, src) \
->>> +     bpf_probe_read(dst, sizeof(*src), __builtin_preserve_access_index=
-(src))
->>=20
->> We should use "sizeof(*(src))"
->>=20
+> With different bpf attach_flags available to attach bpf programs speciall=
+y
+> with BPF_F_ALLOW_OVERRIDE and BPF_F_ALLOW_MULTI, the list of effective
+> bpf-programs available to any sub-cgroups really needs to be available fo=
+r
+> easy debugging.
 >=20
-> Good point. Also (dst) instead of just (dst). Will update.
+> Using BPF_F_QUERY_EFFECTIVE flag, one can get the list of not only attach=
+ed
+> bpf-programs to a cgroup but also the inherited ones from parent cgroup.
+>=20
+> So a new option is introduced to use BPF_F_QUERY_EFFECTIVE query flag her=
+e
+> to list all the effective bpf-programs available for execution at a speci=
+fied
+> cgroup.
+>=20
+> Reused modified test program test_cgroup_attach from tools/testing/selfte=
+sts/bpf:
+>   # ./test_cgroup_attach
+>=20
+> With old bpftool:
+>=20
+>  # bpftool cgroup show /sys/fs/cgroup/cgroup-test-work-dir/cg1/
+>   ID       AttachType      AttachFlags     Name
+>   271      egress          multi           pkt_cntr_1
+>   272      egress          multi           pkt_cntr_2
+>=20
+> Attached new program pkt_cntr_4 in cg2 gives following:
+>=20
+>  # bpftool cgroup show /sys/fs/cgroup/cgroup-test-work-dir/cg1/cg2
+>   ID       AttachType      AttachFlags     Name
+>   273      egress          override        pkt_cntr_4
+>=20
+> And with new "effective" option it shows all effective programs for cg2:
+>=20
+>  # bpftool cgroup show /sys/fs/cgroup/cgroup-test-work-dir/cg1/cg2 effect=
+ive
+>   ID       AttachType      AttachFlags     Name
+>   273      egress          override        pkt_cntr_4
+>   271      egress          override        pkt_cntr_1
+>   272      egress          override        pkt_cntr_2
+>=20
+> Compared to original submission use a local flag instead of global
+> option.
+>=20
+> We need to clear query_flags on every command, in case batch mode
+> wants to use varying settings.
+>=20
+> v2: (Takshak)
+>  - forbid duplicated flags;
+>  - fix cgroup path freeing.
+>=20
+> Signed-off-by: Takshak Chahande <ctakshak@fb.com>
+> Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+> Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
+> ---
+>  .../bpftool/Documentation/bpftool-cgroup.rst  | 16 +++-
+>  tools/bpf/bpftool/bash-completion/bpftool     | 15 ++--
+>  tools/bpf/bpftool/cgroup.c                    | 83 ++++++++++++-------
+>  3 files changed, 76 insertions(+), 38 deletions(-)
+>=20
+> diff --git a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst b/tools/b=
+pf/bpftool/Documentation/bpftool-cgroup.rst
+> index 585f270c2d25..06a28b07787d 100644
+> --- a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
+> +++ b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
+> @@ -20,8 +20,8 @@ SYNOPSIS
+>  CGROUP COMMANDS
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =20
+> -|	**bpftool** **cgroup { show | list }** *CGROUP*
+> -|	**bpftool** **cgroup tree** [*CGROUP_ROOT*]
+> +|	**bpftool** **cgroup { show | list }** *CGROUP* [**effective**]
+> +|	**bpftool** **cgroup tree** [*CGROUP_ROOT*] [**effective**]
+>  |	**bpftool** **cgroup attach** *CGROUP* *ATTACH_TYPE* *PROG* [*ATTACH_F=
+LAGS*]
+>  |	**bpftool** **cgroup detach** *CGROUP* *ATTACH_TYPE* *PROG*
+>  |	**bpftool** **cgroup help**
+> @@ -35,13 +35,17 @@ CGROUP COMMANDS
+> =20
+>  DESCRIPTION
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> -	**bpftool cgroup { show | list }** *CGROUP*
+> +	**bpftool cgroup { show | list }** *CGROUP* [**effective**]
+>  		  List all programs attached to the cgroup *CGROUP*.
+> =20
+>  		  Output will start with program ID followed by attach type,
+>  		  attach flags and program name.
+> =20
+> -	**bpftool cgroup tree** [*CGROUP_ROOT*]
+> +		  If **effective** is specified retrieve effective programs that
+> +		  will execute for events within a cgroup. This includes
+> +		  inherited along with attached ones.
+> +
+> +	**bpftool cgroup tree** [*CGROUP_ROOT*] [**effective**]
+>  		  Iterate over all cgroups in *CGROUP_ROOT* and list all
+>  		  attached programs. If *CGROUP_ROOT* is not specified,
+>  		  bpftool uses cgroup v2 mountpoint.
+> @@ -50,6 +54,10 @@ DESCRIPTION
+>  		  commands: it starts with absolute cgroup path, followed by
+>  		  program ID, attach type, attach flags and program name.
+> =20
+> +		  If **effective** is specified retrieve effective programs that
+> +		  will execute for events within a cgroup. This includes
+> +		  inherited along with attached ones.
+> +
+>  	**bpftool cgroup attach** *CGROUP* *ATTACH_TYPE* *PROG* [*ATTACH_FLAGS*=
+]
+>  		  Attach program *PROG* to the cgroup *CGROUP* with attach type
+>  		  *ATTACH_TYPE* and optional *ATTACH_FLAGS*.
+> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftoo=
+l/bash-completion/bpftool
+> index 6b961a5ed100..df16c5415444 100644
+> --- a/tools/bpf/bpftool/bash-completion/bpftool
+> +++ b/tools/bpf/bpftool/bash-completion/bpftool
+> @@ -710,12 +710,15 @@ _bpftool()
+>              ;;
+>          cgroup)
+>              case $command in
+> -                show|list)
+> -                    _filedir
+> -                    return 0
+> -                    ;;
+> -                tree)
+> -                    _filedir
+> +                show|list|tree)
+> +                    case $cword in
+> +                        3)
+> +                            _filedir
+> +                            ;;
+> +                        4)
+> +                            COMPREPLY=3D( $( compgen -W 'effective' -- "=
+$cur" ) )
+> +                            ;;
+> +                    esac
+>                      return 0
+>                      ;;
+>                  attach|detach)
+> diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
+> index f3c05b08c68c..44352b5aca85 100644
+> --- a/tools/bpf/bpftool/cgroup.c
+> +++ b/tools/bpf/bpftool/cgroup.c
+> @@ -29,6 +29,8 @@
+>  	"                        recvmsg4 | recvmsg6 | sysctl |\n"	       \
+>  	"                        getsockopt | setsockopt }"
+> =20
+> +static unsigned int query_flags;
+> +
+>  static const char * const attach_type_strings[] =3D {
+>  	[BPF_CGROUP_INET_INGRESS] =3D "ingress",
+>  	[BPF_CGROUP_INET_EGRESS] =3D "egress",
+> @@ -107,7 +109,8 @@ static int count_attached_bpf_progs(int cgroup_fd, en=
+um bpf_attach_type type)
+>  	__u32 prog_cnt =3D 0;
+>  	int ret;
+> =20
+> -	ret =3D bpf_prog_query(cgroup_fd, type, 0, NULL, NULL, &prog_cnt);
+> +	ret =3D bpf_prog_query(cgroup_fd, type, query_flags, NULL,
+> +			     NULL, &prog_cnt);
+>  	if (ret)
+>  		return -1;
+> =20
+> @@ -125,8 +128,8 @@ static int show_attached_bpf_progs(int cgroup_fd, enu=
+m bpf_attach_type type,
+>  	int ret;
+> =20
+>  	prog_cnt =3D ARRAY_SIZE(prog_ids);
+> -	ret =3D bpf_prog_query(cgroup_fd, type, 0, &attach_flags, prog_ids,
+> -			     &prog_cnt);
+> +	ret =3D bpf_prog_query(cgroup_fd, type, query_flags, &attach_flags,
+> +			     prog_ids, &prog_cnt);
+>  	if (ret)
+>  		return ret;
+> =20
+> @@ -158,20 +161,34 @@ static int show_attached_bpf_progs(int cgroup_fd, e=
+num bpf_attach_type type,
+>  static int do_show(int argc, char **argv)
+>  {
+>  	enum bpf_attach_type type;
+> +	const char *path;
+>  	int cgroup_fd;
+>  	int ret =3D -1;
+> =20
+> -	if (argc < 1) {
+> -		p_err("too few parameters for cgroup show");
+> -		goto exit;
+> -	} else if (argc > 1) {
+> -		p_err("too many parameters for cgroup show");
+> -		goto exit;
+> +	query_flags =3D 0;
+> +
+> +	if (!REQ_ARGS(1))
+> +		return -1;
+> +	path =3D GET_ARG();
+> +
+> +	while (argc) {
+> +		if (is_prefix(*argv, "effective")) {
+> +			if (query_flags & BPF_F_QUERY_EFFECTIVE) {
+> +				p_err("duplicated argument: %s", *argv);
+> +				return -1;
+> +			}
+> +			query_flags |=3D BPF_F_QUERY_EFFECTIVE;
+> +			NEXT_ARG();
+> +		} else {
+> +			p_err("expected no more arguments, 'effective', got: '%s'?",
+> +			      *argv);
+> +			return -1;
+> +		}
+>  	}
+> =20
+> -	cgroup_fd =3D open(argv[0], O_RDONLY);
+> +	cgroup_fd =3D open(path, O_RDONLY);
+>  	if (cgroup_fd < 0) {
+> -		p_err("can't open cgroup %s", argv[0]);
+> +		p_err("can't open cgroup %s", path);
+>  		goto exit;
+>  	}
+> =20
+> @@ -294,26 +311,37 @@ static char *find_cgroup_root(void)
+> =20
+>  static int do_show_tree(int argc, char **argv)
+>  {
+> -	char *cgroup_root;
+> +	char *cgroup_root, *cgroup_alloced =3D NULL;
+>  	int ret;
+> =20
+> -	switch (argc) {
+> -	case 0:
+> -		cgroup_root =3D find_cgroup_root();
+> -		if (!cgroup_root) {
+> +	query_flags =3D 0;
+> +
+> +	if (!argc) {
+> +		cgroup_alloced =3D find_cgroup_root();
+> +		if (!cgroup_alloced) {
+>  			p_err("cgroup v2 isn't mounted");
+>  			return -1;
+>  		}
+> -		break;
+> -	case 1:
+> -		cgroup_root =3D argv[0];
+> -		break;
+> -	default:
+> -		p_err("too many parameters for cgroup tree");
+> -		return -1;
+> +		cgroup_root =3D cgroup_alloced;
+> +	} else {
+> +		cgroup_root =3D GET_ARG();
+> +
+> +		while (argc) {
+> +			if (is_prefix(*argv, "effective")) {
+> +				if (query_flags & BPF_F_QUERY_EFFECTIVE) {
+> +					p_err("duplicated argument: %s", *argv);
+> +					return -1;
+> +				}
+> +				query_flags |=3D BPF_F_QUERY_EFFECTIVE;
+> +				NEXT_ARG();
+> +			} else {
+> +				p_err("expected no more arguments, 'effective', got: '%s'?",
+> +				      *argv);
+> +				return -1;
+> +			}
+> +		}
+>  	}
+> =20
+> -
+>  	if (json_output)
+>  		jsonw_start_array(json_wtr);
+>  	else
+> @@ -338,8 +366,7 @@ static int do_show_tree(int argc, char **argv)
+>  	if (json_output)
+>  		jsonw_end_array(json_wtr);
+> =20
+> -	if (argc =3D=3D 0)
+> -		free(cgroup_root);
+> +	free(cgroup_alloced);
+> =20
+>  	return ret;
+>  }
+> @@ -459,8 +486,8 @@ static int do_help(int argc, char **argv)
+>  	}
+> =20
+>  	fprintf(stderr,
+> -		"Usage: %s %s { show | list } CGROUP\n"
+> -		"       %s %s tree [CGROUP_ROOT]\n"
+> +		"Usage: %s %s { show | list } CGROUP [**effective**]\n"
+> +		"       %s %s tree [CGROUP_ROOT] [**effective**]\n"
+>  		"       %s %s attach CGROUP ATTACH_TYPE PROG [ATTACH_FLAGS]\n"
+>  		"       %s %s detach CGROUP ATTACH_TYPE PROG\n"
+>  		"       %s %s help\n"
+> --=20
+> 2.21.0
+>=20
 
-I think dst as-is is fine. "," is the very last in precedence list.=20
+Thanks for v2; looks good.
 
+Reviewed-by: Takshak Chahande <ctakshak@fb.com>
