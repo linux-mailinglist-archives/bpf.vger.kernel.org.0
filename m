@@ -2,184 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C26E7B451
-	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2019 22:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2227B4B3
+	for <lists+bpf@lfdr.de>; Tue, 30 Jul 2019 23:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728182AbfG3UYQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Jul 2019 16:24:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728205AbfG3UYP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Jul 2019 16:24:15 -0400
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16CB32067D
-        for <bpf@vger.kernel.org>; Tue, 30 Jul 2019 20:24:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1564518254;
-        bh=Kt8xMfLEUIW3Y3BQbWr7auw3iHGpmo7WxKDcHNpHrJY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GmJoYeQDaFAUl1Ui62dX95JLJaYBJl8hsKijGu5k+fuBTx+nfGLoVkDWtrJkoS24+
-         Ov96rqM0Aio5JTDF0echMY3FYWkr44D4Y6dg3+Xaqiqu8gp4nRWBsCtqe9RS5A3Vit
-         4Gq67dfbTxoatiFtzZYxx2YkQcFFcaavxGZ44U6M=
-Received: by mail-wr1-f48.google.com with SMTP id f9so67115341wre.12
-        for <bpf@vger.kernel.org>; Tue, 30 Jul 2019 13:24:14 -0700 (PDT)
-X-Gm-Message-State: APjAAAUy8YyKuJaRfa8SlzrhJxTHcjlq1DObKOospvGRuBsfJgdxvrVO
-        HrDhDNOft6ldYebxrD7QQgbzSGIWZxyouph7fu45VQ==
-X-Google-Smtp-Source: APXvYqzZ/BahTMAZqJKvw3CKJJrYc0VH2HO2IKCQHMz+jcl+qF5qZMCRFU61mq2qYTzjNeslp+cWZBSZeISWQwA0qnU=
-X-Received: by 2002:adf:f28a:: with SMTP id k10mr52015339wro.343.1564518251602;
- Tue, 30 Jul 2019 13:24:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190627201923.2589391-1-songliubraving@fb.com>
- <20190627201923.2589391-2-songliubraving@fb.com> <21894f45-70d8-dfca-8c02-044f776c5e05@kernel.org>
- <3C595328-3ABE-4421-9772-8D41094A4F57@fb.com> <CALCETrWBnH4Q43POU8cQ7YMjb9LioK28FDEQf7aHZbdf1eBZWg@mail.gmail.com>
- <0DE7F23E-9CD2-4F03-82B5-835506B59056@fb.com> <CALCETrWBWbNFJvsTCeUchu3BZJ3SH3dvtXLUB2EhnPrzFfsLNA@mail.gmail.com>
- <201907021115.DCD56BBABB@keescook> <CALCETrXTta26CTtEDnzvtd03-WOGdXcnsAogP8JjLkcj4-mHvg@mail.gmail.com>
- <4A7A225A-6C23-4C0F-9A95-7C6C56B281ED@fb.com> <CALCETrX2bMnwC6_t4b_G-hzJSfMPrkK4YKs5ebcecv2LJ0rt3w@mail.gmail.com>
- <514D5453-0AEE-420F-AEB6-3F4F58C62E7E@fb.com> <1DE886F3-3982-45DE-B545-67AD6A4871AB@amacapital.net>
- <7F51F8B8-CF4C-4D82-AAE1-F0F28951DB7F@fb.com> <77354A95-4107-41A7-8936-D144F01C3CA4@fb.com>
- <369476A8-4CE1-43DA-9239-06437C0384C7@fb.com>
-In-Reply-To: <369476A8-4CE1-43DA-9239-06437C0384C7@fb.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 30 Jul 2019 13:24:00 -0700
-X-Gmail-Original-Message-ID: <CALCETrUpVMrk7aaf0trfg9AfZ4fy279uJgZH7V+gZzjFw=hUxA@mail.gmail.com>
-Message-ID: <CALCETrUpVMrk7aaf0trfg9AfZ4fy279uJgZH7V+gZzjFw=hUxA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S1726665AbfG3VA4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Jul 2019 17:00:56 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:43670 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726162AbfG3VA4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Jul 2019 17:00:56 -0400
+Received: by mail-qk1-f193.google.com with SMTP id m14so21915367qka.10
+        for <bpf@vger.kernel.org>; Tue, 30 Jul 2019 14:00:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=UZVLH+YJQnTToBfxuUOLKOpxR4PzlV9zcM3XVpn0bZQ=;
+        b=mcws10hDVVGHgXmeHOx3+gacFHiyt6qxQmtnMf9VKy9x2aso89EW+Iz5QyvBfsb5k1
+         mYAFkhQqw6yWf+1/iIzcSs2OgAr0QWe+wVrEtAFBUilZNASolnS6iRHqCGouKKTxI2pb
+         tbupWsSD/Tc8IocksoN9BnMfFPsJswJhUvq0DvlfVplsZKLM0664vDVsqqjchQGU1OnD
+         Vmcd0hqOSEzOcAc6AyUEKp+4VSBl+vtPQNYbD9RnLXrL+N397Jh9IxFwt+Y155WBnSZm
+         YBsmWTIg7WDc3KKxVG9iLH62A88G7F44bLEDorf4En3SYksZTTcX8R4dfbxSdHLuL6gx
+         /7tQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=UZVLH+YJQnTToBfxuUOLKOpxR4PzlV9zcM3XVpn0bZQ=;
+        b=LmznwNkVkiEchbfmRQG6ScKX05q55pLeK3xJVF5ayus6Nw3tP/yKzN/zbDExgr5p0G
+         +okWbmrK69oe/pfe25JLmw7YdfLRBoXwjrHEcn1VorAb0vd3wmNMDKkhy03HPjXPiN5j
+         t7JOmAik+KwPIK/EaPuetGRnfUdyL4F7vziNXuZuj3IQzqEwS5O4eiPTnuymmjG/Bd7R
+         0swcBhpYENMz/vgsYcNb2Lqw2jVSmm4a9vLZyjA9tWBJ7izPt14aGaEq3RbALUPHySb5
+         oLXHzbPYGpI8ydz4sscgv3lOYQWG2yuVMdBedKkEsFn1T5YcWwcwVPuX4OCnmFrP+o1s
+         hm8w==
+X-Gm-Message-State: APjAAAVrDtAHXHukCl5Zdfjn3fmT/zo+rBwu0J0SaeYF/5OtqWib9MHY
+        bVCb2tpC1fckOSfcppcj9SR7RQ==
+X-Google-Smtp-Source: APXvYqy6uA8j/TiODO9MQFYAXMgFVAJWCFAWDabDRYE1w+HZfeiZDq7OyAAZj3mhuM9beq9rdAK4LQ==
+X-Received: by 2002:a37:274a:: with SMTP id n71mr72049172qkn.448.1564520454474;
+        Tue, 30 Jul 2019 14:00:54 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id g10sm27564265qkk.91.2019.07.30.14.00.53
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 30 Jul 2019 14:00:54 -0700 (PDT)
+Date:   Tue, 30 Jul 2019 14:00:40 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Takshak Chahande <ctakshak@fb.com>
+Cc:     "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "oss-drivers@netronome.com" <oss-drivers@netronome.com>,
         Kernel Team <Kernel-team@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Jann Horn <jannh@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Quentin Monnet <quentin.monnet@netronome.com>
+Subject: Re: [PATCH bpf-next] tools: bpftool: add support for reporting the
+ effective cgroup progs
+Message-ID: <20190730140040.7a357b19@cakuba.netronome.com>
+In-Reply-To: <20190730180443.GA48276@ctakshak-mbp.dhcp.thefacebook.com>
+References: <20190729213538.8960-1-jakub.kicinski@netronome.com>
+        <20190730180443.GA48276@ctakshak-mbp.dhcp.thefacebook.com>
+Organization: Netronome Systems, Ltd.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 29, 2019 at 10:07 PM Song Liu <songliubraving@fb.com> wrote:
->
-> Hi Andy,
->
-> > On Jul 27, 2019, at 11:20 AM, Song Liu <songliubraving@fb.com> wrote:
-> >
-> > Hi Andy,
-> >
-> >>>>>
-> >>>>
-> >>>> Well, yes. sys_bpf() is pretty powerful.
-> >>>>
-> >>>> The goal of /dev/bpf is to enable special users to call sys_bpf(). I=
-n
-> >>>> the meanwhile, such users should not take down the whole system easi=
-ly
-> >>>> by accident, e.g., with rm -rf /.
-> >>>
-> >>> That=E2=80=99s easy, though =E2=80=94 bpftool could learn to read /et=
-c/bpfusers before allowing ruid !=3D 0.
-> >>
-> >> This is a great idea! fscaps + /etc/bpfusers should do the trick.
-> >
-> > After some discussions and more thinking on this, I have some concerns
-> > with the user space only approach.
-> >
-> > IIUC, your proposal for user space only approach is like:
-> >
-> > 1. bpftool (and other tools) check /etc/bpfusers and only do
-> >   setuid for allowed users:
-> >
-> >       int main()
-> >       {
-> >               if (/* uid in /etc/bpfusers */)
-> >                       setuid(0);
-> >               sys_bpf(...);
-> >       }
-> >
-> > 2. bpftool (and other tools) is installed with CAP_SETUID:
-> >
-> >       setcap cap_setuid=3De+p /bin/bpftool
-> >
-> > 3. sys admin maintains proper /etc/bpfusers.
-> >
-> > This approach is not ideal, because we need to trust the tool to give
-> > it CAP_SETUID. A hacked tool could easily bypass /etc/bpfusers check
-> > or use other root only sys calls after setuid(0).
-> >
->
-> I would like more comments on this.
->
-> Currently, bpf permission is more or less "root or nothing", which we
-> would like to change.
->
-> The short term goal is to separate bpf from root, in other words, it is
-> "all or nothing". Special user space utilities, such as systemd, would
-> benefit from this. Once this is implemented, systemd can call sys_bpf()
-> when it is not running as root.
+On Tue, 30 Jul 2019 18:04:53 +0000, Takshak Chahande wrote:
+> Jakub Kicinski <jakub.kicinski@netronome.com> wrote on Mon [2019-Jul-29 14:35:38 -0700]:
+> > @@ -158,20 +161,30 @@ static int show_attached_bpf_progs(int cgroup_fd, enum bpf_attach_type type,
+> >  static int do_show(int argc, char **argv)
+> >  {
+> >  	enum bpf_attach_type type;
+> > +	const char *path;
+> >  	int cgroup_fd;
+> >  	int ret = -1;
+> >  
+> > -	if (argc < 1) {
+> > -		p_err("too few parameters for cgroup show");
+> > -		goto exit;
+> > -	} else if (argc > 1) {
+> > -		p_err("too many parameters for cgroup show");
+> > -		goto exit;
+> > +	query_flags = 0;
+> > +
+> > +	if (!REQ_ARGS(1))
+> > +		return -1;
+> > +	path = GET_ARG();
+> > +
+> > +	while (argc) {
+> > +		if (is_prefix(*argv, "effective")) {
+> > +			query_flags |= BPF_F_QUERY_EFFECTIVE;
+> > +			NEXT_ARG();
+> > +		} else {
+> > +			p_err("expected no more arguments, 'effective', got: '%s'?",
+> > +			      *argv);
+> > +			return -1;
+> > +		}
+> >  	}  
+> This while loop will allow multiple 'effective' keywords in the argument
+> unnecessarily. IMO, we should strictly restrict only for single
+> occurance of 'effective' word.
 
-As generally nasty as Linux capabilities are, this sounds like a good
-use for CAP_BPF_ADMIN.
+It's kind of the way all bpftool works to date :(
 
-But what do you have in mind?  Isn't non-root systemd mostly just the
-user systemd session?  That should *not* have bpf() privileges until
-bpf() is improved such that you can't use it to compromise the system.
+But perhaps not checking is worse than inconsistency? Okay, let's fix
+this up.
 
->
-> In longer term, it may be useful to provide finer grain permission of
-> sys_bpf(). For example, sys_bpf() should be aware of containers; and
-> user may only have access to certain bpf maps. Let's call this
-> "fine grain" capability.
->
->
-> Since we are seeing new use cases every year, we will need many
-> iterations to implement the fine grain permission. I think we need an
-> API that is flexible enough to cover different types of permission
-> control.
->
-> For example, bpf_with_cap() can be flexible:
->
->         bpf_with_cap(cmd, attr, size, perm_fd);
->
-> We can get different types of permission via different combinations of
-> arguments:
->
->     A perm_fd to /dev/bpf gives access to all sys_bpf() commands, so
->     this is "all or nothing" permission.
->
->     A perm_fd to /sys/fs/cgroup/.../bpf.xxx would only allow some
->     commands to this specific cgroup.
->
+> > -	cgroup_fd = open(argv[0], O_RDONLY);
+> > +	cgroup_fd = open(path, O_RDONLY);
+> >  	if (cgroup_fd < 0) {
+> > -		p_err("can't open cgroup %s", argv[0]);
+> > +		p_err("can't open cgroup %s", path);
+> >  		goto exit;
+> >  	}
+> >  
+> > @@ -297,23 +310,29 @@ static int do_show_tree(int argc, char **argv)
+> >  	char *cgroup_root;
+> >  	int ret;
+> >  
+> > -	switch (argc) {
+> > -	case 0:
+> > +	query_flags = 0;
+> > +
+> > +	if (!argc) {
+> >  		cgroup_root = find_cgroup_root();
+> >  		if (!cgroup_root) {
+> >  			p_err("cgroup v2 isn't mounted");
+> >  			return -1;
+> >  		}
+> > -		break;
+> > -	case 1:
+> > -		cgroup_root = argv[0];
+> > -		break;
+> > -	default:
+> > -		p_err("too many parameters for cgroup tree");
+> > -		return -1;
+> > +	} else {
+> > +		cgroup_root = GET_ARG();
+> > +
+> > +		while (argc) {
+> > +			if (is_prefix(*argv, "effective")) {
+> > +				query_flags |= BPF_F_QUERY_EFFECTIVE;
+> > +				NEXT_ARG();  
+> 
+> NEXT_ARG() does update argc value; that means after this outer if/else we need 
+> to know how argc has become 0 (through which path) before freeing up `cgroup_root` allocated
+> memory later at the end of this function.
 
-I don't see why you need to invent a whole new mechanism for this.
-The entire cgroup ecosystem outside bpf() does just fine using the
-write permission on files in cgroupfs to control access.  Why can't
-bpf() do the same thing?
+Good catch!
 
->
-> Alexei raised another idea in offline discussions: instead of adding
-> bpf_with_cap(), we add a command LOAD_PERM_FD, which enables special
-> permission for the _next_ sys_bpf() from current task:
->
->     bpf(LOAD_PERM_FD, perm_fd);
->     /* the next sys_bpf() uses permission from perm_fd */
->     bpf(cmd, attr, size);
->
-> This is equivalent to bpf_with_cap(cmd, attr, size, perm_fd), but
-> doesn't require the new sys call.
+> > +			} else {
+> > +				p_err("expected no more arguments, 'effective', got: '%s'?",
+> > +				      *argv);
+> > +				return -1;
+> > +			}
+> > +		}
+> >  	}  
+ 
+> Thanks for the patch. Apart from above two issues, patch looks good.
 
-That sounds almost every bit as problematic as the approach where you
-ask for permission once and it sticks.
-
->
-> 1. User space only approach doesn't work, even for "all or nothing"
->    permission control. I expanded the discussion in the previous
->    email. Please let me know if I missed anything there.
-
-As in my previous email, I disagree.
+Thanks for the review.
