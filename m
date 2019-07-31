@@ -2,106 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A59E7B7AB
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2019 03:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4D17B86A
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2019 06:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbfGaBii convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 30 Jul 2019 21:38:38 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:26764 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726628AbfGaBih (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 30 Jul 2019 21:38:37 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6V1cZ2h003476
-        for <bpf@vger.kernel.org>; Tue, 30 Jul 2019 18:38:36 -0700
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2u2pwm2cw4-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 30 Jul 2019 18:38:36 -0700
-Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Tue, 30 Jul 2019 18:38:32 -0700
-Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
-        id C47A9760C3C; Tue, 30 Jul 2019 18:38:31 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Alexei Starovoitov <ast@kernel.org>
-Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
-To:     <davem@davemloft.net>
-CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf 2/2] selftests/bpf: tests for jmp to 1st insn
-Date:   Tue, 30 Jul 2019 18:38:27 -0700
-Message-ID: <20190731013827.2445262-3-ast@kernel.org>
-X-Mailer: git-send-email 2.20.0
-In-Reply-To: <20190731013827.2445262-1-ast@kernel.org>
-References: <20190731013827.2445262-1-ast@kernel.org>
+        id S1727026AbfGaEMd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Jul 2019 00:12:33 -0400
+Received: from mail-lj1-f181.google.com ([209.85.208.181]:36161 "EHLO
+        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725290AbfGaEMd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Jul 2019 00:12:33 -0400
+Received: by mail-lj1-f181.google.com with SMTP id i21so64209778ljj.3;
+        Tue, 30 Jul 2019 21:12:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hG19nbQy+AVdG3V4usBpGCc3Y7/Fo49/v/D0tj7mJjk=;
+        b=fsmjYkSR0COLxibp9N55+udLVwPk8oPdc/sSwnHW1DjJZW97AbTCjlICWaKcIwKTXs
+         1hvNsbmJJ+Z7K8fQ2Tz06tlkATWHfcevmaaPXRYhC+JhDx9m+vNyyPf8ulg9xuP1SzyG
+         GOx8ZQTCoExZQF1TJNsukG3R4AkAiacdIYVjpOxfQ161kc5fHtwsqs5zOVOZbq76Kphs
+         1qGQYrZrT8j6dD/gH27rDZTJRbQ3f0O2ouXX9NZNlZ54CEYo0O/8eDVuIdTL5MgI1xQc
+         n+JAsLBrkBQsx2iIZDbTuWiyFHgC7uXDaA7vtF09J3iLuBUUHiwJrch1GfSNofKDAke8
+         kMCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hG19nbQy+AVdG3V4usBpGCc3Y7/Fo49/v/D0tj7mJjk=;
+        b=qyvQLNwRWFct8+/+C7VToNlBAkFgDAWik4MJIHjCY8AlAH7JuLjByuv84LuSAUoHug
+         z0siusSOvYMMT6FmmXgxRtgjMBJeMd6NnNAwIx2TLMDpPgpK61bY9NXAtt1wmXEo8oe2
+         MVl1W6G8HHy89LLCT/JME15Fosj9bCNQlAIel/Pmzigm5SAo/Wh3XQGFO0FmlS3hT6LN
+         q8zD+1l/C8ZEGyuak6j/J8GKtAXI5j02UTdljLiUYYI8UbNF1Ek9o77xt7phvrhjUT/1
+         s/QUA53/oWyfeuvBTF2cryPBIlvYsp9y74upgKBFMtbUVkkyzlN6rFo8nWYnnXuemoha
+         fSQA==
+X-Gm-Message-State: APjAAAW7+HP9ddpCZ5seyQScS2MR+StTmNF577XlR5bopfSZ45bYWDd+
+        izHRrwUXS5JpxLXPdA11RWztGZIGly+vcF5vrUPeDA==
+X-Google-Smtp-Source: APXvYqyARbzaS7CSkEyAESuMZyx9Z1IsGeI3J4rq5a9HkrFhw+V6G1HOEOFhw2tKThcn2BFYWMx6+hPBtML8p4q2ksM=
+X-Received: by 2002:a2e:7818:: with SMTP id t24mr34958384ljc.210.1564546351131;
+ Tue, 30 Jul 2019 21:12:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-31_01:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1907310014
-X-FB-Internal: deliver
+References: <20190729165918.92933-1-ppenkov.kernel@gmail.com>
+ <20190729204755.iu5wp3xisu42vkky@ast-mbp> <CAG4SDVV9oBYkXqof=FoD0DeRY=+tSwZo3E1jhqMnF8F8+bVTbg@mail.gmail.com>
+In-Reply-To: <CAG4SDVV9oBYkXqof=FoD0DeRY=+tSwZo3E1jhqMnF8F8+bVTbg@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 30 Jul 2019 21:12:19 -0700
+Message-ID: <CAADnVQKKb=5n-rsa9Gr-i=5bti=xxhjv17gGs51PmHt4FY_jfg@mail.gmail.com>
+Subject: Re: [bpf-next,v2 0/6] Introduce a BPF helper to generate SYN cookies
+To:     Petar Penkov <ppenkov@google.com>
+Cc:     Petar Penkov <ppenkov.kernel@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add 2 tests that check JIT code generation to jumps to 1st insn.
-1st test is similar to syzbot reproducer.
-The backwards branch is never taken at runtime.
-2nd test has branch to 1st insn that executes.
-The test is written as two bpf functions, since it's not possible
-to construct valid single bpf program that jumps to 1st insn.
+On Mon, Jul 29, 2019 at 4:46 PM Petar Penkov <ppenkov@google.com> wrote:
+>>
+> > What is cpu utilization at this rate?
+> > Is it cpu or nic limited if you crank up the syn flood?
+> > Original 7M with all cores or single core?
+> My receiver was configured with 16rx queues and 16 cores. 7M all cores
+> are at 100% so I believe this case is CPU limited. At XDP, all cores
+> are at roughly 40%. I couldn't reliably generate higher SYN flood rate
+> than that, and the highest numbers I could see for XDP did not go past
+> 10.65Mpps with ~42% utilization on each core. I think I am hitting a
+> NIC limit here since the CPUs are free.
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- tools/testing/selftests/bpf/verifier/loops1.c | 28 +++++++++++++++++++
- 1 file changed, 28 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/verifier/loops1.c b/tools/testing/selftests/bpf/verifier/loops1.c
-index 5e980a5ab69d..1fc4e61e9f9f 100644
---- a/tools/testing/selftests/bpf/verifier/loops1.c
-+++ b/tools/testing/selftests/bpf/verifier/loops1.c
-@@ -159,3 +159,31 @@
- 	.errstr = "loop detected",
- 	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
- },
-+{
-+	"not-taken loop with back jump to 1st insn",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 123),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 4, -2),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.prog_type = BPF_PROG_TYPE_XDP,
-+	.retval = 123,
-+},
-+{
-+	"taken loop with back jump to 1st insn",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_1, 10),
-+	BPF_MOV64_IMM(BPF_REG_2, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 1, 0, 1),
-+	BPF_EXIT_INSN(),
-+	BPF_ALU64_REG(BPF_ADD, BPF_REG_2, BPF_REG_1),
-+	BPF_ALU64_IMM(BPF_SUB, BPF_REG_1, 1),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_1, 0, -3),
-+	BPF_MOV64_REG(BPF_REG_0, BPF_REG_2),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.prog_type = BPF_PROG_TYPE_XDP,
-+	.retval = 55,
-+},
--- 
-2.20.0
-
+Applied. Thanks!
