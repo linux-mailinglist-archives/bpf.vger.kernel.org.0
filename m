@@ -2,167 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6C77CA2A
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2019 19:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E947CB8A
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2019 20:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727489AbfGaRTM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Jul 2019 13:19:12 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:44325 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726942AbfGaRTM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Jul 2019 13:19:12 -0400
-Received: by mail-qt1-f193.google.com with SMTP id 44so36323293qtg.11;
-        Wed, 31 Jul 2019 10:19:11 -0700 (PDT)
+        id S1727506AbfGaSK4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Jul 2019 14:10:56 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:41318 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727489AbfGaSK4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Jul 2019 14:10:56 -0400
+Received: by mail-pf1-f193.google.com with SMTP id m30so32325569pff.8;
+        Wed, 31 Jul 2019 11:10:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Vut+5SeKuwpmKhsOF9oU2Lng89koznQFCQaV72q2LU0=;
-        b=ih56czYcuESrpyj0QPqSlmg1K/i3SbpONEJLka7Gdd33DQRsvzyRqIjXCs3hXEcTjZ
-         RW9DpX8aRvJ0xOu+e1Xj0xL6hsjybOG+Kkj1FpffEXOAyTZXAmquc8vYoqzBLks9VxjN
-         ND0FicxKvmdab8B69jyoESSe3YkaIeZpKqgFOOpRpOzpfWZkfMEZJyZe08VlBNtbPgmv
-         tPpfSPwxLfpfSM58mijETtX0gRYQWshdB5Do7nOpdtraUs+DjmHd1MjcFKk/bkst+5O7
-         PxaaLVKR/iSRA07G5SD7mMsOjDyM+X+2GqzbePeFLEGuThfzqYnfwsllPXaon15/Lstf
-         4tXg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=pep2268SUKB+oWlWvHH34A9NbLrS2fXz4pQLCTwbYWI=;
+        b=CqC09YWPPepmuNLh0VzhrFZ1t1Hi5zWWRBHXho8B6yypZqlBw6s9ECSPnhQKR1bcnI
+         6gQgnSXBc1pGFjvXGmWCbepyZvSmzXDyROSY3QRC+fIKBJ1foIE8xjZ4vqjrQfnMUWGO
+         N7tZQ+b1EGDrDhDxjrtza+vklYWSpiBO5UfhAeDDxEVDmf+MFW/AZ1rsaOz6eOUxcPpU
+         8aTHDaq5rHfHwE0wA0M5cc0Iw5OFNeYdVMnhQCoaGGMNuMnXuc4PxdGmftDV4HWOZQEc
+         5yI5Hg5S8SZtHmpQ4M2ju2rDhIFpQR4yODHR8iUklK4Px96YcKDyxOTH4LKVZcGE+FXT
+         aaUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Vut+5SeKuwpmKhsOF9oU2Lng89koznQFCQaV72q2LU0=;
-        b=r7rdLnfTDr89981ul3H3Eqbbh8W8O1lblJouiy7SwRBStSUXi4kPDN2kmdOhQEr/wy
-         93t7M3bk3xROS8z7bSs/6VccUEcpDWe7H7d/J97yqEg+LSECzEMI+pN61FNQAFfRHcyI
-         GHiCJssqcCWgwL6xJkBHLz3GTo8gdAz4yOgsbJpkLjBBtFAeF5k5yduoegk10Cc2Wuip
-         87f8Qaq4wMZ6nc11T/b95XO/o/38tFWH0qZTUCvaQoyWyk17JzXZAGwG2ATZU4wkYtnx
-         BZ/cRMpRb0w6myQXVRB/HkWKeI5W1XPEjMnL39SNwdh1qnKoZVvP4ICCkFCxou17ASXg
-         7sSw==
-X-Gm-Message-State: APjAAAUHGbzIJMhm5qIds9WbXqklfH9I0ErbJlNDty4Lugn5CTkADRyH
-        pHqVBNv3pquwqDNgKCA1xSq5S5GqJb7GBJ7mHxw=
-X-Google-Smtp-Source: APXvYqxInSQiHD5IMjegweTtiNlen9k3On+wJwxkv9Vr7aN8iNTGd1sCJ6NLemC79U+PeZu2WD/9OkZcDv313xy1Yso=
-X-Received: by 2002:ac8:21b7:: with SMTP id 52mr84527111qty.59.1564593550813;
- Wed, 31 Jul 2019 10:19:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=pep2268SUKB+oWlWvHH34A9NbLrS2fXz4pQLCTwbYWI=;
+        b=JOtKvZVUa6yDWUIH/WN6POW3GkEhHxMPLvgBrVP+oAJ7AfusFgX0WQ4uuTMcltWjeX
+         4krGr/5HG+SEj82nv026NMytEuBGyMb5cuW7YOvFYmOXy6tX0w2odtMuDiXRtrAmnfLI
+         PD/o2NnPFP7x8LEuRJdLXnO5ZXOAcB/uCVlOLsQZj6SdFwh9W335jEbT6KUZtbK8TRkT
+         eClJtRLwd4GkvlcsG4CmLjxOtF0VVtQ+wnkolqIxkmrkxMVD2GQ3U9SsoqXX2Jd81k5r
+         B50ZJA6WvsNGIx/1UHtOiYEqEtlBblSFYUmPV7G7x0tpONNZXPVQvboBNJ5n5ey5a23w
+         PUAQ==
+X-Gm-Message-State: APjAAAXaxoJ1YK3cH8Mv7wJW+MhEqLWPbRQjX+kxT8ok+NjG52d4abwY
+        nBiPiaCvg1hjW+0mrdo3QWM=
+X-Google-Smtp-Source: APXvYqzH2NroFGz5G8oll9tbUUshmLQKnLFfUoZu2sdIPVV4Cx4Qp/Sb7+vBrNOGxHGUUggjy3ua0w==
+X-Received: by 2002:a63:c118:: with SMTP id w24mr113486551pgf.347.1564596655215;
+        Wed, 31 Jul 2019 11:10:55 -0700 (PDT)
+Received: from [172.26.116.133] ([2620:10d:c090:180::1:768c])
+        by smtp.gmail.com with ESMTPSA id l124sm69027565pgl.54.2019.07.31.11.10.53
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 31 Jul 2019 11:10:54 -0700 (PDT)
+From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
+To:     "Kevin Laatz" <kevin.laatz@intel.com>
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com,
+        jakub.kicinski@netronome.com, saeedm@mellanox.com,
+        maximmi@mellanox.com, stephen@networkplumber.org,
+        bruce.richardson@intel.com, ciara.loftus@intel.com,
+        bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH bpf-next v4 07/11] mlx5e: modify driver for handling
+ offsets
+Date:   Wed, 31 Jul 2019 11:10:52 -0700
+X-Mailer: MailMate (1.12.5r5635)
+Message-ID: <7568C727-8F36-4127-9D86-A4C37494C55D@gmail.com>
+In-Reply-To: <20190730085400.10376-8-kevin.laatz@intel.com>
+References: <20190724051043.14348-1-kevin.laatz@intel.com>
+ <20190730085400.10376-1-kevin.laatz@intel.com>
+ <20190730085400.10376-8-kevin.laatz@intel.com>
 MIME-Version: 1.0
-References: <20190730195408.670063-1-andriin@fb.com> <20190730195408.670063-3-andriin@fb.com>
- <4AB53FC1-5390-4BC7-83B4-7DDBAFD78ABC@fb.com> <CAEf4BzYE9xnyFjmN3+-LgkkOomt383OPNXVhSCO4PncAu20wgw@mail.gmail.com>
- <AA9B5489-425E-4FAE-BE01-F0F65679DF00@fb.com> <CAEf4Bza3cAoZJE+24_MBiv-8yYtAaTkAez5xq1v12cLW1-RGcw@mail.gmail.com>
- <4D2E1082-5013-4A50-B75D-AB88FDCAAC52@fb.com>
-In-Reply-To: <4D2E1082-5013-4A50-B75D-AB88FDCAAC52@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 31 Jul 2019 10:18:59 -0700
-Message-ID: <CAEf4Bzb6swYtf7J_m1bZo6o+aT1AcCXZX5ZBw7Uja=Tne2LCuw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 02/12] libbpf: implement BPF CO-RE offset
- relocation algorithm
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Kernel Team <Kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; format=flowed
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 31, 2019 at 1:30 AM Song Liu <songliubraving@fb.com> wrote:
->
->
->
-> > On Jul 30, 2019, at 11:52 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Tue, Jul 30, 2019 at 10:19 PM Song Liu <songliubraving@fb.com> wrote:
-> >>
-> >>
-> >>
-> >>> On Jul 30, 2019, at 6:00 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >>>
-> >>> On Tue, Jul 30, 2019 at 5:39 PM Song Liu <songliubraving@fb.com> wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>>> On Jul 30, 2019, at 12:53 PM, Andrii Nakryiko <andriin@fb.com> wrote:
-> >>>>>
-> >>>>> This patch implements the core logic for BPF CO-RE offsets relocations.
-> >>>>> Every instruction that needs to be relocated has corresponding
-> >>>>> bpf_offset_reloc as part of BTF.ext. Relocations are performed by trying
-> >>>>> to match recorded "local" relocation spec against potentially many
-> >>>>> compatible "target" types, creating corresponding spec. Details of the
-> >>>>> algorithm are noted in corresponding comments in the code.
-> >>>>>
-> >>>>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->
-> [...]
->
-> >>>>
-> >>>
-> >>> I just picked the most succinct and non-repetitive form. It's
-> >>> immediately apparent which type it's implicitly converted to, so I
-> >>> felt there is no need to repeat it. Also, just (void *) is much
-> >>> shorter. :)
-> >>
-> >> _All_ other code in btf.c converts the pointer to the target type.
-> >
-> > Most in libbpf.c doesn't, though. Also, I try to preserve pointer
-> > constness for uses that don't modify BTF types (pretty much all of
-> > them in libbpf), so it becomes really verbose, despite extremely short
-> > variable names:
-> >
-> > const struct btf_member *m = (const struct btf_member *)(t + 1);
->
-> I don't think being verbose is a big problem here. Overusing
 
-Problem is too big and strong word to describe this :). It hurts
-readability and will often quite artificially force either wrapping
-the line or unnecessarily splitting declaration and assignment. Void *
-on the other hand is short and usually is in the same line as target
-type declaration, if not, you'll have to find local variable
-declaration to double-check type, if you are unsure.
 
-Using (void *) + implicit cast to target pointer type is not
-unprecedented in libbpf:
+On 30 Jul 2019, at 1:53, Kevin Laatz wrote:
 
-$ rg ' = \((const )?struct \w+ \*\)' tools/lib/bpf/ | wc -l
-52
-$ rg ' = \((const )?void \*\)' tools/lib/bpf/  | wc -l
-35
-
-52 vs 35 is majority overall, but not by a landslide.
-
-> (void *) feels like a bigger problem.
-
-Why do you feel it's a problem? void * conveys that we have a piece of
-memory that we will need to reinterpret as some concrete pointer type.
-That's what we are doing, skipping btf_type and then interpreting
-memory after common btf_type prefix is some other type, depending on
-actual BTF kind. I don't think void * is misleading in any way.
-
-In any case, if you still feel strongly about this after all my
-arguments, please let me know and I will convert them in this patch
-set. It's not like I'm opposed to use duplicate type names (though it
-does feel sort of Java-like before it got limited type inference),
-it's just in practice it leads to unnecessarily verbose code which
-doesn't really improve anything.
-
+> With the addition of the unaligned chunks option, we need to make sure 
+> we
+> handle the offsets accordingly based on the mode we are currently 
+> running
+> in. This patch modifies the driver to appropriately mask the address 
+> for
+> each case.
 >
-> >
-> > Add one or two levels of nestedness and you are wrapping this line.
-> >
-> >> In some cases, it is not apparent which type it is converted to,
-> >> for example:
-> >>
-> >> +       m = (void *)(targ_type + 1);
-> >>
-> >> I would suggest we do implicit conversion whenever possible.
-> >
-> > Implicit conversion (`m = targ_type + 1;`) is a compilation error,
-> > that won't work.
+> Signed-off-by: Kevin Laatz <kevin.laatz@intel.com>
 >
-> I misused "implicit" here. I actually meant to say
+> ---
+> v3:
+>   - Use new helper function to handle offset
 >
->         m = ((const struct btf_member *)(t + 1);
+> v4:
+>   - fixed headroom addition to handle. Using 
+> xsk_umem_adjust_headroom()
+>     now.
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c    | 8 ++++++--
+>  drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c | 3 ++-
+>  2 files changed, 8 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c 
+> b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> index b0b982cf69bb..d5245893d2c8 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> @@ -122,6 +122,7 @@ bool mlx5e_xdp_handle(struct mlx5e_rq *rq, struct 
+> mlx5e_dma_info *di,
+>  		      void *va, u16 *rx_headroom, u32 *len, bool xsk)
+>  {
+>  	struct bpf_prog *prog = READ_ONCE(rq->xdp_prog);
+> +	struct xdp_umem *umem = rq->umem;
+>  	struct xdp_buff xdp;
+>  	u32 act;
+>  	int err;
+> @@ -138,8 +139,11 @@ bool mlx5e_xdp_handle(struct mlx5e_rq *rq, struct 
+> mlx5e_dma_info *di,
+>  	xdp.rxq = &rq->xdp_rxq;
+>
+>  	act = bpf_prog_run_xdp(prog, &xdp);
+> -	if (xsk)
+> -		xdp.handle += xdp.data - xdp.data_hard_start;
+> +	if (xsk) {
+> +		u64 off = xdp.data - xdp.data_hard_start;
+> +
+> +		xdp.handle = xsk_umem_handle_offset(umem, xdp.handle, off);
 
-Ah, so you meant explicit, yep. It's either `void *` or `const struct
-something *` then.
+Shouldn't this be xdp_umem_adjust_offset()?
 
+
+> +	}
+>  	switch (act) {
+>  	case XDP_PASS:
+>  		*rx_headroom = xdp.data - xdp.data_hard_start;
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c 
+> b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
+> index 6a55573ec8f2..7c49a66d28c9 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
+> @@ -24,7 +24,8 @@ int mlx5e_xsk_page_alloc_umem(struct mlx5e_rq *rq,
+>  	if (!xsk_umem_peek_addr_rq(umem, &handle))
+>  		return -ENOMEM;
 >
+> -	dma_info->xsk.handle = handle + rq->buff.umem_headroom;
+> +	dma_info->xsk.handle = xsk_umem_adjust_offset(umem, handle,
+> +						      rq->buff.umem_headroom);
+>  	dma_info->xsk.data = xdp_umem_get_data(umem, dma_info->xsk.handle);
 >
->
+>  	/* No need to add headroom to the DMA address. In striding RQ case, 
+> we
+> -- 
+> 2.17.1
