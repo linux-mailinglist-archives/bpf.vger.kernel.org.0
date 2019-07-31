@@ -2,99 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F41E7BB35
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2019 10:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259F77BBB3
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2019 10:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725970AbfGaIKk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Jul 2019 04:10:40 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:63452 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725866AbfGaIKk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 31 Jul 2019 04:10:40 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x6V85SHd010833;
-        Wed, 31 Jul 2019 01:10:22 -0700
+        id S1726811AbfGaIaV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Jul 2019 04:30:21 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48608 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725970AbfGaIaV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 31 Jul 2019 04:30:21 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6V8PY2U021645;
+        Wed, 31 Jul 2019 01:30:00 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : references : in-reply-to : content-type : content-id
  : content-transfer-encoding : mime-version; s=facebook;
- bh=4Rd6/E4J20E+P26Mrl6epiMx844I7RHweJ0gW6PYY58=;
- b=MGDr1VJfqvW7PPQvESeDwCz7yDjSwvcjtuZoVMykV5797zoF+r2hK0O1oAOMKTVL7bxX
- huuayfL/EEAfrZP5dvMzkk1uuvoEKbNi60mRfFmd/eNvie+dV78YQEGG9wbj964ghEpH
- 807NUcA0IMIVhf2onRZluB1+HW4D2G5fWV0= 
+ bh=rPk5MvDEm3aK1sSXSTCTJivIXyNm/mNFMFE3HBIMORw=;
+ b=Oy/QeVmQQ1zT58lqy9b6xI/SNmVqbbVUXo11Vtj245FBVQvlSkTPrl/Q+8uozPUzJkm0
+ D60c0EsrcJ2l6XULXY+lxzOUJKVzlxvaFjCBWVu6Cy6xcvFkvoO8EXnpWSb8nN6yCKjL
+ tg2gXytnD7xw8x21W7CT4yLNBpjwksUjo80= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 2u31kwgvmp-18
+        by mx0a-00082601.pphosted.com with ESMTP id 2u2wkksr4v-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 31 Jul 2019 01:10:21 -0700
-Received: from ash-exopmbx201.TheFacebook.com (2620:10d:c0a8:83::8) by
- ash-exhub102.TheFacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+        Wed, 31 Jul 2019 01:29:59 -0700
+Received: from ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) by
+ ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 31 Jul 2019 01:10:18 -0700
-Received: from ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) by
- ash-exopmbx201.TheFacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP
+ 15.1.1713.5; Wed, 31 Jul 2019 01:29:58 -0700
+Received: from ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) by
+ ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 31 Jul 2019 01:10:18 -0700
-Received: from NAM01-BY2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ 15.1.1713.5; Wed, 31 Jul 2019 01:29:58 -0700
+Received: from NAM03-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 31 Jul 2019 01:10:18 -0700
+ via Frontend Transport; Wed, 31 Jul 2019 01:29:58 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QWgcSpoGRXv5mS+v8rLB+9VmpwLialOFJyApgGbAUjIoc0zizLe7kbhB8x9a9VC91ZQCefLBLFny+WY+PRTL5sYOXroU5S0YXzLFjz90PxmFCZTNh/YjjtiNO+XqFCDCuc9FtClQ18ZwAEJBxT9j1zCvWqvXzEJwt7SZIklzOzfvTXrCZsj5oDdIU9ZoK7rKHpdXcSMBS/adY7qk+uFz4ehpQxQbGnnIB+IbDR0dYYQMIPhE8FWCml5Elszm0gCOkOg1nOsW2rMLrUAHIxxHis9lUJOLyUevx+SPMBDe35LD8UVT51FnlrGtOp32wR7b1kvIGH6n1cO2ub6ClQ2PYQ==
+ b=E70y9A8NUS14v2tNaDKDdB/8POBwzSZm+4P9o8/8VNfBM1tM/XFYp2A1WqAUDnSUxGYHqpvodrROt7PUomA2STxOfUSaJIIbK8MP/8Q9Y6QhNG1HJLMe2j7bcZNUztTqRp3p+PwWDKHY15Gzk6eckhdsxHu9LoCefHm+aSgEuarGifD0NjuNCd1QHfhVq/06ckLU0FnhE40tB14D3Py7hEmt6aiqj3TcPqBKN8zLd9SbrW6Xn0wTq6MKoIYpcIUr5VhOcP68pTGjJZl4fOCXeGS8RAmUkMSWyfirnkDD6/GIzeauG9XP5bLfrWns3+VuN7tS+MxURscmXIJBaAlVXg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4Rd6/E4J20E+P26Mrl6epiMx844I7RHweJ0gW6PYY58=;
- b=l1sBx9Vmu3iBtPLKOM5PWNAJrP/9aHQLqACCoPDDVgKZVKHxSx9NxZ6+4oGvlSfI8TO66CYciJWR+CuPKoNjLj2eJcktpeBb31um4+au0AyeehnVZdDK1FGRx7zaVknkVmyKEk0fD/TLCJ+LVK3AowHkauKAbIqE8k7o37eQwGZFO0TY76adrZk1M6OuQ7xAp8xO/sFcfB7E5KPbdUNqKYvx98pnLZOLi3FrbkVuZbek40a0KcsxRTIwVB9C1fTPIpxvCKUu+zBEc97iMp14TuLl1sQUeQq0DzMm8kHz2+UuIw2mZUPWr1dowmwuQW3Ye9kiTbUWqUS+ARWq88dGkQ==
+ bh=rPk5MvDEm3aK1sSXSTCTJivIXyNm/mNFMFE3HBIMORw=;
+ b=k7Jo3mGF+keLlttsX5g1abnvujxPaIhlV1ID0HfOeiLJn1hUXipIZGWWLZ6hLy7/1gtXc/xrbfY9JXW5gy7Q6Us9mbD3fd90qx8TYmvSpf22O1CzTOsMrGz+LpeTOIpx9vudX9MOSccMZyw/gHoX89WjHxjxiyt7BpUgin9E4Ddp/31xk4chdcQFfGk733KZ7FaKGZ6c9sSdAgzhg28oEDW7WbInvEXhLVBRm9fW8oUdOluL2bnWXrXXbDZSdP/cMt8fOJH5Kbqa70uz3QZ/LHHqHu9ZEMVXvvLDl1GbclTeqmwQnxjjXEp4C5Q6jFJS1H1yKdIceGlDxTevx4eS8A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
  smtp.mailfrom=fb.com;dmarc=pass action=none header.from=fb.com;dkim=pass
  header.d=fb.com;arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4Rd6/E4J20E+P26Mrl6epiMx844I7RHweJ0gW6PYY58=;
- b=U4ssEG+L03EON/5QuJo5InotSa0RjyST1NPP+zra+MVwYD+af8qIteA2xp7SWWkvLg7zHYc73nq186OJ0WvNBzMqJGj/K19R7mIguOTXCa7C0glXKpGngQ4RLrsxOh8gN5RaWCvxZqnIkNzthvBbltekeFNd8FYI6AktVR5BRZo=
+ bh=rPk5MvDEm3aK1sSXSTCTJivIXyNm/mNFMFE3HBIMORw=;
+ b=GGjN91haoCjsEEWXMqT7wg4XUxBXpKirkoUUcuIoYtx8cjMuhj3BjdYMrQv2L835MIt0nRQt7NHYVbwuKjYEGCc6VRhQSgH6GRg+lzoVFVeicDR70WNB6EPhUQUskMKszOWG7rILtyvCk80jyNl82BX/bFRREtubM0jeGgefe2g=
 Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
- MWHPR15MB1807.namprd15.prod.outlook.com (10.174.255.135) with Microsoft SMTP
+ MWHPR15MB1118.namprd15.prod.outlook.com (10.175.2.135) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2115.14; Wed, 31 Jul 2019 08:10:16 +0000
+ 15.20.2115.15; Wed, 31 Jul 2019 08:29:56 +0000
 Received: from MWHPR15MB1165.namprd15.prod.outlook.com
  ([fe80::d4fc:70c0:79a5:f41b]) by MWHPR15MB1165.namprd15.prod.outlook.com
  ([fe80::d4fc:70c0:79a5:f41b%2]) with mapi id 15.20.2115.005; Wed, 31 Jul 2019
- 08:10:16 +0000
+ 08:29:56 +0000
 From:   Song Liu <songliubraving@fb.com>
-To:     Andy Lutomirski <luto@kernel.org>
-CC:     Kees Cook <keescook@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        "Lorenz Bauer" <lmb@cloudflare.com>, Jann Horn <jannh@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-Thread-Topic: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via
- /dev/bpf
-Thread-Index: AQHVLSW5611trSWWQEuGSg4xXBva46awKSYAgAFFJoCAAehSgIACJsgAgAEbzICAARNPgIAANGYAgB9j6wCAATKggIAAgfQAgAAt2QCAAFEqAIAFfSwAgAPZeACAAQAYAIAAxVOA
-Date:   Wed, 31 Jul 2019 08:10:16 +0000
-Message-ID: <D4040C0C-47D6-4852-933C-59EB53C05242@fb.com>
-References: <20190627201923.2589391-1-songliubraving@fb.com>
- <20190627201923.2589391-2-songliubraving@fb.com>
- <21894f45-70d8-dfca-8c02-044f776c5e05@kernel.org>
- <3C595328-3ABE-4421-9772-8D41094A4F57@fb.com>
- <CALCETrWBnH4Q43POU8cQ7YMjb9LioK28FDEQf7aHZbdf1eBZWg@mail.gmail.com>
- <0DE7F23E-9CD2-4F03-82B5-835506B59056@fb.com>
- <CALCETrWBWbNFJvsTCeUchu3BZJ3SH3dvtXLUB2EhnPrzFfsLNA@mail.gmail.com>
- <201907021115.DCD56BBABB@keescook>
- <CALCETrXTta26CTtEDnzvtd03-WOGdXcnsAogP8JjLkcj4-mHvg@mail.gmail.com>
- <4A7A225A-6C23-4C0F-9A95-7C6C56B281ED@fb.com>
- <CALCETrX2bMnwC6_t4b_G-hzJSfMPrkK4YKs5ebcecv2LJ0rt3w@mail.gmail.com>
- <514D5453-0AEE-420F-AEB6-3F4F58C62E7E@fb.com>
- <1DE886F3-3982-45DE-B545-67AD6A4871AB@amacapital.net>
- <7F51F8B8-CF4C-4D82-AAE1-F0F28951DB7F@fb.com>
- <77354A95-4107-41A7-8936-D144F01C3CA4@fb.com>
- <369476A8-4CE1-43DA-9239-06437C0384C7@fb.com>
- <CALCETrUpVMrk7aaf0trfg9AfZ4fy279uJgZH7V+gZzjFw=hUxA@mail.gmail.com>
-In-Reply-To: <CALCETrUpVMrk7aaf0trfg9AfZ4fy279uJgZH7V+gZzjFw=hUxA@mail.gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next 02/12] libbpf: implement BPF CO-RE offset
+ relocation algorithm
+Thread-Topic: [PATCH v2 bpf-next 02/12] libbpf: implement BPF CO-RE offset
+ relocation algorithm
+Thread-Index: AQHVRxC6gG08pF4S5U2u3sEqys7j0abj4qsAgAAF+YCAAEgvAIAAGhqAgAAbNIA=
+Date:   Wed, 31 Jul 2019 08:29:56 +0000
+Message-ID: <4D2E1082-5013-4A50-B75D-AB88FDCAAC52@fb.com>
+References: <20190730195408.670063-1-andriin@fb.com>
+ <20190730195408.670063-3-andriin@fb.com>
+ <4AB53FC1-5390-4BC7-83B4-7DDBAFD78ABC@fb.com>
+ <CAEf4BzYE9xnyFjmN3+-LgkkOomt383OPNXVhSCO4PncAu20wgw@mail.gmail.com>
+ <AA9B5489-425E-4FAE-BE01-F0F65679DF00@fb.com>
+ <CAEf4Bza3cAoZJE+24_MBiv-8yYtAaTkAez5xq1v12cLW1-RGcw@mail.gmail.com>
+In-Reply-To: <CAEf4Bza3cAoZJE+24_MBiv-8yYtAaTkAez5xq1v12cLW1-RGcw@mail.gmail.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -102,37 +88,37 @@ X-MS-TNEF-Correlator:
 x-mailer: Apple Mail (2.3445.104.11)
 x-originating-ip: [2620:10d:c090:180::1:6d8b]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 991d1ba5-71f5-460a-87e5-08d7158e857f
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MWHPR15MB1807;
-x-ms-traffictypediagnostic: MWHPR15MB1807:
-x-microsoft-antispam-prvs: <MWHPR15MB1807759C324904C351C46ADBB3DF0@MWHPR15MB1807.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-office365-filtering-correlation-id: 49d32298-329d-4521-103b-08d71591450d
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MWHPR15MB1118;
+x-ms-traffictypediagnostic: MWHPR15MB1118:
+x-microsoft-antispam-prvs: <MWHPR15MB1118C334BBC1F6F6F48CBE32B3DF0@MWHPR15MB1118.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
 x-forefront-prvs: 011579F31F
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(366004)(39860400002)(346002)(136003)(376002)(199004)(189003)(476003)(6916009)(486006)(6436002)(81166006)(81156014)(71190400001)(186003)(71200400001)(6506007)(256004)(2616005)(102836004)(8936002)(53546011)(14454004)(14444005)(5024004)(7736002)(305945005)(2906002)(86362001)(8676002)(53936002)(54906003)(50226002)(46003)(68736007)(7416002)(6512007)(76116006)(57306001)(229853002)(4326008)(25786009)(478600001)(446003)(36756003)(6486002)(5660300002)(64756008)(66556008)(11346002)(66476007)(66946007)(66446008)(6246003)(316002)(76176011)(33656002)(6116002)(99286004)(21314003);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1807;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(39860400002)(346002)(396003)(376002)(136003)(189003)(199004)(6436002)(11346002)(71200400001)(36756003)(76176011)(66946007)(7736002)(57306001)(102836004)(81156014)(6916009)(6512007)(6246003)(66556008)(33656002)(64756008)(6116002)(186003)(316002)(76116006)(66446008)(305945005)(81166006)(478600001)(68736007)(66476007)(71190400001)(8676002)(2906002)(229853002)(6506007)(54906003)(50226002)(99286004)(8936002)(446003)(46003)(86362001)(476003)(53936002)(486006)(2616005)(14454004)(25786009)(5660300002)(4326008)(256004)(53546011)(6486002);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1118;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: fb.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: OPiL/JU+/TDOmAzPFrjOkL69zspXwE5qC2VvTSHgz3zxMsfaZ7mwAf30iUtwQvtGm1dhnvMDE6mw0weSRbHuvX+HshucNZA+m3SUYfzpLlPUNK3lqTfqzq3r/QlCuCpSGQ90eESzBJhhcBabqxXLzXGksHFQqKI+AgpuPbbDyO029Czuv6Q95lVTrIkHWTrBG4z6NYYZo7ep4JOGrhrEfpM41fCn/CAAQ6N8mU/xvlDzgcWbS7+B5lkMB9CYqFkohZ/2/fXSRn3TsQ8KxgUmo1NJMI2prdUz3y8VKOLIGN9TGSS6JbUBmPEeTFVplh8UqCfq8drxQu8U3mgvQ2Pnr5W3Jx/sJ68cTAmudPiQXenzJGQ7FZr/NAUQtnidqT25/numyXtuowoTsrahcdNWkvmOPwkeSoEhAvjElwrapUs=
+x-microsoft-antispam-message-info: /ozIvu7VPgsB6UVg3fRtXHh9RfoheXeNhMnmCXbGY0RMkRTYSYl4dQR2KV3jqjaEjwXAKzTIVvPZovdf7z8nLF+hBHXqlKfZFO52X6LGgJ17Lgg+F5C/9bE2lZUz86t0C1rRgNs9z7KIpNyO0CuEGHdfODbbaHC06K6ovu6LCp0Lwu9Nqz/8Lx3hMjZrZtyHqOuXQBx85xJYlosZvkVVD1EoaTMrcaET58oaLMBrToJ7oZoR6R8uhGWu/isORDbb7WC9W8idqZeQf7GVh076ZVJ0goao8vHiDQxeJgvRhOmJZttiFfcKPaIg0MPnlp9KCaDFT3qU3oMvArbOjN8/dDqsGDuFtg5/1BqN8bQJ6ArKhxx69Tl8EOIdePslOjiBUP+DamOkr9CeAIzgOo7SffLkzQHfA27Tb7SW1QsbeQw=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <5E5B76352B389D4A87E904B6B19E7BF7@namprd15.prod.outlook.com>
+Content-ID: <F2980172E8ACE948A5432783DEB38CCC@namprd15.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 991d1ba5-71f5-460a-87e5-08d7158e857f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jul 2019 08:10:16.3069
+X-MS-Exchange-CrossTenant-Network-Message-Id: 49d32298-329d-4521-103b-08d71591450d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jul 2019 08:29:56.7048
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-CrossTenant-userprincipalname: songliubraving@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1807
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1118
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-31_04:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
  malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1907310086
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=962 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1907310091
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -141,89 +127,71 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-> On Jul 30, 2019, at 1:24 PM, Andy Lutomirski <luto@kernel.org> wrote:
+> On Jul 30, 2019, at 11:52 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com>=
+ wrote:
 >=20
-> On Mon, Jul 29, 2019 at 10:07 PM Song Liu <songliubraving@fb.com> wrote:
+> On Tue, Jul 30, 2019 at 10:19 PM Song Liu <songliubraving@fb.com> wrote:
 >>=20
->> Hi Andy,
 >>=20
->>> On Jul 27, 2019, at 11:20 AM, Song Liu <songliubraving@fb.com> wrote:
+>>=20
+>>> On Jul 30, 2019, at 6:00 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com=
+> wrote:
 >>>=20
->>> Hi Andy,
->>>=20
->>>=20
+>>> On Tue, Jul 30, 2019 at 5:39 PM Song Liu <songliubraving@fb.com> wrote:
+>>>>=20
+>>>>=20
+>>>>=20
+>>>>> On Jul 30, 2019, at 12:53 PM, Andrii Nakryiko <andriin@fb.com> wrote:
+>>>>>=20
+>>>>> This patch implements the core logic for BPF CO-RE offsets relocation=
+s.
+>>>>> Every instruction that needs to be relocated has corresponding
+>>>>> bpf_offset_reloc as part of BTF.ext. Relocations are performed by try=
+ing
+>>>>> to match recorded "local" relocation spec against potentially many
+>>>>> compatible "target" types, creating corresponding spec. Details of th=
+e
+>>>>> algorithm are noted in corresponding comments in the code.
+>>>>>=20
+>>>>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
 [...]
 
+>>>>=20
 >>>=20
+>>> I just picked the most succinct and non-repetitive form. It's
+>>> immediately apparent which type it's implicitly converted to, so I
+>>> felt there is no need to repeat it. Also, just (void *) is much
+>>> shorter. :)
 >>=20
->> I would like more comments on this.
->>=20
->> Currently, bpf permission is more or less "root or nothing", which we
->> would like to change.
->>=20
->> The short term goal is to separate bpf from root, in other words, it is
->> "all or nothing". Special user space utilities, such as systemd, would
->> benefit from this. Once this is implemented, systemd can call sys_bpf()
->> when it is not running as root.
+>> _All_ other code in btf.c converts the pointer to the target type.
 >=20
-> As generally nasty as Linux capabilities are, this sounds like a good
-> use for CAP_BPF_ADMIN.
-
-I actually agree CAP_BPF_ADMIN makes sense. The hard part is to make=20
-existing tools (setcap, getcap, etc.) and libraries aware of the new CAP.
-
+> Most in libbpf.c doesn't, though. Also, I try to preserve pointer
+> constness for uses that don't modify BTF types (pretty much all of
+> them in libbpf), so it becomes really verbose, despite extremely short
+> variable names:
 >=20
-> But what do you have in mind?  Isn't non-root systemd mostly just the
-> user systemd session?  That should *not* have bpf() privileges until
-> bpf() is improved such that you can't use it to compromise the system.
+> const struct btf_member *m =3D (const struct btf_member *)(t + 1);
 
-cgroup bpf is the major use case here. A less important use case is to=20
-run bpf selftests without being root.=20
+I don't think being verbose is a big problem here. Overusing=20
+(void *) feels like a bigger problem.=20
 
 >=20
->>=20
->> In longer term, it may be useful to provide finer grain permission of
->> sys_bpf(). For example, sys_bpf() should be aware of containers; and
->> user may only have access to certain bpf maps. Let's call this
->> "fine grain" capability.
->>=20
->>=20
->> Since we are seeing new use cases every year, we will need many
->> iterations to implement the fine grain permission. I think we need an
->> API that is flexible enough to cover different types of permission
->> control.
->>=20
->> For example, bpf_with_cap() can be flexible:
->>=20
->>        bpf_with_cap(cmd, attr, size, perm_fd);
->>=20
->> We can get different types of permission via different combinations of
->> arguments:
->>=20
->>    A perm_fd to /dev/bpf gives access to all sys_bpf() commands, so
->>    this is "all or nothing" permission.
->>=20
->>    A perm_fd to /sys/fs/cgroup/.../bpf.xxx would only allow some
->>    commands to this specific cgroup.
->>=20
+> Add one or two levels of nestedness and you are wrapping this line.
 >=20
-> I don't see why you need to invent a whole new mechanism for this.
-> The entire cgroup ecosystem outside bpf() does just fine using the
-> write permission on files in cgroupfs to control access.  Why can't
-> bpf() do the same thing?
+>> In some cases, it is not apparent which type it is converted to,
+>> for example:
+>>=20
+>> +       m =3D (void *)(targ_type + 1);
+>>=20
+>> I would suggest we do implicit conversion whenever possible.
+>=20
+> Implicit conversion (`m =3D targ_type + 1;`) is a compilation error,
+> that won't work.
 
-It is easier to use write permission for BPF_PROG_ATTACH. But it is=20
-not easy to do the same for other bpf commands: BPF_PROG_LOAD and=20
-BPF_MAP_*. A lot of these commands don't have target concept. Maybe=20
-we should have target concept for all these commands. But that is a=20
-much bigger project. OTOH, "all or nothing" model allows all these=20
-commands at once.
+I misused "implicit" here. I actually meant to say
 
-Well, that being said, I will look more into using write permission=20
-in cgroupfs.=20
+	m =3D ((const struct btf_member *)(t + 1);
 
-Thanks again for all these comments and suggestions. Please let us=20
-know your future thoughts and insights.=20
 
-Song
+
