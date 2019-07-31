@@ -2,181 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 013547CBF0
-	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2019 20:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF52D7CC82
+	for <lists+bpf@lfdr.de>; Wed, 31 Jul 2019 21:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727418AbfGaS0m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Jul 2019 14:26:42 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:46792 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726520AbfGaS0m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Jul 2019 14:26:42 -0400
-Received: by mail-pf1-f193.google.com with SMTP id c3so9197275pfa.13;
-        Wed, 31 Jul 2019 11:26:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version;
-        bh=gXFTZDZYh/lSmKVmhvKdGRFWTUDqCdiSs/uTEkViV5Q=;
-        b=R3xzSA/5pwySc9yVdiB8925NpKw/nRRvZ16m897cP6Q8NrgZExMcmcnwBtvHx5+59A
-         H3vMp9kys4CmTTowPb2wloMfiVMk1dMfbZZrRxDnldIbUSWMAcO+5J/KDgTnCzQrGwge
-         XyECovq+Pq10XntCUeLU5G8SJ+pw36bzznLiBIoCRX1BO+ph7FgiQjwcV/djYuV/0kU7
-         am/gSAyCachclFeUbQrEa7l6lgvflOig/MuXtqjZM1aRoxpVju0pUrsT4TQVH0EQo6xO
-         bvuiK9CbiCnv1oAmrs/k1bWOSy+1X9rs0vDmr6Vc5jWK07XV8PQSoRBHhqEAXf1jYumh
-         zJHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version;
-        bh=gXFTZDZYh/lSmKVmhvKdGRFWTUDqCdiSs/uTEkViV5Q=;
-        b=llavfEuymbYyTVmyjYBmrdryXtsMcwO+V4nBsmRtSop/GEwwH5TMsXQFJZxNXDNFMt
-         F5slFMzWp+mTw3EIa8B7RTd8KQ0PM98MTruc4SEN+WAPMnaU1NwRlgALhAYMQgEgKYcr
-         OF4vpkkaLwjfibw0FxO+Y7ZQMrTfHrOwMJAaptmuP02xGJBVgfww6wemINZVqvaZPI8B
-         YlHrhnBOrr8j2HyDmxAHeJDFtqDinL80tR0t9oOr9Momj9OnpNEDV0mJGgGEHn7j7Wo5
-         gtL9yHw5nlpiyDMVOYqKqT6HRSIx5xOW8pNr6kaZ/VAV1gvcGuxhhj9TL8EgpL9pg9jB
-         nLWw==
-X-Gm-Message-State: APjAAAWCuMllk/dQ4xKpAICAcN65lamFjRY6g1OdlSN88L/EGHW07/hN
-        FIUDMjSoYTjd9hY8mOyadsE=
-X-Google-Smtp-Source: APXvYqztLKuPfMIY2v0mu9mgwt9015tFQ3xt6+jTlYeeWpMtx7iYXxzjOfmXKVkIFFTpwCIHyEfnUw==
-X-Received: by 2002:a17:90a:1d8:: with SMTP id 24mr4353044pjd.70.1564597601115;
-        Wed, 31 Jul 2019 11:26:41 -0700 (PDT)
-Received: from [172.26.116.133] ([2620:10d:c090:180::1:768c])
-        by smtp.gmail.com with ESMTPSA id 195sm111860815pfu.75.2019.07.31.11.26.39
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 31 Jul 2019 11:26:40 -0700 (PDT)
-From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
-To:     "Kevin Laatz" <kevin.laatz@intel.com>
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        bjorn.topel@intel.com, magnus.karlsson@intel.com,
-        jakub.kicinski@netronome.com, saeedm@mellanox.com,
-        maximmi@mellanox.com, stephen@networkplumber.org,
-        bruce.richardson@intel.com, ciara.loftus@intel.com,
-        bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH bpf-next v4 09/11] samples/bpf: add buffer recycling for
- unaligned chunks to xdpsock
-Date:   Wed, 31 Jul 2019 11:26:39 -0700
-X-Mailer: MailMate (1.12.5r5635)
-Message-ID: <AB07E875-FFAE-4F5F-8A8C-EA38CE9D4580@gmail.com>
-In-Reply-To: <20190730085400.10376-10-kevin.laatz@intel.com>
-References: <20190724051043.14348-1-kevin.laatz@intel.com>
- <20190730085400.10376-1-kevin.laatz@intel.com>
- <20190730085400.10376-10-kevin.laatz@intel.com>
+        id S1729034AbfGaTJm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Jul 2019 15:09:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728050AbfGaTJl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Jul 2019 15:09:41 -0400
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77490217F4
+        for <bpf@vger.kernel.org>; Wed, 31 Jul 2019 19:09:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1564600180;
+        bh=5sbq1CUz/4Np8diMsPeYBJ+i1aJj9MKsghvG1UWBzjg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=EZHhqpan5TKtpQ81oKj2cKstineoX3GVqcoD1rjnhWw5RVfbdFLFCKTanF5OehRSW
+         8TQ2MuDoWX2jmbV2Dae5nCcCv29C/K5OsMB9sm1vxJGaAO15N9x3A195qJZF63jmlj
+         JfJeMOXlLCcPc1TTIJ7EWgPOk06X3UAQnocRvKI8=
+Received: by mail-wm1-f41.google.com with SMTP id s3so61931326wms.2
+        for <bpf@vger.kernel.org>; Wed, 31 Jul 2019 12:09:40 -0700 (PDT)
+X-Gm-Message-State: APjAAAX0sOIrPxCAuu0vZ1c3LgspD2dtl3IKee5M75bVaqMGw9A5lW/K
+        AE6TTmzozh86xyiGvN+vYAoV+uiDAu3kYM3/o2KTuw==
+X-Google-Smtp-Source: APXvYqx4zb8LrcibSKUodOi60ie226tvSHupyQ0d4LTQVRZ4SeTKKUMFrOQKYUOpT8Ag2AxIjIWeCiufncu+lKbqMAs=
+X-Received: by 2002:a1c:9a53:: with SMTP id c80mr51242084wme.173.1564600178852;
+ Wed, 31 Jul 2019 12:09:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+References: <20190627201923.2589391-1-songliubraving@fb.com>
+ <20190627201923.2589391-2-songliubraving@fb.com> <21894f45-70d8-dfca-8c02-044f776c5e05@kernel.org>
+ <3C595328-3ABE-4421-9772-8D41094A4F57@fb.com> <CALCETrWBnH4Q43POU8cQ7YMjb9LioK28FDEQf7aHZbdf1eBZWg@mail.gmail.com>
+ <0DE7F23E-9CD2-4F03-82B5-835506B59056@fb.com> <CALCETrWBWbNFJvsTCeUchu3BZJ3SH3dvtXLUB2EhnPrzFfsLNA@mail.gmail.com>
+ <201907021115.DCD56BBABB@keescook> <CALCETrXTta26CTtEDnzvtd03-WOGdXcnsAogP8JjLkcj4-mHvg@mail.gmail.com>
+ <4A7A225A-6C23-4C0F-9A95-7C6C56B281ED@fb.com> <CALCETrX2bMnwC6_t4b_G-hzJSfMPrkK4YKs5ebcecv2LJ0rt3w@mail.gmail.com>
+ <514D5453-0AEE-420F-AEB6-3F4F58C62E7E@fb.com> <1DE886F3-3982-45DE-B545-67AD6A4871AB@amacapital.net>
+ <7F51F8B8-CF4C-4D82-AAE1-F0F28951DB7F@fb.com> <77354A95-4107-41A7-8936-D144F01C3CA4@fb.com>
+ <369476A8-4CE1-43DA-9239-06437C0384C7@fb.com> <CALCETrUpVMrk7aaf0trfg9AfZ4fy279uJgZH7V+gZzjFw=hUxA@mail.gmail.com>
+ <D4040C0C-47D6-4852-933C-59EB53C05242@fb.com>
+In-Reply-To: <D4040C0C-47D6-4852-933C-59EB53C05242@fb.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 31 Jul 2019 12:09:27 -0700
+X-Gmail-Original-Message-ID: <CALCETrVoZL1YGUxx3kM-d21TWVRKdKw=f2B8aE5wc2zmX1cQ4g@mail.gmail.com>
+Message-ID: <CALCETrVoZL1YGUxx3kM-d21TWVRKdKw=f2B8aE5wc2zmX1cQ4g@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Jann Horn <jannh@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 30 Jul 2019, at 1:53, Kevin Laatz wrote:
-
-> This patch adds buffer recycling support for unaligned buffers. Since 
-> we
-> don't mask the addr to 2k at umem_reg in unaligned mode, we need to 
-> make
-> sure we give back the correct (original) addr to the fill queue. We 
-> achieve
-> this using the new descriptor format and associated masks. The new 
-> format
-> uses the upper 16-bits for the offset and the lower 48-bits for the 
-> addr.
-> Since we have a field for the offset, we no longer need to modify the
-> actual address. As such, all we have to do to get back the original 
-> address
-> is mask for the lower 48 bits (i.e. strip the offset and we get the 
-> address
-> on it's own).
+On Wed, Jul 31, 2019 at 1:10 AM Song Liu <songliubraving@fb.com> wrote:
 >
-> Signed-off-by: Kevin Laatz <kevin.laatz@intel.com>
-> Signed-off-by: Bruce Richardson <bruce.richardson@intel.com>
 >
-> ---
-> v2:
->   - Removed unused defines
->   - Fix buffer recycling for unaligned case
->   - Remove --buf-size (--frame-size merged before this)
->   - Modifications to use the new descriptor format for buffer 
-> recycling
-> ---
->  samples/bpf/xdpsock_user.c | 24 +++++++++++++++---------
->  1 file changed, 15 insertions(+), 9 deletions(-)
 >
-> diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-> index 756b00eb1afe..62b2059cd0e3 100644
-> --- a/samples/bpf/xdpsock_user.c
-> +++ b/samples/bpf/xdpsock_user.c
-> @@ -475,6 +475,7 @@ static void kick_tx(struct xsk_socket_info *xsk)
+> > On Jul 30, 2019, at 1:24 PM, Andy Lutomirski <luto@kernel.org> wrote:
+> >
+> > On Mon, Jul 29, 2019 at 10:07 PM Song Liu <songliubraving@fb.com> wrote:
+> >>
+> >> Hi Andy,
+> >>
+> >>> On Jul 27, 2019, at 11:20 AM, Song Liu <songliubraving@fb.com> wrote:
+> >>>
+> >>> Hi Andy,
+> >>>
+> >>>
 >
->  static inline void complete_tx_l2fwd(struct xsk_socket_info *xsk)
->  {
-> +	struct xsk_umem_info *umem = xsk->umem;
->  	u32 idx_cq = 0, idx_fq = 0;
->  	unsigned int rcvd;
->  	size_t ndescs;
-> @@ -487,22 +488,21 @@ static inline void complete_tx_l2fwd(struct 
-> xsk_socket_info *xsk)
->  		xsk->outstanding_tx;
+> [...]
 >
->  	/* re-add completed Tx buffers */
-> -	rcvd = xsk_ring_cons__peek(&xsk->umem->cq, ndescs, &idx_cq);
-> +	rcvd = xsk_ring_cons__peek(&umem->cq, ndescs, &idx_cq);
->  	if (rcvd > 0) {
->  		unsigned int i;
->  		int ret;
+> >>>
+> >>
+> >> I would like more comments on this.
+> >>
+> >> Currently, bpf permission is more or less "root or nothing", which we
+> >> would like to change.
+> >>
+> >> The short term goal is to separate bpf from root, in other words, it is
+> >> "all or nothing". Special user space utilities, such as systemd, would
+> >> benefit from this. Once this is implemented, systemd can call sys_bpf()
+> >> when it is not running as root.
+> >
+> > As generally nasty as Linux capabilities are, this sounds like a good
+> > use for CAP_BPF_ADMIN.
 >
-> -		ret = xsk_ring_prod__reserve(&xsk->umem->fq, rcvd, &idx_fq);
-> +		ret = xsk_ring_prod__reserve(&umem->fq, rcvd, &idx_fq);
->  		while (ret != rcvd) {
->  			if (ret < 0)
->  				exit_with_error(-ret);
-> -			ret = xsk_ring_prod__reserve(&xsk->umem->fq, rcvd,
-> -						     &idx_fq);
-> +			ret = xsk_ring_prod__reserve(&umem->fq, rcvd, &idx_fq);
->  		}
-> +
->  		for (i = 0; i < rcvd; i++)
-> -			*xsk_ring_prod__fill_addr(&xsk->umem->fq, idx_fq++) =
-> -				*xsk_ring_cons__comp_addr(&xsk->umem->cq,
-> -							  idx_cq++);
-> +			*xsk_ring_prod__fill_addr(&umem->fq, idx_fq++) =
-> +				*xsk_ring_cons__comp_addr(&umem->cq, idx_cq++);
->
->  		xsk_ring_prod__submit(&xsk->umem->fq, rcvd);
->  		xsk_ring_cons__release(&xsk->umem->cq, rcvd);
-> @@ -549,7 +549,11 @@ static void rx_drop(struct xsk_socket_info *xsk)
->  	for (i = 0; i < rcvd; i++) {
->  		u64 addr = xsk_ring_cons__rx_desc(&xsk->rx, idx_rx)->addr;
->  		u32 len = xsk_ring_cons__rx_desc(&xsk->rx, idx_rx++)->len;
-> -		char *pkt = xsk_umem__get_data(xsk->umem->buffer, addr);
-> +		u64 offset = addr >> XSK_UNALIGNED_BUF_OFFSET_SHIFT;
-> +
-> +		addr &= XSK_UNALIGNED_BUF_ADDR_MASK;
-> +		char *pkt = xsk_umem__get_data(xsk->umem->buffer,
-> +				addr + offset);
+> I actually agree CAP_BPF_ADMIN makes sense. The hard part is to make
+> existing tools (setcap, getcap, etc.) and libraries aware of the new CAP.
 
-The mask constants should not be part of the api - this should be
-hidden behind an accessor.
+It's been done before -- it's not that hard.  IMO the main tricky bit
+would be try be somewhat careful about defining exactly what
+CAP_BPF_ADMIN does.
 
-Something like:
-   u64 addr = xsk_umem__get_addr(xsk->umem, handle);
-
-
-
-
->  		hex_dump(pkt, len, addr);
->  		*xsk_ring_prod__fill_addr(&xsk->umem->fq, idx_fq++) = addr;
-> @@ -655,7 +659,9 @@ static void l2fwd(struct xsk_socket_info *xsk)
->  							  idx_rx)->addr;
->  			u32 len = xsk_ring_cons__rx_desc(&xsk->rx,
->  							 idx_rx++)->len;
-> -			char *pkt = xsk_umem__get_data(xsk->umem->buffer, addr);
-> +			u64 offset = addr >> XSK_UNALIGNED_BUF_OFFSET_SHIFT;
-> +			char *pkt = xsk_umem__get_data(xsk->umem->buffer,
-> +				(addr & XSK_UNALIGNED_BUF_ADDR_MASK) + offset);
+> > I don't see why you need to invent a whole new mechanism for this.
+> > The entire cgroup ecosystem outside bpf() does just fine using the
+> > write permission on files in cgroupfs to control access.  Why can't
+> > bpf() do the same thing?
 >
->  			swap_mac_addresses(pkt);
->
-> -- 
-> 2.17.1
+> It is easier to use write permission for BPF_PROG_ATTACH. But it is
+> not easy to do the same for other bpf commands: BPF_PROG_LOAD and
+> BPF_MAP_*. A lot of these commands don't have target concept. Maybe
+> we should have target concept for all these commands. But that is a
+> much bigger project. OTOH, "all or nothing" model allows all these
+> commands at once.
+
+For BPF_PROG_LOAD, I admit I've never understood why permission is
+required at all.  I think that CAP_SYS_ADMIN or similar should be
+needed to get is_priv in the verifier, but I think that should mainly
+be useful for tracing, and that requires lots of privilege anyway.
+BPF_MAP_* is probably the trickiest part.  One solution would be some
+kind of bpffs, but I'm sure other solutions are possible.
