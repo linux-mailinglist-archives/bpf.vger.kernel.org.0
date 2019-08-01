@@ -2,85 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6C07E4A1
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2019 23:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC55B7E4BE
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2019 23:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726888AbfHAVLh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Aug 2019 17:11:37 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:43845 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389063AbfHAVLh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Aug 2019 17:11:37 -0400
-Received: by mail-pl1-f194.google.com with SMTP id 4so25740212pld.10
-        for <bpf@vger.kernel.org>; Thu, 01 Aug 2019 14:11:37 -0700 (PDT)
+        id S1732528AbfHAV3S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Aug 2019 17:29:18 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:45194 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728045AbfHAV3S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Aug 2019 17:29:18 -0400
+Received: by mail-lj1-f195.google.com with SMTP id m23so70741384lje.12;
+        Thu, 01 Aug 2019 14:29:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0xsv49hI9aGpjljOtgVwnXuEAi7FmjxIKLfqfg5dOL8=;
-        b=NkhQbzpD4PFe0yt8N8n6078PZiu8nThoyzO+eWHONiylH5RDAwbpNe7a0OXIHacMcG
-         Zm1IdF1ZAQTZJjczh2XUEqQN89wkYo23sVUjnZEPki33dJfdldxjKgUQzkMjOga+mmul
-         TmJ1Mm7bdmc2Nn2vD0kvLs83SpzEUvXdZLf4JJkcm9PrQ7o4gzeOGJPwKsVP1JThvyeP
-         0Gu3SIzi0N9A+p7cO+SEkNiUSElovhZVL16XqojpOHOHQJgobXpcpWTkOvJM/yOCs7v0
-         xcbMm1EZh6XEZNAsUhw6KXEGKhYxLOjUuJnF+y8+SPz3jKtsJIY4DZGa74rNR320924o
-         lmDA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WFZ968ioLvhDlnML/1Tb2VL+GpgCBC3R+Dvj/MA/znw=;
+        b=hlA1TxZ5WHq4cZ6YOWE7/7NMjOyRmkVslk9aZZP+RqyhrM9bsLxANzx5/TPPmxbe++
+         sk16nbqk1A4yeBnDaMbhU4mCIL2wVbebx9V+yzNjuM1XZE5ifFMMNgh+2xweH0gN5zWx
+         PNZ48SDEzKC366pFJ5jSfkcPo01sckIg7gTrAqIHeMQNH11/D5KnmTLprPLiKfgCdKwp
+         3ZGreTRgTC7PaaICiFhZ6SrGOjF+BnBtxx+pRNSbIeFvMERU7YZAbZtTunWbTOURhcj3
+         l9gxP8Iol7py6RzwePVLfRcifT359jfch84dFxi8Kaf1Zcd1xjtJnh+F3Qn5zNkI3eiJ
+         6JrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0xsv49hI9aGpjljOtgVwnXuEAi7FmjxIKLfqfg5dOL8=;
-        b=fGusGJBo9Gsl7wwdIn7k98+NVYCrYKYZ93bjo1i7JWA7KvzoWJ9MxutIryTamM+89w
-         gW/IzGByGkGEWfpJKWf7vZ31UMXzWajbDha320cfHvuSrIzsMYZSdMB9Nuny3piAxwgZ
-         p7mo0jLMUhjsIeckCvUJDn2clqcsY4Dp185sXzfqF4qIigVseegvWN13CrMzrtORSCuj
-         wDJT8MjK3uqJu6ZfovqjFCnCly9WO/OlMiwWr5/N97EVeVReFnXDFgwBjdTUxMo6Koc6
-         A/oqHeZxtkulRKk4LA+wYw1IQIJzLCvwSgcM7F0klvXfOX7Dn6rtqXZ03xPQsckYrfUe
-         zMJQ==
-X-Gm-Message-State: APjAAAXcZCkBMKAsQ6KRDwYxzz5JGCZXDFFd6BuxCwH4iGtvGOIavk9X
-        4LcXcZ2zxSNRDIaBfj/V/q8=
-X-Google-Smtp-Source: APXvYqxMexpp9J8fnGl+bPhCseDlFmUhIGPFD20kLE91/lw53v7y7XMLXyig2C4wfsow7MF8zC2J8A==
-X-Received: by 2002:a17:902:8bc1:: with SMTP id r1mr79221609plo.42.1564693896774;
-        Thu, 01 Aug 2019 14:11:36 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id e10sm75633361pfi.173.2019.08.01.14.11.36
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 01 Aug 2019 14:11:36 -0700 (PDT)
-Date:   Thu, 1 Aug 2019 14:11:35 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
-        daniel@iogearbox.net
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WFZ968ioLvhDlnML/1Tb2VL+GpgCBC3R+Dvj/MA/znw=;
+        b=cOzFbs5IytVx3nWmj+XUYAjUdMt8gQdVlMXnQc0hrrA+iZ6nEL621jV0wJJb7GH9s6
+         MyRBtzzOHJPlH4helyQILiHhlmAEtNqaSYROtu1kH+WuERbeNRpRCOXYb/nFtIXhCyM6
+         AKiI3mPXD5tRLA0hQa/bWvSRaE7JcAXAYPd2mB3H/CQj4GLEI5ZsYejT+9ZBPeGrud/e
+         k5ra8Fs32Igu4tD0G0ORURTrT8DOAvnQVVUufdXfu6o84BWkH67/9oHT4sE6ehJhhTnh
+         ut4TW2pK2vfmSR9frQSKhSWI1C/azqvTMeG4v6ZsRiWV9ZTQnJL4BDBaeFaVNyevIZDD
+         qIvw==
+X-Gm-Message-State: APjAAAVpu22daJsJZyNSbEAecTe0WzqLfkHTK2exNk/UpYWCEa/MWBDK
+        jFgCHV/d/aED7OfKbI60qWTHlA1zy+Cg/wgNE51BSw==
+X-Google-Smtp-Source: APXvYqyYjOa3zPiFTeI7h8zeIhsh1LUFNDASe002/4lQ3kFyriTfD9BkgA9NtI6VVylsfxqok8gpaC1eURwKvnWIRI8=
+X-Received: by 2002:a2e:9758:: with SMTP id f24mr69822624ljj.58.1564694955976;
+ Thu, 01 Aug 2019 14:29:15 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190729215111.209219-1-sdf@google.com> <20190801205807.ruqvljfzcxpdrrfu@ast-mbp.dhcp.thefacebook.com>
+ <20190801211135.GA4544@mini-arch>
+In-Reply-To: <20190801211135.GA4544@mini-arch>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 1 Aug 2019 14:29:04 -0700
+Message-ID: <CAADnVQJN7RLmaMfdhDoJ6x5wgR8Kt3PfyH4nj_6L85jORJF_pw@mail.gmail.com>
 Subject: Re: [PATCH bpf-next 0/2] bpf: allocate extra memory for setsockopt
  hook buffer
-Message-ID: <20190801211135.GA4544@mini-arch>
-References: <20190729215111.209219-1-sdf@google.com>
- <20190801205807.ruqvljfzcxpdrrfu@ast-mbp.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190801205807.ruqvljfzcxpdrrfu@ast-mbp.dhcp.thefacebook.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+To:     Stanislav Fomichev <sdf@fomichev.me>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 08/01, Alexei Starovoitov wrote:
-> On Mon, Jul 29, 2019 at 02:51:09PM -0700, Stanislav Fomichev wrote:
-> > Current setsockopt hook is limited to the size of the buffer that
-> > user had supplied. Since we always allocate memory and copy the value
-> > into kernel space, allocate just a little bit more in case BPF
-> > program needs to override input data with a larger value.
-> > 
-> > The canonical example is TCP_CONGESTION socket option where
-> > input buffer is a string and if user calls it with a short string,
-> > BPF program has no way of extending it.
-> > 
-> > The tests are extended with TCP_CONGESTION use case.
-> 
-> Applied, Thanks
-> 
-> Please consider integrating test_sockopt* into test_progs.
-Sure, will take a look. I think I didn't do it initially
-because these tests create/move to cgroups and test_progs
-do simple tests with BPF_PROG_TEST_RUN.
+On Thu, Aug 1, 2019 at 2:11 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+>
+> On 08/01, Alexei Starovoitov wrote:
+> > On Mon, Jul 29, 2019 at 02:51:09PM -0700, Stanislav Fomichev wrote:
+> > > Current setsockopt hook is limited to the size of the buffer that
+> > > user had supplied. Since we always allocate memory and copy the value
+> > > into kernel space, allocate just a little bit more in case BPF
+> > > program needs to override input data with a larger value.
+> > >
+> > > The canonical example is TCP_CONGESTION socket option where
+> > > input buffer is a string and if user calls it with a short string,
+> > > BPF program has no way of extending it.
+> > >
+> > > The tests are extended with TCP_CONGESTION use case.
+> >
+> > Applied, Thanks
+> >
+> > Please consider integrating test_sockopt* into test_progs.
+> Sure, will take a look. I think I didn't do it initially
+> because these tests create/move to cgroups and test_progs
+> do simple tests with BPF_PROG_TEST_RUN.
+
+I think it would be great to consolidate all tests under test_progs.
+Since testing currently is all manual, myself and Daniel cannot realistically
+run all of them for every patch.
+When it's all part of test_progs it makes testing easier.
+Especially test_progs can now run individual test or subtest.
