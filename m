@@ -2,94 +2,230 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A157D3CA
-	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2019 05:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 271567D5B7
+	for <lists+bpf@lfdr.de>; Thu,  1 Aug 2019 08:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728195AbfHADnr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Jul 2019 23:43:47 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:46714 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725793AbfHADnr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Jul 2019 23:43:47 -0400
-Received: by mail-lf1-f68.google.com with SMTP id z15so44798003lfh.13;
-        Wed, 31 Jul 2019 20:43:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DsOiwp5AJ5StlOEyUqw3Y/9J7gKUCg+XqdMbh1c4nZs=;
-        b=XJNFeLf7sH3vwkX92+5t7+jiFuLB4bpWuiKaDy7Pk+2I0c/wPEmIi/93ME26CjIvT/
-         ZALhCl4flWdM1clFQSqGejWGYI8s6XyrEOyM50FLzId+wzF/qsxF1ifzrNKbhT8aP9VI
-         +dp2TAz0xTg+FtlHw9wXff5+cEKHFhi/tSOzRCZ0YLbVu0WwnozmPh+DqGr/u2EBg+zW
-         3wyXOlBmhxuKfVBGz/spKqtdx1lW8vHcryYK7wGmB18HX8iM4lla3YkFzl9i6qm0pHzk
-         jjtaNovTjxgat2N2KUdKubU6tqIXqSOl2fkuYx2rfJmwgjcVf8hQ9zd6Nzfqn4RNsIpz
-         S7AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DsOiwp5AJ5StlOEyUqw3Y/9J7gKUCg+XqdMbh1c4nZs=;
-        b=GoREtvUYCxV+3MZSxexga1IDWyNoCyWPXzha8+Zb3c+IQ9OqGUNGcu0soTlczF4kAB
-         EQDYcw8hV3flfbgl0aDrvKgIf0Re+/7IIab366sHOdl+HmJ3WWcXjBER3gnKtU0IUe+r
-         RKoDFt8zMMi1qShpzHRp0dHB+XMhiGGUd5Xmao72vivMxi0cg2tR4xgOHL79HoGbFwpq
-         MZz89PanHyFA+wMcMjce57M7tfo5cpgXob0//lmBjKG09efjWXScrs5Z7rThTH5Re8iN
-         HoSw9/qE7nTUWzTU8IR88qp63x6+ld3tIOV3ocN+gjEWZbazS08yK63WTivlCNOx7Mqd
-         Spdw==
-X-Gm-Message-State: APjAAAVqOWjTNNKrF4KzTlG3UI8MjFAEuiSidqr0D+H+BjGvp4PUHXRQ
-        bROfHvxJSS4aFfiFL4l82y1BOK8x0FDVGbt8mog=
-X-Google-Smtp-Source: APXvYqyLlvBQGvrYWVcZ7qOk0S2f0/T0yvlFL1zitQo/4Y33vLVfjhsok80FMTsTpiepOq0znXysKL5xL3shZ09EzQY=
-X-Received: by 2002:a19:ca4b:: with SMTP id h11mr56590366lfj.162.1564631024412;
- Wed, 31 Jul 2019 20:43:44 -0700 (PDT)
+        id S1725804AbfHAGsS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Aug 2019 02:48:18 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:18088 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730030AbfHAGsS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 1 Aug 2019 02:48:18 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x716mF9N029951
+        for <bpf@vger.kernel.org>; Wed, 31 Jul 2019 23:48:16 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=KvrD/D6s1zSrTlLitojcMLybd6I3mkvv6dNyoVyWtu8=;
+ b=GI227nKzKF57AnGChkRoz96YWGotJJb/eRORBgq/RTAPozU9DEWOCjHgvl7agW+/Zy+P
+ p3neFvo3mjslt49f9nE7xn/O57SA8HlzCCS1fSTBvWbibBZTdO/UNuL73U1Yi/1FGnv+
+ 0UMNBBHjlY3jUvRS7dXhnO6GJxDOpJRd1p4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2u3hd81tqe-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 31 Jul 2019 23:48:16 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 31 Jul 2019 23:48:11 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id D5CB9861665; Wed, 31 Jul 2019 23:48:09 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <yhs@fb.com>, <songliubraving@fb.com>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH v3 bpf-next 00/12] CO-RE offset relocations
+Date:   Wed, 31 Jul 2019 23:47:51 -0700
+Message-ID: <20190801064803.2519675-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20190731013827.2445262-1-ast@kernel.org> <20190731013827.2445262-2-ast@kernel.org>
- <B6B907F5-E6CA-4C0B-92F3-0411CA4F4D95@fb.com>
-In-Reply-To: <B6B907F5-E6CA-4C0B-92F3-0411CA4F4D95@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 31 Jul 2019 20:43:33 -0700
-Message-ID: <CAADnVQJu9s4a=tc0+C5hgSPX4KnpYDzKu0AxxU4nCoU1QaWVEg@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] bpf: fix x64 JIT code generation for jmp to 1st insn
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-01_04:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=9 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908010067
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 31, 2019 at 12:36 PM Song Liu <songliubraving@fb.com> wrote:
->
->
->
-> > On Jul 30, 2019, at 6:38 PM, Alexei Starovoitov <ast@kernel.org> wrote:
-> >
-> > Introduction of bounded loops exposed old bug in x64 JIT.
-> > JIT maintains the array of offsets to the end of all instructions to
-> > compute jmp offsets.
-> > addrs[0] - offset of the end of the 1st insn (that includes prologue).
-> > addrs[1] - offset of the end of the 2nd insn.
-> > JIT didn't keep the offset of the beginning of the 1st insn,
-> > since classic BPF didn't have backward jumps and valid extended BPF
-> > couldn't have a branch to 1st insn, because it didn't allow loops.
-> > With bounded loops it's possible to construct a valid program that
-> > jumps backwards to the 1st insn.
-> > Fix JIT by computing:
-> > addrs[0] - offset of the end of prologue == start of the 1st insn.
-> > addrs[1] - offset of the end of 1st insn.
-> >
-> > Reported-by: syzbot+35101610ff3e83119b1b@syzkaller.appspotmail.com
-> > Fixes: 2589726d12a1 ("bpf: introduce bounded loops")
-> > Fixes: 0a14842f5a3c ("net: filter: Just In Time compiler for x86-64")
-> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
->
-> Acked-by: Song Liu <songliubraving@fb.com>
->
-> Do we need similar fix for x86_32?
+This patch set implements central part of CO-RE (Compile Once - Run
+Everywhere, see [0] and [1] for slides and video): relocating fields offsets.
+Most of the details are written down as comments to corresponding parts of the
+code.
 
-Right. x86_32 would need similar fix.
+Patch #1 adds loading of .BTF.ext offset relocations section and macros to
+work with its contents.
+Patch #2 implements CO-RE relocations algorithm in libbpf.
+Patch #3 introduced BPF_CORE_READ macro, hiding usage of Clang's
+__builtin_preserve_access_index intrinsic that records offset relocation.
+Patches #4-#12 adds selftests validating various parts of relocation handling,
+type compatibility, etc.
 
-Applied to bpf tree.
+For all tests to work, you'll need latest Clang/LLVM supporting
+__builtin_preserve_access_index intrinsic, used for recording offset
+relocations. Kernel on which selftests run should have BTF information built
+in (CONFIG_DEBUG_INFO_BTF=y).
+
+  [0] http://vger.kernel.org/bpfconf2019.html#session-2
+  [1] http://vger.kernel.org/lpc-bpf2018.html#session-2
+
+v2->v3:
+- enclose BPF_CORE_READ args in parens (Song);
+
+v1->v2:
+- add offsetofend(), fix btf_ext optional fields checks (Song);
+- add bpf_core_dump_spec() for logging spec representation;
+- move special first element processing out of the loop (Song);
+- typo fixes (Song);
+- drop BPF_ST | BPF_MEM insn relocation (Alexei);
+- extracted BPF_CORE_READ into bpf_helpers (Alexei);
+- added extra tests validating Clang capturing relocs correctly (Yonghong);
+- switch core_relocs.c to use sub-tests;
+- updated mods tests after Clang bug was fixed (Yonghong);
+- fix bug enumerating candidate types;
+
+Andrii Nakryiko (12):
+  libbpf: add .BTF.ext offset relocation section loading
+  libbpf: implement BPF CO-RE offset relocation algorithm
+  selftests/bpf: add BPF_CORE_READ relocatable read macro
+  selftests/bpf: add CO-RE relocs testing setup
+  selftests/bpf: add CO-RE relocs struct flavors tests
+  selftests/bpf: add CO-RE relocs nesting tests
+  selftests/bpf: add CO-RE relocs array tests
+  selftests/bpf: add CO-RE relocs enum/ptr/func_proto tests
+  selftests/bpf: add CO-RE relocs modifiers/typedef tests
+  selftests/bpf: add CO-RE relocs ptr-as-array tests
+  selftests/bpf: add CO-RE relocs ints tests
+  selftests/bpf: add CO-RE relocs misc tests
+
+ tools/lib/bpf/btf.c                           |  69 +-
+ tools/lib/bpf/btf.h                           |   4 +
+ tools/lib/bpf/libbpf.c                        | 915 +++++++++++++++++-
+ tools/lib/bpf/libbpf.h                        |   1 +
+ tools/lib/bpf/libbpf_internal.h               | 105 ++
+ tools/testing/selftests/bpf/bpf_helpers.h     |  20 +
+ .../selftests/bpf/prog_tests/core_reloc.c     | 381 ++++++++
+ .../bpf/progs/btf__core_reloc_arrays.c        |   3 +
+ .../btf__core_reloc_arrays___diff_arr_dim.c   |   3 +
+ ...btf__core_reloc_arrays___diff_arr_val_sz.c |   3 +
+ .../btf__core_reloc_arrays___err_non_array.c  |   3 +
+ ...btf__core_reloc_arrays___err_too_shallow.c |   3 +
+ .../btf__core_reloc_arrays___err_too_small.c  |   3 +
+ ..._core_reloc_arrays___err_wrong_val_type1.c |   3 +
+ ..._core_reloc_arrays___err_wrong_val_type2.c |   3 +
+ .../bpf/progs/btf__core_reloc_flavors.c       |   3 +
+ .../btf__core_reloc_flavors__err_wrong_name.c |   3 +
+ .../bpf/progs/btf__core_reloc_ints.c          |   3 +
+ .../bpf/progs/btf__core_reloc_ints___bool.c   |   3 +
+ .../btf__core_reloc_ints___err_bitfield.c     |   3 +
+ .../btf__core_reloc_ints___err_wrong_sz_16.c  |   3 +
+ .../btf__core_reloc_ints___err_wrong_sz_32.c  |   3 +
+ .../btf__core_reloc_ints___err_wrong_sz_64.c  |   3 +
+ .../btf__core_reloc_ints___err_wrong_sz_8.c   |   3 +
+ .../btf__core_reloc_ints___reverse_sign.c     |   3 +
+ .../bpf/progs/btf__core_reloc_misc.c          |   4 +
+ .../bpf/progs/btf__core_reloc_mods.c          |   3 +
+ .../progs/btf__core_reloc_mods___mod_swap.c   |   3 +
+ .../progs/btf__core_reloc_mods___typedefs.c   |   3 +
+ .../bpf/progs/btf__core_reloc_nesting.c       |   3 +
+ .../btf__core_reloc_nesting___anon_embed.c    |   3 +
+ ...f__core_reloc_nesting___dup_compat_types.c |   5 +
+ ...core_reloc_nesting___err_array_container.c |   3 +
+ ...tf__core_reloc_nesting___err_array_field.c |   3 +
+ ...e_reloc_nesting___err_dup_incompat_types.c |   4 +
+ ...re_reloc_nesting___err_missing_container.c |   3 +
+ ...__core_reloc_nesting___err_missing_field.c |   3 +
+ ..._reloc_nesting___err_nonstruct_container.c |   3 +
+ ...e_reloc_nesting___err_partial_match_dups.c |   4 +
+ .../btf__core_reloc_nesting___err_too_deep.c  |   3 +
+ .../btf__core_reloc_nesting___extra_nesting.c |   3 +
+ ..._core_reloc_nesting___struct_union_mixup.c |   3 +
+ .../bpf/progs/btf__core_reloc_primitives.c    |   3 +
+ ...f__core_reloc_primitives___diff_enum_def.c |   3 +
+ ..._core_reloc_primitives___diff_func_proto.c |   3 +
+ ...f__core_reloc_primitives___diff_ptr_type.c |   3 +
+ ...tf__core_reloc_primitives___err_non_enum.c |   3 +
+ ...btf__core_reloc_primitives___err_non_int.c |   3 +
+ ...btf__core_reloc_primitives___err_non_ptr.c |   3 +
+ .../bpf/progs/btf__core_reloc_ptr_as_arr.c    |   3 +
+ .../btf__core_reloc_ptr_as_arr___diff_sz.c    |   3 +
+ .../selftests/bpf/progs/core_reloc_types.h    | 667 +++++++++++++
+ .../bpf/progs/test_core_reloc_arrays.c        |  55 ++
+ .../bpf/progs/test_core_reloc_flavors.c       |  62 ++
+ .../bpf/progs/test_core_reloc_ints.c          |  44 +
+ .../bpf/progs/test_core_reloc_kernel.c        |  36 +
+ .../bpf/progs/test_core_reloc_misc.c          |  58 ++
+ .../bpf/progs/test_core_reloc_mods.c          |  62 ++
+ .../bpf/progs/test_core_reloc_nesting.c       |  46 +
+ .../bpf/progs/test_core_reloc_primitives.c    |  43 +
+ .../bpf/progs/test_core_reloc_ptr_as_arr.c    |  30 +
+ 61 files changed, 2686 insertions(+), 49 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/core_reloc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_arrays.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_arrays___diff_arr_dim.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_arrays___diff_arr_val_sz.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_arrays___err_non_array.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_arrays___err_too_shallow.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_arrays___err_too_small.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_arrays___err_wrong_val_type1.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_arrays___err_wrong_val_type2.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_flavors.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_flavors__err_wrong_name.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_ints.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_ints___bool.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_ints___err_bitfield.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_ints___err_wrong_sz_16.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_ints___err_wrong_sz_32.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_ints___err_wrong_sz_64.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_ints___err_wrong_sz_8.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_ints___reverse_sign.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_misc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_mods.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_mods___mod_swap.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_mods___typedefs.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_nesting.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_nesting___anon_embed.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_nesting___dup_compat_types.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_nesting___err_array_container.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_nesting___err_array_field.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_nesting___err_dup_incompat_types.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_nesting___err_missing_container.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_nesting___err_missing_field.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_nesting___err_nonstruct_container.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_nesting___err_partial_match_dups.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_nesting___err_too_deep.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_nesting___extra_nesting.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_nesting___struct_union_mixup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_primitives.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_primitives___diff_enum_def.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_primitives___diff_func_proto.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_primitives___diff_ptr_type.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_primitives___err_non_enum.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_primitives___err_non_int.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_primitives___err_non_ptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_ptr_as_arr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_ptr_as_arr___diff_sz.c
+ create mode 100644 tools/testing/selftests/bpf/progs/core_reloc_types.h
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_arrays.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_flavors.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_ints.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_kernel.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_misc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_mods.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_nesting.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_primitives.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_ptr_as_arr.c
+
+-- 
+2.17.1
+
