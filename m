@@ -2,297 +2,574 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3358C8048B
-	for <lists+bpf@lfdr.de>; Sat,  3 Aug 2019 08:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE40804AB
+	for <lists+bpf@lfdr.de>; Sat,  3 Aug 2019 08:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbfHCGAo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 3 Aug 2019 02:00:44 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:42835 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726550AbfHCGAo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 3 Aug 2019 02:00:44 -0400
-Received: by mail-qk1-f195.google.com with SMTP id 201so56488114qkm.9;
-        Fri, 02 Aug 2019 23:00:43 -0700 (PDT)
+        id S1726798AbfHCGae (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 3 Aug 2019 02:30:34 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:46689 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726797AbfHCGae (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 3 Aug 2019 02:30:34 -0400
+Received: by mail-qk1-f193.google.com with SMTP id r4so56463198qkm.13;
+        Fri, 02 Aug 2019 23:30:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lXELc0kA/Mb9tR0vDpmql7F8e0HjtXzOWykDNH1vv/A=;
-        b=vKO86PBjf/1ykBXRb5rreNt+2XxZEbvUj9S+T54oKPlOoN3AQEKQ8HhCHa8zhpCRu0
-         Yw0xRaIWTa2ffnrx0fLMVMyBB59R4OYE81rTkmfm6a812ISmTQ4y7Djjgxk9nRVQdb4q
-         bxUs6ovHY5/JxvSXy4nQS42JsofDANb2EE3W/XZbq5sIujR87w7SfOAEbK++MjDe4Zxn
-         h1XM+Z2pkaIVsbK8RWPQs2E+nNASAPfBDAe0uoscb+3f74y4kf6nEApdR8dXFwSr6kLc
-         zLlpiRruxH5JIJJDT/rK/1x5uqGUnHZr6HfZ7ltY66QHv6WnsgkC6bynUgofliuG/hDP
-         uutg==
+        bh=qO36HbXDPxEiCbth+LZLsbvPAVPJdkhtygqrnzEPIvc=;
+        b=UU+brhdIWkXuNYgeNXEnJqtWs4IOE0EA8tMq05FPhRcbIUP1UsCSK3yWwb5o7HDIGn
+         G7apIjwA35X4P135FdOsr1tObbZneljA68/RzHTaaVSgVdZSfjD2F0uYLzw4RwjKdsLo
+         NbIW8VKH+hUawLJOog8AhGXUai0cEZNFQgEkwbAP2QzusQhIZMueOTKKXAXLcKMIxxQo
+         gz50qj1vo/t+PBNjmUs8CGo0de77JnOevhJBTAqLt5XpKORajF4vwb4Dy0wcWBZkOsrj
+         SHvqjiCXI2wG3N1ofAr3S3tFk5I2ThlGTjqwWNHKN1b74ibudHXjY7WbSEvkgrxhTylL
+         bQ1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lXELc0kA/Mb9tR0vDpmql7F8e0HjtXzOWykDNH1vv/A=;
-        b=ff1Jy/bg5NJcJZ5d3auSDcWDzxptTAlrkF5QIk5a2tbKs0TyfcTkKns/65mMSrTCg6
-         dCrMbOjFoRJgGbY2TbDmZR2YaWeIY8bkowtFltnrEMjCDGhZ4WZ7NHmWQEH9KZJJiE1L
-         1McBKMH5wh8HpeAd+kiF6o2FKGEQnf2+bjEiZPprKCaKtUxGaUo1563vXMQYgCPZLr0y
-         3D5B7m2iNH5I/WsTNKBK3I0cv+HdKdHwjohkcSS1UiYxogVfaM7vOqdrnmConHuwbNfH
-         CXeGnh+5HPClF6KZVzh1bXSRu1IJdvidagPYXMPmyERk8Znr+thCtByAjKEjP0DA6c8e
-         gYDw==
-X-Gm-Message-State: APjAAAUaqV50Hl4r/tuAj5iRkByKrryncQkZFAm0ZOHtXzxfrd9K3xYp
-        azbXCHfhpw1vskBJIpmSzy+MjwN1fSk33Tzpsb0=
-X-Google-Smtp-Source: APXvYqx0td2dro49J6tW1ctR1dyvAIPP20l1mJpUTDrl8IYUUoWdd2g0Zu5DFh05lP28ww2+XhQpX4uFr3oDLPeEGNo=
-X-Received: by 2002:a37:b646:: with SMTP id g67mr91754378qkf.92.1564812042814;
- Fri, 02 Aug 2019 23:00:42 -0700 (PDT)
+        bh=qO36HbXDPxEiCbth+LZLsbvPAVPJdkhtygqrnzEPIvc=;
+        b=OLDT+2B4gHV2YM23ZX/n0L36KY2mqy05NVlBmCcsgCkTUefreXc9DxwcvKyvQtSAwd
+         n1lDxWLuUBBNuExV5kb5+8sgnhDqRruJd1oHNJ6fxoDmcJ1Cw53UB+uS72A0mfuTphwS
+         YK+nlVmZLSPYUuO8anHUS0AAxCGG23rcwwLroH/t7S54pi5NRb+lzxVl5FUEdS6UxsjY
+         K8+sSGbppR8iLxexsq79y9dvbb6AHVUPuKevbgQop9PoT6XAxnYFXiNo+gmkDi03IueE
+         oGxay9ZgPkTpnJNstMaaAadq6ZV4tQ50IV8oYfabE+IVCCyiGWEnYL77Hp0nkRozLKsa
+         bmew==
+X-Gm-Message-State: APjAAAXfDxtSX7Jb0VfNFF7TcVkxfvDUx+vBJsB+ynVQj1z3/4vJDAZR
+        KL1nkdPUwqaNYfG0++ZkhMuUBYnfVc8zSjpk0AE50qdCgz0AVA==
+X-Google-Smtp-Source: APXvYqy1IHNyUHr8x4u0hQ+YJ62Z4O/Du09j/mXcCBZSz2MU1j68U3heF3xJ9A4g3TjLC5VxijjRj+J+QsYNa26MkN4=
+X-Received: by 2002:a37:660d:: with SMTP id a13mr66710345qkc.36.1564813832731;
+ Fri, 02 Aug 2019 23:30:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190802171710.11456-1-sdf@google.com> <20190802171710.11456-2-sdf@google.com>
- <80957794-de90-b09b-89ef-6094d6357d9e@fb.com> <20190802201456.GB4544@mini-arch>
-In-Reply-To: <20190802201456.GB4544@mini-arch>
+References: <20190801064803.2519675-1-andriin@fb.com> <20190801064803.2519675-3-andriin@fb.com>
+ <20190801235030.bzssmwzuvzdy7h7t@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzarjODxo5c-UKtCL_dGGNb1m-3QPAGGR0eq_0tcZVMt8g@mail.gmail.com> <20190802215604.onihsysinwiu3shl@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20190802215604.onihsysinwiu3shl@ast-mbp.dhcp.thefacebook.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 2 Aug 2019 23:00:31 -0700
-Message-ID: <CAEf4BzYV31v6ch-k+ZCQr1RaBuGComt9C0dQjFV1Es42qXz-8Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] selftests/bpf: test_progs: switch to open_memstream
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>
+Date:   Fri, 2 Aug 2019 23:30:21 -0700
+Message-ID: <CAEf4BzY46=Vosd+kha+_Yh_iXNXhgfSW3ihePApb4GfuzoUU6w@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 02/12] libbpf: implement BPF CO-RE offset
+ relocation algorithm
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 2, 2019 at 1:14 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+On Fri, Aug 2, 2019 at 2:56 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On 08/02, Andrii Nakryiko wrote:
-> > On 8/2/19 10:17 AM, Stanislav Fomichev wrote:
-> > > Use open_memstream to override stdout during test execution.
-> > > The copy of the original stdout is held in env.stdout and used
-> > > to print subtest info and dump failed log.
+> On Fri, Aug 02, 2019 at 12:16:52AM -0700, Andrii Nakryiko wrote:
+> > On Thu, Aug 1, 2019 at 4:50 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Wed, Jul 31, 2019 at 11:47:53PM -0700, Andrii Nakryiko wrote:
+> > > > This patch implements the core logic for BPF CO-RE offsets relocations.
+> > > > Every instruction that needs to be relocated has corresponding
+> > > > bpf_offset_reloc as part of BTF.ext. Relocations are performed by trying
+> > > > to match recorded "local" relocation spec against potentially many
+> > > > compatible "target" types, creating corresponding spec. Details of the
+> > > > algorithm are noted in corresponding comments in the code.
+> > > >
+> > > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > > > Acked-by: Song Liu <songliubraving@fb.com>
+> > > ...
+> > > > +             if (btf_is_composite(t)) {
+> > > > +                     const struct btf_member *m = (void *)(t + 1);
+> > > > +                     __u32 offset;
+> > > > +
+> > > > +                     if (access_idx >= BTF_INFO_VLEN(t->info))
+> > > > +                             return -EINVAL;
+> > > > +
+> > > > +                     m = &m[access_idx];
+> > > > +
+> > > > +                     if (BTF_INFO_KFLAG(t->info)) {
+> > > > +                             if (BTF_MEMBER_BITFIELD_SIZE(m->offset))
+> > > > +                                     return -EINVAL;
+> > > > +                             offset = BTF_MEMBER_BIT_OFFSET(m->offset);
+> > > > +                     } else {
+> > > > +                             offset = m->offset;
+> > > > +                     }
+> > >
+> > > very similar logic exists in btf_dump.c
+> > > probably makes sense to make a common helper at some point.
 > >
-> > I really like the idea. I didn't know about open_memstream, it's awesome. Thanks!
-> One possible downside of using open_memstream is that it's glibc
-> specific. I probably need to wrap it in #ifdef __GLIBC__ to make
-> it work with other libcs and just print everything as it was before :-(.
-> I'm not sure we care though.
-
-Given this is selftests/bpf, it is probably OK.
-
->
-> > > test_{v,}printf are now simple wrappers around stdout and will be
-> > > removed in the next patch.
-> > >
-> > > Cc: Andrii Nakryiko <andriin@fb.com>
-> > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > ---
-> > >  tools/testing/selftests/bpf/test_progs.c | 100 ++++++++++-------------
-> > >  tools/testing/selftests/bpf/test_progs.h |   2 +-
-> > >  2 files changed, 46 insertions(+), 56 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-> > > index db00196c8315..00d1565d01a3 100644
-> > > --- a/tools/testing/selftests/bpf/test_progs.c
-> > > +++ b/tools/testing/selftests/bpf/test_progs.c
-> > > @@ -40,14 +40,22 @@ static bool should_run(struct test_selector *sel, int num, const char *name)
-> > >
-> > >  static void dump_test_log(const struct prog_test_def *test, bool failed)
-> > >  {
-> > > -   if (env.verbose || test->force_log || failed) {
-> > > -           if (env.log_cnt) {
-> > > -                   fprintf(stdout, "%s", env.log_buf);
-> > > -                   if (env.log_buf[env.log_cnt - 1] != '\n')
-> > > -                           fprintf(stdout, "\n");
-> > > +   if (stdout == env.stdout)
-> > > +           return;
-> > > +
-> > > +   fflush(stdout); /* exports env.log_buf & env.log_cap */
-> > > +
-> > > +   if (env.log_cap && (env.verbose || test->force_log || failed)) {
-> > > +           int len = strlen(env.log_buf);
+> > Will add btf_member_bit_offset(type, member) and
+> > btf_member_bit_size(type, member).
 > >
-> > env.log_cap is not really a capacity, it's actual number of bytes (without terminating zero), so there is no need to do strlen and it's probably better to rename env.log_cap into env.log_cnt.
-> I'll rename it to log_size to match open_memstream args.
-> We probably still need to do strlen because open_memstream can allocate
-> bigger buffer to hold the data.
+> > >
+> > > > +static size_t bpf_core_essential_name_len(const char *name)
+> > > > +{
+> > > > +     size_t n = strlen(name);
+> > > > +     int i = n - 3;
+> > > > +
+> > > > +     while (i > 0) {
+> > > > +             if (name[i] == '_' && name[i + 1] == '_' && name[i + 2] == '_')
+> > > > +                     return i;
+> > > > +             i--;
+> > > > +     }
+> > > > +     return n;
+> > > > +}
+> > >
+> > > that's a bit of an eye irritant. How about?
+> > >         size_t n = strlen(name);
+> > >         int i, cnt = 0;
+> > >
+> > >         for (i = n - 1; i >= 0; i--) {
+> > >                 if (name[i] == '_') {
+> > >                     cnt++;
+> > >                 } else {
+> > >                    if (cnt == 3)
+> > >                       return i + 1;
+> > >                    cnt = 0;
+> > >                 }
+> > >         }
+> > >         return n;
+> >
+> > I find this one much harder to read and understand. What's
+> > eye-irritating about that loop?
+> >
+> > Your loop will also handle `a____b` differently. My version will
+> > return "a_" as essential name, yours "a____b". Was this intentional on
+> > your part?
+>
+> hmm. I think both will return sizeof("a") == 1
 
-If I read man page correctly, env.log_cnt will be exactly the value
-that strlen will return - number of actual bytes written (omitting
-terminal zero), not number of pre-allocated bytes, thus I'm saying
-that strlen is redundant. Please take a look again.
+nope, there are 4 underscores, your implementation will bump cnt to 4
+without checking it for `cnt == 3`, so will never detect flavor and
+will just return sizeof("a____b"). It's easily fixable, but the point
+is that my original irritating code is very straightforward and harder
+to get wrong an, easier to understand at a glimpse, yours require much
+more conscious thought to understand.
 
 >
-> > > +
-> > > +           if (len) {
-> > > +                   fprintf(env.stdout, "%s", env.log_buf);
-> > > +                   if (env.log_buf[len - 1] != '\n')
-> > > +                           fprintf(env.stdout, "\n");
-> > > +
-> > > +                   fseeko(stdout, 0, SEEK_SET);
-> > Same bug as I already fixed with env.log_cnt = 0 being inside this if. You want to do seek always, not just when you print output log.
-> SG, will move to where we currently clear log_cnt, thanks!
+> > I'd rather use this instead, if you hate the first one:
+> >
+> > size_t n = strlen(name);
+> > int i;
+> >
+> > for (i = n - 3; i > 0; i--) {
+> >     if (strncmp(name + i, "___", 3) == 0)
+> >         return i;
+> > }
+> >
+> > Is this better?
 >
-> > >  /* rewind */
-> > >             }
-> > >     }
-> > > -   env.log_cnt = 0;
-> > >  }
-> > >
-> > >  void test__end_subtest()
-> > > @@ -62,7 +70,7 @@ void test__end_subtest()
-> > >
-> > >     dump_test_log(test, sub_error_cnt);
-> > >
-> > > -   printf("#%d/%d %s:%s\n",
-> > > +   fprintf(env.stdout, "#%d/%d %s:%s\n",
-> > >            test->test_num, test->subtest_num,
-> > >            test->subtest_name, sub_error_cnt ? "FAIL" : "OK");
-> > >  }
-> > > @@ -100,53 +108,7 @@ void test__force_log() {
-> > >
-> > >  void test__vprintf(const char *fmt, va_list args)
-> > >  {
-> > > -   size_t rem_sz;
-> > > -   int ret = 0;
-> > > -
-> > > -   if (env.verbose || (env.test && env.test->force_log)) {
-> > > -           vfprintf(stderr, fmt, args);
-> > > -           return;
-> > > -   }
-> > > -
-> > > -try_again:
-> > > -   rem_sz = env.log_cap - env.log_cnt;
-> > > -   if (rem_sz) {
-> > > -           va_list ap;
-> > > -
-> > > -           va_copy(ap, args);
-> > > -           /* we reserved extra byte for \0 at the end */
-> > > -           ret = vsnprintf(env.log_buf + env.log_cnt, rem_sz + 1, fmt, ap);
-> > > -           va_end(ap);
-> > > -
-> > > -           if (ret < 0) {
-> > > -                   env.log_buf[env.log_cnt] = '\0';
-> > > -                   fprintf(stderr, "failed to log w/ fmt '%s'\n", fmt);
-> > > -                   return;
-> > > -           }
-> > > -   }
-> > > -
-> > > -   if (!rem_sz || ret > rem_sz) {
-> > > -           size_t new_sz = env.log_cap * 3 / 2;
-> > > -           char *new_buf;
-> > > -
-> > > -           if (new_sz < 4096)
-> > > -                   new_sz = 4096;
-> > > -           if (new_sz < ret + env.log_cnt)
-> > > -                   new_sz = ret + env.log_cnt;
-> > > -
-> > > -           /* +1 for guaranteed space for terminating \0 */
-> > > -           new_buf = realloc(env.log_buf, new_sz + 1);
-> > > -           if (!new_buf) {
-> > > -                   fprintf(stderr, "failed to realloc log buffer: %d\n",
-> > > -                           errno);
-> > > -                   return;
-> > > -           }
-> > > -           env.log_buf = new_buf;
-> > > -           env.log_cap = new_sz;
-> > > -           goto try_again;
-> > > -   }
-> > > -
-> > > -   env.log_cnt += ret;
-> > > +   vprintf(fmt, args);
-> > >  }
-> > >
-> > >  void test__printf(const char *fmt, ...)
-> > > @@ -477,6 +439,32 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
-> > >     return 0;
-> > >  }
-> > >
-> > > +static void stdout_hijack(void)
-> > > +{
-> > > +   if (env.verbose || (env.test && env.test->force_log)) {
-> > > +           /* nothing to do, output to stdout by default */
-> > > +           return;
-> > > +   }
-> > > +
-> > > +   /* stdout -> buffer */
-> > > +   fflush(stdout);
-> > > +   stdout = open_memstream(&env.log_buf, &env.log_cap);
-> > Check errors and restore original stdout if something went wrong? (And emit some warning to stderr).
-> Good point, will do.
->
-> > > +}
-> > > +
-> > > +static void stdout_restore(void)
-> > > +{
-> > > +   if (stdout == env.stdout)
-> > > +           return;
-> > > +
-> > > +   fclose(stdout);
-> > > +   free(env.log_buf);
-> > > +
-> > > +   env.log_buf = NULL;
-> > > +   env.log_cap = 0;
-> > > +
-> > > +   stdout = env.stdout;
-> > > +}
-> > > +
-> > >  int main(int argc, char **argv)
-> > >  {
-> > >     static const struct argp argp = {
-> > > @@ -495,6 +483,7 @@ int main(int argc, char **argv)
-> > >     srand(time(NULL));
-> > >
-> > >     env.jit_enabled = is_jit_enabled();
-> > > +   env.stdout = stdout;
-> > >
-> > >     for (i = 0; i < prog_test_cnt; i++) {
-> > >             struct prog_test_def *test = &prog_test_defs[i];
-> > > @@ -508,6 +497,7 @@ int main(int argc, char **argv)
-> > >                             test->test_num, test->test_name))
-> > >                     continue;
-> > >
-> > > +           stdout_hijack();
-> > Why do you do this for every test? Just do once before all the tests and restore after?
-> We can do that, my thinking was to limit the area of hijacking :-)
+> that is worse.
+> What I don't like about it is that every byte is
+> compared N=sizeof(string-to-found) times.
+> I guess it's not such a big performance criticial path,
+> but libbpf has to keep the bar high.
 
-But why? We actually want to hijack stdout/stderr for entire duration
-of all the tests. If test_progs needs some "infrastructural" mandatory
-output, we have env.stdout/env.stderr for that.
+We are talking about searching for *three* characters in a short
+string. Performance difference is negligible at best, unnoticeable at
+worst. I'd rather have straightforward and easy code, but I'll rewrite
+it as a state machine the way you proposed.
 
-> But that would work as well, less allocations per test, I guess. Will
-> do.
 >
-> > >             test->run_test();
-> > >             /* ensure last sub-test is finalized properly */
-> > >             if (test->subtest_name)
-> > > @@ -522,6 +512,7 @@ int main(int argc, char **argv)
-> > >                     env.succ_cnt++;
 > > >
-> > >             dump_test_log(test, test->error_cnt);
-> > > +           stdout_restore();
+> > > > +     case BTF_KIND_ARRAY: {
+> > > > +             const struct btf_array *loc_a, *targ_a;
+> > > > +
+> > > > +             loc_a = (void *)(local_type + 1);
+> > > > +             targ_a = (void *)(targ_type + 1);
+> > > > +             local_id = loc_a->type;
+> > > > +             targ_id = targ_a->type;
 > > >
-> > >             printf("#%d %s:%s\n", test->test_num, test->test_name,
-> > >                    test->error_cnt ? "FAIL" : "OK");
-> > > @@ -529,7 +520,6 @@ int main(int argc, char **argv)
-> > >     printf("Summary: %d/%d PASSED, %d FAILED\n",
-> > >            env.succ_cnt, env.sub_succ_cnt, env.fail_cnt);
-> > >
-> > > -   free(env.log_buf);
-> > >     free(env.test_selector.num_set);
-> > >     free(env.subtest_selector.num_set);
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
-> > > index afd14962456f..9fd89078494f 100644
-> > > --- a/tools/testing/selftests/bpf/test_progs.h
-> > > +++ b/tools/testing/selftests/bpf/test_progs.h
-> > > @@ -56,8 +56,8 @@ struct test_env {
-> > >     bool jit_enabled;
-> > >
-> > >     struct prog_test_def *test;
-> > > +   FILE *stdout;
-> > >     char *log_buf;
-> > > -   size_t log_cnt;
-> > >     size_t log_cap;
-> > So it's actually log_cnt that's assigned on fflush for memstream, according to man page, so probably keep log_cnt, delete log_cap.
-> Ack. See above, will rename to log_size, let me know if you disagree.
+> > > can we add a helper like:
+> >
+> > Yes, we can. I was thinking about that, but decided to not expand
+> > patch set. But we do need to extract all those small, but nice
+> > helpers. I'll put them in libbpf_internal.h for now, but I think it
+> > might be good idea to expose them as part of btf.h. Thoughts?
 >
-> > >     int succ_cnt; /* successful tests */
+> part of btf.h make sense to me.
+>
+> >
+> > > const struct btf_array *btf_array(cosnt struct btf_type *t)
+> > > {
+> > >         return (const struct btf_array *)(t + 1);
+> > > }
+> > >
+> > > then above will be:
+> > >         case BTF_KIND_ARRAY: {
+> > >                 local_id = btf_array(local_type)->type;
+> > >                 targ_id = btf_array(targ_type)->type;
+> > >
+> > > and a bunch of code in btf.c and btf_dump.c would be cleaner as well?
+> >
+> > Yep, some of those are already scattered around btf.c and btf_dump.c,
+> > will clean up and add patch to this patch set.
+> >
+> > >
+> > > > +             goto recur;
+> > > > +     }
+> > > > +     default:
+> > > > +             pr_warning("unexpected kind %d relocated, local [%d], target [%d]\n",
+> > > > +                        kind, local_id, targ_id);
+> > > > +             return 0;
+> > > > +     }
+> > > > +}
+> > > > +
+> > > > +/*
+> > > > + * Given single high-level named field accessor in local type, find
+> > > > + * corresponding high-level accessor for a target type. Along the way,
+> > > > + * maintain low-level spec for target as well. Also keep updating target
+> > > > + * offset.
+> > > > + *
+> > > > + * Searching is performed through recursive exhaustive enumeration of all
+> > > > + * fields of a struct/union. If there are any anonymous (embedded)
+> > > > + * structs/unions, they are recursively searched as well. If field with
+> > > > + * desired name is found, check compatibility between local and target types,
+> > > > + * before returning result.
+> > > > + *
+> > > > + * 1 is returned, if field is found.
+> > > > + * 0 is returned if no compatible field is found.
+> > > > + * <0 is returned on error.
+> > > > + */
+> > > > +static int bpf_core_match_member(const struct btf *local_btf,
+> > > > +                              const struct bpf_core_accessor *local_acc,
+> > > > +                              const struct btf *targ_btf,
+> > > > +                              __u32 targ_id,
+> > > > +                              struct bpf_core_spec *spec,
+> > > > +                              __u32 *next_targ_id)
+> > > > +{
+> > > > +     const struct btf_type *local_type, *targ_type;
+> > > > +     const struct btf_member *local_member, *m;
+> > > > +     const char *local_name, *targ_name;
+> > > > +     __u32 local_id;
+> > > > +     int i, n, found;
+> > > > +
+> > > > +     targ_type = skip_mods_and_typedefs(targ_btf, targ_id, &targ_id);
+> > > > +     if (!targ_type)
+> > > > +             return -EINVAL;
+> > > > +     if (!btf_is_composite(targ_type))
+> > > > +             return 0;
+> > > > +
+> > > > +     local_id = local_acc->type_id;
+> > > > +     local_type = btf__type_by_id(local_btf, local_id);
+> > > > +     local_member = (void *)(local_type + 1);
+> > > > +     local_member += local_acc->idx;
+> > > > +     local_name = btf__name_by_offset(local_btf, local_member->name_off);
+> > > > +
+> > > > +     n = BTF_INFO_VLEN(targ_type->info);
+> > > > +     m = (void *)(targ_type + 1);
+> > >
+> > > new btf_member() helper?
+> > >
+> > > > +     for (i = 0; i < n; i++, m++) {
+> > > > +             __u32 offset;
+> > > > +
+> > > > +             /* bitfield relocations not supported */
+> > > > +             if (BTF_INFO_KFLAG(targ_type->info)) {
+> > > > +                     if (BTF_MEMBER_BITFIELD_SIZE(m->offset))
+> > > > +                             continue;
+> > > > +                     offset = BTF_MEMBER_BIT_OFFSET(m->offset);
+> > > > +             } else {
+> > > > +                     offset = m->offset;
+> > > > +             }
+> > > > +             if (offset % 8)
+> > > > +                     continue;
+> > >
+> > > same bit of code again?
+> > > definitely could use a helper.
+> >
+> > Different handling (continue here, return error above), but can use
+> > those helpers I mentioned above.
+> >
+> > >
+> > > > +     for (i = 0; i < local_spec->len; i++, local_acc++, targ_acc++) {
+> > > > +             targ_type = skip_mods_and_typedefs(targ_spec->btf, targ_id,
+> > > > +                                                &targ_id);
+> > > > +             if (!targ_type)
+> > > > +                     return -EINVAL;
+> > > > +
+> > > > +             if (local_acc->name) {
+> > > > +                     matched = bpf_core_match_member(local_spec->btf,
+> > > > +                                                     local_acc,
+> > > > +                                                     targ_btf, targ_id,
+> > > > +                                                     targ_spec, &targ_id);
+> > > > +                     if (matched <= 0)
+> > > > +                             return matched;
+> > > > +             } else {
+> > > > +                     /* for i=0, targ_id is already treated as array element
+> > > > +                      * type (because it's the original struct), for others
+> > > > +                      * we should find array element type first
+> > > > +                      */
+> > > > +                     if (i > 0) {
+> > > > +                             const struct btf_array *a;
+> > > > +
+> > > > +                             if (!btf_is_array(targ_type))
+> > > > +                                     return 0;
+> > > > +
+> > > > +                             a = (void *)(targ_type + 1);
+> > > > +                             if (local_acc->idx >= a->nelems)
+> > > > +                                     return 0;
+> > >
+> > > am I reading it correctly that the local spec requested out-of-bounds
+> > > index in the target array type?
+> > > Why this is 'ignore' instead of -EINVAL?
+> >
+> > Similar to any other mismatch (e.g., int in local type vs int64 in
+> > target type). It just makes candidate not matching. Why would that be
+> > error that will stop the whole relocation and subsequently object
+> > loading process?
+>
+> Did the field name match or this is for anon types?
+> I've read it as names matched and type miscompared.
+
+No, not anonymous.
+
+struct my_struct___local {
+    int a;
+};
+
+struct my_struct___target {
+    long long a;
+};
+
+my_struct___local->a will not match my_struct___target->a, but it's
+not a reason to stop relocation process due to error.
+
+>
+> >
+> > >
+> > > > +/*
+> > > > + * Probe few well-known locations for vmlinux kernel image and try to load BTF
+> > > > + * data out of it to use for target BTF.
+> > > > + */
+> > > > +static struct btf *bpf_core_find_kernel_btf(void)
+> > > > +{
+> > > > +     const char *locations[] = {
+> > > > +             "/lib/modules/%1$s/vmlinux-%1$s",
+> > > > +             "/usr/lib/modules/%1$s/kernel/vmlinux",
+> > > > +     };
+> > > > +     char path[PATH_MAX + 1];
+> > > > +     struct utsname buf;
+> > > > +     struct btf *btf;
+> > > > +     int i, err;
+> > > > +
+> > > > +     err = uname(&buf);
+> > > > +     if (err) {
+> > > > +             pr_warning("failed to uname(): %d\n", err);
+> > >
+> > > defensive programming ?
+> > > I think uname() can fail only if &buf points to non-existing page like null.
+> >
+> > I haven't checked source for this syscall, but man page specified that
+> > it might return -1 on error.
+>
+> man page says that it can only return EFAULT.
+
+Ah, yeah, seems to be the only reason. I'll remove the check, it
+wasn't paranoia :)
+
+>
+> >
+> > >
+> > > > +             return ERR_PTR(err);
+> > > > +     }
+> > > > +
+> > > > +     for (i = 0; i < ARRAY_SIZE(locations); i++) {
+> > > > +             snprintf(path, PATH_MAX, locations[i], buf.release);
+> > > > +             pr_debug("attempting to load kernel BTF from '%s'\n", path);
+> > >
+> > > I think this debug message would have been more useful after access().
+> >
+> > Sure, will move.
+> >
+> > >
+> > > > +
+> > > > +             if (access(path, R_OK))
+> > > > +                     continue;
+> > > > +
+> > > > +             btf = btf__parse_elf(path, NULL);
+> > > > +             if (IS_ERR(btf))
+> > > > +                     continue;
+> > > > +
+> > > > +             pr_debug("successfully loaded kernel BTF from '%s'\n", path);
+> > > > +             return btf;
+> > > > +     }
+> > > > +
+> > > > +     pr_warning("failed to find valid kernel BTF\n");
+> > > > +     return ERR_PTR(-ESRCH);
+> > > > +}
+> > > > +
+> > > > +/* Output spec definition in the format:
+> > > > + * [<type-id>] (<type-name>) + <raw-spec> => <offset>@<spec>,
+> > > > + * where <spec> is a C-syntax view of recorded field access, e.g.: x.a[3].b
+> > > > + */
+> > > > +static void bpf_core_dump_spec(int level, const struct bpf_core_spec *spec)
+> > > > +{
+> > > > +     const struct btf_type *t;
+> > > > +     const char *s;
+> > > > +     __u32 type_id;
+> > > > +     int i;
+> > > > +
+> > > > +     type_id = spec->spec[0].type_id;
+> > > > +     t = btf__type_by_id(spec->btf, type_id);
+> > > > +     s = btf__name_by_offset(spec->btf, t->name_off);
+> > > > +     libbpf_print(level, "[%u] (%s) + ", type_id, s);
+> > >
+> > > imo extra []() don't improve readability of the dump.
+> >
+> > [<num>] is the general convention I've been using throughout libbpf to
+> > specify type ID, so I'd rather keep it for consistency. I can drop
+> > parens, though, no problem.
+> >
+> > >
+> > > > +
+> > > > +     for (i = 0; i < spec->raw_len; i++)
+> > > > +             libbpf_print(level, "%d%s", spec->raw_spec[i],
+> > > > +                          i == spec->raw_len - 1 ? " => " : ":");
+> > > > +
+> > > > +     libbpf_print(level, "%u @ &x", spec->offset);
+> > > > +
+> > > > +     for (i = 0; i < spec->len; i++) {
+> > > > +             if (spec->spec[i].name)
+> > > > +                     libbpf_print(level, ".%s", spec->spec[i].name);
+> > > > +             else
+> > > > +                     libbpf_print(level, "[%u]", spec->spec[i].idx);
+> > > > +     }
+> > > > +
+> > > > +}
+> > > > +
+> > > > +static size_t bpf_core_hash_fn(const void *key, void *ctx)
+> > > > +{
+> > > > +     return (size_t)key;
+> > > > +}
+> > > > +
+> > > > +static bool bpf_core_equal_fn(const void *k1, const void *k2, void *ctx)
+> > > > +{
+> > > > +     return k1 == k2;
+> > > > +}
+> > > > +
+> > > > +static void *u32_to_ptr(__u32 x)
+> > > > +{
+> > > > +     return (void *)(uintptr_t)x;
+> > > > +}
+> > >
+> > > u32 to pointer on 64-bit arch?!
+> > > That surely needs a comment.
+> >
+> > I should probably call it u32_to_hash_key() to make it obvious it's
+> > conversion to hashmap's generic `void *` key type.
+> >
+> > >
+> > > > +
+> > > > +/*
+> > > > + * CO-RE relocate single instruction.
+> > > > + *
+> > > > + * The outline and important points of the algorithm:
+> > > > + * 1. For given local type, find corresponding candidate target types.
+> > > > + *    Candidate type is a type with the same "essential" name, ignoring
+> > > > + *    everything after last triple underscore (___). E.g., `sample`,
+> > > > + *    `sample___flavor_one`, `sample___flavor_another_one`, are all candidates
+> > > > + *    for each other. Names with triple underscore are referred to as
+> > > > + *    "flavors" and are useful, among other things, to allow to
+> > > > + *    specify/support incompatible variations of the same kernel struct, which
+> > > > + *    might differ between different kernel versions and/or build
+> > > > + *    configurations.
+> > > > + *
+> > > > + *    N.B. Struct "flavors" could be generated by bpftool's BTF-to-C
+> > > > + *    converter, when deduplicated BTF of a kernel still contains more than
+> > > > + *    one different types with the same name. In that case, ___2, ___3, etc
+> > > > + *    are appended starting from second name conflict. But start flavors are
+> > > > + *    also useful to be defined "locally", in BPF program, to extract same
+> > > > + *    data from incompatible changes between different kernel
+> > > > + *    versions/configurations. For instance, to handle field renames between
+> > > > + *    kernel versions, one can use two flavors of the struct name with the
+> > > > + *    same common name and use conditional relocations to extract that field,
+> > > > + *    depending on target kernel version.
+> > >
+> > > there are actual kernel types that have ___ in the name.
+> > > Ex: struct lmc___media
+> > > We probably need to revisit this 'flavor' convention.
+> >
+> > There are only these:
+> > - lmc___softc
+> > - lmc___media
+> > - lmc___ctl (all three in drivers/net/wan/lmc/lmc_var.h)
+> > - ____ftrace_##name set of structs
+> >
+> > I couldn't come up with anything cleaner-looking. I think we can still
+> > keep ___ convention, but:
+> >
+> > 1. Match only exactly 3 underscores, delimited by non-underscore from
+> > both sides (so similar to your proposed loop above);
+> > 2. We can also try matching candidates assuming full name without
+> > ___xxx part removed, in addition to current logic. This seems like an
+> > overkill at this point and unlikely to be useful in practice, so I'd
+> > postpone implementing this until we really need it.
+> >
+> > What do you think? Which other convention did you have in mind?
+>
+> may be match ___[0-9]+ instead for now?
+> Not as flexible, but user supplied "flavors" is not an immediate task.
+
+All the tests I added use non-numeric flavors. While technically I can
+use just ___1, ___2 and so on, it will greatly reduce readability,
+while not really solving any problem (nothing prevents someone to add
+something like lmc___1 eventually).
+
+I think it's not worth it to complicate this logic just for
+lmc___{softc,media,ctl}, but we can do 2) - try to match any struct as
+is. If that fails, see if it's a "flavor" and match flavors.
+
+>
+> >
+> > >
+> > > > +     for (i = 0, j = 0; i < cand_ids->len; i++) {
+> > > > +             cand_id = cand_ids->data[i];
+> > > > +             cand_type = btf__type_by_id(targ_btf, cand_id);
+> > > > +             cand_name = btf__name_by_offset(targ_btf, cand_type->name_off);
+> > > > +
+> > > > +             err = bpf_core_spec_match(&local_spec, targ_btf,
+> > > > +                                       cand_id, &cand_spec);
+> > > > +             if (err < 0) {
+> > > > +                     pr_warning("prog '%s': relo #%d: failed to match spec ",
+> > > > +                                prog_name, relo_idx);
+> > > > +                     bpf_core_dump_spec(LIBBPF_WARN, &local_spec);
+> > > > +                     libbpf_print(LIBBPF_WARN,
+> > > > +                                  " to candidate #%d [%d] (%s): %d\n",
+> > > > +                                  i, cand_id, cand_name, err);
+> > > > +                     return err;
+> > > > +             }
+> > > > +             if (err == 0) {
+> > > > +                     pr_debug("prog '%s': relo #%d: candidate #%d [%d] (%s) doesn't match spec ",
+> > > > +                              prog_name, relo_idx, i, cand_id, cand_name);
+> > > > +                     bpf_core_dump_spec(LIBBPF_DEBUG, &local_spec);
+> > > > +                     libbpf_print(LIBBPF_DEBUG, "\n");
+> > > > +                     continue;
+> > > > +             }
+> > > > +
+> > > > +             pr_debug("prog '%s': relo #%d: candidate #%d matched as spec ",
+> > > > +                      prog_name, relo_idx, i);
+> > >
+> > > did you mention that you're going to make a helper for this debug dumps?
+> >
+> > yeah, I added bpf_core_dump_spec(), but I don't know how to shorten
+> > this further... This output is extremely useful to understand what's
+> > happening and will be invaluable when users will inevitably report
+> > confusing behavior in some cases, so I still want to keep it.
+>
+> not sure yet. Just pointing out that this function has more debug printfs
+> than actual code which doesn't look right.
+> We have complex algorithms in the kernel (like verifier).
+> Yet we don't sprinkle printfs in there to this degree.
+>
+
+We do have a verbose verifier logging, though, exactly to help users
+to debug issues, which is extremely helpful and is greatly appreciated
+by users.
+There is nothing worse for developer experience than getting -EINVAL
+without any useful log message. Been there, banged my head against the
+wall wishing for a bit more verbose log. What are we trying to
+optimize for here?
