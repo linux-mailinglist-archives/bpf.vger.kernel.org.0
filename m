@@ -2,104 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1306880B82
-	for <lists+bpf@lfdr.de>; Sun,  4 Aug 2019 17:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0579280CA2
+	for <lists+bpf@lfdr.de>; Sun,  4 Aug 2019 22:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbfHDPrt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 4 Aug 2019 11:47:49 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:35797 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726333AbfHDPrs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 4 Aug 2019 11:47:48 -0400
-Received: by mail-wm1-f67.google.com with SMTP id l2so70735556wmg.0;
-        Sun, 04 Aug 2019 08:47:47 -0700 (PDT)
+        id S1726587AbfHDUnu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 4 Aug 2019 16:43:50 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:38216 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726561AbfHDUnu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 4 Aug 2019 16:43:50 -0400
+Received: by mail-pf1-f196.google.com with SMTP id y15so38521971pfn.5;
+        Sun, 04 Aug 2019 13:43:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=XpKZwopndEr+MAU5NPtSJHYcO6Ev0MiXZLBr1uT/g74=;
-        b=XU5QG53d3+2crKQsbTdHoGONPn6CyVrAJXUf8YhuW3jwt3jQNVcwL0fkkD4qsI6q24
-         iRlsjJFNqFjAk34GEB5i5ZsPAoK7cqv8xr3ardQdu3a9vwP92MMf/ROCAQO3yfSl5CYQ
-         2JZfTKPbcmQd8/HUDYjUjfhlvLH34tg8FBgB81GOx2nkc13oLYz+ypMoIwMGKVfakLvi
-         hg2+QMbP/eowocijrEJiHCjdm1p7XCaHVkavK3FcGPuESQCxl0tZAgiPZIxMoHYipia2
-         YENHHfbhrj4DPU/oZHFHHLxreYtH61LP0TQSKY1rfJV2C5dhj1tnKZmqKZiT7vZcq1Sn
-         u5ug==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QXemZGNKKSXaemQaQ7I2h0ppDpm757mVpb0u6Ipg/zY=;
+        b=Ci8DEuemiGJTvmtxDYZntIO4I3dCHvdICgkJ9JPV/JZNfhqjjxW0/RkOZ2IIgm2OzJ
+         hZfguJ7UcHTb+MWxe/on+Vaj4r5CVrO1Q76QDEUUQaCzPtyAkR9BKDjMPwg/TooahkPV
+         mRN2Vv8rUgyZeoj3Zx1DqzN1gR08fLQ3jwJqGhvyDOLF1GbJ/1Bunq8duzqhQfkNQJl7
+         /uatMz8xPqEqJdvCWu0ChHgyxJezs+wzKDrZBnGVfvrOptnzVaRp4zDX20vSrxV/Tqzv
+         JbswhyMM+LNYxYDDpA8XktF71PbhRslzvma2xHv1W54y6tLhcXWWLAYzMpu5RrMfioS0
+         TxLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=XpKZwopndEr+MAU5NPtSJHYcO6Ev0MiXZLBr1uT/g74=;
-        b=K9w+4lqS6MUJa74oyxJmoLIXgJ7/pn7LPDlx93jxN29u8K+yGVQyRBBlkpD3MPhhkx
-         BHJGOj9cf/BqaqLREQxh7IrfMYBV1EnWZ0rwyE4gQbLWCSo37LihuOeV6HKvi7fpAqTJ
-         z+hwvXHFqt6bS71qZvRoKUtg5fEHrjLq60vNUAdj7sZbrcMYC05zX6TGQ6BS0CBwuNMj
-         /8FiRPjotFy77396AX2f1ZsfTJT7T2ewMIOYMBRdB17j4xP+dR54txFjpAKV1NEk8q/4
-         PaEa0nitpRTeUXeSf3qRYUK2FNh4O+26PCE1z6Pg+aoAGkvnhslzETsFXAwKhVkAIyqE
-         AWqg==
-X-Gm-Message-State: APjAAAXUI63yiDAgzAJ61wSMkEPWpKC3A1BXvFRi0gilHRpiEmmEspsl
-        MstbSRsbAmODy3R/tB/2aaU=
-X-Google-Smtp-Source: APXvYqzJFuGB25ozI+29umWEdsL9Hgl2qPQJteoUcZ6uWqBwZ6hn5nsD/8MzEZeeH8OkXj4yd8zWVg==
-X-Received: by 2002:a1c:f918:: with SMTP id x24mr13576652wmh.132.1564933666469;
-        Sun, 04 Aug 2019 08:47:46 -0700 (PDT)
-Received: from localhost ([197.211.57.129])
-        by smtp.gmail.com with ESMTPSA id o20sm217192312wrh.8.2019.08.04.08.47.40
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Sun, 04 Aug 2019 08:47:45 -0700 (PDT)
-Date:   Sun, 4 Aug 2019 16:46:35 +0100
-From:   Sheriff Esseson <sheriffesseson@gmail.com>
-To:     skhan@linuxfoundation.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-Subject: [PATCH] Documentation: virt: Fix broken reference to virt tree's
- index
-Message-ID: <20190804154635.GA18475@localhost>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QXemZGNKKSXaemQaQ7I2h0ppDpm757mVpb0u6Ipg/zY=;
+        b=daI48xfqUlqavF51mWGJj7V1mbr9GF1hKk54qlSJ0pT0FmAQ4u5BJZNhYnjBjQsPYm
+         YgmT2QNedsoP8qseoCqL++tx7slT2UU5hvDocoUxxh2iW8MB/b7JuY5QMoLDJCA57NiE
+         8PsnqHgm+EPmr71bZg6zuVqRRJBgjfFbBg8iYZSRJVHAB7m3cVUNQz7I3D97Zq9F3jKm
+         BRQTa9vj97WQYIjr57fRXvw0rUIkcIu1XqZLfOkn4N0wWkIArbUXE6hHi7nQA01ShEBP
+         lKxFT0xf1nkzsg7hdzQJYFmVWu3N/Ld5q8Itj+58DP6/0vN7W3aMU8LnC7aZ0SmxhYqU
+         EPRA==
+X-Gm-Message-State: APjAAAUsDVgOhGHV2lIvOkhIN2qCxMLPD+nr0sUgIb2AalNpfWNQ0rWi
+        1e6SxiC40VJ+xlRJUF76Rrns9GAg9UWt6FO5IDk=
+X-Google-Smtp-Source: APXvYqweie4tsXgeXS4l7m40fPNiOzWI4ifFbqNi/NEF/3xuuypXNwYcjlPs7IYlTK9L8/DTw73l/0gHU2Opf+lx6uw=
+X-Received: by 2002:a62:1bca:: with SMTP id b193mr68260873pfb.57.1564951428540;
+ Sun, 04 Aug 2019 13:43:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <20190803044320.5530-1-farid.m.zakaria@gmail.com>
+ <20190803044320.5530-2-farid.m.zakaria@gmail.com> <CAH3MdRXTEN-Ra+61QA37hM2mkHx99K5NM7f+H6d8Em-bxvaenw@mail.gmail.com>
+ <CACCo2jmcYAfY8zHJiT7NCb-Ct7Wguk9XHRc8QmZa7V3eJy0WTg@mail.gmail.com>
+In-Reply-To: <CACCo2jmcYAfY8zHJiT7NCb-Ct7Wguk9XHRc8QmZa7V3eJy0WTg@mail.gmail.com>
+From:   Farid Zakaria <farid.m.zakaria@gmail.com>
+Date:   Sun, 4 Aug 2019 13:43:37 -0700
+Message-ID: <CACCo2j=RAua1E0d6E+tVoOG=q1sSLuZpLqx32dY4mmhYNtDzvg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] bpf: introduce new helper udp_flow_src_port
+To:     Y Song <ys114321@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix broken reference to virt/index.rst.
+* re-sending as I've sent previously as HTML ... sorry *
 
-Sequel to: 2f5947dfcaec ("Documentation: move Documentation/virtual to
-Documentation/virt")
+First off, thank you for taking the time to review this patch.
 
-Reported-by: Sphinx
+It's not clear to me the backport you'd like for libbpf, I have been following
+the documentation outlined in
+https://www.kernel.org/doc/html/latest/bpf/index.html
+I will hold off on changes to this patch as you've asked for it going forward.
 
-Signed-off-by: Sheriff Esseson <sheriffesseson@gmail.com>
----
- Documentation/index.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This patch is inspired by a MPLSoUDP (https://tools.ietf.org/html/rfc7510)]
+kernel module that was ported to eBPF -- our implementation is slightly
+modified for our custom use case.
 
-diff --git a/Documentation/index.rst b/Documentation/index.rst
-index 2df5a3da563c..5205430305d5 100644
---- a/Documentation/index.rst
-+++ b/Documentation/index.rst
-@@ -115,7 +115,7 @@ needed).
-    target/index
-    timers/index
-    watchdog/index
--   virtual/index
-+   virt/index
-    input/index
-    hwmon/index
-    gpu/index
--- 
-2.17.1
+The Linux kernel provides a single abstraction for the src port for
+UDP tunneling
+via udp_flow_src_port. If it's improved eBPF filters would benefit if
+the call is the same.
 
+Exposing this function to eBPF programs would maintain feature parity
+with other kernel
+tunneling implementations.
+
+Farid Zakaria
+
+Farid Zakaria
+
+
+
+On Sun, Aug 4, 2019 at 1:41 PM Farid Zakaria <farid.m.zakaria@gmail.com> wrote:
+>
+> First off, thank you for taking the time to review this patch.
+>
+> It's not clear to me the backport you'd like for libbpf, I have been following
+> the documentation outlined in https://www.kernel.org/doc/html/latest/bpf/index.html
+> I will hold off on changes to this patch as you've asked for it going forward.
+>
+> This patch is inspired by a MPLSoUDP (https://tools.ietf.org/html/rfc7510)]
+> kernel module that was ported to eBPF -- our implementation is slightly
+> modified for our custom use case.
+>
+> The Linux kernel provides a single abstraction for the src port for UDP tunneling
+> via udp_flow_src_port. If it's improved eBPF filters would benefit if the call is the same.
+>
+> Exposing this function to eBPF programs would maintain feature parity with other kernel
+> tunneling implementations.
+>
+> Cheers,
+> Farid Zakaria
+>
+>
+>
+> On Sat, Aug 3, 2019 at 11:52 PM Y Song <ys114321@gmail.com> wrote:
+>>
+>> On Sat, Aug 3, 2019 at 8:29 PM Farid Zakaria <farid.m.zakaria@gmail.com> wrote:
+>> >
+>> > Foo over UDP uses UDP encapsulation to add additional entropy
+>> > into the packets so that they get beter distribution across EMCP
+>> > routes.
+>> >
+>> > Expose udp_flow_src_port as a bpf helper so that tunnel filters
+>> > can benefit from the helper.
+>> >
+>> > Signed-off-by: Farid Zakaria <farid.m.zakaria@gmail.com>
+>> > ---
+>> >  include/uapi/linux/bpf.h                      | 21 +++++++--
+>> >  net/core/filter.c                             | 20 ++++++++
+>> >  tools/include/uapi/linux/bpf.h                | 21 +++++++--
+>> >  tools/testing/selftests/bpf/bpf_helpers.h     |  2 +
+>> >  .../bpf/prog_tests/udp_flow_src_port.c        | 28 +++++++++++
+>> >  .../bpf/progs/test_udp_flow_src_port_kern.c   | 47 +++++++++++++++++++
+>> >  6 files changed, 131 insertions(+), 8 deletions(-)
+>> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/udp_flow_src_port.c
+>> >  create mode 100644 tools/testing/selftests/bpf/progs/test_udp_flow_src_port_kern.c
+>>
+>> First, for each review, backport and sync with libbpf repo, in the future,
+>> could you break the patch to two patches?
+>>    1. kernel changes (net/core/filter.c, include/uapi/linux/bpf.h)
+>>    2. tools/include/uapi/linux/bpf.h
+>>    3. tools/testing/ changes
+>>
+>> Second, could you explain why existing __sk_buff->hash not enough?
+>> there are corner cases where if __sk_buff->hash is 0 and the kernel did some
+>> additional hashing, but maybe you can approximate in bpf program?
+>> For case, min >= max, I suppose you can get min/max port values
+>> from the user space for a particular net device and then calculate
+>> the hash in the bpf program?
+>> What I want to know if how much accuracy you will lose if you just
+>> use __sk_buff->hash and do approximation in bpf program.
+>>
+>> >
+>> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>> > index 4393bd4b2419..90e814153dec 100644
+>> > --- a/include/uapi/linux/bpf.h
+>> > +++ b/include/uapi/linux/bpf.h
+>> > @@ -2545,9 +2545,21 @@ union bpf_attr {
+>> >   *             *th* points to the start of the TCP header, while *th_len*
+>> >   *             contains **sizeof**\ (**struct tcphdr**).
+>> >   *
+>> > - *     Return
+>> > - *             0 if *iph* and *th* are a valid SYN cookie ACK, or a negative
+>> > - *             error otherwise.
+>> > + *  Return
+>> > + *      0 if *iph* and *th* are a valid SYN cookie ACK, or a negative
+>> > + *      error otherwise.
+>> > + *
+>> > + * int bpf_udp_flow_src_port(struct sk_buff *skb, int min, int max, int use_eth)
+>> > + *  Description
+>> > + *      It's common to implement tunnelling inside a UDP protocol to provide
+>> > + *      additional randomness to the packet. The destination port of the UDP
+>> > + *      header indicates the inner packet type whereas the source port is used
+>> > + *      for additional entropy.
+>> > + *
+>> > + *  Return
+>> > + *      An obfuscated hash of the packet that falls within the
+>> > + *      min & max port range.
+>> > + *      If min >= max, the default port range is used
+>> >   *
+>> >   * int bpf_sysctl_get_name(struct bpf_sysctl *ctx, char *buf, size_t buf_len, u64 flags)
+>> >   *     Description
+>> > @@ -2853,7 +2865,8 @@ union bpf_attr {
+>> >         FN(sk_storage_get),             \
+>> >         FN(sk_storage_delete),          \
+>> >         FN(send_signal),                \
+>> > -       FN(tcp_gen_syncookie),
+>> > +       FN(tcp_gen_syncookie),  \
+>> > +       FN(udp_flow_src_port),
+>> >
+>> >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+>> >   * function eBPF program intends to call
+>> > diff --git a/net/core/filter.c b/net/core/filter.c
+>> > index 5a2707918629..fdf0ebb8c2c8 100644
+>> > --- a/net/core/filter.c
+>> > +++ b/net/core/filter.c
+>> > @@ -2341,6 +2341,24 @@ static const struct bpf_func_proto bpf_msg_pull_data_proto = {
+>> >         .arg4_type      = ARG_ANYTHING,
+>> >  };
+>> >
+>> > +BPF_CALL_4(bpf_udp_flow_src_port, struct sk_buff *, skb, int, min,
+>> > +          int, max, int, use_eth)
+>> > +{
+>> > +       struct net *net = dev_net(skb->dev);
+>> > +
+>> > +       return udp_flow_src_port(net, skb, min, max, use_eth);
+>> > +}
+>> > +
+>> [...]
