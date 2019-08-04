@@ -2,74 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A293780A16
-	for <lists+bpf@lfdr.de>; Sun,  4 Aug 2019 11:32:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1306880B82
+	for <lists+bpf@lfdr.de>; Sun,  4 Aug 2019 17:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726017AbfHDJcN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 4 Aug 2019 05:32:13 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:45159 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbfHDJcN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 4 Aug 2019 05:32:13 -0400
-Received: by mail-ot1-f43.google.com with SMTP id x21so16958049otq.12
-        for <bpf@vger.kernel.org>; Sun, 04 Aug 2019 02:32:12 -0700 (PDT)
+        id S1726392AbfHDPrt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 4 Aug 2019 11:47:49 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:35797 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726333AbfHDPrs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 4 Aug 2019 11:47:48 -0400
+Received: by mail-wm1-f67.google.com with SMTP id l2so70735556wmg.0;
+        Sun, 04 Aug 2019 08:47:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=neemtree-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=PkIjItspvlzL3MIvn5T4oDSXBWJakBLUUY8UsQhh7SU=;
-        b=iUNLg7eVJ4N0CqqAtrKvyH2xWy29fJ2coOnPgm6odeV+aLfyjh7Nul1K6LvbY/jVAB
-         P6yBRdFahOtdNMAmPeILEIRCYmBv+61yrg3USuxyuMBcb7aP5TyFEU+QMOgwxuWd5CWm
-         lip2UjB5IzyKI5aztRqddPQzbPLtN1vqoTbW3Fv6PM7sRhX3pi6n2mCaNVoCN3cU9BXC
-         x8APDDRQRB2dwD2eEJcpObNhJoxNih6rRc3pvhjAGn40EH6V1CAMDFmOXqdF63H4spSr
-         zikp+oitZCfMvJ3Jq+j6o6uOi+D3AN1ExZV3BLH3OW/gQMTA4MvfPPlvFRwLwprM6+Y2
-         nIbQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=XpKZwopndEr+MAU5NPtSJHYcO6Ev0MiXZLBr1uT/g74=;
+        b=XU5QG53d3+2crKQsbTdHoGONPn6CyVrAJXUf8YhuW3jwt3jQNVcwL0fkkD4qsI6q24
+         iRlsjJFNqFjAk34GEB5i5ZsPAoK7cqv8xr3ardQdu3a9vwP92MMf/ROCAQO3yfSl5CYQ
+         2JZfTKPbcmQd8/HUDYjUjfhlvLH34tg8FBgB81GOx2nkc13oLYz+ypMoIwMGKVfakLvi
+         hg2+QMbP/eowocijrEJiHCjdm1p7XCaHVkavK3FcGPuESQCxl0tZAgiPZIxMoHYipia2
+         YENHHfbhrj4DPU/oZHFHHLxreYtH61LP0TQSKY1rfJV2C5dhj1tnKZmqKZiT7vZcq1Sn
+         u5ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=PkIjItspvlzL3MIvn5T4oDSXBWJakBLUUY8UsQhh7SU=;
-        b=WyF0OB2lzmuB+QUE0MPy4e0+gbZSpXTci831hcAlpvOsYafDawsaHVwNWTfC5p7r8z
-         wkNkhbbrsJa4Lgwy4PfwfSDo1AN0d1KWP4mzeDBPmHyTOLYty3stTQRQrHd+/0TWWqT1
-         zGErVzAUJy/Z5TlbZocz9Oq5QAcdJMvqums/PWMyMHZYXF152vm383gBSIQIto2i5361
-         lT18W3WHV1ayZPSdfs/I7HCgwACSP5y2AeWkCa7OphH62C+/r1pdhkrskYsr1gJlorHz
-         6LiZYPbsZj9BZZfaRTpiw2S5iSoZLg2vA+nOFniw+h62aYFf/mQtXTFMur/t0+M8xTnX
-         i6kg==
-X-Gm-Message-State: APjAAAVOXEJNXi5AcxUrBFWDGFQXIWZViy/u+AxGP5XiOBCIusVhEo22
-        OntIlloUU2nLVqVpN/zz70sqdyrpJdvuXL0mGnFgNQfH
-X-Google-Smtp-Source: APXvYqyMX3auQ6WmhHH7NDt3CoqhXiTTPXheamAomeIM0Je6ukvZ7/gZw8YELeoRChCxBVyQmjuvDj/dL7ZmSfW913U=
-X-Received: by 2002:a9d:5788:: with SMTP id q8mr6694890oth.237.1564911131753;
- Sun, 04 Aug 2019 02:32:11 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=XpKZwopndEr+MAU5NPtSJHYcO6Ev0MiXZLBr1uT/g74=;
+        b=K9w+4lqS6MUJa74oyxJmoLIXgJ7/pn7LPDlx93jxN29u8K+yGVQyRBBlkpD3MPhhkx
+         BHJGOj9cf/BqaqLREQxh7IrfMYBV1EnWZ0rwyE4gQbLWCSo37LihuOeV6HKvi7fpAqTJ
+         z+hwvXHFqt6bS71qZvRoKUtg5fEHrjLq60vNUAdj7sZbrcMYC05zX6TGQ6BS0CBwuNMj
+         /8FiRPjotFy77396AX2f1ZsfTJT7T2ewMIOYMBRdB17j4xP+dR54txFjpAKV1NEk8q/4
+         PaEa0nitpRTeUXeSf3qRYUK2FNh4O+26PCE1z6Pg+aoAGkvnhslzETsFXAwKhVkAIyqE
+         AWqg==
+X-Gm-Message-State: APjAAAXUI63yiDAgzAJ61wSMkEPWpKC3A1BXvFRi0gilHRpiEmmEspsl
+        MstbSRsbAmODy3R/tB/2aaU=
+X-Google-Smtp-Source: APXvYqzJFuGB25ozI+29umWEdsL9Hgl2qPQJteoUcZ6uWqBwZ6hn5nsD/8MzEZeeH8OkXj4yd8zWVg==
+X-Received: by 2002:a1c:f918:: with SMTP id x24mr13576652wmh.132.1564933666469;
+        Sun, 04 Aug 2019 08:47:46 -0700 (PDT)
+Received: from localhost ([197.211.57.129])
+        by smtp.gmail.com with ESMTPSA id o20sm217192312wrh.8.2019.08.04.08.47.40
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Sun, 04 Aug 2019 08:47:45 -0700 (PDT)
+Date:   Sun, 4 Aug 2019 16:46:35 +0100
+From:   Sheriff Esseson <sheriffesseson@gmail.com>
+To:     skhan@linuxfoundation.org
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+Subject: [PATCH] Documentation: virt: Fix broken reference to virt tree's
+ index
+Message-ID: <20190804154635.GA18475@localhost>
 MIME-Version: 1.0
-From:   Shridhar Venkatraman <shridhar@neemtree.com>
-Date:   Sun, 4 Aug 2019 15:01:58 +0530
-Message-ID: <CADJe1ZsN8+1brBNdN2VNMp4PRdeYjCC=qaMZALQxOTvPmgJQhA@mail.gmail.com>
-Subject: BPF: ETLS: RECV FLOW
-To:     bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Fix broken reference to virt/index.rst.
 
-The eTLS work has BPF integration which is great.
-However there is one spot where access to the clear text is not available.
+Sequel to: 2f5947dfcaec ("Documentation: move Documentation/virtual to
+Documentation/virt")
 
-From kernel 4.20 - receiver BPF support added for KTLS.
+Reported-by: Sphinx
 
-a. receiver BPF is applied on encrypted message
-b. after applying BPF, message is decrypted
-c. BPF run logic on the decrypted plain message   - can we add this support ?
-d. then copy the decrypted message back to userspace.
+Signed-off-by: Sheriff Esseson <sheriffesseson@gmail.com>
+---
+ Documentation/index.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-code flow reference: tls receive message call flow:
---------------------------------------------------------------
+diff --git a/Documentation/index.rst b/Documentation/index.rst
+index 2df5a3da563c..5205430305d5 100644
+--- a/Documentation/index.rst
++++ b/Documentation/index.rst
+@@ -115,7 +115,7 @@ needed).
+    target/index
+    timers/index
+    watchdog/index
+-   virtual/index
++   virt/index
+    input/index
+    hwmon/index
+    gpu/index
+-- 
+2.17.1
 
-tls_sw_recvmsg
-  __tcp_bpf_recvmsg [ bpf exec function called on encrypted message ]
-  decrypt_skb_update
-  decrypt_internal
-  BPF_PROG_RUN on decrypted plain message - can we add this support ?
-  skb_copy_datagram_msg [ decrypted message copied back to userspace ]
-
-Thanks
