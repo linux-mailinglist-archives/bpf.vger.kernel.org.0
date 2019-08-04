@@ -2,151 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3C0809BB
-	for <lists+bpf@lfdr.de>; Sun,  4 Aug 2019 08:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A293780A16
+	for <lists+bpf@lfdr.de>; Sun,  4 Aug 2019 11:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725930AbfHDGwy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 4 Aug 2019 02:52:54 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:37700 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725914AbfHDGwx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 4 Aug 2019 02:52:53 -0400
-Received: by mail-io1-f65.google.com with SMTP id q22so41268564iog.4;
-        Sat, 03 Aug 2019 23:52:53 -0700 (PDT)
+        id S1726017AbfHDJcN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 4 Aug 2019 05:32:13 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:45159 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725987AbfHDJcN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 4 Aug 2019 05:32:13 -0400
+Received: by mail-ot1-f43.google.com with SMTP id x21so16958049otq.12
+        for <bpf@vger.kernel.org>; Sun, 04 Aug 2019 02:32:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PLECg9teQ0cKlRjb3FgpXIcLlpfHxOQRrARpjQ9WQs0=;
-        b=KdMEqQB+vQxoKeYwU0NEH9zo0HI3Bp2/egvH/7zKOrhq0ruR9uQyGJcb5k7z1KTiUo
-         qgi/vH1YopnOv21vXbUs8U2nF3ftHRH98CWIyaHgJK8VrtVsWVJmXOD9cOY+iJID3bsH
-         5fFZOecf+fM7QOyCo5vZPjXsGfwoDyCuFhp9snHoeGNJu9mtoFFqsKQbXclKlxHuCWiT
-         Swvg1vzbT3clPkHSHXQi1Upr7vBAsJ8tJ7n0T5+Awq1FtQurAcE112Dj9jQAc6TunC54
-         JpAaZL23xlDl6CAuFpf4SS3fvEgiBSM5mIlqz/r1nnZWU179eaOg1bfSABoQ+P1Vz9Rl
-         K7Bg==
+        d=neemtree-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=PkIjItspvlzL3MIvn5T4oDSXBWJakBLUUY8UsQhh7SU=;
+        b=iUNLg7eVJ4N0CqqAtrKvyH2xWy29fJ2coOnPgm6odeV+aLfyjh7Nul1K6LvbY/jVAB
+         P6yBRdFahOtdNMAmPeILEIRCYmBv+61yrg3USuxyuMBcb7aP5TyFEU+QMOgwxuWd5CWm
+         lip2UjB5IzyKI5aztRqddPQzbPLtN1vqoTbW3Fv6PM7sRhX3pi6n2mCaNVoCN3cU9BXC
+         x8APDDRQRB2dwD2eEJcpObNhJoxNih6rRc3pvhjAGn40EH6V1CAMDFmOXqdF63H4spSr
+         zikp+oitZCfMvJ3Jq+j6o6uOi+D3AN1ExZV3BLH3OW/gQMTA4MvfPPlvFRwLwprM6+Y2
+         nIbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PLECg9teQ0cKlRjb3FgpXIcLlpfHxOQRrARpjQ9WQs0=;
-        b=jVY1feaU1G4SQAOlA9T6ZS/k2f1CdDCEjbaQovuTZ7NCQzE9KllQNCr61F4jiau+/A
-         Db+6nUoqVV3RExmFeBQifizqXOLc2zM0S6hWmCKl3fHRqUXEpOU7dkk859WrjWAZCFAl
-         WF0UQN+devKsfUXjrshcNsBQFDb2CoJ4kfTisy7SJB/a2gXrRZXOb5FlQGMz93/EvewT
-         uG4T6tiAteyLD2zyC16gq9+llsTn9L0YU/gPcwjiHsuMuxctYmyrZoTiV9Hsphn+f5ne
-         rdXIkAv+hZTaJThYmQvGdmqKUpgmo0lJINd0vquEPbO0rQNS86Ff/HvcFrLbwxE5s9Vo
-         YnaA==
-X-Gm-Message-State: APjAAAVNfbLuHBQH0cwPTktyRpYu/wrbushyZiLeNy9VTkDwIPlGmZtl
-        9BM0Ndz+j0e7VK2akB2r7Vzn2K/1GXNlTXo3WYkoRVra
-X-Google-Smtp-Source: APXvYqziOUBnQyX6n71woU+Fe//DRiYLi3mLgUkvt/TXTZyItXi8eOqVyDewr/1babN2XzlLBgfsSkjKXyQwyhk1xTs=
-X-Received: by 2002:a5e:aa15:: with SMTP id s21mr3983687ioe.221.1564901572602;
- Sat, 03 Aug 2019 23:52:52 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=PkIjItspvlzL3MIvn5T4oDSXBWJakBLUUY8UsQhh7SU=;
+        b=WyF0OB2lzmuB+QUE0MPy4e0+gbZSpXTci831hcAlpvOsYafDawsaHVwNWTfC5p7r8z
+         wkNkhbbrsJa4Lgwy4PfwfSDo1AN0d1KWP4mzeDBPmHyTOLYty3stTQRQrHd+/0TWWqT1
+         zGErVzAUJy/Z5TlbZocz9Oq5QAcdJMvqums/PWMyMHZYXF152vm383gBSIQIto2i5361
+         lT18W3WHV1ayZPSdfs/I7HCgwACSP5y2AeWkCa7OphH62C+/r1pdhkrskYsr1gJlorHz
+         6LiZYPbsZj9BZZfaRTpiw2S5iSoZLg2vA+nOFniw+h62aYFf/mQtXTFMur/t0+M8xTnX
+         i6kg==
+X-Gm-Message-State: APjAAAVOXEJNXi5AcxUrBFWDGFQXIWZViy/u+AxGP5XiOBCIusVhEo22
+        OntIlloUU2nLVqVpN/zz70sqdyrpJdvuXL0mGnFgNQfH
+X-Google-Smtp-Source: APXvYqyMX3auQ6WmhHH7NDt3CoqhXiTTPXheamAomeIM0Je6ukvZ7/gZw8YELeoRChCxBVyQmjuvDj/dL7ZmSfW913U=
+X-Received: by 2002:a9d:5788:: with SMTP id q8mr6694890oth.237.1564911131753;
+ Sun, 04 Aug 2019 02:32:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190803044320.5530-1-farid.m.zakaria@gmail.com> <20190803044320.5530-2-farid.m.zakaria@gmail.com>
-In-Reply-To: <20190803044320.5530-2-farid.m.zakaria@gmail.com>
-From:   Y Song <ys114321@gmail.com>
-Date:   Sat, 3 Aug 2019 23:52:16 -0700
-Message-ID: <CAH3MdRXTEN-Ra+61QA37hM2mkHx99K5NM7f+H6d8Em-bxvaenw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] bpf: introduce new helper udp_flow_src_port
-To:     Farid Zakaria <farid.m.zakaria@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+From:   Shridhar Venkatraman <shridhar@neemtree.com>
+Date:   Sun, 4 Aug 2019 15:01:58 +0530
+Message-ID: <CADJe1ZsN8+1brBNdN2VNMp4PRdeYjCC=qaMZALQxOTvPmgJQhA@mail.gmail.com>
+Subject: BPF: ETLS: RECV FLOW
+To:     bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Aug 3, 2019 at 8:29 PM Farid Zakaria <farid.m.zakaria@gmail.com> wrote:
->
-> Foo over UDP uses UDP encapsulation to add additional entropy
-> into the packets so that they get beter distribution across EMCP
-> routes.
->
-> Expose udp_flow_src_port as a bpf helper so that tunnel filters
-> can benefit from the helper.
->
-> Signed-off-by: Farid Zakaria <farid.m.zakaria@gmail.com>
-> ---
->  include/uapi/linux/bpf.h                      | 21 +++++++--
->  net/core/filter.c                             | 20 ++++++++
->  tools/include/uapi/linux/bpf.h                | 21 +++++++--
->  tools/testing/selftests/bpf/bpf_helpers.h     |  2 +
->  .../bpf/prog_tests/udp_flow_src_port.c        | 28 +++++++++++
->  .../bpf/progs/test_udp_flow_src_port_kern.c   | 47 +++++++++++++++++++
->  6 files changed, 131 insertions(+), 8 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/udp_flow_src_port.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_udp_flow_src_port_kern.c
+Hi,
 
-First, for each review, backport and sync with libbpf repo, in the future,
-could you break the patch to two patches?
-   1. kernel changes (net/core/filter.c, include/uapi/linux/bpf.h)
-   2. tools/include/uapi/linux/bpf.h
-   3. tools/testing/ changes
+The eTLS work has BPF integration which is great.
+However there is one spot where access to the clear text is not available.
 
-Second, could you explain why existing __sk_buff->hash not enough?
-there are corner cases where if __sk_buff->hash is 0 and the kernel did some
-additional hashing, but maybe you can approximate in bpf program?
-For case, min >= max, I suppose you can get min/max port values
-from the user space for a particular net device and then calculate
-the hash in the bpf program?
-What I want to know if how much accuracy you will lose if you just
-use __sk_buff->hash and do approximation in bpf program.
+From kernel 4.20 - receiver BPF support added for KTLS.
 
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 4393bd4b2419..90e814153dec 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -2545,9 +2545,21 @@ union bpf_attr {
->   *             *th* points to the start of the TCP header, while *th_len*
->   *             contains **sizeof**\ (**struct tcphdr**).
->   *
-> - *     Return
-> - *             0 if *iph* and *th* are a valid SYN cookie ACK, or a negative
-> - *             error otherwise.
-> + *  Return
-> + *      0 if *iph* and *th* are a valid SYN cookie ACK, or a negative
-> + *      error otherwise.
-> + *
-> + * int bpf_udp_flow_src_port(struct sk_buff *skb, int min, int max, int use_eth)
-> + *  Description
-> + *      It's common to implement tunnelling inside a UDP protocol to provide
-> + *      additional randomness to the packet. The destination port of the UDP
-> + *      header indicates the inner packet type whereas the source port is used
-> + *      for additional entropy.
-> + *
-> + *  Return
-> + *      An obfuscated hash of the packet that falls within the
-> + *      min & max port range.
-> + *      If min >= max, the default port range is used
->   *
->   * int bpf_sysctl_get_name(struct bpf_sysctl *ctx, char *buf, size_t buf_len, u64 flags)
->   *     Description
-> @@ -2853,7 +2865,8 @@ union bpf_attr {
->         FN(sk_storage_get),             \
->         FN(sk_storage_delete),          \
->         FN(send_signal),                \
-> -       FN(tcp_gen_syncookie),
-> +       FN(tcp_gen_syncookie),  \
-> +       FN(udp_flow_src_port),
->
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
->   * function eBPF program intends to call
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 5a2707918629..fdf0ebb8c2c8 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -2341,6 +2341,24 @@ static const struct bpf_func_proto bpf_msg_pull_data_proto = {
->         .arg4_type      = ARG_ANYTHING,
->  };
->
-> +BPF_CALL_4(bpf_udp_flow_src_port, struct sk_buff *, skb, int, min,
-> +          int, max, int, use_eth)
-> +{
-> +       struct net *net = dev_net(skb->dev);
-> +
-> +       return udp_flow_src_port(net, skb, min, max, use_eth);
-> +}
-> +
-[...]
+a. receiver BPF is applied on encrypted message
+b. after applying BPF, message is decrypted
+c. BPF run logic on the decrypted plain message   - can we add this support ?
+d. then copy the decrypted message back to userspace.
+
+code flow reference: tls receive message call flow:
+--------------------------------------------------------------
+
+tls_sw_recvmsg
+  __tcp_bpf_recvmsg [ bpf exec function called on encrypted message ]
+  decrypt_skb_update
+  decrypt_internal
+  BPF_PROG_RUN on decrypted plain message - can we add this support ?
+  skb_copy_datagram_msg [ decrypted message copied back to userspace ]
+
+Thanks
