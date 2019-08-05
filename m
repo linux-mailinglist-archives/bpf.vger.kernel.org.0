@@ -2,104 +2,313 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 32FDF8196F
-	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2019 14:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C51C81FE3
+	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2019 17:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728837AbfHEMiY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Aug 2019 08:38:24 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:45673 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728760AbfHEMiJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Aug 2019 08:38:09 -0400
-Received: by mail-io1-f69.google.com with SMTP id e20so91480674ioe.12
-        for <bpf@vger.kernel.org>; Mon, 05 Aug 2019 05:38:08 -0700 (PDT)
+        id S1729194AbfHEPMl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Aug 2019 11:12:41 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:33363 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729060AbfHEPMl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Aug 2019 11:12:41 -0400
+Received: by mail-pg1-f194.google.com with SMTP id n190so4771658pgn.0
+        for <bpf@vger.kernel.org>; Mon, 05 Aug 2019 08:12:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ut9SyAz9j3bPzo743Ce9ZAZaLnIVIv3122HDbgDu9aQ=;
+        b=plFj+inST0l3DGGataitH0pcBmfVASmDsgn+cqk8aoxAG1ZVj1Y7mjDrnfZ80LSfqr
+         a6ExQwF9bZbmu8LR0UUMFCiRuDe3kfoGPAcPLgYpKOaFwYtf9y/+8zGRn0jWyu69YvXP
+         szPpqDy+5GgHTwVBeT9Rz88bYfjTE4BgoW6JvxD0sTYoxhrISSo6mSC913E1id9NAlP7
+         Q3zGVYPhyM7FpBIHV1UyE1jZ5QP7Ff/aVOOzrmNM6FuDXQuRjmV5L0yjewEQru1MXJsU
+         eLpBJXRI4BD+k0RU/cOWtvXIzKae7UIgO+ahtX5D+9FMDLLTtdCTpAxJwxWmLxeJ5/6F
+         UraA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=0SlIsA2694wt+MQ5zgGwgDx+HJC9onZmiZCosf0h45g=;
-        b=T9klWf+ojbr0BLg+7Ksam5I4au04TPZK0I0lY4hdMne9yXF56R5NApvnzvjRPBPnHZ
-         duWFeiG2Z1fjvKPUWW37MEQYJHNbed7IvI20Io1iJyDPGEVrqKmxwsb1XfxgwGeURx+a
-         kVCjAnbPvthTrJD1tiS0EYy25n4Cos60xlBhCyYGt805Pn07jCoRCdnCac8PAspVYdWt
-         tESznlg0W1Cjc6WQnQvjNkuaYPcAlbzrk2cpgiDbX4+RqRVIc8nR+2XzKk9rhd1d7V9E
-         y3yXCr9qAM1LJVLtCJ9dJGWSDck8hewa4UM5P+oP49umbkqG85mgBiSIt2eVsaDmvL6s
-         PYfw==
-X-Gm-Message-State: APjAAAUTbIBViaPJqj8BRDgjHt31UnJc1oMcUlWivwkYRATS7Qogv9M/
-        QahXA9BxxP9YfY27NNBSlLekACyWUD7GwnX4Ck57ftxAw3aF
-X-Google-Smtp-Source: APXvYqyl33KSmOqc0D/gaCB1vcetR2LjFAP3VYVdy4LJX4399FDTlJi85XLUKNOx6HsJaQg1toX7SXFnsmn8hwqbMaIt4hdcR0vj
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ut9SyAz9j3bPzo743Ce9ZAZaLnIVIv3122HDbgDu9aQ=;
+        b=O0+c4wwSxx81KMa3BsTmT+WPLH+jSCGhMKyG73R34MOnk8Ftu0k8lVQLu310R5rbSN
+         8y8nxdSzV9AhCq49Cn4iMYFueF/7RO4vnT/aVF7a6yet9XfNTO4heQte40p+Tjkhuzaq
+         XbKBLOjphgYE5IArpqsmsJb9FbjXi09Sqxw9uVYHJXl1ZWLY/L3qaEVmyPfZrjgAKwpv
+         srX5wnROVdcrZhvBd1Qke0SRM4ZUm1wzFdoolNx6Pv/r46yNvIMj4OrzifJLPq+IR9Dk
+         CEDine5kuc7eW2trB9OoFniTHwPxfwrUFxVHk2goAsWDpBsSCg/VJh152WtfpeX6iMI3
+         0g5Q==
+X-Gm-Message-State: APjAAAWo2dajU4kEb1vjzstw150dSBNazJLcgjhSCn4Ni6FOpiUldCVU
+        6p8+b5wPKJ+sCsGQaVTlwiQ=
+X-Google-Smtp-Source: APXvYqxfiWwxW7uIj+EM3xtDV83FPbWyLAFZRWCRdVrRS+3pYUJhdJtsCriapHNXDlMYHVnR6NMlnw==
+X-Received: by 2002:aa7:9210:: with SMTP id 16mr75593145pfo.11.1565017960464;
+        Mon, 05 Aug 2019 08:12:40 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id w22sm89558260pfi.175.2019.08.05.08.12.39
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 05 Aug 2019 08:12:39 -0700 (PDT)
+Date:   Mon, 5 Aug 2019 08:12:38 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf-next 1/3] selftests/bpf: test_progs: switch to
+ open_memstream
+Message-ID: <20190805151238.GD4544@mini-arch>
+References: <20190802171710.11456-1-sdf@google.com>
+ <20190802171710.11456-2-sdf@google.com>
+ <80957794-de90-b09b-89ef-6094d6357d9e@fb.com>
+ <20190802201456.GB4544@mini-arch>
+ <CAEf4BzYV31v6ch-k+ZCQr1RaBuGComt9C0dQjFV1Es42qXz-8Q@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:5a17:: with SMTP id o23mr32421740iob.41.1565008688166;
- Mon, 05 Aug 2019 05:38:08 -0700 (PDT)
-Date:   Mon, 05 Aug 2019 05:38:08 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000edc1d5058f5dfa5f@google.com>
-Subject: memory leak in ppp_write
-From:   syzbot <syzbot+d9c8bf24e56416d7ce2c@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, kafai@fb.com, linux-kernel@vger.kernel.org,
-        linux-ppp@vger.kernel.org, netdev@vger.kernel.org,
-        paulus@samba.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYV31v6ch-k+ZCQr1RaBuGComt9C0dQjFV1Es42qXz-8Q@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On 08/02, Andrii Nakryiko wrote:
+> On Fri, Aug 2, 2019 at 1:14 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> >
+> > On 08/02, Andrii Nakryiko wrote:
+> > > On 8/2/19 10:17 AM, Stanislav Fomichev wrote:
+> > > > Use open_memstream to override stdout during test execution.
+> > > > The copy of the original stdout is held in env.stdout and used
+> > > > to print subtest info and dump failed log.
+> > >
+> > > I really like the idea. I didn't know about open_memstream, it's awesome. Thanks!
+> > One possible downside of using open_memstream is that it's glibc
+> > specific. I probably need to wrap it in #ifdef __GLIBC__ to make
+> > it work with other libcs and just print everything as it was before :-(.
+> > I'm not sure we care though.
+> 
+> Given this is selftests/bpf, it is probably OK.
+> 
+> >
+> > > > test_{v,}printf are now simple wrappers around stdout and will be
+> > > > removed in the next patch.
+> > > >
+> > > > Cc: Andrii Nakryiko <andriin@fb.com>
+> > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > > > ---
+> > > >  tools/testing/selftests/bpf/test_progs.c | 100 ++++++++++-------------
+> > > >  tools/testing/selftests/bpf/test_progs.h |   2 +-
+> > > >  2 files changed, 46 insertions(+), 56 deletions(-)
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+> > > > index db00196c8315..00d1565d01a3 100644
+> > > > --- a/tools/testing/selftests/bpf/test_progs.c
+> > > > +++ b/tools/testing/selftests/bpf/test_progs.c
+> > > > @@ -40,14 +40,22 @@ static bool should_run(struct test_selector *sel, int num, const char *name)
+> > > >
+> > > >  static void dump_test_log(const struct prog_test_def *test, bool failed)
+> > > >  {
+> > > > -   if (env.verbose || test->force_log || failed) {
+> > > > -           if (env.log_cnt) {
+> > > > -                   fprintf(stdout, "%s", env.log_buf);
+> > > > -                   if (env.log_buf[env.log_cnt - 1] != '\n')
+> > > > -                           fprintf(stdout, "\n");
+> > > > +   if (stdout == env.stdout)
+> > > > +           return;
+> > > > +
+> > > > +   fflush(stdout); /* exports env.log_buf & env.log_cap */
+> > > > +
+> > > > +   if (env.log_cap && (env.verbose || test->force_log || failed)) {
+> > > > +           int len = strlen(env.log_buf);
+> > >
+> > > env.log_cap is not really a capacity, it's actual number of bytes (without terminating zero), so there is no need to do strlen and it's probably better to rename env.log_cap into env.log_cnt.
+> > I'll rename it to log_size to match open_memstream args.
+> > We probably still need to do strlen because open_memstream can allocate
+> > bigger buffer to hold the data.
+> 
+> If I read man page correctly, env.log_cnt will be exactly the value
+> that strlen will return - number of actual bytes written (omitting
+> terminal zero), not number of pre-allocated bytes, thus I'm saying
+> that strlen is redundant. Please take a look again.
+Yeah, you're right, I've played with it a bit and it does return the
+length of the data, not the (possibly bigger) size of the buffer.
+Will fix in a v3 and use log_cnt.
 
-syzbot found the following crash on:
+> >
+> > > > +
+> > > > +           if (len) {
+> > > > +                   fprintf(env.stdout, "%s", env.log_buf);
+> > > > +                   if (env.log_buf[len - 1] != '\n')
+> > > > +                           fprintf(env.stdout, "\n");
+> > > > +
+> > > > +                   fseeko(stdout, 0, SEEK_SET);
+> > > Same bug as I already fixed with env.log_cnt = 0 being inside this if. You want to do seek always, not just when you print output log.
+> > SG, will move to where we currently clear log_cnt, thanks!
+> >
+> > > >  /* rewind */
+> > > >             }
+> > > >     }
+> > > > -   env.log_cnt = 0;
+> > > >  }
+> > > >
+> > > >  void test__end_subtest()
+> > > > @@ -62,7 +70,7 @@ void test__end_subtest()
+> > > >
+> > > >     dump_test_log(test, sub_error_cnt);
+> > > >
+> > > > -   printf("#%d/%d %s:%s\n",
+> > > > +   fprintf(env.stdout, "#%d/%d %s:%s\n",
+> > > >            test->test_num, test->subtest_num,
+> > > >            test->subtest_name, sub_error_cnt ? "FAIL" : "OK");
+> > > >  }
+> > > > @@ -100,53 +108,7 @@ void test__force_log() {
+> > > >
+> > > >  void test__vprintf(const char *fmt, va_list args)
+> > > >  {
+> > > > -   size_t rem_sz;
+> > > > -   int ret = 0;
+> > > > -
+> > > > -   if (env.verbose || (env.test && env.test->force_log)) {
+> > > > -           vfprintf(stderr, fmt, args);
+> > > > -           return;
+> > > > -   }
+> > > > -
+> > > > -try_again:
+> > > > -   rem_sz = env.log_cap - env.log_cnt;
+> > > > -   if (rem_sz) {
+> > > > -           va_list ap;
+> > > > -
+> > > > -           va_copy(ap, args);
+> > > > -           /* we reserved extra byte for \0 at the end */
+> > > > -           ret = vsnprintf(env.log_buf + env.log_cnt, rem_sz + 1, fmt, ap);
+> > > > -           va_end(ap);
+> > > > -
+> > > > -           if (ret < 0) {
+> > > > -                   env.log_buf[env.log_cnt] = '\0';
+> > > > -                   fprintf(stderr, "failed to log w/ fmt '%s'\n", fmt);
+> > > > -                   return;
+> > > > -           }
+> > > > -   }
+> > > > -
+> > > > -   if (!rem_sz || ret > rem_sz) {
+> > > > -           size_t new_sz = env.log_cap * 3 / 2;
+> > > > -           char *new_buf;
+> > > > -
+> > > > -           if (new_sz < 4096)
+> > > > -                   new_sz = 4096;
+> > > > -           if (new_sz < ret + env.log_cnt)
+> > > > -                   new_sz = ret + env.log_cnt;
+> > > > -
+> > > > -           /* +1 for guaranteed space for terminating \0 */
+> > > > -           new_buf = realloc(env.log_buf, new_sz + 1);
+> > > > -           if (!new_buf) {
+> > > > -                   fprintf(stderr, "failed to realloc log buffer: %d\n",
+> > > > -                           errno);
+> > > > -                   return;
+> > > > -           }
+> > > > -           env.log_buf = new_buf;
+> > > > -           env.log_cap = new_sz;
+> > > > -           goto try_again;
+> > > > -   }
+> > > > -
+> > > > -   env.log_cnt += ret;
+> > > > +   vprintf(fmt, args);
+> > > >  }
+> > > >
+> > > >  void test__printf(const char *fmt, ...)
+> > > > @@ -477,6 +439,32 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
+> > > >     return 0;
+> > > >  }
+> > > >
+> > > > +static void stdout_hijack(void)
+> > > > +{
+> > > > +   if (env.verbose || (env.test && env.test->force_log)) {
+> > > > +           /* nothing to do, output to stdout by default */
+> > > > +           return;
+> > > > +   }
+> > > > +
+> > > > +   /* stdout -> buffer */
+> > > > +   fflush(stdout);
+> > > > +   stdout = open_memstream(&env.log_buf, &env.log_cap);
+> > > Check errors and restore original stdout if something went wrong? (And emit some warning to stderr).
+> > Good point, will do.
+> >
+> > > > +}
+> > > > +
+> > > > +static void stdout_restore(void)
+> > > > +{
+> > > > +   if (stdout == env.stdout)
+> > > > +           return;
+> > > > +
+> > > > +   fclose(stdout);
+> > > > +   free(env.log_buf);
+> > > > +
+> > > > +   env.log_buf = NULL;
+> > > > +   env.log_cap = 0;
+> > > > +
+> > > > +   stdout = env.stdout;
+> > > > +}
+> > > > +
+> > > >  int main(int argc, char **argv)
+> > > >  {
+> > > >     static const struct argp argp = {
+> > > > @@ -495,6 +483,7 @@ int main(int argc, char **argv)
+> > > >     srand(time(NULL));
+> > > >
+> > > >     env.jit_enabled = is_jit_enabled();
+> > > > +   env.stdout = stdout;
+> > > >
+> > > >     for (i = 0; i < prog_test_cnt; i++) {
+> > > >             struct prog_test_def *test = &prog_test_defs[i];
+> > > > @@ -508,6 +497,7 @@ int main(int argc, char **argv)
+> > > >                             test->test_num, test->test_name))
+> > > >                     continue;
+> > > >
+> > > > +           stdout_hijack();
+> > > Why do you do this for every test? Just do once before all the tests and restore after?
+> > We can do that, my thinking was to limit the area of hijacking :-)
+> 
+> But why? We actually want to hijack stdout/stderr for entire duration
+> of all the tests. If test_progs needs some "infrastructural" mandatory
+> output, we have env.stdout/env.stderr for that.
+Oh, I agree, I've done just that for v2 that's already out.
+I was just trying to justify my initial thinking :-)
 
-HEAD commit:    d8778f13 Merge tag 'xtensa-20190803' of git://github.com/j..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17a953d6600000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=30cef20daf3e9977
-dashboard link: https://syzkaller.appspot.com/bug?extid=d9c8bf24e56416d7ce2c
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16da002c600000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+d9c8bf24e56416d7ce2c@syzkaller.appspotmail.com
-
-2019/08/04 10:45:32 executed programs: 5
-2019/08/04 10:45:38 executed programs: 7
-2019/08/04 10:45:44 executed programs: 9
-2019/08/04 10:45:51 executed programs: 11
-BUG: memory leak
-unreferenced object 0xffff88811b943200 (size 224):
-   comm "syz-executor.0", pid 7102, jiffies 4294951426 (age 8.020s)
-   hex dump (first 32 bytes):
-     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-   backtrace:
-     [<00000000612bb18c>] kmemleak_alloc_recursive  
-include/linux/kmemleak.h:43 [inline]
-     [<00000000612bb18c>] slab_post_alloc_hook mm/slab.h:522 [inline]
-     [<00000000612bb18c>] slab_alloc_node mm/slab.c:3262 [inline]
-     [<00000000612bb18c>] kmem_cache_alloc_node+0x163/0x2f0 mm/slab.c:3574
-     [<00000000f510d7dd>] __alloc_skb+0x6e/0x210 net/core/skbuff.c:197
-     [<0000000064f35f9b>] alloc_skb include/linux/skbuff.h:1055 [inline]
-     [<0000000064f35f9b>] ppp_write+0x48/0x120  
-drivers/net/ppp/ppp_generic.c:502
-     [<000000007d5732a9>] __vfs_write+0x43/0xa0 fs/read_write.c:494
-     [<00000000b490138e>] vfs_write fs/read_write.c:558 [inline]
-     [<00000000b490138e>] vfs_write+0xee/0x210 fs/read_write.c:542
-     [<00000000d20d33e5>] ksys_write+0x7c/0x130 fs/read_write.c:611
-     [<000000007b61e45c>] __do_sys_write fs/read_write.c:623 [inline]
-     [<000000007b61e45c>] __se_sys_write fs/read_write.c:620 [inline]
-     [<000000007b61e45c>] __x64_sys_write+0x1e/0x30 fs/read_write.c:620
-     [<0000000067600a9b>] do_syscall_64+0x76/0x1a0  
-arch/x86/entry/common.c:296
-     [<000000007e48b83c>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> > But that would work as well, less allocations per test, I guess. Will
+> > do.
+> >
+> > > >             test->run_test();
+> > > >             /* ensure last sub-test is finalized properly */
+> > > >             if (test->subtest_name)
+> > > > @@ -522,6 +512,7 @@ int main(int argc, char **argv)
+> > > >                     env.succ_cnt++;
+> > > >
+> > > >             dump_test_log(test, test->error_cnt);
+> > > > +           stdout_restore();
+> > > >
+> > > >             printf("#%d %s:%s\n", test->test_num, test->test_name,
+> > > >                    test->error_cnt ? "FAIL" : "OK");
+> > > > @@ -529,7 +520,6 @@ int main(int argc, char **argv)
+> > > >     printf("Summary: %d/%d PASSED, %d FAILED\n",
+> > > >            env.succ_cnt, env.sub_succ_cnt, env.fail_cnt);
+> > > >
+> > > > -   free(env.log_buf);
+> > > >     free(env.test_selector.num_set);
+> > > >     free(env.subtest_selector.num_set);
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+> > > > index afd14962456f..9fd89078494f 100644
+> > > > --- a/tools/testing/selftests/bpf/test_progs.h
+> > > > +++ b/tools/testing/selftests/bpf/test_progs.h
+> > > > @@ -56,8 +56,8 @@ struct test_env {
+> > > >     bool jit_enabled;
+> > > >
+> > > >     struct prog_test_def *test;
+> > > > +   FILE *stdout;
+> > > >     char *log_buf;
+> > > > -   size_t log_cnt;
+> > > >     size_t log_cap;
+> > > So it's actually log_cnt that's assigned on fflush for memstream, according to man page, so probably keep log_cnt, delete log_cap.
+> > Ack. See above, will rename to log_size, let me know if you disagree.
+> >
+> > > >     int succ_cnt; /* successful tests */
