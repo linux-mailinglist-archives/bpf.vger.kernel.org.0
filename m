@@ -2,122 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F143B82178
-	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2019 18:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2BC2823EC
+	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2019 19:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727328AbfHEQQa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Aug 2019 12:16:30 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:34465 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726691AbfHEQQa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Aug 2019 12:16:30 -0400
-Received: by mail-pl1-f193.google.com with SMTP id i2so36688078plt.1;
-        Mon, 05 Aug 2019 09:16:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SqxSoJKpGWV14gIS52JocyeN9cK02AV2ZaIsHvNwU4k=;
-        b=A6CtVSZFXsjek7YhQkIhi2zY1y08hCeaSYy6D40JpwJOHjNwPCHojwloXZQJPJ/xxE
-         1n93tmzQxL7ylt2LkBB5jm3TblRMn00YaG3PwcSt3TxPeOSDU5eAy8gE5pXvVK/Pv9nd
-         hYwYbZRTP4ZwfxBTQovX3yD207GuhZW3QYIDCZe3+qWu2653wAFIwPpw2lu0a1DiiSbA
-         XyjfY3U0xgJ5YqBemVCoEor8rzfdGcEF/MlhrBvSf+m3i8FojcTbidrtm5MekJ8gaB9R
-         gNNa5/B2KJeHZsn+BbmVzsuCLRmXDEHk6CQsaw6KEidtw3jVUbFIrCqjdkt2DO/xE3rX
-         Ey2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SqxSoJKpGWV14gIS52JocyeN9cK02AV2ZaIsHvNwU4k=;
-        b=RFv1I+LJ8xZjsw7Dfr7Gf0XtNU8i8AqVPdMK4eZx03KkS4FVbLaFzHY0xMK3/nRj4x
-         u/Lh9et3ralttMPY+YD2zHI0Ju8fDju+7e+LFmOi08zyY+luA4o3deHVyBv2X2ncNn2i
-         acm2gntk3WjtNSchmMowxGh25s0p5MUh1Vggc4O+cfiGfdpuLs5F+v0CvWTtLFRMlxPO
-         BVtZaWW55aJHxleatxxdiqY5oaqLfZK4VizZZrUGtYEC9KmQAeQeOSbvH8QQE9oMf5vV
-         Etg2vovH8JnRWGEEGAawOvfZYG/iBN4yKPpuIvziyTxUHigbcpgdK9Wre00hH9L3aLyB
-         ZJ8w==
-X-Gm-Message-State: APjAAAWojsFA3KhJt9Gfy4Xm25XzA09WbIquXnXWjnLpXgChg5dDUz8q
-        4PuGrtVXl4IuShh+2SpaZu72J5sT
-X-Google-Smtp-Source: APXvYqx4YGzrYlS6KlirTyBW8YVqiN7pvEKMnekXeG/Ao2ta3RPKEwfoo1atqFICCpYLlMsaWt64kg==
-X-Received: by 2002:a17:902:7d86:: with SMTP id a6mr144965925plm.199.1565021789174;
-        Mon, 05 Aug 2019 09:16:29 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:200::1:8a30])
-        by smtp.gmail.com with ESMTPSA id o95sm15825117pjb.4.2019.08.05.09.16.27
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 05 Aug 2019 09:16:28 -0700 (PDT)
-Date:   Mon, 5 Aug 2019 09:16:27 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: add loop test 5
-Message-ID: <20190805161626.dil4xkmrdlqhqhzd@ast-mbp>
-References: <20190802233344.863418-1-ast@kernel.org>
- <20190802233344.863418-3-ast@kernel.org>
- <3f8c913c-3644-6821-70a0-cf129d2a080d@fb.com>
+        id S1728885AbfHERX0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Aug 2019 13:23:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726559AbfHERX0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Aug 2019 13:23:26 -0400
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A3A45217D9
+        for <bpf@vger.kernel.org>; Mon,  5 Aug 2019 17:23:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565025804;
+        bh=/jV+MMgIe5IgN16Vzs40LMFftcAjXyreuD0IqIMo9k0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qidr31N2PRNxVd+MKgLnKCw6Bz+i1nhCJmuO4W/NJnoLu2zwsl8GI3H/Ls/334r2Q
+         iKMR86FfounkpHl0yCGb6c/TQda7tficyXeukinPc4qa9yReDWdbfl7Jl0IIJmooMT
+         XiGr8B6n77BNnGXJOYfrgzC1+HPv1BnxQ3vHjfjg=
+Received: by mail-wm1-f43.google.com with SMTP id l2so73742048wmg.0
+        for <bpf@vger.kernel.org>; Mon, 05 Aug 2019 10:23:24 -0700 (PDT)
+X-Gm-Message-State: APjAAAVQ8vIotLqla68MYaW5beBl2Oiwbt3sZpdo8vze+T4Q9pgOZi5S
+        NBc+jElQb/PCMn/XZE/E9LUwcAm89IjsNT2zWkvHwg==
+X-Google-Smtp-Source: APXvYqzbrZNl+et5W20TDUNPb9shoQcGV833hyVQWOpteUGntxDDkdbnf5VAC+8dawOZT/6K97LFH/mKfkzXIQNNQ3A=
+X-Received: by 2002:a1c:a942:: with SMTP id s63mr19397879wme.76.1565025803035;
+ Mon, 05 Aug 2019 10:23:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3f8c913c-3644-6821-70a0-cf129d2a080d@fb.com>
-User-Agent: NeoMutt/20180223
+References: <20190627201923.2589391-1-songliubraving@fb.com>
+ <20190627201923.2589391-2-songliubraving@fb.com> <21894f45-70d8-dfca-8c02-044f776c5e05@kernel.org>
+ <3C595328-3ABE-4421-9772-8D41094A4F57@fb.com> <CALCETrWBnH4Q43POU8cQ7YMjb9LioK28FDEQf7aHZbdf1eBZWg@mail.gmail.com>
+ <0DE7F23E-9CD2-4F03-82B5-835506B59056@fb.com> <CALCETrWBWbNFJvsTCeUchu3BZJ3SH3dvtXLUB2EhnPrzFfsLNA@mail.gmail.com>
+ <201907021115.DCD56BBABB@keescook> <CALCETrXTta26CTtEDnzvtd03-WOGdXcnsAogP8JjLkcj4-mHvg@mail.gmail.com>
+ <4A7A225A-6C23-4C0F-9A95-7C6C56B281ED@fb.com> <CALCETrX2bMnwC6_t4b_G-hzJSfMPrkK4YKs5ebcecv2LJ0rt3w@mail.gmail.com>
+ <514D5453-0AEE-420F-AEB6-3F4F58C62E7E@fb.com> <1DE886F3-3982-45DE-B545-67AD6A4871AB@amacapital.net>
+ <7F51F8B8-CF4C-4D82-AAE1-F0F28951DB7F@fb.com> <77354A95-4107-41A7-8936-D144F01C3CA4@fb.com>
+ <369476A8-4CE1-43DA-9239-06437C0384C7@fb.com> <CALCETrUpVMrk7aaf0trfg9AfZ4fy279uJgZH7V+gZzjFw=hUxA@mail.gmail.com>
+ <D4040C0C-47D6-4852-933C-59EB53C05242@fb.com> <CALCETrVoZL1YGUxx3kM-d21TWVRKdKw=f2B8aE5wc2zmX1cQ4g@mail.gmail.com>
+ <5A2FCD7E-7F54-41E5-BFAE-BB9494E74F2D@fb.com> <CALCETrU7NbBnXXsw1B+DvTkfTVRBFWXuJ8cZERCCNvdFG6KqRw@mail.gmail.com>
+ <CALCETrUjh6DdgW1qSuSRd1_=0F9CqB8+sNj__e_6AHEvh_BaxQ@mail.gmail.com>
+ <CALCETrWtE2U4EvZVYeq8pSmQjBzF2PHH+KxYW8FSeF+W=1FYjw@mail.gmail.com> <EE7B7AE1-3D44-4561-94B9-E97A626A251D@fb.com>
+In-Reply-To: <EE7B7AE1-3D44-4561-94B9-E97A626A251D@fb.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 5 Aug 2019 10:23:10 -0700
+X-Gmail-Original-Message-ID: <CALCETrXX-Jeb4wiQuL6FUai4wNMmMiUxuLLh_Lb9mT7h=0GgAw@mail.gmail.com>
+Message-ID: <CALCETrXX-Jeb4wiQuL6FUai4wNMmMiUxuLLh_Lb9mT7h=0GgAw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Jann Horn <jannh@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Aug 04, 2019 at 05:45:23AM +0000, Yonghong Song wrote:
-> 
-> 
-> On 8/2/19 4:33 PM, Alexei Starovoitov wrote:
-> > Add a test with multiple exit conditions.
-> > It's not an infinite loop only when the verifier can properly track
-> > all math on variable 'i' through all possible ways of executing this loop.
-> 
-> Agreed with motivation of this test.
-> 
-> > 
-> > barrier()s are needed to disable llvm optimization that combines multiple
-> > branches into fewer branches.
-> > 
-> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > ---
-> >   .../bpf/prog_tests/bpf_verif_scale.c          |  1 +
-> >   tools/testing/selftests/bpf/progs/loop5.c     | 37 +++++++++++++++++++
-> >   2 files changed, 38 insertions(+)
-> >   create mode 100644 tools/testing/selftests/bpf/progs/loop5.c
-> > 
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-> > index 757e39540eda..29615a4a9362 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-> > @@ -72,6 +72,7 @@ void test_bpf_verif_scale(void)
-> >   		{ "loop1.o", BPF_PROG_TYPE_RAW_TRACEPOINT },
-> >   		{ "loop2.o", BPF_PROG_TYPE_RAW_TRACEPOINT },
-> >   		{ "loop4.o", BPF_PROG_TYPE_RAW_TRACEPOINT }, > +		{ "loop5.o", BPF_PROG_TYPE_RAW_TRACEPOINT },
-> 
-> More like a BPF_PROG_TYPE_SCHED_CLS type although probably it does not 
-> matter as we did not attach it to anywhere?
+On Mon, Aug 5, 2019 at 12:37 AM Song Liu <songliubraving@fb.com> wrote:
+>
+> Hi Andy,
+>
 
-right. will fix.
+> >
+> > # mount -t bpf bpf /sys/fs/bpf
+> > # cd /sys/fs/bpf
+> > # mkdir luto
+> > # chown luto: luto
+> > # setpriv --euid=1000 --ruid=1000 bash
+> > $ pwd
+> > /sys/fs/bpf
+> > bash-5.0$ ls -l
+> > total 0
+> > drwxr-xr-x 2 luto luto 0 Aug  4 22:41 luto
+> > bash-5.0$ bpftool map create /sys/fs/bpf/luto/filename type hash key 8
+> > value 8 entries 64 name mapname
+> > bash-5.0$ bpftool map dump pinned /sys/fs/bpf/luto/filename
+> > Found 0 elements
+> >
+> > # chown root: /sys/fs/bpf/luto/filename
+> >
+> > $ bpftool map dump pinned /sys/fs/bpf/luto/filename
+> > Error: bpf obj get (/sys/fs/bpf/luto): Permission denied
+> >
+> > So I think it's possible to get a respectable subset of bpf()
+> > functionality working without privilege in short order :)
+>
+> I think we have two key questions to answer:
+>   1. What subset of bpf() functionality will the users need?
+>   2. Who are the users?
+>
+> Different answers to these two questions lead to different directions.
+>
+>
+> In our use case, the answers are
+>   1) almost all bpf() functionality
+>   2) highly trusted users (sudoers)
+>
+> So our initial approach of /dev/bpf allows all bpf() functionality
+> in one bit in task_struct. (Yes, we can just sudo. But, we would
+> rather not use sudo when possible.)
 
-> >   
-> >   		/* partial unroll. 19k insn in a loop.
-> >   		 * Total program size 20.8k insn.
-> > diff --git a/tools/testing/selftests/bpf/progs/loop5.c b/tools/testing/selftests/bpf/progs/loop5.c
-> > new file mode 100644
-> > index 000000000000..9d9817efe208
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/loop5.c
-> > @@ -0,0 +1,37 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +// Copyright (c) 2019 Facebook
-> > +#include <linux/sched.h>
-> > +#include <linux/ptrace.h>
-> 
-> The above headers probably not needed.
+For this, I think some compelling evidence is needed that a new kernel
+mechanism is actually better than sudo and better than making bpftool
+privileged as previously discussed :)
 
-will fix
+>
+>
+> "cgroup management" use case may have answers like:
+>   1) cgroup_bpf only
+>   2) users in their own containers
+>
+> For this case, getting cgroup_bpf related features (cgroup_bpf progs;
+> some map types, etc.) work with unprivileged users would be the right
+> direction.
 
+:)
+
+>
+>
+> "USDT tracing" use case may have answers like:
+>   1) uprobe, stockmap, histogram, etc.
+>   2) unprivileged user, w/ or w/o containers
+>
+> For this case, the first step is likely hacking sys_perf_event_open().
+>
+
+This would be nice.
+
+>
+> I guess we will need more discussions to decide how to make bpf()
+> work better for all these (and more) use cases.
+>
+
+I refreshed the branch again.  I had a giant hole in my previous idea
+that we could deprivilege program loading: some BPF functions need
+privilege.  Now I have a changelog comment to that effect and a patch
+that sketches out a way to addressing this.
+
+I don't think I'm going to have time soon to actually get any of this
+stuff mergeable, and it would be fantastic if you or someone else who
+likes working of bpf were to take this code and run with it.  Feel
+free to add my Signed-off-by, and I'd be happy to help review.
