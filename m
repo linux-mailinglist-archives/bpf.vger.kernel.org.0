@@ -2,186 +2,983 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB296825D6
-	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2019 22:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BAF82633
+	for <lists+bpf@lfdr.de>; Mon,  5 Aug 2019 22:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728870AbfHEUEj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Aug 2019 16:04:39 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:26724 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727802AbfHEUEj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 5 Aug 2019 16:04:39 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x75K41OM030834;
-        Mon, 5 Aug 2019 13:04:16 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=JHcxEOLt6gp8YWTf4wc+5CFjxJRCt8fDv4T2ZSsvvek=;
- b=kgyYkvmpM8ixqnwuT7mHfPjirePIHVrZmP3etlWTJTyp3P+TyuXLy5qk9l3Dbqa3ObzV
- u5DRDl7eXvGPdomfZJShcrbdAXh+fsNtgWp0wRa7S+Oz2IMcifOu0ZaMSMSTwDTYKpCc
- 7SHnRpzh/agC762r9hO2x6L0nD1o5qtQtME= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2u6tcq05u1-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 05 Aug 2019 13:04:16 -0700
-Received: from prn-hub04.TheFacebook.com (2620:10d:c081:35::128) by
- prn-hub03.TheFacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Mon, 5 Aug 2019 13:04:15 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.28) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Mon, 5 Aug 2019 13:04:15 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nWbJyJqJjaNAaSppdr2mj4R19HIq6knBAu20cKEX+qFD2CBVJYLmvNO2uGx1B+LJjwLL7BsbfNL7z7bcf+Wq9v8gand+3lCaIUlUje07qoMDBoZ2RovxheAF1+fBUWO13IvayI2BDoeGn3M6j/4Ik22jCZ4g2Q9Ql85kh9QjX1QFCNJdnuzKST07HBDQ2e+xdzHtnwnLy2c/kHhDT2D3ZC+7y3bsqr3aF2JuF9u1GMUAN4oe/GlJrY8gh0zouPhPSLvyHJo+ajeTrxyhF+ZvSSspHNI/6pVXc4FaVLiAY3uE1WjlRrYV5RQ0NE8YW5j1wRbx9vCN4KWb/1bvg89upg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JHcxEOLt6gp8YWTf4wc+5CFjxJRCt8fDv4T2ZSsvvek=;
- b=idzDFP9O+8aPBEt+BcYZoAverOhb3ulvHxaciv/04A2jNsOn5abuU4uyxHz0UDlIfjEFxDaG1qlziLEQQTSv7nWXS8ExWI3mwx0IkZCZNj6zoKo0It6Wz5MI6B38+m8dF1rrOfjET38Orw3lLd/A3yk9Pqhr5nJJJdGQECSwBz6E0KoBkyUcwG7o5HfMARciM/twZkd+KQ9Tyeo4Xa6rW5d/cx0UK058AyQBtpPcWxwfFvZPg5leb/bFBRTiJAoD0j7loL5oxzMBU3gtBuCs7+RahCFqd+rI3BTyICvHyiI07cLAjw0Y+vcPfPSxjzW+7NPnOCjJxtX8+Ft5wjXQEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=fb.com;dmarc=pass action=none header.from=fb.com;dkim=pass
- header.d=fb.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JHcxEOLt6gp8YWTf4wc+5CFjxJRCt8fDv4T2ZSsvvek=;
- b=V07Stjq80XKDy/Onmn739BEYza9ZXZrZ1aRRb6pr6Ecqj0HWT85+ycq8BRMrJVaFbAEZ6OSdxqu13zRAtO5UAa4VCvMkGw4flIK27PZM5UiQGOVk5zzwxbxl0OMu2oL1N14W61E3eUTEQSihgxzBiZoghoLOjHs4tRyuEWzl7to=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.59.17) by
- BYAPR15MB2696.namprd15.prod.outlook.com (20.179.156.225) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2136.16; Mon, 5 Aug 2019 20:04:14 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::e499:ecba:ec04:abac]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::e499:ecba:ec04:abac%5]) with mapi id 15.20.2136.018; Mon, 5 Aug 2019
- 20:04:14 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 1/2] selftests/bpf: add loop test 4
-Thread-Topic: [PATCH bpf-next 1/2] selftests/bpf: add loop test 4
-Thread-Index: AQHVS8ZZRvjRjh/ij0+eu7mMX24CUKbs+k0A
-Date:   Mon, 5 Aug 2019 20:04:13 +0000
-Message-ID: <db0340a8-a4d7-f652-729d-9edd22a87310@fb.com>
-References: <20190802233344.863418-1-ast@kernel.org>
- <20190802233344.863418-2-ast@kernel.org>
- <CAEf4Bzb==_gzT78_oN7AfiGHrqGXdYK+oEamkxpfEjP5fzr_UA@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb==_gzT78_oN7AfiGHrqGXdYK+oEamkxpfEjP5fzr_UA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR10CA0070.namprd10.prod.outlook.com
- (2603:10b6:300:2c::32) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:10e::17)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::3:1bdd]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 49a05ec3-eca0-4cdc-e524-08d719e0167e
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB2696;
-x-ms-traffictypediagnostic: BYAPR15MB2696:
-x-microsoft-antispam-prvs: <BYAPR15MB269629C7AAE14BF9EC5146BFD3DA0@BYAPR15MB2696.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 01208B1E18
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(396003)(366004)(346002)(136003)(376002)(199004)(189003)(6506007)(229853002)(4326008)(25786009)(2906002)(6512007)(76176011)(54906003)(305945005)(53936002)(66946007)(7736002)(6486002)(110136005)(6436002)(66446008)(64756008)(66556008)(66476007)(316002)(53546011)(386003)(5660300002)(256004)(476003)(2616005)(31686004)(11346002)(186003)(71190400001)(486006)(71200400001)(46003)(6116002)(86362001)(68736007)(102836004)(31696002)(478600001)(446003)(8936002)(6246003)(52116002)(81166006)(14454004)(81156014)(36756003)(99286004)(8676002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2696;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: Ig8H+o41X7T0ekcGTXtG1jYQpZElU6AGtq6/4Mb2LS4fsJA7DKLf9jvCg9NYaWDCsD1DO3SvSJRxagO6DUtwy8AWsJO4L77zFgIORT2X0UQe8PpmVlhR3+olVqKnmoU+WKh9QFxTue8gyd5p9ola/rBuN8D9bIqGLfZ3NNyf1WaStzFAZ37mT7J+S3EDoe+QWUUXDo0ZRJvXC8l/fqTsiso2Ua2GZJc3rloyN0YT6EWpYPuXcmqtCel5q5voygtnZ+scfizKcajZk3a886F2p0dPH2N8YxOR03j8KDdvRCfeA3nNWjuG9Qb+0RjXbNuZ/r6H4V4HNoGAFFXUmOlINpAjRPkTyeAoh/4LY7WryKBb7t1QKkg8jyw9TGQs46eT4/McEA3CJEALR1G1fdBwKVHNeV+C4bjPk2zwOE+jFNU=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <17C6667075E2DB4D8CF66F5B89EC7F77@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1730036AbfHEUnl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Aug 2019 16:43:41 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:39865 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727460AbfHEUnl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Aug 2019 16:43:41 -0400
+Received: by mail-wm1-f65.google.com with SMTP id u25so63916491wmc.4;
+        Mon, 05 Aug 2019 13:43:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=i2XGE2Z11j/HAtt+j/gd5n5e0wTahlYLx2T1A1NIrRs=;
+        b=laNxJbv37gm8fJBOH6CcGff2dn8YF5iK6aR6fA3eOLq1nIsAsYNvQ3cM+83yKGvQbK
+         F++KQDb/VLay4RFMS2eyZgNBEM98c0edISZ1RuzhlbMfx2t0WnV+Lf8ppA0ast+VTOI8
+         lsdq9JpI0+uKJeHx61ct3Sxl7lAFdhraw5ZbFhkBSk+WHxNh2i+eCmoxpeaZfD8NLOET
+         /mZdJJ4nv0OLsr8Bx3CyEGtPJYIGxmb8F31sXmi1lo1T7i1pFlL0/jEpE8uxRKXIcUbN
+         saINO7alOFX/VZntFNTfdyaWNtvf8rlqQtDYhXfS+Q1OEAgInVbCAPaHrI3GRREn1Cq1
+         KN5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=i2XGE2Z11j/HAtt+j/gd5n5e0wTahlYLx2T1A1NIrRs=;
+        b=pOCCXzCTJfnxzBihxvOaMPPJBdYPjsI6eFdWv4Ahpq20QZe8VQBz/HhXZx1fBdo8S2
+         1xpqvwtsXhyn2GNA+FitfphZmmQmVjl9oJs3oNlclXjoV9qE0ScdjhHGkGD84DIdVVZh
+         KEfz5ioUwwCq1va74hK5k9PyURsEO12tNoXEegcb675RbSC2Y1b2i9eSqqKfv5q0xNmr
+         s7Mg32X6XZP+BKBmermV6Lezf4lEgce8rCjW3xKyGchN4/MFCESrQ+fPWAbHrGnT9ldD
+         uJ0VmhYZ/Y5Z6eQMrcVLULiXwCR4jn74dZhG4VXjjfVeQ6F130cD7n6lrtQSW8yxs9ac
+         ahHQ==
+X-Gm-Message-State: APjAAAVz+1xyA3OGHWZvTGsZDtKcwxH2Jm6Fhozr8nwAEL1kkm05UpHx
+        dGiomVojjqfCK7jCoqIjNw==
+X-Google-Smtp-Source: APXvYqweJon31W8UQR4KKJSdNtbo2IHCPWsgQmPLl2wOBg9ze8UIAGzikNKnYtpRdHTjv0Ix/OcnIA==
+X-Received: by 2002:a1c:9cd1:: with SMTP id f200mr142613wme.157.1565037814060;
+        Mon, 05 Aug 2019 13:43:34 -0700 (PDT)
+Received: from avx2 ([46.53.248.54])
+        by smtp.gmail.com with ESMTPSA id b8sm76483650wrr.43.2019.08.05.13.43.33
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 05 Aug 2019 13:43:33 -0700 (PDT)
+Date:   Mon, 5 Aug 2019 23:43:31 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     davem@davemloft.net
+Cc:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        linux-sctp@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH net-next] net: use "nb" for notifier blocks
+Message-ID: <20190805204331.GA25178@avx2>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 49a05ec3-eca0-4cdc-e524-08d719e0167e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Aug 2019 20:04:13.9266
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yhs@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2696
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-05_11:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908050201
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDgvNS8xOSAxMjo0NSBQTSwgQW5kcmlpIE5ha3J5aWtvIHdyb3RlOg0KPiBPbiBTYXQs
-IEF1ZyAzLCAyMDE5IGF0IDg6MTkgUE0gQWxleGVpIFN0YXJvdm9pdG92IDxhc3RAa2VybmVsLm9y
-Zz4gd3JvdGU6DQo+Pg0KPj4gQWRkIGEgdGVzdCB0aGF0IHJldHVybnMgYSAncmFuZG9tJyBudW1i
-ZXIgYmV0d2VlbiBbMCwgMl4yMCkNCj4+IElmIHN0YXRlIHBydW5pbmcgaXMgbm90IHdvcmtpbmcg
-Y29ycmVjdGx5IGZvciBsb29wIGJvZHkgdGhlIG51bWJlciBvZg0KPj4gcHJvY2Vzc2VkIGluc25z
-IHdpbGwgYmUgMl4yMCAqIG51bV9vZl9pbnNuc19pbl9sb29wX2JvZHkgYW5kIHRoZSBwcm9ncmFt
-DQo+PiB3aWxsIGJlIHJlamVjdGVkLg0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6IEFsZXhlaSBTdGFy
-b3ZvaXRvdiA8YXN0QGtlcm5lbC5vcmc+DQo+PiAtLS0NCj4+ICAgLi4uL2JwZi9wcm9nX3Rlc3Rz
-L2JwZl92ZXJpZl9zY2FsZS5jICAgICAgICAgIHwgIDEgKw0KPj4gICB0b29scy90ZXN0aW5nL3Nl
-bGZ0ZXN0cy9icGYvcHJvZ3MvbG9vcDQuYyAgICAgfCAyMyArKysrKysrKysrKysrKysrKysrDQo+
-PiAgIDIgZmlsZXMgY2hhbmdlZCwgMjQgaW5zZXJ0aW9ucygrKQ0KPj4gICBjcmVhdGUgbW9kZSAx
-MDA2NDQgdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL2xvb3A0LmMNCj4+DQo+PiBk
-aWZmIC0tZ2l0IGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dfdGVzdHMvYnBmX3Zl
-cmlmX3NjYWxlLmMgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ190ZXN0cy9icGZf
-dmVyaWZfc2NhbGUuYw0KPj4gaW5kZXggYjRiZTk2MTYyZmY0Li43NTdlMzk1NDBlZGEgMTAwNjQ0
-DQo+PiAtLS0gYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ190ZXN0cy9icGZfdmVy
-aWZfc2NhbGUuYw0KPj4gKysrIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dfdGVz
-dHMvYnBmX3ZlcmlmX3NjYWxlLmMNCj4+IEBAIC03MSw2ICs3MSw3IEBAIHZvaWQgdGVzdF9icGZf
-dmVyaWZfc2NhbGUodm9pZCkNCj4+DQo+PiAgICAgICAgICAgICAgICAgIHsgImxvb3AxLm8iLCBC
-UEZfUFJPR19UWVBFX1JBV19UUkFDRVBPSU5UIH0sDQo+PiAgICAgICAgICAgICAgICAgIHsgImxv
-b3AyLm8iLCBCUEZfUFJPR19UWVBFX1JBV19UUkFDRVBPSU5UIH0sDQo+PiArICAgICAgICAgICAg
-ICAgeyAibG9vcDQubyIsIEJQRl9QUk9HX1RZUEVfUkFXX1RSQUNFUE9JTlQgfSwNCj4+DQo+PiAg
-ICAgICAgICAgICAgICAgIC8qIHBhcnRpYWwgdW5yb2xsLiAxOWsgaW5zbiBpbiBhIGxvb3AuDQo+
-PiAgICAgICAgICAgICAgICAgICAqIFRvdGFsIHByb2dyYW0gc2l6ZSAyMC44ayBpbnNuLg0KPj4g
-ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9ncy9sb29wNC5jIGIv
-dG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL2xvb3A0LmMNCj4+IG5ldyBmaWxlIG1v
-ZGUgMTAwNjQ0DQo+PiBpbmRleCAwMDAwMDAwMDAwMDAuLjNlN2VlMTRmZGRiZA0KPj4gLS0tIC9k
-ZXYvbnVsbA0KPj4gKysrIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL2xvb3A0
-LmMNCj4+IEBAIC0wLDAgKzEsMjMgQEANCj4+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjog
-R1BMLTIuMA0KPj4gKy8vIENvcHlyaWdodCAoYykgMjAxOSBGYWNlYm9vaw0KPj4gKyNpbmNsdWRl
-IDxsaW51eC9zY2hlZC5oPg0KPj4gKyNpbmNsdWRlIDxsaW51eC9wdHJhY2UuaD4NCj4+ICsjaW5j
-bHVkZSA8c3RkaW50Lmg+DQo+PiArI2luY2x1ZGUgPHN0ZGRlZi5oPg0KPj4gKyNpbmNsdWRlIDxz
-dGRib29sLmg+DQo+PiArI2luY2x1ZGUgPGxpbnV4L2JwZi5oPg0KPj4gKyNpbmNsdWRlICJicGZf
-aGVscGVycy5oIg0KPj4gKw0KPj4gK2NoYXIgX2xpY2Vuc2VbXSBTRUMoImxpY2Vuc2UiKSA9ICJH
-UEwiOw0KPj4gKw0KPj4gK1NFQygic29ja2V0IikNCj4+ICtpbnQgY29tYmluYXRpb25zKHZvbGF0
-aWxlIHN0cnVjdCBfX3NrX2J1ZmYqIHNrYikNCj4+ICt7DQo+PiArICAgICAgIGludCByZXQgPSAw
-LCBpOw0KPj4gKw0KPj4gKyNwcmFnbWEgbm91bnJvbGwNCj4+ICsgICAgICAgZm9yIChpID0gMDsg
-aSA8IDIwOyBpKyspDQo+PiArICAgICAgICAgICAgICAgaWYgKHNrYi0+bGVuKQ0KPj4gKyAgICAg
-ICAgICAgICAgICAgICAgICAgcmV0IHw9IDEgPDwgaTsNCj4gDQo+IFNvIEkgdGhpbmsgdGhlIGlk
-ZWEgaXMgdGhhdCBiZWNhdXNlIHZlcmlmaWVyIHNob3VsZG4ndCBrbm93IHdoZXRoZXINCj4gc2ti
-LT5sZW4gaXMgemVybyBvciBub3QsIHRoZW4geW91IGhhdmUgdHdvIG91dGNvbWVzIG9uIGV2ZXJ5
-IGl0ZXJhdGlvbg0KPiBsZWFkaW5nIHRvIDJeMjAgc3RhdGVzLCByaWdodD8NCj4gDQo+IEJ1dCBJ
-J20gYWZyYWlkIHRoYXQgdmVyaWZpZXIgY2FuIGV2ZW50dWFsbHkgYmUgc21hcnQgZW5vdWdoIChp
-ZiBpdCdzDQo+IG5vdCBhbHJlYWR5LCBidHcpLCB0byBmaWd1cmUgb3V0IHRoYXQgcmV0IGNhbiBi
-ZSBlaXRoZXIgMCBvciAoKDEgPDwNCj4gMjEpIC0gMSksIGFjdHVhbGx5LiBJZiBza2ItPmxlbiBp
-cyBwdXQgaW50byBzZXBhcmF0ZSByZWdpc3RlciwgdGhlbg0KPiB0aGF0IHJlZ2lzdGVyJ3MgYm91
-bmRzIHdpbGwgYmUgZXN0YWJsaXNoZWQgb24gZmlyc3QgbG9vcCBpdGVyYXRpb24gYXMNCj4gZWl0
-aGVyID09IDAgb24gb25lIGJyYW5jaCBvciAoMCwgaW5mKSBvbiBhbm90aGVyIGJyYW5jaCwgYWZ0
-ZXIgd2hpY2gNCj4gYWxsIHN1YnNlcXVlbnQgaXRlcmF0aW9ucyB3aWxsIG5vdCBicmFuY2ggYXQg
-YWxsIChvbmUgb3IgdGhlIG90aGVyDQo+IGJyYW5jaCB3aWxsIGJlIGFsd2F5cyB0YWtlbikuDQo+
-IA0KPiBJdCdzIGFsc28gcG9zc2libGUgdGhhdCBMTFZNL0NsYW5nIGlzIHNtYXJ0IGVub3VnaCBh
-bHJlYWR5IHRvIGZpZ3VyZQ0KPiB0aGlzIG91dCBvbiBpdHMgb3duIGFuZCBvcHRpbWl6ZSBsb29w
-IGludG8uDQo+IA0KPiANCj4gaWYgKHNrYi0+bGVuKSB7DQo+ICAgICAgZm9yIChpID0gMDsgaSA8
-IDIwOyBpKyspDQo+ICAgICAgICAgIHJldCB8PSAxIDw8IGk7DQo+IH0NCg0KV2UgaGF2ZQ0KICAg
-IHZvbGF0aWxlIHN0cnVjdCBfX3NrX2J1ZmYqIHNrYg0KDQpTbyBmcm9tIHRoZSBzb3VyY2UgY29k
-ZSwgc2tiLT5sZW4gY291bGQgYmUgZGlmZmVyZW50IGZvciBlYWNoDQppdGVyYXRpb24uIFRoZSBj
-b21waWxlciBjYW5ub3QgZG8gdGhlIGFib3ZlIG9wdGltaXphdGlvbi4NCg0KPiANCj4gDQo+IFNv
-IHR3byBjb21wbGFpbnM6DQo+IA0KPiAxLiBMZXQncyBvYmZ1c2NhdGUgdGhpcyBhIGJpdCBtb3Jl
-LCBlLmcuLCB3aXRoIHRlc3RpbmcgKHNrYi0+bGVuICYNCj4gKDE8PGkpKSBpbnN0ZWFkLCBzbyB0
-aGF0IHJlc3VsdCByZWFsbHkgZGVwZW5kcyBvbiBhY3R1YWwgbGVuZ3RoIG9mIHRoZQ0KPiBwYWNr
-ZXQuDQo+IDIuIElzIGl0IHBvc3NpYmxlIHRvIHNvbWVob3cgdHVybiBvZmYgdGhpcyBwcmVjaXNp
-b24gdHJhY2tpbmcgKGUuZy4sDQo+IHJ1bm5pbmcgbm90IHVuZGVyIHJvb3QsIG1heWJlPykgYW5k
-IHNlZSB0aGF0IHRoaXMgc2FtZSBwcm9ncmFtIGZhaWxzDQo+IGluIHRoYXQgY2FzZT8gVGhhdCB3
-YXkgd2UnbGwga25vdyB0ZXN0IGFjdHVhbGx5IHZhbGlkYXRlcyB3aGF0IHdlDQo+IHRoaW5rIGl0
-IHZhbGlkYXRlcy4NCj4gDQo+IFRob3VnaHRzPw0KPiANCj4+ICsgICAgICAgcmV0dXJuIHJldDsN
-Cj4+ICt9DQo+PiAtLQ0KPj4gMi4yMC4wDQo+Pg0K
+Use more pleasant looking
+
+	struct notifier_block *nb,
+
+instead of "this".
+
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
+
+ drivers/net/bonding/bond_main.c                      |    2 +-
+ drivers/net/ethernet/broadcom/cnic.c                 |    2 +-
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c      |    2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_netdev.c       |    4 ++--
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h         |    2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c      |    4 ++--
+ drivers/net/ethernet/mellanox/mlx5/core/lag.c        |    4 ++--
+ drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c |    4 ++--
+ drivers/net/ethernet/qlogic/qede/qede_main.c         |    2 +-
+ drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c     |    4 ++--
+ drivers/net/ethernet/sfc/efx.c                       |    2 +-
+ drivers/net/ethernet/sfc/falcon/efx.c                |    2 +-
+ drivers/net/hamradio/bpqether.c                      |    2 +-
+ drivers/net/hyperv/netvsc_drv.c                      |    2 +-
+ drivers/net/macsec.c                                 |    2 +-
+ drivers/net/netconsole.c                             |    2 +-
+ drivers/net/ppp/pppoe.c                              |    2 +-
+ drivers/net/wan/hdlc.c                               |    2 +-
+ drivers/net/wan/lapbether.c                          |    2 +-
+ net/appletalk/aarp.c                                 |    2 +-
+ net/appletalk/ddp.c                                  |    2 +-
+ net/atm/br2684.c                                     |    2 +-
+ net/atm/clip.c                                       |    6 +++---
+ net/ax25/af_ax25.c                                   |    2 +-
+ net/batman-adv/hard-interface.c                      |    2 +-
+ net/core/failover.c                                  |    2 +-
+ net/core/fib_rules.c                                 |    2 +-
+ net/core/rtnetlink.c                                 |    2 +-
+ net/decnet/af_decnet.c                               |    2 +-
+ net/decnet/dn_fib.c                                  |    2 +-
+ net/ipv4/arp.c                                       |    2 +-
+ net/ipv4/devinet.c                                   |    2 +-
+ net/ipv4/fib_frontend.c                              |    4 ++--
+ net/ipv4/igmp.c                                      |    2 +-
+ net/ipv4/ipmr.c                                      |    2 +-
+ net/ipv4/netfilter/ipt_CLUSTERIP.c                   |    2 +-
+ net/ipv4/nexthop.c                                   |    2 +-
+ net/ipv6/addrconf.c                                  |    2 +-
+ net/ipv6/ip6mr.c                                     |    2 +-
+ net/ipv6/mcast.c                                     |    2 +-
+ net/ipv6/ndisc.c                                     |    2 +-
+ net/ipv6/route.c                                     |    2 +-
+ net/iucv/af_iucv.c                                   |    2 +-
+ net/iucv/iucv.c                                      |    2 +-
+ net/mpls/af_mpls.c                                   |    2 +-
+ net/ncsi/ncsi-manage.c                               |    2 +-
+ net/netfilter/ipvs/ip_vs_ctl.c                       |    2 +-
+ net/netfilter/nf_nat_masquerade.c                    |    6 +++---
+ net/netfilter/nf_tables_api.c                        |    2 +-
+ net/netfilter/nfnetlink_log.c                        |    2 +-
+ net/netfilter/nfnetlink_queue.c                      |    4 ++--
+ net/netfilter/nft_chain_filter.c                     |    2 +-
+ net/netfilter/nft_flow_offload.c                     |    2 +-
+ net/netfilter/xt_TEE.c                               |    2 +-
+ net/netlabel/netlabel_unlabeled.c                    |    2 +-
+ net/netrom/af_netrom.c                               |    2 +-
+ net/nfc/netlink.c                                    |    2 +-
+ net/packet/af_packet.c                               |    2 +-
+ net/rose/af_rose.c                                   |    2 +-
+ net/sctp/ipv6.c                                      |    2 +-
+ net/sctp/protocol.c                                  |    2 +-
+ net/smc/smc_pnet.c                                   |    2 +-
+ net/tls/tls_device.c                                 |    2 +-
+ net/x25/af_x25.c                                     |   12 ++++++------
+ net/xdp/xsk.c                                        |    2 +-
+ net/xfrm/xfrm_device.c                               |    2 +-
+ 66 files changed, 82 insertions(+), 82 deletions(-)
+
+--- a/drivers/net/bonding/bond_main.c
++++ b/drivers/net/bonding/bond_main.c
+@@ -3202,7 +3202,7 @@ static int bond_slave_netdev_event(unsigned long event,
+  * locks for us to safely manipulate the slave devices (RTNL lock,
+  * dev_probe_lock).
+  */
+-static int bond_netdev_event(struct notifier_block *this,
++static int bond_netdev_event(struct notifier_block *nb,
+ 			     unsigned long event, void *ptr)
+ {
+ 	struct net_device *event_dev = netdev_notifier_info_to_dev(ptr);
+--- a/drivers/net/ethernet/broadcom/cnic.c
++++ b/drivers/net/ethernet/broadcom/cnic.c
+@@ -5672,7 +5672,7 @@ static void cnic_rcv_netevent(struct cnic_local *cp, unsigned long event,
+ }
+ 
+ /* netdev event handler */
+-static int cnic_netdev_event(struct notifier_block *this, unsigned long event,
++static int cnic_netdev_event(struct notifier_block *nb, unsigned long event,
+ 							 void *ptr)
+ {
+ 	struct net_device *netdev = netdev_notifier_info_to_dev(ptr);
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
+@@ -2273,7 +2273,7 @@ static void notify_ulds(struct adapter *adap, enum cxgb4_state new_state)
+ }
+ 
+ #if IS_ENABLED(CONFIG_IPV6)
+-static int cxgb4_inet6addr_handler(struct notifier_block *this,
++static int cxgb4_inet6addr_handler(struct notifier_block *nb,
+ 				   unsigned long event, void *data)
+ {
+ 	struct inet6_ifaddr *ifa = data;
+--- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
+@@ -3020,7 +3020,7 @@ static int mlx4_en_queue_bond_work(struct mlx4_en_priv *priv, int is_bonded,
+ 	return 0;
+ }
+ 
+-int mlx4_en_netdev_event(struct notifier_block *this,
++int mlx4_en_netdev_event(struct notifier_block *nb,
+ 			 unsigned long event, void *ptr)
+ {
+ 	struct net_device *ndev = netdev_notifier_info_to_dev(ptr);
+@@ -3036,7 +3036,7 @@ int mlx4_en_netdev_event(struct notifier_block *this,
+ 	if (!net_eq(dev_net(ndev), &init_net))
+ 		return NOTIFY_DONE;
+ 
+-	mdev = container_of(this, struct mlx4_en_dev, nb);
++	mdev = container_of(nb, struct mlx4_en_dev, nb);
+ 	dev = mdev->dev;
+ 
+ 	/* Go into this mode only when two network devices set on two ports
+--- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
++++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+@@ -794,7 +794,7 @@ void mlx4_en_update_pfc_stats_bitmap(struct mlx4_dev *dev,
+ 				     struct mlx4_en_stats_bitmap *stats_bitmap,
+ 				     u8 rx_ppp, u8 rx_pause,
+ 				     u8 tx_ppp, u8 tx_pause);
+-int mlx4_en_netdev_event(struct notifier_block *this,
++int mlx4_en_netdev_event(struct notifier_block *nb,
+ 			 unsigned long event, void *ptr);
+ 
+ /*
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+@@ -3657,7 +3657,7 @@ static void mlx5e_tc_hairpin_update_dead_peer(struct mlx5e_priv *priv,
+ 	}
+ }
+ 
+-static int mlx5e_tc_netdev_event(struct notifier_block *this,
++static int mlx5e_tc_netdev_event(struct notifier_block *nb,
+ 				 unsigned long event, void *ptr)
+ {
+ 	struct net_device *ndev = netdev_notifier_info_to_dev(ptr);
+@@ -3671,7 +3671,7 @@ static int mlx5e_tc_netdev_event(struct notifier_block *this,
+ 	    ndev->reg_state == NETREG_REGISTERED)
+ 		return NOTIFY_DONE;
+ 
+-	tc = container_of(this, struct mlx5e_tc_table, netdevice_nb);
++	tc = container_of(nb, struct mlx5e_tc_table, netdevice_nb);
+ 	fs = container_of(tc, struct mlx5e_flow_steering, tc);
+ 	priv = container_of(fs, struct mlx5e_priv, fs);
+ 	peer_priv = netdev_priv(ndev);
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lag.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lag.c
+@@ -453,7 +453,7 @@ static int mlx5_handle_changelowerstate_event(struct mlx5_lag *ldev,
+ 	return 1;
+ }
+ 
+-static int mlx5_lag_netdev_event(struct notifier_block *this,
++static int mlx5_lag_netdev_event(struct notifier_block *nb,
+ 				 unsigned long event, void *ptr)
+ {
+ 	struct net_device *ndev = netdev_notifier_info_to_dev(ptr);
+@@ -467,7 +467,7 @@ static int mlx5_lag_netdev_event(struct notifier_block *this,
+ 	if ((event != NETDEV_CHANGEUPPER) && (event != NETDEV_CHANGELOWERSTATE))
+ 		return NOTIFY_DONE;
+ 
+-	ldev    = container_of(this, struct mlx5_lag, nb);
++	ldev    = container_of(nb, struct mlx5_lag, nb);
+ 	tracker = ldev->tracker;
+ 
+ 	switch (event) {
+--- a/drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c
++++ b/drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c
+@@ -3344,7 +3344,7 @@ static void netxen_config_master(struct net_device *dev, unsigned long event)
+ 		netxen_free_ip_list(adapter, true);
+ }
+ 
+-static int netxen_netdev_event(struct notifier_block *this,
++static int netxen_netdev_event(struct notifier_block *nb,
+ 				 unsigned long event, void *ptr)
+ {
+ 	struct netxen_adapter *adapter;
+@@ -3387,7 +3387,7 @@ static int netxen_netdev_event(struct notifier_block *this,
+ }
+ 
+ static int
+-netxen_inetaddr_event(struct notifier_block *this,
++netxen_inetaddr_event(struct notifier_block *nb,
+ 		unsigned long event, void *ptr)
+ {
+ 	struct netxen_adapter *adapter;
+--- a/drivers/net/ethernet/qlogic/qede/qede_main.c
++++ b/drivers/net/ethernet/qlogic/qede/qede_main.c
+@@ -228,7 +228,7 @@ static struct qed_eth_cb_ops qede_ll_ops = {
+ 	.ports_update = qede_udp_ports_update,
+ };
+ 
+-static int qede_netdev_event(struct notifier_block *this, unsigned long event,
++static int qede_netdev_event(struct notifier_block *nb, unsigned long event,
+ 			     void *ptr)
+ {
+ 	struct net_device *ndev = netdev_notifier_info_to_dev(ptr);
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
+@@ -4162,7 +4162,7 @@ void qlcnic_restore_indev_addr(struct net_device *netdev, unsigned long event)
+ 	rcu_read_unlock();
+ }
+ 
+-static int qlcnic_netdev_event(struct notifier_block *this,
++static int qlcnic_netdev_event(struct notifier_block *nb,
+ 				 unsigned long event, void *ptr)
+ {
+ 	struct qlcnic_adapter *adapter;
+@@ -4194,7 +4194,7 @@ static int qlcnic_netdev_event(struct notifier_block *this,
+ }
+ 
+ static int
+-qlcnic_inetaddr_event(struct notifier_block *this,
++qlcnic_inetaddr_event(struct notifier_block *nb,
+ 		unsigned long event, void *ptr)
+ {
+ 	struct qlcnic_adapter *adapter;
+--- a/drivers/net/ethernet/sfc/efx.c
++++ b/drivers/net/ethernet/sfc/efx.c
+@@ -2498,7 +2498,7 @@ static void efx_update_name(struct efx_nic *efx)
+ 	efx_set_channel_names(efx);
+ }
+ 
+-static int efx_netdev_event(struct notifier_block *this,
++static int efx_netdev_event(struct notifier_block *nb,
+ 			    unsigned long event, void *ptr)
+ {
+ 	struct net_device *net_dev = netdev_notifier_info_to_dev(ptr);
+--- a/drivers/net/ethernet/sfc/falcon/efx.c
++++ b/drivers/net/ethernet/sfc/falcon/efx.c
+@@ -2237,7 +2237,7 @@ static void ef4_update_name(struct ef4_nic *efx)
+ 	ef4_set_channel_names(efx);
+ }
+ 
+-static int ef4_netdev_event(struct notifier_block *this,
++static int ef4_netdev_event(struct notifier_block *nb,
+ 			    unsigned long event, void *ptr)
+ {
+ 	struct net_device *net_dev = netdev_notifier_info_to_dev(ptr);
+--- a/drivers/net/hamradio/bpqether.c
++++ b/drivers/net/hamradio/bpqether.c
+@@ -524,7 +524,7 @@ static void bpq_free_device(struct net_device *ndev)
+ /*
+  *	Handle device status changes.
+  */
+-static int bpq_device_event(struct notifier_block *this,
++static int bpq_device_event(struct notifier_block *nb,
+ 			    unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/drivers/net/hyperv/netvsc_drv.c
++++ b/drivers/net/hyperv/netvsc_drv.c
+@@ -2416,7 +2416,7 @@ static struct  hv_driver netvsc_drv = {
+  * to the guest. When the corresponding VF instance is registered,
+  * we will take care of switching the data path.
+  */
+-static int netvsc_netdev_event(struct notifier_block *this,
++static int netvsc_netdev_event(struct notifier_block *nb,
+ 			       unsigned long event, void *ptr)
+ {
+ 	struct net_device *event_dev = netdev_notifier_info_to_dev(ptr);
+--- a/drivers/net/macsec.c
++++ b/drivers/net/macsec.c
+@@ -3478,7 +3478,7 @@ static bool is_macsec_master(struct net_device *dev)
+ 	return rcu_access_pointer(dev->rx_handler) == macsec_handle_frame;
+ }
+ 
+-static int macsec_notify(struct notifier_block *this, unsigned long event,
++static int macsec_notify(struct notifier_block *nb, unsigned long event,
+ 			 void *ptr)
+ {
+ 	struct net_device *real_dev = netdev_notifier_info_to_dev(ptr);
+--- a/drivers/net/netconsole.c
++++ b/drivers/net/netconsole.c
+@@ -688,7 +688,7 @@ static struct configfs_subsystem netconsole_subsys = {
+ #endif	/* CONFIG_NETCONSOLE_DYNAMIC */
+ 
+ /* Handle network interface device notifications */
+-static int netconsole_netdev_event(struct notifier_block *this,
++static int netconsole_netdev_event(struct notifier_block *nb,
+ 				   unsigned long event, void *ptr)
+ {
+ 	unsigned long flags;
+--- a/drivers/net/ppp/pppoe.c
++++ b/drivers/net/ppp/pppoe.c
+@@ -329,7 +329,7 @@ static void pppoe_flush_dev(struct net_device *dev)
+ 	write_unlock_bh(&pn->hash_lock);
+ }
+ 
+-static int pppoe_device_event(struct notifier_block *this,
++static int pppoe_device_event(struct notifier_block *nb,
+ 			      unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/drivers/net/wan/hdlc.c
++++ b/drivers/net/wan/hdlc.c
+@@ -85,7 +85,7 @@ static inline void hdlc_proto_stop(struct net_device *dev)
+ 
+ 
+ 
+-static int hdlc_device_event(struct notifier_block *this, unsigned long event,
++static int hdlc_device_event(struct notifier_block *nb, unsigned long event,
+ 			     void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/drivers/net/wan/lapbether.c
++++ b/drivers/net/wan/lapbether.c
+@@ -359,7 +359,7 @@ static void lapbeth_free_device(struct lapbethdev *lapbeth)
+  *
+  * Called from notifier with RTNL held.
+  */
+-static int lapbeth_device_event(struct notifier_block *this,
++static int lapbeth_device_event(struct notifier_block *nb,
+ 				unsigned long event, void *ptr)
+ {
+ 	struct lapbethdev *lapbeth;
+--- a/net/appletalk/aarp.c
++++ b/net/appletalk/aarp.c
+@@ -324,7 +324,7 @@ static void aarp_expire_timeout(struct timer_list *unused)
+ }
+ 
+ /* Network device notifier chain handler. */
+-static int aarp_device_event(struct notifier_block *this, unsigned long event,
++static int aarp_device_event(struct notifier_block *nb, unsigned long event,
+ 			     void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/appletalk/ddp.c
++++ b/net/appletalk/ddp.c
+@@ -635,7 +635,7 @@ static inline void atalk_dev_down(struct net_device *dev)
+  * A device event has occurred. Watch for devices going down and
+  * delete our use of them (iface and route).
+  */
+-static int ddp_device_event(struct notifier_block *this, unsigned long event,
++static int ddp_device_event(struct notifier_block *nb, unsigned long event,
+ 			    void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/atm/br2684.c
++++ b/net/atm/br2684.c
+@@ -144,7 +144,7 @@ static struct net_device *br2684_find_dev(const struct br2684_if_spec *s)
+ 	return NULL;
+ }
+ 
+-static int atm_dev_event(struct notifier_block *this, unsigned long event,
++static int atm_dev_event(struct notifier_block *nb, unsigned long event,
+ 		 void *arg)
+ {
+ 	struct atm_dev *atm_dev = arg;
+--- a/net/atm/clip.c
++++ b/net/atm/clip.c
+@@ -542,7 +542,7 @@ static int clip_create(int number)
+ 	return number;
+ }
+ 
+-static int clip_device_event(struct notifier_block *this, unsigned long event,
++static int clip_device_event(struct notifier_block *nb, unsigned long event,
+ 			     void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+@@ -575,7 +575,7 @@ static int clip_device_event(struct notifier_block *this, unsigned long event,
+ 	return NOTIFY_DONE;
+ }
+ 
+-static int clip_inet_event(struct notifier_block *this, unsigned long event,
++static int clip_inet_event(struct notifier_block *nb, unsigned long event,
+ 			   void *ifa)
+ {
+ 	struct in_device *in_dev;
+@@ -589,7 +589,7 @@ static int clip_inet_event(struct notifier_block *this, unsigned long event,
+ 	if (event != NETDEV_UP)
+ 		return NOTIFY_DONE;
+ 	netdev_notifier_info_init(&info, in_dev->dev);
+-	return clip_device_event(this, NETDEV_CHANGE, &info);
++	return clip_device_event(nb, NETDEV_CHANGE, &info);
+ }
+ 
+ static struct notifier_block clip_dev_notifier = {
+--- a/net/ax25/af_ax25.c
++++ b/net/ax25/af_ax25.c
+@@ -106,7 +106,7 @@ static void ax25_kill_by_device(struct net_device *dev)
+ /*
+  *	Handle device status changes.
+  */
+-static int ax25_device_event(struct notifier_block *this, unsigned long event,
++static int ax25_device_event(struct notifier_block *nb, unsigned long event,
+ 			     void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/batman-adv/hard-interface.c
++++ b/net/batman-adv/hard-interface.c
+@@ -1015,7 +1015,7 @@ static int batadv_hard_if_event_softif(unsigned long event,
+ 	return NOTIFY_DONE;
+ }
+ 
+-static int batadv_hard_if_event(struct notifier_block *this,
++static int batadv_hard_if_event(struct notifier_block *nb,
+ 				unsigned long event, void *ptr)
+ {
+ 	struct net_device *net_dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/core/failover.c
++++ b/net/core/failover.c
+@@ -183,7 +183,7 @@ static int failover_slave_name_change(struct net_device *slave_dev)
+ }
+ 
+ static int
+-failover_event(struct notifier_block *this, unsigned long event, void *ptr)
++failover_event(struct notifier_block *nb, unsigned long event, void *ptr)
+ {
+ 	struct net_device *event_dev = netdev_notifier_info_to_dev(ptr);
+ 
+--- a/net/core/fib_rules.c
++++ b/net/core/fib_rules.c
+@@ -1187,7 +1187,7 @@ static void detach_rules(struct list_head *rules, struct net_device *dev)
+ }
+ 
+ 
+-static int fib_rules_event(struct notifier_block *this, unsigned long event,
++static int fib_rules_event(struct notifier_block *nb, unsigned long event,
+ 			   void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/core/rtnetlink.c
++++ b/net/core/rtnetlink.c
+@@ -5253,7 +5253,7 @@ static int rtnetlink_bind(struct net *net, int group)
+ 	return 0;
+ }
+ 
+-static int rtnetlink_event(struct notifier_block *this, unsigned long event, void *ptr)
++static int rtnetlink_event(struct notifier_block *nb, unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+ 
+--- a/net/decnet/af_decnet.c
++++ b/net/decnet/af_decnet.c
+@@ -2076,7 +2076,7 @@ static int dn_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	return err;
+ }
+ 
+-static int dn_device_event(struct notifier_block *this, unsigned long event,
++static int dn_device_event(struct notifier_block *nb, unsigned long event,
+ 			   void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/decnet/dn_fib.c
++++ b/net/decnet/dn_fib.c
+@@ -672,7 +672,7 @@ static void dn_fib_disable_addr(struct net_device *dev, int force)
+ 	neigh_ifdown(&dn_neigh_table, dev);
+ }
+ 
+-static int dn_fib_dnaddr_event(struct notifier_block *this, unsigned long event, void *ptr)
++static int dn_fib_dnaddr_event(struct notifier_block *nb, unsigned long event, void *ptr)
+ {
+ 	struct dn_ifaddr *ifa = (struct dn_ifaddr *)ptr;
+ 
+--- a/net/ipv4/arp.c
++++ b/net/ipv4/arp.c
+@@ -1236,7 +1236,7 @@ int arp_ioctl(struct net *net, unsigned int cmd, void __user *arg)
+ 	return err;
+ }
+ 
+-static int arp_netdev_event(struct notifier_block *this, unsigned long event,
++static int arp_netdev_event(struct notifier_block *nb, unsigned long event,
+ 			    void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/ipv4/devinet.c
++++ b/net/ipv4/devinet.c
+@@ -1517,7 +1517,7 @@ static void inetdev_send_gratuitous_arp(struct net_device *dev,
+ 
+ /* Called only under RTNL semaphore */
+ 
+-static int inetdev_event(struct notifier_block *this, unsigned long event,
++static int inetdev_event(struct notifier_block *nb, unsigned long event,
+ 			 void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/ipv4/fib_frontend.c
++++ b/net/ipv4/fib_frontend.c
+@@ -1415,7 +1415,7 @@ static void fib_disable_ip(struct net_device *dev, unsigned long event,
+ 	arp_ifdown(dev);
+ }
+ 
+-static int fib_inetaddr_event(struct notifier_block *this, unsigned long event, void *ptr)
++static int fib_inetaddr_event(struct notifier_block *nb, unsigned long event, void *ptr)
+ {
+ 	struct in_ifaddr *ifa = (struct in_ifaddr *)ptr;
+ 	struct net_device *dev = ifa->ifa_dev->dev;
+@@ -1446,7 +1446,7 @@ static int fib_inetaddr_event(struct notifier_block *this, unsigned long event,
+ 	return NOTIFY_DONE;
+ }
+ 
+-static int fib_netdev_event(struct notifier_block *this, unsigned long event, void *ptr)
++static int fib_netdev_event(struct notifier_block *nb, unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+ 	struct netdev_notifier_changeupper_info *upper_info = ptr;
+--- a/net/ipv4/igmp.c
++++ b/net/ipv4/igmp.c
+@@ -3044,7 +3044,7 @@ static struct pernet_operations igmp_net_ops = {
+ };
+ #endif
+ 
+-static int igmp_netdev_event(struct notifier_block *this,
++static int igmp_netdev_event(struct notifier_block *nb,
+ 			     unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/ipv4/ipmr.c
++++ b/net/ipv4/ipmr.c
+@@ -1741,7 +1741,7 @@ int ipmr_compat_ioctl(struct sock *sk, unsigned int cmd, void __user *arg)
+ }
+ #endif
+ 
+-static int ipmr_device_event(struct notifier_block *this, unsigned long event, void *ptr)
++static int ipmr_device_event(struct notifier_block *nb, unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+ 	struct net *net = dev_net(dev);
+--- a/net/ipv4/netfilter/ipt_CLUSTERIP.c
++++ b/net/ipv4/netfilter/ipt_CLUSTERIP.c
+@@ -185,7 +185,7 @@ clusterip_config_init_nodelist(struct clusterip_config *c,
+ }
+ 
+ static int
+-clusterip_netdev_event(struct notifier_block *this, unsigned long event,
++clusterip_netdev_event(struct notifier_block *nb, unsigned long event,
+ 		       void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/ipv4/nexthop.c
++++ b/net/ipv4/nexthop.c
+@@ -1753,7 +1753,7 @@ static void nexthop_sync_mtu(struct net_device *dev, u32 orig_mtu)
+ }
+ 
+ /* rtnl */
+-static int nh_netdev_event(struct notifier_block *this,
++static int nh_netdev_event(struct notifier_block *nb,
+ 			   unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/ipv6/addrconf.c
++++ b/net/ipv6/addrconf.c
+@@ -3473,7 +3473,7 @@ static void addrconf_permanent_addr(struct net *net, struct net_device *dev)
+ 	write_unlock_bh(&idev->lock);
+ }
+ 
+-static int addrconf_notify(struct notifier_block *this, unsigned long event,
++static int addrconf_notify(struct notifier_block *nb, unsigned long event,
+ 			   void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/ipv6/ip6mr.c
++++ b/net/ipv6/ip6mr.c
+@@ -1226,7 +1226,7 @@ static int ip6mr_mfc_delete(struct mr_table *mrt, struct mf6cctl *mfc,
+ 	return 0;
+ }
+ 
+-static int ip6mr_device_event(struct notifier_block *this,
++static int ip6mr_device_event(struct notifier_block *nb,
+ 			      unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/ipv6/mcast.c
++++ b/net/ipv6/mcast.c
+@@ -2638,7 +2638,7 @@ static void ipv6_mc_rejoin_groups(struct inet6_dev *idev)
+ 		mld_send_report(idev, NULL);
+ }
+ 
+-static int ipv6_mc_netdev_event(struct notifier_block *this,
++static int ipv6_mc_netdev_event(struct notifier_block *nb,
+ 				unsigned long event,
+ 				void *ptr)
+ {
+--- a/net/ipv6/ndisc.c
++++ b/net/ipv6/ndisc.c
+@@ -1771,7 +1771,7 @@ int ndisc_rcv(struct sk_buff *skb)
+ 	return 0;
+ }
+ 
+-static int ndisc_netdev_event(struct notifier_block *this, unsigned long event, void *ptr)
++static int ndisc_netdev_event(struct notifier_block *nb, unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+ 	struct netdev_notifier_change_info *change_info;
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -5954,7 +5954,7 @@ void fib6_rt_update(struct net *net, struct fib6_info *rt,
+ 		rtnl_set_sk_err(net, RTNLGRP_IPV6_ROUTE, err);
+ }
+ 
+-static int ip6_route_dev_notify(struct notifier_block *this,
++static int ip6_route_dev_notify(struct notifier_block *nb,
+ 				unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/iucv/af_iucv.c
++++ b/net/iucv/af_iucv.c
+@@ -2339,7 +2339,7 @@ static void afiucv_hs_callback_txnotify(struct sk_buff *skb,
+ /*
+  * afiucv_netdev_event: handle netdev notifier chain events
+  */
+-static int afiucv_netdev_event(struct notifier_block *this,
++static int afiucv_netdev_event(struct notifier_block *nb,
+ 			       unsigned long event, void *ptr)
+ {
+ 	struct net_device *event_dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/iucv/iucv.c
++++ b/net/iucv/iucv.c
+@@ -824,7 +824,7 @@ void iucv_unregister(struct iucv_handler *handler, int smp)
+ }
+ EXPORT_SYMBOL(iucv_unregister);
+ 
+-static int iucv_reboot_event(struct notifier_block *this,
++static int iucv_reboot_event(struct notifier_block *nb,
+ 			     unsigned long event, void *ptr)
+ {
+ 	int i;
+--- a/net/mpls/af_mpls.c
++++ b/net/mpls/af_mpls.c
+@@ -1578,7 +1578,7 @@ static void mpls_ifup(struct net_device *dev, unsigned int flags)
+ 	}
+ }
+ 
+-static int mpls_dev_notify(struct notifier_block *this, unsigned long event,
++static int mpls_dev_notify(struct notifier_block *nb, unsigned long event,
+ 			   void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/ncsi/ncsi-manage.c
++++ b/net/ncsi/ncsi-manage.c
+@@ -1484,7 +1484,7 @@ int ncsi_process_next_channel(struct ncsi_dev_priv *ndp)
+ }
+ 
+ #if IS_ENABLED(CONFIG_IPV6)
+-static int ncsi_inet6addr_event(struct notifier_block *this,
++static int ncsi_inet6addr_event(struct notifier_block *nb,
+ 				unsigned long event, void *data)
+ {
+ 	struct inet6_ifaddr *ifa = data;
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@ -1641,7 +1641,7 @@ ip_vs_forget_dev(struct ip_vs_dest *dest, struct net_device *dev)
+ /* Netdev event receiver
+  * Currently only NETDEV_DOWN is handled to release refs to cached dsts
+  */
+-static int ip_vs_dst_event(struct notifier_block *this, unsigned long event,
++static int ip_vs_dst_event(struct notifier_block *nb, unsigned long event,
+ 			   void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/netfilter/nf_nat_masquerade.c
++++ b/net/netfilter/nf_nat_masquerade.c
+@@ -72,7 +72,7 @@ static int device_cmp(struct nf_conn *i, void *ifindex)
+ 	return nat->masq_index == (int)(long)ifindex;
+ }
+ 
+-static int masq_device_event(struct notifier_block *this,
++static int masq_device_event(struct notifier_block *nb,
+ 			     unsigned long event,
+ 			     void *ptr)
+ {
+@@ -106,7 +106,7 @@ static int inet_cmp(struct nf_conn *ct, void *ptr)
+ 	return ifa->ifa_address == tuple->dst.u3.ip;
+ }
+ 
+-static int masq_inet_event(struct notifier_block *this,
++static int masq_inet_event(struct notifier_block *nb,
+ 			   unsigned long event,
+ 			   void *ptr)
+ {
+@@ -228,7 +228,7 @@ static void iterate_cleanup_work(struct work_struct *work)
+  * As we can have 'a lot' of inet_events (depending on amount of ipv6
+  * addresses being deleted), we also need to limit work item queue.
+  */
+-static int masq_inet6_event(struct notifier_block *this,
++static int masq_inet6_event(struct notifier_block *nb,
+ 			    unsigned long event, void *ptr)
+ {
+ 	struct inet6_ifaddr *ifa = ptr;
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -6154,7 +6154,7 @@ static void nft_flowtable_event(unsigned long event, struct net_device *dev,
+ 	}
+ }
+ 
+-static int nf_tables_flowtable_event(struct notifier_block *this,
++static int nf_tables_flowtable_event(struct notifier_block *nb,
+ 				     unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/netfilter/nfnetlink_log.c
++++ b/net/netfilter/nfnetlink_log.c
+@@ -758,7 +758,7 @@ nfulnl_log_packet(struct net *net,
+ }
+ 
+ static int
+-nfulnl_rcv_nl_event(struct notifier_block *this,
++nfulnl_rcv_nl_event(struct notifier_block *nb,
+ 		   unsigned long event, void *ptr)
+ {
+ 	struct netlink_notify *n = ptr;
+--- a/net/netfilter/nfnetlink_queue.c
++++ b/net/netfilter/nfnetlink_queue.c
+@@ -941,7 +941,7 @@ nfqnl_dev_drop(struct net *net, int ifindex)
+ }
+ 
+ static int
+-nfqnl_rcv_dev_event(struct notifier_block *this,
++nfqnl_rcv_dev_event(struct notifier_block *nb,
+ 		    unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+@@ -971,7 +971,7 @@ static void nfqnl_nf_hook_drop(struct net *net)
+ }
+ 
+ static int
+-nfqnl_rcv_nl_event(struct notifier_block *this,
++nfqnl_rcv_nl_event(struct notifier_block *nb,
+ 		   unsigned long event, void *ptr)
+ {
+ 	struct netlink_notify *n = ptr;
+--- a/net/netfilter/nft_chain_filter.c
++++ b/net/netfilter/nft_chain_filter.c
+@@ -311,7 +311,7 @@ static void nft_netdev_event(unsigned long event, struct net_device *dev,
+ 	}
+ }
+ 
+-static int nf_tables_netdev_event(struct notifier_block *this,
++static int nf_tables_netdev_event(struct notifier_block *nb,
+ 				  unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/netfilter/nft_flow_offload.c
++++ b/net/netfilter/nft_flow_offload.c
+@@ -208,7 +208,7 @@ static struct nft_expr_type nft_flow_offload_type __read_mostly = {
+ 	.owner		= THIS_MODULE,
+ };
+ 
+-static int flow_offload_netdev_event(struct notifier_block *this,
++static int flow_offload_netdev_event(struct notifier_block *nb,
+ 				     unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/netfilter/xt_TEE.c
++++ b/net/netfilter/xt_TEE.c
+@@ -57,7 +57,7 @@ tee_tg6(struct sk_buff *skb, const struct xt_action_param *par)
+ }
+ #endif
+ 
+-static int tee_netdev_event(struct notifier_block *this, unsigned long event,
++static int tee_netdev_event(struct notifier_block *nb, unsigned long event,
+ 			    void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/netlabel/netlabel_unlabeled.c
++++ b/net/netlabel/netlabel_unlabeled.c
+@@ -695,7 +695,7 @@ int netlbl_unlhsh_remove(struct net *net,
+  * related entries from the unlabeled connection hash table.
+  *
+  */
+-static int netlbl_unlhsh_netdev_handler(struct notifier_block *this,
++static int netlbl_unlhsh_netdev_handler(struct notifier_block *nb,
+ 					unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/netrom/af_netrom.c
++++ b/net/netrom/af_netrom.c
+@@ -112,7 +112,7 @@ static void nr_kill_by_device(struct net_device *dev)
+ /*
+  *	Handle device status changes.
+  */
+-static int nr_device_event(struct notifier_block *this, unsigned long event, void *ptr)
++static int nr_device_event(struct notifier_block *nb, unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+ 
+--- a/net/nfc/netlink.c
++++ b/net/nfc/netlink.c
+@@ -1811,7 +1811,7 @@ static void nfc_urelease_event_work(struct work_struct *work)
+ 	kfree(w);
+ }
+ 
+-static int nfc_genl_rcv_nl_event(struct notifier_block *this,
++static int nfc_genl_rcv_nl_event(struct notifier_block *nb,
+ 				 unsigned long event, void *ptr)
+ {
+ 	struct netlink_notify *n = ptr;
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -4035,7 +4035,7 @@ static int compat_packet_setsockopt(struct socket *sock, int level, int optname,
+ }
+ #endif
+ 
+-static int packet_notifier(struct notifier_block *this,
++static int packet_notifier(struct notifier_block *nb,
+ 			   unsigned long msg, void *ptr)
+ {
+ 	struct sock *sk;
+--- a/net/rose/af_rose.c
++++ b/net/rose/af_rose.c
+@@ -200,7 +200,7 @@ static void rose_kill_by_device(struct net_device *dev)
+ /*
+  *	Handle device status changes.
+  */
+-static int rose_device_event(struct notifier_block *this,
++static int rose_device_event(struct notifier_block *nb,
+ 			     unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/sctp/ipv6.c
++++ b/net/sctp/ipv6.c
+@@ -71,7 +71,7 @@ static int sctp_v6_cmp_addr(const union sctp_addr *addr1,
+  * time and thus corrupt the list.
+  * The reader side is protected with RCU.
+  */
+-static int sctp_inet6addr_event(struct notifier_block *this, unsigned long ev,
++static int sctp_inet6addr_event(struct notifier_block *nb, unsigned long ev,
+ 				void *ptr)
+ {
+ 	struct inet6_ifaddr *ifa = (struct inet6_ifaddr *)ptr;
+--- a/net/sctp/protocol.c
++++ b/net/sctp/protocol.c
+@@ -751,7 +751,7 @@ void sctp_addr_wq_mgmt(struct net *net, struct sctp_sockaddr_entry *addr, int cm
+  * time and thus corrupt the list.
+  * The reader side is protected with RCU.
+  */
+-static int sctp_inetaddr_event(struct notifier_block *this, unsigned long ev,
++static int sctp_inetaddr_event(struct notifier_block *nb, unsigned long ev,
+ 			       void *ptr)
+ {
+ 	struct in_ifaddr *ifa = (struct in_ifaddr *)ptr;
+--- a/net/smc/smc_pnet.c
++++ b/net/smc/smc_pnet.c
+@@ -651,7 +651,7 @@ static struct genl_family smc_pnet_nl_family __ro_after_init = {
+ 	.n_ops =  ARRAY_SIZE(smc_pnet_ops)
+ };
+ 
+-static int smc_pnet_netdev_event(struct notifier_block *this,
++static int smc_pnet_netdev_event(struct notifier_block *nb,
+ 				 unsigned long event, void *ptr)
+ {
+ 	struct net_device *event_dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/tls/tls_device.c
++++ b/net/tls/tls_device.c
+@@ -1134,7 +1134,7 @@ static int tls_device_down(struct net_device *netdev)
+ 	return NOTIFY_DONE;
+ }
+ 
+-static int tls_dev_event(struct notifier_block *this, unsigned long event,
++static int tls_dev_event(struct notifier_block *nb, unsigned long event,
+ 			 void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/x25/af_x25.c
++++ b/net/x25/af_x25.c
+@@ -218,11 +218,11 @@ static void x25_kill_by_device(struct net_device *dev)
+ /*
+  *	Handle device status changes.
+  */
+-static int x25_device_event(struct notifier_block *this, unsigned long event,
++static int x25_device_event(struct notifier_block *nb, unsigned long event,
+ 			    void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+-	struct x25_neigh *nb;
++	struct x25_neigh *neigh;
+ 
+ 	if (!net_eq(dev_net(dev), &init_net))
+ 		return NOTIFY_DONE;
+@@ -237,10 +237,10 @@ static int x25_device_event(struct notifier_block *this, unsigned long event,
+ 			x25_link_device_up(dev);
+ 			break;
+ 		case NETDEV_GOING_DOWN:
+-			nb = x25_get_neigh(dev);
+-			if (nb) {
+-				x25_terminate_link(nb);
+-				x25_neigh_put(nb);
++			neigh = x25_get_neigh(dev);
++			if (neigh) {
++				x25_terminate_link(neigh);
++				x25_neigh_put(neigh);
+ 			}
+ 			break;
+ 		case NETDEV_DOWN:
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -747,7 +747,7 @@ static int xsk_mmap(struct file *file, struct socket *sock,
+ 			       size, vma->vm_page_prot);
+ }
+ 
+-static int xsk_notifier(struct notifier_block *this,
++static int xsk_notifier(struct notifier_block *nb,
+ 			unsigned long msg, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+--- a/net/xfrm/xfrm_device.c
++++ b/net/xfrm/xfrm_device.c
+@@ -378,7 +378,7 @@ static int xfrm_dev_down(struct net_device *dev)
+ 	return NOTIFY_DONE;
+ }
+ 
+-static int xfrm_dev_event(struct notifier_block *this, unsigned long event, void *ptr)
++static int xfrm_dev_event(struct notifier_block *nb, unsigned long event, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+ 
