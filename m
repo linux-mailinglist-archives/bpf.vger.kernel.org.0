@@ -2,137 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2086383A87
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2019 22:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F72B83DE3
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2019 01:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726612AbfHFUnp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Aug 2019 16:43:45 -0400
-Received: from hqemgate15.nvidia.com ([216.228.121.64]:12036 "EHLO
-        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726539AbfHFUnp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Aug 2019 16:43:45 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5d49e6890000>; Tue, 06 Aug 2019 13:43:53 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 06 Aug 2019 13:43:43 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 06 Aug 2019 13:43:43 -0700
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 6 Aug
- 2019 20:43:43 +0000
-Subject: Re: [PATCH v6 1/3] mm/gup: add make_dirty arg to
- put_user_pages_dirty_lock()
-To:     Ira Weiny <ira.weiny@intel.com>, <john.hubbard@gmail.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Boaz Harrosh <boaz@plexistor.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ilya Dryomov <idryomov@gmail.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Ming Lei <ming.lei@redhat.com>, Sage Weil <sage@redhat.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Yan Zheng <zyan@redhat.com>, <netdev@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-mm@kvack.org>,
-        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20190804214042.4564-1-jhubbard@nvidia.com>
- <20190804214042.4564-2-jhubbard@nvidia.com>
- <20190806174017.GB4748@iweiny-DESK2.sc.intel.com>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <662e3f1e-b63e-ce80-274b-cb407bce6f78@nvidia.com>
-Date:   Tue, 6 Aug 2019 13:43:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726485AbfHFXjq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Aug 2019 19:39:46 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:57517 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726431AbfHFXjp (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 6 Aug 2019 19:39:45 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 4254051B;
+        Tue,  6 Aug 2019 19:39:42 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 06 Aug 2019 19:39:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=42HE4MAtRshZff6o01OwMbGuW7
+        jigCMzpzABvCNUstE=; b=Z9gdqOwtRPPm+ApINL0zG92OK91zkT5uuSU4yXgMD2
+        DKrHnzbltW+bMj4iQK/9/47wFbI2UhUOzjlITdOX1/ooxcRc/nWhtmaKI0Qrv0hx
+        Rtfag8d6MgQJ/N/NLQP5zO130q5FeZkHCbzd7em1yc939lUDoKxsvttkl2j+ExqX
+        jMnv5ZdTC/nUg+9cGvUNzADby6WYxQMkirjkGm7stKHI1DIDj5OzkTkXsjQM7Ofi
+        GY0auMyrpUMmt4IVibPkCpwfW0OVwnaeK/O6d+zoQSz0ed2Je50U6VMWCZMfBrm1
+        MiQ+m1jHLdjMokuKMF6Ag6orD8xUIkfBswnf0LsNSVwQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=42HE4MAtRshZff6o0
+        1OwMbGuW7jigCMzpzABvCNUstE=; b=Nb6y2lByVhyV+AmxtzV4DN6qos/xOqKLG
+        tcWuRbG7knhyTSR/9WsV6XZXlf6VMk/BZvaXMl6L7XM4E19qE2NJB2lo8qeL+Xi8
+        J6VJtfJeqYNsjxHOIc4fdLOK0XcYMnffpXrETMZ+84Jdx6FTphzvJzngJydekCmQ
+        JCg4M0CV6YC97DVcXWL4xesTQQLUMWVA3FXBBQHCrdcYqqt6aBjDTY0uk+r79U9d
+        w8zCdr+yYR6/aXsa1x7H7cxitEQ+e5M+opxZUazEGhflOes3rnruc/fCv32qFq02
+        B3WyL5JLrOQRWYyXxwc4bIaEh8tIrMRBXHzGiJgbIoZSQY9IG3usg==
+X-ME-Sender: <xms:vQ9KXfLs8oL7DdPR3L67S18Os19F7u0nFQ6asGB077wYEHxsB14IOg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduvddrudduuddgvdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
+    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
+    segugihuuhhurdighiiiqeenucfkphepudelledrvddtuddrieegrddufeeknecurfgrrh
+    grmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiinecuvehluhhsthgvrhfu
+    ihiivgeptd
+X-ME-Proxy: <xmx:vQ9KXTQvcLsMWARU6Cmzpfe6d0aT_t4FhMoZrxeCOgATg3ABc0JSyA>
+    <xmx:vQ9KXVgv8y8Eeb4_nBxOSZcW5K5hYuEIT3qAxisZ4-tHSZkb2icibA>
+    <xmx:vQ9KXcp3KXAnKYz4Fqb_ONmQ9ocyT2VIRZVa19mVemMGyY8vsWFqOg>
+    <xmx:vQ9KXWHSsMebNTBE3AjmNthxyepYYh8AOxPDQelleTWk73ZPp-NBPA>
+Received: from dlxu-fedora-R90QNFJV.thefacebook.com (unknown [199.201.64.138])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 2F04B80064;
+        Tue,  6 Aug 2019 19:39:40 -0400 (EDT)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     songliubraving@fb.com, yhs@fb.com, andriin@fb.com
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/3] Add PERF_EVENT_IOC_QUERY_KPROBE ioctl
+Date:   Tue,  6 Aug 2019 16:38:23 -0700
+Message-Id: <20190806233826.2478-1-dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20190806174017.GB4748@iweiny-DESK2.sc.intel.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL104.nvidia.com (172.18.146.11) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1565124233; bh=69F2w6W//D6RGOmiznV0xApH922IMQ0bjLWukK3Y3fM=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=ap4Gh4eAjhabzOCGXg03MlGS3E39LbT2CXYDFUwj2rPlbF7hC6RWG9GhsJ2iB7VW/
-         iYlQoSLezyw7mHlxXl/fKIiZ8rXughCfKjTKN4/Z6IMCoXcHiVjqfWI1NEleGSaZ1D
-         nb/98DcL6LZnWfzY2lODnRbMeV4rL6NENctX00s/9WgBVnL9OMB/MDykHOE9G7K2wL
-         YOLJ7T/SYKJKGHtGsae2JANuXCcr7t7WsPen/yG+U/cLlENdGZ/NhUeRG2cxaPNVG0
-         iSR9G6EBnJbeu0s0AK9qSs5J/PxhKEARuOdUaS2rM7tLFwOLC4PrmECrXiOHXA9ve3
-         yBfnp2wxB5hBA==
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/6/19 10:40 AM, Ira Weiny wrote:
-> On Sun, Aug 04, 2019 at 02:40:40PM -0700, john.hubbard@gmail.com wrote:
->> From: John Hubbard <jhubbard@nvidia.com>
->>
->> Provide a more capable variation of put_user_pages_dirty_lock(),
->> and delete put_user_pages_dirty(). This is based on the
->> following:
->>
->> 1. Lots of call sites become simpler if a bool is passed
->> into put_user_page*(), instead of making the call site
->> choose which put_user_page*() variant to call.
->>
->> 2. Christoph Hellwig's observation that set_page_dirty_lock()
->> is usually correct, and set_page_dirty() is usually a
->> bug, or at least questionable, within a put_user_page*()
->> calling chain.
->>
->> This leads to the following API choices:
->>
->>     * put_user_pages_dirty_lock(page, npages, make_dirty)
->>
->>     * There is no put_user_pages_dirty(). You have to
->>       hand code that, in the rare case that it's
->>       required.
->>
->> Reviewed-by: Christoph Hellwig <hch@lst.de>
->> Cc: Matthew Wilcox <willy@infradead.org>
->> Cc: Jan Kara <jack@suse.cz>
->> Cc: Ira Weiny <ira.weiny@intel.com>
->> Cc: Jason Gunthorpe <jgg@ziepe.ca>
->> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> 
-> I assume this is superseded by the patch in the large series?
-> 
+It's useful to know kprobe's nmissed and nhit stats. For example with
+tracing tools, it's important to know when events may have been lost.
+There is currently no way to get that information from the perf API.
+This patch adds a new ioctl that lets users query this information.
 
-Actually, it's the other way around (there is a note that that effect
-in the admittedly wall-of-text cover letter [1] in the 34-patch series.
+Daniel Xu (3):
+  tracing/kprobe: Add PERF_EVENT_IOC_QUERY_KPROBE ioctl
+  libbpf: Add helper to extract perf fd from bpf_link
+  tracing/kprobe: Add self test for PERF_EVENT_IOC_QUERY_KPROBE
 
-However, I'm trying hard to ensure that it doesn't actually matter:
+ include/linux/trace_events.h                  |  6 +++
+ include/uapi/linux/perf_event.h               | 23 ++++++++++
+ kernel/events/core.c                          | 11 +++++
+ kernel/trace/trace_kprobe.c                   | 25 +++++++++++
+ tools/include/uapi/linux/perf_event.h         | 23 ++++++++++
+ tools/lib/bpf/libbpf.c                        | 13 ++++++
+ tools/lib/bpf/libbpf.h                        |  1 +
+ tools/lib/bpf/libbpf.map                      |  5 +++
+ .../selftests/bpf/prog_tests/attach_probe.c   | 43 +++++++++++++++++++
+ 9 files changed, 150 insertions(+)
 
-* Patch 1 in the latest of each patch series, is identical
-
-* I'm reposting the two series together.
-
-...and yes, it might have been better to merge the two patchsets, but
-the smaller one is more reviewable. And as a result, Andrew has already
-merged it into the akpm tree.
-
-
-[1] https://lore.kernel.org/r/20190804224915.28669-1-jhubbard@nvidia.com
-
-thanks,
 -- 
-John Hubbard
-NVIDIA
+2.20.1
+
