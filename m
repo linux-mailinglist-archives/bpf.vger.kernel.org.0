@@ -2,131 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5416A82A33
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2019 06:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C605C82A7D
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2019 06:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725853AbfHFETw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Aug 2019 00:19:52 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:62152 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725747AbfHFETw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 6 Aug 2019 00:19:52 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x764F5ZX007503;
-        Mon, 5 Aug 2019 21:19:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=gVFzZqcraz4VFJVX7aBP/RMuXMY8SuU3reqJTiTJRJ4=;
- b=IXHl9g4ne0Qd/pKoJ0NXFTrpV+QZJKbE3m/YFLwCfld6rHs0n1GG+xKD7EKerdmH9R6m
- 3wKKkMPUIWMq87vZWA5OLJCIcmapaDk3yWaBGD29JJNR+t2SFftd/BUuYNY+eqfpLmrp
- rzSQy0EWHnKy7YAFy+MYNSEIwMsDR5IJ4xA= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2u6w2e8we2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 05 Aug 2019 21:19:31 -0700
-Received: from ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) by
- ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 5 Aug 2019 21:19:30 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 5 Aug 2019 21:19:30 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U7sCb6vztw8QLeR1MJ9ptPT507Vmt7UZqVWa0vObKlpx6EZyAycSvvb80usReqYQDNh+S0i9voPdAjp+6l2nwqNdHvuZkAz+PRFjRj8onQfVpaEH6pouhfmhf94cmUAHJxbo7MwJy6wmxxMSazl9dnUtLwUzg+Lwn6/0Z8Fz5t/UKRDRQEFwqKI0aLDW/1EnwSz7rNSsv6kP8xak7pCKMVTwQHHXDm7dDie+6ER9AoZUyrRbEY28YUzfbgojpGFUCNSg+JUPiprIj3hLzy/C9/IHnXNrraHvaL1f81GxY5AfPpEj78MR/lgnPyuvgaYCKSk0yMiFivme6NXYpgk/GQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gVFzZqcraz4VFJVX7aBP/RMuXMY8SuU3reqJTiTJRJ4=;
- b=Vu8Y+doRzPFwwNWU7GQKq2jEuFtDHRqHe5Zf5JRTqJTICBefzGWAF+q7y3uwz5tPClrVSDZJMOUV8sD/FIRMO2wTptwJc9x/wSYNa1tdUqoq7AdQyk2HjctoFzLLhYAXxY+srV8Dpehxul9ODlVop/zc1l1RZRJgXUNZ10C/yGhPZtbhaJNXKLdOmx0M/gHqmJthjYGs2I6kJO6R6KHvCMS+cMG1Hiqh/418mQRrNwuR/y6o69lyze66aCkuN9RvX1PHueAkW/jbEecVxb0aegWafUGDX/wchylzxoTjn1BSwtBn+/UbzLIcIo8r6B2H2rqTZjzJjAw5VsSy/4yW7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=fb.com;dmarc=pass action=none header.from=fb.com;dkim=pass
- header.d=fb.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gVFzZqcraz4VFJVX7aBP/RMuXMY8SuU3reqJTiTJRJ4=;
- b=X8hreEvRv4xlHQktZz1+vydXnH8C8jnFD08GggNlIOzFjmDTaCIvkLWXKPKFjfung2F586vTA/kew/lAoLEPQywKDGmucVeaVB3FPKk2m2VDsDZgG5JcRsQbS0jlAMuwcxp6VO+xWt8PS2zhUC1owaDuihvy/yCGWPgWt4ZMDXo=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.59.17) by
- BYAPR15MB3144.namprd15.prod.outlook.com (20.178.239.217) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2136.12; Tue, 6 Aug 2019 04:19:29 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::e499:ecba:ec04:abac]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::e499:ecba:ec04:abac%5]) with mapi id 15.20.2136.018; Tue, 6 Aug 2019
- 04:19:29 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>
-CC:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "Kernel Team" <Kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 0/2] selftests/bpf: more loop tests
-Thread-Topic: [PATCH v2 bpf-next 0/2] selftests/bpf: more loop tests
-Thread-Index: AQHVS/0ke57CCkqp8E6eMb+sDfpwtKbthEcA
-Date:   Tue, 6 Aug 2019 04:19:29 +0000
-Message-ID: <ff86b565-097e-8f1a-c411-7138f429ed79@fb.com>
-References: <20190806021744.2953168-1-ast@kernel.org>
-In-Reply-To: <20190806021744.2953168-1-ast@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR18CA0032.namprd18.prod.outlook.com
- (2603:10b6:320:31::18) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:10e::17)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::5cf1]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7fdb66fc-92d5-431b-e2e3-08d71a25460b
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB3144;
-x-ms-traffictypediagnostic: BYAPR15MB3144:
-x-microsoft-antispam-prvs: <BYAPR15MB3144BA4C5D25F99805D8874AD3D50@BYAPR15MB3144.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-forefront-prvs: 0121F24F22
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(396003)(376002)(39860400002)(136003)(366004)(189003)(199004)(186003)(102836004)(6512007)(7736002)(66946007)(2501003)(66476007)(66556008)(64756008)(66446008)(5660300002)(110136005)(256004)(4326008)(11346002)(2616005)(31696002)(86362001)(4744005)(486006)(305945005)(76176011)(446003)(68736007)(6506007)(386003)(53936002)(6436002)(53546011)(46003)(476003)(31686004)(2906002)(8936002)(81156014)(81166006)(14454004)(8676002)(229853002)(52116002)(6116002)(71200400001)(6486002)(99286004)(36756003)(316002)(54906003)(25786009)(71190400001)(478600001)(6246003);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3144;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: RXqBYL/ikY+VOfnxFcAPMjL2SqvF0TZPbotbUyrvEibCSTJyfaFeZcWqCBCXEF9UkiWTu37Eee00C4MJWYdgaUr6eGv5nw4aPnldJZxhvJ/zloLplUT6jV+lxLlpRTdfJD0RJZ+LtPa3vA9PFADkDNoUHYJm/5oVPXP6HnkfN/Ont16fv/s1DFfTGBUDukpox3YcarmxuLPBEqAuN/t9MussI63R6NccnZmzEXNrwIButHft6FdH4LHq4G7lt/UiPQ5Pks2JygeyDXUC4QsfCPntU9HpiUdY5Jphq6Oj+mCZrj/Lg2WnvKYuLtqcucYbMN1it7PC8PT1LSonrvXRRr7k0oRxqB9/IUeIZNYE6RmgkmsAKfjrzxfZwyLtQ4wGnAKjUVBJI1wUCwIuV7uIxHiG9bwgt9/xTVPO+215kos=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <BDA71DFE3CF75E41853CF2DB3A8AFC27@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7fdb66fc-92d5-431b-e2e3-08d71a25460b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Aug 2019 04:19:29.1038
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yhs@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3144
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-06_02:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908060049
-X-FB-Internal: deliver
+        id S1725853AbfHFEp1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Aug 2019 00:45:27 -0400
+Received: from condef-03.nifty.com ([202.248.20.68]:54491 "EHLO
+        condef-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725798AbfHFEp0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Aug 2019 00:45:26 -0400
+Received: from conuserg-10.nifty.com ([10.126.8.73])by condef-03.nifty.com with ESMTP id x764d6Bk010626
+        for <bpf@vger.kernel.org>; Tue, 6 Aug 2019 13:39:06 +0900
+Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp [153.142.97.92]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id x764bcwx031340;
+        Tue, 6 Aug 2019 13:37:39 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com x764bcwx031340
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1565066259;
+        bh=DssnpgN3lxR1x9/Nc48fcCal/c42cAzZLORr8Jquom8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FBEhx0k1/VXFd+9Dyo7ZWsGCBPr/2mFs1YQm9vEP+No8jX4tLt36lr4TS2uWCgoPm
+         OZ71RUINKTQ5aCSfr0ZJ9dTWXzX+aWQ48+KmEhokWh497XyppQEVSzKET09f5uOVAa
+         viOcZmihxO0kvAq9FIE7k8n5umcrD0h+Zzec1uVpsrwd3mLytGMhErJZIfZakifOEZ
+         u5KVVJDq9bHWUEyLDNxUsQHQdGZ+m4xWWMnIJgOKXOBjOhbo5GWoB9pEnR7wE2ht2u
+         dfWSIuAmgqisoQMyCBEG02Bw9hJwlM0jjnf8iiFLOQYfLokQ2IfZ5SEy0aUEAQmQPE
+         /S8Hg7ZRjo33Q==
+X-Nifty-SrcIP: [153.142.97.92]
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Sam Ravnborg <sam@ravnborg.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [RFC PATCH] kbuild: re-implement detection of CONFIG options leaked to user-space
+Date:   Tue,  6 Aug 2019 13:37:29 +0900
+Message-Id: <20190806043729.5562-1-yamada.masahiro@socionext.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDgvNS8xOSA3OjE3IFBNLCBBbGV4ZWkgU3Rhcm92b2l0b3Ygd3JvdGU6DQo+IEFkZCB0
-d28gYm91bmRlZCBsb29wIHRlc3RzLg0KPiANCj4gdjEtdjI6IGFkZHJlc3NlZCBmZWVkYmFjayBm
-cm9tIFlvbmdob25nLg0KPiANCj4gQWxleGVpIFN0YXJvdm9pdG92ICgyKToNCj4gICAgc2VsZnRl
-c3RzL2JwZjogYWRkIGxvb3AgdGVzdCA0DQo+ICAgIHNlbGZ0ZXN0cy9icGY6IGFkZCBsb29wIHRl
-c3QgNQ0KDQpMb29rcyBnb29kIHRvIG1lLiBBY2sgZm9yIHRoZSB3aG9sZSBzZXJpZXMuDQpBY2tl
-ZC1ieTogWW9uZ2hvbmcgU29uZyA8eWhzQGZiLmNvbT4NCg0KPiANCj4gICAuLi4vYnBmL3Byb2df
-dGVzdHMvYnBmX3ZlcmlmX3NjYWxlLmMgICAgICAgICAgfCAgMiArKw0KPiAgIHRvb2xzL3Rlc3Rp
-bmcvc2VsZnRlc3RzL2JwZi9wcm9ncy9sb29wNC5jICAgICB8IDE4ICsrKysrKysrKysrDQo+ICAg
-dG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL2xvb3A1LmMgICAgIHwgMzIgKysrKysr
-KysrKysrKysrKysrKw0KPiAgIDMgZmlsZXMgY2hhbmdlZCwgNTIgaW5zZXJ0aW9ucygrKQ0KPiAg
-IGNyZWF0ZSBtb2RlIDEwMDY0NCB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ3MvbG9v
-cDQuYw0KPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYv
-cHJvZ3MvbG9vcDUuYw0KPiANCg==
+scripts/headers_check.pl can detect references to CONFIG options in
+exported headers, but it has been disabled for more than a decade.
+
+Reverting commit 7e3fa5614117 ("kbuild: drop check for CONFIG_ in
+headers_check") would emit the following warnings for headers_check
+on x86:
+
+usr/include/mtd/ubi-user.h:283: leaks CONFIG_MTD_UBI_BEB_LIMIT to userspace where it is not valid
+usr/include/linux/elfcore.h:62: leaks CONFIG_BINFMT_ELF_FDPIC to userspace where it is not valid
+usr/include/linux/atmdev.h:104: leaks CONFIG_COMPAT to userspace where it is not valid
+usr/include/linux/raw.h:17: leaks CONFIG_MAX_RAW_DEVS to userspace where it is not valid
+usr/include/linux/pktcdvd.h:37: leaks CONFIG_CDROM_PKTCDVD_WCACHE to userspace where it is not valid
+usr/include/linux/videodev2.h:2465: leaks CONFIG_VIDEO_ADV_DEBUG to userspace where it is not valid
+usr/include/linux/bpf.h:249: leaks CONFIG_EFFICIENT_UNALIGNED_ACCESS to userspace where it is not valid
+usr/include/linux/bpf.h:819: leaks CONFIG_CGROUP_NET_CLASSID to userspace where it is not valid
+usr/include/linux/bpf.h:1011: leaks CONFIG_IP_ROUTE_CLASSID to userspace where it is not valid
+usr/include/linux/bpf.h:1742: leaks CONFIG_BPF_KPROBE_OVERRIDE to userspace where it is not valid
+usr/include/linux/bpf.h:1747: leaks CONFIG_FUNCTION_ERROR_INJECTION to userspace where it is not valid
+usr/include/linux/bpf.h:1936: leaks CONFIG_XFRM to userspace where it is not valid
+usr/include/linux/bpf.h:2184: leaks CONFIG_BPF_LIRC_MODE2 to userspace where it is not valid
+usr/include/linux/bpf.h:2210: leaks CONFIG_BPF_LIRC_MODE2 to userspace where it is not valid
+usr/include/linux/bpf.h:2227: leaks CONFIG_SOCK_CGROUP_DATA to userspace where it is not valid
+usr/include/linux/bpf.h:2311: leaks CONFIG_NET to userspace where it is not valid
+usr/include/linux/bpf.h:2348: leaks CONFIG_NET to userspace where it is not valid
+usr/include/linux/bpf.h:2422: leaks CONFIG_BPF_LIRC_MODE2 to userspace where it is not valid
+usr/include/linux/bpf.h:2528: leaks CONFIG_NET to userspace where it is not valid
+usr/include/linux/eventpoll.h:82: leaks CONFIG_PM_SLEEP to userspace where it is not valid
+usr/include/linux/hw_breakpoint.h:27: leaks CONFIG_HAVE_MIXED_BREAKPOINTS_REGS to userspace where it is not valid
+usr/include/linux/cm4000_cs.h:26: leaks CONFIG_COMPAT to userspace where it is not valid
+usr/include/linux/pkt_cls.h:301: leaks CONFIG_NET_CLS_ACT to userspace where it is not valid
+usr/include/asm-generic/unistd.h:651: leaks CONFIG_MMU to userspace where it is not valid
+usr/include/asm-generic/fcntl.h:119: leaks CONFIG_64BIT to userspace where it is not valid
+usr/include/asm-generic/bitsperlong.h:9: leaks CONFIG_64BIT to userspace where it is not valid
+usr/include/asm/e820.h:14: leaks CONFIG_NODES_SHIFT to userspace where it is not valid
+usr/include/asm/e820.h:39: leaks CONFIG_X86_PMEM_LEGACY to userspace where it is not valid
+usr/include/asm/e820.h:49: leaks CONFIG_INTEL_TXT to userspace where it is not valid
+usr/include/asm/mman.h:7: leaks CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS to userspace where it is not valid
+usr/include/asm/auxvec.h:14: leaks CONFIG_IA32_EMULATION to userspace where it is not valid
+
+Most of these are false positives because scripts/headers_check.pl
+parses comment lines.
+
+It is also false negative. arch/x86/include/uapi/asm/auxvec.h contains
+CONFIG_IA32_EMULATION and CONFIG_X86_64, but the only former is reported.
+
+It would be possible to fix scripts/headers_check.pl, of course.
+However, we already have some duplicated checks between headers_check
+and CONFIG_UAPI_HEADER_TEST. At this moment of time, there are still
+dozens of headers excluded from the header test (usr/include/Makefile),
+but we might be able to remove headers_check when the time comes.
+
+I re-implemented it in scripts/headers_install.sh by using sed because
+the most of code in scripts/headers_install.sh is written is sed.
+
+This patch works like this:
+
+[1] Run scripts/unifdef first because we need to drop the code
+    surrounded by #ifdef __KERNEL__ ... #endif
+
+[2] Remove all C style comments. The sed code is somewhat complicated
+    since we need to deal with both single and multi line comments.
+
+    Precisely speaking, a comment block is replaced with a space just
+    in case.
+
+      CONFIG_FOO/* this is a comment */CONFIG_BAR
+
+    should be converted into:
+
+      CONFIG_FOO CONFIG_BAR
+
+    instead of:
+
+      CONFIG_FOOCONFIG_BAR
+
+[3] Match CONFIG_... pattern. It correctly matches to all CONFIG options
+    that appear in a single line.
+
+After this commit, you will see the following warnings, all of which
+are real ones.
+
+warning: include/uapi/linux/elfcore.h: leaks CONFIG_BINFMT_ELF_FDPIC to user-space
+warning: include/uapi/linux/atmdev.h: leaks CONFIG_COMPAT to user-space
+warning: include/uapi/linux/raw.h: leaks CONFIG_MAX_RAW_DEVS to user-space
+warning: include/uapi/linux/pktcdvd.h: leaks CONFIG_CDROM_PKTCDVD_WCACHE to user-space
+warning: include/uapi/linux/eventpoll.h: leaks CONFIG_PM_SLEEP to user-space
+warning: include/uapi/linux/hw_breakpoint.h: leaks CONFIG_HAVE_MIXED_BREAKPOINTS_REGS to user-space
+warning: include/uapi/asm-generic/fcntl.h: leaks CONFIG_64BIT to user-space
+warning: arch/x86/include/uapi/asm/mman.h: leaks CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS to user-space
+warning: arch/x86/include/uapi/asm/auxvec.h: leaks CONFIG_IA32_EMULATION to user-space
+warning: arch/x86/include/uapi/asm/auxvec.h: leaks CONFIG_X86_64 to user-space
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
+
+I was playing with sed yesterday, but the resulted code might be unreadable.
+
+Sed scripts tend to be somewhat unreadable.
+I just wondered which language is appropriate for this?
+Maybe perl, or what else? I am not good at perl, though.
+
+Maybe, it will be better to fix existing warnings
+before enabling this check.
+If somebody takes a closer look at them, that would be great.
+
+ scripts/headers_install.sh | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/scripts/headers_install.sh b/scripts/headers_install.sh
+index bbaf29386995..73d95e457090 100755
+--- a/scripts/headers_install.sh
++++ b/scripts/headers_install.sh
+@@ -41,5 +41,34 @@ sed -E -e '
+ scripts/unifdef -U__KERNEL__ -D__EXPORTED_HEADERS__ $TMPFILE > $OUTFILE
+ [ $? -gt 1 ] && exit 1
+ 
++# Remove /* ... */ style comments, and find CONFIG_ references in code
++configs=$(sed -e '
++:comment
++	s:/\*[^*][^*]*:/*:
++	s:/\*\*\**\([^/]\):/*\1:
++	t comment
++	s:/\*\*/: :
++	t comment
++	/\/\*/! b check
++	N
++	b comment
++:print
++	P
++	D
++:check
++	s:^[^[:alnum:]_][^[:alnum:]_]*::
++	t check
++	s:^\(CONFIG_[[:alnum:]_]*\):\1\n:
++	t print
++	s:^[[:alnum:]_][[:alnum:]_]*::
++	t check
++	d
++' $OUTFILE)
++
++for c in $configs
++do
++	echo "warning: $INFILE: leaks $c to user-space" >&2
++done
++
+ rm -f $TMPFILE
+ trap - EXIT
+-- 
+2.17.1
+
