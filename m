@@ -2,159 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FDF082F3A
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2019 12:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 309EE83514
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2019 17:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732613AbfHFKBX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Aug 2019 06:01:23 -0400
-Received: from mail-yb1-f194.google.com ([209.85.219.194]:44271 "EHLO
-        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732584AbfHFKBW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Aug 2019 06:01:22 -0400
-Received: by mail-yb1-f194.google.com with SMTP id a14so30414912ybm.11
-        for <bpf@vger.kernel.org>; Tue, 06 Aug 2019 03:01:22 -0700 (PDT)
+        id S1732836AbfHFPVg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Aug 2019 11:21:36 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:38747 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726713AbfHFPVg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Aug 2019 11:21:36 -0400
+Received: by mail-lj1-f196.google.com with SMTP id r9so82565485ljg.5;
+        Tue, 06 Aug 2019 08:21:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=SpJEkhv16jwVLO2sSfJ7SapVMbBMCm5PIZfy4pO40/c=;
-        b=NcmXSNcyQXDjk3UYlgYN76nvMxC7M92+xGOU6qJ+B27Ib4OnaFsQUE4R4i6AgQ5Z27
-         CrVPGUgZwTFsH/qOmNAZIQ9t8+tJQYLJRYwOgyGPNBTtVtV2+jhG318/V8R4JQ79LBji
-         IXJFOhESxve1HFswgRG5nTJ/blfxFcD16f8zz9LuhnDFQEGvMLmUBnqt1xPDTPxTR3F2
-         UHxlkCaew7fGYGA1NWH+bEsjzPS8fNmBKA8ge4sydhn43kds0Br7aJqOw8nsgys43bqq
-         +XxhHjPci5pdYEoWKUtlQUEsK7RtCbrhP00EmAXuXadm7JEFV+so2h2c2OMhdTF7sOr/
-         uDpQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1sJ7ixGeE7RZS3VbxKxevNtiuxonkBN1nlH+bBwiJAo=;
+        b=ZEgo/vnDUJXPZxSAXfu1SMTOyq16tKCuCkk6y9PNBp/2cnI6xZ0gNsugQfhRxfK0AD
+         9AyAKzHnoMKl/ePD2AoWO9j6kIZSIXmWDmhu5lBGSlc3wDCskTXb8qTktdWlDRtWJOxp
+         PKOX1wjw0sdmtijyNW8NaaGolXxIq2oTQQY3gGEq16pl9Hpp46hDhxsUHTNZ5hqp4BZu
+         ZMl7Gl8ui9GnucOy5EyZwAvHgIsToICw6IOScBVLLx5fN8IEI/n5KuhasGsgI3F6Ct7R
+         xbgxLJPoaYSN+SD6h/JpkFoF3mGGNwZAJ1okIXUA5K4nzkhMu5gCizTraVgF+yF+PMZM
+         +nmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=SpJEkhv16jwVLO2sSfJ7SapVMbBMCm5PIZfy4pO40/c=;
-        b=siWKbXGE88DX5phxYrh+6QZQZWsNgvCFEeJ6eXmB1R2QHPwNDy2nqbOmseAbJTYuHE
-         z2AVdbJ7eRmn1XKFARUb7yaUhXSc7fCGqhsd1TMlq9C/NqiXLk7VkLNP5l3nTg8MLd5T
-         9yE0Jp3h2+ol3asweJV2xGITrX/WzIjQhKAngnP46PenSmA/KSiWdcVwp7lmAMiqTv6G
-         OfQaB5Vpw2wqciAwxUYxGSCPTMX81HqYb1hbHj7set+ELiM5EyvEyciR9rxhsJXHBH58
-         8RcdLve38J0iVvx8odHbOfHQq5pMgUpvVCQhdsXzfWBqc4Y0JX0azmn9FA9QsH9+yru1
-         VOaw==
-X-Gm-Message-State: APjAAAWNRhxHHc8cIUVFQz0W4eXpGPn8Of3VB23bUXIuohM7HHR0m7P0
-        yd0XqxC1XgU0/5PINIRrEsqIqQ==
-X-Google-Smtp-Source: APXvYqwTAorLnL1JJGzrv713O0sksEZzjbqxPPlxmNn5n95Bw8aIX/crRrWGGgZ7Emh+mOBZG+hc4w==
-X-Received: by 2002:a25:1a82:: with SMTP id a124mr1799776yba.160.1565085681984;
-        Tue, 06 Aug 2019 03:01:21 -0700 (PDT)
-Received: from localhost.localdomain (li1322-146.members.linode.com. [45.79.223.146])
-        by smtp.gmail.com with ESMTPSA id h12sm18316685ywm.91.2019.08.06.03.01.12
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 06 Aug 2019 03:01:21 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Russell King <linux@armlinux.org.uk>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v2 3/3] arm: Add support for function error injection
-Date:   Tue,  6 Aug 2019 18:00:15 +0800
-Message-Id: <20190806100015.11256-4-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190806100015.11256-1-leo.yan@linaro.org>
-References: <20190806100015.11256-1-leo.yan@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1sJ7ixGeE7RZS3VbxKxevNtiuxonkBN1nlH+bBwiJAo=;
+        b=fQXy0d0rQh9OVeLsEAv4e6uVPG3pY1jf9s1SsaA9KWMwKXcnvaKp8TUsJQwSdKSEID
+         8kGTZcAQCuY2k3n6q3mP/Uw0qthwh9BSyHYNqIK/w9JYcCNCr13CjJjy4P36W2MypB8k
+         ayp1DkgLzw3n0LP1yVcFd5p/4nGn5kcGeUysoZnO0HQFXsEvHigI8C3dWCaDD63dMJhT
+         rM6wwmNgD8ISkWSb6yqdlrinTOfkrvj1QAiGzInT0sBXusTbt9wnDW/QRhUZjctXLd0q
+         bRU9Zl22zbFMIHUOBQ0oQPNPhHurXKas4aGDDHgaCGjw8UuzZG2s+aAUV/iiJHZHrjgW
+         yp3A==
+X-Gm-Message-State: APjAAAXXlrqI5D1fskfewNFE9YxbGfNkD+NTLQraLzOu7GtCaRXrdSwk
+        jNlB0LccDqmlqyeGEUZ6XGWvS87JSOkGHen5F9I=
+X-Google-Smtp-Source: APXvYqwqHpXakbGJfmufnUhVkhx5lb5yh7ESZIq3VNa8wGUESnKDAk8YovWiYUqVoK23hCjYnu5mVf0TRy0H0TgTPp4=
+X-Received: by 2002:a2e:9dca:: with SMTP id x10mr2024634ljj.17.1565104894711;
+ Tue, 06 Aug 2019 08:21:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190806021744.2953168-1-ast@kernel.org> <ff86b565-097e-8f1a-c411-7138f429ed79@fb.com>
+In-Reply-To: <ff86b565-097e-8f1a-c411-7138f429ed79@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 6 Aug 2019 08:21:22 -0700
+Message-ID: <CAADnVQKj1o_OBtM2urdMQe-0x7Qu78-TW5Vj8y_3Q7K2naF25g@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 0/2] selftests/bpf: more loop tests
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch implements arm specific functions regs_set_return_value() and
-override_function_with_return() to support function error injection.
+On Mon, Aug 5, 2019 at 9:19 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 8/5/19 7:17 PM, Alexei Starovoitov wrote:
+> > Add two bounded loop tests.
+> >
+> > v1-v2: addressed feedback from Yonghong.
+> >
+> > Alexei Starovoitov (2):
+> >    selftests/bpf: add loop test 4
+> >    selftests/bpf: add loop test 5
+>
+> Looks good to me. Ack for the whole series.
+> Acked-by: Yonghong Song <yhs@fb.com>
 
-In the exception flow, it updates pt_regs::ARM_pc with pt_regs::ARM_lr
-so can override the probed function return.
-
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- arch/arm/Kconfig              |  1 +
- arch/arm/include/asm/ptrace.h |  5 +++++
- arch/arm/lib/Makefile         |  2 ++
- arch/arm/lib/error-inject.c   | 19 +++++++++++++++++++
- 4 files changed, 27 insertions(+)
- create mode 100644 arch/arm/lib/error-inject.c
-
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 33b00579beff..2d3d44a037f6 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -77,6 +77,7 @@ config ARM
- 	select HAVE_EXIT_THREAD
- 	select HAVE_FAST_GUP if ARM_LPAE
- 	select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
-+	select HAVE_FUNCTION_ERROR_INJECTION if !THUMB2_KERNEL
- 	select HAVE_FUNCTION_GRAPH_TRACER if !THUMB2_KERNEL && !CC_IS_CLANG
- 	select HAVE_FUNCTION_TRACER if !XIP_KERNEL
- 	select HAVE_GCC_PLUGINS
-diff --git a/arch/arm/include/asm/ptrace.h b/arch/arm/include/asm/ptrace.h
-index 91d6b7856be4..3b41f37b361a 100644
---- a/arch/arm/include/asm/ptrace.h
-+++ b/arch/arm/include/asm/ptrace.h
-@@ -89,6 +89,11 @@ static inline long regs_return_value(struct pt_regs *regs)
- 	return regs->ARM_r0;
- }
- 
-+static inline void regs_set_return_value(struct pt_regs *regs, unsigned long rc)
-+{
-+	regs->ARM_r0 = rc;
-+}
-+
- #define instruction_pointer(regs)	(regs)->ARM_pc
- 
- #ifdef CONFIG_THUMB2_KERNEL
-diff --git a/arch/arm/lib/Makefile b/arch/arm/lib/Makefile
-index b25c54585048..8f56484a7156 100644
---- a/arch/arm/lib/Makefile
-+++ b/arch/arm/lib/Makefile
-@@ -42,3 +42,5 @@ ifeq ($(CONFIG_KERNEL_MODE_NEON),y)
-   CFLAGS_xor-neon.o		+= $(NEON_FLAGS)
-   obj-$(CONFIG_XOR_BLOCKS)	+= xor-neon.o
- endif
-+
-+obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
-diff --git a/arch/arm/lib/error-inject.c b/arch/arm/lib/error-inject.c
-new file mode 100644
-index 000000000000..2d696dc94893
---- /dev/null
-+++ b/arch/arm/lib/error-inject.c
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/error-injection.h>
-+#include <linux/kprobes.h>
-+
-+void override_function_with_return(struct pt_regs *regs)
-+{
-+	/*
-+	 * 'regs' represents the state on entry of a predefined function in
-+	 * the kernel/module and which is captured on a kprobe.
-+	 *
-+	 * 'regs->ARM_lr' contains the the link register for the probed
-+	 * function, when kprobe returns back from exception it will override
-+	 * the end of probed function and directly return to the predefined
-+	 * function's caller.
-+	 */
-+	instruction_pointer_set(regs, regs->ARM_lr);
-+}
-+NOKPROBE_SYMBOL(override_function_with_return);
--- 
-2.17.1
-
+Applied. Thanks
