@@ -2,198 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C605C82A7D
-	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2019 06:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DBC282E45
+	for <lists+bpf@lfdr.de>; Tue,  6 Aug 2019 11:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725853AbfHFEp1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Aug 2019 00:45:27 -0400
-Received: from condef-03.nifty.com ([202.248.20.68]:54491 "EHLO
-        condef-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725798AbfHFEp0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Aug 2019 00:45:26 -0400
-Received: from conuserg-10.nifty.com ([10.126.8.73])by condef-03.nifty.com with ESMTP id x764d6Bk010626
-        for <bpf@vger.kernel.org>; Tue, 6 Aug 2019 13:39:06 +0900
-Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp [153.142.97.92]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id x764bcwx031340;
-        Tue, 6 Aug 2019 13:37:39 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com x764bcwx031340
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1565066259;
-        bh=DssnpgN3lxR1x9/Nc48fcCal/c42cAzZLORr8Jquom8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FBEhx0k1/VXFd+9Dyo7ZWsGCBPr/2mFs1YQm9vEP+No8jX4tLt36lr4TS2uWCgoPm
-         OZ71RUINKTQ5aCSfr0ZJ9dTWXzX+aWQ48+KmEhokWh497XyppQEVSzKET09f5uOVAa
-         viOcZmihxO0kvAq9FIE7k8n5umcrD0h+Zzec1uVpsrwd3mLytGMhErJZIfZakifOEZ
-         u5KVVJDq9bHWUEyLDNxUsQHQdGZ+m4xWWMnIJgOKXOBjOhbo5GWoB9pEnR7wE2ht2u
-         dfWSIuAmgqisoQMyCBEG02Bw9hJwlM0jjnf8iiFLOQYfLokQ2IfZ5SEy0aUEAQmQPE
-         /S8Hg7ZRjo33Q==
-X-Nifty-SrcIP: [153.142.97.92]
-From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Sam Ravnborg <sam@ravnborg.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        id S1731922AbfHFJAi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Aug 2019 05:00:38 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:34182 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728056AbfHFJAi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Aug 2019 05:00:38 -0400
+Received: by mail-qt1-f193.google.com with SMTP id k10so14616046qtq.1;
+        Tue, 06 Aug 2019 02:00:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GJI8Q958h48076lj7HHRUT6jGx524lciyFVkT7AnhmM=;
+        b=Ozubf8tdz/lc02BmyX+ghmtZysUvlHmCLbr7v2zhI46tMBEIhBvrAe6DYCRQXiFufu
+         pJvMotonslwTtTxm1i9MDjZAQ8Qi02vpEsQ7gZqolTlFl7y2gS7xtY6BGOK0+HyXzVpK
+         iBbVkvRbZNLJHKo5nsCxTOEWbujKWa6I4R7ssnr5lC7EbPeFD8xfOqpEb7u/1gv6ng90
+         gogmMLNeOjHj4UlTb1Drlj71g399wGDh+QXW3htrIilAcMtvz32taDsAgi73gk9aSdGU
+         GZiWkUHw5+WkY5NsAV0/7GnmIxbHVZlvLMJxPxQVxuMKKLlZuU85pi2og7+SJ21lh/9v
+         Q6Yw==
+X-Gm-Message-State: APjAAAUKQpCEtzo/xvVIooe6SRtOS4Sr/Naw03ex8dbfUEt2xC7lJORX
+        CWCHQo7pdfDXWV5hCzdpAEFMKtKZPlIkVQ4oRSg=
+X-Google-Smtp-Source: APXvYqy4PNWX5BTQ7QWu0URcWKn8nWqNLxwxK1RLYZMdN26VOViuvMztTtwIO8SzKaQh+zB7b2A0pIesdDnxXYb45To=
+X-Received: by 2002:a0c:b758:: with SMTP id q24mr1953315qve.45.1565082036702;
+ Tue, 06 Aug 2019 02:00:36 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190806043729.5562-1-yamada.masahiro@socionext.com>
+In-Reply-To: <20190806043729.5562-1-yamada.masahiro@socionext.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 6 Aug 2019 11:00:19 +0200
+Message-ID: <CAK8P3a2POcb+AReLKib513i_RTN9kLM_Tun7+G5LOacDuy7gjQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] kbuild: re-implement detection of CONFIG options
+ leaked to user-space
+To:     Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [RFC PATCH] kbuild: re-implement detection of CONFIG options leaked to user-space
-Date:   Tue,  6 Aug 2019 13:37:29 +0900
-Message-Id: <20190806043729.5562-1-yamada.masahiro@socionext.com>
-X-Mailer: git-send-email 2.17.1
+        bpf@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Amit Pundir <amit.pundir@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-scripts/headers_check.pl can detect references to CONFIG options in
-exported headers, but it has been disabled for more than a decade.
+On Tue, Aug 6, 2019 at 6:38 AM Masahiro Yamada
+<yamada.masahiro@socionext.com> wrote:
+>
+> I was playing with sed yesterday, but the resulted code might be unreadable.
+>
+> Sed scripts tend to be somewhat unreadable.
+> I just wondered which language is appropriate for this?
+> Maybe perl, or what else? I am not good at perl, though.
 
-Reverting commit 7e3fa5614117 ("kbuild: drop check for CONFIG_ in
-headers_check") would emit the following warnings for headers_check
-on x86:
+I like the sed version, in particular as it seems to do the job and
+I'm not volunteering to write it in anything else.
 
-usr/include/mtd/ubi-user.h:283: leaks CONFIG_MTD_UBI_BEB_LIMIT to userspace where it is not valid
-usr/include/linux/elfcore.h:62: leaks CONFIG_BINFMT_ELF_FDPIC to userspace where it is not valid
-usr/include/linux/atmdev.h:104: leaks CONFIG_COMPAT to userspace where it is not valid
-usr/include/linux/raw.h:17: leaks CONFIG_MAX_RAW_DEVS to userspace where it is not valid
-usr/include/linux/pktcdvd.h:37: leaks CONFIG_CDROM_PKTCDVD_WCACHE to userspace where it is not valid
-usr/include/linux/videodev2.h:2465: leaks CONFIG_VIDEO_ADV_DEBUG to userspace where it is not valid
-usr/include/linux/bpf.h:249: leaks CONFIG_EFFICIENT_UNALIGNED_ACCESS to userspace where it is not valid
-usr/include/linux/bpf.h:819: leaks CONFIG_CGROUP_NET_CLASSID to userspace where it is not valid
-usr/include/linux/bpf.h:1011: leaks CONFIG_IP_ROUTE_CLASSID to userspace where it is not valid
-usr/include/linux/bpf.h:1742: leaks CONFIG_BPF_KPROBE_OVERRIDE to userspace where it is not valid
-usr/include/linux/bpf.h:1747: leaks CONFIG_FUNCTION_ERROR_INJECTION to userspace where it is not valid
-usr/include/linux/bpf.h:1936: leaks CONFIG_XFRM to userspace where it is not valid
-usr/include/linux/bpf.h:2184: leaks CONFIG_BPF_LIRC_MODE2 to userspace where it is not valid
-usr/include/linux/bpf.h:2210: leaks CONFIG_BPF_LIRC_MODE2 to userspace where it is not valid
-usr/include/linux/bpf.h:2227: leaks CONFIG_SOCK_CGROUP_DATA to userspace where it is not valid
-usr/include/linux/bpf.h:2311: leaks CONFIG_NET to userspace where it is not valid
-usr/include/linux/bpf.h:2348: leaks CONFIG_NET to userspace where it is not valid
-usr/include/linux/bpf.h:2422: leaks CONFIG_BPF_LIRC_MODE2 to userspace where it is not valid
-usr/include/linux/bpf.h:2528: leaks CONFIG_NET to userspace where it is not valid
-usr/include/linux/eventpoll.h:82: leaks CONFIG_PM_SLEEP to userspace where it is not valid
-usr/include/linux/hw_breakpoint.h:27: leaks CONFIG_HAVE_MIXED_BREAKPOINTS_REGS to userspace where it is not valid
-usr/include/linux/cm4000_cs.h:26: leaks CONFIG_COMPAT to userspace where it is not valid
-usr/include/linux/pkt_cls.h:301: leaks CONFIG_NET_CLS_ACT to userspace where it is not valid
-usr/include/asm-generic/unistd.h:651: leaks CONFIG_MMU to userspace where it is not valid
-usr/include/asm-generic/fcntl.h:119: leaks CONFIG_64BIT to userspace where it is not valid
-usr/include/asm-generic/bitsperlong.h:9: leaks CONFIG_64BIT to userspace where it is not valid
-usr/include/asm/e820.h:14: leaks CONFIG_NODES_SHIFT to userspace where it is not valid
-usr/include/asm/e820.h:39: leaks CONFIG_X86_PMEM_LEGACY to userspace where it is not valid
-usr/include/asm/e820.h:49: leaks CONFIG_INTEL_TXT to userspace where it is not valid
-usr/include/asm/mman.h:7: leaks CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS to userspace where it is not valid
-usr/include/asm/auxvec.h:14: leaks CONFIG_IA32_EMULATION to userspace where it is not valid
+> Maybe, it will be better to fix existing warnings
+> before enabling this check.
 
-Most of these are false positives because scripts/headers_check.pl
-parses comment lines.
+Yes, absolutely.
 
-It is also false negative. arch/x86/include/uapi/asm/auxvec.h contains
-CONFIG_IA32_EMULATION and CONFIG_X86_64, but the only former is reported.
+> If somebody takes a closer look at them, that would be great.
 
-It would be possible to fix scripts/headers_check.pl, of course.
-However, we already have some duplicated checks between headers_check
-and CONFIG_UAPI_HEADER_TEST. At this moment of time, there are still
-dozens of headers excluded from the header test (usr/include/Makefile),
-but we might be able to remove headers_check when the time comes.
+Let's see:
 
-I re-implemented it in scripts/headers_install.sh by using sed because
-the most of code in scripts/headers_install.sh is written is sed.
+> warning: include/uapi/linux/elfcore.h: leaks CONFIG_BINFMT_ELF_FDPIC to user-space
 
-This patch works like this:
+This one is nontrivial, since it defines two incompatible layouts for
+this structure,
+and the fdpic version is currently not usable at all from user space. Also,
+the definition breaks configurations that have both CONFIG_BINFMT_ELF
+and CONFIG_BINFMT_ELF_FDPIC enabled, which has become possible
+with commit 382e67aec6a7 ("ARM: enable elf_fdpic on systems with an MMU").
 
-[1] Run scripts/unifdef first because we need to drop the code
-    surrounded by #ifdef __KERNEL__ ... #endif
+The best way forward I see is to duplicate the structure definition, adding
+a new 'struct elf_fdpic_prstatus', and using that in fs/binfmt_elf_fdpic.c.
+The same change is required in include/linux/elfcore-compat.h.
 
-[2] Remove all C style comments. The sed code is somewhat complicated
-    since we need to deal with both single and multi line comments.
+> warning: include/uapi/linux/atmdev.h: leaks CONFIG_COMPAT to user-space
 
-    Precisely speaking, a comment block is replaced with a space just
-    in case.
+The "#define COMPAT_ATM_ADDPARTY" can be moved to include/linux/atmdev.h,
+it's not needed in the uapi header
 
-      CONFIG_FOO/* this is a comment */CONFIG_BAR
+> warning: include/uapi/linux/raw.h: leaks CONFIG_MAX_RAW_DEVS to user-space
 
-    should be converted into:
+This has never been usable, I'd just remove MAX_RAW_MINORS and change
+drivers/char/raw.c to use CONFIG_MAX_RAW_DEVS
 
-      CONFIG_FOO CONFIG_BAR
+> warning: include/uapi/linux/pktcdvd.h: leaks CONFIG_CDROM_PKTCDVD_WCACHE to user-space
 
-    instead of:
+USE_WCACHING can be moved to drivers/block/pktcdvd.c
 
-      CONFIG_FOOCONFIG_BAR
+> warning: include/uapi/linux/eventpoll.h: leaks CONFIG_PM_SLEEP to user-space
 
-[3] Match CONFIG_... pattern. It correctly matches to all CONFIG options
-    that appear in a single line.
+ep_take_care_of_epollwakeup() should not be in the header at all I think.
+Commit 95f19f658ce1 ("epoll: drop EPOLLWAKEUP if PM_SLEEP is disabled")
+was wrong to move it out of fs/eventpoll.c, and I'd just move it back
+as an inline function. (Added Amit to Cc for clarification).
 
-After this commit, you will see the following warnings, all of which
-are real ones.
+> warning: include/uapi/linux/hw_breakpoint.h: leaks CONFIG_HAVE_MIXED_BREAKPOINTS_REGS to user-space
 
-warning: include/uapi/linux/elfcore.h: leaks CONFIG_BINFMT_ELF_FDPIC to user-space
-warning: include/uapi/linux/atmdev.h: leaks CONFIG_COMPAT to user-space
-warning: include/uapi/linux/raw.h: leaks CONFIG_MAX_RAW_DEVS to user-space
-warning: include/uapi/linux/pktcdvd.h: leaks CONFIG_CDROM_PKTCDVD_WCACHE to user-space
-warning: include/uapi/linux/eventpoll.h: leaks CONFIG_PM_SLEEP to user-space
-warning: include/uapi/linux/hw_breakpoint.h: leaks CONFIG_HAVE_MIXED_BREAKPOINTS_REGS to user-space
-warning: include/uapi/asm-generic/fcntl.h: leaks CONFIG_64BIT to user-space
-warning: arch/x86/include/uapi/asm/mman.h: leaks CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS to user-space
-warning: arch/x86/include/uapi/asm/auxvec.h: leaks CONFIG_IA32_EMULATION to user-space
-warning: arch/x86/include/uapi/asm/auxvec.h: leaks CONFIG_X86_64 to user-space
+enum bp_type_idx started out in kernel/events/hw_breakpoint.c
+and was later moved to a header which then became public. I
+don't think it was ever meant to be public though. We either want
+to move it back, or change the CONFIG_HAVE_MIXED_BREAKPOINTS_REGS
+macro to an __ARCH_HAVE_MIXED_BREAKPOINTS_REGS that
+is explicitly set in a header file by x86 and superh.
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
+> warning: include/uapi/asm-generic/fcntl.h: leaks CONFIG_64BIT to user-space
 
-I was playing with sed yesterday, but the resulted code might be unreadable.
+The #ifdef could just be changed to
+#if __BITS_PER_LONG == 32
 
-Sed scripts tend to be somewhat unreadable.
-I just wondered which language is appropriate for this?
-Maybe perl, or what else? I am not good at perl, though.
+We could also do this differently, given that most 64-bit architectures define
+the same macros in their arch/*/include/asm/compat.h files (parisc and mips
+use different values).
 
-Maybe, it will be better to fix existing warnings
-before enabling this check.
-If somebody takes a closer look at them, that would be great.
+> warning: arch/x86/include/uapi/asm/mman.h: leaks CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS to user-space
 
- scripts/headers_install.sh | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+I think arch_vm_get_page_prot should not be in the uapi header,
+other architectures have it in arch/powerpc/include/asm/mman.h
 
-diff --git a/scripts/headers_install.sh b/scripts/headers_install.sh
-index bbaf29386995..73d95e457090 100755
---- a/scripts/headers_install.sh
-+++ b/scripts/headers_install.sh
-@@ -41,5 +41,34 @@ sed -E -e '
- scripts/unifdef -U__KERNEL__ -D__EXPORTED_HEADERS__ $TMPFILE > $OUTFILE
- [ $? -gt 1 ] && exit 1
- 
-+# Remove /* ... */ style comments, and find CONFIG_ references in code
-+configs=$(sed -e '
-+:comment
-+	s:/\*[^*][^*]*:/*:
-+	s:/\*\*\**\([^/]\):/*\1:
-+	t comment
-+	s:/\*\*/: :
-+	t comment
-+	/\/\*/! b check
-+	N
-+	b comment
-+:print
-+	P
-+	D
-+:check
-+	s:^[^[:alnum:]_][^[:alnum:]_]*::
-+	t check
-+	s:^\(CONFIG_[[:alnum:]_]*\):\1\n:
-+	t print
-+	s:^[[:alnum:]_][[:alnum:]_]*::
-+	t check
-+	d
-+' $OUTFILE)
-+
-+for c in $configs
-+do
-+	echo "warning: $INFILE: leaks $c to user-space" >&2
-+done
-+
- rm -f $TMPFILE
- trap - EXIT
--- 
-2.17.1
+> warning: arch/x86/include/uapi/asm/auxvec.h: leaks CONFIG_IA32_EMULATION to user-space
+> warning: arch/x86/include/uapi/asm/auxvec.h: leaks CONFIG_X86_64 to user-space
 
+It looks like this definition has always been wrong, across several
+changes that made it wrong in different ways.
+
+AT_VECTOR_SIZE_ARCH is supposed to define the size of the extra
+aux vectors, which is meant to be '2' for i386 tasks, and '1' for
+x86_64 tasks, regardless of how the kernel is configured. I looked at
+this for a bit but it's hard to tell how to fix this without introducing
+possible regressions. Note how 'mm->saved_auxv' uses this
+size and gets copied between kernel and user space.
+
+       Arnd
