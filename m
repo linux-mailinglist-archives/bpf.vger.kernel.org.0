@@ -2,95 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D69484DEA
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2019 15:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE41E85032
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2019 17:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729571AbfHGNwk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Aug 2019 09:52:40 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:46046 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729743AbfHGNwk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Aug 2019 09:52:40 -0400
-Received: by mail-pl1-f194.google.com with SMTP id y8so40946961plr.12
-        for <bpf@vger.kernel.org>; Wed, 07 Aug 2019 06:52:39 -0700 (PDT)
+        id S2388698AbfHGPrY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Aug 2019 11:47:24 -0400
+Received: from mail-pl1-f201.google.com ([209.85.214.201]:36128 "EHLO
+        mail-pl1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387827AbfHGPrX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Aug 2019 11:47:23 -0400
+Received: by mail-pl1-f201.google.com with SMTP id a5so52701407pla.3
+        for <bpf@vger.kernel.org>; Wed, 07 Aug 2019 08:47:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=QnyCTyMbm52NNTF3jvsG/XFHwGBN7xSjxw+ALsjB1gk=;
-        b=hvFXtVNZhyN0kdv9iaA7yZN5RqEBCjciXVvNLIybGo9HT7b3b+wEhDXgwXt9UF8Mrn
-         eZN37QzXBNaCRPUTOtvLbduEWeOl25BDcGmYWV9ZLZmyIY2DelXEGI0guJ8ZqYDWCUc+
-         Uq07GDbvjCnmuho1/UwA+WeZD6IjYNeymq8uFSzW05d1Kn5WjcoE/sdiEk4q9Pnv4DZG
-         rGzgQi4Dw5txGWJVOLLOOxkaXvyGLKhZ4QawFZhVwDTHvgFIyA6iWIhIz3gscwe8DFor
-         gFkbJ3pleEF/BzQx06R1m0tmzKsGUUbphwQkDn43e/6Z8P/hMPwnuj+yzSMhfPUJT3ph
-         I76g==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=FB7cYJl37GdYtFaxc/8cPlb39n5o+VtlMRz941XZmBs=;
+        b=YYfYso7jj0Mt0nR7vmsPM8MVIm3znMDXfEARxHjBpImFO7k9Gr51Trr80tjEgKQq6t
+         DXPZZxmH1K7ngOnSHFCwqrHwnyp7C+npwOR187yn4zinqHX7Z2bn4OjD1l386zK2kKer
+         eKZHXMzb8U52EaJOQyXTfwtzIbFgHP2MLYriTXnPzUWovi3C+CCRIOp1Cw0jCjzrlB1Z
+         wCq2JTl20CpFZtTMpUTH5QI8S88K+XwdOhwUa48H5gLLoJjlpDdC98zvcx4K/SIqF9Rh
+         mfQG9pOMrCXJXvvf8RHFQMfV3bGLJaqJ6MNThk9HbAd2b2Z2bRhDZsijgUqE8q1m0bzU
+         B3PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=QnyCTyMbm52NNTF3jvsG/XFHwGBN7xSjxw+ALsjB1gk=;
-        b=m1or6fTVFNqIRPt/u4jMMsD8DcMEHOWwDFtnTzwltkWCEe5SkRyFYVQ+zfDrmnJlfo
-         HYkzibjfID9gJrOG+GwGnLk0IVOptqp/S627dMotHGMbIBeIsJGEE/52hWO03D3X5hYW
-         qxkqrynv5RvRewwm4OwTG1+tW6BxzLxFMopjyAtDMHhV4ic4YmxJl1aqJ8z9rQ9CocBl
-         e+aNxxVgb3v9BrW67mOihg1gDIQ2gb9xGfVZ1NX3mrPWcCrFAcNGpZ/49CDeC0JTX02b
-         2zarhaif5hKch98pgj3uX9t2vNphTrI7ZnJx/DMJHNuGQIYPaO/5fJn1t6Jn4rxNfZL5
-         zkSw==
-X-Gm-Message-State: APjAAAU9Exh7u2gFZzbVqp6AIhzF3LwjPHPxqmz9qBykH6O3lKzjsrSe
-        T3zoSrH6GvxZff5EZUURgH0n2Q==
-X-Google-Smtp-Source: APXvYqyZHqBPVgXKeTfuam/+wr//DWw1+la2CyEt/5QA6T/uZGoDWyT0btIOkYHc/WOyvZTCa5PcRg==
-X-Received: by 2002:aa7:9dcd:: with SMTP id g13mr9657897pfq.204.1565185959443;
-        Wed, 07 Aug 2019 06:52:39 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:e49d:f1dd:cb7c:c8f6? ([2601:646:c200:1ef2:e49d:f1dd:cb7c:c8f6])
-        by smtp.gmail.com with ESMTPSA id q69sm130734pjb.0.2019.08.07.06.52.37
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 07 Aug 2019 06:52:37 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-From:   Andy Lutomirski <luto@amacapital.net>
-X-Mailer: iPhone Mail (16G77)
-In-Reply-To: <CACAyw9_fVZFW_x4uyTAiRfeH6oq1KHv0uB2wO84u5JZyD+Unaw@mail.gmail.com>
-Date:   Wed, 7 Aug 2019 06:52:36 -0700
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Song Liu <songliubraving@fb.com>,
-        Kees Cook <keescook@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>, Jann Horn <jannh@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <945BCF23-839C-418C-9FBF-46889AE84CA4@amacapital.net>
-References: <D4040C0C-47D6-4852-933C-59EB53C05242@fb.com> <CALCETrVoZL1YGUxx3kM-d21TWVRKdKw=f2B8aE5wc2zmX1cQ4g@mail.gmail.com> <5A2FCD7E-7F54-41E5-BFAE-BB9494E74F2D@fb.com> <CALCETrU7NbBnXXsw1B+DvTkfTVRBFWXuJ8cZERCCNvdFG6KqRw@mail.gmail.com> <CALCETrUjh6DdgW1qSuSRd1_=0F9CqB8+sNj__e_6AHEvh_BaxQ@mail.gmail.com> <CALCETrWtE2U4EvZVYeq8pSmQjBzF2PHH+KxYW8FSeF+W=1FYjw@mail.gmail.com> <EE7B7AE1-3D44-4561-94B9-E97A626A251D@fb.com> <CALCETrXX-Jeb4wiQuL6FUai4wNMmMiUxuLLh_Lb9mT7h=0GgAw@mail.gmail.com> <20190805192122.laxcaz75k4vxdspn@ast-mbp> <CALCETrVtPs8gY-H4gmzSqPboid3CB++n50SvYd6RU9YVde_-Ow@mail.gmail.com> <20190806011134.p5baub5l3t5fkmou@ast-mbp> <CALCETrXEHL3+NAY6P6vUj7Pvd9ZpZsYC6VCLXOaNxb90a_POGw@mail.gmail.com> <CACAyw9_fVZFW_x4uyTAiRfeH6oq1KHv0uB2wO84u5JZyD+Unaw@mail.gmail.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=FB7cYJl37GdYtFaxc/8cPlb39n5o+VtlMRz941XZmBs=;
+        b=mpGhm3QHP13FhUWopAwB9WrT+0E847apc95EwEy8Q235l2/t2Noml/zIDkUjmDQ7WB
+         mLNPeZWnGrtqQB09sBu6X0W0FnHAyjwJkNRrtD8Arm9VUOzs6oGC9724W3I84IsWsFme
+         cYJ2rip25yasbHUgYLj8dwrMcSQ/4Tp9xCR2I1P03nvwn2khzTXk2N4JWqi55H8+GAvc
+         CCHDq6Y6lL++ufY9HfF5KOYApVrfHYFUOrwxfpZoYtNGXJjlFEixmgpCFKrDLTC7i56q
+         gqDgD+99mSBnfrefAR2sNVPWtx0cvsv3kHk6ScRQp3A6+PYFtQ83k7G7alyakzZZym0Z
+         /PiA==
+X-Gm-Message-State: APjAAAWEpyVPnwulsYYMd0jo3JKmBbirIYV1lg8be6QgwTwTmG771wtB
+        fgLJ7Syjxrr3xMsLNnQorIXwBLM=
+X-Google-Smtp-Source: APXvYqxOBipQ1nU/PK2ksfFxIR3S5nRdfHn+QDw0GR5JnLLwvqoTfG3AsFq82CUxRqQwIatZ+sLRSCI=
+X-Received: by 2002:a65:4341:: with SMTP id k1mr8276047pgq.153.1565192842902;
+ Wed, 07 Aug 2019 08:47:22 -0700 (PDT)
+Date:   Wed,  7 Aug 2019 08:47:17 -0700
+Message-Id: <20190807154720.260577-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.22.0.770.g0f2c4a37fd-goog
+Subject: [PATCH bpf-next 0/3] bpf: support cloning sk storage on accept()
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Currently there is no way to propagate sk storage from the listener
+socket to a newly accepted one. Consider the following use case:
 
-> On Aug 7, 2019, at 2:03 AM, Lorenz Bauer <lmb@cloudflare.com> wrote:
->=20
->> On Wed, 7 Aug 2019 at 06:24, Andy Lutomirski <luto@kernel.org> wrote:
->> a) Those that, by design, control privileged operations.  This
->> includes most attach calls, but it also includes allow_ptr_leaks,
->> bpf_probe_read(), and quite a few other things.  It also includes all
->> of the by_id calls, I think, unless some clever modification to the
->> way they worked would isolate different users' objects.  I think that
->> persistent objects can do pretty much everything that by_id users
->> would need, so this isn't a big deal.
->=20
-> Slightly OT, since this is an implementation question: GET_MAP_FD_BY_ID
-> is useful to iterate a nested map. This isn't covered by rights to
-> persistent objects,
-> so it would need some thought.
->=20
->=20
+        fd = socket();
+        setsockopt(fd, SOL_IP, IP_TOS,...);
+        /* ^^^ setsockopt BPF program triggers here and saves something
+         * into sk storage of the listener.
+         */
+        listen(fd, ...);
+        while (client = accept(fd)) {
+                /* At this point all association between listener
+                 * socket and newly accepted one is gone. New
+                 * socket will not have any sk storage attached.
+                 */
+        }
 
-A call to get an fd to a map referenced by a map to which you already have a=
-n fd seems reasonable to me. The new fd would inherit the old fd=E2=80=99s a=
-ccess mode.=
+Let's add new BPF_SK_STORAGE_GET_F_CLONE flag that can be passed to
+bpf_sk_storage_get. This new flag indicates that that particular
+bpf_sk_storage_elem should be cloned when the socket is cloned.
+
+Cc: Martin KaFai Lau <kafai@fb.com>
+
+Stanislav Fomichev (3):
+  bpf: support cloning sk storage on accept()
+  bpf: sync bpf.h to tools/
+  selftests/bpf: add sockopt clone/inheritance test
+
+ include/net/bpf_sk_storage.h                  |  10 +
+ include/uapi/linux/bpf.h                      |   1 +
+ net/core/bpf_sk_storage.c                     | 102 ++++++-
+ net/core/sock.c                               |   9 +-
+ tools/include/uapi/linux/bpf.h                |   1 +
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ .../selftests/bpf/progs/sockopt_inherit.c     | 102 +++++++
+ .../selftests/bpf/test_sockopt_inherit.c      | 252 ++++++++++++++++++
+ 9 files changed, 473 insertions(+), 8 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/sockopt_inherit.c
+ create mode 100644 tools/testing/selftests/bpf/test_sockopt_inherit.c
+
+-- 
+2.22.0.770.g0f2c4a37fd-goog
