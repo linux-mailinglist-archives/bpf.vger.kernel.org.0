@@ -2,181 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B48D283DEB
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2019 01:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DC183E1E
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2019 02:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbfHFXmR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Aug 2019 19:42:17 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:57073 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726133AbfHFXmR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 6 Aug 2019 19:42:17 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 14AEC4F7;
-        Tue,  6 Aug 2019 19:42:16 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 06 Aug 2019 19:42:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=UqiLQ2E5DadWg
-        5fCtspaqcHF7Doczlap7dnJTwl4TwI=; b=dMeqx+p7tYKilkRT7llHiBV6jE3XO
-        ghEvYAlF3N1Z9zA0dUKQdJugIO1n4NrJB+zyliaDec3kWTImjfGtqTBvwhZhF7Ip
-        fNY7hWhhYOPtoiZjfqvBScG7asmk6egXXEh47GjNi7hJzhAWrDivt6cAlwA+5OE2
-        6L7x9eYMM+IYs04UPsQaGqg//AL2dMaJnEz9MLqKgWXNkYeK+HNo4He36A2nECOP
-        uC6JW2gqR7gkXgi6tXWY7zlp73coj1nuJrKRbfZVlfnk4SzsUmhLJetNModq5myO
-        oyjjkvQ79raEHbEBRh7dOLjcd5s/o8e6IYcK2pVYAH4ALUQ+4F2j9XGEQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=UqiLQ2E5DadWg5fCtspaqcHF7Doczlap7dnJTwl4TwI=; b=xL3DsEwd
-        WqlMl/Wj+DdECNPzQYi8eLvW73wLSR/D59acq2uIbBm6qtkoTyJlhbDO4l5ZOv5w
-        lRDdYrh/a3KQMBsdMBPSXq5B70+lBqCJNMdcv4ZuwaTsrbeNSnbBqmj8T+tHsFlK
-        H+2xoXM/FXlNrpBne5Z7QMZ7yGUd61Gv2a1toFzP8SCMfIX7MOY5F8MlC3nIC6Qm
-        etR/dT6RKQ+BIps+uUZtaFXWsFh8DY3CXlLUKJ9ZVLe2tJfsKrE8GwQDk27seCqO
-        ev9orXi6o40+X3dYpYntzwelUfZdPSACXMpdUptIYnFD4bqpJWcwqNtu3xfCqbjd
-        3C/N9TvStgvYKg==
-X-ME-Sender: <xms:VxBKXdLJavEPeO2SOjU_QsthR_M2J9xxmKcLmBhwZoNDcEz0zhdl_g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduvddrudduuddgvdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
-    fufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegu
-    gihusegugihuuhhurdighiiiqeenucfkphepudelledrvddtuddrieegrddufeeknecurf
-    grrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiinecuvehluhhsthgv
-    rhfuihiivgeptd
-X-ME-Proxy: <xmx:VxBKXTzK4maFlZHA-21y_xheajqjz-OffgI5srmxa7dNCHEWo7ddqg>
-    <xmx:VxBKXbu5MxkcQBWLODhkwmMengYd-F6GCY1Ln25ea51sXVcOos4YlA>
-    <xmx:VxBKXeAST1_YpWHmQHiHuWuULmLuHKxgTaUzXG2yYJ6yWy_xPY44IA>
-    <xmx:VxBKXauNLpA286_inoD7aa6kp7mzQUtWpQe3JZscyQUhrdT_5yhXJw>
-Received: from dlxu-fedora-R90QNFJV.thefacebook.com (unknown [199.201.64.138])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 91A8E80060;
-        Tue,  6 Aug 2019 19:42:14 -0400 (EDT)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     songliubraving@fb.com, yhs@fb.com, andriin@fb.com
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 3/3] tracing/kprobe: Add self test for PERF_EVENT_IOC_QUERY_KPROBE
-Date:   Tue,  6 Aug 2019 16:42:01 -0700
-Message-Id: <20190806234201.6296-2-dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190806234201.6296-1-dxu@dxuuu.xyz>
-References: <20190806234201.6296-1-dxu@dxuuu.xyz>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726797AbfHGAIU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Aug 2019 20:08:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726085AbfHGAIU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Aug 2019 20:08:20 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED7FA2089E;
+        Wed,  7 Aug 2019 00:08:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565136499;
+        bh=FhChKXsPPb1L8MSYtmcGqA0kOKtJaeO7DrzVbRT1MXs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TAeG++7BBNLdzsT8EeUACw88fONFc1pQcT8EUvAlKq8EqeLzcGZIz0ceLh4nYgX84
+         xTRDE/BvbyzWZvQYIvI12bG0fb2Hr+ia9Vz72+zfUolIsY7N4a0uoRfA30sNdV3zwc
+         LDnEWEZxfNuA7Zo/uTF7X1Z/DVFpbZNzGS5Nb8/c=
+Date:   Wed, 7 Aug 2019 09:08:11 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2 0/3] arm/arm64: Add support for function error
+ injection
+Message-Id: <20190807090811.1e50eb3e1d5a7b85743748e7@kernel.org>
+In-Reply-To: <20190806100015.11256-1-leo.yan@linaro.org>
+References: <20190806100015.11256-1-leo.yan@linaro.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
----
- tools/include/uapi/linux/perf_event.h         | 23 ++++++++++
- .../selftests/bpf/prog_tests/attach_probe.c   | 43 +++++++++++++++++++
- 2 files changed, 66 insertions(+)
+On Tue,  6 Aug 2019 18:00:12 +0800
+Leo Yan <leo.yan@linaro.org> wrote:
 
-diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
-index 7198ddd0c6b1..4a5e18606baf 100644
---- a/tools/include/uapi/linux/perf_event.h
-+++ b/tools/include/uapi/linux/perf_event.h
-@@ -447,6 +447,28 @@ struct perf_event_query_bpf {
- 	__u32	ids[0];
- };
- 
-+/*
-+ * Structure used by below PERF_EVENT_IOC_QUERY_KPROE command
-+ * to query information about the kprobe attached to the perf
-+ * event.
-+ */
-+struct perf_event_query_kprobe {
-+       /*
-+        * Size of structure for forward/backward compatibility
-+        */
-+       __u32   size;
-+       /*
-+        * Set by the kernel to indicate number of times this kprobe
-+        * was temporarily disabled
-+        */
-+       __u64   nmissed;
-+       /*
-+        * Set by the kernel to indicate number of times this kprobe
-+        * was hit
-+        */
-+       __u64   nhit;
-+};
-+
- /*
-  * Ioctls that can be done on a perf event fd:
-  */
-@@ -462,6 +484,7 @@ struct perf_event_query_bpf {
- #define PERF_EVENT_IOC_PAUSE_OUTPUT		_IOW('$', 9, __u32)
- #define PERF_EVENT_IOC_QUERY_BPF		_IOWR('$', 10, struct perf_event_query_bpf *)
- #define PERF_EVENT_IOC_MODIFY_ATTRIBUTES	_IOW('$', 11, struct perf_event_attr *)
-+#define PERF_EVENT_IOC_QUERY_KPROBE		_IOWR('$', 12, struct perf_event_query_kprobe *)
- 
- enum perf_event_ioc_flags {
- 	PERF_IOC_FLAG_GROUP		= 1U << 0,
-diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-index 5ecc267d98b0..5f118e9a1469 100644
---- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-+++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-@@ -38,9 +38,12 @@ void test_attach_probe(void)
- 	struct bpf_link *kretprobe_link = NULL;
- 	struct bpf_link *uprobe_link = NULL;
- 	struct bpf_link *uretprobe_link = NULL;
-+	int kprobe_fd, kretprobe_fd;
- 	int results_map_fd;
- 	size_t uprobe_offset;
- 	ssize_t base_addr;
-+	struct perf_event_query_kprobe kprobe_query;
-+	struct perf_event_query_kprobe kretprobe_query;
- 
- 	base_addr = get_base_addr();
- 	if (CHECK(base_addr < 0, "get_base_addr",
-@@ -116,6 +119,46 @@ void test_attach_probe(void)
- 	/* trigger & validate kprobe && kretprobe */
- 	usleep(1);
- 
-+	kprobe_fd = bpf_link__get_perf_fd(kprobe_link);
-+	if (CHECK(kprobe_fd < 0, "kprobe_get_perf_fd",
-+	    "failed to get perf fd from kprobe link\n"))
-+		goto cleanup;
-+
-+	kretprobe_fd = bpf_link__get_perf_fd(kretprobe_link);
-+	if (CHECK(kprobe_fd < 0, "kprobe_get_perf_fd",
-+	    "failed to get perf fd from kprobe link\n"))
-+		goto cleanup;
-+
-+	memset(&kprobe_query, 0, sizeof(kprobe_query));
-+	kprobe_query.size = sizeof(kprobe_query);
-+	err = ioctl(kprobe_fd, PERF_EVENT_IOC_QUERY_KPROBE, &kprobe_query);
-+	if (CHECK(err, "get_kprobe_ioctl",
-+		  "failed to issue kprobe query ioctl\n"))
-+		goto cleanup;
-+	if (CHECK(kprobe_query.nmissed > 0, "get_kprobe_ioctl",
-+		  "read incorect nmissed from kprobe_ioctl: %llu\n",
-+		  kprobe_query.nmissed))
-+		goto cleanup;
-+	if (CHECK(kprobe_query.nhit <= 0, "get_kprobe_ioctl",
-+		  "read incorect nhit from kprobe_ioctl: %llu\n",
-+		  kprobe_query.nhit))
-+		goto cleanup;
-+
-+	memset(&kretprobe_query, 0, sizeof(kretprobe_query));
-+	kretprobe_query.size = sizeof(kretprobe_query);
-+	err = ioctl(kretprobe_fd, PERF_EVENT_IOC_QUERY_KPROBE, &kretprobe_query);
-+	if (CHECK(err, "get_kretprobe_ioctl",
-+		  "failed to issue kprobe query ioctl\n"))
-+		goto cleanup;
-+	if (CHECK(kretprobe_query.nmissed > 0, "get_kretprobe_ioctl",
-+		  "read incorect nmissed from kretprobe_ioctl: %llu\n",
-+		  kretprobe_query.nmissed))
-+		goto cleanup;
-+	if (CHECK(kretprobe_query.nhit <= 0, "get_kretprobe_ioctl",
-+		  "read incorect nhit from kretprobe_ioctl: %llu\n",
-+		  kretprobe_query.nhit))
-+		goto cleanup;
-+
- 	err = bpf_map_lookup_elem(results_map_fd, &kprobe_idx, &res);
- 	if (CHECK(err, "get_kprobe_res",
- 		  "failed to get kprobe res: %d\n", err))
+> This small patch set is to add support for function error injection;
+> this can be used to eanble more advanced debugging feature, e.g.
+> CONFIG_BPF_KPROBE_OVERRIDE.
+> 
+> The patch 01/03 is to consolidate the function definition which can be
+> suared cross architectures, patches 02,03/03 are used for enabling
+> function error injection on arm64 and arm architecture respectively.
+> 
+> I tested on arm64 platform Juno-r2 and one of my laptop with x86
+> architecture with below steps; I don't test for Arm architecture so
+> only pass compilation.
+> 
+> - Enable kernel configuration:
+>   CONFIG_BPF_KPROBE_OVERRIDE
+>   CONFIG_BTRFS_FS
+>   CONFIG_BPF_EVENTS=y
+>   CONFIG_KPROBES=y
+>   CONFIG_KPROBE_EVENTS=y
+>   CONFIG_BPF_KPROBE_OVERRIDE=y
+> 
+> - Build samples/bpf on with Debian rootFS:
+>   # cd $kernel
+>   # make headers_install
+>   # make samples/bpf/ LLC=llc-7 CLANG=clang-7
+> 
+> - Run the sample tracex7:
+>   # dd if=/dev/zero of=testfile.img bs=1M seek=1000 count=1
+>   # DEVICE=$(losetup --show -f testfile.img)
+>   # mkfs.btrfs -f $DEVICE
+>   # ./tracex7 testfile.img
+>   [ 1975.211781] BTRFS error (device (efault)): open_ctree failed
+>   mount: /mnt/linux-kernel/linux-cs-dev/samples/bpf/tmpmnt: mount(2) system call failed: Cannot allocate memory.
+> 
+> Changes from v1:
+> * Consolidated the function definition into asm-generic header (Will);
+> * Used APIs to access pt_regs elements (Will);
+> * Fixed typos in the comments (Will).
+
+This looks good to me.
+
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you!
+
+> 
+> 
+> Leo Yan (3):
+>   error-injection: Consolidate override function definition
+>   arm64: Add support for function error injection
+>   arm: Add support for function error injection
+> 
+>  arch/arm/Kconfig                           |  1 +
+>  arch/arm/include/asm/ptrace.h              |  5 +++++
+>  arch/arm/lib/Makefile                      |  2 ++
+>  arch/arm/lib/error-inject.c                | 19 +++++++++++++++++++
+>  arch/arm64/Kconfig                         |  1 +
+>  arch/arm64/include/asm/ptrace.h            |  5 +++++
+>  arch/arm64/lib/Makefile                    |  2 ++
+>  arch/arm64/lib/error-inject.c              | 18 ++++++++++++++++++
+>  arch/powerpc/include/asm/error-injection.h | 13 -------------
+>  arch/x86/include/asm/error-injection.h     | 13 -------------
+>  include/asm-generic/error-injection.h      |  6 ++++++
+>  include/linux/error-injection.h            |  6 +++---
+>  12 files changed, 62 insertions(+), 29 deletions(-)
+>  create mode 100644 arch/arm/lib/error-inject.c
+>  create mode 100644 arch/arm64/lib/error-inject.c
+>  delete mode 100644 arch/powerpc/include/asm/error-injection.h
+>  delete mode 100644 arch/x86/include/asm/error-injection.h
+> 
+> -- 
+> 2.17.1
+> 
+
+
 -- 
-2.20.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
