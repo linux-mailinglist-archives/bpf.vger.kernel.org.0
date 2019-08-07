@@ -2,213 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A7B8555B
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2019 23:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE9F85567
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2019 23:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389565AbfHGVke (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Aug 2019 17:40:34 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:57462 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389573AbfHGVkd (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 7 Aug 2019 17:40:33 -0400
-Received: from pps.filterd (m0001255.ppops.net [127.0.0.1])
-        by mx0b-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x77LbT1A031428
-        for <bpf@vger.kernel.org>; Wed, 7 Aug 2019 14:40:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=lFDlsCFhy4mlD7Q0koIbBu65FWY8EncNVgC2oNP6XN8=;
- b=JKPlMeq+INVG5tzY3UmoyPMpi+X9bewuoijNEiCBqikVLlvbLQx5paqrFYnkpqDSnmGZ
- gFc+qBU3YpPwa8qvyI9AN4YGqv+kpw2jzbo9UjB7xzTPLAcBmycAs8SCS1mddYaLwggO
- a1+Vn6N66kpzH/32R48QIzxJtIXyGle1SaM= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0b-00082601.pphosted.com with ESMTP id 2u80f8sgy5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 07 Aug 2019 14:40:31 -0700
-Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 7 Aug 2019 14:40:31 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id DBA1F861682; Wed,  7 Aug 2019 14:40:30 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>, <yhs@fb.com>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v6 bpf-next 14/14] selftests/bpf: add CO-RE relocs misc tests
-Date:   Wed, 7 Aug 2019 14:40:01 -0700
-Message-ID: <20190807214001.872988-15-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190807214001.872988-1-andriin@fb.com>
-References: <20190807214001.872988-1-andriin@fb.com>
-X-FB-Internal: Safe
+        id S1729920AbfHGVqj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Aug 2019 17:46:39 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:33664 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728083AbfHGVqj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Aug 2019 17:46:39 -0400
+Received: by mail-qt1-f196.google.com with SMTP id r6so85755595qtt.0
+        for <bpf@vger.kernel.org>; Wed, 07 Aug 2019 14:46:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=62wgqsTsuVHUgUQUfLHgAsOVSXEcaeGtAoolloDqQOo=;
+        b=f9pW/6yXKk2UETaCp6+W6xKAmeanwXikfLOxVWef/hml51MZp0CESp1cCxO063ELy5
+         A63NVm8MJDr5cZLKDv4CpY4HHXKB6HLox8k8WYUhDFgWmwmf3bzTgULbkPY1D2Na0kID
+         TRbC0hyK4G68LJLeMcEJs6qqORRFTxHHd//yZgXdCWKRkyvm8zSFhInlPpXnuttF1AaT
+         g8d+mFrenojA+me+fPlndnNOemg/jNzXal9JlNSPhTCsDL1WWVR5gipDrrbmLDDme06e
+         6ieP1R2yujhInPKg3p+M7M56ByKzh2DTn5+4Djhk2p26ncTxhKU6wlX5AokH128LWrnH
+         hJHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=62wgqsTsuVHUgUQUfLHgAsOVSXEcaeGtAoolloDqQOo=;
+        b=sQPXD5AGO1ZWtXtueqDnpw6FIdpbExiS7GgjM0/EAt8LUNrKFR65gfenoxO0Y/CzE5
+         AFmIgyAbGCRKqJdkkc7zIz5RD0zaL0PMW70/UJte8P5zYhHMjTnxl0TztdlWz4l8lgrn
+         ya0onG/W7ky5MJjJuC/nnqjqapHdP0Fm9r6L1y6fE/hDH8Wb+4eJnau+iB7CAwR1KT34
+         XCik7HTlZKmv1u2onFV5Gboq1ADhWMTmoogZJc4iHKIsT548ctaiGZCMUsqCUFxPEXws
+         wS4MAjwXL/R0y2P2sN3A99t2BtBBUFmDTXkUvT8N2glfC/sVpVOkerdYXeuq7koL00vO
+         9zyQ==
+X-Gm-Message-State: APjAAAXZp3Zw6NTlmgz3CFhptXTSYLtaUQTi7csOPpf8+vE12pSpQsZN
+        fBrj/RhT7UhcyQc/Bt7Ug8Hvs5EQT+yP9+XZcFkZA6Kr8JM=
+X-Google-Smtp-Source: APXvYqyhTRax3UaDBGrNMQLT5UtGgN7oVxc0AKt7aub/5VpARK5YjeKEOGpkbzCHN8lJGpo2DaUUGVXn7nmQeDx3xpo=
+X-Received: by 2002:ac8:32a1:: with SMTP id z30mr10362465qta.117.1565214398142;
+ Wed, 07 Aug 2019 14:46:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-07_06:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=67 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908070186
-X-FB-Internal: deliver
+References: <20190806234131.5655-1-dxu@dxuuu.xyz> <8e7749b8-f537-7164-dc85-9a67fe88bba2@fb.com>
+ <98ba658b-e5e1-455d-8c47-36cca16ef17a@www.fastmail.com>
+In-Reply-To: <98ba658b-e5e1-455d-8c47-36cca16ef17a@www.fastmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 7 Aug 2019 14:46:27 -0700
+Message-ID: <CAEf4BzY8D8yQYa_nGqN-u4EXfB=8SEe=DFAREANONFN86E58fg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] tracing/kprobe: Add PERF_EVENT_IOC_QUERY_KPROBE ioctl
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add tests validating few edge-cases of capturing offset relocations.
+On Wed, Aug 7, 2019 at 2:33 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+>
+> On Tue, Aug 6, 2019, at 11:06 PM, Yonghong Song wrote:
+> [...]
+> > > +int perf_event_query_kprobe(struct perf_event *event, void __user *info)
+> > > +{
+> > > +   struct perf_event_query_kprobe __user *uquery = info;
+> > > +   struct perf_event_query_kprobe query = {};
+> > > +   struct trace_event_call *call = event->tp_event;
+> > > +   struct trace_kprobe *tk = (struct trace_kprobe *)call->data;
+> > > +   u64 nmissed, nhit;
+> > > +
+> > > +   if (!capable(CAP_SYS_ADMIN))
+> > > +           return -EPERM;
+> > > +   if (copy_from_user(&query, uquery, sizeof(query)))
+> > > +           return -EFAULT;
+> > > +   if (query.size != sizeof(query))
+> > > +           return -EINVAL;
+> >
+> > Note that here we did not handle any backward or forward compatibility.
+> >
+>
+> I intended this to be reserved for future changes. Sort of like how new syscalls
+> will check for unknown flags. I can remove this if it's a problem.
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../selftests/bpf/prog_tests/core_reloc.c     | 19 +++++++
- .../bpf/progs/btf__core_reloc_misc.c          |  5 ++
- .../selftests/bpf/progs/core_reloc_types.h    | 25 ++++++++
- .../bpf/progs/test_core_reloc_misc.c          | 57 +++++++++++++++++++
- 4 files changed, 106 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_misc.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_misc.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-index 251ef8c518f0..f3863f976a48 100644
---- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-@@ -260,6 +260,25 @@ static struct core_reloc_test_case test_cases[] = {
- 	INTS_ERR_CASE(ints___err_wrong_sz_16),
- 	INTS_ERR_CASE(ints___err_wrong_sz_32),
- 	INTS_ERR_CASE(ints___err_wrong_sz_64),
-+	
-+	/* validate edge cases of capturing relocations */
-+	{
-+		.case_name = "misc",
-+		.bpf_obj_file = "test_core_reloc_misc.o",
-+		.btf_src_file = "btf__core_reloc_misc.o",
-+		.input = (const char *)&(struct core_reloc_misc_extensible[]){
-+			{ .a = 1 },
-+			{ .a = 2 }, /* not read */
-+			{ .a = 3 },
-+		},
-+		.input_len = 4 * sizeof(int),
-+		.output = STRUCT_TO_CHAR_PTR(core_reloc_misc_output) {
-+			.a = 1,
-+			.b = 1,
-+			.c = 0, /* BUG in clang, should be 3 */
-+		},
-+		.output_len = sizeof(struct core_reloc_misc_output),
-+	},
- };
- 
- struct data {
-diff --git a/tools/testing/selftests/bpf/progs/btf__core_reloc_misc.c b/tools/testing/selftests/bpf/progs/btf__core_reloc_misc.c
-new file mode 100644
-index 000000000000..ed9ad8b5b4f8
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/btf__core_reloc_misc.c
-@@ -0,0 +1,5 @@
-+#include "core_reloc_types.h"
-+
-+void f1(struct core_reloc_misc___a x) {}
-+void f2(struct core_reloc_misc___b x) {}
-+void f3(struct core_reloc_misc_extensible x) {}
-diff --git a/tools/testing/selftests/bpf/progs/core_reloc_types.h b/tools/testing/selftests/bpf/progs/core_reloc_types.h
-index 5f3ebd4f6dc3..10a252b6da55 100644
---- a/tools/testing/selftests/bpf/progs/core_reloc_types.h
-+++ b/tools/testing/selftests/bpf/progs/core_reloc_types.h
-@@ -640,3 +640,28 @@ struct core_reloc_ints___err_wrong_sz_64 {
- 	uint32_t	u64_field; /* not 64-bit anymore */
- 	int32_t		s64_field; /* not 64-bit anymore */
- };
-+
-+/*
-+ * MISC
-+ */
-+struct core_reloc_misc_output {
-+	int a, b, c;
-+};
-+
-+struct core_reloc_misc___a {
-+	int a1;
-+	int a2;
-+};
-+
-+struct core_reloc_misc___b {
-+	int b1;
-+	int b2;
-+};
-+
-+/* this one extends core_reloc_misc_extensible struct from BPF prog */
-+struct core_reloc_misc_extensible {
-+	int a;
-+	int b;
-+	int c;
-+	int d;
-+};
-diff --git a/tools/testing/selftests/bpf/progs/test_core_reloc_misc.c b/tools/testing/selftests/bpf/progs/test_core_reloc_misc.c
-new file mode 100644
-index 000000000000..c59984bd3e23
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_core_reloc_misc.c
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2019 Facebook
-+
-+#include <linux/bpf.h>
-+#include <stdint.h>
-+#include "bpf_helpers.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+static volatile struct data {
-+	char in[256];
-+	char out[256];
-+} data;
-+
-+struct core_reloc_misc_output {
-+	int a, b, c;
-+};
-+
-+struct core_reloc_misc___a {
-+	int a1;
-+	int a2;
-+};
-+
-+struct core_reloc_misc___b {
-+	int b1;
-+	int b2;
-+};
-+
-+/* fixed two first members, can be extended with new fields */
-+struct core_reloc_misc_extensible {
-+	int a;
-+	int b;
-+};
-+
-+SEC("raw_tracepoint/sys_enter")
-+int test_core_misc(void *ctx)
-+{
-+	struct core_reloc_misc___a *in_a = (void *)&data.in;
-+	struct core_reloc_misc___b *in_b = (void *)&data.in;
-+	struct core_reloc_misc_extensible *in_ext = (void *)&data.in;
-+	struct core_reloc_misc_output *out = (void *)&data.out;
-+
-+	/* record two different relocations with the same accessor string */
-+	if (BPF_CORE_READ(&out->a, &in_a->a1) ||	/* accessor: 0:0 */
-+	    BPF_CORE_READ(&out->b, &in_b->b1))		/* accessor: 0:0 */
-+		return 1;
-+
-+	/* Validate relocations capture array-only accesses for structs with
-+	 * fixed header, but with potentially extendable tail. This will read
-+	 * first 4 bytes of 2nd element of in_ext array of potentially
-+	 * variably sized struct core_reloc_misc_extensible. */ 
-+	if (BPF_CORE_READ(&out->c, &in_ext[2]))		/* accessor: 2 */
-+		return 1;
-+
-+	return 0;
-+}
-+
--- 
-2.17.1
-
+I think what Yonghong meant was that you should probably allow
+query.size > sizeof(query), but make sure that all the extra stuff is
+zeroed, similar to how it's done elsewhere (e.g.,
+kernel/bpf/syscall.c).
