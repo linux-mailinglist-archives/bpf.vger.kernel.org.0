@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF7585421
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2019 21:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E7D85431
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2019 22:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388428AbfHGTzH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Aug 2019 15:55:07 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:41630 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388270AbfHGTzH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Aug 2019 15:55:07 -0400
-Received: by mail-qk1-f195.google.com with SMTP id d10so2082830qko.8;
-        Wed, 07 Aug 2019 12:55:06 -0700 (PDT)
+        id S2388204AbfHGUAF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Aug 2019 16:00:05 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:39832 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387969AbfHGUAF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Aug 2019 16:00:05 -0400
+Received: by mail-qt1-f196.google.com with SMTP id l9so89611271qtu.6;
+        Wed, 07 Aug 2019 13:00:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OziV8ZMpf3AbKIgWGay+ysxohoYeYkTtlGmtUbAV8rk=;
-        b=GFA4sNmMkZXNNr4ShaFqm9G15/Ym213W+0q42hzMfDI13FenfhpZsCIC2sUp1KdyKn
-         FTEBkz3fiKkN3DfSGxcOJZXwzuSBVsu4eXgdqOUaugBSEh00Z21/ube2AxSdNiHioD90
-         EcgJrpumbcNpJ3iB0FC8vyf8QcvKw71dJB6bBM269h8SDis/RVOn25LUjAC/bfvXyPTj
-         5d1h36blJdNwxPtxCr2KuQrTzTcuVFCmBmcwxZqnhF7RqocxRrKoamS8lbuOELDjZ0HJ
-         F4lldKzIauP97Kf3/yl/nUf7/bLcR6dPTZqXUbrkKMvnmkPqb/rS+P5WhkU366wQDkU5
-         HQGw==
+        bh=ilf2CXFpRkBxK2pVf2kR8nhHAUPLR31x7WWxYjDGYI4=;
+        b=WXsj0fvXVODTllzBGJgPC7k+Vb7nmb6ipu728oMWap3dA789C0sQb6AxIN6QdGPfv8
+         JyD2bSPZ+E2LRYwmpZEyo1H+nga2zLPcS4itxHGr8JVfnMLd9QLp2v/Aa7ZvC+QBJehL
+         A6AnXpLyQahxxMdxPCiUMUn6Z3dRhgxvqL7aHYF2Q5+CrTo/XANE31YhS9Em2ZrP4VOF
+         anfjuhFZRFvPpIThfsh+HFfk9/vIU9cDum5cl/BSPWnDzFUfaBBwqK3dE0tlBzdGGHLC
+         24q7UHm03cRsrWBhlmC+CZ0tgOpSzUx+DaHORCOKr32exM8bF8zbjR6+jrQHdgpc2eoN
+         H3ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OziV8ZMpf3AbKIgWGay+ysxohoYeYkTtlGmtUbAV8rk=;
-        b=CQ71K4bURZ5FINA2oR+ap9O6F4PLgQyGWgJ4Un3I88XTY43ghkpBjIREHCoVcXzNaA
-         n2yZuQYt2v7Js2dfJiTNrFC7IEqus/cScA+GYNhKQVjWCP/H9osd14c64oC28M4Sd2PX
-         9W0pxtGEkGOkB7fXYecejr3+3rCwYw3QPIpfMrzao0o+ADp4UWbynVvIab2YEzoBDQXd
-         Wk5eqzxWtEoR55fRPJObQDVEb+TUmM8gYhbJCPRmkk7Gvf7UY1uiwse9JjpNN7gesrCV
-         C2rpupsdajd1iXS1L1U1sTUfiYfaR3VI0Zqa58rUBLRVSJ6Y/rhX8WhhzDesC+Z2Iy+n
-         h5jQ==
-X-Gm-Message-State: APjAAAVbjjmN0FeuUm3viKU7dPs1X4VklqkkGNpAKabDD2t/JbrwBRot
-        8sScbbm08pSu6Lfaac4My4PVpfE4ZzU1spNzh78=
-X-Google-Smtp-Source: APXvYqxC43MNp1s7v3hxd2BsBd5v3JOuhOFEY/VDEwF6ousHChvFZamDoxiZlBLrpUJUVICrH4eq4/3KMDhhHKl9vsI=
-X-Received: by 2002:a37:660d:: with SMTP id a13mr10178007qkc.36.1565207706080;
- Wed, 07 Aug 2019 12:55:06 -0700 (PDT)
+        bh=ilf2CXFpRkBxK2pVf2kR8nhHAUPLR31x7WWxYjDGYI4=;
+        b=Nd1EDZEubFO47zhGKzfw8olBP+0h9McbuOpfGcqlI06OxmmZpzq6tY3G6P4qmgXkBu
+         z+EW2qUpll52+VzSdl3Zvh9HIhrpAso8FD2X4nU06um8o+QozajmQ4sLnl3USQgtgxX2
+         /L37sofPpZfvhVRF10BOEWEP60Ui4RAbqQyKN4uU0vpgIS/VMGbaJj6FG1dJt6Py/59A
+         QQcCJ1cF1eR7eqGJkXgHPvO8/JRFcEAYi5ESKBMKX6i6+Dg44FrnsF40vkB0IyAsxHe2
+         cR4lze8/Jg4M1DaLYbXoNAVQml0P9RtHFK4nmuUtcifoROD0FD7Ie2o9fSLEgO7rNWPK
+         KDWg==
+X-Gm-Message-State: APjAAAU3VjqH0bzdkOOA2kSyvAjnoAvQoLaodzUy1M+uGgoAgs8CHqJy
+        n7WWdbIywbPbeh7i5ClDRkYBMYLXw408aikeOI4=
+X-Google-Smtp-Source: APXvYqwbpTRj9TAlnrPasASVw3rz31G3SMRx1ICA5kicufxYwwp5iZFiNxXze2pV9ocFu0nEP40ehc47ui35qto1aKI=
+X-Received: by 2002:a0c:c107:: with SMTP id f7mr9797254qvh.150.1565208004620;
+ Wed, 07 Aug 2019 13:00:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190807053806.1534571-1-andriin@fb.com> <20190807053806.1534571-2-andriin@fb.com>
- <20190807193110.p5flmxojmdjdg4dj@ast-mbp>
-In-Reply-To: <20190807193110.p5flmxojmdjdg4dj@ast-mbp>
+References: <20190807053806.1534571-1-andriin@fb.com> <20190807053806.1534571-3-andriin@fb.com>
+ <20190807193011.g2zuaapc2uvvr4h6@ast-mbp>
+In-Reply-To: <20190807193011.g2zuaapc2uvvr4h6@ast-mbp>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 7 Aug 2019 12:54:54 -0700
-Message-ID: <CAEf4BzZ4M33arWAjHcCv7SjqeMpktJ_waFevb8JZ4B=6dXb+6g@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 01/14] libbpf: add helpers for working with
- BTF types
+Date:   Wed, 7 Aug 2019 12:59:53 -0700
+Message-ID: <CAEf4BzahxLWRVNcNWpba7_7CbbQgN8k0RU8Ya1XCK8j4rPQ0NQ@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 02/14] libbpf: convert libbpf code to use new
+ btf helpers
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
@@ -61,19 +61,49 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 7, 2019 at 12:31 PM Alexei Starovoitov
+On Wed, Aug 7, 2019 at 12:30 PM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> On Tue, Aug 06, 2019 at 10:37:53PM -0700, Andrii Nakryiko wrote:
-> > Add lots of frequently used helpers that simplify working with BTF
-> > types.
+> On Tue, Aug 06, 2019 at 10:37:54PM -0700, Andrii Nakryiko wrote:
+> > Simplify code by relying on newly added BTF helper functions.
 > >
 > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 > ..
-> > +/* get bitfield size of a member, assuming t is BTF_KIND_STRUCT or
-> > + * BTF_KIND_UNION. If member is not a bitfield, zero is returned. */
+> >
+> > -     for (i = 0, vsi = (struct btf_var_secinfo *)(t + 1);
+> > -          i < vars; i++, vsi++) {
+> > +     for (i = 0, vsi = (void *)btf_var_secinfos(t); i < vars; i++, vsi++) {
 >
-> Invalid comment style.
+> > +                     struct btf_member *m = (void *)btf_members(t);
+> ...
+> >               case BTF_KIND_ENUM: {
+> > -                     struct btf_enum *m = (struct btf_enum *)(t + 1);
+> > -                     __u16 vlen = BTF_INFO_VLEN(t->info);
+> > +                     struct btf_enum *m = (void *)btf_enum(t);
+> > +                     __u16 vlen = btf_vlen(t);
+> ...
+> >               case BTF_KIND_FUNC_PROTO: {
+> > -                     struct btf_param *m = (struct btf_param *)(t + 1);
+> > -                     __u16 vlen = BTF_INFO_VLEN(t->info);
+> > +                     struct btf_param *m = (void *)btf_params(t);
+> > +                     __u16 vlen = btf_vlen(t);
+>
+> So all of these 'void *' type hacks are only to drop const-ness ?
+
+Yes.
+
+> May be the helpers shouldn't be taking const then?
 >
 
-oops, fixing
+Probably not, because then we'll have much wider-spread problem of
+casting const pointers into non-const when passing btf_type into
+helpers.
+I think const as a default is the right choice, because normally BTF
+is immutable and btf__type_by_id is returning const pointer, etc.
+That's typical and expected use-case. btf_dedup and BTF sanitization +
+datasec size setting pieces are an exception that have to modify BTF
+types in place before passing it to user.
+
+So realistically I think we can just leave it as (void *), or I can do
+explicit non-const type casts, or we can just not use helpers for
+mutable cases. Do you have a preference?
