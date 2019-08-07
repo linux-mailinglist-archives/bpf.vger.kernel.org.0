@@ -2,319 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BD585319
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2019 20:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E128D8534B
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2019 20:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389233AbfHGSlZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Aug 2019 14:41:25 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15990 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388612AbfHGSlZ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 7 Aug 2019 14:41:25 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x77IZ3bP003877
-        for <bpf@vger.kernel.org>; Wed, 7 Aug 2019 11:41:23 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=ilRYSy7qBwBZ1jYCgp+u4rhfOe2HPff+WB1tei9lIL8=;
- b=A7E74KMuAEYuizcuryztCDN6BZ8/sZo2q02C1XBgdTeX2dqXbxPn9qKf0xD5thzymGb+
- KXx1l30xIOzq+Y3N4zkVnrb+4uIc/s4hNyFTcM9Ut6fw1yoiRebjisOgvhWiXAi/7rfd
- rMn42f08iUCOMBHeq3Coba+xjfbxOLR5Hcw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2u842500p0-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 07 Aug 2019 11:41:23 -0700
-Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 7 Aug 2019 11:41:21 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id 46EBD861676; Wed,  7 Aug 2019 11:38:40 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>, <yhs@fb.com>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH bpf-next] btf: expose BTF info through sysfs
-Date:   Wed, 7 Aug 2019 11:38:21 -0700
-Message-ID: <20190807183821.138728-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S2388766AbfHGS54 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Aug 2019 14:57:56 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:42710 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388703AbfHGS54 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Aug 2019 14:57:56 -0400
+Received: by mail-qk1-f195.google.com with SMTP id 201so66633155qkm.9
+        for <bpf@vger.kernel.org>; Wed, 07 Aug 2019 11:57:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6en4LMEj61ddHU0xSwcWXkZgGtJJnQgZlwhSseT3dQ8=;
+        b=fv9i4YLA7ATeJm5K6ltARBABxUI55pRnBZ2Uy303PlfCm02Zs+Wv6FPs/h4Lx3Xg6r
+         yLXAUxM7u9nwEOtAiTerHl6DvISMvS1Q31j09O2EYc6kKMJRk1fMX8EZ/doPXr87Rxkm
+         dMUK/iHvHpvoI0WFehAG2xG1rzcQ3LRkrjEzu49YRoQAlldb3Kgv5G34j4oah7+5F5pk
+         soOh8weRV0Fa7VQh6JcKhWxWHYcdyw8FWmnuGVIu+cTX1D+o+kOnuRrjgffqszH98kBZ
+         hcHkMNgSWaXnpKDDRF4rEs+rMwsBSo/3iPpKiPb+PC7GhSCNy5t/ojtVosKnESYZOW4c
+         cjPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6en4LMEj61ddHU0xSwcWXkZgGtJJnQgZlwhSseT3dQ8=;
+        b=gcFauXyhYg4nahcYOAMVNOuBHhnaD4A4NRfYioiDeILdfhpBnriS9VqWpTO20lYl9x
+         4vPSMPFq6KJ6UG25guKBUISfVpAaTGgnzSrUVbSo+ZBNgZMbY+BoOnDXCf4utlBngDKc
+         8UjXm4+nm3syiNAtDAk2/SSQjbQjUUMWpO5RbHX29xE87UQ5jfQXvXd6ZJiLE7PvT09x
+         JJheFU1hLHOifaQgVmcFXHY3rVTfqffabIdsS4jm9VjGA8KYE047bW5OmrkP2xd1TBHa
+         Ci3jzczXIc4AFZ78WV0U4U7sU/j5EoCTVjIP4TYNK0fwApQ0XqwGULjQChmOO1iJbAo7
+         Kiow==
+X-Gm-Message-State: APjAAAVdPkeqhzDPzlJq1qdVzYNocC5BRXPpyBFwMlqL22WQaERqNQq8
+        zYkcMKUgbE5NeUKZuS1RNqy5Cmyc8e/eAo4EcqaCvqgCMBpvmw==
+X-Google-Smtp-Source: APXvYqwV2xiDYI/RXzzmB7Wn7xKh5mjmnY/MmhHmZ42lLqaSUXPV4OIwwz8Sk08NHpBBmt25jWeuJV6tmdPj69K1bY8=
+X-Received: by 2002:a37:bf42:: with SMTP id p63mr9938702qkf.437.1565204275071;
+ Wed, 07 Aug 2019 11:57:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-07_05:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=9 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=903 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908070170
-X-FB-Internal: deliver
+References: <20190806234201.6296-1-dxu@dxuuu.xyz>
+In-Reply-To: <20190806234201.6296-1-dxu@dxuuu.xyz>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 7 Aug 2019 11:57:44 -0700
+Message-ID: <CAEf4BzaQZrEuqqGhFrf1cDiWiUXYDy6x8zAMXayry6H2ow78Og@mail.gmail.com>
+Subject: Re: [PATCH 2/3] libbpf: Add helper to extract perf fd from bpf_link
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Make .BTF section allocated and expose its contents through sysfs.
+On Tue, Aug 6, 2019 at 4:42 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> It is sometimes necessary to perform ioctl's on the underlying perf fd.
+> There is not currently a way to extract the fd given a bpf_link, so add a
+> helper for it.
+> ---
 
-/sys/kernel/btf directory is created to contain all the BTFs present
-inside kernel. Currently there is only kernel's main BTF, represented as
-/sys/kernel/btf/kernel file. Once kernel modules' BTFs are supported,
-each module will expose its BTF as /sys/kernel/btf/<module-name> file.
+So I've been going back and forth with this approach and the
+alternative one, and I think I'm leaning towards the alternative one
+still.
 
-Current approach relies on a few pieces coming together:
-1. pahole is used to take almost final vmlinux image (modulo .BTF and
-   kallsyms) and generate .BTF section by converting DWARF info into
-   BTF. This section is not allocated and not mapped to any segment,
-   though, so is not yet accessible from inside kernel at runtime.
-2. objcopy dumps .BTF contents into binary file and subsequently
-   convert binary file into linkable object file with automatically
-   generated symbols _binary__btf_kernel_bin_start and
-   _binary__btf_kernel_bin_end, pointing to start and end, respectively,
-   of BTF raw data.
-3. final vmlinux image is generated by linking this object file (and
-   kallsyms, if necessary). sysfs_btf.c then creates
-   /sys/kernel/btf/kernel file and exposes embedded BTF contents through
-   it. This allows, e.g., libbpf and bpftool access BTF info at
-   well-known location, without resorting to searching for vmlinux image
-   on disk (location of which is not standardized and vmlinux image
-   might not be even available in some scenarios, e.g., inside qemu
-   during testing).
+I think it's better to have a broad "categories" of bpf_links, e.g.:
 
-Alternative approach using .incbin assembler directive to embed BTF
-contents directly was attempted but didn't work, because sysfs_proc.o is
-not re-compiled during link-vmlinux.sh stage. This is required, though,
-to update embedded BTF data (initially empty data is embedded, then
-pahole generates BTF info and we need to regenerate sysfs_btf.o with
-updated contents, but it's too late at that point).
+- FD-based bpf_link (which is the only one we have right now):
+bpf_link_fd. It's not just for perf FD-based ones, raw tracepoint is
+not, but it's still FD-based;
+- for cgroup-related links (once they are added), it will be
+bpf_link_cg (or something along the lines);
+- there probably should be separate XDP-related bpf_link with device
+ID/name inside;
+- etc, whatever we'll need.
 
-If BTF couldn't be generated due to missing or too old pahole,
-sysfs_btf.c handles that gracefully by detecting that
-_binary__btf_kernel_bin_start (weak symbol) is 0 and not creating
-/sys/kernel/btf at all.
+Then we can have a set of casting APIs and getter APIs that extract
+useful information from specific type of bpf_link. We can also add
+direct bpf_link creation API (e.g., from known FD), for cases where it
+makes sense.
 
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- kernel/bpf/Makefile     |  3 +++
- kernel/bpf/sysfs_btf.c  | 52 ++++++++++++++++++++++++++++++++++++++++
- scripts/link-vmlinux.sh | 53 ++++++++++++++++++++++++++---------------
- 3 files changed, 89 insertions(+), 19 deletions(-)
- create mode 100644 kernel/bpf/sysfs_btf.c
+So something like (in libbpf.h):
 
-diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index 29d781061cd5..e1d9adb212f9 100644
---- a/kernel/bpf/Makefile
-+++ b/kernel/bpf/Makefile
-@@ -22,3 +22,6 @@ obj-$(CONFIG_CGROUP_BPF) += cgroup.o
- ifeq ($(CONFIG_INET),y)
- obj-$(CONFIG_BPF_SYSCALL) += reuseport_array.o
- endif
-+ifeq ($(CONFIG_SYSFS),y)
-+obj-$(CONFIG_DEBUG_INFO_BTF) += sysfs_btf.o
-+endif
-diff --git a/kernel/bpf/sysfs_btf.c b/kernel/bpf/sysfs_btf.c
-new file mode 100644
-index 000000000000..ac06ce1d62e8
---- /dev/null
-+++ b/kernel/bpf/sysfs_btf.c
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Provide kernel BTF information for introspection and use by eBPF tools.
-+ */
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/kobject.h>
-+#include <linux/init.h>
-+
-+/* See scripts/link-vmlinux.sh, gen_btf() func for details */
-+extern char __weak _binary__btf_kernel_bin_start[];
-+extern char __weak _binary__btf_kernel_bin_end[];
-+
-+static ssize_t
-+btf_kernel_read(struct file *file, struct kobject *kobj,
-+		struct bin_attribute *bin_attr,
-+		char *buf, loff_t off, size_t len)
-+{
-+	memcpy(buf, _binary__btf_kernel_bin_start + off, len);
-+	return len;
-+}
-+
-+static struct bin_attribute btf_kernel_attr __ro_after_init = {
-+	.attr = {
-+		.name = "kernel",
-+		.mode = 0444,
-+	},
-+	.read = btf_kernel_read,
-+};
-+
-+static struct bin_attribute *btf_attrs[] __ro_after_init = {
-+	&btf_kernel_attr,
-+	NULL,
-+};
-+
-+static struct attribute_group btf_group_attr __ro_after_init = {
-+	.name = "btf",
-+	.bin_attrs = btf_attrs,
-+};
-+
-+static int __init btf_kernel_init(void)
-+{
-+	if (!_binary__btf_kernel_bin_start)
-+		return 0;
-+
-+	btf_kernel_attr.size = _binary__btf_kernel_bin_end -
-+			       _binary__btf_kernel_bin_start;
-+
-+	return sysfs_create_group(kernel_kobj, &btf_group_attr);
-+}
-+
-+subsys_initcall(btf_kernel_init);
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index a7124f895b24..a45ba0baf21f 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -56,8 +56,8 @@ modpost_link()
- }
- 
- # Link of vmlinux
--# ${1} - optional extra .o files
--# ${2} - output file
-+# ${1} - output file
-+# ${@:2} - optional extra .o files
- vmlinux_link()
- {
- 	local lds="${objtree}/${KBUILD_LDS}"
-@@ -70,9 +70,9 @@ vmlinux_link()
- 			--start-group				\
- 			${KBUILD_VMLINUX_LIBS}			\
- 			--end-group				\
--			${1}"
-+			${@:2}"
- 
--		${LD} ${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux} -o ${2}	\
-+		${LD} ${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux} -o ${1}	\
- 			-T ${lds} ${objects}
- 	else
- 		objects="-Wl,--whole-archive			\
-@@ -81,9 +81,9 @@ vmlinux_link()
- 			-Wl,--start-group			\
- 			${KBUILD_VMLINUX_LIBS}			\
- 			-Wl,--end-group				\
--			${1}"
-+			${@:2}"
- 
--		${CC} ${CFLAGS_vmlinux} -o ${2}			\
-+		${CC} ${CFLAGS_vmlinux} -o ${1}			\
- 			-Wl,-T,${lds}				\
- 			${objects}				\
- 			-lutil -lrt -lpthread
-@@ -92,23 +92,35 @@ vmlinux_link()
- }
- 
- # generate .BTF typeinfo from DWARF debuginfo
-+# ${1} - vmlinux image
-+# ${2} - file to dump raw BTF data into
- gen_btf()
- {
--	local pahole_ver;
-+	local pahole_ver
-+	local bin_arch
- 
- 	if ! [ -x "$(command -v ${PAHOLE})" ]; then
- 		info "BTF" "${1}: pahole (${PAHOLE}) is not available"
--		return 0
-+		return 1
- 	fi
- 
- 	pahole_ver=$(${PAHOLE} --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
- 	if [ "${pahole_ver}" -lt "113" ]; then
- 		info "BTF" "${1}: pahole version $(${PAHOLE} --version) is too old, need at least v1.13"
--		return 0
-+		return 1
- 	fi
- 
--	info "BTF" ${1}
-+	vmlinux_link ${1}
-+
-+	info "BTF" ${2}
- 	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
-+
-+	# dump .BTF section into raw binary file to link with final vmlinux
-+	bin_arch=$(${OBJDUMP} -f ${1} | grep architecture | \
-+		cut -d, -f1 | cut -d' ' -f2)
-+	${OBJCOPY} --dump-section .BTF=.btf.kernel.bin ${1} 2>/dev/null
-+	${OBJCOPY} -I binary -O ${CONFIG_OUTPUT_FORMAT} -B ${bin_arch} \
-+		--rename-section .data=.BTF .btf.kernel.bin ${2}
- }
- 
- # Create ${2} .o file with all symbols from the ${1} object file
-@@ -153,6 +165,7 @@ sortextable()
- # Delete output files in case of error
- cleanup()
- {
-+	rm -f .btf.*
- 	rm -f .tmp_System.map
- 	rm -f .tmp_kallsyms*
- 	rm -f .tmp_vmlinux*
-@@ -215,6 +228,13 @@ ${MAKE} -f "${srctree}/scripts/Makefile.modpost" vmlinux.o
- info MODINFO modules.builtin.modinfo
- ${OBJCOPY} -j .modinfo -O binary vmlinux.o modules.builtin.modinfo
- 
-+btf_kernel_bin_o=""
-+if [ -n "${CONFIG_DEBUG_INFO_BTF}" ]; then
-+	if gen_btf .tmp_vmlinux_btf .btf.kernel.bin.o ; then
-+		btf_kernel_bin_o=.btf.kernel.bin.o
-+	fi
-+fi
-+
- kallsymso=""
- kallsyms_vmlinux=""
- if [ -n "${CONFIG_KALLSYMS}" ]; then
-@@ -246,11 +266,11 @@ if [ -n "${CONFIG_KALLSYMS}" ]; then
- 	kallsyms_vmlinux=.tmp_vmlinux2
- 
- 	# step 1
--	vmlinux_link "" .tmp_vmlinux1
-+	vmlinux_link .tmp_vmlinux1 ${btf_kernel_bin_o}
- 	kallsyms .tmp_vmlinux1 .tmp_kallsyms1.o
- 
- 	# step 2
--	vmlinux_link .tmp_kallsyms1.o .tmp_vmlinux2
-+	vmlinux_link .tmp_vmlinux2 .tmp_kallsyms1.o ${btf_kernel_bin_o}
- 	kallsyms .tmp_vmlinux2 .tmp_kallsyms2.o
- 
- 	# step 3
-@@ -261,18 +281,13 @@ if [ -n "${CONFIG_KALLSYMS}" ]; then
- 		kallsymso=.tmp_kallsyms3.o
- 		kallsyms_vmlinux=.tmp_vmlinux3
- 
--		vmlinux_link .tmp_kallsyms2.o .tmp_vmlinux3
--
-+		vmlinux_link .tmp_vmlinux3 .tmp_kallsyms2.o ${btf_kernel_bin_o}
- 		kallsyms .tmp_vmlinux3 .tmp_kallsyms3.o
- 	fi
- fi
- 
- info LD vmlinux
--vmlinux_link "${kallsymso}" vmlinux
--
--if [ -n "${CONFIG_DEBUG_INFO_BTF}" ]; then
--	gen_btf vmlinux
--fi
-+vmlinux_link vmlinux "${kallsymso}" "${btf_kernel_bin_o}"
- 
- if [ -n "${CONFIG_BUILDTIME_EXTABLE_SORT}" ]; then
- 	info SORTEX vmlinux
--- 
-2.17.1
+struct bpf_link_fd;
+struct bpf_link_cg;
 
+/* casting APIs */
+const struct bpf_link_fd *bpf_link__as_fd(const struct bpf_link *link);
+const struct bpf_link_cg *bpf_link__as_cg(const struct bpf_link *link);
+
+/* getters APIs */
+int bpf_link_fd__fd(const struct bpf_link_fd *link);
+int bpf_link_cg__cgroup_fd(const struct bpf_link_cg *link);
+
+/* link factories (in addition to attach APIs) */
+const struct bpf_link_fd *bpf_link__from_fd(int fd);
+const struct bpf_link_cg *bpf_link__from_cg(int cg_fd, /* whatever
+else necessary */);
+
+I think this way it becomes obvious what you can expect to get of each
+possible type of bpf_link and you'll have to explicitly cast to the
+right type. Yet we still hide implementation details, allow no-brainer
+bpf_link__destroy regardless of specific type of link (which probably
+will be a common case).
+
+Thoughts?
+
+>  tools/lib/bpf/libbpf.c   | 13 +++++++++++++
+>  tools/lib/bpf/libbpf.h   |  1 +
+>  tools/lib/bpf/libbpf.map |  5 +++++
+>  3 files changed, 19 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index ead915aec349..8469d69448ae 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -4004,6 +4004,19 @@ static int bpf_link__destroy_perf_event(struct bpf_link *link)
+>         return err;
+>  }
+>
+> +int bpf_link__get_perf_fd(struct bpf_link *link)
+
+this seems like a bit too specific name (and we should avoid "get"
+words, as we do in a bunch of other libbpf APIs for getters). Maybe
+just `bpf_link__fd`? This especially makes sense with a "file-based
+bpf_link" abstraction I proposed above.
+
+> +{
+> +       struct bpf_link_fd *l = (void *)link;
+> +
+> +       if (!link)
+> +               return -1;
+> +
+> +       if (link->destroy != &bpf_link__destroy_perf_event)
+> +               return -1;
+> +
+> +       return l->fd;
+> +}
+> +
+>  struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog,
+>                                                 int pfd)
+>  {
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 8a9d462a6f6d..5391ac95e4fa 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -168,6 +168,7 @@ LIBBPF_API void bpf_program__unload(struct bpf_program *prog);
+>  struct bpf_link;
+>
+>  LIBBPF_API int bpf_link__destroy(struct bpf_link *link);
+> +LIBBPF_API int bpf_link__get_perf_fd(struct bpf_link *link);
+>
+>  LIBBPF_API struct bpf_link *
+>  bpf_program__attach_perf_event(struct bpf_program *prog, int pfd);
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index f9d316e873d8..0f844ce29b04 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -184,3 +184,8 @@ LIBBPF_0.0.4 {
+>                 perf_buffer__new_raw;
+>                 perf_buffer__poll;
+>  } LIBBPF_0.0.3;
+> +
+> +LIBBPF_0.0.5 {
+> +       global:
+> +               bpf_link__get_perf_fd;
+> +} LIBBPF_0.0.4;
+> --
+> 2.20.1
+>
