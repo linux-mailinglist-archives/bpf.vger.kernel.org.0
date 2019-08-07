@@ -2,213 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 053E9854BA
-	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2019 22:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7357C854EA
+	for <lists+bpf@lfdr.de>; Wed,  7 Aug 2019 23:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389583AbfHGUtW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Aug 2019 16:49:22 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:6488 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389567AbfHGUtV (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 7 Aug 2019 16:49:21 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x77Kjclu008609
-        for <bpf@vger.kernel.org>; Wed, 7 Aug 2019 13:49:21 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=lFDlsCFhy4mlD7Q0koIbBu65FWY8EncNVgC2oNP6XN8=;
- b=hLgg2vYFg7P7lXwPFZbyvKuao+lTQPjxTExnbD/qjRUeHm5rk/gJA39yFMncGbAxF+HN
- 1hgG+OQDXvELk0ZiKFVrNipgmAvtJJFY+ggH2BP3InrEz2uMd0Uva+o+ogJW1xmqBpRV
- IC+Bjg90Pz74HCkCkHm03Fg3AzBqFSltTlo= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2u8450gfba-8
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 07 Aug 2019 13:49:20 -0700
-Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Wed, 7 Aug 2019 13:49:18 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id 95D2186167B; Wed,  7 Aug 2019 13:49:14 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>, <yhs@fb.com>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v5 bpf-next 14/14] selftests/bpf: add CO-RE relocs misc tests
-Date:   Wed, 7 Aug 2019 13:48:43 -0700
-Message-ID: <20190807204843.513594-15-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190807204843.513594-1-andriin@fb.com>
-References: <20190807204843.513594-1-andriin@fb.com>
-X-FB-Internal: Safe
-MIME-Version: 1.0
+        id S1730138AbfHGVHO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Aug 2019 17:07:14 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:41185 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729960AbfHGVHO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 7 Aug 2019 17:07:14 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 26AD721540;
+        Wed,  7 Aug 2019 17:07:13 -0400 (EDT)
+Received: from imap35 ([10.202.2.85])
+  by compute4.internal (MEProxy); Wed, 07 Aug 2019 17:07:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=7XfQ6neWKgG4FY+EaloGsx/DhHFLq0i
+        ul8n3nG8iLNo=; b=HUh2wwRIOU0IkJGEF9RbappV2N4W0Y0q0tue/gCVmiERfvh
+        b6PcHE2aTAcsuXYSdEMMjnOjGv0wsDvdZdqYwu0dEV6vvkoN39+yfkXughvc6Iz1
+        VClt5lOcCIUG7yA0H+O++ma0tSLg1CQEBl3E+nUvDcW9p4dG+xoiFuC13wiBXeLr
+        3tlVcHbDRzEIHbkzaPHhxsZlFTxAL9J5Q+ZKWjtG7QTDXqlIHTFXA9gJiXFT0ntN
+        TuppBxuCtecAx3mpxPwLZVz706Qjyk47friEdgYwYvkESw+YZYab6zqgx8oZksRe
+        RG+IoVB2oK5d4CtNqBEfjWaVTNjHyl0Npp0sxYw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=7XfQ6n
+        eWKgG4FY+EaloGsx/DhHFLq0iul8n3nG8iLNo=; b=I/hR/m+201PHbjhdPtHXRO
+        YVJMqgDgFpok+l+peTQ9ajKt30u/x8LKmkWwYkUAc/XwEj/jRRE5L3lzw8/8utlD
+        yvt/rPooSS5+mb1ol7eUfmtjWImR/7zxBEWjW8qiw7aq2gkBA9eEPIUxIVneOcUm
+        nx/DZhqHJi9byQWWEctO/JT++7ol7g4CBH7GVBZHyHe/3buMlfhC+nEByRhJMOfC
+        FC4/cG70Aw8cbAj8BLgR1ktzR4qXy6RGQdp+7Y1gFDI3FdAEFaZLuiGQZ3qPZj1L
+        qlL08iWAQyRr9tS6ovpt/79+kNpcJqNk43RRZRntBbQtH3nRpozyw+RUc9pTibVQ
+        ==
+X-ME-Sender: <xms:gD1LXSsiljx5GxLSUuf5KaOVy7zv49uDC8nDOyt2Vtb5YFhKJYpsag>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduvddrudduvddgudehjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculddvfedmnecujfgurhepofgfggfkjghffffhvffutgesthdtredt
+    reertdenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighi
+    iiqeenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihiienucev
+    lhhushhtvghrufhiiigvpedt
+X-ME-Proxy: <xmx:gD1LXctBIC8-beBjbXyWpnk0kiCiZ2yz26k8b4zhCfXy78WEuUJg0g>
+    <xmx:gD1LXQa1SOHu-c6t8R01uYpDYvvSmxfSaOqgRaf3u0lGOtg6vYvz5A>
+    <xmx:gD1LXc6T5xXG97eVgt_0BYXPzMBYp61z-qU_BVgS2z83l2EeEvcO9A>
+    <xmx:gT1LXTz33mzUfmy19G1sAZwPso0JQDDUg7FV3Qs4tKZJuMZFJWLTjQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 8012C14C0066; Wed,  7 Aug 2019 17:07:12 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.1.6-808-g930a1a1-fmstable-20190805v2
+Mime-Version: 1.0
+Message-Id: <08d10274-8d4f-4c59-a33e-07f217a23f09@www.fastmail.com>
+In-Reply-To: <f4a1ca0c-3fa1-5a20-2f41-133dc2ec1445@fb.com>
+References: <20190806234131.5655-1-dxu@dxuuu.xyz>
+ <f4a1ca0c-3fa1-5a20-2f41-133dc2ec1445@fb.com>
+Date:   Wed, 07 Aug 2019 14:07:12 -0700
+From:   "Daniel Xu" <dxu@dxuuu.xyz>
+To:     "Yonghong Song" <yhs@fb.com>, "Song Liu" <songliubraving@fb.com>,
+        "Andrii Nakryiko" <andriin@fb.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "Kernel Team" <Kernel-team@fb.com>
+Subject: Re: [PATCH 1/3] tracing/kprobe: Add PERF_EVENT_IOC_QUERY_KPROBE ioctl
 Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-07_06:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=67 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908070179
-X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add tests validating few edge-cases of capturing offset relocations.
+On Tue, Aug 6, 2019, at 10:52 PM, Yonghong Song wrote:
+> 
+> 
+> On 8/6/19 4:41 PM, Daniel Xu wrote:
+> > It's useful to know kprobe's nmissed and nhit stats. For example with
+> > tracing tools, it's important to know when events may have been lost.
+> > There is currently no way to get that information from the perf API.
+> > This patch adds a new ioctl that lets users query this information.
+[...]
+> > +/*
+> > + * Structure used by below PERF_EVENT_IOC_QUERY_KPROE command
+> 
+> typo PERF_EVENT_IOC_QUERY_KPROE => PERF_EVENT_IOC_QUERY_KPROBE
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../selftests/bpf/prog_tests/core_reloc.c     | 19 +++++++
- .../bpf/progs/btf__core_reloc_misc.c          |  5 ++
- .../selftests/bpf/progs/core_reloc_types.h    | 25 ++++++++
- .../bpf/progs/test_core_reloc_misc.c          | 57 +++++++++++++++++++
- 4 files changed, 106 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_misc.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_misc.c
+Ok. Whoops.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-index 251ef8c518f0..f3863f976a48 100644
---- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-@@ -260,6 +260,25 @@ static struct core_reloc_test_case test_cases[] = {
- 	INTS_ERR_CASE(ints___err_wrong_sz_16),
- 	INTS_ERR_CASE(ints___err_wrong_sz_32),
- 	INTS_ERR_CASE(ints___err_wrong_sz_64),
-+	
-+	/* validate edge cases of capturing relocations */
-+	{
-+		.case_name = "misc",
-+		.bpf_obj_file = "test_core_reloc_misc.o",
-+		.btf_src_file = "btf__core_reloc_misc.o",
-+		.input = (const char *)&(struct core_reloc_misc_extensible[]){
-+			{ .a = 1 },
-+			{ .a = 2 }, /* not read */
-+			{ .a = 3 },
-+		},
-+		.input_len = 4 * sizeof(int),
-+		.output = STRUCT_TO_CHAR_PTR(core_reloc_misc_output) {
-+			.a = 1,
-+			.b = 1,
-+			.c = 0, /* BUG in clang, should be 3 */
-+		},
-+		.output_len = sizeof(struct core_reloc_misc_output),
-+	},
- };
- 
- struct data {
-diff --git a/tools/testing/selftests/bpf/progs/btf__core_reloc_misc.c b/tools/testing/selftests/bpf/progs/btf__core_reloc_misc.c
-new file mode 100644
-index 000000000000..ed9ad8b5b4f8
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/btf__core_reloc_misc.c
-@@ -0,0 +1,5 @@
-+#include "core_reloc_types.h"
-+
-+void f1(struct core_reloc_misc___a x) {}
-+void f2(struct core_reloc_misc___b x) {}
-+void f3(struct core_reloc_misc_extensible x) {}
-diff --git a/tools/testing/selftests/bpf/progs/core_reloc_types.h b/tools/testing/selftests/bpf/progs/core_reloc_types.h
-index 5f3ebd4f6dc3..10a252b6da55 100644
---- a/tools/testing/selftests/bpf/progs/core_reloc_types.h
-+++ b/tools/testing/selftests/bpf/progs/core_reloc_types.h
-@@ -640,3 +640,28 @@ struct core_reloc_ints___err_wrong_sz_64 {
- 	uint32_t	u64_field; /* not 64-bit anymore */
- 	int32_t		s64_field; /* not 64-bit anymore */
- };
-+
-+/*
-+ * MISC
-+ */
-+struct core_reloc_misc_output {
-+	int a, b, c;
-+};
-+
-+struct core_reloc_misc___a {
-+	int a1;
-+	int a2;
-+};
-+
-+struct core_reloc_misc___b {
-+	int b1;
-+	int b2;
-+};
-+
-+/* this one extends core_reloc_misc_extensible struct from BPF prog */
-+struct core_reloc_misc_extensible {
-+	int a;
-+	int b;
-+	int c;
-+	int d;
-+};
-diff --git a/tools/testing/selftests/bpf/progs/test_core_reloc_misc.c b/tools/testing/selftests/bpf/progs/test_core_reloc_misc.c
-new file mode 100644
-index 000000000000..c59984bd3e23
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_core_reloc_misc.c
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2019 Facebook
-+
-+#include <linux/bpf.h>
-+#include <stdint.h>
-+#include "bpf_helpers.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+static volatile struct data {
-+	char in[256];
-+	char out[256];
-+} data;
-+
-+struct core_reloc_misc_output {
-+	int a, b, c;
-+};
-+
-+struct core_reloc_misc___a {
-+	int a1;
-+	int a2;
-+};
-+
-+struct core_reloc_misc___b {
-+	int b1;
-+	int b2;
-+};
-+
-+/* fixed two first members, can be extended with new fields */
-+struct core_reloc_misc_extensible {
-+	int a;
-+	int b;
-+};
-+
-+SEC("raw_tracepoint/sys_enter")
-+int test_core_misc(void *ctx)
-+{
-+	struct core_reloc_misc___a *in_a = (void *)&data.in;
-+	struct core_reloc_misc___b *in_b = (void *)&data.in;
-+	struct core_reloc_misc_extensible *in_ext = (void *)&data.in;
-+	struct core_reloc_misc_output *out = (void *)&data.out;
-+
-+	/* record two different relocations with the same accessor string */
-+	if (BPF_CORE_READ(&out->a, &in_a->a1) ||	/* accessor: 0:0 */
-+	    BPF_CORE_READ(&out->b, &in_b->b1))		/* accessor: 0:0 */
-+		return 1;
-+
-+	/* Validate relocations capture array-only accesses for structs with
-+	 * fixed header, but with potentially extendable tail. This will read
-+	 * first 4 bytes of 2nd element of in_ext array of potentially
-+	 * variably sized struct core_reloc_misc_extensible. */ 
-+	if (BPF_CORE_READ(&out->c, &in_ext[2]))		/* accessor: 2 */
-+		return 1;
-+
-+	return 0;
-+}
-+
--- 
-2.17.1
+> 
+> > + * to query information about the kprobe attached to the perf
+> > + * event.
+> > + */
+> > +struct perf_event_query_kprobe {
+> > +       /*
+> > +        * Size of structure for forward/backward compatibility
+> > +        */
+> > +       __u32   size;
+> 
+> Since this is perf_event UAPI change, could you cc to
+> Peter Zijlstra <peterz@infradead.org> as well?
 
+Ok. Will add in V2.
+
+> 
+> We have 32 bit hole here. For UAPI, it would be best to remove
+> the hole or make it explicit. So in this case, maybe something like
+>            __u32   :32;
+> 
+> Also, what is in your mind for potential future extension?
+
+The idea is we can extend this API if more kprobe stats are added. Similar
+to how perf_event_open(2) has a size field. Not sure if it's a silly idea but
+we could also make the size field a u64 to fill the hole.
+
+> 
+> This will only handle FD based kprobe. If this is the intention, best to
+> clearly state it in the cover letter as well.
+> 
+> I suspect this should also work for debugfs trace event based kprobe,
+> but I did not verify it through codes.
+> 
+
+Ok. Will update cover letter in v2.
+
+[...]
+> > +
+> > +	if (copy_to_user(&uquery->nmissed, &nmissed, sizeof(nmissed)) ||
+> > +	    copy_to_user(&uquery->nhit, &nhit, sizeof(nhit)))
+> > +		return -EFAULT;
+> 
+> You can use put_user() instead of copy_to_user() to simplify the code.
+> 
+
+Ok.
