@@ -2,45 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B748675B
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 18:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E63E867E2
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 19:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390244AbfHHQpG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Aug 2019 12:45:06 -0400
-Received: from mail-ot1-f71.google.com ([209.85.210.71]:37068 "EHLO
+        id S2404288AbfHHRYL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Aug 2019 13:24:11 -0400
+Received: from mail-ot1-f71.google.com ([209.85.210.71]:42831 "EHLO
         mail-ot1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390238AbfHHQpG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Aug 2019 12:45:06 -0400
-Received: by mail-ot1-f71.google.com with SMTP id x5so62812845otb.4
-        for <bpf@vger.kernel.org>; Thu, 08 Aug 2019 09:45:05 -0700 (PDT)
+        with ESMTP id S2404259AbfHHRYH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Aug 2019 13:24:07 -0400
+Received: by mail-ot1-f71.google.com with SMTP id x18so63154689otp.9
+        for <bpf@vger.kernel.org>; Thu, 08 Aug 2019 10:24:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=pCP8x+c3NdmQMNT+LHA6K3XzXnAObCZ6ntIBW771GIM=;
-        b=bNr9BVXeCkeSU6rkIIEiX0KF6GDwKCBOH6H+F8x3s1MTpCZX94IZU/GLbw9J/9ELX3
-         KynoDF6YyLOiGO2IyUUbr5ZtYTnjKCV1hKbiTLlf1L2RXcAlrstiHzAqTrDyf6gMiUra
-         snWTkbu1e12HdHWjlkW3F3S1hrFR6E+JgEnrckwlnqNZMqU39SnFpyns+4frVxcU5gNj
-         Vl1hKOBJqiS0w7PhnfdLZu9A/ys4U3bQhjWc0nrscD4kilxx8IiUPnmcD3k0GWAH5lr9
-         RWc3mqKF6PLVDKWi/2srfoGsjUflZUDjAM2SX99/ChRoqd0TU7dlqkF/5gDDqSljxOPM
-         33fA==
-X-Gm-Message-State: APjAAAXTLP3ZtMGDniChIwDkDQ5sI8BC+WyYdoJdx1g64z3hj4cUAbk5
-        6RlK8TH4oroUV6cdYHUh7AuXPwkXec2pROmq3VW+TUSZcBin
-X-Google-Smtp-Source: APXvYqyKZOG/tnmvcHVs/lnVgia1SmEKFAl2TJJr91WPNOtvwVYVhOvsr5tAKftpEUX5MjcOQuAl2XktGfyghSfgZBa3BS6XROE2
+        bh=e1gv1WeJMlHGANR4IY6E8iV8unm9tW2t77TdB7HR+60=;
+        b=YtqYkPASD2QxjGI30t2hap+ZOMFYrgZi3SsfF0+WX77PrgYi7XytJ8Al07xcceUChl
+         fMVvCHhKumOpsvAA1LvcELAVGo2CoxRXJJcYXRA3xnmXdroDSwiNYzi0/rWV2OPuTCBA
+         twdZbnlhVFT1JhA+IqrFIAKPrSm+QWM+93sMV6ln7yG3JPiH5xQErlR81D4n+AXxACOF
+         NIpo3tyHNvahT+XNyBzRfufQElfiuzfYKGWvfPjOki16wmpO5MMft/YcCPai7rQbRufn
+         q74dfUXc8HNkd77AVQxm8tP7a+sl9hLagLhp+D2ooI1KEMnsFoAtXpxJuF2g/VlYdDrj
+         RptQ==
+X-Gm-Message-State: APjAAAXylKw/r3xYKQqF7JnYviXeIjGMucudBmXYUihpcP1yd3KAYIeB
+        sIjBmkNp3Tqt7DgXMLEp7E9Pqic7GgqbTeCswuC5S21YshHH
+X-Google-Smtp-Source: APXvYqzHlVEvfdz4GO9vSY+QKFPioOgYcsWeEKwBh81ovnl0oAHiXc6BpMVJ4i5rb188ZzJ2tLSS7sfQWxzKOCnTzVv6npF1DGib
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9613:: with SMTP id w19mr109048iol.140.1565282705187;
- Thu, 08 Aug 2019 09:45:05 -0700 (PDT)
-Date:   Thu, 08 Aug 2019 09:45:05 -0700
+X-Received: by 2002:a02:c012:: with SMTP id y18mr6831313jai.85.1565285046564;
+ Thu, 08 Aug 2019 10:24:06 -0700 (PDT)
+Date:   Thu, 08 Aug 2019 10:24:06 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009dac7f058f9dc763@google.com>
-Subject: INFO: rcu detected stall in tcp_write_timer
-From:   syzbot <syzbot+1f80b70f1e8f1df46319@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, edumazet@google.com, kafai@fb.com,
-        kuznet@ms2.inr.ac.ru, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
+Message-ID: <0000000000002c418a058f9e53cf@google.com>
+Subject: general protection fault in perf_tp_event_match (2)
+From:   syzbot <syzbot+076ba900c4a9a0f67aba@syzkaller.appspotmail.com>
+To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
+        ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        jolsa@redhat.com, kafai@fb.com, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, namhyung@kernel.org, netdev@vger.kernel.org,
+        peterz@infradead.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -51,120 +51,79 @@ Hello,
 
 syzbot found the following crash on:
 
-HEAD commit:    ce96e791 Add linux-next specific files for 20190731
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12b2efd0600000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fca5b9d53db6585c
-dashboard link: https://syzkaller.appspot.com/bug?extid=1f80b70f1e8f1df46319
+HEAD commit:    1e78030e Merge tag 'mmc-v5.3-rc1' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1011831a600000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4c7b914a2680c9c6
+dashboard link: https://syzkaller.appspot.com/bug?extid=076ba900c4a9a0f67aba
 compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
 
 Unfortunately, I don't have any reproducer for this crash yet.
 
 IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+1f80b70f1e8f1df46319@syzkaller.appspotmail.com
+Reported-by: syzbot+076ba900c4a9a0f67aba@syzkaller.appspotmail.com
 
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-	(detected by 1, t=10502 jiffies, g=28777, q=38)
-rcu: All QSes seen, last rcu_preempt kthread activity 10503  
-(4294973637-4294963134), jiffies_till_next_fqs=1, root ->qsmask 0x0
-syz-executor.5  R  running task    27376 17588  10322 0x00004008
+kasan: CONFIG_KASAN_INLINE enabled
+kasan: GPF could be caused by NULL-ptr deref or user memory access
+general protection fault: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 22070 Comm: syz-executor.3 Not tainted 5.3.0-rc2+ #86
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+RIP: 0010:perf_tp_event_match+0x31/0x260 kernel/events/core.c:8560
+Code: 89 f6 41 55 49 89 d5 41 54 53 48 89 fb e8 b7 0e ea ff 48 8d bb d0 01  
+00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84  
+c0 74 08 3c 03 0f 8e cc 01 00 00 44 8b a3 d0 01 00
+RSP: 0018:ffff88804ffa7790 EFLAGS: 00010007
+RAX: dffffc0000000000 RBX: 00000000ffffff9f RCX: ffffffff818bcb73
+RDX: 000000002000002d RSI: ffffffff818890b9 RDI: 000000010000016f
+RBP: ffff88804ffa77b0 R08: ffff8880531ba640 R09: ffffed100a6374c9
+R10: ffffed100a6374c8 R11: ffff8880531ba647 R12: ffff8880ae830860
+R13: ffff8880ae830860 R14: ffff88804ffa7880 R15: dffffc0000000000
+FS:  00005555556d7940(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000738008 CR3: 000000004cad5000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
-  <IRQ>
-  sched_show_task kernel/sched/core.c:5814 [inline]
-  sched_show_task.cold+0x2ed/0x34e kernel/sched/core.c:5789
-  print_other_cpu_stall kernel/rcu/tree_stall.h:410 [inline]
-  check_cpu_stall kernel/rcu/tree_stall.h:536 [inline]
-  rcu_pending kernel/rcu/tree.c:2736 [inline]
-  rcu_sched_clock_irq.cold+0xac8/0xc13 kernel/rcu/tree.c:2183
-  update_process_times+0x32/0x80 kernel/time/timer.c:1639
-  tick_sched_handle+0xa2/0x190 kernel/time/tick-sched.c:167
-  tick_sched_timer+0x53/0x140 kernel/time/tick-sched.c:1296
-  __run_hrtimer kernel/time/hrtimer.c:1389 [inline]
-  __hrtimer_run_queues+0x364/0xe40 kernel/time/hrtimer.c:1451
-  hrtimer_interrupt+0x314/0x770 kernel/time/hrtimer.c:1509
-  local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1068 [inline]
-  smp_apic_timer_interrupt+0x160/0x610 arch/x86/kernel/apic/apic.c:1093
-  apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:828
-RIP: 0010:__kasan_check_read+0x0/0x20 mm/kasan/common.c:91
-Code: e8 e9 c0 ae ff 0f 0b 4c 8b 4d d0 e9 27 ee ff ff 48 8b 73 58 89 c2 48  
-c7 c7 e0 c2 89 88 f7 da e8 ca c0 ae ff e9 da ee ff ff 90 <55> 89 f6 31 d2  
-48 89 e5 48 8b 4d 08 e8 cf 26 00 00 5d c3 0f 1f 00
-RSP: 0018:ffff8880ae909b40 EFLAGS: 00000202 ORIG_RAX: ffffffffffffff13
-RAX: 0000000000000000 RBX: ffff8880601cce08 RCX: ffffffff8158f467
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff8880601cce08
-RBP: ffff8880ae909c08 R08: 1ffff1100c0399c1 R09: ffffed100c0399c2
-R10: ffffed100c0399c1 R11: ffff8880601cce0b R12: 0000000000000001
-R13: 0000000000000003 R14: ffffed100c0399c1 R15: 0000000000000001
-  pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:642 [inline]
-  queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:50 [inline]
-  queued_spin_lock include/asm-generic/qspinlock.h:81 [inline]
-  do_raw_spin_lock+0x20e/0x2e0 kernel/locking/spinlock_debug.c:113
-  __raw_spin_lock include/linux/spinlock_api_smp.h:143 [inline]
-  _raw_spin_lock+0x37/0x40 kernel/locking/spinlock.c:151
-  spin_lock include/linux/spinlock.h:338 [inline]
-  tcp_write_timer+0x2b/0x1e0 net/ipv4/tcp_timer.c:610
-  call_timer_fn+0x1ac/0x780 kernel/time/timer.c:1322
-  expire_timers kernel/time/timer.c:1366 [inline]
-  __run_timers kernel/time/timer.c:1685 [inline]
-  __run_timers kernel/time/timer.c:1653 [inline]
-  run_timer_softirq+0x697/0x17a0 kernel/time/timer.c:1698
-  __do_softirq+0x262/0x98c kernel/softirq.c:292
-  invoke_softirq kernel/softirq.c:373 [inline]
-  irq_exit+0x19b/0x1e0 kernel/softirq.c:413
-  exiting_irq arch/x86/include/asm/apic.h:536 [inline]
-  smp_apic_timer_interrupt+0x1a3/0x610 arch/x86/kernel/apic/apic.c:1095
-  apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:828
-  </IRQ>
-RIP: 0010:arch_local_irq_restore arch/x86/include/asm/paravirt.h:756  
-[inline]
-RIP: 0010:slab_alloc mm/slab.c:3312 [inline]
-RIP: 0010:__do_kmalloc mm/slab.c:3653 [inline]
-RIP: 0010:__kmalloc+0x2b8/0x770 mm/slab.c:3664
-Code: 7e 0f 85 d6 fe ff ff e8 26 c5 53 ff e9 cc fe ff ff e8 1c ff ca ff 48  
-83 3d e4 52 26 07 00 0f 84 4f 03 00 00 48 8b 7d c0 57 9d <0f> 1f 44 00 00  
-e9 5e fe ff ff 31 d2 be 35 02 00 00 48 c7 c7 ce c0
-RSP: 0018:ffff888069e978c0 EFLAGS: 00000286 ORIG_RAX: ffffffffffffff13
-RAX: 0000000000000007 RBX: 0000000000000dc0 RCX: 1ffffffff134c016
-RDX: 0000000000000000 RSI: ffffffff8177a12e RDI: 0000000000000286
-RBP: ffff888069e97938 R08: ffff888064bee240 R09: ffffed10154802c1
-R10: ffffed10154802c0 R11: ffff8880aa401603 R12: 0000000000000100
-R13: 0000000000000dc0 R14: ffff8880aa4008c0 R15: ffff88805f8e7dc0
-  kmalloc_array include/linux/slab.h:614 [inline]
-  kcalloc include/linux/slab.h:625 [inline]
-  iter_file_splice_write+0x16e/0xbe0 fs/splice.c:690
-  do_splice_from fs/splice.c:848 [inline]
-  direct_splice_actor+0x123/0x190 fs/splice.c:1020
-  splice_direct_to_actor+0x366/0x970 fs/splice.c:975
-  do_splice_direct+0x1da/0x2a0 fs/splice.c:1063
-  do_sendfile+0x597/0xd00 fs/read_write.c:1464
-  __do_sys_sendfile64 fs/read_write.c:1519 [inline]
-  __se_sys_sendfile64 fs/read_write.c:1511 [inline]
-  __x64_sys_sendfile64+0x15a/0x220 fs/read_write.c:1511
-  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+  perf_tp_event+0x1ea/0x730 kernel/events/core.c:8611
+  perf_trace_run_bpf_submit+0x131/0x190 kernel/events/core.c:8586
+  perf_trace_sched_wakeup_template+0x42d/0x5d0  
+include/trace/events/sched.h:57
+  trace_sched_wakeup_new include/trace/events/sched.h:103 [inline]
+  wake_up_new_task+0x70f/0xbd0 kernel/sched/core.c:2848
+  _do_fork+0x26c/0xfa0 kernel/fork.c:2393
+  __do_sys_clone kernel/fork.c:2524 [inline]
+  __se_sys_clone kernel/fork.c:2505 [inline]
+  __x64_sys_clone+0x18d/0x250 kernel/fork.c:2505
+  do_syscall_64+0xfd/0x6a0 arch/x86/entry/common.c:296
   entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x459829
-Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f9691478c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000000459829
-RDX: 0000000020001000 RSI: 0000000000000003 RDI: 0000000000000003
-RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
-R10: 000000000000ffff R11: 0000000000000246 R12: 00007f96914796d4
-R13: 00000000004c6ff7 R14: 00000000004dc558 R15: 00000000ffffffff
-rcu: rcu_preempt kthread starved for 10569 jiffies! g28777 f0x2  
-RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
-rcu: RCU grace-period kthread stack dump:
-rcu_preempt     R  running task    29688    10      2 0x80004000
-Call Trace:
-  context_switch kernel/sched/core.c:3254 [inline]
-  __schedule+0x755/0x15b0 kernel/sched/core.c:3921
-  schedule+0xa8/0x270 kernel/sched/core.c:3985
-  schedule_timeout+0x486/0xc50 kernel/time/timer.c:1807
-  rcu_gp_fqs_loop kernel/rcu/tree.c:1611 [inline]
-  rcu_gp_kthread+0x9b2/0x18c0 kernel/rcu/tree.c:1768
-  kthread+0x361/0x430 kernel/kthread.c:255
-  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+RIP: 0033:0x457dfa
+Code: f7 d8 64 89 04 25 d4 02 00 00 64 4c 8b 0c 25 10 00 00 00 31 d2 4d 8d  
+91 d0 02 00 00 31 f6 bf 11 00 20 01 b8 38 00 00 00 0f 05 <48> 3d 00 f0 ff  
+ff 0f 87 f5 00 00 00 85 c0 41 89 c5 0f 85 fc 00 00
+RSP: 002b:00007ffcf0b1c640 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+RAX: ffffffffffffffda RBX: 00007ffcf0b1c640 RCX: 0000000000457dfa
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000001200011
+RBP: 00007ffcf0b1c680 R08: 0000000000000001 R09: 00005555556d7940
+R10: 00005555556d7c10 R11: 0000000000000246 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000000 R15: 00007ffcf0b1c6d0
+Modules linked in:
+---[ end trace 8f4efeb0ada52ec1 ]---
+RIP: 0010:perf_tp_event_match+0x31/0x260 kernel/events/core.c:8560
+Code: 89 f6 41 55 49 89 d5 41 54 53 48 89 fb e8 b7 0e ea ff 48 8d bb d0 01  
+00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84  
+c0 74 08 3c 03 0f 8e cc 01 00 00 44 8b a3 d0 01 00
+RSP: 0018:ffff88804ffa7790 EFLAGS: 00010007
+RAX: dffffc0000000000 RBX: 00000000ffffff9f RCX: ffffffff818bcb73
+RDX: 000000002000002d RSI: ffffffff818890b9 RDI: 000000010000016f
+RBP: ffff88804ffa77b0 R08: ffff8880531ba640 R09: ffffed100a6374c9
+R10: ffffed100a6374c8 R11: ffff8880531ba647 R12: ffff8880ae830860
+R13: ffff8880ae830860 R14: ffff88804ffa7880 R15: dffffc0000000000
+FS:  00005555556d7940(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000738008 CR3: 000000004cad5000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
