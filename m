@@ -2,49 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC76E856B6
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 02:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD01856F9
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 02:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730149AbfHHAFg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Aug 2019 20:05:36 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:35477 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730117AbfHHAFg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Aug 2019 20:05:36 -0400
-Received: by mail-pf1-f196.google.com with SMTP id u14so43011186pfn.2
-        for <bpf@vger.kernel.org>; Wed, 07 Aug 2019 17:05:36 -0700 (PDT)
+        id S2389820AbfHHAIx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Aug 2019 20:08:53 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:44573 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389759AbfHHAIa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Aug 2019 20:08:30 -0400
+Received: by mail-pf1-f193.google.com with SMTP id t16so42967568pfe.11
+        for <bpf@vger.kernel.org>; Wed, 07 Aug 2019 17:08:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=fomichev-me.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=5rNLUcyU+g8cIHRhCVxOiEzBg5fOWUyZNgUAXG+TC6M=;
-        b=rVjnwp/5mTAWFNgoUEhkYc7GXD6gczuDvo2A+mYcln4aP993nkH/3fv+uWt95j0YKL
-         Ptqi0tweakRfWAq45bPC5QzfXFmAJbFEyuIOZd220W9t7VzccC/sjpT2UzxEnrRPHVha
-         9m80DzYDOPxemQXJDmpWe8h66+zXUWoWeFl+zLAxxfM3UCvTyvhD20Y7G4w4Wz89fh9i
-         aXerq2pe8xtjU/5siWnRGpkmxcjx/lvfA5Q9xN7+YlquOQj0PkHapwZtQzTPZUXBbeDJ
-         vWSaBavXM5kftWgaJ6BuRjKaYS7pDEwwYcVzjmIGlrxapwOrCVvFatA4jzQCPknWfcuF
-         4LnQ==
+        bh=rr5fxBi2oSUb1ENDkejqRrom+Qly2XgxOWDI0MGIgPo=;
+        b=DhonMwILImLSlS/P8FZIUgizhMMGphTP+RHTNtQ14Osysmk1euwK6qzXZM+Zd+A0ER
+         /WIN57ptIz2I2jJhRhmr++8enc7p1zZCVA1cM+W5Db3UGhaq2JtkezMt2YUa+MnsvyCO
+         WkJN1u4e/CTy3woFc0vWJqrk7eBPJvhd1AoyfR7QFP/1e2QXjlReBC8mS9m9SjDCYhKL
+         MvPhc1bvXvSppIBSHuNd3c+uv+g2DGbJpM343Y5rXuDYU7yBJuZs0OFAACCaaphtPzHV
+         a+yBOLvBOYedSZbDH5GFOwWymUlDBUEZnG0bLGlfxO3t204jGJZMP+TUy2PfNTPOpeY5
+         NlOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5rNLUcyU+g8cIHRhCVxOiEzBg5fOWUyZNgUAXG+TC6M=;
-        b=Kb7TjtCdk45dtgHpAcoj6W7vNHofmM+FOdghxORGTRGuQBh5En/BXpo67eC/gUte1N
-         NKne2zmy2aJgyla4HAU6dvoC86EQpyG/GpJQVyn/X5pInjFyu+jLUoFx3s0bwso0T2zC
-         hlZ67PL+ITy4Ne06mxdQp2wkqMM8fvV2tJTXa86P7dtpANEXSW2UzoTMlaPV/vbtwR8d
-         hI14Y6oWexd1OtQAZPGH/Phv/gurScvOB0KdWqpn4fcTp0c2n8v7EdMIUvL1T6+JwbkY
-         zJO94nG8U/hiNqb8HY/wYtukZbZwsZ/rkmoO9/b54Y9N8jeY3N/O1QBpBscPNX6Alv49
-         QyEA==
-X-Gm-Message-State: APjAAAW8Q/FaxZXnc5tv2iVhfS0VLd80zCuLdRnXYLtqLenFzVLoyuh3
-        LHYsDfp74YY/z2sNnh4OC3BrfQ==
-X-Google-Smtp-Source: APXvYqxJMwvJpKM6qKh1GcP1on/3/77uccJwJ6rwh+7OCow1cJPsjp+WsZNFH+Kx+27piRZSzXrMVw==
-X-Received: by 2002:a17:90a:8a15:: with SMTP id w21mr1027328pjn.134.1565222734806;
-        Wed, 07 Aug 2019 17:05:34 -0700 (PDT)
+        bh=rr5fxBi2oSUb1ENDkejqRrom+Qly2XgxOWDI0MGIgPo=;
+        b=B2LBbgmK/ILnrxJgyXkBwJ+acfBlwKfJinJKHTZrrDTTicQ6CbGTiFbckeWDNKYZSj
+         Qmj+KjGMKDh7YDFruwRvl8qhZyyx5AzYjlrn7ttxqURRmXn2Z60NhVlcYyH1grPyzGm3
+         oJf+7MzjGqzoWtgzXr6C/qIf6niEEiHCKlErfedJ0FPvO/MV30UT5tQiO2+X5zS85VU9
+         fZEKBJkPJaMp73YabJKv2kPcN8/YOd2qKmWDZleCY9ekOcJUHF9U5snxKmy7HDoqS5f1
+         oopMLVbumDNKsqq6ga6M1+LC3UVPzu/pFBO6XRNuIVCjecSsSrze0pIvrOF83akS5+t1
+         i3EQ==
+X-Gm-Message-State: APjAAAVIInFpPZxRexdaSuNH4kTvKd6XB6WlWZOGzq+rofkF+47ONBsZ
+        AH0nKfVlS0TorSQs5WYXWanc2A==
+X-Google-Smtp-Source: APXvYqzod+gSnvi0x4AwWCAm9hQeGlBsEun9U0sEu29zm7bRGNRG5zYpWESsbeKPY7eDg9s4PVm14A==
+X-Received: by 2002:a17:90a:246f:: with SMTP id h102mr1021035pje.126.1565222909791;
+        Wed, 07 Aug 2019 17:08:29 -0700 (PDT)
 Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id i124sm171749195pfe.61.2019.08.07.17.05.33
+        by smtp.gmail.com with ESMTPSA id p27sm137634481pfq.136.2019.08.07.17.08.29
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 07 Aug 2019 17:05:34 -0700 (PDT)
-Date:   Wed, 7 Aug 2019 17:05:33 -0700
+        Wed, 07 Aug 2019 17:08:29 -0700 (PDT)
+Date:   Wed, 7 Aug 2019 17:08:28 -0700
 From:   Stanislav Fomichev <sdf@fomichev.me>
 To:     Yonghong Song <yhs@fb.com>
 Cc:     Stanislav Fomichev <sdf@google.com>,
@@ -54,15 +54,16 @@ Cc:     Stanislav Fomichev <sdf@google.com>,
         "ast@kernel.org" <ast@kernel.org>,
         "daniel@iogearbox.net" <daniel@iogearbox.net>,
         Martin Lau <kafai@fb.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: support cloning sk storage on accept()
-Message-ID: <20190808000533.GA2820@mini-arch>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: add sockopt
+ clone/inheritance test
+Message-ID: <20190808000828.GB2820@mini-arch>
 References: <20190807154720.260577-1-sdf@google.com>
- <20190807154720.260577-2-sdf@google.com>
- <9bd56e49-c38d-e1c4-1ff3-8250531d0d48@fb.com>
+ <20190807154720.260577-4-sdf@google.com>
+ <5a18a8ed-ab1b-de15-5dff-2b4a068bbe56@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9bd56e49-c38d-e1c4-1ff3-8250531d0d48@fb.com>
+In-Reply-To: <5a18a8ed-ab1b-de15-5dff-2b4a068bbe56@fb.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -73,238 +74,396 @@ On 08/07, Yonghong Song wrote:
 > 
 > 
 > On 8/7/19 8:47 AM, Stanislav Fomichev wrote:
-> > Add new helper bpf_sk_storage_clone which optionally clones sk storage
-> > and call it from bpf_sk_storage_clone. Reuse the gap in
-> > bpf_sk_storage_elem to store clone/non-clone flag.
+> > Add a test that calls setsockopt on the listener socket which triggers
+> > BPF program. This BPF program writes to the sk storage and sets
+> > clone flag. Make sure that sk storage is cloned for a newly
+> > accepted connection.
+> > 
+> > We have two cloned maps in the tests to make sure we hit both cases
+> > in bpf_sk_storage_clone: first element (sk_storage_alloc) and
+> > non-first element(s) (selem_link_map).
 > > 
 > > Cc: Martin KaFai Lau <kafai@fb.com>
 > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> 
-> I tried to see whether I can find any missing race conditions in
-> the code but I failed. So except a minor comments below,
-Thanks for a review!
-
-> Acked-by: Yonghong Song <yhs@fb.com>
-> 
 > > ---
-> >   include/net/bpf_sk_storage.h |  10 ++++
-> >   include/uapi/linux/bpf.h     |   1 +
-> >   net/core/bpf_sk_storage.c    | 102 +++++++++++++++++++++++++++++++++--
-> >   net/core/sock.c              |   9 ++--
-> >   4 files changed, 115 insertions(+), 7 deletions(-)
+> >   tools/testing/selftests/bpf/.gitignore        |   1 +
+> >   tools/testing/selftests/bpf/Makefile          |   3 +-
+> >   .../selftests/bpf/progs/sockopt_inherit.c     | 102 +++++++
+> >   .../selftests/bpf/test_sockopt_inherit.c      | 252 ++++++++++++++++++
+> >   4 files changed, 357 insertions(+), 1 deletion(-)
+> >   create mode 100644 tools/testing/selftests/bpf/progs/sockopt_inherit.c
+> >   create mode 100644 tools/testing/selftests/bpf/test_sockopt_inherit.c
 > > 
-> > diff --git a/include/net/bpf_sk_storage.h b/include/net/bpf_sk_storage.h
-> > index b9dcb02e756b..8e4f831d2e52 100644
-> > --- a/include/net/bpf_sk_storage.h
-> > +++ b/include/net/bpf_sk_storage.h
-> > @@ -10,4 +10,14 @@ void bpf_sk_storage_free(struct sock *sk);
-> >   extern const struct bpf_func_proto bpf_sk_storage_get_proto;
-> >   extern const struct bpf_func_proto bpf_sk_storage_delete_proto;
+> > diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+> > index 90f70d2c7c22..60c9338cd9b4 100644
+> > --- a/tools/testing/selftests/bpf/.gitignore
+> > +++ b/tools/testing/selftests/bpf/.gitignore
+> > @@ -42,4 +42,5 @@ xdping
+> >   test_sockopt
+> >   test_sockopt_sk
+> >   test_sockopt_multi
+> > +test_sockopt_inherit
+> >   test_tcp_rtt
+> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> > index 3bd0f4a0336a..c875763a851a 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -29,7 +29,7 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
+> >   	test_cgroup_storage test_select_reuseport test_section_names \
+> >   	test_netcnt test_tcpnotify_user test_sock_fields test_sysctl test_hashmap \
+> >   	test_btf_dump test_cgroup_attach xdping test_sockopt test_sockopt_sk \
+> > -	test_sockopt_multi test_tcp_rtt
+> > +	test_sockopt_multi test_sockopt_inherit test_tcp_rtt
 > >   
-> > +#ifdef CONFIG_BPF_SYSCALL
-> > +int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk);
-> > +#else
-> > +static inline int bpf_sk_storage_clone(const struct sock *sk,
-> > +				       struct sock *newsk)
-> > +{
-> > +	return 0;
-> > +}
-> > +#endif
-> > +
-> >   #endif /* _BPF_SK_STORAGE_H */
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 4393bd4b2419..00459ca4c8cf 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -2931,6 +2931,7 @@ enum bpf_func_id {
+> >   BPF_OBJ_FILES = $(patsubst %.c,%.o, $(notdir $(wildcard progs/*.c)))
+> >   TEST_GEN_FILES = $(BPF_OBJ_FILES)
+> > @@ -110,6 +110,7 @@ $(OUTPUT)/test_cgroup_attach: cgroup_helpers.c
+> >   $(OUTPUT)/test_sockopt: cgroup_helpers.c
+> >   $(OUTPUT)/test_sockopt_sk: cgroup_helpers.c
+> >   $(OUTPUT)/test_sockopt_multi: cgroup_helpers.c
+> > +$(OUTPUT)/test_sockopt_inherit: cgroup_helpers.c
+> >   $(OUTPUT)/test_tcp_rtt: cgroup_helpers.c
 > >   
-> >   /* BPF_FUNC_sk_storage_get flags */
-> >   #define BPF_SK_STORAGE_GET_F_CREATE	(1ULL << 0)
-> > +#define BPF_SK_STORAGE_GET_F_CLONE	(1ULL << 1)
-> >   
-> >   /* Mode for BPF_FUNC_skb_adjust_room helper. */
-> >   enum bpf_adj_room_mode {
-> > diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-> > index 94c7f77ecb6b..b6dea67965bc 100644
-> > --- a/net/core/bpf_sk_storage.c
-> > +++ b/net/core/bpf_sk_storage.c
-> > @@ -12,6 +12,9 @@
-> >   
-> >   static atomic_t cache_idx;
-> >   
-> > +#define BPF_SK_STORAGE_GET_F_MASK	(BPF_SK_STORAGE_GET_F_CREATE | \
-> > +					 BPF_SK_STORAGE_GET_F_CLONE)
+> >   .PHONY: force
+> > diff --git a/tools/testing/selftests/bpf/progs/sockopt_inherit.c b/tools/testing/selftests/bpf/progs/sockopt_inherit.c
+> > new file mode 100644
+> > index 000000000000..357fc9db5874
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/sockopt_inherit.c
+> > @@ -0,0 +1,102 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <linux/bpf.h>
+> > +#include "bpf_helpers.h"
 > > +
-> >   struct bucket {
-> >   	struct hlist_head list;
-> >   	raw_spinlock_t lock;
-> > @@ -66,7 +69,8 @@ struct bpf_sk_storage_elem {
-> >   	struct hlist_node snode;	/* Linked to bpf_sk_storage */
-> >   	struct bpf_sk_storage __rcu *sk_storage;
-> >   	struct rcu_head rcu;
-> > -	/* 8 bytes hole */
-> > +	u8 clone:1;
-> > +	/* 7 bytes hole */
-> >   	/* The data is stored in aother cacheline to minimize
-> >   	 * the number of cachelines access during a cache hit.
-> >   	 */
-> > @@ -509,7 +513,7 @@ static int sk_storage_delete(struct sock *sk, struct bpf_map *map)
-> >   	return 0;
-> >   }
-> >   
-> > -/* Called by __sk_destruct() */
-> > +/* Called by __sk_destruct() & bpf_sk_storage_clone() */
-> >   void bpf_sk_storage_free(struct sock *sk)
-> >   {
-> >   	struct bpf_sk_storage_elem *selem;
-> > @@ -739,19 +743,106 @@ static int bpf_fd_sk_storage_delete_elem(struct bpf_map *map, void *key)
-> >   	return err;
-> >   }
-> >   
-> > +static struct bpf_sk_storage_elem *
-> > +bpf_sk_storage_clone_elem(struct sock *newsk,
-> > +			  struct bpf_sk_storage_map *smap,
-> > +			  struct bpf_sk_storage_elem *selem)
-> > +{
-> > +	struct bpf_sk_storage_elem *copy_selem;
+> > +char _license[] SEC("license") = "GPL";
+> > +__u32 _version SEC("version") = 1;
 > > +
-> > +	copy_selem = selem_alloc(smap, newsk, NULL, true);
-> > +	if (!copy_selem)
-> > +		return ERR_PTR(-ENOMEM);
+> > +#define SOL_CUSTOM			0xdeadbeef
+> > +#define CUSTOM_INHERIT1			0
+> > +#define CUSTOM_INHERIT2			1
+> > +#define CUSTOM_LISTENER			2
 > > +
-> > +	if (map_value_has_spin_lock(&smap->map))
-> > +		copy_map_value_locked(&smap->map, SDATA(copy_selem)->data,
-> > +				      SDATA(selem)->data, true);
-> > +	else
-> > +		copy_map_value(&smap->map, SDATA(copy_selem)->data,
-> > +			       SDATA(selem)->data);
+> > +struct sockopt_inherit {
+> > +	__u8 val;
+> > +};
 > > +
-> > +	return copy_selem;
-> > +}
+> > +struct bpf_map_def SEC("maps") cloned1_map = {
+> > +	.type = BPF_MAP_TYPE_SK_STORAGE,
+> > +	.key_size = sizeof(int),
+> > +	.value_size = sizeof(struct sockopt_inherit),
+> > +	.map_flags = BPF_F_NO_PREALLOC,
+> > +};
+> > +BPF_ANNOTATE_KV_PAIR(cloned1_map, int, struct sockopt_inherit);
 > > +
-> > +int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk)
-> > +{
-> > +	struct bpf_sk_storage *new_sk_storage = NULL;
-> > +	struct bpf_sk_storage *sk_storage;
-> > +	struct bpf_sk_storage_elem *selem;
-> > +	int ret;
+> > +struct bpf_map_def SEC("maps") cloned2_map = {
+> > +	.type = BPF_MAP_TYPE_SK_STORAGE,
+> > +	.key_size = sizeof(int),
+> > +	.value_size = sizeof(struct sockopt_inherit),
+> > +	.map_flags = BPF_F_NO_PREALLOC,
+> > +};
+> > +BPF_ANNOTATE_KV_PAIR(cloned2_map, int, struct sockopt_inherit);
 > > +
-> > +	RCU_INIT_POINTER(newsk->sk_bpf_storage, NULL);
-> > +
-> > +	rcu_read_lock();
-> > +	sk_storage = rcu_dereference(sk->sk_bpf_storage);
-> > +
-> > +	if (!sk_storage || hlist_empty(&sk_storage->list))
-> > +		goto out;
-> > +
-> > +	hlist_for_each_entry_rcu(selem, &sk_storage->list, snode) {
-> > +		struct bpf_sk_storage_map *smap;
-> > +		struct bpf_sk_storage_elem *copy_selem;
-> > +
-> > +		if (!selem->clone)
-> > +			continue;
-> > +
-> > +		smap = rcu_dereference(SDATA(selem)->smap);
-> > +		if (!smap)
-> > +			continue;
-> > +
-> > +		copy_selem = bpf_sk_storage_clone_elem(newsk, smap, selem);
-> > +		if (IS_ERR(copy_selem)) {
-> > +			ret = PTR_ERR(copy_selem);
-> > +			goto err;
-> > +		}
-> > +
-> > +		if (!new_sk_storage) {
-> > +			ret = sk_storage_alloc(newsk, smap, copy_selem);
-> > +			if (ret) {
-> > +				kfree(copy_selem);
-> > +				atomic_sub(smap->elem_size,
-> > +					   &newsk->sk_omem_alloc);
-> > +				goto err;
-> > +			}
-> > +
-> > +			new_sk_storage = rcu_dereference(copy_selem->sk_storage);
-> > +			continue;
-> > +		}
-> > +
-> > +		raw_spin_lock_bh(&new_sk_storage->lock);
-> > +		selem_link_map(smap, copy_selem);
-> > +		__selem_link_sk(new_sk_storage, copy_selem);
-> > +		raw_spin_unlock_bh(&new_sk_storage->lock);
+> > +struct bpf_map_def SEC("maps") listener_map = {
+> > +	.type = BPF_MAP_TYPE_SK_STORAGE,
+> > +	.key_size = sizeof(int),
+> > +	.value_size = sizeof(struct sockopt_inherit),
+> > +	.map_flags = BPF_F_NO_PREALLOC,
+> > +};
+> > +BPF_ANNOTATE_KV_PAIR(listener_map, int, struct sockopt_inherit);
 > 
-> Considering in this particular case, new socket is not visible to 
-> outside world yet (both kernel and user space), map_delete/map_update
-> operations are not applicable in this situation, so
-> the above raw_spin_lock_bh() probably not needed.
-I agree, it's doing nothing, but __selem_link_sk has the following comment:
-/* sk_storage->lock must be held and sk_storage->list cannot be empty */
+> Your still use the old way for map definitions. Is this possible for you
+> to use new map definitions (in section ".maps")?
+Ah, my bad, I'm not used to the new defs. Will fix!
 
-Just wanted to keep that invariant for this call site as well (in case
-we add some lockdep enforcement or smth else). WDYT?
-
+> > +
+> > +static __inline struct sockopt_inherit *get_storage(struct bpf_sockopt *ctx)
+> > +{
+> > +	if (ctx->optname == CUSTOM_INHERIT1)
+> > +		return bpf_sk_storage_get(&cloned1_map, ctx->sk, 0,
+> > +					  BPF_SK_STORAGE_GET_F_CREATE |
+> > +					  BPF_SK_STORAGE_GET_F_CLONE);
+> > +	else if (ctx->optname == CUSTOM_INHERIT2)
+> > +		return bpf_sk_storage_get(&cloned2_map, ctx->sk, 0,
+> > +					  BPF_SK_STORAGE_GET_F_CREATE |
+> > +					  BPF_SK_STORAGE_GET_F_CLONE);
+> > +	else
+> > +		return bpf_sk_storage_get(&listener_map, ctx->sk, 0,
+> > +					  BPF_SK_STORAGE_GET_F_CREATE);
+> > +}
+> > +
+> [.....]> diff --git a/tools/testing/selftests/bpf/test_sockopt_inherit.c 
+> b/tools/testing/selftests/bpf/test_sockopt_inherit.c
+> > new file mode 100644
+> > index 000000000000..e47b9c28d743
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/test_sockopt_inherit.c
+> > @@ -0,0 +1,252 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <error.h>
+> > +#include <errno.h>
+> > +#include <stdio.h>
+> > +#include <unistd.h>
+> > +#include <sys/types.h>
+> > +#include <sys/socket.h>
+> > +#include <netinet/in.h>
+> > +#include <pthread.h>
+> > +
+> > +#include <linux/filter.h>
+> > +#include <bpf/bpf.h>
+> > +#include <bpf/libbpf.h>
+> > +
+> > +#include "bpf_rlimit.h"
+> > +#include "bpf_util.h"
+> > +#include "cgroup_helpers.h"
+> > +
+> > +#define CG_PATH				"/sockopt_inherit"
+> > +#define SOL_CUSTOM			0xdeadbeef
+> > +#define CUSTOM_INHERIT1			0
+> > +#define CUSTOM_INHERIT2			1
+> > +#define CUSTOM_LISTENER			2
+> > +
+> > +static int connect_to_server(int server_fd)
+> > +{
+> > +	struct sockaddr_storage addr;
+> > +	socklen_t len = sizeof(addr);
+> > +	int fd;
+> > +
+> > +	fd = socket(AF_INET, SOCK_STREAM, 0);
+> > +	if (fd < 0) {
+> > +		log_err("Failed to create client socket");
+> > +		return -1;
 > > +	}
 > > +
+> > +	if (getsockname(server_fd, (struct sockaddr *)&addr, &len)) {
+> > +		log_err("Failed to get server addr");
+> > +		goto out;
+> > +	}
+> > +
+> > +	if (connect(fd, (const struct sockaddr *)&addr, len) < 0) {
+> > +		log_err("Fail to connect to server");
+> > +		goto out;
+> > +	}
+> > +
+> > +	return fd;
+> > +
 > > +out:
-> > +	rcu_read_unlock();
-> > +	return 0;
-> > +
-> > +err:
-> > +	rcu_read_unlock();
-> > +
-> > +	bpf_sk_storage_free(newsk);
-> > +	return ret;
+> > +	close(fd);
+> > +	return -1;
 > > +}
 > > +
-> >   BPF_CALL_4(bpf_sk_storage_get, struct bpf_map *, map, struct sock *, sk,
-> >   	   void *, value, u64, flags)
-> >   {
-> >   	struct bpf_sk_storage_data *sdata;
-> >   
-> > -	if (flags > BPF_SK_STORAGE_GET_F_CREATE)
-> > +	if (flags & ~BPF_SK_STORAGE_GET_F_MASK)
-> > +		return (unsigned long)NULL;
+> > +static int verify_sockopt(int fd, int optname, const char *msg, char expected)
+> > +{
+> > +	socklen_t optlen = 1;
+> > +	char buf = 0;
+> > +	int err;
 > > +
-> > +	if ((flags & BPF_SK_STORAGE_GET_F_CLONE) &&
-> > +	    !(flags & BPF_SK_STORAGE_GET_F_CREATE))
-> >   		return (unsigned long)NULL;
-> >   
-> >   	sdata = sk_storage_lookup(sk, map, true);
-> >   	if (sdata)
-> >   		return (unsigned long)sdata->data;
-> >   
-> > -	if (flags == BPF_SK_STORAGE_GET_F_CREATE &&
-> > +	if ((flags & BPF_SK_STORAGE_GET_F_CREATE) &&
-> >   	    /* Cannot add new elem to a going away sk.
-> >   	     * Otherwise, the new elem may become a leak
-> >   	     * (and also other memory issues during map
-> > @@ -762,6 +853,9 @@ BPF_CALL_4(bpf_sk_storage_get, struct bpf_map *, map, struct sock *, sk,
-> >   		/* sk must be a fullsock (guaranteed by verifier),
-> >   		 * so sock_gen_put() is unnecessary.
-> >   		 */
-> > +		if (!IS_ERR(sdata))
-> > +			SELEM(sdata)->clone =
-> > +				!!(flags & BPF_SK_STORAGE_GET_F_CLONE);
-> >   		sock_put(sk);
-> >   		return IS_ERR(sdata) ?
-> >   			(unsigned long)NULL : (unsigned long)sdata->data;
-> > diff --git a/net/core/sock.c b/net/core/sock.c
-> > index d57b0cc995a0..f5e801a9cea4 100644
-> > --- a/net/core/sock.c
-> > +++ b/net/core/sock.c
-> > @@ -1851,9 +1851,12 @@ struct sock *sk_clone_lock(const struct sock *sk, const gfp_t priority)
-> >   			goto out;
-> >   		}
-> >   		RCU_INIT_POINTER(newsk->sk_reuseport_cb, NULL);
-> > -#ifdef CONFIG_BPF_SYSCALL
-> > -		RCU_INIT_POINTER(newsk->sk_bpf_storage, NULL);
-> > -#endif
+> > +	err = getsockopt(fd, SOL_CUSTOM, optname, &buf, &optlen);
+> > +	if (err) {
+> > +		log_err("%s: failed to call getsockopt", msg);
+> > +		return 1;
+> > +	}
 > > +
-> > +		if (bpf_sk_storage_clone(sk, newsk)) {
-> > +			sk_free_unlock_clone(newsk);
-> > +			newsk = NULL;
-> > +			goto out;
+> > +	log_err("%s %d: got=0x%x ? expected=0x%x", msg, optname, buf, expected);
+> 
+> There may not be error here.
+Good point, will switch to simple printf.
+
+> > +
+> > +	if (buf != expected) {
+> > +		log_err("%s: unexpected getsockopt value %d != %d", msg,
+> > +			buf, expected);
+> > +		return 1;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static void *server_thread(void *arg)
+> > +{
+> > +	struct sockaddr_storage addr;
+> > +	socklen_t len = sizeof(addr);
+> > +	int fd = *(int *)arg;
+> > +	int client_fd;
+> > +	int err = 0;
+> > +
+> > +	if (listen(fd, 1) < 0)
+> > +		error(1, errno, "Failed to listed on socket");
+> > +
+> > +	err += verify_sockopt(fd, CUSTOM_INHERIT1, "listen", 1);
+> > +	err += verify_sockopt(fd, CUSTOM_INHERIT2, "listen", 1);
+> > +	err += verify_sockopt(fd, CUSTOM_LISTENER, "listen", 1);
+> > +
+> > +	client_fd = accept(fd, (struct sockaddr *)&addr, &len);
+> > +	if (client_fd < 0)
+> > +		error(1, errno, "Failed to accept client");
+> > +
+> > +	err += verify_sockopt(client_fd, CUSTOM_INHERIT1, "accept", 1);
+> > +	err += verify_sockopt(client_fd, CUSTOM_INHERIT2, "accept", 1);
+> > +	err += verify_sockopt(client_fd, CUSTOM_LISTENER, "accept", 0);
+> > +
+> > +	close(client_fd);
+> > +
+> > +	return (void *)(long)err;
+> > +}
+> > +
+> > +static int start_server(void)
+> > +{
+> > +	struct sockaddr_in addr = {
+> > +		.sin_family = AF_INET,
+> > +		.sin_addr.s_addr = htonl(INADDR_LOOPBACK),
+> > +	};
+> > +	char buf;
+> > +	int err;
+> > +	int fd;
+> > +	int i;
+> > +
+> > +	fd = socket(AF_INET, SOCK_STREAM, 0);
+> > +	if (fd < 0) {
+> > +		log_err("Failed to create server socket");
+> > +		return -1;
+> > +	}
+> > +
+> > +	for (i = CUSTOM_INHERIT1; i <= CUSTOM_LISTENER; i++) {
+> > +		buf = 0x01;
+> > +		err = setsockopt(fd, SOL_CUSTOM, i, &buf, 1);
+> > +		if (err) {
+> > +			log_err("Failed to call setsockopt(%d)", i);
+> > +			close(fd);
+> > +			return -1;
 > > +		}
-> >   
-> >   		newsk->sk_err	   = 0;
-> >   		newsk->sk_err_soft = 0;
+> > +	}
+> > +
+> > +	if (bind(fd, (const struct sockaddr *)&addr, sizeof(addr)) < 0) {
+> > +		log_err("Failed to bind socket");
+> > +		close(fd);
+> > +		return -1;
+> > +	}
+> > +
+> > +	return fd;
+> > +}
+> > +
+> > +static int prog_attach(struct bpf_object *obj, int cgroup_fd, const char *title)
+> > +{
+> > +	enum bpf_attach_type attach_type;
+> > +	enum bpf_prog_type prog_type;
+> > +	struct bpf_program *prog;
+> > +	int err;
+> > +
+> > +	err = libbpf_prog_type_by_name(title, &prog_type, &attach_type);
+> > +	if (err) {
+> > +		log_err("Failed to deduct types for %s BPF program", title);
+> > +		return -1;
+> > +	}
+> > +
+> > +	prog = bpf_object__find_program_by_title(obj, title);
+> > +	if (!prog) {
+> > +		log_err("Failed to find %s BPF program", title);
+> > +		return -1;
+> > +	}
+> > +
+> > +	err = bpf_prog_attach(bpf_program__fd(prog), cgroup_fd,
+> > +			      attach_type, 0);
+> > +	if (err) {
+> > +		log_err("Failed to attach %s BPF program", title);
+> > +		return -1;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int run_test(int cgroup_fd)
+> > +{
+> > +	struct bpf_prog_load_attr attr = {
+> > +		.file = "./sockopt_inherit.o",
+> > +	};
+> > +	int server_fd = -1, client_fd;
+> > +	struct bpf_object *obj;
+> > +	void *server_err;
+> > +	pthread_t tid;
+> > +	int ignored;
+> > +	int err;
+> > +
+> > +	err = bpf_prog_load_xattr(&attr, &obj, &ignored);
+> > +	if (err) {
+> > +		log_err("Failed to load BPF object");
+> > +		return -1;
+> > +	}
+> > +
+> > +	err = prog_attach(obj, cgroup_fd, "cgroup/getsockopt");
+> > +	if (err)
+> > +		goto close_bpf_object;
+> > +
+> > +	err = prog_attach(obj, cgroup_fd, "cgroup/setsockopt");
+> > +	if (err)
+> > +		goto close_bpf_object;
+> > +
+> > +	server_fd = start_server();
+> > +	if (server_fd < 0) {
+> > +		err = -1;
+> > +		goto close_bpf_object;
+> > +	}
+> > +
+> > +	pthread_create(&tid, NULL, server_thread, (void *)&server_fd);
+> > +
+> > +	client_fd = connect_to_server(server_fd);
+> > +	if (client_fd < 0) {
+> > +		err = -1;
+> > +		goto close_bpf_object;
+> > +	}
+> > +
+> > +	err += verify_sockopt(client_fd, CUSTOM_INHERIT1, "connect", 0);
+> > +	err += verify_sockopt(client_fd, CUSTOM_INHERIT2, "connect", 0);
+> > +	err += verify_sockopt(client_fd, CUSTOM_LISTENER, "connect", 0);
+> > +
+> > +	pthread_join(tid, &server_err);
+> > +
+> > +	err += (int)(long)server_err;
+> > +
+> > +	close(client_fd);
+> > +
+> > +close_bpf_object:
+> > +	bpf_object__close(obj);
+> > +	close(server_fd);
+> 
+> server_fd could be -1 here.
+I've initialized it to -1 so we can close(-1) here and not close(some
+random data). Shouldn't be a problem, right?
+
+The order is backwards though, should be:
+close(server_fd);
+bpf_object__close(obj);
+
+I can probably add a label for bpf_object__close case to avoid this close(-1).
+Will do for a v2.
+
+> > +	return err;
+> > +}
+> > +
+> > +int main(int args, char **argv)
+> > +{
+> > +	int cgroup_fd;
+> > +	int err = EXIT_SUCCESS;
+> > +
+> > +	if (setup_cgroup_environment())
+> > +		return err;
+> > +
+> > +	cgroup_fd = create_and_get_cgroup(CG_PATH);
+> > +	if (cgroup_fd < 0)
+> > +		goto cleanup_cgroup_env;
+> > +
+> > +	if (join_cgroup(CG_PATH))
+> > +		goto cleanup_cgroup;
+> > +
+> > +	if (run_test(cgroup_fd))
+> > +		err = EXIT_FAILURE;
+> > +
+> > +	printf("test_sockopt_inherit: %s\n",
+> > +	       err == EXIT_SUCCESS ? "PASSED" : "FAILED");
+> > +
+> > +cleanup_cgroup:
+> > +	close(cgroup_fd);
+> > +cleanup_cgroup_env:
+> > +	cleanup_cgroup_environment();
+> > +	return err;
+> > +}
 > > 
