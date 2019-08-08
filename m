@@ -2,76 +2,316 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A998616B
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 14:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660B0865BB
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 17:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727096AbfHHMOG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Aug 2019 08:14:06 -0400
-Received: from www62.your-server.de ([213.133.104.62]:36446 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbfHHMOG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Aug 2019 08:14:06 -0400
-Received: from [2a02:120b:2c12:c120:71a0:62dd:894c:fd0e] (helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hvh30-0001kV-LN; Thu, 08 Aug 2019 13:57:34 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, m@lambda.lt,
-        edumazet@google.com, ast@kernel.org, willemb@google.com,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH net v2 2/2] bpf: sync bpf.h to tools infrastructure
-Date:   Thu,  8 Aug 2019 13:57:26 +0200
-Message-Id: <20190808115726.31703-3-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190808115726.31703-1-daniel@iogearbox.net>
-References: <20190808115726.31703-1-daniel@iogearbox.net>
+        id S1727096AbfHHP2d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Aug 2019 11:28:33 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:39097 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732662AbfHHP2d (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Aug 2019 11:28:33 -0400
+Received: by mail-pf1-f194.google.com with SMTP id f17so40305179pfn.6
+        for <bpf@vger.kernel.org>; Thu, 08 Aug 2019 08:28:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=utJWuWxfDp9ua5XumByBys8UZrFgh1w22LZS9xGgft0=;
+        b=gNhhbKGptYxJiV8nv+PwZ3LmMXSAAAKCbVBAwGcEYy3Ljf7Iz91lwtJ3otISgSQKtq
+         69aVvxuO1Rxha7cbW7qjEL8nIOMxreugPIwYgH9JEWdVzna4kI5/WZZPX9DrxzmUYy5S
+         +Nzaf2O2D7Zv10i2A3LMoy56RWprtpy4Psww1ZHu/zUQqMj6WKOn2fV8TZuYFe38m9Pw
+         m8nbadKEqrMs/64A4oApXfS0sGTLAJE/yh9pl/MOeWKvA08kWe+qsN4WWhGUUPutfNfI
+         Z/7+drJcLdhROZiGOKSRW4HJ/fi7MxPIjihidEXRW0NCdRYWiDP1KpcazZrvkg/V0Rne
+         GNgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=utJWuWxfDp9ua5XumByBys8UZrFgh1w22LZS9xGgft0=;
+        b=VW3Ru4BW8+qqolc0kJACsfnvn5mNKFuJOHGuSpHKZJTbCeKIfWAMZtbam/vN14j6aq
+         tgqSMPFUUlRLz5LvjrsZL9iocyViE09uf1Le8ILXV0o1xyvyLygelyCzuSJK3BtuvJNP
+         eWOrpW6YBvz8SSx1F84npwD2/E/bsr0+zIvKDj2ZVtIHCivjPDJq+ZEAkFqnph9BldT2
+         8fSF9pRLeFhciSfMC1qAtMvnejcXbXkgYpFaG4Jf6YIENVGspxL/fier41XZJMRidjsG
+         jM23Hsf7UCzlL/0A9EOJaCVn86bDwvdwLGfjJ61iJ12a4zdZ3qiIgeuI4wNWTkqY/Tc1
+         oOSw==
+X-Gm-Message-State: APjAAAUyIskS5eVQLgxdU2RbyR/qrm4+tyBrm3NkbJmfS4n3UYF/wQgh
+        WpI7vFk8fuuXXMhMxXdBqBG9kg==
+X-Google-Smtp-Source: APXvYqwj9ppAnE+z/2UQ/r0ivgWFgYub68BSRT/i731mai1cNLIMRCsWMGiXSONU1zgDYlEUt5HgdA==
+X-Received: by 2002:a63:6c7:: with SMTP id 190mr13150393pgg.7.1565278112226;
+        Thu, 08 Aug 2019 08:28:32 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id l25sm114899839pff.143.2019.08.08.08.28.31
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 08 Aug 2019 08:28:31 -0700 (PDT)
+Date:   Thu, 8 Aug 2019 08:28:30 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Martin Lau <kafai@fb.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf-next 1/3] bpf: support cloning sk storage on accept()
+Message-ID: <20190808152830.GC2820@mini-arch>
+References: <20190807154720.260577-1-sdf@google.com>
+ <20190807154720.260577-2-sdf@google.com>
+ <20190808063936.3p4ahtdkw35rrzqu@kafai-mbp>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25535/Thu Aug  8 10:18:42 2019)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190808063936.3p4ahtdkw35rrzqu@kafai-mbp>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Pull in updates in BPF helper function description.
+On 08/08, Martin Lau wrote:
+> On Wed, Aug 07, 2019 at 08:47:18AM -0700, Stanislav Fomichev wrote:
+> > Add new helper bpf_sk_storage_clone which optionally clones sk storage
+> > and call it from bpf_sk_storage_clone. Reuse the gap in
+> > bpf_sk_storage_elem to store clone/non-clone flag.
+> > 
+> > Cc: Martin KaFai Lau <kafai@fb.com>
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  include/net/bpf_sk_storage.h |  10 ++++
+> >  include/uapi/linux/bpf.h     |   1 +
+> >  net/core/bpf_sk_storage.c    | 102 +++++++++++++++++++++++++++++++++--
+> >  net/core/sock.c              |   9 ++--
+> >  4 files changed, 115 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/include/net/bpf_sk_storage.h b/include/net/bpf_sk_storage.h
+> > index b9dcb02e756b..8e4f831d2e52 100644
+> > --- a/include/net/bpf_sk_storage.h
+> > +++ b/include/net/bpf_sk_storage.h
+> > @@ -10,4 +10,14 @@ void bpf_sk_storage_free(struct sock *sk);
+> >  extern const struct bpf_func_proto bpf_sk_storage_get_proto;
+> >  extern const struct bpf_func_proto bpf_sk_storage_delete_proto;
+> >  
+> > +#ifdef CONFIG_BPF_SYSCALL
+> > +int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk);
+> > +#else
+> > +static inline int bpf_sk_storage_clone(const struct sock *sk,
+> > +				       struct sock *newsk)
+> > +{
+> > +	return 0;
+> > +}
+> > +#endif
+> > +
+> >  #endif /* _BPF_SK_STORAGE_H */
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 4393bd4b2419..00459ca4c8cf 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -2931,6 +2931,7 @@ enum bpf_func_id {
+> >  
+> >  /* BPF_FUNC_sk_storage_get flags */
+> >  #define BPF_SK_STORAGE_GET_F_CREATE	(1ULL << 0)
+> > +#define BPF_SK_STORAGE_GET_F_CLONE	(1ULL << 1)
+> It is only used in bpf_sk_storage_get().
+> What if the elem is created from bpf_fd_sk_storage_update_elem()
+> i.e. from the syscall API ?
+> 
+> What may be the use case for a map to have both CLONE and non-CLONE
+> elements?  If it is not the case, would it be better to add
+> BPF_F_CLONE to bpf_attr->map_flags?
+I didn't think about putting it on the map itself since the API
+is on a per-element, but it does make sense. I can't come up
+with a use-case for a per-element selective clone/non-clone.
+Thanks, will move to the map itself.
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- tools/include/uapi/linux/bpf.h | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+> >  
+> >  /* Mode for BPF_FUNC_skb_adjust_room helper. */
+> >  enum bpf_adj_room_mode {
+> > diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
+> > index 94c7f77ecb6b..b6dea67965bc 100644
+> > --- a/net/core/bpf_sk_storage.c
+> > +++ b/net/core/bpf_sk_storage.c
+> > @@ -12,6 +12,9 @@
+> >  
+> >  static atomic_t cache_idx;
+> >  
+> > +#define BPF_SK_STORAGE_GET_F_MASK	(BPF_SK_STORAGE_GET_F_CREATE | \
+> > +					 BPF_SK_STORAGE_GET_F_CLONE)
+> > +
+> >  struct bucket {
+> >  	struct hlist_head list;
+> >  	raw_spinlock_t lock;
+> > @@ -66,7 +69,8 @@ struct bpf_sk_storage_elem {
+> >  	struct hlist_node snode;	/* Linked to bpf_sk_storage */
+> >  	struct bpf_sk_storage __rcu *sk_storage;
+> >  	struct rcu_head rcu;
+> > -	/* 8 bytes hole */
+> > +	u8 clone:1;
+> > +	/* 7 bytes hole */
+> >  	/* The data is stored in aother cacheline to minimize
+> >  	 * the number of cachelines access during a cache hit.
+> >  	 */
+> > @@ -509,7 +513,7 @@ static int sk_storage_delete(struct sock *sk, struct bpf_map *map)
+> >  	return 0;
+> >  }
+> >  
+> > -/* Called by __sk_destruct() */
+> > +/* Called by __sk_destruct() & bpf_sk_storage_clone() */
+> >  void bpf_sk_storage_free(struct sock *sk)
+> >  {
+> >  	struct bpf_sk_storage_elem *selem;
+> > @@ -739,19 +743,106 @@ static int bpf_fd_sk_storage_delete_elem(struct bpf_map *map, void *key)
+> >  	return err;
+> >  }
+> >  
+> > +static struct bpf_sk_storage_elem *
+> > +bpf_sk_storage_clone_elem(struct sock *newsk,
+> > +			  struct bpf_sk_storage_map *smap,
+> > +			  struct bpf_sk_storage_elem *selem)
+> > +{
+> > +	struct bpf_sk_storage_elem *copy_selem;
+> > +
+> > +	copy_selem = selem_alloc(smap, newsk, NULL, true);
+> > +	if (!copy_selem)
+> > +		return ERR_PTR(-ENOMEM);
+> nit.
+> may be just return NULL as selem_alloc() does.
+Sounds good.
 
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 4e455018da65..a5aa7d3ac6a1 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1466,8 +1466,8 @@ union bpf_attr {
-  * 		If no cookie has been set yet, generate a new cookie. Once
-  * 		generated, the socket cookie remains stable for the life of the
-  * 		socket. This helper can be useful for monitoring per socket
-- * 		networking traffic statistics as it provides a unique socket
-- * 		identifier per namespace.
-+ * 		networking traffic statistics as it provides a global socket
-+ * 		identifier that can be assumed unique.
-  * 	Return
-  * 		A 8-byte long non-decreasing number on success, or 0 if the
-  * 		socket field is missing inside *skb*.
-@@ -1571,8 +1571,11 @@ union bpf_attr {
-  * 		but this is only implemented for native XDP (with driver
-  * 		support) as of this writing).
-  *
-- * 		All values for *flags* are reserved for future usage, and must
-- * 		be left at zero.
-+ * 		The lower two bits of *flags* are used as the return code if
-+ * 		the map lookup fails. This is so that the return value can be
-+ * 		one of the XDP program return codes up to XDP_TX, as chosen by
-+ * 		the caller. Any higher bits in the *flags* argument must be
-+ * 		unset.
-  *
-  * 		When used to redirect packets to net devices, this helper
-  * 		provides a high performance increase over **bpf_redirect**\ ().
--- 
-2.17.1
+> > +
+> > +	if (map_value_has_spin_lock(&smap->map))
+> > +		copy_map_value_locked(&smap->map, SDATA(copy_selem)->data,
+> > +				      SDATA(selem)->data, true);
+> > +	else
+> > +		copy_map_value(&smap->map, SDATA(copy_selem)->data,
+> > +			       SDATA(selem)->data);
+> > +
+> > +	return copy_selem;
+> > +}
+> > +
+> > +int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk)
+> > +{
+> > +	struct bpf_sk_storage *new_sk_storage = NULL;
+> > +	struct bpf_sk_storage *sk_storage;
+> > +	struct bpf_sk_storage_elem *selem;
+> > +	int ret;
+> > +
+> > +	RCU_INIT_POINTER(newsk->sk_bpf_storage, NULL);
+> > +
+> > +	rcu_read_lock();
+> > +	sk_storage = rcu_dereference(sk->sk_bpf_storage);
+> > +
+> > +	if (!sk_storage || hlist_empty(&sk_storage->list))
+> > +		goto out;
+> > +
+> > +	hlist_for_each_entry_rcu(selem, &sk_storage->list, snode) {
+> > +		struct bpf_sk_storage_map *smap;
+> > +		struct bpf_sk_storage_elem *copy_selem;
+> > +
+> > +		if (!selem->clone)
+> > +			continue;
+> > +
+> > +		smap = rcu_dereference(SDATA(selem)->smap);
+> > +		if (!smap)
+> smap should not be NULL.
+I see; you never set it back to NULL and we are guaranteed that the
+map is still around due to rcu. Removed.
 
+> > +			continue;
+> > +
+> > +		copy_selem = bpf_sk_storage_clone_elem(newsk, smap, selem);
+> > +		if (IS_ERR(copy_selem)) {
+> > +			ret = PTR_ERR(copy_selem);
+> > +			goto err;
+> > +		}
+> > +
+> > +		if (!new_sk_storage) {
+> > +			ret = sk_storage_alloc(newsk, smap, copy_selem);
+> > +			if (ret) {
+> > +				kfree(copy_selem);
+> > +				atomic_sub(smap->elem_size,
+> > +					   &newsk->sk_omem_alloc);
+> > +				goto err;
+> > +			}
+> > +
+> > +			new_sk_storage = rcu_dereference(copy_selem->sk_storage);
+> > +			continue;
+> > +		}
+> > +
+> > +		raw_spin_lock_bh(&new_sk_storage->lock);
+> > +		selem_link_map(smap, copy_selem);
+> Unlike the existing selem-update use-cases in bpf_sk_storage.c,
+> the smap->map.refcnt has not been held here.  Reading the smap
+> is fine.  However, adding a new selem to a deleting smap is an issue.
+> Hence, I think bpf_map_inc_not_zero() should be done first.
+In this case, I should probably do it after smap = rcu_deref()?
+
+> > +		__selem_link_sk(new_sk_storage, copy_selem);
+> > +		raw_spin_unlock_bh(&new_sk_storage->lock);
+> > +	}
+> > +
+> > +out:
+> > +	rcu_read_unlock();
+> > +	return 0;
+> > +
+> > +err:
+> > +	rcu_read_unlock();
+> > +
+> > +	bpf_sk_storage_free(newsk);
+> > +	return ret;
+> > +}
+> > +
+> >  BPF_CALL_4(bpf_sk_storage_get, struct bpf_map *, map, struct sock *, sk,
+> >  	   void *, value, u64, flags)
+> >  {
+> >  	struct bpf_sk_storage_data *sdata;
+> >  
+> > -	if (flags > BPF_SK_STORAGE_GET_F_CREATE)
+> > +	if (flags & ~BPF_SK_STORAGE_GET_F_MASK)
+> > +		return (unsigned long)NULL;
+> > +
+> > +	if ((flags & BPF_SK_STORAGE_GET_F_CLONE) &&
+> > +	    !(flags & BPF_SK_STORAGE_GET_F_CREATE))
+> >  		return (unsigned long)NULL;
+> >  
+> >  	sdata = sk_storage_lookup(sk, map, true);
+> >  	if (sdata)
+> >  		return (unsigned long)sdata->data;
+> >  
+> > -	if (flags == BPF_SK_STORAGE_GET_F_CREATE &&
+> > +	if ((flags & BPF_SK_STORAGE_GET_F_CREATE) &&
+> >  	    /* Cannot add new elem to a going away sk.
+> >  	     * Otherwise, the new elem may become a leak
+> >  	     * (and also other memory issues during map
+> > @@ -762,6 +853,9 @@ BPF_CALL_4(bpf_sk_storage_get, struct bpf_map *, map, struct sock *, sk,
+> >  		/* sk must be a fullsock (guaranteed by verifier),
+> >  		 * so sock_gen_put() is unnecessary.
+> >  		 */
+> > +		if (!IS_ERR(sdata))
+> > +			SELEM(sdata)->clone =
+> > +				!!(flags & BPF_SK_STORAGE_GET_F_CLONE);
+> >  		sock_put(sk);
+> >  		return IS_ERR(sdata) ?
+> >  			(unsigned long)NULL : (unsigned long)sdata->data;
+> > diff --git a/net/core/sock.c b/net/core/sock.c
+> > index d57b0cc995a0..f5e801a9cea4 100644
+> > --- a/net/core/sock.c
+> > +++ b/net/core/sock.c
+> > @@ -1851,9 +1851,12 @@ struct sock *sk_clone_lock(const struct sock *sk, const gfp_t priority)
+> >  			goto out;
+> >  		}
+> >  		RCU_INIT_POINTER(newsk->sk_reuseport_cb, NULL);
+> > -#ifdef CONFIG_BPF_SYSCALL
+> > -		RCU_INIT_POINTER(newsk->sk_bpf_storage, NULL);
+> > -#endif
+> > +
+> > +		if (bpf_sk_storage_clone(sk, newsk)) {
+> > +			sk_free_unlock_clone(newsk);
+> > +			newsk = NULL;
+> > +			goto out;
+> > +		}
+> >  
+> >  		newsk->sk_err	   = 0;
+> >  		newsk->sk_err_soft = 0;
+> > -- 
+> > 2.22.0.770.g0f2c4a37fd-goog
+> > 
