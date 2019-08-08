@@ -2,76 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 870E885F00
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 11:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B55B686054
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 12:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389806AbfHHJuE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Aug 2019 05:50:04 -0400
-Received: from www62.your-server.de ([213.133.104.62]:34848 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731488AbfHHJuE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Aug 2019 05:50:04 -0400
-Received: from [2a02:120b:2c12:c120:71a0:62dd:894c:fd0e] (helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hvf3X-0006I4-JT; Thu, 08 Aug 2019 11:49:59 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, m@lambda.lt,
-        edumazet@google.com, ast@kernel.org, willemb@google.com,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH net 2/2] bpf: sync bpf.h to tools infrastructure
-Date:   Thu,  8 Aug 2019 11:49:37 +0200
-Message-Id: <20190808094937.26918-3-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190808094937.26918-1-daniel@iogearbox.net>
-References: <20190808094937.26918-1-daniel@iogearbox.net>
+        id S1732061AbfHHKpy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Aug 2019 06:45:54 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:40302 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731038AbfHHKpy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Aug 2019 06:45:54 -0400
+Received: by mail-ot1-f66.google.com with SMTP id l15so59438192oth.7
+        for <bpf@vger.kernel.org>; Thu, 08 Aug 2019 03:45:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YLgu/31KIHI7QEmn1xuZtlFQdfVxrMlqOe7ysJTjxbQ=;
+        b=rW0DG4KWYRW7RQ7ezHS5PFII+WT1ohtek4K8vpyJvwcFVv52KokGtWv6Tqj4IEFDtv
+         DP+U/sJJPVnCdaYNHgSoeta00d6j32QjA2RrNIXabZ5KPiL+KjO4NClRs0yexnZM+Bn6
+         vr0qK8OoC6qkDWhVitDme/tYRdiMYQnIC7fiyU/jIiNGfp9TrBt9egKPbV3bSWdd+UlF
+         S/N+Pt2tYMpTpUhCcZn6Q4wcYL55YRMMRVogHI7Y6LX+nMvb8vjMWzvV8nCe1NrR8I0v
+         FQd0YbgWBT10A2+3DtWJcwv87LoxzZdz8RIe0dvzz6IxQ7fVXXhkJ/TscWFbZdNiy/np
+         opZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YLgu/31KIHI7QEmn1xuZtlFQdfVxrMlqOe7ysJTjxbQ=;
+        b=ogJiIg/lFZYZFT9lcvmwMcGHh7BZ2qPXbSkFesmFo01ZVtEaeXQneCYrNf6lFXZ1ek
+         xFDFLMJk73jXkJ88HhFpV+iw9iithZlxk15+333plgnJuSGH5XiddUW9TrWX2SdI0Gul
+         fExGRrHj/TA5uZ3ccgH73nnfexEtFfLXGHupCED48P+z6A2zbqIBgffFbLGXTrUjCw9E
+         3EmZL8YIj0LiKpZTB4Z8EM2MnTvdLQFBX+4QWRGbCi9yR/opkran4ChZzYkZMVJAY//X
+         Tclt5OuIynU2oRvpRuvRO5UNSs8w8480ktVHp2cFu5u1kUo8u7L2MiUD/VoQGSZCXs2o
+         XXMw==
+X-Gm-Message-State: APjAAAV3QVy6aEHJrjlMyibLow51L2DgifqAI5L5XneKOrDvPLpGOBMm
+        OV7v66D4PZi1lo93lVtYMYUzDmovxYB5MiICs62R9g==
+X-Google-Smtp-Source: APXvYqyc5e8BqYB7BKbbpzVm7tPxFH0fXAPSyJAVqQ5Rhsje0QSJ7WVpwDqaYn5IWZNSHcstsCOdXYO8+tymrmRZzJs=
+X-Received: by 2002:a6b:f008:: with SMTP id w8mr9418235ioc.60.1565261152766;
+ Thu, 08 Aug 2019 03:45:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25535/Thu Aug  8 10:18:42 2019)
+References: <20190808094937.26918-1-daniel@iogearbox.net> <20190808094937.26918-2-daniel@iogearbox.net>
+In-Reply-To: <20190808094937.26918-2-daniel@iogearbox.net>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 8 Aug 2019 12:45:40 +0200
+Message-ID: <CANn89iKzaxxyC=6s45PEnTsKfz7GN4HHOw3wtpb6-ozrJSRP=g@mail.gmail.com>
+Subject: Re: [PATCH net 1/2] sock: make cookie generation global instead of
+ per netns
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     David Miller <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        m@lambda.lt, Alexei Starovoitov <ast@kernel.org>,
+        Willem de Bruijn <willemb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Pull in updates in BPF helper function description.
+On Thu, Aug 8, 2019 at 11:50 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- tools/include/uapi/linux/bpf.h | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+> Socket cookie consumers must assume the value as opqaue in any case.
+> The cookie does not guarantee an always unique identifier since it
+> could wrap in fabricated corner cases where two sockets could end up
+> holding the same cookie,
 
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 4e455018da65..a5aa7d3ac6a1 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1466,8 +1466,8 @@ union bpf_attr {
-  * 		If no cookie has been set yet, generate a new cookie. Once
-  * 		generated, the socket cookie remains stable for the life of the
-  * 		socket. This helper can be useful for monitoring per socket
-- * 		networking traffic statistics as it provides a unique socket
-- * 		identifier per namespace.
-+ * 		networking traffic statistics as it provides a global socket
-+ * 		identifier that can be assumed unique.
-  * 	Return
-  * 		A 8-byte long non-decreasing number on success, or 0 if the
-  * 		socket field is missing inside *skb*.
-@@ -1571,8 +1571,11 @@ union bpf_attr {
-  * 		but this is only implemented for native XDP (with driver
-  * 		support) as of this writing).
-  *
-- * 		All values for *flags* are reserved for future usage, and must
-- * 		be left at zero.
-+ * 		The lower two bits of *flags* are used as the return code if
-+ * 		the map lookup fails. This is so that the return value can be
-+ * 		one of the XDP program return codes up to XDP_TX, as chosen by
-+ * 		the caller. Any higher bits in the *flags* argument must be
-+ * 		unset.
-  *
-  * 		When used to redirect packets to net devices, this helper
-  * 		provides a high performance increase over **bpf_redirect**\ ().
--- 
-2.17.1
+What do you mean by this ?
 
+Cookie is guaranteed to be unique, it is from a 64bit counter...
+
+There should be no collision.
+
+> but is good enough to be used as a hint for
+> many use cases; not every socket must have a cookie generated hence
+> knowledge of the counter value does not provide much value either way.
+>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Willem de Bruijn <willemb@google.com>
+> Cc: Martynas Pumputis <m@lambda.lt>
+> ---
+>  include/net/net_namespace.h | 1 -
+>  include/uapi/linux/bpf.h    | 4 ++--
+>  net/core/sock_diag.c        | 3 ++-
+>  3 files changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
+> index 4a9da951a794..cb668bc2692d 100644
+> --- a/include/net/net_namespace.h
+> +++ b/include/net/net_namespace.h
+> @@ -61,7 +61,6 @@ struct net {
+>         spinlock_t              rules_mod_lock;
+>
+>         u32                     hash_mix;
+> -       atomic64_t              cookie_gen;
+>
+>         struct list_head        list;           /* list of network namespaces */
+>         struct list_head        exit_list;      /* To linked to call pernet exit
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index fa1c753dcdbc..a5aa7d3ac6a1 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1466,8 +1466,8 @@ union bpf_attr {
+>   *             If no cookie has been set yet, generate a new cookie. Once
+>   *             generated, the socket cookie remains stable for the life of the
+>   *             socket. This helper can be useful for monitoring per socket
+> - *             networking traffic statistics as it provides a unique socket
+> - *             identifier per namespace.
+> + *             networking traffic statistics as it provides a global socket
+> + *             identifier that can be assumed unique.
+>   *     Return
+>   *             A 8-byte long non-decreasing number on success, or 0 if the
+>   *             socket field is missing inside *skb*.
+> diff --git a/net/core/sock_diag.c b/net/core/sock_diag.c
+> index 3312a5849a97..c13ffbd33d8d 100644
+> --- a/net/core/sock_diag.c
+> +++ b/net/core/sock_diag.c
+> @@ -19,6 +19,7 @@ static const struct sock_diag_handler *sock_diag_handlers[AF_MAX];
+>  static int (*inet_rcv_compat)(struct sk_buff *skb, struct nlmsghdr *nlh);
+>  static DEFINE_MUTEX(sock_diag_table_mutex);
+>  static struct workqueue_struct *broadcast_wq;
+> +static atomic64_t cookie_gen;
+>
+>  u64 sock_gen_cookie(struct sock *sk)
+>  {
+> @@ -27,7 +28,7 @@ u64 sock_gen_cookie(struct sock *sk)
+>
+>                 if (res)
+>                         return res;
+> -               res = atomic64_inc_return(&sock_net(sk)->cookie_gen);
+> +               res = atomic64_inc_return(&cookie_gen);
+>                 atomic64_cmpxchg(&sk->sk_cookie, 0, res);
+>         }
+>  }
+> --
+> 2.17.1
+>
