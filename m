@@ -2,134 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E63E867E2
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 19:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368A486846
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 19:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404288AbfHHRYL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Aug 2019 13:24:11 -0400
-Received: from mail-ot1-f71.google.com ([209.85.210.71]:42831 "EHLO
-        mail-ot1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404259AbfHHRYH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Aug 2019 13:24:07 -0400
-Received: by mail-ot1-f71.google.com with SMTP id x18so63154689otp.9
-        for <bpf@vger.kernel.org>; Thu, 08 Aug 2019 10:24:07 -0700 (PDT)
+        id S1732346AbfHHRry (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Aug 2019 13:47:54 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:35712 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728020AbfHHRry (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Aug 2019 13:47:54 -0400
+Received: by mail-qt1-f193.google.com with SMTP id d23so93101640qto.2;
+        Thu, 08 Aug 2019 10:47:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ve448YTVFAAEC23KtyNHOIdfsWIqVwdZMMYjva/9ARk=;
+        b=RsS60EFJW2WbbqFSqkqfnXrDXX62PqLjdszCShukimFNMnuy+E/8ig7vNFNyUhQrdw
+         Y/crX8d+jmZejO199IqhVeAbadoqx2nk9DW3OeBx5GlR1Ls69VeNyrwRvQMgz9OytIQS
+         OaqZwbF0N+msqnNzWOAXmf19+pxL5cZmZdY4+8y1uZ8WLqsOrxHE3LzgZ5KGSMbodGqi
+         +BvndEgqcX+LdL6tYo7Znr8fY035iFZfxgqUsMMtbrdOyVQj96O7Ebf91Yc8ev+EzJtd
+         0cS3u1gnbZhSLL1DK+fUuDYxLma79ytV2AX/ZPxZof8c+z2YT0005+SKg9H3VprHDjfe
+         uUAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=e1gv1WeJMlHGANR4IY6E8iV8unm9tW2t77TdB7HR+60=;
-        b=YtqYkPASD2QxjGI30t2hap+ZOMFYrgZi3SsfF0+WX77PrgYi7XytJ8Al07xcceUChl
-         fMVvCHhKumOpsvAA1LvcELAVGo2CoxRXJJcYXRA3xnmXdroDSwiNYzi0/rWV2OPuTCBA
-         twdZbnlhVFT1JhA+IqrFIAKPrSm+QWM+93sMV6ln7yG3JPiH5xQErlR81D4n+AXxACOF
-         NIpo3tyHNvahT+XNyBzRfufQElfiuzfYKGWvfPjOki16wmpO5MMft/YcCPai7rQbRufn
-         q74dfUXc8HNkd77AVQxm8tP7a+sl9hLagLhp+D2ooI1KEMnsFoAtXpxJuF2g/VlYdDrj
-         RptQ==
-X-Gm-Message-State: APjAAAXylKw/r3xYKQqF7JnYviXeIjGMucudBmXYUihpcP1yd3KAYIeB
-        sIjBmkNp3Tqt7DgXMLEp7E9Pqic7GgqbTeCswuC5S21YshHH
-X-Google-Smtp-Source: APXvYqzHlVEvfdz4GO9vSY+QKFPioOgYcsWeEKwBh81ovnl0oAHiXc6BpMVJ4i5rb188ZzJ2tLSS7sfQWxzKOCnTzVv6npF1DGib
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ve448YTVFAAEC23KtyNHOIdfsWIqVwdZMMYjva/9ARk=;
+        b=ji/TRxK32Gmh6g8jwIk8CsqMxmoyy+0mLraojTNho+gs850frvILSWVRCVk78+M2dY
+         m5b2TdkRVOe4f2D9zfDfpkLs8LHzqI4vOaA9YX2eBDp6DJA/dR0JzqxDeGZekcwX3oQj
+         5RqUToAObffVnRRr+RiK7+/2B25Dgkc6pYY8X4NwC1kv/roMAXKdato6G5i6KJSviUCb
+         GD6X9dW3pOfcm3IoXB0SdJ6PEyUVmsIUl8n+35KnJDX+N7Jgm6sHvwX/ScbSJLTi04zm
+         p+R+lx85jV8jlzesoeyd/bg4Nc8Xl9aUHjcINADxywcpBgMTAr2i8EKbmfxA2VooG0mK
+         e8xg==
+X-Gm-Message-State: APjAAAUBnGeqFHOs6+eXkbj1U2khCozFVf7EbFBkJh2rN5rWeCbcqzXR
+        N4OCrJR4ORdQDRmPA6jpB7KbpZn+1fW+u+2h7YA=
+X-Google-Smtp-Source: APXvYqxSncyUYgj6nnhGr0swFIKM4wrhURHKFa3h39vR+wwapmfV05i8n1lfpz4qtRs2ddbeg97wJhaGCUjsAiEUiCk=
+X-Received: by 2002:ac8:1e9b:: with SMTP id c27mr8458728qtm.171.1565286472975;
+ Thu, 08 Aug 2019 10:47:52 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a02:c012:: with SMTP id y18mr6831313jai.85.1565285046564;
- Thu, 08 Aug 2019 10:24:06 -0700 (PDT)
-Date:   Thu, 08 Aug 2019 10:24:06 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002c418a058f9e53cf@google.com>
-Subject: general protection fault in perf_tp_event_match (2)
-From:   syzbot <syzbot+076ba900c4a9a0f67aba@syzkaller.appspotmail.com>
-To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        jolsa@redhat.com, kafai@fb.com, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, namhyung@kernel.org, netdev@vger.kernel.org,
-        peterz@infradead.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+References: <20190808003215.1462821-1-andriin@fb.com> <89a6e282-0250-4264-128d-469be99073e9@fb.com>
+In-Reply-To: <89a6e282-0250-4264-128d-469be99073e9@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 8 Aug 2019 10:47:41 -0700
+Message-ID: <CAEf4BzYAZ7x+PY0t90ty9RVSm1FSmc9XqY216DtJCA-giK3fUg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] btf: expose BTF info through sysfs
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>, Sam Ravnborg <sam@ravnborg.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Wed, Aug 7, 2019 at 9:24 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 8/7/19 5:32 PM, Andrii Nakryiko wrote:
+> > Make .BTF section allocated and expose its contents through sysfs.
+> >
+> > /sys/kernel/btf directory is created to contain all the BTFs present
+> > inside kernel. Currently there is only kernel's main BTF, represented as
+> > /sys/kernel/btf/kernel file. Once kernel modules' BTFs are supported,
+> > each module will expose its BTF as /sys/kernel/btf/<module-name> file.
+> >
+> > Current approach relies on a few pieces coming together:
+> > 1. pahole is used to take almost final vmlinux image (modulo .BTF and
+> >     kallsyms) and generate .BTF section by converting DWARF info into
+> >     BTF. This section is not allocated and not mapped to any segment,
+> >     though, so is not yet accessible from inside kernel at runtime.
+> > 2. objcopy dumps .BTF contents into binary file and subsequently
+> >     convert binary file into linkable object file with automatically
+> >     generated symbols _binary__btf_kernel_bin_start and
+> >     _binary__btf_kernel_bin_end, pointing to start and end, respectively,
+> >     of BTF raw data.
+> > 3. final vmlinux image is generated by linking this object file (and
+> >     kallsyms, if necessary). sysfs_btf.c then creates
+> >     /sys/kernel/btf/kernel file and exposes embedded BTF contents through
+> >     it. This allows, e.g., libbpf and bpftool access BTF info at
+> >     well-known location, without resorting to searching for vmlinux image
+> >     on disk (location of which is not standardized and vmlinux image
+> >     might not be even available in some scenarios, e.g., inside qemu
+> >     during testing).
+> >
+> > Alternative approach using .incbin assembler directive to embed BTF
+> > contents directly was attempted but didn't work, because sysfs_proc.o is
+> > not re-compiled during link-vmlinux.sh stage. This is required, though,
+> > to update embedded BTF data (initially empty data is embedded, then
+> > pahole generates BTF info and we need to regenerate sysfs_btf.o with
+> > updated contents, but it's too late at that point).
+> >
+> > If BTF couldn't be generated due to missing or too old pahole,
+> > sysfs_btf.c handles that gracefully by detecting that
+> > _binary__btf_kernel_bin_start (weak symbol) is 0 and not creating
+> > /sys/kernel/btf at all.
+> >
+> > v1->v2:
+> > - allow kallsyms stage to re-use vmlinux generated by gen_btf();
+> >
+> > Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+> > Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > Cc: Jiri Olsa <jolsa@kernel.org>
+> > Cc: Sam Ravnborg <sam@ravnborg.org>
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
 
-syzbot found the following crash on:
+[...]
 
-HEAD commit:    1e78030e Merge tag 'mmc-v5.3-rc1' of git://git.kernel.org/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1011831a600000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4c7b914a2680c9c6
-dashboard link: https://syzkaller.appspot.com/bug?extid=076ba900c4a9a0f67aba
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > +
+> > +     # dump .BTF section into raw binary file to link with final vmlinux
+> > +     bin_arch=$(${OBJDUMP} -f ${1} | grep architecture | \
+> > +             cut -d, -f1 | cut -d' ' -f2)
+> > +     ${OBJCOPY} --dump-section .BTF=.btf.kernel.bin ${1} 2>/dev/null
+> > +     ${OBJCOPY} -I binary -O ${CONFIG_OUTPUT_FORMAT} -B ${bin_arch} \
+> > +             --rename-section .data=.BTF .btf.kernel.bin ${2}
+>
+> Currently, the binary size on my config is about 2.6MB. Do you think
+> we could or need to compress it to make it smaller? I tried gzip
+> and the compressed size is 0.9MB.
 
-Unfortunately, I don't have any reproducer for this crash yet.
+I'd really prefer to keep it uncompressed for two main reasons:
+- by having this in uncompressed form, kernel itself can use this BTF
+data from inside with almost no additional memory (except maybe for
+index from type ID to actual location of type info), which opens up a
+lot of new and interesting opportunities, like kernel returning its
+own BTF and BTF type ID for various types (think about driver metdata,
+all those special maps, etc).
+- if we are doing compression, now we need to decide on best
+compression format, teach it libbpf (which will make libbpf also
+bigger and depending on extra libraries), etc.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+076ba900c4a9a0f67aba@syzkaller.appspotmail.com
+So basically, in exchange of 1-1.5MB extra memory we get a bunch of
+new problems we normally don't have to deal with.
 
-kasan: CONFIG_KASAN_INLINE enabled
-kasan: GPF could be caused by NULL-ptr deref or user memory access
-general protection fault: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 22070 Comm: syz-executor.3 Not tainted 5.3.0-rc2+ #86
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-RIP: 0010:perf_tp_event_match+0x31/0x260 kernel/events/core.c:8560
-Code: 89 f6 41 55 49 89 d5 41 54 53 48 89 fb e8 b7 0e ea ff 48 8d bb d0 01  
-00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84  
-c0 74 08 3c 03 0f 8e cc 01 00 00 44 8b a3 d0 01 00
-RSP: 0018:ffff88804ffa7790 EFLAGS: 00010007
-RAX: dffffc0000000000 RBX: 00000000ffffff9f RCX: ffffffff818bcb73
-RDX: 000000002000002d RSI: ffffffff818890b9 RDI: 000000010000016f
-RBP: ffff88804ffa77b0 R08: ffff8880531ba640 R09: ffffed100a6374c9
-R10: ffffed100a6374c8 R11: ffff8880531ba647 R12: ffff8880ae830860
-R13: ffff8880ae830860 R14: ffff88804ffa7880 R15: dffffc0000000000
-FS:  00005555556d7940(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000738008 CR3: 000000004cad5000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-  perf_tp_event+0x1ea/0x730 kernel/events/core.c:8611
-  perf_trace_run_bpf_submit+0x131/0x190 kernel/events/core.c:8586
-  perf_trace_sched_wakeup_template+0x42d/0x5d0  
-include/trace/events/sched.h:57
-  trace_sched_wakeup_new include/trace/events/sched.h:103 [inline]
-  wake_up_new_task+0x70f/0xbd0 kernel/sched/core.c:2848
-  _do_fork+0x26c/0xfa0 kernel/fork.c:2393
-  __do_sys_clone kernel/fork.c:2524 [inline]
-  __se_sys_clone kernel/fork.c:2505 [inline]
-  __x64_sys_clone+0x18d/0x250 kernel/fork.c:2505
-  do_syscall_64+0xfd/0x6a0 arch/x86/entry/common.c:296
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x457dfa
-Code: f7 d8 64 89 04 25 d4 02 00 00 64 4c 8b 0c 25 10 00 00 00 31 d2 4d 8d  
-91 d0 02 00 00 31 f6 bf 11 00 20 01 b8 38 00 00 00 0f 05 <48> 3d 00 f0 ff  
-ff 0f 87 f5 00 00 00 85 c0 41 89 c5 0f 85 fc 00 00
-RSP: 002b:00007ffcf0b1c640 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
-RAX: ffffffffffffffda RBX: 00007ffcf0b1c640 RCX: 0000000000457dfa
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000001200011
-RBP: 00007ffcf0b1c680 R08: 0000000000000001 R09: 00005555556d7940
-R10: 00005555556d7c10 R11: 0000000000000246 R12: 0000000000000001
-R13: 0000000000000000 R14: 0000000000000000 R15: 00007ffcf0b1c6d0
-Modules linked in:
----[ end trace 8f4efeb0ada52ec1 ]---
-RIP: 0010:perf_tp_event_match+0x31/0x260 kernel/events/core.c:8560
-Code: 89 f6 41 55 49 89 d5 41 54 53 48 89 fb e8 b7 0e ea ff 48 8d bb d0 01  
-00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84  
-c0 74 08 3c 03 0f 8e cc 01 00 00 44 8b a3 d0 01 00
-RSP: 0018:ffff88804ffa7790 EFLAGS: 00010007
-RAX: dffffc0000000000 RBX: 00000000ffffff9f RCX: ffffffff818bcb73
-RDX: 000000002000002d RSI: ffffffff818890b9 RDI: 000000010000016f
-RBP: ffff88804ffa77b0 R08: ffff8880531ba640 R09: ffffed100a6374c9
-R10: ffffed100a6374c8 R11: ffff8880531ba647 R12: ffff8880ae830860
-R13: ffff8880ae830860 R14: ffff88804ffa7880 R15: dffffc0000000000
-FS:  00005555556d7940(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000738008 CR3: 000000004cad5000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>
+> >   }
+> >
+> >   # Create ${2} .o file with all symbols from the ${1} object file
+> > @@ -153,6 +164,7 @@ sortextable()
+> >   # Delete output files in case of error
+> >   cleanup()
+> >   {
 
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+[...]
