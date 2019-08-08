@@ -2,177 +2,385 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1EA8687D
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 20:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD6E0868BB
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 20:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728020AbfHHSLI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Aug 2019 14:11:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725535AbfHHSLH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Aug 2019 14:11:07 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5DE3821743;
-        Thu,  8 Aug 2019 18:11:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565287866;
-        bh=VQIOY0vBzuYscrqn68EABa55zxTZLbGjt3/l6q9cOAY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xdrkj+0hZtP1qj4oUD1AxSDlDuoiKG8VcdttnCp4FelzfZoC5uDp0WRnRMAyxMQKE
-         jxGWs49FzLgOld8rhoJP/En/UFXtE8Xaobwq2BVzMH5PBJ07EfuCUsjuQYcWQ+ikb8
-         rNwGD0At0fsoxKJO2Ncnb9rM9MEIarZLVK+AJQt0=
-Date:   Thu, 8 Aug 2019 20:11:04 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        id S1725785AbfHHS2I (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Aug 2019 14:28:08 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:34076 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725535AbfHHS2I (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 8 Aug 2019 14:28:08 -0400
+Received: from pps.filterd (m0044008.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x78IPHJs027784;
+        Thu, 8 Aug 2019 11:27:41 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=RNlaM+7r256rn7275oY5DyEa4m3wOb4CuGAh0UaV30Y=;
+ b=NidresSBzNGj7pN5YHAkZQyYQqVVsf2GoqCC4NtjywzKAFl6d3TCf9vGk0y9APuhOWbJ
+ eAzz1gzF6I56okhk/6XUzOobiQ4Lwe1Q8LvFgoSu4OhuX+LCOqnDDTRo6sJfK1p/qvyJ
+ ZSNRj6A/L8aIsyj8ClCKVAjfY74owH27GKI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2u8q76rgpe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 08 Aug 2019 11:27:40 -0700
+Received: from ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) by
+ ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 8 Aug 2019 11:27:39 -0700
+Received: from NAM05-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 8 Aug 2019 11:27:39 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XOs/VQi0CNmbvc4E2Mqnl9Vob1c/TQdur6W6bx/+yTMAUh/XSscMzx7934/Bvnz5bYKWjCiZWJJBmiMaijBL1LyCXfs0OacB9bRgQ6fMv4tpqmluRm1XyOzWWuNXnoanrsQjnKNMPP/6tQLJ4DJkzbvncDlQQVOrO4kLpzo+iiRBweVUOjLmZhM7peiS3BjdkCgrzFLobuhOsonTO2dnWgBtJFVi8a+Cwd73evD3LHUA6YM8/indzM/ZUOQdorooEh9vP2ocO5Q0dxe8D49UWBvXRNYdmaXqhub1nPu9qZ6AcFbPb0fl20W5PXZkaiJ1H1zi87OQ9XM/6zMk5lc6gw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RNlaM+7r256rn7275oY5DyEa4m3wOb4CuGAh0UaV30Y=;
+ b=RLhPMs01K6qjqm0VZBEdYaVv4+4WKVojycSP7JTXBEfl+i46+rQ7mM2KTuR0e13/TVF6wTTuWNxPBJWp7DDb6dquLL55CjeARdsbEikOSVDnOqcd6CyE2hr5XDwmeBss+gn+nInPnHDxWVUMhDR3b7ftp+ajjK/zJiHsbwBuVOSdUKuSXdSxF4kijOmDXuM7geGoHLoXH7/8mPoVqjZ8mCmfS0LVOukqgbd1/gMXgQgyXLywj0he5i3wgDvc8JjLlB2K67++3MT2Magk2ukw1XbKIgKUWILbAi/d3TgvCY6Vix474YpEbympaEEC9l2LEDnjtT4idWaXWx+m7gtAdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
+ smtp.mailfrom=fb.com;dmarc=pass action=none header.from=fb.com;dkim=pass
+ header.d=fb.com;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RNlaM+7r256rn7275oY5DyEa4m3wOb4CuGAh0UaV30Y=;
+ b=YZLvjtt/L6DlFOBrPdvcwIylIfDuz+gY5Li035ryJ33Hsxa5VizxDcd4jjGgmsnODnbRps3Z30IIW014jeG1eV8Lb4bj3MueE9n/nmD9vgbQ0kI2TXlfxX/5PeWOziFUJZRKFXw17ksJzWWq1E9v/KoSjsjjED0W4a5tVeuDoGk=
+Received: from MWHPR15MB1790.namprd15.prod.outlook.com (10.174.97.138) by
+ MWHPR15MB1695.namprd15.prod.outlook.com (10.175.142.16) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2136.20; Thu, 8 Aug 2019 18:27:38 +0000
+Received: from MWHPR15MB1790.namprd15.prod.outlook.com
+ ([fe80::e44d:56a4:6a5:d1a]) by MWHPR15MB1790.namprd15.prod.outlook.com
+ ([fe80::e44d:56a4:6a5:d1a%3]) with mapi id 15.20.2157.015; Thu, 8 Aug 2019
+ 18:27:38 +0000
+From:   Martin Lau <kafai@fb.com>
+To:     Stanislav Fomichev <sdf@fomichev.me>
+CC:     Stanislav Fomichev <sdf@google.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>, Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH v2 bpf-next] btf: expose BTF info through sysfs
-Message-ID: <20190808181104.GA31357@kroah.com>
-References: <20190808003215.1462821-1-andriin@fb.com>
- <89a6e282-0250-4264-128d-469be99073e9@fb.com>
- <20190808060812.GA25150@kroah.com>
- <CAEf4BzaWtumTrc7h1t3w8hA1L8mVo2Cm0B+eLSe4eSghFAu3iw@mail.gmail.com>
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf-next 1/3] bpf: support cloning sk storage on accept()
+Thread-Topic: [PATCH bpf-next 1/3] bpf: support cloning sk storage on accept()
+Thread-Index: AQHVTTduqbJFH1x3FkOpJFu+AIokkKbwza8AgACTvwCAADIJgA==
+Date:   Thu, 8 Aug 2019 18:27:37 +0000
+Message-ID: <20190808182735.pimzots4a4vmi6ft@kafai-mbp.dhcp.thefacebook.com>
+References: <20190807154720.260577-1-sdf@google.com>
+ <20190807154720.260577-2-sdf@google.com>
+ <20190808063936.3p4ahtdkw35rrzqu@kafai-mbp> <20190808152830.GC2820@mini-arch>
+In-Reply-To: <20190808152830.GC2820@mini-arch>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR14CA0052.namprd14.prod.outlook.com
+ (2603:10b6:300:81::14) To MWHPR15MB1790.namprd15.prod.outlook.com
+ (2603:10b6:301:53::10)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:180::9dd4]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5dc36906-f4d3-4817-3c64-08d71c2e1704
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MWHPR15MB1695;
+x-ms-traffictypediagnostic: MWHPR15MB1695:
+x-microsoft-antispam-prvs: <MWHPR15MB16951C0E9BB75F2CFEC985A2D5D70@MWHPR15MB1695.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 012349AD1C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(376002)(346002)(366004)(39860400002)(396003)(189003)(199004)(316002)(446003)(7736002)(71190400001)(64756008)(11346002)(71200400001)(66446008)(66476007)(66556008)(14454004)(66946007)(229853002)(2906002)(305945005)(476003)(486006)(5660300002)(52116002)(99286004)(6506007)(102836004)(386003)(6916009)(76176011)(54906003)(186003)(8676002)(81166006)(81156014)(8936002)(6512007)(46003)(86362001)(9686003)(6246003)(1076003)(25786009)(53936002)(4326008)(256004)(14444005)(6436002)(6486002)(478600001)(6116002);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1695;H:MWHPR15MB1790.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: dgqDS+zhbapmjteIEDqRNGpVMR3rtb8g1N18HB3OG8ibGu2Fc2em8mzjWFvSdvC1mYip4D8hH0sGQQM6OEptuKQ786TV14kmwFSVkrEV7VEqH4mpkpC4v3fwfcolyVfiLnid2KFLogzbNElCihphaLNffVBuLJv9cqE2vByv7neHRxwlscJGNWxrrPBZgusCR7ONcZguzAXEOEZk4362aSq/lhadk4yyaSnVXrokKQPGg8Ku3y2knSujfMtOJuYiUTa35jdDxjavKiYBZtMH8VR8P4+M9moBmIM8CsdvUpv5x+sx0NVoopQ5bxpwZHxzuckbimbgrRkG0kiWYj1v5qb90QGv+oFeggT7WDftM5Fg5GyH41eYSr6lJ4+7xtf87ipXiw9IWO9plP4CGxmQNhxwFCp1ataSv2A96xFFl+8=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <DE680CEA5750484B8113B8909F9FCFF7@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzaWtumTrc7h1t3w8hA1L8mVo2Cm0B+eLSe4eSghFAu3iw@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5dc36906-f4d3-4817-3c64-08d71c2e1704
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Aug 2019 18:27:37.8710
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2zn4Q4v0yH4GOQLJSLymGsu4D6U9wzNCjyWDvkbHUnFmPorbNzAEBjdGRZBULVb9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1695
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-08_07:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908080163
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 08, 2019 at 10:53:44AM -0700, Andrii Nakryiko wrote:
-> On Wed, Aug 7, 2019 at 11:08 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Thu, Aug 08, 2019 at 04:24:25AM +0000, Yonghong Song wrote:
-> > >
-> > >
-> > > On 8/7/19 5:32 PM, Andrii Nakryiko wrote:
-> > > > Make .BTF section allocated and expose its contents through sysfs.
-> >
-> > Was this original patch not on bpf@vger?  I can't find it in my
-> > archive.  Anyway...
-> >
-> > > > /sys/kernel/btf directory is created to contain all the BTFs present
-> > > > inside kernel. Currently there is only kernel's main BTF, represented as
-> > > > /sys/kernel/btf/kernel file. Once kernel modules' BTFs are supported,
-> > > > each module will expose its BTF as /sys/kernel/btf/<module-name> file.
-> >
-> > Why are you using sysfs for this?  Who uses "BTF"s?  Are these debugging
-> > images that only people working on developing bpf programs are going to
-> > need, or are these things that you are going to need on a production
-> > system?
-> 
-> We need it in production system. One immediate and direct use case is
-> BPF CO-RE (Compile Once - Run Everywhere), which aims to allow to
-> pre-compile BPF applications (even those that read internal kernel
-> structures) using any local kernel headers, and then distribute and
-> run them in binary form on all target production machines without
-> dependencies on kernel headers and having Clang on target machine to
-> compile C to BPF IR. Libbpf is doing all those adjustments/relocations
-> based on kernel's actual BTF. See [0] for a summary and slides, if you
-> curious to learn more.
-> 
->   [0] http://vger.kernel.org/bpfconf2019.html#session-2
+On Thu, Aug 08, 2019 at 08:28:30AM -0700, Stanislav Fomichev wrote:
+> On 08/08, Martin Lau wrote:
+> > On Wed, Aug 07, 2019 at 08:47:18AM -0700, Stanislav Fomichev wrote:
+> > > Add new helper bpf_sk_storage_clone which optionally clones sk storag=
+e
+> > > and call it from bpf_sk_storage_clone. Reuse the gap in
+> > > bpf_sk_storage_elem to store clone/non-clone flag.
+> > >=20
+> > > Cc: Martin KaFai Lau <kafai@fb.com>
+> > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > > ---
+> > >  include/net/bpf_sk_storage.h |  10 ++++
+> > >  include/uapi/linux/bpf.h     |   1 +
+> > >  net/core/bpf_sk_storage.c    | 102 +++++++++++++++++++++++++++++++++=
+--
+> > >  net/core/sock.c              |   9 ++--
+> > >  4 files changed, 115 insertions(+), 7 deletions(-)
+> > >=20
+> > > diff --git a/include/net/bpf_sk_storage.h b/include/net/bpf_sk_storag=
+e.h
+> > > index b9dcb02e756b..8e4f831d2e52 100644
+> > > --- a/include/net/bpf_sk_storage.h
+> > > +++ b/include/net/bpf_sk_storage.h
+> > > @@ -10,4 +10,14 @@ void bpf_sk_storage_free(struct sock *sk);
+> > >  extern const struct bpf_func_proto bpf_sk_storage_get_proto;
+> > >  extern const struct bpf_func_proto bpf_sk_storage_delete_proto;
+> > > =20
+> > > +#ifdef CONFIG_BPF_SYSCALL
+> > > +int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk);
+> > > +#else
+> > > +static inline int bpf_sk_storage_clone(const struct sock *sk,
+> > > +				       struct sock *newsk)
+> > > +{
+> > > +	return 0;
+> > > +}
+> > > +#endif
+> > > +
+> > >  #endif /* _BPF_SK_STORAGE_H */
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index 4393bd4b2419..00459ca4c8cf 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -2931,6 +2931,7 @@ enum bpf_func_id {
+> > > =20
+> > >  /* BPF_FUNC_sk_storage_get flags */
+> > >  #define BPF_SK_STORAGE_GET_F_CREATE	(1ULL << 0)
+> > > +#define BPF_SK_STORAGE_GET_F_CLONE	(1ULL << 1)
+> > It is only used in bpf_sk_storage_get().
+> > What if the elem is created from bpf_fd_sk_storage_update_elem()
+> > i.e. from the syscall API ?
+> >=20
+> > What may be the use case for a map to have both CLONE and non-CLONE
+> > elements?  If it is not the case, would it be better to add
+> > BPF_F_CLONE to bpf_attr->map_flags?
+> I didn't think about putting it on the map itself since the API
+> is on a per-element, but it does make sense. I can't come up
+> with a use-case for a per-element selective clone/non-clone.
+> Thanks, will move to the map itself.
+>=20
+> > > =20
+> > >  /* Mode for BPF_FUNC_skb_adjust_room helper. */
+> > >  enum bpf_adj_room_mode {
+> > > diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
+> > > index 94c7f77ecb6b..b6dea67965bc 100644
+> > > --- a/net/core/bpf_sk_storage.c
+> > > +++ b/net/core/bpf_sk_storage.c
+> > > @@ -12,6 +12,9 @@
+> > > =20
+> > >  static atomic_t cache_idx;
+> > > =20
+> > > +#define BPF_SK_STORAGE_GET_F_MASK	(BPF_SK_STORAGE_GET_F_CREATE | \
+> > > +					 BPF_SK_STORAGE_GET_F_CLONE)
+> > > +
+> > >  struct bucket {
+> > >  	struct hlist_head list;
+> > >  	raw_spinlock_t lock;
+> > > @@ -66,7 +69,8 @@ struct bpf_sk_storage_elem {
+> > >  	struct hlist_node snode;	/* Linked to bpf_sk_storage */
+> > >  	struct bpf_sk_storage __rcu *sk_storage;
+> > >  	struct rcu_head rcu;
+> > > -	/* 8 bytes hole */
+> > > +	u8 clone:1;
+> > > +	/* 7 bytes hole */
+> > >  	/* The data is stored in aother cacheline to minimize
+> > >  	 * the number of cachelines access during a cache hit.
+> > >  	 */
+> > > @@ -509,7 +513,7 @@ static int sk_storage_delete(struct sock *sk, str=
+uct bpf_map *map)
+> > >  	return 0;
+> > >  }
+> > > =20
+> > > -/* Called by __sk_destruct() */
+> > > +/* Called by __sk_destruct() & bpf_sk_storage_clone() */
+> > >  void bpf_sk_storage_free(struct sock *sk)
+> > >  {
+> > >  	struct bpf_sk_storage_elem *selem;
+> > > @@ -739,19 +743,106 @@ static int bpf_fd_sk_storage_delete_elem(struc=
+t bpf_map *map, void *key)
+> > >  	return err;
+> > >  }
+> > > =20
+> > > +static struct bpf_sk_storage_elem *
+> > > +bpf_sk_storage_clone_elem(struct sock *newsk,
+> > > +			  struct bpf_sk_storage_map *smap,
+> > > +			  struct bpf_sk_storage_elem *selem)
+> > > +{
+> > > +	struct bpf_sk_storage_elem *copy_selem;
+> > > +
+> > > +	copy_selem =3D selem_alloc(smap, newsk, NULL, true);
+> > > +	if (!copy_selem)
+> > > +		return ERR_PTR(-ENOMEM);
+> > nit.
+> > may be just return NULL as selem_alloc() does.
+> Sounds good.
+>=20
+> > > +
+> > > +	if (map_value_has_spin_lock(&smap->map))
+> > > +		copy_map_value_locked(&smap->map, SDATA(copy_selem)->data,
+> > > +				      SDATA(selem)->data, true);
+> > > +	else
+> > > +		copy_map_value(&smap->map, SDATA(copy_selem)->data,
+> > > +			       SDATA(selem)->data);
+> > > +
+> > > +	return copy_selem;
+> > > +}
+> > > +
+> > > +int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk)
+> > > +{
+> > > +	struct bpf_sk_storage *new_sk_storage =3D NULL;
+> > > +	struct bpf_sk_storage *sk_storage;
+> > > +	struct bpf_sk_storage_elem *selem;
+> > > +	int ret;
+> > > +
+> > > +	RCU_INIT_POINTER(newsk->sk_bpf_storage, NULL);
+> > > +
+> > > +	rcu_read_lock();
+> > > +	sk_storage =3D rcu_dereference(sk->sk_bpf_storage);
+> > > +
+> > > +	if (!sk_storage || hlist_empty(&sk_storage->list))
+> > > +		goto out;
+> > > +
+> > > +	hlist_for_each_entry_rcu(selem, &sk_storage->list, snode) {
+> > > +		struct bpf_sk_storage_map *smap;
+> > > +		struct bpf_sk_storage_elem *copy_selem;
+> > > +
+> > > +		if (!selem->clone)
+> > > +			continue;
+> > > +
+> > > +		smap =3D rcu_dereference(SDATA(selem)->smap);
+> > > +		if (!smap)
+> > smap should not be NULL.
+> I see; you never set it back to NULL and we are guaranteed that the
+> map is still around due to rcu. Removed.
+>=20
+> > > +			continue;
+> > > +
+> > > +		copy_selem =3D bpf_sk_storage_clone_elem(newsk, smap, selem);
+> > > +		if (IS_ERR(copy_selem)) {
+> > > +			ret =3D PTR_ERR(copy_selem);
+> > > +			goto err;
+> > > +		}
+> > > +
+> > > +		if (!new_sk_storage) {
+> > > +			ret =3D sk_storage_alloc(newsk, smap, copy_selem);
+> > > +			if (ret) {
+> > > +				kfree(copy_selem);
+> > > +				atomic_sub(smap->elem_size,
+> > > +					   &newsk->sk_omem_alloc);
+> > > +				goto err;
+> > > +			}
+> > > +
+> > > +			new_sk_storage =3D rcu_dereference(copy_selem->sk_storage);
+> > > +			continue;
+> > > +		}
+> > > +
+> > > +		raw_spin_lock_bh(&new_sk_storage->lock);
+> > > +		selem_link_map(smap, copy_selem);
+> > Unlike the existing selem-update use-cases in bpf_sk_storage.c,
+> > the smap->map.refcnt has not been held here.  Reading the smap
+> > is fine.  However, adding a new selem to a deleting smap is an issue.
+> > Hence, I think bpf_map_inc_not_zero() should be done first.
+> In this case, I should probably do it after smap =3D rcu_deref()?
+Right.
 
-Ok, then a binary sysfs file is fine, no objection from me.
+and bpf_map_put should be called when done.  Becasue of bpf_map_put,
+it may be a good idea to add a comment to the first synchronize_rcu()
+in bpf_sk_storage_map_free() since this new bpf_sk_storage_clone()
+also depends on it now,
+which makes it different from other bpf maps.
 
-> > I ask as maybe debugfs is the best place for this if they are not needed
-> > on production systems.
-> >
-> >
-> > > >
-> > > > Current approach relies on a few pieces coming together:
-> > > > 1. pahole is used to take almost final vmlinux image (modulo .BTF and
-> > > >     kallsyms) and generate .BTF section by converting DWARF info into
-> > > >     BTF. This section is not allocated and not mapped to any segment,
-> > > >     though, so is not yet accessible from inside kernel at runtime.
-> > > > 2. objcopy dumps .BTF contents into binary file and subsequently
-> > > >     convert binary file into linkable object file with automatically
-> > > >     generated symbols _binary__btf_kernel_bin_start and
-> > > >     _binary__btf_kernel_bin_end, pointing to start and end, respectively,
-> > > >     of BTF raw data.
-> > > > 3. final vmlinux image is generated by linking this object file (and
-> > > >     kallsyms, if necessary). sysfs_btf.c then creates
-> > > >     /sys/kernel/btf/kernel file and exposes embedded BTF contents through
-> > > >     it. This allows, e.g., libbpf and bpftool access BTF info at
-> > > >     well-known location, without resorting to searching for vmlinux image
-> > > >     on disk (location of which is not standardized and vmlinux image
-> > > >     might not be even available in some scenarios, e.g., inside qemu
-> > > >     during testing).
-> > > >
-> > > > Alternative approach using .incbin assembler directive to embed BTF
-> > > > contents directly was attempted but didn't work, because sysfs_proc.o is
-> > > > not re-compiled during link-vmlinux.sh stage. This is required, though,
-> > > > to update embedded BTF data (initially empty data is embedded, then
-> > > > pahole generates BTF info and we need to regenerate sysfs_btf.o with
-> > > > updated contents, but it's too late at that point).
-> > > >
-> > > > If BTF couldn't be generated due to missing or too old pahole,
-> > > > sysfs_btf.c handles that gracefully by detecting that
-> > > > _binary__btf_kernel_bin_start (weak symbol) is 0 and not creating
-> > > > /sys/kernel/btf at all.
-> > > >
-> > > > v1->v2:
-> > > > - allow kallsyms stage to re-use vmlinux generated by gen_btf();
-> > > >
-> > > > Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-> > > > Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > > > Cc: Jiri Olsa <jolsa@kernel.org>
-> > > > Cc: Sam Ravnborg <sam@ravnborg.org>
-> > > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > > > ---
-> > > >   kernel/bpf/Makefile     |  3 +++
-> > > >   kernel/bpf/sysfs_btf.c  | 52 ++++++++++++++++++++++++++++++++++++++
-> > > >   scripts/link-vmlinux.sh | 55 +++++++++++++++++++++++++++--------------
-> > > >   3 files changed, 91 insertions(+), 19 deletions(-)
-> > > >   create mode 100644 kernel/bpf/sysfs_btf.c
-> >
-> > First rule, you can't create new sysfs files without a matching
-> > Documentation/ABI/ set of entries.  Please do that for the next version
-> > of this patch so we can properly check to see if what you are
-> > documenting lines up with the code.  Otherwise we just have to guess as
-> > to what the entries you are creating actually do.
-> 
-> Yep, sure, I wasn't aware, will add in v3.
-
-thanks.
-
-> > > > +static int __init btf_kernel_init(void)
-> > > > +{
-> > > > +   if (!_binary__btf_kernel_bin_start)
-> > > > +           return 0;
-> > > > +
-> > > > +   btf_kernel_attr.size = _binary__btf_kernel_bin_end -
-> > > > +                          _binary__btf_kernel_bin_start;
-> > > > +
-> > > > +   return sysfs_create_group(kernel_kobj, &btf_group_attr);
-> >
-> > You are nesting directories here without a "real" kobject in the middle.
-> > Are you _sure_ you want to do that?  It's going to get really tricky
-> > later on based on your comments above about creating multiple files in
-> > that directory over time once "modules" are allowed.
-> 
-> My thinking was that when we have BTF for modules, I'll need to do
-> some code adjustments anyway, at which point it will be more clear how
-> we want to structure that. But I can add explicit kobject as static
-> variable right now, no problems. Later on we probably will just switch
-> it to be exported, so that modules can self-register/unregister their
-> BTFs autonomously.
-
-A "real" kobject to start with here would probably be best.  Keeps
-things simpler later as well.
-
-thanks,
-
-greg k-h
+>=20
+> > > +		__selem_link_sk(new_sk_storage, copy_selem);
+> > > +		raw_spin_unlock_bh(&new_sk_storage->lock);
+> > > +	}
+> > > +
+> > > +out:
+> > > +	rcu_read_unlock();
+> > > +	return 0;
+> > > +
+> > > +err:
+> > > +	rcu_read_unlock();
+> > > +
+> > > +	bpf_sk_storage_free(newsk);
+> > > +	return ret;
+> > > +}
+> > > +
+> > >  BPF_CALL_4(bpf_sk_storage_get, struct bpf_map *, map, struct sock *,=
+ sk,
+> > >  	   void *, value, u64, flags)
+> > >  {
+> > >  	struct bpf_sk_storage_data *sdata;
+> > > =20
+> > > -	if (flags > BPF_SK_STORAGE_GET_F_CREATE)
+> > > +	if (flags & ~BPF_SK_STORAGE_GET_F_MASK)
+> > > +		return (unsigned long)NULL;
+> > > +
+> > > +	if ((flags & BPF_SK_STORAGE_GET_F_CLONE) &&
+> > > +	    !(flags & BPF_SK_STORAGE_GET_F_CREATE))
+> > >  		return (unsigned long)NULL;
+> > > =20
+> > >  	sdata =3D sk_storage_lookup(sk, map, true);
+> > >  	if (sdata)
+> > >  		return (unsigned long)sdata->data;
+> > > =20
+> > > -	if (flags =3D=3D BPF_SK_STORAGE_GET_F_CREATE &&
+> > > +	if ((flags & BPF_SK_STORAGE_GET_F_CREATE) &&
+> > >  	    /* Cannot add new elem to a going away sk.
+> > >  	     * Otherwise, the new elem may become a leak
+> > >  	     * (and also other memory issues during map
+> > > @@ -762,6 +853,9 @@ BPF_CALL_4(bpf_sk_storage_get, struct bpf_map *, =
+map, struct sock *, sk,
+> > >  		/* sk must be a fullsock (guaranteed by verifier),
+> > >  		 * so sock_gen_put() is unnecessary.
+> > >  		 */
+> > > +		if (!IS_ERR(sdata))
+> > > +			SELEM(sdata)->clone =3D
+> > > +				!!(flags & BPF_SK_STORAGE_GET_F_CLONE);
+> > >  		sock_put(sk);
+> > >  		return IS_ERR(sdata) ?
+> > >  			(unsigned long)NULL : (unsigned long)sdata->data;
+> > > diff --git a/net/core/sock.c b/net/core/sock.c
+> > > index d57b0cc995a0..f5e801a9cea4 100644
+> > > --- a/net/core/sock.c
+> > > +++ b/net/core/sock.c
+> > > @@ -1851,9 +1851,12 @@ struct sock *sk_clone_lock(const struct sock *=
+sk, const gfp_t priority)
+> > >  			goto out;
+> > >  		}
+> > >  		RCU_INIT_POINTER(newsk->sk_reuseport_cb, NULL);
+> > > -#ifdef CONFIG_BPF_SYSCALL
+> > > -		RCU_INIT_POINTER(newsk->sk_bpf_storage, NULL);
+> > > -#endif
+> > > +
+> > > +		if (bpf_sk_storage_clone(sk, newsk)) {
+> > > +			sk_free_unlock_clone(newsk);
+> > > +			newsk =3D NULL;
+> > > +			goto out;
+> > > +		}
+> > > =20
+> > >  		newsk->sk_err	   =3D 0;
+> > >  		newsk->sk_err_soft =3D 0;
+> > > --=20
+> > > 2.22.0.770.g0f2c4a37fd-goog
+> > >=20
