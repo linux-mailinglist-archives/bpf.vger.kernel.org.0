@@ -2,104 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B8B85DDE
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 11:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA9785EB2
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 11:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731782AbfHHJJ1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Aug 2019 05:09:27 -0400
-Received: from mail-yw1-f67.google.com ([209.85.161.67]:45393 "EHLO
-        mail-yw1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731487AbfHHJJ1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Aug 2019 05:09:27 -0400
-Received: by mail-yw1-f67.google.com with SMTP id m16so33720959ywh.12
-        for <bpf@vger.kernel.org>; Thu, 08 Aug 2019 02:09:26 -0700 (PDT)
+        id S1732591AbfHHJiJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Aug 2019 05:38:09 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:47005 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732590AbfHHJiJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Aug 2019 05:38:09 -0400
+Received: by mail-lf1-f66.google.com with SMTP id z15so62056206lfh.13
+        for <bpf@vger.kernel.org>; Thu, 08 Aug 2019 02:38:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=30SazUA7Tq8vOLew/Q0ozPIJ6UITJfx6OSiQFokXt+o=;
-        b=QoAMv3DejUjfnhb+6oRokGpixiiFkdSEwUMfIfWbE6OX7L2QqcKZDYpsVwpgwGt0Xk
-         gznDPs2eCQSu+Ggc2KcoJCA0UdzunKgwi8hiTkLY+ZHSFkDOl1zUGU2gyauNO+35qNsp
-         kOwUFaWA5dDE0XeEaTNpCZhgnTj2tFJ2LW3zQ8yymhoVryuAUaO6vk4vwuh8h+YQAoJi
-         Owph5vWtqqGKlpcP8gxCftLVd4t68yaEHLI2r3anufZwM+CkEeaZRxVRjJcy6dqaTrRW
-         n1JgFKH0jZOf0AvisfXH1BJw411XGuGYF7JGcYpFv4hjSmhazYegG1xn0LEBVT+LZNGq
-         fPkw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KKq6Rq+EYX8ExcTVOf/aov+7OPET0b1D6K1n31UVB3c=;
+        b=L7g3XM0CuaMcn8hysQiAwokrdf3uqIKmkZ8fZ7ry8SmuWC3ecsFb7VNl10/lP7yd/x
+         /E0u/ayUH8PafZlMX+eET7r8DVS3gTNBCMsxDUZOPp9OzAXvNBxfoyu3Pq8ci6XkORQe
+         tZFRgq9gqK1ElBj747sU15wkuSikL7IVt7CezdOFlaGps24pW942lPcXuo17N4ZBg2K4
+         SPp7MeMtFQMhTLstz/zV1ZALgQI16ZpLEQ3UnLh1EsCu6jnXeo/q9jOCCTOZl64TjxeQ
+         tyo8jYFPeauPU5tHKH4CppT/cCHg+74BpkE3cyHE3RzAg2xyluC015PMBevegNjPTb7i
+         d7mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=30SazUA7Tq8vOLew/Q0ozPIJ6UITJfx6OSiQFokXt+o=;
-        b=i1TQDE0Ob7brMo79RdLGBzWdyISF4ONqushZ2CaLFdybRPkEX3kMzfbO9RDOmq+FAD
-         tl/HsnwVJQtq29pgSK347u0Sm9FDESy6fs+Rnsc6ei2boRtLni3PX/u4/sgNcu9A4U7c
-         uU+Wrz0RprCLkgManzBgM+INk4lveGy0fHoBKezQqAL3LGNmKl8GPQFOT0Htd9T2gosc
-         gOx3pR0yl7wa5O8BbI7flIyCBjX6ei1HtUKhJlWpVWsmR+ib4SHvjeYe+9+96INslQgo
-         8YuuwWP/Xz4C0IgHkarRIBmSE9UBj2TRphUXa5GTSPYXuDUYZPqihRD2EQhf6SiMn9il
-         FU5w==
-X-Gm-Message-State: APjAAAXm4ANyz5aTgaICcXVlpIarV1VqqOMyJAyryJQkLIF7fNxMA1Jb
-        rk5+O5/nKPPdpSlFMWWeRt2ihQ==
-X-Google-Smtp-Source: APXvYqydeeI1ncc96UjZdrxAXhHgXZE1BP0vhmCGoDri//M4yZCIqo84HVJCeE6X+NfJt2l/kTMFsg==
-X-Received: by 2002:a81:3646:: with SMTP id d67mr9291114ywa.77.1565255366232;
-        Thu, 08 Aug 2019 02:09:26 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s (li1322-146.members.linode.com. [45.79.223.146])
-        by smtp.gmail.com with ESMTPSA id z9sm21277603ywj.84.2019.08.08.02.09.16
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 08 Aug 2019 02:09:25 -0700 (PDT)
-Date:   Thu, 8 Aug 2019 17:09:13 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH v2 0/3] arm/arm64: Add support for function error
- injection
-Message-ID: <20190808090913.GD8313@leoy-ThinkPad-X240s>
-References: <20190806100015.11256-1-leo.yan@linaro.org>
- <20190807160703.pe4jxak7hs7ptvde@willie-the-truck>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KKq6Rq+EYX8ExcTVOf/aov+7OPET0b1D6K1n31UVB3c=;
+        b=eGRTP3Gn+nh+yyEze0WB2cwHs6bztHDWVTSzESCJl5A4JSaP+zo2rfURaqiFarqS8b
+         oWdhHv6jXukNJcQDtb1m8HAnguJrnesAHECH+WOBJmT0E1HVmlx9zYmz1SruiYV9sOBQ
+         pj7mqbSh4tnpz50/ZIw5yUG9r8kFhghYmatmkgcKhuLxWuJq87lp+o/ZXmkjOChBtyG/
+         t0OvGruWNyfdtS3EgFqB0yVSfhjCQ9UV888GJov1e1tSBdRvEZ227LzZkC0v8Sy5pG3N
+         nDE9zpbmLPBqgoDXansD09whgtGYHl2oS5rCIPybsWsDFjVadQufSONcam5vGI8jFkD1
+         5A5A==
+X-Gm-Message-State: APjAAAVRvyOR6VN6pjnWcRdl4mHAQXg0dFshO4mAdbXeBZ15NbXa436R
+        uwYISFiAjqwDHHnAXp25YF5Ut2DkTcU=
+X-Google-Smtp-Source: APXvYqyuMdt7jID+q3HcQXEifvW4J/jspv2uf3zNhF13WH6UysEsAqmZJj9n6zkM8fFyTHX7tVgVIA==
+X-Received: by 2002:ac2:44ce:: with SMTP id d14mr9058953lfm.143.1565257087328;
+        Thu, 08 Aug 2019 02:38:07 -0700 (PDT)
+Received: from localhost.localdomain (59-201-94-178.pool.ukrtel.net. [178.94.201.59])
+        by smtp.gmail.com with ESMTPSA id r21sm3444783lfi.32.2019.08.08.02.38.05
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 08 Aug 2019 02:38:06 -0700 (PDT)
+From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+To:     bjorn.topel@intel.com, magnus.karlsson@intel.com
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, hawk@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, xdp-newbies@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+Subject: [PATCH v2 bpf-next] xdp: xdp_umem: fix umem pages mapping for 32bits systems
+Date:   Thu,  8 Aug 2019 12:38:03 +0300
+Message-Id: <20190808093803.4918-1-ivan.khoronzhuk@linaro.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190807160703.pe4jxak7hs7ptvde@willie-the-truck>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 07, 2019 at 05:07:03PM +0100, Will Deacon wrote:
-> On Tue, Aug 06, 2019 at 06:00:12PM +0800, Leo Yan wrote:
-> > This small patch set is to add support for function error injection;
-> > this can be used to eanble more advanced debugging feature, e.g.
-> > CONFIG_BPF_KPROBE_OVERRIDE.
-> > 
-> > The patch 01/03 is to consolidate the function definition which can be
-> > suared cross architectures, patches 02,03/03 are used for enabling
-> > function error injection on arm64 and arm architecture respectively.
-> > 
-> > I tested on arm64 platform Juno-r2 and one of my laptop with x86
-> > architecture with below steps; I don't test for Arm architecture so
-> > only pass compilation.
-> 
-> Thanks. I've queued the first two patches up here:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=for-next/error-injection
+Use kmap instead of page_address as it's not always in low memory.
 
-Thank you, Will.
+Acked-by: Björn Töpel <bjorn.topel@intel.com>
+Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+---
 
-Leo.
+Based on bpf-next/master
+v2..v1:
+	included highmem.h
+
+v1: https://lkml.org/lkml/2019/6/26/693
+
+ net/xdp/xdp_umem.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
+index 83de74ca729a..a0607969f8c0 100644
+--- a/net/xdp/xdp_umem.c
++++ b/net/xdp/xdp_umem.c
+@@ -14,6 +14,7 @@
+ #include <linux/netdevice.h>
+ #include <linux/rtnetlink.h>
+ #include <linux/idr.h>
++#include <linux/highmem.h>
+ 
+ #include "xdp_umem.h"
+ #include "xsk_queue.h"
+@@ -164,6 +165,14 @@ void xdp_umem_clear_dev(struct xdp_umem *umem)
+ 	umem->zc = false;
+ }
+ 
++static void xdp_umem_unmap_pages(struct xdp_umem *umem)
++{
++	unsigned int i;
++
++	for (i = 0; i < umem->npgs; i++)
++		kunmap(umem->pgs[i]);
++}
++
+ static void xdp_umem_unpin_pages(struct xdp_umem *umem)
+ {
+ 	unsigned int i;
+@@ -207,6 +216,7 @@ static void xdp_umem_release(struct xdp_umem *umem)
+ 
+ 	xsk_reuseq_destroy(umem);
+ 
++	xdp_umem_unmap_pages(umem);
+ 	xdp_umem_unpin_pages(umem);
+ 
+ 	kfree(umem->pages);
+@@ -369,7 +379,7 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
+ 	}
+ 
+ 	for (i = 0; i < umem->npgs; i++)
+-		umem->pages[i].addr = page_address(umem->pgs[i]);
++		umem->pages[i].addr = kmap(umem->pgs[i]);
+ 
+ 	return 0;
+ 
+-- 
+2.17.1
+
