@@ -2,126 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9625086904
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 20:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4FE08691D
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 20:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390113AbfHHSsl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Aug 2019 14:48:41 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:35769 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733248AbfHHSsl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Aug 2019 14:48:41 -0400
-Received: by mail-qt1-f196.google.com with SMTP id d23so93318037qto.2;
-        Thu, 08 Aug 2019 11:48:41 -0700 (PDT)
+        id S2390261AbfHHSyY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Aug 2019 14:54:24 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:44196 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390260AbfHHSyY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Aug 2019 14:54:24 -0400
+Received: by mail-qt1-f194.google.com with SMTP id 44so62229814qtg.11;
+        Thu, 08 Aug 2019 11:54:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=f80HuJ3dcEKodY0RtmqfOb/w0vbYOhv7LftMqAtR93k=;
-        b=Lot3kI1jX2GfwMlD1yVgU+tjLRmJ7gUCD3AiqHhA91IWXyIespsd7NqAHyVIrWNqvy
-         oGxxtChmpGuEDXUUHvdbCAN7kJHO0us+CKCUcQT2UE58/SiUs5ZMFuyw4D6q9E6XtqCQ
-         xoWpfHsFOQKV0zvgwkl3bZBHSL6RyCEmuhCDIFANNCsqzhyEYy7+2NBaaQxkjMU0/x8+
-         DcCvoUK3UYGa1wuPfeJxxoux/sg01sL0OZjJ9NKaLS8A6LuQLd4bfk0txyIoVznbJ1im
-         K34/YQuvtDM8AQ+dMw4xj+Fr6gyhxH5VEpHQPKylOgR1xVmDaSHJZNzePVL46aOZt4Qp
-         vdIw==
+        bh=ePbQLgmew1flkn1x6c05tWaSE/mhwZOcWAVFKg9qmww=;
+        b=u36AN4gd0RPtfKMPqbdfTmgOOqlgGK83pLl7pOIriFBbEF+gXdR5GUNmWqK4k4nIr4
+         VYfuNLVUE1MqEzk1APsfudag3GHz67C7kjqcP2QZW4GJNpXXgnULiacX620KjJvMNBVs
+         J3ZoaAdSeBzOX3vN2Uc+0P0GtjJ86Fn1yCrugPorMPVqjgMvlrTJs/WiO9kFMH9t8T1H
+         oiJ3c7YfZviPPIU+DXtOvSKesEInJae0SpXRpsmHkSLPj7WDwelC2P7hnZAJx/QcabPP
+         VG8NKa1sbkpNg6jAoZB/pjqTXssHAb9zbyaFMW4BpXCtcQP39jrBDo2TfyS/t6q9Em2S
+         bWDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=f80HuJ3dcEKodY0RtmqfOb/w0vbYOhv7LftMqAtR93k=;
-        b=iA7lxL060NEB2AjyHLfCp/teiXQGiA6391J932DW8wgcaLXYGS0E/ERLyliMogDn3t
-         Xd1vW2vYjGV4SZRAicOXCZ3DfgPdApLSYQDov/qTn54cD8ldCovXzm5Lx6BzCSaVctQ8
-         N9uFkSaAteqyhivh23C93Px6kLGEr2p/PxozMqN+Fi2l3xXSkS5DJFoGiZQz5XBzLbtu
-         YqYbZ/PHikAP18GJxbHaYC8QOyH4C2GJaJOuWua0vvTlB/goiS76KQsX63Lg837e7Nqa
-         CPR3rQmcDHbx65eO80IQE4zf7ymaLmlzsEuE0xj8flG+AJ2E9OAPUQUVUSk1yWwUfEto
-         aoew==
-X-Gm-Message-State: APjAAAXi7L6tghIBYE5l/+FXxRdq1A3+34g6Ef88MEjmUvhMehCCYQa8
-        nZhDMpFFK1XdaMPUzcn5OVGl8JePgPN0vwW42jQ=
-X-Google-Smtp-Source: APXvYqyt0+AS5Aw8s3QHlyYncWrVCjjgAHZiEOkMR/34wXpiw3zhs6G9mpScPvM3XmdzF1gCMfhcu806xqwWSKBBVVc=
-X-Received: by 2002:ac8:290c:: with SMTP id y12mr14345594qty.141.1565290120525;
- Thu, 08 Aug 2019 11:48:40 -0700 (PDT)
+        bh=ePbQLgmew1flkn1x6c05tWaSE/mhwZOcWAVFKg9qmww=;
+        b=Foq1JjB9rZ5FfUnZxr2Y/AJsFTEajmSBoZpZZtZteCkkWTc7GfdqxELyAKJP8CGjnH
+         2D2LHub4F9DUHJq9Logt2Ao+NsGRmsiRWfwoWC4aHcSSlt0jM7+9vPSmtA22Fas3Q3h7
+         3bW/6A30N4X095jBwao6ilkszvgZiZHOsX9A8QmRVsfyCqqvAkZMPAJ0eNzdighP8T7A
+         YGf95vkeih92hRn3Ir3LQPpwUOYqQ24c7FXRya72iz1dIQyd5/HxuUrLBAsx9mAOdR5o
+         LChlIxF77J8cfQ7Jx4TLgHxJud/lHtzbJ0dcIu7ZyjWuNIV3LMSdwzELp2/PF8i1dgbU
+         BRNQ==
+X-Gm-Message-State: APjAAAUU39GMbGc+ZLe8g5gPLtBI+CL/i+XSYDQqIAOsXUq45akAgtBE
+        0Td1nh2XYbzKKO1BvYdVetHbGZs081zTE27YgFpa0Gv/YGw0SA==
+X-Google-Smtp-Source: APXvYqyNavIzM6XtGEHHaSyhsEsgyo1N/M9sigv9bW9ZxDyDb9tUqKSe1cjB4iSoYDbcoyyEzy5xtO5rEpUIz2KZvdo=
+X-Received: by 2002:ad4:56a2:: with SMTP id bd2mr4199859qvb.162.1565290463360;
+ Thu, 08 Aug 2019 11:54:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190803044320.5530-1-farid.m.zakaria@gmail.com>
- <20190803044320.5530-2-farid.m.zakaria@gmail.com> <CAH3MdRXTEN-Ra+61QA37hM2mkHx99K5NM7f+H6d8Em-bxvaenw@mail.gmail.com>
- <20190805171036.5a5bf790@cakuba.netronome.com>
-In-Reply-To: <20190805171036.5a5bf790@cakuba.netronome.com>
+References: <20190807001923.19483-1-jakub.kicinski@netronome.com> <20190807001923.19483-3-jakub.kicinski@netronome.com>
+In-Reply-To: <20190807001923.19483-3-jakub.kicinski@netronome.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 8 Aug 2019 11:48:29 -0700
-Message-ID: <CAEf4Bzb5bvK3+HLGgFi3o7GttQ3FPP0aFS7mB0e9yjmAqG4Feg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] bpf: introduce new helper udp_flow_src_port
+Date:   Thu, 8 Aug 2019 11:54:12 -0700
+Message-ID: <CAEf4BzaCGu8CYc-bztAH4Aqb812jbpr2JRD0T_Wa-9UbS_sAGg@mail.gmail.com>
+Subject: Re: [PATCH bpf 2/2] tools: bpftool: add error message on pin failure
 To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     Y Song <ys114321@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-        Farid Zakaria <farid.m.zakaria@gmail.com>,
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        oss-drivers@netronome.com, Andy Lutomirski <luto@kernel.org>,
+        Quentin Monnet <quentin.monnet@netronome.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 5, 2019 at 5:11 PM Jakub Kicinski
+On Tue, Aug 6, 2019 at 5:21 PM Jakub Kicinski
 <jakub.kicinski@netronome.com> wrote:
 >
-> On Sat, 3 Aug 2019 23:52:16 -0700, Y Song wrote:
-> > >  include/uapi/linux/bpf.h                      | 21 +++++++--
-> > >  net/core/filter.c                             | 20 ++++++++
-> > >  tools/include/uapi/linux/bpf.h                | 21 +++++++--
-> > >  tools/testing/selftests/bpf/bpf_helpers.h     |  2 +
-> > >  .../bpf/prog_tests/udp_flow_src_port.c        | 28 +++++++++++
-> > >  .../bpf/progs/test_udp_flow_src_port_kern.c   | 47 +++++++++++++++++++
-> > >  6 files changed, 131 insertions(+), 8 deletions(-)
-> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/udp_flow_src_port.c
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/test_udp_flow_src_port_kern.c
-> >
-> > First, for each review, backport and sync with libbpf repo, in the future,
-> > could you break the patch to two patches?
-> >    1. kernel changes (net/core/filter.c, include/uapi/linux/bpf.h)
-> >    2. tools/include/uapi/linux/bpf.h
-> >    3. tools/testing/ changes
+> No error message is currently printed if the pin syscall
+> itself fails. It got lost in the loadall refactoring.
 >
-> A lot of people get caught off by this, could explain why this is
-> necessary?
+> Fixes: 77380998d91d ("bpftool: add loadall command")
+> Reported-by: Andy Lutomirski <luto@kernel.org>
+> Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+> Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
+> ---
 
-We are using script [0] to sync libbpf sources from linux repo to
-Github. It does a lot of things to make this happen, given that Github
-structure is not a simple copy/move into subdirectory. Instead it does
-a bunch of cherry-picking and tree rewrites, so when there are patches
-that touched both libbpf sources (including those tools/include/...
-files) and some sources that we don't sync (e.g., just include/...),
-then script/git gets confused which breaks the flow and requires more
-manual work. Which is why we are asking to split those changes. Hope
-this helps to clarify.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-  [0] https://github.com/libbpf/libbpf/blob/master/scripts/sync-kernel.sh
-
+> CC: luto@kernel.org, sdf@google.com
 >
-> git can deal with this scenario without missing a step, format-patch
-> takes paths:
+>  tools/bpf/bpftool/common.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 >
-> $ git show --oneline -s
-> 1002f3e955d7 (HEAD) bpf: introduce new helper udp_flow_src_port
+> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+> index c52a6ffb8949..6a71324be628 100644
+> --- a/tools/bpf/bpftool/common.c
+> +++ b/tools/bpf/bpftool/common.c
+> @@ -204,7 +204,11 @@ int do_pin_fd(int fd, const char *name)
+>         if (err)
+>                 return err;
 >
-> $ git format-patch HEAD~ -- tools/include/uapi/linux/bpf.h
-> 0001-bpf-introduce-new-helper-udp_flow_src_port.patch
+> -       return bpf_obj_pin(fd, name);
+> +       err = bpf_obj_pin(fd, name);
+> +       if (err)
+> +               p_err("can't pin the object (%s): %s", name, strerror(errno));
+> +
+> +       return err;
+>  }
 >
-> $ grep -B1 changed 0001-bpf-introduce-new-helper-udp_flow_src_port.patch
->  tools/include/uapi/linux/bpf.h | 21 +++++++++++++++++----
->  1 file changed, 17 insertions(+), 4 deletions(-)
+>  int do_pin_any(int argc, char **argv, int (*get_fd_by_id)(__u32))
+> --
+> 2.21.0
 >
-> $ cd ../libbpf
-> $ git am -p2 ../linux/0001-bpf-introduce-new-helper-udp_flow_src_port.patch
-> Applying: bpf: introduce new helper udp_flow_src_port
-> error: patch failed: include/uapi/linux/bpf.h:2853
-> error: include/uapi/linux/bpf.h: patch does not apply
-> ...
->
-> Well, the patch doesn't apply to libbpf right now, but git finds the
-> right paths and all that.
->
-> IMO it'd be good to not have this artificial process obstacle and all
-> the "sync headers" commits in the tree.
-
-It might be the case that script can be written in some different way
-to bypass this limitation, but someone has to dedicate time to write
-it and test it. Feel free to contribute.
