@@ -2,326 +2,309 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA8E8565E
-	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 01:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC76E856B6
+	for <lists+bpf@lfdr.de>; Thu,  8 Aug 2019 02:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729960AbfHGXO5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Aug 2019 19:14:57 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:8944 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729938AbfHGXO4 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 7 Aug 2019 19:14:56 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x77NDfa1005470;
-        Wed, 7 Aug 2019 16:14:30 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=9hodY5xttHQF87Zufjj40oACe4RCpEHlSk7lx5RM9Ss=;
- b=rZxnhN5e+VfihnFqy1zZMDC3Y+g4SfFwLXZLPRvNIjavkGa8KUxsJzwO5V6oM/AXgV7Y
- SxeXgO1gnM7yRoef/GAML3iVrzCA2PyP1vStk4p66v1rq+v2Ijb+znY5cYQTroAhdyvH
- x1i9v5oDKlo79V60Nnf2Qin7QN15F2mb78M= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2u87ue81u7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 07 Aug 2019 16:14:29 -0700
-Received: from prn-mbx07.TheFacebook.com (2620:10d:c081:6::21) by
- prn-hub01.TheFacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 7 Aug 2019 16:14:28 -0700
-Received: from prn-hub06.TheFacebook.com (2620:10d:c081:35::130) by
- prn-mbx07.TheFacebook.com (2620:10d:c081:6::21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 7 Aug 2019 16:14:28 -0700
-Received: from NAM01-BY2-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.30) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Wed, 7 Aug 2019 16:14:28 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KiT6fpeigyuEYzAmjDcX92SMgjKaLqlTgMfvl/vGEsMfxbicMrIl587HfROmI/YPR9rLZ6LcRCNaInV6vrkTFsKywDpLTHCeOJLKlGYGQVg1lgnbCws2PJBoTYEzyNjV8Q5667z2ClrVEOGw8gF/j7BZuTPayHQIOlZwX4+xwA/rD8R3JCaLq5EPfw6Tdhm1wkwGg73bRHVtfc74sxrIDrTb9elvOpmGtZngFgoCBD+Doh/SMPRUXsvrrBK846YY5qn+sdInSVG69FGBbQH3YLP6VhN5++Lt+sA/Qo/CmSxth7Esehoge4tBtFVwqn9etny5FRD5udpBSoNC1XGSDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9hodY5xttHQF87Zufjj40oACe4RCpEHlSk7lx5RM9Ss=;
- b=V+poNk+tM4OVXXKVrtz/BoQIALfYhTt1t6Zva/krQlWqELThTKefP8U34s0B0Py7ZV+SeaU86DkaOzkoFQGgbrKF2065glXyiOcdRkyKS0ZQDvy1FjSmBaAqLE4eh+PN1voemWUelZDhQcHB+9Dw4J/otggG2DJsoGPF9iVsGf6EePn8HOi8/Vat9hbpjpPPVQGj2BNJJEo+wHd20uJSu/hQsG7HwIBil30rmBRbee2S3fYpxvD+hUtbewaLXPlbtG5TnMPSpNSfVQpLQPTv2TEmXQTWoPl5ypoH2j+RNN3E24zQCVGQOqO2N6+UA5AIQShkbVIqWJOWNZoZYZV+Vg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
- smtp.mailfrom=fb.com;dmarc=pass action=none header.from=fb.com;dkim=pass
- header.d=fb.com;arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9hodY5xttHQF87Zufjj40oACe4RCpEHlSk7lx5RM9Ss=;
- b=F89XOynjcaGD7ZzOkDJ1N0pdzxvudF+aVsrkNB9uZoXSlS7LCPoH6NAnhw3Pw7p6RU2D9QUnGHZ3B/mPrIzyY3viuY+cbsdEs2THygs49P++mOjk1BWDvBG/rFmsdTupbyuznIpVT9WrcFvoe98RzO/iuyua4SIqz9g5W9oWHME=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.59.17) by
- BYAPR15MB3142.namprd15.prod.outlook.com (20.178.239.215) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2136.13; Wed, 7 Aug 2019 23:14:26 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::e499:ecba:ec04:abac]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::e499:ecba:ec04:abac%5]) with mapi id 15.20.2136.018; Wed, 7 Aug 2019
- 23:14:26 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Stanislav Fomichev <sdf@google.com>,
+        id S1730149AbfHHAFg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Aug 2019 20:05:36 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:35477 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730117AbfHHAFg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Aug 2019 20:05:36 -0400
+Received: by mail-pf1-f196.google.com with SMTP id u14so43011186pfn.2
+        for <bpf@vger.kernel.org>; Wed, 07 Aug 2019 17:05:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5rNLUcyU+g8cIHRhCVxOiEzBg5fOWUyZNgUAXG+TC6M=;
+        b=rVjnwp/5mTAWFNgoUEhkYc7GXD6gczuDvo2A+mYcln4aP993nkH/3fv+uWt95j0YKL
+         Ptqi0tweakRfWAq45bPC5QzfXFmAJbFEyuIOZd220W9t7VzccC/sjpT2UzxEnrRPHVha
+         9m80DzYDOPxemQXJDmpWe8h66+zXUWoWeFl+zLAxxfM3UCvTyvhD20Y7G4w4Wz89fh9i
+         aXerq2pe8xtjU/5siWnRGpkmxcjx/lvfA5Q9xN7+YlquOQj0PkHapwZtQzTPZUXBbeDJ
+         vWSaBavXM5kftWgaJ6BuRjKaYS7pDEwwYcVzjmIGlrxapwOrCVvFatA4jzQCPknWfcuF
+         4LnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5rNLUcyU+g8cIHRhCVxOiEzBg5fOWUyZNgUAXG+TC6M=;
+        b=Kb7TjtCdk45dtgHpAcoj6W7vNHofmM+FOdghxORGTRGuQBh5En/BXpo67eC/gUte1N
+         NKne2zmy2aJgyla4HAU6dvoC86EQpyG/GpJQVyn/X5pInjFyu+jLUoFx3s0bwso0T2zC
+         hlZ67PL+ITy4Ne06mxdQp2wkqMM8fvV2tJTXa86P7dtpANEXSW2UzoTMlaPV/vbtwR8d
+         hI14Y6oWexd1OtQAZPGH/Phv/gurScvOB0KdWqpn4fcTp0c2n8v7EdMIUvL1T6+JwbkY
+         zJO94nG8U/hiNqb8HY/wYtukZbZwsZ/rkmoO9/b54Y9N8jeY3N/O1QBpBscPNX6Alv49
+         QyEA==
+X-Gm-Message-State: APjAAAW8Q/FaxZXnc5tv2iVhfS0VLd80zCuLdRnXYLtqLenFzVLoyuh3
+        LHYsDfp74YY/z2sNnh4OC3BrfQ==
+X-Google-Smtp-Source: APXvYqxJMwvJpKM6qKh1GcP1on/3/77uccJwJ6rwh+7OCow1cJPsjp+WsZNFH+Kx+27piRZSzXrMVw==
+X-Received: by 2002:a17:90a:8a15:: with SMTP id w21mr1027328pjn.134.1565222734806;
+        Wed, 07 Aug 2019 17:05:34 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id i124sm171749195pfe.61.2019.08.07.17.05.33
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 07 Aug 2019 17:05:34 -0700 (PDT)
+Date:   Wed, 7 Aug 2019 17:05:33 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
         "ast@kernel.org" <ast@kernel.org>,
         "daniel@iogearbox.net" <daniel@iogearbox.net>,
         Martin Lau <kafai@fb.com>
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: add sockopt clone/inheritance
- test
-Thread-Topic: [PATCH bpf-next 3/3] selftests/bpf: add sockopt
- clone/inheritance test
-Thread-Index: AQHVTTd3Y92aX26VWUCjXskGnKTCDKbwUUQA
-Date:   Wed, 7 Aug 2019 23:14:26 +0000
-Message-ID: <5a18a8ed-ab1b-de15-5dff-2b4a068bbe56@fb.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: support cloning sk storage on accept()
+Message-ID: <20190808000533.GA2820@mini-arch>
 References: <20190807154720.260577-1-sdf@google.com>
- <20190807154720.260577-4-sdf@google.com>
-In-Reply-To: <20190807154720.260577-4-sdf@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MW2PR2101CA0023.namprd21.prod.outlook.com
- (2603:10b6:302:1::36) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:10e::17)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::1:f6d1]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4bdb69e0-6a07-4329-30d3-08d71b8cfde7
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB3142;
-x-ms-traffictypediagnostic: BYAPR15MB3142:
-x-microsoft-antispam-prvs: <BYAPR15MB3142D33322BE35644E5C13FBD3D40@BYAPR15MB3142.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:15;
-x-forefront-prvs: 01221E3973
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(396003)(39860400002)(376002)(346002)(136003)(199004)(189003)(14454004)(71200400001)(99286004)(54906003)(53546011)(4326008)(316002)(6436002)(2906002)(2201001)(478600001)(6116002)(256004)(386003)(6506007)(76176011)(2616005)(31686004)(476003)(25786009)(53936002)(486006)(11346002)(6246003)(229853002)(86362001)(102836004)(6512007)(110136005)(46003)(14444005)(5024004)(31696002)(446003)(5660300002)(71190400001)(66946007)(66556008)(36756003)(81156014)(8676002)(52116002)(30864003)(66476007)(81166006)(66446008)(64756008)(2501003)(6486002)(8936002)(305945005)(7736002)(186003)(218113003);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3142;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: QbFWKzyILvlThJT/Dm4g74VPXkggta+XnSo9e7MNyt62MojL/gZEQ0K6C8zSkrRM8KuZzxjyumaSX8tK4b28zWUIEhCzupcWSbcTADXLCvPyrhkgvBNpPp1rsaru7tdxPVtjLyHto6c9daWge5JH9wCRCnTOjxAfgBqLFVszHePMcBny0jCjJquuRYQwoa1dVXFAy9ocyN/upIo3KQcgKUqrQXlngasP/yBCXgB//ZUtMpyLXW8nDwoKYph1fbSovWBF9dIhkAHfm5hJfmOUk3Zivb3yn1DdGd5H+11rBAupMr6NcCE/oSn4+WQ5UeQNLda5Gf1iewt80X95FX+qnydDqz6m3tydMpPjpoonhC435Yb25bawnpnEc7iyXWgoEGeWoHEd36YwbihOkqIKWWQye7e/tMcVjzW22MZHqeE=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B2EC4DA06C887C43B5FC6D8D8DD4EDF3@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <20190807154720.260577-2-sdf@google.com>
+ <9bd56e49-c38d-e1c4-1ff3-8250531d0d48@fb.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4bdb69e0-6a07-4329-30d3-08d71b8cfde7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Aug 2019 23:14:26.7171
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yhs@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3142
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-07_07:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908070204
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9bd56e49-c38d-e1c4-1ff3-8250531d0d48@fb.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDgvNy8xOSA4OjQ3IEFNLCBTdGFuaXNsYXYgRm9taWNoZXYgd3JvdGU6DQo+IEFkZCBh
-IHRlc3QgdGhhdCBjYWxscyBzZXRzb2Nrb3B0IG9uIHRoZSBsaXN0ZW5lciBzb2NrZXQgd2hpY2gg
-dHJpZ2dlcnMNCj4gQlBGIHByb2dyYW0uIFRoaXMgQlBGIHByb2dyYW0gd3JpdGVzIHRvIHRoZSBz
-ayBzdG9yYWdlIGFuZCBzZXRzDQo+IGNsb25lIGZsYWcuIE1ha2Ugc3VyZSB0aGF0IHNrIHN0b3Jh
-Z2UgaXMgY2xvbmVkIGZvciBhIG5ld2x5DQo+IGFjY2VwdGVkIGNvbm5lY3Rpb24uDQo+IA0KPiBX
-ZSBoYXZlIHR3byBjbG9uZWQgbWFwcyBpbiB0aGUgdGVzdHMgdG8gbWFrZSBzdXJlIHdlIGhpdCBi
-b3RoIGNhc2VzDQo+IGluIGJwZl9za19zdG9yYWdlX2Nsb25lOiBmaXJzdCBlbGVtZW50IChza19z
-dG9yYWdlX2FsbG9jKSBhbmQNCj4gbm9uLWZpcnN0IGVsZW1lbnQocykgKHNlbGVtX2xpbmtfbWFw
-KS4NCj4gDQo+IENjOiBNYXJ0aW4gS2FGYWkgTGF1IDxrYWZhaUBmYi5jb20+DQo+IFNpZ25lZC1v
-ZmYtYnk6IFN0YW5pc2xhdiBGb21pY2hldiA8c2RmQGdvb2dsZS5jb20+DQo+IC0tLQ0KPiAgIHRv
-b2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi8uZ2l0aWdub3JlICAgICAgICB8ICAgMSArDQo+ICAg
-dG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL01ha2VmaWxlICAgICAgICAgIHwgICAzICstDQo+
-ICAgLi4uL3NlbGZ0ZXN0cy9icGYvcHJvZ3Mvc29ja29wdF9pbmhlcml0LmMgICAgIHwgMTAyICsr
-KysrKysNCj4gICAuLi4vc2VsZnRlc3RzL2JwZi90ZXN0X3NvY2tvcHRfaW5oZXJpdC5jICAgICAg
-fCAyNTIgKysrKysrKysrKysrKysrKysrDQo+ICAgNCBmaWxlcyBjaGFuZ2VkLCAzNTcgaW5zZXJ0
-aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCB0b29scy90ZXN0
-aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ3Mvc29ja29wdF9pbmhlcml0LmMNCj4gICBjcmVhdGUgbW9k
-ZSAxMDA2NDQgdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Rlc3Rfc29ja29wdF9pbmhlcml0
-LmMNCj4gDQo+IGRpZmYgLS1naXQgYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvLmdpdGln
-bm9yZSBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi8uZ2l0aWdub3JlDQo+IGluZGV4IDkw
-ZjcwZDJjN2MyMi4uNjBjOTMzOGNkOWI0IDEwMDY0NA0KPiAtLS0gYS90b29scy90ZXN0aW5nL3Nl
-bGZ0ZXN0cy9icGYvLmdpdGlnbm9yZQ0KPiArKysgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9i
-cGYvLmdpdGlnbm9yZQ0KPiBAQCAtNDIsNCArNDIsNSBAQCB4ZHBpbmcNCj4gICB0ZXN0X3NvY2tv
-cHQNCj4gICB0ZXN0X3NvY2tvcHRfc2sNCj4gICB0ZXN0X3NvY2tvcHRfbXVsdGkNCj4gK3Rlc3Rf
-c29ja29wdF9pbmhlcml0DQo+ICAgdGVzdF90Y3BfcnR0DQo+IGRpZmYgLS1naXQgYS90b29scy90
-ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvTWFrZWZpbGUgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9i
-cGYvTWFrZWZpbGUNCj4gaW5kZXggM2JkMGY0YTAzMzZhLi5jODc1NzYzYTg1MWEgMTAwNjQ0DQo+
-IC0tLSBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9NYWtlZmlsZQ0KPiArKysgYi90b29s
-cy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvTWFrZWZpbGUNCj4gQEAgLTI5LDcgKzI5LDcgQEAgVEVT
-VF9HRU5fUFJPR1MgPSB0ZXN0X3ZlcmlmaWVyIHRlc3RfdGFnIHRlc3RfbWFwcyB0ZXN0X2xydV9t
-YXAgdGVzdF9scG1fbWFwIHRlc3QNCj4gICAJdGVzdF9jZ3JvdXBfc3RvcmFnZSB0ZXN0X3NlbGVj
-dF9yZXVzZXBvcnQgdGVzdF9zZWN0aW9uX25hbWVzIFwNCj4gICAJdGVzdF9uZXRjbnQgdGVzdF90
-Y3Bub3RpZnlfdXNlciB0ZXN0X3NvY2tfZmllbGRzIHRlc3Rfc3lzY3RsIHRlc3RfaGFzaG1hcCBc
-DQo+ICAgCXRlc3RfYnRmX2R1bXAgdGVzdF9jZ3JvdXBfYXR0YWNoIHhkcGluZyB0ZXN0X3NvY2tv
-cHQgdGVzdF9zb2Nrb3B0X3NrIFwNCj4gLQl0ZXN0X3NvY2tvcHRfbXVsdGkgdGVzdF90Y3BfcnR0
-DQo+ICsJdGVzdF9zb2Nrb3B0X211bHRpIHRlc3Rfc29ja29wdF9pbmhlcml0IHRlc3RfdGNwX3J0
-dA0KPiAgIA0KPiAgIEJQRl9PQkpfRklMRVMgPSAkKHBhdHN1YnN0ICUuYywlLm8sICQobm90ZGly
-ICQod2lsZGNhcmQgcHJvZ3MvKi5jKSkpDQo+ICAgVEVTVF9HRU5fRklMRVMgPSAkKEJQRl9PQkpf
-RklMRVMpDQo+IEBAIC0xMTAsNiArMTEwLDcgQEAgJChPVVRQVVQpL3Rlc3RfY2dyb3VwX2F0dGFj
-aDogY2dyb3VwX2hlbHBlcnMuYw0KPiAgICQoT1VUUFVUKS90ZXN0X3NvY2tvcHQ6IGNncm91cF9o
-ZWxwZXJzLmMNCj4gICAkKE9VVFBVVCkvdGVzdF9zb2Nrb3B0X3NrOiBjZ3JvdXBfaGVscGVycy5j
-DQo+ICAgJChPVVRQVVQpL3Rlc3Rfc29ja29wdF9tdWx0aTogY2dyb3VwX2hlbHBlcnMuYw0KPiAr
-JChPVVRQVVQpL3Rlc3Rfc29ja29wdF9pbmhlcml0OiBjZ3JvdXBfaGVscGVycy5jDQo+ICAgJChP
-VVRQVVQpL3Rlc3RfdGNwX3J0dDogY2dyb3VwX2hlbHBlcnMuYw0KPiAgIA0KPiAgIC5QSE9OWTog
-Zm9yY2UNCj4gZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9ncy9z
-b2Nrb3B0X2luaGVyaXQuYyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9ncy9zb2Nr
-b3B0X2luaGVyaXQuYw0KPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiBpbmRleCAwMDAwMDAwMDAw
-MDAuLjM1N2ZjOWRiNTg3NA0KPiAtLS0gL2Rldi9udWxsDQo+ICsrKyBiL3Rvb2xzL3Rlc3Rpbmcv
-c2VsZnRlc3RzL2JwZi9wcm9ncy9zb2Nrb3B0X2luaGVyaXQuYw0KPiBAQCAtMCwwICsxLDEwMiBA
-QA0KPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjANCj4gKyNpbmNsdWRlIDxs
-aW51eC9icGYuaD4NCj4gKyNpbmNsdWRlICJicGZfaGVscGVycy5oIg0KPiArDQo+ICtjaGFyIF9s
-aWNlbnNlW10gU0VDKCJsaWNlbnNlIikgPSAiR1BMIjsNCj4gK19fdTMyIF92ZXJzaW9uIFNFQygi
-dmVyc2lvbiIpID0gMTsNCj4gKw0KPiArI2RlZmluZSBTT0xfQ1VTVE9NCQkJMHhkZWFkYmVlZg0K
-PiArI2RlZmluZSBDVVNUT01fSU5IRVJJVDEJCQkwDQo+ICsjZGVmaW5lIENVU1RPTV9JTkhFUklU
-MgkJCTENCj4gKyNkZWZpbmUgQ1VTVE9NX0xJU1RFTkVSCQkJMg0KPiArDQo+ICtzdHJ1Y3Qgc29j
-a29wdF9pbmhlcml0IHsNCj4gKwlfX3U4IHZhbDsNCj4gK307DQo+ICsNCj4gK3N0cnVjdCBicGZf
-bWFwX2RlZiBTRUMoIm1hcHMiKSBjbG9uZWQxX21hcCA9IHsNCj4gKwkudHlwZSA9IEJQRl9NQVBf
-VFlQRV9TS19TVE9SQUdFLA0KPiArCS5rZXlfc2l6ZSA9IHNpemVvZihpbnQpLA0KPiArCS52YWx1
-ZV9zaXplID0gc2l6ZW9mKHN0cnVjdCBzb2Nrb3B0X2luaGVyaXQpLA0KPiArCS5tYXBfZmxhZ3Mg
-PSBCUEZfRl9OT19QUkVBTExPQywNCj4gK307DQo+ICtCUEZfQU5OT1RBVEVfS1ZfUEFJUihjbG9u
-ZWQxX21hcCwgaW50LCBzdHJ1Y3Qgc29ja29wdF9pbmhlcml0KTsNCj4gKw0KPiArc3RydWN0IGJw
-Zl9tYXBfZGVmIFNFQygibWFwcyIpIGNsb25lZDJfbWFwID0gew0KPiArCS50eXBlID0gQlBGX01B
-UF9UWVBFX1NLX1NUT1JBR0UsDQo+ICsJLmtleV9zaXplID0gc2l6ZW9mKGludCksDQo+ICsJLnZh
-bHVlX3NpemUgPSBzaXplb2Yoc3RydWN0IHNvY2tvcHRfaW5oZXJpdCksDQo+ICsJLm1hcF9mbGFn
-cyA9IEJQRl9GX05PX1BSRUFMTE9DLA0KPiArfTsNCj4gK0JQRl9BTk5PVEFURV9LVl9QQUlSKGNs
-b25lZDJfbWFwLCBpbnQsIHN0cnVjdCBzb2Nrb3B0X2luaGVyaXQpOw0KPiArDQo+ICtzdHJ1Y3Qg
-YnBmX21hcF9kZWYgU0VDKCJtYXBzIikgbGlzdGVuZXJfbWFwID0gew0KPiArCS50eXBlID0gQlBG
-X01BUF9UWVBFX1NLX1NUT1JBR0UsDQo+ICsJLmtleV9zaXplID0gc2l6ZW9mKGludCksDQo+ICsJ
-LnZhbHVlX3NpemUgPSBzaXplb2Yoc3RydWN0IHNvY2tvcHRfaW5oZXJpdCksDQo+ICsJLm1hcF9m
-bGFncyA9IEJQRl9GX05PX1BSRUFMTE9DLA0KPiArfTsNCj4gK0JQRl9BTk5PVEFURV9LVl9QQUlS
-KGxpc3RlbmVyX21hcCwgaW50LCBzdHJ1Y3Qgc29ja29wdF9pbmhlcml0KTsNCg0KWW91ciBzdGls
-bCB1c2UgdGhlIG9sZCB3YXkgZm9yIG1hcCBkZWZpbml0aW9ucy4gSXMgdGhpcyBwb3NzaWJsZSBm
-b3IgeW91DQp0byB1c2UgbmV3IG1hcCBkZWZpbml0aW9ucyAoaW4gc2VjdGlvbiAiLm1hcHMiKT8N
-Cg0KPiArDQo+ICtzdGF0aWMgX19pbmxpbmUgc3RydWN0IHNvY2tvcHRfaW5oZXJpdCAqZ2V0X3N0
-b3JhZ2Uoc3RydWN0IGJwZl9zb2Nrb3B0ICpjdHgpDQo+ICt7DQo+ICsJaWYgKGN0eC0+b3B0bmFt
-ZSA9PSBDVVNUT01fSU5IRVJJVDEpDQo+ICsJCXJldHVybiBicGZfc2tfc3RvcmFnZV9nZXQoJmNs
-b25lZDFfbWFwLCBjdHgtPnNrLCAwLA0KPiArCQkJCQkgIEJQRl9TS19TVE9SQUdFX0dFVF9GX0NS
-RUFURSB8DQo+ICsJCQkJCSAgQlBGX1NLX1NUT1JBR0VfR0VUX0ZfQ0xPTkUpOw0KPiArCWVsc2Ug
-aWYgKGN0eC0+b3B0bmFtZSA9PSBDVVNUT01fSU5IRVJJVDIpDQo+ICsJCXJldHVybiBicGZfc2tf
-c3RvcmFnZV9nZXQoJmNsb25lZDJfbWFwLCBjdHgtPnNrLCAwLA0KPiArCQkJCQkgIEJQRl9TS19T
-VE9SQUdFX0dFVF9GX0NSRUFURSB8DQo+ICsJCQkJCSAgQlBGX1NLX1NUT1JBR0VfR0VUX0ZfQ0xP
-TkUpOw0KPiArCWVsc2UNCj4gKwkJcmV0dXJuIGJwZl9za19zdG9yYWdlX2dldCgmbGlzdGVuZXJf
-bWFwLCBjdHgtPnNrLCAwLA0KPiArCQkJCQkgIEJQRl9TS19TVE9SQUdFX0dFVF9GX0NSRUFURSk7
-DQo+ICt9DQo+ICsNClsuLi4uLl0+IGRpZmYgLS1naXQgYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0
-cy9icGYvdGVzdF9zb2Nrb3B0X2luaGVyaXQuYyANCmIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMv
-YnBmL3Rlc3Rfc29ja29wdF9pbmhlcml0LmMNCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gaW5k
-ZXggMDAwMDAwMDAwMDAwLi5lNDdiOWMyOGQ3NDMNCj4gLS0tIC9kZXYvbnVsbA0KPiArKysgYi90
-b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvdGVzdF9zb2Nrb3B0X2luaGVyaXQuYw0KPiBAQCAt
-MCwwICsxLDI1MiBAQA0KPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjANCj4g
-KyNpbmNsdWRlIDxlcnJvci5oPg0KPiArI2luY2x1ZGUgPGVycm5vLmg+DQo+ICsjaW5jbHVkZSA8
-c3RkaW8uaD4NCj4gKyNpbmNsdWRlIDx1bmlzdGQuaD4NCj4gKyNpbmNsdWRlIDxzeXMvdHlwZXMu
-aD4NCj4gKyNpbmNsdWRlIDxzeXMvc29ja2V0Lmg+DQo+ICsjaW5jbHVkZSA8bmV0aW5ldC9pbi5o
-Pg0KPiArI2luY2x1ZGUgPHB0aHJlYWQuaD4NCj4gKw0KPiArI2luY2x1ZGUgPGxpbnV4L2ZpbHRl
-ci5oPg0KPiArI2luY2x1ZGUgPGJwZi9icGYuaD4NCj4gKyNpbmNsdWRlIDxicGYvbGliYnBmLmg+
-DQo+ICsNCj4gKyNpbmNsdWRlICJicGZfcmxpbWl0LmgiDQo+ICsjaW5jbHVkZSAiYnBmX3V0aWwu
-aCINCj4gKyNpbmNsdWRlICJjZ3JvdXBfaGVscGVycy5oIg0KPiArDQo+ICsjZGVmaW5lIENHX1BB
-VEgJCQkJIi9zb2Nrb3B0X2luaGVyaXQiDQo+ICsjZGVmaW5lIFNPTF9DVVNUT00JCQkweGRlYWRi
-ZWVmDQo+ICsjZGVmaW5lIENVU1RPTV9JTkhFUklUMQkJCTANCj4gKyNkZWZpbmUgQ1VTVE9NX0lO
-SEVSSVQyCQkJMQ0KPiArI2RlZmluZSBDVVNUT01fTElTVEVORVIJCQkyDQo+ICsNCj4gK3N0YXRp
-YyBpbnQgY29ubmVjdF90b19zZXJ2ZXIoaW50IHNlcnZlcl9mZCkNCj4gK3sNCj4gKwlzdHJ1Y3Qg
-c29ja2FkZHJfc3RvcmFnZSBhZGRyOw0KPiArCXNvY2tsZW5fdCBsZW4gPSBzaXplb2YoYWRkcik7
-DQo+ICsJaW50IGZkOw0KPiArDQo+ICsJZmQgPSBzb2NrZXQoQUZfSU5FVCwgU09DS19TVFJFQU0s
-IDApOw0KPiArCWlmIChmZCA8IDApIHsNCj4gKwkJbG9nX2VycigiRmFpbGVkIHRvIGNyZWF0ZSBj
-bGllbnQgc29ja2V0Iik7DQo+ICsJCXJldHVybiAtMTsNCj4gKwl9DQo+ICsNCj4gKwlpZiAoZ2V0
-c29ja25hbWUoc2VydmVyX2ZkLCAoc3RydWN0IHNvY2thZGRyICopJmFkZHIsICZsZW4pKSB7DQo+
-ICsJCWxvZ19lcnIoIkZhaWxlZCB0byBnZXQgc2VydmVyIGFkZHIiKTsNCj4gKwkJZ290byBvdXQ7
-DQo+ICsJfQ0KPiArDQo+ICsJaWYgKGNvbm5lY3QoZmQsIChjb25zdCBzdHJ1Y3Qgc29ja2FkZHIg
-KikmYWRkciwgbGVuKSA8IDApIHsNCj4gKwkJbG9nX2VycigiRmFpbCB0byBjb25uZWN0IHRvIHNl
-cnZlciIpOw0KPiArCQlnb3RvIG91dDsNCj4gKwl9DQo+ICsNCj4gKwlyZXR1cm4gZmQ7DQo+ICsN
-Cj4gK291dDoNCj4gKwljbG9zZShmZCk7DQo+ICsJcmV0dXJuIC0xOw0KPiArfQ0KPiArDQo+ICtz
-dGF0aWMgaW50IHZlcmlmeV9zb2Nrb3B0KGludCBmZCwgaW50IG9wdG5hbWUsIGNvbnN0IGNoYXIg
-Km1zZywgY2hhciBleHBlY3RlZCkNCj4gK3sNCj4gKwlzb2NrbGVuX3Qgb3B0bGVuID0gMTsNCj4g
-KwljaGFyIGJ1ZiA9IDA7DQo+ICsJaW50IGVycjsNCj4gKw0KPiArCWVyciA9IGdldHNvY2tvcHQo
-ZmQsIFNPTF9DVVNUT00sIG9wdG5hbWUsICZidWYsICZvcHRsZW4pOw0KPiArCWlmIChlcnIpIHsN
-Cj4gKwkJbG9nX2VycigiJXM6IGZhaWxlZCB0byBjYWxsIGdldHNvY2tvcHQiLCBtc2cpOw0KPiAr
-CQlyZXR1cm4gMTsNCj4gKwl9DQo+ICsNCj4gKwlsb2dfZXJyKCIlcyAlZDogZ290PTB4JXggPyBl
-eHBlY3RlZD0weCV4IiwgbXNnLCBvcHRuYW1lLCBidWYsIGV4cGVjdGVkKTsNCg0KVGhlcmUgbWF5
-IG5vdCBiZSBlcnJvciBoZXJlLg0KDQo+ICsNCj4gKwlpZiAoYnVmICE9IGV4cGVjdGVkKSB7DQo+
-ICsJCWxvZ19lcnIoIiVzOiB1bmV4cGVjdGVkIGdldHNvY2tvcHQgdmFsdWUgJWQgIT0gJWQiLCBt
-c2csDQo+ICsJCQlidWYsIGV4cGVjdGVkKTsNCj4gKwkJcmV0dXJuIDE7DQo+ICsJfQ0KPiArDQo+
-ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICsNCj4gK3N0YXRpYyB2b2lkICpzZXJ2ZXJfdGhyZWFkKHZv
-aWQgKmFyZykNCj4gK3sNCj4gKwlzdHJ1Y3Qgc29ja2FkZHJfc3RvcmFnZSBhZGRyOw0KPiArCXNv
-Y2tsZW5fdCBsZW4gPSBzaXplb2YoYWRkcik7DQo+ICsJaW50IGZkID0gKihpbnQgKilhcmc7DQo+
-ICsJaW50IGNsaWVudF9mZDsNCj4gKwlpbnQgZXJyID0gMDsNCj4gKw0KPiArCWlmIChsaXN0ZW4o
-ZmQsIDEpIDwgMCkNCj4gKwkJZXJyb3IoMSwgZXJybm8sICJGYWlsZWQgdG8gbGlzdGVkIG9uIHNv
-Y2tldCIpOw0KPiArDQo+ICsJZXJyICs9IHZlcmlmeV9zb2Nrb3B0KGZkLCBDVVNUT01fSU5IRVJJ
-VDEsICJsaXN0ZW4iLCAxKTsNCj4gKwllcnIgKz0gdmVyaWZ5X3NvY2tvcHQoZmQsIENVU1RPTV9J
-TkhFUklUMiwgImxpc3RlbiIsIDEpOw0KPiArCWVyciArPSB2ZXJpZnlfc29ja29wdChmZCwgQ1VT
-VE9NX0xJU1RFTkVSLCAibGlzdGVuIiwgMSk7DQo+ICsNCj4gKwljbGllbnRfZmQgPSBhY2NlcHQo
-ZmQsIChzdHJ1Y3Qgc29ja2FkZHIgKikmYWRkciwgJmxlbik7DQo+ICsJaWYgKGNsaWVudF9mZCA8
-IDApDQo+ICsJCWVycm9yKDEsIGVycm5vLCAiRmFpbGVkIHRvIGFjY2VwdCBjbGllbnQiKTsNCj4g
-Kw0KPiArCWVyciArPSB2ZXJpZnlfc29ja29wdChjbGllbnRfZmQsIENVU1RPTV9JTkhFUklUMSwg
-ImFjY2VwdCIsIDEpOw0KPiArCWVyciArPSB2ZXJpZnlfc29ja29wdChjbGllbnRfZmQsIENVU1RP
-TV9JTkhFUklUMiwgImFjY2VwdCIsIDEpOw0KPiArCWVyciArPSB2ZXJpZnlfc29ja29wdChjbGll
-bnRfZmQsIENVU1RPTV9MSVNURU5FUiwgImFjY2VwdCIsIDApOw0KPiArDQo+ICsJY2xvc2UoY2xp
-ZW50X2ZkKTsNCj4gKw0KPiArCXJldHVybiAodm9pZCAqKShsb25nKWVycjsNCj4gK30NCj4gKw0K
-PiArc3RhdGljIGludCBzdGFydF9zZXJ2ZXIodm9pZCkNCj4gK3sNCj4gKwlzdHJ1Y3Qgc29ja2Fk
-ZHJfaW4gYWRkciA9IHsNCj4gKwkJLnNpbl9mYW1pbHkgPSBBRl9JTkVULA0KPiArCQkuc2luX2Fk
-ZHIuc19hZGRyID0gaHRvbmwoSU5BRERSX0xPT1BCQUNLKSwNCj4gKwl9Ow0KPiArCWNoYXIgYnVm
-Ow0KPiArCWludCBlcnI7DQo+ICsJaW50IGZkOw0KPiArCWludCBpOw0KPiArDQo+ICsJZmQgPSBz
-b2NrZXQoQUZfSU5FVCwgU09DS19TVFJFQU0sIDApOw0KPiArCWlmIChmZCA8IDApIHsNCj4gKwkJ
-bG9nX2VycigiRmFpbGVkIHRvIGNyZWF0ZSBzZXJ2ZXIgc29ja2V0Iik7DQo+ICsJCXJldHVybiAt
-MTsNCj4gKwl9DQo+ICsNCj4gKwlmb3IgKGkgPSBDVVNUT01fSU5IRVJJVDE7IGkgPD0gQ1VTVE9N
-X0xJU1RFTkVSOyBpKyspIHsNCj4gKwkJYnVmID0gMHgwMTsNCj4gKwkJZXJyID0gc2V0c29ja29w
-dChmZCwgU09MX0NVU1RPTSwgaSwgJmJ1ZiwgMSk7DQo+ICsJCWlmIChlcnIpIHsNCj4gKwkJCWxv
-Z19lcnIoIkZhaWxlZCB0byBjYWxsIHNldHNvY2tvcHQoJWQpIiwgaSk7DQo+ICsJCQljbG9zZShm
-ZCk7DQo+ICsJCQlyZXR1cm4gLTE7DQo+ICsJCX0NCj4gKwl9DQo+ICsNCj4gKwlpZiAoYmluZChm
-ZCwgKGNvbnN0IHN0cnVjdCBzb2NrYWRkciAqKSZhZGRyLCBzaXplb2YoYWRkcikpIDwgMCkgew0K
-PiArCQlsb2dfZXJyKCJGYWlsZWQgdG8gYmluZCBzb2NrZXQiKTsNCj4gKwkJY2xvc2UoZmQpOw0K
-PiArCQlyZXR1cm4gLTE7DQo+ICsJfQ0KPiArDQo+ICsJcmV0dXJuIGZkOw0KPiArfQ0KPiArDQo+
-ICtzdGF0aWMgaW50IHByb2dfYXR0YWNoKHN0cnVjdCBicGZfb2JqZWN0ICpvYmosIGludCBjZ3Jv
-dXBfZmQsIGNvbnN0IGNoYXIgKnRpdGxlKQ0KPiArew0KPiArCWVudW0gYnBmX2F0dGFjaF90eXBl
-IGF0dGFjaF90eXBlOw0KPiArCWVudW0gYnBmX3Byb2dfdHlwZSBwcm9nX3R5cGU7DQo+ICsJc3Ry
-dWN0IGJwZl9wcm9ncmFtICpwcm9nOw0KPiArCWludCBlcnI7DQo+ICsNCj4gKwllcnIgPSBsaWJi
-cGZfcHJvZ190eXBlX2J5X25hbWUodGl0bGUsICZwcm9nX3R5cGUsICZhdHRhY2hfdHlwZSk7DQo+
-ICsJaWYgKGVycikgew0KPiArCQlsb2dfZXJyKCJGYWlsZWQgdG8gZGVkdWN0IHR5cGVzIGZvciAl
-cyBCUEYgcHJvZ3JhbSIsIHRpdGxlKTsNCj4gKwkJcmV0dXJuIC0xOw0KPiArCX0NCj4gKw0KPiAr
-CXByb2cgPSBicGZfb2JqZWN0X19maW5kX3Byb2dyYW1fYnlfdGl0bGUob2JqLCB0aXRsZSk7DQo+
-ICsJaWYgKCFwcm9nKSB7DQo+ICsJCWxvZ19lcnIoIkZhaWxlZCB0byBmaW5kICVzIEJQRiBwcm9n
-cmFtIiwgdGl0bGUpOw0KPiArCQlyZXR1cm4gLTE7DQo+ICsJfQ0KPiArDQo+ICsJZXJyID0gYnBm
-X3Byb2dfYXR0YWNoKGJwZl9wcm9ncmFtX19mZChwcm9nKSwgY2dyb3VwX2ZkLA0KPiArCQkJICAg
-ICAgYXR0YWNoX3R5cGUsIDApOw0KPiArCWlmIChlcnIpIHsNCj4gKwkJbG9nX2VycigiRmFpbGVk
-IHRvIGF0dGFjaCAlcyBCUEYgcHJvZ3JhbSIsIHRpdGxlKTsNCj4gKwkJcmV0dXJuIC0xOw0KPiAr
-CX0NCj4gKw0KPiArCXJldHVybiAwOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgaW50IHJ1bl90ZXN0
-KGludCBjZ3JvdXBfZmQpDQo+ICt7DQo+ICsJc3RydWN0IGJwZl9wcm9nX2xvYWRfYXR0ciBhdHRy
-ID0gew0KPiArCQkuZmlsZSA9ICIuL3NvY2tvcHRfaW5oZXJpdC5vIiwNCj4gKwl9Ow0KPiArCWlu
-dCBzZXJ2ZXJfZmQgPSAtMSwgY2xpZW50X2ZkOw0KPiArCXN0cnVjdCBicGZfb2JqZWN0ICpvYmo7
-DQo+ICsJdm9pZCAqc2VydmVyX2VycjsNCj4gKwlwdGhyZWFkX3QgdGlkOw0KPiArCWludCBpZ25v
-cmVkOw0KPiArCWludCBlcnI7DQo+ICsNCj4gKwllcnIgPSBicGZfcHJvZ19sb2FkX3hhdHRyKCZh
-dHRyLCAmb2JqLCAmaWdub3JlZCk7DQo+ICsJaWYgKGVycikgew0KPiArCQlsb2dfZXJyKCJGYWls
-ZWQgdG8gbG9hZCBCUEYgb2JqZWN0Iik7DQo+ICsJCXJldHVybiAtMTsNCj4gKwl9DQo+ICsNCj4g
-KwllcnIgPSBwcm9nX2F0dGFjaChvYmosIGNncm91cF9mZCwgImNncm91cC9nZXRzb2Nrb3B0Iik7
-DQo+ICsJaWYgKGVycikNCj4gKwkJZ290byBjbG9zZV9icGZfb2JqZWN0Ow0KPiArDQo+ICsJZXJy
-ID0gcHJvZ19hdHRhY2gob2JqLCBjZ3JvdXBfZmQsICJjZ3JvdXAvc2V0c29ja29wdCIpOw0KPiAr
-CWlmIChlcnIpDQo+ICsJCWdvdG8gY2xvc2VfYnBmX29iamVjdDsNCj4gKw0KPiArCXNlcnZlcl9m
-ZCA9IHN0YXJ0X3NlcnZlcigpOw0KPiArCWlmIChzZXJ2ZXJfZmQgPCAwKSB7DQo+ICsJCWVyciA9
-IC0xOw0KPiArCQlnb3RvIGNsb3NlX2JwZl9vYmplY3Q7DQo+ICsJfQ0KPiArDQo+ICsJcHRocmVh
-ZF9jcmVhdGUoJnRpZCwgTlVMTCwgc2VydmVyX3RocmVhZCwgKHZvaWQgKikmc2VydmVyX2ZkKTsN
-Cj4gKw0KPiArCWNsaWVudF9mZCA9IGNvbm5lY3RfdG9fc2VydmVyKHNlcnZlcl9mZCk7DQo+ICsJ
-aWYgKGNsaWVudF9mZCA8IDApIHsNCj4gKwkJZXJyID0gLTE7DQo+ICsJCWdvdG8gY2xvc2VfYnBm
-X29iamVjdDsNCj4gKwl9DQo+ICsNCj4gKwllcnIgKz0gdmVyaWZ5X3NvY2tvcHQoY2xpZW50X2Zk
-LCBDVVNUT01fSU5IRVJJVDEsICJjb25uZWN0IiwgMCk7DQo+ICsJZXJyICs9IHZlcmlmeV9zb2Nr
-b3B0KGNsaWVudF9mZCwgQ1VTVE9NX0lOSEVSSVQyLCAiY29ubmVjdCIsIDApOw0KPiArCWVyciAr
-PSB2ZXJpZnlfc29ja29wdChjbGllbnRfZmQsIENVU1RPTV9MSVNURU5FUiwgImNvbm5lY3QiLCAw
-KTsNCj4gKw0KPiArCXB0aHJlYWRfam9pbih0aWQsICZzZXJ2ZXJfZXJyKTsNCj4gKw0KPiArCWVy
-ciArPSAoaW50KShsb25nKXNlcnZlcl9lcnI7DQo+ICsNCj4gKwljbG9zZShjbGllbnRfZmQpOw0K
-PiArDQo+ICtjbG9zZV9icGZfb2JqZWN0Og0KPiArCWJwZl9vYmplY3RfX2Nsb3NlKG9iaik7DQo+
-ICsJY2xvc2Uoc2VydmVyX2ZkKTsNCg0Kc2VydmVyX2ZkIGNvdWxkIGJlIC0xIGhlcmUuDQoNCj4g
-KwlyZXR1cm4gZXJyOw0KPiArfQ0KPiArDQo+ICtpbnQgbWFpbihpbnQgYXJncywgY2hhciAqKmFy
-Z3YpDQo+ICt7DQo+ICsJaW50IGNncm91cF9mZDsNCj4gKwlpbnQgZXJyID0gRVhJVF9TVUNDRVNT
-Ow0KPiArDQo+ICsJaWYgKHNldHVwX2Nncm91cF9lbnZpcm9ubWVudCgpKQ0KPiArCQlyZXR1cm4g
-ZXJyOw0KPiArDQo+ICsJY2dyb3VwX2ZkID0gY3JlYXRlX2FuZF9nZXRfY2dyb3VwKENHX1BBVEgp
-Ow0KPiArCWlmIChjZ3JvdXBfZmQgPCAwKQ0KPiArCQlnb3RvIGNsZWFudXBfY2dyb3VwX2VudjsN
-Cj4gKw0KPiArCWlmIChqb2luX2Nncm91cChDR19QQVRIKSkNCj4gKwkJZ290byBjbGVhbnVwX2Nn
-cm91cDsNCj4gKw0KPiArCWlmIChydW5fdGVzdChjZ3JvdXBfZmQpKQ0KPiArCQllcnIgPSBFWElU
-X0ZBSUxVUkU7DQo+ICsNCj4gKwlwcmludGYoInRlc3Rfc29ja29wdF9pbmhlcml0OiAlc1xuIiwN
-Cj4gKwkgICAgICAgZXJyID09IEVYSVRfU1VDQ0VTUyA/ICJQQVNTRUQiIDogIkZBSUxFRCIpOw0K
-PiArDQo+ICtjbGVhbnVwX2Nncm91cDoNCj4gKwljbG9zZShjZ3JvdXBfZmQpOw0KPiArY2xlYW51
-cF9jZ3JvdXBfZW52Og0KPiArCWNsZWFudXBfY2dyb3VwX2Vudmlyb25tZW50KCk7DQo+ICsJcmV0
-dXJuIGVycjsNCj4gK30NCj4gDQo=
+On 08/07, Yonghong Song wrote:
+> 
+> 
+> On 8/7/19 8:47 AM, Stanislav Fomichev wrote:
+> > Add new helper bpf_sk_storage_clone which optionally clones sk storage
+> > and call it from bpf_sk_storage_clone. Reuse the gap in
+> > bpf_sk_storage_elem to store clone/non-clone flag.
+> > 
+> > Cc: Martin KaFai Lau <kafai@fb.com>
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> 
+> I tried to see whether I can find any missing race conditions in
+> the code but I failed. So except a minor comments below,
+Thanks for a review!
+
+> Acked-by: Yonghong Song <yhs@fb.com>
+> 
+> > ---
+> >   include/net/bpf_sk_storage.h |  10 ++++
+> >   include/uapi/linux/bpf.h     |   1 +
+> >   net/core/bpf_sk_storage.c    | 102 +++++++++++++++++++++++++++++++++--
+> >   net/core/sock.c              |   9 ++--
+> >   4 files changed, 115 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/include/net/bpf_sk_storage.h b/include/net/bpf_sk_storage.h
+> > index b9dcb02e756b..8e4f831d2e52 100644
+> > --- a/include/net/bpf_sk_storage.h
+> > +++ b/include/net/bpf_sk_storage.h
+> > @@ -10,4 +10,14 @@ void bpf_sk_storage_free(struct sock *sk);
+> >   extern const struct bpf_func_proto bpf_sk_storage_get_proto;
+> >   extern const struct bpf_func_proto bpf_sk_storage_delete_proto;
+> >   
+> > +#ifdef CONFIG_BPF_SYSCALL
+> > +int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk);
+> > +#else
+> > +static inline int bpf_sk_storage_clone(const struct sock *sk,
+> > +				       struct sock *newsk)
+> > +{
+> > +	return 0;
+> > +}
+> > +#endif
+> > +
+> >   #endif /* _BPF_SK_STORAGE_H */
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 4393bd4b2419..00459ca4c8cf 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -2931,6 +2931,7 @@ enum bpf_func_id {
+> >   
+> >   /* BPF_FUNC_sk_storage_get flags */
+> >   #define BPF_SK_STORAGE_GET_F_CREATE	(1ULL << 0)
+> > +#define BPF_SK_STORAGE_GET_F_CLONE	(1ULL << 1)
+> >   
+> >   /* Mode for BPF_FUNC_skb_adjust_room helper. */
+> >   enum bpf_adj_room_mode {
+> > diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
+> > index 94c7f77ecb6b..b6dea67965bc 100644
+> > --- a/net/core/bpf_sk_storage.c
+> > +++ b/net/core/bpf_sk_storage.c
+> > @@ -12,6 +12,9 @@
+> >   
+> >   static atomic_t cache_idx;
+> >   
+> > +#define BPF_SK_STORAGE_GET_F_MASK	(BPF_SK_STORAGE_GET_F_CREATE | \
+> > +					 BPF_SK_STORAGE_GET_F_CLONE)
+> > +
+> >   struct bucket {
+> >   	struct hlist_head list;
+> >   	raw_spinlock_t lock;
+> > @@ -66,7 +69,8 @@ struct bpf_sk_storage_elem {
+> >   	struct hlist_node snode;	/* Linked to bpf_sk_storage */
+> >   	struct bpf_sk_storage __rcu *sk_storage;
+> >   	struct rcu_head rcu;
+> > -	/* 8 bytes hole */
+> > +	u8 clone:1;
+> > +	/* 7 bytes hole */
+> >   	/* The data is stored in aother cacheline to minimize
+> >   	 * the number of cachelines access during a cache hit.
+> >   	 */
+> > @@ -509,7 +513,7 @@ static int sk_storage_delete(struct sock *sk, struct bpf_map *map)
+> >   	return 0;
+> >   }
+> >   
+> > -/* Called by __sk_destruct() */
+> > +/* Called by __sk_destruct() & bpf_sk_storage_clone() */
+> >   void bpf_sk_storage_free(struct sock *sk)
+> >   {
+> >   	struct bpf_sk_storage_elem *selem;
+> > @@ -739,19 +743,106 @@ static int bpf_fd_sk_storage_delete_elem(struct bpf_map *map, void *key)
+> >   	return err;
+> >   }
+> >   
+> > +static struct bpf_sk_storage_elem *
+> > +bpf_sk_storage_clone_elem(struct sock *newsk,
+> > +			  struct bpf_sk_storage_map *smap,
+> > +			  struct bpf_sk_storage_elem *selem)
+> > +{
+> > +	struct bpf_sk_storage_elem *copy_selem;
+> > +
+> > +	copy_selem = selem_alloc(smap, newsk, NULL, true);
+> > +	if (!copy_selem)
+> > +		return ERR_PTR(-ENOMEM);
+> > +
+> > +	if (map_value_has_spin_lock(&smap->map))
+> > +		copy_map_value_locked(&smap->map, SDATA(copy_selem)->data,
+> > +				      SDATA(selem)->data, true);
+> > +	else
+> > +		copy_map_value(&smap->map, SDATA(copy_selem)->data,
+> > +			       SDATA(selem)->data);
+> > +
+> > +	return copy_selem;
+> > +}
+> > +
+> > +int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk)
+> > +{
+> > +	struct bpf_sk_storage *new_sk_storage = NULL;
+> > +	struct bpf_sk_storage *sk_storage;
+> > +	struct bpf_sk_storage_elem *selem;
+> > +	int ret;
+> > +
+> > +	RCU_INIT_POINTER(newsk->sk_bpf_storage, NULL);
+> > +
+> > +	rcu_read_lock();
+> > +	sk_storage = rcu_dereference(sk->sk_bpf_storage);
+> > +
+> > +	if (!sk_storage || hlist_empty(&sk_storage->list))
+> > +		goto out;
+> > +
+> > +	hlist_for_each_entry_rcu(selem, &sk_storage->list, snode) {
+> > +		struct bpf_sk_storage_map *smap;
+> > +		struct bpf_sk_storage_elem *copy_selem;
+> > +
+> > +		if (!selem->clone)
+> > +			continue;
+> > +
+> > +		smap = rcu_dereference(SDATA(selem)->smap);
+> > +		if (!smap)
+> > +			continue;
+> > +
+> > +		copy_selem = bpf_sk_storage_clone_elem(newsk, smap, selem);
+> > +		if (IS_ERR(copy_selem)) {
+> > +			ret = PTR_ERR(copy_selem);
+> > +			goto err;
+> > +		}
+> > +
+> > +		if (!new_sk_storage) {
+> > +			ret = sk_storage_alloc(newsk, smap, copy_selem);
+> > +			if (ret) {
+> > +				kfree(copy_selem);
+> > +				atomic_sub(smap->elem_size,
+> > +					   &newsk->sk_omem_alloc);
+> > +				goto err;
+> > +			}
+> > +
+> > +			new_sk_storage = rcu_dereference(copy_selem->sk_storage);
+> > +			continue;
+> > +		}
+> > +
+> > +		raw_spin_lock_bh(&new_sk_storage->lock);
+> > +		selem_link_map(smap, copy_selem);
+> > +		__selem_link_sk(new_sk_storage, copy_selem);
+> > +		raw_spin_unlock_bh(&new_sk_storage->lock);
+> 
+> Considering in this particular case, new socket is not visible to 
+> outside world yet (both kernel and user space), map_delete/map_update
+> operations are not applicable in this situation, so
+> the above raw_spin_lock_bh() probably not needed.
+I agree, it's doing nothing, but __selem_link_sk has the following comment:
+/* sk_storage->lock must be held and sk_storage->list cannot be empty */
+
+Just wanted to keep that invariant for this call site as well (in case
+we add some lockdep enforcement or smth else). WDYT?
+
+> > +	}
+> > +
+> > +out:
+> > +	rcu_read_unlock();
+> > +	return 0;
+> > +
+> > +err:
+> > +	rcu_read_unlock();
+> > +
+> > +	bpf_sk_storage_free(newsk);
+> > +	return ret;
+> > +}
+> > +
+> >   BPF_CALL_4(bpf_sk_storage_get, struct bpf_map *, map, struct sock *, sk,
+> >   	   void *, value, u64, flags)
+> >   {
+> >   	struct bpf_sk_storage_data *sdata;
+> >   
+> > -	if (flags > BPF_SK_STORAGE_GET_F_CREATE)
+> > +	if (flags & ~BPF_SK_STORAGE_GET_F_MASK)
+> > +		return (unsigned long)NULL;
+> > +
+> > +	if ((flags & BPF_SK_STORAGE_GET_F_CLONE) &&
+> > +	    !(flags & BPF_SK_STORAGE_GET_F_CREATE))
+> >   		return (unsigned long)NULL;
+> >   
+> >   	sdata = sk_storage_lookup(sk, map, true);
+> >   	if (sdata)
+> >   		return (unsigned long)sdata->data;
+> >   
+> > -	if (flags == BPF_SK_STORAGE_GET_F_CREATE &&
+> > +	if ((flags & BPF_SK_STORAGE_GET_F_CREATE) &&
+> >   	    /* Cannot add new elem to a going away sk.
+> >   	     * Otherwise, the new elem may become a leak
+> >   	     * (and also other memory issues during map
+> > @@ -762,6 +853,9 @@ BPF_CALL_4(bpf_sk_storage_get, struct bpf_map *, map, struct sock *, sk,
+> >   		/* sk must be a fullsock (guaranteed by verifier),
+> >   		 * so sock_gen_put() is unnecessary.
+> >   		 */
+> > +		if (!IS_ERR(sdata))
+> > +			SELEM(sdata)->clone =
+> > +				!!(flags & BPF_SK_STORAGE_GET_F_CLONE);
+> >   		sock_put(sk);
+> >   		return IS_ERR(sdata) ?
+> >   			(unsigned long)NULL : (unsigned long)sdata->data;
+> > diff --git a/net/core/sock.c b/net/core/sock.c
+> > index d57b0cc995a0..f5e801a9cea4 100644
+> > --- a/net/core/sock.c
+> > +++ b/net/core/sock.c
+> > @@ -1851,9 +1851,12 @@ struct sock *sk_clone_lock(const struct sock *sk, const gfp_t priority)
+> >   			goto out;
+> >   		}
+> >   		RCU_INIT_POINTER(newsk->sk_reuseport_cb, NULL);
+> > -#ifdef CONFIG_BPF_SYSCALL
+> > -		RCU_INIT_POINTER(newsk->sk_bpf_storage, NULL);
+> > -#endif
+> > +
+> > +		if (bpf_sk_storage_clone(sk, newsk)) {
+> > +			sk_free_unlock_clone(newsk);
+> > +			newsk = NULL;
+> > +			goto out;
+> > +		}
+> >   
+> >   		newsk->sk_err	   = 0;
+> >   		newsk->sk_err_soft = 0;
+> > 
