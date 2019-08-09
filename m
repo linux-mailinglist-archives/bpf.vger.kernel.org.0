@@ -2,154 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3822587B98
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2019 15:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B16B87E52
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2019 17:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406048AbfHINos (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Aug 2019 09:44:48 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:33688 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726261AbfHINos (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Aug 2019 09:44:48 -0400
-Received: by mail-pf1-f196.google.com with SMTP id g2so46097559pfq.0
-        for <bpf@vger.kernel.org>; Fri, 09 Aug 2019 06:44:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=cuW7kmnkjezQ8aMd9rmD4VTFMgZO6FdDUXYwitNe1k8=;
-        b=vMdeXKEh7eFUUwZXTeO1KB3t0VYqnDsqK+Pe6NqWE1OkpDl66QSxelZSz3WvzqpJTI
-         lzI9NW3hFpD7FCKLKeyZSp9vveeBagM1OsgpVPuDMEwu+qf7X9NR6Zu/m2BBRrx90BgV
-         gcJk85qtmVkAmJUMHUn7lbeDAwl1oOmxx9IMsftUQ/XkpMYOML7igDGAPwGzVGMTC9FR
-         TqIUJ6F7sk0mluIAfi3FrW58zIj8vfEKrKBOuw/y12LIOcV3S55PWuu5vpu9m45xbuNV
-         oHhaGa7gGvU46H1K2qfUTbLHqJSJxoHwH2DcglgeZFx7FtT4NU5OSZLJKXfqlPTS77gu
-         a7tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cuW7kmnkjezQ8aMd9rmD4VTFMgZO6FdDUXYwitNe1k8=;
-        b=aX+GmfnALTKYV/EAHCqd1Jt8dIqVxeK4+lY4xCj812JUHBqVDs/oy9bDmzEwUDKXuG
-         baEn0Oo26xfX9QS8Ugss2OECfoUfeuDtLc9/RI2QlpEL0Wus+77SR5y5oVsSYynrqxfB
-         svHz+IpwVxRI+rUrGW2hT1yFfIjoHhR04YZK6JG5/3aXQjJs1hU5/GIQ05p3AIJ7ECDT
-         biZBtUXle4f7e3dtmZVlG1EOiPmYIFktSbPs+Owg5uLLSxzJv5XEJR46K8Yce88OkHUM
-         NjJcrJplBH7lYp6JfN1SdAAwMv4fSB+epBV8rkCZ6OJNaT9sGf9vSVaTybxankwNACIw
-         qOLQ==
-X-Gm-Message-State: APjAAAVLkL+lP++CEs+bkCVXtwvnNeXYd4u1VDwq5zFp43P5pt8lvZSn
-        68wGGZDVlG5V+l2b0QFI9ILdwQ==
-X-Google-Smtp-Source: APXvYqzboj5qLeiqBXB007VpMJk0G9XY5d2C5KIpSxTqDgmDKjPfcxEEvfgm3VGFPm/6SzPcQqfycQ==
-X-Received: by 2002:a17:90a:8a15:: with SMTP id w21mr9575094pjn.134.1565358287738;
-        Fri, 09 Aug 2019 06:44:47 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s (li456-16.members.linode.com. [50.116.10.16])
-        by smtp.gmail.com with ESMTPSA id y128sm119018995pgy.41.2019.08.09.06.44.42
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 09 Aug 2019 06:44:46 -0700 (PDT)
-Date:   Fri, 9 Aug 2019 21:44:31 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] perf trace: Fix segmentation fault when access syscall
- info
-Message-ID: <20190809134431.GE8313@leoy-ThinkPad-X240s>
-References: <20190809104752.27338-1-leo.yan@linaro.org>
- <20190809132522.GB20899@kernel.org>
+        id S2436751AbfHIPnK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Aug 2019 11:43:10 -0400
+Received: from www62.your-server.de ([213.133.104.62]:51038 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726255AbfHIPnK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Aug 2019 11:43:10 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hw72p-0000y4-Ns; Fri, 09 Aug 2019 17:43:07 +0200
+Received: from [178.193.45.231] (helo=pc-63.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hw72p-0002ks-I4; Fri, 09 Aug 2019 17:43:07 +0200
+Subject: Re: [PATCH bpf 0/2] tools: bpftool: fix pinning error messages
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        alexei.starovoitov@gmail.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        oss-drivers@netronome.com
+References: <20190807001923.19483-1-jakub.kicinski@netronome.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <cc58a0b1-b0f2-29fb-8e1c-982f5d3126bf@iogearbox.net>
+Date:   Fri, 9 Aug 2019 17:43:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190809132522.GB20899@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190807001923.19483-1-jakub.kicinski@netronome.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25536/Fri Aug  9 10:22:54 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 09, 2019 at 10:25:22AM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Fri, Aug 09, 2019 at 06:47:52PM +0800, Leo Yan escreveu:
-> > 'perf trace' reports the segmentation fault as below on Arm64:
-> > 
-> >   # perf trace -e string -e augmented_raw_syscalls.c
-> >   LLVM: dumping tools/perf/examples/bpf/augmented_raw_syscalls.o
-> >   perf: Segmentation fault
-> >   Obtained 12 stack frames.
-> >   perf(sighandler_dump_stack+0x47) [0xaaaaac96ac87]
-> >   linux-vdso.so.1(+0x5b7) [0xffffadbeb5b7]
-> >   /lib/aarch64-linux-gnu/libc.so.6(strlen+0x10) [0xfffface7d5d0]
-> >   /lib/aarch64-linux-gnu/libc.so.6(_IO_vfprintf+0x1ac7) [0xfffface49f97]
-> >   /lib/aarch64-linux-gnu/libc.so.6(__vsnprintf_chk+0xc7) [0xffffacedfbe7]
-> >   perf(scnprintf+0x97) [0xaaaaac9ca3ff]
-> >   perf(+0x997bb) [0xaaaaac8e37bb]
-> >   perf(cmd_trace+0x28e7) [0xaaaaac8ec09f]
-> >   perf(+0xd4a13) [0xaaaaac91ea13]
-> >   perf(main+0x62f) [0xaaaaac8a147f]
-> >   /lib/aarch64-linux-gnu/libc.so.6(__libc_start_main+0xe3) [0xfffface22d23]
-> >   perf(+0x57723) [0xaaaaac8a1723]
-> >   Segmentation fault
-> > 
-> > This issue is introduced by commit 30a910d7d3e0 ("perf trace:
-> > Preallocate the syscall table"), it allocates trace->syscalls.table[]
-> > array and the element count is 'trace->sctbl->syscalls.nr_entries';
-> > but on Arm64, the system call number is not continuously used; e.g. the
-> > syscall maximum id is 436 but the real entries is only 281.  So the
-> > table is allocated with 'nr_entries' as the element count, but it
-> > accesses the table with the syscall id, which might be out of the bound
-> > of the array and cause the segmentation fault.
-> > 
-> > This patch allocates trace->syscalls.table[] with the element count is
-> > 'trace->sctbl->syscalls.max_id + 1', this allows any id to access the
-> > table without out of the bound.
+On 8/7/19 2:19 AM, Jakub Kicinski wrote:
+> Hi!
 > 
-> Thanks a lot!
-
-You are welcome, Arnaldo.
-
-> My bad, that is why we have that max_id there, I forgot
-> about it and since I tested so far only on x86_64... applied to
-> perf/core, since it is only on:
+> First make sure we don't use "prog" in error messages because
+> the pinning operation could be performed on a map. Second add
+> back missing error message if pin syscall failed.
 > 
-> [acme@quaco perf]$ git tag --contains 30a910d7d3e0
-> perf-core-for-mingo-5.4-20190729
-> [acme@quaco perf]$
-
-Thanks!  Yes, I am working on perf/core branch and hit this issue.
-
-Just in case Ingo has not merged your PR, if could save your efforts
-it's quite fine for me to merge this change in your original patch.
-
-Thanks,
-Leo Yan
-
+> Jakub Kicinski (2):
+>    tools: bpftool: fix error message (prog -> object)
+>    tools: bpftool: add error message on pin failure
 > 
-> - Arnaldo
->  
-> > Fixes: 30a910d7d3e0 ("perf trace: Preallocate the syscall table")
-> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> > ---
-> >  tools/perf/builtin-trace.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-> > index 75eb3811e942..d553d06a9aeb 100644
-> > --- a/tools/perf/builtin-trace.c
-> > +++ b/tools/perf/builtin-trace.c
-> > @@ -1492,7 +1492,7 @@ static int trace__read_syscall_info(struct trace *trace, int id)
-> >  	const char *name = syscalltbl__name(trace->sctbl, id);
-> >  
-> >  	if (trace->syscalls.table == NULL) {
-> > -		trace->syscalls.table = calloc(trace->sctbl->syscalls.nr_entries, sizeof(*sc));
-> > +		trace->syscalls.table = calloc(trace->sctbl->syscalls.max_id + 1, sizeof(*sc));
-> >  		if (trace->syscalls.table == NULL)
-> >  			return -ENOMEM;
-> >  	}
-> > -- 
-> > 2.17.1
+>   tools/bpf/bpftool/common.c | 8 ++++++--
+>   1 file changed, 6 insertions(+), 2 deletions(-)
 > 
-> -- 
-> 
-> - Arnaldo
+
+Applied, thanks!
