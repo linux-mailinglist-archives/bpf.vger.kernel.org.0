@@ -2,61 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F80E88462
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2019 23:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC08886EB
+	for <lists+bpf@lfdr.de>; Sat, 10 Aug 2019 01:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726078AbfHIVDo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Aug 2019 17:03:44 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:41835 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725985AbfHIVDo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Aug 2019 17:03:44 -0400
-Received: by mail-qk1-f193.google.com with SMTP id g17so2071438qkk.8;
-        Fri, 09 Aug 2019 14:03:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=Bqq8mUrHHMMqHalEIJPZoImwq+7nn0q87126IbJEzVs=;
-        b=aDsdUixuZFKqY6uQPok7VTvHGTsO1kbyWcBz18ux1zctcxiTJCk7YZXcXjxc+qcdoD
-         2Pw6DVLp3XuIZhVOJiLbnwQqL7ug0zOeqvqipA3S3G0GZ2+/ob7S7R1mwryqMMwEVioB
-         6y8kg5f+kAeoNKIW72B0wkMbnmqogAPAYu0DqmKekNOM+wDEV56BpdwPoSWNWYuudj0j
-         j9iaHFfvyQ2hy30i/Jbu78lA228QVVxgMkEr5bfscK5UgEuHQKhXgj7vR69Nla5mfTAV
-         U4ApXBiOBx6Cowg9kl0ASITJjIwu7jF6sLw2h+2lLRRowwcxZioko10QdxWGGTivfEYf
-         xU4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=Bqq8mUrHHMMqHalEIJPZoImwq+7nn0q87126IbJEzVs=;
-        b=ljwT0/7u9ArElr7ZHgffOY7bhlFKP1I4jeM9QK4jdF7BeXOJYaWQth3DHOI+SV2fRN
-         VBhK21E/C4TVsT5vguwKfb5W15or1SA3IsVvKxWVxFzSiTccyRMxrZaM3+PNs7ugpuOE
-         HV6pTl0UUp7F8xAsj3hactr8mfhYYBIoIWcIFC3E8OcST1T5X1nGk36wNrQBFbwVYZgU
-         ccpQCUr+xQaEMPnkonoWVMLC/OxjhPGMjPYpDkkibR/Xn9KrrOIvkY6K3jQ9j/6fQVAx
-         ih3Zv+/GLvHMvM0fXps5Ihz/M0zDlY5/oB3HkS3CHKYko5myY2iggK8AzxefXCHbfd8p
-         YX4g==
-X-Gm-Message-State: APjAAAUda+2gBIKLaWil7P6SziDP6By1tu/QqoOimqMTnDiiZ03JAZKn
-        Ht2L5Wys2ApXyw4Et4QFvI0=
-X-Google-Smtp-Source: APXvYqylrUHZImqOKDiKgLla2yNMO2oq3Cvc//Ior+BKgsNo+qVRB1b47Rgm0PQJn/QZMnS3To4b4A==
-X-Received: by 2002:ae9:c313:: with SMTP id n19mr7876461qkg.324.1565384620754;
-        Fri, 09 Aug 2019 14:03:40 -0700 (PDT)
-Received: from dev00 ([190.162.109.53])
-        by smtp.gmail.com with ESMTPSA id f27sm5829298qkl.25.2019.08.09.14.03.38
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 09 Aug 2019 14:03:39 -0700 (PDT)
-Date:   Fri, 9 Aug 2019 17:03:35 -0400
-From:   Carlos Antonio Neira Bustos <cneirabustos@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Y Song <ys114321@gmail.com>,
+        id S1726890AbfHIXae (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Aug 2019 19:30:34 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:1734 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726053AbfHIXae (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 9 Aug 2019 19:30:34 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x79NJQ02010193;
+        Fri, 9 Aug 2019 16:30:27 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=H8OED3we4yS7BACG62Jy6Vihn4GG14ed0F9tlNequxM=;
+ b=oNJ1TGw7M0FtHY5L5OQszQRZeMNPLCIJW3X45ytHCgPrybviFEBSvgPKwTx8AxC7FUvi
+ 7uXkTwoVbbgY9G4K+Qf3F/oDg/2qQWyl5zEz/zy6Obyy/zSGCjMv6la+ZEnV6ofBM9MI
+ 1XYMzZsScZbq6tPTNeivNYMqsP6Bnyw58kM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2u9edb133r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 09 Aug 2019 16:30:27 -0700
+Received: from ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) by
+ ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 9 Aug 2019 16:30:25 -0700
+Received: from NAM03-BY2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Fri, 9 Aug 2019 16:30:25 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nom3pjQxvVVZnCekepvAVAm7LGPK0dSKtX4mds9A7CtfWbWIkOcERDD36Xda4cbWEERm1Btm/c3s6N2XeS1k4s8o2CfHfpRCrJVfN9iLsag8OyO8IRi2MP56s/mkZTRCua/e3jWHMFb0LjBhfDsKJ1GYOLCi6mdL7z+YfSapNARkT99k7KlrTIzCAhkNMbFF0COuhFSMbRJTP23smGwG8IVKEjC5RxKMAGyfRDA2od3khjbR7ya295D6i+YwgceACynnuxPpZG+1BlULO2TVPvNUFJdkMLh6idwuJF7PXpvyVdbezexOsxSQsbn/0QaJrL1DqL4ZJKscE26fwJrOrQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H8OED3we4yS7BACG62Jy6Vihn4GG14ed0F9tlNequxM=;
+ b=lCNyL2K2+QfoU8ANASrTp7fDysPiVWkzmIwPfCwD5N8R/RfQYfqNrAVD8/BSvCofbnzdbbGPkNQ5NuqT0AtaAb/M/EZZ/MqPrsmLQGRLdVFvvojnpdLvKZLOcFjdmWQt/SXuX7A817+Z0J6p1uOKcPJuhQU6dXmBOFDfJi6fzDCnEkXcOcQsiAa0tnWwziFB71vM3pb8c+/Iq2SeNBcCG1YB6PWkTnqOkAY5GGeqhgOEtyXiP99Ub0sfAhNFVAOLx+8NBZlCdWCZrJqo2fH4gUGStqgfXQFoFSqyeH9nqOWwePmb6jzbwbTiSLYFN+xvXL+bNKRUPrJpS37Uz2/D6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H8OED3we4yS7BACG62Jy6Vihn4GG14ed0F9tlNequxM=;
+ b=XjnMJL/IPCoqRVsB/gL/HMtAnraAZW9pTEsxmuAKEvujWgMNiA4LmMqcQU+DwVijxEyf78IfMj+DE4sOwDuAiX+py5SUSCouYlrd1PgABhkqeDTk4bcHR+3H+lYqjTm+z9DySxBLySpIZPokesjGh8bN6ZFEFbpkNYCx/NuZpjo=
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.59.17) by
+ BYAPR15MB2309.namprd15.prod.outlook.com (52.135.197.142) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2157.16; Fri, 9 Aug 2019 23:30:23 +0000
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::d95b:271:fa7e:e978]) by BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::d95b:271:fa7e:e978%5]) with mapi id 15.20.2157.020; Fri, 9 Aug 2019
+ 23:30:23 +0000
+From:   Yonghong Song <yhs@fb.com>
+To:     Carlos Antonio Neira Bustos <cneirabustos@gmail.com>
+CC:     Y Song <ys114321@gmail.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "ebiederm@xmission.com" <ebiederm@xmission.com>,
         "brouer@redhat.com" <brouer@redhat.com>, bpf <bpf@vger.kernel.org>,
         "quentin.monnet@netronome.com" <quentin.monnet@netronome.com>
 Subject: Re: [PATCH v5 bpf-next] BPF: helpers: New helper to obtain
  namespacedata from current task
-Message-ID: <20190809210332.3cxftmljxfhwotrz@dev00>
+Thread-Topic: [PATCH v5 bpf-next] BPF: helpers: New helper to obtain
+ namespacedata from current task
+Thread-Index: AQHVTieQJmjZOrhniEiesemZ8uBquabxQ0AAgAIMWUCAACjngA==
+Date:   Fri, 9 Aug 2019 23:30:23 +0000
+Message-ID: <bd11689b-d695-c13f-7f37-41b088fc5084@fb.com>
 References: <20190808012240.htbgpv2mhktvig5h@dev00>
  <96c7ea2e-7acf-e81a-61dc-a4d4562c736a@fb.com>
  <20190808174848.poybtaagg5ctle7t@dev00>
@@ -64,3002 +77,286 @@ References: <20190808012240.htbgpv2mhktvig5h@dev00>
  <5d4c856b.1c69fb81.2aa4f.32dd@mx.google.com>
  <1c24077d-ed17-86b6-8d3f-81994105f302@fb.com>
  <20190808211714.taet5fjr6q43na5i@dev00>
+ <20190809210332.3cxftmljxfhwotrz@dev00>
+In-Reply-To: <20190809210332.3cxftmljxfhwotrz@dev00>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR13CA0026.namprd13.prod.outlook.com
+ (2603:10b6:300:95::12) To BYAPR15MB3384.namprd15.prod.outlook.com
+ (2603:10b6:a03:10e::17)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::2:b875]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a31bad4b-8663-442a-6ca2-08d71d218d05
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:BYAPR15MB2309;
+x-ms-traffictypediagnostic: BYAPR15MB2309:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <BYAPR15MB2309007D83DD1365EC7A5728D3D60@BYAPR15MB2309.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 01244308DF
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(39860400002)(366004)(396003)(376002)(136003)(189003)(199004)(256004)(4326008)(305945005)(30864003)(478600001)(66446008)(64756008)(66476007)(5660300002)(31696002)(66556008)(6506007)(76176011)(102836004)(66946007)(229853002)(53546011)(6486002)(52116002)(386003)(14454004)(6246003)(81166006)(81156014)(8676002)(25786009)(966005)(53936002)(8936002)(7736002)(6436002)(31686004)(6512007)(6306002)(71200400001)(71190400001)(186003)(2906002)(5024004)(36756003)(14444005)(46003)(6116002)(446003)(2616005)(476003)(486006)(11346002)(6916009)(1411001)(54906003)(99286004)(86362001)(316002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2309;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: jLpoQprT0oB5a31Io/8EYEwMljAMfr2pbdQhuDdzhe1BHFVG2NIlCglnUE7skixb8ozfPnDdSKo1Ap+T7t6L2zlcpbdW28ICALSXj6mMtM81vNzpbjy32pILLEfIJ2El2D3L+l9EFegCgkqHk+syiLxnvhef1GM8eVvbqVhm3NkDFdUvnS9WfsOIdntKisa8voEHZT6Ji8fE+UZMZct+DY/HGMadN6cxaDPnB8bD9Zsh3tTP0Qn0i6XotS4H96m/VZk9aL4s77yZY91+JV3D2qlEbihL5HUDlgCgLyajfPBGI9kiUMaXe5O6yIDmSRFuazJJOqV7+2TGdjOzIWXFsCILwD09t3qRxwvtVmQ31Hz6C/lkKdOrxPOn9xkiEFJWwxIaV0IyfazFkS8mbHRIf2VrMZxV62BXrJ8ipcThx/o=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8F80546C351A68428B48F3E9AA7B079C@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190808211714.taet5fjr6q43na5i@dev00>
-User-Agent: NeoMutt/20170113 (1.7.2)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a31bad4b-8663-442a-6ca2-08d71d218d05
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2019 23:30:23.5572
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: j+fnvQjcUxh/t5KU/sbO6djEdj3sZSJPiinN7gCzyGBKGlODC/NJQSlzFZNdcQGE
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2309
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-09_07:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908090229
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Yonghong,
-
-I have splitted the patch in 2 :
-
-- bpf_helper introduction :
- 
-
-From 40ec0781525b82d5235c45f5066a7a79dea71065 Mon Sep 17 00:00:00 2001
-From: Carlos <cneirabustos@gmail.com>
-Date: Fri, 9 Aug 2019 12:20:52 -0700
-Subject: [PATCH 1/2] [PATCH v8 bpf-next 1/2] BPF: New helper to obtain
- namespace data  from current task
-
-This helper obtains the active namespace from current and returns pid, tgid,
-device and namespace id as seen from that namespace, allowing to instrument
-a process inside a container.
-Device is read from /proc/self/ns/pid, as in the future it's possible that
-different pid_ns files may belong to different devices, according
-to the discussion between Eric Biederman and Yonghong in 2017 linux plumbers
-conference.
-Currently bpf_get_current_pid_tgid(), is used to do pid filtering in bcc's
-scripts but this helper returns the pid as seen by the root namespace which is
-fine when a bcc script is not executed inside a container.
-When the process of interest is inside a container, pid filtering will not work
-if bpf_get_current_pid_tgid() is used. This helper addresses this limitation
-returning the pid as it's seen by the current namespace where the script is
-executing.
-
-This helper has the same use cases as bpf_get_current_pid_tgid() as it can be
-used to do pid filtering even inside a container.
-
-For example a bcc script using bpf_get_current_pid_tgid() (tools/funccount.py):
-
-        u32 pid = bpf_get_current_pid_tgid() >> 32;
-        if (pid != <pid_arg_passed_in>)
-                return 0;
-Could be modified to use bpf_get_current_pidns_info() as follows:
-
-        struct bpf_pidns pidns;
-        bpf_get_current_pidns_info(&pidns, sizeof(struct bpf_pidns));
-        u32 pid = pidns.tgid;
-        u32 nsid = pidns.nsid;
-        if ((pid != <pid_arg_passed_in>) && (nsid != <nsid_arg_passed_in>))
-                return 0;
-
-To find out the name PID namespace id of a process, you could use this command:
-
-$ ps -h -o pidns -p <pid_of_interest>
-
-Or this other command:
-
-$ ls -Li /proc/<pid_of_interest>/ns/pid
-
-Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
----
- fs/internal.h                  |  2 --
- fs/namei.c                     |  1 -
- include/linux/bpf.h            |  1 +
- include/linux/namei.h          |  4 +++
- include/uapi/linux/bpf.h       | 31 +++++++++++++++++++-
- kernel/bpf/core.c              |  1 +
- kernel/bpf/helpers.c           | 64 ++++++++++++++++++++++++++++++++++++++++++
- kernel/trace/bpf_trace.c       |  2 ++
- tools/include/uapi/linux/bpf.h | 31 +++++++++++++++++++-
- 9 files changed, 132 insertions(+), 5 deletions(-)
-
-diff --git a/fs/internal.h b/fs/internal.h
-index 315fcd8d237c..6647e15dd419 100644
---- a/fs/internal.h
-+++ b/fs/internal.h
-@@ -59,8 +59,6 @@ extern int finish_clean_context(struct fs_context *fc);
- /*
-  * namei.c
-  */
--extern int filename_lookup(int dfd, struct filename *name, unsigned flags,
--			   struct path *path, struct path *root);
- extern int user_path_mountpoint_at(int, const char __user *, unsigned int, struct path *);
- extern int vfs_path_lookup(struct dentry *, struct vfsmount *,
- 			   const char *, unsigned int, struct path *);
-diff --git a/fs/namei.c b/fs/namei.c
-index 209c51a5226c..a89fc72a4a10 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -19,7 +19,6 @@
- #include <linux/export.h>
- #include <linux/kernel.h>
- #include <linux/slab.h>
--#include <linux/fs.h>
- #include <linux/namei.h>
- #include <linux/pagemap.h>
- #include <linux/fsnotify.h>
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index f9a506147c8a..e4adf5e05afd 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1050,6 +1050,7 @@ extern const struct bpf_func_proto bpf_get_local_storage_proto;
- extern const struct bpf_func_proto bpf_strtol_proto;
- extern const struct bpf_func_proto bpf_strtoul_proto;
- extern const struct bpf_func_proto bpf_tcp_sock_proto;
-+extern const struct bpf_func_proto bpf_get_current_pidns_info_proto;
- 
- /* Shared helpers among cBPF and eBPF. */
- void bpf_user_rnd_init_once(void);
-diff --git a/include/linux/namei.h b/include/linux/namei.h
-index 9138b4471dbf..b45c8b6f7cb4 100644
---- a/include/linux/namei.h
-+++ b/include/linux/namei.h
-@@ -6,6 +6,7 @@
- #include <linux/path.h>
- #include <linux/fcntl.h>
- #include <linux/errno.h>
-+#include <linux/fs.h>
- 
- enum { MAX_NESTED_LINKS = 8 };
- 
-@@ -97,6 +98,9 @@ extern void unlock_rename(struct dentry *, struct dentry *);
- 
- extern void nd_jump_link(struct path *path);
- 
-+extern int filename_lookup(int dfd, struct filename *name, unsigned flags,
-+			   struct path *path, struct path *root);
-+
- static inline void nd_terminate_link(void *name, size_t len, size_t maxlen)
- {
- 	((char *) name)[min(len, maxlen)] = '\0';
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 4393bd4b2419..db241857ec15 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -2741,6 +2741,28 @@ union bpf_attr {
-  *		**-EOPNOTSUPP** kernel configuration does not enable SYN cookies
-  *
-  *		**-EPROTONOSUPPORT** IP packet version is not 4 or 6
-+ *
-+ * int bpf_get_current_pidns_info(struct bpf_pidns_info *pidns, u32 size_of_pidns)
-+ *	Description
-+ *		Copies into *pidns* pid, namespace id and tgid as seen by the
-+ *		current namespace and also device from /proc/self/ns/pid.
-+ *		*size_of_pidns* must be the size of *pidns*
-+ *
-+ *		This helper is used when pid filtering is needed inside a
-+ *		container as bpf_get_current_tgid() helper returns always the
-+ *		pid id as seen by the root namespace.
-+ *	Return
-+ *		0 on success
-+ *
-+ *		**-EINVAL** if *size_of_pidns* is not valid or unable to get ns, pid
-+ *		or tgid of the current task.
-+ *
-+ *		**-ECHILD** if /proc/self/ns/pid does not exists.
-+ *
-+ *		**-ENOTDIR** if /proc/self/ns does not exists.
-+ *
-+ *		**-ENOMEM**  if allocation fails.
-+ *
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -2853,7 +2875,8 @@ union bpf_attr {
- 	FN(sk_storage_get),		\
- 	FN(sk_storage_delete),		\
- 	FN(send_signal),		\
--	FN(tcp_gen_syncookie),
-+	FN(tcp_gen_syncookie),		\
-+	FN(get_current_pidns_info),
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-  * function eBPF program intends to call
-@@ -3604,4 +3627,10 @@ struct bpf_sockopt {
- 	__s32	retval;
- };
- 
-+struct bpf_pidns_info {
-+	__u32 dev;
-+	__u32 nsid;
-+	__u32 tgid;
-+	__u32 pid;
-+};
- #endif /* _UAPI__LINUX_BPF_H__ */
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 8191a7db2777..3159f2a0188c 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2038,6 +2038,7 @@ const struct bpf_func_proto bpf_get_current_uid_gid_proto __weak;
- const struct bpf_func_proto bpf_get_current_comm_proto __weak;
- const struct bpf_func_proto bpf_get_current_cgroup_id_proto __weak;
- const struct bpf_func_proto bpf_get_local_storage_proto __weak;
-+const struct bpf_func_proto bpf_get_current_pidns_info __weak;
- 
- const struct bpf_func_proto * __weak bpf_get_trace_printk_proto(void)
- {
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 5e28718928ca..41fbf1f28a48 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -11,6 +11,12 @@
- #include <linux/uidgid.h>
- #include <linux/filter.h>
- #include <linux/ctype.h>
-+#include <linux/pid_namespace.h>
-+#include <linux/major.h>
-+#include <linux/stat.h>
-+#include <linux/namei.h>
-+#include <linux/version.h>
-+
- 
- #include "../../lib/kstrtox.h"
- 
-@@ -312,6 +318,64 @@ void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
- 	preempt_enable();
- }
- 
-+BPF_CALL_2(bpf_get_current_pidns_info, struct bpf_pidns_info *, pidns_info, u32,
-+	 size)
-+{
-+	const char *pidns_path = "/proc/self/ns/pid";
-+	struct pid_namespace *pidns = NULL;
-+	struct filename *tmp = NULL;
-+	struct inode *inode;
-+	struct path kp;
-+	pid_t tgid = 0;
-+	pid_t pid = 0;
-+	int ret;
-+	int len;
-+
-+	if (unlikely(size != sizeof(struct bpf_pidns_info)))
-+		return -EINVAL;
-+	pidns = task_active_pid_ns(current);
-+	if (unlikely(!pidns))
-+		goto clear;
-+	pidns_info->nsid =  pidns->ns.inum;
-+	pid = task_pid_nr_ns(current, pidns);
-+	if (unlikely(!pid))
-+		goto clear;
-+	tgid = task_tgid_nr_ns(current, pidns);
-+	if (unlikely(!tgid))
-+		goto clear;
-+	pidns_info->tgid = (u32) tgid;
-+	pidns_info->pid = (u32) pid;
-+	tmp = kmem_cache_alloc(names_cachep, GFP_ATOMIC);
-+	if (unlikely(!tmp)) {
-+		memset((void *)pidns_info, 0, (size_t) size);
-+		return -ENOMEM;
-+	}
-+	len = strlen(pidns_path) + 1;
-+	memcpy((char *)tmp->name, pidns_path, len);
-+	tmp->uptr = NULL;
-+	tmp->aname = NULL;
-+	tmp->refcnt = 1;
-+	ret = filename_lookup(AT_FDCWD, tmp, 0, &kp, NULL);
-+	if (ret) {
-+		memset((void *)pidns_info, 0, (size_t) size);
-+		return ret;
-+	}
-+	inode = d_backing_inode(kp.dentry);
-+	pidns_info->dev = inode->i_sb->s_dev;
-+	return 0;
-+clear:
-+	memset((void *)pidns_info, 0, (size_t) size);
-+	return -EINVAL;
-+}
-+
-+const struct bpf_func_proto bpf_get_current_pidns_info_proto = {
-+	.func		= bpf_get_current_pidns_info,
-+	.gpl_only	= false,
-+	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_PTR_TO_UNINIT_MEM,
-+	.arg2_type	= ARG_CONST_SIZE,
-+};
-+
- #ifdef CONFIG_CGROUPS
- BPF_CALL_0(bpf_get_current_cgroup_id)
- {
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index ca1255d14576..5e1dc22765a5 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -709,6 +709,8 @@ tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- #endif
- 	case BPF_FUNC_send_signal:
- 		return &bpf_send_signal_proto;
-+	case BPF_FUNC_get_current_pidns_info:
-+		return &bpf_get_current_pidns_info_proto;
- 	default:
- 		return NULL;
- 	}
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 4393bd4b2419..db241857ec15 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -2741,6 +2741,28 @@ union bpf_attr {
-  *		**-EOPNOTSUPP** kernel configuration does not enable SYN cookies
-  *
-  *		**-EPROTONOSUPPORT** IP packet version is not 4 or 6
-+ *
-+ * int bpf_get_current_pidns_info(struct bpf_pidns_info *pidns, u32 size_of_pidns)
-+ *	Description
-+ *		Copies into *pidns* pid, namespace id and tgid as seen by the
-+ *		current namespace and also device from /proc/self/ns/pid.
-+ *		*size_of_pidns* must be the size of *pidns*
-+ *
-+ *		This helper is used when pid filtering is needed inside a
-+ *		container as bpf_get_current_tgid() helper returns always the
-+ *		pid id as seen by the root namespace.
-+ *	Return
-+ *		0 on success
-+ *
-+ *		**-EINVAL** if *size_of_pidns* is not valid or unable to get ns, pid
-+ *		or tgid of the current task.
-+ *
-+ *		**-ECHILD** if /proc/self/ns/pid does not exists.
-+ *
-+ *		**-ENOTDIR** if /proc/self/ns does not exists.
-+ *
-+ *		**-ENOMEM**  if allocation fails.
-+ *
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -2853,7 +2875,8 @@ union bpf_attr {
- 	FN(sk_storage_get),		\
- 	FN(sk_storage_delete),		\
- 	FN(send_signal),		\
--	FN(tcp_gen_syncookie),
-+	FN(tcp_gen_syncookie),		\
-+	FN(get_current_pidns_info),
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-  * function eBPF program intends to call
-@@ -3604,4 +3627,10 @@ struct bpf_sockopt {
- 	__s32	retval;
- };
- 
-+struct bpf_pidns_info {
-+	__u32 dev;
-+	__u32 nsid;
-+	__u32 tgid;
-+	__u32 pid;
-+};
- #endif /* _UAPI__LINUX_BPF_H__ */
--- 
-2.11.0
-
-
-- BPF helper samples and selftests 
-
-From a87df8b026c6374c21b2af03d83471c258ff6038 Mon Sep 17 00:00:00 2001
-From: Carlos <cneirabustos@gmail.com>
-Date: Fri, 9 Aug 2019 12:23:27 -0700
-Subject: [PATCH 2/2] [PATCH v8 bpf-next 2/2] BPF: New helper to obtain
- namespace data  from current task
-
-Samples and selftests for new helper.
-
-Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
----
- samples/bpf/Makefile                               |   3 +
- samples/bpf/trace_ns_info_user.c                   |  35 ++++++
- samples/bpf/trace_ns_info_user_kern.c              |  44 +++++++
- tools/testing/selftests/bpf/Makefile               |   2 +-
- tools/testing/selftests/bpf/bpf_helpers.h          |   3 +
- .../testing/selftests/bpf/progs/test_pidns_kern.c  |  51 ++++++++
- tools/testing/selftests/bpf/test_pidns.c           | 138 +++++++++++++++++++++
- 7 files changed, 275 insertions(+), 1 deletion(-)
- create mode 100644 samples/bpf/trace_ns_info_user.c
- create mode 100644 samples/bpf/trace_ns_info_user_kern.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_pidns_kern.c
- create mode 100644 tools/testing/selftests/bpf/test_pidns.c
-
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 1d9be26b4edd..238453ff27d2 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -53,6 +53,7 @@ hostprogs-y += task_fd_query
- hostprogs-y += xdp_sample_pkts
- hostprogs-y += ibumad
- hostprogs-y += hbm
-+hostprogs-y += trace_ns_info
- 
- # Libbpf dependencies
- LIBBPF = $(TOOLS_PATH)/lib/bpf/libbpf.a
-@@ -109,6 +110,7 @@ task_fd_query-objs := bpf_load.o task_fd_query_user.o $(TRACE_HELPERS)
- xdp_sample_pkts-objs := xdp_sample_pkts_user.o $(TRACE_HELPERS)
- ibumad-objs := bpf_load.o ibumad_user.o $(TRACE_HELPERS)
- hbm-objs := bpf_load.o hbm.o $(CGROUP_HELPERS)
-+trace_ns_info-objs := bpf_load.o trace_ns_info_user.o
- 
- # Tell kbuild to always build the programs
- always := $(hostprogs-y)
-@@ -170,6 +172,7 @@ always += xdp_sample_pkts_kern.o
- always += ibumad_kern.o
- always += hbm_out_kern.o
- always += hbm_edt_kern.o
-+always += trace_ns_info_user_kern.o
- 
- KBUILD_HOSTCFLAGS += -I$(objtree)/usr/include
- KBUILD_HOSTCFLAGS += -I$(srctree)/tools/lib/bpf/
-diff --git a/samples/bpf/trace_ns_info_user.c b/samples/bpf/trace_ns_info_user.c
-new file mode 100644
-index 000000000000..e06d08db6f30
---- /dev/null
-+++ b/samples/bpf/trace_ns_info_user.c
-@@ -0,0 +1,35 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2018 Carlos Neira cneirabustos@gmail.com
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ */
-+
-+#include <stdio.h>
-+#include <linux/bpf.h>
-+#include <unistd.h>
-+#include "bpf/libbpf.h"
-+#include "bpf_load.h"
-+
-+/* This code was taken verbatim from tracex1_user.c, it's used
-+ * to exercize bpf_get_current_pidns_info() helper call.
-+ */
-+int main(int ac, char **argv)
-+{
-+	FILE *f;
-+	char filename[256];
-+
-+	snprintf(filename, sizeof(filename), "%s_user_kern.o", argv[0]);
-+	printf("loading %s\n", filename);
-+
-+	if (load_bpf_file(filename)) {
-+		printf("%s", bpf_log_buf);
-+		return 1;
-+	}
-+
-+	f = popen("taskset 1 ping  localhost", "r");
-+	(void) f;
-+	read_trace_pipe();
-+	return 0;
-+}
-diff --git a/samples/bpf/trace_ns_info_user_kern.c b/samples/bpf/trace_ns_info_user_kern.c
-new file mode 100644
-index 000000000000..96675e02b707
---- /dev/null
-+++ b/samples/bpf/trace_ns_info_user_kern.c
-@@ -0,0 +1,44 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2018 Carlos Neira cneirabustos@gmail.com
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ */
-+#include <linux/skbuff.h>
-+#include <linux/netdevice.h>
-+#include <linux/version.h>
-+#include <uapi/linux/bpf.h>
-+#include "bpf_helpers.h"
-+
-+typedef __u64 u64;
-+typedef __u32 u32;
-+
-+
-+/* kprobe is NOT a stable ABI
-+ * kernel functions can be removed, renamed or completely change semantics.
-+ * Number of arguments and their positions can change, etc.
-+ * In such case this bpf+kprobe example will no longer be meaningful
-+ */
-+
-+/* This will call bpf_get_current_pidns_info() to display pid and ns values
-+ * as seen by the current namespace, on the far left you will see the pid as
-+ * seen as by the root namespace.
-+ */
-+
-+SEC("kprobe/__netif_receive_skb_core")
-+int bpf_prog1(struct pt_regs *ctx)
-+{
-+	char fmt[] = "nsid:%u, dev: %u,  pid:%u\n";
-+	struct bpf_pidns_info nsinfo;
-+	int ok = 0;
-+
-+	ok = bpf_get_current_pidns_info(&nsinfo, sizeof(nsinfo));
-+	if (ok == 0)
-+		bpf_trace_printk(fmt, sizeof(fmt), (u32)nsinfo.nsid,
-+				 (u32) nsinfo.dev, (u32)nsinfo.pid);
-+
-+	return 0;
-+}
-+char _license[] SEC("license") = "GPL";
-+u32 _version SEC("version") = LINUX_VERSION_CODE;
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 3bd0f4a0336a..1f97b571b581 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -29,7 +29,7 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
- 	test_cgroup_storage test_select_reuseport test_section_names \
- 	test_netcnt test_tcpnotify_user test_sock_fields test_sysctl test_hashmap \
- 	test_btf_dump test_cgroup_attach xdping test_sockopt test_sockopt_sk \
--	test_sockopt_multi test_tcp_rtt
-+	test_sockopt_multi test_tcp_rtt test_pidns
- 
- BPF_OBJ_FILES = $(patsubst %.c,%.o, $(notdir $(wildcard progs/*.c)))
- TEST_GEN_FILES = $(BPF_OBJ_FILES)
-diff --git a/tools/testing/selftests/bpf/bpf_helpers.h b/tools/testing/selftests/bpf/bpf_helpers.h
-index 8b503ea142f0..3fae3b9fcd2c 100644
---- a/tools/testing/selftests/bpf/bpf_helpers.h
-+++ b/tools/testing/selftests/bpf/bpf_helpers.h
-@@ -231,6 +231,9 @@ static int (*bpf_send_signal)(unsigned sig) = (void *)BPF_FUNC_send_signal;
- static long long (*bpf_tcp_gen_syncookie)(struct bpf_sock *sk, void *ip,
- 					  int ip_len, void *tcp, int tcp_len) =
- 	(void *) BPF_FUNC_tcp_gen_syncookie;
-+static int (*bpf_get_current_pidns_info)(struct bpf_pidns_info *buf,
-+					 unsigned int buf_size) =
-+	(void *) BPF_FUNC_get_current_pidns_info;
- 
- /* llvm builtin functions that eBPF C program may use to
-  * emit BPF_LD_ABS and BPF_LD_IND instructions
-diff --git a/tools/testing/selftests/bpf/progs/test_pidns_kern.c b/tools/testing/selftests/bpf/progs/test_pidns_kern.c
-new file mode 100644
-index 000000000000..e1d2facfa762
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_pidns_kern.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2018 Carlos Neira cneirabustos@gmail.com
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ */
-+
-+#include <linux/bpf.h>
-+#include <errno.h>
-+#include "bpf_helpers.h"
-+
-+struct bpf_map_def SEC("maps") nsidmap = {
-+	.type = BPF_MAP_TYPE_ARRAY,
-+	.key_size = sizeof(__u32),
-+	.value_size = sizeof(__u32),
-+	.max_entries = 1,
-+};
-+
-+struct bpf_map_def SEC("maps") pidmap = {
-+	.type = BPF_MAP_TYPE_ARRAY,
-+	.key_size = sizeof(__u32),
-+	.value_size = sizeof(__u32),
-+	.max_entries = 1,
-+};
-+
-+SEC("tracepoint/syscalls/sys_enter_nanosleep")
-+int trace(void *ctx)
-+{
-+	struct bpf_pidns_info nsinfo;
-+	__u32 key = 0, *expected_pid, *val;
-+	char fmt[] = "ERROR nspid:%d\n";
-+
-+	if (bpf_get_current_pidns_info(&nsinfo, sizeof(nsinfo)))
-+		return -EINVAL;
-+
-+	expected_pid = bpf_map_lookup_elem(&pidmap, &key);
-+
-+
-+	if (!expected_pid || *expected_pid != nsinfo.pid)
-+		return 0;
-+
-+	val = bpf_map_lookup_elem(&nsidmap, &key);
-+	if (val)
-+		*val = nsinfo.nsid;
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-+__u32 _version SEC("version") = 1;
-diff --git a/tools/testing/selftests/bpf/test_pidns.c b/tools/testing/selftests/bpf/test_pidns.c
-new file mode 100644
-index 000000000000..a7254055f294
---- /dev/null
-+++ b/tools/testing/selftests/bpf/test_pidns.c
-@@ -0,0 +1,138 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2018 Carlos Neira cneirabustos@gmail.com
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <syscall.h>
-+#include <unistd.h>
-+#include <linux/perf_event.h>
-+#include <sys/ioctl.h>
-+#include <sys/time.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
-+
-+#include "cgroup_helpers.h"
-+#include "bpf_rlimit.h"
-+
-+#define CHECK(condition, tag, format...) ({		\
-+	int __ret = !!(condition);			\
-+	if (__ret) {					\
-+		printf("%s:FAIL:%s ", __func__, tag);	\
-+		printf(format);				\
-+	} else {					\
-+		printf("%s:PASS:%s\n", __func__, tag);	\
-+	}						\
-+	__ret;						\
-+})
-+
-+static int bpf_find_map(const char *test, struct bpf_object *obj,
-+			const char *name)
-+{
-+	struct bpf_map *map;
-+
-+	map = bpf_object__find_map_by_name(obj, name);
-+	if (!map)
-+		return -1;
-+	return bpf_map__fd(map);
-+}
-+
-+
-+int main(int argc, char **argv)
-+{
-+	const char *probe_name = "syscalls/sys_enter_nanosleep";
-+	const char *file = "test_pidns_kern.o";
-+	int err, bytes, efd, prog_fd, pmu_fd;
-+	int pidmap_fd, nsidmap_fd;
-+	struct perf_event_attr attr = {};
-+	struct bpf_object *obj;
-+	__u32 knsid = 0;
-+	__u32 key = 0, pid;
-+	int exit_code = 1;
-+	struct stat st;
-+	char buf[256];
-+
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_TRACEPOINT, &obj, &prog_fd);
-+	if (CHECK(err, "bpf_prog_load", "err %d errno %d\n", err, errno))
-+		goto cleanup_cgroup_env;
-+
-+	nsidmap_fd = bpf_find_map(__func__, obj, "nsidmap");
-+	if (CHECK(nsidmap_fd < 0, "bpf_find_map", "err %d errno %d\n",
-+		  nsidmap_fd, errno))
-+		goto close_prog;
-+
-+	pidmap_fd = bpf_find_map(__func__, obj, "pidmap");
-+	if (CHECK(pidmap_fd < 0, "bpf_find_map", "err %d errno %d\n",
-+		  pidmap_fd, errno))
-+		goto close_prog;
-+
-+	pid = getpid();
-+	bpf_map_update_elem(pidmap_fd, &key, &pid, 0);
-+
-+	snprintf(buf, sizeof(buf),
-+		 "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-+	efd = open(buf, O_RDONLY, 0);
-+	if (CHECK(efd < 0, "open", "err %d errno %d\n", efd, errno))
-+		goto close_prog;
-+	bytes = read(efd, buf, sizeof(buf));
-+	close(efd);
-+	if (CHECK(bytes <= 0 || bytes >= sizeof(buf), "read",
-+		  "bytes %d errno %d\n", bytes, errno))
-+		goto close_prog;
-+
-+	attr.config = strtol(buf, NULL, 0);
-+	attr.type = PERF_TYPE_TRACEPOINT;
-+	attr.sample_type = PERF_SAMPLE_RAW;
-+	attr.sample_period = 1;
-+	attr.wakeup_events = 1;
-+
-+	pmu_fd = syscall(__NR_perf_event_open, &attr, getpid(), -1, -1, 0);
-+	if (CHECK(pmu_fd < 0, "perf_event_open", "err %d errno %d\n", pmu_fd,
-+		  errno))
-+		goto close_prog;
-+
-+	err = ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0);
-+	if (CHECK(err, "perf_event_ioc_enable", "err %d errno %d\n", err,
-+		  errno))
-+		goto close_pmu;
-+
-+	err = ioctl(pmu_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
-+	if (CHECK(err, "perf_event_ioc_set_bpf", "err %d errno %d\n", err,
-+		  errno))
-+		goto close_pmu;
-+
-+	/* trigger some syscalls */
-+	sleep(1);
-+
-+	err = bpf_map_lookup_elem(nsidmap_fd, &key, &knsid);
-+	if (CHECK(err, "bpf_map_lookup_elem", "err %d errno %d\n", err, errno))
-+		goto close_pmu;
-+
-+	if (stat("/proc/self/ns/pid", &st))
-+		goto close_pmu;
-+
-+	if (CHECK(knsid != (__u32) st.st_ino, "compare_namespace_id",
-+		  "kern knsid %u user unsid %u\n", knsid, (__u32) st.st_ino))
-+		goto close_pmu;
-+
-+	exit_code = 0;
-+	printf("%s:PASS\n", argv[0]);
-+
-+close_pmu:
-+	close(pmu_fd);
-+close_prog:
-+	bpf_object__close(obj);
-+cleanup_cgroup_env:
-+	return exit_code;
-+}
--- 
-2.11.0
-
-Thanks for your help.
-
-Bests
-
-
-On Thu, Aug 08, 2019 at 05:17:16PM -0400, Carlos Antonio Neira Bustos wrote:
-> Thanks a lot, Yonghong. I'll fix and split up the patch.
-> Thanks again for your help.
-> 
-> Bests
-> 
-> On Thu, Aug 08, 2019 at 08:47:14PM +0000, Yonghong Song wrote:
-> > 
-> > 
-> > On 8/8/19 1:26 PM, carlos antonio neira bustos wrote:
-> > > Hi Yonghong,
-> > > 
-> > > I’m sorry, just to be sure, I’m just missing the error codes from 
-> > > filename_lookup() right ?.
-> > 
-> >  From kernel functionality point of view. Yes, I am talking about
-> > error codes returned by filename_lookup().
-> > For example, if CONFIG_PID_NS or CONFIG_NAMESPACES is not
-> > defined in the config, the path "/proc/self/ns/pid" will not exist,
-> > the error code will return. It may be -ENOTDIR
-> > if CONFIG_NAMESPACES not defined or -ECHILD if CONFIG_PID_NS
-> > is not defined. Please double check.
-> > 
-> > Please do follow the advice in
-> >  > https://lore.kernel.org/netdev/20190808174848.poybtaagg5ctle7t@dev00/T/#t
-> > to break the single patch to multiple patches.
-> > 
-> > I only reviewed the kernel code. Will review tools/ code
-> > in the next properly-formatted (broken-up) commits.
-> > 
-> > Also, please also cc commits to bpf mailing list at
-> > bpf@vger.kernel.org
-> > 
-> > > 
-> > > Bests
-> > > 
-> > > Maybe some other error codes in filename_lookup() function?
-> > > 
-> > >  > + *
-> > > 
-> > >  > + *                      If unable to get the inode from 
-> > > /proc/self/ns/pid an error code
-> > > 
-> > >  > + *                      will be returned.
-> > > 
-> > > *From: *Y Song <mailto:ys114321@gmail.com>
-> > > *Sent: *08 August 2019 15:44
-> > > *To: *Carlos Antonio Neira Bustos <mailto:cneirabustos@gmail.com>
-> > > *Cc: *Yonghong Song <mailto:yhs@fb.com>; netdev@vger.kernel.org 
-> > > <mailto:netdev@vger.kernel.org>; ebiederm@xmission.com 
-> > > <mailto:ebiederm@xmission.com>; brouer@redhat.com 
-> > > <mailto:brouer@redhat.com>; quentin.monnet@netronome.com 
-> > > <mailto:quentin.monnet@netronome.com>
-> > > *Subject: *Re: [PATCH v5 bpf-next] BPF: helpers: New helper to obtain 
-> > > namespacedata from current task
-> > > 
-> > > On Thu, Aug 8, 2019 at 10:52 AM Carlos Antonio Neira Bustos
-> > > 
-> > > <cneirabustos@gmail.com> wrote:
-> > > 
-> > >  >
-> > > 
-> > >  > Yonghong,
-> > > 
-> > >  >
-> > > 
-> > >  > I have modified the patch following your feedback.
-> > > 
-> > >  > Let me know if I'm missing something.
-> > > 
-> > > Yes, I have some other requests about formating.
-> > > 
-> > > https://lore.kernel.org/netdev/20190808174848.poybtaagg5ctle7t@dev00/T/#t
-> > > 
-> > > Could you address it as well?
-> > > 
-> > >  >
-> > > 
-> > >  > Bests
-> > > 
-> > >  >
-> > > 
-> > >  > From 70f8d5584700c9cfc82c006901d8ee9595c53f15 Mon Sep 17 00:00:00 2001
-> > > 
-> > >  > From: Carlos <cneirabustos@gmail.com>
-> > > 
-> > >  > Date: Wed, 7 Aug 2019 20:04:30 -0400
-> > > 
-> > >  > Subject: [PATCH] [PATCH v6 bpf-next] BPF: New helper to obtain 
-> > > namespace data
-> > > 
-> > >  >  from current task
-> > > 
-> > >  >
-> > > 
-> > >  > This helper obtains the active namespace from current and returns 
-> > > pid, tgid,
-> > > 
-> > >  > device and namespace id as seen from that namespace, allowing to 
-> > > instrument
-> > > 
-> > >  > a process inside a container.
-> > > 
-> > >  > Device is read from /proc/self/ns/pid, as in the future it's possible 
-> > > that
-> > > 
-> > >  > different pid_ns files may belong to different devices, according
-> > > 
-> > >  > to the discussion between Eric Biederman and Yonghong in 2017 linux 
-> > > plumbers
-> > > 
-> > >  > conference.
-> > > 
-> > >  > Currently bpf_get_current_pid_tgid(), is used to do pid filtering in 
-> > > bcc's
-> > > 
-> > >  > scripts but this helper returns the pid as seen by the root namespace 
-> > > which is
-> > > 
-> > >  > fine when a bcc script is not executed inside a container.
-> > > 
-> > >  > When the process of interest is inside a container, pid filtering 
-> > > will not work
-> > > 
-> > >  > if bpf_get_current_pid_tgid() is used. This helper addresses this 
-> > > limitation
-> > > 
-> > >  > returning the pid as it's seen by the current namespace where the 
-> > > script is
-> > > 
-> > >  > executing.
-> > > 
-> > >  >
-> > > 
-> > >  > This helper has the same use cases as bpf_get_current_pid_tgid() as 
-> > > it can be
-> > > 
-> > >  > used to do pid filtering even inside a container.
-> > > 
-> > >  >
-> > > 
-> > >  > For example a bcc script using bpf_get_current_pid_tgid() 
-> > > (tools/funccount.py):
-> > > 
-> > >  >
-> > > 
-> > >  >         u32 pid = bpf_get_current_pid_tgid() >> 32;
-> > > 
-> > >  >         if (pid != <pid_arg_passed_in>)
-> > > 
-> > >  >                 return 0;
-> > > 
-> > >  > Could be modified to use bpf_get_current_pidns_info() as follows:
-> > > 
-> > >  >
-> > > 
-> > >  >         struct bpf_pidns pidns;
-> > > 
-> > >  >         bpf_get_current_pidns_info(&pidns, sizeof(struct bpf_pidns));
-> > > 
-> > >  >         u32 pid = pidns.tgid;
-> > > 
-> > >  >         u32 nsid = pidns.nsid;
-> > > 
-> > >  >         if ((pid != <pid_arg_passed_in>) && (nsid != 
-> > > <nsid_arg_passed_in>))
-> > > 
-> > >  >                 return 0;
-> > > 
-> > >  >
-> > > 
-> > >  > To find out the name PID namespace id of a process, you could use 
-> > > this command:
-> > > 
-> > >  >
-> > > 
-> > >  > $ ps -h -o pidns -p <pid_of_interest>
-> > > 
-> > >  >
-> > > 
-> > >  > Or this other command:
-> > > 
-> > >  >
-> > > 
-> > >  > $ ls -Li /proc/<pid_of_interest>/ns/pid
-> > > 
-> > >  >
-> > > 
-> > >  > Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
-> > > 
-> > >  > ---
-> > > 
-> > >  >  fs/internal.h                                      |   2 -
-> > > 
-> > >  >  fs/namei.c                                         |   1 -
-> > > 
-> > >  >  include/linux/bpf.h                                |   1 +
-> > > 
-> > >  >  include/linux/namei.h                              |   4 +
-> > > 
-> > >  >  include/uapi/linux/bpf.h                           |  27 +++-
-> > > 
-> > >  >  kernel/bpf/core.c                                  |   1 +
-> > > 
-> > >  >  kernel/bpf/helpers.c                               |  64 ++++++++++
-> > > 
-> > >  >  kernel/trace/bpf_trace.c                           |   2 +
-> > > 
-> > >  >  samples/bpf/Makefile                               |   3 +
-> > > 
-> > >  >  samples/bpf/trace_ns_info_user.c                   |  35 ++++++
-> > > 
-> > >  >  samples/bpf/trace_ns_info_user_kern.c              |  44 +++++++
-> > > 
-> > >  >  tools/include/uapi/linux/bpf.h                     |  27 +++-
-> > > 
-> > >  >  tools/testing/selftests/bpf/Makefile               |   2 +-
-> > > 
-> > >  >  tools/testing/selftests/bpf/bpf_helpers.h          |   3 +
-> > > 
-> > >  >  .../testing/selftests/bpf/progs/test_pidns_kern.c  |  51 ++++++++
-> > > 
-> > >  >  tools/testing/selftests/bpf/test_pidns.c           | 138 
-> > > +++++++++++++++++++++
-> > > 
-> > >  >  16 files changed, 399 insertions(+), 6 deletions(-)
-> > > 
-> > >  >  create mode 100644 samples/bpf/trace_ns_info_user.c
-> > > 
-> > >  >  create mode 100644 samples/bpf/trace_ns_info_user_kern.c
-> > > 
-> > >  >  create mode 100644 tools/testing/selftests/bpf/progs/test_pidns_kern.c
-> > > 
-> > >  >  create mode 100644 tools/testing/selftests/bpf/test_pidns.c
-> > > 
-> > >  >
-> > > 
-> > >  > diff --git a/fs/internal.h b/fs/internal.h
-> > > 
-> > >  > index 315fcd8d237c..6647e15dd419 100644
-> > > 
-> > >  > --- a/fs/internal.h
-> > > 
-> > >  > +++ b/fs/internal.h
-> > > 
-> > >  > @@ -59,8 +59,6 @@ extern int finish_clean_context(struct fs_context *fc);
-> > > 
-> > >  >  /*
-> > > 
-> > >  >   * namei.c
-> > > 
-> > >  >   */
-> > > 
-> > >  > -extern int filename_lookup(int dfd, struct filename *name, unsigned 
-> > > flags,
-> > > 
-> > >  > -                          struct path *path, struct path *root);
-> > > 
-> > >  >  extern int user_path_mountpoint_at(int, const char __user *, 
-> > > unsigned int, struct path *);
-> > > 
-> > >  >  extern int vfs_path_lookup(struct dentry *, struct vfsmount *,
-> > > 
-> > >  >                            const char *, unsigned int, struct path *);
-> > > 
-> > >  > diff --git a/fs/namei.c b/fs/namei.c
-> > > 
-> > >  > index 209c51a5226c..a89fc72a4a10 100644
-> > > 
-> > >  > --- a/fs/namei.c
-> > > 
-> > >  > +++ b/fs/namei.c
-> > > 
-> > >  > @@ -19,7 +19,6 @@
-> > > 
-> > >  >  #include <linux/export.h>
-> > > 
-> > >  >  #include <linux/kernel.h>
-> > > 
-> > >  >  #include <linux/slab.h>
-> > > 
-> > >  > -#include <linux/fs.h>
-> > > 
-> > >  >  #include <linux/namei.h>
-> > > 
-> > >  >  #include <linux/pagemap.h>
-> > > 
-> > >  >  #include <linux/fsnotify.h>
-> > > 
-> > >  > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > 
-> > >  > index f9a506147c8a..e4adf5e05afd 100644
-> > > 
-> > >  > --- a/include/linux/bpf.h
-> > > 
-> > >  > +++ b/include/linux/bpf.h
-> > > 
-> > >  > @@ -1050,6 +1050,7 @@ extern const struct bpf_func_proto 
-> > > bpf_get_local_storage_proto;
-> > > 
-> > >  >  extern const struct bpf_func_proto bpf_strtol_proto;
-> > > 
-> > >  >  extern const struct bpf_func_proto bpf_strtoul_proto;
-> > > 
-> > >  >  extern const struct bpf_func_proto bpf_tcp_sock_proto;
-> > > 
-> > >  > +extern const struct bpf_func_proto bpf_get_current_pidns_info_proto;
-> > > 
-> > >  >
-> > > 
-> > >  >  /* Shared helpers among cBPF and eBPF. */
-> > > 
-> > >  >  void bpf_user_rnd_init_once(void);
-> > > 
-> > >  > diff --git a/include/linux/namei.h b/include/linux/namei.h
-> > > 
-> > >  > index 9138b4471dbf..b45c8b6f7cb4 100644
-> > > 
-> > >  > --- a/include/linux/namei.h
-> > > 
-> > >  > +++ b/include/linux/namei.h
-> > > 
-> > >  > @@ -6,6 +6,7 @@
-> > > 
-> > >  >  #include <linux/path.h>
-> > > 
-> > >  >  #include <linux/fcntl.h>
-> > > 
-> > >  >  #include <linux/errno.h>
-> > > 
-> > >  > +#include <linux/fs.h>
-> > > 
-> > >  >
-> > > 
-> > >  >  enum { MAX_NESTED_LINKS = 8 };
-> > > 
-> > >  >
-> > > 
-> > >  > @@ -97,6 +98,9 @@ extern void unlock_rename(struct dentry *, struct 
-> > > dentry *);
-> > > 
-> > >  >
-> > > 
-> > >  >  extern void nd_jump_link(struct path *path);
-> > > 
-> > >  >
-> > > 
-> > >  > +extern int filename_lookup(int dfd, struct filename *name, unsigned 
-> > > flags,
-> > > 
-> > >  > +                          struct path *path, struct path *root);
-> > > 
-> > >  > +
-> > > 
-> > >  >  static inline void nd_terminate_link(void *name, size_t len, size_t 
-> > > maxlen)
-> > > 
-> > >  >  {
-> > > 
-> > >  >         ((char *) name)[min(len, maxlen)] = '\0';
-> > > 
-> > >  > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > 
-> > >  > index 4393bd4b2419..b0d4869fb860 100644
-> > > 
-> > >  > --- a/include/uapi/linux/bpf.h
-> > > 
-> > >  > +++ b/include/uapi/linux/bpf.h
-> > > 
-> > >  > @@ -2741,6 +2741,24 @@ union bpf_attr {
-> > > 
-> > >  >   *             **-EOPNOTSUPP** kernel configuration does not enable 
-> > > SYN cookies
-> > > 
-> > >  >   *
-> > > 
-> > >  >   *             **-EPROTONOSUPPORT** IP packet version is not 4 or 6
-> > > 
-> > >  > + *
-> > > 
-> > >  > + * int bpf_get_current_pidns_info(struct bpf_pidns_info *pidns, u32 
-> > > size_of_pidns)
-> > > 
-> > >  > + *     Description
-> > > 
-> > >  > + *             Copies into *pidns* pid, namespace id and tgid as 
-> > > seen by the
-> > > 
-> > >  > + *             current namespace and also device from /proc/self/ns/pid.
-> > > 
-> > >  > + *             *size_of_pidns* must be the size of *pidns*
-> > > 
-> > >  > + *
-> > > 
-> > >  > + *             This helper is used when pid filtering is needed inside a
-> > > 
-> > >  > + *             container as bpf_get_current_tgid() helper returns 
-> > > always the
-> > > 
-> > >  > + *             pid id as seen by the root namespace.
-> > > 
-> > >  > + *     Return
-> > > 
-> > >  > + *             0 on success
-> > > 
-> > >  > + *
-> > > 
-> > >  > + *             **-EINVAL** if *size_of_pidns* is not valid or unable 
-> > > to get ns, pid
-> > > 
-> > >  > + *             or tgid of the current task.
-> > > 
-> > >  > + *
-> > > 
-> > >  > + *             **-ENOMEM**  if allocation fails.
-> > > 
-> > >  > + *
-> > > 
-> > >  >   */
-> > > 
-> > >  >  #define __BPF_FUNC_MAPPER(FN)          \
-> > > 
-> > >  >         FN(unspec),                     \
-> > > 
-> > >  > @@ -2853,7 +2871,8 @@ union bpf_attr {
-> > > 
-> > >  >         FN(sk_storage_get),             \
-> > > 
-> > >  >         FN(sk_storage_delete),          \
-> > > 
-> > >  >         FN(send_signal),                \
-> > > 
-> > >  > -       FN(tcp_gen_syncookie),
-> > > 
-> > >  > +       FN(tcp_gen_syncookie),          \
-> > > 
-> > >  > +       FN(get_current_pidns_info),
-> > > 
-> > >  >
-> > > 
-> > >  >  /* integer value in 'imm' field of BPF_CALL instruction selects 
-> > > which helper
-> > > 
-> > >  >   * function eBPF program intends to call
-> > > 
-> > >  > @@ -3604,4 +3623,10 @@ struct bpf_sockopt {
-> > > 
-> > >  >         __s32   retval;
-> > > 
-> > >  >  };
-> > > 
-> > >  >
-> > > 
-> > >  > +struct bpf_pidns_info {
-> > > 
-> > >  > +       __u32 dev;
-> > > 
-> > >  > +       __u32 nsid;
-> > > 
-> > >  > +       __u32 tgid;
-> > > 
-> > >  > +       __u32 pid;
-> > > 
-> > >  > +};
-> > > 
-> > >  >  #endif /* _UAPI__LINUX_BPF_H__ */
-> > > 
-> > >  > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > > 
-> > >  > index 8191a7db2777..3159f2a0188c 100644
-> > > 
-> > >  > --- a/kernel/bpf/core.c
-> > > 
-> > >  > +++ b/kernel/bpf/core.c
-> > > 
-> > >  > @@ -2038,6 +2038,7 @@ const struct bpf_func_proto 
-> > > bpf_get_current_uid_gid_proto __weak;
-> > > 
-> > >  >  const struct bpf_func_proto bpf_get_current_comm_proto __weak;
-> > > 
-> > >  >  const struct bpf_func_proto bpf_get_current_cgroup_id_proto __weak;
-> > > 
-> > >  >  const struct bpf_func_proto bpf_get_local_storage_proto __weak;
-> > > 
-> > >  > +const struct bpf_func_proto bpf_get_current_pidns_info __weak;
-> > > 
-> > >  >
-> > > 
-> > >  >  const struct bpf_func_proto * __weak bpf_get_trace_printk_proto(void)
-> > > 
-> > >  >  {
-> > > 
-> > >  > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > > 
-> > >  > index 5e28718928ca..41fbf1f28a48 100644
-> > > 
-> > >  > --- a/kernel/bpf/helpers.c
-> > > 
-> > >  > +++ b/kernel/bpf/helpers.c
-> > > 
-> > >  > @@ -11,6 +11,12 @@
-> > > 
-> > >  >  #include <linux/uidgid.h>
-> > > 
-> > >  >  #include <linux/filter.h>
-> > > 
-> > >  >  #include <linux/ctype.h>
-> > > 
-> > >  > +#include <linux/pid_namespace.h>
-> > > 
-> > >  > +#include <linux/major.h>
-> > > 
-> > >  > +#include <linux/stat.h>
-> > > 
-> > >  > +#include <linux/namei.h>
-> > > 
-> > >  > +#include <linux/version.h>
-> > > 
-> > >  > +
-> > > 
-> > >  >
-> > > 
-> > >  >  #include "../../lib/kstrtox.h"
-> > > 
-> > >  >
-> > > 
-> > >  > @@ -312,6 +318,64 @@ void copy_map_value_locked(struct bpf_map *map, 
-> > > void *dst, void *src,
-> > > 
-> > >  >         preempt_enable();
-> > > 
-> > >  >  }
-> > > 
-> > >  >
-> > > 
-> > >  > +BPF_CALL_2(bpf_get_current_pidns_info, struct bpf_pidns_info *, 
-> > > pidns_info, u32,
-> > > 
-> > >  > +        size)
-> > > 
-> > >  > +{
-> > > 
-> > >  > +       const char *pidns_path = "/proc/self/ns/pid";
-> > > 
-> > >  > +       struct pid_namespace *pidns = NULL;
-> > > 
-> > >  > +       struct filename *tmp = NULL;
-> > > 
-> > >  > +       struct inode *inode;
-> > > 
-> > >  > +       struct path kp;
-> > > 
-> > >  > +       pid_t tgid = 0;
-> > > 
-> > >  > +       pid_t pid = 0;
-> > > 
-> > >  > +       int ret;
-> > > 
-> > >  > +       int len;
-> > > 
-> > >  > +
-> > > 
-> > >  > +       if (unlikely(size != sizeof(struct bpf_pidns_info)))
-> > > 
-> > >  > +               return -EINVAL;
-> > > 
-> > >  > +       pidns = task_active_pid_ns(current);
-> > > 
-> > >  > +       if (unlikely(!pidns))
-> > > 
-> > >  > +               goto clear;
-> > > 
-> > >  > +       pidns_info->nsid =  pidns->ns.inum;
-> > > 
-> > >  > +       pid = task_pid_nr_ns(current, pidns);
-> > > 
-> > >  > +       if (unlikely(!pid))
-> > > 
-> > >  > +               goto clear;
-> > > 
-> > >  > +       tgid = task_tgid_nr_ns(current, pidns);
-> > > 
-> > >  > +       if (unlikely(!tgid))
-> > > 
-> > >  > +               goto clear;
-> > > 
-> > >  > +       pidns_info->tgid = (u32) tgid;
-> > > 
-> > >  > +       pidns_info->pid = (u32) pid;
-> > > 
-> > >  > +       tmp = kmem_cache_alloc(names_cachep, GFP_ATOMIC);
-> > > 
-> > >  > +       if (unlikely(!tmp)) {
-> > > 
-> > >  > +               memset((void *)pidns_info, 0, (size_t) size);
-> > > 
-> > >  > +               return -ENOMEM;
-> > > 
-> > >  > +       }
-> > > 
-> > >  > +       len = strlen(pidns_path) + 1;
-> > > 
-> > >  > +       memcpy((char *)tmp->name, pidns_path, len);
-> > > 
-> > >  > +       tmp->uptr = NULL;
-> > > 
-> > >  > +       tmp->aname = NULL;
-> > > 
-> > >  > +       tmp->refcnt = 1;
-> > > 
-> > >  > +       ret = filename_lookup(AT_FDCWD, tmp, 0, &kp, NULL);
-> > > 
-> > >  > +       if (ret) {
-> > > 
-> > >  > +               memset((void *)pidns_info, 0, (size_t) size);
-> > > 
-> > >  > +               return ret;
-> > > 
-> > >  > +       }
-> > > 
-> > >  > +       inode = d_backing_inode(kp.dentry);
-> > > 
-> > >  > +       pidns_info->dev = inode->i_sb->s_dev;
-> > > 
-> > >  > +       return 0;
-> > > 
-> > >  > +clear:
-> > > 
-> > >  > +       memset((void *)pidns_info, 0, (size_t) size);
-> > > 
-> > >  > +       return -EINVAL;
-> > > 
-> > >  > +}
-> > > 
-> > >  > +
-> > > 
-> > >  > +const struct bpf_func_proto bpf_get_current_pidns_info_proto = {
-> > > 
-> > >  > +       .func           = bpf_get_current_pidns_info,
-> > > 
-> > >  > +       .gpl_only       = false,
-> > > 
-> > >  > +       .ret_type       = RET_INTEGER,
-> > > 
-> > >  > +       .arg1_type      = ARG_PTR_TO_UNINIT_MEM,
-> > > 
-> > >  > +       .arg2_type      = ARG_CONST_SIZE,
-> > > 
-> > >  > +};
-> > > 
-> > >  > +
-> > > 
-> > >  >  #ifdef CONFIG_CGROUPS
-> > > 
-> > >  >  BPF_CALL_0(bpf_get_current_cgroup_id)
-> > > 
-> > >  >  {
-> > > 
-> > >  > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > > 
-> > >  > index ca1255d14576..5e1dc22765a5 100644
-> > > 
-> > >  > --- a/kernel/trace/bpf_trace.c
-> > > 
-> > >  > +++ b/kernel/trace/bpf_trace.c
-> > > 
-> > >  > @@ -709,6 +709,8 @@ tracing_func_proto(enum bpf_func_id func_id, 
-> > > const struct bpf_prog *prog)
-> > > 
-> > >  >  #endif
-> > > 
-> > >  >         case BPF_FUNC_send_signal:
-> > > 
-> > >  >                 return &bpf_send_signal_proto;
-> > > 
-> > >  > +       case BPF_FUNC_get_current_pidns_info:
-> > > 
-> > >  > +               return &bpf_get_current_pidns_info_proto;
-> > > 
-> > >  >         default:
-> > > 
-> > >  >                 return NULL;
-> > > 
-> > >  >         }
-> > > 
-> > >  > diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> > > 
-> > >  > index 1d9be26b4edd..238453ff27d2 100644
-> > > 
-> > >  > --- a/samples/bpf/Makefile
-> > > 
-> > >  > +++ b/samples/bpf/Makefile
-> > > 
-> > >  > @@ -53,6 +53,7 @@ hostprogs-y += task_fd_query
-> > > 
-> > >  >  hostprogs-y += xdp_sample_pkts
-> > > 
-> > >  >  hostprogs-y += ibumad
-> > > 
-> > >  >  hostprogs-y += hbm
-> > > 
-> > >  > +hostprogs-y += trace_ns_info
-> > > 
-> > >  >
-> > > 
-> > >  >  # Libbpf dependencies
-> > > 
-> > >  >  LIBBPF = $(TOOLS_PATH)/lib/bpf/libbpf.a
-> > > 
-> > >  > @@ -109,6 +110,7 @@ task_fd_query-objs := bpf_load.o 
-> > > task_fd_query_user.o $(TRACE_HELPERS)
-> > > 
-> > >  >  xdp_sample_pkts-objs := xdp_sample_pkts_user.o $(TRACE_HELPERS)
-> > > 
-> > >  >  ibumad-objs := bpf_load.o ibumad_user.o $(TRACE_HELPERS)
-> > > 
-> > >  >  hbm-objs := bpf_load.o hbm.o $(CGROUP_HELPERS)
-> > > 
-> > >  > +trace_ns_info-objs := bpf_load.o trace_ns_info_user.o
-> > > 
-> > >  >
-> > > 
-> > >  >  # Tell kbuild to always build the programs
-> > > 
-> > >  >  always := $(hostprogs-y)
-> > > 
-> > >  > @@ -170,6 +172,7 @@ always += xdp_sample_pkts_kern.o
-> > > 
-> > >  >  always += ibumad_kern.o
-> > > 
-> > >  >  always += hbm_out_kern.o
-> > > 
-> > >  >  always += hbm_edt_kern.o
-> > > 
-> > >  > +always += trace_ns_info_user_kern.o
-> > > 
-> > >  >
-> > > 
-> > >  >  KBUILD_HOSTCFLAGS += -I$(objtree)/usr/include
-> > > 
-> > >  >  KBUILD_HOSTCFLAGS += -I$(srctree)/tools/lib/bpf/
-> > > 
-> > >  > diff --git a/samples/bpf/trace_ns_info_user.c 
-> > > b/samples/bpf/trace_ns_info_user.c
-> > > 
-> > >  > new file mode 100644
-> > > 
-> > >  > index 000000000000..e06d08db6f30
-> > > 
-> > >  > --- /dev/null
-> > > 
-> > >  > +++ b/samples/bpf/trace_ns_info_user.c
-> > > 
-> > >  > @@ -0,0 +1,35 @@
-> > > 
-> > >  > +// SPDX-License-Identifier: GPL-2.0
-> > > 
-> > >  > +/* Copyright (c) 2018 Carlos Neira cneirabustos@gmail.com
-> > > 
-> > >  > + *
-> > > 
-> > >  > + * This program is free software; you can redistribute it and/or
-> > > 
-> > >  > + * modify it under the terms of version 2 of the GNU General Public
-> > > 
-> > >  > + * License as published by the Free Software Foundation.
-> > > 
-> > >  > + */
-> > > 
-> > >  > +
-> > > 
-> > >  > +#include <stdio.h>
-> > > 
-> > >  > +#include <linux/bpf.h>
-> > > 
-> > >  > +#include <unistd.h>
-> > > 
-> > >  > +#include "bpf/libbpf.h"
-> > > 
-> > >  > +#include "bpf_load.h"
-> > > 
-> > >  > +
-> > > 
-> > >  > +/* This code was taken verbatim from tracex1_user.c, it's used
-> > > 
-> > >  > + * to exercize bpf_get_current_pidns_info() helper call.
-> > > 
-> > >  > + */
-> > > 
-> > >  > +int main(int ac, char **argv)
-> > > 
-> > >  > +{
-> > > 
-> > >  > +       FILE *f;
-> > > 
-> > >  > +       char filename[256];
-> > > 
-> > >  > +
-> > > 
-> > >  > +       snprintf(filename, sizeof(filename), "%s_user_kern.o", argv[0]);
-> > > 
-> > >  > +       printf("loading %s\n", filename);
-> > > 
-> > >  > +
-> > > 
-> > >  > +       if (load_bpf_file(filename)) {
-> > > 
-> > >  > +               printf("%s", bpf_log_buf);
-> > > 
-> > >  > +               return 1;
-> > > 
-> > >  > +       }
-> > > 
-> > >  > +
-> > > 
-> > >  > +       f = popen("taskset 1 ping  localhost", "r");
-> > > 
-> > >  > +       (void) f;
-> > > 
-> > >  > +       read_trace_pipe();
-> > > 
-> > >  > +       return 0;
-> > > 
-> > >  > +}
-> > > 
-> > >  > diff --git a/samples/bpf/trace_ns_info_user_kern.c 
-> > > b/samples/bpf/trace_ns_info_user_kern.c
-> > > 
-> > >  > new file mode 100644
-> > > 
-> > >  > index 000000000000..96675e02b707
-> > > 
-> > >  > --- /dev/null
-> > > 
-> > >  > +++ b/samples/bpf/trace_ns_info_user_kern.c
-> > > 
-> > >  > @@ -0,0 +1,44 @@
-> > > 
-> > >  > +// SPDX-License-Identifier: GPL-2.0
-> > > 
-> > >  > +/* Copyright (c) 2018 Carlos Neira cneirabustos@gmail.com
-> > > 
-> > >  > + *
-> > > 
-> > >  > + * This program is free software; you can redistribute it and/or
-> > > 
-> > >  > + * modify it under the terms of version 2 of the GNU General Public
-> > > 
-> > >  > + * License as published by the Free Software Foundation.
-> > > 
-> > >  > + */
-> > > 
-> > >  > +#include <linux/skbuff.h>
-> > > 
-> > >  > +#include <linux/netdevice.h>
-> > > 
-> > >  > +#include <linux/version.h>
-> > > 
-> > >  > +#include <uapi/linux/bpf.h>
-> > > 
-> > >  > +#include "bpf_helpers.h"
-> > > 
-> > >  > +
-> > > 
-> > >  > +typedef __u64 u64;
-> > > 
-> > >  > +typedef __u32 u32;
-> > > 
-> > >  > +
-> > > 
-> > >  > +
-> > > 
-> > >  > +/* kprobe is NOT a stable ABI
-> > > 
-> > >  > + * kernel functions can be removed, renamed or completely change 
-> > > semantics.
-> > > 
-> > >  > + * Number of arguments and their positions can change, etc.
-> > > 
-> > >  > + * In such case this bpf+kprobe example will no longer be meaningful
-> > > 
-> > >  > + */
-> > > 
-> > >  > +
-> > > 
-> > >  > +/* This will call bpf_get_current_pidns_info() to display pid and ns 
-> > > values
-> > > 
-> > >  > + * as seen by the current namespace, on the far left you will see 
-> > > the pid as
-> > > 
-> > >  > + * seen as by the root namespace.
-> > > 
-> > >  > + */
-> > > 
-> > >  > +
-> > > 
-> > >  > +SEC("kprobe/__netif_receive_skb_core")
-> > > 
-> > >  > +int bpf_prog1(struct pt_regs *ctx)
-> > > 
-> > >  > +{
-> > > 
-> > >  > +       char fmt[] = "nsid:%u, dev: %u,  pid:%u\n";
-> > > 
-> > >  > +       struct bpf_pidns_info nsinfo;
-> > > 
-> > >  > +       int ok = 0;
-> > > 
-> > >  > +
-> > > 
-> > >  > +       ok = bpf_get_current_pidns_info(&nsinfo, sizeof(nsinfo));
-> > > 
-> > >  > +       if (ok == 0)
-> > > 
-> > >  > +               bpf_trace_printk(fmt, sizeof(fmt), (u32)nsinfo.nsid,
-> > > 
-> > >  > +                                (u32) nsinfo.dev, (u32)nsinfo.pid);
-> > > 
-> > >  > +
-> > > 
-> > >  > +       return 0;
-> > > 
-> > >  > +}
-> > > 
-> > >  > +char _license[] SEC("license") = "GPL";
-> > > 
-> > >  > +u32 _version SEC("version") = LINUX_VERSION_CODE;
-> > > 
-> > >  > diff --git a/tools/include/uapi/linux/bpf.h 
-> > > b/tools/include/uapi/linux/bpf.h
-> > > 
-> > >  > index 4393bd4b2419..b0d4869fb860 100644
-> > > 
-> > >  > --- a/tools/include/uapi/linux/bpf.h
-> > > 
-> > >  > +++ b/tools/include/uapi/linux/bpf.h
-> > > 
-> > >  > @@ -2741,6 +2741,24 @@ union bpf_attr {
-> > > 
-> > >  >   *             **-EOPNOTSUPP** kernel configuration does not enable 
-> > > SYN cookies
-> > > 
-> > >  >   *
-> > > 
-> > >  >   *             **-EPROTONOSUPPORT** IP packet version is not 4 or 6
-> > > 
-> > >  > + *
-> > > 
-> > >  > + * int bpf_get_current_pidns_info(struct bpf_pidns_info *pidns, u32 
-> > > size_of_pidns)
-> > > 
-> > >  > + *     Description
-> > > 
-> > >  > + *             Copies into *pidns* pid, namespace id and tgid as 
-> > > seen by the
-> > > 
-> > >  > + *             current namespace and also device from /proc/self/ns/pid.
-> > > 
-> > >  > + *             *size_of_pidns* must be the size of *pidns*
-> > > 
-> > >  > + *
-> > > 
-> > >  > + *             This helper is used when pid filtering is needed inside a
-> > > 
-> > >  > + *             container as bpf_get_current_tgid() helper returns 
-> > > always the
-> > > 
-> > >  > + *             pid id as seen by the root namespace.
-> > > 
-> > >  > + *     Return
-> > > 
-> > >  > + *             0 on success
-> > > 
-> > >  > + *
-> > > 
-> > >  > + *             **-EINVAL** if *size_of_pidns* is not valid or unable 
-> > > to get ns, pid
-> > > 
-> > >  > + *             or tgid of the current task.
-> > > 
-> > >  > + *
-> > > 
-> > >  > + *             **-ENOMEM**  if allocation fails.
-> > > 
-> > >  > + *
-> > > 
-> > >  >   */
-> > > 
-> > >  >  #define __BPF_FUNC_MAPPER(FN)          \
-> > > 
-> > >  >         FN(unspec),                     \
-> > > 
-> > >  > @@ -2853,7 +2871,8 @@ union bpf_attr {
-> > > 
-> > >  >         FN(sk_storage_get),             \
-> > > 
-> > >  >         FN(sk_storage_delete),          \
-> > > 
-> > >  >         FN(send_signal),                \
-> > > 
-> > >  > -       FN(tcp_gen_syncookie),
-> > > 
-> > >  > +       FN(tcp_gen_syncookie),          \
-> > > 
-> > >  > +       FN(get_current_pidns_info),
-> > > 
-> > >  >
-> > > 
-> > >  >  /* integer value in 'imm' field of BPF_CALL instruction selects 
-> > > which helper
-> > > 
-> > >  >   * function eBPF program intends to call
-> > > 
-> > >  > @@ -3604,4 +3623,10 @@ struct bpf_sockopt {
-> > > 
-> > >  >         __s32   retval;
-> > > 
-> > >  >  };
-> > > 
-> > >  >
-> > > 
-> > >  > +struct bpf_pidns_info {
-> > > 
-> > >  > +       __u32 dev;
-> > > 
-> > >  > +       __u32 nsid;
-> > > 
-> > >  > +       __u32 tgid;
-> > > 
-> > >  > +       __u32 pid;
-> > > 
-> > >  > +};
-> > > 
-> > >  >  #endif /* _UAPI__LINUX_BPF_H__ */
-> > > 
-> > >  > diff --git a/tools/testing/selftests/bpf/Makefile 
-> > > b/tools/testing/selftests/bpf/Makefile
-> > > 
-> > >  > index 3bd0f4a0336a..1f97b571b581 100644
-> > > 
-> > >  > --- a/tools/testing/selftests/bpf/Makefile
-> > > 
-> > >  > +++ b/tools/testing/selftests/bpf/Makefile
-> > > 
-> > >  > @@ -29,7 +29,7 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps 
-> > > test_lru_map test_lpm_map test
-> > > 
-> > >  >         test_cgroup_storage test_select_reuseport test_section_names \
-> > > 
-> > >  >         test_netcnt test_tcpnotify_user test_sock_fields test_sysctl 
-> > > test_hashmap \
-> > > 
-> > >  >         test_btf_dump test_cgroup_attach xdping test_sockopt 
-> > > test_sockopt_sk \
-> > > 
-> > >  > -       test_sockopt_multi test_tcp_rtt
-> > > 
-> > >  > +       test_sockopt_multi test_tcp_rtt test_pidns
-> > > 
-> > >  >
-> > > 
-> > >  >  BPF_OBJ_FILES = $(patsubst %.c,%.o, $(notdir $(wildcard progs/*.c)))
-> > > 
-> > >  >  TEST_GEN_FILES = $(BPF_OBJ_FILES)
-> > > 
-> > >  > diff --git a/tools/testing/selftests/bpf/bpf_helpers.h 
-> > > b/tools/testing/selftests/bpf/bpf_helpers.h
-> > > 
-> > >  > index 120aa86c58d3..c96795a9d983 100644
-> > > 
-> > >  > --- a/tools/testing/selftests/bpf/bpf_helpers.h
-> > > 
-> > >  > +++ b/tools/testing/selftests/bpf/bpf_helpers.h
-> > > 
-> > >  > @@ -231,6 +231,9 @@ static int (*bpf_send_signal)(unsigned sig) = 
-> > > (void *)BPF_FUNC_send_signal;
-> > > 
-> > >  >  static long long (*bpf_tcp_gen_syncookie)(struct bpf_sock *sk, void *ip,
-> > > 
-> > >  >                                           int ip_len, void *tcp, int 
-> > > tcp_len) =
-> > > 
-> > >  >         (void *) BPF_FUNC_tcp_gen_syncookie;
-> > > 
-> > >  > +static int (*bpf_get_current_pidns_info)(struct bpf_pidns_info *buf,
-> > > 
-> > >  > +                                        unsigned int buf_size) =
-> > > 
-> > >  > +       (void *) BPF_FUNC_get_current_pidns_info;
-> > > 
-> > >  >
-> > > 
-> > >  >  /* llvm builtin functions that eBPF C program may use to
-> > > 
-> > >  >   * emit BPF_LD_ABS and BPF_LD_IND instructions
-> > > 
-> > >  > diff --git a/tools/testing/selftests/bpf/progs/test_pidns_kern.c 
-> > > b/tools/testing/selftests/bpf/progs/test_pidns_kern.c
-> > > 
-> > >  > new file mode 100644
-> > > 
-> > >  > index 000000000000..e1d2facfa762
-> > > 
-> > >  > --- /dev/null
-> > > 
-> > >  > +++ b/tools/testing/selftests/bpf/progs/test_pidns_kern.c
-> > > 
-> > >  > @@ -0,0 +1,51 @@
-> > > 
-> > >  > +// SPDX-License-Identifier: GPL-2.0
-> > > 
-> > >  > +/* Copyright (c) 2018 Carlos Neira cneirabustos@gmail.com
-> > > 
-> > >  > + *
-> > > 
-> > >  > + * This program is free software; you can redistribute it and/or
-> > > 
-> > >  > + * modify it under the terms of version 2 of the GNU General Public
-> > > 
-> > >  > + * License as published by the Free Software Foundation.
-> > > 
-> > >  > + */
-> > > 
-> > >  > +
-> > > 
-> > >  > +#include <linux/bpf.h>
-> > > 
-> > >  > +#include <errno.h>
-> > > 
-> > >  > +#include "bpf_helpers.h"
-> > > 
-> > >  > +
-> > > 
-> > >  > +struct bpf_map_def SEC("maps") nsidmap = {
-> > > 
-> > >  > +       .type = BPF_MAP_TYPE_ARRAY,
-> > > 
-> > >  > +       .key_size = sizeof(__u32),
-> > > 
-> > >  > +       .value_size = sizeof(__u32),
-> > > 
-> > >  > +       .max_entries = 1,
-> > > 
-> > >  > +};
-> > > 
-> > >  > +
-> > > 
-> > >  > +struct bpf_map_def SEC("maps") pidmap = {
-> > > 
-> > >  > +       .type = BPF_MAP_TYPE_ARRAY,
-> > > 
-> > >  > +       .key_size = sizeof(__u32),
-> > > 
-> > >  > +       .value_size = sizeof(__u32),
-> > > 
-> > >  > +       .max_entries = 1,
-> > > 
-> > >  > +};
-> > > 
-> > >  > +
-> > > 
-> > >  > +SEC("tracepoint/syscalls/sys_enter_nanosleep")
-> > > 
-> > >  > +int trace(void *ctx)
-> > > 
-> > >  > +{
-> > > 
-> > >  > +       struct bpf_pidns_info nsinfo;
-> > > 
-> > >  > +       __u32 key = 0, *expected_pid, *val;
-> > > 
-> > >  > +       char fmt[] = "ERROR nspid:%d\n";
-> > > 
-> > >  > +
-> > > 
-> > >  > +       if (bpf_get_current_pidns_info(&nsinfo, sizeof(nsinfo)))
-> > > 
-> > >  > +               return -EINVAL;
-> > > 
-> > >  > +
-> > > 
-> > >  > +       expected_pid = bpf_map_lookup_elem(&pidmap, &key);
-> > > 
-> > >  > +
-> > > 
-> > >  > +
-> > > 
-> > >  > +       if (!expected_pid || *expected_pid != nsinfo.pid)
-> > > 
-> > >  > +               return 0;
-> > > 
-> > >  > +
-> > > 
-> > >  > +       val = bpf_map_lookup_elem(&nsidmap, &key);
-> > > 
-> > >  > +       if (val)
-> > > 
-> > >  > +               *val = nsinfo.nsid;
-> > > 
-> > >  > +
-> > > 
-> > >  > +       return 0;
-> > > 
-> > >  > +}
-> > > 
-> > >  > +
-> > > 
-> > >  > +char _license[] SEC("license") = "GPL";
-> > > 
-> > >  > +__u32 _version SEC("version") = 1;
-> > > 
-> > >  > diff --git a/tools/testing/selftests/bpf/test_pidns.c 
-> > > b/tools/testing/selftests/bpf/test_pidns.c
-> > > 
-> > >  > new file mode 100644
-> > > 
-> > >  > index 000000000000..a7254055f294
-> > > 
-> > >  > --- /dev/null
-> > > 
-> > >  > +++ b/tools/testing/selftests/bpf/test_pidns.c
-> > > 
-> > >  > @@ -0,0 +1,138 @@
-> > > 
-> > >  > +// SPDX-License-Identifier: GPL-2.0
-> > > 
-> > >  > +/* Copyright (c) 2018 Carlos Neira cneirabustos@gmail.com
-> > > 
-> > >  > + *
-> > > 
-> > >  > + * This program is free software; you can redistribute it and/or
-> > > 
-> > >  > + * modify it under the terms of version 2 of the GNU General Public
-> > > 
-> > >  > + * License as published by the Free Software Foundation.
-> > > 
-> > >  > + */
-> > > 
-> > >  > +
-> > > 
-> > >  > +#include <stdio.h>
-> > > 
-> > >  > +#include <stdlib.h>
-> > > 
-> > >  > +#include <string.h>
-> > > 
-> > >  > +#include <errno.h>
-> > > 
-> > >  > +#include <fcntl.h>
-> > > 
-> > >  > +#include <syscall.h>
-> > > 
-> > >  > +#include <unistd.h>
-> > > 
-> > >  > +#include <linux/perf_event.h>
-> > > 
-> > >  > +#include <sys/ioctl.h>
-> > > 
-> > >  > +#include <sys/time.h>
-> > > 
-> > >  > +#include <sys/types.h>
-> > > 
-> > >  > +#include <sys/stat.h>
-> > > 
-> > >  > +
-> > > 
-> > >  > +#include <linux/bpf.h>
-> > > 
-> > >  > +#include <bpf/bpf.h>
-> > > 
-> > >  > +#include <bpf/libbpf.h>
-> > > 
-> > >  > +
-> > > 
-> > >  > +#include "cgroup_helpers.h"
-> > > 
-> > >  > +#include "bpf_rlimit.h"
-> > > 
-> > >  > +
-> > > 
-> > >  > +#define CHECK(condition, tag, format...) ({            \
-> > > 
-> > >  > +       int __ret = !!(condition);                      \
-> > > 
-> > >  > +       if (__ret) {                                    \
-> > > 
-> > >  > +               printf("%s:FAIL:%s ", __func__, tag);   \
-> > > 
-> > >  > +               printf(format);                         \
-> > > 
-> > >  > +       } else {                                        \
-> > > 
-> > >  > +               printf("%s:PASS:%s\n", __func__, tag);  \
-> > > 
-> > >  > +       }                                               \
-> > > 
-> > >  > +       __ret;                                          \
-> > > 
-> > >  > +})
-> > > 
-> > >  > +
-> > > 
-> > >  > +static int bpf_find_map(const char *test, struct bpf_object *obj,
-> > > 
-> > >  > +                       const char *name)
-> > > 
-> > >  > +{
-> > > 
-> > >  > +       struct bpf_map *map;
-> > > 
-> > >  > +
-> > > 
-> > >  > +       map = bpf_object__find_map_by_name(obj, name);
-> > > 
-> > >  > +       if (!map)
-> > > 
-> > >  > +               return -1;
-> > > 
-> > >  > +       return bpf_map__fd(map);
-> > > 
-> > >  > +}
-> > > 
-> > >  > +
-> > > 
-> > >  > +
-> > > 
-> > >  > +int main(int argc, char **argv)
-> > > 
-> > >  > +{
-> > > 
-> > >  > +       const char *probe_name = "syscalls/sys_enter_nanosleep";
-> > > 
-> > >  > +       const char *file = "test_pidns_kern.o";
-> > > 
-> > >  > +       int err, bytes, efd, prog_fd, pmu_fd;
-> > > 
-> > >  > +       int pidmap_fd, nsidmap_fd;
-> > > 
-> > >  > +       struct perf_event_attr attr = {};
-> > > 
-> > >  > +       struct bpf_object *obj;
-> > > 
-> > >  > +       __u32 knsid = 0;
-> > > 
-> > >  > +       __u32 key = 0, pid;
-> > > 
-> > >  > +       int exit_code = 1;
-> > > 
-> > >  > +       struct stat st;
-> > > 
-> > >  > +       char buf[256];
-> > > 
-> > >  > +
-> > > 
-> > >  > +       err = bpf_prog_load(file, BPF_PROG_TYPE_TRACEPOINT, &obj, 
-> > > &prog_fd);
-> > > 
-> > >  > +       if (CHECK(err, "bpf_prog_load", "err %d errno %d\n", err, errno))
-> > > 
-> > >  > +               goto cleanup_cgroup_env;
-> > > 
-> > >  > +
-> > > 
-> > >  > +       nsidmap_fd = bpf_find_map(__func__, obj, "nsidmap");
-> > > 
-> > >  > +       if (CHECK(nsidmap_fd < 0, "bpf_find_map", "err %d errno %d\n",
-> > > 
-> > >  > +                 nsidmap_fd, errno))
-> > > 
-> > >  > +               goto close_prog;
-> > > 
-> > >  > +
-> > > 
-> > >  > +       pidmap_fd = bpf_find_map(__func__, obj, "pidmap");
-> > > 
-> > >  > +       if (CHECK(pidmap_fd < 0, "bpf_find_map", "err %d errno %d\n",
-> > > 
-> > >  > +                 pidmap_fd, errno))
-> > > 
-> > >  > +               goto close_prog;
-> > > 
-> > >  > +
-> > > 
-> > >  > +       pid = getpid();
-> > > 
-> > >  > +       bpf_map_update_elem(pidmap_fd, &key, &pid, 0);
-> > > 
-> > >  > +
-> > > 
-> > >  > +       snprintf(buf, sizeof(buf),
-> > > 
-> > >  > +                "/sys/kernel/debug/tracing/events/%s/id", probe_name);
-> > > 
-> > >  > +       efd = open(buf, O_RDONLY, 0);
-> > > 
-> > >  > +       if (CHECK(efd < 0, "open", "err %d errno %d\n", efd, errno))
-> > > 
-> > >  > +               goto close_prog;
-> > > 
-> > >  > +       bytes = read(efd, buf, sizeof(buf));
-> > > 
-> > >  > +       close(efd);
-> > > 
-> > >  > +       if (CHECK(bytes <= 0 || bytes >= sizeof(buf), "read",
-> > > 
-> > >  > +                 "bytes %d errno %d\n", bytes, errno))
-> > > 
-> > >  > +               goto close_prog;
-> > > 
-> > >  > +
-> > > 
-> > >  > +       attr.config = strtol(buf, NULL, 0);
-> > > 
-> > >  > +       attr.type = PERF_TYPE_TRACEPOINT;
-> > > 
-> > >  > +       attr.sample_type = PERF_SAMPLE_RAW;
-> > > 
-> > >  > +       attr.sample_period = 1;
-> > > 
-> > >  > +       attr.wakeup_events = 1;
-> > > 
-> > >  > +
-> > > 
-> > >  > +       pmu_fd = syscall(__NR_perf_event_open, &attr, getpid(), -1, 
-> > > -1, 0);
-> > > 
-> > >  > +       if (CHECK(pmu_fd < 0, "perf_event_open", "err %d errno %d\n", 
-> > > pmu_fd,
-> > > 
-> > >  > +                 errno))
-> > > 
-> > >  > +               goto close_prog;
-> > > 
-> > >  > +
-> > > 
-> > >  > +       err = ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0);
-> > > 
-> > >  > +       if (CHECK(err, "perf_event_ioc_enable", "err %d errno %d\n", err,
-> > > 
-> > >  > +                 errno))
-> > > 
-> > >  > +               goto close_pmu;
-> > > 
-> > >  > +
-> > > 
-> > >  > +       err = ioctl(pmu_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
-> > > 
-> > >  > +       if (CHECK(err, "perf_event_ioc_set_bpf", "err %d errno %d\n", 
-> > > err,
-> > > 
-> > >  > +                 errno))
-> > > 
-> > >  > +               goto close_pmu;
-> > > 
-> > >  > +
-> > > 
-> > >  > +       /* trigger some syscalls */
-> > > 
-> > >  > +       sleep(1);
-> > > 
-> > >  > +
-> > > 
-> > >  > +       err = bpf_map_lookup_elem(nsidmap_fd, &key, &knsid);
-> > > 
-> > >  > +       if (CHECK(err, "bpf_map_lookup_elem", "err %d errno %d\n", 
-> > > err, errno))
-> > > 
-> > >  > +               goto close_pmu;
-> > > 
-> > >  > +
-> > > 
-> > >  > +       if (stat("/proc/self/ns/pid", &st))
-> > > 
-> > >  > +               goto close_pmu;
-> > > 
-> > >  > +
-> > > 
-> > >  > +       if (CHECK(knsid != (__u32) st.st_ino, "compare_namespace_id",
-> > > 
-> > >  > +                 "kern knsid %u user unsid %u\n", knsid, (__u32) 
-> > > st.st_ino))
-> > > 
-> > >  > +               goto close_pmu;
-> > > 
-> > >  > +
-> > > 
-> > >  > +       exit_code = 0;
-> > > 
-> > >  > +       printf("%s:PASS\n", argv[0]);
-> > > 
-> > >  > +
-> > > 
-> > >  > +close_pmu:
-> > > 
-> > >  > +       close(pmu_fd);
-> > > 
-> > >  > +close_prog:
-> > > 
-> > >  > +       bpf_object__close(obj);
-> > > 
-> > >  > +cleanup_cgroup_env:
-> > > 
-> > >  > +       return exit_code;
-> > > 
-> > >  > +}
-> > > 
-> > >  > --
-> > > 
-> > >  > 2.11.0
-> > > 
-> > >  >
-> > > 
-> > >  >
-> > > 
-> > >  >
-> > > 
-> > >  >
-> > > 
-> > >  >
-> > > 
-> > >  >
-> > > 
-> > >  > On Thu, Aug 08, 2019 at 05:09:51AM +0000, Yonghong Song wrote:
-> > > 
-> > >  > >
-> > > 
-> > >  > >
-> > > 
-> > >  > > On 8/7/19 6:22 PM, Carlos Antonio Neira Bustos wrote:
-> > > 
-> > >  > > > The code has been modified to avoid syscalls that could sleep.
-> > > 
-> > >  > > > Please let me know if any other modification is needed.
-> > > 
-> > >  > > >
-> > > 
-> > >  > > >  From be0384c0fa209a78c1567936e8db4e35b9a7c0f8 Mon Sep 17 
-> > > 00:00:00 2001
-> > > 
-> > >  > > > From: Carlos <cneirabustos@gmail.com>
-> > > 
-> > >  > > > Date: Wed, 7 Aug 2019 20:04:30 -0400
-> > > 
-> > >  > > > Subject: [PATCH] [PATCH v5 bpf-next] BPF: New helper to obtain 
-> > > namespace data
-> > > 
-> > >  > > >   from current task
-> > > 
-> > >  > > >
-> > > 
-> > >  > > > This helper obtains the active namespace from current and returns 
-> > > pid, tgid,
-> > > 
-> > >  > > > device and namespace id as seen from that namespace, allowing to 
-> > > instrument
-> > > 
-> > >  > > > a process inside a container.
-> > > 
-> > >  > > > Device is read from /proc/self/ns/pid, as in the future it's 
-> > > possible that
-> > > 
-> > >  > > > different pid_ns files may belong to different devices, according
-> > > 
-> > >  > > > to the discussion between Eric Biederman and Yonghong in 2017 
-> > > linux plumbers
-> > > 
-> > >  > > > conference.
-> > > 
-> > >  > > > Currently bpf_get_current_pid_tgid(), is used to do pid filtering 
-> > > in bcc's
-> > > 
-> > >  > > > scripts but this helper returns the pid as seen by the root 
-> > > namespace which is
-> > > 
-> > >  > > > fine when a bcc script is not executed inside a container.
-> > > 
-> > >  > > > When the process of interest is inside a container, pid filtering 
-> > > will not work
-> > > 
-> > >  > > > if bpf_get_current_pid_tgid() is used. This helper addresses this 
-> > > limitation
-> > > 
-> > >  > > > returning the pid as it's seen by the current namespace where the 
-> > > script is
-> > > 
-> > >  > > > executing.
-> > > 
-> > >  > > >
-> > > 
-> > >  > > > This helper has the same use cases as bpf_get_current_pid_tgid() 
-> > > as it can be
-> > > 
-> > >  > > > used to do pid filtering even inside a container.
-> > > 
-> > >  > > >
-> > > 
-> > >  > > > For example a bcc script using bpf_get_current_pid_tgid() 
-> > > (tools/funccount.py):
-> > > 
-> > >  > > >
-> > > 
-> > >  > > >          u32 pid = bpf_get_current_pid_tgid() >> 32;
-> > > 
-> > >  > > >          if (pid != <pid_arg_passed_in>)
-> > > 
-> > >  > > >                  return 0;
-> > > 
-> > >  > > > Could be modified to use bpf_get_current_pidns_info() as follows:
-> > > 
-> > >  > > >
-> > > 
-> > >  > > >          struct bpf_pidns pidns;
-> > > 
-> > >  > > >          bpf_get_current_pidns_info(&pidns, sizeof(struct 
-> > > bpf_pidns));
-> > > 
-> > >  > > >          u32 pid = pidns.tgid;
-> > > 
-> > >  > > >          u32 nsid = pidns.nsid;
-> > > 
-> > >  > > >          if ((pid != <pid_arg_passed_in>) && (nsid != 
-> > > <nsid_arg_passed_in>))
-> > > 
-> > >  > > >                  return 0;
-> > > 
-> > >  > > >
-> > > 
-> > >  > > > To find out the name PID namespace id of a process, you could use 
-> > > this command:
-> > > 
-> > >  > > >
-> > > 
-> > >  > > > $ ps -h -o pidns -p <pid_of_interest>
-> > > 
-> > >  > > >
-> > > 
-> > >  > > > Or this other command:
-> > > 
-> > >  > > >
-> > > 
-> > >  > > > $ ls -Li /proc/<pid_of_interest>/ns/pid
-> > > 
-> > >  > > >
-> > > 
-> > >  > > > Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
-> > > 
-> > >  > > > ---
-> > > 
-> > >  > > >   fs/namei.c                                         |   2 +-
-> > > 
-> > >  > > >   include/linux/bpf.h                                |   1 +
-> > > 
-> > >  > > >   include/linux/namei.h                              |   4 +
-> > > 
-> > >  > > >   include/uapi/linux/bpf.h                           |  29 ++++-
-> > > 
-> > >  > > >   kernel/bpf/core.c                                  |   1 +
-> > > 
-> > >  > > >   kernel/bpf/helpers.c                               |  78 
-> > > ++++++++++++
-> > > 
-> > >  > > >   kernel/trace/bpf_trace.c                           |   2 +
-> > > 
-> > >  > > >   samples/bpf/Makefile                               |   3 +
-> > > 
-> > >  > > >   samples/bpf/trace_ns_info_user.c                   |  35 ++++++
-> > > 
-> > >  > > >   samples/bpf/trace_ns_info_user_kern.c              |  44 +++++++
-> > > 
-> > >  > > >   tools/include/uapi/linux/bpf.h                     |  29 ++++-
-> > > 
-> > >  > > >   tools/testing/selftests/bpf/Makefile               |   2 +-
-> > > 
-> > >  > > >   tools/testing/selftests/bpf/bpf_helpers.h          |   3 +
-> > > 
-> > >  > > >   .../testing/selftests/bpf/progs/test_pidns_kern.c  |  51 ++++++++
-> > > 
-> > >  > > >   tools/testing/selftests/bpf/test_pidns.c           | 138 
-> > > +++++++++++++++++++++
-> > > 
-> > >  > > >   15 files changed, 418 insertions(+), 4 deletions(-)
-> > > 
-> > >  > > >   create mode 100644 samples/bpf/trace_ns_info_user.c
-> > > 
-> > >  > > >   create mode 100644 samples/bpf/trace_ns_info_user_kern.c
-> > > 
-> > >  > > >   create mode 100644 
-> > > tools/testing/selftests/bpf/progs/test_pidns_kern.c
-> > > 
-> > >  > > >   create mode 100644 tools/testing/selftests/bpf/test_pidns.c
-> > > 
-> > >  > > >
-> > > 
-> > >  > > > diff --git a/fs/namei.c b/fs/namei.c
-> > > 
-> > >  > > > index 209c51a5226c..d1eca36972d2 100644
-> > > 
-> > >  > > > --- a/fs/namei.c
-> > > 
-> > >  > > > +++ b/fs/namei.c
-> > > 
-> > >  > > > @@ -19,7 +19,6 @@
-> > > 
-> > >  > > >   #include <linux/export.h>
-> > > 
-> > >  > > >   #include <linux/kernel.h>
-> > > 
-> > >  > > >   #include <linux/slab.h>
-> > > 
-> > >  > > > -#include <linux/fs.h>
-> > > 
-> > >  > > >   #include <linux/namei.h>
-> > > 
-> > >  > > >   #include <linux/pagemap.h>
-> > > 
-> > >  > > >   #include <linux/fsnotify.h>
-> > > 
-> > >  > > > @@ -2355,6 +2354,7 @@ int filename_lookup(int dfd, struct 
-> > > filename *name, unsigned flags,
-> > > 
-> > >  > > >     putname(name);
-> > > 
-> > >  > > >     return retval;
-> > > 
-> > >  > > >   }
-> > > 
-> > >  > > > +EXPORT_SYMBOL(filename_lookup);
-> > > 
-> > >  > >
-> > > 
-> > >  > > No need to export symbols. bpf uses it and bpf is in the core, not in
-> > > 
-> > >  > > modules.
-> > > 
-> > >  > >
-> > > 
-> > >  > > >
-> > > 
-> > >  > > >   /* Returns 0 and nd will be valid on success; Retuns error, 
-> > > otherwise. */
-> > > 
-> > >  > > >   static int path_parentat(struct nameidata *nd, unsigned flags,
-> > > 
-> > >  > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > 
-> > >  > > > index f9a506147c8a..e4adf5e05afd 100644
-> > > 
-> > >  > > > --- a/include/linux/bpf.h
-> > > 
-> > >  > > > +++ b/include/linux/bpf.h
-> > > 
-> > >  > > > @@ -1050,6 +1050,7 @@ extern const struct bpf_func_proto 
-> > > bpf_get_local_storage_proto;
-> > > 
-> > >  > > >   extern const struct bpf_func_proto bpf_strtol_proto;
-> > > 
-> > >  > > >   extern const struct bpf_func_proto bpf_strtoul_proto;
-> > > 
-> > >  > > >   extern const struct bpf_func_proto bpf_tcp_sock_proto;
-> > > 
-> > >  > > > +extern const struct bpf_func_proto bpf_get_current_pidns_info_proto;
-> > > 
-> > >  > > >
-> > > 
-> > >  > > >   /* Shared helpers among cBPF and eBPF. */
-> > > 
-> > >  > > >   void bpf_user_rnd_init_once(void);
-> > > 
-> > >  > > > diff --git a/include/linux/namei.h b/include/linux/namei.h
-> > > 
-> > >  > > > index 9138b4471dbf..2c24e8c71d46 100644
-> > > 
-> > >  > > > --- a/include/linux/namei.h
-> > > 
-> > >  > > > +++ b/include/linux/namei.h
-> > > 
-> > >  > > > @@ -6,6 +6,7 @@
-> > > 
-> > >  > > >   #include <linux/path.h>
-> > > 
-> > >  > > >   #include <linux/fcntl.h>
-> > > 
-> > >  > > >   #include <linux/errno.h>
-> > > 
-> > >  > > > +#include <linux/fs.h>
-> > > 
-> > >  > > >
-> > > 
-> > >  > > >   enum { MAX_NESTED_LINKS = 8 };
-> > > 
-> > >  > > >
-> > > 
-> > >  > > > @@ -97,6 +98,9 @@ extern void unlock_rename(struct dentry *, 
-> > > struct dentry *);
-> > > 
-> > >  > > >
-> > > 
-> > >  > > >   extern void nd_jump_link(struct path *path);
-> > > 
-> > >  > > >
-> > > 
-> > >  > > > +extern int filename_lookup(int dfd, struct filename *name, 
-> > > unsigned int flags,
-> > > 
-> > >  > > > +               struct path *path, struct path *root);
-> > > 
-> > >  > >
-> > > 
-> > >  > > The previous definition in fs/internal.h should be removed.
-> > > 
-> > >  > >
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > >   static inline void nd_terminate_link(void *name, size_t len, 
-> > > size_t maxlen)
-> > > 
-> > >  > > >   {
-> > > 
-> > >  > > >     ((char *) name)[min(len, maxlen)] = '\0';
-> > > 
-> > >  > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > 
-> > >  > > > index 4393bd4b2419..6f601f7106e2 100644
-> > > 
-> > >  > > > --- a/include/uapi/linux/bpf.h
-> > > 
-> > >  > > > +++ b/include/uapi/linux/bpf.h
-> > > 
-> > >  > > > @@ -2741,6 +2741,26 @@ union bpf_attr {
-> > > 
-> > >  > > >    *                **-EOPNOTSUPP** kernel configuration does not 
-> > > enable SYN cookies
-> > > 
-> > >  > > >    *
-> > > 
-> > >  > > >    *                **-EPROTONOSUPPORT** IP packet version is not 
-> > > 4 or 6
-> > > 
-> > >  > > > + *
-> > > 
-> > >  > > > + * int bpf_get_current_pidns_info(struct bpf_pidns_info *pidns, 
-> > > u32 size_of_pidns)
-> > > 
-> > >  > > > + * Description
-> > > 
-> > >  > > > + *         Copies into *pidns* pid, namespace id and tgid as 
-> > > seen by the
-> > > 
-> > >  > > > + *         current namespace and also device from /proc/self/ns/pid.
-> > > 
-> > >  > > > + *         *size_of_pidns* must be the size of *pidns*
-> > > 
-> > >  > > > + *
-> > > 
-> > >  > > > + *         This helper is used when pid filtering is needed inside a
-> > > 
-> > >  > > > + *         container as bpf_get_current_tgid() helper returns 
-> > > always the
-> > > 
-> > >  > > > + *         pid id as seen by the root namespace.
-> > > 
-> > >  > > > + * Return
-> > > 
-> > >  > > > + *         0 on success
-> > > 
-> > >  > > > + *
-> > > 
-> > >  > > > + *         **-EINVAL**  if unable to get ns, pid or tgid of 
-> > > current task.
-> > > 
-> > >  > > > + *         Or if size_of_pidns is not valid.
-> > > 
-> > >  > >
-> > > 
-> > >  > > Maybe reword by following the code sequence.
-> > > 
-> > >  > >     if *size_of_pidns* is not valid or unable to get ns, pid or tgid of
-> > > 
-> > >  > >     the current task.
-> > > 
-> > >  > >
-> > > 
-> > >  > > > + *
-> > > 
-> > >  > > > + *         **-ENOMEM**  if allocation fails.
-> > > 
-> > >  > >
-> > > 
-> > >  > > Maybe some other error codes in filename_lookup() function?
-> > > 
-> > >  > >
-> > > 
-> > >  > > > + *
-> > > 
-> > >  > > > + *         If unable to get the inode from /proc/self/ns/pid an 
-> > > error code
-> > > 
-> > >  > > > + *         will be returned.
-> > > 
-> > >  > >
-> > > 
-> > >  > > You do not need this. The description of error code cases should 
-> > > cover this.
-> > > 
-> > >  > >
-> > > 
-> > >  > > >    */
-> > > 
-> > >  > > >   #define __BPF_FUNC_MAPPER(FN)             \
-> > > 
-> > >  > > >     FN(unspec),                     \
-> > > 
-> > >  > > > @@ -2853,7 +2873,8 @@ union bpf_attr {
-> > > 
-> > >  > > >     FN(sk_storage_get),             \
-> > > 
-> > >  > > >     FN(sk_storage_delete),          \
-> > > 
-> > >  > > >     FN(send_signal),                \
-> > > 
-> > >  > > > -   FN(tcp_gen_syncookie),
-> > > 
-> > >  > > > +   FN(tcp_gen_syncookie),          \
-> > > 
-> > >  > > > +   FN(get_current_pidns_info),
-> > > 
-> > >  > > >
-> > > 
-> > >  > > >   /* integer value in 'imm' field of BPF_CALL instruction selects 
-> > > which helper
-> > > 
-> > >  > > >    * function eBPF program intends to call
-> > > 
-> > >  > > > @@ -3604,4 +3625,10 @@ struct bpf_sockopt {
-> > > 
-> > >  > > >     __s32   retval;
-> > > 
-> > >  > > >   };
-> > > 
-> > >  > > >
-> > > 
-> > >  > > > +struct bpf_pidns_info {
-> > > 
-> > >  > > > +   __u32 dev;
-> > > 
-> > >  > > > +   __u32 nsid;
-> > > 
-> > >  > > > +   __u32 tgid;
-> > > 
-> > >  > > > +   __u32 pid;
-> > > 
-> > >  > > > +};
-> > > 
-> > >  > > >   #endif /* _UAPI__LINUX_BPF_H__ */
-> > > 
-> > >  > > > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > > 
-> > >  > > > index 8191a7db2777..3159f2a0188c 100644
-> > > 
-> > >  > > > --- a/kernel/bpf/core.c
-> > > 
-> > >  > > > +++ b/kernel/bpf/core.c
-> > > 
-> > >  > > > @@ -2038,6 +2038,7 @@ const struct bpf_func_proto 
-> > > bpf_get_current_uid_gid_proto __weak;
-> > > 
-> > >  > > >   const struct bpf_func_proto bpf_get_current_comm_proto __weak;
-> > > 
-> > >  > > >   const struct bpf_func_proto bpf_get_current_cgroup_id_proto __weak;
-> > > 
-> > >  > > >   const struct bpf_func_proto bpf_get_local_storage_proto __weak;
-> > > 
-> > >  > > > +const struct bpf_func_proto bpf_get_current_pidns_info __weak;
-> > > 
-> > >  > > >
-> > > 
-> > >  > > >   const struct bpf_func_proto * __weak 
-> > > bpf_get_trace_printk_proto(void)
-> > > 
-> > >  > > >   {
-> > > 
-> > >  > > > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > > 
-> > >  > > > index 5e28718928ca..571f24077db2 100644
-> > > 
-> > >  > > > --- a/kernel/bpf/helpers.c
-> > > 
-> > >  > > > +++ b/kernel/bpf/helpers.c
-> > > 
-> > >  > > > @@ -11,6 +11,12 @@
-> > > 
-> > >  > > >   #include <linux/uidgid.h>
-> > > 
-> > >  > > >   #include <linux/filter.h>
-> > > 
-> > >  > > >   #include <linux/ctype.h>
-> > > 
-> > >  > > > +#include <linux/pid_namespace.h>
-> > > 
-> > >  > > > +#include <linux/major.h>
-> > > 
-> > >  > > > +#include <linux/stat.h>
-> > > 
-> > >  > > > +#include <linux/namei.h>
-> > > 
-> > >  > > > +#include <linux/version.h>
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > >
-> > > 
-> > >  > > >   #include "../../lib/kstrtox.h"
-> > > 
-> > >  > > >
-> > > 
-> > >  > > > @@ -312,6 +318,78 @@ void copy_map_value_locked(struct bpf_map 
-> > > *map, void *dst, void *src,
-> > > 
-> > >  > > >     preempt_enable();
-> > > 
-> > >  > > >   }
-> > > 
-> > >  > > >
-> > > 
-> > >  > > > +BPF_CALL_2(bpf_get_current_pidns_info, struct bpf_pidns_info *, 
-> > > pidns_info, u32,
-> > > 
-> > >  > > > +    size)
-> > > 
-> > >  > > > +{
-> > > 
-> > >  > > > +   const char *name = "/proc/self/ns/pid";
-> > > 
-> > >  > >
-> > > 
-> > >  > > maybe rename this variable to pidns_path?
-> > > 
-> > >  > >
-> > > 
-> > >  > > > +   struct pid_namespace *pidns = NULL;
-> > > 
-> > >  > > > +   struct filename *tmp = NULL;
-> > > 
-> > >  > >
-> > > 
-> > >  > > Maybe rename this variable to name?
-> > > 
-> > >  > >
-> > > 
-> > >  > > > +   int len = strlen(name) + 1;
-> > > 
-> > >  > >
-> > > 
-> > >  > > We can delay this assignment later until it is needed.
-> > > 
-> > >  > >
-> > > 
-> > >  > > > +   struct inode *inode;
-> > > 
-> > >  > > > +   struct path kp;
-> > > 
-> > >  > > > +   pid_t tgid = 0;
-> > > 
-> > >  > > > +   pid_t pid = 0;
-> > > 
-> > >  > > > +   int ret;
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > > +   if (unlikely(size != sizeof(struct bpf_pidns_info)))
-> > > 
-> > >  > > > +           return -EINVAL;
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > > +   pidns = task_active_pid_ns(current);
-> > > 
-> > >  > > > +
-> > > 
-> > >  > >
-> > > 
-> > >  > > we can save an empty line here.
-> > > 
-> > >  > >
-> > > 
-> > >  > > > +   if (unlikely(!pidns))
-> > > 
-> > >  > > > +           goto clear;
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > > +   pidns_info->nsid =  pidns->ns.inum;
-> > > 
-> > >  > > > +   pid = task_pid_nr_ns(current, pidns);
-> > > 
-> > >  > > > +
-> > > 
-> > >  > >
-> > > 
-> > >  > > We can save an empty line here.
-> > > 
-> > >  > >
-> > > 
-> > >  > > > +   if (unlikely(!pid))
-> > > 
-> > >  > > > +           goto clear;
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > > +   tgid = task_tgid_nr_ns(current, pidns);
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > ditto. save an empty line.
-> > > 
-> > >  > > > +   if (unlikely(!tgid))
-> > > 
-> > >  > > > +           goto clear;
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > > +   pidns_info->tgid = (u32) tgid;
-> > > 
-> > >  > > > +   pidns_info->pid = (u32) pid;
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > > +   tmp = kmem_cache_alloc(names_cachep, GFP_ATOMIC);
-> > > 
-> > >  > > > +   if (unlikely(!tmp)) {
-> > > 
-> > >  > > > +           memset((void *)pidns_info, 0, (size_t) size);
-> > > 
-> > >  > > > +           return -ENOMEM;
-> > > 
-> > >  > > > +   }
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > > +   memcpy((char *)tmp->name, name, len);
-> > > 
-> > >  > > > +   tmp->uptr = NULL;
-> > > 
-> > >  > > > +   tmp->aname = NULL;
-> > > 
-> > >  > > > +   tmp->refcnt = 1;
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > ditto. save an empty line.
-> > > 
-> > >  > > > +   ret = filename_lookup(AT_FDCWD, tmp, 0, &kp, NULL);
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > ditto. save an empty line.
-> > > 
-> > >  > > > +   if (ret) {
-> > > 
-> > >  > > > +           memset((void *)pidns_info, 0, (size_t) size);
-> > > 
-> > >  > > > +           return ret;
-> > > 
-> > >  > > > +   }
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > > +   inode = d_backing_inode(kp.dentry);
-> > > 
-> > >  > > > +   pidns_info->dev = inode->i_sb->s_dev;
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > > +   return 0;
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > > +clear:
-> > > 
-> > >  > > > +   memset((void *)pidns_info, 0, (size_t) size);
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > save an empty line.
-> > > 
-> > >  > > > +   return -EINVAL;
-> > > 
-> > >  > > > +}
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > > +const struct bpf_func_proto bpf_get_current_pidns_info_proto = {
-> > > 
-> > >  > > > +   .func   = bpf_get_current_pidns_info,
-> > > 
-> > >  > > make the "= " aligned with others?
-> > > 
-> > >  > > > +   .gpl_only       = false,
-> > > 
-> > >  > > > +   .ret_type       = RET_INTEGER,
-> > > 
-> > >  > > > +   .arg1_type      = ARG_PTR_TO_UNINIT_MEM,
-> > > 
-> > >  > > > +   .arg2_type      = ARG_CONST_SIZE,
-> > > 
-> > >  > > > +};
-> > > 
-> > >  > > > +
-> > > 
-> > >  > > >   #ifdef CONFIG_CGROUPS
-> > > 
-> > >  > > >   BPF_CALL_0(bpf_get_current_cgroup_id)
-> > > 
-> > >  > > >   {
-> > > 
-> > >  > > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > > 
-> > >  > > > index ca1255d14576..5e1dc22765a5 100644
-> > > 
-> > >  > > > --- a/kernel/trace/bpf_trace.c
-> > > 
-> > >  > > > +++ b/kernel/trace/bpf_trace.c
-> > > 
-> > >  > > > @@ -709,6 +709,8 @@ tracing_func_proto(enum bpf_func_id func_id, 
-> > > const struct bpf_prog *prog)
-> > > 
-> > >  > > >   #endif
-> > > 
-> > >  > > >     case BPF_FUNC_send_signal:
-> > > 
-> > >  > > >             return &bpf_send_signal_proto;
-> > > 
-> > >  > > > +   case BPF_FUNC_get_current_pidns_info:
-> > > 
-> > >  > > > +           return &bpf_get_current_pidns_info_proto;
-> > > 
-> > >  > > >     default:
-> > > 
-> > >  > > >             return NULL;
-> > > 
-> > >  > > >     }
-> > > 
-> > >  > > > diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> > > 
-> > >  > > > index 1d9be26b4edd..238453ff27d2 100644
-> > > 
-> > >  > > > --- a/samples/bpf/Makefile
-> > > 
-> > >  > > > +++ b/samples/bpf/Makefile
-> > > 
-> > >  > > > @@ -53,6 +53,7 @@ hostprogs-y += task_fd_query
-> > > 
-> > >  > > >   hostprogs-y += xdp_sample_pkts
-> > > 
-> > >  > > >   hostprogs-y += ibumad
-> > > 
-> > >  > > >   hostprogs-y += hbm
-> > > 
-> > >  > > > +hostprogs-y += trace_ns_info
-> > > 
-> > >  > > [...]
-> > > 
+DQoNCk9uIDgvOS8xOSAyOjAzIFBNLCBDYXJsb3MgQW50b25pbyBOZWlyYSBCdXN0b3Mgd3JvdGU6
+DQo+IFlvbmdob25nLA0KPiANCj4gSSBoYXZlIHNwbGl0dGVkIHRoZSBwYXRjaCBpbiAyIDoNCj4g
+DQo+IC0gYnBmX2hlbHBlciBpbnRyb2R1Y3Rpb24gOg0KPiAgIA0KPiANCj4gIEZyb20gNDBlYzA3
+ODE1MjViODJkNTIzNWM0NWY1MDY2YTdhNzlkZWE3MTA2NSBNb24gU2VwIDE3IDAwOjAwOjAwIDIw
+MDENCj4gRnJvbTogQ2FybG9zIDxjbmVpcmFidXN0b3NAZ21haWwuY29tPg0KPiBEYXRlOiBGcmks
+IDkgQXVnIDIwMTkgMTI6MjA6NTIgLTA3MDANCj4gU3ViamVjdDogW1BBVENIIDEvMl0gW1BBVENI
+IHY4IGJwZi1uZXh0IDEvMl0gQlBGOiBOZXcgaGVscGVyIHRvIG9idGFpbg0KPiAgIG5hbWVzcGFj
+ZSBkYXRhICBmcm9tIGN1cnJlbnQgdGFzaw0KDQpTdWNoIGEgc3VibWlzc2lvbiBpcyBub3Qgd2hh
+dCBrZXJuZWwgZGV2ZWxvcGVyIHR5cGljYWxseSBkby4NCllvdSBjYW4gcmVhZCB0aHJvdWdoIHRo
+ZSBmb2xsb3dpbmcgZG9jcyBmb3IgbW9yZSBkZXRhaWxzLg0KaHR0cHM6Ly93d3cua2VybmVsLm9y
+Zy9kb2MvaHRtbC92NC4xNy9wcm9jZXNzL3N1Ym1pdHRpbmctcGF0Y2hlcy5odG1sDQoNClR5cGlj
+YWxseSwgSSBhbSB1c2luZw0KICAgIGdpdCBmb3JtYXQtcGF0Y2ggLS1jb3Zlci1sZXR0ZXIgLS1z
+dWJqZWN0LXByZWZpeD0iUEFUQ0ggYnBmLW5leHQgDQo8dmVyc2lvbj4iIC4uLg0KdG8gZ2VuZXJh
+dGUgdGhlIHBhdGNoIHNldCwgeW91IG5lZWQgZWRpdCBwYXRjaHNldCAwIHdpdGggcHJvcGVyIGNv
+bnRlbnRzLg0KDQpBZnRlciBwYXRjaCBzZXQgaXMgcHJvcGVybHkgcHJlcGFyZWQsIHlvdSBjYW4g
+dXNlDQogICAgZ2l0IHNlbmQtZW1haWwgLS10byA8Li4uPiAtLXRvIDwuLi4+IC0tY2MgPC4uLj4g
+LS1jYyA8Li4uPiA8QWxsIHlvdXIgDQpwYXRjaGVzPg0KdG8gc3VibWl0IHRoZSBwYXRjaC4NCg0K
+SSBzdGlsbCBwcmVmZXIgeW91IHRvIGZ1cnRoZXIgc3BsaXQgdGhlIHBhdGNoIGludG8gbW9yZSB0
+aGFuIHR3bw0Kd2l0aCBteSBvcmlnaW5hbCBzdWdnZXN0aW9ucy4gSXQgbWlnaHQgYmUgZGlmZmlj
+dWx0IHRvIGRvIGlmIHlvdSB0cnkNCnRvIGF0dGFjaCB0aGUgcGF0Y2hlcyBsaWtlIGJlbG93Lg0K
+QnV0IGl0IHNob3VsZCBiZWNvbWUgZWFzaWVyIHdoZW4geW91IHVzZSB0aGUgYWJvdmUNCiJnaXQg
+Zm9ybWF0LXBhdGNoIC4uLiIgYW5kICJnaXQgc2VuZC1lbWFpbCAuLi4iIGFwcHJvYWNoLg0KDQo+
+IA0KPiBUaGlzIGhlbHBlciBvYnRhaW5zIHRoZSBhY3RpdmUgbmFtZXNwYWNlIGZyb20gY3VycmVu
+dCBhbmQgcmV0dXJucyBwaWQsIHRnaWQsDQo+IGRldmljZSBhbmQgbmFtZXNwYWNlIGlkIGFzIHNl
+ZW4gZnJvbSB0aGF0IG5hbWVzcGFjZSwgYWxsb3dpbmcgdG8gaW5zdHJ1bWVudA0KPiBhIHByb2Nl
+c3MgaW5zaWRlIGEgY29udGFpbmVyLg0KPiBEZXZpY2UgaXMgcmVhZCBmcm9tIC9wcm9jL3NlbGYv
+bnMvcGlkLCBhcyBpbiB0aGUgZnV0dXJlIGl0J3MgcG9zc2libGUgdGhhdA0KPiBkaWZmZXJlbnQg
+cGlkX25zIGZpbGVzIG1heSBiZWxvbmcgdG8gZGlmZmVyZW50IGRldmljZXMsIGFjY29yZGluZw0K
+PiB0byB0aGUgZGlzY3Vzc2lvbiBiZXR3ZWVuIEVyaWMgQmllZGVybWFuIGFuZCBZb25naG9uZyBp
+biAyMDE3IGxpbnV4IHBsdW1iZXJzDQo+IGNvbmZlcmVuY2UuDQo+IEN1cnJlbnRseSBicGZfZ2V0
+X2N1cnJlbnRfcGlkX3RnaWQoKSwgaXMgdXNlZCB0byBkbyBwaWQgZmlsdGVyaW5nIGluIGJjYydz
+DQo+IHNjcmlwdHMgYnV0IHRoaXMgaGVscGVyIHJldHVybnMgdGhlIHBpZCBhcyBzZWVuIGJ5IHRo
+ZSByb290IG5hbWVzcGFjZSB3aGljaCBpcw0KPiBmaW5lIHdoZW4gYSBiY2Mgc2NyaXB0IGlzIG5v
+dCBleGVjdXRlZCBpbnNpZGUgYSBjb250YWluZXIuDQo+IFdoZW4gdGhlIHByb2Nlc3Mgb2YgaW50
+ZXJlc3QgaXMgaW5zaWRlIGEgY29udGFpbmVyLCBwaWQgZmlsdGVyaW5nIHdpbGwgbm90IHdvcmsN
+Cj4gaWYgYnBmX2dldF9jdXJyZW50X3BpZF90Z2lkKCkgaXMgdXNlZC4gVGhpcyBoZWxwZXIgYWRk
+cmVzc2VzIHRoaXMgbGltaXRhdGlvbg0KPiByZXR1cm5pbmcgdGhlIHBpZCBhcyBpdCdzIHNlZW4g
+YnkgdGhlIGN1cnJlbnQgbmFtZXNwYWNlIHdoZXJlIHRoZSBzY3JpcHQgaXMNCj4gZXhlY3V0aW5n
+Lg0KPiANCj4gVGhpcyBoZWxwZXIgaGFzIHRoZSBzYW1lIHVzZSBjYXNlcyBhcyBicGZfZ2V0X2N1
+cnJlbnRfcGlkX3RnaWQoKSBhcyBpdCBjYW4gYmUNCj4gdXNlZCB0byBkbyBwaWQgZmlsdGVyaW5n
+IGV2ZW4gaW5zaWRlIGEgY29udGFpbmVyLg0KPiANCj4gRm9yIGV4YW1wbGUgYSBiY2Mgc2NyaXB0
+IHVzaW5nIGJwZl9nZXRfY3VycmVudF9waWRfdGdpZCgpICh0b29scy9mdW5jY291bnQucHkpOg0K
+PiANCj4gICAgICAgICAgdTMyIHBpZCA9IGJwZl9nZXRfY3VycmVudF9waWRfdGdpZCgpID4+IDMy
+Ow0KPiAgICAgICAgICBpZiAocGlkICE9IDxwaWRfYXJnX3Bhc3NlZF9pbj4pDQo+ICAgICAgICAg
+ICAgICAgICAgcmV0dXJuIDA7DQo+IENvdWxkIGJlIG1vZGlmaWVkIHRvIHVzZSBicGZfZ2V0X2N1
+cnJlbnRfcGlkbnNfaW5mbygpIGFzIGZvbGxvd3M6DQo+IA0KPiAgICAgICAgICBzdHJ1Y3QgYnBm
+X3BpZG5zIHBpZG5zOw0KPiAgICAgICAgICBicGZfZ2V0X2N1cnJlbnRfcGlkbnNfaW5mbygmcGlk
+bnMsIHNpemVvZihzdHJ1Y3QgYnBmX3BpZG5zKSk7DQo+ICAgICAgICAgIHUzMiBwaWQgPSBwaWRu
+cy50Z2lkOw0KPiAgICAgICAgICB1MzIgbnNpZCA9IHBpZG5zLm5zaWQ7DQo+ICAgICAgICAgIGlm
+ICgocGlkICE9IDxwaWRfYXJnX3Bhc3NlZF9pbj4pICYmIChuc2lkICE9IDxuc2lkX2FyZ19wYXNz
+ZWRfaW4+KSkNCj4gICAgICAgICAgICAgICAgICByZXR1cm4gMDsNCj4gDQo+IFRvIGZpbmQgb3V0
+IHRoZSBuYW1lIFBJRCBuYW1lc3BhY2UgaWQgb2YgYSBwcm9jZXNzLCB5b3UgY291bGQgdXNlIHRo
+aXMgY29tbWFuZDoNCj4gDQo+ICQgcHMgLWggLW8gcGlkbnMgLXAgPHBpZF9vZl9pbnRlcmVzdD4N
+Cj4gDQo+IE9yIHRoaXMgb3RoZXIgY29tbWFuZDoNCj4gDQo+ICQgbHMgLUxpIC9wcm9jLzxwaWRf
+b2ZfaW50ZXJlc3Q+L25zL3BpZA0KPiANCj4gU2lnbmVkLW9mZi1ieTogQ2FybG9zIE5laXJhIDxj
+bmVpcmFidXN0b3NAZ21haWwuY29tPg0KPiAtLS0NCj4gICBmcy9pbnRlcm5hbC5oICAgICAgICAg
+ICAgICAgICAgfCAgMiAtLQ0KPiAgIGZzL25hbWVpLmMgICAgICAgICAgICAgICAgICAgICB8ICAx
+IC0NCj4gICBpbmNsdWRlL2xpbnV4L2JwZi5oICAgICAgICAgICAgfCAgMSArDQo+ICAgaW5jbHVk
+ZS9saW51eC9uYW1laS5oICAgICAgICAgIHwgIDQgKysrDQo+ICAgaW5jbHVkZS91YXBpL2xpbnV4
+L2JwZi5oICAgICAgIHwgMzEgKysrKysrKysrKysrKysrKysrKy0NCj4gICBrZXJuZWwvYnBmL2Nv
+cmUuYyAgICAgICAgICAgICAgfCAgMSArDQo+ICAga2VybmVsL2JwZi9oZWxwZXJzLmMgICAgICAg
+ICAgIHwgNjQgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ICAg
+a2VybmVsL3RyYWNlL2JwZl90cmFjZS5jICAgICAgIHwgIDIgKysNCj4gICB0b29scy9pbmNsdWRl
+L3VhcGkvbGludXgvYnBmLmggfCAzMSArKysrKysrKysrKysrKysrKysrLQ0KPiAgIDkgZmlsZXMg
+Y2hhbmdlZCwgMTMyIGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0t
+Z2l0IGEvZnMvaW50ZXJuYWwuaCBiL2ZzL2ludGVybmFsLmgNCj4gaW5kZXggMzE1ZmNkOGQyMzdj
+Li42NjQ3ZTE1ZGQ0MTkgMTAwNjQ0DQo+IC0tLSBhL2ZzL2ludGVybmFsLmgNCj4gKysrIGIvZnMv
+aW50ZXJuYWwuaA0KPiBAQCAtNTksOCArNTksNiBAQCBleHRlcm4gaW50IGZpbmlzaF9jbGVhbl9j
+b250ZXh0KHN0cnVjdCBmc19jb250ZXh0ICpmYyk7DQo+ICAgLyoNCj4gICAgKiBuYW1laS5jDQo+
+ICAgICovDQo+IC1leHRlcm4gaW50IGZpbGVuYW1lX2xvb2t1cChpbnQgZGZkLCBzdHJ1Y3QgZmls
+ZW5hbWUgKm5hbWUsIHVuc2lnbmVkIGZsYWdzLA0KPiAtCQkJICAgc3RydWN0IHBhdGggKnBhdGgs
+IHN0cnVjdCBwYXRoICpyb290KTsNCj4gICBleHRlcm4gaW50IHVzZXJfcGF0aF9tb3VudHBvaW50
+X2F0KGludCwgY29uc3QgY2hhciBfX3VzZXIgKiwgdW5zaWduZWQgaW50LCBzdHJ1Y3QgcGF0aCAq
+KTsNCj4gICBleHRlcm4gaW50IHZmc19wYXRoX2xvb2t1cChzdHJ1Y3QgZGVudHJ5ICosIHN0cnVj
+dCB2ZnNtb3VudCAqLA0KPiAgIAkJCSAgIGNvbnN0IGNoYXIgKiwgdW5zaWduZWQgaW50LCBzdHJ1
+Y3QgcGF0aCAqKTsNCj4gZGlmZiAtLWdpdCBhL2ZzL25hbWVpLmMgYi9mcy9uYW1laS5jDQo+IGlu
+ZGV4IDIwOWM1MWE1MjI2Yy4uYTg5ZmM3MmE0YTEwIDEwMDY0NA0KPiAtLS0gYS9mcy9uYW1laS5j
+DQo+ICsrKyBiL2ZzL25hbWVpLmMNCj4gQEAgLTE5LDcgKzE5LDYgQEANCj4gICAjaW5jbHVkZSA8
+bGludXgvZXhwb3J0Lmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L2tlcm5lbC5oPg0KPiAgICNpbmNs
+dWRlIDxsaW51eC9zbGFiLmg+DQo+IC0jaW5jbHVkZSA8bGludXgvZnMuaD4NCj4gICAjaW5jbHVk
+ZSA8bGludXgvbmFtZWkuaD4NCj4gICAjaW5jbHVkZSA8bGludXgvcGFnZW1hcC5oPg0KPiAgICNp
+bmNsdWRlIDxsaW51eC9mc25vdGlmeS5oPg0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9i
+cGYuaCBiL2luY2x1ZGUvbGludXgvYnBmLmgNCj4gaW5kZXggZjlhNTA2MTQ3YzhhLi5lNGFkZjVl
+MDVhZmQgMTAwNjQ0DQo+IC0tLSBhL2luY2x1ZGUvbGludXgvYnBmLmgNCj4gKysrIGIvaW5jbHVk
+ZS9saW51eC9icGYuaA0KPiBAQCAtMTA1MCw2ICsxMDUwLDcgQEAgZXh0ZXJuIGNvbnN0IHN0cnVj
+dCBicGZfZnVuY19wcm90byBicGZfZ2V0X2xvY2FsX3N0b3JhZ2VfcHJvdG87DQo+ICAgZXh0ZXJu
+IGNvbnN0IHN0cnVjdCBicGZfZnVuY19wcm90byBicGZfc3RydG9sX3Byb3RvOw0KPiAgIGV4dGVy
+biBjb25zdCBzdHJ1Y3QgYnBmX2Z1bmNfcHJvdG8gYnBmX3N0cnRvdWxfcHJvdG87DQo+ICAgZXh0
+ZXJuIGNvbnN0IHN0cnVjdCBicGZfZnVuY19wcm90byBicGZfdGNwX3NvY2tfcHJvdG87DQo+ICtl
+eHRlcm4gY29uc3Qgc3RydWN0IGJwZl9mdW5jX3Byb3RvIGJwZl9nZXRfY3VycmVudF9waWRuc19p
+bmZvX3Byb3RvOw0KPiAgIA0KPiAgIC8qIFNoYXJlZCBoZWxwZXJzIGFtb25nIGNCUEYgYW5kIGVC
+UEYuICovDQo+ICAgdm9pZCBicGZfdXNlcl9ybmRfaW5pdF9vbmNlKHZvaWQpOw0KPiBkaWZmIC0t
+Z2l0IGEvaW5jbHVkZS9saW51eC9uYW1laS5oIGIvaW5jbHVkZS9saW51eC9uYW1laS5oDQo+IGlu
+ZGV4IDkxMzhiNDQ3MWRiZi4uYjQ1YzhiNmY3Y2I0IDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL2xp
+bnV4L25hbWVpLmgNCj4gKysrIGIvaW5jbHVkZS9saW51eC9uYW1laS5oDQo+IEBAIC02LDYgKzYs
+NyBAQA0KPiAgICNpbmNsdWRlIDxsaW51eC9wYXRoLmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L2Zj
+bnRsLmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L2Vycm5vLmg+DQo+ICsjaW5jbHVkZSA8bGludXgv
+ZnMuaD4NCj4gICANCj4gICBlbnVtIHsgTUFYX05FU1RFRF9MSU5LUyA9IDggfTsNCj4gICANCj4g
+QEAgLTk3LDYgKzk4LDkgQEAgZXh0ZXJuIHZvaWQgdW5sb2NrX3JlbmFtZShzdHJ1Y3QgZGVudHJ5
+ICosIHN0cnVjdCBkZW50cnkgKik7DQo+ICAgDQo+ICAgZXh0ZXJuIHZvaWQgbmRfanVtcF9saW5r
+KHN0cnVjdCBwYXRoICpwYXRoKTsNCj4gICANCj4gK2V4dGVybiBpbnQgZmlsZW5hbWVfbG9va3Vw
+KGludCBkZmQsIHN0cnVjdCBmaWxlbmFtZSAqbmFtZSwgdW5zaWduZWQgZmxhZ3MsDQo+ICsJCQkg
+ICBzdHJ1Y3QgcGF0aCAqcGF0aCwgc3RydWN0IHBhdGggKnJvb3QpOw0KPiArDQo+ICAgc3RhdGlj
+IGlubGluZSB2b2lkIG5kX3Rlcm1pbmF0ZV9saW5rKHZvaWQgKm5hbWUsIHNpemVfdCBsZW4sIHNp
+emVfdCBtYXhsZW4pDQo+ICAgew0KPiAgIAkoKGNoYXIgKikgbmFtZSlbbWluKGxlbiwgbWF4bGVu
+KV0gPSAnXDAnOw0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS91YXBpL2xpbnV4L2JwZi5oIGIvaW5j
+bHVkZS91YXBpL2xpbnV4L2JwZi5oDQo+IGluZGV4IDQzOTNiZDRiMjQxOS4uZGIyNDE4NTdlYzE1
+IDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL3VhcGkvbGludXgvYnBmLmgNCj4gKysrIGIvaW5jbHVk
+ZS91YXBpL2xpbnV4L2JwZi5oDQo+IEBAIC0yNzQxLDYgKzI3NDEsMjggQEAgdW5pb24gYnBmX2F0
+dHIgew0KPiAgICAqCQkqKi1FT1BOT1RTVVBQKioga2VybmVsIGNvbmZpZ3VyYXRpb24gZG9lcyBu
+b3QgZW5hYmxlIFNZTiBjb29raWVzDQo+ICAgICoNCj4gICAgKgkJKiotRVBST1RPTk9TVVBQT1JU
+KiogSVAgcGFja2V0IHZlcnNpb24gaXMgbm90IDQgb3IgNg0KPiArICoNCj4gKyAqIGludCBicGZf
+Z2V0X2N1cnJlbnRfcGlkbnNfaW5mbyhzdHJ1Y3QgYnBmX3BpZG5zX2luZm8gKnBpZG5zLCB1MzIg
+c2l6ZV9vZl9waWRucykNCj4gKyAqCURlc2NyaXB0aW9uDQo+ICsgKgkJQ29waWVzIGludG8gKnBp
+ZG5zKiBwaWQsIG5hbWVzcGFjZSBpZCBhbmQgdGdpZCBhcyBzZWVuIGJ5IHRoZQ0KPiArICoJCWN1
+cnJlbnQgbmFtZXNwYWNlIGFuZCBhbHNvIGRldmljZSBmcm9tIC9wcm9jL3NlbGYvbnMvcGlkLg0K
+PiArICoJCSpzaXplX29mX3BpZG5zKiBtdXN0IGJlIHRoZSBzaXplIG9mICpwaWRucyoNCj4gKyAq
+DQo+ICsgKgkJVGhpcyBoZWxwZXIgaXMgdXNlZCB3aGVuIHBpZCBmaWx0ZXJpbmcgaXMgbmVlZGVk
+IGluc2lkZSBhDQo+ICsgKgkJY29udGFpbmVyIGFzIGJwZl9nZXRfY3VycmVudF90Z2lkKCkgaGVs
+cGVyIHJldHVybnMgYWx3YXlzIHRoZQ0KPiArICoJCXBpZCBpZCBhcyBzZWVuIGJ5IHRoZSByb290
+IG5hbWVzcGFjZS4NCj4gKyAqCVJldHVybg0KPiArICoJCTAgb24gc3VjY2Vzcw0KPiArICoNCj4g
+KyAqCQkqKi1FSU5WQUwqKiBpZiAqc2l6ZV9vZl9waWRucyogaXMgbm90IHZhbGlkIG9yIHVuYWJs
+ZSB0byBnZXQgbnMsIHBpZA0KPiArICoJCW9yIHRnaWQgb2YgdGhlIGN1cnJlbnQgdGFzay4NCj4g
+KyAqDQo+ICsgKgkJKiotRUNISUxEKiogaWYgL3Byb2Mvc2VsZi9ucy9waWQgZG9lcyBub3QgZXhp
+c3RzLg0KPiArICoNCj4gKyAqCQkqKi1FTk9URElSKiogaWYgL3Byb2Mvc2VsZi9ucyBkb2VzIG5v
+dCBleGlzdHMuDQo+ICsgKg0KPiArICoJCSoqLUVOT01FTSoqICBpZiBhbGxvY2F0aW9uIGZhaWxz
+Lg0KPiArICoNCj4gICAgKi8NCj4gICAjZGVmaW5lIF9fQlBGX0ZVTkNfTUFQUEVSKEZOKQkJXA0K
+PiAgIAlGTih1bnNwZWMpLAkJCVwNCj4gQEAgLTI4NTMsNyArMjg3NSw4IEBAIHVuaW9uIGJwZl9h
+dHRyIHsNCj4gICAJRk4oc2tfc3RvcmFnZV9nZXQpLAkJXA0KPiAgIAlGTihza19zdG9yYWdlX2Rl
+bGV0ZSksCQlcDQo+ICAgCUZOKHNlbmRfc2lnbmFsKSwJCVwNCj4gLQlGTih0Y3BfZ2VuX3N5bmNv
+b2tpZSksDQo+ICsJRk4odGNwX2dlbl9zeW5jb29raWUpLAkJXA0KPiArCUZOKGdldF9jdXJyZW50
+X3BpZG5zX2luZm8pLA0KPiAgIA0KPiAgIC8qIGludGVnZXIgdmFsdWUgaW4gJ2ltbScgZmllbGQg
+b2YgQlBGX0NBTEwgaW5zdHJ1Y3Rpb24gc2VsZWN0cyB3aGljaCBoZWxwZXINCj4gICAgKiBmdW5j
+dGlvbiBlQlBGIHByb2dyYW0gaW50ZW5kcyB0byBjYWxsDQo+IEBAIC0zNjA0LDQgKzM2MjcsMTAg
+QEAgc3RydWN0IGJwZl9zb2Nrb3B0IHsNCj4gICAJX19zMzIJcmV0dmFsOw0KPiAgIH07DQo+ICAg
+DQo+ICtzdHJ1Y3QgYnBmX3BpZG5zX2luZm8gew0KPiArCV9fdTMyIGRldjsNCj4gKwlfX3UzMiBu
+c2lkOw0KPiArCV9fdTMyIHRnaWQ7DQo+ICsJX191MzIgcGlkOw0KPiArfTsNCj4gICAjZW5kaWYg
+LyogX1VBUElfX0xJTlVYX0JQRl9IX18gKi8NCj4gZGlmZiAtLWdpdCBhL2tlcm5lbC9icGYvY29y
+ZS5jIGIva2VybmVsL2JwZi9jb3JlLmMNCj4gaW5kZXggODE5MWE3ZGIyNzc3Li4zMTU5ZjJhMDE4
+OGMgMTAwNjQ0DQo+IC0tLSBhL2tlcm5lbC9icGYvY29yZS5jDQo+ICsrKyBiL2tlcm5lbC9icGYv
+Y29yZS5jDQo+IEBAIC0yMDM4LDYgKzIwMzgsNyBAQCBjb25zdCBzdHJ1Y3QgYnBmX2Z1bmNfcHJv
+dG8gYnBmX2dldF9jdXJyZW50X3VpZF9naWRfcHJvdG8gX193ZWFrOw0KPiAgIGNvbnN0IHN0cnVj
+dCBicGZfZnVuY19wcm90byBicGZfZ2V0X2N1cnJlbnRfY29tbV9wcm90byBfX3dlYWs7DQo+ICAg
+Y29uc3Qgc3RydWN0IGJwZl9mdW5jX3Byb3RvIGJwZl9nZXRfY3VycmVudF9jZ3JvdXBfaWRfcHJv
+dG8gX193ZWFrOw0KPiAgIGNvbnN0IHN0cnVjdCBicGZfZnVuY19wcm90byBicGZfZ2V0X2xvY2Fs
+X3N0b3JhZ2VfcHJvdG8gX193ZWFrOw0KPiArY29uc3Qgc3RydWN0IGJwZl9mdW5jX3Byb3RvIGJw
+Zl9nZXRfY3VycmVudF9waWRuc19pbmZvIF9fd2VhazsNCj4gICANCj4gICBjb25zdCBzdHJ1Y3Qg
+YnBmX2Z1bmNfcHJvdG8gKiBfX3dlYWsgYnBmX2dldF90cmFjZV9wcmludGtfcHJvdG8odm9pZCkN
+Cj4gICB7DQo+IGRpZmYgLS1naXQgYS9rZXJuZWwvYnBmL2hlbHBlcnMuYyBiL2tlcm5lbC9icGYv
+aGVscGVycy5jDQo+IGluZGV4IDVlMjg3MTg5MjhjYS4uNDFmYmYxZjI4YTQ4IDEwMDY0NA0KPiAt
+LS0gYS9rZXJuZWwvYnBmL2hlbHBlcnMuYw0KPiArKysgYi9rZXJuZWwvYnBmL2hlbHBlcnMuYw0K
+PiBAQCAtMTEsNiArMTEsMTIgQEANCj4gICAjaW5jbHVkZSA8bGludXgvdWlkZ2lkLmg+DQo+ICAg
+I2luY2x1ZGUgPGxpbnV4L2ZpbHRlci5oPg0KPiAgICNpbmNsdWRlIDxsaW51eC9jdHlwZS5oPg0K
+PiArI2luY2x1ZGUgPGxpbnV4L3BpZF9uYW1lc3BhY2UuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9t
+YWpvci5oPg0KPiArI2luY2x1ZGUgPGxpbnV4L3N0YXQuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9u
+YW1laS5oPg0KPiArI2luY2x1ZGUgPGxpbnV4L3ZlcnNpb24uaD4NCj4gKw0KPiAgIA0KPiAgICNp
+bmNsdWRlICIuLi8uLi9saWIva3N0cnRveC5oIg0KPiAgIA0KPiBAQCAtMzEyLDYgKzMxOCw2NCBA
+QCB2b2lkIGNvcHlfbWFwX3ZhbHVlX2xvY2tlZChzdHJ1Y3QgYnBmX21hcCAqbWFwLCB2b2lkICpk
+c3QsIHZvaWQgKnNyYywNCj4gICAJcHJlZW1wdF9lbmFibGUoKTsNCj4gICB9DQo+ICAgDQo+ICtC
+UEZfQ0FMTF8yKGJwZl9nZXRfY3VycmVudF9waWRuc19pbmZvLCBzdHJ1Y3QgYnBmX3BpZG5zX2lu
+Zm8gKiwgcGlkbnNfaW5mbywgdTMyLA0KPiArCSBzaXplKQ0KPiArew0KPiArCWNvbnN0IGNoYXIg
+KnBpZG5zX3BhdGggPSAiL3Byb2Mvc2VsZi9ucy9waWQiOw0KPiArCXN0cnVjdCBwaWRfbmFtZXNw
+YWNlICpwaWRucyA9IE5VTEw7DQo+ICsJc3RydWN0IGZpbGVuYW1lICp0bXAgPSBOVUxMOw0KPiAr
+CXN0cnVjdCBpbm9kZSAqaW5vZGU7DQo+ICsJc3RydWN0IHBhdGgga3A7DQo+ICsJcGlkX3QgdGdp
+ZCA9IDA7DQo+ICsJcGlkX3QgcGlkID0gMDsNCj4gKwlpbnQgcmV0Ow0KPiArCWludCBsZW47DQo+
+ICsNCj4gKwlpZiAodW5saWtlbHkoc2l6ZSAhPSBzaXplb2Yoc3RydWN0IGJwZl9waWRuc19pbmZv
+KSkpDQo+ICsJCXJldHVybiAtRUlOVkFMOw0KPiArCXBpZG5zID0gdGFza19hY3RpdmVfcGlkX25z
+KGN1cnJlbnQpOw0KPiArCWlmICh1bmxpa2VseSghcGlkbnMpKQ0KPiArCQlnb3RvIGNsZWFyOw0K
+PiArCXBpZG5zX2luZm8tPm5zaWQgPSAgcGlkbnMtPm5zLmludW07DQo+ICsJcGlkID0gdGFza19w
+aWRfbnJfbnMoY3VycmVudCwgcGlkbnMpOw0KPiArCWlmICh1bmxpa2VseSghcGlkKSkNCj4gKwkJ
+Z290byBjbGVhcjsNCj4gKwl0Z2lkID0gdGFza190Z2lkX25yX25zKGN1cnJlbnQsIHBpZG5zKTsN
+Cj4gKwlpZiAodW5saWtlbHkoIXRnaWQpKQ0KPiArCQlnb3RvIGNsZWFyOw0KPiArCXBpZG5zX2lu
+Zm8tPnRnaWQgPSAodTMyKSB0Z2lkOw0KPiArCXBpZG5zX2luZm8tPnBpZCA9ICh1MzIpIHBpZDsN
+Cj4gKwl0bXAgPSBrbWVtX2NhY2hlX2FsbG9jKG5hbWVzX2NhY2hlcCwgR0ZQX0FUT01JQyk7DQo+
+ICsJaWYgKHVubGlrZWx5KCF0bXApKSB7DQo+ICsJCW1lbXNldCgodm9pZCAqKXBpZG5zX2luZm8s
+IDAsIChzaXplX3QpIHNpemUpOw0KPiArCQlyZXR1cm4gLUVOT01FTTsNCj4gKwl9DQo+ICsJbGVu
+ID0gc3RybGVuKHBpZG5zX3BhdGgpICsgMTsNCj4gKwltZW1jcHkoKGNoYXIgKil0bXAtPm5hbWUs
+IHBpZG5zX3BhdGgsIGxlbik7DQo+ICsJdG1wLT51cHRyID0gTlVMTDsNCj4gKwl0bXAtPmFuYW1l
+ID0gTlVMTDsNCj4gKwl0bXAtPnJlZmNudCA9IDE7DQo+ICsJcmV0ID0gZmlsZW5hbWVfbG9va3Vw
+KEFUX0ZEQ1dELCB0bXAsIDAsICZrcCwgTlVMTCk7DQo+ICsJaWYgKHJldCkgew0KPiArCQltZW1z
+ZXQoKHZvaWQgKilwaWRuc19pbmZvLCAwLCAoc2l6ZV90KSBzaXplKTsNCj4gKwkJcmV0dXJuIHJl
+dDsNCj4gKwl9DQo+ICsJaW5vZGUgPSBkX2JhY2tpbmdfaW5vZGUoa3AuZGVudHJ5KTsNCj4gKwlw
+aWRuc19pbmZvLT5kZXYgPSBpbm9kZS0+aV9zYi0+c19kZXY7DQo+ICsJcmV0dXJuIDA7DQo+ICtj
+bGVhcjoNCj4gKwltZW1zZXQoKHZvaWQgKilwaWRuc19pbmZvLCAwLCAoc2l6ZV90KSBzaXplKTsN
+Cj4gKwlyZXR1cm4gLUVJTlZBTDsNCj4gK30NCj4gKw0KPiArY29uc3Qgc3RydWN0IGJwZl9mdW5j
+X3Byb3RvIGJwZl9nZXRfY3VycmVudF9waWRuc19pbmZvX3Byb3RvID0gew0KPiArCS5mdW5jCQk9
+IGJwZl9nZXRfY3VycmVudF9waWRuc19pbmZvLA0KPiArCS5ncGxfb25seQk9IGZhbHNlLA0KPiAr
+CS5yZXRfdHlwZQk9IFJFVF9JTlRFR0VSLA0KPiArCS5hcmcxX3R5cGUJPSBBUkdfUFRSX1RPX1VO
+SU5JVF9NRU0sDQo+ICsJLmFyZzJfdHlwZQk9IEFSR19DT05TVF9TSVpFLA0KPiArfTsNCj4gKw0K
+PiAgICNpZmRlZiBDT05GSUdfQ0dST1VQUw0KPiAgIEJQRl9DQUxMXzAoYnBmX2dldF9jdXJyZW50
+X2Nncm91cF9pZCkNCj4gICB7DQo+IGRpZmYgLS1naXQgYS9rZXJuZWwvdHJhY2UvYnBmX3RyYWNl
+LmMgYi9rZXJuZWwvdHJhY2UvYnBmX3RyYWNlLmMNCj4gaW5kZXggY2ExMjU1ZDE0NTc2Li41ZTFk
+YzIyNzY1YTUgMTAwNjQ0DQo+IC0tLSBhL2tlcm5lbC90cmFjZS9icGZfdHJhY2UuYw0KPiArKysg
+Yi9rZXJuZWwvdHJhY2UvYnBmX3RyYWNlLmMNCj4gQEAgLTcwOSw2ICs3MDksOCBAQCB0cmFjaW5n
+X2Z1bmNfcHJvdG8oZW51bSBicGZfZnVuY19pZCBmdW5jX2lkLCBjb25zdCBzdHJ1Y3QgYnBmX3By
+b2cgKnByb2cpDQo+ICAgI2VuZGlmDQo+ICAgCWNhc2UgQlBGX0ZVTkNfc2VuZF9zaWduYWw6DQo+
+ICAgCQlyZXR1cm4gJmJwZl9zZW5kX3NpZ25hbF9wcm90bzsNCj4gKwljYXNlIEJQRl9GVU5DX2dl
+dF9jdXJyZW50X3BpZG5zX2luZm86DQo+ICsJCXJldHVybiAmYnBmX2dldF9jdXJyZW50X3BpZG5z
+X2luZm9fcHJvdG87DQo+ICAgCWRlZmF1bHQ6DQo+ICAgCQlyZXR1cm4gTlVMTDsNCj4gICAJfQ0K
+PiBkaWZmIC0tZ2l0IGEvdG9vbHMvaW5jbHVkZS91YXBpL2xpbnV4L2JwZi5oIGIvdG9vbHMvaW5j
+bHVkZS91YXBpL2xpbnV4L2JwZi5oDQo+IGluZGV4IDQzOTNiZDRiMjQxOS4uZGIyNDE4NTdlYzE1
+IDEwMDY0NA0KPiAtLS0gYS90b29scy9pbmNsdWRlL3VhcGkvbGludXgvYnBmLmgNCj4gKysrIGIv
+dG9vbHMvaW5jbHVkZS91YXBpL2xpbnV4L2JwZi5oDQo+IEBAIC0yNzQxLDYgKzI3NDEsMjggQEAg
+dW5pb24gYnBmX2F0dHIgew0KPiAgICAqCQkqKi1FT1BOT1RTVVBQKioga2VybmVsIGNvbmZpZ3Vy
+YXRpb24gZG9lcyBub3QgZW5hYmxlIFNZTiBjb29raWVzDQo+ICAgICoNCj4gICAgKgkJKiotRVBS
+T1RPTk9TVVBQT1JUKiogSVAgcGFja2V0IHZlcnNpb24gaXMgbm90IDQgb3IgNg0KPiArICoNCj4g
+KyAqIGludCBicGZfZ2V0X2N1cnJlbnRfcGlkbnNfaW5mbyhzdHJ1Y3QgYnBmX3BpZG5zX2luZm8g
+KnBpZG5zLCB1MzIgc2l6ZV9vZl9waWRucykNCj4gKyAqCURlc2NyaXB0aW9uDQo+ICsgKgkJQ29w
+aWVzIGludG8gKnBpZG5zKiBwaWQsIG5hbWVzcGFjZSBpZCBhbmQgdGdpZCBhcyBzZWVuIGJ5IHRo
+ZQ0KPiArICoJCWN1cnJlbnQgbmFtZXNwYWNlIGFuZCBhbHNvIGRldmljZSBmcm9tIC9wcm9jL3Nl
+bGYvbnMvcGlkLg0KPiArICoJCSpzaXplX29mX3BpZG5zKiBtdXN0IGJlIHRoZSBzaXplIG9mICpw
+aWRucyoNCj4gKyAqDQo+ICsgKgkJVGhpcyBoZWxwZXIgaXMgdXNlZCB3aGVuIHBpZCBmaWx0ZXJp
+bmcgaXMgbmVlZGVkIGluc2lkZSBhDQo+ICsgKgkJY29udGFpbmVyIGFzIGJwZl9nZXRfY3VycmVu
+dF90Z2lkKCkgaGVscGVyIHJldHVybnMgYWx3YXlzIHRoZQ0KPiArICoJCXBpZCBpZCBhcyBzZWVu
+IGJ5IHRoZSByb290IG5hbWVzcGFjZS4NCj4gKyAqCVJldHVybg0KPiArICoJCTAgb24gc3VjY2Vz
+cw0KPiArICoNCj4gKyAqCQkqKi1FSU5WQUwqKiBpZiAqc2l6ZV9vZl9waWRucyogaXMgbm90IHZh
+bGlkIG9yIHVuYWJsZSB0byBnZXQgbnMsIHBpZA0KPiArICoJCW9yIHRnaWQgb2YgdGhlIGN1cnJl
+bnQgdGFzay4NCj4gKyAqDQo+ICsgKgkJKiotRUNISUxEKiogaWYgL3Byb2Mvc2VsZi9ucy9waWQg
+ZG9lcyBub3QgZXhpc3RzLg0KPiArICoNCj4gKyAqCQkqKi1FTk9URElSKiogaWYgL3Byb2Mvc2Vs
+Zi9ucyBkb2VzIG5vdCBleGlzdHMuDQo+ICsgKg0KPiArICoJCSoqLUVOT01FTSoqICBpZiBhbGxv
+Y2F0aW9uIGZhaWxzLg0KPiArICoNCj4gICAgKi8NCj4gICAjZGVmaW5lIF9fQlBGX0ZVTkNfTUFQ
+UEVSKEZOKQkJXA0KPiAgIAlGTih1bnNwZWMpLAkJCVwNCj4gQEAgLTI4NTMsNyArMjg3NSw4IEBA
+IHVuaW9uIGJwZl9hdHRyIHsNCj4gICAJRk4oc2tfc3RvcmFnZV9nZXQpLAkJXA0KPiAgIAlGTihz
+a19zdG9yYWdlX2RlbGV0ZSksCQlcDQo+ICAgCUZOKHNlbmRfc2lnbmFsKSwJCVwNCj4gLQlGTih0
+Y3BfZ2VuX3N5bmNvb2tpZSksDQo+ICsJRk4odGNwX2dlbl9zeW5jb29raWUpLAkJXA0KPiArCUZO
+KGdldF9jdXJyZW50X3BpZG5zX2luZm8pLA0KPiAgIA0KPiAgIC8qIGludGVnZXIgdmFsdWUgaW4g
+J2ltbScgZmllbGQgb2YgQlBGX0NBTEwgaW5zdHJ1Y3Rpb24gc2VsZWN0cyB3aGljaCBoZWxwZXIN
+Cj4gICAgKiBmdW5jdGlvbiBlQlBGIHByb2dyYW0gaW50ZW5kcyB0byBjYWxsDQo+IEBAIC0zNjA0
+LDQgKzM2MjcsMTAgQEAgc3RydWN0IGJwZl9zb2Nrb3B0IHsNCj4gICAJX19zMzIJcmV0dmFsOw0K
+PiAgIH07DQo+ICAgDQo+ICtzdHJ1Y3QgYnBmX3BpZG5zX2luZm8gew0KPiArCV9fdTMyIGRldjsN
+Cj4gKwlfX3UzMiBuc2lkOw0KPiArCV9fdTMyIHRnaWQ7DQo+ICsJX191MzIgcGlkOw0KPiArfTsN
+Cj4gICAjZW5kaWYgLyogX1VBUElfX0xJTlVYX0JQRl9IX18gKi8NCj4gDQo=
