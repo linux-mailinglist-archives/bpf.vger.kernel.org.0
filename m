@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A81D486EBA
-	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2019 02:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1620386EC2
+	for <lists+bpf@lfdr.de>; Fri,  9 Aug 2019 02:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404676AbfHIATq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Aug 2019 20:19:46 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:36431 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404001AbfHIATp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Aug 2019 20:19:45 -0400
-Received: by mail-qk1-f196.google.com with SMTP id g18so70369709qkl.3
-        for <bpf@vger.kernel.org>; Thu, 08 Aug 2019 17:19:45 -0700 (PDT)
+        id S2404428AbfHIAUv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Aug 2019 20:20:51 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:38096 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404850AbfHIAUp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Aug 2019 20:20:45 -0400
+Received: by mail-qt1-f196.google.com with SMTP id n11so94160002qtl.5
+        for <bpf@vger.kernel.org>; Thu, 08 Aug 2019 17:20:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:in-reply-to:references
          :organization:mime-version:content-transfer-encoding;
-        bh=hJMvu/bbGMstrnewPFAYRHW5WokfxwcPC/wDK1WVJ88=;
-        b=z4XNvgin7nFh4kPDTEhzofo8m0g4DMGAn/yrIhKc8IjS025H7JUWO8DNbfeH/nOshY
-         JD/N0uUYliB5FmyoXXiC1udK5khqLISJ0NMcRhMXbO2DRFwdB8J5OicKZHBjC5Xu2VUJ
-         wTEkK46qcvahJtbTvst3BO/dNssrK1cGsea5uj+z5/zECRnJ2KkpAZv7TO0aspenNPIv
-         BzFuUZLcgiAQ9V2aHBiAMqKOBhRNT3MC5w1CVjbX86nf0URIkcjyFsm2Y44FttDJQbuT
-         pK0NlxwF/0FpE+HDWNhjUJGlbKE8NQt6U0jyN2jSDYtOPjJlKITwIslVfAZXL/b4ImXl
-         TVmA==
+        bh=SrXlbID68lhPKrJjkmbTtajZDQHFU0j/ynkOO+lAohM=;
+        b=Yr5u2Vmo96zfWo39ki7h7j7HCO1EXUDceAcYfoQtM5RXkFFvJypKjsEjKiv8bUFEWd
+         ndb3UqgQdVG5d7QyqSo97A3i3BPmPoiVELQKMA1Y2j3qmge4ZhPji+1S0lPqrtEUxiaC
+         MbJEyrANZe7MemMD0mDcPUlws7G4xTK/eXmUhFky1OS2l8RttkA2unobufRTaXikM86m
+         JjgluiH74qu/c0dBiWmCgueiRclbh5xeau3N0NtY+U7uiSmXweWXVGnCuN+OF9hJPCKc
+         eD4NnaKttNVkM6x4t06CaMZP0P0/iCI3pMHsvmGwzS1YFDZ6jZEsfV2a11ncE5Ojd1jU
+         fVqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
          :references:organization:mime-version:content-transfer-encoding;
-        bh=hJMvu/bbGMstrnewPFAYRHW5WokfxwcPC/wDK1WVJ88=;
-        b=sfHDpEKS8FLLMG6F+zMOHLC1eZXp3RNTUTkfrgCcbqohii0jAccFvDJBnJ4K8m1ZJ2
-         zp6XSMY4oK0ydeGi+2dSWd/swEpzCHpw6bhSXdgErYBYDVvPjz1MdvF4MknfNLv/6JUG
-         GGlJy8wNmMi8bFAcX5sHgDj7/5Lm0v/tJsPEl/QnrDvKmzFK2jGPE6UUien0IKtjNlXN
-         fmXYzo/tQj30yROI+Eq0uhJqhjAkA1dK2xCKXIoiSvEjXtxSAXHmeAMi+6gZLeoNN4wq
-         ZcSYqnRuU9jlpEp2fLaBrq5dYbMdasTMy7TNNyr+Q9Z89yV+MJ6ubLqeoU8q6KxhmbbF
-         bXfA==
-X-Gm-Message-State: APjAAAWdQEYO1mvhIFNsDtKiybjIjrh6mszUf5wY5O4/2txXTu0fxotX
-        d5sBwn/CSDJywwKHsd3mvWKV9g==
-X-Google-Smtp-Source: APXvYqxbmXOq4kKnGHFk685MiQxRvF1/WB+ij0S0Lr+A3JFDTPnEB+HHNnX5RvoExNme8uKrtDtrvw==
-X-Received: by 2002:a37:9ec6:: with SMTP id h189mr4525284qke.280.1565309984935;
-        Thu, 08 Aug 2019 17:19:44 -0700 (PDT)
+        bh=SrXlbID68lhPKrJjkmbTtajZDQHFU0j/ynkOO+lAohM=;
+        b=nKihUUSiS15s+MU7RuVw+/FgaDWDyUZGeFnP3yxfFfETTv9Q7m44mBCekcR4veCLJs
+         0plELUgUqPyjz6I5BVq9AiNe4B2FY4sGpsOWZd12QC0+/0hh6EMuKrOrpen6MRbFaHd6
+         YyPfm7B91ndRm2fC/Ox77S9T/yhph/KzffXFRbeJrLL0+E3S2oTVyAZloG+IA5h8zxbk
+         fNgdqzfgWawMOHobzDYi4+bIlBJ9A2RZDNcflh8oENq1QqCWCjSr1sZ3vAGeaXppxr2i
+         569KSFMqlvJ8J6VQTx/cfC7XMC142Ow/ENBZk5uDcDc61WyaJcjnZY7jDTB8wpD0VMF6
+         eezA==
+X-Gm-Message-State: APjAAAWa96ewmIjC0U4SU6XTl3ahfDjTbVeALr0o1B1SpUPe+U1SJOKN
+        1eak6q6/cvUMz5K5xTy3yVyCCw==
+X-Google-Smtp-Source: APXvYqxXRpoNHsJzyfCUQYdj2V8c2KZTPv3rU9ocRemD+2B0qsEHSJiuOKcias/L0ujb0D4xLA65Pw==
+X-Received: by 2002:a0c:8602:: with SMTP id p2mr15734769qva.111.1565310044622;
+        Thu, 08 Aug 2019 17:20:44 -0700 (PDT)
 Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id f12sm289605qkm.18.2019.08.08.17.19.43
+        by smtp.gmail.com with ESMTPSA id q17sm37509666qtl.13.2019.08.08.17.20.43
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 08 Aug 2019 17:19:44 -0700 (PDT)
-Date:   Thu, 8 Aug 2019 17:19:40 -0700
+        Thu, 08 Aug 2019 17:20:44 -0700 (PDT)
+Date:   Thu, 8 Aug 2019 17:20:41 -0700
 From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     syzbot <syzbot+97d0cf528b9c8e9be7f4@syzkaller.appspotmail.com>
+To:     syzbot <syzbot+30c791a76814a3c6c9f9@syzkaller.appspotmail.com>
 Cc:     ast@kernel.org, aviadye@mellanox.com, borisp@mellanox.com,
         bpf@vger.kernel.org, daniel@iogearbox.net, davejwatson@fb.com,
         davem@davemloft.net, john.fastabend@gmail.com, kafai@fb.com,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Subject: Re: general protection fault in tls_tx_records
-Message-ID: <20190808171940.1e7fcbe3@cakuba.netronome.com>
-In-Reply-To: <000000000000216779058f9dc40e@google.com>
-References: <000000000000216779058f9dc40e@google.com>
+Subject: Re: KASAN: use-after-free Read in tls_wait_data
+Message-ID: <20190808172041.282a755d@cakuba.netronome.com>
+In-Reply-To: <000000000000262820058f9dc474@google.com>
+References: <000000000000262820058f9dc474@google.com>
 Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -65,18 +65,23 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 08 Aug 2019 09:44:06 -0700, syzbot wrote:
+On Thu, 08 Aug 2019 09:44:07 -0700, syzbot wrote:
 > Hello,
 > 
 > syzbot found the following crash on:
 > 
-> HEAD commit:    ce96e791 Add linux-next specific files for 20190731
+> HEAD commit:    7b4980e0 Add linux-next specific files for 20190802
 > git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13ce4fd0600000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=fca5b9d53db6585c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=97d0cf528b9c8e9be7f4
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14a749b4600000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=7e1348afd44b5e02
+> dashboard link: https://syzkaller.appspot.com/bug?extid=30c791a76814a3c6c9f9
 > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> 
+> Unfortunately, I don't have any reproducer for this crash yet.
+> 
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+30c791a76814a3c6c9f9@syzkaller.appspotmail.com
 
-Looks like this was an old tree here, so most likely:
+Also old tree, pretty confidently I can say:
 
 #syz fix: net/tls: partially revert fix transition through disconnect with close
