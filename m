@@ -2,31 +2,31 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F10F88C19
-	for <lists+bpf@lfdr.de>; Sat, 10 Aug 2019 17:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCFD88C17
+	for <lists+bpf@lfdr.de>; Sat, 10 Aug 2019 17:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbfHJP64 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Aug 2019 11:58:56 -0400
-Received: from condef-03.nifty.com ([202.248.20.68]:41395 "EHLO
-        condef-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbfHJP6z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Aug 2019 11:58:55 -0400
-Received: from conuserg-11.nifty.com ([10.126.8.74])by condef-03.nifty.com with ESMTP id x7AFtOOp007456;
-        Sun, 11 Aug 2019 00:55:24 +0900
+        id S1726188AbfHJP5g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Aug 2019 11:57:36 -0400
+Received: from condef-08.nifty.com ([202.248.20.73]:32334 "EHLO
+        condef-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbfHJP5g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Aug 2019 11:57:36 -0400
+Received: from conuserg-11.nifty.com ([10.126.8.74])by condef-08.nifty.com with ESMTP id x7AFtsrQ011088;
+        Sun, 11 Aug 2019 00:55:54 +0900
 Received: from grover.flets-west.jp (softbank126125143222.bbtec.net [126.125.143.222]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id x7AFrG8t009713;
-        Sun, 11 Aug 2019 00:53:17 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com x7AFrG8t009713
+        by conuserg-11.nifty.com with ESMTP id x7AFrG96009713;
+        Sun, 11 Aug 2019 00:53:26 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com x7AFrG96009713
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1565452398;
-        bh=oC63xap+fxhG9bzK+JnNTDD45f6COtr1Al2zhD2RQ+A=;
-        h=From:To:Cc:Subject:Date:From;
-        b=QRz/HTl63qVrVTBqUg3+u+Dklu40WD9vhseAg4FJ5HltnTHBLjXl/xoo5p1cQaowl
-         2SbyyKz6G7ZsMJeOXEA1NevVxbw2p+BDy/WnSkiGXuEA8IgxM1gdqq6ice3Ocpq8eG
-         5wXh9rypOSc3FpReWjYOlzm3Km8ISSl797/j2PotFFDP+ITNphwWGF3gG228KXZvdG
-         +DVWRjSfCcxV3fRTy1RJ0wQdZscJUJ5+1TJZJaHNd8uMtPN+M3SdbsN1J4ccjmajk2
-         cIYJpMIbPJ+XhO4NJWNrvdbI0WoXHgjzeKYJeWuRXa6Z+LV1DjB1lJNEZuuv10GMZH
-         PfGev3kUnpmsw==
+        s=dec2015msa; t=1565452407;
+        bh=jmtnAlp5r/W1VjpdNwYulBR6vPbBBKflh9Un7xceSbI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Jzfo/uJj4NDRwhMy9Cn70CvntcZFbN6G6bFTZlu8kAYtHICAFeeYFz4NS04n8DNNu
+         rJ+kowmP2XYeu+aeeYvcbvpoU93G2NaNNmIQdsgic1q3dyblTr6LYyDVM8JOS8aexK
+         OXtIvT8XwRBsdpf3REmEBZLVzPtzIiUN62DPDzyt1hE6pDblo9pcPtgiUs9dt4uK20
+         ksK7dunb1OxclzbzrtP5gfNdMkNRoM6b2X0FU+5wybzF5Ah/xX55Iu0F5q9xojCLq6
+         wwHzoWU6Im4BsdX2MgcOgp/ik9Nl5yt/qWvcv4tUfk2by7i59R90blvFjyqWOJCxST
+         /kpvVLZUdCcPg==
 X-Nifty-SrcIP: [126.125.143.222]
 From:   Masahiro Yamada <yamada.masahiro@socionext.com>
 To:     linux-kbuild@vger.kernel.org
@@ -40,62 +40,44 @@ Cc:     Christoph Hellwig <hch@lst.de>, Sam Ravnborg <sam@ravnborg.org>,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
         Leon Romanovsky <leon@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Michal Marek <michal.lkml@markovi.net>,
         Saeed Mahameed <saeedm@mellanox.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
         oss-drivers@netronome.com
-Subject: [PATCH 00/11] kbuild: clean-ups and improvement of single targets
-Date:   Sun, 11 Aug 2019 00:52:56 +0900
-Message-Id: <20190810155307.29322-1-yamada.masahiro@socionext.com>
+Subject: [PATCH 11/11] treewide: remove dummy Makefiles for single targets
+Date:   Sun, 11 Aug 2019 00:53:07 +0900
+Message-Id: <20190810155307.29322-12-yamada.masahiro@socionext.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20190810155307.29322-1-yamada.masahiro@socionext.com>
+References: <20190810155307.29322-1-yamada.masahiro@socionext.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Now that the single target build descends into sub-directories
+in the same ways as the normal build, these dummy Makefiles
+are not needed any more.
 
-01/11-09/11 are trivial clean-ups.
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-10/11 makes the single targets work more correctly.
-
-11/11 cleans up Makefiles that have been added
-to work aroud the single target issues.
-
-
-
-Masahiro Yamada (11):
-  kbuild: move the Module.symvers check for external module build
-  kbuild: refactor part-of-module more
-  kbuild: fix modkern_aflags implementation
-  kbuild: remove 'make /' support
-  kbuild: remove meaningless 'targets' in ./Kbuild
-  kbuild: do not descend to ./Kbuild when cleaning
-  kbuild: unset variables in top Makefile instead of setting 0
-  kbuild: unify vmlinux-dirs and module-dirs rules
-  kbuild: unify clean-dirs rule for in-kernel and external module
-  kbuild: make single targets work more correctly
-  treewide: remove dummy Makefiles for single targets
-
- Kbuild                                        |   7 -
- Makefile                                      | 193 ++++++++++--------
- .../aquantia/atlantic/hw_atl/Makefile         |   2 -
- .../mellanox/mlx5/core/accel/Makefile         |   2 -
- .../ethernet/mellanox/mlx5/core/diag/Makefile |   2 -
- .../ethernet/mellanox/mlx5/core/en/Makefile   |   2 -
- .../mellanox/mlx5/core/en/xsk/Makefile        |   1 -
- .../mellanox/mlx5/core/en_accel/Makefile      |   2 -
- .../ethernet/mellanox/mlx5/core/fpga/Makefile |   2 -
- .../mellanox/mlx5/core/ipoib/Makefile         |   2 -
- .../ethernet/mellanox/mlx5/core/lib/Makefile  |   2 -
- .../net/ethernet/netronome/nfp/bpf/Makefile   |   2 -
- .../ethernet/netronome/nfp/flower/Makefile    |   2 -
- .../ethernet/netronome/nfp/nfpcore/Makefile   |   2 -
- .../netronome/nfp/nfpcore/nfp6000/Makefile    |   2 -
- .../net/ethernet/netronome/nfp/nic/Makefile   |   2 -
- scripts/Makefile.build                        |  55 +++--
- 17 files changed, 149 insertions(+), 133 deletions(-)
+ drivers/net/ethernet/aquantia/atlantic/hw_atl/Makefile      | 2 --
+ drivers/net/ethernet/mellanox/mlx5/core/accel/Makefile      | 2 --
+ drivers/net/ethernet/mellanox/mlx5/core/diag/Makefile       | 2 --
+ drivers/net/ethernet/mellanox/mlx5/core/en/Makefile         | 2 --
+ drivers/net/ethernet/mellanox/mlx5/core/en/xsk/Makefile     | 1 -
+ drivers/net/ethernet/mellanox/mlx5/core/en_accel/Makefile   | 2 --
+ drivers/net/ethernet/mellanox/mlx5/core/fpga/Makefile       | 2 --
+ drivers/net/ethernet/mellanox/mlx5/core/ipoib/Makefile      | 2 --
+ drivers/net/ethernet/mellanox/mlx5/core/lib/Makefile        | 2 --
+ drivers/net/ethernet/netronome/nfp/bpf/Makefile             | 2 --
+ drivers/net/ethernet/netronome/nfp/flower/Makefile          | 2 --
+ drivers/net/ethernet/netronome/nfp/nfpcore/Makefile         | 2 --
+ drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000/Makefile | 2 --
+ drivers/net/ethernet/netronome/nfp/nic/Makefile             | 2 --
+ 14 files changed, 27 deletions(-)
  delete mode 100644 drivers/net/ethernet/aquantia/atlantic/hw_atl/Makefile
  delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/accel/Makefile
  delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/diag/Makefile
@@ -111,6 +93,117 @@ Masahiro Yamada (11):
  delete mode 100644 drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000/Makefile
  delete mode 100644 drivers/net/ethernet/netronome/nfp/nic/Makefile
 
+diff --git a/drivers/net/ethernet/aquantia/atlantic/hw_atl/Makefile b/drivers/net/ethernet/aquantia/atlantic/hw_atl/Makefile
+deleted file mode 100644
+index 805fa28f391a..000000000000
+--- a/drivers/net/ethernet/aquantia/atlantic/hw_atl/Makefile
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-# kbuild requires Makefile in a directory to build individual objects
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/accel/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/accel/Makefile
+deleted file mode 100644
+index c78512eed8d7..000000000000
+--- a/drivers/net/ethernet/mellanox/mlx5/core/accel/Makefile
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-subdir-ccflags-y += -I$(src)/..
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/diag/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/diag/Makefile
+deleted file mode 100644
+index c78512eed8d7..000000000000
+--- a/drivers/net/ethernet/mellanox/mlx5/core/diag/Makefile
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-subdir-ccflags-y += -I$(src)/..
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/en/Makefile
+deleted file mode 100644
+index c78512eed8d7..000000000000
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/Makefile
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-subdir-ccflags-y += -I$(src)/..
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/Makefile
+deleted file mode 100644
+index 5ee42991900a..000000000000
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/Makefile
++++ /dev/null
+@@ -1 +0,0 @@
+-subdir-ccflags-y += -I$(src)/../..
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/Makefile
+deleted file mode 100644
+index c78512eed8d7..000000000000
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/Makefile
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-subdir-ccflags-y += -I$(src)/..
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/fpga/Makefile
+deleted file mode 100644
+index c78512eed8d7..000000000000
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/Makefile
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-subdir-ccflags-y += -I$(src)/..
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/ipoib/Makefile
+deleted file mode 100644
+index c78512eed8d7..000000000000
+--- a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/Makefile
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-subdir-ccflags-y += -I$(src)/..
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/lib/Makefile
+deleted file mode 100644
+index c78512eed8d7..000000000000
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/Makefile
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-subdir-ccflags-y += -I$(src)/..
+diff --git a/drivers/net/ethernet/netronome/nfp/bpf/Makefile b/drivers/net/ethernet/netronome/nfp/bpf/Makefile
+deleted file mode 100644
+index 805fa28f391a..000000000000
+--- a/drivers/net/ethernet/netronome/nfp/bpf/Makefile
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-# kbuild requires Makefile in a directory to build individual objects
+diff --git a/drivers/net/ethernet/netronome/nfp/flower/Makefile b/drivers/net/ethernet/netronome/nfp/flower/Makefile
+deleted file mode 100644
+index 805fa28f391a..000000000000
+--- a/drivers/net/ethernet/netronome/nfp/flower/Makefile
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-# kbuild requires Makefile in a directory to build individual objects
+diff --git a/drivers/net/ethernet/netronome/nfp/nfpcore/Makefile b/drivers/net/ethernet/netronome/nfp/nfpcore/Makefile
+deleted file mode 100644
+index 805fa28f391a..000000000000
+--- a/drivers/net/ethernet/netronome/nfp/nfpcore/Makefile
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-# kbuild requires Makefile in a directory to build individual objects
+diff --git a/drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000/Makefile b/drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000/Makefile
+deleted file mode 100644
+index 805fa28f391a..000000000000
+--- a/drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000/Makefile
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-# kbuild requires Makefile in a directory to build individual objects
+diff --git a/drivers/net/ethernet/netronome/nfp/nic/Makefile b/drivers/net/ethernet/netronome/nfp/nic/Makefile
+deleted file mode 100644
+index 805fa28f391a..000000000000
+--- a/drivers/net/ethernet/netronome/nfp/nic/Makefile
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-# kbuild requires Makefile in a directory to build individual objects
 -- 
 2.17.1
 
