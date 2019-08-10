@@ -2,64 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D0E88BCD
-	for <lists+bpf@lfdr.de>; Sat, 10 Aug 2019 16:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F10F88C19
+	for <lists+bpf@lfdr.de>; Sat, 10 Aug 2019 17:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbfHJO6Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Aug 2019 10:58:24 -0400
-Received: from ms.lwn.net ([45.79.88.28]:54206 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726024AbfHJO6Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Aug 2019 10:58:24 -0400
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id EA68D2EF;
-        Sat, 10 Aug 2019 14:58:22 +0000 (UTC)
-Date:   Sat, 10 Aug 2019 08:58:21 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Jonathan =?UTF-8?B?TmV1c2Now6RmZXI=?= <j.neuschaefer@gmx.net>
-Cc:     linux-doc@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        id S1726116AbfHJP64 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Aug 2019 11:58:56 -0400
+Received: from condef-03.nifty.com ([202.248.20.68]:41395 "EHLO
+        condef-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbfHJP6z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Aug 2019 11:58:55 -0400
+Received: from conuserg-11.nifty.com ([10.126.8.74])by condef-03.nifty.com with ESMTP id x7AFtOOp007456;
+        Sun, 11 Aug 2019 00:55:24 +0900
+Received: from grover.flets-west.jp (softbank126125143222.bbtec.net [126.125.143.222]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id x7AFrG8t009713;
+        Sun, 11 Aug 2019 00:53:17 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com x7AFrG8t009713
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1565452398;
+        bh=oC63xap+fxhG9bzK+JnNTDD45f6COtr1Al2zhD2RQ+A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QRz/HTl63qVrVTBqUg3+u+Dklu40WD9vhseAg4FJ5HltnTHBLjXl/xoo5p1cQaowl
+         2SbyyKz6G7ZsMJeOXEA1NevVxbw2p+BDy/WnSkiGXuEA8IgxM1gdqq6ice3Ocpq8eG
+         5wXh9rypOSc3FpReWjYOlzm3Km8ISSl797/j2PotFFDP+ITNphwWGF3gG228KXZvdG
+         +DVWRjSfCcxV3fRTy1RJ0wQdZscJUJ5+1TJZJaHNd8uMtPN+M3SdbsN1J4ccjmajk2
+         cIYJpMIbPJ+XhO4NJWNrvdbI0WoXHgjzeKYJeWuRXa6Z+LV1DjB1lJNEZuuv10GMZH
+         PfGev3kUnpmsw==
+X-Nifty-SrcIP: [126.125.143.222]
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>, Sam Ravnborg <sam@ravnborg.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
         Alexei Starovoitov <ast@kernel.org>,
+        Boris Pismenny <borisp@mellanox.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Igor Russkikh <igor.russkikh@aquantia.com>,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation/networking/af_xdp: Inhibit reference to
- struct socket
-Message-ID: <20190810085821.11cee8b0@lwn.net>
-In-Reply-To: <20190810121738.19587-1-j.neuschaefer@gmx.net>
-References: <20190810121738.19587-1-j.neuschaefer@gmx.net>
-Organization: LWN.net
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Leon Romanovsky <leon@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        oss-drivers@netronome.com
+Subject: [PATCH 00/11] kbuild: clean-ups and improvement of single targets
+Date:   Sun, 11 Aug 2019 00:52:56 +0900
+Message-Id: <20190810155307.29322-1-yamada.masahiro@socionext.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 10 Aug 2019 14:17:37 +0200
-Jonathan Neuschäfer <j.neuschaefer@gmx.net> wrote:
 
-> With the recent change to auto-detect function names, Sphinx parses
-> socket() as a reference to the in-kernel definition of socket. It then
-> decides that struct socket is a good match, which was obviously not
-> intended in this case, because the text speaks about the syscall with
-> the same name.
-> 
-> Prevent socket() from being misinterpreted by wrapping it in ``inline
-> literal`` quotes.
-> 
-> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+01/11-09/11 are trivial clean-ups.
 
-Thanks for looking at that.  The better fix, though, would be to add
-socket() to the Skipfuncs array in Documentation/sphinx/automarkup.py.
-Then it will do the right thing everywhere without the need to add markup
-to the RST files.
+10/11 makes the single targets work more correctly.
 
-Thanks,
+11/11 cleans up Makefiles that have been added
+to work aroud the single target issues.
 
-jon
+
+
+Masahiro Yamada (11):
+  kbuild: move the Module.symvers check for external module build
+  kbuild: refactor part-of-module more
+  kbuild: fix modkern_aflags implementation
+  kbuild: remove 'make /' support
+  kbuild: remove meaningless 'targets' in ./Kbuild
+  kbuild: do not descend to ./Kbuild when cleaning
+  kbuild: unset variables in top Makefile instead of setting 0
+  kbuild: unify vmlinux-dirs and module-dirs rules
+  kbuild: unify clean-dirs rule for in-kernel and external module
+  kbuild: make single targets work more correctly
+  treewide: remove dummy Makefiles for single targets
+
+ Kbuild                                        |   7 -
+ Makefile                                      | 193 ++++++++++--------
+ .../aquantia/atlantic/hw_atl/Makefile         |   2 -
+ .../mellanox/mlx5/core/accel/Makefile         |   2 -
+ .../ethernet/mellanox/mlx5/core/diag/Makefile |   2 -
+ .../ethernet/mellanox/mlx5/core/en/Makefile   |   2 -
+ .../mellanox/mlx5/core/en/xsk/Makefile        |   1 -
+ .../mellanox/mlx5/core/en_accel/Makefile      |   2 -
+ .../ethernet/mellanox/mlx5/core/fpga/Makefile |   2 -
+ .../mellanox/mlx5/core/ipoib/Makefile         |   2 -
+ .../ethernet/mellanox/mlx5/core/lib/Makefile  |   2 -
+ .../net/ethernet/netronome/nfp/bpf/Makefile   |   2 -
+ .../ethernet/netronome/nfp/flower/Makefile    |   2 -
+ .../ethernet/netronome/nfp/nfpcore/Makefile   |   2 -
+ .../netronome/nfp/nfpcore/nfp6000/Makefile    |   2 -
+ .../net/ethernet/netronome/nfp/nic/Makefile   |   2 -
+ scripts/Makefile.build                        |  55 +++--
+ 17 files changed, 149 insertions(+), 133 deletions(-)
+ delete mode 100644 drivers/net/ethernet/aquantia/atlantic/hw_atl/Makefile
+ delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/accel/Makefile
+ delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/diag/Makefile
+ delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/Makefile
+ delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/xsk/Makefile
+ delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en_accel/Makefile
+ delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/fpga/Makefile
+ delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/ipoib/Makefile
+ delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/lib/Makefile
+ delete mode 100644 drivers/net/ethernet/netronome/nfp/bpf/Makefile
+ delete mode 100644 drivers/net/ethernet/netronome/nfp/flower/Makefile
+ delete mode 100644 drivers/net/ethernet/netronome/nfp/nfpcore/Makefile
+ delete mode 100644 drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000/Makefile
+ delete mode 100644 drivers/net/ethernet/netronome/nfp/nic/Makefile
+
+-- 
+2.17.1
+
