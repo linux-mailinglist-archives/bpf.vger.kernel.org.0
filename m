@@ -2,92 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DAD089374
-	for <lists+bpf@lfdr.de>; Sun, 11 Aug 2019 21:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B23EC89492
+	for <lists+bpf@lfdr.de>; Sun, 11 Aug 2019 23:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725870AbfHKT6i (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Aug 2019 15:58:38 -0400
-Received: from www62.your-server.de ([213.133.104.62]:38216 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbfHKT6i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Aug 2019 15:58:38 -0400
-Received: from 231.45.193.178.dynamic.wline.res.cust.swisscom.ch ([178.193.45.231] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hwtz8-0007lw-DS; Sun, 11 Aug 2019 21:58:34 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, ast@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: pull-request: bpf 2019-08-11
-Date:   Sun, 11 Aug 2019 21:58:34 +0200
-Message-Id: <20190811195834.3430-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25538/Sun Aug 11 10:18:30 2019)
+        id S1726424AbfHKVty (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Aug 2019 17:49:54 -0400
+Received: from shards.monkeyblade.net ([23.128.96.9]:34960 "EHLO
+        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726053AbfHKVty (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Aug 2019 17:49:54 -0400
+Received: from localhost (unknown [IPv6:2601:601:9f80:35cd::d71])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 14BA0155075C6;
+        Sun, 11 Aug 2019 14:49:54 -0700 (PDT)
+Date:   Sun, 11 Aug 2019 14:49:53 -0700 (PDT)
+Message-Id: <20190811.144953.272254761097299399.davem@davemloft.net>
+To:     daniel@iogearbox.net
+Cc:     ast@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: pull-request: bpf 2019-08-11
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20190811195834.3430-1-daniel@iogearbox.net>
+References: <20190811195834.3430-1-daniel@iogearbox.net>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Sun, 11 Aug 2019 14:49:54 -0700 (PDT)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David,
+From: Daniel Borkmann <daniel@iogearbox.net>
+Date: Sun, 11 Aug 2019 21:58:34 +0200
 
-The following pull-request contains BPF updates for your *net* tree.
+> The following pull-request contains BPF updates for your *net* tree.
+> 
+> The main changes are:
+> 
+> 1) x64 JIT code generation fix for backward-jumps to 1st insn, from Alexei.
+> 
+> 2) Fix buggy multi-closing of BTF file descriptor in libbpf, from Andrii.
+> 
+> 3) Fix libbpf_num_possible_cpus() to make it thread safe, from Takshak.
+> 
+> 4) Fix bpftool to dump an error if pinning fails, from Jakub.
+> 
+> Please consider pulling these changes from:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
 
-The main changes are:
-
-1) x64 JIT code generation fix for backward-jumps to 1st insn, from Alexei.
-
-2) Fix buggy multi-closing of BTF file descriptor in libbpf, from Andrii.
-
-3) Fix libbpf_num_possible_cpus() to make it thread safe, from Takshak.
-
-4) Fix bpftool to dump an error if pinning fails, from Jakub.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-----------------------------------------------------------------
-
-The following changes since commit 0a062ba725cdad3b167782179ee914a8402a0184:
-
-  Merge tag 'mlx5-fixes-2019-07-25' of git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux (2019-07-26 14:26:41 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to 4f7aafd78aeaf18a4f6dea9415df60e745c9dfa7:
-
-  Merge branch 'bpf-bpftool-pinning-error-msg' (2019-08-09 17:38:53 +0200)
-
-----------------------------------------------------------------
-Alexei Starovoitov (2):
-      bpf: fix x64 JIT code generation for jmp to 1st insn
-      selftests/bpf: tests for jmp to 1st insn
-
-Andrii Nakryiko (2):
-      libbpf: fix erroneous multi-closing of BTF FD
-      libbpf: set BTF FD for prog only when there is supported .BTF.ext data
-
-Daniel Borkmann (1):
-      Merge branch 'bpf-bpftool-pinning-error-msg'
-
-Jakub Kicinski (2):
-      tools: bpftool: fix error message (prog -> object)
-      tools: bpftool: add error message on pin failure
-
-Takshak Chahande (1):
-      libbpf : make libbpf_num_possible_cpus function thread safe
-
- arch/x86/net/bpf_jit_comp.c                   |  9 ++++----
- tools/bpf/bpftool/common.c                    |  8 +++++--
- tools/lib/bpf/libbpf.c                        | 33 +++++++++++++++------------
- tools/testing/selftests/bpf/verifier/loops1.c | 28 +++++++++++++++++++++++
- 4 files changed, 57 insertions(+), 21 deletions(-)
+Pulled, thanks Daniel.
