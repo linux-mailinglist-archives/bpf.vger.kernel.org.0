@@ -2,120 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFEA89129
-	for <lists+bpf@lfdr.de>; Sun, 11 Aug 2019 11:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DBC389186
+	for <lists+bpf@lfdr.de>; Sun, 11 Aug 2019 13:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726029AbfHKJ4F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Aug 2019 05:56:05 -0400
-Received: from mail-eopbgr140057.outbound.protection.outlook.com ([40.107.14.57]:50760
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725900AbfHKJ4F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Aug 2019 05:56:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NQtZkbdYptQtCagSdMzg5d3sbrKrdL6yvWVN6o1yFDftUUpOIASdRWBqNisVpL6KSPhjBojvbvGtEZcTqZWlUi2/yVTrTvaPJuovXkhx+Eyq+hmG81zTFN5rxlFre7nrgdoRSNCjQVr5XtevdphIPtaI+OscB181YFT9PjThGmmSLVhXzwqWvyW2pK+MLamH0BQQMQKZNIe2FGV3+bKQRDY9pLZEXhtkNtP35jLXzDH509NvEDLv8SJO7rq2coN5rnKLXDav32KIbuBb8Sd6F5FvVFgq1JsuSw9QuPbNgljn1pc1JmRSjXpMlQ8J1PXfRkV+mX1GSSTZ6/7MOOBqqA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LJtzcYhH8Dei1lvX5Lut2M+WOEfZoTyMfeC5WS3b/og=;
- b=EDtNbfuKl4qdHOdDg5Zhgujc3AZ0u31pXf9CUeHptsJrb9abZAmfHe6sMLcAiCcjqRguTPQUnAkP7dGlQO6zXS2Icx616nyBcEX9aEpFNVpkb93hvKs4mlTpXNWaYkjOVueqayYioG1kcMQQBAtHVEOuKFRZlZG37d5cU9KGg/eYDvKFEIpOKhyZXV9zf08BjAB+eBZlpCTwXsvqFEhBcQS4z7DeG5KaGgQNI05slgQE35DRf367738YFVkTwSBJz2GGOR1l1Y5KDGE+jS89JtLmPT7byNATA3Pb5sIt29Jk087OGuMTg47P2O0ax0MjvEme09RThjxC1z6Ss614BQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LJtzcYhH8Dei1lvX5Lut2M+WOEfZoTyMfeC5WS3b/og=;
- b=Irf3nmJbp1R2uoOy+bKZC6gszk5O7YkJ8c5NFfYcA3K9n9GU8cqbAIunYGyULnuEa25vKiK4rR34HhA9wEI3ZFBYXHAimCn6Dr7oc92jQofiJMzsHNgSHA1xQ8rnUIUIcAyTU3QpM2JimwR5mHD6VWKMu2tfdanDpeTx25ZIK7c=
-Received: from AM4PR05MB3137.eurprd05.prod.outlook.com (10.171.188.155) by
- AM4PR05MB3458.eurprd05.prod.outlook.com (10.170.125.151) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2157.14; Sun, 11 Aug 2019 09:55:58 +0000
-Received: from AM4PR05MB3137.eurprd05.prod.outlook.com
- ([fe80::a1bc:70:4ca9:49f6]) by AM4PR05MB3137.eurprd05.prod.outlook.com
- ([fe80::a1bc:70:4ca9:49f6%7]) with mapi id 15.20.2157.022; Sun, 11 Aug 2019
- 09:55:58 +0000
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>
-CC:     "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
+        id S1726038AbfHKLdH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Aug 2019 07:33:07 -0400
+Received: from mout.gmx.net ([212.227.15.18]:53855 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725990AbfHKLdH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Aug 2019 07:33:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1565523160;
+        bh=5XNLSGLV/n8XATlDhvdkuJ0c9QjsZbpQ2b3uSxwJK6w=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=bYyr51s8eLybvh94uOtY1iy/RL+qrsRvhIqX/y4gU5zcOm4PQzksqf+zXKoslev7D
+         NP2u7cSloBXdFHSIX9LUiA3dVht1iTP26Jl9Oz+nmPJLrGqz5FoJT34A0i9VyyLL0D
+         oaUFb5e12LIj1zFqZYpF2oPRAO7y25HgbbTQcur0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([109.90.233.87]) by mail.gmx.com (mrgmx001
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 0MQ2Wx-1i0Kr52FzX-005KXD; Sun, 11
+ Aug 2019 13:32:40 +0200
+Date:   Sun, 11 Aug 2019 13:32:25 +0200
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        linux-doc@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Boris Pismenny <borisp@mellanox.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Igor Russkikh <igor.russkikh@aquantia.com>,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "oss-drivers@netronome.com" <oss-drivers@netronome.com>
-Subject: Re: [PATCH 11/11] treewide: remove dummy Makefiles for single targets
-Thread-Topic: [PATCH 11/11] treewide: remove dummy Makefiles for single
- targets
-Thread-Index: AQHVT5QeRE/eBhrx90G8ydJdkg0FfKb1tsaA
-Date:   Sun, 11 Aug 2019 09:55:58 +0000
-Message-ID: <20190811095555.GF28049@mtr-leonro.mtl.com>
-References: <20190810155307.29322-1-yamada.masahiro@socionext.com>
- <20190810155307.29322-12-yamada.masahiro@socionext.com>
-In-Reply-To: <20190810155307.29322-12-yamada.masahiro@socionext.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: PR2PR09CA0020.eurprd09.prod.outlook.com
- (2603:10a6:101:16::32) To AM4PR05MB3137.eurprd05.prod.outlook.com
- (2603:10a6:205:8::27)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=leonro@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [193.47.165.251]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5a6960f3-1c5c-406b-f5ef-08d71e421c0e
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM4PR05MB3458;
-x-ms-traffictypediagnostic: AM4PR05MB3458:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM4PR05MB3458C667CF8B910D35D17B15B0D00@AM4PR05MB3458.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-forefront-prvs: 0126A32F74
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39850400004)(376002)(366004)(396003)(136003)(346002)(199004)(189003)(6246003)(4326008)(8676002)(11346002)(6486002)(478600001)(446003)(81156014)(81166006)(229853002)(5660300002)(66066001)(316002)(8936002)(4744005)(14454004)(2906002)(54906003)(486006)(6436002)(1076003)(66446008)(64756008)(66556008)(66476007)(66946007)(476003)(3846002)(6506007)(386003)(7416002)(52116002)(9686003)(6512007)(6116002)(102836004)(6916009)(25786009)(86362001)(186003)(53936002)(99286004)(71190400001)(71200400001)(305945005)(76176011)(33656002)(7736002)(26005)(256004);DIR:OUT;SFP:1101;SCL:1;SRVR:AM4PR05MB3458;H:AM4PR05MB3137.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: C1hooVLEz9S7qgTUPP8Zlpw5FQtCLRbfPMo7YyXFLvvb9F073Xk/btf9azTdxldc8ZlWSJ2SUjuLi5/cnHManxEwIdITcihL6aove01RaWwQvatTerBqbYQ9Hk+QmuWHsLw0XBnsTxmdl9WQQZDwx7hBUbCkKfUZsaOR9e6U5ITrBqxsgzBXEzksUxER1HbFjQsrHLbgknODGGJ8kApjvFtT4J6sjT0aivxkmqj2kYbXKxZgmRGgncne3Ubb2XOu2jasWESfT8NkaHhj0sb130Ylcfz62iVUoCNdeFV8oUwv+qK8Z9WtoPB6s2Uvclyv/zgHEhaCbnBIFrToCIL2a+NGbHWQSjbcEZpFv5s8MRvmxV6PP2pntXa3z834xZizLkBZ0i8cgLbeqTrxjbVQ6a1/Iqji4xIJWljsKbFIPlk=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <D00E1D38B2CAF44D82BE59CBB71B2DAA@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation/networking/af_xdp: Inhibit reference to
+ struct socket
+Message-ID: <20190811113225.GD1966@latitude>
+References: <20190810121738.19587-1-j.neuschaefer@gmx.net>
+ <20190810085821.11cee8b0@lwn.net>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5a6960f3-1c5c-406b-f5ef-08d71e421c0e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Aug 2019 09:55:58.6030
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yes2R86qFUOXZKiZF1gnTM+fy5wNPsgym0WfQhcCmZeOuLNs2hUD2a4zvtZuE4yDFj8D2rpmIs9GKaNm+uhlew==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR05MB3458
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3Pql8miugIZX0722"
+Content-Disposition: inline
+In-Reply-To: <20190810085821.11cee8b0@lwn.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Provags-ID: V03:K1:WSlMOTVkTIxgNdANUM34B9Gmw91nDYkQ4iCc+WK1bcjyk8C1UVC
+ xd4RXLqrHapjXCexH+vQ3NdTtgk03TD0vuPZ+zgdyQKcB/OBs1TdT7T6e7GZs9RfH1BUjvU
+ 5eUraiD5cWDMFKmPen2rgxYhu409cLv5Vh/xJr3Nbhx36lwNMVCPzEGVKzIdS2mOH4PxxOH
+ Gu1usr2e7Hg9gQhtvvCpA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:y64qkCK5mCY=:Ul8qM4rYjC/JIKtPh+C2QA
+ O+NQ+dtV+T+uJHv+18CPWbiFdp5IvIJrqq6fEsC1/9rvOfRkPVTHlNy5+3hImBlfdj3tGASW8
+ E9f8vcOr5XSqUf3uTwU993wHkK4hXX0yErTG18Yj3n1nc0h2vu6LBc6HGsDJm2YSl0XVm4sAs
+ 6022eCI1cgEW9RH0v8t8CJkezSvr3GV0EgRTflBEFIVVmz9q1Y2ljSVGSeSCREXHJvemB2L3j
+ ReTM+XO0LLZlM9vMVscZ63Rt+1uZYDVMqDyLYN9AXRa7uE+QdHpYlFGIVNMCABXUpoBCWiD1X
+ GlFyqAr/1yOyfgDz/zbjAi0Y4wGO+J35M+dlDxt6kIPCMS/f8LyXpnRqu4Z1eKzOn6zw1fB9O
+ /Psvu4iRxvr+HQ2n5EPbIj+ktG+It6+9O8vzdzj9d27Jhysy9ot3SNbZta0NiGbjsEHOodVqX
+ Bq1BwSnK2sTgMTCAt/y/MvY0nDSyMQ3dOUwEYEWJk7y5/aTqD4R75QOrLQS0e5qlJmnwoMwRj
+ +XRSU4ox8FyZMcL1f/3D1BFYNXr0BvlTHQgAwyxTS8UOIxnXVwoNVpzPmJ2npZGgbvzyPLNXw
+ OwgK/F/13q9H1YKBzLUyK/4EUBB1Wybb44Eig2bK1XrEjXLWhdlsCCUoFvJjKonC6wQwRLPwx
+ y8hGLVxZo7Po/KmLfrxNsSkZplVMK/5JcFP2KmHpTZ3Kt+89ZuE9XVJz9Gchtyova5jYMcOgv
+ haCI5Qlc1+sTkqG81+pRSVtEt+LAG7j7SibahVhB+65QPdlIK87drPSmLJP6OFt0vZdJLqxBx
+ sA1ozCd/ZGyIGGqHbyr8DrnjYVto5IIvltYEc7qMWNq7PD0xJvb4Kakd4i6Wfjjb9TRtvm6eV
+ M03K7GPVhbmJFKL/DCQBRwaa7GU8Yc7eWBjeHe4svs3uJuM83FjEt5m7fHQAzwe2DL3TJNPHn
+ n2vmD9BQgK45Z+2xVAU0mqlUmOaMBnQptu8bolR3EoqhyirC2Uo6P3DN58Vsz94zUGZyFsASX
+ Bd/pRcUuJ8aWBDk5lQAfr46cLuIHrhEZDeSH/NOFy1UbJ7wZYB/1mE5UkA/OeDGPOchJaqxhR
+ bTnOf675spHdrb7v6xdI7a6hpcU4oQ0mwv9aynbWG54b6EJT02E7gkc4Q==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Aug 11, 2019 at 12:53:07AM +0900, Masahiro Yamada wrote:
-> Now that the single target build descends into sub-directories
-> in the same ways as the normal build, these dummy Makefiles
-> are not needed any more.
->
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
->
 
-It is hard to test/review/ack on this patch without seeing previous
-patches, especially patch #10 where you changed logic of single targets.
+--3Pql8miugIZX0722
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks
+On Sat, Aug 10, 2019 at 08:58:21AM -0600, Jonathan Corbet wrote:
+> On Sat, 10 Aug 2019 14:17:37 +0200
+> Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net> wrote:
+>=20
+> > With the recent change to auto-detect function names, Sphinx parses
+> > socket() as a reference to the in-kernel definition of socket. It then
+> > decides that struct socket is a good match, which was obviously not
+> > intended in this case, because the text speaks about the syscall with
+> > the same name.
+> >=20
+> > Prevent socket() from being misinterpreted by wrapping it in ``inline
+> > literal`` quotes.
+> >=20
+> > Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+>=20
+> Thanks for looking at that.  The better fix, though, would be to add
+> socket() to the Skipfuncs array in Documentation/sphinx/automarkup.py.
+> Then it will do the right thing everywhere without the need to add markup
+> to the RST files.
+
+Alright, I'll do that for v2.
+
+
+Thanks,
+Jonathan Neusch=C3=A4fer
+
+--3Pql8miugIZX0722
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAl1P/IAACgkQCDBEmo7z
+X9sBYw//WDx7jJODlKacEnlPkuHTxAkanqNDkGnT1Ghh6pIMjM4kqaZSusMiTy77
+BCcw1O+iDfYLGZgBVuEeOZzaQtmKPGiaYvaOCGlEse5I/FR51qxXJmH6joU7ernN
+SktIdNBlV7GnisrZHoXvxVeBmnCtLUDX0mIdqstioLlkGNnu1zEduNhM+p/KkBzj
+iSxlNeQ/NEETCj2e4UHpLpYynix8j17T7X7uG/uO4b8gzoMBRe1bSOfKp45+AOoN
+0LwjbcS3rnsFqaYiP/7dJ8LaQUYCSWfUd4+f7yKgrvzA2cH3ObjYbDd8XeKHRm/R
+Gndzkxqm3SzxaUfAo8xYBqzD9tl/lfVVDYz0LUl1S+zMWAVK9v6rLXvdX7Ab7YRX
+dY3gRKCPYvL0jzyrLFHOZTBIlHqSHV9X/kECgVCS2ahOMIDx3ll8scb/Pw2XkM06
+bKQ/M/4SEaW4kxbhIj3H8y3lzngY46I5kFW/R64vhiH5KITQvqNd31V5ZUNzkdAT
+2+pQP1tBasxhur956ITqgW74t3KhwnqSTv8c7VS+VtmJQrB2QvXzaWT9RrodcrTo
+Tm5mWmfVBy8d0xfUu6RFNZN7SuQ2aUwb5WxDmzvNrB7FGD3vFpd42SJN2ub3qSDZ
+OeHDnYBFmcvbsYAi7JUi+Wg7yZzZoCeKsbKdgQdyxQG2UHYFpyg=
+=rjZu
+-----END PGP SIGNATURE-----
+
+--3Pql8miugIZX0722--
