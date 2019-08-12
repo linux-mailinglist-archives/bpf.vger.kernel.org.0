@@ -2,118 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9A78A322
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2019 18:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBACE8A437
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2019 19:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbfHLQST (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Aug 2019 12:18:19 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32902 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726463AbfHLQST (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 12 Aug 2019 12:18:19 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7CGHXaW039030
-        for <bpf@vger.kernel.org>; Mon, 12 Aug 2019 12:18:18 -0400
-Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2ubb1798vk-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 12 Aug 2019 12:18:17 -0400
-Received: from localhost
-        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Mon, 12 Aug 2019 17:18:15 +0100
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
-        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 12 Aug 2019 17:18:14 +0100
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7CGICt249348746
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Aug 2019 16:18:12 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8144111C05B;
-        Mon, 12 Aug 2019 16:18:12 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 41C5A11C050;
-        Mon, 12 Aug 2019 16:18:12 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.152.97.155])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 12 Aug 2019 16:18:12 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     daniel@iogearbox.net, ast@kernel.org
-Cc:     bpf@vger.kernel.org, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Subject: [PATCH bpf] s390/bpf: use 32-bit index for tail calls
-Date:   Mon, 12 Aug 2019 18:18:07 +0200
-X-Mailer: git-send-email 2.21.0
+        id S1726457AbfHLRZx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Aug 2019 13:25:53 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:37278 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726453AbfHLRZx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Aug 2019 13:25:53 -0400
+Received: by mail-qk1-f194.google.com with SMTP id s14so7115835qkm.4;
+        Mon, 12 Aug 2019 10:25:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=h9Fd8ad52H/DXc3EHqrRcl7UWFQ+n2opqsuoNUk+fj4=;
+        b=gk6B7+x9JvpjciKJE8+BS6x1209RGxdCQ44W6xZlmXchN8q7r8y3dolOfjdqPhIoT5
+         ufjIpCSqId54VkRVRJ1HSMeNrF8rQD24rMQlXlrRQ3QNuuVpoSwneieUQnN1vnHjwEcS
+         sGSeY+aQxvuWkDll+X6gHoffejn6FFaeXJh81vlB7i5Bwt6k9VvfJNlPbhZP1Kr5n8DE
+         cpDrVb+oFXVs1lKnfiZbSDieh2bsDTOY/l+VtjLRwQS8wEzCZPb6iQtz/HyZFb4TfmhB
+         kwJeg0n5TfAW/6NhZ5qz0ODzo9frvlE3Vr3qf2qE6ug6C2dtrgRq436Gy8AKz4yokKo0
+         0HUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=h9Fd8ad52H/DXc3EHqrRcl7UWFQ+n2opqsuoNUk+fj4=;
+        b=qU8ElZoI4SsW76qc153t9auAorP8IK3skAXw6X1UQkJbw3hZqbtY83qIZ9GDOc9bN5
+         q6lTf8G+lUbEtNUPpeYwjtUGHtZGZouQW3WehtQ6pmkJMrdr85Vc8IeoBsfFVOXU2D8a
+         L+1MOvCI/cvaMMiGaz/SHkq4TUl1cVXWGMryIOK/4Qiz1tqvAjHBirLKc6hDLhGibzFH
+         9Q5nJF1rrF+G2uHECa4P8naijkno9rENMcNghfcXjjQ0sIYs9zkpOt3U99YylTHz9NgZ
+         EIunyqqPqBY3DCQTDBaFGRkLRZz+kvFjkcXqLhQI9PXWE/rRczpXB16WFT6RLIiC73+e
+         AlWg==
+X-Gm-Message-State: APjAAAVD9uoZhizLFA+O1pkubzabhLFWUQkr6frK7aR0oLL8dJazLDFk
+        HeGkwldfJBIAvd7UtDfro9A6WblTEBLkBRLEOvsb9QuW9YY=
+X-Google-Smtp-Source: APXvYqwz9YRUN6iViaNMwZ7Dentim6bctiDMDgoDYqetEvemutV+2Q5yO0XBRlXmXNGSc+7j3MSoRmPkaV9WfUwtj1g=
+X-Received: by 2002:a37:f902:: with SMTP id l2mr2639584qkj.218.1565630751660;
+ Mon, 12 Aug 2019 10:25:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19081216-0028-0000-0000-0000038EE493
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19081216-0029-0000-0000-00002450F107
-Message-Id: <20190812161807.1400-1-iii@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-12_06:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908120182
+References: <20190802081154.30962-1-bjorn.topel@gmail.com> <20190802081154.30962-2-bjorn.topel@gmail.com>
+ <5ad56a5e-a189-3f56-c85c-24b6c300efd9@iogearbox.net>
+In-Reply-To: <5ad56a5e-a189-3f56-c85c-24b6c300efd9@iogearbox.net>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Mon, 12 Aug 2019 19:25:40 +0200
+Message-ID: <CAJ+HfNhO+xSs25aPat9WjC75W6_Kgfq=GU+YCEcoZw-GCjZdEg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/2] xsk: remove AF_XDP socket from map when
+ the socket is released
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Bruce Richardson <bruce.richardson@intel.com>,
+        Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-"p runtime/jit: pass > 32bit index to tail_call" fails when
-bpf_jit_enable=1, because the tail call is not executed.
+On Mon, 12 Aug 2019 at 14:28, Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+[...]
+> > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > index 59b57d708697..c3447bad608a 100644
+> > --- a/net/xdp/xsk.c
+> > +++ b/net/xdp/xsk.c
+> > @@ -362,6 +362,50 @@ static void xsk_unbind_dev(struct xdp_sock *xs)
+> >       dev_put(dev);
+> >   }
+> >
+> > +static struct xsk_map *xsk_get_map_list_entry(struct xdp_sock *xs,
+> > +                                           struct xdp_sock ***map_entr=
+y)
+> > +{
+> > +     struct xsk_map *map =3D NULL;
+> > +     struct xsk_map_node *node;
+> > +
+> > +     *map_entry =3D NULL;
+> > +
+> > +     spin_lock_bh(&xs->map_list_lock);
+> > +     node =3D list_first_entry_or_null(&xs->map_list, struct xsk_map_n=
+ode,
+> > +                                     node);
+> > +     if (node) {
+> > +             WARN_ON(xsk_map_inc(node->map));
+>
+> Can you elaborate on the refcount usage here and against what scenario it=
+ is protecting?
+>
 
-This in turn is because the generated code assumes index is 64-bit,
-while it must be 32-bit, and as a result prog array bounds check fails,
-while it should pass. Even if bounds check would have passed, the code
-that follows uses 64-bit index to compute prog array offset.
+Thanks for having a look!
 
-Fix by using clrj instead of clgrj for comparing index with array size,
-and also by using llgfr for truncating index to 32 bits before using it
-to compute prog array offset.
+First we access the map_list (under the lock) and pull out the map
+which we intend to clean. In order to clear the map entry, we need to
+a reference to the map. However, when the map_list_lock is released,
+there's a window where the map entry can be cleared and the map can be
+destroyed, and making the "map", which is used in
+xsk_delete_from_maps, stale. To guarantee existence the additional
+refinc is required. Makes sense?
 
-Fixes: 6651ee070b31 ("s390/bpf: implement bpf_tail_call() helper")
-Reported-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Acked-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- arch/s390/net/bpf_jit_comp.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+> Do we pretend it never fails on the bpf_map_inc() wrt the WARN_ON(),
+> why that (what makes it different from the xsk_map_node_alloc() inc
+> above where we do error out)?
 
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index 6299156f9738..955eb355c2fd 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -1049,8 +1049,8 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
- 		/* llgf %w1,map.max_entries(%b2) */
- 		EMIT6_DISP_LH(0xe3000000, 0x0016, REG_W1, REG_0, BPF_REG_2,
- 			      offsetof(struct bpf_array, map.max_entries));
--		/* clgrj %b3,%w1,0xa,label0: if %b3 >= %w1 goto out */
--		EMIT6_PCREL_LABEL(0xec000000, 0x0065, BPF_REG_3,
-+		/* clrj %b3,%w1,0xa,label0: if (u32)%b3 >= (u32)%w1 goto out */
-+		EMIT6_PCREL_LABEL(0xec000000, 0x0077, BPF_REG_3,
- 				  REG_W1, 0, 0xa);
- 
- 		/*
-@@ -1076,8 +1076,10 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
- 		 *         goto out;
- 		 */
- 
--		/* sllg %r1,%b3,3: %r1 = index * 8 */
--		EMIT6_DISP_LH(0xeb000000, 0x000d, REG_1, BPF_REG_3, REG_0, 3);
-+		/* llgfr %r1,%b3: %r1 = (u32) index */
-+		EMIT4(0xb9160000, REG_1, BPF_REG_3);
-+		/* sllg %r1,%r1,3: %r1 *= 8 */
-+		EMIT6_DISP_LH(0xeb000000, 0x000d, REG_1, REG_1, REG_0, 3);
- 		/* lg %r1,prog(%b2,%r1) */
- 		EMIT6_DISP_LH(0xe3000000, 0x0004, REG_1, BPF_REG_2,
- 			      REG_1, offsetof(struct bpf_array, ptrs));
--- 
-2.21.0
+Hmm, given that we're in a cleanup (socket release), we can't really
+return any error. What would be a more robust way? Retrying? AFAIK the
+release ops return an int, but it's not checked/used.
 
+> > +             map =3D node->map;
+> > +             *map_entry =3D node->map_entry;
+> > +     }
+> > +     spin_unlock_bh(&xs->map_list_lock);
+> > +     return map;
+> > +}
+> > +
+> > +static void xsk_delete_from_maps(struct xdp_sock *xs)
+> > +{
+> > +     /* This function removes the current XDP socket from all the
+> > +      * maps it resides in. We need to take extra care here, due to
+> > +      * the two locks involved. Each map has a lock synchronizing
+> > +      * updates to the entries, and each socket has a lock that
+> > +      * synchronizes access to the list of maps (map_list). For
+> > +      * deadlock avoidance the locks need to be taken in the order
+> > +      * "map lock"->"socket map list lock". We start off by
+> > +      * accessing the socket map list, and take a reference to the
+> > +      * map to guarantee existence. Then we ask the map to remove
+> > +      * the socket, which tries to remove the socket from the
+> > +      * map. Note that there might be updates to the map between
+> > +      * xsk_get_map_list_entry() and xsk_map_try_sock_delete().
+> > +      */
+
+I tried to clarify here, but I obviously need to do a better job. :-)
+
+
+Bj=C3=B6rn
