@@ -2,95 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9B78A1D6
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2019 17:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76498A255
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2019 17:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727236AbfHLPDp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Aug 2019 11:03:45 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31884 "EHLO
+        id S1727061AbfHLPbA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Aug 2019 11:31:00 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52406 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726325AbfHLPDp (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 12 Aug 2019 11:03:45 -0400
+        by vger.kernel.org with ESMTP id S1726818AbfHLPbA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 12 Aug 2019 11:31:00 -0400
 Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7CF3NKa145494
-        for <bpf@vger.kernel.org>; Mon, 12 Aug 2019 11:03:44 -0400
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7CFROdP110232
+        for <bpf@vger.kernel.org>; Mon, 12 Aug 2019 11:30:59 -0400
 Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2ub9c9kfxx-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2ub9c9mykd-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 12 Aug 2019 11:03:42 -0400
+        for <bpf@vger.kernel.org>; Mon, 12 Aug 2019 11:30:58 -0400
 Received: from localhost
         by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Mon, 12 Aug 2019 16:03:36 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
+        Mon, 12 Aug 2019 16:30:56 +0100
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
         by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 12 Aug 2019 16:03:35 +0100
+        Mon, 12 Aug 2019 16:30:53 +0100
 Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7CF3FaG40174002
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7CFUrtG61210846
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Aug 2019 15:03:15 GMT
+        Mon, 12 Aug 2019 15:30:53 GMT
 Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 41C6C11C052;
-        Mon, 12 Aug 2019 15:03:34 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id DEB0011C050;
+        Mon, 12 Aug 2019 15:30:52 +0000 (GMT)
 Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 03C2A11C04A;
-        Mon, 12 Aug 2019 15:03:34 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.152.97.155])
+        by IMSVA (Postfix) with ESMTP id AF1AD11C054;
+        Mon, 12 Aug 2019 15:30:52 +0000 (GMT)
+Received: from dyn-9-152-97-155.boeblingen.de.ibm.com (unknown [9.152.97.155])
         by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 12 Aug 2019 15:03:33 +0000 (GMT)
+        Mon, 12 Aug 2019 15:30:52 +0000 (GMT)
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     gor@linux.ibm.com, heiko.carstens@de.ibm.com,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf] s390/bpf: fix lcgr instruction encoding
-Date:   Mon, 12 Aug 2019 17:03:32 +0200
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+        charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Subject: Sending s390 eBPF JIT patches via bpf@vger.kernel.org
+Date:   Mon, 12 Aug 2019 17:30:52 +0200
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>
+X-Mailer: Apple Mail (2.3445.9.1)
 X-TM-AS-GCONF: 00
-x-cbid: 19081215-0008-0000-0000-000003083ABA
+x-cbid: 19081215-0008-0000-0000-000003083E76
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19081215-0009-0000-0000-00004A264A24
-Message-Id: <20190812150332.98109-1-iii@linux.ibm.com>
+x-cbparentid: 19081215-0009-0000-0000-00004A264DF1
+Message-Id: <5EC6E1F2-DBE4-42AB-B3F8-C6E78F52A7BF@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-12_06:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
+ malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908120169
+ mlxlogscore=683 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908120172
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-"masking, test in bounds 3" fails on s390, because
-BPF_ALU64_IMM(BPF_NEG, BPF_REG_2, 0) ignores the top 32 bits of
-BPF_REG_2. The reason is that JIT emits lcgfr instead of lcgr.
-The associated comment indicates that the code was intended to emit lcgr
-in the first place, it's just that the wrong opcode was used.
+Hello Daniel and Alexei,
 
-Fix by using the correct opcode.
+We would like to send s390 eBPF JIT patches through your bpf tree (as
+opposed to our s390 tree), since even though they mostly deal with s390
+instruction set, we believe you might spot more potential issues than
+we do. We also hope that this would allow to identify potential 
+conflicts with generic bpf changes earlier. Would that be OK?
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- arch/s390/net/bpf_jit_comp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index e636728ab452..6299156f9738 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -863,7 +863,7 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
- 		break;
- 	case BPF_ALU64 | BPF_NEG: /* dst = -dst */
- 		/* lcgr %dst,%dst */
--		EMIT4(0xb9130000, dst_reg, dst_reg);
-+		EMIT4(0xb9030000, dst_reg, dst_reg);
- 		break;
- 	/*
- 	 * BPF_FROM_BE/LE
--- 
-2.21.0
+Best regards,
+Ilya
 
