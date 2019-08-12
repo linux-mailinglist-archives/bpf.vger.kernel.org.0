@@ -2,89 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9747289EF3
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2019 14:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9B78A1D6
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2019 17:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726822AbfHLM5I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Aug 2019 08:57:08 -0400
-Received: from www62.your-server.de ([213.133.104.62]:40366 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbfHLM5I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Aug 2019 08:57:08 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hx9sj-0006FN-BN; Mon, 12 Aug 2019 14:57:01 +0200
-Received: from [178.193.45.231] (helo=pc-63.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hx9sj-000XKt-1f; Mon, 12 Aug 2019 14:57:01 +0200
-Subject: Re: [PATCH v2 bpf-next] mm: mmap: increase sockets maximum memory
- size pgoff for 32bits
-To:     Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        bjorn.topel@intel.com, linux-mm@kvack.org
-Cc:     xdp-newbies@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, ast@kernel.org,
-        magnus.karlsson@intel.com
-References: <20190812113429.2488-1-ivan.khoronzhuk@linaro.org>
- <20190812124326.32146-1-ivan.khoronzhuk@linaro.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <389f9d64-cfcd-6cc3-bf72-83c35d3e9512@iogearbox.net>
-Date:   Mon, 12 Aug 2019 14:57:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727236AbfHLPDp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Aug 2019 11:03:45 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31884 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726325AbfHLPDp (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 12 Aug 2019 11:03:45 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7CF3NKa145494
+        for <bpf@vger.kernel.org>; Mon, 12 Aug 2019 11:03:44 -0400
+Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2ub9c9kfxx-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 12 Aug 2019 11:03:42 -0400
+Received: from localhost
+        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Mon, 12 Aug 2019 16:03:36 +0100
+Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
+        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 12 Aug 2019 16:03:35 +0100
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7CF3FaG40174002
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Aug 2019 15:03:15 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 41C6C11C052;
+        Mon, 12 Aug 2019 15:03:34 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 03C2A11C04A;
+        Mon, 12 Aug 2019 15:03:34 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.97.155])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 12 Aug 2019 15:03:33 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     gor@linux.ibm.com, heiko.carstens@de.ibm.com,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf] s390/bpf: fix lcgr instruction encoding
+Date:   Mon, 12 Aug 2019 17:03:32 +0200
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20190812124326.32146-1-ivan.khoronzhuk@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25539/Mon Aug 12 10:15:24 2019)
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19081215-0008-0000-0000-000003083ABA
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19081215-0009-0000-0000-00004A264A24
+Message-Id: <20190812150332.98109-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-12_06:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908120169
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/12/19 2:43 PM, Ivan Khoronzhuk wrote:
-> The AF_XDP sockets umem mapping interface uses XDP_UMEM_PGOFF_FILL_RING
-> and XDP_UMEM_PGOFF_COMPLETION_RING offsets. The offsets seems like are
-> established already and are part of configuration interface.
-> 
-> But for 32-bit systems, while AF_XDP socket configuration, the values
-> are to large to pass maximum allowed file size verification.
-> The offsets can be tuned ofc, but instead of changing existent
-> interface - extend max allowed file size for sockets.
-> 
-> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-> ---
-> 
-> Based on bpf-next/master
+"masking, test in bounds 3" fails on s390, because
+BPF_ALU64_IMM(BPF_NEG, BPF_REG_2, 0) ignores the top 32 bits of
+BPF_REG_2. The reason is that JIT emits lcgfr instead of lcgr.
+The associated comment indicates that the code was intended to emit lcgr
+in the first place, it's just that the wrong opcode was used.
 
-This is mainly for Andrew to pick rather than bpf-next, but I presume it would
-apply cleanly to his tree as well.
+Fix by using the correct opcode.
 
-> v2..v1:
-> 	removed not necessarily #ifdev as ULL and UL for 64 has same size
-> 
->   mm/mmap.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index 7e8c3e8ae75f..578f52812361 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -1358,6 +1358,9 @@ static inline u64 file_mmap_size_max(struct file *file, struct inode *inode)
->   	if (S_ISBLK(inode->i_mode))
->   		return MAX_LFS_FILESIZE;
->   
-> +	if (S_ISSOCK(inode->i_mode))
-> +		return MAX_LFS_FILESIZE;
-> +
->   	/* Special "we do even unsigned file positions" case */
->   	if (file->f_mode & FMODE_UNSIGNED_OFFSET)
->   		return 0;
-> 
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ arch/s390/net/bpf_jit_comp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
+index e636728ab452..6299156f9738 100644
+--- a/arch/s390/net/bpf_jit_comp.c
++++ b/arch/s390/net/bpf_jit_comp.c
+@@ -863,7 +863,7 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
+ 		break;
+ 	case BPF_ALU64 | BPF_NEG: /* dst = -dst */
+ 		/* lcgr %dst,%dst */
+-		EMIT4(0xb9130000, dst_reg, dst_reg);
++		EMIT4(0xb9030000, dst_reg, dst_reg);
+ 		break;
+ 	/*
+ 	 * BPF_FROM_BE/LE
+-- 
+2.21.0
 
