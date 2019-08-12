@@ -2,185 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59384897FE
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2019 09:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4785289B22
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2019 12:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726931AbfHLHjk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Aug 2019 03:39:40 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:42629 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726785AbfHLHjk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Aug 2019 03:39:40 -0400
-Received: by mail-pf1-f194.google.com with SMTP id i30so571489pfk.9
-        for <bpf@vger.kernel.org>; Mon, 12 Aug 2019 00:39:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2quQnHJeT9Fa5IrcwEwRCo1YcerZTXomN5HFRZFMkZA=;
-        b=UZbvpYbcRKMB/b1QsY8X3xIXLrbQEdCpA4iv13KRfFJsy7ZRirVFICaxDYOri61lmI
-         /kPemgdrhQXdHaDh5SYmHoB06YaJICbPKKh5UjTUqeOZPR0/yAVReQ981EUoIPLWHoue
-         HdNp0+7bLSTsZQ3ZzvBkRI4aNF8cSRi6tEwa3xCZMoD3V//LdModJ5MZxOCsiEGWUmwf
-         5ftBQ9yml82PT+YSCWCIa/cGWj7xRg6+KIfxzDqQz95QAfsqF5syMu2pj7crCYOp5MwK
-         lZ3e2Qxq9uOgPMIZ4d7gc7E8ffRUBNVI8KTgbRriTGU/JNG6ndglyx8GhUTUP9KaHqCA
-         CUig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2quQnHJeT9Fa5IrcwEwRCo1YcerZTXomN5HFRZFMkZA=;
-        b=k3I3ZTshPx8pJAdYFrwEUt2+lQOEurZSpNcmvbs0ThXhmVCsXx03t4FUS/Mxe8Wg+o
-         ifzWohCjMhAaDL/oDeKILiAiKrTn79fIa7pY2C4q+ecCG3iH6VfArSh/uaVKujvuohyo
-         FaNcHI4RVOnZ4o4q2ag+OB63wY7s1Q2DCbg3PAt+jDfQclfJqS4RrNt77MIflHesMEw6
-         4y8fAlKkZhQ2YBvuNG6QL+K/TBGAizw9vz1QcB707e/ISCqpT7SOtKuBGHH/Zk2pNWaf
-         YwLurPSYiPt7NlaJAYTZ5OTqVmmChEbxLWS5VNe45uQ7Qu+6AXXjzJ4etlQ+qbojHGrR
-         QLlg==
-X-Gm-Message-State: APjAAAXxRIUZmX17NK50D9THaawn1iQflpPTBUGgd4Kq70l8Mxb/+nFj
-        9gvLsgtFuNKvWuyAbRXKI5ax1Q==
-X-Google-Smtp-Source: APXvYqxsTbOEkvNmm97I6dKg6Jvq/xPehRt6IenrYIjfZP9tbVsVlR9H+zzFNqA/n8mNeFGwsh9AAw==
-X-Received: by 2002:a65:4505:: with SMTP id n5mr26188138pgq.301.1565595579238;
-        Mon, 12 Aug 2019 00:39:39 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s (li456-16.members.linode.com. [50.116.10.16])
-        by smtp.gmail.com with ESMTPSA id k6sm115551672pfi.12.2019.08.12.00.39.33
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 12 Aug 2019 00:39:38 -0700 (PDT)
-Date:   Mon, 12 Aug 2019 15:39:31 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Milian Wolff <milian.wolff@kdab.com>,
-        Donald Yandt <donald.yandt@gmail.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Wei Li <liwei391@huawei.com>, Mark Drayton <mbd@fb.com>,
-        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Subject: Re: [PATCH v4 1/2] perf machine: Support arch's specific kernel
- start address
-Message-ID: <20190812073931.GB8062@leoy-ThinkPad-X240s>
-References: <20190810072135.27072-1-leo.yan@linaro.org>
- <20190810072135.27072-2-leo.yan@linaro.org>
- <c1818f6f-37df-6971-fddc-6663e5b6ff95@intel.com>
- <20190812070236.GA8062@leoy-ThinkPad-X240s>
- <250165c6-908a-c57e-8d83-03da4272f568@intel.com>
+        id S1727641AbfHLKRX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Aug 2019 06:17:23 -0400
+Received: from www62.your-server.de ([213.133.104.62]:39540 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727323AbfHLKRX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Aug 2019 06:17:23 -0400
+Received: from sslproxy01.your-server.de ([88.198.220.130])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hx7O9-0000SG-UJ; Mon, 12 Aug 2019 12:17:17 +0200
+Received: from [178.193.45.231] (helo=pc-63.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hx7O9-0003yz-IC; Mon, 12 Aug 2019 12:17:17 +0200
+Subject: Re: [PATCH bpf-next v2 2/4] bpf: support cloning sk storage on
+ accept()
+To:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
+References: <20190809161038.186678-1-sdf@google.com>
+ <20190809161038.186678-3-sdf@google.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <db5ec323-1126-d461-bc65-27ccc1414589@iogearbox.net>
+Date:   Mon, 12 Aug 2019 12:17:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <250165c6-908a-c57e-8d83-03da4272f568@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190809161038.186678-3-sdf@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25539/Mon Aug 12 10:15:24 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 12, 2019 at 10:23:21AM +0300, Adrian Hunter wrote:
-> On 12/08/19 10:02 AM, Leo Yan wrote:
-> > On Mon, Aug 12, 2019 at 09:37:33AM +0300, Adrian Hunter wrote:
-> >> On 10/08/19 10:21 AM, Leo Yan wrote:
-> >>> machine__get_kernel_start() gives out the kernel start address; some
-> >>> architectures need to tweak the start address so that can reflect the
-> >>> kernel start address correctly.  This is not only for x86_64 arch, but
-> >>> it is also required by other architectures, e.g. arm/arm64 needs to
-> >>> tweak the kernel start address so can include the kernel memory regions
-> >>> which are used before the '_stext' symbol.
-> >>>
-> >>> This patch refactors machine__get_kernel_start() by adding a weak
-> >>> arch__fix_kernel_text_start(), any architecture can implement it to
-> >>> tweak its specific start address; this also allows the arch specific
-> >>> code to be placed into 'arch' folder.
-> >>>
-> >>> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> >>> ---
-> >>>  tools/perf/arch/x86/util/machine.c | 10 ++++++++++
-> >>>  tools/perf/util/machine.c          | 13 +++++++------
-> >>>  tools/perf/util/machine.h          |  2 ++
-> >>>  3 files changed, 19 insertions(+), 6 deletions(-)
-> >>>
-> >>> diff --git a/tools/perf/arch/x86/util/machine.c b/tools/perf/arch/x86/util/machine.c
-> >>> index 1e9ec783b9a1..9f012131534a 100644
-> >>> --- a/tools/perf/arch/x86/util/machine.c
-> >>> +++ b/tools/perf/arch/x86/util/machine.c
-> >>> @@ -101,4 +101,14 @@ int machine__create_extra_kernel_maps(struct machine *machine,
-> >>>  	return ret;
-> >>>  }
-> >>>  
-> >>> +void arch__fix_kernel_text_start(u64 *start)
-> >>> +{
-> >>> +	/*
-> >>> +	 * On x86_64, PTI entry trampolines are less than the
-> >>> +	 * start of kernel text, but still above 2^63. So leave
-> >>> +	 * kernel_start = 1ULL << 63 for x86_64.
-> >>> +	 */
-> >>> +	*start = 1ULL << 63;
-> >>> +}
-> >>
-> >> That is needed for reporting x86 data on any arch i.e. it is not specific to
-> >> the compile-time architecture, it is specific to the perf.data file
-> >> architecture, which is what machine__is() compares. So, this looks wrong.
-> > 
-> > Thanks for reviewing, Adrian.
-> > 
-> > If so, I think we should extend the function machine__get_kernel_start()
-> > as below; for building successfully, will always define the macro
-> > ARM_PRE_START_SIZE in Makefile.config.
-> > 
-> > @Arnaldo, @Adrian, Please let me know if this works for you?
+On 8/9/19 6:10 PM, Stanislav Fomichev wrote:
+> Add new helper bpf_sk_storage_clone which optionally clones sk storage
+> and call it from sk_clone_lock.
 > 
-> I don't know how you intend to calculate ARM_PRE_START_SIZE, but below is OK
-> for x86.
-> 
-> > 
-> > diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> > index f6ee7fbad3e4..30a0ff627263 100644
-> > --- a/tools/perf/util/machine.c
-> > +++ b/tools/perf/util/machine.c
-> > @@ -2687,13 +2687,26 @@ int machine__get_kernel_start(struct machine *machine)
-> >         machine->kernel_start = 1ULL << 63;
-> >         if (map) {
-> >                 err = map__load(map);
-> > +               if (err)
-> > +                       return err;
-> > +
-> >                 /*
-> >                  * On x86_64, PTI entry trampolines are less than the
-> >                  * start of kernel text, but still above 2^63. So leave
-> >                  * kernel_start = 1ULL << 63 for x86_64.
-> >                  */
-> > -               if (!err && !machine__is(machine, "x86_64"))
-> > +               if (!machine__is(machine, "x86_64"))
-> >                         machine->kernel_start = map->start;
-> > +
-> > +               /*
-> > +                * On arm/arm64, some memory regions are prior to '_stext'
-> > +                * symbol; to reflect the complete kernel address space,
-> > +                * compensate these pre-defined regions for kernel start
-> > +                * address.
-> > +                */
-> > +               if (machine__is(machine, "arm64") ||
-> > +                   machine__is(machine, "arm"))
-> 
-> machine__is() does not normalize the architecture, so you may want to use
-> perf_env__arch() instead.
-
-You are right, thanks for suggestion.  Will use perf_env__arch() in
-next spin.
-
-Thanks,
-Leo Yan
-
-> 
-> > +                       machine->kernel_start -= ARM_PRE_START_SIZE;
-> >         }
-> >         return err;
-> >  }
-
+> Cc: Martin KaFai Lau <kafai@fb.com>
+> Cc: Yonghong Song <yhs@fb.com>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 [...]
+> +int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk)
+> +{
+> +	struct bpf_sk_storage *new_sk_storage = NULL;
+> +	struct bpf_sk_storage *sk_storage;
+> +	struct bpf_sk_storage_elem *selem;
+> +	int ret;
+> +
+> +	RCU_INIT_POINTER(newsk->sk_bpf_storage, NULL);
+> +
+> +	rcu_read_lock();
+> +	sk_storage = rcu_dereference(sk->sk_bpf_storage);
+> +
+> +	if (!sk_storage || hlist_empty(&sk_storage->list))
+> +		goto out;
+> +
+> +	hlist_for_each_entry_rcu(selem, &sk_storage->list, snode) {
+> +		struct bpf_sk_storage_elem *copy_selem;
+> +		struct bpf_sk_storage_map *smap;
+> +		struct bpf_map *map;
+> +		int refold;
+> +
+> +		smap = rcu_dereference(SDATA(selem)->smap);
+> +		if (!(smap->map.map_flags & BPF_F_CLONE))
+> +			continue;
+> +
+> +		map = bpf_map_inc_not_zero(&smap->map, false);
+> +		if (IS_ERR(map))
+> +			continue;
+> +
+> +		copy_selem = bpf_sk_storage_clone_elem(newsk, smap, selem);
+> +		if (!copy_selem) {
+> +			ret = -ENOMEM;
+> +			bpf_map_put(map);
+> +			goto err;
+> +		}
+> +
+> +		if (new_sk_storage) {
+> +			selem_link_map(smap, copy_selem);
+> +			__selem_link_sk(new_sk_storage, copy_selem);
+> +		} else {
+> +			ret = sk_storage_alloc(newsk, smap, copy_selem);
+> +			if (ret) {
+> +				kfree(copy_selem);
+> +				atomic_sub(smap->elem_size,
+> +					   &newsk->sk_omem_alloc);
+> +				bpf_map_put(map);
+> +				goto err;
+> +			}
+> +
+> +			new_sk_storage = rcu_dereference(copy_selem->sk_storage);
+> +		}
+> +		bpf_map_put(map);
+
+The map get/put combination /under/ RCU read lock seems a bit odd to me, could
+you exactly describe the race that this would be preventing?
+
+> +	}
+> +
+> +out:
+> +	rcu_read_unlock();
+> +	return 0;
+> +
+> +err:
+> +	rcu_read_unlock();
+> +
+> +	bpf_sk_storage_free(newsk);
+> +	return ret;
+> +}
+Thanks,
+Daniel
