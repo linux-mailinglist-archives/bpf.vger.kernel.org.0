@@ -2,140 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EBACE8A437
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2019 19:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407CB8A4EF
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2019 19:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726457AbfHLRZx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Aug 2019 13:25:53 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:37278 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726453AbfHLRZx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Aug 2019 13:25:53 -0400
-Received: by mail-qk1-f194.google.com with SMTP id s14so7115835qkm.4;
-        Mon, 12 Aug 2019 10:25:52 -0700 (PDT)
+        id S1726506AbfHLRwv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Aug 2019 13:52:51 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:35377 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbfHLRwv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Aug 2019 13:52:51 -0400
+Received: by mail-pl1-f196.google.com with SMTP id w24so48154284plp.2
+        for <bpf@vger.kernel.org>; Mon, 12 Aug 2019 10:52:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=h9Fd8ad52H/DXc3EHqrRcl7UWFQ+n2opqsuoNUk+fj4=;
-        b=gk6B7+x9JvpjciKJE8+BS6x1209RGxdCQ44W6xZlmXchN8q7r8y3dolOfjdqPhIoT5
-         ufjIpCSqId54VkRVRJ1HSMeNrF8rQD24rMQlXlrRQ3QNuuVpoSwneieUQnN1vnHjwEcS
-         sGSeY+aQxvuWkDll+X6gHoffejn6FFaeXJh81vlB7i5Bwt6k9VvfJNlPbhZP1Kr5n8DE
-         cpDrVb+oFXVs1lKnfiZbSDieh2bsDTOY/l+VtjLRwQS8wEzCZPb6iQtz/HyZFb4TfmhB
-         kwJeg0n5TfAW/6NhZ5qz0ODzo9frvlE3Vr3qf2qE6ug6C2dtrgRq436Gy8AKz4yokKo0
-         0HUg==
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=FDBHhm9o0hCKPWae4nXBJdHpjQnOdVxkg9O1sCwpT3c=;
+        b=f6bs+VkH6HmAmbfT0JcI9UiQX2Yy2ulAeH7sjJn9fNGaqzxmrnPUaLY9Sd/BZ/F3Fh
+         o+hCBJBSQCOW6UFH+Ch9gxkeaN31YSnXEh5GHcqIX3ngKsCMnXeyLr9dzuFGBlytvi1e
+         jvY+ARqwLpPAP0y3fZ6XR1/uT2hnENUYO0GlmqohQpVtGDr+qMAswuKr3YnJUekuDQzX
+         wZYmEIRqCETd5hMzowmN2snNJN6kRCXIJ6h41E/H22TYELKVI1biFKjikb0kxBF5u2Vw
+         CLk/M8GeNYoN6rxRJz99VnMVJHf8FKMhhr3ZpL0h6jhd6hXDRd+iBlEShFytZoq2cOoa
+         /f/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=h9Fd8ad52H/DXc3EHqrRcl7UWFQ+n2opqsuoNUk+fj4=;
-        b=qU8ElZoI4SsW76qc153t9auAorP8IK3skAXw6X1UQkJbw3hZqbtY83qIZ9GDOc9bN5
-         q6lTf8G+lUbEtNUPpeYwjtUGHtZGZouQW3WehtQ6pmkJMrdr85Vc8IeoBsfFVOXU2D8a
-         L+1MOvCI/cvaMMiGaz/SHkq4TUl1cVXWGMryIOK/4Qiz1tqvAjHBirLKc6hDLhGibzFH
-         9Q5nJF1rrF+G2uHECa4P8naijkno9rENMcNghfcXjjQ0sIYs9zkpOt3U99YylTHz9NgZ
-         EIunyqqPqBY3DCQTDBaFGRkLRZz+kvFjkcXqLhQI9PXWE/rRczpXB16WFT6RLIiC73+e
-         AlWg==
-X-Gm-Message-State: APjAAAVD9uoZhizLFA+O1pkubzabhLFWUQkr6frK7aR0oLL8dJazLDFk
-        HeGkwldfJBIAvd7UtDfro9A6WblTEBLkBRLEOvsb9QuW9YY=
-X-Google-Smtp-Source: APXvYqwz9YRUN6iViaNMwZ7Dentim6bctiDMDgoDYqetEvemutV+2Q5yO0XBRlXmXNGSc+7j3MSoRmPkaV9WfUwtj1g=
-X-Received: by 2002:a37:f902:: with SMTP id l2mr2639584qkj.218.1565630751660;
- Mon, 12 Aug 2019 10:25:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190802081154.30962-1-bjorn.topel@gmail.com> <20190802081154.30962-2-bjorn.topel@gmail.com>
- <5ad56a5e-a189-3f56-c85c-24b6c300efd9@iogearbox.net>
-In-Reply-To: <5ad56a5e-a189-3f56-c85c-24b6c300efd9@iogearbox.net>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Mon, 12 Aug 2019 19:25:40 +0200
-Message-ID: <CAJ+HfNhO+xSs25aPat9WjC75W6_Kgfq=GU+YCEcoZw-GCjZdEg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/2] xsk: remove AF_XDP socket from map when
- the socket is released
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FDBHhm9o0hCKPWae4nXBJdHpjQnOdVxkg9O1sCwpT3c=;
+        b=i3eXok5FKiC+CKu+HRxK67nrQWNScGyNpvec1GgCgjjIiCER/stw9g55qCxBqTvC6t
+         iowiKyuWapJT7ehKIGyI5nehDkXznsdYT9wwp8wWaC/1o5i5gJNlorhpdCVPBQ1g6ulh
+         v/VyCYsLzOIf++j/gkiz61KeBb13CSfCqd3eG/MlGhbjdqPtxYKVjoQ+UoFRMJ1fSFJW
+         8F9xeWDARdFf3XqyrVCDDyNTx15XgUj1r5HzkdRWAPaXAGSN5q0xbPuB1XqQLWu33C3h
+         MsOh87B1PbYGxZwJGhOobuRu882i2mYiANp4tu4iS5X6+QMcxe9SqgY+vVTsNXQAiPP3
+         rwsA==
+X-Gm-Message-State: APjAAAUUxUI2CxLqGiCz9wps/1Fpoq7s30yPlR4RFRFhqpWM7rKXq0xx
+        my9gugztQn5J1Oy0Hma8qImq8g==
+X-Google-Smtp-Source: APXvYqyLAo893vqHTfzBwG3ccLyA4X+EsqC2/4r6iU+AD+DOwYk6KGio6qLinnSkPUx3XIRRykfiWA==
+X-Received: by 2002:a17:902:be03:: with SMTP id r3mr34472025pls.156.1565632370710;
+        Mon, 12 Aug 2019 10:52:50 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id r6sm229803pjb.22.2019.08.12.10.52.49
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 12 Aug 2019 10:52:50 -0700 (PDT)
+Date:   Mon, 12 Aug 2019 10:52:49 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
 To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Bruce Richardson <bruce.richardson@intel.com>,
-        Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH bpf-next v2 2/4] bpf: support cloning sk storage on
+ accept()
+Message-ID: <20190812175249.GF2820@mini-arch>
+References: <20190809161038.186678-1-sdf@google.com>
+ <20190809161038.186678-3-sdf@google.com>
+ <db5ec323-1126-d461-bc65-27ccc1414589@iogearbox.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <db5ec323-1126-d461-bc65-27ccc1414589@iogearbox.net>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 12 Aug 2019 at 14:28, Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-[...]
-> > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > index 59b57d708697..c3447bad608a 100644
-> > --- a/net/xdp/xsk.c
-> > +++ b/net/xdp/xsk.c
-> > @@ -362,6 +362,50 @@ static void xsk_unbind_dev(struct xdp_sock *xs)
-> >       dev_put(dev);
-> >   }
-> >
-> > +static struct xsk_map *xsk_get_map_list_entry(struct xdp_sock *xs,
-> > +                                           struct xdp_sock ***map_entr=
-y)
+On 08/12, Daniel Borkmann wrote:
+> On 8/9/19 6:10 PM, Stanislav Fomichev wrote:
+> > Add new helper bpf_sk_storage_clone which optionally clones sk storage
+> > and call it from sk_clone_lock.
+> > 
+> > Cc: Martin KaFai Lau <kafai@fb.com>
+> > Cc: Yonghong Song <yhs@fb.com>
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> [...]
+> > +int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk)
 > > +{
-> > +     struct xsk_map *map =3D NULL;
-> > +     struct xsk_map_node *node;
+> > +	struct bpf_sk_storage *new_sk_storage = NULL;
+> > +	struct bpf_sk_storage *sk_storage;
+> > +	struct bpf_sk_storage_elem *selem;
+> > +	int ret;
 > > +
-> > +     *map_entry =3D NULL;
+> > +	RCU_INIT_POINTER(newsk->sk_bpf_storage, NULL);
 > > +
-> > +     spin_lock_bh(&xs->map_list_lock);
-> > +     node =3D list_first_entry_or_null(&xs->map_list, struct xsk_map_n=
-ode,
-> > +                                     node);
-> > +     if (node) {
-> > +             WARN_ON(xsk_map_inc(node->map));
->
-> Can you elaborate on the refcount usage here and against what scenario it=
- is protecting?
->
-
-Thanks for having a look!
-
-First we access the map_list (under the lock) and pull out the map
-which we intend to clean. In order to clear the map entry, we need to
-a reference to the map. However, when the map_list_lock is released,
-there's a window where the map entry can be cleared and the map can be
-destroyed, and making the "map", which is used in
-xsk_delete_from_maps, stale. To guarantee existence the additional
-refinc is required. Makes sense?
-
-> Do we pretend it never fails on the bpf_map_inc() wrt the WARN_ON(),
-> why that (what makes it different from the xsk_map_node_alloc() inc
-> above where we do error out)?
-
-Hmm, given that we're in a cleanup (socket release), we can't really
-return any error. What would be a more robust way? Retrying? AFAIK the
-release ops return an int, but it's not checked/used.
-
-> > +             map =3D node->map;
-> > +             *map_entry =3D node->map_entry;
-> > +     }
-> > +     spin_unlock_bh(&xs->map_list_lock);
-> > +     return map;
-> > +}
+> > +	rcu_read_lock();
+> > +	sk_storage = rcu_dereference(sk->sk_bpf_storage);
 > > +
-> > +static void xsk_delete_from_maps(struct xdp_sock *xs)
-> > +{
-> > +     /* This function removes the current XDP socket from all the
-> > +      * maps it resides in. We need to take extra care here, due to
-> > +      * the two locks involved. Each map has a lock synchronizing
-> > +      * updates to the entries, and each socket has a lock that
-> > +      * synchronizes access to the list of maps (map_list). For
-> > +      * deadlock avoidance the locks need to be taken in the order
-> > +      * "map lock"->"socket map list lock". We start off by
-> > +      * accessing the socket map list, and take a reference to the
-> > +      * map to guarantee existence. Then we ask the map to remove
-> > +      * the socket, which tries to remove the socket from the
-> > +      * map. Note that there might be updates to the map between
-> > +      * xsk_get_map_list_entry() and xsk_map_try_sock_delete().
-> > +      */
+> > +	if (!sk_storage || hlist_empty(&sk_storage->list))
+> > +		goto out;
+> > +
+> > +	hlist_for_each_entry_rcu(selem, &sk_storage->list, snode) {
+> > +		struct bpf_sk_storage_elem *copy_selem;
+> > +		struct bpf_sk_storage_map *smap;
+> > +		struct bpf_map *map;
+> > +		int refold;
+> > +
+> > +		smap = rcu_dereference(SDATA(selem)->smap);
+> > +		if (!(smap->map.map_flags & BPF_F_CLONE))
+> > +			continue;
+> > +
+> > +		map = bpf_map_inc_not_zero(&smap->map, false);
+> > +		if (IS_ERR(map))
+> > +			continue;
+> > +
+> > +		copy_selem = bpf_sk_storage_clone_elem(newsk, smap, selem);
+> > +		if (!copy_selem) {
+> > +			ret = -ENOMEM;
+> > +			bpf_map_put(map);
+> > +			goto err;
+> > +		}
+> > +
+> > +		if (new_sk_storage) {
+> > +			selem_link_map(smap, copy_selem);
+> > +			__selem_link_sk(new_sk_storage, copy_selem);
+> > +		} else {
+> > +			ret = sk_storage_alloc(newsk, smap, copy_selem);
+> > +			if (ret) {
+> > +				kfree(copy_selem);
+> > +				atomic_sub(smap->elem_size,
+> > +					   &newsk->sk_omem_alloc);
+> > +				bpf_map_put(map);
+> > +				goto err;
+> > +			}
+> > +
+> > +			new_sk_storage = rcu_dereference(copy_selem->sk_storage);
+> > +		}
+> > +		bpf_map_put(map);
+> 
+> The map get/put combination /under/ RCU read lock seems a bit odd to me, could
+> you exactly describe the race that this would be preventing?
+There is a race between sk storage release and sk storage clone.
+bpf_sk_storage_map_free uses synchronize_rcu to wait for all existing
+users to finish and the new ones are prevented via map's refcnt being
+zero; we need to do something like that for the clone.
+Martin suggested to use bpf_map_inc_not_zero/bpf_map_put.
+If I read everythin correctly, I think without map_inc/map_put we
+get the following race:
 
-I tried to clarify here, but I obviously need to do a better job. :-)
+CPU0                                   CPU1
 
+bpf_map_put
+  bpf_sk_storage_map_free(smap)
+    synchronize_rcu
 
-Bj=C3=B6rn
+    // no more users via bpf or
+    // syscall, but clone
+    // can still happen
+
+    for each (bucket)
+      selem_unlink
+        selem_unlink_map(smap)
+
+        // adding anything at
+        // this point to the
+        // bucket will leak
+
+                                       rcu_read_lock
+                                       tcp_v4_rcv
+                                         tcp_v4_do_rcv
+                                           // sk is lockless TCP_LISTEN
+                                           tcp_v4_cookie_check
+                                             tcp_v4_syn_recv_sock
+                                               bpf_sk_storage_clone
+                                                 rcu_dereference(sk->sk_bpf_storage)
+                                                 selem_link_map(smap, copy)
+                                                 // adding new element to the
+                                                 // map -> leak
+                                       rcu_read_unlock
+
+      selem_unlink_sk
+       sk->sk_bpf_storage = NULL
+
+    synchronize_rcu
