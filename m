@@ -2,110 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4BD8A310
-	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2019 18:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9A78A322
+	for <lists+bpf@lfdr.de>; Mon, 12 Aug 2019 18:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726354AbfHLQLq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Aug 2019 12:11:46 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:40012 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbfHLQLq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Aug 2019 12:11:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
-        From:Date:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=acc3WF35LR8BXEDMGJ13kNusezGrO1SutQPhnhxeBCw=; b=eWv3m7KcDGlqFNO3Yad5F/wta
-        m7r6ZVcp6p6MSp20w6n8sMza+rI0sCCtzdzvaJ3TzrPH21tYKbUNwBRcoKYULQcpISRzRUw85wPWX
-        PsDY+oNVtbEx/9pBa5rePj62z8keperADcjWaAvzkFnSsKY345OTrNIthz+2TUHzE5cOWR1nQL9pV
-        lY8CrO1+2H7TfGMCYSXJaR56QaxhZx/+FDrHEe8+SXzPddYMWzy1qxH9jq45Zx0MJpd8nC7dAwgyl
-        OP15PscPVMaZDv5PNPv33OCBIwPjsr/wUnwyfOFDKXWPo1I8DXPQZSi7T8L6pC6oze7JjUqqSr4Dh
-        I0o92n8GQ==;
-Received: from [179.182.166.35] (helo=coco.lan)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1hxCv9-0005tS-LL; Mon, 12 Aug 2019 16:11:43 +0000
-Date:   Mon, 12 Aug 2019 13:11:37 -0300
-From:   Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-To:     Jonathan =?UTF-8?B?TmV1c2Now6RmZXI=?= <j.neuschaefer@gmx.net>
-Cc:     linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        xdp-newbies@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] Documentation: sphinx: Don't parse socket() as
- identifier reference
-Message-ID: <20190812131137.74a4ddf3@coco.lan>
-In-Reply-To: <20190812160708.32172-2-j.neuschaefer@gmx.net>
-References: <20190812160708.32172-1-j.neuschaefer@gmx.net>
-        <20190812160708.32172-2-j.neuschaefer@gmx.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726506AbfHLQST (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Aug 2019 12:18:19 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32902 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726463AbfHLQST (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 12 Aug 2019 12:18:19 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7CGHXaW039030
+        for <bpf@vger.kernel.org>; Mon, 12 Aug 2019 12:18:18 -0400
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2ubb1798vk-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 12 Aug 2019 12:18:17 -0400
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Mon, 12 Aug 2019 17:18:15 +0100
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 12 Aug 2019 17:18:14 +0100
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7CGICt249348746
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Aug 2019 16:18:12 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8144111C05B;
+        Mon, 12 Aug 2019 16:18:12 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 41C5A11C050;
+        Mon, 12 Aug 2019 16:18:12 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.97.155])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 12 Aug 2019 16:18:12 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     daniel@iogearbox.net, ast@kernel.org
+Cc:     bpf@vger.kernel.org, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Subject: [PATCH bpf] s390/bpf: use 32-bit index for tail calls
+Date:   Mon, 12 Aug 2019 18:18:07 +0200
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19081216-0028-0000-0000-0000038EE493
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19081216-0029-0000-0000-00002450F107
+Message-Id: <20190812161807.1400-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-12_06:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908120182
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, 12 Aug 2019 18:07:05 +0200
-Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net> escreveu:
+"p runtime/jit: pass > 32bit index to tail_call" fails when
+bpf_jit_enable=1, because the tail call is not executed.
 
-> With the introduction of Documentation/sphinx/automarkup.py, socket() is
-> parsed as a reference to the in-kernel definition of socket. Sphinx then
-> decides that struct socket is a good match, which is usually not
-> intended, when the syscall is meant instead. This was observed in
-> Documentation/networking/af_xdp.rst.
->=20
-> Prevent socket() from being misinterpreted by adding it to the Skipfuncs
-> list in automarkup.py.
->=20
-> Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-> ---
->=20
-> v2:
-> - block socket() in Documentation/sphinx/automarkup.py, as suggested by
->   Jonathan Corbet
->=20
-> v1:
-> - https://lore.kernel.org/lkml/20190810121738.19587-1-j.neuschaefer@gmx.n=
-et/
-> ---
->  Documentation/sphinx/automarkup.py | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/sphinx/automarkup.py b/Documentation/sphinx/au=
-tomarkup.py
-> index a8798369e8f7..5b6119ff69f4 100644
-> --- a/Documentation/sphinx/automarkup.py
-> +++ b/Documentation/sphinx/automarkup.py
-> @@ -26,7 +26,8 @@ RE_function =3D re.compile(r'([\w_][\w\d_]+\(\))')
->  # just don't even try with these names.
->  #
->  Skipfuncs =3D [ 'open', 'close', 'read', 'write', 'fcntl', 'mmap',
-> -              'select', 'poll', 'fork', 'execve', 'clone', 'ioctl']
-> +              'select', 'poll', 'fork', 'execve', 'clone', 'ioctl',
-> +              'socket' ]
+This in turn is because the generated code assumes index is 64-bit,
+while it must be 32-bit, and as a result prog array bounds check fails,
+while it should pass. Even if bounds check would have passed, the code
+that follows uses 64-bit index to compute prog array offset.
 
-Both patches sound OK on my eyes. Yet, I would just fold them into
-a single one.
+Fix by using clrj instead of clgrj for comparing index with array size,
+and also by using llgfr for truncating index to 32 bits before using it
+to compute prog array offset.
 
-In any case:
+Fixes: 6651ee070b31 ("s390/bpf: implement bpf_tail_call() helper")
+Reported-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Acked-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ arch/s390/net/bpf_jit_comp.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Reviewed-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
->=20
->  #
->  # Find all occurrences of function() and try to replace them with
-> --
-> 2.20.1
->=20
+diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
+index 6299156f9738..955eb355c2fd 100644
+--- a/arch/s390/net/bpf_jit_comp.c
++++ b/arch/s390/net/bpf_jit_comp.c
+@@ -1049,8 +1049,8 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
+ 		/* llgf %w1,map.max_entries(%b2) */
+ 		EMIT6_DISP_LH(0xe3000000, 0x0016, REG_W1, REG_0, BPF_REG_2,
+ 			      offsetof(struct bpf_array, map.max_entries));
+-		/* clgrj %b3,%w1,0xa,label0: if %b3 >= %w1 goto out */
+-		EMIT6_PCREL_LABEL(0xec000000, 0x0065, BPF_REG_3,
++		/* clrj %b3,%w1,0xa,label0: if (u32)%b3 >= (u32)%w1 goto out */
++		EMIT6_PCREL_LABEL(0xec000000, 0x0077, BPF_REG_3,
+ 				  REG_W1, 0, 0xa);
+ 
+ 		/*
+@@ -1076,8 +1076,10 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
+ 		 *         goto out;
+ 		 */
+ 
+-		/* sllg %r1,%b3,3: %r1 = index * 8 */
+-		EMIT6_DISP_LH(0xeb000000, 0x000d, REG_1, BPF_REG_3, REG_0, 3);
++		/* llgfr %r1,%b3: %r1 = (u32) index */
++		EMIT4(0xb9160000, REG_1, BPF_REG_3);
++		/* sllg %r1,%r1,3: %r1 *= 8 */
++		EMIT6_DISP_LH(0xeb000000, 0x000d, REG_1, REG_1, REG_0, 3);
+ 		/* lg %r1,prog(%b2,%r1) */
+ 		EMIT6_DISP_LH(0xe3000000, 0x0004, REG_1, BPF_REG_2,
+ 			      REG_1, offsetof(struct bpf_array, ptrs));
+-- 
+2.21.0
 
-
-
-Thanks,
-Mauro
