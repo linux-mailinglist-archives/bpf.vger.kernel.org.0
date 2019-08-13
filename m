@@ -2,63 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64AC78BB2F
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2019 16:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D0B8BB43
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2019 16:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729229AbfHMOI4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Aug 2019 10:08:56 -0400
-Received: from www62.your-server.de ([213.133.104.62]:39112 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728095AbfHMOI4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Aug 2019 10:08:56 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hxXTo-0003dA-Ak; Tue, 13 Aug 2019 16:08:52 +0200
-Received: from [2a02:120b:2c12:c120:71a0:62dd:894c:fd0e] (helo=pc-66.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1hxXTo-000Qxi-3J; Tue, 13 Aug 2019 16:08:52 +0200
-Subject: Re: [PATCH bpf] s390/bpf: use 32-bit index for tail calls
-To:     Ilya Leoshkevich <iii@linux.ibm.com>, ast@kernel.org
-Cc:     bpf@vger.kernel.org, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-References: <20190812161807.1400-1-iii@linux.ibm.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ec7cc1e0-8062-be37-cc9e-30e36f160d08@iogearbox.net>
-Date:   Tue, 13 Aug 2019 16:08:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1728095AbfHMORl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Aug 2019 10:17:41 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:40006 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728681AbfHMORk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Aug 2019 10:17:40 -0400
+Received: by mail-qk1-f193.google.com with SMTP id s145so79766700qke.7
+        for <bpf@vger.kernel.org>; Tue, 13 Aug 2019 07:17:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=D9XEkfdrTpRsDvLbOWM/kDfwV+anKwtzA9g2jyyYlc0=;
+        b=Quig1zLNeY5xuaRIxfe0tjc6LVnb0hrDGootjTZ+PBtgVnHeTwbHz/UILdR+BgrUwe
+         NDHZXoMcDjR83X+C8WHvRCSmLBSS/8j0eRn2MQKx+ZpwB/WGC4s7j3zjv4P8100tFKkc
+         IKWP3I3jQVUOjGyNgMJuyywnCFxSrEoBQt5SrmCD0Xhn3pdTFG2wtAjtfUPqL+lzuWbn
+         MpInW7wccRXCS/nrcUzhOjplZpegQnQoSlzmdiZ+ucHDCh4nqy5ocIkmygTGXuu4iyr8
+         HXb0kJ4FbziPtzcJFB0VgUjwkyTKbBV755cq4rwWsVj+ls5fVypMYDl9IgDhU5HH9rVJ
+         copw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=D9XEkfdrTpRsDvLbOWM/kDfwV+anKwtzA9g2jyyYlc0=;
+        b=SGFNzNLyJ5lDnxlgOlPQpCUVlYo+iSEXt1NtvoVh2pbZXz+hmnPjVtOdKn5r165M7A
+         SHmLmAEd+sQvRud2ZDQhqJQOmB/0MdhSLi9YXkfp1p+GmE+swSHaYV3cyVZ2IHkruwqu
+         UfKjy+e1DR2k/e3dRvpHTpuX0D/5f6ls7wSmoT/sG7U7KsHpOAhzshlwxIraxU+spFJN
+         OYuR5oS0+roPm7+LGrG8kUQnu/R2H4o5BYwwySiTYCMTjg3iMI8BgeRpBAfCHtxa8/9G
+         nuSiw1yUB7ZheW+9Z0n+u7PQ2y7tQOV1OLUohCldBArqb88HCpD35VtIi6+hcMCaeAOw
+         E5mg==
+X-Gm-Message-State: APjAAAWikMv2nAgBIMjTI7jfOcbC6LUCLHdVvCpsSZA3SvpeW+MXcX2d
+        kV4ndv+42yjqJ21OgBmu8aQ=
+X-Google-Smtp-Source: APXvYqxmwBE1f/MgxkVCMaXgO0JewaMMZZLCkSiZ0rI0XOIJOlZ5LKpHL1ugzIJFuHdfcXWXsQxmYg==
+X-Received: by 2002:a37:83c4:: with SMTP id f187mr33317110qkd.380.1565705859814;
+        Tue, 13 Aug 2019 07:17:39 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.35.50])
+        by smtp.gmail.com with ESMTPSA id k25sm60440539qta.78.2019.08.13.07.17.38
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 13 Aug 2019 07:17:38 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 62C7040340; Tue, 13 Aug 2019 11:17:35 -0300 (-03)
+Date:   Tue, 13 Aug 2019 11:17:35 -0300
+To:     Song Liu <liu.song.a23@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH v1] tools: Keep list of tools in alphabetical order
+Message-ID: <20190813141735.GC12299@kernel.org>
+References: <20190628172209.37290-1-andriy.shevchenko@linux.intel.com>
+ <CAPhsuW75_wNSkLeRVL-X+qtdbExU+xcu7Vx5f5ZiH2CL-3TPxA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20190812161807.1400-1-iii@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25540/Tue Aug 13 10:16:47 2019)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPhsuW75_wNSkLeRVL-X+qtdbExU+xcu7Vx5f5ZiH2CL-3TPxA@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/12/19 6:18 PM, Ilya Leoshkevich wrote:
-> "p runtime/jit: pass > 32bit index to tail_call" fails when
-> bpf_jit_enable=1, because the tail call is not executed.
+Em Fri, Jun 28, 2019 at 10:53:27AM -0700, Song Liu escreveu:
+> On Fri, Jun 28, 2019 at 10:23 AM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > When `make help` is executed it lists the possible tools to build,
+> > though couple of entries is kept unordered. Fix it here.
+> >
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > 
-> This in turn is because the generated code assumes index is 64-bit,
-> while it must be 32-bit, and as a result prog array bounds check fails,
-> while it should pass. Even if bounds check would have passed, the code
-> that follows uses 64-bit index to compute prog array offset.
-> 
-> Fix by using clrj instead of clgrj for comparing index with array size,
-> and also by using llgfr for truncating index to 32 bits before using it
-> to compute prog array offset.
-> 
-> Fixes: 6651ee070b31 ("s390/bpf: implement bpf_tail_call() helper")
-> Reported-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-> Acked-by: Vasily Gorbik <gor@linux.ibm.com>
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> Acked-by: Song Liu <songliubraving@fb.com>
 
-Applied, thanks!
+Thanks, applied.
+
+- Arnaldo
