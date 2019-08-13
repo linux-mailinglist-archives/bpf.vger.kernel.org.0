@@ -2,331 +2,356 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC38E8B5F7
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2019 12:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1538B7FB
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2019 14:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727351AbfHMK4E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Aug 2019 06:56:04 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:46899 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728041AbfHMK4C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Aug 2019 06:56:02 -0400
-Received: by mail-qt1-f196.google.com with SMTP id j15so12255461qtl.13
-        for <bpf@vger.kernel.org>; Tue, 13 Aug 2019 03:56:00 -0700 (PDT)
+        id S1727679AbfHMMHV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Aug 2019 08:07:21 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:46730 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726600AbfHMMHV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Aug 2019 08:07:21 -0400
+Received: by mail-pg1-f196.google.com with SMTP id w3so13956755pgt.13;
+        Tue, 13 Aug 2019 05:07:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w5sPqza6P5CyON82wlhwQd10KrhkTHB73HEFamjzhx8=;
+        b=KW5LmAAxRZwlnW8lk7UJeFqMi81cd589VUGVIBIY71PQPew2Dopoyrg3s4UdfE1y0R
+         VMQfyUo3vbxxv7MFWYRmErRDKrs1DgOE/YcDPWzXjut8kBt1u1kFrIIpZ6OkRKy2z+i1
+         xrcV3BZhYzWeEQno8wXwTyg+yN3k9/4GGFi5Q4/njCgCtQAg8hAJbtvDnQEmA6XQSome
+         CMxUZICosFUgZaBpKywN/Z0sr79SUY0SmlckMKQbAue2/vr5XIAKgE5hZxGd+yc+Q3hf
+         IgiZHrABDHFivuCfSAEZmGsgP0odPVj2X+7RgbSbgqKe72tP89oCjZgOgM1Bx5qByLEP
+         CKPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=bEmLHxGUxmFs7xRPTSUeAUEZjtqoM3mJDyXTwehoEtM=;
-        b=hu4oUQMwVp9ubSgY9SAXGxR+1P//OVyaVEhHa+feHUDz/NofyOPDpxwGtU0Sn/1+Bx
-         Ls3VkNE1UpO68HIcUhnIKSeWpo+3Y1l2JtugAleqwtu7kffh+YtFgw9S6ihAhnNefxkE
-         /xk3ljQ3C7z+yoErqpl0ZnY9pV/UYpkmiUMfi4FVh9pYCKYkot0Cgc3nHRol3F980OUs
-         Rb90YofvMkkWRRz24/2a9cCi14YZalI0L/QMjxyMLVLvp2cBEpXW9MsrkDsMwH2eHRdL
-         txOmF8XfJMes6zmUcdake8wJVMJsgQ2uCfy6uQtC5pg9Qc95AP3K8zY57zwsMhPqJZ4k
-         qy3A==
-X-Gm-Message-State: APjAAAVH3PBm7c/lqFr29CUAw+PV7HqZ6tn/NZF6sKPJFInPttTe+m78
-        tJ4c8ypCx5YunYNNrDQ2bCDwug==
-X-Google-Smtp-Source: APXvYqyEro66IqlI0bQ/A/yOJdfCw/oCIFDef29ExLrVgJQH/MqQ3PLfzrKCLNeen61IpwBZwLxWow==
-X-Received: by 2002:ac8:43c4:: with SMTP id w4mr17764544qtn.238.1565693760232;
-        Tue, 13 Aug 2019 03:56:00 -0700 (PDT)
-Received: from redhat.com (bzq-79-181-91-42.red.bezeqint.net. [79.181.91.42])
-        by smtp.gmail.com with ESMTPSA id l206sm12424091qke.33.2019.08.13.03.55.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Aug 2019 03:55:59 -0700 (PDT)
-Date:   Tue, 13 Aug 2019 06:55:52 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     =?utf-8?B?5YaJ?= jiang <jiangkidd@hotmail.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "yhs@fb.com" <yhs@fb.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "xdp-newbies@vger.kernel.org" <xdp-newbies@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "jiangran.jr@alibaba-inc.com" <jiangran.jr@alibaba-inc.com>
-Subject: Re: [PATCH] virtio-net: parameterize min ring num_free for virtio
- receive
-Message-ID: <20190813065421-mutt-send-email-mst@kernel.org>
-References: <BYAPR14MB32056583C4963342F5D817C4A6C80@BYAPR14MB3205.namprd14.prod.outlook.com>
- <20190718085836-mutt-send-email-mst@kernel.org>
- <bdd30ef5-4f69-8218-eed0-38c6daac42db@redhat.com>
- <20190718103641-mutt-send-email-mst@kernel.org>
- <20190718104307-mutt-send-email-mst@kernel.org>
- <d1faa33a-6c4c-1190-8430-f0639edc3b96@redhat.com>
- <9c1bdbc5-e2c1-8dd7-52f9-1a4b43b86ff0@hotmail.com>
- <BYAPR14MB3205CA9A194A3828D869E2E5A6CB0@BYAPR14MB3205.namprd14.prod.outlook.com>
- <20190719121243-mutt-send-email-mst@kernel.org>
- <DM6PR14MB3212E9CD5E95249564B8FBCFA6C70@DM6PR14MB3212.namprd14.prod.outlook.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w5sPqza6P5CyON82wlhwQd10KrhkTHB73HEFamjzhx8=;
+        b=X8E7whMEepAci/3Ni/FokKly99CkEc9FBiAZMITpIAu7yS5n7xYj76EipCF9V8fnoc
+         iuuDhifpNYmX273VVuRBNDODcUbFU3yA/tyfvOb+KOlTV8QFipKLnuu2wBbHm/rF9IKR
+         J6tmKhwlRLYKxNlgaVcelxL7l8LrDTig0qNy56J6Wj1at4V/ZYeFA3W19hs9sCeY36AQ
+         JzMebn5viTy2nb97xiLiQDwFq7+MfJ6V2CvQp/FgBW0sG4JgRnXepwnVPoDVoRFf6O9T
+         UBuH/Df5xQJFDFskktrXuUZTSp8GYO+TjdWiNDAp1yRqIXlS45TTFeMgU96olh8kZ7E+
+         DsKw==
+X-Gm-Message-State: APjAAAUYRHhZ1NEb/ja5+eGkCxBDCwq3rpJBNlVaXbFaGMTB3gohLtR2
+        RYA5GrW4o9AEnYQOecZgd30=
+X-Google-Smtp-Source: APXvYqydUAfDNZv/4Y0u4Xx5jSUPAbug3iw+eRUesGr/b8gTGhxy8ngXE8HvwljXCxiSRI9NGGJc+g==
+X-Received: by 2002:a17:90a:1b0d:: with SMTP id q13mr1908470pjq.61.1565698039915;
+        Tue, 13 Aug 2019 05:07:19 -0700 (PDT)
+Received: from z400-fedora29.kern.oss.ntt.co.jp ([222.151.198.97])
+        by smtp.gmail.com with ESMTPSA id o9sm73251099pgv.19.2019.08.13.05.07.15
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 13 Aug 2019 05:07:18 -0700 (PDT)
+From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>
+Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        William Tu <u9012063@gmail.com>
+Subject: [RFC PATCH bpf-next 00/14] xdp_flow: Flow offload to XDP
+Date:   Tue, 13 Aug 2019 21:05:44 +0900
+Message-Id: <20190813120558.6151-1-toshiaki.makita1@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <DM6PR14MB3212E9CD5E95249564B8FBCFA6C70@DM6PR14MB3212.namprd14.prod.outlook.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 23, 2019 at 12:05:03PM +0000, 冉 jiang wrote:
-> 
-> On 2019/7/20 0:13, Michael S. Tsirkin wrote:
-> > On Fri, Jul 19, 2019 at 03:31:29PM +0000, 冉 jiang wrote:
-> >> On 2019/7/19 22:29, Jiang wrote:
-> >>> On 2019/7/19 10:36, Jason Wang wrote:
-> >>>> On 2019/7/18 下午10:43, Michael S. Tsirkin wrote:
-> >>>>> On Thu, Jul 18, 2019 at 10:42:47AM -0400, Michael S. Tsirkin wrote:
-> >>>>>> On Thu, Jul 18, 2019 at 10:01:05PM +0800, Jason Wang wrote:
-> >>>>>>> On 2019/7/18 下午9:04, Michael S. Tsirkin wrote:
-> >>>>>>>> On Thu, Jul 18, 2019 at 12:55:50PM +0000, ? jiang wrote:
-> >>>>>>>>> This change makes ring buffer reclaim threshold num_free
-> >>>>>>>>> configurable
-> >>>>>>>>> for better performance, while it's hard coded as 1/2 * queue now.
-> >>>>>>>>> According to our test with qemu + dpdk, packet dropping happens
-> >>>>>>>>> when
-> >>>>>>>>> the guest is not able to provide free buffer in avail ring timely.
-> >>>>>>>>> Smaller value of num_free does decrease the number of packet
-> >>>>>>>>> dropping
-> >>>>>>>>> during our test as it makes virtio_net reclaim buffer earlier.
-> >>>>>>>>>
-> >>>>>>>>> At least, we should leave the value changeable to user while the
-> >>>>>>>>> default value as 1/2 * queue is kept.
-> >>>>>>>>>
-> >>>>>>>>> Signed-off-by: jiangkidd<jiangkidd@hotmail.com>
-> >>>>>>>> That would be one reason, but I suspect it's not the
-> >>>>>>>> true one. If you need more buffer due to jitter
-> >>>>>>>> then just increase the queue size. Would be cleaner.
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>> However are you sure this is the reason for
-> >>>>>>>> packet drops? Do you see them dropped by dpdk
-> >>>>>>>> due to lack of space in the ring? As opposed to
-> >>>>>>>> by guest?
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>> Besides those, this patch depends on the user to choose a suitable
-> >>>>>>> threshold
-> >>>>>>> which is not good. You need either a good value with demonstrated
-> >>>>>>> numbers or
-> >>>>>>> something smarter.
-> >>>>>>>
-> >>>>>>> Thanks
-> >>>>>> I do however think that we have a problem right now: try_fill_recv can
-> >>>>>> take up a long time during which net stack does not run at all.
-> >>>>>> Imagine
-> >>>>>> a 1K queue - we are talking 512 packets. That's exceessive.
-> >>>>
-> >>>> Yes, we will starve a fast host in this case.
-> >>>>
-> >>>>
-> >>>>>>     napi poll
-> >>>>>> weight solves a similar problem, so it might make sense to cap this at
-> >>>>>> napi_poll_weight.
-> >>>>>>
-> >>>>>> Which will allow tweaking it through a module parameter as a
-> >>>>>> side effect :) Maybe just do NAPI_POLL_WEIGHT.
-> >>>>> Or maybe NAPI_POLL_WEIGHT/2 like we do at half the queue ;). Please
-> >>>>> experiment, measure performance and let the list know
-> >>>>>
-> >>>>>> Need to be careful though: queues can also be small and I don't
-> >>>>>> think we
-> >>>>>> want to exceed queue size / 2, or maybe queue size - napi_poll_weight.
-> >>>>>> Definitely must not exceed the full queue size.
-> >>>>
-> >>>> Looking at intel, it uses 16 and i40e uses 32.  It looks to me
-> >>>> NAPI_POLL_WEIGHT/2 is better.
-> >>>>
-> >>>> Jiang, want to try that and post a new patch?
-> >>>>
-> >>>> Thanks
-> >>>>
-> >>>>
-> >>>>>> -- 
-> >>>>>> MST
-> >>> We did have completed several rounds of test with setting the value to
-> >>> budget (64 as the default value). It does improve a lot with pps is
-> >>> below 400pps for a single stream. Let me consolidate the data and will
-> >>> send it soon. Actually, we are confident that it runs out of free
-> >>> buffer in avail ring when packet dropping happens with below systemtap:
-> >>>
-> >>> Just a snippet:
-> >>>
-> >>> probe module("virtio_ring").function("virtqueue_get_buf")
-> >>> {
-> >>>      x = (@cast($_vq, "vring_virtqueue")->vring->used->idx)-
-> >>> (@cast($_vq, "vring_virtqueue")->last_used_idx) ---> we use this one
-> >>> to verify if the queue is full, which means guest is not able to take
-> >>> buffer from the queue timely
-> >>>
-> >>>      if (x<0 && (x+65535)<4096)
-> >>>          x = x+65535
-> >>>
-> >>>      if((x==1024) && @cast($_vq, "vring_virtqueue")->vq->callback ==
-> >>> callback_addr)
-> >>>          netrxcount[x] <<< gettimeofday_s()
-> >>> }
-> >>>
-> >>>
-> >>> probe module("virtio_ring").function("virtqueue_add_inbuf")
-> >>> {
-> >>>      y = (@cast($vq, "vring_virtqueue")->vring->avail->idx)-
-> >>> (@cast($vq, "vring_virtqueue")->vring->used->idx) ---> we use this one
-> >>> to verify if we run out of free buffer in avail ring
-> >>>      if (y<0 && (y+65535)<4096)
-> >>>          y = y+65535
-> >>>
-> >>>      if(@2=="debugon")
-> >>>      {
-> >>>          if(y==0 && @cast($vq, "vring_virtqueue")->vq->callback ==
-> >>> callback_addr)
-> >>>          {
-> >>>              netrxfreecount[y] <<< gettimeofday_s()
-> >>>
-> >>>              printf("no avail ring left seen, printing most recent 5
-> >>> num free, vq: %lx, current index: %d\n", $vq, recentfreecount)
-> >>>              for(i=recentfreecount; i!=((recentfreecount+4) % 5);
-> >>> i=((i+1) % 5))
-> >>>              {
-> >>>                  printf("index: %d, num free: %d\n", i, recentfree[$vq,
-> >>> i])
-> >>>              }
-> >>>
-> >>>              printf("index: %d, num free: %d\n", i, recentfree[$vq, i])
-> >>>              //exit()
-> >>>          }
-> >>>      }
-> >>> }
-> >>>
-> >>>
-> >>> probe
-> >>> module("virtio_net").statement("virtnet_receive@drivers/net/virtio_net.c:732")
-> >>> {
-> >>>      recentfreecount++
-> >>>      recentfreecount = recentfreecount % 5
-> >>>      recentfree[$rq->vq, recentfreecount] = $rq->vq->num_free --->
-> >>> record the num_free for the last 5 calls to virtnet_receive, so we can
-> >>> see if lowering the bar helps.
-> >>> }
-> >>>
-> >>>
-> >>> Here is the result:
-> >>>
-> >>> no avail ring left seen, printing most recent 5 num free, vq:
-> >>> ffff9c13c1200000, current index: 1
-> >>> index: 1, num free: 561
-> >>> index: 2, num free: 305
-> >>> index: 3, num free: 369
-> >>> index: 4, num free: 433
-> >>> index: 0, num free: 497
-> >>> no avail ring left seen, printing most recent 5 num free, vq:
-> >>> ffff9c13c1200000, current index: 1
-> >>> index: 1, num free: 543
-> >>> index: 2, num free: 463
-> >>> index: 3, num free: 469
-> >>> index: 4, num free: 476
-> >>> index: 0, num free: 479
-> >>> no avail ring left seen, printing most recent 5 num free, vq:
-> >>> ffff9c13c1200000, current index: 2
-> >>> index: 2, num free: 555
-> >>> index: 3, num free: 414
-> >>> index: 4, num free: 420
-> >>> index: 0, num free: 427
-> >>> index: 1, num free: 491
-> >>>
-> >>> You can see in the last 4 calls to virtnet_receive before we run out
-> >>> of free buffer and start to relaim, num_free is quite high. So if we
-> >>> can do the reclaim earlier, it will certainly help.
-> >>>
-> >>> Meanwhile, the patch I proposed actually keeps the default value as
-> >>> 1/2 * queue. So the default behavior remains and only leave the
-> >>> interface to advanced users, who really understands what they are
-> >>> doing. Also, the best value may vary in different environment. Do you
-> >>> still think hardcoding this is better option?
-> >>>
-> >>>
-> >>> Jiang
-> >>>
-> >> Here is the snippet from our test result. Test1 was done with default
-> >> driver with the value of 1/2 * queue, while test2 is with my patch and
-> >> min_numfree set to 64 (the default budget value). We can see average
-> >> drop packets do decrease a lot in test2. Let me know if you need the
-> >> full testing data.
-> >>
-> >> test1Time    avgDropPackets    test2Time    avgDropPackets    pps
-> >>
-> >>> 16:21.0    12.295    56:50.4    0    300k
-> >>> 17:19.1    15.244    56:50.4    0    300k
-> >>> 18:17.5    18.789    56:50.4    0    300k
-> >>> 19:15.1    14.208    56:50.4    0    300k
-> >>> 20:13.2    20.818    56:50.4    0.267    300k
-> >>> 21:11.2    12.397    56:50.4    0    300k
-> >>> 22:09.3    12.599    56:50.4    0    300k
-> >>> 23:07.3    15.531    57:48.4    0    300k
-> >>> 24:05.5    13.664    58:46.5    0    300k
-> >>> 25:03.7    13.158    59:44.5    4.73    300k
-> >>> 26:01.1    2.486    00:42.6    0    300k
-> >>> 26:59.1    11.241    01:40.6    0    300k
-> >>> 27:57.2    20.521    02:38.6    0    300k
-> >>> 28:55.2    30.094    03:36.7    0    300k
-> >>> 29:53.3    16.828    04:34.7    0.963    300k
-> >>> 30:51.3    46.916    05:32.8    0    400k
-> >>> 31:49.3    56.214    05:32.8    0    400k
-> >>> 32:47.3    58.69    05:32.8    0    400k
-> >>> 33:45.3    61.486    05:32.8    0    400k
-> >>> 34:43.3    72.175    05:32.8    0.598    400k
-> >>> 35:41.3    56.699    05:32.8    0    400k
-> >>> 36:39.3    61.071    05:32.8    0    400k
-> >>> 37:37.3    43.355    06:30.8    0    400k
-> >>> 38:35.4    44.644    06:30.8    0    400k
-> >>> 39:33.4    72.336    06:30.8    0    400k
-> >>> 40:31.4    70.676    06:30.8    0    400k
-> >>> 41:29.4    108.009    06:30.8    0    400k
-> >>> 42:27.4    65.216    06:30.8    0    400k
-> >>
-> >> Jiang
-> >
-> > OK I find this surprising but I accept what you see.
-> > I'm inclined not to add a tunable and just select
-> > a value ourselves.
-> > I'm also fine with using the napi poll module parameter
-> > which will give you a bit of tunability.
-> 
-> OK, kindly take a look if you prefer the below code change. I tested 
-> budget/2 and the result is almost the same as budget when pps below 
-> 400k, but a little better when it goes beyond 400k in my environment.
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> 
-> index 0d4115c9e20b..bc08be7925eb 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -1331,7 +1331,7 @@ static int virtnet_receive(struct receive_queue 
-> *rq, int budget,
->                  }
->          }
-> 
-> -       if (rq->vq->num_free > virtqueue_get_vring_size(rq->vq) / 2) {
-> +       if (rq->vq->num_free > min((unsigned int)budget, 
-> virtqueue_get_vring_size(rq->vq)) / 2) {
->                  if (!try_fill_recv(vi, rq, GFP_ATOMIC))
->                          schedule_delayed_work(&vi->refill, 0);
->          }
-> 
-> 
-> Jiang
->
+This is a rough PoC for an idea to offload TC flower to XDP.
 
-Looks good to me.
-Pls post for inclusion in -net.
+
+* Motivation
+
+The purpose is to speed up software TC flower by using XDP.
+
+I chose TC flower because my current interest is in OVS. OVS uses TC to
+offload flow tables to hardware, so if TC can offload flows to XDP, OVS
+also can be offloaded to XDP.
+
+When TC flower filter is offloaded to XDP, the received packets are
+handled by XDP first, and if their protocol or something is not
+supported by the eBPF program, the program returns XDP_PASS and packets
+are passed to upper layer TC.
+
+The packet processing flow will be like this when this mechanism,
+xdp_flow, is used with OVS.
+
+ +-------------+
+ | openvswitch |
+ |    kmod     |
+ +-------------+
+        ^
+        | if not match in filters (flow key or action not supported by TC)
+ +-------------+
+ |  TC flower  |
+ +-------------+
+        ^
+        | if not match in flow tables (flow key or action not supported by XDP)
+ +-------------+
+ |  XDP prog   |
+ +-------------+
+        ^
+        | incoming packets
+
+Of course we can directly use TC flower without OVS to speed up TC.
+
+This is useful especially when the device does not support HW-offload.
+Such interfaces include virtual interfaces like veth.
+
+
+* How to use
+
+It only supports ingress (clsact) flower filter at this point.
+Enable the feature via ethtool before adding ingress/clsact qdisc.
+
+ $ ethtool -K eth0 tc-offload-xdp on
+
+Then add qdisc/filters as normal.
+
+ $ tc qdisc add dev eth0 clsact
+ $ tc filter add dev eth0 ingress protocol ip flower skip_sw ...
+
+Alternatively, when using OVS, adding qdisc and filters will be
+automatically done by setting hw-offload.
+
+ $ ovs-vsctl set Open_vSwitch . other_config:hw-offload=true
+ $ systemctl stop openvswitch
+ $ tc qdisc del dev eth0 ingress # or reboot
+ $ ethtool -K eth0 tc-offload-xdp on
+ $ systemctl start openvswitch
+
+
+* Performance
+
+I measured drop rate at veth interface with redirect action from physical
+interface (i40e 25G NIC, XXV 710) to veth. The CPU is Xeon Silver 4114
+(2.20 GHz).
+                                                                 XDP_DROP
+                    +------+                        +-------+    +-------+
+ pktgen -- wire --> | eth0 | -- TC/OVS redirect --> | veth0 |----| veth1 |
+                    +------+   (offloaded to XDP)   +-------+    +-------+
+
+The setup for redirect is done by OVS like this.
+
+ $ ovs-vsctl add-br ovsbr0
+ $ ovs-vsctl add-port ovsbr0 eth0
+ $ ovs-vsctl add-port ovsbr0 veth0
+ $ ovs-vsctl set Open_vSwitch . other_config:hw-offload=true
+ $ systemctl stop openvswitch
+ $ tc qdisc del dev eth0 ingress
+ $ tc qdisc del dev veth0 ingress
+ $ ethtool -K eth0 tc-offload-xdp on
+ $ ethtool -K veth0 tc-offload-xdp on
+ $ systemctl start openvswitch
+
+Tested single core/single flow with 3 configurations.
+- xdp_flow: hw-offload=true, tc-offload-xdp on
+- TC:       hw-offload=true, tc-offload-xdp off (software TC)
+- ovs kmod: hw-offload=false
+
+ xdp_flow  TC        ovs kmod
+ --------  --------  --------
+ 4.0 Mpps  1.1 Mpps  1.1 Mpps
+
+So xdp_flow drop rate is roughly 4x faster than software TC or ovs kmod.
+
+OTOH the time to add a flow increases with xdp_flow.
+
+ping latency of first packet when veth1 does XDP_PASS instead of DROP:
+
+ xdp_flow  TC        ovs kmod
+ --------  --------  --------
+ 25ms      12ms      0.6ms
+
+xdp_flow does a lot of work to emulate TC behavior including UMH
+transaction and multiple bpf map update from UMH which I think increases
+the latency.
+
+
+* Implementation
+
+xdp_flow makes use of UMH to load an eBPF program for XDP, similar to
+bpfilter. The difference is that xdp_flow does not generate the eBPF
+program dynamically but a prebuilt program is embedded in UMH. This is
+mainly because flow insertion is considerably frequent. If we generate
+and load an eBPF program on each insertion of a flow, the latency of the
+first packet of ping in above test will incease, which I want to avoid.
+
+                         +----------------------+
+                         |    xdp_flow_umh      | load eBPF prog for XDP
+                         | (eBPF prog embedded) | update maps for flow tables
+                         +----------------------+
+                                   ^ |
+                           request | v eBPF prog id
+ +-----------+  offload  +-----------------------+
+ | TC flower | --------> |    xdp_flow kmod      | attach the prog to XDP
+ +-----------+           | (flow offload driver) |
+                         +-----------------------+
+
+- When ingress/clsact qdisc is created, i.e. a device is bound to a flow
+  block, xdp_flow kmod requests xdp_flow_umh to load eBPF prog.
+  xdp_flow_umh returns prog id and xdp_flow kmod attach the prog to XDP
+  (the reason of attaching XDP from kmod is that rtnl_lock is held here).
+
+- When flower filter is added, xdp_flow kmod requests xdp_flow_umh to
+  update maps for flow tables.
+
+
+* Patches
+
+- patch 1
+ Basic framework for xdp_flow kmod and UMH.
+
+- patch 2
+ Add prebuilt eBPF program embedded in UMH.
+
+- patch 3, 4
+ Attach the prog to XDP in kmod after using the prog id returned from
+ UMH.
+
+- patch 5, 6
+ Add maps for flow tables and flow table manipulation logic in UMH.
+
+- patch 7
+ Implement flow lookup and basic actions in eBPF prog.
+
+- patch 8
+ Implement flow manipulation logic, serialize flow key and actions from
+ TC flower and make requests to UMH in kmod.
+
+- patch 9
+ Add tc-offload-xdp netdev feature and hooks to call xdp_flow kmod in
+ TC flower offload code.
+
+- patch 10, 11
+ Add example actions, redirect and vlan_push.
+
+- patch 12
+ Add testcase for xdp_flow.
+
+- patch 13, 14
+ These are unrelated patches. They just improves XDP program's
+ performance. They are included to demonstrate to what extent xdp_flow
+ performance can increase. Without them, drop rate goes down from 4Mpps
+ to 3Mpps.
+
+
+* About OVS AF_XDP netdev
+
+Recently OVS has added AF_XDP netdev type support. This also makes use
+of XDP, but in some ways different from this patch set.
+
+- AF_XDP work originally started in order to bring BPF's flexibility to
+  OVS, which enables us to upgrade datapath without updating kernel.
+  AF_XDP solution uses userland datapath so it achieved its goal.
+  xdp_flow will not replace OVS datapath completely, but offload it
+  partially just for speed up.
+
+- OVS AF_XDP requires PMD for the best performance so consumes 100% CPU.
+
+- OVS AF_XDP needs packet copy when forwarding packets.
+
+- xdp_flow can be used not only for OVS. It works for direct use of TC
+  flower. nftables also can be offloaded by the same mechanism in the
+  future.
+
+
+* About alternative userland (ovs-vswitchd etc.) implementation
+
+Maybe a similar logic can be implemented in ovs-vswitchd offload
+mechanism, instead of adding code to kernel. I just thought offloading
+TC is more generic and allows wider usage with direct TC command.
+
+For example, considering that OVS inserts a flow to kernel only when
+flow miss happens in kernel, we can in advance add offloaded flows via
+tc filter to avoid flow insertion latency for certain sensitive flows.
+TC flower usage without using OVS is also possible.
+
+Also as written above nftables can be offloaded to XDP with this
+mechanism as well.
+
+
+* Note
+
+This patch set is based on top of commit a664a834579a ("tools: bpftool:
+fix reading from /proc/config.gz").
+
+Any feedback is welcome.
+Thanks!
+
+Signed-off-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
+
+Toshiaki Makita (14):
+  xdp_flow: Add skeleton of XDP based TC offload driver
+  xdp_flow: Add skeleton bpf program for XDP
+  bpf: Add API to get program from id
+  xdp_flow: Attach bpf prog to XDP in kernel after UMH loaded program
+  xdp_flow: Prepare flow tables in bpf
+  xdp_flow: Add flow entry insertion/deletion logic in UMH
+  xdp_flow: Add flow handling and basic actions in bpf prog
+  xdp_flow: Implement flow replacement/deletion logic in xdp_flow kmod
+  xdp_flow: Add netdev feature for enabling TC flower offload to XDP
+  xdp_flow: Implement redirect action
+  xdp_flow: Implement vlan_push action
+  bpf, selftest: Add test for xdp_flow
+  i40e: prefetch xdp->data before running XDP prog
+  bpf, hashtab: Compare keys in long
+
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c  |    1 +
+ include/linux/bpf.h                          |    6 +
+ include/linux/netdev_features.h              |    2 +
+ include/linux/netdevice.h                    |    4 +
+ include/net/flow_offload_xdp.h               |   33 +
+ include/net/pkt_cls.h                        |    5 +
+ include/net/sch_generic.h                    |    1 +
+ kernel/bpf/hashtab.c                         |   27 +-
+ kernel/bpf/syscall.c                         |   26 +-
+ net/Kconfig                                  |    1 +
+ net/Makefile                                 |    1 +
+ net/core/dev.c                               |   13 +-
+ net/core/ethtool.c                           |    1 +
+ net/sched/cls_api.c                          |   67 +-
+ net/xdp_flow/.gitignore                      |    1 +
+ net/xdp_flow/Kconfig                         |   16 +
+ net/xdp_flow/Makefile                        |  112 +++
+ net/xdp_flow/msgfmt.h                        |  102 +++
+ net/xdp_flow/umh_bpf.h                       |   34 +
+ net/xdp_flow/xdp_flow_core.c                 |  126 ++++
+ net/xdp_flow/xdp_flow_kern_bpf.c             |  358 +++++++++
+ net/xdp_flow/xdp_flow_kern_bpf_blob.S        |    7 +
+ net/xdp_flow/xdp_flow_kern_mod.c             |  645 ++++++++++++++++
+ net/xdp_flow/xdp_flow_umh.c                  | 1034 ++++++++++++++++++++++++++
+ net/xdp_flow/xdp_flow_umh_blob.S             |    7 +
+ tools/testing/selftests/bpf/Makefile         |    1 +
+ tools/testing/selftests/bpf/test_xdp_flow.sh |  103 +++
+ 27 files changed, 2716 insertions(+), 18 deletions(-)
+ create mode 100644 include/net/flow_offload_xdp.h
+ create mode 100644 net/xdp_flow/.gitignore
+ create mode 100644 net/xdp_flow/Kconfig
+ create mode 100644 net/xdp_flow/Makefile
+ create mode 100644 net/xdp_flow/msgfmt.h
+ create mode 100644 net/xdp_flow/umh_bpf.h
+ create mode 100644 net/xdp_flow/xdp_flow_core.c
+ create mode 100644 net/xdp_flow/xdp_flow_kern_bpf.c
+ create mode 100644 net/xdp_flow/xdp_flow_kern_bpf_blob.S
+ create mode 100644 net/xdp_flow/xdp_flow_kern_mod.c
+ create mode 100644 net/xdp_flow/xdp_flow_umh.c
+ create mode 100644 net/xdp_flow/xdp_flow_umh_blob.S
+ create mode 100755 tools/testing/selftests/bpf/test_xdp_flow.sh
 
 -- 
-MST 
+1.8.3.1
+
