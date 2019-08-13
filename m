@@ -2,131 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 110208B374
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2019 11:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D998B42D
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2019 11:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727559AbfHMJMj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Aug 2019 05:12:39 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:46689 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726811AbfHMJMe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Aug 2019 05:12:34 -0400
-Received: by mail-lj1-f196.google.com with SMTP id f9so2339491ljc.13
-        for <bpf@vger.kernel.org>; Tue, 13 Aug 2019 02:12:33 -0700 (PDT)
+        id S1727038AbfHMJdc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Aug 2019 05:33:32 -0400
+Received: from mail-wm1-f49.google.com ([209.85.128.49]:53789 "EHLO
+        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726811AbfHMJdc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Aug 2019 05:33:32 -0400
+Received: by mail-wm1-f49.google.com with SMTP id 10so846644wmp.3
+        for <bpf@vger.kernel.org>; Tue, 13 Aug 2019 02:33:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Fqm1qEXgId3LWA2NcOGNLytQeIXWcu4whGK205OK+oE=;
-        b=hfRt+z+D9yk1sJYudtDMXBHyY6D+2qiqV/Q0A5uC517NkQfhn84w03CEm+CUmcg/YO
-         xJPqvrGgLs16lDH/3dloHHlkGbp2h3r9rIgnDvmKfVTplppEulAeS2WQtVGZ8wWFs15M
-         R5qBYokxyKXI2Jfql/W33mwqvH+OuFprJVGNGTsHQu5VItj8aJMS6Ur6rJYb6Hy7WRn/
-         AX4hDuDNWmPdJr+yZFLhP6VsHFefhVLaK4WsyRhEk2D+tu0eVkerETdtQ8N8zpk4CR7G
-         z7+Z3ORP+em5lWvkHic+zqfbFKZVaZBuXDwrPHPXLdvyLr95YD3Zita8cZ6CQHogX55V
-         lS0A==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=MlR2rn9zThqqmBqWlzW7EqR2TgaSWvTZCGypbjFEDiY=;
+        b=X4zF5sDgHXJn+8pNouCDO0v+RWNoI9+wEHnZS12zqg8b5GYhO+/nvXXbbm5kV4LEcj
+         pDNBvS/n54JrgwETuMMOEP9Z3mHftdRJLwzM7Z6I1Ljj+ps9zFEOQ2NIhErYNrDqtHqz
+         d/Z1pswbGT/99Hmo7qXZfSyvJILBIkIl8tY7DKqTF2Ii3vWbBllGKg/UX00e6zfgPC7r
+         Ef8rEamr29/RcID0eFKbeUzlQE9u1ZgO5pCn3M/uKr4MIw4F+HEi9RLRM0wy0ORxkMYN
+         ULgBKjAR07jKQIGQTYdHnCrZKht+lbrBR56skGnNinMbnOiXrqbFAz+4pbkRq0ycxjar
+         pHlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=Fqm1qEXgId3LWA2NcOGNLytQeIXWcu4whGK205OK+oE=;
-        b=f4rFAx+wlMlV9BWzQE9xVVkQ3jA11JWwASe2vE6BmGKViS3INI8d2K1iAHF6bAfD5X
-         GJWG8V/22itfW+SBxeBMM1HpNRr2W5x23dyb98mOTlBIsSPM6NI15nrDQjAJAEXrKODQ
-         k868NKayfB0BQRI6Bj5mI7J3PyyUcCdlQDQAL9RuheYDohXXsqvid53ty2MAoIcDZBgr
-         t7leGrewcYQrkYl9byueYSrtaCcwDcgqvzLPus1z0DmDmQ/X0vcEdOBa1Vpv2Kl3FAyU
-         x4FYBP47rt3GS/WJtKR6+JLiPNU1CwYU766lsMwQ/YRSdRFbqkU8OGedI/bDxQ1Hd+6w
-         hMNQ==
-X-Gm-Message-State: APjAAAWe5qdiwHTKNw745jDKsniUl0dV/aizADkiGyxQadXT+rDzA9mG
-        uKds/b7tiue/PW1fjKMjUfJxBA==
-X-Google-Smtp-Source: APXvYqyEmjV0GBixJh0DVshdyHJJIKyBEfQHcoHLxMsbb6J1S0HM71TOzoTAcNAvNIqYowflXLcs+w==
-X-Received: by 2002:a2e:3a13:: with SMTP id h19mr20948011lja.220.1565687552537;
-        Tue, 13 Aug 2019 02:12:32 -0700 (PDT)
-Received: from khorivan (168-200-94-178.pool.ukrtel.net. [178.94.200.168])
-        by smtp.gmail.com with ESMTPSA id l23sm21497274lje.106.2019.08.13.02.12.31
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 13 Aug 2019 02:12:31 -0700 (PDT)
-Date:   Tue, 13 Aug 2019 12:12:29 +0300
-From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        linux-mm@kvack.org, Xdp <xdp-newbies@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, Alexei Starovoitov <ast@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: Re: [PATCH v2 bpf-next] mm: mmap: increase sockets maximum memory
- size pgoff for 32bits
-Message-ID: <20190813091228.GA6951@khorivan>
-Mail-Followup-To: Magnus Karlsson <magnus.karlsson@gmail.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        linux-mm@kvack.org, Xdp <xdp-newbies@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, Alexei Starovoitov <ast@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-References: <20190812113429.2488-1-ivan.khoronzhuk@linaro.org>
- <20190812124326.32146-1-ivan.khoronzhuk@linaro.org>
- <CAJ8uoz0bBhdQSocQz8Y9tvrGCsCE9TDf3m1u6=sL4Eo5tZ17YQ@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=MlR2rn9zThqqmBqWlzW7EqR2TgaSWvTZCGypbjFEDiY=;
+        b=fFqthZzzbRw37rtL6xDj8WIEH8rKQwJJs1GZd96J++Nh1fxmsTmQmR+REAQJNF87l6
+         +NeOKHYTS35KKWkDbwF7NH0lvJCn3X0fCT/qC0cIEgrCRRwheWdX5Gp4g1bI9UfZkC8f
+         XPQlU42Q2iXjWFWRsP+34IS5/7o09udSiJWZE7eBBdw1qex+dgdbYTeHPwliPV00ykMU
+         0smnqT43+6BOU60qsJG8uVAde3eUbrnEif12obPAaEQXl0tm34d1+m/yA2rdjXUfyyVy
+         3igRUMlrQmmutIHGJ7axvLokyccbXWSnTiABg2mRy3NHH6JskmXJ5m05cJV/QCCMvOiE
+         zVzA==
+X-Gm-Message-State: APjAAAVchU/LOU/L+M35Zlyb+s0wAMuTvGUpdaVq9BENjj2SgR/aVkwZ
+        2tSt/QJzm8/nUopnbroWkpo2i29PVbs=
+X-Google-Smtp-Source: APXvYqxmAMHNUTlNacw/cR8fY/SukXmqu+Q979YuGUmmgGaWBLmN1RZl+Xu+CzHgOsXsN755PKuYjA==
+X-Received: by 2002:a05:600c:24cf:: with SMTP id 15mr2074434wmu.76.1565688810013;
+        Tue, 13 Aug 2019 02:33:30 -0700 (PDT)
+Received: from [172.20.1.137] ([217.38.71.146])
+        by smtp.googlemail.com with ESMTPSA id k124sm2146043wmk.47.2019.08.13.02.33.28
+        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+        Tue, 13 Aug 2019 02:33:29 -0700 (PDT)
+Subject: Re: Taking a day off...
+To:     jakub.kicinski@netronome.com
+Cc:     bpf@vger.kernel.org
+References: <20190812.212659.1072592048193337024.davem@davemloft.net>
+From:   =?UTF-8?Q?Pablo_Casc=c3=b3n?= <pablo.cascon@netronome.com>
+Message-ID: <77f93fa7-c4a6-39a5-32c2-e82c61f9fcf9@netronome.com>
+Date:   Tue, 13 Aug 2019 10:33:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAJ8uoz0bBhdQSocQz8Y9tvrGCsCE9TDf3m1u6=sL4Eo5tZ17YQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190812.212659.1072592048193337024.davem@davemloft.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 13, 2019 at 10:02:54AM +0200, Magnus Karlsson wrote:
->On Mon, Aug 12, 2019 at 2:45 PM Ivan Khoronzhuk
-><ivan.khoronzhuk@linaro.org> wrote:
->>
->> The AF_XDP sockets umem mapping interface uses XDP_UMEM_PGOFF_FILL_RING
->> and XDP_UMEM_PGOFF_COMPLETION_RING offsets. The offsets seems like are
->> established already and are part of configuration interface.
->>
->> But for 32-bit systems, while AF_XDP socket configuration, the values
->> are to large to pass maximum allowed file size verification.
->> The offsets can be tuned ofc, but instead of changing existent
->> interface - extend max allowed file size for sockets.
->
->Can you use mmap2() instead that takes a larger offset (2^44) even on
->32-bit systems?
+Wow this is big! Congratulations Kuba!
 
-That's for mmap2.
-
+On 13/08/2019 05:26, David Miller wrote:
+> Hello everyone,
 >
->/Magnus
+> Tomorrow I will be letting Jakub Kicinski manage the net and net-next
+> GIT trees.  So he will be integrating patches into GIT and doing git
+> pulls from people.  He will alway keep the patchwork states up to
+> date, just like I do.
 >
->> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
->> ---
->>
->> Based on bpf-next/master
->>
->> v2..v1:
->>         removed not necessarily #ifdev as ULL and UL for 64 has same size
->>
->>  mm/mmap.c | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/mm/mmap.c b/mm/mmap.c
->> index 7e8c3e8ae75f..578f52812361 100644
->> --- a/mm/mmap.c
->> +++ b/mm/mmap.c
->> @@ -1358,6 +1358,9 @@ static inline u64 file_mmap_size_max(struct file *file, struct inode *inode)
->>         if (S_ISBLK(inode->i_mode))
->>                 return MAX_LFS_FILESIZE;
->>
->> +       if (S_ISSOCK(inode->i_mode))
->> +               return MAX_LFS_FILESIZE;
->> +
->>         /* Special "we do even unsigned file positions" case */
->>         if (file->f_mode & FMODE_UNSIGNED_OFFSET)
->>                 return 0;
->> --
->> 2.17.1
->>
+> I completely expect everyone to give Jakub the same respect and
+> consideration they usually give to me, because he deserves it.
+>
+> In the future, when I need to take a few days off, I will hand things
+> over to Jakub in a similar way.
+>
+> Thank you.
 
--- 
-Regards,
-Ivan Khoronzhuk
