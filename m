@@ -2,118 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D94788BE47
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2019 18:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1936B8BE73
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2019 18:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727714AbfHMQV3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Aug 2019 12:21:29 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61360 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728433AbfHMQV3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 13 Aug 2019 12:21:29 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7DG6w75066903
-        for <bpf@vger.kernel.org>; Tue, 13 Aug 2019 12:21:28 -0400
-Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2ubxwjdg58-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 13 Aug 2019 12:21:27 -0400
-Received: from localhost
-        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Tue, 13 Aug 2019 17:21:25 +0100
-Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
-        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 13 Aug 2019 17:21:23 +0100
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7DGLMpH37618062
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Aug 2019 16:21:22 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3482842042;
-        Tue, 13 Aug 2019 16:21:22 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E50854203F;
-        Tue, 13 Aug 2019 16:21:21 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.152.96.61])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 13 Aug 2019 16:21:21 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf] selftests/bpf: fix "bind{4,6} deny specific IP & port" on s390
-Date:   Tue, 13 Aug 2019 18:21:18 +0200
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19081316-0012-0000-0000-0000033E37EB
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19081316-0013-0000-0000-000021784835
-Message-Id: <20190813162118.17957-1-iii@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-13_05:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908130161
+        id S1727053AbfHMQ0e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Aug 2019 12:26:34 -0400
+Received: from mail-vs1-f73.google.com ([209.85.217.73]:48199 "EHLO
+        mail-vs1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726802AbfHMQ0e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Aug 2019 12:26:34 -0400
+Received: by mail-vs1-f73.google.com with SMTP id h3so29270183vsr.15
+        for <bpf@vger.kernel.org>; Tue, 13 Aug 2019 09:26:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=rEg3vpBiSevgVJYfmkI0ugswBbPAxHgecBPHEJKFNuM=;
+        b=SjcCJiMmDTyooV26WYe92/vA1lSSXCKJOCPz/bKL7KS79MVYDuTcLVCoJpV8mc1KgD
+         J9Pp+aAjVgm1xip+wlEQYK62JqJ1FygrLHIidU22x5dfxcOg0E9UGAHB52YcdBQY69bl
+         tdeccbPwDp4jq2hzBrFurAbQAocejsc/wMI1fio+wMxtw0f03sLN2h+2Q/IlkScRdMiv
+         6qG7Oj58db84lKKF0OXhmAg7cTv5uRxmxe8xfeRAH54QfZyjJXnOXOnhlA6Lp/GsiDzo
+         geYcpZQBQdNZOGJ0bXfpbwwiZS9Kibq/Httl6ciMS1tmctuKroGUQszfQNmjreTydjd5
+         s/UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=rEg3vpBiSevgVJYfmkI0ugswBbPAxHgecBPHEJKFNuM=;
+        b=UmW+jvHmO5/shlv+8J6XKhEPHXEdwx/0BvS5unOmpT3cst9P87hkVsBnRcZM7Qv9Ns
+         62OHAPo27JbB17i3MUm607GzW7U8ahBEeEzCu/+6rcj3W2GPCa3iy70QGsanLCloUVl7
+         R4xffGy4CI/mNfdHbS6G2WzAZsmGa6JOYuLaFJocB8h0CB3W3LzyxSLl05XzTxvOwPOC
+         erFOq8tQFvJwp7UZ3wf0jADy2buu3Bx6WanaKL2AhKomUYkgyVXKO2cBconlb1/ZDf3U
+         U2gxRZvw3uHrwNwuf9vi62C0rGfkHBBTNW2J2zCHCQ9p5K4YLjhEgnYAcXxRAx5/zbT+
+         090w==
+X-Gm-Message-State: APjAAAUBQhF0PNiOvo/Ti3rXtvRRQL5CBmG62xwAChE7eAYcONiaSdY6
+        6VhsOKfzxcikYDCfKMbnFVKSaXA=
+X-Google-Smtp-Source: APXvYqychZ3DfVuOpbrNugd0OUpob50vjnpuBW4EL0utwAp1CiHRYiSbfg0e6vI7m+vSrrOUSypyH2I=
+X-Received: by 2002:a1f:94e:: with SMTP id 75mr8867303vkj.8.1565713593137;
+ Tue, 13 Aug 2019 09:26:33 -0700 (PDT)
+Date:   Tue, 13 Aug 2019 09:26:26 -0700
+Message-Id: <20190813162630.124544-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.23.0.rc1.153.gdeed80330f-goog
+Subject: [PATCH bpf-next v3 0/4] bpf: support cloning sk storage on accept()
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-"bind4 allow specific IP & port" and "bind6 deny specific IP & port"
-fail on s390 because of endianness issue: the 4 IP address bytes are
-loaded as a word and compared with a constant, but the value of this
-constant should be different on big- and little- endian machines, which
-is not the case right now.
+Currently there is no way to propagate sk storage from the listener
+socket to a newly accepted one. Consider the following use case:
 
-Use __constant_ntohl to generate proper value based on machine
-endianness.
+        fd = socket();
+        setsockopt(fd, SOL_IP, IP_TOS,...);
+        /* ^^^ setsockopt BPF program triggers here and saves something
+         * into sk storage of the listener.
+         */
+        listen(fd, ...);
+        while (client = accept(fd)) {
+                /* At this point all association between listener
+                 * socket and newly accepted one is gone. New
+                 * socket will not have any sk storage attached.
+                 */
+        }
 
-Fixes: 1d436885b23b ("selftests/bpf: Selftest for sys_bind post-hooks.")
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- tools/testing/selftests/bpf/test_sock.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Let's add new BPF_F_CLONE flag that can be specified when creating
+a socket storage map. This new flag indicates that map contents
+should be cloned when the socket is cloned.
 
-diff --git a/tools/testing/selftests/bpf/test_sock.c b/tools/testing/selftests/bpf/test_sock.c
-index fb679ac3d4b0..5c092a85125f 100644
---- a/tools/testing/selftests/bpf/test_sock.c
-+++ b/tools/testing/selftests/bpf/test_sock.c
-@@ -8,6 +8,7 @@
- #include <sys/types.h>
- #include <sys/socket.h>
- 
-+#include <asm/byteorder.h>
- #include <linux/filter.h>
- 
- #include <bpf/bpf.h>
-@@ -232,7 +233,8 @@ static struct sock_test tests[] = {
- 			/* if (ip == expected && port == expected) */
- 			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
- 				    offsetof(struct bpf_sock, src_ip6[3])),
--			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x01000000, 4),
-+			BPF_JMP_IMM(BPF_JNE, BPF_REG_7,
-+				    __constant_ntohl(0x00000001), 4),
- 			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
- 				    offsetof(struct bpf_sock, src_port)),
- 			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x2001, 2),
-@@ -261,7 +263,8 @@ static struct sock_test tests[] = {
- 			/* if (ip == expected && port == expected) */
- 			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
- 				    offsetof(struct bpf_sock, src_ip4)),
--			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x0100007F, 4),
-+			BPF_JMP_IMM(BPF_JNE, BPF_REG_7,
-+				    __constant_ntohl(0x7F000001), 4),
- 			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
- 				    offsetof(struct bpf_sock, src_port)),
- 			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x1002, 2),
+v3:
+* make sure BPF_F_NO_PREALLOC is always present when creating
+  a map (Martin KaFai Lau)
+* don't call bpf_sk_storage_free explicitly, rely on
+  sk_free_unlock_clone to do the cleanup (Martin KaFai Lau)
+
+v2:
+* remove spinlocks around selem_link_map/sk (Martin KaFai Lau)
+* BPF_F_CLONE on a map, not selem (Martin KaFai Lau)
+* hold a map while cloning (Martin KaFai Lau)
+* use BTF maps in selftests (Yonghong Song)
+* do proper cleanup selftests; don't call close(-1) (Yonghong Song)
+* export bpf_map_inc_not_zero
+
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Yonghong Song <yhs@fb.com>
+
+Stanislav Fomichev (4):
+  bpf: export bpf_map_inc_not_zero
+  bpf: support cloning sk storage on accept()
+  bpf: sync bpf.h to tools/
+  selftests/bpf: add sockopt clone/inheritance test
+
+ include/linux/bpf.h                           |   2 +
+ include/net/bpf_sk_storage.h                  |  10 +
+ include/uapi/linux/bpf.h                      |   3 +
+ kernel/bpf/syscall.c                          |  16 +-
+ net/core/bpf_sk_storage.c                     | 103 ++++++-
+ net/core/sock.c                               |   9 +-
+ tools/include/uapi/linux/bpf.h                |   3 +
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ .../selftests/bpf/progs/sockopt_inherit.c     |  97 +++++++
+ .../selftests/bpf/test_sockopt_inherit.c      | 253 ++++++++++++++++++
+ 11 files changed, 490 insertions(+), 10 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/sockopt_inherit.c
+ create mode 100644 tools/testing/selftests/bpf/test_sockopt_inherit.c
+
 -- 
-2.21.0
-
+2.23.0.rc1.153.gdeed80330f-goog
