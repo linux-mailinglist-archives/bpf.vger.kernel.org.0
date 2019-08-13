@@ -2,85 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3DAF8B28B
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2019 10:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADE5D8B32D
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2019 10:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728030AbfHMIdH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Aug 2019 04:33:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727769AbfHMIdH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Aug 2019 04:33:07 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A41620663;
-        Tue, 13 Aug 2019 08:33:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565685186;
-        bh=unpmMBhs4Ryw1cerppIFvtapYPS35xYcBeAoCDolA6w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WqrCGZiwPT5XJfLodebKxXSJPKmci2x2fwZGH36KLg7TF4/ErOQsgXAxSmwpQMb4W
-         /8CtB7mhub9VGftPo7SpT8b1cK2f5l/j1A4H7LKGYd5eKMldbAKdzQSpiHANqtgiYf
-         PYe/ar6YQ1VZMDRfqa1J+cpLiLimW4AePBBWOokU=
-Date:   Tue, 13 Aug 2019 09:32:57 +0100
-From:   Will Deacon <will@kernel.org>
+        id S1727639AbfHMI7R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Aug 2019 04:59:17 -0400
+Received: from mail01.asahi-net.or.jp ([202.224.55.13]:34207 "EHLO
+        mail01.asahi-net.or.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725781AbfHMI7R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Aug 2019 04:59:17 -0400
+X-Greylist: delayed 467 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Aug 2019 04:59:16 EDT
+Received: from h61-195-96-97.vps.ablenet.jp (h61-195-96-97.ablenetvps.ne.jp [61.195.96.97])
+        (Authenticated sender: PQ4Y-STU)
+        by mail01.asahi-net.or.jp (Postfix) with ESMTPA id B8D031321BA;
+        Tue, 13 Aug 2019 17:51:27 +0900 (JST)
+Received: from yo-satoh-debian.ysato.ml (ZM005235.ppp.dion.ne.jp [222.8.5.235])
+        by h61-195-96-97.vps.ablenet.jp (Postfix) with ESMTPSA id 13510240085;
+        Tue, 13 Aug 2019 17:51:27 +0900 (JST)
+Date:   Tue, 13 Aug 2019 17:51:26 +0900
+Message-ID: <875zn1phwx.wl-ysato@users.sourceforge.jp>
+From:   Yoshinori Sato <ysato@users.sourceforge.jp>
 To:     Nick Desaulniers <ndesaulniers@google.com>
 Cc:     akpm@linux-foundation.org, sedat.dilek@gmail.com,
         jpoimboe@redhat.com, yhs@fb.com, miguel.ojeda.sandonis@gmail.com,
-        clang-built-linux@googlegroups.com,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        clang-built-linux@googlegroups.com, Rich Felker <dalias@libc.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Hans Liljestrand <ishkamiel@gmail.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        David Windsor <dwindsor@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, Ming Lei <ming.lei@redhat.com>,
-        Dou Liyang <douliyangs@gmail.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        linux-sparse@vger.kernel.org, rcu@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 14/16] include/linux: prefer __section from
- compiler_attributes.h
-Message-ID: <20190813083257.nnsxf5khnqagl46s@willie-the-truck>
+        Song Liu <songliubraving@fb.com>, linux-sh@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 05/16] sh: prefer __section from compiler_attributes.h
+In-Reply-To: <20190812215052.71840-5-ndesaulniers@google.com>
 References: <20190812215052.71840-1-ndesaulniers@google.com>
- <20190812215052.71840-14-ndesaulniers@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190812215052.71840-14-ndesaulniers@google.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+        <20190812215052.71840-5-ndesaulniers@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM/1.14.9 (=?ISO-8859-4?Q?Goj=F2?=) APEL/10.8 EasyPG/1.0.0 Emacs/25.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 12, 2019 at 02:50:47PM -0700, Nick Desaulniers wrote:
-> Link: https://github.com/ClangBuiltLinux/linux/issues/619
+On Tue, 13 Aug 2019 06:50:38 +0900,
+Nick Desaulniers wrote:
+> 
 > Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
 > Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
 > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 > ---
+>  arch/sh/include/asm/cache.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/sh/include/asm/cache.h b/arch/sh/include/asm/cache.h
+> index 2408ac4873aa..07ddf31124a3 100644
+> --- a/arch/sh/include/asm/cache.h
+> +++ b/arch/sh/include/asm/cache.h
+> @@ -15,7 +15,7 @@
+>  
+>  #define L1_CACHE_BYTES		(1 << L1_CACHE_SHIFT)
+>  
+> -#define __read_mostly __attribute__((__section__(".data..read_mostly")))
+> +#define __read_mostly __section(.data..read_mostly)
+>  
+>  #ifndef __ASSEMBLY__
+>  struct cache_info {
+> -- 
+> 2.23.0.rc1.153.gdeed80330f-goog
+> 
 
--ENOCOMMITMESSAGE
+Applied sh-next.
+Thanks.
 
-Otherwise, patch looks good to me.
-
-Will
+-- 
+Yosinori Sato
