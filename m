@@ -2,188 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E718C3AE
-	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2019 23:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A788C402
+	for <lists+bpf@lfdr.de>; Tue, 13 Aug 2019 23:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbfHMV2u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Aug 2019 17:28:50 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:46413 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726188AbfHMV2u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Aug 2019 17:28:50 -0400
-Received: by mail-pf1-f193.google.com with SMTP id q139so4036131pfc.13
-        for <bpf@vger.kernel.org>; Tue, 13 Aug 2019 14:28:49 -0700 (PDT)
+        id S1726260AbfHMV63 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Aug 2019 17:58:29 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:43303 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726155AbfHMV63 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Aug 2019 17:58:29 -0400
+Received: by mail-pl1-f195.google.com with SMTP id 4so42826609pld.10;
+        Tue, 13 Aug 2019 14:58:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=7MV3mapKiYjg4aOC58fcsYuIoZKPAlaZsR9dswVdxNY=;
-        b=puaeNSsvWnlTY/rsC/3atxQO0Qh1fQrwww3HFTG78nzm098bNepfwz4IhVbrEl0XOd
-         UNaSL8sWry/8FGHaGlc4N7Cm/3oR+mgg7zezFFO20Ezf57V4+2ZRlX8a54X9IQ5VtMzI
-         tlOdmipcZdQf+p+1YLTHIcITv1XW0gPc9+ySJP/fDD95zi9Dk63gqAKtlBg5SVchuNMg
-         jl/f5W85DtttGchiNp2dpRRC3LjCcEbub+6nz61Xg5ii5GAj6SIGSY1mBoQCjd1hesBu
-         pH7y/n6JOn0MRDCpDuVNlwR1Wfvm0Ih2h3jWNoyhgImn8m7pPlkFIIEjjB+gdY/LSPbK
-         ly1g==
+        bh=/Q+5s20XHMc4iuRDKXdxpzS8kzsfDj5amerE2E4kpDU=;
+        b=l/O31lke/LzDTPiubFahE36gGH9b7sra9UhQHBhE9dvYDQQDTH/b2l9ICZlbOngeiG
+         TegryTsW14+xSSlKqxEJGRUqgLx5Ojuqjzmtd6k9b0DMbr12e7DukO6cgtuKp9DWAGP+
+         hDB/+hGRyZah8sgYEeRYbDdU57uOIysYAP85b8dFxN1CbbOJiqNCj//SyJrwXRe8z3Tq
+         UmjdunPkhf52DO4F8QMLiESq+I3VHo6ECaDvHm3QxoLmlfHGe/pqPEYsy9y5JkrOBhOr
+         6iJJuQ7Dc67i3mai1CfK253Jb5OjmxmkTwQE8W6bSSt5ccQS8oFdMfXb/m6FNLEHV9sg
+         7lNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7MV3mapKiYjg4aOC58fcsYuIoZKPAlaZsR9dswVdxNY=;
-        b=Oqy/J1611WXO/cqJF4QyOYWFIitWFwbPjKgr/U3eDDZ73hSlVtoBuiwjqW6UQs0TcD
-         AK7czlnwAicrGy5k48pFb9gXsLtgMKeeR/fZ67KrdlzBVHvKshB2irS1Yh3wpzZlBuBn
-         LVUn3Ff59VUUMOGEOUIK7dEkOcGMPdHUVT1a5yA9HrsiErnjQAFooqqGFcONXlX0HHWM
-         bu4xNxfo4Lox782WcXUZIQor4Z5FOYmWRAtu2FdtRG3/DBM5eAahTcXo3z3ff7P5aAia
-         3e9yBxiTAPrarOafsa9JFghCYrl1TyshTlc1hhkz5nrN4F/1uS5MZ7wk07RA1mNtwcOI
-         6fpQ==
-X-Gm-Message-State: APjAAAVZ3axQJM1H8DtJLBl52LIIfBeeLRas4xAIcwFOoMciPIwwB1BC
-        EiqQovB/OnvWxtRh0yS6WL3rIjuk0MA=
-X-Google-Smtp-Source: APXvYqx/61RzpvdOIsmGo8c1gIoU40mcA+PLNEXor9AkVw+DeDL2qD64DjRU+maXQGVAs3vuRh3+eA==
-X-Received: by 2002:a63:5b52:: with SMTP id l18mr36021232pgm.21.1565731729276;
-        Tue, 13 Aug 2019 14:28:49 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id i15sm115364401pfd.160.2019.08.13.14.28.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Aug 2019 14:28:48 -0700 (PDT)
-Date:   Tue, 13 Aug 2019 14:28:47 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH bpf-next v2 2/4] bpf: support cloning sk storage on
- accept()
-Message-ID: <20190813212847.GI2820@mini-arch>
-References: <20190809161038.186678-1-sdf@google.com>
- <20190809161038.186678-3-sdf@google.com>
- <db5ec323-1126-d461-bc65-27ccc1414589@iogearbox.net>
- <20190812175249.GF2820@mini-arch>
- <2d24378a-73f4-bfa0-dc99-4a0ed761c797@iogearbox.net>
+        bh=/Q+5s20XHMc4iuRDKXdxpzS8kzsfDj5amerE2E4kpDU=;
+        b=W3QQj6zIydED18e48pnR66RyYxq0Y/rLn7Szy/2rWKqcTAYA0+KuK7uLaRHV659n8U
+         4bgbzP5LtlgQhzHglQujtWZr1UiBhJSzxOuYIrmUEJ+GUeUzAf7gLEjfh8cYItrWzddq
+         ZTOASATqz4TieK8jOa4/N6fGwMvqAZJoj2pBAIosx8Blea5Q6ExObSqX2W83UZ5aq+FF
+         G8PTF4dH5yeS5ZxQA1q/wIahzwHoAPJvZPbv5oIuRw+6j46tWgFmlDn9I0DMGC0AjHwU
+         fnpwmOHmVsESbA1hgOjHUF2QkMtpdULt2eLqk+/0qBberx+F2J6QBNBZocv7sYI2C8OP
+         4aEw==
+X-Gm-Message-State: APjAAAUctdp5l7nAE0YGC3DkynF/+FlnEZrnnJP0vnhNUTN4X+w8Txzh
+        V5AfWoPXtPUFBr4M7SOuU/E=
+X-Google-Smtp-Source: APXvYqxjiUmkl64G1tHSx+VC7+PCJACU5FiOcdV5TIbEkpKvm5x6v5eoIGUfB+eF3IlCJYHKUNBV0Q==
+X-Received: by 2002:a17:902:9889:: with SMTP id s9mr11519716plp.100.1565733508159;
+        Tue, 13 Aug 2019 14:58:28 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:200::3:8a34])
+        by smtp.gmail.com with ESMTPSA id t6sm35037435pgu.23.2019.08.13.14.58.26
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 13 Aug 2019 14:58:27 -0700 (PDT)
+Date:   Tue, 13 Aug 2019 14:58:25 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Song Liu <songliubraving@fb.com>,
+        Kees Cook <keescook@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Jann Horn <jannh@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
+Message-ID: <20190813215823.3sfbakzzjjykyng2@ast-mbp>
+References: <5A2FCD7E-7F54-41E5-BFAE-BB9494E74F2D@fb.com>
+ <CALCETrU7NbBnXXsw1B+DvTkfTVRBFWXuJ8cZERCCNvdFG6KqRw@mail.gmail.com>
+ <CALCETrUjh6DdgW1qSuSRd1_=0F9CqB8+sNj__e_6AHEvh_BaxQ@mail.gmail.com>
+ <CALCETrWtE2U4EvZVYeq8pSmQjBzF2PHH+KxYW8FSeF+W=1FYjw@mail.gmail.com>
+ <EE7B7AE1-3D44-4561-94B9-E97A626A251D@fb.com>
+ <CALCETrXX-Jeb4wiQuL6FUai4wNMmMiUxuLLh_Lb9mT7h=0GgAw@mail.gmail.com>
+ <20190805192122.laxcaz75k4vxdspn@ast-mbp>
+ <CALCETrVtPs8gY-H4gmzSqPboid3CB++n50SvYd6RU9YVde_-Ow@mail.gmail.com>
+ <20190806011134.p5baub5l3t5fkmou@ast-mbp>
+ <CALCETrXEHL3+NAY6P6vUj7Pvd9ZpZsYC6VCLXOaNxb90a_POGw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2d24378a-73f4-bfa0-dc99-4a0ed761c797@iogearbox.net>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <CALCETrXEHL3+NAY6P6vUj7Pvd9ZpZsYC6VCLXOaNxb90a_POGw@mail.gmail.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 08/13, Daniel Borkmann wrote:
-> On 8/12/19 7:52 PM, Stanislav Fomichev wrote:
-> > On 08/12, Daniel Borkmann wrote:
-> > > On 8/9/19 6:10 PM, Stanislav Fomichev wrote:
-> > > > Add new helper bpf_sk_storage_clone which optionally clones sk storage
-> > > > and call it from sk_clone_lock.
-> > > > 
-> > > > Cc: Martin KaFai Lau <kafai@fb.com>
-> > > > Cc: Yonghong Song <yhs@fb.com>
-> > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > [...]
-> > > > +int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk)
-> > > > +{
-> > > > +	struct bpf_sk_storage *new_sk_storage = NULL;
-> > > > +	struct bpf_sk_storage *sk_storage;
-> > > > +	struct bpf_sk_storage_elem *selem;
-> > > > +	int ret;
-> > > > +
-> > > > +	RCU_INIT_POINTER(newsk->sk_bpf_storage, NULL);
-> > > > +
-> > > > +	rcu_read_lock();
-> > > > +	sk_storage = rcu_dereference(sk->sk_bpf_storage);
-> > > > +
-> > > > +	if (!sk_storage || hlist_empty(&sk_storage->list))
-> > > > +		goto out;
-> > > > +
-> > > > +	hlist_for_each_entry_rcu(selem, &sk_storage->list, snode) {
-> > > > +		struct bpf_sk_storage_elem *copy_selem;
-> > > > +		struct bpf_sk_storage_map *smap;
-> > > > +		struct bpf_map *map;
-> > > > +		int refold;
-> > > > +
-> > > > +		smap = rcu_dereference(SDATA(selem)->smap);
-> > > > +		if (!(smap->map.map_flags & BPF_F_CLONE))
-> > > > +			continue;
-> > > > +
-> > > > +		map = bpf_map_inc_not_zero(&smap->map, false);
-> > > > +		if (IS_ERR(map))
-> > > > +			continue;
-> > > > +
-> > > > +		copy_selem = bpf_sk_storage_clone_elem(newsk, smap, selem);
-> > > > +		if (!copy_selem) {
-> > > > +			ret = -ENOMEM;
-> > > > +			bpf_map_put(map);
-> > > > +			goto err;
-> > > > +		}
-> > > > +
-> > > > +		if (new_sk_storage) {
-> > > > +			selem_link_map(smap, copy_selem);
-> > > > +			__selem_link_sk(new_sk_storage, copy_selem);
-> > > > +		} else {
-> > > > +			ret = sk_storage_alloc(newsk, smap, copy_selem);
-> > > > +			if (ret) {
-> > > > +				kfree(copy_selem);
-> > > > +				atomic_sub(smap->elem_size,
-> > > > +					   &newsk->sk_omem_alloc);
-> > > > +				bpf_map_put(map);
-> > > > +				goto err;
-> > > > +			}
-> > > > +
-> > > > +			new_sk_storage = rcu_dereference(copy_selem->sk_storage);
-> > > > +		}
-> > > > +		bpf_map_put(map);
-> > > 
-> > > The map get/put combination /under/ RCU read lock seems a bit odd to me, could
-> > > you exactly describe the race that this would be preventing?
-> > There is a race between sk storage release and sk storage clone.
-> > bpf_sk_storage_map_free uses synchronize_rcu to wait for all existing
-> > users to finish and the new ones are prevented via map's refcnt being
-> > zero; we need to do something like that for the clone.
-> > Martin suggested to use bpf_map_inc_not_zero/bpf_map_put.
-> > If I read everythin correctly, I think without map_inc/map_put we
-> > get the following race:
-> > 
-> > CPU0                                   CPU1
-> > 
-> > bpf_map_put
-> >    bpf_sk_storage_map_free(smap)
-> >      synchronize_rcu
-> > 
-> >      // no more users via bpf or
-> >      // syscall, but clone
-> >      // can still happen
-> > 
-> >      for each (bucket)
-> >        selem_unlink
-> >          selem_unlink_map(smap)
-> > 
-> >          // adding anything at
-> >          // this point to the
-> >          // bucket will leak
-> > 
-> >                                         rcu_read_lock
-> >                                         tcp_v4_rcv
-> >                                           tcp_v4_do_rcv
-> >                                             // sk is lockless TCP_LISTEN
-> >                                             tcp_v4_cookie_check
-> >                                               tcp_v4_syn_recv_sock
-> >                                                 bpf_sk_storage_clone
-> >                                                   rcu_dereference(sk->sk_bpf_storage)
-> >                                                   selem_link_map(smap, copy)
-> >                                                   // adding new element to the
-> >                                                   // map -> leak
-> >                                         rcu_read_unlock
-> > 
-> >        selem_unlink_sk
-> >         sk->sk_bpf_storage = NULL
-> > 
-> >      synchronize_rcu
-> > 
+On Tue, Aug 06, 2019 at 10:24:25PM -0700, Andy Lutomirski wrote:
+> >
+> > Inside containers and inside nested containers we need to start processes
+> > that will use bpf. All of the processes are trusted.
 > 
-> Makes sense, thanks for clarifying. Perhaps a small comment on top of
-> the bpf_map_inc_not_zero() would be great as well, so it's immediately
-> clear also from this location when reading the code why this is done.
-Sure, no problem, will have something similar to what I have before
-synchronize_rcu in bpf_sk_storage_map_free.
+> Trusted by whom?  In a non-nested container, the container manager
+> *might* be trusted by the outside world.  In a *nested* container,
+> unless the inner container management is controlled from outside the
+> outer container, it's not trusted.  I don't know much about how
+> Facebook's containers work, but the LXC/LXD/Podman world is moving
+> very strongly toward user namespaces and maximally-untrusted
+> containers, and I think bpf() should work in that context.
 
-> Thanks,
-> Daniel
+agree that containers (namespaces) reduce amount of trust necessary
+for apps to run, but the end goal is not security though.
+Linux has become a single user system.
+If user can ssh into the host they can become root.
+If arbitrary code can run on the host it will be break out of any sandbox.
+Containers are not providing the level of security that is enough
+to run arbitrary code. VMs can do it better, but cpu bugs don't make it easy.
+Containers are used to make production systems safer.
+Some people call it more 'secure', but it's clearly not secure for
+arbitrary code and that is what kernel.unprivileged_bpf_disabled allows.
+When we say 'unprivileged bpf' we really mean arbitrary malicious bpf program.
+It's been a constant source of pain. The constant blinding, randomization,
+verifier speculative analysis, all spectre v1, v2, v4 mitigations
+are simply not worth it. It's a lot of complex kernel code without users.
+There is not a single use case to allow arbitrary malicious bpf
+program to be loaded and executed.
+As soon as we have /dev/bpf to allow all of bpf to be used without root
+we will set sysctl kernel.unprivileged_bpf_disabled=1
+Hence I prefer this /dev/bpf mechanism to be as simple a possible.
+The applications that will use it are going to be just as trusted as systemd.
+
+> > To solve your concern of bypassing all capable checks...
+> > How about we do /dev/bpf/full_verifier first?
+> > It will replace capable() checks in the verifier only.
+> 
+> I'm not convinced that "in the verifier" is the right distinction.
+> Telling administrators that some setting lets certain users bypass
+> bpf() verifier checks doesn't have a clear enough meaning.  
+
+linux is a single user system. there are no administrators any more.
+No doubt, folks will disagree, but that game is over.
+At least on bpf side it's done.
+
+> I propose,
+> instead, that the current capable() checks be divided into three
+> categories:
+
+I don't see a use case for these categories.
+All bpf programs extend the kernel in some way.
+The kernel vs user is one category.
+Conceptually CAP_BPF is enough. It would be similar to CAP_NET_ADMIN.
+When application has CAP_NET_ADMIN it covers all of networking knobs.
+There is no use case that would warrant fine grain CAP_ROUTE_ADMIN,
+CAP_ETHTOOL_ADMIN, CAP_ETH0_ADMIN, etc.
+Similarly CAP_BPF as the only knob is enough.
+The only disadvantage of CAP_BPF is that it's not possible to
+pass it from one systemd-like daemon to another systemd-like daemon.
+Hence /dev/bpf idea and passing file descriptor.
+
+> This type of thing actually fits quite nicely into an idea I've been
+> thinking about for a while called "implicit rights". In very brief
+> summary, there would be objects called /dev/rights/xyz, where xyz is
+> the same of a "right".  If there is a readable object of the right
+> type at the literal path "/dev/rights/xyz", then you have right xyz.
+> There's a bit more flexibility on top of this.  BPF could use
+> /dev/rights/bpf/maptypes/lpm and
+> /dev/rights/bpf/verifier/bounded_loops, for example.  Other non-BPF
+> use cases include a biggie:
+> /dev/rights/namespace/create_unprivileged_userns.
+> /dev/rights/bind_port/80 would be nice, too.
+
+The concept of "implicit rights" is very nice and I'm sure it will
+be a good fit somewhere, but I don't see why use it in bpf space.
+There is no use case for fine grain partition of bpf features.
+
