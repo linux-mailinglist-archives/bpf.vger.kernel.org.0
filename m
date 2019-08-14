@@ -2,270 +2,339 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDAA8DEAF
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 22:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3333F8DF70
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 22:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728443AbfHNUWq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Aug 2019 16:22:46 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:38192 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728262AbfHNUWq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Aug 2019 16:22:46 -0400
-Received: by mail-qt1-f195.google.com with SMTP id x4so33171qts.5;
-        Wed, 14 Aug 2019 13:22:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G/pB5BRwOpTmkoE1vsDtrWyu1m7MhB5hViIsP5sOuQM=;
-        b=R3e+/RwRtTGWNPJSlrotA2AZMbJKIws+xhUtjz8hTz6knImtoZMfN+o7vl+iL4pvLS
-         /vfvFCuSeKxlCNN7QcFqGPtgsIAvapo1duucqIBk5UUNmdN5OwtmU7BIeNOkftMGsOpq
-         T4DE5oRvRX0aEahEWWi45M0avpau7/y3B6zCc5e6s5Vm2jW5jOlJ0VwvYhT8vvgh9O4J
-         tBXZt3xtBflNTBw8lsydvA3QzKiU+dGwO5cB+OoZikeJkb3F3ulNk2oG2hLxOHZ/kIur
-         Hs433C0SYFBRLIpFOeJhvHptaMDe2qKgeLbdIHCIjj7CVl6yqSIK98QJYnE1ruZmtQMp
-         q5sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G/pB5BRwOpTmkoE1vsDtrWyu1m7MhB5hViIsP5sOuQM=;
-        b=HvCOz0lI9ODi5Jlp2ViI20LDnGUp+apLveDr6DHhZ4U7d3W3bQvKXyN3q6KWbtNQZp
-         XhaaWiROK/dY9duBxVv371kbclfmqRfkwJAePcLPi1+F+w/GGkK6dLRtxVpHmCM8GW+C
-         TeCyOx2INwYoMdvjyyVnnCcgmoXoB5Z2/iHabHmqLa3SEdVIciW4y2q1bjD5iq0alIOT
-         I7vw/2PjqUrLyPN/OkkwP8x2SUh7IehqYX/p76MpIpuM2Smp5FfYGHqcZX3iQuuG5Pkt
-         cdk2otxHMzbNfr/hCNV/90GYTsDXHzlNOCLSzqWVadYtWue9qB4dpGzgIRD13S6Jk+gF
-         q+xg==
-X-Gm-Message-State: APjAAAXb44SPkkicPsxboze2RGRqRmlKjao2OGdfO+SXa09Db/g7EfTf
-        wUt+C70w6pOE/lH1Yl7cOxPA8ZE5PzfWX4dKgPA=
-X-Google-Smtp-Source: APXvYqyigjNg1P4hUCFUIstyNR5mmcHV3nm6ZpYs81vhzxhZzkRLip3Rpd7KsB3xbfjq4tu2cyn2KpXrm9QQnmQnq50=
-X-Received: by 2002:aed:26c2:: with SMTP id q60mr974838qtd.59.1565814165410;
- Wed, 14 Aug 2019 13:22:45 -0700 (PDT)
+        id S1726166AbfHNU4G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Aug 2019 16:56:06 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:60957 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728443AbfHNU4G (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Aug 2019 16:56:06 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1M4K2r-1hyHIH0iDh-000MQ2; Wed, 14 Aug 2019 22:56:00 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-ppp@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH v5 12/18] compat_ioctl: unify copy-in of ppp filters
+Date:   Wed, 14 Aug 2019 22:54:47 +0200
+Message-Id: <20190814205521.122180-3-arnd@arndb.de>
+X-Mailer: git-send-email 2.20.0
+In-Reply-To: <20190814204259.120942-1-arnd@arndb.de>
+References: <20190814204259.120942-1-arnd@arndb.de>
 MIME-Version: 1.0
-References: <20190814164742.208909-1-sdf@google.com> <20190814164742.208909-4-sdf@google.com>
- <CAEf4BzYNQSQKrDXHvMnFZY+uapU7uou1MnE_YY-QjoBCN3qLrA@mail.gmail.com> <20190814200751.GM2820@mini-arch>
-In-Reply-To: <20190814200751.GM2820@mini-arch>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 14 Aug 2019 13:22:34 -0700
-Message-ID: <CAEf4BzY=ZrS1+7RDPFyzLheZv-C4HqBEh_iLWgnUFPh95TvRFg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/4] selftests/bpf: test_progs: remove global
- fail/success counts
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:gweRwe3qoOfci1cVCHomKaMjKCeIGffZck0PcdeiHARYsh64WGz
+ upSLT8xxKvAMj7GeXMKh8qZRYj3HKzPwEtlBatIM5V0lJdkWWu++ZDiIQiqWKMKxQF528up
+ diRaGWM7UeH9O7Ovc54jU3fY41LJbxW6jks8NGuvhbepvO3gMuTbwycWxAstgnQkLEWs5IL
+ 2QFLdzKY58dgL7NzJLu7g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qbgXzQj+UpM=:nbb7CErS1GX4es59ymPfuC
+ hKqDGMbDByRk6H8a/qM4epEHrtxYj3vUP2bIvviABQZXMrheOHOLMpQUQ/aZf1PJlsCN6pNxs
+ yAq3JDSkqGcg5g8UGWYygW2wlZhbKM9LgyCZf3qAdeLbP405B+fuFGO+ocrwXc/DC4KD9REfm
+ fXx6vyK7H3ilGKG/00ErzYhLgSLge+3yH/9RDw8IQNfbq1JH4M/BnrlbQdVgoN5NILd9oITbC
+ 2yTXyRgnUi8LrA2uuKURV0P2t1yImAiTMZPqVUywP9V2CZYJbQX3wGmbuEkW56BYzcL8140vj
+ j0nhZ2kTvZo2ADBcJ+50wF0i9mdvqNmFON2gWzG9IJCmXqsQdOf9TsT63S5AMits+gQ0FVGg/
+ mV/va9xv0ZtOHfB0EeyCpEkBiCyKPK961+U0xcp5TRiRrxapcVm0a6si6xnZ2+HMfpdcxQcJK
+ 4/wdQPRTBy9ec7rXvl4f/Ui9240L463MhLw3sigcLr91FCmJqe8Wpv16UgaGODTfPNNjmZomX
+ SHIzG8Yujp2ClNw0VVSe6mlla++Kc0Si5aUyD8vkFna56GaZXDdBrGlzUsNKd5nwkjf3eENRY
+ YSR4LwMq9suARgyqclDMiCgUaV1nYe84vyCZ9V/f6TfR5z+Jbz6h90j7M6OUnLJW++wNUsYHs
+ SV0m709ZFcB8JkvIvDCiG6WcG5wNRAqnlcA9dblULrNtwK0bEub5dQN+I4fwmdMPMkQU4WZ3K
+ p0pOKIa2dCzMyTozjBZZy+cHBQyWhgA1+N4QuA==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 14, 2019 at 1:07 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
->
-> On 08/14, Andrii Nakryiko wrote:
-> > On Wed, Aug 14, 2019 at 9:48 AM Stanislav Fomichev <sdf@google.com> wrote:
-> > >
-> > > Now that we have a global per-test/per-environment state, there
-> > > is no longer the need to have global fail/success counters
-> > > (and there is no need to save/get the diff before/after the
-> > > test).
-> > >
-> > > Cc: Andrii Nakryiko <andriin@fb.com>
-> > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > ---
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-[...]
+Now that isdn4linux is gone, the is only one implementation of PPPIOCSPASS
+and PPPIOCSACTIVE in ppp_generic.c, so this is where the compat_ioctl
+support should be implemented.
 
-> > > +void __test__fail(const char *file, int line)
-> > > +{
-> > > +       if (env.test->subtest_name)
-> > > +               fprintf(stderr, "%s:%s failed at %s:%d, errno=%d\n",
-> >
-> > Nit: let's keep <test>/<subtest> convention here as well?
-> >
-> > Failure doesn't always set errno, this will be quite confusing
-> > sometimes. Especially for higher-level libbpf APIs, which don't set
-> > errno at all.
-> > If test wants to log additional information, let it do it explicitly.
-> SG. Maybe we can adapt log_err from cgroup_helpers.h for error reporting
-> once I move sockopt tests into test_progs.
->
-> > Also, _CHECK already logs error message, so this is going to be
-> > double-verbose for typical case. I'd say let's drop these error
-> > messages and instead slightly extend _CHECK one with line number (it
-> > already logs func name).
-> Not everything goes through the _CHECK macro unfortunately, see
+The two commands are implemented in very similar ways, so introduce
+new helpers to allow sharing between the two and between native and
+compat mode.
 
-Well, it should (at least eventually). If existing macro doesn't cover
-typical use case, we can add one that does cover.
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+[arnd: rebased, and added changelog text]
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/ppp/ppp_generic.c | 169 ++++++++++++++++++++++------------
+ fs/compat_ioctl.c             |  37 --------
+ 2 files changed, 108 insertions(+), 98 deletions(-)
 
-> all the cases where I did s/error_cnt++/test__fail/. How about I
-> remove the error message from _CHECK and leave it in __test_fail?
+diff --git a/drivers/net/ppp/ppp_generic.c b/drivers/net/ppp/ppp_generic.c
+index a30e41a56085..e3f207767589 100644
+--- a/drivers/net/ppp/ppp_generic.c
++++ b/drivers/net/ppp/ppp_generic.c
+@@ -554,29 +554,58 @@ static __poll_t ppp_poll(struct file *file, poll_table *wait)
+ }
+ 
+ #ifdef CONFIG_PPP_FILTER
+-static int get_filter(void __user *arg, struct sock_filter **p)
++static struct bpf_prog *get_filter(struct sock_fprog *uprog)
++{
++	struct sock_fprog_kern fprog;
++	struct bpf_prog *res = NULL;
++	int err;
++
++	if (!uprog->len)
++		return NULL;
++
++	/* uprog->len is unsigned short, so no overflow here */
++	fprog.len = uprog->len * sizeof(struct sock_filter);
++	fprog.filter = memdup_user(uprog->filter, fprog.len);
++	if (IS_ERR(fprog.filter))
++		return ERR_CAST(fprog.filter);
++
++	err = bpf_prog_create(&res, &fprog);
++	kfree(fprog.filter);
++
++	return err ? ERR_PTR(err) : res;
++}
++
++static struct bpf_prog *ppp_get_filter(struct sock_fprog __user *p)
+ {
+ 	struct sock_fprog uprog;
+-	struct sock_filter *code = NULL;
+-	int len;
+ 
+-	if (copy_from_user(&uprog, arg, sizeof(uprog)))
+-		return -EFAULT;
++	if (copy_from_user(&uprog, p, sizeof(struct sock_fprog)))
++		return ERR_PTR(-EFAULT);
++	return get_filter(&uprog);
++}
+ 
+-	if (!uprog.len) {
+-		*p = NULL;
+-		return 0;
+-	}
++#ifdef CONFIG_COMPAT
++struct sock_fprog32 {
++	unsigned short len;
++	compat_caddr_t filter;
++};
+ 
+-	len = uprog.len * sizeof(struct sock_filter);
+-	code = memdup_user(uprog.filter, len);
+-	if (IS_ERR(code))
+-		return PTR_ERR(code);
++#define PPPIOCSPASS32		_IOW('t', 71, struct sock_fprog32)
++#define PPPIOCSACTIVE32		_IOW('t', 70, struct sock_fprog32)
+ 
+-	*p = code;
+-	return uprog.len;
++static struct bpf_prog *compat_ppp_get_filter(struct sock_fprog32 __user *p)
++{
++	struct sock_fprog32 uprog32;
++	struct sock_fprog uprog;
++
++	if (copy_from_user(&uprog32, p, sizeof(struct sock_fprog32)))
++		return ERR_PTR(-EFAULT);
++	uprog.len = uprog32.len;
++	uprog.filter = compat_ptr(uprog32.filter);
++	return get_filter(&uprog);
+ }
+-#endif /* CONFIG_PPP_FILTER */
++#endif
++#endif
+ 
+ static long ppp_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ {
+@@ -753,55 +782,25 @@ static long ppp_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 
+ #ifdef CONFIG_PPP_FILTER
+ 	case PPPIOCSPASS:
+-	{
+-		struct sock_filter *code;
+-
+-		err = get_filter(argp, &code);
+-		if (err >= 0) {
+-			struct bpf_prog *pass_filter = NULL;
+-			struct sock_fprog_kern fprog = {
+-				.len = err,
+-				.filter = code,
+-			};
+-
+-			err = 0;
+-			if (fprog.filter)
+-				err = bpf_prog_create(&pass_filter, &fprog);
+-			if (!err) {
+-				ppp_lock(ppp);
+-				if (ppp->pass_filter)
+-					bpf_prog_destroy(ppp->pass_filter);
+-				ppp->pass_filter = pass_filter;
+-				ppp_unlock(ppp);
+-			}
+-			kfree(code);
+-		}
+-		break;
+-	}
+ 	case PPPIOCSACTIVE:
+ 	{
+-		struct sock_filter *code;
++		struct bpf_prog *filter = ppp_get_filter(argp);
++		struct bpf_prog **which;
+ 
+-		err = get_filter(argp, &code);
+-		if (err >= 0) {
+-			struct bpf_prog *active_filter = NULL;
+-			struct sock_fprog_kern fprog = {
+-				.len = err,
+-				.filter = code,
+-			};
+-
+-			err = 0;
+-			if (fprog.filter)
+-				err = bpf_prog_create(&active_filter, &fprog);
+-			if (!err) {
+-				ppp_lock(ppp);
+-				if (ppp->active_filter)
+-					bpf_prog_destroy(ppp->active_filter);
+-				ppp->active_filter = active_filter;
+-				ppp_unlock(ppp);
+-			}
+-			kfree(code);
++		if (IS_ERR(filter)) {
++			err = PTR_ERR(filter);
++			break;
+ 		}
++		if (cmd == PPPIOCSPASS)
++			which = &ppp->pass_filter;
++		else
++			which = &ppp->active_filter;
++		ppp_lock(ppp);
++		if (*which)
++			bpf_prog_destroy(*which);
++		*which = filter;
++		ppp_unlock(ppp);
++		err = 0;
+ 		break;
+ 	}
+ #endif /* CONFIG_PPP_FILTER */
+@@ -827,6 +826,51 @@ static long ppp_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	return err;
+ }
+ 
++#ifdef CONFIG_COMPAT
++static long ppp_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
++{
++	struct ppp_file *pf;
++	int err = -ENOIOCTLCMD;
++	void __user *argp = (void __user *)arg;
++
++	mutex_lock(&ppp_mutex);
++
++	pf = file->private_data;
++	if (pf && pf->kind == INTERFACE) {
++		struct ppp *ppp = PF_TO_PPP(pf);
++		switch (cmd) {
++#ifdef CONFIG_PPP_FILTER
++		case PPPIOCSPASS32:
++		case PPPIOCSACTIVE32:
++		{
++			struct bpf_prog *filter = compat_ppp_get_filter(argp);
++			struct bpf_prog **which;
++
++			if (IS_ERR(filter)) {
++				err = PTR_ERR(filter);
++				break;
++			}
++			if (cmd == PPPIOCSPASS32)
++				which = &ppp->pass_filter;
++			else
++				which = &ppp->active_filter;
++			ppp_lock(ppp);
++			if (*which)
++				bpf_prog_destroy(*which);
++			*which = filter;
++			ppp_unlock(ppp);
++			err = 0;
++			break;
++		}
++#endif /* CONFIG_PPP_FILTER */
++		}
++	}
++	mutex_unlock(&ppp_mutex);
++
++	return err;
++}
++#endif
++
+ static int ppp_unattached_ioctl(struct net *net, struct ppp_file *pf,
+ 			struct file *file, unsigned int cmd, unsigned long arg)
+ {
+@@ -895,6 +939,9 @@ static const struct file_operations ppp_device_fops = {
+ 	.write		= ppp_write,
+ 	.poll		= ppp_poll,
+ 	.unlocked_ioctl	= ppp_ioctl,
++#ifdef CONFIG_COMPAT
++	.compat_ioctl	= ppp_compat_ioctl,
++#endif
+ 	.open		= ppp_open,
+ 	.release	= ppp_release,
+ 	.llseek		= noop_llseek,
+diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
+index d537888f3660..eda41b2537f0 100644
+--- a/fs/compat_ioctl.c
++++ b/fs/compat_ioctl.c
+@@ -99,40 +99,6 @@ static int sg_grt_trans(struct file *file,
+ }
+ #endif /* CONFIG_BLOCK */
+ 
+-struct sock_fprog32 {
+-	unsigned short	len;
+-	compat_caddr_t	filter;
+-};
+-
+-#define PPPIOCSPASS32	_IOW('t', 71, struct sock_fprog32)
+-#define PPPIOCSACTIVE32	_IOW('t', 70, struct sock_fprog32)
+-
+-static int ppp_sock_fprog_ioctl_trans(struct file *file,
+-		unsigned int cmd, struct sock_fprog32 __user *u_fprog32)
+-{
+-	struct sock_fprog __user *u_fprog64 = compat_alloc_user_space(sizeof(struct sock_fprog));
+-	void __user *fptr64;
+-	u32 fptr32;
+-	u16 flen;
+-
+-	if (get_user(flen, &u_fprog32->len) ||
+-	    get_user(fptr32, &u_fprog32->filter))
+-		return -EFAULT;
+-
+-	fptr64 = compat_ptr(fptr32);
+-
+-	if (put_user(flen, &u_fprog64->len) ||
+-	    put_user(fptr64, &u_fprog64->filter))
+-		return -EFAULT;
+-
+-	if (cmd == PPPIOCSPASS32)
+-		cmd = PPPIOCSPASS;
+-	else
+-		cmd = PPPIOCSACTIVE;
+-
+-	return do_ioctl(file, cmd, (unsigned long) u_fprog64);
+-}
+-
+ struct ppp_option_data32 {
+ 	compat_caddr_t	ptr;
+ 	u32			length;
+@@ -285,9 +251,6 @@ static long do_ioctl_trans(unsigned int cmd,
+ 		return ppp_gidle(file, cmd, argp);
+ 	case PPPIOCSCOMPRESS32:
+ 		return ppp_scompress(file, cmd, argp);
+-	case PPPIOCSPASS32:
+-	case PPPIOCSACTIVE32:
+-		return ppp_sock_fprog_ioctl_trans(file, cmd, argp);
+ #ifdef CONFIG_BLOCK
+ 	case SG_GET_REQUEST_TABLE:
+ 		return sg_grt_trans(file, cmd, argp);
+-- 
+2.20.0
 
-I'd keep test__fail() and test__success() as a low-level building
-block. And move all the logging into corresponding high-level macro.
-This still gives flexibility to do one-off crazy tests, if necessary,
-while having consistent approach for everything else.
-
->
-> > > +                       env.test->test_name, env.test->subtest_name,
-> > > +                       file, line, errno);
-> > > +       else
-> > > +               fprintf(stderr, "%s failed at %s:%d, errno=%d\n",
-> > > +                       env.test->test_name, file, line, errno);
-> > > +
-> > > +       env.test->fail_cnt++;
-> > > +}
-> > > +
-> > >  struct ipv4_packet pkt_v4 = {
-> > >         .eth.h_proto = __bpf_constant_htons(ETH_P_IP),
-> > >         .iph.ihl = 5,
-> > > @@ -150,7 +145,7 @@ int bpf_find_map(const char *test, struct bpf_object *obj, const char *name)
-> > >         map = bpf_object__find_map_by_name(obj, name);
-> > >         if (!map) {
-> > >                 printf("%s:FAIL:map '%s' not found\n", test, name);
-> > > -               error_cnt++;
-> > > +               test__fail();
-> > >                 return -1;
-> > >         }
-> > >         return bpf_map__fd(map);
-> > > @@ -509,8 +504,6 @@ int main(int argc, char **argv)
-> > >         stdio_hijack();
-> > >         for (i = 0; i < prog_test_cnt; i++) {
-> > >                 struct prog_test_def *test = &prog_test_defs[i];
-> > > -               int old_pass_cnt = pass_cnt;
-> > > -               int old_error_cnt = error_cnt;
-> > >
-> > >                 env.test = test;
-> > >                 test->test_num = i + 1;
-> > > @@ -525,14 +518,12 @@ int main(int argc, char **argv)
-> > >                         test__end_subtest();
-> > >
-> > >                 test->tested = true;
-> > > -               test->pass_cnt = pass_cnt - old_pass_cnt;
-> > > -               test->error_cnt = error_cnt - old_error_cnt;
-> > > -               if (test->error_cnt)
-> > > +               if (test->fail_cnt)
-> > >                         env.fail_cnt++;
-> > >                 else
-> > >                         env.succ_cnt++;
-> > >
-> > > -               dump_test_log(test, test->error_cnt);
-> > > +               dump_test_log(test, test->fail_cnt);
-> > >
-> > >                 fprintf(env.stdout, "#%3d     %4s %s\n",
-> > >                         test->test_num,
-> > > @@ -546,5 +537,5 @@ int main(int argc, char **argv)
-> > >         free(env.test_selector.num_set);
-> > >         free(env.subtest_selector.num_set);
-> > >
-> > > -       return error_cnt ? EXIT_FAILURE : EXIT_SUCCESS;
-> > > +       return env.fail_cnt ? EXIT_FAILURE : EXIT_SUCCESS;
-> > >  }
-> > > diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
-> > > index 9defd35cb6c0..7b05921784a4 100644
-> > > --- a/tools/testing/selftests/bpf/test_progs.h
-> > > +++ b/tools/testing/selftests/bpf/test_progs.h
-> > > @@ -38,7 +38,23 @@ typedef __u16 __sum16;
-> > >  #include "trace_helpers.h"
-> > >  #include "flow_dissector_load.h"
-> > >
-> > > -struct prog_test_def;
-> > > +struct prog_test_def {
-> > > +       const char *test_name;
-> > > +       int test_num;
-> > > +       void (*run_test)(void);
-> > > +       bool force_log;
-> > > +       bool tested;
-> > > +
-> > > +       const char *subtest_name;
-> > > +       int subtest_num;
-> > > +
-> > > +       int succ_cnt;
-> > > +       int fail_cnt;
-> >
-> > So I'm neutral on this rename, I even considered it myself initially.
-> > But keep in mind, that succ/fail in env means number of tests, while
-> > test->succ/fail means number of assertions. We don't report total
-> > number of failed checks anymore, so it doesn't matter, but if we ever
-> > want to keep track of that at env level, it will be very confusing and
-> > inconvenient.
-> Point taken, I didn't think about it, let me undo the rename. I'll
-> try to add a comment instead to highlight the difference.
->
-> > > +
-> > > +       /* store counts before subtest started */
-> > > +       int old_succ_cnt;
-> > > +       int old_fail_cnt;
-> > > +};
-> >
-> > Did you move it here just to access env.test->succ_cnt in _CHECK()?
-> > Maybe add test__success() counterpart to test__fail() instead?
-> Yeah, good point, will do.
->
-> > >
-> > >  struct test_selector {
-> > >         const char *name;
-> > > @@ -67,13 +83,13 @@ struct test_env {
-> > >         int skip_cnt; /* skipped tests */
-> > >  };
-> > >
-> > > -extern int error_cnt;
-> > > -extern int pass_cnt;
-> > >  extern struct test_env env;
-> > >
-> > >  extern void test__force_log();
-> > >  extern bool test__start_subtest(const char *name);
-> > >  extern void test__skip(void);
-> > > +#define test__fail() __test__fail(__FILE__, __LINE__)
-> > > +extern void __test__fail(const char *file, int line);
-> >
-> > Given my comment above about too verbose logging, I'd say let's keep
-> > this simple and have just
-> >
-> > extern void test__fail()
-> >
-> > And let _CHECK log file:line.
-> See above about test__fail without _CHECK. Maybe we should do QCHECK
-> as you suggested in the other email.
->
-> So those lonely:
->
->         if (err) {
->                 error_cnt++;
->                 return;
->         }
->
-> checks can instead be converted to:
->
->         if (QCHECK(err))
->                 return;
->
-> Let me play with it a bit and see how it goes.
-
-Yeah, give it a go. Try keeping file:line logging in macro, where it's
-more natural, IMO.
-
->
-> > >
-> > >  #define MAGIC_BYTES 123
-> > >
-> > > @@ -96,11 +112,11 @@ extern struct ipv6_packet pkt_v6;
-> > >  #define _CHECK(condition, tag, duration, format...) ({                 \
-> > >         int __ret = !!(condition);                                      \
-> > >         if (__ret) {                                                    \
-> > > -               error_cnt++;                                            \
-> > > +               test__fail();                                           \
-> > >                 printf("%s:FAIL:%s ", __func__, tag);                   \
-> > >                 printf(format);                                         \
-> > >         } else {                                                        \
-> > > -               pass_cnt++;                                             \
-> > > +               env.test->succ_cnt++;                                   \
-> > >                 printf("%s:PASS:%s %d nsec\n",                          \
-> > >                        __func__, tag, duration);                        \
-> > >         }                                                               \
-> > > --
-> > > 2.23.0.rc1.153.gdeed80330f-goog
-> > >
