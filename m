@@ -2,173 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6098E0AF
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 00:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CDB8E12B
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 01:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728887AbfHNWay (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Aug 2019 18:30:54 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:45036 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728815AbfHNWay (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Aug 2019 18:30:54 -0400
-Received: by mail-pf1-f195.google.com with SMTP id c81so202824pfc.11
-        for <bpf@vger.kernel.org>; Wed, 14 Aug 2019 15:30:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=yFT0DexMwrpcpBksqM27vWgfwGLdGdnJxoa44QNbmXc=;
-        b=mdyzDvu42tTkOsWy6oTPXu18OkStVhbhSoIT/SQap4fGl7XOdtBH5ZFB0bHDYa1y/z
-         nIG/PUjvCypqMuWoHSfsttI9fau5EVlapKeEuOV2JM9Xu7BhrYnpIqEeq9aUx5/xcZv8
-         mEi6tWij5/6vd9gQGKGUeUwwC7mnS84sZfs6oiOuZx90z/9scFOevardh43fJcAjndhO
-         7XbOPsnwVlU9htX6OWr4qG5AYWLTeQjQeYSRqO1jVj5ihkf/BawHcc1xYEe1FGXuxL2y
-         L2Zc2Lh1QA2T7+ehxuiCBbV/8RfmubBfWt8kIW5Kkl4xy5rSfi3onKqL1VkYlha0+6h9
-         qNQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=yFT0DexMwrpcpBksqM27vWgfwGLdGdnJxoa44QNbmXc=;
-        b=RzxCsEvtdywkm4nlKi4A7S3aEhKaXK4ael8bB3xUh8sjrZ888+ghs6RFefJx5vOl8K
-         EdLocBDoLoNz4ROkeQgF3HuXNwfv//hlUCW4k3dDF7iUZ9Dix/QG5i+riidrs9OC2CCk
-         KgfFomwlv+6mgczWc8GUkalDswf4LjfszDVLU3MQPcBBbSBXgXZlJa/CwEYDn5uFZAyJ
-         aTrGNCfmv57QiDB+CWi0QIFb7oZwMEmALJudHn5axpa9v6CWDxCUkYfVxyFvzUn9b/b7
-         uPQ5V+X1lSVRQMl1AzTLPo96y/l6pbptbQQVYOd5Pw96GFMVgUhxyxwdbvWSdS9q0YNi
-         DX9g==
-X-Gm-Message-State: APjAAAXTvaMuM2OKkNEQdM3C1qx+fTYmyVOEB2b4dCoaK5ji9j15W39N
-        i3Vd3ysJ1+fdGi6l7IJQx8YBmA==
-X-Google-Smtp-Source: APXvYqzJ31qf7hxB+vYykfcoT3+2aPYGmhoqmEYaHxavvuZTHNyJQKWgpyrk5FWfjptWB1rUiqJeVg==
-X-Received: by 2002:a63:5d54:: with SMTP id o20mr1120079pgm.413.1565821853550;
-        Wed, 14 Aug 2019 15:30:53 -0700 (PDT)
-Received: from ?IPv6:2600:1010:b04e:b450:9121:34aa:70f4:e97c? ([2600:1010:b04e:b450:9121:34aa:70f4:e97c])
-        by smtp.gmail.com with ESMTPSA id 4sm917288pfc.92.2019.08.14.15.30.52
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 14 Aug 2019 15:30:52 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-From:   Andy Lutomirski <luto@amacapital.net>
-X-Mailer: iPhone Mail (16G77)
-In-Reply-To: <20190814220545.co5pucyo5jk3weiv@ast-mbp.dhcp.thefacebook.com>
-Date:   Wed, 14 Aug 2019 15:30:51 -0700
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Daniel Colascione <dancol@google.com>,
-        Song Liu <songliubraving@fb.com>,
-        Kees Cook <keescook@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Jann Horn <jannh@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <AD211133-EA60-4B91-AB1B-201713F50AB2@amacapital.net>
-References: <EE7B7AE1-3D44-4561-94B9-E97A626A251D@fb.com> <CALCETrXX-Jeb4wiQuL6FUai4wNMmMiUxuLLh_Lb9mT7h=0GgAw@mail.gmail.com> <20190805192122.laxcaz75k4vxdspn@ast-mbp> <CALCETrVtPs8gY-H4gmzSqPboid3CB++n50SvYd6RU9YVde_-Ow@mail.gmail.com> <20190806011134.p5baub5l3t5fkmou@ast-mbp> <CALCETrXEHL3+NAY6P6vUj7Pvd9ZpZsYC6VCLXOaNxb90a_POGw@mail.gmail.com> <20190813215823.3sfbakzzjjykyng2@ast-mbp> <CALCETrVT-dDXQGukGs5S1DkzvQv9_e=axzr_GyEd2c4T4z8Qng@mail.gmail.com> <20190814005737.4qg6wh4a53vmso2v@ast-mbp> <CALCETrUkqUprujww26VxHwkdXQ3DWJH8nnL2VBYpK2EU0oX_YA@mail.gmail.com> <20190814220545.co5pucyo5jk3weiv@ast-mbp.dhcp.thefacebook.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        id S1727659AbfHNXRa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Aug 2019 19:17:30 -0400
+Received: from www62.your-server.de ([213.133.104.62]:60330 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726619AbfHNXRa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Aug 2019 19:17:30 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hy2WE-0002TG-BV; Thu, 15 Aug 2019 01:17:26 +0200
+Received: from [178.193.45.231] (helo=pc-63.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hy2WE-000CWU-3l; Thu, 15 Aug 2019 01:17:26 +0200
+Subject: Re: [PATCH bpf-next v4 1/2] xsk: remove AF_XDP socket from map when
+ the socket is released
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Bruce Richardson <bruce.richardson@intel.com>,
+        Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>
+References: <20190802081154.30962-1-bjorn.topel@gmail.com>
+ <20190802081154.30962-2-bjorn.topel@gmail.com>
+ <5ad56a5e-a189-3f56-c85c-24b6c300efd9@iogearbox.net>
+ <CAJ+HfNhO+xSs25aPat9WjC75W6_Kgfq=GU+YCEcoZw-GCjZdEg@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5ce25e5b-a07a-31d8-4141-c6bd250bba0e@iogearbox.net>
+Date:   Thu, 15 Aug 2019 01:17:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <CAJ+HfNhO+xSs25aPat9WjC75W6_Kgfq=GU+YCEcoZw-GCjZdEg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25541/Wed Aug 14 10:26:08 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 8/12/19 7:25 PM, Björn Töpel wrote:
+> On Mon, 12 Aug 2019 at 14:28, Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>
+> [...]
+>>> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+>>> index 59b57d708697..c3447bad608a 100644
+>>> --- a/net/xdp/xsk.c
+>>> +++ b/net/xdp/xsk.c
+>>> @@ -362,6 +362,50 @@ static void xsk_unbind_dev(struct xdp_sock *xs)
+>>>        dev_put(dev);
+>>>    }
+>>>
+>>> +static struct xsk_map *xsk_get_map_list_entry(struct xdp_sock *xs,
+>>> +                                           struct xdp_sock ***map_entry)
+>>> +{
+>>> +     struct xsk_map *map = NULL;
+>>> +     struct xsk_map_node *node;
+>>> +
+>>> +     *map_entry = NULL;
+>>> +
+>>> +     spin_lock_bh(&xs->map_list_lock);
+>>> +     node = list_first_entry_or_null(&xs->map_list, struct xsk_map_node,
+>>> +                                     node);
+>>> +     if (node) {
+>>> +             WARN_ON(xsk_map_inc(node->map));
+>>
+>> Can you elaborate on the refcount usage here and against what scenario it is protecting?
+> 
+> Thanks for having a look!
+> 
+> First we access the map_list (under the lock) and pull out the map
+> which we intend to clean. In order to clear the map entry, we need to
+> a reference to the map. However, when the map_list_lock is released,
+> there's a window where the map entry can be cleared and the map can be
+> destroyed, and making the "map", which is used in
+> xsk_delete_from_maps, stale. To guarantee existence the additional
+> refinc is required. Makes sense?
 
+Seems reasonable to me, and inc as opposed to inc_not_zero is also fine
+here since at this point in time we're still holding one reference to
+the map. But I think there's a catch with the current code that still
+needs fixing:
 
-> On Aug 14, 2019, at 3:05 PM, Alexei Starovoitov <alexei.starovoitov@gmail.=
-com> wrote:
->=20
->> On Wed, Aug 14, 2019 at 10:51:23AM -0700, Andy Lutomirski wrote:
->>=20
->> If eBPF is genuinely not usable by programs that are not fully trusted
->> by the admin, then no kernel changes at all are needed.  Programs that
->> want to reduce their own privileges can easily fork() a privileged
->> subprocess or run a little helper to which they delegate BPF
->> operations.  This is far more flexible than anything that will ever be
->> in the kernel because it allows the helper to verify that the rest of
->> the program is doing exactly what it's supposed to and restrict eBPF
->> operations to exactly the subset that is needed.  So a container
->> manager or network manager that drops some provilege could have a
->> little bpf-helper that manages its BPF XDP, firewalling, etc
->> configuration.  The two processes would talk over a socketpair.
->=20
-> there were three projects that tried to delegate bpf operations.
-> All of them failed.
-> bpf operational workflow is much more complex than you're imagining.
-> fork() also doesn't work for all cases.
-> I gave this example before: consider multiple systemd-like deamons
-> that need to do bpf operations that want to pass this 'bpf capability'
-> to other deamons written by other teams. Some of them will start
-> non-root, but still need to do bpf. They will be rpm installed
-> and live upgraded while running.
-> We considered to make systemd such centralized bpf delegation
-> authority too. It didn't work. bpf in kernel grows quickly.
-> libbpf part grows independently. llvm keeps evolving.
-> All of them are being changed while system overall has to stay
-> operational. Centralized approach breaks apart.
->=20
->> The interesting cases you're talking about really *do* involved
->> unprivileged or less privileged eBPF, though.  Let's see:
->>=20
->> systemd --user: systemd --user *is not privileged at all*.  There's no
->> issue of reducing privilege, since systemd --user doesn't have any
->> privilege to begin with.  But systemd supports some eBPF features, and
->> presumably it would like to support them in the systemd --user case.
->> This is unprivileged eBPF.
->=20
-> Let's disambiguate the terminology.
-> This /dev/bpf patch set started as describing the feature as 'unprivileged=
- bpf'.
-> I think that was a mistake.
-> Let's call systemd-like deamon usage of bpf 'less privileged bpf'.
-> This is not unprivileged.
-> 'unprivileged bpf' is what sysctl kernel.unprivileged_bpf_disabled control=
-s.
->=20
-> There is a huge difference between the two.
-> I'm against extending 'unprivileged bpf' even a bit more than what it is
-> today for many reasons mentioned earlier.
-> The /dev/bpf is about 'less privileged'.
-> Less privileged than root. We need to split part of full root capability
-> into bpf capability. So that most of the root can be dropped.
-> This is very similar to what cap_net_admin does.
-> cap_net_amdin can bring down eth0 which is just as bad as crashing the box=
-.
-> cap_net_admin is very much privileged. Just 'less privileged' than root.
-> Same thing for cap_bpf.
+Imagine you do a xsk_map_update_elem() where we have a situation where
+xs == old_xs. There, we first do the xsk_map_sock_add() to add the new
+xsk map node at the tail of the socket's xs->map_list. We do the xchg()
+and then xsk_map_sock_delete() for old_xs which then walks xs->map_list
+again and purges all entries including the just newly created one. This
+means we'll end up with an xs socket at the given map slot, but the xs
+socket has empty xs->map_list. This means we could release the xs sock
+and the xsk_delete_from_maps() won't need to clean up anything anymore
+but yet the xs is still in the map slot, so if you redirect to that
+socket, it would be use-after-free, no?
 
-The new pseudo-capability in this patch set is absurdly broad. I=E2=80=99ve p=
-roposed some finer-grained divisions in this thread. Do you have comments on=
- them?
+>> Do we pretend it never fails on the bpf_map_inc() wrt the WARN_ON(),
+>> why that (what makes it different from the xsk_map_node_alloc() inc
+>> above where we do error out)?
+> 
+> Hmm, given that we're in a cleanup (socket release), we can't really
+> return any error. What would be a more robust way? Retrying? AFAIK the
+> release ops return an int, but it's not checked/used.
+> 
+>>> +             map = node->map;
+>>> +             *map_entry = node->map_entry;
+>>> +     }
+>>> +     spin_unlock_bh(&xs->map_list_lock);
+>>> +     return map;
+>>> +}
+>>> +
+>>> +static void xsk_delete_from_maps(struct xdp_sock *xs)
+>>> +{
+>>> +     /* This function removes the current XDP socket from all the
+>>> +      * maps it resides in. We need to take extra care here, due to
+>>> +      * the two locks involved. Each map has a lock synchronizing
+>>> +      * updates to the entries, and each socket has a lock that
+>>> +      * synchronizes access to the list of maps (map_list). For
+>>> +      * deadlock avoidance the locks need to be taken in the order
+>>> +      * "map lock"->"socket map list lock". We start off by
+>>> +      * accessing the socket map list, and take a reference to the
+>>> +      * map to guarantee existence. Then we ask the map to remove
+>>> +      * the socket, which tries to remove the socket from the
+>>> +      * map. Note that there might be updates to the map between
+>>> +      * xsk_get_map_list_entry() and xsk_map_try_sock_delete().
+>>> +      */
+> 
+> I tried to clarify here, but I obviously need to do a better job. :-)
+> 
+> 
+> Björn
+> 
 
->=20
-> May be we should do both cap_bpf and /dev/bpf to make it clear that
-> this is the same thing. Two interfaces to achieve the same result.
-
-What for?  If there=E2=80=99s a CAP_BPF, then why do you want /dev/bpf? Espe=
-cially if you define it to do the same thing.
-
->=20
->> Seccomp.  Seccomp already uses cBPF, which is a form of BPF although
->> it doesn't involve the bpf() syscall.  There are some seccomp
->> proposals in the works that will want some stuff from eBPF.  In
->=20
-> I'm afraid these proposals won't go anywhere.
-
-Can you explain why?
-
->=20
->> So it's a bit of a chicken-and-egg situation.  There aren't major
->> unprivileged eBPF users because the kernel support isn't there.
->=20
-> As I said before there are zero known use cases of 'unprivileged bpf'.
->=20
-> If I understand you correctly you're refusing to accept that
-> 'less privileged bpf' is a valid use case while pushing for extending
-> scope of 'unprivileged'.
-
-No, I=E2=80=99m not.  I have no objection at all if you try to come up with a=
- clear definition of what the capability checks do and what it means to gran=
-t a new permission to a task.  Changing *all* of the capable checks is needl=
-essly broad.=
