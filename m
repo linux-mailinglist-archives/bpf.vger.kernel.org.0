@@ -2,133 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CF78DB2C
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 19:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6068DBE1
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 19:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728899AbfHNRHu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Aug 2019 13:07:50 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:36621 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729971AbfHNRHu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Aug 2019 13:07:50 -0400
-Received: by mail-pg1-f194.google.com with SMTP id l21so53383946pgm.3
-        for <bpf@vger.kernel.org>; Wed, 14 Aug 2019 10:07:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FfuwdcQYVuz1smdU6cuWM5yXvRpjDtjFrggRUBq6uDw=;
-        b=NHjn2XABm/9/xwzgQjEDJfAWjZevBwrSW/x9lGsePkN6Rho/yQjLXPoaDwFkOUFMkX
-         qIer4xzE/Ne3No+3x++c5jL6Kz49WC297T4Bdd8M6AnhNgVa+W69wO2qW634uEnuVujM
-         OToizJFaUSBgLwvmHBJC+NwLAnA/3HApKX7sTGpE0RIN+QkyEkzGEEZ/1P1TPqWyG28x
-         bPoIa4MaulM3yLmGh00ZJ4j/6RBD0zglfGGKxEZJ44DIo2C6zjzdcL+z/reLQ5829x3L
-         45r1NJr5I5gFTH0gRzaj2pQjj9bqYY+yW8AUT5KADzQJ8DB4L+iqismH3QimmmmK6NVK
-         M2aA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FfuwdcQYVuz1smdU6cuWM5yXvRpjDtjFrggRUBq6uDw=;
-        b=YevDf60vrNM2Qe9WwgNzXDxzscmVxiD/vkYYKenn+wXEo2lP3dL7bGNNQ+c/n3P6rQ
-         YZfk3F7JzkVmg6MLOoLCaIRp/Be/UiDL3QmwgzRQwl9MjS91A84hMUo2jy/Wrf/ZCdxh
-         5IM/5hkTjKVyTbxZKfPFadyuZXRF1v4yhE3blWDq3NlDGjhOM1dERqncTok85BVCpEYU
-         3GpLOqYX39L+2DEf3y/u3n3iAL4lOGGlAyDoAcnbJvwoVT2V0hIJ90gv2pv3YMQBx/qU
-         RRYwutFRj/VK9lJTuJQN39Uw9Cc+4pxYCXlqZqVRPm0HVzhNNIHrZTXXWrype9+FCwVT
-         mFkw==
-X-Gm-Message-State: APjAAAX3UxmklYbXcgU5PImIKernnGRXuV/p+I4RJeFo6v/wehGo8ykT
-        01uCE1LvqRb/ZpvQOBrydA6TXg==
-X-Google-Smtp-Source: APXvYqzN5aJBu0nuWREutIuBmbQ4WEamZlx4CyC8y6jOxoAOHgIMfIBVaHpGtuBAWzU8DeWS4mAhYg==
-X-Received: by 2002:a17:90a:c714:: with SMTP id o20mr735220pjt.50.1565802469557;
-        Wed, 14 Aug 2019 10:07:49 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id a189sm374332pfa.60.2019.08.14.10.07.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Aug 2019 10:07:49 -0700 (PDT)
-Date:   Wed, 14 Aug 2019 10:07:48 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH bpf-next 1/4] selftests/bpf: test_progs: change
- formatting of the condenced output
-Message-ID: <20190814170748.GK2820@mini-arch>
-References: <20190814164742.208909-1-sdf@google.com>
- <20190814164742.208909-2-sdf@google.com>
- <CAADnVQJk=qSLR1A=1poPY85wNqiye3dMvXZOZ+1OFZSA78VARg@mail.gmail.com>
+        id S1726047AbfHNR2r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Aug 2019 13:28:47 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:41174 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726804AbfHNR2r (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 14 Aug 2019 13:28:47 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7EHJSHJ032493;
+        Wed, 14 Aug 2019 10:28:25 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=7lcgO7NtooV8TJdSIRMLoNW6BrvwFRacWrI6dO6T8BI=;
+ b=MFsrihemKG10KXCbhy9RQAu4hV0CYicPxpnz093sqGTrEOGN4mH1cWLzaDRsyKyjOG9N
+ AwPfbF7Hdg33Oe7DX3MuhzscCK85CXkaz/2gYKkieIRlh+GRlSumiwSxXeHb9HWNF17T
+ VwQ8T4NE034KaUX2y6PbRJGU0ilzYjb2Y/c= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2ucpkpr14g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 14 Aug 2019 10:28:25 -0700
+Received: from prn-hub04.TheFacebook.com (2620:10d:c081:35::128) by
+ prn-hub04.TheFacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Wed, 14 Aug 2019 10:28:24 -0700
+Received: from NAM03-BY2-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.28) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Wed, 14 Aug 2019 10:28:23 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=esiuTgEcLbMvms+699r0DD7QRODoAYVdwdBvjJ6fF/GVx/EtU+PqQOaCg6XyGw0hVBdq83wwe7Co2PwKNehwAW6E/lxuIJdJdgqtMElRpkZyaj/Z3abMt7cJZZ/f/qK1Hs2koNKZovsOFHybb+6U5NSwW0npMcJ7hCIHQnqAitr80ySqRrXaFK2Yn5xKrlZ+P4j4xPRE05oCAH+tvIhUXaFJGnjRom8tqjCGvDExR48k79w2nRvILwxDny8+G+7W/boG11R+OFPOatMWZYpiu44MbFYrzS7Y5wWFVakCzMg/VO2gTmoBoYKXnXpaXD/yb6j5GR6YYbyYXiZ/Pi8pTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7lcgO7NtooV8TJdSIRMLoNW6BrvwFRacWrI6dO6T8BI=;
+ b=YDLYHpiYyBa+/9bIwMuNeQuqGlGeMfrnOfbYEtJ2L9l/jZa9rOw4BpoLJ3I9BTT9oHteBrdQzxZZlLI1X3z5qBrkpnnEaRMvKnS/s/abHgvBtAv2dYun6nkzlQcIioLa0iZPuALxpm0qoFIe4z25C71wEmB0lZUnGIJL0ExaIoUrXfNI6onzMSwpYLY0DYLJJM8xhIZMV2AMsnrBiTEvPzxDZK9kiNvkeUFNPOv0fcjCaectJ+Ji73BxVmJqxxK0lRQW7Pm8vkc4tWBLkRhWcIuDCYhqeG0UkiBJOdLUio67lgGDbQnYqDRUeX/W2uxMGFNCiBz7wz+39oitYwy0jA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7lcgO7NtooV8TJdSIRMLoNW6BrvwFRacWrI6dO6T8BI=;
+ b=YD4se8RTwq99q0rzsjQa7i5ebCAhzCNinzEwASGFb2eJy5WNsjy9riqxUq30d560d4cPeAyXI/IFxdrPum3L6sJsHb4BiWxNCuBD9piqQbGfujwCq5gxGwhStyUhd6+ALXlpPwwlR3BG8EOVAzMLzqOnSgkm5KD7H5FWoHDe09o=
+Received: from MWHPR15MB1790.namprd15.prod.outlook.com (10.174.97.138) by
+ MWHPR15MB1373.namprd15.prod.outlook.com (10.173.233.151) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2157.18; Wed, 14 Aug 2019 17:28:23 +0000
+Received: from MWHPR15MB1790.namprd15.prod.outlook.com
+ ([fe80::e44d:56a4:6a5:d1a]) by MWHPR15MB1790.namprd15.prod.outlook.com
+ ([fe80::e44d:56a4:6a5:d1a%3]) with mapi id 15.20.2157.022; Wed, 14 Aug 2019
+ 17:28:23 +0000
+From:   Martin Lau <kafai@fb.com>
+To:     Stanislav Fomichev <sdf@google.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH bpf-next v3 2/4] bpf: support cloning sk storage on
+ accept()
+Thread-Topic: [PATCH bpf-next v3 2/4] bpf: support cloning sk storage on
+ accept()
+Thread-Index: AQHVUfPomszFO3Dcp0+jW/mc3Xk5IKb652yA
+Date:   Wed, 14 Aug 2019 17:28:22 +0000
+Message-ID: <20190814172819.syz5skzil2ekdu5g@kafai-mbp>
+References: <20190813162630.124544-1-sdf@google.com>
+ <20190813162630.124544-3-sdf@google.com>
+In-Reply-To: <20190813162630.124544-3-sdf@google.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR19CA0056.namprd19.prod.outlook.com
+ (2603:10b6:300:94::18) To MWHPR15MB1790.namprd15.prod.outlook.com
+ (2603:10b6:301:53::10)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:180::5f6f]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 687032c2-a0f5-4c5d-75d4-08d720dcce7c
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MWHPR15MB1373;
+x-ms-traffictypediagnostic: MWHPR15MB1373:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR15MB1373B48C60CB7BA355F52CC2D5AD0@MWHPR15MB1373.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:843;
+x-forefront-prvs: 01294F875B
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(346002)(376002)(366004)(396003)(39860400002)(136003)(189003)(199004)(66476007)(66946007)(256004)(8676002)(81166006)(558084003)(6246003)(64756008)(14444005)(81156014)(478600001)(66556008)(4326008)(6116002)(8936002)(25786009)(53936002)(66446008)(54906003)(99286004)(33716001)(316002)(486006)(476003)(46003)(446003)(76176011)(7736002)(86362001)(102836004)(186003)(6916009)(6486002)(11346002)(305945005)(6436002)(386003)(52116002)(5660300002)(6506007)(71190400001)(14454004)(229853002)(71200400001)(1076003)(9686003)(6512007)(2906002);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1373;H:MWHPR15MB1790.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: V2yxWdS6tNH0y4WTdvStPrnSbDDba4cOhWFFFJo0qrsLj64FZHO7ZltAcznMNR284v798wz5h1ZYAIUdimZIsUz4MlwBDtLw0xpqAI8AmcCWB1ixLLQDcbnNU7YEuoH6vQCiehulOht2V5AUJUTwZCsNCAjYYbljXhp3/HtNjTLNV63xoKKLvK3fl2+T6I5O28sVqY+QuWmA5u/yd5CQnheC4T8pTdzirY46EI3I0wkbYqyll6pklY8ssO9q4jxuUAPzlPjaEMdz5KMQWWqSJprhWbRY3H/jKW/DLQmyMWwjNVNLsPS2/FE0OUxADo2XgkPM2u0X8DHPcMO4pXnkG0tBT6KauT9iLtyddkR52MWwsw5hB9UsHcrcRc08di7OvEtO7l8axY3eeJ6x0B+0umWdtFhFV+cg4wfmZiRONpY=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <6D1D7F7DD6DC544F88C741DE584D3D64@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJk=qSLR1A=1poPY85wNqiye3dMvXZOZ+1OFZSA78VARg@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 687032c2-a0f5-4c5d-75d4-08d720dcce7c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Aug 2019 17:28:22.8030
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ApaWDxJFEzWh0j8wKNYoer3LiENLZKzGpgd+ACT9kaU9yqSzSa2nFgVempPqM/op
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1373
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-14_06:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=460 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908140158
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 08/14, Alexei Starovoitov wrote:
-> On Wed, Aug 14, 2019 at 9:47 AM Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > This makes it visually simpler to follow the output.
-> > Also, highlight with red color failures when outputting to tty.
-> >
-> > Before:
-> >   #1 attach_probe:FAIL
-> >   #2 bpf_obj_id:OK
-> >   #3/1 bpf_verif_scale:loop3.o:OK
-> >   #3/2 bpf_verif_scale:test_verif_scale1.o:OK
-> >   #3/3 bpf_verif_scale:test_verif_scale2.o:OK
-> >   #3/4 bpf_verif_scale:test_verif_scale3.o:OK
-> >   #3/5 bpf_verif_scale:pyperf50.o:OK
-> >   #3/6 bpf_verif_scale:pyperf100.o:OK
-> >   #3/7 bpf_verif_scale:pyperf180.o:OK
-> >   #3/8 bpf_verif_scale:pyperf600.o:OK
-> >   #3/9 bpf_verif_scale:pyperf600_nounroll.o:OK
-> >   #3/10 bpf_verif_scale:loop1.o:OK
-> >   #3/11 bpf_verif_scale:loop2.o:OK
-> >   #3/12 bpf_verif_scale:loop4.o:OK
-> >   #3/13 bpf_verif_scale:loop5.o:OK
-> >   #3/14 bpf_verif_scale:strobemeta.o:OK
-> >   #3/15 bpf_verif_scale:strobemeta_nounroll1.o:OK
-> >   #3/16 bpf_verif_scale:strobemeta_nounroll2.o:OK
-> >   #3/17 bpf_verif_scale:test_sysctl_loop1.o:OK
-> >   #3/18 bpf_verif_scale:test_sysctl_loop2.o:OK
-> >   #3/19 bpf_verif_scale:test_xdp_loop.o:OK
-> >   #3/20 bpf_verif_scale:test_seg6_loop.o:OK
-> >   #3 bpf_verif_scale:OK
-> >   #4 flow_dissector:OK
-> >
-> > After:
-> >   #  1     FAIL attach_probe
-> >   #  2       OK bpf_obj_id
-> >   #  3/1     OK bpf_verif_scale:loop3.o
-> >   #  3/2     OK bpf_verif_scale:test_verif_scale1.o
-> >   #  3/3     OK bpf_verif_scale:test_verif_scale2.o
-> >   #  3/4     OK bpf_verif_scale:test_verif_scale3.o
-> >   #  3/5     OK bpf_verif_scale:pyperf50.o
-> >   #  3/6     OK bpf_verif_scale:pyperf100.o
-> >   #  3/7     OK bpf_verif_scale:pyperf180.o
-> >   #  3/8     OK bpf_verif_scale:pyperf600.o
-> >   #  3/9     OK bpf_verif_scale:pyperf600_nounroll.o
-> >   #  3/10    OK bpf_verif_scale:loop1.o
-> >   #  3/11    OK bpf_verif_scale:loop2.o
-> >   #  3/12    OK bpf_verif_scale:loop4.o
-> >   #  3/13    OK bpf_verif_scale:loop5.o
-> >   #  3/14    OK bpf_verif_scale:strobemeta.o
-> >   #  3/15    OK bpf_verif_scale:strobemeta_nounroll1.o
-> >   #  3/16    OK bpf_verif_scale:strobemeta_nounroll2.o
-> >   #  3/17    OK bpf_verif_scale:test_sysctl_loop1.o
-> >   #  3/18    OK bpf_verif_scale:test_sysctl_loop2.o
-> >   #  3/19    OK bpf_verif_scale:test_xdp_loop.o
-> >   #  3/20    OK bpf_verif_scale:test_seg6_loop.o
-> >   #  3       OK bpf_verif_scale
-> >   #  4       OK flow_dissector
-> 
-> sorry this is nack.
-> I prefer consistency with test_verifier output.
-No problem, let me know how you feel about the other patches
-in the series, can drop this one.
+On Tue, Aug 13, 2019 at 09:26:28AM -0700, Stanislav Fomichev wrote:
+> Add new helper bpf_sk_storage_clone which optionally clones sk storage
+> and call it from sk_clone_lock.
+Acked-by: Martin KaFai Lau <kafai@fb.com>
