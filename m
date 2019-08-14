@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1EF8DC05
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 19:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC768DC07
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 19:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728533AbfHNRiB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Aug 2019 13:38:01 -0400
-Received: from mail-yb1-f201.google.com ([209.85.219.201]:41118 "EHLO
-        mail-yb1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728511AbfHNRiB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Aug 2019 13:38:01 -0400
-Received: by mail-yb1-f201.google.com with SMTP id 137so7918458ybd.8
-        for <bpf@vger.kernel.org>; Wed, 14 Aug 2019 10:38:00 -0700 (PDT)
+        id S1728657AbfHNRiE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Aug 2019 13:38:04 -0400
+Received: from mail-qt1-f202.google.com ([209.85.160.202]:38055 "EHLO
+        mail-qt1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728520AbfHNRiD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Aug 2019 13:38:03 -0400
+Received: by mail-qt1-f202.google.com with SMTP id i13so8225271qtq.5
+        for <bpf@vger.kernel.org>; Wed, 14 Aug 2019 10:38:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=a7H16UQmJw6VgKiMqqu0R0QEkK8DCgpC0fmnX/y6MpI=;
-        b=odigD1yiSpXcvenlUb3RoKMjOjsUPHNirq43Q9GruOcDZeVGkqQxi88qiRC48KbB/o
-         FZRLsa6mZuygL1e7LhWPeyq+ykzbiUV9k2xlKMRIHoAukPx34lBYHWugZYpfD6UnSwAo
-         Nb/QGJY0e93Ij3RNZKEknIQWQJJ1Fee8vkJWWp9Hoi0FyJq2qcSPzLBIuw5ne3FW/jqT
-         susA0L+wnxF6V0AaFdUSRoP4Abb8kppjeFYTf9010Efs+MsBf2P/reaHsguI/oOVs/x4
-         akz28JIrM/jmgpzZvT8mQrsNhZNROFKLYuaDhfDiITKPuLqf3z/edbjKb41eJhPliZI9
-         eglQ==
+        bh=80gVs8IzWGoGeL5TQc1siGuhLRsZ2VKQxE10IPj1Irs=;
+        b=Q1bioI/n+qQcRZew1C8g0VJqGvV5n9pgtuUy6trAUYjnHmvSrOtv1BC0gRwtv3cIYN
+         qXy3mNfP95c6J2AAmospsrxq6/YW+sZwiWl9rUqgdoxAITU7hknQQVPj4YFyLfSDDB8U
+         x3kQhiAa8FnI33t9USybZgIsKakb7nP3SblL54Aieh53ARev4PKL1STrgK89hAbrxumo
+         g6HCpN67+bDmvrgrEYokOsbcXIMvg5zMYUxscI6MCSfnJdUJPJXDUbRg7ovVpCZgRhZO
+         PrpEl0heiaThkGfdvC8vekhSgu3wHH0lZxnaw7WybIVUervtdn0g3UVfxxyekEyydTgp
+         l8fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=a7H16UQmJw6VgKiMqqu0R0QEkK8DCgpC0fmnX/y6MpI=;
-        b=lvZHEC6zUvxleN++C2kUQVRd7yZMYmrouBt2vx0MHM9iPsqd4JR17YmLtoYWIysfev
-         UZ9tWsZ9r2880lElRE8izA6omjUbbaKpMNrJDjDn4UzodpciYcZ3bHfXK1KXiZgL51at
-         rqyigDaQic8VDUlUYyVZjvRwH2MBvsvCQEMN1nqB0hlUw8BrlEeDbuNsW3R9J3PWkl+W
-         WvshzpGHA2XC9Ui51/Ztjl0HeO0rkMZ2WwQZaiIHT+i4Q/cQc0mXv2PoJi1RW3P/JjYz
-         iM0HY7bl0C4lwGLhNKnc0c3uo24RUFaCLLdDqbCXOyW/Kl/zPHTcmNje3uT25Df49rd6
-         8F/w==
-X-Gm-Message-State: APjAAAXfWVzDRuY+MH3uq4xs6lPyh4nUp6TdyELCc3m545uzNRdBV6Vv
-        jAoyScQPaa7BoEIIbG00rXhVXbo=
-X-Google-Smtp-Source: APXvYqxxkcCMAbUMycc6zxfAX9dGuoLco/71gWMwv1KmFCtZf3F+SQMcptqLLomHQOBpUl7VtY5pLPw=
-X-Received: by 2002:a25:9202:: with SMTP id b2mr27850ybo.65.1565804280099;
- Wed, 14 Aug 2019 10:38:00 -0700 (PDT)
-Date:   Wed, 14 Aug 2019 10:37:49 -0700
+        bh=80gVs8IzWGoGeL5TQc1siGuhLRsZ2VKQxE10IPj1Irs=;
+        b=sWhzhSuIDDpiCETndVtjrrWStuCbtYASOzXf3H7Kvee+muw5Nb+YuUTIer2C3nEFAm
+         wGmwNWhJB+RJ6grEGuouqTa7qSUr03XhygfTvxfNmSjP1PsTlxNODg6uQ5ZFDvV8Rd3y
+         Udtjswo+RZCDm+cwlBmKRpmMCe+ARCMXWyItj2xfCm4v/lF4+j1QIM55vuzVxgqvY7I4
+         +tBNYgPAtn78SRemm/l05DscKW/M1OKhLBOai+oNgxbQ2T2fdazA/EDZ2NGRaVN9A3bI
+         9phxTVpjv1wZhLvGQedsAsYceg+ZDoNb5WEhgQUuamayai7ndpPjWU94BtvsVqOt8SAu
+         SQAg==
+X-Gm-Message-State: APjAAAXdl4n8eMbP5M7QwJshw+vYfjwZv0fPlHJK9V899dSIMBcxEjfF
+        tgO3Iccate7wNSiovL1JK/stvFg=
+X-Google-Smtp-Source: APXvYqzM7C2qcyJEskTtqWiuXOTMK3bdPyK7ataW8vGHhJkDbLNYXvf5f+x6KUGryz2W6YLKW13zzo4=
+X-Received: by 2002:a37:ac19:: with SMTP id e25mr551488qkm.155.1565804282786;
+ Wed, 14 Aug 2019 10:38:02 -0700 (PDT)
+Date:   Wed, 14 Aug 2019 10:37:50 -0700
 In-Reply-To: <20190814173751.31806-1-sdf@google.com>
-Message-Id: <20190814173751.31806-3-sdf@google.com>
+Message-Id: <20190814173751.31806-4-sdf@google.com>
 Mime-Version: 1.0
 References: <20190814173751.31806-1-sdf@google.com>
 X-Mailer: git-send-email 2.23.0.rc1.153.gdeed80330f-goog
-Subject: [PATCH bpf-next v4 2/4] bpf: support cloning sk storage on accept()
+Subject: [PATCH bpf-next v4 3/4] bpf: sync bpf.h to tools/
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
@@ -58,8 +58,7 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add new helper bpf_sk_storage_clone which optionally clones sk storage
-and call it from sk_clone_lock.
+Sync new sk storage clone flag.
 
 Cc: Martin KaFai Lau <kafai@fb.com>
 Cc: Yonghong Song <yhs@fb.com>
@@ -67,35 +66,13 @@ Acked-by: Martin KaFai Lau <kafai@fb.com>
 Acked-by: Yonghong Song <yhs@fb.com>
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- include/net/bpf_sk_storage.h |  10 ++++
- include/uapi/linux/bpf.h     |   3 +
- net/core/bpf_sk_storage.c    | 104 ++++++++++++++++++++++++++++++++++-
- net/core/sock.c              |   9 ++-
- 4 files changed, 120 insertions(+), 6 deletions(-)
+ tools/include/uapi/linux/bpf.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/net/bpf_sk_storage.h b/include/net/bpf_sk_storage.h
-index b9dcb02e756b..8e4f831d2e52 100644
---- a/include/net/bpf_sk_storage.h
-+++ b/include/net/bpf_sk_storage.h
-@@ -10,4 +10,14 @@ void bpf_sk_storage_free(struct sock *sk);
- extern const struct bpf_func_proto bpf_sk_storage_get_proto;
- extern const struct bpf_func_proto bpf_sk_storage_delete_proto;
- 
-+#ifdef CONFIG_BPF_SYSCALL
-+int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk);
-+#else
-+static inline int bpf_sk_storage_clone(const struct sock *sk,
-+				       struct sock *newsk)
-+{
-+	return 0;
-+}
-+#endif
-+
- #endif /* _BPF_SK_STORAGE_H */
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
 index 4393bd4b2419..0ef594ac3899 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
 @@ -337,6 +337,9 @@ enum bpf_attach_type {
  #define BPF_F_RDONLY_PROG	(1U << 7)
  #define BPF_F_WRONLY_PROG	(1U << 8)
@@ -106,176 +83,6 @@ index 4393bd4b2419..0ef594ac3899 100644
  /* flags for BPF_PROG_QUERY */
  #define BPF_F_QUERY_EFFECTIVE	(1U << 0)
  
-diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-index 94c7f77ecb6b..da5639a5bd3b 100644
---- a/net/core/bpf_sk_storage.c
-+++ b/net/core/bpf_sk_storage.c
-@@ -12,6 +12,9 @@
- 
- static atomic_t cache_idx;
- 
-+#define SK_STORAGE_CREATE_FLAG_MASK					\
-+	(BPF_F_NO_PREALLOC | BPF_F_CLONE)
-+
- struct bucket {
- 	struct hlist_head list;
- 	raw_spinlock_t lock;
-@@ -209,7 +212,6 @@ static void selem_unlink_sk(struct bpf_sk_storage_elem *selem)
- 		kfree_rcu(sk_storage, rcu);
- }
- 
--/* sk_storage->lock must be held and sk_storage->list cannot be empty */
- static void __selem_link_sk(struct bpf_sk_storage *sk_storage,
- 			    struct bpf_sk_storage_elem *selem)
- {
-@@ -509,7 +511,7 @@ static int sk_storage_delete(struct sock *sk, struct bpf_map *map)
- 	return 0;
- }
- 
--/* Called by __sk_destruct() */
-+/* Called by __sk_destruct() & bpf_sk_storage_clone() */
- void bpf_sk_storage_free(struct sock *sk)
- {
- 	struct bpf_sk_storage_elem *selem;
-@@ -557,6 +559,11 @@ static void bpf_sk_storage_map_free(struct bpf_map *map)
- 
- 	smap = (struct bpf_sk_storage_map *)map;
- 
-+	/* Note that this map might be concurrently cloned from
-+	 * bpf_sk_storage_clone. Wait for any existing bpf_sk_storage_clone
-+	 * RCU read section to finish before proceeding. New RCU
-+	 * read sections should be prevented via bpf_map_inc_not_zero.
-+	 */
- 	synchronize_rcu();
- 
- 	/* bpf prog and the userspace can no longer access this map
-@@ -601,7 +608,9 @@ static void bpf_sk_storage_map_free(struct bpf_map *map)
- 
- static int bpf_sk_storage_map_alloc_check(union bpf_attr *attr)
- {
--	if (attr->map_flags != BPF_F_NO_PREALLOC || attr->max_entries ||
-+	if (attr->map_flags & ~SK_STORAGE_CREATE_FLAG_MASK ||
-+	    !(attr->map_flags & BPF_F_NO_PREALLOC) ||
-+	    attr->max_entries ||
- 	    attr->key_size != sizeof(int) || !attr->value_size ||
- 	    /* Enforce BTF for userspace sk dumping */
- 	    !attr->btf_key_type_id || !attr->btf_value_type_id)
-@@ -739,6 +748,95 @@ static int bpf_fd_sk_storage_delete_elem(struct bpf_map *map, void *key)
- 	return err;
- }
- 
-+static struct bpf_sk_storage_elem *
-+bpf_sk_storage_clone_elem(struct sock *newsk,
-+			  struct bpf_sk_storage_map *smap,
-+			  struct bpf_sk_storage_elem *selem)
-+{
-+	struct bpf_sk_storage_elem *copy_selem;
-+
-+	copy_selem = selem_alloc(smap, newsk, NULL, true);
-+	if (!copy_selem)
-+		return NULL;
-+
-+	if (map_value_has_spin_lock(&smap->map))
-+		copy_map_value_locked(&smap->map, SDATA(copy_selem)->data,
-+				      SDATA(selem)->data, true);
-+	else
-+		copy_map_value(&smap->map, SDATA(copy_selem)->data,
-+			       SDATA(selem)->data);
-+
-+	return copy_selem;
-+}
-+
-+int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk)
-+{
-+	struct bpf_sk_storage *new_sk_storage = NULL;
-+	struct bpf_sk_storage *sk_storage;
-+	struct bpf_sk_storage_elem *selem;
-+	int ret = 0;
-+
-+	RCU_INIT_POINTER(newsk->sk_bpf_storage, NULL);
-+
-+	rcu_read_lock();
-+	sk_storage = rcu_dereference(sk->sk_bpf_storage);
-+
-+	if (!sk_storage || hlist_empty(&sk_storage->list))
-+		goto out;
-+
-+	hlist_for_each_entry_rcu(selem, &sk_storage->list, snode) {
-+		struct bpf_sk_storage_elem *copy_selem;
-+		struct bpf_sk_storage_map *smap;
-+		struct bpf_map *map;
-+
-+		smap = rcu_dereference(SDATA(selem)->smap);
-+		if (!(smap->map.map_flags & BPF_F_CLONE))
-+			continue;
-+
-+		/* Note that for lockless listeners adding new element
-+		 * here can race with cleanup in bpf_sk_storage_map_free.
-+		 * Try to grab map refcnt to make sure that it's still
-+		 * alive and prevent concurrent removal.
-+		 */
-+		map = bpf_map_inc_not_zero(&smap->map, false);
-+		if (IS_ERR(map))
-+			continue;
-+
-+		copy_selem = bpf_sk_storage_clone_elem(newsk, smap, selem);
-+		if (!copy_selem) {
-+			ret = -ENOMEM;
-+			bpf_map_put(map);
-+			goto out;
-+		}
-+
-+		if (new_sk_storage) {
-+			selem_link_map(smap, copy_selem);
-+			__selem_link_sk(new_sk_storage, copy_selem);
-+		} else {
-+			ret = sk_storage_alloc(newsk, smap, copy_selem);
-+			if (ret) {
-+				kfree(copy_selem);
-+				atomic_sub(smap->elem_size,
-+					   &newsk->sk_omem_alloc);
-+				bpf_map_put(map);
-+				goto out;
-+			}
-+
-+			new_sk_storage = rcu_dereference(copy_selem->sk_storage);
-+		}
-+		bpf_map_put(map);
-+	}
-+
-+out:
-+	rcu_read_unlock();
-+
-+	/* In case of an error, don't free anything explicitly here, the
-+	 * caller is responsible to call bpf_sk_storage_free.
-+	 */
-+
-+	return ret;
-+}
-+
- BPF_CALL_4(bpf_sk_storage_get, struct bpf_map *, map, struct sock *, sk,
- 	   void *, value, u64, flags)
- {
-diff --git a/net/core/sock.c b/net/core/sock.c
-index d57b0cc995a0..f5e801a9cea4 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1851,9 +1851,12 @@ struct sock *sk_clone_lock(const struct sock *sk, const gfp_t priority)
- 			goto out;
- 		}
- 		RCU_INIT_POINTER(newsk->sk_reuseport_cb, NULL);
--#ifdef CONFIG_BPF_SYSCALL
--		RCU_INIT_POINTER(newsk->sk_bpf_storage, NULL);
--#endif
-+
-+		if (bpf_sk_storage_clone(sk, newsk)) {
-+			sk_free_unlock_clone(newsk);
-+			newsk = NULL;
-+			goto out;
-+		}
- 
- 		newsk->sk_err	   = 0;
- 		newsk->sk_err_soft = 0;
 -- 
 2.23.0.rc1.153.gdeed80330f-goog
 
