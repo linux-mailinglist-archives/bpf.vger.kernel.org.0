@@ -2,47 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5B68D85B
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 18:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499F98D85D
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 18:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728233AbfHNQrq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Aug 2019 12:47:46 -0400
-Received: from mail-ua1-f74.google.com ([209.85.222.74]:48260 "EHLO
-        mail-ua1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726585AbfHNQrq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Aug 2019 12:47:46 -0400
-Received: by mail-ua1-f74.google.com with SMTP id z21so843055uaq.15
-        for <bpf@vger.kernel.org>; Wed, 14 Aug 2019 09:47:45 -0700 (PDT)
+        id S1728283AbfHNQrt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Aug 2019 12:47:49 -0400
+Received: from mail-ua1-f73.google.com ([209.85.222.73]:39847 "EHLO
+        mail-ua1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727929AbfHNQrs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Aug 2019 12:47:48 -0400
+Received: by mail-ua1-f73.google.com with SMTP id 43so10042489uaj.6
+        for <bpf@vger.kernel.org>; Wed, 14 Aug 2019 09:47:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=FPuI57Gwp6Wac6Fi4cTNK0HXdqhfqqrfPDHjjOcr8Bw=;
-        b=L6+4a2vUg7jyTQ7kgadz00cPI0WU08mtGoMFsuKPq/xQxXgTiYnru1b8OCqzKANMBA
-         9I7xseSeeHKBQ386E7VibqNQ83lGJUqBMySO9+fGbhhY3s+7ccKWOwIFN54QnRL1XBRn
-         45lSlLMnMPXbXXvQIR72UKqbU2/xFYoMlUe0TBLRt28c6gQ1pH8AIJuT5O7Ml7vFoBc6
-         omEzHbLeTwYbvGDses6PVc6ayRDfahZOkHKuBDfYS7VXFks1Bn5VVP6sxdfoFiprVPnf
-         /vIWm2u3EvjF8swmxn2K8gLvR4moBeME3Xq1cKvIuS9WHC1UQI1tLuygtB8Q21zJjZmr
-         Lq6w==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=5ek1EVAZRm+qabxMqMu9irrjkFWPa5puXpEJvWK1CPc=;
+        b=JjGJU8FXjx72USEfNiHz8y2IRJdjutfZjUekmWtYRD+00SKpLSw/97erYQMrhGpo1O
+         Xoe/UXMW0uyXam6u7OelkgXEA0iXlRZMar8e93b9Cbcvrrx9mJa7lHRABbKG1ZJZEsIc
+         J7BNTRZjVHhGnT802eD+V5iVNNASdyrvk2nxJlQei3RnETKMLuaKMOBS/hZSePs4kSyF
+         f1690+wyrmBHi9jOqWS9SsZqDX7t843+mCzH79NdUYLvUMPeq2HOBgpteCZcAxJ2td4+
+         /dA0Hdhh2q6JUaWeH0eduH9MywQoOzG3mfeHvAR1BpBo1RoeOqrl9q8atd4V6Bll2P9h
+         frpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=FPuI57Gwp6Wac6Fi4cTNK0HXdqhfqqrfPDHjjOcr8Bw=;
-        b=ce+I/005oA0jOCKHhFRLEqNW+9ShVmgq0UAoNQ1RG5Es3MV5CBfon3ePE9lMC/kAaD
-         s71ESV8CFc8JNUBxsKiQZU6NXNe88tVmbzKjprzW/DyvOirq2ZjawhPu478UqkfpJPKR
-         UK5YsbyxJ/5tPfvAcvi/LX9nJFbXXZDydKhPo8jpWFp3GJYXovzVkKKm8swR9h7G1HAQ
-         e2KDlkFJdEBbuzGy2soO+Cd5T5QTQE5Ug9y4p4uFlbwQ+4JJZz2harmk7iIsZzDvnOtb
-         muLdMKVSqjxrlg/HQyIgXVN9HMURw5ko/95WuHTNq5nNGndHkJfhwL/PzWFZMSzujADc
-         Y1MQ==
-X-Gm-Message-State: APjAAAWbxtyGrQp23R4ZP3VJHCFxvD+Eg1jkS6BpwKzCEp5/X0Iefxac
-        UmJDq/A1oM9I1FcVzt6rRo2mflo=
-X-Google-Smtp-Source: APXvYqxs88uisoBK0TpmlGkLAwrocAYqPq1bS41Z7Acmj+peWMYkXuraXSDo5YE15Ysd+zTQ8I1IBvE=
-X-Received: by 2002:a1f:1288:: with SMTP id 130mr86504vks.12.1565801264638;
- Wed, 14 Aug 2019 09:47:44 -0700 (PDT)
-Date:   Wed, 14 Aug 2019 09:47:38 -0700
-Message-Id: <20190814164742.208909-1-sdf@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=5ek1EVAZRm+qabxMqMu9irrjkFWPa5puXpEJvWK1CPc=;
+        b=dlLXzatlutJgryTU0W2vfYooSMQdYNOLpwoFjwJnrOdpKgCgcx79YPs1eukD5TgMuG
+         e6/WsVoC5Li1zIUF2t4IhqD7OoxVQgux4PcuPkDZp1wAw3/pRzldp1KyLr3koLI9h4Yi
+         V5l5RjCpgiEu7z3uWOPQW2K/yLNS1cMfH7LfxZ0Pj9iaDo75j4xtZYf0qC81jCSVu03D
+         XlqWlXhAEx1Vm5SlawgP3MyUvm0YL+bZH1t2aHbRLR89wTX7gewAgUoCkFgfbPu3OCE/
+         5ml9Fw6ojElW7q8B2iyL8uRNGYsPxTWHCoTB+2b/dRW4LExp1Xq2GLqW/nSqLeCtVbsx
+         dB5w==
+X-Gm-Message-State: APjAAAUiuQ1I8cpJ+63afTiFCg4YtkdGo8j33Xd0qh37h/Cq6AxA2f4M
+        3qBUsHEEeJhYhOD6WfntjUiR+ho=
+X-Google-Smtp-Source: APXvYqwj69o47JQ7jW03Tjv21//xstWKWAQPpr5QkxWl/JkW/mGq+pNtMoXZDMbaEX2a/vykrqcAiiE=
+X-Received: by 2002:a1f:4588:: with SMTP id s130mr72229vka.58.1565801267231;
+ Wed, 14 Aug 2019 09:47:47 -0700 (PDT)
+Date:   Wed, 14 Aug 2019 09:47:39 -0700
+In-Reply-To: <20190814164742.208909-1-sdf@google.com>
+Message-Id: <20190814164742.208909-2-sdf@google.com>
 Mime-Version: 1.0
+References: <20190814164742.208909-1-sdf@google.com>
 X-Mailer: git-send-email 2.23.0.rc1.153.gdeed80330f-goog
-Subject: [PATCH bpf-next 0/4] selftests/bpf: test_progs: misc fixes
+Subject: [PATCH bpf-next 1/4] selftests/bpf: test_progs: change formatting of
+ the condenced output
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
@@ -54,45 +59,121 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-* make output a bit easier to follow
-* add test__skip to indicate skipped tests
-* remove global success/error counts (use environment)
-* remove asserts from the tests
+This makes it visually simpler to follow the output.
+Also, highlight with red color failures when outputting to tty.
+
+Before:
+  #1 attach_probe:FAIL
+  #2 bpf_obj_id:OK
+  #3/1 bpf_verif_scale:loop3.o:OK
+  #3/2 bpf_verif_scale:test_verif_scale1.o:OK
+  #3/3 bpf_verif_scale:test_verif_scale2.o:OK
+  #3/4 bpf_verif_scale:test_verif_scale3.o:OK
+  #3/5 bpf_verif_scale:pyperf50.o:OK
+  #3/6 bpf_verif_scale:pyperf100.o:OK
+  #3/7 bpf_verif_scale:pyperf180.o:OK
+  #3/8 bpf_verif_scale:pyperf600.o:OK
+  #3/9 bpf_verif_scale:pyperf600_nounroll.o:OK
+  #3/10 bpf_verif_scale:loop1.o:OK
+  #3/11 bpf_verif_scale:loop2.o:OK
+  #3/12 bpf_verif_scale:loop4.o:OK
+  #3/13 bpf_verif_scale:loop5.o:OK
+  #3/14 bpf_verif_scale:strobemeta.o:OK
+  #3/15 bpf_verif_scale:strobemeta_nounroll1.o:OK
+  #3/16 bpf_verif_scale:strobemeta_nounroll2.o:OK
+  #3/17 bpf_verif_scale:test_sysctl_loop1.o:OK
+  #3/18 bpf_verif_scale:test_sysctl_loop2.o:OK
+  #3/19 bpf_verif_scale:test_xdp_loop.o:OK
+  #3/20 bpf_verif_scale:test_seg6_loop.o:OK
+  #3 bpf_verif_scale:OK
+  #4 flow_dissector:OK
+
+After:
+  #  1     FAIL attach_probe
+  #  2       OK bpf_obj_id
+  #  3/1     OK bpf_verif_scale:loop3.o
+  #  3/2     OK bpf_verif_scale:test_verif_scale1.o
+  #  3/3     OK bpf_verif_scale:test_verif_scale2.o
+  #  3/4     OK bpf_verif_scale:test_verif_scale3.o
+  #  3/5     OK bpf_verif_scale:pyperf50.o
+  #  3/6     OK bpf_verif_scale:pyperf100.o
+  #  3/7     OK bpf_verif_scale:pyperf180.o
+  #  3/8     OK bpf_verif_scale:pyperf600.o
+  #  3/9     OK bpf_verif_scale:pyperf600_nounroll.o
+  #  3/10    OK bpf_verif_scale:loop1.o
+  #  3/11    OK bpf_verif_scale:loop2.o
+  #  3/12    OK bpf_verif_scale:loop4.o
+  #  3/13    OK bpf_verif_scale:loop5.o
+  #  3/14    OK bpf_verif_scale:strobemeta.o
+  #  3/15    OK bpf_verif_scale:strobemeta_nounroll1.o
+  #  3/16    OK bpf_verif_scale:strobemeta_nounroll2.o
+  #  3/17    OK bpf_verif_scale:test_sysctl_loop1.o
+  #  3/18    OK bpf_verif_scale:test_sysctl_loop2.o
+  #  3/19    OK bpf_verif_scale:test_xdp_loop.o
+  #  3/20    OK bpf_verif_scale:test_seg6_loop.o
+  #  3       OK bpf_verif_scale
+  #  4       OK flow_dissector
 
 Cc: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ tools/testing/selftests/bpf/test_progs.c | 29 +++++++++++++++++++-----
+ 1 file changed, 23 insertions(+), 6 deletions(-)
 
-Stanislav Fomichev (4):
-  selftests/bpf: test_progs: change formatting of the condenced output
-  selftests/bpf: test_progs: test__skip
-  selftests/bpf: test_progs: remove global fail/success counts
-  selftests/bpf: test_progs: remove asserts from subtests
-
- .../selftests/bpf/prog_tests/bpf_obj_id.c     | 32 +++++--
- .../bpf/prog_tests/bpf_verif_scale.c          | 10 +-
- .../selftests/bpf/prog_tests/flow_dissector.c |  2 +-
- .../bpf/prog_tests/get_stack_raw_tp.c         |  2 +-
- .../selftests/bpf/prog_tests/global_data.c    | 10 +-
- .../selftests/bpf/prog_tests/l4lb_all.c       |  4 +-
- .../selftests/bpf/prog_tests/map_lock.c       | 28 +++---
- .../selftests/bpf/prog_tests/pkt_access.c     |  2 +-
- .../selftests/bpf/prog_tests/pkt_md_access.c  |  2 +-
- .../bpf/prog_tests/queue_stack_map.c          |  4 +-
- .../bpf/prog_tests/reference_tracking.c       |  2 +-
- .../selftests/bpf/prog_tests/send_signal.c    |  1 +
- .../selftests/bpf/prog_tests/spinlock.c       | 12 ++-
- .../bpf/prog_tests/stacktrace_build_id.c      | 11 ++-
- .../bpf/prog_tests/stacktrace_build_id_nmi.c  | 11 ++-
- .../selftests/bpf/prog_tests/stacktrace_map.c |  2 +-
- .../bpf/prog_tests/stacktrace_map_raw_tp.c    |  2 +-
- .../bpf/prog_tests/task_fd_query_rawtp.c      |  2 +-
- .../bpf/prog_tests/task_fd_query_tp.c         |  2 +-
- .../selftests/bpf/prog_tests/tcp_estats.c     |  2 +-
- tools/testing/selftests/bpf/prog_tests/xdp.c  |  2 +-
- .../bpf/prog_tests/xdp_adjust_tail.c          |  2 +-
- .../selftests/bpf/prog_tests/xdp_noinline.c   |  4 +-
- tools/testing/selftests/bpf/test_progs.c      | 93 +++++++++++--------
- tools/testing/selftests/bpf/test_progs.h      | 28 +++++-
- 25 files changed, 165 insertions(+), 107 deletions(-)
-
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index 12895d03d58b..1a7a2a0c0a11 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -56,6 +56,21 @@ static void dump_test_log(const struct prog_test_def *test, bool failed)
+ 	fseeko(stdout, 0, SEEK_SET); /* rewind */
+ }
+ 
++static const char *test_status_string(bool success)
++{
++#define COLOR_RED	"\033[31m"
++#define COLOR_RESET	"\033[m"
++	if (success)
++		return "OK";
++
++	if (isatty(fileno(env.stdout)))
++		return COLOR_RED "FAIL" COLOR_RESET;
++	else
++		return "FAIL";
++#undef COLOR_RED
++#undef COLOR_RESET
++}
++
+ void test__end_subtest()
+ {
+ 	struct prog_test_def *test = env.test;
+@@ -68,9 +83,10 @@ void test__end_subtest()
+ 
+ 	dump_test_log(test, sub_error_cnt);
+ 
+-	fprintf(env.stdout, "#%d/%d %s:%s\n",
+-	       test->test_num, test->subtest_num,
+-	       test->subtest_name, sub_error_cnt ? "FAIL" : "OK");
++	fprintf(env.stdout, "#%3d/%-3d %4s %s:%s\n",
++		test->test_num, test->subtest_num,
++		test_status_string(test->fail_cnt == 0),
++		test->test_name, test->subtest_name);
+ }
+ 
+ bool test__start_subtest(const char *name)
+@@ -513,9 +529,10 @@ int main(int argc, char **argv)
+ 
+ 		dump_test_log(test, test->error_cnt);
+ 
+-		fprintf(env.stdout, "#%d %s:%s\n",
+-			test->test_num, test->test_name,
+-			test->error_cnt ? "FAIL" : "OK");
++		fprintf(env.stdout, "#%3d     %4s %s\n",
++			test->test_num,
++			test_status_string(test->fail_cnt == 0),
++			test->test_name);
+ 	}
+ 	stdio_restore();
+ 	printf("Summary: %d/%d PASSED, %d FAILED\n",
 -- 
 2.23.0.rc1.153.gdeed80330f-goog
+
