@@ -2,236 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 948C28D863
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 18:47:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527BA8D890
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 18:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728347AbfHNQr4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Aug 2019 12:47:56 -0400
-Received: from mail-qk1-f201.google.com ([209.85.222.201]:33178 "EHLO
-        mail-qk1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728320AbfHNQr4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Aug 2019 12:47:56 -0400
-Received: by mail-qk1-f201.google.com with SMTP id f22so18940192qkg.0
-        for <bpf@vger.kernel.org>; Wed, 14 Aug 2019 09:47:55 -0700 (PDT)
+        id S1727122AbfHNQ6R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Aug 2019 12:58:17 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:35927 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726047AbfHNQ6Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Aug 2019 12:58:16 -0400
+Received: by mail-lj1-f195.google.com with SMTP id u15so10481481ljl.3;
+        Wed, 14 Aug 2019 09:58:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=VdatEzAwtdxRnHgxwHcBpEyz4fJTPa7g3XqVA9XHlDQ=;
-        b=vs6H85nQzbsugBAmC/oFyZC2xjy9u26nLTaX6MXLkZT6Yl3HaMAN2b4ULh+r29KTe7
-         6xWoulE38Oic2sEPSPamXaAUhmEEgyRRJkQEKlQWDD2W4R98IGo46Oo8Vn4KG5qKrNMa
-         cXz+mqMkgWX+GLYYYt6V91E8M0nJNJsOE2spuhLUvi4VSjp/jfVRiq/Q99XK/pIYZkNJ
-         wKxz2TvyiKSy7mS1NdmoqGb1z5rI291q958omtmyvTpliurb2OV5dYicAEacVj3TvcKl
-         kY3ipb+slqut+zXhmgt3lZu6XsiBuyNAXc6KhOX/bu5Sv4vpwrGbs4/lFhqC2zktr95Q
-         C8yg==
+        bh=QIKWMah9z81d5Ciq8DbElfNQyPLbhJzJJRSu5nRoozI=;
+        b=qStH5YE7Cb+rTVUvFPpHNi+lOc+hJxIruleCF1hvx0BGhOfaUE6sJ6V9zvYnCNnd3I
+         IiZl0cHaDPKyeXKjuCCCEIgqARmEVCBMETBkyXv1grsjUX81m8Iz97TXQIv1fKhc6rWv
+         usYay6VIPTMLu6ZLoIgyZzYa46wkHTI1fTeGss7+VTZYOOtIQjE3mV9lF2LEa/5YYlO7
+         4mLJhvLeD2JT3BJDByCFcjT46Ubz3XZm82ljI6szBjI5hms96Jk4jOLiV1ZYR/35rpwL
+         XzbTd/wA9ymID2vYFaxGKvBGQQfQA0X8f5d1iWmspnfAegDQB4Z55HPSSFDELTxtrL4A
+         q2ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=VdatEzAwtdxRnHgxwHcBpEyz4fJTPa7g3XqVA9XHlDQ=;
-        b=NW2iMYbJDuW5oYnHUaNxtMV7nhWi3Rck44AyEx+zOrUb6OQpIAy1B1ZY1Cdmue+0pF
-         AN/NkOdHkmQnlw7LPDzJvUqloihCI5PXcVMIrvGZKN20uSvr+GrCOVK6ocRZ9Zad0sL/
-         hOIrXHdRMowCcFT2CCefA7coA3WaJpV2SCefjFUSyuWx6AiLPRU5q+HWoFDS/bCJAoBG
-         l3qfOCCDcmw07O57UqBayNHfsH3sPuqk8vd3DUHgDse/LfdfxRKvlXAE17+RGThRhrKi
-         eXOmrveY8Lu3ezuwHTtffHeK+3o8vpM7+LQS0ICDpp3+DZ5htdN4juFR9xi4ojBeQGfD
-         QX2A==
-X-Gm-Message-State: APjAAAXXu93TI3dFyni63qen3yzXOW7FF5GubK+47QRGXvXb1qeWvP51
-        5I2PTUxF+q5hb0xf39/wrbn4xRE=
-X-Google-Smtp-Source: APXvYqwi02DDukEjRigwsxH/vw/nbocKWQ/LZzPiB4IJHQcEEbNitRjEu1BjtE6/s5L5PNZ76rQtw6c=
-X-Received: by 2002:aed:2ca3:: with SMTP id g32mr248900qtd.359.1565801275252;
- Wed, 14 Aug 2019 09:47:55 -0700 (PDT)
-Date:   Wed, 14 Aug 2019 09:47:42 -0700
-In-Reply-To: <20190814164742.208909-1-sdf@google.com>
-Message-Id: <20190814164742.208909-5-sdf@google.com>
-Mime-Version: 1.0
-References: <20190814164742.208909-1-sdf@google.com>
-X-Mailer: git-send-email 2.23.0.rc1.153.gdeed80330f-goog
-Subject: [PATCH bpf-next 4/4] selftests/bpf: test_progs: remove asserts from subtests
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>,
-        Andrii Nakryiko <andriin@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QIKWMah9z81d5Ciq8DbElfNQyPLbhJzJJRSu5nRoozI=;
+        b=LDdI4RUAJNw61gbW7Nh86CUo7WEsOUYARWoica6k8+bFagS8JOD0FlgK3IQ5VnJC2P
+         bUUxZ2uzH8A+UcEELWjxRLt7ai6hWjT6ioJTm7NZSm8BVEFZVYeE3hDy4TUDd/WnuO33
+         WUj626LKblfXBjtIj6mN5OMz04TH/atkZYuhVo4V5zmjnRJtugqnH+zp2xH2K1HbBOXk
+         UWH52tjidOI4Hq+vGj0D0vl9Nx9n8W6UwSzdGWaGxqQpOHp60NE9oGaVaQ7CvZURyyvP
+         JHfIzPJXNFJS/JikUWon6fuYHlY8ySUcHUt4aosjOqECIJ9Yc1oA4w9JLvH+jotdtV+2
+         8+IA==
+X-Gm-Message-State: APjAAAUZAfkb8qYngD5+2y9r8//1ErB8E6IEwfQ4hLTcXqDnpq4CymdX
+        FxA9DISNZWeD8BmRvNYDqhXH4AdL5OtUX7InuHA=
+X-Google-Smtp-Source: APXvYqxvJ75ppnFsFwcpxF01U3wFdNovxKssHYKOz2hyAOqpjrv/fsRpsiLATURwuurW7ppJXFxw5zQQTiMX2pHHuwg=
+X-Received: by 2002:a2e:93cc:: with SMTP id p12mr400054ljh.11.1565801894591;
+ Wed, 14 Aug 2019 09:58:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190813130921.10704-1-quentin.monnet@netronome.com>
+ <20190814015149.b4pmubo3s4ou5yek@ast-mbp> <ab11a9f2-0fbd-d35f-fee1-784554a2705a@netronome.com>
+ <bdb4b47b-25fa-eb96-aa8d-dd4f4b012277@solarflare.com>
+In-Reply-To: <bdb4b47b-25fa-eb96-aa8d-dd4f4b012277@solarflare.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 14 Aug 2019 09:58:02 -0700
+Message-ID: <CAADnVQJE2DCU0J2_d4Z-1cmXZsb_q2FODcbC1S24C0f=_b2ffg@mail.gmail.com>
+Subject: Re: [RFC bpf-next 0/3] tools: bpftool: add subcommand to count map entries
+To:     Edward Cree <ecree@solarflare.com>
+Cc:     Quentin Monnet <quentin.monnet@netronome.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        oss-drivers@netronome.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Otherwise they can bring the whole process down.
+On Wed, Aug 14, 2019 at 9:45 AM Edward Cree <ecree@solarflare.com> wrote:
+>
+> On 14/08/2019 10:42, Quentin Monnet wrote:
+> > 2019-08-13 18:51 UTC-0700 ~ Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com>
+> >> The same can be achieved by 'bpftool map dump|grep key|wc -l', no?
+> > To some extent (with subtleties for some other map types); and we use a
+> > similar command line as a workaround for now. But because of the rate of
+> > inserts/deletes in the map, the process often reports a number higher
+> > than the max number of entries (we observed up to ~750k when max_entries
+> > is 500k), even is the map is only half-full on average during the count.
+> > On the worst case (though not frequent), an entry is deleted just before
+> > we get the next key from it, and iteration starts all over again. This
+> > is not reliable to determine how much space is left in the map.
+> >
+> > I cannot see a solution that would provide a more accurate count from
+> > user space, when the map is under pressure?
+> This might be a really dumb suggestion, but: you're wanting to collect a
+>  summary statistic over an in-kernel data structure in a single syscall,
+>  because making a series of syscalls to examine every entry is slow and
+>  racy.  Isn't that exactly a job for an in-kernel virtual machine, and
+>  could you not supply an eBPF program which the kernel runs on each entry
+>  in the map, thus supporting people who want to calculate something else
+>  (mean, min and max, whatever) instead of count?
 
-Cc: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- .../selftests/bpf/prog_tests/bpf_obj_id.c     | 30 ++++++++++++++-----
- .../selftests/bpf/prog_tests/map_lock.c       | 20 ++++++++-----
- .../selftests/bpf/prog_tests/spinlock.c       | 10 ++++---
- .../bpf/prog_tests/stacktrace_build_id.c      | 11 +++++--
- .../bpf/prog_tests/stacktrace_build_id_nmi.c  | 11 +++++--
- 5 files changed, 57 insertions(+), 25 deletions(-)
+Pretty much my suggestion as well :)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c b/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c
-index f57e0c625de3..4ec8c4e9e9a1 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c
-@@ -48,16 +48,23 @@ void test_bpf_obj_id(void)
- 		/* test_obj_id.o is a dumb prog. It should never fail
- 		 * to load.
- 		 */
--		if (err)
-+		if (err) {
- 			test__fail();
--		assert(!err);
-+			continue;
-+		}
- 
- 		/* Insert a magic value to the map */
- 		map_fds[i] = bpf_find_map(__func__, objs[i], "test_map_id");
--		assert(map_fds[i] >= 0);
-+		if (map_fds[i] < 0) {
-+			test__fail();
-+			goto done;
-+		}
- 		err = bpf_map_update_elem(map_fds[i], &array_key,
- 					  &array_magic_value, 0);
--		assert(!err);
-+		if (err) {
-+			test__fail();
-+			goto done;
-+		}
- 
- 		/* Check getting map info */
- 		info_len = sizeof(struct bpf_map_info) * 2;
-@@ -96,9 +103,15 @@ void test_bpf_obj_id(void)
- 		prog_infos[i].map_ids = ptr_to_u64(map_ids + i);
- 		prog_infos[i].nr_map_ids = 2;
- 		err = clock_gettime(CLOCK_REALTIME, &real_time_ts);
--		assert(!err);
-+		if (err) {
-+			test__fail();
-+			goto done;
-+		}
- 		err = clock_gettime(CLOCK_BOOTTIME, &boot_time_ts);
--		assert(!err);
-+		if (err) {
-+			test__fail();
-+			goto done;
-+		}
- 		err = bpf_obj_get_info_by_fd(prog_fds[i], &prog_infos[i],
- 					     &info_len);
- 		load_time = (real_time_ts.tv_sec - boot_time_ts.tv_sec)
-@@ -224,7 +237,10 @@ void test_bpf_obj_id(void)
- 		nr_id_found++;
- 
- 		err = bpf_map_lookup_elem(map_fd, &array_key, &array_value);
--		assert(!err);
-+		if (err) {
-+			test__fail();
-+			goto done;
-+		}
- 
- 		err = bpf_obj_get_info_by_fd(map_fd, &map_info, &info_len);
- 		CHECK(err || info_len != sizeof(struct bpf_map_info) ||
-diff --git a/tools/testing/selftests/bpf/prog_tests/map_lock.c b/tools/testing/selftests/bpf/prog_tests/map_lock.c
-index 12123ff1f31f..e7663721fb57 100644
---- a/tools/testing/selftests/bpf/prog_tests/map_lock.c
-+++ b/tools/testing/selftests/bpf/prog_tests/map_lock.c
-@@ -56,17 +56,21 @@ void test_map_lock(void)
- 	bpf_map_update_elem(map_fd[0], &key, vars, BPF_F_LOCK);
- 
- 	for (i = 0; i < 4; i++)
--		assert(pthread_create(&thread_id[i], NULL,
--				      &spin_lock_thread, &prog_fd) == 0);
-+		if (pthread_create(&thread_id[i], NULL,
-+				   &spin_lock_thread, &prog_fd))
-+			goto close_prog;
- 	for (i = 4; i < 6; i++)
--		assert(pthread_create(&thread_id[i], NULL,
--				      &parallel_map_access, &map_fd[i - 4]) == 0);
-+		if (pthread_create(&thread_id[i], NULL,
-+				   &parallel_map_access, &map_fd[i - 4]))
-+			goto close_prog;
- 	for (i = 0; i < 4; i++)
--		assert(pthread_join(thread_id[i], &ret) == 0 &&
--		       ret == (void *)&prog_fd);
-+		if (pthread_join(thread_id[i], &ret) ||
-+		    ret != (void *)&prog_fd)
-+			goto close_prog;
- 	for (i = 4; i < 6; i++)
--		assert(pthread_join(thread_id[i], &ret) == 0 &&
--		       ret == (void *)&map_fd[i - 4]);
-+		if (pthread_join(thread_id[i], &ret) ||
-+		    ret != (void *)&map_fd[i - 4])
-+			goto close_prog;
- 	goto close_prog_noerr;
- close_prog:
- 	test__fail();
-diff --git a/tools/testing/selftests/bpf/prog_tests/spinlock.c b/tools/testing/selftests/bpf/prog_tests/spinlock.c
-index e843336713e8..5f32a913f732 100644
---- a/tools/testing/selftests/bpf/prog_tests/spinlock.c
-+++ b/tools/testing/selftests/bpf/prog_tests/spinlock.c
-@@ -16,11 +16,13 @@ void test_spinlock(void)
- 		goto close_prog;
- 	}
- 	for (i = 0; i < 4; i++)
--		assert(pthread_create(&thread_id[i], NULL,
--				      &spin_lock_thread, &prog_fd) == 0);
-+		if (pthread_create(&thread_id[i], NULL,
-+				   &spin_lock_thread, &prog_fd))
-+			goto close_prog;
-+
- 	for (i = 0; i < 4; i++)
--		assert(pthread_join(thread_id[i], &ret) == 0 &&
--		       ret == (void *)&prog_fd);
-+		if (pthread_join(thread_id[i], &ret) || ret != (void *)&prog_fd)
-+			goto close_prog;
- 	goto close_prog_noerr;
- close_prog:
- 	test__fail();
-diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
-index ac44fda84833..d74464faebd7 100644
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
-@@ -51,9 +51,14 @@ void test_stacktrace_build_id(void)
- 		  "err %d errno %d\n", err, errno))
- 		goto disable_pmu;
- 
--	assert(system("dd if=/dev/urandom of=/dev/zero count=4 2> /dev/null")
--	       == 0);
--	assert(system("./urandom_read") == 0);
-+	if (system("dd if=/dev/urandom of=/dev/zero count=4 2> /dev/null")) {
-+		test__fail();
-+		goto disable_pmu;
-+	}
-+	if (system("./urandom_read")) {
-+		test__fail();
-+		goto disable_pmu;
-+	}
- 	/* disable stack trace collection */
- 	key = 0;
- 	val = 1;
-diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-index 9557b7dfb782..e886911928bc 100644
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-@@ -82,9 +82,14 @@ void test_stacktrace_build_id_nmi(void)
- 		  "err %d errno %d\n", err, errno))
- 		goto disable_pmu;
- 
--	assert(system("dd if=/dev/urandom of=/dev/zero count=4 2> /dev/null")
--	       == 0);
--	assert(system("taskset 0x1 ./urandom_read 100000") == 0);
-+	if (system("dd if=/dev/urandom of=/dev/zero count=4 2> /dev/null")) {
-+		test__fail();
-+		goto disable_pmu;
-+	}
-+	if (system("taskset 0x1 ./urandom_read 100000")) {
-+		test__fail();
-+		goto disable_pmu;
-+	}
- 	/* disable stack trace collection */
- 	key = 0;
- 	val = 1;
--- 
-2.23.0.rc1.153.gdeed80330f-goog
-
+It seems the better fix for your nat threshold is to keep count of
+elements in the map in a separate global variable that
+bpf program manually increments and decrements.
+bpftool will dump it just as regular map of single element.
+(I believe it doesn't recognize global variables properly yet)
+and BTF will be there to pick exactly that 'count' variable.
