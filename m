@@ -2,147 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C45B8C59C
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 03:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7638C5AE
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 03:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726533AbfHNBou (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Aug 2019 21:44:50 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:39102 "EHLO
+        id S1726900AbfHNBvx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Aug 2019 21:51:53 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:34059 "EHLO
         mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbfHNBot (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Aug 2019 21:44:49 -0400
-Received: by mail-pl1-f193.google.com with SMTP id z3so3209399pln.6;
-        Tue, 13 Aug 2019 18:44:49 -0700 (PDT)
+        with ESMTP id S1726825AbfHNBvx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Aug 2019 21:51:53 -0400
+Received: by mail-pl1-f193.google.com with SMTP id i2so50071939plt.1;
+        Tue, 13 Aug 2019 18:51:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=vUNwl5nx1kBf+zxIr2kgBV9jHfRhHo+6UnxNpoEu764=;
-        b=AVBe50IFJz86bR0eOTvWOyPW5fz1PmgbTerz+kF/Nh0qS7pqsv0hkI26iL6zP56rrG
-         reQ1Ax16tgmoqu20fqjGQZ024lTYCQpKUcohQcmcsWuA8/va2lK160FbL+kQdAfzUzKK
-         vzY2aIm27fizlsxK9SPWz4fgWBgs8Ys3TRGSPnWFG0yrH8En6pkx1t+DCB45L08LzvWb
-         Y45t4+jN3riAZymu5JCH+ASCbl75w1i8O8irQ3u8nHf8CrDWcxmAXMTb+hgt21xBvolj
-         E4ZywMkP2F9yg/bJSa/Xxo0CM1N3IwBOZUAGrd7RVr5cY8kOnyzsgdJgR0FYP/qW6QzE
-         diKw==
+        bh=Lp7W6yUkEuFiW/WJUDPMwQwcRO85PXGwYwhO+f6+kU0=;
+        b=b9nj8loOV7wYJhqW2MQYQYfsfUy66sVheULhrOwofd433JBeEN+i8V5W38V2Md+T14
+         XOlaurr+1zpfMOivdbdbi0NINzZzqZ8P/1GOWTuoVTFix4GOfqRgabe90fiUkiX0gzxq
+         auSvK9u2uKOKLCHRQkIHRg6z8QCjlPcKR6sKLsP4KQv7ECPT39vLXeU9pvNg4gTYgZR1
+         oNjsR1RqX2HJXAQg47RtcggmNrxgFz+7alZYVO8rsfvKSCTpX6faJl8MfqkEEwrcLe44
+         cHxfbjEhtE5fIrJJCkvdg097X8zirBV7W0R4bsKNMAM33+gq+1Kx65A+bA52+MUSyAAS
+         uUCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vUNwl5nx1kBf+zxIr2kgBV9jHfRhHo+6UnxNpoEu764=;
-        b=db1xcidcPSCjgflQGfCTyvFeH6spSHS7RnZUCzEhhf0hLV6U0HlsuwTb3hxbV0X7LL
-         TYtV9VOth1Fd2XWK3dfqWsaAsSDRXwHNQdvmv0SMATGNEBv3vXCtOerncfvddLyoPnmH
-         D6q6wmrfhoHRpgwqR6DTXU/LNmnGQj/hXuxjYooJXKsmo0QqlJL5+cm8xCDQJ8i4SWRK
-         Y6g+5Av2A/tQKEylKErFnX1RxyENUBne6D/HjUmQgnZtr576hczKP+f+pB7sYoFOX/AZ
-         gC5xjv2wmNqi5j7MBhH3H33zf9WH1H6sJk2OdzIaYoE467Tv+smrp0o+4H/VYWb9uI1U
-         7ASQ==
-X-Gm-Message-State: APjAAAWhldC//yLujaLs/yy7cCeVHamdvEGAJ7U2Ypp1g+FJBJPb+RFE
-        Csxx1ZEP6dYZEbcNeIzT5VI=
-X-Google-Smtp-Source: APXvYqxP54S0k5F4xY9PPfUNJPXk2Tf+eUtv7hY7EZRTsRWPfiNKA2vpZI3cLL4pQBWulbor0xffRw==
-X-Received: by 2002:a17:902:1122:: with SMTP id d31mr35217050pla.254.1565747089009;
-        Tue, 13 Aug 2019 18:44:49 -0700 (PDT)
+        bh=Lp7W6yUkEuFiW/WJUDPMwQwcRO85PXGwYwhO+f6+kU0=;
+        b=B6erfSupiUkJCgLO7MAdev16XUn0LpnIobO72LD6RVqn7WP/TlvLPD8Mlf8DvqnODI
+         VygHJlDYvIZghiZSDacl33ksg3mO0vDiXM+tRYOI95M5Rxra8egiBskAeOV/gqDqKdeb
+         mcz4X0tH2LJlOMXb3q0vNqa5KSFYoZCQ0XDs8WahyxiGEM1o3N4keidpzUPZ/qpchAWi
+         A6uBi7xmO1NXGft/6Pob6zBIq1jN9Y8HFM5sddMEXVcnO9jUQUhE504p7GswYizxkuHX
+         oPrUvLlsK30LLK/8c07zMcxE6LUfk6gVqye109HR1gu+zN1bvb3Br1+NxUwRI2M1K4QC
+         UqIQ==
+X-Gm-Message-State: APjAAAWNM6rPcnGWoR8FzqVzxdXE0TYA05DAH16l7b3VIV/9hTiZfSzO
+        K1b5ryUCs9hEXcFpNG1Te+0=
+X-Google-Smtp-Source: APXvYqyswiRVE+m4G3bq/gAgAZJdSiwO9Y1gh8SDM6KfnFG0Vtc0vem6hmYmvDsidO+dlppXRg0hwA==
+X-Received: by 2002:a17:902:7797:: with SMTP id o23mr9324583pll.102.1565747512814;
+        Tue, 13 Aug 2019 18:51:52 -0700 (PDT)
 Received: from ast-mbp ([2620:10d:c090:200::3:8a34])
-        by smtp.gmail.com with ESMTPSA id 4sm1762511pfn.118.2019.08.13.18.44.47
+        by smtp.gmail.com with ESMTPSA id ce7sm3006639pjb.16.2019.08.13.18.51.51
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 13 Aug 2019 18:44:48 -0700 (PDT)
-Date:   Tue, 13 Aug 2019 18:44:46 -0700
+        Tue, 13 Aug 2019 18:51:52 -0700 (PDT)
+Date:   Tue, 13 Aug 2019 18:51:51 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Toshiaki Makita <toshiaki.makita1@gmail.com>
+To:     Quentin Monnet <quentin.monnet@netronome.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, William Tu <u9012063@gmail.com>
-Subject: Re: [RFC PATCH bpf-next 00/14] xdp_flow: Flow offload to XDP
-Message-ID: <20190814014445.3dnduyrass5jycr5@ast-mbp>
-References: <20190813120558.6151-1-toshiaki.makita1@gmail.com>
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, oss-drivers@netronome.com
+Subject: Re: [RFC bpf-next 0/3] tools: bpftool: add subcommand to count map
+ entries
+Message-ID: <20190814015149.b4pmubo3s4ou5yek@ast-mbp>
+References: <20190813130921.10704-1-quentin.monnet@netronome.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190813120558.6151-1-toshiaki.makita1@gmail.com>
+In-Reply-To: <20190813130921.10704-1-quentin.monnet@netronome.com>
 User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 13, 2019 at 09:05:44PM +0900, Toshiaki Makita wrote:
-> This is a rough PoC for an idea to offload TC flower to XDP.
-...
->  xdp_flow  TC        ovs kmod
->  --------  --------  --------
->  4.0 Mpps  1.1 Mpps  1.1 Mpps
-
-Is xdp_flow limited to 4 Mpps due to veth or something else?
-
+On Tue, Aug 13, 2019 at 02:09:18PM +0100, Quentin Monnet wrote:
+> This series adds a "bpftool map count" subcommand to count the number of
+> entries present in a BPF map. This results from a customer request for a
+> tool to count the number of entries in BPF maps used in production (for
+> example, to know how many free entries are left in a given map).
 > 
-> So xdp_flow drop rate is roughly 4x faster than software TC or ovs kmod.
+> The first two commits actually contain some clean-up in preparation for the
+> new subcommand.
 > 
-> OTOH the time to add a flow increases with xdp_flow.
+> The third commit adds the new subcommand. Because what data should count as
+> an entry is not entirely clear for all map types, we actually dump several
+> counters, and leave it to the users to interpret the values.
 > 
-> ping latency of first packet when veth1 does XDP_PASS instead of DROP:
+> Sending as a RFC because I'm looking for feedback on the approach. Is
+> printing several values the good thing to do? Also, note that some map
+> types such as queue/stack maps do not support any type of counting, this
+> would need to be implemented in the kernel I believe.
 > 
->  xdp_flow  TC        ovs kmod
->  --------  --------  --------
->  25ms      12ms      0.6ms
-> 
-> xdp_flow does a lot of work to emulate TC behavior including UMH
-> transaction and multiple bpf map update from UMH which I think increases
-> the latency.
+> More generally, we have a use case where (hash) maps are under pressure
+> (many additions/deletions from the BPF program), and counting the entries
+> by iterating other the different keys is not at all reliable. Would that
+> make sense to add a new bpf() subcommand to count the entries on the kernel
+> side instead of cycling over the entries in bpftool? If so, we would need
+> to agree on what makes an entry for each kind of map.
 
-make sense, but why vanilla TC is so slow ?
+I don't mind new bpftool sub-command, but against adding kernel interface.
+Can you elaborate what is the actual use case?
+The same can be achieved by 'bpftool map dump|grep key|wc -l', no?
 
-> * Implementation
-> 
-> xdp_flow makes use of UMH to load an eBPF program for XDP, similar to
-> bpfilter. The difference is that xdp_flow does not generate the eBPF
-> program dynamically but a prebuilt program is embedded in UMH. This is
-> mainly because flow insertion is considerably frequent. If we generate
-> and load an eBPF program on each insertion of a flow, the latency of the
-> first packet of ping in above test will incease, which I want to avoid.
+> Note that we are also facing similar issues for purging map from their
+> entries (deleting all entries at once). We can iterate on the keys and
+> delete elements one by one, but this is very inefficient when entries are
+> being added/removed in parallel from the BPF program, and having another
+> dedicated command accessible from the bpf() system call might help here as
+> well.
 
-I think UMH approach is a good fit for this.
-Clearly the same algorithm can be done as kernel code or kernel module, but
-bpfilter-like UMH is a safer approach.
-
-> - patch 9
->  Add tc-offload-xdp netdev feature and hooks to call xdp_flow kmod in
->  TC flower offload code.
-
-The hook into UMH from TC looks simple. Do you expect the same interface to be
-reused from OVS ?
-
-> * About alternative userland (ovs-vswitchd etc.) implementation
-> 
-> Maybe a similar logic can be implemented in ovs-vswitchd offload
-> mechanism, instead of adding code to kernel. I just thought offloading
-> TC is more generic and allows wider usage with direct TC command.
-> 
-> For example, considering that OVS inserts a flow to kernel only when
-> flow miss happens in kernel, we can in advance add offloaded flows via
-> tc filter to avoid flow insertion latency for certain sensitive flows.
-> TC flower usage without using OVS is also possible.
-> 
-> Also as written above nftables can be offloaded to XDP with this
-> mechanism as well.
-
-Makes sense to me.
-
->   bpf, hashtab: Compare keys in long
-
-3Mpps vs 4Mpps just from this patch ?
-or combined with i40 prefech patch ?
-
->  drivers/net/ethernet/intel/i40e/i40e_txrx.c  |    1 +
-
-Could you share "perf report" for just hash tab optimization
-and for i40 ?
-I haven't seen memcmp to be bottle neck in hash tab.
-What is the the of the key?
+I think that fits into the batch processing of map commands discussion.
 
