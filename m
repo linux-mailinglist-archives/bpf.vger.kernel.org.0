@@ -2,121 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F318D0DC
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 12:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B788D24A
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 13:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726263AbfHNKlU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Aug 2019 06:41:20 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62946 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726230AbfHNKlU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 14 Aug 2019 06:41:20 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7EAXX9Q059606
-        for <bpf@vger.kernel.org>; Wed, 14 Aug 2019 06:41:18 -0400
-Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2uce7wxj8k-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 14 Aug 2019 06:41:18 -0400
-Received: from localhost
-        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Wed, 14 Aug 2019 11:41:17 +0100
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
-        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 14 Aug 2019 11:41:14 +0100
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7EAfC1T46268506
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Aug 2019 10:41:12 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A2FDC4C04E;
-        Wed, 14 Aug 2019 10:41:12 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 60E2A4C05A;
-        Wed, 14 Aug 2019 10:41:12 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.152.96.174])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 14 Aug 2019 10:41:12 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf v2] selftests/bpf: fix "bind{4,6} deny specific IP & port" on s390
-Date:   Wed, 14 Aug 2019 12:41:09 +0200
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19081410-0012-0000-0000-0000033EB0BF
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19081410-0013-0000-0000-00002178C3C5
-Message-Id: <20190814104109.22020-1-iii@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-14_04:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908140109
+        id S1725888AbfHNLhn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Aug 2019 07:37:43 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:37348 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725996AbfHNLhl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Aug 2019 07:37:41 -0400
+Received: by mail-wr1-f68.google.com with SMTP id z11so8836723wrt.4
+        for <bpf@vger.kernel.org>; Wed, 14 Aug 2019 04:37:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=/uOcvbr7W4BNDBGFlgBNRAJtBhauxb70EOTJlpIIqeE=;
+        b=QS0JYrM3xQOutEPfWggnrSenr4NaWZWTqkVUIiWZKpN78CrOk5p0ItUNOHCRWRvV6I
+         7buGT47NH/m/sKjwDP3ZQKp8LmZABIhXviJYS7Hiu9ucPHDCZ4agb1RSNKsZi3319qI5
+         nQlj+7lOqNK4jlnFrPTI7hzVUCVLkSTMXWqN3z+HKc9pbHY66zcUb3ga4wr7r80NDekD
+         IkQ3lTqDs7dKvn2O7y5euotBndmI5QxIKWUvvvEaxSV/casesqtOovRHHFKZoyBDJ4on
+         bJlEvQfLVjKMvcwo88wMUY7ARzCh/N3YfFT4nHQHQudgVpdYXNLgx2ZSIWnd56pV7ZnW
+         9QNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/uOcvbr7W4BNDBGFlgBNRAJtBhauxb70EOTJlpIIqeE=;
+        b=L/2PmlP3/t84DW0bm1rtNBZ4HyCyMuGsKwgot0FexOrQRVZREIZcrERBA6Vpsb7EN1
+         SmjjdNF5vs4QHn3o1iXKcNa9jBjU2cvKPITKrh2K4loKSLKPISGnmxjUI9Kkhu8oGPck
+         U+vGc4y0gaXWYDQeowRLJV0G9ETzFk3fjcQo2yrVtg4ozAYTfG/LplGY3YS3A0aRZRWJ
+         FhjkHbsHMoJth2Pkpeti6S+PS7PNqkOxyAHx9shH0Spuc6XyXjbYjI32bOauk57MYbqA
+         EVDMqfIgwg1DZMTgfL8jKQAwVm+fBn8+a+jqy8cQ14VjC6ng80198lOaX+Bw7mt6IHBo
+         DV1Q==
+X-Gm-Message-State: APjAAAVRkPsY9pLj9HTysSnVjoqchR60FXklpak49uI8bl1FVhiqocOb
+        7U4D5jvt4MOVneJ+eho+WG3hvA==
+X-Google-Smtp-Source: APXvYqyidnt83gOV6RcxGFWLvn0wQsELUCIsNuikJCcFKQnTqf/8GxOfC8N+yqtos/rpuD8YLcFYPw==
+X-Received: by 2002:adf:ed8d:: with SMTP id c13mr5290790wro.106.1565782659448;
+        Wed, 14 Aug 2019 04:37:39 -0700 (PDT)
+Received: from cbtest32.netronome.com ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id 2sm17902687wrg.83.2019.08.14.04.37.37
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 14 Aug 2019 04:37:37 -0700 (PDT)
+From:   Quentin Monnet <quentin.monnet@netronome.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        oss-drivers@netronome.com,
+        Quentin Monnet <quentin.monnet@netronome.com>
+Subject: [PATCH bpf-next] tools: bpftool: compile with $(EXTRA_WARNINGS)
+Date:   Wed, 14 Aug 2019 12:37:24 +0100
+Message-Id: <20190814113724.20884-1-quentin.monnet@netronome.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-"bind4 allow specific IP & port" and "bind6 deny specific IP & port"
-fail on s390 because of endianness issue: the 4 IP address bytes are
-loaded as a word and compared with a constant, but the value of this
-constant should be different on big- and little- endian machines, which
-is not the case right now.
+Compile bpftool with $(EXTRA_WARNINGS), as defined in
+scripts/Makefile.include, and fix the new warnings produced.
 
-Use __bpf_constant_ntohl to generate proper value based on machine
-endianness.
+Simply leave -Wswitch-enum out of the warning list, as we have several
+switch-case structures where it is not desirable to process all values
+of an enum.
 
-Fixes: 1d436885b23b ("selftests/bpf: Selftest for sys_bind post-hooks.")
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Remove -Wshadow from the warnings we manually add to CFLAGS, as it is
+handled in $(EXTRA_WARNINGS).
+
+Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
+Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
 ---
-v1->v2: Use bpf_endian.h and __bpf_constant_ntohl.
+ tools/bpf/bpftool/Makefile | 3 ++-
+ tools/bpf/bpftool/cgroup.c | 2 +-
+ tools/bpf/bpftool/perf.c   | 4 ++++
+ 3 files changed, 7 insertions(+), 2 deletions(-)
 
- tools/testing/selftests/bpf/test_sock.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/test_sock.c b/tools/testing/selftests/bpf/test_sock.c
-index fb679ac3d4b0..0e6652733462 100644
---- a/tools/testing/selftests/bpf/test_sock.c
-+++ b/tools/testing/selftests/bpf/test_sock.c
-@@ -13,6 +13,7 @@
- #include <bpf/bpf.h>
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index 4c9d1ffc3fc7..f284c207765a 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -37,7 +37,8 @@ prefix ?= /usr/local
+ bash_compdir ?= /usr/share/bash-completion/completions
  
- #include "cgroup_helpers.h"
-+#include "bpf_endian.h"
- #include "bpf_rlimit.h"
- #include "bpf_util.h"
+ CFLAGS += -O2
+-CFLAGS += -W -Wall -Wextra -Wno-unused-parameter -Wshadow -Wno-missing-field-initializers
++CFLAGS += -W -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers
++CFLAGS += $(filter-out -Wswitch-enum,$(EXTRA_WARNINGS))
+ CFLAGS += -DPACKAGE='"bpftool"' -D__EXPORTED_HEADERS__ \
+ 	-I$(srctree)/kernel/bpf/ \
+ 	-I$(srctree)/tools/include \
+diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
+index 44352b5aca85..1ef45e55039e 100644
+--- a/tools/bpf/bpftool/cgroup.c
++++ b/tools/bpf/bpftool/cgroup.c
+@@ -120,8 +120,8 @@ static int count_attached_bpf_progs(int cgroup_fd, enum bpf_attach_type type)
+ static int show_attached_bpf_progs(int cgroup_fd, enum bpf_attach_type type,
+ 				   int level)
+ {
++	const char *attach_flags_str;
+ 	__u32 prog_ids[1024] = {0};
+-	char *attach_flags_str;
+ 	__u32 prog_cnt, iter;
+ 	__u32 attach_flags;
+ 	char buf[32];
+diff --git a/tools/bpf/bpftool/perf.c b/tools/bpf/bpftool/perf.c
+index f2a545e667c4..b2046f33e23f 100644
+--- a/tools/bpf/bpftool/perf.c
++++ b/tools/bpf/bpftool/perf.c
+@@ -104,6 +104,8 @@ static void print_perf_json(int pid, int fd, __u32 prog_id, __u32 fd_type,
+ 		jsonw_string_field(json_wtr, "filename", buf);
+ 		jsonw_lluint_field(json_wtr, "offset", probe_offset);
+ 		break;
++	default:
++		break;
+ 	}
+ 	jsonw_end_object(json_wtr);
+ }
+@@ -140,6 +142,8 @@ static void print_perf_plain(int pid, int fd, __u32 prog_id, __u32 fd_type,
+ 		printf("uretprobe  filename %s  offset %llu\n", buf,
+ 		       probe_offset);
+ 		break;
++	default:
++		break;
+ 	}
+ }
  
-@@ -232,7 +233,8 @@ static struct sock_test tests[] = {
- 			/* if (ip == expected && port == expected) */
- 			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
- 				    offsetof(struct bpf_sock, src_ip6[3])),
--			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x01000000, 4),
-+			BPF_JMP_IMM(BPF_JNE, BPF_REG_7,
-+				    __bpf_constant_ntohl(0x00000001), 4),
- 			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
- 				    offsetof(struct bpf_sock, src_port)),
- 			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x2001, 2),
-@@ -261,7 +263,8 @@ static struct sock_test tests[] = {
- 			/* if (ip == expected && port == expected) */
- 			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
- 				    offsetof(struct bpf_sock, src_ip4)),
--			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x0100007F, 4),
-+			BPF_JMP_IMM(BPF_JNE, BPF_REG_7,
-+				    __bpf_constant_ntohl(0x7F000001), 4),
- 			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
- 				    offsetof(struct bpf_sock, src_port)),
- 			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0x1002, 2),
 -- 
-2.21.0
+2.17.1
 
