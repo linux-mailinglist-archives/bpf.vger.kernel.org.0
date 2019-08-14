@@ -2,38 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14AB78C60B
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 04:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C184A8C97B
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 04:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbfHNCM1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Aug 2019 22:12:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44534 "EHLO mail.kernel.org"
+        id S1727422AbfHNCLZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Aug 2019 22:11:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727049AbfHNCMZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Aug 2019 22:12:25 -0400
+        id S1727410AbfHNCLZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Aug 2019 22:11:25 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B143E208C2;
-        Wed, 14 Aug 2019 02:12:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B5F32084D;
+        Wed, 14 Aug 2019 02:11:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565748744;
-        bh=yzdK0cpATKfDgE266QK3LkS15A5pMnjiRaPV3/oLKK0=;
+        s=default; t=1565748684;
+        bh=Qxzn1GhQkt3VpBDtZ5IfDFsMDOoiGdj2MAiQd54afUo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HIs12VncSQZzDwaziPUuf8ieOi2wuBWDLiq6XiNX8+AM+c4IAQi9vhD5IuQmokLC7
-         pjPcKcvXfZgGCubr2yWiGIveKGITN4CJI7vj50JELfypyJQannTHRtaaoJxcoWAmau
-         5evEpKglcvt91d/AnMr6IbeMYG2+qDxvzX6mWyiY=
+        b=jSXTl9IseVqvzEksIssa5/qzWzmHbWYxMJGINlCEPhhnwznfTzQFVM/zf2l2YJoQ7
+         qe+c5/G0XxLxMc+sClvo9znV0kmQXkMAkQlbWPd3Az1wKEdqWV0MjdLSZcHwxrdWIM
+         El1ilb0Xb1WDgtQTerLfyZVTYv2r8UvTIc1c+dtU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Song Liu <songliubraving@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 042/123] libbpf: silence GCC8 warning about string truncation
-Date:   Tue, 13 Aug 2019 22:09:26 -0400
-Message-Id: <20190814021047.14828-42-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.2 020/123] libbpf: sanitize VAR to conservative 1-byte INT
+Date:   Tue, 13 Aug 2019 22:09:04 -0400
+Message-Id: <20190814021047.14828-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190814021047.14828-1-sashal@kernel.org>
 References: <20190814021047.14828-1-sashal@kernel.org>
@@ -48,54 +46,40 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Andrii Nakryiko <andriin@fb.com>
 
-[ Upstream commit cb8ffde5694ae5fffb456eae932aac442aa3a207 ]
+[ Upstream commit 1d4126c4e1190d2f7d3f388552f9bd17ae0c64fc ]
 
-Despite a proper NULL-termination after strncpy(..., ..., IFNAMSIZ - 1),
-GCC8 still complains about *expected* string truncation:
+If VAR in non-sanitized BTF was size less than 4, converting such VAR
+into an INT with size=4 will cause BTF validation failure due to
+violationg of STRUCT (into which DATASEC was converted) member size.
+Fix by conservatively using size=1.
 
-  xsk.c:330:2: error: 'strncpy' output may be truncated copying 15 bytes
-  from a string of length 15 [-Werror=stringop-truncation]
-    strncpy(ifr.ifr_name, xsk->ifname, IFNAMSIZ - 1);
-
-This patch gets rid of the issue altogether by using memcpy instead.
-There is no performance regression, as strncpy will still copy and fill
-all of the bytes anyway.
-
-v1->v2:
-- rebase against bpf tree.
-
-Cc: Magnus Karlsson <magnus.karlsson@intel.com>
 Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
-Acked-by: Song Liu <songliubraving@fb.com>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/xsk.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/lib/bpf/libbpf.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-index 8e03b65830da0..fa948c5445ecf 100644
---- a/tools/lib/bpf/xsk.c
-+++ b/tools/lib/bpf/xsk.c
-@@ -336,7 +336,7 @@ static int xsk_get_max_queues(struct xsk_socket *xsk)
- 		return -errno;
- 
- 	ifr.ifr_data = (void *)&channels;
--	strncpy(ifr.ifr_name, xsk->ifname, IFNAMSIZ - 1);
-+	memcpy(ifr.ifr_name, xsk->ifname, IFNAMSIZ - 1);
- 	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
- 	err = ioctl(fd, SIOCETHTOOL, &ifr);
- 	if (err && errno != EOPNOTSUPP) {
-@@ -561,7 +561,7 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
- 		err = -errno;
- 		goto out_socket;
- 	}
--	strncpy(xsk->ifname, ifname, IFNAMSIZ - 1);
-+	memcpy(xsk->ifname, ifname, IFNAMSIZ - 1);
- 	xsk->ifname[IFNAMSIZ - 1] = '\0';
- 
- 	err = xsk_set_xdp_socket_config(&xsk->config, usr_config);
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 3865a5d272514..77e14d9954796 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1044,8 +1044,13 @@ static void bpf_object__sanitize_btf(struct bpf_object *obj)
+ 		if (!has_datasec && kind == BTF_KIND_VAR) {
+ 			/* replace VAR with INT */
+ 			t->info = BTF_INFO_ENC(BTF_KIND_INT, 0, 0);
+-			t->size = sizeof(int);
+-			*(int *)(t+1) = BTF_INT_ENC(0, 0, 32);
++			/*
++			 * using size = 1 is the safest choice, 4 will be too
++			 * big and cause kernel BTF validation failure if
++			 * original variable took less than 4 bytes
++			 */
++			t->size = 1;
++			*(int *)(t+1) = BTF_INT_ENC(0, 0, 8);
+ 		} else if (!has_datasec && kind == BTF_KIND_DATASEC) {
+ 			/* replace DATASEC with STRUCT */
+ 			struct btf_var_secinfo *v = (void *)(t + 1);
 -- 
 2.20.1
 
