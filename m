@@ -2,163 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D724F8E050
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 00:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C5C8E093
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 00:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728757AbfHNWFw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Aug 2019 18:05:52 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:32898 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727975AbfHNWFv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Aug 2019 18:05:51 -0400
-Received: by mail-pf1-f195.google.com with SMTP id g2so200975pfq.0;
-        Wed, 14 Aug 2019 15:05:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=akGGQ0T5s15xdYfV8Yi0U9bWHmBXQ1uj+JTu67HUzEs=;
-        b=GDDJVCA307fH25acwfSdT5jUUfgk+stFEQ6Yz0NWq/9TtAuha61v6KY3RcV9zLp1pI
-         twghte/CD7pPEABWggNnTA6jCAP5gHOLBA8Uu8vjvi1j0BkBDSkUacytr70EbS1aE3ZC
-         tlbcUXvBOQKW/PH+jfqsZmmtasbgmvfD7DHb9E12HJTLMqohP518Tv/UXLEE0C503a29
-         1j4bPdYgGoFXvXAJdIs7EFGu7pkK1R2+nXE256gPftPV82pKQzqUR1Q+RxP6AqCyT2x0
-         93FU595RIA+j53da2O/jl6EE17K5XuRzRAGYdQHbpiCQP06LuO5jzTMME3PswZI2P1rN
-         4Alw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=akGGQ0T5s15xdYfV8Yi0U9bWHmBXQ1uj+JTu67HUzEs=;
-        b=qNtQ/NhHFjBVud7CMXBoTdJx55zT8ThHg7hIPISzsITyTKsvako6y2x9rcEaZmg7CF
-         z5OZ8EU8ijQ0Zd6o5V1EQTdXDd27DvC/HHZHHNaSiNwxcAZxphx1QCk/t6PsKtzltbOs
-         9KKuJ5IMfwmOKNgsroU4QT4gXo2cEQZo/OLSG9yNkWCnkNAW+jjZ6+Pb+zjPOeGkZiYL
-         V7OowrbQqXLKPRofbg+IXJJn9JlCKQAlKjBCtMj26vOHv/AlOf0g3oBTiTUXq/iTVCgL
-         zDJRSpA6KXmzsl4j34DKFCFCuJk5oIitl/YPlR4t9D8GEYo2NPO1TIV630UvWRkaWMJS
-         8cKw==
-X-Gm-Message-State: APjAAAUpWKie9wEVs0iz5LuPdA2j3G34C6rPzz/T0l4a5a6zlYd8pP4X
-        oyZBWxk7zIWoY3xzTc0fmH4=
-X-Google-Smtp-Source: APXvYqzbUrMXQzjnhLxDu+G49xTwQ95XyI+0sXhsDrQiMvY00hrNmHq67WfHNy6je1K1NlY3tb8VXA==
-X-Received: by 2002:a65:5c02:: with SMTP id u2mr1053362pgr.367.1565820350217;
-        Wed, 14 Aug 2019 15:05:50 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::d35d])
-        by smtp.gmail.com with ESMTPSA id g11sm970137pfk.187.2019.08.14.15.05.48
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 14 Aug 2019 15:05:49 -0700 (PDT)
-Date:   Wed, 14 Aug 2019 15:05:46 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Daniel Colascione <dancol@google.com>,
-        Song Liu <songliubraving@fb.com>,
-        Kees Cook <keescook@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Jann Horn <jannh@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-Message-ID: <20190814220545.co5pucyo5jk3weiv@ast-mbp.dhcp.thefacebook.com>
-References: <EE7B7AE1-3D44-4561-94B9-E97A626A251D@fb.com>
- <CALCETrXX-Jeb4wiQuL6FUai4wNMmMiUxuLLh_Lb9mT7h=0GgAw@mail.gmail.com>
- <20190805192122.laxcaz75k4vxdspn@ast-mbp>
- <CALCETrVtPs8gY-H4gmzSqPboid3CB++n50SvYd6RU9YVde_-Ow@mail.gmail.com>
- <20190806011134.p5baub5l3t5fkmou@ast-mbp>
- <CALCETrXEHL3+NAY6P6vUj7Pvd9ZpZsYC6VCLXOaNxb90a_POGw@mail.gmail.com>
- <20190813215823.3sfbakzzjjykyng2@ast-mbp>
- <CALCETrVT-dDXQGukGs5S1DkzvQv9_e=axzr_GyEd2c4T4z8Qng@mail.gmail.com>
- <20190814005737.4qg6wh4a53vmso2v@ast-mbp>
- <CALCETrUkqUprujww26VxHwkdXQ3DWJH8nnL2VBYpK2EU0oX_YA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrUkqUprujww26VxHwkdXQ3DWJH8nnL2VBYpK2EU0oX_YA@mail.gmail.com>
-User-Agent: NeoMutt/20180223
+        id S1727815AbfHNWSI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Aug 2019 18:18:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726221AbfHNWSI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Aug 2019 18:18:08 -0400
+Received: from localhost.localdomain (c-73-223-200-170.hsd1.ca.comcast.net [73.223.200.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4107D20665;
+        Wed, 14 Aug 2019 22:18:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565821086;
+        bh=k8sF9ByxTFJt+xPpPS1ClUhI3arOUct3oMxaqPHO3MI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=S/1z63Ov8CQ7Ns/DVtHuelIHzOPS4/tww77AgTZI+v2U7sLvnbEEPlv9WPhG4y32H
+         Ky5oGomVEEFvzPSSqxC0WdbhxRINJl5SXaHNr/fe/MyCpOGumxN+7Nu+yIVU/PM4I1
+         D0rTreqznnzPWBSf5XSM5YiCaXthUF0BkjISpeJc=
+Date:   Wed, 14 Aug 2019 15:18:05 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+Cc:     bjorn.topel@intel.com, linux-mm@kvack.org,
+        xdp-newbies@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
+        magnus.karlsson@intel.com
+Subject: Re: [PATCH v2 bpf-next] mm: mmap: increase sockets maximum memory
+ size pgoff for 32bits
+Message-Id: <20190814151805.bbff7b08f3a4119750b3e9fd@linux-foundation.org>
+In-Reply-To: <20190814150934.GD4142@khorivan>
+References: <20190812113429.2488-1-ivan.khoronzhuk@linaro.org>
+        <20190812124326.32146-1-ivan.khoronzhuk@linaro.org>
+        <20190812141924.32136e040904d0c5a819dcb1@linux-foundation.org>
+        <20190814150934.GD4142@khorivan>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 14, 2019 at 10:51:23AM -0700, Andy Lutomirski wrote:
+On Wed, 14 Aug 2019 18:09:36 +0300 Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org> wrote:
+
+> On Mon, Aug 12, 2019 at 02:19:24PM -0700, Andrew Morton wrote:
 > 
-> If eBPF is genuinely not usable by programs that are not fully trusted
-> by the admin, then no kernel changes at all are needed.  Programs that
-> want to reduce their own privileges can easily fork() a privileged
-> subprocess or run a little helper to which they delegate BPF
-> operations.  This is far more flexible than anything that will ever be
-> in the kernel because it allows the helper to verify that the rest of
-> the program is doing exactly what it's supposed to and restrict eBPF
-> operations to exactly the subset that is needed.  So a container
-> manager or network manager that drops some provilege could have a
-> little bpf-helper that manages its BPF XDP, firewalling, etc
-> configuration.  The two processes would talk over a socketpair.
-
-there were three projects that tried to delegate bpf operations.
-All of them failed.
-bpf operational workflow is much more complex than you're imagining.
-fork() also doesn't work for all cases.
-I gave this example before: consider multiple systemd-like deamons
-that need to do bpf operations that want to pass this 'bpf capability'
-to other deamons written by other teams. Some of them will start
-non-root, but still need to do bpf. They will be rpm installed
-and live upgraded while running.
-We considered to make systemd such centralized bpf delegation
-authority too. It didn't work. bpf in kernel grows quickly.
-libbpf part grows independently. llvm keeps evolving.
-All of them are being changed while system overall has to stay
-operational. Centralized approach breaks apart.
-
-> The interesting cases you're talking about really *do* involved
-> unprivileged or less privileged eBPF, though.  Let's see:
+> Hi, Andrew
 > 
-> systemd --user: systemd --user *is not privileged at all*.  There's no
-> issue of reducing privilege, since systemd --user doesn't have any
-> privilege to begin with.  But systemd supports some eBPF features, and
-> presumably it would like to support them in the systemd --user case.
-> This is unprivileged eBPF.
+> >On Mon, 12 Aug 2019 15:43:26 +0300 Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org> wrote:
+> >
+> >> The AF_XDP sockets umem mapping interface uses XDP_UMEM_PGOFF_FILL_RING
+> >> and XDP_UMEM_PGOFF_COMPLETION_RING offsets. The offsets seems like are
+> >> established already and are part of configuration interface.
+> >>
+> >> But for 32-bit systems, while AF_XDP socket configuration, the values
+> >> are to large to pass maximum allowed file size verification.
+> >> The offsets can be tuned ofc, but instead of changing existent
+> >> interface - extend max allowed file size for sockets.
+> >
+> >
+> >What are the implications of this?  That all code in the kernel which
+> >handles mapped sockets needs to be audited (and tested) for correctly
+> >handling mappings larger than 4G on 32-bit machines?  Has that been
+> 
+> That's to allow only offset to be passed, mapping length is less than 4Gb.
+> I have verified all list of mmap for sockets and all of them contain dummy
+> cb sock_no_mmap() except the following:
+> 
+> xsk_mmap()
+> tcp_mmap()
+> packet_mmap()
+> 
+> xsk_mmap() - it's what this fix is needed for.
+> tcp_mmap() - doesn't have obvious issues with pgoff - no any references on it.
+> packet_mmap() - return -EINVAL if it's even set.
 
-Let's disambiguate the terminology.
-This /dev/bpf patch set started as describing the feature as 'unprivileged bpf'.
-I think that was a mistake.
-Let's call systemd-like deamon usage of bpf 'less privileged bpf'.
-This is not unprivileged.
-'unprivileged bpf' is what sysctl kernel.unprivileged_bpf_disabled controls.
+Great, thanks.
 
-There is a huge difference between the two.
-I'm against extending 'unprivileged bpf' even a bit more than what it is
-today for many reasons mentioned earlier.
-The /dev/bpf is about 'less privileged'.
-Less privileged than root. We need to split part of full root capability
-into bpf capability. So that most of the root can be dropped.
-This is very similar to what cap_net_admin does.
-cap_net_amdin can bring down eth0 which is just as bad as crashing the box.
-cap_net_admin is very much privileged. Just 'less privileged' than root.
-Same thing for cap_bpf.
+> 
+> >done?  Are we confident that we aren't introducing user-visible buggy
+> >behaviour into unsuspecting legacy code?
+> >
+> >Also...  what are the user-visible runtime effects of this change?
+> >Please send along a paragraph which explains this, for the changelog.
+> >Does this patch fix some user-visible problem?  If so, should be code
+> >be backported into -stable kernels?
+> It should go to linux-next, no one has been using it till this patch
+> with 32 bits as w/o this fix af_xdp sockets can't be used at all.
+> It unblocks af_xdp socket usage for 32bit systems.
+> 
+> 
+> That's example of potential next commit message:
+> Subject: mm: mmap: increase sockets maximum memory size pgoff for 32bits
+> 
+> The AF_XDP sockets umem mapping interface uses XDP_UMEM_PGOFF_FILL_RING
+> and XDP_UMEM_PGOFF_COMPLETION_RING offsets.  These offsets are established
+> already and are part of the configuration interface.
+> 
+> But for 32-bit systems, using AF_XDP socket configuration, these values
+> are too large to pass the maximum allowed file size verification.  The
+> offsets can be tuned off, but instead of changing the existing interface,
+> let's extend the max allowed file size for sockets.
+> 
+> No one has been using it till this patch with 32 bits as w/o this fix
+> af_xdp sockets can't be used at all, so it unblocks af_xdp socket usage
+> for 32bit systems.
+> 
+> All list of mmap cbs for sockets were verified on side effects and
+> all of them contain dummy cb - sock_no_mmap() at this moment, except the
+> following:
+> 
+> xsk_mmap() - it's what this fix is needed for.
+> tcp_mmap() - doesn't have obvious issues with pgoff - no any references on it.
+> packet_mmap() - return -EINVAL if it's even set.
+>
+> ...
+>
+> Is it ok to be replicated in PATCH v2 or this explanation is enough here
+> to use v1?
 
-May be we should do both cap_bpf and /dev/bpf to make it clear that
-this is the same thing. Two interfaces to achieve the same result.
-
-> Seccomp.  Seccomp already uses cBPF, which is a form of BPF although
-> it doesn't involve the bpf() syscall.  There are some seccomp
-> proposals in the works that will want some stuff from eBPF.  In
-
-I'm afraid these proposals won't go anywhere.
-
-> So it's a bit of a chicken-and-egg situation.  There aren't major
-> unprivileged eBPF users because the kernel support isn't there.
-
-As I said before there are zero known use cases of 'unprivileged bpf'.
-
-If I understand you correctly you're refusing to accept that
-'less privileged bpf' is a valid use case while pushing for extending
-scope of 'unprivileged'.
-Extending the scope is an orthogonal discussion. Currently I'm
-opposed to that. Whereas 'less privileged' is what people require.
-
-> It will remain extremely awkward for containers and
-> especially nested containers to use eBPF.
-
-I'm afraid we have to agree to disagree here and move on.
+I have replaced the changlog in my tree with the above, thanks.
 
