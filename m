@@ -2,40 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEF98DF69
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 22:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD058DF90
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 22:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728443AbfHNUzY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Aug 2019 16:55:24 -0400
-Received: from www62.your-server.de ([213.133.104.62]:40106 "EHLO
+        id S1729984AbfHNU7C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Aug 2019 16:59:02 -0400
+Received: from www62.your-server.de ([213.133.104.62]:42874 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726505AbfHNUzY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Aug 2019 16:55:24 -0400
+        with ESMTP id S1729066AbfHNU7C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Aug 2019 16:59:02 -0400
 Received: from sslproxy06.your-server.de ([78.46.172.3])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1hy0Ih-0003of-7A; Wed, 14 Aug 2019 22:55:19 +0200
+        id 1hy0MG-00047Q-Go; Wed, 14 Aug 2019 22:59:00 +0200
 Received: from [178.193.45.231] (helo=pc-63.home)
         by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89)
         (envelope-from <daniel@iogearbox.net>)
-        id 1hy0Ih-000TrX-0B; Wed, 14 Aug 2019 22:55:19 +0200
-Subject: Re: [PATCH bpf v2] selftests/bpf: fix "bind{4,6} deny specific IP &
- port" on s390
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        id 1hy0MG-000KxW-7F; Wed, 14 Aug 2019 22:59:00 +0200
+Subject: Re: [PATCH bpf-next] tools: bpftool: compile with $(EXTRA_WARNINGS)
+To:     Quentin Monnet <quentin.monnet@netronome.com>,
         Alexei Starovoitov <ast@kernel.org>
-Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-References: <20190814104109.22020-1-iii@linux.ibm.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        oss-drivers@netronome.com
+References: <20190814113724.20884-1-quentin.monnet@netronome.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <8e14fad6-c8d2-f62d-bfb4-f3d95ddddcd7@iogearbox.net>
-Date:   Wed, 14 Aug 2019 22:55:18 +0200
+Message-ID: <9d404595-88fe-dc06-33f0-9c8d513deb7b@iogearbox.net>
+Date:   Wed, 14 Aug 2019 22:58:59 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20190814104109.22020-1-iii@linux.ibm.com>
+In-Reply-To: <20190814113724.20884-1-quentin.monnet@netronome.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -46,17 +44,18 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/14/19 12:41 PM, Ilya Leoshkevich wrote:
-> "bind4 allow specific IP & port" and "bind6 deny specific IP & port"
-> fail on s390 because of endianness issue: the 4 IP address bytes are
-> loaded as a word and compared with a constant, but the value of this
-> constant should be different on big- and little- endian machines, which
-> is not the case right now.
+On 8/14/19 1:37 PM, Quentin Monnet wrote:
+> Compile bpftool with $(EXTRA_WARNINGS), as defined in
+> scripts/Makefile.include, and fix the new warnings produced.
 > 
-> Use __bpf_constant_ntohl to generate proper value based on machine
-> endianness.
+> Simply leave -Wswitch-enum out of the warning list, as we have several
+> switch-case structures where it is not desirable to process all values
+> of an enum.
 > 
-> Fixes: 1d436885b23b ("selftests/bpf: Selftest for sys_bind post-hooks.")
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> Remove -Wshadow from the warnings we manually add to CFLAGS, as it is
+> handled in $(EXTRA_WARNINGS).
+> 
+> Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
+> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
 
-Looks good, applied, thanks.
+Applied, thanks!
