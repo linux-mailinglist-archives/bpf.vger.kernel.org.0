@@ -2,142 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9658DE26
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 21:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75608DE5B
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 22:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727558AbfHNT4p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Aug 2019 15:56:45 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:45274 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726865AbfHNT4p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Aug 2019 15:56:45 -0400
-Received: by mail-qt1-f195.google.com with SMTP id k13so14217221qtm.12;
-        Wed, 14 Aug 2019 12:56:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=ww+ukQWhq8T3zW2D5eMGHhBPEXg0kxg6O6YWVSbyLu0=;
-        b=Z5im4LRUTbqe71draDujv36ynaR5I7qnWRFDXujjJOzy8/wD1b7rPasp8FZ0ASV+FK
-         2TOMISmoOdJ7DuiiaFYlzb9BQAokUydp8ZyR4t3xhk1tZM5T4q89XGdp4vgvIz3wTBGN
-         ffr//kJA2Xy3cDRAURvIvGO8qv4/ro/22riaw2Bg/9dDRcetRHknLSh58Jf+0KNGPA6v
-         lgx6bGTaXn0l4GBe5ERN9ErTjrki/EPLWVrJ2B3fH2L2nj5WJoF9oQPcTGGr3zqbYi0M
-         dkSVvFrCEYMsPitD6HZNUOztYWReG85PTV3FVlII6yFD012SQJAF12TPOqyl9lHBi811
-         DFeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=ww+ukQWhq8T3zW2D5eMGHhBPEXg0kxg6O6YWVSbyLu0=;
-        b=gOIXH6EXbEq99u27/TqlAWtgJW640zSSJoqOG3WixZrPqD4BNwu83PMHGzIEczf1Pz
-         Aj0W4PUBaIh8G8CZ7gRMFz1Hxj4YBaeXVVyZrSRImK+OgYqCCKuZAiTVnFtJlrAQpEcH
-         TI6KhURiF43fNfbxoVX5B04Kvj3BOSpOhfOlYrPoahFC4osbNV5zcbEb0vZ+yDyoPnY0
-         qrosby1lVpnfpzYMPGHe063un0TGD/UTNiwJcesEzZJDkLIdp97TaiVIJhSGWUszZe1f
-         2MoCZLtQUaR4b7Zqmq/sqakTSEAwEDPmeDaQ5TtSAR9YCBPSvAhUrg4cf8qsd5WIB7As
-         9rsQ==
-X-Gm-Message-State: APjAAAVaDSh7YV2zmipsJT3Uc4M6gA5bG0sFvd16OfOQPP8lVms1Opez
-        DVc9os4hhPe70aiVLwdyqCMKIOm2RIW/ei/TL8c=
-X-Google-Smtp-Source: APXvYqxXSTAWwijyc9NlManHFj6IVa/Msxv4XU2yOuIwifQOSvJEefJBpvrsS3zKqV4PuA0PJ50+m8sLy2gTt5qDjGs=
-X-Received: by 2002:ac8:488a:: with SMTP id i10mr891426qtq.93.1565812603868;
- Wed, 14 Aug 2019 12:56:43 -0700 (PDT)
+        id S1728519AbfHNUEs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Aug 2019 16:04:48 -0400
+Received: from mail1.oneunified.net ([63.85.42.215]:35834 "EHLO
+        mail1.oneunified.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729479AbfHNUEp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Aug 2019 16:04:45 -0400
+X-Greylist: delayed 1096 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Aug 2019 16:04:44 EDT
+X-Spam-Status: No
+X-One-Unified-MailScanner-Watermark: 1566416786.88654@llTxkVrR0i2rcv/yasm9fQ
+X-One-Unified-MailScanner-From: ray@oneunified.net
+X-One-Unified-MailScanner: Not scanned: postmaster@oneunified.net
+X-One-Unified-MailScanner-ID: x7EJkJbN031716
+X-OneUnified-MailScanner-Information: Please contact the ISP for more information
+Received: from [10.55.90.10] (h96-45-2-121-eidnet.org.2.45.96.in-addr.arpa [96.45.2.121] (may be forged))
+        (authenticated bits=0)
+        by mail1.oneunified.net (8.14.4/8.14.4/Debian-4) with ESMTP id x7EJkJbN031716
+        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 14 Aug 2019 19:46:25 GMT
+To:     bpf@vger.kernel.org
+From:   Raymond Burkholder <ray@oneunified.net>
+Subject: bpftrace / bpf program 'Killed' on kernel v5.2.7 during load
+Organization: One Unified Net Limited
+Message-ID: <9b763db5-2d31-9e72-7236-4e4c9f91180f@oneunified.net>
+Date:   Wed, 14 Aug 2019 13:46:19 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20190813102318.5521-1-ivan.khoronzhuk@linaro.org>
- <20190813102318.5521-2-ivan.khoronzhuk@linaro.org> <CAEf4BzZ2y_DmTXkVqFh6Hdcquo6UvntvCygw5h5WwrWYXRRg_g@mail.gmail.com>
- <20190814092403.GA4142@khorivan>
-In-Reply-To: <20190814092403.GA4142@khorivan>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 14 Aug 2019 12:56:32 -0700
-Message-ID: <CAEf4BzbyAHkL5pFoBCKPY7ia3voj7t2OkFDNKYqdyE1Fiuy4nQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] libbpf: add asm/unistd.h to xsk to get __NR_mmap2
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        xdp-newbies@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 14, 2019 at 2:24 AM Ivan Khoronzhuk
-<ivan.khoronzhuk@linaro.org> wrote:
->
-> On Tue, Aug 13, 2019 at 04:38:13PM -0700, Andrii Nakryiko wrote:
->
-> Hi, Andrii
->
-> >On Tue, Aug 13, 2019 at 3:24 AM Ivan Khoronzhuk
-> ><ivan.khoronzhuk@linaro.org> wrote:
-> >>
-> >> That's needed to get __NR_mmap2 when mmap2 syscall is used.
-> >>
-> >> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-> >> ---
-> >>  tools/lib/bpf/xsk.c | 1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> >> index 5007b5d4fd2c..f2fc40f9804c 100644
-> >> --- a/tools/lib/bpf/xsk.c
-> >> +++ b/tools/lib/bpf/xsk.c
-> >> @@ -12,6 +12,7 @@
-> >>  #include <stdlib.h>
-> >>  #include <string.h>
-> >>  #include <unistd.h>
-> >> +#include <asm/unistd.h>
-> >
-> >asm/unistd.h is not present in Github libbpf projection. Is there any
->
-> Look on includes from
-> tools/lib/bpf/libpf.c
-> tools/lib/bpf/bpf.c
->
+The simplest test I have is the following for a difference between kernels:
 
-Yeah, sorry for the noise. I missed that this is system header that's
-expected to be present, not internal kernel header, parts of which we
-need to re-implement for Github projection. Never mind my concerns.
+# uname -a
+Linux nuc8i7hvk01 4.19.0-5-amd64 #1 SMP Debian 4.19.37-6 (2019-07-18) 
+x86_64 GNU/Linux
+# cat /sys/kernel/debug/tracing/events/syscalls/sys_enter_execve/id
+677
+
+# uname -a
+Linux nuc8i7hvk01 5.2.0-2-amd64 #1 SMP Debian 5.2.7-1 (2019-08-07) 
+x86_64 GNU/Linux
+# cat /sys/kernel/debug/tracing/events/syscalls/sys_enter_execve/id
+Killed
 
 
-> That's how it's done... Copping headers to arch/arm will not
-> solve this, it includes both of them anyway, and anyway it needs
-> asm/unistd.h inclusion here, only because xsk.c needs __NR_*
->
->
-> >way to avoid including this header? Generally, libbpf can't easily use
-> >all of kernel headers, we need to re-implemented all the extra used
-> >stuff for Github version of libbpf, so we try to minimize usage of new
-> >headers that are not just plain uapi headers from include/uapi.
->
-> Yes I know, it's far away from real number of changes needed.
-> I faced enough about this already and kernel headers, especially
-> for arm32 it's a bit decency problem. But this patch it's part of
-> normal one. I have couple issues despite this normally fixed mmap2
-> that is the same even if uapi includes are coppied to tools/arch/arm.
->
-> In continuation of kernel headers inclusion and arm build:
->
-> For instance, what about this rough "kernel headers" hack:
-> https://github.com/ikhorn/af_xdp_stuff/commit/aa645ccca4d844f404ec3c2b27402d4d7848d1b5
->
-> or this one related for arm32 only:
-> https://github.com/ikhorn/af_xdp_stuff/commit/2c6c6d538605aac39600dcb3c9b66de11c70b963
->
-> I have more...
->
-> >
-> >>  #include <arpa/inet.h>
-> >>  #include <asm/barrier.h>
-> >>  #include <linux/compiler.h>
-> >> --
-> >> 2.17.1
-> >>
->
-> --
-> Regards,
-> Ivan Khoronzhuk
+This prevents bpftrace and other bpf helper based applications from loading.
+
+apparmour, selinux, and audit are all turned off.
+
+Is there a new 'enable' flag some where?  Or are things done differently 
+now? Or is this a Debian 'thing'?
+
+Raymond.
+https://blog.raymond.burkholder.net/
+
+
+
