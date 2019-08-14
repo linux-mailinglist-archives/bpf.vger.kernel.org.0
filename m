@@ -2,48 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D278D67D
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 16:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6914E8D681
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 16:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726166AbfHNOr3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Aug 2019 10:47:29 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:34403 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbfHNOr3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Aug 2019 10:47:29 -0400
-Received: by mail-pf1-f194.google.com with SMTP id b24so3203752pfp.1;
-        Wed, 14 Aug 2019 07:47:29 -0700 (PDT)
+        id S1727474AbfHNOsb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Aug 2019 10:48:31 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:43772 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725955AbfHNOsa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Aug 2019 10:48:30 -0400
+Received: by mail-pf1-f193.google.com with SMTP id v12so5920248pfn.10;
+        Wed, 14 Aug 2019 07:48:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version;
-        bh=+bfgMzTl7z9Y6DJNVLvjkdqFQ1VmcHfYDw/wszdBB/0=;
-        b=X2XwwVDGzuGz6/0z5RsERMw2Ub9WInmFP03LEyT2f8JNPHLqSZkC1LZvgm/52+af65
-         O8fZq+T9yx7pplCSHbbzYR8+nx7xz+jYnjtof69KPBkSWaIee+/dS99xQBGyS/Ow2S1v
-         ov3ysC1qBNgzPaXlG0a83V6+Vz64OQODczPMlli9/EsaA7SZLREx7nPmD5GawP4MUk8B
-         CfMtIuusoNyg+pfMZ7RR/KYwkrjygerAj8MJvBwd+YPOg2lWLeHgl+yQPMru89I6qX9W
-         o9gRuz9eJkkcaB3t1uuj+IJCh+yyg1T/iJDO6Qu9tiRo3rZ/eRM5F1vWOGMqIE+w5DyM
-         LZxA==
+        bh=S0PKkzS+u3LtwRK0AR6XUJMj1yqa0xdQ2uanteb5fC0=;
+        b=sQM4VfFLvn25TVYXiWOtcjotvAhyTEXVeLfR5u3JjOMA2hJ54Q09fdaIrSCoqwh+LA
+         07piD3dPQQshVizY5Lon6hvSoABAGnKmiYEIGja0QpGMwN08qZY/i6nPqUTLUDxOGB0S
+         GYNZqYuLrPpQKIkDkzQF6EHQRq2TUm9LQzh3n+MmBo3A4H1w8z/yMgmZHdx+k5AXu71W
+         dEN9ewXfAUXiBZSu4rACdoWk+PXdVU1B3y8yvPYSrfu+p2PrRwabYkDNp7aPs71JDXG8
+         qZjPizmt7qjQxj/6oAmQdDu1p/U6kwQmnYOJd5yh1GrCLH7IGR+ef+nafNiDPdOyB1hw
+         55aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version;
-        bh=+bfgMzTl7z9Y6DJNVLvjkdqFQ1VmcHfYDw/wszdBB/0=;
-        b=HX1jKjM0UpmU6Q/yigVBjYsNFENgHitN5WIm14UgIp2hNhS9RATB0fwqDxzv29Md4p
-         H2mQ4ui3ijjmkhG4mHy/Cbtv65ElQDr+ryhShFPXGkP+ZDaIxAyU1U6xZGb53HV3QG2q
-         vC7Pbh0dML3th5UVhCqXnOaZYcNBMFkqVNaJvF5Fku89bCVLAhDHFZBcBtgYOlQLINqS
-         DaYeDzcfzLKsEwaFI1GtZKeBFRiqGB2W/lFLSCUGtciczAB2TP1MQlp/V7u5oAh66O/G
-         Ur1xR4t6O/UlxiF44fLlsYem66duCEyBfapu665Y0D3JG1dvnZLvln5d7jpHMpPr75KQ
-         Chtw==
-X-Gm-Message-State: APjAAAWzua2G6Cq85R2l+2VrOro4Qo2A2276aGtjgQdrq2twTlNuHLQL
-        mNTe9WuFc0xcaqp38SDG6JE=
-X-Google-Smtp-Source: APXvYqw0WB3o+N7IJOrL257UyMoZNcm9pS+lgtDN+iApwhFzkLAQqG9TZG01NXjoXJ/ZmuPBjD/kOQ==
-X-Received: by 2002:a63:2a08:: with SMTP id q8mr38941051pgq.415.1565794048667;
-        Wed, 14 Aug 2019 07:47:28 -0700 (PDT)
+        bh=S0PKkzS+u3LtwRK0AR6XUJMj1yqa0xdQ2uanteb5fC0=;
+        b=gjQm/gu/Pkelf9pXa2mndd0lWngKmK7KbAcTeZd+D56S2Prg9pmbH/0jYE4Ss2yqYi
+         T8XLNsjDuAfTYN4rSrXiT2a/DHnDam+sZprL03cGm8SDNWk8+b3Rp4+DgvtS8WRaF/wE
+         ptZJW1h4SJqwtK8p1th/Wqi7g7YIEs9vbPKBiJgJx6Vc6x6PSXBHs1UoEqAYq4GgVKJ+
+         t+V20JdeCzebjNzqpG4f1aOlQkIBBX254kjSHtzTCooxrsCKMq51DTCcNYa9LJGFr/+z
+         uESo7h2n/Zc1ycMvnLVQ4sttNXPTaQTdJeM22EIKBgPKgUFpqWKDfU9+V57TYqLN02gS
+         PJDg==
+X-Gm-Message-State: APjAAAXy496Rm7bxWnTfPn+fZIClWpC/81yjlxOIVY4sHrIHZ7z3o+92
+        IbUgyJApWSAAvAVpdW/uvq0=
+X-Google-Smtp-Source: APXvYqwru1vkZWwlBfz7B/06Y+bnrjh88s8RNYiJ5/2hO9wsYeiA2OtcSsBxgwgVwGCzTrUoKgi32Q==
+X-Received: by 2002:a63:6ec1:: with SMTP id j184mr18477470pgc.232.1565794110139;
+        Wed, 14 Aug 2019 07:48:30 -0700 (PDT)
 Received: from [172.26.122.72] ([2620:10d:c090:180::6327])
-        by smtp.gmail.com with ESMTPSA id v184sm12995pfb.82.2019.08.14.07.47.27
+        by smtp.gmail.com with ESMTPSA id 124sm5861pfw.142.2019.08.14.07.48.28
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 14 Aug 2019 07:47:28 -0700 (PDT)
+        Wed, 14 Aug 2019 07:48:29 -0700 (PDT)
 From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
 To:     "Magnus Karlsson" <magnus.karlsson@intel.com>
 Cc:     bjorn.topel@intel.com, ast@kernel.org, daniel@iogearbox.net,
@@ -55,67 +55,58 @@ Cc:     bjorn.topel@intel.com, ast@kernel.org, daniel@iogearbox.net,
         ilias.apalodimas@linaro.org, kiran.patil@intel.com,
         axboe@kernel.dk, maciej.fijalkowski@intel.com,
         maciejromanfijalkowski@gmail.com, intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH bpf-next v4 2/8] xsk: add support for need_wakeup flag in
- AF_XDP rings
-Date:   Wed, 14 Aug 2019 07:47:26 -0700
+Subject: Re: [PATCH bpf-next v4 3/8] i40e: add support for AF_XDP need_wakeup
+ feature
+Date:   Wed, 14 Aug 2019 07:48:28 -0700
 X-Mailer: MailMate (1.12.5r5635)
-Message-ID: <238E96EC-0BE7-461C-8FF8-509997EEBA31@gmail.com>
-In-Reply-To: <1565767643-4908-3-git-send-email-magnus.karlsson@intel.com>
+Message-ID: <3B2C7C21-4AAC-4126-A31D-58A61D941709@gmail.com>
+In-Reply-To: <1565767643-4908-4-git-send-email-magnus.karlsson@intel.com>
 References: <1565767643-4908-1-git-send-email-magnus.karlsson@intel.com>
- <1565767643-4908-3-git-send-email-magnus.karlsson@intel.com>
+ <1565767643-4908-4-git-send-email-magnus.karlsson@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; format=flowed
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+
+
 On 14 Aug 2019, at 0:27, Magnus Karlsson wrote:
 
-> This commit adds support for a new flag called need_wakeup in the
-> AF_XDP Tx and fill rings. When this flag is set, it means that the
-> application has to explicitly wake up the kernel Rx (for the bit in
-> the fill ring) or kernel Tx (for bit in the Tx ring) processing by
-> issuing a syscall. Poll() can wake up both depending on the flags
-> submitted and sendto() will wake up tx processing only.
->
-> The main reason for introducing this new flag is to be able to
-> efficiently support the case when application and driver is executing
-> on the same core. Previously, the driver was just busy-spinning on the
-> fill ring if it ran out of buffers in the HW and there were none on
-> the fill ring. This approach works when the application is running on
-> another core as it can replenish the fill ring while the driver is
-> busy-spinning. Though, this is a lousy approach if both of them are
-> running on the same core as the probability of the fill ring getting
-> more entries when the driver is busy-spinning is zero. With this new
-> feature the driver now sets the need_wakeup flag and returns to the
-> application. The application can then replenish the fill queue and
-> then explicitly wake up the Rx processing in the kernel using the
-> syscall poll(). For Tx, the flag is only set to one if the driver has
-> no outstanding Tx completion interrupts. If it has some, the flag is
-> zero as it will be woken up by a completion interrupt anyway.
->
-> As a nice side effect, this new flag also improves the performance of
-> the case where application and driver are running on two different
-> cores as it reduces the number of syscalls to the kernel. The kernel
-> tells user space if it needs to be woken up by a syscall, and this
-> eliminates many of the syscalls.
->
-> This flag needs some simple driver support. If the driver does not
-> support this, the Rx flag is always zero and the Tx flag is always
-> one. This makes any application relying on this feature default to the
-> old behaviour of not requiring any syscalls in the Rx path and always
-> having to call sendto() in the Tx path.
->
-> For backwards compatibility reasons, this feature has to be explicitly
-> turned on using a new bind flag (XDP_USE_NEED_WAKEUP). I recommend
-> that you always turn it on as it so far always have had a positive
-> performance impact.
->
-> The name and inspiration of the flag has been taken from io_uring by
-> Jens Axboe. Details about this feature in io_uring can be found in
-> http://kernel.dk/io_uring.pdf, section 8.3.
+> This patch adds support for the need_wakeup feature of AF_XDP. If the
+> application has told the kernel that it might sleep using the new bind
+> flag XDP_USE_NEED_WAKEUP, the driver will then set this flag if it has
+> no more buffers on the NIC Rx ring and yield to the application. For
+> Tx, it will set the flag if it has no outstanding Tx completion
+> interrupts and return to the application.
 >
 > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> ---
+>  drivers/net/ethernet/intel/i40e/i40e_xsk.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+>
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c 
+> b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> index d0ff5d8..42c9012 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> @@ -626,6 +626,15 @@ int i40e_clean_rx_irq_zc(struct i40e_ring 
+> *rx_ring, int budget)
+>
+>  	i40e_finalize_xdp_rx(rx_ring, xdp_xmit);
+>  	i40e_update_rx_stats(rx_ring, total_rx_bytes, total_rx_packets);
+> +
+> +	if (xsk_umem_uses_need_wakeup(rx_ring->xsk_umem)) {
+> +		if (failure || rx_ring->next_to_clean == rx_ring->next_to_use)
+> +			xsk_set_rx_need_wakeup(rx_ring->xsk_umem);
+> +		else
+> +			xsk_clear_rx_need_wakeup(rx_ring->xsk_umem);
+> +
+> +		return (int)total_rx_packets;
+> +	}
+>  	return failure ? budget : (int)total_rx_packets;
 
-Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
+Can you elaborate why we're not returning the total budget on failure
+for the wakeup case?
+
