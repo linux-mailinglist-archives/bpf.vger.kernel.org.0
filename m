@@ -2,129 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59BF08D6C7
-	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 17:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43BB08D6E2
+	for <lists+bpf@lfdr.de>; Wed, 14 Aug 2019 17:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727703AbfHNPAC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Aug 2019 11:00:02 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:44713 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727425AbfHNPAC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Aug 2019 11:00:02 -0400
-Received: by mail-ot1-f66.google.com with SMTP id w4so7968454ote.11;
-        Wed, 14 Aug 2019 08:00:01 -0700 (PDT)
+        id S1727983AbfHNPJl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Aug 2019 11:09:41 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:41785 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726166AbfHNPJk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Aug 2019 11:09:40 -0400
+Received: by mail-lj1-f195.google.com with SMTP id m24so2676373ljg.8
+        for <bpf@vger.kernel.org>; Wed, 14 Aug 2019 08:09:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mqYnljBZWJ9CSU4xNm5KnWlCC0kHqslp4DIAsr09jT0=;
-        b=Bp4LLyGrIdsRWVPZEAy7Y88iJcA2V/WKLgjXRWhwwUTTWTT2rfBu1i/Eavvr4H5HFY
-         20G1Jy8DOxPO6vZhyRvw9P1FlsZd7DDLIjjOQwkDQmd9QBIIhqc3TSYtRTTUo5NCWQrj
-         BgHJOfuP5CX7WE3i4vK68LjoxvpYacbchTVSUhxmuyc4p6NOsd46SwTZ74+z9na2GzpN
-         YT6gpQt1ldXvTZV637WBhNsWz8YWU2cOrb1u9z/VXhnHCBhOiJzdCr+LgxcOnzV3wmkI
-         kfRMHDPEopjCFpxIJjDd9v2vURHny479/bqtgKH7LKGe50SbmwOKcBVgxXRQxuNCCVCj
-         8a+A==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2ptfAgVpyIEhhkDUXUHOQeIgB7V3ChTfM7YuAb134Kg=;
+        b=x2n6+rP6ZwrFCjfm8bFO/Vk4gMraybEkDtn/pwBnfQQjn651Lm6f83/MXyyR8JDaJE
+         0tRK/p9cifp44E0FTnkOFanairQJNzX1c1zeImZ08ypWdY+O3vhaXoleBFSqBlh1/WyQ
+         3nw5aLY8qaAOkW4Kr27WJdta4q7KRfmbDPzyjCe94MN8cML68DixxuMWmWQZsCDEP9vU
+         WZrbCO9PrBo1mpyeFxRE6BB+JsO9MV5inELKKQU+MM8jr/Dd+EPbD4squSjv2Euk0nKK
+         kgtq7iRzdyBwtJyGbcbx6KhvBupL4J3XvuPS4oMY2Ri/cWI5dK+TbVzUVWhCwFsKuonO
+         DJ6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mqYnljBZWJ9CSU4xNm5KnWlCC0kHqslp4DIAsr09jT0=;
-        b=UApbIJpyfHaTnIJiepNHMDWdWxwZXl1ZMseJLGwq7ZIKbCk3rsQxfXhAeDxu8dQX2j
-         KxrP5v14uLZgJOSW3gCKfi53rwrHHB+bnGGg/sk6r3C0fmT3sJkX3/W7+8hP9jXJZXOx
-         DoQytWTLq/B2IXL5VKurXjRwY+iXdsTXGBxdv/bsO9IJUNUTYtpe3UKjqINm8PvmkAOb
-         ru4FOcurphsuRYztuJwBVbzO2skJV3MC1ii/7CjfkM8ZRbPqyY6XnGeNNoWcLig50Rf0
-         BK1F32G8sMJEM+vpIalHZjDfYBAV0ESeJB4XjgnizqAr/NaKJ10J5NzfUHsY8JKD6tIr
-         ydag==
-X-Gm-Message-State: APjAAAVe8h0FvaS7zsHvntjABkC7srG+uf/RaOkf92JGa1m9wvH9MoDt
-        OnQQwXpcHvzSWy/yJYWqzFz3jKDrQtgnTl5H4KM=
-X-Google-Smtp-Source: APXvYqyzISvYx9KXXQMPCWFPWDem0P2xD3aWYJvKHkMRJW+c9ClkjsSF8s7cuJgUoPd67VAQ1gn/OKcDsOQskRjX7kY=
-X-Received: by 2002:a9d:5e19:: with SMTP id d25mr4093379oti.192.1565794801058;
- Wed, 14 Aug 2019 08:00:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=2ptfAgVpyIEhhkDUXUHOQeIgB7V3ChTfM7YuAb134Kg=;
+        b=HcaXnShkZE56sQ4E9/lJRfqPrpIjPr5/M+2q4wGzjwOOK0kDIVdu7hV84SgB0cB5+g
+         QMxFHJZVNOykf97DdG6nYs6zYZjx14/padih+ZOpuyjYJevMNpeMoC3iOG7L4sJLGRNF
+         0fLyZILwgOkJATrsBYx87w5nYEoZDrVSe5UFgg1q2mwaJsN1xHq4Blpe0Q6QxztcM1+Q
+         CdziPBrOtndhZ6n08ehfYmEA7419qsnhiSKB3ofJRBMZ5KInlRqKH/fQtMhUnNc3Ma4M
+         7n3XOrucRjZgSfnXQVECjyJR4WnZNYXxfDs4skOhJALRid23+5T+jsIbHey8c65iuYDD
+         US0Q==
+X-Gm-Message-State: APjAAAX+w2No26G/YbvvXv5adMxYIGWZshvi/ReMyWIZE6z/k55xlcmt
+        mE+o98L0GVzJOnBboLqy8LRQ3A==
+X-Google-Smtp-Source: APXvYqyAM8eXnr+Jy6s24b158nlo/qNRMKZlplURPgkyhCKBGAc5pooN4Mik7Peninx/2IsQdmdO8w==
+X-Received: by 2002:a2e:81c3:: with SMTP id s3mr162966ljg.70.1565795378768;
+        Wed, 14 Aug 2019 08:09:38 -0700 (PDT)
+Received: from khorivan (168-200-94-178.pool.ukrtel.net. [178.94.200.168])
+        by smtp.gmail.com with ESMTPSA id l8sm2347lja.38.2019.08.14.08.09.37
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 14 Aug 2019 08:09:38 -0700 (PDT)
+Date:   Wed, 14 Aug 2019 18:09:36 +0300
+From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     bjorn.topel@intel.com, linux-mm@kvack.org,
+        xdp-newbies@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
+        magnus.karlsson@intel.com
+Subject: Re: [PATCH v2 bpf-next] mm: mmap: increase sockets maximum memory
+ size pgoff for 32bits
+Message-ID: <20190814150934.GD4142@khorivan>
+Mail-Followup-To: Andrew Morton <akpm@linux-foundation.org>,
+        bjorn.topel@intel.com, linux-mm@kvack.org,
+        xdp-newbies@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
+        magnus.karlsson@intel.com
+References: <20190812113429.2488-1-ivan.khoronzhuk@linaro.org>
+ <20190812124326.32146-1-ivan.khoronzhuk@linaro.org>
+ <20190812141924.32136e040904d0c5a819dcb1@linux-foundation.org>
 MIME-Version: 1.0
-References: <1565767643-4908-1-git-send-email-magnus.karlsson@intel.com>
- <1565767643-4908-4-git-send-email-magnus.karlsson@intel.com> <3B2C7C21-4AAC-4126-A31D-58A61D941709@gmail.com>
-In-Reply-To: <3B2C7C21-4AAC-4126-A31D-58A61D941709@gmail.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 14 Aug 2019 16:59:49 +0200
-Message-ID: <CAJ8uoz0Tnb=i-LkGqLU87be9BuYqxmu2pN1Mte0UEWA2+f8bTQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 3/8] i40e: add support for AF_XDP need_wakeup feature
-To:     Jonathan Lemon <jonathan.lemon@gmail.com>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        bpf <bpf@vger.kernel.org>, bruce.richardson@intel.com,
-        ciara.loftus@intel.com,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Ye Xiaolong <xiaolong.ye@intel.com>,
-        "Zhang, Qi Z" <qi.z.zhang@intel.com>,
-        "Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
-        Kevin Laatz <kevin.laatz@intel.com>,
-        ilias.apalodimas@linaro.org, Kiran <kiran.patil@intel.com>,
-        axboe@kernel.dk,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20190812141924.32136e040904d0c5a819dcb1@linux-foundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 14, 2019 at 4:48 PM Jonathan Lemon <jonathan.lemon@gmail.com> wrote:
->
->
->
-> On 14 Aug 2019, at 0:27, Magnus Karlsson wrote:
->
-> > This patch adds support for the need_wakeup feature of AF_XDP. If the
-> > application has told the kernel that it might sleep using the new bind
-> > flag XDP_USE_NEED_WAKEUP, the driver will then set this flag if it has
-> > no more buffers on the NIC Rx ring and yield to the application. For
-> > Tx, it will set the flag if it has no outstanding Tx completion
-> > interrupts and return to the application.
-> >
-> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > ---
-> >  drivers/net/ethernet/intel/i40e/i40e_xsk.c | 18 ++++++++++++++++++
-> >  1 file changed, 18 insertions(+)
-> >
-> > diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > index d0ff5d8..42c9012 100644
-> > --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > @@ -626,6 +626,15 @@ int i40e_clean_rx_irq_zc(struct i40e_ring
-> > *rx_ring, int budget)
-> >
-> >       i40e_finalize_xdp_rx(rx_ring, xdp_xmit);
-> >       i40e_update_rx_stats(rx_ring, total_rx_bytes, total_rx_packets);
-> > +
-> > +     if (xsk_umem_uses_need_wakeup(rx_ring->xsk_umem)) {
-> > +             if (failure || rx_ring->next_to_clean == rx_ring->next_to_use)
-> > +                     xsk_set_rx_need_wakeup(rx_ring->xsk_umem);
-> > +             else
-> > +                     xsk_clear_rx_need_wakeup(rx_ring->xsk_umem);
-> > +
-> > +             return (int)total_rx_packets;
-> > +     }
-> >       return failure ? budget : (int)total_rx_packets;
->
-> Can you elaborate why we're not returning the total budget on failure
-> for the wakeup case?
+On Mon, Aug 12, 2019 at 02:19:24PM -0700, Andrew Morton wrote:
 
-In the non need_wakeup case (the old behavior), when allocation fails
-from the fill queue we want to retry right away basically busy
-spinning on the fill queue until we find at least one entry and then
-go on processing packets. Works well when the app and the driver are
-on different cores, but a lousy strategy when they execute on the same
-core. That is why in the need_wakeup feature case, we do not return
-the total budget if there is a failure. We will just come back at a
-later point in time from a syscall since the need_wakeup flag will
-have been set and check the fill queue again. We do not want a
-busy-spinning behavior in this case.
+Hi, Andrew
 
-Thanks: Magnus
+>On Mon, 12 Aug 2019 15:43:26 +0300 Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org> wrote:
+>
+>> The AF_XDP sockets umem mapping interface uses XDP_UMEM_PGOFF_FILL_RING
+>> and XDP_UMEM_PGOFF_COMPLETION_RING offsets. The offsets seems like are
+>> established already and are part of configuration interface.
+>>
+>> But for 32-bit systems, while AF_XDP socket configuration, the values
+>> are to large to pass maximum allowed file size verification.
+>> The offsets can be tuned ofc, but instead of changing existent
+>> interface - extend max allowed file size for sockets.
+>
+>
+>What are the implications of this?  That all code in the kernel which
+>handles mapped sockets needs to be audited (and tested) for correctly
+>handling mappings larger than 4G on 32-bit machines?  Has that been
+
+That's to allow only offset to be passed, mapping length is less than 4Gb.
+I have verified all list of mmap for sockets and all of them contain dummy
+cb sock_no_mmap() except the following:
+
+xsk_mmap()
+tcp_mmap()
+packet_mmap()
+
+xsk_mmap() - it's what this fix is needed for.
+tcp_mmap() - doesn't have obvious issues with pgoff - no any references on it.
+packet_mmap() - return -EINVAL if it's even set.
+
+
+>done?  Are we confident that we aren't introducing user-visible buggy
+>behaviour into unsuspecting legacy code?
+>
+>Also...  what are the user-visible runtime effects of this change?
+>Please send along a paragraph which explains this, for the changelog.
+>Does this patch fix some user-visible problem?  If so, should be code
+>be backported into -stable kernels?
+It should go to linux-next, no one has been using it till this patch
+with 32 bits as w/o this fix af_xdp sockets can't be used at all.
+It unblocks af_xdp socket usage for 32bit systems.
+
+
+That's example of potential next commit message:
+Subject: mm: mmap: increase sockets maximum memory size pgoff for 32bits
+
+The AF_XDP sockets umem mapping interface uses XDP_UMEM_PGOFF_FILL_RING
+and XDP_UMEM_PGOFF_COMPLETION_RING offsets.  These offsets are established
+already and are part of the configuration interface.
+
+But for 32-bit systems, using AF_XDP socket configuration, these values
+are too large to pass the maximum allowed file size verification.  The
+offsets can be tuned off, but instead of changing the existing interface,
+let's extend the max allowed file size for sockets.
+
+No one has been using it till this patch with 32 bits as w/o this fix
+af_xdp sockets can't be used at all, so it unblocks af_xdp socket usage
+for 32bit systems.
+
+All list of mmap cbs for sockets were verified on side effects and
+all of them contain dummy cb - sock_no_mmap() at this moment, except the
+following:
+
+xsk_mmap() - it's what this fix is needed for.
+tcp_mmap() - doesn't have obvious issues with pgoff - no any references on it.
+packet_mmap() - return -EINVAL if it's even set.
+
+
+
+
+Is it ok to be replicated in PATCH v2 or this explanation is enough here
+to use v1?
+
+-- 
+Regards,
+Ivan Khoronzhuk
