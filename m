@@ -2,82 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F198F2D3
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 20:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7541F8F336
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 20:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730317AbfHOSJd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Aug 2019 14:09:33 -0400
-Received: from mail-qt1-f172.google.com ([209.85.160.172]:35649 "EHLO
-        mail-qt1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729210AbfHOSJc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Aug 2019 14:09:32 -0400
-Received: by mail-qt1-f172.google.com with SMTP id u34so3306022qte.2
-        for <bpf@vger.kernel.org>; Thu, 15 Aug 2019 11:09:32 -0700 (PDT)
+        id S1732850AbfHOSXT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Aug 2019 14:23:19 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:42423 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729565AbfHOSXT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Aug 2019 14:23:19 -0400
+Received: by mail-pf1-f195.google.com with SMTP id i30so1719828pfk.9;
+        Thu, 15 Aug 2019 11:23:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=87jBvrmfDVMJVf8IFXwudV0aE/EPj/3YMYd29VW+nMY=;
-        b=IvRqyQ9NRAPXdhdw51EW/7znw/89AZU4aBT7DiVUuRzt2oOGcUXdbwM9ONHgQJRyhc
-         EdEg0mGP+LuTEpnyOdqLNgc3yTxFfUQDuaQ1w0Aq1kdMCmO1Muv8sNRdyqjtHmvU9hR0
-         9E31gMw85Ocfip1u5lNZLBqrrYWghlMWBZvlspStGsoylXEdbxkdwnBjpKNmSS/D34AI
-         Sd8WhAVmnKqB+/VB1bJJJSCPSJlbIbYS/RnDvwKiceyiBUPZorh4kJYU1krN7hq3nvh1
-         OOJuqW1T65ugDkKnnxHlkVHOT3Q2GJ+zJayTyND/4iWRJwGF+VKeJ2D/jb1QPirL9QOE
-         D8mg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=l7ROvwBmxyo8/D3YRRi0Igp8QJbgJTkQ4GmMpySCWJw=;
+        b=hpm1cOi18/fG/NCX5oXTspgxisZB91yz5SIdJ02JxUbw/62uEAeqLtdoNBJRGFRYor
+         ku4lr4oiVTFODDWfudvhhBIsqWBYHYhtAYHiIbHlaozuOtyg8o37i7DC3tbD9CqxD/L3
+         EiuCHQFVoeGVDJM7/BE+PACPExAbF8lHmZSJwKPR0gfBMNEuiUSJbFUa2oeQxzgSQ7eP
+         m1R2fLOQgmv8QSFPhFGQSroZ7hJSVKP7ZlzcGJ2yjezmqxkXcuIEymlzQOS8tWg5ydKj
+         yO6j+6roOJEInH2iZSpMzcpS/5RbOah+Czx0HKl1aveFzlklWDiIqZWIAgIkIXVzxbQ8
+         4LCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=87jBvrmfDVMJVf8IFXwudV0aE/EPj/3YMYd29VW+nMY=;
-        b=ALZ5jCSam2TjiKUalZMZ/2RsW6P2dBXrm0Y3OLBw8QSwyk/H7dX77VE882o0w5Gwil
-         /IYwOnovv+CTJ066gd7925BFbOgxbHurJMYAybhFbdoeJ5QN/UAefAHccgsOAHDflzfk
-         eK6O3rrz8LTH2TR63OGvwfV1j6WAbVD++QLOyI9R8p90zCAJ772QKpj/cM09eLUIlBzb
-         iH6VGtbBo/lSvVyqDgw/RH7mOoV/7rchbGJhR6CjPaDwn+DA3OyBhSQLJhMc6SaHVnSw
-         lD2CdeQUcf8teKnz84ICL5FjcM2SaiRNm/wc9Ku9cHjo9yawPER5pGhPZXNq83ts5eAC
-         Kabw==
-X-Gm-Message-State: APjAAAULzn5h/UgANjv2Yqyp1Ugmj3oPLuNrjqFkEwx7FlvaSOh423AP
-        3hkI5WXiz8rqGyaXDZVFlq2gkQ==
-X-Google-Smtp-Source: APXvYqzY+EzedYrrJaqdBRpkDq6DhPLiHEeO7o/fqWibnXpA0LiDH8jwwZyaFeiicKLJFUB5KO7frg==
-X-Received: by 2002:a0c:9782:: with SMTP id l2mr4258555qvd.72.1565892571732;
-        Thu, 15 Aug 2019 11:09:31 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id c11sm1583943qtq.41.2019.08.15.11.09.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Aug 2019 11:09:31 -0700 (PDT)
-Date:   Thu, 15 Aug 2019 11:09:17 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Quentin Monnet <quentin.monnet@netronome.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        oss-drivers@netronome.com
-Subject: Re: [PATCH bpf] tools: bpftool: close prog FD before exit on
- showing a single program
-Message-ID: <20190815110917.657de4e3@cakuba.netronome.com>
-In-Reply-To: <CAEf4BzYL-pJ79nKywsAH1b2S-EP_4SUZY5jS2wzYJ32pywsyrw@mail.gmail.com>
-References: <20190815142223.2203-1-quentin.monnet@netronome.com>
-        <CAEf4BzbL3K5XWSyY6BxrVeF3+3qomsYbXh67yzjyy7ApsosVBw@mail.gmail.com>
-        <20190815103023.0bd2c210@cakuba.netronome.com>
-        <CAEf4BzYL-pJ79nKywsAH1b2S-EP_4SUZY5jS2wzYJ32pywsyrw@mail.gmail.com>
-Organization: Netronome Systems, Ltd.
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=l7ROvwBmxyo8/D3YRRi0Igp8QJbgJTkQ4GmMpySCWJw=;
+        b=GCA3ZlxFfZDSv4qwTZAmLH2KtB0Wjv8xcQgZ/UtNbAD4uDEV11do9ZaOt2yNABbJZh
+         KM+OWkqtHp0OzglYhspJiS83v4jJSypgnCV4A1tZXiHnUBSsOlmdCpQz+Aa32Law7X5J
+         u9NwwGejZS+xEEFdPPuqwDUWPmKZAAD5PqqXT+HfP59c0SOAT7XiZ/XPz0MmtYriGLgk
+         zA6JvkppDV83wJZf4LVjddjN2+CeKiO1BfAPbjpdrEVrTjKwduNr5E1OA29jXMkPq+Lw
+         Qeik3Nk9b46Ml57KFoFZQROYn3B5yKC5MaynrD2LhPZz6nwu4lt3F8fRqHdrNt74hTMM
+         ctuw==
+X-Gm-Message-State: APjAAAU8QwL/cINb/PvAB/+CG5+nyiL0J4uBfgHYsasFTBySgxydI5GE
+        GV+tTFoXsqBQOqwKKTm0E+M=
+X-Google-Smtp-Source: APXvYqwgna4XblK6OdGHyhlLPS69ayd9Afhl6vvTAwfLAjyGRADSZs4VsLbGeinUJvzxhf9FCCdshw==
+X-Received: by 2002:a63:5550:: with SMTP id f16mr4717026pgm.426.1565893398599;
+        Thu, 15 Aug 2019 11:23:18 -0700 (PDT)
+Received: from [172.20.53.208] ([2620:10d:c090:200::3:fd5d])
+        by smtp.gmail.com with ESMTPSA id ay7sm1948348pjb.4.2019.08.15.11.23.17
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 15 Aug 2019 11:23:17 -0700 (PDT)
+From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
+To:     "Ivan Khoronzhuk" <ivan.khoronzhuk@linaro.org>
+Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        jakub.kicinski@netronome.com, daniel@iogearbox.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        xdp-newbies@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yhs@fb.com, andrii.nakryiko@gmail.com
+Subject: Re: [PATCH bpf-next v2 2/3] xdp: xdp_umem: replace kmap on vmap for
+ umem map
+Date:   Thu, 15 Aug 2019 11:23:16 -0700
+X-Mailer: MailMate (1.12.5r5635)
+Message-ID: <5B58D364-609F-498E-B7DF-4457D454A14D@gmail.com>
+In-Reply-To: <20190815121356.8848-3-ivan.khoronzhuk@linaro.org>
+References: <20190815121356.8848-1-ivan.khoronzhuk@linaro.org>
+ <20190815121356.8848-3-ivan.khoronzhuk@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 15 Aug 2019 11:05:16 -0700, Andrii Nakryiko wrote:
-> > > Would it be better to make show_prog(fd) close provided fd instead or
-> > > is it used in some other context where FD should live longer (I
-> > > haven't checked, sorry)?  
-> >
-> > I think it used to close that's how the bug crept in. Other than the bug
-> > it's fine the way it is.  
-> 
-> So are you saying that show_prog() should or should not close FD?
+On 15 Aug 2019, at 5:13, Ivan Khoronzhuk wrote:
 
-Yup, it we'd have to rename it to indicate it closes the fd, and it's
-only called in two places. Not worth the churn.
+> For 64-bit there is no reason to use vmap/vunmap, so use page_address
+> as it was initially. For 32 bits, in some apps, like in samples
+> xdpsock_user.c when number of pgs in use is quite big, the kmap
+> memory can be not enough, despite on this, kmap looks like is
+> deprecated in such cases as it can block and should be used rather
+> for dynamic mm.
+>
+> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+> ---
+>  net/xdp/xdp_umem.c | 36 ++++++++++++++++++++++++++++++------
+>  1 file changed, 30 insertions(+), 6 deletions(-)
+>
+> diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
+> index a0607969f8c0..d740c4f8810c 100644
+> --- a/net/xdp/xdp_umem.c
+> +++ b/net/xdp/xdp_umem.c
+> @@ -14,7 +14,7 @@
+>  #include <linux/netdevice.h>
+>  #include <linux/rtnetlink.h>
+>  #include <linux/idr.h>
+> -#include <linux/highmem.h>
+> +#include <linux/vmalloc.h>
+>
+>  #include "xdp_umem.h"
+>  #include "xsk_queue.h"
+> @@ -170,7 +170,30 @@ static void xdp_umem_unmap_pages(struct xdp_umem 
+> *umem)
+>  	unsigned int i;
+>
+>  	for (i = 0; i < umem->npgs; i++)
+> -		kunmap(umem->pgs[i]);
+> +		if (PageHighMem(umem->pgs[i]))
+> +			vunmap(umem->pages[i].addr);
+> +}
+> +
+> +static int xdp_umem_map_pages(struct xdp_umem *umem)
+> +{
+> +	unsigned int i;
+> +	void *addr;
+> +
+> +	for (i = 0; i < umem->npgs; i++) {
+> +		if (PageHighMem(umem->pgs[i]))
+> +			addr = vmap(&umem->pgs[i], 1, VM_MAP, PAGE_KERNEL);
+> +		else
+> +			addr = page_address(umem->pgs[i]);
+> +
+> +		if (!addr) {
+> +			xdp_umem_unmap_pages(umem);
+> +			return -ENOMEM;
+> +		}
+> +
+> +		umem->pages[i].addr = addr;
+> +	}
+> +
+> +	return 0;
+>  }
+
+You'll want a __xdp_umem_unmap_pages() helper here that takes an
+count of the number of pages to unmap, so it can be called from
+xdp_umem_unmap_pages() in the normal case, and xdp_umem_map_pages()
+in the error case.  Otherwise the error case ends up calling
+PageHighMem on a null page.
+-- 
+Jonathan
+
+>  static void xdp_umem_unpin_pages(struct xdp_umem *umem)
+> @@ -312,7 +335,7 @@ static int xdp_umem_reg(struct xdp_umem *umem, 
+> struct xdp_umem_reg *mr)
+>  	u32 chunk_size = mr->chunk_size, headroom = mr->headroom;
+>  	unsigned int chunks, chunks_per_page;
+>  	u64 addr = mr->addr, size = mr->len;
+> -	int size_chk, err, i;
+> +	int size_chk, err;
+>
+>  	if (chunk_size < XDP_UMEM_MIN_CHUNK_SIZE || chunk_size > PAGE_SIZE) 
+> {
+>  		/* Strictly speaking we could support this, if:
+> @@ -378,10 +401,11 @@ static int xdp_umem_reg(struct xdp_umem *umem, 
+> struct xdp_umem_reg *mr)
+>  		goto out_account;
+>  	}
+>
+> -	for (i = 0; i < umem->npgs; i++)
+> -		umem->pages[i].addr = kmap(umem->pgs[i]);
+> +	err = xdp_umem_map_pages(umem);
+> +	if (!err)
+> +		return 0;
+>
+> -	return 0;
+> +	kfree(umem->pages);
+>
+>  out_account:
+>  	xdp_umem_unaccount_pages(umem);
+> -- 
+> 2.17.1
