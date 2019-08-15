@@ -2,251 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D618E780
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 10:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7F28E7CF
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 11:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730444AbfHOI4J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Aug 2019 04:56:09 -0400
-Received: from mga17.intel.com ([192.55.52.151]:16269 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726366AbfHOI4J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Aug 2019 04:56:09 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Aug 2019 01:56:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,388,1559545200"; 
-   d="scan'208";a="181821709"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.122]) ([10.237.72.122])
-  by orsmga006.jf.intel.com with ESMTP; 15 Aug 2019 01:56:03 -0700
-Subject: Re: [PATCH v5] perf machine: arm/arm64: Improve completeness for
- kernel address space
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        id S1730939AbfHOJIu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Aug 2019 05:08:50 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:33666 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730212AbfHOJIu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Aug 2019 05:08:50 -0400
+Received: by mail-lj1-f196.google.com with SMTP id z17so1669523ljz.0;
+        Thu, 15 Aug 2019 02:08:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0UE6srbxTSzeQEGUqQmtIA5ElC0/7wYx3fPkt29gctA=;
+        b=XlyDTQw/LApnV+/jl3INSQ0k5kkAC/D/oC26vZ9uWE9MEg3xW3781+knczAv4Aaf2a
+         dDTP8F6TCi/OyI8bPVdVCN57ntl7atgf2pmtMC4foq3XyLYv54jwaSDTyigDmaFJTuLN
+         HTYTpKOlcK2VdKCMk8hfpSwDNOy1+V/tesvKx3CEkop4q6eSIwmZjdmvxmfgW0VLzJpo
+         VpiFsTYq9biPd7m6Uq3jDpyl2233BEL5+bvbFpJGe+zqxEAugwnqxL34d4WJhoZJQ/2G
+         QKS1ERct7SoOBMBQ65iClNzCB5N9LYZ54uUvZj8xrYylAk3KOoTygKBs5tRFQQ6eXQyL
+         LmQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0UE6srbxTSzeQEGUqQmtIA5ElC0/7wYx3fPkt29gctA=;
+        b=a+voiIiLIwi5NsBzcfZcSslBsoILh0dphdCbQOOf5lK8bBWSYkdpfKPvs6ztlhxx2e
+         2Mxr5KeTgPvNCha+zpoECKnaV90VC+pSX5TDA08D/dpaaWJH3VpOjzLgJnA5wwhyVvTs
+         TbzIpwJ+3lRb6kSzCZPekrVt34cT1Jcqic3k5ItprtlauVuSuVy57hxDnZ15wYGQpH9j
+         kNuSKcgdXEvPw8kYxVHwVfUMvTc1eDzwDZEN6zVsxlKS4H4gzYHHp8MlgZx+UWjDrc+M
+         E6kjtfOqhUs1uvd8YQDCngTslf4aJyK5Y/NYKEPxINf/1hKAfvQTwsJQhK2LFhUXVez4
+         bP2w==
+X-Gm-Message-State: APjAAAUuxxQqzmMhUYuqLaesWinnzDaUr2XuaD8PMc+k2cqAGUZEon9j
+        gRsOKlRi8nuiuIWwe+sULCBIjh9cv2nHbVeBoa0=
+X-Google-Smtp-Source: APXvYqwMEUAJffcAHkjsEhd8NMusg/7M2UPC/oaiZA76NFZ6YUgtOx0nJ3OvlVQjfSslMzS/Nsbw4g+olqzqauqWEC8=
+X-Received: by 2002:a2e:9252:: with SMTP id v18mr1033100ljg.93.1565860127855;
+ Thu, 15 Aug 2019 02:08:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190812215052.71840-1-ndesaulniers@google.com>
+ <20190812215052.71840-12-ndesaulniers@google.com> <20190813082744.xmzmm4j675rqiz47@willie-the-truck>
+ <CANiq72mAfJ23PyWzZAELgbKQDCX2nvY0z+dmOMe14qz=wa6eFg@mail.gmail.com>
+ <20190813170829.c3lryb6va3eopxd7@willie-the-truck> <CAKwvOdk4hca8WzWzhcPEvxXnJVLbXGnhBdDZbeL_W_H91Ttjqw@mail.gmail.com>
+In-Reply-To: <CAKwvOdk4hca8WzWzhcPEvxXnJVLbXGnhBdDZbeL_W_H91Ttjqw@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 15 Aug 2019 11:08:36 +0200
+Message-ID: <CANiq72mGoGpx7EAVUPcGuhVkLit8sB3bR-k1XBDyeM8HBUaDZw@mail.gmail.com>
+Subject: Re: [PATCH 12/16] arm64: prefer __section from compiler_attributes.h
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Yonghong Song <yhs@fb.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suzuki Poulouse <suzuki.poulose@arm.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-References: <20190815082521.16885-1-leo.yan@linaro.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <d874e6b3-c115-6c8c-bb12-160cfd600505@intel.com>
-Date:   Thu, 15 Aug 2019 11:54:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20190815082521.16885-1-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Song Liu <songliubraving@fb.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Enrico Weigelt <info@metux.net>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Allison Randal <allison@lohutok.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 15/08/19 11:25 AM, Leo Yan wrote:
-> Arm and arm64 architecture reserve some memory regions prior to the
-> symbol '_stext' and these memory regions later will be used by device
-> module and BPF jit.  The current code misses to consider these memory
-> regions thus any address in the regions will be taken as user space
-> mode, but perf cannot find the corresponding dso with the wrong CPU
-> mode so we misses to generate samples for device module and BPF
-> related trace data.
-> 
-> This patch parse the link scripts to get the memory size prior to start
-> address and reduce this size from 'machine>->kernel_start', then can
-> get a fixed up kernel start address which contain memory regions for
-> device module and BPF.  Finally, machine__get_kernel_start() can reflect
-> more complete kernel memory regions and perf can successfully generate
-> samples.
-> 
-> The reason for parsing the link scripts is Arm architecture changes text
-> offset dependent on different platforms, which define multiple text
-> offsets in $kernel/arch/arm/Makefile.  This offset is decided when build
-> kernel and the final value is extended in the link script, so we can
-> extract the used value from the link script.  We use the same way to
-> parse arm64 link script as well.  If fail to find the link script, the
-> pre start memory size is assumed as zero, in this case it has no any
-> change caused with this patch.
-> 
-> Below is detailed info for testing this patch:
-> 
-> - Install or build LLVM/Clang;
-> 
-> - Configure perf with ~/.perfconfig:
-> 
->   root@debian:~# cat ~/.perfconfig
->   # this file is auto-generated.
->   [llvm]
->           clang-path = /mnt/build/llvm-build/build/install/bin/clang
->           kbuild-dir = /mnt/linux-kernel/linux-cs-dev/
->           clang-opt = "-g"
->           dump-obj = true
-> 
->   [trace]
->           show_zeros = yes
->           show_duration = no
->           no_inherit = yes
->           show_timestamp = no
->           show_arg_names = no
->           args_alignment = 40
->           show_prefix = yes
-> 
-> - Run 'perf trace' command with eBPF event:
-> 
->   root@debian:~# perf trace -e string \
->       -e $kernel/tools/perf/examples/bpf/augmented_raw_syscalls.c
-> 
-> - Read eBPF program memory mapping in kernel:
-> 
->   root@debian:~# echo 1 > /proc/sys/net/core/bpf_jit_kallsyms
->   root@debian:~# cat /proc/kallsyms | grep -E "bpf_prog_.+_sys_[enter|exit]"
->   ffff00000008a0d0 t bpf_prog_e470211b846088d5_sys_enter  [bpf]
->   ffff00000008c6a4 t bpf_prog_29c7ae234d79bd5c_sys_exit   [bpf]
-> 
-> - Launch any program which accesses file system frequently so can hit
->   the system calls trace flow with eBPF event;
-> 
-> - Capture CoreSight trace data with filtering eBPF program:
-> 
->   root@debian:~# perf record -e cs_etm/@tmc_etr0/ \
-> 	--filter 'filter 0xffff00000008a0d0/0x800' -a sleep 5s
-> 
-> - Decode the eBPF program symbol 'bpf_prog_f173133dc38ccf87_sys_enter':
-> 
->   root@debian:~# perf script -F,ip,sym
->   Frame deformatter: Found 4 FSYNCS
->                   0 [unknown]
->    ffff00000008a1ac bpf_prog_e470211b846088d5_sys_enter
->    ffff00000008a250 bpf_prog_e470211b846088d5_sys_enter
->                   0 [unknown]
->    ffff00000008a124 bpf_prog_e470211b846088d5_sys_enter
->                   0 [unknown]
->    ffff00000008a14c bpf_prog_e470211b846088d5_sys_enter
->    ffff00000008a13c bpf_prog_e470211b846088d5_sys_enter
->    ffff00000008a14c bpf_prog_e470211b846088d5_sys_enter
->                   0 [unknown]
->    ffff00000008a180 bpf_prog_e470211b846088d5_sys_enter
->                   0 [unknown]
->    ffff00000008a1ac bpf_prog_e470211b846088d5_sys_enter
->    ffff00000008a190 bpf_prog_e470211b846088d5_sys_enter
->    ffff00000008a1ac bpf_prog_e470211b846088d5_sys_enter
->    ffff00000008a250 bpf_prog_e470211b846088d5_sys_enter
->                   0 [unknown]
->    ffff00000008a124 bpf_prog_e470211b846088d5_sys_enter
->                   0 [unknown]
->    ffff00000008a14c bpf_prog_e470211b846088d5_sys_enter
->                   0 [unknown]
->    ffff00000008a180 bpf_prog_e470211b846088d5_sys_enter
->    [...]
-> 
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Suzuki Poulouse <suzuki.poulose@arm.com>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: coresight@lists.linaro.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/Makefile.config | 22 ++++++++++++++++++++++
->  tools/perf/util/machine.c  | 15 ++++++++++++++-
->  2 files changed, 36 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> index e4988f49ea79..d7ff839d8b20 100644
-> --- a/tools/perf/Makefile.config
-> +++ b/tools/perf/Makefile.config
-> @@ -48,9 +48,20 @@ ifeq ($(SRCARCH),x86)
->    NO_PERF_REGS := 0
->  endif
->  
-> +ARM_PRE_START_SIZE := 0
-> +
->  ifeq ($(SRCARCH),arm)
->    NO_PERF_REGS := 0
->    LIBUNWIND_LIBS = -lunwind -lunwind-arm
-> +  ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/kernel/vmlinux.lds),)
-> +    # Extract info from lds:
-> +    #   . = ((0xC0000000)) + 0x00208000;
-> +    # ARM_PRE_START_SIZE := 0x00208000
-> +    ARM_PRE_START_SIZE := $(shell egrep ' \. \= \({2}0x[0-9a-fA-F]+\){2}' \
-> +      $(srctree)/arch/$(SRCARCH)/kernel/vmlinux.lds | \
-> +      sed -e 's/[(|)|.|=|+|<|;|-]//g' -e 's/ \+/ /g' -e 's/^[ \t]*//' | \
-> +      awk -F' ' '{printf "0x%x", $$2}' 2>/dev/null)
-> +  endif
->  endif
->  
->  ifeq ($(SRCARCH),arm64)
-> @@ -58,8 +69,19 @@ ifeq ($(SRCARCH),arm64)
->    NO_SYSCALL_TABLE := 0
->    CFLAGS += -I$(OUTPUT)arch/arm64/include/generated
->    LIBUNWIND_LIBS = -lunwind -lunwind-aarch64
-> +  ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/kernel/vmlinux.lds),)
-> +    # Extract info from lds:
-> +    #  . = ((((((((0xffffffffffffffff)) - (((1)) << (48)) + 1) + (0)) + (0x08000000))) + (0x08000000))) + 0x00080000;
-> +    # ARM_PRE_START_SIZE := (0x08000000 + 0x08000000 + 0x00080000) = 0x10080000
-> +    ARM_PRE_START_SIZE := $(shell egrep ' \. \= \({8}0x[0-9a-fA-F]+\){2}' \
-> +      $(srctree)/arch/$(SRCARCH)/kernel/vmlinux.lds | \
-> +      sed -e 's/[(|)|.|=|+|<|;|-]//g' -e 's/ \+/ /g' -e 's/^[ \t]*//' | \
-> +      awk -F' ' '{printf "0x%x", $$6+$$7+$$8}' 2>/dev/null)
-> +  endif
+On Thu, Aug 15, 2019 at 12:20 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> This lone patch of the series is just cosmetic, but patch 14/16 fixes
+> a real boot issue:
+> https://github.com/ClangBuiltLinux/linux/issues/619
+> Miguel, I'd like to get that one landed ASAP; the rest are just for consistency.
 
-So, that is not going to work if you take a perf.data file to a non-arm machine?
+Ah, interesting. It would be best to have sent that one independently
+to the others, plus adding a commit message mentioning this in
+particular. Let's talk about that in the thread.
 
-How come you cannot use kallsyms to get the information?
+> Miguel, how do you want to take the rest of these patches? Will picked
+> up the arm64 one, I think the SuperH one got picked up.  There was
+> feedback to add more info to individual commits' commit messages.
 
->  endif
->  
-> +CFLAGS += -DARM_PRE_START_SIZE=$(ARM_PRE_START_SIZE)
-> +
->  ifeq ($(SRCARCH),csky)
->    NO_PERF_REGS := 0
->  endif
-> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> index f6ee7fbad3e4..e993f891bb82 100644
-> --- a/tools/perf/util/machine.c
-> +++ b/tools/perf/util/machine.c
-> @@ -2687,13 +2687,26 @@ int machine__get_kernel_start(struct machine *machine)
->  	machine->kernel_start = 1ULL << 63;
->  	if (map) {
->  		err = map__load(map);
-> +		if (err)
-> +			return err;
-> +
->  		/*
->  		 * On x86_64, PTI entry trampolines are less than the
->  		 * start of kernel text, but still above 2^63. So leave
->  		 * kernel_start = 1ULL << 63 for x86_64.
->  		 */
-> -		if (!err && !machine__is(machine, "x86_64"))
-> +		if (!machine__is(machine, "x86_64"))
->  			machine->kernel_start = map->start;
-> +
-> +		/*
-> +		 * On arm/arm64, the kernel uses some memory regions which are
-> +		 * prior to '_stext' symbol; to reflect the complete kernel
-> +		 * address space, compensate these pre-defined regions for
-> +		 * kernel start address.
-> +		 */
-> +		if (!strcmp(perf_env__arch(machine->env), "arm") ||
-> +		    !strcmp(perf_env__arch(machine->env), "arm64"))
-> +			machine->kernel_start -= ARM_PRE_START_SIZE;
->  	}
->  	return err;
->  }
-> 
+Yes, I told Will I would pick up whatever is not already picked up by
+individual maintainers.
 
+> I kept these tree wide changes separate to improve the likelihood that
+> they'd backport to stable cleanly, but could always squash if you'd
+> prefer to have 1 patch instead of a series.  Just let me know.
+
+Since you already did the splitting work, let's take advantage of it.
+I prefer them to be split anyway, since that gives maintainers a
+chance to pick them up individually if they prefer to do so.
+
+Cheers,
+Miguel
