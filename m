@@ -2,167 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77CD18F3C9
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 20:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F1D8F457
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 21:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731634AbfHOSnT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Aug 2019 14:43:19 -0400
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:50199 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730317AbfHOSnS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Aug 2019 14:43:18 -0400
-Date:   Thu, 15 Aug 2019 18:43:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.ch;
-        s=default; t=1565894593;
-        bh=ND7tBfcYJKAh1WsZTzGacbQjk9haGZQHPo35ShA56Nc=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:
-         Feedback-ID:From;
-        b=qwmMlhXr3hYgLqjAkYZd8zbseVL3j0wedk8zYIV497DuO/fvA+lHvT9x8MwqgvJ1V
-         gzRm5eeJstu9+MkpLhXAVCCfrwtEME3lxyWjzqfCKal7uXI6luIg/wElPp1AkBena2
-         h5UUxSttI4gyShf5i/qvjyBg1cTD0+Z5tLXi4gtc=
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-From:   Jordan Glover <Golden_Miller83@protonmail.ch>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Daniel Colascione <dancol@google.com>,
-        Song Liu <songliubraving@fb.com>,
-        Kees Cook <keescook@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Jann Horn <jannh@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>
-Reply-To: Jordan Glover <Golden_Miller83@protonmail.ch>
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-Message-ID: <eHOd0IhIGMCitkKOPHlXyhVUNtZQ7lj3A1dmxkDQ2ky2tbzfAv1Yp5ZoO3fNXr3GQ3HrEiMNy_n6dncrbVkvUjakh1VCx0vi0nUkNB_PE0Q=@protonmail.ch>
-In-Reply-To: <20190815172856.yoqvgu2yfrgbkowu@ast-mbp.dhcp.thefacebook.com>
-References: <EE7B7AE1-3D44-4561-94B9-E97A626A251D@fb.com>
- <CALCETrXEHL3+NAY6P6vUj7Pvd9ZpZsYC6VCLXOaNxb90a_POGw@mail.gmail.com>
- <20190813215823.3sfbakzzjjykyng2@ast-mbp>
- <CALCETrVT-dDXQGukGs5S1DkzvQv9_e=axzr_GyEd2c4T4z8Qng@mail.gmail.com>
- <20190814005737.4qg6wh4a53vmso2v@ast-mbp>
- <CALCETrUkqUprujww26VxHwkdXQ3DWJH8nnL2VBYpK2EU0oX_YA@mail.gmail.com>
- <20190814220545.co5pucyo5jk3weiv@ast-mbp.dhcp.thefacebook.com>
- <HG0x24u69mnaMFKuxHVAzHpyjwsD5-U6RpqFRua87wGWQCHg00Q8ZqPeA_5kJ9l-d6oe0cXa4HyYXMnOO0Aofp_LcPcQdG0WFV21z1MbgcE=@protonmail.ch>
- <20190815172856.yoqvgu2yfrgbkowu@ast-mbp.dhcp.thefacebook.com>
-Feedback-ID: QEdvdaLhFJaqnofhWA-dldGwsuoeDdDw7vz0UPs8r8sanA3bIt8zJdf4aDqYKSy4gJuZ0WvFYJtvq21y6ge_uQ==:Ext:ProtonMail
+        id S1731154AbfHOTTn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Aug 2019 15:19:43 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:36928 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731979AbfHOTTn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Aug 2019 15:19:43 -0400
+Received: by mail-lj1-f194.google.com with SMTP id t14so3196448lji.4
+        for <bpf@vger.kernel.org>; Thu, 15 Aug 2019 12:19:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=NlktoYn7GnTL4hkv6fSDP6jxnFjODJIzhQlYIZg0bd4=;
+        b=zzAlynUlgH4+MpPOfOGtgNMRwPO9tIdY8wRShreA86Rcm9/7IFvuxexRtod4QEP/Bp
+         sLRcgzClT+ibagHjOgfPZuYWt7DYsM/Zf+6xtzSyIhMWJ86DbS5j9QME74ROJlEY021S
+         9ggqchyWDKwqYdP7WSeOepcHDpOtmetmrLFPEBkKaVUnKDu0x15Z0XZ74NOQVP0semMX
+         ObxZJUDlBib6mrqTxp1Tg8dEs7KxmPPR2pVmURGfWjLHjY0+thU2HVhRBgB7emeyxsbp
+         eZCxEOClxXGDGMHyKZdtjxS1sRMunzwWOlIQ2HJ1B3gnU0C6JOzatDild3hGQ4XSgdwy
+         JMgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=NlktoYn7GnTL4hkv6fSDP6jxnFjODJIzhQlYIZg0bd4=;
+        b=rPH3jCQ6i3TQWxbAObEUrZkPTXPGaCTNDo8koUkS9SERrmeH8mixWOxfqWgCYUamNG
+         USuRvnlo2XA1hIB6KKCe096THLZtrjNGDJGOex6TzPfTZj/MnmOt4c7BKWyLPtRwrY9y
+         XlBWFliGdKE9ZaUi3DiIVT7HwGsbD/Iw0Z4xYTrODa+ZGWZr/OOTgMHjG/lkKOStgUKm
+         pMBR+/IkQn4+7mLA06I9hiIuTnLlB/Dso1sSn292jCR1a3sZk2me5buge/tHVKYKHgJy
+         Gf1cfox5jH+SHY1cYXR+f1HffR45lB0y1LEIwe13QIKxAmNPANSFnt5R4IcimRacJJpt
+         +2PQ==
+X-Gm-Message-State: APjAAAW3/XoiD6xsUZuB5mtShrYb3L3h9JbJczjO2gXoXBAUAuIS/7V8
+        v3biW/+OFYPUqR6Xnob1QSdsKA==
+X-Google-Smtp-Source: APXvYqycN5rMbTje+rC1m6zgeRUvUyN3KKS8p+Tml9G5gJbp+bE3P5wUL9Bg8nVCsjBr2Do9LNSWAQ==
+X-Received: by 2002:a2e:82c7:: with SMTP id n7mr2384989ljh.131.1565896780983;
+        Thu, 15 Aug 2019 12:19:40 -0700 (PDT)
+Received: from khorivan (168-200-94-178.pool.ukrtel.net. [178.94.200.168])
+        by smtp.gmail.com with ESMTPSA id a15sm577425lfl.44.2019.08.15.12.19.39
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 15 Aug 2019 12:19:40 -0700 (PDT)
+Date:   Thu, 15 Aug 2019 22:19:38 +0300
+From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+To:     Jonathan Lemon <jonathan.lemon@gmail.com>
+Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        jakub.kicinski@netronome.com, daniel@iogearbox.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        xdp-newbies@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yhs@fb.com, andrii.nakryiko@gmail.com
+Subject: Re: [PATCH bpf-next v2 2/3] xdp: xdp_umem: replace kmap on vmap for
+ umem map
+Message-ID: <20190815191456.GA11699@khorivan>
+Mail-Followup-To: Jonathan Lemon <jonathan.lemon@gmail.com>,
+        magnus.karlsson@intel.com, bjorn.topel@intel.com,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        jakub.kicinski@netronome.com, daniel@iogearbox.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        xdp-newbies@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yhs@fb.com, andrii.nakryiko@gmail.com
+References: <20190815121356.8848-1-ivan.khoronzhuk@linaro.org>
+ <20190815121356.8848-3-ivan.khoronzhuk@linaro.org>
+ <5B58D364-609F-498E-B7DF-4457D454A14D@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.7 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT autolearn=no
-        autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.protonmail.ch
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <5B58D364-609F-498E-B7DF-4457D454A14D@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thursday, August 15, 2019 5:28 PM, Alexei Starovoitov <alexei.starovoito=
-v@gmail.com> wrote:
-
-> On Thu, Aug 15, 2019 at 11:24:54AM +0000, Jordan Glover wrote:
+On Thu, Aug 15, 2019 at 11:23:16AM -0700, Jonathan Lemon wrote:
+>On 15 Aug 2019, at 5:13, Ivan Khoronzhuk wrote:
 >
-> > On Wednesday, August 14, 2019 10:05 PM, Alexei Starovoitov alexei.staro=
-voitov@gmail.com wrote:
-> >
-> > > On Wed, Aug 14, 2019 at 10:51:23AM -0700, Andy Lutomirski wrote:
-> > >
-> > > > If eBPF is genuinely not usable by programs that are not fully trus=
-ted
-> > > > by the admin, then no kernel changes at all are needed. Programs th=
-at
-> > > > want to reduce their own privileges can easily fork() a privileged
-> > > > subprocess or run a little helper to which they delegate BPF
-> > > > operations. This is far more flexible than anything that will ever =
-be
-> > > > in the kernel because it allows the helper to verify that the rest =
-of
-> > > > the program is doing exactly what it's supposed to and restrict eBP=
-F
-> > > > operations to exactly the subset that is needed. So a container
-> > > > manager or network manager that drops some provilege could have a
-> > > > little bpf-helper that manages its BPF XDP, firewalling, etc
-> > > > configuration. The two processes would talk over a socketpair.
-> > >
-> > > there were three projects that tried to delegate bpf operations.
-> > > All of them failed.
-> > > bpf operational workflow is much more complex than you're imagining.
-> > > fork() also doesn't work for all cases.
-> > > I gave this example before: consider multiple systemd-like deamons
-> > > that need to do bpf operations that want to pass this 'bpf capability=
-'
-> > > to other deamons written by other teams. Some of them will start
-> > > non-root, but still need to do bpf. They will be rpm installed
-> > > and live upgraded while running.
-> > > We considered to make systemd such centralized bpf delegation
-> > > authority too. It didn't work. bpf in kernel grows quickly.
-> > > libbpf part grows independently. llvm keeps evolving.
-> > > All of them are being changed while system overall has to stay
-> > > operational. Centralized approach breaks apart.
-> > >
-> > > > The interesting cases you're talking about really do involved
-> > > > unprivileged or less privileged eBPF, though. Let's see:
-> > > > systemd --user: systemd --user is not privileged at all. There's no
-> > > > issue of reducing privilege, since systemd --user doesn't have any
-> > > > privilege to begin with. But systemd supports some eBPF features, a=
-nd
-> > > > presumably it would like to support them in the systemd --user case=
-.
-> > > > This is unprivileged eBPF.
-> > >
-> > > Let's disambiguate the terminology.
-> > > This /dev/bpf patch set started as describing the feature as 'unprivi=
-leged bpf'.
-> > > I think that was a mistake.
-> > > Let's call systemd-like deamon usage of bpf 'less privileged bpf'.
-> > > This is not unprivileged.
-> > > 'unprivileged bpf' is what sysctl kernel.unprivileged_bpf_disabled co=
-ntrols.
-> > > There is a huge difference between the two.
-> > > I'm against extending 'unprivileged bpf' even a bit more than what it=
- is
-> > > today for many reasons mentioned earlier.
-> > > The /dev/bpf is about 'less privileged'.
-> > > Less privileged than root. We need to split part of full root capabil=
-ity
-> > > into bpf capability. So that most of the root can be dropped.
-> > > This is very similar to what cap_net_admin does.
-> > > cap_net_amdin can bring down eth0 which is just as bad as crashing th=
-e box.
-> > > cap_net_admin is very much privileged. Just 'less privileged' than ro=
-ot.
-> > > Same thing for cap_bpf.
-> > > May be we should do both cap_bpf and /dev/bpf to make it clear that
-> > > this is the same thing. Two interfaces to achieve the same result.
-> >
-> > systemd --user processes aren't "less privileged". The are COMPLETELY u=
-nprivileged.
-> > Granting them cap_bpf is the same as granting it to every other unprivi=
-leged user
-> > process. Also unprivileged user process can start systemd --user proces=
-s with any
-> > command they like.
+>>For 64-bit there is no reason to use vmap/vunmap, so use page_address
+>>as it was initially. For 32 bits, in some apps, like in samples
+>>xdpsock_user.c when number of pgs in use is quite big, the kmap
+>>memory can be not enough, despite on this, kmap looks like is
+>>deprecated in such cases as it can block and should be used rather
+>>for dynamic mm.
+>>
+>>Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+>>---
+>> net/xdp/xdp_umem.c | 36 ++++++++++++++++++++++++++++++------
+>> 1 file changed, 30 insertions(+), 6 deletions(-)
+>>
+>>diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
+>>index a0607969f8c0..d740c4f8810c 100644
+>>--- a/net/xdp/xdp_umem.c
+>>+++ b/net/xdp/xdp_umem.c
+>>@@ -14,7 +14,7 @@
+>> #include <linux/netdevice.h>
+>> #include <linux/rtnetlink.h>
+>> #include <linux/idr.h>
+>>-#include <linux/highmem.h>
+>>+#include <linux/vmalloc.h>
+>>
+>> #include "xdp_umem.h"
+>> #include "xsk_queue.h"
+>>@@ -170,7 +170,30 @@ static void xdp_umem_unmap_pages(struct 
+>>xdp_umem *umem)
+>> 	unsigned int i;
+>>
+>> 	for (i = 0; i < umem->npgs; i++)
+>>-		kunmap(umem->pgs[i]);
+>>+		if (PageHighMem(umem->pgs[i]))
+>>+			vunmap(umem->pages[i].addr);
+>>+}
+>>+
+>>+static int xdp_umem_map_pages(struct xdp_umem *umem)
+>>+{
+>>+	unsigned int i;
+>>+	void *addr;
+>>+
+>>+	for (i = 0; i < umem->npgs; i++) {
+>>+		if (PageHighMem(umem->pgs[i]))
+>>+			addr = vmap(&umem->pgs[i], 1, VM_MAP, PAGE_KERNEL);
+>>+		else
+>>+			addr = page_address(umem->pgs[i]);
+>>+
+>>+		if (!addr) {
+>>+			xdp_umem_unmap_pages(umem);
+>>+			return -ENOMEM;
+>>+		}
+>>+
+>>+		umem->pages[i].addr = addr;
+>>+	}
+>>+
+>>+	return 0;
+>> }
 >
-> systemd itself is trusted. It's the same binary whether it runs as pid=3D=
-1
-> or as pid=3D123. One of the use cases is to make IPAddressDeny=3D work wi=
-th --user.
-> Subset of that feature already works with AmbientCapabilities=3DCAP_NET_A=
-DMIN.
-> CAP_BPF is a natural step in the same direction.
+>You'll want a __xdp_umem_unmap_pages() helper here that takes an
+>count of the number of pages to unmap, so it can be called from
+>xdp_umem_unmap_pages() in the normal case, and xdp_umem_map_pages()
+>in the error case.  Otherwise the error case ends up calling
+>PageHighMem on a null page.
+>-- 
+>Jonathan
 
-The point was that systemd will run any arbitrary command you'll throw at i=
-t and you want
-to automatically attach CAP_BPF to it. AmbientCapabilities is not valid opt=
-ion for
-systemd --user instance (otherwise it would be nuts).
+Do you mean null address?
+If so, then vunmap do nothing if it's null, and addr is null if it's not
+assigned... and it's not assigned w/o correct mapping...
 
-I think we may have misunderstanding here. Did you mean systemd "system" se=
-rvice with
-"User=3Dxxx" option instead of "systemd --user" service? It would make sens=
-e then.
+If you mean null page, then it is not possible after all they are
+pinned above, here: xdp_umem_pin_pages(), thus assigned.
+
+Or I missed smth?
+
+Despite of this, seems like here should be one more patch, adding unpinning page
+in error path, but this not related to this change. Will do this in follow up
+fix patch, if no objection to my explanation, ofc.
+
+-- 
+Regards,
+Ivan Khoronzhuk
