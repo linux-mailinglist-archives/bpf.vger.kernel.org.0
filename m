@@ -2,115 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD588E8FD
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 12:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C53888E951
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 12:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730788AbfHOK0n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Aug 2019 06:26:43 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:32896 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728500AbfHOK0n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Aug 2019 06:26:43 -0400
-Received: by mail-pf1-f195.google.com with SMTP id g2so1164128pfq.0;
-        Thu, 15 Aug 2019 03:26:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ivq6bPNC4Odf4YX0dM+xQIJIuVtnKxhLJ9VEaA8nd38=;
-        b=BTIAMjenPCDqNriRn7WiFHq67MSB1eVlhF/dWPpSZyYZXOs/Hgks0vN34JHL/V31a6
-         lUlH33BHytqjnSe0DfRPuoI4NkeeVPbABmu1UqxhqqjwwfJrqP6WQRypZ62eZzvnqRHG
-         MKNf7rTEQGTdwaGlb1Fh7YMqcPJ1weIthHDczxrXw+mhLdEh5Yazqswr46dGsl25LJUd
-         wAmz6gjEUIGWdUZiDFYggrgkJV6wykpkkH0WD3ZddXqZ7IAtjoz2jMzYNKUNWKjPNesG
-         hhzJPGkY/dkVEcOErUuWcH8ueJGrq2cz/1xcked9NP1QQfdRAU8yWIsWy7pTuG+VJMsb
-         0nrQ==
+        id S1731319AbfHOKyI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Aug 2019 06:54:08 -0400
+Received: from mail-oi1-f198.google.com ([209.85.167.198]:52257 "EHLO
+        mail-oi1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731317AbfHOKyH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Aug 2019 06:54:07 -0400
+Received: by mail-oi1-f198.google.com with SMTP id y1so954141oih.19
+        for <bpf@vger.kernel.org>; Thu, 15 Aug 2019 03:54:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ivq6bPNC4Odf4YX0dM+xQIJIuVtnKxhLJ9VEaA8nd38=;
-        b=gKDbevlmWMS2ms+V7CttSQhIWyr9z4Srf0dq+TKl5Z5ftAtJB+261wFp16f9GHBCyh
-         XEnfa6ms+D6lz9bXL9cNvSZDLYMv7GRr4WGOBmPFwfPpkoXwNX7uNeNqnTMhjEUBbQBT
-         xyOd72BYi+iBswFxM1/bPJeyg1wCom/32YJhQE64SK0/pzAMzAj2uU2DNGDPHLiUOQTm
-         GpogP2dsY9i3kP48W60/H5K9yotJwcfi3u2ZixbIrPDmZNu0UNju20TgtVKoOURvEk45
-         iBLaqsLQD/SWdFMLcoFsuE/aW6aEwxN6rTlO2Ta5QLTDFold0li81LwM+YXxP0gAIEd0
-         IZjg==
-X-Gm-Message-State: APjAAAUFJ4BZqed9RN542+r4wu3ikpohKrGlSKrPcb6iGjhN7c4czphM
-        K8rJ4RFO7NtK6bspMqsNF7w=
-X-Google-Smtp-Source: APXvYqz4i9kR8vwZAmA62oQGsICrPUUvJAalWXZAvxTPIdkVioKPgFXOYaQC/Mmj18p7sqhh6JOa8w==
-X-Received: by 2002:a63:6146:: with SMTP id v67mr3064063pgb.271.1565864802609;
-        Thu, 15 Aug 2019 03:26:42 -0700 (PDT)
-Received: from [172.20.20.103] ([222.151.198.97])
-        by smtp.gmail.com with ESMTPSA id e188sm2296505pfa.76.2019.08.15.03.26.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Aug 2019 03:26:42 -0700 (PDT)
-Subject: Re: [RFC PATCH bpf-next 00/14] xdp_flow: Flow offload to XDP
-To:     Stanislav Fomichev <sdf@fomichev.me>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, William Tu <u9012063@gmail.com>
-References: <20190813120558.6151-1-toshiaki.makita1@gmail.com>
- <20190814170715.GJ2820@mini-arch>
-From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
-Message-ID: <14c4a876-6f5d-4750-cbe4-19622f64975b@gmail.com>
-Date:   Thu, 15 Aug 2019 19:26:36 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=iu5xMpJVePxmGvQqPz/kzGEyl3lnKN+M2iewRRbTvBs=;
+        b=hdTYjo/e7xyCRXMhRjwFXPNP10/EpztagscSosHT+3LVyeYLMCGyVdEQqk3HCTDTOK
+         Ge53corn4femHxZpVHl/OSGwCbFOFJISrdmWP2NRfeogiHAvrj6CCq2W4cpazXBD3GcS
+         ZB1O5Mo68RLEHWaWgJ1Puz+mCxSK4arhrSlb89wOkCyQF9BlIDkwWUuhPa4s+Q1w7WjR
+         k2Lg1+qP/oOW/a7LgIwSRG9I2qGg21Kjbw7LdUqo3ngYvHuCpfkie18/mN5UpWD/FFIL
+         q2m1a3WmfPf96iB+ZfHkzpbqTXtNtlCkd7V+gso0ogLkpnyaO4dN7PRPAiuUPy61vtgN
+         dUuw==
+X-Gm-Message-State: APjAAAWcXl1oAqTz8gloYwKu7za5l9sebWqP3R8EppM333GiaB8f7N0S
+        bwdGCpI37bCfsD6sons24Ix82b5H3fRL87MlSO13AYmIolj0
+X-Google-Smtp-Source: APXvYqyJUfSjq5fX6S07s69c3lj/EQ1Effq/eoWR5+O3xWIoG31oSpaenHel3MEScC5+3znLjx+3Y2HUOE/zfO27k/8/8PQatAkt
 MIME-Version: 1.0
-In-Reply-To: <20190814170715.GJ2820@mini-arch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a5e:d70a:: with SMTP id v10mr1960404iom.19.1565866446695;
+ Thu, 15 Aug 2019 03:54:06 -0700 (PDT)
+Date:   Thu, 15 Aug 2019 03:54:06 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000523ea3059025b11d@google.com>
+Subject: INFO: task hung in tls_sw_release_resources_tx
+From:   syzbot <syzbot+6a9ff159672dfbb41c95@syzkaller.appspotmail.com>
+To:     ast@kernel.org, aviadye@mellanox.com, borisp@mellanox.com,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davejwatson@fb.com,
+        davem@davemloft.net, jakub.kicinski@netronome.com,
+        john.fastabend@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2019/08/15 2:07, Stanislav Fomichev wrote:
-> On 08/13, Toshiaki Makita wrote:
->> * Implementation
->>
->> xdp_flow makes use of UMH to load an eBPF program for XDP, similar to
->> bpfilter. The difference is that xdp_flow does not generate the eBPF
->> program dynamically but a prebuilt program is embedded in UMH. This is
->> mainly because flow insertion is considerably frequent. If we generate
->> and load an eBPF program on each insertion of a flow, the latency of the
->> first packet of ping in above test will incease, which I want to avoid.
-> Can this be instead implemented with a new hook that will be called
-> for TC events? This hook can write to perf event buffer and control
-> plane will insert/remove/modify flow tables in the BPF maps (contol
-> plane will also install xdp program).
-> 
-> Why do we need UMH? What am I missing?
+Hello,
 
-So you suggest doing everything in xdp_flow kmod?
-I also thought about that. There are two phases so let's think about them separately.
+syzbot found the following crash on:
 
-1) TC block (qdisc) creation / eBPF load
+HEAD commit:    6d5afe20 sctp: fix memleak in sctp_send_reset_streams
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=16e5536a600000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a4c9e9f08e9e8960
+dashboard link: https://syzkaller.appspot.com/bug?extid=6a9ff159672dfbb41c95
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17cb0502600000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14d5dc22600000
 
-I saw eBPF maintainers repeatedly saying eBPF program loading needs to be
-done from userland, not from kernel, to run the verifier for safety.
-However xdp_flow eBPF program is prebuilt and embedded in kernel so we may
-allow such programs to be loaded from kernel? I currently don't have the will
-to make such an API as loading can be done with current UMH mechanism.
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+6a9ff159672dfbb41c95@syzkaller.appspotmail.com
 
-2) flow insertion / eBPF map update
+INFO: task syz-executor153:10198 blocked for more than 143 seconds.
+       Not tainted 5.3.0-rc3+ #162
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+syz-executor153 D27672 10198  10179 0x80000002
+Call Trace:
+  context_switch kernel/sched/core.c:3254 [inline]
+  __schedule+0x755/0x1580 kernel/sched/core.c:3880
+  schedule+0xa8/0x270 kernel/sched/core.c:3944
+  schedule_timeout+0x717/0xc50 kernel/time/timer.c:1783
+  do_wait_for_common kernel/sched/completion.c:83 [inline]
+  __wait_for_common kernel/sched/completion.c:104 [inline]
+  wait_for_common kernel/sched/completion.c:115 [inline]
+  wait_for_completion+0x29c/0x440 kernel/sched/completion.c:136
+  crypto_wait_req include/linux/crypto.h:685 [inline]
+  crypto_wait_req include/linux/crypto.h:680 [inline]
+  tls_sw_release_resources_tx+0x4ee/0x6b0 net/tls/tls_sw.c:2075
+  tls_sk_proto_cleanup net/tls/tls_main.c:275 [inline]
+  tls_sk_proto_close+0x686/0x970 net/tls/tls_main.c:305
+  inet_release+0xed/0x200 net/ipv4/af_inet.c:427
+  inet6_release+0x53/0x80 net/ipv6/af_inet6.c:470
+  __sock_release+0xce/0x280 net/socket.c:590
+  sock_close+0x1e/0x30 net/socket.c:1268
+  __fput+0x2ff/0x890 fs/file_table.c:280
+  ____fput+0x16/0x20 fs/file_table.c:313
+  task_work_run+0x145/0x1c0 kernel/task_work.c:113
+  exit_task_work include/linux/task_work.h:22 [inline]
+  do_exit+0x92f/0x2e50 kernel/exit.c:879
+  do_group_exit+0x135/0x360 kernel/exit.c:983
+  __do_sys_exit_group kernel/exit.c:994 [inline]
+  __se_sys_exit_group kernel/exit.c:992 [inline]
+  __x64_sys_exit_group+0x44/0x50 kernel/exit.c:992
+  do_syscall_64+0xfd/0x6a0 arch/x86/entry/common.c:296
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x43ff88
+Code: 00 00 be 3c 00 00 00 eb 19 66 0f 1f 84 00 00 00 00 00 48 89 d7 89 f0  
+0f 05 48 3d 00 f0 ff ff 77 21 f4 48 89 d7 44 89 c0 0f 05 <48> 3d 00 f0 ff  
+ff 76 e0 f7 d8 64 41 89 01 eb d8 0f 1f 84 00 00 00
+RSP: 002b:00007ffd1c2d0f78 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 000000000043ff88
+RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
+RBP: 00000000004bf890 R08: 00000000000000e7 R09: ffffffffffffffd0
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00000000006d1180 R14: 0000000000000000 R15: 0000000000000000
+INFO: lockdep is turned off.
+NMI backtrace for cpu 0
+CPU: 0 PID: 1057 Comm: khungtaskd Not tainted 5.3.0-rc3+ #162
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+  nmi_cpu_backtrace.cold+0x70/0xb2 lib/nmi_backtrace.c:101
+  nmi_trigger_cpumask_backtrace+0x23b/0x28b lib/nmi_backtrace.c:62
+  arch_trigger_cpumask_backtrace+0x14/0x20 arch/x86/kernel/apic/hw_nmi.c:38
+  trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+  check_hung_uninterruptible_tasks kernel/hung_task.c:205 [inline]
+  watchdog+0x9d0/0xef0 kernel/hung_task.c:289
+  kthread+0x361/0x430 kernel/kthread.c:255
+  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1 skipped: idling at native_safe_halt+0xe/0x10  
+arch/x86/include/asm/irqflags.h:60
 
-Not sure if this needs to be done from userland. One concern is that eBPF maps can
-be modified by unrelated processes and we need to handle all unexpected state of maps.
-Such handling tends to be difficult and may cause unexpected kernel behavior.
-OTOH updating maps from kmod may reduces the latency of flow insertion drastically.
 
-Alexei, Daniel, what do you think?
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Toshiaki Makita
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
