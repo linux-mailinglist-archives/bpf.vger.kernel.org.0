@@ -2,96 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5C28F60D
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 22:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287498F61B
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 23:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732759AbfHOU4m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Aug 2019 16:56:42 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:39413 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732660AbfHOU4m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Aug 2019 16:56:42 -0400
-Received: by mail-lj1-f194.google.com with SMTP id x4so3413347ljj.6
-        for <bpf@vger.kernel.org>; Thu, 15 Aug 2019 13:56:41 -0700 (PDT)
+        id S1726171AbfHOVBv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Aug 2019 17:01:51 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:40762 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726008AbfHOVBv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Aug 2019 17:01:51 -0400
+Received: by mail-pf1-f194.google.com with SMTP id w16so1931398pfn.7;
+        Thu, 15 Aug 2019 14:01:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=205QOW+yfCAbUC7sqLeSze+Vg1m2Bj7bh4Zpv9ddbPA=;
-        b=aHSHLFL2ibBV/js7b7q+6nct87exfpVR8oXwxPxV1O3q6wd5IOfaorpO5msfvRyevT
-         nYKoDnt9kqYmiQu9PjsrPREPSVxpT9OzKTUoF3JQdooYysuqXafyRNzG7iDVEFoE0IeS
-         3ZoOHiiqJprJgUr8Tfrc/9AbsMPLPS0kBBA/XGerv/Vt/XOsD71F+/3fM9gEBNUCWZAk
-         65kZb29OLfGg5zb6VfW7gyr4F/F42sB/LPn1fUg0usLHPPnJzxH+vgNnMrCd32OsCh0f
-         AsVZGyYS1Hp9/Ychz/oDWhBSoli78rvDYq7YI7yYJHv7gCl/+GTOkq96i3FHnuHbFrLk
-         kNOg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=4T64qkcAdXmbepae4c9HCTfQGPBnJoejyWFEjIneg2s=;
+        b=RN9JoNnS4VX0rzGS2CSyjnUzPIPErSpNO8+HGiJvK6ZIxUwz6q+/aZsqvLfBetDQ5S
+         iMa4wkqjaCQytGxrsOSIAebJ08Sx00bEiI2x9SFU9F6978G0e4ndNwZIzjrkZkVe4KTF
+         H+ebL06LoowsGWpHJ6gZCEQXEfHl39a8zr9PaiPUpvn6dNy22g9oA2y+dzYIOj3HtZ6O
+         gLQ60pqFPuni4FhgBzdNCXd8CIc+naFzs48zdPoDM+OxUd8DC8s94gVgmfor4QUKSdbS
+         WVkqNbtY5pu2fqpLhMiWMb+YIZLlbCdm1UkhIOzpwBAUcfRxY0fZzsZNEsH/Hwh4ToT5
+         LZ4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=205QOW+yfCAbUC7sqLeSze+Vg1m2Bj7bh4Zpv9ddbPA=;
-        b=ZjPyuXXvkaIsgQL+hTfCV8OI93gTFpySXYcXoIs3cjx89PBjqvjy8Ow+HGwQYWGbzD
-         /g/dji2PhggxxfHuXZZpli06NrbQazTRH07A4jplMhfQoETLC4bSt6x+QFRSyuuKZEpo
-         dDsziMeQpbEQb3P0RGJeB4l+Hk5+w+3Ts6Jqta6P6hp5FQzafUJcRU/mh2iyWY/AauFT
-         mZD4W1DOl2lWyN98XzYvqSRUv9g6DltlQRTB/+rQlBMaWe7CjiLHQ5hCOLgudNrID9fr
-         Ezx0XYRZQXK6JXvYfjx0yVwcpxsmyIJu9yeUYpvxnSqtnUjHH+fwagvG16f6MVkk0u+F
-         BQ1A==
-X-Gm-Message-State: APjAAAVzkrbLMRXIIVOMXo5ovoa4+vmtRsvZVXPnK3haQoDzhIEJ1uUw
-        lZz4i5sLOxZJu/sJf0OshOSY0Q==
-X-Google-Smtp-Source: APXvYqyuY8R61y7WvPEvbnEg7y6ACV3N9GK5MW1RpPiIpvbgr2NsI7s4+uvjBaACZ8Tx4DVi1QBdDA==
-X-Received: by 2002:a2e:8510:: with SMTP id j16mr3721390lji.174.1565902600461;
-        Thu, 15 Aug 2019 13:56:40 -0700 (PDT)
-Received: from localhost.localdomain (168-200-94-178.pool.ukrtel.net. [178.94.200.168])
-        by smtp.gmail.com with ESMTPSA id j14sm651676ljc.67.2019.08.15.13.56.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Aug 2019 13:56:39 -0700 (PDT)
-From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-To:     bjorn.topel@intel.com
-Cc:     magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=4T64qkcAdXmbepae4c9HCTfQGPBnJoejyWFEjIneg2s=;
+        b=p+9QFkKAxJlo0B7WRg1SWLfX0/U2rskFIDFw/FfDuNWhtLxM+S0nSIb+gZHhpUPzAp
+         CYs/j6g5vn1XFtHuFoBeGBHZ1ZAUdmrsC5puZAZvs5rJJmV4ZjpAaqV08pTULD8tm+V+
+         X7B1P0WhGzb4zrf/qHwVKtnn/eW73LzL7pwErqMV5YeLjhtJfAszyOYs5cw6ReeOMk+s
+         QCDlrelXNFOZG3CwIuZLFH9p9H/xTk8+NZQONxVR2W/9AchrAwHiorp6uqKJOSqGpWxn
+         mpueCnPyRpViF2ppR6T2+KGedVb7uztj6OT2bLAFlD8vDf/ecwvnrB1++Q11l6E8C2Lt
+         fiKw==
+X-Gm-Message-State: APjAAAWbvtneQXQ1604JMhV9FoR+R97eZZed4JAuSz7MYbValWp9vQ/L
+        d9F+WoM3ZSsvslKAqPYAUgY=
+X-Google-Smtp-Source: APXvYqzoyCZOMcdfxkJb1szIM39Ur1skzzb4WHfq9bjFGTO4eIIks53+RyyheGBGWshT0f+I9dUqgQ==
+X-Received: by 2002:a17:90b:949:: with SMTP id dw9mr3974290pjb.49.1565902910671;
+        Thu, 15 Aug 2019 14:01:50 -0700 (PDT)
+Received: from [172.20.53.208] ([2620:10d:c090:200::3:fd5d])
+        by smtp.gmail.com with ESMTPSA id 195sm4163508pfu.75.2019.08.15.14.01.49
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 15 Aug 2019 14:01:50 -0700 (PDT)
+From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
+To:     "Ivan Khoronzhuk" <ivan.khoronzhuk@linaro.org>
+Cc:     bjorn.topel@intel.com, magnus.karlsson@intel.com,
         davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
         jakub.kicinski@netronome.com, hawk@kernel.org,
         john.fastabend@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-Subject: [PATCH bpf 1/1] xdp: unpin xdp umem pages in error path
-Date:   Thu, 15 Aug 2019 23:56:35 +0300
-Message-Id: <20190815205635.6536-1-ivan.khoronzhuk@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf 1/1] xdp: unpin xdp umem pages in error path
+Date:   Thu, 15 Aug 2019 14:01:48 -0700
+X-Mailer: MailMate (1.12.5r5635)
+Message-ID: <1194DC32-76CC-4C7E-9D21-47886C704367@gmail.com>
+In-Reply-To: <20190815205635.6536-1-ivan.khoronzhuk@linaro.org>
+References: <20190815205635.6536-1-ivan.khoronzhuk@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix mem leak caused by missed unpin routine for umem pages.
-Fixes: 8aef7340ae9695 ("commit xsk: introduce xdp_umem_page")
 
-Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
----
 
-Based on bpf/master
+On 15 Aug 2019, at 13:56, Ivan Khoronzhuk wrote:
 
- net/xdp/xdp_umem.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> Fix mem leak caused by missed unpin routine for umem pages.
+> Fixes: 8aef7340ae9695 ("commit xsk: introduce xdp_umem_page")
+>
+> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
 
-diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-index 83de74ca729a..688aac7a6943 100644
---- a/net/xdp/xdp_umem.c
-+++ b/net/xdp/xdp_umem.c
-@@ -365,7 +365,7 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
- 	umem->pages = kcalloc(umem->npgs, sizeof(*umem->pages), GFP_KERNEL);
- 	if (!umem->pages) {
- 		err = -ENOMEM;
--		goto out_account;
-+		goto out_pin;
- 	}
- 
- 	for (i = 0; i < umem->npgs; i++)
-@@ -373,6 +373,8 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
- 
- 	return 0;
- 
-+out_pin:
-+	xdp_umem_unpin_pages(umem);
- out_account:
- 	xdp_umem_unaccount_pages(umem);
- 	return err;
--- 
-2.17.1
-
+Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
