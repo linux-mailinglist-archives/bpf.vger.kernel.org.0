@@ -2,91 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9F58E8A2
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 11:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD588E8FD
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 12:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730404AbfHOJz3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Aug 2019 05:55:29 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:44180 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726098AbfHOJz3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Aug 2019 05:55:29 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 2B76E804F2;
-        Thu, 15 Aug 2019 09:55:29 +0000 (UTC)
-Received: from [10.72.12.184] (ovpn-12-184.pek2.redhat.com [10.72.12.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7B425608AB;
-        Thu, 15 Aug 2019 09:55:20 +0000 (UTC)
-Subject: Re: [PATCH v2] virtio-net: lower min ring num_free for efficiency
-To:     ? jiang <jiangkidd@hotmail.com>, "mst@redhat.com" <mst@redhat.com>
-Cc:     "davem@davemloft.net" <davem@davemloft.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "yhs@fb.com" <yhs@fb.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "xdp-newbies@vger.kernel.org" <xdp-newbies@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "jiangran.jr@alibaba-inc.com" <jiangran.jr@alibaba-inc.com>
-References: <BYAPR14MB32058F4B2AD162F5421BB9B4A6AC0@BYAPR14MB3205.namprd14.prod.outlook.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <f26c808a-180a-6c85-637c-17629f2906e4@redhat.com>
-Date:   Thu, 15 Aug 2019 17:55:17 +0800
+        id S1730788AbfHOK0n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Aug 2019 06:26:43 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:32896 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728500AbfHOK0n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Aug 2019 06:26:43 -0400
+Received: by mail-pf1-f195.google.com with SMTP id g2so1164128pfq.0;
+        Thu, 15 Aug 2019 03:26:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ivq6bPNC4Odf4YX0dM+xQIJIuVtnKxhLJ9VEaA8nd38=;
+        b=BTIAMjenPCDqNriRn7WiFHq67MSB1eVlhF/dWPpSZyYZXOs/Hgks0vN34JHL/V31a6
+         lUlH33BHytqjnSe0DfRPuoI4NkeeVPbABmu1UqxhqqjwwfJrqP6WQRypZ62eZzvnqRHG
+         MKNf7rTEQGTdwaGlb1Fh7YMqcPJ1weIthHDczxrXw+mhLdEh5Yazqswr46dGsl25LJUd
+         wAmz6gjEUIGWdUZiDFYggrgkJV6wykpkkH0WD3ZddXqZ7IAtjoz2jMzYNKUNWKjPNesG
+         hhzJPGkY/dkVEcOErUuWcH8ueJGrq2cz/1xcked9NP1QQfdRAU8yWIsWy7pTuG+VJMsb
+         0nrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ivq6bPNC4Odf4YX0dM+xQIJIuVtnKxhLJ9VEaA8nd38=;
+        b=gKDbevlmWMS2ms+V7CttSQhIWyr9z4Srf0dq+TKl5Z5ftAtJB+261wFp16f9GHBCyh
+         XEnfa6ms+D6lz9bXL9cNvSZDLYMv7GRr4WGOBmPFwfPpkoXwNX7uNeNqnTMhjEUBbQBT
+         xyOd72BYi+iBswFxM1/bPJeyg1wCom/32YJhQE64SK0/pzAMzAj2uU2DNGDPHLiUOQTm
+         GpogP2dsY9i3kP48W60/H5K9yotJwcfi3u2ZixbIrPDmZNu0UNju20TgtVKoOURvEk45
+         iBLaqsLQD/SWdFMLcoFsuE/aW6aEwxN6rTlO2Ta5QLTDFold0li81LwM+YXxP0gAIEd0
+         IZjg==
+X-Gm-Message-State: APjAAAUFJ4BZqed9RN542+r4wu3ikpohKrGlSKrPcb6iGjhN7c4czphM
+        K8rJ4RFO7NtK6bspMqsNF7w=
+X-Google-Smtp-Source: APXvYqz4i9kR8vwZAmA62oQGsICrPUUvJAalWXZAvxTPIdkVioKPgFXOYaQC/Mmj18p7sqhh6JOa8w==
+X-Received: by 2002:a63:6146:: with SMTP id v67mr3064063pgb.271.1565864802609;
+        Thu, 15 Aug 2019 03:26:42 -0700 (PDT)
+Received: from [172.20.20.103] ([222.151.198.97])
+        by smtp.gmail.com with ESMTPSA id e188sm2296505pfa.76.2019.08.15.03.26.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Aug 2019 03:26:42 -0700 (PDT)
+Subject: Re: [RFC PATCH bpf-next 00/14] xdp_flow: Flow offload to XDP
+To:     Stanislav Fomichev <sdf@fomichev.me>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, William Tu <u9012063@gmail.com>
+References: <20190813120558.6151-1-toshiaki.makita1@gmail.com>
+ <20190814170715.GJ2820@mini-arch>
+From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
+Message-ID: <14c4a876-6f5d-4750-cbe4-19622f64975b@gmail.com>
+Date:   Thu, 15 Aug 2019 19:26:36 +0900
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <BYAPR14MB32058F4B2AD162F5421BB9B4A6AC0@BYAPR14MB3205.namprd14.prod.outlook.com>
+In-Reply-To: <20190814170715.GJ2820@mini-arch>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.27]); Thu, 15 Aug 2019 09:55:29 +0000 (UTC)
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 2019/08/15 2:07, Stanislav Fomichev wrote:
+> On 08/13, Toshiaki Makita wrote:
+>> * Implementation
+>>
+>> xdp_flow makes use of UMH to load an eBPF program for XDP, similar to
+>> bpfilter. The difference is that xdp_flow does not generate the eBPF
+>> program dynamically but a prebuilt program is embedded in UMH. This is
+>> mainly because flow insertion is considerably frequent. If we generate
+>> and load an eBPF program on each insertion of a flow, the latency of the
+>> first packet of ping in above test will incease, which I want to avoid.
+> Can this be instead implemented with a new hook that will be called
+> for TC events? This hook can write to perf event buffer and control
+> plane will insert/remove/modify flow tables in the BPF maps (contol
+> plane will also install xdp program).
+> 
+> Why do we need UMH? What am I missing?
 
-On 2019/8/15 下午5:42, ? jiang wrote:
-> This change lowers ring buffer reclaim threshold from 1/2*queue to budget
-> for better performance. According to our test with qemu + dpdk, packet
-> dropping happens when the guest is not able to provide free buffer in
-> avail ring timely with default 1/2*queue. The value in the patch has been
-> tested and does show better performance.
->
-> Test setup: iperf3 to generate packets to guest (total 30mins, pps 400k, UDP)
-> avg packets drop before: 2842
-> avg packets drop after: 360(-87.3%)
->
-> Signed-off-by: jiangkidd <jiangkidd@hotmail.com>
-> ---
->   drivers/net/virtio_net.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 0d4115c9e20b..bc08be7925eb 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -1331,7 +1331,7 @@ static int virtnet_receive(struct receive_queue *rq, int budget,
->   		}
->   	}
->   
-> -	if (rq->vq->num_free > virtqueue_get_vring_size(rq->vq) / 2) {
-> +	if (rq->vq->num_free > min((unsigned int)budget, virtqueue_get_vring_size(rq->vq)) / 2) {
->   		if (!try_fill_recv(vi, rq, GFP_ATOMIC))
->   			schedule_delayed_work(&vi->refill, 0);
->   	}
+So you suggest doing everything in xdp_flow kmod?
+I also thought about that. There are two phases so let's think about them separately.
 
+1) TC block (qdisc) creation / eBPF load
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+I saw eBPF maintainers repeatedly saying eBPF program loading needs to be
+done from userland, not from kernel, to run the verifier for safety.
+However xdp_flow eBPF program is prebuilt and embedded in kernel so we may
+allow such programs to be loaded from kernel? I currently don't have the will
+to make such an API as loading can be done with current UMH mechanism.
 
+2) flow insertion / eBPF map update
 
+Not sure if this needs to be done from userland. One concern is that eBPF maps can
+be modified by unrelated processes and we need to handle all unexpected state of maps.
+Such handling tends to be difficult and may cause unexpected kernel behavior.
+OTOH updating maps from kmod may reduces the latency of flow insertion drastically.
+
+Alexei, Daniel, what do you think?
+
+Toshiaki Makita
