@@ -2,85 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D178E34D
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 05:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 863D08E5C4
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 09:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728786AbfHODq3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Aug 2019 23:46:29 -0400
-Received: from mga04.intel.com ([192.55.52.120]:56749 "EHLO mga04.intel.com"
+        id S1730609AbfHOHvv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Aug 2019 03:51:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729479AbfHODqY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Aug 2019 23:46:24 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Aug 2019 20:46:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,387,1559545200"; 
-   d="scan'208";a="352124063"
-Received: from arch-p28.jf.intel.com ([10.166.187.31])
-  by orsmga005.jf.intel.com with ESMTP; 14 Aug 2019 20:46:23 -0700
-From:   Sridhar Samudrala <sridhar.samudrala@intel.com>
-To:     magnus.karlsson@intel.com, bjorn.topel@intel.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        sridhar.samudrala@intel.com, intel-wired-lan@lists.osuosl.org,
-        maciej.fijalkowski@intel.com, tom.herbert@intel.com
-Subject: [PATCH bpf-next 5/5] xdpsock_user: Add skip_bpf option
-Date:   Wed, 14 Aug 2019 20:46:23 -0700
-Message-Id: <1565840783-8269-6-git-send-email-sridhar.samudrala@intel.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1565840783-8269-1-git-send-email-sridhar.samudrala@intel.com>
-References: <1565840783-8269-1-git-send-email-sridhar.samudrala@intel.com>
+        id S1726443AbfHOHvu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Aug 2019 03:51:50 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F9F92084D;
+        Thu, 15 Aug 2019 07:51:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565855509;
+        bh=OcToxkMk9gwSDl2BUebvNxigaLKXvR3X1ectJPWkRLE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ikYTm+Z+svls9M/L1vwCDEPOjor7PIuUJlBIMrqGDy5t9DD6cJBn+9lPsrRj4k/0A
+         YcWUquzHr2EfuIY9gSs9nyeux6mM5QAff0gLwWAHzYsYRDmxc9IYZ1sVFcTHXC8uDK
+         fRos8pRMya5Flsy5VvWWyluoO24ZWhf9SFNYxVZc=
+Date:   Thu, 15 Aug 2019 08:51:42 +0100
+From:   Will Deacon <will@kernel.org>
+To:     syzbot <syzbot+bd3bba6ff3fcea7a6ec6@syzkaller.appspotmail.com>,
+        bvanassche@acm.org
+Cc:     akpm@linux-foundation.org, ast@kernel.org, bpf@vger.kernel.org,
+        bvanassche@acm.org, daniel@iogearbox.net, davem@davemloft.net,
+        dvyukov@google.com, hawk@kernel.org, hdanton@sina.com,
+        jakub.kicinski@netronome.com, johannes.berg@intel.com,
+        johannes@sipsolutions.net, john.fastabend@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, longman@redhat.com, mingo@kernel.org,
+        netdev@vger.kernel.org, paulmck@linux.vnet.ibm.com,
+        peterz@infradead.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, tj@kernel.org,
+        torvalds@linux-foundation.org, will.deacon@arm.com,
+        xdp-newbies@vger.kernel.org, yhs@fb.com
+Subject: Re: WARNING in is_bpf_text_address
+Message-ID: <20190815075142.vuza32plqtiuhixx@willie-the-truck>
+References: <00000000000000ac4f058bd50039@google.com>
+ <000000000000e56cb0058fcc6c28@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000e56cb0058fcc6c28@google.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Signed-off-by: Sridhar Samudrala <sridhar.samudrala@intel.com>
----
- samples/bpf/xdpsock_user.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Hi Bart,
 
-diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-index 93eaaf7239b2..509fc6a18af9 100644
---- a/samples/bpf/xdpsock_user.c
-+++ b/samples/bpf/xdpsock_user.c
-@@ -123,6 +123,9 @@ static void print_benchmark(bool running)
- 	if (opt_poll)
- 		printf("poll() ");
- 
-+	if (opt_xdp_bind_flags & XDP_SKIP_BPF)
-+		printf("skip-bpf ");
-+
- 	if (running) {
- 		printf("running...");
- 		fflush(stdout);
-@@ -352,6 +355,7 @@ static struct option long_options[] = {
- 	{"zero-copy", no_argument, 0, 'z'},
- 	{"copy", no_argument, 0, 'c'},
- 	{"frame-size", required_argument, 0, 'f'},
-+	{"skip-bpf", no_argument, 0, 's'},
- 	{0, 0, 0, 0}
- };
- 
-@@ -372,6 +376,7 @@ static void usage(const char *prog)
- 		"  -z, --zero-copy      Force zero-copy mode.\n"
- 		"  -c, --copy           Force copy mode.\n"
- 		"  -f, --frame-size=n   Set the frame size (must be a power of two, default is %d).\n"
-+		"  -s, --skip-bpf       Skip running bpf program.\n"
- 		"\n";
- 	fprintf(stderr, str, prog, XSK_UMEM__DEFAULT_FRAME_SIZE);
- 	exit(EXIT_FAILURE);
-@@ -430,6 +435,9 @@ static void parse_command_line(int argc, char **argv)
- 		case 'f':
- 			opt_xsk_frame_size = atoi(optarg);
- 			break;
-+		case 's':
-+			opt_xdp_bind_flags |= XDP_SKIP_BPF;
-+			break;
- 		default:
- 			usage(basename(argv[0]));
- 		}
--- 
-2.20.1
+On Sat, Aug 10, 2019 at 05:24:06PM -0700, syzbot wrote:
+> syzbot has found a reproducer for the following crash on:
+> 
+> HEAD commit:    451577f3 Merge tag 'kbuild-fixes-v5.3-3' of git://git.kern..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=120850a6600000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=2031e7d221391b8a
+> dashboard link: https://syzkaller.appspot.com/bug?extid=bd3bba6ff3fcea7a6ec6
+> compiler:       clang version 9.0.0 (/home/glider/llvm/clang
+> 80fee25776c2fb61e74c1ecb1a523375c2500b69)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=130ffe4a600000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17137d2c600000
+> 
+> The bug was bisected to:
+> 
+> commit a0b0fd53e1e67639b303b15939b9c653dbe7a8c4
+> Author: Bart Van Assche <bvanassche@acm.org>
+> Date:   Thu Feb 14 23:00:46 2019 +0000
+> 
+>     locking/lockdep: Free lock classes that are no longer in use
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=152f6a9da00000
+> final crash:    https://syzkaller.appspot.com/x/report.txt?x=172f6a9da00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=132f6a9da00000
 
+I know you don't think much to these reports, but please could you have a
+look (even if it's just to declare it a false positive)?
+
+Cheers,
+
+Will
