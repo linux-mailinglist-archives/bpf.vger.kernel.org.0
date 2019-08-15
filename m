@@ -2,65 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B92A88ED92
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 16:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE2E8EDF3
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 16:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732559AbfHOOCH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Aug 2019 10:02:07 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:46994 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732267AbfHOOCG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Aug 2019 10:02:06 -0400
-Received: by mail-wr1-f68.google.com with SMTP id z1so2282555wru.13
-        for <bpf@vger.kernel.org>; Thu, 15 Aug 2019 07:02:04 -0700 (PDT)
+        id S1732116AbfHOOPj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Aug 2019 10:15:39 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:52718 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732818AbfHOOPj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Aug 2019 10:15:39 -0400
+Received: by mail-wm1-f67.google.com with SMTP id o4so1410368wmh.2
+        for <bpf@vger.kernel.org>; Thu, 15 Aug 2019 07:15:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=to:cc:references:from:openpgp:autocrypt:subject:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=FQNOABTbL/8jEK8m2LW+8rEri3jE9Z/p5qumYKibyAc=;
-        b=gxhbNS60/UQT9y6In7OTwU0njZk32RyJuqAiwvZG28GdWrAjlsxbNGT/Rww3uELuG0
-         VjzJ5EznBejLB6Ubg1QX2hNndcLGYhRIB3YvpMyjoizAjIsgkkjGXqRd+6Z8GDAEo9/6
-         +t8XPt0KAWWHg5OnGSsOBmuLWusgDQqgkhfBD7VTJIt+JJ46uqK/6b/1ZJszWH+8p0S2
-         uVb17OI2DY7uP7otSNqStdvADamrgjXFxE4Yxpc0LJG1xpK9+60FfVozWTqofVO2bC0g
-         ZHpPDKwT81EhFZ+oCtaTveaNS7cSuJGLINJkxfh92BEChWJgXpyJEsPPTYdSP0oZYPUN
-         dIwQ==
+        bh=Mxfj9o0P5tEgod6FKkLFIahvcuu1vbJFdLB5VIxwJrQ=;
+        b=QDCYP0DkglpbzoNmC3xXMbqF3JLEi7RZ38mZaMo21vRL440eO9beuJy1z3WRRWOSMi
+         eUx6gvujg2aYEWNlkKzt7mcv+YOQh8U/0NkzAk0VLMxAAgRRSB/dRa/hqfrqtwFsD/mn
+         iucbLLSydumMz8D7a0V0nM1fLyTPOE6koimawUc/6PUl5grfAIBZdJHaGVjP9B26gv/X
+         1I0xp2s1O2HiHLjkYbwJ0DZWKhILtImreanJ+L6Jf+JleuivEsf99l1hMAA6lTUiIvnQ
+         xFKz0a2CjkGNyeZuyy2DaZPCiWobpwL4sFcTZBI1/7CgBDjT/A8FXvYeg74y4tYAY960
+         B0aA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:to:cc:references:from:openpgp:autocrypt:subject
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=FQNOABTbL/8jEK8m2LW+8rEri3jE9Z/p5qumYKibyAc=;
-        b=V/Yb2YNwrEsMG1ZTrGdX2/v1yPBa0s29S+A6UJsqRWOQWovN6dmzmL3+qNo9gTRJMD
-         Hu+GX87KnlFM7jYiQAFwZ5a5bsJ9J+VYgzpghG7L1armgWleoepcR2GH7/5O3DGLr3+d
-         vzLrykOa6GXkCLnNwZ1i0ClcYtAawZbiNzoYs8tB6wzrNGg4sDorvTLO5qUklqAqaRIa
-         diBFRNc2TvLkgBK2Q1bfoQiG7q+uKaM0hQyoRfISSJQRzVG5QjL3++ajviMlanlcJrXW
-         KUFI9GoEL0rn3wgndDUXWEW66XGkrkHIe1bYZexdKp5tOp22MAd4EvahBDlJShhOqmCN
-         zP1A==
-X-Gm-Message-State: APjAAAVdTTp36zc/S7Rlch8jLkwaWtWlvakpbbnQqWg2TySxt81iPYBV
-        7q3chJpXGGM5lWhw0BbZWDt2ZQ==
-X-Google-Smtp-Source: APXvYqwkcoRie5k+E43qVPnGy8gLOcWqpfViY09PKpvmM0UtWWG40ruV4lL5DZgQWO8n5OY//Yb53w==
-X-Received: by 2002:adf:c803:: with SMTP id d3mr5936871wrh.130.1565877723710;
-        Thu, 15 Aug 2019 07:02:03 -0700 (PDT)
+        bh=Mxfj9o0P5tEgod6FKkLFIahvcuu1vbJFdLB5VIxwJrQ=;
+        b=QJ/OGtpTGxs4CdfrGde/Sar/7qSllDQXTamTb0uWQKBM4S3Z41gVuIr8Mm2GP+e04i
+         aLdu6hm8bnWfCB/7oHfw3+GxDEqkIrusPWXLBOcOIWbVdqL099bTJXpQo8Es9t21rrN/
+         OIMCXGlm9MFjTVv2q6qA/1GCkeyePCG8X71Vmq5L0YnroxGgdiVLU2lFilgLpseOyhjK
+         EuqBkpVVePvij6SUJl+u6pGyGEjDIZvK3i3ebf1xhmOlE1igZ1E60dGZtUWNLQM7RIwr
+         a78WFsImbLA9riVNMhVrFcdKb6yK5zYneZN8NuFQ+73voDGcNXU1nhbcMqMRgZ3oko3L
+         cz5w==
+X-Gm-Message-State: APjAAAVR5YSBRmqfj/VvqcFPfD02uzMlQixTzw2b51bOxS0K+/y+67lo
+        DNYOaftTd01qIWonWyGdiY7YGg==
+X-Google-Smtp-Source: APXvYqwSWnjm0osJQ3uqUB7vF7WzfYLODyyjHhCplD1OAT2LRKKPYWhp4WlVqz74HvE3m/KgQnZraA==
+X-Received: by 2002:a7b:cf21:: with SMTP id m1mr3161253wmg.150.1565878535481;
+        Thu, 15 Aug 2019 07:15:35 -0700 (PDT)
 Received: from [172.20.1.254] ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id z8sm3559957wru.13.2019.08.15.07.02.02
+        by smtp.gmail.com with ESMTPSA id r17sm6792721wrg.93.2019.08.15.07.15.34
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Aug 2019 07:02:02 -0700 (PDT)
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        oss-drivers@netronome.com
+        Thu, 15 Aug 2019 07:15:34 -0700 (PDT)
+To:     Edward Cree <ecree@solarflare.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, oss-drivers@netronome.com
 References: <20190813130921.10704-1-quentin.monnet@netronome.com>
  <20190814015149.b4pmubo3s4ou5yek@ast-mbp>
  <ab11a9f2-0fbd-d35f-fee1-784554a2705a@netronome.com>
  <bdb4b47b-25fa-eb96-aa8d-dd4f4b012277@solarflare.com>
- <CAADnVQJE2DCU0J2_d4Z-1cmXZsb_q2FODcbC1S24C0f=_b2ffg@mail.gmail.com>
- <bec14521-dec1-5e1b-2f29-5c0492500272@netronome.com>
- <CAEf4BzYqsT4OmWQ9WK9dmnKT9cMcjbhgHZmboUBgkEvtbaeUeA@mail.gmail.com>
+ <18f887ec-99fd-20ae-f5d6-a1f4117b2d77@netronome.com>
+ <84aa97e3-5fde-e041-12c6-85863e27d2d9@solarflare.com>
 From:   Quentin Monnet <quentin.monnet@netronome.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quentin.monnet@netronome.com; prefer-encrypt=mutual; keydata=
@@ -108,12 +104,12 @@ Autocrypt: addr=quentin.monnet@netronome.com; prefer-encrypt=mutual; keydata=
  RHhSHGnKaQ6MfrTge5Q0h5A=
 Subject: Re: [RFC bpf-next 0/3] tools: bpftool: add subcommand to count map
  entries
-Message-ID: <3684be7d-aae9-9478-6826-a8c92f01a2cd@netronome.com>
-Date:   Thu, 15 Aug 2019 15:02:02 +0100
+Message-ID: <031de7fd-caa7-9e66-861f-8e46e5bb8851@netronome.com>
+Date:   Thu, 15 Aug 2019 15:15:34 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzYqsT4OmWQ9WK9dmnKT9cMcjbhgHZmboUBgkEvtbaeUeA@mail.gmail.com>
+In-Reply-To: <84aa97e3-5fde-e041-12c6-85863e27d2d9@solarflare.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
@@ -122,69 +118,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2019-08-14 13:18 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> On Wed, Aug 14, 2019 at 10:12 AM Quentin Monnet
-> <quentin.monnet@netronome.com> wrote:
+2019-08-14 18:14 UTC+0100 ~ Edward Cree <ecree@solarflare.com>
+> On 14/08/2019 17:58, Quentin Monnet wrote:
+>> 2019-08-14 17:45 UTC+0100 ~ Edward Cree <ecree@solarflare.com>
+>>> This might be a really dumb suggestion, but: you're wanting to collect a
+>>>  summary statistic over an in-kernel data structure in a single syscall,
+>>>  because making a series of syscalls to examine every entry is slow and
+>>>  racy.  Isn't that exactly a job for an in-kernel virtual machine, and
+>>>  could you not supply an eBPF program which the kernel runs on each entry
+>>>  in the map, thus supporting people who want to calculate something else
+>>>  (mean, min and max, whatever) instead of count?
+>>>
+>> Hi Edward, I like the approach, thanks for the suggestion.
 >>
->> 2019-08-14 09:58 UTC-0700 ~ Alexei Starovoitov
->> <alexei.starovoitov@gmail.com>
->>> On Wed, Aug 14, 2019 at 9:45 AM Edward Cree <ecree@solarflare.com> wrote:
->>>>
->>>> On 14/08/2019 10:42, Quentin Monnet wrote:
->>>>> 2019-08-13 18:51 UTC-0700 ~ Alexei Starovoitov
->>>>> <alexei.starovoitov@gmail.com>
->>>>>> The same can be achieved by 'bpftool map dump|grep key|wc -l', no?
->>>>> To some extent (with subtleties for some other map types); and we use a
->>>>> similar command line as a workaround for now. But because of the rate of
->>>>> inserts/deletes in the map, the process often reports a number higher
->>>>> than the max number of entries (we observed up to ~750k when max_entries
->>>>> is 500k), even is the map is only half-full on average during the count.
->>>>> On the worst case (though not frequent), an entry is deleted just before
->>>>> we get the next key from it, and iteration starts all over again. This
->>>>> is not reliable to determine how much space is left in the map.
->>>>>
->>>>> I cannot see a solution that would provide a more accurate count from
->>>>> user space, when the map is under pressure?
->>>> This might be a really dumb suggestion, but: you're wanting to collect a
->>>>  summary statistic over an in-kernel data structure in a single syscall,
->>>>  because making a series of syscalls to examine every entry is slow and
->>>>  racy.  Isn't that exactly a job for an in-kernel virtual machine, and
->>>>  could you not supply an eBPF program which the kernel runs on each entry
->>>>  in the map, thus supporting people who want to calculate something else
->>>>  (mean, min and max, whatever) instead of count?
->>>
->>> Pretty much my suggestion as well :)
+>> But I did not mention that we were using offloaded maps: Tracing the
+>> kernel would probably work for programs running on the host, but this is
+>> not a solution we could extend to hardware offload.
+> I don't see where "tracing" comes into it; this is a new program type and
+>  a new map op under the bpf() syscall.
+> Could the user-supplied BPF program not then be passed down to the device
+>  for it to run against its offloaded maps?
 > 
-> I also support the suggestion to count it from BPF side. It's flexible
-> and powerful approach and doesn't require adding more and more nuanced
-> sub-APIs to kernel to support subset of bulk operations on map
-> (subset, because we'll expose count, but what about, e.g., p50, etc,
-> there will always be something more that someone will want and it just
-> doesn't scale).
 
-Hi Andrii,
-Yes, that makes sense.
+Sorry, I misunderstood your suggestion :s (I thought you meant tracing
+the insert and delete operations).
 
-> 
->>>
->>> It seems the better fix for your nat threshold is to keep count of
->>> elements in the map in a separate global variable that
->>> bpf program manually increments and decrements.
->>> bpftool will dump it just as regular map of single element.
->>> (I believe it doesn't recognize global variables properly yet)
->>> and BTF will be there to pick exactly that 'count' variable.
->>>
->>
->> It would be with an offloaded map, but yes, I suppose we could keep
->> track of the numbers in a separate map. We'll have a look into this.
-> 
-> See if you can use a global variable, that way you completely
-> eliminate any overhead from BPF side of things, except for atomic
-> increment.
+So if I understand correctly, we would use the bpf() syscall to trigger
+a run of such program on all map entries (for map implementing the new
+operation), and the context would include pointers to the key and the
+value for the entry being processed so we can count/sum/compute an
+average of the values or any other kind of processing?
 
-Offloaded maps do not implement the map_direct_value_addr() operation,
-so global variables are not supported at the moment. I need to dive
-deeper into this and see what is required to add that support.
-
-Thanks for your advice!
+Thanks,
 Quentin
