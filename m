@@ -2,107 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6C58F484
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 21:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8128F4AC
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 21:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726616AbfHOT27 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Aug 2019 15:28:59 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:39649 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbfHOT27 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Aug 2019 15:28:59 -0400
-Received: by mail-qk1-f196.google.com with SMTP id 125so2753301qkl.6
-        for <bpf@vger.kernel.org>; Thu, 15 Aug 2019 12:28:58 -0700 (PDT)
+        id S1731692AbfHOTdA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Aug 2019 15:33:00 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:46868 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728762AbfHOTdA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Aug 2019 15:33:00 -0400
+Received: by mail-pf1-f195.google.com with SMTP id q139so1798621pfc.13;
+        Thu, 15 Aug 2019 12:32:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=qnb1kJVM+ye3vGOEYAiSOgWaI3eqtlq3N9qsMgSh97Q=;
-        b=JaxEwRb54HjwKuEneJpNZxQXixF0DRverv10uYcg0cKMh+ECh1y3PYBIoVR8Ow63CY
-         /WKKphuy/0ciV1fNmih3/+fh1ESfjqrk8yHo0doVrzNTOxcJMsagAdyXMS8N/hUKLJPO
-         ys+xqkbDGaAu2an70dXBKE7/dX6r7CD1hTWHgLBbP8r7EYoOkBUlQbeN2jIMyj9Dysla
-         wDX7CxJU3y8ZMIq76PCJUoS7kW/AF751fzeef3qiIS7S2cYClSK9dT24i7ZuQPd5uFoz
-         f6s3KOUMGs1sEJvIxWN86ubo0VVUcfS6hyOVGtopxRcSTT/nWToBiiYmv8ZNyyHvpMvH
-         Y0DQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=p7aqnAxt4JZHFY9o0OB/fA5VGIsSeYMdSjXI0F07Cmg=;
+        b=Nuqb6d4Zm3704+QDdhxRMUZT/PFx7B0ES+uTxZ16Rp9+YrRpLLrp9APz8y8sCxsE9+
+         EnnGbN6ybkVD3oEneF4hHpWyRl+WrJmKEJ+M0TN4wpRKcRFBB8GgJ9WeCqIdrIgVE/kV
+         fFx9XXqqmOKMc4890Y8jSI1kO+0j78JP7YJhcYl307r/8JHJ1nYszwmvYzweJpC07IpO
+         1hlGo1hDE8NAbB6v1d2gUzixLVvUrT68beZyHYCbCsqiZN1d/e/Ql6f1fSevDJrtTM1p
+         neJed9Zjaj4dJNQBYTdWO2IPFtDIJLWFSrSaRJ7ieL+7TQHHdLkeziIOuh+qNg/K5HBW
+         bk1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=qnb1kJVM+ye3vGOEYAiSOgWaI3eqtlq3N9qsMgSh97Q=;
-        b=ojGBsIyORTuza5C590mvkn7ygxadirqmp1Bf2YLY+M44Mv6t1dhfQIjyyYRbrdKXbT
-         EHWVg+MLSTK1xT7Vn5PUBnEZlL9gGGkTNOGMM1AKxJIQA8MIozz55hITFt8x5LI9Mux+
-         FWAjD76TRY8X67nZByciypW/1SRVWZ/FGqLRsCg8q70xXGjQx4usr7VgnMuNtHqHwG16
-         k0r2eoawuKZ2a2JyIHZ8FAesX6eu9FVB4T5OVQ1MACdpv5Lqpcdg0eWPRSnc/K1qi68x
-         t01/RCMhojPaQOnxNCxy8bdx0G60oC9HJX/l5KsBvjSohypnkLOWDRzvnG7qik69fKJN
-         jZww==
-X-Gm-Message-State: APjAAAVittYmbGxP8/EFzTg/uBaWZz5BA3f0SPN0YKMrNyPXSPwbQAzI
-        N3Ac2npg9OljHZvsYmlW7MjTUQ==
-X-Google-Smtp-Source: APXvYqwkPh8ov3QUSzCWMxSKt+ziOPYpJfoCxehX3GtP2xT/V0Zjj4WnEp5aVw6Y7vkICXjTGBM3Aw==
-X-Received: by 2002:a05:620a:100c:: with SMTP id z12mr5528461qkj.279.1565897338446;
-        Thu, 15 Aug 2019 12:28:58 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id x3sm1885999qkl.71.2019.08.15.12.28.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Aug 2019 12:28:58 -0700 (PDT)
-Date:   Thu, 15 Aug 2019 12:28:44 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Sridhar Samudrala <sridhar.samudrala@intel.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=p7aqnAxt4JZHFY9o0OB/fA5VGIsSeYMdSjXI0F07Cmg=;
+        b=QeSWb+P6hzzE1pgcRhXjel4DvYz37Qi8eiA+Lz9s2N0xMpbNeo/+MWnyAbM/VwTUHW
+         RtNIcyLElnhLFtJ3uWkYDcN4YTmQ6Lc1r0TL/MLIFqckuR2aPpsmbMDH6EJrr9zWepsb
+         v5hmy8RLdXEHKKk/FyzWxwpI5emmN6lFQ+/pW1W+JGkc4gTl6AmnPiIXULyx0afyOriR
+         w9ATXFoWc98xUJgtp23HHyfmS6dAG006KBPdesMC/ZrFPHx3Q4f4us2ur3JC8GkFnNn6
+         kEJYjGl4uGnJFCgVQtUaFqNV+MZyoWjm50v8PDncXDnIUpp6b6RJaCPU+O3hj0YvJrTt
+         calA==
+X-Gm-Message-State: APjAAAUnf2f0ru8XY/e5Z6zXVJOf5dkOvnJcW+9KctlDdIFKGxOzHHtN
+        EsTeQAw9rds/uKxHsSJ1Hkc=
+X-Google-Smtp-Source: APXvYqywj0OftSHEfbT4+9vHaQoy3pkI16VnmgMQJWCTevASvp70dSF0ikoKMfZeysS2xv4N6tZZvg==
+X-Received: by 2002:a62:be02:: with SMTP id l2mr7195167pff.63.1565897579197;
+        Thu, 15 Aug 2019 12:32:59 -0700 (PDT)
+Received: from [172.20.53.208] ([2620:10d:c090:200::3:fd5d])
+        by smtp.gmail.com with ESMTPSA id t4sm4134652pfq.153.2019.08.15.12.32.57
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 15 Aug 2019 12:32:58 -0700 (PDT)
+From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
+To:     "Ivan Khoronzhuk" <ivan.khoronzhuk@linaro.org>
 Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        jakub.kicinski@netronome.com, daniel@iogearbox.net,
         netdev@vger.kernel.org, bpf@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, maciej.fijalkowski@intel.com,
-        tom.herbert@intel.com
-Subject: Re: [PATCH bpf-next 0/5] Add support for SKIP_BPF flag for AF_XDP
- sockets
-Message-ID: <20190815122844.52eeda08@cakuba.netronome.com>
-In-Reply-To: <1565840783-8269-1-git-send-email-sridhar.samudrala@intel.com>
-References: <1565840783-8269-1-git-send-email-sridhar.samudrala@intel.com>
-Organization: Netronome Systems, Ltd.
+        xdp-newbies@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yhs@fb.com, andrii.nakryiko@gmail.com
+Subject: Re: [PATCH bpf-next v2 2/3] xdp: xdp_umem: replace kmap on vmap for
+ umem map
+Date:   Thu, 15 Aug 2019 12:32:57 -0700
+X-Mailer: MailMate (1.12.5r5635)
+Message-ID: <0BD97FA1-8251-436D-A1F8-00BEF0791B95@gmail.com>
+In-Reply-To: <20190815191456.GA11699@khorivan>
+References: <20190815121356.8848-1-ivan.khoronzhuk@linaro.org>
+ <20190815121356.8848-3-ivan.khoronzhuk@linaro.org>
+ <5B58D364-609F-498E-B7DF-4457D454A14D@gmail.com>
+ <20190815191456.GA11699@khorivan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 14 Aug 2019 20:46:18 -0700, Sridhar Samudrala wrote:
-> This patch series introduces XDP_SKIP_BPF flag that can be specified
-> during the bind() call of an AF_XDP socket to skip calling the BPF 
-> program in the receive path and pass the buffer directly to the socket.
-> 
-> When a single AF_XDP socket is associated with a queue and a HW
-> filter is used to redirect the packets and the app is interested in
-> receiving all the packets on that queue, we don't need an additional 
-> BPF program to do further filtering or lookup/redirect to a socket.
-> 
-> Here are some performance numbers collected on 
->   - 2 socket 28 core Intel(R) Xeon(R) Platinum 8180 CPU @ 2.50GHz
->   - Intel 40Gb Ethernet NIC (i40e)
-> 
-> All tests use 2 cores and the results are in Mpps.
-> 
-> turbo on (default)
-> ---------------------------------------------	
->                       no-skip-bpf    skip-bpf
-> ---------------------------------------------	
-> rxdrop zerocopy           21.9         38.5 
-> l2fwd  zerocopy           17.0         20.5
-> rxdrop copy               11.1         13.3
-> l2fwd  copy                1.9          2.0
-> 
-> no turbo :  echo 1 > /sys/devices/system/cpu/intel_pstate/no_turbo
-> ---------------------------------------------	
->                       no-skip-bpf    skip-bpf
-> ---------------------------------------------	
-> rxdrop zerocopy           15.4         29.0
-> l2fwd  zerocopy           11.8         18.2
-> rxdrop copy                8.2         10.5
-> l2fwd  copy                1.7          1.7
-> ---------------------------------------------	
 
-Could you include a third column here - namely the in-XDP performance?
-AFAIU the way to achieve better performance with AF_XDP is to move the
-fast path into the kernel's XDP program..
 
-Maciej's work on batching XDP program's execution should lower the
-retpoline overhead, without leaning close to the bypass model.
+On 15 Aug 2019, at 12:19, Ivan Khoronzhuk wrote:
+
+> On Thu, Aug 15, 2019 at 11:23:16AM -0700, Jonathan Lemon wrote:
+>> On 15 Aug 2019, at 5:13, Ivan Khoronzhuk wrote:
+>>
+>>> For 64-bit there is no reason to use vmap/vunmap, so use 
+>>> page_address
+>>> as it was initially. For 32 bits, in some apps, like in samples
+>>> xdpsock_user.c when number of pgs in use is quite big, the kmap
+>>> memory can be not enough, despite on this, kmap looks like is
+>>> deprecated in such cases as it can block and should be used rather
+>>> for dynamic mm.
+>>>
+>>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+>>> ---
+>>> net/xdp/xdp_umem.c | 36 ++++++++++++++++++++++++++++++------
+>>> 1 file changed, 30 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
+>>> index a0607969f8c0..d740c4f8810c 100644
+>>> --- a/net/xdp/xdp_umem.c
+>>> +++ b/net/xdp/xdp_umem.c
+>>> @@ -14,7 +14,7 @@
+>>> #include <linux/netdevice.h>
+>>> #include <linux/rtnetlink.h>
+>>> #include <linux/idr.h>
+>>> -#include <linux/highmem.h>
+>>> +#include <linux/vmalloc.h>
+>>>
+>>> #include "xdp_umem.h"
+>>> #include "xsk_queue.h"
+>>> @@ -170,7 +170,30 @@ static void xdp_umem_unmap_pages(struct 
+>>> xdp_umem *umem)
+>>> 	unsigned int i;
+>>>
+>>> 	for (i = 0; i < umem->npgs; i++)
+>>> -		kunmap(umem->pgs[i]);
+>>> +		if (PageHighMem(umem->pgs[i]))
+>>> +			vunmap(umem->pages[i].addr);
+>>> +}
+>>> +
+>>> +static int xdp_umem_map_pages(struct xdp_umem *umem)
+>>> +{
+>>> +	unsigned int i;
+>>> +	void *addr;
+>>> +
+>>> +	for (i = 0; i < umem->npgs; i++) {
+>>> +		if (PageHighMem(umem->pgs[i]))
+>>> +			addr = vmap(&umem->pgs[i], 1, VM_MAP, PAGE_KERNEL);
+>>> +		else
+>>> +			addr = page_address(umem->pgs[i]);
+>>> +
+>>> +		if (!addr) {
+>>> +			xdp_umem_unmap_pages(umem);
+>>> +			return -ENOMEM;
+>>> +		}
+>>> +
+>>> +		umem->pages[i].addr = addr;
+>>> +	}
+>>> +
+>>> +	return 0;
+>>> }
+>>
+>> You'll want a __xdp_umem_unmap_pages() helper here that takes an
+>> count of the number of pages to unmap, so it can be called from
+>> xdp_umem_unmap_pages() in the normal case, and xdp_umem_map_pages()
+>> in the error case.  Otherwise the error case ends up calling
+>> PageHighMem on a null page.
+>> -- 
+>> Jonathan
+>
+> Do you mean null address?
+> If so, then vunmap do nothing if it's null, and addr is null if it's 
+> not
+> assigned... and it's not assigned w/o correct mapping...
+>
+> If you mean null page, then it is not possible after all they are
+> pinned above, here: xdp_umem_pin_pages(), thus assigned.
+>
+> Or I missed smth?
+
+No - I forgot about umem_pin_pages() - feel free to ignore my comments.
+--
+Jonathan
+
+>
+> Despite of this, seems like here should be one more patch, adding 
+> unpinning page
+> in error path, but this not related to this change. Will do this in 
+> follow up
+> fix patch, if no objection to my explanation, ofc.
+>
+> -- 
+> Regards,
+> Ivan Khoronzhuk
