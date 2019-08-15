@@ -2,70 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF208F46D
-	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 21:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6C58F484
+	for <lists+bpf@lfdr.de>; Thu, 15 Aug 2019 21:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732675AbfHOTWx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Aug 2019 15:22:53 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:45621 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730809AbfHOTWs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Aug 2019 15:22:48 -0400
-Received: by mail-qt1-f193.google.com with SMTP id k13so3489394qtm.12
-        for <bpf@vger.kernel.org>; Thu, 15 Aug 2019 12:22:48 -0700 (PDT)
+        id S1726616AbfHOT27 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Aug 2019 15:28:59 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:39649 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726171AbfHOT27 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Aug 2019 15:28:59 -0400
+Received: by mail-qk1-f196.google.com with SMTP id 125so2753301qkl.6
+        for <bpf@vger.kernel.org>; Thu, 15 Aug 2019 12:28:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:in-reply-to:references
          :organization:mime-version:content-transfer-encoding;
-        bh=LlT4pUqJ1pdZQp31Z6TlgIrwFLzT6r/hfcXvC21i00M=;
-        b=v3t2zkOZDoOfbaW3AV33GOl6aMHaGfNUUk1WeSNH5QlbZ72fZfbxobmeB7qSEA811S
-         jHmiiNGVkYQsTKj5/fGs/rnkTyECZFRh/TEk1nz5tEepEp2tXuu9yk/nD40Wjcwvpvf1
-         s0IETaxLoAs89QrXdcnloX2vNCJkTHUrWEQTlqbybOT017Rzyc9CKROA2lxjIIZu03pr
-         e8AZo/KNIZlGRbg1LezbQgHyjRjIOH7GjdwwXxXz+c+wrT7C38vrNNABwBfhZ1nMdzqk
-         eiFuoTpYd6wEScBQjDqPB0YueRvgVE4vDaKOtWfBognzhYvHCJRWIsu6k8QYDvga9JXQ
-         je1Q==
+        bh=qnb1kJVM+ye3vGOEYAiSOgWaI3eqtlq3N9qsMgSh97Q=;
+        b=JaxEwRb54HjwKuEneJpNZxQXixF0DRverv10uYcg0cKMh+ECh1y3PYBIoVR8Ow63CY
+         /WKKphuy/0ciV1fNmih3/+fh1ESfjqrk8yHo0doVrzNTOxcJMsagAdyXMS8N/hUKLJPO
+         ys+xqkbDGaAu2an70dXBKE7/dX6r7CD1hTWHgLBbP8r7EYoOkBUlQbeN2jIMyj9Dysla
+         wDX7CxJU3y8ZMIq76PCJUoS7kW/AF751fzeef3qiIS7S2cYClSK9dT24i7ZuQPd5uFoz
+         f6s3KOUMGs1sEJvIxWN86ubo0VVUcfS6hyOVGtopxRcSTT/nWToBiiYmv8ZNyyHvpMvH
+         Y0DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
          :references:organization:mime-version:content-transfer-encoding;
-        bh=LlT4pUqJ1pdZQp31Z6TlgIrwFLzT6r/hfcXvC21i00M=;
-        b=MlcpiA978W2ukBxfFW/wgaBAJjbWxGgb/7e20uAi3Eg3LL03ks+zrdEGudcH2W0cPL
-         Z4vRs9Yrf+OqcCbMzwIZMSVwUkRjbHMw8p69OcvJeXOCxz8T+ojsEMvq3fTw5FEzWaHf
-         8EUnixl5+0zXylJ/9VAl8DadrdDmkYQ7CYGXfvsRYDW1nd/7/Lr0/k8MhrGiwVna8ghd
-         AgrsYu320yjct6GDyurog7qDHJOvPJ50LLsIwU/YYbF6nqGiypIEr/P5uBSmP7JrH51o
-         2AsFBtmD1dTVaRoxhWMsjXlhARaUO1vcKB9Ixf6jB4l73ulF8txaobRNLPvHBwR9dfqo
-         G1zw==
-X-Gm-Message-State: APjAAAXE/wlnNwU3iXOYtgNTCtyOKQMMJkDxz9+YS3HJ5H5g/YJhImto
-        SeVPo9uIVgoDawFw3vg8lo21xQ==
-X-Google-Smtp-Source: APXvYqzoEaFWpei7IEEEbSmc388lyR9cT7nk5mEzKHJji4TlUy8IYaWEGh7Cy0Kg7ErZT9D3dnr22A==
-X-Received: by 2002:ac8:75d9:: with SMTP id z25mr5333522qtq.207.1565896967699;
-        Thu, 15 Aug 2019 12:22:47 -0700 (PDT)
+        bh=qnb1kJVM+ye3vGOEYAiSOgWaI3eqtlq3N9qsMgSh97Q=;
+        b=ojGBsIyORTuza5C590mvkn7ygxadirqmp1Bf2YLY+M44Mv6t1dhfQIjyyYRbrdKXbT
+         EHWVg+MLSTK1xT7Vn5PUBnEZlL9gGGkTNOGMM1AKxJIQA8MIozz55hITFt8x5LI9Mux+
+         FWAjD76TRY8X67nZByciypW/1SRVWZ/FGqLRsCg8q70xXGjQx4usr7VgnMuNtHqHwG16
+         k0r2eoawuKZ2a2JyIHZ8FAesX6eu9FVB4T5OVQ1MACdpv5Lqpcdg0eWPRSnc/K1qi68x
+         t01/RCMhojPaQOnxNCxy8bdx0G60oC9HJX/l5KsBvjSohypnkLOWDRzvnG7qik69fKJN
+         jZww==
+X-Gm-Message-State: APjAAAVittYmbGxP8/EFzTg/uBaWZz5BA3f0SPN0YKMrNyPXSPwbQAzI
+        N3Ac2npg9OljHZvsYmlW7MjTUQ==
+X-Google-Smtp-Source: APXvYqwkPh8ov3QUSzCWMxSKt+ziOPYpJfoCxehX3GtP2xT/V0Zjj4WnEp5aVw6Y7vkICXjTGBM3Aw==
+X-Received: by 2002:a05:620a:100c:: with SMTP id z12mr5528461qkj.279.1565897338446;
+        Thu, 15 Aug 2019 12:28:58 -0700 (PDT)
 Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id t2sm1678382qtq.73.2019.08.15.12.22.45
+        by smtp.gmail.com with ESMTPSA id x3sm1885999qkl.71.2019.08.15.12.28.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Aug 2019 12:22:47 -0700 (PDT)
-Date:   Thu, 15 Aug 2019 12:22:32 -0700
+        Thu, 15 Aug 2019 12:28:58 -0700 (PDT)
+Date:   Thu, 15 Aug 2019 12:28:44 -0700
 From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, William Tu <u9012063@gmail.com>
-Subject: Re: [RFC PATCH bpf-next 00/14] xdp_flow: Flow offload to XDP
-Message-ID: <20190815122232.4b1fa01c@cakuba.netronome.com>
-In-Reply-To: <20190815152100.GN2820@mini-arch>
-References: <20190813120558.6151-1-toshiaki.makita1@gmail.com>
-        <20190814170715.GJ2820@mini-arch>
-        <14c4a876-6f5d-4750-cbe4-19622f64975b@gmail.com>
-        <20190815152100.GN2820@mini-arch>
+To:     Sridhar Samudrala <sridhar.samudrala@intel.com>
+Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, maciej.fijalkowski@intel.com,
+        tom.herbert@intel.com
+Subject: Re: [PATCH bpf-next 0/5] Add support for SKIP_BPF flag for AF_XDP
+ sockets
+Message-ID: <20190815122844.52eeda08@cakuba.netronome.com>
+In-Reply-To: <1565840783-8269-1-git-send-email-sridhar.samudrala@intel.com>
+References: <1565840783-8269-1-git-send-email-sridhar.samudrala@intel.com>
 Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -75,49 +65,44 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 15 Aug 2019 08:21:00 -0700, Stanislav Fomichev wrote:
-> On 08/15, Toshiaki Makita wrote:
-> > On 2019/08/15 2:07, Stanislav Fomichev wrote:  
-> > > On 08/13, Toshiaki Makita wrote:  
-> > > > * Implementation
-> > > > 
-> > > > xdp_flow makes use of UMH to load an eBPF program for XDP, similar to
-> > > > bpfilter. The difference is that xdp_flow does not generate the eBPF
-> > > > program dynamically but a prebuilt program is embedded in UMH. This is
-> > > > mainly because flow insertion is considerably frequent. If we generate
-> > > > and load an eBPF program on each insertion of a flow, the latency of the
-> > > > first packet of ping in above test will incease, which I want to avoid.  
-> > > Can this be instead implemented with a new hook that will be called
-> > > for TC events? This hook can write to perf event buffer and control
-> > > plane will insert/remove/modify flow tables in the BPF maps (contol
-> > > plane will also install xdp program).
-> > > 
-> > > Why do we need UMH? What am I missing?  
-> > 
-> > So you suggest doing everything in xdp_flow kmod?  
-> You probably don't even need xdp_flow kmod. Add new tc "offload" mode
-> (bypass) that dumps every command via netlink (or calls the BPF hook
-> where you can dump it into perf event buffer) and then read that info
-> from userspace and install xdp programs and modify flow tables.
-> I don't think you need any kernel changes besides that stream
-> of data from the kernel about qdisc/tc flow creation/removal/etc.
+On Wed, 14 Aug 2019 20:46:18 -0700, Sridhar Samudrala wrote:
+> This patch series introduces XDP_SKIP_BPF flag that can be specified
+> during the bind() call of an AF_XDP socket to skip calling the BPF 
+> program in the receive path and pass the buffer directly to the socket.
+> 
+> When a single AF_XDP socket is associated with a queue and a HW
+> filter is used to redirect the packets and the app is interested in
+> receiving all the packets on that queue, we don't need an additional 
+> BPF program to do further filtering or lookup/redirect to a socket.
+> 
+> Here are some performance numbers collected on 
+>   - 2 socket 28 core Intel(R) Xeon(R) Platinum 8180 CPU @ 2.50GHz
+>   - Intel 40Gb Ethernet NIC (i40e)
+> 
+> All tests use 2 cores and the results are in Mpps.
+> 
+> turbo on (default)
+> ---------------------------------------------	
+>                       no-skip-bpf    skip-bpf
+> ---------------------------------------------	
+> rxdrop zerocopy           21.9         38.5 
+> l2fwd  zerocopy           17.0         20.5
+> rxdrop copy               11.1         13.3
+> l2fwd  copy                1.9          2.0
+> 
+> no turbo :  echo 1 > /sys/devices/system/cpu/intel_pstate/no_turbo
+> ---------------------------------------------	
+>                       no-skip-bpf    skip-bpf
+> ---------------------------------------------	
+> rxdrop zerocopy           15.4         29.0
+> l2fwd  zerocopy           11.8         18.2
+> rxdrop copy                8.2         10.5
+> l2fwd  copy                1.7          1.7
+> ---------------------------------------------	
 
-There's a certain allure in bringing the in-kernel BPF translation
-infrastructure forward. OTOH from system architecture perspective IMHO
-it does seem like a task best handed in user space. bpfilter can replace
-iptables completely, here we're looking at an acceleration relatively
-loosely coupled with flower.
+Could you include a third column here - namely the in-XDP performance?
+AFAIU the way to achieve better performance with AF_XDP is to move the
+fast path into the kernel's XDP program..
 
-FWIW Quentin spent some time working on a universal flow rule to BPF
-translation library:
-
-https://github.com/Netronome/libkefir
-
-A lot remains to be done there, but flower front end is one of the
-targets. A library can be tuned for any application, without a
-dependency on flower uAPI.
-
-> But, I haven't looked at the series deeply, so I might be missing
-> something :-)
-
-I don't think you are :)
+Maciej's work on batching XDP program's execution should lower the
+retpoline overhead, without leaning close to the bypass model.
