@@ -2,75 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9DB8FA5F
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 07:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D5D8FA7C
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 07:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726257AbfHPFYr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Aug 2019 01:24:47 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:34090 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726141AbfHPFYq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Aug 2019 01:24:46 -0400
-Received: by mail-lf1-f66.google.com with SMTP id b29so3242610lfq.1;
-        Thu, 15 Aug 2019 22:24:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rpfB3Q5jcM+4sbz0QcY5vnHo3c0rHRb/VWMYMI6DOqw=;
-        b=O9aQa6vXGh2JKZ24LO62tv8KbvE4fTqMX9XH6D43Rb8tNNl+oQffVUylgUyoFxV6iK
-         wRDllUngoU8SZ5L241dO79srqiUQfHd7B3kF9WDgdAq9r1b8/bQKtK5TKmjB+5pICfjb
-         nUULr2chxztm8lG2h1jcq9NhgiVBJwUUfkvnsY+Lyn8vixlxOlQLTBNidLFWD0qvlOc/
-         /vnDY8kfViPf1MhDSzvKou3Xx/A+MmT5UG8fT95l1zaRgj64hh86sLUlzgn6j58FWBYn
-         DhitkqsF8nyJwkWi3QUICn2c1+ErEzlvlmXTkW3hJUz7bVqKws7jrheXHqKZOrmRVc72
-         r4lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rpfB3Q5jcM+4sbz0QcY5vnHo3c0rHRb/VWMYMI6DOqw=;
-        b=gfZbjI9KjNlFqfKLliXHle1bQowkjOgNQRdeTkeRIE4kRYrDoqab3fMHInEQ3Z/mnV
-         80NYdHy2RUdpJFjtJeXLrYdRaKsQIJHEBwvii3pva+ojy+q99BhAcV0aEdMDf4VuNHL8
-         nHx6TsUlZyF00+RT2+4wS/IpOva+Udlgli1td8X7ezZdF6I+1XX0Btgzhk/lfxz0ghlf
-         TaWSkZTzZenXzJxMq4Nte3Y56vQxe+PsPM38rNaH1Wfi3Dpr2BOlCcXLnQuMmKE6BXNl
-         hPXZRG8UqrJyIyaZP6bDjdrU/wK15rHz4Suw7oofUiuflWVoHbldNmWHbr31MnLRrDnm
-         VsvQ==
-X-Gm-Message-State: APjAAAVMyUhzAPGcbGhXLtbXWIVkLaQDmnd41428CQA8nQSCw2pGEpFr
-        x38G/c/AwTl7hiMxsZrSOQfB2aSL74oBvmjN/lM=
-X-Google-Smtp-Source: APXvYqzn5i/+XEV2n+C529s0+kZBTANKIa5O2lpzrVhd6ZBs+0aYkWQrlmxhSKaa3+GkHOpVNGLsPqrjrWTygNCsqYg=
-X-Received: by 2002:a19:ca4b:: with SMTP id h11mr3994625lfj.162.1565933084391;
- Thu, 15 Aug 2019 22:24:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190815142432.101401-1-weiyongjun1@huawei.com> <20190816024044.139761-1-weiyongjun1@huawei.com>
-In-Reply-To: <20190816024044.139761-1-weiyongjun1@huawei.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 15 Aug 2019 22:24:33 -0700
-Message-ID: <CAADnVQK_NTZVXosgLDBg-in+HBDaK5d24heaR0HSkEw2L0g=6w@mail.gmail.com>
-Subject: Re: [PATCH -next v2] btf: fix return value check in btf_vmlinux_init()
-To:     Wei Yongjun <weiyongjun1@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        id S1726519AbfHPFvT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Aug 2019 01:51:19 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:2018 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726371AbfHPFvS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 16 Aug 2019 01:51:18 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7G5m6HD003409
+        for <bpf@vger.kernel.org>; Thu, 15 Aug 2019 22:51:17 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=IZrHqa4QuLJMtr4+C7bcLZLe9SprRxgFU1axuwRa3Jg=;
+ b=dcYjkEb27xCNCr3yInUDfrTJsepTzLkdDRkxQ4lTXC7CaEG1wpSpjitCrtIz791IpP4U
+ VKf43wsP74h+aWARnutqmHxJD3qsAve+9F6ONN4miHN3C0/iTx0CbEWAs8XJoQ270yBr
+ 0kYjYmZRhBpfSMaDADRRoV5LaGrVd10ol9A= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2udk6q8nf3-9
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 15 Aug 2019 22:51:17 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 15 Aug 2019 22:48:45 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 097288617BC; Thu, 15 Aug 2019 22:46:00 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Michael Holzheu <holzheu@linux.vnet.ibm.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Michal Rostecki <mrostecki@opensuse.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next] libbpf: relicense bpf_helpers.h and bpf_endian.h
+Date:   Thu, 15 Aug 2019 22:45:43 -0700
+Message-ID: <20190816054543.2215626-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-16_03:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=8 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908160063
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 15, 2019 at 7:36 PM Wei Yongjun <weiyongjun1@huawei.com> wrote:
->
-> In case of error, the function kobject_create_and_add() returns NULL
-> pointer not ERR_PTR(). The IS_ERR() test in the return value check
-> should be replaced with NULL test.
->
-> Fixes: 341dfcf8d78e ("btf: expose BTF info through sysfs")
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+bpf_helpers.h and bpf_endian.h contain useful macros and BPF helper
+definitions essential to almost every BPF program. Which makes them
+useful not just for selftests. To be able to expose them as part of
+libbpf, though, we need them to be dual-licensed as LGPL-2.1 OR
+BSD-2-Clause. This patch updates licensing of those two files.
 
-Applied. Thanks.
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Hechao Li <hechaol@fb.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Acked-by: Andrey Ignatov <rdna@fb.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+Acked-by: Lawrence Brakmo <brakmo@fb.com>
+Acked-by: Adam Barth <arb@fb.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Acked-by: Josef Bacik <jbacik@fb.com>
+Acked-by: Joe Stringer <joe@wand.net.nz>
+Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Acked-by: David Ahern <dsahern@gmail.com>
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Acked-by: Lorenz Bauer <lmb@cloudflare.com>
+Acked-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+Acked-by: Nikita V. Shirokov <tehnerd@tehnerd.com>
+Acked-by: Willem de Bruijn <willemb@google.com>
+Acked-by: Petar Penkov <ppenkov@google.com>
+Acked-by: Teng Qin <palmtenor@gmail.com>
+Cc: Michael Holzheu <holzheu@linux.vnet.ibm.com>
+Cc: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Michal Rostecki <mrostecki@opensuse.org>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Sargun Dhillon <sargun@sargun.me>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/testing/selftests/bpf/bpf_endian.h  | 2 +-
+ tools/testing/selftests/bpf/bpf_helpers.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Please spell out [PATCH v2 bpf-next] in the subject next time.
+diff --git a/tools/testing/selftests/bpf/bpf_endian.h b/tools/testing/selftests/bpf/bpf_endian.h
+index 05f036df8a4c..ff3593b0ae03 100644
+--- a/tools/testing/selftests/bpf/bpf_endian.h
++++ b/tools/testing/selftests/bpf/bpf_endian.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+ #ifndef __BPF_ENDIAN__
+ #define __BPF_ENDIAN__
+ 
+diff --git a/tools/testing/selftests/bpf/bpf_helpers.h b/tools/testing/selftests/bpf/bpf_helpers.h
+index 8b503ea142f0..6c4930bc6e2e 100644
+--- a/tools/testing/selftests/bpf/bpf_helpers.h
++++ b/tools/testing/selftests/bpf/bpf_helpers.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+ #ifndef __BPF_HELPERS_H
+ #define __BPF_HELPERS_H
+ 
+-- 
+2.17.1
+
