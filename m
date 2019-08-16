@@ -2,116 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 32BBF907EE
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 20:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50373908F8
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 21:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726527AbfHPSwm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Aug 2019 14:52:42 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:40473 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727286AbfHPSwm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Aug 2019 14:52:42 -0400
-Received: by mail-qt1-f196.google.com with SMTP id e8so7163927qtp.7
-        for <bpf@vger.kernel.org>; Fri, 16 Aug 2019 11:52:41 -0700 (PDT)
+        id S1727593AbfHPTwj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Aug 2019 15:52:39 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:41255 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726527AbfHPTwi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Aug 2019 15:52:38 -0400
+Received: by mail-pf1-f193.google.com with SMTP id 196so3623812pfz.8;
+        Fri, 16 Aug 2019 12:52:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=Ka5b9O0v2h8EPGcPlYICwMwfBEn+9/M69P0uVVaDSv8=;
-        b=gmLs/gg/DLel8Bu9H7Yty3eGVJRQ6i99RavU9NMCDZFhP9bTMB8kAxLHdlKfngUDZ4
-         yM2ON5usXPTT+rPJ654L1FTqLNZ5RTorIRBgKujqZmdJBL0q3CzRrPdq1fSecetEmip6
-         dOdFkGQVSxzUG0dCHw7N7pgqE5FfxtZmvu2xNQf4GA/6Q+nqF7mdqEp69qXDne4x9b1c
-         eMeNT6YpvtQeuedwCcRjRTaHNNNfL9PHw0j2ZmqjBexQ8LrnnV1joWT1fUjjSdCzUeke
-         9Wya0xdvduM9z/BjuuCPlBYDeC+5uDOcfxjNiQxKLcm/cqBVvSTIhcYJJqZkBI5J2w80
-         Imrg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BsYRIWt7zgiLsYRkEbHKo3EPHhpbpjVq3H8U3w5nr8I=;
+        b=XPVLpvmSGjDqAepn2Df5xVHA1UUZ9+xOQU2OlgeKUqfIGCBsbEfEy0Zoey7BlQkrxP
+         CzJXdnPEYwh8oebCjhRRR7HCTZnGEE/rOqVAagxXSISdJUy9W2MAf4If6WWkvEXkWCck
+         ymVDHu84P27/6BDid5eyjZWLIk1gQ5WPwy9I5RyJBIK246xZ618VNNL3GdJOSnqdYHm5
+         A/pw57bMUosyPVDSBFrYOCmrjtNnAjQHTNuxW+kKH6AWLQA3ltn1bCzgczbPe12pBTtr
+         oDlKuKhKPMj6G8jOkS8idVDtPeThndVdW6O22sVbM1HXETi2nYA1wdK1SSZEQqVP8yF0
+         k5Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=Ka5b9O0v2h8EPGcPlYICwMwfBEn+9/M69P0uVVaDSv8=;
-        b=avE5ghNc1etqdhmcM+1ktpdZijHeDsHNgxdTjSWihldiiROVlvEo+Ecld/wPpIyaqK
-         IFntwbiCd6yjye3k5kPc4YcityfGNHa7goGaq9gszPEGqJmcjDrG2ivqkDM0WLiyXwhr
-         tEyGXNTCyIsMBN/5EZ55ljrOwEcFlpw2ZNKrWWEQF6c3RA/yGUFEOny6xiUMjvcPZLQf
-         7n4Fi9nRMyrYHuC++Wv3p8XxzyK7iXwwXNXjhQIp1LyYU94fq9wXnMUv/B5jhrmrcaxB
-         lp7NJR7cn7+Z4K7FOvCDbOsHdTeB/o7OJr/XU5sz2vrXnpsBtyZVjt9Ho3JS/EIo50qr
-         nN5Q==
-X-Gm-Message-State: APjAAAXcaAWjCT7BN9ZYxa4XnVidQRznrsh6QygDg19+Nv+mThvfKoRe
-        lfT1IEjm3GR3zkYfVtAGxxTH+g==
-X-Google-Smtp-Source: APXvYqxZUCzBEXXtP6MprT+m/pI74yj0Arh9tpzoJWrttcANn88neTR/HmiwhuViRjjaTqxX7SkNIw==
-X-Received: by 2002:ac8:2642:: with SMTP id v2mr9573892qtv.333.1565981561193;
-        Fri, 16 Aug 2019 11:52:41 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id j6sm3289962qkd.26.2019.08.16.11.52.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Aug 2019 11:52:41 -0700 (PDT)
-Date:   Fri, 16 Aug 2019 11:52:24 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Toshiaki Makita <toshiaki.makita1@gmail.com>
-Cc:     Stanislav Fomichev <sdf@fomichev.me>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BsYRIWt7zgiLsYRkEbHKo3EPHhpbpjVq3H8U3w5nr8I=;
+        b=VivxObsxO+OiYsZnoyaPOf4+ZDrsGmewuMtBAgBcmzm8WuAQvrXZ7R7HbgPAA15MPd
+         NV0pquuUeNatDoB7hr7yWvYgog77O15k9QIdz+NqwP4CWaUSU2Eu25J0fMgzfqhaNnHk
+         J9N4u4U/Stmpgnsc+TjkXS7DFVu9WUwbiDoZWU22drFwUToheiuiV6FX/G69VAsY8qqK
+         ZxICcVsZtK8lYfwNrhpPqWfM4lN8FwLMug/gEoxKCQozlfaRFJ+2cYbMKc6R0uNomJrS
+         wpBT+q42FloP3B5lMXC6r5GsJ57HprRiKVk5T+UFG9gbybiCYhU4ieEIjzQlXrWkFX6y
+         ck4A==
+X-Gm-Message-State: APjAAAWLV/otEumKgGyn8Mk1UpwP+fJR5mAt/g58jKTTBELd718tywW/
+        PUIUspcMuF4m/dka1V4QRMY=
+X-Google-Smtp-Source: APXvYqzrd7QyPzjL0x3MzSJ9v0FfGA12R+uv7HUBgJeM5ogLLZzOB/z+CjGaACxHJtQGH1TFe78JVA==
+X-Received: by 2002:aa7:9799:: with SMTP id o25mr12431962pfp.74.1565985157546;
+        Fri, 16 Aug 2019 12:52:37 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::2:79ad])
+        by smtp.gmail.com with ESMTPSA id 97sm6005173pjz.12.2019.08.16.12.52.35
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 16 Aug 2019 12:52:36 -0700 (PDT)
+Date:   Fri, 16 Aug 2019 12:52:35 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jordan Glover <Golden_Miller83@protonmail.ch>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Daniel Colascione <dancol@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        Kees Cook <keescook@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, William Tu <u9012063@gmail.com>
-Subject: Re: [RFC PATCH bpf-next 00/14] xdp_flow: Flow offload to XDP
-Message-ID: <20190816115224.6aafd4ee@cakuba.netronome.com>
-In-Reply-To: <da840b14-ab5b-91f1-df2f-6bdd0ed41173@gmail.com>
-References: <20190813120558.6151-1-toshiaki.makita1@gmail.com>
-        <20190814170715.GJ2820@mini-arch>
-        <14c4a876-6f5d-4750-cbe4-19622f64975b@gmail.com>
-        <20190815152100.GN2820@mini-arch>
-        <20190815122232.4b1fa01c@cakuba.netronome.com>
-        <da840b14-ab5b-91f1-df2f-6bdd0ed41173@gmail.com>
-Organization: Netronome Systems, Ltd.
+        Kernel Team <Kernel-team@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Jann Horn <jannh@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
+Message-ID: <20190816195233.vzqqbqrivnooohq6@ast-mbp.dhcp.thefacebook.com>
+References: <20190806011134.p5baub5l3t5fkmou@ast-mbp>
+ <CALCETrUkqUprujww26VxHwkdXQ3DWJH8nnL2VBYpK2EU0oX_YA@mail.gmail.com>
+ <20190814220545.co5pucyo5jk3weiv@ast-mbp.dhcp.thefacebook.com>
+ <HG0x24u69mnaMFKuxHVAzHpyjwsD5-U6RpqFRua87wGWQCHg00Q8ZqPeA_5kJ9l-d6oe0cXa4HyYXMnOO0Aofp_LcPcQdG0WFV21z1MbgcE=@protonmail.ch>
+ <20190815172856.yoqvgu2yfrgbkowu@ast-mbp.dhcp.thefacebook.com>
+ <CALCETrUv+g+cb79FJ1S4XuV0K=kowFkPXpzoC99svoOfs4-Kvg@mail.gmail.com>
+ <20190815230808.2o2qe7a72cwdce2m@ast-mbp.dhcp.thefacebook.com>
+ <fkD3fs46a1YnR4lh0tEG-g3tDnDcyZuzji7bAUR9wujPLLl75ZhI8Yk-H1jZpSugO7qChVeCwxAMmxLdeoF2QFS3ZzuYlh7zmeZOmhDJxww=@protonmail.ch>
+ <alpine.DEB.2.21.1908161158490.1873@nanos.tec.linutronix.de>
+ <lGGTLXBsX3V6p1Z4TkdzAjxbNywaPS2HwX5WLleAkmXNcnKjTPpWnP6DnceSsy8NKt5NBRBbuoAb0woKTcDhJXVoFb7Ygk3Skfj8j6rVfMQ=@protonmail.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <lGGTLXBsX3V6p1Z4TkdzAjxbNywaPS2HwX5WLleAkmXNcnKjTPpWnP6DnceSsy8NKt5NBRBbuoAb0woKTcDhJXVoFb7Ygk3Skfj8j6rVfMQ=@protonmail.ch>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 16 Aug 2019 10:28:10 +0900, Toshiaki Makita wrote:
-> On 2019/08/16 4:22, Jakub Kicinski wrote:
-> > There's a certain allure in bringing the in-kernel BPF translation
-> > infrastructure forward. OTOH from system architecture perspective IMHO
-> > it does seem like a task best handed in user space. bpfilter can replace
-> > iptables completely, here we're looking at an acceleration relatively
-> > loosely coupled with flower.  
+On Fri, Aug 16, 2019 at 11:33:57AM +0000, Jordan Glover wrote:
+> On Friday, August 16, 2019 9:59 AM, Thomas Gleixner <tglx@linutronix.de> wrote:
 > 
-> I don't think it's loosely coupled. Emulating TC behavior in userspace
-> is not so easy.
+> > On Fri, 16 Aug 2019, Jordan Glover wrote:
+> >
+> > > "systemd --user" service? Trying to do so will fail with:
+> > > "Failed to apply ambient capabilities (before UID change): Operation not permitted"
+> > > I think it's crucial to clear that point to avoid confusion in this discussion
+> > > where people are talking about different things.
+> > > On the other hand running "systemd --system" service with:
+> > > User=nobody
+> > > AmbientCapabilities=CAP_NET_ADMIN
+> > > is perfectly legit and clears some security concerns as only privileged user
+> > > can start such service.
+> >
+> > While we are at it, can we please stop looking at this from a systemd only
+> > perspective. There is a world outside of systemd.
+> >
+> > Thanks,
+> >
+> > tglx
 > 
-> Think about recent multi-mask support in flower. Previously userspace could
-> assume there is one mask and hash table for each preference in TC. After the
-> change TC accepts different masks with the same pref. Such a change tends to
-> break userspace emulation. It may ignore masks passed from flow insertion
-> and use the mask remembered when the first flow of the pref is inserted. It
-> may override the mask of all existing flows with the pref. It may fail to
-> insert such flows. Any of them would result in unexpected wrong datapath
-> handling which is critical.
-> I think such an emulation layer needs to be updated in sync with TC.
+> If you define:
+> 
+> "systemd --user" == unprivileged process started by unprivileged user
+> "systemd --system" == process started by privileged user but run as another
+> user which keeps some of parent user privileges and drops others
+> 
+> you can get rid of "systemd" from the equation.
+> 
+> "systemd --user" was the example provided by Alexei when asked about the usecase
+> but his description didn't match what it does so it's not obvious what the real
+> usecase is. I'm sure there can be many more examples and systemd isn't important
+> here in particular beside to understand this specific example.
 
-Oh, so you're saying that if xdp_flow is merged all patches to
-cls_flower and netfilter which affect flow offload will be required 
-to update xdp_flow as well?
+It's both of the above when 'systemd' is not taken literally.
+To earlier Thomas's point: the use case is not only about systemd.
+There are other containers management systems.
+I've used 'systemd-like' terminology as an attempt to explain that such
+daemons are trusted signed binaries that can be run as pid=1.
+Sometimes it's the later:
+"process started by privileged user but run as another user which keeps
+some of parent user privileges and drops others".
+Sometimes capability delegation to another container management daemon
+is too cumbersome, so it's easier to use suid bit on that other daemon.
+So it will become like the former:
+"sort-of unprivileged process started by unprivileged user."
+where daemon has suid and drops most of the capabilities as it starts.
+Let's not focus on the model being good or bad security wise.
+The point that those are the use cases that folks are thinking about.
+That secondary daemon can be full root just fine.
+All outer and inner daemons can be root.
+These daemons need to drop privileges to make the system safer ==
+less prone to corruption due to bugs in themselves. Not necessary security bugs.
 
-That's a question of policy. Technically the implementation in user
-space is equivalent.
-
-The advantage of user space implementation is that you can add more
-to it and explore use cases which do not fit in the flow offload API,
-but are trivial for BPF. Not to mention the obvious advantage of
-decoupling the upgrade path.
-
-
-Personally I'm not happy with the way this patch set messes with the
-flow infrastructure. You should use the indirect callback
-infrastructure instead, and that way you can build the whole thing
-touching none of the flow offload core.
