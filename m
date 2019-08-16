@@ -2,72 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F8390790
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 20:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BBF907EE
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 20:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727498AbfHPSNN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Aug 2019 14:13:13 -0400
-Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164]:56664 "EHLO
-        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727490AbfHPSNM (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 16 Aug 2019 14:13:12 -0400
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from webmail.solarflare.com (webmail.solarflare.com [12.187.104.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1-us5.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 8C6E04C0062;
-        Fri, 16 Aug 2019 18:13:11 +0000 (UTC)
-Received: from [10.17.20.203] (10.17.20.203) by ocex03.SolarFlarecom.com
- (10.20.40.36) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Fri, 16 Aug
- 2019 11:13:07 -0700
-Subject: Re: [RFC bpf-next 0/3] tools: bpftool: add subcommand to count map
- entries
-To:     Quentin Monnet <quentin.monnet@netronome.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <oss-drivers@netronome.com>
-References: <20190813130921.10704-1-quentin.monnet@netronome.com>
- <20190814015149.b4pmubo3s4ou5yek@ast-mbp>
- <ab11a9f2-0fbd-d35f-fee1-784554a2705a@netronome.com>
- <bdb4b47b-25fa-eb96-aa8d-dd4f4b012277@solarflare.com>
- <18f887ec-99fd-20ae-f5d6-a1f4117b2d77@netronome.com>
- <84aa97e3-5fde-e041-12c6-85863e27d2d9@solarflare.com>
- <031de7fd-caa7-9e66-861f-8e46e5bb8851@netronome.com>
-From:   Edward Cree <ecree@solarflare.com>
-Message-ID: <c62611b7-9322-4efe-6b44-cb4087617e29@solarflare.com>
-Date:   Fri, 16 Aug 2019 19:13:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726527AbfHPSwm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Aug 2019 14:52:42 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:40473 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727286AbfHPSwm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Aug 2019 14:52:42 -0400
+Received: by mail-qt1-f196.google.com with SMTP id e8so7163927qtp.7
+        for <bpf@vger.kernel.org>; Fri, 16 Aug 2019 11:52:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=Ka5b9O0v2h8EPGcPlYICwMwfBEn+9/M69P0uVVaDSv8=;
+        b=gmLs/gg/DLel8Bu9H7Yty3eGVJRQ6i99RavU9NMCDZFhP9bTMB8kAxLHdlKfngUDZ4
+         yM2ON5usXPTT+rPJ654L1FTqLNZ5RTorIRBgKujqZmdJBL0q3CzRrPdq1fSecetEmip6
+         dOdFkGQVSxzUG0dCHw7N7pgqE5FfxtZmvu2xNQf4GA/6Q+nqF7mdqEp69qXDne4x9b1c
+         eMeNT6YpvtQeuedwCcRjRTaHNNNfL9PHw0j2ZmqjBexQ8LrnnV1joWT1fUjjSdCzUeke
+         9Wya0xdvduM9z/BjuuCPlBYDeC+5uDOcfxjNiQxKLcm/cqBVvSTIhcYJJqZkBI5J2w80
+         Imrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=Ka5b9O0v2h8EPGcPlYICwMwfBEn+9/M69P0uVVaDSv8=;
+        b=avE5ghNc1etqdhmcM+1ktpdZijHeDsHNgxdTjSWihldiiROVlvEo+Ecld/wPpIyaqK
+         IFntwbiCd6yjye3k5kPc4YcityfGNHa7goGaq9gszPEGqJmcjDrG2ivqkDM0WLiyXwhr
+         tEyGXNTCyIsMBN/5EZ55ljrOwEcFlpw2ZNKrWWEQF6c3RA/yGUFEOny6xiUMjvcPZLQf
+         7n4Fi9nRMyrYHuC++Wv3p8XxzyK7iXwwXNXjhQIp1LyYU94fq9wXnMUv/B5jhrmrcaxB
+         lp7NJR7cn7+Z4K7FOvCDbOsHdTeB/o7OJr/XU5sz2vrXnpsBtyZVjt9Ho3JS/EIo50qr
+         nN5Q==
+X-Gm-Message-State: APjAAAXcaAWjCT7BN9ZYxa4XnVidQRznrsh6QygDg19+Nv+mThvfKoRe
+        lfT1IEjm3GR3zkYfVtAGxxTH+g==
+X-Google-Smtp-Source: APXvYqxZUCzBEXXtP6MprT+m/pI74yj0Arh9tpzoJWrttcANn88neTR/HmiwhuViRjjaTqxX7SkNIw==
+X-Received: by 2002:ac8:2642:: with SMTP id v2mr9573892qtv.333.1565981561193;
+        Fri, 16 Aug 2019 11:52:41 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id j6sm3289962qkd.26.2019.08.16.11.52.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Aug 2019 11:52:41 -0700 (PDT)
+Date:   Fri, 16 Aug 2019 11:52:24 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Toshiaki Makita <toshiaki.makita1@gmail.com>
+Cc:     Stanislav Fomichev <sdf@fomichev.me>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, William Tu <u9012063@gmail.com>
+Subject: Re: [RFC PATCH bpf-next 00/14] xdp_flow: Flow offload to XDP
+Message-ID: <20190816115224.6aafd4ee@cakuba.netronome.com>
+In-Reply-To: <da840b14-ab5b-91f1-df2f-6bdd0ed41173@gmail.com>
+References: <20190813120558.6151-1-toshiaki.makita1@gmail.com>
+        <20190814170715.GJ2820@mini-arch>
+        <14c4a876-6f5d-4750-cbe4-19622f64975b@gmail.com>
+        <20190815152100.GN2820@mini-arch>
+        <20190815122232.4b1fa01c@cakuba.netronome.com>
+        <da840b14-ab5b-91f1-df2f-6bdd0ed41173@gmail.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-In-Reply-To: <031de7fd-caa7-9e66-861f-8e46e5bb8851@netronome.com>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [10.17.20.203]
-X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1010-24850.005
-X-TM-AS-Result: No-1.736300-4.000000-10
-X-TMASE-MatchedRID: 7ySqCuYCpfjmLzc6AOD8DfHkpkyUphL99+PHtghP8GLo5ylrWfS0yzKy
-        dfFQiPH7pVO+oN4Yy+nwJd0y95699XufZC0Pz+WkBcaL/tyWL2PDu9Ig2VAzuXRBPvVzfVU/m+q
-        3qIvun/12d8d8QAF3I+P3YB3VAfGPlwV2iaAfSWc5f9Xw/xqKXXJnzNw42kCx2bNx1HEv7HAqtq
-        5d3cxkNcDmktstdnbHsCD6Gug0nSw6dFPM3ONtRe0449QWDDb4Oidh6Pj4BzCFcgJc+QNMwu8bJ
-        ovJYm8FYupx0XjSQPLDOFVmKqGJ4bPn3tFon6UK
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--1.736300-4.000000
-X-TMASE-Version: SMEX-12.5.0.1300-8.5.1010-24850.005
-X-MDID: 1565979192-y5jBoVQEMl90
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 15/08/2019 15:15, Quentin Monnet wrote:
-> So if I understand correctly, we would use the bpf() syscall to trigger
-> a run of such program on all map entries (for map implementing the new
-> operation), and the context would include pointers to the key and the
-> value for the entry being processed so we can count/sum/compute an
-> average of the values or any other kind of processing?
-Yep, that's pretty much exactly what I had in mind.
+On Fri, 16 Aug 2019 10:28:10 +0900, Toshiaki Makita wrote:
+> On 2019/08/16 4:22, Jakub Kicinski wrote:
+> > There's a certain allure in bringing the in-kernel BPF translation
+> > infrastructure forward. OTOH from system architecture perspective IMHO
+> > it does seem like a task best handed in user space. bpfilter can replace
+> > iptables completely, here we're looking at an acceleration relatively
+> > loosely coupled with flower.  
+> 
+> I don't think it's loosely coupled. Emulating TC behavior in userspace
+> is not so easy.
+> 
+> Think about recent multi-mask support in flower. Previously userspace could
+> assume there is one mask and hash table for each preference in TC. After the
+> change TC accepts different masks with the same pref. Such a change tends to
+> break userspace emulation. It may ignore masks passed from flow insertion
+> and use the mask remembered when the first flow of the pref is inserted. It
+> may override the mask of all existing flows with the pref. It may fail to
+> insert such flows. Any of them would result in unexpected wrong datapath
+> handling which is critical.
+> I think such an emulation layer needs to be updated in sync with TC.
 
--Ed
+Oh, so you're saying that if xdp_flow is merged all patches to
+cls_flower and netfilter which affect flow offload will be required 
+to update xdp_flow as well?
+
+That's a question of policy. Technically the implementation in user
+space is equivalent.
+
+The advantage of user space implementation is that you can add more
+to it and explore use cases which do not fit in the flow offload API,
+but are trivial for BPF. Not to mention the obvious advantage of
+decoupling the upgrade path.
+
+
+Personally I'm not happy with the way this patch set messes with the
+flow infrastructure. You should use the indirect callback
+infrastructure instead, and that way you can build the whole thing
+touching none of the flow offload core.
