@@ -2,112 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D73790935
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 22:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2CB90972
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 22:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727611AbfHPUKw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Aug 2019 16:10:52 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:27618 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726527AbfHPUKw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Aug 2019 16:10:52 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id EBDA554F66;
-        Fri, 16 Aug 2019 20:10:51 +0000 (UTC)
-Received: from carbon (ovpn-200-29.brq.redhat.com [10.40.200.29])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AAE3D84D14;
-        Fri, 16 Aug 2019 20:10:27 +0000 (UTC)
-Date:   Fri, 16 Aug 2019 22:10:25 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, andrii.nakryiko@gmail.com,
-        kernel-team@fb.com, Michael Holzheu <holzheu@linux.vnet.ibm.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Michal Rostecki <mrostecki@opensuse.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>, brouer@redhat.com
-Subject: Re: [PATCH bpf-next] libbpf: relicense bpf_helpers.h and
- bpf_endian.h
-Message-ID: <20190816221025.239e9e94@carbon>
-In-Reply-To: <20190816171529.GA20099@kroah.com>
-References: <20190816054543.2215626-1-andriin@fb.com>
-        <20190816141001.4a879101@carbon>
-        <23a87525-acf5-7a7e-b7b6-3c47b9760eeb@iogearbox.net>
-        <20190816171529.GA20099@kroah.com>
+        id S1727628AbfHPU2s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Aug 2019 16:28:48 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43151 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727589AbfHPU2s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Aug 2019 16:28:48 -0400
+Received: from pd9ef1cb8.dip0.t-ipconnect.de ([217.239.28.184] helo=nanos)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1hyipq-00005o-Km; Fri, 16 Aug 2019 22:28:30 +0200
+Date:   Fri, 16 Aug 2019 22:28:29 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+cc:     Jordan Glover <Golden_Miller83@protonmail.ch>,
+        Andy Lutomirski <luto@kernel.org>,
+        Daniel Colascione <dancol@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        Kees Cook <keescook@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Jann Horn <jannh@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via
+ /dev/bpf
+In-Reply-To: <20190816195233.vzqqbqrivnooohq6@ast-mbp.dhcp.thefacebook.com>
+Message-ID: <alpine.DEB.2.21.1908162211270.1923@nanos.tec.linutronix.de>
+References: <20190806011134.p5baub5l3t5fkmou@ast-mbp> <CALCETrUkqUprujww26VxHwkdXQ3DWJH8nnL2VBYpK2EU0oX_YA@mail.gmail.com> <20190814220545.co5pucyo5jk3weiv@ast-mbp.dhcp.thefacebook.com> <HG0x24u69mnaMFKuxHVAzHpyjwsD5-U6RpqFRua87wGWQCHg00Q8ZqPeA_5kJ9l-d6oe0cXa4HyYXMnOO0Aofp_LcPcQdG0WFV21z1MbgcE=@protonmail.ch>
+ <20190815172856.yoqvgu2yfrgbkowu@ast-mbp.dhcp.thefacebook.com> <CALCETrUv+g+cb79FJ1S4XuV0K=kowFkPXpzoC99svoOfs4-Kvg@mail.gmail.com> <20190815230808.2o2qe7a72cwdce2m@ast-mbp.dhcp.thefacebook.com>
+ <fkD3fs46a1YnR4lh0tEG-g3tDnDcyZuzji7bAUR9wujPLLl75ZhI8Yk-H1jZpSugO7qChVeCwxAMmxLdeoF2QFS3ZzuYlh7zmeZOmhDJxww=@protonmail.ch> <alpine.DEB.2.21.1908161158490.1873@nanos.tec.linutronix.de> <lGGTLXBsX3V6p1Z4TkdzAjxbNywaPS2HwX5WLleAkmXNcnKjTPpWnP6DnceSsy8NKt5NBRBbuoAb0woKTcDhJXVoFb7Ygk3Skfj8j6rVfMQ=@protonmail.ch>
+ <20190816195233.vzqqbqrivnooohq6@ast-mbp.dhcp.thefacebook.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.25]); Fri, 16 Aug 2019 20:10:52 +0000 (UTC)
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 16 Aug 2019 19:15:29 +0200
-Greg KH <gregkh@linuxfoundation.org> wrote:
+Alexei,
 
-> On Fri, Aug 16, 2019 at 05:29:27PM +0200, Daniel Borkmann wrote:
-> > On 8/16/19 2:10 PM, Jesper Dangaard Brouer wrote:  
-> > > On Thu, 15 Aug 2019 22:45:43 -0700
-> > > Andrii Nakryiko <andriin@fb.com> wrote:
-> > >   
-> > > > bpf_helpers.h and bpf_endian.h contain useful macros and BPF helper
-> > > > definitions essential to almost every BPF program. Which makes them
-> > > > useful not just for selftests. To be able to expose them as part of
-> > > > libbpf, though, we need them to be dual-licensed as LGPL-2.1 OR
-> > > > BSD-2-Clause. This patch updates licensing of those two files.  
-> > > 
-> > > I've already ACKed this, and is fine with (LGPL-2.1 OR BSD-2-Clause).
-> > > 
-> > > I just want to understand, why "BSD-2-Clause" and not "Apache-2.0" ?
-> > > 
-> > > The original argument was that this needed to be compatible with
-> > > "Apache-2.0", then why not simply add this in the "OR" ?  
-> > 
-> > It's use is discouraged in the kernel tree, see also LICENSES/dual/Apache-2.0 (below) and
-> > statement wrt compatibility from https://www.apache.org/licenses/GPL-compatibility.html:
-> > 
-> >   Valid-License-Identifier: Apache-2.0
-> >   SPDX-URL: https://spdx.org/licenses/Apache-2.0.html
-> >   Usage-Guide:
-> >     Do NOT use. The Apache-2.0 is not GPL2 compatible. [...]  
+On Fri, 16 Aug 2019, Alexei Starovoitov wrote:
+> It's both of the above when 'systemd' is not taken literally.
+> To earlier Thomas's point: the use case is not only about systemd.
+> There are other containers management systems.
 
-You didn't quote the continuation from LICENSES/dual/Apache-2.0
+<SNIP>
 
-Usage-Guide:
-  Do NOT use. The Apache-2.0 is not GPL2 compatible. It may only be used
-  for dual-licensed files where the other license is GPL2 compatible.
-  If you end up using this it MUST be used together with a GPL2 compatible
-  license using "OR".
+> These daemons need to drop privileges to make the system safer == less
+> prone to corruption due to bugs in themselves. Not necessary security
+> bugs.
 
-The way I read it, is that you can use it with "OR", like:
- SPDX-License-Identifier: GPL-2.0 OR Apache-2.0
+Let's take a step back.
 
-> That is correct, don't use Apache-2 code in the kernel please.  Even as
-> a dual-license, it's a total mess.
+While real usecases are helpful to understand a design decision, the design
+needs to be usecase independent.
 
-Good, I just wanted to understand why.  
+The kernel provides mechanisms, not policies. My impression of this whole
+discussion is that it is policy driven. That's the wrong approach.
 
-> Having this be BSD-2 is actually better, as it should be fine to use
-> with Apache 2 code, right?
+So let's look at the mechanisms which we have at hand:
 
-Yes, that is also my understanding. And it better be as this is needed,
-as we want libbpf to be used by https://github.com/iovisor/bcc/ which
-is Apache-2.0.
+ 1) Capabilities
+ 
+ 2) SUID and dropping priviledges
 
-> Jesper, do you know of any license that BSD-2 is not compatible with
-> that is needed?
+ 3) Seccomp and LSM
 
-No.
+Now the real interesting questions are:
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+ A) What kind of restrictions does BPF allow? Is it a binary on/off or is
+    there a more finegrained control of BPF functionality?
+
+    TBH, I can't tell.
+
+ B) Depending on the answer to #A what is the control possibility for
+    #1/#2/#3 ?
+
+Answering those questions gives us a real scope of what can be achieved
+independent of use cases and wishful thought out policies.
+
+Thanks,
+
+	tglx
