@@ -2,109 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A70C79073B
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 19:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F8390790
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 20:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727200AbfHPRvV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Aug 2019 13:51:21 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:33120 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726469AbfHPRvV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Aug 2019 13:51:21 -0400
-Received: by mail-qk1-f196.google.com with SMTP id w18so4700375qki.0
-        for <bpf@vger.kernel.org>; Fri, 16 Aug 2019 10:51:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=00A8PXEYv7SUacKbSulI1YeAv3mHRh4MRNuFBd4Lqhg=;
-        b=YnLbpEqYx0ynG2uh8mLmOVvnxMZfZ8rpx6Q7q2bxKKMooHdqKYmusCXJqCApNGpjhk
-         29xkZsTQW/oA6JmFNF5M6/fVAVL1wDnRlyNaNkfQvjR4steNF4ZI2Tirnkd35YYitk3D
-         UKQPSmBOzsMC/D7QhwiayrioKPVQwY/OvH5UohORrdgtMRe13y/p5lTaeB3ADRRMkrc8
-         xamb86Zw3lIdk5d6qo+E8c7EqO9JovAcxzHhDF4vDGoZ1A5v/wFqZZM8RZfmj9veIz7m
-         y5J2EMcwNMrPYu+OICgocF+1neFeDPsGC71sXPHJQj2D9ft2KtReyCUlt8gG1SILBbQE
-         6ewQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=00A8PXEYv7SUacKbSulI1YeAv3mHRh4MRNuFBd4Lqhg=;
-        b=kGaCqx0x4wIrmJfb+IJpkT/mCoGlGlIeV21yZoR/IQ7Jn+q7vNtFlHrRdBPVTYWn1V
-         xkefhm8RF/moQPCJC926iYeKHHVEWNo/S7RAp+K/uufryVpFIYzFvuWRuUbAjFls6Fqu
-         lmI9rwNZdUNT8a4CWH7+GHN24zh3+hRDxzWu1LRIxpBFxqRhfmqDjC5/KAtniNHIDfcb
-         pt4n+I1W0bMF2DAUa+ZqgONlAdXAJyVS739mN5mhL+Z0IBJXArIPmuayxqDAzmiDXj0k
-         No6u2VEQAkUN+PeYOtx0hoCngHH+DbhDNFDIR3zASf73oomqjeSv2d/5eYjIMzA2ik3O
-         pX6g==
-X-Gm-Message-State: APjAAAWNbRoSmGwjBs2zRYL4zjuRWto+WNjkqRAhoTE12UUJa4wx+HOW
-        4wJYDqWlhKwgzrruPphDb05Wtg==
-X-Google-Smtp-Source: APXvYqyPIeZSUubbpYkFjBLDGn+v8lJZHS00aMD48SIQJFOIfWzk7KWnK9Bg89RW/sYe3fvJKmWtVQ==
-X-Received: by 2002:a37:aa88:: with SMTP id t130mr10257725qke.12.1565977880069;
-        Fri, 16 Aug 2019 10:51:20 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id k16sm3243369qki.119.2019.08.16.10.51.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Aug 2019 10:51:19 -0700 (PDT)
-Date:   Fri, 16 Aug 2019 10:51:02 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Quentin Monnet <quentin.monnet@netronome.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        oss-drivers@netronome.com
-Subject: Re: [PATCH bpf 0/6] tools: bpftool: fix printf()-like functions
-Message-ID: <20190816105102.3a5623b1@cakuba.netronome.com>
-In-Reply-To: <CAADnVQLPg8jEsUbKOxzQc5Q1BKrB=urSWiniGwsJhcm=UM7oKA@mail.gmail.com>
-References: <20190815143220.4199-1-quentin.monnet@netronome.com>
-        <CAADnVQKpPaZ3wJJwSn=JPML9pWzwy_8G9c0H=ToaaxZEJ8isnQ@mail.gmail.com>
-        <10602447-213f-fce5-54c7-7952eb3e8712@netronome.com>
-        <CAADnVQLPg8jEsUbKOxzQc5Q1BKrB=urSWiniGwsJhcm=UM7oKA@mail.gmail.com>
-Organization: Netronome Systems, Ltd.
+        id S1727498AbfHPSNN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Aug 2019 14:13:13 -0400
+Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164]:56664 "EHLO
+        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727490AbfHPSNM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 16 Aug 2019 14:13:12 -0400
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from webmail.solarflare.com (webmail.solarflare.com [12.187.104.26])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1-us5.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 8C6E04C0062;
+        Fri, 16 Aug 2019 18:13:11 +0000 (UTC)
+Received: from [10.17.20.203] (10.17.20.203) by ocex03.SolarFlarecom.com
+ (10.20.40.36) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Fri, 16 Aug
+ 2019 11:13:07 -0700
+Subject: Re: [RFC bpf-next 0/3] tools: bpftool: add subcommand to count map
+ entries
+To:     Quentin Monnet <quentin.monnet@netronome.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <oss-drivers@netronome.com>
+References: <20190813130921.10704-1-quentin.monnet@netronome.com>
+ <20190814015149.b4pmubo3s4ou5yek@ast-mbp>
+ <ab11a9f2-0fbd-d35f-fee1-784554a2705a@netronome.com>
+ <bdb4b47b-25fa-eb96-aa8d-dd4f4b012277@solarflare.com>
+ <18f887ec-99fd-20ae-f5d6-a1f4117b2d77@netronome.com>
+ <84aa97e3-5fde-e041-12c6-85863e27d2d9@solarflare.com>
+ <031de7fd-caa7-9e66-861f-8e46e5bb8851@netronome.com>
+From:   Edward Cree <ecree@solarflare.com>
+Message-ID: <c62611b7-9322-4efe-6b44-cb4087617e29@solarflare.com>
+Date:   Fri, 16 Aug 2019 19:13:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <031de7fd-caa7-9e66-861f-8e46e5bb8851@netronome.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-Originating-IP: [10.17.20.203]
+X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1010-24850.005
+X-TM-AS-Result: No-1.736300-4.000000-10
+X-TMASE-MatchedRID: 7ySqCuYCpfjmLzc6AOD8DfHkpkyUphL99+PHtghP8GLo5ylrWfS0yzKy
+        dfFQiPH7pVO+oN4Yy+nwJd0y95699XufZC0Pz+WkBcaL/tyWL2PDu9Ig2VAzuXRBPvVzfVU/m+q
+        3qIvun/12d8d8QAF3I+P3YB3VAfGPlwV2iaAfSWc5f9Xw/xqKXXJnzNw42kCx2bNx1HEv7HAqtq
+        5d3cxkNcDmktstdnbHsCD6Gug0nSw6dFPM3ONtRe0449QWDDb4Oidh6Pj4BzCFcgJc+QNMwu8bJ
+        ovJYm8FYupx0XjSQPLDOFVmKqGJ4bPn3tFon6UK
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--1.736300-4.000000
+X-TMASE-Version: SMEX-12.5.0.1300-8.5.1010-24850.005
+X-MDID: 1565979192-y5jBoVQEMl90
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 16 Aug 2019 10:11:12 -0700, Alexei Starovoitov wrote:
-> On Fri, Aug 16, 2019 at 9:41 AM Quentin Monnet wrote:
-> > 2019-08-15 22:08 UTC-0700 ~ Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com>  
-> > > On Thu, Aug 15, 2019 at 7:32 AM Quentin Monnet
-> > > <quentin.monnet@netronome.com> wrote:  
-> > >>
-> > >> Hi,
-> > >> Because the "__printf()" attributes were used only where the functions are
-> > >> implemented, and not in header files, the checks have not been enforced on
-> > >> all the calls to printf()-like functions, and a number of errors slipped in
-> > >> bpftool over time.
-> > >>
-> > >> This set cleans up such errors, and then moves the "__printf()" attributes
-> > >> to header files, so that the checks are performed at all locations.  
-> > >
-> > > Applied. Thanks
-> > >  
-> >
-> > Thanks Alexei!
-> >
-> > I noticed the set was applied to the bpf-next tree, and not bpf. Just
-> > checking if this is intentional?  
-> 
-> Yes. I don't see the _fix_ part in there.
+On 15/08/2019 15:15, Quentin Monnet wrote:
+> So if I understand correctly, we would use the bpf() syscall to trigger
+> a run of such program on all map entries (for map implementing the new
+> operation), and the context would include pointers to the key and the
+> value for the entry being processed so we can count/sum/compute an
+> average of the values or any other kind of processing?
+Yep, that's pretty much exactly what I had in mind.
 
-Mm.. these are not critical indeed, but patches 1 and 3 do fix a crash.
-Perhaps those should had been a series on their own. 
-
-We'll recalibrate :)
-
-> Looks like cleanup to me.
-> I've also considered to push
-> commit d34b044038bf ("tools: bpftool: close prog FD before exit on
-> showing a single program")
-> to bpf-next as well.
-> That fd leak didn't feel that necessary to push to bpf tree
-> and risk merge conflicts... but I pushed it to bpf at the end.
-
+-Ed
