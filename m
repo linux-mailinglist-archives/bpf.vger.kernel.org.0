@@ -2,126 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 710709011D
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 14:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE59B90246
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 15:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbfHPMKQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Aug 2019 08:10:16 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:56322 "EHLO mx1.redhat.com"
+        id S1726981AbfHPNBS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Aug 2019 09:01:18 -0400
+Received: from mga12.intel.com ([192.55.52.136]:56584 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727104AbfHPMKQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Aug 2019 08:10:16 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 1964825CCB;
-        Fri, 16 Aug 2019 12:10:16 +0000 (UTC)
-Received: from carbon (ovpn-200-29.brq.redhat.com [10.40.200.29])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6DA721001B28;
-        Fri, 16 Aug 2019 12:10:03 +0000 (UTC)
-Date:   Fri, 16 Aug 2019 14:10:01 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     brouer@redhat.com, <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Michael Holzheu <holzheu@linux.vnet.ibm.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Michal Rostecki <mrostecki@opensuse.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>
-Subject: Re: [PATCH bpf-next] libbpf: relicense bpf_helpers.h and
- bpf_endian.h
-Message-ID: <20190816141001.4a879101@carbon>
-In-Reply-To: <20190816054543.2215626-1-andriin@fb.com>
-References: <20190816054543.2215626-1-andriin@fb.com>
+        id S1726075AbfHPNBS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Aug 2019 09:01:18 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Aug 2019 06:01:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,393,1559545200"; 
+   d="scan'208";a="171409585"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.122]) ([10.237.72.122])
+  by orsmga008.jf.intel.com with ESMTP; 16 Aug 2019 06:01:12 -0700
+Subject: Re: [PATCH v5] perf machine: arm/arm64: Improve completeness for
+ kernel address space
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Suzuki Poulouse <suzuki.poulose@arm.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
+References: <20190815082521.16885-1-leo.yan@linaro.org>
+ <d874e6b3-c115-6c8c-bb12-160cfd600505@intel.com>
+ <20190815113242.GA28881@leoy-ThinkPad-X240s>
+ <e0919e39-7607-815b-3a12-96f098e45a5f@intel.com>
+ <20190816014541.GA17960@leoy-ThinkPad-X240s>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <363577f1-097e-eddd-a6ca-b23f644dd8ce@intel.com>
+Date:   Fri, 16 Aug 2019 16:00:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20190816014541.GA17960@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.25]); Fri, 16 Aug 2019 12:10:16 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 15 Aug 2019 22:45:43 -0700
-Andrii Nakryiko <andriin@fb.com> wrote:
-
-> bpf_helpers.h and bpf_endian.h contain useful macros and BPF helper
-> definitions essential to almost every BPF program. Which makes them
-> useful not just for selftests. To be able to expose them as part of
-> libbpf, though, we need them to be dual-licensed as LGPL-2.1 OR
-> BSD-2-Clause. This patch updates licensing of those two files.
-
-I've already ACKed this, and is fine with (LGPL-2.1 OR BSD-2-Clause).
-
-I just want to understand, why "BSD-2-Clause" and not "Apache-2.0" ?
-
-The original argument was that this needed to be compatible with
-"Apache-2.0", then why not simply add this in the "OR" ?
-
-> Acked-by: Alexei Starovoitov <ast@kernel.org>
-> Acked-by: Hechao Li <hechaol@fb.com>
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
-> Acked-by: Andrey Ignatov <rdna@fb.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
-> Acked-by: Lawrence Brakmo <brakmo@fb.com>
-> Acked-by: Adam Barth <arb@fb.com>
-> Acked-by: Roman Gushchin <guro@fb.com>
-> Acked-by: Josef Bacik <jbacik@fb.com>
-> Acked-by: Joe Stringer <joe@wand.net.nz>
-> Acked-by: Daniel Borkmann <daniel@iogearbox.net>
-> Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Acked-by: David Ahern <dsahern@gmail.com>
-> Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-
-Confirming I acked this.
-
-> Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> Acked-by: Lorenz Bauer <lmb@cloudflare.com>
-> Acked-by: Adrian Ratiu <adrian.ratiu@collabora.com>
-> Acked-by: Nikita V. Shirokov <tehnerd@tehnerd.com>
-> Acked-by: Willem de Bruijn <willemb@google.com>
-> Acked-by: Petar Penkov <ppenkov@google.com>
-> Acked-by: Teng Qin <palmtenor@gmail.com>
-> Cc: Michael Holzheu <holzheu@linux.vnet.ibm.com>
-> Cc: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: Michal Rostecki <mrostecki@opensuse.org>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Sargun Dhillon <sargun@sargun.me>
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  tools/testing/selftests/bpf/bpf_endian.h  | 2 +-
->  tools/testing/selftests/bpf/bpf_helpers.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+On 16/08/19 4:45 AM, Leo Yan wrote:
+> Hi Adrian,
 > 
-> diff --git a/tools/testing/selftests/bpf/bpf_endian.h b/tools/testing/selftests/bpf/bpf_endian.h
-> index 05f036df8a4c..ff3593b0ae03 100644
-> --- a/tools/testing/selftests/bpf/bpf_endian.h
-> +++ b/tools/testing/selftests/bpf/bpf_endian.h
-> @@ -1,4 +1,4 @@
-> -/* SPDX-License-Identifier: GPL-2.0 */
-> +/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
->  #ifndef __BPF_ENDIAN__
->  #define __BPF_ENDIAN__
+> On Thu, Aug 15, 2019 at 02:45:57PM +0300, Adrian Hunter wrote:
+> 
+> [...]
+> 
+>>>> How come you cannot use kallsyms to get the information?
+>>>
+>>> Thanks for pointing out this.  Sorry I skipped your comment "I don't
+>>> know how you intend to calculate ARM_PRE_START_SIZE" when you reviewed
+>>> the patch v3, I should use that chance to elaborate the detailed idea
+>>> and so can get more feedback/guidance before procceed.
+>>>
+>>> Actually, I have considered to use kallsyms when worked on the previous
+>>> patch set.
+>>>
+>>> As mentioned in patch set v4's cover letter, I tried to implement
+>>> machine__create_extra_kernel_maps() for arm/arm64, the purpose is to
+>>> parse kallsyms so can find more kernel maps and thus also can fixup
+>>> the kernel start address.  But I found the 'perf script' tool directly
+>>> calls machine__get_kernel_start() instead of running into the flow for
+>>> machine__create_extra_kernel_maps();
+>>
+>> Doesn't it just need to loop through each kernel map to find the lowest
+>> start address?
+> 
+> Based on your suggestion, I worked out below change and verified it
+> can work well on arm64 for fixing up start address; please let me know
+> if the change works for you?
+
+How does that work if take a perf.data file to a machine with a different
+architecture?
+
+> 
+> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> index f6ee7fbad3e4..51d78313dca1 100644
+> --- a/tools/perf/util/machine.c
+> +++ b/tools/perf/util/machine.c
+> @@ -2671,9 +2671,26 @@ int machine__nr_cpus_avail(struct machine *machine)
+>  	return machine ? perf_env__nr_cpus_avail(machine->env) : 0;
+>  }
 >  
-> diff --git a/tools/testing/selftests/bpf/bpf_helpers.h b/tools/testing/selftests/bpf/bpf_helpers.h
-> index 8b503ea142f0..6c4930bc6e2e 100644
-> --- a/tools/testing/selftests/bpf/bpf_helpers.h
-> +++ b/tools/testing/selftests/bpf/bpf_helpers.h
-> @@ -1,4 +1,4 @@
-> -/* SPDX-License-Identifier: GPL-2.0 */
-> +/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
->  #ifndef __BPF_HELPERS_H
->  #define __BPF_HELPERS_H
+> +static int machine__fixup_kernel_start(void *arg,
+> +				       const char *name __maybe_unused,
+> +				       char type,
+> +				       u64 start)
+> +{
+> +	struct machine *machine = arg;
+> +
+> +	type = toupper(type);
+> +
+> +	/* Fixup for text, weak, data and bss sections. */
+> +	if (type == 'T' || type == 'W' || type == 'D' || type == 'B')
+> +		machine->kernel_start = min(machine->kernel_start, start);
+> +
+> +	return 0;
+> +}
+> +
+>  int machine__get_kernel_start(struct machine *machine)
+>  {
+>  	struct map *map = machine__kernel_map(machine);
+> +	char filename[PATH_MAX];
+>  	int err = 0;
 >  
+>  	/*
+> @@ -2687,6 +2704,7 @@ int machine__get_kernel_start(struct machine *machine)
+>  	machine->kernel_start = 1ULL << 63;
+>  	if (map) {
+>  		err = map__load(map);
+>  		/*
+>  		 * On x86_64, PTI entry trampolines are less than the
+>  		 * start of kernel text, but still above 2^63. So leave
+> @@ -2695,6 +2713,16 @@ int machine__get_kernel_start(struct machine *machine)
+>  		if (!err && !machine__is(machine, "x86_64"))
+>  			machine->kernel_start = map->start;
+>  	}
+> +
+> +	machine__get_kallsyms_filename(machine, filename, PATH_MAX);
+> +
+> +	if (symbol__restricted_filename(filename, "/proc/kallsyms"))
+> +		goto out;
+> +
+> +	if (kallsyms__parse(filename, machine, machine__fixup_kernel_start))
+> +		pr_warning("Fail to fixup kernel start address. skipping...\n");
+> +
+> +out:
+>  	return err;
+>  }
+> 
+> Thanks,
+> Leo Yan
+> 
 
-
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
