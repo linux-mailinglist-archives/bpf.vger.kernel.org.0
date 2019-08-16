@@ -2,160 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7540290584
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 18:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B109C905A3
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 18:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727540AbfHPQNE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Aug 2019 12:13:04 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:34896 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727441AbfHPQNE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Aug 2019 12:13:04 -0400
-Received: by mail-pf1-f196.google.com with SMTP id d85so3369121pfd.2
-        for <bpf@vger.kernel.org>; Fri, 16 Aug 2019 09:13:04 -0700 (PDT)
+        id S1726345AbfHPQUc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Aug 2019 12:20:32 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:34461 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726265AbfHPQUc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Aug 2019 12:20:32 -0400
+Received: by mail-pg1-f194.google.com with SMTP id n9so3190539pgc.1
+        for <bpf@vger.kernel.org>; Fri, 16 Aug 2019 09:20:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=fomichev-me.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=WQixU0fZP8Z2akFwLIh0P4tmgyV6zz+KmxGRGUStWaQ=;
-        b=xOAXPRWNhEyLpz5iV3fw1FUOQOW8dTEGcnwCP6caZ5GaOLsEchUFFmXhTe5qBoA/g9
-         2oqzNTJ9ZBWRUZrCEY0WAzPvgiEl4i3zxsXTrq3j19eLGQvYdJnwr2KI9+6aVBY5OS87
-         5p2OuhOdF1Do/PeNASm+OifXB0Yfcm4U5qoNejL4K2PZNEd303jSDIhn9J46fOSz+/f/
-         4qZ0W7SFJ7Z42Tjc1tvyHsbkXSvg5n1njPXAZOZe0OjSc6tGryvg7u1z+Fm17BT1ktmL
-         uSYejeqLUSR0HhYOi16fKFjsDCiiWVYmPXkruklOGb8il8rp/Oy9YpAhgH72mnbO/NX+
-         d0FQ==
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=Z+jwXCn4Nrf4ggKgpv88PtHdT/59MEwcFoA29WZ+sWM=;
+        b=dq+JJrDDK/vTTtdT4WHD4v4RDL9h/yIunZwnbmuOuqunmGJdQyUzUsTj/lD/mZhylI
+         0Uqult2Bt5JSQ8EaQEl0bQaQsm2t2f/WXie0vLHISDR3AS696sifXQxIkqsPiOYfxt6T
+         R7LMe8Wz5CRbsbcLqB09MGC3Bi1GbY6i6g9iDntWdhEKUpfdL2tZTKo+Nwyl2SCpBcCY
+         ds7JZsTVICFO8Y1Yx6+Ejm3Q9uxVPZqKGRQJ91KQBaXnvn6wf11r8I02A/7piKe2KSPo
+         iOLLHtC1eRnT/kKxXk2rViALmSR+4cCShj8sBO+lOeL2+U1JSLSCTVfsGqVEBaB88rNu
+         xtNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WQixU0fZP8Z2akFwLIh0P4tmgyV6zz+KmxGRGUStWaQ=;
-        b=DomlWoNAr0SWmx6mSkxwHDi35LZvKdV9R55T3veN5slJ8J1AgLDbl5LBSEW2JSzWuA
-         6WgyJlSoMhRsfDCopJdDB5cqxwMhGdEThtaMIZWfcY06V+17GTSabs5ovgRdfGc4drpy
-         QWGFURBLS9/b3AWQTLRHP1tuG+i68a0fuPrvZLwpeNA+nKhxOdYwXd7aDqyN+5pz6W86
-         nNpxEzBTdVuCzBbg7Y/LBxXhW+mKmg7kzOpacbFm3xCDKyoifjIAt4jhwn0Tf2Ig/jjP
-         eZCnTQSPaCjJFM3M6U/gMmFq5wy49p7vr9BE/TNunuE+cjgDOb1AUDEBs+yVLnLSh7fh
-         5PZg==
-X-Gm-Message-State: APjAAAVeCvYJNeADOf+i5azwrkkYiWacfRiuATjEUSHiSunh8s3Zj0Oj
-        S9dm9PtjLdA6/vuESWezdC1cDg==
-X-Google-Smtp-Source: APXvYqyH1PmTjiubGIUx2pWC75jcQLxJflbOUj7GlvarB6iqgf4+i21Gxo3DKbYGLck6jU+tN6KoTg==
-X-Received: by 2002:aa7:842f:: with SMTP id q15mr11503809pfn.250.1565971983984;
-        Fri, 16 Aug 2019 09:13:03 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=Z+jwXCn4Nrf4ggKgpv88PtHdT/59MEwcFoA29WZ+sWM=;
+        b=pb0Gh98nLs897wSDW3AZZNelJenDUh2Q1lqD8AY4oVuDpi4aDy9WljU1T3J9aXgmZZ
+         kii/4+qwD3R6fcbOqlwaDh7GDIABV2khOPmVvh1D8gWorwYpozH00UjpKeEZV3DSJXqX
+         jpR+Keq9tW+rQA0D9brZcZZM/M2JAl8iRt+HoQwPCozI6wb6rGlaoOR/Fob+Z2bK0TNp
+         V/c4Wi7Q3gCixPnS5zSwnQwzus6PP+la0HxEzmtAMdbWHsikU5jIqeYC9ITp6U5WRrJP
+         8FZdEi9FH8YdsiElukrT800x6rzmwAhofpKTFU9KEUclKMl42ikaCKZXaSAD/XVSJeeO
+         kvdg==
+X-Gm-Message-State: APjAAAUVft8WtZGuHWNqjHfaOBRaE0qTN+z8NYetNMgZ6nfe7P0oT3eM
+        HP6/eAGQYinMyUsXSl7aIZy7NQ==
+X-Google-Smtp-Source: APXvYqy7xbf0oeZMLxRIKCMpxiZxJiFL+gKjY3snNZxR195IKv4ZDKrh4MMrMH5ydsuFGEAgnd3WNA==
+X-Received: by 2002:a63:ff0c:: with SMTP id k12mr8156108pgi.186.1565972431208;
+        Fri, 16 Aug 2019 09:20:31 -0700 (PDT)
 Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id z12sm1117798pfg.21.2019.08.16.09.13.03
+        by smtp.gmail.com with ESMTPSA id o11sm7318906pfh.114.2019.08.16.09.20.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Aug 2019 09:13:03 -0700 (PDT)
-Date:   Fri, 16 Aug 2019 09:13:02 -0700
+        Fri, 16 Aug 2019 09:20:30 -0700 (PDT)
+Date:   Fri, 16 Aug 2019 09:20:29 -0700
 From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Petar Penkov <ppenkov.kernel@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        ast@kernel.org, daniel@iogearbox.net, sdf@google.com,
-        Petar Penkov <ppenkov@google.com>
-Subject: Re: [bpf-next] selftests/bpf: fix race in test_tcp_rtt test
-Message-ID: <20190816161302.GQ2820@mini-arch>
-References: <20190816160339.249832-1-ppenkov.kernel@gmail.com>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, William Tu <u9012063@gmail.com>
+Subject: Re: [RFC PATCH bpf-next 00/14] xdp_flow: Flow offload to XDP
+Message-ID: <20190816162029.GR2820@mini-arch>
+References: <20190813120558.6151-1-toshiaki.makita1@gmail.com>
+ <20190814170715.GJ2820@mini-arch>
+ <14c4a876-6f5d-4750-cbe4-19622f64975b@gmail.com>
+ <20190815152100.GN2820@mini-arch>
+ <20190815122232.4b1fa01c@cakuba.netronome.com>
+ <20190816155911.GP2820@mini-arch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20190816160339.249832-1-ppenkov.kernel@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190816155911.GP2820@mini-arch>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 08/16, Petar Penkov wrote:
-> From: Petar Penkov <ppenkov@google.com>
-> 
-> There is a race in this test between receiving the ACK for the
-> single-byte packet sent in the test, and reading the values from the
-> map.
-> 
-> This patch fixes this by having the client wait until there are no more
-> unacknowledged packets.
-> 
-> Before:
-> for i in {1..1000}; do ../net/in_netns.sh ./test_tcp_rtt; \
-> done | grep -c PASSED
-> < trimmed error messages >
-> 993
-> 
-> After:
-> for i in {1..10000}; do ../net/in_netns.sh ./test_tcp_rtt; \
-> done | grep -c PASSED
-> 10000
-> 
-> Fixes: b55873984dab ("selftests/bpf: test BPF_SOCK_OPS_RTT_CB")
-> Signed-off-by: Petar Penkov <ppenkov@google.com>
-> ---
->  tools/testing/selftests/bpf/test_tcp_rtt.c | 31 ++++++++++++++++++++++
->  1 file changed, 31 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/test_tcp_rtt.c b/tools/testing/selftests/bpf/test_tcp_rtt.c
-> index 90c3862f74a8..2b4754473956 100644
-> --- a/tools/testing/selftests/bpf/test_tcp_rtt.c
-> +++ b/tools/testing/selftests/bpf/test_tcp_rtt.c
-> @@ -6,6 +6,7 @@
->  #include <sys/types.h>
->  #include <sys/socket.h>
->  #include <netinet/in.h>
-> +#include <netinet/tcp.h>
->  #include <pthread.h>
->  
->  #include <linux/filter.h>
-> @@ -34,6 +35,30 @@ static void send_byte(int fd)
->  		error(1, errno, "Failed to send single byte");
->  }
->  
-> +static int wait_for_ack(int fd, int retries)
-> +{
-> +	struct tcp_info info;
-> +	socklen_t optlen;
-> +	int i, err;
-> +
-> +	for (i = 0; i < retries; i++) {
-> +		optlen = sizeof(info);
-> +		err = getsockopt(fd, SOL_TCP, TCP_INFO, &info, &optlen);
-> +		if (err < 0) {
-> +			log_err("Failed to lookup TCP stats");
-> +			return err;
-> +		}
-> +
-> +		if (info.tcpi_unacked == 0)
-> +			return 0;
-> +
-> +		sleep(1);
-Isn't it too big of a hammer? Maybe usleep(10) here and do x100 retries
-instead?
+On 08/16, Stanislav Fomichev wrote:
+> On 08/15, Jakub Kicinski wrote:
+> > On Thu, 15 Aug 2019 08:21:00 -0700, Stanislav Fomichev wrote:
+> > > On 08/15, Toshiaki Makita wrote:
+> > > > On 2019/08/15 2:07, Stanislav Fomichev wrote:  
+> > > > > On 08/13, Toshiaki Makita wrote:  
+> > > > > > * Implementation
+> > > > > > 
+> > > > > > xdp_flow makes use of UMH to load an eBPF program for XDP, similar to
+> > > > > > bpfilter. The difference is that xdp_flow does not generate the eBPF
+> > > > > > program dynamically but a prebuilt program is embedded in UMH. This is
+> > > > > > mainly because flow insertion is considerably frequent. If we generate
+> > > > > > and load an eBPF program on each insertion of a flow, the latency of the
+> > > > > > first packet of ping in above test will incease, which I want to avoid.  
+> > > > > Can this be instead implemented with a new hook that will be called
+> > > > > for TC events? This hook can write to perf event buffer and control
+> > > > > plane will insert/remove/modify flow tables in the BPF maps (contol
+> > > > > plane will also install xdp program).
+> > > > > 
+> > > > > Why do we need UMH? What am I missing?  
+> > > > 
+> > > > So you suggest doing everything in xdp_flow kmod?  
+> > > You probably don't even need xdp_flow kmod. Add new tc "offload" mode
+> > > (bypass) that dumps every command via netlink (or calls the BPF hook
+> > > where you can dump it into perf event buffer) and then read that info
+> > > from userspace and install xdp programs and modify flow tables.
+> > > I don't think you need any kernel changes besides that stream
+> > > of data from the kernel about qdisc/tc flow creation/removal/etc.
+> > 
+> > There's a certain allure in bringing the in-kernel BPF translation
+> > infrastructure forward. OTOH from system architecture perspective IMHO
+> > it does seem like a task best handed in user space. bpfilter can replace
+> > iptables completely, here we're looking at an acceleration relatively
+> > loosely coupled with flower.
+> Even for bpfilter I would've solved it using something similar:
+> iptables bypass + redirect iptables netlink requests to some
+> userspace helper that was registered to be iptables compatibility
+> manager. And then, again, it becomes a purely userspace problem.
+Oh, wait, isn't iptables kernel api is setsockopt/getsockopt?
+With the new cgroup hooks you can now try to do bpfilter completely
+in BPF 🤯
 
-> +	}
-> +
-> +	log_err("Did not receive ACK");
-> +	return -1;
-> +}
-> +
->  static int verify_sk(int map_fd, int client_fd, const char *msg, __u32 invoked,
->  		     __u32 dsack_dups, __u32 delivered, __u32 delivered_ce,
->  		     __u32 icsk_retransmits)
-> @@ -149,6 +174,11 @@ static int run_test(int cgroup_fd, int server_fd)
->  			 /*icsk_retransmits=*/0);
->  
->  	send_byte(client_fd);
-> +	if (wait_for_ack(client_fd, 5) < 0) {
-> +		err = -1;
-> +		goto close_client_fd;
-> +	}
-> +
->  
->  	err += verify_sk(map_fd, client_fd, "first payload byte",
->  			 /*invoked=*/2,
-> @@ -157,6 +187,7 @@ static int run_test(int cgroup_fd, int server_fd)
->  			 /*delivered_ce=*/0,
->  			 /*icsk_retransmits=*/0);
->  
-> +close_client_fd:
->  	close(client_fd);
->  
->  close_bpf_object:
-> -- 
-> 2.23.0.rc1.153.gdeed80330f-goog
+> The issue with UMH is that the helper has to be statically compiled
+> from the kernel tree, which means we can't bring in any dependencies
+> (stuff like libkefir you mentioned below).
 > 
+> But I digress :-)
+> 
+> > FWIW Quentin spent some time working on a universal flow rule to BPF
+> > translation library:
+> > 
+> > https://github.com/Netronome/libkefir
+> > 
+> > A lot remains to be done there, but flower front end is one of the
+> > targets. A library can be tuned for any application, without a
+> > dependency on flower uAPI.
+> > 
+> > > But, I haven't looked at the series deeply, so I might be missing
+> > > something :-)
+> > 
+> > I don't think you are :)
