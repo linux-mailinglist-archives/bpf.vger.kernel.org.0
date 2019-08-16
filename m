@@ -2,152 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 352898F853
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 03:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CABC98F85C
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 03:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725983AbfHPBJg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Aug 2019 21:09:36 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:34896 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbfHPBJg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Aug 2019 21:09:36 -0400
-Received: by mail-pl1-f194.google.com with SMTP id gn20so1747626plb.2;
-        Thu, 15 Aug 2019 18:09:35 -0700 (PDT)
+        id S1726317AbfHPBLq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Aug 2019 21:11:46 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:46657 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbfHPBLq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Aug 2019 21:11:46 -0400
+Received: by mail-qk1-f196.google.com with SMTP id p13so3383036qkg.13
+        for <bpf@vger.kernel.org>; Thu, 15 Aug 2019 18:11:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1YMHTogQxms124knKvOrhV4+uPKPBj4yRMMTsLFzfAQ=;
-        b=Y73dfJIL8GcU9PVBfZcWVtpLsdjcGk4E87sykad4dWHU3Gme8BXOifDxxtcP06d+jA
-         bYA80CWez7+Kc0BWTU9SL3F9KGkSsiCsL5rraN+uEDVpxiolHCQcSp/iwEJjXLTVG4at
-         g7gsWvoT4adSsnKEt/sPy/6kZsv04E3w+Q0AjkKdp+BNz2Z1SkJ92s031vKENDGU0b1x
-         SJcanuMc6dKL1qqJ0vVheAZqtpZpa5EcjJe84EXH0+RMm47cohfO7jTmieeJTxIO4kNj
-         ccXFV1V8BdW9nMl03YwnKZK8yRzd8Yr20WSE9SL9v0sfBvu+C9wEMqP0PXVF5LOpquzV
-         yUXw==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=Rbq2eJ7KZq0RzLXpjgW/ZcfZFRzoMUskGtK7fK2K5/g=;
+        b=CZaii7gcMhA9ZeQo9LX9swlMehFen1b/QndvEsnqnWrH9arEWtW09Gi5GDXTBU17kE
+         vj8vpWBKMc6riL+e1obdBk8//rCKbi5Psxxyb7J5FoGLrq1aYXCAJVnaX36Ks7ySzRAi
+         Q5V2uYIdiI3c2J6WujNycfK60lb66/CMRsyLNIUlkDfo2AoZg+hZpdUdGzo2/wIfckIg
+         bv4QnCDyNMgwtmvM+EmwCfooU3m0ttGdywy2HjakjLDog9f4Bn0sT6xqVG/m9cvux8em
+         E+fJoHd7BPzlJdhVwdlMwokV9L7MFEKymsP+3o6gXpnKll2IsX3x+kiFJRVgRXWFLFaf
+         obNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1YMHTogQxms124knKvOrhV4+uPKPBj4yRMMTsLFzfAQ=;
-        b=kY4JS8EgNaLqDufRuMVmJpDreh1Q5ykdAhsfnHOO5RpQJlo3iEeDbv39WMO+GGZOqM
-         ZlxdLTA7awh+CSytby+abUMT7iWInSlluNq695RLLO3QRrX/bgRkYkJuq0UXDS3xAl7T
-         /JNOTVO4AL4qjUS9xQMuzsCMkBGq61zcdX4LUkput5NBy2j9DPWAl9HvYkfos/x75dOp
-         E0w47cjnflMt0GJ1jQfxtwozukaTONe0vYlWPg5jR7HE9at07GpMkq4d2GlETdD045D+
-         LRrNkqC1c/oPB1RAq5B2KjZwcBD2IqZ7Sq7bHlqnFFsbQHchVkCZVyR4Svgyu00V3Xo7
-         GsMw==
-X-Gm-Message-State: APjAAAVUlowXJcsHG49ZgvIFcB59F4qfaI3L+EWjXPhEnsm9eoWg2zV+
-        4OA0F7skkip+wEUdRZiQT9rL6RVY
-X-Google-Smtp-Source: APXvYqwIC5ILNmOPeqjn0HH+UMYJLq2biuhwUqT1z1RQLlgt8VJyiMRosZi9n5ET7n2ZU9gNg06s7A==
-X-Received: by 2002:a17:902:7448:: with SMTP id e8mr6821694plt.85.1565917775588;
-        Thu, 15 Aug 2019 18:09:35 -0700 (PDT)
-Received: from [172.20.20.103] ([222.151.198.97])
-        by smtp.gmail.com with ESMTPSA id x17sm4157030pff.62.2019.08.15.18.09.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Aug 2019 18:09:34 -0700 (PDT)
-Subject: Re: [RFC PATCH bpf-next 00/14] xdp_flow: Flow offload to XDP
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, William Tu <u9012063@gmail.com>
-References: <20190813120558.6151-1-toshiaki.makita1@gmail.com>
- <20190814170715.GJ2820@mini-arch>
- <14c4a876-6f5d-4750-cbe4-19622f64975b@gmail.com>
- <20190815152100.GN2820@mini-arch>
-From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
-Message-ID: <4614fefc-fc43-8cf7-d064-7dc1947acc6c@gmail.com>
-Date:   Fri, 16 Aug 2019 10:09:28 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=Rbq2eJ7KZq0RzLXpjgW/ZcfZFRzoMUskGtK7fK2K5/g=;
+        b=ZmdUzUA/YFT3w3HVBsJZV0C9X6lO3rXgAhjP8pJrsmfO1s3rFEmM3XgDCf8Ul9rKAA
+         i0hhxKJNQ7dPwnktOq9FSS7EmwpYePB92WtPWiJd5N/oQQtMyzWTj9YajsKGnBsS6+kg
+         6v1aa9MfGXK79wmwA+rlgp5TN3ojvsyp/YfNLl0bwHgb3GrZIETiHGFrWR7oqgRw8cFk
+         CWLmbCuv+DUewIKxssSvouD54JTh0JI5mCBgcarZQUQZa6isIzDtyA2MIba2hiHyU9II
+         FP+ZCLx9RLjz0hGMnPsIVGRGqcgreiaMUjJFQSu3DVHSQ77/JngTh4pB08kXeVIMudNk
+         UK2w==
+X-Gm-Message-State: APjAAAUXWfCZ92Pkn0PKrSWfBLJF0301nrf6yO2nkU9/APphZXTx2Jhu
+        mhcXmXIoXMQ1YZrav7ULiAVfyg==
+X-Google-Smtp-Source: APXvYqzK0n1SoR2Vc+r61iNqCltlb6bI/Y1APffNLbi25Uh59bRhBAhSvbGXuecmywiutAgoXpK1LA==
+X-Received: by 2002:a05:620a:691:: with SMTP id f17mr6883617qkh.470.1565917905610;
+        Thu, 15 Aug 2019 18:11:45 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id v81sm2390151qkb.21.2019.08.15.18.11.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Aug 2019 18:11:45 -0700 (PDT)
+Date:   Thu, 15 Aug 2019 18:11:29 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     syzbot <syzbot+6a9ff159672dfbb41c95@syzkaller.appspotmail.com>,
+        ast@kernel.org, aviadye@mellanox.com, borisp@mellanox.com,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davejwatson@fb.com,
+        davem@davemloft.net, john.fastabend@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Subject: Re: INFO: task hung in tls_sw_release_resources_tx
+Message-ID: <20190815181129.561cef8f@cakuba.netronome.com>
+In-Reply-To: <20190815141419.15036-1-hdanton@sina.com>
+References: <20190815141419.15036-1-hdanton@sina.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-In-Reply-To: <20190815152100.GN2820@mini-arch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2019/08/16 0:21, Stanislav Fomichev wrote:
-> On 08/15, Toshiaki Makita wrote:
->> On 2019/08/15 2:07, Stanislav Fomichev wrote:
->>> On 08/13, Toshiaki Makita wrote:
->>>> * Implementation
->>>>
->>>> xdp_flow makes use of UMH to load an eBPF program for XDP, similar to
->>>> bpfilter. The difference is that xdp_flow does not generate the eBPF
->>>> program dynamically but a prebuilt program is embedded in UMH. This is
->>>> mainly because flow insertion is considerably frequent. If we generate
->>>> and load an eBPF program on each insertion of a flow, the latency of the
->>>> first packet of ping in above test will incease, which I want to avoid.
->>> Can this be instead implemented with a new hook that will be called
->>> for TC events? This hook can write to perf event buffer and control
->>> plane will insert/remove/modify flow tables in the BPF maps (contol
->>> plane will also install xdp program).
->>>
->>> Why do we need UMH? What am I missing?
->>
->> So you suggest doing everything in xdp_flow kmod?
-> You probably don't even need xdp_flow kmod. Add new tc "offload" mode
-> (bypass) that dumps every command via netlink (or calls the BPF hook
-> where you can dump it into perf event buffer) and then read that info
-> from userspace and install xdp programs and modify flow tables.
-> I don't think you need any kernel changes besides that stream
-> of data from the kernel about qdisc/tc flow creation/removal/etc.
-
-My intention is to make more people who want high speed network easily use XDP,
-so making transparent XDP offload with current TC interface.
-
-What userspace program would monitor TC events with your suggestion?
-ovs-vswitchd? If so, it even does not need to monitor TC. It can
-implement XDP offload directly.
-(However I prefer kernel solution. Please refer to "About alternative
-userland (ovs-vswitchd etc.) implementation" section in the cover letter.)
-
-Also such a TC monitoring solution easily can be out-of-sync with real TC
-behavior as TC filter/flower is being heavily developed and changed,
-e.g. introduction of TC block, support multiple masks with the same pref, etc.
-I'm not sure such an unreliable solution have much value.
-
-> But, I haven't looked at the series deeply, so I might be missing
-> something :-)
+On Thu, 15 Aug 2019 22:14:19 +0800, Hillf Danton wrote:
+> On Thu, 15 Aug 2019 03:54:06 -0700
+> > Hello,
+> > 
+> > syzbot found the following crash on:
+> > 
+> > HEAD commit:    6d5afe20 sctp: fix memleak in sctp_send_reset_streams
+> > git tree:       net
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=16e5536a600000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=a4c9e9f08e9e8960
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=6a9ff159672dfbb41c95
+> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17cb0502600000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14d5dc22600000
+> > 
+> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > Reported-by: syzbot+6a9ff159672dfbb41c95@syzkaller.appspotmail.com
+> > 
+> > INFO: task syz-executor153:10198 blocked for more than 143 seconds.
+> >        Not tainted 5.3.0-rc3+ #162
+> > "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> > syz-executor153 D27672 10198  10179 0x80000002
+> > Call Trace:
+> >   context_switch kernel/sched/core.c:3254 [inline]
+> >   __schedule+0x755/0x1580 kernel/sched/core.c:3880
+> >   schedule+0xa8/0x270 kernel/sched/core.c:3944
+> >   schedule_timeout+0x717/0xc50 kernel/time/timer.c:1783
+> >   do_wait_for_common kernel/sched/completion.c:83 [inline]
+> >   __wait_for_common kernel/sched/completion.c:104 [inline]
+> >   wait_for_common kernel/sched/completion.c:115 [inline]
+> >   wait_for_completion+0x29c/0x440 kernel/sched/completion.c:136
+> >   crypto_wait_req include/linux/crypto.h:685 [inline]
+> >   crypto_wait_req include/linux/crypto.h:680 [inline]
+> >   tls_sw_release_resources_tx+0x4ee/0x6b0 net/tls/tls_sw.c:2075
+> >   tls_sk_proto_cleanup net/tls/tls_main.c:275 [inline]
+> >   tls_sk_proto_close+0x686/0x970 net/tls/tls_main.c:305
+> >   inet_release+0xed/0x200 net/ipv4/af_inet.c:427
+> >   inet6_release+0x53/0x80 net/ipv6/af_inet6.c:470
+> >   __sock_release+0xce/0x280 net/socket.c:590
+> >   sock_close+0x1e/0x30 net/socket.c:1268
+> >   __fput+0x2ff/0x890 fs/file_table.c:280
+> >   ____fput+0x16/0x20 fs/file_table.c:313
+> >   task_work_run+0x145/0x1c0 kernel/task_work.c:113
+> >   exit_task_work include/linux/task_work.h:22 [inline]
+> >   do_exit+0x92f/0x2e50 kernel/exit.c:879
+> >   do_group_exit+0x135/0x360 kernel/exit.c:983
+> >   __do_sys_exit_group kernel/exit.c:994 [inline]
+> >   __se_sys_exit_group kernel/exit.c:992 [inline]
+> >   __x64_sys_exit_group+0x44/0x50 kernel/exit.c:992
+> >   do_syscall_64+0xfd/0x6a0 arch/x86/entry/common.c:296
+> >   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> > RIP: 0033:0x43ff88
+> > Code: 00 00 be 3c 00 00 00 eb 19 66 0f 1f 84 00 00 00 00 00 48 89 d7 89 f0  
+> > 0f 05 48 3d 00 f0 ff ff 77 21 f4 48 89 d7 44 89 c0 0f 05 <48> 3d 00 f0 ff  
+> > ff 76 e0 f7 d8 64 41 89 01 eb d8 0f 1f 84 00 00 00
+> > RSP: 002b:00007ffd1c2d0f78 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+> > RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 000000000043ff88
+> > RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
+> > RBP: 00000000004bf890 R08: 00000000000000e7 R09: ffffffffffffffd0
+> > R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+> > R13: 00000000006d1180 R14: 0000000000000000 R15: 0000000000000000
+> > INFO: lockdep is turned off.
+> > NMI backtrace for cpu 0
+> > CPU: 0 PID: 1057 Comm: khungtaskd Not tainted 5.3.0-rc3+ #162
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+> > Google 01/01/2011
+> > Call Trace:
+> >   __dump_stack lib/dump_stack.c:77 [inline]
+> >   dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+> >   nmi_cpu_backtrace.cold+0x70/0xb2 lib/nmi_backtrace.c:101
+> >   nmi_trigger_cpumask_backtrace+0x23b/0x28b lib/nmi_backtrace.c:62
+> >   arch_trigger_cpumask_backtrace+0x14/0x20 arch/x86/kernel/apic/hw_nmi.c:38
+> >   trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+> >   check_hung_uninterruptible_tasks kernel/hung_task.c:205 [inline]
+> >   watchdog+0x9d0/0xef0 kernel/hung_task.c:289
+> >   kthread+0x361/0x430 kernel/kthread.c:255
+> >   ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+> > Sending NMI from CPU 0 to CPUs 1:
+> > NMI backtrace for cpu 1 skipped: idling at native_safe_halt+0xe/0x10  
+> > arch/x86/include/asm/irqflags.h:60  
 > 
->> I also thought about that. There are two phases so let's think about them separately.
->>
->> 1) TC block (qdisc) creation / eBPF load
->>
->> I saw eBPF maintainers repeatedly saying eBPF program loading needs to be
->> done from userland, not from kernel, to run the verifier for safety.
->> However xdp_flow eBPF program is prebuilt and embedded in kernel so we may
->> allow such programs to be loaded from kernel? I currently don't have the will
->> to make such an API as loading can be done with current UMH mechanism.
->>
->> 2) flow insertion / eBPF map update
->>
->> Not sure if this needs to be done from userland. One concern is that eBPF maps can
->> be modified by unrelated processes and we need to handle all unexpected state of maps.
->> Such handling tends to be difficult and may cause unexpected kernel behavior.
->> OTOH updating maps from kmod may reduces the latency of flow insertion drastically.
-> Latency from the moment I type 'tc filter add ...' to the moment the rule
-> is installed into the maps? Does it really matter?
+> 1, diff -> commit f87e62d45e51 -> commit 1023121375c6
+> 
+> --- a/net/tls/tls_sw.c
+> +++ b/net/tls/tls_sw.c
+> @@ -2167,11 +2167,13 @@ static void tx_work_handler(struct work_
+>  		return;
+>  
+>  	ctx = tls_sw_ctx_tx(tls_ctx);
+> -	if (test_bit(BIT_TX_CLOSING, &ctx->tx_bitmask))
+> -		return;
+> -
+> -	if (!test_and_clear_bit(BIT_TX_SCHEDULED, &ctx->tx_bitmask))
+> -		return;
+> +	if (test_bit(BIT_TX_CLOSING, &ctx->tx_bitmask)) {
+> +		if (!test_bit(BIT_TX_SCHEDULED, &ctx->tx_bitmask))
+> +			return;
+> +	} else {
+> +		if (!test_and_clear_bit(BIT_TX_SCHEDULED, &ctx->tx_bitmask))
+> +			return;
+> +	}
+>  	lock_sock(sk);
+>  	tls_tx_records(sk, -1);
+>  	release_sock(sk);
+> --
+> 
+> 2, a simpler one. And clear BIT_TX_SCHEDULED perhaps after releasing sock.
+> 
+> --- a/net/tls/tls_sw.c
+> +++ b/net/tls/tls_sw.c
+> @@ -2167,11 +2167,9 @@ static void tx_work_handler(struct work_
+>  		return;
+>  
+>  	ctx = tls_sw_ctx_tx(tls_ctx);
+> -	if (test_bit(BIT_TX_CLOSING, &ctx->tx_bitmask))
+> -		return;
+> +	if (!test_bit(BIT_TX_CLOSING, &ctx->tx_bitmask))
+> +		clear_bit(BIT_TX_SCHEDULED, &ctx->tx_bitmask);
+>  
+> -	if (!test_and_clear_bit(BIT_TX_SCHEDULED, &ctx->tx_bitmask))
+> -		return;
+>  	lock_sock(sk);
+>  	tls_tx_records(sk, -1);
+>  	release_sock(sk);
 
-Yes it matters. Flow insertion is kind of data path in OVS.
-Please see how ping latency is affected in the cover letter.
+Mmm.. too terse, I don't follow what you're trying to do here :(
 
-> Do I understand correctly that both of those events (qdisc creation and
-> flow insertion) are triggered from tcf_block_offload_cmd (or similar)?
+I've been staring at this for a while and trying to repo but it's not
+happening here.
 
-Both of eBPF load and map update are triggered from tcf_block_offload_cmd.
-I think you understand it correctly.
-
-Toshiaki Makita
+The only thing I see is that EBUSY is not handled.
