@@ -2,135 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B502904E1
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 17:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE379051E
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 17:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727345AbfHPPoM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Aug 2019 11:44:12 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:10834 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727311AbfHPPoM (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 16 Aug 2019 11:44:12 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7GFeaKR000905;
-        Fri, 16 Aug 2019 08:43:48 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=21D7G6Ke6G6M2hj2FV6sqAHfMqazQkrXL0AmMN30+Kw=;
- b=Q405bchW6C/aLxoqXTSUk+b2zBLk563f4GpQqwIzFDsFoDV8ON18gJ8+S8buOg36jESE
- E9jTP1Dx71+lg5d8IJYcV3DCm5SmPA80QzVJn8ocRMEmfQ9ySP57VhJnJkK0VFeqOQDb
- fivqIrxBKUDvte0Hv5vzUPGgDTuSRXKTumU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2udsxesaqr-10
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 16 Aug 2019 08:43:48 -0700
-Received: from ash-exhub102.TheFacebook.com (2620:10d:c0a8:82::f) by
- ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 16 Aug 2019 08:43:25 -0700
-Received: from NAM01-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Fri, 16 Aug 2019 08:43:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mPSYB0FruXuZJOAv2ZCyGjvdRFBza8FF8BDRrvzohx3xhJylz8BuBJMUB6u1ZiR9MY6YWNZ9Q3KG49VXsYeExlsJyAQgXtU9toKsIiLTh3QoUc/X/IKfRVo64HmQiCBQHwq2WQKSe6I4yx0BBeUcwrWyEnH8BYAKvmz97yR7Z099MG5NEqRSlWYqa7ubboapq2r0fDtL1XzOuqMyPe1LWI0ZnnBNfqZZz2R2WE80siU6JIfv70w8wxdpjHgi5EDKtIp2K8LYkwnRoDLlp9Gf8aSvM4zRDb92sFmx/k347DS5vuQJ6n3K4FBdwBu3e5bAMPe5sc3y4rUk6KdJJuzghQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=21D7G6Ke6G6M2hj2FV6sqAHfMqazQkrXL0AmMN30+Kw=;
- b=UaH/LiecIG2CIRsRAOoLxblebf5e0LyJDPztVFy65x2v6jHfUbcNSR+UTY/dv7B5Mld7Qx0NUcThpX7GG15oFWQ2o6P9Zjwgnj7lXxK/Vtk3FBuHlv53mREOzR7o8wu0132G3FAnja9Gf1la/FEwO8/X2ERvSrUkHi1/UYlirelZmTYotMsPX53fpuXf48xvZoagzGH6p0BmuYGZWTaIYgaxR0uwl8Pv2yPil71NCStivFRea/IHBzDDSo+V3J/rBWT5be21ZE3qMpE9DDkZU+kPJcfGGyFlUq+2KOruUNvdx1VQEao1f/792EaNQc8CZvmmG43JG75sdLyW/h6aXg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=21D7G6Ke6G6M2hj2FV6sqAHfMqazQkrXL0AmMN30+Kw=;
- b=JNoIagRBb6+yXcLXqbsB5zmIV2iNM6oEjZGzYljwUjF8rMeuXkOCEFA0SoTG889zgd+57BNUaSjXG9wNJoi/f4fstVkG4qnSDEzDZwvwnjAQwWBXOdKKCBcnSfaQH1zHLGn+8u2D053DCVKUwpO3uoOdyMKzx4B8Ie5tWhJ/n9Y=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.59.17) by
- BYAPR15MB2248.namprd15.prod.outlook.com (52.135.197.13) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2178.16; Fri, 16 Aug 2019 15:43:24 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::d95b:271:fa7e:e978]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::d95b:271:fa7e:e978%5]) with mapi id 15.20.2157.022; Fri, 16 Aug 2019
- 15:43:24 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        id S1727347AbfHPP7O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Aug 2019 11:59:14 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:46215 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727217AbfHPP7N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Aug 2019 11:59:13 -0400
+Received: by mail-pf1-f196.google.com with SMTP id q139so3309005pfc.13
+        for <bpf@vger.kernel.org>; Fri, 16 Aug 2019 08:59:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TQNTKSrwbTOmioBUBWTo9NADf1gDtrRnG9YNSpiPFM0=;
+        b=j78QV8fAikdi57toSBskutc8uhtLf/mE+aXXQTC62Mz3qEBtScgmeXZkxl7XGFIOb2
+         KnTqLfk2N2hytAfyl8tWj3td1dO8qjEM7vcP7mAFOCtuEiyKGq+JFZwlOsGMqpdyqLJV
+         P17iD1/28rMSlPyjFW6FSY51nRfynJdqtkRw/HYXRImBeLwEgMx2yPf2dH2XeSPE6OOa
+         041RBf3KzY778zRISsr2XF3IKzb6zDAH3TvYY3ySmAmFMCpMGJ9wtKrWWnAUy+TnZWjn
+         oOS6PjwbqB+G79cT/122Np5kymrGjYw1PD4xpKPcD2dwuEfPel6UV+fuy+bwBk7qSad+
+         GoxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TQNTKSrwbTOmioBUBWTo9NADf1gDtrRnG9YNSpiPFM0=;
+        b=VLjqKhgRLDjkXlTXbq2uioRPGipxn9xV1p6iDniab5MF1zuE+FelkvJH9YM85/L9t0
+         mfWZ+Yl11d4ZmKX+cWcmKwYdCAq8YYW4UwkUJ6I86QjJ/Yl043TynLkRYs6NuZ2FvYYZ
+         kswZkQW+dItKL9juLNhLusIvTOoD9HeilZk7oq4axrN9diNeHpSFm57k9ngjrlmVSNaT
+         +DL0jEAKVspaHwFRAFuipFdRKpuVhNVRE6Uyu3+g9B+eFLOsa6TofSMcFzd8MskZlTWu
+         RHUl1cW4o7cfXpgJLrJCL+8Kc9vgO4PJ5dG/zonqS4wINc3M0YuQht1IBfNuvuYzdd3Q
+         JANg==
+X-Gm-Message-State: APjAAAVFCoF2aKRUoANenNLeyv6QmNQK6e+QrUfBUT/oauxOa2ax+u1E
+        vApDFTAWczkAICEfWCQ0bGOIdw==
+X-Google-Smtp-Source: APXvYqyV8QLWZG8gAPyTfVRJiYrELMT9MlTccr85MegdRgT3cyi7ebo8T73R3BPFYLPzJw9HViubDA==
+X-Received: by 2002:a17:90a:148:: with SMTP id z8mr469216pje.96.1565971152710;
+        Fri, 16 Aug 2019 08:59:12 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id s16sm4075821pjp.10.2019.08.16.08.59.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Aug 2019 08:59:12 -0700 (PDT)
+Date:   Fri, 16 Aug 2019 08:59:11 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Andrey Ignatov <rdna@fb.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH bpf v2] bpf: fix accessing bpf_sysctl.file_pos on s390
-Thread-Topic: [PATCH bpf v2] bpf: fix accessing bpf_sysctl.file_pos on s390
-Thread-Index: AQHVVCESLNEA0xJ8rUq0Dn4tWx4R7Kb96mYA
-Date:   Fri, 16 Aug 2019 15:43:24 +0000
-Message-ID: <ff6b8a11-ffdb-4500-7b09-9e255d8e9bfe@fb.com>
-References: <20190816105300.49035-1-iii@linux.ibm.com>
-In-Reply-To: <20190816105300.49035-1-iii@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR22CA0003.namprd22.prod.outlook.com
- (2603:10b6:300:ef::13) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:10e::17)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::3:9590]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b46c47f4-f14e-4c62-7aff-08d72260792c
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB2248;
-x-ms-traffictypediagnostic: BYAPR15MB2248:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB22484309E6F49A3CDE2489B0D3AF0@BYAPR15MB2248.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3513;
-x-forefront-prvs: 0131D22242
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(366004)(346002)(376002)(39860400002)(396003)(189003)(199004)(86362001)(6246003)(31686004)(31696002)(186003)(66946007)(53546011)(386003)(6506007)(102836004)(36756003)(4326008)(6512007)(71190400001)(71200400001)(53936002)(5660300002)(25786009)(486006)(6436002)(256004)(46003)(66556008)(4744005)(64756008)(229853002)(66446008)(66476007)(14444005)(2906002)(476003)(6486002)(446003)(2616005)(11346002)(52116002)(14454004)(76176011)(316002)(54906003)(110136005)(478600001)(8676002)(6116002)(305945005)(81156014)(7736002)(81166006)(8936002)(99286004);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2248;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: bMPNBYDwgwtHNtF28MJsYvqbvX3tQAcM3b/I4AmgQO5JF3sXnBhsQ+LVzcs8gEhXZrlA6/4Xkyqqkwv8S28ULYzMEo731DojIZxR9cDRuDBZtpVs+qFtX4iLcq6oh2GwFnxssj3fyIXfPsbKXjz0dqoBki91oh3BelI2HmG/GRVD1fLbfLdqyg0YRAPh2orXx3zj4fAKLw+JUgh6KBOYV3gqt2sr6CurpKtLF/lJGb+TJHIVO9AmuUJrMTkbPgFw5A2QbW22Ha4QM8z7B5B6D6uewHHPLBG7k+Qzxxu3pyQ8Pnd4xX5KhHYAob535s1p32nMVU5CWHYm1mDrA6aDCTZEd8hM2L4cdm3JxgLXFnYEOv/yA9gbuqmVI56p6L2GheKb227jhPUOZyGzjZv1slpL+0nP8HzHdAPbuPr1+BY=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E8493DD4648F7D4388FD303253716EDB@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, William Tu <u9012063@gmail.com>
+Subject: Re: [RFC PATCH bpf-next 00/14] xdp_flow: Flow offload to XDP
+Message-ID: <20190816155911.GP2820@mini-arch>
+References: <20190813120558.6151-1-toshiaki.makita1@gmail.com>
+ <20190814170715.GJ2820@mini-arch>
+ <14c4a876-6f5d-4750-cbe4-19622f64975b@gmail.com>
+ <20190815152100.GN2820@mini-arch>
+ <20190815122232.4b1fa01c@cakuba.netronome.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: b46c47f4-f14e-4c62-7aff-08d72260792c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Aug 2019 15:43:24.3436
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5qS96fQGoqz1XWEqtPLCC0ETZEfWFdINOrbvo2/uwfxn5tfh9U3hYRlZ3bkM2VEz
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2248
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-16_07:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=911 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908160166
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190815122232.4b1fa01c@cakuba.netronome.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDgvMTYvMTkgMzo1MyBBTSwgSWx5YSBMZW9zaGtldmljaCB3cm90ZToNCj4gImN0eDpm
-aWxlX3BvcyBzeXNjdGw6cmVhZCB3cml0ZSBvayIgZmFpbHMgb24gczM5MCB3aXRoICJSZWFkIHZh
-bHVlICAhPQ0KPiBudXgiLiBUaGlzIGlzIGJlY2F1c2UgdmVyaWZpZXIgcmV3cml0ZXMgYSBjb21w
-bGV0ZSAzMi1iaXQNCj4gYnBmX3N5c2N0bC5maWxlX3BvcyB1cGRhdGUgdG8gYSBwYXJ0aWFsIHVw
-ZGF0ZSBvZiB0aGUgZmlyc3QgMzIgYml0cyBvZg0KPiA2NC1iaXQgKmJwZl9zeXNjdGxfa2Vybi5w
-cG9zLCB3aGljaCBpcyBub3QgY29ycmVjdCBvbiBiaWctZW5kaWFuDQo+IHN5c3RlbXMuDQo+IA0K
-PiBGaXggYnkgdXNpbmcgYW4gb2Zmc2V0IG9uIGJpZy1lbmRpYW4gc3lzdGVtcy4NCj4gDQo+IERp
-dHRvIGZvciBicGZfc3lzY3RsLmZpbGVfcG9zIHJlYWRzLiBDdXJyZW50bHkgdGhlIHRlc3QgZG9l
-cyBub3QgZGV0ZWN0DQo+IGEgcHJvYmxlbSB0aGVyZSwgc2luY2UgaXQgZXhwZWN0cyB0byBzZWUg
-MCwgd2hpY2ggaXQgZ2V0cyB3aXRoIGhpZ2gNCj4gcHJvYmFiaWxpdHkgaW4gZXJyb3IgY2FzZXMs
-IHNvIGNoYW5nZSBpdCB0byBzZWVrIHRvIG9mZnNldCAzIGFuZCBleHBlY3QNCj4gMyBpbiBicGZf
-c3lzY3RsLmZpbGVfcG9zLg0KPiANCj4gRml4ZXM6IGUxNTUwYmZlMGRlNCAoImJwZjogQWRkIGZp
-bGVfcG9zIGZpZWxkIHRvIGJwZl9zeXNjdGwgY3R4IikNCj4gU2lnbmVkLW9mZi1ieTogSWx5YSBM
-ZW9zaGtldmljaCA8aWlpQGxpbnV4LmlibS5jb20+DQoNCkFja2VkLWJ5OiBZb25naG9uZyBTb25n
-IDx5aHNAZmIuY29tPg0K
+On 08/15, Jakub Kicinski wrote:
+> On Thu, 15 Aug 2019 08:21:00 -0700, Stanislav Fomichev wrote:
+> > On 08/15, Toshiaki Makita wrote:
+> > > On 2019/08/15 2:07, Stanislav Fomichev wrote:  
+> > > > On 08/13, Toshiaki Makita wrote:  
+> > > > > * Implementation
+> > > > > 
+> > > > > xdp_flow makes use of UMH to load an eBPF program for XDP, similar to
+> > > > > bpfilter. The difference is that xdp_flow does not generate the eBPF
+> > > > > program dynamically but a prebuilt program is embedded in UMH. This is
+> > > > > mainly because flow insertion is considerably frequent. If we generate
+> > > > > and load an eBPF program on each insertion of a flow, the latency of the
+> > > > > first packet of ping in above test will incease, which I want to avoid.  
+> > > > Can this be instead implemented with a new hook that will be called
+> > > > for TC events? This hook can write to perf event buffer and control
+> > > > plane will insert/remove/modify flow tables in the BPF maps (contol
+> > > > plane will also install xdp program).
+> > > > 
+> > > > Why do we need UMH? What am I missing?  
+> > > 
+> > > So you suggest doing everything in xdp_flow kmod?  
+> > You probably don't even need xdp_flow kmod. Add new tc "offload" mode
+> > (bypass) that dumps every command via netlink (or calls the BPF hook
+> > where you can dump it into perf event buffer) and then read that info
+> > from userspace and install xdp programs and modify flow tables.
+> > I don't think you need any kernel changes besides that stream
+> > of data from the kernel about qdisc/tc flow creation/removal/etc.
+> 
+> There's a certain allure in bringing the in-kernel BPF translation
+> infrastructure forward. OTOH from system architecture perspective IMHO
+> it does seem like a task best handed in user space. bpfilter can replace
+> iptables completely, here we're looking at an acceleration relatively
+> loosely coupled with flower.
+Even for bpfilter I would've solved it using something similar:
+iptables bypass + redirect iptables netlink requests to some
+userspace helper that was registered to be iptables compatibility
+manager. And then, again, it becomes a purely userspace problem.
+
+The issue with UMH is that the helper has to be statically compiled
+from the kernel tree, which means we can't bring in any dependencies
+(stuff like libkefir you mentioned below).
+
+But I digress :-)
+
+> FWIW Quentin spent some time working on a universal flow rule to BPF
+> translation library:
+> 
+> https://github.com/Netronome/libkefir
+> 
+> A lot remains to be done there, but flower front end is one of the
+> targets. A library can be tuned for any application, without a
+> dependency on flower uAPI.
+> 
+> > But, I haven't looked at the series deeply, so I might be missing
+> > something :-)
+> 
+> I don't think you are :)
