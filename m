@@ -2,249 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9482C8F9A7
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 06:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A42F38FA39
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 07:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726240AbfHPERo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Aug 2019 00:17:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725897AbfHPERo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Aug 2019 00:17:44 -0400
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D3E32089E;
-        Fri, 16 Aug 2019 04:17:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565929062;
-        bh=KYggdZKTQhxo4mb/TpGgNFnb1ZKhLbE8Lv0eb5oYZHc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=CNUuS57m8qR9bcPLyGv0IChQJFq86b55QOc9ff5dfhXHt1uaYVZ2O1sU4NbVVzQOK
-         BwzLIEBxNqtXuAs6VCbG+/B6U+pLZVYC7GfN8NgiG2J0Amo62/vBFrhKJkNGmhyhce
-         VVefDC8k1VAdxRHCSh70sY/9yWxrsxZE7ODdnEU4=
-Date:   Thu, 15 Aug 2019 21:17:41 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, syzkaller-bugs@googlegroups.com
-Subject: Reminder: 8 active syzbot reports in "net/bpf" subsystem
-Message-ID: <20190816041741.GB12185@sol.localdomain>
-Mail-Followup-To: netdev@vger.kernel.org, bpf@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, syzkaller-bugs@googlegroups.com
+        id S1726609AbfHPFIy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Aug 2019 01:08:54 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:35111 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725945AbfHPFIy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Aug 2019 01:08:54 -0400
+Received: by mail-lf1-f66.google.com with SMTP id p197so3212661lfa.2;
+        Thu, 15 Aug 2019 22:08:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z6SC2HE4Qz0atBAfBNgG9UkV/smYkL/54apM6Bm++F0=;
+        b=XstnF5PgUy7tEU9ReAhktiwVFaI18nlnGNzByJ+tiL2JZpfwqH+mkeqmLOp+A+sLfr
+         ru9PVvfk60NJgdzGJ9fSJ7YYMNCt3OdZG7VWXGNYOjj0vYKknF4ZUmTwDwKfEvmRH1t3
+         0pYMaO0090/Ti7t5uhFMlKSCLMkhV/UYVZey++Hsypd4ULOutTOl26GDE+nl9E6EP44U
+         ANMf4DVc5B/hCop6+q92g3JGbzKUZTdxoecfK+QTjFVUUE3j9O2AhsDE5wkZU87SLbWp
+         AYPpuJhMM1z2nVb7ByQacEKZ9vv8WzXG24/kR1YGcG1RT6eI3hKPoBkxKBe0cS5hwCi/
+         t+ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z6SC2HE4Qz0atBAfBNgG9UkV/smYkL/54apM6Bm++F0=;
+        b=mfm9w/1a0xmKTzSGvRI7K3eqS26XIuqGXWKl+UiDVKyxxmj7g8mAt44R8WLEwGNPHK
+         ewfsIy9mS+1q0anLvjH2Bkwkm/Wc7/zHjauSeTejGrkq/TnJbnEDW9ecJyuRhX6C1ykT
+         jiQKIz2gMmE9DLPGe75kRcNUwplWEV2qBWOFH+9b2KffLbcps4pETMiVj70cthREx2p6
+         FFkvRhWJz//XLoLSDXp7rAd/6EN2Gr4J4CoPsOv+0Tp9+z4xXWhwWK3kLgIUr5qtoz3u
+         3lcEKO0tJdZXQEiPI67TpFwz6b9xMzD1jWaqh1WkWiYq9yXyJ8iot1Lj6t0VXcWlh/Yd
+         yg9Q==
+X-Gm-Message-State: APjAAAUHeS7a9m1ZQlz+2GefiZMi9W5eQnoneagfe0y37n43/9B0yigx
+        wT40iKPkcUUV4ARmxlroAQwUwZsGy03O8jOGL0I=
+X-Google-Smtp-Source: APXvYqxhR3jp1qxnjxWEituGs+YrlqRegjMDIbYm+FXE5251atPUMkQAC9byLbOehFgPRUuDxu3WLavNR4aoAtcB+00=
+X-Received: by 2002:a19:6450:: with SMTP id b16mr4302290lfj.15.1565932132520;
+ Thu, 15 Aug 2019 22:08:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <20190815143220.4199-1-quentin.monnet@netronome.com>
+In-Reply-To: <20190815143220.4199-1-quentin.monnet@netronome.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 15 Aug 2019 22:08:41 -0700
+Message-ID: <CAADnVQKpPaZ3wJJwSn=JPML9pWzwy_8G9c0H=ToaaxZEJ8isnQ@mail.gmail.com>
+Subject: Re: [PATCH bpf 0/6] tools: bpftool: fix printf()-like functions
+To:     Quentin Monnet <quentin.monnet@netronome.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        oss-drivers@netronome.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[This email was generated by a script.  Let me know if you have any suggestions
-to make it better, or if you want it re-generated with the latest status.]
+On Thu, Aug 15, 2019 at 7:32 AM Quentin Monnet
+<quentin.monnet@netronome.com> wrote:
+>
+> Hi,
+> Because the "__printf()" attributes were used only where the functions are
+> implemented, and not in header files, the checks have not been enforced on
+> all the calls to printf()-like functions, and a number of errors slipped in
+> bpftool over time.
+>
+> This set cleans up such errors, and then moves the "__printf()" attributes
+> to header files, so that the checks are performed at all locations.
 
-Of the distinct crashes that syzbot has seen in the last week, I've manually
-marked 8 of them as possibly being bugs in the "net/bpf" subsystem.  I've listed
-these bug reports below.
-
-Of these 8 reports, 1 was bisected to a commit from the following person:
-
-	Alexei Starovoitov <ast@kernel.org>
-
-I've manually checked that this bisection result looks plausible.
-
-If you believe a bug report is no longer valid, please close it by sending a
-'#syz fix', '#syz dup', or '#syz invalid' command in reply to the original
-thread, as explained at https://goo.gl/tpsmEJ#status
-
-If you believe I misattributed a bug report to the "net/bpf" subsystem, please
-let me know and (if possible) forward it to the correct place.
-
-Note: in total, I've actually assigned 42 open syzbot reports to this subsystem.
-But to help focus people's efforts, I've only listed the 8 that have
-(re-)occurred in the last week.  Let me know if you want the full list.
-
-Here are the bug reports:
-
---------------------------------------------------------------------------------
-Title:              WARNING in bpf_jit_free
-Last occurred:      0 days ago
-Reported:           395 days ago
-Branches:           Mainline and others
-Dashboard link:     https://syzkaller.appspot.com/bug?id=d04f9c2ec11ab2678f7427795ff5170cb9eb2220
-Original thread:    https://lore.kernel.org/lkml/000000000000e92d1805711f5552@google.com/T/#u
-
-This bug has a C reproducer.
-
-syzbot has bisected this bug, but I think the bisection result is incorrect.
-
-The original thread for this bug received 5 replies; the last was 65 days ago.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+2ff1e7cb738fd3c41113@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please consider replying to the
-original thread.  For the git send-email command to use, or tips on how to reply
-if the thread isn't in your mailbox, see the "Reply instructions" at
-https://lore.kernel.org/r/000000000000e92d1805711f5552@google.com
-
---------------------------------------------------------------------------------
-Title:              WARNING: kernel stack frame pointer has bad value (2)
-Last occurred:      1 day ago
-Reported:           395 days ago
-Branches:           Mainline and others
-Dashboard link:     https://syzkaller.appspot.com/bug?id=02a32f98a4e3b5a2ed6929aabdd28dd1618b9c03
-Original thread:    https://lore.kernel.org/lkml/0000000000000956640571197f98@google.com/T/#u
-
-This bug has a C reproducer.
-
-The original thread for this bug received 1 reply, 395 days ago.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+903cdd6bce9a6eb832a4@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please consider replying to the
-original thread.  For the git send-email command to use, or tips on how to reply
-if the thread isn't in your mailbox, see the "Reply instructions" at
-https://lore.kernel.org/r/0000000000000956640571197f98@google.com
-
---------------------------------------------------------------------------------
-Title:              BUG: unable to handle kernel paging request in bpf_prog_kallsyms_add
-Last occurred:      0 days ago
-Reported:           339 days ago
-Branches:           Mainline and others
-Dashboard link:     https://syzkaller.appspot.com/bug?id=97f89d84d528e4f5150dcfbdeb97347bc8471e96
-Original thread:    https://lore.kernel.org/lkml/0000000000009417ef0575802d44@google.com/T/#u
-
-This bug has a syzkaller reproducer only.
-
-The original thread for this bug received 2 replies; the last was 164 days ago.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+c827a78260579449ad39@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please consider replying to the
-original thread.  For the git send-email command to use, or tips on how to reply
-if the thread isn't in your mailbox, see the "Reply instructions" at
-https://lore.kernel.org/r/0000000000009417ef0575802d44@google.com
-
---------------------------------------------------------------------------------
-Title:              WARNING in bpf_prog_kallsyms_find
-Last occurred:      0 days ago
-Reported:           100 days ago
-Branches:           Mainline and others
-Dashboard link:     https://syzkaller.appspot.com/bug?id=40b0c218e639f1d882b86abff2549cfe11c5101e
-Original thread:    https://lore.kernel.org/lkml/000000000000a8fa360588580820@google.com/T/#u
-
-This bug has a C reproducer.
-
-No one replied to the original thread for this bug.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+89d1ce6e80218a6192d8@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please consider replying to the
-original thread.  For the git send-email command to use, or tips on how to reply
-if the thread isn't in your mailbox, see the "Reply instructions" at
-https://lore.kernel.org/r/000000000000a8fa360588580820@google.com
-
---------------------------------------------------------------------------------
-Title:              KASAN: use-after-free Read in sk_psock_unlink
-Last occurred:      5 days ago
-Reported:           293 days ago
-Branches:           Mainline and others
-Dashboard link:     https://syzkaller.appspot.com/bug?id=d691981726208716cc7aec231fb915e27763d662
-Original thread:    https://lore.kernel.org/lkml/000000000000fd342e05791cc86f@google.com/T/#u
-
-This bug has a syzkaller reproducer only.
-
-syzbot has bisected this bug, but I think the bisection result is incorrect.
-
-The original thread for this bug received 1 reply, 85 days ago.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+3acd9f67a6a15766686e@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please consider replying to the
-original thread.  For the git send-email command to use, or tips on how to reply
-if the thread isn't in your mailbox, see the "Reply instructions" at
-https://lore.kernel.org/r/000000000000fd342e05791cc86f@google.com
-
---------------------------------------------------------------------------------
-Title:              KASAN: slab-out-of-bounds Read in do_jit
-Last occurred:      0 days ago
-Reported:           23 days ago
-Branches:           Mainline and others
-Dashboard link:     https://syzkaller.appspot.com/bug?id=3aacade388873fa82bd6d2efb6aaa9ab85964020
-Original thread:    https://lore.kernel.org/lkml/000000000000a6ab6b058e5b899b@google.com/T/#u
-
-This bug has a C reproducer.
-
-This bug was bisected to:
-
-		commit 2589726d12a1b12eaaa93c7f1ea64287e383c7a5
-		Author: Alexei Starovoitov <ast@kernel.org>
-		Date:   Sat Jun 15 19:12:20 2019 +0000
-
-		  bpf: introduce bounded loops
-
-No one has replied to the original thread for this bug yet.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+6b40f58c6d280fa23b40@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please consider replying to the
-original thread.  For the git send-email command to use, or tips on how to reply
-if the thread isn't in your mailbox, see the "Reply instructions" at
-https://lore.kernel.org/r/000000000000a6ab6b058e5b899b@google.com
-
---------------------------------------------------------------------------------
-Title:              WARNING in is_bpf_text_address
-Last occurred:      0 days ago
-Reported:           55 days ago
-Branches:           Mainline
-Dashboard link:     https://syzkaller.appspot.com/bug?id=2386340f7a641010bb1e17228d1e9319592c01ba
-Original thread:    https://lore.kernel.org/lkml/00000000000000ac4f058bd50039@google.com/T/#u
-
-This bug has a C reproducer.
-
-The original thread for this bug has received 5 replies; the last was 2 hours
-ago.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+bd3bba6ff3fcea7a6ec6@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please reply to the original
-thread, which had activity only 2 hours ago.  For the git send-email command to
-use, or tips on how to reply if the thread isn't in your mailbox, see the "Reply
-instructions" at https://lore.kernel.org/r/00000000000000ac4f058bd50039@google.com
-
---------------------------------------------------------------------------------
-Title:              memory leak in sock_hash_update_common
-Last occurred:      7 days ago
-Reported:           85 days ago
-Branches:           Mainline
-Dashboard link:     https://syzkaller.appspot.com/bug?id=9992588b3bbe2617f62f41b1162af9fc8ea4829c
-Original thread:    https://lore.kernel.org/lkml/000000000000fa662405897c0774@google.com/T/#u
-
-This bug has a syzkaller reproducer only.
-
-No one has replied to the original thread for this bug yet.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+30c7a1fc662026545124@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please consider replying to the
-original thread.  For the git send-email command to use, or tips on how to reply
-if the thread isn't in your mailbox, see the "Reply instructions" at
-https://lore.kernel.org/r/000000000000fa662405897c0774@google.com
-
+Applied. Thanks
