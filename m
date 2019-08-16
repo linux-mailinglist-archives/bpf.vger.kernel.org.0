@@ -2,108 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F93900CC
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 13:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 897FC900D6
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 13:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727085AbfHPLeI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Aug 2019 07:34:08 -0400
-Received: from mail-40135.protonmail.ch ([185.70.40.135]:20621 "EHLO
-        mail-40135.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727007AbfHPLeI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Aug 2019 07:34:08 -0400
-Date:   Fri, 16 Aug 2019 11:33:57 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.ch;
-        s=default; t=1565955243;
-        bh=Yt+i7vUoMC/7exz+6N1Qfx1ezQKcdB81VEBD2vgd94g=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:
-         Feedback-ID:From;
-        b=JmfR8i9mQ9pd0Isp+wfbro4gkLogIvJHS8cTAdzkbaV0V+HlbX6D6OpI/mFq6ZKRr
-         BnYyvP++4dMxYJXBJ0BS4WyODhCoXNaDmmjS30Fk8oK9nfI2N0WtXgZwkPEFKhlRoa
-         Iecmj9CBu2xx+2z/NT9Ktm2V5NKOGsR7u29tEdh8=
-To:     Thomas Gleixner <tglx@linutronix.de>
-From:   Jordan Glover <Golden_Miller83@protonmail.ch>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Daniel Colascione <dancol@google.com>,
-        Song Liu <songliubraving@fb.com>,
-        Kees Cook <keescook@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        id S1727070AbfHPLho convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 16 Aug 2019 07:37:44 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37362 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727081AbfHPLhn (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 16 Aug 2019 07:37:43 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7GBbOU8116416
+        for <bpf@vger.kernel.org>; Fri, 16 Aug 2019 07:37:42 -0400
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2uduk6rds5-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 16 Aug 2019 07:37:42 -0400
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Fri, 16 Aug 2019 12:37:40 +0100
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Fri, 16 Aug 2019 12:37:37 +0100
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7GBbaUH46071836
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Aug 2019 11:37:37 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D938AA4060;
+        Fri, 16 Aug 2019 11:37:36 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9C2F0A4054;
+        Fri, 16 Aug 2019 11:37:36 +0000 (GMT)
+Received: from dyn-9-152-96-190.boeblingen.de.ibm.com (unknown [9.152.96.190])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 16 Aug 2019 11:37:36 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Subject: Re: [PATCH bpf] selftests/bpf: fix endianness issues in test_sysctl
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+In-Reply-To: <076513cd-fbde-cf66-ce3b-a6143878f786@fb.com>
+Date:   Fri, 16 Aug 2019 13:37:36 +0200
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Jann Horn <jannh@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>
-Reply-To: Jordan Glover <Golden_Miller83@protonmail.ch>
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-Message-ID: <lGGTLXBsX3V6p1Z4TkdzAjxbNywaPS2HwX5WLleAkmXNcnKjTPpWnP6DnceSsy8NKt5NBRBbuoAb0woKTcDhJXVoFb7Ygk3Skfj8j6rVfMQ=@protonmail.ch>
-In-Reply-To: <alpine.DEB.2.21.1908161158490.1873@nanos.tec.linutronix.de>
-References: <20190806011134.p5baub5l3t5fkmou@ast-mbp>
- <CALCETrUkqUprujww26VxHwkdXQ3DWJH8nnL2VBYpK2EU0oX_YA@mail.gmail.com>
- <20190814220545.co5pucyo5jk3weiv@ast-mbp.dhcp.thefacebook.com>
- <HG0x24u69mnaMFKuxHVAzHpyjwsD5-U6RpqFRua87wGWQCHg00Q8ZqPeA_5kJ9l-d6oe0cXa4HyYXMnOO0Aofp_LcPcQdG0WFV21z1MbgcE=@protonmail.ch>
- <20190815172856.yoqvgu2yfrgbkowu@ast-mbp.dhcp.thefacebook.com>
- <CALCETrUv+g+cb79FJ1S4XuV0K=kowFkPXpzoC99svoOfs4-Kvg@mail.gmail.com>
- <20190815230808.2o2qe7a72cwdce2m@ast-mbp.dhcp.thefacebook.com>
- <fkD3fs46a1YnR4lh0tEG-g3tDnDcyZuzji7bAUR9wujPLLl75ZhI8Yk-H1jZpSugO7qChVeCwxAMmxLdeoF2QFS3ZzuYlh7zmeZOmhDJxww=@protonmail.ch>
- <alpine.DEB.2.21.1908161158490.1873@nanos.tec.linutronix.de>
-Feedback-ID: QEdvdaLhFJaqnofhWA-dldGwsuoeDdDw7vz0UPs8r8sanA3bIt8zJdf4aDqYKSy4gJuZ0WvFYJtvq21y6ge_uQ==:Ext:ProtonMail
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.7 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT autolearn=no
-        autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.protonmail.ch
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Content-Transfer-Encoding: 8BIT
+References: <20190815122525.41073-1-iii@linux.ibm.com>
+ <076513cd-fbde-cf66-ce3b-a6143878f786@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+X-Mailer: Apple Mail (2.3445.9.1)
+X-TM-AS-GCONF: 00
+x-cbid: 19081611-0028-0000-0000-000003905E42
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19081611-0029-0000-0000-0000245277CD
+Message-Id: <91EFE17B-3835-4679-8464-A76C885BCD46@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-16_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908160123
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Friday, August 16, 2019 9:59 AM, Thomas Gleixner <tglx@linutronix.de> wr=
-ote:
+> Am 16.08.2019 um 02:05 schrieb Yonghong Song <yhs@fb.com>:
+> 
+>> +# define __bpf_constant_be64_to_cpu(x)	___constant_swab64(x)
+> 
+> bpf_endian.h is used for both bpf program and native applications.
+> Could you make sure it works for bpf programs? It should be, but want to 
+> double check.
 
-> On Fri, 16 Aug 2019, Jordan Glover wrote:
->
-> > "systemd --user" service? Trying to do so will fail with:
-> > "Failed to apply ambient capabilities (before UID change): Operation no=
-t permitted"
-> > I think it's crucial to clear that point to avoid confusion in this dis=
-cussion
-> > where people are talking about different things.
-> > On the other hand running "systemd --system" service with:
-> > User=3Dnobody
-> > AmbientCapabilities=3DCAP_NET_ADMIN
-> > is perfectly legit and clears some security concerns as only privileged=
- user
-> > can start such service.
->
-> While we are at it, can we please stop looking at this from a systemd onl=
-y
-> perspective. There is a world outside of systemd.
->
-> Thanks,
->
-> tglx
+Yes:
 
-If you define:
+#include <linux/compiler_attributes.h>
+#include "bpf_endian.h"
+u64 answer() { return __bpf_constant_be64_to_cpu(42); }
 
-"systemd --user" =3D=3D unprivileged process started by unprivileged user
-"systemd --system" =3D=3D process started by privileged user but run as ano=
-ther
-user which keeps some of parent user privileges and drops others
+compiles to
 
-you can get rid of "systemd" from the equation.
+        r0 = 3026418949592973312 ll
+        exit
 
-"systemd --user" was the example provided by Alexei when asked about the us=
-ecase
-but his description didn't match what it does so it's not obvious what the =
-real
-usecase is. I'm sure there can be many more examples and systemd isn't impo=
-rtant
-here in particular beside to understand this specific example.
+on x86.
 
-Jordan
+> The __constant_swab64 looks like a little bit expensive
+> for bpf programs compared to __builtin_bswap64. But
+> __builtin_bswap64 may not be available for all architectures, esp.
+> 32bit system. So macro __bpf__ is required to use it.
+
+Isn't ___constant_swab64 supposed to be 100% compile-time?
+
+Also, I think __builtin_bswap64 should be available everywhere for
+userspace. At least the following test does not indicate any problems:
+
+for cc in "x86_64-linux-gnu-gcc -m32" \
+          "x86_64-linux-gnu-gcc -m64" \
+          "aarch64-linux-gnu-gcc" \
+          "arm-linux-gnueabihf-gcc" \
+          "mips64el-linux-gnuabi64-gcc" \
+          "powerpc64le-linux-gnu-gcc -m32" \
+          "s390x-linux-gnu-gcc -m31" \
+          "s390x-linux-gnu-gcc -m64" \
+          "sparc64-linux-gnu-gcc -m32" \
+          "sparc64-linux-gnu-gcc -m64" \
+          "clang -target bpf -m32" \
+          "clang -target bpf -m64"; do
+	echo "*** $cc ***"
+	echo "long long f(long long x) { return __builtin_bswap64(x); }" | \
+	$cc -x c -S - -O3 -o -;
+done
+
+Only sparc64 doesn't support it directly, but then it just calls
+libgcc's __bswapdi2. This might not be ok only for kernel native code
+(though even there we have e.g. arch/arm/lib/bswapsdi2.S), but I don't
+think this header is used in such context anyway.
+
+>> 
+>>  			BPF_MOV64_REG(BPF_REG_1, BPF_REG_7),
+>> @@ -1344,20 +1379,26 @@ static size_t probe_prog_length(const struct bpf_insn *fp)
+>>  static int fixup_sysctl_value(const char *buf, size_t buf_len,
+>>  			      struct bpf_insn *prog, size_t insn_num)
+>>  {
+>> -	uint32_t value_num = 0;
+>> +	uint64_t value_num = 0;
+>>  	uint8_t c, i;
+>> 
+>>  	if (buf_len > sizeof(value_num)) {
+>>  		log_err("Value is too big (%zd) to use in fixup", buf_len);
+>>  		return -1;
+>>  	}
+>> +	if (prog[insn_num].code != (BPF_LD | BPF_DW | BPF_IMM)) {
+>> +		log_err("Can fixup only BPF_LD_IMM64 insns");
+>> +		return -1;
+>> +	}
+>> 
+>>  	for (i = 0; i < buf_len; ++i) {
+>>  		c = buf[i];
+>>  		value_num |= (c << i * 8);
+>>  	}
+>> +	value_num = __bpf_le64_to_cpu(value_num);
+> 
+> Can we avoid to use __bpf_le64_to_cpu?
+> Look like we already having the value in buf, can we just cast it
+> to get value_num. Note that bpf program and host always have
+> the same endianness. This way, no endianness conversion
+> is needed.
+
+I think this might be dangerous in case buf is smaller than 8 bytes.
