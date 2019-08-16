@@ -2,118 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5B390A68
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 23:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12A990AA0
+	for <lists+bpf@lfdr.de>; Sat, 17 Aug 2019 00:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727734AbfHPVps (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Aug 2019 17:45:48 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:33722 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727548AbfHPVps (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Aug 2019 17:45:48 -0400
-Received: by mail-pg1-f194.google.com with SMTP id n190so3577990pgn.0;
-        Fri, 16 Aug 2019 14:45:47 -0700 (PDT)
+        id S1727760AbfHPWBK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Aug 2019 18:01:10 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:33616 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727755AbfHPWBK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Aug 2019 18:01:10 -0400
+Received: by mail-pg1-f193.google.com with SMTP id n190so3593651pgn.0;
+        Fri, 16 Aug 2019 15:01:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=rTRJflC/XxBLRwk7ddMQbRUyGqdCMOTG2uddVwF5CRA=;
-        b=jB1AnQawoQedqYKJq826OAR3SFlaaXgZH69A+tvDgt2K1K7zKQWqPwlEm6tMrAV8Yn
-         Uuaamv2nEicce2W5ofEr1HDygvb2eDPhkiAn/ibfjRoYkUGKZWlgSmc0pdcPJzQko0eT
-         9UPKrBtBdfESLvGp3y9NIBDG2+zyQRSHv7oC/V2653KPeANqBK2hSU/t/RVgAVVwm813
-         gWN8FOGD0Ggb/F+moEvKQg3PiW+OkdJ6CY4/vRwT1LSYUJOJRtdoEciTJ3Ay7YpdIPXG
-         tY1J1vKtR5CvapgSpVV3hi2KD9S7kzcbDb4p54EtpXQu9b4Kh62UYPt2IQzkdpfsFSJN
-         fC+g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=dWMHoo7zy5ro+gPfK7r7C9aoJ9XMNHd5EkfhgDYq2io=;
+        b=LwIltLncEeFNdJYXoqGTJocMGGOj0Lg9xJIqK6w4TpXIKb34G9ISsaaZzYHwGNM90e
+         +p0m3Meh3mZO/YykNbhnl2K6G+Aj4A0mgoxenX5pTs4Uy0PWO4uUvZ4o4mJzrdlo+iao
+         OZICN2buLu2t1qgV4K8PJ5YeynAKYeYvKxdWkhscnUl5BlJLNlRvSvMDOfWZluDnNU+B
+         PEKXayPfVBJxFzA/N4DwhTgYJJf7Oa3V/j39LBm8DN64kL0J4FXYF8BtPAuyZ3rmLkmd
+         cWQjZ4dnpTYL6ZLTx8nZCcaIwUGEB9AJixrtcMXOn5z1u/TKCO0KzjXpRjF7mO0Bfphd
+         4wpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=rTRJflC/XxBLRwk7ddMQbRUyGqdCMOTG2uddVwF5CRA=;
-        b=l7EPdb1UTHEb4HGiOmHa6P4s+px5rO8YY1w9iWJ0cQI7MCev/dWlIwnn/cWLyzd2Du
-         ZEfFSmjVD+biLBgm+FU+YQKnPr5EMAcvjEedVWujBmk12IVLNIUH9JOkVDbdZV9tyZqQ
-         SSeusWMRMUW7U0ZUQ3IEBn9DWCMTdh+Wiisduk3zS3RLCt6ksnVjKQ5L0+as74/JYwv9
-         8kDhEPRGsJ/GvWcXmMJ11PzM2NR1B6D725LDPCoMqvE4p1ic0VWhgb9HP4pjrk9R9o7O
-         0E1kTxL0lrULAVvFCAdg+ndtKkQ39MIUSo3/J9Fte509Fs7yTcNN9S6iZolpq+qvvNow
-         yzww==
-X-Gm-Message-State: APjAAAWrvji3h8kLtudSmnFl7bGTlLpLGKDEi40t+jMGbm5QsqMnq5ns
-        GD5bKbx/vk5D09X7f0wVEo8=
-X-Google-Smtp-Source: APXvYqysgJqBQz521+pAW1NAwGoOd4PbNNpeVQ6+yfbXQ+uhgOU2OEgzlh4Xe/ovsCZpFHYNWfUaMw==
-X-Received: by 2002:a65:638c:: with SMTP id h12mr9391815pgv.436.1565991947070;
-        Fri, 16 Aug 2019 14:45:47 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::4e61])
-        by smtp.gmail.com with ESMTPSA id d14sm3052732pjx.17.2019.08.16.14.45.45
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=dWMHoo7zy5ro+gPfK7r7C9aoJ9XMNHd5EkfhgDYq2io=;
+        b=oBoTTik7lPBte4uYOWfGqwzb2QLNfWVJv4s4+MwFfgab3tANkFwmIPOhoWzBAt1wV2
+         LXW52NRJ25c6b3jNA6Y76EymP7Gwgjofi/0mikeF8Bhs6FCy3hZw5zP4cRdBo+lg1Ypm
+         tJbsznQTkVhvk3LPwSfzuwML3hFSYJzYwPTUBcBrR/NZSFlYXAMe5xEA9uoPMK4Ky5Nn
+         bIWZmJZBVzyuhm9mBjf9QMu0R1wZ0fp6OAmRQy1RPisdCpnPkdqkDWMOs0u1PPCGLW6f
+         cb6XeOnExc+2cK/ElbXBTJSt55O93f3urwVn9Xsa3vzXQODGFia5rMlY5p7NCFQOvVpQ
+         EXkw==
+X-Gm-Message-State: APjAAAVr2d+RD/LxC+0SDYnHtgRo+eQOMLJR+mZcnNp8BcyclPZOkT5H
+        5NglqgXJvWoAJtWxssu2/SfOlAT8
+X-Google-Smtp-Source: APXvYqzYae918bOj1V4zW1RDJQqkzK7RNhZCHLfvCJFTfk87w2sYSffrhNgWH0+zW1Mng7zE1hUiAw==
+X-Received: by 2002:a63:31c1:: with SMTP id x184mr9881417pgx.128.1565992869213;
+        Fri, 16 Aug 2019 15:01:09 -0700 (PDT)
+Received: from [169.254.4.234] ([2620:10d:c090:200::3:e378])
+        by smtp.gmail.com with ESMTPSA id e13sm7664950pff.181.2019.08.16.15.01.07
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 16 Aug 2019 14:45:46 -0700 (PDT)
-Date:   Fri, 16 Aug 2019 14:45:44 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Jann Horn <jannh@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-Message-ID: <20190816214542.inpt6p655whc2ejw@ast-mbp.dhcp.thefacebook.com>
-References: <EE7B7AE1-3D44-4561-94B9-E97A626A251D@fb.com>
- <CALCETrXX-Jeb4wiQuL6FUai4wNMmMiUxuLLh_Lb9mT7h=0GgAw@mail.gmail.com>
- <20190805192122.laxcaz75k4vxdspn@ast-mbp>
- <CALCETrVtPs8gY-H4gmzSqPboid3CB++n50SvYd6RU9YVde_-Ow@mail.gmail.com>
- <20190806011134.p5baub5l3t5fkmou@ast-mbp>
- <CALCETrXEHL3+NAY6P6vUj7Pvd9ZpZsYC6VCLXOaNxb90a_POGw@mail.gmail.com>
- <20190813215823.3sfbakzzjjykyng2@ast-mbp>
- <201908151203.FE87970@keescook>
- <20190815234622.t65oxm5mtfzy6fhg@ast-mbp.dhcp.thefacebook.com>
- <B0364660-AD6A-4E5C-B04F-3B6DA78B4BBE@amacapital.net>
+        Fri, 16 Aug 2019 15:01:08 -0700 (PDT)
+From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
+To:     "Yonghong Song" <yhs@fb.com>
+Cc:     "Magnus Karlsson" <magnus.karlsson@intel.com>,
+        bjorn.topel@intel.com, ast@kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next] libbpf: remove zc variable as it is not used
+Date:   Fri, 16 Aug 2019 15:01:06 -0700
+X-Mailer: MailMate (1.12.5r5635)
+Message-ID: <2B143E7F-EE34-4298-B628-E2F669F89896@gmail.com>
+In-Reply-To: <f3a8ea34-bd70-8ab8-9739-bb086643fa44@fb.com>
+References: <1565951171-14439-1-git-send-email-magnus.karlsson@intel.com>
+ <f3a8ea34-bd70-8ab8-9739-bb086643fa44@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <B0364660-AD6A-4E5C-B04F-3B6DA78B4BBE@amacapital.net>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain; format=flowed
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 15, 2019 at 05:54:59PM -0700, Andy Lutomirski wrote:
-> 
-> 
-> > On Aug 15, 2019, at 4:46 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> 
-> 
-> >> 
-> >> I'm not sure why you draw the line for VMs -- they're just as buggy
-> >> as anything else. Regardless, I reject this line of thinking: yes,
-> >> all software is buggy, but that isn't a reason to give up.
-> > 
-> > hmm. are you saying you want kernel community to work towards
-> > making containers (namespaces) being able to run arbitrary code
-> > downloaded from the internet?
-> 
-> Yes.
-> 
-> As an example, Sandstorm uses a combination of namespaces (user, network, mount, ipc) and a moderately permissive seccomp policy to run arbitrary code. Not just little snippets, either — node.js, Mongo, MySQL, Meteor, and other fairly heavyweight stacks can all run under Sandstorm, with the whole stack (database engine binaries, etc) supplied by entirely untrusted customers.  During the time Sandstorm was under active development, I can recall *one* bug that would have allowed a sandbox escape. That’s a pretty good track record.  (Also, Meltdown and Spectre, sigh.)
 
-exactly: "meltdown", "spectre", "sigh".
-Side channels effectively stalled the work on secure containers.
-And killed projects like sandstorm.
-Why work on improving kaslr when there are several ways to
-get kernel addresses through hw bugs? Patch mouse holes when roof is leaking ?
-In case of unprivileged bpf I'm confident that all known holes are patched.
-Until disclosures stop happening with the frequency they do now the time
-of bpf developers is better spent on something other than unprivileged bpf.
 
-> I’m suggesting that you engage the security community ...
-> .. so that normal users can use bpf filtering
+On 16 Aug 2019, at 8:37, Yonghong Song wrote:
 
-yes, but not soon. unfortunately.
+> On 8/16/19 3:26 AM, Magnus Karlsson wrote:
+>> The zc is not used in the xsk part of libbpf, so let us remove it. 
+>> Not
+>> good to have dead code lying around.
+>>
+>> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+>> Reported-by: Yonghong Song <yhs@fb.com> > ---
+>>   tools/lib/bpf/xsk.c | 3 ---
+>>   1 file changed, 3 deletions(-)
+>>
+>> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+>> index 680e630..9687da9 100644
+>> --- a/tools/lib/bpf/xsk.c
+>> +++ b/tools/lib/bpf/xsk.c
+>> @@ -65,7 +65,6 @@ struct xsk_socket {
+>>   	int xsks_map_fd;
+>>   	__u32 queue_id;
+>>   	char ifname[IFNAMSIZ];
+>> -	bool zc;
+>>   };
+>>
+>>   struct xsk_nl_info {
+>> @@ -608,8 +607,6 @@ int xsk_socket__create(struct xsk_socket 
+>> **xsk_ptr, const char *ifname,
+>>   		goto out_mmap_tx;
+>>   	}
+>>
+>> -	xsk->zc = opts.flags & XDP_OPTIONS_ZEROCOPY;
+>
+> Since opts.flags usage is removed. Do you think it makes sense to
+> remove
+>          optlen = sizeof(opts);
+>          err = getsockopt(xsk->fd, SOL_XDP, XDP_OPTIONS, &opts, 
+> &optlen);
+>          if (err) {
+>                  err = -errno;
+>                  goto out_mmap_tx;
+>          }
+> as well since nobody then uses opts?
 
+IIRC, this was added specifically in 
+2761ed4b6e192820760d5ba913834b2ba05fd08c
+so that userland code could know whether the socket was operating in 
+zero-copy
+mode or not.
+-- 
+Jonathan
