@@ -2,99 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B7C8FAE2
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 08:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6CB8FDAB
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 10:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbfHPGZ5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Aug 2019 02:25:57 -0400
-Received: from mga01.intel.com ([192.55.52.88]:34135 "EHLO mga01.intel.com"
+        id S1726880AbfHPIVk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Aug 2019 04:21:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726166AbfHPGZ5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Aug 2019 02:25:57 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Aug 2019 23:25:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,391,1559545200"; 
-   d="scan'208";a="182095397"
-Received: from samudral-mobl1.amr.corp.intel.com (HELO [10.251.21.3]) ([10.251.21.3])
-  by orsmga006.jf.intel.com with ESMTP; 15 Aug 2019 23:25:55 -0700
-Subject: Re: [PATCH bpf-next 0/5] Add support for SKIP_BPF flag for AF_XDP
- sockets
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, maciej.fijalkowski@intel.com,
-        tom.herbert@intel.com
-References: <1565840783-8269-1-git-send-email-sridhar.samudrala@intel.com>
- <20190815122844.52eeda08@cakuba.netronome.com>
-From:   "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
-Message-ID: <f9df4d0e-c5f2-036d-994c-3162274820ea@intel.com>
-Date:   Thu, 15 Aug 2019 23:25:55 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726820AbfHPIVk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Aug 2019 04:21:40 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BEA64206C2;
+        Fri, 16 Aug 2019 08:21:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565943699;
+        bh=45xE287d0eM04My2txp6SH/3Wubo253uv59ZVJNr3VE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NbVyzIfb5MQEr6j7Y68FkNmVHLmnWhZAp/RXXMr37iQb7uEdjcJvTGpAm3OWaxMn7
+         KoZ3FgZA1MSqEEQUvlKLIfdxnG694Hk9b/RtcaQLEazfJWAb/lFHzrw0i10uDKqAm5
+         Oqz/4mXpbrFX8rP3Lo6HqdOoJTJbjvoDqsxD3s+g=
+Date:   Fri, 16 Aug 2019 09:21:31 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     syzbot <syzbot+bd3bba6ff3fcea7a6ec6@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, dvyukov@google.com,
+        hawk@kernel.org, hdanton@sina.com, jakub.kicinski@netronome.com,
+        johannes.berg@intel.com, johannes@sipsolutions.net,
+        john.fastabend@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, longman@redhat.com, mingo@kernel.org,
+        netdev@vger.kernel.org, paulmck@linux.vnet.ibm.com,
+        peterz@infradead.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, tj@kernel.org,
+        torvalds@linux-foundation.org, will.deacon@arm.com,
+        xdp-newbies@vger.kernel.org, yhs@fb.com
+Subject: Re: WARNING in is_bpf_text_address
+Message-ID: <20190816082130.2shhirk53qofn6bj@willie-the-truck>
+References: <00000000000000ac4f058bd50039@google.com>
+ <000000000000e56cb0058fcc6c28@google.com>
+ <20190815075142.vuza32plqtiuhixx@willie-the-truck>
+ <456d0da6-3e16-d3fc-ecf6-7abb410bf689@acm.org>
 MIME-Version: 1.0
-In-Reply-To: <20190815122844.52eeda08@cakuba.netronome.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <456d0da6-3e16-d3fc-ecf6-7abb410bf689@acm.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 8/15/2019 12:28 PM, Jakub Kicinski wrote:
-> On Wed, 14 Aug 2019 20:46:18 -0700, Sridhar Samudrala wrote:
->> This patch series introduces XDP_SKIP_BPF flag that can be specified
->> during the bind() call of an AF_XDP socket to skip calling the BPF
->> program in the receive path and pass the buffer directly to the socket.
->>
->> When a single AF_XDP socket is associated with a queue and a HW
->> filter is used to redirect the packets and the app is interested in
->> receiving all the packets on that queue, we don't need an additional
->> BPF program to do further filtering or lookup/redirect to a socket.
->>
->> Here are some performance numbers collected on
->>    - 2 socket 28 core Intel(R) Xeon(R) Platinum 8180 CPU @ 2.50GHz
->>    - Intel 40Gb Ethernet NIC (i40e)
->>
->> All tests use 2 cores and the results are in Mpps.
->>
->> turbo on (default)
->> ---------------------------------------------	
->>                        no-skip-bpf    skip-bpf
->> ---------------------------------------------	
->> rxdrop zerocopy           21.9         38.5
->> l2fwd  zerocopy           17.0         20.5
->> rxdrop copy               11.1         13.3
->> l2fwd  copy                1.9          2.0
->>
->> no turbo :  echo 1 > /sys/devices/system/cpu/intel_pstate/no_turbo
->> ---------------------------------------------	
->>                        no-skip-bpf    skip-bpf
->> ---------------------------------------------	
->> rxdrop zerocopy           15.4         29.0
->> l2fwd  zerocopy           11.8         18.2
->> rxdrop copy                8.2         10.5
->> l2fwd  copy                1.7          1.7
->> ---------------------------------------------	
+On Thu, Aug 15, 2019 at 06:39:56PM -0700, Bart Van Assche wrote:
+> On 8/15/19 12:51 AM, Will Deacon wrote:
+> > On Sat, Aug 10, 2019 at 05:24:06PM -0700, syzbot wrote:
+> > > The bug was bisected to:
+> > > 
+> > > commit a0b0fd53e1e67639b303b15939b9c653dbe7a8c4
+> > > Author: Bart Van Assche <bvanassche@acm.org>
+> > > Date:   Thu Feb 14 23:00:46 2019 +0000
+> > > 
+> > >      locking/lockdep: Free lock classes that are no longer in use
+> > > 
+> > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=152f6a9da00000
+> > > final crash:    https://syzkaller.appspot.com/x/report.txt?x=172f6a9da00000
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=132f6a9da00000
+> > 
+> > I know you don't think much to these reports, but please could you have a
+> > look (even if it's just to declare it a false positive)?
 > 
-> Could you include a third column here - namely the in-XDP performance?
-> AFAIU the way to achieve better performance with AF_XDP is to move the
-> fast path into the kernel's XDP program..
-
-The in-xdp drop that can be measured with xdp1 is lower than rxdrop
-zerocopy with skip-bpf although in-xdp drop uses only 1 core. af-xdp 
-1-core performance would improve with need-wakeup or busypoll patches 
-and based on early experiments so far af-xdp with need-wakeup/busypoll + 
-skip-bpf perf is higher than in-xdp drop.
-
-Will include in-xdp drop data too in the next revision.
-
+> Had you already noticed the following message?
 > 
-> Maciej's work on batching XDP program's execution should lower the
-> retpoline overhead, without leaning close to the bypass model.
+> https://lore.kernel.org/bpf/d76d7a63-7854-e92d-30cb-52546d333ffe@iogearbox.net/
 > 
+> From that message: "Hey Bart, don't think it's related in any way to your
+> commit. I'll allocate some time on working on this issue today, thanks!"
+
+Apologies, but I hadn't received that when I sent my initial email. Anyway,
+just wanted to make sure somebody was looking into it!
+
+Will
