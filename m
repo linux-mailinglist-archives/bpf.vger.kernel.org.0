@@ -2,55 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0478FA45
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 07:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5442D8FA5B
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 07:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726166AbfHPFQU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Aug 2019 01:16:20 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:34700 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725971AbfHPFQT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Aug 2019 01:16:19 -0400
-Received: by mail-lj1-f195.google.com with SMTP id x18so4232490ljh.1;
-        Thu, 15 Aug 2019 22:16:18 -0700 (PDT)
+        id S1726088AbfHPFX1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Aug 2019 01:23:27 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:39669 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725971AbfHPFX1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Aug 2019 01:23:27 -0400
+Received: by mail-qk1-f196.google.com with SMTP id 125so3795098qkl.6;
+        Thu, 15 Aug 2019 22:23:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=aXT56wysrSUKT0mrZs1SZsEmms88zrluxlXTsaKbuCw=;
-        b=kDSc6L3xsrMjEexDgEG7IBJJuFT2T/v846y+amyRWBkRInSNhF52xBVOvPO6MACEyF
-         wT3hXV8YBn1JTgAymE+IVXwIIZlHOLbDE8EGS38Bod/ekyYQvD2cwXDU9ZEJeg1MXgn7
-         n7gj3rQiq/cS7/gfhk+yH07AgWFGZYZfdyTY0zHiA+v1hWQgMyyqXiKRzFXC05oTdA7Y
-         VyZKDOx8FgQQwjrTnLDankfFlTfEQjUhP4MitReZ/OiYl6KSqW+EFNML1RDVDTHh0zJr
-         cyZP/KrmvJQzwUWFyXX+ysQ73SyhCAqoEo95Nx7v9n0OT8VDPAZONWcip6oHeOeVulau
-         0F7g==
+        bh=uHyOSrsLg+OpTAnL/CHZKBv938Zif7lAbBDshh9pX/c=;
+        b=lYK9LS3N7wVCkLjV2IsreoUe7z+fSQ9B/mQ08Q3vfdBmDbtZUiYi0wa6QMOZSXWJGI
+         RB2Lc+mK0FrrdoMlT6ptkYsIjxwwNCbc16b4K6kKgiytfPkhEWKpzljzg4L0JYplp0Ao
+         ETAEXJjEe2KA+kSlN9b10R5CNaKIivxG4iAKKQfotYPv0bLjPoAZgxVklWZ3e98qNmra
+         SEWCCfTaEBlGNusKq86KxYTZEzcSGJbLJTPhL0WNeO9RMXJ2Q7gue0fCSusiCBvug4q4
+         uMNs2Lp3LJtq5jf6jR4TwpZ5exqo1S7by7/bal6Mhlx8nOUvgj/a8+RS1ptYVSHDrofR
+         4law==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aXT56wysrSUKT0mrZs1SZsEmms88zrluxlXTsaKbuCw=;
-        b=TGwYR55u9MyXuV5aW5JfqIFdUk70GjloYj0q5X6Rm/2H0f+D1x2TBvRkv9ufz/d4Iy
-         ARs1LV0sT4oIAFiFr948uicp2W5U68RPz+YXy+s55B6M4CIH329ooBAI0gHE9PVznOsm
-         u0/e4zev9AldV7fHZe4GQxs2aSThmeCYqp9spkcqpxO7hotovnbCB3mGmr41TiIpYosn
-         KWc8a8avm2C9jFkdx1q6bIf0ua/WTaiqX+qnXCGkg0n7QizC/pI6ow314fi45KjuRuFJ
-         lOrOMExEUe4EEohC785XYhvWZutwUv+NRYoDM0SyVX3ZZWgNiXpXtK/LI83k0+wRWK+g
-         jeEQ==
-X-Gm-Message-State: APjAAAUMfpNkXSbzikXF1tK4JymYxP8098h+VcQN/IeY99q1AFCsZqzH
-        xwWPQmTE7W2d587cEmjQCgZzqCsefP1qSmN+odoGXw==
-X-Google-Smtp-Source: APXvYqzqZ4Qx86aACw9yZh7/lTrjsdYjL6aRwZS74hkZUt90oVG4d4E/63Om/IKiIbXKvlWaSw9WRYmdtVqomXwoV1E=
-X-Received: by 2002:a2e:7818:: with SMTP id t24mr2839746ljc.210.1565932577762;
- Thu, 15 Aug 2019 22:16:17 -0700 (PDT)
+        bh=uHyOSrsLg+OpTAnL/CHZKBv938Zif7lAbBDshh9pX/c=;
+        b=AGE64x333SK+w483f4/+Jj8LNUuUfGP80yr0WxdHsp6lERYUZnNeSW3AB3+AnGTHgb
+         BONk7edO18+NFMGV/V8DnCEYadPH8MXs1t5d1JkNHwdxoVh8q6qKQe602it7Vknsu2WI
+         bLL48m+IpSdI9UzKnMIChpqElhrMA1HT6om0152jXSEj+256jukmouwDOExYhVvFPcfu
+         bVmSLb7NHiBjHlcI4RVaVrZsAzKYB+bvnoa2etkUVoeMl6iK5H1hoPWxidQjY97M5Jkc
+         p9bR8aHGhHDEyFdYc6W46XR6y9KU087Cj2abkabyBeCGGSsnVfSryEifQhaD1xss3PEk
+         Wpqg==
+X-Gm-Message-State: APjAAAWhYq1feGVWXgenVaXxX7vKWpBFRJkGGKYBhdUAanfo/ywWjtxW
+        4hZj6nugtm8PFVFDnA3IlLcsMIZy1tRVh9BcFvQ=
+X-Google-Smtp-Source: APXvYqxvHQeKguD98k0XdADD/VXzOjaffIHkuxcXXYHy0FpA90De4BOpFPS7MfUZZ1XksLjDU+lcQvwf79yN3UzAR8E=
+X-Received: by 2002:a37:9b48:: with SMTP id d69mr7465606qke.449.1565933006557;
+ Thu, 15 Aug 2019 22:23:26 -0700 (PDT)
 MIME-Version: 1.0
 References: <20190814164742.208909-1-sdf@google.com> <20190814164742.208909-3-sdf@google.com>
  <CAEf4BzZR12JgbSvBqS7LMZjLcsneVDfFL9XyZdi3gtneyA9X9g@mail.gmail.com>
  <CAEf4BzaE-KiW1Xt049A4s25YiaLeTH3yhgahwLUdpXNjF1sVpA@mail.gmail.com>
  <20190814195330.GL2820@mini-arch> <CAEf4BzaEJcTKV6s8cVinpJcBStvs2LAJ+obNjevw54EOQq1QdQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzaEJcTKV6s8cVinpJcBStvs2LAJ+obNjevw54EOQq1QdQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 15 Aug 2019 22:16:06 -0700
-Message-ID: <CAADnVQ+Bz6R17bassdr3xOR7rhbuw-HbdXYu-hHkxE8S2WiNrA@mail.gmail.com>
+ <CAADnVQ+Bz6R17bassdr3xOR7rhbuw-HbdXYu-hHkxE8S2WiNrA@mail.gmail.com>
+In-Reply-To: <CAADnVQ+Bz6R17bassdr3xOR7rhbuw-HbdXYu-hHkxE8S2WiNrA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 15 Aug 2019 22:23:15 -0700
+Message-ID: <CAEf4BzbA_GtJSSxtVKLL+x3hScSw6zVy2cKPgBcYCa1eisr28g@mail.gmail.com>
 Subject: Re: [PATCH bpf-next 2/4] selftests/bpf: test_progs: test__skip
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Stanislav Fomichev <sdf@fomichev.me>,
         Stanislav Fomichev <sdf@google.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
@@ -64,18 +65,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 14, 2019 at 1:01 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> >
-> > Let me know if you see a value in highlighting test vs subtest skip.
-> >
-> > Other related question is: should we do verbose output in case
-> > of a skip? Right now we don't do it.
+On Thu, Aug 15, 2019 at 10:16 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> It might be useful, I guess, especially if it's not too common. But
-> Alexei is way more picky about stuff like that, so I'd defer to him. I
-> have no problem with a clean "SKIPPED: <test>/<subtest> (maybe some
-> reason for skipping here)" message.
+> On Wed, Aug 14, 2019 at 1:01 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > Let me know if you see a value in highlighting test vs subtest skip.
+> > >
+> > > Other related question is: should we do verbose output in case
+> > > of a skip? Right now we don't do it.
+> >
+> > It might be useful, I guess, especially if it's not too common. But
+> > Alexei is way more picky about stuff like that, so I'd defer to him. I
+> > have no problem with a clean "SKIPPED: <test>/<subtest> (maybe some
+> > reason for skipping here)" message.
+>
+> Since test_progs prints single number for FAILED tests then single number
+> for SKIPPED tests is fine as well.
 
-Since test_progs prints single number for FAILED tests then single number
-for SKIPPED tests is fine as well.
+I'm fine with single number, but it should count number of subtests
+skipped, if there are subtests within test, same as for FAILED.
