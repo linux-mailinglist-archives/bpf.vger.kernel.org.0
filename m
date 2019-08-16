@@ -2,152 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E66E390555
-	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 18:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB80D90567
+	for <lists+bpf@lfdr.de>; Fri, 16 Aug 2019 18:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727416AbfHPQDo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Aug 2019 12:03:44 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:40705 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727391AbfHPQDo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Aug 2019 12:03:44 -0400
-Received: by mail-pl1-f196.google.com with SMTP id a93so2628289pla.7;
-        Fri, 16 Aug 2019 09:03:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IsyaBI53vlhVFwEj55jm631qg+ZeEvxgq87mCMPjPqE=;
-        b=raABAyA/SRX7wBb0sZMtVZg3VQdVpjS5uOi8Jq0dMJhqIGOJkovKIgAAFzAADAu8s9
-         bi33YuEEKu6Lr3/rbZPBUMYccKNmwDMPQQi5ymvHx3gAv3OC7zQOl2OYCRfrGZWv/GhM
-         xM7nWKoaJhXM6gn2PGl/Zrsb2HTPp2IP72coCTztWbGs3NX1gLSH+8UVYYV6AT/uJ1V6
-         IaunLVzDYLufNjN11ApTvGS+AYmYnatIe5JCh4uyJ/6kmYYqjqm3SKCMYvWRIt6PZBCN
-         AZbtTlASKi6c7FInjEy0DhWW6rQcjCY7nOC+q0rasqnlRpXIkDa/fwN/hWxjH4W24fFp
-         8Azw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IsyaBI53vlhVFwEj55jm631qg+ZeEvxgq87mCMPjPqE=;
-        b=YS5wphjvK9IJSvNJ1Wq2Jfl4zQ6MhckL7NPdlM0QFqDSg7ksmleBGsfNPXFfOp45XD
-         p0ZCoL7dIt8aw0/kFmi1B4rmA4LAIwVJ7/Fc4vI9Ng8cHhmNPjf+af5i45NiEutMT6Si
-         kGE605aLNk9yX4/VrqiDE8nsEIwLwjCOQVtHFH+CzgLjh781AQTytgcA4eDuFuMUdaNL
-         4MAtUiWHqUlPhyKEhYgdrbuEC+11ZjMABChXD1OXqmZp4wniVyfCSsxnqP8UrxbfV2Li
-         jE3QolxushBXaThNwXJjsD9fw6a7kW8sMft2pl24K3A4fuaahoR6zMk5YBACxWnR3J1H
-         bd0w==
-X-Gm-Message-State: APjAAAUhtJkfV/DlusrkZxYM1AL+d/ZefZYjDkUtf3arDADyj0RjV8SX
-        Y54KzWhJroKKmVhoJOOaxEDfcmRI
-X-Google-Smtp-Source: APXvYqwpS7uoEfKXNDCd6pkgEamcrZuSfpYkDZZa99FRkK3tvMuRjyfSWRg2ZQheUxffkUfFh7MMJQ==
-X-Received: by 2002:a17:902:d917:: with SMTP id c23mr10041133plz.248.1565971423216;
-        Fri, 16 Aug 2019 09:03:43 -0700 (PDT)
-Received: from ppenkov.svl.corp.google.com ([2620:15c:2c4:201:7bd4:4f27:abe4:d695])
-        by smtp.gmail.com with ESMTPSA id t9sm6078591pgj.89.2019.08.16.09.03.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Aug 2019 09:03:42 -0700 (PDT)
-From:   Petar Penkov <ppenkov.kernel@gmail.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        sdf@google.com, Petar Penkov <ppenkov@google.com>
-Subject: [bpf-next] selftests/bpf: fix race in test_tcp_rtt test
-Date:   Fri, 16 Aug 2019 09:03:39 -0700
-Message-Id: <20190816160339.249832-1-ppenkov.kernel@gmail.com>
-X-Mailer: git-send-email 2.23.0.rc1.153.gdeed80330f-goog
+        id S1727418AbfHPQGQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Aug 2019 12:06:16 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53346 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727352AbfHPQGP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 16 Aug 2019 12:06:15 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7GG3JHj141535
+        for <bpf@vger.kernel.org>; Fri, 16 Aug 2019 12:06:14 -0400
+Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2udw0w71k4-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 16 Aug 2019 12:06:14 -0400
+Received: from localhost
+        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Fri, 16 Aug 2019 17:06:12 +0100
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
+        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Fri, 16 Aug 2019 17:06:10 +0100
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7GG687W43647206
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Aug 2019 16:06:08 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3C52442042;
+        Fri, 16 Aug 2019 16:06:08 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E70E54203F;
+        Fri, 16 Aug 2019 16:06:07 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.96.190])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 16 Aug 2019 16:06:07 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH] selftests: use "$(MAKE)" instead of "make"
+Date:   Fri, 16 Aug 2019 18:06:04 +0200
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19081616-0016-0000-0000-0000029F740A
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19081616-0017-0000-0000-000032FF9729
+Message-Id: <20190816160604.61294-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-16_07:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908160170
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Petar Penkov <ppenkov@google.com>
+When doing "make kselftest TARGETS=bpf -j12", bpf progs end up being
+compiled sequentially and thus slowly.
 
-There is a race in this test between receiving the ACK for the
-single-byte packet sent in the test, and reading the values from the
-map.
+The reason is that parent make (tools/testing/selftests/Makefile) does
+not share its jobserver with child make
+(tools/testing/selftests/bpf/Makefile), therefore the latter runs with
+-j1.
 
-This patch fixes this by having the client wait until there are no more
-unacknowledged packets.
+Change all instances of "make" to "$(MAKE)", so that the whole make
+hierarchy runs using a single jobserver.
 
-Before:
-for i in {1..1000}; do ../net/in_netns.sh ./test_tcp_rtt; \
-done | grep -c PASSED
-< trimmed error messages >
-993
-
-After:
-for i in {1..10000}; do ../net/in_netns.sh ./test_tcp_rtt; \
-done | grep -c PASSED
-10000
-
-Fixes: b55873984dab ("selftests/bpf: test BPF_SOCK_OPS_RTT_CB")
-Signed-off-by: Petar Penkov <ppenkov@google.com>
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
- tools/testing/selftests/bpf/test_tcp_rtt.c | 31 ++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+I tested this with:
 
-diff --git a/tools/testing/selftests/bpf/test_tcp_rtt.c b/tools/testing/selftests/bpf/test_tcp_rtt.c
-index 90c3862f74a8..2b4754473956 100644
---- a/tools/testing/selftests/bpf/test_tcp_rtt.c
-+++ b/tools/testing/selftests/bpf/test_tcp_rtt.c
-@@ -6,6 +6,7 @@
- #include <sys/types.h>
- #include <sys/socket.h>
- #include <netinet/in.h>
-+#include <netinet/tcp.h>
- #include <pthread.h>
+	make kselftest
+	make -C tools/testing/selftests
+	make -C tools/testing/selftests/bpf
+
+Unfortunately, in my setup a lot of tests fail for a number of reasons.
+However, this change does not make it worse.
+
+tools/testing/selftests/Makefile | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index 25b43a8c2b15..c3feccb99ff5 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -126,9 +126,9 @@ endif
+ # in the default INSTALL_HDR_PATH usr/include.
+ khdr:
+ ifeq (1,$(DEFAULT_INSTALL_HDR_PATH))
+-	make --no-builtin-rules ARCH=$(ARCH) -C $(top_srcdir) headers_install
++	$(MAKE) --no-builtin-rules ARCH=$(ARCH) -C $(top_srcdir) headers_install
+ else
+-	make --no-builtin-rules INSTALL_HDR_PATH=$$BUILD/usr \
++	$(MAKE) --no-builtin-rules INSTALL_HDR_PATH=$$BUILD/usr \
+ 		ARCH=$(ARCH) -C $(top_srcdir) headers_install
+ endif
  
- #include <linux/filter.h>
-@@ -34,6 +35,30 @@ static void send_byte(int fd)
- 		error(1, errno, "Failed to send single byte");
- }
+@@ -136,35 +136,35 @@ all: khdr
+ 	@for TARGET in $(TARGETS); do		\
+ 		BUILD_TARGET=$$BUILD/$$TARGET;	\
+ 		mkdir $$BUILD_TARGET  -p;	\
+-		make OUTPUT=$$BUILD_TARGET -C $$TARGET;\
++		$(MAKE) OUTPUT=$$BUILD_TARGET -C $$TARGET;\
+ 	done;
  
-+static int wait_for_ack(int fd, int retries)
-+{
-+	struct tcp_info info;
-+	socklen_t optlen;
-+	int i, err;
-+
-+	for (i = 0; i < retries; i++) {
-+		optlen = sizeof(info);
-+		err = getsockopt(fd, SOL_TCP, TCP_INFO, &info, &optlen);
-+		if (err < 0) {
-+			log_err("Failed to lookup TCP stats");
-+			return err;
-+		}
-+
-+		if (info.tcpi_unacked == 0)
-+			return 0;
-+
-+		sleep(1);
-+	}
-+
-+	log_err("Did not receive ACK");
-+	return -1;
-+}
-+
- static int verify_sk(int map_fd, int client_fd, const char *msg, __u32 invoked,
- 		     __u32 dsack_dups, __u32 delivered, __u32 delivered_ce,
- 		     __u32 icsk_retransmits)
-@@ -149,6 +174,11 @@ static int run_test(int cgroup_fd, int server_fd)
- 			 /*icsk_retransmits=*/0);
+ run_tests: all
+ 	@for TARGET in $(TARGETS); do \
+ 		BUILD_TARGET=$$BUILD/$$TARGET;	\
+-		make OUTPUT=$$BUILD_TARGET -C $$TARGET run_tests;\
++		$(MAKE) OUTPUT=$$BUILD_TARGET -C $$TARGET run_tests;\
+ 	done;
  
- 	send_byte(client_fd);
-+	if (wait_for_ack(client_fd, 5) < 0) {
-+		err = -1;
-+		goto close_client_fd;
-+	}
-+
+ hotplug:
+ 	@for TARGET in $(TARGETS_HOTPLUG); do \
+ 		BUILD_TARGET=$$BUILD/$$TARGET;	\
+-		make OUTPUT=$$BUILD_TARGET -C $$TARGET;\
++		$(MAKE) OUTPUT=$$BUILD_TARGET -C $$TARGET;\
+ 	done;
  
- 	err += verify_sk(map_fd, client_fd, "first payload byte",
- 			 /*invoked=*/2,
-@@ -157,6 +187,7 @@ static int run_test(int cgroup_fd, int server_fd)
- 			 /*delivered_ce=*/0,
- 			 /*icsk_retransmits=*/0);
+ run_hotplug: hotplug
+ 	@for TARGET in $(TARGETS_HOTPLUG); do \
+ 		BUILD_TARGET=$$BUILD/$$TARGET;	\
+-		make OUTPUT=$$BUILD_TARGET -C $$TARGET run_full_test;\
++		$(MAKE) OUTPUT=$$BUILD_TARGET -C $$TARGET run_full_test;\
+ 	done;
  
-+close_client_fd:
- 	close(client_fd);
+ clean_hotplug:
+ 	@for TARGET in $(TARGETS_HOTPLUG); do \
+ 		BUILD_TARGET=$$BUILD/$$TARGET;	\
+-		make OUTPUT=$$BUILD_TARGET -C $$TARGET clean;\
++		$(MAKE) OUTPUT=$$BUILD_TARGET -C $$TARGET clean;\
+ 	done;
  
- close_bpf_object:
+ run_pstore_crash:
+-	make -C pstore run_crash
++	$(MAKE) -C pstore run_crash
+ 
+ # Use $BUILD as the default install root. $BUILD points to the
+ # right output location for the following cases:
+@@ -184,7 +184,7 @@ ifdef INSTALL_PATH
+ 	install -m 744 kselftest/prefix.pl $(INSTALL_PATH)/kselftest/
+ 	@for TARGET in $(TARGETS); do \
+ 		BUILD_TARGET=$$BUILD/$$TARGET;	\
+-		make OUTPUT=$$BUILD_TARGET -C $$TARGET INSTALL_PATH=$(INSTALL_PATH)/$$TARGET install; \
++		$(MAKE) OUTPUT=$$BUILD_TARGET -C $$TARGET INSTALL_PATH=$(INSTALL_PATH)/$$TARGET install; \
+ 	done;
+ 
+ 	@# Ask all targets to emit their test scripts
+@@ -203,7 +203,7 @@ ifdef INSTALL_PATH
+ 		echo "[ -w /dev/kmsg ] && echo \"kselftest: Running tests in $$TARGET\" >> /dev/kmsg" >> $(ALL_SCRIPT); \
+ 		echo "cd $$TARGET" >> $(ALL_SCRIPT); \
+ 		echo -n "run_many" >> $(ALL_SCRIPT); \
+-		make -s --no-print-directory OUTPUT=$$BUILD_TARGET -C $$TARGET emit_tests >> $(ALL_SCRIPT); \
++		$(MAKE) -s --no-print-directory OUTPUT=$$BUILD_TARGET -C $$TARGET emit_tests >> $(ALL_SCRIPT); \
+ 		echo "" >> $(ALL_SCRIPT);	    \
+ 		echo "cd \$$ROOT" >> $(ALL_SCRIPT); \
+ 	done;
+@@ -216,7 +216,7 @@ endif
+ clean:
+ 	@for TARGET in $(TARGETS); do \
+ 		BUILD_TARGET=$$BUILD/$$TARGET;	\
+-		make OUTPUT=$$BUILD_TARGET -C $$TARGET clean;\
++		$(MAKE) OUTPUT=$$BUILD_TARGET -C $$TARGET clean;\
+ 	done;
+ 
+ .PHONY: khdr all run_tests hotplug run_hotplug clean_hotplug run_pstore_crash install clean
 -- 
-2.23.0.rc1.153.gdeed80330f-goog
+2.21.0
 
