@@ -2,130 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2700B911C1
-	for <lists+bpf@lfdr.de>; Sat, 17 Aug 2019 17:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407E391344
+	for <lists+bpf@lfdr.de>; Sat, 17 Aug 2019 23:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbfHQPoz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 17 Aug 2019 11:44:55 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:35617 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725832AbfHQPoz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 17 Aug 2019 11:44:55 -0400
-Received: by mail-pl1-f196.google.com with SMTP id gn20so3713802plb.2
-        for <bpf@vger.kernel.org>; Sat, 17 Aug 2019 08:44:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=R2/VJq6nrOFMWOBOgnh5HWjyHIE/BDqFX+S1CeV3qAs=;
-        b=WaP7COrr+38AIFHTYCbpqcx3jLbdYVTtlCWA+1q5UPdXIiVAPDyvZf9DznDc9S8c2u
-         J2urZpD3/44z3m341acVQM9Fd6YpoHb6MV0OC587gacLZPxksqSGGC5P18a+s9X4DrC5
-         glswsfCwPe1MCUkV9D77l52MeDoV/odb8e7K4nf++wuk6JbknP2w+WFaswPoGL/LA1Ea
-         k/enOTcOZq7XAVufNnZKXMAJcjpbnfTcyP/psfuUKkaAKPmN8RMT03nLb++aubNbv05Q
-         PcFbzZBJWsHQEEzMKpsLM2OgRqPkqlP5hVihi3lo369sVowoeJmpga1fVTtsowuIKZZe
-         dmDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=R2/VJq6nrOFMWOBOgnh5HWjyHIE/BDqFX+S1CeV3qAs=;
-        b=lEtqclzIiuz5pfYDQpcenLKzl1cLqPEIUuhjMCtKvWvaWS4+T9rM6bE00kRuGU+opX
-         xt/xzzCyFjVC+6RY7P+4u3rohAe/VD3CMP0GW188pxg6j+ImmnDlZp5HywiNGNk4gKiw
-         aToxJUaEAKcCWqBes6Z6u1sdgshLrMrt/CTKRiePP66/9y0etbDq4gBW3NfXKbncRbHG
-         fGV99VhmGWdgnQotE8IwjxuRFvfyp1WZSRiSa7LLQaFtQHUUtZmCdE/IsFs/eiQiP9eC
-         uEaFs/CN/G6OtVHNPPzNzARaiILAKAW1fCO5HDsVj/jUUSbzDJrUgEPp88ibUQJPx8yN
-         eggg==
-X-Gm-Message-State: APjAAAX5E6t6NFkOyq3A20f7HjQlKxN/XXZo5aNGWpz5tPg9WhnWX0kI
-        4gt0Jcbe+wvK0YooCDXu3svUhw==
-X-Google-Smtp-Source: APXvYqxGPZQ32jm+v1QngNi4NkhKo4BrhhWdQ6WcwGGei+2UBkhZw6dczbdrutxMwyo4yOE9YZomEQ==
-X-Received: by 2002:a17:902:2bc8:: with SMTP id l66mr14790994plb.222.1566056694423;
-        Sat, 17 Aug 2019 08:44:54 -0700 (PDT)
-Received: from ?IPv6:2600:1010:b04e:b450:b585:791c:ba5c:79b4? ([2600:1010:b04e:b450:b585:791c:ba5c:79b4])
-        by smtp.gmail.com with ESMTPSA id m13sm9400788pgn.57.2019.08.17.08.44.53
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 17 Aug 2019 08:44:53 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-From:   Andy Lutomirski <luto@amacapital.net>
-X-Mailer: iPhone Mail (16G77)
-In-Reply-To: <20190817150245.xxzxqjpvgqsxmloe@ast-mbp>
-Date:   Sat, 17 Aug 2019 08:44:52 -0700
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jordan Glover <Golden_Miller83@protonmail.ch>,
-        Andy Lutomirski <luto@kernel.org>,
-        Daniel Colascione <dancol@google.com>,
-        Song Liu <songliubraving@fb.com>,
-        Kees Cook <keescook@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Jann Horn <jannh@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <959BAF9B-F2A2-4187-A2A7-C64D675F537B@amacapital.net>
-References: <20190814220545.co5pucyo5jk3weiv@ast-mbp.dhcp.thefacebook.com> <HG0x24u69mnaMFKuxHVAzHpyjwsD5-U6RpqFRua87wGWQCHg00Q8ZqPeA_5kJ9l-d6oe0cXa4HyYXMnOO0Aofp_LcPcQdG0WFV21z1MbgcE=@protonmail.ch> <20190815172856.yoqvgu2yfrgbkowu@ast-mbp.dhcp.thefacebook.com> <CALCETrUv+g+cb79FJ1S4XuV0K=kowFkPXpzoC99svoOfs4-Kvg@mail.gmail.com> <20190815230808.2o2qe7a72cwdce2m@ast-mbp.dhcp.thefacebook.com> <fkD3fs46a1YnR4lh0tEG-g3tDnDcyZuzji7bAUR9wujPLLl75ZhI8Yk-H1jZpSugO7qChVeCwxAMmxLdeoF2QFS3ZzuYlh7zmeZOmhDJxww=@protonmail.ch> <alpine.DEB.2.21.1908161158490.1873@nanos.tec.linutronix.de> <lGGTLXBsX3V6p1Z4TkdzAjxbNywaPS2HwX5WLleAkmXNcnKjTPpWnP6DnceSsy8NKt5NBRBbuoAb0woKTcDhJXVoFb7Ygk3Skfj8j6rVfMQ=@protonmail.ch> <20190816195233.vzqqbqrivnooohq6@ast-mbp.dhcp.thefacebook.com> <alpine.DEB.2.21.1908162211270.1923@nanos.tec.linutronix.de> <20190817150245.xxzxqjpvgqsxmloe@ast-mbp>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        id S1726163AbfHQV2J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 17 Aug 2019 17:28:09 -0400
+Received: from www62.your-server.de ([213.133.104.62]:56324 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726089AbfHQV2J (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 17 Aug 2019 17:28:09 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hz6F4-0001ZX-Az; Sat, 17 Aug 2019 23:28:06 +0200
+Received: from [178.193.45.231] (helo=pc-63.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1hz6F4-000DWa-5N; Sat, 17 Aug 2019 23:28:06 +0200
+Subject: Re: [PATCH bpf-next v5 0/2] net: xdp: XSKMAP improvements
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        ast@kernel.org, netdev@vger.kernel.org
+Cc:     magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
+        bjorn.topel@intel.com, bruce.richardson@intel.com,
+        songliubraving@fb.com, bpf@vger.kernel.org
+References: <20190815093014.31174-1-bjorn.topel@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c9f62b8e-34e1-3331-8a23-95d064aa4f87@iogearbox.net>
+Date:   Sat, 17 Aug 2019 23:28:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20190815093014.31174-1-bjorn.topel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25544/Sat Aug 17 10:24:01 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 8/15/19 11:30 AM, Björn Töpel wrote:
+> This series (v5 and counting) add two improvements for the XSKMAP,
+> used by AF_XDP sockets.
+> 
+> 1. Automatic cleanup when an AF_XDP socket goes out of scope/is
+>     released. Instead of require that the user manually clears the
+>     "released" state socket from the map, this is done
+>     automatically. Each socket tracks which maps it resides in, and
+>     remove itself from those maps at relase. A notable implementation
+>     change, is that the sockets references the map, instead of the map
+>     referencing the sockets. Which implies that when the XSKMAP is
+>     freed, it is by definition cleared of sockets.
+> 
+> 2. The XSKMAP did not honor the BPF_EXIST/BPF_NOEXIST flag on insert,
+>     which this patch addresses.
+> 
+> 
+> Thanks,
+> Björn
+> 
+> v1->v2: Fixed deadlock and broken cleanup. (Daniel)
+> v2->v3: Rebased onto bpf-next
+> v3->v4: {READ, WRITE}_ONCE consistency. (Daniel)
+>          Socket release/map update race. (Daniel)
+> v4->v5: Avoid use-after-free on XSKMAP self-assignment [1]. (Daniel)
+>          Removed redundant assignment in xsk_map_update_elem().
+>          Variable name consistency; Use map_entry everywhere.
+> 
+> [1] https://lore.kernel.org/bpf/20190802081154.30962-1-bjorn.topel@gmail.com/T/#mc68439e97bc07fa301dad9fc4850ed5aa392f385
+> 
+> Björn Töpel (2):
+>    xsk: remove AF_XDP socket from map when the socket is released
+>    xsk: support BPF_EXIST and BPF_NOEXIST flags in XSKMAP
+> 
+>   include/net/xdp_sock.h |  18 ++++++
+>   kernel/bpf/xskmap.c    | 133 ++++++++++++++++++++++++++++++++++-------
+>   net/xdp/xsk.c          |  50 ++++++++++++++++
+>   3 files changed, 179 insertions(+), 22 deletions(-)
+> 
 
-
-> On Aug 17, 2019, at 8:02 AM, Alexei Starovoitov <alexei.starovoitov@gmail.=
-com> wrote:
-
->=20
-> Can any of the mechanisms 1/2/3 address the concern in mds.rst?
->=20
-
-seccomp() can. It=E2=80=99s straightforward to use seccomp to disable bpf() o=
-utright for a process tree.  In this regard, bpf() isn=E2=80=99t particularl=
-y unique =E2=80=94 it=E2=80=99s a system call that exposes some attack surfa=
-ce and that isn=E2=80=99t required by most programs for basic functionality.=
-
-
-At LPC this year, there will be a discussion about seccomp improvements that=
- will, among other things, offer fiber-grained control. It=E2=80=99s quite l=
-ikely, for example, that seccomp will soon be able to enable and disable spe=
-cific map types or attach types.  The exact mechanism isn=E2=80=99t decided y=
-et,  but I think everyone expects that this is mostly a design problem, not a=
-n implementation problem.
-
-This is off topic for the current thread, but it could be useful to allow bp=
-f programs to be loaded from files directly (i.e. pass an fd to a file into b=
-pf() to load the program), which would enable LSMs to check that the file is=
- appropriately labeled. This would dramatically raise the bar for exploitati=
-on of verifier bugs or speculation attacks, since anyone trying to exploit i=
-t would need to get the bpf payload through LSM policy first.
-
-> I believe Andy wants to expand the attack surface when
-> kernel.unprivileged_bpf_disabled=3D0
-> Before that happens I'd like the community to work on addressing the text a=
-bove.
->=20
-
-Not by much. BPF maps are already largely exposed to unprivileged code (when=
- unprivileged_bpf_disabled=3D0).  The attack surface is there, and they=E2=80=
-=99re arguably even more exposed than they should be.  My patch 1 earlier wa=
-s about locking these interfaces down.
-
-Similarly, my suggestions about reworking cgroup attach and program load don=
-=E2=80=99t actually allow fully unprivileged users to run arbitrary bpf() pr=
-ograms [0] =E2=80=94 under my proposal, to attach a bpf cgroup program, you n=
-eed a delegated cgroup. The mechanism could be extended by a requirement tha=
-t a privileged cgroup manager explicitly enable certain attach types for a d=
-elegated subtree.
-
-A cgroup knob to turn unprivileged bpf on and off for tasks in the cgroup mi=
-ght actually be quite useful.
-
-[0] on some thought, the test run mechanism should probably remain root-only=
-.
-
+Looks better, applied thanks!
