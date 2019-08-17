@@ -2,138 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B74E4910B1
-	for <lists+bpf@lfdr.de>; Sat, 17 Aug 2019 16:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1942D9111C
+	for <lists+bpf@lfdr.de>; Sat, 17 Aug 2019 17:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725937AbfHQOKV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 17 Aug 2019 10:10:21 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:34063 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725929AbfHQOKU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 17 Aug 2019 10:10:20 -0400
-Received: by mail-pf1-f193.google.com with SMTP id b24so4634046pfp.1;
-        Sat, 17 Aug 2019 07:10:20 -0700 (PDT)
+        id S1725988AbfHQPCw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 17 Aug 2019 11:02:52 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:36809 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbfHQPCv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 17 Aug 2019 11:02:51 -0400
+Received: by mail-pf1-f194.google.com with SMTP id w2so4659140pfi.3;
+        Sat, 17 Aug 2019 08:02:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=D08stjvpro3pBQEkt/xg9U3d/spYVftHRq2OktyQcuU=;
-        b=FRtG4p4AM9MWI141V860dpTT0z7Hgt1NoJ8ZoEstcyLZ/eue5duUtUagyGVNAMwvkn
-         Lxv5ieYoF2iWxrEE3ky0iQWKctg4A1k5nzqYrbZkwZJmJCy5Bt2bVb3Yrdz3D2PYI9LA
-         eT33YHXrg4et/NPDY3Zz/Oato+mVbWsPgDvFQ4lDzldUFEM6in4IsFVY+CaBUK7JGBqJ
-         Yq1FpqyyHJU+X+vD6FAETxpWPRlwhBz76sAt3n8cv8l+LmYW1E23zN2kxdtszpiAuRuF
-         jrxXtfuC785akFKnkYeha35TUaJUT1RX56iQb5hSym/YlPCKCEnXFUcmk5g3hWxbHmRz
-         oktw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=1yM+3gaDT2rRc0Bnym4V9e44Bftn+Nt4gZNjCRfq0Zc=;
+        b=L5JD5xwE59YvEytmxCvXa0dMfZE56DMqONaXkYB90GeRMd9ciAEL8NDD2MlHS6sQJp
+         xwGbCcUvQjPeEZ5OMM+LLMp+enQYkbUvRd4uVqdFvGwPClNn0df5DyQwTRJqo0bcvJ5j
+         0RCjSr8Oa6Vc31vtOJjyXtSZYIF2RpcCx0hTELf9XvYcHkopAxIk8MydOuH8VojjcXui
+         PogcwXEByTJVk0HRayk6CpeoDeWjlBub9B7btPMSU/y4RbCEQYnBuASXBM/QD9U2k9h4
+         1/buHcPAIxUiX4rePL1p5wOBIlGHf6zXeCJNC4gBPVIUWsoQa9j5GslA//38We/qbrLU
+         lxnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=D08stjvpro3pBQEkt/xg9U3d/spYVftHRq2OktyQcuU=;
-        b=uIqJb/LZ+Dfb5o6u8bhkV1AZVU5BTu0JwrQS/OexvvqbyNuJgAH0FCZ2I4ncS2Dfd7
-         1qyo3zaOtO8lGwiBc2AQ8nk5KslcApKskN2yBysoFBHoUZVuaPCy6rCbskPHO8CHik17
-         FlgkVphUh6QuyRpuEnzRkf2oxDW8/0MCS8dkL166D2y4bz0l8/30EaUANIzXpzIt8HH1
-         LTkPBFE5E/daCsiz1Q3eYAsdmK0jPuz4WDrCKa5SG4xqh5MlEWWBpRn49UWQ9ejuiMoZ
-         KMhOILIs1oGREm4CvkR5sg24IFIycC6fxudFfzXfwpuP/1rVzdnC9UYJBNRSpeSBP8ox
-         Pqiw==
-X-Gm-Message-State: APjAAAVNx3334NMC9axEum8pOCBva/gWxW/9lnCqaF90rXtSXE6jhUP8
-        f58F4lWPVaZiDxMRyz4r95A=
-X-Google-Smtp-Source: APXvYqyS+7YNkkIu6rZVfGSTFv26iTDSwMZG/k/xZGjh7JDy6pFF4OcDGt4qdo0y2Op2TQUyyrCvwA==
-X-Received: by 2002:a63:ea50:: with SMTP id l16mr12409339pgk.160.1566051020011;
-        Sat, 17 Aug 2019 07:10:20 -0700 (PDT)
-Received: from ?IPv6:240d:2:6b22:5500:b8ce:7113:7b93:9494? ([240d:2:6b22:5500:b8ce:7113:7b93:9494])
-        by smtp.googlemail.com with ESMTPSA id p1sm9943632pff.44.2019.08.17.07.10.14
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1yM+3gaDT2rRc0Bnym4V9e44Bftn+Nt4gZNjCRfq0Zc=;
+        b=ox3TlWcgJkHNj9zbxbdMMhBCQP5C0ggM76UBHdteh/c7XhqpiBJ20ZNe4vP0b1/Dsi
+         BVww/Tp5tFMY8PYgtsqHJ7umUKljgsL1K7OS0iroaEWR01mvkLQixm14pv4rUL+XpWkN
+         IkR9I9z4w/iq6zgdBEvq9RkKINxQdEzyPOUHtydeJG3632i1OBtFKfGjJ5DP9FUi5ckT
+         viAnvhHVBcVzTDoE2fyjIomRFVpgNc8vF8e7aqkQy1p4b4MzEjHAY8UlJU2/16sm+RNf
+         X6Zg4r5Wi/a3mhI7tGb+pv4+0w74O6dVdMbm/tGLBOwKxCaWMJL4VvbKIWSLbgpwg+4v
+         Jvag==
+X-Gm-Message-State: APjAAAWueqQuNmy8DYITaV59tt9I2hMwhHl7X6+BAWME7hMrZFuLgN94
+        L3MFkUhjob57+HkYiCa9Fk0=
+X-Google-Smtp-Source: APXvYqzL25Fka42KOBCiR2tWbSPJ47nKP4Id6XB3/20akCnmXzBuscYvgcS7HYZh6Zwbdn8j38dDeQ==
+X-Received: by 2002:a63:2043:: with SMTP id r3mr12314709pgm.311.1566054170489;
+        Sat, 17 Aug 2019 08:02:50 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:180::9c96])
+        by smtp.gmail.com with ESMTPSA id d18sm8153411pgi.40.2019.08.17.08.02.48
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 17 Aug 2019 07:10:19 -0700 (PDT)
-Subject: Re: [RFC PATCH bpf-next 00/14] xdp_flow: Flow offload to XDP
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Sat, 17 Aug 2019 08:02:49 -0700 (PDT)
+Date:   Sat, 17 Aug 2019 08:02:47 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jordan Glover <Golden_Miller83@protonmail.ch>,
+        Andy Lutomirski <luto@kernel.org>,
+        Daniel Colascione <dancol@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        Kees Cook <keescook@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, William Tu <u9012063@gmail.com>
-References: <20190813120558.6151-1-toshiaki.makita1@gmail.com>
- <20190814170715.GJ2820@mini-arch>
- <14c4a876-6f5d-4750-cbe4-19622f64975b@gmail.com>
- <20190815152100.GN2820@mini-arch>
- <4614fefc-fc43-8cf7-d064-7dc1947acc6c@gmail.com>
- <20190816153550.GO2820@mini-arch>
-From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
-Message-ID: <11ab8890-f876-250e-1a52-eab0bf057640@gmail.com>
-Date:   Sat, 17 Aug 2019 23:10:10 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Kernel Team <Kernel-team@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Jann Horn <jannh@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
+Message-ID: <20190817150245.xxzxqjpvgqsxmloe@ast-mbp>
+References: <20190814220545.co5pucyo5jk3weiv@ast-mbp.dhcp.thefacebook.com>
+ <HG0x24u69mnaMFKuxHVAzHpyjwsD5-U6RpqFRua87wGWQCHg00Q8ZqPeA_5kJ9l-d6oe0cXa4HyYXMnOO0Aofp_LcPcQdG0WFV21z1MbgcE=@protonmail.ch>
+ <20190815172856.yoqvgu2yfrgbkowu@ast-mbp.dhcp.thefacebook.com>
+ <CALCETrUv+g+cb79FJ1S4XuV0K=kowFkPXpzoC99svoOfs4-Kvg@mail.gmail.com>
+ <20190815230808.2o2qe7a72cwdce2m@ast-mbp.dhcp.thefacebook.com>
+ <fkD3fs46a1YnR4lh0tEG-g3tDnDcyZuzji7bAUR9wujPLLl75ZhI8Yk-H1jZpSugO7qChVeCwxAMmxLdeoF2QFS3ZzuYlh7zmeZOmhDJxww=@protonmail.ch>
+ <alpine.DEB.2.21.1908161158490.1873@nanos.tec.linutronix.de>
+ <lGGTLXBsX3V6p1Z4TkdzAjxbNywaPS2HwX5WLleAkmXNcnKjTPpWnP6DnceSsy8NKt5NBRBbuoAb0woKTcDhJXVoFb7Ygk3Skfj8j6rVfMQ=@protonmail.ch>
+ <20190816195233.vzqqbqrivnooohq6@ast-mbp.dhcp.thefacebook.com>
+ <alpine.DEB.2.21.1908162211270.1923@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20190816153550.GO2820@mini-arch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.1908162211270.1923@nanos.tec.linutronix.de>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 19/08/17 (土) 0:35:50, Stanislav Fomichev wrote:
-> On 08/16, Toshiaki Makita wrote:
->> On 2019/08/16 0:21, Stanislav Fomichev wrote:
->>> On 08/15, Toshiaki Makita wrote:
->>>> On 2019/08/15 2:07, Stanislav Fomichev wrote:
->>>>> On 08/13, Toshiaki Makita wrote:
->>>>>> * Implementation
->>>>>>
->>>>>> xdp_flow makes use of UMH to load an eBPF program for XDP, similar to
->>>>>> bpfilter. The difference is that xdp_flow does not generate the eBPF
->>>>>> program dynamically but a prebuilt program is embedded in UMH. This is
->>>>>> mainly because flow insertion is considerably frequent. If we generate
->>>>>> and load an eBPF program on each insertion of a flow, the latency of the
->>>>>> first packet of ping in above test will incease, which I want to avoid.
->>>>> Can this be instead implemented with a new hook that will be called
->>>>> for TC events? This hook can write to perf event buffer and control
->>>>> plane will insert/remove/modify flow tables in the BPF maps (contol
->>>>> plane will also install xdp program).
->>>>>
->>>>> Why do we need UMH? What am I missing?
->>>>
->>>> So you suggest doing everything in xdp_flow kmod?
->>> You probably don't even need xdp_flow kmod. Add new tc "offload" mode
->>> (bypass) that dumps every command via netlink (or calls the BPF hook
->>> where you can dump it into perf event buffer) and then read that info
->>> from userspace and install xdp programs and modify flow tables.
->>> I don't think you need any kernel changes besides that stream
->>> of data from the kernel about qdisc/tc flow creation/removal/etc.
->>
->> My intention is to make more people who want high speed network easily use XDP,
->> so making transparent XDP offload with current TC interface.
->>
->> What userspace program would monitor TC events with your suggestion?
-> Have a new system daemon (xdpflowerd) that is independently
-> packaged/shipped/installed. Anybody who wants accelerated TC can
-> download/install it. OVS can be completely unaware of this.
+On Fri, Aug 16, 2019 at 10:28:29PM +0200, Thomas Gleixner wrote:
+> Alexei,
+> 
+> On Fri, 16 Aug 2019, Alexei Starovoitov wrote:
+> > It's both of the above when 'systemd' is not taken literally.
+> > To earlier Thomas's point: the use case is not only about systemd.
+> > There are other containers management systems.
+> 
+> <SNIP>
+> 
+> > These daemons need to drop privileges to make the system safer == less
+> > prone to corruption due to bugs in themselves. Not necessary security
+> > bugs.
+> 
+> Let's take a step back.
+> 
+> While real usecases are helpful to understand a design decision, the design
+> needs to be usecase independent.
+> 
+> The kernel provides mechanisms, not policies. My impression of this whole
+> discussion is that it is policy driven. That's the wrong approach.
 
-Thanks, but that's what I called an unreliable solution...
+not sure what you mean by 'policy driven'.
+Proposed CAP_BPF is a policy?
 
->> ovs-vswitchd? If so, it even does not need to monitor TC. It can
->> implement XDP offload directly.
->> (However I prefer kernel solution. Please refer to "About alternative
->> userland (ovs-vswitchd etc.) implementation" section in the cover letter.)
->>
->> Also such a TC monitoring solution easily can be out-of-sync with real TC
->> behavior as TC filter/flower is being heavily developed and changed,
->> e.g. introduction of TC block, support multiple masks with the same pref, etc.
->> I'm not sure such an unreliable solution have much value.
-> This same issue applies to the in-kernel implementation, isn't it?
-> What happens if somebody sends patches for a new flower feature but
-> doesn't add appropriate xdp support? Do we reject them?
+My desire to do kernel.unprivileged_bpf_disabled=1 is driven by
+text in Documentation/x86/mds.rst which says:
+"There is one exception, which is untrusted BPF. The functionality of
+untrusted BPF is limited, but it needs to be thoroughly investigated
+whether it can be used to create such a construct."
 
-Why can we accept a patch which breaks other in-kernel subsystem...
-Such patches can be applied accidentally but we are supposed to fix such 
-problems in -rc phase, aren't we?
+commit 6a9e52927251 ("x86/speculation/mds: Add mds_clear_cpu_buffers()")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Reviewed-by: Jon Masters <jcm@redhat.com>
+Tested-by: Jon Masters <jcm@redhat.com>
 
-Toshiaki Makita
+The way I read this text:
+- there is a concern that mds is exploitable via bpf
+- there is a desire to investigate to address this concern
+
+I'm committed to help with the investigation.
+
+In the mean time I propose a path to do
+kernel.unprivileged_bpf_disabled=1 which is CAP_BPF.
+
+Can kernel.unprivileged_bpf_disabled=1 be used now?
+Yes, but it will weaken overall system security because things that
+use unpriv to load bpf and CAP_NET_ADMIN to attach bpf would need
+to move to stronger CAP_SYS_ADMIN.
+
+With CAP_BPF both load and attach would happen under CAP_BPF
+instead of CAP_SYS_ADMIN.
+
+> So let's look at the mechanisms which we have at hand:
+> 
+>  1) Capabilities
+>  
+>  2) SUID and dropping priviledges
+> 
+>  3) Seccomp and LSM
+> 
+> Now the real interesting questions are:
+> 
+>  A) What kind of restrictions does BPF allow? Is it a binary on/off or is
+>     there a more finegrained control of BPF functionality?
+> 
+>     TBH, I can't tell.
+> 
+>  B) Depending on the answer to #A what is the control possibility for
+>     #1/#2/#3 ?
+
+Can any of the mechanisms 1/2/3 address the concern in mds.rst?
+
+I believe Andy wants to expand the attack surface when
+kernel.unprivileged_bpf_disabled=0
+Before that happens I'd like the community to work on addressing the text above.
+
