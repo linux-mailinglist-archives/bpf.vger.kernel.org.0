@@ -2,116 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 770F590D42
-	for <lists+bpf@lfdr.de>; Sat, 17 Aug 2019 07:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8EA7910A8
+	for <lists+bpf@lfdr.de>; Sat, 17 Aug 2019 16:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726002AbfHQFrq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 17 Aug 2019 01:47:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60798 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725975AbfHQFrp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 17 Aug 2019 01:47:45 -0400
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E3A021019;
-        Sat, 17 Aug 2019 05:47:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1566020865;
-        bh=lxUYLtvBEUEzWwLJTyyeXIKjo7WX90NrxflgYrnNUqU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jeRLKw7DJRurEy3f37XGcoTkX3Nwld4cB9Mc0cDVvJsxY86HlYN1+O5+7BXYt7cnH
-         qXYb/MFgYR42ncN4hn6LV5DzX31WLZbSprTpvnlYcCZ2pNAA+cemdubOEnt4GFmIOL
-         hZNdLVu/6In1utJjVCqoBoGhO2vBiNlSnr6GpDVw=
-Date:   Fri, 16 Aug 2019 22:47:43 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Steffen Klassert <steffen.klassert@secunet.com>
-Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
-        syzbot <syzbot+6a9ff159672dfbb41c95@syzkaller.appspotmail.com>,
-        ast@kernel.org, aviadye@mellanox.com, borisp@mellanox.com,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davejwatson@fb.com,
-        davem@davemloft.net, hdanton@sina.com, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org
-Subject: Re: INFO: task hung in tls_sw_release_resources_tx
-Message-ID: <20190817054743.GE8209@sol.localdomain>
-Mail-Followup-To: Steffen Klassert <steffen.klassert@secunet.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        syzbot <syzbot+6a9ff159672dfbb41c95@syzkaller.appspotmail.com>,
-        ast@kernel.org, aviadye@mellanox.com, borisp@mellanox.com,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davejwatson@fb.com,
-        davem@davemloft.net, hdanton@sina.com, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org
-References: <000000000000523ea3059025b11d@google.com>
- <000000000000e75f1805902bb919@google.com>
- <20190816190234.2aaab5b6@cakuba.netronome.com>
+        id S1725988AbfHQOCK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 17 Aug 2019 10:02:10 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:37532 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725945AbfHQOCJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 17 Aug 2019 10:02:09 -0400
+Received: by mail-pg1-f196.google.com with SMTP id d1so3785775pgp.4;
+        Sat, 17 Aug 2019 07:02:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Lg/gteB5jcgk4P7pTBTBE8oTq7EjI3gE+e8xvyMR8nY=;
+        b=CSXu6cRLDT6ts1zWS6LM+MjDfuedyT7uW2vAtJ9NkPX8Igx4ScuC6QVDsaBpvMJse3
+         nfUIhVsGyJKczBepizWDqxh84c+VnhAHGTwZxGzgiAGykxdPTCdhGLr3XJPqZQR+H6F8
+         bdLpCGMErUSMksUGmn3HXYfLbiwSj6UXEWeQokt+7qa4WmfyTxD58EiTO6s2AwPwuA4U
+         Xw3X2x5D1wOTotJeSWwXV9hZ999smsY1xDu4njqa8MvEPVVfGDYrQ9UwUpUHkyvYCWw2
+         1OpxeSyp91UJVzZlcmTKfsILccXCqP3I34HpDtocdgBz0ERFJtCOzvNSE9VhxdgXr6yQ
+         /Hlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Lg/gteB5jcgk4P7pTBTBE8oTq7EjI3gE+e8xvyMR8nY=;
+        b=i9qakIx+t87Pfu+aCpe0k2Ebr65ybBaaBH9RRgYV0e9BFj4ZkwyXtnoyxm2sScAr48
+         dHafRFQ9t3v8ZTa5a9IuTef+s2VYaVY3bbQFbsps9IMGyvf0DRA7XzjhgM63p+fXIoS3
+         D/nRPlborAZVdE3S25540D+1wxnQ3pRxFkHPYUySyKgcpBDfVMl8T6GA9puTRQWWX/+2
+         G1NbdqOtwl5bA3nHKRi12YaPEsWXOkPs96qKbO3Rj+c0E3ynwVbDDV6G7GLl01N7PRJT
+         bzbiryoD/SDQWqYlNALExU6A0l1httQGQQAvARf2i2n4ILoQQni6nJj2x1KGv+dd4Hmu
+         adnQ==
+X-Gm-Message-State: APjAAAWZfUNevG+TaDMAjuBdbByNI2AeTGy67dg7YwH1G1QcSot4IYla
+        Ci0Ob1/IZHDzas36rRHyWMw=
+X-Google-Smtp-Source: APXvYqzIHhBy4grTQqm6P2J4CgZBVa+vt+adB+TFRWVf9BAKEGPKdWZndTnvu9MY2rfNuWA8Ljn65w==
+X-Received: by 2002:a17:90a:5803:: with SMTP id h3mr176245pji.133.1566050529177;
+        Sat, 17 Aug 2019 07:02:09 -0700 (PDT)
+Received: from ?IPv6:240d:2:6b22:5500:b8ce:7113:7b93:9494? ([240d:2:6b22:5500:b8ce:7113:7b93:9494])
+        by smtp.googlemail.com with ESMTPSA id s16sm6558026pjp.10.2019.08.17.07.02.04
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 17 Aug 2019 07:02:08 -0700 (PDT)
+Subject: Re: [RFC PATCH bpf-next 00/14] xdp_flow: Flow offload to XDP
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     Stanislav Fomichev <sdf@fomichev.me>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, William Tu <u9012063@gmail.com>
+References: <20190813120558.6151-1-toshiaki.makita1@gmail.com>
+ <20190814170715.GJ2820@mini-arch>
+ <14c4a876-6f5d-4750-cbe4-19622f64975b@gmail.com>
+ <20190815152100.GN2820@mini-arch>
+ <20190815122232.4b1fa01c@cakuba.netronome.com>
+ <da840b14-ab5b-91f1-df2f-6bdd0ed41173@gmail.com>
+ <20190816115224.6aafd4ee@cakuba.netronome.com>
+From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
+Message-ID: <5e9bee13-a746-f148-00de-feb7cb7b1403@gmail.com>
+Date:   Sat, 17 Aug 2019 23:01:59 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190816190234.2aaab5b6@cakuba.netronome.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20190816115224.6aafd4ee@cakuba.netronome.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[+Steffen, who is the maintainer of pcrypt]
-
-On Fri, Aug 16, 2019 at 07:02:34PM -0700, Jakub Kicinski wrote:
-> On Thu, 15 Aug 2019 11:06:00 -0700, syzbot wrote:
-> > syzbot has bisected this bug to:
-> > 
-> > commit 130b392c6cd6b2aed1b7eb32253d4920babb4891
-> > Author: Dave Watson <davejwatson@fb.com>
-> > Date:   Wed Jan 30 21:58:31 2019 +0000
-> > 
-> >      net: tls: Add tls 1.3 support
-> > 
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=118e8dee600000
-> > start commit:   6d5afe20 sctp: fix memleak in sctp_send_reset_streams
-> > git tree:       net
-> > final crash:    https://syzkaller.appspot.com/x/report.txt?x=138e8dee600000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=158e8dee600000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=a4c9e9f08e9e8960
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=6a9ff159672dfbb41c95
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17cb0502600000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14d5dc22600000
-> > 
-> > Reported-by: syzbot+6a9ff159672dfbb41c95@syzkaller.appspotmail.com
-> > Fixes: 130b392c6cd6 ("net: tls: Add tls 1.3 support")
-> > 
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+On 19/08/17 (土) 3:52:24, Jakub Kicinski wrote:
+> On Fri, 16 Aug 2019 10:28:10 +0900, Toshiaki Makita wrote:
+>> On 2019/08/16 4:22, Jakub Kicinski wrote:
+>>> There's a certain allure in bringing the in-kernel BPF translation
+>>> infrastructure forward. OTOH from system architecture perspective IMHO
+>>> it does seem like a task best handed in user space. bpfilter can replace
+>>> iptables completely, here we're looking at an acceleration relatively
+>>> loosely coupled with flower.
+>>
+>> I don't think it's loosely coupled. Emulating TC behavior in userspace
+>> is not so easy.
+>>
+>> Think about recent multi-mask support in flower. Previously userspace could
+>> assume there is one mask and hash table for each preference in TC. After the
+>> change TC accepts different masks with the same pref. Such a change tends to
+>> break userspace emulation. It may ignore masks passed from flow insertion
+>> and use the mask remembered when the first flow of the pref is inserted. It
+>> may override the mask of all existing flows with the pref. It may fail to
+>> insert such flows. Any of them would result in unexpected wrong datapath
+>> handling which is critical.
+>> I think such an emulation layer needs to be updated in sync with TC.
 > 
-> CC Herbert, linux-crypto
-> 
-> This is got to be something in the crypto code :S 
-> 
-> The test case opens a ktls socket and back log writes to it.
-> Then it opens a AF_ALG socket, binds "pcrypt(gcm(aes))" and dies.
-> 
-> The ktls socket upon close waits for async crypto callbacks, but they
-> never come. If I unset CRYPTO_USER_API_AEAD or change the alg to bind
-> to "gcm(aes)" the bug does not trigger.
-> 
-> Any suggestions?
+> Oh, so you're saying that if xdp_flow is merged all patches to
+> cls_flower and netfilter which affect flow offload will be required
+> to update xdp_flow as well?
 
-Seeing as pcrypt is involved and this is a "task hung" bug, this is probably
-caused by the recursive pcrypt deadlock, which is yet to be fixed.
+Hmm... you are saying that we are allowed to break other in-kernel 
+subsystem by some change? Sounds strange...
 
-See the original thread for more info:
+> That's a question of policy. Technically the implementation in user
+> space is equivalent.
+ >
+> The advantage of user space implementation is that you can add more
+> to it and explore use cases which do not fit in the flow offload API,
+> but are trivial for BPF. Not to mention the obvious advantage of
+> decoupling the upgrade path.
 
-	https://groups.google.com/forum/#!msg/syzkaller-bugs/1_CXUd3gBcg/BvsRLH0lAgAJ
+I understand the advantage, but I can't trust such a third-party kernel 
+emulation solution for this kind of thing which handles critical data path.
 
-And the syzbot dashboard link:
+> Personally I'm not happy with the way this patch set messes with the
+> flow infrastructure. You should use the indirect callback
+> infrastructure instead, and that way you can build the whole thing
+> touching none of the flow offload core.
 
-	https://syzkaller.appspot.com/bug?id=178f2528d10720d563091fb51dceb4cb20f75525
+I don't want to mess up the core flow infrastructure either. I'm all 
+ears about less invasive ways. Using indirect callback sounds like a 
+good idea. Will give it a try. Many thanks.
 
-Let's tell syzbot this is a duplicate:
-
-#syz dup: INFO: task hung in aead_recvmsg
-
-
-Steffen, do you have any plan to fix this?
-
-- Eric
+Toshiaki Makita
