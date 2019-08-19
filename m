@@ -2,113 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 574C991AC9
-	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2019 03:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CFBA91C16
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2019 06:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726139AbfHSBhI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 18 Aug 2019 21:37:08 -0400
-Received: from mx7.zte.com.cn ([202.103.147.169]:45254 "EHLO mxct.zte.com.cn"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726028AbfHSBhI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 18 Aug 2019 21:37:08 -0400
-Received: from mse-fl1.zte.com.cn (unknown [10.30.14.238])
-        by Forcepoint Email with ESMTPS id 344124AE22AB3D25044F;
-        Mon, 19 Aug 2019 09:37:05 +0800 (CST)
-Received: from notes_smtp.zte.com.cn (notes_smtp.zte.com.cn [10.30.1.239])
-        by mse-fl1.zte.com.cn with ESMTP id x7J1aQZ2051895;
-        Mon, 19 Aug 2019 09:36:26 +0800 (GMT-8)
-        (envelope-from zhang.lin16@zte.com.cn)
-Received: from fox-host8.localdomain ([10.74.120.8])
-          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
-          with ESMTP id 2019081909362859-3033320 ;
-          Mon, 19 Aug 2019 09:36:28 +0800 
-From:   zhanglin <zhang.lin16@zte.com.cn>
-To:     davem@davemloft.net
-Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, willemb@google.com,
-        edumazet@google.com, deepa.kernel@gmail.com, arnd@arndb.de,
-        dh.herrmann@gmail.com, gnault@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        xue.zhihong@zte.com.cn, wang.yi59@zte.com.cn,
-        jiang.xuexin@zte.com.cn, zhanglin <zhang.lin16@zte.com.cn>
-Subject: [PATCH] sock: fix potential memory leak in proto_register()
-Date:   Mon, 19 Aug 2019 09:35:56 +0800
-Message-Id: <1566178556-46071-1-git-send-email-zhang.lin16@zte.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
- 21, 2013) at 2019-08-19 09:36:28,
-        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
- 2019-08-19 09:36:27,
-        Serialize complete at 2019-08-19 09:36:27
-X-MAIL: mse-fl1.zte.com.cn x7J1aQZ2051895
+        id S1725768AbfHSEhA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Aug 2019 00:37:00 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:35782 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbfHSEhA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Aug 2019 00:37:00 -0400
+Received: by mail-wr1-f68.google.com with SMTP id k2so7193008wrq.2;
+        Sun, 18 Aug 2019 21:36:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZUCw4jAs77fJWvJ1Lbk9AJyiu5YLLMkfP4oKtMz1NVw=;
+        b=uYH4KbWl08ZgKEpjhyYlfwvt9PdrFvpKMSKrDB/bHWMyRU+XUtYSStUbBLT5ziwZGl
+         t60r3tqUrSES+VTAuxKq3qBMi3tLrQQNaL0SIigL/02DNaxLMfCrVhVHJ211ZyUXZ2CQ
+         auHG0As1cCwaTCqHlXIhGDIYQWlDA7UERd0CKQTsAQUNqEnPjlbwK2klFMq2mJshC6Qj
+         EBIpU7+XyUzC5g/mNOtUuxvLD/JQM5MPi0R2nfcrpj8ak8j6MXSLzEMQqVf154qbaI3Q
+         XtxeoHtsJPy7cv8bhx/BVrTiyu9jgeKD7IcKIy0KruGZZm/p3HQSrvz3cJG2aFSc+Umi
+         7Mfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZUCw4jAs77fJWvJ1Lbk9AJyiu5YLLMkfP4oKtMz1NVw=;
+        b=bWkDL8CL579GUqvVxFdcPOeEvD8g/9YTNR5FFATA0/4DgtD8zCZbux/xOwpzxHRMId
+         P2N2fS7vZzMf6u614sHqfNvW53bWt7kEKglX+0yMw+c4DYFu7kr9WMHubG0tfvzUswN2
+         n+t1chn3iVHAbeaGEQqt7sNi2sjhdTAEf4ej0RUgZ3IBOvtjMjvh6IcBh1qvXlFLDcNi
+         awFlUNvLkmJUTNZawGqDr8XmPM86eMhrneTv6qeYEq1AyuJ+eX/PuTScrqzH7qOMfu7g
+         hG3c7UfKbHo2eO9HBRUsCGxLrIjXOhdBmoY37RXMzRIw+jvs3eAfoyxLv6u10+8u3bqd
+         oXZQ==
+X-Gm-Message-State: APjAAAUBkgeTWcun9KOpTKvGWz1WFsG5mK6f/ohAFvRFOhUh3/4C9r72
+        Ej8sCDxpqIUZexBWrSqx/dY=
+X-Google-Smtp-Source: APXvYqyHKAGqzXXD27TODaxzJH2S8swRrcvJBmyoQQcxyqBVpHYwkStPF7Y+58W+JKHUm4F7neENzA==
+X-Received: by 2002:adf:de02:: with SMTP id b2mr24526170wrm.204.1566189417661;
+        Sun, 18 Aug 2019 21:36:57 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:4f8:222:2f1b::2])
+        by smtp.gmail.com with ESMTPSA id j10sm15218526wrd.26.2019.08.18.21.36.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Aug 2019 21:36:56 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] test_bpf: Fix a new clang warning about xor-ing two numbers
+Date:   Sun, 18 Aug 2019 21:34:20 -0700
+Message-Id: <20190819043419.68223-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.23.0
+MIME-Version: 1.0
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If protocols registered exceeded PROTO_INUSE_NR, prot will be
-added to proto_list, but no available bit left for prot in
-proto_inuse_idx.
+r369217 in clang added a new warning about potential misuse of the xor
+operator as an exponentiation operator:
 
-Signed-off-by: zhanglin <zhang.lin16@zte.com.cn>
+../lib/test_bpf.c:870:13: warning: result of '10 ^ 300' is 294; did you
+mean '1e300'? [-Wxor-used-as-pow]
+                { { 4, 10 ^ 300 }, { 20, 10 ^ 300 } },
+                       ~~~^~~~~
+                       1e300
+../lib/test_bpf.c:870:13: note: replace expression with '0xA ^ 300' to
+silence this warning
+../lib/test_bpf.c:870:31: warning: result of '10 ^ 300' is 294; did you
+mean '1e300'? [-Wxor-used-as-pow]
+                { { 4, 10 ^ 300 }, { 20, 10 ^ 300 } },
+                                         ~~~^~~~~
+                                         1e300
+../lib/test_bpf.c:870:31: note: replace expression with '0xA ^ 300' to
+silence this warning
+
+The commit link for this new warning has some good logic behind wanting
+to add it but this instance appears to be a false positive. Adopt its
+suggestion to silence the warning but not change the code. According to
+the differential review link in the clang commit, GCC may eventually
+adopt this warning as well.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/643
+Link: https://github.com/llvm/llvm-project/commit/920890e26812f808a74c60ebc14cc636dac661c1
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 ---
- net/core/sock.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index bc3512f230a3..25388d429f6a 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -3139,16 +3139,17 @@ static __init int net_inuse_init(void)
- 
- core_initcall(net_inuse_init);
- 
--static void assign_proto_idx(struct proto *prot)
-+static int assign_proto_idx(struct proto *prot)
- {
- 	prot->inuse_idx = find_first_zero_bit(proto_inuse_idx, PROTO_INUSE_NR);
- 
- 	if (unlikely(prot->inuse_idx == PROTO_INUSE_NR - 1)) {
- 		pr_err("PROTO_INUSE_NR exhausted\n");
--		return;
-+		return -ENOSPC;
- 	}
- 
- 	set_bit(prot->inuse_idx, proto_inuse_idx);
-+	return 0;
- }
- 
- static void release_proto_idx(struct proto *prot)
-@@ -3243,18 +3244,24 @@ int proto_register(struct proto *prot, int alloc_slab)
- 	}
- 
- 	mutex_lock(&proto_list_mutex);
-+	if (assign_proto_idx(prot)) {
-+		mutex_unlock(&proto_list_mutex);
-+		goto out_free_timewait_sock_slab_name;
-+	}
- 	list_add(&prot->node, &proto_list);
--	assign_proto_idx(prot);
- 	mutex_unlock(&proto_list_mutex);
- 	return 0;
- 
- out_free_timewait_sock_slab_name:
--	kfree(prot->twsk_prot->twsk_slab_name);
-+	if (alloc_slab && prot->twsk_prot)
-+		kfree(prot->twsk_prot->twsk_slab_name);
- out_free_request_sock_slab:
--	req_prot_cleanup(prot->rsk_prot);
-+	if (alloc_slab) {
-+		req_prot_cleanup(prot->rsk_prot);
- 
--	kmem_cache_destroy(prot->slab);
--	prot->slab = NULL;
-+		kmem_cache_destroy(prot->slab);
-+		prot->slab = NULL;
-+	}
- out:
- 	return -ENOBUFS;
- }
+I highly doubt that 1e300 was intented but if it was (or something else
+was), please let me know. Commit history wasn't entirely clear on why
+this expression was used over just a raw number.
+
+ lib/test_bpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index c41705835cba..5ef3eccee27c 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -867,7 +867,7 @@ static struct bpf_test tests[] = {
+ 		},
+ 		CLASSIC,
+ 		{ },
+-		{ { 4, 10 ^ 300 }, { 20, 10 ^ 300 } },
++		{ { 4, 0xA ^ 300 }, { 20, 0xA ^ 300 } },
+ 	},
+ 	{
+ 		"SPILL_FILL",
 -- 
-2.17.1
+2.23.0
 
