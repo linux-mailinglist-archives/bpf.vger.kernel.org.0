@@ -2,63 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6204494F95
-	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2019 23:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F99194F9D
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2019 23:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728441AbfHSVKJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Aug 2019 17:10:09 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:42318 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728018AbfHSVKJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Aug 2019 17:10:09 -0400
-Received: by mail-qk1-f193.google.com with SMTP id 201so2700493qkm.9
-        for <bpf@vger.kernel.org>; Mon, 19 Aug 2019 14:10:08 -0700 (PDT)
+        id S1728352AbfHSVNF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Aug 2019 17:13:05 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:36669 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727971AbfHSVNF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Aug 2019 17:13:05 -0400
+Received: by mail-qk1-f195.google.com with SMTP id d23so2720135qko.3
+        for <bpf@vger.kernel.org>; Mon, 19 Aug 2019 14:13:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:in-reply-to:references
          :organization:mime-version:content-transfer-encoding;
-        bh=gNko8uYZ/iSVAQkfn2DxMOBCbut/oBDTcq1NiXuMq1Q=;
-        b=d9zbuePbVfnVj+QN/ZFdPRmQgkE8/L2bKlSBU+iTJaTACwicNRb8RIVd/OgSurHSl2
-         3K/wKETiXla57BE/k/VWoPOvW9Qwmho+85Q09Wu0PiiB8JyZWKVNP3QW5DFwhLAORm6E
-         egJnME5xBnx+TAu/y0VP12DBd+NSnNJcM8buHsmNZN+WcBsPmtqbmlWSW+cf5l4apqzH
-         /koqgZ8IbY+5QPCVkbjXl/nBdtU+GaDAWxT7CEga7brX3Oj+Di9slysot7Pki7CrZp8x
-         FSN8caxSyLv5RXg+eHlkrdrZH169XjGnlHDJUJSZdgyZwegqUtlXXqmaCkts42Sp+d3B
-         LV1A==
+        bh=zcVnTkmaXZnvPzlslFpXTMQ+JyK8DgeCTABL7ZZHlNU=;
+        b=VneBgzz0zlwlbD+l25IEANd6GZochFewROcYaBQgFYjKrQTYV7b9Enr3aOVpRzYlHD
+         uCCmm6sRFPRnhKlctdECpZ/4OkRUTWuY7XvzXvfY4FBNOXxZP0urwnOgzmgszTbPPUqu
+         I7offB5XiFLr76whtKbv/7zyhDKvitkCTGSMj0A4cJi44sl2i0U6qked42BxpM00dzdI
+         kQgTrGUgQO5oCuBA1WQQvUYYa1hGWG5hoOPJ75v3LkR3r6a85fE0IBGm97o9IUpHHamk
+         ztNpnA3Wax0FBRwaUJOoFmMfWLXhMTTvhx0Mcg3FzRYDekOWNAtbo03YZDNRf3CE+s8J
+         5YSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
          :references:organization:mime-version:content-transfer-encoding;
-        bh=gNko8uYZ/iSVAQkfn2DxMOBCbut/oBDTcq1NiXuMq1Q=;
-        b=pLChsKOWLMMOEznX16TSEV29fOzfbf1y0iJQ3QM+KH24yaNQiYIXTFG/oxZziaYUAi
-         Unc2q3Mq9Oz3ZnHnpY7FlIF4lqThxM6bRcD6fGNTXzqRRWtxJSeVKUMOW0H+BJO2pD3k
-         8FfAfAt6sphmstseU4Ye9hApJzNeJOk4Wh1xHbGWhw5nOpAtd2lAQcyQuEH9hPMHjZ8m
-         n/vtJJhjSXkGySH8zTQfnRgqbjWICvGGLe1tAuIiuVITyzmvDMxrsc86HnjGM7gOVUQ0
-         0JenZNZOWOD70nIP0QVVkvKL+FSum6dv4d0XosX0p6bbhVBPdTGS9az2D1PF2E0MxFuv
-         AlbQ==
-X-Gm-Message-State: APjAAAVXWYSj/eaLpR+DI41hTIJqqnk3MJ4X49SP52ztgjffHG9SLaWn
-        LbX77TE7Wv2JAnxjm0hU7nCe5w==
-X-Google-Smtp-Source: APXvYqxbOHmZq2qLpckgNNtItEsJCIiUrNJX2RlAGSln7w+nCPcQfnCWxfv/mTB9PQZBdMUL2wpgYw==
-X-Received: by 2002:a37:7c02:: with SMTP id x2mr23287096qkc.298.1566249008458;
-        Mon, 19 Aug 2019 14:10:08 -0700 (PDT)
+        bh=zcVnTkmaXZnvPzlslFpXTMQ+JyK8DgeCTABL7ZZHlNU=;
+        b=e7VS20rLOkyv4OHmRMrAGBtsBsyNUEHlFnA+JM9qHo93TVJlSKsTs5gLNPH9DDzxja
+         m4fihWzpra9V8GgdvWaMbYPb7DGagW+0O2gISeciHw0TfmiJVr5iYrgzigJzDpkRpx3/
+         rk9up5ZRqOGKKw2sp2r0P4/DseZlyop9Cfrkh18wIaEo8LsVbrCZXnDWoOuX/jCggHWO
+         yIg/cdhXyRwj3cWrfKt3AoJSlb1Ki6GAFGWiEFF/juF92IjylwNjJgLm7i2ORJJhN9RT
+         KenqKk6Z2lXIF90Ik1r0ID9lqvAQYIljP0VoKQpVNRgMROnAU9ft/gqsyDYbaf6CYl5e
+         PeBQ==
+X-Gm-Message-State: APjAAAWvdlRgxgC5laLpUSbknZItZHaMkALBhqwXzkrBg6dZCDaP+boX
+        gqM8HhO/8xhKxpLqXtx7yLL59w==
+X-Google-Smtp-Source: APXvYqwLaN0yohHtVfe4XZyjRKdXGEk5nnPYe9Tav4wl1k/s/Fsnb6Cem5zSCOnY6T+lv/oZaKquFA==
+X-Received: by 2002:a05:620a:4c8:: with SMTP id 8mr21380405qks.366.1566249184021;
+        Mon, 19 Aug 2019 14:13:04 -0700 (PDT)
 Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id t13sm7579042qkm.117.2019.08.19.14.10.06
+        by smtp.gmail.com with ESMTPSA id o29sm8527788qtf.19.2019.08.19.14.13.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Aug 2019 14:10:08 -0700 (PDT)
-Date:   Mon, 19 Aug 2019 14:09:59 -0700
+        Mon, 19 Aug 2019 14:13:03 -0700 (PDT)
+Date:   Mon, 19 Aug 2019 14:12:55 -0700
 From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     syzbot <syzbot+8a6df99c3b1812093b70@syzkaller.appspotmail.com>
-Cc:     ast@kernel.org, aviadye@mellanox.com, borisp@mellanox.com,
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
+        syzbot <syzbot+6a9ff159672dfbb41c95@syzkaller.appspotmail.com>,
+        ast@kernel.org, aviadye@mellanox.com, borisp@mellanox.com,
         bpf@vger.kernel.org, daniel@iogearbox.net, davejwatson@fb.com,
-        davem@davemloft.net, john.fastabend@gmail.com, kafai@fb.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        Eric Biggers <ebiggers@kernel.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        linux-crypto@vger.kernel.org
-Subject: Re: INFO: task hung in tls_sw_sendmsg
-Message-ID: <20190819140959.72a419d8@cakuba.netronome.com>
-In-Reply-To: <0000000000006a71990583cd3d9c@google.com>
-References: <0000000000006a71990583cd3d9c@google.com>
+        davem@davemloft.net, hdanton@sina.com, john.fastabend@gmail.com,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org
+Subject: Re: INFO: task hung in tls_sw_release_resources_tx
+Message-ID: <20190819141255.010a323a@cakuba.netronome.com>
+In-Reply-To: <20190817054743.GE8209@sol.localdomain>
+References: <000000000000523ea3059025b11d@google.com>
+        <000000000000e75f1805902bb919@google.com>
+        <20190816190234.2aaab5b6@cakuba.netronome.com>
+        <20190817054743.GE8209@sol.localdomain>
 Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -68,29 +70,63 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 11 Mar 2019 01:20:05 -0700, syzbot wrote:
-> Hello,
+On Fri, 16 Aug 2019 22:47:43 -0700, Eric Biggers wrote:
+> [+Steffen, who is the maintainer of pcrypt]
 > 
-> syzbot found the following crash on:
+> On Fri, Aug 16, 2019 at 07:02:34PM -0700, Jakub Kicinski wrote:
+> > On Thu, 15 Aug 2019 11:06:00 -0700, syzbot wrote:  
+> > > syzbot has bisected this bug to:
+> > > 
+> > > commit 130b392c6cd6b2aed1b7eb32253d4920babb4891
+> > > Author: Dave Watson <davejwatson@fb.com>
+> > > Date:   Wed Jan 30 21:58:31 2019 +0000
+> > > 
+> > >      net: tls: Add tls 1.3 support
+> > > 
+> > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=118e8dee600000
+> > > start commit:   6d5afe20 sctp: fix memleak in sctp_send_reset_streams
+> > > git tree:       net
+> > > final crash:    https://syzkaller.appspot.com/x/report.txt?x=138e8dee600000
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=158e8dee600000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=a4c9e9f08e9e8960
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=6a9ff159672dfbb41c95
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17cb0502600000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14d5dc22600000
+> > > 
+> > > Reported-by: syzbot+6a9ff159672dfbb41c95@syzkaller.appspotmail.com
+> > > Fixes: 130b392c6cd6 ("net: tls: Add tls 1.3 support")
+> > > 
+> > > For information about bisection process see: https://goo.gl/tpsmEJ#bisection  
+> > 
+> > CC Herbert, linux-crypto
+> > 
+> > This is got to be something in the crypto code :S 
+> > 
+> > The test case opens a ktls socket and back log writes to it.
+> > Then it opens a AF_ALG socket, binds "pcrypt(gcm(aes))" and dies.
+> > 
+> > The ktls socket upon close waits for async crypto callbacks, but they
+> > never come. If I unset CRYPTO_USER_API_AEAD or change the alg to bind
+> > to "gcm(aes)" the bug does not trigger.
+> > 
+> > Any suggestions?  
 > 
-> HEAD commit:    d9862cfb Merge tag 'mips_5.1' of git://git.kernel.org/pub/..
-> git tree:       net-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16e9d977200000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=73d88a42238825ad
-> dashboard link: https://syzkaller.appspot.com/bug?extid=8a6df99c3b1812093b70
-> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> userspace arch: amd64
+> Seeing as pcrypt is involved and this is a "task hung" bug, this is probably
+> caused by the recursive pcrypt deadlock, which is yet to be fixed.
 > 
-> Unfortunately, I don't have any reproducer for this crash yet.
+> See the original thread for more info:
 > 
-> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: syzbot+8a6df99c3b1812093b70@syzkaller.appspotmail.com
+> 	https://groups.google.com/forum/#!msg/syzkaller-bugs/1_CXUd3gBcg/BvsRLH0lAgAJ
+> 
+> And the syzbot dashboard link:
+> 
+> 	https://syzkaller.appspot.com/bug?id=178f2528d10720d563091fb51dceb4cb20f75525
+> 
+> Let's tell syzbot this is a duplicate:
+> 
+> #syz dup: INFO: task hung in aead_recvmsg
 
-Looks like the TLS bugs which involve pcrypt may be a pcrypt issue.
-There seems to be no clear explanation for these in TLS code.
+Thanks for the suggestion Eric!
 
-#syz dup: INFO: task hung in aead_recvmsg
-
-This is similar to:
-https://syzkaller.appspot.com/bug?id=44ae4b4fa7e6c6e92aa921d2ec20ce9fbee97939
-(INFO: task hung in tls_sw_free_resources_tx)
+Looks like the dup didn't tickle syzbot the right way. Let me retry
+sending this directly to the original report.
