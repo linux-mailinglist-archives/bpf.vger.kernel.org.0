@@ -2,101 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 687C491E0B
-	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2019 09:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6CCD91FC4
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2019 11:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726881AbfHSHjl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Aug 2019 03:39:41 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:33363 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbfHSHjl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Aug 2019 03:39:41 -0400
-Received: by mail-qt1-f196.google.com with SMTP id v38so918421qtb.0;
-        Mon, 19 Aug 2019 00:39:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pX5vzrCrWspkDa0PwEU135ZuQd7KwdNzkE2O8jHiKBs=;
-        b=iSJxQNALgQU3Ul2Q56P4y4rASj+dQUEc1gDUuOD7I3Ff1j9edsP+30/F9pCmFWN9SD
-         dwRjZJYm+dsXJNH2hp5ZDLHt8aAy2FHzD60JoemZLNp6xMBIre3P6NAGVR7tadIVwATj
-         BWh85aCEY1L+brMunAzqMQFtGT0GQLXcE3sm0EP5Cyjf2kVZWFGa069HFlYO3VjLZOQf
-         IoiczLGg1uE8VZ/Lzvq50iGuhzwspZYMEfGHOYYhYl4FcDQJnIouYPz2n7xRSPzchozN
-         kMd58bQ0vaNjpmO2HcntLdyf3WSxvLL8zx+/C/0I6cd+DQvR8sMP9hi99U9jEfq4JAWa
-         YcvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pX5vzrCrWspkDa0PwEU135ZuQd7KwdNzkE2O8jHiKBs=;
-        b=p08MGZoPafS01VzJsmpNaJi3BfPEjLR0YVMV2eN5DFjcktM+MJgO4ETynr9igyDW8q
-         EmZJDrOIbGu3d2qE3USojJPavPlaxJ1mmYFI59HMk0anRInpjZ9AU/3W2Cl19GcHuByI
-         uMY9vPrCLoHqXU4WSHxRLPIi5/Pb4310ItNEPogxPY6jnzwfTgCOML46OI0g6Vlrkhtp
-         uytEw7v5nbBEJ9jAm4mx1Kdo3DQOcr8W6LYyhvqHyuWU/tChP1WgS7Cj7XGzh1I5D15J
-         cupHk08P45Ohqniy3l8Rb8isOcKHGAe2ERUY2V3ndCbCp3cuOqt7PNfaWGzjwKYMKFTN
-         rN/A==
-X-Gm-Message-State: APjAAAWG/yQA5m0t/qBSpd1VSXOR98Is4zhD8LgKqdtcWQeuT5E22G09
-        pr3cqPxLw5WcEv+okLrqTyBzbAfhiuHUdZBp55g=
-X-Google-Smtp-Source: APXvYqwZd0Zy2/2KscKfhkCmVEkfVWBj1p7q1DV4+0rtdAwNPScBEsILu18gDy5NMadWD6yYSABKvDxK/2lL1ro6nwo=
-X-Received: by 2002:ad4:50d1:: with SMTP id e17mr9993601qvq.9.1566200379933;
- Mon, 19 Aug 2019 00:39:39 -0700 (PDT)
+        id S1727300AbfHSJPa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Aug 2019 05:15:30 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46607 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726661AbfHSJPa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Aug 2019 05:15:30 -0400
+Received: from pd9ef1cb8.dip0.t-ipconnect.de ([217.239.28.184] helo=nanos)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1hzdku-00009b-Bv; Mon, 19 Aug 2019 11:15:12 +0200
+Date:   Mon, 19 Aug 2019 11:15:11 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+cc:     Jordan Glover <Golden_Miller83@protonmail.ch>,
+        Andy Lutomirski <luto@kernel.org>,
+        Daniel Colascione <dancol@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        Kees Cook <keescook@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Jann Horn <jannh@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via
+ /dev/bpf
+In-Reply-To: <20190817150245.xxzxqjpvgqsxmloe@ast-mbp>
+Message-ID: <alpine.DEB.2.21.1908191103130.1923@nanos.tec.linutronix.de>
+References: <20190814220545.co5pucyo5jk3weiv@ast-mbp.dhcp.thefacebook.com> <HG0x24u69mnaMFKuxHVAzHpyjwsD5-U6RpqFRua87wGWQCHg00Q8ZqPeA_5kJ9l-d6oe0cXa4HyYXMnOO0Aofp_LcPcQdG0WFV21z1MbgcE=@protonmail.ch> <20190815172856.yoqvgu2yfrgbkowu@ast-mbp.dhcp.thefacebook.com>
+ <CALCETrUv+g+cb79FJ1S4XuV0K=kowFkPXpzoC99svoOfs4-Kvg@mail.gmail.com> <20190815230808.2o2qe7a72cwdce2m@ast-mbp.dhcp.thefacebook.com> <fkD3fs46a1YnR4lh0tEG-g3tDnDcyZuzji7bAUR9wujPLLl75ZhI8Yk-H1jZpSugO7qChVeCwxAMmxLdeoF2QFS3ZzuYlh7zmeZOmhDJxww=@protonmail.ch>
+ <alpine.DEB.2.21.1908161158490.1873@nanos.tec.linutronix.de> <lGGTLXBsX3V6p1Z4TkdzAjxbNywaPS2HwX5WLleAkmXNcnKjTPpWnP6DnceSsy8NKt5NBRBbuoAb0woKTcDhJXVoFb7Ygk3Skfj8j6rVfMQ=@protonmail.ch> <20190816195233.vzqqbqrivnooohq6@ast-mbp.dhcp.thefacebook.com>
+ <alpine.DEB.2.21.1908162211270.1923@nanos.tec.linutronix.de> <20190817150245.xxzxqjpvgqsxmloe@ast-mbp>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <1565840783-8269-1-git-send-email-sridhar.samudrala@intel.com>
- <bebfb097-5357-91d8-ebc7-2f8ede392ad7@intel.com> <cc3a09eb-bcb8-a6e1-7175-77bddaf10c11@intel.com>
- <CAJ+HfNj=devuEky3VwbibA-j+o=bKi4Gg=MeHsuuDGAKc9p2Vw@mail.gmail.com> <331CAEDB-776A-4928-93EF-F45F1339848F@gmail.com>
-In-Reply-To: <331CAEDB-776A-4928-93EF-F45F1339848F@gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Mon, 19 Aug 2019 09:39:28 +0200
-Message-ID: <CAJ+HfNgeSYRuQ8+80zepsAj8f+gdXEqsnbebuvmJggYOBUsj9w@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH bpf-next 0/5] Add support for SKIP_BPF
- flag for AF_XDP sockets
-To:     Jonathan Lemon <jonathan.lemon@gmail.com>
-Cc:     "Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        maciej.fijalkowski@intel.com, tom.herbert@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 17 Aug 2019 at 00:08, Jonathan Lemon <jonathan.lemon@gmail.com> wro=
-te:
-> On 16 Aug 2019, at 6:32, Bj=C3=B6rn T=C3=B6pel wrote:
-[...]
-> >
-> > Today, from a driver perspective, to enable XDP you pass a struct
-> > bpf_prog pointer via the ndo_bpf. The program get executed in
-> > BPF_PROG_RUN (via bpf_prog_run_xdp) from include/linux/filter.h.
-> >
-> > I think it's possible to achieve what you're doing w/o *any* driver
-> > modification. Pass a special, invalid, pointer to the driver (say
-> > (void *)0x1 or smth more elegant), which has a special handling in
-> > BPF_RUN_PROG e.g. setting a per-cpu state and return XDP_REDIRECT. The
-> > per-cpu state is picked up in xdp_do_redirect and xdp_flush.
-> >
-> > An approach like this would be general, and apply to all modes
-> > automatically.
-> >
-> > Thoughts?
->
-> All the default program does is check that the map entry contains a xsk,
-> and call bpf_redirect_map().  So this is pretty much the same as above,
-> without any special case handling.
->
-> Why would this be so expensive?  Is the JIT compilation time being
-> counted?
+Alexei,
 
-No, not the JIT compilation time, only the fast-path. The gain is from
-removing the indirect call (hitting a retpoline) when calling the XDP
-program, and reducing code from xdp_do_redirect/xdp_flush.
+On Sat, 17 Aug 2019, Alexei Starovoitov wrote:
+> On Fri, Aug 16, 2019 at 10:28:29PM +0200, Thomas Gleixner wrote:
+> > On Fri, 16 Aug 2019, Alexei Starovoitov wrote:
+> > While real usecases are helpful to understand a design decision, the design
+> > needs to be usecase independent.
+> > 
+> > The kernel provides mechanisms, not policies. My impression of this whole
+> > discussion is that it is policy driven. That's the wrong approach.
+> 
+> not sure what you mean by 'policy driven'.
+> Proposed CAP_BPF is a policy?
 
-But, as Jakub pointed out, the XDP batching work by Maciej, might
-reduce the retpoline impact quite a bit.
+I was referring to the discussion as a whole.
+ 
+> Can kernel.unprivileged_bpf_disabled=1 be used now?
+> Yes, but it will weaken overall system security because things that
+> use unpriv to load bpf and CAP_NET_ADMIN to attach bpf would need
+> to move to stronger CAP_SYS_ADMIN.
+> 
+> With CAP_BPF both load and attach would happen under CAP_BPF
+> instead of CAP_SYS_ADMIN.
 
+I'm not arguing against that.
 
-Bj=C3=B6rn
+> > So let's look at the mechanisms which we have at hand:
+> > 
+> >  1) Capabilities
+> >  
+> >  2) SUID and dropping priviledges
+> > 
+> >  3) Seccomp and LSM
+> > 
+> > Now the real interesting questions are:
+> > 
+> >  A) What kind of restrictions does BPF allow? Is it a binary on/off or is
+> >     there a more finegrained control of BPF functionality?
+> > 
+> >     TBH, I can't tell.
+> > 
+> >  B) Depending on the answer to #A what is the control possibility for
+> >     #1/#2/#3 ?
+> 
+> Can any of the mechanisms 1/2/3 address the concern in mds.rst?
+
+Well, that depends. As with any other security policy which is implemented
+via these mechanisms, the policy can be strict enough to prevent it by not
+allowing certain operations. The more fine-grained the control is, it
+allows the administrator who implements the policy to remove the
+'dangerous' parts from an untrusted user.
+
+So really question #A is important for this. Is BPF just providing a binary
+ON/OFF knob or does it allow to disable/enable certain aspects of BPF
+functionality in a more fine grained way? If the latter, then it might be
+possible to control functionality which might be abused for exploits of
+some sorts (including MDS) in a way which allows other parts of BBF to be
+exposed to less priviledged contexts.
+
+> I believe Andy wants to expand the attack surface when
+> kernel.unprivileged_bpf_disabled=0
+> Before that happens I'd like the community to work on addressing the text above.
+
+Well, that text above can be removed when the BPF wizards are entirely sure
+that BPF cannot be abused to exploit stuff. 
+
+Thanks,
+
+	tglx
