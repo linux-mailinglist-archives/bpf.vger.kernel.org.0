@@ -2,165 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3D691CC3
-	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2019 07:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94EE391D33
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2019 08:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbfHSFvf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Aug 2019 01:51:35 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:51012 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725846AbfHSFve (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 19 Aug 2019 01:51:34 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7J5nugR014183;
-        Sun, 18 Aug 2019 22:51:12 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=/D1aTRNaQpXeGhUKDkRERGc+8ROoHc7Ime160JrClvc=;
- b=oy1q7Cdhy5p8blsWij0JAI5ZmvqnMgN5FosnSIsebyvC+OCnN+MvmtOlF6AcG3mhPR99
- pkioYPNFq+t9eyPXgRLZFgwCqd48IE4rsAejFKA1uzF0I2foZ9IEe37uNS31xTQ0doWj
- hT5wiZ6sNVtO2hZyD4gMf+/LgKMCVv22oTw= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2ufnqb01h1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 18 Aug 2019 22:51:12 -0700
-Received: from prn-hub04.TheFacebook.com (2620:10d:c081:35::128) by
- prn-hub05.TheFacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Sun, 18 Aug 2019 22:51:11 -0700
-Received: from NAM03-BY2-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.28) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Sun, 18 Aug 2019 22:51:11 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N2FdP9OF8w6o9nZicQ4Ppzy1cUH1C+6fLBcnc97XUKYTl+/09zPWoUdBK0vpDIjn6XBJMTW6gMn+Id6RL0wptHTYyAbkquwSfrfStwhMEpSNTloJGM2AtvXA+A/slH95RjJDh8CJRQwP2qPW9M2jv7H8NLlhNcXEoJxmKMuJXy0uTb0MVZYY6/AMmaMHQFSN0bPq27lOwV5mKL9Pac/wYVE6UDSByCU9NeCRXpaRlBEFzCF34TdvKUlhoOOe9TEDXjWQB//bj0LLVeXTZcpOG/p9RqbkNOTJ+zmJAyTTJDYZk+Ufa9YzseUNUp91/19KWwiPq2oXVTwXAPACEFaNZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/D1aTRNaQpXeGhUKDkRERGc+8ROoHc7Ime160JrClvc=;
- b=D50Bh+1C7VKLPMNS1VEeK8hagr6aJcwJK1Iu549RvP+h9cmNh6uMyqJbJ/TBOy2bqvWOTht+qkYK0lE46+k+Z+NxaBEYH9t3PjOjscp6LvcNaIn9p8dPRwxEUhUn3EezVKQrs6vQgijPNDO2qsU9EvaJCXfg2CZ5LQOIPgaOAsJaA7rEEVW0LIw2JeWoOtjNnEo2QnmSYY2iPJ/ltMmPFDIP0SyvFQ+PYznIAxZD6LgtNuMkC3RdDcT+umOkF/fc/Pcvv5tqeuNbQrgdA4k/mpK/zloHbBPO2cul8RJB3sGaAWANyr8leE9eHdM6NS3IYyxq80p2tMWDX5iyQeDqvQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/D1aTRNaQpXeGhUKDkRERGc+8ROoHc7Ime160JrClvc=;
- b=WxRT3jjYgJ3H11Ri1JhOaSxYrrX56b8snR7oe7cy+b2HqJLSZcwIZ/SZoLGf2KwsQ7ckyNBiis+9LofwDvbW0f8sSVSyW31/p/E2aO9zDT21eNyRLKOrDx5QSWzyhs8S2MqYlZfKXAASNW6Fh1ykB1IEPrPaa4o/jnyZ+2krmtc=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.59.17) by
- BYAPR15MB2439.namprd15.prod.outlook.com (52.135.198.155) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2178.16; Mon, 19 Aug 2019 05:51:09 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::d95b:271:fa7e:e978]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::d95b:271:fa7e:e978%5]) with mapi id 15.20.2178.018; Mon, 19 Aug 2019
- 05:51:09 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Nathan Chancellor <natechancellor@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-CC:     Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] test_bpf: Fix a new clang warning about xor-ing two
- numbers
-Thread-Topic: [PATCH] test_bpf: Fix a new clang warning about xor-ing two
- numbers
-Thread-Index: AQHVVkfGI3lq+eqY6EetOxo2qpIqHacB956A
-Date:   Mon, 19 Aug 2019 05:51:09 +0000
-Message-ID: <00b21133-196c-f304-14a1-facb24c09103@fb.com>
-References: <20190819043419.68223-1-natechancellor@gmail.com>
-In-Reply-To: <20190819043419.68223-1-natechancellor@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR21CA0034.namprd21.prod.outlook.com
- (2603:10b6:300:129::20) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:10e::17)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::a8b3]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: dfe2e8dd-f4e8-42a9-b03a-08d724693c09
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:BYAPR15MB2439;
-x-ms-traffictypediagnostic: BYAPR15MB2439:
-x-ms-exchange-purlcount: 2
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB2439B1BF18CBBCA0FA53C097D3A80@BYAPR15MB2439.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 0134AD334F
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(346002)(39860400002)(376002)(396003)(366004)(199004)(189003)(25786009)(6246003)(14454004)(66556008)(478600001)(64756008)(66446008)(66476007)(53936002)(229853002)(4326008)(966005)(6116002)(31686004)(76176011)(52116002)(2906002)(446003)(5660300002)(6506007)(102836004)(6486002)(386003)(53546011)(7736002)(14444005)(31696002)(256004)(305945005)(86362001)(316002)(71190400001)(71200400001)(66946007)(99286004)(186003)(81156014)(81166006)(110136005)(8676002)(8936002)(36756003)(54906003)(6512007)(6306002)(6436002)(476003)(11346002)(486006)(2616005)(46003);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2439;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: hU0I7CBEUiZygn4rD/I4IEwG8R8TciSNnNLFEanXgdL03ngJSp55zV6zfpNTaGPc0mVyp3MEDBJjq8zEiORqZwjahs/AvDPSDSy2Etnv1PZJvawtjUd4Nx49IuRmpH5DbtCxg6E4yf5x9Q4I4rFpzIaF+LUkRBtTJC4eScDTILvKnljI55x6teaKg/IjhF28TXgpxxGYl/w0W6Cdsu6PBgHmr+A8LbQAq78fmflgT/3xUpNu+llyBa3aVKbr9pOgflmXHnzFOhidzgGmsiLhBd/SZeIxMS7jomspSqU4ddLIJxz9yBai4zxxtI5BsA/h6g5BgJZOMZmIlMEVN/OMtVrw1jnwsBCCfqnmZ6XGKiMGZ5C/dJUrnIMQGk/lK1nW3f29ocm6Dmh8bBwQFkszaWh0JXZRKYb4ZTQGDUmcOhA=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1F8ECC3C16EEA947B68204269CE85C56@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726464AbfHSGf0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Aug 2019 02:35:26 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:35577 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726261AbfHSGfZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Aug 2019 02:35:25 -0400
+Received: by mail-ot1-f65.google.com with SMTP id g17so685820otl.2;
+        Sun, 18 Aug 2019 23:35:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hehynR5oMc0ygrLfxgtV2LBMgj/0/3USx04Fi55/N18=;
+        b=BqWb4oAF5EmHxqNMEkZ+gZT+JcDLLnz0XU9HRjN0B2I4FS/61qK4wt2ZtvUGFoei8g
+         ZWJCaUh0TMbTF/cN6PII/9t1ebsCS77u8Og/uMeYojffXAQEsounkP6nhUaIiRxLsmTh
+         WwSlnzyCl+uwRv/BwB106rGTgq8o/K3mK6mb1AWy0vSMGXwgGCId760ZnGSzJdnNdGnO
+         QTBREfJ8UxrZoMdr1gnuodlCoatRC0qzAXP+VdfE20TZ4eYhNGt34Bm582mR52Uui35C
+         48W0uXhaUZF9Z4W4js/7DY6dYv6j7DuhZtGElAXTEBIUY52EbrhhKowuksR/iROLQnEL
+         +sYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hehynR5oMc0ygrLfxgtV2LBMgj/0/3USx04Fi55/N18=;
+        b=nFwFaHewk1Z5kohYViGfUirAE8iy7Y9Hq8yKWyjdxL1aYvB9nygR8gUPR1baKGDwWG
+         vIQsC20OIGqOZDhAu1dpU5N6N8WeIB0sQqTTHWKizrY4NAjEUZDjZMq8FlgWuvSQpC2P
+         CyXbOzcXH92GcZRe1RbxJJ9FnvoKHtsRsdUqmxFZsyu5f7PPwdEN+1rmQmjh5lc7rw9d
+         kZYTuTTEaiW7AXx/Ql6dVOZFZjPK/UTMOlbGnyOwSaLfNVx0FPaNdT2uGfttakb9zbii
+         XGq0Pd+yCWbD/SZQHmCXdh+89YrtNX68Ou6sGcMhARjEwNfP3/ra3r/zPuedfowC0kAV
+         QjVg==
+X-Gm-Message-State: APjAAAUxxVoEwqwB0v1SB1519kMiWj4PwbeA6kpW0RxpIgIE0MpNnDJT
+        uuLOE3xqTi6syVDnskHHEhwlGQFIEwtfrHTl46Q=
+X-Google-Smtp-Source: APXvYqzWetXyg+zssDPoektkY2F3mYhPVSAYE/uwaNM/FFoHYpl9cGOm5nWniMRcJ8f0c8s+tjYglzEdpvdjJ0iGUVE=
+X-Received: by 2002:a9d:5e19:: with SMTP id d25mr17527065oti.192.1566196524573;
+ Sun, 18 Aug 2019 23:35:24 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: dfe2e8dd-f4e8-42a9-b03a-08d724693c09
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2019 05:51:09.6716
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rH0w1dUzAX1Z514QlhnfdCSSSwAHmRsHQLrydg7wuDMMXwtH6t5R84VJXnni0GvB
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2439
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-19_02:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908190067
-X-FB-Internal: deliver
+References: <1565951171-14439-1-git-send-email-magnus.karlsson@intel.com>
+ <f3a8ea34-bd70-8ab8-9739-bb086643fa44@fb.com> <2B143E7F-EE34-4298-B628-E2F669F89896@gmail.com>
+In-Reply-To: <2B143E7F-EE34-4298-B628-E2F669F89896@gmail.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Mon, 19 Aug 2019 08:35:13 +0200
+Message-ID: <CAJ8uoz1hY0P+xypkJYYi775SeSXnrrPSM5v0yTf3G+d2a3OhJg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: remove zc variable as it is not used
+To:     Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDgvMTgvMTkgOTozNCBQTSwgTmF0aGFuIENoYW5jZWxsb3Igd3JvdGU6DQo+IHIzNjky
-MTcgaW4gY2xhbmcgYWRkZWQgYSBuZXcgd2FybmluZyBhYm91dCBwb3RlbnRpYWwgbWlzdXNlIG9m
-IHRoZSB4b3INCj4gb3BlcmF0b3IgYXMgYW4gZXhwb25lbnRpYXRpb24gb3BlcmF0b3I6DQo+IA0K
-PiAuLi9saWIvdGVzdF9icGYuYzo4NzA6MTM6IHdhcm5pbmc6IHJlc3VsdCBvZiAnMTAgXiAzMDAn
-IGlzIDI5NDsgZGlkIHlvdQ0KPiBtZWFuICcxZTMwMCc/IFstV3hvci11c2VkLWFzLXBvd10NCj4g
-ICAgICAgICAgICAgICAgICB7IHsgNCwgMTAgXiAzMDAgfSwgeyAyMCwgMTAgXiAzMDAgfSB9LA0K
-PiAgICAgICAgICAgICAgICAgICAgICAgICB+fn5efn5+fg0KPiAgICAgICAgICAgICAgICAgICAg
-ICAgICAxZTMwMA0KPiAuLi9saWIvdGVzdF9icGYuYzo4NzA6MTM6IG5vdGU6IHJlcGxhY2UgZXhw
-cmVzc2lvbiB3aXRoICcweEEgXiAzMDAnIHRvDQo+IHNpbGVuY2UgdGhpcyB3YXJuaW5nDQo+IC4u
-L2xpYi90ZXN0X2JwZi5jOjg3MDozMTogd2FybmluZzogcmVzdWx0IG9mICcxMCBeIDMwMCcgaXMg
-Mjk0OyBkaWQgeW91DQo+IG1lYW4gJzFlMzAwJz8gWy1XeG9yLXVzZWQtYXMtcG93XQ0KPiAgICAg
-ICAgICAgICAgICAgIHsgeyA0LCAxMCBeIDMwMCB9LCB7IDIwLCAxMCBeIDMwMCB9IH0sDQo+ICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH5+fl5+fn5+DQo+ICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDFlMzAwDQo+IC4uL2xpYi90ZXN0
-X2JwZi5jOjg3MDozMTogbm90ZTogcmVwbGFjZSBleHByZXNzaW9uIHdpdGggJzB4QSBeIDMwMCcg
-dG8NCj4gc2lsZW5jZSB0aGlzIHdhcm5pbmcNCj4gDQo+IFRoZSBjb21taXQgbGluayBmb3IgdGhp
-cyBuZXcgd2FybmluZyBoYXMgc29tZSBnb29kIGxvZ2ljIGJlaGluZCB3YW50aW5nDQo+IHRvIGFk
-ZCBpdCBidXQgdGhpcyBpbnN0YW5jZSBhcHBlYXJzIHRvIGJlIGEgZmFsc2UgcG9zaXRpdmUuIEFk
-b3B0IGl0cw0KPiBzdWdnZXN0aW9uIHRvIHNpbGVuY2UgdGhlIHdhcm5pbmcgYnV0IG5vdCBjaGFu
-Z2UgdGhlIGNvZGUuIEFjY29yZGluZyB0bw0KPiB0aGUgZGlmZmVyZW50aWFsIHJldmlldyBsaW5r
-IGluIHRoZSBjbGFuZyBjb21taXQsIEdDQyBtYXkgZXZlbnR1YWxseQ0KPiBhZG9wdCB0aGlzIHdh
-cm5pbmcgYXMgd2VsbC4NCj4gDQo+IExpbms6IGh0dHBzOi8vZ2l0aHViLmNvbS9DbGFuZ0J1aWx0
-TGludXgvbGludXgvaXNzdWVzLzY0Mw0KPiBMaW5rOiBodHRwczovL2dpdGh1Yi5jb20vbGx2bS9s
-bHZtLXByb2plY3QvY29tbWl0LzkyMDg5MGUyNjgxMmY4MDhhNzRjNjBlYmMxNGNjNjM2ZGFjNjYx
-YzENCj4gU2lnbmVkLW9mZi1ieTogTmF0aGFuIENoYW5jZWxsb3IgPG5hdGVjaGFuY2VsbG9yQGdt
-YWlsLmNvbT4NCg0KVmVyaWZpZWQgdGhhdCBsYXRlc3QgdHJ1bmsgY2xhbmcgaW5kZWVkIGhhcyB0
-aGlzIHdhcm5pbmcsIGFuZCBiZWxvdyANCmNoYW5nZSBpbmRlZWQgZml4ZWQgdGhlIHdhcm5pbmcg
-aW4gdGhlIGNvcnJlY3Qgd2F5Lg0KDQpBY2tlZC1ieTogWW9uZ2hvbmcgU29uZyA8eWhzQGZiLmNv
-bT4NCg0KPiAtLS0NCj4gDQo+IEkgaGlnaGx5IGRvdWJ0IHRoYXQgMWUzMDAgd2FzIGludGVudGVk
-IGJ1dCBpZiBpdCB3YXMgKG9yIHNvbWV0aGluZyBlbHNlDQo+IHdhcyksIHBsZWFzZSBsZXQgbWUg
-a25vdy4gQ29tbWl0IGhpc3Rvcnkgd2Fzbid0IGVudGlyZWx5IGNsZWFyIG9uIHdoeQ0KPiB0aGlz
-IGV4cHJlc3Npb24gd2FzIHVzZWQgb3ZlciBqdXN0IGEgcmF3IG51bWJlci4NCj4gDQo+ICAgbGli
-L3Rlc3RfYnBmLmMgfCAyICstDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAx
-IGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvbGliL3Rlc3RfYnBmLmMgYi9saWIvdGVz
-dF9icGYuYw0KPiBpbmRleCBjNDE3MDU4MzVjYmEuLjVlZjNlY2NlZTI3YyAxMDA2NDQNCj4gLS0t
-IGEvbGliL3Rlc3RfYnBmLmMNCj4gKysrIGIvbGliL3Rlc3RfYnBmLmMNCj4gQEAgLTg2Nyw3ICs4
-NjcsNyBAQCBzdGF0aWMgc3RydWN0IGJwZl90ZXN0IHRlc3RzW10gPSB7DQo+ICAgCQl9LA0KPiAg
-IAkJQ0xBU1NJQywNCj4gICAJCXsgfSwNCj4gLQkJeyB7IDQsIDEwIF4gMzAwIH0sIHsgMjAsIDEw
-IF4gMzAwIH0gfSwNCj4gKwkJeyB7IDQsIDB4QSBeIDMwMCB9LCB7IDIwLCAweEEgXiAzMDAgfSB9
-LA0KPiAgIAl9LA0KPiAgIAl7DQo+ICAgCQkiU1BJTExfRklMTCIsDQo+IA0K
+On Sat, Aug 17, 2019 at 12:02 AM Jonathan Lemon
+<jonathan.lemon@gmail.com> wrote:
+>
+>
+>
+> On 16 Aug 2019, at 8:37, Yonghong Song wrote:
+>
+> > On 8/16/19 3:26 AM, Magnus Karlsson wrote:
+> >> The zc is not used in the xsk part of libbpf, so let us remove it.
+> >> Not
+> >> good to have dead code lying around.
+> >>
+> >> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> >> Reported-by: Yonghong Song <yhs@fb.com> > ---
+> >>   tools/lib/bpf/xsk.c | 3 ---
+> >>   1 file changed, 3 deletions(-)
+> >>
+> >> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> >> index 680e630..9687da9 100644
+> >> --- a/tools/lib/bpf/xsk.c
+> >> +++ b/tools/lib/bpf/xsk.c
+> >> @@ -65,7 +65,6 @@ struct xsk_socket {
+> >>      int xsks_map_fd;
+> >>      __u32 queue_id;
+> >>      char ifname[IFNAMSIZ];
+> >> -    bool zc;
+> >>   };
+> >>
+> >>   struct xsk_nl_info {
+> >> @@ -608,8 +607,6 @@ int xsk_socket__create(struct xsk_socket
+> >> **xsk_ptr, const char *ifname,
+> >>              goto out_mmap_tx;
+> >>      }
+> >>
+> >> -    xsk->zc = opts.flags & XDP_OPTIONS_ZEROCOPY;
+> >
+> > Since opts.flags usage is removed. Do you think it makes sense to
+> > remove
+> >          optlen = sizeof(opts);
+> >          err = getsockopt(xsk->fd, SOL_XDP, XDP_OPTIONS, &opts,
+> > &optlen);
+> >          if (err) {
+> >                  err = -errno;
+> >                  goto out_mmap_tx;
+> >          }
+> > as well since nobody then uses opts?
+>
+> IIRC, this was added specifically in
+> 2761ed4b6e192820760d5ba913834b2ba05fd08c
+> so that userland code could know whether the socket was operating in
+> zero-copy
+> mode or not.
+
+Thanks for reminding me Jonathan.
+
+Roping in Maxim here since he wrote the patch. Was this something you
+planned on using but the functionality that needed it was removed? The
+patch set did go through a number of changes in the libbpf area, if I
+remember correctly.
+
+There are two options: either we remove it, or we add an interface in
+xsk.h so that people can use it. I vote for the latter since I think
+it could be useful. The sample app could use it at least :-).
+
+/Magnus
+
+> --
+> Jonathan
