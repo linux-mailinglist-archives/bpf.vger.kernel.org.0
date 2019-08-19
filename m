@@ -2,225 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6086494BDC
-	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2019 19:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3927594BF5
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2019 19:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727865AbfHSRjB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Aug 2019 13:39:01 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:46454 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727913AbfHSRjA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Aug 2019 13:39:00 -0400
-Received: by mail-pg1-f193.google.com with SMTP id m3so1598866pgv.13
-        for <bpf@vger.kernel.org>; Mon, 19 Aug 2019 10:38:59 -0700 (PDT)
+        id S1727744AbfHSRpR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Aug 2019 13:45:17 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:41301 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726959AbfHSRpR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Aug 2019 13:45:17 -0400
+Received: by mail-qt1-f193.google.com with SMTP id i4so2817587qtj.8;
+        Mon, 19 Aug 2019 10:45:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=XlmO/eodwC71D1bsvJiGJ+8sk3xEUmzJXMjarfbHpdM=;
-        b=gg7ZbGjUDcVLbly6VkVmQCEm7LnkM7/6eeJr1yDs/VllkZKChPUwEdIIM+ASJep+0d
-         eTbcdwDBDnKHjZCSyp5RDqf1TtfMsMh+vt9oAp3e0EwlmkpTYhuHPUHzlHx12lsYMA6B
-         XIIRQq56YHYVfoGZPvdmk762cOlZT9gcyK/DGI1NIT/6fL0go62V36EENoYqRw73qpkm
-         5C2PnhPOmeBcDCPJX69CgCkLcL5fJS0lVZHv0xerYPYlKw0mZqWbnQRyDII2jbC4t9B8
-         ip/abnvN/q+dm8L/8HG5bh9s0yT4UbiWPwqT529QMgGUVn4BaLTKI/S3pAiCSPFXQe6F
-         vLyg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5C10SdTw9UsRHE8mSdMz/uk/aS8BfPDdbX4rmEYHzaw=;
+        b=ruGTsG/TOkpqLtT4WJgHDJ3Li4k/0DKSh1BviEgQ+FsLLotDrvs270uzLeikm/Ukg9
+         5sGCjXhebL7oYW0ZcFdP859ObgBvX6TvdljAkRmfi58IpdxTtfdiXE7NxFzmcmiqIF7Z
+         wcX9aWUW6/PSxjPwf9YU1FS/jKGYB+G6RZSrQerdzNXe45tb8GHkSVSse4VXK8n4PH5K
+         fqnqtrxUC7KOOkrarpC/YVVukR/w0tewaStiH9HPyBuae2zknD8tcA1mRcC9v2voe8Bs
+         bJl3hYg/4GmgL6hiJP1jHkXQEBEvNOky7qXmyk739IMiV4Y124Tq+qCbuBBQhyY7kxAY
+         cypw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=XlmO/eodwC71D1bsvJiGJ+8sk3xEUmzJXMjarfbHpdM=;
-        b=lYE5sjJ8rMLbnGLjr7GMjvor+k2rj1UTgiQXH9tpkCgC8Tyzzs7AwjT9d26j2VACJO
-         Kp9aaT24FXU0ZLEe2aeU6sMnh+4pbagfgYv315kfXp3cYuylABXj1TJ8yIZN+WDNOr39
-         EPd/FNmGhYu6g1wYFGX2qnAnCK6VHQxUPZaFP4GQ5MvtDIMJf6VA+jspwZwub+J3f16C
-         qxCTPE9tLOdcAcd09jyPEiKhoM6DMBwHQnsqQ/H7kdskTlMxONe/Qz7k/P4tgJo/y6wm
-         kpWRphIFKNrkvh7vKo0u0aCX4TOVDheG7lWxVCT4+nZeLK6lHluK++UMmynJgfOlCrRv
-         rtRA==
-X-Gm-Message-State: APjAAAUBmILm9qWDmYggvXrDcij5PeksqRzsfB9F+yyX7I3rGS1JDpO0
-        lKIoRYpGo2otAjo4w/6HzGFXSQ==
-X-Google-Smtp-Source: APXvYqxPdCTE7oJv0KRum5I0reGZkgvYoxAuvehn29xWjMgxP5kckXF7eMEtwBbvDmFwEEKLk08xug==
-X-Received: by 2002:aa7:9713:: with SMTP id a19mr25281790pfg.64.1566236338926;
-        Mon, 19 Aug 2019 10:38:58 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:f907:f7f1:6354:309? ([2601:646:c200:1ef2:f907:f7f1:6354:309])
-        by smtp.gmail.com with ESMTPSA id br18sm14684454pjb.20.2019.08.19.10.38.57
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 19 Aug 2019 10:38:57 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
-From:   Andy Lutomirski <luto@amacapital.net>
-X-Mailer: iPhone Mail (16G77)
-In-Reply-To: <20190819172718.jwnvvotssxwhc7m6@ast-mbp.dhcp.thefacebook.com>
-Date:   Mon, 19 Aug 2019 10:38:56 -0700
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jordan Glover <Golden_Miller83@protonmail.ch>,
-        Andy Lutomirski <luto@kernel.org>,
-        Daniel Colascione <dancol@google.com>,
-        Song Liu <songliubraving@fb.com>,
-        Kees Cook <keescook@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Jann Horn <jannh@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <CA2D2573-D90D-4904-A8B5-08C9C5FC7A56@amacapital.net>
-References: <20190815172856.yoqvgu2yfrgbkowu@ast-mbp.dhcp.thefacebook.com> <CALCETrUv+g+cb79FJ1S4XuV0K=kowFkPXpzoC99svoOfs4-Kvg@mail.gmail.com> <20190815230808.2o2qe7a72cwdce2m@ast-mbp.dhcp.thefacebook.com> <fkD3fs46a1YnR4lh0tEG-g3tDnDcyZuzji7bAUR9wujPLLl75ZhI8Yk-H1jZpSugO7qChVeCwxAMmxLdeoF2QFS3ZzuYlh7zmeZOmhDJxww=@protonmail.ch> <alpine.DEB.2.21.1908161158490.1873@nanos.tec.linutronix.de> <lGGTLXBsX3V6p1Z4TkdzAjxbNywaPS2HwX5WLleAkmXNcnKjTPpWnP6DnceSsy8NKt5NBRBbuoAb0woKTcDhJXVoFb7Ygk3Skfj8j6rVfMQ=@protonmail.ch> <20190816195233.vzqqbqrivnooohq6@ast-mbp.dhcp.thefacebook.com> <alpine.DEB.2.21.1908162211270.1923@nanos.tec.linutronix.de> <20190817150245.xxzxqjpvgqsxmloe@ast-mbp> <alpine.DEB.2.21.1908191103130.1923@nanos.tec.linutronix.de> <20190819172718.jwnvvotssxwhc7m6@ast-mbp.dhcp.thefacebook.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5C10SdTw9UsRHE8mSdMz/uk/aS8BfPDdbX4rmEYHzaw=;
+        b=s5IrA1Ynv9znvMEC0x8SZVR7YwSW7uOpOGBjC/C8nu5bNhQuRtLujgEu7CoB3+YdkI
+         LI8xAck6vnuHDZZrw5rxYkge0yg17VXWEJYd/jJsPJi9ihbwqqUlEDhw+F53ZdmTdSdx
+         cfXTNfyZWv6i5M7ne0OH1747rDyJGft401Jqzk3SBbPI2SpDJRs20dRJpBx+0CigKJPv
+         czl1ql4EqzLwJFSkPQtQa2LfQIzEcvOkLlChd9+whfxmk33ZMH0ZoBFsfc5CIS4LHAhj
+         GjlkCEFz6ihN4i2avD/b9xZ0s6U3EQM5k9L+z1LyJAmZuw9mdBZPtbTBNmg3hp4zEQVT
+         Vk+Q==
+X-Gm-Message-State: APjAAAUEWbkcTOfY3pOnpetzH5t1NffLdfCmyfDKTLfGLhQe96pU7v8a
+        vmiwL3J3G9A/I2oAw77t+uWtV4wcde1GbYzBep0=
+X-Google-Smtp-Source: APXvYqwr+fVhJ35Czwd9Xb4pyCZvoPQ3OvIzy3HfnL8UCcUYIw9PumcFsf5+UeWyKZypIa4kmZo4EYeoClXHJkGXS4g=
+X-Received: by 2002:ad4:56a2:: with SMTP id bd2mr3096857qvb.162.1566236716058;
+ Mon, 19 Aug 2019 10:45:16 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190816223149.5714-1-dxu@dxuuu.xyz> <20190816223149.5714-3-dxu@dxuuu.xyz>
+In-Reply-To: <20190816223149.5714-3-dxu@dxuuu.xyz>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 19 Aug 2019 10:45:05 -0700
+Message-ID: <CAEf4BzYbckCr2mxgsAn0z-fi-jxjvL5RGF4vdCLdfWgOzQfb-A@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 2/4] libbpf: Add helpers to extract perf fd
+ from bpf_link
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf <bpf@vger.kernel.org>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        alexander.shishkin@linux.intel.com, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Aug 16, 2019 at 3:32 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> It is sometimes necessary to perform ioctl's on the underlying perf fd.
+> There is not currently a way to extract the fd given a bpf_link, so add a
+> a pair of casting and getting helpers.
+>
+> The casting and getting helpers are nice because they let us define
+> broad categories of links that makes it clear to users what they can
+> expect to extract from what type of link.
+>
+> Acked-by: Song Liu <songliubraving@fb.com>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
 
+This looks great, thanks a lot!
 
-> On Aug 19, 2019, at 10:27 AM, Alexei Starovoitov <alexei.starovoitov@gmail=
-.com> wrote:
->=20
->> On Mon, Aug 19, 2019 at 11:15:11AM +0200, Thomas Gleixner wrote:
->> Alexei,
->>=20
->>> On Sat, 17 Aug 2019, Alexei Starovoitov wrote:
->>>> On Fri, Aug 16, 2019 at 10:28:29PM +0200, Thomas Gleixner wrote:
->>>> On Fri, 16 Aug 2019, Alexei Starovoitov wrote:
->>>> While real usecases are helpful to understand a design decision, the de=
-sign
->>>> needs to be usecase independent.
->>>>=20
->>>> The kernel provides mechanisms, not policies. My impression of this who=
-le
->>>> discussion is that it is policy driven. That's the wrong approach.
->>>=20
->>> not sure what you mean by 'policy driven'.
->>> Proposed CAP_BPF is a policy?
->>=20
->> I was referring to the discussion as a whole.
->>=20
->>> Can kernel.unprivileged_bpf_disabled=3D1 be used now?
->>> Yes, but it will weaken overall system security because things that
->>> use unpriv to load bpf and CAP_NET_ADMIN to attach bpf would need
->>> to move to stronger CAP_SYS_ADMIN.
->>>=20
->>> With CAP_BPF both load and attach would happen under CAP_BPF
->>> instead of CAP_SYS_ADMIN.
->>=20
->> I'm not arguing against that.
->>=20
->>>> So let's look at the mechanisms which we have at hand:
->>>>=20
->>>> 1) Capabilities
->>>>=20
->>>> 2) SUID and dropping priviledges
->>>>=20
->>>> 3) Seccomp and LSM
->>>>=20
->>>> Now the real interesting questions are:
->>>>=20
->>>> A) What kind of restrictions does BPF allow? Is it a binary on/off or i=
-s
->>>>    there a more finegrained control of BPF functionality?
->>>>=20
->>>>    TBH, I can't tell.
->>>>=20
->>>> B) Depending on the answer to #A what is the control possibility for
->>>>    #1/#2/#3 ?
->>>=20
->>> Can any of the mechanisms 1/2/3 address the concern in mds.rst?
->>=20
->> Well, that depends. As with any other security policy which is implemente=
-d
->> via these mechanisms, the policy can be strict enough to prevent it by no=
-t
->> allowing certain operations. The more fine-grained the control is, it
->> allows the administrator who implements the policy to remove the
->> 'dangerous' parts from an untrusted user.
->>=20
->> So really question #A is important for this. Is BPF just providing a bina=
-ry
->> ON/OFF knob or does it allow to disable/enable certain aspects of BPF
->> functionality in a more fine grained way? If the latter, then it might be=
+I think you might have a conflict with dadb81d0afe7 ("libbpf: make
+libbpf.map source of truth for libbpf version") in libbpf.map, so you
+might need to pull, rebase and re-post rebased version. But in any
+case:
 
->> possible to control functionality which might be abused for exploits of
->> some sorts (including MDS) in a way which allows other parts of BBF to be=
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
->> exposed to less priviledged contexts.
->=20
-> I see. So the kernel.unprivileged_bpf_disabled knob is binary and I think i=
-t's
-> the right mechanism to expose to users.
-> Having N knobs for every map/prog type won't decrease attack surface.
-> In the other email Andy's quoting seccomp man page...
-> Today seccomp cannot really look into bpf_attr syscall args, but even
-> if it could it won't secure the system.
-> Examples:
-> 1.
-> spectre v2 is using bpf in-kernel interpreter in speculative way.
-> The mere presence of interpreter as part of kernel .text makes the exploit=
-
-> easier to do. That was the reason to do CONFIG_BPF_JIT_ALWAYS_ON.
-> For this case even kernel.unprivileged_bpf_disabled=3D1 was hopeless.
->=20
-> 2.
-> var4 doing store hazard. It doesn't matter which program type is used.
-> load/store instructions are the same across program types.
->=20
-> 3.
-> prog_array was used as part of var1. I guess it was simply more
-> convenient for Jann to do it this way :) All other map types
-> have the same out-of-bounds speculation issue.
->=20
-> In general side channels are cpu bugs that are exploited via sequences
-> of cpu instructions. In that sense bpf infra provides these instructions.
-> So all program types and all maps have the same level of 'side channel ris=
-k'.
->=20
->>> I believe Andy wants to expand the attack surface when
->>> kernel.unprivileged_bpf_disabled=3D0
->>> Before that happens I'd like the community to work on addressing the tex=
-t above.
->>=20
->> Well, that text above can be removed when the BPF wizards are entirely su=
-re
->> that BPF cannot be abused to exploit stuff.=20
->=20
-> Myself and Daniel looked at it in detail. I think we understood
-> MDS mechanism well enough. Right now we're fairly confident that
-> combination of existing mechanisms we did for var4 and
-> verifier speculative analysis protect us from MDS.
-> The thing is that every new cpu bug is looked at through the bpf lenses.
-> Can it be exploited through bpf? Complexity of side channels
-> is growing. Can the most recent swapgs be exploited ?
-> What if we kprobe+bpf somewhere ?
-> I don't think there is an issue, but we will never be 'entirely sure'.
-> Even if myself and Daniel are sure the concern will stay.
-> Unprivileged bpf as a whole is the concern due to side channels.
-> The number of them are not yet disclosed. Who is going to analyze them?
-> imo the only answer to that is kernel.unprivileged_bpf_disabled=3D1
-> which together with CONFIG_BPF_JIT_ALWAYS_ON is secure enough.
-> The other option is to sprinkle every bpf load/store with lfence
-> which will make execution so slow that it will be unusable.
-> Which is effectively the same as unprivileged_bpf_disabled=3D1.
->=20
-> There are other things we can do. Like kasan-style shadow memory
-> for bpf execution. Auto re-JITing the code after it's running.
-> We can do lfences everywhere for some time then re-JIT
-> when kasan-ed shadow memory shows only clean memory accesses.
-> The beauty of BPF that it is analyze-able and JIT-able instruction set.
-> The verifier speculative analysis is an example that the kernel
-> can analyze the speculative execution path that cpu will
-> take before the code starts executing.
-> Unprivileged bpf can made absolutely secure. It can be
-> made more secure than the rest of the kernel.
-> But today we should just go with unprivileged_bpf_disabled=3D1
-
-I=E2=80=99m still okay with this.
-
-> and CAP_BPF.
->=20
-
-I think this needs more design work.  I=E2=80=99m halfway through writing up=
- an actual proposal. I=E2=80=99ll send it soon.=
+>  tools/lib/bpf/libbpf.c   | 21 +++++++++++++++++++++
+>  tools/lib/bpf/libbpf.h   | 13 +++++++++++++
+>  tools/lib/bpf/libbpf.map |  4 ++++
+>  3 files changed, 38 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 2233f919dd88..41588e13be2b 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -4876,6 +4876,7 @@ int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
+>
+>  struct bpf_link {
+>         int (*destroy)(struct bpf_link *link);
+> +       enum bpf_link_type type;
+>  };
+>
+>  int bpf_link__destroy(struct bpf_link *link)
+> @@ -4909,6 +4910,24 @@ static int bpf_link__destroy_perf_event(struct bpf_link *link)
+>         return err;
+>  }
+>
+> +const struct bpf_link_fd *bpf_link__as_fd(const struct bpf_link *link)
+> +{
+> +       if (link->type != LIBBPF_LINK_FD)
+> +               return NULL;
+> +
+> +       return (struct bpf_link_fd *)link;
+> +}
+> +
+> +enum bpf_link_type bpf_link__type(const struct bpf_link *link)
+> +{
+> +       return link->type;
+> +}
+> +
+> +int bpf_link_fd__fd(const struct bpf_link_fd *link)
+> +{
+> +       return link->fd;
+> +}
+> +
+>  struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog,
+>                                                 int pfd)
+>  {
+> @@ -4932,6 +4951,7 @@ struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog,
+>         if (!link)
+>                 return ERR_PTR(-ENOMEM);
+>         link->link.destroy = &bpf_link__destroy_perf_event;
+> +       link->link.type = LIBBPF_LINK_FD;
+>         link->fd = pfd;
+>
+>         if (ioctl(pfd, PERF_EVENT_IOC_SET_BPF, prog_fd) < 0) {
+> @@ -5225,6 +5245,7 @@ struct bpf_link *bpf_program__attach_raw_tracepoint(struct bpf_program *prog,
+>         link = malloc(sizeof(*link));
+>         if (!link)
+>                 return ERR_PTR(-ENOMEM);
+> +       link->link.type = LIBBPF_LINK_FD;
+>         link->link.destroy = &bpf_link__destroy_fd;
+>
+>         pfd = bpf_raw_tracepoint_open(tp_name, prog_fd);
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index e8f70977d137..2ddef5315ff9 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -166,7 +166,20 @@ LIBBPF_API int bpf_program__pin(struct bpf_program *prog, const char *path);
+>  LIBBPF_API int bpf_program__unpin(struct bpf_program *prog, const char *path);
+>  LIBBPF_API void bpf_program__unload(struct bpf_program *prog);
+>
+> +enum bpf_link_type {
+> +       LIBBPF_LINK_FD,
+> +};
+> +
+>  struct bpf_link;
+> +struct bpf_link_fd;
+> +
+> +/* casting APIs */
+> +LIBBPF_API const struct bpf_link_fd *
+> +bpf_link__as_fd(const struct bpf_link *link);
+> +
+> +/* getters APIs */
+> +LIBBPF_API enum bpf_link_type bpf_link__type(const struct bpf_link *link);
+> +LIBBPF_API int bpf_link_fd__fd(const struct bpf_link_fd *link);
+>
+>  LIBBPF_API int bpf_link__destroy(struct bpf_link *link);
+>
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 4e72df8e98ba..ee9945177100 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -186,4 +186,8 @@ LIBBPF_0.0.4 {
+>  } LIBBPF_0.0.3;
+>
+>  LIBBPF_0.0.5 {
+> +       global:
+> +               bpf_link__type;
+> +               bpf_link__as_fd;
+> +               bpf_link_fd__fd;
+>  } LIBBPF_0.0.4;
+> --
+> 2.20.1
+>
