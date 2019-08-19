@@ -2,107 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C4C94FEC
-	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2019 23:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754C894FF4
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2019 23:36:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728554AbfHSVaL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Aug 2019 17:30:11 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:47571 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728387AbfHSVaK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 19 Aug 2019 17:30:10 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id BBCA32E7F;
-        Mon, 19 Aug 2019 17:30:08 -0400 (EDT)
-Received: from imap35 ([10.202.2.85])
-  by compute4.internal (MEProxy); Mon, 19 Aug 2019 17:30:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=Q5JhGTN+fjSJxso/aLaWEsyqO9JCUhO
-        T7ziS9ZnAOsA=; b=xUtn4j1G34ZT3y2T5IEdd5A2VDsgDEVzXW6Pjsx8JMHzTRK
-        8+qj+li6IoE0Unogyksn2fTbvKy5Nhzd9jiqGmGUK0V9NfJ5BTE5fnMrXgWBTFkT
-        mqkfky6XZsWnVjBopBNHHhTyafKYye8S0aEF5oVPyWXcBy1nHmwUtbUt5ZUS7GSw
-        SzkXSr9/3KAIEOmyRR5bQTfKyF/YSKHWUXkwouEs6q4qIRZwfZ49dJzRz4Hu+P1a
-        2mzP4fSAMLeD4qTbvf5LnPZIQ4k8QvR8V0tByP68lUZ2jT9xOoO65NWY5FHykU6D
-        G+bysEnfWHYGEsypANvxwWZv1KctKojA/1bgj1w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Q5JhGT
-        N+fjSJxso/aLaWEsyqO9JCUhOT7ziS9ZnAOsA=; b=ry0547q56oTH2j7WD50GWt
-        XupBQm20OFhLRN/3HuCo0W9MYrJ+dee1hun0MAH083ZiRI9hJPNQenkeHoOfh08p
-        FlV2pP4DMwVqZpqg4kSIKaFz6NZ466GB+CQ0Ta4ubOJEqBH0zsuBfTmZdA78Z9ew
-        sBfN08+RjqHWJ5Yewk1+avKDGPz2RkQvGR3SchevaSKgji1onmpbRbcsDerZi9CS
-        RkHM9X1PEK0BVXHbM7HO+t6k9MMcFo/U/PRRMoRDSGVsUVuggOFCNLiOiSJQNhp8
-        u95LZTpDKVM2lTorphVVcNgf0ry+8UCns5So4i9zEaKbN4KOSGv8rSmBM8BCeEJQ
-        ==
-X-ME-Sender: <xms:3xRbXTtD2Kd1Vh4LbPdobYV9vL-Reffwx06OdMVNejirngyp92DwvQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduvddrudegtddgtdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlfeehmdenucfjughrpefofgggkfgjfhffhffvufgtsehttdertder
-    reejnecuhfhrohhmpedfffgrnhhivghlucgiuhdfuceougiguhesugiguhhuuhdrgiihii
-    eqnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiinecuvehl
-    uhhsthgvrhfuihiivgeptd
-X-ME-Proxy: <xmx:3xRbXfJ6hQpkIf2K3Lt08Ggg6IKBWXa6iKwbbi5mIKrlb2RT_Y-H9w>
-    <xmx:3xRbXdZ3Iqdsp5PizLUl6pWo7J6q7aCRovUO326tyZySaIyVpUHo-A>
-    <xmx:3xRbXdLlx8sT3Rh6KY9TpVPVLjyS3WLhurdTZIYearTcuL_1MwiEDg>
-    <xmx:4BRbXePAsusUAd0M_S8bjowWXd0JiFtf1TAPX8gPuqUYGE27LwX0kQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id B0F1114C0062; Mon, 19 Aug 2019 17:30:07 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.1.6-877-g11309a8-fmstable-20190819v1
-Mime-Version: 1.0
-Message-Id: <bf85e622-afa9-4f9e-a41b-ba67be24a9e3@www.fastmail.com>
-In-Reply-To: <CAEf4BzYbckCr2mxgsAn0z-fi-jxjvL5RGF4vdCLdfWgOzQfb-A@mail.gmail.com>
-References: <20190816223149.5714-1-dxu@dxuuu.xyz>
- <20190816223149.5714-3-dxu@dxuuu.xyz>
- <CAEf4BzYbckCr2mxgsAn0z-fi-jxjvL5RGF4vdCLdfWgOzQfb-A@mail.gmail.com>
-Date:   Mon, 19 Aug 2019 14:30:06 -0700
-From:   "Daniel Xu" <dxu@dxuuu.xyz>
-To:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "Song Liu" <songliubraving@fb.com>, "Yonghong Song" <yhs@fb.com>,
-        "Andrii Nakryiko" <andriin@fb.com>,
-        "Peter Ziljstra" <peterz@infradead.org>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
-        "Alexei Starovoitov" <ast@fb.com>,
-        alexander.shishkin@linux.intel.com, "Jiri Olsa" <jolsa@redhat.com>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        "open list" <linux-kernel@vger.kernel.org>,
-        "Kernel Team" <kernel-team@fb.com>
-Subject: =?UTF-8?Q?Re:_[PATCH_v3_bpf-next_2/4]_libbpf:_Add_helpers_to_extract_per?=
- =?UTF-8?Q?f_fd_from_bpf=5Flink?=
-Content-Type: text/plain
+        id S1728402AbfHSVf7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Aug 2019 17:35:59 -0400
+Received: from mail-qk1-f176.google.com ([209.85.222.176]:43353 "EHLO
+        mail-qk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728018AbfHSVf7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Aug 2019 17:35:59 -0400
+Received: by mail-qk1-f176.google.com with SMTP id m2so2760789qkd.10
+        for <bpf@vger.kernel.org>; Mon, 19 Aug 2019 14:35:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=HRf/rgT/WG8UbnB9CjMWjQnc+PtTo38b22VnPUq0Gg8=;
+        b=bfNVMyCC+kpeWN4Ybm2ppMO2SSq9dd2BlbnaSbYunSW9kMr7c3/Mn7ghnxAYXX/H9w
+         5cnSpgo2YJd/pI0Wqb+d59pIFjFHJRUl59fR5WiO8eqo6wjq4l7mVfR/Dr2gNwO8ZQav
+         6L9PLkWJJs05//MgTBjYa8Y+6ITBMMRL+sTah5MhvAS7N1/asb8a+WQaUDzPlrKstd9L
+         HipbiFhOGFIavip/WSrlseDc+9rsiX1OLiBr9skoN9ZOkRjlgLZ0hh6eOiGSMaCMBWEN
+         gj71PmdpSRKKD4F7Lsrve9PMd/cNE+Dx8in71GFDGAmo0/BO8CpnzHVBUI6xiqFz76Gr
+         ej1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=HRf/rgT/WG8UbnB9CjMWjQnc+PtTo38b22VnPUq0Gg8=;
+        b=svZe3dTV+/x+tZLVap/5HecsA+M3az7jSJ7orDF6XIj0tRlMly/eJEp5urWJv7vq66
+         vBQT4/oqxOQ/52Um11oyj+D3mHc3vAX9N75mYc6OrIDZIY46k4+GLWH7PdZrZSMyu0Fo
+         3ShQVP2Dmva16rJODnLeIEisvcR67gKz72dpXZIdfei+1MFCigVrVQp4w6QiC5RfEo1z
+         suWe2gL6A4hPVzb91lLhn0nLErADlNhdNE8Xe0dWlJ7G4Lzz06tEz+2zLqDrJ/xI7vYU
+         vRHWJHHuJfmt9BE/QPA3IsPFx5jScEBtFqyPx5/cDQ+JW0wG1k13XDdL7FEAKKT7GtUn
+         Ye/Q==
+X-Gm-Message-State: APjAAAVlz7kwZl9hVn3nDlEMCo7VLz05j3AnP7lgFsLZvmUQqoKZMxTt
+        UjU+PPSKhm8ggIjwU+c7x5bwDQ==
+X-Google-Smtp-Source: APXvYqyP3YqD1FV6I4CPqc2ji59sr1BQNcZd6k5ZgqSkUowaBMDrU4lqioDJjyN9S5NapIiP5Q/Vrg==
+X-Received: by 2002:a37:9cc2:: with SMTP id f185mr22980034qke.172.1566250558671;
+        Mon, 19 Aug 2019 14:35:58 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id i5sm8912132qti.0.2019.08.19.14.35.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Aug 2019 14:35:58 -0700 (PDT)
+Date:   Mon, 19 Aug 2019 14:35:51 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
+        syzbot <syzbot+6a9ff159672dfbb41c95@syzkaller.appspotmail.com>,
+        ast@kernel.org, aviadye@mellanox.com, borisp@mellanox.com,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davejwatson@fb.com,
+        davem@davemloft.net, hdanton@sina.com, john.fastabend@gmail.com,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org
+Subject: Re: INFO: task hung in tls_sw_release_resources_tx
+Message-ID: <20190819143551.5b8935f5@cakuba.netronome.com>
+In-Reply-To: <20190819141255.010a323a@cakuba.netronome.com>
+References: <000000000000523ea3059025b11d@google.com>
+        <000000000000e75f1805902bb919@google.com>
+        <20190816190234.2aaab5b6@cakuba.netronome.com>
+        <20190817054743.GE8209@sol.localdomain>
+        <20190819141255.010a323a@cakuba.netronome.com>
+Organization: Netronome Systems, Ltd.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 19, 2019, at 10:45 AM, Andrii Nakryiko wrote:
-> On Fri, Aug 16, 2019 at 3:32 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> >
-> > It is sometimes necessary to perform ioctl's on the underlying perf fd.
-> > There is not currently a way to extract the fd given a bpf_link, so add a
-> > a pair of casting and getting helpers.
-> >
-> > The casting and getting helpers are nice because they let us define
-> > broad categories of links that makes it clear to users what they can
-> > expect to extract from what type of link.
-> >
-> > Acked-by: Song Liu <songliubraving@fb.com>
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > ---
-> 
-> This looks great, thanks a lot!
-> 
-> I think you might have a conflict with dadb81d0afe7 ("libbpf: make
-> libbpf.map source of truth for libbpf version") in libbpf.map, so you
-> might need to pull, rebase and re-post rebased version. But in any
-> case:
-> 
+On Mon, 19 Aug 2019 14:12:55 -0700, Jakub Kicinski wrote:
+> Looks like the dup didn't tickle syzbot the right way. Let me retry
+> sending this directly to the original report.
 
-The patchset is already rebased on top :). Thanks for the tip.
-
-Daniel
+Oh, no, my bad, there was just a third bug of the same nature.
+tls_sw_release_resources_tx got renamed at some point, hence 
+the duplicate report.
