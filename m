@@ -2,120 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB049493C
-	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2019 17:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C4194986
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2019 18:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727667AbfHSP43 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 19 Aug 2019 11:56:29 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40926 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727691AbfHSP43 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 19 Aug 2019 11:56:29 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7JFlXbN045442
-        for <bpf@vger.kernel.org>; Mon, 19 Aug 2019 11:56:27 -0400
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2ufx6mhnpu-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 19 Aug 2019 11:56:27 -0400
-Received: from localhost
-        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Mon, 19 Aug 2019 16:56:25 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 19 Aug 2019 16:56:23 +0100
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7JFu27p41484552
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Aug 2019 15:56:02 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7F67CAE058;
-        Mon, 19 Aug 2019 15:56:22 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3AB52AE055;
-        Mon, 19 Aug 2019 15:56:22 +0000 (GMT)
-Received: from dyn-9-152-98-226.boeblingen.de.ibm.com (unknown [9.152.98.226])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 19 Aug 2019 15:56:22 +0000 (GMT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [RESEND][PATCH v3 bpf-next] btf: expose BTF info through sysfs
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-In-Reply-To: <20190812183947.130889-1-andriin@fb.com>
-Date:   Mon, 19 Aug 2019 17:56:21 +0200
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        id S1727525AbfHSQL1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Aug 2019 12:11:27 -0400
+Received: from conuserg-10.nifty.com ([210.131.2.77]:35433 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726464AbfHSQL0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Aug 2019 12:11:26 -0400
+Received: from grover.flets-west.jp (softbank126125143222.bbtec.net [126.125.143.222]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id x7JGAjJ4031644;
+        Tue, 20 Aug 2019 01:10:45 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com x7JGAjJ4031644
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1566231046;
+        bh=UiQIcbV+7eg30mI6THf1kYVPy2WAYixEsvCpcmTCFhM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YSzJXcvNZk3opw9EGUfvvNCh+2OaVE5XfF9SnJ+0HjVGvf9Rugq2S0vocu2jys61+
+         RyMwumxKkBC5m/714VI5i1lwnFahOnRal/eQEFpDxOMMUqCF0PYIbsVUZFn9TRSyJL
+         isf4rTAyCnMb2HPcHzmN7Jhey0SxXyjy2y/TemisPS9mvMcHm573skHdBSfYkG8/C8
+         jF9It1AaGmi5mCH1crKm5Ih0T1Ch3+T6wL3Ie8mhb2d6KoHc68alfWFgtoRNVO75kj
+         eLOOTS/TAp2UILpMeaev5o/QxUml7FpENq7OiG7oK0sT2OxtYOb++sE8sCV3LJWzTU
+         Ff/5pYn3YmafQ==
+X-Nifty-SrcIP: [126.125.143.222]
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>
-Content-Transfer-Encoding: 8BIT
-References: <20190812183947.130889-1-andriin@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-X-Mailer: Apple Mail (2.3445.9.1)
-X-TM-AS-GCONF: 00
-x-cbid: 19081915-4275-0000-0000-0000035ACB54
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19081915-4276-0000-0000-0000386CE8BB
-Message-Id: <3F6DFBAE-ECA5-4E06-B9A0-4D6868FD0B13@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-19_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=615 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908190171
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] bpfilter/verifier: add include guard to tnum.h
+Date:   Tue, 20 Aug 2019 01:10:35 +0900
+Message-Id: <20190819161035.21826-1-yamada.masahiro@socionext.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Am 12.08.2019 um 20:39 schrieb Andrii Nakryiko <andriin@fb.com>:
-> 
-> @@ -92,23 +92,34 @@ vmlinux_link()
-> }
-> 
-> # generate .BTF typeinfo from DWARF debuginfo
-> +# ${1} - vmlinux image
-> +# ${2} - file to dump raw BTF data into
-> gen_btf()
-> {
-> -	local pahole_ver;
-> +	local pahole_ver
-> +	local bin_arch
-> 
-> 	if ! [ -x "$(command -v ${PAHOLE})" ]; then
-> 		info "BTF" "${1}: pahole (${PAHOLE}) is not available"
-> -		return 0
-> +		return 1
-> 	fi
-> 
-> 	pahole_ver=$(${PAHOLE} --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
-> 	if [ "${pahole_ver}" -lt "113" ]; then
-> 		info "BTF" "${1}: pahole version $(${PAHOLE} --version) is too old, need at least v1.13"
-> -		return 0
-> +		return 1
-> 	fi
-> 
-> -	info "BTF" ${1}
-> +	info "BTF" ${2}
-> +	vmlinux_link ${1}
-> 	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
-> +
-> +	# dump .BTF section into raw binary file to link with final vmlinux
-> +	bin_arch=$(${OBJDUMP} -f ${1} | grep architecture | \
-> +		cut -d, -f1 | cut -d' ' -f2)
-> +	${OBJCOPY} --dump-section .BTF=.btf.kernel.bin ${1} 2>/dev/null
-> +	${OBJCOPY} -I binary -O ${CONFIG_OUTPUT_FORMAT} -B ${bin_arch} \
-> +		--rename-section .data=.BTF .btf.kernel.bin ${2}
-> }
+Add a header include guard just in case.
 
-CONFIG_OUTPUT_FORMAT appears to be x86-only; enabling
-CONFIG_DEBUG_INFO_BTF on s390 caused a build failure. I now have a quick
-and dirty local patch, which adds CONFIG_OUTPUT_FORMAT to s390 and fixes
-the issue for me, but I suspect that CONFIG_DEBUG_INFO_BTF might be
-broken on other arches as well.
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
+
+ include/linux/tnum.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/include/linux/tnum.h b/include/linux/tnum.h
+index c7dc2b5902c0..c17af77f3fae 100644
+--- a/include/linux/tnum.h
++++ b/include/linux/tnum.h
+@@ -5,6 +5,10 @@
+  * propagate the unknown bits such that the tnum result represents all the
+  * possible results for possible values of the operands.
+  */
++
++#ifndef _LINUX_TNUM_H
++#define _LINUX_TNUM_H
++
+ #include <linux/types.h>
+ 
+ struct tnum {
+@@ -81,3 +85,5 @@ bool tnum_in(struct tnum a, struct tnum b);
+ int tnum_strn(char *str, size_t size, struct tnum a);
+ /* Format a tnum as tristate binary expansion */
+ int tnum_sbin(char *str, size_t size, struct tnum a);
++
++#endif /* _LINUX_TNUM_H */
+-- 
+2.17.1
+
