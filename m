@@ -2,141 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C72AA94ACB
-	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2019 18:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2538394BAE
+	for <lists+bpf@lfdr.de>; Mon, 19 Aug 2019 19:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727890AbfHSQss (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Aug 2019 12:48:48 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28388 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726553AbfHSQsr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 19 Aug 2019 12:48:47 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x7JGi3Uc019003;
-        Mon, 19 Aug 2019 09:48:25 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=eFrHHJ6VuAbpxCIXz/DOEzXYf0Kk6QYUoqPlZfNQSuo=;
- b=aH5Tuf+4wa4IyTnQZIZp+7SsXMpy7VgBuiZfQpDZAylyWQMEOJlv0H9amEKbPPnhP2BK
- WvyNkJ5NliRviO6+hXZyhmoIgOs+rBuROc3ykGtbhQRpk2jNmpGAjP0ASwh96q0TraDj
- zrrlNcSr5tlfQexDQ3jrK8RONbTVnveo9kU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 2ufvyj8suw-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 19 Aug 2019 09:48:24 -0700
-Received: from ash-exhub201.TheFacebook.com (2620:10d:c0a8:83::7) by
- ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 19 Aug 2019 09:48:23 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 19 Aug 2019 09:48:23 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=drHejCIOzAYgZb9HEytNL8hOSyfwhgYbZxtow5OJ3fgvXUW0AYAAMJlWW16HsW0IglY1JPoOgPEoyRgZGa09rwT9dFoU83hFn/OqYmaRENTSPSVZtmvqv7lTwnvZNRYkpvi6nfpPqyGvsvuLqx3MRVBv26vQCBkTW/kLVJKrq8/ay2z9lfaDOYSNxMtLk7dG+QybEoho+O+CIjWSPKZeI5FUZ45v8fT0nefwJS3RRMzknPvKnDaJOuUECaxzRlFmYG9ZGuS9IChB3aujVqVsgrEWkcv95YKp33Cgddarjf/JDgbN5uY0xsKWwwlj1CwWPwly6XKGmUBnxvDCMjuPJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eFrHHJ6VuAbpxCIXz/DOEzXYf0Kk6QYUoqPlZfNQSuo=;
- b=h9A7QKSHMHEoAa5FV6TDjPjq6OrqWIwFGvftyRahMnWqp3DYb6M3MbSsGNNRYpJbWv0Vthpymawv5c4ZM4bmCaTc0DGwrDYjTApk8ieuuTNZxjtPlJ5SBdSsvHWDSzQ09xJnRRNB9opBarR0ej7VxJlQtbdYUbYwcZgDsPj/5C+U2gaQc57bCyuwKYchPkFw1iYgnqDlzc3v54iLY83DDrl57YWYSW1ZJ5lpaLdHYCEx2PrJzy+y9MCJuQqmLvOgBli+DricNtM85XaEWg6j9ZPnXI/4YLar0HNQPzTEETFpQDj5u0rGTkM+MdSrXOWwc18nEj/bJ4fDIYL1lXt4Hg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eFrHHJ6VuAbpxCIXz/DOEzXYf0Kk6QYUoqPlZfNQSuo=;
- b=R57fF/h34dhhSjMMkqFLnwE8TJzAoH0HMEt4JG/oxfnTaW/U9jgfwnZBwVWDHKPgc64pgPHBUqTQqSTKUZ0liYHnL8s2702+m1VtS1WGyfJ3lRSUPihbtDe96C2iER2kq3Ff81OAzQZhWONwi1FUTqYl5fym8CQWgDDWcrt8PWg=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.59.17) by
- BYAPR15MB2936.namprd15.prod.outlook.com (20.178.237.29) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2157.23; Mon, 19 Aug 2019 16:48:22 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::d95b:271:fa7e:e978]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::d95b:271:fa7e:e978%5]) with mapi id 15.20.2178.018; Mon, 19 Aug 2019
- 16:48:22 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        id S1728092AbfHSR1Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Aug 2019 13:27:25 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:43689 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727459AbfHSR1Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Aug 2019 13:27:25 -0400
+Received: by mail-pf1-f194.google.com with SMTP id v12so1543649pfn.10;
+        Mon, 19 Aug 2019 10:27:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=pHtKRE/j0R9EYexP4Ct260+ZlqktQWeWlzyIShlpY20=;
+        b=n1xRQ15KKa4d64xjiDmaHUJCQEdA9TcQb3+CwxFsTQ8tUzI0VcAZUwRzet8Lm9hzIx
+         nXdy2+i2Y3jigmcmliIVnRvakBTk2TJXhY2t1ZXbGEjuHpr+NDPyM7tnCsmpLFikHeM4
+         CZS/ZtNAUxc1SxdIxzu7uvdrMqeEicfk06psNfKGXzCdF7FXG8kOh+NyZNZ/Mg1bfMve
+         XcqTmJqMI0m3p8T0Aw4Pxp+jdQdVngfmcwmkADV0GB4NR+QVK0vCvqDpKuffOqiF7mER
+         FvgAnLbnrh9BnZL9zBtZdLiEXTIBb4oDVWM5ecyXUV9me9cwgb/0IkhUGspJ+OifOYqK
+         MI9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=pHtKRE/j0R9EYexP4Ct260+ZlqktQWeWlzyIShlpY20=;
+        b=IHcY7o18EI/idoIOwMtSs8LUs8yJZ1ai9L8o9Yr4axtEW6S/wLZWSkTcuQmV581C8F
+         I9V+GzQy0iKNKSmHyu0FrkYkwifZ8OMfG21m3XdOsUlgyN3VVSjFIhl3CELmaj8G192g
+         w5DvMRpMm6RJOUaZ6uQIp7eHYXB5m7quUcjbcRsAlowxnIweRt8Rk/IFliCQsLPWwr86
+         px6HqiYW3DSouLWU4UwW2HnQClDEOjWMTz53opg+4RMMEyAAF8BlJGrjH5Vhv1+WeJyq
+         9jembjPSgLCuzQ6SMBmOT/tKzjHsTCpffDSb9Hi4KGxTSU3FSpVL1nfM9J5akmZDrpZz
+         91qQ==
+X-Gm-Message-State: APjAAAV3A6stGY6zJPqRdtNoODhI46t3uWlB908DsP4g+MvcpqKQizV+
+        4nuusxl1GbRCEgockA81K58=
+X-Google-Smtp-Source: APXvYqwDd/WmJR1G4wWzYzG/o6pc9FR9zZxEBe5GBqLktaP+H320JEEpvfBSP2RiRv8sIvUBsR8dUw==
+X-Received: by 2002:a63:4562:: with SMTP id u34mr20675357pgk.288.1566235644201;
+        Mon, 19 Aug 2019 10:27:24 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::e55e])
+        by smtp.gmail.com with ESMTPSA id k6sm16233157pfi.12.2019.08.19.10.27.22
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 19 Aug 2019 10:27:23 -0700 (PDT)
+Date:   Mon, 19 Aug 2019 10:27:20 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jordan Glover <Golden_Miller83@protonmail.ch>,
+        Andy Lutomirski <luto@kernel.org>,
+        Daniel Colascione <dancol@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        Kees Cook <keescook@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Andrey Ignatov <rdna@fb.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH bpf v2] selftests/bpf: fix endianness issues in
- test_sysctl
-Thread-Topic: [PATCH bpf v2] selftests/bpf: fix endianness issues in
- test_sysctl
-Thread-Index: AQHVVn0okd2PMHpik0uKOq+MKCEMk6cCrtSA
-Date:   Mon, 19 Aug 2019 16:48:22 +0000
-Message-ID: <1f27f05f-cb0d-fa38-9486-7c9551698a10@fb.com>
-References: <20190819105908.64863-1-iii@linux.ibm.com>
-In-Reply-To: <20190819105908.64863-1-iii@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR21CA0071.namprd21.prod.outlook.com
- (2603:10b6:300:db::33) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:10e::17)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::1:4efb]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b378be81-7e66-4edc-bf4d-08d724c50be5
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB2936;
-x-ms-traffictypediagnostic: BYAPR15MB2936:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB2936B49AFFE5F29C450D7D19D3A80@BYAPR15MB2936.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:529;
-x-forefront-prvs: 0134AD334F
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(39860400002)(396003)(366004)(376002)(346002)(199004)(189003)(6246003)(446003)(186003)(7736002)(99286004)(478600001)(4326008)(76176011)(8676002)(53936002)(71190400001)(71200400001)(486006)(6512007)(476003)(110136005)(2616005)(2906002)(256004)(14444005)(11346002)(46003)(6116002)(386003)(6506007)(53546011)(305945005)(102836004)(316002)(6436002)(6486002)(25786009)(54906003)(229853002)(14454004)(66446008)(66556008)(86362001)(66476007)(52116002)(31696002)(66946007)(64756008)(81156014)(31686004)(8936002)(36756003)(5660300002)(81166006);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2936;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: eYoZoWWesGzwf0XnKIO1kZirTJpdmyuRH0k6ieNm30tYjHi3zFmQmYltAYGous3t6oQCcWYH64INjGXcgOpbkY+HnsDpo1orL42uW0U5o+jQXDGpwEfyWZq2OsgeYBOk0D8VQOebod/ieI/uii1hFXbLeEdBisPtq7TEZrxgYT0wj5oMNC8R2kFGDCKJpJzPhpNsMksSEkKrrZO1wOoGzUJrFMbPO/Gz05eFVAb6pj8Ujd0ER7Mtdn7OzkvH2lxaUoqPENQabgpM2DxbG9mdCEZ02ZSQLpahy5YUTGpGe51VBcdK10Er3E6ysqCLs+0tB0qACTvoyv6FNSqlj6gFF5vKlUBb4Ib7uY/JUFvjmFI9wPUupBp66YtgzRhcrlLLg+3r60nM+ZLoG7oX5QcwInUMTZOlF7f8Htt1eF5MYO0=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0DE3F0F7BAA36443BC9CFA37FDF56DEF@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Kernel Team <Kernel-team@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Jann Horn <jannh@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
+Message-ID: <20190819172718.jwnvvotssxwhc7m6@ast-mbp.dhcp.thefacebook.com>
+References: <20190815172856.yoqvgu2yfrgbkowu@ast-mbp.dhcp.thefacebook.com>
+ <CALCETrUv+g+cb79FJ1S4XuV0K=kowFkPXpzoC99svoOfs4-Kvg@mail.gmail.com>
+ <20190815230808.2o2qe7a72cwdce2m@ast-mbp.dhcp.thefacebook.com>
+ <fkD3fs46a1YnR4lh0tEG-g3tDnDcyZuzji7bAUR9wujPLLl75ZhI8Yk-H1jZpSugO7qChVeCwxAMmxLdeoF2QFS3ZzuYlh7zmeZOmhDJxww=@protonmail.ch>
+ <alpine.DEB.2.21.1908161158490.1873@nanos.tec.linutronix.de>
+ <lGGTLXBsX3V6p1Z4TkdzAjxbNywaPS2HwX5WLleAkmXNcnKjTPpWnP6DnceSsy8NKt5NBRBbuoAb0woKTcDhJXVoFb7Ygk3Skfj8j6rVfMQ=@protonmail.ch>
+ <20190816195233.vzqqbqrivnooohq6@ast-mbp.dhcp.thefacebook.com>
+ <alpine.DEB.2.21.1908162211270.1923@nanos.tec.linutronix.de>
+ <20190817150245.xxzxqjpvgqsxmloe@ast-mbp>
+ <alpine.DEB.2.21.1908191103130.1923@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: b378be81-7e66-4edc-bf4d-08d724c50be5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2019 16:48:22.6186
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: //KRMKMjli7hzUt0BcvIyNJblrjjmgZpx8ttt/IZ8//50mTIbHB/xUPU+iKOE07J
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2936
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-19_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=462 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908190177
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.1908191103130.1923@nanos.tec.linutronix.de>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDgvMTkvMTkgMzo1OSBBTSwgSWx5YSBMZW9zaGtldmljaCB3cm90ZToNCj4gQSBsb3Qg
-b2YgdGVzdF9zeXNjdGwgc3ViLXRlc3RzIGZhaWwgZHVlIHRvIGhhbmRsaW5nIHN0cmluZ3MgYXMg
-YSBidW5jaA0KPiBvZiBpbW1lZGlhdGUgdmFsdWVzIGluIGEgbGl0dGxlLWVuZGlhbi1zcGVjaWZp
-YyBtYW5uZXIuDQo+IA0KPiBGaXggYnkgd3JhcHBpbmcgYWxsIGltbWVkaWF0ZXMgaW4gYnBmX250
-b2hsIGFuZCB0aGUgbmV3IGJwZl9iZTY0X3RvX2NwdS4NCj4gDQo+IEFsc28sIHNvbWV0aW1lcyB0
-ZXN0cyBmYWlsIGJlY2F1c2Ugc3lzY3RsKCkgdW5leHBlY3RlZGx5IHN1Y2NlZWRzIHdpdGgNCj4g
-YW4gaW5hcHByb3ByaWF0ZSAiVW5leHBlY3RlZCBmYWlsdXJlIiBtZXNzYWdlIGFuZCBhIHJhbmRv
-bSBlcnJuby4gWmVybw0KPiBvdXQgZXJybm8gYmVmb3JlIGNhbGxpbmcgc3lzY3RsKCkgYW5kIHJl
-cGxhY2UgdGhlIG1lc3NhZ2Ugd2l0aA0KPiAiVW5leHBlY3RlZCBzdWNjZXNzIi4NCj4gDQo+IEZp
-eGVzOiAxZjVmYTlhYjZlMmUgKCJzZWxmdGVzdHMvYnBmOiBUZXN0IEJQRl9DR1JPVVBfU1lTQ1RM
-IikNCj4gRml4ZXM6IDlhMTAyN2U1MjUzNSAoInNlbGZ0ZXN0cy9icGY6IFRlc3QgZmlsZV9wb3Mg
-ZmllbGQgaW4gYnBmX3N5c2N0bCBjdHgiKQ0KPiBGaXhlczogNjA0MWM2N2YyOGQ4ICgic2VsZnRl
-c3RzL2JwZjogVGVzdCBicGZfc3lzY3RsX2dldF9uYW1lIGhlbHBlciIpDQo+IEZpeGVzOiAxMWZm
-MzRmNzRlMzIgKCJzZWxmdGVzdHMvYnBmOiBUZXN0IHN5c2N0bF9nZXRfY3VycmVudF92YWx1ZSBo
-ZWxwZXIiKQ0KPiBGaXhlczogNzg2MDQ3ZGQwOGRlICgic2VsZnRlc3RzL2JwZjogVGVzdCBicGZf
-c3lzY3RsX3tnZXQsc2V0fV9uZXdfdmFsdWUgaGVscGVycyIpDQo+IEZpeGVzOiA4NTQ5ZGRjODMy
-ZDYgKCJzZWxmdGVzdHMvYnBmOiBUZXN0IGJwZl9zdHJ0b2wgYW5kIGJwZl9zdHJ0b3VsIGhlbHBl
-cnMiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBJbHlhIExlb3Noa2V2aWNoIDxpaWlAbGludXguaWJtLmNv
-bT4NCg0KQWNrZWQtYnk6IFlvbmdob25nIFNvbmcgPHloc0BmYi5jb20+DQo=
+On Mon, Aug 19, 2019 at 11:15:11AM +0200, Thomas Gleixner wrote:
+> Alexei,
+> 
+> On Sat, 17 Aug 2019, Alexei Starovoitov wrote:
+> > On Fri, Aug 16, 2019 at 10:28:29PM +0200, Thomas Gleixner wrote:
+> > > On Fri, 16 Aug 2019, Alexei Starovoitov wrote:
+> > > While real usecases are helpful to understand a design decision, the design
+> > > needs to be usecase independent.
+> > > 
+> > > The kernel provides mechanisms, not policies. My impression of this whole
+> > > discussion is that it is policy driven. That's the wrong approach.
+> > 
+> > not sure what you mean by 'policy driven'.
+> > Proposed CAP_BPF is a policy?
+> 
+> I was referring to the discussion as a whole.
+>  
+> > Can kernel.unprivileged_bpf_disabled=1 be used now?
+> > Yes, but it will weaken overall system security because things that
+> > use unpriv to load bpf and CAP_NET_ADMIN to attach bpf would need
+> > to move to stronger CAP_SYS_ADMIN.
+> > 
+> > With CAP_BPF both load and attach would happen under CAP_BPF
+> > instead of CAP_SYS_ADMIN.
+> 
+> I'm not arguing against that.
+> 
+> > > So let's look at the mechanisms which we have at hand:
+> > > 
+> > >  1) Capabilities
+> > >  
+> > >  2) SUID and dropping priviledges
+> > > 
+> > >  3) Seccomp and LSM
+> > > 
+> > > Now the real interesting questions are:
+> > > 
+> > >  A) What kind of restrictions does BPF allow? Is it a binary on/off or is
+> > >     there a more finegrained control of BPF functionality?
+> > > 
+> > >     TBH, I can't tell.
+> > > 
+> > >  B) Depending on the answer to #A what is the control possibility for
+> > >     #1/#2/#3 ?
+> > 
+> > Can any of the mechanisms 1/2/3 address the concern in mds.rst?
+> 
+> Well, that depends. As with any other security policy which is implemented
+> via these mechanisms, the policy can be strict enough to prevent it by not
+> allowing certain operations. The more fine-grained the control is, it
+> allows the administrator who implements the policy to remove the
+> 'dangerous' parts from an untrusted user.
+> 
+> So really question #A is important for this. Is BPF just providing a binary
+> ON/OFF knob or does it allow to disable/enable certain aspects of BPF
+> functionality in a more fine grained way? If the latter, then it might be
+> possible to control functionality which might be abused for exploits of
+> some sorts (including MDS) in a way which allows other parts of BBF to be
+> exposed to less priviledged contexts.
+
+I see. So the kernel.unprivileged_bpf_disabled knob is binary and I think it's
+the right mechanism to expose to users.
+Having N knobs for every map/prog type won't decrease attack surface.
+In the other email Andy's quoting seccomp man page...
+Today seccomp cannot really look into bpf_attr syscall args, but even
+if it could it won't secure the system.
+Examples:
+1.
+spectre v2 is using bpf in-kernel interpreter in speculative way.
+The mere presence of interpreter as part of kernel .text makes the exploit
+easier to do. That was the reason to do CONFIG_BPF_JIT_ALWAYS_ON.
+For this case even kernel.unprivileged_bpf_disabled=1 was hopeless.
+
+2.
+var4 doing store hazard. It doesn't matter which program type is used.
+load/store instructions are the same across program types.
+
+3.
+prog_array was used as part of var1. I guess it was simply more
+convenient for Jann to do it this way :) All other map types
+have the same out-of-bounds speculation issue.
+
+In general side channels are cpu bugs that are exploited via sequences
+of cpu instructions. In that sense bpf infra provides these instructions.
+So all program types and all maps have the same level of 'side channel risk'.
+
+> > I believe Andy wants to expand the attack surface when
+> > kernel.unprivileged_bpf_disabled=0
+> > Before that happens I'd like the community to work on addressing the text above.
+> 
+> Well, that text above can be removed when the BPF wizards are entirely sure
+> that BPF cannot be abused to exploit stuff. 
+
+Myself and Daniel looked at it in detail. I think we understood
+MDS mechanism well enough. Right now we're fairly confident that
+combination of existing mechanisms we did for var4 and
+verifier speculative analysis protect us from MDS.
+The thing is that every new cpu bug is looked at through the bpf lenses.
+Can it be exploited through bpf? Complexity of side channels
+is growing. Can the most recent swapgs be exploited ?
+What if we kprobe+bpf somewhere ?
+I don't think there is an issue, but we will never be 'entirely sure'.
+Even if myself and Daniel are sure the concern will stay.
+Unprivileged bpf as a whole is the concern due to side channels.
+The number of them are not yet disclosed. Who is going to analyze them?
+imo the only answer to that is kernel.unprivileged_bpf_disabled=1
+which together with CONFIG_BPF_JIT_ALWAYS_ON is secure enough.
+The other option is to sprinkle every bpf load/store with lfence
+which will make execution so slow that it will be unusable.
+Which is effectively the same as unprivileged_bpf_disabled=1.
+
+There are other things we can do. Like kasan-style shadow memory
+for bpf execution. Auto re-JITing the code after it's running.
+We can do lfences everywhere for some time then re-JIT
+when kasan-ed shadow memory shows only clean memory accesses.
+The beauty of BPF that it is analyze-able and JIT-able instruction set.
+The verifier speculative analysis is an example that the kernel
+can analyze the speculative execution path that cpu will
+take before the code starts executing.
+Unprivileged bpf can made absolutely secure. It can be
+made more secure than the rest of the kernel.
+But today we should just go with unprivileged_bpf_disabled=1
+and CAP_BPF.
+
