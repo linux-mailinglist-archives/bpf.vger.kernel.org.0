@@ -2,126 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A9395C8A
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 12:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E0895D54
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 13:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729485AbfHTKsO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Aug 2019 06:48:14 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:32839 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729341AbfHTKsO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Aug 2019 06:48:14 -0400
-Received: by mail-wr1-f68.google.com with SMTP id u16so11884150wrr.0
-        for <bpf@vger.kernel.org>; Tue, 20 Aug 2019 03:48:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=8YhdYjqe+CTt77YsPRFesv990RDPmX6UdhabR8/j8l8=;
-        b=dgG7nSaegDa/f34PzKpV/NDTRDbAf4Tn8ESgBGCCvyBUctxq98sGkgyEW3giHSJqxI
-         yUlLAH58TbPebsNICnhxbv2FhjuVdm71H1yyw5DTYaHXUr2mcxTajrDMX8YQgXP6K59l
-         KMlqgNId7X/0kUtpLyRyUbCvjdArWdQ99nv9N56pBQaxb3fB9btAbzRfZfUnDKcyc653
-         FieTVsewJyyWcgh+hruCD2sviZgKsiiLWf5EamLzSfUSXhw0pHGE0djlhbWl5DfBK/qL
-         x+kZDh5BOO4jY2T8+YBs/0azHTKHddDMvZO7kBrbJSv/Sg/eUgpzfCZxDVIdodTyN4C4
-         JChA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=8YhdYjqe+CTt77YsPRFesv990RDPmX6UdhabR8/j8l8=;
-        b=m0xoMWUO5i/eLTXBU5IGDqcooJtkF/o5/eUOi1RSrxJLemRrqQMP+U1/PyR4gM/1wW
-         z/oxyhg6Vy5EmohMlf9v/jChbw02melPyyo0b4NoyT2fudD7llCfvWX5f5ddeqRLCF+a
-         gHOzXC8JaIKdPEltVk741y6Mtt/SMZ5gdXTHMuYy4S7wcRKpFWyfr6RYgHCZWzjzBk0F
-         evLGoDPmU+c2BbRmeLXLbjxNlEMlC9bei8IlLqQImmv4rczFwn25ewObTKPz18XFDRT5
-         l/CVGeWxTw6NM+axmNO9mNoa9PFwAAkfQ8Nc7+9poyLi0ap8mEjTySb7rCZ8NfPAbUf7
-         UbYg==
-X-Gm-Message-State: APjAAAXwo13HmquhV9BMpc4i/QBOI2g6ymw5PF86DxxkRx8iKZFCMMvo
-        rj2J4R2u73v8Q+5ISGiGVneO6g==
-X-Google-Smtp-Source: APXvYqwc3MstBJr5Jkxt0X3//Ms1r9i69Vio0VuTKiCfoKN0uTDQcpIcE5vYcPNH7zQIlsf1GoelnQ==
-X-Received: by 2002:a5d:5450:: with SMTP id w16mr20045745wrv.174.1566298092001;
-        Tue, 20 Aug 2019 03:48:12 -0700 (PDT)
-Received: from [192.168.0.101] (88-147-37-138.dyn.eolo.it. [88.147.37.138])
-        by smtp.gmail.com with ESMTPSA id c11sm14244247wrs.86.2019.08.20.03.48.10
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 20 Aug 2019 03:48:11 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
-Subject: Re: [PATCHSET block/for-next] IO cost model based work-conserving
- porportional controller
-From:   Paolo Valente <paolo.valente@linaro.org>
-In-Reply-To: <20190614175642.GA657710@devbig004.ftw2.facebook.com>
-Date:   Tue, 20 Aug 2019 12:48:09 +0200
-Cc:     Jens Axboe <axboe@kernel.dk>, newella@fb.com, clm@fb.com,
-        Josef Bacik <josef@toxicpanda.com>, dennisz@fb.com,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>, kernel-team@fb.com,
-        cgroups@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        bpf@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <5A63F937-F7B5-4D09-9DB4-C73D6F571D50@linaro.org>
-References: <20190614015620.1587672-1-tj@kernel.org>
- <20190614175642.GA657710@devbig004.ftw2.facebook.com>
-To:     Tejun Heo <tj@kernel.org>
-X-Mailer: Apple Mail (2.3445.104.8)
+        id S1729426AbfHTL3t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Aug 2019 07:29:49 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22958 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729421AbfHTL3t (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 20 Aug 2019 07:29:49 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7KBRFmO002884
+        for <bpf@vger.kernel.org>; Tue, 20 Aug 2019 07:29:48 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2ugeg84hye-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 20 Aug 2019 07:29:47 -0400
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Tue, 20 Aug 2019 12:29:45 +0100
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 20 Aug 2019 12:29:42 +0100
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7KBTfxO36896774
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Aug 2019 11:29:41 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3545BA4051;
+        Tue, 20 Aug 2019 11:29:41 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E7D23A405B;
+        Tue, 20 Aug 2019 11:29:40 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.97.160])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 20 Aug 2019 11:29:40 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next] btf: do not use CONFIG_OUTPUT_FORMAT
+Date:   Tue, 20 Aug 2019 13:29:39 +0200
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19082011-0020-0000-0000-00000361AB48
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19082011-0021-0000-0000-000021B6DBD7
+Message-Id: <20190820112939.84249-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-20_04:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908200121
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Building s390 kernel with CONFIG_DEBUG_INFO_BTF fails, because
+CONFIG_OUTPUT_FORMAT is not defined. As a matter of fact, this variable
+appears to be x86-only, so other arches might be affected as well.
 
+Fix by obtaining this value from objdump output, just like it's already
+done for bin_arch. The exact objdump invocation is "inspired" by
+arch/powerpc/boot/wrapper.
 
-> Il giorno 14 giu 2019, alle ore 19:56, Tejun Heo <tj@kernel.org> ha =
-scritto:
->=20
-> On Thu, Jun 13, 2019 at 06:56:10PM -0700, Tejun Heo wrote:
-> ...
->> The patchset is also available in the following git branch.
->>=20
->> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git =
-review-iow
->=20
-> Updated patchset available in the following branch.  Just build fixes
-> and cosmetic changes for now.
->=20
->  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git =
-review-iow-v2
->=20
+Also, use LANG=C for the existing bin_arch objdump invocation to avoid
+potential build issues on systems with non-English locale.
 
-Hi Tejun,
-I'm running the kernel in your tree above, in an Ubuntu 18.04.
+Fixes: 341dfcf8d78e ("btf: expose BTF info through sysfs")
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ scripts/link-vmlinux.sh | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-After unmounting the v1 blkio controller that gets mounted at startup
-I have created v2 root as follows
-
-$ mount -t cgroup2 none /cgroup
-
-Then I have:
-$ ls /cgroup
-cgroup.controllers  cgroup.max.descendants  cgroup.stat             =
-cgroup.threads  io.weight.cost_model  system.slice
-cgroup.max.depth    cgroup.procs            cgroup.subtree_control  =
-init.scope      io.weight.qos         user.slice
-
-But the following command gives no output:
-$ cat /cgroup/io.weight.qos=20
-
-And, above all,
-$ echo 1 > /cgroup/io.weight.qos=20
-bash: echo: write error: Invalid argument
-
-No complain in the kernel log.
-
-What am I doing wrong? How can I make the controller work?
-
-Thanks,
-Paolo
-
-> Thanks.
->=20
-> --=20
-> tejun
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index c31193340108..0d8f41db8cd6 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -115,10 +115,12 @@ gen_btf()
+ 	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
+ 
+ 	# dump .BTF section into raw binary file to link with final vmlinux
+-	bin_arch=$(${OBJDUMP} -f ${1} | grep architecture | \
++	bin_arch=$(LANG=C ${OBJDUMP} -f ${1} | grep architecture | \
+ 		cut -d, -f1 | cut -d' ' -f2)
++	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
++		awk '{print $4}')
+ 	${OBJCOPY} --dump-section .BTF=.btf.vmlinux.bin ${1} 2>/dev/null
+-	${OBJCOPY} -I binary -O ${CONFIG_OUTPUT_FORMAT} -B ${bin_arch} \
++	${OBJCOPY} -I binary -O ${bin_format} -B ${bin_arch} \
+ 		--rename-section .data=.BTF .btf.vmlinux.bin ${2}
+ }
+ 
+-- 
+2.21.0
 
