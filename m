@@ -2,130 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E686E95BF3
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 12:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A9395C8A
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 12:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728426AbfHTKFA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Aug 2019 06:05:00 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:36341 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728414AbfHTKFA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Aug 2019 06:05:00 -0400
-Received: by mail-pl1-f194.google.com with SMTP id f19so2096289plr.3;
-        Tue, 20 Aug 2019 03:04:59 -0700 (PDT)
+        id S1729485AbfHTKsO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Aug 2019 06:48:14 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:32839 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729341AbfHTKsO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Aug 2019 06:48:14 -0400
+Received: by mail-wr1-f68.google.com with SMTP id u16so11884150wrr.0
+        for <bpf@vger.kernel.org>; Tue, 20 Aug 2019 03:48:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Rj7SDym9UNxyg0oSA1OfNeIBnB06iO8MD1npAu2+BTI=;
-        b=JtxtXgiVKCdj2zs5yiCEZ1rb2h6TGGbtd1BbgNGzkqTztKQhEWYmE6Jqk/73FBDcUx
-         4sBlBKTihdiMJR/PLabdINYC5RoZxzXHYlOVTJDqqEa/6kGdZItMPfzYNx8F3Ny3urDy
-         BX5/bCANsTwNA9aKKSJeCl/KmsU9F934H0EWSUxtWdk6FW7u4CQJTn9lcIFNIeJoCX8D
-         N2Qs2+eKE9a6gQAVCJOtLeHOVYDgJt6Pg1I2W0GaO6qQQVZUiZyyB4K6YoGXBMhuF15H
-         hUE7lO/IHljvng6B9MXGWmB0pcdbJLRSjN/+UdetUIcGnNY9lpDN/F5K6WlzOJkgFzB/
-         x5ig==
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=8YhdYjqe+CTt77YsPRFesv990RDPmX6UdhabR8/j8l8=;
+        b=dgG7nSaegDa/f34PzKpV/NDTRDbAf4Tn8ESgBGCCvyBUctxq98sGkgyEW3giHSJqxI
+         yUlLAH58TbPebsNICnhxbv2FhjuVdm71H1yyw5DTYaHXUr2mcxTajrDMX8YQgXP6K59l
+         KMlqgNId7X/0kUtpLyRyUbCvjdArWdQ99nv9N56pBQaxb3fB9btAbzRfZfUnDKcyc653
+         FieTVsewJyyWcgh+hruCD2sviZgKsiiLWf5EamLzSfUSXhw0pHGE0djlhbWl5DfBK/qL
+         x+kZDh5BOO4jY2T8+YBs/0azHTKHddDMvZO7kBrbJSv/Sg/eUgpzfCZxDVIdodTyN4C4
+         JChA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Rj7SDym9UNxyg0oSA1OfNeIBnB06iO8MD1npAu2+BTI=;
-        b=szgkW24OvZ8BqmEVW2Cxmx6SCeqe3wf+AskofwMtNRlkP3H17OzDcIFm+sK5+iTIuY
-         gslVB3uuK+NeWiTPIMZY3Yc5ZLnFtmgxBJ9lmJOlWEFVWD2irGJ9z23Spq6yW0lAyQOs
-         tt2wY+kQQYWcEcnPCPmowR8DKS/EIgafc0knkSLmtcIBzD9qz7rzY0KjuQ9wjVOrTBmL
-         yMlraxX+uUkRHRfN24JiwGeeclbSVfDkPGOHcHlq1HkOGd8B6spqRbBRfkAuzFNw60ZX
-         OfRH/oq6uT92FErYFV63gv/sYbvLnc8G2W3PGi9dmoJ3+lEZZXtR6IlXI96yhmp2qyYv
-         EA0Q==
-X-Gm-Message-State: APjAAAWrGgxGCMlCJs7Ut97tufq5KBIvuJg+XzXl1erH0figDAzTfF9s
-        nEF14iwo13+PQmCMVUEXaJM=
-X-Google-Smtp-Source: APXvYqy+/CbGkRnUzDNk57X5X3BHv5GNk/qLIHNfAWzPlLXSaatbk93fURQJsdlf3TYSO/YYPt58kA==
-X-Received: by 2002:a17:902:7d82:: with SMTP id a2mr28078362plm.57.1566295499426;
-        Tue, 20 Aug 2019 03:04:59 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com ([192.55.54.42])
-        by smtp.gmail.com with ESMTPSA id c2sm9078201pjs.13.2019.08.20.03.04.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Aug 2019 03:04:58 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     syzbot+c82697e3043781e08802@syzkaller.appspotmail.com,
-        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org
-Cc:     bjorn.topel@intel.com, bpf@vger.kernel.org, davem@davemloft.net,
-        hawk@kernel.org, jakub.kicinski@netronome.com,
-        john.fastabend@gmail.com, jonathan.lemon@gmail.com, kafai@fb.com,
-        linux-kernel@vger.kernel.org, magnus.karlsson@intel.com,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        xdp-newbies@vger.kernel.org, yhs@fb.com, hdanton@sina.com
-Subject: [PATCH bpf-next] xsk: proper socket state check in xsk_poll
-Date:   Tue, 20 Aug 2019 12:04:05 +0200
-Message-Id: <20190820100405.25564-1-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <0000000000009167320590823a8c@google.com>
-References: <0000000000009167320590823a8c@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=8YhdYjqe+CTt77YsPRFesv990RDPmX6UdhabR8/j8l8=;
+        b=m0xoMWUO5i/eLTXBU5IGDqcooJtkF/o5/eUOi1RSrxJLemRrqQMP+U1/PyR4gM/1wW
+         z/oxyhg6Vy5EmohMlf9v/jChbw02melPyyo0b4NoyT2fudD7llCfvWX5f5ddeqRLCF+a
+         gHOzXC8JaIKdPEltVk741y6Mtt/SMZ5gdXTHMuYy4S7wcRKpFWyfr6RYgHCZWzjzBk0F
+         evLGoDPmU+c2BbRmeLXLbjxNlEMlC9bei8IlLqQImmv4rczFwn25ewObTKPz18XFDRT5
+         l/CVGeWxTw6NM+axmNO9mNoa9PFwAAkfQ8Nc7+9poyLi0ap8mEjTySb7rCZ8NfPAbUf7
+         UbYg==
+X-Gm-Message-State: APjAAAXwo13HmquhV9BMpc4i/QBOI2g6ymw5PF86DxxkRx8iKZFCMMvo
+        rj2J4R2u73v8Q+5ISGiGVneO6g==
+X-Google-Smtp-Source: APXvYqwc3MstBJr5Jkxt0X3//Ms1r9i69Vio0VuTKiCfoKN0uTDQcpIcE5vYcPNH7zQIlsf1GoelnQ==
+X-Received: by 2002:a5d:5450:: with SMTP id w16mr20045745wrv.174.1566298092001;
+        Tue, 20 Aug 2019 03:48:12 -0700 (PDT)
+Received: from [192.168.0.101] (88-147-37-138.dyn.eolo.it. [88.147.37.138])
+        by smtp.gmail.com with ESMTPSA id c11sm14244247wrs.86.2019.08.20.03.48.10
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 20 Aug 2019 03:48:11 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
+Subject: Re: [PATCHSET block/for-next] IO cost model based work-conserving
+ porportional controller
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <20190614175642.GA657710@devbig004.ftw2.facebook.com>
+Date:   Tue, 20 Aug 2019 12:48:09 +0200
+Cc:     Jens Axboe <axboe@kernel.dk>, newella@fb.com, clm@fb.com,
+        Josef Bacik <josef@toxicpanda.com>, dennisz@fb.com,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>, kernel-team@fb.com,
+        cgroups@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        bpf@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <5A63F937-F7B5-4D09-9DB4-C73D6F571D50@linaro.org>
+References: <20190614015620.1587672-1-tj@kernel.org>
+ <20190614175642.GA657710@devbig004.ftw2.facebook.com>
+To:     Tejun Heo <tj@kernel.org>
+X-Mailer: Apple Mail (2.3445.104.8)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
 
-The poll() implementation for AF_XDP sockets did not perform the
-proper state checks, prior accessing the socket umem. This patch fixes
-that by performing a xsk_is_bound() check.
 
-Suggested-by: Hillf Danton <hdanton@sina.com>
-Reported-by: syzbot+c82697e3043781e08802@syzkaller.appspotmail.com
-Fixes: 77cd0d7b3f25 ("xsk: add support for need_wakeup flag in AF_XDP rings")
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- net/xdp/xsk.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+> Il giorno 14 giu 2019, alle ore 19:56, Tejun Heo <tj@kernel.org> ha =
+scritto:
+>=20
+> On Thu, Jun 13, 2019 at 06:56:10PM -0700, Tejun Heo wrote:
+> ...
+>> The patchset is also available in the following git branch.
+>>=20
+>> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git =
+review-iow
+>=20
+> Updated patchset available in the following branch.  Just build fixes
+> and cosmetic changes for now.
+>=20
+>  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git =
+review-iow-v2
+>=20
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index ee4428a892fa..08bed5e92af4 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -356,13 +356,20 @@ static int xsk_generic_xmit(struct sock *sk, struct msghdr *m,
- 	return err;
- }
- 
-+static bool xsk_is_bound(struct xdp_sock *xs)
-+{
-+	struct net_device *dev = READ_ONCE(xs->dev);
-+
-+	return dev && xs->state == XSK_BOUND;
-+}
-+
- static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
- {
- 	bool need_wait = !(m->msg_flags & MSG_DONTWAIT);
- 	struct sock *sk = sock->sk;
- 	struct xdp_sock *xs = xdp_sk(sk);
- 
--	if (unlikely(!xs->dev))
-+	if (unlikely(!xsk_is_bound(xs)))
- 		return -ENXIO;
- 	if (unlikely(!(xs->dev->flags & IFF_UP)))
- 		return -ENETDOWN;
-@@ -383,6 +390,9 @@ static unsigned int xsk_poll(struct file *file, struct socket *sock,
- 	struct net_device *dev = xs->dev;
- 	struct xdp_umem *umem = xs->umem;
- 
-+	if (unlikely(!xsk_is_bound(xs)))
-+		return mask;
-+
- 	if (umem->need_wakeup)
- 		dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id,
- 						umem->need_wakeup);
-@@ -417,7 +427,7 @@ static void xsk_unbind_dev(struct xdp_sock *xs)
- {
- 	struct net_device *dev = xs->dev;
- 
--	if (!dev || xs->state != XSK_BOUND)
-+	if (!xsk_is_bound(xs))
- 		return;
- 
- 	xs->state = XSK_UNBOUND;
--- 
-2.20.1
+Hi Tejun,
+I'm running the kernel in your tree above, in an Ubuntu 18.04.
+
+After unmounting the v1 blkio controller that gets mounted at startup
+I have created v2 root as follows
+
+$ mount -t cgroup2 none /cgroup
+
+Then I have:
+$ ls /cgroup
+cgroup.controllers  cgroup.max.descendants  cgroup.stat             =
+cgroup.threads  io.weight.cost_model  system.slice
+cgroup.max.depth    cgroup.procs            cgroup.subtree_control  =
+init.scope      io.weight.qos         user.slice
+
+But the following command gives no output:
+$ cat /cgroup/io.weight.qos=20
+
+And, above all,
+$ echo 1 > /cgroup/io.weight.qos=20
+bash: echo: write error: Invalid argument
+
+No complain in the kernel log.
+
+What am I doing wrong? How can I make the controller work?
+
+Thanks,
+Paolo
+
+> Thanks.
+>=20
+> --=20
+> tejun
 
