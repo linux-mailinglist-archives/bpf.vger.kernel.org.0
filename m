@@ -2,110 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF9495B67
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 11:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B668E95BA9
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 11:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729396AbfHTJqH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Aug 2019 05:46:07 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:49392 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728426AbfHTJqH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Aug 2019 05:46:07 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7K9iMuS132835;
-        Tue, 20 Aug 2019 09:45:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2019-08-05;
- bh=rJGY4A3Rt+Hl36n8/Gp1bBe5o1K9b1rfgPgCTlnsZLU=;
- b=IoRCZn/HHyA7FhxFvVj6hDLsTpXJkGk/NUTzOYs36RGnuC1qaGpe24SKjSOvSNnKC0sO
- 2JnlmK1q5nnst+K2/9krBshx1SfR0eCVSLjOj+fWYF0bWO9wgUpulpYTKvJdsvpAqHX+
- 6kSFK7W56flfSBiEpCiMSER5AAapl3w1C6SDi9SMBDERA+jOO1/1KlZcC1+gmN8eblnD
- uc1MCGJZzgjVhmvcGR8lNh3pYLVhlsk2Pdl/h4yTnCWdMkaaZQUrk2F5YJ8uvOt2XRml
- GyBAglJ3JTWXuh+6H+/qGRcEU6BuSRXThH+BpM2Fh8GuwSCZt6JXAhgHKWFky9GoAMPl xg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 2ue90tdapw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Aug 2019 09:45:38 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7K9haIU022058;
-        Tue, 20 Aug 2019 09:45:37 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 2ufwgcywpj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Aug 2019 09:45:37 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x7K9jaH1013512;
-        Tue, 20 Aug 2019 09:45:36 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 20 Aug 2019 02:45:35 -0700
-Date:   Tue, 20 Aug 2019 12:44:44 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
-Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH -next] bpf: Use PTR_ERR_OR_ZERO in xsk_map_inc()
-Message-ID: <20190820094444.GA3964@kadam>
-References: <20190820013652.147041-1-yuehaibing@huawei.com>
- <93fafdab-8fb3-0f2b-8f36-0cf297db3cd9@intel.com>
- <20190820085547.GE4451@kadam>
- <CAJ+HfNhRf+=yN6eOOZ1zp8=VicT-k6nHLO6r+f__O5X3M+N=ug@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJ+HfNhRf+=yN6eOOZ1zp8=VicT-k6nHLO6r+f__O5X3M+N=ug@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9354 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908200102
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9354 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908200102
+        id S1729497AbfHTJws (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Aug 2019 05:52:48 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:37350 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728842AbfHTJws (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Aug 2019 05:52:48 -0400
+Received: by mail-wr1-f66.google.com with SMTP id z11so11695863wrt.4
+        for <bpf@vger.kernel.org>; Tue, 20 Aug 2019 02:52:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=aI5rpFA+O+q5SGN1wlAZgaPJ7UfrHimu6B38WtNbXwI=;
+        b=VDePyvDODjXxuAFEeyxCV3o077e9VEsl6W3vBBF/a/RUSNfFl0B/UkpKSK23EWRzgK
+         s7QxbMBbzSzpjuc88q5jggsjc4ZJup0qNb6/jVpySYqaBpz5nMSmojQbO+tyiJ7wEyjI
+         rG/v5RbKWhDm0+CBuY/eZAYQw7X6zyhzlVQYbZAH1TTmNvB4yIykl8AP7YJSXviyu0mt
+         wTYVA7jWJrOryi5c7Ti0RKz2Cf1GtB/sW1/tT9aKmDET4r8eBcml8V6u7IpT4j6G6yd2
+         LEvVouYHgtMIf+7YeVXaJvaCDPuJOykEJS9YkowQRw8U5VSL7tQQEkRiIGi7jHcKsUTu
+         jo/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=aI5rpFA+O+q5SGN1wlAZgaPJ7UfrHimu6B38WtNbXwI=;
+        b=CK72L/9H8T5a7cbZjtHMpXcKGNy2R9cN0itnGMWFZuwHLxgkDXNcAe4B4O3GB/TCYi
+         AgCgV2Fhqo9EFLFyrj2LNc9GXwk1s9OQRrzMSE7ETdp+BbU4FCH1P6Tv++zlb5KjYVFe
+         Ef90xi+PdgPccXNlRQZPeXjEYTIDKaCBLaSdwwLVa+xhAoe7hkg3nHWM2x8EaeQ3BSdI
+         0r/EhuwGOn1tzAW/dVYIHLlwHITDKSehECKYrHLiPHWQVke40K4XJvqGjKSCmhpk6z7W
+         fCYBWlUITUpdtfMyYgX6d5RDZTTuQD1hNxDf87w7SEfVxkmS87cyOy2kk+ogb5cssG8W
+         P2rA==
+X-Gm-Message-State: APjAAAVoWP++2Uk4OhCXlu3yiAO8vuAfAMsoyPcEDI26RV2+9QEZGUHY
+        rHYFtOKqBsX9oEBKn5IriJRo2Q==
+X-Google-Smtp-Source: APXvYqy1dwZaVsiy5v8APqXbgekVyXnzBTsjIDVemoEDzSyjcZXe31q4hP0Mk7VSNvMeuXTAgCziAw==
+X-Received: by 2002:adf:e6c5:: with SMTP id y5mr31772516wrm.2.1566294766093;
+        Tue, 20 Aug 2019 02:52:46 -0700 (PDT)
+Received: from cbtest32.netronome.com ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id o14sm31008569wrg.64.2019.08.20.02.52.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Aug 2019 02:52:45 -0700 (PDT)
+From:   Quentin Monnet <quentin.monnet@netronome.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        oss-drivers@netronome.com,
+        Quentin Monnet <quentin.monnet@netronome.com>
+Subject: [PATCH bpf-next] bpf: add BTF ids in procfs for file descriptors to BTF objects
+Date:   Tue, 20 Aug 2019 10:52:33 +0100
+Message-Id: <20190820095233.17097-1-quentin.monnet@netronome.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 20, 2019 at 11:25:29AM +0200, Björn Töpel wrote:
-> On Tue, 20 Aug 2019 at 10:59, Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> >
-> > On Tue, Aug 20, 2019 at 09:28:26AM +0200, Björn Töpel wrote:
-> > > For future patches: Prefix AF_XDP socket work with "xsk:" and use "PATCH
-> > > bpf-next" to let the developers know what tree you're aiming for.
-> >
-> > There are over 300 trees in linux-next.  It impossible to try remember
-> > everyone's trees.  No one else has this requirement.
-> >
-> 
-> Net/bpf are different, and I wanted to point that out to lessen the
-> burden for the maintainers. It's documented in:
-> 
-> Documentation/bpf/bpf_devel_QA.rst.
-> Documentation/networking/netdev-FAQ.rst
+Implement the show_fdinfo hook for BTF FDs file operations, and make it
+print the id and the size of the BTF object. This allows for a quick
+retrieval of the BTF id from its FD; or it can help understanding what
+type of object (BTF) the file descriptor points to.
 
-Ah...  I hadn't realized that BPF patches were confusing to Dave.
+Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
+Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+---
+ kernel/bpf/btf.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-I actually do keep track of net and net-next.  I do quite a bit of extra
-stuff for netdev patches.  So what about if we used [PATCH] for bpf and
-[PATCH net] and [PATCH net-next] for networking?
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 5fcc7a17eb5a..39e184f1b27c 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3376,6 +3376,19 @@ void btf_type_seq_show(const struct btf *btf, u32 type_id, void *obj,
+ 	btf_type_ops(t)->seq_show(btf, t, type_id, obj, 0, m);
+ }
+ 
++#ifdef CONFIG_PROC_FS
++static void bpf_btf_show_fdinfo(struct seq_file *m, struct file *filp)
++{
++	const struct btf *btf = filp->private_data;
++
++	seq_printf(m,
++		   "btf_id:\t%u\n"
++		   "data_size:\t%u\n",
++		   btf->id,
++		   btf->data_size);
++}
++#endif
++
+ static int btf_release(struct inode *inode, struct file *filp)
+ {
+ 	btf_put(filp->private_data);
+@@ -3383,6 +3396,9 @@ static int btf_release(struct inode *inode, struct file *filp)
+ }
+ 
+ const struct file_operations btf_fops = {
++#ifdef CONFIG_PROC_FS
++	.show_fdinfo	= bpf_btf_show_fdinfo,
++#endif
+ 	.release	= btf_release,
+ };
+ 
+-- 
+2.17.1
 
-I will do that.
-
-regards,
-dan carpenter
