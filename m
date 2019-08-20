@@ -2,117 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D66696274
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 16:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216B8962BD
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 16:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729762AbfHTOaf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Aug 2019 10:30:35 -0400
-Received: from www62.your-server.de ([213.133.104.62]:48460 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728770AbfHTOaf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Aug 2019 10:30:35 -0400
-Received: from sslproxy01.your-server.de ([88.198.220.130])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1i059Z-0005CZ-DM; Tue, 20 Aug 2019 16:30:29 +0200
-Received: from [178.197.249.40] (helo=pc-63.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1i059Y-0003x3-U5; Tue, 20 Aug 2019 16:30:29 +0200
-Subject: Re: [PATCH bpf-next] xsk: proper socket state check in xsk_poll
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        syzbot+c82697e3043781e08802@syzkaller.appspotmail.com,
-        ast@kernel.org, netdev@vger.kernel.org
-Cc:     bjorn.topel@intel.com, bpf@vger.kernel.org, davem@davemloft.net,
-        hawk@kernel.org, jakub.kicinski@netronome.com,
-        john.fastabend@gmail.com, jonathan.lemon@gmail.com, kafai@fb.com,
-        linux-kernel@vger.kernel.org, magnus.karlsson@intel.com,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        xdp-newbies@vger.kernel.org, yhs@fb.com, hdanton@sina.com
-References: <0000000000009167320590823a8c@google.com>
- <20190820100405.25564-1-bjorn.topel@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <beef16bb-a09b-40f1-7dd0-c323b4b89b17@iogearbox.net>
-Date:   Tue, 20 Aug 2019 16:30:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1730120AbfHTOpM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Aug 2019 10:45:12 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:47538 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729810AbfHTOpM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Aug 2019 10:45:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=0LAxwykHVedtmUFtDwghFW/Ngjwy5rPPhRHs6eC63ZQ=; b=hw2gR7kcRWphlWRW867OYSLqo
+        0GSrE1i3Gmj+zOQSYXr8yQ8M79IwA8CMDsnMqJnw1OWdg0DBGpOXagmJcrrAujOtLWMFR5DoUuhWH
+        vJso2SPIztvRDDtHmkoQRvs+uACV9nZBw5emewERLAwVU5eqSsxJcOEBYp45ciVSo86Cjwe7smbIL
+        NiJSRK3dfK/TYqhjKkXBDDJgXbikR5R3H3P6RgITe9TzChvygFPahU8S0fm+LvgHiGwjSP6ZRp95W
+        tGCkhseQOABPjHfDh2HQ176C/cHlYoIPieqpnI46REj/xvTXSOQLe3TG4FBrLwWXw7KZMJmc3BXhg
+        2i1tiF+1Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1i05Ni-0006sp-Sb; Tue, 20 Aug 2019 14:45:07 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EAAB330768C;
+        Tue, 20 Aug 2019 16:44:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F185F20A999E4; Tue, 20 Aug 2019 16:45:03 +0200 (CEST)
+Date:   Tue, 20 Aug 2019 16:45:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf@vger.kernel.org, songliubraving@fb.com, yhs@fb.com,
+        andriin@fb.com, mingo@redhat.com, acme@kernel.org, ast@fb.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v3 bpf-next 1/4] tracing/probe: Add
+ PERF_EVENT_IOC_QUERY_PROBE ioctl
+Message-ID: <20190820144503.GV2332@hirez.programming.kicks-ass.net>
+References: <20190816223149.5714-1-dxu@dxuuu.xyz>
+ <20190816223149.5714-2-dxu@dxuuu.xyz>
 MIME-Version: 1.0
-In-Reply-To: <20190820100405.25564-1-bjorn.topel@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25547/Tue Aug 20 10:27:49 2019)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190816223149.5714-2-dxu@dxuuu.xyz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/20/19 12:04 PM, Björn Töpel wrote:
-> From: Björn Töpel <bjorn.topel@intel.com>
-> 
-> The poll() implementation for AF_XDP sockets did not perform the
-> proper state checks, prior accessing the socket umem. This patch fixes
-> that by performing a xsk_is_bound() check.
-> 
-> Suggested-by: Hillf Danton <hdanton@sina.com>
-> Reported-by: syzbot+c82697e3043781e08802@syzkaller.appspotmail.com
-> Fixes: 77cd0d7b3f25 ("xsk: add support for need_wakeup flag in AF_XDP rings")
-> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
-> ---
->   net/xdp/xsk.c | 14 ++++++++++++--
->   1 file changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index ee4428a892fa..08bed5e92af4 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -356,13 +356,20 @@ static int xsk_generic_xmit(struct sock *sk, struct msghdr *m,
->   	return err;
->   }
->   
-> +static bool xsk_is_bound(struct xdp_sock *xs)
-> +{
-> +	struct net_device *dev = READ_ONCE(xs->dev);
-> +
-> +	return dev && xs->state == XSK_BOUND;
-> +}
-> +
->   static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
->   {
->   	bool need_wait = !(m->msg_flags & MSG_DONTWAIT);
->   	struct sock *sk = sock->sk;
->   	struct xdp_sock *xs = xdp_sk(sk);
->   
-> -	if (unlikely(!xs->dev))
-> +	if (unlikely(!xsk_is_bound(xs)))
->   		return -ENXIO;
->   	if (unlikely(!(xs->dev->flags & IFF_UP)))
->   		return -ENETDOWN;
-> @@ -383,6 +390,9 @@ static unsigned int xsk_poll(struct file *file, struct socket *sock,
->   	struct net_device *dev = xs->dev;
->   	struct xdp_umem *umem = xs->umem;
->   
-> +	if (unlikely(!xsk_is_bound(xs)))
-> +		return mask;
-> +
->   	if (umem->need_wakeup)
->   		dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id,
->   						umem->need_wakeup);
-> @@ -417,7 +427,7 @@ static void xsk_unbind_dev(struct xdp_sock *xs)
->   {
->   	struct net_device *dev = xs->dev;
->   
-> -	if (!dev || xs->state != XSK_BOUND)
-> +	if (!xsk_is_bound(xs))
->   		return;
+On Fri, Aug 16, 2019 at 03:31:46PM -0700, Daniel Xu wrote:
+> It's useful to know [uk]probe's nmissed and nhit stats. For example with
+> tracing tools, it's important to know when events may have been lost.
+> debugfs currently exposes a control file to get this information, but
+> it is not compatible with probes registered with the perf API.
 
-I think I'm a bit confused by your READ_ONCE() usage. ;-/ I can see why you're
-using it in xsk_is_bound() above, but then at the same time all the other callbacks
-like xsk_poll() or xsk_unbind_dev() above have a struct net_device *dev = xs->dev
-right before the test. Could you elaborate?
-
-Thanks,
-Daniel
+What is this nmissed and nhit stuff?
