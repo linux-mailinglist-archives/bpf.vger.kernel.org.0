@@ -2,106 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B668E95BA9
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 11:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E686E95BF3
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 12:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729497AbfHTJws (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Aug 2019 05:52:48 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:37350 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728842AbfHTJws (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Aug 2019 05:52:48 -0400
-Received: by mail-wr1-f66.google.com with SMTP id z11so11695863wrt.4
-        for <bpf@vger.kernel.org>; Tue, 20 Aug 2019 02:52:46 -0700 (PDT)
+        id S1728426AbfHTKFA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Aug 2019 06:05:00 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:36341 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728414AbfHTKFA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Aug 2019 06:05:00 -0400
+Received: by mail-pl1-f194.google.com with SMTP id f19so2096289plr.3;
+        Tue, 20 Aug 2019 03:04:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=aI5rpFA+O+q5SGN1wlAZgaPJ7UfrHimu6B38WtNbXwI=;
-        b=VDePyvDODjXxuAFEeyxCV3o077e9VEsl6W3vBBF/a/RUSNfFl0B/UkpKSK23EWRzgK
-         s7QxbMBbzSzpjuc88q5jggsjc4ZJup0qNb6/jVpySYqaBpz5nMSmojQbO+tyiJ7wEyjI
-         rG/v5RbKWhDm0+CBuY/eZAYQw7X6zyhzlVQYbZAH1TTmNvB4yIykl8AP7YJSXviyu0mt
-         wTYVA7jWJrOryi5c7Ti0RKz2Cf1GtB/sW1/tT9aKmDET4r8eBcml8V6u7IpT4j6G6yd2
-         LEvVouYHgtMIf+7YeVXaJvaCDPuJOykEJS9YkowQRw8U5VSL7tQQEkRiIGi7jHcKsUTu
-         jo/Q==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Rj7SDym9UNxyg0oSA1OfNeIBnB06iO8MD1npAu2+BTI=;
+        b=JtxtXgiVKCdj2zs5yiCEZ1rb2h6TGGbtd1BbgNGzkqTztKQhEWYmE6Jqk/73FBDcUx
+         4sBlBKTihdiMJR/PLabdINYC5RoZxzXHYlOVTJDqqEa/6kGdZItMPfzYNx8F3Ny3urDy
+         BX5/bCANsTwNA9aKKSJeCl/KmsU9F934H0EWSUxtWdk6FW7u4CQJTn9lcIFNIeJoCX8D
+         N2Qs2+eKE9a6gQAVCJOtLeHOVYDgJt6Pg1I2W0GaO6qQQVZUiZyyB4K6YoGXBMhuF15H
+         hUE7lO/IHljvng6B9MXGWmB0pcdbJLRSjN/+UdetUIcGnNY9lpDN/F5K6WlzOJkgFzB/
+         x5ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=aI5rpFA+O+q5SGN1wlAZgaPJ7UfrHimu6B38WtNbXwI=;
-        b=CK72L/9H8T5a7cbZjtHMpXcKGNy2R9cN0itnGMWFZuwHLxgkDXNcAe4B4O3GB/TCYi
-         AgCgV2Fhqo9EFLFyrj2LNc9GXwk1s9OQRrzMSE7ETdp+BbU4FCH1P6Tv++zlb5KjYVFe
-         Ef90xi+PdgPccXNlRQZPeXjEYTIDKaCBLaSdwwLVa+xhAoe7hkg3nHWM2x8EaeQ3BSdI
-         0r/EhuwGOn1tzAW/dVYIHLlwHITDKSehECKYrHLiPHWQVke40K4XJvqGjKSCmhpk6z7W
-         fCYBWlUITUpdtfMyYgX6d5RDZTTuQD1hNxDf87w7SEfVxkmS87cyOy2kk+ogb5cssG8W
-         P2rA==
-X-Gm-Message-State: APjAAAVoWP++2Uk4OhCXlu3yiAO8vuAfAMsoyPcEDI26RV2+9QEZGUHY
-        rHYFtOKqBsX9oEBKn5IriJRo2Q==
-X-Google-Smtp-Source: APXvYqy1dwZaVsiy5v8APqXbgekVyXnzBTsjIDVemoEDzSyjcZXe31q4hP0Mk7VSNvMeuXTAgCziAw==
-X-Received: by 2002:adf:e6c5:: with SMTP id y5mr31772516wrm.2.1566294766093;
-        Tue, 20 Aug 2019 02:52:46 -0700 (PDT)
-Received: from cbtest32.netronome.com ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id o14sm31008569wrg.64.2019.08.20.02.52.45
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Rj7SDym9UNxyg0oSA1OfNeIBnB06iO8MD1npAu2+BTI=;
+        b=szgkW24OvZ8BqmEVW2Cxmx6SCeqe3wf+AskofwMtNRlkP3H17OzDcIFm+sK5+iTIuY
+         gslVB3uuK+NeWiTPIMZY3Yc5ZLnFtmgxBJ9lmJOlWEFVWD2irGJ9z23Spq6yW0lAyQOs
+         tt2wY+kQQYWcEcnPCPmowR8DKS/EIgafc0knkSLmtcIBzD9qz7rzY0KjuQ9wjVOrTBmL
+         yMlraxX+uUkRHRfN24JiwGeeclbSVfDkPGOHcHlq1HkOGd8B6spqRbBRfkAuzFNw60ZX
+         OfRH/oq6uT92FErYFV63gv/sYbvLnc8G2W3PGi9dmoJ3+lEZZXtR6IlXI96yhmp2qyYv
+         EA0Q==
+X-Gm-Message-State: APjAAAWrGgxGCMlCJs7Ut97tufq5KBIvuJg+XzXl1erH0figDAzTfF9s
+        nEF14iwo13+PQmCMVUEXaJM=
+X-Google-Smtp-Source: APXvYqy+/CbGkRnUzDNk57X5X3BHv5GNk/qLIHNfAWzPlLXSaatbk93fURQJsdlf3TYSO/YYPt58kA==
+X-Received: by 2002:a17:902:7d82:: with SMTP id a2mr28078362plm.57.1566295499426;
+        Tue, 20 Aug 2019 03:04:59 -0700 (PDT)
+Received: from btopel-mobl.ger.intel.com ([192.55.54.42])
+        by smtp.gmail.com with ESMTPSA id c2sm9078201pjs.13.2019.08.20.03.04.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Aug 2019 02:52:45 -0700 (PDT)
-From:   Quentin Monnet <quentin.monnet@netronome.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@netronome.com,
-        Quentin Monnet <quentin.monnet@netronome.com>
-Subject: [PATCH bpf-next] bpf: add BTF ids in procfs for file descriptors to BTF objects
-Date:   Tue, 20 Aug 2019 10:52:33 +0100
-Message-Id: <20190820095233.17097-1-quentin.monnet@netronome.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 20 Aug 2019 03:04:58 -0700 (PDT)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     syzbot+c82697e3043781e08802@syzkaller.appspotmail.com,
+        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org
+Cc:     bjorn.topel@intel.com, bpf@vger.kernel.org, davem@davemloft.net,
+        hawk@kernel.org, jakub.kicinski@netronome.com,
+        john.fastabend@gmail.com, jonathan.lemon@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, magnus.karlsson@intel.com,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        xdp-newbies@vger.kernel.org, yhs@fb.com, hdanton@sina.com
+Subject: [PATCH bpf-next] xsk: proper socket state check in xsk_poll
+Date:   Tue, 20 Aug 2019 12:04:05 +0200
+Message-Id: <20190820100405.25564-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <0000000000009167320590823a8c@google.com>
+References: <0000000000009167320590823a8c@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Implement the show_fdinfo hook for BTF FDs file operations, and make it
-print the id and the size of the BTF object. This allows for a quick
-retrieval of the BTF id from its FD; or it can help understanding what
-type of object (BTF) the file descriptor points to.
+From: Björn Töpel <bjorn.topel@intel.com>
 
-Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
-Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+The poll() implementation for AF_XDP sockets did not perform the
+proper state checks, prior accessing the socket umem. This patch fixes
+that by performing a xsk_is_bound() check.
+
+Suggested-by: Hillf Danton <hdanton@sina.com>
+Reported-by: syzbot+c82697e3043781e08802@syzkaller.appspotmail.com
+Fixes: 77cd0d7b3f25 ("xsk: add support for need_wakeup flag in AF_XDP rings")
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
 ---
- kernel/bpf/btf.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ net/xdp/xsk.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 5fcc7a17eb5a..39e184f1b27c 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -3376,6 +3376,19 @@ void btf_type_seq_show(const struct btf *btf, u32 type_id, void *obj,
- 	btf_type_ops(t)->seq_show(btf, t, type_id, obj, 0, m);
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index ee4428a892fa..08bed5e92af4 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -356,13 +356,20 @@ static int xsk_generic_xmit(struct sock *sk, struct msghdr *m,
+ 	return err;
  }
  
-+#ifdef CONFIG_PROC_FS
-+static void bpf_btf_show_fdinfo(struct seq_file *m, struct file *filp)
++static bool xsk_is_bound(struct xdp_sock *xs)
 +{
-+	const struct btf *btf = filp->private_data;
++	struct net_device *dev = READ_ONCE(xs->dev);
 +
-+	seq_printf(m,
-+		   "btf_id:\t%u\n"
-+		   "data_size:\t%u\n",
-+		   btf->id,
-+		   btf->data_size);
++	return dev && xs->state == XSK_BOUND;
 +}
-+#endif
 +
- static int btf_release(struct inode *inode, struct file *filp)
+ static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
  {
- 	btf_put(filp->private_data);
-@@ -3383,6 +3396,9 @@ static int btf_release(struct inode *inode, struct file *filp)
- }
+ 	bool need_wait = !(m->msg_flags & MSG_DONTWAIT);
+ 	struct sock *sk = sock->sk;
+ 	struct xdp_sock *xs = xdp_sk(sk);
  
- const struct file_operations btf_fops = {
-+#ifdef CONFIG_PROC_FS
-+	.show_fdinfo	= bpf_btf_show_fdinfo,
-+#endif
- 	.release	= btf_release,
- };
+-	if (unlikely(!xs->dev))
++	if (unlikely(!xsk_is_bound(xs)))
+ 		return -ENXIO;
+ 	if (unlikely(!(xs->dev->flags & IFF_UP)))
+ 		return -ENETDOWN;
+@@ -383,6 +390,9 @@ static unsigned int xsk_poll(struct file *file, struct socket *sock,
+ 	struct net_device *dev = xs->dev;
+ 	struct xdp_umem *umem = xs->umem;
  
++	if (unlikely(!xsk_is_bound(xs)))
++		return mask;
++
+ 	if (umem->need_wakeup)
+ 		dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id,
+ 						umem->need_wakeup);
+@@ -417,7 +427,7 @@ static void xsk_unbind_dev(struct xdp_sock *xs)
+ {
+ 	struct net_device *dev = xs->dev;
+ 
+-	if (!dev || xs->state != XSK_BOUND)
++	if (!xsk_is_bound(xs))
+ 		return;
+ 
+ 	xs->state = XSK_UNBOUND;
 -- 
-2.17.1
+2.20.1
 
