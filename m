@@ -2,64 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 216B8962BD
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 16:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C75963A8
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 17:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730120AbfHTOpM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Aug 2019 10:45:12 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:47538 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729810AbfHTOpM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Aug 2019 10:45:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=0LAxwykHVedtmUFtDwghFW/Ngjwy5rPPhRHs6eC63ZQ=; b=hw2gR7kcRWphlWRW867OYSLqo
-        0GSrE1i3Gmj+zOQSYXr8yQ8M79IwA8CMDsnMqJnw1OWdg0DBGpOXagmJcrrAujOtLWMFR5DoUuhWH
-        vJso2SPIztvRDDtHmkoQRvs+uACV9nZBw5emewERLAwVU5eqSsxJcOEBYp45ciVSo86Cjwe7smbIL
-        NiJSRK3dfK/TYqhjKkXBDDJgXbikR5R3H3P6RgITe9TzChvygFPahU8S0fm+LvgHiGwjSP6ZRp95W
-        tGCkhseQOABPjHfDh2HQ176C/cHlYoIPieqpnI46REj/xvTXSOQLe3TG4FBrLwWXw7KZMJmc3BXhg
-        2i1tiF+1Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1i05Ni-0006sp-Sb; Tue, 20 Aug 2019 14:45:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EAAB330768C;
-        Tue, 20 Aug 2019 16:44:32 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F185F20A999E4; Tue, 20 Aug 2019 16:45:03 +0200 (CEST)
-Date:   Tue, 20 Aug 2019 16:45:03 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf@vger.kernel.org, songliubraving@fb.com, yhs@fb.com,
-        andriin@fb.com, mingo@redhat.com, acme@kernel.org, ast@fb.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v3 bpf-next 1/4] tracing/probe: Add
- PERF_EVENT_IOC_QUERY_PROBE ioctl
-Message-ID: <20190820144503.GV2332@hirez.programming.kicks-ass.net>
-References: <20190816223149.5714-1-dxu@dxuuu.xyz>
- <20190816223149.5714-2-dxu@dxuuu.xyz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190816223149.5714-2-dxu@dxuuu.xyz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1729918AbfHTPEa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Aug 2019 11:04:30 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:37268 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729819AbfHTPEa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Aug 2019 11:04:30 -0400
+Received: by mail-wm1-f66.google.com with SMTP id d16so2968127wme.2
+        for <bpf@vger.kernel.org>; Tue, 20 Aug 2019 08:04:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=b/1w5LvL+fBJM0aA0+n6sQkDfXDbUnJO+MNoklWJK6k=;
+        b=s1wwfXpp3IIu5zYLuh/BcfPpG9+/3h93ZL8srfWtCF6/V4AgZTQd88PQVUUcIIceg3
+         iSId+Jf/SelQiNRkah6dq2I28zAviqQCMMKXSS+Xiq3oPHj6m6EgZaG51LEYGQoBnQon
+         G5r+to80gAgDsdFn3J9Kfbq0B/bgkyctwrG6pxNOikJmnb0tEmRvAZqt7d+KRolHHXm7
+         TwWegXMdH5f5PRHcQnm6Izew+8dZ7IHI8eGNOXbrLyLpI01vth6grw8bR/FXPEVPSkrb
+         /Ne4lqEnKF4FHaTQ7a8RZpQ+5N9qvYCSvDIJl5JnoEnpsJiBH737i+GLHjhNBHlYpBlF
+         jP4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=b/1w5LvL+fBJM0aA0+n6sQkDfXDbUnJO+MNoklWJK6k=;
+        b=KBtztwh6tzk1a2K4FPi1MBJwNcC3PZw1ITd3X/GLqCNtbfT8WaXRSN7DqUJsx2cyUB
+         lcP6SmO6rdd0LMfJD3CRztiJXQfveaAXslklA9A2rbOOTnTqi2jcukpwwm3kmOD1p/js
+         iyCwxEU+Qf6nm/IY2uvdE2mgL+fBtv+OX1cHztbcQfIJTHl9WPrr0LDAXV9s7NYdjuVQ
+         PRHL+lzOHZYNGUD4gUbXTos5xys7NGhJNisRdp8Ya5eZHg/9ms40Wy8mxUc1i2TMm1E1
+         7neYmWmJTDvTKVmLUff3JoHlgzIUyoY6QUOCZLWjH6EjazJ/GFw9i8aph7IcqKYxsj36
+         nKYQ==
+X-Gm-Message-State: APjAAAXaOfymkabmAcgbvBgWci7H9kO1kq2j6KgmMrAkQWErFktItvuT
+        79yspLgR7Pk7BH4TsXkLdGlNdfv96oA=
+X-Google-Smtp-Source: APXvYqxD2lete8UEuvPIbzlRuBI6fHCtkpp45v8YWanLLfdGYOXLCH+A4P7NECo2rhTeuiIc8MSXJw==
+X-Received: by 2002:a7b:c195:: with SMTP id y21mr498870wmi.16.1566313468179;
+        Tue, 20 Aug 2019 08:04:28 -0700 (PDT)
+Received: from [192.168.0.101] (88-147-37-138.dyn.eolo.it. [88.147.37.138])
+        by smtp.gmail.com with ESMTPSA id f7sm25906746wrf.8.2019.08.20.08.04.26
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 20 Aug 2019 08:04:27 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
+Subject: Re: [PATCHSET block/for-next] IO cost model based work-conserving
+ porportional controller
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <5A63F937-F7B5-4D09-9DB4-C73D6F571D50@linaro.org>
+Date:   Tue, 20 Aug 2019 17:04:25 +0200
+Cc:     Jens Axboe <axboe@kernel.dk>, newella@fb.com, clm@fb.com,
+        Josef Bacik <josef@toxicpanda.com>, dennisz@fb.com,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>, kernel-team@fb.com,
+        cgroups@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        bpf@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B5E431F7-549D-4FC4-A098-D074DF9586A1@linaro.org>
+References: <20190614015620.1587672-1-tj@kernel.org>
+ <20190614175642.GA657710@devbig004.ftw2.facebook.com>
+ <5A63F937-F7B5-4D09-9DB4-C73D6F571D50@linaro.org>
+To:     Tejun Heo <tj@kernel.org>
+X-Mailer: Apple Mail (2.3445.104.8)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 16, 2019 at 03:31:46PM -0700, Daniel Xu wrote:
-> It's useful to know [uk]probe's nmissed and nhit stats. For example with
-> tracing tools, it's important to know when events may have been lost.
-> debugfs currently exposes a control file to get this information, but
-> it is not compatible with probes registered with the perf API.
 
-What is this nmissed and nhit stuff?
+
+> Il giorno 20 ago 2019, alle ore 12:48, Paolo Valente =
+<paolo.valente@linaro.org> ha scritto:
+>=20
+>=20
+>=20
+>> Il giorno 14 giu 2019, alle ore 19:56, Tejun Heo <tj@kernel.org> ha =
+scritto:
+>>=20
+>> On Thu, Jun 13, 2019 at 06:56:10PM -0700, Tejun Heo wrote:
+>> ...
+>>> The patchset is also available in the following git branch.
+>>>=20
+>>> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git =
+review-iow
+>>=20
+>> Updated patchset available in the following branch.  Just build fixes
+>> and cosmetic changes for now.
+>>=20
+>> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git =
+review-iow-v2
+>>=20
+>=20
+> Hi Tejun,
+> I'm running the kernel in your tree above, in an Ubuntu 18.04.
+>=20
+> After unmounting the v1 blkio controller that gets mounted at startup
+> I have created v2 root as follows
+>=20
+> $ mount -t cgroup2 none /cgroup
+>=20
+> Then I have:
+> $ ls /cgroup
+> cgroup.controllers  cgroup.max.descendants  cgroup.stat             =
+cgroup.threads  io.weight.cost_model  system.slice
+> cgroup.max.depth    cgroup.procs            cgroup.subtree_control  =
+init.scope      io.weight.qos         user.slice
+>=20
+> But the following command gives no output:
+> $ cat /cgroup/io.weight.qos=20
+>=20
+> And, above all,
+> $ echo 1 > /cgroup/io.weight.qos=20
+> bash: echo: write error: Invalid argument
+>=20
+> No complain in the kernel log.
+>=20
+> What am I doing wrong? How can I make the controller work?
+>=20
+
+I made it, sorry for my usual silly questions (for some reason, I
+thought the controller could be enabled globally by just passing a 1).
+
+The problem now is that the controller doesn't seem to work.  I've
+emulated 16 clients doing I/O on a SATA SSD.  One client, the target,
+does random reads, while the remaining 15 clients, the interferers, do
+sequential reads.
+
+Each client is encapsulated in a separate group, but whatever weight
+is assigned to the target group, the latter gets the same, extremely
+low bandwidth.  I have tried with even the maximum weight ratio, i.e.,
+1000 for the target and only 1 for each interferer.  Here are the
+results, compared with BFQ (bandwidth in MB/s):
+
+io.weight   BFQ
+0.2         3.7
+
+I ran this test with the script S/bandwidth-latency/bandwidth-latency.sh
+of the S benchmark suite [1], invoked as follows:
+sudo ./bandwidth-latency.sh -t randread -s none -b weight -n 15 -w 1000 =
+-W 1
+
+The above command simply creates groups, assigns weights as follows
+
+echo 1 > /cgroup/InterfererGroup0/io.weight
+echo 1 > /cgroup/InterfererGroup1/io.weight
+...
+echo 1 > /cgroup/InterfererGroup14/io.weight
+echo 1000 > /cgroup/interfered/io.weight
+
+and makes one fio instance generate I/O for each group.  The bandwidth
+reported above is that reported by the fio instance emulating the
+target client.
+
+Am I missing something?
+
+Thanks,
+Paolo
+
+[1] https://github.com/Algodev-github/S
+
+
+> Thanks,
+> Paolo
+>=20
+>> Thanks.
+>>=20
+>> --=20
+>> tejun
+>=20
+
