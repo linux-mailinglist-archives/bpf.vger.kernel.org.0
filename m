@@ -2,157 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B66A9618E
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 15:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02392961A4
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 15:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728248AbfHTNse (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Aug 2019 09:48:34 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:36518 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730098AbfHTNse (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Aug 2019 09:48:34 -0400
-Received: by mail-wm1-f65.google.com with SMTP id g67so2728166wme.1
-        for <bpf@vger.kernel.org>; Tue, 20 Aug 2019 06:48:32 -0700 (PDT)
+        id S1729820AbfHTNx5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Aug 2019 09:53:57 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:33369 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728248AbfHTNx4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Aug 2019 09:53:56 -0400
+Received: by mail-wr1-f66.google.com with SMTP id u16so12510766wrr.0
+        for <bpf@vger.kernel.org>; Tue, 20 Aug 2019 06:53:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:references:from:openpgp:autocrypt:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wAT7SyBCLW4Yu4QrSneHAfmHCfaOcdPIhTOn63ZR9A4=;
-        b=OLJ9oWSKBahvsUbwcKYm3EdKff/9kJI1ieDki1y8XUIY8Zk4vsQYeVxpF3pgeH03Dw
-         NttuADIXxMTEU3UvpCF/w10V+3WRd+ZWkHzMUIuEE1LA0TaX8Jv15DeLqZHfQBT8gvE/
-         bJq9+TvGN38Z4bT18oFxEdmPKM70Q1kBZGxomv3bcR0+wlANiFQ4lVBvlBjcEb8x1W4R
-         NPQmdu4j+pFQCwCTHmpW+nOROMpHH/5oOcR3FM8HcuO69N52KwbNJSTV46thOdIEm8ov
-         mwN3xw6nHN4VK4C9J5COc1+0xHloLdQmj/CTjU6VTHC7bmmNjTJehtaj56YHMut+9Zkr
-         q93g==
+        h=from:to:cc:subject:date:message-id;
+        bh=bm263GMWeKPUI5wuV6Udltpey7traBFFYHIuzV+qSTc=;
+        b=jzoC16fwWZQlep1XQrlZ0OvgarFBOjo2tNoXXGTtGjwGvTi0M94aXOIfTpw1F1usI7
+         l8NV3J0K0RHwN3vSbpENrpEa6I1VK9iYe+7cuMtEp5zUXHftwz+OjeE1CbhDauSWI3t3
+         TI94J1+ntokgm5jht6OkVi9sN3fGCWoryhsD8YjrzBoIlOoq+J9A92frr1wUY7PI4xM9
+         A8f1t/uNwb4i/H1cLogQDqgi3nX6FCfFenanvi4Pmtcujd475T4MmsS11pKL3fhFFb8i
+         /8npLUtIfKqXlSuAXSVx5IDHGlRVo8268w1wRpgOOSqTs3bFDzJw9DorUD+xeRq0SMY+
+         CUvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:openpgp:autocrypt:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=wAT7SyBCLW4Yu4QrSneHAfmHCfaOcdPIhTOn63ZR9A4=;
-        b=PqjfMdG+6JC147ikuiT8yObNmmq4q8eCj1F82CnCkgUXXxcI3WIztZ8oR8Fwz1h15R
-         owfPFsbcmaERjIFyC2xvcU5Q+nj9m3KzlFQ/+AR7ZklWWfWcVhUyYXiNSWChSwI+k43T
-         +Bb6yHGmyQLIQJ2ZUDibxFilPkOoOwniIs7A8NAb/iTAF6fDN+Ca0daFLBal2f1Awzb8
-         dFuwLFiRIeTRCRSGjYGUC2Y2DPV7HikT0jeF0Dr2nBup3Br+txf6f1ua+Y1PBAK+JIU6
-         LMDcVMy6gkquI9rq8rh4cuzturf4zjz89HUrw6jvzMe2UnV+++qdgrUJALZUmZ+TyyJ6
-         V+XA==
-X-Gm-Message-State: APjAAAVXnB3b3PYf5YM81fiRfd0+z51XeGLbS4sNw91zhgTSkUesGcEy
-        wJMGvrfFnrECY1rn29kchZcH1A==
-X-Google-Smtp-Source: APXvYqzw5VL2EY7tUEATyO7k1BRMQOVVWPMvfC2ycjU5JCZv2DMjS5gNqN9z6a4Erxg+kdhL7u+Kzg==
-X-Received: by 2002:a7b:cd0f:: with SMTP id f15mr121947wmj.86.1566308912168;
-        Tue, 20 Aug 2019 06:48:32 -0700 (PDT)
-Received: from [172.20.1.254] ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id w5sm27954wmm.43.2019.08.20.06.48.31
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 20 Aug 2019 06:48:31 -0700 (PDT)
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@netronome.com
-References: <20190820095233.17097-1-quentin.monnet@netronome.com>
- <fcb2e528-6750-2192-befe-dd68ca36fc62@iogearbox.net>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=bm263GMWeKPUI5wuV6Udltpey7traBFFYHIuzV+qSTc=;
+        b=Pyn4Cj/r34x7S8jQERE7xPV/sBgGqyUqPDcK5/+l9V+8XTFbyShnVZfxV8z0qRTJUM
+         bZ3MR8gzH8htjiagJ3fSOpDs63FZaLYuRkMVX+wzkU/rc7K97s+/rrUz1ZF4SZcmUrK4
+         pDJobA77PpqNkfHFZFCPBs/0dZ0YjCU+Yd9BNvaKgk/6xgrqyPLt2uk6EEiCzQMHnyXi
+         lDBBcQ8PV1kwVghR7p/srVXjz7tCvSFFgTqK+4tyUT6FOxxYWM/DWzooLXSrajTxTUaI
+         D1rCgIPO5hbFDcyKM8reR8BkV8rmz6Y9s031t3JzFbfK8ALfPneiwYtT5IQrYABxNgHk
+         BrXw==
+X-Gm-Message-State: APjAAAXZwGDmSCJ+HoY8vyCTlWI96IA24Rlo0I4s15aOloW8ml2NM0ol
+        CZzNbpnVdG6AZbhc+3Eh30cdNQ==
+X-Google-Smtp-Source: APXvYqyz3HKtXQok062DzHDWKPtayPWakbhiAmNsdprn5WW7GG4zo5XvnC2cnQ/Gey1Ng+DO+LGYqQ==
+X-Received: by 2002:adf:ec4f:: with SMTP id w15mr18720296wrn.311.1566309235151;
+        Tue, 20 Aug 2019 06:53:55 -0700 (PDT)
+Received: from cbtest32.netronome.com ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id r18sm107943wmh.6.2019.08.20.06.53.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Aug 2019 06:53:54 -0700 (PDT)
 From:   Quentin Monnet <quentin.monnet@netronome.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quentin.monnet@netronome.com; prefer-encrypt=mutual; keydata=
- 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
- RHhSHGnKaQ6MfrTge5Q0h5A=
-Subject: Re: [oss-drivers] Re: [PATCH bpf-next] bpf: add BTF ids in procfs for
- file descriptors to BTF objects
-Message-ID: <534ce109-06e9-d8d5-9de6-240518286d11@netronome.com>
-Date:   Tue, 20 Aug 2019 14:48:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <fcb2e528-6750-2192-befe-dd68ca36fc62@iogearbox.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        oss-drivers@netronome.com,
+        Quentin Monnet <quentin.monnet@netronome.com>
+Subject: [PATCH bpf-next v2] bpf: add BTF ids in procfs for file descriptors to BTF objects
+Date:   Tue, 20 Aug 2019 14:53:46 +0100
+Message-Id: <20190820135346.7593-1-quentin.monnet@netronome.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2019-08-20 15:36 UTC+0200 ~ Daniel Borkmann <daniel@iogearbox.net>
-> On 8/20/19 11:52 AM, Quentin Monnet wrote:
->> Implement the show_fdinfo hook for BTF FDs file operations, and make it
->> print the id and the size of the BTF object. This allows for a quick
->> retrieval of the BTF id from its FD; or it can help understanding what
->> type of object (BTF) the file descriptor points to.
->>
->> Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
->> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
->> ---
->>   kernel/bpf/btf.c | 16 ++++++++++++++++
->>   1 file changed, 16 insertions(+)
->>
->> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
->> index 5fcc7a17eb5a..39e184f1b27c 100644
->> --- a/kernel/bpf/btf.c
->> +++ b/kernel/bpf/btf.c
->> @@ -3376,6 +3376,19 @@ void btf_type_seq_show(const struct btf *btf,
->> u32 type_id, void *obj,
->>       btf_type_ops(t)->seq_show(btf, t, type_id, obj, 0, m);
->>   }
->>   +#ifdef CONFIG_PROC_FS
->> +static void bpf_btf_show_fdinfo(struct seq_file *m, struct file *filp)
->> +{
->> +    const struct btf *btf = filp->private_data;
->> +
->> +    seq_printf(m,
->> +           "btf_id:\t%u\n"
->> +           "data_size:\t%u\n",
->> +           btf->id,
->> +           btf->data_size);
-> 
-> Looks good, exposing btf_id makes sense to me in order to correlate with
-> applications.
-> Do you have a concrete use case for data_size to expose it this way as
-> opposed to fetch
-> it via btf_get_info_by_fd()? If not, I'd say lets only add btf_id in there.
+Implement the show_fdinfo hook for BTF FDs file operations, and make it
+print the id of the BTF object. This allows for a quick retrieval of the
+BTF id from its FD; or it can help understanding what type of object
+(BTF) the file descriptor points to.
 
-No, I don't have one for data_size to be honest. I'll respin with btf_id
-only then.
+v2:
+- Do not expose data_size, only btf_id, in FD info.
 
-Thanks,
-Quentin
+Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
+Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+---
+ kernel/bpf/btf.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 5fcc7a17eb5a..6b403dc18486 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3376,6 +3376,15 @@ void btf_type_seq_show(const struct btf *btf, u32 type_id, void *obj,
+ 	btf_type_ops(t)->seq_show(btf, t, type_id, obj, 0, m);
+ }
+ 
++#ifdef CONFIG_PROC_FS
++static void bpf_btf_show_fdinfo(struct seq_file *m, struct file *filp)
++{
++	const struct btf *btf = filp->private_data;
++
++	seq_printf(m, "btf_id:\t%u\n", btf->id);
++}
++#endif
++
+ static int btf_release(struct inode *inode, struct file *filp)
+ {
+ 	btf_put(filp->private_data);
+@@ -3383,6 +3392,9 @@ static int btf_release(struct inode *inode, struct file *filp)
+ }
+ 
+ const struct file_operations btf_fops = {
++#ifdef CONFIG_PROC_FS
++	.show_fdinfo	= bpf_btf_show_fdinfo,
++#endif
+ 	.release	= btf_release,
+ };
+ 
+-- 
+2.17.1
+
