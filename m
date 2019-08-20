@@ -2,153 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCC896B61
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 23:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BEC96BB3
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 23:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730680AbfHTVYc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Aug 2019 17:24:32 -0400
-Received: from www62.your-server.de ([213.133.104.62]:55030 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728283AbfHTVYc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Aug 2019 17:24:32 -0400
-Received: from sslproxy01.your-server.de ([88.198.220.130])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1i0Bc5-0007QV-Pz; Tue, 20 Aug 2019 23:24:21 +0200
-Received: from [178.197.249.40] (helo=pc-63.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1i0Bc5-0006tF-Df; Tue, 20 Aug 2019 23:24:21 +0200
-Subject: Re: [PATCH bpf-next] xsk: proper socket state check in xsk_poll
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     syzbot+c82697e3043781e08802@syzkaller.appspotmail.com,
-        Alexei Starovoitov <ast@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>, David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs@googlegroups.com, Xdp <xdp-newbies@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>, hdanton@sina.com
-References: <0000000000009167320590823a8c@google.com>
- <20190820100405.25564-1-bjorn.topel@gmail.com>
- <beef16bb-a09b-40f1-7dd0-c323b4b89b17@iogearbox.net>
- <CAJ+HfNj8qNwCpiLBw1eO_ggSf11Qq9323NVOcTS6wtfTm=RWcg@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <fa423b3d-d9da-7142-c7bf-e202967620ea@iogearbox.net>
-Date:   Tue, 20 Aug 2019 23:24:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1730650AbfHTVtC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Aug 2019 17:49:02 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:34211 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730273AbfHTVtB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 20 Aug 2019 17:49:01 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 625E621BB;
+        Tue, 20 Aug 2019 17:49:00 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 20 Aug 2019 17:49:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=a/sXuKrYtYLnT+5uNbpd3uKPLS
+        r1XkxMB37mi6euXos=; b=JVrgCXfLj2pfz30stslGJwBLmnyUJAz+La78uysin4
+        D7+vTZIyVxnHO9Ci5tsBisaDBQ33XyXEvTbTDYGO+MoDZ8p0WGyeK5H0Y6bSluhm
+        Q9qQKDwDdMw12Zp67qLpDcZVoUelgjJzPvhMBOMivWJD4TB48EDtYAdvMN4Ln3Av
+        0MaHd531Ks8pj5ufBgbeUjbTV/a1Fr2SPEKJ+R8rdlsEH7Lsy8Yz953Edc84Z8yK
+        a6um41gCdffk1AvgsM5e57R0u0yAfGV8wdshgmTTSt0aFBmgDuxB5IwcS1IYyx9F
+        MFFs6xwry3s/w8+Iu3wCiL4C8nuyGT+WfefZx1HlQVCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=a/sXuKrYtYLnT+5uN
+        bpd3uKPLSr1XkxMB37mi6euXos=; b=i+zyOlFsrJBVHmSMf9PEJcjKbN4B7fPKe
+        eKB9Dr891rzZQATIvVbuKgUWM0dmhWEECCQNOhPubQ780BgHTdGqlBguGDE1Gjcl
+        bKaq8GacDD8Cmiy1jO/CmAKYIYJbwJEbNMA3ha//ifKYBWuvGgZMo2TDcT2w4JB/
+        s4apWGoP50xmHThA8nu/mva4A2R/tLeZ8l6y6vy0oOHnp+ZrFPjtA31crYg1OpCN
+        w7ZY0s+q7zD+aUzn6KkBYqL3DKzYsj8mfJJwes9+RjE4ihCFV4ov2YUluMFH6+fZ
+        66MXm6goRweraDJB40OlLi1FfnBQYxJH+RT/2gi8n6GxQhFAz1iQA==
+X-ME-Sender: <xms:y2pcXRjamW5IWP4AexKJBQr5a9JRTWZpejWi7U7EdQUHCg4t_WiZVg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduvddrudegvddgtdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
+    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
+    segugihuuhhurdighiiiqeenucfkphepudelledrvddtuddrieegrddvnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiiinecuvehluhhsthgvrhfuihii
+    vgeptd
+X-ME-Proxy: <xmx:y2pcXWx1BnGZG7lVsTaI1c0XyoRfLvvxNykeagfL1zv1eAAYbmAGlw>
+    <xmx:y2pcXZ82lAJh4QdeCDTrGy1-H01MsQl94DChJtRF_ouCofFn3jJvoQ>
+    <xmx:y2pcXeKxYMSjl6m3jvuTp2KihNnrk-x5rlogp8ZXMlvFc1SvCe7s4A>
+    <xmx:zGpcXQSqnUmxJpInDyaXRxgBNiApeJDo8zgPX1U_dFq_SUeBPF7j-g>
+Received: from dlxu-fedora-R90QNFJV.thefacebook.com (unknown [199.201.64.2])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 6376780062;
+        Tue, 20 Aug 2019 17:48:57 -0400 (EDT)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     bpf@vger.kernel.org, songliubraving@fb.com, yhs@fb.com,
+        andriin@fb.com, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, ast@fb.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH v4 bpf-next 0/4] tracing/probe: Add PERF_EVENT_IOC_QUERY_PROBE
+Date:   Tue, 20 Aug 2019 14:48:15 -0700
+Message-Id: <20190820214819.16154-1-dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <CAJ+HfNj8qNwCpiLBw1eO_ggSf11Qq9323NVOcTS6wtfTm=RWcg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25547/Tue Aug 20 10:27:49 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/20/19 5:29 PM, Björn Töpel wrote:
-> On Tue, 20 Aug 2019 at 16:30, Daniel Borkmann <daniel@iogearbox.net> wrote:
->> On 8/20/19 12:04 PM, Björn Töpel wrote:
->>> From: Björn Töpel <bjorn.topel@intel.com>
->>>
->>> The poll() implementation for AF_XDP sockets did not perform the
->>> proper state checks, prior accessing the socket umem. This patch fixes
->>> that by performing a xsk_is_bound() check.
->>>
->>> Suggested-by: Hillf Danton <hdanton@sina.com>
->>> Reported-by: syzbot+c82697e3043781e08802@syzkaller.appspotmail.com
->>> Fixes: 77cd0d7b3f25 ("xsk: add support for need_wakeup flag in AF_XDP rings")
->>> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
->>> ---
->>>    net/xdp/xsk.c | 14 ++++++++++++--
->>>    1 file changed, 12 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
->>> index ee4428a892fa..08bed5e92af4 100644
->>> --- a/net/xdp/xsk.c
->>> +++ b/net/xdp/xsk.c
->>> @@ -356,13 +356,20 @@ static int xsk_generic_xmit(struct sock *sk, struct msghdr *m,
->>>        return err;
->>>    }
->>>
->>> +static bool xsk_is_bound(struct xdp_sock *xs)
->>> +{
->>> +     struct net_device *dev = READ_ONCE(xs->dev);
->>> +
->>> +     return dev && xs->state == XSK_BOUND;
->>> +}
->>> +
->>>    static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
->>>    {
->>>        bool need_wait = !(m->msg_flags & MSG_DONTWAIT);
->>>        struct sock *sk = sock->sk;
->>>        struct xdp_sock *xs = xdp_sk(sk);
->>>
->>> -     if (unlikely(!xs->dev))
->>> +     if (unlikely(!xsk_is_bound(xs)))
->>>                return -ENXIO;
->>>        if (unlikely(!(xs->dev->flags & IFF_UP)))
->>>                return -ENETDOWN;
->>> @@ -383,6 +390,9 @@ static unsigned int xsk_poll(struct file *file, struct socket *sock,
->>>        struct net_device *dev = xs->dev;
->>>        struct xdp_umem *umem = xs->umem;
->>>
->>> +     if (unlikely(!xsk_is_bound(xs)))
->>> +             return mask;
->>> +
->>>        if (umem->need_wakeup)
->>>                dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id,
->>>                                                umem->need_wakeup);
->>> @@ -417,7 +427,7 @@ static void xsk_unbind_dev(struct xdp_sock *xs)
->>>    {
->>>        struct net_device *dev = xs->dev;
->>>
->>> -     if (!dev || xs->state != XSK_BOUND)
->>> +     if (!xsk_is_bound(xs))
->>>                return;
->>
->> I think I'm a bit confused by your READ_ONCE() usage. ;-/ I can see why you're
->> using it in xsk_is_bound() above, but then at the same time all the other callbacks
->> like xsk_poll() or xsk_unbind_dev() above have a struct net_device *dev = xs->dev
->> right before the test. Could you elaborate?
-> 
-> Yes, now I'm confused as well! Digging deeper... I believe there are a
-> couple of places in xsk.c that do not have
-> READ_ONCE/WRITE_ONCE-correctness. Various xdp_sock members are read
-> lock-less outside the control plane mutex (mutex member of struct
-> xdp_sock). This needs some re-work. I'll look into using the newly
+It's useful to know [uk]probe's nmissed and nhit stats. For example with
+tracing tools, it's important to know when events may have been lost.
+debugfs currently exposes a control file to get this information, but
+it is not compatible with probes registered with the perf API.
 
-Right, so even in above two cases, the compiler could have refetched, e.g.
-dev variable could have first been NULL, but xsk_is_bound() later returns
-true.
+While bpf programs may be able to manually count nhit, there is no way
+to gather nmissed. In other words, it is currently not possible to
+retrieve information about FD-based probes.
 
-> introduced state member (with corresponding read/write barriers) for
-> this.
-> 
-> I'll cook some patch(es) that address this, but first it sounds like I
-> need to reread [1] two, or three times. At least. ;-)
-> 
-> 
-> Thanks,
-> Björn
-> 
-> 
-> [1] https://lwn.net/Articles/793253/
-> 
-> 
->> Thanks,
->> Daniel
+This patch adds a new ioctl that lets users query nmissed (as well as
+nhit for completeness). We currently only add support for [uk]probes
+but leave the possibility open for other probes like tracepoint.
+
+v3 -> v4:
+- Make kernel code set size field on ioctl arg
+- Update selftests to check size field
+- Remove unnecessary function stubs
+
+v2 -> v3:
+- Introduce bpf_link_type and associated getter to track underlying link
+  types
+- Add back size field in perf_event_query_probe for forward/backwards
+  compat
+- Remove NULL checks, fix typos
+
+v1 -> v2:
+- More descriptive cover letter
+- Make API more generic and support uprobes as well
+- Use casters/getters for libbpf instead of single getter
+- Fix typos
+- Remove size field from ioctl struct
+- Split out libbpf.h sync to tools dir to separate commit
+
+Daniel Xu (4):
+  tracing/probe: Add PERF_EVENT_IOC_QUERY_PROBE ioctl
+  libbpf: Add helpers to extract perf fd from bpf_link
+  tracing/probe: Sync perf_event.h to tools
+  tracing/probe: Add self test for PERF_EVENT_IOC_QUERY_PROBE
+
+ include/linux/trace_events.h                  |   2 +
+ include/uapi/linux/perf_event.h               |  23 ++++
+ kernel/events/core.c                          |  20 +++
+ kernel/trace/trace_kprobe.c                   |  25 ++++
+ kernel/trace/trace_uprobe.c                   |  25 ++++
+ tools/include/uapi/linux/perf_event.h         |  23 ++++
+ tools/lib/bpf/libbpf.c                        |  21 ++++
+ tools/lib/bpf/libbpf.h                        |  13 ++
+ tools/lib/bpf/libbpf.map                      |   3 +
+ .../selftests/bpf/prog_tests/attach_probe.c   | 115 ++++++++++++++++++
+ 10 files changed, 270 insertions(+)
+
+-- 
+2.21.0
 
