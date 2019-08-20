@@ -2,82 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FCCC95DD4
-	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 13:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35EAB96039
+	for <lists+bpf@lfdr.de>; Tue, 20 Aug 2019 15:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729736AbfHTLue (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Aug 2019 07:50:34 -0400
-Received: from mga17.intel.com ([192.55.52.151]:34298 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729684AbfHTLue (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Aug 2019 07:50:34 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Aug 2019 04:50:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,408,1559545200"; 
-   d="scan'208";a="183176160"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 20 Aug 2019 04:50:31 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1i02el-000HTe-53; Tue, 20 Aug 2019 19:50:31 +0800
-Date:   Tue, 20 Aug 2019 19:50:16 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     =?unknown-8bit?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Cc:     kbuild-all@01.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH] xsk: fix ptr_ret.cocci warnings
-Message-ID: <20190820115016.i6uuadjmqrr2iunt@48261080c7f1>
-References: <201908201913.pObcBf2Z%lkp@intel.com>
+        id S1730020AbfHTNgw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Aug 2019 09:36:52 -0400
+Received: from www62.your-server.de ([213.133.104.62]:48650 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728682AbfHTNgw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Aug 2019 09:36:52 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1i04Jd-0000lu-Ho; Tue, 20 Aug 2019 15:36:49 +0200
+Received: from [178.197.249.40] (helo=pc-63.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1i04Jd-000MPw-8g; Tue, 20 Aug 2019 15:36:49 +0200
+Subject: Re: [PATCH bpf-next] bpf: add BTF ids in procfs for file descriptors
+ to BTF objects
+To:     Quentin Monnet <quentin.monnet@netronome.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        oss-drivers@netronome.com
+References: <20190820095233.17097-1-quentin.monnet@netronome.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <fcb2e528-6750-2192-befe-dd68ca36fc62@iogearbox.net>
+Date:   Tue, 20 Aug 2019 15:36:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=unknown-8bit
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <201908201913.pObcBf2Z%lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20190820095233.17097-1-quentin.monnet@netronome.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25547/Tue Aug 20 10:27:49 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: kbuild test robot <lkp@intel.com>
+On 8/20/19 11:52 AM, Quentin Monnet wrote:
+> Implement the show_fdinfo hook for BTF FDs file operations, and make it
+> print the id and the size of the BTF object. This allows for a quick
+> retrieval of the BTF id from its FD; or it can help understanding what
+> type of object (BTF) the file descriptor points to.
+> 
+> Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
+> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+> ---
+>   kernel/bpf/btf.c | 16 ++++++++++++++++
+>   1 file changed, 16 insertions(+)
+> 
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 5fcc7a17eb5a..39e184f1b27c 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -3376,6 +3376,19 @@ void btf_type_seq_show(const struct btf *btf, u32 type_id, void *obj,
+>   	btf_type_ops(t)->seq_show(btf, t, type_id, obj, 0, m);
+>   }
+>   
+> +#ifdef CONFIG_PROC_FS
+> +static void bpf_btf_show_fdinfo(struct seq_file *m, struct file *filp)
+> +{
+> +	const struct btf *btf = filp->private_data;
+> +
+> +	seq_printf(m,
+> +		   "btf_id:\t%u\n"
+> +		   "data_size:\t%u\n",
+> +		   btf->id,
+> +		   btf->data_size);
 
-kernel/bpf/xskmap.c:24:8-14: WARNING: PTR_ERR_OR_ZERO can be used
+Looks good, exposing btf_id makes sense to me in order to correlate with applications.
+Do you have a concrete use case for data_size to expose it this way as opposed to fetch
+it via btf_get_info_by_fd()? If not, I'd say lets only add btf_id in there.
 
+> +}
+> +#endif
+> +
+>   static int btf_release(struct inode *inode, struct file *filp)
+>   {
+>   	btf_put(filp->private_data);
+> @@ -3383,6 +3396,9 @@ static int btf_release(struct inode *inode, struct file *filp)
+>   }
+>   
+>   const struct file_operations btf_fops = {
+> +#ifdef CONFIG_PROC_FS
+> +	.show_fdinfo	= bpf_btf_show_fdinfo,
+> +#endif
+>   	.release	= btf_release,
+>   };
+>   
+> 
 
- Use PTR_ERR_OR_ZERO rather than if(IS_ERR(...)) + PTR_ERR
-
-Generated by: scripts/coccinelle/api/ptr_ret.cocci
-
-Fixes: 0402acd683c6 ("xsk: remove AF_XDP socket from map when the socket is released")
-CC: Björn Töpel <bjorn.topel@intel.com>
-Signed-off-by: kbuild test robot <lkp@intel.com>
----
-
-tree:   https://kernel.googlesource.com/pub/scm/linux/kernel/git/next/linux-next.git master
-head:   54c851a8cc739ce7f1aaea583940054cdfe2223f
-commit: 0402acd683c678874df6bdbc23530ca07ea19353 [7165/7710] xsk: remove AF_XDP socket from map when the socket is released
-
- xskmap.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/kernel/bpf/xskmap.c
-+++ b/kernel/bpf/xskmap.c
-@@ -21,7 +21,7 @@ int xsk_map_inc(struct xsk_map *map)
- 	struct bpf_map *m = &map->map;
- 
- 	m = bpf_map_inc(m, false);
--	return IS_ERR(m) ? PTR_ERR(m) : 0;
-+	return PTR_ERR_OR_ZERO(m);
- }
- 
- void xsk_map_put(struct xsk_map *map)
+Thanks,
+Daniel
