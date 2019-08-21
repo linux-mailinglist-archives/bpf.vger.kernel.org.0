@@ -2,124 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3120896E80
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 02:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC53196EC0
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 03:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726294AbfHUAnL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Aug 2019 20:43:11 -0400
-Received: from mxhk.zte.com.cn ([63.217.80.70]:8004 "EHLO mxhk.zte.com.cn"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726193AbfHUAnL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Aug 2019 20:43:11 -0400
-Received: from mse-fl1.zte.com.cn (unknown [10.30.14.238])
-        by Forcepoint Email with ESMTPS id D07814679584F6934D3D;
-        Wed, 21 Aug 2019 08:43:07 +0800 (CST)
-Received: from notes_smtp.zte.com.cn (notessmtp.zte.com.cn [10.30.1.239])
-        by mse-fl1.zte.com.cn with ESMTP id x7L0g2Aj077465;
-        Wed, 21 Aug 2019 08:42:02 +0800 (GMT-8)
-        (envelope-from zhang.lin16@zte.com.cn)
-Received: from fox-host8.localdomain ([10.74.120.8])
-          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
-          with ESMTP id 2019082108422087-3081849 ;
-          Wed, 21 Aug 2019 08:42:20 +0800 
-From:   zhanglin <zhang.lin16@zte.com.cn>
-To:     davem@davemloft.net
-Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, willemb@google.com,
-        edumazet@google.com, deepa.kernel@gmail.com, arnd@arndb.de,
-        dh.herrmann@gmail.com, gnault@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        xue.zhihong@zte.com.cn, wang.yi59@zte.com.cn,
-        jiang.xuexin@zte.com.cn, zhanglin <zhang.lin16@zte.com.cn>
-Subject: [PATCH v2] sock: fix potential memory leak in proto_register()
-Date:   Wed, 21 Aug 2019 08:42:38 +0800
-Message-Id: <1566348158-43942-1-git-send-email-zhang.lin16@zte.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
- 21, 2013) at 2019-08-21 08:42:20,
-        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
- 2019-08-21 08:42:06,
-        Serialize complete at 2019-08-21 08:42:06
-X-MAIL: mse-fl1.zte.com.cn x7L0g2Aj077465
+        id S1726351AbfHUBRN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Aug 2019 21:17:13 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:41486 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726202AbfHUBRM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Aug 2019 21:17:12 -0400
+Received: by mail-io1-f67.google.com with SMTP id j5so1246592ioj.8;
+        Tue, 20 Aug 2019 18:17:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kZWHrTprV1/7KUdKW3G6OHYWGjOaGD0IoU996R//irc=;
+        b=PW/FNmKOjoHqHBgeKuzcejPrWtquvNRR8hFw19cBinEnE7gl0RdKyYw2XhZFsMK5l8
+         jSWcbl+meQnv7sxj8jqKKU3UIX3V+6MXUy8oV7zb9opsXDeeAi4xDzQRHCGUp6E7iFrN
+         8bWY7qXYx+av2KfejCyBNsCYm3VxnL7YaA6eajUZ3RFxY6mAR/YLmt003MKqW0/tIbX1
+         qcLZKcc7MA7q9HnC9CmAv6ZQxtd3J9rVvcvNdIWPW4hm+wlvNikXZqVM4e7cOCiD4/vZ
+         DnA2tCTB5rUV7i43BoOjjvGGEWYorK7nKtvSlDicQz7tL3nrLpg8pa1gaUgFwVF2TwCF
+         nYdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kZWHrTprV1/7KUdKW3G6OHYWGjOaGD0IoU996R//irc=;
+        b=P674LPmtp7bPIRbsWYBdCYFk6ZrCdQaHT9C9WYbqfixnUBC5T74jrTsqZGJjZgIj0j
+         Ymi8bHtKkMBC/V8at5KpEVyGmURLN/PUZLd2gpFOwua+hxKRUiKhX0f5mQX3fsLCqzc2
+         YQnBnSylcPlkfmhzPLz/5cE4d/kTdt1KHOtFzqeWRaZWHgHQYaX/V6rirZbwNZRhzxsj
+         7vnuYjzyJy1AlvdSWo5mqoSxvuGcvrHtsM+kxorfnPvjw6ErIgON8ti0DUQhbzcFffIe
+         L1XIhct+dRewCc1+V0c0TPUWFzIudBu5YFwn7MEnmnkXfrDtWwDXQCvuwviDU2K0p3KI
+         mKkw==
+X-Gm-Message-State: APjAAAWs5CGHkozDZUE0HxvOoibumzZl7prYiM8mE5gdxT+pL9gm0D+8
+        OCs2exrBS+eOZgT1IDdQPFedDTGW4wGf9kPN7nA=
+X-Google-Smtp-Source: APXvYqwKPD7A/87E2z38qYXby7iIyyIj1fffBmYKZ1eCq5AuMAqrR+2V+Rth31D1/5dIoKoaLHfgabFG9o2gT1w9NOY=
+X-Received: by 2002:a5d:8b47:: with SMTP id c7mr24228155iot.42.1566350231784;
+ Tue, 20 Aug 2019 18:17:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <CGME20190820151644eucas1p179d6d1da42bb6be0aad8f58ac46624ce@eucas1p1.samsung.com>
+ <20190820151611.10727-1-i.maximets@samsung.com> <CAKgT0Udn0D0_f=SOH2wpBRWV_u4rb1Qe2h7gguXnRNzJ_VkRzg@mail.gmail.com>
+ <625791af-c656-1e42-b60e-b3a5cedcb4c4@samsung.com>
+In-Reply-To: <625791af-c656-1e42-b60e-b3a5cedcb4c4@samsung.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Tue, 20 Aug 2019 18:17:00 -0700
+Message-ID: <CAKgT0Uc27+ucd=a_sgTmv5g7_+ZTg1zK4isYJ0H7YWQj3d=Ejg@mail.gmail.com>
+Subject: Re: [PATCH net] ixgbe: fix double clean of tx descriptors with xdp
+To:     Ilya Maximets <i.maximets@samsung.com>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        William Tu <u9012063@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If protocols registered exceeded PROTO_INUSE_NR, prot will be
-added to proto_list, but no available bit left for prot in
-proto_inuse_idx.
+On Tue, Aug 20, 2019 at 8:58 AM Ilya Maximets <i.maximets@samsung.com> wrote:
+>
+> On 20.08.2019 18:35, Alexander Duyck wrote:
+> > On Tue, Aug 20, 2019 at 8:18 AM Ilya Maximets <i.maximets@samsung.com> wrote:
+> >>
+> >> Tx code doesn't clear the descriptor status after cleaning.
+> >> So, if the budget is larger than number of used elems in a ring, some
+> >> descriptors will be accounted twice and xsk_umem_complete_tx will move
+> >> prod_tail far beyond the prod_head breaking the comletion queue ring.
+> >>
+> >> Fix that by limiting the number of descriptors to clean by the number
+> >> of used descriptors in the tx ring.
+> >>
+> >> Fixes: 8221c5eba8c1 ("ixgbe: add AF_XDP zero-copy Tx support")
+> >> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
+> >
+> > I'm not sure this is the best way to go. My preference would be to
+> > have something in the ring that would prevent us from racing which I
+> > don't think this really addresses. I am pretty sure this code is safe
+> > on x86 but I would be worried about weak ordered systems such as
+> > PowerPC.
+> >
+> > It might make sense to look at adding the eop_desc logic like we have
+> > in the regular path with a proper barrier before we write it and after
+> > we read it. So for example we could hold of on writing the bytecount
+> > value until the end of an iteration and call smp_wmb before we write
+> > it. Then on the cleanup we could read it and if it is non-zero we take
+> > an smp_rmb before proceeding further to process the Tx descriptor and
+> > clearing the value. Otherwise this code is going to just keep popping
+> > up with issues.
+>
+> But, unlike regular case, xdp zero-copy xmit and clean for particular
+> tx ring always happens in the same NAPI context and even on the same
+> CPU core.
+>
+> I saw the 'eop_desc' manipulations in regular case and yes, we could
+> use 'next_to_watch' field just as a flag of descriptor existence,
+> but it seems unnecessarily complicated. Am I missing something?
+>
 
-Signed-off-by: zhanglin <zhang.lin16@zte.com.cn>
----
- net/core/sock.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+So is it always in the same NAPI context?. I forgot, I was thinking
+that somehow the socket could possibly make use of XDP for transmit.
 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index bc3512f230a3..c7ae32705705 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -3139,16 +3139,17 @@ static __init int net_inuse_init(void)
- 
- core_initcall(net_inuse_init);
- 
--static void assign_proto_idx(struct proto *prot)
-+static int assign_proto_idx(struct proto *prot)
- {
- 	prot->inuse_idx = find_first_zero_bit(proto_inuse_idx, PROTO_INUSE_NR);
- 
- 	if (unlikely(prot->inuse_idx == PROTO_INUSE_NR - 1)) {
- 		pr_err("PROTO_INUSE_NR exhausted\n");
--		return;
-+		return -ENOSPC;
- 	}
- 
- 	set_bit(prot->inuse_idx, proto_inuse_idx);
-+	return 0;
- }
- 
- static void release_proto_idx(struct proto *prot)
-@@ -3157,8 +3158,9 @@ static void release_proto_idx(struct proto *prot)
- 		clear_bit(prot->inuse_idx, proto_inuse_idx);
- }
- #else
--static inline void assign_proto_idx(struct proto *prot)
-+static inline int assign_proto_idx(struct proto *prot)
- {
-+	return 0;
- }
- 
- static inline void release_proto_idx(struct proto *prot)
-@@ -3243,18 +3245,24 @@ int proto_register(struct proto *prot, int alloc_slab)
- 	}
- 
- 	mutex_lock(&proto_list_mutex);
-+	if (assign_proto_idx(prot)) {
-+		mutex_unlock(&proto_list_mutex);
-+		goto out_free_timewait_sock_slab_name;
-+	}
- 	list_add(&prot->node, &proto_list);
--	assign_proto_idx(prot);
- 	mutex_unlock(&proto_list_mutex);
- 	return 0;
- 
- out_free_timewait_sock_slab_name:
--	kfree(prot->twsk_prot->twsk_slab_name);
-+	if (alloc_slab && prot->twsk_prot)
-+		kfree(prot->twsk_prot->twsk_slab_name);
- out_free_request_sock_slab:
--	req_prot_cleanup(prot->rsk_prot);
-+	if (alloc_slab) {
-+		req_prot_cleanup(prot->rsk_prot);
- 
--	kmem_cache_destroy(prot->slab);
--	prot->slab = NULL;
-+		kmem_cache_destroy(prot->slab);
-+		prot->slab = NULL;
-+	}
- out:
- 	return -ENOBUFS;
- }
--- 
-2.17.1
+As far as the logic to use I would be good with just using a value you
+are already setting such as the bytecount value. All that would need
+to happen is to guarantee that the value is cleared in the Tx path. So
+if you clear the bytecount in ixgbe_clean_xdp_tx_irq you could
+theoretically just use that as well to flag that a descriptor has been
+populated and is ready to be cleaned. Assuming the logic about this
+all being in the same NAPI context anyway you wouldn't need to mess
+with the barrier stuff I mentioned before.
 
+- Alex
