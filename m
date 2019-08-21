@@ -2,115 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C05298456
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 21:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF17984D5
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 21:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729748AbfHUT0Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Aug 2019 15:26:16 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:35657 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729700AbfHUT0Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Aug 2019 15:26:16 -0400
-Received: by mail-pl1-f194.google.com with SMTP id gn20so1872445plb.2;
-        Wed, 21 Aug 2019 12:26:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=PNUqpGr9n3DZ1UqJZHgWC3CBJzQFi6GomaPmjlQlmnY=;
-        b=ScoclNxohaMG9qcl0/98baxq3e9Dfu1aXi059zSgcDbTLQFQx9l89ecYlFupYueNPL
-         7n6UjS040PYa46dSL/ovQ5Di+AsdaKd+LWnQavuXeoIfexVGNhiN0MYkAHt5SgPzzYG0
-         mgSdy5tsqOhI7JzzjQc0/i70Ubl/ywqMyTje2oVpVEqSYuuPLqY55VN03zpj+DeYVsVG
-         DCKgqYU2k/KBI5upgLm9pdd+aB7VqzRKfnixDf4sssuYB2cPYYcY6aiqRGpZh96h5KMX
-         bCTXRePURM+lShk4Wy7DwKEF0YnIRixnWb5o9vJjsGNZ/BUYJztcRoA8fvWb+dDjRP8h
-         QHSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=PNUqpGr9n3DZ1UqJZHgWC3CBJzQFi6GomaPmjlQlmnY=;
-        b=GY/tzOPT/Cip3FE3NJSSVYY/o0lQyLMoc8k978APRo9+qsA4PpYf9YsZbwY2GzsLHd
-         0HBaz6xSGSKC5XROsh7+A6uiumN3+UEcuz2RuikzGpt1o/dtdQA21SezjBv6uuBO8NsI
-         WtCOStSqp9tnBZ0gXb6+i1icUU6gC4WZj8bPln2MBsOq+rfpMWZRu6mActngqkHTk87i
-         PwXeDd0uaFWtHGvxEk08WAygH9qc2rqw0igysaj+fcetKTnP2wfrhZI1FwbP+maq6tSb
-         7H4hNBCSDuHZumfA84C7MWXMKe9Yc0k41c5QDBlyIgFZ1rBhkQSaEAHLxrxMOl8gvvGq
-         aHBw==
-X-Gm-Message-State: APjAAAXyMBh2Qo9Jfpz12XTZKGv0A8AtpuOZNTtJRW5mwVyFguLA/eI1
-        p3IIA8qJWcv9ZXSIXuZ8vfc=
-X-Google-Smtp-Source: APXvYqyiGjVoxpnDmBXTJec/nTluT/vnF4EYm4c8oxZ3SwrDPFS7iVXZJcP25WODHfum2WdVVXmgXw==
-X-Received: by 2002:a17:902:e9:: with SMTP id a96mr20008772pla.169.1566415575634;
-        Wed, 21 Aug 2019 12:26:15 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::678f])
-        by smtp.gmail.com with ESMTPSA id e66sm24807075pfe.142.2019.08.21.12.26.14
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 21 Aug 2019 12:26:14 -0700 (PDT)
-Date:   Wed, 21 Aug 2019 12:26:12 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [RFC bpf-next 0/5] Convert iproute2 to use libbpf (WIP)
-Message-ID: <20190821192611.xmciiiqjpkujjup7@ast-mbp.dhcp.thefacebook.com>
-References: <20190820114706.18546-1-toke@redhat.com>
+        id S1729659AbfHUTxB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Aug 2019 15:53:01 -0400
+Received: from www62.your-server.de ([213.133.104.62]:33036 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727780AbfHUTxB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Aug 2019 15:53:01 -0400
+Received: from sslproxy01.your-server.de ([88.198.220.130])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1i0WfB-0000NG-4P; Wed, 21 Aug 2019 21:52:57 +0200
+Received: from [178.197.249.40] (helo=pc-63.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1i0WfA-00088k-TE; Wed, 21 Aug 2019 21:52:56 +0200
+Subject: Re: [PATCH bpf v2] selftests/bpf: fix endianness issues in
+ test_sysctl
+To:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+References: <20190819105908.64863-1-iii@linux.ibm.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <40d41e83-61c3-5e08-f44d-4800763b1785@iogearbox.net>
+Date:   Wed, 21 Aug 2019 21:52:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190820114706.18546-1-toke@redhat.com>
-User-Agent: NeoMutt/20180223
+In-Reply-To: <20190819105908.64863-1-iii@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25548/Wed Aug 21 10:27:18 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 20, 2019 at 01:47:01PM +0200, Toke Høiland-Jørgensen wrote:
-> iproute2 uses its own bpf loader to load eBPF programs, which has
-> evolved separately from libbpf. Since we are now standardising on
-> libbpf, this becomes a problem as iproute2 is slowly accumulating
-> feature incompatibilities with libbpf-based loaders. In particular,
-> iproute2 has its own (expanded) version of the map definition struct,
-> which makes it difficult to write programs that can be loaded with both
-> custom loaders and iproute2.
+On 8/19/19 12:59 PM, Ilya Leoshkevich wrote:
+> A lot of test_sysctl sub-tests fail due to handling strings as a bunch
+> of immediate values in a little-endian-specific manner.
 > 
-> This series seeks to address this by converting iproute2 to using libbpf
-> for all its bpf needs. This version is an early proof-of-concept RFC, to
-> get some feedback on whether people think this is the right direction.
+> Fix by wrapping all immediates in bpf_ntohl and the new bpf_be64_to_cpu.
 > 
-> What this series does is the following:
+> Also, sometimes tests fail because sysctl() unexpectedly succeeds with
+> an inappropriate "Unexpected failure" message and a random errno. Zero
+> out errno before calling sysctl() and replace the message with
+> "Unexpected success".
 > 
-> - Updates the libbpf map definition struct to match that of iproute2
->   (patch 1).
-> - Adds functionality to libbpf to support automatic pinning of maps when
->   loading an eBPF program, while re-using pinned maps if they already
->   exist (patches 2-3).
-> - Modifies iproute2 to make it possible to compile it against libbpf
->   without affecting any existing functionality (patch 4).
-> - Changes the iproute2 eBPF loader to use libbpf for loading XDP
->   programs (patch 5).
+> Fixes: 1f5fa9ab6e2e ("selftests/bpf: Test BPF_CGROUP_SYSCTL")
+> Fixes: 9a1027e52535 ("selftests/bpf: Test file_pos field in bpf_sysctl ctx")
+> Fixes: 6041c67f28d8 ("selftests/bpf: Test bpf_sysctl_get_name helper")
+> Fixes: 11ff34f74e32 ("selftests/bpf: Test sysctl_get_current_value helper")
+> Fixes: 786047dd08de ("selftests/bpf: Test bpf_sysctl_{get,set}_new_value helpers")
+> Fixes: 8549ddc832d6 ("selftests/bpf: Test bpf_strtol and bpf_strtoul helpers")
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+> v1->v2: Use bpf_ntohl and bpf_be64_to_cpu, drop __bpf_le64_to_cpu.
 > 
+>   tools/testing/selftests/bpf/bpf_endian.h  |   7 ++
+>   tools/testing/selftests/bpf/test_sysctl.c | 130 ++++++++++++++--------
+>   2 files changed, 92 insertions(+), 45 deletions(-)
 > 
-> As this is an early PoC, there are still a few missing pieces before
-> this can be merged. Including (but probably not limited to):
-> 
-> - Consolidate the map definition struct in the bpf_helpers.h file in the
->   kernel tree. This contains a different, and incompatible, update to
->   the struct. Since the iproute2 version has actually been released for
->   use outside the kernel tree (and thus is subject to API stability
->   constraints), I think it makes the most sense to keep that, and port
->   the selftests to use it.
+> diff --git a/tools/testing/selftests/bpf/bpf_endian.h b/tools/testing/selftests/bpf/bpf_endian.h
+> index 05f036df8a4c..f3be9322e89c 100644
+> --- a/tools/testing/selftests/bpf/bpf_endian.h
+> +++ b/tools/testing/selftests/bpf/bpf_endian.h
+> @@ -29,6 +29,8 @@
+>   # define __bpf_htonl(x)			__builtin_bswap32(x)
+>   # define __bpf_constant_ntohl(x)	___constant_swab32(x)
+>   # define __bpf_constant_htonl(x)	___constant_swab32(x)
+> +# define __bpf_be64_to_cpu(x)		__builtin_bswap64(x)
+> +# define __bpf_constant_be64_to_cpu(x)	___constant_swab64(x)
+>   #elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+>   # define __bpf_ntohs(x)			(x)
+>   # define __bpf_htons(x)			(x)
+> @@ -38,6 +40,8 @@
+>   # define __bpf_htonl(x)			(x)
+>   # define __bpf_constant_ntohl(x)	(x)
+>   # define __bpf_constant_htonl(x)	(x)
+> +# define __bpf_be64_to_cpu(x)		(x)
+> +# define __bpf_constant_be64_to_cpu(x)  (x)
+>   #else
+>   # error "Fix your compiler's __BYTE_ORDER__?!"
+>   #endif
+> @@ -54,5 +58,8 @@
+>   #define bpf_ntohl(x)				\
+>   	(__builtin_constant_p(x) ?		\
+>   	 __bpf_constant_ntohl(x) : __bpf_ntohl(x))
+> +#define bpf_be64_to_cpu(x)			\
+> +	(__builtin_constant_p(x) ?		\
+> +	 __bpf_constant_be64_to_cpu(x) : __bpf_be64_to_cpu(x))
+>   
+>   #endif /* __BPF_ENDIAN__ */
 
-It sounds like you're implying that existing libbpf format is not uapi.
-It is and we cannot break it.
-If patch 1 means breakage for existing pre-compiled .o that won't load
-with new libbpf then we cannot use this method.
-Recompiling .o with new libbpf definition of bpf_map_def isn't an option.
-libbpf has to be smart before/after and recognize both old and iproute2 format.
+By the way, looks like progs/test_lwt_seg6local.c defines its own ntohll()/htonll(),
+could we make this two patches: i) consolidating the former by adding proper variants
+to bpf_endian.h (I mean generically) and ii) fixing test_sysctl.c by using them? Thinking
+addition of i) as plan for bpf-next would be to move bpf_endian.h as proper API into
+libbpf in near future such that BPF progs don't need to redefine them.
 
+Thanks,
+Daniel
