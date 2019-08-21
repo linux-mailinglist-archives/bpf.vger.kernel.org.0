@@ -2,113 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C62F96E02
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 02:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3120896E80
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 02:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726294AbfHUAET (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Aug 2019 20:04:19 -0400
-Received: from lekensteyn.nl ([178.21.112.251]:34193 "EHLO lekensteyn.nl"
+        id S1726294AbfHUAnL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Aug 2019 20:43:11 -0400
+Received: from mxhk.zte.com.cn ([63.217.80.70]:8004 "EHLO mxhk.zte.com.cn"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726028AbfHUAET (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Aug 2019 20:04:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lekensteyn.nl; s=s2048-2015-q1;
-        h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date; bh=K3uy9dtKEGKpF75hNPdQJreepvLtuf4viqOfIEdhqEE=;
-        b=UAlesXhAJmN/Bm9g4b7rVWmx+HQInzGBH3x+BU7jIMtOjgeaFr2cRIE/4DjjrA5ChVwWKMk4mjoJyKuQRi2Ev7MhcVqHHlJshP44ZINwgtbwllyAxDHDMOPfx/S4dCPYQuZWoxP33OwEo5+Ewi2LgK50aFEu4+k+XFBUfge7XDsAA2kK1GLcKdAPF4oYHZSMzrvpOYRKzV/RBTcq+LR/lgZQH8RjGvVZiJZdhyOMVeDdmDbD5AsUmFC7+8ERasREmztrVH5hiTWgSdIypeUegDGXxi9Ynmk+lo9vKk+O0wrjzmKKIPZGLb8O5UrL/UJ0YUTpEBb5HFTOG/9/jCrM3g==;
-Received: by lekensteyn.nl with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.84_2)
-        (envelope-from <peter@lekensteyn.nl>)
-        id 1i0E6p-0005Jr-0O; Wed, 21 Aug 2019 02:04:15 +0200
-Date:   Wed, 21 Aug 2019 01:04:13 +0100
-From:   Peter Wu <peter@lekensteyn.nl>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] bpf: clarify when bpf_trace_printk discards lines
-Message-ID: <20190821000413.GA28011@al>
-References: <20190820230900.23445-1-peter@lekensteyn.nl>
- <20190820230900.23445-4-peter@lekensteyn.nl>
- <20190820232221.vzxemergvzy3bg4j@ast-mbp>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190820232221.vzxemergvzy3bg4j@ast-mbp>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Spam-Score: -0.0 (/)
-X-Spam-Status: No, hits=-0.0 required=5.0 tests=NO_RELAYS=-0.001 autolearn=unavailable autolearn_force=no
+        id S1726193AbfHUAnL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Aug 2019 20:43:11 -0400
+Received: from mse-fl1.zte.com.cn (unknown [10.30.14.238])
+        by Forcepoint Email with ESMTPS id D07814679584F6934D3D;
+        Wed, 21 Aug 2019 08:43:07 +0800 (CST)
+Received: from notes_smtp.zte.com.cn (notessmtp.zte.com.cn [10.30.1.239])
+        by mse-fl1.zte.com.cn with ESMTP id x7L0g2Aj077465;
+        Wed, 21 Aug 2019 08:42:02 +0800 (GMT-8)
+        (envelope-from zhang.lin16@zte.com.cn)
+Received: from fox-host8.localdomain ([10.74.120.8])
+          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
+          with ESMTP id 2019082108422087-3081849 ;
+          Wed, 21 Aug 2019 08:42:20 +0800 
+From:   zhanglin <zhang.lin16@zte.com.cn>
+To:     davem@davemloft.net
+Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, willemb@google.com,
+        edumazet@google.com, deepa.kernel@gmail.com, arnd@arndb.de,
+        dh.herrmann@gmail.com, gnault@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        xue.zhihong@zte.com.cn, wang.yi59@zte.com.cn,
+        jiang.xuexin@zte.com.cn, zhanglin <zhang.lin16@zte.com.cn>
+Subject: [PATCH v2] sock: fix potential memory leak in proto_register()
+Date:   Wed, 21 Aug 2019 08:42:38 +0800
+Message-Id: <1566348158-43942-1-git-send-email-zhang.lin16@zte.com.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
+ 21, 2013) at 2019-08-21 08:42:20,
+        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
+ 2019-08-21 08:42:06,
+        Serialize complete at 2019-08-21 08:42:06
+X-MAIL: mse-fl1.zte.com.cn x7L0g2Aj077465
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 20, 2019 at 04:22:23PM -0700, Alexei Starovoitov wrote:
-> On Wed, Aug 21, 2019 at 12:08:59AM +0100, Peter Wu wrote:
-> > I opened /sys/kernel/tracing/trace once and kept reading from it.
-> > bpf_trace_printk somehow did not seem to work, no entries were appended
-> > to that trace file. It turns out that tracing is disabled when that file
-> > is open. Save the next person some time and document this.
-> > 
-> > The trace file is described in Documentation/trace/ftrace.rst, however
-> > the implication "tracing is disabled" did not immediate translate to
-> > "bpf_trace_printk silently discards entries".
-> > 
-> > Signed-off-by: Peter Wu <peter@lekensteyn.nl>
-> > ---
-> >  include/uapi/linux/bpf.h | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 9ca333c3ce91..e4236e357ed9 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -575,6 +575,8 @@ union bpf_attr {
-> >   * 		limited to five).
-> >   *
-> >   * 		Each time the helper is called, it appends a line to the trace.
-> > + * 		Lines are discarded while *\/sys/kernel/debug/tracing/trace* is
-> > + * 		open, use *\/sys/kernel/debug/tracing/trace_pipe* to avoid this.
-> 
-> that's not quite correct.
-> Having 'trace' file open doesn't discard lines.
-> I think this type of comment in uapi header makes more confusion than helps.
+If protocols registered exceeded PROTO_INUSE_NR, prot will be
+added to proto_list, but no available bit left for prot in
+proto_inuse_idx.
 
-Having the 'trace' file open for reading results in discarding lines. It
-took me a while to figure that out. At first I was not even sure whether
-my eBPF program was executed or not due to lack of entries in the
-'trace' file.
+Signed-off-by: zhanglin <zhang.lin16@zte.com.cn>
+---
+ net/core/sock.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-I ended up setting a breakpoint and ended up with this call stack:
-
-  - bpf_trace_printk
-    - ____bpf_trace_printk
-      - __trace_printk
-        - trace_vprintk
-          - trace_array_vprintk
-            - __trace_array_vprintk
-              - __trace_array_vprintk
-                - __trace_buffer_lock_reserve
-                  - ring_buffer_lock_reserve
-
-The function ends up skipping the even because record_disabled == 1:
-
-    if (unlikely(atomic_read(&buffer->record_disabled)))
-        goto out;
-
-Why is that? Well, I guessed that ring_buffer_record_disable and
-ring_buffer_record_enable would be related. Sure enough, the first one
-was hit when the 'trace' file is opened for reading while the latter is
-called when the file is closed.
-
-The relevant code from kernel/trace/trace.c (__tracing_open), "snapshot"
-is true when "trace" is opened, and "false" when "trace_pipe" is used:
-
-    /* stop the trace while dumping if we are not opening "snapshot" */
-    if (!iter->snapshot)
-        tracing_stop_tr(tr);
-
-So I think this supports the claim that lines are discarded. Do you
-think this is not the case?
+diff --git a/net/core/sock.c b/net/core/sock.c
+index bc3512f230a3..c7ae32705705 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -3139,16 +3139,17 @@ static __init int net_inuse_init(void)
+ 
+ core_initcall(net_inuse_init);
+ 
+-static void assign_proto_idx(struct proto *prot)
++static int assign_proto_idx(struct proto *prot)
+ {
+ 	prot->inuse_idx = find_first_zero_bit(proto_inuse_idx, PROTO_INUSE_NR);
+ 
+ 	if (unlikely(prot->inuse_idx == PROTO_INUSE_NR - 1)) {
+ 		pr_err("PROTO_INUSE_NR exhausted\n");
+-		return;
++		return -ENOSPC;
+ 	}
+ 
+ 	set_bit(prot->inuse_idx, proto_inuse_idx);
++	return 0;
+ }
+ 
+ static void release_proto_idx(struct proto *prot)
+@@ -3157,8 +3158,9 @@ static void release_proto_idx(struct proto *prot)
+ 		clear_bit(prot->inuse_idx, proto_inuse_idx);
+ }
+ #else
+-static inline void assign_proto_idx(struct proto *prot)
++static inline int assign_proto_idx(struct proto *prot)
+ {
++	return 0;
+ }
+ 
+ static inline void release_proto_idx(struct proto *prot)
+@@ -3243,18 +3245,24 @@ int proto_register(struct proto *prot, int alloc_slab)
+ 	}
+ 
+ 	mutex_lock(&proto_list_mutex);
++	if (assign_proto_idx(prot)) {
++		mutex_unlock(&proto_list_mutex);
++		goto out_free_timewait_sock_slab_name;
++	}
+ 	list_add(&prot->node, &proto_list);
+-	assign_proto_idx(prot);
+ 	mutex_unlock(&proto_list_mutex);
+ 	return 0;
+ 
+ out_free_timewait_sock_slab_name:
+-	kfree(prot->twsk_prot->twsk_slab_name);
++	if (alloc_slab && prot->twsk_prot)
++		kfree(prot->twsk_prot->twsk_slab_name);
+ out_free_request_sock_slab:
+-	req_prot_cleanup(prot->rsk_prot);
++	if (alloc_slab) {
++		req_prot_cleanup(prot->rsk_prot);
+ 
+-	kmem_cache_destroy(prot->slab);
+-	prot->slab = NULL;
++		kmem_cache_destroy(prot->slab);
++		prot->slab = NULL;
++	}
+ out:
+ 	return -ENOBUFS;
+ }
 -- 
-Kind regards,
-Peter Wu
-https://lekensteyn.nl
+2.17.1
+
