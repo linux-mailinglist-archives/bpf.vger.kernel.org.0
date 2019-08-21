@@ -2,95 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B47F97504
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 10:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DBA997555
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 10:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727529AbfHUIaz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 21 Aug 2019 04:30:55 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57678 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727416AbfHUIay (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 21 Aug 2019 04:30:54 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7L8LecB108153
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2019 04:30:53 -0400
-Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2uh0mpvx48-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2019 04:30:53 -0400
-Received: from localhost
-        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <naveen.n.rao@linux.vnet.ibm.com>;
-        Wed, 21 Aug 2019 09:30:51 +0100
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
-        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 21 Aug 2019 09:30:47 +0100
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7L8UkFk60620938
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Aug 2019 08:30:46 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 858F1A4055;
-        Wed, 21 Aug 2019 08:30:46 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 34F27A4053;
-        Wed, 21 Aug 2019 08:30:46 +0000 (GMT)
-Received: from localhost (unknown [9.124.35.29])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 21 Aug 2019 08:30:46 +0000 (GMT)
-Date:   Wed, 21 Aug 2019 14:00:44 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Subject: Re: [RFC PATCH] bpf: handle 32-bit zext during constant blinding
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        id S1726252AbfHUItk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Aug 2019 04:49:40 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:44606 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725268AbfHUItj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Aug 2019 04:49:39 -0400
+Received: by mail-pg1-f195.google.com with SMTP id i18so912854pgl.11;
+        Wed, 21 Aug 2019 01:49:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5H8yxlWflNf32/es+Dro2IiovtqE5FGqEuiX13BlX/k=;
+        b=i0E9zZNB8cWFSiabZWuw5ffOBAjHn7D9ZmOIann/kQLlgkmwHXUIGv4b59ZKeG6yDN
+         9MT/IycpPvypusN8AiSdxFFzESLbfZ6ab9HAJXxmsvVJdfNR2vSV+OIOUyC6hTVPr0ef
+         /y8WcL2QTr6g2tM6IeKkpGLjrplknhqDpUj+Hfy0DdlkFuoWG0+JJUdY4hZ61cnWBUR9
+         8ywgnlmLeHD9DcgC5rJnle0/q3w4JjnTHF1T5S3gsZpAo42/g7xy7TRBUvoSX7+2aaWi
+         538hSuKz7PaOmuLPr38basL3p4Dw/DmGqm1ENA7VFsVEW4ophWWukM2LoNMWllkl9lJ9
+         h9Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5H8yxlWflNf32/es+Dro2IiovtqE5FGqEuiX13BlX/k=;
+        b=ptKK6jOeISXOFJ1WeAnwudplXpGQ801aX2DFtVbMHyN+Dv92meTOpJPAHPv47v5Cfl
+         sgABW1bChV6W1SHGtEfY8CgJUsx/wrT8lMOyf4+zV2QXh1R8EWMFS0F8tUXJDTrpLBxh
+         WwYJHoqZOWu3UcG68HJO1hW22gxuw2T+nTfmqoCf68x+0gSbYdg4s0YbcxLpm33pkK/p
+         oKUsfP6Vj4sVHzg0BFIAwXuWwZQ03ZJBYYngoMlKQVhLrlrHPEmPHaFOTqFuUPC+6Zc2
+         jMgtEnJ/3hGVzoYoz8fjrAvjgi95Snatr3FFnb2m0Fn9tNiNxOXy2ppahiTq28k5NY4D
+         UFww==
+X-Gm-Message-State: APjAAAWpvKTADfWgo+d4vGWLkdYgkIfxlm4D+hnZQnI3pSe26tgC9G7t
+        BehlfzkPI8ZEMdsSPUAsrqg=
+X-Google-Smtp-Source: APXvYqygYWSWvOT0aZq36xJv1lERrPKjUSchdvMPwqcT0xjg1M5VxBp0c2VK/0Ayhf/GK9+OLacY4w==
+X-Received: by 2002:a17:90a:cd03:: with SMTP id d3mr4168178pju.117.1566377378819;
+        Wed, 21 Aug 2019 01:49:38 -0700 (PDT)
+Received: from ?IPv6:240d:2:6b22:5500:ad97:b2ea:4b4b:d354? ([240d:2:6b22:5500:ad97:b2ea:4b4b:d354])
+        by smtp.googlemail.com with ESMTPSA id ay7sm2146116pjb.4.2019.08.21.01.49.34
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 21 Aug 2019 01:49:37 -0700 (PDT)
+Subject: Re: [RFC PATCH bpf-next 00/14] xdp_flow: Flow offload to XDP
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     Stanislav Fomichev <sdf@fomichev.me>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jiong Wang <jiong.wang@netronome.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>, netdev@vger.kernel.org
-References: <20190813171018.28221-1-naveen.n.rao@linux.vnet.ibm.com>
-In-Reply-To: <20190813171018.28221-1-naveen.n.rao@linux.vnet.ibm.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, William Tu <u9012063@gmail.com>
+References: <20190813120558.6151-1-toshiaki.makita1@gmail.com>
+ <20190814170715.GJ2820@mini-arch>
+ <14c4a876-6f5d-4750-cbe4-19622f64975b@gmail.com>
+ <20190815152100.GN2820@mini-arch>
+ <20190815122232.4b1fa01c@cakuba.netronome.com>
+ <da840b14-ab5b-91f1-df2f-6bdd0ed41173@gmail.com>
+ <20190816115224.6aafd4ee@cakuba.netronome.com>
+ <5e9bee13-a746-f148-00de-feb7cb7b1403@gmail.com>
+ <20190819111546.35a8ed76@cakuba.netronome.com>
+From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
+Message-ID: <250f99fd-7289-a8e2-a710-560305e2d17d@gmail.com>
+Date:   Wed, 21 Aug 2019 17:49:33 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-User-Agent: astroid/0.15.0 (https://github.com/astroidmail/astroid)
+In-Reply-To: <20190819111546.35a8ed76@cakuba.netronome.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8BIT
-X-TM-AS-GCONF: 00
-x-cbid: 19082108-0016-0000-0000-000002A108D2
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19082108-0017-0000-0000-000033013B9D
-Message-Id: <1566376025.68ldwx3wc7.naveen@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-21_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=636 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908210089
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Naveen N. Rao wrote:
-> Since BPF constant blinding is performed after the verifier pass, there
-> are certain ALU32 instructions inserted which don't have a corresponding
-> zext instruction inserted after. This is causing a kernel oops on
-> powerpc and can be reproduced by running 'test_cgroup_storage' with
-> bpf_jit_harden=2.
+On 19/08/20 (火) 3:15:46, Jakub Kicinski wrote:
+
+I'm on vacation and replying slowly. Sorry for any inconvenience.
+
+> On Sat, 17 Aug 2019 23:01:59 +0900, Toshiaki Makita wrote:
+>> On 19/08/17 (土) 3:52:24, Jakub Kicinski wrote:
+>>> On Fri, 16 Aug 2019 10:28:10 +0900, Toshiaki Makita wrote:
+>>>> On 2019/08/16 4:22, Jakub Kicinski wrote:
+>>>>> There's a certain allure in bringing the in-kernel BPF translation
+>>>>> infrastructure forward. OTOH from system architecture perspective IMHO
+>>>>> it does seem like a task best handed in user space. bpfilter can replace
+>>>>> iptables completely, here we're looking at an acceleration relatively
+>>>>> loosely coupled with flower.
+>>>>
+>>>> I don't think it's loosely coupled. Emulating TC behavior in userspace
+>>>> is not so easy.
+>>>>
+>>>> Think about recent multi-mask support in flower. Previously userspace could
+>>>> assume there is one mask and hash table for each preference in TC. After the
+>>>> change TC accepts different masks with the same pref. Such a change tends to
+>>>> break userspace emulation. It may ignore masks passed from flow insertion
+>>>> and use the mask remembered when the first flow of the pref is inserted. It
+>>>> may override the mask of all existing flows with the pref. It may fail to
+>>>> insert such flows. Any of them would result in unexpected wrong datapath
+>>>> handling which is critical.
+>>>> I think such an emulation layer needs to be updated in sync with TC.
+>>>
+>>> Oh, so you're saying that if xdp_flow is merged all patches to
+>>> cls_flower and netfilter which affect flow offload will be required
+>>> to update xdp_flow as well?
+>>
+>> Hmm... you are saying that we are allowed to break other in-kernel
+>> subsystem by some change? Sounds strange...
 > 
-> Fix this by emitting BPF_ZEXT during constant blinding if
-> prog->aux->verifier_zext is set.
+> No I'm not saying that, please don't put words in my mouth.
+
+If we ignore xdp_flow when modifying something which affects flow 
+offload, that may cause breakage. I showed such an example using 
+multi-mask support. So I just wondered what you mean and guessed you 
+think we can break other subsystem in some situation.
+
+I admit I should not have used the wording "you are saying...?". If it 
+was not unpleasant to you I'm sorry about that. But I think you should 
+not use it as well. I did not say "cls_flower and netfilter which affect 
+flow offload will be required to update xdp_flow". I guess most patches 
+which affect flow offload core will not break xdp_flow. In some cases 
+breakage may happen. In that case we need to fix xdp_flow as well.
+
+> I'm asking you if that's your intention.
 > 
-> Fixes: a4b1d3c1ddf6cb ("bpf: verifier: insert zero extension according to analysis result")
-> Reported-by: Michael Ellerman <mpe@ellerman.id.au>
-> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-> ---
-> This approach (the location where zext is being introduced below, in 
-> particular) works for powerpc, but I am not entirely sure if this is 
-> sufficient for other architectures as well. This is broken on v5.3-rc4.
+> Having an implementation nor support a feature of another implementation
+> and degrade gracefully to the slower one is not necessarily breakage.
+> We need to make a concious decision here, hence the clarifying question.
 
-Alexie, Daniel, Jiong,
-Any feedback on this?
+As I described above, breakage can happen in some case, and if the patch 
+breaks xdp_flow I think we need to fix xdp_flow at the same time. If 
+xdp_flow does not support newly added features but it works for existing 
+ones, it is OK. In the first place not all features can be offloaded to 
+xdp_flow. I think this is the same as HW-offload.
 
-- Naveen
+>>> That's a question of policy. Technically the implementation in user
+>>> space is equivalent.
+>>>
+>>> The advantage of user space implementation is that you can add more
+>>> to it and explore use cases which do not fit in the flow offload API,
+>>> but are trivial for BPF. Not to mention the obvious advantage of
+>>> decoupling the upgrade path.
+>>
+>> I understand the advantage, but I can't trust such a third-party kernel
+>> emulation solution for this kind of thing which handles critical data path.
+> 
+> That's a strange argument to make. All production data path BPF today
+> comes from user space.
 
+Probably my explanation was not sufficient. What I'm concerned about is 
+that this needs to emulate kernel behavior, and it is difficult.
+I don't think userspace-defined datapath itself is not reliable, nor 
+eBPF ecosystem.
+
+Toshiaki Makita
