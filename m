@@ -2,142 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC599812C
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 19:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F31982D5
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 20:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbfHURYL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Aug 2019 13:24:11 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:43686 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727037AbfHURYK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Aug 2019 13:24:10 -0400
-Received: by mail-lj1-f195.google.com with SMTP id h15so2871787ljg.10;
-        Wed, 21 Aug 2019 10:24:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ImUO9R2zFHULTGLAfy/amMjTreuObHPtY/k9LK1EvQs=;
-        b=QD80siO81QUF7hQIILnvgjrDLEvWPs85k4obC2CzqFtze9ccI8D5qA3bWHNJs68Tbm
-         9K+gS+RVuk04q5aU4WE0hpfEmnbN9LOIR1Z3+97/6gw5yyWYPRatSyJgQUS3uziKzBsT
-         Cu702YKbzAy7XbM1RzpCfj21qXM1mc0fA70FYkCiFXlgZDc5Du/5nG+3esfzSKfljpd3
-         6xOZlegCvIZX7E8qhkwVZeCTC4bnSnOg5mc+9vQ0BWITcZTLeW7R4BciTRHhXAyn7Wmu
-         0HxTkHyFIDpQIKqUf+JQrbClPGXta4LuXhQP3qrn3MBZ+xhuZhUKJVxQvlAPNPLMiyZi
-         U6Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ImUO9R2zFHULTGLAfy/amMjTreuObHPtY/k9LK1EvQs=;
-        b=m9E+bE1FXn/HE8LxmpDuDA46gnKgxEMPD9YBm22VvZFAL2XoNU1iCyhB1qTPV66+lC
-         /nL4VVSJSvp1PVMfKj1Z9DuJu0Asq4KWn0OE1tHcP2BN6zP66G0ckTqDq8jelpZqdNKQ
-         aTBEGsTXP3oyP41OfTpJtJFi3b6DkX7uGoZgLl7XFQSiMsLsJP7mfex3PiISZoMWKkE8
-         uGyGvk0uPwm0qTFuYxzieky8W2LnWogHUVDic+HWWI2MrhHauTFUg6XfOGaLNMfCrkQh
-         WVVYpnhyQaCgC8bo9UVWKjbEQiRRCBWfqzuDdd6ro3Z5WLu8TZvkUpLXbMwZ/693DvV2
-         kiew==
-X-Gm-Message-State: APjAAAW69kUZ9k61nOJWObyRq8DHTfiMZ+FmUALstn57M5jF+hcrOo6s
-        9ORdFmXPky1ZDGpNK5bhQyLrV/jopztocS2+mwDjwRmt
-X-Google-Smtp-Source: APXvYqz33ncCwZwD2/AjqAgHdu2e1J/pZT+JsCyyBshuqGRJk+UC+iKE9jjOrLe6sjYyJcVA14KThFw6G4bn2p3gRiA=
-X-Received: by 2002:a2e:7818:: with SMTP id t24mr3270230ljc.210.1566408248481;
- Wed, 21 Aug 2019 10:24:08 -0700 (PDT)
+        id S1729090AbfHUScF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Aug 2019 14:32:05 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:41662 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726513AbfHUScF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Aug 2019 14:32:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=tVY1LXmdi32TE9w1SeLZsUhYLzjbIKh1g8jTSkv50s0=; b=bhJJa4E42SMEYiIa1DWA2XlMu
+        4vGjx+rsvfe+CrMjov5MKEqtLN+RI/AcK6Vs7e5E3E7S1/KeayvRFeJ14231xfrWhGN7WN000fvI1
+        wr6ARpqeyItdr4BeTOr4gIlYjDRXI9jQn/GdZuKv+i6EPx+OkN2r9RgSU//OsEDYyP+kQQNydRsEu
+        4dsQfkB04uYA3XjbDZZvaRh7ww+8QaF0H1Br4ZgkIHEftCSadBmxj336Y0i2uq2d8euohNvTMJYgr
+        ei8PQDJkEP29FLGm9feeESwlOZHZ9hxmFFSMYiF+iJ9olCPAoFo3nvHYqvnjl+ksRjTGX7ZIFtkAJ
+        prHujlgIw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1i0VOo-0003wh-HG; Wed, 21 Aug 2019 18:31:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E3F5F307456;
+        Wed, 21 Aug 2019 20:31:23 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5C7DE20F0FB1F; Wed, 21 Aug 2019 20:31:55 +0200 (CEST)
+Date:   Wed, 21 Aug 2019 20:31:55 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Daniel Xu <dxu@dxuuu.xyz>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH v3 bpf-next 1/4] tracing/probe: Add
+ PERF_EVENT_IOC_QUERY_PROBE ioctl
+Message-ID: <20190821183155.GE2349@hirez.programming.kicks-ass.net>
+References: <20190820144503.GV2332@hirez.programming.kicks-ass.net>
+ <BWENHQJIN885.216UOYEIWNGFU@dlxu-fedora-R90QNFJV>
+ <20190821110856.GB2349@hirez.programming.kicks-ass.net>
+ <62874df3-cae0-36a1-357f-b59484459e52@fb.com>
 MIME-Version: 1.0
-References: <20190820230900.23445-1-peter@lekensteyn.nl> <20190820230900.23445-4-peter@lekensteyn.nl>
- <20190820232221.vzxemergvzy3bg4j@ast-mbp> <20190821000413.GA28011@al>
-In-Reply-To: <20190821000413.GA28011@al>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 21 Aug 2019 10:23:56 -0700
-Message-ID: <CAADnVQ+hU6QOC_dPmpjnuv=9g4SQEeaMEMqXOS2WpMj=q=LdiQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] bpf: clarify when bpf_trace_printk discards lines
-To:     Peter Wu <peter@lekensteyn.nl>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <62874df3-cae0-36a1-357f-b59484459e52@fb.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 20, 2019 at 5:04 PM Peter Wu <peter@lekensteyn.nl> wrote:
->
-> On Tue, Aug 20, 2019 at 04:22:23PM -0700, Alexei Starovoitov wrote:
-> > On Wed, Aug 21, 2019 at 12:08:59AM +0100, Peter Wu wrote:
-> > > I opened /sys/kernel/tracing/trace once and kept reading from it.
-> > > bpf_trace_printk somehow did not seem to work, no entries were appended
-> > > to that trace file. It turns out that tracing is disabled when that file
-> > > is open. Save the next person some time and document this.
-> > >
-> > > The trace file is described in Documentation/trace/ftrace.rst, however
-> > > the implication "tracing is disabled" did not immediate translate to
-> > > "bpf_trace_printk silently discards entries".
-> > >
-> > > Signed-off-by: Peter Wu <peter@lekensteyn.nl>
-> > > ---
-> > >  include/uapi/linux/bpf.h | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index 9ca333c3ce91..e4236e357ed9 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -575,6 +575,8 @@ union bpf_attr {
-> > >   *                 limited to five).
-> > >   *
-> > >   *                 Each time the helper is called, it appends a line to the trace.
-> > > + *                 Lines are discarded while *\/sys/kernel/debug/tracing/trace* is
-> > > + *                 open, use *\/sys/kernel/debug/tracing/trace_pipe* to avoid this.
-> >
-> > that's not quite correct.
-> > Having 'trace' file open doesn't discard lines.
-> > I think this type of comment in uapi header makes more confusion than helps.
->
-> Having the 'trace' file open for reading results in discarding lines. It
-> took me a while to figure that out. At first I was not even sure whether
-> my eBPF program was executed or not due to lack of entries in the
-> 'trace' file.
->
-> I ended up setting a breakpoint and ended up with this call stack:
->
->   - bpf_trace_printk
->     - ____bpf_trace_printk
->       - __trace_printk
->         - trace_vprintk
->           - trace_array_vprintk
->             - __trace_array_vprintk
->               - __trace_array_vprintk
->                 - __trace_buffer_lock_reserve
->                   - ring_buffer_lock_reserve
->
-> The function ends up skipping the even because record_disabled == 1:
->
->     if (unlikely(atomic_read(&buffer->record_disabled)))
->         goto out;
->
-> Why is that? Well, I guessed that ring_buffer_record_disable and
-> ring_buffer_record_enable would be related. Sure enough, the first one
-> was hit when the 'trace' file is opened for reading while the latter is
-> called when the file is closed.
->
-> The relevant code from kernel/trace/trace.c (__tracing_open), "snapshot"
-> is true when "trace" is opened, and "false" when "trace_pipe" is used:
->
->     /* stop the trace while dumping if we are not opening "snapshot" */
->     if (!iter->snapshot)
->         tracing_stop_tr(tr);
->
-> So I think this supports the claim that lines are discarded. Do you
-> think this is not the case?
+On Wed, Aug 21, 2019 at 04:54:47PM +0000, Yonghong Song wrote:
+> Currently, in kernel/trace/bpf_trace.c, we have
+> 
+> unsigned int trace_call_bpf(struct trace_event_call *call, void *ctx)
+> {
+>          unsigned int ret;
+> 
+>          if (in_nmi()) /* not supported yet */
+>                  return 1;
+> 
+>          preempt_disable();
+> 
+>          if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
 
-Indeed.
-I missed "(opened)" part in Documentation/trace/ftrace.rst:
-  trace:
-        This file holds the output of the trace in a human
-        readable format (described below). Note, tracing is temporarily
-        disabled while this file is being read (opened).
+Yes, I'm aware of that.
 
-I always thought that reading disables it.
-It's indeed odd part of the ftrace implementation that
-worth documenting here.
+> In the above, the events with bpf program attached will be missed
+> if the context is nmi interrupt, or if some recursion happens even with 
+> the same or different bpf programs.
+> In case of recursion, the events will not be sent to ring buffer.
 
-Applied the set to bpf-next. Thanks
+And while that is significantly worse than what ftrace/perf have, it is
+fundamentally the same thing.
+
+perf allows (and iirc ftrace does too) 4 nested context per CPU
+(task,softirq,irq,nmi) but any recursion within those context and we
+drop stuff.
+
+The BPF stuff is just more eager to drop things on the floor, but it is
+fundamentally the same.
+
+> A lot of bpf-based tracing programs uses maps to communicate and
+> do not allocate ring buffer at all.
+
+So extending PERF_RECORD_LOST doesn't work. But PERF_FORMAT_LOST might
+still work fine; but you get to implement it for all software events.
+
+> Maybe we can still use ioctl based approach which is light weighted
+> compared to ring buffer approach? If a fd has bpf attached, nhit/nmisses
+> means the kprobe is processed by bpf program or not.
+
+There is nothing kprobe specific here. Kprobes just appear to be the
+only one actually accounting the recursion cases, but everyone has
+them.
+
+> Currently, for debugfs, the nhit/nmisses info is exposed at
+> {k|u}probe_profile. Alternative, we could expose the nhit/nmisses
+> in /proc/self/fdinfo/<fd>. User can query this interface to
+> get numbers.
+
+No, we're not adding stuff to procfs for this.
