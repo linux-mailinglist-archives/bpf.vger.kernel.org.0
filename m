@@ -2,212 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E18C986AE
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 23:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9189A986E0
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 23:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727507AbfHUVjG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Aug 2019 17:39:06 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:32872 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726530AbfHUVjG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Aug 2019 17:39:06 -0400
-Received: by mail-qt1-f195.google.com with SMTP id v38so5015311qtb.0;
-        Wed, 21 Aug 2019 14:39:05 -0700 (PDT)
+        id S1728872AbfHUVvl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Aug 2019 17:51:41 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:38857 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726530AbfHUVvk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Aug 2019 17:51:40 -0400
+Received: by mail-wm1-f68.google.com with SMTP id m125so3633362wmm.3
+        for <bpf@vger.kernel.org>; Wed, 21 Aug 2019 14:51:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DUnGPgYSlYELq8snkCH3/ogLmFH6bABIvcNtaNXTSVc=;
-        b=AXDHQob5IyMllJJoCx7ZMR8TK3SJN0l7qIATQtWf6ngixz26/p+Sey60awnPqojOTU
-         ECTbzza4sfLN2MZNGWAPC5aO0a/n+iDaEPCfzPGJF911kaP0oySCyhDQenhRqoGE/46f
-         SNLMK3otufWhvREna0kxOFS7STmbaaVnCSswUJsIxkc+s50sZi3CxY3Se6mco3tFynew
-         5pFuHfoV0v9VCYiMjGnz4d3zyUnuTg5tAPIb9HAxcnHQZxyrEQekItEFl8cKP3TY0Kh0
-         uleYqDjSSbn/nF5glEFEJye/1xrV8Du+6FWcXn0h5IoikXVIaQ5kMZ2Ddrb6jckdzwUU
-         iJ3Q==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=tzs0xL7F6e4DYv0KKXWstcIwevn1IeV2WU1eJYUjfUc=;
+        b=cSapzLObrFhl9WiOnkT1Yt3qMrv+d9JGVzxCP0RCrg4HDDoOq9rDy26FxLVG1MUZWU
+         Tb3wG8LMVh2xbjCriUATkhMeVZCg4a4IaoE0La8xSVXj2Vj55w0A4Jb6KQFbsbDaT0lq
+         RbjwbjviHSBy9Ih21aDFJiuNnLLsa8FprO2LzTBYqg3pWDKz1Lk86wy/DzYpt2mxi+0M
+         agenDEbadExsbz/tlANeVWRO5zI1fm2U9mK3oimhQdlChq+5WojjnsV0IxhasGg54NzQ
+         PeE/BQUGj2ZarJ43yyiKHKL6xiB7I8ASK50mlaQGzkhcyI0fDVH97/iYsutzOeOjPXkd
+         zkpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DUnGPgYSlYELq8snkCH3/ogLmFH6bABIvcNtaNXTSVc=;
-        b=Nhvd27PLar3qiTcmnUV55G66hokheTyCtPnAPpxZWHjrZJtI3CnI2aqwsBQGoHgEGV
-         W75XpnLFHNWtdAUWSCO0CIX5cDsrJ5y60LGl2ADwh0vV+DmtX/Vx0FifiwKwI/fEN3bo
-         tty/OL4jSMKrOzEsCV/z/Oe+CMZc2itxQoETWEoMoBYBIDBvsUWbGCKGxDAXIKrjIQbw
-         wFK0WClotKIRntIYn+pd4FK7RdsY5wVDsC0H6atv1VQt7tLVEFRJ3Gaf77M5zKAj0v5K
-         v9hLB+ZHkdTf9npLJeBTCc82lO0ITkanO7gAvYhp0eEi01SCWcOtpPeBWokrRx3f7YI1
-         wZeQ==
-X-Gm-Message-State: APjAAAVNgMitA3NrhhnsHdQvmOBNuAdIkT98yPPPVASydcYDu+BjVR8x
-        PxyI73/9DJiRl3Mxu7zPyptR1GEjg+QlVwHvO84=
-X-Google-Smtp-Source: APXvYqyy0hvvRHykzg7i0XuhNgycH/ll14e3xUl/E4u+m0BQJBHvXmJ9XL1xul4O3FjgxkcePIYvjvZNX2y+J4rwF4w=
-X-Received: by 2002:a0c:db12:: with SMTP id d18mr19832519qvk.199.1566423544935;
- Wed, 21 Aug 2019 14:39:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <CGME20190820151644eucas1p179d6d1da42bb6be0aad8f58ac46624ce@eucas1p1.samsung.com>
- <20190820151611.10727-1-i.maximets@samsung.com> <CAKgT0Udn0D0_f=SOH2wpBRWV_u4rb1Qe2h7gguXnRNzJ_VkRzg@mail.gmail.com>
- <625791af-c656-1e42-b60e-b3a5cedcb4c4@samsung.com> <CAKgT0Uc27+ucd=a_sgTmv5g7_+ZTg1zK4isYJ0H7YWQj3d=Ejg@mail.gmail.com>
- <f7d0f7a5-e664-8b72-99c7-63275aff4c18@samsung.com> <CAKgT0UcCKiM1Ys=vWxctprN7fzWcBCk-PCuKB-8=RThM=CqLSQ@mail.gmail.com>
-In-Reply-To: <CAKgT0UcCKiM1Ys=vWxctprN7fzWcBCk-PCuKB-8=RThM=CqLSQ@mail.gmail.com>
-From:   William Tu <u9012063@gmail.com>
-Date:   Wed, 21 Aug 2019 14:38:28 -0700
-Message-ID: <CALDO+SZCbxEEwCS6MyHk-Cp_LJ33N=QFqwZ8uRm0e-PBRgxRYw@mail.gmail.com>
-Subject: Re: [PATCH net] ixgbe: fix double clean of tx descriptors with xdp
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Ilya Maximets <i.maximets@samsung.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=tzs0xL7F6e4DYv0KKXWstcIwevn1IeV2WU1eJYUjfUc=;
+        b=bV1Thb8LCYgvIQm5Qh18req+s1JczG3VGiFTp4h2hYOtJVkSMNiOWZoTSXYe0TkD12
+         VxO/L7chZPWyF1+Va5SixJ/pyGzcfgyVTue0BthT95QDS4ih+D0wtJA9aS+PWUi5qmYL
+         UoAkAopObF8VjkCNmtpnZKbIMA873se6kUemSEy1SyImV3aMGFSFuEKM9VMcf9csIZaZ
+         6oEXp3wrSaSvR8SbYK7jldx8+6gHRSVJBQ/EuSackxBTtxfFaHOzW3Z8VKM5ndjMEaOc
+         2BF63l6qcb6PqiC+hKA/QeSK+wqnlT0yIjhWP5h+SPkq2c+xCteLwTGaqo1O/yaXbSDW
+         lwlQ==
+X-Gm-Message-State: APjAAAVyA7FmB31DyKkE5ozv6ZkuUrcVf7mfAejn+LVrMzfzgv9Dyptu
+        q8je99XZ87oA8MzPTeiR+AxINQ==
+X-Google-Smtp-Source: APXvYqy2LFveaB3xNaCXGpcvOKttC8dJWdS9RQtFwtlXe9SG6QFy84en6i34jTXyo21MVdAelxHMqA==
+X-Received: by 2002:a1c:7d08:: with SMTP id y8mr2441435wmc.50.1566424298379;
+        Wed, 21 Aug 2019 14:51:38 -0700 (PDT)
+Received: from LAPTOP-V3S7NLPL (cpc1-cmbg19-2-0-cust104.5-4.cable.virginm.net. [82.27.180.105])
+        by smtp.gmail.com with ESMTPSA id r15sm38044110wrj.68.2019.08.21.14.51.37
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 21 Aug 2019 14:51:37 -0700 (PDT)
+References: <20190821192358.31922-1-naveen.n.rao@linux.vnet.ibm.com>
+User-agent: mu4e 0.9.18; emacs 25.2.2
+From:   Jiong Wang <jiong.wang@netronome.com>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Eelco Chaudron <echaudro@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jiong Wang <jiong.wang@netronome.com>,
+        Michael Ellerman <mpe@ellerman.id.au>, bpf@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bpf: handle 32-bit zext during constant blinding
+In-reply-to: <20190821192358.31922-1-naveen.n.rao@linux.vnet.ibm.com>
+Date:   Wed, 21 Aug 2019 22:51:35 +0100
+Message-ID: <87zhk2faqg.fsf@netronome.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 21, 2019 at 9:57 AM Alexander Duyck
-<alexander.duyck@gmail.com> wrote:
->
-> On Wed, Aug 21, 2019 at 9:22 AM Ilya Maximets <i.maximets@samsung.com> wr=
-ote:
-> >
-> > On 21.08.2019 4:17, Alexander Duyck wrote:
-> > > On Tue, Aug 20, 2019 at 8:58 AM Ilya Maximets <i.maximets@samsung.com=
-> wrote:
-> > >>
-> > >> On 20.08.2019 18:35, Alexander Duyck wrote:
-> > >>> On Tue, Aug 20, 2019 at 8:18 AM Ilya Maximets <i.maximets@samsung.c=
-om> wrote:
-> > >>>>
-> > >>>> Tx code doesn't clear the descriptor status after cleaning.
-> > >>>> So, if the budget is larger than number of used elems in a ring, s=
-ome
-> > >>>> descriptors will be accounted twice and xsk_umem_complete_tx will =
-move
-> > >>>> prod_tail far beyond the prod_head breaking the comletion queue ri=
-ng.
-> > >>>>
-> > >>>> Fix that by limiting the number of descriptors to clean by the num=
-ber
-> > >>>> of used descriptors in the tx ring.
-> > >>>>
-> > >>>> Fixes: 8221c5eba8c1 ("ixgbe: add AF_XDP zero-copy Tx support")
-> > >>>> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
-> > >>>
-> > >>> I'm not sure this is the best way to go. My preference would be to
-> > >>> have something in the ring that would prevent us from racing which =
-I
-> > >>> don't think this really addresses. I am pretty sure this code is sa=
-fe
-> > >>> on x86 but I would be worried about weak ordered systems such as
-> > >>> PowerPC.
-> > >>>
-> > >>> It might make sense to look at adding the eop_desc logic like we ha=
-ve
-> > >>> in the regular path with a proper barrier before we write it and af=
-ter
-> > >>> we read it. So for example we could hold of on writing the bytecoun=
-t
-> > >>> value until the end of an iteration and call smp_wmb before we writ=
-e
-> > >>> it. Then on the cleanup we could read it and if it is non-zero we t=
-ake
-> > >>> an smp_rmb before proceeding further to process the Tx descriptor a=
-nd
-> > >>> clearing the value. Otherwise this code is going to just keep poppi=
-ng
-> > >>> up with issues.
-> > >>
-> > >> But, unlike regular case, xdp zero-copy xmit and clean for particula=
-r
-> > >> tx ring always happens in the same NAPI context and even on the same
-> > >> CPU core.
-> > >>
-> > >> I saw the 'eop_desc' manipulations in regular case and yes, we could
-> > >> use 'next_to_watch' field just as a flag of descriptor existence,
-> > >> but it seems unnecessarily complicated. Am I missing something?
-> > >>
-> > >
-> > > So is it always in the same NAPI context?. I forgot, I was thinking
-> > > that somehow the socket could possibly make use of XDP for transmit.
-> >
-> > AF_XDP socket only triggers tx interrupt on ndo_xsk_async_xmit() which
-> > is used in zero-copy mode. Real xmit happens inside
-> > ixgbe_poll()
-> >  -> ixgbe_clean_xdp_tx_irq()
-> >     -> ixgbe_xmit_zc()
-> >
-> > This should be not possible to bound another XDP socket to the same net=
-dev
-> > queue.
-> >
-> > It also possible to xmit frames in xdp_ring while performing XDP_TX/RED=
-IRECT
-> > actions. REDIRECT could happen from different netdev with different NAP=
-I
-> > context, but this operation is bound to specific CPU core and each core=
- has
-> > its own xdp_ring.
-> >
-> > However, I'm not an expert here.
-> > Bj=C3=B6rn, maybe you could comment on this?
-> >
-> > >
-> > > As far as the logic to use I would be good with just using a value yo=
-u
-> > > are already setting such as the bytecount value. All that would need
-> > > to happen is to guarantee that the value is cleared in the Tx path. S=
-o
-> > > if you clear the bytecount in ixgbe_clean_xdp_tx_irq you could
-> > > theoretically just use that as well to flag that a descriptor has bee=
-n
-> > > populated and is ready to be cleaned. Assuming the logic about this
-> > > all being in the same NAPI context anyway you wouldn't need to mess
-> > > with the barrier stuff I mentioned before.
-> >
-> > Checking the number of used descs, i.e. next_to_use - next_to_clean,
-> > makes iteration in this function logically equal to the iteration insid=
-e
-> > 'ixgbe_xsk_clean_tx_ring()'. Do you think we need to change the later
-> > function too to follow same 'bytecount' approach? I don't like having
-> > two different ways to determine number of used descriptors in the same =
-file.
-> >
-> > Best regards, Ilya Maximets.
->
-> As far as ixgbe_clean_xdp_tx_irq() vs ixgbe_xsk_clean_tx_ring(), I
-> would say that if you got rid of budget and framed things more like
-> how ixgbe_xsk_clean_tx_ring was framed with the ntc !=3D ntu being
-> obvious I would prefer to see us go that route.
->
-> Really there is no need for budget in ixgbe_clean_xdp_tx_irq() if you
-> are going to be working with a static ntu value since you will only
-> ever process one iteration through the ring anyway. It might make more
-> sense if you just went through and got rid of budget and i, and
-> instead used ntc and ntu like what was done in
-> ixgbe_xsk_clean_tx_ring().
->
-> Thanks.
->
-> - Alex
 
-Not familiar with the driver details.
-I tested this patch and the issue mentioned in OVS mailing list.
-https://www.mail-archive.com/ovs-dev@openvswitch.org/msg35362.html
-and indeed the problem goes away. But I saw a huge performance drop,
-my AF_XDP tx performance drops from >9Mpps to <5Mpps.
+Naveen N. Rao writes:
 
-Tested using kernel 5.3.0-rc3+
-03:00.0 Ethernet controller: Intel Corporation Ethernet Controller
-10-Gigabit X540-AT2 (rev 01)
-Subsystem: Intel Corporation Ethernet 10G 2P X540-t Adapter
-Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
-Stepping- SERR- FastB2B- DisINTx+
+> Since BPF constant blinding is performed after the verifier pass, the
+> ALU32 instructions inserted for doubleword immediate loads don't have a
+> corresponding zext instruction. This is causing a kernel oops on powerpc
+> and can be reproduced by running 'test_cgroup_storage' with
+> bpf_jit_harden=2.
+>
+> Fix this by emitting BPF_ZEXT during constant blinding if
+> prog->aux->verifier_zext is set.
+>
+> Fixes: a4b1d3c1ddf6cb ("bpf: verifier: insert zero extension according to analysis result")
+> Reported-by: Michael Ellerman <mpe@ellerman.id.au>
+> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+
+Thanks for the fix.
+
+Reviewed-by: Jiong Wang <jiong.wang@netronome.com>
+
+Just two other comments during review in case I am wrong on somewhere.
+
+  - Use verifier_zext instead of bpf_jit_needs_zext() seems better, even
+    though the latter could avoid extending function argument.
+
+    Because JIT back-ends look at verifier_zext, true means zext inserted
+    by verifier so JITs won't do the code-gen.
+
+    Use verifier_zext is sort of keeping JIT blinding the same behaviour
+    has verifier even though blinding doesn't belong to verifier, but for
+    such insn patching, it could be seen as a extension of verifier,
+    therefore use verifier_zext seems better than bpf_jit_needs_zext() to
+    me.
+   
+  - JIT blinding is also escaping the HI32 randomization which happens
+    inside verifier, otherwise x86-64 regression should have caught this issue.
 
 Regards,
-William
+Jiong
+
+> ---
+> Changes since RFC:
+> - Removed changes to ALU32 and JMP32 ops since those don't alter program 
+>   execution, and the verifier would have already accounted for them.  
+>
+>
+>  kernel/bpf/core.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 8191a7db2777..66088a9e9b9e 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -890,7 +890,8 @@ int bpf_jit_get_func_addr(const struct bpf_prog *prog,
+>  
+>  static int bpf_jit_blind_insn(const struct bpf_insn *from,
+>  			      const struct bpf_insn *aux,
+> -			      struct bpf_insn *to_buff)
+> +			      struct bpf_insn *to_buff,
+> +			      bool emit_zext)
+>  {
+>  	struct bpf_insn *to = to_buff;
+>  	u32 imm_rnd = get_random_int();
+> @@ -1005,6 +1006,8 @@ static int bpf_jit_blind_insn(const struct bpf_insn *from,
+>  	case 0: /* Part 2 of BPF_LD | BPF_IMM | BPF_DW. */
+>  		*to++ = BPF_ALU32_IMM(BPF_MOV, BPF_REG_AX, imm_rnd ^ aux[0].imm);
+>  		*to++ = BPF_ALU32_IMM(BPF_XOR, BPF_REG_AX, imm_rnd);
+> +		if (emit_zext)
+> +			*to++ = BPF_ZEXT_REG(BPF_REG_AX);
+>  		*to++ = BPF_ALU64_REG(BPF_OR,  aux[0].dst_reg, BPF_REG_AX);
+>  		break;
+>  
+> @@ -1088,7 +1091,8 @@ struct bpf_prog *bpf_jit_blind_constants(struct bpf_prog *prog)
+>  		    insn[1].code == 0)
+>  			memcpy(aux, insn, sizeof(aux));
+>  
+> -		rewritten = bpf_jit_blind_insn(insn, aux, insn_buff);
+> +		rewritten = bpf_jit_blind_insn(insn, aux, insn_buff,
+> +						clone->aux->verifier_zext);
+>  		if (!rewritten)
+>  			continue;
+
