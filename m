@@ -2,71 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BE2976B0
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 12:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B47997717
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 12:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbfHUKJL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Aug 2019 06:09:11 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:55488 "EHLO mx1.redhat.com"
+        id S1726478AbfHUKZj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Aug 2019 06:25:39 -0400
+Received: from ozlabs.org ([203.11.71.1]:35609 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726389AbfHUKJL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Aug 2019 06:09:11 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726389AbfHUKZj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Aug 2019 06:25:39 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id F05063003185;
-        Wed, 21 Aug 2019 10:09:10 +0000 (UTC)
-Received: from [10.36.116.152] (ovpn-116-152.ams2.redhat.com [10.36.116.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 433F75B807;
-        Wed, 21 Aug 2019 10:09:07 +0000 (UTC)
-From:   "Eelco Chaudron" <echaudro@redhat.com>
-To:     "Ilya Maximets" <i.maximets@samsung.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        "=?utf-8?b?QmrDtnJuIFTDtnBlbA==?=" <bjorn.topel@intel.com>,
-        "Magnus Karlsson" <magnus.karlsson@intel.com>,
-        "Jakub Kicinski" <jakub.kicinski@netronome.com>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        "Jeff Kirsher" <jeffrey.t.kirsher@intel.com>,
-        intel-wired-lan@lists.osuosl.org, "William Tu" <u9012063@gmail.com>
-Subject: Re: [PATCH net] ixgbe: fix double clean of tx descriptors with xdp
-Date:   Wed, 21 Aug 2019 12:09:06 +0200
-Message-ID: <9EFD9B47-2CD0-4D7A-BA22-D87018894E91@redhat.com>
-In-Reply-To: <20190820151611.10727-1-i.maximets@samsung.com>
-References: <CGME20190820151644eucas1p179d6d1da42bb6be0aad8f58ac46624ce@eucas1p1.samsung.com>
- <20190820151611.10727-1-i.maximets@samsung.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 46D3hP6b02z9sN4;
+        Wed, 21 Aug 2019 20:25:24 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jiong Wang <jiong.wang@netronome.com>
+Cc:     bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Regression fix for bpf in v5.3 (was Re: [RFC PATCH] bpf: handle 32-bit zext during constant blinding)
+In-Reply-To: <20190813171018.28221-1-naveen.n.rao@linux.vnet.ibm.com>
+References: <20190813171018.28221-1-naveen.n.rao@linux.vnet.ibm.com>
+Date:   Wed, 21 Aug 2019 20:25:17 +1000
+Message-ID: <87d0gy6cj6.fsf@concordia.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.40]); Wed, 21 Aug 2019 10:09:11 +0000 (UTC)
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 20 Aug 2019, at 17:16, Ilya Maximets wrote:
-
-> Tx code doesn't clear the descriptor status after cleaning.
-> So, if the budget is larger than number of used elems in a ring, some
-> descriptors will be accounted twice and xsk_umem_complete_tx will move
-> prod_tail far beyond the prod_head breaking the comletion queue ring.
+"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> writes:
+> Since BPF constant blinding is performed after the verifier pass, there
+> are certain ALU32 instructions inserted which don't have a corresponding
+> zext instruction inserted after. This is causing a kernel oops on
+> powerpc and can be reproduced by running 'test_cgroup_storage' with
+> bpf_jit_harden=2.
 >
-> Fix that by limiting the number of descriptors to clean by the number
-> of used descriptors in the tx ring.
+> Fix this by emitting BPF_ZEXT during constant blinding if
+> prog->aux->verifier_zext is set.
 >
-> Fixes: 8221c5eba8c1 ("ixgbe: add AF_XDP zero-copy Tx support")
-> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
+> Fixes: a4b1d3c1ddf6cb ("bpf: verifier: insert zero extension according to analysis result")
+> Reported-by: Michael Ellerman <mpe@ellerman.id.au>
+> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 > ---
->
-> Not tested yet because of lack of available hardware.
-> So, testing is very welcome.
->
-Hi Ilya, this patch fixes the issue I reported earlier on the Open 
-vSwitch mailing list regarding complete queue overrun.
+> This approach (the location where zext is being introduced below, in 
+> particular) works for powerpc, but I am not entirely sure if this is 
+> sufficient for other architectures as well. This is broken on v5.3-rc4.
 
-Tested-by: Eelco Chaudron <echaudro@redhat.com>
+Any comment on this?
 
-<SNIP>
+This is a regression in v5.3, which results in a kernel crash, it would
+be nice to get it fixed before the release please?
+
+cheers
+
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 8191a7db2777..d84146e6fd9e 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -890,7 +890,8 @@ int bpf_jit_get_func_addr(const struct bpf_prog *prog,
+>  
+>  static int bpf_jit_blind_insn(const struct bpf_insn *from,
+>  			      const struct bpf_insn *aux,
+> -			      struct bpf_insn *to_buff)
+> +			      struct bpf_insn *to_buff,
+> +			      bool emit_zext)
+>  {
+>  	struct bpf_insn *to = to_buff;
+>  	u32 imm_rnd = get_random_int();
+> @@ -939,6 +940,8 @@ static int bpf_jit_blind_insn(const struct bpf_insn *from,
+>  		*to++ = BPF_ALU32_IMM(BPF_MOV, BPF_REG_AX, imm_rnd ^ from->imm);
+>  		*to++ = BPF_ALU32_IMM(BPF_XOR, BPF_REG_AX, imm_rnd);
+>  		*to++ = BPF_ALU32_REG(from->code, from->dst_reg, BPF_REG_AX);
+> +		if (emit_zext)
+> +			*to++ = BPF_ZEXT_REG(from->dst_reg);
+>  		break;
+>  
+>  	case BPF_ALU64 | BPF_ADD | BPF_K:
+> @@ -992,6 +995,10 @@ static int bpf_jit_blind_insn(const struct bpf_insn *from,
+>  			off -= 2;
+>  		*to++ = BPF_ALU32_IMM(BPF_MOV, BPF_REG_AX, imm_rnd ^ from->imm);
+>  		*to++ = BPF_ALU32_IMM(BPF_XOR, BPF_REG_AX, imm_rnd);
+> +		if (emit_zext) {
+> +			*to++ = BPF_ZEXT_REG(BPF_REG_AX);
+> +			off--;
+> +		}
+>  		*to++ = BPF_JMP32_REG(from->code, from->dst_reg, BPF_REG_AX,
+>  				      off);
+>  		break;
+> @@ -1005,6 +1012,8 @@ static int bpf_jit_blind_insn(const struct bpf_insn *from,
+>  	case 0: /* Part 2 of BPF_LD | BPF_IMM | BPF_DW. */
+>  		*to++ = BPF_ALU32_IMM(BPF_MOV, BPF_REG_AX, imm_rnd ^ aux[0].imm);
+>  		*to++ = BPF_ALU32_IMM(BPF_XOR, BPF_REG_AX, imm_rnd);
+> +		if (emit_zext)
+> +			*to++ = BPF_ZEXT_REG(BPF_REG_AX);
+>  		*to++ = BPF_ALU64_REG(BPF_OR,  aux[0].dst_reg, BPF_REG_AX);
+>  		break;
+>  
+> @@ -1088,7 +1097,8 @@ struct bpf_prog *bpf_jit_blind_constants(struct bpf_prog *prog)
+>  		    insn[1].code == 0)
+>  			memcpy(aux, insn, sizeof(aux));
+>  
+> -		rewritten = bpf_jit_blind_insn(insn, aux, insn_buff);
+> +		rewritten = bpf_jit_blind_insn(insn, aux, insn_buff,
+> +						clone->aux->verifier_zext);
+>  		if (!rewritten)
+>  			continue;
+>  
+> -- 
+> 2.22.0
