@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B86F497560
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 10:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0F297562
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 10:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbfHUIwa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1726869AbfHUIwc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Aug 2019 04:52:32 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:38287 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726818AbfHUIwa (ORCPT <rfc822;bpf@vger.kernel.org>);
         Wed, 21 Aug 2019 04:52:30 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:33222 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbfHUIw3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Aug 2019 04:52:29 -0400
-Received: by mail-wm1-f65.google.com with SMTP id p77so4271313wme.0
+Received: by mail-wm1-f67.google.com with SMTP id m125so1272276wmm.3
         for <bpf@vger.kernel.org>; Wed, 21 Aug 2019 01:52:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=jsfJpUVjU9dUn+lZhqs5bn9/2bp4FWXp9iMvmKTuF4E=;
-        b=byzJFaKj+d4bHL9LHY3n0DV4iHLyQuvcnTXnasPh7QkG38qUdOY7LF4MKsMy4J7PNP
-         3LwV3h5V+UlmP1QGqaLfVuxbywNciaYZqh9cdt0ohkeRPT53mBMAgawFqEFSCbyr/0kf
-         fzSNBvmJAsEQbcB9Ix3luxaR3Td7zVIbuxaqvuWE7SzBZK5f5DJY/BzX8AfGG+ji/8MK
-         MuLmdwlokb1Aq3M3bkx/NW8f36eIVS33cHwS3APVDvYj4Ln9gDD6FrpE9BGOskPo6nXk
-         syK/OJ687HVIxHtD6l98jTZIH+SxmqOdaj0m0jcDVhAiOp/aSNsd6P39D4DGyDjEPEMP
-         tQRA==
+        bh=r4bUeephZBN2sAbFUS+smte4iFd/homrxE93aQENC8Q=;
+        b=J6vM5rlnR5SWmEYHt1GsK+IYqHY5SLwtDI4y7CHEDAcohXU5se/ULO9SO23cgjHDRA
+         wZO+anZL0upC+0ymoI/MHOnSsOSeN5PIVd8Jj8hzLicJGltomxYkkjn79Rnttd3YW74Z
+         sYpUduLuegLkMkxomAJE/7ElhpvaNLwifbuMIR6oT/ddnK0nfjZ5AH5yCY1H2mk4oKPS
+         6czySKRNf86iwXnFwqYDVn1T+msRrX9UT5VCKWn7fgj54SuNli56krHYHjE6ZzhwHxrd
+         MTkCVC9DD5C6xNSqaxcIZh6LP1PTvBhtEst+EL+ZZd6fOa7+McN4N9M8BYHilFGIbweA
+         uT5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=jsfJpUVjU9dUn+lZhqs5bn9/2bp4FWXp9iMvmKTuF4E=;
-        b=DMpX+xMxX0G7DRbzbWqUp917N7nWJ+9IK3fMAmKg83Qk14/r592CwiE5b4MewSvi6D
-         68G9QIKMGr9Pg2CAZiTKmGdTBuxykrTZchSRE2m0Xn5+K6VnbkediGpkUgCZOYxmyUOc
-         L1kllDILr8yonrO+cmbxeBNJNhw+MZ7Kx7MXZHw9pxbt1TYo3BxtV5bn8JagxnOvChUm
-         SYfdRcLl6bUecB9A0hmtQX26nQFLNsnV8/gu7dYixuHKxcg7uB2hYFZWp+6Th8H9uaIB
-         EJwBhL4hpOcKIhbV1TQkH8EtuYpd1e7wm7GPRwEIns1jHjgnou+J+Z7pb2EcNXwHEbfL
-         yEAg==
-X-Gm-Message-State: APjAAAWuMuIqL7BjSHN1G4LnMcOXo77QmEtpC43msm4gKN1Oc6+FDNxc
-        XmtJCFGxVg31gxFinqlUiXKjzA==
-X-Google-Smtp-Source: APXvYqwL+YrEg3UG2c5vp4RYF5inEJnepCfl8hWeHhW+rgYDI3vvhrlOEQEVmGrw0sfLOw0dTmEAyw==
-X-Received: by 2002:a1c:c5c2:: with SMTP id v185mr4999397wmf.161.1566377547342;
-        Wed, 21 Aug 2019 01:52:27 -0700 (PDT)
+        bh=r4bUeephZBN2sAbFUS+smte4iFd/homrxE93aQENC8Q=;
+        b=nzN5x6tWva8w6y5PswlQPh86FlELBkY/2GzF5yAA3to01A89X+mhvtFxrLm+pKgYAd
+         iMJruA0Ts2kXYdD8Zyv4MDPBuTp7eCiKjjdM12f0xixDr21rCL8hCED+8Uv4Bg0d24qt
+         Jryf07R8TB/7iBMziDukGu/fFfy8ntyUaFrrciNriEleXh7k70WKgG4uhLdZhncUTAd5
+         r23/wqZ5fgXC0nupUevP0bA4pQ+4MXwVv15wxSMAnB2tLJtGovopA2IhflUZpFzYX25U
+         mEgUg02ri2UVavaAsbPwPgHR2saESvthLuonSTEnsD/o9oA3UhP3pCCVbaxgAay8vhUG
+         Eocg==
+X-Gm-Message-State: APjAAAU/XD7fGXJYZ8DsdG9bOgvk/WNcXKQi6Ogn/6xSv8Ix2MyFmxeO
+        Fb4xaWZUMslEpcdFon0MsY+dWA==
+X-Google-Smtp-Source: APXvYqxGS2hNJpfLX5MhgvPLSj1wCl7pcjMh9xsnXs9vnRE9ibeXUfBLtSVh9/0JLxu6sJMUW0oq/A==
+X-Received: by 2002:a1c:a957:: with SMTP id s84mr4754734wme.65.1566377548301;
+        Wed, 21 Aug 2019 01:52:28 -0700 (PDT)
 Received: from cbtest32.netronome.com ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id p7sm2040165wmh.38.2019.08.21.01.52.26
+        by smtp.gmail.com with ESMTPSA id p7sm2040165wmh.38.2019.08.21.01.52.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Aug 2019 01:52:26 -0700 (PDT)
+        Wed, 21 Aug 2019 01:52:27 -0700 (PDT)
 From:   Quentin Monnet <quentin.monnet@netronome.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         oss-drivers@netronome.com,
         Quentin Monnet <quentin.monnet@netronome.com>
-Subject: [PATCH bpf-next 1/2] tools: bpftool: show frozen status for maps
-Date:   Wed, 21 Aug 2019 09:52:18 +0100
-Message-Id: <20190821085219.30387-2-quentin.monnet@netronome.com>
+Subject: [PATCH bpf-next 2/2] tools: bpftool: add "bpftool map freeze" subcommand
+Date:   Wed, 21 Aug 2019 09:52:19 +0100
+Message-Id: <20190821085219.30387-3-quentin.monnet@netronome.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190821085219.30387-1-quentin.monnet@netronome.com>
 References: <20190821085219.30387-1-quentin.monnet@netronome.com>
@@ -60,87 +60,131 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When listing maps, read their "frozen" status from procfs, and tell if
-maps are frozen.
-
-As commit log for map freezing command mentions that the feature might
-be extended with flags (e.g. for write-only instead of read-only) in the
-future, use an integer and not a boolean for JSON output.
+Add a new subcommand to freeze maps from user space.
 
 Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
 Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
 ---
- tools/bpf/bpftool/map.c | 30 +++++++++++++++++++++++++++---
- 1 file changed, 27 insertions(+), 3 deletions(-)
+ .../bpf/bpftool/Documentation/bpftool-map.rst |  9 +++++
+ tools/bpf/bpftool/bash-completion/bpftool     |  4 +--
+ tools/bpf/bpftool/map.c                       | 34 ++++++++++++++++++-
+ 3 files changed, 44 insertions(+), 3 deletions(-)
 
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/bpftool/Documentation/bpftool-map.rst
+index 61d1d270eb5e..1c0f7146aab0 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
+@@ -36,6 +36,7 @@ MAP COMMANDS
+ |	**bpftool** **map pop**        *MAP*
+ |	**bpftool** **map enqueue**    *MAP* **value** *VALUE*
+ |	**bpftool** **map dequeue**    *MAP*
++|	**bpftool** **map freeze**     *MAP*
+ |	**bpftool** **map help**
+ |
+ |	*MAP* := { **id** *MAP_ID* | **pinned** *FILE* }
+@@ -127,6 +128,14 @@ DESCRIPTION
+ 	**bpftool map dequeue**  *MAP*
+ 		  Dequeue and print **value** from the queue.
+ 
++	**bpftool map freeze**  *MAP*
++		  Freeze the map as read-only from user space. Entries from a
++		  frozen map can not longer be updated or deleted with the
++		  **bpf\ ()** system call. This operation is not reversible,
++		  and the map remains immutable from user space until its
++		  destruction. However, read and write permissions for BPF
++		  programs to the map remain unchanged.
++
+ 	**bpftool map help**
+ 		  Print short help message.
+ 
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index 2ffd351f9dbf..70493a6da206 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -449,7 +449,7 @@ _bpftool()
+         map)
+             local MAP_TYPE='id pinned'
+             case $command in
+-                show|list|dump|peek|pop|dequeue)
++                show|list|dump|peek|pop|dequeue|freeze)
+                     case $prev in
+                         $command)
+                             COMPREPLY=( $( compgen -W "$MAP_TYPE" -- "$cur" ) )
+@@ -638,7 +638,7 @@ _bpftool()
+                     [[ $prev == $object ]] && \
+                         COMPREPLY=( $( compgen -W 'delete dump getnext help \
+                             lookup pin event_pipe show list update create \
+-                            peek push enqueue pop dequeue' -- \
++                            peek push enqueue pop dequeue freeze' -- \
+                             "$cur" ) )
+                     ;;
+             esac
 diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index bfbbc6b4cb83..af2e9eb9747b 100644
+index af2e9eb9747b..de61d73b9030 100644
 --- a/tools/bpf/bpftool/map.c
 +++ b/tools/bpf/bpftool/map.c
-@@ -481,9 +481,11 @@ static int parse_elem(char **argv, struct bpf_map_info *info,
+@@ -1262,6 +1262,35 @@ static int do_pop_dequeue(int argc, char **argv)
+ 	return err;
+ }
  
- static int show_map_close_json(int fd, struct bpf_map_info *info)
- {
--	char *memlock;
-+	char *memlock, *frozen_str;
-+	int frozen = 0;
- 
- 	memlock = get_fdinfo(fd, "memlock");
-+	frozen_str = get_fdinfo(fd, "frozen");
- 
- 	jsonw_start_object(json_wtr);
- 
-@@ -533,6 +535,12 @@ static int show_map_close_json(int fd, struct bpf_map_info *info)
- 	}
- 	close(fd);
- 
-+	if (frozen_str) {
-+		frozen = atoi(frozen_str);
-+		free(frozen_str);
-+	}
-+	jsonw_int_field(json_wtr, "frozen", frozen);
++static int do_freeze(int argc, char **argv)
++{
++	int err, fd;
 +
- 	if (info->btf_id)
- 		jsonw_int_field(json_wtr, "btf_id", info->btf_id);
- 
-@@ -555,9 +563,11 @@ static int show_map_close_json(int fd, struct bpf_map_info *info)
- 
- static int show_map_close_plain(int fd, struct bpf_map_info *info)
- {
--	char *memlock;
-+	char *memlock, *frozen_str;
-+	int frozen = 0;
- 
- 	memlock = get_fdinfo(fd, "memlock");
-+	frozen_str = get_fdinfo(fd, "frozen");
- 
- 	printf("%u: ", info->id);
- 	if (info->type < ARRAY_SIZE(map_type_name))
-@@ -610,9 +620,23 @@ static int show_map_close_plain(int fd, struct bpf_map_info *info)
- 				printf("\n\tpinned %s", obj->path);
- 		}
- 	}
-+	printf("\n");
++	if (!REQ_ARGS(2))
++		return -1;
 +
-+	if (frozen_str) {
-+		frozen = atoi(frozen_str);
-+		free(frozen_str);
++	fd = map_parse_fd(&argc, &argv);
++	if (fd < 0)
++		return -1;
++
++	if (argc) {
++		close(fd);
++		return BAD_ARG();
 +	}
 +
-+	if (!info->btf_id && !frozen)
-+		return 0;
++	err = bpf_map_freeze(fd);
++	close(fd);
++	if (err) {
++		p_err("failed to freeze map: %s", strerror(errno));
++		return err;
++	}
 +
-+	printf("\t");
- 
- 	if (info->btf_id)
--		printf("\n\tbtf_id %d", info->btf_id);
-+		printf("btf_id %d", info->btf_id);
++	if (json_output)
++		jsonw_null(json_wtr);
 +
-+	if (frozen)
-+		printf("%sfrozen", info->btf_id ? "  " : "");
++	return 0;
++}
++
+ static int do_help(int argc, char **argv)
+ {
+ 	if (json_output) {
+@@ -1286,6 +1315,7 @@ static int do_help(int argc, char **argv)
+ 		"       %s %s pop        MAP\n"
+ 		"       %s %s enqueue    MAP value VALUE\n"
+ 		"       %s %s dequeue    MAP\n"
++		"       %s %s freeze     MAP\n"
+ 		"       %s %s help\n"
+ 		"\n"
+ 		"       " HELP_SPEC_MAP "\n"
+@@ -1304,7 +1334,8 @@ static int do_help(int argc, char **argv)
+ 		bin_name, argv[-2], bin_name, argv[-2], bin_name, argv[-2],
+ 		bin_name, argv[-2], bin_name, argv[-2], bin_name, argv[-2],
+ 		bin_name, argv[-2], bin_name, argv[-2], bin_name, argv[-2],
+-		bin_name, argv[-2], bin_name, argv[-2], bin_name, argv[-2]);
++		bin_name, argv[-2], bin_name, argv[-2], bin_name, argv[-2],
++		bin_name, argv[-2]);
  
- 	printf("\n");
  	return 0;
+ }
+@@ -1326,6 +1357,7 @@ static const struct cmd cmds[] = {
+ 	{ "enqueue",	do_update },
+ 	{ "pop",	do_pop_dequeue },
+ 	{ "dequeue",	do_pop_dequeue },
++	{ "freeze",	do_freeze },
+ 	{ 0 }
+ };
+ 
 -- 
 2.17.1
 
