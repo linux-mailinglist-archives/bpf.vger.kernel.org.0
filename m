@@ -2,115 +2,212 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 666AD98647
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 23:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E18C986AE
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 23:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726828AbfHUVHP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 21 Aug 2019 17:07:15 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:38450 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730722AbfHUVHO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 21 Aug 2019 17:07:14 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x7LL6o1N017637
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2019 14:07:12 -0700
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by m0001303.ppops.net with ESMTP id 2uh8qcsfvf-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2019 14:07:12 -0700
-Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Wed, 21 Aug 2019 14:07:11 -0700
-Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
-        id 888EF760ACD; Wed, 21 Aug 2019 14:07:10 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Alexei Starovoitov <ast@kernel.org>
-Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
-To:     <davem@davemloft.net>
-CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf] bpf: fix precision tracking in presence of bpf2bpf calls
-Date:   Wed, 21 Aug 2019 14:07:10 -0700
-Message-ID: <20190821210710.1276117-1-ast@kernel.org>
-X-Mailer: git-send-email 2.20.0
+        id S1727507AbfHUVjG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Aug 2019 17:39:06 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:32872 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726530AbfHUVjG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Aug 2019 17:39:06 -0400
+Received: by mail-qt1-f195.google.com with SMTP id v38so5015311qtb.0;
+        Wed, 21 Aug 2019 14:39:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DUnGPgYSlYELq8snkCH3/ogLmFH6bABIvcNtaNXTSVc=;
+        b=AXDHQob5IyMllJJoCx7ZMR8TK3SJN0l7qIATQtWf6ngixz26/p+Sey60awnPqojOTU
+         ECTbzza4sfLN2MZNGWAPC5aO0a/n+iDaEPCfzPGJF911kaP0oySCyhDQenhRqoGE/46f
+         SNLMK3otufWhvREna0kxOFS7STmbaaVnCSswUJsIxkc+s50sZi3CxY3Se6mco3tFynew
+         5pFuHfoV0v9VCYiMjGnz4d3zyUnuTg5tAPIb9HAxcnHQZxyrEQekItEFl8cKP3TY0Kh0
+         uleYqDjSSbn/nF5glEFEJye/1xrV8Du+6FWcXn0h5IoikXVIaQ5kMZ2Ddrb6jckdzwUU
+         iJ3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DUnGPgYSlYELq8snkCH3/ogLmFH6bABIvcNtaNXTSVc=;
+        b=Nhvd27PLar3qiTcmnUV55G66hokheTyCtPnAPpxZWHjrZJtI3CnI2aqwsBQGoHgEGV
+         W75XpnLFHNWtdAUWSCO0CIX5cDsrJ5y60LGl2ADwh0vV+DmtX/Vx0FifiwKwI/fEN3bo
+         tty/OL4jSMKrOzEsCV/z/Oe+CMZc2itxQoETWEoMoBYBIDBvsUWbGCKGxDAXIKrjIQbw
+         wFK0WClotKIRntIYn+pd4FK7RdsY5wVDsC0H6atv1VQt7tLVEFRJ3Gaf77M5zKAj0v5K
+         v9hLB+ZHkdTf9npLJeBTCc82lO0ITkanO7gAvYhp0eEi01SCWcOtpPeBWokrRx3f7YI1
+         wZeQ==
+X-Gm-Message-State: APjAAAVNgMitA3NrhhnsHdQvmOBNuAdIkT98yPPPVASydcYDu+BjVR8x
+        PxyI73/9DJiRl3Mxu7zPyptR1GEjg+QlVwHvO84=
+X-Google-Smtp-Source: APXvYqyy0hvvRHykzg7i0XuhNgycH/ll14e3xUl/E4u+m0BQJBHvXmJ9XL1xul4O3FjgxkcePIYvjvZNX2y+J4rwF4w=
+X-Received: by 2002:a0c:db12:: with SMTP id d18mr19832519qvk.199.1566423544935;
+ Wed, 21 Aug 2019 14:39:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-21_07:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908210207
-X-FB-Internal: deliver
+References: <CGME20190820151644eucas1p179d6d1da42bb6be0aad8f58ac46624ce@eucas1p1.samsung.com>
+ <20190820151611.10727-1-i.maximets@samsung.com> <CAKgT0Udn0D0_f=SOH2wpBRWV_u4rb1Qe2h7gguXnRNzJ_VkRzg@mail.gmail.com>
+ <625791af-c656-1e42-b60e-b3a5cedcb4c4@samsung.com> <CAKgT0Uc27+ucd=a_sgTmv5g7_+ZTg1zK4isYJ0H7YWQj3d=Ejg@mail.gmail.com>
+ <f7d0f7a5-e664-8b72-99c7-63275aff4c18@samsung.com> <CAKgT0UcCKiM1Ys=vWxctprN7fzWcBCk-PCuKB-8=RThM=CqLSQ@mail.gmail.com>
+In-Reply-To: <CAKgT0UcCKiM1Ys=vWxctprN7fzWcBCk-PCuKB-8=RThM=CqLSQ@mail.gmail.com>
+From:   William Tu <u9012063@gmail.com>
+Date:   Wed, 21 Aug 2019 14:38:28 -0700
+Message-ID: <CALDO+SZCbxEEwCS6MyHk-Cp_LJ33N=QFqwZ8uRm0e-PBRgxRYw@mail.gmail.com>
+Subject: Re: [PATCH net] ixgbe: fix double clean of tx descriptors with xdp
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Ilya Maximets <i.maximets@samsung.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Eelco Chaudron <echaudro@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-While adding extra tests for precision tracking and extra infra
-to adjust verifier heuristics the existing test
-"calls: cross frame pruning - liveness propagation" started to fail.
-The root cause is the same as described in verifer.c comment:
+On Wed, Aug 21, 2019 at 9:57 AM Alexander Duyck
+<alexander.duyck@gmail.com> wrote:
+>
+> On Wed, Aug 21, 2019 at 9:22 AM Ilya Maximets <i.maximets@samsung.com> wr=
+ote:
+> >
+> > On 21.08.2019 4:17, Alexander Duyck wrote:
+> > > On Tue, Aug 20, 2019 at 8:58 AM Ilya Maximets <i.maximets@samsung.com=
+> wrote:
+> > >>
+> > >> On 20.08.2019 18:35, Alexander Duyck wrote:
+> > >>> On Tue, Aug 20, 2019 at 8:18 AM Ilya Maximets <i.maximets@samsung.c=
+om> wrote:
+> > >>>>
+> > >>>> Tx code doesn't clear the descriptor status after cleaning.
+> > >>>> So, if the budget is larger than number of used elems in a ring, s=
+ome
+> > >>>> descriptors will be accounted twice and xsk_umem_complete_tx will =
+move
+> > >>>> prod_tail far beyond the prod_head breaking the comletion queue ri=
+ng.
+> > >>>>
+> > >>>> Fix that by limiting the number of descriptors to clean by the num=
+ber
+> > >>>> of used descriptors in the tx ring.
+> > >>>>
+> > >>>> Fixes: 8221c5eba8c1 ("ixgbe: add AF_XDP zero-copy Tx support")
+> > >>>> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
+> > >>>
+> > >>> I'm not sure this is the best way to go. My preference would be to
+> > >>> have something in the ring that would prevent us from racing which =
+I
+> > >>> don't think this really addresses. I am pretty sure this code is sa=
+fe
+> > >>> on x86 but I would be worried about weak ordered systems such as
+> > >>> PowerPC.
+> > >>>
+> > >>> It might make sense to look at adding the eop_desc logic like we ha=
+ve
+> > >>> in the regular path with a proper barrier before we write it and af=
+ter
+> > >>> we read it. So for example we could hold of on writing the bytecoun=
+t
+> > >>> value until the end of an iteration and call smp_wmb before we writ=
+e
+> > >>> it. Then on the cleanup we could read it and if it is non-zero we t=
+ake
+> > >>> an smp_rmb before proceeding further to process the Tx descriptor a=
+nd
+> > >>> clearing the value. Otherwise this code is going to just keep poppi=
+ng
+> > >>> up with issues.
+> > >>
+> > >> But, unlike regular case, xdp zero-copy xmit and clean for particula=
+r
+> > >> tx ring always happens in the same NAPI context and even on the same
+> > >> CPU core.
+> > >>
+> > >> I saw the 'eop_desc' manipulations in regular case and yes, we could
+> > >> use 'next_to_watch' field just as a flag of descriptor existence,
+> > >> but it seems unnecessarily complicated. Am I missing something?
+> > >>
+> > >
+> > > So is it always in the same NAPI context?. I forgot, I was thinking
+> > > that somehow the socket could possibly make use of XDP for transmit.
+> >
+> > AF_XDP socket only triggers tx interrupt on ndo_xsk_async_xmit() which
+> > is used in zero-copy mode. Real xmit happens inside
+> > ixgbe_poll()
+> >  -> ixgbe_clean_xdp_tx_irq()
+> >     -> ixgbe_xmit_zc()
+> >
+> > This should be not possible to bound another XDP socket to the same net=
+dev
+> > queue.
+> >
+> > It also possible to xmit frames in xdp_ring while performing XDP_TX/RED=
+IRECT
+> > actions. REDIRECT could happen from different netdev with different NAP=
+I
+> > context, but this operation is bound to specific CPU core and each core=
+ has
+> > its own xdp_ring.
+> >
+> > However, I'm not an expert here.
+> > Bj=C3=B6rn, maybe you could comment on this?
+> >
+> > >
+> > > As far as the logic to use I would be good with just using a value yo=
+u
+> > > are already setting such as the bytecount value. All that would need
+> > > to happen is to guarantee that the value is cleared in the Tx path. S=
+o
+> > > if you clear the bytecount in ixgbe_clean_xdp_tx_irq you could
+> > > theoretically just use that as well to flag that a descriptor has bee=
+n
+> > > populated and is ready to be cleaned. Assuming the logic about this
+> > > all being in the same NAPI context anyway you wouldn't need to mess
+> > > with the barrier stuff I mentioned before.
+> >
+> > Checking the number of used descs, i.e. next_to_use - next_to_clean,
+> > makes iteration in this function logically equal to the iteration insid=
+e
+> > 'ixgbe_xsk_clean_tx_ring()'. Do you think we need to change the later
+> > function too to follow same 'bytecount' approach? I don't like having
+> > two different ways to determine number of used descriptors in the same =
+file.
+> >
+> > Best regards, Ilya Maximets.
+>
+> As far as ixgbe_clean_xdp_tx_irq() vs ixgbe_xsk_clean_tx_ring(), I
+> would say that if you got rid of budget and framed things more like
+> how ixgbe_xsk_clean_tx_ring was framed with the ntc !=3D ntu being
+> obvious I would prefer to see us go that route.
+>
+> Really there is no need for budget in ixgbe_clean_xdp_tx_irq() if you
+> are going to be working with a static ntu value since you will only
+> ever process one iteration through the ring anyway. It might make more
+> sense if you just went through and got rid of budget and i, and
+> instead used ntc and ntu like what was done in
+> ixgbe_xsk_clean_tx_ring().
+>
+> Thanks.
+>
+> - Alex
 
- * Also if parent's curframe > frame where backtracking started,
- * the verifier need to mark registers in both frames, otherwise callees
- * may incorrectly prune callers. This is similar to
- * commit 7640ead93924 ("bpf: verifier: make sure callees don't prune with caller differences")
- * For now backtracking falls back into conservative marking.
+Not familiar with the driver details.
+I tested this patch and the issue mentioned in OVS mailing list.
+https://www.mail-archive.com/ovs-dev@openvswitch.org/msg35362.html
+and indeed the problem goes away. But I saw a huge performance drop,
+my AF_XDP tx performance drops from >9Mpps to <5Mpps.
 
-Turned out though that returning -ENOTSUPP from backtrack_insn() and
-doing mark_all_scalars_precise() in the current parentage chain is not enough.
-Depending on how is_state_visited() heuristic is creating parentage chain
-it's possible that callee will incorrectly prune caller.
-Fix the issue by setting precise=true earlier and more aggressively.
-Before this fix the precision tracking _within_ functions that don't do
-bpf2bpf calls would still work. Whereas now precision tracking is completely
-disabled when bpf2bpf calls are present anywhere in the program.
+Tested using kernel 5.3.0-rc3+
+03:00.0 Ethernet controller: Intel Corporation Ethernet Controller
+10-Gigabit X540-AT2 (rev 01)
+Subsystem: Intel Corporation Ethernet 10G 2P X540-t Adapter
+Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+Stepping- SERR- FastB2B- DisINTx+
 
-No difference in cilium tests (they don't have bpf2bpf calls).
-No difference in test_progs though some of them have bpf2bpf calls,
-but precision tracking wasn't effective there.
-
-Fixes: b5dc0163d8fd ("bpf: precise scalar_value tracking")
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
-Separate set of tests and infra for them will go into bpf-next.
----
- kernel/bpf/verifier.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index c84d83f86141..b5c14c9d7b98 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -985,9 +985,6 @@ static void __mark_reg_unbounded(struct bpf_reg_state *reg)
- 	reg->smax_value = S64_MAX;
- 	reg->umin_value = 0;
- 	reg->umax_value = U64_MAX;
--
--	/* constant backtracking is enabled for root only for now */
--	reg->precise = capable(CAP_SYS_ADMIN) ? false : true;
- }
- 
- /* Mark a register as having a completely unknown (scalar) value. */
-@@ -1014,7 +1011,11 @@ static void mark_reg_unknown(struct bpf_verifier_env *env,
- 			__mark_reg_not_init(regs + regno);
- 		return;
- 	}
--	__mark_reg_unknown(regs + regno);
-+	regs += regno;
-+	__mark_reg_unknown(regs);
-+	/* constant backtracking is enabled for root without bpf2bpf calls */
-+	regs->precise = env->subprog_cnt > 1 || !env->allow_ptr_leaks ?
-+			true : false;
- }
- 
- static void __mark_reg_not_init(struct bpf_reg_state *reg)
--- 
-2.20.0
-
+Regards,
+William
