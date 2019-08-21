@@ -2,122 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC53196EC0
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 03:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E0597250
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 08:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726351AbfHUBRN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Aug 2019 21:17:13 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:41486 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726202AbfHUBRM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Aug 2019 21:17:12 -0400
-Received: by mail-io1-f67.google.com with SMTP id j5so1246592ioj.8;
-        Tue, 20 Aug 2019 18:17:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kZWHrTprV1/7KUdKW3G6OHYWGjOaGD0IoU996R//irc=;
-        b=PW/FNmKOjoHqHBgeKuzcejPrWtquvNRR8hFw19cBinEnE7gl0RdKyYw2XhZFsMK5l8
-         jSWcbl+meQnv7sxj8jqKKU3UIX3V+6MXUy8oV7zb9opsXDeeAi4xDzQRHCGUp6E7iFrN
-         8bWY7qXYx+av2KfejCyBNsCYm3VxnL7YaA6eajUZ3RFxY6mAR/YLmt003MKqW0/tIbX1
-         qcLZKcc7MA7q9HnC9CmAv6ZQxtd3J9rVvcvNdIWPW4hm+wlvNikXZqVM4e7cOCiD4/vZ
-         DnA2tCTB5rUV7i43BoOjjvGGEWYorK7nKtvSlDicQz7tL3nrLpg8pa1gaUgFwVF2TwCF
-         nYdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kZWHrTprV1/7KUdKW3G6OHYWGjOaGD0IoU996R//irc=;
-        b=P674LPmtp7bPIRbsWYBdCYFk6ZrCdQaHT9C9WYbqfixnUBC5T74jrTsqZGJjZgIj0j
-         Ymi8bHtKkMBC/V8at5KpEVyGmURLN/PUZLd2gpFOwua+hxKRUiKhX0f5mQX3fsLCqzc2
-         YQnBnSylcPlkfmhzPLz/5cE4d/kTdt1KHOtFzqeWRaZWHgHQYaX/V6rirZbwNZRhzxsj
-         7vnuYjzyJy1AlvdSWo5mqoSxvuGcvrHtsM+kxorfnPvjw6ErIgON8ti0DUQhbzcFffIe
-         L1XIhct+dRewCc1+V0c0TPUWFzIudBu5YFwn7MEnmnkXfrDtWwDXQCvuwviDU2K0p3KI
-         mKkw==
-X-Gm-Message-State: APjAAAWs5CGHkozDZUE0HxvOoibumzZl7prYiM8mE5gdxT+pL9gm0D+8
-        OCs2exrBS+eOZgT1IDdQPFedDTGW4wGf9kPN7nA=
-X-Google-Smtp-Source: APXvYqwKPD7A/87E2z38qYXby7iIyyIj1fffBmYKZ1eCq5AuMAqrR+2V+Rth31D1/5dIoKoaLHfgabFG9o2gT1w9NOY=
-X-Received: by 2002:a5d:8b47:: with SMTP id c7mr24228155iot.42.1566350231784;
- Tue, 20 Aug 2019 18:17:11 -0700 (PDT)
+        id S1727952AbfHUGhI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Aug 2019 02:37:08 -0400
+Received: from a.mx.secunet.com ([62.96.220.36]:43188 "EHLO a.mx.secunet.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727841AbfHUGhI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Aug 2019 02:37:08 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 9F41020571;
+        Wed, 21 Aug 2019 08:37:06 +0200 (CEST)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 4021cwcMpGel; Wed, 21 Aug 2019 08:37:05 +0200 (CEST)
+Received: from mail-essen-01.secunet.de (mail-essen-01.secunet.de [10.53.40.204])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 5029A200AC;
+        Wed, 21 Aug 2019 08:37:05 +0200 (CEST)
+Received: from gauss2.secunet.de (10.182.7.193) by mail-essen-01.secunet.de
+ (10.53.40.204) with Microsoft SMTP Server id 14.3.439.0; Wed, 21 Aug 2019
+ 08:37:05 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)      id E4FFE31827CE;
+ Wed, 21 Aug 2019 08:37:04 +0200 (CEST)
+Date:   Wed, 21 Aug 2019 08:37:04 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        syzbot <syzbot+6a9ff159672dfbb41c95@syzkaller.appspotmail.com>,
+        <ast@kernel.org>, <aviadye@mellanox.com>, <borisp@mellanox.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davejwatson@fb.com>, <davem@davemloft.net>, <hdanton@sina.com>,
+        <john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
+        <syzkaller-bugs@googlegroups.com>, <herbert@gondor.apana.org.au>,
+        <linux-crypto@vger.kernel.org>
+Subject: Re: INFO: task hung in tls_sw_release_resources_tx
+Message-ID: <20190821063704.GM2879@gauss3.secunet.de>
+References: <000000000000523ea3059025b11d@google.com>
+ <000000000000e75f1805902bb919@google.com>
+ <20190816190234.2aaab5b6@cakuba.netronome.com>
+ <20190817054743.GE8209@sol.localdomain>
 MIME-Version: 1.0
-References: <CGME20190820151644eucas1p179d6d1da42bb6be0aad8f58ac46624ce@eucas1p1.samsung.com>
- <20190820151611.10727-1-i.maximets@samsung.com> <CAKgT0Udn0D0_f=SOH2wpBRWV_u4rb1Qe2h7gguXnRNzJ_VkRzg@mail.gmail.com>
- <625791af-c656-1e42-b60e-b3a5cedcb4c4@samsung.com>
-In-Reply-To: <625791af-c656-1e42-b60e-b3a5cedcb4c4@samsung.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Tue, 20 Aug 2019 18:17:00 -0700
-Message-ID: <CAKgT0Uc27+ucd=a_sgTmv5g7_+ZTg1zK4isYJ0H7YWQj3d=Ejg@mail.gmail.com>
-Subject: Re: [PATCH net] ixgbe: fix double clean of tx descriptors with xdp
-To:     Ilya Maximets <i.maximets@samsung.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        William Tu <u9012063@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20190817054743.GE8209@sol.localdomain>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 20, 2019 at 8:58 AM Ilya Maximets <i.maximets@samsung.com> wrote:
->
-> On 20.08.2019 18:35, Alexander Duyck wrote:
-> > On Tue, Aug 20, 2019 at 8:18 AM Ilya Maximets <i.maximets@samsung.com> wrote:
-> >>
-> >> Tx code doesn't clear the descriptor status after cleaning.
-> >> So, if the budget is larger than number of used elems in a ring, some
-> >> descriptors will be accounted twice and xsk_umem_complete_tx will move
-> >> prod_tail far beyond the prod_head breaking the comletion queue ring.
-> >>
-> >> Fix that by limiting the number of descriptors to clean by the number
-> >> of used descriptors in the tx ring.
-> >>
-> >> Fixes: 8221c5eba8c1 ("ixgbe: add AF_XDP zero-copy Tx support")
-> >> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
-> >
-> > I'm not sure this is the best way to go. My preference would be to
-> > have something in the ring that would prevent us from racing which I
-> > don't think this really addresses. I am pretty sure this code is safe
-> > on x86 but I would be worried about weak ordered systems such as
-> > PowerPC.
-> >
-> > It might make sense to look at adding the eop_desc logic like we have
-> > in the regular path with a proper barrier before we write it and after
-> > we read it. So for example we could hold of on writing the bytecount
-> > value until the end of an iteration and call smp_wmb before we write
-> > it. Then on the cleanup we could read it and if it is non-zero we take
-> > an smp_rmb before proceeding further to process the Tx descriptor and
-> > clearing the value. Otherwise this code is going to just keep popping
-> > up with issues.
->
-> But, unlike regular case, xdp zero-copy xmit and clean for particular
-> tx ring always happens in the same NAPI context and even on the same
-> CPU core.
->
-> I saw the 'eop_desc' manipulations in regular case and yes, we could
-> use 'next_to_watch' field just as a flag of descriptor existence,
-> but it seems unnecessarily complicated. Am I missing something?
->
+On Fri, Aug 16, 2019 at 10:47:43PM -0700, Eric Biggers wrote:
+> [+Steffen, who is the maintainer of pcrypt]
+> 
+> On Fri, Aug 16, 2019 at 07:02:34PM -0700, Jakub Kicinski wrote:
+> > On Thu, 15 Aug 2019 11:06:00 -0700, syzbot wrote:
+> > > syzbot has bisected this bug to:
+> > > 
+> > > commit 130b392c6cd6b2aed1b7eb32253d4920babb4891
+> > > Author: Dave Watson <davejwatson@fb.com>
+> > > Date:   Wed Jan 30 21:58:31 2019 +0000
+> > > 
+> > >      net: tls: Add tls 1.3 support
+> > > 
+> > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=118e8dee600000
+> > > start commit:   6d5afe20 sctp: fix memleak in sctp_send_reset_streams
+> > > git tree:       net
+> > > final crash:    https://syzkaller.appspot.com/x/report.txt?x=138e8dee600000
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=158e8dee600000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=a4c9e9f08e9e8960
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=6a9ff159672dfbb41c95
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17cb0502600000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14d5dc22600000
+> > > 
+> > > Reported-by: syzbot+6a9ff159672dfbb41c95@syzkaller.appspotmail.com
+> > > Fixes: 130b392c6cd6 ("net: tls: Add tls 1.3 support")
+> > > 
+> > > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> > 
+> > CC Herbert, linux-crypto
+> > 
+> > This is got to be something in the crypto code :S 
+> > 
+> > The test case opens a ktls socket and back log writes to it.
+> > Then it opens a AF_ALG socket, binds "pcrypt(gcm(aes))" and dies.
+> > 
+> > The ktls socket upon close waits for async crypto callbacks, but they
+> > never come. If I unset CRYPTO_USER_API_AEAD or change the alg to bind
+> > to "gcm(aes)" the bug does not trigger.
+> > 
+> > Any suggestions?
+> 
+> Seeing as pcrypt is involved and this is a "task hung" bug, this is probably
+> caused by the recursive pcrypt deadlock, which is yet to be fixed.
+> 
+> See the original thread for more info:
+> 
+> 	https://groups.google.com/forum/#!msg/syzkaller-bugs/1_CXUd3gBcg/BvsRLH0lAgAJ
+> 
+> And the syzbot dashboard link:
+> 
+> 	https://syzkaller.appspot.com/bug?id=178f2528d10720d563091fb51dceb4cb20f75525
+> 
+> Let's tell syzbot this is a duplicate:
+> 
+> #syz dup: INFO: task hung in aead_recvmsg
+> 
+> 
+> Steffen, do you have any plan to fix this?
 
-So is it always in the same NAPI context?. I forgot, I was thinking
-that somehow the socket could possibly make use of XDP for transmit.
+I've tried to use different padata instances for each pcrypt template,
+but then each pcrypt template needs to expose its cpumask configuration
+to a new file in /sys/kernel/pcrypt/. Currently we have one file
+there for the encrytion and on for the decryption cpumask. If we have
+more than these two files, we need some naming convention to now which
+pcrypt template we want to configure. That would be a bit odd because
+a such a nested pcrypt in pcrypt algorithm would not make sense at all.
 
-As far as the logic to use I would be good with just using a value you
-are already setting such as the bytecount value. All that would need
-to happen is to guarantee that the value is cleared in the Tx path. So
-if you clear the bytecount in ixgbe_clean_xdp_tx_irq you could
-theoretically just use that as well to flag that a descriptor has been
-populated and is ready to be cleaned. Assuming the logic about this
-all being in the same NAPI context anyway you wouldn't need to mess
-with the barrier stuff I mentioned before.
+I still think we should somehow forbid these nested configurations.
+If I remember correct, the only objection to your original patch
+was that it would still deadlock if an underlying algorithm uses
+pcrypt as a fallback.
 
-- Alex
+Maybe we can use your patch and also refuse instanitating if an
+underlying algorithm needs a fallback.
+
+The patch would look like this then:
+
+Subject: [PATCH] crypto: pcrypt - forbid recursive instantiation
+
+If the pcrypt template is used multiple times in an algorithm, then a
+deadlock occurs because all pcrypt instances share the same
+padata_instance, which completes requests in the order submitted.  That
+is, the inner pcrypt request waits for the outer pcrypt request while
+the outer request is already waiting for the inner.
+
+Fix this by making pcrypt forbid instantiation if pcrypt appears in the
+underlying ->cra_driver_name and if an underlying algorithm needs a
+fallback.  This is somewhat of a hack, but it's a simple fix that should
+be sufficient to prevent the deadlock.
+
+Reproducer:
+
+	#include <linux/if_alg.h>
+	#include <sys/socket.h>
+	#include <unistd.h>
+
+	int main()
+	{
+		struct sockaddr_alg addr = {
+			.salg_type = "aead",
+			.salg_name = "pcrypt(pcrypt(rfc4106-gcm-aesni))"
+		};
+		int algfd, reqfd;
+		char buf[32] = { 0 };
+
+		algfd = socket(AF_ALG, SOCK_SEQPACKET, 0);
+		bind(algfd, (void *)&addr, sizeof(addr));
+		setsockopt(algfd, SOL_ALG, ALG_SET_KEY, buf, 20);
+		reqfd = accept(algfd, 0, 0);
+		write(reqfd, buf, 32);
+		read(reqfd, buf, 16);
+	}
+
+Reported-by: syzbot+56c7151cad94eec37c521f0e47d2eee53f9361c4@syzkaller.appspotmail.com
+Fixes: 5068c7a883d1 ("crypto: pcrypt - Add pcrypt crypto parallelization wrapper")
+Cc: <stable@vger.kernel.org> # v2.6.34+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+---
+ crypto/pcrypt.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/crypto/pcrypt.c b/crypto/pcrypt.c
+index 543792e0ebf0..932a77b61b47 100644
+--- a/crypto/pcrypt.c
++++ b/crypto/pcrypt.c
+@@ -198,6 +198,12 @@ static void pcrypt_free(struct aead_instance *inst)
+ static int pcrypt_init_instance(struct crypto_instance *inst,
+ 				struct crypto_alg *alg)
+ {
++	/* Recursive pcrypt deadlocks due to the shared padata_instance */
++	if (!strncmp(alg->cra_driver_name, "pcrypt(", 7) ||
++	    strstr(alg->cra_driver_name, "(pcrypt(") ||
++	    strstr(alg->cra_driver_name, ",pcrypt("))
++		return -EINVAL;
++
+ 	if (snprintf(inst->alg.cra_driver_name, CRYPTO_MAX_ALG_NAME,
+ 		     "pcrypt(%s)", alg->cra_driver_name) >= CRYPTO_MAX_ALG_NAME)
+ 		return -ENAMETOOLONG;
+@@ -236,7 +242,7 @@ static int pcrypt_create_aead(struct crypto_template *tmpl, struct rtattr **tb,
+ 	ctx = aead_instance_ctx(inst);
+ 	crypto_set_aead_spawn(&ctx->spawn, aead_crypto_instance(inst));
+ 
+-	err = crypto_grab_aead(&ctx->spawn, name, 0, 0);
++	err = crypto_grab_aead(&ctx->spawn, name, 0, CRYPTO_ALG_NEED_FALLBACK);
+ 	if (err)
+ 		goto out_free_inst;
+ 
+-- 
+2.17.1
+
