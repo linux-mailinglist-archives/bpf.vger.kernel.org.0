@@ -2,118 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C3C9810F
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 19:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC599812C
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 19:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728303AbfHURLx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Aug 2019 13:11:53 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:38101 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729470AbfHURLw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Aug 2019 13:11:52 -0400
-Received: by mail-pg1-f196.google.com with SMTP id e11so1670871pga.5
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2019 10:11:51 -0700 (PDT)
+        id S1728264AbfHURYL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Aug 2019 13:24:11 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:43686 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727037AbfHURYK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Aug 2019 13:24:10 -0400
+Received: by mail-lj1-f195.google.com with SMTP id h15so2871787ljg.10;
+        Wed, 21 Aug 2019 10:24:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=9sz1HR21ZNE/lPIudnqu5o8TGKBNgdHKG73vNNFPHmI=;
-        b=Fa8t/OgmzCblhcW0o6sC00GT6IWfbpGePL4EyWVNYxnE/d7D5mascN+XlC6W8gby/a
-         4N3J2BHr0Babr0Pxsx35uRY1AtMJJJoQ8TrWovKBrj2GXlC6VaAniCWZ/DW8zvPlM9NQ
-         kBUKWMx0Y64Epfq1IjN0pOEBGg/3N+cfcXw0pzw1Be4Nca15oSz6I8M7AC1wpbo7YWY1
-         rHbM0yAneaqcjJZj4Rr4Acf1XpK6H0wdgW9Uj5lhAYZ+xc4K3R36q0qy2afILO8PVkfK
-         CwVUDa8Qn4kvVnP6OZvHoxHmeW6i8+c6aFqmhdXkJRAEpbktbhh/LHHfJh87sq1zjwAL
-         f0NA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ImUO9R2zFHULTGLAfy/amMjTreuObHPtY/k9LK1EvQs=;
+        b=QD80siO81QUF7hQIILnvgjrDLEvWPs85k4obC2CzqFtze9ccI8D5qA3bWHNJs68Tbm
+         9K+gS+RVuk04q5aU4WE0hpfEmnbN9LOIR1Z3+97/6gw5yyWYPRatSyJgQUS3uziKzBsT
+         Cu702YKbzAy7XbM1RzpCfj21qXM1mc0fA70FYkCiFXlgZDc5Du/5nG+3esfzSKfljpd3
+         6xOZlegCvIZX7E8qhkwVZeCTC4bnSnOg5mc+9vQ0BWITcZTLeW7R4BciTRHhXAyn7Wmu
+         0HxTkHyFIDpQIKqUf+JQrbClPGXta4LuXhQP3qrn3MBZ+xhuZhUKJVxQvlAPNPLMiyZi
+         U6Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9sz1HR21ZNE/lPIudnqu5o8TGKBNgdHKG73vNNFPHmI=;
-        b=gbSSAvUgiIZKBpzc8GGOFJA42bPUOZXMpLXXsGopsebEHybywiwerHN7sq9Wt66ML9
-         +HSKS0mf+2ogsuwBIjuh7i2Qn6WZOFVZ6AXqUrSW0+myrPGYgkYTa3PsNBXelB/bvZJp
-         cBhs9BzCdCsfnqXTmyN73Byz862h+KGc/hO4U5Bue66bZfiput/ZGBv/RVLirhpWCQ9d
-         U++mF0R/fEAXH+UEAbQwKzYc3jK1ohNen2ZG49fRRF752oPzzSbZJCWly5JkagBZ+QOp
-         HzB5AJkvf6sIZ01iAx9ZU9MH+OVaL02YkdCP/h+66wVDuQjdxJE4GiCJ3c89k9QVwcbo
-         W1Qw==
-X-Gm-Message-State: APjAAAXpzJuDXnws/A6+0DWT1KZerooii39mATMtQwaUHjpIRjGxdPCY
-        MbtMKfVXK2nmD+YHF3Dn4F2cYw==
-X-Google-Smtp-Source: APXvYqwNbinWRLDaw/4XOTedS/RCr7a66kyyVucgBrujmrtc7pTYrKC0fMNgAqm78QEGRgDF5xVmFQ==
-X-Received: by 2002:a63:f907:: with SMTP id h7mr23839670pgi.418.1566407511350;
-        Wed, 21 Aug 2019 10:11:51 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id z13sm23374626pfa.94.2019.08.21.10.11.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Aug 2019 10:11:50 -0700 (PDT)
-Date:   Wed, 21 Aug 2019 10:11:49 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH bpf-next v2 2/4] selftests/bpf: test_progs: remove global
- fail/success counts
-Message-ID: <20190821171149.GA1717@mini-arch>
-References: <20190819191752.241637-1-sdf@google.com>
- <20190819191752.241637-3-sdf@google.com>
- <5248b967-2887-2205-3e59-fc067e2ada33@iogearbox.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ImUO9R2zFHULTGLAfy/amMjTreuObHPtY/k9LK1EvQs=;
+        b=m9E+bE1FXn/HE8LxmpDuDA46gnKgxEMPD9YBm22VvZFAL2XoNU1iCyhB1qTPV66+lC
+         /nL4VVSJSvp1PVMfKj1Z9DuJu0Asq4KWn0OE1tHcP2BN6zP66G0ckTqDq8jelpZqdNKQ
+         aTBEGsTXP3oyP41OfTpJtJFi3b6DkX7uGoZgLl7XFQSiMsLsJP7mfex3PiISZoMWKkE8
+         uGyGvk0uPwm0qTFuYxzieky8W2LnWogHUVDic+HWWI2MrhHauTFUg6XfOGaLNMfCrkQh
+         WVVYpnhyQaCgC8bo9UVWKjbEQiRRCBWfqzuDdd6ro3Z5WLu8TZvkUpLXbMwZ/693DvV2
+         kiew==
+X-Gm-Message-State: APjAAAW69kUZ9k61nOJWObyRq8DHTfiMZ+FmUALstn57M5jF+hcrOo6s
+        9ORdFmXPky1ZDGpNK5bhQyLrV/jopztocS2+mwDjwRmt
+X-Google-Smtp-Source: APXvYqz33ncCwZwD2/AjqAgHdu2e1J/pZT+JsCyyBshuqGRJk+UC+iKE9jjOrLe6sjYyJcVA14KThFw6G4bn2p3gRiA=
+X-Received: by 2002:a2e:7818:: with SMTP id t24mr3270230ljc.210.1566408248481;
+ Wed, 21 Aug 2019 10:24:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5248b967-2887-2205-3e59-fc067e2ada33@iogearbox.net>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <20190820230900.23445-1-peter@lekensteyn.nl> <20190820230900.23445-4-peter@lekensteyn.nl>
+ <20190820232221.vzxemergvzy3bg4j@ast-mbp> <20190821000413.GA28011@al>
+In-Reply-To: <20190821000413.GA28011@al>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 21 Aug 2019 10:23:56 -0700
+Message-ID: <CAADnVQ+hU6QOC_dPmpjnuv=9g4SQEeaMEMqXOS2WpMj=q=LdiQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] bpf: clarify when bpf_trace_printk discards lines
+To:     Peter Wu <peter@lekensteyn.nl>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 08/21, Daniel Borkmann wrote:
-> On 8/19/19 9:17 PM, Stanislav Fomichev wrote:
-> > Now that we have a global per-test/per-environment state, there
-> > is no longer need to have global fail/success counters (and there
-> > is no need to save/get the diff before/after the test).
-> 
-> Thanks for the improvements, just a small comment below, otherwise LGTM.
-> 
-> > Introduce QCHECK macro (suggested by Andrii) and covert existing tests
-> > to it. QCHECK uses new test__fail() to record the failure.
-> > 
-> > Cc: Andrii Nakryiko <andriin@fb.com>
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> [...]
-> > @@ -96,17 +93,25 @@ extern struct ipv6_packet pkt_v6;
-> >   #define _CHECK(condition, tag, duration, format...) ({			\
-> >   	int __ret = !!(condition);					\
-> >   	if (__ret) {							\
-> > -		error_cnt++;						\
-> > +		test__fail();						\
-> >   		printf("%s:FAIL:%s ", __func__, tag);			\
-> >   		printf(format);						\
-> >   	} else {							\
-> > -		pass_cnt++;						\
-> >   		printf("%s:PASS:%s %d nsec\n",				\
-> >   		       __func__, tag, duration);			\
-> >   	}								\
-> >   	__ret;								\
-> >   })
-> > +#define QCHECK(condition) ({						\
-> > +	int __ret = !!(condition);					\
-> > +	if (__ret) {							\
-> > +		test__fail();						\
-> > +		printf("%s:FAIL:%d ", __func__, __LINE__);		\
-> > +	}								\
-> > +	__ret;								\
-> > +})
-> 
-> I know it's just a tiny nit but the name QCHECK() really doesn't tell me anything
-> if I don't see its definition. Even just a CHECK_FAIL() might be 'better' and
-> more aligned with the CHECK() and CHECK_ATTR() we have, at least I don't think
-> many would automatically derive 'quiet' from the Q prefix [0].
-CHECK_FAIL sounds good, will respin! Thanks!
+On Tue, Aug 20, 2019 at 5:04 PM Peter Wu <peter@lekensteyn.nl> wrote:
+>
+> On Tue, Aug 20, 2019 at 04:22:23PM -0700, Alexei Starovoitov wrote:
+> > On Wed, Aug 21, 2019 at 12:08:59AM +0100, Peter Wu wrote:
+> > > I opened /sys/kernel/tracing/trace once and kept reading from it.
+> > > bpf_trace_printk somehow did not seem to work, no entries were appended
+> > > to that trace file. It turns out that tracing is disabled when that file
+> > > is open. Save the next person some time and document this.
+> > >
+> > > The trace file is described in Documentation/trace/ftrace.rst, however
+> > > the implication "tracing is disabled" did not immediate translate to
+> > > "bpf_trace_printk silently discards entries".
+> > >
+> > > Signed-off-by: Peter Wu <peter@lekensteyn.nl>
+> > > ---
+> > >  include/uapi/linux/bpf.h | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index 9ca333c3ce91..e4236e357ed9 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -575,6 +575,8 @@ union bpf_attr {
+> > >   *                 limited to five).
+> > >   *
+> > >   *                 Each time the helper is called, it appends a line to the trace.
+> > > + *                 Lines are discarded while *\/sys/kernel/debug/tracing/trace* is
+> > > + *                 open, use *\/sys/kernel/debug/tracing/trace_pipe* to avoid this.
+> >
+> > that's not quite correct.
+> > Having 'trace' file open doesn't discard lines.
+> > I think this type of comment in uapi header makes more confusion than helps.
+>
+> Having the 'trace' file open for reading results in discarding lines. It
+> took me a while to figure that out. At first I was not even sure whether
+> my eBPF program was executed or not due to lack of entries in the
+> 'trace' file.
+>
+> I ended up setting a breakpoint and ended up with this call stack:
+>
+>   - bpf_trace_printk
+>     - ____bpf_trace_printk
+>       - __trace_printk
+>         - trace_vprintk
+>           - trace_array_vprintk
+>             - __trace_array_vprintk
+>               - __trace_array_vprintk
+>                 - __trace_buffer_lock_reserve
+>                   - ring_buffer_lock_reserve
+>
+> The function ends up skipping the even because record_disabled == 1:
+>
+>     if (unlikely(atomic_read(&buffer->record_disabled)))
+>         goto out;
+>
+> Why is that? Well, I guessed that ring_buffer_record_disable and
+> ring_buffer_record_enable would be related. Sure enough, the first one
+> was hit when the 'trace' file is opened for reading while the latter is
+> called when the file is closed.
+>
+> The relevant code from kernel/trace/trace.c (__tracing_open), "snapshot"
+> is true when "trace" is opened, and "false" when "trace_pipe" is used:
+>
+>     /* stop the trace while dumping if we are not opening "snapshot" */
+>     if (!iter->snapshot)
+>         tracing_stop_tr(tr);
+>
+> So I think this supports the claim that lines are discarded. Do you
+> think this is not the case?
 
->   [0] https://lore.kernel.org/bpf/CAEf4BzbUGiUZBWkTWe2=LfhkXYhQGndN9gR6VTZwfV3eytstUw@mail.gmail.com/
-> 
-> >   #define CHECK(condition, tag, format...) \
-> >   	_CHECK(condition, tag, duration, format)
-> >   #define CHECK_ATTR(condition, tag, format...) \
-> > 
-> 
+Indeed.
+I missed "(opened)" part in Documentation/trace/ftrace.rst:
+  trace:
+        This file holds the output of the trace in a human
+        readable format (described below). Note, tracing is temporarily
+        disabled while this file is being read (opened).
+
+I always thought that reading disables it.
+It's indeed odd part of the ftrace implementation that
+worth documenting here.
+
+Applied the set to bpf-next. Thanks
