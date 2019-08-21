@@ -2,122 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0A097723
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 12:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C220977A3
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 12:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbfHUK2h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Aug 2019 06:28:37 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:46378 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728019AbfHUK2g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Aug 2019 06:28:36 -0400
-Received: by mail-wr1-f66.google.com with SMTP id z1so1481273wru.13
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2019 03:28:35 -0700 (PDT)
+        id S1727099AbfHUKz7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Aug 2019 06:55:59 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:35306 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbfHUKz6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Aug 2019 06:55:58 -0400
+Received: by mail-wr1-f67.google.com with SMTP id k2so1604005wrq.2
+        for <bpf@vger.kernel.org>; Wed, 21 Aug 2019 03:55:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:openpgp:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=O/D2vpsgIlxB4bDKY/wKhj2I/R2FzVAbo1B5Cab8cZk=;
-        b=CmtC9m5WOJrXBFHf5KfFf4FmGd9TorW3pFUqNPjPlJnq4uD0z8GoRRAvlh37xWZlHy
-         8125FRM487D2bAd7223yvtXofmbh9qnI6n79iPhdYisgTrukf5WGY5n+rircDggFHbPj
-         ByF1iMtfPaxOPkjwryuTyiUGrszRels1+uuwwsZ4XisW32fehPIMJjOdJV6TdNkuTVep
-         D46t5jhWan3JwU4czU+sep74u9LrEt9z92LmON//omTebw6F6FQGXFgI7S9jmk29Xdra
-         2nZ2wAfFhWRuw7H3iJtqqEMBctb8uCb5HQQ6HAOqeJRnb5GIDTqG8LWioIlHoQinGgD/
-         Qjfg==
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=WyMHZAA0Qc/+TYCGuweI620Z3fpFzwfapMrIB9ufTsg=;
+        b=fHvjr7M6oaWkGoWvcj9pBZmawdN6AT/H7iPBdFn+TdXoKTZpAm6k6X457tR1nd17hx
+         BWXvWHcu3QIwb6BXuuWalLFaUIArTyJ/Wn+8XazKdstH2/5ddO077ZNzX95OvfA/bLkF
+         grtXXwefsLdQVmzT0uzIJAPKXWJ/t4NXvmjWvWSgzVv1hDNX2ywpxx7yX3l/98tgcLzX
+         3lfytGhqxQ4oJ2dCFhWF0gEoJ0E0cM4eROXmE6JK65SiDDRpJDp2ozvFrpDr/p+BpU1t
+         bBIIuSD5SOjKDo7wg3besn6J0FWR+5wIvVjk/pprMgLOyEWk7wEaD0fuivujlrsHcBrP
+         Tfjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=O/D2vpsgIlxB4bDKY/wKhj2I/R2FzVAbo1B5Cab8cZk=;
-        b=Kh6w/R06MZdt+CCxJex2FrB63NZsz/h+suECn+xgOK9Xg1X0wDmVDiHtuQ7FDdvpXJ
-         pnsmFV9c2KnyYu7LTpQLgPlCXh3Fplaz9g5dQmiAHH6gNtmXCFzawK4cvTQuYDRGYlh0
-         H0hDHSIpk3J6dgrBQft6WZtkqvw339dHyaNr6tESc9jXUA+bwHLL7tYb641iuQX6ppIw
-         n2Caasmigc5w/hY4pCXjWCQJsRzHTuwdd971FYq4YOeVjGHbDxn0zaam35u/RWj8atSz
-         2WuIJry2paabwSJAdXPs3Tr7r8Yyd3z/Zfwv5KAvGg7vaC0YJ3zPAssxviKKHy0GnD6Q
-         XEbg==
-X-Gm-Message-State: APjAAAU7K48V+s5RcEN1xG/OCY4NJAztfmZiJhT/PWRnVwLwujk08HFM
-        GsRinByaOpO4syzYR5S9uxJIp8DzBAc=
-X-Google-Smtp-Source: APXvYqxaNqqGw/22p0miXqjCKdcvSwodwcFuJLX+Z5942Fe6XAo9qBYXultLANwwBQ8BhEs1AuecOw==
-X-Received: by 2002:a05:6000:104c:: with SMTP id c12mr35999536wrx.328.1566383314746;
-        Wed, 21 Aug 2019 03:28:34 -0700 (PDT)
-Received: from [172.20.1.254] ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id k124sm7525145wmk.47.2019.08.21.03.28.33
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 21 Aug 2019 03:28:33 -0700 (PDT)
-Subject: Re: [PATCH v2 2/4] bpf: fix 'struct pt_reg' typo in documentation
-To:     Peter Wu <peter@lekensteyn.nl>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20190820230900.23445-1-peter@lekensteyn.nl>
- <20190820230900.23445-3-peter@lekensteyn.nl>
-From:   Quentin Monnet <quentin.monnet@netronome.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quentin.monnet@netronome.com; prefer-encrypt=mutual; keydata=
- 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
- RHhSHGnKaQ6MfrTge5Q0h5A=
-Message-ID: <99273386-030c-15b6-7488-27a5b05a2ea7@netronome.com>
-Date:   Wed, 21 Aug 2019 11:28:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=WyMHZAA0Qc/+TYCGuweI620Z3fpFzwfapMrIB9ufTsg=;
+        b=h08mJWJ7rLRz/1VZPQlcuPUgs5ZaGXvTfsgdX6xYoUHW3igZKl5r0M0tDPFFmcB/QV
+         SMM5IlD+r+CPPfamx1kXHoOVm8AsIsb82KjUKLeeyNs5/cpBILrWdD8040udUD37y5p0
+         MTc717rtYtPMbEokBw1D5NuVg/aC8c+qWKaG0UaD+iYTxQ2kjeDNYMJyyS2FrYPKXqt+
+         ViclUvvnruWiy/tdmJHxDlu/biUCxjsNlS7nilAbqaP53AcdQLqkGCmoqRDIFjOqb7KO
+         nLMDX5ScQzH2Lv2MjjpMty1ZRw2oZ0vxsRqdgWThtt1x0eic5sWs6jjQP/us3uPBNcUY
+         u9Qw==
+X-Gm-Message-State: APjAAAVhEPfxQuFP2R6LxeY/j6yh7VqY+4qzUph7LpSBBQdk0d2fctQc
+        A7IXEYoHpqD0RfvGLa7Ef+DJtw==
+X-Google-Smtp-Source: APXvYqxy71UJYE8nNVPrM78f/UonRomhIlrziR5U+ykFKDa0TRBkO8syiWp8ZwkpMnF9OvVCGS9LGg==
+X-Received: by 2002:a5d:4950:: with SMTP id r16mr39205612wrs.347.1566384956439;
+        Wed, 21 Aug 2019 03:55:56 -0700 (PDT)
+Received: from LAPTOP-V3S7NLPL ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id g65sm7099972wma.21.2019.08.21.03.55.55
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 21 Aug 2019 03:55:55 -0700 (PDT)
+References: <20190813171018.28221-1-naveen.n.rao@linux.vnet.ibm.com> <87d0gy6cj6.fsf@concordia.ellerman.id.au>
+User-agent: mu4e 0.9.18; emacs 25.2.2
+From:   Jiong Wang <jiong.wang@netronome.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jiong Wang <jiong.wang@netronome.com>, bpf@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Regression fix for bpf in v5.3 (was Re: [RFC PATCH] bpf: handle 32-bit zext during constant blinding)
+In-reply-to: <87d0gy6cj6.fsf@concordia.ellerman.id.au>
+Date:   Wed, 21 Aug 2019 11:55:54 +0100
+Message-ID: <87k1b6yeh1.fsf@netronome.com>
 MIME-Version: 1.0
-In-Reply-To: <20190820230900.23445-3-peter@lekensteyn.nl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2019-08-21 00:08 UTC+0100 ~ Peter Wu <peter@lekensteyn.nl>
-> There is no 'struct pt_reg'.
-> 
-> Signed-off-by: Peter Wu <peter@lekensteyn.nl>
 
-Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
+Michael Ellerman writes:
 
-Thanks for the fix!
-Quentin
+> "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> writes:
+>> Since BPF constant blinding is performed after the verifier pass, there
+>> are certain ALU32 instructions inserted which don't have a corresponding
+>> zext instruction inserted after. This is causing a kernel oops on
+>> powerpc and can be reproduced by running 'test_cgroup_storage' with
+>> bpf_jit_harden=2.
+>>
+>> Fix this by emitting BPF_ZEXT during constant blinding if
+>> prog->aux->verifier_zext is set.
+>>
+>> Fixes: a4b1d3c1ddf6cb ("bpf: verifier: insert zero extension according to analysis result")
+>> Reported-by: Michael Ellerman <mpe@ellerman.id.au>
+>> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+>> ---
+>> This approach (the location where zext is being introduced below, in 
+>> particular) works for powerpc, but I am not entirely sure if this is 
+>> sufficient for other architectures as well. This is broken on v5.3-rc4.
+>
+> Any comment on this?
+
+Have commented on https://marc.info/?l=linux-netdev&m=156637836024743&w=2
+
+The fix looks correct to me on "BPF_LD | BPF_IMM | BPF_DW", but looks
+unnecessary on two other places. It would be great if you or Naveen could
+confirm it.
+
+Thanks.
+
+Regards,
+Jiong
+
+> This is a regression in v5.3, which results in a kernel crash, it would
+> be nice to get it fixed before the release please?
+>
+> cheers
+>
+>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>> index 8191a7db2777..d84146e6fd9e 100644
+>> --- a/kernel/bpf/core.c
+>> +++ b/kernel/bpf/core.c
+>> @@ -890,7 +890,8 @@ int bpf_jit_get_func_addr(const struct bpf_prog *prog,
+>>  
+>>  static int bpf_jit_blind_insn(const struct bpf_insn *from,
+>>  			      const struct bpf_insn *aux,
+>> -			      struct bpf_insn *to_buff)
+>> +			      struct bpf_insn *to_buff,
+>> +			      bool emit_zext)
+>>  {
+>>  	struct bpf_insn *to = to_buff;
+>>  	u32 imm_rnd = get_random_int();
+>> @@ -939,6 +940,8 @@ static int bpf_jit_blind_insn(const struct bpf_insn *from,
+>>  		*to++ = BPF_ALU32_IMM(BPF_MOV, BPF_REG_AX, imm_rnd ^ from->imm);
+>>  		*to++ = BPF_ALU32_IMM(BPF_XOR, BPF_REG_AX, imm_rnd);
+>>  		*to++ = BPF_ALU32_REG(from->code, from->dst_reg, BPF_REG_AX);
+>> +		if (emit_zext)
+>> +			*to++ = BPF_ZEXT_REG(from->dst_reg);
+>>  		break;
+>>  
+>>  	case BPF_ALU64 | BPF_ADD | BPF_K:
+>> @@ -992,6 +995,10 @@ static int bpf_jit_blind_insn(const struct bpf_insn *from,
+>>  			off -= 2;
+>>  		*to++ = BPF_ALU32_IMM(BPF_MOV, BPF_REG_AX, imm_rnd ^ from->imm);
+>>  		*to++ = BPF_ALU32_IMM(BPF_XOR, BPF_REG_AX, imm_rnd);
+>> +		if (emit_zext) {
+>> +			*to++ = BPF_ZEXT_REG(BPF_REG_AX);
+>> +			off--;
+>> +		}
+>>  		*to++ = BPF_JMP32_REG(from->code, from->dst_reg, BPF_REG_AX,
+>>  				      off);
+>>  		break;
+>> @@ -1005,6 +1012,8 @@ static int bpf_jit_blind_insn(const struct bpf_insn *from,
+>>  	case 0: /* Part 2 of BPF_LD | BPF_IMM | BPF_DW. */
+>>  		*to++ = BPF_ALU32_IMM(BPF_MOV, BPF_REG_AX, imm_rnd ^ aux[0].imm);
+>>  		*to++ = BPF_ALU32_IMM(BPF_XOR, BPF_REG_AX, imm_rnd);
+>> +		if (emit_zext)
+>> +			*to++ = BPF_ZEXT_REG(BPF_REG_AX);
+>>  		*to++ = BPF_ALU64_REG(BPF_OR,  aux[0].dst_reg, BPF_REG_AX);
+>>  		break;
+>>  
+>> @@ -1088,7 +1097,8 @@ struct bpf_prog *bpf_jit_blind_constants(struct bpf_prog *prog)
+>>  		    insn[1].code == 0)
+>>  			memcpy(aux, insn, sizeof(aux));
+>>  
+>> -		rewritten = bpf_jit_blind_insn(insn, aux, insn_buff);
+>> +		rewritten = bpf_jit_blind_insn(insn, aux, insn_buff,
+>> +						clone->aux->verifier_zext);
+>>  		if (!rewritten)
+>>  			continue;
+>>  
+>> -- 
+>> 2.22.0
+
