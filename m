@@ -2,102 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7D697594
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 11:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68BE2976B0
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 12:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbfHUJF5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Aug 2019 05:05:57 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:39564 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726437AbfHUJF5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Aug 2019 05:05:57 -0400
-Received: by mail-wr1-f67.google.com with SMTP id t16so1268768wra.6
-        for <bpf@vger.kernel.org>; Wed, 21 Aug 2019 02:05:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=fQeTw8XVpz3MXJ+9QKUltKbufjCfYbnuGVJHHdsUDLI=;
-        b=eN2sJxBYytWmV3/n076E7pwNxHyBqPih6k1yaMTSgWesLfORTfAQd/TyGk2BSf6eDw
-         OTh9CSsPjuOfOv+ZYebNkiivlWNXMt3AWrscTv4UmcqfK3bvUEiI9sjHdDpJ5U1JrXtG
-         PVfMJKDMCk7WSQ0dnvEFFQiJS+Rwz3XRCMLCflYtp7yecqs+fBoJ9udb+dMYH7Ka9+VE
-         iaBGNJmfnZSOqQVqUEKnIQjlYppxz9AotT+CDtLRDn5JYGqQy9GibuJ8n/zwK3KZoy+1
-         yFN/6kJyjNUE/X4QgWakwmg3FJEgjx8TyiP/2HLaWHDxdIRt39KUcrClx9ExN44FOYAj
-         sQDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=fQeTw8XVpz3MXJ+9QKUltKbufjCfYbnuGVJHHdsUDLI=;
-        b=mbWeYVmCfrpyV0/4lxameOa/5GHlmefhApZp509oCfeaphoPoKwG8PtD9uIwIxWckp
-         7VmnSILIfyZGxZ5oLuvlz3hg4rskvHNqaeMyAJBMXdJG5S9ZYm+LiNIgkxfpGphS7iUC
-         YL+yjv0lE0eerHRlQRFwndAN/zufskmHy9A41nmih5GeiGpXLNMpcgBF/fgm7Cd4UrwQ
-         U+EcJ8aGsyPiJFpMJ6k9EMZ0j9J/u83y5L3Xrx0hallGexPcWeExrN4Nce+kA4BxmPt4
-         HiSaJuevcJcQy23TKTOFCW3HKXiA0UilwvdVLJGNWATMxB+ZFQ80bjn1io+9BPG1gGDf
-         PlxA==
-X-Gm-Message-State: APjAAAXqwFwpovIX7DmLqWHETwzDt5ttYAJLtfUXWh+Eu0A3s5G/R6bj
-        dObTJ/QbZQlBYneLHgml0+QQ1w==
-X-Google-Smtp-Source: APXvYqyjvAvT4fg2ukxmE0qZ9tQtEBd7iI0jte/BSRbLASZkZ+xMjQBSSJvfCpxW0Oo/+1F7zkzQbQ==
-X-Received: by 2002:adf:ed4a:: with SMTP id u10mr14236353wro.284.1566378355151;
-        Wed, 21 Aug 2019 02:05:55 -0700 (PDT)
-Received: from LAPTOP-V3S7NLPL ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id 91sm64065796wrp.3.2019.08.21.02.05.53
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 21 Aug 2019 02:05:54 -0700 (PDT)
-References: <20190813171018.28221-1-naveen.n.rao@linux.vnet.ibm.com> <1566376025.68ldwx3wc7.naveen@linux.ibm.com>
-User-agent: mu4e 0.9.18; emacs 25.2.2
-From:   Jiong Wang <jiong.wang@netronome.com>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiong Wang <jiong.wang@netronome.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH] bpf: handle 32-bit zext during constant blinding
-In-reply-to: <1566376025.68ldwx3wc7.naveen@linux.ibm.com>
-Date:   Wed, 21 Aug 2019 10:05:53 +0100
-Message-ID: <87y2zmubv2.fsf@netronome.com>
+        id S1726825AbfHUKJL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Aug 2019 06:09:11 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:55488 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726389AbfHUKJL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Aug 2019 06:09:11 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id F05063003185;
+        Wed, 21 Aug 2019 10:09:10 +0000 (UTC)
+Received: from [10.36.116.152] (ovpn-116-152.ams2.redhat.com [10.36.116.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 433F75B807;
+        Wed, 21 Aug 2019 10:09:07 +0000 (UTC)
+From:   "Eelco Chaudron" <echaudro@redhat.com>
+To:     "Ilya Maximets" <i.maximets@samsung.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        "=?utf-8?b?QmrDtnJuIFTDtnBlbA==?=" <bjorn.topel@intel.com>,
+        "Magnus Karlsson" <magnus.karlsson@intel.com>,
+        "Jakub Kicinski" <jakub.kicinski@netronome.com>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "Jeff Kirsher" <jeffrey.t.kirsher@intel.com>,
+        intel-wired-lan@lists.osuosl.org, "William Tu" <u9012063@gmail.com>
+Subject: Re: [PATCH net] ixgbe: fix double clean of tx descriptors with xdp
+Date:   Wed, 21 Aug 2019 12:09:06 +0200
+Message-ID: <9EFD9B47-2CD0-4D7A-BA22-D87018894E91@redhat.com>
+In-Reply-To: <20190820151611.10727-1-i.maximets@samsung.com>
+References: <CGME20190820151644eucas1p179d6d1da42bb6be0aad8f58ac46624ce@eucas1p1.samsung.com>
+ <20190820151611.10727-1-i.maximets@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; format=flowed
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.40]); Wed, 21 Aug 2019 10:09:11 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-Naveen N. Rao writes:
 
-> Naveen N. Rao wrote:
->> Since BPF constant blinding is performed after the verifier pass, there
->> are certain ALU32 instructions inserted which don't have a corresponding
->> zext instruction inserted after. This is causing a kernel oops on
->> powerpc and can be reproduced by running 'test_cgroup_storage' with
->> bpf_jit_harden=2.
->> 
->> Fix this by emitting BPF_ZEXT during constant blinding if
->> prog->aux->verifier_zext is set.
->> 
->> Fixes: a4b1d3c1ddf6cb ("bpf: verifier: insert zero extension according to analysis result")
->> Reported-by: Michael Ellerman <mpe@ellerman.id.au>
->> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
->> ---
->> This approach (the location where zext is being introduced below, in 
->> particular) works for powerpc, but I am not entirely sure if this is 
->> sufficient for other architectures as well. This is broken on v5.3-rc4.
+On 20 Aug 2019, at 17:16, Ilya Maximets wrote:
+
+> Tx code doesn't clear the descriptor status after cleaning.
+> So, if the budget is larger than number of used elems in a ring, some
+> descriptors will be accounted twice and xsk_umem_complete_tx will move
+> prod_tail far beyond the prod_head breaking the comletion queue ring.
 >
-> Alexie, Daniel, Jiong,
-> Any feedback on this?
-
-The fix on BPF_LD | BPF_IMM | BPF_DW looks correct to me, but the two other
-places looks to me is unnecessary, as those destinations are exposed to
-external and if they are used as 64-bit then there will be zext inserted
-for them.
-
-Have you verified removing those two fixes will still cause the bug?
-
-Regards,
-Jiong
-
+> Fix that by limiting the number of descriptors to clean by the number
+> of used descriptors in the tx ring.
 >
-> - Naveen
+> Fixes: 8221c5eba8c1 ("ixgbe: add AF_XDP zero-copy Tx support")
+> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
+> ---
+>
+> Not tested yet because of lack of available hardware.
+> So, testing is very welcome.
+>
+Hi Ilya, this patch fixes the issue I reported earlier on the Open 
+vSwitch mailing list regarding complete queue overrun.
 
+Tested-by: Eelco Chaudron <echaudro@redhat.com>
+
+<SNIP>
