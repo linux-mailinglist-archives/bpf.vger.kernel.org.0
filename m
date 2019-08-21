@@ -2,180 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB77980CF
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 18:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C3C9810F
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 19:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728870AbfHUQ51 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Aug 2019 12:57:27 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:41980 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728810AbfHUQ51 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Aug 2019 12:57:27 -0400
-Received: by mail-io1-f68.google.com with SMTP id j5so5954204ioj.8;
-        Wed, 21 Aug 2019 09:57:26 -0700 (PDT)
+        id S1728303AbfHURLx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Aug 2019 13:11:53 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:38101 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729470AbfHURLw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Aug 2019 13:11:52 -0400
+Received: by mail-pg1-f196.google.com with SMTP id e11so1670871pga.5
+        for <bpf@vger.kernel.org>; Wed, 21 Aug 2019 10:11:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wCEZNrYU/5ppBxRNJA9n1HgdSaVTKFRs/1eid1avNfw=;
-        b=dkRgj4Mi9Zklnd9c2qIHIa13rUDGB6PqiCoGPTawJV+toT1h8vw5oLAZOLnqbH+mGN
-         gvBnQ7GKEgVj9IJVyfEFoS7lSkgdfwWj5WqtAW3+7GJHalLUJManVBxHZKXyacE+Ibc6
-         6b9RO56Vz06OWsRWQwBEQ0/LKbtXsgyg0BOwabgh7Kmm8shbc7rshlxWEcRIl5t88Q43
-         y/hJmwUtSm4+Q+A4zYLMrj1ROhOUmrtVYhg+gvs04C4lFh2KiDsYcPheI1CxV73VwiXW
-         tdk1u0aKYY8b0VUgJ8LsDpx5StGoyqFXGLcKatH0zT3feX5IJ0eOivrwVrjCFOrc8Y5F
-         Re9g==
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=9sz1HR21ZNE/lPIudnqu5o8TGKBNgdHKG73vNNFPHmI=;
+        b=Fa8t/OgmzCblhcW0o6sC00GT6IWfbpGePL4EyWVNYxnE/d7D5mascN+XlC6W8gby/a
+         4N3J2BHr0Babr0Pxsx35uRY1AtMJJJoQ8TrWovKBrj2GXlC6VaAniCWZ/DW8zvPlM9NQ
+         kBUKWMx0Y64Epfq1IjN0pOEBGg/3N+cfcXw0pzw1Be4Nca15oSz6I8M7AC1wpbo7YWY1
+         rHbM0yAneaqcjJZj4Rr4Acf1XpK6H0wdgW9Uj5lhAYZ+xc4K3R36q0qy2afILO8PVkfK
+         CwVUDa8Qn4kvVnP6OZvHoxHmeW6i8+c6aFqmhdXkJRAEpbktbhh/LHHfJh87sq1zjwAL
+         f0NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wCEZNrYU/5ppBxRNJA9n1HgdSaVTKFRs/1eid1avNfw=;
-        b=NR/jLoFL6xfdrIytsPQwUeUu0i1R4Bi1FyITsDN1TCtT7QhBl7QYa1LRkRy8CvohsX
-         /0g4Z9JYEznmHf8odT3ih2aSl6ANguSA7jgTFo+DHy/4QHdArGib24F1UkE+WasWfEN/
-         FIPWekupNJ1hG2xUcYNII6ZxcpcEX/HNkNCRMBfKQLSGeli6Kb8uSsUq9IQXsEX8GCLv
-         GknB0xuXy3vUXVvD5umUq8PB1kwJbadse4NDorkFW2eCLacIsNwv2ts1rGCWbaYqE1OH
-         3cTJ3Qp4lcZSN5EZhwcqmHz8DKWC+Wxb000scFQZ5NGRmbIjwcciMB5r2zhxUvw5/wy/
-         zMaA==
-X-Gm-Message-State: APjAAAW0PHIaIta0IAItej5x3KLZixgLbGZL/EvJQpO8H9KZPZYkrSwL
-        XStvxrv5CKNuWGBjnVM1Gn6ZiASCyyfSKnheeYI=
-X-Google-Smtp-Source: APXvYqy5ER/jZPFQpXJhtg7vrUBIju/JR5g17iCTaerGnhqLDbkPmYKy2G/d3Owf4mg8glr1mvcKJ65SkpcrEw9ExXg=
-X-Received: by 2002:a5e:8c11:: with SMTP id n17mr28082811ioj.64.1566406645836;
- Wed, 21 Aug 2019 09:57:25 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=9sz1HR21ZNE/lPIudnqu5o8TGKBNgdHKG73vNNFPHmI=;
+        b=gbSSAvUgiIZKBpzc8GGOFJA42bPUOZXMpLXXsGopsebEHybywiwerHN7sq9Wt66ML9
+         +HSKS0mf+2ogsuwBIjuh7i2Qn6WZOFVZ6AXqUrSW0+myrPGYgkYTa3PsNBXelB/bvZJp
+         cBhs9BzCdCsfnqXTmyN73Byz862h+KGc/hO4U5Bue66bZfiput/ZGBv/RVLirhpWCQ9d
+         U++mF0R/fEAXH+UEAbQwKzYc3jK1ohNen2ZG49fRRF752oPzzSbZJCWly5JkagBZ+QOp
+         HzB5AJkvf6sIZ01iAx9ZU9MH+OVaL02YkdCP/h+66wVDuQjdxJE4GiCJ3c89k9QVwcbo
+         W1Qw==
+X-Gm-Message-State: APjAAAXpzJuDXnws/A6+0DWT1KZerooii39mATMtQwaUHjpIRjGxdPCY
+        MbtMKfVXK2nmD+YHF3Dn4F2cYw==
+X-Google-Smtp-Source: APXvYqwNbinWRLDaw/4XOTedS/RCr7a66kyyVucgBrujmrtc7pTYrKC0fMNgAqm78QEGRgDF5xVmFQ==
+X-Received: by 2002:a63:f907:: with SMTP id h7mr23839670pgi.418.1566407511350;
+        Wed, 21 Aug 2019 10:11:51 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id z13sm23374626pfa.94.2019.08.21.10.11.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Aug 2019 10:11:50 -0700 (PDT)
+Date:   Wed, 21 Aug 2019 10:11:49 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH bpf-next v2 2/4] selftests/bpf: test_progs: remove global
+ fail/success counts
+Message-ID: <20190821171149.GA1717@mini-arch>
+References: <20190819191752.241637-1-sdf@google.com>
+ <20190819191752.241637-3-sdf@google.com>
+ <5248b967-2887-2205-3e59-fc067e2ada33@iogearbox.net>
 MIME-Version: 1.0
-References: <CGME20190820151644eucas1p179d6d1da42bb6be0aad8f58ac46624ce@eucas1p1.samsung.com>
- <20190820151611.10727-1-i.maximets@samsung.com> <CAKgT0Udn0D0_f=SOH2wpBRWV_u4rb1Qe2h7gguXnRNzJ_VkRzg@mail.gmail.com>
- <625791af-c656-1e42-b60e-b3a5cedcb4c4@samsung.com> <CAKgT0Uc27+ucd=a_sgTmv5g7_+ZTg1zK4isYJ0H7YWQj3d=Ejg@mail.gmail.com>
- <f7d0f7a5-e664-8b72-99c7-63275aff4c18@samsung.com>
-In-Reply-To: <f7d0f7a5-e664-8b72-99c7-63275aff4c18@samsung.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Wed, 21 Aug 2019 09:57:14 -0700
-Message-ID: <CAKgT0UcCKiM1Ys=vWxctprN7fzWcBCk-PCuKB-8=RThM=CqLSQ@mail.gmail.com>
-Subject: Re: [PATCH net] ixgbe: fix double clean of tx descriptors with xdp
-To:     Ilya Maximets <i.maximets@samsung.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        William Tu <u9012063@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5248b967-2887-2205-3e59-fc067e2ada33@iogearbox.net>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 21, 2019 at 9:22 AM Ilya Maximets <i.maximets@samsung.com> wrot=
-e:
->
-> On 21.08.2019 4:17, Alexander Duyck wrote:
-> > On Tue, Aug 20, 2019 at 8:58 AM Ilya Maximets <i.maximets@samsung.com> =
-wrote:
-> >>
-> >> On 20.08.2019 18:35, Alexander Duyck wrote:
-> >>> On Tue, Aug 20, 2019 at 8:18 AM Ilya Maximets <i.maximets@samsung.com=
-> wrote:
-> >>>>
-> >>>> Tx code doesn't clear the descriptor status after cleaning.
-> >>>> So, if the budget is larger than number of used elems in a ring, som=
-e
-> >>>> descriptors will be accounted twice and xsk_umem_complete_tx will mo=
-ve
-> >>>> prod_tail far beyond the prod_head breaking the comletion queue ring=
-.
-> >>>>
-> >>>> Fix that by limiting the number of descriptors to clean by the numbe=
-r
-> >>>> of used descriptors in the tx ring.
-> >>>>
-> >>>> Fixes: 8221c5eba8c1 ("ixgbe: add AF_XDP zero-copy Tx support")
-> >>>> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
-> >>>
-> >>> I'm not sure this is the best way to go. My preference would be to
-> >>> have something in the ring that would prevent us from racing which I
-> >>> don't think this really addresses. I am pretty sure this code is safe
-> >>> on x86 but I would be worried about weak ordered systems such as
-> >>> PowerPC.
-> >>>
-> >>> It might make sense to look at adding the eop_desc logic like we have
-> >>> in the regular path with a proper barrier before we write it and afte=
-r
-> >>> we read it. So for example we could hold of on writing the bytecount
-> >>> value until the end of an iteration and call smp_wmb before we write
-> >>> it. Then on the cleanup we could read it and if it is non-zero we tak=
-e
-> >>> an smp_rmb before proceeding further to process the Tx descriptor and
-> >>> clearing the value. Otherwise this code is going to just keep popping
-> >>> up with issues.
-> >>
-> >> But, unlike regular case, xdp zero-copy xmit and clean for particular
-> >> tx ring always happens in the same NAPI context and even on the same
-> >> CPU core.
-> >>
-> >> I saw the 'eop_desc' manipulations in regular case and yes, we could
-> >> use 'next_to_watch' field just as a flag of descriptor existence,
-> >> but it seems unnecessarily complicated. Am I missing something?
-> >>
-> >
-> > So is it always in the same NAPI context?. I forgot, I was thinking
-> > that somehow the socket could possibly make use of XDP for transmit.
->
-> AF_XDP socket only triggers tx interrupt on ndo_xsk_async_xmit() which
-> is used in zero-copy mode. Real xmit happens inside
-> ixgbe_poll()
->  -> ixgbe_clean_xdp_tx_irq()
->     -> ixgbe_xmit_zc()
->
-> This should be not possible to bound another XDP socket to the same netde=
-v
-> queue.
->
-> It also possible to xmit frames in xdp_ring while performing XDP_TX/REDIR=
-ECT
-> actions. REDIRECT could happen from different netdev with different NAPI
-> context, but this operation is bound to specific CPU core and each core h=
-as
-> its own xdp_ring.
->
-> However, I'm not an expert here.
-> Bj=C3=B6rn, maybe you could comment on this?
->
-> >
-> > As far as the logic to use I would be good with just using a value you
-> > are already setting such as the bytecount value. All that would need
-> > to happen is to guarantee that the value is cleared in the Tx path. So
-> > if you clear the bytecount in ixgbe_clean_xdp_tx_irq you could
-> > theoretically just use that as well to flag that a descriptor has been
-> > populated and is ready to be cleaned. Assuming the logic about this
-> > all being in the same NAPI context anyway you wouldn't need to mess
-> > with the barrier stuff I mentioned before.
->
-> Checking the number of used descs, i.e. next_to_use - next_to_clean,
-> makes iteration in this function logically equal to the iteration inside
-> 'ixgbe_xsk_clean_tx_ring()'. Do you think we need to change the later
-> function too to follow same 'bytecount' approach? I don't like having
-> two different ways to determine number of used descriptors in the same fi=
-le.
->
-> Best regards, Ilya Maximets.
+On 08/21, Daniel Borkmann wrote:
+> On 8/19/19 9:17 PM, Stanislav Fomichev wrote:
+> > Now that we have a global per-test/per-environment state, there
+> > is no longer need to have global fail/success counters (and there
+> > is no need to save/get the diff before/after the test).
+> 
+> Thanks for the improvements, just a small comment below, otherwise LGTM.
+> 
+> > Introduce QCHECK macro (suggested by Andrii) and covert existing tests
+> > to it. QCHECK uses new test__fail() to record the failure.
+> > 
+> > Cc: Andrii Nakryiko <andriin@fb.com>
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> [...]
+> > @@ -96,17 +93,25 @@ extern struct ipv6_packet pkt_v6;
+> >   #define _CHECK(condition, tag, duration, format...) ({			\
+> >   	int __ret = !!(condition);					\
+> >   	if (__ret) {							\
+> > -		error_cnt++;						\
+> > +		test__fail();						\
+> >   		printf("%s:FAIL:%s ", __func__, tag);			\
+> >   		printf(format);						\
+> >   	} else {							\
+> > -		pass_cnt++;						\
+> >   		printf("%s:PASS:%s %d nsec\n",				\
+> >   		       __func__, tag, duration);			\
+> >   	}								\
+> >   	__ret;								\
+> >   })
+> > +#define QCHECK(condition) ({						\
+> > +	int __ret = !!(condition);					\
+> > +	if (__ret) {							\
+> > +		test__fail();						\
+> > +		printf("%s:FAIL:%d ", __func__, __LINE__);		\
+> > +	}								\
+> > +	__ret;								\
+> > +})
+> 
+> I know it's just a tiny nit but the name QCHECK() really doesn't tell me anything
+> if I don't see its definition. Even just a CHECK_FAIL() might be 'better' and
+> more aligned with the CHECK() and CHECK_ATTR() we have, at least I don't think
+> many would automatically derive 'quiet' from the Q prefix [0].
+CHECK_FAIL sounds good, will respin! Thanks!
 
-As far as ixgbe_clean_xdp_tx_irq() vs ixgbe_xsk_clean_tx_ring(), I
-would say that if you got rid of budget and framed things more like
-how ixgbe_xsk_clean_tx_ring was framed with the ntc !=3D ntu being
-obvious I would prefer to see us go that route.
-
-Really there is no need for budget in ixgbe_clean_xdp_tx_irq() if you
-are going to be working with a static ntu value since you will only
-ever process one iteration through the ring anyway. It might make more
-sense if you just went through and got rid of budget and i, and
-instead used ntc and ntu like what was done in
-ixgbe_xsk_clean_tx_ring().
-
-Thanks.
-
-- Alex
+>   [0] https://lore.kernel.org/bpf/CAEf4BzbUGiUZBWkTWe2=LfhkXYhQGndN9gR6VTZwfV3eytstUw@mail.gmail.com/
+> 
+> >   #define CHECK(condition, tag, format...) \
+> >   	_CHECK(condition, tag, duration, format)
+> >   #define CHECK_ATTR(condition, tag, format...) \
+> > 
+> 
