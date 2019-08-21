@@ -2,119 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F31982D5
-	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 20:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC1598337
+	for <lists+bpf@lfdr.de>; Wed, 21 Aug 2019 20:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729090AbfHUScF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Aug 2019 14:32:05 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:41662 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726513AbfHUScF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Aug 2019 14:32:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=tVY1LXmdi32TE9w1SeLZsUhYLzjbIKh1g8jTSkv50s0=; b=bhJJa4E42SMEYiIa1DWA2XlMu
-        4vGjx+rsvfe+CrMjov5MKEqtLN+RI/AcK6Vs7e5E3E7S1/KeayvRFeJ14231xfrWhGN7WN000fvI1
-        wr6ARpqeyItdr4BeTOr4gIlYjDRXI9jQn/GdZuKv+i6EPx+OkN2r9RgSU//OsEDYyP+kQQNydRsEu
-        4dsQfkB04uYA3XjbDZZvaRh7ww+8QaF0H1Br4ZgkIHEftCSadBmxj336Y0i2uq2d8euohNvTMJYgr
-        ei8PQDJkEP29FLGm9feeESwlOZHZ9hxmFFSMYiF+iJ9olCPAoFo3nvHYqvnjl+ksRjTGX7ZIFtkAJ
-        prHujlgIw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1i0VOo-0003wh-HG; Wed, 21 Aug 2019 18:31:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E3F5F307456;
-        Wed, 21 Aug 2019 20:31:23 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5C7DE20F0FB1F; Wed, 21 Aug 2019 20:31:55 +0200 (CEST)
-Date:   Wed, 21 Aug 2019 20:31:55 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "jolsa@redhat.com" <jolsa@redhat.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH v3 bpf-next 1/4] tracing/probe: Add
- PERF_EVENT_IOC_QUERY_PROBE ioctl
-Message-ID: <20190821183155.GE2349@hirez.programming.kicks-ass.net>
-References: <20190820144503.GV2332@hirez.programming.kicks-ass.net>
- <BWENHQJIN885.216UOYEIWNGFU@dlxu-fedora-R90QNFJV>
- <20190821110856.GB2349@hirez.programming.kicks-ass.net>
- <62874df3-cae0-36a1-357f-b59484459e52@fb.com>
+        id S1726903AbfHUSiZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Aug 2019 14:38:25 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:45824 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726513AbfHUSiZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Aug 2019 14:38:25 -0400
+Received: by mail-qk1-f196.google.com with SMTP id m2so2714927qki.12
+        for <bpf@vger.kernel.org>; Wed, 21 Aug 2019 11:38:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=XDlPfXRQuCPTCFskR9JG+Wsrqkken/Qm3lzMWM8DxQY=;
+        b=E8ncTyp78G09Ml3oDEKWx4WWp1oBs8ewBRvCvHL71PZX4EiuhkfYo+NEOcEFerYYjg
+         ME8120Myrk0zxGFkcd+JVQ/Zv40mVmjmwUisMqPWZFxnfikG+0PClD+V8VtjzQdtx9NY
+         O82w76IPamf9t/sZioRnBxwDsDpkWF2D7wXjTaFQnhsJL5HQmfXwWH5RNBwL8Riu3B3o
+         VeHOFbw3MNfmi6WdDb4tRtBmFl+ZUmOUvZrMEgB6paU/IzQAXIWndWVzhJm2dujx7dQ8
+         WCNhzmw1q6cYkCms3I2Ft77m+iZ+nz3SXbFpdv+7m8nZ8xtYHmBa+sJ/q2BktavB8CXH
+         W/mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=XDlPfXRQuCPTCFskR9JG+Wsrqkken/Qm3lzMWM8DxQY=;
+        b=EpJ3HERLIuGnkG9h9hhlpmbXAj2qBw8eJFO5jeIYo9XIsmuYsVfHZOn1O64g6cWbtA
+         9gjNKV02cXtxKK8WNu4EJyJQEne2ShLcv+lIvg9V3QqF3yEM5DgwtALZ8nw/KFLych8r
+         Oz54fjyY8DOMXr/Z8ZMSXQz7669mPfJW4I/K36MLRofSAQSBl8z/g2Rp/qGtgTnVecuR
+         /GMc9ZbXqK9UzhZaw4365fLDNuNHjnXuL6dzqfZ+jSf5FByKTNX4JndFsWNqLmDp0Ol/
+         0x1sGwvvqZsAPbNJg7ZKHbeCtVpfERLuIEv4MvI73d0S5UWQ7VrgO5YglxBXk07wg/W2
+         2vXQ==
+X-Gm-Message-State: APjAAAX4lJNvLNa4F1NtqHuN2Qw3d+pWnosww6g/r6DFVmq8fbTJp9hn
+        t+T2Q2HE66gxW6YMe1AHRNNFEg==
+X-Google-Smtp-Source: APXvYqxUMD6ESn0CCDKKuMpJDp9Of8FsLAwQpIVdxp6TANQKqRzeiAON5wzfi/oG1vODOtHolL7iaA==
+X-Received: by 2002:a37:2f05:: with SMTP id v5mr32971442qkh.143.1566412704245;
+        Wed, 21 Aug 2019 11:38:24 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id d22sm10068312qto.45.2019.08.21.11.38.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Aug 2019 11:38:24 -0700 (PDT)
+Date:   Wed, 21 Aug 2019 11:38:16 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Toshiaki Makita <toshiaki.makita1@gmail.com>
+Cc:     Stanislav Fomichev <sdf@fomichev.me>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, William Tu <u9012063@gmail.com>
+Subject: Re: [RFC PATCH bpf-next 00/14] xdp_flow: Flow offload to XDP
+Message-ID: <20190821113816.4dee030a@cakuba.netronome.com>
+In-Reply-To: <250f99fd-7289-a8e2-a710-560305e2d17d@gmail.com>
+References: <20190813120558.6151-1-toshiaki.makita1@gmail.com>
+        <20190814170715.GJ2820@mini-arch>
+        <14c4a876-6f5d-4750-cbe4-19622f64975b@gmail.com>
+        <20190815152100.GN2820@mini-arch>
+        <20190815122232.4b1fa01c@cakuba.netronome.com>
+        <da840b14-ab5b-91f1-df2f-6bdd0ed41173@gmail.com>
+        <20190816115224.6aafd4ee@cakuba.netronome.com>
+        <5e9bee13-a746-f148-00de-feb7cb7b1403@gmail.com>
+        <20190819111546.35a8ed76@cakuba.netronome.com>
+        <250f99fd-7289-a8e2-a710-560305e2d17d@gmail.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <62874df3-cae0-36a1-357f-b59484459e52@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 21, 2019 at 04:54:47PM +0000, Yonghong Song wrote:
-> Currently, in kernel/trace/bpf_trace.c, we have
+On Wed, 21 Aug 2019 17:49:33 +0900, Toshiaki Makita wrote:
+> > Having an implementation nor support a feature of another implementation
+> > and degrade gracefully to the slower one is not necessarily breakage.
+> > We need to make a concious decision here, hence the clarifying question.  
 > 
-> unsigned int trace_call_bpf(struct trace_event_call *call, void *ctx)
-> {
->          unsigned int ret;
-> 
->          if (in_nmi()) /* not supported yet */
->                  return 1;
-> 
->          preempt_disable();
-> 
->          if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
+> As I described above, breakage can happen in some case, and if the patch 
+> breaks xdp_flow I think we need to fix xdp_flow at the same time. If 
+> xdp_flow does not support newly added features but it works for existing 
+> ones, it is OK. In the first place not all features can be offloaded to 
+> xdp_flow. I think this is the same as HW-offload.
 
-Yes, I'm aware of that.
-
-> In the above, the events with bpf program attached will be missed
-> if the context is nmi interrupt, or if some recursion happens even with 
-> the same or different bpf programs.
-> In case of recursion, the events will not be sent to ring buffer.
-
-And while that is significantly worse than what ftrace/perf have, it is
-fundamentally the same thing.
-
-perf allows (and iirc ftrace does too) 4 nested context per CPU
-(task,softirq,irq,nmi) but any recursion within those context and we
-drop stuff.
-
-The BPF stuff is just more eager to drop things on the floor, but it is
-fundamentally the same.
-
-> A lot of bpf-based tracing programs uses maps to communicate and
-> do not allocate ring buffer at all.
-
-So extending PERF_RECORD_LOST doesn't work. But PERF_FORMAT_LOST might
-still work fine; but you get to implement it for all software events.
-
-> Maybe we can still use ioctl based approach which is light weighted
-> compared to ring buffer approach? If a fd has bpf attached, nhit/nmisses
-> means the kprobe is processed by bpf program or not.
-
-There is nothing kprobe specific here. Kprobes just appear to be the
-only one actually accounting the recursion cases, but everyone has
-them.
-
-> Currently, for debugfs, the nhit/nmisses info is exposed at
-> {k|u}probe_profile. Alternative, we could expose the nhit/nmisses
-> in /proc/self/fdinfo/<fd>. User can query this interface to
-> get numbers.
-
-No, we're not adding stuff to procfs for this.
+I see, that sounds reasonable, yes. Thanks for clarifying.
