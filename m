@@ -2,100 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED4099575
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 15:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE3D9962F
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 16:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730532AbfHVNvS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Aug 2019 09:51:18 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:40352 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730788AbfHVNvS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Aug 2019 09:51:18 -0400
-Received: by mail-qt1-f196.google.com with SMTP id e8so7703358qtp.7;
-        Thu, 22 Aug 2019 06:51:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=eKFs2QgT5CD3dy1iA3ijvvJPybcZyHo0PiJ8pz3oNpk=;
-        b=rggXNW7h+fGIr31YDRNO073ERJFYNGq6sOAvRV7e+1F/YD8eNfzgC3edszJfEplwEI
-         nM3AtKMWAcfvi8eOYPaddnljH0RvkMms7tffvgqwmnWQZBOYPXaaFxQvuoIBrNL//hd2
-         GyOcVVb4qYaTgSNH1DZFA+HXX+Mp3i8QAHV5VkEOkLghzgDZ58grgRpy1kCQ/N1i4l/w
-         W9u5rXiBp7RUaWPnb8s2KqdethQG4Wfdn83Qswcwc3FVVvC4H3ld4u8zQF5/2KwzeXwl
-         M7N1/sEP9raPjqI03ZdFTy1+vUatu5numfQz5zlSI+cstIWw4NSHeFsfiBOFLM72VlaD
-         bHRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=eKFs2QgT5CD3dy1iA3ijvvJPybcZyHo0PiJ8pz3oNpk=;
-        b=aaHFv64I8bWdweGumkTIaEGPIByLqyD0jJDjr7FF3SNx0U6y6hCX2ZmZ7MniVoTdVY
-         ewFF4uaXO05TnHtxUr7D8WnYCxgYWPqFcnsaRWOuZkO3At3e62Yglvv1/7V6XekKY9cU
-         VaODdKd1UEBN3z2ukJwZEMMt0cEv6o58luQF8uL6W6QZdzMUuM/fbA4JYVx43zEFIgvJ
-         Gt3Qur2MZMAG50hC3oPO9LwFMGq4nsgzUVAlTdqnra4mM2nUd8dBTHdscPeB9BtNfqc2
-         ZAgqQ9EosH1qOgvcN/7J7Gq7buqzZ2QYbnB//APkp6dj8tdTOt7dQ3zYNw3c6B5E59jB
-         MeRg==
-X-Gm-Message-State: APjAAAWvWRjaAgb8cF81SvaGPLvzrlTFdX4vzUe1O2BHX492ffZiwAZV
-        MwoFDVdWrsxA5FiMLHmC9IitA7MhwzssLA3Dmr8=
-X-Google-Smtp-Source: APXvYqwMZss1KxiA/nSuBZpQ1bj4WT/UPhzt0bgewuTjv3yAQk5Deo3NcNsQvcRv1hDrE7tbIZ+IkgEG+mTzD0LgR4c=
-X-Received: by 2002:a0c:f643:: with SMTP id s3mr21496414qvm.79.1566481877282;
- Thu, 22 Aug 2019 06:51:17 -0700 (PDT)
+        id S2387553AbfHVORv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Aug 2019 10:17:51 -0400
+Received: from www62.your-server.de ([213.133.104.62]:49354 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732331AbfHVORu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Aug 2019 10:17:50 -0400
+Received: from sslproxy01.your-server.de ([88.198.220.130])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1i0nuL-0005On-Ay; Thu, 22 Aug 2019 16:17:45 +0200
+Received: from [178.197.249.40] (helo=pc-63.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1i0nuK-0000WB-Qs; Thu, 22 Aug 2019 16:17:44 +0200
+Subject: Re: [PATCH v2 bpf-next 1/4] bpf: unprivileged BPF access via /dev/bpf
+To:     Andy Lutomirski <luto@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Song Liu <songliubraving@fb.com>,
+        Kees Cook <keescook@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Jann Horn <jannh@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Chenbo Feng <chenbofeng.kernel@gmail.com>
+References: <D4040C0C-47D6-4852-933C-59EB53C05242@fb.com>
+ <CALCETrVoZL1YGUxx3kM-d21TWVRKdKw=f2B8aE5wc2zmX1cQ4g@mail.gmail.com>
+ <5A2FCD7E-7F54-41E5-BFAE-BB9494E74F2D@fb.com>
+ <CALCETrU7NbBnXXsw1B+DvTkfTVRBFWXuJ8cZERCCNvdFG6KqRw@mail.gmail.com>
+ <CALCETrUjh6DdgW1qSuSRd1_=0F9CqB8+sNj__e_6AHEvh_BaxQ@mail.gmail.com>
+ <CALCETrWtE2U4EvZVYeq8pSmQjBzF2PHH+KxYW8FSeF+W=1FYjw@mail.gmail.com>
+ <EE7B7AE1-3D44-4561-94B9-E97A626A251D@fb.com>
+ <CALCETrXX-Jeb4wiQuL6FUai4wNMmMiUxuLLh_Lb9mT7h=0GgAw@mail.gmail.com>
+ <20190805192122.laxcaz75k4vxdspn@ast-mbp>
+ <CALCETrVtPs8gY-H4gmzSqPboid3CB++n50SvYd6RU9YVde_-Ow@mail.gmail.com>
+ <20190806011134.p5baub5l3t5fkmou@ast-mbp>
+ <CALCETrXEHL3+NAY6P6vUj7Pvd9ZpZsYC6VCLXOaNxb90a_POGw@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <98fee747-795a-ff10-fa98-10ddb5afcc03@iogearbox.net>
+Date:   Thu, 22 Aug 2019 16:17:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20190822091306.20581-1-bjorn.topel@gmail.com> <20190822091306.20581-2-bjorn.topel@gmail.com>
- <5d5e980f.1c69fb81.f8d9b.71f2SMTPIN_ADDED_MISSING@mx.google.com>
-In-Reply-To: <5d5e980f.1c69fb81.f8d9b.71f2SMTPIN_ADDED_MISSING@mx.google.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Thu, 22 Aug 2019 15:51:05 +0200
-Message-ID: <CAJ+HfNiYtnyfcGvAw0X+gNPhpqV8EpCT0Mo=tGX9Oj6XN7NOQA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/4] xsk: avoid store-tearing when assigning queues
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "magnus.karlsson@intel.com" <magnus.karlsson@intel.com>,
-        "magnus.karlsson@gmail.com" <magnus.karlsson@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
-        "syzbot+c82697e3043781e08802@syzkaller.appspotmail.com" 
-        <syzbot+c82697e3043781e08802@syzkaller.appspotmail.com>,
-        "i.maximets@samsung.com" <i.maximets@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CALCETrXEHL3+NAY6P6vUj7Pvd9ZpZsYC6VCLXOaNxb90a_POGw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25549/Thu Aug 22 10:31:26 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 22 Aug 2019 at 15:26, Hillf Danton <hdanton@sina.com> wrote:
->
-> >
->
-> >    /* Make sure queue is ready before it can be seen by others */
->
-> >    smp_wmb();
->
->
->
-> Hehe, who put mb here and for what?
->
+On 8/7/19 7:24 AM, Andy Lutomirski wrote:
+> On Mon, Aug 5, 2019 at 6:11 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>> On Mon, Aug 05, 2019 at 02:25:35PM -0700, Andy Lutomirski wrote:
+>>> It tries to make the kernel respect the access modes for fds.  Without
+>>> this patch, there seem to be some holes: nothing looked at program fds
+>>> and, unless I missed something, you could take a readonly fd for a
+>>> program, pin the program, and reopen it RW.
+>>
+>> I think it's by design. iirc Daniel had a use case for something like this.
+> 
+> That seems odd.  Daniel, can you elaborate?
 
-That was from an earlier commit, and it's a barrier paired with the
-lock-less reading of queues in xsk_mmap. Uhm... not sure I answered
-your question?
+[ ... catching up late. ]
 
+Not from my side, the change was added by Chenbo back then for Android
+use-case to replace xt_qtaguid and xt_owner with BPF programs and to
+allow unprivileged applications to read maps. More on their architecture:
 
-Bj=C3=B6rn
+   https://source.android.com/devices/tech/datausage/ebpf-traffic-monitor
 
+ From the cover-letter:
 
+   [...]
+   The network-control daemon (netd) creates and loads an eBPF object for
+   network packet filtering and analysis. It passes the object FD to an
+   unprivileged network monitor app (netmonitor), which is not allowed to
+   create, modify or load eBPF objects, but is allowed to read the traffic
+   stats from the map.
+   [...]
 
+Iuuc, netd would be in charge with the ability to r/w into maps and
+pin them, but with the ability to to hand off some map fds as r/o to
+unprivileged applications in order for them to query data.
 
->
->
-> >-   *queue =3D q;
->
-> >+  WRITE_ONCE(*queue, q);
->
-> >    return 0;
->
->
+>> Hence unprivileged bpf is actually something that can be deprecated.
+
+There is actually a publicly known use-case on unprivileged bpf wrt
+socket filters, see the SO_ATTACH_BPF on sockets section as an example:
+
+   https://blog.cloudflare.com/cloudflare-architecture-and-how-bpf-eats-the-world/
+
+If I'd have to take a good guess, I'd think it's major use-case is in
+SO_ATTACH_REUSEPORT_EBPF in the wild, I don't think the sysctl can be
+outright flipped or deprecated w/o breaking existing applications unless
+it's cleanly modeled into some sort of customizable CAP_BPF* type policy
+(more below) where this would be the lowest common denominator.
+
+> I hope not.  There are a couple setsockopt uses right now, and and
+> seccomp will surely want it someday.  And the bpf-inside-container use
+> case really is unprivileged bpf -- containers are, in many (most?)
+> cases, explicitly not trusted by the host.
+[...]
+>> Inside containers and inside nested containers we need to start processes
+>> that will use bpf. All of the processes are trusted.
+> 
+> Trusted by whom?  In a non-nested container, the container manager
+> *might* be trusted by the outside world.  In a *nested* container,
+> unless the inner container management is controlled from outside the
+> outer container, it's not trusted.  I don't know much about how
+> Facebook's containers work, but the LXC/LXD/Podman world is moving
+> very strongly toward user namespaces and maximally-untrusted
+> containers, and I think bpf() should work in that context.
+
+[...] and if we opt-in with CAP_NET_ADMIN, for example, then it should
+ideally be possible for that container to install BPF programs for
+mangling, dropping, forwarding etc as long as it's only affecting it's
+/own/ netns like the rest of networking subsystem controls that work
+in that case. I would actually like to get to this at some point and
+make it more approachable as long as there is a way for an admin to
+/opt into it/ via policy (aka not by default). Thinking out loud, I'd
+love some sort of a hybrid, that is, a mixture of CAP_BPF_ADMIN and
+customizable seccomp policy. Meaning, there could be several CAP_BPF
+type sub-policies e.g. from allowing everything (equivalent to the
+/dev/bpf on/off handle or CAP_SYS_ADMIN we have today) down to
+programmable user defined policy that can be tailored to specific
+needs like granting apps to BPF_OBJ_GET and BPF_MAP_LOOKUP elements
+or granting to load+mangle a specific subset of maps (e.g. BPF_MAP_TYPE_{ARRAY,
+HASH,LRU_HASH,LPM_TRIE}) and prog types (...) plus attaching them to
+their own netns, and if that is untrusted, then same restrictions/
+mitigations could be done by the verifier as with (current) unprivileged
+BPF, enabled via programmable policy as well. We wouldn't make any
+static/fixed assumptions, but allow users to define them based on their
+own use-cases. Haven't looked how feasible this would be, but something
+to take into consideration when we rework the current [admittedly
+suboptimal all-or-nothing] model we have. Is this something you had in
+mind as well for your wip proposal, Andy?
+
+Thanks,
+Daniel
