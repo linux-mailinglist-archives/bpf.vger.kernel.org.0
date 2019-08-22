@@ -2,77 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3BCA99043
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 12:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE26990FE
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 12:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731888AbfHVKA6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Aug 2019 06:00:58 -0400
-Received: from mga12.intel.com ([192.55.52.136]:1799 "EHLO mga12.intel.com"
+        id S1730918AbfHVKiW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 22 Aug 2019 06:38:22 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:46558 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732115AbfHVKA5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Aug 2019 06:00:57 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 Aug 2019 03:00:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,416,1559545200"; 
-   d="scan'208";a="180336970"
-Received: from silpixa00399838.ir.intel.com (HELO silpixa00399838.ger.corp.intel.com) ([10.237.223.140])
-  by fmsmga007.fm.intel.com with ESMTP; 22 Aug 2019 03:00:54 -0700
-From:   Kevin Laatz <kevin.laatz@intel.com>
-To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        bjorn.topel@intel.com, magnus.karlsson@intel.com,
-        jakub.kicinski@netronome.com, jonathan.lemon@gmail.com,
-        saeedm@mellanox.com, maximmi@mellanox.com,
-        stephen@networkplumber.org
-Cc:     bruce.richardson@intel.com, ciara.loftus@intel.com,
-        bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        Kevin Laatz <kevin.laatz@intel.com>
-Subject: [PATCH bpf-next v5 11/11] doc/af_xdp: include unaligned chunk case
-Date:   Thu, 22 Aug 2019 01:44:27 +0000
-Message-Id: <20190822014427.49800-12-kevin.laatz@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190822014427.49800-1-kevin.laatz@intel.com>
-References: <20190730085400.10376-1-kevin.laatz@intel.com>
- <20190822014427.49800-1-kevin.laatz@intel.com>
+        id S1726096AbfHVKiW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Aug 2019 06:38:22 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 0F236C05AA58
+        for <bpf@vger.kernel.org>; Thu, 22 Aug 2019 10:38:21 +0000 (UTC)
+Received: by mail-ed1-f69.google.com with SMTP id w22so3125612edx.8
+        for <bpf@vger.kernel.org>; Thu, 22 Aug 2019 03:38:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=3WF76R9PRluSwsSbBisHuTfQpPlZfHG8CCj+Dbr+eN8=;
+        b=mVHGbWvWoaxf3GS8JPu50RxAhNwpAZqqWDfi4JQjSVLk2J09gLQxWuSV8B2lsmYb0s
+         t7RJkprUoOrPqmaANI5TOD/ZKyDQboKTdfT/jZg+6DbI0enf74bKX8s/s2C7L+h3vc/f
+         mExrIRK48O5iEhcOvqVvM+xctnL9+t35u/qOHzXpfdcaPBp+/Zi5I3eMv1rCxGQOAlD4
+         ZgyXr2K9LqIjSJ/tKCNjyst8HOYJRdJl+aPBzYk3+gjIMrVBSNmWt7JgvCKvx6C7XFOT
+         jlmRjUNObRx3qe7523Im8HEriLmRmhgz2eToQACnHcraTMj3KNTiQui/lACtnYxm00Y9
+         q2AQ==
+X-Gm-Message-State: APjAAAW239ZazH93hIeYhHDHlbRSunXwlXUDuGM7q9ZI6PAetNrEEAfA
+        DB6laZVsQ7rwyMbGAAGFYtvr6Tt3JYEH6lYt0HplGO9HlNn6aD6z3HqQqgMYTkK+vPh2KZz8FNa
+        UBqbzSVqOKYRC
+X-Received: by 2002:aa7:c389:: with SMTP id k9mr11406780edq.175.1566470299824;
+        Thu, 22 Aug 2019 03:38:19 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqwES2nggyHN87LpGxHfpuoh53GOMS5YnMJCbxe42BZzTz9LYqV0cMOrbTyJkseXDOJx/onB1g==
+X-Received: by 2002:aa7:c389:: with SMTP id k9mr11406761edq.175.1566470299651;
+        Thu, 22 Aug 2019 03:38:19 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id i1sm2436280edi.13.2019.08.22.03.38.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Aug 2019 03:38:18 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 4B4FC181CEF; Thu, 22 Aug 2019 12:38:18 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [RFC bpf-next 0/5] Convert iproute2 to use libbpf (WIP)
+In-Reply-To: <CAEf4BzbR3gdn=82gCmSQ+=81222J0zza9z6JyYs=TkUY=WDXQw@mail.gmail.com>
+References: <20190820114706.18546-1-toke@redhat.com> <20190821192611.xmciiiqjpkujjup7@ast-mbp.dhcp.thefacebook.com> <87ef1eqlnb.fsf@toke.dk> <CAEf4BzbR3gdn=82gCmSQ+=81222J0zza9z6JyYs=TkUY=WDXQw@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 22 Aug 2019 12:38:18 +0200
+Message-ID: <87lfvlpjs5.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The addition of unaligned chunks mode, the documentation needs to be
-updated to indicate that the incoming addr to the fill ring will only be
-masked if the user application is run in the aligned chunk mode. This patch
-also adds a line to explicitly indicate that the incoming addr will not be
-masked if running the user application in the unaligned chunk mode.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Signed-off-by: Kevin Laatz <kevin.laatz@intel.com>
----
- Documentation/networking/af_xdp.rst | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+> On Wed, Aug 21, 2019 at 4:29 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>>
+>> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>>
+>> > On Tue, Aug 20, 2019 at 01:47:01PM +0200, Toke Høiland-Jørgensen wrote:
+>> >> iproute2 uses its own bpf loader to load eBPF programs, which has
+>> >> evolved separately from libbpf. Since we are now standardising on
+>> >> libbpf, this becomes a problem as iproute2 is slowly accumulating
+>> >> feature incompatibilities with libbpf-based loaders. In particular,
+>> >> iproute2 has its own (expanded) version of the map definition struct,
+>> >> which makes it difficult to write programs that can be loaded with both
+>> >> custom loaders and iproute2.
+>> >>
+>> >> This series seeks to address this by converting iproute2 to using libbpf
+>> >> for all its bpf needs. This version is an early proof-of-concept RFC, to
+>> >> get some feedback on whether people think this is the right direction.
+>> >>
+>> >> What this series does is the following:
+>> >>
+>> >> - Updates the libbpf map definition struct to match that of iproute2
+>> >>   (patch 1).
+>> >> - Adds functionality to libbpf to support automatic pinning of maps when
+>> >>   loading an eBPF program, while re-using pinned maps if they already
+>> >>   exist (patches 2-3).
+>> >> - Modifies iproute2 to make it possible to compile it against libbpf
+>> >>   without affecting any existing functionality (patch 4).
+>> >> - Changes the iproute2 eBPF loader to use libbpf for loading XDP
+>> >>   programs (patch 5).
+>> >>
+>> >>
+>> >> As this is an early PoC, there are still a few missing pieces before
+>> >> this can be merged. Including (but probably not limited to):
+>> >>
+>> >> - Consolidate the map definition struct in the bpf_helpers.h file in the
+>> >>   kernel tree. This contains a different, and incompatible, update to
+>> >>   the struct. Since the iproute2 version has actually been released for
+>> >>   use outside the kernel tree (and thus is subject to API stability
+>> >>   constraints), I think it makes the most sense to keep that, and port
+>> >>   the selftests to use it.
+>> >
+>> > It sounds like you're implying that existing libbpf format is not
+>> > uapi.
+>>
+>> No, that's not what I meant... See below.
+>>
+>> > It is and we cannot break it.
+>> > If patch 1 means breakage for existing pre-compiled .o that won't load
+>> > with new libbpf then we cannot use this method.
+>> > Recompiling .o with new libbpf definition of bpf_map_def isn't an option.
+>> > libbpf has to be smart before/after and recognize both old and iproute2 format.
+>>
+>> The libbpf.h definition of struct bpf_map_def is compatible with the one
+>> used in iproute2. In libbpf.h, the struct only contains five fields
+>> (type, key_size, value_size, max_entries and flags), and iproute2 adds
+>> another 4 (id, pinning, inner_id and inner_idx; these are the ones in
+>> patch 1 in this series).
+>>
+>> The issue I was alluding to above is that the bpf_helpers.h file in the
+>> kernel selftests directory *also* extends the bpf_map_def struct, and
+>> adds two *different* fields (inner_map_idx and numa_mode). The former is
+>> used to implement the same map-in-map definition functionality that
+>> iproute2 has, but with different semantics. The latter is additional to
+>> that, and I'm planning to add that to this series.
+>>
+>> Since bpf_helpers.h is *not* part of libbpf (yet), this will make it
+>
+> We should start considering it as if it was, so if we can avoid adding
+> stuff that I'd need to untangle to move it into libbpf, I'd rather
+> avoid it.
+> We've already prepared this move by relicensing bpf_helpers.h. Moving
+> it into libbpf itself is immediate next thing I'll do when I'm back.
 
-diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networking/af_xdp.rst
-index eeedc2e826aa..83f7ae5fc045 100644
---- a/Documentation/networking/af_xdp.rst
-+++ b/Documentation/networking/af_xdp.rst
-@@ -153,10 +153,12 @@ an example, if the UMEM is 64k and each chunk is 4k, then the UMEM has
- 
- Frames passed to the kernel are used for the ingress path (RX rings).
- 
--The user application produces UMEM addrs to this ring. Note that the
--kernel will mask the incoming addr. E.g. for a chunk size of 2k, the
--log2(2048) LSB of the addr will be masked off, meaning that 2048, 2050
--and 3000 refers to the same chunk.
-+The user application produces UMEM addrs to this ring. Note that, if
-+running the application with aligned chunk mode, the kernel will mask
-+the incoming addr.  E.g. for a chunk size of 2k, the log2(2048) LSB of
-+the addr will be masked off, meaning that 2048, 2050 and 3000 refers
-+to the same chunk. If the user application is run in the unaligned
-+chunks mode, then the incoming addr will be left untouched.
- 
- 
- UMEM Completion Ring
--- 
-2.17.1
+Yeah, I figured that with the relicensing, bpf_helpers would probably be
+making its way into libbpf soon. Which is why I wanted to start this
+discussion before that: If we do move bpf_helpers as-is, that will put
+us in the territory of full-on binary incompatibility. So the time to
+discuss doing this in a compatible way is now, before any such move is
+made.
 
+-Toke
