@@ -2,179 +2,251 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3033F99820
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 17:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79FB0998CD
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 18:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731394AbfHVP2S convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 22 Aug 2019 11:28:18 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:36488 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729704AbfHVP2S (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Aug 2019 11:28:18 -0400
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 352A8796EF
-        for <bpf@vger.kernel.org>; Thu, 22 Aug 2019 15:28:17 +0000 (UTC)
-Received: by mail-ed1-f72.google.com with SMTP id m30so3576751eda.11
-        for <bpf@vger.kernel.org>; Thu, 22 Aug 2019 08:28:17 -0700 (PDT)
+        id S2389743AbfHVQIa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Aug 2019 12:08:30 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:45298 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733155AbfHVQIa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Aug 2019 12:08:30 -0400
+Received: by mail-qk1-f196.google.com with SMTP id m2so5596757qki.12;
+        Thu, 22 Aug 2019 09:08:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=TMaoiNeDTQTd0JYgJVXpjjLos7pKWO83AVF6+JcNwlg=;
+        b=LCrFl0JE5Ih0OQX6yFnKtnAzFMDwIlQbdd8oMlBLpHTr3iOphhqUs6bxk4lw1E6tQg
+         yUnVimyWbghFyo4vEmHr0lTeCr+Y+J6Q339QNW2bt0ViAmrAaoqTGUZ5DtsNWbB8Xbke
+         QN+k0VH+SKQUrPAZik6dx48a2ilmSu3ET1n6TEEZtIqenA+jtt58fGIPTC7qmcN0+eQI
+         yjXWVGi8mGnCtUQeSu3yz+E1YeHFpYsNboWGhWJ+g6tuXPXWxQTIOmqbB0BnnPQCrRg8
+         OrhWesFAWbw2kd5I/pIxHPwBTTFZMKOl4NSODYghIRuaPYk1qwQqxHWbOPMyjLzIfZd6
+         tKqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=krMfSLZcsg7EJW3/JmyKQzYNmpY5sLVlz3EGChY+0Vg=;
-        b=A7w64dBMwgrYbXbreaXVS7hGJI1FIfznrsyUOtSQoRR/E8jvO8Hl3YDYDOVA8W6JDf
-         q0TIpYplVYo0czWWrAaB8hhnGbaLHUr6i/8al0NZgmjjc4nOXG4dgD58PjczFe5tkVDK
-         5hSZsBcxatqOxN+NwuPOWCDI84+gGP6GmZ5TMvGVU1jHm1qNVrL3cAwNn/5bqFxXWA6n
-         8ecPL67r0yhHgyeZl7Ft3Qn14T9s762xRPtTPevoicQ07E9nCxUa7m6wLqYZXaRnHo00
-         j/zv/955rZKYwVmBQmEajplgSdb/aHBtME6MiVAx22+eMqvY+rrDHB9IrkFIvpSBvwzn
-         K1Ww==
-X-Gm-Message-State: APjAAAVc3DZthLSJ2Qerz+hS7NwMAckXRB0cwzrKa7rJANItFdBaGmNi
-        RvnkpcJS99cc7VVSmEFV+iR60yVEbil1KEx9GEyN+vSjfsxmqFRy3TIpUpqZ309SDRWhEfTtf+B
-        i2N0623j74+UB
-X-Received: by 2002:a50:982a:: with SMTP id g39mr42427135edb.88.1566487695945;
-        Thu, 22 Aug 2019 08:28:15 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqxnSJz0Yuac1EFb3CuPfOvbRFXUk0QFhxQhZWF0nZbq15JMgFuxehfkZBdeRKDZznSFqLw25g==
-X-Received: by 2002:a50:982a:: with SMTP id g39mr42427119edb.88.1566487695767;
-        Thu, 22 Aug 2019 08:28:15 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id p20sm3703597eja.59.2019.08.22.08.28.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Aug 2019 08:28:15 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 47FED181CEF; Thu, 22 Aug 2019 17:28:14 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        andrii.nakryiko@gmail.com
-Subject: Re: [RFC bpf-next 4/5] iproute2: Allow compiling against libbpf
-In-Reply-To: <2cf18fed-f2ec-bea3-658e-07ba8124148a@iogearbox.net>
-References: <20190820114706.18546-1-toke@redhat.com> <20190820114706.18546-5-toke@redhat.com> <9de36bbf-b70d-9320-c686-3033d0408276@iogearbox.net> <87imqppjir.fsf@toke.dk> <0c3d78eb-d305-9266-b505-c2f9181d5c89@iogearbox.net> <877e75pftb.fsf@toke.dk> <4ca44e39-9b32-909f-df8d-f565eae57498@iogearbox.net> <87zhk1nwvc.fsf@toke.dk> <2cf18fed-f2ec-bea3-658e-07ba8124148a@iogearbox.net>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 22 Aug 2019 17:28:14 +0200
-Message-ID: <87v9upnrsh.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=TMaoiNeDTQTd0JYgJVXpjjLos7pKWO83AVF6+JcNwlg=;
+        b=oS7/gL2uB2qXpQqd4g5yOPcH8mjyEElSSoxA5DZi905xe0O/69J5DH+xflfSGIzwOC
+         AN4rUzCVXPUG5yFRixk3zjOm1dUQPMLxTAmnB+UL6NtfRWoioPTXPTk4W6OTF6ccvlK0
+         +/0KKrx2D/B3I2AlFyWBDm052gjfEuWp6HQDGwdE/NMdQ7HSmkiKf1VWuObPVdHnTs33
+         vYgm//JB4+wbpVYcXUGbFGt68Qfkrlu5DCLO71ZiiKBJOWtdA3KeLCSospCtCQ4jd7pB
+         rg3ItZ3kuday1f2tm6JSR5rCCsgMCX39EGie9SV7sbDbSAlT25m4Wt/yXTGEXbZKG7oe
+         NRbg==
+X-Gm-Message-State: APjAAAW9TQ0SDgmff432I3B2t2DTsMg3govUPeb4UIPIzr6CZmLQ8LKF
+        qVcsj4ryDYfr4POtp21L+6ECOp8kZ3fJNbU9i3w=
+X-Google-Smtp-Source: APXvYqyCrSAgGlsFqxSWHd6YgBn0GV2mCyO/I4opzz6lmW8S0os/wBWQjd/DM0YKQq39kgSaWUmQ3HoT+mZamtpuq3E=
+X-Received: by 2002:a37:690:: with SMTP id 138mr36902439qkg.184.1566490108954;
+ Thu, 22 Aug 2019 09:08:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+References: <CGME20190820151644eucas1p179d6d1da42bb6be0aad8f58ac46624ce@eucas1p1.samsung.com>
+ <20190820151611.10727-1-i.maximets@samsung.com> <CAKgT0Udn0D0_f=SOH2wpBRWV_u4rb1Qe2h7gguXnRNzJ_VkRzg@mail.gmail.com>
+ <625791af-c656-1e42-b60e-b3a5cedcb4c4@samsung.com> <CAKgT0Uc27+ucd=a_sgTmv5g7_+ZTg1zK4isYJ0H7YWQj3d=Ejg@mail.gmail.com>
+ <f7d0f7a5-e664-8b72-99c7-63275aff4c18@samsung.com> <CAKgT0UcCKiM1Ys=vWxctprN7fzWcBCk-PCuKB-8=RThM=CqLSQ@mail.gmail.com>
+ <CALDO+SZCbxEEwCS6MyHk-Cp_LJ33N=QFqwZ8uRm0e-PBRgxRYw@mail.gmail.com> <cbf7c51b-9ce7-6ef6-32c4-981258d4af4c@samsung.com>
+In-Reply-To: <cbf7c51b-9ce7-6ef6-32c4-981258d4af4c@samsung.com>
+From:   William Tu <u9012063@gmail.com>
+Date:   Thu, 22 Aug 2019 09:07:50 -0700
+Message-ID: <CALDO+SaRNMvmXrQqOtNiRsOkgfOQAW4EA2yVgmeoGQto2zvfMQ@mail.gmail.com>
+Subject: Re: [PATCH net] ixgbe: fix double clean of tx descriptors with xdp
+To:     Ilya Maximets <i.maximets@samsung.com>
+Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Eelco Chaudron <echaudro@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
-
-> On 8/22/19 3:38 PM, Toke Høiland-Jørgensen wrote:
->> Daniel Borkmann <daniel@iogearbox.net> writes:
->>> On 8/22/19 2:04 PM, Toke Høiland-Jørgensen wrote:
->>>> Daniel Borkmann <daniel@iogearbox.net> writes:
->>>>> On 8/22/19 12:43 PM, Toke Høiland-Jørgensen wrote:
->>>>>> Daniel Borkmann <daniel@iogearbox.net> writes:
->>>>>>> On 8/20/19 1:47 PM, Toke Høiland-Jørgensen wrote:
->>>>>>>> This adds a configure check for libbpf and renames functions to allow
->>>>>>>> lib/bpf.c to be compiled with it present. This makes it possible to
->>>>>>>> port functionality piecemeal to use libbpf.
->>>>>>>>
->>>>>>>> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
->>>>>>>> ---
->>>>>>>>      configure          | 16 ++++++++++++++++
->>>>>>>>      include/bpf_util.h |  6 +++---
->>>>>>>>      ip/ipvrf.c         |  4 ++--
->>>>>>>>      lib/bpf.c          | 33 +++++++++++++++++++--------------
->>>>>>>>      4 files changed, 40 insertions(+), 19 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/configure b/configure
->>>>>>>> index 45fcffb6..5a89ee9f 100755
->>>>>>>> --- a/configure
->>>>>>>> +++ b/configure
->>>>>>>> @@ -238,6 +238,19 @@ check_elf()
->>>>>>>>          fi
->>>>>>>>      }
->>>>>>>>      
->>>>>>>> +check_libbpf()
->>>>>>>> +{
->>>>>>>> +    if ${PKG_CONFIG} libbpf --exists; then
->>>>>>>> +	echo "HAVE_LIBBPF:=y" >>$CONFIG
->>>>>>>> +	echo "yes"
->>>>>>>> +
->>>>>>>> +	echo 'CFLAGS += -DHAVE_LIBBPF' `${PKG_CONFIG} libbpf --cflags` >> $CONFIG
->>>>>>>> +	echo 'LDLIBS += ' `${PKG_CONFIG} libbpf --libs` >>$CONFIG
->>>>>>>> +    else
->>>>>>>> +	echo "no"
->>>>>>>> +    fi
->>>>>>>> +}
->>>>>>>> +
->>>>>>>>      check_selinux()
->>>>>>>
->>>>>>> More of an implementation detail at this point in time, but want to
->>>>>>> make sure this doesn't get missed along the way: as discussed at
->>>>>>> bpfconf [0] best for iproute2 to handle libbpf support would be the
->>>>>>> same way of integration as pahole does, that is, to integrate it via
->>>>>>> submodule [1] to allow kernel and libbpf features to be in sync with
->>>>>>> iproute2 releases and therefore easily consume extensions we're adding
->>>>>>> to libbpf to aide iproute2 integration.
->>>>>>
->>>>>> I can sorta see the point wrt keeping in sync with kernel features. But
->>>>>> how will this work with distros that package libbpf as a regular
->>>>>> library? Have you guys given up on regular library symbol versioning for
->>>>>> libbpf?
->>>>>
->>>>> Not at all, and I hope you know that. ;-)
->>>>
->>>> Good! Didn't really expect you had, just checking ;)
->>>>
->>>>> The reason I added lib/bpf.c integration into iproute2 directly back
->>>>> then was exactly such that users can start consuming BPF for tc and
->>>>> XDP via iproute2 /everywhere/ with only a simple libelf dependency
->>>>> which is also available on all distros since pretty much forever. If
->>>>> it was an external library, we could have waited till hell freezes
->>>>> over and initial distro adoption would have pretty much taken forever:
->>>>> to pick one random example here wrt the pace of some downstream
->>>>> distros [0]. The main rationale is pretty much the same as with added
->>>>> kernel features that land complementary iproute2 patches for that
->>>>> kernel release and as libbpf is developed alongside it is reasonable
->>>>> to guarantee user expectations that iproute2 released for kernel
->>>>> version x can make use of BPF features added to kernel x with same
->>>>> loader support from x.
->>>>
->>>> Well, for iproute2 I would expect this to be solved by version
->>>> dependencies. I.e. iproute2 version X would depend on libbpf version Y+
->>>> (like, I dunno, the version of libbpf included in the same kernel source
->>>> tree as the kernel version iproute2 is targeting? :)).
->>>
->>> This sounds nice in theory, but from what I've seen major (!) distros
->>> already seem to have a hard time releasing kernel x along with iproute2
->>> package x, concrete example was that distro kernel was on 4.13 and its
->>> official iproute2 package on 4.9,
->> 
->> If the iproute2 package is not being updated at all I don't really see
->> how it would make any difference whether libbpf is vendored or not? :)
->> 
->>> adding yet another variable that needs to be in sync with kernel is
->>> simply impractical especially for a _core_ package like iproute2 that
->>> should have as little dependencies as possible. I also don't want to
->>> make a bet on whether libbpf will be available on every distro that
->>> also ships iproute2. Hence approach that pahole (and also bcc by the
->>> way) takes is most reasonable to have the best user experience.
->> 
->> Most users are going to get iproute2 from their distro packages anyway,
->> so if distros are incompetent at packaging, my bet is that you're going
->> to run into issues one way or another.
->> 
->> But OK, if you think it is easier to work around bad distros by
->> vendoring, you guys are the maintainers, so that's up to you. But can we
->> at least put in the version dependency and let the build system pick up
->> a system libbpf if it exists and is compatible? That way distros that
->> *are* competent can still link it dynamically...
+On Thu, Aug 22, 2019 at 1:17 AM Ilya Maximets <i.maximets@samsung.com> wrot=
+e:
 >
-> Yeah that would be fine by me to use this as a fallback, and I think that
-> iproute2's configure script should be able to easily handle this
-> situation.
+> On 22.08.2019 0:38, William Tu wrote:
+> > On Wed, Aug 21, 2019 at 9:57 AM Alexander Duyck
+> > <alexander.duyck@gmail.com> wrote:
+> >>
+> >> On Wed, Aug 21, 2019 at 9:22 AM Ilya Maximets <i.maximets@samsung.com>=
+ wrote:
+> >>>
+> >>> On 21.08.2019 4:17, Alexander Duyck wrote:
+> >>>> On Tue, Aug 20, 2019 at 8:58 AM Ilya Maximets <i.maximets@samsung.co=
+m> wrote:
+> >>>>>
+> >>>>> On 20.08.2019 18:35, Alexander Duyck wrote:
+> >>>>>> On Tue, Aug 20, 2019 at 8:18 AM Ilya Maximets <i.maximets@samsung.=
+com> wrote:
+> >>>>>>>
+> >>>>>>> Tx code doesn't clear the descriptor status after cleaning.
+> >>>>>>> So, if the budget is larger than number of used elems in a ring, =
+some
+> >>>>>>> descriptors will be accounted twice and xsk_umem_complete_tx will=
+ move
+> >>>>>>> prod_tail far beyond the prod_head breaking the comletion queue r=
+ing.
+> >>>>>>>
+> >>>>>>> Fix that by limiting the number of descriptors to clean by the nu=
+mber
+> >>>>>>> of used descriptors in the tx ring.
+> >>>>>>>
+> >>>>>>> Fixes: 8221c5eba8c1 ("ixgbe: add AF_XDP zero-copy Tx support")
+> >>>>>>> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
+> >>>>>>
+> >>>>>> I'm not sure this is the best way to go. My preference would be to
+> >>>>>> have something in the ring that would prevent us from racing which=
+ I
+> >>>>>> don't think this really addresses. I am pretty sure this code is s=
+afe
+> >>>>>> on x86 but I would be worried about weak ordered systems such as
+> >>>>>> PowerPC.
+> >>>>>>
+> >>>>>> It might make sense to look at adding the eop_desc logic like we h=
+ave
+> >>>>>> in the regular path with a proper barrier before we write it and a=
+fter
+> >>>>>> we read it. So for example we could hold of on writing the bytecou=
+nt
+> >>>>>> value until the end of an iteration and call smp_wmb before we wri=
+te
+> >>>>>> it. Then on the cleanup we could read it and if it is non-zero we =
+take
+> >>>>>> an smp_rmb before proceeding further to process the Tx descriptor =
+and
+> >>>>>> clearing the value. Otherwise this code is going to just keep popp=
+ing
+> >>>>>> up with issues.
+> >>>>>
+> >>>>> But, unlike regular case, xdp zero-copy xmit and clean for particul=
+ar
+> >>>>> tx ring always happens in the same NAPI context and even on the sam=
+e
+> >>>>> CPU core.
+> >>>>>
+> >>>>> I saw the 'eop_desc' manipulations in regular case and yes, we coul=
+d
+> >>>>> use 'next_to_watch' field just as a flag of descriptor existence,
+> >>>>> but it seems unnecessarily complicated. Am I missing something?
+> >>>>>
+> >>>>
+> >>>> So is it always in the same NAPI context?. I forgot, I was thinking
+> >>>> that somehow the socket could possibly make use of XDP for transmit.
+> >>>
+> >>> AF_XDP socket only triggers tx interrupt on ndo_xsk_async_xmit() whic=
+h
+> >>> is used in zero-copy mode. Real xmit happens inside
+> >>> ixgbe_poll()
+> >>>  -> ixgbe_clean_xdp_tx_irq()
+> >>>     -> ixgbe_xmit_zc()
+> >>>
+> >>> This should be not possible to bound another XDP socket to the same n=
+etdev
+> >>> queue.
+> >>>
+> >>> It also possible to xmit frames in xdp_ring while performing XDP_TX/R=
+EDIRECT
+> >>> actions. REDIRECT could happen from different netdev with different N=
+API
+> >>> context, but this operation is bound to specific CPU core and each co=
+re has
+> >>> its own xdp_ring.
+> >>>
+> >>> However, I'm not an expert here.
+> >>> Bj=C3=B6rn, maybe you could comment on this?
+> >>>
+> >>>>
+> >>>> As far as the logic to use I would be good with just using a value y=
+ou
+> >>>> are already setting such as the bytecount value. All that would need
+> >>>> to happen is to guarantee that the value is cleared in the Tx path. =
+So
+> >>>> if you clear the bytecount in ixgbe_clean_xdp_tx_irq you could
+> >>>> theoretically just use that as well to flag that a descriptor has be=
+en
+> >>>> populated and is ready to be cleaned. Assuming the logic about this
+> >>>> all being in the same NAPI context anyway you wouldn't need to mess
+> >>>> with the barrier stuff I mentioned before.
+> >>>
+> >>> Checking the number of used descs, i.e. next_to_use - next_to_clean,
+> >>> makes iteration in this function logically equal to the iteration ins=
+ide
+> >>> 'ixgbe_xsk_clean_tx_ring()'. Do you think we need to change the later
+> >>> function too to follow same 'bytecount' approach? I don't like having
+> >>> two different ways to determine number of used descriptors in the sam=
+e file.
+> >>>
+> >>> Best regards, Ilya Maximets.
+> >>
+> >> As far as ixgbe_clean_xdp_tx_irq() vs ixgbe_xsk_clean_tx_ring(), I
+> >> would say that if you got rid of budget and framed things more like
+> >> how ixgbe_xsk_clean_tx_ring was framed with the ntc !=3D ntu being
+> >> obvious I would prefer to see us go that route.
+> >>
+> >> Really there is no need for budget in ixgbe_clean_xdp_tx_irq() if you
+> >> are going to be working with a static ntu value since you will only
+> >> ever process one iteration through the ring anyway. It might make more
+> >> sense if you just went through and got rid of budget and i, and
+> >> instead used ntc and ntu like what was done in
+> >> ixgbe_xsk_clean_tx_ring().
+> >>
+> >> Thanks.
+> >>
+> >> - Alex
+> >
+> > Not familiar with the driver details.
+> > I tested this patch and the issue mentioned in OVS mailing list.
+> > https://www.mail-archive.com/ovs-dev@openvswitch.org/msg35362.html
+> > and indeed the problem goes away.
+>
+> Good. Thanks for testing!
+>
+> > But I saw a huge performance drop,
+> > my AF_XDP tx performance drops from >9Mpps to <5Mpps.
+>
+> I didn't expect so big performance difference with this change.
+> What is your test scenario?
 
-Cool, I can live with that :)
+I was using OVS with dual port NIC, setting one OpenFlow rule
+in_port=3Deth2 actions=3Doutput:eth3
+and eth2 for rx and measure eth3 tx
+'sar -n DEV 1'  shows pretty huge drop on eth3 tx.
 
--Toke
+> Is it possible that you're accounting same
+> packet several times due to broken completion queue?
+
+That's possible.
+Let me double check on your v2 patch.
+
+@Eelco: do you also see some performance difference?
+
+Regards,
+William
+
+>
+> Looking at samples/bpf/xdpsock_user.c:complete_tx_only(), it accounts
+> sent packets (tx_npkts) by accumulating results of xsk_ring_cons__peek()
+> for completion queue, so it's not a trusted source of pps information.
+>
+> Best regards, Ilya Maximets.
+>
+> >
+> > Tested using kernel 5.3.0-rc3+
+> > 03:00.0 Ethernet controller: Intel Corporation Ethernet Controller
+> > 10-Gigabit X540-AT2 (rev 01)
+> > Subsystem: Intel Corporation Ethernet 10G 2P X540-t Adapter
+> > Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+> > Stepping- SERR- FastB2B- DisINTx+
+> >
+> > Regards,
+> > William
