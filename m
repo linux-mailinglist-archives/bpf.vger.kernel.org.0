@@ -2,91 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CE7993D0
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 14:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1121299542
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 15:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388660AbfHVMeM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Aug 2019 08:34:12 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:34964 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388654AbfHVMeM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Aug 2019 08:34:12 -0400
-Received: by mail-lf1-f68.google.com with SMTP id p197so4425631lfa.2
-        for <bpf@vger.kernel.org>; Thu, 22 Aug 2019 05:34:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=aWwEGZ7IKPwlD1SyN53LweuoS+rG8j2WBRgPDxMagPA=;
-        b=qQwouDogyXJvS+YAsG7u3jI4chdOO2iCwbnUv4qV7/t3H0mpAnkar5BQ6W4yzvm3w4
-         MFy7lbM3I35ux+N13OWQLqMSp+JYBfamJOBS4Rv9YtwGFbdx/1nZ3P/IH2tA3AOy5PjU
-         kwMZko6qlgHP0UHJGHFvzgceOWtw4tjNefrQZ96MP6AChhfKt94B36gjTZhv6W5d2u3q
-         XLX/JEQ53zQai3qewoG2X6xDeNJ4HOzQU6TV4Cb4zGt4uQQf5AD05mnaufLgjsYbqLh0
-         X5GVMmJW05ufNL+28p6nLz0lCjVsZITmyIS1mIvW9/VAX3eTcLMat0TkK0bawj8l1wal
-         unaQ==
+        id S1732752AbfHVNif convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 22 Aug 2019 09:38:35 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:38728 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725797AbfHVNif (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Aug 2019 09:38:35 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id EA92381F01
+        for <bpf@vger.kernel.org>; Thu, 22 Aug 2019 13:38:33 +0000 (UTC)
+Received: by mail-ed1-f70.google.com with SMTP id r21so3400623edc.6
+        for <bpf@vger.kernel.org>; Thu, 22 Aug 2019 06:38:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=aWwEGZ7IKPwlD1SyN53LweuoS+rG8j2WBRgPDxMagPA=;
-        b=jiwpuPDubMXxyckI+UfKZkSGj/DvLtHUpxwe8WMNzo9uoOeiBPIgBaFlgWYfAtHrYP
-         bv7zl/CXl7/xNOxhYK1LwKq6zt38aNB/xVn+qq58W2TgrLAFLfGSOu8rqJU9QlQvzKD4
-         2pluXRSE0k8QhOl+cBmDdbLRwMEjhC+p5vaUtp0L/wR6vqdM+M21TxRChLgRL7AWCHly
-         SlWfoDboUOJdrOjpFhyR52FVeRyFSZqE7H8/u67GUegzBVQ30yqJXUJJ1bY+rwFHjCOy
-         tYPZ9z4HDiRVaOM5xdKRxPohm6nGyETyHSnszgdeh0l8XZfjTinZyPRRMzCw8GpV48cW
-         O5BA==
-X-Gm-Message-State: APjAAAWw+e0swh/1MF5KKXnaiqC5tQBP8l0M1l4d6ekL1JGlo54Hhdr1
-        6H+riPwbMZz+Vmb9GmaBLgjp3G7bew5AtpoX6KM=
-X-Google-Smtp-Source: APXvYqyvt2RXzV9cZsTsiBwjcFFEoyd1HLlAwIQQPxXOemblWJ85A0QXgz94gt7tcllsT417ikCMvXpOU1ZxhrqMZqI=
-X-Received: by 2002:ac2:42c3:: with SMTP id n3mr13722899lfl.117.1566477250738;
- Thu, 22 Aug 2019 05:34:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=eOshNgd+ea2TO9KPUqOeWvd/cwAScC6pZU+4eW7HbnA=;
+        b=LbeW2USSbWjfADeFv9So5ZPZy6MGL7M81S2vhN2WzqDQa21eUGDJRkNt/esDDFVPyM
+         cJujn87DXifpOof+L3ofVCgmd6Fkm5oUwIuPDkVlGD5MXF4pVb3j9dexkeuNNAWHkwec
+         6OuhP7UJgwM8fjDy+KsgzuHWYw38VTPakP1Go+FS7AjtoFf41AOxWDBJPZANnLQl7v1c
+         KsVGmoTv5zlfcBK3mBxPvkXFOTSRKDpHRGPzKWe7n1hxrjZA8EInFPVigMuJ5vwg9exJ
+         f0RWBdDaM89Uyn2RrM3GwNWHcVKe2ja+Z3T5JxemKEryP5961ZPpbkP5MOYzMtDnaOw6
+         Ncpw==
+X-Gm-Message-State: APjAAAX71O4uFj3VCKlRf6+UNfQTx49sfUvafzkpY/EfQK1K4U9c/mtt
+        rjq7VnbqS2sW5jZbENLD0DWUxqWJG8fNjk7a2e0+iDqbHVFXE0CcmpwinQjsC3BRT0WjmD8sobi
+        Orj3S0gCcWqU+
+X-Received: by 2002:a05:6402:741:: with SMTP id p1mr29316057edy.245.1566481112736;
+        Thu, 22 Aug 2019 06:38:32 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqyv7YrY2Dps5v3LLCml2Bc2N7XWvM7WH7+vwmz68MGWRDSgOPQPMsSYQflA9EOorOiowA5V/w==
+X-Received: by 2002:a05:6402:741:: with SMTP id p1mr29316033edy.245.1566481112551;
+        Thu, 22 Aug 2019 06:38:32 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id y9sm4756665eds.49.2019.08.22.06.38.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Aug 2019 06:38:31 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 580A3181CEF; Thu, 22 Aug 2019 15:38:31 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        andrii.nakryiko@gmail.com
+Subject: Re: [RFC bpf-next 4/5] iproute2: Allow compiling against libbpf
+In-Reply-To: <4ca44e39-9b32-909f-df8d-f565eae57498@iogearbox.net>
+References: <20190820114706.18546-1-toke@redhat.com> <20190820114706.18546-5-toke@redhat.com> <9de36bbf-b70d-9320-c686-3033d0408276@iogearbox.net> <87imqppjir.fsf@toke.dk> <0c3d78eb-d305-9266-b505-c2f9181d5c89@iogearbox.net> <877e75pftb.fsf@toke.dk> <4ca44e39-9b32-909f-df8d-f565eae57498@iogearbox.net>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 22 Aug 2019 15:38:31 +0200
+Message-ID: <87zhk1nwvc.fsf@toke.dk>
 MIME-Version: 1.0
-Received: by 2002:ab3:6a0f:0:0:0:0:0 with HTTP; Thu, 22 Aug 2019 05:34:10
- -0700 (PDT)
-Reply-To: eku.lawfirm@gmail.com
-From:   "Law firm(Eku and Associates)" <ezeobodo1@gmail.com>
-Date:   Thu, 22 Aug 2019 12:34:10 +0000
-Message-ID: <CAN-_bTZ04fanuBw0m=mWQFHTKscwdYgns3LR19ZdaFDanOVNGQ@mail.gmail.com>
-Subject: MY $25,000,000.00 INVESTMENT PROPOSAL WITH YOU AND IN YOUR COUNTRY.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---=20
-Dear,
-With due respect this is not spam or Scam mail, because I have
-contacted you before and there was no response from you,I apologise if
-the contents of this mail are contrary to your moral ethics, which I
-feel may be of great disturbance to your person, but please treat this
-with absolute confidentiality, believing that this email reaches you
-in good faith. My contacting you is not a mistake or a coincidence
-because God can use any person known or unknown to accomplish great
-things.
-I am a lawyer and I have an investment business proposal to offer you.
-It is not official but should be considered as legal and confidential
-business. I have a customer's deposit of $US25 million dollars ready
-to be moved for investment if you can partner with us. We are ready to
-offer you 10% of this total amount as your compensation for supporting
-the transaction to completion. If you are interested to help me please
-reply me with your full details as stated below:
-(1) Your full names:
-(2) Your address:
-(3) Your occupation:
-(4) Your mobile telephone number:
-(5) Your nationality:
-(6) Your present location:
-(7) Your age:
-So that I will provide you more details on what to do and what is
-required for successful completion.
-Note: DO NOT REPLY ME IF YOU ARE NOT INTERESTED AND WITHOUT THE ABOVE
-MENTIONED DETAILS
+Daniel Borkmann <daniel@iogearbox.net> writes:
 
-Sinc=C3=A8rement v=C3=B4tre,
-Avocat Etienne Eku Esq.(Lawfirm)
-Procureur principal. De Cabinet d=E2=80=99avocats de l=E2=80=99Afrique de l=
-=E2=80=99ouest.
-Skype:westafricalawfirm
+> On 8/22/19 2:04 PM, Toke Høiland-Jørgensen wrote:
+>> Daniel Borkmann <daniel@iogearbox.net> writes:
+>>> On 8/22/19 12:43 PM, Toke Høiland-Jørgensen wrote:
+>>>> Daniel Borkmann <daniel@iogearbox.net> writes:
+>>>>> On 8/20/19 1:47 PM, Toke Høiland-Jørgensen wrote:
+>>>>>> This adds a configure check for libbpf and renames functions to allow
+>>>>>> lib/bpf.c to be compiled with it present. This makes it possible to
+>>>>>> port functionality piecemeal to use libbpf.
+>>>>>>
+>>>>>> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+>>>>>> ---
+>>>>>>     configure          | 16 ++++++++++++++++
+>>>>>>     include/bpf_util.h |  6 +++---
+>>>>>>     ip/ipvrf.c         |  4 ++--
+>>>>>>     lib/bpf.c          | 33 +++++++++++++++++++--------------
+>>>>>>     4 files changed, 40 insertions(+), 19 deletions(-)
+>>>>>>
+>>>>>> diff --git a/configure b/configure
+>>>>>> index 45fcffb6..5a89ee9f 100755
+>>>>>> --- a/configure
+>>>>>> +++ b/configure
+>>>>>> @@ -238,6 +238,19 @@ check_elf()
+>>>>>>         fi
+>>>>>>     }
+>>>>>>     
+>>>>>> +check_libbpf()
+>>>>>> +{
+>>>>>> +    if ${PKG_CONFIG} libbpf --exists; then
+>>>>>> +	echo "HAVE_LIBBPF:=y" >>$CONFIG
+>>>>>> +	echo "yes"
+>>>>>> +
+>>>>>> +	echo 'CFLAGS += -DHAVE_LIBBPF' `${PKG_CONFIG} libbpf --cflags` >> $CONFIG
+>>>>>> +	echo 'LDLIBS += ' `${PKG_CONFIG} libbpf --libs` >>$CONFIG
+>>>>>> +    else
+>>>>>> +	echo "no"
+>>>>>> +    fi
+>>>>>> +}
+>>>>>> +
+>>>>>>     check_selinux()
+>>>>>
+>>>>> More of an implementation detail at this point in time, but want to
+>>>>> make sure this doesn't get missed along the way: as discussed at
+>>>>> bpfconf [0] best for iproute2 to handle libbpf support would be the
+>>>>> same way of integration as pahole does, that is, to integrate it via
+>>>>> submodule [1] to allow kernel and libbpf features to be in sync with
+>>>>> iproute2 releases and therefore easily consume extensions we're adding
+>>>>> to libbpf to aide iproute2 integration.
+>>>>
+>>>> I can sorta see the point wrt keeping in sync with kernel features. But
+>>>> how will this work with distros that package libbpf as a regular
+>>>> library? Have you guys given up on regular library symbol versioning for
+>>>> libbpf?
+>>>
+>>> Not at all, and I hope you know that. ;-)
+>> 
+>> Good! Didn't really expect you had, just checking ;)
+>> 
+>>> The reason I added lib/bpf.c integration into iproute2 directly back
+>>> then was exactly such that users can start consuming BPF for tc and
+>>> XDP via iproute2 /everywhere/ with only a simple libelf dependency
+>>> which is also available on all distros since pretty much forever. If
+>>> it was an external library, we could have waited till hell freezes
+>>> over and initial distro adoption would have pretty much taken forever:
+>>> to pick one random example here wrt the pace of some downstream
+>>> distros [0]. The main rationale is pretty much the same as with added
+>>> kernel features that land complementary iproute2 patches for that
+>>> kernel release and as libbpf is developed alongside it is reasonable
+>>> to guarantee user expectations that iproute2 released for kernel
+>>> version x can make use of BPF features added to kernel x with same
+>>> loader support from x.
+>> 
+>> Well, for iproute2 I would expect this to be solved by version
+>> dependencies. I.e. iproute2 version X would depend on libbpf version Y+
+>> (like, I dunno, the version of libbpf included in the same kernel source
+>> tree as the kernel version iproute2 is targeting? :)).
+>
+> This sounds nice in theory, but from what I've seen major (!) distros
+> already seem to have a hard time releasing kernel x along with iproute2
+> package x, concrete example was that distro kernel was on 4.13 and its
+> official iproute2 package on 4.9,
+
+If the iproute2 package is not being updated at all I don't really see
+how it would make any difference whether libbpf is vendored or not? :)
+
+> adding yet another variable that needs to be in sync with kernel is
+> simply impractical especially for a _core_ package like iproute2 that
+> should have as little dependencies as possible. I also don't want to
+> make a bet on whether libbpf will be available on every distro that
+> also ships iproute2. Hence approach that pahole (and also bcc by the
+> way) takes is most reasonable to have the best user experience.
+
+Most users are going to get iproute2 from their distro packages anyway,
+so if distros are incompetent at packaging, my bet is that you're going
+to run into issues one way or another.
+
+But OK, if you think it is easier to work around bad distros by
+vendoring, you guys are the maintainers, so that's up to you. But can we
+at least put in the version dependency and let the build system pick up
+a system libbpf if it exists and is compatible? That way distros that
+*are* competent can still link it dynamically...
+
+-Toke
