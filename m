@@ -2,98 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D4198E80
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 10:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B69598EB3
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 11:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731958AbfHVI6h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Aug 2019 04:58:37 -0400
-Received: from www62.your-server.de ([213.133.104.62]:48740 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731589AbfHVI6h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Aug 2019 04:58:37 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1i0ivI-0000Ci-4d; Thu, 22 Aug 2019 10:58:24 +0200
-Received: from [178.197.249.40] (helo=pc-63.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1i0ivH-000AIc-Ig; Thu, 22 Aug 2019 10:58:23 +0200
-Subject: Re: [RFC bpf-next 4/5] iproute2: Allow compiling against libbpf
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        andrii.nakryiko@gmail.com
-References: <20190820114706.18546-1-toke@redhat.com>
- <20190820114706.18546-5-toke@redhat.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9de36bbf-b70d-9320-c686-3033d0408276@iogearbox.net>
-Date:   Thu, 22 Aug 2019 10:58:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1732115AbfHVJGI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Aug 2019 05:06:08 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:55022 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727910AbfHVJGI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Aug 2019 05:06:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=jQUmhm+crCMl7aYhsmY917C2u3wYSGbnGiCkrOsABG0=; b=H96MoQ+Xd3KhAeEuhp3KuJohI
+        7ynuQoFB+FMMXI0yuJcBPGyPNWoozF3fDKL9kl4B1XlMv3+6HktRE1qRLl7vo2y5kWQsZ1DyZye2c
+        D9kG9tcMcVvyCEkQ+xqenprcGbr2Gvn0PAaMxckZsZrBkOjWWIh522IzryqmQX0oBFf0K/llZ93O6
+        ZDU/ioNYP/VUNvq59utMpn18uDg7xZOFlRcstWcRz1zfQ9Ez0NQEKeBhW+jmRezsiZrZTxj3r+RT6
+        zHReVu6e3nCBZlm6teISKVXXZnYetDwGV4kJGAqQtH/SBfvLNvHDE5vEekVryI6QFRfDmLqGtuE0V
+        KC4nhDu6Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1i0j2c-0000zc-VK; Thu, 22 Aug 2019 09:05:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 82957307145;
+        Thu, 22 Aug 2019 11:05:23 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8000620A21FDF; Thu, 22 Aug 2019 11:05:55 +0200 (CEST)
+Date:   Thu, 22 Aug 2019 11:05:55 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Yonghong Song <yhs@fb.com>, Daniel Xu <dxu@dxuuu.xyz>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH v3 bpf-next 1/4] tracing/probe: Add
+ PERF_EVENT_IOC_QUERY_PROBE ioctl
+Message-ID: <20190822090555.GJ2349@hirez.programming.kicks-ass.net>
+References: <20190820144503.GV2332@hirez.programming.kicks-ass.net>
+ <BWENHQJIN885.216UOYEIWNGFU@dlxu-fedora-R90QNFJV>
+ <20190821110856.GB2349@hirez.programming.kicks-ass.net>
+ <62874df3-cae0-36a1-357f-b59484459e52@fb.com>
+ <20190821183155.GE2349@hirez.programming.kicks-ass.net>
+ <5ecdcd72-255d-26d1-baf3-dc64498753c2@fb.com>
+ <20190822074737.GG2349@hirez.programming.kicks-ass.net>
+ <E9CB8C05-8972-4454-9D19-FA2D0D94F32D@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <20190820114706.18546-5-toke@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25548/Wed Aug 21 10:27:18 2019)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <E9CB8C05-8972-4454-9D19-FA2D0D94F32D@fb.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/20/19 1:47 PM, Toke Høiland-Jørgensen wrote:
-> This adds a configure check for libbpf and renames functions to allow
-> lib/bpf.c to be compiled with it present. This makes it possible to
-> port functionality piecemeal to use libbpf.
+On Thu, Aug 22, 2019 at 07:54:16AM +0000, Song Liu wrote:
+> Hi Peter, 
 > 
-> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> ---
->   configure          | 16 ++++++++++++++++
->   include/bpf_util.h |  6 +++---
->   ip/ipvrf.c         |  4 ++--
->   lib/bpf.c          | 33 +++++++++++++++++++--------------
->   4 files changed, 40 insertions(+), 19 deletions(-)
+> > On Aug 22, 2019, at 12:47 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+> > 
+> > On Wed, Aug 21, 2019 at 06:43:49PM +0000, Yonghong Song wrote:
+> >> On 8/21/19 11:31 AM, Peter Zijlstra wrote:
+> > 
+> >>> So extending PERF_RECORD_LOST doesn't work. But PERF_FORMAT_LOST might
+> >>> still work fine; but you get to implement it for all software events.
+> >> 
+> >> Could you give more specifics about PERF_FORMAT_LOST? Googling 
+> >> "PERF_FORMAT_LOST" only yields two emails which we are discussing here :-(
+> > 
+> > Look at what the other PERF_FORMAT_ flags do? Basically it is adding a
+> > field to the read(2) output.
 > 
-> diff --git a/configure b/configure
-> index 45fcffb6..5a89ee9f 100755
-> --- a/configure
-> +++ b/configure
-> @@ -238,6 +238,19 @@ check_elf()
->       fi
->   }
->   
-> +check_libbpf()
-> +{
-> +    if ${PKG_CONFIG} libbpf --exists; then
-> +	echo "HAVE_LIBBPF:=y" >>$CONFIG
-> +	echo "yes"
-> +
-> +	echo 'CFLAGS += -DHAVE_LIBBPF' `${PKG_CONFIG} libbpf --cflags` >> $CONFIG
-> +	echo 'LDLIBS += ' `${PKG_CONFIG} libbpf --libs` >>$CONFIG
-> +    else
-> +	echo "no"
-> +    fi
-> +}
-> +
->   check_selinux()
+> Do we need to implement PERF_FORMAT_LOST for all software events? If user
+> space asks for PERF_FORMAT_LOST for events that do not support it, can we
+> just fail sys_perf_event_open()?
 
-More of an implementation detail at this point in time, but want to make sure this
-doesn't get missed along the way: as discussed at bpfconf [0] best for iproute2 to
-handle libbpf support would be the same way of integration as pahole does, that is,
-to integrate it via submodule [1] to allow kernel and libbpf features to be in sync
-with iproute2 releases and therefore easily consume extensions we're adding to libbpf
-to aide iproute2 integration.
-
-Thanks,
-Daniel
-
-   [0] http://vger.kernel.org/bpfconf2019.html#session-4
-   [1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?id=21507cd3e97bc5692d97201ee68df044c6767e9a
+It really shouldn't be hard; and I'm failing to see why kprobes are
+special.
