@@ -2,94 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B69598EB3
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 11:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4803998EE3
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 11:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732115AbfHVJGI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Aug 2019 05:06:08 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:55022 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727910AbfHVJGI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Aug 2019 05:06:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=jQUmhm+crCMl7aYhsmY917C2u3wYSGbnGiCkrOsABG0=; b=H96MoQ+Xd3KhAeEuhp3KuJohI
-        7ynuQoFB+FMMXI0yuJcBPGyPNWoozF3fDKL9kl4B1XlMv3+6HktRE1qRLl7vo2y5kWQsZ1DyZye2c
-        D9kG9tcMcVvyCEkQ+xqenprcGbr2Gvn0PAaMxckZsZrBkOjWWIh522IzryqmQX0oBFf0K/llZ93O6
-        ZDU/ioNYP/VUNvq59utMpn18uDg7xZOFlRcstWcRz1zfQ9Ez0NQEKeBhW+jmRezsiZrZTxj3r+RT6
-        zHReVu6e3nCBZlm6teISKVXXZnYetDwGV4kJGAqQtH/SBfvLNvHDE5vEekVryI6QFRfDmLqGtuE0V
-        KC4nhDu6Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1i0j2c-0000zc-VK; Thu, 22 Aug 2019 09:05:59 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 82957307145;
-        Thu, 22 Aug 2019 11:05:23 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8000620A21FDF; Thu, 22 Aug 2019 11:05:55 +0200 (CEST)
-Date:   Thu, 22 Aug 2019 11:05:55 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Yonghong Song <yhs@fb.com>, Daniel Xu <dxu@dxuuu.xyz>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "jolsa@redhat.com" <jolsa@redhat.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH v3 bpf-next 1/4] tracing/probe: Add
- PERF_EVENT_IOC_QUERY_PROBE ioctl
-Message-ID: <20190822090555.GJ2349@hirez.programming.kicks-ass.net>
-References: <20190820144503.GV2332@hirez.programming.kicks-ass.net>
- <BWENHQJIN885.216UOYEIWNGFU@dlxu-fedora-R90QNFJV>
- <20190821110856.GB2349@hirez.programming.kicks-ass.net>
- <62874df3-cae0-36a1-357f-b59484459e52@fb.com>
- <20190821183155.GE2349@hirez.programming.kicks-ass.net>
- <5ecdcd72-255d-26d1-baf3-dc64498753c2@fb.com>
- <20190822074737.GG2349@hirez.programming.kicks-ass.net>
- <E9CB8C05-8972-4454-9D19-FA2D0D94F32D@fb.com>
+        id S1733032AbfHVJNn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Aug 2019 05:13:43 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:45423 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733031AbfHVJNn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Aug 2019 05:13:43 -0400
+Received: by mail-pf1-f196.google.com with SMTP id w26so3507687pfq.12;
+        Thu, 22 Aug 2019 02:13:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ve0kUU0qLNwm3Q2yOn7y3CVKdgXEFZVbDWzW0GPjgmI=;
+        b=ASnyzlgJImrl3SY34M109XDvGmS88DXNdoAahO+0aZunVQLBvS/x2MDzG+MDnWL8Gf
+         rT0b3XVQxkFcTrKPfreKTT1VjSOfJabA5r9wxkOyW5rQOE2Lnb8OxmKbZrV5DKp/hsl6
+         C3qpeb9Vh7qjZ4hKH86f4F8G0op0aitP/mqChNX2txxaijZA+edJzYcVUdY4TCdnH+sB
+         AUmuLSkei15zF7OU679f3x96KogpmD5mSzW3i2hZacvsfCXohvNS23egnczIdl64Ga4F
+         /yNo/zl4It5kypgGEonnHpFRq+odupqereYLb7rZ9uaTUFuHgssRQvD0OQJP8SRzANU/
+         IwTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ve0kUU0qLNwm3Q2yOn7y3CVKdgXEFZVbDWzW0GPjgmI=;
+        b=XFV7RVXC3zTwL8nhbXmVungyU3EB6IN94owL6JA/9OC4FY3KyQgLej9eeIIIASEoKJ
+         PsfsvfN6B6B+b2UrlxTt3gMgve1UxO/Xgo+d7hOvA8bX8HKY7i3xqcKHioakJCKJZERF
+         82VLRszu8/ahisPs0yETr0AQf5Rcf9SRG2SOza0kKzrNfxVq7sma4nK4u7r25G8Xs3cv
+         iltYyEbSfITfhmQgtEVBvoBWdCEeR9IC8xOS9TkoyhX5sPXnSni5ABmRu9PMDtPRNMbs
+         D/v0VHYYGZdpnOGG4HRQqJY53QXVKqdj3e1i1qIGCT4qIQ2IZFy01MPdjqeNsaw+BLq0
+         oQbw==
+X-Gm-Message-State: APjAAAXD1S1MsqNJrS3OV+kmi19E940kuEj3fTOn79tNvIMJYderB4Bg
+        Ldcf5urQvSTzUehHrvUeKfFLuUkx5KKlvw==
+X-Google-Smtp-Source: APXvYqznyliqc24rWRQaD3BHBVkFHNO6+xyjgDNVtgxDBPfyJ0MEKfI9VPpElo+JLarrlu+iinH5Dg==
+X-Received: by 2002:aa7:9d07:: with SMTP id k7mr39643968pfp.94.1566465222507;
+        Thu, 22 Aug 2019 02:13:42 -0700 (PDT)
+Received: from btopel-mobl.ger.intel.com ([192.55.54.43])
+        by smtp.gmail.com with ESMTPSA id w207sm28414754pff.93.2019.08.22.02.13.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Aug 2019 02:13:40 -0700 (PDT)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        magnus.karlsson@intel.com, magnus.karlsson@gmail.com,
+        bpf@vger.kernel.org, bjorn.topel@intel.com,
+        jonathan.lemon@gmail.com,
+        syzbot+c82697e3043781e08802@syzkaller.appspotmail.com,
+        hdanton@sina.com, i.maximets@samsung.com
+Subject: [PATCH bpf-next 0/4] xsk: various CPU barrier and {READ, WRITE}_ONCE fixes
+Date:   Thu, 22 Aug 2019 11:13:02 +0200
+Message-Id: <20190822091306.20581-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <E9CB8C05-8972-4454-9D19-FA2D0D94F32D@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 22, 2019 at 07:54:16AM +0000, Song Liu wrote:
-> Hi Peter, 
-> 
-> > On Aug 22, 2019, at 12:47 AM, Peter Zijlstra <peterz@infradead.org> wrote:
-> > 
-> > On Wed, Aug 21, 2019 at 06:43:49PM +0000, Yonghong Song wrote:
-> >> On 8/21/19 11:31 AM, Peter Zijlstra wrote:
-> > 
-> >>> So extending PERF_RECORD_LOST doesn't work. But PERF_FORMAT_LOST might
-> >>> still work fine; but you get to implement it for all software events.
-> >> 
-> >> Could you give more specifics about PERF_FORMAT_LOST? Googling 
-> >> "PERF_FORMAT_LOST" only yields two emails which we are discussing here :-(
-> > 
-> > Look at what the other PERF_FORMAT_ flags do? Basically it is adding a
-> > field to the read(2) output.
-> 
-> Do we need to implement PERF_FORMAT_LOST for all software events? If user
-> space asks for PERF_FORMAT_LOST for events that do not support it, can we
-> just fail sys_perf_event_open()?
+This is a four patch series of various barrier, {READ, WRITE}_ONCE
+cleanups in the AF_XDP socket code. More details can be found in the
+corresponding commit message.
 
-It really shouldn't be hard; and I'm failing to see why kprobes are
-special.
+For an AF_XDP socket, most control plane operations are done under the
+control mutex (struct xdp_sock, mutex), but there are some places
+where members of the struct is read outside the control mutex. This,
+as pointed out by Daniel in [1], requires proper {READ,
+WRITE}_ONCE-correctness [2] [3]. To address this, and to simplify the
+code, the state variable (introduced by Ilya), is now used a point of
+synchronization ("is the socket in a valid state, or not").
+
+
+Thanks,
+Björn
+
+[1] https://lore.kernel.org/bpf/beef16bb-a09b-40f1-7dd0-c323b4b89b17@iogearbox.net/
+[2] https://lwn.net/Articles/793253/
+[3] https://github.com/google/ktsan/wiki/READ_ONCE-and-WRITE_ONCE
+
+Björn Töpel (4):
+  xsk: avoid store-tearing when assigning queues
+  xsk: add proper barriers and {READ, WRITE}_ONCE-correctness for state
+  xsk: avoid store-tearing when assigning umem
+  xsk: lock the control mutex in sock_diag interface
+
+ net/xdp/xsk.c      | 61 ++++++++++++++++++++++++++++++++--------------
+ net/xdp/xsk_diag.c |  3 +++
+ 2 files changed, 46 insertions(+), 18 deletions(-)
+
+-- 
+2.20.1
+
