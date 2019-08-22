@@ -2,103 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7990798CE1
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 10:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE0698D62
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 10:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731257AbfHVIF7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Aug 2019 04:05:59 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:35496 "EHLO
+        id S1732196AbfHVIRY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Aug 2019 04:17:24 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:39860 "EHLO
         mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbfHVIF7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Aug 2019 04:05:59 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20190822080556euoutp020f68f950187ff73c8d2172bed169834e~9MB9dL-Pn1412914129euoutp024
-        for <bpf@vger.kernel.org>; Thu, 22 Aug 2019 08:05:56 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20190822080556euoutp020f68f950187ff73c8d2172bed169834e~9MB9dL-Pn1412914129euoutp024
+        with ESMTP id S1732194AbfHVIRX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Aug 2019 04:17:23 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20190822081721euoutp02fc8f7b6cef115c7656397823efc52447~9ML7UlKD02022020220euoutp02H
+        for <bpf@vger.kernel.org>; Thu, 22 Aug 2019 08:17:21 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20190822081721euoutp02fc8f7b6cef115c7656397823efc52447~9ML7UlKD02022020220euoutp02H
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1566461156;
-        bh=4zxlvUFQ7kHa/ksIbQBsJoh28JPFEn+LcgjtZFtKCHY=;
+        s=mail20170921; t=1566461841;
+        bh=eH3VAAcLRYwEU2jjSTk2TX56nvxFUZ0pGc8FxPpOx10=;
         h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=ONNztFHtxctClNwYIDQtXTgHdMTa1iV/H7OkuxSEo9ECWjS0sJRD5zTuVXTBsC/Gu
-         tf302rQHiFWN+ORTsNAk3PE9naHdW6UWMLeTrQyhpGPYRafMgQ0LsLwy2KID+mkeTy
-         CkmPbpdgMP03hct31Hyr4wDwQQeKbCLUHIux/5wU=
+        b=CEVkgJpqlmitBpoTgBdgpD1urSxXxgP1RWEgMET7Se53rVn9lWqKjUe4VOuZORI8p
+         Df2leGzW26YMGIT/RYMpA5xO0Ca1PubjbS97oGoEcKcxlp6+5inMRm1AbCM3ie0B6a
+         kfgcIElLShRfWRV4yXDrPk1YCN+szwKok24WbEUs=
 Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
         eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20190822080555eucas1p2cfd3d35e5146fdfbd8a2f18ec2b54549~9MB8nyJzw0411304113eucas1p2x;
-        Thu, 22 Aug 2019 08:05:55 +0000 (GMT)
+        20190822081720eucas1p29ee1e2d981cc9fa43bf41c748e1d8f2e~9ML6khgqf2927229272eucas1p2M;
+        Thu, 22 Aug 2019 08:17:20 +0000 (GMT)
 Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 1E.B2.04374.3EC4E5D5; Thu, 22
-        Aug 2019 09:05:55 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20190822080554eucas1p2610b6e5b48679b6cc912eb5ced8b9502~9MB75AJy82378423784eucas1p2q;
-        Thu, 22 Aug 2019 08:05:54 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20190822080554eusmtrp23e970cb4e30bb13756c118f3d7af5245~9MB7qzioP3146831468eusmtrp2Z;
-        Thu, 22 Aug 2019 08:05:54 +0000 (GMT)
-X-AuditID: cbfec7f5-4f7ff70000001116-8f-5d5e4ce3aaff
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 53.84.04374.09F4E5D5; Thu, 22
+        Aug 2019 09:17:20 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20190822081719eucas1p13b7b5abe25b1838b38e77002a5daa5c3~9ML52Wn7g2311423114eucas1p1H;
+        Thu, 22 Aug 2019 08:17:19 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20190822081719eusmtrp118abc76009661efb2087d6ca197b26bf~9ML5nhRmO2148421484eusmtrp1n;
+        Thu, 22 Aug 2019 08:17:19 +0000 (GMT)
+X-AuditID: cbfec7f5-4ddff70000001116-cb-5d5e4f90955c
 Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 93.1A.04166.2EC4E5D5; Thu, 22
-        Aug 2019 09:05:54 +0100 (BST)
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id FE.1D.04117.F8F4E5D5; Thu, 22
+        Aug 2019 09:17:19 +0100 (BST)
 Received: from [106.109.129.180] (unknown [106.109.129.180]) by
         eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20190822080553eusmtip2170b491e8fa5ca2ecbf729347cfc9810~9MB6yGR6m2361123611eusmtip24;
-        Thu, 22 Aug 2019 08:05:53 +0000 (GMT)
-Subject: Re: [Intel-wired-lan] [PATCH net] ixgbe: fix double clean of tx
- descriptors with xdp
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        20190822081718eusmtip28624971d74a2604a01884c8f1e9f78b1~9ML4wwYRV2944029440eusmtip2S;
+        Thu, 22 Aug 2019 08:17:18 +0000 (GMT)
+Subject: Re: [PATCH net] ixgbe: fix double clean of tx descriptors with xdp
+To:     William Tu <u9012063@gmail.com>,
         Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Netdev <netdev@vger.kernel.org>, William Tu <u9012063@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        bpf <bpf@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
         Eelco Chaudron <echaudro@redhat.com>
 From:   Ilya Maximets <i.maximets@samsung.com>
-Message-ID: <54faa2f1-345d-b5b2-7e48-963876b62813@samsung.com>
-Date:   Thu, 22 Aug 2019 11:05:52 +0300
+Message-ID: <cbf7c51b-9ce7-6ef6-32c4-981258d4af4c@samsung.com>
+Date:   Thu, 22 Aug 2019 11:17:18 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
         Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAJ+HfNjo0tpk2v_+85SuX7Jw797QwRA7uJBggPHtY=JznLC9Zg@mail.gmail.com>
+In-Reply-To: <CALDO+SZCbxEEwCS6MyHk-Cp_LJ33N=QFqwZ8uRm0e-PBRgxRYw@mail.gmail.com>
 Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBKsWRmVeSWpSXmKPExsWy7djPc7qPfeJiDb7slLX4P/c2i8WXn7fZ
-        Lc5PO8Vm8adtA6PF5yPH2SwWL/zGbDHnfAuLxZ0rP9ksrrT/ZLf4f+s3q8WxFy1sFpd3zWGz
-        WHHoBLvFsQViFtcv8Tjwe2xZeZPJY+esu+wei/e8ZPLounGJ2WPTqk42j5PNpR7Tux8ye7zf
-        d5XNo2/LKkaPz5vkAriiuGxSUnMyy1KL9O0SuDLWvtQvaNeueNfwi6mB8aNSFyMnh4SAicSV
-        /susXYxcHEICKxglrjTPZIZwvjBKdL1+ApX5zCjx98oiZpiW7n1LmSASyxklTq37CVX1kVFi
-        zqktjCBVwgLxEnPurWYCsUUEsiW+X5zKBlLELPCDWWLn7JNsIAk2AR2JU6uPgDXwCthJHFu1
-        nx3EZhFQldgx/xHYOlGBCIlPDw6zQtQISpyc+YQFxOYUCJRY8KwXLM4sIC7R9GUllC0v0bx1
-        NtgTEgK9HBKPp91kgbjbRWLj+i9QPwhLvDq+hR3ClpH4v3M+E4RdL3G/5SUjRHMHo8T0Q/+g
-        EvYSW16fA2rgANqgKbF+lz6IKSHgKPG1VRPC5JO48VYQ4gQ+iUnbpjNDhHklOtqEIGaoSPw+
-        uBzqACmJm+8+s09gVJqF5LFZSJ6ZheSZWQhrFzCyrGIUTy0tzk1PLTbOSy3XK07MLS7NS9dL
-        zs/dxAhMf6f/Hf+6g3Hfn6RDjAIcjEo8vBN0Y2OFWBPLiitzDzFKcDArifBWzImKFeJNSays
-        Si3Kjy8qzUktPsQozcGiJM5bzfAgWkggPbEkNTs1tSC1CCbLxMEp1cC4VP7sveunlms4nwoy
-        XDlf/xS73LQv8z/pHO5bxfM5M3zehOY9JVesfWIkesPfuR+K2LqxWDFvyqN966YdqLnV2rld
-        kOmNaMGkOZW8/XuZzwk9Dw32YtC8fUTWpDXCRqDjlzvzjIC+wiXF1rF5LwwYTl7RVsyaoOyr
-        Xy5wTfb5jLgdcysfb+dXYinOSDTUYi4qTgQAk/YWrHsDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNIsWRmVeSWpSXmKPExsVy+t/xe7qPfOJiDRovaVj8n3ubxeLLz9vs
-        FuennWKz+NO2gdHi85HjbBaLF35jtphzvoXF4s6Vn2wWV9p/slv8v/Wb1eLYixY2i8u75rBZ
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SWUwTURSGvZ3pzLRSGUqVE0RJGjVCFNwexsQ9mEz0wS0RRFCrjAWlVTqC
+        ghsKoqJRcINWlJJqWHyAsEWQkFjKrjUCCopEVFDBoMEipJaIDgORt++e/57/nD85FKbskXpT
+        UfpjnEGviVYTcry8zmlfnLZlT/iS69U+zNi9TpwZcnaSzGhKEWIctnqCseQMY0zWi2Scedfm
+        JJi2i06SGXvrkjJ1X5MJpqHkPWJaK7MIJs/aQDJ15llMe4vbOne2NP+NhK0wdZGspapPwqZ2
+        tGBsccFlgm1MimUzrnzA2B/Vrwj2WmkBYh3Fc7fKQ+WrIrjoqDjOELhmnzzym+MTOmoOPPHk
+        dSuZiMoWpCIZBfQKaOqxkKlITinpPAQD5jZMfAwhGCl0TigOBMaXZnKypaLWiUQhF0FO9v2J
+        lkEEH2tt0lREUZ70ZqitxYQGFb0dMqu6CIExOgmHF+kHBSboRdD0yIaE7wp6DZS4fIUyTs+H
+        4Zyu8Vkz6RD42V0jFVhBe0CjsQcXWEZvg/SMdly09ILzQ/lSkX0hqewuJu55m4KmjtOCPdBB
+        YCo6JZY9ob++dCKKDzTfvIqLfBbeJ/eNxwL6EoIM6x+JKKyF0m92UvDBaD8orAwULdfDrwt+
+        Is6AjgEPcYEZcKM8AxPLCriUohQ95oHrae7EXt7w5ruDTENq05RYpilRTFOimP6PNSO8AHlx
+        sbxOy/HL9dzxAF6j42P12oADR3TF6N/tNf+p//UYVY/utyKaQmo3Rdri8HClVBPHx+usCChM
+        rVKcyAoNVyoiNPEJnOHIXkNsNMdb0WwKV3spTk7r3q2ktZpj3GGOO8oZJlUJJfNORDKVpe/V
+        1Wm/5476uId1uYcFRcr1xhB70EjCzpWFp5d8WWZ7Wkhl5htbZTWfr4xoY1a32PyDn/n1Fm3s
+        39S38GfbLonqgXvV82WGXsvw52bJliJ59qhR1zzdlu77cPBOWvoh14amxLjAmM1+t2rmrPTu
+        PXM5mq8Ptq+N6+YPn9uxqV+N85Gapf6Ygdf8BZdSLFR3AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNIsWRmVeSWpSXmKPExsVy+t/xe7r9/nGxBot2aln8n3ubxeLLz9vs
+        Fn/aNjBafD5ynM1i8cJvzBZzzrewWNy58pPN4kr7T3aL/7d+s1oce9HCZnFi831Gi8u75rBZ
         rDh0gt3i2AIxi+uXeBz4PbasvMnksXPWXXaPxXteMnl03bjE7LFpVSebx8nmUo/p3Q+ZPd7v
         u8rm0bdlFaPH501yAVxRejZF+aUlqQoZ+cUltkrRhhZGeoaWFnpGJpZ6hsbmsVZGpkr6djYp
-        qTmZZalF+nYJehlrX+oXtGtXvGv4xdTA+FGpi5GTQ0LARKJ731KmLkYuDiGBpYwSh65uYoNI
-        SEn8+HWBFcIWlvhzrQssLiTwnlFi9n0wW1ggXmLOvdVMILaIQLZE09GLbCCDmAV+MUscf7kT
-        aupUFomH+2+zg1SxCehInFp9hBHE5hWwkzi2aj9YnEVAVWLH/EfMILaoQITE4R2zoGoEJU7O
-        fMICYnMKBEoseNYLdhGzgLrEn3mXmCFscYmmLyuh4vISzVtnM09gFJqFpH0WkpZZSFpmIWlZ
-        wMiyilEktbQ4Nz232FCvODG3uDQvXS85P3cTIzDitx37uXkH46WNwYcYBTgYlXh4J+jGxgqx
-        JpYVV+YeYpTgYFYS4a2YExUrxJuSWFmVWpQfX1Sak1p8iNEU6LmJzFKiyfnAZJRXEm9oamhu
-        YWlobmxubGahJM7bIXAwRkggPbEkNTs1tSC1CKaPiYNTqoExRprjYBR334HdH2Ma51lsXvDi
-        3cTVLlm5q4s5H0/2XHmuP0rw+qS6wzJCnLHi1xLOrjx9fklpwZNFDhpuN6dLdB99u2tmj9mv
-        QpmAtjwtzoPFFg9e3p+8cvECFeHnbvMXPti0aMlT49+/DtpWceQtP71xneGdy0k7Zus8tDo7
-        NSJ++Tk3gcv32ZVYijMSDbWYi4oTAc2jckYOAwAA
-X-CMS-MailID: 20190822080554eucas1p2610b6e5b48679b6cc912eb5ced8b9502
+        qTmZZalF+nYJehmvPz9mLFigX7H72mX2Bsatal2MnBwSAiYSO4/+ZOxi5OIQEljKKNH+cB0b
+        REJK4sevC6wQtrDEn2tdbBBF7xklDp36DdTBwSEs4C1x9CgzSI2IQJBEx5ZLrCA1zAKtLBKz
+        FhxggWiYyiLR+nASO0gVm4COxKnVR8CaeQXsJDb/lgcJswioSnxbeBesRFQgQuLwjlmMIDav
+        gKDEyZlPWEBsToFAiYnTr4PZzALqEn/mXWKGsMUlmr6sZIWw5SWat85mnsAoNAtJ+ywkLbOQ
+        tMxC0rKAkWUVo0hqaXFuem6xkV5xYm5xaV66XnJ+7iZGYMRvO/Zzyw7GrnfBhxgFOBiVeHgn
+        6MbGCrEmlhVX5h5ilOBgVhLhrZgTFSvEm5JYWZValB9fVJqTWnyI0RTouYnMUqLJ+cBklFcS
+        b2hqaG5haWhubG5sZqEkztshcDBGSCA9sSQ1OzW1ILUIpo+Jg1OqgVFmR45g/nuFvO4W5kcs
+        Zy4tXnL79LzTt019ligbLD5ZzH5AoiBN4VDoVP1nZ91Et8ziS/ZI3CG9Oahh06sXnHd25vMm
+        hWjpTpihIBPza/qHDQH7tT5fWGH2Wbvh5sJvPF9P6C3aXHvQy/f3t7X/jBd8/ZcibTy9K/jc
+        bP6lRy+3d8atjO0/Nc1ZiaU4I9FQi7moOBEAWMOQ/A4DAAA=
+X-CMS-MailID: 20190822081719eucas1p13b7b5abe25b1838b38e77002a5daa5c3
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
 X-RootMTR: 20190820151644eucas1p179d6d1da42bb6be0aad8f58ac46624ce
@@ -112,14 +111,15 @@ References: <CGME20190820151644eucas1p179d6d1da42bb6be0aad8f58ac46624ce@eucas1p1
         <CAKgT0Uc27+ucd=a_sgTmv5g7_+ZTg1zK4isYJ0H7YWQj3d=Ejg@mail.gmail.com>
         <f7d0f7a5-e664-8b72-99c7-63275aff4c18@samsung.com>
         <CAKgT0UcCKiM1Ys=vWxctprN7fzWcBCk-PCuKB-8=RThM=CqLSQ@mail.gmail.com>
-        <CAJ+HfNjo0tpk2v_+85SuX7Jw797QwRA7uJBggPHtY=JznLC9Zg@mail.gmail.com>
+        <CALDO+SZCbxEEwCS6MyHk-Cp_LJ33N=QFqwZ8uRm0e-PBRgxRYw@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 22.08.2019 10:12, Björn Töpel wrote:
-> On Wed, 21 Aug 2019 at 18:57, Alexander Duyck <alexander.duyck@gmail.com> wrote:
+On 22.08.2019 0:38, William Tu wrote:
+> On Wed, Aug 21, 2019 at 9:57 AM Alexander Duyck
+> <alexander.duyck@gmail.com> wrote:
 >>
 >> On Wed, Aug 21, 2019 at 9:22 AM Ilya Maximets <i.maximets@samsung.com> wrote:
 >>>
@@ -214,27 +214,37 @@ On 22.08.2019 10:12, Björn Töpel wrote:
 >> instead used ntc and ntu like what was done in
 >> ixgbe_xsk_clean_tx_ring().
 >>
-> 
-> +1. I'd prefer this as well!
-
-Sounds good. I'll look in this direction.
-But I'm not completely sure about 'budget' elimination. Wouldn't it cause
-issues if we'll clean the whole ring at once? I mean maybe it'll be too long
-to hold the CPU core for this amount of work.
-We could re-work the code keeping the loop break on budget exhaustion.
-What do you think?
-
-> 
-> 
-> Cheers,
-> Björn
-> 
 >> Thanks.
 >>
 >> - Alex
->> _______________________________________________
->> Intel-wired-lan mailing list
->> Intel-wired-lan@osuosl.org
->> https://lists.osuosl.org/mailman/listinfo/intel-wired-lan
 > 
+> Not familiar with the driver details.
+> I tested this patch and the issue mentioned in OVS mailing list.
+> https://www.mail-archive.com/ovs-dev@openvswitch.org/msg35362.html
+> and indeed the problem goes away.
+
+Good. Thanks for testing!
+
+> But I saw a huge performance drop,
+> my AF_XDP tx performance drops from >9Mpps to <5Mpps.
+
+I didn't expect so big performance difference with this change.
+What is your test scenario? Is it possible that you're accounting same
+packet several times due to broken completion queue?
+
+Looking at samples/bpf/xdpsock_user.c:complete_tx_only(), it accounts
+sent packets (tx_npkts) by accumulating results of xsk_ring_cons__peek()
+for completion queue, so it's not a trusted source of pps information.
+
+Best regards, Ilya Maximets.
+
 > 
+> Tested using kernel 5.3.0-rc3+
+> 03:00.0 Ethernet controller: Intel Corporation Ethernet Controller
+> 10-Gigabit X540-AT2 (rev 01)
+> Subsystem: Intel Corporation Ethernet 10G 2P X540-t Adapter
+> Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+> Stepping- SERR- FastB2B- DisINTx+
+> 
+> Regards,
+> William
