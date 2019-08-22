@@ -2,153 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD849993D
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 18:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D8699961
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 18:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389988AbfHVQc5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Aug 2019 12:32:57 -0400
-Received: from mout.web.de ([212.227.17.11]:33725 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728591AbfHVQc4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Aug 2019 12:32:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1566491545;
-        bh=ht6lYPJe0b8nt8f4KXeCIb7X14dugJgZeVLShKqxWVo=;
-        h=X-UI-Sender-Class:To:Cc:From:Subject:Date;
-        b=C62D8uE8fZcM6yk0bLu6yXGwnz3Dm+NslzeReHEcFA1J0MPGb8+OlTdAKpn2cDdJV
-         C9NmYUnmpRiYXG6HhhTARS5XsHXZuyGll4jb7L+S6ZvNaEIRKbkwuj2JerrRCyjcx1
-         cb6kWdDB5No+5sPCMKI5dOUX+c0wYKvbTiPNc/Gc=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([78.49.181.43]) by smtp.web.de (mrweb103
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0LgYOH-1idWkX3j0P-00nzZ9; Thu, 22
- Aug 2019 18:32:25 +0200
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Hideaki Yoshifuji <yoshfuji@linux-ipv6.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-From:   Markus Elfring <Markus.Elfring@web.de>
-Subject: =?UTF-8?Q?=5bPATCH=5d_net/ipv4/tcp=5fbpf=3a_Delete_an_unnecessary_c?=
- =?UTF-8?Q?heck_before_the_function_call_=e2=80=9cconsume=5fskb=e2=80=9d?=
-Openpgp: preference=signencrypt
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <25ca9c48-1ac9-daa1-8472-0a53e4beed6a@web.de>
-Date:   Thu, 22 Aug 2019 18:32:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1732921AbfHVQip (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Aug 2019 12:38:45 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:38058 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730545AbfHVQio (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Aug 2019 12:38:44 -0400
+Received: by mail-io1-f68.google.com with SMTP id p12so13173299iog.5;
+        Thu, 22 Aug 2019 09:38:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q3FgN6tHPMtfR2eh2tcn0+eFg5p7QIcdpMVYh3HXblQ=;
+        b=YoksQZH6CZk9rispM3SOYYBOusbFtUm5rCwC6capVqF+tL2k5etGl9dtOzNww/DeIW
+         B7lKpSIveYDL+qGTWVEo1jV4Alwe1mYrnZ1DcUsI+IbRzPodvEHkUIYkQgQkhp+rBf0Z
+         Wu/ab1GuYxbWMikSOUCMaPBePwnYr1Tudq/JOzMMceWNH0XmhEubdBxFuYzHiLrSSwjW
+         vdWwzLmHl9xhse/616UGWp4M4C7FQQHwtlM0ZkkDaGEepsxCSKaV7Rl6/xewiMrsjt3j
+         5pNjVBzObfsDLHsrKls4T2blO6t151Z4lm/kSYXcCbKmx2BlTZr2kL+8+O4CpHoAPsDK
+         PmqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q3FgN6tHPMtfR2eh2tcn0+eFg5p7QIcdpMVYh3HXblQ=;
+        b=ZqN8dRBzepRPF4d3yTHPREuOgqCfnDgU9xkONFgRm0efPXiTtuLEBa37uhLS+V7+AL
+         vtezYQAdNA6m28PJWhkg0fuA4YstLKyQ4ZevEIoGwaAu0n3+2y2dCo7JETo2o2QFPIzX
+         i0nr2onlzznaHdUS52IWxlUsJ0rIjEieFANHqVeRWi7/hI2apmkCsfp9g1jeOJJt+Z5I
+         +0ACtCnRezrk2BHLm4QSXOT42GZo/Dc9ixVJGYISWeFDci5VOd0j1v3C6oLSKpstv1g6
+         JCOcK+jfIIdYhWJ3rlWnEnn7s0lbso3DS+bVXM4fIE3I3VW9VA0LWoBKoxp0VjiokTBj
+         W37Q==
+X-Gm-Message-State: APjAAAXZwTqZaoLvr2DKF3E02IBrOUVEqVVE6INvyx+7/AFiJh+eyRum
+        SnNha8vBTNwbwEukhtM0sLNvQb/g0KNjrku6YPU=
+X-Google-Smtp-Source: APXvYqzwldhCiG7ir76K/uWSEH120ud4pRYjWlRwuINIRmmSCViVvYmdKA/Qla5MKm403JbmwHQAN3MfzwJ6cMxzYhY=
+X-Received: by 2002:a6b:dd18:: with SMTP id f24mr679216ioc.97.1566491923755;
+ Thu, 22 Aug 2019 09:38:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:xDTeW1knqZOQNEv3CDUHgxC3lXmxNlPeXq7oAGg1PPlrRYRLBQX
- IS+eJXuxa/0qCqrzDvOXdOawn2ZzcGc7ceCEkI+QxZzognhcxwUKpT9QQ0++YVJX4mI4d0I
- /6C9O5szvLH2aTvZyjBq4h2jP2FxwAV4xVIkFOfACzq+PFbaKjesiVSYeaMTMz65MzVzmqN
- SWLAdB65sgjC+dfC7tFhQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Z3St/I3a+aM=:mIIFZ9s5mp6yvJ/9xWt7cd
- 3Te+BdsE3kOdYomnNE7FhKraecvC+wOdSr8zD66yndfRvXuRjUAhqke8f5rEYslx0zIC83Lv3
- n3sX3lAcyWc204sBidSMBrTQ4zZHn9D45CwZweI/stk+mOtHU5lZ7U74zq0y3TRKus25BySwa
- kdVYgA+JEEPNBFQi9qGQPcSH3rfPKSzqSJb3IpdV+YIcdztxjp4Wwun5K10Jqdl2Yahtj9Sui
- R/e6AetJRlE6jXrXoEJNDrJrlZ7hsBHHuulF9X0+fyTCdngVTqVJJqDIQTwnX8tCJf+JQoN8Q
- kP+4qqDPWAqDa1saFTIVgaLxFHh4iiZgVsys8OeVqIiO0i51OKu0yrQaD/GsqsRniLN1v9VQi
- 1XqxLW39/gaHKxA0/lBr1H/4ww4Xb4hkMQ2M/iA+l2iwbPes5DvhjYF3A5W24nyBbzrRb7hid
- mjBvwlzrOMkxrGHAlJNbuFZBS8cJpgZS6nWYENCIs46jlju6zv/ycmelzzQsZ/iF9Z2Pha+Pp
- UmnkAuEvlM1uV4U48DkVb9TaebCiTTLP8VxYKqfVJbU/s0X+UE3rE0rqLGoRjiNVSXm/tRYZx
- /JqtbAJ44yfye/3PkOhxc3ILGojG8gJKyBRytjBpT1XfEwzkpn5t/sDu2C6PV6ePVYWAtwmlG
- 2+Se7Stibo9Ya54M27G8v3yVBZ/Pu35iHhs92wRZ5I9AhL5xNtwTziPjWuhu0Le5UAfuPkx/1
- zqEod1klu+OglFxgej/S2eUP4IBiAtWgzenj6Gy98lGzL/5y6g0wCT1oXLm4/dPlPfTXYmGIh
- s387dvzddfZkuqVlcXMj8FYaN/Uf7OxgxJhawVXU0R+UbGTm7GnGHCvRbf2gpSz9I/4yiedaj
- 7mE7OA10hc19FFHCila5buNRXgWrBqQb84PSq2UTY1SLR3tTSgSaAhd47wnFSludQLoNxZgZ5
- g8uBImWAkq7iPAGBnD3RQZ3LUg5XyizKoO9IciPYIafBPaHaIH1iE6UEc3V6Wb0wvum3KMHLo
- vFSfFYM3SnnMXWbvc/fmRaCP6lUepPhBo17Xf0hzSWrZc1mNQ5xMyW1dM7Mbif47P8REV8Rie
- mkJizJos7rUhm+ieuw7r0y4+/tl7OWNFAkUsMCLXEwRVPOA/0YEDz7TRZn0VMIBDw0xyr+WUT
- WL6f9IH895pBzH47eAnaQOYpBRaZYI+Z99Ji6gRiJOFKftWR8DqJdQgWpCk254/i8nM59gl9+
- rFX9llRRIQ0WIWnF/yFhb+eWSahnOX8pWMcumFuAx45cpweADdutyWmowLyj6F1yf43A2CzYt
- xHi9z1XwwPmVkOXRE2cv1XSqLV2pFhScFNjukgtLBSlppLQlTtKsVzncBU7ATtseXvOYMa+Zv
- ffDIAt8ZXwY7WpboB8+gHaMpG8V0ZqkJ7m0GoCKBIFybBAYdU6A2XvPVGDuZWTWY2ELL3csxE
- Gm88F2Ee+5SXg81aMRKtWWQ95jt3Ev2cI=
+References: <CGME20190822123045eucas1p125b6e106f0310bdb50e759ef41993a91@eucas1p1.samsung.com>
+ <20190822123037.28068-1-i.maximets@samsung.com>
+In-Reply-To: <20190822123037.28068-1-i.maximets@samsung.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Thu, 22 Aug 2019 09:38:32 -0700
+Message-ID: <CAKgT0Uf26P53EA4m503aehq3tWCX9b3C+17TW2Ursbue9Kp=_w@mail.gmail.com>
+Subject: Re: [PATCH net v2] ixgbe: fix double clean of tx descriptors with xdp
+To:     Ilya Maximets <i.maximets@samsung.com>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        William Tu <u9012063@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 22 Aug 2019 18:20:42 +0200
+On Thu, Aug 22, 2019 at 5:30 AM Ilya Maximets <i.maximets@samsung.com> wrote:
+>
+> Tx code doesn't clear the descriptors' status after cleaning.
+> So, if the budget is larger than number of used elems in a ring, some
+> descriptors will be accounted twice and xsk_umem_complete_tx will move
+> prod_tail far beyond the prod_head breaking the comletion queue ring.
+>
+> Fix that by limiting the number of descriptors to clean by the number
+> of used descriptors in the tx ring.
+>
+> 'ixgbe_clean_xdp_tx_irq()' function refactored to look more like
+> 'ixgbe_xsk_clean_tx_ring()' since we don't need most of the
+> complications implemented in the regular 'ixgbe_clean_tx_irq()'
+> and we're allowed to directly use 'next_to_clean' and 'next_to_use'
+> indexes.
+>
+> Fixes: 8221c5eba8c1 ("ixgbe: add AF_XDP zero-copy Tx support")
+> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
+> ---
+>
+> Version 2:
+>   * 'ixgbe_clean_xdp_tx_irq()' refactored to look more like
+>     'ixgbe_xsk_clean_tx_ring()'.
+>
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c | 34 ++++++++------------
+>  1 file changed, 13 insertions(+), 21 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> index 6b609553329f..d1297660e14a 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> @@ -633,22 +633,23 @@ static void ixgbe_clean_xdp_tx_buffer(struct ixgbe_ring *tx_ring,
+>  bool ixgbe_clean_xdp_tx_irq(struct ixgbe_q_vector *q_vector,
+>                             struct ixgbe_ring *tx_ring, int napi_budget)
+>  {
+> +       u16 ntc = tx_ring->next_to_clean, ntu = tx_ring->next_to_use;
+>         unsigned int total_packets = 0, total_bytes = 0;
+> -       u32 i = tx_ring->next_to_clean, xsk_frames = 0;
+>         unsigned int budget = q_vector->tx.work_limit;
+>         struct xdp_umem *umem = tx_ring->xsk_umem;
+> -       union ixgbe_adv_tx_desc *tx_desc;
+> -       struct ixgbe_tx_buffer *tx_bi;
+> +       u32 xsk_frames = 0;
+>         bool xmit_done;
+>
+> -       tx_bi = &tx_ring->tx_buffer_info[i];
+> -       tx_desc = IXGBE_TX_DESC(tx_ring, i);
+> -       i -= tx_ring->count;
+> +       while (likely(ntc != ntu && budget)) {
 
-The consume_skb() function performs also input parameter validation.
-Thus the test around the call is not needed.
+I would say you can get rid of budget entirely. It was only really
+needed for the regular Tx case where you can have multiple CPUs
+feeding a single Tx queue and causing a stall. Since we have a 1:1
+mapping we should never have more than the Rx budget worth of packets
+to really process. In addition we can only make one pass through the
+ring since the ntu value is not updated while running the loop.
 
-This issue was detected by using the Coccinelle software.
+> +               union ixgbe_adv_tx_desc *tx_desc;
+> +               struct ixgbe_tx_buffer *tx_bi;
+> +
+> +               tx_desc = IXGBE_TX_DESC(tx_ring, ntc);
+>
+> -       do {
+>                 if (!(tx_desc->wb.status & cpu_to_le32(IXGBE_TXD_STAT_DD)))
+>                         break;
+>
+> +               tx_bi = &tx_ring->tx_buffer_info[ntc];
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- net/ipv4/tcp_bpf.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Please don't move this logic into the loop. We were intentionally
+processing this outside of the loop once and then just doing the
+increments because it is faster that way. It takes several operations
+to compute tx_bi based on ntc, whereas just incrementing is a single
+operation.
 
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 8a56e09cfb0e..4ae18bd431a0 100644
-=2D-- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -103,8 +103,7 @@ int __tcp_bpf_recvmsg(struct sock *sk, struct sk_psock=
- *psock,
- 		msg_rx->sg.start =3D i;
- 		if (!sge->length && msg_rx->sg.start =3D=3D msg_rx->sg.end) {
- 			list_del(&msg_rx->list);
--			if (msg_rx->skb)
--				consume_skb(msg_rx->skb);
-+			consume_skb(msg_rx->skb);
- 			kfree(msg_rx);
- 		}
- 		msg_rx =3D list_first_entry_or_null(&psock->ingress_msg,
-=2D-
-2.23.0
+>                 total_bytes += tx_bi->bytecount;
+>                 total_packets += tx_bi->gso_segs;
+>
+> @@ -659,24 +660,15 @@ bool ixgbe_clean_xdp_tx_irq(struct ixgbe_q_vector *q_vector,
+>
+>                 tx_bi->xdpf = NULL;
+>
+> -               tx_bi++;
+> -               tx_desc++;
+> -               i++;
+> -               if (unlikely(!i)) {
+> -                       i -= tx_ring->count;
 
+So these two lines can probably just be replaced by:
+if (unlikely(ntc == tx_ring->count)) {
+        ntc = 0;
+
+> -                       tx_bi = tx_ring->tx_buffer_info;
+> -                       tx_desc = IXGBE_TX_DESC(tx_ring, 0);
+> -               }
+> -
+> -               /* issue prefetch for next Tx descriptor */
+> -               prefetch(tx_desc);
+
+Did you just drop the prefetch? You are changing way too much with
+this patch. All you should need to do is replace i with ntc, replace
+the "do {" with "while (ntc != ntu) {", and remove the while at the
+end.
+
+> +               ntc++;
+> +               if (unlikely(ntc == tx_ring->count))
+> +                       ntc = 0;
+>
+>                 /* update budget accounting */
+>                 budget--;
+> -       } while (likely(budget));
+
+As I stated earlier, budget can be removed entirely.
+
+> +       }
+>
+> -       i += tx_ring->count;
+> -       tx_ring->next_to_clean = i;
+> +       tx_ring->next_to_clean = ntc;
+>
+>         u64_stats_update_begin(&tx_ring->syncp);
+>         tx_ring->stats.bytes += total_bytes;
+> --
+> 2.17.1
+>
