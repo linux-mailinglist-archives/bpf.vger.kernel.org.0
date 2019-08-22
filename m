@@ -2,249 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE0698D62
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 10:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C484A98DC8
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 10:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732196AbfHVIRY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Aug 2019 04:17:24 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:39860 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732194AbfHVIRX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Aug 2019 04:17:23 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20190822081721euoutp02fc8f7b6cef115c7656397823efc52447~9ML7UlKD02022020220euoutp02H
-        for <bpf@vger.kernel.org>; Thu, 22 Aug 2019 08:17:21 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20190822081721euoutp02fc8f7b6cef115c7656397823efc52447~9ML7UlKD02022020220euoutp02H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1566461841;
-        bh=eH3VAAcLRYwEU2jjSTk2TX56nvxFUZ0pGc8FxPpOx10=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=CEVkgJpqlmitBpoTgBdgpD1urSxXxgP1RWEgMET7Se53rVn9lWqKjUe4VOuZORI8p
-         Df2leGzW26YMGIT/RYMpA5xO0Ca1PubjbS97oGoEcKcxlp6+5inMRm1AbCM3ie0B6a
-         kfgcIElLShRfWRV4yXDrPk1YCN+szwKok24WbEUs=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20190822081720eucas1p29ee1e2d981cc9fa43bf41c748e1d8f2e~9ML6khgqf2927229272eucas1p2M;
-        Thu, 22 Aug 2019 08:17:20 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 53.84.04374.09F4E5D5; Thu, 22
-        Aug 2019 09:17:20 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20190822081719eucas1p13b7b5abe25b1838b38e77002a5daa5c3~9ML52Wn7g2311423114eucas1p1H;
-        Thu, 22 Aug 2019 08:17:19 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20190822081719eusmtrp118abc76009661efb2087d6ca197b26bf~9ML5nhRmO2148421484eusmtrp1n;
-        Thu, 22 Aug 2019 08:17:19 +0000 (GMT)
-X-AuditID: cbfec7f5-4ddff70000001116-cb-5d5e4f90955c
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id FE.1D.04117.F8F4E5D5; Thu, 22
-        Aug 2019 09:17:19 +0100 (BST)
-Received: from [106.109.129.180] (unknown [106.109.129.180]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20190822081718eusmtip28624971d74a2604a01884c8f1e9f78b1~9ML4wwYRV2944029440eusmtip2S;
-        Thu, 22 Aug 2019 08:17:18 +0000 (GMT)
-Subject: Re: [PATCH net] ixgbe: fix double clean of tx descriptors with xdp
-To:     William Tu <u9012063@gmail.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        id S1731123AbfHVId4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Aug 2019 04:33:56 -0400
+Received: from www62.your-server.de ([213.133.104.62]:41210 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726039AbfHVId4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Aug 2019 04:33:56 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1i0iXP-0006qM-Se; Thu, 22 Aug 2019 10:33:43 +0200
+Received: from [178.197.249.40] (helo=pc-63.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1i0iXP-000JYh-DQ; Thu, 22 Aug 2019 10:33:43 +0200
+Subject: Re: [RFC bpf-next 0/5] Convert iproute2 to use libbpf (WIP)
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Eelco Chaudron <echaudro@redhat.com>
-From:   Ilya Maximets <i.maximets@samsung.com>
-Message-ID: <cbf7c51b-9ce7-6ef6-32c4-981258d4af4c@samsung.com>
-Date:   Thu, 22 Aug 2019 11:17:18 +0300
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20190820114706.18546-1-toke@redhat.com>
+ <CAEf4BzZxb7qZabw6aDVaTqnhr3AGtwEo+DbuBR9U9tJr+qVuyg@mail.gmail.com>
+ <87blwiqlc8.fsf@toke.dk>
+ <CAEf4BzYMKPbfOu4a4UDEfJVcNW1-KvRwJ7PVo+Mf_1YUJgE4Qw@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <43e8c177-cc9c-ca0b-1622-e30a7a1281b7@iogearbox.net>
+Date:   Thu, 22 Aug 2019 10:33:42 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
-        Thunderbird/60.8.0
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <CALDO+SZCbxEEwCS6MyHk-Cp_LJ33N=QFqwZ8uRm0e-PBRgxRYw@mail.gmail.com>
-Content-Language: en-GB
+In-Reply-To: <CAEf4BzYMKPbfOu4a4UDEfJVcNW1-KvRwJ7PVo+Mf_1YUJgE4Qw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SWUwTURSGvZ3pzLRSGUqVE0RJGjVCFNwexsQ9mEz0wS0RRFCrjAWlVTqC
-        ghsKoqJRcINWlJJqWHyAsEWQkFjKrjUCCopEVFDBoMEipJaIDgORt++e/57/nD85FKbskXpT
-        UfpjnEGviVYTcry8zmlfnLZlT/iS69U+zNi9TpwZcnaSzGhKEWIctnqCseQMY0zWi2Scedfm
-        JJi2i06SGXvrkjJ1X5MJpqHkPWJaK7MIJs/aQDJ15llMe4vbOne2NP+NhK0wdZGspapPwqZ2
-        tGBsccFlgm1MimUzrnzA2B/Vrwj2WmkBYh3Fc7fKQ+WrIrjoqDjOELhmnzzym+MTOmoOPPHk
-        dSuZiMoWpCIZBfQKaOqxkKlITinpPAQD5jZMfAwhGCl0TigOBMaXZnKypaLWiUQhF0FO9v2J
-        lkEEH2tt0lREUZ70ZqitxYQGFb0dMqu6CIExOgmHF+kHBSboRdD0yIaE7wp6DZS4fIUyTs+H
-        4Zyu8Vkz6RD42V0jFVhBe0CjsQcXWEZvg/SMdly09ILzQ/lSkX0hqewuJu55m4KmjtOCPdBB
-        YCo6JZY9ob++dCKKDzTfvIqLfBbeJ/eNxwL6EoIM6x+JKKyF0m92UvDBaD8orAwULdfDrwt+
-        Is6AjgEPcYEZcKM8AxPLCriUohQ95oHrae7EXt7w5ruDTENq05RYpilRTFOimP6PNSO8AHlx
-        sbxOy/HL9dzxAF6j42P12oADR3TF6N/tNf+p//UYVY/utyKaQmo3Rdri8HClVBPHx+usCChM
-        rVKcyAoNVyoiNPEJnOHIXkNsNMdb0WwKV3spTk7r3q2ktZpj3GGOO8oZJlUJJfNORDKVpe/V
-        1Wm/5476uId1uYcFRcr1xhB70EjCzpWFp5d8WWZ7Wkhl5htbZTWfr4xoY1a32PyDn/n1Fm3s
-        39S38GfbLonqgXvV82WGXsvw52bJliJ59qhR1zzdlu77cPBOWvoh14amxLjAmM1+t2rmrPTu
-        PXM5mq8Ptq+N6+YPn9uxqV+N85Gapf6Ygdf8BZdSLFR3AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNIsWRmVeSWpSXmKPExsVy+t/xe7r9/nGxBot2aln8n3ubxeLLz9vs
-        Fn/aNjBafD5ynM1i8cJvzBZzzrewWNy58pPN4kr7T3aL/7d+s1oce9HCZnFi831Gi8u75rBZ
-        rDh0gt3i2AIxi+uXeBz4PbasvMnksXPWXXaPxXteMnl03bjE7LFpVSebx8nmUo/p3Q+ZPd7v
-        u8rm0bdlFaPH501yAVxRejZF+aUlqQoZ+cUltkrRhhZGeoaWFnpGJpZ6hsbmsVZGpkr6djYp
-        qTmZZalF+nYJehmvPz9mLFigX7H72mX2Bsatal2MnBwSAiYSO4/+ZOxi5OIQEljKKNH+cB0b
-        REJK4sevC6wQtrDEn2tdbBBF7xklDp36DdTBwSEs4C1x9CgzSI2IQJBEx5ZLrCA1zAKtLBKz
-        FhxggWiYyiLR+nASO0gVm4COxKnVR8CaeQXsJDb/lgcJswioSnxbeBesRFQgQuLwjlmMIDav
-        gKDEyZlPWEBsToFAiYnTr4PZzALqEn/mXWKGsMUlmr6sZIWw5SWat85mnsAoNAtJ+ywkLbOQ
-        tMxC0rKAkWUVo0hqaXFuem6xkV5xYm5xaV66XnJ+7iZGYMRvO/Zzyw7GrnfBhxgFOBiVeHgn
-        6MbGCrEmlhVX5h5ilOBgVhLhrZgTFSvEm5JYWZValB9fVJqTWnyI0RTouYnMUqLJ+cBklFcS
-        b2hqaG5haWhubG5sZqEkztshcDBGSCA9sSQ1OzW1ILUIpo+Jg1OqgVFmR45g/nuFvO4W5kcs
-        Zy4tXnL79LzTt019ligbLD5ZzH5AoiBN4VDoVP1nZ91Et8ziS/ZI3CG9Oahh06sXnHd25vMm
-        hWjpTpihIBPza/qHDQH7tT5fWGH2Wbvh5sJvPF9P6C3aXHvQy/f3t7X/jBd8/ZcibTy9K/jc
-        bP6lRy+3d8atjO0/Nc1ZiaU4I9FQi7moOBEAWMOQ/A4DAAA=
-X-CMS-MailID: 20190822081719eucas1p13b7b5abe25b1838b38e77002a5daa5c3
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20190820151644eucas1p179d6d1da42bb6be0aad8f58ac46624ce
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20190820151644eucas1p179d6d1da42bb6be0aad8f58ac46624ce
-References: <CGME20190820151644eucas1p179d6d1da42bb6be0aad8f58ac46624ce@eucas1p1.samsung.com>
-        <20190820151611.10727-1-i.maximets@samsung.com>
-        <CAKgT0Udn0D0_f=SOH2wpBRWV_u4rb1Qe2h7gguXnRNzJ_VkRzg@mail.gmail.com>
-        <625791af-c656-1e42-b60e-b3a5cedcb4c4@samsung.com>
-        <CAKgT0Uc27+ucd=a_sgTmv5g7_+ZTg1zK4isYJ0H7YWQj3d=Ejg@mail.gmail.com>
-        <f7d0f7a5-e664-8b72-99c7-63275aff4c18@samsung.com>
-        <CAKgT0UcCKiM1Ys=vWxctprN7fzWcBCk-PCuKB-8=RThM=CqLSQ@mail.gmail.com>
-        <CALDO+SZCbxEEwCS6MyHk-Cp_LJ33N=QFqwZ8uRm0e-PBRgxRYw@mail.gmail.com>
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25548/Wed Aug 21 10:27:18 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 22.08.2019 0:38, William Tu wrote:
-> On Wed, Aug 21, 2019 at 9:57 AM Alexander Duyck
-> <alexander.duyck@gmail.com> wrote:
->>
->> On Wed, Aug 21, 2019 at 9:22 AM Ilya Maximets <i.maximets@samsung.com> wrote:
->>>
->>> On 21.08.2019 4:17, Alexander Duyck wrote:
->>>> On Tue, Aug 20, 2019 at 8:58 AM Ilya Maximets <i.maximets@samsung.com> wrote:
->>>>>
->>>>> On 20.08.2019 18:35, Alexander Duyck wrote:
->>>>>> On Tue, Aug 20, 2019 at 8:18 AM Ilya Maximets <i.maximets@samsung.com> wrote:
->>>>>>>
->>>>>>> Tx code doesn't clear the descriptor status after cleaning.
->>>>>>> So, if the budget is larger than number of used elems in a ring, some
->>>>>>> descriptors will be accounted twice and xsk_umem_complete_tx will move
->>>>>>> prod_tail far beyond the prod_head breaking the comletion queue ring.
->>>>>>>
->>>>>>> Fix that by limiting the number of descriptors to clean by the number
->>>>>>> of used descriptors in the tx ring.
->>>>>>>
->>>>>>> Fixes: 8221c5eba8c1 ("ixgbe: add AF_XDP zero-copy Tx support")
->>>>>>> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
->>>>>>
->>>>>> I'm not sure this is the best way to go. My preference would be to
->>>>>> have something in the ring that would prevent us from racing which I
->>>>>> don't think this really addresses. I am pretty sure this code is safe
->>>>>> on x86 but I would be worried about weak ordered systems such as
->>>>>> PowerPC.
->>>>>>
->>>>>> It might make sense to look at adding the eop_desc logic like we have
->>>>>> in the regular path with a proper barrier before we write it and after
->>>>>> we read it. So for example we could hold of on writing the bytecount
->>>>>> value until the end of an iteration and call smp_wmb before we write
->>>>>> it. Then on the cleanup we could read it and if it is non-zero we take
->>>>>> an smp_rmb before proceeding further to process the Tx descriptor and
->>>>>> clearing the value. Otherwise this code is going to just keep popping
->>>>>> up with issues.
->>>>>
->>>>> But, unlike regular case, xdp zero-copy xmit and clean for particular
->>>>> tx ring always happens in the same NAPI context and even on the same
->>>>> CPU core.
->>>>>
->>>>> I saw the 'eop_desc' manipulations in regular case and yes, we could
->>>>> use 'next_to_watch' field just as a flag of descriptor existence,
->>>>> but it seems unnecessarily complicated. Am I missing something?
->>>>>
+On 8/22/19 9:49 AM, Andrii Nakryiko wrote:
+> On Wed, Aug 21, 2019 at 2:07 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>> On Tue, Aug 20, 2019 at 4:47 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
 >>>>
->>>> So is it always in the same NAPI context?. I forgot, I was thinking
->>>> that somehow the socket could possibly make use of XDP for transmit.
->>>
->>> AF_XDP socket only triggers tx interrupt on ndo_xsk_async_xmit() which
->>> is used in zero-copy mode. Real xmit happens inside
->>> ixgbe_poll()
->>>  -> ixgbe_clean_xdp_tx_irq()
->>>     -> ixgbe_xmit_zc()
->>>
->>> This should be not possible to bound another XDP socket to the same netdev
->>> queue.
->>>
->>> It also possible to xmit frames in xdp_ring while performing XDP_TX/REDIRECT
->>> actions. REDIRECT could happen from different netdev with different NAPI
->>> context, but this operation is bound to specific CPU core and each core has
->>> its own xdp_ring.
->>>
->>> However, I'm not an expert here.
->>> Björn, maybe you could comment on this?
->>>
+>>>> iproute2 uses its own bpf loader to load eBPF programs, which has
+>>>> evolved separately from libbpf. Since we are now standardising on
+>>>> libbpf, this becomes a problem as iproute2 is slowly accumulating
+>>>> feature incompatibilities with libbpf-based loaders. In particular,
+>>>> iproute2 has its own (expanded) version of the map definition struct,
+>>>> which makes it difficult to write programs that can be loaded with both
+>>>> custom loaders and iproute2.
 >>>>
->>>> As far as the logic to use I would be good with just using a value you
->>>> are already setting such as the bytecount value. All that would need
->>>> to happen is to guarantee that the value is cleared in the Tx path. So
->>>> if you clear the bytecount in ixgbe_clean_xdp_tx_irq you could
->>>> theoretically just use that as well to flag that a descriptor has been
->>>> populated and is ready to be cleaned. Assuming the logic about this
->>>> all being in the same NAPI context anyway you wouldn't need to mess
->>>> with the barrier stuff I mentioned before.
+>>>> This series seeks to address this by converting iproute2 to using libbpf
+>>>> for all its bpf needs. This version is an early proof-of-concept RFC, to
+>>>> get some feedback on whether people think this is the right direction.
+>>>>
+>>>> What this series does is the following:
+>>>>
+>>>> - Updates the libbpf map definition struct to match that of iproute2
+>>>>    (patch 1).
 >>>
->>> Checking the number of used descs, i.e. next_to_use - next_to_clean,
->>> makes iteration in this function logically equal to the iteration inside
->>> 'ixgbe_xsk_clean_tx_ring()'. Do you think we need to change the later
->>> function too to follow same 'bytecount' approach? I don't like having
->>> two different ways to determine number of used descriptors in the same file.
+>>> Thanks for taking a stab at unifying libbpf and iproute2 loaders. I'm
+>>> totally in support of making iproute2 use libbpf to load/initialize
+>>> BPF programs. But I'm against adding iproute2-specific fields to
+>>> libbpf's bpf_map_def definitions to support this.
 >>>
->>> Best regards, Ilya Maximets.
+>>> I've proposed the plan of extending libbpf's supported features so
+>>> that it can be used to load iproute2-style BPF programs earlier,
+>>> please see discussions in [0] and [1].
 >>
->> As far as ixgbe_clean_xdp_tx_irq() vs ixgbe_xsk_clean_tx_ring(), I
->> would say that if you got rid of budget and framed things more like
->> how ixgbe_xsk_clean_tx_ring was framed with the ntc != ntu being
->> obvious I would prefer to see us go that route.
+>> Yeah, I've seen that discussion, and agree that longer term this is
+>> probably a better way to do map-in-map definitions.
 >>
->> Really there is no need for budget in ixgbe_clean_xdp_tx_irq() if you
->> are going to be working with a static ntu value since you will only
->> ever process one iteration through the ring anyway. It might make more
->> sense if you just went through and got rid of budget and i, and
->> instead used ntc and ntu like what was done in
->> ixgbe_xsk_clean_tx_ring().
->>
->> Thanks.
->>
->> - Alex
+>> However, I view your proposal as complementary to this series: we'll
+>> probably also want the BTF-based definition to work with iproute2, and
+>> that means iproute2 needs to be ported to libbpf. But iproute2 needs to
+>> be backwards compatible with the format it supports now, and, well, this
+>> series is the simplest way to achieve that IMO :)
 > 
-> Not familiar with the driver details.
-> I tested this patch and the issue mentioned in OVS mailing list.
-> https://www.mail-archive.com/ovs-dev@openvswitch.org/msg35362.html
-> and indeed the problem goes away.
+> Ok, I understand that. But I'd still want to avoid adding extra cruft
+> to libbpf just for backwards-compatibility with *exact* iproute2
+> format. Libbpf as a whole is trying to move away from relying on
+> binary bpf_map_def and into using BTF-defined map definitions, and
+> this patch series is a step backwards in that regard, that adds,
+> essentially, already outdated stuff that we'll need to support forever
+> (I mean those extra fields in bpf_map_def, that will stay there
+> forever).
 
-Good. Thanks for testing!
+Agree, adding these extensions for libbpf would be a step backwards
+compared to using BTF defined map defs.
 
-> But I saw a huge performance drop,
-> my AF_XDP tx performance drops from >9Mpps to <5Mpps.
-
-I didn't expect so big performance difference with this change.
-What is your test scenario? Is it possible that you're accounting same
-packet several times due to broken completion queue?
-
-Looking at samples/bpf/xdpsock_user.c:complete_tx_only(), it accounts
-sent packets (tx_npkts) by accumulating results of xsk_ring_cons__peek()
-for completion queue, so it's not a trusted source of pps information.
-
-Best regards, Ilya Maximets.
-
+> We've discussed one way to deal with it, IMO, in a cleaner way. It can
+> be done in few steps:
 > 
-> Tested using kernel 5.3.0-rc3+
-> 03:00.0 Ethernet controller: Intel Corporation Ethernet Controller
-> 10-Gigabit X540-AT2 (rev 01)
-> Subsystem: Intel Corporation Ethernet 10G 2P X540-t Adapter
-> Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
-> Stepping- SERR- FastB2B- DisINTx+
+> 1. I originally wanted BTF-defined map definitions to ignore unknown
+> fields. It shouldn't be a default mode, but it should be supported
+> (and of course is very easy to add). So let's add that and let libbpf
+> ignore unknown stuff.
 > 
-> Regards,
-> William
+> 2. Then to let iproute2 loader deal with backwards-compatibility for
+> libbpf-incompatible bpf_elf_map, we need to "pass-through" all those
+> fields so that users of libbpf (iproute2 loader, in this case) can
+> make use of it. The easiest and cleanest way to do this is to expose
+> BTF ID of a type describing each map entry and let iproute2 process
+> that in whichever way it sees fit.
+> 
+> Luckily, bpf_elf_map is compatible in `type` field, which will let
+> libbpf recognize bpf_elf_map as map definition. All the rest setup
+> will be done by iproute2, by processing BTF of bpf_elf_map, which will
+> let it set up map sizes, flags and do all of its map-in-map magic.
+> 
+> The only additions to libbpf in this case would be a new `__u32
+> bpf_map__btf_id(struct bpf_map* map);` API.
+> 
+> I haven't written any code and haven't 100% checked that this will
+> cover everything, but I think we should try. This will allow to let
+> users of libbpf do custom stuff with map definitions without having to
+> put all this extra logic into libbpf itself, which I think is
+> desirable outcome.
+
+Sounds reasonable in general, but all this still has the issue that we're
+assuming that BTF is /always/ present. Existing object files that would load
+just fine /today/ but do not have BTF attached won't be handled here. Wouldn't
+it be more straight forward to allow passing callbacks to the libbpf loader
+such that if the map section is not found to be bpf_map_def compatible, we
+rely on external user aka callback to parse the ELF section, handle any
+non-default libbpf behavior like pinning/retrieving from BPF fs, populate
+related internal libbpf map data structures and pass control back to libbpf
+loader afterwards. (Similar callback with prog section name handling for the
+case where tail call maps get automatically populated.)
+
+Thanks,
+Daniel
