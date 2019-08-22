@@ -2,97 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B99C98C93
-	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 09:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 979B698C99
+	for <lists+bpf@lfdr.de>; Thu, 22 Aug 2019 09:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725857AbfHVHrw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Aug 2019 03:47:52 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:53872 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbfHVHrw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Aug 2019 03:47:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=EmuC6Fpk11rSVocpKbT8KYAej4t4mP+c/Oiv8Dne6MM=; b=0QYEvGjuKtc+q7j2b3hiPyDeJ
-        mg+zKCYg+iMWtehpQ0UGDVQL+lL8lvCqx+Ir/+dDLouDYR3kku+370uVmT8IlsWWLWt5c+aUW1S2+
-        sOf23i/MrMkrfQ3ovgUWXSatBtVcvNoZYkZ+e9qSoJlBEqe6YW68A9ifz1pjxe2WlqFJuT0vxJl89
-        9e6aFuKufIXKwAkuD2WVUHN8ZjgzpMaRbhcLwTCUVlOl7Vp8CJDYIR3QjhwrUYjDwK2y+ME2HWrQd
-        gbAWnBGY7KAl4H/UwgZJ5Jc+UznTzMhWTu+YeFw0vsuYvWqRu4Lnv6yiSZxHdOzfxg10axRX22vH1
-        EX2KcvCgA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1i0hoq-0000Bt-PY; Thu, 22 Aug 2019 07:47:41 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E693A307598;
-        Thu, 22 Aug 2019 09:47:05 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9034020C3BF31; Thu, 22 Aug 2019 09:47:37 +0200 (CEST)
-Date:   Thu, 22 Aug 2019 09:47:37 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "jolsa@redhat.com" <jolsa@redhat.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH v3 bpf-next 1/4] tracing/probe: Add
- PERF_EVENT_IOC_QUERY_PROBE ioctl
-Message-ID: <20190822074737.GG2349@hirez.programming.kicks-ass.net>
-References: <20190820144503.GV2332@hirez.programming.kicks-ass.net>
- <BWENHQJIN885.216UOYEIWNGFU@dlxu-fedora-R90QNFJV>
- <20190821110856.GB2349@hirez.programming.kicks-ass.net>
- <62874df3-cae0-36a1-357f-b59484459e52@fb.com>
- <20190821183155.GE2349@hirez.programming.kicks-ass.net>
- <5ecdcd72-255d-26d1-baf3-dc64498753c2@fb.com>
+        id S1726844AbfHVHtZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Aug 2019 03:49:25 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:42661 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726645AbfHVHtZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Aug 2019 03:49:25 -0400
+Received: by mail-qt1-f196.google.com with SMTP id t12so6511020qtp.9;
+        Thu, 22 Aug 2019 00:49:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=XEYb4gQ2sesd2E9ru9HUrR2gaowtmInxlS2I12otpDA=;
+        b=NI1sxOlnetlbLsbY58l/L1RhrUgcXGvOSqB8uNH0xNLeJK13t/pHZzYIYcOyrMwDjT
+         MwHXVT/GJjWgpLfZyAml4qIdtqsBfEF/NxJCOugq3OTd6CYpnOZpUt2QKzhgld3cibC2
+         /QqRIv1dObYilASbsGOm1sat0BN7pilmhE6C5q/phGEMD0B6oXmXwbo98HhFc79rDpsq
+         Z6dPot8jyR5obWxPkQ5GfIzBp25bB9LwKkITW69D4BQtg/NJd+J65RkKobubjFpRwcbP
+         2cDLrz3mzpMctYbGzCOjK9i7ESr1cjpHXrKK+Zsg/+vvPatd/qnN2Dws5cxjTxqHWdl2
+         bydw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=XEYb4gQ2sesd2E9ru9HUrR2gaowtmInxlS2I12otpDA=;
+        b=VoFmRhg3KkJqFyeuN0GfgpsL7/PfKcWJ7DaL2V4t/MIwC/evJYblUUY/uHGOsQaEPz
+         bH5uctBSOrNrbNrLGUISn/7PF7QXB6Mfo9UIMVJ6eTC8nop3RjcdSWeobUlHEvQPUvrC
+         lHQ4Hes6N4VCuy8LSPaGRg6wsfPBhGwwJXqkrKcd/TNEkkaf93vjWFGRAJ7BuND9PXYd
+         fPS5WIXapZjJLyiuw8Qj+AyppShEmHX8zxkaugCf8WrZA2FW0/vtWfQNRUnoE6cWi1oN
+         BiDZLo771leVTLGNxE6DsQDdlvKOe1OQvfQvWW3zinnj3mmXR89y/ZyQNxPmQWMqrMAx
+         ZM4Q==
+X-Gm-Message-State: APjAAAUoa8zbmVhRf2Iq0VHcw6BjYsRmwemLlLCYfZCqR/wN2Ri9IOIo
+        3tAIDgcKclOr9+g+LSqZK2UNJUrBQcBC43TQjCo=
+X-Google-Smtp-Source: APXvYqyZvEhu9KmTu982XXqSPOWfCWgxIKik+8WxnJYLEJfGVdRafiUSSrPJ2JhhgOOh7tLvAb2nlv6GNpgtOq5bUqU=
+X-Received: by 2002:aed:26c2:: with SMTP id q60mr34274927qtd.59.1566460164130;
+ Thu, 22 Aug 2019 00:49:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5ecdcd72-255d-26d1-baf3-dc64498753c2@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190820114706.18546-1-toke@redhat.com> <CAEf4BzZxb7qZabw6aDVaTqnhr3AGtwEo+DbuBR9U9tJr+qVuyg@mail.gmail.com>
+ <87blwiqlc8.fsf@toke.dk>
+In-Reply-To: <87blwiqlc8.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 22 Aug 2019 00:49:12 -0700
+Message-ID: <CAEf4BzYMKPbfOu4a4UDEfJVcNW1-KvRwJ7PVo+Mf_1YUJgE4Qw@mail.gmail.com>
+Subject: Re: [RFC bpf-next 0/5] Convert iproute2 to use libbpf (WIP)
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 21, 2019 at 06:43:49PM +0000, Yonghong Song wrote:
-> On 8/21/19 11:31 AM, Peter Zijlstra wrote:
+On Wed, Aug 21, 2019 at 2:07 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>
+> > On Tue, Aug 20, 2019 at 4:47 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+> >>
+> >> iproute2 uses its own bpf loader to load eBPF programs, which has
+> >> evolved separately from libbpf. Since we are now standardising on
+> >> libbpf, this becomes a problem as iproute2 is slowly accumulating
+> >> feature incompatibilities with libbpf-based loaders. In particular,
+> >> iproute2 has its own (expanded) version of the map definition struct,
+> >> which makes it difficult to write programs that can be loaded with bot=
+h
+> >> custom loaders and iproute2.
+> >>
+> >> This series seeks to address this by converting iproute2 to using libb=
+pf
+> >> for all its bpf needs. This version is an early proof-of-concept RFC, =
+to
+> >> get some feedback on whether people think this is the right direction.
+> >>
+> >> What this series does is the following:
+> >>
+> >> - Updates the libbpf map definition struct to match that of iproute2
+> >>   (patch 1).
+> >
+> >
+> > Hi Toke,
+> >
+> > Thanks for taking a stab at unifying libbpf and iproute2 loaders. I'm
+> > totally in support of making iproute2 use libbpf to load/initialize
+> > BPF programs. But I'm against adding iproute2-specific fields to
+> > libbpf's bpf_map_def definitions to support this.
+> >
+> > I've proposed the plan of extending libbpf's supported features so
+> > that it can be used to load iproute2-style BPF programs earlier,
+> > please see discussions in [0] and [1].
+>
+> Yeah, I've seen that discussion, and agree that longer term this is
+> probably a better way to do map-in-map definitions.
+>
+> However, I view your proposal as complementary to this series: we'll
+> probably also want the BTF-based definition to work with iproute2, and
+> that means iproute2 needs to be ported to libbpf. But iproute2 needs to
+> be backwards compatible with the format it supports now, and, well, this
+> series is the simplest way to achieve that IMO :)
 
-> > So extending PERF_RECORD_LOST doesn't work. But PERF_FORMAT_LOST might
-> > still work fine; but you get to implement it for all software events.
-> 
-> Could you give more specifics about PERF_FORMAT_LOST? Googling 
-> "PERF_FORMAT_LOST" only yields two emails which we are discussing here :-(
+Ok, I understand that. But I'd still want to avoid adding extra cruft
+to libbpf just for backwards-compatibility with *exact* iproute2
+format. Libbpf as a whole is trying to move away from relying on
+binary bpf_map_def and into using BTF-defined map definitions, and
+this patch series is a step backwards in that regard, that adds,
+essentially, already outdated stuff that we'll need to support forever
+(I mean those extra fields in bpf_map_def, that will stay there
+forever).
 
-Look at what the other PERF_FORMAT_ flags do? Basically it is adding a
-field to the read(2) output.
+We've discussed one way to deal with it, IMO, in a cleaner way. It can
+be done in few steps:
 
-> >> Maybe we can still use ioctl based approach which is light weighted
-> >> compared to ring buffer approach? If a fd has bpf attached, nhit/nmisses
-> >> means the kprobe is processed by bpf program or not.
-> > 
-> > There is nothing kprobe specific here. Kprobes just appear to be the
-> > only one actually accounting the recursion cases, but everyone has
-> > them.
-> 
-> Sorry to be specific, kprobe is just an example, I actually refers to 
-> any perf event where bpf can attach to, which theoretically are any
-> perf events which can be opened with "perf_event_open" syscall although 
-> some of them (e.g., software events?) may not have bpf running hooks yet.
+1. I originally wanted BTF-defined map definitions to ignore unknown
+fields. It shouldn't be a default mode, but it should be supported
+(and of course is very easy to add). So let's add that and let libbpf
+ignore unknown stuff.
 
-Yes, BPF is sucky that way.
+2. Then to let iproute2 loader deal with backwards-compatibility for
+libbpf-incompatible bpf_elf_map, we need to "pass-through" all those
+fields so that users of libbpf (iproute2 loader, in this case) can
+make use of it. The easiest and cleanest way to do this is to expose
+BTF ID of a type describing each map entry and let iproute2 process
+that in whichever way it sees fit.
 
+Luckily, bpf_elf_map is compatible in `type` field, which will let
+libbpf recognize bpf_elf_map as map definition. All the rest setup
+will be done by iproute2, by processing BTF of bpf_elf_map, which will
+let it set up map sizes, flags and do all of its map-in-map magic.
+
+The only additions to libbpf in this case would be a new `__u32
+bpf_map__btf_id(struct bpf_map* map);` API.
+
+I haven't written any code and haven't 100% checked that this will
+cover everything, but I think we should try. This will allow to let
+users of libbpf do custom stuff with map definitions without having to
+put all this extra logic into libbpf itself, which I think is
+desirable outcome.
+
+
+>
+> > I think instead of emulating iproute2 way of matching everything based
+> > on user-specified internal IDs, which doesn't provide good user
+> > experience and is quite easy to get wrong, we should support same
+> > scenarios with better declarative syntax and in a less error-prone
+> > way. I believe we can do that by relying on BTF more heavily (again,
+> > please check some of my proposals in [0], [1], and discussion with
+> > Daniel in those threads). It will feel more natural and be more
+> > straightforward to follow. It would be great if you can lend a hand in
+> > implementing pieces of that plan!
+> >
+> > I'm currently on vacation, so my availability is very sparse, but I'd
+> > be happy to discuss this further, if need be.
+>
+> Happy to collaborate on your proposal when you're back from vacation;
+> but as I said above, I believe this is a complementary longer-term
+> thing...
+>
+> -Toke
