@@ -2,104 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 88EAF9A741
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2019 07:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6A69A765
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2019 08:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392100AbfHWFw1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 23 Aug 2019 01:52:27 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:14350 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387557AbfHWFw0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 23 Aug 2019 01:52:26 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7N5noe9022296
-        for <bpf@vger.kernel.org>; Thu, 22 Aug 2019 22:52:25 -0700
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2uj3yes85k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 22 Aug 2019 22:52:25 -0700
-Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Thu, 22 Aug 2019 22:52:24 -0700
-Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
-        id EAC34760BEC; Thu, 22 Aug 2019 22:52:23 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Alexei Starovoitov <ast@kernel.org>
-Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
-To:     <davem@davemloft.net>
-CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 4/4] selftests/bpf: add precision tracking test
-Date:   Thu, 22 Aug 2019 22:52:15 -0700
-Message-ID: <20190823055215.2658669-5-ast@kernel.org>
-X-Mailer: git-send-email 2.20.0
-In-Reply-To: <20190823055215.2658669-1-ast@kernel.org>
-References: <20190823055215.2658669-1-ast@kernel.org>
+        id S2392301AbfHWGKc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Aug 2019 02:10:32 -0400
+Received: from mga01.intel.com ([192.55.52.88]:60504 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392300AbfHWGKc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Aug 2019 02:10:32 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 Aug 2019 23:10:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,420,1559545200"; 
+   d="scan'208";a="170030314"
+Received: from arappl-mobl2.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.53.140])
+  by orsmga007.jf.intel.com with ESMTP; 22 Aug 2019 23:10:27 -0700
+Subject: Re: [PATCH net v3] ixgbe: fix double clean of tx descriptors with xdp
+To:     William Tu <u9012063@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Ilya Maximets <i.maximets@samsung.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Eelco Chaudron <echaudro@redhat.com>
+References: <CGME20190822171243eucas1p12213f2239d6c36be515dade41ed7470b@eucas1p1.samsung.com>
+ <20190822171237.20798-1-i.maximets@samsung.com>
+ <CAKgT0UepBGqx=FiqrdC-r3kvkMxVAHonkfc6rDt_HVQuzahZPQ@mail.gmail.com>
+ <CALDO+SYhU4krmBO8d4hsDGm+BuUAR4qMv=WzVa=jAx27+g9KnA@mail.gmail.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <217e90f5-206a-bb80-6699-f6dd750b57d9@intel.com>
+Date:   Fri, 23 Aug 2019 08:10:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-23_01:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1034 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908230063
-X-FB-Internal: deliver
+In-Reply-To: <CALDO+SYhU4krmBO8d4hsDGm+BuUAR4qMv=WzVa=jAx27+g9KnA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Copy-paste of existing test
-"calls: cross frame pruning - liveness propagation"
-but ran with different parentage chain heuristic
-which stresses different path in precision tracking logic.
+On 2019-08-22 19:32, William Tu wrote:
+> On Thu, Aug 22, 2019 at 10:21 AM Alexander Duyck
+> <alexander.duyck@gmail.com> wrote:
+>>
+>> On Thu, Aug 22, 2019 at 10:12 AM Ilya Maximets <i.maximets@samsung.com> wrote:
+>>>
+>>> Tx code doesn't clear the descriptors' status after cleaning.
+>>> So, if the budget is larger than number of used elems in a ring, some
+>>> descriptors will be accounted twice and xsk_umem_complete_tx will move
+>>> prod_tail far beyond the prod_head breaking the completion queue ring.
+>>>
+>>> Fix that by limiting the number of descriptors to clean by the number
+>>> of used descriptors in the tx ring.
+>>>
+>>> 'ixgbe_clean_xdp_tx_irq()' function refactored to look more like
+>>> 'ixgbe_xsk_clean_tx_ring()' since we're allowed to directly use
+>>> 'next_to_clean' and 'next_to_use' indexes.
+>>>
+>>> Fixes: 8221c5eba8c1 ("ixgbe: add AF_XDP zero-copy Tx support")
+>>> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
+>>> ---
+>>>
+>>> Version 3:
+>>>    * Reverted some refactoring made for v2.
+>>>    * Eliminated 'budget' for tx clean.
+>>>    * prefetch returned.
+>>>
+>>> Version 2:
+>>>    * 'ixgbe_clean_xdp_tx_irq()' refactored to look more like
+>>>      'ixgbe_xsk_clean_tx_ring()'.
+>>>
+>>>   drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c | 29 ++++++++------------
+>>>   1 file changed, 11 insertions(+), 18 deletions(-)
+>>
+>> Thanks for addressing my concerns.
+>>
+>> Acked-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> 
+> Thanks.
+> 
+> Tested-by: William Tu <u9012063@gmail.com>
+> 
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
-This test will be failing without this fix
-https://patchwork.ozlabs.org/patch/1151172/
----
- .../testing/selftests/bpf/verifier/precise.c  | 25 +++++++++++++++++++
- 1 file changed, 25 insertions(+)
+Will, thanks for testing! For this patch, did you notice any performance
+degradation?
 
-diff --git a/tools/testing/selftests/bpf/verifier/precise.c b/tools/testing/selftests/bpf/verifier/precise.c
-index a20953c23721..a455a4a71f11 100644
---- a/tools/testing/selftests/bpf/verifier/precise.c
-+++ b/tools/testing/selftests/bpf/verifier/precise.c
-@@ -115,3 +115,28 @@
- 	regs=300 stack=0 before 17\
- 	parent already had regs=0 stack=0 marks",
- },
-+{
-+	"precise: cross frame pruning",
-+	.insns = {
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_prandom_u32),
-+	BPF_MOV64_IMM(BPF_REG_8, 0),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+	BPF_MOV64_IMM(BPF_REG_8, 1),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_prandom_u32),
-+	BPF_MOV64_IMM(BPF_REG_9, 0),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+	BPF_MOV64_IMM(BPF_REG_9, 1),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 1, 0, 4),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_8, 1, 1),
-+	BPF_LDX_MEM(BPF_B, BPF_REG_1, BPF_REG_2, 0),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_XDP,
-+	.flags = BPF_F_TEST_STATE_FREQ,
-+	.errstr = "!read_ok",
-+	.result = REJECT,
-+},
--- 
-2.20.0
 
+Cheers,
+Björn
