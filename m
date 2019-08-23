@@ -2,141 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B90E9A4D5
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2019 03:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612AC9A73D
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2019 07:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731592AbfHWBN7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Aug 2019 21:13:59 -0400
-Received: from out1.zte.com.cn ([202.103.147.172]:55682 "EHLO mxct.zte.com.cn"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387676AbfHWBN7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Aug 2019 21:13:59 -0400
-Received: from mse-fl2.zte.com.cn (unknown [10.30.14.239])
-        by Forcepoint Email with ESMTPS id 0F8CEBDD19C0BD7E4CD3;
-        Fri, 23 Aug 2019 09:13:57 +0800 (CST)
-Received: from notes_smtp.zte.com.cn (notessmtp.zte.com.cn [10.30.1.239])
-        by mse-fl2.zte.com.cn with ESMTP id x7N1Dgrq054529;
-        Fri, 23 Aug 2019 09:13:42 +0800 (GMT-8)
-        (envelope-from zhang.lin16@zte.com.cn)
-Received: from fox-host8.localdomain ([10.74.120.8])
-          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
-          with ESMTP id 2019082309141585-3127175 ;
-          Fri, 23 Aug 2019 09:14:15 +0800 
-From:   zhanglin <zhang.lin16@zte.com.cn>
-To:     davem@davemloft.net
-Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, willemb@google.com,
-        edumazet@google.com, deepa.kernel@gmail.com, arnd@arndb.de,
-        dh.herrmann@gmail.com, gnault@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        xue.zhihong@zte.com.cn, wang.yi59@zte.com.cn,
-        jiang.xuexin@zte.com.cn, zhanglin <zhang.lin16@zte.com.cn>
-Subject: [PATCH] [PATCH v3] sock: fix potential memory leak in proto_register()
-Date:   Fri, 23 Aug 2019 09:14:11 +0800
-Message-Id: <1566522851-24018-1-git-send-email-zhang.lin16@zte.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
- 21, 2013) at 2019-08-23 09:14:15,
-        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
- 2019-08-23 09:13:47,
-        Serialize complete at 2019-08-23 09:13:47
-X-MAIL: mse-fl2.zte.com.cn x7N1Dgrq054529
+        id S2392034AbfHWFwV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 23 Aug 2019 01:52:21 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:38644 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2391970AbfHWFwU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 23 Aug 2019 01:52:20 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x7N5phHn025530
+        for <bpf@vger.kernel.org>; Thu, 22 Aug 2019 22:52:19 -0700
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by m0001303.ppops.net with ESMTP id 2uj4jqh344-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 22 Aug 2019 22:52:19 -0700
+Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::126) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Thu, 22 Aug 2019 22:52:17 -0700
+Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
+        id C6F09760BEC; Thu, 22 Aug 2019 22:52:15 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Alexei Starovoitov <ast@kernel.org>
+Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
+To:     <davem@davemloft.net>
+CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 0/4] bpf: precision tracking tests
+Date:   Thu, 22 Aug 2019 22:52:11 -0700
+Message-ID: <20190823055215.2658669-1-ast@kernel.org>
+X-Mailer: git-send-email 2.20.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-23_01:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=549 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908230064
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If protocols registered exceeded PROTO_INUSE_NR, prot will be
-added to proto_list, but no available bit left for prot in
-proto_inuse_idx.
+Add few additional tests for precision tracking in the verifier.
 
-Changes since v2:
-* Propagate the error code properly
+Alexei Starovoitov (4):
+  bpf: introduce verifier internal test flag
+  tools/bpf: sync bpf.h
+  selftests/bpf: verifier precise tests
+  selftests/bpf: add precision tracking test
 
-Signed-off-by: zhanglin <zhang.lin16@zte.com.cn>
----
- net/core/sock.c | 31 +++++++++++++++++++++----------
- 1 file changed, 21 insertions(+), 10 deletions(-)
+ include/linux/bpf_verifier.h                  |   1 +
+ include/uapi/linux/bpf.h                      |   3 +
+ kernel/bpf/syscall.c                          |   1 +
+ kernel/bpf/verifier.c                         |   5 +-
+ tools/include/uapi/linux/bpf.h                |   3 +
+ tools/testing/selftests/bpf/test_verifier.c   |  68 +++++++--
+ .../testing/selftests/bpf/verifier/precise.c  | 142 ++++++++++++++++++
+ 7 files changed, 211 insertions(+), 12 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/verifier/precise.c
 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index bc3512f230a3..f39163071384 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -3139,16 +3139,17 @@ static __init int net_inuse_init(void)
- 
- core_initcall(net_inuse_init);
- 
--static void assign_proto_idx(struct proto *prot)
-+static int assign_proto_idx(struct proto *prot)
- {
- 	prot->inuse_idx = find_first_zero_bit(proto_inuse_idx, PROTO_INUSE_NR);
- 
- 	if (unlikely(prot->inuse_idx == PROTO_INUSE_NR - 1)) {
- 		pr_err("PROTO_INUSE_NR exhausted\n");
--		return;
-+		return -ENOSPC;
- 	}
- 
- 	set_bit(prot->inuse_idx, proto_inuse_idx);
-+	return 0;
- }
- 
- static void release_proto_idx(struct proto *prot)
-@@ -3157,8 +3158,9 @@ static void release_proto_idx(struct proto *prot)
- 		clear_bit(prot->inuse_idx, proto_inuse_idx);
- }
- #else
--static inline void assign_proto_idx(struct proto *prot)
-+static inline int assign_proto_idx(struct proto *prot)
- {
-+	return 0;
- }
- 
- static inline void release_proto_idx(struct proto *prot)
-@@ -3207,6 +3209,8 @@ static int req_prot_init(const struct proto *prot)
- 
- int proto_register(struct proto *prot, int alloc_slab)
- {
-+	int ret = -ENOBUFS;
-+
- 	if (alloc_slab) {
- 		prot->slab = kmem_cache_create_usercopy(prot->name,
- 					prot->obj_size, 0,
-@@ -3243,20 +3247,27 @@ int proto_register(struct proto *prot, int alloc_slab)
- 	}
- 
- 	mutex_lock(&proto_list_mutex);
-+	ret = assign_proto_idx(prot);
-+	if (ret) {
-+		mutex_unlock(&proto_list_mutex);
-+		goto out_free_timewait_sock_slab_name;
-+	}
- 	list_add(&prot->node, &proto_list);
--	assign_proto_idx(prot);
- 	mutex_unlock(&proto_list_mutex);
--	return 0;
-+	return ret;
- 
- out_free_timewait_sock_slab_name:
--	kfree(prot->twsk_prot->twsk_slab_name);
-+	if (alloc_slab && prot->twsk_prot)
-+		kfree(prot->twsk_prot->twsk_slab_name);
- out_free_request_sock_slab:
--	req_prot_cleanup(prot->rsk_prot);
-+	if (alloc_slab) {
-+		req_prot_cleanup(prot->rsk_prot);
- 
--	kmem_cache_destroy(prot->slab);
--	prot->slab = NULL;
-+		kmem_cache_destroy(prot->slab);
-+		prot->slab = NULL;
-+	}
- out:
--	return -ENOBUFS;
-+	return ret;
- }
- EXPORT_SYMBOL(proto_register);
- 
 -- 
-2.17.1
+2.20.0
 
