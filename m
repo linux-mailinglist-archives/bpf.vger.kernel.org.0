@@ -2,152 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C71B9B10B
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2019 15:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBBF9B20E
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2019 16:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405599AbfHWNfp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Aug 2019 09:35:45 -0400
-Received: from mga01.intel.com ([192.55.52.88]:31234 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726319AbfHWNfp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Aug 2019 09:35:45 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 23 Aug 2019 06:35:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,421,1559545200"; 
-   d="scan'208";a="330723926"
-Received: from klaatz-mobl1.ger.corp.intel.com (HELO [10.237.221.61]) ([10.237.221.61])
-  by orsmga004.jf.intel.com with ESMTP; 23 Aug 2019 06:35:41 -0700
-Subject: Re: [PATCH bpf-next v5 03/11] xsk: add support to allow unaligned
- chunk placement
-To:     Jonathan Lemon <jonathan.lemon@gmail.com>
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        bjorn.topel@intel.com, magnus.karlsson@intel.com,
-        jakub.kicinski@netronome.com, saeedm@mellanox.com,
-        maximmi@mellanox.com, stephen@networkplumber.org,
-        bruce.richardson@intel.com, ciara.loftus@intel.com,
-        bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org
-References: <20190730085400.10376-1-kevin.laatz@intel.com>
- <20190822014427.49800-1-kevin.laatz@intel.com>
- <20190822014427.49800-4-kevin.laatz@intel.com>
- <3AEEC88E-8D45-41C5-AFBF-51512826B1A7@gmail.com>
-From:   "Laatz, Kevin" <kevin.laatz@intel.com>
-Message-ID: <e549e399-089e-f423-169f-81ac9f831cad@intel.com>
-Date:   Fri, 23 Aug 2019 14:35:40 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S2392574AbfHWOdI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Aug 2019 10:33:08 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:44894 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395336AbfHWOdH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Aug 2019 10:33:07 -0400
+Received: by mail-io1-f70.google.com with SMTP id f5so6555013ioo.11
+        for <bpf@vger.kernel.org>; Fri, 23 Aug 2019 07:33:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=tq7Jw6SrnSfUoJ4hJwFy3Z1HYUI0Qv2w/PUYUtFSAsM=;
+        b=CxW/8e15AZWqVfivuv3ymd3eX8v8zToGMms6BrXW3bb3WK0/jhYNG0UburKDEEXhrn
+         AlL/ShkpALKjrO/e/cMxZeSRExoVEwtsDZ+CQkrUwV4t+FYYOW6lk7ZlxLSgtzN35L5C
+         IuRgIsZ6OFClH43Me6s9AQeS23RWDTmH3b1ZwBeJtUKvIYAuS8GBuJEK3V+jzCUaLYCE
+         vij+lWx24kFu3rdHY+VMwDyv0TvYeZeAAZl6/SIP/UNUTNZV13Gr5fH4I6CZcTx1JgKT
+         3BvEogj8BEe5/0rKjGJcWupF3kv3e2rUkl6nLGQgyDSly4SbFDSxBpSQCNPeWjOivJOC
+         9qBQ==
+X-Gm-Message-State: APjAAAXzoJfsZUxKG1Td0g2cDBBzkbkvZl8U8CAZ54sTR/Y/9CuJmmnJ
+        SENwT5U7+tDe5NmtkXUNkKvJT57iS72XPNXwlljMQPs1qHOf
+X-Google-Smtp-Source: APXvYqzS/77kZr9waqajqpiOTNdu3Q5rrmDv7WcWt+0cT0dt5T+e06aDEiHc0nrDV+PZ9oeBuIkbnstfUzz7eSdx9Fhh/qEI1JfM
 MIME-Version: 1.0
-In-Reply-To: <3AEEC88E-8D45-41C5-AFBF-51512826B1A7@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-Received: by 2002:a5e:a811:: with SMTP id c17mr6793074ioa.122.1566570786561;
+ Fri, 23 Aug 2019 07:33:06 -0700 (PDT)
+Date:   Fri, 23 Aug 2019 07:33:06 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003fac1d0590c9afef@google.com>
+Subject: WARNING in sk_msg_check_to_free
+From:   syzbot <syzbot+ea3c54a7b2364123d818@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, john.fastabend@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 22/08/2019 19:43, Jonathan Lemon wrote:
-> On 21 Aug 2019, at 18:44, Kevin Laatz wrote:
->> Currently, addresses are chunk size aligned. This means, we are very
->> restricted in terms of where we can place chunk within the umem. For
->> example, if we have a chunk size of 2k, then our chunks can only be 
->> placed
->> at 0,2k,4k,6k,8k... and so on (ie. every 2k starting from 0).
->>
->> This patch introduces the ability to use unaligned chunks. With these
->> changes, we are no longer bound to having to place chunks at a 2k (or
->> whatever your chunk size is) interval. Since we are no longer dealing 
->> with
->> aligned chunks, they can now cross page boundaries. Checks for page
->> contiguity have been added in order to keep track of which pages are
->> followed by a physically contiguous page.
->>
->> Signed-off-by: Kevin Laatz <kevin.laatz@intel.com>
->> Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
->> Signed-off-by: Bruce Richardson <bruce.richardson@intel.com>
->>
->> ---
->> v2:
->>   - Add checks for the flags coming from userspace
->>   - Fix how we get chunk_size in xsk_diag.c
->>   - Add defines for masking the new descriptor format
->>   - Modified the rx functions to use new descriptor format
->>   - Modified the tx functions to use new descriptor format
->>
->> v3:
->>   - Add helper function to do address/offset masking/addition
->>
->> v4:
->>   - fixed page_start calculation in __xsk_rcv_memcpy().
->>   - move offset handling to the xdp_umem_get_* functions
->>   - modified the len field in xdp_umem_reg struct. We now use 16 bits 
->> from
->>     this for the flags field.
->>   - removed next_pg_contig field from xdp_umem_page struct. Using low 12
->>     bits of addr to store flags instead.
->>   - other minor changes based on review comments
->>
->> v5:
->>   - Added accessors for getting addr and offset
->>   - Added helper function to add offset to addr
->>   - Fixed offset handling in xsk_rcv
->>   - Removed bitfields from xdp_umem_reg
->>   - Added struct size checking for xdp_umem_reg in xsk_setsockopt to 
->> handle
->>     different versions of the struct.
->>   - fix conflicts after 'bpf-af-xdp-wakeup' was merged.
->> ---
->>  include/net/xdp_sock.h      | 75 +++++++++++++++++++++++++++--
->>  include/uapi/linux/if_xdp.h |  9 ++++
->>  net/xdp/xdp_umem.c          | 19 ++++++--
->>  net/xdp/xsk.c               | 96 +++++++++++++++++++++++++++++--------
->>  net/xdp/xsk_diag.c          |  2 +-
->>  net/xdp/xsk_queue.h         | 68 ++++++++++++++++++++++----
->>  6 files changed, 232 insertions(+), 37 deletions(-)
->>
->>
-[...]
+Hello,
 
->> @@ -196,17 +221,17 @@ int xsk_generic_rcv(struct xdp_sock *xs, struct 
->> xdp_buff *xdp)
->>          goto out_unlock;
->>      }
->>
->> -    if (!xskq_peek_addr(xs->umem->fq, &addr) ||
->> +    if (!xskq_peek_addr(xs->umem->fq, &addr, xs->umem) ||
->>          len > xs->umem->chunk_size_nohr - XDP_PACKET_HEADROOM) {
->>          err = -ENOSPC;
->>          goto out_drop;
->>      }
->>
->> -    addr += xs->umem->headroom;
->> -
->> -    buffer = xdp_umem_get_data(xs->umem, addr);
->> +    buffer = xdp_umem_get_data(xs->umem, addr + offset);
->>      memcpy(buffer, xdp->data_meta, len + metalen);
->> -    addr += metalen;
->> +    offset += metalen;
->> +
->> +    addr = xsk_umem_adjust_offset(xs->umem, addr, offset);
->>      err = xskq_produce_batch_desc(xs->rx, addr, len);
->>      if (err)
->>          goto out_drop;
->
-> Can't just add address and offset any longer.  This should read:
->
->     addr = xsk_umem_adjust_offset(xs->umem, addr, offset);
->     buffer = xdp_umem_get_data(xs->umem, addr);
->
->     addr = xsk_umem_adjust_offset(xs->umem, addr, metalen);
->
->
-> so that offset and then metalen are added.  (or preserve the
-> address across the calls like memcpy_addr earlier).
+syzbot found the following crash on:
+
+HEAD commit:    fed07ef3 Merge tag 'mlx5-updates-2019-08-21' of git://git...
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=150102bc600000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e34a4fe936eac597
+dashboard link: https://syzkaller.appspot.com/bug?extid=ea3c54a7b2364123d818
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+ea3c54a7b2364123d818@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 14478 at include/linux/skmsg.h:129  
+sk_msg_check_to_free.isra.0.part.0+0x15/0x19 include/linux/skmsg.h:129
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 14478 Comm: syz-executor.0 Not tainted 5.3.0-rc5+ #143
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+  panic+0x2dc/0x755 kernel/panic.c:219
+  __warn.cold+0x20/0x4c kernel/panic.c:576
+  report_bug+0x263/0x2b0 lib/bug.c:186
+  fixup_bug arch/x86/kernel/traps.c:179 [inline]
+  fixup_bug arch/x86/kernel/traps.c:174 [inline]
+  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:272
+  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:291
+  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1028
+RIP: 0010:sk_msg_check_to_free.isra.0.part.0+0x15/0x19  
+include/linux/skmsg.h:129
+Code: 77 ff ff ff e8 4e de 03 fc eb 96 4c 89 f7 e8 e4 dd 03 fc eb c3 55 48  
+89 e5 e8 f9 b4 c9 fb 48 c7 c7 80 3a 48 88 e8 c1 55 b3 fb <0f> 0b 5d c3 e8  
+e4 b4 c9 fb e8 dd ff ff ff 48 8b 45 d0 0f b6 00 41
+RSP: 0018:ffff88806381fb98 EFLAGS: 00010286
+RAX: 0000000000000024 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff815c2456 RDI: ffffed100c703f65
+RBP: ffff88806381fb98 R08: 0000000000000024 R09: ffffed1015d060d1
+R10: ffffed1015d060d0 R11: ffff8880ae830687 R12: 000000000000000d
+R13: ffff8880986c1550 R14: 0000000000000001 R15: 0000000000000007
+  sk_msg_check_to_free include/linux/skmsg.h:129 [inline]
+  __sk_msg_free.cold+0xa/0x2e net/core/skmsg.c:190
+  sk_msg_free+0x44/0x60 net/core/skmsg.c:207
+  tls_sw_release_resources_tx+0x268/0x6b0 net/tls/tls_sw.c:2092
+  tls_sk_proto_cleanup net/tls/tls_main.c:275 [inline]
+  tls_sk_proto_close+0x6a7/0x990 net/tls/tls_main.c:305
+  inet_release+0xed/0x200 net/ipv4/af_inet.c:427
+  inet6_release+0x53/0x80 net/ipv6/af_inet6.c:470
+  __sock_release+0xce/0x280 net/socket.c:590
+  sock_close+0x1e/0x30 net/socket.c:1268
+  __fput+0x2ff/0x890 fs/file_table.c:280
+  ____fput+0x16/0x20 fs/file_table.c:313
+  task_work_run+0x145/0x1c0 kernel/task_work.c:113
+  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+  exit_to_usermode_loop+0x316/0x380 arch/x86/entry/common.c:163
+  prepare_exit_to_usermode arch/x86/entry/common.c:194 [inline]
+  syscall_return_slowpath arch/x86/entry/common.c:274 [inline]
+  do_syscall_64+0x5a9/0x6a0 arch/x86/entry/common.c:299
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x413511
+Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 04 1b 00 00 c3 48  
+83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48  
+89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
+RSP: 002b:00007ffdca8135c0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 0000000000000004 RCX: 0000000000413511
+RDX: 0000001b31920000 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 0000000000000001 R08: 0000000025038832 R09: 0000000025038836
+R10: 00007ffdca8136a0 R11: 0000000000000293 R12: 000000000075bf20
+R13: 000000000009f412 R14: 0000000000760b20 R15: ffffffffffffffff
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
 
-Will fix this, thanks!
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
--Kevin
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
