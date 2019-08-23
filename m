@@ -2,72 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B609AB2E
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2019 11:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DA39AD13
+	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2019 12:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbfHWJMj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Aug 2019 05:12:39 -0400
-Received: from Chamillionaire.breakpoint.cc ([193.142.43.52]:51688 "EHLO
-        Chamillionaire.breakpoint.cc" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726980AbfHWJMj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 23 Aug 2019 05:12:39 -0400
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1i15cb-0001k7-BL; Fri, 23 Aug 2019 11:12:37 +0200
-Date:   Fri, 23 Aug 2019 11:12:37 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Dan Siemon <dan@coverfire.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: Bridge zeros out skb->cb in 5.2 (not in 5.1)
-Message-ID: <20190823091237.GK20113@breakpoint.cc>
-References: <CAB2AaTmtwpHKvuOi6a-54SW1JXUxt1N03Lb=GXMVv_-y+zYyEA@mail.gmail.com>
+        id S1732420AbfHWK10 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 23 Aug 2019 06:27:26 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:33610 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731002AbfHWK10 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Aug 2019 06:27:26 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 3E38C3061423;
+        Fri, 23 Aug 2019 10:27:25 +0000 (UTC)
+Received: from carbon (ovpn-200-29.brq.redhat.com [10.40.200.29])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 456575D6B2;
+        Fri, 23 Aug 2019 10:27:14 +0000 (UTC)
+Date:   Fri, 23 Aug 2019 12:27:13 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        brouer@redhat.com, Anton Protopopov <aspsk2@gmail.com>,
+        Stanislav Fomichev <sdf@fomichev.me>,
+        Yoel Caspersen <yoel@kviknet.dk>
+Subject: Re: [RFC bpf-next 0/5] Convert iproute2 to use libbpf (WIP)
+Message-ID: <20190823122713.73450a4b@carbon>
+In-Reply-To: <CAEf4BzZxb7qZabw6aDVaTqnhr3AGtwEo+DbuBR9U9tJr+qVuyg@mail.gmail.com>
+References: <20190820114706.18546-1-toke@redhat.com>
+        <CAEf4BzZxb7qZabw6aDVaTqnhr3AGtwEo+DbuBR9U9tJr+qVuyg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAB2AaTmtwpHKvuOi6a-54SW1JXUxt1N03Lb=GXMVv_-y+zYyEA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.45]); Fri, 23 Aug 2019 10:27:25 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dan Siemon <dan@coverfire.com> wrote:
+On Wed, 21 Aug 2019 13:30:09 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-[ CCing bpf maling list ]
-
-> Commit f12064d1b402c60c5db9c4b63d5ed6d7facb33f6 zeros out skb->cb in
-> br_input.c:
+> On Tue, Aug 20, 2019 at 4:47 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+> >
+> > iproute2 uses its own bpf loader to load eBPF programs, which has
+> > evolved separately from libbpf. Since we are now standardising on
+> > libbpf, this becomes a problem as iproute2 is slowly accumulating
+> > feature incompatibilities with libbpf-based loaders. In particular,
+> > iproute2 has its own (expanded) version of the map definition struct,
+> > which makes it difficult to write programs that can be loaded with both
+> > custom loaders and iproute2.
+> >
+> > This series seeks to address this by converting iproute2 to using libbpf
+> > for all its bpf needs. This version is an early proof-of-concept RFC, to
+> > get some feedback on whether people think this is the right direction.
+> >
+> > What this series does is the following:
+> >
+> > - Updates the libbpf map definition struct to match that of iproute2
+> >   (patch 1).  
 > 
-> memset(skb->cb, 0, sizeof(struct br_input_skb_cb));
 > 
-> https://github.com/torvalds/linux/commit/f12064d1b402c60c5db9c4b63d5ed6d7facb33f6
+> Hi Toke,
 > 
-> Prior to 5.2, it was possible to store information in skb->cb and have it
-> pass through the bridge to the output link.
-
-I did not know this was even possible.
-
-Any owner of the skb (bridge, ip stack, etc.) use skb->cb[] as they see fit.
-
-> We leveraged this to have a BPF
-> prog that runs on ingress and does custom packet parsing and stores the
-> output qdisc:class in skb->cb. This enabled the egress BPF filter to be
-> super simple and avoid having to parse the entire packet again.
+> Thanks for taking a stab at unifying libbpf and iproute2 loaders. I'm
+> totally in support of making iproute2 use libbpf to load/initialize
+> BPF programs. But I'm against adding iproute2-specific fields to
+> libbpf's bpf_map_def definitions to support this.
 > 
-> Note I haven't built with this patch removed so it's possible this isn't
-> the problem but the memset is unconditional...
+> I've proposed the plan of extending libbpf's supported features so
+> that it can be used to load iproute2-style BPF programs earlier,
+> please see discussions in [0] and [1]. I think instead of emulating
+> iproute2 way of matching everything based on user-specified internal
+> IDs, which doesn't provide good user experience and is quite easy to
+> get wrong, we should support same scenarios with better declarative
+> syntax and in a less error-prone way. I believe we can do that by
+> relying on BTF more heavily (again, please check some of my proposals
+> in [0], [1], and discussion with Daniel in those threads). It will
+> feel more natural and be more straightforward to follow. It would be
+> great if you can lend a hand in implementing pieces of that plan!
+> 
+> I'm currently on vacation, so my availability is very sparse, but I'd
+> be happy to discuss this further, if need be.
+> 
+>   [0] https://lore.kernel.org/bpf/CAEf4BzbfdG2ub7gCi0OYqBrUoChVHWsmOntWAkJt47=FE+km+A@mail.gmail.com/
+>   [1] https://www.spinics.net/lists/bpf/msg03976.html
+> 
+> > - Adds functionality to libbpf to support automatic pinning of maps when
+> >   loading an eBPF program, while re-using pinned maps if they already
+> >   exist (patches 2-3).
 
-You're not exactly saying what the problem is, so I have no idea.
+For production use-cases, libbpf really need an easier higher-level API
+for re-using pinned maps, for establishing shared maps between
+programs.  The existing libbpf API bpf_object__pin_maps() and
+bpf_object__unpin_maps(), which don't re-use pinned maps, are not
+really usable, because they pin/unpin ALL maps in the ELF file.
 
-> Is this a regression? Is it expected that the bridge would wipe this field
-> when just passing frames?
+What users really need is an easy way to specify, on a per map basis,
+what kind of pinning and reuse/sharing they want.  E.g. like iproute2
+have, "global", "object-scope", and "no-pinning". ("ifindex-scope" would
+be nice for XDP).
+  Today users have to split/reimplement bpf_prog_load_xattr(), and
+use/add bpf_map__reuse_fd().  Which is that I ended doing for
+xdp-cpumap-tc[2] (used in production at ISP) resulting in 142 lines of
+extra code[3] that should have been hidden inside libbpf.  And worse,
+in this solution[4] the maps for reuse-pinning is specified in the code
+by name.  Thus, they cannot use a generic loader.  That I why, I want
+to mark the maps via a pinning member, like iproute2.
 
-Even if you remove the memset, that commit br_input_skb_cb
-has existed, and is used.  Fields were just cleared on-demand rather
-than unconditionally at the start.
+I really hope this moves in a practical direction, as I have the next
+production request lined up (also from an ISP), and I hate to have to
+advice them to choose the same route as [3].
 
-I think the latter is better practice and also what other owners do.
-So please explain what exactly the problem is and/or check that the
-cb clearing "is the problem".
 
-If it is, I have no idea how to fix it.
+[2] https://github.com/xdp-project/xdp-cpumap-tc/
+[3] https://github.com/xdp-project/xdp-cpumap-tc/blob/master/src/xdp_iphash_to_cpu_user.c#L262-L403
+[4] https://github.com/xdp-project/xdp-cpumap-tc/blob/master/src/xdp_iphash_to_cpu_user.c#L431-L441
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
