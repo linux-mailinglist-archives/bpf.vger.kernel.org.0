@@ -2,157 +2,307 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CCA9B794
-	for <lists+bpf@lfdr.de>; Fri, 23 Aug 2019 22:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4359B8A0
+	for <lists+bpf@lfdr.de>; Sat, 24 Aug 2019 00:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731765AbfHWUPD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Aug 2019 16:15:03 -0400
-Received: from www62.your-server.de ([213.133.104.62]:42444 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730896AbfHWUPC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Aug 2019 16:15:02 -0400
-Received: from [178.197.249.40] (helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1i1Fxb-0002iP-EH; Fri, 23 Aug 2019 22:14:59 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     ast@kernel.org
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        syzbot+bd3bba6ff3fcea7a6ec6@syzkaller.appspotmail.com,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH bpf] bpf: fix use after free in prog symbol exposure
-Date:   Fri, 23 Aug 2019 22:14:23 +0200
-Message-Id: <5c8e41702da6794e788d06dd3d56d46f9ca42b99.1566591076.git.daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S1726559AbfHWWyQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Aug 2019 18:54:16 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:41234 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726620AbfHWWyP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Aug 2019 18:54:15 -0400
+Received: by mail-ot1-f68.google.com with SMTP id o101so10191797ota.8
+        for <bpf@vger.kernel.org>; Fri, 23 Aug 2019 15:54:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=carlosedp-com.20150623.gappssmtp.com; s=20150623;
+        h=sender:mime-version:references:in-reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=tzDrHmFEcYK0I28RjAt4Fuw9PRGX0gxadXFcnRSTG0Q=;
+        b=mZ49T6ZPEyZCC1pwf9r3Am19lhgltKzQYucXa1x+bu8k1heIdnm1495V2ekRmLikCB
+         km1PSkluj6U2RnYGyCbbGiN+DCx3EouEBJVz9OnutxnQgaxqvukBurUhDqCEN6BnnYB4
+         QWo7btWgRZWc1WGh8ip80Iy8bGOZNTdUFM8h59ByuukwKSNq50CjfCYdwropWBBwSql6
+         J5yF9h7Qs5+cKpel7Z/9rnIM3GyVyDdTCheg0HhEb8t3HZXwd0IeiD4lHxYVedFTVvn1
+         D+SmGXC7DUN0IuKPtHdnADvmwoO3uN1NLxGukvA0tTBZoWbG9CBdJ8pEiU6rxaLdJH83
+         nDKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:mime-version:references:in-reply-to:from
+         :date:message-id:subject:to:cc;
+        bh=tzDrHmFEcYK0I28RjAt4Fuw9PRGX0gxadXFcnRSTG0Q=;
+        b=ZkNAsiCyGLSkQnf5+sgiAVyPc7ZrnROQs7DvJ6oxW14U5rJ7uQhrS65kxQzMGV2ilg
+         LCNvK0lYEcsoOt7zsGyXv8X7EbohInPKH3OpExCmRK1Akec5GqDRa3c28C5tVbK0JB/f
+         1DuohfPjv6jZayi/1rQ1vIpRthE9+kFjYmY792CVBEHuUhsXHMeMT7stnWpHmIWvfM4Q
+         gEB3D9ilHLd1clJfySXys+/HvyGxWEOKrgkOkcQ9GU+TyZ7OicUp3wDf/4vPCkLbDRFR
+         /1p9DgznXlpGoXAIGp81qcfYXz0vZ3x7Mx97KZj/mUitXeZNd48N3mGrsUhZ4jpuM5T4
+         vc9g==
+X-Gm-Message-State: APjAAAUqJauMYJdx9eBt0DWe1gzVCXZHBttaRLPPIA5+dqj8ru6Voyl8
+        yjBy0nnnC4biq3LpgymZs6Y+Eg==
+X-Google-Smtp-Source: APXvYqzu7br4vKdPTd8chj2nuB+5kW8vtOIzXF2DFgc/O7N8xCo1m6HFuQgX2Rm4ouYocgtvvF266A==
+X-Received: by 2002:a9d:5502:: with SMTP id l2mr33832oth.309.1566600853740;
+        Fri, 23 Aug 2019 15:54:13 -0700 (PDT)
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com. [209.85.210.47])
+        by smtp.gmail.com with ESMTPSA id j189sm1220305oih.30.2019.08.23.15.54.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Aug 2019 15:54:12 -0700 (PDT)
+Received: by mail-ot1-f47.google.com with SMTP id c7so10247336otp.1;
+        Fri, 23 Aug 2019 15:54:12 -0700 (PDT)
+X-Received: by 2002:a9d:2cc:: with SMTP id 70mr3070288otl.145.1566600852132;
+ Fri, 23 Aug 2019 15:54:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.100.3/25550/Fri Aug 23 10:25:33 2019)
+References: <20190822205533.4877-1-david.abdurachmanov@sifive.com>
+In-Reply-To: <20190822205533.4877-1-david.abdurachmanov@sifive.com>
+From:   Carlos Eduardo de Paula <me@carlosedp.com>
+Date:   Fri, 23 Aug 2019 19:54:01 -0300
+X-Gmail-Original-Message-ID: <CADnnUqe2Phwy7cUAaawLzcBLbMtHKvJPr9Gmn9zQsVSGf_K=VA@mail.gmail.com>
+Message-ID: <CADnnUqe2Phwy7cUAaawLzcBLbMtHKvJPr9Gmn9zQsVSGf_K=VA@mail.gmail.com>
+Subject: Re: [PATCH v2] riscv: add support for SECCOMP and SECCOMP_FILTER
+To:     David Abdurachmanov <david.abdurachmanov@gmail.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Abdurachmanov <david.abdurachmanov@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Vincent Chen <vincentc@andestech.com>,
+        Alan Kao <alankao@andestech.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzkaller managed to trigger the warning in bpf_jit_free() which checks via
-bpf_prog_kallsyms_verify_off() for potentially unlinked JITed BPF progs
-in kallsyms, and subsequently trips over GPF when walking kallsyms entries:
+On Thu, Aug 22, 2019 at 5:56 PM David Abdurachmanov
+<david.abdurachmanov@gmail.com> wrote:
+>
+> This patch was extensively tested on Fedora/RISCV (applied by default on
+> top of 5.2-rc7 kernel for <2 months). The patch was also tested with 5.3-rc
+> on QEMU and SiFive Unleashed board.
+>
+> libseccomp (userspace) was rebased:
+> https://github.com/seccomp/libseccomp/pull/134
+>
+> Fully passes libseccomp regression testing (simulation and live).
+>
+> There is one failing kernel selftest: global.user_notification_signal
+>
+> v1 -> v2:
+>   - return immediatly if secure_computing(NULL) returns -1
+>   - fixed whitespace issues
+>   - add missing seccomp.h
+>   - remove patch #2 (solved now)
+>   - add riscv to seccomp kernel selftest
+>
+> Cc: keescook@chromium.org
+> Cc: me@carlosedp.com
+>
+> Signed-off-by: David Abdurachmanov <david.abdurachmanov@sifive.com>
+> ---
+>  arch/riscv/Kconfig                            | 14 ++++++++++
+>  arch/riscv/include/asm/seccomp.h              | 10 +++++++
+>  arch/riscv/include/asm/thread_info.h          |  5 +++-
+>  arch/riscv/kernel/entry.S                     | 27 +++++++++++++++++--
+>  arch/riscv/kernel/ptrace.c                    | 10 +++++++
+>  tools/testing/selftests/seccomp/seccomp_bpf.c |  8 +++++-
+>  6 files changed, 70 insertions(+), 4 deletions(-)
+>  create mode 100644 arch/riscv/include/asm/seccomp.h
+>
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 59a4727ecd6c..441e63ff5adc 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -31,6 +31,7 @@ config RISCV
+>         select GENERIC_SMP_IDLE_THREAD
+>         select GENERIC_ATOMIC64 if !64BIT
+>         select HAVE_ARCH_AUDITSYSCALL
+> +       select HAVE_ARCH_SECCOMP_FILTER
+>         select HAVE_MEMBLOCK_NODE_MAP
+>         select HAVE_DMA_CONTIGUOUS
+>         select HAVE_FUTEX_CMPXCHG if FUTEX
+> @@ -235,6 +236,19 @@ menu "Kernel features"
+>
+>  source "kernel/Kconfig.hz"
+>
+> +config SECCOMP
+> +       bool "Enable seccomp to safely compute untrusted bytecode"
+> +       help
+> +         This kernel feature is useful for number crunching applications
+> +         that may need to compute untrusted bytecode during their
+> +         execution. By using pipes or other transports made available to
+> +         the process as file descriptors supporting the read/write
+> +         syscalls, it's possible to isolate those applications in
+> +         their own address space using seccomp. Once seccomp is
+> +         enabled via prctl(PR_SET_SECCOMP), it cannot be disabled
+> +         and the task is only allowed to execute a few safe syscalls
+> +         defined by each seccomp mode.
+> +
+>  endmenu
+>
+>  menu "Boot options"
+> diff --git a/arch/riscv/include/asm/seccomp.h b/arch/riscv/include/asm/seccomp.h
+> new file mode 100644
+> index 000000000000..bf7744ee3b3d
+> --- /dev/null
+> +++ b/arch/riscv/include/asm/seccomp.h
+> @@ -0,0 +1,10 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef _ASM_SECCOMP_H
+> +#define _ASM_SECCOMP_H
+> +
+> +#include <asm/unistd.h>
+> +
+> +#include <asm-generic/seccomp.h>
+> +
+> +#endif /* _ASM_SECCOMP_H */
+> diff --git a/arch/riscv/include/asm/thread_info.h b/arch/riscv/include/asm/thread_info.h
+> index 905372d7eeb8..a0b2a29a0da1 100644
+> --- a/arch/riscv/include/asm/thread_info.h
+> +++ b/arch/riscv/include/asm/thread_info.h
+> @@ -75,6 +75,7 @@ struct thread_info {
+>  #define TIF_MEMDIE             5       /* is terminating due to OOM killer */
+>  #define TIF_SYSCALL_TRACEPOINT  6       /* syscall tracepoint instrumentation */
+>  #define TIF_SYSCALL_AUDIT      7       /* syscall auditing */
+> +#define TIF_SECCOMP            8       /* syscall secure computing */
+>
+>  #define _TIF_SYSCALL_TRACE     (1 << TIF_SYSCALL_TRACE)
+>  #define _TIF_NOTIFY_RESUME     (1 << TIF_NOTIFY_RESUME)
+> @@ -82,11 +83,13 @@ struct thread_info {
+>  #define _TIF_NEED_RESCHED      (1 << TIF_NEED_RESCHED)
+>  #define _TIF_SYSCALL_TRACEPOINT        (1 << TIF_SYSCALL_TRACEPOINT)
+>  #define _TIF_SYSCALL_AUDIT     (1 << TIF_SYSCALL_AUDIT)
+> +#define _TIF_SECCOMP           (1 << TIF_SECCOMP)
+>
+>  #define _TIF_WORK_MASK \
+>         (_TIF_NOTIFY_RESUME | _TIF_SIGPENDING | _TIF_NEED_RESCHED)
+>
+>  #define _TIF_SYSCALL_WORK \
+> -       (_TIF_SYSCALL_TRACE | _TIF_SYSCALL_TRACEPOINT | _TIF_SYSCALL_AUDIT)
+> +       (_TIF_SYSCALL_TRACE | _TIF_SYSCALL_TRACEPOINT | _TIF_SYSCALL_AUDIT | \
+> +        _TIF_SECCOMP )
+>
+>  #endif /* _ASM_RISCV_THREAD_INFO_H */
+> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+> index bc7a56e1ca6f..0bbedfa3e47d 100644
+> --- a/arch/riscv/kernel/entry.S
+> +++ b/arch/riscv/kernel/entry.S
+> @@ -203,8 +203,25 @@ check_syscall_nr:
+>         /* Check to make sure we don't jump to a bogus syscall number. */
+>         li t0, __NR_syscalls
+>         la s0, sys_ni_syscall
+> -       /* Syscall number held in a7 */
+> -       bgeu a7, t0, 1f
+> +       /*
+> +        * The tracer can change syscall number to valid/invalid value.
+> +        * We use syscall_set_nr helper in syscall_trace_enter thus we
+> +        * cannot trust the current value in a7 and have to reload from
+> +        * the current task pt_regs.
+> +        */
+> +       REG_L a7, PT_A7(sp)
+> +       /*
+> +        * Syscall number held in a7.
+> +        * If syscall number is above allowed value, redirect to ni_syscall.
+> +        */
+> +       bge a7, t0, 1f
+> +       /*
+> +        * Check if syscall is rejected by tracer or seccomp, i.e., a7 == -1.
+> +        * If yes, we pretend it was executed.
+> +        */
+> +       li t1, -1
+> +       beq a7, t1, ret_from_syscall_rejected
+> +       /* Call syscall */
+>         la s0, sys_call_table
+>         slli t0, a7, RISCV_LGPTR
+>         add s0, s0, t0
+> @@ -215,6 +232,12 @@ check_syscall_nr:
+>  ret_from_syscall:
+>         /* Set user a0 to kernel a0 */
+>         REG_S a0, PT_A0(sp)
+> +       /*
+> +        * We didn't execute the actual syscall.
+> +        * Seccomp already set return value for the current task pt_regs.
+> +        * (If it was configured with SECCOMP_RET_ERRNO/TRACE)
+> +        */
+> +ret_from_syscall_rejected:
+>         /* Trace syscalls, but only if requested by the user. */
+>         REG_L t0, TASK_TI_FLAGS(tp)
+>         andi t0, t0, _TIF_SYSCALL_WORK
+> diff --git a/arch/riscv/kernel/ptrace.c b/arch/riscv/kernel/ptrace.c
+> index 368751438366..63e47c9f85f0 100644
+> --- a/arch/riscv/kernel/ptrace.c
+> +++ b/arch/riscv/kernel/ptrace.c
+> @@ -154,6 +154,16 @@ void do_syscall_trace_enter(struct pt_regs *regs)
+>                 if (tracehook_report_syscall_entry(regs))
+>                         syscall_set_nr(current, regs, -1);
+>
+> +       /*
+> +        * Do the secure computing after ptrace; failures should be fast.
+> +        * If this fails we might have return value in a0 from seccomp
+> +        * (via SECCOMP_RET_ERRNO/TRACE).
+> +        */
+> +       if (secure_computing(NULL) == -1) {
+> +               syscall_set_nr(current, regs, -1);
+> +               return;
+> +       }
+> +
+>  #ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
+>         if (test_thread_flag(TIF_SYSCALL_TRACEPOINT))
+>                 trace_sys_enter(regs, syscall_get_nr(current, regs));
+> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> index 6ef7f16c4cf5..492e0adad9d3 100644
+> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
+> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> @@ -112,6 +112,8 @@ struct seccomp_data {
+>  #  define __NR_seccomp 383
+>  # elif defined(__aarch64__)
+>  #  define __NR_seccomp 277
+> +# elif defined(__riscv)
+> +#  define __NR_seccomp 277
+>  # elif defined(__hppa__)
+>  #  define __NR_seccomp 338
+>  # elif defined(__powerpc__)
+> @@ -1582,6 +1584,10 @@ TEST_F(TRACE_poke, getpid_runs_normally)
+>  # define ARCH_REGS     struct user_pt_regs
+>  # define SYSCALL_NUM   regs[8]
+>  # define SYSCALL_RET   regs[0]
+> +#elif defined(__riscv) && __riscv_xlen == 64
+> +# define ARCH_REGS     struct user_regs_struct
+> +# define SYSCALL_NUM   a7
+> +# define SYSCALL_RET   a0
+>  #elif defined(__hppa__)
+>  # define ARCH_REGS     struct user_regs_struct
+>  # define SYSCALL_NUM   gr[20]
+> @@ -1671,7 +1677,7 @@ void change_syscall(struct __test_metadata *_metadata,
+>         EXPECT_EQ(0, ret) {}
+>
+>  #if defined(__x86_64__) || defined(__i386__) || defined(__powerpc__) || \
+> -    defined(__s390__) || defined(__hppa__)
+> +    defined(__s390__) || defined(__hppa__) || defined(__riscv)
+>         {
+>                 regs.SYSCALL_NUM = syscall;
+>         }
+> --
+> 2.21.0
+>
 
-  [...]
-  8021q: adding VLAN 0 to HW filter on device batadv0
-  8021q: adding VLAN 0 to HW filter on device batadv0
-  WARNING: CPU: 0 PID: 9869 at kernel/bpf/core.c:810 bpf_jit_free+0x1e8/0x2a0
-  Kernel panic - not syncing: panic_on_warn set ...
-  CPU: 0 PID: 9869 Comm: kworker/0:7 Not tainted 5.0.0-rc8+ #1
-  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-  Workqueue: events bpf_prog_free_deferred
-  Call Trace:
-   __dump_stack lib/dump_stack.c:77 [inline]
-   dump_stack+0x113/0x167 lib/dump_stack.c:113
-   panic+0x212/0x40b kernel/panic.c:214
-   __warn.cold.8+0x1b/0x38 kernel/panic.c:571
-   report_bug+0x1a4/0x200 lib/bug.c:186
-   fixup_bug arch/x86/kernel/traps.c:178 [inline]
-   do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:271
-   do_invalid_op+0x36/0x40 arch/x86/kernel/traps.c:290
-   invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:973
-  RIP: 0010:bpf_jit_free+0x1e8/0x2a0
-  Code: 02 4c 89 e2 83 e2 07 38 d0 7f 08 84 c0 0f 85 86 00 00 00 48 ba 00 02 00 00 00 00 ad de 0f b6 43 02 49 39 d6 0f 84 5f fe ff ff <0f> 0b e9 58 fe ff ff 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1
-  RSP: 0018:ffff888092f67cd8 EFLAGS: 00010202
-  RAX: 0000000000000007 RBX: ffffc90001947000 RCX: ffffffff816e9d88
-  RDX: dead000000000200 RSI: 0000000000000008 RDI: ffff88808769f7f0
-  RBP: ffff888092f67d00 R08: fffffbfff1394059 R09: fffffbfff1394058
-  R10: fffffbfff1394058 R11: ffffffff89ca02c7 R12: ffffc90001947002
-  R13: ffffc90001947020 R14: ffffffff881eca80 R15: ffff88808769f7e8
-  BUG: unable to handle kernel paging request at fffffbfff400d000
-  #PF error: [normal kernel read fault]
-  PGD 21ffee067 P4D 21ffee067 PUD 21ffed067 PMD 9f942067 PTE 0
-  Oops: 0000 [#1] PREEMPT SMP KASAN
-  CPU: 0 PID: 9869 Comm: kworker/0:7 Not tainted 5.0.0-rc8+ #1
-  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-  Workqueue: events bpf_prog_free_deferred
-  RIP: 0010:bpf_get_prog_addr_region kernel/bpf/core.c:495 [inline]
-  RIP: 0010:bpf_tree_comp kernel/bpf/core.c:558 [inline]
-  RIP: 0010:__lt_find include/linux/rbtree_latch.h:115 [inline]
-  RIP: 0010:latch_tree_find include/linux/rbtree_latch.h:208 [inline]
-  RIP: 0010:bpf_prog_kallsyms_find+0x107/0x2e0 kernel/bpf/core.c:632
-  Code: 00 f0 ff ff 44 38 c8 7f 08 84 c0 0f 85 fa 00 00 00 41 f6 45 02 01 75 02 0f 0b 48 39 da 0f 82 92 00 00 00 48 89 d8 48 c1 e8 03 <42> 0f b6 04 30 84 c0 74 08 3c 03 0f 8e 45 01 00 00 8b 03 48 c1 e0
-  [...]
-
-Upon further debugging, it turns out that whenever we trigger this
-issue, the kallsyms removal in bpf_prog_ksym_node_del() was /skipped/
-but yet bpf_jit_free() reported that the entry is /in use/.
-
-Problem is that symbol exposure via bpf_prog_kallsyms_add() but also
-perf_event_bpf_event() were done /after/ bpf_prog_new_fd(). Once the
-fd is exposed to the public, a parallel close request came in right
-before we attempted to do the bpf_prog_kallsyms_add().
-
-Given at this time the prog reference count is one, we start to rip
-everything underneath us via bpf_prog_release() -> bpf_prog_put().
-The memory is eventually released via deferred free, so we're seeing
-that bpf_jit_free() has a kallsym entry because we added it from
-bpf_prog_load() but /after/ bpf_prog_put() from the remote CPU.
-
-Therefore, move both notifications /before/ we install the fd. The
-issue was never seen between bpf_prog_alloc_id() and bpf_prog_new_fd()
-because upon bpf_prog_get_fd_by_id() we'll take another reference to
-the BPF prog, so we're still holding the original reference from the
-bpf_prog_load().
-
-Fixes: 6ee52e2a3fe4 ("perf, bpf: Introduce PERF_RECORD_BPF_EVENT")
-Fixes: 74451e66d516 ("bpf: make jited programs visible in traces")
-Reported-by: syzbot+bd3bba6ff3fcea7a6ec6@syzkaller.appspotmail.com
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Song Liu <songliubraving@fb.com>
----
- kernel/bpf/syscall.c | 30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
-
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 5d141f16f6fa..272071e9112f 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1707,20 +1707,26 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
- 	if (err)
- 		goto free_used_maps;
- 
--	err = bpf_prog_new_fd(prog);
--	if (err < 0) {
--		/* failed to allocate fd.
--		 * bpf_prog_put() is needed because the above
--		 * bpf_prog_alloc_id() has published the prog
--		 * to the userspace and the userspace may
--		 * have refcnt-ed it through BPF_PROG_GET_FD_BY_ID.
--		 */
--		bpf_prog_put(prog);
--		return err;
--	}
--
-+	/* Upon success of bpf_prog_alloc_id(), the BPF prog is
-+	 * effectively publicly exposed. However, retrieving via
-+	 * bpf_prog_get_fd_by_id() will take another reference,
-+	 * therefore it cannot be gone underneath us.
-+	 *
-+	 * Only for the time /after/ successful bpf_prog_new_fd()
-+	 * and before returning to userspace, we might just hold
-+	 * one reference and any parallel close on that fd could
-+	 * rip everything out. Hence, below notifications must
-+	 * happen before bpf_prog_new_fd().
-+	 *
-+	 * Also, any failure handling from this point onwards must
-+	 * be using bpf_prog_put() given the program is exposed.
-+	 */
- 	bpf_prog_kallsyms_add(prog);
- 	perf_event_bpf_event(prog, PERF_BPF_EVENT_PROG_LOAD, 0);
-+
-+	err = bpf_prog_new_fd(prog);
-+	if (err < 0)
-+		bpf_prog_put(prog);
- 	return err;
- 
- free_used_maps:
+Tested-by: Carlos de Paula <me@carlosedp.com>
 -- 
-2.21.0
-
+________________________________________
+Carlos Eduardo de Paula
+me@carlosedp.com
+http://carlosedp.com
+http://twitter.com/carlosedp
+Linkedin
+________________________________________
