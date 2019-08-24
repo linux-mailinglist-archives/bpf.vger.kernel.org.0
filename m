@@ -2,30 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 912219BD40
-	for <lists+bpf@lfdr.de>; Sat, 24 Aug 2019 13:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF539BDC3
+	for <lists+bpf@lfdr.de>; Sat, 24 Aug 2019 14:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbfHXLZv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 24 Aug 2019 07:25:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56926 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727604AbfHXLZv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 24 Aug 2019 07:25:51 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FA5D206BB;
-        Sat, 24 Aug 2019 11:25:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1566645950;
-        bh=p0T18Ac2XKyz8tWjMXJ1tfKYxEKJw+mV/K1hBTkTLdM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f2CmPfEKS8W1/Txnq5raX/38HHvvimfslr6SB+oGrQSDls/D7J9Bco9NNUGtujrHs
-         q9PQqsqwGngHAaLNowMgJ+xsUI2EdALL+jZeWRwMzGHHIhF8O1psIuKq8TT86NQQvH
-         m2CGOkOQUmyeA77k5EP7ArwKtxP1l0hRJsvXg1sg=
-Date:   Sat, 24 Aug 2019 12:25:43 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+        id S1728065AbfHXMs5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 24 Aug 2019 08:48:57 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:35652 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727779AbfHXMs5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 24 Aug 2019 08:48:57 -0400
+Received: by mail-lf1-f68.google.com with SMTP id h27so3160401lfp.2;
+        Sat, 24 Aug 2019 05:48:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KWoEeG6vs6VCUSeGXmHbpQT+ujKELvjfgOGYqoxN0II=;
+        b=vFr+uyBDpavs65AlLok3MR+CufBp1mBxwOEujmZshvy2vvsCO8+5X4Jsh5ZvtR3sJy
+         LqavRLPmHKiziNsqIDTFOuYJxCD800oXZyqhwjMtS4ORIeq5F9TP83AO1qiePSK1CPjt
+         1JUUdm11zfj8/kXKFarfgn14mRZOpmXmDEFUgvx88neKoXyvliFkrw/ZYkviDeykkKfs
+         aTgEbKXlrMS2fBVG8WFrJRMa4ClsaeR95IeRpyl6mdJQkbb7bn+GYWOb5wud1DUUkidT
+         CiS1V7SjkEmP/3VcLKiOvE0DHDLYyjxxvNexw0M0vrJV4GMcb6UjursF1lGq8WTufIlZ
+         0fVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KWoEeG6vs6VCUSeGXmHbpQT+ujKELvjfgOGYqoxN0II=;
+        b=iyRQqO8io3WViSA/ceLC2UvOXmc5Et0z9a5rDmSilSlRNW1FPdcRnTTG9bXExq14e+
+         vDEk9Xh3FyxF+uHaWkFj8VG4pIgazYneoyHlwoS+fNUTv8aeAxovMKKefcn5rRGtNLmh
+         2TNHiF3gMWVxcm9hSLYNPXjUIWCK7l+1UOHp4ZQePPjcR+lPXkou/gsYwzMWZDA8mnNL
+         wMqOs5I1ImBORtJyppydbxnVJxb46cqYSuMQuWMoMT3VymchxeU9HUgYoUxFlOiBxBx5
+         wrwMWAKi2Ib0CNdy5xtBXB6b9y3i92tjeM5jXNQOwVNy3dwAolPK5B1eiQzqKsLUYQdJ
+         vvXw==
+X-Gm-Message-State: APjAAAUrScnOqgEcm00geEqqiEcfsEXd3+rFeJPvdkmxKzluT0gYIXa+
+        7UIHg8RQJeQaUbQcH3mFdN0soq0yap9EpbOLT7I=
+X-Google-Smtp-Source: APXvYqwnCZ2QCveajf6BQHzrths1C2ZlN+b/72OTA3OlX8P3zC8nnVXdt5C9XMQ+b2iPAbpk1uaWSvp2qjQP5rbA5/U=
+X-Received: by 2002:ac2:546c:: with SMTP id e12mr5441079lfn.133.1566650934562;
+ Sat, 24 Aug 2019 05:48:54 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190812215052.71840-1-ndesaulniers@google.com>
+ <20190812215052.71840-12-ndesaulniers@google.com> <20190813082744.xmzmm4j675rqiz47@willie-the-truck>
+ <CANiq72mAfJ23PyWzZAELgbKQDCX2nvY0z+dmOMe14qz=wa6eFg@mail.gmail.com>
+ <20190813170829.c3lryb6va3eopxd7@willie-the-truck> <CAKwvOdk4hca8WzWzhcPEvxXnJVLbXGnhBdDZbeL_W_H91Ttjqw@mail.gmail.com>
+ <CANiq72mGoGpx7EAVUPcGuhVkLit8sB3bR-k1XBDyeM8HBUaDZw@mail.gmail.com>
+ <CANiq72nUyT-q3A9mTrYzPZ+J9Ya7Lns5MyTK7W7-7yXgFWc2xA@mail.gmail.com>
+ <CANiq72nfn4zxAO63GEEoUjumC6Jwi5_jdcD_5Xzt1vZRgh52fg@mail.gmail.com> <20190824112542.7guulvdenm35ihs7@willie-the-truck>
+In-Reply-To: <20190824112542.7guulvdenm35ihs7@willie-the-truck>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sat, 24 Aug 2019 14:48:43 +0200
+Message-ID: <CANiq72mcSniCzMzW6AX_5tG5W2edjEmZ=Rf=jo-Mw3H-9RVJqw@mail.gmail.com>
+Subject: Re: [PATCH 12/16] arm64: prefer __section from compiler_attributes.h
+To:     Will Deacon <will@kernel.org>
 Cc:     Nick Desaulniers <ndesaulniers@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Sedat Dilek <sedat.dilek@gmail.com>,
@@ -50,39 +78,27 @@ Cc:     Nick Desaulniers <ndesaulniers@google.com>,
         linux-kernel <linux-kernel@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
         bpf@vger.kernel.org
-Subject: Re: [PATCH 12/16] arm64: prefer __section from compiler_attributes.h
-Message-ID: <20190824112542.7guulvdenm35ihs7@willie-the-truck>
-References: <20190812215052.71840-1-ndesaulniers@google.com>
- <20190812215052.71840-12-ndesaulniers@google.com>
- <20190813082744.xmzmm4j675rqiz47@willie-the-truck>
- <CANiq72mAfJ23PyWzZAELgbKQDCX2nvY0z+dmOMe14qz=wa6eFg@mail.gmail.com>
- <20190813170829.c3lryb6va3eopxd7@willie-the-truck>
- <CAKwvOdk4hca8WzWzhcPEvxXnJVLbXGnhBdDZbeL_W_H91Ttjqw@mail.gmail.com>
- <CANiq72mGoGpx7EAVUPcGuhVkLit8sB3bR-k1XBDyeM8HBUaDZw@mail.gmail.com>
- <CANiq72nUyT-q3A9mTrYzPZ+J9Ya7Lns5MyTK7W7-7yXgFWc2xA@mail.gmail.com>
- <CANiq72nfn4zxAO63GEEoUjumC6Jwi5_jdcD_5Xzt1vZRgh52fg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANiq72nfn4zxAO63GEEoUjumC6Jwi5_jdcD_5Xzt1vZRgh52fg@mail.gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 23, 2019 at 09:35:08PM +0200, Miguel Ojeda wrote:
-> On Thu, Aug 15, 2019 at 11:12 AM Miguel Ojeda
-> <miguel.ojeda.sandonis@gmail.com> wrote:
-> >
-> > Btw, I guess that is the Oops you were mentioning in the cover letter?
-> 
-> Pinging about this...
+On Sat, Aug 24, 2019 at 1:25 PM Will Deacon <will@kernel.org> wrote:
+>
+> Which bit are you pinging about? This patch (12/16) has been in -next for a
+> while and is queued in the arm64 tree for 5.4. The Oops/boot issue is
+> addressed in patch 14 which probably needs to be sent as a separate patch
+> (with a commit message) if it's targetting 5.3 and, I assume, routed via
+> somebody like akpm.
 
-Which bit are you pinging about? This patch (12/16) has been in -next for a
-while and is queued in the arm64 tree for 5.4. The Oops/boot issue is
-addressed in patch 14 which probably needs to be sent as a separate patch
-(with a commit message) if it's targetting 5.3 and, I assume, routed via
-somebody like akpm.
+I was pinging about the bit I was quoting, i.e. whether the Oops in
+the cover letter was #14 indeed. Also, since Nick said he wanted to
+get this ASAP through compiler-attributes, I assumed he wanted it to
+be in 5.3, but I have not seen the independent patch.
 
-Will
+Since he seems busy, I will write a better commit message myself and
+send it to Linus next week.
+
+Cheers,
+Miguel
