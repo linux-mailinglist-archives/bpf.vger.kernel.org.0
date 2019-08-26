@@ -2,128 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 499579D438
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2019 18:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408AD9D499
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2019 19:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732900AbfHZQlv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Aug 2019 12:41:51 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:35932 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732627AbfHZQlv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Aug 2019 12:41:51 -0400
-Received: by mail-ed1-f68.google.com with SMTP id g24so43400edu.3
-        for <bpf@vger.kernel.org>; Mon, 26 Aug 2019 09:41:50 -0700 (PDT)
+        id S1728808AbfHZREG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Aug 2019 13:04:06 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:35491 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727205AbfHZREG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Aug 2019 13:04:06 -0400
+Received: by mail-pl1-f196.google.com with SMTP id gn20so10324249plb.2
+        for <bpf@vger.kernel.org>; Mon, 26 Aug 2019 10:04:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=sUOyFBT2+8QqNk5UJQIBj6nCxO+4SHMbLqF7J7W/NhI=;
-        b=LrOoB8mx7pwy349C38sVSk3ZgMzTc/zFD3rmQww2ovzBa6mV9c48mAMHVruoePFfKI
-         YJOdX2aAgJBsD5nlz/or/tNH/F1Cd/tOVg9g+CC44sh0taWQ0IhbrkDtz6BEe/K9M56p
-         Zh129KoOT3usmeT2/UgmpEsyO3f8OcTUKB1qx0nuNSqK42UbAHyAp7UbQ/VmDVqr0vnO
-         f+trBL1Awdu3i2+4DBzzDsqP5ZVbYzwR6aQ8e58L3q7XGQE1J+94ixPNyCor552hInGn
-         RfA9dln1blHWPuMyea1MJ2+OerKUjaY/86qEu7OZTO+KJYBi9mHt5Ns6NgaJjmX7cTdG
-         NNWQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FQr2+CCalKgDrA12cz6kTPFlEgpE4NTSJBHk84k9KlA=;
+        b=gK38A443J07JEv1eh/lZRr+OP0alDEoLrPFRvrv0zx5PtWmDjpTo4wBqkXvanXqjRb
+         womdthz/nhAEw63Hr7UOKqCsf5KERELbxa/Zr5s1O5Mzy8LBJsr8yN34FuO60Jm1IiuT
+         UXgjQtyVt5Gwo0tmxjHxcSj1RAoSitwBdXQW+n+vaJbaaYkMDPtVzPJwmd0tSg3sXNDU
+         lXcphOgTaWgiVrnkBPDWoXbkjGp9PS3O27W1GwLxqG5n+xVP2vtsFBG1IBPoNTpGRS7K
+         eRy5w6Wx8de29tC7h1k4Md4ZVCe4WSHKOUNT+qXUDzCB4ozgZaUlDffa25kNVr4n4ayr
+         MYlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=sUOyFBT2+8QqNk5UJQIBj6nCxO+4SHMbLqF7J7W/NhI=;
-        b=APc2p+cQU8yjO1hCqeRQRX/PZc/b+hIQXTNOQMceN6ti5sSSQvwQw/E2YO3O1iHfLz
-         EsY2Ju1zI94UmK/FSO5RDaFjLXJJojrDRZb47aWv7VjOATlz4G8qUtGgV4djR1E2pNL+
-         POrl6HezgC2O98zzb/4SSwh0HHarfvVMX5uM0cyzsEQnsjmKVAAtm87ydJxxf8di+xeK
-         PrEx7BrxGWZu8vEugq4kjb7OBttdHi87Pt2m5LC4JwB/9Pww+4OyZceNHaBVtIzogAVC
-         D96h0W0+SvWf3ZvAFdxTP45XEhJMKQ36HhvHUGFuP3cHG8somRs8bf7M191GYsfDNRok
-         EhWQ==
-X-Gm-Message-State: APjAAAU93A52irUJrZ0J/H4Msun3BMRqutLYAOERdihPC1nbKi9o+iCz
-        +VuUwzC3yUI8US9DKBszvoDLnw==
-X-Google-Smtp-Source: APXvYqzY4N30xw3vQHFEyJ5Xq6qPEyBfCSuJzko5PdbB5tOoObXrkYkezylbeknuj0Tf8aF0qs31tA==
-X-Received: by 2002:a05:6402:8c9:: with SMTP id d9mr19437197edz.154.1566837710037;
-        Mon, 26 Aug 2019 09:41:50 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id f6sm1405942edn.63.2019.08.26.09.41.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Aug 2019 09:41:49 -0700 (PDT)
-Date:   Mon, 26 Aug 2019 09:41:29 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Song Liu <liu.song.a23@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        OSS Drivers <oss-drivers@netronome.com>,
-        Jiong Wang <jiong.wang@netronome.com>
-Subject: Re: [PATCH bpf] nfp: bpf: fix latency bug when updating stack index
- register
-Message-ID: <20190826094129.3d28ce64@cakuba.netronome.com>
-In-Reply-To: <1417962c-e63d-6c46-bf07-9284f5332583@iogearbox.net>
-References: <20190824020028.6242-1-jakub.kicinski@netronome.com>
-        <CAPhsuW7_dSEPJOdKApQFU-aVmEXgOwmqLS7S1FC4JtnzjR6OiQ@mail.gmail.com>
-        <CAJpBn1z736w5_uv7apwyy82vzcnc9c5Gua_9ZyUy-pSEwnQewA@mail.gmail.com>
-        <CAADnVQ++TEUK=Cb3sCyunFyYFcpXu=NK71P4-1rEWEGCGewU7A@mail.gmail.com>
-        <1417962c-e63d-6c46-bf07-9284f5332583@iogearbox.net>
-Organization: Netronome Systems, Ltd.
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FQr2+CCalKgDrA12cz6kTPFlEgpE4NTSJBHk84k9KlA=;
+        b=rJklV6NIt3PPQdIaiwJCkD/204hCDID+80KNCN3jHaf+hbDSd/WJgTn94FoDlIPmjy
+         oLv1htDjo0W4lzu7YrlAEXE6xXtI1am8BdN2WJSKon/WdBken9CXlY/+mt+KZLN7Wid/
+         ZwDU8vkOioVi5bYaHaCloPldHHEeN8lhWtMtsZJz2E6kF/yRSVgY0K7wSxyxP4S5KOED
+         Lcg2Fuas0NOwn2f8k2PoNc2sCLG27g0bBAfxPKnvXyJDhdBdcuyKrhhPg6Tvo56Gs4E1
+         F1GVlu0B7zrfLc8UKZPZnXlHzITwyBtprnCCwA9ZtUKaQLd51CUNf/rKfiLCuM0SPOxy
+         kGtw==
+X-Gm-Message-State: APjAAAXSYPvIAODQEDbH4z73rEnorq+SCF89T7w6HE178UBVCRgmZS6m
+        QntNaUZDMwhTWdmRRD+x7jiPGknzqq/GyOiQ8Zo2Nw==
+X-Google-Smtp-Source: APXvYqxjWDEwbkiE2ZsJXoDXKy8bI8tnus4ZqI8PGuQRfd0/qEvKV0AcHKVrO9J3tvHAbI2QR49LL7GHmT1tgXzHaKI=
+X-Received: by 2002:a17:902:8484:: with SMTP id c4mr19844087plo.223.1566839045123;
+ Mon, 26 Aug 2019 10:04:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20190812215052.71840-1-ndesaulniers@google.com>
+ <20190812215052.71840-12-ndesaulniers@google.com> <20190813082744.xmzmm4j675rqiz47@willie-the-truck>
+ <CANiq72mAfJ23PyWzZAELgbKQDCX2nvY0z+dmOMe14qz=wa6eFg@mail.gmail.com>
+ <20190813170829.c3lryb6va3eopxd7@willie-the-truck> <CAKwvOdk4hca8WzWzhcPEvxXnJVLbXGnhBdDZbeL_W_H91Ttjqw@mail.gmail.com>
+ <CANiq72mGoGpx7EAVUPcGuhVkLit8sB3bR-k1XBDyeM8HBUaDZw@mail.gmail.com>
+ <CANiq72nUyT-q3A9mTrYzPZ+J9Ya7Lns5MyTK7W7-7yXgFWc2xA@mail.gmail.com>
+ <CANiq72nfn4zxAO63GEEoUjumC6Jwi5_jdcD_5Xzt1vZRgh52fg@mail.gmail.com>
+ <20190824112542.7guulvdenm35ihs7@willie-the-truck> <CANiq72mcSniCzMzW6AX_5tG5W2edjEmZ=Rf=jo-Mw3H-9RVJqw@mail.gmail.com>
+In-Reply-To: <CANiq72mcSniCzMzW6AX_5tG5W2edjEmZ=Rf=jo-Mw3H-9RVJqw@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 26 Aug 2019 10:03:53 -0700
+Message-ID: <CAKwvOdkhJQEwWNZSC08sg9vGjydTXrbqNqNrqfN6vbRZUsjGvA@mail.gmail.com>
+Subject: Re: [PATCH 12/16] arm64: prefer __section from compiler_attributes.h
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Yonghong Song <yhs@fb.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Enrico Weigelt <info@metux.net>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Allison Randal <allison@lohutok.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 26 Aug 2019 18:25:10 +0200, Daniel Borkmann wrote:
-> On 8/26/19 6:18 PM, Alexei Starovoitov wrote:
-> > On Mon, Aug 26, 2019 at 8:57 AM Jakub Kicinski
-> > <jakub.kicinski@netronome.com> wrote:  
-> >> On Sun, Aug 25, 2019 at 10:37 PM Song Liu <liu.song.a23@gmail.com> wrote:  
-> >>> On Fri, Aug 23, 2019 at 7:04 PM Jakub Kicinski wrote:  
-> >>>> From: Jiong Wang <jiong.wang@netronome.com>
-> >>>>
-> >>>> NFP is using Local Memory to model stack. LM_addr could be used as base of
-> >>>> a 16 32-bit word region of Local Memory. Then, if the stack offset is
-> >>>> beyond the current region, the local index needs to be updated. The update
-> >>>> needs at least three cycles to take effect, therefore the sequence normally
-> >>>> looks like:
-> >>>>
-> >>>>    local_csr_wr[ActLMAddr3, gprB_5]
-> >>>>    nop
-> >>>>    nop
-> >>>>    nop
-> >>>>
-> >>>> If the local index switch happens on a narrow loads, then the instruction
-> >>>> preparing value to zero high 32-bit of the destination register could be
-> >>>> counted as one cycle, the sequence then could be something like:
-> >>>>
-> >>>>    local_csr_wr[ActLMAddr3, gprB_5]
-> >>>>    nop
-> >>>>    nop
-> >>>>    immed[gprB_5, 0]
-> >>>>
-> >>>> However, we have zero extension optimization that zeroing high 32-bit could
-> >>>> be eliminated, therefore above IMMED insn won't be available for which case
-> >>>> the first sequence needs to be generated.
-> >>>>
-> >>>> Fixes: 0b4de1ff19bf ("nfp: bpf: eliminate zero extension code-gen")
-> >>>> Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
-> >>>> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>  
-> >>> I haven't looked into the code yet. But ^^^ should be
-> >>>
-> >>> Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-> >>>
-> >>> right?  
-> >>
-> >> I prefer Review on code I review, ack on code I ack, and sign-off on
-> >> code I co-author.  
-> > 
-> > I believe if you're sending somebody else patch you have to add your SOB
-> > in addition to their 'Author:' and their SOB fields.  
-> 
-> +1, for co-authoring there's a 'Co-authored-by:' tag which seems to be frequently
-> used these days.
+On Sat, Aug 24, 2019 at 5:48 AM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> On Sat, Aug 24, 2019 at 1:25 PM Will Deacon <will@kernel.org> wrote:
+> >
+> > Which bit are you pinging about? This patch (12/16) has been in -next for a
+> > while and is queued in the arm64 tree for 5.4. The Oops/boot issue is
+> > addressed in patch 14 which probably needs to be sent as a separate patch
+> > (with a commit message) if it's targetting 5.3 and, I assume, routed via
+> > somebody like akpm.
+>
+> I was pinging about the bit I was quoting, i.e. whether the Oops in
+> the cover letter was #14 indeed. Also, since Nick said he wanted to
+> get this ASAP through compiler-attributes, I assumed he wanted it to
+> be in 5.3, but I have not seen the independent patch.
+>
+> Since he seems busy, I will write a better commit message myself and
+> send it to Linus next week.
 
-Ack, there is a difference between co-author of code, and co-author as
-step by step guidance. I've been doing this for 6 years now, and nobody
-ever complained :)
-
-Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-
-Is that enough or should I repost?
+Sorry, very hectic week here last week.  I'll try to get the import
+bit split off, collect the acks/reviewed-by tags, and resend a v2 of
+the series this week.
+-- 
+Thanks,
+~Nick Desaulniers
