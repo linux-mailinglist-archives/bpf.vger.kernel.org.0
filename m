@@ -2,278 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BEDE9D29D
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2019 17:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2407F9D384
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2019 17:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729183AbfHZPZA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Aug 2019 11:25:00 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:43412 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729144AbfHZPZA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Aug 2019 11:25:00 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20190826152457euoutp01d82f5a140f3a53b21c83c3da8b0fb6fa~_gmalYrzE1730017300euoutp01L
-        for <bpf@vger.kernel.org>; Mon, 26 Aug 2019 15:24:57 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20190826152457euoutp01d82f5a140f3a53b21c83c3da8b0fb6fa~_gmalYrzE1730017300euoutp01L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1566833097;
-        bh=EwDiHvSYuFXDPIALtgIl5Mu8Pp/J0q9o3l5QYy9kxT8=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=W/XKlOQQl3txQwRzHN8SsWQyBmEFdYyPHhnD/4SdA5bCXacoZZTbE9wE8pVbwf9C0
-         aRlvKm3Znj4auuX1TP92+kx36e6jyDuBEwj+bQ5lhBIcfeHW6fARI21PyleUEL7fth
-         FsaVyAFD+20gAZDLq2dFxWr7g4CojrcWdk4CooGw=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20190826152456eucas1p1356062a3f133b4376b5ac11286ce1a3e~_gmZ0cLPh1540715407eucas1p1H;
-        Mon, 26 Aug 2019 15:24:56 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id DC.CD.04374.8C9F36D5; Mon, 26
-        Aug 2019 16:24:56 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20190826152455eucas1p2ec110333877e4d7154bae9a04b8a3758~_gmY4Ta4Q2401024010eucas1p2o;
-        Mon, 26 Aug 2019 15:24:55 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20190826152455eusmtrp28725afcaa615081e2aa0cdf74bbbf8db~_gmYqM0gO0175601756eusmtrp2L;
-        Mon, 26 Aug 2019 15:24:55 +0000 (GMT)
-X-AuditID: cbfec7f5-4f7ff70000001116-ce-5d63f9c8b0cd
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 9E.76.04117.7C9F36D5; Mon, 26
-        Aug 2019 16:24:55 +0100 (BST)
-Received: from [106.109.129.180] (unknown [106.109.129.180]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20190826152454eusmtip21dfd7593c285e9140c3b266d977a314a~_gmXyUbxe2608326083eusmtip2y;
-        Mon, 26 Aug 2019 15:24:54 +0000 (GMT)
-Subject: Re: [PATCH bpf-next v2 2/4] xsk: add proper barriers and {READ,
- WRITE}_ONCE-correctness for state
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, magnus.karlsson@gmail.com,
-        bpf@vger.kernel.org, jonathan.lemon@gmail.com,
-        syzbot+c82697e3043781e08802@syzkaller.appspotmail.com,
-        hdanton@sina.com
-From:   Ilya Maximets <i.maximets@samsung.com>
-Message-ID: <14576fd3-69ce-6493-5a38-c47566851d4e@samsung.com>
-Date:   Mon, 26 Aug 2019 18:24:53 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
-        Thunderbird/60.8.0
+        id S1730965AbfHZP5l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Aug 2019 11:57:41 -0400
+Received: from mail-ua1-f68.google.com ([209.85.222.68]:41333 "EHLO
+        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728350AbfHZP5l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Aug 2019 11:57:41 -0400
+Received: by mail-ua1-f68.google.com with SMTP id x2so1188261uar.8
+        for <bpf@vger.kernel.org>; Mon, 26 Aug 2019 08:57:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GFnOT6vgu+r/lhkNN/tQF3NbbQWiENZLqVFsUKVA5rU=;
+        b=BMInD5xOvrN2i1SL0H0iqKlICinwarz2/UC6/LzJNY+/qGEXF89sf1f+lUQOpeR8NJ
+         jGrnv2++PVMJVjokc31NuRgeM0ObSc6MxtkUlTyYOrQBQ6mOpuj3xtE53u8cFLJoB1Kp
+         Z6NnmdQdc4OTbghXq1k8XmPqTS/kpYhuXdQjuenDJtwpPIiY5kcorpFRuryTKSKwaTJw
+         O4Opi8YPvYB3rKZfFaE0YxFCVSIEncAk1kEn85a7Uq4HYMCARrcOWX2/dhzZDJhtkePR
+         wRUdL8i8g19avjYI7BJA9ifJTjDPQjuEzUovBDZVMwGB5mTgxIn+jZrZLRm+mBCQkKUP
+         JUcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GFnOT6vgu+r/lhkNN/tQF3NbbQWiENZLqVFsUKVA5rU=;
+        b=FuvsWjQKM1WCQXdXAGyv8P0EYPH/CucY6py6+YYiwrAFNYxOY/zJnPYPfFRTFg4AHK
+         oZ7TyATkVFYzpTWJI98ya0v7sOrfI2AbjJct6TiZw+QWjU32V7G+G0DVH6+NaDD40HGA
+         6zPceNDcLwMFQRTsKozmD2/QlqA+XkAYpHXAX0rfElYwmCcWM4YwgqfSOa66dyHvd4WW
+         j3kp8vFjSKvTKI1PCr1fWegwRztjD+Fq2lhO1TwS7pJeKNUJ0au6RsVxrkQevMdOpre4
+         os4gTk9PPA2wrbktoi7sBM45ZeTtixwGui3mS6jhXFZirBAWASRkp+7ahFkYtJTRSj1H
+         f1sw==
+X-Gm-Message-State: APjAAAUyvkGc5BYMF3EN9X8upE6ih1ctvATSLek1o+DZiT2B8w1QLJRR
+        miDHNypaC20OkB/6LGTjwvt78zsgbBan0ZH3jZvi1A==
+X-Google-Smtp-Source: APXvYqxb9EOME/yS8FxXdJ9AuKzls2c+zYtIBAXjNTg2VvJzAn/Vo1vD5JBG2oa2MXhSHox+v35wp+ejnd+eCrSR7Pk=
+X-Received: by 2002:ab0:e19:: with SMTP id g25mr8360418uak.71.1566835060171;
+ Mon, 26 Aug 2019 08:57:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190826061053.15996-3-bjorn.topel@gmail.com>
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfSzUcRzHfe93Dz/m7OtHfFJLu6X1IJJav0roYetW//RPrZjVxW/HOkd3
-        iLTiMomSqZEzYTKPE0K5VFzmKXObEcLSYlwiT+GWyN2P5b/X5+H9+Xze24ckKB3PgQyShzEK
-        uUQm4ltwa5oMun0tBn+//bo6ET1n6BfQurQ2Pr0UX47o2cZmPp2XO0/Q9YZRLt113yCgNWUZ
-        BF0aF8uhC7UtAropx46e18m9LcW16kGBOK9OzxEn9nYS4sriB3xxclUxEqeOnRFnTOwUz1Zu
-        O0/6WHgEMLKgCEbh6nnVIjC/R8UL7dsVOb7ymohBDY6JyJwEfBBeZcbyEpEFSeFCBBmF1QQb
-        zCFYbCtHbDCL4Gn/CLEuScpqNzGFCxD0LUaxTdMIvkwVcI0FGyyDvlEN38i2+DY8VPWYJhF4
-        CsFKRbJJzcfO0FbSiIwsxJ6g6qgXGJmLnaCzaswk3oQvwczQRx7bYw2tGcOmBeb4GFT/1ZuY
-        wPagmivisewI96ozTR4A6wWQNMwOAnwaUt4+WbNgAz+aqwQsb4WV2mwOy3fha5weseIEBOna
-        5bWCF1SNd6wKyNUNu+GlxpVNn4C4Ui1hTAO2gt4Ja/YGK0itSV9LCyEhnmK7d8CfhoK1Cxyg
-        b3JWkIJE6g3O1BvcqDe4Uf/fm4O4xcieCVcGSxmlu5y56aKUBCvD5VIX/5DgSrT6Zp+Wm3+/
-        Qe+XrmkRJpHIUgjt/n4UTxKhjArWIiAJka1Q5irxo4QBkqhbjCLkiiJcxii1aAvJFdkLo82G
-        fCkslYQx1xkmlFGsVzmkuUMMUufryy47wruIqQ8Uys0iPe/4ftO2TpZ/djo0UzKCo3yiZ3py
-        2xe8S92pw6dSuvYmNJzrzfLqXPh+8sBc7sWBG5sJ/mOFx4u47nHN8YFH2udtlmZnZ5yjf0l5
-        FX4TDaoVYv7Cs7DFoC5NZNrPo3ZD3dn67YYjZUWcsCVptdv0YKCIqwyUuO0hFErJP6lauali
-        AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrEIsWRmVeSWpSXmKPExsVy+t/xe7rHfybHGvQuU7H48vM2u8X5aafY
-        LP60bWC0+HzkOJvF4oXfmC0O/HzOYnGl/Se7xa51M5kt1rQ0MlmsOHSC3eLYAjGLb+fzHHg8
-        ds66y+6xeM9LJo+uG5eYPTat6mTz6NuyitFj0gt3j5lv1Tw+b5IL4IjSsynKLy1JVcjILy6x
-        VYo2tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcksSy3St0vQy1h6vYm14KZGxev/25kbGA/K
-        dzFyckgImEh0zz3D3MXIxSEksJRR4lLrBRaIhJTEj18XWCFsYYk/17rYIIreM0p8nzGLDSQh
-        LJAjcfP5LjBbRKBGYu7On0wgNrPAB0aJjZ+4IRr2M0rsvvcBbCqbgI7EqdVHGEFsXgE7iaZz
-        B9hBbBYBVYlLW16ADRIViJA4vGMWVI2gxMmZT8B6OQWsJbb+fckCsUBd4s+8S8wQtrhE05eV
-        rBC2vETz1tnMExiFZiFpn4WkZRaSlllIWhYwsqxiFEktLc5Nzy020itOzC0uzUvXS87P3cQI
-        jN9tx35u2cHY9S74EKMAB6MSD6/EmeRYIdbEsuLK3EOMEhzMSiK8OfqJsUK8KYmVValF+fFF
-        pTmpxYcYTYGem8gsJZqcD0wteSXxhqaG5haWhubG5sZmFkrivB0CB2OEBNITS1KzU1MLUotg
-        +pg4OKUaGCtmtvYLhpXMmHd0abTNokm3W9bdsSiWfSrMM+VhnPJ/U7VLcX5CG/P+SWRbT3B5
-        8yBH7MaGjW82CNf9q6nZ+v0767tZW6J2zpy71yC/YEL5WTUp5etPZNdYL5+qKLnX8oCLkcq+
-        l0oMV26xPk9qkdcIXJjRVLzH63LUWyeFeP67V00MFqdmVSmxFGckGmoxFxUnAgAdTHO99QIA
-        AA==
-X-CMS-MailID: 20190826152455eucas1p2ec110333877e4d7154bae9a04b8a3758
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20190826061127epcas5p21bb790365a436ff234d77786f03729f8
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20190826061127epcas5p21bb790365a436ff234d77786f03729f8
-References: <20190826061053.15996-1-bjorn.topel@gmail.com>
-        <CGME20190826061127epcas5p21bb790365a436ff234d77786f03729f8@epcas5p2.samsung.com>
-        <20190826061053.15996-3-bjorn.topel@gmail.com>
+References: <20190824020028.6242-1-jakub.kicinski@netronome.com> <CAPhsuW7_dSEPJOdKApQFU-aVmEXgOwmqLS7S1FC4JtnzjR6OiQ@mail.gmail.com>
+In-Reply-To: <CAPhsuW7_dSEPJOdKApQFU-aVmEXgOwmqLS7S1FC4JtnzjR6OiQ@mail.gmail.com>
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+Date:   Mon, 26 Aug 2019 08:57:17 -0700
+Message-ID: <CAJpBn1z736w5_uv7apwyy82vzcnc9c5Gua_9ZyUy-pSEwnQewA@mail.gmail.com>
+Subject: Re: [PATCH bpf] nfp: bpf: fix latency bug when updating stack index register
+To:     Song Liu <liu.song.a23@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        OSS Drivers <oss-drivers@netronome.com>,
+        Jiong Wang <jiong.wang@netronome.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 26.08.2019 9:10, Björn Töpel wrote:
-> From: Björn Töpel <bjorn.topel@intel.com>
-> 
-> The state variable was read, and written outside the control mutex
-> (struct xdp_sock, mutex), without proper barriers and {READ,
-> WRITE}_ONCE correctness.
-> 
-> In this commit this issue is addressed, and the state member is now
-> used a point of synchronization whether the socket is setup correctly
-> or not.
-> 
-> This also fixes a race, found by syzcaller, in xsk_poll() where umem
-> could be accessed when stale.
-> 
-> Suggested-by: Hillf Danton <hdanton@sina.com>
-> Reported-by: syzbot+c82697e3043781e08802@syzkaller.appspotmail.com
-> Fixes: 77cd0d7b3f25 ("xsk: add support for need_wakeup flag in AF_XDP rings")
-> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
-> ---
->  net/xdp/xsk.c | 57 ++++++++++++++++++++++++++++++++++++---------------
->  1 file changed, 40 insertions(+), 17 deletions(-)
-> 
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index f3351013c2a5..8fafa3ce3ae6 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -162,10 +162,23 @@ static int __xsk_rcv_zc(struct xdp_sock *xs, struct xdp_buff *xdp, u32 len)
->  	return err;
->  }
->  
-> +static bool xsk_is_bound(struct xdp_sock *xs)
-> +{
-> +	if (READ_ONCE(xs->state) == XSK_BOUND) {
-> +		/* Matches smp_wmb() in bind(). */
-> +		smp_rmb();
-> +		return true;
-> +	}
-> +	return false;
-> +}
-> +
->  int xsk_rcv(struct xdp_sock *xs, struct xdp_buff *xdp)
->  {
->  	u32 len;
->  
-> +	if (!xsk_is_bound(xs))
-> +		return -EINVAL;
-> +
->  	if (xs->dev != xdp->rxq->dev || xs->queue_id != xdp->rxq->queue_index)
->  		return -EINVAL;
->  
-> @@ -362,7 +375,7 @@ static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
->  	struct sock *sk = sock->sk;
->  	struct xdp_sock *xs = xdp_sk(sk);
->  
-> -	if (unlikely(!xs->dev))
-> +	if (unlikely(!xsk_is_bound(xs)))
->  		return -ENXIO;
->  	if (unlikely(!(xs->dev->flags & IFF_UP)))
->  		return -ENETDOWN;
-> @@ -378,10 +391,15 @@ static unsigned int xsk_poll(struct file *file, struct socket *sock,
->  			     struct poll_table_struct *wait)
->  {
->  	unsigned int mask = datagram_poll(file, sock, wait);
-> -	struct sock *sk = sock->sk;
-> -	struct xdp_sock *xs = xdp_sk(sk);
-> -	struct net_device *dev = xs->dev;
-> -	struct xdp_umem *umem = xs->umem;
-> +	struct xdp_sock *xs = xdp_sk(sock->sk);
-> +	struct net_device *dev;
-> +	struct xdp_umem *umem;
-> +
-> +	if (unlikely(!xsk_is_bound(xs)))
-> +		return mask;
-> +
-> +	dev = xs->dev;
-> +	umem = xs->umem;
->  
->  	if (umem->need_wakeup)
->  		dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id,
-> @@ -417,10 +435,9 @@ static void xsk_unbind_dev(struct xdp_sock *xs)
->  {
->  	struct net_device *dev = xs->dev;
->  
-> -	if (!dev || xs->state != XSK_BOUND)
-> +	if (xs->state != XSK_BOUND)
->  		return;
-> -
-> -	xs->state = XSK_UNBOUND;
-> +	WRITE_ONCE(xs->state, XSK_UNBOUND);
->  
->  	/* Wait for driver to stop using the xdp socket. */
->  	xdp_del_sk_umem(xs->umem, xs);
-> @@ -495,7 +512,9 @@ static int xsk_release(struct socket *sock)
->  	local_bh_enable();
->  
->  	xsk_delete_from_maps(xs);
-> +	mutex_lock(&xs->mutex);
->  	xsk_unbind_dev(xs);
-> +	mutex_unlock(&xs->mutex);
->  
->  	xskq_destroy(xs->rx);
->  	xskq_destroy(xs->tx);
-> @@ -589,19 +608,18 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
->  		}
->  
->  		umem_xs = xdp_sk(sock->sk);
-> -		if (!umem_xs->umem) {
-> -			/* No umem to inherit. */
-> +		if (!xsk_is_bound(umem_xs)) {
+On Sun, Aug 25, 2019 at 10:37 PM Song Liu <liu.song.a23@gmail.com> wrote:
+> On Fri, Aug 23, 2019 at 7:04 PM Jakub Kicinski wrote:
+> > From: Jiong Wang <jiong.wang@netronome.com>
+> >
+> > NFP is using Local Memory to model stack. LM_addr could be used as base of
+> > a 16 32-bit word region of Local Memory. Then, if the stack offset is
+> > beyond the current region, the local index needs to be updated. The update
+> > needs at least three cycles to take effect, therefore the sequence normally
+> > looks like:
+> >
+> >   local_csr_wr[ActLMAddr3, gprB_5]
+> >   nop
+> >   nop
+> >   nop
+> >
+> > If the local index switch happens on a narrow loads, then the instruction
+> > preparing value to zero high 32-bit of the destination register could be
+> > counted as one cycle, the sequence then could be something like:
+> >
+> >   local_csr_wr[ActLMAddr3, gprB_5]
+> >   nop
+> >   nop
+> >   immed[gprB_5, 0]
+> >
+> > However, we have zero extension optimization that zeroing high 32-bit could
+> > be eliminated, therefore above IMMED insn won't be available for which case
+> > the first sequence needs to be generated.
+> >
+> > Fixes: 0b4de1ff19bf ("nfp: bpf: eliminate zero extension code-gen")
+> > Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
+> > Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+> I haven't looked into the code yet. But ^^^ should be
+>
+> Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+>
+> right?
 
-This changes the error code a bit.
-Previously:
-   umem exists + xs unbound    --> EINVAL
-   no umem     + xs unbound    --> EBADF
-   xs bound to different dev/q --> EINVAL
-
-With this change:
-   umem exists + xs unbound    --> EBADF
-   no umem     + xs unbound    --> EBADF
-   xs bound to different dev/q --> EINVAL
-
-Just a note. Not sure if this is important.
-
-
->  			err = -EBADF;
->  			sockfd_put(sock);
->  			goto out_unlock;
-> -		} else if (umem_xs->dev != dev || umem_xs->queue_id != qid) {
-> +		}
-> +		if (umem_xs->dev != dev || umem_xs->queue_id != qid) {
->  			err = -EINVAL;
->  			sockfd_put(sock);
->  			goto out_unlock;
->  		}
-> -
->  		xdp_get_umem(umem_xs->umem);
-> -		xs->umem = umem_xs->umem;
-> +		WRITE_ONCE(xs->umem, umem_xs->umem);
->  		sockfd_put(sock);
->  	} else if (!xs->umem || !xdp_umem_validate_queues(xs->umem)) {
->  		err = -EINVAL;
-> @@ -626,10 +644,15 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
->  	xdp_add_sk_umem(xs->umem, xs);
->  
->  out_unlock:
-> -	if (err)
-> +	if (err) {
->  		dev_put(dev);
-> -	else
-> -		xs->state = XSK_BOUND;
-> +	} else {
-> +		/* Matches smp_rmb() in bind() for shared umem
-> +		 * sockets, and xsk_is_bound().
-> +		 */
-> +		smp_wmb();
-> +		WRITE_ONCE(xs->state, XSK_BOUND);
-> +	}
->  out_release:
->  	mutex_unlock(&xs->mutex);
->  	rtnl_unlock();
-> @@ -869,7 +892,7 @@ static int xsk_mmap(struct file *file, struct socket *sock,
->  	unsigned long pfn;
->  	struct page *qpg;
->  
-> -	if (xs->state != XSK_READY)
-> +	if (READ_ONCE(xs->state) != XSK_READY)
->  		return -EBUSY;
->  
->  	if (offset == XDP_PGOFF_RX_RING) {
-> 
+I prefer Review on code I review, ack on code I ack, and sign-off on
+code I co-author.
