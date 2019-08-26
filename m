@@ -2,96 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7872E9C8B4
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2019 07:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87049C8F7
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2019 08:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729137AbfHZFhC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Aug 2019 01:37:02 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:41977 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726994AbfHZFhC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Aug 2019 01:37:02 -0400
-Received: by mail-qk1-f193.google.com with SMTP id g17so13139296qkk.8;
-        Sun, 25 Aug 2019 22:37:01 -0700 (PDT)
+        id S1729331AbfHZGLR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Aug 2019 02:11:17 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:35211 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729303AbfHZGLQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Aug 2019 02:11:16 -0400
+Received: by mail-pl1-f193.google.com with SMTP id gn20so9480312plb.2;
+        Sun, 25 Aug 2019 23:11:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HXFMCXkCtgEG+phWKWnvagB67xULZR7CQP4q4jOM2lg=;
-        b=aq403RUvXVjuLSvz2zD1kizG72TAxSRezq5Y+xhceIuN/bwQk2tUiBUw7ZiZWcgCxU
-         BTkqE1g8czsGJ7Wjxfg8f/mpfEyMYduJV4w/0xZxdK8w2Ec66W63UX5yTsE/jPvIkISf
-         j1nuqGSkXoa9q9ytX+0ZN1Ty3eSD6tGwvwK1GwyBg7oOar+B/PYf2mHOwWXvSdJ04Y3x
-         GvBvkDGVDgqFH3Ma4Kt55dnD1qdIpCW0RPSXxhORlT+OGCTz4HjIFqzGsmGSg14f2xA4
-         f1rJMK8IfM+WGsNFRTj6yvwQbh6MxtHHR2oRwXvOYh/mjBqDtuVJ21NQA3Y/cna6S+PX
-         j+ZA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HQ8V7KQdw5JCSfSPNekTuVfm5OO1JCPPgl/Rgpn3re8=;
+        b=KBme8iaqhcnzlcwDy3uY3cH9m/T+YIJqeSodLY8BGqVm07b8wX8q6Jzhdh6MymsRok
+         G5gVWPaxUMCh4d/ALf0XIUkqHy4x4OJEcciXcaeTAwQ9lkBkQU2eE1ExSA/v+GMNZtag
+         joSQp2UWnhz87wlO6zHNk+aCgGbukxflFfIJnHtGMMryA8W8Xqkfkn1GyI3K7/VYtBMH
+         D2a5My/HlTJonzjWO+vAoCDBwmYA1lRR1FoSX0ajM5rZgNZHmepEQzFv7wrf/nSnHUm+
+         izgldYRYBH+0M1RMB/s5mnce/jzeQklXYLI6td+yIwbiDUSUmTknWsQtF++zfC+FKFrA
+         xHqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HXFMCXkCtgEG+phWKWnvagB67xULZR7CQP4q4jOM2lg=;
-        b=KiTEGtdqFuBQ3zewXWqxbRoweaMYTHbLvSlFB7D15Uef3VjO7B+3nAfj3We9WTVQo7
-         WebzZFK+xAbxga5zSoKmawAuYZa/xQ6os7T3sAU750G+llubrbkppexaG1D4KQcQ8xMA
-         4gT1nvw4rIXsNdUVMiU7A4RxHhfcwYqcH00v28/ereRT5FgxxYl+aJqszfEnZbSkSVlu
-         b5aYz/8ZrZdOXHal3gPk4OO0CpuTO5elCvUoSXnaIiToGMMobS3F9e0B88dZuz10xbQM
-         xqOKSlMSwkEvZyotLlHzYccIV5zjooyvlCOCGpRRiWrQpQnfyzf5kXNtFQ8vgwdQ2nrF
-         NP/Q==
-X-Gm-Message-State: APjAAAVilkViJ+7DypaAllTi470oNxeB3EU9RbXx3UNQDLrMuJtuC6gd
-        uisrQT9N0BwU+jUDfF3l7Yeqb1tTYPg340gYvx8=
-X-Google-Smtp-Source: APXvYqx/G6lkczbgxRbBrMfO1lTyeZ8rYfNgMb4Goyvp+DE8ofSpIn/ML1AxRs4KH9j8OpYdQvtoKsTTtn0m8C6r4YA=
-X-Received: by 2002:ae9:e714:: with SMTP id m20mr14346568qka.72.1566797821536;
- Sun, 25 Aug 2019 22:37:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HQ8V7KQdw5JCSfSPNekTuVfm5OO1JCPPgl/Rgpn3re8=;
+        b=nLcr85R1fy7pPmUYvyApv1d2KZyEiAz0UDYBagkP4l7j06K1y4fa2vldw1/R/tKmGJ
+         MfBpSGizAL9HdVB9hlDbmPbc0emCKlwcK9xSj3RFcTtWRdss94+BERLd0ixkce/kOU6+
+         NBaWXAESH5wUJoeM5L7brhqAgZYmBaAG6pJ6m+v1R4UDqnsAKU8nE9keh6GAx7XxzL9v
+         N8ty30ADQV1V+jO09ZCMKAe8QsEHGKqLxTvFVdimsq+8zAxzIzxcebV1rWfNoRTmC5Q5
+         hyD8niK/FZDwnVimzMTvt41HCG+6FFwFe0OFXTOrMvRCQ9wW8DpkvwnaOzQG+dAgoK+Q
+         R/2A==
+X-Gm-Message-State: APjAAAWDJmB2jOeGhGneeOePYYcQ+ijkjzHS7YHLC0yzHoSLNwkg/Maj
+        /5HeFsl9eIhmaZ1XSkR5N+Y=
+X-Google-Smtp-Source: APXvYqycj8vBcVQwislncSPWkqoedWucbqALM6ke8xmTF3D9d5dG2hbaKo62jSZ6cQu7gnE/SA7azg==
+X-Received: by 2002:a17:902:fa5:: with SMTP id 34mr1886460plz.285.1566799875850;
+        Sun, 25 Aug 2019 23:11:15 -0700 (PDT)
+Received: from btopel-mobl.ger.intel.com ([192.55.54.42])
+        by smtp.gmail.com with ESMTPSA id d2sm9567452pjs.21.2019.08.25.23.11.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Aug 2019 23:11:15 -0700 (PDT)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        magnus.karlsson@intel.com, magnus.karlsson@gmail.com,
+        bpf@vger.kernel.org, bjorn.topel@intel.com,
+        jonathan.lemon@gmail.com,
+        syzbot+c82697e3043781e08802@syzkaller.appspotmail.com,
+        hdanton@sina.com, i.maximets@samsung.com
+Subject: [PATCH bpf-next v2 0/4] xsk: various CPU barrier and {READ, WRITE}_ONCE fixes
+Date:   Mon, 26 Aug 2019 08:10:49 +0200
+Message-Id: <20190826061053.15996-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20190824020028.6242-1-jakub.kicinski@netronome.com>
-In-Reply-To: <20190824020028.6242-1-jakub.kicinski@netronome.com>
-From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Sun, 25 Aug 2019 22:36:50 -0700
-Message-ID: <CAPhsuW7_dSEPJOdKApQFU-aVmEXgOwmqLS7S1FC4JtnzjR6OiQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] nfp: bpf: fix latency bug when updating stack index register
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        oss-drivers@netronome.com, Jiong Wang <jiong.wang@netronome.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 23, 2019 at 7:04 PM Jakub Kicinski
-<jakub.kicinski@netronome.com> wrote:
->
-> From: Jiong Wang <jiong.wang@netronome.com>
->
-> NFP is using Local Memory to model stack. LM_addr could be used as base of
-> a 16 32-bit word region of Local Memory. Then, if the stack offset is
-> beyond the current region, the local index needs to be updated. The update
-> needs at least three cycles to take effect, therefore the sequence normally
-> looks like:
->
->   local_csr_wr[ActLMAddr3, gprB_5]
->   nop
->   nop
->   nop
->
-> If the local index switch happens on a narrow loads, then the instruction
-> preparing value to zero high 32-bit of the destination register could be
-> counted as one cycle, the sequence then could be something like:
->
->   local_csr_wr[ActLMAddr3, gprB_5]
->   nop
->   nop
->   immed[gprB_5, 0]
->
-> However, we have zero extension optimization that zeroing high 32-bit could
-> be eliminated, therefore above IMMED insn won't be available for which case
-> the first sequence needs to be generated.
->
-> Fixes: 0b4de1ff19bf ("nfp: bpf: eliminate zero extension code-gen")
-> Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
-> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-I haven't looked into the code yet. But ^^^ should be
+This is a four patch series of various barrier, {READ, WRITE}_ONCE
+cleanups in the AF_XDP socket code. More details can be found in the
+corresponding commit message.
 
-Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+For an AF_XDP socket, most control plane operations are done under the
+control mutex (struct xdp_sock, mutex), but there are some places
+where members of the struct is read outside the control mutex. This,
+as pointed out by Daniel in [1], requires proper {READ,
+WRITE}_ONCE-correctness [2] [3]. To address this, and to simplify the
+code, the state variable (introduced by Ilya), is now used a point of
+synchronization ("is the socket in a valid state, or not").
 
-right?
+
+Thanks,
+Björn
+
+[1] https://lore.kernel.org/bpf/beef16bb-a09b-40f1-7dd0-c323b4b89b17@iogearbox.net/
+[2] https://lwn.net/Articles/793253/
+[3] https://github.com/google/ktsan/wiki/READ_ONCE-and-WRITE_ONCE
+
+v1->v2:
+  Removed redundant dev check. (Jonathan)
+
+Björn Töpel (4):
+  xsk: avoid store-tearing when assigning queues
+  xsk: add proper barriers and {READ, WRITE}_ONCE-correctness for state
+  xsk: avoid store-tearing when assigning umem
+  xsk: lock the control mutex in sock_diag interface
+
+ net/xdp/xsk.c      | 61 +++++++++++++++++++++++++++++++---------------
+ net/xdp/xsk_diag.c |  3 +++
+ 2 files changed, 45 insertions(+), 19 deletions(-)
+
+-- 
+2.20.1
+
