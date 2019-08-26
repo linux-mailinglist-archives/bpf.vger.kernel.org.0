@@ -2,219 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0C79D5AB
-	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2019 20:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6979D873
+	for <lists+bpf@lfdr.de>; Mon, 26 Aug 2019 23:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731578AbfHZSUm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Aug 2019 14:20:42 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:34270 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730248AbfHZSUl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Aug 2019 14:20:41 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 300783001AB7;
-        Mon, 26 Aug 2019 18:20:41 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-116-102.ams2.redhat.com [10.36.116.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C26CE600C8;
-        Mon, 26 Aug 2019 18:20:38 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     daniel@iogearbox.net, iii@linux.ibm.com, jolsa@redhat.com
-Subject: [RFC PATCH] bpf: s390: add JIT support for multi-function programs
-Date:   Mon, 26 Aug 2019 21:20:36 +0300
-Message-Id: <20190826182036.17456-1-yauheni.kaliuta@redhat.com>
+        id S1728676AbfHZVc7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Aug 2019 17:32:59 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:43280 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728677AbfHZVc7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Aug 2019 17:32:59 -0400
+Received: by mail-ed1-f66.google.com with SMTP id h13so28370180edq.10
+        for <bpf@vger.kernel.org>; Mon, 26 Aug 2019 14:32:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=gBwDGsC6foYqXEPI47ZDhCrEWzYaPgLkTrUQJeVlEUI=;
+        b=axgBS9niHQTJhaOHrQVs/D2379m7mRjRRp7N1UPdbqaCZiWXR3Vse9jTmhow2Jku5N
+         j+jjfar6Dnw3/lU8toCSl/ZVoXiOyNUDafjN3UEhIzpExBk1mNyidPpfk03+k5DM1Ciq
+         mqPeyWHxTLlrHCxTrXYLQ724ccQg4L5yCgIX1+LRRoCmOvS3AwYIfazHmf2VXgPup2r+
+         1M39IHjlLvRS3cRHySK/29E6hnO4mUnZw3y10DVSVpPltPBRV15e6UbS2VSPkh/hcX6G
+         pCAKeJ6C6RTBg0DzTMuGUwoitsT/VnzjMjKUwWkremtCLqPQ4PoX7ScYLVQHHkf/TrUz
+         ODWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=gBwDGsC6foYqXEPI47ZDhCrEWzYaPgLkTrUQJeVlEUI=;
+        b=l51CNJ+PEvmC8t/3mqB4rve4irsyzxquGWEWOGSjzb2IEzrdPwsOK8XovY5x4T3UC0
+         XgRP1zBS4TJSv8I83UdUiWzDzOTblUN6emgUGoJLM5ByX3o0Yb7xDWzSyT/v/uRFegwJ
+         /YZp2K2ACg5HvV64KMdj3KytVvcs6yX6e0clM7VtV1ZRofqBgSt2Z4VdZ2SZoWAHyseM
+         aYwofu9t61wv8LesDOyPxN/PgyoEf6RfyS4Zsq0Oml+w/KFsLa0ZuSjYU5lOFaI8XfbJ
+         phreTG2Hv/nJjmtYsTjbqqOihfqp7IAZywle3LgsduB/EzL2r3cN0P6Nd28roHwc8SVM
+         A4ZQ==
+X-Gm-Message-State: APjAAAXcMU2hQzKW1U7uJ2Ni7VpYjAthYgHsIrVRe1N60QuIHU9j4Zxe
+        qsLCuvsF0E2X2mhesn88r+8m7A==
+X-Google-Smtp-Source: APXvYqzquzVt14p3LLDL+d3Z5AzbHNSEdgfLktAqh2hV/Fjlt9aM1wW8rtmdqp+rQakkGhepRtZVXw==
+X-Received: by 2002:a50:f70b:: with SMTP id g11mr2398581edn.263.1566855177482;
+        Mon, 26 Aug 2019 14:32:57 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id oq26sm3058283ejb.66.2019.08.26.14.32.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Aug 2019 14:32:57 -0700 (PDT)
+Date:   Mon, 26 Aug 2019 14:32:37 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Mallesham Jatharakonda <mallesh537@gmail.com>
+Cc:     borisp@mellanox.com, davejwatson@fb.com, daniel@iogearbox.net,
+        davem@davemloft.net, ast@kernel.org, kafai@fb.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: TLS record double free
+Message-ID: <20190826143237.7dd91c62@cakuba.netronome.com>
+In-Reply-To: <CADgrbRrtawBDAnk+E-PBUd2qiEd7Q3SrvF7F+HVjsE=6JAnvHg@mail.gmail.com>
+References: <CADgrbRrtawBDAnk+E-PBUd2qiEd7Q3SrvF7F+HVjsE=6JAnvHg@mail.gmail.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.42]); Mon, 26 Aug 2019 18:20:41 +0000 (UTC)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds support for bpf-to-bpf function calls in the s390 JIT
-compiler. The JIT compiler converts the bpf call instructions to
-native branch instructions. After a round of the usual passes, the
-start addresses of the JITed images for the callee functions are
-known. Finally, to fixup the branch target addresses, we need to
-perform an extra pass.
+Thank you for the report.
 
-Because of the address range in which JITed images are allocated on
-s390, the offsets of the start addresses of these images from
-__bpf_call_base are as large as 64 bits. So, for a function call,
-the imm field of the instruction cannot be used to determine the
-callee's address. Use bpf_jit_get_func_addr() helper instead.
+On Sun, 25 Aug 2019 22:21:50 +0530, Mallesham Jatharakonda wrote:
+> Hi All,
+> 
+> Am facing one tls double while using the Nitrox(cavium) card and n5pf
+> driver over the TLS module.
+> 
+> Please see the below details:
+> 
+> TLS module is crashing While running SSL record encryption using
+> Klts_send_[file]
+> 
+> Precondition:
+> 1) Installed 5.3-rc4.
+> 2) Nitrox5 card pluggin.
 
-The patch borrows a lot from:
+Presumably this card contains a crypto accelerator? Does it have any
+special characteristic which could help us narrow down the bug search?
 
-8c11ea5ce13d bpf, arm64: fix getting subprog addr from aux for calls
-e2c95a61656d bpf, ppc64: generalize fetching subprog into bpf_jit_get_func_addr
-8484ce8306f9 bpf: powerpc64: add JIT support for multi-function programs
+Before we proceed - are you able to reproduce this issue with an
+pure upstream kernel? It seems the kernel in the BUG report is tainted.
 
-(including the commit message).
-
-test_verifier (5.3-rc6):
-
-without patch:
-Summary: 1501 PASSED, 0 SKIPPED, 47 FAILED
-
-with patch:
-Summary: 1540 PASSED, 0 SKIPPED, 8 FAILED
-
-Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
----
- arch/s390/net/bpf_jit_comp.c | 63 +++++++++++++++++++++++++++++-------
- 1 file changed, 52 insertions(+), 11 deletions(-)
-
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index e636728ab452..39329c20dcbb 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -502,7 +502,8 @@ static void bpf_jit_epilogue(struct bpf_jit *jit, u32 stack_depth)
-  * NOTE: Use noinline because for gcov (-fprofile-arcs) gcc allocates a lot of
-  * stack space for the large switch statement.
-  */
--static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i)
-+static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
-+				 int i, bool extra_pass)
- {
- 	struct bpf_insn *insn = &fp->insnsi[i];
- 	int jmp_off, last, insn_count = 1;
-@@ -1011,10 +1012,14 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
- 	 */
- 	case BPF_JMP | BPF_CALL:
- 	{
--		/*
--		 * b0 = (__bpf_call_base + imm)(b1, b2, b3, b4, b5)
--		 */
--		const u64 func = (u64)__bpf_call_base + imm;
-+		u64 func;
-+		bool func_addr_fixed;
-+		int ret;
-+
-+		ret = bpf_jit_get_func_addr(fp, insn, extra_pass,
-+					    &func, &func_addr_fixed);
-+		if (ret < 0)
-+			return ret;
- 
- 		REG_SET_SEEN(BPF_REG_5);
- 		jit->seen |= SEEN_FUNC;
-@@ -1281,7 +1286,7 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
- /*
-  * Compile eBPF program into s390x code
-  */
--static int bpf_jit_prog(struct bpf_jit *jit, struct bpf_prog *fp)
-+static int bpf_jit_prog(struct bpf_jit *jit, struct bpf_prog *fp, bool extra_pass)
- {
- 	int i, insn_count;
- 
-@@ -1290,7 +1295,7 @@ static int bpf_jit_prog(struct bpf_jit *jit, struct bpf_prog *fp)
- 
- 	bpf_jit_prologue(jit, fp->aux->stack_depth);
- 	for (i = 0; i < fp->len; i += insn_count) {
--		insn_count = bpf_jit_insn(jit, fp, i);
-+		insn_count = bpf_jit_insn(jit, fp, i, extra_pass);
- 		if (insn_count < 0)
- 			return -1;
- 		/* Next instruction address */
-@@ -1309,6 +1314,12 @@ bool bpf_jit_needs_zext(void)
- 	return true;
- }
- 
-+
-+struct s390_jit_data {
-+	struct bpf_binary_header *header;
-+	struct bpf_jit ctx;
-+};
-+
- /*
-  * Compile eBPF program "fp"
-  */
-@@ -1316,7 +1327,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- {
- 	struct bpf_prog *tmp, *orig_fp = fp;
- 	struct bpf_binary_header *header;
-+	struct s390_jit_data *jit_data;
- 	bool tmp_blinded = false;
-+	bool extra_pass = false;
- 	struct bpf_jit jit;
- 	int pass;
- 
-@@ -1335,6 +1348,22 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		fp = tmp;
- 	}
- 
-+	jit_data = fp->aux->jit_data;
-+	if (!jit_data) {
-+		jit_data = kzalloc(sizeof(*jit_data), GFP_KERNEL);
-+		if (!jit_data) {
-+			fp = orig_fp;
-+			goto out;
-+		}
-+		fp->aux->jit_data = jit_data;
-+	}
-+	if (jit_data->ctx.addrs) {
-+		jit = jit_data->ctx;
-+		header = jit_data->header;
-+		extra_pass = true;
-+		goto skip_init_ctx;
-+	}
-+
- 	memset(&jit, 0, sizeof(jit));
- 	jit.addrs = kcalloc(fp->len + 1, sizeof(*jit.addrs), GFP_KERNEL);
- 	if (jit.addrs == NULL) {
-@@ -1347,7 +1376,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	 *   - 3:   Calculate program size and addrs arrray
- 	 */
- 	for (pass = 1; pass <= 3; pass++) {
--		if (bpf_jit_prog(&jit, fp)) {
-+		if (bpf_jit_prog(&jit, fp, extra_pass)) {
- 			fp = orig_fp;
- 			goto free_addrs;
- 		}
-@@ -1359,12 +1388,14 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		fp = orig_fp;
- 		goto free_addrs;
- 	}
-+
- 	header = bpf_jit_binary_alloc(jit.size, &jit.prg_buf, 2, jit_fill_hole);
- 	if (!header) {
- 		fp = orig_fp;
- 		goto free_addrs;
- 	}
--	if (bpf_jit_prog(&jit, fp)) {
-+skip_init_ctx:
-+	if (bpf_jit_prog(&jit, fp, extra_pass)) {
- 		bpf_jit_binary_free(header);
- 		fp = orig_fp;
- 		goto free_addrs;
-@@ -1373,12 +1404,22 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		bpf_jit_dump(fp->len, jit.size, pass, jit.prg_buf);
- 		print_fn_code(jit.prg_buf, jit.size_prg);
- 	}
--	bpf_jit_binary_lock_ro(header);
-+	if (!fp->is_func || extra_pass) {
-+		bpf_jit_binary_lock_ro(header);
-+	} else {
-+		jit_data->header = header;
-+		jit_data->ctx = jit;
-+	}
- 	fp->bpf_func = (void *) jit.prg_buf;
- 	fp->jited = 1;
- 	fp->jited_len = jit.size;
-+
-+	if (!fp->is_func || extra_pass) {
- free_addrs:
--	kfree(jit.addrs);
-+		kfree(jit.addrs);
-+		kfree(jit_data);
-+		fp->aux->jit_data = NULL;
-+	}
- out:
- 	if (tmp_blinded)
- 		bpf_jit_prog_release_other(fp, fp == orig_fp ?
--- 
-2.22.0
-
+> Steps to produce the issue:
+> 1) Install n5pf.ko.(drivers/crypto/cavium/nitrox)
+> 2) Install tls.ko if not is installed by default(net/tls)
+> 3) Taken uperf tool from git.
+>    3.1) Modified uperf to use tls module by using setsocket.
+>    3.2) Modified uperf tool to support sendfile with SSL.
+> 
+> 
+> Test:
+> 1) Running uperf with 4threads.
+> 2) Each Thread send the data using sendfile over SSL protocol.
+> 
+> 
+> After few seconds kernel is crashing because of record list corruption
+> 
+> 
+> [  270.888952] ------------[ cut here ]------------
+> [  270.890450] list_del corruption, ffff91cc3753a800->prev is
+> LIST_POISON2 (dead000000000122)
+> [  270.891194] WARNING: CPU: 1 PID: 7387 at lib/list_debug.c:50
+> __list_del_entry_valid+0x62/0x90
+> [  270.892037] Modules linked in: n5pf(OE) netconsole tls(OE) bonding
+> intel_rapl_msr intel_rapl_common sb_edac x86_pkg_temp_thermal
+> intel_powerclamp coretemp kvm_intel kvm iTCO_wdt iTCO_vendor_support
+> irqbypass crct10dif_pclmul crc32_pclmul ghash_clmulni_intel
+> aesni_intel crypto_simd mei_me cryptd glue_helper ipmi_si sg mei
+> lpc_ich pcspkr joydev ioatdma i2c_i801 ipmi_devintf ipmi_msghandler
+> wmi ip_tables xfs libcrc32c sd_mod mgag200 drm_vram_helper ttm
+> drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops drm isci
+> libsas ahci scsi_transport_sas libahci crc32c_intel serio_raw igb
+> libata ptp pps_core dca i2c_algo_bit dm_mirror dm_region_hash dm_log
+> dm_mod [last unloaded: nitrox_drv]
+> [  270.896836] CPU: 1 PID: 7387 Comm: uperf Kdump: loaded Tainted: G
+>         OE     5.3.0-rc4 #1
