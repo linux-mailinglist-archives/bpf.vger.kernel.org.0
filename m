@@ -2,240 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 83FA29E645
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2019 13:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F669E91B
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2019 15:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729140AbfH0LA1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Aug 2019 07:00:27 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:51766 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725793AbfH0LA1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Aug 2019 07:00:27 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20190827110024euoutp015846902293aaf66113a3bba1dee303d2~_wot2jLI21940819408euoutp015
-        for <bpf@vger.kernel.org>; Tue, 27 Aug 2019 11:00:24 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20190827110024euoutp015846902293aaf66113a3bba1dee303d2~_wot2jLI21940819408euoutp015
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1566903624;
-        bh=mZQrfwhPHo3NNvmZXOp7eUyIiEKfr48SNN3n8hLi20s=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=MQPOPzoSwiqo8epcJfJTgayzaHOXnIo0fCbECFw4KGJVq9GPEebyFCjjxC6ZEZbqK
-         WlhTu0ZXhvD6ZJarbW+LzEJtnjeGldElpaa+GzhqVxC8Lq3Wy+JOJsojVy6vbCMP78
-         rhKMQ0ylxPwBl+Tyh6BdC7nQavGGEAfWdtpFL8hQ=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20190827110023eucas1p13a98e6aba2d9c5192b0baebb6ad6a07c~_wos0ywpT0632306323eucas1p1o;
-        Tue, 27 Aug 2019 11:00:23 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 9B.5A.04469.74D056D5; Tue, 27
-        Aug 2019 12:00:23 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20190827110022eucas1p299082bbbb45e872d01614b987645e9f8~_wor0LpWZ1514215142eucas1p2b;
-        Tue, 27 Aug 2019 11:00:22 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20190827110022eusmtrp2831ff897664c6d9c12353d5c2db9f88e~_worl2gWH0382403824eusmtrp2u;
-        Tue, 27 Aug 2019 11:00:22 +0000 (GMT)
-X-AuditID: cbfec7f2-569ff70000001175-4b-5d650d47abeb
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 1E.7A.04166.64D056D5; Tue, 27
-        Aug 2019 12:00:22 +0100 (BST)
-Received: from [106.109.129.180] (unknown [106.109.129.180]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20190827110020eusmtip1dc26f30686fd5fdc55497109932c965a~_woqb88Ke0349703497eusmtip1P;
-        Tue, 27 Aug 2019 11:00:20 +0000 (GMT)
-Subject: Re: [PATCH net v3] ixgbe: fix double clean of tx descriptors with
- xdp
-To:     Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Eelco Chaudron <echaudro@redhat.com>,
-        William Tu <u9012063@gmail.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>
-From:   Ilya Maximets <i.maximets@samsung.com>
-Message-ID: <3d93da21-0198-2fff-fbbf-3c02c5155f25@samsung.com>
-Date:   Tue, 27 Aug 2019 14:00:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
-        Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20190826154042.00004bfc@gmail.com>
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHKsWRmVeSWpSXmKPExsWy7djP87ruvKmxBpuXsVn8n3ubxeLLz9vs
-        Fn/aNjBafD5ynM1i8cJvzBZzzrewWNy58pPN4kr7T3aL/7d+s1oce9HCZnFi831Gi8u75rBZ
-        zD8/md1ixaET7BbHFohZXL/E4yDgsWXlTSaPnbPusnss3vOSyaPrxiVmj02rOtk8TjaXekzv
-        fsjs8X7fVTaPvi2rGD0+b5IL4IrisklJzcksSy3St0vgyvj69AFzwVLlil8Hz7E2MO6V6WLk
-        5JAQMJE4+fcfC4gtJLCCUeLzucAuRi4g+wujRNuLbnYI5zOjxP1bu1lgOnofToRKLGeU6D/8
-        jQ3C+Qjk3N3OCFIlLBAgca3nJ1iHiIClxJ+VX8E6mAVWskicmwDSwcnBJqAjcWr1EbAGXgE7
-        if6115hBbBYBVYnrkyezg9iiAhESnx4cZoWoEZQ4OfMJ2FBOAQOJpRf+gsWZBcQlmr6shLLl
-        Jba/ncMMskxCYCqHxImvG6HudpFomnCLEcIWlnh1fAs7hC0j8X/nfCYIu17ifstLRojmDkaJ
-        6Yf+QSXsJba8PgfUwAG0QVNi/S59iLCjxM325UwgYQkBPokbbwUhbuCTmLRtOjNEmFeio00I
-        olpF4vfB5cwQtpTEzXef2ScwKs1C8tksJN/MQvLNLIS9CxhZVjGKp5YW56anFhvmpZbrFSfm
-        Fpfmpesl5+duYgSmwtP/jn/awfj1UtIhRgEORiUeXokzybFCrIllxZW5hxglOJiVRHhz9BNj
-        hXhTEiurUovy44tKc1KLDzFKc7AoifNWMzyIFhJITyxJzU5NLUgtgskycXBKNTAarTvwWlWo
-        wuYVh2juKWPV3/WG5z+e4j7Ac+KPuMrc5/4xMy/6NGlHfv+5yqM9K//K13SfkMm7K6f/eRR2
-        r7JyzzV5RfsArWfOkhtagvepri9Nnr91zi2LaN2ZmpHaplNvcvGbuWllufb3vVwk4fhw89dD
-        E73Eymwi7T7xeTBf1OleIpoWfECJpTgj0VCLuag4EQDfNKXlgQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpileLIzCtJLcpLzFFi42I5/e/4XV033tRYg/MLWSz+z73NYvHl5212
-        iz9tGxgtPh85zmaxeOE3Zos551tYLO5c+clmcaX9J7vF/1u/WS2OvWhhszix+T6jxeVdc9gs
-        5p+fzG6x4tAJdotjC8Qsrl/icRDw2LLyJpPHzll32T0W73nJ5NF14xKzx6ZVnWweJ5tLPaZ3
-        P2T2eL/vKptH35ZVjB6fN8kFcEXp2RTll5akKmTkF5fYKkUbWhjpGVpa6BmZWOoZGpvHWhmZ
-        Kunb2aSk5mSWpRbp2yXoZXx9+oC5YKlyxa+D51gbGPfKdDFyckgImEj0PpzI3sXIxSEksJRR
-        4tfhC2wQCSmJH78usELYwhJ/rnWxQRS9Z5Q4/Rikg5NDWMBP4tfjEywgtoiApcSflV/BJjEL
-        rGaRuLj7BhNEx1ZGiad3l4J1sAnoSJxafYQRxOYVsJPoX3uNGcRmEVCVuD55MliNqECExOEd
-        s6BqBCVOznwCtoFTwEBi6YW/YCcxC6hL/Jl3iRnCFpdo+rISKi4vsf3tHOYJjEKzkLTPQtIy
-        C0nLLCQtCxhZVjGKpJYW56bnFhvqFSfmFpfmpesl5+duYgTG/7ZjPzfvYLy0MfgQowAHoxIP
-        r8SZ5Fgh1sSy4srcQ4wSHMxKIrw5+omxQrwpiZVVqUX58UWlOanFhxhNgZ6byCwlmpwPTE15
-        JfGGpobmFpaG5sbmxmYWSuK8HQIHY4QE0hNLUrNTUwtSi2D6mDg4pRoYNbkusP92mzu1/uuv
-        7I2Z34wZWv1zLopM3/DyhDHjTM24Ez43JDSE/wt2CX3bbWOVe5djpWn6Rpkq9fZdvRYRctX8
-        DayzK3Zc+2rr+q2l8DGX0nWBAIEbmy85lM40kt90RLSb9RDXwv983EanUwu1ni8u/Fm1Lsnz
-        79Fc4ZOyQavv38rcWfBeiaU4I9FQi7moOBEAQYoIwxUDAAA=
-X-CMS-MailID: 20190827110022eucas1p299082bbbb45e872d01614b987645e9f8
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20190822171243eucas1p12213f2239d6c36be515dade41ed7470b
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20190822171243eucas1p12213f2239d6c36be515dade41ed7470b
-References: <CGME20190822171243eucas1p12213f2239d6c36be515dade41ed7470b@eucas1p1.samsung.com>
-        <20190822171237.20798-1-i.maximets@samsung.com>
-        <20190826154042.00004bfc@gmail.com>
+        id S1726552AbfH0NVh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 27 Aug 2019 09:21:37 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37554 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726539AbfH0NVh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 27 Aug 2019 09:21:37 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7RDIYnG028209
+        for <bpf@vger.kernel.org>; Tue, 27 Aug 2019 09:21:36 -0400
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2un561rj6m-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 27 Aug 2019 09:21:36 -0400
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Tue, 27 Aug 2019 14:21:34 +0100
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 27 Aug 2019 14:21:31 +0100
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7RDLVvG43843774
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Aug 2019 13:21:31 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E3EEA4204B;
+        Tue, 27 Aug 2019 13:21:30 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B400E42041;
+        Tue, 27 Aug 2019 13:21:30 +0000 (GMT)
+Received: from dyn-9-152-98-121.boeblingen.de.ibm.com (unknown [9.152.98.121])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 27 Aug 2019 13:21:30 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Subject: Re: [RFC PATCH] bpf: s390: add JIT support for multi-function
+ programs
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+In-Reply-To: <20190826182036.17456-1-yauheni.kaliuta@redhat.com>
+Date:   Tue, 27 Aug 2019 15:21:30 +0200
+Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, jolsa@redhat.com
+Content-Transfer-Encoding: 8BIT
+References: <20190826182036.17456-1-yauheni.kaliuta@redhat.com>
+To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+X-Mailer: Apple Mail (2.3445.9.1)
+X-TM-AS-GCONF: 00
+x-cbid: 19082713-0028-0000-0000-000003947BF3
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19082713-0029-0000-0000-00002456B475
+Message-Id: <3F7BF2AC-E27D-4E69-90D6-07B36C7D7598@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-27_02:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=838 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908270143
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 26.08.2019 16:40, Maciej Fijalkowski wrote:
-> On Thu, 22 Aug 2019 20:12:37 +0300
-> Ilya Maximets <i.maximets@samsung.com> wrote:
+> Am 26.08.2019 um 20:20 schrieb Yauheni Kaliuta <yauheni.kaliuta@redhat.com>:
 > 
->> Tx code doesn't clear the descriptors' status after cleaning.
->> So, if the budget is larger than number of used elems in a ring, some
->> descriptors will be accounted twice and xsk_umem_complete_tx will move
->> prod_tail far beyond the prod_head breaking the completion queue ring.
->>
->> Fix that by limiting the number of descriptors to clean by the number
->> of used descriptors in the tx ring.
->>
->> 'ixgbe_clean_xdp_tx_irq()' function refactored to look more like
->> 'ixgbe_xsk_clean_tx_ring()' since we're allowed to directly use
->> 'next_to_clean' and 'next_to_use' indexes.
->>
->> Fixes: 8221c5eba8c1 ("ixgbe: add AF_XDP zero-copy Tx support")
->> Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
->> ---
->>
->> Version 3:
->>   * Reverted some refactoring made for v2.
->>   * Eliminated 'budget' for tx clean.
->>   * prefetch returned.
->>
->> Version 2:
->>   * 'ixgbe_clean_xdp_tx_irq()' refactored to look more like
->>     'ixgbe_xsk_clean_tx_ring()'.
->>
->>  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c | 29 ++++++++------------
->>  1 file changed, 11 insertions(+), 18 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
->> index 6b609553329f..a3b6d8c89127 100644
->> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
->> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
->> @@ -633,19 +633,17 @@ static void ixgbe_clean_xdp_tx_buffer(struct ixgbe_ring *tx_ring,
->>  bool ixgbe_clean_xdp_tx_irq(struct ixgbe_q_vector *q_vector,
->>  			    struct ixgbe_ring *tx_ring, int napi_budget)
+> test_verifier (5.3-rc6):
 > 
-> While you're at it, can you please as well remove the 'napi_budget' argument?
-> It wasn't used at all even before your patch.
+> without patch:
+> Summary: 1501 PASSED, 0 SKIPPED, 47 FAILED
+> 
+> with patch:
+> Summary: 1540 PASSED, 0 SKIPPED, 8 FAILED
 
-As you mentioned, this is not related to current patch and this patch doesn't
-touch these particular lines of code.  So, I think it's better to make a
-separate patch for this if you think it's needed.
+Are you per chance running with a testsuite patch like this one?
 
-> 
-> I'm jumping late in, but I was really wondering and hesitated with taking
-> part in discussion since the v1 of this patch - can you elaborate why simply
-> clearing the DD bit wasn't sufficient?
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -846,7 +846,7 @@ static int do_prog_test_run(int fd_prog, bool unpriv, uint32_t expected_val,
+ 				tmp, &size_tmp, &retval, NULL);
+ 	if (unpriv)
+ 		set_admin(false);
+-	if (err && errno != 524/*ENOTSUPP*/ && errno != EPERM) {
++	if (err && errno != EPERM) {
+ 		printf("Unexpected bpf_prog_test_run error ");
+ 		return err;
+ 	}
 
-Clearing the DD bit will end up driver and hardware writing to close memory
-locations at the same time leading to cache trashing and poor performance.
-
-Anyway additional write is unnecessary, because we know exactly which descriptors
-we need to check.
-
-Best regards, Ilya Maximets.
-
-> 
-> Maciej
-> 
->>  {
->> +	u16 ntc = tx_ring->next_to_clean, ntu = tx_ring->next_to_use;
->>  	unsigned int total_packets = 0, total_bytes = 0;
->> -	u32 i = tx_ring->next_to_clean, xsk_frames = 0;
->> -	unsigned int budget = q_vector->tx.work_limit;
->>  	struct xdp_umem *umem = tx_ring->xsk_umem;
->>  	union ixgbe_adv_tx_desc *tx_desc;
->>  	struct ixgbe_tx_buffer *tx_bi;
->> -	bool xmit_done;
->> +	u32 xsk_frames = 0;
->>  
->> -	tx_bi = &tx_ring->tx_buffer_info[i];
->> -	tx_desc = IXGBE_TX_DESC(tx_ring, i);
->> -	i -= tx_ring->count;
->> +	tx_bi = &tx_ring->tx_buffer_info[ntc];
->> +	tx_desc = IXGBE_TX_DESC(tx_ring, ntc);
->>  
->> -	do {
->> +	while (ntc != ntu) {
->>  		if (!(tx_desc->wb.status & cpu_to_le32(IXGBE_TXD_STAT_DD)))
->>  			break;
->>  
->> @@ -661,22 +659,18 @@ bool ixgbe_clean_xdp_tx_irq(struct ixgbe_q_vector *q_vector,
->>  
->>  		tx_bi++;
->>  		tx_desc++;
->> -		i++;
->> -		if (unlikely(!i)) {
->> -			i -= tx_ring->count;
->> +		ntc++;
->> +		if (unlikely(ntc == tx_ring->count)) {
->> +			ntc = 0;
->>  			tx_bi = tx_ring->tx_buffer_info;
->>  			tx_desc = IXGBE_TX_DESC(tx_ring, 0);
->>  		}
->>  
->>  		/* issue prefetch for next Tx descriptor */
->>  		prefetch(tx_desc);
->> +	}
->>  
->> -		/* update budget accounting */
->> -		budget--;
->> -	} while (likely(budget));
->> -
->> -	i += tx_ring->count;
->> -	tx_ring->next_to_clean = i;
->> +	tx_ring->next_to_clean = ntc;
->>  
->>  	u64_stats_update_begin(&tx_ring->syncp);
->>  	tx_ring->stats.bytes += total_bytes;
->> @@ -688,8 +682,7 @@ bool ixgbe_clean_xdp_tx_irq(struct ixgbe_q_vector *q_vector,
->>  	if (xsk_frames)
->>  		xsk_umem_complete_tx(umem, xsk_frames);
->>  
->> -	xmit_done = ixgbe_xmit_zc(tx_ring, q_vector->tx.work_limit);
->> -	return budget > 0 && xmit_done;
->> +	return ixgbe_xmit_zc(tx_ring, q_vector->tx.work_limit);
->>  }
->>  
->>  int ixgbe_xsk_async_xmit(struct net_device *dev, u32 qid)
-> 
-> 
-> 
+Without it, all the failures appear to be masked for me.
