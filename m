@@ -2,108 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 857D59F06F
-	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2019 18:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF7B9F205
+	for <lists+bpf@lfdr.de>; Tue, 27 Aug 2019 20:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727401AbfH0QkF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 27 Aug 2019 12:40:05 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46204 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727219AbfH0QkF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 27 Aug 2019 12:40:05 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7RGIFBW065496
-        for <bpf@vger.kernel.org>; Tue, 27 Aug 2019 12:40:04 -0400
-Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2un6dqnp31-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 27 Aug 2019 12:40:03 -0400
-Received: from localhost
-        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Tue, 27 Aug 2019 17:40:02 +0100
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
-        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 27 Aug 2019 17:39:59 +0100
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7RGdw3o59834390
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Aug 2019 16:39:58 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0BE9652069;
-        Tue, 27 Aug 2019 16:39:58 +0000 (GMT)
-Received: from dyn-9-152-98-121.boeblingen.de.ibm.com (unknown [9.152.98.121])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id DCDE752050;
-        Tue, 27 Aug 2019 16:39:57 +0000 (GMT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [PATCH v2] bpf: s390: add JIT support for multi-function programs
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-In-Reply-To: <20190827145307.7984-1-yauheni.kaliuta@redhat.com>
-Date:   Tue, 27 Aug 2019 18:39:57 +0200
-Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, jolsa@redhat.com
-Content-Transfer-Encoding: 8BIT
-References: <20190826182036.17456-1-yauheni.kaliuta@redhat.com>
- <20190827145307.7984-1-yauheni.kaliuta@redhat.com>
-To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-X-Mailer: Apple Mail (2.3445.9.1)
-X-TM-AS-GCONF: 00
-x-cbid: 19082716-0016-0000-0000-000002A38E1F
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19082716-0017-0000-0000-00003303DADA
-Message-Id: <D9450184-3B41-4893-8485-4A578FAA0566@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-27_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908270161
+        id S1728312AbfH0SEL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Aug 2019 14:04:11 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:55125 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727064AbfH0SEL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Aug 2019 14:04:11 -0400
+Received: by mail-wm1-f68.google.com with SMTP id t6so36429wmj.4;
+        Tue, 27 Aug 2019 11:04:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eeXEbfNVRk3oAI90JXSVwlfA1/Luk09oyGiJ2cBc090=;
+        b=l566AOedLj0sB7R/r792xeSKSmRuOoMdg8f4HcHV4zqE7Gg4OKGl3l2zYNO2TUnQCS
+         xmf1PvlYP1YUT8spw0jt3HYVNRPl1DGjaDgCGaWamEdecsqMFilYE8HIViJ1muZzANSy
+         P56mTbNqBdM4AIphIL8jFa+L+FXI5l9HCeZ2XmAH0dHxW8oL/AgJ+y/DZlZRefBbRUjK
+         JI82IZWyA5KLN2orqEZ3dh///GFWAYiBqHxcZ9vEQNqMAajI5Rq5kcEvBgHwAdrNtGyr
+         AEnyjui9UyAkgr4EsIMw/IIPRZEQgYp3wenSQ9YhwsnCTEGlNneRXXvAx1YstOS20FM3
+         SegQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eeXEbfNVRk3oAI90JXSVwlfA1/Luk09oyGiJ2cBc090=;
+        b=ZN4xEVjB80+neuY4X/M9T88Y/KZSmlDw4pKLw76Xi1wCKkrUDrjzRJrvWPR9BO4gfv
+         Kj38F2dpxguHoVk/v1bKANpl0ELyMbYtv9R1/BIkclQex3A7ndAmQ+gtl7asnceuWaie
+         uxKlM39yXojs1wbH1mO9RbHmrP/55yxeFtMGOFCCYjrST98JYIoYZAlQUnf9NG2iq3l8
+         qXZq+SrwD35ruZAQjBGH/Izq4Xt9Ge5gbdCbUjoJ31Wen5k4HRuSB2vCHK6XPqaxyyrI
+         zZX0p1A+bWSKH35og8WrieiBkfAnLe91ShfC41nUux887ATCUekT65h/1DLMfbJEp6ma
+         PoGQ==
+X-Gm-Message-State: APjAAAU1oKUlB23LzUeS7FxaIA//f0aiCOjjjpk+Chxrape6PW4kWSW5
+        b/HPk9ZHP+S+imLH48EsSII=
+X-Google-Smtp-Source: APXvYqy/OaFb4S1R0xj6XUxUdfkuBIgwYGte/KsTRxDbfjz/vjDAgNOk4eIBQjude9QoVCn6hCdKQw==
+X-Received: by 2002:a1c:a481:: with SMTP id n123mr164017wme.123.1566929048457;
+        Tue, 27 Aug 2019 11:04:08 -0700 (PDT)
+Received: from [192.168.8.147] (212.160.185.81.rev.sfr.net. [81.185.160.212])
+        by smtp.gmail.com with ESMTPSA id a203sm140208wme.11.2019.08.27.11.04.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Aug 2019 11:04:08 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v3 7/7] selftests/bpf: support
+ BPF_FLOW_DISSECTOR_F_STOP_AT_ENCAP
+To:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Petar Penkov <ppenkov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Song Liu <songliubraving@fb.com>
+References: <20190725225231.195090-1-sdf@google.com>
+ <20190725225231.195090-8-sdf@google.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <c1cec8df-e3c5-8d34-c3b3-44eae4f10e9b@gmail.com>
+Date:   Tue, 27 Aug 2019 20:04:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20190725225231.195090-8-sdf@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Am 27.08.2019 um 16:53 schrieb Yauheni Kaliuta <yauheni.kaliuta@redhat.com>:
+
+
+On 7/26/19 12:52 AM, Stanislav Fomichev wrote:
+> Exit as soon as we found that packet is encapped when
+> BPF_FLOW_DISSECTOR_F_STOP_AT_ENCAP is passed.
+> Add appropriate selftest cases.
 > 
-> @@ -1316,7 +1327,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
-> {
-> 	struct bpf_prog *tmp, *orig_fp = fp;
-> 	struct bpf_binary_header *header;
-> +	struct s390_jit_data *jit_data;
-> 	bool tmp_blinded = false;
-> +	bool extra_pass = false;
-> 	struct bpf_jit jit;
-> 	int pass;
+> v2:
+> * Subtract sizeof(struct iphdr) from .iph_inner.tot_len (Willem de Bruijn)
 > 
-> @@ -1335,6 +1348,22 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
-> 		fp = tmp;
-> 	}
+> Acked-by: Petar Penkov <ppenkov@google.com>
+> Acked-by: Willem de Bruijn <willemb@google.com>
+> Acked-by: Song Liu <songliubraving@fb.com>
+> Cc: Song Liu <songliubraving@fb.com>
+> Cc: Willem de Bruijn <willemb@google.com>
+> Cc: Petar Penkov <ppenkov@google.com>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  .../selftests/bpf/prog_tests/flow_dissector.c | 64 +++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/bpf_flow.c  |  8 +++
+>  2 files changed, 72 insertions(+)
 > 
-> +	jit_data = fp->aux->jit_data;
-> +	if (!jit_data) {
-> +		jit_data = kzalloc(sizeof(*jit_data), GFP_KERNEL);
-> +		if (!jit_data) {
-> +			fp = orig_fp;
-> +			goto out;
-> +		}
-> +		fp->aux->jit_data = jit_data;
-> +	}
-> +	if (jit_data->ctx.addrs) {
-> +		jit = jit_data->ctx;
-> +		header = jit_data->header;
-> +		extra_pass = true;
-> +		goto skip_init_ctx;
-> +	}
+> diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
+> index ef83f145a6f1..700d73d2f22a 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector.c
+> @@ -41,6 +41,13 @@ struct ipv4_pkt {
+>  	struct tcphdr tcp;
+>  } __packed;
+>  
+> +struct ipip_pkt {
+> +	struct ethhdr eth;
+> +	struct iphdr iph;
+> +	struct iphdr iph_inner;
+> +	struct tcphdr tcp;
+> +} __packed;
 > +
+>  struct svlan_ipv4_pkt {
+>  	struct ethhdr eth;
+>  	__u16 vlan_tci;
+> @@ -82,6 +89,7 @@ struct test {
+>  	union {
+>  		struct ipv4_pkt ipv4;
+>  		struct svlan_ipv4_pkt svlan_ipv4;
+> +		struct ipip_pkt ipip;
+>  		struct ipv6_pkt ipv6;
+>  		struct ipv6_frag_pkt ipv6_frag;
+>  		struct dvlan_ipv6_pkt dvlan_ipv6;
+> @@ -303,6 +311,62 @@ struct test tests[] = {
+>  		},
+>  		.flags = BPF_FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL,
+>  	},
+> +	{
+> +		.name = "ipip-encap",
+> +		.pkt.ipip = {
+> +			.eth.h_proto = __bpf_constant_htons(ETH_P_IP),
+> +			.iph.ihl = 5,
+> +			.iph.protocol = IPPROTO_IPIP,
+> +			.iph.tot_len = __bpf_constant_htons(MAGIC_BYTES),
+> +			.iph_inner.ihl = 5,
+> +			.iph_inner.protocol = IPPROTO_TCP,
+> +			.iph_inner.tot_len =
+> +				__bpf_constant_htons(MAGIC_BYTES) -
+> +				sizeof(struct iphdr),
+> +			.tcp.doff = 5,
+> +			.tcp.source = 80,
+> +			.tcp.dest = 8080,
+> +		},
+> +		.keys = {
+> +			.nhoff = 0,
+> +			.nhoff = ETH_HLEN,
 
-I've noticed that I'm getting the following warning, presumably because
-of the added goto skip_init_ctx:
+clang emits a warning because nhoff is defined twice.
 
-linux/arch/s390/net/bpf_jit_comp.c: In function 'bpf_int_jit_compile':
-linux/arch/s390/net/bpf_jit_comp.c:1406:3: warning: 'pass' may be used uninitialized in this function [-Wmaybe-uninitialized]
-   bpf_jit_dump(fp->len, jit.size, pass, jit.prg_buf);
-
-Maybe set the initial value of pass to 1?
+> +			.thoff = ETH_HLEN + sizeof(struct iphdr) +
+> +				sizeof(struct iphdr),
+> +			.addr_proto = ETH_P_IP,
+> +			.ip_proto = IPPROTO_TCP,
+> +			.n_proto = __bpf_constant_htons(ETH_P_IP),
+> +			.is_encap = true,
+> +			.sport = 80,
+> +			.dport = 8080,
+> +		},
+> +	},
+> +	{
+> +		.name = "ipip-no-encap",
+> +		.pkt.ipip = {
+> +			.eth.h_proto = __bpf_constant_htons(ETH_P_IP),
+> +			.iph.ihl = 5,
+> +			.iph.protocol = IPPROTO_IPIP,
+> +			.iph.tot_len = __bpf_constant_htons(MAGIC_BYTES),
+> +			.iph_inner.ihl = 5,
+> +			.iph_inner.protocol = IPPROTO_TCP,
+> +			.iph_inner.tot_len =
+> +				__bpf_constant_htons(MAGIC_BYTES) -
+> +				sizeof(struct iphdr),
+> +			.tcp.doff = 5,
+> +			.tcp.source = 80,
+> +			.tcp.dest = 8080,
+> +		},
+> +		.keys = {
+> +			.flags = BPF_FLOW_DISSECTOR_F_STOP_AT_ENCAP,
+> +			.nhoff = ETH_HLEN,
+> +			.thoff = ETH_HLEN + sizeof(struct iphdr),
+> +			.addr_proto = ETH_P_IP,
+> +			.ip_proto = IPPROTO_IPIP,
+> +			.n_proto = __bpf_constant_htons(ETH_P_IP),
+> +			.is_encap = true,
+> +		},
+> +		.flags = BPF_FLOW_DISSECTOR_F_STOP_AT_ENCAP,
+> +	},
+>  };
+>  
+>  static int create_tap(const char *ifname)
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_flow.c b/tools/testing/selftests/bpf/progs/bpf_flow.c
+> index 7fbfa22f33df..08bd8b9d58d0 100644
+> --- a/tools/testing/selftests/bpf/progs/bpf_flow.c
+> +++ b/tools/testing/selftests/bpf/progs/bpf_flow.c
+> @@ -167,9 +167,15 @@ static __always_inline int parse_ip_proto(struct __sk_buff *skb, __u8 proto)
+>  		return export_flow_keys(keys, BPF_OK);
+>  	case IPPROTO_IPIP:
+>  		keys->is_encap = true;
+> +		if (keys->flags & BPF_FLOW_DISSECTOR_F_STOP_AT_ENCAP)
+> +			return export_flow_keys(keys, BPF_OK);
+> +
+>  		return parse_eth_proto(skb, bpf_htons(ETH_P_IP));
+>  	case IPPROTO_IPV6:
+>  		keys->is_encap = true;
+> +		if (keys->flags & BPF_FLOW_DISSECTOR_F_STOP_AT_ENCAP)
+> +			return export_flow_keys(keys, BPF_OK);
+> +
+>  		return parse_eth_proto(skb, bpf_htons(ETH_P_IPV6));
+>  	case IPPROTO_GRE:
+>  		gre = bpf_flow_dissect_get_header(skb, sizeof(*gre), &_gre);
+> @@ -189,6 +195,8 @@ static __always_inline int parse_ip_proto(struct __sk_buff *skb, __u8 proto)
+>  			keys->thoff += 4; /* Step over sequence number */
+>  
+>  		keys->is_encap = true;
+> +		if (keys->flags & BPF_FLOW_DISSECTOR_F_STOP_AT_ENCAP)
+> +			return export_flow_keys(keys, BPF_OK);
+>  
+>  		if (gre->proto == bpf_htons(ETH_P_TEB)) {
+>  			eth = bpf_flow_dissect_get_header(skb, sizeof(*eth),
+> 
