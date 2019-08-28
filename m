@@ -2,107 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 21DFBA0C6C
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 23:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F901A0C7A
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 23:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726400AbfH1Vdp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Aug 2019 17:33:45 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:45045 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726764AbfH1Vdp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Aug 2019 17:33:45 -0400
-Received: by mail-pl1-f195.google.com with SMTP id t14so540392plr.11;
-        Wed, 28 Aug 2019 14:33:44 -0700 (PDT)
+        id S1726865AbfH1ViN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Aug 2019 17:38:13 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:34836 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726839AbfH1ViN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Aug 2019 17:38:13 -0400
+Received: by mail-wr1-f67.google.com with SMTP id g7so1299638wrx.2;
+        Wed, 28 Aug 2019 14:38:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=H/T62WymqibAzBybIU6SUVM2xwVqngTN7XIUBl9RNJY=;
-        b=DpZq1hI8hoSZMAIvIKWuAwAwDsAUnLgjeh2j+TjrB1SsTc7bDlHtwkcjGBHhMNrpSa
-         0ftLnVhblEm8eYwLkQBwBv3aUiVC8sQddcMvkVg23Z7KYL3jSZQQ2LioBdjh1Nq6bzAR
-         +iA510Cyusj+fk2PdO/X66G2VJ0wjvjPHRDEGFXP+KO+vQUVybYxqO2yL2jEbAH37ZTC
-         WOHrrDl2m6dA709A5HmVbzUYh8JIoO6UX0WV2ibeM74U0uWG4ruseiRfaAUZOjqdBOGv
-         LXP7E/Ewr1PsJEc1Y1HeAF28kYVODUsl5mN4S4be964aADo+LmtbPRjDcs0lqkE6AWa/
-         c99Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sGjhjuh8luS+aqRBrfS7bHWA5KJ+QKi4i3rS6Cai6WY=;
+        b=SiERiSw553Kaxk/tRLH5J9b4vOVe5PEhITDMHzFEy2/8RX+K5wXHNtNLCnw4SbRJDk
+         JCCiIjdQLrIoZA/CfHjgVs42XEDgAWj4hn7afiVHrFw8LJtdpynYnsoxpBqKbSqTqfJd
+         HNKWuEzo2ini90T5kpyxNSKb+8ForNyAOwc/MVmCzxKfCGPiRbo466ilnhXU68kB1bA3
+         EhqYXDVTNeccNDqqIA7pYJlVX3RC/R8qfQnLNqoxVjSsXOio6D72LFOvsXoI14FflENV
+         wapdyA8ef8PQbXzGRWwhRRf3ISJ1p8DISLOgSWn54ygagD1I+Y5zRELj7YNRL6Zba8BR
+         qYwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=H/T62WymqibAzBybIU6SUVM2xwVqngTN7XIUBl9RNJY=;
-        b=KLXjJSrEoTCxocFIpMDBHDLfHA6z5KIRGpUnfBHCn1UD0tZnw2b+5EkESLDJTI6YDO
-         YT5DygK0uXrLyfZnUJslBj0EaFIIFzvtPf+OGozBUx9viuASRQmFvU6rUclte4NP7tZN
-         qx45bNz4g7UVAi8FIaC3FuMGLHXQz2hUi80/9hL/VUB+kfN/MsnX08Eibiu0m5tTz0S6
-         FsmzKbWFAowVsaoLRJ8owWHF5f0TzHgIrmEjgl8P8ifodNdgiyeKBwiuvLkasaAFMC7K
-         FTW20CHmdtzcCvWZHNXEv2YHHjqv0x1eMm+czTctrGHdxrWookCRm/QyBcEvGM3gKoOo
-         GZrg==
-X-Gm-Message-State: APjAAAXzXmzPxG5ds9RkAPvuCHdI6LfXCprnblKcUi53cKLT/na1y1F6
-        NWYl0L0lBTzEjPGy3b0R1HE=
-X-Google-Smtp-Source: APXvYqxV8rh8RoFIsPi0EjsCE3QE6b/+zZAO0va1dz9OD5UGMEIr78PFAz9v9sUoSY1sncswXiSTeA==
-X-Received: by 2002:a17:902:302:: with SMTP id 2mr6423212pld.149.1567028024344;
-        Wed, 28 Aug 2019 14:33:44 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::5983])
-        by smtp.gmail.com with ESMTPSA id j18sm334330pfh.70.2019.08.28.14.33.42
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 28 Aug 2019 14:33:43 -0700 (PDT)
-Date:   Wed, 28 Aug 2019 14:33:41 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Julia Kartseva <hex@fb.com>
-Cc:     rdna@fb.com, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 01/10] bpf: introduce __MAX_BPF_PROG_TYPE and
- __MAX_BPF_MAP_TYPE enum values
-Message-ID: <20190828213339.5qie42ulkhyso7i5@ast-mbp.dhcp.thefacebook.com>
-References: <cover.1567024943.git.hex@fb.com>
- <43989d37be938b7d284028481e63df0a0471e29f.1567024943.git.hex@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sGjhjuh8luS+aqRBrfS7bHWA5KJ+QKi4i3rS6Cai6WY=;
+        b=WRkPN+kakvwxC+mu/Dm1fIbftsBCSl93ykeqz8HlCDQ2py12fYG5XU5czwS17odAHl
+         6nubPsiL0QeNtdwIYBVqeKUJ5GHa7bBvK/rYZ3bQcNna3z7szfsKuYwrmJdtdOtyHjGV
+         vi9h1V20qQKiNeBLR69l9KJ6PTreQqsizPNWhLDgi+pIL7aKvWjTT+4DhlFxV/bilA1t
+         hTDOnmxwEvrYab2Gj237G+lAxFoeNbcn3yZkM7y++jcR+8IjSZRZG0Fuk+hz62DRtskl
+         RKOE5/UNFrAHHVzrEbL0GFEaa3HHcfzBW6kgK6ScL8Rdo2+S33mGq4tQ/h5PGLEb6nwu
+         q0xA==
+X-Gm-Message-State: APjAAAUsCtrsEjw0AWHVyLLyHEen1a3f6LSkyo1vhdNSTKea32LUfQ3O
+        +8gHqwksAnlCevWGbxeY/fV7UWmneQMV++DEwfw=
+X-Google-Smtp-Source: APXvYqy0U65XUAnttf145xEP+EHodRd9s98VxWubDUuMO7oGhPo6lBhmmd2Vbn44BFVHtYxXeHabTrxP5Dn2X0NcIS4=
+X-Received: by 2002:a5d:51c6:: with SMTP id n6mr7299855wrv.206.1567028290871;
+ Wed, 28 Aug 2019 14:38:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <43989d37be938b7d284028481e63df0a0471e29f.1567024943.git.hex@fb.com>
-User-Agent: NeoMutt/20180223
+References: <20190822205533.4877-1-david.abdurachmanov@sifive.com> <201908251451.73C6812E8@keescook>
+In-Reply-To: <201908251451.73C6812E8@keescook>
+From:   David Abdurachmanov <david.abdurachmanov@gmail.com>
+Date:   Wed, 28 Aug 2019 14:37:34 -0700
+Message-ID: <CAEn-LToB1atxDvehBanVaxg6sk8zDkMe_CbqeTVgKNzOvD9-Sw@mail.gmail.com>
+Subject: Re: [PATCH v2] riscv: add support for SECCOMP and SECCOMP_FILTER
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Abdurachmanov <david.abdurachmanov@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Vincent Chen <vincentc@andestech.com>,
+        Alan Kao <alankao@andestech.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, me@carlosedp.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 28, 2019 at 02:03:04PM -0700, Julia Kartseva wrote:
-> Similar to __MAX_BPF_ATTACH_TYPE identifying the number of elements in
-> bpf_attach_type enum, add tailing enum values __MAX_BPF_PROG_TYPE
-> and __MAX_BPF_MAP_TYPE to simplify e.g. iteration over enums values in
-> the case when new values are added.
-> 
-> Signed-off-by: Julia Kartseva <hex@fb.com>
-> ---
->  include/uapi/linux/bpf.h | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 5d2fb183ee2d..9b681bb82211 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -136,8 +136,11 @@ enum bpf_map_type {
->  	BPF_MAP_TYPE_STACK,
->  	BPF_MAP_TYPE_SK_STORAGE,
->  	BPF_MAP_TYPE_DEVMAP_HASH,
-> +	__MAX_BPF_MAP_TYPE
->  };
->  
-> +#define MAX_BPF_MAP_TYPE __MAX_BPF_MAP_TYPE
-> +
->  /* Note that tracing related programs such as
->   * BPF_PROG_TYPE_{KPROBE,TRACEPOINT,PERF_EVENT,RAW_TRACEPOINT}
->   * are not subject to a stable API since kernel internal data
-> @@ -173,8 +176,11 @@ enum bpf_prog_type {
->  	BPF_PROG_TYPE_CGROUP_SYSCTL,
->  	BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE,
->  	BPF_PROG_TYPE_CGROUP_SOCKOPT,
-> +	__MAX_BPF_PROG_TYPE
->  };
->  
-> +#define MAX_BPF_PROG_TYPE __MAX_BPF_PROG_TYPE
-> +
+On Wed, Aug 28, 2019 at 10:36 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Thu, Aug 22, 2019 at 01:55:22PM -0700, David Abdurachmanov wrote:
+> > This patch was extensively tested on Fedora/RISCV (applied by default on
+> > top of 5.2-rc7 kernel for <2 months). The patch was also tested with 5.3-rc
+> > on QEMU and SiFive Unleashed board.
+>
+> Oops, I see the mention of QEMU here. Where's the best place to find
+> instructions on creating a qemu riscv image/environment?
 
-This came up before and my position is still the same.
-I'm against this type of band-aid in uapi.
-'bpftool feature probe' can easily discover all supported
-prog and map types already.
+Examples from what I personally use:
+https://github.com/riscv/meta-riscv
+https://fedoraproject.org/wiki/Architectures/RISC-V/Installing#Boot_with_libvirt
+(might be outdated)
 
+If you are running machine with a properly working libvirt/QEMU setup:
+
+VIRTBUILDER_IMAGE=fedora-rawhide-developer-20190703n0
+FIRMWARE=fw_payload-uboot-qemu-virt-smode.elf
+wget https://dl.fedoraproject.org/pub/alt/risc-v/disk-images/fedora/rawhide/20190703.n.0/Developer/$FIRMWARE
+echo riscv > /tmp/rootpw
+virt-builder \
+    --verbose \
+    --source https://dl.fedoraproject.org/pub/alt/risc-v/repo/virt-builder-images/images/index
+\
+    --no-check-signature \
+    --arch riscv64 \
+    --size 10G \
+    --format raw \
+    --hostname fedora-riscv \
+    -o disk \
+    --root-password file:/tmp/rootpw \
+    ${VIRTBUILDER_IMAGE}
+
+sudo virt-install \
+    --name fedora-riscv \
+    --arch riscv64 \
+    --vcpus 4 \
+    --memory 3048 \
+    --import \
+    --disk path=$PWD/disk \
+    --boot kernel=$PWD/${FIRMWARE} \
+    --network network=default \
+    --graphics none \
+    --serial log.file=/tmp/fedora-riscv.serial.log \
+    --noautoconsole
+
+The following does incl. SECCOMP v2 patch on top of 5.2-rc7 kernel.
+
+>
+> > There is one failing kernel selftest: global.user_notification_signal
+>
+> This test has been fragile (and is not arch-specific), so as long as
+> everything else is passing, I would call this patch ready to go. :)
+>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+>
+> --
+> Kees Cook
