@@ -2,229 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 87DF8A096B
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 20:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 867B9A0A39
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 21:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbfH1S2v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Aug 2019 14:28:51 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:57248 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726541AbfH1S2u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Aug 2019 14:28:50 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 5C7AC8AC6F9;
-        Wed, 28 Aug 2019 18:28:50 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-116-102.ams2.redhat.com [10.36.116.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E06E35D70D;
-        Wed, 28 Aug 2019 18:28:48 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     daniel@iogearbox.net, iii@linux.ibm.com, jolsa@redhat.com
-Subject: [PATCH v3] bpf: s390: add JIT support for multi-function programs
-Date:   Wed, 28 Aug 2019 21:28:46 +0300
-Message-Id: <20190828182846.10473-1-yauheni.kaliuta@redhat.com>
-In-Reply-To: <20190826182036.17456-1-yauheni.kaliuta@redhat.com>
-References: <20190826182036.17456-1-yauheni.kaliuta@redhat.com>
+        id S1726617AbfH1TPi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Aug 2019 15:15:38 -0400
+Received: from mail-qt1-f181.google.com ([209.85.160.181]:38515 "EHLO
+        mail-qt1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726603AbfH1TPi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Aug 2019 15:15:38 -0400
+Received: by mail-qt1-f181.google.com with SMTP id q64so836036qtd.5;
+        Wed, 28 Aug 2019 12:15:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4wucswGgAeMprRvHqEbQtJG4/pT+Cqd+9w+NdQqNrAA=;
+        b=NnZqPL+8jD0eeAfdtXeLAwJGy78aZke/7tQcutBfMa6BrI6U9S3Lgpkic2ad7K3/F+
+         hmmSXWmIdUMSmntqKVlSSHzcwNfZLpzBsK/isi77d9xNKs0tlVWWWmscpbdjTpp2Brz3
+         XTNd7VPLYBAca9cdPf07A0SU4Yl0bMdk/ozNQ3y+xdr+WfWNK2jUeKcKFvJ/SCzU+gHa
+         dFk344Vihgx1V4T+Lv8FUhFpdOvc3MuUIwG+3L9GRlK8ddYnLBwNi3yC1+8jD7xGoTuw
+         lC4NQi89RZeK3GzgPf6XUO0ht8GFzKLTaDnTiR5/qOjMXqI/WhvWKr1sYAKWYYNebK+9
+         rShA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4wucswGgAeMprRvHqEbQtJG4/pT+Cqd+9w+NdQqNrAA=;
+        b=iAK01oXT1sv91IdRh89AhgE3gYJkZPo3UmFYo2ICUAyyLYOSBd8J8J64gJZaYKuz/K
+         EjscI7b9cQksYF/ZBfWZ8zFpHKwpVb5kiOSi0a9o3ptZaZ93V6JXMs+0WNThIs2GAQQD
+         Z380IFTz4TFjQBwfD8oHEQrvDFztzejNUgQe8Qt4h6hoFG9jGJHT+5502I1bys9vGZo8
+         UKvl75HMVUeI1WGLaOt72s00ajipl2VGRf4sev18jmsWWTd0Nxb7RkceSgr5kiKJQipA
+         71ZyRbbDwIElP9yxPinUNK+6zTRQO7Lb1gs59PBfMJIfocDLFznhe8voOMIny75UYWFe
+         1xiQ==
+X-Gm-Message-State: APjAAAV6e0dI7f+nLAymcIcAZSqmNpcNTYFWDREf7si4D3AJbx1GkhWi
+        NBwIY2r5Tqj1YzWlHpeR+CKFzzE8UaSsUs9wDDU=
+X-Google-Smtp-Source: APXvYqyPKf9MY+M0Ey+Z9Z3uHN6ww/XaF44hvYPWY+DuOAKNwhd/1FQJzllTnEP+wZ/r3y06hjnqYX+0VB8FbGVtEXk=
+X-Received: by 2002:a0c:f6c6:: with SMTP id d6mr4043204qvo.102.1567019737388;
+ Wed, 28 Aug 2019 12:15:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.69]); Wed, 28 Aug 2019 18:28:50 +0000 (UTC)
+References: <20190827234622.76209-1-ppenkov.kernel@gmail.com>
+In-Reply-To: <20190827234622.76209-1-ppenkov.kernel@gmail.com>
+From:   Song Liu <liu.song.a23@gmail.com>
+Date:   Wed, 28 Aug 2019 12:15:26 -0700
+Message-ID: <CAPhsuW6yGV1MbA9MHdOp_5VyvMA3EX7Eew6rNKbYZKSD42m-uQ@mail.gmail.com>
+Subject: Re: [bpf-next] bpf: fix error check in bpf_tcp_gen_syncookie
+To:     Petar Penkov <ppenkov.kernel@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Petar Penkov <ppenkov@google.com>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds support for bpf-to-bpf function calls in the s390 JIT
-compiler. The JIT compiler converts the bpf call instructions to
-native branch instructions. After a round of the usual passes, the
-start addresses of the JITed images for the callee functions are
-known. Finally, to fixup the branch target addresses, we need to
-perform an extra pass.
+On Tue, Aug 27, 2019 at 4:46 PM Petar Penkov <ppenkov.kernel@gmail.com> wrote:
+>
+> From: Petar Penkov <ppenkov@google.com>
+>
+> If a SYN cookie is not issued by tcp_v#_gen_syncookie, then the return
+> value will be exactly 0, rather than <= 0. Let's change the check to
+> reflect that, especially since mss is an unsigned value and cannot be
+> negative.
+>
+> Fixes: 70d66244317e ("bpf: add bpf_tcp_gen_syncookie helper")
+> Reported-by: Stanislav Fomichev <sdf@google.com>
+> Signed-off-by: Petar Penkov <ppenkov@google.com>
 
-Because of the address range in which JITed images are allocated on
-s390, the offsets of the start addresses of these images from
-__bpf_call_base are as large as 64 bits. So, for a function call,
-the imm field of the instruction cannot be used to determine the
-callee's address. Use bpf_jit_get_func_addr() helper instead.
-
-The patch borrows a lot from:
-
-commit 8c11ea5ce13d ("bpf, arm64: fix getting subprog addr from aux
-for calls")
-
-commit e2c95a61656d ("bpf, ppc64: generalize fetching subprog into
-bpf_jit_get_func_addr")
-
-commit 8484ce8306f9 ("bpf: powerpc64: add JIT support for
-multi-function programs")
-
-(including the commit message).
-
-test_verifier (5.3-rc6 with CONFIG_BPF_JIT_ALWAYS_ON=y):
-
-without patch:
-Summary: 1501 PASSED, 0 SKIPPED, 47 FAILED
-
-with patch:
-Summary: 1540 PASSED, 0 SKIPPED, 8 FAILED
-
-Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
----
- arch/s390/net/bpf_jit_comp.c | 66 ++++++++++++++++++++++++++++++------
- 1 file changed, 55 insertions(+), 11 deletions(-)
-
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index 955eb355c2fd..b6801d854c77 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -502,7 +502,8 @@ static void bpf_jit_epilogue(struct bpf_jit *jit, u32 stack_depth)
-  * NOTE: Use noinline because for gcov (-fprofile-arcs) gcc allocates a lot of
-  * stack space for the large switch statement.
-  */
--static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i)
-+static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
-+				 int i, bool extra_pass)
- {
- 	struct bpf_insn *insn = &fp->insnsi[i];
- 	int jmp_off, last, insn_count = 1;
-@@ -1011,10 +1012,14 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
- 	 */
- 	case BPF_JMP | BPF_CALL:
- 	{
--		/*
--		 * b0 = (__bpf_call_base + imm)(b1, b2, b3, b4, b5)
--		 */
--		const u64 func = (u64)__bpf_call_base + imm;
-+		u64 func;
-+		bool func_addr_fixed;
-+		int ret;
-+
-+		ret = bpf_jit_get_func_addr(fp, insn, extra_pass,
-+					    &func, &func_addr_fixed);
-+		if (ret < 0)
-+			return -1;
- 
- 		REG_SET_SEEN(BPF_REG_5);
- 		jit->seen |= SEEN_FUNC;
-@@ -1283,7 +1288,8 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
- /*
-  * Compile eBPF program into s390x code
-  */
--static int bpf_jit_prog(struct bpf_jit *jit, struct bpf_prog *fp)
-+static int bpf_jit_prog(struct bpf_jit *jit, struct bpf_prog *fp,
-+			bool extra_pass)
- {
- 	int i, insn_count;
- 
-@@ -1292,7 +1298,7 @@ static int bpf_jit_prog(struct bpf_jit *jit, struct bpf_prog *fp)
- 
- 	bpf_jit_prologue(jit, fp->aux->stack_depth);
- 	for (i = 0; i < fp->len; i += insn_count) {
--		insn_count = bpf_jit_insn(jit, fp, i);
-+		insn_count = bpf_jit_insn(jit, fp, i, extra_pass);
- 		if (insn_count < 0)
- 			return -1;
- 		/* Next instruction address */
-@@ -1311,6 +1317,12 @@ bool bpf_jit_needs_zext(void)
- 	return true;
- }
- 
-+struct s390_jit_data {
-+	struct bpf_binary_header *header;
-+	struct bpf_jit ctx;
-+	int pass;
-+};
-+
- /*
-  * Compile eBPF program "fp"
-  */
-@@ -1318,7 +1330,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- {
- 	struct bpf_prog *tmp, *orig_fp = fp;
- 	struct bpf_binary_header *header;
-+	struct s390_jit_data *jit_data;
- 	bool tmp_blinded = false;
-+	bool extra_pass = false;
- 	struct bpf_jit jit;
- 	int pass;
- 
-@@ -1337,6 +1351,23 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		fp = tmp;
- 	}
- 
-+	jit_data = fp->aux->jit_data;
-+	if (!jit_data) {
-+		jit_data = kzalloc(sizeof(*jit_data), GFP_KERNEL);
-+		if (!jit_data) {
-+			fp = orig_fp;
-+			goto out;
-+		}
-+		fp->aux->jit_data = jit_data;
-+	}
-+	if (jit_data->ctx.addrs) {
-+		jit = jit_data->ctx;
-+		header = jit_data->header;
-+		extra_pass = true;
-+		pass = jit_data->pass + 1;
-+		goto skip_init_ctx;
-+	}
-+
- 	memset(&jit, 0, sizeof(jit));
- 	jit.addrs = kcalloc(fp->len + 1, sizeof(*jit.addrs), GFP_KERNEL);
- 	if (jit.addrs == NULL) {
-@@ -1349,7 +1380,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	 *   - 3:   Calculate program size and addrs arrray
- 	 */
- 	for (pass = 1; pass <= 3; pass++) {
--		if (bpf_jit_prog(&jit, fp)) {
-+		if (bpf_jit_prog(&jit, fp, extra_pass)) {
- 			fp = orig_fp;
- 			goto free_addrs;
- 		}
-@@ -1361,12 +1392,14 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		fp = orig_fp;
- 		goto free_addrs;
- 	}
-+
- 	header = bpf_jit_binary_alloc(jit.size, &jit.prg_buf, 2, jit_fill_hole);
- 	if (!header) {
- 		fp = orig_fp;
- 		goto free_addrs;
- 	}
--	if (bpf_jit_prog(&jit, fp)) {
-+skip_init_ctx:
-+	if (bpf_jit_prog(&jit, fp, extra_pass)) {
- 		bpf_jit_binary_free(header);
- 		fp = orig_fp;
- 		goto free_addrs;
-@@ -1375,12 +1408,23 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		bpf_jit_dump(fp->len, jit.size, pass, jit.prg_buf);
- 		print_fn_code(jit.prg_buf, jit.size_prg);
- 	}
--	bpf_jit_binary_lock_ro(header);
-+	if (!fp->is_func || extra_pass) {
-+		bpf_jit_binary_lock_ro(header);
-+	} else {
-+		jit_data->header = header;
-+		jit_data->ctx = jit;
-+		jit_data->pass = pass;
-+	}
- 	fp->bpf_func = (void *) jit.prg_buf;
- 	fp->jited = 1;
- 	fp->jited_len = jit.size;
-+
-+	if (!fp->is_func || extra_pass) {
- free_addrs:
--	kfree(jit.addrs);
-+		kfree(jit.addrs);
-+		kfree(jit_data);
-+		fp->aux->jit_data = NULL;
-+	}
- out:
- 	if (tmp_blinded)
- 		bpf_jit_prog_release_other(fp, fp == orig_fp ?
--- 
-2.22.0
-
+Acked-by: Song Liu <songliubraving@fb.com>
