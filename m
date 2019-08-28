@@ -2,101 +2,229 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9B3A0926
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 20:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87DF8A096B
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 20:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726763AbfH1SBN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Aug 2019 14:01:13 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:34845 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726619AbfH1SBM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Aug 2019 14:01:12 -0400
-Received: by mail-pg1-f196.google.com with SMTP id n4so146710pgv.2
-        for <bpf@vger.kernel.org>; Wed, 28 Aug 2019 11:01:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=BFJvddMVdRzlLg4JaQXTPKjXHEos9ALpLQhTxwQRgB0=;
-        b=ASkY1rUlh5uPsHc6yy1UDllwaGq7eHHaqrx9mHH1JQk+Juc6hS4cevD9XTNCDZesbH
-         Mmo9mFrqYcCia1Ti/2PSg9CY+Q8KpxUS8DMx9XHSfqZZ6kXEF39+pefIA2AvUzXJi4+i
-         2z/Sepk/beKs+aXtnAYFGTpIHKCQHRn848/5Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=BFJvddMVdRzlLg4JaQXTPKjXHEos9ALpLQhTxwQRgB0=;
-        b=tf+O36Z4/6bT27yVyQt85S2bXVPb/hnL+6g6yw2qLskMgeBRocINzs75M8lG/Y2tZx
-         JU3VkkVAS04DrrQO8BCHPCx5pSwiyKii7MhEUgOIIR5JZs4rqkCF9GHdeh+XdnDLfsvJ
-         lvA0ecu/+crlQuSdoihSZjQ8WzhUXBI2pFdzoISyxa4i0zNUkvZhuVKZRGxFv68WsZs0
-         6AZPkXWJpOmCUUB7X+wO+7JDW4JSCtuYua5ewmU8ENdA8AGAOfF4I44ssu6FzN2UcT4t
-         sTsvW7ThCJlNHVhrS81n70t/YOGeimn/EjCuJaisANNdeMbWxJkWDV3Lqq5vAbXoBy9R
-         qsMA==
-X-Gm-Message-State: APjAAAV61LbtHDyV5aPhiqNvJZ8UoO/85INfhTXd4g3ZgrGh3ciMZhJV
-        nmn7loraofiecU34q7HHMikCKQ==
-X-Google-Smtp-Source: APXvYqxl9ldGbN+Y6p7HIDBEFutfmUjTW+7dVVdP5QoMG/5a9Fx5qHPh4AtBUYcTgv24Hatkm1LSYw==
-X-Received: by 2002:a17:90a:6581:: with SMTP id k1mr5476919pjj.47.1567015272079;
-        Wed, 28 Aug 2019 11:01:12 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z4sm3347892pfg.166.2019.08.28.11.01.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2019 11:01:11 -0700 (PDT)
-Date:   Wed, 28 Aug 2019 11:01:10 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     David Abdurachmanov <david.abdurachmanov@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Abdurachmanov <david.abdurachmanov@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        Vincent Chen <vincentc@andestech.com>,
-        Alan Kao <alankao@andestech.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, me@carlosedp.com
-Subject: Re: [PATCH v2] riscv: add support for SECCOMP and SECCOMP_FILTER
-Message-ID: <201908281100.D78277FD@keescook>
-References: <20190822205533.4877-1-david.abdurachmanov@sifive.com>
- <201908251451.73C6812E8@keescook>
- <419CB0D1-E51C-49D5-9745-7771C863462F@amacapital.net>
+        id S1726554AbfH1S2v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Aug 2019 14:28:51 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:57248 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726541AbfH1S2u (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Aug 2019 14:28:50 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 5C7AC8AC6F9;
+        Wed, 28 Aug 2019 18:28:50 +0000 (UTC)
+Received: from astarta.redhat.com (ovpn-116-102.ams2.redhat.com [10.36.116.102])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E06E35D70D;
+        Wed, 28 Aug 2019 18:28:48 +0000 (UTC)
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     daniel@iogearbox.net, iii@linux.ibm.com, jolsa@redhat.com
+Subject: [PATCH v3] bpf: s390: add JIT support for multi-function programs
+Date:   Wed, 28 Aug 2019 21:28:46 +0300
+Message-Id: <20190828182846.10473-1-yauheni.kaliuta@redhat.com>
+In-Reply-To: <20190826182036.17456-1-yauheni.kaliuta@redhat.com>
+References: <20190826182036.17456-1-yauheni.kaliuta@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <419CB0D1-E51C-49D5-9745-7771C863462F@amacapital.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.69]); Wed, 28 Aug 2019 18:28:50 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 28, 2019 at 10:52:05AM -0700, Andy Lutomirski wrote:
-> 
-> 
-> > On Aug 25, 2019, at 2:59 PM, Kees Cook <keescook@chromium.org> wrote:
-> > 
-> >> On Thu, Aug 22, 2019 at 01:55:22PM -0700, David Abdurachmanov wrote:
-> >> This patch was extensively tested on Fedora/RISCV (applied by default on
-> >> top of 5.2-rc7 kernel for <2 months). The patch was also tested with 5.3-rc
-> >> on QEMU and SiFive Unleashed board.
-> > 
-> > Oops, I see the mention of QEMU here. Where's the best place to find
-> > instructions on creating a qemu riscv image/environment?
-> 
-> I don’t suppose one of you riscv folks would like to contribute riscv support to virtme?  virtme-run —arch=riscv would be quite nice, and the total patch should be just a couple lines.  Unfortunately, it helps a lot to understand the subtleties of booting the architecture to write those couple lines :)
+This adds support for bpf-to-bpf function calls in the s390 JIT
+compiler. The JIT compiler converts the bpf call instructions to
+native branch instructions. After a round of the usual passes, the
+start addresses of the JITed images for the callee functions are
+known. Finally, to fixup the branch target addresses, we need to
+perform an extra pass.
 
-As it turns out, this is where I'm stuck. All the instructions I can
-find are about booting a kernel off a disk image. :(
+Because of the address range in which JITed images are allocated on
+s390, the offsets of the start addresses of these images from
+__bpf_call_base are as large as 64 bits. So, for a function call,
+the imm field of the instruction cannot be used to determine the
+callee's address. Use bpf_jit_get_func_addr() helper instead.
 
+The patch borrows a lot from:
+
+commit 8c11ea5ce13d ("bpf, arm64: fix getting subprog addr from aux
+for calls")
+
+commit e2c95a61656d ("bpf, ppc64: generalize fetching subprog into
+bpf_jit_get_func_addr")
+
+commit 8484ce8306f9 ("bpf: powerpc64: add JIT support for
+multi-function programs")
+
+(including the commit message).
+
+test_verifier (5.3-rc6 with CONFIG_BPF_JIT_ALWAYS_ON=y):
+
+without patch:
+Summary: 1501 PASSED, 0 SKIPPED, 47 FAILED
+
+with patch:
+Summary: 1540 PASSED, 0 SKIPPED, 8 FAILED
+
+Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+---
+ arch/s390/net/bpf_jit_comp.c | 66 ++++++++++++++++++++++++++++++------
+ 1 file changed, 55 insertions(+), 11 deletions(-)
+
+diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
+index 955eb355c2fd..b6801d854c77 100644
+--- a/arch/s390/net/bpf_jit_comp.c
++++ b/arch/s390/net/bpf_jit_comp.c
+@@ -502,7 +502,8 @@ static void bpf_jit_epilogue(struct bpf_jit *jit, u32 stack_depth)
+  * NOTE: Use noinline because for gcov (-fprofile-arcs) gcc allocates a lot of
+  * stack space for the large switch statement.
+  */
+-static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i)
++static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
++				 int i, bool extra_pass)
+ {
+ 	struct bpf_insn *insn = &fp->insnsi[i];
+ 	int jmp_off, last, insn_count = 1;
+@@ -1011,10 +1012,14 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
+ 	 */
+ 	case BPF_JMP | BPF_CALL:
+ 	{
+-		/*
+-		 * b0 = (__bpf_call_base + imm)(b1, b2, b3, b4, b5)
+-		 */
+-		const u64 func = (u64)__bpf_call_base + imm;
++		u64 func;
++		bool func_addr_fixed;
++		int ret;
++
++		ret = bpf_jit_get_func_addr(fp, insn, extra_pass,
++					    &func, &func_addr_fixed);
++		if (ret < 0)
++			return -1;
+ 
+ 		REG_SET_SEEN(BPF_REG_5);
+ 		jit->seen |= SEEN_FUNC;
+@@ -1283,7 +1288,8 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp, int i
+ /*
+  * Compile eBPF program into s390x code
+  */
+-static int bpf_jit_prog(struct bpf_jit *jit, struct bpf_prog *fp)
++static int bpf_jit_prog(struct bpf_jit *jit, struct bpf_prog *fp,
++			bool extra_pass)
+ {
+ 	int i, insn_count;
+ 
+@@ -1292,7 +1298,7 @@ static int bpf_jit_prog(struct bpf_jit *jit, struct bpf_prog *fp)
+ 
+ 	bpf_jit_prologue(jit, fp->aux->stack_depth);
+ 	for (i = 0; i < fp->len; i += insn_count) {
+-		insn_count = bpf_jit_insn(jit, fp, i);
++		insn_count = bpf_jit_insn(jit, fp, i, extra_pass);
+ 		if (insn_count < 0)
+ 			return -1;
+ 		/* Next instruction address */
+@@ -1311,6 +1317,12 @@ bool bpf_jit_needs_zext(void)
+ 	return true;
+ }
+ 
++struct s390_jit_data {
++	struct bpf_binary_header *header;
++	struct bpf_jit ctx;
++	int pass;
++};
++
+ /*
+  * Compile eBPF program "fp"
+  */
+@@ -1318,7 +1330,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+ {
+ 	struct bpf_prog *tmp, *orig_fp = fp;
+ 	struct bpf_binary_header *header;
++	struct s390_jit_data *jit_data;
+ 	bool tmp_blinded = false;
++	bool extra_pass = false;
+ 	struct bpf_jit jit;
+ 	int pass;
+ 
+@@ -1337,6 +1351,23 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+ 		fp = tmp;
+ 	}
+ 
++	jit_data = fp->aux->jit_data;
++	if (!jit_data) {
++		jit_data = kzalloc(sizeof(*jit_data), GFP_KERNEL);
++		if (!jit_data) {
++			fp = orig_fp;
++			goto out;
++		}
++		fp->aux->jit_data = jit_data;
++	}
++	if (jit_data->ctx.addrs) {
++		jit = jit_data->ctx;
++		header = jit_data->header;
++		extra_pass = true;
++		pass = jit_data->pass + 1;
++		goto skip_init_ctx;
++	}
++
+ 	memset(&jit, 0, sizeof(jit));
+ 	jit.addrs = kcalloc(fp->len + 1, sizeof(*jit.addrs), GFP_KERNEL);
+ 	if (jit.addrs == NULL) {
+@@ -1349,7 +1380,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+ 	 *   - 3:   Calculate program size and addrs arrray
+ 	 */
+ 	for (pass = 1; pass <= 3; pass++) {
+-		if (bpf_jit_prog(&jit, fp)) {
++		if (bpf_jit_prog(&jit, fp, extra_pass)) {
+ 			fp = orig_fp;
+ 			goto free_addrs;
+ 		}
+@@ -1361,12 +1392,14 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+ 		fp = orig_fp;
+ 		goto free_addrs;
+ 	}
++
+ 	header = bpf_jit_binary_alloc(jit.size, &jit.prg_buf, 2, jit_fill_hole);
+ 	if (!header) {
+ 		fp = orig_fp;
+ 		goto free_addrs;
+ 	}
+-	if (bpf_jit_prog(&jit, fp)) {
++skip_init_ctx:
++	if (bpf_jit_prog(&jit, fp, extra_pass)) {
+ 		bpf_jit_binary_free(header);
+ 		fp = orig_fp;
+ 		goto free_addrs;
+@@ -1375,12 +1408,23 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+ 		bpf_jit_dump(fp->len, jit.size, pass, jit.prg_buf);
+ 		print_fn_code(jit.prg_buf, jit.size_prg);
+ 	}
+-	bpf_jit_binary_lock_ro(header);
++	if (!fp->is_func || extra_pass) {
++		bpf_jit_binary_lock_ro(header);
++	} else {
++		jit_data->header = header;
++		jit_data->ctx = jit;
++		jit_data->pass = pass;
++	}
+ 	fp->bpf_func = (void *) jit.prg_buf;
+ 	fp->jited = 1;
+ 	fp->jited_len = jit.size;
++
++	if (!fp->is_func || extra_pass) {
+ free_addrs:
+-	kfree(jit.addrs);
++		kfree(jit.addrs);
++		kfree(jit_data);
++		fp->aux->jit_data = NULL;
++	}
+ out:
+ 	if (tmp_blinded)
+ 		bpf_jit_prog_release_other(fp, fp == orig_fp ?
 -- 
-Kees Cook
+2.22.0
+
