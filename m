@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B6AC09FB83
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 09:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D005E9FB8D
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 09:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbfH1HXK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Aug 2019 03:23:10 -0400
-Received: from mail-lj1-f180.google.com ([209.85.208.180]:44839 "EHLO
-        mail-lj1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726545AbfH1HXJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Aug 2019 03:23:09 -0400
-Received: by mail-lj1-f180.google.com with SMTP id e24so1576172ljg.11
-        for <bpf@vger.kernel.org>; Wed, 28 Aug 2019 00:23:08 -0700 (PDT)
+        id S1726606AbfH1HXU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Aug 2019 03:23:20 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:43050 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726554AbfH1HXL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Aug 2019 03:23:11 -0400
+Received: by mail-lj1-f193.google.com with SMTP id h15so1582774ljg.10
+        for <bpf@vger.kernel.org>; Wed, 28 Aug 2019 00:23:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZHgvfVC1U/7DlItOuwqPgoPx/xxqHmQYB5wrJeGRtiI=;
-        b=X9lpk9rkCYruKaEHcwMFxgS4DGe2S+luCkFihWcYC9Qg9CdmjijalshjAfmf2thYjk
-         Q7/ZActUENPjHlpYMD+gZ6Zgel9yHAvqRb0KQjzx7OGZG1iH2+w4h7YUglDKo6dU9bWE
-         XcfwjwnX5NBfqxLSghu+9JDc25zTB+2vF6+hw=
+        bh=dOjmOoluf3gBhq8eXlD9r/R6bKdILCYGeFhsMtNw2Bg=;
+        b=drPLXTz/iUa3KrW0woM6DgA1FNTMXghWMAgZ/d1hRLAhtim8Tqxij8+YlUrnTti9Q6
+         XYfqoyhRr44AmkTHDWRPOLDSAr6Ac2Ll1AVby4+cuGTHsmlA51wZ4eWTz2lbOhH5aep+
+         zrPc2HDnJTTo5QmT9BuDypfBJjHuns02syetU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZHgvfVC1U/7DlItOuwqPgoPx/xxqHmQYB5wrJeGRtiI=;
-        b=M1GF5AJJ5LkMzNwA9Rl/bd40QGY3PN83f9qoGTINbfZtYup3N2rUT+/WWXxVpJ6sK0
-         yQI08M+7h+LLPiNn7Via02QALfcJeA2Eq7sCy8rkjqd0C/i1mNY710Lt8mU0wck0pSkp
-         cObm87+29lWO/WOVqHR/MGFm3dpHGLPMuPfmIwayoSRF/HSTcBZKRZ8PU/R7fN8eWqdm
-         KjQJB7UCazesdeOFdPDzC15rCsLYjhGrV4RE5WwL1boIpdmyU0hpTRFgjVfQMhTq8cNQ
-         BFdPUIOOKnZpYweiB2HqlG3CE/6SypNBbf5RDkpJ/33gxmDOXKO6C4ElKIifM0WJATZ5
-         Iyug==
-X-Gm-Message-State: APjAAAV+PxTjd2fg0WMjHlZYagiDyi6fBNtO68N8fGw7a0HvQCHWDMhO
-        j8ICqqTUx0ZTTDldFpftwWutqZzuLy9szw==
-X-Google-Smtp-Source: APXvYqya0lCSDUrxeFaZ9PdNLYXc7NjB0miRgLZtQ69EotIP5LcBpJezpcR+3w+guP00Pkbrtzxg+g==
-X-Received: by 2002:a2e:9b02:: with SMTP id u2mr1190072lji.219.1566976986901;
-        Wed, 28 Aug 2019 00:23:06 -0700 (PDT)
+        bh=dOjmOoluf3gBhq8eXlD9r/R6bKdILCYGeFhsMtNw2Bg=;
+        b=tCSO7b/LU8MzMbxmjZ5TcX4e1AZjEol3md2NGBdw7mCLMm7jYSLoPV959od7nBrwva
+         0QD9zuwFEcnpgxGKdcU0cBCb1reW6wzWYnlLgSWHKXktLPz8gZ8cXL2hAXhSnxY2N0M5
+         9CxXKFPDvMkavUTp6+LFNDw7RSmsDG6nkIwzETQvTBundBea+GI/mBXCo5/53SbJAQaa
+         hT4DJ0LB3G7A9SXdEFv5dmlzknZo//krEz/1K4nsg4amG5DGZmmX6J+Vu5EuRC0u34ik
+         Rh+Dgf4+8Wtt1xg5Htsa1xRyWZQaPzgCj2t9eFNPtwyGGgkXOOKZhnZFkx7Q9y1tWFd+
+         0IoQ==
+X-Gm-Message-State: APjAAAUC0y8CoE85d8hEfgEyVsMjghsHlRH7DwCT8Xdqv5j6yciXv/DE
+        NEE0r54UVSvEhxgo3sGLIJ7tQardtpQ/4A==
+X-Google-Smtp-Source: APXvYqy/051ovGZpvNRH2c/q6cFO4hCR/+K3XMh/dqaiEIodzAbMuxW+CIdS0I8dfWDIR8SpD2Tl1A==
+X-Received: by 2002:a2e:9417:: with SMTP id i23mr1210580ljh.12.1566976989273;
+        Wed, 28 Aug 2019 00:23:09 -0700 (PDT)
 Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id b21sm586231lff.11.2019.08.28.00.23.06
+        by smtp.gmail.com with ESMTPSA id 141sm414630ljf.32.2019.08.28.00.23.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2019 00:23:06 -0700 (PDT)
+        Wed, 28 Aug 2019 00:23:08 -0700 (PDT)
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     bpf@vger.kernel.org, netdev@vger.kernel.org
 Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
         Marek Majkowski <marek@cloudflare.com>
-Subject: [RFCv2 bpf-next 08/12] udp: Run inet_lookup bpf program on socket lookup
-Date:   Wed, 28 Aug 2019 09:22:46 +0200
-Message-Id: <20190828072250.29828-9-jakub@cloudflare.com>
+Subject: [RFCv2 bpf-next 09/12] udp6: Run inet_lookup bpf program on socket lookup
+Date:   Wed, 28 Aug 2019 09:22:47 +0200
+Message-Id: <20190828072250.29828-10-jakub@cloudflare.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190828072250.29828-1-jakub@cloudflare.com>
 References: <20190828072250.29828-1-jakub@cloudflare.com>
@@ -58,103 +58,96 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Following the TCP socket lookup changes, allow selecting the receiving
-socket from BPF before searching for bound socket by destination address
-and port.
-
-As connected and bound but non-connected socket lookup currently happens in
-one step, we split the lookup in two phases to run BPF only after a lookup
-for a connected socket was a miss. Hence making sure connected UDP sockets
-continue to work as expected in presence of a BPF inet_lookup program.
+Same as for udp, split the socket lookup into two phases and let the BPF
+inet_lookup program select the receiving socket.
 
 Suggested-by: Marek Majkowski <marek@cloudflare.com>
 Reviewed-by: Lorenz Bauer <lmb@cloudflare.com>
 Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
- net/ipv4/udp.c | 44 ++++++++++++++++++++++++++++++++------------
- 1 file changed, 32 insertions(+), 12 deletions(-)
+ net/ipv6/udp.c | 42 ++++++++++++++++++++++++++++++------------
+ 1 file changed, 30 insertions(+), 12 deletions(-)
 
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 9fffe9e9eec6..3a4b98f89249 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -353,7 +353,7 @@ int udp_v4_get_port(struct sock *sk, unsigned short snum)
+diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
+index 16ef2303bd8d..7380cf57e88c 100644
+--- a/net/ipv6/udp.c
++++ b/net/ipv6/udp.c
+@@ -101,7 +101,7 @@ void udp_v6_rehash(struct sock *sk)
  static int compute_score(struct sock *sk, struct net *net,
- 			 __be32 saddr, __be16 sport,
- 			 __be32 daddr, unsigned short hnum,
+ 			 const struct in6_addr *saddr, __be16 sport,
+ 			 const struct in6_addr *daddr, unsigned short hnum,
 -			 int dif, int sdif)
 +			 int dif, int sdif, unsigned char state)
  {
  	int score;
  	struct inet_sock *inet;
-@@ -364,6 +364,9 @@ static int compute_score(struct sock *sk, struct net *net,
- 	    ipv6_only_sock(sk))
+@@ -112,6 +112,9 @@ static int compute_score(struct sock *sk, struct net *net,
+ 	    sk->sk_family != PF_INET6)
  		return -1;
  
 +	if (state && sk->sk_state != state)
 +		return -1;
 +
- 	if (sk->sk_rcv_saddr != daddr)
+ 	if (!ipv6_addr_equal(&sk->sk_v6_rcv_saddr, daddr))
  		return -1;
  
-@@ -411,7 +414,8 @@ static struct sock *udp4_lib_lookup2(struct net *net,
- 				     __be32 daddr, unsigned int hnum,
- 				     int dif, int sdif,
- 				     struct udp_hslot *hslot2,
--				     struct sk_buff *skb)
-+				     struct sk_buff *skb,
-+				     unsigned char state)
+@@ -146,7 +149,7 @@ static struct sock *udp6_lib_lookup2(struct net *net,
+ 		const struct in6_addr *saddr, __be16 sport,
+ 		const struct in6_addr *daddr, unsigned int hnum,
+ 		int dif, int sdif, struct udp_hslot *hslot2,
+-		struct sk_buff *skb)
++		struct sk_buff *skb, unsigned char state)
  {
  	struct sock *sk, *result;
  	int score, badness;
-@@ -421,7 +425,7 @@ static struct sock *udp4_lib_lookup2(struct net *net,
- 	badness = 0;
+@@ -156,7 +159,7 @@ static struct sock *udp6_lib_lookup2(struct net *net,
+ 	badness = -1;
  	udp_portaddr_for_each_entry_rcu(sk, &hslot2->head) {
  		score = compute_score(sk, net, saddr, sport,
 -				      daddr, hnum, dif, sdif);
 +				      daddr, hnum, dif, sdif, state);
  		if (score > badness) {
  			if (sk->sk_reuseport) {
- 				hash = udp_ehashfn(net, daddr, hnum,
-@@ -454,18 +458,34 @@ struct sock *__udp4_lib_lookup(struct net *net, __be32 saddr,
+ 				hash = udp6_ehashfn(net, daddr, hnum,
+@@ -190,19 +193,34 @@ struct sock *__udp6_lib_lookup(struct net *net,
  	slot2 = hash2 & udptable->mask;
  	hslot2 = &udptable->hash2[slot2];
  
 +	/* Lookup connected sockets */
- 	result = udp4_lib_lookup2(net, saddr, sport,
+ 	result = udp6_lib_lookup2(net, saddr, sport,
  				  daddr, hnum, dif, sdif,
 -				  hslot2, skb);
 -	if (!result) {
--		hash2 = ipv4_portaddr_hash(net, htonl(INADDR_ANY), hnum);
+-		hash2 = ipv6_portaddr_hash(net, &in6addr_any, hnum);
 -		slot2 = hash2 & udptable->mask;
--		hslot2 = &udptable->hash2[slot2];
 +				  hslot2, skb, TCP_ESTABLISHED);
 +	if (result)
 +		goto done;
  
--		result = udp4_lib_lookup2(net, saddr, sport,
--					  htonl(INADDR_ANY), hnum, dif, sdif,
--					  hslot2, skb);
--	}
+-		hslot2 = &udptable->hash2[slot2];
 +	/* Lookup redirect from BPF */
-+	result = inet_lookup_run_bpf(net, udptable->protocol,
-+				     saddr, sport, daddr, hnum);
++	result = inet6_lookup_run_bpf(net, udptable->protocol,
++				      saddr, sport, daddr, hnum);
 +	if (result)
 +		goto done;
-+
+ 
+-		result = udp6_lib_lookup2(net, saddr, sport,
+-					  &in6addr_any, hnum, dif, sdif,
+-					  hslot2, skb);
+-	}
 +	/* Lookup bound sockets */
-+	result = udp4_lib_lookup2(net, saddr, sport,
++	result = udp6_lib_lookup2(net, saddr, sport,
 +				  daddr, hnum, dif, sdif,
 +				  hslot2, skb, 0);
 +	if (result)
 +		goto done;
 +
-+	hash2 = ipv4_portaddr_hash(net, htonl(INADDR_ANY), hnum);
++	hash2 = ipv6_portaddr_hash(net, &in6addr_any, hnum);
 +	slot2 = hash2 & udptable->mask;
 +	hslot2 = &udptable->hash2[slot2];
 +
-+	result = udp4_lib_lookup2(net, saddr, sport,
-+				  htonl(INADDR_ANY), hnum, dif, sdif,
++	result = udp6_lib_lookup2(net, saddr, sport,
++				  &in6addr_any, hnum, dif, sdif,
 +				  hslot2, skb, 0);
 +done:
  	if (IS_ERR(result))
