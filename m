@@ -2,129 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8D1A0C45
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 23:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DFBA0C6C
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 23:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbfH1VTV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Aug 2019 17:19:21 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:33052 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbfH1VTV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Aug 2019 17:19:21 -0400
-Received: by mail-qt1-f195.google.com with SMTP id v38so1301085qtb.0;
-        Wed, 28 Aug 2019 14:19:20 -0700 (PDT)
+        id S1726400AbfH1Vdp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Aug 2019 17:33:45 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:45045 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726764AbfH1Vdp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Aug 2019 17:33:45 -0400
+Received: by mail-pl1-f195.google.com with SMTP id t14so540392plr.11;
+        Wed, 28 Aug 2019 14:33:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Q+bSnufMMSFAODoq3/Ev2TbR4aO+KDVdFDkEKdK/0bU=;
-        b=IoDMT2RdcJ1YeBO9uC+RbeSTb4qg2esJfM3QoK2NpLSWreOyNGs1A61oRRkNbnA9Th
-         vq5RblmFhWFroC0ZXCXTGtilPCjVx9unFhhlKgm0LEPgJLLzW+tCid8Kjz8XzsOP9yCR
-         6ZzNgZuWYQ6zaEPelKHttusivG/QClkEfXqTYCwM9vcvt/4x6Z6g43XH92DP6YjZ0MhV
-         5g6300DwobiiJGbxxRUx2fJz3L6nyQAOWUzn8sMbblsnbbkyhPvl2GDCsWWyTU679p84
-         /GL+ZvFTQcYZKIJqQ9nHZ/nvN+hRcB29hk2Nh8zJ9M+EEqTmQMRn+2IGXGfBctVnc8e+
-         ymrA==
+        bh=H/T62WymqibAzBybIU6SUVM2xwVqngTN7XIUBl9RNJY=;
+        b=DpZq1hI8hoSZMAIvIKWuAwAwDsAUnLgjeh2j+TjrB1SsTc7bDlHtwkcjGBHhMNrpSa
+         0ftLnVhblEm8eYwLkQBwBv3aUiVC8sQddcMvkVg23Z7KYL3jSZQQ2LioBdjh1Nq6bzAR
+         +iA510Cyusj+fk2PdO/X66G2VJ0wjvjPHRDEGFXP+KO+vQUVybYxqO2yL2jEbAH37ZTC
+         WOHrrDl2m6dA709A5HmVbzUYh8JIoO6UX0WV2ibeM74U0uWG4ruseiRfaAUZOjqdBOGv
+         LXP7E/Ewr1PsJEc1Y1HeAF28kYVODUsl5mN4S4be964aADo+LmtbPRjDcs0lqkE6AWa/
+         c99Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Q+bSnufMMSFAODoq3/Ev2TbR4aO+KDVdFDkEKdK/0bU=;
-        b=dIKqgDSV9HP5wf9zNZ44VqSV4J3qfe8IQUPwTuIqdcYCRKxXKkfSj00cVKywIoPqt3
-         KTTO5s/FBzJ8nkj39eYy3w/nItn0Uxi8U4TuICyNKHe+BrSh9+4h6xJHdo9uOuvMwX09
-         4AzEih1BAKDnVRxCGMRH7OKqzcecuQx20OBJ/VpICF26xHtdAUod0XALMZddTr1SNPJR
-         yw+k5tcBcVISVEZWdqQCbPcH2jbRAFzEIO34B4fmNYC3SwpQKu55OnYYOiQTA1s3b/Du
-         q8tibyARgZ8/HFEsbw6vUX1n0NDM5ENmtc+ghic5bVpLAXSJtpV1DkrDCjLutALDuJGh
-         USgg==
-X-Gm-Message-State: APjAAAU6H02DBvKJnbbfhCSHdv/yrvABiu2ZVs6hzvvXchTjnFBm1AfR
-        UHuAZ6ZaBHjxsOKZyUsK4h09Thj1
-X-Google-Smtp-Source: APXvYqwO5mxKViKsfViHqdNiTk/Dza2zVIjeURGbk4BSGoEVpsLVDJV3PdyjmWWN9odp2q5jjsGkmw==
-X-Received: by 2002:a05:6214:1447:: with SMTP id b7mr4436628qvy.89.1567027160329;
-        Wed, 28 Aug 2019 14:19:20 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.162.135.198])
-        by smtp.gmail.com with ESMTPSA id t13sm161466qkm.117.2019.08.28.14.19.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2019 14:19:19 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9D8FC41146; Wed, 28 Aug 2019 18:19:16 -0300 (-03)
-Date:   Wed, 28 Aug 2019 18:19:16 -0300
+        bh=H/T62WymqibAzBybIU6SUVM2xwVqngTN7XIUBl9RNJY=;
+        b=KLXjJSrEoTCxocFIpMDBHDLfHA6z5KIRGpUnfBHCn1UD0tZnw2b+5EkESLDJTI6YDO
+         YT5DygK0uXrLyfZnUJslBj0EaFIIFzvtPf+OGozBUx9viuASRQmFvU6rUclte4NP7tZN
+         qx45bNz4g7UVAi8FIaC3FuMGLHXQz2hUi80/9hL/VUB+kfN/MsnX08Eibiu0m5tTz0S6
+         FsmzKbWFAowVsaoLRJ8owWHF5f0TzHgIrmEjgl8P8ifodNdgiyeKBwiuvLkasaAFMC7K
+         FTW20CHmdtzcCvWZHNXEv2YHHjqv0x1eMm+czTctrGHdxrWookCRm/QyBcEvGM3gKoOo
+         GZrg==
+X-Gm-Message-State: APjAAAXzXmzPxG5ds9RkAPvuCHdI6LfXCprnblKcUi53cKLT/na1y1F6
+        NWYl0L0lBTzEjPGy3b0R1HE=
+X-Google-Smtp-Source: APXvYqxV8rh8RoFIsPi0EjsCE3QE6b/+zZAO0va1dz9OD5UGMEIr78PFAz9v9sUoSY1sncswXiSTeA==
+X-Received: by 2002:a17:902:302:: with SMTP id 2mr6423212pld.149.1567028024344;
+        Wed, 28 Aug 2019 14:33:44 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::5983])
+        by smtp.gmail.com with ESMTPSA id j18sm334330pfh.70.2019.08.28.14.33.42
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 28 Aug 2019 14:33:43 -0700 (PDT)
+Date:   Wed, 28 Aug 2019 14:33:41 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Julia Kartseva <hex@fb.com>
 Cc:     rdna@fb.com, bpf@vger.kernel.org, ast@kernel.org,
         daniel@iogearbox.net, netdev@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 03/10] tools/bpf: handle
- __MAX_BPF_(PROG|MAP)_TYPE in switch statements
-Message-ID: <20190828211916.GA28011@kernel.org>
+Subject: Re: [PATCH bpf-next 01/10] bpf: introduce __MAX_BPF_PROG_TYPE and
+ __MAX_BPF_MAP_TYPE enum values
+Message-ID: <20190828213339.5qie42ulkhyso7i5@ast-mbp.dhcp.thefacebook.com>
 References: <cover.1567024943.git.hex@fb.com>
- <1895f7dfe2a8067f6397ff565edf20130a28aa91.1567024943.git.hex@fb.com>
+ <43989d37be938b7d284028481e63df0a0471e29f.1567024943.git.hex@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1895f7dfe2a8067f6397ff565edf20130a28aa91.1567024943.git.hex@fb.com>
-X-Url:  http://acmel.wordpress.com
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <43989d37be938b7d284028481e63df0a0471e29f.1567024943.git.hex@fb.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Aug 28, 2019 at 02:03:06PM -0700, Julia Kartseva escreveu:
-> Add cases to switch statements in probe_load, bpf_prog_type__needs_kver
-> bpf_probe_map_type to fix enumeration value not handled in switch
-> compilation error.
-> prog_type_name array in bpftool/main.h doesn't have __MAX_BPF_PROG_TYPE
-> entity, same for map, so probe won't be called.
-
-Shouldn't this be added when adding that __MAX_BPF_PROG_TYPE value to
-the enum? Otherwise the build will fail when __MAX_BPF_PROG_TYPE is
-added but not handled in the switches.
-
-I.e. the tree should build patch by patch, not just at the end of patch
-series.
-
-- Arnaldo
- 
+On Wed, Aug 28, 2019 at 02:03:04PM -0700, Julia Kartseva wrote:
+> Similar to __MAX_BPF_ATTACH_TYPE identifying the number of elements in
+> bpf_attach_type enum, add tailing enum values __MAX_BPF_PROG_TYPE
+> and __MAX_BPF_MAP_TYPE to simplify e.g. iteration over enums values in
+> the case when new values are added.
+> 
 > Signed-off-by: Julia Kartseva <hex@fb.com>
 > ---
->  tools/lib/bpf/libbpf.c        | 1 +
->  tools/lib/bpf/libbpf_probes.c | 2 ++
->  2 files changed, 3 insertions(+)
+>  include/uapi/linux/bpf.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 2233f919dd88..72e6e5eb397f 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -3580,6 +3580,7 @@ static bool bpf_prog_type__needs_kver(enum bpf_prog_type type)
->  	case BPF_PROG_TYPE_PERF_EVENT:
->  	case BPF_PROG_TYPE_CGROUP_SYSCTL:
->  	case BPF_PROG_TYPE_CGROUP_SOCKOPT:
-> +	case __MAX_BPF_PROG_TYPE:
->  		return false;
->  	case BPF_PROG_TYPE_KPROBE:
->  	default:
-> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
-> index 4b0b0364f5fc..8f2ba6a457ac 100644
-> --- a/tools/lib/bpf/libbpf_probes.c
-> +++ b/tools/lib/bpf/libbpf_probes.c
-> @@ -102,6 +102,7 @@ probe_load(enum bpf_prog_type prog_type, const struct bpf_insn *insns,
->  	case BPF_PROG_TYPE_FLOW_DISSECTOR:
->  	case BPF_PROG_TYPE_CGROUP_SYSCTL:
->  	case BPF_PROG_TYPE_CGROUP_SOCKOPT:
-> +	case __MAX_BPF_PROG_TYPE:
->  	default:
->  		break;
->  	}
-> @@ -250,6 +251,7 @@ bool bpf_probe_map_type(enum bpf_map_type map_type, __u32 ifindex)
->  	case BPF_MAP_TYPE_XSKMAP:
->  	case BPF_MAP_TYPE_SOCKHASH:
->  	case BPF_MAP_TYPE_REUSEPORT_SOCKARRAY:
-> +	case __MAX_BPF_MAP_TYPE:
->  	default:
->  		break;
->  	}
-> -- 
-> 2.17.1
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 5d2fb183ee2d..9b681bb82211 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -136,8 +136,11 @@ enum bpf_map_type {
+>  	BPF_MAP_TYPE_STACK,
+>  	BPF_MAP_TYPE_SK_STORAGE,
+>  	BPF_MAP_TYPE_DEVMAP_HASH,
+> +	__MAX_BPF_MAP_TYPE
+>  };
+>  
+> +#define MAX_BPF_MAP_TYPE __MAX_BPF_MAP_TYPE
+> +
+>  /* Note that tracing related programs such as
+>   * BPF_PROG_TYPE_{KPROBE,TRACEPOINT,PERF_EVENT,RAW_TRACEPOINT}
+>   * are not subject to a stable API since kernel internal data
+> @@ -173,8 +176,11 @@ enum bpf_prog_type {
+>  	BPF_PROG_TYPE_CGROUP_SYSCTL,
+>  	BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE,
+>  	BPF_PROG_TYPE_CGROUP_SOCKOPT,
+> +	__MAX_BPF_PROG_TYPE
+>  };
+>  
+> +#define MAX_BPF_PROG_TYPE __MAX_BPF_PROG_TYPE
+> +
 
--- 
+This came up before and my position is still the same.
+I'm against this type of band-aid in uapi.
+'bpftool feature probe' can easily discover all supported
+prog and map types already.
 
-- Arnaldo
