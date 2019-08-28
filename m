@@ -2,115 +2,235 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 153869F8C6
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 05:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22919F983
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 06:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726207AbfH1Dat (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Aug 2019 23:30:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42278 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726206AbfH1Dat (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Aug 2019 23:30:49 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E43AB217F5;
-        Wed, 28 Aug 2019 03:30:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1566963048;
-        bh=QwBtkl1IG8fVTvlSF50wiwwTEzxi3t44fFqpGmTznss=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PlKZdbng3HaPSeMSMuTn/q7fDeuMCIcNgcagEmqFg8UkACtVF7d4RGuTbMtljfY5j
-         dMrw4idt7ZYU1EK1yn31eKwtzhqQWClquZcg6cV0PxHSKsqnoKhMlCuOp3FTi95Otl
-         Je+5JUJ8rCcOqDxsNvpYC0bIyg5Yi9Rvpq43rss8=
-Date:   Wed, 28 Aug 2019 12:30:41 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1726154AbfH1Enr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Aug 2019 00:43:47 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:37703 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725884AbfH1Enq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Aug 2019 00:43:46 -0400
+Received: by mail-pf1-f196.google.com with SMTP id y9so849145pfl.4;
+        Tue, 27 Aug 2019 21:43:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=SQRsO4HQsPC7Xef8p7UBxcbTjZcy6s6xp94BxhDA1Io=;
+        b=ZRvUBboX5pgf17qvbTw52lXPleJRJetyCi4gvUWvaEE00i/6geDOtLILohZGeHn+34
+         a40rh/Y3kwSq2c4uVMZ8W2wyenCpuKvYyrN1xbJSfHhOJ+rNPlFFq1It7C8wpjpMwQse
+         YYSZXOj6RKMqi1+/8hgfCP4frW1BwV74vbBckZ/uuHkA8z4Z/JSKh5PBUlsuC1cVX4y+
+         KB9UEwrwvZbFvfT2t0jlvMyKpKYhEactagbpg1oDoGNXOHWF0UTqc0HGUHmnuHwwUn9M
+         rQKhy0XdPIMSb84ydJGsNnqcGFnJqnhVD9OpwHSk1Zd6YNI60T3TKBorXLhWEdiwvi2m
+         lkgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SQRsO4HQsPC7Xef8p7UBxcbTjZcy6s6xp94BxhDA1Io=;
+        b=oBTUkQVfEgo2CIr+AnRO6a9aVwyjqElKBq8RkmnYO/2nV32bzjYxI+zQOXB2e3zV3c
+         ggU/d12sJkrQhPRyQw9jalo/vDkpFSTzzhVoHz3lUUlZDGXvGBRA99UGUSuaT+mfscSv
+         x0qT8mUn8dYcsF7PXDIn30tBjL+B+6nFvzW58gB07cOJ1rv8/ON73Z1N8otuySuA9/k6
+         SsPneNI74pUYpvbY5YoV5/fBprEiYolHVYNLroon2pH32WV2CwwRSgpde50cFVvhM/JP
+         cvDBVQ5avlOBJXo+S8tyHuMMVxp4gy401IPsT0qJ5Hq+qHVDaYERvJ502xL9lPqHLht+
+         eFHw==
+X-Gm-Message-State: APjAAAVNLnjnUXuLN3mRoBjGwWwh3u0mmQHuhAMDocKTqVDbK4l5FRC9
+        3yE3nUFkOjnOldZt0n3GBts=
+X-Google-Smtp-Source: APXvYqwbE1gace4erNrIx63AC4tcBecFb28M8x3UTN3JHnhFWJenAWY7TYkl3CjYuI4/giLJSjc4Nw==
+X-Received: by 2002:a62:ed10:: with SMTP id u16mr2420034pfh.179.1566967425781;
+        Tue, 27 Aug 2019 21:43:45 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::86a2])
+        by smtp.gmail.com with ESMTPSA id h197sm1052934pfe.67.2019.08.27.21.43.43
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 27 Aug 2019 21:43:44 -0700 (PDT)
+Date:   Tue, 27 Aug 2019 21:43:42 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Kees Cook <keescook@chromium.org>,
         LSM List <linux-security-module@vger.kernel.org>,
         James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
         "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Network Development <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>,
         Linux API <linux-api@vger.kernel.org>
 Subject: Re: [PATCH bpf-next] bpf, capabilities: introduce CAP_BPF
-Message-Id: <20190828123041.c0c90c15865897461ee819a2@kernel.org>
-In-Reply-To: <20190827192144.3b38b25a@gandalf.local.home>
+Message-ID: <20190828044340.zeha3k3cmmxgfqj7@ast-mbp.dhcp.thefacebook.com>
 References: <20190827205213.456318-1-ast@kernel.org>
-        <CALCETrV8iJv9+Ai11_1_r6MapPhhwt9hjxi=6EoixytabTScqg@mail.gmail.com>
-        <20190827192144.3b38b25a@gandalf.local.home>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ <CALCETrV8iJv9+Ai11_1_r6MapPhhwt9hjxi=6EoixytabTScqg@mail.gmail.com>
+ <20190828003447.htgzsxs5oevn3eys@ast-mbp.dhcp.thefacebook.com>
+ <CALCETrVbPPPr=BdPAx=tJKxD3oLXP4OVSgCYrB_E4vb6idELow@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrVbPPPr=BdPAx=tJKxD3oLXP4OVSgCYrB_E4vb6idELow@mail.gmail.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 27 Aug 2019 19:21:44 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-
-> > Here's my proposal for CAP_TRACING, documentation-style:
-> > 
-> > --- begin ---
-> > 
-> > CAP_TRACING enables a task to use various kernel features to trace
-> > running user programs and the kernel itself.  CAP_TRACING also enables
-> > a task to bypass some speculation attack countermeasures.  A task in
-> > the init user namespace with CAP_TRACING will be able to tell exactly
-> > what kernel code is executed and when, and will be able to read kernel
-> > registers and kernel memory.  It will, similarly, be able to read the
-> > state of other user tasks.
-> > 
-> > Specifically, CAP_TRACING allows the following operations.  It may
-> > allow more operations in the future:
-> > 
-> >  - Full use of perf_event_open(), similarly to the effect of
-> > kernel.perf_event_paranoid == -1.
-> > 
-> >  - Loading and attaching tracing BPF programs, including use of BPF
-> > raw tracepoints.
-> > 
-> >  - Use of BPF stack maps.
-> > 
-> >  - Use of bpf_probe_read() and bpf_trace_printk().
-> > 
-> >  - Use of unsafe pointer-to-integer conversions in BPF.
-> > 
-> >  - Bypassing of BPF's speculation attack hardening measures and
-> > constant blinding.  (Note: other mechanisms might also allow this.)
-> > 
-> > CAP_TRACING does not override normal permissions on sysfs or debugfs.
-> > This means that, unless a new interface for programming kprobes and
-> > such is added, it does not directly allow use of kprobes.
+On Tue, Aug 27, 2019 at 05:55:41PM -0700, Andy Lutomirski wrote:
 > 
-> kprobes can be created in the tracefs filesystem (which is separate from
-> debugfs, tracefs just gets automatically mounted
-> in /sys/kernel/debug/tracing when debugfs is mounted) from the
-> kprobe_events file. /sys/kernel/tracing is just the tracefs
-> directory without debugfs, and was created specifically to allow
-> tracing to be access without opening up the can of worms in debugfs.
+> I was hoping for something in Documentation/admin-guide, not in a
+> changelog that's hard to find.
 
-I like the CAP_TRACING for tracefs. Can we make the tracefs itself
-check the CAP_TRACING and call file_ops? or each tracefs file-ops
-handlers must check it?
+eventually yes.
 
-> Should we allow CAP_TRACING access to /proc/kallsyms? as it is helpful
-> to convert perf and trace-cmd's function pointers into names. Once you
-> allow tracing of the kernel, hiding /proc/kallsyms is pretty useless.
+> >
+> > > Changing the capability that some existing operation requires could
+> > > break existing programs.  The old capability may need to be accepted
+> > > as well.
+> >
+> > As far as I can see there is no ABI breakage. Please point out
+> > which line of the patch may break it.
+> 
+> As a more or less arbitrary selection:
+> 
+>  void bpf_prog_kallsyms_add(struct bpf_prog *fp)
+>  {
+>         if (!bpf_prog_kallsyms_candidate(fp) ||
+> -           !capable(CAP_SYS_ADMIN))
+> +           !capable(CAP_BPF))
+>                 return;
+> 
+> Before your patch, a task with CAP_SYS_ADMIN could do this.  Now it
+> can't.  Per the usual Linux definition of "ABI break", this is an ABI
+> break if and only if someone actually did this in a context where they
+> have CAP_SYS_ADMIN but not all capabilities.  How confident are you
+> that no one does things like this?
+>  void bpf_prog_kallsyms_add(struct bpf_prog *fp)
+>  {
+>         if (!bpf_prog_kallsyms_candidate(fp) ||
+> -           !capable(CAP_SYS_ADMIN))
+> +           !capable(CAP_BPF))
+>                 return;
 
-Also, there is a blacklist of kprobes under debugfs. If CAP_TRACING
-introduced and it allows to access kallsyms, I would like to move the
-blacklist under tracefs, or make an alias of blacklist entry on tracefs.
+Yes. I'm confident that apps don't drop everything and
+leave cap_sys_admin only before doing bpf() syscall, since it would
+break their own use of networking.
+Hence I'm not going to do the cap_syslog-like "deprecated" message mess
+because of this unfounded concern.
+If I turn out to be wrong we will add this "deprecated mess" later.
 
-Thank you,
+> 
+> From the previous discussion, you want to make progress toward solving
+> a lot of problems with CAP_BPF.  One of them was making BPF
+> firewalling more generally useful. By making CAP_BPF grant the ability
+> to read kernel memory, you will make administrators much more nervous
+> to grant CAP_BPF. 
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Andy, were your email hacked?
+I explained several times that in this proposal 
+CAP_BPF _and_ CAP_TRACING _both_ are necessary to read kernel memory.
+CAP_BPF alone is _not enough_.
+
+> Similarly, and correct me if I'm wrong, most of
+> these capabilities are primarily or only useful for tracing, so I
+> don't see why users without CAP_TRACING should get them.
+> bpf_trace_printk(), in particular, even has "trace" in its name :)
+> 
+> Also, if a task has CAP_TRACING, it's expected to be able to trace the
+> system -- that's the whole point.  Why shouldn't it be able to use BPF
+> to trace the system better?
+
+CAP_TRACING shouldn't be able to do BPF because BPF is not tracing only.
+
+> > For example:
+> > BPF_CALL_3(bpf_probe_read, void *, dst, u32, size, const void *, unsafe_ptr)
+> > {
+> >         int ret;
+> >
+> >         ret = probe_kernel_read(dst, unsafe_ptr, size);
+> >         if (unlikely(ret < 0))
+> >                 memset(dst, 0, size);
+> >
+> >         return ret;
+> > }
+> >
+> > All of BPF (including prototype of bpf_probe_read) is controlled by CAP_BPF.
+> > But the kernel primitives its using (probe_kernel_read) is controlled by CAP_TRACING.
+> > Hence a task needs _both_ CAP_BPF and CAP_TRACING to attach and run bpf program
+> > that uses bpf_probe_read.
+> >
+> > Similar with all other kernel code that BPF helpers may call directly or indirectly.
+> > If there is a way for bpf program to call into piece of code controlled by CAP_TRACING
+> > such helper would need CAP_BPF and CAP_TRACING.
+> > If bpf helper calls into something that may mangle networking packet
+> > such helper would need both CAP_BPF and CAP_NET_ADMIN to execute.
+> 
+> Why do you want to require CAP_BPF to call into functions like
+> bpf_probe_read()?  I understand why you want to limit access to bpf,
+> but I think that CAP_TRACING should be sufficient to allow the tracing
+> parts of BPF.  After all, a lot of your concerns, especially the ones
+> involving speculation, don't really apply to users with CAP_TRACING --
+> users with CAP_TRACING can read kernel memory with or without bpf.
+
+Let me try again to explain the concept...
+
+Imagine AUDI logo with 4 circles.
+They partially intersect.
+The first circle is CAP_TRACING. Second is CAP_BPF. Third is CAP_NET_ADMIN.
+Fourth - up to your imagination :)
+
+These capabilities subdivide different parts of root privileges.
+CAP_NET_ADMIN is useful on its own.
+Just as CAP_TRACING that is useful for perf, ftrace, and probably
+other tracing things that don't need bpf.
+
+'bpftrace' is using a lot of tracing and a lot of bpf features,
+but not all of bpf and not all tracing.
+It falls into intersection of CAP_BPF and CAP_TRACING.
+
+probe_kernel_read is a tracing mechanism.
+perf can use it without bpf.
+Hence it should be controlled by CAP_TRACING.
+
+bpf_probe_read is a wrapper of that mechanism.
+It's a place where BPF and TRACING circles intersect.
+A task needs to have both CAP_BPF (to load the program)
+and CAP_TRACING (to read kernel memory) to execute bpf_probe_read() helper.
+
+> > > > @@ -2080,7 +2083,10 @@ static int bpf_prog_test_run(const union bpf_attr *attr,
+> > > >         struct bpf_prog *prog;
+> > > >         int ret = -ENOTSUPP;
+> > > >
+> > > > -       if (!capable(CAP_SYS_ADMIN))
+> > > > +       if (!capable(CAP_NET_ADMIN) || !capable(CAP_BPF))
+> > > > +               /* test_run callback is available for networking progs only.
+> > > > +                * Add cap_bpf_tracing() above when tracing progs become runable.
+> > > > +                */
+> > >
+> > > I think test_run should probably be CAP_SYS_ADMIN forever.  test_run
+> > > is the only way that one can run a bpf program and call helper
+> > > functions via the program if one doesn't have permission to attach the
+> > > program.
+> >
+> > Since CAP_BPF + CAP_NET_ADMIN allow attach. It means that a task
+> > with these two permissions will have programs running anyway.
+> > (traffic will flow through netdev, socket events will happen, etc)
+> > Hence no reason to disallow running program via test_run.
+> >
+> 
+> test_run allows fully controlled inputs, in a context where a program
+> can trivially flush caches, mistrain branch predictors, etc first.  It
+> seems to me that, if a JITted bpf program contains an exploitable
+> speculation gadget (MDS, Spectre v1, RSB, or anything else), 
+
+speaking of MDS... I already asked you to help investigate its
+applicability with existing bpf exposure. Are you going to do that?
+
+> it will
+> be *much* easier to exploit it using test_run than using normal
+> network traffic.  Similarly, normal network traffic will have network
+> headers that are valid enough to have caused the BPF program to be
+> invoked in the first place.  test_run can inject arbitrary garbage.
+
+Please take a look at Jann's var1 exploit. Was it hard to run bpf prog
+in controlled environment without test_run command ?
+
