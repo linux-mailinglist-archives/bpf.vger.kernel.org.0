@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB069FB7F
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 09:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3079E9FB84
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 09:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726520AbfH1HXG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Aug 2019 03:23:06 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:35938 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726506AbfH1HXF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Aug 2019 03:23:05 -0400
-Received: by mail-lf1-f66.google.com with SMTP id r5so1246344lfc.3
-        for <bpf@vger.kernel.org>; Wed, 28 Aug 2019 00:23:04 -0700 (PDT)
+        id S1726561AbfH1HXL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Aug 2019 03:23:11 -0400
+Received: from mail-lf1-f50.google.com ([209.85.167.50]:39445 "EHLO
+        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726530AbfH1HXH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Aug 2019 03:23:07 -0400
+Received: by mail-lf1-f50.google.com with SMTP id l11so1238159lfk.6
+        for <bpf@vger.kernel.org>; Wed, 28 Aug 2019 00:23:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bUOQ5oa1ZHxkv7QVhvg7zNwIQm1dIN9rUB7dlg1DwGU=;
-        b=aqGvTP9fAIyReK8/fPYCFrDrtPsWF2xlKWNBmrCXzGsK+uRSv6lXRYCnbAsLKhnZRu
-         bApNJexfTCTD7qWgpHnGRBrDo3WvoQQHhXBejHeVUU9O9F53OS5OjBN7TpYH8sfxIVrU
-         KaaJTTW+GqRnU9YWif+t70Z9pEYpHA+2jz70k=
+        bh=ChrDtz59PnCX+6+r9UCdXvbVLOtObm7QD6/Fb8mBLd8=;
+        b=Pq2QeT0JSwflfDyfGw+IpbCkdMftwlMx9FkXMud1cXD7nUTTk/UhYnXygF7reAPVqz
+         RP6OBw+CaT2DDQkpnxoA4pySZjW4BGJAZpQVm1NGz1MMablRgnl1CJ1Z5N+xslqqBi0W
+         Yrqgk+snPp0iqhvVo05cYTtH4GYqtLal5Olfc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bUOQ5oa1ZHxkv7QVhvg7zNwIQm1dIN9rUB7dlg1DwGU=;
-        b=DznQPTlSSdmmgQpPCFTvW4st3LsBgxtpCwvHCHKENEchtJg4YL1sgA2IEfxYMXk7Pb
-         LlRaQ3XOP69xalkDpTw82R4dfEg1Gf3TLrM4J8Szdz0O162ilmm246bwhhNYfKrq8Csx
-         1qXF6SFDknz1SxCcN67taI82ZM6C9Rs1B6P8EOSO17LPDGgqNWvudoA5EbCAhoMCCpGg
-         t4Nf7d4lrtyrKzxXzfXejYjcOB3BX+rQ+Qm7QXEtaEO6I+ml3mAVmn1F2qkLCo6Idk48
-         vBhMy4xSDiFnBEcw+aldptbQHR+wlfm21u6T1IACLJEHj/pPEDLePlNNhTurRfAkelSQ
-         snSA==
-X-Gm-Message-State: APjAAAVpZ4I9/QFl3w7I+twz8G8lWOqJ+68ph5m/QJ9LUjcmXXZnn5Hz
-        g6I6pEMMZbyQq81JrZby30ZtOSkFEIi7TA==
-X-Google-Smtp-Source: APXvYqwlE+EtT2/p7367j86OfDaPYOt8ajL8OKE5nB8hwq3maKuNvxpyFZxyGnKn3Y1cISSrgY6FZw==
-X-Received: by 2002:ac2:5df7:: with SMTP id z23mr875407lfq.105.1566976983387;
-        Wed, 28 Aug 2019 00:23:03 -0700 (PDT)
+        bh=ChrDtz59PnCX+6+r9UCdXvbVLOtObm7QD6/Fb8mBLd8=;
+        b=hXDJcKJBIUGGmWXtju4EwgHzsoQhhUdEiQPiwu2OlDVRAPjlhxvj2I7tgaoVwLcZMP
+         lg5+N0hpM2xId+BE3xE20bqk5TZnVMZZdYXWIRwP4HgZjVdPbJnvNVf9hgHH5oQ/736q
+         HBehKafuck98+XfGJJ28YY8av0INcUUl5zf8kPrqPJRsv+NgMIcBL03IAtrgjkMooane
+         nA//vPS3/Bq/1UMrZK8qsFmI5T/6pHTKSrJvnTqHjxsT5yDSXHnxRQPwgkAXbkPFwe44
+         fZit0+YWSro1KTwVkYjcl/NJna6z9uG3BJIv8ljYdWFISCMNNkmt34LUG9tO2ibi7DCP
+         iTqA==
+X-Gm-Message-State: APjAAAWYlqDmrJVMA0aafXRiDTrLUGlyqrqDx2Huqo71PD1XNALMqd4k
+        NAr/P8cLfdwMPL/fqkby3Lles4oYqHFWEg==
+X-Google-Smtp-Source: APXvYqzxJ3Mhwm/IPq1UDw4LsLtnUR8CKfKfH4WkwC8YVqnuos4IDuKZE0JITkZea8gPXZHVeep7/A==
+X-Received: by 2002:a19:6b09:: with SMTP id d9mr1653999lfa.8.1566976985078;
+        Wed, 28 Aug 2019 00:23:05 -0700 (PDT)
 Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id t2sm486554lfl.33.2019.08.28.00.23.02
+        by smtp.gmail.com with ESMTPSA id w26sm590039lfk.57.2019.08.28.00.23.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2019 00:23:02 -0700 (PDT)
+        Wed, 28 Aug 2019 00:23:04 -0700 (PDT)
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     bpf@vger.kernel.org, netdev@vger.kernel.org
 Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
         Marek Majkowski <marek@cloudflare.com>
-Subject: [RFCv2 bpf-next 06/12] inet: Run inet_lookup bpf program on socket lookup
-Date:   Wed, 28 Aug 2019 09:22:44 +0200
-Message-Id: <20190828072250.29828-7-jakub@cloudflare.com>
+Subject: [RFCv2 bpf-next 07/12] inet6: Run inet_lookup bpf program on socket lookup
+Date:   Wed, 28 Aug 2019 09:22:45 +0200
+Message-Id: <20190828072250.29828-8-jakub@cloudflare.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190828072250.29828-1-jakub@cloudflare.com>
 References: <20190828072250.29828-1-jakub@cloudflare.com>
@@ -58,83 +58,62 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Run a BPF program before looking up the listening socket. The program can
-redirect the skb to a listening socket of its choice, providing it calls
-bpf_redirect_lookup() helper and returns BPF_REDIRECT.
-
-This lets the user-space program mappings between packet 4-tuple and
-listening sockets. With the possibility to override the socket lookup from
-BPF, applications don't need to bind sockets to every addresses they
-receive on, or resort to listening on all addresses with INADDR_ANY.
-
-Also port sharing conflicts become a non-issue. Application can listen on
-any free port and still receive traffic destined to its assigned service
-port.
+Following the ipv4 changes, run a BPF program attached to netns in context
+of which we're doing the socket lookup so that it can redirect the skb to a
+socket of its choice. The program runs before the listening socket lookup.
 
 Suggested-by: Marek Majkowski <marek@cloudflare.com>
 Reviewed-by: Lorenz Bauer <lmb@cloudflare.com>
 Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
- include/net/inet_hashtables.h | 33 +++++++++++++++++++++++++++++++++
- net/ipv4/inet_hashtables.c    |  5 +++++
- 2 files changed, 38 insertions(+)
+ include/net/inet6_hashtables.h | 19 +++++++++++++++++++
+ net/ipv6/inet6_hashtables.c    |  5 +++++
+ 2 files changed, 24 insertions(+)
 
-diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
-index b2d43ee72dc1..c9c7efb961cb 100644
---- a/include/net/inet_hashtables.h
-+++ b/include/net/inet_hashtables.h
-@@ -417,4 +417,37 @@ int __inet_hash_connect(struct inet_timewait_death_row *death_row,
+diff --git a/include/net/inet6_hashtables.h b/include/net/inet6_hashtables.h
+index fe96bf247aac..c2393d148d8d 100644
+--- a/include/net/inet6_hashtables.h
++++ b/include/net/inet6_hashtables.h
+@@ -104,6 +104,25 @@ struct sock *inet6_lookup(struct net *net, struct inet_hashinfo *hashinfo,
+ 			  const int dif);
  
- int inet_hash_connect(struct inet_timewait_death_row *death_row,
- 		      struct sock *sk);
+ int inet6_hash(struct sock *sk);
 +
-+static inline struct sock *__inet_lookup_run_bpf(const struct net *net,
-+						 struct bpf_inet_lookup_kern *ctx)
-+{
-+	struct bpf_prog *prog;
-+	int ret = BPF_OK;
-+
-+	rcu_read_lock();
-+	prog = rcu_dereference(net->inet_lookup_prog);
-+	if (prog)
-+		ret = BPF_PROG_RUN(prog, ctx);
-+	rcu_read_unlock();
-+
-+	return ret == BPF_REDIRECT ? ctx->redir_sk : NULL;
-+}
-+
-+static inline struct sock *inet_lookup_run_bpf(const struct net *net, u8 proto,
-+					       __be32 saddr, __be16 sport,
-+					       __be32 daddr,
-+					       unsigned short hnum)
++static inline struct sock *inet6_lookup_run_bpf(struct net *net, u8 proto,
++						const struct in6_addr *saddr,
++						__be16 sport,
++						const struct in6_addr *daddr,
++						unsigned short hnum)
 +{
 +	struct bpf_inet_lookup_kern ctx = {
-+		.family		= AF_INET,
++		.family		= AF_INET6,
 +		.protocol	= proto,
-+		.saddr		= saddr,
++		.saddr6		= *saddr,
 +		.sport		= sport,
-+		.daddr		= daddr,
++		.daddr6		= *daddr,
 +		.hnum		= hnum,
 +	};
 +
 +	return __inet_lookup_run_bpf(net, &ctx);
 +}
 +
- #endif /* _INET_HASHTABLES_H */
-diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
-index 97824864e40d..ab6d89c27c94 100644
---- a/net/ipv4/inet_hashtables.c
-+++ b/net/ipv4/inet_hashtables.c
-@@ -299,6 +299,11 @@ struct sock *__inet_lookup_listener(struct net *net,
+ #endif /* IS_ENABLED(CONFIG_IPV6) */
+ 
+ #define INET6_MATCH(__sk, __net, __saddr, __daddr, __ports, __dif, __sdif) \
+diff --git a/net/ipv6/inet6_hashtables.c b/net/ipv6/inet6_hashtables.c
+index cf60fae9533b..40dd0a3d80ed 100644
+--- a/net/ipv6/inet6_hashtables.c
++++ b/net/ipv6/inet6_hashtables.c
+@@ -157,6 +157,11 @@ struct sock *inet6_lookup_listener(struct net *net,
  	struct sock *result = NULL;
  	unsigned int hash2;
  
-+	result = inet_lookup_run_bpf(net, hashinfo->protocol,
-+				     saddr, sport, daddr, hnum);
++	result = inet6_lookup_run_bpf(net, hashinfo->protocol,
++				      saddr, sport, daddr, hnum);
 +	if (result)
 +		goto done;
 +
- 	hash2 = ipv4_portaddr_hash(net, daddr, hnum);
+ 	hash2 = ipv6_portaddr_hash(net, daddr, hnum);
  	ilb2 = inet_lhash2_bucket(hashinfo, hash2);
  
 -- 
