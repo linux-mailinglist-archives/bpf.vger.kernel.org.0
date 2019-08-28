@@ -2,54 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1BB9F992
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 06:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 724879FA48
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 08:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726052AbfH1EtI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Aug 2019 00:49:08 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:34636 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbfH1EtI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Aug 2019 00:49:08 -0400
-Received: by mail-pg1-f195.google.com with SMTP id n9so729078pgc.1;
-        Tue, 27 Aug 2019 21:49:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=Wqg7s2VUiWnCXp5xHQk0TWcvmJznRH+GklDYl3ugIDI=;
-        b=nm7UJeT8VU8VVcVNeCtyOXAcJCJMMtDOitRvkRUTUjYR2y0wLqfAcohps+3AX2vzEu
-         2Ss8vu8CtJlLsRaDk5hEdiHwQ2JdXSkblDRgTc0Syx0KjAJsynvr6QgqPvBTiDCmh7j5
-         OnxERo8Vt+LBNFgQrzRKHokekpEYBL5lA0nr4F0rSp8r+Gm/k4ZWyukryWWNzixQgZdF
-         I+lfmWz5NQOimMpCk2reWHe+SaLmE2zisVXUKlJr3uJ94edlxQ1Ipbh9HYlcYjT2Kr6L
-         tOUQ/wk+yE1x8eHzdE4mzeYEwIeENLEyefpxFKjipDmnp4fFRkiJW9GUHcdrVQjU9P6L
-         Z9GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=Wqg7s2VUiWnCXp5xHQk0TWcvmJznRH+GklDYl3ugIDI=;
-        b=mZnw1/kbEyEpFrisDiX4Ew71usXxBoVwY4bjRze0UDbxjH/PuU+W+26DRNUwH87oi2
-         +SBaq2Swl0f40n71kjm8EoM7QDmO8CiH4hPqhyl0OBAheowPMvSBCTUTcLhl2g4qOfe2
-         dcf6LZDPYlT+9fcp3ouyIRI04zk0tqtytrRXbjXPudvPErb9sHK25+Axwo/PCmB8V1ds
-         xOEoDbTn+lqlxiTJhZvqnim+oTZJ08dhuHfgSfM03iUIALvmAr0r5mNtEeTOCiGPN51H
-         98Lb/YL+LT2euM7utSxCd8Xf6TgeyP2AqEY9p8LulXJCm8s8dCxJUvXoCxSZ4KQ7Wgvw
-         g88w==
-X-Gm-Message-State: APjAAAXL7r5Xg+r/XDOE7pMvF0/RwjAJk0uM5NJmbmETyLV0tyxxfco6
-        vA2TRONaFI5/NbFFnt1J2eg=
-X-Google-Smtp-Source: APXvYqwqTRMDD2PNZbsRspgzW5nn2Eh6VJ2YQhL/gbSvytSSyRLGjMMEPHEzLxNmt8FgDx+JlCv94g==
-X-Received: by 2002:a63:dc4f:: with SMTP id f15mr1803659pgj.227.1566967747577;
-        Tue, 27 Aug 2019 21:49:07 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::86a2])
-        by smtp.gmail.com with ESMTPSA id r3sm1155539pfr.101.2019.08.27.21.49.05
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Aug 2019 21:49:06 -0700 (PDT)
-Date:   Tue, 27 Aug 2019 21:49:05 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1726300AbfH1GMo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Aug 2019 02:12:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726131AbfH1GMo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Aug 2019 02:12:44 -0400
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B3B22341B
+        for <bpf@vger.kernel.org>; Wed, 28 Aug 2019 06:12:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1566972763;
+        bh=ODzQkK6y27HTo68G01A4Bfylvnf3Ipj6FoWEYUVyD1k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=yv6jQRLFdWGyyb5DKLDWI4t2UfhKj784gNv9AAHwaPaPDqXlVUckEmII5IcnMwuwL
+         oeoN4MQtrfedcHvyrtZ+3C4G6tIzoUqgHXmGYh2e5XoffCSUf5ypfOAoAPMlUKjbbm
+         ZIJ0FMdKEC7PWV/QS4W+Ii+fT2s7wv9kq2q1OGN8=
+Received: by mail-wr1-f45.google.com with SMTP id z1so1129264wru.13
+        for <bpf@vger.kernel.org>; Tue, 27 Aug 2019 23:12:43 -0700 (PDT)
+X-Gm-Message-State: APjAAAWJkt46KSnFhkrOwzb0mG+b3wW928hNVcVU9AIf6inPy0+ku3Y3
+        MiZZIhHSqOu679eOme7oqIO4tXnn2vRBw0F/HfMsuw==
+X-Google-Smtp-Source: APXvYqwm8CdxDaqnZvTy7LYUZZA5fEy5yH/c41ZCti/xj4ypzoZ14FdW4nC0tYfmE9AtKy6W6kkpjlDxGD49ApJoba4=
+X-Received: by 2002:adf:f18c:: with SMTP id h12mr2179606wro.47.1566972761352;
+ Tue, 27 Aug 2019 23:12:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190827205213.456318-1-ast@kernel.org> <CALCETrV8iJv9+Ai11_1_r6MapPhhwt9hjxi=6EoixytabTScqg@mail.gmail.com>
+ <20190828003447.htgzsxs5oevn3eys@ast-mbp.dhcp.thefacebook.com>
+ <CALCETrVbPPPr=BdPAx=tJKxD3oLXP4OVSgCYrB_E4vb6idELow@mail.gmail.com> <20190828044340.zeha3k3cmmxgfqj7@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20190828044340.zeha3k3cmmxgfqj7@ast-mbp.dhcp.thefacebook.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 27 Aug 2019 23:12:29 -0700
+X-Gmail-Original-Message-ID: <CALCETrW1o+Lazi2Ng6b9JN6jeJffgdW9f3HvqYhNo4TpHRXW=g@mail.gmail.com>
+Message-ID: <CALCETrW1o+Lazi2Ng6b9JN6jeJffgdW9f3HvqYhNo4TpHRXW=g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf, capabilities: introduce CAP_BPF
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Kees Cook <keescook@chromium.org>,
         LSM List <linux-security-module@vger.kernel.org>,
         James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
@@ -61,30 +54,137 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Network Development <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>,
         Linux API <linux-api@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf, capabilities: introduce CAP_BPF
-Message-ID: <20190828044903.nv3hvinkkolnnxtv@ast-mbp.dhcp.thefacebook.com>
-References: <20190827205213.456318-1-ast@kernel.org>
- <CALCETrV8iJv9+Ai11_1_r6MapPhhwt9hjxi=6EoixytabTScqg@mail.gmail.com>
- <20190828003447.htgzsxs5oevn3eys@ast-mbp.dhcp.thefacebook.com>
- <CALCETrVbPPPr=BdPAx=tJKxD3oLXP4OVSgCYrB_E4vb6idELow@mail.gmail.com>
- <CALCETrVVQs1s27y8fB17JtQi-VzTq1YZPTPy3k=fKhQB1X-KKA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALCETrVVQs1s27y8fB17JtQi-VzTq1YZPTPy3k=fKhQB1X-KKA@mail.gmail.com>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 27, 2019 at 07:00:40PM -0700, Andy Lutomirski wrote:
-> 
-> Let me put this a bit differently. Part of the point is that
-> CAP_TRACING should allow a user or program to trace without being able
-> to corrupt the system. CAP_BPF as you’ve proposed it *can* likely
-> crash the system.
+On Tue, Aug 27, 2019 at 9:43 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Aug 27, 2019 at 05:55:41PM -0700, Andy Lutomirski wrote:
+> >
+> > I was hoping for something in Documentation/admin-guide, not in a
+> > changelog that's hard to find.
+>
+> eventually yes.
+>
+> > >
+> > > > Changing the capability that some existing operation requires could
+> > > > break existing programs.  The old capability may need to be accepted
+> > > > as well.
+> > >
+> > > As far as I can see there is no ABI breakage. Please point out
+> > > which line of the patch may break it.
+> >
+> > As a more or less arbitrary selection:
+> >
+> >  void bpf_prog_kallsyms_add(struct bpf_prog *fp)
+> >  {
+> >         if (!bpf_prog_kallsyms_candidate(fp) ||
+> > -           !capable(CAP_SYS_ADMIN))
+> > +           !capable(CAP_BPF))
+> >                 return;
+> >
+> > Before your patch, a task with CAP_SYS_ADMIN could do this.  Now it
+> > can't.  Per the usual Linux definition of "ABI break", this is an ABI
+> > break if and only if someone actually did this in a context where they
+> > have CAP_SYS_ADMIN but not all capabilities.  How confident are you
+> > that no one does things like this?
+> >  void bpf_prog_kallsyms_add(struct bpf_prog *fp)
+> >  {
+> >         if (!bpf_prog_kallsyms_candidate(fp) ||
+> > -           !capable(CAP_SYS_ADMIN))
+> > +           !capable(CAP_BPF))
+> >                 return;
+>
+> Yes. I'm confident that apps don't drop everything and
+> leave cap_sys_admin only before doing bpf() syscall, since it would
+> break their own use of networking.
+> Hence I'm not going to do the cap_syslog-like "deprecated" message mess
+> because of this unfounded concern.
+> If I turn out to be wrong we will add this "deprecated mess" later.
+>
+> >
+> > From the previous discussion, you want to make progress toward solving
+> > a lot of problems with CAP_BPF.  One of them was making BPF
+> > firewalling more generally useful. By making CAP_BPF grant the ability
+> > to read kernel memory, you will make administrators much more nervous
+> > to grant CAP_BPF.
+>
+> Andy, were your email hacked?
+> I explained several times that in this proposal
+> CAP_BPF _and_ CAP_TRACING _both_ are necessary to read kernel memory.
+> CAP_BPF alone is _not enough_.
 
-Really? I'm still waiting for your example where bpf+kprobe crashes the system...
+You have indeed said this many times.  You've stated it as a matter of
+fact as though it cannot possibly discussed.  I'm asking you to
+justify it.
 
+> > Similarly, and correct me if I'm wrong, most of
+> > these capabilities are primarily or only useful for tracing, so I
+> > don't see why users without CAP_TRACING should get them.
+> > bpf_trace_printk(), in particular, even has "trace" in its name :)
+> >
+> > Also, if a task has CAP_TRACING, it's expected to be able to trace the
+> > system -- that's the whole point.  Why shouldn't it be able to use BPF
+> > to trace the system better?
+>
+> CAP_TRACING shouldn't be able to do BPF because BPF is not tracing only.
+
+What does "do BPF" even mean?  seccomp() does BPF.  SO_ATTACH_FILTER
+does BPF.  Saying that using BPF should require a specific capability
+seems kind of like saying that using the network should require a
+specific capability.  Linux (and Unixy systems in general) distinguish
+between binding low-number ports, binding high-number ports, using raw
+sockets, and changing the system's IP address.  These have different
+implications and require different capabilities.
+
+It seems like you are specifically trying to add a new switch to turn
+as much of BPF as possible on and off.  Why?
+
+> >
+> > test_run allows fully controlled inputs, in a context where a program
+> > can trivially flush caches, mistrain branch predictors, etc first.  It
+> > seems to me that, if a JITted bpf program contains an exploitable
+> > speculation gadget (MDS, Spectre v1, RSB, or anything else),
+>
+> speaking of MDS... I already asked you to help investigate its
+> applicability with existing bpf exposure. Are you going to do that?
+
+I am blissfully uninvolved in MDS, and I don't know all that much more
+about the overall mechanism than a random reader of tech news :)  ISTM
+there are two meaningful ways that BPF could be involved: a BPF
+program could leak info into the state exposed by MDS, or a BPF
+program could try to read that state.  From what little I understand,
+it's essentially inevitable that BPF leaks information into MDS state,
+and this is probably even controllable by an attacker that understands
+MDS in enough detail.    So the interesting questions are: can BPF be
+used to read MDS state and can BPF be used to leak information in a
+more useful way than the rest of the kernel to an attacker.
+
+Keeping in mind that the kernel will flush MDS state on every exit to
+usermode, I think the most likely attack is to try to read MDS state
+with BPF.  This could happen, I suppose -- BPF programs can easily
+contain the usual speculation gadgets of "do something and read an
+address that depends on the outcome".  Fortunately, outside of
+bpf_probe_read(), AFAIK BPF programs can't directly touch user memory,
+and an attacker that is allowed to use bpf_probe_read() doesn't need
+MDS to read things.
+
+So it's not entirely obvious to me how an attack would be mounted.
+test_run would make it a lot easier, I think.
+
+>
+> > it will
+> > be *much* easier to exploit it using test_run than using normal
+> > network traffic.  Similarly, normal network traffic will have network
+> > headers that are valid enough to have caused the BPF program to be
+> > invoked in the first place.  test_run can inject arbitrary garbage.
+>
+> Please take a look at Jann's var1 exploit. Was it hard to run bpf prog
+> in controlled environment without test_run command ?
+>
+
+Can you send me a link?
