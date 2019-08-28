@@ -2,116 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A989FA0C88
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 23:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18429A0D48
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 00:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbfH1Vki (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Aug 2019 17:40:38 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:52191 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726787AbfH1Vki (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Aug 2019 17:40:38 -0400
-Received: by mail-wm1-f68.google.com with SMTP id k1so1564156wmi.1;
-        Wed, 28 Aug 2019 14:40:35 -0700 (PDT)
+        id S1727078AbfH1WIc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Aug 2019 18:08:32 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:43365 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727020AbfH1WIc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Aug 2019 18:08:32 -0400
+Received: by mail-pg1-f193.google.com with SMTP id k3so425044pgb.10;
+        Wed, 28 Aug 2019 15:08:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Fl6SJhDThIzLVktnxnUQoR6p6jMmSRZeGxNzVfHmfGc=;
-        b=hP0eYnVngg0lq1hP3JK2h2x4x8ZP/LkgNSObaO5dsLMMR2EJ6hZWoQU0HSs2LYhSsb
-         jZvfF3tenLWEI+TfyOXld/nC78gwghtTXq74BisZRBq370GK9BohnQcL+QB/VOVBzyRN
-         sHUYswv7Krf01vNRoTte5Qv63es97SoJOsPRRwu8NnmyqYX+eL8ro9JYWEOuONfzdNxp
-         QKIKfpzf935Zo9T1KzQ35aqV+s9JSs1l9PnjjYCoAWY3soLZBXfPod0i/RQpPZVAIXjn
-         8cFh1mpvHFd7YJpzBB7JyY2kJ8UTY+oxj5b63/JZLCRI08fYwRk3aBygjrSbuM3d0PUe
-         pxqA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6X3gVkrOkSh07fF2QBrnXgjAV6GqAqVzRBOyJnnlCsc=;
+        b=XMEMXzpjRbv78M/7RIbt6Ker6NLG81lMeXuGSIW2C+kCV2pu6xIUSbsKTuy2XYhfMo
+         jyerJBU7KRDahKo2CfaMQI147LOJ+gpSI8SFVxX09nnjsG5amGN0mcZXSWIRiZU04p6r
+         nsfyRyNq5lFdcrVRIMGUN30Usrkjl6NCJhK3kMq7knk9zcgFC4Mw8MXTxPhXMIlvaie6
+         dyp3Irr6DQWobNpeUp1kuPdEwTP0uB71Ct1XrJ8royu+XKP1Mwy7uqrmJzflSwdy2gs6
+         NljsT9HrVxlObxvIHAjpqsDGk3Zhh1LZpxCPXPs8GGp+Uxowd0p0TDZzqym/4n2IZ2Xw
+         z+gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Fl6SJhDThIzLVktnxnUQoR6p6jMmSRZeGxNzVfHmfGc=;
-        b=YNXpt4eB6VwcugyOGFb7TBGkTRpMiV6Eij6/QBPawPfbSMWm8Ylf/iHoqbjsQHtLx+
-         s6Pm6xdzw1HsLzPt+e7Y8aAOMB/B/oI2utPUEMe5b7U2gaX+wCXlOZMVM8Ap6oc7MQ5/
-         FyN9KzlU3cohWgH35gxL9Wu7JMi03DoloQSJDUXwFhbtbLFSRGxqbKXudmnnV2EAgBbC
-         +DSH4aSY2wjSxQgjn/E/U/os5UvykxxlWWQ8EYywMHRJNxf4tGK+WFylb2W8Ycvl6i32
-         t9XlAH0Wk89AesBjHtjcUFeG2Jz4mWYtVKM6V/m21j+nEhDqWPkknfGmmYUVHHvA1jDr
-         1pRQ==
-X-Gm-Message-State: APjAAAVJfKpy4x9H1738j3Ed277aysixvBMMmuYZL84pr1PnpDnm2np4
-        bqITU1mP4l/115T9di2E4jynp3yWTukebMXfK34=
-X-Google-Smtp-Source: APXvYqxOcImQNzypGFeVWXGp9py8wxlKFKPpz27tdDyzrs1uINU6LbYMgXisOoMzDrWVf3NaJrKHA50+j9kgwxhzJro=
-X-Received: by 2002:a7b:c3d4:: with SMTP id t20mr7052016wmj.71.1567028435172;
- Wed, 28 Aug 2019 14:40:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190822205533.4877-1-david.abdurachmanov@sifive.com>
- <alpine.DEB.2.21.9999.1908231717550.25649@viisi.sifive.com> <201908251446.04BCB8C@keescook>
-In-Reply-To: <201908251446.04BCB8C@keescook>
-From:   David Abdurachmanov <david.abdurachmanov@gmail.com>
-Date:   Wed, 28 Aug 2019 14:39:59 -0700
-Message-ID: <CAEn-LTpSPV6NDQ+J3GJxS=rtNMS384uQmq_EuR3ZN_qCGSbyww@mail.gmail.com>
-Subject: Re: [PATCH v2] riscv: add support for SECCOMP and SECCOMP_FILTER
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6X3gVkrOkSh07fF2QBrnXgjAV6GqAqVzRBOyJnnlCsc=;
+        b=gM0clnH3Yi8dmp9Ak/cAOJ3Pqd0vjaeATPqFd27hgZHzVk+ldyQ3nEeEV3xvm2kmPZ
+         A5zBY8tsn7gfPoXJ9Q0NOF2mvQOAj2vnSQsG5osGI0Z2AkgG5pHG/l9et1FdDopOaU3K
+         gp1di4V40q+2x2mKREIPIgoJ68hO40QUfK9UhoRVq+KQspJhOvE/5zeQI0RYNq7sqOWZ
+         7h+8wqA9570k4MvUO9ydxAM4pkV+e9nwySTE8ZBZeBdxITnWbt2IlXI08lbxRQ4ozhD1
+         wFRpn8dNt7ZTD+EH4/N0YtS5s57MDYuH9mAeiV2qUgUI6JCecv5FGooU835fgJOzN9qB
+         NxvA==
+X-Gm-Message-State: APjAAAWkV/KJJXC89I2cP8BeLU4oQ4pxA8LclTDqZMVkF+PGqjsoFUt0
+        012RxZ3tj2wiwIK8jGBgfto=
+X-Google-Smtp-Source: APXvYqy3gGKj8gWziVg4E09JVnbLn6ZOFG4q2CDDKrl/vre359CP3azlfThIpQhzhpykvvKhEdP67g==
+X-Received: by 2002:a63:6686:: with SMTP id a128mr5276547pgc.361.1567030111078;
+        Wed, 28 Aug 2019 15:08:31 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::5983])
+        by smtp.gmail.com with ESMTPSA id h197sm400102pfe.67.2019.08.28.15.08.29
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 28 Aug 2019 15:08:30 -0700 (PDT)
+Date:   Wed, 28 Aug 2019 15:08:28 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Abdurachmanov <david.abdurachmanov@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        Vincent Chen <vincentc@andestech.com>,
-        Alan Kao <alankao@andestech.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, me@carlosedp.com
-Content-Type: text/plain; charset="UTF-8"
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] bpf, capabilities: introduce CAP_BPF
+Message-ID: <20190828220826.nlkpp632rsomocve@ast-mbp.dhcp.thefacebook.com>
+References: <20190827205213.456318-1-ast@kernel.org>
+ <CALCETrV8iJv9+Ai11_1_r6MapPhhwt9hjxi=6EoixytabTScqg@mail.gmail.com>
+ <20190828071421.GK2332@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190828071421.GK2332@hirez.programming.kicks-ass.net>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 28, 2019 at 10:36 AM Kees Cook <keescook@chromium.org> wrote:
->
-> On Fri, Aug 23, 2019 at 05:30:53PM -0700, Paul Walmsley wrote:
-> > On Thu, 22 Aug 2019, David Abdurachmanov wrote:
-> >
-> > > There is one failing kernel selftest: global.user_notification_signal
-> >
-> > Is this the only failing test?  Or are the rest of the selftests skipped
-> > when this test fails, and no further tests are run, as seems to be shown
-> > here:
-> >
-> >   https://lore.kernel.org/linux-riscv/CADnnUqcmDMRe1f+3jG8SPR6jRrnBsY8VVD70VbKEm0NqYeoicA@mail.gmail.com/
-> >
-> > For example, looking at the source, I'd naively expect to see the
-> > user_notification_closed_listener test result -- which follows right
-> > after the failing test in the selftest source.  But there aren't any
-> > results?
-> >
-> > Also - could you follow up with the author of this failing test to see if
-> > we can get some more clarity about what might be going wrong here?  It
-> > appears that the failing test was added in commit 6a21cc50f0c7f ("seccomp:
-> > add a return code to trap to userspace") by Tycho Andersen
-> > <tycho@tycho.ws>.
->
-> So, the original email says the riscv series is tested on top of 5.2-rc7,
-> but just for fun, can you confirm that you're building a tree that includes
-> 9dd3fcb0ab73 ("selftests/seccomp: Handle namespace failures gracefully")? I
-> assume it does, but I suspect something similar is happening, where the
-> environment is slightly different than expected and the test stalls.
->
-> Does it behave the same way under emulation (i.e. can I hope to
-> reproduce this myself?)
+On Wed, Aug 28, 2019 at 09:14:21AM +0200, Peter Zijlstra wrote:
+> On Tue, Aug 27, 2019 at 04:01:08PM -0700, Andy Lutomirski wrote:
+> 
+> > > Tracing:
+> > >
+> > > CAP_BPF and perf_paranoid_tracepoint_raw() (which is kernel.perf_event_paranoid == -1)
+> > > are necessary to:
+> 
+> That's not tracing, that's perf.
+> 
+> > > +bool cap_bpf_tracing(void)
+> > > +{
+> > > +       return capable(CAP_SYS_ADMIN) ||
+> > > +              (capable(CAP_BPF) && !perf_paranoid_tracepoint_raw());
+> > > +}
+> 
+> A whole long time ago, I proposed we introduce CAP_PERF or something
+> along those lines; as a replacement for that horrible crap Android and
+> Debian ship. But nobody was ever interested enough.
+> 
+> The nice thing about that is that you can then disallow perf/tracing in
+> general, but tag the perf executable (and similar tools) with the
+> capability so that unpriv users can still use it, but only limited
+> through the tool, not the syscalls directly.
 
-This was tested in 5.2-rc7 and later in 5.3-rc with the same behavior.
-Also VM or physical HW doesn't matter, same result.
+Exactly.
+Similar motivation for CAP_BPF as well.
 
->
-> --
-> Kees Cook
+re: your first comment above.
+I'm not sure what difference you see in words 'tracing' and 'perf'.
+I really hope we don't partition the overall tracing category
+into CAP_PERF and CAP_FTRACE only because these pieces are maintained
+by different people.
+On one side perf_event_open() isn't really doing tracing (as step by
+step ftracing of function sequences), but perf_event_open() opens
+an event and the sequence of events (may include IP) becomes a trace.
+imo CAP_TRACING is the best name to descibe the privileged space
+of operations possible via perf_event_open, ftrace, kprobe, stack traces, etc.
+
+Another reason are kuprobes. They can be crated via perf_event_open
+and via tracefs. Are they in CAP_PERF or in CAP_FTRACE ? In both, right?
+Should then CAP_KPROBE be used ? that would be an overkill.
+It would partition the space even further without obvious need.
+
+Looking from BPF angle... BPF doesn't have integration with ftrace yet.
+bpf_trace_printk is using ftrace mechanism, but that's 1% of ftrace.
+In the long run I really like to see bpf using all of ftrace.
+Whereas bpf is using a lot of 'perf'.
+And extending some perf things in bpf specific way.
+Take a look at how BPF_F_STACK_BUILD_ID. It's clearly perf/stack_tracing
+feature that generic perf can use one day.
+Currently it sits in bpf land and accessible via bpf only.
+Though its bpf only today I categorize it under CAP_TRACING.
+
+I think CAP_TRACING privilege should allow task to do all of perf_event_open,
+kuprobe, stack trace, ftrace, and kallsyms.
+We can think of some exceptions that should stay under CAP_SYS_ADMIN,
+but most of the functionality available by 'perf' binary should be
+usable with CAP_TRACING. 'perf' can do bpf too.
+With CAP_BPF it would be all set.
+
