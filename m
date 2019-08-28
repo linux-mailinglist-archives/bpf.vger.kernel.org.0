@@ -2,190 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 847D1A0B3F
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 22:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1991FA0BA9
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 22:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbfH1UYD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Aug 2019 16:24:03 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:38588 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726687AbfH1UYD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Aug 2019 16:24:03 -0400
-Received: by mail-qk1-f193.google.com with SMTP id u190so967896qkh.5;
-        Wed, 28 Aug 2019 13:24:02 -0700 (PDT)
+        id S1726616AbfH1UkA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Aug 2019 16:40:00 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:40131 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726583AbfH1UkA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Aug 2019 16:40:00 -0400
+Received: by mail-qt1-f195.google.com with SMTP id g4so1118487qtq.7;
+        Wed, 28 Aug 2019 13:39:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0PthWGi5zyhlTnok+h1QQSOQeRjewqREOQF5mh2omPY=;
-        b=HDD/csk5KFc0GxByqsRCYaKyfndjqV2NalmWPdkCVEDKomHYTWg3daowCLSS5piOqt
-         VpYLfU557o5zwvwXBuZyZ8QCqo3c30RclvvZ6kogHseEAsYew7rijrs07uEN31+PM4Ob
-         TfIai3nf+rSx5SXngGRoNZ4SwUrWQd8JZaujvmn+jSXPue4GFmWTZqlAhRwpjX18LNuC
-         Ri20JDMPkdrUgFTIoBqbduB49scrAvjOsdW0LBjuj7BImfbO7zSzoBF18/tugKGZcKAJ
-         xeWx+wQtQ1imhbhCp/b1BBzG4nJ1iaW4AEKgsR5A4LHaWdWjm8WB3gzWdxyJYauKisQA
-         qPYw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=LN6I+wmkOUjNvboiLmQ4C8v9hct75PjdpPpBQSjLorY=;
+        b=b+L4vN1gv5nzgoWLJOvf5JkWyLaeHVnLI15Jv3oD8LKiG/lmf7nTjQj23avEl5ig4s
+         2P3z/8c/HS7TntLMxSnQKMV/NVItwRXUnX61bL9nhvGoSUROUcYSC/Iz2gfGQUh2x1Mp
+         gLssKl7ZrxGs8laQAg8HAqsSgoHY10cz+TWaPQwzcoMvKz5syIddRlb4U5le5SHepTkW
+         Qr9xDmpg+xnVUZwv8caYNq6I/YKHbzuDQ4EZtfOerVDHdKBz/v1lc3EjQDqsvruxaaP9
+         I8LScCQrWLoTAmK84Xutph/3TqJOt48HGDonbPGd0EMkkpEuJZEjsYoaGpZJ2qoHz1HF
+         u3Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0PthWGi5zyhlTnok+h1QQSOQeRjewqREOQF5mh2omPY=;
-        b=P/YtiS1sc6ajbDyd6Pu9E6I3RrBGp+4L6nd6TUUOwCYyenvHsOOHNHqDgoJxFiJwaM
-         0paX1YtQy7PBEAYNR/PScKyVuKP3mozQIkvg+4YeFai7OA1ngVGjb8IcnmkpiUeguPvZ
-         NV0CsxoEWiJr6rY0RGhMijwhny4d1+H/dqrQ1rPuJ0L8V/Ia33oLH+/o3JtUx4ebPgdT
-         hiTbs62Je/b5KvnfDOK3r/R8I+pbYleePbOMAS2VD5RGtcsWvLtOSLfczQm18u+4Lk/Z
-         vmRi6O6Yvr+yoST8zy0oebJTwZet6ncPBHSBmCz3EcTmSg+oupXtedk3TufDoK4T/YzV
-         aPXA==
-X-Gm-Message-State: APjAAAW8NwE8bqfntpiapMsHELaHUGCTPZ16AeNJAAwm9yuatuAvjuac
-        VIDzcq4o8s9PHsELwldKHIJtJvsFvY1OOrBQEZ0=
-X-Google-Smtp-Source: APXvYqzmQgaD9udTS9piXFwvCnf0kMM9MokjH4+r6GG2uaRhGR1Faz2m0KtcknN2iQlMSDPkhWIPuKGoUvQHQK2Afgk=
-X-Received: by 2002:a37:6007:: with SMTP id u7mr5926088qkb.92.1567023842170;
- Wed, 28 Aug 2019 13:24:02 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=LN6I+wmkOUjNvboiLmQ4C8v9hct75PjdpPpBQSjLorY=;
+        b=hNsqC4Q3G9CEs+togx3VcxUI27uhkJnyASYVZP22LVCQRJt3X4MgluoanEcqR6vrcF
+         H0q+ycJBGuXCDcBAKxQ81afzcte75ldR9evhLuUWnjinMIz4A5q+8rwE6YD7SMIViqMO
+         NcA20XnHd0hYVQs133a4UTCQNmZ8WvG974IMsoa71wm1pErSYTbudN6kMIebUxcjePHB
+         AHIp4p2uBgPDUNoQF+sSwxb1UMsjBgp36cUx80k1qys4pEXwzvXzrEo0aixuYHiZa2um
+         PeL7A2pxh16pp1uPyTFzbeAJCeQtfx09/A786yGGz3lm1mBwPY8z8V4zFyefdHR0vqx/
+         J7yQ==
+X-Gm-Message-State: APjAAAXIKJLIq8fkN8AZbLUZ1NYtwBeJwYI4PXWJ1eyVlhhDbaB9QJon
+        OeOy15mSIX+my5icImlH7q8=
+X-Google-Smtp-Source: APXvYqzr3cZcQQZ7Jab7CUJx9Ujq4Bq8JsfpSWAD/r5SmKwlX0wC9xx1oE/c7ttafaD3Z8UptTNNHQ==
+X-Received: by 2002:a0c:92ca:: with SMTP id c10mr4436312qvc.108.1567024798639;
+        Wed, 28 Aug 2019 13:39:58 -0700 (PDT)
+Received: from ebpf-metal ([190.162.109.190])
+        by smtp.gmail.com with ESMTPSA id y5sm161232qkj.64.2019.08.28.13.39.56
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 28 Aug 2019 13:39:58 -0700 (PDT)
+Date:   Wed, 28 Aug 2019 16:39:54 -0400
+From:   Carlos Antonio Neira Bustos <cneirabustos@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     netdev@vger.kernel.org, Eric Biederman <ebiederm@xmission.com>,
+        "brouer@redhat.com" <brouer@redhat.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next V9 1/3] bpf: new helper to obtain namespace data
+ from current task
+Message-ID: <20190828203951.qo4kaloahcnvp7nw@ebpf-metal>
+References: <20190813184747.12225-1-cneirabustos@gmail.com>
+ <20190813184747.12225-2-cneirabustos@gmail.com>
+ <13b7f81f-83b6-07c9-4864-b49749cbf7d9@fb.com>
+ <20190814005604.yeqb45uv2fc3anab@dev00>
+ <9a2cacad-b79f-5d39-6d62-bb48cbaaac07@fb.com>
+ <CACiB22jyN9=0ATWWE+x=BoWD6u+8KO+MvBfsFQmcNfkmANb2_w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20190820114706.18546-1-toke@redhat.com> <CAEf4BzZxb7qZabw6aDVaTqnhr3AGtwEo+DbuBR9U9tJr+qVuyg@mail.gmail.com>
- <20190823122713.73450a4b@carbon>
-In-Reply-To: <20190823122713.73450a4b@carbon>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 28 Aug 2019 13:23:51 -0700
-Message-ID: <CAEf4BzbFEVjDkxeUu3XcU3QWYSBWWHhYehDyFWF0nnWrZmmtTg@mail.gmail.com>
-Subject: Re: [RFC bpf-next 0/5] Convert iproute2 to use libbpf (WIP)
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Anton Protopopov <aspsk2@gmail.com>,
-        Stanislav Fomichev <sdf@fomichev.me>,
-        Yoel Caspersen <yoel@kviknet.dk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACiB22jyN9=0ATWWE+x=BoWD6u+8KO+MvBfsFQmcNfkmANb2_w@mail.gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 23, 2019 at 3:27 AM Jesper Dangaard Brouer
-<brouer@redhat.com> wrote:
->
-> On Wed, 21 Aug 2019 13:30:09 -0700
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> > On Tue, Aug 20, 2019 at 4:47 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
-redhat.com> wrote:
+Yonghong, 
+
+Thanks for the pointer, I fixed this bug, but I found another one that's triggered
+now the test program I included in  tools/testing/selftests/bpf/test_pidns.
+It's seemed that fname was not correctly setup when passing it to filename_lookup.
+This is fixed now and I'm doing some more testing.
+I think I'll remove the tests on samples/bpf as they are mostly end on -EPERM as 
+the fix intended.
+Is ok to remove them and just focus to finish the self tests code?.
+
+Bests
+
+On Wed, Aug 14, 2019 at 01:25:06AM -0400, carlos antonio neira bustos wrote:
+> Thank you very much!
+> 
+> Bests
+> 
+> El mié., 14 de ago. de 2019 00:50, Yonghong Song <yhs@fb.com> escribió:
+> 
+> >
+> >
+> > On 8/13/19 5:56 PM, Carlos Antonio Neira Bustos wrote:
+> > > On Tue, Aug 13, 2019 at 11:11:14PM +0000, Yonghong Song wrote:
+> > >>
+> > >>
+> > >> On 8/13/19 11:47 AM, Carlos Neira wrote:
+> > >>> From: Carlos <cneirabustos@gmail.com>
+> > >>>
+> > >>> New bpf helper bpf_get_current_pidns_info.
+> > >>> This helper obtains the active namespace from current and returns
+> > >>> pid, tgid, device and namespace id as seen from that namespace,
+> > >>> allowing to instrument a process inside a container.
+> > >>>
+> > >>> Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
+> > >>> ---
+> > >>>    fs/internal.h            |  2 --
+> > >>>    fs/namei.c               |  1 -
+> > >>>    include/linux/bpf.h      |  1 +
+> > >>>    include/linux/namei.h    |  4 +++
+> > >>>    include/uapi/linux/bpf.h | 31 ++++++++++++++++++++++-
+> > >>>    kernel/bpf/core.c        |  1 +
+> > >>>    kernel/bpf/helpers.c     | 64
+> > ++++++++++++++++++++++++++++++++++++++++++++++++
+> > >>>    kernel/trace/bpf_trace.c |  2 ++
+> > >>>    8 files changed, 102 insertions(+), 4 deletions(-)
+> > >>>
+> > [...]
+> > >>>
+> > >>> +BPF_CALL_2(bpf_get_current_pidns_info, struct bpf_pidns_info *,
+> > pidns_info, u32,
+> > >>> +    size)
+> > >>> +{
+> > >>> +   const char *pidns_path = "/proc/self/ns/pid";
+> > >>> +   struct pid_namespace *pidns = NULL;
+> > >>> +   struct filename *tmp = NULL;
+> > >>> +   struct inode *inode;
+> > >>> +   struct path kp;
+> > >>> +   pid_t tgid = 0;
+> > >>> +   pid_t pid = 0;
+> > >>> +   int ret;
+> > >>> +   int len;
+> > >>
 > > >
-> > > iproute2 uses its own bpf loader to load eBPF programs, which has
-> > > evolved separately from libbpf. Since we are now standardising on
-> > > libbpf, this becomes a problem as iproute2 is slowly accumulating
-> > > feature incompatibilities with libbpf-based loaders. In particular,
-> > > iproute2 has its own (expanded) version of the map definition struct,
-> > > which makes it difficult to write programs that can be loaded with bo=
-th
-> > > custom loaders and iproute2.
+> > > Thank you very much for catching this!.
+> > > Could you share how to replicate this bug?.
+> >
+> > The config is attached. just run trace_ns_info and you
+> > can reproduce the issue.
+> >
 > > >
-> > > This series seeks to address this by converting iproute2 to using lib=
-bpf
-> > > for all its bpf needs. This version is an early proof-of-concept RFC,=
- to
-> > > get some feedback on whether people think this is the right direction=
-.
-> > >
-> > > What this series does is the following:
-> > >
-> > > - Updates the libbpf map definition struct to match that of iproute2
-> > >   (patch 1).
+> > >> I am running your sample program and get the following kernel bug:
+> > >>
+> > >> ...
+> > >> [   26.414825] BUG: sleeping function called from invalid context at
+> > >> /data/users/yhs/work/net-next/fs
+> > >> /dcache.c:843
+> > >> [   26.416314] in_atomic(): 1, irqs_disabled(): 0, pid: 1911, name: ping
+> > >> [   26.417189] CPU: 0 PID: 1911 Comm: ping Tainted: G        W
+> > >> 5.3.0-rc1+ #280
+> > >> [   26.418182] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> > >> BIOS 1.9.3-1.el7.centos 04/01/2
+> > >> 014
+> > >> [   26.419393] Call Trace:
+> > >> [   26.419697]  <IRQ>
+> > >> [   26.419960]  dump_stack+0x46/0x5b
+> > >> [   26.420434]  ___might_sleep+0xe4/0x110
+> > >> [   26.420894]  dput+0x2a/0x200
+> > >> [   26.421265]  walk_component+0x10c/0x280
+> > >> [   26.421773]  link_path_walk+0x327/0x560
+> > >> [   26.422280]  ? proc_ns_dir_readdir+0x1a0/0x1a0
+> > >> [   26.422848]  ? path_init+0x232/0x330
+> > >> [   26.423364]  path_lookupat+0x88/0x200
+> > >> [   26.423808]  ? selinux_parse_skb.constprop.69+0x124/0x430
+> > >> [   26.424521]  filename_lookup+0xaf/0x190
+> > >> [   26.425031]  ? simple_attr_release+0x20/0x20
+> > >> [   26.425560]  bpf_get_current_pidns_info+0xfa/0x190
+> > >> [   26.426168]  bpf_prog_83627154cefed596+0xe66/0x1000
+> > >> [   26.426779]  trace_call_bpf+0xb5/0x160
+> > >> [   26.427317]  ? __netif_receive_skb_core+0x1/0xbb0
+> > >> [   26.427929]  ? __netif_receive_skb_core+0x1/0xbb0
+> > >> [   26.428496]  kprobe_perf_func+0x4d/0x280
+> > >> [   26.428986]  ? tracing_record_taskinfo_skip+0x1a/0x30
+> > >> [   26.429584]  ? tracing_record_taskinfo+0xe/0x80
+> > >> [   26.430152]  ? ttwu_do_wakeup.isra.114+0xcf/0xf0
+> > >> [   26.430737]  ? __netif_receive_skb_core+0x1/0xbb0
+> > >> [   26.431334]  ? __netif_receive_skb_core+0x5/0xbb0
+> > >> [   26.431930]  kprobe_ftrace_handler+0x90/0xf0
+> > >> [   26.432495]  ftrace_ops_assist_func+0x63/0x100
+> > >> [   26.433060]  0xffffffffc03180bf
+> > >> [   26.433471]  ? __netif_receive_skb_core+0x1/0xbb0
+> > >> ...
+> > >>
+> > >> To prevent we are running in arbitrary task (e.g., idle task)
+> > >> context which may introduce sleeping issues, the following
+> > >> probably appropriate:
+> > >>
+> > >>          if (in_nmi() || in_softirq())
+> > >>                  return -EPERM;
+> > >>
+> > >> Anyway, if in nmi or softirq, the namespace and pid/tgid
+> > >> we get may be just accidentally associated with the bpf running
+> > >> context, but it could be in a different context. So such info
+> > >> is not reliable any way.
+> > >>
+> > >>> +
+> > >>> +   if (unlikely(size != sizeof(struct bpf_pidns_info)))
+> > >>> +           return -EINVAL;
+> > >>> +   pidns = task_active_pid_ns(current);
+> > [...]
 > >
-> >
-> > Hi Toke,
-> >
-> > Thanks for taking a stab at unifying libbpf and iproute2 loaders. I'm
-> > totally in support of making iproute2 use libbpf to load/initialize
-> > BPF programs. But I'm against adding iproute2-specific fields to
-> > libbpf's bpf_map_def definitions to support this.
-> >
-> > I've proposed the plan of extending libbpf's supported features so
-> > that it can be used to load iproute2-style BPF programs earlier,
-> > please see discussions in [0] and [1]. I think instead of emulating
-> > iproute2 way of matching everything based on user-specified internal
-> > IDs, which doesn't provide good user experience and is quite easy to
-> > get wrong, we should support same scenarios with better declarative
-> > syntax and in a less error-prone way. I believe we can do that by
-> > relying on BTF more heavily (again, please check some of my proposals
-> > in [0], [1], and discussion with Daniel in those threads). It will
-> > feel more natural and be more straightforward to follow. It would be
-> > great if you can lend a hand in implementing pieces of that plan!
-> >
-> > I'm currently on vacation, so my availability is very sparse, but I'd
-> > be happy to discuss this further, if need be.
-> >
-> >   [0] https://lore.kernel.org/bpf/CAEf4BzbfdG2ub7gCi0OYqBrUoChVHWsmOntW=
-AkJt47=3DFE+km+A@mail.gmail.com/
-> >   [1] https://www.spinics.net/lists/bpf/msg03976.html
-> >
-> > > - Adds functionality to libbpf to support automatic pinning of maps w=
-hen
-> > >   loading an eBPF program, while re-using pinned maps if they already
-> > >   exist (patches 2-3).
->
-> For production use-cases, libbpf really need an easier higher-level API
-> for re-using pinned maps, for establishing shared maps between
-> programs.  The existing libbpf API bpf_object__pin_maps() and
-> bpf_object__unpin_maps(), which don't re-use pinned maps, are not
-> really usable, because they pin/unpin ALL maps in the ELF file.
->
-> What users really need is an easy way to specify, on a per map basis,
-> what kind of pinning and reuse/sharing they want.  E.g. like iproute2
-> have, "global", "object-scope", and "no-pinning". ("ifindex-scope" would
-> be nice for XDP).
-
-I totally agree and I think this is easy to add both for BTF-defined
-and "classic" bpf_map_def maps. Daniel mentioned in one of the
-previous threads that in practice object-scope doesn't seem to be
-used, so I'd say we should start with no-pinning + global pinning as
-two initial supported values for pinning attribute. ifindex-scope is
-interesting, but I'd love to hear a bit more about the use cases.
-
->   Today users have to split/reimplement bpf_prog_load_xattr(), and
-> use/add bpf_map__reuse_fd().  Which is that I ended doing for
-
-Honestly, bpf_prog_load_xattr() existence seems redundant to me. It's
-basically just bpf_object__open + bpf_object__load. There is a piece
-in the middle with "guessing" program types, but it should just be
-moved into bpf_object__open and happen by default. Using open + load
-gives more control and isn't really harder than bpf_prog_load_xattr.
-bpf_prog_load_xattr which might be slightly more convenient for simple
-use case, but falls apart immediately if you need to tune anything
-before load.
-
-> xdp-cpumap-tc[2] (used in production at ISP) resulting in 142 lines of
-> extra code[3] that should have been hidden inside libbpf.  And worse,
-> in this solution[4] the maps for reuse-pinning is specified in the code
-> by name.  Thus, they cannot use a generic loader.  That I why, I want
-> to mark the maps via a pinning member, like iproute2.
->
-> I really hope this moves in a practical direction, as I have the next
-> production request lined up (also from an ISP), and I hate to have to
-> advice them to choose the same route as [3].
-
-It seems to me that map pinning doesn't need much discussion at this
-point, let's start with no-pinning + global pinning. To accommodate
-pinning at custom root, bpf_object__open_xattr should accept extra
-argument with non-default pinning root path. That should solve your
-case completely, shouldn't it? Ultimately, with BTF-defined maps it
-should be possible to specify custom pinning path on per-map basis for
-cases where user needs ultimate non-uniform manual control.
-
->
->
-> [2] https://github.com/xdp-project/xdp-cpumap-tc/
-> [3] https://github.com/xdp-project/xdp-cpumap-tc/blob/master/src/xdp_ipha=
-sh_to_cpu_user.c#L262-L403
-> [4] https://github.com/xdp-project/xdp-cpumap-tc/blob/master/src/xdp_ipha=
-sh_to_cpu_user.c#L431-L441
-> --
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
