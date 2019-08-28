@@ -2,86 +2,235 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3BFD9FB41
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 09:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0CBF9FB74
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 09:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbfH1HPC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Aug 2019 03:15:02 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:40878 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbfH1HPC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Aug 2019 03:15:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=LCKYQgM1kednGh8zGipmDLqih90IW12ASZGRceJC28s=; b=ZrBVdurcF+KjSFtVBhIaPIsM/
-        PovNxMPCKE8EXwzGkkQdQgyTgQFqZi9Ao2HWKViPP/8HIcSySUsejvVyQQmdN+Yfo9207BqtqKJ+L
-        X4rhbWytrJSTTVPGSipIAIDdmCDGQE4nCy9oBkVxHHtI6Ui93dbGy3lkefgY+WPmeMhHqpCJAdch1
-        rNPivGHLjPuggglOz+vnT3ueExfIo+ZnL+xH26bAqRGAcbHxRZEv22Xc8MT5AB+J0s1b6kVD8Vty0
-        30fecCnsQrHkm4MQ+N/KYyz5NRnsd+SLyyqaat1b4bmHZmuM9wx1pVSdyglx+JGSkCF00LXEXhS86
-        gEOCQJ2Sg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1i2s9w-0004Zr-CD; Wed, 28 Aug 2019 07:14:24 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 373B63070F4;
-        Wed, 28 Aug 2019 09:13:47 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 15FE720C74263; Wed, 28 Aug 2019 09:14:21 +0200 (CEST)
-Date:   Wed, 28 Aug 2019 09:14:21 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf, capabilities: introduce CAP_BPF
-Message-ID: <20190828071421.GK2332@hirez.programming.kicks-ass.net>
-References: <20190827205213.456318-1-ast@kernel.org>
- <CALCETrV8iJv9+Ai11_1_r6MapPhhwt9hjxi=6EoixytabTScqg@mail.gmail.com>
+        id S1726297AbfH1HW4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Aug 2019 03:22:56 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:43134 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726272AbfH1HWz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Aug 2019 03:22:55 -0400
+Received: by mail-lf1-f65.google.com with SMTP id q27so1217805lfo.10
+        for <bpf@vger.kernel.org>; Wed, 28 Aug 2019 00:22:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=095Hu7dvtdB4T1s4IQFBQWtbFveYiA+Tv6pUB2rK3XQ=;
+        b=HyXgiB7XwN5k7cZkuQ+hY4O2lQB9dZsiDCE4w1dFEJYKlc+scKCt/fwOSz/ILb9bsN
+         UT5N4yxmfdzQVb7FFkXIQYzajv+qiXLcjN7STcJIemPwYWzcT2tKki/jomm2ts/CxI7e
+         MLXAmbI9zmwqAoOAndSjiaubfjZriCbE/ubSM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=095Hu7dvtdB4T1s4IQFBQWtbFveYiA+Tv6pUB2rK3XQ=;
+        b=R9SUmEHLFPO4R6t/E9UreBp7UA1AXKTsPRTAdLMl3GGP3jqk6EiWnVNkr0SKUjf8Gb
+         NRDC31bcKH69MbBqvmgRQR0aAHekjDk+Gflyk0omnR6owQalOrKcsmfCRX+p2gc67UoT
+         pgf5b/nZ5UGiYoeYX5AY2xNm5daX1UHUZkoYB5kUOtAFupMtD9ZH/CTmbU8mv4BWObH9
+         FH/65wsvFK1vjEnVfihTKVAm8a1k46/dsZ703uZOu05Hyg2tJdlAmJWvahjErzJdhdAP
+         0O7FPkE387aW3shB+7D5g3GmEYbOfxAUWIZmEpPUtU7XJWL0Uh6h9Flj1hmadoUSnjmZ
+         ccCg==
+X-Gm-Message-State: APjAAAU3znxlONZ1f9yaVd5JJQeNgAKV7d/lg8D02UsUnTwd1j7IUWzj
+        8Lv/MqmPxtHgdF7ivw1DbFZ3CE5di+91TQ==
+X-Google-Smtp-Source: APXvYqz1FugCrzsZ/nST7XVxhdGCHTQSXdYNZn5OGkOa6u/e4XovZZNV8rrqLqnWN6Dhr6EIvXSKgA==
+X-Received: by 2002:ac2:484b:: with SMTP id 11mr1676709lfy.156.1566976972113;
+        Wed, 28 Aug 2019 00:22:52 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id s21sm418079ljm.28.2019.08.28.00.22.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Aug 2019 00:22:51 -0700 (PDT)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        Marek Majkowski <marek@cloudflare.com>
+Subject: [RFCv2 bpf-next 00/12] Programming socket lookup with BPF
+Date:   Wed, 28 Aug 2019 09:22:38 +0200
+Message-Id: <20190828072250.29828-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrV8iJv9+Ai11_1_r6MapPhhwt9hjxi=6EoixytabTScqg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 27, 2019 at 04:01:08PM -0700, Andy Lutomirski wrote:
+This patch set adds a mechanism for programming mappings between the local
+addresses and listening/receiving sockets with BPF.
 
-> > Tracing:
-> >
-> > CAP_BPF and perf_paranoid_tracepoint_raw() (which is kernel.perf_event_paranoid == -1)
-> > are necessary to:
+It introduces a new per-netns BPF program type, called inet_lookup, which
+runs during the socket lookup. The program is allowed to select a
+listening/receiving socket from a SOCKARRAY map that the packet will be
+delivered to.
 
-That's not tracing, that's perf.
+BPF inet_lookup intends to be an alternative for:
 
-> > +bool cap_bpf_tracing(void)
-> > +{
-> > +       return capable(CAP_SYS_ADMIN) ||
-> > +              (capable(CAP_BPF) && !perf_paranoid_tracepoint_raw());
-> > +}
+* SO_BINDTOPREFIX [1] - a mechanism that provides a way to listen/receive
+  on all local addresses that belong to a network prefix. An alternative to
+  binding to INADDR_ANY that allows applications bound to disjoint network
+  prefixes to share a port. Not generic. Never got upstreamed.
 
-A whole long time ago, I proposed we introduce CAP_PERF or something
-along those lines; as a replacement for that horrible crap Android and
-Debian ship. But nobody was ever interested enough.
+* TPROXY [2] - a powerful mechanism that allows steering packets destined
+  to non-local addresses to a local socket. It also works for local
+  addresses, which is a less restrictive case. Can be used to implement
+  what SO_BINDTOPREFIX does, and more - in particular, all ports can be
+  redirected to a single socket. Socket dispatch happens early in ingress
+  path (PREROUTING hook). Versatile but comes with complexities.
 
-The nice thing about that is that you can then disallow perf/tracing in
-general, but tag the perf executable (and similar tools) with the
-capability so that unpriv users can still use it, but only limited
-through the tool, not the syscalls directly.
+Compared to the above, inet_lookup aims to be a programmatic way to map
+(address, port) pairs to a socket. It runs after a routing decision for
+local delivery was made, and hence is limited to local addresses only.
+
+Being part of the socket lookup, has a desired effect that redirection is
+visible to XDP programs which call bpf_sk_lookup helpers.
+
+When it comes to use cases, we have presented them in RFCv1 [3] cover
+letter and also at last Netconf [4]. To recap, they are:
+
+1) sharing a port between two services
+
+   Services are accepting connections on different (disjoint) IP ranges but
+   same port. Requests going to 192.0.2.0/24 tcp/80 are handled by NGINX,
+   while 198.51.100.0/24 tcp/80 IP range is handled by Apache server.
+   Applications are running as different users, in a flat single-netns
+   setup.
+
+2) receiving traffic on all ports
+
+   We have a proxy server that accepts connections to _any_ port [5].
+
+A simple demo program that implements (1) could look like
+
+#define NET1 (IP4(192,  0,   2, 0) >> 8)
+#define NET2 (IP4(198, 51, 100, 0) >> 8)
+
+#define MAX_SERVERS 2
+
+struct {
+	__uint(type, BPF_MAP_TYPE_REUSEPORT_SOCKARRAY);
+	__uint(max_entries, MAX_SERVERS);
+	__type(key, __u32);
+	__type(value, __u64);
+} redir_map SEC(".maps");
+
+SEC("inet_lookup/demo_two_servers")
+int demo_two_http_servers(struct bpf_inet_lookup *ctx)
+{
+	__u32 index = 0;
+	__u64 flags = 0;
+
+        if (ctx->family != AF_INET)
+                return BPF_OK;
+	if (ctx->protocol != IPPROTO_TCP)
+		return BPF_OK;
+        if (ctx->local_port != 80)
+                return BPF_OK;
+
+        switch (bpf_ntohl(ctx->local_ip4) >> 8) {
+        case NET1:
+		index = 0;
+		break;
+        case NET2:
+		index = 1;
+		break;
+	default:
+		return BPF_OK;
+        }
+
+        return bpf_redirect_lookup(ctx, &redir_map, &index, flags);
+}
+
+Since RFCv1, we've changed the approach from rewriting the lookup key to
+map-based redirection. This has been suggested at Netconf, and is a
+recurring pattern in existing BPF program types.
+
+We're posting the 2nd version of RFC patch set to collect further feedback
+and set context for the presentation and discussions at the upcoming
+Network Summit at LPC '19 [6].
+
+Patches are also available on GitHub [7].
+
+Thanks,
+Jakub
+
+[1] https://www.spinics.net/lists/netdev/msg370789.html
+[2] https://www.kernel.org/doc/Documentation/networking/tproxy.txt
+[3] https://lore.kernel.org/netdev/20190618130050.8344-1-jakub@cloudflare.com/
+[4] http://vger.kernel.org/netconf2019_files/Programmable%20socket%20lookup.pdf
+[5] https://blog.cloudflare.com/how-we-built-spectrum/
+[6] https://linuxplumbersconf.org/event/4/contributions/487/
+[7] https://github.com/jsitnicki/linux/commits/bpf-inet-lookup
+
+Changes RFCv1 -> RFCv2:
+
+- Make socket lookup redirection map-based. BPF program now uses a
+  dedicated helper and a SOCKARRAY map to select the socket to redirect to.
+  A consequence of this change is that bpf_inet_lookup context is now
+  read-only.
+
+- Look for connected UDP sockets before allowing redirection from BPF.
+  This makes connected UDP socket work as expected in the presence of
+  inet_lookup prog.
+
+- Share the code for BPF_PROG_{ATTACH,DETACH,QUERY} with flow_dissector,
+  the only other per-netns BPF prog type.
+
+
+Jakub Sitnicki (12):
+  flow_dissector: Extract attach/detach/query helpers
+  bpf: Introduce inet_lookup program type for redirecting socket lookup
+  bpf: Add verifier tests for inet_lookup context access
+  inet: Store layer 4 protocol in inet_hashinfo
+  udp: Store layer 4 protocol in udp_table
+  inet: Run inet_lookup bpf program on socket lookup
+  inet6: Run inet_lookup bpf program on socket lookup
+  udp: Run inet_lookup bpf program on socket lookup
+  udp6: Run inet_lookup bpf program on socket lookup
+  bpf: Sync linux/bpf.h to tools/
+  libbpf: Add support for inet_lookup program type
+  bpf: Test redirecting listening/receiving socket lookup
+
+ include/linux/bpf.h                           |   8 +
+ include/linux/bpf_types.h                     |   1 +
+ include/linux/filter.h                        |  18 +
+ include/net/inet6_hashtables.h                |  19 +
+ include/net/inet_hashtables.h                 |  36 +
+ include/net/net_namespace.h                   |   2 +
+ include/net/udp.h                             |  10 +-
+ include/uapi/linux/bpf.h                      |  58 +-
+ kernel/bpf/syscall.c                          |  10 +
+ kernel/bpf/verifier.c                         |   7 +-
+ net/core/filter.c                             | 304 ++++++++
+ net/core/flow_dissector.c                     |  65 +-
+ net/dccp/proto.c                              |   2 +-
+ net/ipv4/inet_hashtables.c                    |   5 +
+ net/ipv4/tcp_ipv4.c                           |   2 +-
+ net/ipv4/udp.c                                |  59 +-
+ net/ipv4/udp_impl.h                           |   2 +-
+ net/ipv4/udplite.c                            |   4 +-
+ net/ipv6/inet6_hashtables.c                   |   5 +
+ net/ipv6/udp.c                                |  54 +-
+ net/ipv6/udp_impl.h                           |   2 +-
+ net/ipv6/udplite.c                            |   2 +-
+ tools/include/uapi/linux/bpf.h                |  58 +-
+ tools/lib/bpf/libbpf.c                        |   4 +
+ tools/lib/bpf/libbpf.h                        |   2 +
+ tools/lib/bpf/libbpf.map                      |   2 +
+ tools/lib/bpf/libbpf_probes.c                 |   1 +
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |   5 +-
+ tools/testing/selftests/bpf/bpf_helpers.h     |   3 +
+ .../selftests/bpf/progs/inet_lookup_progs.c   |  78 ++
+ .../testing/selftests/bpf/test_inet_lookup.c  | 522 +++++++++++++
+ .../testing/selftests/bpf/test_inet_lookup.sh |  35 +
+ .../selftests/bpf/verifier/ctx_inet_lookup.c  | 696 ++++++++++++++++++
+ 34 files changed, 1974 insertions(+), 108 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/inet_lookup_progs.c
+ create mode 100644 tools/testing/selftests/bpf/test_inet_lookup.c
+ create mode 100755 tools/testing/selftests/bpf/test_inet_lookup.sh
+ create mode 100644 tools/testing/selftests/bpf/verifier/ctx_inet_lookup.c
+
+-- 
+2.20.1
 
