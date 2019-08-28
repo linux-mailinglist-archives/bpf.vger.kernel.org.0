@@ -2,54 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D30A08BA
-	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 19:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56BC7A08F8
+	for <lists+bpf@lfdr.de>; Wed, 28 Aug 2019 19:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726857AbfH1RhK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Aug 2019 13:37:10 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:40089 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727065AbfH1Rgd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Aug 2019 13:36:33 -0400
-Received: by mail-pf1-f194.google.com with SMTP id w16so242395pfn.7
-        for <bpf@vger.kernel.org>; Wed, 28 Aug 2019 10:36:33 -0700 (PDT)
+        id S1726894AbfH1RwI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Aug 2019 13:52:08 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:46961 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726853AbfH1RwI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Aug 2019 13:52:08 -0400
+Received: by mail-pg1-f195.google.com with SMTP id m3so103491pgv.13
+        for <bpf@vger.kernel.org>; Wed, 28 Aug 2019 10:52:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UBNYDOQLiPHI747g3CvJSLTMKiFZvSX4+F+h+ZK0RGk=;
-        b=hBpwGl91JHahbLFCmv2w1Mjzc7Oz3kRyNRNlfokM3jA96+3Z6siqSGJK3qXqEvZYXw
-         209fRwW977JPTkPz9WVu94EDq8zT1usK2FPzVbiynFtN99nMvFDHeFEXObaCht1TcFgd
-         4xrqVdOp6iVorPHpgxumzhQ/jyb1V//MFBv7E=
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=jQX3yoLyPfk/0j+lt93BtL/GBDo4w3swgacBIDakXXQ=;
+        b=XhlIuiCrJiPd178mhAYLbMaCFhZdbbqbwaKU3q6uJ30qMagqqTw/bFQdZlNUymLTK8
+         dAlhmcyR3vP0ZtDqdiHYyudCImcd6mGVQj44mv4tr0vwZxX8d6TFobwdN4uxlZ1uDl/t
+         X/kt1Ft483Gh0bH+NGznab4xcFdJ/6TYS+9Yo3rpExBYeqGDHZD6RaHPArHNC3kr2rgJ
+         NxILOLue3/+PKN00bZKV+tNBQ8D4tNvwKWRAPKMbVtIL1UD4Gr4sqUnHjy2NZtrlK7hv
+         Jg6WoKH+rCjRnSUQMig8d9M/n0qExNh5AHuPyAICyXxTEnIuGS65lVHCT01gHzZmPOSt
+         MLHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UBNYDOQLiPHI747g3CvJSLTMKiFZvSX4+F+h+ZK0RGk=;
-        b=FlPu2y+m5XJ9HigYkm4sZFTmSpe6gqSS/ReRksFACN9lomU7MR+40nybQLUSV6kFm9
-         s8fEn10lifmXz1t+S3KB5AhWMF0yWEOzh82f1+5Eee7+Nb3+b+GSzFujT5258Nd6Vgia
-         ULxIDZf8sOwlxxXZog5KVmmRTZQ/atjXPWVstKfWS+XJI3738E4nlUttaIYSyXww5uA1
-         4VqGpMvxUCCRXZLpLZTeNr7dY7k1ac8c1XpBRIue7X8to33idiuInWgnQM9t03ZSHmqC
-         6vvW7GC1uoGgf26lmwjRii44sUOtiMVFSHUxWgbwWfNpXYlgSqzWlN/qa+RhlRiPP4RG
-         A4sg==
-X-Gm-Message-State: APjAAAVQTj6ccvvpp/joz8pZEN7WeC9qghP6PVtGM8HY1RsKSLGWwUaK
-        RRr+7gwMg6zyD8ARZOKogMaXIA==
-X-Google-Smtp-Source: APXvYqzwkMj0PJ8taLffJ8W2JrcvATme98GQGJX0LS7TPTRiUEPTNp5IYu8fT7uFmLx8nEqHd37GDw==
-X-Received: by 2002:a17:90a:f0d8:: with SMTP id fa24mr5639027pjb.142.1567013792822;
-        Wed, 28 Aug 2019 10:36:32 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id m145sm5047005pfd.68.2019.08.28.10.36.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2019 10:36:29 -0700 (PDT)
-Date:   Mon, 26 Aug 2019 10:48:34 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     David Abdurachmanov <david.abdurachmanov@gmail.com>
-Cc:     Tycho Andersen <tycho@tycho.ws>,
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=jQX3yoLyPfk/0j+lt93BtL/GBDo4w3swgacBIDakXXQ=;
+        b=o7bV7df1Vd2Ld58x6F8dZlEyBC1vQwfjJCtc1hJ/TuUkVFK1ogk6AW6i8p9JD7Ic89
+         bWQE3gHGv59et3w9ScTYKfRKRbZJFxJ9A7dx9l+ediaYGo0gtk5n6RwMwkGjEQYO2YKq
+         CTlw0+vvWd8QNT4qIyT6f6cOdJ6jbCZR9AW7FHjyiQX/fLNxA69FpeAiK/C/Fxr+ISNr
+         xzvziU480Sgzlo+2+ryF5JYH3F3Anok5y8/FD7ZvlUyzZOkVyVkJ69IcgltLPAu275QI
+         BrB1YDZejb39iE7bL9udYD8QAWOE9Rddk9K1PqekjFy/KInU0kfcg3XciicdxY++X7KC
+         LfNA==
+X-Gm-Message-State: APjAAAXTpsPpyPWN8QH6XWnovmfYv9WuZXvhx3IsJYET2KhLPbNUsf2D
+        7OjfQ9HGK6Z5sQ/v2+EsJzQQOg==
+X-Google-Smtp-Source: APXvYqxOrLR3mQwFe9lP+xvQ8UaEwRlRzDb4ILg8zRF5qtKWo+EbZYY96fc4AyXGZBZM2GL8Qh83Qw==
+X-Received: by 2002:a17:90a:9905:: with SMTP id b5mr2493871pjp.117.1567014727512;
+        Wed, 28 Aug 2019 10:52:07 -0700 (PDT)
+Received: from ?IPv6:2600:1012:b023:28ef:14c8:9cc:b602:d8f? ([2600:1012:b023:28ef:14c8:9cc:b602:d8f])
+        by smtp.gmail.com with ESMTPSA id x10sm2728615pjo.4.2019.08.28.10.52.06
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 28 Aug 2019 10:52:06 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2] riscv: add support for SECCOMP and SECCOMP_FILTER
+From:   Andy Lutomirski <luto@amacapital.net>
+X-Mailer: iPhone Mail (16G77)
+In-Reply-To: <201908251451.73C6812E8@keescook>
+Date:   Wed, 28 Aug 2019 10:52:05 -0700
+Cc:     David Abdurachmanov <david.abdurachmanov@gmail.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@sifive.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
         Oleg Nesterov <oleg@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
         Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -65,27 +72,31 @@ Cc:     Tycho Andersen <tycho@tycho.ws>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org, me@carlosedp.com
-Subject: Re: [PATCH v2] riscv: add support for SECCOMP and SECCOMP_FILTER
-Message-ID: <201908261043.08510F5E66@keescook>
-References: <20190822205533.4877-1-david.abdurachmanov@sifive.com>
- <alpine.DEB.2.21.9999.1908231717550.25649@viisi.sifive.com>
- <20190826145756.GB4664@cisco>
- <CAEn-LTrtn01=fp6taBBG_QkfBtgiJyt6oUjZJOi6VN8OeXp6=g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEn-LTrtn01=fp6taBBG_QkfBtgiJyt6oUjZJOi6VN8OeXp6=g@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <419CB0D1-E51C-49D5-9745-7771C863462F@amacapital.net>
+References: <20190822205533.4877-1-david.abdurachmanov@sifive.com> <201908251451.73C6812E8@keescook>
+To:     Kees Cook <keescook@chromium.org>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 26, 2019 at 09:39:50AM -0700, David Abdurachmanov wrote:
-> I don't have the a build with SECCOMP for the board right now, so it
-> will have to wait. I just finished a new kernel (almost rc6) for Fedora,
 
-FWIW, I don't think this should block landing the code: all the tests
-fail without seccomp support. ;) So this patch is an improvement!
 
--- 
-Kees Cook
+> On Aug 25, 2019, at 2:59 PM, Kees Cook <keescook@chromium.org> wrote:
+>=20
+>> On Thu, Aug 22, 2019 at 01:55:22PM -0700, David Abdurachmanov wrote:
+>> This patch was extensively tested on Fedora/RISCV (applied by default on
+>> top of 5.2-rc7 kernel for <2 months). The patch was also tested with 5.3-=
+rc
+>> on QEMU and SiFive Unleashed board.
+>=20
+> Oops, I see the mention of QEMU here. Where's the best place to find
+> instructions on creating a qemu riscv image/environment?
+
+I don=E2=80=99t suppose one of you riscv folks would like to contribute risc=
+v support to virtme?  virtme-run =E2=80=94arch=3Driscv would be quite nice, a=
+nd the total patch should be just a couple lines.  Unfortunately, it helps a=
+ lot to understand the subtleties of booting the architecture to write those=
+ couple lines :)
+
