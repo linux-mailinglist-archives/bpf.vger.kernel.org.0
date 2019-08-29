@@ -2,34 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 436D8A120A
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 08:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B149A1208
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 08:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727464AbfH2Gpd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Aug 2019 02:45:33 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:30950 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727161AbfH2GpM (ORCPT
+        id S1727854AbfH2Gpb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Aug 2019 02:45:31 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:35874 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727370AbfH2GpM (ORCPT
         <rfc822;bpf@vger.kernel.org>); Thu, 29 Aug 2019 02:45:12 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x7T6gYqa025076
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x7T6jB6F002509
         for <bpf@vger.kernel.org>; Wed, 28 Aug 2019 23:45:11 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=NT7SZrw3Qy+6M0D0VAHxgNYPUvtSj8aHb73BTo4D7nk=;
- b=WY+AbgpwkAmNEChFcTVDjVhSlMmegaCwMCrljsSMs8Sie8oosQZLKQQqxYVGyxrO5BYA
- fwhT9iAnC9UV9eZzpCtjjWwEyZL5uyNzRExWeRcdd0ZLb8r+IszTH+KZkru3Pdc4bpt7
- PtowletVaAqYEdhc8tiOw1/U0Ap3M9E6SK4= 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=facebook; bh=hQIzsHayAyex0TK2IjHU272wj4yUeThc332xjAs5G4U=;
+ b=M6/dO0n9dyZlStqP/gsqCEq7OVAoQw4DREsSw6CD63LBApRIgxaVjh7mQDYjc62i2KE0
+ a60hgcgKMCB1DKlXLZiEie7aRTGLszn9PF6IEPJYSQY/GlnILUtCsKMh1m3zMZJn2C9/
+ LnsCJj7zyjkSshilpphiPaEo7AQa+j4KqcI= 
 Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by m0001303.ppops.net with ESMTP id 2unuwqbhyk-2
+        by mx0a-00082601.pphosted.com with ESMTP id 2up8cqr83w-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
         for <bpf@vger.kernel.org>; Wed, 28 Aug 2019 23:45:11 -0700
 Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
+ mail.thefacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Wed, 28 Aug 2019 23:45:09 -0700
+ Wed, 28 Aug 2019 23:45:10 -0700
 Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id C453C3702BA3; Wed, 28 Aug 2019 23:45:02 -0700 (PDT)
+        id 2D8C93702BA3; Wed, 28 Aug 2019 23:45:04 -0700 (PDT)
 Smtp-Origin-Hostprefix: devbig
 From:   Yonghong Song <yhs@fb.com>
 Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
@@ -39,117 +39,179 @@ CC:     Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
         Yonghong Song <yhs@fb.com>
 Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 00/13] bpf: adding map batch processing support
-Date:   Wed, 28 Aug 2019 23:45:02 -0700
-Message-ID: <20190829064502.2750303-1-yhs@fb.com>
+Subject: [PATCH bpf-next 02/13] bpf: refactor map_update_elem()
+Date:   Wed, 28 Aug 2019 23:45:04 -0700
+Message-ID: <20190829064504.2750444-1-yhs@fb.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20190829064502.2750303-1-yhs@fb.com>
+References: <20190829064502.2750303-1-yhs@fb.com>
 X-FB-Internal: Safe
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
  definitions=2019-08-29_04:2019-08-28,2019-08-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- priorityscore=1501 mlxscore=0 phishscore=0 mlxlogscore=826 impostorscore=0
- adultscore=0 lowpriorityscore=0 suspectscore=0 malwarescore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1906280000 definitions=main-1908290072
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
+ bulkscore=0 spamscore=0 priorityscore=1501 clxscore=1015 mlxlogscore=756
+ adultscore=0 suspectscore=25 phishscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1906280000 definitions=main-1908290073
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Brian Vazquez has proposed BPF_MAP_DUMP command to look up more than one
-map entries per syscall.
-  https://lore.kernel.org/bpf/CABCgpaU3xxX6CMMxD+1knApivtc2jLBHysDXw-0E9bQEL0qC3A@mail.gmail.com/T/#t
+Refactor function map_update_elem() by creating a
+helper function bpf_map_update_elem() which will be
+used later by batched map update operation.
 
-During discussion, we found more use cases can be supported in a similar
-map operation batching framework. For example, batched map lookup and delete,
-which can be really helpful for bcc.
-  https://github.com/iovisor/bcc/blob/master/tools/tcptop.py#L233-L243
-  https://github.com/iovisor/bcc/blob/master/tools/slabratetop.py#L129-L138
-    
-Also, in bcc, we have API to delete all entries in a map.
-  https://github.com/iovisor/bcc/blob/master/src/cc/api/BPFTable.h#L257-L264
+Also reuse function bpf_map_value_size()
+in map_update_elem().
 
-For map update, batched operations also useful as sometimes applications need
-to populate initial maps with more than one entry. For example, the below
-example is from kernel/samples/bpf/xdp_redirect_cpu_user.c:
-  https://github.com/torvalds/linux/blob/master/samples/bpf/xdp_redirect_cpu_user.c#L543-L550
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ kernel/bpf/syscall.c | 113 ++++++++++++++++++++++---------------------
+ 1 file changed, 57 insertions(+), 56 deletions(-)
 
-This patch addresses all the above use cases. To make uapi stable, it also
-covers other potential use cases. Four bpf syscall subcommands are introduced:
-    BPF_MAP_LOOKUP_BATCH
-    BPF_MAP_LOOKUP_AND_DELETE_BATCH
-    BPF_MAP_UPDATE_BATCH
-    BPF_MAP_DELETE_BATCH
-
-In userspace, application can iterate through the whole map one batch
-as a time, e.g., bpf_map_lookup_batch() in the below:
-    p_key = NULL;
-    p_next_key = &key;
-    while (true) {
-       err = bpf_map_lookup_batch(fd, p_key, &p_next_key, keys, values,
-                                  &batch_size, elem_flags, flags);
-       if (err) ...
-       if (p_next_key) break; // done
-       if (!p_key) p_key = p_next_key;
-    }
-Please look at individual patches for details of new syscall subcommands
-and examples of user codes.
-
-The testing is also done in a qemu VM environment:
-      measure_lookup: max_entries 1000000, batch 10, time 342ms
-      measure_lookup: max_entries 1000000, batch 1000, time 295ms
-      measure_lookup: max_entries 1000000, batch 1000000, time 270ms
-      measure_lookup: max_entries 1000000, no batching, time 1346ms
-      measure_lookup_delete: max_entries 1000000, batch 10, time 433ms
-      measure_lookup_delete: max_entries 1000000, batch 1000, time 363ms
-      measure_lookup_delete: max_entries 1000000, batch 1000000, time 357ms
-      measure_lookup_delete: max_entries 1000000, not batch, time 1894ms
-      measure_delete: max_entries 1000000, batch, time 220ms
-      measure_delete: max_entries 1000000, not batch, time 1289ms
-For a 1M entry hash table, batch size of 10 can reduce cpu time
-by 70%. Please see patch "tools/bpf: measure map batching perf"
-for details of test codes.
-
-Brian Vazquez (1):
-  bpf: add bpf_map_value_size and bp_map_copy_value helper functions
-
-Yonghong Song (12):
-  bpf: refactor map_update_elem()
-  bpf: refactor map_delete_elem()
-  bpf: refactor map_get_next_key()
-  bpf: adding map batch processing support
-  tools/bpf: sync uapi header bpf.h
-  tools/bpf: implement libbpf API functions for map batch operations
-  tools/bpf: add test for bpf_map_update_batch()
-  tools/bpf: add test for bpf_map_lookup_batch()
-  tools/bpf: add test for bpf_map_lookup_and_delete_batch()
-  tools/bpf: add test for bpf_map_delete_batch()
-  tools/bpf: add a multithreaded test for map batch operations
-  tools/bpf: measure map batching perf
-
- include/uapi/linux/bpf.h                      |  27 +
- kernel/bpf/syscall.c                          | 752 ++++++++++++++----
- tools/include/uapi/linux/bpf.h                |  27 +
- tools/lib/bpf/bpf.c                           |  67 ++
- tools/lib/bpf/bpf.h                           |  17 +
- tools/lib/bpf/libbpf.map                      |   4 +
- .../selftests/bpf/map_tests/map_batch_mt.c    | 126 +++
- .../selftests/bpf/map_tests/map_batch_perf.c  | 242 ++++++
- .../bpf/map_tests/map_delete_batch.c          | 139 ++++
- .../map_tests/map_lookup_and_delete_batch.c   | 164 ++++
- .../bpf/map_tests/map_lookup_batch.c          | 166 ++++
- .../bpf/map_tests/map_update_batch.c          | 115 +++
- 12 files changed, 1707 insertions(+), 139 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/map_tests/map_batch_mt.c
- create mode 100644 tools/testing/selftests/bpf/map_tests/map_batch_perf.c
- create mode 100644 tools/testing/selftests/bpf/map_tests/map_delete_batch.c
- create mode 100644 tools/testing/selftests/bpf/map_tests/map_lookup_and_delete_batch.c
- create mode 100644 tools/testing/selftests/bpf/map_tests/map_lookup_batch.c
- create mode 100644 tools/testing/selftests/bpf/map_tests/map_update_batch.c
-
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 211e0bc667bd..3caa0ab3d30d 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -878,6 +878,61 @@ static void maybe_wait_bpf_programs(struct bpf_map *map)
+ 		synchronize_rcu();
+ }
+ 
++static int bpf_map_update_elem(struct bpf_map *map, void *key, void *value,
++			       struct fd *f, __u64 flags) {
++	int err;
++
++	/* Need to create a kthread, thus must support schedule */
++	if (bpf_map_is_dev_bound(map)) {
++		return bpf_map_offload_update_elem(map, key, value, flags);
++	} else if (map->map_type == BPF_MAP_TYPE_CPUMAP ||
++		   map->map_type == BPF_MAP_TYPE_SOCKHASH ||
++		   map->map_type == BPF_MAP_TYPE_SOCKMAP) {
++		return map->ops->map_update_elem(map, key, value, flags);
++	}
++
++	/* must increment bpf_prog_active to avoid kprobe+bpf triggering from
++	 * inside bpf map update or delete otherwise deadlocks are possible
++	 */
++	preempt_disable();
++	__this_cpu_inc(bpf_prog_active);
++	if (map->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
++	    map->map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH) {
++		err = bpf_percpu_hash_update(map, key, value, flags);
++	} else if (map->map_type == BPF_MAP_TYPE_PERCPU_ARRAY) {
++		err = bpf_percpu_array_update(map, key, value, flags);
++	} else if (map->map_type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE) {
++		err = bpf_percpu_cgroup_storage_update(map, key, value,
++						       flags);
++	} else if (IS_FD_ARRAY(map)) {
++		rcu_read_lock();
++		err = bpf_fd_array_map_update_elem(map, f->file, key, value,
++						   flags);
++		rcu_read_unlock();
++	} else if (map->map_type == BPF_MAP_TYPE_HASH_OF_MAPS) {
++		rcu_read_lock();
++		err = bpf_fd_htab_map_update_elem(map, f->file, key, value,
++						  flags);
++		rcu_read_unlock();
++	} else if (map->map_type == BPF_MAP_TYPE_REUSEPORT_SOCKARRAY) {
++		/* rcu_read_lock() is not needed */
++		err = bpf_fd_reuseport_array_update_elem(map, key, value,
++							 flags);
++	} else if (map->map_type == BPF_MAP_TYPE_QUEUE ||
++		   map->map_type == BPF_MAP_TYPE_STACK) {
++		err = map->ops->map_push_elem(map, value, flags);
++	} else {
++		rcu_read_lock();
++		err = map->ops->map_update_elem(map, key, value, flags);
++		rcu_read_unlock();
++	}
++	__this_cpu_dec(bpf_prog_active);
++	preempt_enable();
++	maybe_wait_bpf_programs(map);
++
++	return err;
++}
++
+ #define BPF_MAP_UPDATE_ELEM_LAST_FIELD flags
+ 
+ static int map_update_elem(union bpf_attr *attr)
+@@ -915,13 +970,7 @@ static int map_update_elem(union bpf_attr *attr)
+ 		goto err_put;
+ 	}
+ 
+-	if (map->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
+-	    map->map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH ||
+-	    map->map_type == BPF_MAP_TYPE_PERCPU_ARRAY ||
+-	    map->map_type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE)
+-		value_size = round_up(map->value_size, 8) * num_possible_cpus();
+-	else
+-		value_size = map->value_size;
++	value_size = bpf_map_value_size(map);
+ 
+ 	err = -ENOMEM;
+ 	value = kmalloc(value_size, GFP_USER | __GFP_NOWARN);
+@@ -932,56 +981,8 @@ static int map_update_elem(union bpf_attr *attr)
+ 	if (copy_from_user(value, uvalue, value_size) != 0)
+ 		goto free_value;
+ 
+-	/* Need to create a kthread, thus must support schedule */
+-	if (bpf_map_is_dev_bound(map)) {
+-		err = bpf_map_offload_update_elem(map, key, value, attr->flags);
+-		goto out;
+-	} else if (map->map_type == BPF_MAP_TYPE_CPUMAP ||
+-		   map->map_type == BPF_MAP_TYPE_SOCKHASH ||
+-		   map->map_type == BPF_MAP_TYPE_SOCKMAP) {
+-		err = map->ops->map_update_elem(map, key, value, attr->flags);
+-		goto out;
+-	}
++	err = bpf_map_update_elem(map, key, value, &f, attr->flags);
+ 
+-	/* must increment bpf_prog_active to avoid kprobe+bpf triggering from
+-	 * inside bpf map update or delete otherwise deadlocks are possible
+-	 */
+-	preempt_disable();
+-	__this_cpu_inc(bpf_prog_active);
+-	if (map->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
+-	    map->map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH) {
+-		err = bpf_percpu_hash_update(map, key, value, attr->flags);
+-	} else if (map->map_type == BPF_MAP_TYPE_PERCPU_ARRAY) {
+-		err = bpf_percpu_array_update(map, key, value, attr->flags);
+-	} else if (map->map_type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE) {
+-		err = bpf_percpu_cgroup_storage_update(map, key, value,
+-						       attr->flags);
+-	} else if (IS_FD_ARRAY(map)) {
+-		rcu_read_lock();
+-		err = bpf_fd_array_map_update_elem(map, f.file, key, value,
+-						   attr->flags);
+-		rcu_read_unlock();
+-	} else if (map->map_type == BPF_MAP_TYPE_HASH_OF_MAPS) {
+-		rcu_read_lock();
+-		err = bpf_fd_htab_map_update_elem(map, f.file, key, value,
+-						  attr->flags);
+-		rcu_read_unlock();
+-	} else if (map->map_type == BPF_MAP_TYPE_REUSEPORT_SOCKARRAY) {
+-		/* rcu_read_lock() is not needed */
+-		err = bpf_fd_reuseport_array_update_elem(map, key, value,
+-							 attr->flags);
+-	} else if (map->map_type == BPF_MAP_TYPE_QUEUE ||
+-		   map->map_type == BPF_MAP_TYPE_STACK) {
+-		err = map->ops->map_push_elem(map, value, attr->flags);
+-	} else {
+-		rcu_read_lock();
+-		err = map->ops->map_update_elem(map, key, value, attr->flags);
+-		rcu_read_unlock();
+-	}
+-	__this_cpu_dec(bpf_prog_active);
+-	preempt_enable();
+-	maybe_wait_bpf_programs(map);
+-out:
+ free_value:
+ 	kfree(value);
+ free_key:
 -- 
 2.17.1
 
