@@ -2,110 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECE0A20E0
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 18:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B588A21FB
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 19:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727731AbfH2Q20 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Aug 2019 12:28:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727347AbfH2Q20 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Aug 2019 12:28:26 -0400
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6320C23403
-        for <bpf@vger.kernel.org>; Thu, 29 Aug 2019 16:28:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1567096105;
-        bh=0isBkftQj9Gg9hHTU78TmmFxYE1h8gyYcnugZeuoeWU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=wukAxiPZfDy3ZtcloWmqW3DP3qsMj7ePmtvvo298RNDdeLbjk+yDLMngxgGPkpG7c
-         vjPBXqrWXSXrTSTm2apasNoSbqYSII8sJNLJ+d/TLdh6+maBvkzuBbiBfhlrys+I+/
-         kLnPGK0ahX1LZHTZVcWXA4go+SOrk1UNPGmTEQi0=
-Received: by mail-wm1-f45.google.com with SMTP id t17so4389797wmi.2
-        for <bpf@vger.kernel.org>; Thu, 29 Aug 2019 09:28:25 -0700 (PDT)
-X-Gm-Message-State: APjAAAUhnkjUd0P/4ZujbcyrhAe+KbsP0L13SjLD5Xg3QAwaO1Hm7iI/
-        w49n8I+8Mn4Maf3OX4epQI0oj2MBOcGWLOzbWYZm5w==
-X-Google-Smtp-Source: APXvYqw4AFPdrT5RzNU6kJNbmC7DZNh9sfduGZL2/yjx0+ctJaAvdCV/NlCBgqiaCkyDGXTO5nK7NXnSodHqigUTJa8=
-X-Received: by 2002:a05:600c:22d7:: with SMTP id 23mr13191080wmg.0.1567096103873;
- Thu, 29 Aug 2019 09:28:23 -0700 (PDT)
+        id S1727144AbfH2RQ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Aug 2019 13:16:59 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:40034 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726973AbfH2RQ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Aug 2019 13:16:59 -0400
+Received: by mail-pl1-f194.google.com with SMTP id h3so1871235pls.7;
+        Thu, 29 Aug 2019 10:16:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=NRznbnxEWY+qWoYeVGueN4YTAamRXlvpw8xIbz20Lgs=;
+        b=Ip2brTNUSZufRT7ajPKX2XmDiE/4k99B4Qw6Tu9NBHa2NgeQwrn3SxWVrTfn5drQYI
+         TB+gtkXppxZC2sm+oEb1VHeWFmwGRbiauC4sCOXb/Uw0SPZS2tTGu3wcS1V/oQadLomF
+         dyZd1YEbfg+7Tyl/dBHjUDuvkhUqJe0KBu7ZxTiLaAngvwplmuuHvrhc3djSPmBA3xxo
+         bsTskEPJFjY/ciIkkQ+5LrOOHVCvtIezovHNh4LnpaxjRJ20Yi5SrbU1eidtwnD5+Cg4
+         d/WgwD9cqmAZAtWfEZprK9dsuP4vYRuY0Rx1Mz3Gq3ErZEME19s0CxUSXJaURayKouz5
+         wxkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=NRznbnxEWY+qWoYeVGueN4YTAamRXlvpw8xIbz20Lgs=;
+        b=MruRO+IwItYnCF+TA92QxaLdsv4fwQ9inDkw1ybeKFwLiZCcok/PyiqUNRBBVMFgpR
+         jKOrIO9SGh5i4vKvRDvWhVXHPCJxl6yGgAHD/qE/KHqrZ6rxziaK/4vSHvJUnyLHjmb6
+         RpQ3a1STkEry8wKMcWNR+6QcZ6+OJH3vg4EfUsJ8x4oHP7JLN55R1pbIckHukrodioPd
+         81aeXytcyJrqwQtuaxOxfa2iGUCxcPcFnLEtciHUOIkDbCUL4DRJ1pa06zlnhHWHyXyw
+         DiFtgAxSS/LUbDcylTDmrDZLUJ7evJrYPGou35XCXMk5hdNfbKMv5Vo4343/c+ehMiKg
+         JHUw==
+X-Gm-Message-State: APjAAAVkJKUQnG0OG/cy/o8+oxq/ONzu1aXeTziEwYGA7ZtChS3xHdFN
+        6AK2Ymk4GMqNUVZO25NTPy8=
+X-Google-Smtp-Source: APXvYqx4BiyE1NCYS+lshAeU+SaBj8mn6xKaWsz+BXUBUKH2O9TJD4ouiGurN/bQK3ZbpAgM/a3ukg==
+X-Received: by 2002:a17:902:7d82:: with SMTP id a2mr11387111plm.57.1567099018801;
+        Thu, 29 Aug 2019 10:16:58 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::2:1347])
+        by smtp.gmail.com with ESMTPSA id 185sm4739240pfd.125.2019.08.29.10.16.57
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 29 Aug 2019 10:16:58 -0700 (PDT)
+Date:   Thu, 29 Aug 2019 10:16:56 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Julia Kartseva <hex@fb.com>, ast@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, rdna@fb.com,
+        bpf@vger.kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: auto-split of commit. Was: [PATCH bpf-next 04/10] tools/bpf: add
+ libbpf_prog_type_(from|to)_str helpers
+Message-ID: <20190829171655.fww5qxtfusehcpds@ast-mbp.dhcp.thefacebook.com>
+References: <cover.1567024943.git.hex@fb.com>
+ <467620c966825173dbd65b37a3f9bd7dd4fb8184.1567024943.git.hex@fb.com>
+ <20190828163422.3d167c4b@cakuba.netronome.com>
+ <20190828234626.ltfy3qr2nne4uumy@ast-mbp.dhcp.thefacebook.com>
+ <20190829065151.GB30423@kroah.com>
 MIME-Version: 1.0
-References: <20190829051253.1927291-1-ast@kernel.org> <536636ad-0baf-31e9-85fe-2591b65068df@iogearbox.net>
-In-Reply-To: <536636ad-0baf-31e9-85fe-2591b65068df@iogearbox.net>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 29 Aug 2019 09:28:12 -0700
-X-Gmail-Original-Message-ID: <CALCETrWFeAXjZEiTZJjansqCLLO3OK=Vf+qeRh48akMjf34Ctw@mail.gmail.com>
-Message-ID: <CALCETrWFeAXjZEiTZJjansqCLLO3OK=Vf+qeRh48akMjf34Ctw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/3] capability: introduce CAP_BPF and CAP_TRACING
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190829065151.GB30423@kroah.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> On Aug 29, 2019, at 8:47 AM, Daniel Borkmann <daniel@iogearbox.net> wrote=
-:
->
->> On 8/29/19 7:12 AM, Alexei Starovoitov wrote:
->> [...]
->>  +/*
->> + * CAP_BPF allows the following BPF operations:
->> + * - Loading all types of BPF programs
->> + * - Creating all types of BPF maps except:
->> + *    - stackmap that needs CAP_TRACING
->> + *    - devmap that needs CAP_NET_ADMIN
->> + *    - cpumap that needs CAP_SYS_ADMIN
->> + * - Advanced verifier features
->> + *   - Indirect variable access
->> + *   - Bounded loops
->> + *   - BPF to BPF function calls
->> + *   - Scalar precision tracking
->> + *   - Larger complexity limits
->> + *   - Dead code elimination
->> + *   - And potentially other features
->> + * - Use of pointer-to-integer conversions in BPF programs
->> + * - Bypassing of speculation attack hardening measures
->> + * - Loading BPF Type Format (BTF) data
->> + * - Iterate system wide loaded programs, maps, BTF objects
->> + * - Retrieve xlated and JITed code of BPF programs
->> + * - Access maps and programs via id
->> + * - Use bpf_spin_lock() helper
->
-> This is still very wide. Consider following example: app has CAP_BPF +
-> CAP_NET_ADMIN. Why can't we in this case *only* allow loading networking
-> related [plus generic] maps and programs? If it doesn't have CAP_TRACING,
-> what would be a reason to allow loading it? Same vice versa. There are
-> some misc program types like the infraread stuff, but they could continue
-> to live under [CAP_BPF +] CAP_SYS_ADMIN as fallback. I think categorizing
-> a specific list of prog and map types might be more clear than disallowin=
-g
-> some helpers like below (e.g. why choice of bpf_probe_read() but not
-> bpf_probe_write_user() etc).
+On Thu, Aug 29, 2019 at 08:51:51AM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Aug 28, 2019 at 04:46:28PM -0700, Alexei Starovoitov wrote:
+> > On Wed, Aug 28, 2019 at 04:34:22PM -0700, Jakub Kicinski wrote:
+> > > 
+> > > Greg, Thomas, libbpf is extracted from the kernel sources and
+> > > maintained in a clone repo on GitHub for ease of packaging.
+> > > 
+> > > IIUC Alexei's concern is that since we are moving the commits from
+> > > the kernel repo to the GitHub one we have to preserve the commits
+> > > exactly as they are, otherwise SOB lines lose their power.
+> > > 
+> > > Can you provide some guidance on whether that's a valid concern, 
+> > > or whether it's perfectly fine to apply a partial patch?
+> > 
+> > Right. That's exactly the concern.
+> > 
+> > Greg, Thomas,
+> > could you please put your legal hat on and clarify the following.
+> > Say some developer does a patch that modifies
+> > include/uapi/linux/bpf.h
+> > ..some other kernel code...and
+> > tools/include/uapi/linux/bpf.h
+> > 
+> > That tools/include/uapi/linux/bpf.h is used by perf and by libbpf.
+> > We have automatic mirror of tools/libbpf into github/libbpf/
+> > so that external projects and can do git submodule of it,
+> > can build packages out of it, etc.
+> > 
+> > The question is whether it's ok to split tools/* part out of
+> > original commit, keep Author and SOB, create new commit out of it,
+> > and automatically push that auto-generated commit into github mirror.
+> 
+> Note, I am not a laywer, and am not _your_ lawyer either, only _your_
+> lawyer can answer questions as to what is best for you.
+> 
+> That being said, from a "are you keeping the correct authorship info",
+> yes, it sounds like you are doing the correct thing here.
+> 
+> Look at what I do for stable kernels, I take the original commit and add
+> it to "another tree" keeping the original author and s-o-b chain intact,
+> and adding a "this is the original git commit id" type message to the
+> changelog text so that people can link it back to the original.
 
-Wow, I didn=E2=80=99t notice that bpf_probe_write_user() existed. That shou=
-ld
-need something like CAP_PTRACE or CAP_SYS_ADMIN.
+I think you're describing 'git cherry-pick -x'.
+The question was about taking pieces of the original commit. Not the whole commit.
+Author field obviously stays, but SOB is questionable.
+If author meant to change X and Y and Z. Silently taking only Z chunk of the diff
+doesn't quite seem right.
+If we document that such commit split happens in Documentation/bpf/bpf_devel_QA.rst
+do you think it will be enough to properly inform developers?
+The main concern is the surprise factor when people start seeing their commits
+in the mirror, but not their full commits.
 
-I'm starting to think that something like this:
-
-https://lore.kernel.org/bpf/968f3551247a43e1104b198f2e58fb0595d425e7.156504=
-0372.git.luto@kernel.org/
-
-should maybe be finished before CAP_BPF happens at all.  It really
-looks like the bpf operations that need privilege need to get fully
-catalogued and dealt with rather than just coming up with a new
-capability that covers a huge swath.
-
-(bpf_probe_write_user() is also terminally broken on architectures
-like s390x, but that's not really relevant right now.  I'm a bit
-surprised it works on x86 with SMAP, though.)
