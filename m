@@ -2,105 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 387D6A0EEB
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 03:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31708A1028
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 06:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbfH2BaR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Aug 2019 21:30:17 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:33810 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726319AbfH2BaR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Aug 2019 21:30:17 -0400
-Received: by mail-pf1-f194.google.com with SMTP id b24so941590pfp.1
-        for <bpf@vger.kernel.org>; Wed, 28 Aug 2019 18:30:16 -0700 (PDT)
+        id S1725826AbfH2EH2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Aug 2019 00:07:28 -0400
+Received: from mail-pf1-f177.google.com ([209.85.210.177]:45472 "EHLO
+        mail-pf1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbfH2EH2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Aug 2019 00:07:28 -0400
+Received: by mail-pf1-f177.google.com with SMTP id w26so1125252pfq.12;
+        Wed, 28 Aug 2019 21:07:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=oNuMQ0k3tolgyGaRQrF7TXZFayppiTIHnhst6LSZzgM=;
-        b=N0Tiu7A4E04tZ0bGKbShdzjcMamCLdZF8w9OOQK6PqJNfA15z95T1h2MEkAr1QGrkv
-         MTmnaoNxMhluJ+2QIg5wgRlKZG4ebI1krbhI2gFwPGhzgjl3Mo9eYwmeXkS342XWdvW2
-         6o8joBVW/w2HTRLZcmWXJgsyKzxaDVdpZopFc+IAFxfJItzbjS6MQxV8iMzvMh+wCbxD
-         Jlu+YvTpNL5xNRiykc69s779w7U0EiJlNB8fL9OGeoCN3UhQ1qRDkxoOPgj2e9fdO+nP
-         rUwqW2dh56+pi8vTJEXJED0sq/nTmn2tjeRp9FDE/GII0XdAAqqoM5RIQmupCWDxlq+V
-         rHBA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=w0kt/ZUsbjTm2T8fFDi3JgxkmlUidJXSFufUbXNNKCE=;
+        b=qhzOR9cJ6L7DZn1HkdBMFCRqg/z+yoqvDqSweHrPdaz6+PZL2QPpWblX0pPUHjMZTQ
+         7zbIceM7lFnWxlqr+lWpgCbe2rr95iHOall7VH87dj235uRsoOwSJoe4rJJbxu8YlvSw
+         WjC7vA+pgTOfKsH9gIO1IieiiEP4xTJiq0Zts4hsbevNxP2dsN5xioHuUDJpzI3vRXJS
+         0qfKFjI6M2VS/85HEw1Gjcb2I9FSxvRQ5RC1iikYapMkGmjsg3j+THXf0kf3gLkY338M
+         +zaSyJ/mrt7+IWekig9GofhMHjfGa3uHIAWiwDt3w/5Y1u+thX+aJykyMf5KBUlMLVWR
+         dbVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=oNuMQ0k3tolgyGaRQrF7TXZFayppiTIHnhst6LSZzgM=;
-        b=HDKlsTs0I+PqOwXXpgMQI4UIposoZwKtKykW34HXS8sU6tCkLGhIOpqDUsWguZ28So
-         RYmOFOvdCEAInyDuWw268bzDwD6kQmfIhg2aECatHl2U9Jr1KJw94wD88KkT1vTsSsbB
-         HbiF3VLXSDsf8IuxtTnsM0ine9M6lUIr1wy3ZbQajkWIX9HhD24Naf4N7BmZndmjj2D3
-         qp34HSH8glfAH3Q4M43pCSy0jghHgay5iHSFHYB4cgTmvNbdr6EMwZK7j17MJjViHH7n
-         Gnlo2dcqhkRgpQLDtffB3UoU48cebFwQs8ME/+HtIpAC9yHI99wkewRqhltx9n0+pf+K
-         eQLg==
-X-Gm-Message-State: APjAAAWpjGJ8q2Zi6Mqsu+w+OHdpJNV/CrrSr+5yWVhXlSa8p38V1wVD
-        k8s6s/qI5t5qauQCKxxNqGUsug==
-X-Google-Smtp-Source: APXvYqzneWTer11an0OtynaQ0NdmFFtoQFTgNrY29fSA6ajAUSOjqiO56Ptl9fWn/+Jpt6o1LcWHIg==
-X-Received: by 2002:aa7:8602:: with SMTP id p2mr8123966pfn.138.1567042216270;
-        Wed, 28 Aug 2019 18:30:16 -0700 (PDT)
-Received: from localhost ([12.206.222.5])
-        by smtp.gmail.com with ESMTPSA id y13sm669451pfm.164.2019.08.28.18.30.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2019 18:30:15 -0700 (PDT)
-Date:   Wed, 28 Aug 2019 18:30:14 -0700 (PDT)
-From:   Paul Walmsley <paul.walmsley@sifive.com>
-X-X-Sender: paulw@viisi.sifive.com
-To:     Kees Cook <keescook@chromium.org>, Tycho Andersen <tycho@tycho.ws>
-cc:     David Abdurachmanov <david.abdurachmanov@gmail.com>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=w0kt/ZUsbjTm2T8fFDi3JgxkmlUidJXSFufUbXNNKCE=;
+        b=QnoardO0SPx6fOb+hrEynIoVdT001907JeCN0ZDnV9i42Zl9vqdh9CG5W0P1nz9HNz
+         vgUFBzLsAlYH1bMAhUVK1K2jwRltcp2+nrkjTT5pShplNKAQN6bnZHBp2I9cWL0gGMI3
+         2txMs6NAvE7+/tXWvNkZuOgCLxapTLtegTNfwrfxbgLV2NVhX9LtA6J9xxvAVmn4nH75
+         SB9ACsgZKgzIzNgSLv93DaAjuvi7PsPEAm1FGAQIqeoqzM730ktMOZjUyGrot9F2ETRd
+         qVjwm9ah1ztXgEvfvzSLM79gYt6Uoej3Iu8+g6WuTcaRoO4obpznnyMXWUq7+Yqd19fU
+         cQ6g==
+X-Gm-Message-State: APjAAAXfUouDLhxDROmwOxxQJYwX/NlULbOHqv+WATTk3xTTnxRsutv1
+        n3t+sSzRlBlO4655JKIjnUE=
+X-Google-Smtp-Source: APXvYqyPHkJAYhQSNPZHuxydg9VayItwubA4Zdtoip62p7IyAUioHvt20v/oeofIyrsg/afivZqLcw==
+X-Received: by 2002:a63:10a:: with SMTP id 10mr6495671pgb.281.1567051646997;
+        Wed, 28 Aug 2019 21:07:26 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::1e41])
+        by smtp.gmail.com with ESMTPSA id a186sm679089pge.0.2019.08.28.21.07.25
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 28 Aug 2019 21:07:26 -0700 (PDT)
+Date:   Wed, 28 Aug 2019 21:07:24 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Andy Lutomirski <luto@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Abdurachmanov <david.abdurachmanov@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        Vincent Chen <vincentc@andestech.com>,
-        Alan Kao <alankao@andestech.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, me@carlosedp.com
-Subject: Re: [PATCH v2] riscv: add support for SECCOMP and SECCOMP_FILTER
-In-Reply-To: <201908261043.08510F5E66@keescook>
-Message-ID: <alpine.DEB.2.21.9999.1908281825240.13811@viisi.sifive.com>
-References: <20190822205533.4877-1-david.abdurachmanov@sifive.com> <alpine.DEB.2.21.9999.1908231717550.25649@viisi.sifive.com> <20190826145756.GB4664@cisco> <CAEn-LTrtn01=fp6taBBG_QkfBtgiJyt6oUjZJOi6VN8OeXp6=g@mail.gmail.com>
- <201908261043.08510F5E66@keescook>
-User-Agent: Alpine 2.21.9999 (DEB 301 2018-08-15)
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] bpf, capabilities: introduce CAP_BPF
+Message-ID: <20190829040721.ef6rumbaunkavyrr@ast-mbp.dhcp.thefacebook.com>
+References: <20190827205213.456318-1-ast@kernel.org>
+ <CALCETrV8iJv9+Ai11_1_r6MapPhhwt9hjxi=6EoixytabTScqg@mail.gmail.com>
+ <20190828003447.htgzsxs5oevn3eys@ast-mbp.dhcp.thefacebook.com>
+ <CALCETrVbPPPr=BdPAx=tJKxD3oLXP4OVSgCYrB_E4vb6idELow@mail.gmail.com>
+ <20190828044340.zeha3k3cmmxgfqj7@ast-mbp.dhcp.thefacebook.com>
+ <CALCETrW1o+Lazi2Ng6b9JN6jeJffgdW9f3HvqYhNo4TpHRXW=g@mail.gmail.com>
+ <20190828225512.q6qbvkdiqih2iewk@ast-mbp.dhcp.thefacebook.com>
+ <DA52992F-4862-4945-8482-FE619A04C753@amacapital.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DA52992F-4862-4945-8482-FE619A04C753@amacapital.net>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Kees,
-
-On Mon, 26 Aug 2019, Kees Cook wrote:
-
-> On Mon, Aug 26, 2019 at 09:39:50AM -0700, David Abdurachmanov wrote:
-> > I don't have the a build with SECCOMP for the board right now, so it
-> > will have to wait. I just finished a new kernel (almost rc6) for Fedora,
+On Wed, Aug 28, 2019 at 05:45:47PM -0700, Andy Lutomirski wrote:
+> > 
+> >> It seems like you are specifically trying to add a new switch to turn
+> >> as much of BPF as possible on and off.  Why?
+> > 
+> > Didn't I explain it several times already with multiple examples
+> > from systemd, daemons, bpftrace ?
+> > 
+> > Let's try again.
+> > Take your laptop with linux distro.
+> > You're the only user there. I'm assuming you're not sharing it with
+> > partner and kids. This is my definition of 'single user system'.
+> > You can sudo on it at any time, but obviously prefer to run as many
+> > apps as possible without cap_sys_admin.
+> > Now you found some awesome open source app on the web that monitors
+> > the health of the kernel and will pop a nice message on a screen if
+> > something is wrong. Currently this app needs root. You hesitate,
+> > but the apps is so useful and it has strong upstream code review process
+> > that you keep running it 24/7.
+> > This is open source app. New versions come. You upgrade.
+> > You have enough trust in that app that you keep running it as root.
+> > But there is always a chance that new version doing accidentaly
+> > something stupid as 'kill -9 -1'. It's an open source app at the end.
+> > 
+> > Now I come with this CAP* proposal to make this app safer.
+> > I'm not making your system more secure and not making this app
+> > more secure. I can only make your laptop safer for day to day work
+> > by limiting the operations this app can do.
+> > This particular app monitros the kernel via bpf and tracing.
+> > Hence you can give it CAP_TRACING and CAP_BPF and drop the rest.
 > 
-> FWIW, I don't think this should block landing the code: all the tests
-> fail without seccomp support. ;) So this patch is an improvement!
+> This won’t make me much more comfortable, since CAP_BPF lets it do an ever-growing set of nasty things. I’d much rather one or both of two things happen:
+> 
+> 1. Give it CAP_TRACING only. It can leak my data, but it’s rather hard for it to crash my laptop, lose data, or cause other shenanigans.
+> 
+> 2. Improve it a bit do all the privileged ops are wrapped by capset().
+> 
+> Does this make sense?  I’m a security person on occasion. I find vulnerabilities and exploit them deliberately and I break things by accident on a regular basis. In my considered opinion, CAP_TRACING alone, even extended to cover part of BPF as I’ve described, is decently safe. Getting root with just CAP_TRACING will be decently challenging, especially if I don’t get to read things like sshd’s memory, and improvements to mitigate even that could be added.  I am quite confident that attacks starting with CAP_TRACING will have clear audit signatures if auditing is on.  I am also confident that CAP_BPF *will* allow DoS and likely privilege escalation, and this will only get more likely as BPF gets more widely used. And, if BPF-based auditing ever becomes a thing, writing to the audit daemon’s maps will be a great way to cover one’s tracks.
 
-Am sympathetic to this -- we did it with the hugetlb patches for RISC-V -- 
-but it would be good to understand a little bit more about why the test 
-fails before we merge it.
+CAP_TRACING, as I'm proposing it, will allow full tracefs access.
+I think Steven and Massami prefer that as well.
+That includes kprobe with probe_kernel_read.
+That also means mini-DoS by installing kprobes everywhere or running too much ftrace.
 
-Once we merge the patch, it will probably reduce the motivation for others 
-to either understand and fix the underlying problem with the RISC-V code 
--- or, if it truly is a flaky test, to drop (or fix) the test in the 
-seccomp_bpf kselftests.
+CAP_TRACING will allow perf_event_open() too.
+Which also means mini-DoS with too many events.
 
-Thanks for helping to take a closer look at this,
+CAP_TRACING with or without CAP_BPF is safe, but it's not secure.
+And that's what I need to make above 'open source kernel health app' to be safe.
 
-- Paul
+In real world we have tens of such apps and they use all of the things that
+I'm allowing via CAP_BPF + CAP_NET_ADMIN + CAP_TRACING.
+Some apps will need only two out of three.
+I don't see any further possibility to shrink the scope of the proposal.
+
+> I’m trying to convince you that bpf’s security model can be made better
+> than what you’re proposing. I’m genuinely not trying to get in your way.
+> I’m trying to help you improve bpf.
+
+If you really want to help please don't reject the real use cases
+just because they don't fit into your proposal.
+
+There is not a single feature in BPF land that we did because we simply
+wanted to. For every feature we drilled into use cases to make sure
+there is a real user behind it.
+Same thing with CAP_BPF. I'm defining it to include GET_FD_BY_ID because
+apps use it and they need to made safer.
+
+Anyway the v2 version of the patch with CAP_TRACING and CAP_BPF is on the way.
+Hopefully later tonight or tomorrow.
+
