@@ -2,82 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A1435A204B
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 18:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70585A2071
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 18:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbfH2QDV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 29 Aug 2019 12:03:21 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58512 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727008AbfH2QDU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 29 Aug 2019 12:03:20 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7TG2cUj041415
-        for <bpf@vger.kernel.org>; Thu, 29 Aug 2019 12:03:20 -0400
-Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2uphes8und-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 29 Aug 2019 12:03:19 -0400
-Received: from localhost
-        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Thu, 29 Aug 2019 17:03:17 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 29 Aug 2019 17:03:13 +0100
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7TG2nZC21561674
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Aug 2019 16:02:49 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EB28D52050;
-        Thu, 29 Aug 2019 16:03:11 +0000 (GMT)
-Received: from dyn-9-152-98-121.boeblingen.de.ibm.com (unknown [9.152.98.121])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id A0E015204F;
-        Thu, 29 Aug 2019 16:03:11 +0000 (GMT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [PATCH bpf-next 2/3] tools: bpftool: improve and check builds for
- different make invocations
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-In-Reply-To: <20190829105645.12285-3-quentin.monnet@netronome.com>
-Date:   Thu, 29 Aug 2019 18:03:11 +0200
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, oss-drivers@netronome.com,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>
-Content-Transfer-Encoding: 8BIT
-References: <20190829105645.12285-1-quentin.monnet@netronome.com>
- <20190829105645.12285-3-quentin.monnet@netronome.com>
-To:     Quentin Monnet <quentin.monnet@netronome.com>
-X-Mailer: Apple Mail (2.3445.9.1)
-X-TM-AS-GCONF: 00
-x-cbid: 19082916-0016-0000-0000-000002A455E6
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19082916-0017-0000-0000-00003304AC8E
-Message-Id: <C90F7A80-D2E9-401B-8BFC-47C22A44ADAC@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-29_07:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=466 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908290169
+        id S1727994AbfH2QNf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Aug 2019 12:13:35 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:33172 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727008AbfH2QNe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Aug 2019 12:13:34 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 93F393084031;
+        Thu, 29 Aug 2019 16:13:34 +0000 (UTC)
+Received: from astarta.redhat.com (unknown [10.36.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 535285D9D3;
+        Thu, 29 Aug 2019 16:13:33 +0000 (UTC)
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     daniel@iogearbox.net, iii@linux.ibm.com, jolsa@redhat.com
+Subject: [PATCH] bpf: s390: add JIT support for bpf line info
+Date:   Thu, 29 Aug 2019 19:13:30 +0300
+Message-Id: <20190829161330.14951-1-yauheni.kaliuta@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.40]); Thu, 29 Aug 2019 16:13:34 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Am 29.08.2019 um 12:56 schrieb Quentin Monnet <quentin.monnet@netronome.com>:
-> 
-> +make_and_clean() {
-> +	echo -e "\$PWD:    $PWD"
-> +	echo -e "command: make -s $* >/dev/null"
-> +	make $J -s $* >/dev/null
+This adds support for generating bpf line info for JITed programs
+like commit 6f20c71d8505 ("bpf: powerpc64: add JIT support for bpf
+line info") does for powerpc.
 
-Would it make sense to set ERROR=1 if make produces a bpftool binary,
-but still fails with a non-zero RC for whatever reason?
+Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+---
+
+The patch is on top of "bpf: s390: add JIT support for multi-function
+programs"
+
+---
+ arch/s390/net/bpf_jit_comp.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
+index b6801d854c77..4ef783b67dfc 100644
+--- a/arch/s390/net/bpf_jit_comp.c
++++ b/arch/s390/net/bpf_jit_comp.c
+@@ -1420,6 +1420,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+ 	fp->jited_len = jit.size;
+ 
+ 	if (!fp->is_func || extra_pass) {
++		bpf_prog_fill_jited_linfo(fp, jit.addrs);
+ free_addrs:
+ 		kfree(jit.addrs);
+ 		kfree(jit_data);
+-- 
+2.22.0
 
