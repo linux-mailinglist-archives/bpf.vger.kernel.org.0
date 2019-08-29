@@ -2,107 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C4204A1B90
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 15:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5B0A1F3B
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 17:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727025AbfH2Ngq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Aug 2019 09:36:46 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:38684 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726985AbfH2Ngp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Aug 2019 09:36:45 -0400
-Received: by mail-wm1-f66.google.com with SMTP id o184so3913819wme.3
-        for <bpf@vger.kernel.org>; Thu, 29 Aug 2019 06:36:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=6wind.com; s=google;
-        h=reply-to:subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zE0VmLeBzgPYmKuPhgJ9fctJWF45LQJx75UYMLKMg40=;
-        b=LDhD1/JGvTucAvTQG4dSckFrsjbU95uXqflF0RIlZ9i4pAWZnJAwfigPkhQSAIT+FA
-         B73Aa6/SZIe7LXKG+Crx9YFpwNSdXKBk2ajOxmVhRbH7uON2R3CT/oMnQmBKoNFVx1Sd
-         vCX+OkLuUb7UDYZi1SLnTQn6Ecbs+knM8524db9/NLt1/OHfgp81QEf1/Wsg1+d7spqJ
-         UZJJ9xSlMfbmabT15Na7ixOESMzllG03L/ucp2IVktC6DASEMzotvxULSlzP4F00BOYr
-         5lhewHqDIHqBwbr+inNIDDcuKxJD8QeOE6HLwFTbCjrqhl1hzfK0QL5eOBs80wxg7h3z
-         DimQ==
+        id S1728008AbfH2PcI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Aug 2019 11:32:08 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:47489 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727046AbfH2PcI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Aug 2019 11:32:08 -0400
+Received: by mail-io1-f72.google.com with SMTP id b22so4409054iod.14
+        for <bpf@vger.kernel.org>; Thu, 29 Aug 2019 08:32:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=zE0VmLeBzgPYmKuPhgJ9fctJWF45LQJx75UYMLKMg40=;
-        b=HnP8EatdsTts3TzcQSLmaMeflNORdC8dxn+UQH5hhBctsBsEiOk332sZS+tmLcDxoK
-         x1f7xCkVJLEQrW4oxGBdnD9UPQUCtNxihpmaMCF7ExE5Mor+UfH1JTT7aSt+wlIHF3Bx
-         Cj2BJjAaZkv5YaFstXNYHJsFjFCkF3LDw51QOY3rrcbO19RqDb1E1Rd4rpxVlsOJYtd7
-         1UhYvqaSRvXmAN/y21Uts75mCf3lG/GjLquMHvKmjYGquW9++xg2GO0A3D77CwoUUfTl
-         nrgrD8OV6qzuqDQAV3esfwsDU+VzTbud1K4WpiuWu7TIHLsTyFAjREGLJngpKfTisIib
-         QyQw==
-X-Gm-Message-State: APjAAAWmrKf8uIScN19hMhUtAfkicKImKShgA95aUzy2FAhTVLrEEt/F
-        eGkcNOdKlP/5SganKkAHZQNZr0Abtsc=
-X-Google-Smtp-Source: APXvYqwypUOyTmNS5h+nHgiRnMgXMO0pA7nxRGN/4AT57HE9aMwLBYvn74vmzrW9/lmvE7zse0SGZQ==
-X-Received: by 2002:a1c:a9c6:: with SMTP id s189mr11321239wme.85.1567085803221;
-        Thu, 29 Aug 2019 06:36:43 -0700 (PDT)
-Received: from [10.16.0.69] (host.78.145.23.62.rev.coltfrance.com. [62.23.145.78])
-        by smtp.gmail.com with ESMTPSA id b4sm4247974wma.5.2019.08.29.06.36.42
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 29 Aug 2019 06:36:42 -0700 (PDT)
-Reply-To: nicolas.dichtel@6wind.com
-Subject: Re: [PATCH v2 bpf-next 1/3] capability: introduce CAP_BPF and
- CAP_TRACING
-To:     Alexei Starovoitov <ast@kernel.org>, luto@amacapital.net
-Cc:     davem@davemloft.net, peterz@infradead.org, rostedt@goodmis.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
-        linux-api@vger.kernel.org
-References: <20190829051253.1927291-1-ast@kernel.org>
-From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Organization: 6WIND
-Message-ID: <a5ef2f94-acca-eb66-b48c-899494a9f8d0@6wind.com>
-Date:   Thu, 29 Aug 2019 15:36:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=9jMd6mNwFLX+PQpzzKyalqJyB2DZCmy9IGLW1UJr3iU=;
+        b=BEajdyl4nzyObnX/P94w2+WZrEPogYLiKTs2c01VxiJYozzigHXEinZtuv8sthlVa+
+         aU50E6kpy92v3V7RmCcFOp3mIPHLlC2YDjl0GRde49IpQ6wQGSSSE4WbR1yOrnLJ7JVr
+         meF9Coj6pIwIJRjrO5IFzirnNbFcAsigurZht5FnSXLJ2h0cUh1f9gJDZoSL+HXZ5MVR
+         dUdyTlk5rSM50i5/D8oV6sKXxp4AcQDpvd8uHy541Q2bta4l+/23LIP4DhWd/N/uKPr4
+         rP5MM2Vt1zWc7boovgubJAcAyOI8n79e140V5yHUyBsUuT2x+csWuuhgBv/2zZQvuuZG
+         JF8g==
+X-Gm-Message-State: APjAAAVgYT1U5aV+cu3p2KRhPDH5Et6M8B6mOPEJofymwLWX8YC5W9RX
+        W6Lf+F3xCi83Vp/JD6ew7ESA0Ku222aRZXn5HxJww0bWMxYu
+X-Google-Smtp-Source: APXvYqwRkvhHX4DsRrb2aW6LnXU//89K++W00MWSrkTYJbPK6vsIHenfAXL3fk+j1Bgmi2Tdw9zqdjK1NZeoTAKKbiFLfzuodlEM
 MIME-Version: 1.0
-In-Reply-To: <20190829051253.1927291-1-ast@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5d:97cf:: with SMTP id k15mr856067ios.151.1567092727431;
+ Thu, 29 Aug 2019 08:32:07 -0700 (PDT)
+Date:   Thu, 29 Aug 2019 08:32:07 -0700
+In-Reply-To: <000000000000edc1d5058f5dfa5f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000594c700591433550@google.com>
+Subject: Re: memory leak in ppp_write
+From:   syzbot <syzbot+d9c8bf24e56416d7ce2c@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, kafai@fb.com, linux-kernel@vger.kernel.org,
+        linux-ppp@vger.kernel.org, netdev@vger.kernel.org,
+        paulus@samba.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Le 29/08/2019 à 07:12, Alexei Starovoitov a écrit :
-[snip]
-> CAP_BPF and CAP_NET_ADMIN together allow the following:
-> - Attach to cgroup-bpf hooks and query
-> - skb, xdp, flow_dissector test_run command
-> 
-> CAP_NET_ADMIN allows:
-> - Attach networking bpf programs to xdp, tc, lwt, flow dissector
-I'm not sure to understand the difference between these last two points.
-But, with the current kernel, CAP_NET_ADMIN is not enough to attach bpf prog
-with tc and it's still not enough after your patch.
-The following command is rejected:
-$ tc filter add dev eth0 ingress matchall action bpf obj ./tc_test_kern.o sec test
+syzbot has found a reproducer for the following crash on:
 
-Prog section 'test' rejected: Operation not permitted (1)!
- - Type:         4
- - Instructions: 22 (0 over limit)
- - License:      GPL
+HEAD commit:    6525771f Merge tag 'arc-5.3-rc7' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16dc12a2600000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e6131eafb9408877
+dashboard link: https://syzkaller.appspot.com/bug?extid=d9c8bf24e56416d7ce2c
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=116942de600000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1179c582600000
 
-Verifier analysis:
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+d9c8bf24e56416d7ce2c@syzkaller.appspotmail.com
 
-Error fetching program/map!
-bad action parsing
-parse_action: bad value (5:bpf)!
-Illegal "action"
-$
+executing program
+executing program
+executing program
+executing program
+BUG: memory leak
+unreferenced object 0xffff88812a17bc00 (size 224):
+   comm "syz-executor673", pid 6952, jiffies 4294942888 (age 13.040s)
+   hex dump (first 32 bytes):
+     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+   backtrace:
+     [<00000000d110fff9>] kmemleak_alloc_recursive  
+include/linux/kmemleak.h:43 [inline]
+     [<00000000d110fff9>] slab_post_alloc_hook mm/slab.h:522 [inline]
+     [<00000000d110fff9>] slab_alloc_node mm/slab.c:3262 [inline]
+     [<00000000d110fff9>] kmem_cache_alloc_node+0x163/0x2f0 mm/slab.c:3574
+     [<000000002d616113>] __alloc_skb+0x6e/0x210 net/core/skbuff.c:197
+     [<000000000167fc45>] alloc_skb include/linux/skbuff.h:1055 [inline]
+     [<000000000167fc45>] ppp_write+0x48/0x120  
+drivers/net/ppp/ppp_generic.c:502
+     [<000000009ab42c0b>] __vfs_write+0x43/0xa0 fs/read_write.c:494
+     [<00000000086b2e22>] vfs_write fs/read_write.c:558 [inline]
+     [<00000000086b2e22>] vfs_write+0xee/0x210 fs/read_write.c:542
+     [<00000000a2b70ef9>] ksys_write+0x7c/0x130 fs/read_write.c:611
+     [<00000000ce5e0fdd>] __do_sys_write fs/read_write.c:623 [inline]
+     [<00000000ce5e0fdd>] __se_sys_write fs/read_write.c:620 [inline]
+     [<00000000ce5e0fdd>] __x64_sys_write+0x1e/0x30 fs/read_write.c:620
+     [<00000000d9d7b370>] do_syscall_64+0x76/0x1a0  
+arch/x86/entry/common.c:296
+     [<0000000006e6d506>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff888121203900 (size 224):
+   comm "syz-executor673", pid 6965, jiffies 4294943430 (age 7.620s)
+   hex dump (first 32 bytes):
+     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+   backtrace:
+     [<00000000d110fff9>] kmemleak_alloc_recursive  
+include/linux/kmemleak.h:43 [inline]
+     [<00000000d110fff9>] slab_post_alloc_hook mm/slab.h:522 [inline]
+     [<00000000d110fff9>] slab_alloc_node mm/slab.c:3262 [inline]
+     [<00000000d110fff9>] kmem_cache_alloc_node+0x163/0x2f0 mm/slab.c:3574
+     [<000000002d616113>] __alloc_skb+0x6e/0x210 net/core/skbuff.c:197
+     [<000000000167fc45>] alloc_skb include/linux/skbuff.h:1055 [inline]
+     [<000000000167fc45>] ppp_write+0x48/0x120  
+drivers/net/ppp/ppp_generic.c:502
+     [<000000009ab42c0b>] __vfs_write+0x43/0xa0 fs/read_write.c:494
+     [<00000000086b2e22>] vfs_write fs/read_write.c:558 [inline]
+     [<00000000086b2e22>] vfs_write+0xee/0x210 fs/read_write.c:542
+     [<00000000a2b70ef9>] ksys_write+0x7c/0x130 fs/read_write.c:611
+     [<00000000ce5e0fdd>] __do_sys_write fs/read_write.c:623 [inline]
+     [<00000000ce5e0fdd>] __se_sys_write fs/read_write.c:620 [inline]
+     [<00000000ce5e0fdd>] __x64_sys_write+0x1e/0x30 fs/read_write.c:620
+     [<00000000d9d7b370>] do_syscall_64+0x76/0x1a0  
+arch/x86/entry/common.c:296
+     [<0000000006e6d506>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88811d0cf800 (size 512):
+   comm "syz-executor673", pid 6965, jiffies 4294943430 (age 7.620s)
+   hex dump (first 32 bytes):
+     06 00 00 00 05 00 00 00 40 00 00 00 00 00 00 00  ........@.......
+     40 00 40 00 00 00 00 00 40 00 40 00 00 00 00 00  @.@.....@.@.....
+   backtrace:
+     [<00000000b9629d4c>] kmemleak_alloc_recursive  
+include/linux/kmemleak.h:43 [inline]
+     [<00000000b9629d4c>] slab_post_alloc_hook mm/slab.h:522 [inline]
+     [<00000000b9629d4c>] slab_alloc_node mm/slab.c:3262 [inline]
+     [<00000000b9629d4c>] kmem_cache_alloc_node_trace+0x161/0x2f0  
+mm/slab.c:3592
+     [<00000000a9b92035>] __do_kmalloc_node mm/slab.c:3614 [inline]
+     [<00000000a9b92035>] __kmalloc_node_track_caller+0x38/0x50  
+mm/slab.c:3629
+     [<00000000fad050db>] __kmalloc_reserve.isra.0+0x40/0xb0  
+net/core/skbuff.c:141
+     [<00000000a1025904>] __alloc_skb+0xa0/0x210 net/core/skbuff.c:209
+     [<000000000167fc45>] alloc_skb include/linux/skbuff.h:1055 [inline]
+     [<000000000167fc45>] ppp_write+0x48/0x120  
+drivers/net/ppp/ppp_generic.c:502
+     [<000000009ab42c0b>] __vfs_write+0x43/0xa0 fs/read_write.c:494
+     [<00000000086b2e22>] vfs_write fs/read_write.c:558 [inline]
+     [<00000000086b2e22>] vfs_write+0xee/0x210 fs/read_write.c:542
+     [<00000000a2b70ef9>] ksys_write+0x7c/0x130 fs/read_write.c:611
+     [<00000000ce5e0fdd>] __do_sys_write fs/read_write.c:623 [inline]
+     [<00000000ce5e0fdd>] __se_sys_write fs/read_write.c:620 [inline]
+     [<00000000ce5e0fdd>] __x64_sys_write+0x1e/0x30 fs/read_write.c:620
+     [<00000000d9d7b370>] do_syscall_64+0x76/0x1a0  
+arch/x86/entry/common.c:296
+     [<0000000006e6d506>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
 
-Like Andy, I'm also wondering about the backward compatibility. With my current
-docker, I'm able to play with tc bpf with CAP_SYS_ADMIN. But if I update my
-kernel with your patches, CAP_SYS_ADMIN doesn't allow anymore that and CAP_BPF
-is not implemented in my current docker, thus I cannot give the correct
-capabilities. In other words, an old docker cannot run on a new kernel.
-
-Regards,
-Nicolas
