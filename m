@@ -2,197 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6C1A1286
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 09:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E64A12C1
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 09:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727844AbfH2HX7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Aug 2019 03:23:59 -0400
-Received: from mail-yb1-f193.google.com ([209.85.219.193]:44314 "EHLO
-        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726330AbfH2HX6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Aug 2019 03:23:58 -0400
-Received: by mail-yb1-f193.google.com with SMTP id y21so856729ybi.11
-        for <bpf@vger.kernel.org>; Thu, 29 Aug 2019 00:23:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=R8EgEva/nN+dxw6+a+tbX87JZIlVuBuzMvhuJDwRRR4=;
-        b=NXuypbmTaSrUawn6dK0eZNoFKLnVaJ7BIWZVqgFlG76S+ATA+MCe8+XdoZm8vDLJll
-         /m3vEwRSe+Kw1sjV9VP135ZrO6XKTdN0l6/Ms6+4BYLRrB2sx1KUJxFe6rlLSCIGtqcZ
-         IwJd7XYNmKPOK1HhNsnVYN6AZ+qv+S74/q2q9wy1NjlXR2CYn5g6TxtO05dnCP5BETa+
-         1vOMw+KOdRogsxcBS/7sQrwFhQZrTKwVPiaVgp2r1n4+eY02INrAGYUNv+5BF3G/XmqL
-         AnmdCj3TZWtviGy97p0vejfvFXY+jqzuRVKNwO0TDskQHHrxTEUTVxPpbqrB6PI/oeX9
-         2u9Q==
+        id S1727478AbfH2HoW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Aug 2019 03:44:22 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:33390 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726417AbfH2HoV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Aug 2019 03:44:21 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 6E345C04959E
+        for <bpf@vger.kernel.org>; Thu, 29 Aug 2019 07:44:21 +0000 (UTC)
+Received: by mail-ed1-f72.google.com with SMTP id i10so1589019edv.14
+        for <bpf@vger.kernel.org>; Thu, 29 Aug 2019 00:44:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=R8EgEva/nN+dxw6+a+tbX87JZIlVuBuzMvhuJDwRRR4=;
-        b=B6G1nyUow+gamaHgu7Z5/BMw/g3jgsCKLa1JIbOYMGG0+e2TVKqPywNrX8ZHsBdEh+
-         cwtaHpmDZEq427VWxkirOIEnZVGXnX8tIENgauxancVlD+xfKyy+f7sfwkhmI8pi3Fff
-         LZmv3vSqO2lcjYEfkFZFWlhUW9dOVL+8TntTu0q5mJh+z+hqAJxDKB5zI7vXNQe/1sLS
-         BW3TNvdwJ7djwuyOgCJKZe79ddg82yMTJldVy8n/K26C/P+ACHvESyPulAF+OQEKSTk2
-         8xzLpgDyB47tlue3aUieDIHCgjGOV3BPXl7UqZCdFkaN1gvf3fu/ISRm0yEyGWfaejTz
-         aTCw==
-X-Gm-Message-State: APjAAAWmuR+mRHmFIvHywnNbXG9PWfgGkDv1CSPprOJJHUJJKacmlCE0
-        9p5/rPGLFOZUpKsRSZBGlg/ikQ==
-X-Google-Smtp-Source: APXvYqzl8gabGH4zPMEJYFXPgGvZMdADKlGX5Q1XpXlgRWqc5yCW4GiS1Az0+E7aIXUyCD1kagvFBQ==
-X-Received: by 2002:a25:e70b:: with SMTP id e11mr5618813ybh.127.1567063437479;
-        Thu, 29 Aug 2019 00:23:57 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s (li1320-244.members.linode.com. [45.79.221.244])
-        by smtp.gmail.com with ESMTPSA id e3sm320863ywc.91.2019.08.29.00.23.48
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 29 Aug 2019 00:23:56 -0700 (PDT)
-Date:   Thu, 29 Aug 2019 15:23:43 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH v2 3/3] arm: Add support for function error injection
-Message-ID: <20190829072343.GD10583@leoy-ThinkPad-X240s>
-References: <20190806100015.11256-1-leo.yan@linaro.org>
- <20190806100015.11256-4-leo.yan@linaro.org>
- <20190819091808.GB5599@leoy-ThinkPad-X240s>
- <20190829065729.GU13294@shell.armlinux.org.uk>
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=syJ1qgGbb2nyLjAQ0BdovjtQf9fJ98FvbZ0asS0WfAc=;
+        b=ViBXc1P3zw1++UMk7qf8ACku0yoT+cewvznJ6Qp7sahA8ayJIwZ55b2zh/9q1ErifL
+         xo8kFakECG/vRJxDwlYlbEjG0gAO6WtHcASq9KC9MRIbXiu99OeckvAqStzTiq8Qc3LP
+         yuKfzONC38BTZx5OvhPII+iSX00imNwNong67SYiefrCM1tkoOf4z6sldkbhoWtEt25S
+         xTbzXF+RzZu3v0W0wsRkLNs5WVVFMqPNjkwrHtrItppqsW+CjWsDDY9l3LwnD4LR0Zeb
+         SpnSx5Hg2q/xcyxJbqSUz5NYSrtBmlFLt6NhILNufsFI9tqths1z9dDiZsS4XYfpsY14
+         9wWA==
+X-Gm-Message-State: APjAAAUELmIcl/08twa6Sb4HAgqw6IpBNb2ANkdgw/2SAMDdQ434hsKl
+        BZ5opMuFLsg24LRtADwAz+eOuC1Z+yOG35jcLnaL+Nyzbg8GKPkA4jRFJTuWP9Jzbu9ZxrF9r4l
+        2lmH+jIAeTGvI
+X-Received: by 2002:a17:906:841a:: with SMTP id n26mr6877707ejx.181.1567064660258;
+        Thu, 29 Aug 2019 00:44:20 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqxTEgOTmPL7C6gKeK+p4p3VDmj4jaAlWchwY4AG0qidGcwqilr8Hiqay9Scqq+u8hizc7+f4A==
+X-Received: by 2002:a17:906:841a:: with SMTP id n26mr6877690ejx.181.1567064660112;
+        Thu, 29 Aug 2019 00:44:20 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id h9sm292089edv.75.2019.08.29.00.44.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Aug 2019 00:44:19 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 7C1F2181C2E; Thu, 29 Aug 2019 09:44:18 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>, luto@amacapital.net
+Cc:     davem@davemloft.net, peterz@infradead.org, rostedt@goodmis.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH v2 bpf-next 1/3] capability: introduce CAP_BPF and CAP_TRACING
+In-Reply-To: <20190829051253.1927291-1-ast@kernel.org>
+References: <20190829051253.1927291-1-ast@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 29 Aug 2019 09:44:18 +0200
+Message-ID: <87ef14iffx.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190829065729.GU13294@shell.armlinux.org.uk>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Russell,
+Alexei Starovoitov <ast@kernel.org> writes:
 
-On Thu, Aug 29, 2019 at 07:57:29AM +0100, Russell King - ARM Linux admin wrote:
-> I'm sorry, I can't apply this, it produces loads of:
-> 
-> include/linux/error-injection.h:7:10: fatal error: asm/error-injection.h: No such file or directory
-> 
-> Since your patch 1 has been merged by the ARM64 people, I can't take
-> it until next cycle.
+> CAP_BPF allows the following BPF operations:
+> - Loading all types of BPF programs
+> - Creating all types of BPF maps except:
+>    - stackmap that needs CAP_TRACING
+>    - devmap that needs CAP_NET_ADMIN
+>    - cpumap that needs CAP_SYS_ADMIN
 
-For this case, do you want me to resend this patch in next merge
-window?  Or you have picked up this patch but will send PR in next
-cycle?
+Why CAP_SYS_ADMIN instead of CAP_NET_ADMIN for cpumap?
 
-Thanks,
-Leo Yan
-
-> On Mon, Aug 19, 2019 at 05:18:08PM +0800, Leo Yan wrote:
-> > Hi Russell,
-> > 
-> > On Tue, Aug 06, 2019 at 06:00:15PM +0800, Leo Yan wrote:
-> > > This patch implements arm specific functions regs_set_return_value() and
-> > > override_function_with_return() to support function error injection.
-> > > 
-> > > In the exception flow, it updates pt_regs::ARM_pc with pt_regs::ARM_lr
-> > > so can override the probed function return.
-> > 
-> > Gentle ping ...  Could you review this patch?
-> > 
-> > Thanks,
-> > Leo.
-> > 
-> > > Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> > > ---
-> > >  arch/arm/Kconfig              |  1 +
-> > >  arch/arm/include/asm/ptrace.h |  5 +++++
-> > >  arch/arm/lib/Makefile         |  2 ++
-> > >  arch/arm/lib/error-inject.c   | 19 +++++++++++++++++++
-> > >  4 files changed, 27 insertions(+)
-> > >  create mode 100644 arch/arm/lib/error-inject.c
-> > > 
-> > > diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> > > index 33b00579beff..2d3d44a037f6 100644
-> > > --- a/arch/arm/Kconfig
-> > > +++ b/arch/arm/Kconfig
-> > > @@ -77,6 +77,7 @@ config ARM
-> > >  	select HAVE_EXIT_THREAD
-> > >  	select HAVE_FAST_GUP if ARM_LPAE
-> > >  	select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
-> > > +	select HAVE_FUNCTION_ERROR_INJECTION if !THUMB2_KERNEL
-> > >  	select HAVE_FUNCTION_GRAPH_TRACER if !THUMB2_KERNEL && !CC_IS_CLANG
-> > >  	select HAVE_FUNCTION_TRACER if !XIP_KERNEL
-> > >  	select HAVE_GCC_PLUGINS
-> > > diff --git a/arch/arm/include/asm/ptrace.h b/arch/arm/include/asm/ptrace.h
-> > > index 91d6b7856be4..3b41f37b361a 100644
-> > > --- a/arch/arm/include/asm/ptrace.h
-> > > +++ b/arch/arm/include/asm/ptrace.h
-> > > @@ -89,6 +89,11 @@ static inline long regs_return_value(struct pt_regs *regs)
-> > >  	return regs->ARM_r0;
-> > >  }
-> > >  
-> > > +static inline void regs_set_return_value(struct pt_regs *regs, unsigned long rc)
-> > > +{
-> > > +	regs->ARM_r0 = rc;
-> > > +}
-> > > +
-> > >  #define instruction_pointer(regs)	(regs)->ARM_pc
-> > >  
-> > >  #ifdef CONFIG_THUMB2_KERNEL
-> > > diff --git a/arch/arm/lib/Makefile b/arch/arm/lib/Makefile
-> > > index b25c54585048..8f56484a7156 100644
-> > > --- a/arch/arm/lib/Makefile
-> > > +++ b/arch/arm/lib/Makefile
-> > > @@ -42,3 +42,5 @@ ifeq ($(CONFIG_KERNEL_MODE_NEON),y)
-> > >    CFLAGS_xor-neon.o		+= $(NEON_FLAGS)
-> > >    obj-$(CONFIG_XOR_BLOCKS)	+= xor-neon.o
-> > >  endif
-> > > +
-> > > +obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
-> > > diff --git a/arch/arm/lib/error-inject.c b/arch/arm/lib/error-inject.c
-> > > new file mode 100644
-> > > index 000000000000..2d696dc94893
-> > > --- /dev/null
-> > > +++ b/arch/arm/lib/error-inject.c
-> > > @@ -0,0 +1,19 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +
-> > > +#include <linux/error-injection.h>
-> > > +#include <linux/kprobes.h>
-> > > +
-> > > +void override_function_with_return(struct pt_regs *regs)
-> > > +{
-> > > +	/*
-> > > +	 * 'regs' represents the state on entry of a predefined function in
-> > > +	 * the kernel/module and which is captured on a kprobe.
-> > > +	 *
-> > > +	 * 'regs->ARM_lr' contains the the link register for the probed
-> > > +	 * function, when kprobe returns back from exception it will override
-> > > +	 * the end of probed function and directly return to the predefined
-> > > +	 * function's caller.
-> > > +	 */
-> > > +	instruction_pointer_set(regs, regs->ARM_lr);
-> > > +}
-> > > +NOKPROBE_SYMBOL(override_function_with_return);
-> > > -- 
-> > > 2.17.1
-> > > 
-> > 
-> 
-> -- 
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTC broadband for 0.8mile line in suburbia: sync at 12.1Mbps down 622kbps up
-> According to speedtest.net: 11.9Mbps down 500kbps up
+-Toke
