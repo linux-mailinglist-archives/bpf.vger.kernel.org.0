@@ -2,137 +2,453 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67EA3A295B
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 00:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB902A2A77
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 01:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728107AbfH2WEk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Aug 2019 18:04:40 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:26510 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726894AbfH2WEj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 29 Aug 2019 18:04:39 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x7TM3Qju027436;
-        Thu, 29 Aug 2019 15:04:17 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=6j9OHNdxrL6U69XNa2Jz8V42eC/LEFW8hLkEq9mofRo=;
- b=N7i3L456Y1qsdhmZdUrvar2BlfJPuF9CRjF1vasYh6IVXPIFa7amQO/YC7oWjPuaQo54
- gf03L5XfIRJNWJYxhGoj3gphYB0F8SO/sRsJSDyQAWXNSOM1f4o51O+vyx6wGVIRQArI
- R5QRKavFDqLFJ4az9tSVqdPceMhVz97A3Vc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2upfdvan8e-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 29 Aug 2019 15:04:16 -0700
-Received: from ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) by
- ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 29 Aug 2019 15:04:11 -0700
-Received: from NAM03-BY2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 29 Aug 2019 15:04:11 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gj6JdjUdCrNdbYTL9E2/5qIl5RO5REx4H05Mj4wYvQpKwQkQa4q+SG5u/NnVuD2bN6Tbr0Th2ChjXUx/OyosgfiYXwCuNquz+v6/QWQcF2/DKjAQjtRKH/cpfAT6QxU0lmFLH2ja5g6joPe7uP7b21dIcz9w5lVVkdKMTQWEee+gaInotr016OkD90wUAPfERbD9D5YpmQQQQFu0SjzWtFOrAAzHEZsTq5y3npmWp0qQEvr7ac6yPeZlaDgKMTrSvw/ZkpRGi+Ja+piQgDviFOvO4kyhB+jNpfWJvW8/7CImhABm7BG16z6/GCnK/6IzBHiBqU+Tkbgdbp1h8FaL2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6j9OHNdxrL6U69XNa2Jz8V42eC/LEFW8hLkEq9mofRo=;
- b=kjCkxkjIfHI01LX5DOheRkGoRAevx/n3euP3CXgAQVN5J7aBT96PO6WQ67Hoim4iPW1WdtI5uvFp4GrE1jPF3Tukr06pE+FB2CyLwSR28WvSwZZp47aXNtgg1BNKGC4QsPbeIqz9y8ayK/zPcxWulxtA2P3i4f8gXBPpGG78EQZFPkAVoNKuKYYOWPugIxlkFooVb6bMpAJTYDGUmKXmwoLppHAd4os8cSgm1vGdhiMHJsLR47Ulc6ffeUXy/yNrntMvmyG8c3k4lV7MaZzni9S8QFEGJUqTHQXWAWp1dfS1LkDc8fNe0GfA92jsOZ1L0HWWljRW6Hq5cfud18ZK/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6j9OHNdxrL6U69XNa2Jz8V42eC/LEFW8hLkEq9mofRo=;
- b=iUvmWUZ6CmTXW9dknjgamM4VSzUgXhPlHeK/xGpvN9Oyr9Mleck8CV706YnaHRuvE7qj8aVICR8A7nt97ag9q3TcdF/V3FjMwDVx8GarQMVjUPQWOD9whWE7fBL/70j8jvB4U1UGHmkRTh5hlJJbq5VWtBv1lfegZfXhOu4Ui6o=
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
- MWHPR15MB1775.namprd15.prod.outlook.com (10.174.255.142) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2199.20; Thu, 29 Aug 2019 22:04:10 +0000
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::45ee:bc50:acfa:60a5]) by MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::45ee:bc50:acfa:60a5%3]) with mapi id 15.20.2199.021; Thu, 29 Aug 2019
- 22:04:10 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Yonghong Song <yhs@fb.com>
-CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        "Alexei Starovoitov" <ast@fb.com>,
-        Brian Vazquez <brianvv@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 01/13] bpf: add bpf_map_value_size and
- bp_map_copy_value helper functions
-Thread-Topic: [PATCH bpf-next 01/13] bpf: add bpf_map_value_size and
- bp_map_copy_value helper functions
-Thread-Index: AQHVXjVRHUTlANX960mFdvHLqfQdRacSrvKA
-Date:   Thu, 29 Aug 2019 22:04:10 +0000
-Message-ID: <2DB6B840-9EF6-483D-8570-4BB9EB74F3DA@fb.com>
-References: <20190829064502.2750303-1-yhs@fb.com>
- <20190829064502.2750359-1-yhs@fb.com>
-In-Reply-To: <20190829064502.2750359-1-yhs@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3445.104.11)
-x-originating-ip: [2620:10d:c090:200::1:3161]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b880ccb0-96ef-44bb-5ae3-08d72cccd1fe
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600166)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:MWHPR15MB1775;
-x-ms-traffictypediagnostic: MWHPR15MB1775:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR15MB17754EB267D12BA96971FD79B3A20@MWHPR15MB1775.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3276;
-x-forefront-prvs: 0144B30E41
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(136003)(396003)(366004)(376002)(346002)(189003)(199004)(229853002)(71190400001)(71200400001)(4326008)(36756003)(86362001)(66556008)(66476007)(66946007)(6486002)(66446008)(64756008)(6246003)(76116006)(53936002)(6636002)(37006003)(54906003)(6512007)(6436002)(33656002)(91956017)(4744005)(2906002)(6862004)(7736002)(305945005)(50226002)(8936002)(53546011)(8676002)(81166006)(186003)(478600001)(6116002)(6506007)(102836004)(316002)(25786009)(256004)(5660300002)(14454004)(57306001)(11346002)(446003)(2616005)(46003)(99286004)(476003)(76176011)(486006)(81156014);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1775;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: FToYaRq3N2d5goXy7pVdQaUxAQ4DloUMVn+m6DaoFCXojTr0kX/v9Jb7I85jrXrj5nsOfnacvkMkdd0GdNQiLSbdLEOuHITVnHpADCc+mKA1vdVwpEUljh3mBeQnxXSvDMWVF6ZPIzebF4xk3bfVIrGKfQkH4FOC805DwwjRlBylN79eiiKxWYV2lfHjUhbE2Ea2VhIfdta/TyctMXR4HDsKfSwjWCnQCCLhV913ell+x90YXqpvwRUWxZhSrvmaQwDkUxQ26S/4LyzqZaR/jFmwp2j3QRdu6VMxj6GC/6g+4nH9F9FJgsSlcg0fsgvTya37WzrJr/UmRSMd0dd0XmGTkW7eR+vEp7DWhv9NIIphr39OL/aJpdLGF/0B5n0QCS4Usr4Ygjjf4XBEpb9k82TY3i76Lr5XElWJ0/7wddc=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <C94EF4AB7407B8479023385A09B97749@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1728267AbfH2XBi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Aug 2019 19:01:38 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:40083 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727826AbfH2XBh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Aug 2019 19:01:37 -0400
+Received: by mail-lj1-f194.google.com with SMTP id e27so4624582ljb.7
+        for <bpf@vger.kernel.org>; Thu, 29 Aug 2019 16:01:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dWpG0YUJK4oh97pmATFFGm5Bx2chV77bCMHwj+U/rzs=;
+        b=VuTBOHveQY4ECCWJawPUkFir2Mkr3Pc5QEum8ohGsf0SMDR/muT3SPS6HpUQrmWNch
+         U7KuqDSjK/bIGZlmNfFtVfmRft1uSbjb58oL+f5sctrrLpWrNUMxLgqVnESt/GrMoK4g
+         N9xITWbTi0J83XcJXiptBg3vk5k3BwkNbE18x72x3w+BYnWWUXug1DtY03RxDTmrMR6h
+         KO6kfofFjTVtH5u1ksCcIu3CPpVaXHuRfMEppd89yswXqPjXtdGV/eaO06plv7/5G21s
+         V8yU7WbPa7/evucSbiXbCj9qT0HIvPgyU1ceOg4W4qXm6oET9fg5xoEz6207A0u+wbj6
+         d8SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dWpG0YUJK4oh97pmATFFGm5Bx2chV77bCMHwj+U/rzs=;
+        b=rRE3cBpo/FVgHt6TO/+egr3C859Fc+ZxfJtG9eirhQ6afJp+4encYTrs8a2p0zuoaQ
+         D/nibpJ8SiZu4OoeNBWdwp1i0qLtjzpAgapoVGWFLv71Fhhav2oocaCZzDI+VCqaiXxD
+         gottF3nwfsF2jkR5NCTBs6yQZexu1ItqJ0o9qGoCIHdk4U16nh6iaI6zl7IHADQPIAnC
+         cROrVU4fn6Z8HREHzUvIOkBIhQhMikFdh2ngOM/yDYFzflwFIdPuo3nLcss/H+4yahvA
+         u9oviTm+sKTxFu3ArRfe0V9f8YfpoNxCsBVg9RMUpaAvaSZ1s/57dHhsY11HzNCfmMX5
+         ho1Q==
+X-Gm-Message-State: APjAAAWG2MOtfmmX1GJzxYDAR9ugKSm9W96FBo/ZR7ZMxw3fD2wdZifZ
+        sHW1yXQKJrP1WQ/EvoK3fkoVjOzJD44T5zgGlZG/CKoGQi6Isg==
+X-Google-Smtp-Source: APXvYqxNpzicsUuQwo1oQCc+GPzNucP83JZz9Ef59f8nvkHELkz0gFCaDSokDUztXkMvX6PkYbWDLzZOxJnfQsdhHMg=
+X-Received: by 2002:a2e:8794:: with SMTP id n20mr5597064lji.116.1567119693426;
+ Thu, 29 Aug 2019 16:01:33 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: b880ccb0-96ef-44bb-5ae3-08d72cccd1fe
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Aug 2019 22:04:10.3113
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cL2mLlVKtMKpdeqhpmagOo6KKVw8ZIJsAFPhW7vovRTDgSXvIf4L+f4kFjcXSNhE5OdrmYNRqPtU6ZzpxGTK2A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1775
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
- definitions=2019-08-29_08:2019-08-29,2019-08-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=345
- adultscore=0 priorityscore=1501 mlxscore=0 impostorscore=0 clxscore=1011
- suspectscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1906280000 definitions=main-1908290220
-X-FB-Internal: deliver
+References: <20190829064502.2750303-1-yhs@fb.com> <20190829064507.2750795-1-yhs@fb.com>
+In-Reply-To: <20190829064507.2750795-1-yhs@fb.com>
+From:   Brian Vazquez <brianvv@google.com>
+Date:   Thu, 29 Aug 2019 16:01:22 -0700
+Message-ID: <CAMzD94RuPs8_BHNRDjk6NDkyi=hJ+pCKeLb3ihACLYaOWz8sAA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 05/13] bpf: adding map batch processing support
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi Yonghong!
 
+Thanks for sending this series of patches and starting the discussion.
 
-> On Aug 28, 2019, at 11:45 PM, Yonghong Song <yhs@fb.com> wrote:
->=20
-> From: Brian Vazquez <brianvv@google.com>
->=20
-> Move reusable code from map_lookup_elem to helper functions to avoid code
-> duplication in kernel/bpf/syscall.c
->=20
-> Suggested-by: Stanislav Fomichev <sdf@google.com>
-> Signed-off-by: Brian Vazquez <brianvv@google.com>
+On Wed, Aug 28, 2019 at 11:45 PM Yonghong Song <yhs@fb.com> wrote:
+>
+> Brian Vazquez has proposed BPF_MAP_DUMP command to look up more than one
+> map entries per syscall.
+>   https://lore.kernel.org/bpf/CABCgpaU3xxX6CMMxD+1knApivtc2jLBHysDXw-0E9bQEL0qC3A@mail.gmail.com/T/#t
+>
+> During discussion, we found more use cases can be supported in a similar
+> map operation batching framework. For example, batched map lookup and delete,
+> which can be really helpful for bcc.
+>   https://github.com/iovisor/bcc/blob/master/tools/tcptop.py#L233-L243
+>   https://github.com/iovisor/bcc/blob/master/tools/slabratetop.py#L129-L138
+>
+> Also, in bcc, we have API to delete all entries in a map.
+>   https://github.com/iovisor/bcc/blob/master/src/cc/api/BPFTable.h#L257-L264
+>
+> For map update, batched operations also useful as sometimes applications need
+> to populate initial maps with more than one entry. For example, the below
+> example is from kernel/samples/bpf/xdp_redirect_cpu_user.c:
+>   https://github.com/torvalds/linux/blob/master/samples/bpf/xdp_redirect_cpu_user.c#L543-L550
+>
+> This patch addresses all the above use cases. To make uapi stable, it also
+> covers other potential use cases. Four bpf syscall subcommands are introduced:
+>         BPF_MAP_LOOKUP_BATCH
+>         BPF_MAP_LOOKUP_AND_DELETE_BATCH
+>         BPF_MAP_UPDATE_BATCH
+>         BPF_MAP_DELETE_BATCH
+>
+> The UAPI attribute structure looks like:
+>         struct { /* struct used by BPF_MAP_*_BATCH commands */
+>                 __aligned_u64   start_key;      /* input: storing start key,
+>                                                  * if NULL, starting from the beginning.
+>                                                  */
+>                 __aligned_u64   next_start_key; /* output: storing next batch start_key,
+>                                                  * if NULL, no next key.
+>                                                  */
+>                 __aligned_u64   keys;           /* input/output: key buffer */
+>                 __aligned_u64   values;         /* input/output: value buffer */
+>                 __u32           count;          /* input: # of keys/values in
+>                                                  *   or fits in keys[]/values[].
+>                                                  * output: how many successful
+>                                                  *   lookup/lookup_and_delete
+>                                                  *   /delete/update operations.
+>                                                  */
+>                 __u32           map_fd;
+>                 __u64           elem_flags;     /* BPF_MAP_{UPDATE,LOOKUP}_ELEM flags */
+>                 __u64           flags;          /* flags for batch operation */
+>         } batch;
+>
+> The 'start_key' and 'next_start_key' are used to BPF_MAP_LOOKUP_BATCH,
+> BPF_MAP_LOOKUP_AND_DELETE_BATCH and BPF_MAP_DELETE_BATCH
+> to start the operation on 'start_key' and also set the
+> next batch start key in 'next_start_key'.
+>
+> If 'count' is greater than 0 and the return code is 0,
+>   . the 'count' may be updated to be smaller if there is less
+>     elements than 'count' for the operation. In such cases,
+>     'next_start_key' will be set to NULL.
+>   . the 'count' remains the same. 'next_start_key' could be NULL
+>     or could point to next start_key for batch processing.
+>
+> If 'count' is greater than 0 and the return code is an error
+> other than -EFAULT, the kernel will try to overwrite 'count'
+> to contain the number of successful element-level (lookup,
+> lookup_and_delete, update and delete) operations. The following
+> attributes can be checked:
+>   . if 'count' value is modified, the new value will be
+>     the number of successful element-level operations.
+>   . if 'count' value is modified, the keys[]/values[] will
+>     contain correct results for new 'count' number of
+>     operations for lookup[_and_delete] and update.
+>
+> The implementation in this patch mimics what user space
+> did, e.g., for lookup_and_delete,
+>     while(bpf_get_next_key(map, keyp, next_keyp) == 0) {
+>        bpf_map_delete_elem(map, keyp);
+>        bpf_map_lookup_elem(map, next_keyp, &value, flags);
+>        keyp, next_keyp = next_keyp, keyp;
+>     }
+> The similar loop is implemented in the kernel, and
+> each operation, bpf_get_next_key(), bpf_map_delete_elem()
+> and bpf_map_lookup_elem(), uses existing kernel functions
+> each of which has its own rcu_read_lock region, bpf_prog_active
+> protection, etc.
+> Therefore, it is totally possible that after bpf_get_next_key(),
+> the bpf_map_delete_elem() or bpf_map_lookup_elem() may fail
+> as the key may be deleted concurrently by kernel or
+> other user space processes/threads.
+> By default, the current implementation permits the loop
+> to continue, just like typical user space handling. But
+> a flag, BPF_F_ENFORCE_ENOENT, can be specified, so kernel
+> will return an error if bpf_map_delete_elem() or
+> bpf_map_lookup_elem() failed.
+>
+> The high-level algorithm for BPF_MAP_LOOKUP_BATCH and
+> BPF_MAP_LOOKUP_AND_DELETE_BATCH:
+>         if (start_key == NULL and next_start_key == NULL) {
+>                 lookup up to 'count' keys in keys[] and fill
+>                 corresponding values[], and delete those
+>                 keys if BPF_MAP_LOOKUP_AND_DELETE_BATCH.
+>         } else if (start_key == NULL && next_start_key != NULL) {
+>                 lookup up to 'count' keys from the beginning
+>                 of the map and fill keys[]/values[], delete
+>                 those keys if BPF_MAP_LOOKUP_AND_DELETE_BATCH.
+>                 Set 'next_start_key' for next batch operation.
+>         } else if (start_key != NULL && next_start_key != NULL) {
+>                 lookup to 'count' keys from 'start_key', inclusive,
+>                 and fill keys[]/values[], delete those keys if
+>                 BPF_MAP_LOOKUP_AND_DELETE_BATCH.
+>                 Set 'next_start_key' for next batch operation.
+>         }
+>
+> The high-level algorithm for BPF_MAP_UPDATE_BATCH:
+>         if (count != 0) {
+>                 do 'count' number of updates on keys[]/values[].
+>         }
+>
+> The high-level algorithm for BPF_MAP_DELETE_BATCH:
+>         if (count == 0) {
+>                 if (start_key == NULL) {
+>                         delete all elements from map.
+>                 } else {
+>                         delete all elements from start_key to the end of map.
+>                 }
+>         } else {
+>                 if (start_key == NULL and next_start_key == NULL) {
+>                         delete 'count' number of keys in keys[].
+>                 } else if (start_key == NULL and next_start_key != NULL) {
+>                         delete 'count' number of keys from the
+>                         beginning of the map and set 'next_start_key'
+>                         properly.
+>                 } else if (start_key != NULL and next_start_keeey != NULL) {
+>                         delete 'count' number of keys from 'start_key',
+>                         and set 'next_start_key' properly.
+>                 }
+>         }
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  include/uapi/linux/bpf.h |  27 +++
+>  kernel/bpf/syscall.c     | 448 +++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 475 insertions(+)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 5d2fb183ee2d..576688f13e8c 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -107,6 +107,10 @@ enum bpf_cmd {
+>         BPF_MAP_LOOKUP_AND_DELETE_ELEM,
+>         BPF_MAP_FREEZE,
+>         BPF_BTF_GET_NEXT_ID,
+> +       BPF_MAP_LOOKUP_BATCH,
+> +       BPF_MAP_LOOKUP_AND_DELETE_BATCH,
+> +       BPF_MAP_UPDATE_BATCH,
+> +       BPF_MAP_DELETE_BATCH,
+>  };
+>
+>  enum bpf_map_type {
+> @@ -347,6 +351,9 @@ enum bpf_attach_type {
+>  /* flags for BPF_PROG_QUERY */
+>  #define BPF_F_QUERY_EFFECTIVE  (1U << 0)
+>
+> +/* flags for BPF_MAP_*_BATCH */
+> +#define BPF_F_ENFORCE_ENOENT   (1U << 0)
+> +
+>  enum bpf_stack_build_id_status {
+>         /* user space need an empty entry to identify end of a trace */
+>         BPF_STACK_BUILD_ID_EMPTY = 0,
+> @@ -396,6 +403,26 @@ union bpf_attr {
+>                 __u64           flags;
+>         };
+>
+> +       struct { /* struct used by BPF_MAP_*_BATCH commands */
+> +               __aligned_u64   start_key;      /* input: storing start key,
+> +                                                * if NULL, starting from the beginning.
+> +                                                */
+> +               __aligned_u64   next_start_key; /* output: storing next batch start_key,
+> +                                                * if NULL, no next key.
+> +                                                */
+> +               __aligned_u64   keys;           /* input/output: key buffer */
+> +               __aligned_u64   values;         /* input/output: value buffer */
+> +               __u32           count;          /* input: # of keys/values in
+> +                                                *   or fits in keys[]/values[].
+> +                                                * output: how many successful
+> +                                                *   lookup/lookup_and_delete
+> +                                                *   update/delete operations.
+> +                                                */
+> +               __u32           map_fd;
+> +               __u64           elem_flags;     /* BPF_MAP_*_ELEM flags */
+> +               __u64           flags;          /* flags for batch operation */
+> +       } batch;
+> +
+>         struct { /* anonymous struct used by BPF_PROG_LOAD command */
+>                 __u32           prog_type;      /* one of enum bpf_prog_type */
+>                 __u32           insn_cnt;
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 06308f0206e5..8746b55405f9 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -33,6 +33,17 @@
+>
+>  #define BPF_OBJ_FLAG_MASK   (BPF_F_RDONLY | BPF_F_WRONLY)
+>
+> +#define BPF_MAP_BATCH_SWAP_KEYS(key1, key2, buf1, buf2)        \
+> +       do {                                            \
+> +               if (key1 == (buf1)) {                   \
+> +                       key1 = buf2;                    \
+> +                       key2 = buf1;                    \
+> +               } else {                                \
+> +                       key1 = buf1;                    \
+> +                       key2 = buf2;                    \
+> +               }                                       \
+> +       } while (0)                                     \
+> +
+>  DEFINE_PER_CPU(int, bpf_prog_active);
+>  static DEFINE_IDR(prog_idr);
+>  static DEFINE_SPINLOCK(prog_idr_lock);
+> @@ -1183,6 +1194,431 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
+>         return err;
+>  }
+>
+> +static void __map_batch_get_attrs(const union bpf_attr *attr,
+> +                                 void __user **skey, void __user **nskey,
+> +                                 void __user **keys, void __user **values,
+> +                                 u32 *max_count, u64 *elem_flags, u64 *flags)
+> +{
+> +       *skey = u64_to_user_ptr(attr->batch.start_key);
+> +       *nskey = u64_to_user_ptr(attr->batch.next_start_key);
+> +       *keys = u64_to_user_ptr(attr->batch.keys);
+> +       *values = u64_to_user_ptr(attr->batch.values);
+> +       *max_count = attr->batch.count;
+> +       *elem_flags = attr->batch.elem_flags;
+> +       *flags = attr->batch.flags;
+> +}
+> +
+> +static int
+> +__map_lookup_delete_batch_key_in_keys(struct bpf_map *map, void *key, void *value,
+> +                                     u32 max_count, u32 key_size, u32 value_size,
+> +                                     u64 elem_flags, void __user *keys,
+> +                                     void __user *values,
+> +                                     union bpf_attr __user *uattr,
+> +                                     bool ignore_enoent)
+> +{
+> +       u32 count, missed = 0;
+> +       int ret = 0, err;
+> +
+> +       for (count = 0; count < max_count; count++) {
+> +               if (copy_from_user(key, keys + count * key_size, key_size)) {
+> +                       ret = -EFAULT;
+> +                       break;
+> +               }
+> +
+> +               ret = bpf_map_copy_value(map, key, value, elem_flags);
+> +               if (ret) {
+> +                       if (ret != -ENOENT || !ignore_enoent)
+> +                               break;
+> +
+> +                       missed++;
+> +                       continue;
+> +               }
+> +
+> +
+> +               if (copy_to_user(values + count * value_size, value, value_size)) {
+> +                       ret = -EFAULT;
+> +                       break;
+> +               }
+> +
+> +               ret = bpf_map_delete_elem(map, key);
+> +               if (ret) {
+> +                       if (ret != -ENOENT || !ignore_enoent)
+> +                               break;
+> +
+> +                       missed++;
+> +               }
+> +       }
+> +
+> +       count -= missed;
+> +       if ((!ret && missed) || (ret && ret != -EFAULT)) {
+> +               err = put_user(count, &uattr->batch.count);
+> +               ret = err ? : ret;
+> +       }
+> +
+> +       return ret;
+> +}
+> +
+> +static int map_lookup_and_delete_batch(struct bpf_map *map,
+> +                                      const union bpf_attr *attr,
+> +                                      union bpf_attr __user *uattr,
+> +                                      bool do_delete)
+> +{
+> +       u32 max_count, count = 0, key_size, roundup_key_size, value_size;
+> +       bool ignore_enoent, nextkey_is_null, copied;
+> +       void *buf = NULL, *key, *value, *next_key;
+> +       void __user *skey, *nskey, *keys, *values;
+> +       u64 elem_flags, flags, zero = 0;
+> +       int err, ret = 0;
+> +
+> +       if (map->map_type == BPF_MAP_TYPE_QUEUE ||
+> +           map->map_type == BPF_MAP_TYPE_STACK)
+> +               return -ENOTSUPP;
+> +
+> +       __map_batch_get_attrs(attr, &skey, &nskey, &keys, &values, &max_count,
+> +                             &elem_flags, &flags);
+> +
+> +       if (elem_flags & ~BPF_F_LOCK || flags & ~BPF_F_ENFORCE_ENOENT)
+> +               return -EINVAL;
+> +
+> +       if (!max_count)
+> +               return 0;
+> +
+> +       /* The following max_count/skey/nskey combinations are supported:
+> +        * max_count != 0 && !skey && !nskey: loop/delete max_count elements in keys[]/values[].
+> +        * max_count != 0 && !skey && nskey: loop/delete max_count elements starting from map start.
+> +        * max_count != 0 && skey && nskey: loop/delete max_count elements starting from skey.
+> +        */
+> +       if (skey && !nskey)
+> +               return -EINVAL;
+> +
+> +       /* allocate space for two keys and one value. */
+> +       key_size = map->key_size;
+> +       roundup_key_size = round_up(map->key_size, 8);
+> +       value_size = bpf_map_value_size(map);
+> +       buf = kmalloc(roundup_key_size * 2 + value_size, GFP_USER | __GFP_NOWARN);
+> +       if (!buf)
+> +               return -ENOMEM;
+> +
+> +       key = buf;
+> +       next_key = buf + roundup_key_size;
+> +       value = buf + roundup_key_size * 2;
+> +       ignore_enoent = !(flags & BPF_F_ENFORCE_ENOENT);
+> +
+> +       if (!skey && !nskey) {
+> +               /* handle cases where keys in keys[] */
+> +               ret = __map_lookup_delete_batch_key_in_keys(map, key, value, max_count,
+> +                                                           key_size, value_size,
+> +                                                           elem_flags, keys, values,
+> +                                                           uattr, ignore_enoent);
+> +               goto out;
+> +       }
+> +
+> +       /* Get the first key. */
+> +       if (!skey) {
+> +               ret = bpf_map_get_next_key(map, NULL, key);
+> +               if (ret) {
+> +                       nextkey_is_null = true;
+> +                       goto after_loop;
+> +               }
+> +       } else if (copy_from_user(key, skey, key_size)) {
+> +               ret = -EFAULT;
+> +               goto out;
+> +       }
+> +
+> +       /* Copy the first key/value pair */
+> +       ret = bpf_map_copy_value(map, key, value, elem_flags);
+> +       if (ret) {
+> +               if (skey)
+> +                       goto out;
+> +
+> +               nextkey_is_null = true;
+> +               goto after_loop;
+> +       }
+> +
+> +       if (copy_to_user(keys, key, key_size) ||
+> +           copy_to_user(values, value, value_size)) {
+> +               ret = -EFAULT;
+> +               goto out;
+> +       }
+> +
+> +       /* We will always try to get next_key first
+> +        * and then delete the current key.
+> +        */
+> +       ret = bpf_map_get_next_key(map, key, next_key);
 
+One of the issues I see in this implementation is that is still
+relying on the existing functions and has the same consistency
+problems that my attempt had.
 
-Acked-by: Song Liu <songliubraving@fb.com>
+The problem happens when you are trying to do batch lookup on a
+hashmap and when executing bpf_map_get_next_key(map, key, next_key)
+the key is removed, then that call will return the first key and you'd
+start iterating the map from the beginning again and retrieve
+duplicate information.
 
-Yonghong, we also need your SoB.=20
+Note that sometimes you can also start from the same bucket when the
+key is updated while dumping it because it can be inserted on the head
+of the bucket so you could potentially revisit elements that you had
+already visited.
 
-
+From previous discussion my understanding was that what we wanted was
+to pursue 'atomic' compounded operations first and after that, try to
+batch them. Although I don't think there's an easy way of batching and
+being consistent at the same time.
