@@ -2,69 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4DBA22B6
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 19:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD367A22F5
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 20:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727500AbfH2RtK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Aug 2019 13:49:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45240 "EHLO mail.kernel.org"
+        id S1726810AbfH2SFw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 29 Aug 2019 14:05:52 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:47600 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727234AbfH2RtK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Aug 2019 13:49:10 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726518AbfH2SFw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Aug 2019 14:05:52 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35F9321726;
-        Thu, 29 Aug 2019 17:49:08 +0000 (UTC)
-Date:   Thu, 29 Aug 2019 13:49:06 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
+        by mx1.redhat.com (Postfix) with ESMTPS id 1E962883CA
+        for <bpf@vger.kernel.org>; Thu, 29 Aug 2019 18:05:52 +0000 (UTC)
+Received: by mail-ed1-f72.google.com with SMTP id c3so2628706edt.21
+        for <bpf@vger.kernel.org>; Thu, 29 Aug 2019 11:05:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=XnQ5OvmJcjZ763Ru15zt4QsophfhQ/CzM5dYjcfw5h0=;
+        b=mxqDVVSuuJWWPJPQH2LP57i2CWNGd8etaUOH3E8Ot+P2n2vYwQL/ZSitG0SkMkO4WL
+         i7rVx1tVCfyM8sPjKcOTLJ8lzaVKYo75CUwS74mjV2w5p91mtB+TvMPb0ppgKizE54dv
+         Uj9r2mJf1hz7xGQOAkiwfdKm7SSytpCnZO0eCuMvGbl6lxCN/GL/4Uy+tL8jxC8RLm65
+         84ykskc0uVJhAB9k2SW6u0syIuIBYdHdmgkJxDgZ1U4BfoCjUf5p3ACaJV1kQo86uc/b
+         5RiVsVVY71O0EZgWX/yG6OGwaMzxzPwMSMzN19dfvInruCChQrgt+nWVuRVzCzDYIM9c
+         mKRg==
+X-Gm-Message-State: APjAAAUeTqGZFS+B7quxhnl7XUNbuW8ACUVeZm0+AbB4CSYlDFLDTHvC
+        Z6dhQteLa9XKcDjekXavmaW2H01AJXQCxg5zHt9nuVglc01ZiqBzfhEgHIG0m1RgeK97KQoxFWb
+        g6SLm6m68Csgy
+X-Received: by 2002:a17:907:11c4:: with SMTP id va4mr9409861ejb.261.1567101950842;
+        Thu, 29 Aug 2019 11:05:50 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqyP9jB9e80k1SGJ4g4J+yigCbv04dAehOdW5zmTqivhMVtVDL7jQeEOMYjq+U1RNwiAYvXfvg==
+X-Received: by 2002:a17:907:11c4:: with SMTP id va4mr9409835ejb.261.1567101950682;
+        Thu, 29 Aug 2019 11:05:50 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id r23sm573998edx.1.2019.08.29.11.05.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Aug 2019 11:05:49 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 3ECDD181C2E; Thu, 29 Aug 2019 20:05:49 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf, capabilities: introduce CAP_BPF
-Message-ID: <20190829134906.7ecae4e2@gandalf.local.home>
-In-Reply-To: <20190829172309.xd73ax4wgsjmv6zg@ast-mbp.dhcp.thefacebook.com>
-References: <20190827205213.456318-1-ast@kernel.org>
-        <CALCETrV8iJv9+Ai11_1_r6MapPhhwt9hjxi=6EoixytabTScqg@mail.gmail.com>
-        <20190828071421.GK2332@hirez.programming.kicks-ass.net>
-        <20190828220826.nlkpp632rsomocve@ast-mbp.dhcp.thefacebook.com>
-        <20190829093434.36540972@gandalf.local.home>
-        <CALCETrWYu0XB_d-MhXFgopEmBu-pog493G1e+KsE3dS32UULgA@mail.gmail.com>
-        <20190829172309.xd73ax4wgsjmv6zg@ast-mbp.dhcp.thefacebook.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Cc:     Alexei Starovoitov <ast@kernel.org>, luto@amacapital.net,
+        davem@davemloft.net, peterz@infradead.org, rostedt@goodmis.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        linux-api@vger.kernel.org, brouer@redhat.com
+Subject: Re: [PATCH v2 bpf-next 1/3] capability: introduce CAP_BPF and CAP_TRACING
+In-Reply-To: <20190829172410.j36gjxt6oku5zh6s@ast-mbp.dhcp.thefacebook.com>
+References: <20190829051253.1927291-1-ast@kernel.org> <87ef14iffx.fsf@toke.dk> <20190829172410.j36gjxt6oku5zh6s@ast-mbp.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 29 Aug 2019 20:05:49 +0200
+Message-ID: <87imqfhmo2.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 29 Aug 2019 10:23:10 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-> > CAP_TRACE_KERNEL: Use all of perf, ftrace, kprobe, etc.
-> > 
-> > CAP_TRACE_USER: Use all of perf with scope limited to user mode and uprobes.  
-> 
-> imo that makes little sense from security pov, since
-> such CAP_TRACE_KERNEL (ex kprobe) can trace "unrelated user process"
-> just as well. Yet not letting it do cleanly via uprobe.
-> Sort of like giving a spare key for back door of the house and
-> saying no, you cannot have main door key.
+> On Thu, Aug 29, 2019 at 09:44:18AM +0200, Toke Høiland-Jørgensen wrote:
+>> Alexei Starovoitov <ast@kernel.org> writes:
+>> 
+>> > CAP_BPF allows the following BPF operations:
+>> > - Loading all types of BPF programs
+>> > - Creating all types of BPF maps except:
+>> >    - stackmap that needs CAP_TRACING
+>> >    - devmap that needs CAP_NET_ADMIN
+>> >    - cpumap that needs CAP_SYS_ADMIN
+>> 
+>> Why CAP_SYS_ADMIN instead of CAP_NET_ADMIN for cpumap?
+>
+> Currently it's cap_sys_admin and I think it should stay this way
+> because it creates kthreads.
 
-I took it as CAP_TRACE_KERNEL as a superset of CAP_TRACE_USER. That is,
-if you have CAP_TRACE_KERNEL, by default you get USER. Where as
-CAP_TRACE_USER, is much more limiting.
+Ah, right. I can sorta see that makes sense because of the kthreads, but
+it also means that you can use all of XDP *except* cpumap with
+CAP_NET_ADMIN+CAP_BPF. That is bound to create confusion, isn't it?
 
--- Steve
+-Toke
