@@ -2,36 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84485A2615
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 20:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F5AA25F5
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 20:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbfH2SNU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Aug 2019 14:13:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55070 "EHLO mail.kernel.org"
+        id S1729831AbfH2Sdl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Aug 2019 14:33:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727087AbfH2SNR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Aug 2019 14:13:17 -0400
+        id S1728461AbfH2SNm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Aug 2019 14:13:42 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67AC12189D;
-        Thu, 29 Aug 2019 18:13:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F050C23407;
+        Thu, 29 Aug 2019 18:13:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1567102396;
-        bh=hkBnbXIj4Ow5ukHzAWFpSqN0IRB8d7dNXP7A+zZpRBQ=;
+        s=default; t=1567102421;
+        bh=j1DhezeBNuS/QPGHTZtbVwNwMe4iNqsCArHRdJU0aEM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qtxi24umdUcuSRIwdfk7cQXF9cWXQuDwXySud/jP4Yb1VydCYv1vxcTVEmOFlYLix
-         DnOO0zrNtbjc7N5iw5smu2WgFVdqBeRRrn/pCf0RADLso02pyRUR40r5wgBvH7oqLr
-         NhoRCbGxY4kMc8AcjRPeclf+lUt1g1TI+QBbHrY8=
+        b=Vmqo0Qzw9+3q5uJMHeiqQ/XgpBgfoZCgSrpFWb/x1hX+UNj4pY399PNml1xH3HOUE
+         8iwbu3fWEcpAwq2jWvIJO9pWdwe420WYtHmAbry+34iZizhBYOrGranAREoFGyCEj+
+         5S8I/3baJ8jppJLQkH1wfAZRhFCMR2plt2+IeKBU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andrii Nakryiko <andriin@fb.com>, Andrey Ignatov <rdna@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 03/76] libbpf: set BTF FD for prog only when there is supported .BTF.ext data
-Date:   Thu, 29 Aug 2019 14:11:58 -0400
-Message-Id: <20190829181311.7562-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.2 14/76] tools: bpftool: fix error message (prog -> object)
+Date:   Thu, 29 Aug 2019 14:12:09 -0400
+Message-Id: <20190829181311.7562-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190829181311.7562-1-sashal@kernel.org>
 References: <20190829181311.7562-1-sashal@kernel.org>
@@ -44,47 +45,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Andrii Nakryiko <andriin@fb.com>
+From: Jakub Kicinski <jakub.kicinski@netronome.com>
 
-[ Upstream commit 3415ec643e7bd644b03026efbe2f2b36cbe9b34b ]
+[ Upstream commit b3e78adcbf991a4e8b2ebb23c9889e968ec76c5f ]
 
-5d01ab7bac46 ("libbpf: fix erroneous multi-closing of BTF FD")
-introduced backwards-compatibility issue, manifesting itself as -E2BIG
-error returned on program load due to unknown non-zero btf_fd attribute
-value for BPF_PROG_LOAD sys_bpf() sub-command.
+Change an error message to work for any object being
+pinned not just programs.
 
-This patch fixes bug by ensuring that we only ever associate BTF FD with
-program if there is a BTF.ext data that was successfully loaded into
-kernel, which automatically means kernel supports func_info/line_info
-and associated BTF FD for progs (checked and ensured also by BTF
-sanitization code).
-
-Fixes: 5d01ab7bac46 ("libbpf: fix erroneous multi-closing of BTF FD")
-Reported-by: Andrey Ignatov <rdna@fb.com>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Fixes: 71bb428fe2c1 ("tools: bpf: add bpftool")
+Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ tools/bpf/bpftool/common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index e308fcf16cdd0..ce579e3654d60 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -2066,7 +2066,11 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
- 	load_attr.license = license;
- 	load_attr.kern_version = kern_version;
- 	load_attr.prog_ifindex = prog->prog_ifindex;
--	btf_fd = bpf_object__btf_fd(prog->obj);
-+	/* if .BTF.ext was loaded, kernel supports associated BTF for prog */
-+	if (prog->obj->btf_ext)
-+		btf_fd = bpf_object__btf_fd(prog->obj);
-+	else
-+		btf_fd = -1;
- 	load_attr.prog_btf_fd = btf_fd >= 0 ? btf_fd : 0;
- 	load_attr.func_info = prog->func_info;
- 	load_attr.func_info_rec_size = prog->func_info_rec_size;
+diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+index f7261fad45c19..647d8a4044fbd 100644
+--- a/tools/bpf/bpftool/common.c
++++ b/tools/bpf/bpftool/common.c
+@@ -236,7 +236,7 @@ int do_pin_any(int argc, char **argv, int (*get_fd_by_id)(__u32))
+ 
+ 	fd = get_fd_by_id(id);
+ 	if (fd < 0) {
+-		p_err("can't get prog by id (%u): %s", id, strerror(errno));
++		p_err("can't open object by id (%u): %s", id, strerror(errno));
+ 		return -1;
+ 	}
+ 
 -- 
 2.20.1
 
