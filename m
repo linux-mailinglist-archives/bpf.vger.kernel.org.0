@@ -2,103 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7E2A0E6B
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 01:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06722A0E79
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 02:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726991AbfH1Xqb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Aug 2019 19:46:31 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:35656 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726825AbfH1Xqb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Aug 2019 19:46:31 -0400
-Received: by mail-pg1-f196.google.com with SMTP id n4so559715pgv.2;
-        Wed, 28 Aug 2019 16:46:31 -0700 (PDT)
+        id S1727005AbfH2ABq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Aug 2019 20:01:46 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:43071 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725892AbfH2ABq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Aug 2019 20:01:46 -0400
+Received: by mail-pg1-f194.google.com with SMTP id k3so553686pgb.10;
+        Wed, 28 Aug 2019 17:01:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5d0g3Dl6DhW5niS/Sr8rnftZb+SLlZRLZP+NnA4xrN0=;
-        b=bJo6Is24JDWPaRjfEQ+Nws9DB6QjJyldcwWZv7W+vR8r+ODrdUDl+JiFp8dS8WcjNV
-         jtN/0Fqm+2HcPUCzZ91XncpezkpdrluzGpHUnJtqzazUuwAegbapPNdXufMFbnHuunB+
-         LC5TQUtWHqe+7csMgcFOk2r0wbB9NVs5RaA/ima+8uKA+dTPqOZziVAkKS9Phm0Tapc2
-         dwdcG4SafNH+SSDZpyI+KgrVv/dni0dP0JsUzs/y+Ry/xBRquW1XsB7QLReD0auOLL0P
-         H+6ByAFoXdgWShPrC4knSqsgYA6lTD6wVYHW4JdPwwUdQqKwZVNEuNgf2aPuc9Kl5QDx
-         AdIg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+xL/Oj30ungnv7AXXKEXXc2ijUo+geLZ+6VixKgBmaI=;
+        b=LnP8qDwmC568ICHNp5X4e3Me3bgQ1MS4TmeAket+k/S9bNYaRQbWXvtxpZbflN52ID
+         cqHHfqWLapFZ4Un9/GVlrZ5xNbG+pxfF/GbZEy9dgC2M4JGM8mGkzXOAwfxgz467bt/5
+         9CIwOOcmDgwmv11Ro5n7QgufcHzqnJlkS8svK0O6mL06fuqfWxs/qDiS/fMEzFPXVRPr
+         v4fRA3LAZR3w4GhDLJ8X0t0SYQGI7RITGnd21qQv5lghBlcVTXWBEfnXvbWjXtHOfZaa
+         Q6uS78IWI2Y8KEdT1EFRwVOrwyi00Y9GH0W/PxBJg3K1zuGQ6bdp2LC9Ewhe2amfPsEk
+         MEgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5d0g3Dl6DhW5niS/Sr8rnftZb+SLlZRLZP+NnA4xrN0=;
-        b=jWyo3wBu0l1NAH84NO1rB+q/uy2TWK/TLI4QPOqqy67pbl2LQs0HC/WSX9A0O7MDgU
-         u7EuQ+KWae/JR0UTYJ2WJxv1ofoGRxywew0Tj6SkHoIPp7AH/2wyjXEjo3mFOYCHWNdw
-         ouBzQXGmGLOYXMdajPiM41G+B2OrhK04XSCqfOdxkamX3/c34QF4VEgmutb12cwEybt7
-         smrMthO9iBAZmIqPn2jbhHH+AKocLhgVVLKHaUY0moxzfOJDZJvI0VBK7fph2rZDAMzJ
-         T9LPmcvtxmmPZjucIDE8UPPhquuB7ckC1OAgDfrZutXu7J03IJ+hnhQT6qCq3evJMarw
-         SO5Q==
-X-Gm-Message-State: APjAAAVlwPkoWAHyrKfG4MSskA4A6B3KeTEiqwlwyhqMrDvw9cpVfxrq
-        YBeh+4+4UVwse3J0RoN1BMA=
-X-Google-Smtp-Source: APXvYqx0JxqrskzUfC3ETWuy5cywCktad3INkEP1oK24ozKVwAkQVgjxPlFe0OPEjDbsAtgWpnCAeQ==
-X-Received: by 2002:a63:161c:: with SMTP id w28mr3524886pgl.442.1567035990759;
-        Wed, 28 Aug 2019 16:46:30 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::5983])
-        by smtp.gmail.com with ESMTPSA id d11sm536066pfh.59.2019.08.28.16.46.29
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+xL/Oj30ungnv7AXXKEXXc2ijUo+geLZ+6VixKgBmaI=;
+        b=d9DCEl/cmybYdZCPYH3hyR1SYdS7dl596HsF7/prfN2g7wjW+hKN6hFfY/YohYtaMb
+         EcMh+FPuuwNNB9edS9csw5S3xdpmYVoJyoj7w1mSFgrcS4juRramPtN2sbUloOm2AXyP
+         2Nvbx/9l54k+wyN/2Fi7y7amwfWT1vv0cdUVP2FxHkoRWyRI0svoI2zTwldJ3sIn0Q/+
+         wvfnCTGJDTMPsRU0nRFsvCdZiR23tyJyOaAvsOpd72Ps3gcSu81N/hajoGNkpZXe2aSB
+         AKdne90eJXfJvd3tTQyhj4/1oSKZEebnTGg4v/ldECyxbLRhy3om9/Gwy6eA9X7oePbD
+         p9pQ==
+X-Gm-Message-State: APjAAAUBQzFE4SiQoLMSPB/RvKa4xsIoaImLM9q4EdTD8/+dQ29QPYDC
+        PGmnE5hF+DLESgiHM+oMOMQthizR
+X-Google-Smtp-Source: APXvYqwkb50dVh1LsEmevzcBW8xq0HTr8GOVnv0hQTgH4Tc05RGyLNRErIMMR6mRVV0ZvzpdRTupNg==
+X-Received: by 2002:a65:5b09:: with SMTP id y9mr5874979pgq.345.1567036905268;
+        Wed, 28 Aug 2019 17:01:45 -0700 (PDT)
+Received: from masabert (150-66-70-147m5.mineo.jp. [150.66.70.147])
+        by smtp.gmail.com with ESMTPSA id y10sm277114pjp.27.2019.08.28.17.01.44
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 28 Aug 2019 16:46:29 -0700 (PDT)
-Date:   Wed, 28 Aug 2019 16:46:28 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     Julia Kartseva <hex@fb.com>, ast@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>, rdna@fb.com,
-        bpf@vger.kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        kernel-team@fb.com
-Subject: auto-split of commit. Was: [PATCH bpf-next 04/10] tools/bpf: add
- libbpf_prog_type_(from|to)_str helpers
-Message-ID: <20190828234626.ltfy3qr2nne4uumy@ast-mbp.dhcp.thefacebook.com>
-References: <cover.1567024943.git.hex@fb.com>
- <467620c966825173dbd65b37a3f9bd7dd4fb8184.1567024943.git.hex@fb.com>
- <20190828163422.3d167c4b@cakuba.netronome.com>
+        Wed, 28 Aug 2019 17:01:44 -0700 (PDT)
+Received: by masabert (Postfix, from userid 1000)
+        id 010D42011A3; Thu, 29 Aug 2019 09:01:31 +0900 (JST)
+From:   Masanari Iida <standby24x7@gmail.com>
+To:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com
+Cc:     Masanari Iida <standby24x7@gmail.com>
+Subject: [PATCH] selftests/bpf: Fix a typo in test_offload.py
+Date:   Thu, 29 Aug 2019 09:01:30 +0900
+Message-Id: <20190829000130.7845-1-standby24x7@gmail.com>
+X-Mailer: git-send-email 2.23.0.37.g745f6812895b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190828163422.3d167c4b@cakuba.netronome.com>
-User-Agent: NeoMutt/20180223
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 28, 2019 at 04:34:22PM -0700, Jakub Kicinski wrote:
-> 
-> Greg, Thomas, libbpf is extracted from the kernel sources and
-> maintained in a clone repo on GitHub for ease of packaging.
-> 
-> IIUC Alexei's concern is that since we are moving the commits from
-> the kernel repo to the GitHub one we have to preserve the commits
-> exactly as they are, otherwise SOB lines lose their power.
-> 
-> Can you provide some guidance on whether that's a valid concern, 
-> or whether it's perfectly fine to apply a partial patch?
+This patch fix a spelling typo in test_offload.py
 
-Right. That's exactly the concern.
+Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+---
+ tools/testing/selftests/bpf/test_offload.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Greg, Thomas,
-could you please put your legal hat on and clarify the following.
-Say some developer does a patch that modifies
-include/uapi/linux/bpf.h
-..some other kernel code...and
-tools/include/uapi/linux/bpf.h
-
-That tools/include/uapi/linux/bpf.h is used by perf and by libbpf.
-We have automatic mirror of tools/libbpf into github/libbpf/
-so that external projects and can do git submodule of it,
-can build packages out of it, etc.
-
-The question is whether it's ok to split tools/* part out of
-original commit, keep Author and SOB, create new commit out of it,
-and automatically push that auto-generated commit into github mirror.
-
-So far we've requested all developers to split their patches manually.
-So that tools/* update is an individual commit that mirror can
-simply git cherry-pick.
+diff --git a/tools/testing/selftests/bpf/test_offload.py b/tools/testing/selftests/bpf/test_offload.py
+index 425f9ed27c3b..15a666329a34 100755
+--- a/tools/testing/selftests/bpf/test_offload.py
++++ b/tools/testing/selftests/bpf/test_offload.py
+@@ -1353,7 +1353,7 @@ try:
+     bpftool_prog_list_wait(expected=1)
+ 
+     ifnameB = bpftool("prog show %s" % (progB))[1]["dev"]["ifname"]
+-    fail(ifnameB != simB1['ifname'], "program not bound to originial device")
++    fail(ifnameB != simB1['ifname'], "program not bound to original device")
+     simB1.remove()
+     bpftool_prog_list_wait(expected=1)
+ 
+-- 
+2.23.0.37.g745f6812895b
 
