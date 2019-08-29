@@ -2,85 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C20A2221
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 19:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CD2A222D
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 19:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727735AbfH2RYP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Aug 2019 13:24:15 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:34059 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726661AbfH2RYO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Aug 2019 13:24:14 -0400
-Received: by mail-pg1-f195.google.com with SMTP id n9so1952537pgc.1;
-        Thu, 29 Aug 2019 10:24:14 -0700 (PDT)
+        id S1727426AbfH2RZn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Aug 2019 13:25:43 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:44239 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727228AbfH2RZn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Aug 2019 13:25:43 -0400
+Received: by mail-pl1-f195.google.com with SMTP id t14so1873260plr.11;
+        Thu, 29 Aug 2019 10:25:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to
          :user-agent;
-        bh=tbVm52sbCYygnxsvFx8xgew5SYJ1d2+HJkYkARR1mRc=;
-        b=SuezRnkpMxROmN/SHpY5Md0c4ractqEcqbQLnbjlkAe0/C2ZgLLwiYoH5DAGhI8H5i
-         AesXpgC775xDbQbFPJmbh50KDo5tGS4gOHWe27SdXsVRZuRqMLQSmC0xiApEe49gVik3
-         sLq23RXk1jOu1aMLJMs3RlG1Hgew9fBiGfjGLhZGe+O+RnA6C4EJkDS4pQnwYMiUI9Ke
-         ath8AboaemzRjIGqSbqAuA+9tlkZ5JyG+GBBt07SZEG8eiRDyNk96wTd6DNxKWidAwlR
-         6etpkRJeRc4auI+lB42OSSZqAbhxuNB62tJTWnxcGfWoOGdCNMWtzyMzb6C4ASFzJ+7f
-         UEZg==
+        bh=O6/rw6fyYXK3X1buWGszqsqXgLe4Q/iuHvp4zHdAOQk=;
+        b=A1GOpaZPd8TQWHez555novaUxU0bh30thynzh5VF2NbIghtS1sSUxx5Led0aaTeRdJ
+         atbm9I1kXhX1GnYyckHUcmap9OFlpyA3tQg9x8L4lZLPsxDIBbUBnTgEc7ql8B4SRPgu
+         McXUuHeVT8jRnxd9PwAhJX98MxAIYmLHbp+BZMTmJtXmXDHxPx7NqIBWnfXqstEyMGRi
+         iCPWa5WZYuPBP8H3elxIwJBoPBEX8b1uSt+ka0HA/PaATo1NT7EMi7aWULErOpqWi2iA
+         CnWtBcbVyl1qavHRMJKxvJKc8FgLaTS1KOlInQgWLUcxOjIB3VR88IhO0WFJvn0Q/qP3
+         mjBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to:user-agent;
-        bh=tbVm52sbCYygnxsvFx8xgew5SYJ1d2+HJkYkARR1mRc=;
-        b=JYSwk0FDmz4Ycmph0qJ29osTTDFmOnTZLDnjstrxhSDTo3wz04o4VB+c0K24efc2US
-         fbQd2s87PVHD08e/uLyM4vAeTqgpeae+LuTUBin8Ir66SDHSblyAc6N5/SFpuCowl73R
-         FHmvCvokUqB0hPlOzTy8cdSgdNaLv2AMZPX2yvPC1DWmCSsAh4R8akb7C6b3SzvJmmH8
-         GNuWnYAVDfNHKwrCT279xDGSccIf6aW643Lza7yBWRN1TYj9R7lSudvZDFuq5/MPoFuo
-         kuMUE+LDOnRzj2/wEMIDpJDtXPbvOBvu+hCZqzk3sD9JpzL2KhcS706bzeozzHALQ8wa
-         tP7w==
-X-Gm-Message-State: APjAAAUCpUGXlY7yaiyFOSp9xy68thEnYqmccwdvJkYSXndJxcJ3oQ8q
-        apfTO+vKJ+2Njm8QgL0DhvY=
-X-Google-Smtp-Source: APXvYqz1qyzrHqwkUegxvwfI1STmPkuqXeFyUxoUfAVWjiQ+MMPsms1h44tNEPPg5KUEgG9MQqOMKg==
-X-Received: by 2002:a63:a35c:: with SMTP id v28mr9417712pgn.144.1567099453842;
-        Thu, 29 Aug 2019 10:24:13 -0700 (PDT)
+        bh=O6/rw6fyYXK3X1buWGszqsqXgLe4Q/iuHvp4zHdAOQk=;
+        b=sAAp71MAJEWXnKHpkGEmTQLZ2vMkodQ56bsBmlxb1sDf+kUrnWyiggKrKpBss9CLpI
+         MUq8t2XyuULsBvbE9adMRHzSRRpGg1tEOsp+8aUk6aqCLVa6RbKyVNlNWVHqAMix4G4W
+         T0ep6pyNthJIWjVxfhViFK2tAf7tDVKoRdPB+m/KR0+7Wu6LJ/+jPZwStGtMf4v+gY4H
+         NGy9DVEB7POMK50Oo1lEznV7E/yPDQAUNWsFcGCukeln4UHxV4OdzVV7bAqtXvheezZm
+         +arSW/538261ktnkgEiP3boIi5JV52RtcM7iKalWNkLpr0pWcq4SgTueGIjFXUPjWlUh
+         syHg==
+X-Gm-Message-State: APjAAAVyUSGZRxPHZb9enG3KgGDKCFKCr+ziFwCEJdLi62b6568pa/ra
+        Kc01zeQ6Ai9oPhF71z5DpAI=
+X-Google-Smtp-Source: APXvYqyGtgleiIDvmQc3kbRiRgdrnVZpp1SLjMIECGNsc2qUk+re7BbM3WDh1f4GFE0ZDf/yyjbhlw==
+X-Received: by 2002:a17:902:b604:: with SMTP id b4mr10849149pls.94.1567099542333;
+        Thu, 29 Aug 2019 10:25:42 -0700 (PDT)
 Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::2:1347])
-        by smtp.gmail.com with ESMTPSA id p90sm8579670pjp.7.2019.08.29.10.24.12
+        by smtp.gmail.com with ESMTPSA id k8sm2750558pgm.14.2019.08.29.10.25.40
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 29 Aug 2019 10:24:12 -0700 (PDT)
-Date:   Thu, 29 Aug 2019 10:24:11 -0700
+        Thu, 29 Aug 2019 10:25:41 -0700 (PDT)
+Date:   Thu, 29 Aug 2019 10:25:40 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Nicolas Dichtel <nicolas.dichtel@6wind.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>, luto@amacapital.net,
         davem@davemloft.net, peterz@infradead.org, rostedt@goodmis.org,
         netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
         linux-api@vger.kernel.org
 Subject: Re: [PATCH v2 bpf-next 1/3] capability: introduce CAP_BPF and
  CAP_TRACING
-Message-ID: <20190829172410.j36gjxt6oku5zh6s@ast-mbp.dhcp.thefacebook.com>
+Message-ID: <20190829172539.j4qnhokhdflvkfm2@ast-mbp.dhcp.thefacebook.com>
 References: <20190829051253.1927291-1-ast@kernel.org>
- <87ef14iffx.fsf@toke.dk>
+ <a5ef2f94-acca-eb66-b48c-899494a9f8d0@6wind.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87ef14iffx.fsf@toke.dk>
+In-Reply-To: <a5ef2f94-acca-eb66-b48c-899494a9f8d0@6wind.com>
 User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 29, 2019 at 09:44:18AM +0200, Toke Høiland-Jørgensen wrote:
-> Alexei Starovoitov <ast@kernel.org> writes:
+On Thu, Aug 29, 2019 at 03:36:42PM +0200, Nicolas Dichtel wrote:
+> Le 29/08/2019 à 07:12, Alexei Starovoitov a écrit :
+> [snip]
+> > CAP_BPF and CAP_NET_ADMIN together allow the following:
+> > - Attach to cgroup-bpf hooks and query
+> > - skb, xdp, flow_dissector test_run command
+> > 
+> > CAP_NET_ADMIN allows:
+> > - Attach networking bpf programs to xdp, tc, lwt, flow dissector
+> I'm not sure to understand the difference between these last two points.
+> But, with the current kernel, CAP_NET_ADMIN is not enough to attach bpf prog
+> with tc and it's still not enough after your patch.
+> The following command is rejected:
+> $ tc filter add dev eth0 ingress matchall action bpf obj ./tc_test_kern.o sec test
 > 
-> > CAP_BPF allows the following BPF operations:
-> > - Loading all types of BPF programs
-> > - Creating all types of BPF maps except:
-> >    - stackmap that needs CAP_TRACING
-> >    - devmap that needs CAP_NET_ADMIN
-> >    - cpumap that needs CAP_SYS_ADMIN
+> Prog section 'test' rejected: Operation not permitted (1)!
+>  - Type:         4
+>  - Instructions: 22 (0 over limit)
+>  - License:      GPL
 > 
-> Why CAP_SYS_ADMIN instead of CAP_NET_ADMIN for cpumap?
+> Verifier analysis:
+> 
+> Error fetching program/map!
+> bad action parsing
+> parse_action: bad value (5:bpf)!
+> Illegal "action"
 
-Currently it's cap_sys_admin and I think it should stay this way
-because it creates kthreads.
+because tc/iproute2 is doing load and attach.
+Currently load needs cap_sys_admin and
+attach needs cap_net_admin.
 
