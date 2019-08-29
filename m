@@ -2,174 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D163A0EBF
-	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 02:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 387D6A0EEB
+	for <lists+bpf@lfdr.de>; Thu, 29 Aug 2019 03:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbfH2A6d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Aug 2019 20:58:33 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:38055 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726128AbfH2A6d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Aug 2019 20:58:33 -0400
-Received: by mail-pg1-f195.google.com with SMTP id e11so632314pga.5
-        for <bpf@vger.kernel.org>; Wed, 28 Aug 2019 17:58:33 -0700 (PDT)
+        id S1726634AbfH2BaR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Aug 2019 21:30:17 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:33810 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726319AbfH2BaR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Aug 2019 21:30:17 -0400
+Received: by mail-pf1-f194.google.com with SMTP id b24so941590pfp.1
+        for <bpf@vger.kernel.org>; Wed, 28 Aug 2019 18:30:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=HCu9GxKna/uq7gKa9s14Sv2OjTD6YUF4iS2Qub5oG9Q=;
-        b=A/b0mZPCuCZ0+yZ5B1ZDDH3FBsg5PH+aIZHT5TTam3sKPpZnX8Xci7elVgUzCDq2uG
-         5UdViTmoXZwPI6tpvtcnAPo8uI/p28yZs/CfTiKgfYRxIIF12KQ5CmPypyjZsTePlfG2
-         7O68jorQ7f3Ntm9mZckv98/rfACRVD79xS+psxSmnMKG5J2T2fBZ5yW9PXFpX2PaUt8n
-         bAVXd4zrxBVr4iwA6p7UnCFsRPWbMlFJQMxIaCOj2lMJxeD62Lu+3sxqLu6NyzrymwWj
-         0yFkFl5QAKeP42zcKV9dJUC7Fzd9/MJQljcZpfO1l211rl9Sxq9R6aBrAsmTSxCCUmnd
-         YgdQ==
+        d=sifive.com; s=google;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=oNuMQ0k3tolgyGaRQrF7TXZFayppiTIHnhst6LSZzgM=;
+        b=N0Tiu7A4E04tZ0bGKbShdzjcMamCLdZF8w9OOQK6PqJNfA15z95T1h2MEkAr1QGrkv
+         MTmnaoNxMhluJ+2QIg5wgRlKZG4ebI1krbhI2gFwPGhzgjl3Mo9eYwmeXkS342XWdvW2
+         6o8joBVW/w2HTRLZcmWXJgsyKzxaDVdpZopFc+IAFxfJItzbjS6MQxV8iMzvMh+wCbxD
+         Jlu+YvTpNL5xNRiykc69s779w7U0EiJlNB8fL9OGeoCN3UhQ1qRDkxoOPgj2e9fdO+nP
+         rUwqW2dh56+pi8vTJEXJED0sq/nTmn2tjeRp9FDE/GII0XdAAqqoM5RIQmupCWDxlq+V
+         rHBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=HCu9GxKna/uq7gKa9s14Sv2OjTD6YUF4iS2Qub5oG9Q=;
-        b=UwvBlq7EgFGM86pegRyaTPuCSztAliOtgzDYgdykU1/MdPhXB+izxWNiL8vCZzSqgz
-         Fl5Fh0dBu/HSp3/SyEmasSMjou56RE9oNONED5kNk4tRlrE8WmPJtfOzC0UBDuJ+TZ6f
-         4UE3RNVt/yrVpuXlqE0MKY5h5jSSq9nyfJCYYZWrVcF8IxaoURFWAdNTgal1HDCcBtkH
-         DKfwOBlUZFD7a8sVzRuYhmG8lrTFat4JKjUbXLlB30OuRs9Lr6qLezHcWqFUE7HIWnl0
-         pV7ItbK4m2/61bObD5s40OL80LYpvCo7AOwOWx1cZhyoYQIRI0iVKUnN5spX+564QHOR
-         sbpg==
-X-Gm-Message-State: APjAAAV3ft/Rpjry8Z1gwSPa9a3gcGVUSspiWuuWjs9smZ7GXeHv/yke
-        2Cjq3f1F4ZXdac7BjnmdK8r40w==
-X-Google-Smtp-Source: APXvYqwExxgHxqVlV8wOamSNqpOY8/PTR//jv1jEK9C6+n0BnhBf7kvocV2uwd5BL9TtgdeFCrm3rQ==
-X-Received: by 2002:a62:3145:: with SMTP id x66mr8155519pfx.186.1567040312675;
-        Wed, 28 Aug 2019 17:58:32 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:9437:f332:3e4c:f05b? ([2601:646:c200:1ef2:9437:f332:3e4c:f05b])
-        by smtp.gmail.com with ESMTPSA id 4sm695379pfe.76.2019.08.28.17.58.31
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 28 Aug 2019 17:58:31 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH bpf-next] bpf, capabilities: introduce CAP_BPF
-From:   Andy Lutomirski <luto@amacapital.net>
-X-Mailer: iPhone Mail (16G77)
-In-Reply-To: <20190828233828.p7xddyw3fjzfinm6@ast-mbp.dhcp.thefacebook.com>
-Date:   Wed, 28 Aug 2019 17:58:31 -0700
-Cc:     Andy Lutomirski <luto@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=oNuMQ0k3tolgyGaRQrF7TXZFayppiTIHnhst6LSZzgM=;
+        b=HDKlsTs0I+PqOwXXpgMQI4UIposoZwKtKykW34HXS8sU6tCkLGhIOpqDUsWguZ28So
+         RYmOFOvdCEAInyDuWw268bzDwD6kQmfIhg2aECatHl2U9Jr1KJw94wD88KkT1vTsSsbB
+         HbiF3VLXSDsf8IuxtTnsM0ine9M6lUIr1wy3ZbQajkWIX9HhD24Naf4N7BmZndmjj2D3
+         qp34HSH8glfAH3Q4M43pCSy0jghHgay5iHSFHYB4cgTmvNbdr6EMwZK7j17MJjViHH7n
+         Gnlo2dcqhkRgpQLDtffB3UoU48cebFwQs8ME/+HtIpAC9yHI99wkewRqhltx9n0+pf+K
+         eQLg==
+X-Gm-Message-State: APjAAAWpjGJ8q2Zi6Mqsu+w+OHdpJNV/CrrSr+5yWVhXlSa8p38V1wVD
+        k8s6s/qI5t5qauQCKxxNqGUsug==
+X-Google-Smtp-Source: APXvYqzneWTer11an0OtynaQ0NdmFFtoQFTgNrY29fSA6ajAUSOjqiO56Ptl9fWn/+Jpt6o1LcWHIg==
+X-Received: by 2002:aa7:8602:: with SMTP id p2mr8123966pfn.138.1567042216270;
+        Wed, 28 Aug 2019 18:30:16 -0700 (PDT)
+Received: from localhost ([12.206.222.5])
+        by smtp.gmail.com with ESMTPSA id y13sm669451pfm.164.2019.08.28.18.30.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Aug 2019 18:30:15 -0700 (PDT)
+Date:   Wed, 28 Aug 2019 18:30:14 -0700 (PDT)
+From:   Paul Walmsley <paul.walmsley@sifive.com>
+X-X-Sender: paulw@viisi.sifive.com
+To:     Kees Cook <keescook@chromium.org>, Tycho Andersen <tycho@tycho.ws>
+cc:     David Abdurachmanov <david.abdurachmanov@gmail.com>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <63F74C1D-F061-41D6-A3CA-02EE640FEA8D@amacapital.net>
-References: <20190827205213.456318-1-ast@kernel.org> <CALCETrV8iJv9+Ai11_1_r6MapPhhwt9hjxi=6EoixytabTScqg@mail.gmail.com> <20190828003447.htgzsxs5oevn3eys@ast-mbp.dhcp.thefacebook.com> <CALCETrVbPPPr=BdPAx=tJKxD3oLXP4OVSgCYrB_E4vb6idELow@mail.gmail.com> <CALCETrVVQs1s27y8fB17JtQi-VzTq1YZPTPy3k=fKhQB1X-KKA@mail.gmail.com> <20190828044903.nv3hvinkkolnnxtv@ast-mbp.dhcp.thefacebook.com> <CALCETrX-bn2SpVzTkPz+A=z_oWDs7PNeouzK7wRWMzyaBd4+7g@mail.gmail.com> <20190828233828.p7xddyw3fjzfinm6@ast-mbp.dhcp.thefacebook.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Abdurachmanov <david.abdurachmanov@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Vincent Chen <vincentc@andestech.com>,
+        Alan Kao <alankao@andestech.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, me@carlosedp.com
+Subject: Re: [PATCH v2] riscv: add support for SECCOMP and SECCOMP_FILTER
+In-Reply-To: <201908261043.08510F5E66@keescook>
+Message-ID: <alpine.DEB.2.21.9999.1908281825240.13811@viisi.sifive.com>
+References: <20190822205533.4877-1-david.abdurachmanov@sifive.com> <alpine.DEB.2.21.9999.1908231717550.25649@viisi.sifive.com> <20190826145756.GB4664@cisco> <CAEn-LTrtn01=fp6taBBG_QkfBtgiJyt6oUjZJOi6VN8OeXp6=g@mail.gmail.com>
+ <201908261043.08510F5E66@keescook>
+User-Agent: Alpine 2.21.9999 (DEB 301 2018-08-15)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi Kees,
 
+On Mon, 26 Aug 2019, Kees Cook wrote:
 
-> On Aug 28, 2019, at 4:38 PM, Alexei Starovoitov <alexei.starovoitov@gmail.=
-com> wrote:
->=20
->> On Tue, Aug 27, 2019 at 11:20:19PM -0700, Andy Lutomirski wrote:
->> On Tue, Aug 27, 2019 at 9:49 PM Alexei Starovoitov
->> <alexei.starovoitov@gmail.com> wrote:
->>>=20
->>>> On Tue, Aug 27, 2019 at 07:00:40PM -0700, Andy Lutomirski wrote:
->>>>=20
->>>> Let me put this a bit differently. Part of the point is that
->>>> CAP_TRACING should allow a user or program to trace without being able
->>>> to corrupt the system. CAP_BPF as you=E2=80=99ve proposed it *can* like=
-ly
->>>> crash the system.
->>>=20
->>> Really? I'm still waiting for your example where bpf+kprobe crashes the s=
-ystem...
->>>=20
->>=20
->> That's not what I meant.  bpf+kprobe causing a crash is a bug.  I'm
->> referring to a totally different issue.  On my laptop:
->>=20
->> $ sudo bpftool map
->> 48: hash  name foobar  flags 0x0
->>    key 8B  value 8B  max_entries 64  memlock 8192B
->> 181: lpm_trie  flags 0x1
->>    key 8B  value 8B  max_entries 1  memlock 4096B
->> 182: lpm_trie  flags 0x1
->>    key 20B  value 8B  max_entries 1  memlock 4096B
->> 183: lpm_trie  flags 0x1
->>    key 8B  value 8B  max_entries 1  memlock 4096B
->> 184: lpm_trie  flags 0x1
->>    key 20B  value 8B  max_entries 1  memlock 4096B
->> 185: lpm_trie  flags 0x1
->>    key 8B  value 8B  max_entries 1  memlock 4096B
->> 186: lpm_trie  flags 0x1
->>    key 20B  value 8B  max_entries 1  memlock 4096B
->> 187: lpm_trie  flags 0x1
->>    key 8B  value 8B  max_entries 1  memlock 4096B
->> 188: lpm_trie  flags 0x1
->>    key 20B  value 8B  max_entries 1  memlock 4096B
->>=20
->> $ sudo bpftool map dump id 186
->> key:
->> 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
->> 00 00 00 00
->> value:
->> 02 00 00 00 00 00 00 00
->> Found 1 element
->>=20
->> $ sudo bpftool map delete id 186 key hex 00 00 00 00 00 00 00 00 00 00
->> 00 00 00 00 00 00 00 00 00 00
->> [this worked]
->>=20
->> I don't know what my laptop was doing with map id 186 in particular,
->> but, whatever it was, I definitely broke it.  If a BPF firewall is in
->> use on something important enough, this could easily remove
->> connectivity from part or all of the system.  Right now, this needs
->> CAP_SYS_ADMIN.  With your patch, CAP_BPF is sufficient to do this, but
->> you *also* need CAP_BPF to trace the system using BPF.  Tracing with
->> BPF is 'safe' in the absence of bugs.  Modifying other peoples' maps
->> is not.
->=20
-> That lpm_trie is likely systemd implementing IP sandboxing.
-> Not sure whether it's white or black list.
-> Deleting an IP address from that map will either allow or disallow
-> network traffic.
-> Out of band operation on bpf map broke some bpf program. Sure.
-> But calling it 'breaking the system' is quite a stretch.
-> Calling it 'crashing the system' is plain wrong.
-> Yet you're generalizing this bpf map read/write as
-> "CAP_BPF as you=E2=80=99ve proposed it *can* likely crash the system."
-> This is what I have a problem with.
+> On Mon, Aug 26, 2019 at 09:39:50AM -0700, David Abdurachmanov wrote:
+> > I don't have the a build with SECCOMP for the board right now, so it
+> > will have to wait. I just finished a new kernel (almost rc6) for Fedora,
+> 
+> FWIW, I don't think this should block landing the code: all the tests
+> fail without seccomp support. ;) So this patch is an improvement!
 
-Well, after I sent that email, firewalld on my laptop exploded and the syste=
-m eventually hung.  I call that broken, and I really made a minimal effort h=
-ere to break things.
+Am sympathetic to this -- we did it with the hugetlb patches for RISC-V -- 
+but it would be good to understand a little bit more about why the test 
+fails before we merge it.
 
->=20
-> Anyway, changing gears...
-> Yes. I did propose to make a task with CAP_BPF to be able to
-> manipulate arbitrary maps in the system.
-> You could have said that if CAP_BPF is given to 'bpftool'
-> then any user will be able to mess with other maps because
-> bpftool is likely chmod-ed 755.
-> Absolutely correct!
-> It's not a fault of the CAP_BPF scope.
-> Just don't give that cap to bpftool or do different acl/chmod.
+Once we merge the patch, it will probably reduce the motivation for others 
+to either understand and fix the underlying problem with the RISC-V code 
+-- or, if it truly is a flaky test, to drop (or fix) the test in the 
+seccomp_bpf kselftests.
 
-I see no reason that allowing a user to use most of bpftool=E2=80=99s functi=
-onality necessarily needs to allow that user to corrupt the system. It obvio=
-usly will expand the attack surface available to that user, but that should b=
-e it.
+Thanks for helping to take a closer look at this,
 
-I=E2=80=99m trying to convince you that bpf=E2=80=99s security model can be m=
-ade better than what you=E2=80=99re proposing. I=E2=80=99m genuinely not try=
-ing to get in your way. I=E2=80=99m trying to help you improve bpf.
+- Paul
