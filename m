@@ -2,102 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8502A2BC1
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 02:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B3AA2E04
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 06:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727922AbfH3Au5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Aug 2019 20:50:57 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:44880 "EHLO
+        id S1725819AbfH3EQz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Aug 2019 00:16:55 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:33773 "EHLO
         mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727896AbfH3Au4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Aug 2019 20:50:56 -0400
-Received: by mail-lj1-f195.google.com with SMTP id e24so4787757ljg.11
-        for <bpf@vger.kernel.org>; Thu, 29 Aug 2019 17:50:55 -0700 (PDT)
+        with ESMTP id S1725774AbfH3EQz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Aug 2019 00:16:55 -0400
+Received: by mail-lj1-f195.google.com with SMTP id z17so5179342ljz.0;
+        Thu, 29 Aug 2019 21:16:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=mY025N9ZTLshq6bUASscJHYyFWN73WCKPGSueHP30TA=;
-        b=Okdsp5ZxNf0c0ZS1PgudZ1/Uzcx1vh+JyUHLIBaB4gA9eHqIu0am2+/xAGRamBrEmK
-         qCvznYgVkMcSDDWdiuCGk34vVj8/mP+ro1bCTjA8Ka3xrOrkCNjL5U6xgrBRNELJmuje
-         tp5PnYpAOK9+P7pd2AMtrpQ2VFUiwZgdf+VjTUiXBMwwiLm0B+wHxS9J4hkKQKTR1PMo
-         g5JzQdW9lrRdG4QItLYA3aqHsMKgs2n4aIc4BsxCiDVNYjJ1gBnQXG5diF7z2I2DKLba
-         2UWvt484BgUsrYmmG+TmQ/bM0gM9QCmze3gdMrsQwFGwno6fmli/VeP2qEfoN4+I/6o0
-         LHHg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iCLpdRArKeEL95JPVvIj5SaZBs9XGj7yces6tTfOStA=;
+        b=NGcsYzMjskd+7OhewWqjmPfjfb9vMfaXR2uRHfS9k8f4X5oAfxYur3wU1mGw6z9Adb
+         s2vSwPdI5MgQ4eo0KXdbdByfhixSLkllBJGWIlIgnMKt/IOTvkIeaEuR6O589lzfmryA
+         6DZK5zWsARS5a4cbhaMVO1vNF8zJA+nFUYwp2FocHW1HXNjbxt1aBqC73lDqN3iU2f2l
+         ODHuasUQ55rzy4x9fiz0RvJv5FS27UAqM3MvRHxTek4Mg8HyqGD6Owic2fzaFJ8SNuhf
+         eF5ngM9Cksnm6F0m+XrxQVECHdjmoyWi/boaFCBQQ7F09g+OKrJHWXcHf6DdE01r/QEj
+         VB5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=mY025N9ZTLshq6bUASscJHYyFWN73WCKPGSueHP30TA=;
-        b=PXMLmG5nBpePp5bRy3rnNWNw5UEmjUgFkEreBpElUE/yiT0XOGxas3s6tzsL8rtsKc
-         eaU/LokEnlIm/llsh52NWiGCrg9si/0WbLZDbSCCeKySPN8tEvOmQK1AA5LPeq9OE3el
-         OGacDSGQaU/h3nPgBZKZSbe4oO8oFmDcO2AbqHgJByebV2txghnSF6aWnu8JH2Uydm9W
-         OcJAVa+BpsCZdmX+IOmq1axfkYOlTNDfSMBQBwa3LS67UD03cZxTa1RZVSnHKwnBYLvK
-         A8/S4seHQTYRO99A2s4G7MKtA0YhC+/LdxewHy+hV0UEEuUdxcg6ASCbuNVB/O3Ka08K
-         7KpA==
-X-Gm-Message-State: APjAAAU0Ar2stG5TA4Rf16wgu8whAeiWRjtQZt5Mj5jd97BnSwHNtbYD
-        TM44Kw6cGCZF6nDC45zb1eDckg==
-X-Google-Smtp-Source: APXvYqwqImk+P6XTagmx3q1aVV2TwK0n5J/VZAS+IZlC8HW1HTeVnR0gZP11ETCdNHIKYsMWLXe3bA==
-X-Received: by 2002:a2e:2bda:: with SMTP id r87mr1097319ljr.3.1567126254430;
-        Thu, 29 Aug 2019 17:50:54 -0700 (PDT)
-Received: from localhost.localdomain (168-200-94-178.pool.ukrtel.net. [178.94.200.168])
-        by smtp.gmail.com with ESMTPSA id f19sm628149lfk.43.2019.08.29.17.50.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Aug 2019 17:50:53 -0700 (PDT)
-From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-To:     linux@armlinux.org.uk, ast@kernel.org, daniel@iogearbox.net,
-        yhs@fb.com, davem@davemloft.net, jakub.kicinski@netronome.com,
-        hawk@kernel.org, john.fastabend@gmail.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-Subject: [PATCH RFC bpf-next 10/10] arm: include: asm: unified: mask .syntax unified for clang
-Date:   Fri, 30 Aug 2019 03:50:37 +0300
-Message-Id: <20190830005037.24004-11-ivan.khoronzhuk@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190830005037.24004-1-ivan.khoronzhuk@linaro.org>
-References: <20190830005037.24004-1-ivan.khoronzhuk@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iCLpdRArKeEL95JPVvIj5SaZBs9XGj7yces6tTfOStA=;
+        b=E7zwOCPAzSWUSb+IQDyQ7chPC/rhm/DNFR1h95z4qMNHlhfYrdMfjwBKlwt2fonFto
+         g5c5YDYsgLydq3C4pXX3tLfmUendbfdSVQ8mJCjGcKO5f/q6/lg+P0KPv247cA7zvDnV
+         dpyfTW6pLPiYLbL9E8O4s/nlJjT08GGtFEUXZgkama3kb45FvXJMarrI5hU/VWD85slT
+         aiR96an0e3ggYOzIAMRZ4SXrkCHinbbhRn+AJZgZqgF0D4F8kZDFKugSlCSphikmVi16
+         l/2HxSdFnbz765rx2SfC4Rg2Wj57/WJjcABziS0e8nEHi21uxm9EVxyj8GlMCYfr7al/
+         Ex+A==
+X-Gm-Message-State: APjAAAVnockiYd+271qgOPHwoy67wrcECitZJWx70mWBYUfcn3ljk2Ai
+        KpQyuxYfppQHq+Xkb0nhDhi9bqhbQ5Kf6zrHZPI=
+X-Google-Smtp-Source: APXvYqwckFt3LnsIIi6bT/vpq147Uo7WytBr14tQ2z3LKla/6nJ/Z4g9Ap40xGdfMuNke05PcWsONH/yRHIgQeADweg=
+X-Received: by 2002:a05:651c:1ba:: with SMTP id c26mr7511169ljn.11.1567138612764;
+ Thu, 29 Aug 2019 21:16:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190829051253.1927291-1-ast@kernel.org> <536636ad-0baf-31e9-85fe-2591b65068df@iogearbox.net>
+In-Reply-To: <536636ad-0baf-31e9-85fe-2591b65068df@iogearbox.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 29 Aug 2019 21:16:39 -0700
+Message-ID: <CAADnVQLiD_2dTWXgaC773Uo+4LPz=vFEysXUnUcsJ9FKBk5Q7g@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/3] capability: introduce CAP_BPF and CAP_TRACING
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The samples/bpf reuses linux headers, with clang -emit-llvm,
-so this w/a is only for samples/bpf (samples/bpf/Makefile CLANG-bpf).
+On Thu, Aug 29, 2019 at 8:47 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 8/29/19 7:12 AM, Alexei Starovoitov wrote:
+> [...]
+> >
+> > +/*
+> > + * CAP_BPF allows the following BPF operations:
+> > + * - Loading all types of BPF programs
+> > + * - Creating all types of BPF maps except:
+> > + *    - stackmap that needs CAP_TRACING
+> > + *    - devmap that needs CAP_NET_ADMIN
+> > + *    - cpumap that needs CAP_SYS_ADMIN
+> > + * - Advanced verifier features
+> > + *   - Indirect variable access
+> > + *   - Bounded loops
+> > + *   - BPF to BPF function calls
+> > + *   - Scalar precision tracking
+> > + *   - Larger complexity limits
+> > + *   - Dead code elimination
+> > + *   - And potentially other features
+> > + * - Use of pointer-to-integer conversions in BPF programs
+> > + * - Bypassing of speculation attack hardening measures
+> > + * - Loading BPF Type Format (BTF) data
+> > + * - Iterate system wide loaded programs, maps, BTF objects
+> > + * - Retrieve xlated and JITed code of BPF programs
+> > + * - Access maps and programs via id
+> > + * - Use bpf_spin_lock() helper
+>
+> This is still very wide.
 
-It allows to build samples/bpf for arm on target board.
-In another way clang -emit-llvm generates errors like:
+'still very wide' ? you make it sound like it's a bad thing.
+Covering all of bpf with single CAP_BPF is #1 goal of this set.
 
-<inline asm>:1:1: error: unknown directive
-.syntax unified
+> Consider following example: app has CAP_BPF +> CAP_NET_ADMIN. Why can't we in this case *only* allow loading networking
+> related [plus generic] maps and programs? If it doesn't have CAP_TRACING,
+> what would be a reason to allow loading it? Same vice versa. There are
+> some misc program types like the infraread stuff, but they could continue
+> to live under [CAP_BPF +] CAP_SYS_ADMIN as fallback. I think categorizing
+> a specific list of prog and map types might be more clear than disallowing
+> some helpers like below (e.g. why choice of bpf_probe_read() but not
+> bpf_probe_write_user() etc).
 
-I have verified it on clang 5, 6 ,7, 8, 9, 10
-as on native platform as for cross-compiling. This decision is
-arguable, but it doesn't have impact on samples/bpf so it's easier
-just ignore it for clang, at least for now...
+It kinda makes sense:
+cap_bpf+cap_net_admin allows networking progs.
+cap_bpf+cap_tracing allows tracing progs.
+But what to do with cg_sysctl, cg_device, lirc ?
+They are clearly neither.
+Invent yet another cap_foo for them?
+or let them under cap_bpf alone?
+If cap_bpf alone is enough then why bother with bpf+net_admin for networking?
+It's not making anything cleaner. Only confuses users.
 
-Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
----
- arch/arm/include/asm/unified.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Also bpf_trace_printk() is using ftrace and can print arbitrary memory.
+In that sense it's no different than bpf_probe_read.
+Both should be under CAP_TRACING.
+But bpf_trace_printk() is available to all progs.
+Even to socket filters under cap_sys_admin today.
+With this patch set I'm allowing bpf_trace_printk() under CAP_TRACING.
+Same goes to bpf_probe_read.
 
-diff --git a/arch/arm/include/asm/unified.h b/arch/arm/include/asm/unified.h
-index 1e2c3eb04353..3cf8757b9a14 100644
---- a/arch/arm/include/asm/unified.h
-+++ b/arch/arm/include/asm/unified.h
-@@ -11,7 +11,11 @@
- #if defined(__ASSEMBLY__)
- 	.syntax unified
- #else
--__asm__(".syntax unified");
-+
-+#ifndef __clang__
-+	__asm__(".syntax unified");
-+#endif
-+
- #endif
- 
- #ifdef CONFIG_CPU_V7M
--- 
-2.17.1
+High level description:
+cap_bpf alone allows loading of all progs except when
+later cap_net_admin or cap_tracing will _not_ be able to
+filter out the helper at attach time that shouldn't be there.
 
+Example of how this patch set works:
+- to load and attach networking progs
+both cap_bpf and cap_net_admin are necessary.
+- to load and attach tracing progs
+both cap_bpf and cap_tracing are necessary.
+
+when networking prog is using bpf_trace_printk
+then cap_tracing is needed too.
+And it's checked at load time.
+If we do what you're proposing:
+"lets allow load of all networking with bpf+net_admin"
+then this won't work for bpf_trace_printk.
+Per helper function capability check is still needed.
+And since it's needed I see no reason to limit
+networking progs to bpf+net_admin at load time.
+Load time is still cap_bpf only.
+And helpers will be filtered out at attach by net_admin.
