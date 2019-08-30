@@ -2,46 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 632EAA3552
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 13:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B06A355B
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 13:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727170AbfH3LAx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1727789AbfH3LAz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Aug 2019 07:00:55 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:46599 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727104AbfH3LAx (ORCPT <rfc822;bpf@vger.kernel.org>);
         Fri, 30 Aug 2019 07:00:53 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:42696 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726660AbfH3LAw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Aug 2019 07:00:52 -0400
-Received: by mail-wr1-f67.google.com with SMTP id b16so6506481wrq.9
-        for <bpf@vger.kernel.org>; Fri, 30 Aug 2019 04:00:51 -0700 (PDT)
+Received: by mail-wr1-f65.google.com with SMTP id h7so5192286wrt.13
+        for <bpf@vger.kernel.org>; Fri, 30 Aug 2019 04:00:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=tzqgVqkwgF/KCEzpq5kudUbw0OX0oPLacHJ2iZv9bCk=;
-        b=GYVOZL1YmhxxrNRSGB6gLWgzBctRRnIiIwbmibm0I2ZRcNPIzIJDR4stGdPoKeTneK
-         yMmw6EBZuZOXbo3HR1c/mMQ/ZSvaJw7obaxvZliq9AXlQU5tDn+O6zfY7+02isGZqP5g
-         4IDIgvOrR3syN//a5YybvkNWEzhyDFK4wVPvTIyVXA4Y0Tk27cVdv/aE4715pB5VIP7k
-         YPL93N8Q1h7y68bvN7Xb1aQIElmQCBo6G/4DC71sdnRIGkPRkGKOV3L+HuAzDOJPfr/t
-         tG2YeiXKNrX+NfTc8KcRVv+90XxWu7MRuzARojMVjwLssXQUQvF8gSI3DJ/082NZ7kH2
-         HlmA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=5KBK1cGSBEAbGEvyJtoTJ6fJ17kKSEVR9EUqVztgDKw=;
+        b=xWDfxIOIYjzAbGRzXVhrfSAcx5KGF/2WAhU5H2OqBZ48pYok+kyM+p1t5Gnaek9CzD
+         sXL5M2u80CQUo6GQqdbNNVgybgyl2KdMhvdwY+N4glLtQM2PsCvKZzGDdYvBUuR6Hfeq
+         7iSQcGIGm0iopgQyc0B1lyRdp41mPv0wliTg40bx8gR45HfejzIK/qxOmsp47KUsCLJz
+         uExjGUBtpeNHZ9Jl+MTMPx/4idDSCToZS8lHY0StfvpVeHdn34J7+GJIJl0eI05m0pVA
+         F7XrCLUH1P+budt/kfxmrGDR1fCpT6hUiEzFb1PShYlKaim0uGVgBMl//kEXOyy4JKTM
+         Ptxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=tzqgVqkwgF/KCEzpq5kudUbw0OX0oPLacHJ2iZv9bCk=;
-        b=TcpGefn39k/miSaSB2DGfrb/Ci8wsiCS87BJQj5WV7TTocvssXmBMiAb9k9lcjnJrP
-         vN+2Jm2rHphniayI8Mo3Pi/G1+zb/EEAi8az2Ol888W3GVzUog11nmu+MaLYyxNC9ywZ
-         5q3c2vLCBQxlvgVn64u94bRKXIBwPtYYfwPDIa5KW0uupFGmd7ZbYoBskxxCZ+w8+7SZ
-         qLZ/6qhXOaGUCA/Ksn15kQcv8l8J+nrWLzoSm0zMyfZyOlbXO9J//4goHfKtTsc0IDtv
-         6DfENcXtorivxLw/i18BNy/mrE+Wy3ftAR7Hl6e/XQRE4rxaRqrr0Ob5yIVvRoYS+JRi
-         4ihw==
-X-Gm-Message-State: APjAAAXwkHRekkIbH6O8jteLL1KpFardqfTpJjV9slmT5hPQ7DeAElmN
-        gvZUy3toz+05FF5cJjlcwfo7Fw==
-X-Google-Smtp-Source: APXvYqzOjuLr3NvKa7DLct2H8Fz6Ov2dhUXvCVMZ03wpXp4dnrGfdYGX5NLvyYNOxQqIe+r6vgCgFg==
-X-Received: by 2002:a5d:51c7:: with SMTP id n7mr17060204wrv.73.1567162850501;
-        Fri, 30 Aug 2019 04:00:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=5KBK1cGSBEAbGEvyJtoTJ6fJ17kKSEVR9EUqVztgDKw=;
+        b=I0YBDDqjZYRXzi4iCRyle7klnQyXJa96+Lhwu06LmoKQu7pRhcne8A+keO5NGYyqlT
+         M8jRldLmAZc5bzvJ8cXJciX/KG7XQkxXMcOZtQETdhWIQOBBbpaYoMLlyNAjgeVfaY9L
+         fSnv0/ahNfMPhuq+FGm63ON5wUMBdZUqBuYsBZaiSgjOfB6rYEiT0NuWJqSJjH7vOY/a
+         6dqVdkjjsIVnAQC274LQCuCUki4bQYY9V1fbdJqRwFsKhYaIJ+UXWNiPLfNaaV253mAv
+         TDSPCuINXJaFvbrSnxYGX0fZRp7BFv3G7KZH7V35pdX8CQAFjNQKL55/kcLQARjp7qaP
+         jJOw==
+X-Gm-Message-State: APjAAAUcFl3GhRQGnBlDAnEOyHwM+5r86llZUcCna86D/hD40wlfrxbR
+        NX1KVQMnOBxMpW6nNudpMg1o5Q==
+X-Google-Smtp-Source: APXvYqyE5c88n/jExRazKL6s6y59bE1sgrEtKT0LVIyquRCbXmYNa+x6ZT6pa22w1q290hg4aQq0zw==
+X-Received: by 2002:adf:eac5:: with SMTP id o5mr18636189wrn.140.1567162851509;
+        Fri, 30 Aug 2019 04:00:51 -0700 (PDT)
 Received: from cbtest32.netronome.com ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id t198sm7848083wmt.39.2019.08.30.04.00.49
+        by smtp.gmail.com with ESMTPSA id t198sm7848083wmt.39.2019.08.30.04.00.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Aug 2019 04:00:49 -0700 (PDT)
+        Fri, 30 Aug 2019 04:00:50 -0700 (PDT)
 From:   Quentin Monnet <quentin.monnet@netronome.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
@@ -51,66 +52,93 @@ Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         Lorenz Bauer <lmb@cloudflare.com>,
         Ilya Leoshkevich <iii@linux.ibm.com>,
         Jakub Kicinski <jakub.kicinski@netronome.com>
-Subject: [PATCH bpf-next v2 0/4] tools: bpftool: improve bpftool build experience
-Date:   Fri, 30 Aug 2019 12:00:36 +0100
-Message-Id: <20190830110040.31257-1-quentin.monnet@netronome.com>
+Subject: [PATCH bpf-next v2 1/4] tools: bpftool: ignore make built-in rules for getting kernel version
+Date:   Fri, 30 Aug 2019 12:00:37 +0100
+Message-Id: <20190830110040.31257-2-quentin.monnet@netronome.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20190830110040.31257-1-quentin.monnet@netronome.com>
+References: <20190830110040.31257-1-quentin.monnet@netronome.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
-This set attempts to make it easier to build bpftool, in particular when
-passing a specific output directory. This is a follow-up to the
-conversation held last month by Lorenz, Ilya and Jakub [0].
+Bpftool calls the toplevel Makefile to get the kernel version for the
+sources it is built from. But when the utility is built from the top of
+the kernel repository, it may dump the following error message for
+certain architectures (including x86):
 
-The first patch is a minor fix to bpftool's Makefile, regarding the
-retrieval of kernel version (which currently prints a non-relevant make
-warning on some invocations).
+    $ make tools/bpf
+    [...]
+    make[3]: *** [checkbin] Error 1
+    [...]
 
-Second patch improves the Makefile commands to support more "make"
-invocations, or to fix building with custom output directory. On Jakub's
-suggestion, a script is also added to BPF selftests in order to keep track
-of the supported build variants.
+This does not prevent bpftool compilation, but may feel disconcerting.
+The "checkbin" arch-dependent target is not supposed to be called for
+target "kernelversion", which is a simple "echo" of the version number.
 
-Building bpftool with "make tools/bpf" from the top of the repository
-generates files in "libbpf/" and "feature/" directories under tools/bpf/
-and tools/bpf/bpftool/. The third patch ensures such directories are taken
-care of on "make clean", and add them to the relevant .gitignore files.
+It turns out this is caused by the make invocation in tools/bpf/bpftool,
+which attempts to find implicit rules to apply. Extract from debug
+output:
 
-At last, fourth patch is a sligthly modified version of Ilya's fix
-regarding libbpf.a appearing twice on the linking command for bpftool.
+    Reading makefiles...
+    Reading makefile 'Makefile'...
+    Reading makefile 'scripts/Kbuild.include' (search path) (no ~ expansion)...
+    Reading makefile 'scripts/subarch.include' (search path) (no ~ expansion)...
+    Reading makefile 'arch/x86/Makefile' (search path) (no ~ expansion)...
+    Reading makefile 'scripts/Makefile.kcov' (search path) (no ~ expansion)...
+    Reading makefile 'scripts/Makefile.gcc-plugins' (search path) (no ~ expansion)...
+    Reading makefile 'scripts/Makefile.kasan' (search path) (no ~ expansion)...
+    Reading makefile 'scripts/Makefile.extrawarn' (search path) (no ~ expansion)...
+    Reading makefile 'scripts/Makefile.ubsan' (search path) (no ~ expansion)...
+    Updating makefiles....
+     Considering target file 'scripts/Makefile.ubsan'.
+      Looking for an implicit rule for 'scripts/Makefile.ubsan'.
+      Trying pattern rule with stem 'Makefile.ubsan'.
+    [...]
+      Trying pattern rule with stem 'Makefile.ubsan'.
+      Trying implicit prerequisite 'scripts/Makefile.ubsan.o'.
+      Looking for a rule with intermediate file 'scripts/Makefile.ubsan.o'.
+       Avoiding implicit rule recursion.
+       Trying pattern rule with stem 'Makefile.ubsan'.
+       Trying rule prerequisite 'prepare'.
+       Trying rule prerequisite 'FORCE'.
+      Found an implicit rule for 'scripts/Makefile.ubsan'.
+        Considering target file 'prepare'.
+         File 'prepare' does not exist.
+          Considering target file 'prepare0'.
+           File 'prepare0' does not exist.
+            Considering target file 'archprepare'.
+             File 'archprepare' does not exist.
+              Considering target file 'archheaders'.
+               File 'archheaders' does not exist.
+               Finished prerequisites of target file 'archheaders'.
+              Must remake target 'archheaders'.
+    Putting child 0x55976f4f6980 (archheaders) PID 31743 on the chain.
 
-[0] https://lore.kernel.org/bpf/CACAyw9-CWRHVH3TJ=Tke2x8YiLsH47sLCijdp=V+5M836R9aAA@mail.gmail.com/
+To avoid that, pass the -r and -R flags to eliminate the use of make
+built-in rules (and while at it, built-in variables) when running
+command "make kernelversion" from bpftool's Makefile.
 
-v2:
-- Return error from check script if one of the make invocations returns
-  non-zero (even if binary is successfully produced).
-- Run "make clean" from bpf/ and not only bpf/bpftool/ in that same script,
-  when relevant.
-- Add a patch to clean up generated "feature/" and "libbpf/" directories.
+Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
+Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+---
+ tools/bpf/bpftool/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Cc: Lorenz Bauer <lmb@cloudflare.com>
-Cc: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: Jakub Kicinski <jakub.kicinski@netronome.com>
-
-Quentin Monnet (4):
-  tools: bpftool: ignore make built-in rules for getting kernel version
-  tools: bpftool: improve and check builds for different make
-    invocations
-  tools: bpf: account for generated feature/ and libbpf/ directories
-  tools: bpftool: do not link twice against libbpf.a in Makefile
-
- tools/bpf/.gitignore                          |   1 +
- tools/bpf/Makefile                            |   5 +-
- tools/bpf/bpftool/.gitignore                  |   2 +
- tools/bpf/bpftool/Makefile                    |  28 ++--
- tools/testing/selftests/bpf/Makefile          |   3 +-
- .../selftests/bpf/test_bpftool_build.sh       | 143 ++++++++++++++++++
- 6 files changed, 167 insertions(+), 15 deletions(-)
- create mode 100755 tools/testing/selftests/bpf/test_bpftool_build.sh
-
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index f284c207765a..cd0fc05464e7 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -24,7 +24,7 @@ endif
+ 
+ LIBBPF = $(BPF_PATH)libbpf.a
+ 
+-BPFTOOL_VERSION := $(shell make --no-print-directory -sC ../../.. kernelversion)
++BPFTOOL_VERSION := $(shell make -rR --no-print-directory -sC ../../.. kernelversion)
+ 
+ $(LIBBPF): FORCE
+ 	$(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(OUTPUT) $(OUTPUT)libbpf.a
 -- 
 2.17.1
 
