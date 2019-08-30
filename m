@@ -2,48 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C91A3A3AB5
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 17:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A32DA3ABF
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 17:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728461AbfH3Pnv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Aug 2019 11:43:51 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:45421 "EHLO
+        id S1727876AbfH3Ppi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Aug 2019 11:45:38 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:44809 "EHLO
         mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728195AbfH3Pnv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Aug 2019 11:43:51 -0400
-Received: by mail-pf1-f193.google.com with SMTP id w26so4866957pfq.12;
-        Fri, 30 Aug 2019 08:43:51 -0700 (PDT)
+        with ESMTP id S1727304AbfH3Ppi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Aug 2019 11:45:38 -0400
+Received: by mail-pf1-f193.google.com with SMTP id c81so4872982pfc.11;
+        Fri, 30 Aug 2019 08:45:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version;
-        bh=IZK133rvLPFOXdT1nth00dyTGLOoSKiaU2rUxXtqO8Q=;
-        b=t45Zb8MpRU4zl0yeD8VsoHrfDmDVKjnG1Vt0+zrLAFSEhHgvyTi3EA5JmQuo+h+UCZ
-         HYlSYCz3636k8rhcABU/AwV6BB87hxv0Xm4Dpg8iZTDLR6Iew5JtbWfkxNWPL/gmlYZf
-         B4DVGNgaTO2PBHtpqu5JGL2UjxLRqkGmG1jeAuIwOOllcV54IvFBm/tRqfCF6cFlA3w9
-         Js9zj1NocQkVzxWyBc8HPzj7FhNX9Hxz3ytZPxoWkDhWP5FnCtKV8+drhJ7g3AhhILox
-         80ujVW8YqnLyOrbXcVZYn5nHohKNL38RDBrGTITM7RIyBBcYszbqD3sBf+b01YBUl5By
-         bZ/w==
+        bh=AQcszAxJMGmzr9mcXZyzTqKFncOjDmo3mtAAwMQbfK0=;
+        b=AFjjIfia0spTV6b4E9ZloJREqJlMRAGat+xANwqw8sWD6RbrfWq1uOVmZOqNWc7aNR
+         aNotby77LKePdQECAx6xTE9dXfASNAqCQuJRUW6q+BqQViRPsNy9uPuvz1R4mU0k2nBo
+         xh8FsNTZ7oC3rTr2O069gxAb2WDijZhNjzBMZXQ43g1epzZod4Dz4BTIxEVWCo60JuxO
+         gMHvddyxBJjreD2fJXnhTWxiwnSCUBcoFlfJISfZcRR/T3SghTFOnJGwvQgbvIt6OWeZ
+         UmY1QBRSAlhXB/ANdRfizXKmmfTc+wPeOnWtziXzWw92dOTYnVEYig+fNiGb7oYDFBdW
+         oJTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version;
-        bh=IZK133rvLPFOXdT1nth00dyTGLOoSKiaU2rUxXtqO8Q=;
-        b=iuKVCI1LBmte4NIXdBdgwNHpaJxADNhq8zaQhHExcJCOnHB97M8PK/ewqc/6VXAl4F
-         PN6Tp7Ym1CGQL43OyZOBtfvFbWb+fFsXoRRfgyQiHoLSQCYq8MqIVdnrnY+joOHlyi6a
-         TtQG+7+CXhY21JMV7wbyeuT4AYUj/JFx9KvZtuSjJO+748Sq5fz18EAZFWuUVksg4Jy5
-         JdnZbtc58zrBshMxTCe1TVOa7gG2BSvC9Fo56jUhhd9pONRUoMlDSg6YSnAcMPOZqIMz
-         +WKCv1PWI6tjfez6QkYrE+ncoKD5RXUsSorCyTm16CZtBskh5mRTmhjcQIIsGeFNcKIZ
-         6hIA==
-X-Gm-Message-State: APjAAAWw2nxoIf9/xih9NPS0JwEeXGzfAtTyw9eo5ynhqZv8CInwpJ64
-        EjwUedXLEaxs84JhzApxNZ0=
-X-Google-Smtp-Source: APXvYqxsYGqcl9EsgZCqgSTKDVc8tStadrHPrGQVw2ILBQsdE6ZrKfTHvjq9qNPYym29KJVDyvCgqQ==
-X-Received: by 2002:aa7:87d8:: with SMTP id i24mr18668241pfo.88.1567179830889;
-        Fri, 30 Aug 2019 08:43:50 -0700 (PDT)
+        bh=AQcszAxJMGmzr9mcXZyzTqKFncOjDmo3mtAAwMQbfK0=;
+        b=X6HAFwYv/eu17JBmCFtjcOp/nCpA4tLbE9A2jNo9cSq4WiTfM1Y0/475HJj3V9X9Du
+         qbnl9UFWr+Bja+xaLbSEZ8//ZtPE+V9wJR43Kq5jT5DiHLPBixr09L/US88cPsx+RirQ
+         /pOA5tVtepEQYmVWT4BmvBp3hEvFtFDLRkV/Sq2rhBGWU9BM+0sD8AIdtEE6gOGZvA7k
+         AzMw+ogX/z/9PtmNMQznw6pp04SeieZdxrR0q6VQNDRLnV+SwdgIhr/5Yv0WUuaBCUYv
+         zpr7PcHIrT+S4XuzLZq9JRhO2wvtDz8GJ6vCtbEftgSHyQlIiTLMmXrvWWox5Ucpd/NZ
+         EFZQ==
+X-Gm-Message-State: APjAAAXx5p/xCm45iB6xGK82CXBJ18ZuUHNwMhbcb1UHtLk63deRVmkS
+        kOZke1QDj67Q0Ka0z9K80Fs=
+X-Google-Smtp-Source: APXvYqztZbEcpjjL+pO9jnW+VurgE/+k1BJo2dvvu4XMbmkpdKaLXzDKOtW5gTMEu1j9ffQfGnhYlQ==
+X-Received: by 2002:a17:90a:f986:: with SMTP id cq6mr5023902pjb.48.1567179937659;
+        Fri, 30 Aug 2019 08:45:37 -0700 (PDT)
 Received: from [172.26.108.102] ([2620:10d:c090:180::7594])
-        by smtp.gmail.com with ESMTPSA id r28sm3303447pfg.62.2019.08.30.08.43.49
+        by smtp.gmail.com with ESMTPSA id i9sm4920390pgg.38.2019.08.30.08.45.36
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 30 Aug 2019 08:43:50 -0700 (PDT)
+        Fri, 30 Aug 2019 08:45:36 -0700 (PDT)
 From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
 To:     "Kevin Laatz" <kevin.laatz@intel.com>
 Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
@@ -52,15 +52,15 @@ Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         maximmi@mellanox.com, stephen@networkplumber.org,
         bruce.richardson@intel.com, ciara.loftus@intel.com,
         bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH bpf-next v6 06/12] mlx5e: modify driver for handling
- offsets
-Date:   Fri, 30 Aug 2019 08:43:48 -0700
+Subject: Re: [PATCH bpf-next v6 07/12] net/mlx5e: Allow XSK frames smaller
+ than a page
+Date:   Fri, 30 Aug 2019 08:45:35 -0700
 X-Mailer: MailMate (1.12.5r5635)
-Message-ID: <E540DA62-B004-40B0-8FF0-7B6B44D500C4@gmail.com>
-In-Reply-To: <20190827022531.15060-7-kevin.laatz@intel.com>
+Message-ID: <C5FEBF55-CC52-4489-955E-1202BB4FF193@gmail.com>
+In-Reply-To: <20190827022531.15060-8-kevin.laatz@intel.com>
 References: <20190822014427.49800-1-kevin.laatz@intel.com>
  <20190827022531.15060-1-kevin.laatz@intel.com>
- <20190827022531.15060-7-kevin.laatz@intel.com>
+ <20190827022531.15060-8-kevin.laatz@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
@@ -72,10 +72,27 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On 26 Aug 2019, at 19:25, Kevin Laatz wrote:
 
-> With the addition of the unaligned chunks option, we need to make sure we
-> handle the offsets accordingly based on the mode we are currently running
-> in. This patch modifies the driver to appropriately mask the address for
-> each case.
+> From: Maxim Mikityanskiy <maximmi@mellanox.com>
 >
-> Signed-off-by: Kevin Laatz <kevin.laatz@intel.com>
+> Relax the requirements to the XSK frame size to allow it to be smaller
+> than a page and even not a power of two. The current implementation can
+> work in this mode, both with Striding RQ and without it.
+>
+> The code that checks `mtu + headroom <= XSK frame size` is modified
+> accordingly. Any frame size between 2048 and PAGE_SIZE is accepted.
+>
+> Functions that worked with pages only now work with XSK frames, even if
+> their size is different from PAGE_SIZE.
+>
+> With XSK queues, regardless of the frame size, Striding RQ uses the
+> stride size of PAGE_SIZE, and UMR MTTs are posted using starting
+> addresses of frames, but PAGE_SIZE as page size. MTU guarantees that no
+> packet data will overlap with other frames. UMR MTT size is made equal
+> to the stride size of the RQ, because UMEM frames may come in random
+> order, and we need to handle them one by one. PAGE_SIZE is just a power
+> of two that is bigger than any allowed XSK frame size, and also it
+> doesn't require making additional changes to the code.
+>
+> Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+> Reviewed-by: Saeed Mahameed <saeedm@mellanox.com>
 Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
