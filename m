@@ -2,78 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6758A3604
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 13:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654B5A38D3
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 16:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727434AbfH3LvN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Aug 2019 07:51:13 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:46118 "EHLO mx1.redhat.com"
+        id S1727958AbfH3OJb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Aug 2019 10:09:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727410AbfH3LvN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Aug 2019 07:51:13 -0400
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727791AbfH3OJb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Aug 2019 10:09:31 -0400
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 4992D18C893F;
-        Fri, 30 Aug 2019 11:51:13 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-116-97.ams2.redhat.com [10.36.116.97])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E7B1C60C05;
-        Fri, 30 Aug 2019 11:51:11 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     daniel@iogearbox.net, iii@linux.ibm.com, jolsa@redhat.com
-Subject: [PATCH v3] bpf: s390: add JIT support for bpf line info
-Date:   Fri, 30 Aug 2019 14:51:09 +0300
-Message-Id: <20190830115109.3896-1-yauheni.kaliuta@redhat.com>
-In-Reply-To: <20190829200217.16075-1-yauheni.kaliuta@redhat.com>
-References: <20190829200217.16075-1-yauheni.kaliuta@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 96DBD22CE9;
+        Fri, 30 Aug 2019 14:09:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1567174170;
+        bh=p5AjW3xVDRxCRokQLJsTqv+1lmdRB2z4uTAo1OGwa4Q=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=E/heTaWMHie+f9aeljhO/1yfl9cSU7vcNF/AqUhGNPWL/KPpd7dNvx0UyWaxDk1k2
+         VFXySM1rPovDrqpfURtsc0Qw49mjuDC3qFcbeYuFqQRddu0yUujxGnbUUQ6uBdz0AY
+         Fg6wPEqFXmdOf/n5IqZABnc7lopIyAgMoMkspmt4=
+Subject: Re: [PATCH] seccomp: fix compilation errors in seccomp-bpf kselftest
+To:     Alakesh Haloi <alakesh.haloi@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Cc:     linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shuah <shuah@kernel.org>
+References: <20190822215823.GA11292@ip-172-31-44-144.us-west-2.compute.internal>
+From:   shuah <shuah@kernel.org>
+Message-ID: <30e993fe-de76-9831-7ecc-61fcbcd51ae0@kernel.org>
+Date:   Fri, 30 Aug 2019 08:09:20 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <20190822215823.GA11292@ip-172-31-44-144.us-west-2.compute.internal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.70]); Fri, 30 Aug 2019 11:51:13 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds support for generating bpf line info for JITed programs
-like commit 6f20c71d8505 ("bpf: powerpc64: add JIT support for bpf
-line info") does for powerpc, but it should pass the array starting
-from 1 like x86, see commit 7c2e988f400e ("bpf: fix x64 JIT code
-generation for jmp to 1st insn").
+On 8/22/19 3:58 PM, Alakesh Haloi wrote:
+> Without this patch we see following error while building and kselftest
+> for secccomp_bpf fails.
+> 
+> seccomp_bpf.c:1787:20: error: ‘PTRACE_EVENTMSG_SYSCALL_ENTRY’ undeclared (first use in this function);
+> seccomp_bpf.c:1788:6: error: ‘PTRACE_EVENTMSG_SYSCALL_EXIT’ undeclared (first use in this function);
+> 
+> Signed-off-by: Alakesh Haloi <alakesh.haloi@gmail.com>
+> ---
+>   tools/testing/selftests/seccomp/seccomp_bpf.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> index 6ef7f16c4cf5..2e619760fc3e 100644
+> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
+> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> @@ -1353,6 +1353,14 @@ TEST_F(precedence, log_is_fifth_in_any_order)
+>   #define PTRACE_EVENT_SECCOMP 7
+>   #endif
+>   
+> +#ifndef PTRACE_EVENTMSG_SYSCALL_ENTRY
+> +#define PTRACE_EVENTMSG_SYSCALL_ENTRY 1
+> +#endif
+> +
+> +#ifndef PTRACE_EVENTMSG_SYSCALL_EXIT
+> +#define PTRACE_EVENTMSG_SYSCALL_EXIT 2
+> +#endif
+> +
+>   #define IS_SECCOMP_EVENT(status) ((status >> 16) == PTRACE_EVENT_SECCOMP)
+>   bool tracer_running;
+>   void tracer_stop(int sig)
+> 
 
-That fixes test_btf.
+Hi Kees,
 
-Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
----
+Okay to apply this one for 5.4-rc1. Or is this going through bpf tree?
+If it is going through bpf tree:
 
-The patch is on top of "bpf: s390: add JIT support for multi-function
-programs"
- 
-V1->V2:
+Acked-by: Shuah Khan <skhan@linuxfoundation.org>
 
-- pass address array starting from element 1.
-
-V2->V3:
-
-- Fix braces in the commit message.
-
----
- arch/s390/net/bpf_jit_comp.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index b6801d854c77..ce88211b9c6c 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -1420,6 +1420,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	fp->jited_len = jit.size;
- 
- 	if (!fp->is_func || extra_pass) {
-+		bpf_prog_fill_jited_linfo(fp, jit.addrs + 1);
- free_addrs:
- 		kfree(jit.addrs);
- 		kfree(jit_data);
--- 
-2.22.0
-
+thanks,
+-- Shuah
