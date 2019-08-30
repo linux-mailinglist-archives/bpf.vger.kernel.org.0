@@ -2,117 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77EC8A35D8
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 13:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 257E8A35E4
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 13:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727718AbfH3Lj1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 30 Aug 2019 07:39:27 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55844 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727525AbfH3Lj1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 30 Aug 2019 07:39:27 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7UBcOeY103989
-        for <bpf@vger.kernel.org>; Fri, 30 Aug 2019 07:39:26 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2upyk70kyf-1
+        id S1727417AbfH3Lm5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 30 Aug 2019 07:42:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54572 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727525AbfH3Lm5 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 30 Aug 2019 07:42:57 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7UBgsLi074451
+        for <bpf@vger.kernel.org>; Fri, 30 Aug 2019 07:42:55 -0400
+Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2uq0xd5jx7-1
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 30 Aug 2019 07:39:26 -0400
+        for <bpf@vger.kernel.org>; Fri, 30 Aug 2019 07:42:55 -0400
 Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
         for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Fri, 30 Aug 2019 12:39:23 +0100
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        Fri, 30 Aug 2019 12:42:53 +0100
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
         (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 30 Aug 2019 12:39:20 +0100
+        Fri, 30 Aug 2019 12:42:49 +0100
 Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7UBdJD349414224
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7UBgm6P51707962
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Aug 2019 11:39:19 GMT
+        Fri, 30 Aug 2019 11:42:48 GMT
 Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 929D711C05B;
-        Fri, 30 Aug 2019 11:39:19 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id BFA1611C04C;
+        Fri, 30 Aug 2019 11:42:48 +0000 (GMT)
 Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 68D7211C04A;
-        Fri, 30 Aug 2019 11:39:19 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 7D87011C04A;
+        Fri, 30 Aug 2019 11:42:48 +0000 (GMT)
 Received: from dyn-9-152-96-21.boeblingen.de.ibm.com (unknown [9.152.96.21])
         by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 30 Aug 2019 11:39:19 +0000 (GMT)
+        Fri, 30 Aug 2019 11:42:48 +0000 (GMT)
 Content-Type: text/plain;
         charset=us-ascii
 Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [PATCH v2] bpf: s390: add JIT support for bpf line info
+Subject: Re: [PATCH bpf-next v2 0/4] tools: bpftool: improve bpftool build
+ experience
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
-In-Reply-To: <20190829200217.16075-1-yauheni.kaliuta@redhat.com>
-Date:   Fri, 30 Aug 2019 13:39:19 +0200
-Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, jolsa@redhat.com
+In-Reply-To: <20190830110040.31257-1-quentin.monnet@netronome.com>
+Date:   Fri, 30 Aug 2019 13:42:48 +0200
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, oss-drivers@netronome.com,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>
 Content-Transfer-Encoding: 8BIT
-References: <xunyd0go9cba.fsf@redhat.com>
- <20190829200217.16075-1-yauheni.kaliuta@redhat.com>
-To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+References: <20190830110040.31257-1-quentin.monnet@netronome.com>
+To:     Quentin Monnet <quentin.monnet@netronome.com>
 X-Mailer: Apple Mail (2.3445.9.1)
 X-TM-AS-GCONF: 00
-x-cbid: 19083011-0008-0000-0000-0000030EFD76
+x-cbid: 19083011-4275-0000-0000-0000035F0D94
 X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19083011-0009-0000-0000-00004A2D44D7
-Message-Id: <879D38E9-3F3D-4C77-A370-8D4998F9FEF9@linux.ibm.com>
+x-cbparentid: 19083011-4276-0000-0000-000038714794
+Message-Id: <A222439F-07F7-4256-B00D-72F1E4C2906D@linux.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-30_05:,,
  signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=11 phishscore=0 bulkscore=0 spamscore=0
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
  clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
  mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908300127
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908300128
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Am 29.08.2019 um 22:02 schrieb Yauheni Kaliuta <yauheni.kaliuta@redhat.com>:
+> Am 30.08.2019 um 13:00 schrieb Quentin Monnet <quentin.monnet@netronome.com>:
 > 
-> This adds support for generating bpf line info for JITed programs
-> like commit 6f20c71d8505 ("bpf: powerpc64: add JIT support for bpf
-> line info") does for powerpc, but it should pass the array starting
-> from 1 like x86, see commit 7c2e988f400e ("bpf: fix x64 JIT code
-> generation for jmp to 1st insn".
+> Hi,
+> This set attempts to make it easier to build bpftool, in particular when
+> passing a specific output directory. This is a follow-up to the
+> conversation held last month by Lorenz, Ilya and Jakub [0].
 > 
-> That fixes test_btf.
+> The first patch is a minor fix to bpftool's Makefile, regarding the
+> retrieval of kernel version (which currently prints a non-relevant make
+> warning on some invocations).
 > 
-> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-> ---
+> Second patch improves the Makefile commands to support more "make"
+> invocations, or to fix building with custom output directory. On Jakub's
+> suggestion, a script is also added to BPF selftests in order to keep track
+> of the supported build variants.
 > 
-> The patch is on top of "bpf: s390: add JIT support for multi-function
-> programs"
+> Building bpftool with "make tools/bpf" from the top of the repository
+> generates files in "libbpf/" and "feature/" directories under tools/bpf/
+> and tools/bpf/bpftool/. The third patch ensures such directories are taken
+> care of on "make clean", and add them to the relevant .gitignore files.
 > 
-> V1->V1:
+> At last, fourth patch is a sligthly modified version of Ilya's fix
+> regarding libbpf.a appearing twice on the linking command for bpftool.
 > 
-> - pass address array starting from element 1.
+> [0] https://lore.kernel.org/bpf/CACAyw9-CWRHVH3TJ=Tke2x8YiLsH47sLCijdp=V+5M836R9aAA@mail.gmail.com/
 > 
-> ---
-> arch/s390/net/bpf_jit_comp.c | 1 +
-> 1 file changed, 1 insertion(+)
+> v2:
+> - Return error from check script if one of the make invocations returns
+>  non-zero (even if binary is successfully produced).
+> - Run "make clean" from bpf/ and not only bpf/bpftool/ in that same script,
+>  when relevant.
+> - Add a patch to clean up generated "feature/" and "libbpf/" directories.
 > 
-> diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-> index b6801d854c77..ce88211b9c6c 100644
-> --- a/arch/s390/net/bpf_jit_comp.c
-> +++ b/arch/s390/net/bpf_jit_comp.c
-> @@ -1420,6 +1420,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
-> 	fp->jited_len = jit.size;
+> Cc: Lorenz Bauer <lmb@cloudflare.com>
+> Cc: Ilya Leoshkevich <iii@linux.ibm.com>
+> Cc: Jakub Kicinski <jakub.kicinski@netronome.com>
 > 
-> 	if (!fp->is_func || extra_pass) {
-> +		bpf_prog_fill_jited_linfo(fp, jit.addrs + 1);
-> free_addrs:
-> 		kfree(jit.addrs);
-> 		kfree(jit_data);
+> Quentin Monnet (4):
+>  tools: bpftool: ignore make built-in rules for getting kernel version
+>  tools: bpftool: improve and check builds for different make
+>    invocations
+>  tools: bpf: account for generated feature/ and libbpf/ directories
+>  tools: bpftool: do not link twice against libbpf.a in Makefile
+> 
+> tools/bpf/.gitignore                          |   1 +
+> tools/bpf/Makefile                            |   5 +-
+> tools/bpf/bpftool/.gitignore                  |   2 +
+> tools/bpf/bpftool/Makefile                    |  28 ++--
+> tools/testing/selftests/bpf/Makefile          |   3 +-
+> .../selftests/bpf/test_bpftool_build.sh       | 143 ++++++++++++++++++
+> 6 files changed, 167 insertions(+), 15 deletions(-)
+> create mode 100755 tools/testing/selftests/bpf/test_bpftool_build.sh
+> 
 > -- 
-> 2.22.0
-> 
-
-Checkpatch complains about the missing ")" at the end of 7c2e988f400e
-commit description. With that fixed:
+> 2.17.1
 
 Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
 Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
-Thanks!
+for the whole series.
