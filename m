@@ -2,76 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 51ACDA3B07
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 17:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1631A3DFC
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 20:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728155AbfH3Pwf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Aug 2019 11:52:35 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:38630 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727791AbfH3Pwf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Aug 2019 11:52:35 -0400
-Received: by mail-pl1-f193.google.com with SMTP id w11so3571049plp.5;
-        Fri, 30 Aug 2019 08:52:34 -0700 (PDT)
+        id S1728042AbfH3Sx0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Aug 2019 14:53:26 -0400
+Received: from mail-ua1-f68.google.com ([209.85.222.68]:40407 "EHLO
+        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727979AbfH3Sx0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Aug 2019 14:53:26 -0400
+Received: by mail-ua1-f68.google.com with SMTP id s25so2632416uap.7;
+        Fri, 30 Aug 2019 11:53:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version;
-        bh=3aRbcb7mxKQhl3wvmytYCrnDqahAtopYovMiaFP7Dy8=;
-        b=rgJ6w8Z7MmdO0Hp0qryaIgI2vza5UivQ0SOUdnJpS1vqPLzqjk8fuGUPSsXsqKVpye
-         uWqB2Xd4dFoNdamuvDf6zbqYNb8fVTvv6RM7UNMycIsZqrppP+bVcvaHsMkHkDP7C2Hx
-         OI70ReTP+yE72H5kd+X2HLXTT9z16DsWK2M5oygh588jg1sP7WZ6rZqkUOHSI2aSKOyL
-         imyr/NYOixwQF8+4WfrSb7KCUQ2qvu8+2R19sq0FO3egqMqFg79X/q/rt0u99WtQJBy3
-         e4SAAUkJhnYQGGkzs1TPrnhFdP6X05RmoQ/I/qARjdGj0oiL7arQl4BRlRzeVQcBUq2Q
-         TM/w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=xK2myEoST0Vxt1PsxBqflm07dfmYsoiLaH0chIFi/wk=;
+        b=BzcdSt1Sf5kVEFD+sgdoHgEY6Da33Ty/2119/8qJWeNvJEs2sD7BW0X6xaecNtkoo8
+         2EbbNGDklNxBK7DSC/heugp1WpHeMA6jzRUcgfi665NZxV13EcCerqX3SLqjr/0pBWgM
+         EIOjjUOqd9HhovEkURNUsMlr45KPDxlwJaaf6rDQPobH/w2mIUOhUQPQrNZENlIxjDKd
+         nY/lsWm8y5mebKb/wUXJp7hdvPTnxiv4IutUIuN/V8BtusXFoDW39y+r3+93hYu6eSMA
+         x6uaMQ19dzPs3k4RkvKpeiMtxhBCmEhZFhmJ794lMYCk1eT6ec91Y4UZv1NO4eXbzJVV
+         B4Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version;
-        bh=3aRbcb7mxKQhl3wvmytYCrnDqahAtopYovMiaFP7Dy8=;
-        b=RLZEutoCIlhIEP3vEGITm5xKrNY1aRvSnNmIg9S1B1DCjVhockV08uvI/GydyFnWMg
-         H0JqHlptLK37J2VAfttAXJUIefRn6EMphblJxFlejjpLHssdYHqFzIlYEHSxsc71pbFC
-         35n3c7LYKa7QvJ5tEWdlwv88gCQODoh2MoYH36t58D9jWOHWuAOPJFHWMKiyT8QhDudP
-         kfXMkVpHyBYaEui/+DZ1BOviFY87Ps5ddJ03OqY3lGmU8fRCssPxQhuiO8sM4bPoj8Ed
-         boZUxSCg9h8DmbS6oKPguZ+9bDxCHb4cA/J2oOd83l+ehMvG8fXfqkLUKRLRGjSuxalb
-         MD2w==
-X-Gm-Message-State: APjAAAVvTYewZAR9wjSXPJwIkb8li0yJeCD4R7qdeNlFXMqTOCLLnEoc
-        XlCA4y3f3iHryApW2eV3znw=
-X-Google-Smtp-Source: APXvYqxBKMNukScLMmC9gZpQf+27nAE4AepJTruMT6n2P7I8TuROlQ9AdU2fRT8efHkSAak4hUNxHA==
-X-Received: by 2002:a17:902:780c:: with SMTP id p12mr2079429pll.290.1567180354650;
-        Fri, 30 Aug 2019 08:52:34 -0700 (PDT)
-Received: from [172.26.108.102] ([2620:10d:c090:180::7594])
-        by smtp.gmail.com with ESMTPSA id r2sm4248607pfq.60.2019.08.30.08.52.33
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 30 Aug 2019 08:52:34 -0700 (PDT)
-From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
-To:     "Kevin Laatz" <kevin.laatz@intel.com>
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        bjorn.topel@intel.com, magnus.karlsson@intel.com,
-        jakub.kicinski@netronome.com, saeedm@mellanox.com,
-        maximmi@mellanox.com, stephen@networkplumber.org,
-        bruce.richardson@intel.com, ciara.loftus@intel.com,
-        bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH bpf-next v6 00/12] XDP unaligned chunk placement support
-Date:   Fri, 30 Aug 2019 08:52:32 -0700
-X-Mailer: MailMate (1.12.5r5635)
-Message-ID: <542303AD-5786-4184-8B4F-075DD945F4C4@gmail.com>
-In-Reply-To: <20190827022531.15060-1-kevin.laatz@intel.com>
-References: <20190822014427.49800-1-kevin.laatz@intel.com>
- <20190827022531.15060-1-kevin.laatz@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xK2myEoST0Vxt1PsxBqflm07dfmYsoiLaH0chIFi/wk=;
+        b=qRBDmAvKEyarsma3g5WpjIvJkvZ59M8Flx1Irzxs9H8+t/mlUvX2yacA6SGYCdFJNG
+         rTM1Ys8iFFbWSrIvs3oeXqxZwy5HXolIsKtCo9VZBmKpJXt9bmhTyZvQQEHhIjMoSOz5
+         si4XuTMRPrN72nwSwjizuMQczqqz9wDAQ+9xGMb3GSIodhjhKd4/VR2FfNmJLRXHQy47
+         P8P1UJi/2gfSUXI+TDR8omkjJDhoH4BWHRNXOihFcp73QmjwbItnEzUBDuMWNmevHfPj
+         GLMd9vY9pX3o3Vgq9FL+DLaVFBVqoV8iBm7Jy909oU8CEKRwIF+6lqjfgLhWSZed65iY
+         CZWg==
+X-Gm-Message-State: APjAAAUuTZ4sfoO0yy7ggQXD4DZjrLgqPfnU/Z+Rj7cJMhtZex7TZjkM
+        S7cVRsVVWB5y3QCUqU7h656LdDl14hImgnLnNeE=
+X-Google-Smtp-Source: APXvYqx3p0qeEiqpOfcu6rstyvxgdzKrEafJWsPlt9eD9GL04G/JeteD+Fj7gjKTG8QN2+Yt5pl+1s9+SgP2f1fyq1w=
+X-Received: by 2002:ab0:630e:: with SMTP id a14mr8575342uap.37.1567191205441;
+ Fri, 30 Aug 2019 11:53:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20190815000330.12044-1-a.s.protopopov@gmail.com> <796E4DA8-4844-4708-866E-A8AE9477E94E@fb.com>
+In-Reply-To: <796E4DA8-4844-4708-866E-A8AE9477E94E@fb.com>
+From:   Anton Protopopov <a.s.protopopov@gmail.com>
+Date:   Fri, 30 Aug 2019 14:53:14 -0400
+Message-ID: <CAGn_itwS=bLf8NGVNbByNx8FmR_JtPWnuEnKO23ig8xnK_GYOw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] tools: libbpf: update extended attributes
+ version of bpf_object__open()
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+=D1=87=D1=82, 29 =D0=B0=D0=B2=D0=B3. 2019 =D0=B3. =D0=B2 16:02, Song Liu <s=
+ongliubraving@fb.com>:
+>
+>
+>
+> > On Aug 14, 2019, at 5:03 PM, Anton Protopopov <a.s.protopopov@gmail.com=
+> wrote:
+> >
+>
+> [...]
+>
+> >
+> >
+> > int bpf_object__unload(struct bpf_object *obj)
+> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > index e8f70977d137..634f278578dd 100644
+> > --- a/tools/lib/bpf/libbpf.h
+> > +++ b/tools/lib/bpf/libbpf.h
+> > @@ -63,8 +63,13 @@ LIBBPF_API libbpf_print_fn_t libbpf_set_print(libbpf=
+_print_fn_t fn);
+> > struct bpf_object;
+> >
+> > struct bpf_object_open_attr {
+> > -     const char *file;
+> > +     union {
+> > +             const char *file;
+> > +             const char *obj_name;
+> > +     };
+> >       enum bpf_prog_type prog_type;
+> > +     void *obj_buf;
+> > +     size_t obj_buf_sz;
+> > };
+>
+> I think this would break dynamically linked libbpf. No?
 
+Ah, yes, sure. What is the right way to make changes which break ABI in lib=
+bpf?
 
-On 26 Aug 2019, at 19:25, Kevin Laatz wrote:
+BTW, does the commit ddc7c3042614 ("libbpf: implement BPF CO-RE offset
+relocation algorithm") which adds a new field to the struct
+bpf_object_load_attr also break ABI?
 
-> This patch set adds the ability to use unaligned chunks in the XDP umem.
-
-Thanks, Kevin for your hard work and perseverance on this patch set!
--- 
-Jonathan
+>
+> Thanks,
+> Song
+>
