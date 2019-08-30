@@ -2,47 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9D6A2BDD
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 02:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1632A2BD1
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 02:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727562AbfH3Avp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Aug 2019 20:51:45 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:42624 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727578AbfH3Aur (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Aug 2019 20:50:47 -0400
-Received: by mail-lj1-f195.google.com with SMTP id l14so4804362ljj.9
-        for <bpf@vger.kernel.org>; Thu, 29 Aug 2019 17:50:46 -0700 (PDT)
+        id S1727563AbfH3Aut (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Aug 2019 20:50:49 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:40337 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727139AbfH3Aus (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Aug 2019 20:50:48 -0400
+Received: by mail-lf1-f65.google.com with SMTP id u29so3963025lfk.7
+        for <bpf@vger.kernel.org>; Thu, 29 Aug 2019 17:50:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=baF6/BEW5KEVo2LOFkZZTRTkQs3Veu82MyQ6XaftpOU=;
-        b=biPM7KPdLtnr+xQRNp5xESVEeouLUJKehD24Gd9ioxx2OUh6OIbrndSWFIo+qFylSI
-         kWdpwF+J69U+3pO4IuT7c63y1CwY11q0cXDK5OXsQnG4N+5QSF0rdTNyreizSd4oQ8ux
-         Am84VUumVDcjZ1RoEaa413ZVsTrv4I2GuzRZa59p3t9MedXqHlG7BxfFeXGP1smCN1Rm
-         pj+FEwpD4ZadSIML4/3wTI9ldsdEy1/4SBL2pH8rHBRmKHSJVdGhBCPlnrs46hM1tr7p
-         VF5+0TZbcNTyjM8g81MSG9ZbEwNHniA392B0IqMVwrg9G2ma9dMcEqh7oNjuVlu+1z81
-         Z/3A==
+        bh=Q+vZM4cZektdF572TqWkVl3QkOoJAXjpmJXjWwwbKzE=;
+        b=LEYfqXzZUPeIuy93SH8GAssQsvlBou/hIWteBhvmXq1F9JVWj2wTkzeZdfRJclvOXa
+         Ml9kVrTIeDyM2A/3eaEvzVK9/pGt5qEqzLTWvJqdBmLcHkvvh07Ut09wAvSKXrIMNobx
+         r2RNchETr9Z4KWTcRDbMNJ6rLBGv3sDWxx1Z8Z5O54FYC/zPoXMdoQJR1eWto+H3GBER
+         DlMphrpkhbPZGMzNxrWnt0/mC94HVFKOY0k+/6wVxcaRK9ftaqDrp/Dypqjz3DpeV74s
+         5LHndEkamECTgyLl93XSkTDSnp9E79AvMzRJuicO+St87f2BsjM+kyYugZH0KcXkbFhW
+         G9ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=baF6/BEW5KEVo2LOFkZZTRTkQs3Veu82MyQ6XaftpOU=;
-        b=prM+zdLlxaH26TDcIg2zJtGZt9X79oKpKCbW6Ydk0Ir0VH3y1qU8PPRt7z6aPpccnX
-         zAclFmd61xiiNQ1dO5HvyLdjZtTJiQb2bbAqAy4jMNKVWuy0wuFY+dn1lrXU+4WAHJlP
-         c4y2H6ZSxb9Z9rIoy3ELYGS0EHN86kJ0HlXCIGQ3vMIksaIYa6F1vC7BB+lQrLrcab/e
-         NZP3oikB8PIws3h7pZMu5msnLtSYSPiGm0wo5Gr5wVJCMpFGwFur+OAbdfIEOXugz/Pi
-         tMiftogXUxhOPgi1Ql9sUFoFkgfPXtm+r94/qgTsKZc4ep1gFL8gEFdviBgG/Fqjuiu3
-         FLuw==
-X-Gm-Message-State: APjAAAV1T+1YIRyx28UvdMXWpiYWlCfSTVz9NAVwplMQSqkDKhZpxQYn
-        1eLLlG9wbJDoTHOywMYPzw6qkBt8KXk=
-X-Google-Smtp-Source: APXvYqwlf7D/N+8AETmyrADFpsR/4uDHEHGgehGXXJJxn9PraZ2fAYxITTtvWqzPcr0SP5k+C+brcg==
-X-Received: by 2002:a2e:900c:: with SMTP id h12mr6901426ljg.151.1567126245707;
-        Thu, 29 Aug 2019 17:50:45 -0700 (PDT)
+        bh=Q+vZM4cZektdF572TqWkVl3QkOoJAXjpmJXjWwwbKzE=;
+        b=XdsY8D7ouqkewHrs4bRt9Q2yiTb0mRoBOM/Q7zGnZXU86tB0Al9zEK0N5jBq23aGM1
+         SvJGk8eqkivlCNGFBcZlK1S+0Qq07R6cIKtoWVS0IQk/MGj9gUZc1ab1dh0eBWqmXAbP
+         xXSAyBI//Mm3Aw7Yw0Bg+QkTcQgVSBV6ZpEdtYYLem8iMcWAxTAdRQ5Yo6+Hd4aF2K0B
+         ebEZoXCMMVqQ4ERZj06IxK1//oT5TR49EymZtLGOwaFAeVkzGSaaO/ot5Vll8ANPrCpI
+         dNaQu/+Wp07AUh+Dzkmv5CHG08jZF8FxMZHR8M7fNZAWRUMPCc7Fs7UPgldQXYDfbnIB
+         bWLQ==
+X-Gm-Message-State: APjAAAVEzJKSdxaBj5JM0ZcsKn355m8+hsmMDPnXSKg3EOwPZr4KtfpC
+        eryBHCmclWFC3OqlePz8Nezv4Q==
+X-Google-Smtp-Source: APXvYqyihXTROPMaQ2wywc9lmAKFZbgnRCz1760bakTi1cPbibvD2WXzoa2W4G39kM/s/BUv/T280g==
+X-Received: by 2002:a19:ae0b:: with SMTP id f11mr2637945lfc.28.1567126246924;
+        Thu, 29 Aug 2019 17:50:46 -0700 (PDT)
 Received: from localhost.localdomain (168-200-94-178.pool.ukrtel.net. [178.94.200.168])
-        by smtp.gmail.com with ESMTPSA id f19sm628149lfk.43.2019.08.29.17.50.44
+        by smtp.gmail.com with ESMTPSA id f19sm628149lfk.43.2019.08.29.17.50.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Aug 2019 17:50:45 -0700 (PDT)
+        Thu, 29 Aug 2019 17:50:46 -0700 (PDT)
 From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
 To:     linux@armlinux.org.uk, ast@kernel.org, daniel@iogearbox.net,
         yhs@fb.com, davem@davemloft.net, jakub.kicinski@netronome.com,
@@ -51,9 +51,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org, bpf@vger.kernel.org,
         clang-built-linux@googlegroups.com,
         Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-Subject: [PATCH RFC bpf-next 03/10] libbpf: Makefile: add C/CXX/LDFLAGS to libbpf.so and test_libpf targets
-Date:   Fri, 30 Aug 2019 03:50:30 +0300
-Message-Id: <20190830005037.24004-4-ivan.khoronzhuk@linaro.org>
+Subject: [PATCH RFC bpf-next 04/10] samples: bpf: use own EXTRA_CFLAGS for clang commands
+Date:   Fri, 30 Aug 2019 03:50:31 +0300
+Message-Id: <20190830005037.24004-5-ivan.khoronzhuk@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190830005037.24004-1-ivan.khoronzhuk@linaro.org>
 References: <20190830005037.24004-1-ivan.khoronzhuk@linaro.org>
@@ -62,52 +62,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In case of LDFLAGS and EXTRA_CC flags there is no way to pass them
-correctly to build command, for instance when --sysroot is used or
-external libraries are used, like -lelf. In follow patches this is
-used for samples/bpf cross-compiling.
+It can overlap with CFLAGS used for libraries built with gcc if
+not now then in following patches. Correct it here for simplicity.
 
 Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
 ---
- tools/lib/bpf/Makefile | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ samples/bpf/Makefile | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index 844f6cd79c03..d606d249e334 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -99,6 +99,10 @@ else
-   CFLAGS := -g -Wall
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index a2953357927e..cdd742c05200 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -219,10 +219,10 @@ BTF_LLVM_PROBE := $(shell echo "int main() { return 0; }" | \
+ 			  /bin/rm -f ./llvm_btf_verify.o)
+ 
+ ifneq ($(BTF_LLVM_PROBE),)
+-	EXTRA_CFLAGS += -g
++	CLANG_EXTRA_CFLAGS += -g
+ else
+ ifneq ($(and $(BTF_LLC_PROBE),$(BTF_PAHOLE_PROBE),$(BTF_OBJCOPY_PROBE)),)
+-	EXTRA_CFLAGS += -g
++	CLANG_EXTRA_CFLAGS += -g
+ 	LLC_FLAGS += -mattr=dwarfris
+ 	DWARF2BTF = y
  endif
- 
-+ifdef EXTRA_CXXFLAGS
-+  CXXFLAGS := $(EXTRA_CXXFLAGS)
-+endif
-+
- ifeq ($(feature-libelf-mmap), 1)
-   override CFLAGS += -DHAVE_LIBELF_MMAP_SUPPORT
- endif
-@@ -179,8 +183,9 @@ $(BPF_IN): force elfdep bpfdep
- $(OUTPUT)libbpf.so: $(OUTPUT)libbpf.so.$(LIBBPF_VERSION)
- 
- $(OUTPUT)libbpf.so.$(LIBBPF_VERSION): $(BPF_IN)
--	$(QUIET_LINK)$(CC) --shared -Wl,-soname,libbpf.so.$(VERSION) \
--				    -Wl,--version-script=$(VERSION_SCRIPT) $^ -lelf -o $@
-+	$(QUIET_LINK)$(CC) $(LDFLAGS) \
-+		--shared -Wl,-soname,libbpf.so.$(VERSION) \
-+		-Wl,--version-script=$(VERSION_SCRIPT) $^ -lelf -o $@
- 	@ln -sf $(@F) $(OUTPUT)libbpf.so
- 	@ln -sf $(@F) $(OUTPUT)libbpf.so.$(VERSION)
- 
-@@ -188,7 +193,7 @@ $(OUTPUT)libbpf.a: $(BPF_IN)
- 	$(QUIET_LINK)$(RM) $@; $(AR) rcs $@ $^
- 
- $(OUTPUT)test_libbpf: test_libbpf.cpp $(OUTPUT)libbpf.a
--	$(QUIET_LINK)$(CXX) $(INCLUDES) $^ -lelf -o $@
-+	$(QUIET_LINK)$(CXX) $(CXXFLAGS) $(LDFLAGS) $(INCLUDES) $^ -lelf -o $@
- 
- $(OUTPUT)libbpf.pc:
- 	$(QUIET_GEN)sed -e "s|@PREFIX@|$(prefix)|" \
+@@ -281,8 +281,8 @@ $(obj)/hbm_edt_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
+ # useless for BPF samples.
+ $(obj)/%.o: $(src)/%.c
+ 	@echo "  CLANG-bpf " $@
+-	$(Q)$(CLANG) $(NOSTDINC_FLAGS) $(LINUXINCLUDE) $(EXTRA_CFLAGS) -I$(obj) \
+-		-I$(srctree)/tools/testing/selftests/bpf/ \
++	$(Q)$(CLANG) $(NOSTDINC_FLAGS) $(LINUXINCLUDE) $(CLANG_EXTRA_CFLAGS) \
++		-I$(obj) -I$(srctree)/tools/testing/selftests/bpf/ \
+ 		-D__KERNEL__ -D__BPF_TRACING__ -Wno-unused-value -Wno-pointer-sign \
+ 		-D__TARGET_ARCH_$(SRCARCH) -Wno-compare-distinct-pointer-types \
+ 		-Wno-gnu-variable-sized-type-not-at-end \
 -- 
 2.17.1
 
