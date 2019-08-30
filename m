@@ -2,41 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A176DA40EE
-	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2019 01:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B175CA40FA
+	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2019 01:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728248AbfH3XUx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Aug 2019 19:20:53 -0400
-Received: from www62.your-server.de ([213.133.104.62]:58384 "EHLO
+        id S1728258AbfH3XWL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Aug 2019 19:22:11 -0400
+Received: from www62.your-server.de ([213.133.104.62]:58600 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728208AbfH3XUx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Aug 2019 19:20:53 -0400
+        with ESMTP id S1728122AbfH3XWK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Aug 2019 19:22:10 -0400
 Received: from sslproxy05.your-server.de ([78.46.172.2])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1i3qCI-00049A-KX; Sat, 31 Aug 2019 01:20:50 +0200
+        id 1i3qDY-0004Ds-Uq; Sat, 31 Aug 2019 01:22:09 +0200
 Received: from [178.197.249.19] (helo=pc-63.home)
         by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89)
         (envelope-from <daniel@iogearbox.net>)
-        id 1i3qCI-0007Op-E9; Sat, 31 Aug 2019 01:20:50 +0200
-Subject: Re: [PATCH bpf-next v2 0/4] tools: bpftool: improve bpftool build
- experience
-To:     Quentin Monnet <quentin.monnet@netronome.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@netronome.com, Lorenz Bauer <lmb@cloudflare.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>
-References: <20190830110040.31257-1-quentin.monnet@netronome.com>
+        id 1i3qDY-000Enp-NW; Sat, 31 Aug 2019 01:22:08 +0200
+Subject: Re: [PATCH v3] bpf: s390: add JIT support for multi-function programs
+To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>, bpf@vger.kernel.org
+Cc:     iii@linux.ibm.com, jolsa@redhat.com
+References: <20190826182036.17456-1-yauheni.kaliuta@redhat.com>
+ <20190828182846.10473-1-yauheni.kaliuta@redhat.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <238303e7-3d73-cf29-eb04-4a77a5a504fe@iogearbox.net>
-Date:   Sat, 31 Aug 2019 01:20:49 +0200
+Message-ID: <f5ecc32b-b72f-df15-000e-3b2bf35192d0@iogearbox.net>
+Date:   Sat, 31 Aug 2019 01:22:08 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20190830110040.31257-1-quentin.monnet@netronome.com>
+In-Reply-To: <20190828182846.10473-1-yauheni.kaliuta@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -47,57 +43,41 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/30/19 1:00 PM, Quentin Monnet wrote:
-> Hi,
-> This set attempts to make it easier to build bpftool, in particular when
-> passing a specific output directory. This is a follow-up to the
-> conversation held last month by Lorenz, Ilya and Jakub [0].
+On 8/28/19 8:28 PM, Yauheni Kaliuta wrote:
+> This adds support for bpf-to-bpf function calls in the s390 JIT
+> compiler. The JIT compiler converts the bpf call instructions to
+> native branch instructions. After a round of the usual passes, the
+> start addresses of the JITed images for the callee functions are
+> known. Finally, to fixup the branch target addresses, we need to
+> perform an extra pass.
 > 
-> The first patch is a minor fix to bpftool's Makefile, regarding the
-> retrieval of kernel version (which currently prints a non-relevant make
-> warning on some invocations).
+> Because of the address range in which JITed images are allocated on
+> s390, the offsets of the start addresses of these images from
+> __bpf_call_base are as large as 64 bits. So, for a function call,
+> the imm field of the instruction cannot be used to determine the
+> callee's address. Use bpf_jit_get_func_addr() helper instead.
 > 
-> Second patch improves the Makefile commands to support more "make"
-> invocations, or to fix building with custom output directory. On Jakub's
-> suggestion, a script is also added to BPF selftests in order to keep track
-> of the supported build variants.
+> The patch borrows a lot from:
 > 
-> Building bpftool with "make tools/bpf" from the top of the repository
-> generates files in "libbpf/" and "feature/" directories under tools/bpf/
-> and tools/bpf/bpftool/. The third patch ensures such directories are taken
-> care of on "make clean", and add them to the relevant .gitignore files.
+> commit 8c11ea5ce13d ("bpf, arm64: fix getting subprog addr from aux
+> for calls")
 > 
-> At last, fourth patch is a sligthly modified version of Ilya's fix
-> regarding libbpf.a appearing twice on the linking command for bpftool.
+> commit e2c95a61656d ("bpf, ppc64: generalize fetching subprog into
+> bpf_jit_get_func_addr")
 > 
-> [0] https://lore.kernel.org/bpf/CACAyw9-CWRHVH3TJ=Tke2x8YiLsH47sLCijdp=V+5M836R9aAA@mail.gmail.com/
+> commit 8484ce8306f9 ("bpf: powerpc64: add JIT support for
+> multi-function programs")
 > 
-> v2:
-> - Return error from check script if one of the make invocations returns
->    non-zero (even if binary is successfully produced).
-> - Run "make clean" from bpf/ and not only bpf/bpftool/ in that same script,
->    when relevant.
-> - Add a patch to clean up generated "feature/" and "libbpf/" directories.
+> (including the commit message).
 > 
-> Cc: Lorenz Bauer <lmb@cloudflare.com>
-> Cc: Ilya Leoshkevich <iii@linux.ibm.com>
-> Cc: Jakub Kicinski <jakub.kicinski@netronome.com>
+> test_verifier (5.3-rc6 with CONFIG_BPF_JIT_ALWAYS_ON=y):
 > 
-> Quentin Monnet (4):
->    tools: bpftool: ignore make built-in rules for getting kernel version
->    tools: bpftool: improve and check builds for different make
->      invocations
->    tools: bpf: account for generated feature/ and libbpf/ directories
->    tools: bpftool: do not link twice against libbpf.a in Makefile
+> without patch:
+> Summary: 1501 PASSED, 0 SKIPPED, 47 FAILED
 > 
->   tools/bpf/.gitignore                          |   1 +
->   tools/bpf/Makefile                            |   5 +-
->   tools/bpf/bpftool/.gitignore                  |   2 +
->   tools/bpf/bpftool/Makefile                    |  28 ++--
->   tools/testing/selftests/bpf/Makefile          |   3 +-
->   .../selftests/bpf/test_bpftool_build.sh       | 143 ++++++++++++++++++
->   6 files changed, 167 insertions(+), 15 deletions(-)
->   create mode 100755 tools/testing/selftests/bpf/test_bpftool_build.sh
+> with patch:
+> Summary: 1540 PASSED, 0 SKIPPED, 8 FAILED
 > 
+> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 
 Applied, thanks!
