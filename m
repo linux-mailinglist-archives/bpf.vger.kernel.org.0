@@ -2,101 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFEAA3559
-	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 13:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C49C4A3563
+	for <lists+bpf@lfdr.de>; Fri, 30 Aug 2019 13:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725780AbfH3LA7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Aug 2019 07:00:59 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:33768 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727857AbfH3LA5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Aug 2019 07:00:57 -0400
-Received: by mail-wr1-f66.google.com with SMTP id u16so6566250wrr.0
-        for <bpf@vger.kernel.org>; Fri, 30 Aug 2019 04:00:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=EIr8AwOPiNckdVBY6i7n8z6ctI1h3TpypkoOttv24nk=;
-        b=oSAv+pXhnO/OYle9E3G8UH8llVneQ8uAsk1pihGWX5uwFjBzjBvufEYuUW3XNJ+FwR
-         1uMAbLiY0F0IQqWGFq0xXf0KzPnHnE5sSLjUr8vYZcWSzcLFRtM9GLhWt3gH83w7Vmdn
-         JLne9RTU5uS4fIdoyxr/MeN8hdYAiwqewYTBbaelPwdf4jS2ab4OD+cp9aOtn7ge4tfi
-         ff54s2BQt/r5mlQS3I0fuBOl2jnxS/gjZbPuTiD36z9+MmaNlnXkxcYPtMMfYLP+8McT
-         x/8aYFRbCTpejazxRia4jk756TuqqvI3+eQ4/bdS5cRQRKDKOM1u37kLN4OLAnxumEOH
-         BNMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=EIr8AwOPiNckdVBY6i7n8z6ctI1h3TpypkoOttv24nk=;
-        b=nAdCUdofn7BgyCYNCeMVNktCIRxFpxviCq7J4gwWipj1GpFyvjlqJLenUsaxQYrJCi
-         iDgnKeMj6rOY3nkyqCIka1PmRaq8E3rkf+O/uwQbmn3FsWXoX+U8lOUQ579fiF8/3Z2T
-         bi6DqOG+SFtsMzxRkRRuWibxsdve+7j90eTIFIykCvkRQgTmB9CAGXk4j1j7kJ2Ng2Yh
-         YsXraL35lK1Bwuek1yw4FgEq6D1j27wwQJRiP2bBuVTgXfEWXIl1/wYWWmwHPDkUOCj+
-         iI9qiz6TcQawWZbv58xProNz4IxCQtiq/HTEMYyPCNK1IrnNUwzA/MOLpKMHgThMPlQm
-         mcBw==
-X-Gm-Message-State: APjAAAWrUDDwuJgzJUUPpbH8QCeHXMBiM0HB/FMQSQVMozZhEmFRl2ZX
-        oGUP+3Fm51XvXpBzQYW6kxeQ+A==
-X-Google-Smtp-Source: APXvYqyePid31/mbtw+pMW7sS/tQSrLG35ES5azqMPRTxsFSVhfSNMx5hJEJYbWfW+gUlX4Ug80n1A==
-X-Received: by 2002:adf:dc03:: with SMTP id t3mr17323673wri.80.1567162855349;
-        Fri, 30 Aug 2019 04:00:55 -0700 (PDT)
-Received: from cbtest32.netronome.com ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id t198sm7848083wmt.39.2019.08.30.04.00.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Aug 2019 04:00:54 -0700 (PDT)
-From:   Quentin Monnet <quentin.monnet@netronome.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@netronome.com,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>
-Subject: [PATCH bpf-next v2 4/4] tools: bpftool: do not link twice against libbpf.a in Makefile
-Date:   Fri, 30 Aug 2019 12:00:40 +0100
-Message-Id: <20190830110040.31257-5-quentin.monnet@netronome.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190830110040.31257-1-quentin.monnet@netronome.com>
-References: <20190830110040.31257-1-quentin.monnet@netronome.com>
+        id S1727170AbfH3LHp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Aug 2019 07:07:45 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61632 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726902AbfH3LHp (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 30 Aug 2019 07:07:45 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7UB7fsS135647
+        for <bpf@vger.kernel.org>; Fri, 30 Aug 2019 07:07:43 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2uq0xcv494-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 30 Aug 2019 07:07:43 -0400
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Fri, 30 Aug 2019 12:07:38 +0100
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Fri, 30 Aug 2019 12:07:36 +0100
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7UB7YCE37683348
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Aug 2019 11:07:34 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AC8C411C050;
+        Fri, 30 Aug 2019 11:07:34 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5817211C04A;
+        Fri, 30 Aug 2019 11:07:34 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.96.21])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 30 Aug 2019 11:07:34 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     bpf@vger.kernel.org, Song Liu <liu.song.a23@gmail.com>,
+        Yonghong Song <yhs@fb.com>, Andrey Ignatov <rdna@fb.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf v4 0/4] selftests/bpf: fix endianness issues in test_sysctl
+Date:   Fri, 30 Aug 2019 13:07:28 +0200
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19083011-0020-0000-0000-000003659CC7
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19083011-0021-0000-0000-000021BAF91C
+Message-Id: <20190830110732.8966-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-30_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=878 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908300121
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In bpftool's Makefile, $(LIBS) includes $(LIBBPF), therefore the library
-is used twice in the linking command. No need to have $(LIBBPF) (from
-$^) on that command, let's do with "$(OBJS) $(LIBS)" (but move $(LIBBPF)
-_before_ the -l flags in $(LIBS)).
+Patch 1 is a preparatory commit, which introduces 64-bit endianness
+conversion functions.
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
-Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
----
- tools/bpf/bpftool/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Patch 2 fixes reading the wrong byte of an int.
 
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index b0c5a369f54a..39bc6f0f4f0b 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -55,7 +55,7 @@ ifneq ($(EXTRA_LDFLAGS),)
- LDFLAGS += $(EXTRA_LDFLAGS)
- endif
- 
--LIBS = -lelf -lz $(LIBBPF)
-+LIBS = $(LIBBPF) -lelf -lz
- 
- INSTALL ?= install
- RM ?= rm -f
-@@ -117,7 +117,7 @@ $(OUTPUT)disasm.o: $(srctree)/kernel/bpf/disasm.c
- $(OUTPUT)feature.o: | zdep
- 
- $(OUTPUT)bpftool: $(OBJS) $(LIBBPF)
--	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
-+	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
- 
- $(OUTPUT)%.o: %.c
- 	$(QUIET_CC)$(COMPILE.c) -MMD -o $@ $<
+Patch 3 improves error reporting.
+
+Patch 4 uses the new conversion functions to fix wrong endianness of
+immediates.
+
+v1->v2: Use bpf_ntohl and bpf_be64_to_cpu, drop __bpf_le64_to_cpu.
+v2->v3: Split bpf_be64_to_cpu introduction into a separate patch.
+        Use the new functions in test_lwt_seg6local.c and
+	test_seg6_loop.c.
+v3->v4: Improved commit message, split fixes that are not related to
+        each other into separate patches.
+
+Ilya Leoshkevich (4):
+  selftests/bpf: introduce bpf_cpu_to_be64 and bpf_be64_to_cpu
+  selftests/bpf: fix "ctx:write sysctl:write read ok" on s390
+  selftests/bpf: improve unexpected success reporting in test_syctl
+  selftests/bpf: fix endianness issues in test_sysctl
+
+ tools/testing/selftests/bpf/bpf_endian.h      |  14 ++
+ .../selftests/bpf/progs/test_lwt_seg6local.c  |  16 +--
+ .../selftests/bpf/progs/test_seg6_loop.c      |   8 +-
+ tools/testing/selftests/bpf/test_sysctl.c     | 130 ++++++++++++------
+ 4 files changed, 107 insertions(+), 61 deletions(-)
+
 -- 
-2.17.1
+2.21.0
 
