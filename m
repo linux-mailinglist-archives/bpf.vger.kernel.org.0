@@ -2,98 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBF5A443F
-	for <lists+bpf@lfdr.de>; Sat, 31 Aug 2019 13:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B23A4B1B
+	for <lists+bpf@lfdr.de>; Sun,  1 Sep 2019 20:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726659AbfHaLUQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 31 Aug 2019 07:20:16 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:34201 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726062AbfHaLUQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 31 Aug 2019 07:20:16 -0400
-Received: by mail-qt1-f193.google.com with SMTP id a13so10597425qtj.1;
-        Sat, 31 Aug 2019 04:20:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LvmGRX4LOdsdUyhqS2DocPUCGusSGnHnPDwLS+tUYBw=;
-        b=PK/UUpMIz6vGKESR/qWrB73mE5YrMA3srDYvsuYkZrvinUDXGVxGQ5MG3gdvcVS07j
-         ZfANEcE/6el1beaQ4LSh3G1MTb05PufyP/OU6Q0VQOb2cDAcrIxDzvSZv+FYVzrntCvQ
-         tTWEaEuJyTtf8N2g7gXdNHT7+q8SLvbxI/heNodCYdg+heOHOoAdjPP4Vsu3obkzZWSe
-         H5W7JInfDelMo6SSnpOS6d0F9x0aIdjeq9YYKXaxhbj3w9W8nmYuGb4t7T/SW7pQKzB/
-         097wawu8tSWVKZF9uRH0rbsWAQ5AUeikdovBIDTVghW4ccY/51t6WwfqP70a9c4bACZh
-         jL9Q==
+        id S1729141AbfIASXC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 1 Sep 2019 14:23:02 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:46869 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729140AbfIASXB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 1 Sep 2019 14:23:01 -0400
+Received: by mail-io1-f72.google.com with SMTP id o3so1994507iom.13
+        for <bpf@vger.kernel.org>; Sun, 01 Sep 2019 11:23:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LvmGRX4LOdsdUyhqS2DocPUCGusSGnHnPDwLS+tUYBw=;
-        b=XqbXTdgCk0QLUjU09c18Ppvk5AVQOuGwEWyovFBFhLiSBv+AZP5Lb8vgvqRpOUPYsS
-         I19cLFyA4qaSYnEWy+XeI/nhdcroYwEgg82J+4vo7lT1eY1iDlJpidarz+Ic3WYhsPun
-         wtc5/82vpJjK/LTiX+E08PNY1U8Uu+2lOgy8baWMqJTolSW33HJOysjsLu2nzduVo5IH
-         FfuIKtVyodwKhd0CxQ57EMb5eXWbKodUlRom782fpYpwaXJirlUcjEHL2ZeQlzxnKv4A
-         dxI9JOdFMp7jhNTxvvDmNgnd4Qp9Jnv9Rvdmz0zTAhVZCU0oSROaZKqgxLCyO+1BZ6Aw
-         0hYQ==
-X-Gm-Message-State: APjAAAV8VuD4LHHuMkoeOCWHz8x2+BOXt5UJFCZrGbNXj+PPKWP5wIuX
-        UnJsNMNjGDpVdZdn7dW8/4w=
-X-Google-Smtp-Source: APXvYqxlmdRha80klC3NPhknthgVd3QVg1cGBUKDxmEcoq0Bjs+/s8SS3U82mQXt9So7bUSlMmHy0A==
-X-Received: by 2002:ad4:4a92:: with SMTP id h18mr13034019qvx.235.1567250414665;
-        Sat, 31 Aug 2019 04:20:14 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::3986])
-        by smtp.gmail.com with ESMTPSA id t15sm1442361qti.12.2019.08.31.04.20.13
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 31 Aug 2019 04:20:13 -0700 (PDT)
-Date:   Sat, 31 Aug 2019 04:20:10 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, newella@fb.com, clm@fb.com,
-        Josef Bacik <josef@toxicpanda.com>, dennisz@fb.com,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>, kernel-team@fb.com,
-        cgroups@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        bpf@vger.kernel.org
-Subject: Re: [PATCHSET block/for-next] IO cost model based work-conserving
- porportional controller
-Message-ID: <20190831112010.GG2263813@devbig004.ftw2.facebook.com>
-References: <20190614015620.1587672-1-tj@kernel.org>
- <20190614175642.GA657710@devbig004.ftw2.facebook.com>
- <5A63F937-F7B5-4D09-9DB4-C73D6F571D50@linaro.org>
- <B5E431F7-549D-4FC4-A098-D074DF9586A1@linaro.org>
- <20190820151903.GH2263813@devbig004.ftw2.facebook.com>
- <9EB760CE-0028-4766-AE9D-6E90028D8579@linaro.org>
- <20190831065358.GF2263813@devbig004.ftw2.facebook.com>
- <73CA9E04-DD93-47E4-B0FE-0A12EC991DEF@linaro.org>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=nuF/NvQUPru9tAlC0mm8ctMiLuI0uuXct3/25gBy3VU=;
+        b=hVKbZZZ/X2ZJuL45bS9Y8pntIcGSB879ccn8KRSJKE8FF2rdVrB6EHGF4GEgZFAu7e
+         ekxklnVAD8jAMp7te/VWHaY+Q2fI6IE63g2BK0vBffTzDDUjN1o1pxz1XpObLU1Oadcw
+         69BIC/4X0AONk2Uow9BgDRsgXYzHPJp4+jaUAfn8FnhK1OB8GRYwIyRTvYCQd9uInMs1
+         /urFmKZNKvOnoND/Esl8GuoIryhvV6sIH8AkY761Q9aF4+tUxxG8K3pslU6eZqY/qh0p
+         01YEOeXH77JWirGG93Mh36NzICnHicuhT/wuPhSE4L7k419wjq6/vhjimy3zGVvy98qL
+         lsIg==
+X-Gm-Message-State: APjAAAW1UCM2neBmVOtOhT2VaYDlwP1qUpe4mBgeHDIgDl5Up2VWx1uU
+        PN4nrnm+Ev7aY3Py6GYqxTpCZ6qopoieKwnDtoNX7OE57VBt
+X-Google-Smtp-Source: APXvYqxx1JUJRFI65w6pHYwBvLIZxZYDddDgdFCblHTcdGM//eA3cmcidNDkcKZhgDPRTq/ohBQfHqUnNU60eqT/NjGvpKx0FZJx
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <73CA9E04-DD93-47E4-B0FE-0A12EC991DEF@linaro.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Received: by 2002:a5d:8599:: with SMTP id f25mr3677451ioj.265.1567362180985;
+ Sun, 01 Sep 2019 11:23:00 -0700 (PDT)
+Date:   Sun, 01 Sep 2019 11:23:00 -0700
+In-Reply-To: <000000000000b7a14105913fcca8@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000083a86059181f20b@google.com>
+Subject: Re: WARNING in __mark_chain_precision (2)
+From:   syzbot <syzbot+c8d66267fd2b5955287e@syzkaller.appspotmail.com>
+To:     allison@lohutok.net, arvid.brodin@alten.se, ast@kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        daniel@iogearbox.net, davem@davemloft.net,
+        gregkh@linuxfoundation.org, hawk@kernel.org,
+        jakub.kicinski@netronome.com, jic23@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, knaack.h@gmx.de,
+        kstewart@linuxfoundation.org, lars@metafoo.de,
+        linus.walleij@linaro.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mchehab+samsung@kernel.org,
+        netdev@vger.kernel.org, nicolas.ferre@microchip.com,
+        paulmck@linux.ibm.com, pmeerw@pmeerw.net, rfontana@redhat.com,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, torvalds@linux-foundation.org, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+syzbot has bisected this bug to:
 
-On Sat, Aug 31, 2019 at 09:10:26AM +0200, Paolo Valente wrote:
-> Hi Tejun,
-> thank you very much for this extra information, I'll try the
-> configuration you suggest.  In this respect, is this still the branch
-> to use
-> 
-> https://kernel.googlesource.com/pub/scm/linux/kernel/git/tj/cgroup/+/refs/heads/review-iocost-v2
-> 
-> also after the issue spotted two days ago [1]?
+commit e786741ff1b52769b044b7f4407f39cd13ee5d2d
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu Jul 11 22:36:02 2019 +0000
 
-block/for-next is the branch which has all the updates.
+     Merge tag 'staging-5.3-rc1' of  
+git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git for-next
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11958f12600000
+start commit:   47ee6e86 selftests/bpf: remove wrong nhoff in flow dissect..
+git tree:       bpf-next
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=13958f12600000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15958f12600000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d4cf1ffb87d590d7
+dashboard link: https://syzkaller.appspot.com/bug?extid=c8d66267fd2b5955287e
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d26ebc600000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=127805ca600000
 
-Thanks.
+Reported-by: syzbot+c8d66267fd2b5955287e@syzkaller.appspotmail.com
+Fixes: e786741ff1b5 ("Merge tag 'staging-5.3-rc1' of  
+git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging")
 
--- 
-tejun
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
