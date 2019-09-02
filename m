@@ -2,90 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8057A4D83
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2019 05:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B5DA4D85
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2019 05:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729211AbfIBDX6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 1 Sep 2019 23:23:58 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:45509 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729229AbfIBDXz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 1 Sep 2019 23:23:55 -0400
-Received: by mail-qk1-f193.google.com with SMTP id m2so11341156qki.12
-        for <bpf@vger.kernel.org>; Sun, 01 Sep 2019 20:23:54 -0700 (PDT)
+        id S1729294AbfIBDYO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 1 Sep 2019 23:24:14 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:46015 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729229AbfIBDYO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 1 Sep 2019 23:24:14 -0400
+Received: by mail-qt1-f196.google.com with SMTP id r15so8594147qtn.12
+        for <bpf@vger.kernel.org>; Sun, 01 Sep 2019 20:24:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XPLkdTaS+cWviKWsyXZOkahcwDz4T4iRqzOYOjVp7Io=;
-        b=Bjd4dmZKm9ahzyCGqWgK2g+TjcFTBZ1FrTjYxEToos+V4YveECHwHx9p1DkAHT4Xhr
-         lpwY9V1q/wMkVg2z/8D56u825hL5LemsxNInEYAKLNu1m3Ubo/MP3i0tUBuFiul4q9HE
-         2KV/4MRk3FoYm0Abm4Yy+cLPpa64EpHV4Bg3evz6xas0jmbjo74Val4ikz9hgYgEqBQZ
-         yLBnUiKWnpmvSEvnBrCbcUC1yiQH0rulLfLcLYUJkShtVJBRGUG3CRZlvQDOI6O1Xz/M
-         TrMKTDHwZwEsA/1IpGibz/2F7lzpq+1noLo8OWrLNR0Nw1xcqHL8P8EhhnhWaS+/MdcP
-         O2QA==
+        bh=c6Z5DSSACKSWSp8b89LCfUEjrE4iWwfhjwqK/9pHbwo=;
+        b=vSy8Ap4oedvi1uoi4Gf/VMdfcS5JJtiDTon/mIGfqt/y7WbszkDTZwKXp7TlocbvVl
+         +sBAAQeyefSh/sulYF8VL5auwguh+sWOfOGgqa7Nf8pKoGDcy2SNhDUUTjGAooOokL2k
+         8FLsc7wbPcIA6SHkw17zjkDr+iGCJvPPs0oLVlBuO/dRmXf5iluhYvzUFMi+rvtrIczp
+         zpo6lc/lCfQrlLly93rf39XOAh2ZKOXobW4LlJ4KEUWfhhovFe02wNQ0FCPtbIBkvy2p
+         BxhqWg9c1amnFP0yZKaX+SF0sXjN88W1oESgNZFj8f1eSYSv59WrcYLQoF7GfEK3FcVf
+         uY8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XPLkdTaS+cWviKWsyXZOkahcwDz4T4iRqzOYOjVp7Io=;
-        b=jvKeT2dm/wfl1kqMDFvG4SWT9UcRcYpbeVJHre3BG/UfaFAJyPOkwl1fv0DB/Z2wLi
-         koJApXjOcwVko3FI4XkFr5B2z9Bbjel2pSPatRuSKqJeaWs6J58wmuVNx0HwhqNlUO1l
-         XYcEV1jSW2bND/Q9vRwqd/pSr/PHJn1bjdVyACk+3mvzT3q/qRe7OFjIAgVA+k4uaYrw
-         vJi2cZsvRJGg06OAqYOHWnzE/at9CQK6lA/WPYykOavhHKsuLKAVUS0s/SVrERuK4ZY0
-         ZgaWPq/now68mcc3ODLcYUTWbLihx6j5/E5enLe5el8eL2UX2zVla+3UV7zAsVKGWA1a
-         gxMA==
-X-Gm-Message-State: APjAAAVs026ZOO4NwIudzdoaASlOJZc6p3ab+Ux1JJyzcRQURBDO8izX
-        +4sfj5kEXofBSkpBddp8PvYRYvOWQKw7TlHJXv/E5Q==
-X-Google-Smtp-Source: APXvYqwuDxmO6gzEBlMckDuI4tFmeGOrN4ITnig+Q6JQUL8igiXxEEb0zy9iLW8xMBSNL4ZdAZ/FeIsmaj13+7TERTM=
-X-Received: by 2002:a37:985:: with SMTP id 127mr26358532qkj.43.1567394633574;
- Sun, 01 Sep 2019 20:23:53 -0700 (PDT)
+        bh=c6Z5DSSACKSWSp8b89LCfUEjrE4iWwfhjwqK/9pHbwo=;
+        b=OW2PuGzJSIi8Yw9PxeXbnurM6MQhZ1O1tf4XImJXNZ0pESVpuNHuPnMKvc0X5XJGY1
+         rL4LXZSB1xXxCLDKrI+e2Tm3oETyV/g1NGis3HYp2MLRgCTjaU0M15QI4CrA3ApjklCS
+         yevTk2Vs8gJxS4b3akA7t+yxxLroibCeVYWkHYtvlNDCtasqd31Q+TiOw8B2xBkgzT+o
+         OSkWsVZyoqdVzlSqra/r0w45VOdQJ12iR/A5yMVdMIncL6JoMfkCH//qCFY2ZnNOSeRh
+         5MMTdhewCkxI+MXARUuz0tCJHMuc8+sXa1ISJhprW+odje637t8ZgU0waNw4y1RZ+zze
+         wQrA==
+X-Gm-Message-State: APjAAAVotlE1xzm5VG8oxffhHMPdjHPZT4x3tBgo9dlv5mXbQRUXIAsd
+        xnPIN6iI7gRtp1m91H6yjmdrUGhsDXp7kEH804enlQ==
+X-Google-Smtp-Source: APXvYqxriQFfhlHk4GewXahbFKKYVfC8BMiYNDm2u11fc4CRJuKouSCtWHVVoahxf3YSj40UWiwHjV6BgN6AVqxt5FU=
+X-Received: by 2002:a0c:fd91:: with SMTP id p17mr17416922qvr.170.1567394653221;
+ Sun, 01 Sep 2019 20:24:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <0000000000009b3b80058af452ae@google.com> <0000000000000ec274059185a63e@google.com>
-In-Reply-To: <0000000000000ec274059185a63e@google.com>
+References: <00000000000088cdb2059186312f@google.com>
+In-Reply-To: <00000000000088cdb2059186312f@google.com>
 From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sun, 1 Sep 2019 20:23:42 -0700
-Message-ID: <CACT4Y+aT5z65OZE6_TQieU5zUYWDvDtAogC45f6ifLkshBK2iw@mail.gmail.com>
-Subject: Re: kernel panic: stack is corrupted in __lock_acquire (4)
-To:     syzbot <syzbot+83979935eb6304f8cd46@syzkaller.appspotmail.com>,
-        bpf <bpf@vger.kernel.org>
+Date:   Sun, 1 Sep 2019 20:24:02 -0700
+Message-ID: <CACT4Y+Z64=fD3aw88YtEQS9o-uZ8hqe0WRr_X=FrkajJWSs3Nw@mail.gmail.com>
+Subject: Re: kernel panic: stack is corrupted in lock_release (2)
+To:     syzbot <syzbot+97deee97cf14574b96d0@syzkaller.appspotmail.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         netdev <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Sep 1, 2019 at 3:48 PM syzbot
-<syzbot+83979935eb6304f8cd46@syzkaller.appspotmail.com> wrote:
+On Sun, Sep 1, 2019 at 4:27 PM syzbot
+<syzbot+97deee97cf14574b96d0@syzkaller.appspotmail.com> wrote:
 >
-> syzbot has found a reproducer for the following crash on:
+> Hello,
 >
-> HEAD commit:    38320f69 Merge branch 'Minor-cleanup-in-devlink'
-> git tree:       net-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13d74356600000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=1bbf70b6300045af
-> dashboard link: https://syzkaller.appspot.com/bug?extid=83979935eb6304f8cd46
+> syzbot found the following crash on:
+>
+> HEAD commit:    dd7078f0 enetc: Add missing call to 'pci_free_irq_vectors(..
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=115fe0fa600000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=2a6a2b9826fdadf9
+> dashboard link: https://syzkaller.appspot.com/bug?extid=97deee97cf14574b96d0
 > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1008b232600000
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11f7c2fe600000
 
 Stack corruption + bpf maps in repro triggers some bells. +bpf mailing list.
 
 > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: syzbot+83979935eb6304f8cd46@syzkaller.appspotmail.com
+> Reported-by: syzbot+97deee97cf14574b96d0@syzkaller.appspotmail.com
 >
 > Kernel panic - not syncing: stack-protector: Kernel stack is corrupted in:
-> __lock_acquire+0x36fa/0x4c30 kernel/locking/lockdep.c:3907
-> CPU: 0 PID: 8662 Comm: syz-executor.4 Not tainted 5.3.0-rc6+ #153
+> lock_release+0x866/0x960 kernel/locking/lockdep.c:4435
+> CPU: 0 PID: 9965 Comm: syz-executor.0 Not tainted 5.3.0-rc6+ #182
 > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
 > Google 01/01/2011
 > Call Trace:
 > Kernel Offset: disabled
 > Rebooting in 86400 seconds..
 >
+>
+> ---
+> This bug is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this bug report. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> syzbot can test patches for this bug, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
+>
 > --
 > You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
 > To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000000ec274059185a63e%40google.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000088cdb2059186312f%40google.com.
