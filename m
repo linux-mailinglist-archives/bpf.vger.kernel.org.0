@@ -2,207 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1A3A58FA
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2019 16:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A2DA5A0C
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2019 17:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726874AbfIBOPb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Sep 2019 10:15:31 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:41390 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726847AbfIBOPa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Sep 2019 10:15:30 -0400
-Received: by mail-qk1-f194.google.com with SMTP id g17so12599166qkk.8
-        for <bpf@vger.kernel.org>; Mon, 02 Sep 2019 07:15:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vg5cV8RgYZAUwO4BlUHQDzrdFcjapkG4a4PKGmuKmDk=;
-        b=mj/Q0KsoKkL2aU8JZYYOHHonFGHI32S47bwd5c/tBzZWVQqk20Z5lLx+BxwVj/27qU
-         CVKjoFn4KS2uLQ/mVkJkNF2mAgDtmCdpBVGUKns+p5oTekFtv67IL8RRWmpZqFtxaZ3U
-         v2gxg4Ku+yL/kAxYWoaL9NFMXqoa40a0L1BCLjo/4mrl/lj0XaHeavdXQVStmMlhMohI
-         GtAbBq5vOdH/MuvS6pe6D9Sdce9cGAjxA0OGr3pmJ+a3bnABM0SX6/QPtxwY8LhWztnJ
-         GuG0qHfkIj9uf2P8ls1l987c+SgQm0iqRt/CuNzTsAGgvJIL4p+Kb21tQgfa6Cxq6myZ
-         wTUQ==
+        id S1731791AbfIBPB5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Sep 2019 11:01:57 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:47672 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731782AbfIBPB5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Sep 2019 11:01:57 -0400
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 1A76481F0E
+        for <bpf@vger.kernel.org>; Mon,  2 Sep 2019 15:01:57 +0000 (UTC)
+Received: by mail-qt1-f197.google.com with SMTP id t5so15856164qtd.21
+        for <bpf@vger.kernel.org>; Mon, 02 Sep 2019 08:01:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vg5cV8RgYZAUwO4BlUHQDzrdFcjapkG4a4PKGmuKmDk=;
-        b=Oz4H1C3LO+w7X/iyubUmZTsv7bLs0B46p7PwAdy2GkMuH0B7csFmG2eppDtnXdr+uJ
-         dlrQG3z2cfuup0/Bl/pFjW/rJofvul2zawU1WkZl0okgACegeRHTcNaZBqXD8OcN7SW+
-         STX7Kve1OmyDlKEnr2Swx69yf5t4Oq1kQewYrkfMwM1F+qzh+giVKTFCOjfkBXIVbKc4
-         vAmd/GPxf5VmdsNLXAMp88F7P+rurmKEODBi04L0uW03RjBcOtuea5fQlGhbD7dgc2HI
-         SPfpBvYRVbLlotpQ3AKR9nzkDod56Vgx9t6rHUH3K0IByXk2GP7rILWYKu0l7JgqbIlA
-         h/fg==
-X-Gm-Message-State: APjAAAXyaYsBifhMnQlEij9zyUzNi6poogeRo5zymSSbPwFE5538uO3h
-        ouPmj7gayweLU+lvpVhpZhJ80Q==
-X-Google-Smtp-Source: APXvYqwh5YLrf3v8H14X6qT6Rudakihge2BEBvIqE2ipHpxFGIlfyf61HS+kjaheOm4zXVDWDgA7sA==
-X-Received: by 2002:a37:de14:: with SMTP id h20mr26496247qkj.260.1567433729523;
-        Mon, 02 Sep 2019 07:15:29 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s (li1320-244.members.linode.com. [45.79.221.244])
-        by smtp.gmail.com with ESMTPSA id d45sm3752547qtc.70.2019.09.02.07.15.17
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 02 Sep 2019 07:15:28 -0700 (PDT)
-Date:   Mon, 2 Sep 2019 22:15:11 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suzuki Poulouse <suzuki.poulose@arm.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v5] perf machine: arm/arm64: Improve completeness for
- kernel address space
-Message-ID: <20190902141511.GF4931@leoy-ThinkPad-X240s>
-References: <20190815082521.16885-1-leo.yan@linaro.org>
- <d874e6b3-c115-6c8c-bb12-160cfd600505@intel.com>
- <20190815113242.GA28881@leoy-ThinkPad-X240s>
- <e0919e39-7607-815b-3a12-96f098e45a5f@intel.com>
- <20190816014541.GA17960@leoy-ThinkPad-X240s>
- <363577f1-097e-eddd-a6ca-b23f644dd8ce@intel.com>
- <20190826125105.GA3288@leoy-ThinkPad-X240s>
+         :mime-version:content-disposition:in-reply-to;
+        bh=3eUULgrjIJg0a0dnW4SKY8dVu/LzudzFut/uYLoCkM0=;
+        b=XbiQ75Qi8Hu2Tw/VJGKNG0ZrWDM6gf/SQqm7/4hN/Q2M9y6F+9qLICtGkfqre3mmVw
+         RTNvSkZ4fAIKPL1C/1POLk8I9Q4T2m48bdGCXTotSY1IKJr87YYSXHZfuUWhBb7BzhYJ
+         AuES6vo76aGk7l/p9gloAlKMgKDDktBYelVctL5mtBLMBmqmg5E5dcvuH64jwRb5K27y
+         uaMg7Fu6SHmjLMnPqg/DKGQYUp5W/Cix2Fe4zgaQttKj8SEUnjsL+N4CLoYikOE6tEUX
+         7gVE1wVeHc3cGE1c3YzmagENnYSSrj3E3KLaYmuIl1O2CWM9dBfKNVYn6pkzm1U5c9oR
+         UyyA==
+X-Gm-Message-State: APjAAAXGfeUOUoKnKHl5m3OESCMiGPUwGasWKMDR6oGEBKuNunztMtzr
+        jfHAFDndRSD+oSGhNzlp1nECwKaLR1rBO5L/2F7u7EQkcN38veYrgfIZCJVrUzA7n6QrGEPby0w
+        llrtngR/wWXaY
+X-Received: by 2002:ac8:750e:: with SMTP id u14mr28909659qtq.282.1567436516414;
+        Mon, 02 Sep 2019 08:01:56 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqzukZkbHkn1xgGj19iRwoWTZ0EUi0+QeIBA4njsNuROpWrZ/97Kw7ZdMd2ZPPImX2/1Fxx4Fg==
+X-Received: by 2002:ac8:750e:: with SMTP id u14mr28909631qtq.282.1567436516228;
+        Mon, 02 Sep 2019 08:01:56 -0700 (PDT)
+Received: from redhat.com (bzq-79-180-62-110.red.bezeqint.net. [79.180.62.110])
+        by smtp.gmail.com with ESMTPSA id o11sm4589103qkm.105.2019.09.02.08.01.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Sep 2019 08:01:55 -0700 (PDT)
+Date:   Mon, 2 Sep 2019 11:01:48 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     ? jiang <jiangkidd@hotmail.com>
+Cc:     "jasowang@redhat.com" <jasowang@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "xdp-newbies@vger.kernel.org" <xdp-newbies@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "jiangran.jr@alibaba-inc.com" <jiangran.jr@alibaba-inc.com>
+Subject: Re: [PATCH v3] virtio-net: lower min ring num_free for efficiency
+Message-ID: <20190902110038-mutt-send-email-mst@kernel.org>
+References: <BYAPR14MB32059DD9439280B66B532351A6AB0@BYAPR14MB3205.namprd14.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190826125105.GA3288@leoy-ThinkPad-X240s>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <BYAPR14MB32059DD9439280B66B532351A6AB0@BYAPR14MB3205.namprd14.prod.outlook.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Adrian,
+On Tue, Aug 20, 2019 at 02:51:23AM +0000, ? jiang wrote:
+> This change lowers ring buffer reclaim threshold from 1/2*queue to budget
+> for better performance. According to our test with qemu + dpdk, packet
+> dropping happens when the guest is not able to provide free buffer in
+> avail ring timely with default 1/2*queue. The value in the patch has been
+> tested and does show better performance.
+> 
+> Test setup: iperf3 to generate packets to guest (total 30mins, pps 400k, UDP)
+> avg packets drop before: 2842
+> avg packets drop after: 360(-87.3%)
+> 
+> Further, current code suffers from a starvation problem: the amount of
+> work done by try_fill_recv is not bounded by the budget parameter, thus
+> (with large queues) once in a while userspace gets blocked for a long
+> time while queue is being refilled. Trigger refills earlier to make sure
+> the amount of work to do is limited.
+> 
+> Signed-off-by: jiangkidd <jiangkidd@hotmail.com>
+> Acked-by: Jason Wang <jasowang@redhat.com>
+> Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
-On Mon, Aug 26, 2019 at 08:51:05PM +0800, Leo Yan wrote:
-> Hi Adrian,
-> 
-> On Fri, Aug 16, 2019 at 04:00:02PM +0300, Adrian Hunter wrote:
-> > On 16/08/19 4:45 AM, Leo Yan wrote:
-> > > Hi Adrian,
-> > > 
-> > > On Thu, Aug 15, 2019 at 02:45:57PM +0300, Adrian Hunter wrote:
-> > > 
-> > > [...]
-> > > 
-> > >>>> How come you cannot use kallsyms to get the information?
-> > >>>
-> > >>> Thanks for pointing out this.  Sorry I skipped your comment "I don't
-> > >>> know how you intend to calculate ARM_PRE_START_SIZE" when you reviewed
-> > >>> the patch v3, I should use that chance to elaborate the detailed idea
-> > >>> and so can get more feedback/guidance before procceed.
-> > >>>
-> > >>> Actually, I have considered to use kallsyms when worked on the previous
-> > >>> patch set.
-> > >>>
-> > >>> As mentioned in patch set v4's cover letter, I tried to implement
-> > >>> machine__create_extra_kernel_maps() for arm/arm64, the purpose is to
-> > >>> parse kallsyms so can find more kernel maps and thus also can fixup
-> > >>> the kernel start address.  But I found the 'perf script' tool directly
-> > >>> calls machine__get_kernel_start() instead of running into the flow for
-> > >>> machine__create_extra_kernel_maps();
-> > >>
-> > >> Doesn't it just need to loop through each kernel map to find the lowest
-> > >> start address?
-> > > 
-> > > Based on your suggestion, I worked out below change and verified it
-> > > can work well on arm64 for fixing up start address; please let me know
-> > > if the change works for you?
-> > 
-> > How does that work if take a perf.data file to a machine with a different
-> > architecture?
-> 
-> Sorry I delayed so long to respond to your question; I didn't have
-> confidence to give out very reasonale answer and this is the main reason
-> for delaying.
 
-Could you take chance to review my below replying?  I'd like to get
-your confirmation before I send out offical patch.
+Dave, could you merge this please?
 
-Thanks,
-Leo Yan
+Either net or net-next at your discretion.
 
+> ---
+>  drivers/net/virtio_net.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> For your question for taking a perf.data file to a machine with a
-> different architecture, we can firstly use command 'perf buildid-list'
-> to print out the buildid for kallsyms, based on the dumped buildid we
-> can find out the location for the saved kallsyms file; then we can use
-> option '--kallsyms' to specify the offline kallsyms file and use the
-> offline kallsyms to fixup kernel start address.  The detailed commands
-> are listed as below:
-> 
-> root@debian:~# perf buildid-list
-> 7b36dfca8317ef74974ebd7ee5ec0a8b35c97640 [kernel.kallsyms]
-> 56b84aa88a1bcfe222a97a53698b92723a3977ca /usr/lib/systemd/systemd
-> 0956b952e9cd673d48ff2cfeb1a9dbd0c853e686 /usr/lib/aarch64-linux-gnu/libm-2.28.so
-> [...]
-> 
-> root@debian:~# perf script --kallsyms ~/.debug/\[kernel.kallsyms\]/7b36dfca8317ef74974ebd7ee5ec0a8b35c97640/kallsyms
-> 
-> The amended patch is as below, please review and always welcome
-> any suggestions or comments!
-> 
-> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> index 5734460fc89e..593f05cc453f 100644
-> --- a/tools/perf/util/machine.c
-> +++ b/tools/perf/util/machine.c
-> @@ -2672,9 +2672,26 @@ int machine__nr_cpus_avail(struct machine *machine)
->  	return machine ? perf_env__nr_cpus_avail(machine->env) : 0;
->  }
->  
-> +static int machine__fixup_kernel_start(void *arg,
-> +				       const char *name __maybe_unused,
-> +				       char type,
-> +				       u64 start)
-> +{
-> +	struct machine *machine = arg;
-> +
-> +	type = toupper(type);
-> +
-> +	/* Fixup for text, weak, data and bss sections. */
-> +	if (type == 'T' || type == 'W' || type == 'D' || type == 'B')
-> +		machine->kernel_start = min(machine->kernel_start, start);
-> +
-> +	return 0;
-> +}
-> +
->  int machine__get_kernel_start(struct machine *machine)
->  {
->  	struct map *map = machine__kernel_map(machine);
-> +	char filename[PATH_MAX];
->  	int err = 0;
->  
->  	/*
-> @@ -2696,6 +2713,22 @@ int machine__get_kernel_start(struct machine *machine)
->  		if (!err && !machine__is(machine, "x86_64"))
->  			machine->kernel_start = map->start;
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 0d4115c9e20b..bc08be7925eb 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -1331,7 +1331,7 @@ static int virtnet_receive(struct receive_queue *rq, int budget,
+>  		}
 >  	}
-> +
-> +	if (symbol_conf.kallsyms_name != NULL) {
-> +		strncpy(filename, symbol_conf.kallsyms_name, PATH_MAX);
-> +	} else {
-> +		machine__get_kallsyms_filename(machine, filename, PATH_MAX);
-> +
-> +		if (symbol__restricted_filename(filename, "/proc/kallsyms"))
-> +			goto out;
-> +	}
-> +
-> +	if (kallsyms__parse(filename, machine, machine__fixup_kernel_start))
-> +		pr_warning("Fail to fixup kernel start address. skipping...\n");
-> +
-> +out:
->  	return err;
->  }
 >  
-> 
-> Thanks,
-> Leo Yan
+> -	if (rq->vq->num_free > virtqueue_get_vring_size(rq->vq) / 2) {
+> +	if (rq->vq->num_free > min((unsigned int)budget, virtqueue_get_vring_size(rq->vq)) / 2) {
+>  		if (!try_fill_recv(vi, rq, GFP_ATOMIC))
+>  			schedule_delayed_work(&vi->refill, 0);
+>  	}
+> -- 
+> 2.11.0
