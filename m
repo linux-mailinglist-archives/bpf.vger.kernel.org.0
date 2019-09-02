@@ -2,81 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B23A4B1B
-	for <lists+bpf@lfdr.de>; Sun,  1 Sep 2019 20:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8057A4D83
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2019 05:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729141AbfIASXC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 1 Sep 2019 14:23:02 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:46869 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729140AbfIASXB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 1 Sep 2019 14:23:01 -0400
-Received: by mail-io1-f72.google.com with SMTP id o3so1994507iom.13
-        for <bpf@vger.kernel.org>; Sun, 01 Sep 2019 11:23:01 -0700 (PDT)
+        id S1729211AbfIBDX6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 1 Sep 2019 23:23:58 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:45509 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729229AbfIBDXz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 1 Sep 2019 23:23:55 -0400
+Received: by mail-qk1-f193.google.com with SMTP id m2so11341156qki.12
+        for <bpf@vger.kernel.org>; Sun, 01 Sep 2019 20:23:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XPLkdTaS+cWviKWsyXZOkahcwDz4T4iRqzOYOjVp7Io=;
+        b=Bjd4dmZKm9ahzyCGqWgK2g+TjcFTBZ1FrTjYxEToos+V4YveECHwHx9p1DkAHT4Xhr
+         lpwY9V1q/wMkVg2z/8D56u825hL5LemsxNInEYAKLNu1m3Ubo/MP3i0tUBuFiul4q9HE
+         2KV/4MRk3FoYm0Abm4Yy+cLPpa64EpHV4Bg3evz6xas0jmbjo74Val4ikz9hgYgEqBQZ
+         yLBnUiKWnpmvSEvnBrCbcUC1yiQH0rulLfLcLYUJkShtVJBRGUG3CRZlvQDOI6O1Xz/M
+         TrMKTDHwZwEsA/1IpGibz/2F7lzpq+1noLo8OWrLNR0Nw1xcqHL8P8EhhnhWaS+/MdcP
+         O2QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=nuF/NvQUPru9tAlC0mm8ctMiLuI0uuXct3/25gBy3VU=;
-        b=hVKbZZZ/X2ZJuL45bS9Y8pntIcGSB879ccn8KRSJKE8FF2rdVrB6EHGF4GEgZFAu7e
-         ekxklnVAD8jAMp7te/VWHaY+Q2fI6IE63g2BK0vBffTzDDUjN1o1pxz1XpObLU1Oadcw
-         69BIC/4X0AONk2Uow9BgDRsgXYzHPJp4+jaUAfn8FnhK1OB8GRYwIyRTvYCQd9uInMs1
-         /urFmKZNKvOnoND/Esl8GuoIryhvV6sIH8AkY761Q9aF4+tUxxG8K3pslU6eZqY/qh0p
-         01YEOeXH77JWirGG93Mh36NzICnHicuhT/wuPhSE4L7k419wjq6/vhjimy3zGVvy98qL
-         lsIg==
-X-Gm-Message-State: APjAAAW1UCM2neBmVOtOhT2VaYDlwP1qUpe4mBgeHDIgDl5Up2VWx1uU
-        PN4nrnm+Ev7aY3Py6GYqxTpCZ6qopoieKwnDtoNX7OE57VBt
-X-Google-Smtp-Source: APXvYqxx1JUJRFI65w6pHYwBvLIZxZYDddDgdFCblHTcdGM//eA3cmcidNDkcKZhgDPRTq/ohBQfHqUnNU60eqT/NjGvpKx0FZJx
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XPLkdTaS+cWviKWsyXZOkahcwDz4T4iRqzOYOjVp7Io=;
+        b=jvKeT2dm/wfl1kqMDFvG4SWT9UcRcYpbeVJHre3BG/UfaFAJyPOkwl1fv0DB/Z2wLi
+         koJApXjOcwVko3FI4XkFr5B2z9Bbjel2pSPatRuSKqJeaWs6J58wmuVNx0HwhqNlUO1l
+         XYcEV1jSW2bND/Q9vRwqd/pSr/PHJn1bjdVyACk+3mvzT3q/qRe7OFjIAgVA+k4uaYrw
+         vJi2cZsvRJGg06OAqYOHWnzE/at9CQK6lA/WPYykOavhHKsuLKAVUS0s/SVrERuK4ZY0
+         ZgaWPq/now68mcc3ODLcYUTWbLihx6j5/E5enLe5el8eL2UX2zVla+3UV7zAsVKGWA1a
+         gxMA==
+X-Gm-Message-State: APjAAAVs026ZOO4NwIudzdoaASlOJZc6p3ab+Ux1JJyzcRQURBDO8izX
+        +4sfj5kEXofBSkpBddp8PvYRYvOWQKw7TlHJXv/E5Q==
+X-Google-Smtp-Source: APXvYqwuDxmO6gzEBlMckDuI4tFmeGOrN4ITnig+Q6JQUL8igiXxEEb0zy9iLW8xMBSNL4ZdAZ/FeIsmaj13+7TERTM=
+X-Received: by 2002:a37:985:: with SMTP id 127mr26358532qkj.43.1567394633574;
+ Sun, 01 Sep 2019 20:23:53 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a5d:8599:: with SMTP id f25mr3677451ioj.265.1567362180985;
- Sun, 01 Sep 2019 11:23:00 -0700 (PDT)
-Date:   Sun, 01 Sep 2019 11:23:00 -0700
-In-Reply-To: <000000000000b7a14105913fcca8@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000083a86059181f20b@google.com>
-Subject: Re: WARNING in __mark_chain_precision (2)
-From:   syzbot <syzbot+c8d66267fd2b5955287e@syzkaller.appspotmail.com>
-To:     allison@lohutok.net, arvid.brodin@alten.se, ast@kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        daniel@iogearbox.net, davem@davemloft.net,
-        gregkh@linuxfoundation.org, hawk@kernel.org,
-        jakub.kicinski@netronome.com, jic23@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, knaack.h@gmx.de,
-        kstewart@linuxfoundation.org, lars@metafoo.de,
-        linus.walleij@linaro.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mchehab+samsung@kernel.org,
-        netdev@vger.kernel.org, nicolas.ferre@microchip.com,
-        paulmck@linux.ibm.com, pmeerw@pmeerw.net, rfontana@redhat.com,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, torvalds@linux-foundation.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+References: <0000000000009b3b80058af452ae@google.com> <0000000000000ec274059185a63e@google.com>
+In-Reply-To: <0000000000000ec274059185a63e@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Sun, 1 Sep 2019 20:23:42 -0700
+Message-ID: <CACT4Y+aT5z65OZE6_TQieU5zUYWDvDtAogC45f6ifLkshBK2iw@mail.gmail.com>
+Subject: Re: kernel panic: stack is corrupted in __lock_acquire (4)
+To:     syzbot <syzbot+83979935eb6304f8cd46@syzkaller.appspotmail.com>,
+        bpf <bpf@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has bisected this bug to:
+On Sun, Sep 1, 2019 at 3:48 PM syzbot
+<syzbot+83979935eb6304f8cd46@syzkaller.appspotmail.com> wrote:
+>
+> syzbot has found a reproducer for the following crash on:
+>
+> HEAD commit:    38320f69 Merge branch 'Minor-cleanup-in-devlink'
+> git tree:       net-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13d74356600000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=1bbf70b6300045af
+> dashboard link: https://syzkaller.appspot.com/bug?extid=83979935eb6304f8cd46
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1008b232600000
 
-commit e786741ff1b52769b044b7f4407f39cd13ee5d2d
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu Jul 11 22:36:02 2019 +0000
+Stack corruption + bpf maps in repro triggers some bells. +bpf mailing list.
 
-     Merge tag 'staging-5.3-rc1' of  
-git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11958f12600000
-start commit:   47ee6e86 selftests/bpf: remove wrong nhoff in flow dissect..
-git tree:       bpf-next
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=13958f12600000
-console output: https://syzkaller.appspot.com/x/log.txt?x=15958f12600000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d4cf1ffb87d590d7
-dashboard link: https://syzkaller.appspot.com/bug?extid=c8d66267fd2b5955287e
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d26ebc600000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=127805ca600000
-
-Reported-by: syzbot+c8d66267fd2b5955287e@syzkaller.appspotmail.com
-Fixes: e786741ff1b5 ("Merge tag 'staging-5.3-rc1' of  
-git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+83979935eb6304f8cd46@syzkaller.appspotmail.com
+>
+> Kernel panic - not syncing: stack-protector: Kernel stack is corrupted in:
+> __lock_acquire+0x36fa/0x4c30 kernel/locking/lockdep.c:3907
+> CPU: 0 PID: 8662 Comm: syz-executor.4 Not tainted 5.3.0-rc6+ #153
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+> Google 01/01/2011
+> Call Trace:
+> Kernel Offset: disabled
+> Rebooting in 86400 seconds..
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000000ec274059185a63e%40google.com.
