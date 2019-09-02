@@ -2,116 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 95566A4F1C
-	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2019 08:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1A3A58FA
+	for <lists+bpf@lfdr.de>; Mon,  2 Sep 2019 16:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729417AbfIBGPB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Sep 2019 02:15:01 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:22448 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729415AbfIBGPB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 2 Sep 2019 02:15:01 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x8264pmb026548;
-        Sun, 1 Sep 2019 23:14:30 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0818; bh=G+tb34DLVI/GaywJTNbYC1jeXErBz+Ms/6koVGt7RTU=;
- b=K3syjr2bCax7AufTwpWHSbhbUxU5VYIwQEGesdU+fjDriqoSzEFdkr2JUq977PDcmeX7
- uuc14vje7aiqve851BL7WogZtLYTz0XWArF5xGzBtOTHm80fceTgWCY1i7TJDxdLR7b6
- aQY2phvHAnpFQvujyc1ht8rSzxumpnnrgGexiwo+0sAxrDgW+277R4zSow83oGnV1nPm
- n5ZqLh6CVeEy1Z2ukXY74mOeELiVxKdof9BJYbxbnBJJCtbuNk4cHveoXOVAI/8v+L69
- 5KyB0KUP69rHZi7jXrl8CNGPgOIVe4M9ILgvYaNvF6rzGe4VoN50GIuCpyvOKgDZ7C2b 6g== 
-Received: from sc-exch01.marvell.com ([199.233.58.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 2uqrdm52ma-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 01 Sep 2019 23:14:30 -0700
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Sun, 1 Sep
- 2019 23:14:27 -0700
-Received: from maili.marvell.com (10.93.176.43) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
- Transport; Sun, 1 Sep 2019 23:14:27 -0700
-Received: from jerin-lab.marvell.com (jerin-lab.marvell.com [10.28.34.14])
-        by maili.marvell.com (Postfix) with ESMTP id BA3533F703F;
-        Sun,  1 Sep 2019 23:14:23 -0700 (PDT)
-From:   <jerinj@marvell.com>
-To:     <netdev@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Martin KaFai Lau" <kafai@fb.com>,
+        id S1726874AbfIBOPb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Sep 2019 10:15:31 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:41390 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726847AbfIBOPa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Sep 2019 10:15:30 -0400
+Received: by mail-qk1-f194.google.com with SMTP id g17so12599166qkk.8
+        for <bpf@vger.kernel.org>; Mon, 02 Sep 2019 07:15:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vg5cV8RgYZAUwO4BlUHQDzrdFcjapkG4a4PKGmuKmDk=;
+        b=mj/Q0KsoKkL2aU8JZYYOHHonFGHI32S47bwd5c/tBzZWVQqk20Z5lLx+BxwVj/27qU
+         CVKjoFn4KS2uLQ/mVkJkNF2mAgDtmCdpBVGUKns+p5oTekFtv67IL8RRWmpZqFtxaZ3U
+         v2gxg4Ku+yL/kAxYWoaL9NFMXqoa40a0L1BCLjo/4mrl/lj0XaHeavdXQVStmMlhMohI
+         GtAbBq5vOdH/MuvS6pe6D9Sdce9cGAjxA0OGr3pmJ+a3bnABM0SX6/QPtxwY8LhWztnJ
+         GuG0qHfkIj9uf2P8ls1l987c+SgQm0iqRt/CuNzTsAGgvJIL4p+Kb21tQgfa6Cxq6myZ
+         wTUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vg5cV8RgYZAUwO4BlUHQDzrdFcjapkG4a4PKGmuKmDk=;
+        b=Oz4H1C3LO+w7X/iyubUmZTsv7bLs0B46p7PwAdy2GkMuH0B7csFmG2eppDtnXdr+uJ
+         dlrQG3z2cfuup0/Bl/pFjW/rJofvul2zawU1WkZl0okgACegeRHTcNaZBqXD8OcN7SW+
+         STX7Kve1OmyDlKEnr2Swx69yf5t4Oq1kQewYrkfMwM1F+qzh+giVKTFCOjfkBXIVbKc4
+         vAmd/GPxf5VmdsNLXAMp88F7P+rurmKEODBi04L0uW03RjBcOtuea5fQlGhbD7dgc2HI
+         SPfpBvYRVbLlotpQ3AKR9nzkDod56Vgx9t6rHUH3K0IByXk2GP7rILWYKu0l7JgqbIlA
+         h/fg==
+X-Gm-Message-State: APjAAAXyaYsBifhMnQlEij9zyUzNi6poogeRo5zymSSbPwFE5538uO3h
+        ouPmj7gayweLU+lvpVhpZhJ80Q==
+X-Google-Smtp-Source: APXvYqwh5YLrf3v8H14X6qT6Rudakihge2BEBvIqE2ipHpxFGIlfyf61HS+kjaheOm4zXVDWDgA7sA==
+X-Received: by 2002:a37:de14:: with SMTP id h20mr26496247qkj.260.1567433729523;
+        Mon, 02 Sep 2019 07:15:29 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s (li1320-244.members.linode.com. [45.79.221.244])
+        by smtp.gmail.com with ESMTPSA id d45sm3752547qtc.70.2019.09.02.07.15.17
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 02 Sep 2019 07:15:28 -0700 (PDT)
+Date:   Mon, 2 Sep 2019 22:15:11 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "open list:BPF JIT for ARM64" <bpf@vger.kernel.org>,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-CC:     Jerin Jacob <jerinj@marvell.com>
-Subject: [PATCH bpf-next] arm64: bpf: optimize modulo operation
-Date:   Mon, 2 Sep 2019 11:44:48 +0530
-Message-ID: <20190902061448.28252-1-jerinj@marvell.com>
-X-Mailer: git-send-email 2.23.0
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Suzuki Poulouse <suzuki.poulose@arm.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5] perf machine: arm/arm64: Improve completeness for
+ kernel address space
+Message-ID: <20190902141511.GF4931@leoy-ThinkPad-X240s>
+References: <20190815082521.16885-1-leo.yan@linaro.org>
+ <d874e6b3-c115-6c8c-bb12-160cfd600505@intel.com>
+ <20190815113242.GA28881@leoy-ThinkPad-X240s>
+ <e0919e39-7607-815b-3a12-96f098e45a5f@intel.com>
+ <20190816014541.GA17960@leoy-ThinkPad-X240s>
+ <363577f1-097e-eddd-a6ca-b23f644dd8ce@intel.com>
+ <20190826125105.GA3288@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
- definitions=2019-09-02_02:2019-08-29,2019-09-02 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190826125105.GA3288@leoy-ThinkPad-X240s>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jerin Jacob <jerinj@marvell.com>
+Hi Adrian,
 
-Optimize modulo operation instruction generation by
-using single MSUB instruction vs MUL followed by SUB
-instruction scheme.
+On Mon, Aug 26, 2019 at 08:51:05PM +0800, Leo Yan wrote:
+> Hi Adrian,
+> 
+> On Fri, Aug 16, 2019 at 04:00:02PM +0300, Adrian Hunter wrote:
+> > On 16/08/19 4:45 AM, Leo Yan wrote:
+> > > Hi Adrian,
+> > > 
+> > > On Thu, Aug 15, 2019 at 02:45:57PM +0300, Adrian Hunter wrote:
+> > > 
+> > > [...]
+> > > 
+> > >>>> How come you cannot use kallsyms to get the information?
+> > >>>
+> > >>> Thanks for pointing out this.  Sorry I skipped your comment "I don't
+> > >>> know how you intend to calculate ARM_PRE_START_SIZE" when you reviewed
+> > >>> the patch v3, I should use that chance to elaborate the detailed idea
+> > >>> and so can get more feedback/guidance before procceed.
+> > >>>
+> > >>> Actually, I have considered to use kallsyms when worked on the previous
+> > >>> patch set.
+> > >>>
+> > >>> As mentioned in patch set v4's cover letter, I tried to implement
+> > >>> machine__create_extra_kernel_maps() for arm/arm64, the purpose is to
+> > >>> parse kallsyms so can find more kernel maps and thus also can fixup
+> > >>> the kernel start address.  But I found the 'perf script' tool directly
+> > >>> calls machine__get_kernel_start() instead of running into the flow for
+> > >>> machine__create_extra_kernel_maps();
+> > >>
+> > >> Doesn't it just need to loop through each kernel map to find the lowest
+> > >> start address?
+> > > 
+> > > Based on your suggestion, I worked out below change and verified it
+> > > can work well on arm64 for fixing up start address; please let me know
+> > > if the change works for you?
+> > 
+> > How does that work if take a perf.data file to a machine with a different
+> > architecture?
+> 
+> Sorry I delayed so long to respond to your question; I didn't have
+> confidence to give out very reasonale answer and this is the main reason
+> for delaying.
 
-Signed-off-by: Jerin Jacob <jerinj@marvell.com>
----
- arch/arm64/net/bpf_jit.h      | 3 +++
- arch/arm64/net/bpf_jit_comp.c | 6 ++----
- 2 files changed, 5 insertions(+), 4 deletions(-)
+Could you take chance to review my below replying?  I'd like to get
+your confirmation before I send out offical patch.
 
-diff --git a/arch/arm64/net/bpf_jit.h b/arch/arm64/net/bpf_jit.h
-index cb7ab50b7657..eb73f9f72c46 100644
---- a/arch/arm64/net/bpf_jit.h
-+++ b/arch/arm64/net/bpf_jit.h
-@@ -171,6 +171,9 @@
- /* Rd = Ra + Rn * Rm */
- #define A64_MADD(sf, Rd, Ra, Rn, Rm) aarch64_insn_gen_data3(Rd, Ra, Rn, Rm, \
- 	A64_VARIANT(sf), AARCH64_INSN_DATA3_MADD)
-+/* Rd = Ra - Rn * Rm */
-+#define A64_MSUB(sf, Rd, Ra, Rn, Rm) aarch64_insn_gen_data3(Rd, Ra, Rn, Rm, \
-+	A64_VARIANT(sf), AARCH64_INSN_DATA3_MSUB)
- /* Rd = Rn * Rm */
- #define A64_MUL(sf, Rd, Rn, Rm) A64_MADD(sf, Rd, A64_ZR, Rn, Rm)
- 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index f5b437f8a22b..cdc79de0c794 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -409,8 +409,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 			break;
- 		case BPF_MOD:
- 			emit(A64_UDIV(is64, tmp, dst, src), ctx);
--			emit(A64_MUL(is64, tmp, tmp, src), ctx);
--			emit(A64_SUB(is64, dst, dst, tmp), ctx);
-+			emit(A64_MSUB(is64, dst, dst, tmp, src), ctx);
- 			break;
- 		}
- 		break;
-@@ -516,8 +515,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 	case BPF_ALU64 | BPF_MOD | BPF_K:
- 		emit_a64_mov_i(is64, tmp2, imm, ctx);
- 		emit(A64_UDIV(is64, tmp, dst, tmp2), ctx);
--		emit(A64_MUL(is64, tmp, tmp, tmp2), ctx);
--		emit(A64_SUB(is64, dst, dst, tmp), ctx);
-+		emit(A64_MSUB(is64, dst, dst, tmp, tmp2), ctx);
- 		break;
- 	case BPF_ALU | BPF_LSH | BPF_K:
- 	case BPF_ALU64 | BPF_LSH | BPF_K:
--- 
-2.23.0
+Thanks,
+Leo Yan
 
+> 
+> For your question for taking a perf.data file to a machine with a
+> different architecture, we can firstly use command 'perf buildid-list'
+> to print out the buildid for kallsyms, based on the dumped buildid we
+> can find out the location for the saved kallsyms file; then we can use
+> option '--kallsyms' to specify the offline kallsyms file and use the
+> offline kallsyms to fixup kernel start address.  The detailed commands
+> are listed as below:
+> 
+> root@debian:~# perf buildid-list
+> 7b36dfca8317ef74974ebd7ee5ec0a8b35c97640 [kernel.kallsyms]
+> 56b84aa88a1bcfe222a97a53698b92723a3977ca /usr/lib/systemd/systemd
+> 0956b952e9cd673d48ff2cfeb1a9dbd0c853e686 /usr/lib/aarch64-linux-gnu/libm-2.28.so
+> [...]
+> 
+> root@debian:~# perf script --kallsyms ~/.debug/\[kernel.kallsyms\]/7b36dfca8317ef74974ebd7ee5ec0a8b35c97640/kallsyms
+> 
+> The amended patch is as below, please review and always welcome
+> any suggestions or comments!
+> 
+> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> index 5734460fc89e..593f05cc453f 100644
+> --- a/tools/perf/util/machine.c
+> +++ b/tools/perf/util/machine.c
+> @@ -2672,9 +2672,26 @@ int machine__nr_cpus_avail(struct machine *machine)
+>  	return machine ? perf_env__nr_cpus_avail(machine->env) : 0;
+>  }
+>  
+> +static int machine__fixup_kernel_start(void *arg,
+> +				       const char *name __maybe_unused,
+> +				       char type,
+> +				       u64 start)
+> +{
+> +	struct machine *machine = arg;
+> +
+> +	type = toupper(type);
+> +
+> +	/* Fixup for text, weak, data and bss sections. */
+> +	if (type == 'T' || type == 'W' || type == 'D' || type == 'B')
+> +		machine->kernel_start = min(machine->kernel_start, start);
+> +
+> +	return 0;
+> +}
+> +
+>  int machine__get_kernel_start(struct machine *machine)
+>  {
+>  	struct map *map = machine__kernel_map(machine);
+> +	char filename[PATH_MAX];
+>  	int err = 0;
+>  
+>  	/*
+> @@ -2696,6 +2713,22 @@ int machine__get_kernel_start(struct machine *machine)
+>  		if (!err && !machine__is(machine, "x86_64"))
+>  			machine->kernel_start = map->start;
+>  	}
+> +
+> +	if (symbol_conf.kallsyms_name != NULL) {
+> +		strncpy(filename, symbol_conf.kallsyms_name, PATH_MAX);
+> +	} else {
+> +		machine__get_kallsyms_filename(machine, filename, PATH_MAX);
+> +
+> +		if (symbol__restricted_filename(filename, "/proc/kallsyms"))
+> +			goto out;
+> +	}
+> +
+> +	if (kallsyms__parse(filename, machine, machine__fixup_kernel_start))
+> +		pr_warning("Fail to fixup kernel start address. skipping...\n");
+> +
+> +out:
+>  	return err;
+>  }
+>  
+> 
+> Thanks,
+> Leo Yan
