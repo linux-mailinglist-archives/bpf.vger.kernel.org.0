@@ -2,149 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 89279A770C
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 00:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD04CA774E
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 00:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbfICWap (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Sep 2019 18:30:45 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:33195 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbfICWap (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Sep 2019 18:30:45 -0400
-Received: by mail-pl1-f196.google.com with SMTP id t11so2491468plo.0
-        for <bpf@vger.kernel.org>; Tue, 03 Sep 2019 15:30:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=67Vm1F1CZhhmiaACMulYV2Zj+QF82Kmr08sCmkU9nP4=;
-        b=srlfQ0Qp1/7S5KfkOV44dq9mpTjKafWnF5LFkAZo1lTzzQ124C4FeqPulpIpISr8GS
-         L3TFQZihTG8HHOHvg3uUL0n3ylF9OJumJFkqEMJQ1+Cj//nUu+lyMfsI0/L2/PzmhKKE
-         rv9ThwqeEztnXa8OD94tlBva6c+t/Ovk56q3K64phEMmo+0RuZLvLx9jxaVIuy06+k0O
-         wTrVWRHUruwR9wu3SHA+X0oTPNqrP/xthYsjeZ6m0pGMzlh5dNDIV3WdLB20dhxpp4fQ
-         VOx8672bsHhuVexHcjr4OSUUifYMN9Yxt/QiyhyT01S4AY0RCFIxdC/Kszw6hmq342Qq
-         3k0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=67Vm1F1CZhhmiaACMulYV2Zj+QF82Kmr08sCmkU9nP4=;
-        b=GnDdlK1T2sMPi1B7GmjdMZfupCibBZbisT772ieA9pliRboTTsdV6WyRfFMHQ2oEds
-         ZfYr874eIbVNFA8LBBa7OunVSP08BNKdALrKJWPiOCavuQH0wsW+fZm9mIcocM41UPps
-         ZMh0UjQW2Z7CbEA0MTjXtnEOmKA+ZweT0rUNmxh2NAdAiFpc3TAaWSw5hVROm6AtV5yB
-         bbyebBQv1zTrSX1wNADfHQgL88iPUcgs85BF8k6ElgP2qZyCtXPdCux7XMpZNywhQz0m
-         kj1R+iPNQMoMQN2gUIdrbe64SgSo7dBf18MmBbEO/h7Gi5ZF+JikPvCsphl+gUGQD6ST
-         k6Vw==
-X-Gm-Message-State: APjAAAWdA7OVlXnBaL4VZ5TcFPFiaohwPwfY0eZ0PpHfpgjaLW7Mw72Z
-        yRklF+v5kr8YYyngQILmc1bg1w==
-X-Google-Smtp-Source: APXvYqwpbYINQaxATyjjlM/Q2Wqx0PWzLMMfNcydNBGcEdVc1OU/3tfSNW2uaJmIFP0gHq+ZKM/40Q==
-X-Received: by 2002:a17:902:441:: with SMTP id 59mr38343845ple.62.1567549844592;
-        Tue, 03 Sep 2019 15:30:44 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id s186sm24332031pfb.126.2019.09.03.15.30.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Sep 2019 15:30:44 -0700 (PDT)
-Date:   Tue, 3 Sep 2019 15:30:43 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Brian Vazquez <brianvv@google.com>,
-        Alexei Starovoitov <ast@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 00/13] bpf: adding map batch processing support
-Message-ID: <20190903223043.GC2101@mini-arch>
-References: <20190829064502.2750303-1-yhs@fb.com>
- <20190829113932.5c058194@cakuba.netronome.com>
- <CAMzD94S87BD0HnjjHVmhMPQ3UijS+oNu+H7NtMN8z8EAexgFtg@mail.gmail.com>
- <20190829171513.7699dbf3@cakuba.netronome.com>
- <20190830201513.GA2101@mini-arch>
- <eda3c9e0-8ad6-e684-0aeb-d63b9ed60aa7@fb.com>
- <20190830211809.GB2101@mini-arch>
- <20190903210127.z6mhkryqg6qz62dq@ast-mbp.dhcp.thefacebook.com>
+        id S1727433AbfICWvi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 3 Sep 2019 18:51:38 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:61256 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727340AbfICWvh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 3 Sep 2019 18:51:37 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x83MoIgJ022124
+        for <bpf@vger.kernel.org>; Tue, 3 Sep 2019 15:51:36 -0700
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2usr9kaptj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 03 Sep 2019 15:51:36 -0700
+Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Tue, 3 Sep 2019 15:51:35 -0700
+Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
+        id 3FC6D760915; Tue,  3 Sep 2019 15:51:33 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Alexei Starovoitov <ast@kernel.org>
+Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
+To:     <davem@davemloft.net>
+CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] selftests/bpf: precision tracking tests
+Date:   Tue, 3 Sep 2019 15:51:33 -0700
+Message-ID: <20190903225133.821243-1-ast@kernel.org>
+X-Mailer: git-send-email 2.20.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190903210127.z6mhkryqg6qz62dq@ast-mbp.dhcp.thefacebook.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
+ definitions=2019-09-03_05:2019-09-03,2019-09-03 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ clxscore=1034 mlxscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0
+ adultscore=0 mlxlogscore=999 impostorscore=0 spamscore=0
+ priorityscore=1501 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1906280000 definitions=main-1909030228
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 09/03, Alexei Starovoitov wrote:
-> On Fri, Aug 30, 2019 at 02:18:09PM -0700, Stanislav Fomichev wrote:
-> > > > 
-> > > > I personally like Jakub's/Quentin's proposal more. So if I get to choose
-> > > > between this series and Jakub's filter+dump in BPF, I'd pick filter+dump
-> > > > (pending per-cpu issue which we actually care about).
-> > > > 
-> > > > But if we can have both, I don't have any objections; this patch
-> 
-> I think we need to have both.
-> imo Jakub's and Yonghong's approach are solving slightly different cases.
-> 
-> filter+dump via program is better suited for LRU map walks where filter prog
-> would do some non-trivial logic.
-> Whereas plain 'delete all' or 'dump all' is much simpler to use without
-> loading yet another prog just to dump it.
-> bpf infra today isn't quite ready for this very short lived auxiliary progs.
-> At prog load pages get read-only mapping, tlbs across cpus flushed,
-> kallsyms populated, FDs allocated, etc.
-> Loading the prog is a heavy operation. There was a chatter before to have
-> built-in progs. This filter+dump could benefit from builtin 'allow all'
-> or 'delete all' progs, but imo that complicates design and asks even
-> more questions than it answers. Should this builtin progs show up
-> in 'bpftool prog show' ? When do they load/unload? Same safety requirements
-> as normal progs? etc.
-> imo it's fine to have little bit overlap between apis.
-> So I think we should proceed with both batching apis.
-We don't need to load filter+dump every time we need a dump, right?
-We, internally, want to have this 'batch dump' only for long running daemons
-(I think the same applies to bcc), we can load this filter+dump once and
-then have a sys_bpf() command to trigger it.
+Add two tests to check that stack slot marking during backtracking
+doesn't trigger 'spi > allocated_stack' warning.
+One test is using BPF_ST insn. Another is using BPF_STX.
 
-Also, related, if we add this batch dump, it doesn't mean that
-everything should switch to it. For example, I feel like we
-are perfectly fine if bpftool still uses get_next_key+lookup
-since we use it only for debugging.
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+these tests depend on the fix https://patchwork.ozlabs.org/patch/1157368/
+---
+ .../testing/selftests/bpf/verifier/precise.c  | 52 +++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
-> Having said that I think both are suffering from the important issue pointed out
-> by Brian: when kernel deletes an element get_next_key iterator over hash/lru
-> map will produce duplicates.
-> The amount of duplicates can be huge. When batched iterator is slow and
-> bpf prog is doing a lot of update/delete, there could be 10x worth of duplicates,
-> since walk will resume from the beginning.
-> User space cannot be tasked to deal with it.
-> I think this issue has to be solved in the kernel first and it may require
-> different batching api.
-> 
-> One idea is to use bucket spin_lock and batch process it bucket-at-a-time.
-> From api pov the user space will tell kernel:
-> - here is the buffer for N element. start dump from the beginning.
-> - kernel will return <= N elements and an iterator.
-> - user space will pass this opaque iterator back to get another batch
-> For well behaved hash/lru map there will be zero or one elements per bucket.
-> When there are 2+ the batching logic can process them together.
-> If 'lookup' is requested the kernel can check whether user space provided
-> enough space for these 2 elements. If not abort the batch earlier.
-> get_next_key won't be used. Instead some sort of opaque iterator
-> will be returned to user space, so next batch lookup can start from it.
-> This iterator could be the index of the last dumped bucket.
-> This idea won't work for pathological hash tables though.
-> A lot of elements in a single bucket may be more than room for single batch.
-> In such case iterator will get stuck, since num_of_elements_in_bucket > batch_buf_size.
-> May be special error code can be used to solve that?
-This all requires new per-map implementations unfortunately :-(
-We were trying to see if we can somehow improve the existing bpf_map_ops
-to be more friendly towards batching.
+diff --git a/tools/testing/selftests/bpf/verifier/precise.c b/tools/testing/selftests/bpf/verifier/precise.c
+index a455a4a71f11..02151f8c940f 100644
+--- a/tools/testing/selftests/bpf/verifier/precise.c
++++ b/tools/testing/selftests/bpf/verifier/precise.c
+@@ -140,3 +140,55 @@
+ 	.errstr = "!read_ok",
+ 	.result = REJECT,
+ },
++{
++	"precise: ST insn causing spi > allocated_stack",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_3, BPF_REG_10),
++	BPF_JMP_IMM(BPF_JNE, BPF_REG_3, 123, 0),
++	BPF_ST_MEM(BPF_DW, BPF_REG_3, -8, 0),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_4, BPF_REG_10, -8),
++	BPF_MOV64_IMM(BPF_REG_0, -1),
++	BPF_JMP_REG(BPF_JGT, BPF_REG_4, BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = BPF_F_TEST_STATE_FREQ,
++	.errstr = "5: (2d) if r4 > r0 goto pc+0\
++	last_idx 5 first_idx 5\
++	parent didn't have regs=10 stack=0 marks\
++	last_idx 4 first_idx 2\
++	regs=10 stack=0 before 4\
++	regs=10 stack=0 before 3\
++	regs=0 stack=1 before 2\
++	last_idx 5 first_idx 5\
++	parent didn't have regs=1 stack=0 marks",
++	.result = VERBOSE_ACCEPT,
++	.retval = -1,
++},
++{
++	"precise: STX insn causing spi > allocated_stack",
++	.insns = {
++	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_prandom_u32),
++	BPF_MOV64_REG(BPF_REG_3, BPF_REG_10),
++	BPF_JMP_IMM(BPF_JNE, BPF_REG_3, 123, 0),
++	BPF_STX_MEM(BPF_DW, BPF_REG_3, BPF_REG_0, -8),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_4, BPF_REG_10, -8),
++	BPF_MOV64_IMM(BPF_REG_0, -1),
++	BPF_JMP_REG(BPF_JGT, BPF_REG_4, BPF_REG_0, 0),
++	BPF_EXIT_INSN(),
++	},
++	.prog_type = BPF_PROG_TYPE_XDP,
++	.flags = BPF_F_TEST_STATE_FREQ,
++	.errstr = "last_idx 6 first_idx 6\
++	parent didn't have regs=10 stack=0 marks\
++	last_idx 5 first_idx 3\
++	regs=10 stack=0 before 5\
++	regs=10 stack=0 before 4\
++	regs=0 stack=1 before 3\
++	last_idx 6 first_idx 6\
++	parent didn't have regs=1 stack=0 marks\
++	last_idx 5 first_idx 3\
++	regs=1 stack=0 before 5",
++	.result = VERBOSE_ACCEPT,
++	.retval = -1,
++},
+-- 
+2.20.0
 
-You also bring a valid point with regard to well behaved hash/lru,
-we might be optimizing for the wrong case :-)
-
-> I hope we can come up with other ideas to have a stable iterator over hash table.
-> Let's use email to describe the ideas and upcoming LPC conference to
-> sort out details and finalize the one to use.
