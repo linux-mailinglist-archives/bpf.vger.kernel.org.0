@@ -2,38 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DCAA6A2F
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2019 15:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 627F8A6ABB
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2019 16:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728679AbfICNlG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Sep 2019 09:41:06 -0400
-Received: from www62.your-server.de ([213.133.104.62]:46650 "EHLO
+        id S1728122AbfICOFI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Sep 2019 10:05:08 -0400
+Received: from www62.your-server.de ([213.133.104.62]:51478 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727107AbfICNlG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Sep 2019 09:41:06 -0400
-Received: from sslproxy01.your-server.de ([88.198.220.130])
+        with ESMTP id S1725782AbfICOFI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Sep 2019 10:05:08 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1i593N-0002SU-3x; Tue, 03 Sep 2019 15:41:01 +0200
+        id 1i59Qf-0004U9-TM; Tue, 03 Sep 2019 16:05:05 +0200
 Received: from [178.197.249.19] (helo=pc-63.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89)
         (envelope-from <daniel@iogearbox.net>)
-        id 1i593M-000785-MS; Tue, 03 Sep 2019 15:41:00 +0200
-Subject: Re: [PATCH bpf-next 1/2] selftests/bpf: test_progs: fix verbose mode
- garbage
-To:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org
-References: <20190831023427.239820-1-sdf@google.com>
+        id 1i59Qf-000CjB-Mh; Tue, 03 Sep 2019 16:05:05 +0200
+Subject: Re: [PATCH bpf-next] arm64: bpf: optimize modulo operation
+To:     jerinj@marvell.com, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "open list:BPF JIT for ARM64" <bpf@vger.kernel.org>,
+        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20190902061448.28252-1-jerinj@marvell.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <549829f5-6c93-6417-0582-ed10c7269c1f@iogearbox.net>
-Date:   Tue, 3 Sep 2019 15:40:59 +0200
+Message-ID: <4da4bb59-5578-6981-55b7-5dbc4f0a8254@iogearbox.net>
+Date:   Tue, 3 Sep 2019 16:05:04 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20190831023427.239820-1-sdf@google.com>
+In-Reply-To: <20190902061448.28252-1-jerinj@marvell.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -44,31 +50,13 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/31/19 4:34 AM, Stanislav Fomichev wrote:
-> fseeko(.., 0, SEEK_SET) on a memstream just puts the buffer pointer
-> to the beginning so when we call fflush on it we get some garbage
-> log data from the previous test. Let's manually set terminating
-> byte to zero at the reported buffer size.
+On 9/2/19 8:14 AM, jerinj@marvell.com wrote:
+> From: Jerin Jacob <jerinj@marvell.com>
 > 
-> To show the issue consider the following snippet:
+> Optimize modulo operation instruction generation by
+> using single MSUB instruction vs MUL followed by SUB
+> instruction scheme.
 > 
-> 	stream = open_memstream (&buf, &len);
-> 
-> 	fprintf(stream, "aaa");
-> 	fflush(stream);
-> 	printf("buf=%s, len=%zu\n", buf, len);
-> 	fseeko(stream, 0, SEEK_SET);
-> 
-> 	fprintf(stream, "b");
-> 	fflush(stream);
-> 	printf("buf=%s, len=%zu\n", buf, len);
-> 
-> Output:
-> 
-> 	buf=aaa, len=3
-> 	buf=baa, len=1
-> 
-> Fixes: 946152b3c5d6 ("selftests/bpf: test_progs: switch to open_memstream")
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> Signed-off-by: Jerin Jacob <jerinj@marvell.com>
 
-Both applied, thanks!
+Applied, thanks!
