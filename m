@@ -2,251 +2,249 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 834FAA6CE0
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2019 17:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08630A72B1
+	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2019 20:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728967AbfICP1H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Sep 2019 11:27:07 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:44557 "EHLO
+        id S1725939AbfICSpL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Sep 2019 14:45:11 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:39760 "EHLO
         mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728122AbfICP1G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Sep 2019 11:27:06 -0400
-Received: by mail-qt1-f194.google.com with SMTP id u40so11795489qth.11;
-        Tue, 03 Sep 2019 08:27:05 -0700 (PDT)
+        with ESMTP id S1725914AbfICSpL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Sep 2019 14:45:11 -0400
+Received: by mail-qt1-f194.google.com with SMTP id n7so21215968qtb.6;
+        Tue, 03 Sep 2019 11:45:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2BslGMqR0B0fw9ANYmp3iM0FumCNAlK+G6wQM1eUVr0=;
-        b=KsEg44dF0La+5x71xcdCIvvaAnFk5h+qDUFH0UzMq2Mynu+T9Y/Aco1g76RcbGl7j8
-         T2VQn6SESvjzw9TLWv1vuFXWiFM+yu317D4xS65Vs30YCUTyrPvqfiYMU/HwAVlzkLR/
-         Yr3bystimdNGdvbklTw3utuwQqrvcDM1LOg+JXKbuw80HbgMr3CsvohnX1oNCSsSh4IN
-         IhVdLtIJ0qVNFHYmHvwtJo6kvcEG0tbpX2oi1siowNFUYwtgPTNBPM9uaiOH7RKmwH9A
-         dZRClW/tvaC5AiFsVe+rFQInuW6Rd3Jg6gxfli/T7wRtCxkO75Iw+LCKtDnyDuCRbJl2
-         9bUA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=TP/nxnQHNvQgkQWnrMmtRVQkzf/U2EMaIcHydGqn6+w=;
+        b=RdH9/LAsJ4GwpNa5D1BwJfADOoN8eBDkaq3dtP0uILDnQmGxZcbbzQnIND349KlZ9G
+         omsRdv939nEZwsQGQgn6dmeis+sIg2fU0eGhyKEDQjth8PBRAlo+coXq5utKSd0aPO6B
+         fmOLJfsrVX8jQ6lvAUuaiZfZB51Sm9eVT7NZ7rcDtQQWZ7WgpsmXmVPfAhdHnLdi3Pz9
+         cexQ/RAna+PpV5//u60FCZpJgdXJLYgMJsoPzOlA5NFJ1M1svMG2w0x8uOZsKLqzKITn
+         8s6KJoJNHXE+SPvQJcTf163pxNeqJG43MbunDT6S4aOVR/MKamSGhrCkekjytOXHiQ44
+         D+mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2BslGMqR0B0fw9ANYmp3iM0FumCNAlK+G6wQM1eUVr0=;
-        b=uL3icIX2ls4SbBr6U6W1pe0tYFMMBzDuF2XsQHOJLLBQyaUjSiBGHxTYNba8yrhI3i
-         XOgdFXO8UGVxwp5PICRi/HRclByEVbcUGGaXU3fYV/fJyQlciA1UYC+d1uskF241t5FP
-         nsW/yZTD8qLTfu4nOwCUerGO5afmjZaEK0VVSmZY6Wj/4FL6xL6xpYgbSYbpSRTsSYGh
-         0Q6MTE7Pi7nvlIMnqAtKXZE45gmPvsn7m87qlslMFym+855Kcyt30e4lIGGDkRmiNAVN
-         py/OSKfYAwl1ynQlnUdyIDLccsWHoU92ZrkfntEiKs/vzf9/w0yvYu9venw79epdEazp
-         f9GA==
-X-Gm-Message-State: APjAAAUOL1riyK733PpkRwEDlCjExB7sFH9bPK0ctvWSsWPSmrWgQveW
-        2+OevugWAC+L9xM3gdfocI4+5lsrW5NDrKmiC8TgyRu4bbY=
-X-Google-Smtp-Source: APXvYqx8jnmuK8yPpc9WctAL9AsNxm4uJhTZ7ZjNE8V92zLxCEZ3/5gDcbuOjgt3TyoBCNc5+wU6oslUOXnj8Ag49lM=
-X-Received: by 2002:ac8:23b9:: with SMTP id q54mr8411417qtq.107.1567524425198;
- Tue, 03 Sep 2019 08:27:05 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=TP/nxnQHNvQgkQWnrMmtRVQkzf/U2EMaIcHydGqn6+w=;
+        b=SQAO8msW251TJWzYrUAm3jB0W7F9e5CcumH3uLh8UBXzh7RbIrVNQMBznIMzfQY2ME
+         hvMZ/pR+xTO87SMvEjLYJXLIrIRQRP9upH7B17xmBKagGdQdozKhIESd5gQkU84ITjyR
+         MPhGqhhFX/sWzECW3uCPtk8lqNCY8itQkQFq36+lopwEH6YViLmC17SFoTSmnRYYLkgO
+         j+XoUPZur8+zgUDlzzTFvk2l5Dqi/HwOfD3cMz5dcdKbUd0gOXX4ioT+71PgPTpopSS1
+         VkmCHzH6OmrXa/Axk1fa/rSeRwCzFw9OJf8sLkbMzy+QhfPaT4ixpuWUm62armMtQS4+
+         FD6g==
+X-Gm-Message-State: APjAAAXEnNMtLuFtmCavPO6A//t0dnCFwpcuS4Pg80FhUueloealfvv7
+        AuerhwEZp8EkzWyP0hvK0ug=
+X-Google-Smtp-Source: APXvYqwqmYGQTkhKidGM1ltYrj8p0EFeo6gWVUBrAR4l+2wDIy9Zdj6l+1xB2akmXyJwDiun8VGaMA==
+X-Received: by 2002:ac8:94f:: with SMTP id z15mr35941455qth.233.1567536309415;
+        Tue, 03 Sep 2019 11:45:09 -0700 (PDT)
+Received: from ebpf-metal ([190.162.109.190])
+        by smtp.gmail.com with ESMTPSA id q3sm2852793qtp.14.2019.09.03.11.45.07
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 03 Sep 2019 11:45:08 -0700 (PDT)
+Date:   Tue, 3 Sep 2019 14:45:04 -0400
+From:   Carlos Antonio Neira Bustos <cneirabustos@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        "brouer@redhat.com" <brouer@redhat.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next V9 1/3] bpf: new helper to obtain namespace data
+ from current task
+Message-ID: <20190903184502.2vpaqnoubbr7nnf6@ebpf-metal>
+References: <20190813184747.12225-1-cneirabustos@gmail.com>
+ <20190813184747.12225-2-cneirabustos@gmail.com>
+ <13b7f81f-83b6-07c9-4864-b49749cbf7d9@fb.com>
+ <20190814005604.yeqb45uv2fc3anab@dev00>
+ <9a2cacad-b79f-5d39-6d62-bb48cbaaac07@fb.com>
+ <CACiB22jyN9=0ATWWE+x=BoWD6u+8KO+MvBfsFQmcNfkmANb2_w@mail.gmail.com>
+ <20190828203951.qo4kaloahcnvp7nw@ebpf-metal>
+ <4faeb577-387a-7186-e060-f0ca76395823@fb.com>
+ <20190828210333.itwtyqa5w5egnrwm@ebpf-metal>
 MIME-Version: 1.0
-References: <20190826061053.15996-1-bjorn.topel@gmail.com> <20190826061053.15996-3-bjorn.topel@gmail.com>
- <b580a3c0-c7c2-2191-997b-473ae65f977e@iogearbox.net>
-In-Reply-To: <b580a3c0-c7c2-2191-997b-473ae65f977e@iogearbox.net>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 3 Sep 2019 17:26:53 +0200
-Message-ID: <CAJ+HfNhWFAVzrLshMOts7nLBwK=6ythCeCAY6N-puhpi=RnSAw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/4] xsk: add proper barriers and {READ,
- WRITE}_ONCE-correctness for state
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        syzbot+c82697e3043781e08802@syzkaller.appspotmail.com,
-        Hillf Danton <hdanton@sina.com>,
-        Ilya Maximets <i.maximets@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190828210333.itwtyqa5w5egnrwm@ebpf-metal>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 3 Sep 2019 at 17:22, Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 8/26/19 8:10 AM, Bj=C3=B6rn T=C3=B6pel wrote:
-> > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> >
-> > The state variable was read, and written outside the control mutex
-> > (struct xdp_sock, mutex), without proper barriers and {READ,
-> > WRITE}_ONCE correctness.
-> >
-> > In this commit this issue is addressed, and the state member is now
-> > used a point of synchronization whether the socket is setup correctly
-> > or not.
-> >
-> > This also fixes a race, found by syzcaller, in xsk_poll() where umem
-> > could be accessed when stale.
-> >
-> > Suggested-by: Hillf Danton <hdanton@sina.com>
-> > Reported-by: syzbot+c82697e3043781e08802@syzkaller.appspotmail.com
-> > Fixes: 77cd0d7b3f25 ("xsk: add support for need_wakeup flag in AF_XDP r=
-ings")
-> > Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
->
-> Sorry for the delay.
->
-> > ---
-> >   net/xdp/xsk.c | 57 ++++++++++++++++++++++++++++++++++++--------------=
--
-> >   1 file changed, 40 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > index f3351013c2a5..8fafa3ce3ae6 100644
-> > --- a/net/xdp/xsk.c
-> > +++ b/net/xdp/xsk.c
-> > @@ -162,10 +162,23 @@ static int __xsk_rcv_zc(struct xdp_sock *xs, stru=
-ct xdp_buff *xdp, u32 len)
-> >       return err;
-> >   }
-> >
-> > +static bool xsk_is_bound(struct xdp_sock *xs)
-> > +{
-> > +     if (READ_ONCE(xs->state) =3D=3D XSK_BOUND) {
-> > +             /* Matches smp_wmb() in bind(). */
-> > +             smp_rmb();
-> > +             return true;
-> > +     }
-> > +     return false;
-> > +}
-> > +
-> >   int xsk_rcv(struct xdp_sock *xs, struct xdp_buff *xdp)
-> >   {
-> >       u32 len;
-> >
-> > +     if (!xsk_is_bound(xs))
-> > +             return -EINVAL;
-> > +
-> >       if (xs->dev !=3D xdp->rxq->dev || xs->queue_id !=3D xdp->rxq->que=
-ue_index)
-> >               return -EINVAL;
-> >
-> > @@ -362,7 +375,7 @@ static int xsk_sendmsg(struct socket *sock, struct =
-msghdr *m, size_t total_len)
-> >       struct sock *sk =3D sock->sk;
-> >       struct xdp_sock *xs =3D xdp_sk(sk);
-> >
-> > -     if (unlikely(!xs->dev))
-> > +     if (unlikely(!xsk_is_bound(xs)))
-> >               return -ENXIO;
-> >       if (unlikely(!(xs->dev->flags & IFF_UP)))
-> >               return -ENETDOWN;
-> > @@ -378,10 +391,15 @@ static unsigned int xsk_poll(struct file *file, s=
-truct socket *sock,
-> >                            struct poll_table_struct *wait)
-> >   {
-> >       unsigned int mask =3D datagram_poll(file, sock, wait);
-> > -     struct sock *sk =3D sock->sk;
-> > -     struct xdp_sock *xs =3D xdp_sk(sk);
-> > -     struct net_device *dev =3D xs->dev;
-> > -     struct xdp_umem *umem =3D xs->umem;
-> > +     struct xdp_sock *xs =3D xdp_sk(sock->sk);
-> > +     struct net_device *dev;
-> > +     struct xdp_umem *umem;
-> > +
-> > +     if (unlikely(!xsk_is_bound(xs)))
-> > +             return mask;
-> > +
-> > +     dev =3D xs->dev;
-> > +     umem =3D xs->umem;
-> >
-> >       if (umem->need_wakeup)
-> >               dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id,
-> > @@ -417,10 +435,9 @@ static void xsk_unbind_dev(struct xdp_sock *xs)
-> >   {
-> >       struct net_device *dev =3D xs->dev;
-> >
-> > -     if (!dev || xs->state !=3D XSK_BOUND)
-> > +     if (xs->state !=3D XSK_BOUND)
-> >               return;
-> > -
-> > -     xs->state =3D XSK_UNBOUND;
-> > +     WRITE_ONCE(xs->state, XSK_UNBOUND);
-> >
-> >       /* Wait for driver to stop using the xdp socket. */
-> >       xdp_del_sk_umem(xs->umem, xs);
-> > @@ -495,7 +512,9 @@ static int xsk_release(struct socket *sock)
-> >       local_bh_enable();
-> >
-> >       xsk_delete_from_maps(xs);
-> > +     mutex_lock(&xs->mutex);
-> >       xsk_unbind_dev(xs);
-> > +     mutex_unlock(&xs->mutex);
-> >
-> >       xskq_destroy(xs->rx);
-> >       xskq_destroy(xs->tx);
-> > @@ -589,19 +608,18 @@ static int xsk_bind(struct socket *sock, struct s=
-ockaddr *addr, int addr_len)
-> >               }
-> >
-> >               umem_xs =3D xdp_sk(sock->sk);
-> > -             if (!umem_xs->umem) {
-> > -                     /* No umem to inherit. */
-> > +             if (!xsk_is_bound(umem_xs)) {
-> >                       err =3D -EBADF;
-> >                       sockfd_put(sock);
-> >                       goto out_unlock;
-> > -             } else if (umem_xs->dev !=3D dev || umem_xs->queue_id !=
-=3D qid) {
-> > +             }
-> > +             if (umem_xs->dev !=3D dev || umem_xs->queue_id !=3D qid) =
-{
-> >                       err =3D -EINVAL;
-> >                       sockfd_put(sock);
-> >                       goto out_unlock;
-> >               }
-> > -
-> >               xdp_get_umem(umem_xs->umem);
-> > -             xs->umem =3D umem_xs->umem;
-> > +             WRITE_ONCE(xs->umem, umem_xs->umem);
-> >               sockfd_put(sock);
-> >       } else if (!xs->umem || !xdp_umem_validate_queues(xs->umem)) {
-> >               err =3D -EINVAL;
-> > @@ -626,10 +644,15 @@ static int xsk_bind(struct socket *sock, struct s=
-ockaddr *addr, int addr_len)
-> >       xdp_add_sk_umem(xs->umem, xs);
-> >
-> >   out_unlock:
-> > -     if (err)
-> > +     if (err) {
-> >               dev_put(dev);
-> > -     else
-> > -             xs->state =3D XSK_BOUND;
-> > +     } else {
-> > +             /* Matches smp_rmb() in bind() for shared umem
-> > +              * sockets, and xsk_is_bound().
-> > +              */
-> > +             smp_wmb();
->
-> You write with what this barrier matches/pairs, but would be useful for r=
-eaders
-> to have an explanation against what it protects. I presume to have things=
- like
-> xs->umem public as you seem to guard it behind xsk_is_bound() in xsk_poll=
-() and
-> other cases? Would be great to have a detailed analysis of all this e.g. =
-in the
-> commit message so one wouldn't need to guess; right now it feels this is =
-doing
-> many things at once and w/o further explanation of why READ_ONCE() or oth=
-ers are
-> omitted sometimes. Would be great to get a lot more clarity into this, pe=
-rhaps
-> splitting it up a bit might also help.
->
+Hi Yonghong,
 
-I'll address that. Thanks for the review!
-
-
-Bj=C3=B6rn
-
-> > +             WRITE_ONCE(xs->state, XSK_BOUND);
-> > +     }
+> > Yes, the samples/bpf test case can be removed.
+> > Could you create a selftest with tracpoint net/netif_receive_skb, which 
+> > also uses the proposed helper? net/netif_receive_skb will happen in
+> > interrupt context and it should catch the issue as well if 
+> > filename_lookup still get called in interrupt context.
 >
-> Thanks,
-> Daniel
+For this one scenario I just created another selftest with the only difference 
+that the tracepoint is /net/netif_receive_skb so this fails with -EPERM.
+Is that enough?.
+
+I have made this comment on include/uapi/linux/bpf.h, maybe is too terse?
+
+struct bpf_pidns_info {
+	__u32 dev;	/* dev_t from /proc/self/ns/pid inode */
+	__u32 nsid;
+	__u32 tgid;
+	__u32 pid;
+};
+
+I'm only missing clearing out those questions to be ready to submit v11 of this patch.
+
+Bests
+
+On Wed, Aug 28, 2019 at 05:03:35PM -0400, Carlos Antonio Neira Bustos wrote:
+> Thanks, I'll work on the net/netif_receive_skb selftest using this helper.
+> I hope I could complete this work this week.
+> 
+> Bests.
+> 
+> On Wed, Aug 28, 2019 at 08:53:25PM +0000, Yonghong Song wrote:
+> > 
+> > 
+> > On 8/28/19 1:39 PM, Carlos Antonio Neira Bustos wrote:
+> > > Yonghong,
+> > > 
+> > > Thanks for the pointer, I fixed this bug, but I found another one that's triggered
+> > > now the test program I included in  tools/testing/selftests/bpf/test_pidns.
+> > > It's seemed that fname was not correctly setup when passing it to filename_lookup.
+> > > This is fixed now and I'm doing some more testing.
+> > > I think I'll remove the tests on samples/bpf as they are mostly end on -EPERM as
+> > > the fix intended.
+> > > Is ok to remove them and just focus to finish the self tests code?.
+> > 
+> > Yes, the samples/bpf test case can be removed.
+> > Could you create a selftest with tracpoint net/netif_receive_skb, which 
+> > also uses the proposed helper? net/netif_receive_skb will happen in
+> > interrupt context and it should catch the issue as well if 
+> > filename_lookup still get called in interrupt context.
+> > 
+> > > 
+> > > Bests
+> > > 
+> > > On Wed, Aug 14, 2019 at 01:25:06AM -0400, carlos antonio neira bustos wrote:
+> > >> Thank you very much!
+> > >>
+> > >> Bests
+> > >>
+> > >> El mié., 14 de ago. de 2019 00:50, Yonghong Song <yhs@fb.com> escribió:
+> > >>
+> > >>>
+> > >>>
+> > >>> On 8/13/19 5:56 PM, Carlos Antonio Neira Bustos wrote:
+> > >>>> On Tue, Aug 13, 2019 at 11:11:14PM +0000, Yonghong Song wrote:
+> > >>>>>
+> > >>>>>
+> > >>>>> On 8/13/19 11:47 AM, Carlos Neira wrote:
+> > >>>>>> From: Carlos <cneirabustos@gmail.com>
+> > >>>>>>
+> > >>>>>> New bpf helper bpf_get_current_pidns_info.
+> > >>>>>> This helper obtains the active namespace from current and returns
+> > >>>>>> pid, tgid, device and namespace id as seen from that namespace,
+> > >>>>>> allowing to instrument a process inside a container.
+> > >>>>>>
+> > >>>>>> Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
+> > >>>>>> ---
+> > >>>>>>     fs/internal.h            |  2 --
+> > >>>>>>     fs/namei.c               |  1 -
+> > >>>>>>     include/linux/bpf.h      |  1 +
+> > >>>>>>     include/linux/namei.h    |  4 +++
+> > >>>>>>     include/uapi/linux/bpf.h | 31 ++++++++++++++++++++++-
+> > >>>>>>     kernel/bpf/core.c        |  1 +
+> > >>>>>>     kernel/bpf/helpers.c     | 64
+> > >>> ++++++++++++++++++++++++++++++++++++++++++++++++
+> > >>>>>>     kernel/trace/bpf_trace.c |  2 ++
+> > >>>>>>     8 files changed, 102 insertions(+), 4 deletions(-)
+> > >>>>>>
+> > >>> [...]
+> > >>>>>>
+> > >>>>>> +BPF_CALL_2(bpf_get_current_pidns_info, struct bpf_pidns_info *,
+> > >>> pidns_info, u32,
+> > >>>>>> +    size)
+> > >>>>>> +{
+> > >>>>>> +   const char *pidns_path = "/proc/self/ns/pid";
+> > >>>>>> +   struct pid_namespace *pidns = NULL;
+> > >>>>>> +   struct filename *tmp = NULL;
+> > >>>>>> +   struct inode *inode;
+> > >>>>>> +   struct path kp;
+> > >>>>>> +   pid_t tgid = 0;
+> > >>>>>> +   pid_t pid = 0;
+> > >>>>>> +   int ret;
+> > >>>>>> +   int len;
+> > >>>>>
+> > >>>>
+> > >>>> Thank you very much for catching this!.
+> > >>>> Could you share how to replicate this bug?.
+> > >>>
+> > >>> The config is attached. just run trace_ns_info and you
+> > >>> can reproduce the issue.
+> > >>>
+> > >>>>
+> > >>>>> I am running your sample program and get the following kernel bug:
+> > >>>>>
+> > >>>>> ...
+> > >>>>> [   26.414825] BUG: sleeping function called from invalid context at
+> > >>>>> /data/users/yhs/work/net-next/fs
+> > >>>>> /dcache.c:843
+> > >>>>> [   26.416314] in_atomic(): 1, irqs_disabled(): 0, pid: 1911, name: ping
+> > >>>>> [   26.417189] CPU: 0 PID: 1911 Comm: ping Tainted: G        W
+> > >>>>> 5.3.0-rc1+ #280
+> > >>>>> [   26.418182] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> > >>>>> BIOS 1.9.3-1.el7.centos 04/01/2
+> > >>>>> 014
+> > >>>>> [   26.419393] Call Trace:
+> > >>>>> [   26.419697]  <IRQ>
+> > >>>>> [   26.419960]  dump_stack+0x46/0x5b
+> > >>>>> [   26.420434]  ___might_sleep+0xe4/0x110
+> > >>>>> [   26.420894]  dput+0x2a/0x200
+> > >>>>> [   26.421265]  walk_component+0x10c/0x280
+> > >>>>> [   26.421773]  link_path_walk+0x327/0x560
+> > >>>>> [   26.422280]  ? proc_ns_dir_readdir+0x1a0/0x1a0
+> > >>>>> [   26.422848]  ? path_init+0x232/0x330
+> > >>>>> [   26.423364]  path_lookupat+0x88/0x200
+> > >>>>> [   26.423808]  ? selinux_parse_skb.constprop.69+0x124/0x430
+> > >>>>> [   26.424521]  filename_lookup+0xaf/0x190
+> > >>>>> [   26.425031]  ? simple_attr_release+0x20/0x20
+> > >>>>> [   26.425560]  bpf_get_current_pidns_info+0xfa/0x190
+> > >>>>> [   26.426168]  bpf_prog_83627154cefed596+0xe66/0x1000
+> > >>>>> [   26.426779]  trace_call_bpf+0xb5/0x160
+> > >>>>> [   26.427317]  ? __netif_receive_skb_core+0x1/0xbb0
+> > >>>>> [   26.427929]  ? __netif_receive_skb_core+0x1/0xbb0
+> > >>>>> [   26.428496]  kprobe_perf_func+0x4d/0x280
+> > >>>>> [   26.428986]  ? tracing_record_taskinfo_skip+0x1a/0x30
+> > >>>>> [   26.429584]  ? tracing_record_taskinfo+0xe/0x80
+> > >>>>> [   26.430152]  ? ttwu_do_wakeup.isra.114+0xcf/0xf0
+> > >>>>> [   26.430737]  ? __netif_receive_skb_core+0x1/0xbb0
+> > >>>>> [   26.431334]  ? __netif_receive_skb_core+0x5/0xbb0
+> > >>>>> [   26.431930]  kprobe_ftrace_handler+0x90/0xf0
+> > >>>>> [   26.432495]  ftrace_ops_assist_func+0x63/0x100
+> > >>>>> [   26.433060]  0xffffffffc03180bf
+> > >>>>> [   26.433471]  ? __netif_receive_skb_core+0x1/0xbb0
+> > >>>>> ...
+> > >>>>>
+> > >>>>> To prevent we are running in arbitrary task (e.g., idle task)
+> > >>>>> context which may introduce sleeping issues, the following
+> > >>>>> probably appropriate:
+> > >>>>>
+> > >>>>>           if (in_nmi() || in_softirq())
+> > >>>>>                   return -EPERM;
+> > >>>>>
+> > >>>>> Anyway, if in nmi or softirq, the namespace and pid/tgid
+> > >>>>> we get may be just accidentally associated with the bpf running
+> > >>>>> context, but it could be in a different context. So such info
+> > >>>>> is not reliable any way.
+> > >>>>>
+> > >>>>>> +
+> > >>>>>> +   if (unlikely(size != sizeof(struct bpf_pidns_info)))
+> > >>>>>> +           return -EINVAL;
+> > >>>>>> +   pidns = task_active_pid_ns(current);
+> > >>> [...]
+> > >>>
