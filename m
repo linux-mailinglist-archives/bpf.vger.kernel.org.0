@@ -2,133 +2,197 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB36FA75DD
-	for <lists+bpf@lfdr.de>; Tue,  3 Sep 2019 23:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA836A76B9
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 00:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726219AbfICVBd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Sep 2019 17:01:33 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:39159 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726177AbfICVBc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Sep 2019 17:01:32 -0400
-Received: by mail-pg1-f193.google.com with SMTP id u17so9887948pgi.6;
-        Tue, 03 Sep 2019 14:01:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/I2e5TZ3s/EGP5RsRiT47mqjf+UrF/Gzo0wfYyDpaaI=;
-        b=X/dpUKHv++MPBzNvn4zAjK8IhWSn8gIQ7U0iSjlZ4aKBc8ZafEC9tbypHFG4V7uvw4
-         2qo6EIfGHjr9cDKUN4fx1Bs1xylwbu/Ux4ER/386hSoWlpWyDgJaRCp+rfQ2ZdpkiDfM
-         +Khy/j8oxyGcfkXgJYJH8mZVzuebWLoCcXo3Ltk3UK0cR/mKMiLArPFTbQdNOhHG80t5
-         V2/MeM7QHoDsReyqyScYMH3mVWXQmHHqJe9zkv+1lI64JdCLfpV0E0IF7K/g4tlx32ji
-         vbeR8ZMOzwVcSUmrjCQLadRqa/9hV8+To0co0mjoat0pp171q/ih25i0CeupOkytBagR
-         XqkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/I2e5TZ3s/EGP5RsRiT47mqjf+UrF/Gzo0wfYyDpaaI=;
-        b=Fj+uCvV8tPk2Q9qPp/OjV4L+T2ZeBbgXCd50OEKftLrZQkfH7ifAZZMS4uRAqKay1X
-         6Z6TIXiB1d28WzYi9L2s2dOe2NyQ3j5gTMTVU7d4svulAxoZ33T9Dmh1FU/opJZM6gs+
-         jgebNnjyECrfCIDlQZeunojDix1sMfNVGQU2WDMd1FzjnqJqtMbsAyWjwaJWX7RP5ckJ
-         9srrY3DsmBF+xC697R+8hmEBhaHO6dwU8oyg95Lz8tq43CXxPnMrc2P5TY0ZGdmDylKv
-         56jeAmS8BgAuqnwWvEBlsynKX2V/7FKudeb0R/0YQ73uY6wJ9tDXnRrP79bNVI48Gfr5
-         7tVg==
-X-Gm-Message-State: APjAAAX2T8CJ5wD/p52Lz1iWTCX35oxZ9kPcUxp+1FA0PSBjhB5+Edwx
-        +T3ywCHM3ox+J25Xqm5kJeg=
-X-Google-Smtp-Source: APXvYqx+epiJvfw96CKWo6ZMpR/XivQEWPwJFsivkwF5rP/Vk8ST8wBLkSh4ckibAud7gnyxmmsN2Q==
-X-Received: by 2002:a63:5c1a:: with SMTP id q26mr15139320pgb.19.1567544491733;
-        Tue, 03 Sep 2019 14:01:31 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::3:58a9])
-        by smtp.gmail.com with ESMTPSA id i137sm19146782pgc.4.2019.09.03.14.01.30
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 03 Sep 2019 14:01:30 -0700 (PDT)
-Date:   Tue, 3 Sep 2019 14:01:29 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Yonghong Song <yhs@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Brian Vazquez <brianvv@google.com>,
-        Alexei Starovoitov <ast@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 00/13] bpf: adding map batch processing support
-Message-ID: <20190903210127.z6mhkryqg6qz62dq@ast-mbp.dhcp.thefacebook.com>
-References: <20190829064502.2750303-1-yhs@fb.com>
- <20190829113932.5c058194@cakuba.netronome.com>
- <CAMzD94S87BD0HnjjHVmhMPQ3UijS+oNu+H7NtMN8z8EAexgFtg@mail.gmail.com>
- <20190829171513.7699dbf3@cakuba.netronome.com>
- <20190830201513.GA2101@mini-arch>
- <eda3c9e0-8ad6-e684-0aeb-d63b9ed60aa7@fb.com>
- <20190830211809.GB2101@mini-arch>
+        id S1726079AbfICWNL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Sep 2019 18:13:11 -0400
+Received: from www62.your-server.de ([213.133.104.62]:44740 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbfICWNL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Sep 2019 18:13:11 -0400
+Received: from sslproxy01.your-server.de ([88.198.220.130])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1i5H2u-0003qt-OW; Wed, 04 Sep 2019 00:13:04 +0200
+Received: from [178.197.249.19] (helo=pc-63.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1i5H2u-0003FM-E2; Wed, 04 Sep 2019 00:13:04 +0200
+Subject: Re: [PATCH bpf v2] bpf: fix accessing bpf_sysctl.file_pos on s390
+To:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     bpf@vger.kernel.org, Andrey Ignatov <rdna@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+References: <20190816105300.49035-1-iii@linux.ibm.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <55d0fca4-099a-9fb8-8dcd-9cca31e18063@iogearbox.net>
+Date:   Wed, 4 Sep 2019 00:13:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190830211809.GB2101@mini-arch>
-User-Agent: NeoMutt/20180223
+In-Reply-To: <20190816105300.49035-1-iii@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25561/Tue Sep  3 10:24:26 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 30, 2019 at 02:18:09PM -0700, Stanislav Fomichev wrote:
-> > > 
-> > > I personally like Jakub's/Quentin's proposal more. So if I get to choose
-> > > between this series and Jakub's filter+dump in BPF, I'd pick filter+dump
-> > > (pending per-cpu issue which we actually care about).
-> > > 
-> > > But if we can have both, I don't have any objections; this patch
+On 8/16/19 12:53 PM, Ilya Leoshkevich wrote:
+> "ctx:file_pos sysctl:read write ok" fails on s390 with "Read value  !=
+> nux". This is because verifier rewrites a complete 32-bit
+> bpf_sysctl.file_pos update to a partial update of the first 32 bits of
+> 64-bit *bpf_sysctl_kern.ppos, which is not correct on big-endian
+> systems.
+> 
+> Fix by using an offset on big-endian systems.
+> 
+> Ditto for bpf_sysctl.file_pos reads. Currently the test does not detect
+> a problem there, since it expects to see 0, which it gets with high
+> probability in error cases, so change it to seek to offset 3 and expect
+> 3 in bpf_sysctl.file_pos.
+> 
+> Fixes: e1550bfe0de4 ("bpf: Add file_pos field to bpf_sysctl ctx")
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+> v1->v2: Merge bpf_ctx_narrow_load_shift and
+> bpf_ctx_narrow_access_offset.
+> 
+>   include/linux/filter.h                    |  8 ++++----
+>   kernel/bpf/cgroup.c                       | 10 ++++++++--
+>   kernel/bpf/verifier.c                     |  4 ++--
+>   tools/testing/selftests/bpf/test_sysctl.c |  9 ++++++++-
+>   4 files changed, 22 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index 92c6e31fb008..2ce57645f3cd 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -749,14 +749,14 @@ bpf_ctx_narrow_access_ok(u32 off, u32 size, u32 size_default)
+>   }
+>   
+>   static inline u8
+> -bpf_ctx_narrow_load_shift(u32 off, u32 size, u32 size_default)
+> +bpf_ctx_narrow_access_offset(u32 off, u32 size, u32 size_default)
+>   {
+> -	u8 load_off = off & (size_default - 1);
+> +	u8 access_off = off & (size_default - 1);
+>   
+>   #ifdef __LITTLE_ENDIAN
+> -	return load_off * 8;
+> +	return access_off;
+>   #else
+> -	return (size_default - (load_off + size)) * 8;
+> +	return size_default - (access_off + size);
+>   #endif
+>   }
+>   
+> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> index 0a00eaca6fae..00c4647ce92a 100644
+> --- a/kernel/bpf/cgroup.c
+> +++ b/kernel/bpf/cgroup.c
+> @@ -1325,6 +1325,7 @@ static u32 sysctl_convert_ctx_access(enum bpf_access_type type,
+>   				     struct bpf_prog *prog, u32 *target_size)
+>   {
+>   	struct bpf_insn *insn = insn_buf;
+> +	u32 read_size;
+>   
+>   	switch (si->off) {
+>   	case offsetof(struct bpf_sysctl, write):
+> @@ -1356,7 +1357,9 @@ static u32 sysctl_convert_ctx_access(enum bpf_access_type type,
+>   				treg, si->dst_reg,
+>   				offsetof(struct bpf_sysctl_kern, ppos));
+>   			*insn++ = BPF_STX_MEM(
+> -				BPF_SIZEOF(u32), treg, si->src_reg, 0);
+> +				BPF_SIZEOF(u32), treg, si->src_reg,
+> +				bpf_ctx_narrow_access_offset(
+> +					0, sizeof(u32), sizeof(loff_t)));
+>   			*insn++ = BPF_LDX_MEM(
+>   				BPF_DW, treg, si->dst_reg,
+>   				offsetof(struct bpf_sysctl_kern, tmp_reg));
+> @@ -1365,8 +1368,11 @@ static u32 sysctl_convert_ctx_access(enum bpf_access_type type,
+>   				BPF_FIELD_SIZEOF(struct bpf_sysctl_kern, ppos),
+>   				si->dst_reg, si->src_reg,
+>   				offsetof(struct bpf_sysctl_kern, ppos));
+> +			read_size = bpf_size_to_bytes(BPF_SIZE(si->code));
+>   			*insn++ = BPF_LDX_MEM(
+> -				BPF_SIZE(si->code), si->dst_reg, si->dst_reg, 0);
+> +				BPF_SIZE(si->code), si->dst_reg, si->dst_reg,
+> +				bpf_ctx_narrow_access_offset(
+> +					0, read_size, sizeof(loff_t)));
 
-I think we need to have both.
-imo Jakub's and Yonghong's approach are solving slightly different cases.
+I see what you're doing, but generally I'm a bit puzzled on why we need these
+partial store/loads and cannot access the full loff_t value internally with the
+rewrite. Why was BPF_SIZEOF(u32) chosen in the first place? Looks like git history
+doesn't have any useful insight here ... Andrey mind to put some clarifications
+on this? Thx
 
-filter+dump via program is better suited for LRU map walks where filter prog
-would do some non-trivial logic.
-Whereas plain 'delete all' or 'dump all' is much simpler to use without
-loading yet another prog just to dump it.
-bpf infra today isn't quite ready for this very short lived auxiliary progs.
-At prog load pages get read-only mapping, tlbs across cpus flushed,
-kallsyms populated, FDs allocated, etc.
-Loading the prog is a heavy operation. There was a chatter before to have
-built-in progs. This filter+dump could benefit from builtin 'allow all'
-or 'delete all' progs, but imo that complicates design and asks even
-more questions than it answers. Should this builtin progs show up
-in 'bpftool prog show' ? When do they load/unload? Same safety requirements
-as normal progs? etc.
-imo it's fine to have little bit overlap between apis.
-So I think we should proceed with both batching apis.
-
-Having said that I think both are suffering from the important issue pointed out
-by Brian: when kernel deletes an element get_next_key iterator over hash/lru
-map will produce duplicates.
-The amount of duplicates can be huge. When batched iterator is slow and
-bpf prog is doing a lot of update/delete, there could be 10x worth of duplicates,
-since walk will resume from the beginning.
-User space cannot be tasked to deal with it.
-I think this issue has to be solved in the kernel first and it may require
-different batching api.
-
-One idea is to use bucket spin_lock and batch process it bucket-at-a-time.
-From api pov the user space will tell kernel:
-- here is the buffer for N element. start dump from the beginning.
-- kernel will return <= N elements and an iterator.
-- user space will pass this opaque iterator back to get another batch
-For well behaved hash/lru map there will be zero or one elements per bucket.
-When there are 2+ the batching logic can process them together.
-If 'lookup' is requested the kernel can check whether user space provided
-enough space for these 2 elements. If not abort the batch earlier.
-get_next_key won't be used. Instead some sort of opaque iterator
-will be returned to user space, so next batch lookup can start from it.
-This iterator could be the index of the last dumped bucket.
-This idea won't work for pathological hash tables though.
-A lot of elements in a single bucket may be more than room for single batch.
-In such case iterator will get stuck, since num_of_elements_in_bucket > batch_buf_size.
-May be special error code can be used to solve that?
-
-I hope we can come up with other ideas to have a stable iterator over hash table.
-Let's use email to describe the ideas and upcoming LPC conference to
-sort out details and finalize the one to use.
+>   		}
+>   		*target_size = sizeof(u32);
+>   		break;
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index c84d83f86141..d1d4c995a9eb 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -8616,8 +8616,8 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+>   		}
+>   
+>   		if (is_narrower_load && size < target_size) {
+> -			u8 shift = bpf_ctx_narrow_load_shift(off, size,
+> -							     size_default);
+> +			u8 shift = bpf_ctx_narrow_access_offset(
+> +				off, size, size_default) * 8;
+>   			if (ctx_field_size <= 4) {
+>   				if (shift)
+>   					insn_buf[cnt++] = BPF_ALU32_IMM(BPF_RSH,
+> diff --git a/tools/testing/selftests/bpf/test_sysctl.c b/tools/testing/selftests/bpf/test_sysctl.c
+> index a3bebd7c68dd..abc26248a7f1 100644
+> --- a/tools/testing/selftests/bpf/test_sysctl.c
+> +++ b/tools/testing/selftests/bpf/test_sysctl.c
+> @@ -31,6 +31,7 @@ struct sysctl_test {
+>   	enum bpf_attach_type attach_type;
+>   	const char *sysctl;
+>   	int open_flags;
+> +	int seek;
+>   	const char *newval;
+>   	const char *oldval;
+>   	enum {
+> @@ -139,7 +140,7 @@ static struct sysctl_test tests[] = {
+>   			/* If (file_pos == X) */
+>   			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_1,
+>   				    offsetof(struct bpf_sysctl, file_pos)),
+> -			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0, 2),
+> +			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 3, 2),
+>   
+>   			/* return ALLOW; */
+>   			BPF_MOV64_IMM(BPF_REG_0, 1),
+> @@ -152,6 +153,7 @@ static struct sysctl_test tests[] = {
+>   		.attach_type = BPF_CGROUP_SYSCTL,
+>   		.sysctl = "kernel/ostype",
+>   		.open_flags = O_RDONLY,
+> +		.seek = 3,
+>   		.result = SUCCESS,
+>   	},
+>   	{
+> @@ -1442,6 +1444,11 @@ static int access_sysctl(const char *sysctl_path,
+>   	if (fd < 0)
+>   		return fd;
+>   
+> +	if (test->seek && lseek(fd, test->seek, SEEK_SET) == -1) {
+> +		log_err("lseek(%d) failed", test->seek);
+> +		goto err;
+> +	}
+> +
+>   	if (test->open_flags == O_RDONLY) {
+>   		char buf[128];
+>   
+> 
 
