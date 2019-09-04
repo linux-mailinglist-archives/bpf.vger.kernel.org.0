@@ -2,193 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 49952A7E9B
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 10:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4386A804C
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 12:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbfIDI7Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Sep 2019 04:59:24 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:44805 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727348AbfIDI7Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Sep 2019 04:59:24 -0400
-Received: by mail-qt1-f195.google.com with SMTP id u40so14905438qth.11
-        for <bpf@vger.kernel.org>; Wed, 04 Sep 2019 01:59:23 -0700 (PDT)
+        id S1726304AbfIDKZ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Sep 2019 06:25:26 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:39845 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725966AbfIDKZZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Sep 2019 06:25:25 -0400
+Received: by mail-ot1-f65.google.com with SMTP id n7so12658663otk.6;
+        Wed, 04 Sep 2019 03:25:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jFVKdea45mJrNywU948vMYq5u5WRFPo01K8iIYZKsrw=;
-        b=OrwA+4vKkCB9cklKzP5BVFlg4BG6lgl69PUYcGp5Pb5zditO/wJGwJljrVy1GIHLs2
-         i8KYGCQ2pFe6T7LNzk2gleAPCJOhYY3jJE+0CVcnCJOVRWvimJbt4Pq7cdcU2rospPhh
-         Ce2FnYU077ib318/G8aFjuNh7rkCLS0A9qHtTVi7PMiPx6Ouhqy3jXQsZx4S9pumNicD
-         6B7HTb9f+D/8uUppfMCB9SMt2kZDq8/fRhhPK24rXlr8GIqSNPiihRI5qcnJvObPM2Dr
-         vkxJQBQ3QWSk1uDOG3fm1WEV3fUYRJ1WDVuR5qE5TRBU8Qemj1A0qK4EqjU1xkT/snKR
-         RyGg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nG3/Gl4yEYJWotofdnx8KNNKr+MoKl/PK0J2xDPrapc=;
+        b=Pgy1s443ZVa7y6xWQDOsFagYzMjNYXRRAG5UmX8zZ27DDZbMfD3igph7bFghLS8ygA
+         HZbNWzrjWSPG6QTGZbMLMIqiNGg5qzt5zIIMv07CMpdQhrE0Kukcz7qsfbgBAKe8hSEZ
+         d9OfR+D9HspB/xICarnnjj7qJ7RzM/Rpbx0nbfhh4m+isPDVAgivNK3nxp690x19VHjO
+         enZAMYE25ZPNfU7ywq9l2O6kj23iEwvk8k021qju1FvXD6QZ05FwA7f3XPVPzYcEC6Gp
+         tCXUE5bDBEMZclflaUEKAzlAHsiGnABEc1LawhgE79MGjMcpzar7ur0ock8n0iUI1I/t
+         B0OA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jFVKdea45mJrNywU948vMYq5u5WRFPo01K8iIYZKsrw=;
-        b=A+60JUsjWplBJBzhCEgZcPkb9WH6W5xCSiLnVLA9CIVxRq0lr6NkY3qDeAO29RoLco
-         MBf7mjGC0TS0BVEmb7b0Xd7OHzDuu8a59da/E7bSzQZSjVtmpWSaw+qmO5dzqj4fCG2Q
-         a6RSdSMpyTeLCVsAV5ZbqPFBVH8x6F96I+igxqUStEOM2salC+iKBeaLe2VFRg0j64nJ
-         MeQ7XdcxkP8kZfAi8gCYo3fiwI4JTmZwQPj7V5HOjwK/rZre8cK8qdOiZ0cR0Wwfdo/Y
-         phiy1gF//0cXBYgPtzhWX4Pjt+JskfRdzeY+zxcBfFzf9wloqRlpVg+rPEG1aS+1BsUD
-         nn2w==
-X-Gm-Message-State: APjAAAUMAUi45e8wcYgV3vWfV0l34PkXFmKYbCR7WK15KnZkzS5xMXm4
-        RG8FbjX19GRtRcsicJjbnL+1/g==
-X-Google-Smtp-Source: APXvYqyJag4ggmgi7xh2Gz1Sw+DPkf0OQ7myIaHWJXxifbKX1zyv/8Shs9SPwXg8QVxvQm6vfC0MZw==
-X-Received: by 2002:ac8:3a84:: with SMTP id x4mr14802700qte.334.1567587562863;
-        Wed, 04 Sep 2019 01:59:22 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s (li1320-244.members.linode.com. [45.79.221.244])
-        by smtp.gmail.com with ESMTPSA id c1sm665566qkm.70.2019.09.04.01.59.16
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 04 Sep 2019 01:59:22 -0700 (PDT)
-Date:   Wed, 4 Sep 2019 16:59:12 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suzuki Poulouse <suzuki.poulose@arm.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v5] perf machine: arm/arm64: Improve completeness for
- kernel address space
-Message-ID: <20190904085912.GA27922@leoy-ThinkPad-X240s>
-References: <20190815082521.16885-1-leo.yan@linaro.org>
- <d874e6b3-c115-6c8c-bb12-160cfd600505@intel.com>
- <20190815113242.GA28881@leoy-ThinkPad-X240s>
- <e0919e39-7607-815b-3a12-96f098e45a5f@intel.com>
- <20190816014541.GA17960@leoy-ThinkPad-X240s>
- <363577f1-097e-eddd-a6ca-b23f644dd8ce@intel.com>
- <20190826125105.GA3288@leoy-ThinkPad-X240s>
- <20190902141511.GF4931@leoy-ThinkPad-X240s>
- <c16ee888-73cc-588d-6156-bb5528d635cf@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nG3/Gl4yEYJWotofdnx8KNNKr+MoKl/PK0J2xDPrapc=;
+        b=lZclZUzlAuDqI4VDJRAd6uW27FzLyfMP5WVcZzenui4DbE21KG6wA7gmeqIJV/AvFC
+         KLmEMLwrOQCdQMrTm+GnXsRldNYJzDm+8jhwUKMo0TnyoaCN9rx4tKx3R7yF5mlhiGdk
+         9fZMVwvlFEvTBMUoZxDjht+H7igqTjLtxiPqzD4j1OBZ7Qr61fFAaEHA0vADfi9yo30P
+         pJSFd4jY/IFAvg3POywuEN+L54R8bskB+H1rCEfwZF3jTHc6eWZ6rxQb1JrrtnJoA+5V
+         ASKbihuzAY8FjLJ4ZG1GsKS0Kb9BYOCFINRQQK5VlFyOoVsfARrgKKs0p6uxDCr7HTSm
+         JthA==
+X-Gm-Message-State: APjAAAWuygTQYSM0Lkq0prU+53JuiOWMnLnQZ/KsTIDs0Ck5ECbZNw/S
+        LftB0bHDoQsAaPhK/jLBtpyLYQHA9vu4YFXPIRk=
+X-Google-Smtp-Source: APXvYqwlGEQrzdMKlcF6z8QugBr53fTpNVI8uF9B/jqBlOB1JTu6Z4UX3jHuKs2HTuWp5RuhzeUAdsR7A1vsI8yWSC0=
+X-Received: by 2002:a9d:6256:: with SMTP id i22mr4758536otk.139.1567592724601;
+ Wed, 04 Sep 2019 03:25:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c16ee888-73cc-588d-6156-bb5528d635cf@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1554792253-27081-1-git-send-email-magnus.karlsson@intel.com>
+ <1554792253-27081-3-git-send-email-magnus.karlsson@intel.com>
+ <xunyo9007hk9.fsf@redhat.com> <CAJ8uoz2LEun-bjUYQKZdx9NbLBOSRGsZZTWAp10=vhiP7Dms9g@mail.gmail.com>
+ <xunyftlc7dn8.fsf@redhat.com>
+In-Reply-To: <xunyftlc7dn8.fsf@redhat.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 4 Sep 2019 12:25:13 +0200
+Message-ID: <CAJ8uoz3jhr+VUmtjotW07mnDkYLgOYYO2HpV9hOv3i8B4=Z_CQ@mail.gmail.com>
+Subject: Re: [PATCH bpf 2/2] libbpf: remove dependency on barrier.h in xsk.h
+To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Adrian,
+On Wed, Sep 4, 2019 at 8:56 AM Yauheni Kaliuta
+<yauheni.kaliuta@redhat.com> wrote:
+>
+> Hi, Magnus!
+>
+> >>>>> On Wed, 4 Sep 2019 08:39:24 +0200, Magnus Karlsson  wrote:
+>
+>  > On Wed, Sep 4, 2019 at 7:32 AM Yauheni Kaliuta
+>  > <yauheni.kaliuta@redhat.com> wrote:
+>  >>
+>  >> Hi, Magnus!
+>  >>
+>  >> >>>>> On Tue,  9 Apr 2019 08:44:13 +0200, Magnus Karlsson  wrote:
+>  >>
+>  >> > The use of smp_rmb() and smp_wmb() creates a Linux header dependency
+>  >> > on barrier.h that is uneccessary in most parts. This patch implements
+>  >> > the two small defines that are needed from barrier.h. As a bonus, the
+>  >> > new implementations are faster than the default ones as they default
+>  >> > to sfence and lfence for x86, while we only need a compiler barrier in
+>  >> > our case. Just as it is when the same ring access code is compiled in
+>  >> > the kernel.
+>  >>
+>  >> > Fixes: 1cad07884239 ("libbpf: add support for using AF_XDP sockets")
+>  >> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+>  >> > ---
+>  >> >  tools/lib/bpf/xsk.h | 19 +++++++++++++++++--
+>  >> >  1 file changed, 17 insertions(+), 2 deletions(-)
+>  >>
+>  >> > diff --git a/tools/lib/bpf/xsk.h b/tools/lib/bpf/xsk.h
+>  >> > index 3638147..317b44f 100644
+>  >> > --- a/tools/lib/bpf/xsk.h
+>  >> > +++ b/tools/lib/bpf/xsk.h
+>  >> > @@ -39,6 +39,21 @@ DEFINE_XSK_RING(xsk_ring_cons);
+>  >> >  struct xsk_umem;
+>  >> >  struct xsk_socket;
+>  >>
+>  >> > +#if !defined bpf_smp_rmb && !defined bpf_smp_wmb
+>  >> > +# if defined(__i386__) || defined(__x86_64__)
+>  >> > +#  define bpf_smp_rmb() asm volatile("" : : : "memory")
+>  >> > +#  define bpf_smp_wmb() asm volatile("" : : : "memory")
+>  >> > +# elif defined(__aarch64__)
+>  >> > +#  define bpf_smp_rmb() asm volatile("dmb ishld" : : : "memory")
+>  >> > +#  define bpf_smp_wmb() asm volatile("dmb ishst" : : : "memory")
+>  >> > +# elif defined(__arm__)
+>  >> > +#  define bpf_smp_rmb() asm volatile("dmb ish" : : : "memory")
+>  >> > +#  define bpf_smp_wmb() asm volatile("dmb ishst" : : : "memory")
+>  >> > +# else
+>  >> > +#  error Architecture not supported by the XDP socket code in libbpf.
+>  >> > +# endif
+>  >> > +#endif
+>  >> > +
+>  >>
+>  >> What about other architectures then?
+>
+>  > AF_XDP has not been tested on anything else, as far as I
+>  > know. But contributions that extend it to more archs are very
+>  > welcome.
+>
+> Well, I'll may be try to fetch something from barrier.h's (since
+> I cannot consider myself as a specialist in the area), but at the
+> moment the patch breaks the build on that arches.
 
-On Wed, Sep 04, 2019 at 10:26:13AM +0300, Adrian Hunter wrote:
+Do you have a specific architecture in mind and do you have some
+board/server (of that architecture) you could test AF_XDP on?
 
-[...]
-
-> > Could you take chance to review my below replying?  I'd like to get
-> > your confirmation before I send out offical patch.
-> 
-> It is not necessary to do kallsyms__parse for x86_64, so it would be better
-> to check the arch before calling that.
-
-Thanks for suggestion, will do it in the formal patch.
-
-> However in general, having to copy and use kallsyms with perf.data if on a
-> different arch does not seem very user friendly.
-
-Agree.  Seems it's more reasonable to save related info in
-perf.data; TBH, I have no idea for how to do that.
-
-> But really that is up to Arnaldo.
-
-@Arnaldo, if possible could you take a look for below change?
-
-If you don't think below code is the right thing and it's not a common
-issue, then maybe it's more feasible to resolve this issue only for
-Arm CoreSight specific.
-
-Please let me know how about you think for this?
-
-Thanks,
-Leo Yan
-
-> >> For your question for taking a perf.data file to a machine with a
-> >> different architecture, we can firstly use command 'perf buildid-list'
-> >> to print out the buildid for kallsyms, based on the dumped buildid we
-> >> can find out the location for the saved kallsyms file; then we can use
-> >> option '--kallsyms' to specify the offline kallsyms file and use the
-> >> offline kallsyms to fixup kernel start address.  The detailed commands
-> >> are listed as below:
-> >>
-> >> root@debian:~# perf buildid-list
-> >> 7b36dfca8317ef74974ebd7ee5ec0a8b35c97640 [kernel.kallsyms]
-> >> 56b84aa88a1bcfe222a97a53698b92723a3977ca /usr/lib/systemd/systemd
-> >> 0956b952e9cd673d48ff2cfeb1a9dbd0c853e686 /usr/lib/aarch64-linux-gnu/libm-2.28.so
-> >> [...]
-> >>
-> >> root@debian:~# perf script --kallsyms ~/.debug/\[kernel.kallsyms\]/7b36dfca8317ef74974ebd7ee5ec0a8b35c97640/kallsyms
-> >>
-> >> The amended patch is as below, please review and always welcome
-> >> any suggestions or comments!
-> >>
-> >> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> >> index 5734460fc89e..593f05cc453f 100644
-> >> --- a/tools/perf/util/machine.c
-> >> +++ b/tools/perf/util/machine.c
-> >> @@ -2672,9 +2672,26 @@ int machine__nr_cpus_avail(struct machine *machine)
-> >>  	return machine ? perf_env__nr_cpus_avail(machine->env) : 0;
-> >>  }
-> >>  
-> >> +static int machine__fixup_kernel_start(void *arg,
-> >> +				       const char *name __maybe_unused,
-> >> +				       char type,
-> >> +				       u64 start)
-> >> +{
-> >> +	struct machine *machine = arg;
-> >> +
-> >> +	type = toupper(type);
-> >> +
-> >> +	/* Fixup for text, weak, data and bss sections. */
-> >> +	if (type == 'T' || type == 'W' || type == 'D' || type == 'B')
-> >> +		machine->kernel_start = min(machine->kernel_start, start);
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >>  int machine__get_kernel_start(struct machine *machine)
-> >>  {
-> >>  	struct map *map = machine__kernel_map(machine);
-> >> +	char filename[PATH_MAX];
-> >>  	int err = 0;
-> >>  
-> >>  	/*
-> >> @@ -2696,6 +2713,22 @@ int machine__get_kernel_start(struct machine *machine)
-> >>  		if (!err && !machine__is(machine, "x86_64"))
-> >>  			machine->kernel_start = map->start;
-> >>  	}
-> >> +
-> >> +	if (symbol_conf.kallsyms_name != NULL) {
-> >> +		strncpy(filename, symbol_conf.kallsyms_name, PATH_MAX);
-> >> +	} else {
-> >> +		machine__get_kallsyms_filename(machine, filename, PATH_MAX);
-> >> +
-> >> +		if (symbol__restricted_filename(filename, "/proc/kallsyms"))
-> >> +			goto out;
-> >> +	}
-> >> +
-> >> +	if (kallsyms__parse(filename, machine, machine__fixup_kernel_start))
-> >> +		pr_warning("Fail to fixup kernel start address. skipping...\n");
-> >> +
-> >> +out:
-> >>  	return err;
-> >>  }
-> >>  
-> >>
-> >> Thanks,
-> >> Leo Yan
-> > 
-> 
+>  > /Magnus
+>
+>  >>
+>  >> >  static inline __u64 *xsk_ring_prod__fill_addr(struct xsk_ring_prod *fill,
+>  >> >                                            __u32 idx)
+>  >> >  {
+>  >> > @@ -119,7 +134,7 @@ static inline void xsk_ring_prod__submit(struct xsk_ring_prod *prod, size_t nb)
+>  >> >      /* Make sure everything has been written to the ring before signalling
+>  >> >       * this to the kernel.
+>  >> >       */
+>  >> > -    smp_wmb();
+>  >> > +    bpf_smp_wmb();
+>  >>
+>  >> >      *prod->producer += nb;
+>  >> >  }
+>  >> > @@ -133,7 +148,7 @@ static inline size_t xsk_ring_cons__peek(struct xsk_ring_cons *cons,
+>  >> >              /* Make sure we do not speculatively read the data before
+>  >> >               * we have received the packet buffers from the ring.
+>  >> >               */
+>  >> > -            smp_rmb();
+>  >> > +            bpf_smp_rmb();
+>  >>
+>  >> >              *idx = cons->cached_cons;
+>  cons-> cached_cons += entries;
+>  >> > --
+>  >> > 2.7.4
+>  >>
+>  >>
+>  >> --
+>  >> WBR,
+>  >> Yauheni Kaliuta
+>
+> --
+> WBR,
+> Yauheni Kaliuta
