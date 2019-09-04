@@ -2,101 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEF1A8CDA
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 21:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9644A8D12
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 21:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732326AbfIDQSc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Sep 2019 12:18:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732082AbfIDP6m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Sep 2019 11:58:42 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE8192339D;
-        Wed,  4 Sep 2019 15:58:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1567612721;
-        bh=gcfw7Pl9wJ1QreK2DJ9KV2FBShwf39zNfDMOs861Vlc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p+LDXK+T1k1os6p1NJbzu/qlEBpfUABImLqTmCSAb17HPA3nM03VLAqxgbf7FM3bS
-         dSah5jbMd0yZwYmXra5rGCK2DWJIze7P5D4fqRAVwnDLZxJ2gKqnFPZ/G6okvT5Dwl
-         LpZu1JRO4WRb8YvAcIfXoWvn6plYo0fK1CKABkGg=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 42/94] bpf: allow narrow loads of some sk_reuseport_md fields with offset > 0
-Date:   Wed,  4 Sep 2019 11:56:47 -0400
-Message-Id: <20190904155739.2816-42-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190904155739.2816-1-sashal@kernel.org>
-References: <20190904155739.2816-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1731577AbfIDQZN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Sep 2019 12:25:13 -0400
+Received: from mail-qk1-f202.google.com ([209.85.222.202]:37414 "EHLO
+        mail-qk1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731561AbfIDQZM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Sep 2019 12:25:12 -0400
+Received: by mail-qk1-f202.google.com with SMTP id o133so23700331qke.4
+        for <bpf@vger.kernel.org>; Wed, 04 Sep 2019 09:25:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=YkX5xIFZm8dKIo6Aaw0z72OCwLMrJLrAmP5FOc86WyY=;
+        b=GZl2stlJ5Zpb52zpjdFc4qTpbqt56GTzBoAEfjU9VzeB7RfR5sBNdJtdG8NJLxmAZD
+         0njeHZyIWngTVMIaus8VeCtdCg7s2FVx29Lh1GSvh8pYjrdLdinnNahmCdyo3wwlEDEq
+         tnGSpGdqXu2QNAS6uuefvYOtwI2gC3PnZLSZtFMk2mfhz5YJpUXHoyJ2229Zi18R+evZ
+         uCaCRQODds9hkf17ZN3tZZVRpy3DIgPjpvvxsTxF36VpF5kEwp+Q3AA3hcWbCODfnHrq
+         xfmYkwZOtDMg3ByaUjuccAZb021FQlqecooCCx8ELh1sVTK5LR32//lsQh6drwcWo9bN
+         2M4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=YkX5xIFZm8dKIo6Aaw0z72OCwLMrJLrAmP5FOc86WyY=;
+        b=lf9u1yvA7Me6ZFCowdjCHUNgX/ilC/S5PDUdG4NZ8W6XwlgwqxNomgSaU/zU2fCwFz
+         PZplZwH3gTJJhZ0GXFMODoPeTpgQyrZ5be/GEIq37FolMbpc9x6tKAu+JtQSFJS6h2jn
+         wRbZuxdKipjhT1hIwCtzSbm2rssnl2VfIbGvu6ZO8ylzMx6CaxzSx9M5ZdHg1OT5Kvhj
+         tsKYqO0QlzUSI1JS00avOSANntFGdEaReoZCzHE2fzkIdu5WRYjFaHZkXncD7PmlfeMd
+         DLlOfbHxQeqUDA1iidEgL9RwevI8/NuLetgEBJ+JtEpVpZOzr1joPS5wrIwJwKzYVUOO
+         LadQ==
+X-Gm-Message-State: APjAAAUNYsY2Q2wUXG9OKUgcuLHvMA/23EBwaAtTvtVtfcFMy9ZSNVF2
+        HBjD1kCwLGFKaTDVNAi4G/2Mdjk=
+X-Google-Smtp-Source: APXvYqyArNXsaVHaGpvDehnryrWUZe0zRTisNwOPaBj9m14d7MTwlTYtnmRgQRkRwzJ9z0AYKcwD7po=
+X-Received: by 2002:ae9:c00d:: with SMTP id u13mr37979383qkk.300.1567614311627;
+ Wed, 04 Sep 2019 09:25:11 -0700 (PDT)
+Date:   Wed,  4 Sep 2019 09:25:03 -0700
+Message-Id: <20190904162509.199561-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.23.0.187.g17f5b7556c-goog
+Subject: [PATCH bpf-next 0/6] selftests/bpf: move sockopt tests under test_progs
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Ilya Leoshkevich <iii@linux.ibm.com>
+Now that test_progs is shaping into more generic test framework,
+let's convert sockopt tests to it. This requires adding
+a helper to create and join a cgroup first (test__join_cgroup).
+Since we already hijack stdout/stderr that shouldn't be
+a problem (cgroup helpers log to stderr).
 
-[ Upstream commit 2c238177bd7f4b14bdf7447cc1cd9bb791f147e6 ]
+The rest of the patches just move sockopt tests files under prog_tests/
+and do the required small adjustments.
 
-test_select_reuseport fails on s390 due to verifier rejecting
-test_select_reuseport_kern.o with the following message:
+Stanislav Fomichev (6):
+  selftests/bpf: test_progs: add test__join_cgroup helper
+  selftests/bpf: test_progs: convert test_sockopt
+  selftests/bpf: test_progs: convert test_sockopt_sk
+  selftests/bpf: test_progs: convert test_sockopt_multi
+  selftests/bpf: test_progs: convert test_sockopt_inherit
+  selftests/bpf: test_progs: convert test_tcp_rtt
 
-	; data_check.eth_protocol = reuse_md->eth_protocol;
-	18: (69) r1 = *(u16 *)(r6 +22)
-	invalid bpf_context access off=22 size=2
+ tools/testing/selftests/bpf/.gitignore        |   5 -
+ tools/testing/selftests/bpf/Makefile          |  12 +--
+ .../{test_sockopt.c => prog_tests/sockopt.c}  |  50 ++-------
+ .../sockopt_inherit.c}                        | 102 ++++++++----------
+ .../sockopt_multi.c}                          |  62 ++---------
+ .../sockopt_sk.c}                             |  60 +++--------
+ .../{test_tcp_rtt.c => prog_tests/tcp_rtt.c}  |  83 +++++---------
+ tools/testing/selftests/bpf/test_progs.c      |  38 +++++++
+ tools/testing/selftests/bpf/test_progs.h      |   4 +-
+ 9 files changed, 142 insertions(+), 274 deletions(-)
+ rename tools/testing/selftests/bpf/{test_sockopt.c => prog_tests/sockopt.c} (96%)
+ rename tools/testing/selftests/bpf/{test_sockopt_inherit.c => prog_tests/sockopt_inherit.c} (72%)
+ rename tools/testing/selftests/bpf/{test_sockopt_multi.c => prog_tests/sockopt_multi.c} (83%)
+ rename tools/testing/selftests/bpf/{test_sockopt_sk.c => prog_tests/sockopt_sk.c} (79%)
+ rename tools/testing/selftests/bpf/{test_tcp_rtt.c => prog_tests/tcp_rtt.c} (76%)
 
-This is because on big-endian machines casts from __u32 to __u16 are
-generated by referencing the respective variable as __u16 with an offset
-of 2 (as opposed to 0 on little-endian machines).
-
-The verifier already has all the infrastructure in place to allow such
-accesses, it's just that they are not explicitly enabled for
-eth_protocol field. Enable them for eth_protocol field by using
-bpf_ctx_range instead of offsetof.
-
-Ditto for ip_protocol, bind_inany and len, since they already allow
-narrowing, and the same problem can arise when working with them.
-
-Fixes: 2dbb9b9e6df6 ("bpf: Introduce BPF_PROG_TYPE_SK_REUSEPORT")
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/core/filter.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 534c310bb0893..7aee6f368754a 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -8553,13 +8553,13 @@ sk_reuseport_is_valid_access(int off, int size,
- 		return size == size_default;
- 
- 	/* Fields that allow narrowing */
--	case offsetof(struct sk_reuseport_md, eth_protocol):
-+	case bpf_ctx_range(struct sk_reuseport_md, eth_protocol):
- 		if (size < FIELD_SIZEOF(struct sk_buff, protocol))
- 			return false;
- 		/* fall through */
--	case offsetof(struct sk_reuseport_md, ip_protocol):
--	case offsetof(struct sk_reuseport_md, bind_inany):
--	case offsetof(struct sk_reuseport_md, len):
-+	case bpf_ctx_range(struct sk_reuseport_md, ip_protocol):
-+	case bpf_ctx_range(struct sk_reuseport_md, bind_inany):
-+	case bpf_ctx_range(struct sk_reuseport_md, len):
- 		bpf_ctx_record_field_size(info, size_default);
- 		return bpf_ctx_narrow_access_ok(off, size, size_default);
- 
 -- 
-2.20.1
-
+2.23.0.187.g17f5b7556c-goog
