@@ -2,27 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DCCE5A7CC0
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 09:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49952A7E9B
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 10:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725938AbfIDH10 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Sep 2019 03:27:26 -0400
-Received: from mga05.intel.com ([192.55.52.43]:1839 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725840AbfIDH1Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Sep 2019 03:27:25 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Sep 2019 00:27:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,465,1559545200"; 
-   d="scan'208";a="198965380"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.66]) ([10.237.72.66])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Sep 2019 00:27:21 -0700
-Subject: Re: [PATCH v5] perf machine: arm/arm64: Improve completeness for
- kernel address space
-To:     Leo Yan <leo.yan@linaro.org>
+        id S1727787AbfIDI7Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Sep 2019 04:59:24 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:44805 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727348AbfIDI7Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Sep 2019 04:59:24 -0400
+Received: by mail-qt1-f195.google.com with SMTP id u40so14905438qth.11
+        for <bpf@vger.kernel.org>; Wed, 04 Sep 2019 01:59:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jFVKdea45mJrNywU948vMYq5u5WRFPo01K8iIYZKsrw=;
+        b=OrwA+4vKkCB9cklKzP5BVFlg4BG6lgl69PUYcGp5Pb5zditO/wJGwJljrVy1GIHLs2
+         i8KYGCQ2pFe6T7LNzk2gleAPCJOhYY3jJE+0CVcnCJOVRWvimJbt4Pq7cdcU2rospPhh
+         Ce2FnYU077ib318/G8aFjuNh7rkCLS0A9qHtTVi7PMiPx6Ouhqy3jXQsZx4S9pumNicD
+         6B7HTb9f+D/8uUppfMCB9SMt2kZDq8/fRhhPK24rXlr8GIqSNPiihRI5qcnJvObPM2Dr
+         vkxJQBQ3QWSk1uDOG3fm1WEV3fUYRJ1WDVuR5qE5TRBU8Qemj1A0qK4EqjU1xkT/snKR
+         RyGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jFVKdea45mJrNywU948vMYq5u5WRFPo01K8iIYZKsrw=;
+        b=A+60JUsjWplBJBzhCEgZcPkb9WH6W5xCSiLnVLA9CIVxRq0lr6NkY3qDeAO29RoLco
+         MBf7mjGC0TS0BVEmb7b0Xd7OHzDuu8a59da/E7bSzQZSjVtmpWSaw+qmO5dzqj4fCG2Q
+         a6RSdSMpyTeLCVsAV5ZbqPFBVH8x6F96I+igxqUStEOM2salC+iKBeaLe2VFRg0j64nJ
+         MeQ7XdcxkP8kZfAi8gCYo3fiwI4JTmZwQPj7V5HOjwK/rZre8cK8qdOiZ0cR0Wwfdo/Y
+         phiy1gF//0cXBYgPtzhWX4Pjt+JskfRdzeY+zxcBfFzf9wloqRlpVg+rPEG1aS+1BsUD
+         nn2w==
+X-Gm-Message-State: APjAAAUMAUi45e8wcYgV3vWfV0l34PkXFmKYbCR7WK15KnZkzS5xMXm4
+        RG8FbjX19GRtRcsicJjbnL+1/g==
+X-Google-Smtp-Source: APXvYqyJag4ggmgi7xh2Gz1Sw+DPkf0OQ7myIaHWJXxifbKX1zyv/8Shs9SPwXg8QVxvQm6vfC0MZw==
+X-Received: by 2002:ac8:3a84:: with SMTP id x4mr14802700qte.334.1567587562863;
+        Wed, 04 Sep 2019 01:59:22 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s (li1320-244.members.linode.com. [45.79.221.244])
+        by smtp.gmail.com with ESMTPSA id c1sm665566qkm.70.2019.09.04.01.59.16
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 04 Sep 2019 01:59:22 -0700 (PDT)
+Date:   Wed, 4 Sep 2019 16:59:12 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@redhat.com>,
@@ -37,6 +61,9 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Suzuki Poulouse <suzuki.poulose@arm.com>,
         coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5] perf machine: arm/arm64: Improve completeness for
+ kernel address space
+Message-ID: <20190904085912.GA27922@leoy-ThinkPad-X240s>
 References: <20190815082521.16885-1-leo.yan@linaro.org>
  <d874e6b3-c115-6c8c-bb12-160cfd600505@intel.com>
  <20190815113242.GA28881@leoy-ThinkPad-X240s>
@@ -45,156 +72,123 @@ References: <20190815082521.16885-1-leo.yan@linaro.org>
  <363577f1-097e-eddd-a6ca-b23f644dd8ce@intel.com>
  <20190826125105.GA3288@leoy-ThinkPad-X240s>
  <20190902141511.GF4931@leoy-ThinkPad-X240s>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <c16ee888-73cc-588d-6156-bb5528d635cf@intel.com>
-Date:   Wed, 4 Sep 2019 10:26:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ <c16ee888-73cc-588d-6156-bb5528d635cf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20190902141511.GF4931@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c16ee888-73cc-588d-6156-bb5528d635cf@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/09/19 5:15 PM, Leo Yan wrote:
-> Hi Adrian,
-> 
-> On Mon, Aug 26, 2019 at 08:51:05PM +0800, Leo Yan wrote:
->> Hi Adrian,
->>
->> On Fri, Aug 16, 2019 at 04:00:02PM +0300, Adrian Hunter wrote:
->>> On 16/08/19 4:45 AM, Leo Yan wrote:
->>>> Hi Adrian,
->>>>
->>>> On Thu, Aug 15, 2019 at 02:45:57PM +0300, Adrian Hunter wrote:
->>>>
->>>> [...]
->>>>
->>>>>>> How come you cannot use kallsyms to get the information?
->>>>>>
->>>>>> Thanks for pointing out this.  Sorry I skipped your comment "I don't
->>>>>> know how you intend to calculate ARM_PRE_START_SIZE" when you reviewed
->>>>>> the patch v3, I should use that chance to elaborate the detailed idea
->>>>>> and so can get more feedback/guidance before procceed.
->>>>>>
->>>>>> Actually, I have considered to use kallsyms when worked on the previous
->>>>>> patch set.
->>>>>>
->>>>>> As mentioned in patch set v4's cover letter, I tried to implement
->>>>>> machine__create_extra_kernel_maps() for arm/arm64, the purpose is to
->>>>>> parse kallsyms so can find more kernel maps and thus also can fixup
->>>>>> the kernel start address.  But I found the 'perf script' tool directly
->>>>>> calls machine__get_kernel_start() instead of running into the flow for
->>>>>> machine__create_extra_kernel_maps();
->>>>>
->>>>> Doesn't it just need to loop through each kernel map to find the lowest
->>>>> start address?
->>>>
->>>> Based on your suggestion, I worked out below change and verified it
->>>> can work well on arm64 for fixing up start address; please let me know
->>>> if the change works for you?
->>>
->>> How does that work if take a perf.data file to a machine with a different
->>> architecture?
->>
->> Sorry I delayed so long to respond to your question; I didn't have
->> confidence to give out very reasonale answer and this is the main reason
->> for delaying.
-> 
-> Could you take chance to review my below replying?  I'd like to get
-> your confirmation before I send out offical patch.
+Hi Adrian,
 
-It is not necessary to do kallsyms__parse for x86_64, so it would be better
-to check the arch before calling that.
+On Wed, Sep 04, 2019 at 10:26:13AM +0300, Adrian Hunter wrote:
 
-However in general, having to copy and use kallsyms with perf.data if on a
-different arch does not seem very user friendly.  But really that is up to
-Arnaldo.
+[...]
 
+> > Could you take chance to review my below replying?  I'd like to get
+> > your confirmation before I send out offical patch.
 > 
-> Thanks,
-> Leo Yan
-> 
->>
->> For your question for taking a perf.data file to a machine with a
->> different architecture, we can firstly use command 'perf buildid-list'
->> to print out the buildid for kallsyms, based on the dumped buildid we
->> can find out the location for the saved kallsyms file; then we can use
->> option '--kallsyms' to specify the offline kallsyms file and use the
->> offline kallsyms to fixup kernel start address.  The detailed commands
->> are listed as below:
->>
->> root@debian:~# perf buildid-list
->> 7b36dfca8317ef74974ebd7ee5ec0a8b35c97640 [kernel.kallsyms]
->> 56b84aa88a1bcfe222a97a53698b92723a3977ca /usr/lib/systemd/systemd
->> 0956b952e9cd673d48ff2cfeb1a9dbd0c853e686 /usr/lib/aarch64-linux-gnu/libm-2.28.so
->> [...]
->>
->> root@debian:~# perf script --kallsyms ~/.debug/\[kernel.kallsyms\]/7b36dfca8317ef74974ebd7ee5ec0a8b35c97640/kallsyms
->>
->> The amended patch is as below, please review and always welcome
->> any suggestions or comments!
->>
->> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
->> index 5734460fc89e..593f05cc453f 100644
->> --- a/tools/perf/util/machine.c
->> +++ b/tools/perf/util/machine.c
->> @@ -2672,9 +2672,26 @@ int machine__nr_cpus_avail(struct machine *machine)
->>  	return machine ? perf_env__nr_cpus_avail(machine->env) : 0;
->>  }
->>  
->> +static int machine__fixup_kernel_start(void *arg,
->> +				       const char *name __maybe_unused,
->> +				       char type,
->> +				       u64 start)
->> +{
->> +	struct machine *machine = arg;
->> +
->> +	type = toupper(type);
->> +
->> +	/* Fixup for text, weak, data and bss sections. */
->> +	if (type == 'T' || type == 'W' || type == 'D' || type == 'B')
->> +		machine->kernel_start = min(machine->kernel_start, start);
->> +
->> +	return 0;
->> +}
->> +
->>  int machine__get_kernel_start(struct machine *machine)
->>  {
->>  	struct map *map = machine__kernel_map(machine);
->> +	char filename[PATH_MAX];
->>  	int err = 0;
->>  
->>  	/*
->> @@ -2696,6 +2713,22 @@ int machine__get_kernel_start(struct machine *machine)
->>  		if (!err && !machine__is(machine, "x86_64"))
->>  			machine->kernel_start = map->start;
->>  	}
->> +
->> +	if (symbol_conf.kallsyms_name != NULL) {
->> +		strncpy(filename, symbol_conf.kallsyms_name, PATH_MAX);
->> +	} else {
->> +		machine__get_kallsyms_filename(machine, filename, PATH_MAX);
->> +
->> +		if (symbol__restricted_filename(filename, "/proc/kallsyms"))
->> +			goto out;
->> +	}
->> +
->> +	if (kallsyms__parse(filename, machine, machine__fixup_kernel_start))
->> +		pr_warning("Fail to fixup kernel start address. skipping...\n");
->> +
->> +out:
->>  	return err;
->>  }
->>  
->>
->> Thanks,
->> Leo Yan
-> 
+> It is not necessary to do kallsyms__parse for x86_64, so it would be better
+> to check the arch before calling that.
 
+Thanks for suggestion, will do it in the formal patch.
+
+> However in general, having to copy and use kallsyms with perf.data if on a
+> different arch does not seem very user friendly.
+
+Agree.  Seems it's more reasonable to save related info in
+perf.data; TBH, I have no idea for how to do that.
+
+> But really that is up to Arnaldo.
+
+@Arnaldo, if possible could you take a look for below change?
+
+If you don't think below code is the right thing and it's not a common
+issue, then maybe it's more feasible to resolve this issue only for
+Arm CoreSight specific.
+
+Please let me know how about you think for this?
+
+Thanks,
+Leo Yan
+
+> >> For your question for taking a perf.data file to a machine with a
+> >> different architecture, we can firstly use command 'perf buildid-list'
+> >> to print out the buildid for kallsyms, based on the dumped buildid we
+> >> can find out the location for the saved kallsyms file; then we can use
+> >> option '--kallsyms' to specify the offline kallsyms file and use the
+> >> offline kallsyms to fixup kernel start address.  The detailed commands
+> >> are listed as below:
+> >>
+> >> root@debian:~# perf buildid-list
+> >> 7b36dfca8317ef74974ebd7ee5ec0a8b35c97640 [kernel.kallsyms]
+> >> 56b84aa88a1bcfe222a97a53698b92723a3977ca /usr/lib/systemd/systemd
+> >> 0956b952e9cd673d48ff2cfeb1a9dbd0c853e686 /usr/lib/aarch64-linux-gnu/libm-2.28.so
+> >> [...]
+> >>
+> >> root@debian:~# perf script --kallsyms ~/.debug/\[kernel.kallsyms\]/7b36dfca8317ef74974ebd7ee5ec0a8b35c97640/kallsyms
+> >>
+> >> The amended patch is as below, please review and always welcome
+> >> any suggestions or comments!
+> >>
+> >> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> >> index 5734460fc89e..593f05cc453f 100644
+> >> --- a/tools/perf/util/machine.c
+> >> +++ b/tools/perf/util/machine.c
+> >> @@ -2672,9 +2672,26 @@ int machine__nr_cpus_avail(struct machine *machine)
+> >>  	return machine ? perf_env__nr_cpus_avail(machine->env) : 0;
+> >>  }
+> >>  
+> >> +static int machine__fixup_kernel_start(void *arg,
+> >> +				       const char *name __maybe_unused,
+> >> +				       char type,
+> >> +				       u64 start)
+> >> +{
+> >> +	struct machine *machine = arg;
+> >> +
+> >> +	type = toupper(type);
+> >> +
+> >> +	/* Fixup for text, weak, data and bss sections. */
+> >> +	if (type == 'T' || type == 'W' || type == 'D' || type == 'B')
+> >> +		machine->kernel_start = min(machine->kernel_start, start);
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +
+> >>  int machine__get_kernel_start(struct machine *machine)
+> >>  {
+> >>  	struct map *map = machine__kernel_map(machine);
+> >> +	char filename[PATH_MAX];
+> >>  	int err = 0;
+> >>  
+> >>  	/*
+> >> @@ -2696,6 +2713,22 @@ int machine__get_kernel_start(struct machine *machine)
+> >>  		if (!err && !machine__is(machine, "x86_64"))
+> >>  			machine->kernel_start = map->start;
+> >>  	}
+> >> +
+> >> +	if (symbol_conf.kallsyms_name != NULL) {
+> >> +		strncpy(filename, symbol_conf.kallsyms_name, PATH_MAX);
+> >> +	} else {
+> >> +		machine__get_kallsyms_filename(machine, filename, PATH_MAX);
+> >> +
+> >> +		if (symbol__restricted_filename(filename, "/proc/kallsyms"))
+> >> +			goto out;
+> >> +	}
+> >> +
+> >> +	if (kallsyms__parse(filename, machine, machine__fixup_kernel_start))
+> >> +		pr_warning("Fail to fixup kernel start address. skipping...\n");
+> >> +
+> >> +out:
+> >>  	return err;
+> >>  }
+> >>  
+> >>
+> >> Thanks,
+> >> Leo Yan
+> > 
+> 
