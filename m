@@ -2,106 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 42988A817C
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 13:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0639A8241
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 14:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729816AbfIDLtp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Sep 2019 07:49:45 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:42486 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729774AbfIDLtp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Sep 2019 07:49:45 -0400
-Received: by mail-pg1-f195.google.com with SMTP id p3so11107718pgb.9;
-        Wed, 04 Sep 2019 04:49:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=m2GWrCu6Yp2/AvmU7Djr4/KynHbwAR5ba11BQUHMvBU=;
-        b=Ufq6mgXaQ5OjMGWeUrfmMi7aP7CdMIBgq5R1fXi+JbO0/qrKFAJX9NzhDe1TWBNTu2
-         ZozDuFLys9sJjY8tZ4KXagnUVsB5Cs4Gc74zH3OAC7Tr82PJPxr6NXVou8L4OLeRdXYK
-         zBv7PPxbXOhUff/Mcx4JCXr6LSWBeQS7nfjCYgp0cB0UiUvo3fgagHUXy4fqvFTW3nsf
-         XuOmJ0tJIVFBpctRL/m2hZypJiavkJA7zOH4Un3m3d5pdCPCdvf7Scx2YMXS1YBiNEQ/
-         xnN7j5dZsuG6tibM0PjePsd3FKfpHa2Bg+FwIK84caKyMrKzASt/qUjPcy78PdQeErX+
-         JcVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=m2GWrCu6Yp2/AvmU7Djr4/KynHbwAR5ba11BQUHMvBU=;
-        b=NXIZMBjJTIVwcHXoEF2d5VjanNdEOxzguvojLdIxOL/XecdDjm/J9v1gRg8lNlAshq
-         kt+F7E8Z4chdGrPtO0BvwRTvyODt5Rid6LL+CXqaC6XpV+xapxQ+8kqYgT+d5C0ooebE
-         xTVvmCST9C6BBBze3vT2ckdUMbWsmpYsIfkjoWvUh1NgLtI+h4Adhs87/1UBJ4XRTBBB
-         +g/M40Hs7f7JhqJSXmv3NQ7wwHEL7KCbke+Mr+Tkzy0iSjVQR+LlBxhXNYFUIdDkNICj
-         5dyTmg/cmN1PnT2kWThg+UnwMj9Ij/7pXa7MqfB6vonLdgm3JNuPSs5vXsXelWNM8D9L
-         mi8w==
-X-Gm-Message-State: APjAAAUPuVt6CZ5H0xSXI9HTYdTzohigbO02KgatC3a+DjbQiyk9xHdN
-        Qs+eZboR/mHD6ePsY4wjSng=
-X-Google-Smtp-Source: APXvYqyZXXmKAsk9itmyadcRF21M7VVDXHGujlAHTvo1l9S6+ZtsLkMHjJk/iiU2jiUssO3og/C0wg==
-X-Received: by 2002:aa7:8219:: with SMTP id k25mr46219337pfi.72.1567597784535;
-        Wed, 04 Sep 2019 04:49:44 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com (fmdmzpr04-ext.fm.intel.com. [192.55.54.39])
-        by smtp.gmail.com with ESMTPSA id b126sm48257008pfa.177.2019.09.04.04.49.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Sep 2019 04:49:44 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, magnus.karlsson@gmail.com,
-        bpf@vger.kernel.org, jonathan.lemon@gmail.com,
-        syzbot+c82697e3043781e08802@syzkaller.appspotmail.com,
-        hdanton@sina.com, i.maximets@samsung.com
-Subject: [PATCH bpf-next v3 4/4] xsk: lock the control mutex in sock_diag interface
-Date:   Wed,  4 Sep 2019 13:49:13 +0200
-Message-Id: <20190904114913.17217-5-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190904114913.17217-1-bjorn.topel@gmail.com>
-References: <20190904114913.17217-1-bjorn.topel@gmail.com>
+        id S1726943AbfIDMTK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Sep 2019 08:19:10 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:46724 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727929AbfIDMTK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Sep 2019 08:19:10 -0400
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 950C510A8122;
+        Wed,  4 Sep 2019 12:19:09 +0000 (UTC)
+Received: from astarta.redhat.com (ovpn-116-92.ams2.redhat.com [10.36.116.92])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3B58C6092D;
+        Wed,  4 Sep 2019 12:19:08 +0000 (UTC)
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf 2/2] libbpf: remove dependency on barrier.h in xsk.h
+References: <1554792253-27081-1-git-send-email-magnus.karlsson@intel.com>
+        <1554792253-27081-3-git-send-email-magnus.karlsson@intel.com>
+        <xunyo9007hk9.fsf@redhat.com>
+        <CAJ8uoz2LEun-bjUYQKZdx9NbLBOSRGsZZTWAp10=vhiP7Dms9g@mail.gmail.com>
+        <xunyftlc7dn8.fsf@redhat.com>
+        <CAJ8uoz3jhr+VUmtjotW07mnDkYLgOYYO2HpV9hOv3i8B4=Z_CQ@mail.gmail.com>
+Date:   Wed, 04 Sep 2019 15:19:06 +0300
+In-Reply-To: <CAJ8uoz3jhr+VUmtjotW07mnDkYLgOYYO2HpV9hOv3i8B4=Z_CQ@mail.gmail.com>
+        (Magnus Karlsson's message of "Wed, 4 Sep 2019 12:25:13 +0200")
+Message-ID: <xuny36hc6ypx.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.64]); Wed, 04 Sep 2019 12:19:09 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+Hi, Magnus!
 
-When accessing the members of an XDP socket, the control mutex should
-be held. This commit fixes that.
+>>>>> On Wed, 4 Sep 2019 12:25:13 +0200, Magnus Karlsson  wrote:
+ > On Wed, Sep 4, 2019 at 8:56 AM Yauheni Kaliuta
+ > <yauheni.kaliuta@redhat.com> wrote:
+ >> 
+ >> Hi, Magnus!
+ >> 
+ >> >>>>> On Wed, 4 Sep 2019 08:39:24 +0200, Magnus Karlsson  wrote:
+ >> 
+ >> > On Wed, Sep 4, 2019 at 7:32 AM Yauheni Kaliuta
+ >> > <yauheni.kaliuta@redhat.com> wrote:
+ >> >>
+ >> >> Hi, Magnus!
+ >> >>
+ >> >> >>>>> On Tue,  9 Apr 2019 08:44:13 +0200, Magnus Karlsson  wrote:
+ >> >>
+ >> >> > The use of smp_rmb() and smp_wmb() creates a Linux header dependency
+ >> >> > on barrier.h that is uneccessary in most parts. This patch implements
+ >> >> > the two small defines that are needed from barrier.h. As a bonus, the
+ >> >> > new implementations are faster than the default ones as they default
+ >> >> > to sfence and lfence for x86, while we only need a compiler barrier in
+ >> >> > our case. Just as it is when the same ring access code is compiled in
+ >> >> > the kernel.
+ >> >>
+ >> >> > Fixes: 1cad07884239 ("libbpf: add support for using AF_XDP sockets")
+ >> >> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+ >> >> > ---
+ >> >> >  tools/lib/bpf/xsk.h | 19 +++++++++++++++++--
+ >> >> >  1 file changed, 17 insertions(+), 2 deletions(-)
+ >> >>
+ >> >> > diff --git a/tools/lib/bpf/xsk.h b/tools/lib/bpf/xsk.h
+ >> >> > index 3638147..317b44f 100644
+ >> >> > --- a/tools/lib/bpf/xsk.h
+ >> >> > +++ b/tools/lib/bpf/xsk.h
+ >> >> > @@ -39,6 +39,21 @@ DEFINE_XSK_RING(xsk_ring_cons);
+ >> >> >  struct xsk_umem;
+ >> >> >  struct xsk_socket;
+ >> >>
+ >> >> > +#if !defined bpf_smp_rmb && !defined bpf_smp_wmb
+ >> >> > +# if defined(__i386__) || defined(__x86_64__)
+ >> >> > +#  define bpf_smp_rmb() asm volatile("" : : : "memory")
+ >> >> > +#  define bpf_smp_wmb() asm volatile("" : : : "memory")
+ >> >> > +# elif defined(__aarch64__)
+ >> >> > +#  define bpf_smp_rmb() asm volatile("dmb ishld" : : : "memory")
+ >> >> > +#  define bpf_smp_wmb() asm volatile("dmb ishst" : : : "memory")
+ >> >> > +# elif defined(__arm__)
+ >> >> > +#  define bpf_smp_rmb() asm volatile("dmb ish" : : : "memory")
+ >> >> > +#  define bpf_smp_wmb() asm volatile("dmb ishst" : : : "memory")
+ >> >> > +# else
+ >> >> > +#  error Architecture not supported by the XDP socket code in libbpf.
+ >> >> > +# endif
+ >> >> > +#endif
+ >> >> > +
+ >> >>
+ >> >> What about other architectures then?
+ >> 
+ >> > AF_XDP has not been tested on anything else, as far as I
+ >> > know. But contributions that extend it to more archs are
+ >> > very welcome.
+ >> 
+ >> Well, I'll may be try to fetch something from barrier.h's
+ >> (since I cannot consider myself as a specialist in the area),
+ >> but at the moment the patch breaks the build on that arches.
 
-Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
-Fixes: a36b38aa2af6 ("xsk: add sock_diag interface for AF_XDP")
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- net/xdp/xsk_diag.c | 3 +++
- 1 file changed, 3 insertions(+)
+ > Do you have a specific architecture in mind and do you have
+ > some board/server (of that architecture) you could test AF_XDP
+ > on?
 
-diff --git a/net/xdp/xsk_diag.c b/net/xdp/xsk_diag.c
-index 9986a759fe06..f59791ba43a0 100644
---- a/net/xdp/xsk_diag.c
-+++ b/net/xdp/xsk_diag.c
-@@ -97,6 +97,7 @@ static int xsk_diag_fill(struct sock *sk, struct sk_buff *nlskb,
- 	msg->xdiag_ino = sk_ino;
- 	sock_diag_save_cookie(sk, msg->xdiag_cookie);
- 
-+	mutex_lock(&xs->mutex);
- 	if ((req->xdiag_show & XDP_SHOW_INFO) && xsk_diag_put_info(xs, nlskb))
- 		goto out_nlmsg_trim;
- 
-@@ -117,10 +118,12 @@ static int xsk_diag_fill(struct sock *sk, struct sk_buff *nlskb,
- 	    sock_diag_put_meminfo(sk, nlskb, XDP_DIAG_MEMINFO))
- 		goto out_nlmsg_trim;
- 
-+	mutex_unlock(&xs->mutex);
- 	nlmsg_end(nlskb, nlh);
- 	return 0;
- 
- out_nlmsg_trim:
-+	mutex_unlock(&xs->mutex);
- 	nlmsg_cancel(nlskb, nlh);
- 	return -EMSGSIZE;
- }
+I do care about s390 and ppc64 and I can run tests for them.
+
+
+[...]
+
 -- 
-2.20.1
-
+WBR,
+Yauheni Kaliuta
