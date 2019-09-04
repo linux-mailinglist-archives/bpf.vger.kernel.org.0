@@ -2,38 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FAEA8CE5
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 21:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB8EA8CDF
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 21:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731511AbfIDQTK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Sep 2019 12:19:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60650 "EHLO mail.kernel.org"
+        id S1731543AbfIDQSl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Sep 2019 12:18:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731920AbfIDP61 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Sep 2019 11:58:27 -0400
+        id S1731479AbfIDP6m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Sep 2019 11:58:42 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A89AB2377B;
-        Wed,  4 Sep 2019 15:58:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE2132070C;
+        Wed,  4 Sep 2019 15:58:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1567612706;
-        bh=6zIiEWN31skM5xergCOsL8g59AvndvwXjYmo6+sQC3U=;
+        s=default; t=1567612720;
+        bh=KT1cqQYuCdglFPdumvq7H8CWoXVeOetimjy1U9BQ8MQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z1BiQUjmKf3Tv9p4UKUWni4yke/XKGDWvaCGqYS19NWQMG/RIgqTeIc6GVOKgqtOM
-         19Fw4QbobOeRZnfrRXLzrPqFqJK2OlMF+PGy2LCF+9KUPWNAN8hNnjbMax7052NbAa
-         Zq+toA6HUuj9iqB4Uqmz2/UTJUWjU3Y03PQU8irY=
+        b=DVv0KBhkdS/Lpwk6kw2O7mkrO39W0dzE4+NwyZpI/zbo474cwVXT9OPosd8gAkOJk
+         2VTWxjNkatZbaMRoBPe1Vpjf2hCw7Znyiw31NNYenTk8ENmJ199oJNA00ZVGBfAee5
+         E8I7FOSMdblK2GmQHSSrq/Odf1KaJ1X2Il8ebKdI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Anders Roxell <anders.roxell@linaro.org>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        syzbot+bd3bba6ff3fcea7a6ec6@syzkaller.appspotmail.com,
+        Song Liu <songliubraving@fb.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 33/94] selftests/bpf: install files test_xdp_vlan.sh
-Date:   Wed,  4 Sep 2019 11:56:38 -0400
-Message-Id: <20190904155739.2816-33-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.2 41/94] bpf: fix use after free in prog symbol exposure
+Date:   Wed,  4 Sep 2019 11:56:46 -0400
+Message-Id: <20190904155739.2816-41-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190904155739.2816-1-sashal@kernel.org>
 References: <20190904155739.2816-1-sashal@kernel.org>
@@ -46,43 +45,129 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Anders Roxell <anders.roxell@linaro.org>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-[ Upstream commit 3035bb72ee47d494c041465b4add9c6407c832ed ]
+[ Upstream commit c751798aa224fadc5124b49eeb38fb468c0fa039 ]
 
-When ./test_xdp_vlan_mode_generic.sh runs it complains that it can't
-find file test_xdp_vlan.sh.
+syzkaller managed to trigger the warning in bpf_jit_free() which checks via
+bpf_prog_kallsyms_verify_off() for potentially unlinked JITed BPF progs
+in kallsyms, and subsequently trips over GPF when walking kallsyms entries:
 
- # selftests: bpf: test_xdp_vlan_mode_generic.sh
- # ./test_xdp_vlan_mode_generic.sh: line 9: ./test_xdp_vlan.sh: No such
- file or directory
+  [...]
+  8021q: adding VLAN 0 to HW filter on device batadv0
+  8021q: adding VLAN 0 to HW filter on device batadv0
+  WARNING: CPU: 0 PID: 9869 at kernel/bpf/core.c:810 bpf_jit_free+0x1e8/0x2a0
+  Kernel panic - not syncing: panic_on_warn set ...
+  CPU: 0 PID: 9869 Comm: kworker/0:7 Not tainted 5.0.0-rc8+ #1
+  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+  Workqueue: events bpf_prog_free_deferred
+  Call Trace:
+   __dump_stack lib/dump_stack.c:77 [inline]
+   dump_stack+0x113/0x167 lib/dump_stack.c:113
+   panic+0x212/0x40b kernel/panic.c:214
+   __warn.cold.8+0x1b/0x38 kernel/panic.c:571
+   report_bug+0x1a4/0x200 lib/bug.c:186
+   fixup_bug arch/x86/kernel/traps.c:178 [inline]
+   do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:271
+   do_invalid_op+0x36/0x40 arch/x86/kernel/traps.c:290
+   invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:973
+  RIP: 0010:bpf_jit_free+0x1e8/0x2a0
+  Code: 02 4c 89 e2 83 e2 07 38 d0 7f 08 84 c0 0f 85 86 00 00 00 48 ba 00 02 00 00 00 00 ad de 0f b6 43 02 49 39 d6 0f 84 5f fe ff ff <0f> 0b e9 58 fe ff ff 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1
+  RSP: 0018:ffff888092f67cd8 EFLAGS: 00010202
+  RAX: 0000000000000007 RBX: ffffc90001947000 RCX: ffffffff816e9d88
+  RDX: dead000000000200 RSI: 0000000000000008 RDI: ffff88808769f7f0
+  RBP: ffff888092f67d00 R08: fffffbfff1394059 R09: fffffbfff1394058
+  R10: fffffbfff1394058 R11: ffffffff89ca02c7 R12: ffffc90001947002
+  R13: ffffc90001947020 R14: ffffffff881eca80 R15: ffff88808769f7e8
+  BUG: unable to handle kernel paging request at fffffbfff400d000
+  #PF error: [normal kernel read fault]
+  PGD 21ffee067 P4D 21ffee067 PUD 21ffed067 PMD 9f942067 PTE 0
+  Oops: 0000 [#1] PREEMPT SMP KASAN
+  CPU: 0 PID: 9869 Comm: kworker/0:7 Not tainted 5.0.0-rc8+ #1
+  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+  Workqueue: events bpf_prog_free_deferred
+  RIP: 0010:bpf_get_prog_addr_region kernel/bpf/core.c:495 [inline]
+  RIP: 0010:bpf_tree_comp kernel/bpf/core.c:558 [inline]
+  RIP: 0010:__lt_find include/linux/rbtree_latch.h:115 [inline]
+  RIP: 0010:latch_tree_find include/linux/rbtree_latch.h:208 [inline]
+  RIP: 0010:bpf_prog_kallsyms_find+0x107/0x2e0 kernel/bpf/core.c:632
+  Code: 00 f0 ff ff 44 38 c8 7f 08 84 c0 0f 85 fa 00 00 00 41 f6 45 02 01 75 02 0f 0b 48 39 da 0f 82 92 00 00 00 48 89 d8 48 c1 e8 03 <42> 0f b6 04 30 84 c0 74 08 3c 03 0f 8e 45 01 00 00 8b 03 48 c1 e0
+  [...]
 
-Rework so that test_xdp_vlan.sh gets installed, added to the variable
-TEST_PROGS_EXTENDED.
+Upon further debugging, it turns out that whenever we trigger this
+issue, the kallsyms removal in bpf_prog_ksym_node_del() was /skipped/
+but yet bpf_jit_free() reported that the entry is /in use/.
 
-Fixes: d35661fcf95d ("selftests/bpf: add wrapper scripts for test_xdp_vlan.sh")
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
-Acked-by: Jesper Dangaard Brouer <jbrouer@redhat.com>
+Problem is that symbol exposure via bpf_prog_kallsyms_add() but also
+perf_event_bpf_event() were done /after/ bpf_prog_new_fd(). Once the
+fd is exposed to the public, a parallel close request came in right
+before we attempted to do the bpf_prog_kallsyms_add().
+
+Given at this time the prog reference count is one, we start to rip
+everything underneath us via bpf_prog_release() -> bpf_prog_put().
+The memory is eventually released via deferred free, so we're seeing
+that bpf_jit_free() has a kallsym entry because we added it from
+bpf_prog_load() but /after/ bpf_prog_put() from the remote CPU.
+
+Therefore, move both notifications /before/ we install the fd. The
+issue was never seen between bpf_prog_alloc_id() and bpf_prog_new_fd()
+because upon bpf_prog_get_fd_by_id() we'll take another reference to
+the BPF prog, so we're still holding the original reference from the
+bpf_prog_load().
+
+Fixes: 6ee52e2a3fe4 ("perf, bpf: Introduce PERF_RECORD_BPF_EVENT")
+Fixes: 74451e66d516 ("bpf: make jited programs visible in traces")
+Reported-by: syzbot+bd3bba6ff3fcea7a6ec6@syzkaller.appspotmail.com
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Song Liu <songliubraving@fb.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/Makefile | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/bpf/syscall.c | 30 ++++++++++++++++++------------
+ 1 file changed, 18 insertions(+), 12 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index b9e88ccc289ba..adced69d026e5 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -61,7 +61,8 @@ TEST_PROGS := test_kmod.sh \
- TEST_PROGS_EXTENDED := with_addr.sh \
- 	with_tunnels.sh \
- 	tcp_client.py \
--	tcp_server.py
-+	tcp_server.py \
-+	test_xdp_vlan.sh
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 42d17f7307802..d2146277071f3 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1686,20 +1686,26 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
+ 	if (err)
+ 		goto free_used_maps;
  
- # Compile but not part of 'make run_tests'
- TEST_GEN_PROGS_EXTENDED = test_libbpf_open test_sock_addr test_skb_cgroup_id_user \
+-	err = bpf_prog_new_fd(prog);
+-	if (err < 0) {
+-		/* failed to allocate fd.
+-		 * bpf_prog_put() is needed because the above
+-		 * bpf_prog_alloc_id() has published the prog
+-		 * to the userspace and the userspace may
+-		 * have refcnt-ed it through BPF_PROG_GET_FD_BY_ID.
+-		 */
+-		bpf_prog_put(prog);
+-		return err;
+-	}
+-
++	/* Upon success of bpf_prog_alloc_id(), the BPF prog is
++	 * effectively publicly exposed. However, retrieving via
++	 * bpf_prog_get_fd_by_id() will take another reference,
++	 * therefore it cannot be gone underneath us.
++	 *
++	 * Only for the time /after/ successful bpf_prog_new_fd()
++	 * and before returning to userspace, we might just hold
++	 * one reference and any parallel close on that fd could
++	 * rip everything out. Hence, below notifications must
++	 * happen before bpf_prog_new_fd().
++	 *
++	 * Also, any failure handling from this point onwards must
++	 * be using bpf_prog_put() given the program is exposed.
++	 */
+ 	bpf_prog_kallsyms_add(prog);
+ 	perf_event_bpf_event(prog, PERF_BPF_EVENT_PROG_LOAD, 0);
++
++	err = bpf_prog_new_fd(prog);
++	if (err < 0)
++		bpf_prog_put(prog);
+ 	return err;
+ 
+ free_used_maps:
 -- 
 2.20.1
 
