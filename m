@@ -2,148 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B4858A897D
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 21:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0FBCA89D4
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 21:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730993AbfIDPWK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Sep 2019 11:22:10 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46682 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730299AbfIDPWJ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 4 Sep 2019 11:22:09 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x84F7pAx011607;
-        Wed, 4 Sep 2019 08:21:14 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=VQp8PxvTOOpN9WTFL80kxiAUWElYqgglDxYxLzQZMpg=;
- b=TrRNzac5SBajzrWPOQIoFARI+uVgXJ4sPeutJgZ0Kv5Jh/LP1sS5MYfRa/KCdYWYA6Ct
- grCUaxv5H0CxkfXPespctxnVRXKROA6tUWVNyqPGlA/7UTwKHLAnQew5S8cE0bvjufIY
- 0tNZIp+e1VhKc/Vrgu1cOuklXOt9WX3uBNs= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2usu2fn6w8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 04 Sep 2019 08:21:14 -0700
-Received: from prn-mbx06.TheFacebook.com (2620:10d:c081:6::20) by
- prn-hub06.TheFacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 4 Sep 2019 08:21:13 -0700
-Received: from prn-hub04.TheFacebook.com (2620:10d:c081:35::128) by
- prn-mbx06.TheFacebook.com (2620:10d:c081:6::20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 4 Sep 2019 08:21:13 -0700
-Received: from NAM05-DM3-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.28) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Wed, 4 Sep 2019 08:21:13 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y4OFp3nOig5McVBddJJPGKOxWUHyGbFWTMCRqW+WMY2GQLI2KPKRm9x5wXhNQ2twvv7sC7wq1Mg5SpaNWzKsrX+aHJLaAenvNgMqXS6mswKrMbeGb2zTI1MVIKPMaEMDF+znv60LHYSDLBivX45DNDEHx7am4GivVuDmnVdCj+eAlizGiRe+SC9OB9n7hl10rqsjdPCy3X3yWH1IEyYINOk5+qYvJVb1ZscHZQjuvPAy20zf6vky7oJWbwBLqFKx3NCSquglD4Bq+I/OjQE6kAxFJEvc0OENzucA1mMkNHcgu2pbj32vDjEfV/B25NyQF5Lb9MaHb49gCwHz6Zu3vw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VQp8PxvTOOpN9WTFL80kxiAUWElYqgglDxYxLzQZMpg=;
- b=WV6RYorHUyOhkrPgSEUG8HwwfBIgEnt8P5Ht8SsVSQvnfaEKnMYBZmQzFDFUzusfDbnaYJB1Cq9aGcBApigFQFi4EtsVpR1M8KIEFyYgrGHyRHr7p5KpSA2Ck/RIksGXV/gSw2mJggPdK7sj4rLFS3KCGPAQe0ZjXYPVhELglPOiS5RWs1Pazzvm5hOEAExzhVmbBhG3wA35hyGLlQc3N2bKocGJfiFjfSLPLsUjHc7qxApqm2HbgpvCZFPWxr5F0T3yexLadnjbUBt8gIUBKHiqiif/MC2RGhpyKxOSIZ1q/NB9nzM/GIcdftOv3DzRNYsvqyHanTuiRcSdirZFbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VQp8PxvTOOpN9WTFL80kxiAUWElYqgglDxYxLzQZMpg=;
- b=PR7GsASF3uzcjcgrLP68t9cw5vwuNTnUNFzGg73e8ZGBOMr+Q10YbULspdVFQKzFHauc9LDrHv87h+bgCks1EmOkkCMNa2zxy5BBw6y9yveKejNhMsCDUlc3x3GqjAnAphp3iCrbwYTU3nH1maSaTH8zKrcuSWwTTG1fiH0G9Go=
-Received: from BYAPR15MB2501.namprd15.prod.outlook.com (52.135.196.11) by
- BYASPR01MB0023.namprd15.prod.outlook.com (20.177.126.93) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2241.14; Wed, 4 Sep 2019 15:21:12 +0000
-Received: from BYAPR15MB2501.namprd15.prod.outlook.com
- ([fe80::65e2:8d24:46f3:fd3d]) by BYAPR15MB2501.namprd15.prod.outlook.com
- ([fe80::65e2:8d24:46f3:fd3d%7]) with mapi id 15.20.2220.021; Wed, 4 Sep 2019
- 15:21:11 +0000
-From:   Alexei Starovoitov <ast@fb.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        "nicolas.dichtel@6wind.com" <nicolas.dichtel@6wind.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        "luto@amacapital.net" <luto@amacapital.net>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>
-Subject: Re: [PATCH v2 bpf-next 2/3] bpf: implement CAP_BPF
-Thread-Topic: [PATCH v2 bpf-next 2/3] bpf: implement CAP_BPF
-Thread-Index: AQHVXiiECXa58nNjTk27E4Nc66HXg6cSQZuAgAAhAoCAAW2TAIAGgVCAgAFZroCAAAFBAA==
-Date:   Wed, 4 Sep 2019 15:21:11 +0000
-Message-ID: <99acd443-69d7-f53a-1af0-263e0b73abef@fb.com>
-References: <20190829051253.1927291-1-ast@kernel.org>
- <20190829051253.1927291-2-ast@kernel.org>
- <ed8796f5-eaea-c87d-ddd9-9d624059e5ee@iogearbox.net>
- <20190829173034.up5g74onaekp53zd@ast-mbp.dhcp.thefacebook.com>
- <59ac111e-7ce7-5e00-32c9-9b55482fe701@6wind.com>
- <46df2c36-4276-33c0-626b-c51e77b3a04f@fb.com>
- <5e36a193-8ad9-77e7-e2ff-429fb521a79c@iogearbox.net>
-In-Reply-To: <5e36a193-8ad9-77e7-e2ff-429fb521a79c@iogearbox.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BYAPR02CA0063.namprd02.prod.outlook.com
- (2603:10b6:a03:54::40) To BYAPR15MB2501.namprd15.prod.outlook.com
- (2603:10b6:a02:88::11)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::5f42]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8f30aa0b-9b6e-45b3-bdef-08d7314b848a
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYASPR01MB0023;
-x-ms-traffictypediagnostic: BYASPR01MB0023:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYASPR01MB00236EF44D43E04168841C3AD7B80@BYASPR01MB0023.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:765;
-x-forefront-prvs: 0150F3F97D
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(366004)(346002)(396003)(136003)(376002)(189003)(199004)(446003)(53936002)(25786009)(6512007)(6436002)(46003)(6246003)(4326008)(14454004)(478600001)(31686004)(66476007)(64756008)(2501003)(66556008)(66446008)(476003)(31696002)(486006)(71200400001)(71190400001)(11346002)(2616005)(66946007)(256004)(8936002)(4744005)(36756003)(229853002)(305945005)(86362001)(7736002)(186003)(81166006)(81156014)(8676002)(5660300002)(54906003)(110136005)(53546011)(6506007)(386003)(6486002)(102836004)(76176011)(6116002)(99286004)(52116002)(2906002)(7416002)(316002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYASPR01MB0023;H:BYAPR15MB2501.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: eCUwseemVUwwMOQTC+UKOHIlLpnEIFd4eLGAAAIdKdyXlmAyrbr2dN0/2CR2A8ZDE2X9hChnN47RivZjk5TcprAu6d+tQxHGjmkhsppav3BCRxgNs372Vbo5IUOAhMK0ggkO7GwSJDoLCHcxbnq4cUkoscvU6uXopD4R+58YQ9ZweMNKPgWk7MXy+bsVeMc39b/8qvSdCztuJrcA18vcHArb4SSzy2psP9VWetduH6GhVmZFLO0YFlo+hNY6mVqKdXp2qge3AfCl/cmmrRW3lkikNYjM2xGXZ6833tnCXVaijze6BCcQKS/7rTy70KyrjTOKRhMm7TCNoE5MnZAcodgjIVvZFBLYGn74RzTs83nbzEoxoL2/UaZwXBT65lsWSTUfiubSrpjFHKRpIFRKXwf01SJf+iFs+VyNzWvnhic=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F2DB9086D997BB47992EA8F2BE17B6A7@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1731465AbfIDP5n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Sep 2019 11:57:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730355AbfIDP5n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Sep 2019 11:57:43 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C642E22CED;
+        Wed,  4 Sep 2019 15:57:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1567612661;
+        bh=5VvYnwAMIunNq1mXCuUviFAgfKWidIzSl/qVKwJNG6o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nXH8BwmK1/9SEQm+IJEnDMrjIdaWLCdIp7snz5/AHFiV4qt/pSXqU6s4lJ5xlH/uE
+         2rmppkBbgRwO7Xjs6D67Q+AIiYmthoHGM+bwFgVEetzDCD+colfj2LHEjTL+l2o3iw
+         /r5U7Z86NuCogfWI2V889hxAd3ELJS4bmPIWX6bE=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     YueHaibing <yuehaibing@huawei.com>, Hulk Robot <hulkci@huawei.com>,
+        Alexander Aring <aring@mojatatu.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Sasha Levin <sashal@kernel.org>, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.2 01/94] ieee802154: hwsim: Fix error handle path in hwsim_init_module
+Date:   Wed,  4 Sep 2019 11:56:06 -0400
+Message-Id: <20190904155739.2816-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f30aa0b-9b6e-45b3-bdef-08d7314b848a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Sep 2019 15:21:11.4536
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: N+YXo/TUG7jJYGSTfej/DQyz8s849dLtba6I9h+JAOIPrwd2M5QqIbguXMFJrUCt
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYASPR01MB0023
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
- definitions=2019-09-04_04:2019-09-04,2019-09-04 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
- spamscore=0 phishscore=0 impostorscore=0 clxscore=1015 suspectscore=0
- lowpriorityscore=0 priorityscore=1501 malwarescore=0 bulkscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1906280000 definitions=main-1909040149
-X-FB-Internal: deliver
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gOS80LzE5IDg6MTYgQU0sIERhbmllbCBCb3JrbWFubiB3cm90ZToNCj4gb3BlbmluZy9jcmVh
-dGluZyBCUEYgbWFwcyIgZXJyb3I9IlVuYWJsZSB0byBjcmVhdGUgbWFwIA0KPiAvcnVuL2NpbGl1
-bS9icGZmcy90Yy9nbG9iYWxzL2NpbGl1bV9seGM6IG9wZXJhdGlvbiBub3QgcGVybWl0dGVkIiAN
-Cj4gc3Vic3lzPWRhZW1vbg0KPiAyMDE5LTA5LTA0VDE0OjExOjQ3LjI4MTc4NjY2WiBsZXZlbD1m
-YXRhbCBtc2c9IkVycm9yIHdoaWxlIGNyZWF0aW5nIA0KPiBkYWVtb24iIGVycm9yPSJVbmFibGUg
-dG8gY3JlYXRlIG1hcCANCj4gL3J1bi9jaWxpdW0vYnBmZnMvdGMvZ2xvYmFscy9jaWxpdW1fbHhj
-OiBvcGVyYXRpb24gbm90IHBlcm1pdHRlZCIgDQo+IHN1YnN5cz1kYWVtb24NCg0KT2suIFdlIGhh
-dmUgdG8gaW5jbHVkZSBjYXBzIGluIGJvdGggY2FwX3N5c19hZG1pbiBhbmQgY2FwX2JwZiB0aGVu
-Lg0KDQo+IEFuZCAvc2FtZS8gZGVwbG95bWVudCB3aXRoIHJldmVydGVkIHBhdGNoZXMsIGhlbmNl
-IG5vIENBUF9CUEYgZ2V0cyBpdCB1cCANCj4gYW5kIHJ1bm5pbmcgYWdhaW46DQo+IA0KPiAjIGt1
-YmVjdGwgZ2V0IHBvZHMgLS1hbGwtbmFtZXNwYWNlcyAtbyB3aWRlDQoNCkNhbiB5b3Ugc2hhcmUg
-d2hhdCB0aGlzIG1hZ2ljIGNvbW1hbmRzIGRvIHVuZGVybmVhdGg/DQoNCldoYXQgdXNlciBkbyB0
-aGV5IHBpY2sgdG8gc3RhcnQgdW5kZXI/IGFuZCB3aGF0IGNhcHMgYXJlIGdyYW50ZWQ/DQo=
+From: YueHaibing <yuehaibing@huawei.com>
+
+[ Upstream commit 1cbbbf39efab05fae67f59e6ed01bb85061c69e2 ]
+
+KASAN report this:
+
+BUG: unable to handle kernel paging request at fffffbfff834f001
+PGD 237fe8067 P4D 237fe8067 PUD 237e64067 PMD 1c968d067 PTE 0
+Oops: 0000 [#1] SMP KASAN PTI
+CPU: 1 PID: 8871 Comm: syz-executor.0 Tainted: G         C        5.0.0+ #5
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
+RIP: 0010:strcmp+0x31/0xa0 lib/string.c:328
+Code: 00 00 00 00 fc ff df 55 53 48 83 ec 08 eb 0a 84 db 48 89 ef 74 5a 4c 89 e6 48 89 f8 48 89 fa 48 8d 6f 01 48 c1 e8 03 83 e2 07 <42> 0f b6 04 28 38 d0 7f 04 84 c0 75 50 48 89 f0 48 89 f2 0f b6 5d
+RSP: 0018:ffff8881e0c57800 EFLAGS: 00010246
+RAX: 1ffffffff834f001 RBX: ffffffffc1a78000 RCX: ffffffff827b9503
+RDX: 0000000000000000 RSI: ffffffffc1a40008 RDI: ffffffffc1a78008
+RBP: ffffffffc1a78009 R08: fffffbfff6a92195 R09: fffffbfff6a92195
+R10: ffff8881e0c578b8 R11: fffffbfff6a92194 R12: ffffffffc1a40008
+R13: dffffc0000000000 R14: ffffffffc1a3e470 R15: ffffffffc1a40000
+FS:  00007fdcc02ff700(0000) GS:ffff8881f7300000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfff834f001 CR3: 00000001b3134003 CR4: 00000000007606e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ genl_family_find_byname+0x7f/0xf0 net/netlink/genetlink.c:104
+ genl_register_family+0x1e1/0x1070 net/netlink/genetlink.c:333
+ ? 0xffffffffc1978000
+ hwsim_init_module+0x6a/0x1000 [mac802154_hwsim]
+ ? 0xffffffffc1978000
+ ? 0xffffffffc1978000
+ ? 0xffffffffc1978000
+ do_one_initcall+0xbc/0x47d init/main.c:887
+ do_init_module+0x1b5/0x547 kernel/module.c:3456
+ load_module+0x6405/0x8c10 kernel/module.c:3804
+ __do_sys_finit_module+0x162/0x190 kernel/module.c:3898
+ do_syscall_64+0x9f/0x450 arch/x86/entry/common.c:290
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x462e99
+Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fdcc02fec58 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+RAX: ffffffffffffffda RBX: 000000000073bf00 RCX: 0000000000462e99
+RDX: 0000000000000000 RSI: 0000000020000200 RDI: 0000000000000003
+RBP: 00007fdcc02fec70 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007fdcc02ff6bc
+R13: 00000000004bcefa R14: 00000000006f6fb0 R15: 0000000000000004
+Modules linked in: mac802154_hwsim(+) mac802154 ieee802154 speakup(C) rc_proteus_2309 rtc_rk808 streebog_generic rds vboxguest madera_spi madera da9052_wdt mISDN_core ueagle_atm usbatm atm ir_imon_decoder scsi_transport_sas rc_dntv_live_dvb_t panel_samsung_s6d16d0 drm drm_panel_orientation_quirks lib80211 fb_agm1264k_fl(C) gspca_pac7302 gspca_main videobuf2_v4l2 soundwire_intel_init i2c_dln2 dln2 usbcore hid_gaff 88pm8607 nfnetlink axp20x_i2c axp20x uio pata_marvell pmbus_core snd_sonicvibes gameport snd_pcm snd_opl3_lib snd_timer snd_hwdep snd_mpu401_uart snd_rawmidi snd_seq_device snd soundcore rtc_ds1511 rtc_ds1742 vsock dwc_xlgmac rtc_rx8010 libphy twofish_x86_64_3way twofish_x86_64 twofish_common ad5696_i2c ad5686 lp8788_charger cxd2880_spi dvb_core videobuf2_common videodev media videobuf2_vmalloc videobuf2_memops fbtft(C) sysimgblt sysfillrect syscopyarea fb_sys_fops janz_ican3 firewire_net firewire_core crc_itu_t spi_slave_system_control i2c_matroxfb i2c_algo_bit
+ matroxfb_base fb fbdev matroxfb_DAC1064 matroxfb_accel cfbcopyarea cfbimgblt cfbfillrect matroxfb_Ti3026 matroxfb_g450 g450_pll matroxfb_misc leds_blinkm ti_dac7311 intel_spi_pci intel_spi spi_nor hid_elan hid async_tx rc_cinergy_1400 rc_core intel_ishtp kxcjk_1013 industrialio_triggered_buffer kfifo_buf can_dev intel_th spi_pxa2xx_platform pata_artop vme_ca91cx42 gb_gbphy(C) greybus(C) industrialio mptbase st_drv cmac ttpci_eeprom via_wdt gpio_xra1403 mtd iptable_security iptable_raw iptable_mangle iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 iptable_filter bpfilter ip6_vti ip_vti ip_gre ipip sit tunnel4 ip_tunnel hsr veth netdevsim vxcan batman_adv cfg80211 rfkill chnl_net caif nlmon dummy team bonding vcan bridge stp llc ip6_gre gre ip6_tunnel tunnel6 tun joydev mousedev ppdev kvm_intel kvm irqbypass crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel aes_x86_64 input_leds crypto_simd cryptd glue_helper ide_pci_generic piix psmouse
+ ide_core serio_raw ata_generic i2c_piix4 pata_acpi parport_pc parport floppy rtc_cmos intel_agp intel_gtt agpgart sch_fq_codel ip_tables x_tables sha1_ssse3 sha1_generic ipv6 [last unloaded: speakup]
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+CR2: fffffbfff834f001
+---[ end trace 5aa772c793e0e971 ]---
+RIP: 0010:strcmp+0x31/0xa0 lib/string.c:328
+Code: 00 00 00 00 fc ff df 55 53 48 83 ec 08 eb 0a 84 db 48 89 ef 74 5a 4c 89 e6 48 89 f8 48 89 fa 48 8d 6f 01 48 c1 e8 03 83 e2 07 <42> 0f b6 04 28 38 d0 7f 04 84 c0 75 50 48 89 f0 48 89 f2 0f b6 5d
+RSP: 0018:ffff8881e0c57800 EFLAGS: 00010246
+RAX: 1ffffffff834f001 RBX: ffffffffc1a78000 RCX: ffffffff827b9503
+RDX: 0000000000000000 RSI: ffffffffc1a40008 RDI: ffffffffc1a78008
+RBP: ffffffffc1a78009 R08: fffffbfff6a92195 R09: fffffbfff6a92195
+R10: ffff8881e0c578b8 R11: fffffbfff6a92194 R12: ffffffffc1a40008
+R13: dffffc0000000000 R14: ffffffffc1a3e470 R15: ffffffffc1a40000
+FS:  00007fdcc02ff700(0000) GS:ffff8881f7300000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfff834f001 CR3: 00000001b3134003 CR4: 00000000007606e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+
+The error handing path misplace the cleanup in hwsim_init_module,
+switch the two cleanup functions to fix above issues.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: f25da51fdc38 ("ieee802154: hwsim: add replacement for fakelb")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Acked-by: Alexander Aring <aring@mojatatu.com>
+Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/ieee802154/mac802154_hwsim.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ieee802154/mac802154_hwsim.c b/drivers/net/ieee802154/mac802154_hwsim.c
+index b41696e16bdc8..94b9e9d775e40 100644
+--- a/drivers/net/ieee802154/mac802154_hwsim.c
++++ b/drivers/net/ieee802154/mac802154_hwsim.c
+@@ -901,9 +901,9 @@ static __init int hwsim_init_module(void)
+ 	return 0;
+ 
+ platform_drv:
+-	genl_unregister_family(&hwsim_genl_family);
+-platform_dev:
+ 	platform_device_unregister(mac802154hwsim_dev);
++platform_dev:
++	genl_unregister_family(&hwsim_genl_family);
+ 	return rc;
+ }
+ 
+-- 
+2.20.1
+
