@@ -2,240 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A2880A8D1E
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 21:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DD0A8D3D
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 21:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731718AbfIDQZ1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Sep 2019 12:25:27 -0400
-Received: from mail-pl1-f202.google.com ([209.85.214.202]:38685 "EHLO
-        mail-pl1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731660AbfIDQZ1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Sep 2019 12:25:27 -0400
-Received: by mail-pl1-f202.google.com with SMTP id x5so12114222pln.5
-        for <bpf@vger.kernel.org>; Wed, 04 Sep 2019 09:25:27 -0700 (PDT)
+        id S1731628AbfIDQkn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Sep 2019 12:40:43 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:43916 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731493AbfIDQkm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Sep 2019 12:40:42 -0400
+Received: by mail-pf1-f195.google.com with SMTP id d15so4080449pfo.10;
+        Wed, 04 Sep 2019 09:40:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=lTHI3kK5VYAt2CUHcJhzYihkdJRkFD9/pz9e86BhyNk=;
-        b=SH7fS/7O+0gv1WISOURiTSE5KAJLXZjS3epFQ4GZJVCm6clt94/JBR1ZSaHGjMCzY2
-         Iuvr8Lz587zmJ76di321voYzd6+nTzToXEondxQzqlUyvUbeeBeOFhSAAn+bjWDrVMSe
-         pIw53XH/9OpLwwBX6EmbM0D8jDhWQfM5T4LW35dNCq2rghrGrbGEEO4N2xIa1p/rE2SO
-         VEFFeoNQHwnJJ/qLVazCg3glGkzAA7m3RyPgQbarM8uet37p7e6NzROCtPdthEM1LKn6
-         Op5VSmwRZL8f1k+ukQtMvHvEOTc5BAk4EFKsXEjzqAdhdw3WP6mFgibUpYB89NEvvb4/
-         2J6A==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=2J0mzQdMeSmayAIFRl/DDgdb93Tauzyrb7Uz/NHGZhc=;
+        b=SoJYpgGY7CF2CfhToHrDRyXKndLqqg6yqRnD+DMeRrGyHxbvevNZEf0zkva8TDKsj5
+         grsk/eRsIbzQ6kEnqZYEIdcXMB5B9tYwo2BJA0u2zcGRi99Qx98/YTjLlkTWmrb+s821
+         gq166Pa/JIgxzMiZ1sQMxrLTnwCWpEw4fYE/zl44FRFEL/gnFbv7j2vCyop4vzZT+eKV
+         bgOxZEILzW1jX1dUA8vjEk0OyvlniHIiJQM/y2i4O6g6Uma6bozJm2uokijVvE3Ae6uc
+         5oFu6X/k7p7dEkGVii6zUJ3Zpu5yfPVWnS4kMy5caJUas7oE1VSTpmGUAfaQyAOPy/qV
+         +P5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=lTHI3kK5VYAt2CUHcJhzYihkdJRkFD9/pz9e86BhyNk=;
-        b=pi9wDp1hp+ClhQBXrWDvS/xkCagiwb1TB6jBvOAdPzzyU4M29g0vT0hf7gMAGX2/VP
-         uzEqbAX1Te3ZSviyAy7tEVeLjxZa+R+sgVi/YD+K8DLiIeavW7q7QzgCU9Be/ypRtBuJ
-         IdhA47GBSzJnPx+MQhTJ88AS08OGITqbbJQAZpe/karICCwWslc8xyyM8FGKpLVRiekp
-         doqsG3NzCS7+9C8x0CQ6Tx7oR9RbDPTFSWxp48IrAoZWVBcJs856Op3s2UZFEnuqJevc
-         ouydNzeiWxTGlCmhvu68fPiv+HBeUY+/AeHscD6WYNH45Mb2f3y0HERrEMdWv98VXhnY
-         Cv6Q==
-X-Gm-Message-State: APjAAAXG2ij4yrpQpJSwuJs/3Z2rARZwubLSnzjtRE9ji/cBkb4sDTut
-        tNEG4XjqjmABv0oiYn4pBhWALI4=
-X-Google-Smtp-Source: APXvYqx1MoSqmM5sAmUCgWK0UzeVh2lXwgiUfyTJOOAueMCxdHTmxJ+0ZZM99itgMIut3Q0OIoryy+Y=
-X-Received: by 2002:a63:481c:: with SMTP id v28mr35446565pga.50.1567614326437;
- Wed, 04 Sep 2019 09:25:26 -0700 (PDT)
-Date:   Wed,  4 Sep 2019 09:25:09 -0700
-In-Reply-To: <20190904162509.199561-1-sdf@google.com>
-Message-Id: <20190904162509.199561-7-sdf@google.com>
-Mime-Version: 1.0
-References: <20190904162509.199561-1-sdf@google.com>
-X-Mailer: git-send-email 2.23.0.187.g17f5b7556c-goog
-Subject: [PATCH bpf-next 6/6] selftests/bpf: test_progs: convert test_tcp_rtt
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=2J0mzQdMeSmayAIFRl/DDgdb93Tauzyrb7Uz/NHGZhc=;
+        b=ulUzOzLGjgK98qmnKbA2bGjYRlFoJVFGjERBiH4DCt+bYZ+Fyo05oqycVizFM70TUf
+         LC4N2eyxcrFvdw86csddz/THjvnmd0G7yXCHwiSnB5dyQdvZsuS00NgVfO3M0zpzoJY/
+         v3tfVTkUamhGR9wPug/KnrZYfgDiQScPG+85ozN2BRrneIcjnbYgIo2btMRhUQUaWBKs
+         FirXbpbzb4nMLBcdE+vQQESUypMJdltUFe4sZUV9jShaEfr3TFqVkGGUdfuFy6FfugVB
+         UaPj7fwhB9MI4kkgn7mTBA3+sR4ZSivIlYwmnDighKYo1xsxP/KRBf05FpsbuQ59czAu
+         xxhA==
+X-Gm-Message-State: APjAAAW2YDE0qjg6v4bGLax0eTnVaXHx3atZquTYN1AmqHKZhSB+of/r
+        k4h69jw6oaxslwGz2HY2oPE=
+X-Google-Smtp-Source: APXvYqy32sWmcTKMymczeR/FTDJKW4oa06ltZ+9er8h2ggVTT79FL6lUmThH2aws9vzV0qfaChAP6w==
+X-Received: by 2002:a63:2a41:: with SMTP id q62mr36168854pgq.444.1567615242106;
+        Wed, 04 Sep 2019 09:40:42 -0700 (PDT)
+Received: from [172.26.108.37] ([2620:10d:c090:180::85c5])
+        by smtp.gmail.com with ESMTPSA id v8sm18712900pgs.82.2019.09.04.09.40.41
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 04 Sep 2019 09:40:41 -0700 (PDT)
+From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
+To:     "=?utf-8?b?QmrDtnJuIFTDtnBlbA==?=" <bjorn.topel@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        "=?utf-8?b?QmrDtnJuIFTDtnBlbA==?=" <bjorn.topel@intel.com>,
+        magnus.karlsson@intel.com, magnus.karlsson@gmail.com,
+        bpf@vger.kernel.org,
+        syzbot+c82697e3043781e08802@syzkaller.appspotmail.com,
+        hdanton@sina.com, i.maximets@samsung.com
+Subject: Re: [PATCH bpf-next v3 3/4] xsk: use state member for socket
+ synchronization
+Date:   Wed, 04 Sep 2019 09:40:40 -0700
+X-Mailer: MailMate (1.12.5r5635)
+Message-ID: <4FF1A5C9-F4DD-4FD8-86E8-DDEA753B7954@gmail.com>
+In-Reply-To: <20190904114913.17217-4-bjorn.topel@gmail.com>
+References: <20190904114913.17217-1-bjorn.topel@gmail.com>
+ <20190904114913.17217-4-bjorn.topel@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Move the files, adjust includes, remove entry from Makefile & .gitignore
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/testing/selftests/bpf/.gitignore        |  1 -
- tools/testing/selftests/bpf/Makefile          |  3 +-
- .../{test_tcp_rtt.c => prog_tests/tcp_rtt.c}  | 83 ++++++-------------
- 3 files changed, 28 insertions(+), 59 deletions(-)
- rename tools/testing/selftests/bpf/{test_tcp_rtt.c => prog_tests/tcp_rtt.c} (76%)
 
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index 5b06bb45b500..7470327edcfe 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -39,4 +39,3 @@ libbpf.so.*
- test_hashmap
- test_btf_dump
- xdping
--test_tcp_rtt
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index fe786df1174b..811f1b24d02b 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -28,7 +28,7 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
- 	test_sock test_btf test_sockmap get_cgroup_id_user test_socket_cookie \
- 	test_cgroup_storage test_select_reuseport test_section_names \
- 	test_netcnt test_tcpnotify_user test_sock_fields test_sysctl test_hashmap \
--	test_btf_dump test_cgroup_attach xdping test_tcp_rtt
-+	test_btf_dump test_cgroup_attach xdping
- 
- BPF_OBJ_FILES = $(patsubst %.c,%.o, $(notdir $(wildcard progs/*.c)))
- TEST_GEN_FILES = $(BPF_OBJ_FILES)
-@@ -108,7 +108,6 @@ $(OUTPUT)/test_netcnt: cgroup_helpers.c
- $(OUTPUT)/test_sock_fields: cgroup_helpers.c
- $(OUTPUT)/test_sysctl: cgroup_helpers.c
- $(OUTPUT)/test_cgroup_attach: cgroup_helpers.c
--$(OUTPUT)/test_tcp_rtt: cgroup_helpers.c
- 
- .PHONY: force
- 
-diff --git a/tools/testing/selftests/bpf/test_tcp_rtt.c b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-similarity index 76%
-rename from tools/testing/selftests/bpf/test_tcp_rtt.c
-rename to tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-index 93916a69823e..fdc0b3614a9e 100644
---- a/tools/testing/selftests/bpf/test_tcp_rtt.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-@@ -1,24 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
--#include <error.h>
--#include <errno.h>
--#include <stdio.h>
--#include <unistd.h>
--#include <sys/types.h>
--#include <sys/socket.h>
--#include <netinet/in.h>
--#include <netinet/tcp.h>
--#include <pthread.h>
--
--#include <linux/filter.h>
--#include <bpf/bpf.h>
--#include <bpf/libbpf.h>
--
--#include "bpf_rlimit.h"
--#include "bpf_util.h"
-+#include <test_progs.h>
- #include "cgroup_helpers.h"
- 
--#define CG_PATH                                "/tcp_rtt"
--
- struct tcp_rtt_storage {
- 	__u32 invoked;
- 	__u32 dsack_dups;
-@@ -31,8 +14,8 @@ static void send_byte(int fd)
- {
- 	char b = 0x55;
- 
--	if (write(fd, &b, sizeof(b)) != 1)
--		error(1, errno, "Failed to send single byte");
-+	if (CHECK_FAIL(write(fd, &b, sizeof(b)) != 1))
-+		perror("Failed to send single byte");
- }
- 
- static int wait_for_ack(int fd, int retries)
-@@ -66,8 +49,10 @@ static int verify_sk(int map_fd, int client_fd, const char *msg, __u32 invoked,
- 	int err = 0;
- 	struct tcp_rtt_storage val;
- 
--	if (bpf_map_lookup_elem(map_fd, &client_fd, &val) < 0)
--		error(1, errno, "Failed to read socket storage");
-+	if (CHECK_FAIL(bpf_map_lookup_elem(map_fd, &client_fd, &val) < 0)) {
-+		perror("Failed to read socket storage");
-+		return -1;
-+	}
- 
- 	if (val.invoked != invoked) {
- 		log_err("%s: unexpected bpf_tcp_sock.invoked %d != %d",
-@@ -225,61 +210,47 @@ static void *server_thread(void *arg)
- 	int fd = *(int *)arg;
- 	int client_fd;
- 
--	if (listen(fd, 1) < 0)
--		error(1, errno, "Failed to listed on socket");
-+	if (CHECK_FAIL(listen(fd, 1)) < 0) {
-+		perror("Failed to listed on socket");
-+		return NULL;
-+	}
- 
- 	client_fd = accept(fd, (struct sockaddr *)&addr, &len);
--	if (client_fd < 0)
--		error(1, errno, "Failed to accept client");
-+	if (CHECK_FAIL(client_fd < 0)) {
-+		perror("Failed to accept client");
-+		return NULL;
-+	}
- 
- 	/* Wait for the next connection (that never arrives)
- 	 * to keep this thread alive to prevent calling
- 	 * close() on client_fd.
- 	 */
--	if (accept(fd, (struct sockaddr *)&addr, &len) >= 0)
--		error(1, errno, "Unexpected success in second accept");
-+	if (CHECK_FAIL(accept(fd, (struct sockaddr *)&addr, &len) >= 0)) {
-+		perror("Unexpected success in second accept");
-+		return NULL;
-+	}
- 
- 	close(client_fd);
- 
- 	return NULL;
- }
- 
--int main(int args, char **argv)
-+void test_tcp_rtt(void)
- {
- 	int server_fd, cgroup_fd;
--	int err = EXIT_SUCCESS;
- 	pthread_t tid;
- 
--	if (setup_cgroup_environment())
--		goto cleanup_obj;
--
--	cgroup_fd = create_and_get_cgroup(CG_PATH);
--	if (cgroup_fd < 0)
--		goto cleanup_cgroup_env;
--
--	if (join_cgroup(CG_PATH))
--		goto cleanup_cgroup;
-+	cgroup_fd = test__join_cgroup("/tcp_rtt");
-+	if (CHECK_FAIL(cgroup_fd < 0))
-+		return;
- 
- 	server_fd = start_server();
--	if (server_fd < 0) {
--		err = EXIT_FAILURE;
--		goto cleanup_cgroup;
--	}
-+	if (CHECK_FAIL(server_fd < 0))
-+		goto close_cgroup_fd;
- 
- 	pthread_create(&tid, NULL, server_thread, (void *)&server_fd);
--
--	if (run_test(cgroup_fd, server_fd))
--		err = EXIT_FAILURE;
--
-+	CHECK_FAIL(run_test(cgroup_fd, server_fd));
- 	close(server_fd);
--
--	printf("test_sockopt_sk: %s\n",
--	       err == EXIT_SUCCESS ? "PASSED" : "FAILED");
--
--cleanup_cgroup:
-+close_cgroup_fd:
- 	close(cgroup_fd);
--cleanup_cgroup_env:
--	cleanup_cgroup_environment();
--cleanup_obj:
--	return err;
- }
--- 
-2.23.0.187.g17f5b7556c-goog
+On 4 Sep 2019, at 4:49, Björn Töpel wrote:
 
+> From: Björn Töpel <bjorn.topel@intel.com>
+>
+> Prior the state variable was introduced by Ilya, the dev member was
+> used to determine whether the socket was bound or not. However, when
+> dev was read, proper SMP barriers and READ_ONCE were missing. In order
+> to address the missing barriers and READ_ONCE, we start using the
+> state variable as a point of synchronization. The state member
+> read/write is paired with proper SMP barriers, and from this follows
+> that the members described above does not need READ_ONCE if used in
+> conjunction with state check.
+>
+> In all syscalls and the xsk_rcv path we check if state is
+> XSK_BOUND. If that is the case we do a SMP read barrier, and this
+> implies that the dev, umem and all rings are correctly setup. Note
+> that no READ_ONCE are needed for these variable if used when state is
+> XSK_BOUND (plus the read barrier).
+>
+> To summarize: The members struct xdp_sock members dev, queue_id, umem,
+> fq, cq, tx, rx, and state were read lock-less, with incorrect barriers
+> and missing {READ, WRITE}_ONCE. Now, umem, fq, cq, tx, rx, and state
+> are read lock-less. When these members are updated, WRITE_ONCE is
+> used. When read, READ_ONCE are only used when read outside the control
+> mutex (e.g. mmap) or, not synchronized with the state member
+> (XSK_BOUND plus smp_rmb())
+>
+> Note that dev and queue_id do not need a WRITE_ONCE or READ_ONCE, due
+> to the introduce state synchronization (XSK_BOUND plus smp_rmb()).
+>
+> Introducing the state check also fixes a race, found by syzcaller, in
+> xsk_poll() where umem could be accessed when stale.
+>
+> Suggested-by: Hillf Danton <hdanton@sina.com>
+> Reported-by: syzbot+c82697e3043781e08802@syzkaller.appspotmail.com
+> Fixes: 77cd0d7b3f25 ("xsk: add support for need_wakeup flag in AF_XDP 
+> rings")
+> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+
+Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
