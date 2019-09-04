@@ -2,174 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FF5A8778
-	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 21:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B00A896A
+	for <lists+bpf@lfdr.de>; Wed,  4 Sep 2019 21:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730514AbfIDNxl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 4 Sep 2019 09:53:41 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18976 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730457AbfIDNxl (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 4 Sep 2019 09:53:41 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x84DlIw2099010
-        for <bpf@vger.kernel.org>; Wed, 4 Sep 2019 09:53:40 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2utdes31n4-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 04 Sep 2019 09:53:39 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Wed, 4 Sep 2019 14:53:38 +0100
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 4 Sep 2019 14:53:35 +0100
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x84DrYX752494372
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 4 Sep 2019 13:53:34 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 62555A4051;
-        Wed,  4 Sep 2019 13:53:34 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 207A2A4040;
-        Wed,  4 Sep 2019 13:53:34 +0000 (GMT)
-Received: from dyn-9-152-98-23.boeblingen.de.ibm.com (unknown [9.152.98.23])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  4 Sep 2019 13:53:34 +0000 (GMT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [PATCH bpf v2] bpf: fix accessing bpf_sysctl.file_pos on s390
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-In-Reply-To: <55d0fca4-099a-9fb8-8dcd-9cca31e18063@iogearbox.net>
-Date:   Wed, 4 Sep 2019 15:53:33 +0200
-Cc:     Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Andrey Ignatov <rdna@fb.com>, Yonghong Song <yhs@fb.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Content-Transfer-Encoding: 8BIT
-References: <20190816105300.49035-1-iii@linux.ibm.com>
- <55d0fca4-099a-9fb8-8dcd-9cca31e18063@iogearbox.net>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-X-Mailer: Apple Mail (2.3445.9.1)
-X-TM-AS-GCONF: 00
-x-cbid: 19090413-0020-0000-0000-00000367A4EF
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19090413-0021-0000-0000-000021BD147A
-Message-Id: <786A5138-BDE6-4C9F-A302-4E8B7D2DD46F@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-09-04_04:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1909040138
+        id S1730193AbfIDPRB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Sep 2019 11:17:01 -0400
+Received: from www62.your-server.de ([213.133.104.62]:60542 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729888AbfIDPRB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Sep 2019 11:17:01 -0400
+Received: from sslproxy01.your-server.de ([88.198.220.130])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1i5X1U-0003n7-VI; Wed, 04 Sep 2019 17:16:41 +0200
+Received: from [2a02:120b:2c12:c120:71a0:62dd:894c:fd0e] (helo=pc-66.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1i5X1U-00057d-LP; Wed, 04 Sep 2019 17:16:40 +0200
+Subject: Re: [PATCH v2 bpf-next 2/3] bpf: implement CAP_BPF
+To:     Alexei Starovoitov <ast@fb.com>,
+        "nicolas.dichtel@6wind.com" <nicolas.dichtel@6wind.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        "luto@amacapital.net" <luto@amacapital.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>
+References: <20190829051253.1927291-1-ast@kernel.org>
+ <20190829051253.1927291-2-ast@kernel.org>
+ <ed8796f5-eaea-c87d-ddd9-9d624059e5ee@iogearbox.net>
+ <20190829173034.up5g74onaekp53zd@ast-mbp.dhcp.thefacebook.com>
+ <59ac111e-7ce7-5e00-32c9-9b55482fe701@6wind.com>
+ <46df2c36-4276-33c0-626b-c51e77b3a04f@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5e36a193-8ad9-77e7-e2ff-429fb521a79c@iogearbox.net>
+Date:   Wed, 4 Sep 2019 17:16:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <46df2c36-4276-33c0-626b-c51e77b3a04f@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.100.3/25562/Wed Sep  4 10:23:03 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Am 04.09.2019 um 00:13 schrieb Daniel Borkmann <daniel@iogearbox.net>:
+On 9/4/19 3:39 AM, Alexei Starovoitov wrote:
+> On 8/30/19 8:19 AM, Nicolas Dichtel wrote:
+>> Le 29/08/2019 à 19:30, Alexei Starovoitov a écrit :
+>> [snip]
+>>> These are the links that showing that k8 can delegates caps.
+>>> Are you saying that you know of folks who specifically
+>>> delegate cap_sys_admin and cap_net_admin _only_ to a container to run bpf in there?
+>>>
+>> Yes, we need cap_sys_admin only to load bpf:
+>> tc filter add dev eth0 ingress matchall action bpf obj ./tc_test_kern.o sec test
+>>
+>> I'm not sure to understand why cap_net_admin is not enough to run the previous
+>> command (ie why load is forbidden).
 > 
-> On 8/16/19 12:53 PM, Ilya Leoshkevich wrote:
->> "ctx:file_pos sysctl:read write ok" fails on s390 with "Read value  !=
->> nux". This is because verifier rewrites a complete 32-bit
->> bpf_sysctl.file_pos update to a partial update of the first 32 bits of
->> 64-bit *bpf_sysctl_kern.ppos, which is not correct on big-endian
->> systems.
->> Fix by using an offset on big-endian systems.
->> Ditto for bpf_sysctl.file_pos reads. Currently the test does not detect
->> a problem there, since it expects to see 0, which it gets with high
->> probability in error cases, so change it to seek to offset 3 and expect
->> 3 in bpf_sysctl.file_pos.
->> Fixes: e1550bfe0de4 ("bpf: Add file_pos field to bpf_sysctl ctx")
->> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
->> ---
->> v1->v2: Merge bpf_ctx_narrow_load_shift and
->> bpf_ctx_narrow_access_offset.
->>  include/linux/filter.h                    |  8 ++++----
->>  kernel/bpf/cgroup.c                       | 10 ++++++++--
->>  kernel/bpf/verifier.c                     |  4 ++--
->>  tools/testing/selftests/bpf/test_sysctl.c |  9 ++++++++-
->>  4 files changed, 22 insertions(+), 9 deletions(-)
->> diff --git a/include/linux/filter.h b/include/linux/filter.h
->> index 92c6e31fb008..2ce57645f3cd 100644
->> --- a/include/linux/filter.h
->> +++ b/include/linux/filter.h
->> @@ -749,14 +749,14 @@ bpf_ctx_narrow_access_ok(u32 off, u32 size, u32 size_default)
->>  }
->>    static inline u8
->> -bpf_ctx_narrow_load_shift(u32 off, u32 size, u32 size_default)
->> +bpf_ctx_narrow_access_offset(u32 off, u32 size, u32 size_default)
->>  {
->> -	u8 load_off = off & (size_default - 1);
->> +	u8 access_off = off & (size_default - 1);
->>    #ifdef __LITTLE_ENDIAN
->> -	return load_off * 8;
->> +	return access_off;
->>  #else
->> -	return (size_default - (load_off + size)) * 8;
->> +	return size_default - (access_off + size);
->>  #endif
->>  }
->>  diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
->> index 0a00eaca6fae..00c4647ce92a 100644
->> --- a/kernel/bpf/cgroup.c
->> +++ b/kernel/bpf/cgroup.c
->> @@ -1325,6 +1325,7 @@ static u32 sysctl_convert_ctx_access(enum bpf_access_type type,
->>  				     struct bpf_prog *prog, u32 *target_size)
->>  {
->>  	struct bpf_insn *insn = insn_buf;
->> +	u32 read_size;
->>    	switch (si->off) {
->>  	case offsetof(struct bpf_sysctl, write):
->> @@ -1356,7 +1357,9 @@ static u32 sysctl_convert_ctx_access(enum bpf_access_type type,
->>  				treg, si->dst_reg,
->>  				offsetof(struct bpf_sysctl_kern, ppos));
->>  			*insn++ = BPF_STX_MEM(
->> -				BPF_SIZEOF(u32), treg, si->src_reg, 0);
->> +				BPF_SIZEOF(u32), treg, si->src_reg,
->> +				bpf_ctx_narrow_access_offset(
->> +					0, sizeof(u32), sizeof(loff_t)));
->>  			*insn++ = BPF_LDX_MEM(
->>  				BPF_DW, treg, si->dst_reg,
->>  				offsetof(struct bpf_sysctl_kern, tmp_reg));
->> @@ -1365,8 +1368,11 @@ static u32 sysctl_convert_ctx_access(enum bpf_access_type type,
->>  				BPF_FIELD_SIZEOF(struct bpf_sysctl_kern, ppos),
->>  				si->dst_reg, si->src_reg,
->>  				offsetof(struct bpf_sysctl_kern, ppos));
->> +			read_size = bpf_size_to_bytes(BPF_SIZE(si->code));
->>  			*insn++ = BPF_LDX_MEM(
->> -				BPF_SIZE(si->code), si->dst_reg, si->dst_reg, 0);
->> +				BPF_SIZE(si->code), si->dst_reg, si->dst_reg,
->> +				bpf_ctx_narrow_access_offset(
->> +					0, read_size, sizeof(loff_t)));
+> because bpf syscall prog_load command requires cap_sys_admin in
+> the current implementation.
 > 
-> I see what you're doing, but generally I'm a bit puzzled on why we need these
-> partial store/loads and cannot access the full loff_t value internally with the
-> rewrite. Why was BPF_SIZEOF(u32) chosen in the first place? Looks like git history
-> doesn't have any useful insight here ... Andrey mind to put some clarifications
-> on this? Thx
+>> I want to avoid sys_admin, thus cap_bpf will be ok. But we need to manage the
+>> backward compatibility.
+> 
+> re: backward compatibility...
+> do you know of any case where task is running under userid=nobody
+> with cap_sys_admin and cap_net_admin in order to do bpf ?
+> 
+> If not then what is the concern about compatibility?
 
-Do you mean rewriting e.g. the following:
+Finally managed to find some cycles to pull up a k8s cluster. Looks like it would
+break deployments with the patches as-is right away; meaning, any constellation
+where BPF is used inside the pod.
 
-    BPF_LDX_MEM(access_size, si->dst_reg, si->src_reg,
-                offsetof(struct bpf_sysctl, file_pos)));
+With CAP_BPF patches applied on bpf-next:
 
-as the following?
+# kubectl apply -f ./cilium.yaml
+[...]
+# kubectl get pods --all-namespaces -o wide
+NAMESPACE     NAME                               READY   STATUS              RESTARTS   AGE     IP              NODE     NOMINATED NODE   READINESS GATES
+kube-system   cilium-cz9qs                       0/1     CrashLoopBackOff    4          2m36s   192.168.1.125   apoc     <none>           <none>
+kube-system   cilium-operator-6c7c6c788b-xcm9d   0/1     Pending             0          2m36s   <none>          <none>   <none>           <none>
+kube-system   coredns-5c98db65d4-6nhpg           0/1     ContainerCreating   0          4m12s   <none>          apoc     <none>           <none>
+kube-system   coredns-5c98db65d4-l5b94           0/1     ContainerCreating   0          4m12s   <none>          apoc     <none>           <none>
+kube-system   etcd-apoc                          1/1     Running             0          3m26s   192.168.1.125   apoc     <none>           <none>
+kube-system   kube-apiserver-apoc                1/1     Running             0          3m32s   192.168.1.125   apoc     <none>           <none>
+kube-system   kube-controller-manager-apoc       1/1     Running             0          3m18s   192.168.1.125   apoc     <none>           <none>
+kube-system   kube-proxy-jj9kz                   1/1     Running             0          4m12s   192.168.1.125   apoc     <none>           <none>
+kube-system   kube-scheduler-apoc                1/1     Running             0          3m26s   192.168.1.125   apoc     <none>           <none>
+# kubectl -n kube-system logs --timestamps cilium-cz9qs
+[...]
+2019-09-04T14:11:46.399478585Z level=info msg="Cilium 1.6.90 ba0ed147b 2019-09-03T21:20:30+02:00 go version go1.12.8 linux/amd64" subsys=daemon
+2019-09-04T14:11:46.410564471Z level=info msg="cilium-envoy  version: b7a919ebdca3d3bbc6aae51357e78e9c603450ae/1.11.1/Modified/RELEASE/BoringSSL" subsys=daemon
+2019-09-04T14:11:46.446983926Z level=info msg="clang (7.0.0) and kernel (5.3.0) versions: OK!" subsys=daemon
+[...]
+2019-09-04T14:11:47.27988188Z level=info msg="Mounting BPF filesystem at /run/cilium/bpffs" subsys=bpf
+2019-09-04T14:11:47.279904256Z level=info msg="Detected mounted BPF filesystem at /run/cilium/bpffs" subsys=bpf
+2019-09-04T14:11:47.280205098Z level=info msg="Valid label prefix configuration:" subsys=labels-filter
+2019-09-04T14:11:47.280214528Z level=info msg=" - :io.kubernetes.pod.namespace" subsys=labels-filter
+2019-09-04T14:11:47.28021738Z level=info msg=" - :io.cilium.k8s.namespace.labels" subsys=labels-filter
+2019-09-04T14:11:47.280220836Z level=info msg=" - :app.kubernetes.io" subsys=labels-filter
+2019-09-04T14:11:47.280223355Z level=info msg=" - !:io.kubernetes" subsys=labels-filter
+2019-09-04T14:11:47.280225723Z level=info msg=" - !:kubernetes.io" subsys=labels-filter
+2019-09-04T14:11:47.280228095Z level=info msg=" - !:.*beta.kubernetes.io" subsys=labels-filter
+2019-09-04T14:11:47.280230409Z level=info msg=" - !:k8s.io" subsys=labels-filter
+2019-09-04T14:11:47.280232699Z level=info msg=" - !:pod-template-generation" subsys=labels-filter
+2019-09-04T14:11:47.280235569Z level=info msg=" - !:pod-template-hash" subsys=labels-filter
+2019-09-04T14:11:47.28023792Z level=info msg=" - !:controller-revision-hash" subsys=labels-filter
+2019-09-04T14:11:47.280240253Z level=info msg=" - !:annotation.*" subsys=labels-filter
+2019-09-04T14:11:47.280242566Z level=info msg=" - !:etcd_node" subsys=labels-filter
+2019-09-04T14:11:47.28026585Z level=info msg="Initializing daemon" subsys=daemon
+2019-09-04T14:11:47.281344002Z level=info msg="Detected MTU 1500" subsys=mtu
+2019-09-04T14:11:47.281771889Z level=error msg="Error while opening/creating BPF maps" error="Unable to create map /run/cilium/bpffs/tc/globals/cilium_lxc: operation not permitted" subsys=daemon
+2019-09-04T14:11:47.28178666Z level=fatal msg="Error while creating daemon" error="Unable to create map /run/cilium/bpffs/tc/globals/cilium_lxc: operation not permitted" subsys=daemon
 
-    BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct bpf_sysctl_kern, ppos),
-                si->dst_reg, si->src_reg,
-                offsetof(struct bpf_sysctl_kern, ppos));
-    BPF_LDX_MEM(BPF_DW, si->dst_reg, si->dst_reg, 0);  # full loff_t
+And /same/ deployment with reverted patches, hence no CAP_BPF gets it up and running again:
 
-while also doing
+# kubectl get pods --all-namespaces -o wide
+NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE   IP              NODE     NOMINATED NODE   READINESS GATES
+kube-system   cilium-cz9qs                       1/1     Running   13         50m   192.168.1.125   apoc     <none>           <none>
+kube-system   cilium-operator-6c7c6c788b-xcm9d   0/1     Pending   0          50m   <none>          <none>   <none>           <none>
+kube-system   coredns-5c98db65d4-6nhpg           1/1     Running   0          52m   10.217.0.91     apoc     <none>           <none>
+kube-system   coredns-5c98db65d4-l5b94           1/1     Running   0          52m   10.217.0.225    apoc     <none>           <none>
+kube-system   etcd-apoc                          1/1     Running   1          51m   192.168.1.125   apoc     <none>           <none>
+kube-system   kube-apiserver-apoc                1/1     Running   1          51m   192.168.1.125   apoc     <none>           <none>
+kube-system   kube-controller-manager-apoc       1/1     Running   1          51m   192.168.1.125   apoc     <none>           <none>
+kube-system   kube-proxy-jj9kz                   1/1     Running   1          52m   192.168.1.125   apoc     <none>           <none>
+kube-system   kube-scheduler-apoc                1/1     Running   1          51m   192.168.1.125   apoc     <none>           <none>
 
-    *target_size = sizeof(loff_t);
-
-in order to let is_narrower_load logic in convert_ctx_accesses () do the
-masking? That would work, but wouldn't the generated code be less
-efficient due to explicit masking?
+Thanks,
+Daniel
