@@ -2,124 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAE7AAA78
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2019 20:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C260EAACC4
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2019 22:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391195AbfIESAV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Sep 2019 14:00:21 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:52688 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727143AbfIESAU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 5 Sep 2019 14:00:20 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x85I0GmD005786
-        for <bpf@vger.kernel.org>; Thu, 5 Sep 2019 11:00:19 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=7ke73pEVb/kU37IV/XVhV4TkVIqC/yt+sS0yMFGN1Y0=;
- b=f4+b8EtvvVw6Zd1b3NVvDsrHXX9hXWiOndTBw1WCqFGinVXgprBBcsOoBxpXowggBETD
- cznJJMWj0Gpryw0dZe46XXOcTKdyZcBkCX6lyoOlkRKZK71OAbDXchx/ybKG9uUL8uny
- R/o8AhiTUANGjZflqA6MSBMWZP8DKT0878U= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2utkkxvvbg-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 05 Sep 2019 11:00:19 -0700
-Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 5 Sep 2019 10:59:53 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id 9DD42861892; Thu,  5 Sep 2019 10:59:52 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH bpf-next] kbuild: replace BASH-specific ${@:2} with shift and ${@}
-Date:   Thu, 5 Sep 2019 10:59:38 -0700
-Message-ID: <20190905175938.599455-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1726097AbfIEUIL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Sep 2019 16:08:11 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:56242 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387865AbfIEUIJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Sep 2019 16:08:09 -0400
+Received: by mail-io1-f69.google.com with SMTP id i2so4604682iof.22
+        for <bpf@vger.kernel.org>; Thu, 05 Sep 2019 13:08:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Abbd0TSs66/zCB2hcq/kRDumBVAAFLe4IOeLRBtvGas=;
+        b=oPcuwq0QIkikCxkc2oE8XtEfhnYSqhyppSSWBdBHpDEnSWDMHYWdlgkN/iLitvE4m8
+         5bOyrRb7+V3VsJ5wwCv2OXhmSHNb3kKnFEX33Q8OQx8LcC0sRIj37ulh6ogKmP7zXiMA
+         EN82ynP8y5CFz4jrC7m+bCtBZ7LZ7ohWUrI1+03QnyPP89IHoiP0ZfKpiwo/pVaa20Vp
+         f0za/9BicsqEfSYuNmz9ud8q2WwKaTZ4ptORAxEyx6i8QursVoY+t1u7bwC/QJNXhXXY
+         NBdhNk02OOcXna8xhwsS6UamnG/P/kYbDEXoy+wHUyX5tB3T3CAbJO2EC2UEPHK6d/AP
+         VnsQ==
+X-Gm-Message-State: APjAAAW67M6HkqDoaIWmOACZ7XQTMrdkmo4q9DD2aZErxcr7idDuJ6nU
+        s7H6zSALIxxtFlXDPQ1rE3n8v3Q26Du7VAKfjwrrjl5/Oj5i
+X-Google-Smtp-Source: APXvYqwemc/4NDS04xk5eP5U95GqM6jnkkJWflKsban4wQWb879YYrAVRiYPmeVbK5uR5ZL4Kr7i98jSqkgtPCBagdaJpO0QD/58
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
- definitions=2019-09-05_05:2019-09-04,2019-09-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- lowpriorityscore=0 spamscore=0 priorityscore=1501 phishscore=0
- mlxlogscore=500 mlxscore=0 clxscore=1015 adultscore=0 suspectscore=9
- impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1906280000 definitions=main-1909050170
-X-FB-Internal: deliver
+X-Received: by 2002:a5d:9591:: with SMTP id a17mr6266918ioo.303.1567714087830;
+ Thu, 05 Sep 2019 13:08:07 -0700 (PDT)
+Date:   Thu, 05 Sep 2019 13:08:07 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005091a70591d3e1d9@google.com>
+Subject: general protection fault in dev_map_hash_update_elem
+From:   syzbot <syzbot+4e7a85b1432052e8d6f8@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, hawk@kernel.org, jakub.kicinski@netronome.com,
+        john.fastabend@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-${@:2} is BASH-specific extension, which makes link-vmlinux.sh rely on
-BASH. Use shift and ${@} instead to fix this issue.
+Hello,
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Fixes: 341dfcf8d78e ("btf: expose BTF info through sysfs")
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+syzbot found the following crash on:
+
+HEAD commit:    6d028043 Add linux-next specific files for 20190830
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=135c1a92600000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=82a6bec43ab0cb69
+dashboard link: https://syzkaller.appspot.com/bug?extid=4e7a85b1432052e8d6f8
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=109124e1600000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+4e7a85b1432052e8d6f8@syzkaller.appspotmail.com
+
+kasan: CONFIG_KASAN_INLINE enabled
+kasan: GPF could be caused by NULL-ptr deref or user memory access
+general protection fault: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 10235 Comm: syz-executor.0 Not tainted 5.3.0-rc6-next-20190830  
+#75
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+RIP: 0010:__write_once_size include/linux/compiler.h:203 [inline]
+RIP: 0010:__hlist_del include/linux/list.h:795 [inline]
+RIP: 0010:hlist_del_rcu include/linux/rculist.h:475 [inline]
+RIP: 0010:__dev_map_hash_update_elem kernel/bpf/devmap.c:668 [inline]
+RIP: 0010:dev_map_hash_update_elem+0x3c8/0x6e0 kernel/bpf/devmap.c:691
+Code: 48 89 f1 48 89 75 c8 48 c1 e9 03 80 3c 11 00 0f 85 d3 02 00 00 48 b9  
+00 00 00 00 00 fc ff df 48 8b 53 10 48 89 d6 48 c1 ee 03 <80> 3c 0e 00 0f  
+85 97 02 00 00 48 85 c0 48 89 02 74 38 48 89 55 b8
+RSP: 0018:ffff88808d607c30 EFLAGS: 00010046
+RAX: 0000000000000000 RBX: ffff8880a7f14580 RCX: dffffc0000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff8880a7f14588
+RBP: ffff88808d607c78 R08: 0000000000000004 R09: ffffed1011ac0f73
+R10: ffffed1011ac0f72 R11: 0000000000000003 R12: ffff88809f4e9400
+R13: ffff88809b06ba00 R14: 0000000000000000 R15: ffff88809f4e9528
+FS:  00007f3a3d50c700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007feb3fcd0000 CR3: 00000000986b9000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+  map_update_elem+0xc82/0x10b0 kernel/bpf/syscall.c:966
+  __do_sys_bpf+0x8b5/0x3350 kernel/bpf/syscall.c:2854
+  __se_sys_bpf kernel/bpf/syscall.c:2825 [inline]
+  __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:2825
+  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x459879
+Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f3a3d50bc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000459879
+RDX: 0000000000000020 RSI: 0000000020000040 RDI: 0000000000000002
+RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f3a3d50c6d4
+R13: 00000000004bfc86 R14: 00000000004d1960 R15: 00000000ffffffff
+Modules linked in:
+---[ end trace 083223e21dbd0ae5 ]---
+RIP: 0010:__write_once_size include/linux/compiler.h:203 [inline]
+RIP: 0010:__hlist_del include/linux/list.h:795 [inline]
+RIP: 0010:hlist_del_rcu include/linux/rculist.h:475 [inline]
+RIP: 0010:__dev_map_hash_update_elem kernel/bpf/devmap.c:668 [inline]
+RIP: 0010:dev_map_hash_update_elem+0x3c8/0x6e0 kernel/bpf/devmap.c:691
+Code: 48 89 f1 48 89 75 c8 48 c1 e9 03 80 3c 11 00 0f 85 d3 02 00 00 48 b9  
+00 00 00 00 00 fc ff df 48 8b 53 10 48 89 d6 48 c1 ee 03 <80> 3c 0e 00 0f  
+85 97 02 00 00 48 85 c0 48 89 02 74 38 48 89 55 b8
+RSP: 0018:ffff88808d607c30 EFLAGS: 00010046
+RAX: 0000000000000000 RBX: ffff8880a7f14580 RCX: dffffc0000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff8880a7f14588
+RBP: ffff88808d607c78 R08: 0000000000000004 R09: ffffed1011ac0f73
+R10: ffffed1011ac0f72 R11: 0000000000000003 R12: ffff88809f4e9400
+R13: ffff88809b06ba00 R14: 0000000000000000 R15: ffff88809f4e9528
+FS:  00007f3a3d50c700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007feb3fcd0000 CR3: 00000000986b9000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
- scripts/link-vmlinux.sh | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index 0d8f41db8cd6..8c59970a09dc 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -57,12 +57,16 @@ modpost_link()
- 
- # Link of vmlinux
- # ${1} - output file
--# ${@:2} - optional extra .o files
-+# ${2}, ${3}, ... - optional extra .o files
- vmlinux_link()
- {
- 	local lds="${objtree}/${KBUILD_LDS}"
-+	local output=${1}
- 	local objects
- 
-+	# skip output file argument
-+	shift
-+
- 	if [ "${SRCARCH}" != "um" ]; then
- 		objects="--whole-archive			\
- 			${KBUILD_VMLINUX_OBJS}			\
-@@ -70,9 +74,10 @@ vmlinux_link()
- 			--start-group				\
- 			${KBUILD_VMLINUX_LIBS}			\
- 			--end-group				\
--			${@:2}"
-+			${@}"
- 
--		${LD} ${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux} -o ${1}	\
-+		${LD} ${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux}	\
-+			-o ${output}				\
- 			-T ${lds} ${objects}
- 	else
- 		objects="-Wl,--whole-archive			\
-@@ -81,9 +86,10 @@ vmlinux_link()
- 			-Wl,--start-group			\
- 			${KBUILD_VMLINUX_LIBS}			\
- 			-Wl,--end-group				\
--			${@:2}"
-+			${@}"
- 
--		${CC} ${CFLAGS_vmlinux} -o ${1}			\
-+		${CC} ${CFLAGS_vmlinux}				\
-+			-o ${output}				\
- 			-Wl,-T,${lds}				\
- 			${objects}				\
- 			-lutil -lrt -lpthread
--- 
-2.21.0
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
