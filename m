@@ -2,96 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8B8AA96E
-	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2019 18:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDAE7AAA78
+	for <lists+bpf@lfdr.de>; Thu,  5 Sep 2019 20:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390712AbfIEQzp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Sep 2019 12:55:45 -0400
-Received: from mail-qt1-f169.google.com ([209.85.160.169]:39423 "EHLO
-        mail-qt1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731492AbfIEQzp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Sep 2019 12:55:45 -0400
-Received: by mail-qt1-f169.google.com with SMTP id n7so3615939qtb.6;
-        Thu, 05 Sep 2019 09:55:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=U86ZblmgaF4eBV4iyqRJf/CbV9WbHkWYMeJ0zFkqIu0=;
-        b=TyUOTJJGoo8GODrCt/6YB1x/8aj4n9IE8jT/v+K7tCsOLINcESeyD/Ij4NXtMIB6Sy
-         17L6qDvWQyCyeC7XEmXxoOnrWrvCkDJaDG0IEmRd9h3bbbHGAAp7YN0Z5zIHZIZQLjXo
-         e7R4fvWV6g6XW9aD+hLJiCg7Lmv5aeBV8tuo+o7VsPjG3fXt7UmiwBwDqQNJlFXWk3TH
-         5zwtfxF6mzHV0xMeRObFu3TfF099rR2GJ8US0yfbmsALUGRng05iBs5g6jzYHGRvKk8h
-         FRvrTCHS5oUC5grWyibA9V7qghdaMk9oAmt6exGDzNOXAJpBRPdCLJ0cj/yBZJkPaFfd
-         sbuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=U86ZblmgaF4eBV4iyqRJf/CbV9WbHkWYMeJ0zFkqIu0=;
-        b=AaGh5aAxS1kkttwlWW1hzOrtLI04mgCTsJuuHe/KUgC6l7CNGVlFoGPKxQY3ibD06M
-         SCSC8X+4RRoEDzGI6q36Stpv+YyyKV2Uip9jN10hOteMbSMN4P1pZNZGw7QFRgg59SwG
-         lXnKMoDmohrsgXZpwrR8m/HevTmN134AU2EUOwZnmsQ7A991TtHQV6s57IA0qwAxsZPQ
-         UxuQzbK1g0M4j4KkjffyPFv0n9I4Wx/q3SDwH9sEG/K9kxBtUS9eQhBwEK9SwlspDL12
-         0qerDkdbz/MXVX3b/Sz5iRqqPsJSsN8d3e24K7YJKCr7n2AsR4efrlUbW4OlPTV0y/z+
-         PzTA==
-X-Gm-Message-State: APjAAAU9ptiZiNXOtCObdJWOrdGF8URMTjPe2nFnDjAm8y3UWh5M+8K2
-        n0vHJVdEe9NZbdwsc7zVwbY=
-X-Google-Smtp-Source: APXvYqxWVpg+iwFh32fbJZ2IVVdvSiiBQD6AcEmV0uXtGrMn3YPk/UP/cg4q73bDG/04BT3T30UTyg==
-X-Received: by 2002:ac8:2914:: with SMTP id y20mr4722757qty.150.1567702543675;
-        Thu, 05 Sep 2019 09:55:43 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:500::1:5196])
-        by smtp.gmail.com with ESMTPSA id e7sm1083953qto.43.2019.09.05.09.55.42
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Sep 2019 09:55:42 -0700 (PDT)
-Date:   Thu, 5 Sep 2019 09:55:40 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, newella@fb.com, clm@fb.com,
-        Josef Bacik <josef@toxicpanda.com>, dennisz@fb.com,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>, kernel-team@fb.com,
-        cgroups@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        bpf@vger.kernel.org
-Subject: Re: [PATCHSET block/for-next] IO cost model based work-conserving
- porportional controller
-Message-ID: <20190905165540.GJ2263813@devbig004.ftw2.facebook.com>
-References: <20190614015620.1587672-1-tj@kernel.org>
- <20190614175642.GA657710@devbig004.ftw2.facebook.com>
- <5A63F937-F7B5-4D09-9DB4-C73D6F571D50@linaro.org>
- <B5E431F7-549D-4FC4-A098-D074DF9586A1@linaro.org>
- <20190820151903.GH2263813@devbig004.ftw2.facebook.com>
- <9EB760CE-0028-4766-AE9D-6E90028D8579@linaro.org>
- <20190831065358.GF2263813@devbig004.ftw2.facebook.com>
- <88C7DC68-680E-49BB-9699-509B9B0B12A0@linaro.org>
- <20190902155652.GH2263813@devbig004.ftw2.facebook.com>
- <D9F6BC6D-FEB3-40CA-A33C-F501AE4434F0@linaro.org>
+        id S2391195AbfIESAV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Sep 2019 14:00:21 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:52688 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727143AbfIESAU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 5 Sep 2019 14:00:20 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x85I0GmD005786
+        for <bpf@vger.kernel.org>; Thu, 5 Sep 2019 11:00:19 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=7ke73pEVb/kU37IV/XVhV4TkVIqC/yt+sS0yMFGN1Y0=;
+ b=f4+b8EtvvVw6Zd1b3NVvDsrHXX9hXWiOndTBw1WCqFGinVXgprBBcsOoBxpXowggBETD
+ cznJJMWj0Gpryw0dZe46XXOcTKdyZcBkCX6lyoOlkRKZK71OAbDXchx/ybKG9uUL8uny
+ R/o8AhiTUANGjZflqA6MSBMWZP8DKT0878U= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2utkkxvvbg-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 05 Sep 2019 11:00:19 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 5 Sep 2019 10:59:53 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 9DD42861892; Thu,  5 Sep 2019 10:59:52 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next] kbuild: replace BASH-specific ${@:2} with shift and ${@}
+Date:   Thu, 5 Sep 2019 10:59:38 -0700
+Message-ID: <20190905175938.599455-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <D9F6BC6D-FEB3-40CA-A33C-F501AE4434F0@linaro.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
+ definitions=2019-09-05_05:2019-09-04,2019-09-05 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ lowpriorityscore=0 spamscore=0 priorityscore=1501 phishscore=0
+ mlxlogscore=500 mlxscore=0 clxscore=1015 adultscore=0 suspectscore=9
+ impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1906280000 definitions=main-1909050170
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello, Paolo.
+${@:2} is BASH-specific extension, which makes link-vmlinux.sh rely on
+BASH. Use shift and ${@} instead to fix this issue.
 
-So, I'm currently verifying iocost in the FB fleet.  Around three
-thousand machines running v5.2 (+ some backports) with btrfs on a
-handful of different models of consumer grade SSDs.  I haven't seen
-complete loss of control as you're reporting.  Given that you're
-reporting the same thing on io.latency, which is deployed on multiple
-orders of magnitude more machines at this point, it's likely that
-there's something common affecting your test setup.  Can you please
-describe your test configuration and if you aren't already try testing
-on btrfs?
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Fixes: 341dfcf8d78e ("btf: expose BTF info through sysfs")
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ scripts/link-vmlinux.sh | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-Thanks.
-
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 0d8f41db8cd6..8c59970a09dc 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -57,12 +57,16 @@ modpost_link()
+ 
+ # Link of vmlinux
+ # ${1} - output file
+-# ${@:2} - optional extra .o files
++# ${2}, ${3}, ... - optional extra .o files
+ vmlinux_link()
+ {
+ 	local lds="${objtree}/${KBUILD_LDS}"
++	local output=${1}
+ 	local objects
+ 
++	# skip output file argument
++	shift
++
+ 	if [ "${SRCARCH}" != "um" ]; then
+ 		objects="--whole-archive			\
+ 			${KBUILD_VMLINUX_OBJS}			\
+@@ -70,9 +74,10 @@ vmlinux_link()
+ 			--start-group				\
+ 			${KBUILD_VMLINUX_LIBS}			\
+ 			--end-group				\
+-			${@:2}"
++			${@}"
+ 
+-		${LD} ${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux} -o ${1}	\
++		${LD} ${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux}	\
++			-o ${output}				\
+ 			-T ${lds} ${objects}
+ 	else
+ 		objects="-Wl,--whole-archive			\
+@@ -81,9 +86,10 @@ vmlinux_link()
+ 			-Wl,--start-group			\
+ 			${KBUILD_VMLINUX_LIBS}			\
+ 			-Wl,--end-group				\
+-			${@:2}"
++			${@}"
+ 
+-		${CC} ${CFLAGS_vmlinux} -o ${1}			\
++		${CC} ${CFLAGS_vmlinux}				\
++			-o ${output}				\
+ 			-Wl,-T,${lds}				\
+ 			${objects}				\
+ 			-lutil -lrt -lpthread
 -- 
-tejun
+2.21.0
+
