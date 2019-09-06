@@ -2,71 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 521B7AB16D
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2019 05:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 023DFAB32D
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2019 09:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388879AbfIFDxZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Sep 2019 23:53:25 -0400
-Received: from mx.socionext.com ([202.248.49.38]:28932 "EHLO mx.socionext.com"
+        id S1732554AbfIFHbs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Sep 2019 03:31:48 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:52072 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732004AbfIFDxZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Sep 2019 23:53:25 -0400
-Received: from unknown (HELO kinkan-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 06 Sep 2019 12:53:23 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by kinkan-ex.css.socionext.com (Postfix) with ESMTP id 4B7CD180B7D;
-        Fri,  6 Sep 2019 12:53:23 +0900 (JST)
-Received: from 10.213.24.1 (10.213.24.1) by m-FILTER with ESMTP; Fri, 6 Sep 2019 12:53:23 +0900
-Received: from SOC-EX01V.e01.socionext.com (10.213.24.21) by
- SOC-EX02V.e01.socionext.com (10.213.24.22) with Microsoft SMTP Server (TLS)
- id 15.0.995.29; Fri, 6 Sep 2019 12:53:22 +0900
-Received: from SOC-EX01V.e01.socionext.com ([10.213.24.21]) by
- SOC-EX01V.e01.socionext.com ([10.213.24.21]) with mapi id 15.00.0995.028;
- Fri, 6 Sep 2019 12:53:22 +0900
-From:   <yamada.masahiro@socionext.com>
-To:     <andriin@fb.com>, <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <ast@fb.com>, <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        <sfr@canb.auug.org.au>
-Subject: RE: [PATCH bpf-next] kbuild: replace BASH-specific ${@:2} with shift
- and ${@}
-Thread-Topic: [PATCH bpf-next] kbuild: replace BASH-specific ${@:2} with shift
- and ${@}
-Thread-Index: AQHVZBO7/L6pfNSQwUKKg4pTyRjpVacd+BEQ
-Date:   Fri, 6 Sep 2019 03:53:21 +0000
-Message-ID: <0b39dab4fdbe4c678902657c71364abd@SOC-EX01V.e01.socionext.com>
-References: <20190905175938.599455-1-andriin@fb.com>
-In-Reply-To: <20190905175938.599455-1-andriin@fb.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-securitypolicycheck: OK by SHieldMailChecker v2.5.2
-x-shieldmailcheckerpolicyversion: POLICY190801
-x-originating-ip: [10.213.24.1]
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: base64
+        id S1732504AbfIFHbs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Sep 2019 03:31:48 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id A017180041A;
+        Fri,  6 Sep 2019 07:31:47 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.205.33])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B16D160126;
+        Fri,  6 Sep 2019 07:31:45 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: [PATCH 0/7] libbpf: Fix cast away const qualifiers in btf.h
+Date:   Fri,  6 Sep 2019 09:31:37 +0200
+Message-Id: <20190906073144.31068-1-jolsa@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.67]); Fri, 06 Sep 2019 07:31:47 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQW5kcmlpIE5ha3J5aWtv
-IDxhbmRyaWluQGZiLmNvbT4NCj4gU2VudDogRnJpZGF5LCBTZXB0ZW1iZXIgMDYsIDIwMTkgMzow
-MCBBTQ0KPiBUbzogYnBmQHZnZXIua2VybmVsLm9yZzsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsg
-YXN0QGZiLmNvbTsNCj4gZGFuaWVsQGlvZ2VhcmJveC5uZXQNCj4gQ2M6IGFuZHJpaS5uYWtyeWlr
-b0BnbWFpbC5jb207IGtlcm5lbC10ZWFtQGZiLmNvbTsgQW5kcmlpIE5ha3J5aWtvDQo+IDxhbmRy
-aWluQGZiLmNvbT47IFN0ZXBoZW4gUm90aHdlbGwgPHNmckBjYW5iLmF1dWcub3JnLmF1PjsgWWFt
-YWRhLA0KPiBNYXNhaGlyby8bJEI7M0VEGyhCIBskQj8/OTAbKEIgPHlhbWFkYS5tYXNhaGlyb0Bz
-b2Npb25leHQuY29tPg0KPiBTdWJqZWN0OiBbUEFUQ0ggYnBmLW5leHRdIGtidWlsZDogcmVwbGFj
-ZSBCQVNILXNwZWNpZmljICR7QDoyfSB3aXRoIHNoaWZ0DQo+IGFuZCAke0B9DQo+IA0KPiAke0A6
-Mn0gaXMgQkFTSC1zcGVjaWZpYyBleHRlbnNpb24sIHdoaWNoIG1ha2VzIGxpbmstdm1saW51eC5z
-aCByZWx5IG9uDQo+IEJBU0guIFVzZSBzaGlmdCBhbmQgJHtAfSBpbnN0ZWFkIHRvIGZpeCB0aGlz
-IGlzc3VlLg0KPiANCj4gUmVwb3J0ZWQtYnk6IFN0ZXBoZW4gUm90aHdlbGwgPHNmckBjYW5iLmF1
-dWcub3JnLmF1Pg0KPiBGaXhlczogMzQxZGZjZjhkNzhlICgiYnRmOiBleHBvc2UgQlRGIGluZm8g
-dGhyb3VnaCBzeXNmcyIpDQo+IENjOiBTdGVwaGVuIFJvdGh3ZWxsIDxzZnJAY2FuYi5hdXVnLm9y
-Zy5hdT4NCj4gQ2M6IE1hc2FoaXJvIFlhbWFkYSA8eWFtYWRhLm1hc2FoaXJvQHNvY2lvbmV4dC5j
-b20+DQo+IFNpZ25lZC1vZmYtYnk6IEFuZHJpaSBOYWtyeWlrbyA8YW5kcmlpbkBmYi5jb20+DQoN
-ClJldmlld2VkLWJ5OiBNYXNhaGlybyBZYW1hZGEgPHlhbWFkYS5tYXNhaGlyb0Bzb2Npb25leHQu
-Y29tPg0KDQo=
+hi,
+when including btf.h in bpftrace, I'm getting -Wcast-qual warnings like:
+
+  bpf/btf.h: In function ‘btf_var_secinfo* btf_var_secinfos(const btf_type*)’:
+  bpf/btf.h:302:41: warning: cast from type ‘const btf_type*’ to type
+  ‘btf_var_secinfo*’ casts away qualifiers [-Wcast-qual]
+    302 |  return (struct btf_var_secinfo *)(t + 1);
+        |                                         ^
+
+I changed the btf.h header to comply with -Wcast-qual checks
+and used const cast away casting in libbpf objects, where it's
+all related to deduplication code, so I believe loosing const
+is fine there.
+
+thanks,
+jirka
+
+
+---
+Jiri Olsa (7):
+      libbpf: Use const cast for btf_int_* functions
+      libbpf: Return const btf_array from btf_array inline function
+      libbpf: Return const btf_enum from btf_enum inline function
+      libbpf: Return const btf_member from btf_members inline function
+      libbpf: Return const btf_param from btf_params inline function
+      libbpf: Return const btf_var from btf_var inline function
+      libbpf: Return const struct btf_var_secinfo from btf_var_secinfos inline function
+
+ tools/lib/bpf/btf.c    | 21 +++++++++++----------
+ tools/lib/bpf/btf.h    | 30 +++++++++++++++---------------
+ tools/lib/bpf/libbpf.c |  2 +-
+ 3 files changed, 27 insertions(+), 26 deletions(-)
