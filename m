@@ -2,107 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 297EFABB90
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2019 16:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE58ABBD2
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2019 17:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392216AbfIFO6b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Sep 2019 10:58:31 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:34697 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbfIFO6b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Sep 2019 10:58:31 -0400
-Received: by mail-qt1-f193.google.com with SMTP id a13so7407633qtj.1;
-        Fri, 06 Sep 2019 07:58:30 -0700 (PDT)
+        id S1725846AbfIFPKU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Sep 2019 11:10:20 -0400
+Received: from mail-vs1-f68.google.com ([209.85.217.68]:35228 "EHLO
+        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725945AbfIFPKU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Sep 2019 11:10:20 -0400
+Received: by mail-vs1-f68.google.com with SMTP id b11so4297105vsq.2;
+        Fri, 06 Sep 2019 08:10:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LOL4RkhxwNmxVBDlkkOKh5q7eIdq3MEVHDS6KxIm1I4=;
-        b=MOXP8ySNFPJpMxFpoTNloLC7w8Wh/zABeSUGLmy9GcZZLTPwTWbLNAiqmpDc3ec4/o
-         fd/SQEbUNPqNvtpl1/z5Lvnd779JkYSuyqQbJvM8lCbSRUV/hrvYwZxSgL1rKwz0us/i
-         ZREmz6vxrZfPNGqJkZmhWJzITJzzyL2gIw8RxEgkUTgtbxCjFWnGsP1l5JXqBN4ds0LM
-         SVyRMrlR29TEH85320jHVL5TDIO8nn5KCyJ9cdcTr0DMf2el5OoMqyCl+KPnXNdr78gM
-         NnqSEpEKFjrjmUF5jre4PNzvz5/0G04w9u5myf8I6/pAcoyhos2ouAn+mFiJ6I12Kg6r
-         75JQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=j1+lClJ6d8F+YNdDNXRwm8Dq6oGT8kFe2Xr4BcbGRn8=;
+        b=Az1Z6p9rHHu2pKUbbTInepV3asBU4LkhmdjC6twvncaGJGCTB8EyOgFDyq8qG8QPPn
+         IdL8M+NkGbdsBqXpynWEM48hgx6DQqwjcD+OzKX8ZS6f3jePABZLcGNrjw65H2/nXd0U
+         8lVKdJVsuldJKt5CxWeix0pmA+sRJAYY81DnIaQxnMdeXtoQX5lYpy7RtH9GVPeV+2xX
+         uPzcE4IW7HJmvKDiulfEEQEvn99ZWqMDOZ1t0k5CMRKhdwqsO8gXMS76N1uT+5d2UcAz
+         p77tL2svfjMz//FoccUF+qK22os1oj+6TNsRvD/kFBGaPaVB8KZbOCtFPqi8FJ3j9KaB
+         7ZJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LOL4RkhxwNmxVBDlkkOKh5q7eIdq3MEVHDS6KxIm1I4=;
-        b=bvCsxm+7mke4oAm9lVJ7sqkX5g8rBzceWjkhyKXuRsc7PKNbiEpuNWMiVcpq+43ulF
-         QIolFhhZOJQAM/S7B5/PM4pqoiPJfFOsQSwJhJaGjF+zLmVkw0O6kRO3rGfg3MuiBgzw
-         O7tgFWS8GMtyuaX1tVND2xrnvXgCSSir8sxkhAXA0ArA4Wy+qPbV1Sgc0d8OvVmhwrrt
-         qsNn8FjJm0XGGU7K5iiJ060rOC8fp7hPSGyPAMGNpTsSluIaeLyppOgsMNMp0vvGfM8X
-         pWdHPdj3GbuAG696f4vO/fihvrVzS7fUHL/fx/6D8hHVxnhamUcqWdcA1dq030oHeX/m
-         hmqQ==
-X-Gm-Message-State: APjAAAXupRDMVQga3obNhhiRDQ6cNTSbLe6kxxhsSDAkqGdUtexBXq9C
-        VcrEGiFSQeTq0pO4Vig0Y4A=
-X-Google-Smtp-Source: APXvYqzw/ynJVnXeScViPWyvcMnfE9uWmFXTKN6Uah/pXOmrexC6Mnw/vVsY8SiKAx59SdE4f2ivQw==
-X-Received: by 2002:ac8:5390:: with SMTP id x16mr9499947qtp.390.1567781909530;
-        Fri, 06 Sep 2019 07:58:29 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::e7cb])
-        by smtp.gmail.com with ESMTPSA id g194sm2967170qke.46.2019.09.06.07.58.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=j1+lClJ6d8F+YNdDNXRwm8Dq6oGT8kFe2Xr4BcbGRn8=;
+        b=tbLFeHNjrUEvJlbz+qNRa1pZ5x6aUqep/eZqxzwH+qjF8IZ8oJJeSmljakCvJaLmad
+         qPAiDIHn1QkEpv64yOsXjYB7BxCqdemDvzXqRBKPAzj/8qe0hUmEzSov3M31MDibpgew
+         UTVLG2G2Y4kR4nsjzAgwQsYJWckdCGslJ1OIcOK2gXw5Sl6wUsA1ILYq9B/2iEMVBRf4
+         oqo+SZP2Orq33O3nNrhndQLerdWw8h6ZnSHRxRvnAax10QZ38B5yO58sdC/yvnR4Bttm
+         wN5UFHiN198y7UZxcPX7hu+4UEngNU+j702yaYhv17CCdcj2XVz+I64U+ORI361SRBlm
+         lcyw==
+X-Gm-Message-State: APjAAAWfM42H2EBebu2QX3TOoL0c+6wb1Jr0bDxhb118WJwzp8JcC8GR
+        O0fzK6TyZcuJemm3Sga9I54eUv42QyU=
+X-Google-Smtp-Source: APXvYqyr9h/V6S3oBULItwMsxPmZ4X4wwTt2yyOHw729+jNLCbJGoRERzdUDX0ICkpD/vZsxHYoXhQ==
+X-Received: by 2002:a67:2e96:: with SMTP id u144mr5314743vsu.46.1567782618935;
+        Fri, 06 Sep 2019 08:10:18 -0700 (PDT)
+Received: from localhost.localdomain ([190.162.109.190])
+        by smtp.googlemail.com with ESMTPSA id o15sm4833822vkc.38.2019.09.06.08.10.16
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 06 Sep 2019 07:58:28 -0700 (PDT)
-Date:   Fri, 6 Sep 2019 07:58:26 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, newella@fb.com, clm@fb.com,
-        Josef Bacik <josef@toxicpanda.com>, dennisz@fb.com,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>, kernel-team@fb.com,
-        cgroups@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        bpf@vger.kernel.org
-Subject: Re: [PATCHSET block/for-next] IO cost model based work-conserving
- porportional controller
-Message-ID: <20190906145826.GL2263813@devbig004.ftw2.facebook.com>
-References: <5A63F937-F7B5-4D09-9DB4-C73D6F571D50@linaro.org>
- <B5E431F7-549D-4FC4-A098-D074DF9586A1@linaro.org>
- <20190820151903.GH2263813@devbig004.ftw2.facebook.com>
- <9EB760CE-0028-4766-AE9D-6E90028D8579@linaro.org>
- <20190831065358.GF2263813@devbig004.ftw2.facebook.com>
- <88C7DC68-680E-49BB-9699-509B9B0B12A0@linaro.org>
- <20190902155652.GH2263813@devbig004.ftw2.facebook.com>
- <D9F6BC6D-FEB3-40CA-A33C-F501AE4434F0@linaro.org>
- <20190905165540.GJ2263813@devbig004.ftw2.facebook.com>
- <EFFA2298-8614-4AFC-9208-B36976F6548C@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <EFFA2298-8614-4AFC-9208-B36976F6548C@linaro.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+        Fri, 06 Sep 2019 08:10:18 -0700 (PDT)
+From:   Carlos Neira <cneirabustos@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     yhs@fb.com, ebiederm@xmission.com, brouer@redhat.com,
+        cneirabustos@gmail.com, bpf@vger.kernel.org
+Subject: [PATCH bpf-next v10 0/4] BPF: New helper to obtain namespace data  from current task
+Date:   Fri,  6 Sep 2019 11:09:48 -0400
+Message-Id: <20190906150952.23066-1-cneirabustos@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello, Paolo.
+This helper obtains the active namespace from current and returns pid, tgid,
+device and namespace id as seen from that namespace, allowing to instrument
+a process inside a container.
+Device is read from /proc/self/ns/pid, as in the future it's possible that
+different pid_ns files may belong to different devices, according
+to the discussion between Eric Biederman and Yonghong in 2017 linux plumbers
+conference.
+Currently bpf_get_current_pid_tgid(), is used to do pid filtering in bcc's
+scripts but this helper returns the pid as seen by the root namespace which is
+fine when a bcc script is not executed inside a container.
+When the process of interest is inside a container, pid filtering will not work
+if bpf_get_current_pid_tgid() is used. This helper addresses this limitation
+returning the pid as it's seen by the current namespace where the script is
+executing.
 
-On Fri, Sep 06, 2019 at 11:07:17AM +0200, Paolo Valente wrote:
-> email.  As for the filesystem, I'm interested in ext4, because it is
-> the most widely used file system, and, with some workloads, it makes
+This helper has the same use cases as bpf_get_current_pid_tgid() as it can be
+used to do pid filtering even inside a container.
 
-Ext4 can't do writeback control as it currently stands.  It creates
-hard ordering across data writes from different cgroups.  No matter
-what mechanism you use for IO control, it is broken.  I'm sure it's
-fixable but does need some work.
+For example a bcc script using bpf_get_current_pid_tgid() (tools/funccount.py):
 
-That said, read-only tests like you're doing should work fine on ext4
-too but the last time I tested io control on ext4 is more than a year
-ago so something might have changed in the meantime.
+        u32 pid = bpf_get_current_pid_tgid() >> 32;
+        if (pid != <pid_arg_passed_in>)
+                return 0;
+Could be modified to use bpf_get_current_pidns_info() as follows:
 
-Just to rule out this isn't what you're hitting.  Can you please run
-your test on btrfs with the following patchset applied?
+        struct bpf_pidns pidns;
+        bpf_get_current_pidns_info(&pidns, sizeof(struct bpf_pidns));
+        u32 pid = pidns.tgid;
+        u32 nsid = pidns.nsid;
+        if ((pid != <pid_arg_passed_in>) && (nsid != <nsid_arg_passed_in>))
+                return 0;
 
- http://lkml.kernel.org/r/20190710192818.1069475-1-tj@kernel.org
+To find out the name PID namespace id of a process, you could use this command:
 
-And as I wrote in the previous reply, I did run your benchmark on one
-of the test machines and it did work fine.
+$ ps -h -o pidns -p <pid_of_interest>
 
-Thanks.
+Or this other command:
+
+$ ls -Li /proc/<pid_of_interest>/ns/pid
+
+Changes from v9 :
+Removed samples/bpf in favor of tools/testing/selftests/bpf
+Fixed bug when bpf helper is called in an interrupt context.
+Code style fixes.
+Added more comments on bpf helper struct member.
+
+Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
+
+Carlos Neira (4):
+  fs/namei.c: make available filename_lookup() for bpf helpers.
+  bpf: new helper to obtain namespace data from  current task New bpf
+    helper bpf_get_current_pidns_info.
+  tools: Added bpf_get_current_pidns_info  helper.
+  tools/testing/selftests/bpf: Add self-tests  for helper
+    bpf_get_pidns_info.
+
+ fs/internal.h                                      |   2 -
+ fs/namei.c                                         |   1 -
+ include/linux/bpf.h                                |   1 +
+ include/linux/namei.h                              |   4 +
+ include/uapi/linux/bpf.h                           |  35 ++++-
+ kernel/bpf/core.c                                  |   1 +
+ kernel/bpf/helpers.c                               |  86 ++++++++++++
+ kernel/trace/bpf_trace.c                           |   2 +
+ tools/include/uapi/linux/bpf.h                     |  35 ++++-
+ tools/testing/selftests/bpf/Makefile               |   2 +-
+ tools/testing/selftests/bpf/bpf_helpers.h          |   3 +
+ .../testing/selftests/bpf/progs/test_pidns_kern.c  |  52 ++++++++
+ .../selftests/bpf/progs/test_pidns_nmi_kern.c      |  52 ++++++++
+ tools/testing/selftests/bpf/test_pidns.c           | 146 +++++++++++++++++++++
+ tools/testing/selftests/bpf/test_pidns_nmi.c       | 139 ++++++++++++++++++++
+ 15 files changed, 555 insertions(+), 6 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_pidns_kern.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_pidns_nmi_kern.c
+ create mode 100644 tools/testing/selftests/bpf/test_pidns.c
+ create mode 100644 tools/testing/selftests/bpf/test_pidns_nmi.c
 
 -- 
-tejun
+2.11.0
+
