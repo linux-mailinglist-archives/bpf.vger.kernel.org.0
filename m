@@ -2,102 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D939AB33B
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2019 09:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F315AB497
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2019 11:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732586AbfIFHcE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Sep 2019 03:32:04 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:36284 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404555AbfIFHcD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Sep 2019 03:32:03 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 2CB67308AA11;
-        Fri,  6 Sep 2019 07:32:03 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.205.33])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 59D56600CC;
-        Fri,  6 Sep 2019 07:32:01 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Subject: [PATCH 7/7] libbpf: Return const struct btf_var_secinfo from btf_var_secinfos inline function
-Date:   Fri,  6 Sep 2019 09:31:44 +0200
-Message-Id: <20190906073144.31068-8-jolsa@kernel.org>
-In-Reply-To: <20190906073144.31068-1-jolsa@kernel.org>
-References: <20190906073144.31068-1-jolsa@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.41]); Fri, 06 Sep 2019 07:32:03 +0000 (UTC)
+        id S2392854AbfIFJHW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Sep 2019 05:07:22 -0400
+Received: from mail-wm1-f50.google.com ([209.85.128.50]:52629 "EHLO
+        mail-wm1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391081AbfIFJHW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Sep 2019 05:07:22 -0400
+Received: by mail-wm1-f50.google.com with SMTP id t17so5666410wmi.2
+        for <bpf@vger.kernel.org>; Fri, 06 Sep 2019 02:07:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=bRNpTF+jlVTEA0th1ETWAk1qTJWN6Qeu8URjuG4vuw0=;
+        b=g2/f8zaLtJ58LwSPZ4Fxp31XofUqLVy6CiLpQZDRxqfSFCkkkcQLmP2pN2lCr2Rvma
+         iQJYDrF+zvyU/PUN6bEeU5c3tIgPkZfK545NpqirU+wuHQnRcG43TdxBmEC2cEZRwsiY
+         rtFeoV8dRoYX1yt6xiu7gsSNbRo/a2xy2lLe+bnBCfBxMj1ZL9K1yYgTC0JgUyLrQ8Up
+         SGrBhpTBm62GcF/Xcwdw5RbV4mP9XNKsL94XLYOL+Z65LESWw2zQzD1bbFKib96Bk+9s
+         KAaQoiygmpBNgES7OYeyQdBSdamFxGxMR9Rl/R6obORIq2TlsRfCcMnN7w819OT00gC7
+         vLkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=bRNpTF+jlVTEA0th1ETWAk1qTJWN6Qeu8URjuG4vuw0=;
+        b=hbiVSFMkVwm91dXBDS6aVwEY1En9BNyDv0mB8VTo928rtwmy+0WbNZDGmJxIqszb89
+         oSZVDAQkiwPj6llFKtcxYgQl7+pwqLApjsOTmceKXHDakp2g7EMYFZiCKyBmYJI+uQM8
+         OBV73NeqVGmCVABsEzZDU8WyYBStaG+WSFXgUkYt79gbqG2ORLBI67w6CkrQAXvNPhpk
+         xoDucEXE7oc3qgkzUBktQAboSiPEiX/XUER/0szJCo0DXnvA8vc6ra+NRgQflPN51Pve
+         J6JE87qrP0Z3qXbjeL+xwXJ8bks1Zh0Fl005v4OzaypFczJf3iBWF2vtlOepFn/j1Yex
+         dJtA==
+X-Gm-Message-State: APjAAAWpT1TMeH3jlVHZWr4r4OKgz6tSrxltNqWU7vVF9GN58nQQeiEA
+        MqFdWusAlA3HScK4tAVbB0JbKQ==
+X-Google-Smtp-Source: APXvYqzTkSfIsU3hU/2q5f43wN5BDN/9Qf5vdBDJjz92GTwgZTlvkevjXpGIrHIxjNr/Bdt75k4Fig==
+X-Received: by 2002:a7b:c935:: with SMTP id h21mr6004171wml.35.1567760839881;
+        Fri, 06 Sep 2019 02:07:19 -0700 (PDT)
+Received: from [192.168.0.103] (88-147-65-157.dyn.eolo.it. [88.147.65.157])
+        by smtp.gmail.com with ESMTPSA id j22sm9584317wre.45.2019.09.06.02.07.18
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 06 Sep 2019 02:07:19 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
+Subject: Re: [PATCHSET block/for-next] IO cost model based work-conserving
+ porportional controller
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <20190905165540.GJ2263813@devbig004.ftw2.facebook.com>
+Date:   Fri, 6 Sep 2019 11:07:17 +0200
+Cc:     Jens Axboe <axboe@kernel.dk>, newella@fb.com, clm@fb.com,
+        Josef Bacik <josef@toxicpanda.com>, dennisz@fb.com,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>, kernel-team@fb.com,
+        cgroups@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        bpf@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <EFFA2298-8614-4AFC-9208-B36976F6548C@linaro.org>
+References: <20190614015620.1587672-1-tj@kernel.org>
+ <20190614175642.GA657710@devbig004.ftw2.facebook.com>
+ <5A63F937-F7B5-4D09-9DB4-C73D6F571D50@linaro.org>
+ <B5E431F7-549D-4FC4-A098-D074DF9586A1@linaro.org>
+ <20190820151903.GH2263813@devbig004.ftw2.facebook.com>
+ <9EB760CE-0028-4766-AE9D-6E90028D8579@linaro.org>
+ <20190831065358.GF2263813@devbig004.ftw2.facebook.com>
+ <88C7DC68-680E-49BB-9699-509B9B0B12A0@linaro.org>
+ <20190902155652.GH2263813@devbig004.ftw2.facebook.com>
+ <D9F6BC6D-FEB3-40CA-A33C-F501AE4434F0@linaro.org>
+ <20190905165540.GJ2263813@devbig004.ftw2.facebook.com>
+To:     Tejun Heo <tj@kernel.org>
+X-Mailer: Apple Mail (2.3445.104.8)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I'm getting following errors when compiling with -Wcast-qual:
 
-  bpf/btf.h: In function ‘btf_var_secinfo* btf_var_secinfos(const btf_type*)’:
-  bpf/btf.h:302:41: warning: cast from type ‘const btf_type*’ to type
-  ‘btf_var_secinfo*’ casts away qualifiers [-Wcast-qual]
-    302 |  return (struct btf_var_secinfo *)(t + 1);
-        |                                         ^
 
-The argument is const so the cast to following struct btf_var_secinfo
-pointer should be const as well. Casting the const away in btf.c call
-where it's correctly used without const in deduplication code.
+> Il giorno 5 set 2019, alle ore 18:55, Tejun Heo <tj@kernel.org> ha scritto:
+> 
+> Hello, Paolo.
+> 
+> So, I'm currently verifying iocost in the FB fleet.  Around three
+> thousand machines running v5.2 (+ some backports) with btrfs on a
+> handful of different models of consumer grade SSDs.  I haven't seen
+> complete loss of control as you're reporting.  Given that you're
+> reporting the same thing on io.latency, which is deployed on multiple
+> orders of magnitude more machines at this point, it's likely that
+> there's something common affecting your test setup.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/lib/bpf/btf.c | 5 +++--
- tools/lib/bpf/btf.h | 4 ++--
- 2 files changed, 5 insertions(+), 4 deletions(-)
+Yep, I had that doubt too, so I extended my tests to one more PC and
+two more drives: a fast SAMSUNG NVMe SSD 970 PRO and an HITACHI
+HTS72755 HDD, using the QoS configurations suggested in your last
+email.  As for the filesystem, I'm interested in ext4, because it is
+the most widely used file system, and, with some workloads, it makes
+it hard to control I/O while keeping throughput high.  I'll provide hw
+and sw details in my reply to your next question.  I'm willing to run
+tests with btrfs too, at a later time.
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index b5121c79fd9f..32527622792d 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -526,7 +526,8 @@ static int btf_fixup_datasec(struct bpf_object *obj, struct btf *btf,
- 
- 	t->size = size;
- 
--	for (i = 0, vsi = btf_var_secinfos(t); i < vars; i++, vsi++) {
-+	for (i = 0, vsi = (struct btf_var_secinfo *) btf_var_secinfos(t);
-+	     i < vars; i++, vsi++) {
- 		t_var = btf__type_by_id(btf, vsi->type);
- 		var = btf_var(t_var);
- 
-@@ -2830,7 +2831,7 @@ static int btf_dedup_remap_type(struct btf_dedup *d, __u32 type_id)
- 	}
- 
- 	case BTF_KIND_DATASEC: {
--		struct btf_var_secinfo *var = btf_var_secinfos(t);
-+		struct btf_var_secinfo *var = (struct btf_var_secinfo *) btf_var_secinfos(t);
- 		__u16 vlen = btf_vlen(t);
- 
- 		for (i = 0; i < vlen; i++) {
-diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-index 480dbe780fa7..ecccde0988b1 100644
---- a/tools/lib/bpf/btf.h
-+++ b/tools/lib/bpf/btf.h
-@@ -296,10 +296,10 @@ static inline const struct btf_var *btf_var(const struct btf_type *t)
- 	return (const struct btf_var *)(t + 1);
- }
- 
--static inline struct btf_var_secinfo *
-+static inline const struct btf_var_secinfo *
- btf_var_secinfos(const struct btf_type *t)
- {
--	return (struct btf_var_secinfo *)(t + 1);
-+	return (const struct btf_var_secinfo *)(t + 1);
- }
- 
- #ifdef __cplusplus
--- 
-2.21.0
+Something is wrong with io.cost also with the other PC and the other
+drives.  In the next table, each pair of numbers contains the target's
+throughput and the total throughput:
+
+                  none                 io.cost               bfq
+SAMSUNG SSD    11.373  3295.517     6.468  3273.892    10.802  1862.288
+HITACHI HDD    0.026    11.531      0.042    30.299     0.067    76.642
+
+With the SAMSUNG SSD, io.cost gives to the target less throughput than
+none (and bfq is behaving badly too, but this is my problem).  On the
+HDD, io.cost gives to the target a little bit more than half the
+throughput guaranteed by bfq, and reaches less than half the total
+throughput reached by bfq.
+
+I do agree that three thousand is an overwhelming number of machines,
+and I'll probably never have that many resources for my tests.  Still,
+it seems rather unlikely that two different PCs, and three different
+drives, all suffer from a common anomaly that causes troubles only to
+io.cost and io.latency.
+
+I try to never overlook also me being the problematic link in the
+chain.  But I'm executing this test with the public script I mentioned
+in my previous emails; and all steps seem correct.
+
+>  Can you please
+> describe your test configuration and if you aren't already try testing
+> on btrfs?
+> 
+
+PC 1: Thinkpad W520, Ubuntu 18.04 (no configuration change w.r.t.
+defaults), PLEXTOR SATA PX-256M5S SSD, HITACHI HTS72755 HDD, ext4.
+
+PC 2: Thinkpad X1 Extreme, Ubuntu 19.04 (no configuration change
+w.r.t.  defaults), SAMSUNG NVMe SSD 970 PRO, ext4.
+
+If you need more details, just ask.
+
+Thanks,
+Paolo
+
+
+
+> Thanks.
+> 
+> -- 
+> tejun
 
