@@ -2,89 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 880A4AB519
-	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2019 11:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 984F7AB876
+	for <lists+bpf@lfdr.de>; Fri,  6 Sep 2019 14:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392945AbfIFJtj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Sep 2019 05:49:39 -0400
-Received: from mail-sz.amlogic.com ([211.162.65.117]:46212 "EHLO
-        mail-sz.amlogic.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbfIFJtj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Sep 2019 05:49:39 -0400
-X-Greylist: delayed 903 seconds by postgrey-1.27 at vger.kernel.org; Fri, 06 Sep 2019 05:49:38 EDT
-Received: from localhost.localdomain (10.28.8.29) by mail-sz.amlogic.com
- (10.28.11.5) with Microsoft SMTP Server id 15.1.1591.10; Fri, 6 Sep 2019
- 17:35:25 +0800
-From:   chunguo feng <chunguo.feng@amlogic.com>
-To:     <edumazet@google.com>
-CC:     <davem@davemloft.net>, <kuznet@ms2.inr.ac.ru>,
-        <yoshfuji@linux-ipv6.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <netdev@vger.kernel.org>, <kafai@fb.com>,
-        <songliubraving@fb.com>, <yhs@fb.com>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        fengchunguo <chunguo.feng@amlogic.com>
-Subject: [PATCH] tcp: fix tcp_disconnect() not clear tp->fastopen_rsk sometimes
-Date:   Fri, 6 Sep 2019 17:34:29 +0800
-Message-ID: <20190906093429.930-1-chunguo.feng@amlogic.com>
-X-Mailer: git-send-email 2.22.0
+        id S2404817AbfIFMyS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Sep 2019 08:54:18 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:55915 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404811AbfIFMyS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Sep 2019 08:54:18 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id A28B630A56B0;
+        Fri,  6 Sep 2019 12:54:17 +0000 (UTC)
+Received: from carbon (ovpn-200-55.brq.redhat.com [10.40.200.55])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 29E0760126;
+        Fri,  6 Sep 2019 12:54:11 +0000 (UTC)
+Date:   Fri, 6 Sep 2019 14:54:08 +0200
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     syzbot <syzbot+4e7a85b1432052e8d6f8@syzkaller.appspotmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdl?= =?UTF-8?B?bnNlbg==?= 
+        <toke@redhat.com>
+Subject: Re: general protection fault in dev_map_hash_update_elem
+Message-ID: <20190906145408.05406b0f@carbon>
+In-Reply-To: <CAADnVQK94boXD8Y=g1LsBtNG4wrYQ0Jnjxhq7hdxvyBKZuPwXw@mail.gmail.com>
+References: <0000000000005091a70591d3e1d9@google.com>
+        <CAADnVQK94boXD8Y=g1LsBtNG4wrYQ0Jnjxhq7hdxvyBKZuPwXw@mail.gmail.com>
+Organization: Red Hat Inc.
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.28.8.29]
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.47]); Fri, 06 Sep 2019 12:54:18 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: fengchunguo <chunguo.feng@amlogic.com>
+On Thu, 5 Sep 2019 14:44:37 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-This patch avoids fastopen_rsk not be cleared every times, then occur 
-the below BUG_ON:
-tcp_v4_destroy_sock
-	->BUG_ON(tp->fastopen_rsk);
+> On Thu, Sep 5, 2019 at 1:08 PM syzbot
+> <syzbot+4e7a85b1432052e8d6f8@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following crash on:
+> >
+> > HEAD commit:    6d028043 Add linux-next specific files for 20190830
+> > git tree:       linux-next
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=135c1a92600000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=82a6bec43ab0cb69
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=4e7a85b1432052e8d6f8
+> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=109124e1600000
+> >
+> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > Reported-by: syzbot+4e7a85b1432052e8d6f8@syzkaller.appspotmail.com
+> >
+> > kasan: CONFIG_KASAN_INLINE enabled
+> > kasan: GPF could be caused by NULL-ptr deref or user memory access
+> > general protection fault: 0000 [#1] PREEMPT SMP KASAN
+> > CPU: 1 PID: 10235 Comm: syz-executor.0 Not tainted 5.3.0-rc6-next-20190830
+> > #75
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+> > Google 01/01/2011
+> > RIP: 0010:__write_once_size include/linux/compiler.h:203 [inline]
+> > RIP: 0010:__hlist_del include/linux/list.h:795 [inline]
+> > RIP: 0010:hlist_del_rcu include/linux/rculist.h:475 [inline]
+> > RIP: 0010:__dev_map_hash_update_elem kernel/bpf/devmap.c:668 [inline]
+> > RIP: 0010:dev_map_hash_update_elem+0x3c8/0x6e0 kernel/bpf/devmap.c:691
+> > Code: 48 89 f1 48 89 75 c8 48 c1 e9 03 80 3c 11 00 0f 85 d3 02 00 00 48 b9
+> > 00 00 00 00 00 fc ff df 48 8b 53 10 48 89 d6 48 c1 ee 03 <80> 3c 0e 00 0f
+> > 85 97 02 00 00 48 85 c0 48 89 02 74 38 48 89 55 b8
+> > RSP: 0018:ffff88808d607c30 EFLAGS: 00010046
+> > RAX: 0000000000000000 RBX: ffff8880a7f14580 RCX: dffffc0000000000
+> > RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff8880a7f14588
+> > RBP: ffff88808d607c78 R08: 0000000000000004 R09: ffffed1011ac0f73
+> > R10: ffffed1011ac0f72 R11: 0000000000000003 R12: ffff88809f4e9400
+> > R13: ffff88809b06ba00 R14: 0000000000000000 R15: ffff88809f4e9528
+> > FS:  00007f3a3d50c700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00007feb3fcd0000 CR3: 00000000986b9000 CR4: 00000000001406e0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >   map_update_elem+0xc82/0x10b0 kernel/bpf/syscall.c:966
+> >   __do_sys_bpf+0x8b5/0x3350 kernel/bpf/syscall.c:2854
+> >   __se_sys_bpf kernel/bpf/syscall.c:2825 [inline]
+> >   __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:2825
+> >   do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+> >   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> > RIP: 0033:0x459879
+> > Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7
+> > 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff
+> > ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+> > RSP: 002b:00007f3a3d50bc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> > RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000459879
+> > RDX: 0000000000000020 RSI: 0000000020000040 RDI: 0000000000000002
+> > RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
+> > R10: 0000000000000000 R11: 0000000000000246 R12: 00007f3a3d50c6d4
+> > R13: 00000000004bfc86 R14: 00000000004d1960 R15: 00000000ffffffff
+> > Modules linked in:
+> > ---[ end trace 083223e21dbd0ae5 ]---
+> > RIP: 0010:__write_once_size include/linux/compiler.h:203 [inline]
+> > RIP: 0010:__hlist_del include/linux/list.h:795 [inline]
+> > RIP: 0010:hlist_del_rcu include/linux/rculist.h:475 [inline]
+> > RIP: 0010:__dev_map_hash_update_elem kernel/bpf/devmap.c:668 [inline]
+> > RIP: 0010:dev_map_hash_update_elem+0x3c8/0x6e0 kernel/bpf/devmap.c:691  
+> 
+> Toke,
+> please take a look.
+> Thanks!
 
-When playback some videos from netwrok,used tcp_disconnect continually.
-        Call trace:
-        kfree+0x210/0x250
-        tcp_v4_destroy_sock+0xb8/0x1b0
-        tcp_v6_destroy_sock+0x20/0x34
-        inet_csk_destroy_sock+0x58/0x114
-        tcp_done+0x144/0x148
-        tcp_rcv_state_process+0x5d4/0xe3c
-        tcp_v4_do_rcv+0x74/0x240
-        tcp_v4_rcv+0xaac/0xba0
-        ip_local_deliver_finish+0xe8/0x25c
-        ip_local_deliver+0x60/0x118
-        ip_rcv+0x70/0x108
-        __netif_receive_skb_core+0x6f8/0xb80
-        process_backlog+0xe4/0x1f4
-        napi_poll+0x94/0x1ec
-        net_rx_action+0xe4/0x224
-        __do_softirq+0x16c/0x3bc
-        do_softirq.part.15+0x70/0x74
-        do_softirq+0x24/0x2c
-        netif_rx_ni+0x108/0x138
-        dhd_rxf_thread+0x134/0x1e4
-        kthread+0x114/0x140
-        ret_from_fork+0x10/0x18
+Hi Toke,
 
-Signed-off-by: fengchunguo <chunguo.feng@amlogic.com>
----
- net/ipv4/tcp.c | 1 +
- 1 file changed, 1 insertion(+)
+I think the problem is that you read:
+ old_dev = __dev_map_hash_lookup_elem(map, idx);
 
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index 61082065b26a..f5c354c0b24c 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -2655,6 +2655,7 @@ int tcp_disconnect(struct sock *sk, int flags)
- 	/* Clean up fastopen related fields */
- 	tcp_free_fastopen_req(tp);
- 	inet->defer_connect = 0;
-+	tp->fastopen_rsk = 0;
+Before holding the lock dtab->index_lock... 
+
+I'm not sure this is the correct fix, but I think below change should
+solve the issue (not even compile tested):
+
+[bpf-next]$ git diff
+
+diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+index 9af048a932b5..c41854a68e9e 100644
+--- a/kernel/bpf/devmap.c
++++ b/kernel/bpf/devmap.c
+@@ -664,6 +664,9 @@ static int __dev_map_hash_update_elem(struct net *net, struct bpf_map *map,
  
- 	WARN_ON(inet->inet_num && !icsk->icsk_bind_hash);
+        spin_lock_irqsave(&dtab->index_lock, flags);
  
++       /* Re-read old_dev while holding lock*/
++       old_dev = __dev_map_hash_lookup_elem(map, idx);
++
+        if (old_dev) {
+                hlist_del_rcu(&old_dev->index_hlist);
+        } else {
+
+
 -- 
-2.22.0
-
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
