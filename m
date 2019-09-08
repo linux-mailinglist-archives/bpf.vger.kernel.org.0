@@ -2,219 +2,234 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50271ACA49
-	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2019 03:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4603EACA73
+	for <lists+bpf@lfdr.de>; Sun,  8 Sep 2019 05:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389419AbfIHB7I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 7 Sep 2019 21:59:08 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:54293 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388647AbfIHB7I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 7 Sep 2019 21:59:08 -0400
-Received: by mail-io1-f70.google.com with SMTP id a20so13086133iok.21
-        for <bpf@vger.kernel.org>; Sat, 07 Sep 2019 18:59:07 -0700 (PDT)
+        id S1726833AbfIHDhm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 7 Sep 2019 23:37:42 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:42071 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726749AbfIHDhm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 7 Sep 2019 23:37:42 -0400
+Received: by mail-lj1-f193.google.com with SMTP id y23so9482080lje.9
+        for <bpf@vger.kernel.org>; Sat, 07 Sep 2019 20:37:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rdna-ru.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Y8AnyqcbwPfyfiiDy3zIIs0GsMNBXL9rg1QBTReDG94=;
+        b=rP4nI6iZUe+13wudncHldtTL1a7kafaCxkz1Uu7kR5pzL4TZD7Uz1TzuBboEAdmU6f
+         wmLTOhjtRGXbJdHTP8n1YWnmrP0WeDsoa8r2XboK++bde9BAOqYVBv4qNr1mGJ+HmfYq
+         UwJthICaTHY6Zt5Y9eKX4JzQEb8GpKhZQkxlMvZZVeTfY8Q4ToNpPZbB/Vg1EubFVfvV
+         7RBCHB+MNhQFy8stWP23hWIvduJ8uMoq68eeuS7r13VKuaNGCFOrgO21LeRGsA18sRtp
+         rndw4p88cCOKfhs23n/UpdAsjQhtmlsDftC1175ssoORVSx9waJpuIEEzyfgyznn8l3U
+         6d+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=rXKs9yhAL+cLtDNzcYNrqbpngd8N+DJ3APnXTX48uH8=;
-        b=FiPZPOPfg4bXZeYksAaaPwnFK0Vz9mR4A75OHpKkDfJdyGF/dfHSLGyAevPShC2z9J
-         08nCc8ci3Nw25U8cM05206VkuYSfvlM3bGfa+KXWSwKr7zDQhwwBwM4a4i22k/k/IHKQ
-         AySy1E2s7NK3Nw9Y/9qYgNH7lPJXsv3sTR4SUI6yCtqH02+KDpjK7yO6wHwrLlNyKP8k
-         gpxZTVgMCSzhJcGIaXznXR8Sq432zICrZZFW+i5GXxrlWWnMt/qxOadLJmeyfG+ywFCN
-         Ls6ODtaeFsIlgHAIGuz74a9fsFaaAiXLoasXkd4VwT/zAUpuxZlIBoxVMsMajJqXMB9X
-         ZwdA==
-X-Gm-Message-State: APjAAAXut4q1HCHzOIDVKPcveOITejSHHiYO0MCAomvxEKvIerUuuR5x
-        +0NV3KBE6hwevqrh8XE4PTa6WSXkQxdQSd0ovh/6wclFoEu7
-X-Google-Smtp-Source: APXvYqyN1zQ0hsIlmiKdinW/dtYs2rMpdVgFIoL09fkmJzKYJYJ3ntfObYT0u6rGFcEetLfFE/OpRJffdTMV+hFjyrkt9UuxQu0C
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Y8AnyqcbwPfyfiiDy3zIIs0GsMNBXL9rg1QBTReDG94=;
+        b=h/rneJ/EAkTAfHkuQSO0Hh3IBfHUPOLQo7D2xIzBIQOwrGsL20lmzWDcGnm3Ab0wch
+         GUotktVFVSGWVMwemUeR5eG+24zYH3WLmvz/X6t4tTSw31mSEgF7XgWzlrJ3zy+jbkLo
+         RrTriumiboFxHwt79gP2DxSOo7qiRy+3I63jFtPJJTcCUbISyz4tI3DFC5RfUM5LLptU
+         m/q1AeA08kwnuGvoYUkxzlepZixayOqB9Ef34YH53wRWnmbq0nhxrforKao8Ls+UQoBG
+         0YUOxeX5i4nYS4q8NenYy/8GdGzeU3K/28GrBLhybpIheSkriYsdh1Re9O0dnAqBBe8q
+         EO5A==
+X-Gm-Message-State: APjAAAX7l31Co1dF1ANKEVFipe7w4bkj2KtapqvAMNaNAmDl0Kfa0MaO
+        pOIubBDs2qRwlB0/W2B1v4uSNg==
+X-Google-Smtp-Source: APXvYqwZ9Oh/rnvxzqaaqETjxMThRVRPygw2PMiccJUY4baehXmNsZd8OjPJCXYN3DM5hwf/QKQcXw==
+X-Received: by 2002:a2e:5358:: with SMTP id t24mr11258883ljd.209.1567913859019;
+        Sat, 07 Sep 2019 20:37:39 -0700 (PDT)
+Received: from localhost ([62.117.96.61])
+        by smtp.gmail.com with ESMTPSA id p12sm1750553ljn.15.2019.09.07.20.37.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Sep 2019 20:37:38 -0700 (PDT)
+Date:   Sun, 8 Sep 2019 06:37:36 +0300
+From:   Andrey Ignatov <rdna@rdna.ru>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Andrey Ignatov <rdna@fb.com>, Yonghong Song <yhs@fb.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCH bpf v2] bpf: fix accessing bpf_sysctl.file_pos on s390
+Message-ID: <20190908033652.GA41624@rdna-mbp>
+References: <20190816105300.49035-1-iii@linux.ibm.com>
+ <55d0fca4-099a-9fb8-8dcd-9cca31e18063@iogearbox.net>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:6b2:: with SMTP id d18mr18383931jad.61.1567907946584;
- Sat, 07 Sep 2019 18:59:06 -0700 (PDT)
-Date:   Sat, 07 Sep 2019 18:59:06 -0700
-In-Reply-To: <0000000000005091a70591d3e1d9@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000032650c0592010449@google.com>
-Subject: Re: general protection fault in dev_map_hash_update_elem
-From:   syzbot <syzbot+4e7a85b1432052e8d6f8@syzkaller.appspotmail.com>
-To:     alexei.starovoitov@gmail.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        jakub.kicinski@netronome.com, jbrouer@redhat.com,
-        john.fastabend@gmail.com, kafai@fb.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        toke@redhat.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <55d0fca4-099a-9fb8-8dcd-9cca31e18063@iogearbox.net>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has found a reproducer for the following crash on:
+Daniel Borkmann <daniel@iogearbox.net> [Wed, 4 Sep 2019 00:13:03 +0200]:
+> On 8/16/19 12:53 PM, Ilya Leoshkevich wrote:
+> > "ctx:file_pos sysctl:read write ok" fails on s390 with "Read value  !=
+> > nux". This is because verifier rewrites a complete 32-bit
+> > bpf_sysctl.file_pos update to a partial update of the first 32 bits of
+> > 64-bit *bpf_sysctl_kern.ppos, which is not correct on big-endian
+> > systems.
+> > 
+> > Fix by using an offset on big-endian systems.
+> > 
+> > Ditto for bpf_sysctl.file_pos reads. Currently the test does not detect
+> > a problem there, since it expects to see 0, which it gets with high
+> > probability in error cases, so change it to seek to offset 3 and expect
+> > 3 in bpf_sysctl.file_pos.
+> > 
+> > Fixes: e1550bfe0de4 ("bpf: Add file_pos field to bpf_sysctl ctx")
+> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > ---
+> > v1->v2: Merge bpf_ctx_narrow_load_shift and
+> > bpf_ctx_narrow_access_offset.
+> > 
+> >   include/linux/filter.h                    |  8 ++++----
+> >   kernel/bpf/cgroup.c                       | 10 ++++++++--
+> >   kernel/bpf/verifier.c                     |  4 ++--
+> >   tools/testing/selftests/bpf/test_sysctl.c |  9 ++++++++-
+> >   4 files changed, 22 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/include/linux/filter.h b/include/linux/filter.h
+> > index 92c6e31fb008..2ce57645f3cd 100644
+> > --- a/include/linux/filter.h
+> > +++ b/include/linux/filter.h
+> > @@ -749,14 +749,14 @@ bpf_ctx_narrow_access_ok(u32 off, u32 size, u32 size_default)
+> >   }
+> >   static inline u8
+> > -bpf_ctx_narrow_load_shift(u32 off, u32 size, u32 size_default)
+> > +bpf_ctx_narrow_access_offset(u32 off, u32 size, u32 size_default)
+> >   {
+> > -	u8 load_off = off & (size_default - 1);
+> > +	u8 access_off = off & (size_default - 1);
+> >   #ifdef __LITTLE_ENDIAN
+> > -	return load_off * 8;
+> > +	return access_off;
+> >   #else
+> > -	return (size_default - (load_off + size)) * 8;
+> > +	return size_default - (access_off + size);
+> >   #endif
+> >   }
+> > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> > index 0a00eaca6fae..00c4647ce92a 100644
+> > --- a/kernel/bpf/cgroup.c
+> > +++ b/kernel/bpf/cgroup.c
+> > @@ -1325,6 +1325,7 @@ static u32 sysctl_convert_ctx_access(enum bpf_access_type type,
+> >   				     struct bpf_prog *prog, u32 *target_size)
+> >   {
+> >   	struct bpf_insn *insn = insn_buf;
+> > +	u32 read_size;
+> >   	switch (si->off) {
+> >   	case offsetof(struct bpf_sysctl, write):
+> > @@ -1356,7 +1357,9 @@ static u32 sysctl_convert_ctx_access(enum bpf_access_type type,
+> >   				treg, si->dst_reg,
+> >   				offsetof(struct bpf_sysctl_kern, ppos));
+> >   			*insn++ = BPF_STX_MEM(
+> > -				BPF_SIZEOF(u32), treg, si->src_reg, 0);
+> > +				BPF_SIZEOF(u32), treg, si->src_reg,
+> > +				bpf_ctx_narrow_access_offset(
+> > +					0, sizeof(u32), sizeof(loff_t)));
+> >   			*insn++ = BPF_LDX_MEM(
+> >   				BPF_DW, treg, si->dst_reg,
+> >   				offsetof(struct bpf_sysctl_kern, tmp_reg));
+> > @@ -1365,8 +1368,11 @@ static u32 sysctl_convert_ctx_access(enum bpf_access_type type,
+> >   				BPF_FIELD_SIZEOF(struct bpf_sysctl_kern, ppos),
+> >   				si->dst_reg, si->src_reg,
+> >   				offsetof(struct bpf_sysctl_kern, ppos));
+> > +			read_size = bpf_size_to_bytes(BPF_SIZE(si->code));
+> >   			*insn++ = BPF_LDX_MEM(
+> > -				BPF_SIZE(si->code), si->dst_reg, si->dst_reg, 0);
+> > +				BPF_SIZE(si->code), si->dst_reg, si->dst_reg,
+> > +				bpf_ctx_narrow_access_offset(
+> > +					0, read_size, sizeof(loff_t)));
+> 
+> I see what you're doing, but generally I'm a bit puzzled on why we need these
+> partial store/loads and cannot access the full loff_t value internally with the
+> rewrite. Why was BPF_SIZEOF(u32) chosen in the first place? Looks like git history
+> doesn't have any useful insight here ... Andrey mind to put some clarifications
+> on this? Thx
 
-HEAD commit:    a2c11b03 kcm: use BPF_PROG_RUN
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13d46ec1600000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cf0c85d15c20ade3
-dashboard link: https://syzkaller.appspot.com/bug?extid=4e7a85b1432052e8d6f8
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1220b2d1600000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1360b26e600000
+Hi Daniel,
 
-Bisection is inconclusive: the first bad commit could be any of:
+Sorry for delay, I took a week of vacation w/ pretty limited Internet
+access and w/o access to my work e-mail (so answering from personal
+one).
 
-116e7dbe Merge branch 'gen-syn-cookie'
-91bc3578 selftests/bpf: add test for bpf_tcp_gen_syncookie
-637f71c0 selftests/bpf: bpf_tcp_gen_syncookie->bpf_helpers
-bf8ff0f8 selftests/bpf: fix clearing buffered output between tests/subtests
-3745ee18 bpf: sync bpf.h to tools/
-a98bf573 tools: bpftool: add support for reporting the effective cgroup  
-progs
-70d66244 bpf: add bpf_tcp_gen_syncookie helper
-9babe825 bpf: always allocate at least 16 bytes for setsockopt hook
-9349d600 tcp: add skb-less helpers to retrieve SYN cookie
-fd5ef31f selftests/bpf: extend sockopt_sk selftest with TCP_CONGESTION use  
-case
-02bc2b64 Merge branch 'setsockopt-extra-mem'
-96511278 tcp: tcp_syn_flood_action read port from socket
-a78d0dbe selftests/bpf: add loop test 4
-d3406913 Merge branch 'devmap_hash'
-1375dc4a tools: Add definitions for devmap_hash map type
-8c303960 selftests/bpf: add loop test 5
-946152b3 selftests/bpf: test_progs: switch to open_memstream
-e4234619 tools/libbpf_probes: Add new devmap_hash type
-10fbe211 tools/include/uapi: Add devmap_hash BPF map type
-66bd2ec1 selftests/bpf: test_progs: test__printf -> printf
-16e910d4 selftests/bpf: test_progs: drop extra trailing tab
-6f9d451a xdp: Add devmap_hash map type for looking up devices by hashed  
-index
-682cdbdc Merge branch 'test_progs-stdio'
-fca16e51 xdp: Refactor devmap allocation code for reuse
-6dbff13c include/bpf.h: Remove map_insert_ctx() stubs
-ef20a9b2 libbpf: add helpers for working with BTF types
-475e31f8 Merge branch 'revamp-test_progs'
-b03bc685 libbpf: convert libbpf code to use new btf helpers
-4cedc0da libbpf: add .BTF.ext offset relocation section loading
-b207edfe selftests/bpf: convert send_signal.c to use subtests
-51436ed7 selftests/bpf: convert bpf_verif_scale.c to sub-tests API
-ddc7c304 libbpf: implement BPF CO-RE offset relocation algorithm
-2dc26d5a selftests/bpf: add BPF_CORE_READ relocatable read macro
-3a516a0a selftests/bpf: add sub-tests support for test_progs
-0ff97e56 selftests/bpf: abstract away test log output
-df36e621 selftests/bpf: add CO-RE relocs testing setup
-002d3afc selftests/bpf: add CO-RE relocs struct flavors tests
-329e38f7 selftest/bpf: centralize libbpf logging management for test_progs
-e87fd8ba libbpf: return previous print callback from libbpf_set_print
-ec6438a9 selftests/bpf: add CO-RE relocs nesting tests
-20a9ad2e selftests/bpf: add CO-RE relocs array tests
-8160bae2 selftests/bpf: add test selectors by number and name to test_progs
-766f2a59 selftests/bpf: revamp test_progs to allow more control
-d9db3550 selftests/bpf: add CO-RE relocs enum/ptr/func_proto tests
-61098e89 selftests/bpf: prevent headers to be compiled as C code
-9654e2ae selftests/bpf: add CO-RE relocs modifiers/typedef tests
-943e398d Merge branch 'flow_dissector-input-flags'
-d698f9db selftests/bpf: add CO-RE relocs ptr-as-array tests
-c1f5e7dd selftests/bpf: add CO-RE relocs ints tests
-e853ae77 selftests/bpf: support BPF_FLOW_DISSECTOR_F_STOP_AT_ENCAP
-29e1c668 selftests/bpf: add CO-RE relocs misc tests
-71c99e32 bpf/flow_dissector: support ipv6 flow_label and  
-BPF_FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL
-726e333f Merge branch 'compile-once-run-everywhere'
-ae173a91 selftests/bpf: support BPF_FLOW_DISSECTOR_F_PARSE_1ST_FRAG
-57debff2 tools/bpf: sync bpf_flow_keys flags
-b7076592 tools/bpf: fix core_reloc.c compilation error
-b2ca4e1c bpf/flow_dissector: support flags in BPF_PROG_TEST_RUN
-d9973cec xdp: xdp_umem: fix umem pages mapping for 32bits systems
-1ac6b126 bpf/flow_dissector: document flags
-3783d437 samples/bpf: xdp_fwd rename devmap name to be xdp_tx_ports
-086f9568 bpf/flow_dissector: pass input flags to BPF flow dissector program
-a32a32cb samples/bpf: make xdp_fwd more practically usable via devmap lookup
-03cd1d1a selftests/bpf: Add selftests for bpf_perf_event_output
-abcce733 samples/bpf: xdp_fwd explain bpf_fib_lookup return codes
-7c4b90d7 bpf: Allow bpf_skb_event_output for a few prog types
-9f30cd56 Merge branch 'bpf-xdp-fwd-sample-improvements'
-5e31d507 Merge branch 'convert-tests-to-libbpf'
-a664a834 tools: bpftool: fix reading from /proc/config.gz
-341dfcf8 btf: expose BTF info through sysfs
-47da6e4d selftests/bpf: remove perf buffer helpers
-c17bec54 samples/bpf: switch trace_output sample to perf_buffer API
-d66fa3c7 tools: bpftool: add feature check for zlib
-9840a4ff selftests/bpf: fix race in flow dissector tests
-f58a4d51 samples/bpf: convert xdp_sample_pkts_user to perf_buffer API
-7fd78568 btf: rename /sys/kernel/btf/kernel into /sys/kernel/btf/vmlinux
-898ca681 selftests/bpf: switch test_tcpnotify to perf_buffer API
-58b80815 selftests/bpf: convert test_get_stack_raw_tp to perf_buffer API
-a1916a15 libbpf: attempt to load kernel BTF from sysfs first
-72ef80b5 Merge branch 'bpf-libbpf-read-sysfs-btf'
-f2a3e4e9 libbpf: provide more helpful message on uninitialized global var
-708852dc Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next
+loff_t is signed and can be negative, but file position used in
+bpf_sysctl ctx can only be >= 0 since negative file position doesn't
+make sense here. When picking up the unsigned int size I made an
+assumption that writing >4GB to sysctl file in /proc/sys would never be
+needed in practice so I chose u32. This also allowed not to care about
+negative values passed to loff_t since MSB is never touched and stays
+zero.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1130846e600000
+You're right the commit message could be more detailed on this part.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+4e7a85b1432052e8d6f8@syzkaller.appspotmail.com
+One thing I missed in the initial patch though is the endianness and,
+yes, making the code play well with both LE and BE requires this
+additional work.
 
-kasan: CONFIG_KASAN_INLINE enabled
-kasan: GPF could be caused by NULL-ptr deref or user memory access
-general protection fault: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 10210 Comm: syz-executor910 Not tainted 5.3.0-rc7+ #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-RIP: 0010:__write_once_size include/linux/compiler.h:226 [inline]
-RIP: 0010:__hlist_del include/linux/list.h:762 [inline]
-RIP: 0010:hlist_del_rcu include/linux/rculist.h:455 [inline]
-RIP: 0010:__dev_map_hash_update_elem kernel/bpf/devmap.c:668 [inline]
-RIP: 0010:dev_map_hash_update_elem+0x3c8/0x6e0 kernel/bpf/devmap.c:691
-Code: 48 89 f1 48 89 75 c8 48 c1 e9 03 80 3c 11 00 0f 85 d3 02 00 00 48 b9  
-00 00 00 00 00 fc ff df 48 8b 53 10 48 89 d6 48 c1 ee 03 <80> 3c 0e 00 0f  
-85 97 02 00 00 48 85 c0 48 89 02 74 38 48 89 55 b8
-RSP: 0018:ffff88808c757c30 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: ffff8880a216a980 RCX: dffffc0000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff8880a216a988
-RBP: ffff88808c757c78 R08: 0000000000000004 R09: ffffed10118eaf73
-R10: ffffed10118eaf72 R11: 0000000000000003 R12: ffff88808c7fb2c0
-R13: ffff88808aa98800 R14: 0000000000000000 R15: ffff88808c7fb3e8
-FS:  00007fd4c5528700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fff47596210 CR3: 000000008b442000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-  map_update_elem+0xc82/0x10b0 kernel/bpf/syscall.c:966
-  __do_sys_bpf+0x8b5/0x3350 kernel/bpf/syscall.c:2854
-  __se_sys_bpf kernel/bpf/syscall.c:2825 [inline]
-  __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:2825
-  do_syscall_64+0xfd/0x6a0 arch/x86/entry/common.c:296
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x446a29
-Code: e8 0c e8 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 5b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fd4c5527db8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446a29
-RDX: 0000000000000020 RSI: 0000000020000180 RDI: 0000000000000002
-RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
-R13: 00007fff4759618f R14: 00007fd4c55289c0 R15: 0000000000000000
-Modules linked in:
----[ end trace 9a6d00abce3fe1c8 ]---
-RIP: 0010:__write_once_size include/linux/compiler.h:226 [inline]
-RIP: 0010:__hlist_del include/linux/list.h:762 [inline]
-RIP: 0010:hlist_del_rcu include/linux/rculist.h:455 [inline]
-RIP: 0010:__dev_map_hash_update_elem kernel/bpf/devmap.c:668 [inline]
-RIP: 0010:dev_map_hash_update_elem+0x3c8/0x6e0 kernel/bpf/devmap.c:691
-Code: 48 89 f1 48 89 75 c8 48 c1 e9 03 80 3c 11 00 0f 85 d3 02 00 00 48 b9  
-00 00 00 00 00 fc ff df 48 8b 53 10 48 89 d6 48 c1 ee 03 <80> 3c 0e 00 0f  
-85 97 02 00 00 48 85 c0 48 89 02 74 38 48 89 55 b8
-RSP: 0018:ffff88808c757c30 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: ffff8880a216a980 RCX: dffffc0000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff8880a216a988
-RBP: ffff88808c757c78 R08: 0000000000000004 R09: ffffed10118eaf73
-R10: ffffed10118eaf72 R11: 0000000000000003 R12: ffff88808c7fb2c0
-R13: ffff88808aa98800 R14: 0000000000000000 R15: ffff88808c7fb3e8
-FS:  00007fd4c5528700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fff47596210 CR3: 000000008b442000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
+> >   		}
+> >   		*target_size = sizeof(u32);
+> >   		break;
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index c84d83f86141..d1d4c995a9eb 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -8616,8 +8616,8 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+> >   		}
+> >   		if (is_narrower_load && size < target_size) {
+> > -			u8 shift = bpf_ctx_narrow_load_shift(off, size,
+> > -							     size_default);
+> > +			u8 shift = bpf_ctx_narrow_access_offset(
+> > +				off, size, size_default) * 8;
+> >   			if (ctx_field_size <= 4) {
+> >   				if (shift)
+> >   					insn_buf[cnt++] = BPF_ALU32_IMM(BPF_RSH,
+> > diff --git a/tools/testing/selftests/bpf/test_sysctl.c b/tools/testing/selftests/bpf/test_sysctl.c
+> > index a3bebd7c68dd..abc26248a7f1 100644
+> > --- a/tools/testing/selftests/bpf/test_sysctl.c
+> > +++ b/tools/testing/selftests/bpf/test_sysctl.c
+> > @@ -31,6 +31,7 @@ struct sysctl_test {
+> >   	enum bpf_attach_type attach_type;
+> >   	const char *sysctl;
+> >   	int open_flags;
+> > +	int seek;
+> >   	const char *newval;
+> >   	const char *oldval;
+> >   	enum {
+> > @@ -139,7 +140,7 @@ static struct sysctl_test tests[] = {
+> >   			/* If (file_pos == X) */
+> >   			BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_1,
+> >   				    offsetof(struct bpf_sysctl, file_pos)),
+> > -			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0, 2),
+> > +			BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 3, 2),
+> >   			/* return ALLOW; */
+> >   			BPF_MOV64_IMM(BPF_REG_0, 1),
+> > @@ -152,6 +153,7 @@ static struct sysctl_test tests[] = {
+> >   		.attach_type = BPF_CGROUP_SYSCTL,
+> >   		.sysctl = "kernel/ostype",
+> >   		.open_flags = O_RDONLY,
+> > +		.seek = 3,
+> >   		.result = SUCCESS,
+> >   	},
+> >   	{
+> > @@ -1442,6 +1444,11 @@ static int access_sysctl(const char *sysctl_path,
+> >   	if (fd < 0)
+> >   		return fd;
+> > +	if (test->seek && lseek(fd, test->seek, SEEK_SET) == -1) {
+> > +		log_err("lseek(%d) failed", test->seek);
+> > +		goto err;
+> > +	}
+> > +
+> >   	if (test->open_flags == O_RDONLY) {
+> >   		char buf[128];
+> > 
+> 
+
+-- 
+Andrey Ignatov
