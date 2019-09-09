@@ -2,230 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C76AE101
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2019 00:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680E5AE10E
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2019 00:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728128AbfIIW2Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Sep 2019 18:28:16 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:34852 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728057AbfIIW2Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Sep 2019 18:28:16 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x89MOsD8153655;
-        Mon, 9 Sep 2019 22:25:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2019-08-05;
- bh=mCSo/zj7/YSUjXhq0JKwCa5UQGg5IoMmZftszTYHZC4=;
- b=FCgXhWBzo6opTttCTRpv/gbHEoCkcMLG9AGKk2++SgoMz+DHAmGjEDB2Ru0qCPtPKKzg
- nltKcFJsUKWZVS5OZd2Mg6VZWbPH6hdZNH6FUts9Xhc4WdZwWBaI+hUnCVAm4ftx5BTj
- u2ZSfXHVUxcmhh3zbtUYU2Vr4ChHBw9AgaiJ+5MUrGOtDiWV0fldM5aNyg0TJpZeJaeP
- lx3pogzH0qwCsrENQfjnSsDC6UO8DabVOU3x++93qEDgF5QaXtW0aMEX+9Sy9TAiQvqw
- SNycnLmbgXbWN0luwyhiBzN75BfgddYGKZQ35SFjspxkk1kquG8z9td8WD70KXEap2uH Og== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2uw1jk7d59-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 09 Sep 2019 22:25:22 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x89MP0YJ016162;
-        Mon, 9 Sep 2019 22:25:22 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 2uwqqcyw78-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 09 Sep 2019 22:25:22 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x89MPJAJ023570;
-        Mon, 9 Sep 2019 22:25:19 GMT
-Received: from dhcp-10-175-172-139.vpn.oracle.com (/10.175.172.139)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 09 Sep 2019 15:25:18 -0700
-Date:   Mon, 9 Sep 2019 23:25:05 +0100 (BST)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@dhcp-10-175-172-139.vpn.oracle.com
-To:     Yonghong Song <yhs@fb.com>
-cc:     Alan Maguire <alan.maguire@oracle.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "quentin.monnet@netronome.com" <quentin.monnet@netronome.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        "joe@wand.net.nz" <joe@wand.net.nz>,
-        "acme@redhat.com" <acme@redhat.com>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "alexey.budankov@linux.intel.com" <alexey.budankov@linux.intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "sdf@google.com" <sdf@google.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "peter@lekensteyn.nl" <peter@lekensteyn.nl>,
-        "ivan@cloudflare.com" <ivan@cloudflare.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "bhole_prashant_q7@lab.ntt.co.jp" <bhole_prashant_q7@lab.ntt.co.jp>,
-        "david.calavera@gmail.com" <david.calavera@gmail.com>,
-        "danieltimlee@gmail.com" <danieltimlee@gmail.com>,
-        Takshak Chahande <ctakshak@fb.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        toke@redhat.com, jbenc@redhat.com, acme@redhat.com
-Subject: Re: [RFC bpf-next 2/7] bpf: extend bpf_pcap support to tracing
- programs
-In-Reply-To: <89305ec8-7e03-3cd0-4e39-c3760dd3477b@fb.com>
-Message-ID: <alpine.LRH.2.20.1909092236490.10757@dhcp-10-175-172-139.vpn.oracle.com>
-References: <1567892444-16344-1-git-send-email-alan.maguire@oracle.com> <1567892444-16344-3-git-send-email-alan.maguire@oracle.com> <89305ec8-7e03-3cd0-4e39-c3760dd3477b@fb.com>
-User-Agent: Alpine 2.20 (LRH 67 2015-01-07)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9375 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1909090213
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9375 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=3 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1909090213
+        id S1729819AbfIIWco (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Sep 2019 18:32:44 -0400
+Received: from mail-pg1-f201.google.com ([209.85.215.201]:36096 "EHLO
+        mail-pg1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726351AbfIIWcn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Sep 2019 18:32:43 -0400
+Received: by mail-pg1-f201.google.com with SMTP id d19so9435763pgh.3
+        for <bpf@vger.kernel.org>; Mon, 09 Sep 2019 15:32:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=M+O0NRYJIUOQwM5A2IHz4DriBr4UGq0Iy2y9IwyZH3Y=;
+        b=uSSJ/9dBZ4SUH8Vu83YhRkxUrHRiMrFD+WA7dlH97UhoPXhKy+qvRVsO+ZyPiinTQU
+         kW2oquEGlQhnHPLYr7SnE5Hjed3eFAE/AON7FSZqmaqgDhmgDQHrhljk4122UnH/Zqbe
+         0POY/rndGLopqMAisGTRXR9NO7kWf1hrTA/bkwAirAJIwYthVB5j5F8G0bXWxoIEi34w
+         T1umkO9uwS4rgiGR5SVtwNBeH+FIbX4Bzy7dyei1tu7Tyx1pKaZqi3sLNMUWst1ZkfKm
+         zKdqIfkYW0ENInQpeOCbg9au+eoaAc+mib239FrA3O8lkyFzF2Hh2NtE97JuvzrVFGmK
+         ySjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=M+O0NRYJIUOQwM5A2IHz4DriBr4UGq0Iy2y9IwyZH3Y=;
+        b=AhrIFJ01SW2iVxSGKsQuRj7NjXODX5q6BuRRgYgeyUOXpYZKg9ewjklpNfiYr1601v
+         Y97z6U2T4I3/o5ENIBG6k5x2+JZQ3fJ4C6UPxRge20Q2yHVMVkvitr/O00sPad0wDd1k
+         M2Zx9IROLdyMlSKkHLblKhHHfhJ3blcSU/E0vzhjk/Cn/WfZSGfYM8DinraVaXkM+e97
+         Wf17yKQBWSZK0V3v4ZSkcu+goGr3qfzo+YIR+eum9Ecf4yF+kmuzQWNzDehpxx4hYd7U
+         xx2h7USEubkahbChNFcKowjmxFTbHhS98xN7nYWVhVYSOYonqdtdiHCQTyITdXy4vqZq
+         d+oA==
+X-Gm-Message-State: APjAAAU5cuDhdCCjzXaWOxOLcnJ1pEAYr2LF9ndUzibxOWy6p93smp4P
+        maqYsSA2D1UatBv2ggyMjg32y2R7U3X46xmRtEI=
+X-Google-Smtp-Source: APXvYqxTeuYy2NwZex38o5nWcQCCKjZAMdZMxGFCfwQtbMikQBtzHTJqIJzQOMfqvPkqbuZsurBUBmTO57nF9ip9+eE=
+X-Received: by 2002:a63:f048:: with SMTP id s8mr23767917pgj.26.1568068361073;
+ Mon, 09 Sep 2019 15:32:41 -0700 (PDT)
+Date:   Mon,  9 Sep 2019 15:32:36 -0700
+Message-Id: <20190909223236.157099-1-samitolvanen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.23.0.162.g0b9fbb3734-goog
+Subject: [PATCH] bpf: validate bpf_func when BPF_JIT is enabled
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Kees Cook <keescook@chromium.org>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 8 Sep 2019, Yonghong Song wrote:
+With CONFIG_BPF_JIT, the kernel makes indirect calls to dynamically
+generated code. This change adds basic sanity checking to ensure
+we are jumping to a valid location, which narrows down the attack
+surface on the stored pointer. This also prepares the code for future
+Control-Flow Integrity (CFI) checking, which adds indirect call
+validation to call targets that can be determined at compile-time, but
+cannot validate calls to jited functions.
+
+In addition, this change adds a weak arch_bpf_jit_check_func function,
+which architectures that implement BPF JIT can override to perform
+additional validation, such as verifying that the pointer points to
+the correct memory region.
+
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+---
+ include/linux/filter.h | 26 ++++++++++++++++++++++++--
+ kernel/bpf/core.c      | 25 +++++++++++++++++++++++++
+ 2 files changed, 49 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 92c6e31fb008..abfb0e1b21a8 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -511,7 +511,10 @@ struct sock_fprog_kern {
+ 	struct sock_filter	*filter;
+ };
  
-> For net side bpf_perf_event_output, we have
-> static unsigned long bpf_skb_copy(void *dst_buff, const void *skb,
->                                    unsigned long off, unsigned long len)
-> {
->          void *ptr = skb_header_pointer(skb, off, len, dst_buff);
-> 
->          if (unlikely(!ptr))
->                  return len;
->          if (ptr != dst_buff)
->                  memcpy(dst_buff, ptr, len);
-> 
->          return 0;
-> }
-> 
-> BPF_CALL_5(bpf_skb_event_output, struct sk_buff *, skb, struct bpf_map 
-> *, map,
->             u64, flags, void *, meta, u64, meta_size)
-> {
->          u64 skb_size = (flags & BPF_F_CTXLEN_MASK) >> 32;
-> 
->          if (unlikely(flags & ~(BPF_F_CTXLEN_MASK | BPF_F_INDEX_MASK)))
->                  return -EINVAL;
->          if (unlikely(skb_size > skb->len))
->                  return -EFAULT;
-> 
->          return bpf_event_output(map, flags, meta, meta_size, skb, skb_size,
->                                  bpf_skb_copy);
-> }
-> 
-> It does not really consider output all the frags.
-> I understand that to get truly all packet data, frags should be
-> considered, but seems we did not do it before? I am wondering
-> whether we need to do here.
++#define BPF_BINARY_HEADER_MAGIC	0x05de0e82
++
+ struct bpf_binary_header {
++	u32 magic;
+ 	u32 pages;
+ 	/* Some arches need word alignment for their instructions */
+ 	u8 image[] __aligned(4);
+@@ -553,20 +556,39 @@ struct sk_filter {
+ 
+ DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
+ 
++#ifdef CONFIG_BPF_JIT
++/*
++ * With JIT, the kernel makes an indirect call to dynamically generated
++ * code. Use bpf_call_func to perform additional validation of the call
++ * target to narrow down attack surface. Architectures implementing BPF
++ * JIT can override arch_bpf_jit_check_func for arch-specific checking.
++ */
++extern unsigned int bpf_call_func(const struct bpf_prog *prog,
++				  const void *ctx);
++
++extern bool arch_bpf_jit_check_func(const struct bpf_prog *prog);
++#else
++static inline unsigned int bpf_call_func(const struct bpf_prog *prog,
++					 const void *ctx)
++{
++	return prog->bpf_func(ctx, prog->insnsi);
++}
++#endif
++
+ #define BPF_PROG_RUN(prog, ctx)	({				\
+ 	u32 ret;						\
+ 	cant_sleep();						\
+ 	if (static_branch_unlikely(&bpf_stats_enabled_key)) {	\
+ 		struct bpf_prog_stats *stats;			\
+ 		u64 start = sched_clock();			\
+-		ret = (*(prog)->bpf_func)(ctx, (prog)->insnsi);	\
++		ret = bpf_call_func(prog, ctx);			\
+ 		stats = this_cpu_ptr(prog->aux->stats);		\
+ 		u64_stats_update_begin(&stats->syncp);		\
+ 		stats->cnt++;					\
+ 		stats->nsecs += sched_clock() - start;		\
+ 		u64_stats_update_end(&stats->syncp);		\
+ 	} else {						\
+-		ret = (*(prog)->bpf_func)(ctx, (prog)->insnsi);	\
++		ret = bpf_call_func(prog, ctx);			\
+ 	}							\
+ 	ret; })
+ 
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 66088a9e9b9e..7aad58f67105 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -792,6 +792,30 @@ void __weak bpf_jit_free_exec(void *addr)
+ 	module_memfree(addr);
+ }
+ 
++#ifdef CONFIG_BPF_JIT
++bool __weak arch_bpf_jit_check_func(const struct bpf_prog *prog)
++{
++	return true;
++}
++
++unsigned int bpf_call_func(const struct bpf_prog *prog, const void *ctx)
++{
++	const struct bpf_binary_header *hdr = bpf_jit_binary_hdr(prog);
++
++	if (!IS_ENABLED(CONFIG_BPF_JIT_ALWAYS_ON) && !prog->jited)
++		return prog->bpf_func(ctx, prog->insnsi);
++
++	if (unlikely(hdr->magic != BPF_BINARY_HEADER_MAGIC ||
++		     !arch_bpf_jit_check_func(prog))) {
++		WARN(1, "attempt to jump to an invalid address");
++		return 0;
++	}
++
++	return prog->bpf_func(ctx, prog->insnsi);
++}
++EXPORT_SYMBOL_GPL(bpf_call_func);
++#endif
++
+ struct bpf_binary_header *
+ bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
+ 		     unsigned int alignment,
+@@ -818,6 +842,7 @@ bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
+ 	/* Fill space with illegal/arch-dep instructions. */
+ 	bpf_fill_ill_insns(hdr, size);
+ 
++	hdr->magic = BPF_BINARY_HEADER_MAGIC;
+ 	hdr->pages = pages;
+ 	hole = min_t(unsigned int, size - (proglen + sizeof(*hdr)),
+ 		     PAGE_SIZE - sizeof(*hdr));
+-- 
+2.23.0.162.g0b9fbb3734-goog
 
-Thanks for the feedback! In experimenting with packet capture,
-my original hope was to keep things simple and avoid fragment parsing
-if possible. However if scatter-gather is enabled for the networking
-device, or indeed if it's running in a VM it turns out a lot of the
-interesting packet data ends up in the fragments on transmit (ssh
-headers, http headers etc).  So I think it would be worth considering
-adding support for fragment traversal.  It's not needed as much
-in the skb program case - we can always pullup the skb - but in
-the tracing situation we probably wouldn't want to do something
-that invasive in tracing context.
-
-Fragment traversal might be worth breaking out as a separate patchset, 
-perhaps triggered by a specific flag to bpf_skb_event_output?
-
-Feedback from folks at Linux Plumbers (I hope I'm summarizing correctly) 
-seemed to agree with what you mentioned WRT the first patch in this 
-series.  The gist was we probably don't want to force the metadata to be a 
-specific packet capture type; we'd rather use the existing perf event 
-mechanisms and if we are indeed doing packet capture, simply specify that 
-data in the program as metadata. 
-
-I'd be happy with that approach myself if I could capture skb 
-fragments in tracing programs - being able to do that would give 
-equivalent functionality to what I proposed but without having a packet 
-capture-specific helper.
-> 
-> If we indeed do not need to handle frags here, I think maybe
-> bpf_probe_read() in existing bpf kprobe function should be
-> enough, we do not need this helper?
-> 
-
-Certainly for many use cases, that will get you most of what you need - 
-particularly if you're just looking at L2 to L4 data. For full packet 
-capture however I think we may need to think about fragment traversal.
-
-> > +
-> > +/* Derive protocol for some of the easier cases.  For tracing, a probe point
-> > + * may be dealing with packets in various states. Common cases are IP
-> > + * packets prior to adding MAC header (_PCAP_TYPE_IP) and a full packet
-> > + * (_PCAP_TYPE_ETH).  For other cases the caller must specify the
-> > + * protocol they expect.  Other heuristics for packet identification
-> > + * should be added here as needed, since determining the packet type
-> > + * ensures we do not capture packets that fail to match the desired
-> > + * pcap type in BPF_F_PCAP_STRICT_TYPE mode.
-> > + */
-> > +static inline int bpf_skb_protocol_get(struct sk_buff *skb)
-> > +{
-> > +	switch (htons(skb->protocol)) {
-> > +	case ETH_P_IP:
-> > +	case ETH_P_IPV6:
-> > +		if (skb_network_header(skb) == skb->data)
-> > +			return BPF_PCAP_TYPE_IP;
-> > +		else
-> > +			return BPF_PCAP_TYPE_ETH;
-> > +	default:
-> > +		return BPF_PCAP_TYPE_UNSET;
-> > +	}
-> > +}
-> > +
-> > +BPF_CALL_5(bpf_trace_pcap, void *, data, u32, size, struct bpf_map *, map,
-> > +	   int, protocol_wanted, u64, flags)
-> 
-> Up to now, for helpers, verifier has a way to verifier it is used 
-> properly regarding to the context. For example, for xdp version
-> perf_event_output, the help prototype,
->    BPF_CALL_5(bpf_xdp_event_output, struct xdp_buff *, xdp, struct 
-> bpf_map *, map,
->             u64, flags, void *, meta, u64, meta_size)
-> the verifier is able to guarantee that the first parameter
-> has correct type xdp_buff, not something from type cast.
->    .arg1_type      = ARG_PTR_TO_CTX,
-> 
-> This helper, in the below we have
->    .arg1_type	= ARG_ANYTHING,
-> 
-> So it is not really enforced. Bringing BTF can help, but type
-> name matching typically bad.
-> 
-> 
-One thing we were discussing - and I think this is similar to what
-you're suggesting - is to investigate if there might be a way to
-leverage BTF to provide additional guarantees that the tracing
-data we are handling is indeed an skb.  Specifically if we
-trace a kprobe function argument or a tracepoint function, and
-if we had that guarantee, we could perhaps invoke the skb-style
-perf event output function (trace both the skb data and the metadata).
-The challenge would be how to do that type-based matching; we'd
-need the function argument information from BTF _and_ need to
-somehow associate it at probe attach time. 
-
-Thanks again for looking at the code!
-
-Alan
