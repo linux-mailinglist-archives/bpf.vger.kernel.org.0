@@ -2,172 +2,230 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9793DADE46
-	for <lists+bpf@lfdr.de>; Mon,  9 Sep 2019 19:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C76AE101
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2019 00:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730537AbfIIRxr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Sep 2019 13:53:47 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:64552 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728768AbfIIRxr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 9 Sep 2019 13:53:47 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x89HrMWM004273;
-        Mon, 9 Sep 2019 10:53:25 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : subject :
- date : message-id : references : in-reply-to : content-type : content-id :
- content-transfer-encoding : mime-version; s=facebook;
- bh=mgLPQx1kvTqEtHhsnaI67kqLDkKXQLCdFKit0/GIfgM=;
- b=kkRkw3Z2zjPBmjQAKSRScnZfHp+BkFWXPtk8tGHwiu6xyyP1/qyq6J5ckuMIdJWJh77T
- 0WgSEYJ5K5SE9R1HXYtYxYKNjG4a4VDVFEn8911lQzFx0SyBYUY4J8JTo/RaruYOS7rd
- TlC8bGiuRYzMtqS0/Nmevev7jxHbu9z1Bao= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2uvv8s5uar-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 09 Sep 2019 10:53:25 -0700
-Received: from prn-mbx04.TheFacebook.com (2620:10d:c081:6::18) by
- prn-hub05.TheFacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Mon, 9 Sep 2019 10:53:22 -0700
-Received: from prn-hub06.TheFacebook.com (2620:10d:c081:35::130) by
- prn-mbx04.TheFacebook.com (2620:10d:c081:6::18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Mon, 9 Sep 2019 10:53:22 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.30) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Mon, 9 Sep 2019 10:53:22 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TB828mRQfbpBKr8FjQshWEShGOxmfxYUqb+QT2fijketwTI3yve4VeJl6lc74wKGdc+FTnCmtzpH/vmNHs8kDdNc5aDkE+PsinIyPzpzNvUx3bbX0VDYA58rQtfZjXAIzUJ1TZjCKNSgzB3yQ8cneRkcsLTjMyFuLJj9BGm9sdN4nGKmMKLaUKp3m0Lh5URNt1c57h09qzWIjhlzpaWDSjmCYwMwC7rNIxagh/aZZ3KpVjGQutrV3xs4py1CH3oaDuRiB3uY/z8u5tItjVq3pCAaptbHw3t8g0w/BMCBajkdDMiSq1VD86+w9ZquddQzGi2znYyjpWxI7aRIUm7zQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mgLPQx1kvTqEtHhsnaI67kqLDkKXQLCdFKit0/GIfgM=;
- b=kL00DVTEuUjaG43acpPBiZjkMUkI5DMIszte+XaBEAs/7Fe+32CE4EPxf18c/9/VoziiTd2COPKW/mL57/i2vNZ8vsh+ge0papfqzFc+iUsLL7WTQF0nO594Bov2NkLgMYEUilMNe4aONQbEqN9S4AYsokLxfR0hjKXU9sFh8b/pCEk9r26svWY4hstPNWC63T5rstBz30Qq23zqP7UiKe6v9ww1AamYDdOEO7y8AiDrcyXTAzi+hLupufJZMB5KWH3NIIOeKcgUWwwIay+rgVPcCM49toIyiFj5osCWSXNKifCLJkeJ4mNCewXujGhvNKL6vgIWS3igZGDpG+orWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mgLPQx1kvTqEtHhsnaI67kqLDkKXQLCdFKit0/GIfgM=;
- b=Xen39Lg1kA04GR9e9sNCP2/ZjM0w6VJUvADjcvgzLwp0QNBJtEKr2Y3w4yMCXhwYLH2JWkrtx6FqXDfro4OAUjgLPVJICp0EA5abBa6rSf3pE21/dHo0RfhBI1a2kbpfWJEU2THgxco3VqOADXCAJZN/fuY0++hEJUGXlppwc7E=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.60.27) by
- BYAPR15MB2630.namprd15.prod.outlook.com (20.179.156.23) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2241.14; Mon, 9 Sep 2019 17:53:21 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::95ab:61a0:29f4:e07e]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::95ab:61a0:29f4:e07e%6]) with mapi id 15.20.2241.018; Mon, 9 Sep 2019
- 17:53:21 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S1728128AbfIIW2Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Sep 2019 18:28:16 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:34852 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728057AbfIIW2Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Sep 2019 18:28:16 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x89MOsD8153655;
+        Mon, 9 Sep 2019 22:25:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=corp-2019-08-05;
+ bh=mCSo/zj7/YSUjXhq0JKwCa5UQGg5IoMmZftszTYHZC4=;
+ b=FCgXhWBzo6opTttCTRpv/gbHEoCkcMLG9AGKk2++SgoMz+DHAmGjEDB2Ru0qCPtPKKzg
+ nltKcFJsUKWZVS5OZd2Mg6VZWbPH6hdZNH6FUts9Xhc4WdZwWBaI+hUnCVAm4ftx5BTj
+ u2ZSfXHVUxcmhh3zbtUYU2Vr4ChHBw9AgaiJ+5MUrGOtDiWV0fldM5aNyg0TJpZeJaeP
+ lx3pogzH0qwCsrENQfjnSsDC6UO8DabVOU3x++93qEDgF5QaXtW0aMEX+9Sy9TAiQvqw
+ SNycnLmbgXbWN0luwyhiBzN75BfgddYGKZQ35SFjspxkk1kquG8z9td8WD70KXEap2uH Og== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 2uw1jk7d59-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Sep 2019 22:25:22 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x89MP0YJ016162;
+        Mon, 9 Sep 2019 22:25:22 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 2uwqqcyw78-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Sep 2019 22:25:22 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x89MPJAJ023570;
+        Mon, 9 Sep 2019 22:25:19 GMT
+Received: from dhcp-10-175-172-139.vpn.oracle.com (/10.175.172.139)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 09 Sep 2019 15:25:18 -0700
+Date:   Mon, 9 Sep 2019 23:25:05 +0100 (BST)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@dhcp-10-175-172-139.vpn.oracle.com
+To:     Yonghong Song <yhs@fb.com>
+cc:     Alan Maguire <alan.maguire@oracle.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "quentin.monnet@netronome.com" <quentin.monnet@netronome.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        "joe@wand.net.nz" <joe@wand.net.nz>,
+        "acme@redhat.com" <acme@redhat.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "alexey.budankov@linux.intel.com" <alexey.budankov@linux.intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "sdf@google.com" <sdf@google.com>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "peter@lekensteyn.nl" <peter@lekensteyn.nl>,
+        "ivan@cloudflare.com" <ivan@cloudflare.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "bhole_prashant_q7@lab.ntt.co.jp" <bhole_prashant_q7@lab.ntt.co.jp>,
+        "david.calavera@gmail.com" <david.calavera@gmail.com>,
+        "danieltimlee@gmail.com" <danieltimlee@gmail.com>,
+        Takshak Chahande <ctakshak@fb.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH] libbpf: Don't error out if getsockopt() fails for
- XDP_OPTIONS
-Thread-Topic: [PATCH] libbpf: Don't error out if getsockopt() fails for
- XDP_OPTIONS
-Thread-Index: AQHVZzaNKJS7wgKEt0+HUZnyS02oyKcjoHoA
-Date:   Mon, 9 Sep 2019 17:53:21 +0000
-Message-ID: <8e909219-a225-b242-aaa5-bee1180aed48@fb.com>
-References: <20190909174619.1735-1-toke@redhat.com>
-In-Reply-To: <20190909174619.1735-1-toke@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR1201CA0007.namprd12.prod.outlook.com
- (2603:10b6:301:4a::17) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:112::27)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::97ba]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a86213c2-4895-4fcc-a58e-08d7354e9a75
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB2630;
-x-ms-traffictypediagnostic: BYAPR15MB2630:
-x-microsoft-antispam-prvs: <BYAPR15MB263090ECE4C54ADB79E316A2D3B70@BYAPR15MB2630.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-forefront-prvs: 01559F388D
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(39860400002)(376002)(396003)(366004)(346002)(199004)(189003)(31696002)(6512007)(6246003)(53936002)(71200400001)(2501003)(71190400001)(2906002)(8936002)(66946007)(36756003)(478600001)(64756008)(66476007)(66556008)(229853002)(6486002)(256004)(66446008)(86362001)(2201001)(31686004)(6436002)(6116002)(305945005)(2616005)(46003)(476003)(81166006)(186003)(81156014)(8676002)(110136005)(25786009)(11346002)(14454004)(52116002)(76176011)(99286004)(5660300002)(386003)(316002)(53546011)(6506007)(102836004)(486006)(7736002)(446003);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2630;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: SgOgfLJQ6iJOPm7rFk+udvQ/DJz6Hc2F8gLGEms/HxBJD67FARP00w/nnrEt5pvJg69QjwJTYIq7x/6f/3lO6YAD2RiylpI5Ew4+CkqYCLJXHjhRu4EQKqinovjD5Ihk9I0P/Q5+uALyFodYMLEL8xt7CycnsPkXxsbJwWD0MeMe0BA3BHzG/b98g+qbpDaxUC6CyfsKKc7QkihITlSrSDO1vb6KoM+8zbODheMnXJxYVM1GOQ0bGNH6PBK/1DPoXs6pblWnTCpE+FQPKZoxT0xClP5kACf6rw0tUI5wbMMN/TdKoYuVnPFykFt+0NOf5pI7+x2FsCe3pZ2mj1BmVdj20z6gsigiYU8FQc8ZU11jRsewBDm9e0lc9woXn5qJIe6L/vlH8GEZzJrzZ/K3gxMGvaoCnAo2/wga1Bi+8Y4=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D412E3A72E42E54C98CFAF4F49A07BE8@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        toke@redhat.com, jbenc@redhat.com, acme@redhat.com
+Subject: Re: [RFC bpf-next 2/7] bpf: extend bpf_pcap support to tracing
+ programs
+In-Reply-To: <89305ec8-7e03-3cd0-4e39-c3760dd3477b@fb.com>
+Message-ID: <alpine.LRH.2.20.1909092236490.10757@dhcp-10-175-172-139.vpn.oracle.com>
+References: <1567892444-16344-1-git-send-email-alan.maguire@oracle.com> <1567892444-16344-3-git-send-email-alan.maguire@oracle.com> <89305ec8-7e03-3cd0-4e39-c3760dd3477b@fb.com>
+User-Agent: Alpine 2.20 (LRH 67 2015-01-07)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: a86213c2-4895-4fcc-a58e-08d7354e9a75
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2019 17:53:21.3795
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9UDxR+8kia+5SVkc4oddS0eUCuMmtIoiwmB0itYmD85zFi33k+JjRQ0SGtXkXBDe
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2630
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
- definitions=2019-09-09_07:2019-09-09,2019-09-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 phishscore=0
- malwarescore=0 priorityscore=1501 impostorscore=0 mlxscore=0
- lowpriorityscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
- clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1906280000 definitions=main-1909090182
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=US-ASCII
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9375 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1909090213
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9375 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=3 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1909090213
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDkvOS8xOSAxMDo0NiBBTSwgVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOg0K
-PiBUaGUgeHNrX3NvY2tldF9fY3JlYXRlKCkgZnVuY3Rpb24gZmFpbHMgYW5kIHJldHVybnMgYW4g
-ZXJyb3IgaWYgaXQgY2Fubm90DQo+IGdldCB0aGUgWERQX09QVElPTlMgdGhyb3VnaCBnZXRzb2Nr
-b3B0KCkuIEhvd2V2ZXIsIHN1cHBvcnQgZm9yIFhEUF9PUFRJT05TDQo+IHdhcyBub3QgYWRkZWQg
-dW50aWwga2VybmVsIDUuMywgc28gdGhpcyBtZWFucyB0aGF0IGNyZWF0aW5nIFhTSyBzb2NrZXRz
-DQo+IGFsd2F5cyBmYWlscyBvbiBvbGRlciBrZXJuZWxzLg0KPiANCj4gU2luY2UgdGhlIG9wdGlv
-biBpcyBqdXN0IHVzZWQgdG8gc2V0IHRoZSB6ZXJvLWNvcHkgZmxhZyBpbiB0aGUgeHNrIHN0cnVj
-dCwNCj4gdGhlcmUgcmVhbGx5IGlzIG5vIG5lZWQgdG8gZXJyb3Igb3V0IGlmIHRoZSBnZXRzb2Nr
-b3B0KCkgY2FsbCBmYWlscy4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFRva2UgSMO4aWxhbmQtSsO4
-cmdlbnNlbiA8dG9rZUByZWRoYXQuY29tPg0KPiAtLS0NCj4gICB0b29scy9saWIvYnBmL3hzay5j
-IHwgOCArKy0tLS0tLQ0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDYgZGVs
-ZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvdG9vbHMvbGliL2JwZi94c2suYyBiL3Rvb2xz
-L2xpYi9icGYveHNrLmMNCj4gaW5kZXggNjgwZTYzMDY2Y2YzLi41OThlNDg3ZDljZTggMTAwNjQ0
-DQo+IC0tLSBhL3Rvb2xzL2xpYi9icGYveHNrLmMNCj4gKysrIGIvdG9vbHMvbGliL2JwZi94c2su
-Yw0KPiBAQCAtNjAzLDEyICs2MDMsOCBAQCBpbnQgeHNrX3NvY2tldF9fY3JlYXRlKHN0cnVjdCB4
-c2tfc29ja2V0ICoqeHNrX3B0ciwgY29uc3QgY2hhciAqaWZuYW1lLA0KPiAgIA0KPiAgIAlvcHRs
-ZW4gPSBzaXplb2Yob3B0cyk7DQo+ICAgCWVyciA9IGdldHNvY2tvcHQoeHNrLT5mZCwgU09MX1hE
-UCwgWERQX09QVElPTlMsICZvcHRzLCAmb3B0bGVuKTsNCj4gLQlpZiAoZXJyKSB7DQo+IC0JCWVy
-ciA9IC1lcnJubzsNCj4gLQkJZ290byBvdXRfbW1hcF90eDsNCj4gLQl9DQo+IC0NCj4gLQl4c2st
-PnpjID0gb3B0cy5mbGFncyAmIFhEUF9PUFRJT05TX1pFUk9DT1BZOw0KPiArCWlmICghZXJyKQ0K
-PiArCQl4c2stPnpjID0gb3B0cy5mbGFncyAmIFhEUF9PUFRJT05TX1pFUk9DT1BZOw0KPiAgIA0K
-PiAgIAlpZiAoISh4c2stPmNvbmZpZy5saWJicGZfZmxhZ3MgJiBYU0tfTElCQlBGX0ZMQUdTX19J
-TkhJQklUX1BST0dfTE9BRCkpIHsNCj4gICAJCWVyciA9IHhza19zZXR1cF94ZHBfcHJvZyh4c2sp
-Ow0KDQpTaW5jZSAnemMnIGlzIG5vdCB1c2VkIGJ5IGFueWJvZHksIG1heWJlIGFsbCBjb2RlcyAn
-emMnIHJlbGF0ZWQgY2FuIGJlIA0KcmVtb3ZlZD8gSXQgY2FuIGJlIGFkZGVkIGJhY2sgYmFjayBv
-bmNlIHRoZXJlIGlzIGFuIGludGVyZmFjZSB0byB1c2UgJ3pjJz8NCg0KZGlmZiAtLWdpdCBhL3Rv
-b2xzL2xpYi9icGYveHNrLmMgYi90b29scy9saWIvYnBmL3hzay5jDQppbmRleCA4NDJjNGZkNTU4
-NTkuLjI0ZmEzMTM1MjRmYiAxMDA2NDQNCi0tLSBhL3Rvb2xzL2xpYi9icGYveHNrLmMNCisrKyBi
-L3Rvb2xzL2xpYi9icGYveHNrLmMNCkBAIC02NSw3ICs2NSw2IEBAIHN0cnVjdCB4c2tfc29ja2V0
-IHsNCiAgICAgICAgIGludCB4c2tzX21hcF9mZDsNCiAgICAgICAgIF9fdTMyIHF1ZXVlX2lkOw0K
-ICAgICAgICAgY2hhciBpZm5hbWVbSUZOQU1TSVpdOw0KLSAgICAgICBib29sIHpjOw0KICB9Ow0K
-DQogIHN0cnVjdCB4c2tfbmxfaW5mbyB7DQpAQCAtNDkxLDcgKzQ5MCw2IEBAIGludCB4c2tfc29j
-a2V0X19jcmVhdGUoc3RydWN0IHhza19zb2NrZXQgKip4c2tfcHRyLCANCmNvbnN0IGNoYXIgKmlm
-bmFtZSwNCiAgICAgICAgIHZvaWQgKnJ4X21hcCA9IE5VTEwsICp0eF9tYXAgPSBOVUxMOw0KICAg
-ICAgICAgc3RydWN0IHNvY2thZGRyX3hkcCBzeGRwID0ge307DQogICAgICAgICBzdHJ1Y3QgeGRw
-X21tYXBfb2Zmc2V0cyBvZmY7DQotICAgICAgIHN0cnVjdCB4ZHBfb3B0aW9ucyBvcHRzOw0KICAg
-ICAgICAgc3RydWN0IHhza19zb2NrZXQgKnhzazsNCiAgICAgICAgIHNvY2tsZW5fdCBvcHRsZW47
-DQogICAgICAgICBpbnQgZXJyOw0KQEAgLTYxMSwxNSArNjA5LDYgQEAgaW50IHhza19zb2NrZXRf
-X2NyZWF0ZShzdHJ1Y3QgeHNrX3NvY2tldCAqKnhza19wdHIsIA0KY29uc3QgY2hhciAqaWZuYW1l
-LA0KDQogICAgICAgICB4c2stPnByb2dfZmQgPSAtMTsNCg0KLSAgICAgICBvcHRsZW4gPSBzaXpl
-b2Yob3B0cyk7DQotICAgICAgIGVyciA9IGdldHNvY2tvcHQoeHNrLT5mZCwgU09MX1hEUCwgWERQ
-X09QVElPTlMsICZvcHRzLCAmb3B0bGVuKTsNCi0gICAgICAgaWYgKGVycikgew0KLSAgICAgICAg
-ICAgICAgIGVyciA9IC1lcnJubzsNCi0gICAgICAgICAgICAgICBnb3RvIG91dF9tbWFwX3R4Ow0K
-LSAgICAgICB9DQotDQotICAgICAgIHhzay0+emMgPSBvcHRzLmZsYWdzICYgWERQX09QVElPTlNf
-WkVST0NPUFk7DQotDQogICAgICAgICBpZiAoISh4c2stPmNvbmZpZy5saWJicGZfZmxhZ3MgJiAN
-ClhTS19MSUJCUEZfRkxBR1NfX0lOSElCSVRfUFJPR19MT0FEKSkgew0KICAgICAgICAgICAgICAg
-ICBlcnIgPSB4c2tfc2V0dXBfeGRwX3Byb2coeHNrKTsNCiAgICAgICAgICAgICAgICAgaWYgKGVy
-cikNCg==
+On Sun, 8 Sep 2019, Yonghong Song wrote:
+ 
+> For net side bpf_perf_event_output, we have
+> static unsigned long bpf_skb_copy(void *dst_buff, const void *skb,
+>                                    unsigned long off, unsigned long len)
+> {
+>          void *ptr = skb_header_pointer(skb, off, len, dst_buff);
+> 
+>          if (unlikely(!ptr))
+>                  return len;
+>          if (ptr != dst_buff)
+>                  memcpy(dst_buff, ptr, len);
+> 
+>          return 0;
+> }
+> 
+> BPF_CALL_5(bpf_skb_event_output, struct sk_buff *, skb, struct bpf_map 
+> *, map,
+>             u64, flags, void *, meta, u64, meta_size)
+> {
+>          u64 skb_size = (flags & BPF_F_CTXLEN_MASK) >> 32;
+> 
+>          if (unlikely(flags & ~(BPF_F_CTXLEN_MASK | BPF_F_INDEX_MASK)))
+>                  return -EINVAL;
+>          if (unlikely(skb_size > skb->len))
+>                  return -EFAULT;
+> 
+>          return bpf_event_output(map, flags, meta, meta_size, skb, skb_size,
+>                                  bpf_skb_copy);
+> }
+> 
+> It does not really consider output all the frags.
+> I understand that to get truly all packet data, frags should be
+> considered, but seems we did not do it before? I am wondering
+> whether we need to do here.
+
+Thanks for the feedback! In experimenting with packet capture,
+my original hope was to keep things simple and avoid fragment parsing
+if possible. However if scatter-gather is enabled for the networking
+device, or indeed if it's running in a VM it turns out a lot of the
+interesting packet data ends up in the fragments on transmit (ssh
+headers, http headers etc).  So I think it would be worth considering
+adding support for fragment traversal.  It's not needed as much
+in the skb program case - we can always pullup the skb - but in
+the tracing situation we probably wouldn't want to do something
+that invasive in tracing context.
+
+Fragment traversal might be worth breaking out as a separate patchset, 
+perhaps triggered by a specific flag to bpf_skb_event_output?
+
+Feedback from folks at Linux Plumbers (I hope I'm summarizing correctly) 
+seemed to agree with what you mentioned WRT the first patch in this 
+series.  The gist was we probably don't want to force the metadata to be a 
+specific packet capture type; we'd rather use the existing perf event 
+mechanisms and if we are indeed doing packet capture, simply specify that 
+data in the program as metadata. 
+
+I'd be happy with that approach myself if I could capture skb 
+fragments in tracing programs - being able to do that would give 
+equivalent functionality to what I proposed but without having a packet 
+capture-specific helper.
+> 
+> If we indeed do not need to handle frags here, I think maybe
+> bpf_probe_read() in existing bpf kprobe function should be
+> enough, we do not need this helper?
+> 
+
+Certainly for many use cases, that will get you most of what you need - 
+particularly if you're just looking at L2 to L4 data. For full packet 
+capture however I think we may need to think about fragment traversal.
+
+> > +
+> > +/* Derive protocol for some of the easier cases.  For tracing, a probe point
+> > + * may be dealing with packets in various states. Common cases are IP
+> > + * packets prior to adding MAC header (_PCAP_TYPE_IP) and a full packet
+> > + * (_PCAP_TYPE_ETH).  For other cases the caller must specify the
+> > + * protocol they expect.  Other heuristics for packet identification
+> > + * should be added here as needed, since determining the packet type
+> > + * ensures we do not capture packets that fail to match the desired
+> > + * pcap type in BPF_F_PCAP_STRICT_TYPE mode.
+> > + */
+> > +static inline int bpf_skb_protocol_get(struct sk_buff *skb)
+> > +{
+> > +	switch (htons(skb->protocol)) {
+> > +	case ETH_P_IP:
+> > +	case ETH_P_IPV6:
+> > +		if (skb_network_header(skb) == skb->data)
+> > +			return BPF_PCAP_TYPE_IP;
+> > +		else
+> > +			return BPF_PCAP_TYPE_ETH;
+> > +	default:
+> > +		return BPF_PCAP_TYPE_UNSET;
+> > +	}
+> > +}
+> > +
+> > +BPF_CALL_5(bpf_trace_pcap, void *, data, u32, size, struct bpf_map *, map,
+> > +	   int, protocol_wanted, u64, flags)
+> 
+> Up to now, for helpers, verifier has a way to verifier it is used 
+> properly regarding to the context. For example, for xdp version
+> perf_event_output, the help prototype,
+>    BPF_CALL_5(bpf_xdp_event_output, struct xdp_buff *, xdp, struct 
+> bpf_map *, map,
+>             u64, flags, void *, meta, u64, meta_size)
+> the verifier is able to guarantee that the first parameter
+> has correct type xdp_buff, not something from type cast.
+>    .arg1_type      = ARG_PTR_TO_CTX,
+> 
+> This helper, in the below we have
+>    .arg1_type	= ARG_ANYTHING,
+> 
+> So it is not really enforced. Bringing BTF can help, but type
+> name matching typically bad.
+> 
+> 
+One thing we were discussing - and I think this is similar to what
+you're suggesting - is to investigate if there might be a way to
+leverage BTF to provide additional guarantees that the tracing
+data we are handling is indeed an skb.  Specifically if we
+trace a kprobe function argument or a tracepoint function, and
+if we had that guarantee, we could perhaps invoke the skb-style
+perf event output function (trace both the skb data and the metadata).
+The challenge would be how to do that type-based matching; we'd
+need the function argument information from BTF _and_ need to
+somehow associate it at probe attach time. 
+
+Thanks again for looking at the code!
+
+Alan
