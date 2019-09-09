@@ -2,160 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B6AAE141
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2019 00:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF300AE157
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2019 01:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729031AbfIIWwm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Sep 2019 18:52:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58152 "EHLO mail.kernel.org"
+        id S1730151AbfIIXGI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 9 Sep 2019 19:06:08 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:43418 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728945AbfIIWwl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Sep 2019 18:52:41 -0400
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+        id S1726937AbfIIXGH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Sep 2019 19:06:07 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DF78222C0
-        for <bpf@vger.kernel.org>; Mon,  9 Sep 2019 22:52:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1568069560;
-        bh=KQdOtep/fJtO4YL+FRc2frDHqd9PIOzbuU5ucWQl2UQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aW6ay5Q8op/HZa/5vNXr2/suTkKSE3Q58tm2lo/KOu+l5ryRSyMxiQStM2Ne3W26V
-         Uw9XMcbsamtNuNlcG82q5AepsZc2U2Hq5OzHnsjnShO16kNRGn/eOUha36EfFl9ygd
-         9Ezdyqj9UOqOOtfYWF6Gmq7+Vh3Y14mgYSWqy6b4=
-Received: by mail-wr1-f49.google.com with SMTP id l11so16286112wrx.5
-        for <bpf@vger.kernel.org>; Mon, 09 Sep 2019 15:52:40 -0700 (PDT)
-X-Gm-Message-State: APjAAAUWhle4htiPOG6GUoFog9PQ92YQo7jr3jVfMobXGAXr9c4eOyOP
-        Z0gQ7674qz089k6HVMbE5TM/rIG/RPCK1wQAg/B2zA==
-X-Google-Smtp-Source: APXvYqxjXu9tLKEeidry8TRnmvMaltITLyIhvUtZf50njewqCflxdMPyZxPcqVEhtg99777/tMeAYnKT6NblO0sboVA=
-X-Received: by 2002:adf:fe0f:: with SMTP id n15mr886881wrr.343.1568069558803;
- Mon, 09 Sep 2019 15:52:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190906231053.1276792-1-ast@kernel.org> <20190906231053.1276792-2-ast@kernel.org>
-In-Reply-To: <20190906231053.1276792-2-ast@kernel.org>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 9 Sep 2019 15:52:27 -0700
-X-Gmail-Original-Message-ID: <CALCETrVCimrLCzdZ2Jgb-AFd-Ptjd+MmyD-XW=baSt6uOOTtEg@mail.gmail.com>
-Message-ID: <CALCETrVCimrLCzdZ2Jgb-AFd-Ptjd+MmyD-XW=baSt6uOOTtEg@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 1/4] capability: introduce CAP_BPF and CAP_TRACING
-To:     Alexei Starovoitov <ast@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        by mx1.redhat.com (Postfix) with ESMTPS id 88E3980F83
+        for <bpf@vger.kernel.org>; Mon,  9 Sep 2019 23:06:07 +0000 (UTC)
+Received: by mail-ed1-f72.google.com with SMTP id f5so9032072edr.19
+        for <bpf@vger.kernel.org>; Mon, 09 Sep 2019 16:06:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=0Vcc/CpcwFDnggZF+bM9tipKpM2+G5aqH/4y5fHGma8=;
+        b=VnP8fi4//cX83m42vDTGI8qqNrBs4ytl5kdGLzcr8CWhgzoqKWki+DuyYWZ9F6bhRp
+         W2wl6QmAtHhDm0S874rkhXUBzJzOygS1ttx+mnN5JUH9He3jGfkErrh6dr4QlujGONBs
+         0Uw2lgnhxic7YuCovZW1UB0M6pDmJVmdJxIktqmZLmwvLqQs3MpdgHkiZeo3fAVvcMx2
+         w4eGQkuYFAwcurcwlHof74UvhNZ7mpYbHBeYLuRkz13qXC57/ZbR5QN5QH44IUGwpfYo
+         sCCFkQCn8d0WNCkk+djFs3ivrtIyuwG9e8ncHJdyEOPZHWowzE0g7bmmTKgLeZ8/OIcL
+         cprg==
+X-Gm-Message-State: APjAAAUBwZV+0eBVdky3hqZmZavwOtas37d1hATYSQZyLAiac6h3yXIi
+        o9RMRtcfkmzH2wYzep4NdoDORmrjFM+DRpIDAiYL0PuPd2gFSljo5FvX4+B9PpyLkX4PqAQtxMz
+        vdIMxHzKtZ2D3
+X-Received: by 2002:aa7:d607:: with SMTP id c7mr27677922edr.286.1568070366337;
+        Mon, 09 Sep 2019 16:06:06 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqx9yil8yRFH/A/aSwo0G1O5W8PW+3q4yyXMIw5BEUHsXmvyGp6uXBi9Oh49SGSYrSfiUFy48g==
+X-Received: by 2002:aa7:d607:: with SMTP id c7mr27677910edr.286.1568070366180;
+        Mon, 09 Sep 2019 16:06:06 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id w11sm1869129eju.9.2019.09.09.16.06.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Sep 2019 16:06:05 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 1EEDD1804C5; Tue, 10 Sep 2019 00:06:04 +0100 (WEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH] libbpf: Don't error out if getsockopt() fails for XDP_OPTIONS
+In-Reply-To: <8e909219-a225-b242-aaa5-bee1180aed48@fb.com>
+References: <20190909174619.1735-1-toke@redhat.com> <8e909219-a225-b242-aaa5-bee1180aed48@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 10 Sep 2019 00:06:04 +0100
+Message-ID: <87lfuxul2b.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 6, 2019 at 4:10 PM Alexei Starovoitov <ast@kernel.org> wrote:
->
-> Split BPF and perf/tracing operations that are allowed under
-> CAP_SYS_ADMIN into corresponding CAP_BPF and CAP_TRACING.
-> For backward compatibility include them in CAP_SYS_ADMIN as well.
->
-> The end result provides simple safety model for applications that use BPF:
-> - for tracing program types
->   BPF_PROG_TYPE_{KPROBE, TRACEPOINT, PERF_EVENT, RAW_TRACEPOINT, etc}
->   use CAP_BPF and CAP_TRACING
-> - for networking program types
->   BPF_PROG_TYPE_{SCHED_CLS, XDP, CGROUP_SKB, SK_SKB, etc}
->   use CAP_BPF and CAP_NET_ADMIN
->
-> There are few exceptions from this simple rule:
-> - bpf_trace_printk() is allowed in networking programs, but it's using
->   ftrace mechanism, hence this helper needs additional CAP_TRACING.
-> - cpumap is used by XDP programs. Currently it's kept under CAP_SYS_ADMIN,
->   but could be relaxed to CAP_NET_ADMIN in the future.
-> - BPF_F_ZERO_SEED flag for hash/lru map is allowed under CAP_SYS_ADMIN only
->   to discourage production use.
-> - BPF HW offload is allowed under CAP_SYS_ADMIN.
-> - cg_sysctl, cg_device, lirc program types are neither networking nor tracing.
->   They can be loaded under CAP_BPF, but attach is allowed under CAP_NET_ADMIN.
->   This will be cleaned up in the future.
->
-> userid=nobody + (CAP_TRACING | CAP_NET_ADMIN) + CAP_BPF is safer than
-> typical setup with userid=root and sudo by existing bpf applications.
-> It's not secure, since these capabilities:
-> - allow bpf progs access arbitrary memory
-> - let tasks access any bpf map
-> - let tasks attach/detach any bpf prog
->
-> bpftool, bpftrace, bcc tools binaries should not be installed with
-> cap_bpf+cap_tracing, since unpriv users will be able to read kernel secrets.
->
-> CAP_BPF, CAP_NET_ADMIN, CAP_TRACING are roughly equal in terms of
-> damage they can make to the system.
-> Example:
-> CAP_NET_ADMIN can stop network traffic. CAP_BPF can write into map
-> and if that map is used by firewall-like bpf prog the network traffic
-> may stop.
-> CAP_BPF allows many bpf prog_load commands in parallel. The verifier
-> may consume large amount of memory and significantly slow down the system.
-> CAP_TRACING allows many kprobes that can slow down the system.
+Yonghong Song <yhs@fb.com> writes:
 
-Do we want to split CAP_TRACE_KERNEL and CAP_TRACE_USER?  It's not
-entirely clear to me that it's useful.
-
+> On 9/9/19 10:46 AM, Toke Høiland-Jørgensen wrote:
+>> The xsk_socket__create() function fails and returns an error if it cannot
+>> get the XDP_OPTIONS through getsockopt(). However, support for XDP_OPTIONS
+>> was not added until kernel 5.3, so this means that creating XSK sockets
+>> always fails on older kernels.
+>> 
+>> Since the option is just used to set the zero-copy flag in the xsk struct,
+>> there really is no need to error out if the getsockopt() call fails.
+>> 
+>> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+>> ---
+>>   tools/lib/bpf/xsk.c | 8 ++------
+>>   1 file changed, 2 insertions(+), 6 deletions(-)
+>> 
+>> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+>> index 680e63066cf3..598e487d9ce8 100644
+>> --- a/tools/lib/bpf/xsk.c
+>> +++ b/tools/lib/bpf/xsk.c
+>> @@ -603,12 +603,8 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
+>>   
+>>   	optlen = sizeof(opts);
+>>   	err = getsockopt(xsk->fd, SOL_XDP, XDP_OPTIONS, &opts, &optlen);
+>> -	if (err) {
+>> -		err = -errno;
+>> -		goto out_mmap_tx;
+>> -	}
+>> -
+>> -	xsk->zc = opts.flags & XDP_OPTIONS_ZEROCOPY;
+>> +	if (!err)
+>> +		xsk->zc = opts.flags & XDP_OPTIONS_ZEROCOPY;
+>>   
+>>   	if (!(xsk->config.libbpf_flags & XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD)) {
+>>   		err = xsk_setup_xdp_prog(xsk);
 >
-> In the future more fine-grained bpf permissions may be added.
->
-> Existing unprivileged BPF operations are not affected.
-> In particular unprivileged users are allowed to load socket_filter and cg_skb
-> program types and to create array, hash, prog_array, map-in-map map types.
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
->  include/linux/capability.h          | 18 +++++++++++
->  include/uapi/linux/capability.h     | 49 ++++++++++++++++++++++++++++-
->  security/selinux/include/classmap.h |  4 +--
->  3 files changed, 68 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/capability.h b/include/linux/capability.h
-> index ecce0f43c73a..13eb49c75797 100644
-> --- a/include/linux/capability.h
-> +++ b/include/linux/capability.h
-> @@ -247,6 +247,24 @@ static inline bool ns_capable_setid(struct user_namespace *ns, int cap)
->         return true;
->  }
->  #endif /* CONFIG_MULTIUSER */
-> +
-> +static inline bool capable_bpf(void)
-> +{
-> +       return capable(CAP_SYS_ADMIN) || capable(CAP_BPF);
-> +}
-> +static inline bool capable_tracing(void)
-> +{
-> +       return capable(CAP_SYS_ADMIN) || capable(CAP_TRACING);
-> +}
-> +static inline bool capable_bpf_tracing(void)
-> +{
-> +       return capable(CAP_SYS_ADMIN) || (capable(CAP_BPF) && capable(CAP_TRACING));
-> +}
-> +static inline bool capable_bpf_net_admin(void)
-> +{
-> +       return (capable(CAP_SYS_ADMIN) || capable(CAP_BPF)) && capable(CAP_NET_ADMIN);
-> +}
-> +
+> Since 'zc' is not used by anybody, maybe all codes 'zc' related can be 
+> removed? It can be added back back once there is an interface to use
+> 'zc'?
 
-These helpers are all wrong, unfortunately, since they will produce
-inappropriate audit events.  capable_bpf() should look more like this:
+Fine with me; up to the maintainers what they prefer, I guess? :)
 
-if (capable_noaudit(CAP_BPF))
-  return capable(CAP_BPF);
-if (capable_noaudit(CAP_SYS_ADMIN))
-  return capable(CAP_SYS_ADMIN);
-
-return capable(CAP_BPF);
-
-James, etc: should there instead be new helpers to do this more
-generically rather than going through the noaudit contortions?  My
-code above is horrible.
+-Toke
