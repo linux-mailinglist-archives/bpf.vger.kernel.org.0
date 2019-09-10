@@ -2,45 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D065AE9AB
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2019 13:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76525AE9B0
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2019 13:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732530AbfIJL4d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Sep 2019 07:56:33 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:40822 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731997AbfIJL4d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Sep 2019 07:56:33 -0400
-Received: by mail-wr1-f68.google.com with SMTP id w13so19613906wru.7
-        for <bpf@vger.kernel.org>; Tue, 10 Sep 2019 04:56:31 -0700 (PDT)
+        id S1733294AbfIJL4h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Sep 2019 07:56:37 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:45273 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732623AbfIJL4g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Sep 2019 07:56:36 -0400
+Received: by mail-wr1-f65.google.com with SMTP id l16so19551078wrv.12
+        for <bpf@vger.kernel.org>; Tue, 10 Sep 2019 04:56:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fFz8YZRCL6C0W3zDLuAn1hD9LuCSoyLjLV0WVySuCIs=;
-        b=d/mwWVfm8N8nWpk2rm3dvnygC8+vI+RR7bAE9isIWbzYVPVY6IF449wd1prgiYsr54
-         vMsiBoGNafqRieyRDnQ0nVkOfLWRnocaxrGrwxYDKE9XjczgyM/VrQIKYT7fF0Dmhtiw
-         2VX8NF4bE8gL1FHptMJ9bruscFd21e3Npc7ho=
+        bh=khTLae9RCwkUqy9+7uO8vTkotEuqqfm01bDE7aGuRNw=;
+        b=PnzCgXjNvnuPNnTWHRjmLY/R+M3PqGR3Yjz+BOo6oYQ/vgpY2KdtwLmOY34jos2X0H
+         X3rOTwaix0gt/O6HYjtB2s8QAbKS5Tpe2mzz7c305PYW4/zqsnVcjd1V6fP+pL3S0Yri
+         w/9zPw+SNOhM23ea/k4eAC3E1R2AUiDZNF0r4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fFz8YZRCL6C0W3zDLuAn1hD9LuCSoyLjLV0WVySuCIs=;
-        b=Og+MuZXI5IykkIHuE/EO+xyiQWTHYOq4n40uqa6fsXUK8v+8hoYamfWrWgcu9zsnun
-         UwYzOMvEC0O/HAudrRM3EmonlFv4mKX0jIV1HYY5fvRU2M/MqJyKc/NUq33S85S8JY/j
-         DQXBPAA3ovICW3cGTGPQoxqcb4uV0itj2EAdIciU44zKO+C6wfHeOwaPjxRAviHs7frb
-         2ELhlXRk1HrNUliL4dNNtXyXcgU+CWjTNmXfewBisSdqpuAFqF8Hhw7QwdKIqx2KWw56
-         pIT4m5fSvxrNMsChJ3iRS1VdE9VN2GXqB4myE7y4nJhQt09I5rZYvb5WzMmEu+VIyI10
-         uByw==
-X-Gm-Message-State: APjAAAXguPPY/mMmqSp9nrT/CPaYVUUkL/Dzu4JYpbcCLRyqM+7JFKrS
-        WNyy3mq4mrGHGpxsehoPd+hZQQ==
-X-Google-Smtp-Source: APXvYqyquiCnLNFVIZCBecAJwbrRsHhJkrlT57UUhcOwi+WJMCuUh8z7GvOmBsiDp0NaD9HE3hT31w==
-X-Received: by 2002:a5d:49c3:: with SMTP id t3mr26705536wrs.151.1568116590867;
-        Tue, 10 Sep 2019 04:56:30 -0700 (PDT)
+        bh=khTLae9RCwkUqy9+7uO8vTkotEuqqfm01bDE7aGuRNw=;
+        b=Dzym25SuisUmTGmBL5+Qo7EXxieZUj39uEHO+1HVxBpMOmlbO/gsWDCLj0VvvsRqmK
+         FrhsOkbyanGNLahXxglpFQIHbf7z5LcQU2RAXvxi4pIbDWaFEVce7IGC2adKxNTRGen2
+         +ZyFwUuNEp9A3WoD//SKKZi6vO4LLUGnIwIUyuyoZs+EQhHChrZdSG1UcUeCgEgR9E6S
+         wuDZ+Myxe75S7Nhbmeu5hKlrHlC3lDXuqT7AAHolZO6g/CttFawypypQEbevFRWvIAlg
+         LpcQT8oaSaH+0I4xy0Zbzzk3cP7kc/4hjr1yI+VbcE8gK15RimTtTGtJlwprZU8ddo6E
+         WnXw==
+X-Gm-Message-State: APjAAAXs0V0DWRVYV5ocebnHLrDMvKU5ZKeKLDFew4xG2RqxK/FyoGby
+        D3zAbNPHOanSiaSANTdDh9ArSQ==
+X-Google-Smtp-Source: APXvYqxOn37aSDhqXLhP48ScKpNZDRSV1bh9pheAfKkJ1p3R44n3jR0uNlENRSQPjhBnLLFHHeyaFA==
+X-Received: by 2002:adf:ee10:: with SMTP id y16mr22300305wrn.47.1568116592680;
+        Tue, 10 Sep 2019 04:56:32 -0700 (PDT)
 Received: from kpsingh-kernel.c.hoisthospitality.com (110.8.30.213.rev.vodafone.pt. [213.30.8.110])
-        by smtp.gmail.com with ESMTPSA id q19sm23732935wra.89.2019.09.10.04.56.28
+        by smtp.gmail.com with ESMTPSA id q19sm23732935wra.89.2019.09.10.04.56.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Sep 2019 04:56:30 -0700 (PDT)
+        Tue, 10 Sep 2019 04:56:32 -0700 (PDT)
 From:   KP Singh <kpsingh@chromium.org>
 To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         linux-security-module@vger.kernel.org
@@ -67,9 +67,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Quentin Monnet <quentin.monnet@netronome.com>,
         Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>
-Subject: [RFC v1 05/14] krsi: Initialize KRSI hooks and create files in securityfs
-Date:   Tue, 10 Sep 2019 13:55:18 +0200
-Message-Id: <20190910115527.5235-6-kpsingh@chromium.org>
+Subject: [RFC v1 06/14] krsi: Implement eBPF operations, attachment and execution
+Date:   Tue, 10 Sep 2019 13:55:19 +0200
+Message-Id: <20190910115527.5235-7-kpsingh@chromium.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190910115527.5235-1-kpsingh@chromium.org>
 References: <20190910115527.5235-1-kpsingh@chromium.org>
@@ -82,276 +82,362 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: KP Singh <kpsingh@google.com>
 
-The LSM creates files in securityfs for each hook registered with the
-LSM.
+A user space program can attach an eBPF program by:
 
-    /sys/kernel/security/bpf/<h_name>
+  hook_fd = open("/sys/kernel/security/krsi/process_execution", O_RDWR)
+  prog_fd = bpf(BPF_PROG_LOAD, ...)
+  bpf(BPF_PROG_ATTACH, hook_fd, prog_fd)
 
-The initialization of the hooks is done collectively in an internal
-header "hooks.h" which results in:
+When such an attach call is received, the attachment logic looks up the
+dentry and appends the program to the bpf_prog_array.
 
-* Creation of a file for the hook in the securityfs.
-* Allocation of a krsi_hook data structure which stores a pointer to the
-  dentry of the newly created file in securityfs.
-* A pointer to the krsi_hook data structure is stored in the private
-  d_fsdata of dentry of the file created in securityFS.
-
-These files will later be used to specify an attachment target during
-BPF_PROG_LOAD.
+The BPF programs are stored in a bpf_prog_array and writes to the array
+are guarded by a mutex. The eBPF programs are executed as a part of the
+LSM hook they are attached to. If any of the eBPF programs return
+an error (-ENOPERM) the action represented by the hook is denied.
 
 Signed-off-by: KP Singh <kpsingh@google.com>
 ---
- security/krsi/Makefile            |  4 +-
- security/krsi/include/hooks.h     | 21 ++++++++
- security/krsi/include/krsi_fs.h   | 19 +++++++
- security/krsi/include/krsi_init.h | 45 ++++++++++++++++
- security/krsi/krsi.c              | 16 +++++-
- security/krsi/krsi_fs.c           | 88 +++++++++++++++++++++++++++++++
- 6 files changed, 191 insertions(+), 2 deletions(-)
- create mode 100644 security/krsi/include/hooks.h
- create mode 100644 security/krsi/include/krsi_fs.h
- create mode 100644 security/krsi/include/krsi_init.h
- create mode 100644 security/krsi/krsi_fs.c
+ include/linux/krsi.h              |  18 ++++++
+ kernel/bpf/syscall.c              |   3 +-
+ security/krsi/include/krsi_init.h |  51 +++++++++++++++
+ security/krsi/krsi.c              |  13 +++-
+ security/krsi/krsi_fs.c           |  28 ++++++++
+ security/krsi/ops.c               | 102 ++++++++++++++++++++++++++++++
+ 6 files changed, 213 insertions(+), 2 deletions(-)
+ create mode 100644 include/linux/krsi.h
 
-diff --git a/security/krsi/Makefile b/security/krsi/Makefile
-index 660cc1f422fd..4586241f16e1 100644
---- a/security/krsi/Makefile
-+++ b/security/krsi/Makefile
-@@ -1 +1,3 @@
--obj-$(CONFIG_SECURITY_KRSI) := krsi.o ops.o
-+obj-$(CONFIG_SECURITY_KRSI) := krsi.o krsi_fs.o ops.o
-+
-+ccflags-y := -I$(srctree)/security/krsi -I$(srctree)/security/krsi/include
-diff --git a/security/krsi/include/hooks.h b/security/krsi/include/hooks.h
+diff --git a/include/linux/krsi.h b/include/linux/krsi.h
 new file mode 100644
-index 000000000000..e070c452b5de
+index 000000000000..c7d1790d0c1f
 --- /dev/null
-+++ b/security/krsi/include/hooks.h
-@@ -0,0 +1,21 @@
++++ b/include/linux/krsi.h
+@@ -0,0 +1,18 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +
-+/*
-+ * The hooks for the KRSI LSM are declared in this file.
-+ *
-+ * This header MUST NOT be included directly and should
-+ * be only used to initialize the hooks lists.
-+ *
-+ * Format:
-+ *
-+ *   KRSI_HOOK_INIT(TYPE, NAME, LSM_HOOK, KRSI_HOOK_FN)
-+ *
-+ * KRSI adds one layer of indirection between the name of the hook and the name
-+ * it exposes to the userspace in Security FS to prevent the userspace from
-+ * breaking in case the name of the hook changes in the kernel or if there's
-+ * another LSM hook that maps better to the represented security behaviour.
-+ */
-+KRSI_HOOK_INIT(PROCESS_EXECUTION,
-+	       process_execution,
-+	       bprm_check_security,
-+	       krsi_process_execution)
-diff --git a/security/krsi/include/krsi_fs.h b/security/krsi/include/krsi_fs.h
-new file mode 100644
-index 000000000000..38134661d8d6
---- /dev/null
-+++ b/security/krsi/include/krsi_fs.h
-@@ -0,0 +1,19 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef _KRSI_FS_H
-+#define _KRSI_FS_H
++#ifndef _KRSI_H
++#define _KRSI_H
 +
 +#include <linux/bpf.h>
-+#include <linux/fs.h>
-+#include <linux/types.h>
 +
-+bool is_krsi_hook_file(struct file *f);
++#ifdef CONFIG_SECURITY_KRSI
++int krsi_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog);
++#else
++static inline int krsi_prog_attach(const union bpf_attr *attr,
++				   struct bpf_prog *prog)
++{
++	return -EINVAL;
++}
++#endif /* CONFIG_SECURITY_KRSI */
 +
-+/*
-+ * The name of the directory created in securityfs
-+ *
-+ *	/sys/kernel/security/<dir_name>
-+ */
-+#define KRSI_SFS_NAME "krsi"
-+
-+#endif /* _KRSI_FS_H */
++#endif /* _KRSI_H */
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index f38a539f7e67..ab063ed84258 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -4,6 +4,7 @@
+ #include <linux/bpf.h>
+ #include <linux/bpf_trace.h>
+ #include <linux/bpf_lirc.h>
++#include <linux/krsi.h>
+ #include <linux/btf.h>
+ #include <linux/syscalls.h>
+ #include <linux/slab.h>
+@@ -1950,7 +1951,7 @@ static int bpf_prog_attach(const union bpf_attr *attr)
+ 		ret = lirc_prog_attach(attr, prog);
+ 		break;
+ 	case BPF_PROG_TYPE_KRSI:
+-		ret = -EINVAL;
++		ret = krsi_prog_attach(attr, prog);
+ 		break;
+ 	case BPF_PROG_TYPE_FLOW_DISSECTOR:
+ 		ret = skb_flow_dissector_bpf_prog_attach(attr, prog);
 diff --git a/security/krsi/include/krsi_init.h b/security/krsi/include/krsi_init.h
-new file mode 100644
-index 000000000000..68755182a031
---- /dev/null
+index 68755182a031..4e17ecacd4ed 100644
+--- a/security/krsi/include/krsi_init.h
 +++ b/security/krsi/include/krsi_init.h
-@@ -0,0 +1,45 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
+@@ -5,12 +5,29 @@
+ 
+ #include "krsi_fs.h"
+ 
++#include <linux/binfmts.h>
 +
-+#ifndef _KRSI_INIT_H
-+#define _KRSI_INIT_H
+ enum krsi_hook_type {
+ 	PROCESS_EXECUTION,
+ 	__MAX_KRSI_HOOK_TYPE, /* delimiter */
+ };
+ 
+ extern int krsi_fs_initialized;
 +
-+#include "krsi_fs.h"
-+
-+enum krsi_hook_type {
-+	PROCESS_EXECUTION,
-+	__MAX_KRSI_HOOK_TYPE, /* delimiter */
++struct krsi_bprm_ctx {
++	struct linux_binprm *bprm;
 +};
 +
-+extern int krsi_fs_initialized;
 +/*
-+ * The LSM creates one file per hook.
-+ *
-+ * A pointer to krsi_hook data structure is stored in the
-+ * private fsdata of the dentry of the per-hook file created
-+ * in securityfs.
++ * krsi_ctx is the context that is passed to all KRSI eBPF
++ * programs.
 + */
-+struct krsi_hook {
-+	/*
-+	 * The name of the security hook, a file with this name will be created
-+	 * in the securityfs.
-+	 */
-+	const char *name;
-+	/*
-+	 * The type of the LSM hook, the LSM uses this to index the list of the
-+	 * hooks to run the eBPF programs that may have been attached.
-+	 */
-+	enum krsi_hook_type h_type;
-+	/*
-+	 * The dentry of the file created in securityfs.
-+	 */
-+	struct dentry *h_dentry;
++struct krsi_ctx {
++	union {
++		struct krsi_bprm_ctx bprm_ctx;
++	};
 +};
 +
-+extern struct krsi_hook krsi_hooks_list[];
+ /*
+  * The LSM creates one file per hook.
+  *
+@@ -33,10 +50,44 @@ struct krsi_hook {
+ 	 * The dentry of the file created in securityfs.
+ 	 */
+ 	struct dentry *h_dentry;
++	/*
++	 * The mutex must be held when updating the progs attached to the hook.
++	 */
++	struct mutex mutex;
++	/*
++	 * The eBPF programs that are attached to this hook.
++	 */
++	struct bpf_prog_array __rcu	*progs;
+ };
+ 
+ extern struct krsi_hook krsi_hooks_list[];
+ 
++static inline int krsi_run_progs(enum krsi_hook_type t, struct krsi_ctx *ctx)
++{
++	struct bpf_prog_array_item *item;
++	struct bpf_prog *prog;
++	struct krsi_hook *h = &krsi_hooks_list[t];
++	int ret, retval = 0;
 +
-+#define krsi_for_each_hook(hook) \
-+	for ((hook) = &krsi_hooks_list[0]; \
-+	     (hook) < &krsi_hooks_list[__MAX_KRSI_HOOK_TYPE]; \
-+	     (hook)++)
++	preempt_disable();
++	rcu_read_lock();
 +
-+#endif /* _KRSI_INIT_H */
++	item = rcu_dereference(h->progs)->items;
++	while ((prog = READ_ONCE(item->prog))) {
++		ret = BPF_PROG_RUN(prog, ctx);
++		if (ret < 0) {
++			retval = ret;
++			goto out;
++		}
++		item++;
++	}
++
++out:
++	rcu_read_unlock();
++	preempt_enable();
++	return IS_ENABLED(CONFIG_SECURITY_KRSI_ENFORCE) ? retval : 0;
++}
++
+ #define krsi_for_each_hook(hook) \
+ 	for ((hook) = &krsi_hooks_list[0]; \
+ 	     (hook) < &krsi_hooks_list[__MAX_KRSI_HOOK_TYPE]; \
 diff --git a/security/krsi/krsi.c b/security/krsi/krsi.c
-index 9ce4f56fb78d..77d7e2f91172 100644
+index 77d7e2f91172..d3a4a361c192 100644
 --- a/security/krsi/krsi.c
 +++ b/security/krsi/krsi.c
-@@ -2,13 +2,27 @@
+@@ -1,6 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0
  
  #include <linux/lsm_hooks.h>
++#include <linux/filter.h>
++#include <linux/bpf.h>
++#include <linux/binfmts.h>
  
-+#include "krsi_init.h"
-+
-+struct krsi_hook krsi_hooks_list[] = {
-+	#define KRSI_HOOK_INIT(TYPE, NAME, H, I) \
-+		[TYPE] = { \
-+			.h_type = TYPE, \
-+			.name = #NAME, \
-+		},
-+	#include "hooks.h"
-+	#undef KRSI_HOOK_INIT
-+};
-+
+ #include "krsi_init.h"
+ 
+@@ -16,7 +19,15 @@ struct krsi_hook krsi_hooks_list[] = {
+ 
  static int krsi_process_execution(struct linux_binprm *bprm)
  {
- 	return 0;
+-	return 0;
++	int ret;
++	struct krsi_ctx ctx;
++
++	ctx.bprm_ctx = (struct krsi_bprm_ctx) {
++		.bprm = bprm,
++	};
++
++	ret = krsi_run_progs(PROCESS_EXECUTION, &ctx);
++	return ret;
  }
  
  static struct security_hook_list krsi_hooks[] __lsm_ro_after_init = {
--	LSM_HOOK_INIT(bprm_check_security, krsi_process_execution),
-+	#define KRSI_HOOK_INIT(T, N, HOOK, IMPL) LSM_HOOK_INIT(HOOK, IMPL),
-+	#include "hooks.h"
-+	#undef KRSI_HOOK_INIT
- };
- 
- static int __init krsi_init(void)
 diff --git a/security/krsi/krsi_fs.c b/security/krsi/krsi_fs.c
-new file mode 100644
-index 000000000000..604f826cee5c
---- /dev/null
+index 604f826cee5c..3ba18b52ce85 100644
+--- a/security/krsi/krsi_fs.c
 +++ b/security/krsi/krsi_fs.c
-@@ -0,0 +1,88 @@
-+// SPDX-License-Identifier: GPL-2.0
+@@ -5,6 +5,8 @@
+ #include <linux/file.h>
+ #include <linux/fs.h>
+ #include <linux/types.h>
++#include <linux/filter.h>
++#include <linux/bpf.h>
+ #include <linux/security.h>
+ 
+ #include "krsi_fs.h"
+@@ -27,12 +29,29 @@ bool is_krsi_hook_file(struct file *f)
+ 
+ static void __init krsi_free_hook(struct krsi_hook *h)
+ {
++	struct bpf_prog_array_item *item;
++	/*
++	 * This function is __init so we are guarranteed that there will be
++	 * no concurrent access.
++	 */
++	struct bpf_prog_array *progs = rcu_dereference_raw(h->progs);
 +
++	if (progs) {
++		item = progs->items;
++		while (item->prog) {
++			bpf_prog_put(item->prog);
++			item++;
++		}
++		bpf_prog_array_free(progs);
++	}
++
+ 	securityfs_remove(h->h_dentry);
+ 	h->h_dentry = NULL;
+ }
+ 
+ static int __init krsi_init_hook(struct krsi_hook *h, struct dentry *parent)
+ {
++	struct bpf_prog_array __rcu     *progs;
+ 	struct dentry *h_dentry;
+ 	int ret;
+ 
+@@ -41,6 +60,15 @@ static int __init krsi_init_hook(struct krsi_hook *h, struct dentry *parent)
+ 
+ 	if (IS_ERR(h_dentry))
+ 		return PTR_ERR(h_dentry);
++
++	mutex_init(&h->mutex);
++	progs = bpf_prog_array_alloc(0, GFP_KERNEL);
++	if (!progs) {
++		ret = -ENOMEM;
++		goto error;
++	}
++
++	RCU_INIT_POINTER(h->progs, progs);
+ 	h_dentry->d_fsdata = h;
+ 	h->h_dentry = h_dentry;
+ 	return 0;
+diff --git a/security/krsi/ops.c b/security/krsi/ops.c
+index f2de3bd9621e..cf4d06189aa1 100644
+--- a/security/krsi/ops.c
++++ b/security/krsi/ops.c
+@@ -1,10 +1,112 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
 +#include <linux/err.h>
-+#include <linux/init.h>
-+#include <linux/file.h>
-+#include <linux/fs.h>
 +#include <linux/types.h>
+ #include <linux/filter.h>
+ #include <linux/bpf.h>
 +#include <linux/security.h>
++#include <linux/krsi.h>
 +
-+#include "krsi_fs.h"
 +#include "krsi_init.h"
++#include "krsi_fs.h"
 +
 +extern struct krsi_hook krsi_hooks_list[];
 +
-+static struct dentry *krsi_dir;
-+
-+static const struct file_operations krsi_hook_ops = {
-+	.llseek = generic_file_llseek,
-+};
-+
-+int krsi_fs_initialized;
-+
-+bool is_krsi_hook_file(struct file *f)
++static struct krsi_hook *get_hook_from_fd(int fd)
 +{
-+	return f->f_op == &krsi_hook_ops;
-+}
-+
-+static void __init krsi_free_hook(struct krsi_hook *h)
-+{
-+	securityfs_remove(h->h_dentry);
-+	h->h_dentry = NULL;
-+}
-+
-+static int __init krsi_init_hook(struct krsi_hook *h, struct dentry *parent)
-+{
-+	struct dentry *h_dentry;
++	struct fd f = fdget(fd);
++	struct krsi_hook *h;
 +	int ret;
 +
-+	h_dentry = securityfs_create_file(h->name, 0600, parent,
-+			NULL, &krsi_hook_ops);
++	if (!f.file) {
++		ret = -EBADF;
++		goto error;
++	}
 +
-+	if (IS_ERR(h_dentry))
-+		return PTR_ERR(h_dentry);
-+	h_dentry->d_fsdata = h;
-+	h->h_dentry = h_dentry;
-+	return 0;
-+
-+error:
-+	securityfs_remove(h_dentry);
-+	return ret;
-+}
-+
-+static int __init krsi_fs_init(void)
-+{
-+
-+	struct krsi_hook *hook;
-+	int ret;
-+
-+	krsi_dir = securityfs_create_dir(KRSI_SFS_NAME, NULL);
-+	if (IS_ERR(krsi_dir)) {
-+		ret = PTR_ERR(krsi_dir);
-+		pr_err("Unable to create krsi sysfs dir: %d\n", ret);
-+		krsi_dir = NULL;
-+		return ret;
++	if (!is_krsi_hook_file(f.file)) {
++		ret = -EINVAL;
++		goto error;
 +	}
 +
 +	/*
-+	 * If there is an error in initializing a hook, the initialization
-+	 * logic makes sure that it has been freed, but this means that
-+	 * cleanup should be called for all the other hooks. The cleanup
-+	 * logic handles uninitialized data.
++	 * The securityfs dentry never disappears, so we don't need to take a
++	 * reference to it.
 +	 */
-+	krsi_for_each_hook(hook) {
-+		ret = krsi_init_hook(hook, krsi_dir);
-+		if (ret < 0)
-+			goto error;
++	h = file_dentry(f.file)->d_fsdata;
++	if (WARN_ON(!h)) {
++		ret = -EINVAL;
++		goto error;
 +	}
++	fdput(f);
++	return h;
 +
-+	krsi_fs_initialized = 1;
-+	return 0;
 +error:
-+	krsi_for_each_hook(hook)
-+		krsi_free_hook(hook);
-+	securityfs_remove(krsi_dir);
-+	return ret;
++	fdput(f);
++	return ERR_PTR(ret);
 +}
 +
-+late_initcall(krsi_fs_init);
++int krsi_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog)
++{
++	struct bpf_prog_array *old_array;
++	struct bpf_prog_array *new_array;
++	struct krsi_hook *h;
++	int ret = 0;
++
++	h = get_hook_from_fd(attr->target_fd);
++	if (IS_ERR(h))
++		return PTR_ERR(h);
++
++	mutex_lock(&h->mutex);
++	old_array = rcu_dereference_protected(h->progs,
++					      lockdep_is_held(&h->mutex));
++
++	ret = bpf_prog_array_copy(old_array, NULL, prog, &new_array);
++	if (ret < 0) {
++		ret = -ENOMEM;
++		goto unlock;
++	}
++
++	rcu_assign_pointer(h->progs, new_array);
++	bpf_prog_array_free(old_array);
++
++unlock:
++	mutex_unlock(&h->mutex);
++	return ret;
++}
+ 
+ const struct bpf_prog_ops krsi_prog_ops = {
+ };
+ 
++static bool krsi_prog_is_valid_access(int off, int size,
++				      enum bpf_access_type type,
++				      const struct bpf_prog *prog,
++				      struct bpf_insn_access_aux *info)
++{
++	/*
++	 * KRSI is conservative about any direct access in eBPF to
++	 * prevent the users from depending on the internals of the kernel and
++	 * aims at providing a rich eco-system of safe eBPF helpers as an API
++	 * for accessing relevant information from the context.
++	 */
++	return false;
++}
++
++static const struct bpf_func_proto *krsi_prog_func_proto(enum bpf_func_id
++							 func_id,
++							 const struct bpf_prog
++							 *prog)
++{
++	switch (func_id) {
++	case BPF_FUNC_map_lookup_elem:
++		return &bpf_map_lookup_elem_proto;
++	case BPF_FUNC_get_current_pid_tgid:
++		return &bpf_get_current_pid_tgid_proto;
++	default:
++		return NULL;
++	}
++}
++
+ const struct bpf_verifier_ops krsi_verifier_ops = {
++	.get_func_proto = krsi_prog_func_proto,
++	.is_valid_access = krsi_prog_is_valid_access,
+ };
 -- 
 2.20.1
 
