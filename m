@@ -2,45 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF62AAE9B3
-	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2019 13:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E30AAE9B5
+	for <lists+bpf@lfdr.de>; Tue, 10 Sep 2019 13:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387595AbfIJL4k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Sep 2019 07:56:40 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:37879 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731955AbfIJL4j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Sep 2019 07:56:39 -0400
-Received: by mail-wr1-f66.google.com with SMTP id i1so19028214wro.4
-        for <bpf@vger.kernel.org>; Tue, 10 Sep 2019 04:56:36 -0700 (PDT)
+        id S2388061AbfIJL4l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Sep 2019 07:56:41 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:40846 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388030AbfIJL4l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Sep 2019 07:56:41 -0400
+Received: by mail-wr1-f65.google.com with SMTP id w13so19614663wru.7
+        for <bpf@vger.kernel.org>; Tue, 10 Sep 2019 04:56:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=oVQ7Tct8tU0DJx5s8h1k7biDl9I5KG0OFqo1Lpd86hc=;
-        b=lIcQYf/amVBtQDfTxCxyvYoyuo7sxkZenk0YeowuFnzDH6o8iHr3Ldayw8ch8W5+Fa
-         dRQYIkfrm5mFDKNUvGJOYCBnZmxaTxgckK4gIyg2wybSvUgyFr4Qyup1A5rGGxMnbdAf
-         TujF0G6HNz/U56ZKm3MxmHZ9PCEw9y/TPRj+g=
+        bh=t15c8HaxO7PieQmaQJo6m5Fa3LC9U0plzJQkm4Wyt4U=;
+        b=fN37gePq6j/onKdsWODRjgRB0RSIEAzJkFNsmZsO7Rj/2Ydz5NSbjvpWNzIbAy9pA/
+         9oxN0X6e2Zy8DSUr+5l7voWWPCZHxmcHB9aPMViYyGqKV2xJO+fJXtKd2cTvIS+oWUAb
+         U/eQ9hzmSg0IgzNvMa+MSbiuuwdf05LgDQSFQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=oVQ7Tct8tU0DJx5s8h1k7biDl9I5KG0OFqo1Lpd86hc=;
-        b=VBz9mEnIB0ARAPdNQvl8EiiYDekLsHTuTtFI+iobKn23nKrP2WqY++3l2jWS6V6eJi
-         8KnxvJDP4HwF7JgLKcbu0mVk87jg47JyS2ZWITOtZCIZYHUNsxaugzxJJbOEBx3xa9i/
-         m6u9e4jKPkYmRirI5sqXkum9oQBFkUk6mjozwTfhcpCWnRG5szdX2e6AFsmql9GILq5k
-         fap4KDKGK/rICjT6YhDXDRGAWNLBYizlInlxwd8s321OQ6jAJhpSD0OulZHwDLzkZLrQ
-         x9O108jYvJanqmMk+zVMDjgUaO3bzWA9DW59y6n0rzBKhjsymjGEOihweBScoOZ3M6F5
-         iWhA==
-X-Gm-Message-State: APjAAAWKOIbp9yZdVwbBEHHUC51y3NG0xFrJWfCOVUYUAbspQqh55WvI
-        Y0sCSIMs8rj9KZAWBpjxW/+t+Q==
-X-Google-Smtp-Source: APXvYqxsMV7T7MYZDqZj7+zf1X42YUxNEluEUNSWA8evGhzEfC93r4n95G3TeHM62hd43tXfDYT1jw==
-X-Received: by 2002:adf:e947:: with SMTP id m7mr26846741wrn.178.1568116596374;
-        Tue, 10 Sep 2019 04:56:36 -0700 (PDT)
+        bh=t15c8HaxO7PieQmaQJo6m5Fa3LC9U0plzJQkm4Wyt4U=;
+        b=fqjQlis9Es0i/LladWPvwarwidpOsuZuDfL5j5DRabNlDFRcvOuSSW+dr3MqEco5wx
+         3LqT7ntVy1UyXhbrG0U0BZzw0UKOikZ+ec/14DpQnbY4P2kMvnWQmbAjasjxnb02rwGM
+         YxEOAtVa29gUU1UplvBvMwl8rgU2YXVLwOVGbyIO1YeK7aKa7LabIhlTgIPbIrsQ9T3E
+         lVCpGnC+3iE4wt5+BHM5mI7oXD0kGRWOeei8H0AGA7ne5UZIAU2yNoyu6z3EgvpvxpzR
+         C+BMQnICTDGc90k6VzkMRlJVcXyFIOhvyZw66a2YuOKMdjh5IXmmwTeStqnZMhMFOBTs
+         VOiQ==
+X-Gm-Message-State: APjAAAWsDCch4wmBl7jVzs/TwlhPK2D4g1XN+9jwah4qfh3ci0IIDRRd
+        YYuBqn1IqzFmfAojV74syODZOw==
+X-Google-Smtp-Source: APXvYqx5bCZdZM8ig5BWorMuJCs6R0fLGHDD6n+wdFQaD3/uF7xN9UX6qDjEC4Ak4zVX4HLaU+dLvQ==
+X-Received: by 2002:adf:dd04:: with SMTP id a4mr26091671wrm.340.1568116598261;
+        Tue, 10 Sep 2019 04:56:38 -0700 (PDT)
 Received: from kpsingh-kernel.c.hoisthospitality.com (110.8.30.213.rev.vodafone.pt. [213.30.8.110])
-        by smtp.gmail.com with ESMTPSA id q19sm23732935wra.89.2019.09.10.04.56.34
+        by smtp.gmail.com with ESMTPSA id q19sm23732935wra.89.2019.09.10.04.56.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Sep 2019 04:56:35 -0700 (PDT)
+        Tue, 10 Sep 2019 04:56:37 -0700 (PDT)
 From:   KP Singh <kpsingh@chromium.org>
 To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         linux-security-module@vger.kernel.org
@@ -67,9 +67,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Quentin Monnet <quentin.monnet@netronome.com>,
         Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>
-Subject: [RFC v1 08/14] krsi: Show attached program names in hook read handler.
-Date:   Tue, 10 Sep 2019 13:55:21 +0200
-Message-Id: <20190910115527.5235-9-kpsingh@chromium.org>
+Subject: [RFC v1 09/14] krsi: Add a helper function for bpf_perf_event_output
+Date:   Tue, 10 Sep 2019 13:55:22 +0200
+Message-Id: <20190910115527.5235-10-kpsingh@chromium.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190910115527.5235-1-kpsingh@chromium.org>
 References: <20190910115527.5235-1-kpsingh@chromium.org>
@@ -82,112 +82,86 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: KP Singh <kpsingh@google.com>
 
-For inspectability the system administrator should be able to view the
-list of active KRSI programs:
+This helper is mapped to the existing operation
+BPF_FUNC_perf_event_output.
 
-   bash # cat /sys/kernel/security/krsi/process_execution
-   bpf_prog1
+An example usage of this function would be:
+
+#define BUF_SIZE 64;
+
+struct bpf_map_def SEC("maps") perf_map = {
+        .type = BPF_MAP_TYPE_PERF_EVENT_ARRAY,
+        .key_size = sizeof(int),
+        .value_size = sizeof(u32),
+        .max_entries = MAX_CPUS,
+};
+
+SEC("krsi")
+int bpf_prog1(void *ctx)
+{
+	char buf[BUF_SIZE];
+	int len;
+	u64 flags = BPF_F_CURRENT_CPU;
+
+	/* some logic that fills up buf with len data*/
+	len = fill_up_buf(buf);
+	if (len < 0)
+		return len;
+	if (len > BU)
+		return 0;
+
+	bpf_perf_event_output(ctx, &perf_map, flags, buf len);
+	return 0;
+}
+
+A sample program that showcases the use of bpf_perf_event_output is
+added later.
 
 Signed-off-by: KP Singh <kpsingh@google.com>
 ---
- security/krsi/krsi_fs.c | 76 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 75 insertions(+), 1 deletion(-)
+ security/krsi/ops.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/security/krsi/krsi_fs.c b/security/krsi/krsi_fs.c
-index 3ba18b52ce85..0ebf4fabe935 100644
---- a/security/krsi/krsi_fs.c
-+++ b/security/krsi/krsi_fs.c
-@@ -6,6 +6,7 @@
- #include <linux/fs.h>
- #include <linux/types.h>
- #include <linux/filter.h>
-+#include <linux/seq_file.h>
- #include <linux/bpf.h>
- #include <linux/security.h>
+diff --git a/security/krsi/ops.c b/security/krsi/ops.c
+index a61508b7018f..57bd304a03f4 100644
+--- a/security/krsi/ops.c
++++ b/security/krsi/ops.c
+@@ -111,6 +111,26 @@ static bool krsi_prog_is_valid_access(int off, int size,
+ 	return false;
+ }
  
-@@ -16,8 +17,81 @@ extern struct krsi_hook krsi_hooks_list[];
- 
- static struct dentry *krsi_dir;
- 
-+static void *seq_start(struct seq_file *m, loff_t *pos)
-+	__acquires(rcu)
++BPF_CALL_5(krsi_event_output, void *, log,
++	   struct bpf_map *, map, u64, flags, void *, data, u64, size)
 +{
-+	struct krsi_hook *h;
-+	struct dentry *dentry;
-+	struct bpf_prog_array *progs;
-+	struct bpf_prog_array_item *item;
++	if (unlikely(flags & ~(BPF_F_INDEX_MASK)))
++		return -EINVAL;
 +
-+	/*
-+	 * rcu_read_lock() must be held before any return statement
-+	 * because the stop() will always be called and thus call
-+	 * rcu_read_unlock()
-+	 */
-+	rcu_read_lock();
-+
-+	dentry = file_dentry(m->file);
-+	h = dentry->d_fsdata;
-+	if (WARN_ON(!h))
-+		return ERR_PTR(-EFAULT);
-+
-+	progs = rcu_dereference(h->progs);
-+	if ((*pos) >= bpf_prog_array_length(progs))
-+		return NULL;
-+
-+	item = progs->items + *pos;
-+	if (!item->prog)
-+		return NULL;
-+
-+	return item;
++	return bpf_event_output(map, flags, data, size, NULL, 0, NULL);
 +}
 +
-+static void *seq_next(struct seq_file *m, void *v, loff_t *pos)
-+{
-+	struct bpf_prog_array_item *item = v;
-+
-+	item++;
-+	++*pos;
-+
-+	if (!item->prog)
-+		return NULL;
-+
-+	return item;
-+}
-+
-+static void seq_stop(struct seq_file *m, void *v)
-+	__releases(rcu)
-+{
-+	rcu_read_unlock();
-+}
-+
-+static int show_prog(struct seq_file *m, void *v)
-+{
-+	struct bpf_prog_array_item *item = v;
-+
-+	seq_printf(m, "%s\n", item->prog->aux->name);
-+	return 0;
-+}
-+
-+static const struct seq_operations seq_ops = {
-+	.show	= show_prog,
-+	.start	= seq_start,
-+	.next	= seq_next,
-+	.stop	= seq_stop,
++static const struct bpf_func_proto krsi_event_output_proto =  {
++	.func		= krsi_event_output,
++	.gpl_only       = true,
++	.ret_type       = RET_INTEGER,
++	.arg1_type      = ARG_PTR_TO_CTX,
++	.arg2_type      = ARG_CONST_MAP_PTR,
++	.arg3_type      = ARG_ANYTHING,
++	.arg4_type      = ARG_PTR_TO_MEM,
++	.arg5_type      = ARG_CONST_SIZE_OR_ZERO,
 +};
 +
-+static int hook_open(struct inode *inode, struct file *file)
-+{
-+	return seq_open(file, &seq_ops);
-+}
-+
- static const struct file_operations krsi_hook_ops = {
--	.llseek = generic_file_llseek,
-+	.open		= hook_open,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= seq_release,
- };
- 
- int krsi_fs_initialized;
+ static const struct bpf_func_proto *krsi_prog_func_proto(enum bpf_func_id
+ 							 func_id,
+ 							 const struct bpf_prog
+@@ -121,6 +141,8 @@ static const struct bpf_func_proto *krsi_prog_func_proto(enum bpf_func_id
+ 		return &bpf_map_lookup_elem_proto;
+ 	case BPF_FUNC_get_current_pid_tgid:
+ 		return &bpf_get_current_pid_tgid_proto;
++	case BPF_FUNC_perf_event_output:
++		return &krsi_event_output_proto;
+ 	default:
+ 		return NULL;
+ 	}
 -- 
 2.20.1
 
