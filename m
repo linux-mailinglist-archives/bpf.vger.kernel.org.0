@@ -2,103 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F69AFB08
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2019 13:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9CDAFB31
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2019 13:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727093AbfIKLCU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Sep 2019 07:02:20 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:32840 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbfIKLCU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Sep 2019 07:02:20 -0400
-Received: by mail-lj1-f193.google.com with SMTP id a22so19590120ljd.0
-        for <bpf@vger.kernel.org>; Wed, 11 Sep 2019 04:02:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=UnTxdulsUUoW4MpbjOz0YKEvbNh2+pBrrEt0pc1iTEY=;
-        b=Ob2WcKnDVzkZwjpLgbluTx3iqYajdJ2DODeTyESW1TZpIwQOdUyjdsE56rYtwFwt2o
-         vBHbj91NUsX2nOIrtjuQFtM5PvLBFXFOuX1qow3GG0qSqk48qu90ef+ZdRUE0SEODX+j
-         4A5l8K0SW7YGwUIBaZ2T3+eF8n20cTVGmnJvXrWCez7G8/aw/Q4JeC2DD1qck35C0wvV
-         sG/9ovLmpbqikwoeV9Bp6YBNBeZLVWS1Ol7sSgShU808PXkCBpas1n+Rq25ehBoz58Gq
-         TYBRJNVkl9PPBhK1CBlnXOFsyw+qu08HMpMM/J8a9R27bRvxwAQ9yttZQ6YgmKsM0HG+
-         SxOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UnTxdulsUUoW4MpbjOz0YKEvbNh2+pBrrEt0pc1iTEY=;
-        b=P6Bkra3N7SH1cGJH8dj9uRTDiOof4MPU8k4WGntaqWx1+LD8xNPiF8gA+PLxLG1mRf
-         fxpOxBQChxeLHA0eOjnhIuaK9DOv0svcFdTAqCAcLID/OBp5QNYSkm8r5ieGr/zBX2C6
-         Uxlof95oU8IRWbVnIacrQ0gdPQTgEcKOjNRTRBnCJDMY7E48V6G2zGVcDRPjvpdZcJvi
-         No1j0VET6toygA5BYA7IoaiiwtrBETwofA2k9nVC9KsjzUDLRGrsToY8PYQXdB3SVMiP
-         LSs5EHo0875jcRvv2SwrFDXPDjWwNBxIRz9AcCIzce0gKjyij+wisyVvfXL+mu2Dxe5y
-         MCyg==
-X-Gm-Message-State: APjAAAWU227IdcIUty3rs/eX+4zliK54Cqfgpsd18uEGYDjLHi3EOCzT
-        mWHd3tWtAssjJTq6BKrZXcGYuA==
-X-Google-Smtp-Source: APXvYqzrabH5jqIXFRRKoZkb0A3Gq2y2775Mog1g0hbWCWbCyy1Z3PbubQS3H6F+3FkRG2x9faJgfQ==
-X-Received: by 2002:a2e:a303:: with SMTP id l3mr22113052lje.124.1568199738009;
-        Wed, 11 Sep 2019 04:02:18 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:8e6:86de:79c0:860e:c175:7d39? ([2a00:1fa0:8e6:86de:79c0:860e:c175:7d39])
-        by smtp.gmail.com with ESMTPSA id b9sm4570882ljd.52.2019.09.11.04.02.16
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 11 Sep 2019 04:02:17 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 01/11] samples: bpf: makefile: fix HDR_PROBE
- "echo"
-To:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com,
-        davem@davemloft.net, jakub.kicinski@netronome.com, hawk@kernel.org,
-        john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-References: <20190910103830.20794-1-ivan.khoronzhuk@linaro.org>
- <20190910103830.20794-2-ivan.khoronzhuk@linaro.org>
- <55803f7e-a971-d71a-fcc2-76ae1cf813bf@cogentembedded.com>
- <20190910145359.GD3053@khorivan>
-From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <4251fe86-ccc7-f1ce-e954-2d488d2a95a9@cogentembedded.com>
-Date:   Wed, 11 Sep 2019 14:02:11 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <20190910145359.GD3053@khorivan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1726781AbfIKLMI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Sep 2019 07:12:08 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56454 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726696AbfIKLMI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 11 Sep 2019 07:12:08 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x8BBBeKf040680
+        for <bpf@vger.kernel.org>; Wed, 11 Sep 2019 07:12:06 -0400
+Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2uxyuar0fm-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 11 Sep 2019 07:12:06 -0400
+Received: from localhost
+        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Wed, 11 Sep 2019 12:12:04 +0100
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 11 Sep 2019 12:12:02 +0100
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x8BBC1SQ43778116
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Sep 2019 11:12:02 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CEB724C050;
+        Wed, 11 Sep 2019 11:12:01 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6AB7F4C044;
+        Wed, 11 Sep 2019 11:12:01 +0000 (GMT)
+Received: from [9.145.11.53] (unknown [9.145.11.53])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 11 Sep 2019 11:12:01 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Subject: Re: [PATCH bpf-next] selftests/bpf: add bpf-gcc support
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+In-Reply-To: <8736h3nn6g.fsf@oracle.com>
+Date:   Wed, 11 Sep 2019 12:12:00 +0100
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Content-Transfer-Encoding: 7bit
+References: <20190910234140.53363-1-iii@linux.ibm.com>
+ <8736h3nn6g.fsf@oracle.com>
+To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>
+X-Mailer: Apple Mail (2.3445.9.1)
+X-TM-AS-GCONF: 00
+x-cbid: 19091111-4275-0000-0000-000003646C7A
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19091111-4276-0000-0000-00003876C3B2
+Message-Id: <70986114-761C-425A-B04F-B9B402023BDA@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-09-11_07:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1909110102
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10.09.2019 17:54, Ivan Khoronzhuk wrote:
-
->> Hello!
->>
->> On 10.09.2019 13:38, Ivan Khoronzhuk wrote:
->>
->>> echo should be replaced on echo -e to handle \n correctly, but instead,
->>
->>  s/on/with/?
-> s/echo/printf/ instead of s/echo/echo -e/
-
-    I only pointed that 'on' is incorrect there. You replace something /with/ 
-something other...
-
+> Am 11.09.2019 um 11:30 schrieb Jose E. Marchesi <jose.marchesi@oracle.com>:
 > 
-> printf looks better.
 > 
->>
->>> replace it on printf as some systems can't handle echo -e.
->>
->>   Likewise?
+> Hi Ilya.
+> 
+>    Now that binutils and gcc support for BPF is upstream, make use of it in
+>    BPF selftests using alu32-like approach. Share as much as possible of
+>    CFLAGS calculation with clang.
+> 
+>    In order to activate the new bpf-gcc support, one needs to configure
+>    binutils and gcc with --target=bpf and make them available in $PATH. In
+>    particular, gcc must be installed as `bpf-gcc`, which is the default.
+> 
+>    Right now with binutils 25a2915e8dba and gcc r275589 only a handful of
+>    tests work:
+> 
+>    	# ./test_progs_bpf_gcc
+>    	Summary: 5/39 PASSED, 1 SKIPPED, 100 FAILED
+> 
+>    The reason is that a lot of progs fail to build with the following
+>    errors:
+> 
+>    	error: indirect call in function, which are not supported by eBPF
+>    	error: too many function arguments for eBPF
+> 
+>    The next step is to understand those issues and fix them.
+> 
+> Will install your patch and take a look.
+> 
+> Maybe GCC is not inlining something it should be inlining, or clang may
+> be silently generating callx %reg instructions, or maybe there are bugs
+> in my diagnostics... in any case this is useful feedback :)
+> 
+> Thanks!
 
-    Same grammatical mistake.
+Hi Jose,
 
-> I can guess its Mac vs Linux, but it does mean nothing if it's defined as
-> implementation dependent, can be any.
- >
->>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
->> [...]
+I have realised this morning that I must have missed what you said
+yesterday about bpf-helpers.h -- using gcc version of this header clears
+a lot of errors, but the remaning ones are more curious. I plan to
+post a v2 of this patch today or tomorrow with more details on the
+remaining failures.
 
-MBR, Sergei
+Thanks!
+Ilya
+
