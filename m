@@ -2,91 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84352B0518
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2019 23:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65799B0563
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2019 00:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730668AbfIKVHv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Sep 2019 17:07:51 -0400
-Received: from mail-vs1-f68.google.com ([209.85.217.68]:34745 "EHLO
-        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729681AbfIKVHv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Sep 2019 17:07:51 -0400
-Received: by mail-vs1-f68.google.com with SMTP id g14so9196708vsp.1
-        for <bpf@vger.kernel.org>; Wed, 11 Sep 2019 14:07:50 -0700 (PDT)
+        id S1726952AbfIKWLf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Sep 2019 18:11:35 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:38897 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728556AbfIKWLf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Sep 2019 18:11:35 -0400
+Received: by mail-pg1-f196.google.com with SMTP id d10so12243424pgo.5
+        for <bpf@vger.kernel.org>; Wed, 11 Sep 2019 15:11:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XJHMobu+BW8e+V93RysuqAgvySnrHLkRIzv4bFfI7f4=;
-        b=rLaITkTegfgDMi+pB/j2GYgfbd6BDMH+O8pwlAubC6Z5n5kBe90cnyi48On+jQNA9m
-         baSrbYQ59tXUdZLYPMx3QGsc/mNPgpai5FUjX2j4kJNpm01e2LBSRiiMCVycweKWx29F
-         n2QZ7KQZPwv5UqS+w6i5mDg7DGJmRcULePrDjgC+78lhrCqZq6dMTxvqH1oui/kEYQPM
-         reYg7Ub6C0ts0aefaw+ybSvD4KteJ5fluoZHKnSzOCzb4HXsFcDAn8swltoqO4hMwSLN
-         tq+MfJQ0P8ajLboT7nYDwDWBR7DkiGnrhlLPoxQHgCIkKf6YdD/uAoJTUpoR71KYDK1a
-         IFIw==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Q6jLEHDrdAVkyK20fWjT39oclCB9S4iV/KFrjMBbJeE=;
+        b=QVCVJyazN/1N3tJh29TNpXnPZfFboklNshuMEVATsFL73C4lZ3qdC9cIJwoWXu03no
+         Yo+usfFGucs6trZ6+x8CKnsjWG1J93b4JdVgkzYxMZtJjlsmh6pRNhFufp6iwRTUeiZT
+         MdmwZDKL3OJ4enBbnJjaALuEsrl8rx30ORRFnv2Jr+pCyQKgT/0b2/WOfiaT1DVa87G5
+         Y2NPh7gy9tsZ00Phml674zGM20dJ/8cuZjGJDzYAsjA9Z6pGr2jo2reiYecdjUlWGfd6
+         JNDirCjdVZwZUzGsqb5fF0iFPnLZXl4Rrnd4IZtgZ2f8Ofom94jQ2//HypL5e60Iw0+s
+         WHAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XJHMobu+BW8e+V93RysuqAgvySnrHLkRIzv4bFfI7f4=;
-        b=AiN7fqCxBEaQOAf9fXEGd3pnURjJ9eQ0A7oHkvcptGsK1ifH96m1wHgBIZkOnS+PEm
-         eYg0xwUa3NVCtquMD3ljNiBACXZ/nQOJAXAtavylcA0/sfAYZkbYBPqRXec6P1vwmAlp
-         21/GAFrk9HVTQehyz5FMy2cfbKP1XrqcPKHWOcSeyYRUFpzlObXUxIf9DIkZTHg6M34p
-         gOSNnfYtLtQQ0TYdAb2Z/WXfWS/ixtDba2dhp5+rvj5l59HKooAG2QCrWNCQzLFodI1y
-         pLueAPeN5EDg3kqN6j9Ox5Af+7cS71q6C37hrvWEptgpCRY/ftQO1qK2iwQgwiVA4/9x
-         60oA==
-X-Gm-Message-State: APjAAAXX9eBtvXjjKNzSpcbKEArxHD6k1mV3gjv6xPrRC/xXMAmL9mHs
-        z18xhNT9pLQvAtMQTPlY8kW/9kQ31pDaTVuzujJSmQ==
-X-Google-Smtp-Source: APXvYqzVFDguN8esHlbARMFIHd2F5AxzYzchx7PmiukG4R+VEAGjETrh4svN9zZQtYLaAcXSG2g3v9d0ZdhTkVGhPNc=
-X-Received: by 2002:a67:6d06:: with SMTP id i6mr21756050vsc.5.1568236069615;
- Wed, 11 Sep 2019 14:07:49 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Q6jLEHDrdAVkyK20fWjT39oclCB9S4iV/KFrjMBbJeE=;
+        b=DP9mCWiwflalQ88CowdFIRo7WLX+0GPb3LxbVkgL8r3IRK7F0mjFsfrKPESgqF3k3m
+         trJs3pHAhSKWXLcfS0oDPheGf6nSOcWoIdo9vIBIqwq3bUw3YftAZr3FRjyvFjboviMm
+         m1yxmqDOq12M4Prev+7rnQ0HhTqOpHakWshccdFOGcWzo5c0CDyH49NmMFdZio+vagnF
+         4IyVBKa87OhwemYAsFjPolTvz0pwbh+dztG1N+SkPK+3XfZOYIkdYyyZShf8i7EAUUYy
+         GHJf+VpnFXseSt9BHBSn615KLmN+aqAnKlT+eLp0ZJ1CiwXu8Wuycbw587doVGhIMoKW
+         hi0g==
+X-Gm-Message-State: APjAAAUbFw10ZdruJQ3IRaDCrkDowAYjLd97m8gW7c9I4e4GUxV0LCWh
+        /qNYwX+Z22BTFDUXn7J/GhuH5EJW+flrOA==
+X-Google-Smtp-Source: APXvYqzc+AsW4ZOIn8LcwEkNbf6geCnMtHj/uM/luJQFVU08Hw7GR90DEjIbBO8Yfy27zfgzGqT8Rg==
+X-Received: by 2002:a17:90a:fa3:: with SMTP id 32mr8129966pjz.35.1568239892801;
+        Wed, 11 Sep 2019 15:11:32 -0700 (PDT)
+Received: from [192.168.1.188] ([23.158.160.160])
+        by smtp.gmail.com with ESMTPSA id q4sm24322182pfh.115.2019.09.11.15.11.30
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 11 Sep 2019 15:11:31 -0700 (PDT)
+Subject: Re: [Ksummit-discuss] [PATCH v2 3/3] libnvdimm, MAINTAINERS:
+ Maintainer Entry Profile
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Dave Jiang <dave.jiang@intel.com>,
+        ksummit-discuss@lists.linuxfoundation.org,
+        linux-nvdimm@lists.01.org, Vishal Verma <vishal.l.verma@intel.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <156821692280.2951081.18036584954940423225.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <156821693963.2951081.11214256396118531359.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20190911184332.GL20699@kadam>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <9132e214-9b57-07dc-7ee2-f6bc52e960c5@kernel.dk>
+Date:   Wed, 11 Sep 2019 16:11:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20190909223236.157099-1-samitolvanen@google.com>
- <4f4136f5-db54-f541-2843-ccb35be25ab4@fb.com> <20190910172253.GA164966@google.com>
- <c7c7668e-6336-0367-42b3-2f6026c466dd@fb.com> <fd8b6f04-3902-12e9-eab1-fa85b7e44dd5@intel.com>
- <87impzt4pu.fsf@toke.dk>
-In-Reply-To: <87impzt4pu.fsf@toke.dk>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Wed, 11 Sep 2019 14:07:38 -0700
-Message-ID: <CABCJKufCwjXQ6a4oLjywDmxY2apUZ1yop-5+qty82bfwV-QTAA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: validate bpf_func when BPF_JIT is enabled
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kees Cook <keescook@chromium.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20190911184332.GL20699@kadam>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 11, 2019 at 5:09 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com> writes:
-> > I ran the "xdp_rxq_info" sample with and without Sami's patch:
->
-> Thanks for doing this!
+On 9/11/19 12:43 PM, Dan Carpenter wrote:
+> On Wed, Sep 11, 2019 at 08:48:59AM -0700, Dan Williams wrote:
+>> +Coding Style Addendum
+>> +---------------------
+>> +libnvdimm expects multi-line statements to be double indented. I.e.
+>> +
+>> +        if (x...
+>> +                        && ...y) {
+> 
+> That looks horrible and it causes a checkpatch warning.  :(  Why not
+> do it the same way that everyone else does it.
+> 
+> 	if (blah_blah_x && <-- && has to be on the first line for checkpatch
+> 	    blah_blah_y) { <-- [tab][space][space][space][space]blah
+> 
+> Now all the conditions are aligned visually which makes it readable.
+> They aren't aligned with the indent block so it's easy to tell the
+> inside from the if condition.
+> 
+> I kind of hate all this extra documentation because now everyone thinks
+> they can invent new hoops to jump through.
 
-Yes, thanks for testing this Bj=C3=B6rn!
+FWIW, I completely agree with Dan (Carpenter) here. I absolutely
+dislike having these kinds of files, and with subsystems imposing weird
+restrictions on style (like the quoted example, yuck).
 
-> Or (1/22998700 - 1/23923874) * 10**9 =3D=3D 1.7 nanoseconds of overhead.
->
-> I guess that is not *too* bad; but it's still chipping away at
-> performance; anything we could do to lower the overhead?
+Additionally, it would seem saner to standardize rules around when
+code is expected to hit the maintainers hands for kernel releases. Both
+yours and Martins deals with that, there really shouldn't be the need
+to have this specified in detail per sub-system.
 
-The check is already rather minimal, but I could move this to a static
-inline function to help ensure the compiler doesn't generate an
-additional function call for this. I'm also fine with gating this
-behind a separate config option, but I'm not sure if that's worth it.
-Any thoughts?
+-- 
+Jens Axboe
 
-Sami
