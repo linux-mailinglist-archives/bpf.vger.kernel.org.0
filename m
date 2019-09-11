@@ -2,104 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 82863AFA82
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2019 12:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 673A9AFA96
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2019 12:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727307AbfIKKft (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Sep 2019 06:35:49 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:58970 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727093AbfIKKft (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Sep 2019 06:35:49 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8BAYdd2165109;
-        Wed, 11 Sep 2019 10:35:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2019-08-05;
- bh=Uqvw86eZACPCWwhEi9VGEZayZR4nrtYb+0ee6A1ZSTw=;
- b=Cmr33c5Ql5q9XdfwxGxPMpSqTpE4QlXWOVSo39rFehktlquZPCGZvpbUDLztXB1Kt7T7
- w6RgPWEnf6n4YA6HqKHG1u+67SZuO2Bz0K1ni/criq4HdYEzOUwJiw4lGUhnpyYx8sUb
- YM1f2Z7b+BgA8EbTk3zGiNzfQ6/snVdQKL6NfF7frKKIT2uZSLHy3aq8pl3FJrJp9IWw
- bTBtPeq/9+EQLaoHsFfMvVozubsqAgTu/7z7jHrglue2OpALA88lBYURtLqFLJw9scA9
- oUnmUPBorBl1R0Plw4admkpG9yFaGkt50gHpdYQj1Hi3fZ3+puO1RAsBcrepNpu5z5nn 2Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 2uw1jkh06a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Sep 2019 10:35:23 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8BAY61Q069382;
-        Wed, 11 Sep 2019 10:35:22 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 2uxj88n09t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Sep 2019 10:35:22 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x8BAZLru009387;
-        Wed, 11 Sep 2019 10:35:21 GMT
-Received: from termi.oracle.com (/93.108.232.149)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 11 Sep 2019 03:35:20 -0700
-From:   jose.marchesi@oracle.com (Jose E. Marchesi)
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: add bpf-gcc support
-Message-ID: <8736h3nn6g.fsf@oracle.com>
-References: <20190910234140.53363-1-iii@linux.ibm.com>
-Date:   Wed, 11 Sep 2019 12:30:44 +0200
-In-Reply-To: <20190910234140.53363-1-iii@linux.ibm.com> (Ilya Leoshkevich's
-        message of "Wed, 11 Sep 2019 00:41:40 +0100")
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1727695AbfIKKjM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Sep 2019 06:39:12 -0400
+Received: from mga12.intel.com ([192.55.52.136]:53278 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727307AbfIKKjM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Sep 2019 06:39:12 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Sep 2019 03:39:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,493,1559545200"; 
+   d="scan'208";a="200497189"
+Received: from sroessel-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.249.38.107])
+  by fmsmga001.fm.intel.com with ESMTP; 11 Sep 2019 03:39:08 -0700
+Subject: Re: [PATCH] bpf: validate bpf_func when BPF_JIT is enabled
+To:     Yonghong Song <yhs@fb.com>, Sami Tolvanen <samitolvanen@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kees Cook <keescook@chromium.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+References: <20190909223236.157099-1-samitolvanen@google.com>
+ <4f4136f5-db54-f541-2843-ccb35be25ab4@fb.com>
+ <20190910172253.GA164966@google.com>
+ <c7c7668e-6336-0367-42b3-2f6026c466dd@fb.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <fd8b6f04-3902-12e9-eab1-fa85b7e44dd5@intel.com>
+Date:   Wed, 11 Sep 2019 12:39:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9376 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1909110096
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9376 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1909110096
+In-Reply-To: <c7c7668e-6336-0367-42b3-2f6026c466dd@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-Hi Ilya.
+On 2019-09-11 09:42, Yonghong Song wrote:
+> I am not an expert in XDP testing. Toke, Björn, could you give some
+> suggestions what to test for XDP performance here?
 
-    Now that binutils and gcc support for BPF is upstream, make use of it in
-    BPF selftests using alu32-like approach. Share as much as possible of
-    CFLAGS calculation with clang.
+I ran the "xdp_rxq_info" sample with and without Sami's patch:
 
-    In order to activate the new bpf-gcc support, one needs to configure
-    binutils and gcc with --target=bpf and make them available in $PATH. In
-    particular, gcc must be installed as `bpf-gcc`, which is the default.
-    
-    Right now with binutils 25a2915e8dba and gcc r275589 only a handful of
-    tests work:
-    
-    	# ./test_progs_bpf_gcc
-    	Summary: 5/39 PASSED, 1 SKIPPED, 100 FAILED
-    
-    The reason is that a lot of progs fail to build with the following
-    errors:
-    
-    	error: indirect call in function, which are not supported by eBPF
-    	error: too many function arguments for eBPF
-    
-    The next step is to understand those issues and fix them.
+$ sudo ./xdp_rxq_info --dev enp134s0f0 --action XDP_DROP
 
-Will install your patch and take a look.
+Before:
 
-Maybe GCC is not inlining something it should be inlining, or clang may
-be silently generating callx %reg instructions, or maybe there are bugs
-in my diagnostics... in any case this is useful feedback :)
+Running XDP on dev:enp134s0f0 (ifindex:6) action:XDP_DROP options:no_touch
+XDP stats       CPU     pps         issue-pps
+XDP-RX CPU      20      23923874    0
+XDP-RX CPU      total   23923874
 
-Thanks!
+RXQ stats       RXQ:CPU pps         issue-pps
+rx_queue_index   20:20  23923878    0
+rx_queue_index   20:sum 23923878
+
+After Sami's patch:
+
+Running XDP on dev:enp134s0f0 (ifindex:6) action:XDP_DROP options:no_touch
+XDP stats       CPU     pps         issue-pps
+XDP-RX CPU      20      22998700    0
+XDP-RX CPU      total   22998700
+
+RXQ stats       RXQ:CPU pps         issue-pps
+rx_queue_index   20:20  22998705    0
+rx_queue_index   20:sum 22998705
+
+
+So, roughly ~4% for this somewhat naive scenario.
+
+
+As for XDP performance tests; I guess some of the XDP selftests could be
+used as well!
+
+
+Björn
