@@ -2,106 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C46BBB03C9
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2019 20:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED55B045D
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2019 21:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730026AbfIKSnr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Sep 2019 14:43:47 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:46794 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729975AbfIKSnq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Sep 2019 14:43:46 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8BIhVqx057041;
-        Wed, 11 Sep 2019 18:43:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=PpbjP/K7FS/mhoPoFUIAdpkmq3dsAewLE9s1QyDDJa0=;
- b=HCaGG62/OUogK5kDUJX8eKcIBNc4qkq3JHV4gsLrMxOSiF7DUUB1GD2yojxzvJSfgdUg
- IQYJJrnn7v/KN1sxGkSUaFj166y2WV1bnFPxNoHoPNPtTvY72YOdyOUs6D6Tbe3PUnID
- 56xXRSPU2lbOT4UyD0y7EEFzUX4M06yq9XROHZbGJIOHDd7NZLSPvq8PLba/DGHnpBlT
- +UAk/glklN7aPmijNmla+bbMPeBYI6Ux/Awt8ZVLTyjqM3vzdA8glvG9eSlMZcih8q5l
- PDQrddNfimBTaovRvWH/Xk+vm+SnXUFSuTCUzRSHc37abpQsn2qIPA2L05rNs8Jb0Jqp ag== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 2uw1m943vv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Sep 2019 18:43:42 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8BIhXnt024817;
-        Wed, 11 Sep 2019 18:43:42 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 2uxj893hsy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Sep 2019 18:43:41 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x8BIhdlD029626;
-        Wed, 11 Sep 2019 18:43:40 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 11 Sep 2019 11:43:39 -0700
-Date:   Wed, 11 Sep 2019 21:43:33 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        ksummit-discuss@lists.linuxfoundation.org,
-        linux-nvdimm@lists.01.org, bpf@vger.kernel.org
-Subject: Re: [Ksummit-discuss] [PATCH v2 3/3] libnvdimm, MAINTAINERS:
- Maintainer Entry Profile
-Message-ID: <20190911184332.GL20699@kadam>
-References: <156821692280.2951081.18036584954940423225.stgit@dwillia2-desk3.amr.corp.intel.com>
- <156821693963.2951081.11214256396118531359.stgit@dwillia2-desk3.amr.corp.intel.com>
+        id S1730178AbfIKTDA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Sep 2019 15:03:00 -0400
+Received: from mail-pf1-f177.google.com ([209.85.210.177]:46056 "EHLO
+        mail-pf1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728573AbfIKTDA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Sep 2019 15:03:00 -0400
+Received: by mail-pf1-f177.google.com with SMTP id y72so14249854pfb.12;
+        Wed, 11 Sep 2019 12:02:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ZzYVQmwjph7D99XrncLI3k6B0fYteXj1VXuw5UiTIU=;
+        b=HW+zaOypEhqwYnNlSvX0iyuAPkwYHrP5paA0m+ITCOYN1MLq9FjMKAYYAFhdvBFFzJ
+         dFFO9y6+nEXcaJNWTAB1gKlbcOlPCyuBDYvnqVEAUtBIzAXnFRY9ywSivpKhyRsBjqq2
+         /OL/P/0Hfxeozo167nyKE4QrWLvlej3h2pWar7jHQHXlFc1MINIE5DLsGGz/izWQDEi2
+         1Tfv97BZ93S/s9HAQyrPZjQh41P5eGp+vqsW/z6nG/DJyVhFfPW5/t2wFD3WD1aPA1Ac
+         0sKUwttmdpIZXjfBebYZgQCrz9Rcg+cm07l28n1XnlyzB2SmWF5oHTwUH/hLu43UPKCA
+         uxUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ZzYVQmwjph7D99XrncLI3k6B0fYteXj1VXuw5UiTIU=;
+        b=JY28Gp4QXbRQDjNUg/eoIAFz5ADxr3KlQJQWesaSt+SqsZ57aRToV5mOyJzmKS8ScM
+         HcLbWhAcY3aHdgM62oqtVa1WfLXOQy4uyRn4SIF9VUczb390cnb4Xjd8rEmHpNfgEPrI
+         OS7xibxuetSuVV2VQ619Ss0IlmJHXgp/HwraF6sc59355B0TJrTX+13ip/rfZohSN6rs
+         OlQkhYqmBPSRBnb3b1hgUSwmlhHnTo2dGXCQN6nF69ABb6cBR/gFekXc4SQiKQ/id6Kz
+         KWGF6KXJyXgszS+5ehYSZnsswrcQ+52PIpb3br5RzxPhlwVjfaJx2lorGifKEvfS8mAA
+         B75w==
+X-Gm-Message-State: APjAAAW71VXpMakC3EhQVqdvBDlUmq3Yh7Kz5Q7OIn9Ih57Jom0rUHT8
+        Bk7ANuYeeIi/vW7zdvTdiQ==
+X-Google-Smtp-Source: APXvYqzfczUGJjVyG7bhzY8usbw4AA2NmTQOkVVP+ghPm3YeDxtlRq9O6utrHXnDAwgi5FpJ4LB9CQ==
+X-Received: by 2002:a17:90a:e397:: with SMTP id b23mr7011757pjz.140.1568228578765;
+        Wed, 11 Sep 2019 12:02:58 -0700 (PDT)
+Received: from localhost.localdomain ([110.35.161.54])
+        by smtp.gmail.com with ESMTPSA id k36sm19885028pgl.42.2019.09.11.12.02.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Sep 2019 12:02:58 -0700 (PDT)
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [bpf-next,v3] samples: bpf: add max_pckt_size option at xdp_adjust_tail
+Date:   Thu, 12 Sep 2019 04:02:18 +0900
+Message-Id: <20190911190218.22628-1-danieltimlee@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <156821693963.2951081.11214256396118531359.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9377 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1909110171
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9377 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1909110171
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 11, 2019 at 08:48:59AM -0700, Dan Williams wrote:
-> +Coding Style Addendum
-> +---------------------
-> +libnvdimm expects multi-line statements to be double indented. I.e.
-> +
-> +        if (x...
-> +                        && ...y) {
+Currently, at xdp_adjust_tail_kern.c, MAX_PCKT_SIZE is limited
+to 600. To make this size flexible, a new map 'pcktsz' is added.
 
-That looks horrible and it causes a checkpatch warning.  :(  Why not
-do it the same way that everyone else does it.
+By updating new packet size to this map from the userland,
+xdp_adjust_tail_kern.o will use this value as a new max_pckt_size.
 
-	if (blah_blah_x && <-- && has to be on the first line for checkpatch
-	    blah_blah_y) { <-- [tab][space][space][space][space]blah
+If no '-P <MAX_PCKT_SIZE>' option is used, the size of maximum packet
+will be 600 as a default.
 
-Now all the conditions are aligned visually which makes it readable.
-They aren't aligned with the indent block so it's easy to tell the
-inside from the if condition.
+Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
 
-I kind of hate all this extra documentation because now everyone thinks
-they can invent new hoops to jump through.
+---
+Changes in v2:
+    - Change the helper to fetch map from 'bpf_map__next' to 
+    'bpf_object__find_map_fd_by_name'.
+ 
+ samples/bpf/xdp_adjust_tail_kern.c | 23 +++++++++++++++++++----
+ samples/bpf/xdp_adjust_tail_user.c | 28 ++++++++++++++++++++++------
+ 2 files changed, 41 insertions(+), 10 deletions(-)
 
-Speaking of hoops, the BPF documentation says that you have to figure
-out which tree a patch applies to instead of just working against
-linux-next.  Is there an automated way to do that?  I looked through my
-inbox and there are a bunch of patches marked as going through the
-bpf-next tree but about half were marked incorrectly so it looks like
-everyone who tries to tag their patches is going to do it badly anyway.
-
-regards,
-dan carpenter
+diff --git a/samples/bpf/xdp_adjust_tail_kern.c b/samples/bpf/xdp_adjust_tail_kern.c
+index 411fdb21f8bc..d6d84ffe6a7a 100644
+--- a/samples/bpf/xdp_adjust_tail_kern.c
++++ b/samples/bpf/xdp_adjust_tail_kern.c
+@@ -25,6 +25,13 @@
+ #define ICMP_TOOBIG_SIZE 98
+ #define ICMP_TOOBIG_PAYLOAD_SIZE 92
+ 
++struct bpf_map_def SEC("maps") pcktsz = {
++	.type = BPF_MAP_TYPE_ARRAY,
++	.key_size = sizeof(__u32),
++	.value_size = sizeof(__u32),
++	.max_entries = 1,
++};
++
+ struct bpf_map_def SEC("maps") icmpcnt = {
+ 	.type = BPF_MAP_TYPE_ARRAY,
+ 	.key_size = sizeof(__u32),
+@@ -64,7 +71,8 @@ static __always_inline void ipv4_csum(void *data_start, int data_size,
+ 	*csum = csum_fold_helper(*csum);
+ }
+ 
+-static __always_inline int send_icmp4_too_big(struct xdp_md *xdp)
++static __always_inline int send_icmp4_too_big(struct xdp_md *xdp,
++					      __u32 max_pckt_size)
+ {
+ 	int headroom = (int)sizeof(struct iphdr) + (int)sizeof(struct icmphdr);
+ 
+@@ -92,7 +100,7 @@ static __always_inline int send_icmp4_too_big(struct xdp_md *xdp)
+ 	orig_iph = data + off;
+ 	icmp_hdr->type = ICMP_DEST_UNREACH;
+ 	icmp_hdr->code = ICMP_FRAG_NEEDED;
+-	icmp_hdr->un.frag.mtu = htons(MAX_PCKT_SIZE-sizeof(struct ethhdr));
++	icmp_hdr->un.frag.mtu = htons(max_pckt_size - sizeof(struct ethhdr));
+ 	icmp_hdr->checksum = 0;
+ 	ipv4_csum(icmp_hdr, ICMP_TOOBIG_PAYLOAD_SIZE, &csum);
+ 	icmp_hdr->checksum = csum;
+@@ -118,14 +126,21 @@ static __always_inline int handle_ipv4(struct xdp_md *xdp)
+ {
+ 	void *data_end = (void *)(long)xdp->data_end;
+ 	void *data = (void *)(long)xdp->data;
++	__u32 max_pckt_size = MAX_PCKT_SIZE;
++	__u32 *pckt_sz;
++	__u32 key = 0;
+ 	int pckt_size = data_end - data;
+ 	int offset;
+ 
+-	if (pckt_size > MAX_PCKT_SIZE) {
++	pckt_sz = bpf_map_lookup_elem(&pcktsz, &key);
++	if (pckt_sz && *pckt_sz)
++		max_pckt_size = *pckt_sz;
++
++	if (pckt_size > max_pckt_size) {
+ 		offset = pckt_size - ICMP_TOOBIG_SIZE;
+ 		if (bpf_xdp_adjust_tail(xdp, 0 - offset))
+ 			return XDP_PASS;
+-		return send_icmp4_too_big(xdp);
++		return send_icmp4_too_big(xdp, max_pckt_size);
+ 	}
+ 	return XDP_PASS;
+ }
+diff --git a/samples/bpf/xdp_adjust_tail_user.c b/samples/bpf/xdp_adjust_tail_user.c
+index a3596b617c4c..aef6c69a48a7 100644
+--- a/samples/bpf/xdp_adjust_tail_user.c
++++ b/samples/bpf/xdp_adjust_tail_user.c
+@@ -23,6 +23,7 @@
+ #include "libbpf.h"
+ 
+ #define STATS_INTERVAL_S 2U
++#define MAX_PCKT_SIZE 600
+ 
+ static int ifindex = -1;
+ static __u32 xdp_flags = XDP_FLAGS_UPDATE_IF_NOEXIST;
+@@ -72,6 +73,7 @@ static void usage(const char *cmd)
+ 	printf("Usage: %s [...]\n", cmd);
+ 	printf("    -i <ifname|ifindex> Interface\n");
+ 	printf("    -T <stop-after-X-seconds> Default: 0 (forever)\n");
++	printf("    -P <MAX_PCKT_SIZE> Default: %u\n", MAX_PCKT_SIZE);
+ 	printf("    -S use skb-mode\n");
+ 	printf("    -N enforce native mode\n");
+ 	printf("    -F force loading prog\n");
+@@ -85,13 +87,14 @@ int main(int argc, char **argv)
+ 		.prog_type	= BPF_PROG_TYPE_XDP,
+ 	};
+ 	unsigned char opt_flags[256] = {};
+-	const char *optstr = "i:T:SNFh";
++	const char *optstr = "i:T:P:SNFh";
+ 	struct bpf_prog_info info = {};
+ 	__u32 info_len = sizeof(info);
++	__u32 max_pckt_size = 0;
++	__u32 key = 0;
+ 	unsigned int kill_after_s = 0;
+ 	int i, prog_fd, map_fd, opt;
+ 	struct bpf_object *obj;
+-	struct bpf_map *map;
+ 	char filename[256];
+ 	int err;
+ 
+@@ -110,6 +113,9 @@ int main(int argc, char **argv)
+ 		case 'T':
+ 			kill_after_s = atoi(optarg);
+ 			break;
++		case 'P':
++			max_pckt_size = atoi(optarg);
++			break;
+ 		case 'S':
+ 			xdp_flags |= XDP_FLAGS_SKB_MODE;
+ 			break;
+@@ -150,12 +156,22 @@ int main(int argc, char **argv)
+ 	if (bpf_prog_load_xattr(&prog_load_attr, &obj, &prog_fd))
+ 		return 1;
+ 
+-	map = bpf_map__next(NULL, obj);
+-	if (!map) {
+-		printf("finding a map in obj file failed\n");
++	/* update pcktsz map */
++	if (max_pckt_size) {
++		map_fd = bpf_object__find_map_fd_by_name(obj, "pcktsz");
++		if (!map_fd) {
++			printf("finding a pcktsz map in obj file failed\n");
++			return 1;
++		}
++		bpf_map_update_elem(map_fd, &key, &max_pckt_size, BPF_ANY);
++	}
++
++	/* fetch icmpcnt map */
++	map_fd = bpf_object__find_map_fd_by_name(obj, "icmpcnt");
++	if (!map_fd) {
++		printf("finding a icmpcnt map in obj file failed\n");
+ 		return 1;
+ 	}
+-	map_fd = bpf_map__fd(map);
+ 
+ 	if (!prog_fd) {
+ 		printf("load_bpf_file: %s\n", strerror(errno));
+-- 
+2.20.1
 
