@@ -2,182 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CED12AF717
-	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2019 09:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6134AF786
+	for <lists+bpf@lfdr.de>; Wed, 11 Sep 2019 10:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726724AbfIKHn0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Sep 2019 03:43:26 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:53452 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725379AbfIKHn0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 11 Sep 2019 03:43:26 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x8B7gWZS029606;
-        Wed, 11 Sep 2019 00:43:01 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=oJJtfcesFoq9HigEG3xHXTvAtSyylwI1L7QArdo9Zc0=;
- b=jYHw4E7cvYFYXTxzjTVLktb6jsA0m75pk6HTBqxinoApy8rETVDlLueqqSquFZliGBp6
- 45/gEgzDeePL593KzmGDu5aWL+kVfk9GiVUDLUk7vkJC+naND+YMVB13Hd0xZ1KQ/mWu
- hX/YcBmILd1QZoalP+jMZg2HpKayrpHgsIY= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 2uxf95ut1t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 11 Sep 2019 00:43:00 -0700
-Received: from ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) by
- ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 11 Sep 2019 00:43:00 -0700
-Received: from ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) by
- ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 11 Sep 2019 00:42:59 -0700
-Received: from NAM01-BN3-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 11 Sep 2019 00:42:59 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KLnwZweIf9gMQZ5QHBKojs/P5urrPPsLa8pDaMKD/MDrhkAgBC2qr3RT2DkVmnmI+PrC9rDrapg/cQ03LOtgwUu6/lvpGk5Y8MTmFuMw3RrWo8EndsgA/ej9/3Ln1Exb20iYIU+Bt6mVHsfMhzhjIKwftSwTn0VuU436UwMvsJW3de80gL1va1C0lbOOZ++eqiEbZ/DhU/4++RXCa3qIFCZZDbnNm0alI3PN8uDm5NKjVNFBMWLIi2FBl19WnVhN9XYPvQO1qfJONmRYC1A5CghsuXo1UoVUee8P1MsaZzXBV90O0WD9sIZ1Dx+3KuAFuv7KRn1Na/UdWWJOX3w3cg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oJJtfcesFoq9HigEG3xHXTvAtSyylwI1L7QArdo9Zc0=;
- b=DPJ/fxpQt3twQ8t8TBhKG7jGDPbBBAlS9v2lxlxUECuiBLbWMxFWpjNT1v0p+M5H8p1ynQY+n3ag8JMyQNcVE2HOh31BhpUutYAgOEXgZNsOZx1Pe6042L/+HBOHZ8YlLD37schJUzAHD0zdq1vsZMnCRLRzhqNYkuCRzGFqLltn7qpiL1Kr8D0mgyLpTMQcntfHXeT/H/IhTnZ5Qx9P5lsnwdHXugDUsz3d4+j5FMSfPllRGQ01x8KOaUGsrY3VD85SGQgD10Tt5KLruodYH/faDzi9yiDLrkWPoL/Gg9rEV1MKK2ID9ro17IzsUvQsxF2OiagwuLAzvYUCEZXfOA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oJJtfcesFoq9HigEG3xHXTvAtSyylwI1L7QArdo9Zc0=;
- b=NKygGa0RxYcZWkGWxyFKBOPq8esQm88N4YE24gI8esYdZF0FQCcJGKouUCVxgJqOF9USAlJSLsQAXmWN1OfU1gFotI9lJkR6kFbcDhKTUQxZzB1az+znD62DVyDCWc+fvrYATfA+Fx8DcU8qaJ3EGeEKjmhwB7SWWin0OnEFJq8=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.60.27) by
- BYAPR15MB3447.namprd15.prod.outlook.com (20.179.59.207) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2263.15; Wed, 11 Sep 2019 07:42:40 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::95ab:61a0:29f4:e07e]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::95ab:61a0:29f4:e07e%6]) with mapi id 15.20.2263.015; Wed, 11 Sep 2019
- 07:42:40 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Sami Tolvanen <samitolvanen@google.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kees Cook <keescook@chromium.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Subject: Re: [PATCH] bpf: validate bpf_func when BPF_JIT is enabled
-Thread-Topic: [PATCH] bpf: validate bpf_func when BPF_JIT is enabled
-Thread-Index: AQHVZ16IW5erCFqZOkia6/rUPUKqLqcklyQAgACS4ICAAPAvAA==
-Date:   Wed, 11 Sep 2019 07:42:39 +0000
-Message-ID: <c7c7668e-6336-0367-42b3-2f6026c466dd@fb.com>
-References: <20190909223236.157099-1-samitolvanen@google.com>
- <4f4136f5-db54-f541-2843-ccb35be25ab4@fb.com>
- <20190910172253.GA164966@google.com>
-In-Reply-To: <20190910172253.GA164966@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR21CA0043.namprd21.prod.outlook.com
- (2603:10b6:300:129::29) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:112::27)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::d583]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a758702f-79fc-47ed-55ac-08d7368b9f40
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600166)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:BYAPR15MB3447;
-x-ms-traffictypediagnostic: BYAPR15MB3447:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB3447242CEB093419276CB921D3B10@BYAPR15MB3447.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 0157DEB61B
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(39860400002)(136003)(366004)(376002)(346002)(53234004)(189003)(199004)(14444005)(486006)(186003)(6246003)(386003)(6116002)(25786009)(6506007)(2616005)(476003)(102836004)(11346002)(46003)(446003)(53546011)(8936002)(81166006)(8676002)(81156014)(76176011)(4326008)(66446008)(66476007)(66556008)(64756008)(7736002)(305945005)(66946007)(66574012)(36756003)(316002)(15650500001)(6916009)(99286004)(52116002)(71200400001)(71190400001)(53936002)(2906002)(31686004)(14454004)(478600001)(86362001)(31696002)(54906003)(229853002)(5660300002)(6486002)(6436002)(256004)(6512007);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3447;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: w0YX7KZ4BCsLhBvP9Glt5Ajr75fLdI1Ket12Rc3Ucqdr2zZyue+os1r6T8nSdjTKIxJOhv7FRH6eOndYio6cNXqiRmZ5cnBt44Fs0wNU0+Ec7hOJL3VoM7KkgvJjcO3w4U1II76mHSkbQh9kgp9VnsmPXncMzdWsOUwjTfvcXEp7MfuQhBDsV7Qx09ayNvuM0zsW5V/BsipaEE8u8G+t1G3UgZLUbL8F8tE/OGDHgJKkJlOoJ2lUj2eFhUgfgurKnmIio3n1Uepc5KcAHFdN+8V0fo54uis4+7ZBZqmV6l77GnJb1wogx9uzPWoF4jaXk6usfMdmfvX1NUhkh7aYivBRZ1xIR0xl/9g3dNOn/xMeaM8KhdjFFsHVNYRC4v1t+pwXtIXAXQeOyhMIlQASENJrMX31YhF4SzUEtkok0U8=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A7F773D60F502D4D9323F2FFD42525B9@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1725924AbfIKIQp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Sep 2019 04:16:45 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:57590 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727152AbfIKIQo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Sep 2019 04:16:44 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1i7xnu-0003mo-Lx; Wed, 11 Sep 2019 02:16:42 -0600
+Received: from 110.8.30.213.rev.vodafone.pt ([213.30.8.110] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1i7xnp-0000gG-GW; Wed, 11 Sep 2019 02:16:42 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Carlos Antonio Neira Bustos <cneirabustos@gmail.com>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
+        "brouer\@redhat.com" <brouer@redhat.com>,
+        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>
+References: <20190906150952.23066-1-cneirabustos@gmail.com>
+        <20190906150952.23066-3-cneirabustos@gmail.com>
+        <20190906152435.GW1131@ZenIV.linux.org.uk>
+        <20190906154647.GA19707@ZenIV.linux.org.uk>
+        <20190906160020.GX1131@ZenIV.linux.org.uk>
+        <c0e67fc7-be66-c4c6-6aad-316cbba18757@fb.com>
+        <20190907001056.GA1131@ZenIV.linux.org.uk>
+        <7d196a64-cf36-c2d5-7328-154aaeb929eb@fb.com>
+        <20190909174522.GA17882@frodo.byteswizards.com>
+        <dadf3657-2648-14ef-35ee-e09efb2cdb3e@fb.com>
+        <20190910231506.GL1131@ZenIV.linux.org.uk>
+Date:   Wed, 11 Sep 2019 03:16:16 -0500
+In-Reply-To: <20190910231506.GL1131@ZenIV.linux.org.uk> (Al Viro's message of
+        "Wed, 11 Sep 2019 00:15:06 +0100")
+Message-ID: <87o8zr8cz3.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: a758702f-79fc-47ed-55ac-08d7368b9f40
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Sep 2019 07:42:39.9040
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Kef0VsKSMZdRDpvDFkzS0IYOS5IFmXxsCnW9Q692bco0YlAaXMwzHuVTWBP8I661
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3447
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
- definitions=2019-09-11_05:2019-09-10,2019-09-11 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 spamscore=0
- adultscore=0 mlxscore=0 mlxlogscore=999 priorityscore=1501 suspectscore=0
- malwarescore=0 lowpriorityscore=0 bulkscore=0 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1906280000 definitions=main-1909110071
-X-FB-Internal: deliver
+Content-Type: text/plain
+X-XM-SPF: eid=1i7xnp-0000gG-GW;;;mid=<87o8zr8cz3.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=213.30.8.110;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+rB1/EbSiXLC2gKNzl0bODizDKGQpqjGE=
+X-SA-Exim-Connect-IP: 213.30.8.110
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,TVD_RCVD_IP,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,T_TooManySym_03,XMGappySubj_01,XMGappySubj_02,
+        XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4963]
+        *  0.7 XMSubLong Long Subject
+        *  1.0 XMGappySubj_02 Gappier still
+        *  0.5 XMGappySubj_01 Very gappy subject
+        *  0.0 TVD_RCVD_IP Message was received from an IP address
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_03 6+ unique symbols in subject
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Al Viro <viro@zeniv.linux.org.uk>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 4609 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 2.9 (0.1%), b_tie_ro: 2.1 (0.0%), parse: 1.10
+        (0.0%), extract_message_metadata: 15 (0.3%), get_uri_detail_list: 3.3
+        (0.1%), tests_pri_-1000: 9 (0.2%), tests_pri_-950: 0.99 (0.0%),
+        tests_pri_-900: 0.82 (0.0%), tests_pri_-90: 33 (0.7%), check_bayes: 32
+        (0.7%), b_tokenize: 7 (0.2%), b_tok_get_all: 13 (0.3%), b_comp_prob:
+        2.5 (0.1%), b_tok_touch_all: 3.4 (0.1%), b_finish: 5 (0.1%),
+        tests_pri_0: 4531 (98.3%), check_dkim_signature: 0.40 (0.0%),
+        check_dkim_adsp: 4.6 (0.1%), poll_dns_idle: 0.25 (0.0%), tests_pri_10:
+        2.9 (0.1%), tests_pri_500: 8 (0.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH bpf-next v10 2/4] bpf: new helper to obtain namespace data from current task New bpf helper bpf_get_current_pidns_info.
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDkvMTAvMTkgNjoyMiBQTSwgU2FtaSBUb2x2YW5lbiB3cm90ZToNCj4gT24gVHVlLCBT
-ZXAgMTAsIDIwMTkgYXQgMDg6Mzc6MTlBTSArMDAwMCwgWW9uZ2hvbmcgU29uZyB3cm90ZToNCj4+
-IFlvdSBkaWQgbm90IG1lbnRpb24gQlBGX0JJTkFSWV9IRUFERVJfTUFHSUMgYW5kIGFkZGVkIG1l
-bWJlcg0KPj4gb2YgYG1hZ2ljYCBpbiBicGZfYmluYXJ5X2hlYWRlci4gQ291bGQgeW91IGFkZCBz
-b21lIGRldGFpbHMNCj4+IG9uIHdoYXQgaXMgdGhlIHB1cnBvc2UgZm9yIHRoaXMgYG1hZ2ljYCBt
-ZW1iZXI/DQo+IA0KPiBTdXJlLCBJJ2xsIGFkZCBhIGRlc2NyaXB0aW9uIHRvIHRoZSBuZXh0IHZl
-cnNpb24uDQo+IA0KPiBUaGUgbWFnaWMgaXMgYSByYW5kb20gbnVtYmVyIHVzZWQgdG8gaWRlbnRp
-ZnkgYnBmX2JpbmFyeV9oZWFkZXIgaW4NCj4gbWVtb3J5LiBUaGUgcHVycG9zZSBvZiB0aGlzIHBh
-dGNoIGlzIHRvIGxpbWl0IHRoZSBwb3NzaWJsZSBjYWxsDQo+IHRhcmdldHMgZm9yIHRoZSBmdW5j
-dGlvbiBwb2ludGVyIGFuZCBjaGVja2luZyBmb3IgdGhlIG1hZ2ljIGhlbHBzDQo+IGVuc3VyZSB3
-ZSBhcmUganVtcGluZyB0byBhIHBhZ2UgdGhhdCBjb250YWlucyBhIGppdGVkIGZ1bmN0aW9uLA0K
-PiBpbnN0ZWFkIG9mIGFsbG93aW5nIGNhbGxzIHRvIGFyYml0cmFyeSB0YXJnZXRzLg0KPiANCj4g
-VGhpcyBpcyBwYXJ0aWN1bGFybHkgdXNlZnVsIHdoZW4gY29tYmluZWQgd2l0aCB0aGUgY29tcGls
-ZXItYmFzZWQNCj4gQ29udHJvbC1GbG93IEludGVncml0eSAoQ0ZJKSBtaXRpZ2F0aW9uLCB3aGlj
-aCBHb29nbGUgc3RhcnRlZCBzaGlwcGluZw0KPiBpbiBQaXhlbCBrZXJuZWxzIGxhc3QgeWVhci4g
-VGhlIGNvbXBpbGVyIGluamVjdHMgY2hlY2tzIHRvIGFsbA0KPiBpbmRpcmVjdCBjYWxscywgYnV0
-IGNhbm5vdCBvYnZpb3VzbHkgdmFsaWRhdGUganVtcHMgdG8gZHluYW1pY2FsbHkNCj4gZ2VuZXJh
-dGVkIGNvZGUuDQo+IA0KPj4+ICt1bnNpZ25lZCBpbnQgYnBmX2NhbGxfZnVuYyhjb25zdCBzdHJ1
-Y3QgYnBmX3Byb2cgKnByb2csIGNvbnN0IHZvaWQgKmN0eCkNCj4+PiArew0KPj4+ICsJY29uc3Qg
-c3RydWN0IGJwZl9iaW5hcnlfaGVhZGVyICpoZHIgPSBicGZfaml0X2JpbmFyeV9oZHIocHJvZyk7
-DQo+Pj4gKw0KPj4+ICsJaWYgKCFJU19FTkFCTEVEKENPTkZJR19CUEZfSklUX0FMV0FZU19PTikg
-JiYgIXByb2ctPmppdGVkKQ0KPj4+ICsJCXJldHVybiBwcm9nLT5icGZfZnVuYyhjdHgsIHByb2ct
-Pmluc25zaSk7DQo+Pj4gKw0KPj4+ICsJaWYgKHVubGlrZWx5KGhkci0+bWFnaWMgIT0gQlBGX0JJ
-TkFSWV9IRUFERVJfTUFHSUMgfHwNCj4+PiArCQkgICAgICFhcmNoX2JwZl9qaXRfY2hlY2tfZnVu
-Yyhwcm9nKSkpIHsNCj4+PiArCQlXQVJOKDEsICJhdHRlbXB0IHRvIGp1bXAgdG8gYW4gaW52YWxp
-ZCBhZGRyZXNzIik7DQo+Pj4gKwkJcmV0dXJuIDA7DQo+Pj4gKwl9DQo+Pj4gKw0KPj4+ICsJcmV0
-dXJuIHByb2ctPmJwZl9mdW5jKGN0eCwgcHJvZy0+aW5zbnNpKTsNCj4+PiArfQ0KPiANCj4+IFRo
-ZSBhYm92ZSBjYW4gYmUgcmV3cml0dGVuIGFzDQo+PiAJaWYgKElTX0VOQUJMRUQoQ09ORklHX0JQ
-Rl9KSVRfQUxXQVlTX09OKSB8fCBwcm9nLT5qaXRlZCB8fA0KPj4gCSAgICBoZHItPm1hZ2ljICE9
-IEJQRl9CSU5BUllfSEVBREVSX01BR0lDIHx8DQo+PiAJICAgICFhcmNoX2JwZl9qaXRfY2hlY2tf
-ZnVuYyhwcm9nKSkpIHsNCj4+IAkJV0FSTigxLCAiYXR0ZW1wdCB0byBqdW1wIHRvIGFuIGludmFs
-aWQgYWRkcmVzcyIpOw0KPj4gCQlyZXR1cm4gMDsNCj4+IAl9DQo+IA0KPiBUaGF0IGRvZXNuJ3Qg
-bG9vayBxdWl0ZSBlcXVpdmFsZW50LCBidXQgeWVzLCB0aGlzIGNhbiBiZSByZXdyaXR0ZW4gYXMg
-YQ0KDQpJbmRlZWQsIEkgbWFkZSBhIG1pc3Rha2UuIFlvdXIgYmVsb3cgY2hhbmdlIGlzIGNvcnJl
-Y3QuDQoNCj4gc2luZ2xlIGlmIHN0YXRlbWVudCBsaWtlIHRoaXM6DQo+IA0KPiAJaWYgKChJU19F
-TkFCTEVEKENPTkZJR19CUEZfSklUX0FMV0FZU19PTikgfHwNCj4gCSAgICAgcHJvZy0+aml0ZWQp
-ICYmDQo+IAkgICAgKGhkci0+bWFnaWMgIT0gQlBGX0JJTkFSWV9IRUFERVJfTUFHSUMgfHwNCj4g
-CSAgICAgIWFyY2hfYnBmX2ppdF9jaGVja19mdW5jKHByb2cpKSkNCj4gDQo+IEkgdGhpbmsgc3Bs
-aXR0aW5nIHRoZSBpbnRlcnByZXRlciBhbmQgSklUIHBhdGhzIHdvdWxkIGJlIG1vcmUgcmVhZGFi
-bGUsDQo+IGJ1dCBJIGNhbiBjZXJ0YWlubHkgY2hhbmdlIHRoaXMgaWYgeW91IHByZWZlci4NCg0K
-SG93IGFib3V0IHRoaXM6DQoNCglpZiAoIUlTX0VOQUJMRUQoQ09ORklHX0JQRl9KSVRfQUxXQVlT
-X09OKSAmJiAhcHJvZy0+aml0ZWQpDQoJCWdvdG8gb3V0Ow0KDQoJaWYgKHVubGlrZWx5KGhkci0+
-bWFnaWMgIT0gQlBGX0JJTkFSWV9IRUFERVJfTUFHSUMgfHwNCgkgICAgIWFyY2hfYnBmX2ppdF9j
-aGVja19mdW5jKHByb2cpKSkgew0KCQlXQVJOKDEsICJhdHRlbXB0IHRvIGp1bXAgdG8gYW4gaW52
-YWxpZCBhZGRyZXNzIik7DQoJCXJldHVybiAwOw0KCX0NCm91dDoNCglyZXR1cm4gcHJvZy0+YnBm
-X2Z1bmMoY3R4LCBwcm9nLT5pbnNuc2kpOw0KDQo+IA0KPj4gQlBGX1BST0dfUlVOKCkgd2lsbCBi
-ZSBjYWxsZWQgZHVyaW5nIHhkcCBmYXN0IHBhdGguDQo+PiBIYXZlIHlvdSBtZWFzdXJlZCBob3cg
-bXVjaCBzbG93ZG93biB0aGUgYWJvdmUgY2hhbmdlIGNvdWxkDQo+PiBjb3N0IGZvciB0aGUgcGVy
-Zm9ybWFuY2U/DQo+IA0KPiBJIGhhdmUgbm90IG1lYXN1cmVkIHRoZSBvdmVyaGVhZCwgYnV0IGl0
-IHNob3VsZG4ndCBiZSBzaWduaWZpY2FudC4gSXMNCj4gdGhlcmUgYSBwYXJ0aWN1bGFyIGJlbmNo
-bWFyayB5b3UnZCBsaWtlIG1lIHRvIHJ1bj8NCg0KSSBhbSBub3QgYW4gZXhwZXJ0IGluIFhEUCB0
-ZXN0aW5nLiBUb2tlLCBCasO2cm4sIGNvdWxkIHlvdSBnaXZlIHNvbWUNCnN1Z2dlc3Rpb25zIHdo
-YXQgdG8gdGVzdCBmb3IgWERQIHBlcmZvcm1hbmNlIGhlcmU/DQoNCj4gDQo+IFNhbWkNCj4gDQo=
+Al Viro <viro@zeniv.linux.org.uk> writes:
+
+> On Tue, Sep 10, 2019 at 10:35:09PM +0000, Yonghong Song wrote:
+>> 
+>> Carlos,
+>> 
+>> Discussed with Eric today for what is the best way to get
+>> the device number for a namespace. The following patch seems
+>> a reasonable start although Eric would like to see
+>> how the helper is used in order to decide whether the
+>> interface looks right.
+>> 
+>> commit bb00fc36d5d263047a8bceb3e51e969d7fbce7db (HEAD -> fs2)
+>> Author: Yonghong Song <yhs@fb.com>
+>> Date:   Mon Sep 9 21:50:51 2019 -0700
+>> 
+>>      nsfs: add an interface function ns_get_inum_dev()
+>> 
+>>      This patch added an interface function
+>>      ns_get_inum_dev(). Given a ns_common structure,
+>>      the function returns the inode and device
+>>      numbers. The function will be used later
+>>      by a newly added bpf helper.
+>> 
+>>      Signed-off-by: Yonghong Song <yhs@fb.com>
+>> 
+>> diff --git a/fs/nsfs.c b/fs/nsfs.c
+>> index a0431642c6b5..a603c6fc3f54 100644
+>> --- a/fs/nsfs.c
+>> +++ b/fs/nsfs.c
+>> @@ -245,6 +245,14 @@ struct file *proc_ns_fget(int fd)
+>>          return ERR_PTR(-EINVAL);
+>>   }
+>> 
+>> +/* Get the device number for the current task pidns.
+>> + */
+>> +void ns_get_inum_dev(struct ns_common *ns, u32 *inum, dev_t *dev)
+>> +{
+>> +       *inum = ns->inum;
+>> +       *dev = nsfs_mnt->mnt_sb->s_dev;
+>> +}
+>
+> Umm...  Where would it get the device number once we get (hell knows
+> what for) multiple nsfs instances?  I still don't understand what
+> would that be about, TBH...  Is it really per-userns?  Or something
+> else entirely?  Eric, could you give some context?
+
+My goal is not to paint things into a corner, with future changes.
+Right now it is possible to stat a namespace file descriptor and
+get a device and inode number.  Then compare that. 
+
+I don't want people using the inode number in nsfd as some magic
+namespace id.
+
+We have had times in the past where there was more than one superblock
+and thus more than one device number.  Further if userspace ever uses
+this heavily there may be times in the future where for
+checkpoint/restart purposes we will want multiple nsfd's so we can
+preserve the inode number accross a migration.
+
+Realistically there will probably just some kind of hotplug notification
+to userspace to say we have hotplugged your operatining system as
+a migration notification.
+
+Now the halway discussion did not quite capture everything I was trying
+to say but it at least got to the right ballpark.
+
+The helper in fs/nsfs.c should be:
+
+bool ns_match(const struct ns_common *ns, dev_t dev, ino_t ino)
+{
+        return ((ns->inum == ino) && (nsfs_mnt->mnt_sb->s_dev == dev));
+}
+
+That way if/when there are multiple inodes identifying the same
+namespace the bpf programs don't need to change.
+
+Up farther in the stack it should be something like:
+
+> BPF_CALL_2(bpf_current_pidns_match, dev_t *dev, ino_t *ino)
+> {
+>         return ns_match(&task_active_pid_ns(current)->ns, *dev, *ino);
+> }
+> 
+> const struct bpf_func_proto bpf_current_pidns_match_proto = {
+> 	.func		= bpf_current_pins_match,
+> 	.gpl_only	= true,
+> 	.ret_type	= RET_INTEGER
+> 	.arg1_type	= ARG_PTR_TO_DEVICE_NUMBER,
+> 	.arg2_type	= ARG_PTR_TO_INODE_NUMBER,
+> };
+
+That allows comparing what the bpf came up with with whatever value
+userspace generated by stating the file descriptor.
+
+
+That is the least bad suggestion I currently have for that
+functionality.  It really would be better to not have that filter in the
+bpf program itself but in the infrastructure that binds a program to a
+set of tasks.
+
+The problem with this approach is whatever device/inode you have when
+the namespace they refer to exits there is the possibility that the
+inode will be reused.  So your filter will eventually start matching on
+the wrong thing.
+
+Eric
