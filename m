@@ -2,138 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 12BACB1010
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2019 15:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E31B114D
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2019 16:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732179AbfILNeJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Sep 2019 09:34:09 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:41009 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731283AbfILNeJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Sep 2019 09:34:09 -0400
-Received: by mail-pf1-f193.google.com with SMTP id b13so16011988pfo.8;
-        Thu, 12 Sep 2019 06:34:09 -0700 (PDT)
+        id S1732708AbfILOmR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Sep 2019 10:42:17 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:42239 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732598AbfILOmR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Sep 2019 10:42:17 -0400
+Received: by mail-lf1-f68.google.com with SMTP id c195so4695798lfg.9;
+        Thu, 12 Sep 2019 07:42:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=AOatXHCitiKL87ERXc3HpgwYrhBGRNlx7jOwScjCRWU=;
-        b=Jr/O3OdJj5XEnZw9E5KhFE2e/P79Jxv45DzbCTVOnksxsCZLrCsglgTpjMhP/CUqpQ
-         FxV/i9DjBWTuL0AgSOo3VZL/AswHSKtAfuKmG4suDcX+Bo9I+QEPA60qEFxwB3BmO52s
-         BA0mppgozs5ioUi9yc4VLIP/po1IZ22wKz7jLXvHsDXeM1TT6SAeDUGK5eUCaPCkcguW
-         z6HpeNcKUAb0mcD54P7MFHNhRj1FZ+eVpuKeWjhRJNXf1F1/7VxXdF/VtDt5Li9xk5gL
-         grIdetkJXTrCF7R8ZDbrTKoFtpBzoQtB0NDBB0beq5pgYNv+ziQznxWPIbs1omNQcZ08
-         EyIA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5YVmroOmWsfbPZww9PGat/bavCeNmvQGcimrBhWBuy4=;
+        b=K76FKy6ESnqOvkBCMCo6qwFBykl2HdgaTHRY3YvD94OEdMgn9uYrY/t3Kmifp0e0uD
+         LKnNGAwBNrnpdLtTq9Y4/2qsIRatfXp4eGFn0qSiJZTHqhBN8a91HDkxHp/U7w44lQq9
+         v1ggR0KcIzhSI+0MbaLJSfH2FWbpjSsGKPCyd2dAWcg9hKLHNSh5LIzcI74Gjc+/Ldyq
+         saKzYeh0F20mLAZa06YrBLvngFBnrnuKNU7eq7UERSVLSk9yPQ6sz5lNpPe55yuHx61l
+         ffgqplJqtREYfZa6YR5FZdkdKY3CFo9akYzMw+XUp0ASe2YSHqJL0Hitx9EuJrKhvtlr
+         reVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=AOatXHCitiKL87ERXc3HpgwYrhBGRNlx7jOwScjCRWU=;
-        b=J2v7+TuYy1c7WCnzWSDsMhk29wPYOchEgEkUk0qJKuBdNTeYRee662LXpWt1Z2nbLD
-         iCWlxRyICcFj+P4C/yDerreXWiqXP7AHKhsIT8m7ILGscqvjRqRKt1c9VV4OiUsihMeD
-         sJ//DYUJ+8i3PBMb0zQqSh9nrsIsH1h9K7ZhYqZnB892EywIgBM6VwZ39LWSOKIqCABI
-         vxSqiXPB97/BUaTyVrszkHP/FlcAzeb62OpcO0cvullufJYOO+4T1Cg/LjozwoxcfoOA
-         EygiOKOzHc5J/HJ5jAWtKcHWckFd19XBNKEzD27mMMPaLIqNtZyqzKKSFx0iTjD5RP2C
-         +A3w==
-X-Gm-Message-State: APjAAAX2hqhz7ZG/SB5iT6Ib9p9MAANx3Orb8fj9KNdNAahxCAue5LKa
-        z7Fye9XYDHgH8n4UyufmYw==
-X-Google-Smtp-Source: APXvYqx+o3gwfnUvsIkknmFCS2MYpF0zqj4FQzZXkli86+QlMwz3klWltYz4z1f6onv6AZ6GOeAMzg==
-X-Received: by 2002:a62:7c47:: with SMTP id x68mr49463684pfc.178.1568295248717;
-        Thu, 12 Sep 2019 06:34:08 -0700 (PDT)
-Received: from DESKTOP (softbank126011092035.bbtec.net. [126.11.92.35])
-        by smtp.gmail.com with ESMTPSA id u17sm15239pjn.7.2019.09.12.06.34.05
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 12 Sep 2019 06:34:07 -0700 (PDT)
-Date:   Thu, 12 Sep 2019 22:34:02 +0900
-From:   Takeshi Misawa <jeliantsurux@gmail.com>
-To:     syzbot <syzbot+d9c8bf24e56416d7ce2c@syzkaller.appspotmail.com>
-Cc:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, kafai@fb.com, linux-kernel@vger.kernel.org,
-        linux-ppp@vger.kernel.org, netdev@vger.kernel.org,
-        paulus@samba.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Subject: Re: memory leak in ppp_write
-Message-ID: <CAKK_rchVQCYmjPSxk9MszV9BtF8y04-j2dpjV0Jg3c+nrRNEWQ@mail.gmail.com>
-References: <000000000000edc1d5058f5dfa5f@google.com>
- <000000000000594c700591433550@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5YVmroOmWsfbPZww9PGat/bavCeNmvQGcimrBhWBuy4=;
+        b=ajCnJFG6BI41+o0Sah45WeOUdfdE+OCf/md55NYgVWKtp84bUH+tD9891+tpyOG5UF
+         Pk/Qr+8vkNnvCvk8YJQuSPJ7levB1HQmidBHjccYJRJxNfzDDomM1ino8QCcp7bTjGNv
+         DRdWts4kMER55TOOY57iNHpMagXdmtslOI1ky9k87rZZuLn7ICFyN4gNUIU8zhV9zEgB
+         Wu0i9eqNtPc4bddK0cTpVdp7/beum5eq0u8fp7b9Si04tjQfBGmrr+3vwQjNDx4517rW
+         PvC/SS+d7HKtbGwpE6/B9k/dLyqQjgLfhJ2zv6lr89QfPk6/K2M3KuWlpnvuFReyJi6D
+         J3OA==
+X-Gm-Message-State: APjAAAV5iivRuCmn3mtJtQKvjiL92cDLb1gYSWqVhU1r0YlOXDmgnLcr
+        IB230W1hum9hkBtFAKzHrC6YGIt0N3LxeRB+RRFqZa9J
+X-Google-Smtp-Source: APXvYqy5v3NkZEjEMM7AwjSVopo8j9FGoJxzUq1NdqYhh5e1x0kmCJH4LPdki4NmHpjeLat+4zGNy30KUDyElmgw5l0=
+X-Received: by 2002:ac2:4351:: with SMTP id o17mr2286425lfl.131.1568299334764;
+ Thu, 12 Sep 2019 07:42:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="6WlEvdN9Dv0WHSBl"
-Content-Disposition: inline
-In-Reply-To: <000000000000594c700591433550@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <156821692280.2951081.18036584954940423225.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <156821693963.2951081.11214256396118531359.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20190911184332.GL20699@kadam> <9132e214-9b57-07dc-7ee2-f6bc52e960c5@kernel.dk>
+ <CAPcyv4ij3s+9uO0f9aLHGj3=ACG7hAjZ0Rf=tyFmpt3+uQyymw@mail.gmail.com>
+ <CANiq72k2so3ZcqA3iRziGY=Shd_B1=qGoXXROeAF7Y3+pDmqyA@mail.gmail.com> <e9cb9bc8bd7fe38a5bb6ff7b7222b512acc7b018.camel@perches.com>
+In-Reply-To: <e9cb9bc8bd7fe38a5bb6ff7b7222b512acc7b018.camel@perches.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 12 Sep 2019 16:42:03 +0200
+Message-ID: <CANiq72ntjDRyMBdVXLMV9h=3_jU47UA06LaGvR2Jw9aMZM3V3w@mail.gmail.com>
+Subject: Re: [Ksummit-discuss] [PATCH v2 3/3] libnvdimm, MAINTAINERS:
+ Maintainer Entry Profile
+To:     Joe Perches <joe@perches.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Sep 12, 2019 at 12:18 PM Joe Perches <joe@perches.com> wrote:
+>
+> I don't think that's close to true yet for clang-format.
 
---6WlEvdN9Dv0WHSBl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I don't expect clang-format to match perfectly our current code style.
 
-#syz test: https://github.com/google/kasan.git 6525771f
+However, if core maintainers agree that it is "close enough now"
+(specially with newer LLVMs, like 9), then there is a great benefit on
+moving to automatically-styled code. The "con" is having to change a
+bit our style wherever clang-format does not support exactly our
+current style.
 
+> For instance: clang-format does not do anything with
+> missing braces, or coalescing multi-part strings,
+> or any number of other nominal coding style defects
+> like all the for_each macros, aligning or not aligning
+> columnar contents appropriately, etc...
 
---6WlEvdN9Dv0WHSBl
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="0001-ppp-Fix-memory-leak-in-ppp_write.patch"
+Some of these may or may not be fixable tweaking the options. Note
+that there are conflicting styles within the kernel at the moment,
+e.g. how to indent arguments to function calls. Therefore, some of the
+differences do not apply as soon as we decide on a given style.
 
-From e4ff0d04a4b8dd6da3dfb9135235ae5360ce86e6 Mon Sep 17 00:00:00 2001
-From: Takeshi Misawa <jeliantsurux@gmail.com>
-Date: Wed, 11 Sep 2019 22:18:43 +0900
-Subject: [PATCH] ppp: Fix memory leak in ppp_write
+Furthermore, with automatic formatting we have also the chance to
+review some options that we couldn't easily change before.
 
-When ppp is closing, __ppp_xmit_process() failed to enqueue skb
-and skb allocated in ppp_write() is leaked.
+> clang-format as yet has no taste.
+>
+> I believe it'll take a lot of work to improve it to a point
+> where its formatting is acceptable and appropriate.
+>
+> An AI rather than a table based system like clang-format is
+> more likely to be a real solution, but training that AI
+> isn't a thing that I want to do.
 
-syzbot reported :
-BUG: memory leak
-unreferenced object 0xffff88812a17bc00 (size 224):
-  comm "syz-executor673", pid 6952, jiffies 4294942888 (age 13.040s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000d110fff9>] kmemleak_alloc_recursive include/linux/kmemleak.h:43 [inline]
-    [<00000000d110fff9>] slab_post_alloc_hook mm/slab.h:522 [inline]
-    [<00000000d110fff9>] slab_alloc_node mm/slab.c:3262 [inline]
-    [<00000000d110fff9>] kmem_cache_alloc_node+0x163/0x2f0 mm/slab.c:3574
-    [<000000002d616113>] __alloc_skb+0x6e/0x210 net/core/skbuff.c:197
-    [<000000000167fc45>] alloc_skb include/linux/skbuff.h:1055 [inline]
-    [<000000000167fc45>] ppp_write+0x48/0x120 drivers/net/ppp/ppp_generic.c:502
-    [<000000009ab42c0b>] __vfs_write+0x43/0xa0 fs/read_write.c:494
-    [<00000000086b2e22>] vfs_write fs/read_write.c:558 [inline]
-    [<00000000086b2e22>] vfs_write+0xee/0x210 fs/read_write.c:542
-    [<00000000a2b70ef9>] ksys_write+0x7c/0x130 fs/read_write.c:611
-    [<00000000ce5e0fdd>] __do_sys_write fs/read_write.c:623 [inline]
-    [<00000000ce5e0fdd>] __se_sys_write fs/read_write.c:620 [inline]
-    [<00000000ce5e0fdd>] __x64_sys_write+0x1e/0x30 fs/read_write.c:620
-    [<00000000d9d7b370>] do_syscall_64+0x76/0x1a0 arch/x86/entry/common.c:296
-    [<0000000006e6d506>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+I don't think we need taste (or AI-like solutions), because
+consistency has a lot of value too. Not just for our brains, but for
+patches as well.
 
-Fix this by freeing skb, if ppp is closing.
+Note that clang-format is a tool used by major projects successfully,
+it is not like we are experimenting too much here :-)
 
-Reported-by: syzbot+d9c8bf24e56416d7ce2c@syzkaller.appspotmail.com
-Signed-off-by: Takeshi Misawa <jeliantsurux@gmail.com>
----
- drivers/net/ppp/ppp_generic.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/net/ppp/ppp_generic.c b/drivers/net/ppp/ppp_generic.c
-index a30e41a56085..9a1b006904a7 100644
---- a/drivers/net/ppp/ppp_generic.c
-+++ b/drivers/net/ppp/ppp_generic.c
-@@ -1415,6 +1415,8 @@ static void __ppp_xmit_process(struct ppp *ppp, struct sk_buff *skb)
- 			netif_wake_queue(ppp->dev);
- 		else
- 			netif_stop_queue(ppp->dev);
-+	} else {
-+		kfree_skb(skb);
- 	}
- 	ppp_xmit_unlock(ppp);
- }
--- 
-2.17.1
-
-
---6WlEvdN9Dv0WHSBl--
+Cheers,
+Miguel
