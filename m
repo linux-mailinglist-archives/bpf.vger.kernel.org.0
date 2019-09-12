@@ -2,81 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A89B9B1676
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2019 00:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC73B1692
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2019 01:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727054AbfILWvp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Sep 2019 18:51:45 -0400
-Received: from smtprelay0065.hostedemail.com ([216.40.44.65]:33884 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726778AbfILWvo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 12 Sep 2019 18:51:44 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 478BE18224D66;
-        Thu, 12 Sep 2019 22:51:43 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,:::::::,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2195:2199:2200:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4321:5007:6119:6691:7514:7903:8545:9010:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12346:12438:12679:12740:12760:12895:13019:13069:13311:13357:13439:13891:14180:14181:14659:14721:21060:21080:21451:21627:21740:30054:30091,0,RBL:47.151.152.152:@perches.com:.lbl8.mailshell.net-62.8.0.100 64.201.201.201,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:fn,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:26,LUA_SUMMARY:none
-X-HE-Tag: wash29_66372152c7216
-X-Filterd-Recvd-Size: 1955
-Received: from XPS-9350.home (unknown [47.151.152.152])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 12 Sep 2019 22:51:42 +0000 (UTC)
-Message-ID: <b5cd34b624f07ed136178724f208f027644f36a5.camel@perches.com>
+        id S1727703AbfILXIm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Sep 2019 19:08:42 -0400
+Received: from mail-lf1-f52.google.com ([209.85.167.52]:33133 "EHLO
+        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726718AbfILXIm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Sep 2019 19:08:42 -0400
+Received: by mail-lf1-f52.google.com with SMTP id d10so20676099lfi.0
+        for <bpf@vger.kernel.org>; Thu, 12 Sep 2019 16:08:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r/5S16DQfAjuE8QsLW9bADwc/2fkAheU+o57IlmqMXU=;
+        b=Aa2qs56FD27COHBL9ZSpQaQJYhDIYsnARFP0xT/dRqoZBEf/8DTZZnRv4sb1J0INcm
+         YPzoNk4AYGGr6cEk18ypJqofDrQ6GrvbDVmWVwsgBrvFuxHb4jc1Uavvtlv7JJtR8EfP
+         N603n4Q+hiXmC9r5buErTxezIa5ALED0Z2zDuZTr7KAlR3goNl7VXD8oaDKWqab6IHMm
+         CGU0KziWHnHPCara4HXYAWDlLt6wrQbxWUyUQo3XqTJ6//OKZzKsUtWs4zsbaeiXotL1
+         iSmpntu7VxFVR+fd4rVzwAFjdQbTTW5hqLb9dlw2RsERmLfUCUALwHBIJNAFyjuE4tai
+         JX4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r/5S16DQfAjuE8QsLW9bADwc/2fkAheU+o57IlmqMXU=;
+        b=jiIMfH0D0BB0dLnQGC8XI6+m5H/JHJaKbpZv0scoZDLSLfdHSHljkVKe0rkm+eh2NI
+         cJzU2TUe71KESSg2oy2OxNEmdU0mKuSrMMycA2g69d9Xg8esR6LC28ysdyBJNYQnHBlL
+         HVYr61jMKZi5hbu78dPgW1uCZ/vRpB9FyvSo/zCiErQksY9qOIIpVmBOr+5QxvoFV9yr
+         Oslbr/aO6stNjNWeFQ/5JvAxadt74DyJf57PZiWz5RIuOh2Cbv5frUfRukmEUQ8QppwY
+         nAhj8lxrcsase83p40x7ImK0uf/iZ7PpKbjdvmjf6HCgcLSBiLy1yMts+qWK3QGzhMSO
+         c6WQ==
+X-Gm-Message-State: APjAAAU0ro/trmkNSR1utxiDE5fvbjDDWcBzV4rzvEfRMXjDNlCQyBTU
+        /igpViEp/iyd7M9HHzMfQSv2r49hZU5ZDCx7LHg=
+X-Google-Smtp-Source: APXvYqze2NL5huvrL8A3vpVxR9TL7RGbcUjyWxyLajXmPs114WhhSYek75OjWPaiRF/HKwAMhgi+btiy35RVU8uzUhc=
+X-Received: by 2002:a19:3805:: with SMTP id f5mr6852966lfa.173.1568329719938;
+ Thu, 12 Sep 2019 16:08:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <CANiq72kQUvnVq0U-okpND8L5xueHs4o3-mKMNX8_P0n5uZw+-w@mail.gmail.com>
+ <b5cd34b624f07ed136178724f208f027644f36a5.camel@perches.com>
+In-Reply-To: <b5cd34b624f07ed136178724f208f027644f36a5.camel@perches.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 13 Sep 2019 01:08:28 +0200
+Message-ID: <CANiq72kzc3wn1Xm3Ndpt1V-HLsRJ0sGph4+YgByBfdLjjfNCTQ@mail.gmail.com>
 Subject: Re: Strange scripts/get_maintainer.pl output
-From:   Joe Perches <joe@perches.com>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+To:     Joe Perches <joe@perches.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
-Date:   Thu, 12 Sep 2019 15:51:41 -0700
-In-Reply-To: <CANiq72kQUvnVq0U-okpND8L5xueHs4o3-mKMNX8_P0n5uZw+-w@mail.gmail.com>
-References: <CANiq72kQUvnVq0U-okpND8L5xueHs4o3-mKMNX8_P0n5uZw+-w@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.32.1-2 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 2019-09-13 at 00:25 +0200, Miguel Ojeda wrote:
-> Hi Joe,
+On Fri, Sep 13, 2019 at 12:51 AM Joe Perches <joe@perches.com> wrote:
+>
+> This K: entry matches a _lot_ of files that contain bpf.
+>
+> For instance, the .clang-format file has:
 
-Hey Miguel.
+Aaaaah! I thought the matching was not using the contents of the
+files, but the commit information etc.!
 
-> I was preparing the RFC for the clang-format stuff and I ran:
-> 
->   scripts/get_maintainer.pl -f .clang-format
-> 
-> But it seems I (also) got the people from the BPF entry for some
-> reason. Maybe the dot messes with some regex? (although other
-> dot-files seem to work). I could try to solve it, but my Perl-fu is
-> weak and you are the wizard of get_maintainer.pl anyway... :-)
+Never mind then -- thanks a lot!
 
-It's not perl, it's the entry for
-	K: bpf
-in the BPF section.
-
-BPF (Safe dynamic programs and tools)
-M:	Alexei Starovoitov <ast@kernel.org>
-M:	Daniel Borkmann <daniel@iogearbox.net>
-[...]
-K:	bpf
-N:	bpf
-
-This K: entry matches a _lot_ of files that contain bpf.
-
-For instance, the .clang-format file has:
-
-$ git grep bpf .clang-format
-.clang-format:  - 'bpf_for_each_spilled_reg'
-
-If you use --no-keywords, you get:
-
-$ ./scripts/get_maintainer.pl -f --no-keywords .clang-format
-Miguel Ojeda <miguel.ojeda.sandonis@gmail.com> (maintainer:CLANG-FORMAT FILE)
-linux-kernel@vger.kernel.org (open list)
-
-
-
+Cheers,
+Miguel
