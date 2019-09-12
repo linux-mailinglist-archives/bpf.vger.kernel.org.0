@@ -2,113 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 00E31B114D
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2019 16:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6B6B11EF
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2019 17:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732708AbfILOmR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Sep 2019 10:42:17 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:42239 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732598AbfILOmR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Sep 2019 10:42:17 -0400
-Received: by mail-lf1-f68.google.com with SMTP id c195so4695798lfg.9;
-        Thu, 12 Sep 2019 07:42:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5YVmroOmWsfbPZww9PGat/bavCeNmvQGcimrBhWBuy4=;
-        b=K76FKy6ESnqOvkBCMCo6qwFBykl2HdgaTHRY3YvD94OEdMgn9uYrY/t3Kmifp0e0uD
-         LKnNGAwBNrnpdLtTq9Y4/2qsIRatfXp4eGFn0qSiJZTHqhBN8a91HDkxHp/U7w44lQq9
-         v1ggR0KcIzhSI+0MbaLJSfH2FWbpjSsGKPCyd2dAWcg9hKLHNSh5LIzcI74Gjc+/Ldyq
-         saKzYeh0F20mLAZa06YrBLvngFBnrnuKNU7eq7UERSVLSk9yPQ6sz5lNpPe55yuHx61l
-         ffgqplJqtREYfZa6YR5FZdkdKY3CFo9akYzMw+XUp0ASe2YSHqJL0Hitx9EuJrKhvtlr
-         reVw==
+        id S1732993AbfILPRD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Sep 2019 11:17:03 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:32928 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732983AbfILPRD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Sep 2019 11:17:03 -0400
+Received: by mail-io1-f71.google.com with SMTP id 5so33433920ion.0
+        for <bpf@vger.kernel.org>; Thu, 12 Sep 2019 08:17:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5YVmroOmWsfbPZww9PGat/bavCeNmvQGcimrBhWBuy4=;
-        b=ajCnJFG6BI41+o0Sah45WeOUdfdE+OCf/md55NYgVWKtp84bUH+tD9891+tpyOG5UF
-         Pk/Qr+8vkNnvCvk8YJQuSPJ7levB1HQmidBHjccYJRJxNfzDDomM1ino8QCcp7bTjGNv
-         DRdWts4kMER55TOOY57iNHpMagXdmtslOI1ky9k87rZZuLn7ICFyN4gNUIU8zhV9zEgB
-         Wu0i9eqNtPc4bddK0cTpVdp7/beum5eq0u8fp7b9Si04tjQfBGmrr+3vwQjNDx4517rW
-         PvC/SS+d7HKtbGwpE6/B9k/dLyqQjgLfhJ2zv6lr89QfPk6/K2M3KuWlpnvuFReyJi6D
-         J3OA==
-X-Gm-Message-State: APjAAAV5iivRuCmn3mtJtQKvjiL92cDLb1gYSWqVhU1r0YlOXDmgnLcr
-        IB230W1hum9hkBtFAKzHrC6YGIt0N3LxeRB+RRFqZa9J
-X-Google-Smtp-Source: APXvYqy5v3NkZEjEMM7AwjSVopo8j9FGoJxzUq1NdqYhh5e1x0kmCJH4LPdki4NmHpjeLat+4zGNy30KUDyElmgw5l0=
-X-Received: by 2002:ac2:4351:: with SMTP id o17mr2286425lfl.131.1568299334764;
- Thu, 12 Sep 2019 07:42:14 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=RPiyZVry3vcCdktPjsrAehjjz4bpmZ6S8izbMfh4+Qw=;
+        b=Dq1rBd7a0DfhKkRm7mf6GV0YVcDc7pOZrIawJbsovzpaY+xwAk1XN8qMFsRmBYKNnx
+         MOgzVoa+SeyRIuN6rwTzuDc4Ke7uX3uxXlNeNONOU/PR3byrwZjDPDBvtvry8ZYcpvf8
+         8LHQEW9RwqX/tevL9bQ6FvmIE+Q4JsfIetC3NZgd9iOMHvY2ZEIoPxjpIvNZN0BmxW1r
+         +Ra4IRrSYzOeEOakWZyze3xttSWgFG4rQM6KM9IIUUb8KglZ9ubRWRPbQ1iEOhdzrF+N
+         UZAWwg7vijJmyTKmYziJistHqcwTj+YXulaOmTaLk1GTlryUHz6woEw4H+tYTAsongwP
+         KATQ==
+X-Gm-Message-State: APjAAAUNKqkpZcKcxpBvvFuAb7RtuD/LRfdS1a+DR/faRbXj3UipKxLW
+        JHUuewANA3O2J68YO+mnwHeKBukKQh1zGwVJzweNgikw70oT
+X-Google-Smtp-Source: APXvYqzSR03YPSVhMgY8omiNzjtKp/LsOhihqJynqTinJuXFm9yeiEQpDpPKj8OnPE+PaoUQpZvFmlFn8e22sLT7FtGXZct/f2eo
 MIME-Version: 1.0
-References: <156821692280.2951081.18036584954940423225.stgit@dwillia2-desk3.amr.corp.intel.com>
- <156821693963.2951081.11214256396118531359.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20190911184332.GL20699@kadam> <9132e214-9b57-07dc-7ee2-f6bc52e960c5@kernel.dk>
- <CAPcyv4ij3s+9uO0f9aLHGj3=ACG7hAjZ0Rf=tyFmpt3+uQyymw@mail.gmail.com>
- <CANiq72k2so3ZcqA3iRziGY=Shd_B1=qGoXXROeAF7Y3+pDmqyA@mail.gmail.com> <e9cb9bc8bd7fe38a5bb6ff7b7222b512acc7b018.camel@perches.com>
-In-Reply-To: <e9cb9bc8bd7fe38a5bb6ff7b7222b512acc7b018.camel@perches.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 12 Sep 2019 16:42:03 +0200
-Message-ID: <CANiq72ntjDRyMBdVXLMV9h=3_jU47UA06LaGvR2Jw9aMZM3V3w@mail.gmail.com>
-Subject: Re: [Ksummit-discuss] [PATCH v2 3/3] libnvdimm, MAINTAINERS:
- Maintainer Entry Profile
-To:     Joe Perches <joe@perches.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-Received: by 2002:a02:aa84:: with SMTP id u4mr23912052jai.14.1568301421376;
+ Thu, 12 Sep 2019 08:17:01 -0700 (PDT)
+Date:   Thu, 12 Sep 2019 08:17:01 -0700
+In-Reply-To: <CAKK_rchVQCYmjPSxk9MszV9BtF8y04-j2dpjV0Jg3c+nrRNEWQ@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001f3a3a05925ca177@google.com>
+Subject: Re: memory leak in ppp_write
+From:   syzbot <syzbot+d9c8bf24e56416d7ce2c@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, jeliantsurux@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, linux-ppp@vger.kernel.org,
+        netdev@vger.kernel.org, paulus@samba.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 12, 2019 at 12:18 PM Joe Perches <joe@perches.com> wrote:
->
-> I don't think that's close to true yet for clang-format.
+Hello,
 
-I don't expect clang-format to match perfectly our current code style.
+syzbot has tested the proposed patch and the reproducer did not trigger  
+crash:
 
-However, if core maintainers agree that it is "close enough now"
-(specially with newer LLVMs, like 9), then there is a great benefit on
-moving to automatically-styled code. The "con" is having to change a
-bit our style wherever clang-format does not support exactly our
-current style.
+Reported-and-tested-by:  
+syzbot+d9c8bf24e56416d7ce2c@syzkaller.appspotmail.com
 
-> For instance: clang-format does not do anything with
-> missing braces, or coalescing multi-part strings,
-> or any number of other nominal coding style defects
-> like all the for_each macros, aligning or not aligning
-> columnar contents appropriately, etc...
+Tested on:
 
-Some of these may or may not be fixable tweaking the options. Note
-that there are conflicting styles within the kernel at the moment,
-e.g. how to indent arguments to function calls. Therefore, some of the
-differences do not apply as soon as we decide on a given style.
+commit:         6525771f Merge tag 'arc-5.3-rc7' of git://git.kernel.org/p..
+git tree:       https://github.com/google/kasan.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e6131eafb9408877
+dashboard link: https://syzkaller.appspot.com/bug?extid=d9c8bf24e56416d7ce2c
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=12610ef1600000
 
-Furthermore, with automatic formatting we have also the chance to
-review some options that we couldn't easily change before.
-
-> clang-format as yet has no taste.
->
-> I believe it'll take a lot of work to improve it to a point
-> where its formatting is acceptable and appropriate.
->
-> An AI rather than a table based system like clang-format is
-> more likely to be a real solution, but training that AI
-> isn't a thing that I want to do.
-
-I don't think we need taste (or AI-like solutions), because
-consistency has a lot of value too. Not just for our brains, but for
-patches as well.
-
-Note that clang-format is a tool used by major projects successfully,
-it is not like we are experimenting too much here :-)
-
-Cheers,
-Miguel
+Note: testing is done by a robot and is best-effort only.
