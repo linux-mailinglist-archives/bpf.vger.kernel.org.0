@@ -2,56 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C76B099C
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2019 09:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE81B0A31
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2019 10:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729785AbfILHlh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Sep 2019 03:41:37 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:43035 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbfILHlh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Sep 2019 03:41:37 -0400
-Received: by mail-oi1-f193.google.com with SMTP id t84so16356255oih.10
-        for <bpf@vger.kernel.org>; Thu, 12 Sep 2019 00:41:36 -0700 (PDT)
+        id S1730178AbfILIYP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Sep 2019 04:24:15 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:38208 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730179AbfILIYP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Sep 2019 04:24:15 -0400
+Received: by mail-lj1-f193.google.com with SMTP id y23so22383737ljn.5;
+        Thu, 12 Sep 2019 01:24:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=o8LTeC4govd1fNBJO0ioJqcSmCWQfNIKLUUZIaiAhHg=;
-        b=r5iciw4g8aqTCdevxlX7Yl1qKRDD/phXv4v2oTTELHQGit1wxhO/OmSHjpMCzaPPrC
-         Vr8pfrqAPKZP/QRditALJa3T7m3utIzI7knIH43NmnrLOYeWwUlpJTX+V+qEIHPXtDWk
-         i+S3TBIunng9amNi6owpSMAwGYmTOzTOg39UCXWUFCAs9mW/cRdQ9TrieNsVwozqYGMY
-         ud38gNVy7hASRzjURWmOVrK8Lm1bGKmNLt/QqIPlK0Zbi79sDGl94Y4HvgRcvzJv2owV
-         GO/6yFDyIZBlsfIr5xvExb4PHDGHZscKuenTgOys/I73OMjRL8cbQsLrUCTP+Fo1/Uy7
-         k13A==
+        bh=ECkS2puFAK1gVjPinpMaI687BSxI+r7g336/1esz1k0=;
+        b=bobU2/X+jXrG7Z7VhdAPWfrQEBrRDHgblPscgg39+wUJnCf7d4fx3qf6vcFFVvxSkN
+         3U4gbkvDhjbCnuW8meMQgC2Ft3e3FFwa0KHF1D5u7qW7MBU1GnNfd/QMkK8wWUaaRqCB
+         3JpC+A70eitPZT6pl0sNnHh2A+r/Bjvb6UnMxMWGl1ObfMLIR+F5cnwsHKrEwhjq8yyf
+         MAFpuPAHwSYnNDLUlhili68ZfGdf+ruL/K0+YDRvDT04U78lShW4wiNWlvwbwU67SIo/
+         T3D0trHu4hTkAJJSD3d30zL/Ox1rPT250C9erYGII76G3/3XIUEY41WiGKx5RXmDT1UJ
+         x+xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=o8LTeC4govd1fNBJO0ioJqcSmCWQfNIKLUUZIaiAhHg=;
-        b=mEkwS/OpjDMp8p+w306zaGLzNYx+2h43sD8FnkfQ5rvh6sPgA5V27+wfq8MH9dFl/s
-         5tj+dhJ/uw4s9gn0PbdI/n/mtnDKGplp1jt/TXZY1Sva2HydfYcnr8YMfbQGrk3qAFTp
-         2ioPQ2AG9bzpVluGFRuzKsYO3mRe0hN/51f7GLDnJArciI6GQRfVLOh2u4Sybp3zOPNQ
-         Imrkb/Cs5JtDXiO5v9SdD6RySV3VoxKHUjo3mGzu09s/0drQAOu7h1VS4Rn6KW0r7YHK
-         A54LJkJ+1WPdDXrJF6FZUQ1oUzoweLUuUift5zF9dR3mZYnWlU7s9iL3b3/Do2vNjpzE
-         rikQ==
-X-Gm-Message-State: APjAAAVHBASO46UtwpPpEAiK+FlEFkYF2rmeYuDa+/4R9AxpBxx0b1wX
-        NJpik1ecNQO1/EtqjWEWp00p0Y4UiP1NqpIWCgh71w==
-X-Google-Smtp-Source: APXvYqw0A8Lqk6qX7CD0ZjUAfqaCMtvOeZCnyqiVzGAx3LVFCio/Y9Fb+8rbJ3TzTxR704q9l8iceiToxbjJgcESn2g=
-X-Received: by 2002:aca:eb09:: with SMTP id j9mr7724558oih.105.1568274096350;
- Thu, 12 Sep 2019 00:41:36 -0700 (PDT)
+        bh=ECkS2puFAK1gVjPinpMaI687BSxI+r7g336/1esz1k0=;
+        b=LRerhYz0dapsDal6WCveyZMFx6etC+hACuljn9qOP2PqzEDl5sbz0bzqv4G/rduYCU
+         1siAsCRX00wZ4sIbyqC/ZU1+agBDd/gNp6GupK8marOQgciS8RfiPbKkqa5NGQe6nLm0
+         8xZPybx2LdIs/c9yhRAwYDx9f++RMmeS3hGEom4K4ZD981a1KdqX8SApvnpb5S1WyMlA
+         Gm2/fTzhW0GpEPg2ExLEr5AftXOfKDNo1nOB2TgzLX/0C1Pyy85eT251NWmMipXtXQ+z
+         0vnopwRNX+oqxvMCRVL53i3lMDcNvutXYvNZUAlysaM59XY3cO8f4R0lMe05syXo/Jm2
+         xDCQ==
+X-Gm-Message-State: APjAAAXT+zcodJ6gyXxIxECUsgigFun1DQD+aKMKn84oJn6IFwoZOvWj
+        W6l/JFKHgyPOkFV2eMIeKS8XL7+MLSoJUnuOELc=
+X-Google-Smtp-Source: APXvYqwJdAIg0MN468eMceiqvbqhEFZIaSKfHpA6hbEW7p8IU8l3e2/DQsQGc8lPdxLHrAXG/fVObo9RcVpmFUoxXg8=
+X-Received: by 2002:a2e:9555:: with SMTP id t21mr9396134ljh.93.1568276653052;
+ Thu, 12 Sep 2019 01:24:13 -0700 (PDT)
 MIME-Version: 1.0
 References: <156821692280.2951081.18036584954940423225.stgit@dwillia2-desk3.amr.corp.intel.com>
  <156821693963.2951081.11214256396118531359.stgit@dwillia2-desk3.amr.corp.intel.com>
  <20190911184332.GL20699@kadam> <9132e214-9b57-07dc-7ee2-f6bc52e960c5@kernel.dk>
-In-Reply-To: <9132e214-9b57-07dc-7ee2-f6bc52e960c5@kernel.dk>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 12 Sep 2019 00:41:24 -0700
-Message-ID: <CAPcyv4ij3s+9uO0f9aLHGj3=ACG7hAjZ0Rf=tyFmpt3+uQyymw@mail.gmail.com>
+ <CAPcyv4ij3s+9uO0f9aLHGj3=ACG7hAjZ0Rf=tyFmpt3+uQyymw@mail.gmail.com>
+In-Reply-To: <CAPcyv4ij3s+9uO0f9aLHGj3=ACG7hAjZ0Rf=tyFmpt3+uQyymw@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 12 Sep 2019 10:24:01 +0200
+Message-ID: <CANiq72k2so3ZcqA3iRziGY=Shd_B1=qGoXXROeAF7Y3+pDmqyA@mail.gmail.com>
 Subject: Re: [Ksummit-discuss] [PATCH v2 3/3] libnvdimm, MAINTAINERS:
  Maintainer Entry Profile
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
         Dave Jiang <dave.jiang@intel.com>,
         ksummit <ksummit-discuss@lists.linuxfoundation.org>,
         linux-nvdimm <linux-nvdimm@lists.01.org>,
@@ -64,56 +66,19 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 11, 2019 at 3:11 PM Jens Axboe <axboe@kernel.dk> wrote:
+On Thu, Sep 12, 2019 at 9:43 AM Dan Williams <dan.j.williams@intel.com> wrote:
 >
-> On 9/11/19 12:43 PM, Dan Carpenter wrote:
-> > On Wed, Sep 11, 2019 at 08:48:59AM -0700, Dan Williams wrote:
-> >> +Coding Style Addendum
-> >> +---------------------
-> >> +libnvdimm expects multi-line statements to be double indented. I.e.
-> >> +
-> >> +        if (x...
-> >> +                        && ...y) {
-> >
-> > That looks horrible and it causes a checkpatch warning.  :(  Why not
-> > do it the same way that everyone else does it.
-> >
-> >       if (blah_blah_x && <-- && has to be on the first line for checkpatch
-> >           blah_blah_y) { <-- [tab][space][space][space][space]blah
-> >
-> > Now all the conditions are aligned visually which makes it readable.
-> > They aren't aligned with the indent block so it's easy to tell the
-> > inside from the if condition.
-> >
-> > I kind of hate all this extra documentation because now everyone thinks
-> > they can invent new hoops to jump through.
->
-> FWIW, I completely agree with Dan (Carpenter) here. I absolutely
-> dislike having these kinds of files, and with subsystems imposing weird
-> restrictions on style (like the quoted example, yuck).
->
-> Additionally, it would seem saner to standardize rules around when
-> code is expected to hit the maintainers hands for kernel releases. Both
-> yours and Martins deals with that, there really shouldn't be the need
-> to have this specified in detail per sub-system.
+> Now I come to find that CodingStyle has settled on clang-format (in
+> the last 15 months) as the new standard which is a much better answer
+> to me than a manually specified style open to interpretation. I'll
+> take a look at getting libnvdimm converted over.
 
-So this is *the* point of the exercise.
+Note that clang-format cannot do everything as we want within the
+kernel just yet, but it is a close enough approximation -- it is near
+the point where we could simply agree to use it and stop worrying
+about styling issues. However, that would mean everyone needs to have
+a recent clang-format available, which I think is the biggest obstacle
+at the moment.
 
-I picked up this indentation habit a long while back in response to
-review feedback on a patch to a subsystem that formatted code this
-way. At the time CodingStyle did not contradict the maintainer's
-preference, so I adopted it across the board.
-
-Now I come to find that CodingStyle has settled on clang-format (in
-the last 15 months) as the new standard which is a much better answer
-to me than a manually specified style open to interpretation. I'll
-take a look at getting libnvdimm converted over.
-
-If we can take that further and standardize all of the places where
-contributors see variations across subsystems on the fundamental
-questions of style, timing, follow-up, and unit test invocation the
-Maintainer Entry Profile can be superseded with common guidelines.
-
-Otherwise, yes I completely agree with you that a "Maintainer Entry
-Profile" is a sad comment on the state of what contributors need to
-navigate, but that's today's reality that needs to be addressed.
+Cheers,
+Miguel
