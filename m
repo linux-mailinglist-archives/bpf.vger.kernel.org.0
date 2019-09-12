@@ -2,92 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ACBEB12C5
-	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2019 18:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED56B14C8
+	for <lists+bpf@lfdr.de>; Thu, 12 Sep 2019 21:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730609AbfILQ2K convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 12 Sep 2019 12:28:10 -0400
-Received: from mga06.intel.com ([134.134.136.31]:4827 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726159AbfILQ2K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Sep 2019 12:28:10 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Sep 2019 09:28:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,492,1559545200"; 
-   d="scan'208";a="269134479"
-Received: from fmsmsx103.amr.corp.intel.com ([10.18.124.201])
-  by orsmga001.jf.intel.com with ESMTP; 12 Sep 2019 09:28:09 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- FMSMSX103.amr.corp.intel.com (10.18.124.201) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 12 Sep 2019 09:28:09 -0700
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 12 Sep 2019 09:28:09 -0700
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82]) by
- fmsmsx602.amr.corp.intel.com ([10.18.126.82]) with mapi id 15.01.1713.004;
- Thu, 12 Sep 2019 09:28:09 -0700
-From:   "Bowers, AndrewX" <andrewx.bowers@intel.com>
-To:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
-Subject: RE: [Intel-wired-lan] [PATCH bpf-next 2/3] ixgbe: fix xdp handle
- calculations
-Thread-Topic: [Intel-wired-lan] [PATCH bpf-next 2/3] ixgbe: fix xdp handle
- calculations
-Thread-Index: AQHVaMws/RmUsUOPPkiAyCDyL0vP3KcoPEcA
-Date:   Thu, 12 Sep 2019 16:28:08 +0000
-Message-ID: <5bda2f9461624c7a8a82e8eea25b7de5@intel.com>
-References: <20190911172435.21042-1-ciara.loftus@intel.com>
- <20190911172435.21042-2-ciara.loftus@intel.com>
-In-Reply-To: <20190911172435.21042-2-ciara.loftus@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-x-ctpclassification: CTP_NT
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiYzBmYWNmMzEtNmFjMS00NTU2LWFjMTUtOTdkNjkwNzhmYzA1IiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiRk5FV2ppamtLdEFtRk1wTjNWWGpoQWlyQjlkRkl5dGwwZUFYUjlkRmhRS3RzNHF3TmVoYXRXXC9cL2RHVFZsbEJDIn0=
-dlp-reaction: no-action
-dlp-version: 11.0.400.15
-x-originating-ip: [10.22.254.132]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727661AbfILT1H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Sep 2019 15:27:07 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:49916 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727586AbfILT1G (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Sep 2019 15:27:06 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8CJEI4a082576
+        for <bpf@vger.kernel.org>; Thu, 12 Sep 2019 19:27:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : mime-version : content-type; s=corp-2019-08-05;
+ bh=VDm8kTp6tJkH0tG43vjMNPVKkmqG8jFhyBWaYlwYfgE=;
+ b=YNlHLnwib/k2Wcu8Vt2XL0OnGDQHCWb+itrlVrXR9InlOpVL/JhLb3jh+L+zHHJsjtnV
+ bU+81uXHo0LjeYrrm2NK1yxJE2JajcIQtcxdxRc6JsFzLrTAnbDEKQifk313ZntdmrBL
+ 21LFvBek7cQ7d7ogePe73HsPMGJs2d5QXfQ5+nRzexvs8ahnm3a6eMhwBh4SBI7d6PkK
+ oNxIzHB8GlAf9Js84xbmSqSoJc5PPguaHdJDHGz5ReGoLS7o29CpXY7eqDw5YUS4GUua
+ RXbUdw+JnFJyATaEHbZ71F35eEBNRacCpoyGhKZMSL3exh4vRvJzEQQxUaNTwWrg4B35 JA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 2uytd3gj2m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <bpf@vger.kernel.org>; Thu, 12 Sep 2019 19:27:05 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8CJDci3057343
+        for <bpf@vger.kernel.org>; Thu, 12 Sep 2019 19:27:04 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 2uytdvumf3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <bpf@vger.kernel.org>; Thu, 12 Sep 2019 19:27:04 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x8CJR3nW031218
+        for <bpf@vger.kernel.org>; Thu, 12 Sep 2019 19:27:03 GMT
+Received: from termi.oracle.com (/198.168.27.218)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 12 Sep 2019 12:27:03 -0700
+From:   jose.marchesi@oracle.com (Jose E. Marchesi)
+To:     bpf@vger.kernel.org
+Subject: [GCC,LLVM] bpf_helpers.h
+Date:   Thu, 12 Sep 2019 21:26:57 +0200
+Message-ID: <87lfutgvsu.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9378 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1909120201
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9378 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1909120201
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> -----Original Message-----
-> From: Intel-wired-lan [mailto:intel-wired-lan-bounces@osuosl.org] On
-> Behalf Of Ciara Loftus
-> Sent: Wednesday, September 11, 2019 10:25 AM
-> To: netdev@vger.kernel.org; ast@kernel.org; daniel@iogearbox.net; Topel,
-> Bjorn <bjorn.topel@intel.com>; Karlsson, Magnus
-> <magnus.karlsson@intel.com>; jonathan.lemon@gmail.com
-> Cc: Richardson, Bruce <bruce.richardson@intel.com>; bpf@vger.kernel.org;
-> intel-wired-lan@lists.osuosl.org; Loftus, Ciara <ciara.loftus@intel.com>;
-> Laatz, Kevin <kevin.laatz@intel.com>
-> Subject: [Intel-wired-lan] [PATCH bpf-next 2/3] ixgbe: fix xdp handle
-> calculations
-> 
-> Commit 7cbbf9f1fa23 ("ixgbe: fix xdp handle calculations") reintroduced the
-> addition of the umem headroom to the xdp handle in the ixgbe_zca_free,
-> ixgbe_alloc_buffer_slow_zc and ixgbe_alloc_buffer_zc functions. However,
-> the headroom is already added to the handle in the function
-> ixgbe_run_xdp_zc. This commit removes the latter addition and fixes the
-> case where the headroom is non-zero.
-> 
-> Fixes: 7cbbf9f1fa23 ("ixgbe: fix xdp handle calculations")
-> Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
-> ---
->  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
+Hi people!
 
+First of all, many thanks for the lots of feedback I got at the LPC
+conference.  It was very useful and made these days totally worth it :)
 
+In order to advance in the direction of having a single bpf_helpers.h
+header that works with both llvm and gcc, I would like to suggest a few
+changes for the kernel's header.
+
+Kernel helpers
+--------------
+
+First, there is the issue of kernel helpers.  You people made it very
+clear at LPC that having a compiler built-in function per kernel helper
+is way too restrictive, since it makes it impossible to use new kernel
+helpers without patching the compiler.  I agree.
+
+However, I still think that the function pointer hack currently used in
+bpf_helpers.h is way too fragile, depending on the optimization level
+and the particular behavior of the compiler.
+
+Thinking about a more robust and flexible solution, today I wrote a
+patch for GCC that adds a target-specific function attribute:
+
+   __attribute__ ((kernel_helper (NUM)))
+
+Then I changed my bpf-helpers.h to define the kernel helpers like:
+
+   void *bpf_map_lookup_elem (void *map, const void *key)
+      __attribute__ ((kernel_helper (1)));
+
+This new mechanism allows the user to mark any function prototype as a
+kernel helper, so the flexibility is total.  It also allowed me to get
+rid of the table of helpers in the GCC backend proper, which is awesome
+:)
+
+Would you consider implementing this attribute in llvm and adapt the
+kernel's bpf_header accordingly?  In that respect, note that it is
+possible to pass enum entries to the attribute (at least in GCC.)  So
+you once you implement the attribute, you should be able to do:
+
+   void *bpf_map_lookup_elem (void *map, const void *key)
+       __attribute__ ((kernel_helper (BPF_FUNC_map_lookup_elem)));
+
+instead of the current:
+
+   static void *(*bpf_map_lookup_elem)(void *map, const void *key) =
+	(void *) BPF_FUNC_map_lookup_elem;
+
+Please let me know what do you think.
+
+SKB load built-ins
+------------------
+
+bpf_helpers.h contains the following llvm-isms:
+
+   /* llvm builtin functions that eBPF C program may use to
+    * emit BPF_LD_ABS and BPF_LD_IND instructions
+    */
+   struct sk_buff;
+   unsigned long long load_byte(void *skb,
+                                unsigned long long off) asm("llvm.bpf.load.byte");
+   unsigned long long load_half(void *skb,
+			        unsigned long long off) asm("llvm.bpf.load.half");
+   unsigned long long load_word(void *skb,
+			        unsigned long long off) asm("llvm.bpf.load.word");
+
+Would you consider adopting more standard built-ins in llvm, like I
+implemented in GCC?  These are:
+
+   __builtin_bpf_load_byte (unsigned long long off)
+   __builtin_bpf_load_half (unsigned long long off)
+   __builtin_bpf_load_word (unsigned long long off)
+
+Note that I didn't add an SKB argument to the builtins, as it is not
+used: the pointer to the skb is implied by the instructions to be in
+some predefined register.  I added compatibility wrappers in my
+bpf-helpers.h:
+
+  #define load_byte(SKB,OFF) __builtin_bpf_load_byte ((OFF))
+  #define load_half(SKB,OFF) __builtin_bpf_load_half ((OFF))
+  #define load_word(SKB,OFF) __builtin_bpf_load_word ((OFF))
+
+Would you consider removing the unused SKB arguments from the built-ins
+in llvm?  Or is there a good reason for having them, other than maybe
+backwards compatibility?  In case backwards compatibility is a must, I
+can add the unused argument to my builtins.
+
+Thanks!
