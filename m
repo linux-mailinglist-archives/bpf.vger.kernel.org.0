@@ -2,94 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 559CDB1D7F
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2019 14:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 309C9B22C4
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2019 17:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388312AbfIMMTa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 13 Sep 2019 08:19:30 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:41106 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388307AbfIMMT3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Sep 2019 08:19:29 -0400
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 2AFA53C916
-        for <bpf@vger.kernel.org>; Fri, 13 Sep 2019 12:19:29 +0000 (UTC)
-Received: by mail-ed1-f69.google.com with SMTP id z39so17088515edc.15
-        for <bpf@vger.kernel.org>; Fri, 13 Sep 2019 05:19:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=FUyOcPi0NHmHBGgNXqP+P7obEs5/r8uMUZC4jE6n+fs=;
-        b=ONBeVn33mqAOPNvFIOU1KKjpo/1v0pkcbAprRG9MPWUR53nPF3v6VDGK0yH+2VzRJm
-         nMQ0kmmtH/fw/PyhfVm7rOapGA2mBN3qc9WYxHZI8y9scx5XcqLcoq75a1fTGRy4jv6s
-         4eg0cH5mP/lnngniG1lCUQ+IKaURtVWTQdgJlgIj5ZZ839+BWDHMa9TqOTM1QaHIb1ha
-         refwdxT9KExluudljTdcaGOBcXpuANgNFdKHVZtAINsgx/Ac+XcnNETvFFbQ2PW0u8Oc
-         U0qk7wX19V6hnnfXlldZdYt1kOEVCTMNrD/7ScKTwpzXb+DtRD8P8OFA6QKFYd7dJamK
-         sxrQ==
-X-Gm-Message-State: APjAAAWefGEf2Kov+YZewmFdu765ZU1amNYrXQie4mtulm5nfvARlXzn
-        +yFTQpPPLuxuRbt8ZDfQD0UzStW2UJg9X0XPRRu28kIK0HoZuUGKWHtXoof4yk8LkLq7f0KMSlH
-        BnhZwXHjf5yWG
-X-Received: by 2002:a50:f30c:: with SMTP id p12mr46858198edm.299.1568377167950;
-        Fri, 13 Sep 2019 05:19:27 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqyyJlvDFyQWbdgNap7j6wIzmKQY/VrKSgEVURx/1Gzi41LI0cvKYDz9tVgKPwUjHeIr/5xDNA==
-X-Received: by 2002:a50:f30c:: with SMTP id p12mr46858177edm.299.1568377167788;
-        Fri, 13 Sep 2019 05:19:27 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id p11sm5241842edh.77.2019.09.13.05.19.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Sep 2019 05:19:26 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 68597180613; Fri, 13 Sep 2019 14:19:26 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kees Cook <keescook@chromium.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH] bpf: validate bpf_func when BPF_JIT is enabled
-In-Reply-To: <CABCJKufGy0aRDSUPQEOKYZ9tLjqwQDcDaTW-6im-VfjkB_gUsw@mail.gmail.com>
-References: <20190909223236.157099-1-samitolvanen@google.com> <4f4136f5-db54-f541-2843-ccb35be25ab4@fb.com> <20190910172253.GA164966@google.com> <c7c7668e-6336-0367-42b3-2f6026c466dd@fb.com> <fd8b6f04-3902-12e9-eab1-fa85b7e44dd5@intel.com> <87impzt4pu.fsf@toke.dk> <CABCJKufCwjXQ6a4oLjywDmxY2apUZ1yop-5+qty82bfwV-QTAA@mail.gmail.com> <87sgp1ssfk.fsf@toke.dk> <CABCJKufGy0aRDSUPQEOKYZ9tLjqwQDcDaTW-6im-VfjkB_gUsw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 13 Sep 2019 14:19:26 +0200
-Message-ID: <87h85gs81d.fsf@toke.dk>
+        id S2389849AbfIMPAq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Sep 2019 11:00:46 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:43348 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388211AbfIMPAq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Sep 2019 11:00:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=/rrOO5cRfnuT0HPH0sG11kpD8hb/EFmQkUJiAynpSfI=; b=rhcGyriUGdM0uLIxwPsUds2QT
+        t+M0Zs7sOBv6zqYYMm7GBfHI8C5o8Wn19/FCGzhLLfkakZqlASZkCnoNm1ElzdSTNHs5DJzfwQ0S/
+        sAs15ESalJ9S2r2ftIZc8Y1T0YZ7pzRl8jxQVlMibUStwIfn91AVf+5NKl5l7qv72VxeDZGsgOok7
+        UXm4bOQOokOzPjF9h+WMsBoTJUBRU+L78K5hAPL1I7FPhBnPzhNxbdWzQR5XXLAUcuCyAJOHLffEI
+        p9Ovn+qpuOdt1PbCis4hoqBgSJre4ax2VCiIp/Ev1VjI9J3m/zLiVwnWY9LsF49wzYWf4M6kKbVmv
+        oNAcnnchg==;
+Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.252])
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.2 #3 (Red Hat Linux))
+        id 1i8n3z-0006Au-6N; Fri, 13 Sep 2019 15:00:43 +0000
+Subject: Re: [Ksummit-discuss] [PATCH v2 3/3] libnvdimm, MAINTAINERS:
+ Maintainer Entry Profile
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Dave Jiang <dave.jiang@intel.com>,
+        ksummit-discuss@lists.linuxfoundation.org,
+        linux-nvdimm@lists.01.org, Vishal Verma <vishal.l.verma@intel.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <156821692280.2951081.18036584954940423225.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <156821693963.2951081.11214256396118531359.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20190911184332.GL20699@kadam>
+ <9132e214-9b57-07dc-7ee2-f6bc52e960c5@kernel.dk>
+ <20190913010937.7fc20d93@lwn.net> <20190913114849.GP20699@kadam>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b579153b-3f6d-722c-aea8-abc0d026fa0d@infradead.org>
+Date:   Fri, 13 Sep 2019 08:00:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <20190913114849.GP20699@kadam>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Sami Tolvanen <samitolvanen@google.com> writes:
+On 9/13/19 4:48 AM, Dan Carpenter wrote:
 
-> On Thu, Sep 12, 2019 at 3:52 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
->> I think it would be good if you do both. I'm a bit worried that XDP
->> performance will end up in a "death by a thousand paper cuts" situation,
->> so I'd rather push back on even relatively small overheads like this; so
->> being able to turn it off in the config would be good.
->
-> OK, thanks for the feedback. In that case, I think it's probably
-> better to wait until we have CFI ready for upstreaming and use the
-> same config for this one.
+>> So I'm expecting to take this kind of stuff into Documentation/.  My own
+>> personal hope is that it can maybe serve to shame some of these "local
+>> quirks" out of existence.  The evidence from this brief discussion suggests
+>> that this might indeed happen.
+> 
+> I don't think it's shaming, I think it's validating.  Everyone just
+> insists that since it's written in the Book of Rules then it's our fault
+> for not reading it.  It's like those EULA things where there is more
+> text than anyone can physically read in a life time.
 
-SGTM, thanks!
+Yes, agreed.
 
->> Can you share more details about what the "future CFI checking" is
->> likely to look like?
->
-> Sure, I posted an overview of CFI and what we're doing in Pixel devices here:
->
-> https://android-developers.googleblog.com/2018/10/control-flow-integrity-in-android-kernel.html
+> And the documentation doesn't help.  For example, I knew people's rules
+> about capitalizing the subject but I'd just forget.  I say that if you
+> can't be bothered to add it to checkpatch then it means you don't really
+> care that strongly.
 
-Great, thank you.
+If a subsystem requires a certain spelling/capitalization in patch email
+subjects, it should be added to MAINTAINERS IMO.  E.g.,
+E:	NuBus
 
--Toke
+-- 
+~Randy
