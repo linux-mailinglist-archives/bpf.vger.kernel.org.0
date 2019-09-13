@@ -2,75 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ED70BB18A6
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2019 09:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E22B1B7B
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2019 12:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbfIMHJn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Sep 2019 03:09:43 -0400
-Received: from ms.lwn.net ([45.79.88.28]:57676 "EHLO ms.lwn.net"
+        id S1726484AbfIMKVV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Sep 2019 06:21:21 -0400
+Received: from mga05.intel.com ([192.55.52.43]:59202 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727661AbfIMHJn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Sep 2019 03:09:43 -0400
-Received: from localhost.localdomain (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id D794177D;
-        Fri, 13 Sep 2019 07:09:40 +0000 (UTC)
-Date:   Fri, 13 Sep 2019 01:09:37 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        ksummit-discuss@lists.linuxfoundation.org,
-        linux-nvdimm@lists.01.org, Vishal Verma <vishal.l.verma@intel.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [Ksummit-discuss] [PATCH v2 3/3] libnvdimm, MAINTAINERS:
- Maintainer Entry Profile
-Message-ID: <20190913010937.7fc20d93@lwn.net>
-In-Reply-To: <9132e214-9b57-07dc-7ee2-f6bc52e960c5@kernel.dk>
-References: <156821692280.2951081.18036584954940423225.stgit@dwillia2-desk3.amr.corp.intel.com>
-        <156821693963.2951081.11214256396118531359.stgit@dwillia2-desk3.amr.corp.intel.com>
-        <20190911184332.GL20699@kadam>
-        <9132e214-9b57-07dc-7ee2-f6bc52e960c5@kernel.dk>
-Organization: LWN.net
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1725775AbfIMKVU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Sep 2019 06:21:20 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Sep 2019 03:21:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,489,1559545200"; 
+   d="scan'208";a="386346150"
+Received: from klaatz-mobl1.ger.corp.intel.com (HELO [10.252.28.31]) ([10.252.28.31])
+  by fmsmga006.fm.intel.com with ESMTP; 13 Sep 2019 03:21:17 -0700
+Subject: Re: [PATCH bpf-next] libbpf: add xsk_umem__adjust_offset
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Bruce Richardson <bruce.richardson@intel.com>,
+        ciara.loftus@intel.com, bpf <bpf@vger.kernel.org>
+References: <20190912072840.20947-1-kevin.laatz@intel.com>
+ <CAJ+HfNgQY6muwzGgBW6xLFzKeiCMQUwrz_yrywB3F_VSKbaadQ@mail.gmail.com>
+From:   "Laatz, Kevin" <kevin.laatz@intel.com>
+Message-ID: <847dcd1e-81ba-4364-7242-d280a17f9244@intel.com>
+Date:   Fri, 13 Sep 2019 11:21:16 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAJ+HfNgQY6muwzGgBW6xLFzKeiCMQUwrz_yrywB3F_VSKbaadQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 11 Sep 2019 16:11:29 -0600
-Jens Axboe <axboe@kernel.dk> wrote:
+On 13/09/2019 05:59, Björn Töpel wrote:
+> On Thu, 12 Sep 2019 at 17:47, Kevin Laatz <kevin.laatz@intel.com> wrote:
+>> Currently, xsk_umem_adjust_offset exists as a kernel internal function.
+>> This patch adds xsk_umem__adjust_offset to libbpf so that it can be used
+>> from userspace. This will take the responsibility of properly storing the
+>> offset away from the application, making it less error prone.
+>>
+>> Since xsk_umem__adjust_offset is called on a per-packet basis, we need to
+>> inline the function to avoid any performance regressions.  In order to
+>> inline xsk_umem__adjust_offset, we need to add it to xsk.h. Unfortunately
+>> this means that we can't dereference the xsk_umem_config struct directly
+>> since it is defined only in xsk.c. We therefore add an extra API to return
+>> the flags field to the user from the structure, and have the inline
+>> function use this flags field directly.
+>>
+> Can you expand this to a series, with an additional patch where these
+> functions are used in XDP socket sample application, so it's more
+> clear for users?
 
-> On 9/11/19 12:43 PM, Dan Carpenter wrote:
-> > 
-> > I kind of hate all this extra documentation because now everyone thinks
-> > they can invent new hoops to jump through.  
-> 
-> FWIW, I completely agree with Dan (Carpenter) here. I absolutely
-> dislike having these kinds of files, and with subsystems imposing weird
-> restrictions on style (like the quoted example, yuck).
-> 
-> Additionally, it would seem saner to standardize rules around when
-> code is expected to hit the maintainers hands for kernel releases. Both
-> yours and Martins deals with that, there really shouldn't be the need
-> to have this specified in detail per sub-system.
+These functions are currently not required in the xdpsock application and I think forcing them in would be messy :-). However, an example of the use of these functions could be seen in the DPDK AF_XDP PMD. There is a patch herehttp://patches.dpdk.org/patch/58624/  where we currently do the offset adjustment to the handle manually, but with this patch we could replace it with xsk_umem__adjust_offset and have a real use example of the functions being used.
 
-This sort of objection came up at the maintainers summit yesterday; the
-consensus was that, while we might not like subsystem-specific rules, they
-do currently exist and we're just documenting reality.  To paraphrase
-Phillip K. Dick, reality is that which, when you refuse to document it,
-doesn't go away.
-
-So I'm expecting to take this kind of stuff into Documentation/.  My own
-personal hope is that it can maybe serve to shame some of these "local
-quirks" out of existence.  The evidence from this brief discussion suggests
-that this might indeed happen.
+Would this be enough for an example?
 
 Thanks,
+Kevin
 
-jon
