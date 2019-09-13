@@ -2,104 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C772FB1CBE
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2019 13:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6DEB1D5C
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2019 14:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729608AbfIML6v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Sep 2019 07:58:51 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:42547 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728523AbfIML6v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Sep 2019 07:58:51 -0400
-Received: by mail-qk1-f193.google.com with SMTP id f16so1535753qkl.9;
-        Fri, 13 Sep 2019 04:58:49 -0700 (PDT)
+        id S2388189AbfIMMSg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Sep 2019 08:18:36 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:46468 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388187AbfIMMSg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Sep 2019 08:18:36 -0400
+Received: by mail-ot1-f68.google.com with SMTP id g19so29164055otg.13
+        for <bpf@vger.kernel.org>; Fri, 13 Sep 2019 05:18:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=BDa53w/ACXdT5fA16kw42x/1PlignMSxtyYJh9nqv/8=;
-        b=OT5AiV0BzI6lyLS+FJBPujuz795LNXNHh8cOVghQE4u6aEfAbbBc6mWgpghzi/pXUI
-         tI7TGXSGWfLKsA+oZUSyLxPRAXN3RbE7J2nN83wcVWnMQlTEfWjj5CRdVIwHoWiL721x
-         AECp1ChA3lVFjQQI55acaSP7RAOeB0H4pt9t8JLzCDDzp4ewN+sjQtarWCimkNkF8nL3
-         uzWrBXuAZl4OXXgLVG57iiF1PpBp9RFRkqGfcwa4EDJDF6krzBzRK9LT/BI8QqorUR7L
-         LzoXL/Y6BUFv5PwUE8bUw4Y5KgsPwOziFYUq9lKSO9z+70OURud2nM6GTgTo8DQkQ4Fa
-         kJMA==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A/c97/nFme+ivPwJjzTzfClgEa0OIy/3njro+D9o78o=;
+        b=XOYIJFsaopl13XxNMqGXKTMtqthGHFDixCdxfm/BRkbm8C7nqft8bOMYav+KkL38Qt
+         QBPmqIznV8C75U0erZcJeN+FS4ORrdfnOjlRb9HcFlpbAXpaDUwEMEFfgca6deU40mKQ
+         dAOsSZkAX1fiHcUyIlZI0MpYcLKZkJiURtJujVfDoxC7cHZxhUrtdZawEtZRorybqoKp
+         Du310WWUJuQYwvmI+m/z4o8nvQoTbQdB9+0Eb9svR+kK5/cpRBeRAWUoHJP1VOu6fTY3
+         9DYzNQKc+KVnxHkBABtxBwWcts/Vcw2KusB5j9MY08YSFdZXJcIUkmnHlOhvEmYtyq/g
+         +xmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BDa53w/ACXdT5fA16kw42x/1PlignMSxtyYJh9nqv/8=;
-        b=Ss+JNKdg6bj2bChO99uJo93nu0K4cbrRKaXn57rs4cW2cyaTSGU84t8r+1QY4iCnhE
-         vulJeCv7/qbjn6UMu+XpXlXh3cmodKdtIJLZoiK6LsVzlKL7rMxIHPgRq+1lBP4aimkv
-         95FfSRxGLa6zCUK3c2+j9x3us2KdLRpwKPsbrbUai+It7k4JbabxxaWFqnyN0Lkz/igO
-         pTeTgLNf4FD6CzXZFmeIWVl8f92FoTzawYM4JJIZA7Bd4bRntxkBAKPFsJ4Jb3FEW6sD
-         8XLWZv+nLGu1OSpVqj5xDxkgZ3E2cvQzO/fmVkfkmajW4Oky3OSA7gqA6e7F/KqT+NyD
-         5EuA==
-X-Gm-Message-State: APjAAAW8jD/ypzEwTATXFRT2xu6ojDM1r8OED5QP1MJBn9qKtQFlE4Jd
-        JynqzsNU7s5WyOfmiefKg73Gp71KWCk=
-X-Google-Smtp-Source: APXvYqzIM2cv9WUUoNPdkfYD6AMHGpK/i8XCfIRPhj02e1zxMQtsmqTGnRkGuNPky+VCy6IS1aDkAA==
-X-Received: by 2002:a37:708:: with SMTP id 8mr45614203qkh.273.1568375928331;
-        Fri, 13 Sep 2019 04:58:48 -0700 (PDT)
-Received: from frodo.byteswizards.com ([190.162.109.190])
-        by smtp.gmail.com with ESMTPSA id z38sm16977290qtj.83.2019.09.13.04.58.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Sep 2019 04:58:47 -0700 (PDT)
-Date:   Fri, 13 Sep 2019 08:58:43 -0300
-From:   Carlos Antonio Neira Bustos <cneirabustos@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Eric Biederman <ebiederm@xmission.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "brouer@redhat.com" <brouer@redhat.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v10 2/4] bpf: new helper to obtain namespace
- data from current task New bpf helper bpf_get_current_pidns_info.
-Message-ID: <20190913115843.GA8262@frodo.byteswizards.com>
-References: <c0e67fc7-be66-c4c6-6aad-316cbba18757@fb.com>
- <20190907001056.GA1131@ZenIV.linux.org.uk>
- <7d196a64-cf36-c2d5-7328-154aaeb929eb@fb.com>
- <20190909174522.GA17882@frodo.byteswizards.com>
- <dadf3657-2648-14ef-35ee-e09efb2cdb3e@fb.com>
- <20190910231506.GL1131@ZenIV.linux.org.uk>
- <87o8zr8cz3.fsf@x220.int.ebiederm.org>
- <7b0a325e-9187-702f-eba7-bfcc7e3f7eb4@fb.com>
- <CACiB22j9M2gmccnh7XqqFp8g7qKFuiOrSAVJiA2tQHLB0pmoSQ@mail.gmail.com>
- <91327e6c-2ea7-de0e-4459-06a9e0075416@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A/c97/nFme+ivPwJjzTzfClgEa0OIy/3njro+D9o78o=;
+        b=LxV+uyEr9BqupIWSOSDYZn0CJK+8x2lOgphw9+68Xm10W82YdjyQ+3EPSCJC6lzYnL
+         Av4JmMRZPlaSPLCbZ8t5pDLSvfkD3QoMsTnmeACvVeyHnlYIi3JkWT/H6ouh6JHFfqr3
+         L+oVrS8pCzVLqTJL8GSnSJsmMmOyoJwAaLdDNn1mE0yOUegwgo1WK1iRpuUYjQjHsmWH
+         rQWqH+9iR0L3gtFEyW163bPvGMJPQ5MMnAtvmBzqRGQLiEAHdQGi+TX/7/fTKiilaYlW
+         1w0gcEPUNRLF7bErUmfzFnYnb3px5na94uYKOH+CddOGjbzFhYvDTMXwUbontGIFxebG
+         GdMQ==
+X-Gm-Message-State: APjAAAVjioOn2ykKtHC9HOyDRDoINHJSqBqC2lRDUe54/KFnzOtYA/kb
+        bLE18eLrkDoYcOb4U/f6sOcN0GZPnnPX3Trjp4iNKg==
+X-Google-Smtp-Source: APXvYqyUP3UinjilPMLX5L/ce/vPrHjlyiR9Mzwouxkvl/+9B3J3lEInbbUjdvdAF29WZpR8yBBtHGAMbtEPFqknxsQ=
+X-Received: by 2002:a9d:2642:: with SMTP id a60mr8278939otb.247.1568377114876;
+ Fri, 13 Sep 2019 05:18:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <91327e6c-2ea7-de0e-4459-06a9e0075416@fb.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <156821692280.2951081.18036584954940423225.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <156821693963.2951081.11214256396118531359.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20190911184332.GL20699@kadam> <9132e214-9b57-07dc-7ee2-f6bc52e960c5@kernel.dk>
+ <20190913010937.7fc20d93@lwn.net> <20190913114849.GP20699@kadam>
+In-Reply-To: <20190913114849.GP20699@kadam>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 13 Sep 2019 05:18:22 -0700
+Message-ID: <CAPcyv4jPpxS4wxNO-e1pSHdQpKo5=V0YwD1CHqR61g8zmECKfw@mail.gmail.com>
+Subject: Re: [Ksummit-discuss] [PATCH v2 3/3] libnvdimm, MAINTAINERS:
+ Maintainer Entry Profile
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+        Dave Jiang <dave.jiang@intel.com>,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 13, 2019 at 02:56:43AM +0000, Yonghong Song wrote:
-Yonghong,
+On Fri, Sep 13, 2019 at 4:49 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> On Fri, Sep 13, 2019 at 01:09:37AM -0600, Jonathan Corbet wrote:
+> > On Wed, 11 Sep 2019 16:11:29 -0600
+> > Jens Axboe <axboe@kernel.dk> wrote:
+> >
+> > > On 9/11/19 12:43 PM, Dan Carpenter wrote:
+> > > >
+> > > > I kind of hate all this extra documentation because now everyone thinks
+> > > > they can invent new hoops to jump through.
+> > >
+> > > FWIW, I completely agree with Dan (Carpenter) here. I absolutely
+> > > dislike having these kinds of files, and with subsystems imposing weird
+> > > restrictions on style (like the quoted example, yuck).
+> > >
+> > > Additionally, it would seem saner to standardize rules around when
+> > > code is expected to hit the maintainers hands for kernel releases. Both
+> > > yours and Martins deals with that, there really shouldn't be the need
+> > > to have this specified in detail per sub-system.
+> >
+> > This sort of objection came up at the maintainers summit yesterday; the
+> > consensus was that, while we might not like subsystem-specific rules, they
+> > do currently exist and we're just documenting reality.  To paraphrase
+> > Phillip K. Dick, reality is that which, when you refuse to document it,
+> > doesn't go away.
+>
+> There aren't that many subsystem rules.  The big exception is
+> networking, with the comment style and reverse Chrismas tree
+> declarations.  Also you have to label which git tree the patch applies
+> to like [net] or [net-next].
+>
+> It used to be that infiniband used "sizeof foo" instead of sizeof(foo)
+> but now there is a new maintainer.
+>
+> There is one subsystem which where the maintainer will capitalize your
+> patch prefix and complain.  There are others where they will silently
+> change it to lower case.  (Maybe that has changed in recent years).
+>
+> There is one subsystem where the maintainer is super strict rules that
+> you can't use "I" or "we" in the commit message.  So you can't say "I
+> noticed a bug while reviewing", you have to say "The code has a bug".
+>
+> Some maintainers have rules about what you can put in the declaration
+> block.  No kmalloc() in the declarations is a common rule.
+> "struct foo *p = kmalloc();".
+>
+> Some people (I do) have strict rules for error handling, but most won't
+> complain unless the error handling has bugs.
+>
+> The bpf people want you to put [bpf] or [bpf-next] in the subject.
+> Everyone just guesses, and uneducated guesses are worse than leaving it
+> blank, but that's just my opinion.
+>
+> > So I'm expecting to take this kind of stuff into Documentation/.  My own
+> > personal hope is that it can maybe serve to shame some of these "local
+> > quirks" out of existence.  The evidence from this brief discussion suggests
+> > that this might indeed happen.
+>
+> I don't think it's shaming, I think it's validating.  Everyone just
+> insists that since it's written in the Book of Rules then it's our fault
+> for not reading it.  It's like those EULA things where there is more
+> text than anyone can physically read in a life time.
+>
+> And the documentation doesn't help.  For example, I knew people's rules
+> about capitalizing the subject but I'd just forget.  I say that if you
+> can't be bothered to add it to checkpatch then it means you don't really
+> care that strongly.
 
-Great, I'll submit this new interface along self tests as version 12.
-Thanks for your help.
-
-Bests
-> 
-> 
-> On 9/12/19 3:03 PM, carlos antonio neira bustos wrote:
-> > Yonghong,
-> > 
-> > I think bpf_get_ns_current_pid_tgid interface is a lot better than the 
-> > one proposed in my patch, how are we going to move forward? Should I 
-> > take these changes and refactor the selftests to use this new interface 
-> > and submit version 12 or as the interface changed completely is a new 
-> > set of patches?.
-> 
-> This is to solve the same problem. You can just submit as version 12.
-> This way, we preserves discussion history clearly.
-> 
-> > 
-> > Eric,
-> > Thank you very much for explaining the problem and your help to move 
-> > forward with this new helper.
-> > 
-> > 
-> > Bests
+True, can someone with better perl skills than me take a shot at a
+rule for checkpatch to catch the capitalization preference based on
+the subsystem being touched, or otherwise agree that if a maintainer
+has a changelog capitalization preference they just silently fix it up
+at application time and not waste time pointing out something so
+trivial? For example, I notice Linus likes "-" instead of "*" for
+bullet lists in changelogs he just fixes it up silently if I forget.
