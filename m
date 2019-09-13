@@ -2,329 +2,317 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E9015B2471
-	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2019 18:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59AFEB2498
+	for <lists+bpf@lfdr.de>; Fri, 13 Sep 2019 19:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730160AbfIMQ7q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Sep 2019 12:59:46 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:41174 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729908AbfIMQ7p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Sep 2019 12:59:45 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1i8ov8-0006Qy-CD; Fri, 13 Sep 2019 10:59:42 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1i8ov7-0000yk-10; Fri, 13 Sep 2019 10:59:42 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        id S1730875AbfIMR2n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Sep 2019 13:28:43 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:29432 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730499AbfIMR2n (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 13 Sep 2019 13:28:43 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x8DHKaNn017759;
+        Fri, 13 Sep 2019 10:28:37 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=wCVvZ9yF8BjDtcZDrpBjR+iT5bqhVl/1w1HP9uhVZvI=;
+ b=SgPTPfGa0zkJT2AEQUBoZ9MO7U1jRKjx2QwqpCRCBJ3HeSqCH4tskjdl+HuNzwWfsyQm
+ K8dGL97/Jcs89tcNZeJeOKnAtNJgmYVwjAUxCppEcVOY8gF2shhLCKwJvPAqsUNpg23q
+ k6J6Yn9TUF0BhbggENz9LivOwn+qWw2e4cU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 2uytd94yg6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 13 Sep 2019 10:28:37 -0700
+Received: from ash-exopmbx201.TheFacebook.com (2620:10d:c0a8:83::8) by
+ ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 13 Sep 2019 10:28:36 -0700
+Received: from ash-exhub201.TheFacebook.com (2620:10d:c0a8:83::7) by
+ ash-exopmbx201.TheFacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 13 Sep 2019 10:28:36 -0700
+Received: from NAM05-DM3-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Fri, 13 Sep 2019 10:28:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mqen3eH5/nzzSwP4ItB7ZfR8s6DsRPzFueL7Qz9/+2J5sJwYhO42Mw5LR1+UXJJezE3KWkCrjUd7WY9iP4ZV9w39iv5GWNzB86ECHh5i0DfT3aiUDPUOPyoukKWTintrEWxiYgQQ3WGitc7ISNBdLTiuu75axCVJc7bjpvhc9CuLSc+nzjDChumrt1+P707L6ufMhWudYw6lOdmj85bv13/PWtRY3bhf3fmToZDzyttRx8Hj09YlPPVAdke92oBrXNBlcRS45UVxEyrIifR/yBxfsvTASsea8faALRoOCzs3oXe8uXzeyprrvwVDVIqhgmwJXkXXCPOJpqHNiqUNEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wCVvZ9yF8BjDtcZDrpBjR+iT5bqhVl/1w1HP9uhVZvI=;
+ b=FBVj6Gp6P1nUPjTPP8shiJuig2QErfsxYaOM0gfO3+N6zvhHnLlkuRlTs1e6jSVmkGLMb6KRC2g3Spa8AHmyFp9BbsmK+Nq5Zaom9EjtJGdxb/Rcfn9o7XZd5zXbt9k3xx2/55OCqy7PjOcthDJ52JV16TW3sLytOpojysxM5WVaqPKO5l6e7AsPHrgDii/0xF7IRLf8x3JQwdEc3gul+JcYnXLXw4W1RIIGumTyEMzGzlLdR+kCx9HSBHt7fQAIelz5WvE9bEYeIHUg3XlvamYKTYidkMlNVGIF+XXyFvkD444xFztKxKVIxveAdRIJ04Dz9RFNKgNv3BkVjkhFBA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wCVvZ9yF8BjDtcZDrpBjR+iT5bqhVl/1w1HP9uhVZvI=;
+ b=JfS/A49nBhGV1oo6fqW90YcXhCa8EzEkmjdqeSQZIsvJ9au2Ejpfa3rghXxgekd4bJuixh83OMEhRYrbsxx+U1vBZrgT96ZHGjqVQPr19aMzEnLvFTYxzTx0zhyQd2bcEPjzumj2CjqawmRgnPtSvCMmjeiZCB5eqQ0oo5lFgg4=
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.60.27) by
+ BYAPR15MB3366.namprd15.prod.outlook.com (20.179.58.213) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2263.17; Fri, 13 Sep 2019 17:28:35 +0000
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::95ab:61a0:29f4:e07e]) by BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::95ab:61a0:29f4:e07e%6]) with mapi id 15.20.2263.021; Fri, 13 Sep 2019
+ 17:28:35 +0000
+From:   Yonghong Song <yhs@fb.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
         Carlos Antonio Neira Bustos <cneirabustos@gmail.com>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "brouer\@redhat.com" <brouer@redhat.com>,
-        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "brouer@redhat.com" <brouer@redhat.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v10 2/4] bpf: new helper to obtain namespace data
+ from current task New bpf helper bpf_get_current_pidns_info.
+Thread-Topic: [PATCH bpf-next v10 2/4] bpf: new helper to obtain namespace
+ data from current task New bpf helper bpf_get_current_pidns_info.
+Thread-Index: AQHVZQnHC5SFgtm26kSgAiqJpjAzqqcfV1wAgABrMACAA+AVAIABbemAgACAjACAAJdbyoABaP+AgAJNzTOAAAgCgA==
+Date:   Fri, 13 Sep 2019 17:28:34 +0000
+Message-ID: <b99306da-e689-a815-8e5b-398bd2a35506@fb.com>
 References: <20190906150952.23066-1-cneirabustos@gmail.com>
-        <20190906150952.23066-3-cneirabustos@gmail.com>
-        <20190906152435.GW1131@ZenIV.linux.org.uk>
-        <20190906154647.GA19707@ZenIV.linux.org.uk>
-        <20190906160020.GX1131@ZenIV.linux.org.uk>
-        <c0e67fc7-be66-c4c6-6aad-316cbba18757@fb.com>
-        <20190907001056.GA1131@ZenIV.linux.org.uk>
-        <7d196a64-cf36-c2d5-7328-154aaeb929eb@fb.com>
-        <20190909174522.GA17882@frodo.byteswizards.com>
-        <dadf3657-2648-14ef-35ee-e09efb2cdb3e@fb.com>
-        <20190910231506.GL1131@ZenIV.linux.org.uk>
-        <87o8zr8cz3.fsf@x220.int.ebiederm.org>
-        <7b0a325e-9187-702f-eba7-bfcc7e3f7eb4@fb.com>
-Date:   Fri, 13 Sep 2019 11:59:23 -0500
-In-Reply-To: <7b0a325e-9187-702f-eba7-bfcc7e3f7eb4@fb.com> (Yonghong Song's
-        message of "Thu, 12 Sep 2019 05:49:00 +0000")
-Message-ID: <87a7b8gmj8.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+ <20190906150952.23066-3-cneirabustos@gmail.com>
+ <20190906152435.GW1131@ZenIV.linux.org.uk>
+ <20190906154647.GA19707@ZenIV.linux.org.uk>
+ <20190906160020.GX1131@ZenIV.linux.org.uk>
+ <c0e67fc7-be66-c4c6-6aad-316cbba18757@fb.com>
+ <20190907001056.GA1131@ZenIV.linux.org.uk>
+ <7d196a64-cf36-c2d5-7328-154aaeb929eb@fb.com>
+ <20190909174522.GA17882@frodo.byteswizards.com>
+ <dadf3657-2648-14ef-35ee-e09efb2cdb3e@fb.com>
+ <20190910231506.GL1131@ZenIV.linux.org.uk>
+ <87o8zr8cz3.fsf@x220.int.ebiederm.org>
+ <7b0a325e-9187-702f-eba7-bfcc7e3f7eb4@fb.com>
+ <87a7b8gmj8.fsf@x220.int.ebiederm.org>
+In-Reply-To: <87a7b8gmj8.fsf@x220.int.ebiederm.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR0201CA0025.namprd02.prod.outlook.com
+ (2603:10b6:301:74::38) To BYAPR15MB3384.namprd15.prod.outlook.com
+ (2603:10b6:a03:112::27)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::ec5b]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b361c1ce-08a9-4d30-80c4-08d7386fce26
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600166)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:BYAPR15MB3366;
+x-ms-traffictypediagnostic: BYAPR15MB3366:
+x-ms-exchange-purlcount: 6
+x-microsoft-antispam-prvs: <BYAPR15MB3366C44DF30C905886B9BF24D3B30@BYAPR15MB3366.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:247;
+x-forefront-prvs: 0159AC2B97
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(39860400002)(376002)(346002)(136003)(366004)(189003)(199004)(81156014)(8936002)(478600001)(6486002)(229853002)(25786009)(6436002)(6116002)(53936002)(476003)(14444005)(6306002)(6512007)(256004)(4326008)(5660300002)(86362001)(71190400001)(71200400001)(7736002)(316002)(14454004)(305945005)(11346002)(2616005)(966005)(446003)(53546011)(6506007)(102836004)(386003)(52116002)(6246003)(31696002)(76176011)(186003)(99286004)(486006)(81166006)(36756003)(2906002)(54906003)(31686004)(66446008)(64756008)(66556008)(66476007)(66946007)(6916009)(8676002)(46003);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3366;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: LdPeaIoCmZntTQJu5ORGkDnjmFLWGrVWPd64R1b5DygikdKqBKiLiS+vRNJESbBzRtAq/4kOA+kpJlsfviRr3TiQcZp1n30g2p0TrSTmPOpSFsyuzrDDuog8KDhqx/ub7JEEAKwskANYOOHhLg1WrtaK15kM6Fh9oi9vOc0oiKhNx1E0GRsRYsvhWFvUSpTwp0AcieSoGvwpwseHf9hpw5VXekUN+RVjxikPpT+nHnf52Q9uiQw/igBvNUPGEPCSqJUsl51LmLHisNKDcUQQidiYGkllx7nW66QbmLbwLIU6OZmdGf8rf2SNdOH9bptfy40qeypRHkmJl/pfoLsTF9gDTGNYC3UlcGPsvPyH3D5IB83F+bvxgOqmEcApsOfpXA/2nFlIrDz7ZATtnp3PLMQH+kcxcjhN0O3eBGpuFaQ=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <667ABFF4B8B57644B43C289A2C4DF783@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1i8ov7-0000yk-10;;;mid=<87a7b8gmj8.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/cD5NG1UJx++PyMjNdkjNsczn4qkEJJm0=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,T_TooManySym_03,XMGappySubj_01,XMGappySubj_02,
-        XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  1.0 XMGappySubj_02 Gappier still
-        *  0.5 XMGappySubj_01 Very gappy subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_03 6+ unique symbols in subject
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Yonghong Song <yhs@fb.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 950 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 2.5 (0.3%), b_tie_ro: 1.71 (0.2%), parse: 0.83
-        (0.1%), extract_message_metadata: 14 (1.5%), get_uri_detail_list: 3.6
-        (0.4%), tests_pri_-1000: 4.9 (0.5%), tests_pri_-950: 1.07 (0.1%),
-        tests_pri_-900: 0.83 (0.1%), tests_pri_-90: 35 (3.7%), check_bayes: 34
-        (3.6%), b_tokenize: 13 (1.3%), b_tok_get_all: 12 (1.2%), b_comp_prob:
-        2.8 (0.3%), b_tok_touch_all: 4.5 (0.5%), b_finish: 0.57 (0.1%),
-        tests_pri_0: 598 (63.0%), check_dkim_signature: 0.47 (0.0%),
-        check_dkim_adsp: 2.4 (0.3%), poll_dns_idle: 277 (29.1%), tests_pri_10:
-        1.70 (0.2%), tests_pri_500: 288 (30.3%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH bpf-next v10 2/4] bpf: new helper to obtain namespace data from current task New bpf helper bpf_get_current_pidns_info.
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b361c1ce-08a9-4d30-80c4-08d7386fce26
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Sep 2019 17:28:34.9658
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +F5qlc0BdGJ7J/JHHiG6GVsMPhSG53uB1xYyvMFSAjJgGt+Gbnw9+VrW9fqx5y0V
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3366
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
+ definitions=2019-09-13_08:2019-09-11,2019-09-13 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ lowpriorityscore=0 adultscore=0 clxscore=1015 mlxlogscore=999 spamscore=0
+ bulkscore=0 malwarescore=0 suspectscore=0 priorityscore=1501
+ impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1909130175
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Yonghong Song <yhs@fb.com> writes:
-
-> On 9/11/19 9:16 AM, Eric W. Biederman wrote:
->> Al Viro <viro@zeniv.linux.org.uk> writes:
->> 
->>> On Tue, Sep 10, 2019 at 10:35:09PM +0000, Yonghong Song wrote:
->>>>
->>>> Carlos,
->>>>
->>>> Discussed with Eric today for what is the best way to get
->>>> the device number for a namespace. The following patch seems
->>>> a reasonable start although Eric would like to see
->>>> how the helper is used in order to decide whether the
->>>> interface looks right.
->>>>
->>>> commit bb00fc36d5d263047a8bceb3e51e969d7fbce7db (HEAD -> fs2)
->>>> Author: Yonghong Song <yhs@fb.com>
->>>> Date:   Mon Sep 9 21:50:51 2019 -0700
->>>>
->>>>       nsfs: add an interface function ns_get_inum_dev()
->>>>
->>>>       This patch added an interface function
->>>>       ns_get_inum_dev(). Given a ns_common structure,
->>>>       the function returns the inode and device
->>>>       numbers. The function will be used later
->>>>       by a newly added bpf helper.
->>>>
->>>>       Signed-off-by: Yonghong Song <yhs@fb.com>
->>>>
->>>> diff --git a/fs/nsfs.c b/fs/nsfs.c
->>>> index a0431642c6b5..a603c6fc3f54 100644
->>>> --- a/fs/nsfs.c
->>>> +++ b/fs/nsfs.c
->>>> @@ -245,6 +245,14 @@ struct file *proc_ns_fget(int fd)
->>>>           return ERR_PTR(-EINVAL);
->>>>    }
->>>>
->>>> +/* Get the device number for the current task pidns.
->>>> + */
->>>> +void ns_get_inum_dev(struct ns_common *ns, u32 *inum, dev_t *dev)
->>>> +{
->>>> +       *inum = ns->inum;
->>>> +       *dev = nsfs_mnt->mnt_sb->s_dev;
->>>> +}
->>>
->>> Umm...  Where would it get the device number once we get (hell knows
->>> what for) multiple nsfs instances?  I still don't understand what
->>> would that be about, TBH...  Is it really per-userns?  Or something
->>> else entirely?  Eric, could you give some context?
->> 
->> My goal is not to paint things into a corner, with future changes.
->> Right now it is possible to stat a namespace file descriptor and
->> get a device and inode number.  Then compare that.
->> 
->> I don't want people using the inode number in nsfd as some magic
->> namespace id.
->> 
->> We have had times in the past where there was more than one superblock
->> and thus more than one device number.  Further if userspace ever uses
->> this heavily there may be times in the future where for
->> checkpoint/restart purposes we will want multiple nsfd's so we can
->> preserve the inode number accross a migration.
->> 
->> Realistically there will probably just some kind of hotplug notification
->> to userspace to say we have hotplugged your operatining system as
->> a migration notification.
->> 
->> Now the halway discussion did not quite capture everything I was trying
->> to say but it at least got to the right ballpark.
->> 
->> The helper in fs/nsfs.c should be:
->> 
->> bool ns_match(const struct ns_common *ns, dev_t dev, ino_t ino)
->> {
->>          return ((ns->inum == ino) && (nsfs_mnt->mnt_sb->s_dev == dev));
->> }
->> 
->> That way if/when there are multiple inodes identifying the same
->> namespace the bpf programs don't need to change.
->
-> Thanks, Eric. This is indeed better. The bpf helper should focus
-> on comparing dev/ino, instead of return the dev/ino to bpf program.
->
-> So overall, nsfs related change will look like:
->
-> diff --git a/fs/nsfs.c b/fs/nsfs.c
-> index a0431642c6b5..7e78d89c2172 100644
-> --- a/fs/nsfs.c
-> +++ b/fs/nsfs.c
-> @@ -245,6 +245,11 @@ struct file *proc_ns_fget(int fd)
->          return ERR_PTR(-EINVAL);
->   }
->
-> +bool ns_match(const struct ns_common *ns, dev_t dev, ino_t ino)
-> +{
-> +       return ((ns->inum == ino) && (nsfs_mnt->mnt_sb->s_dev == dev));
-> +}
-> +
->   static int nsfs_show_path(struct seq_file *seq, struct dentry *dentry)
->   {
->          struct inode *inode = d_inode(dentry);
-> diff --git a/include/linux/proc_ns.h b/include/linux/proc_ns.h
-> index d31cb6215905..79639807e960 100644
-> --- a/include/linux/proc_ns.h
-> +++ b/include/linux/proc_ns.h
-> @@ -81,6 +81,7 @@ extern void *ns_get_path(struct path *path, struct 
-> task_struct *task,
->   typedef struct ns_common *ns_get_path_helper_t(void *);
->   extern void *ns_get_path_cb(struct path *path, ns_get_path_helper_t 
-> ns_get_cb,
->                              void *private_data);
-> +extern bool ns_match(const struct ns_common *ns, dev_t dev, ino_t ino);
->
->   extern int ns_get_name(char *buf, size_t size, struct task_struct *task,
->                          const struct proc_ns_operations *ns_ops);
->
->> 
->> Up farther in the stack it should be something like:
->> 
->>> BPF_CALL_2(bpf_current_pidns_match, dev_t *dev, ino_t *ino)
->>> {
->>>          return ns_match(&task_active_pid_ns(current)->ns, *dev, *ino);
->>> }
->>>
->>> const struct bpf_func_proto bpf_current_pidns_match_proto = {
->>> 	.func		= bpf_current_pins_match,
->>> 	.gpl_only	= true,
->>> 	.ret_type	= RET_INTEGER
->>> 	.arg1_type	= ARG_PTR_TO_DEVICE_NUMBER,
->>> 	.arg2_type	= ARG_PTR_TO_INODE_NUMBER,
->>> };
->> 
->> That allows comparing what the bpf came up with with whatever value
->> userspace generated by stating the file descriptor.
->> 
->> 
->> That is the least bad suggestion I currently have for that
->> functionality.  It really would be better to not have that filter in the
->> bpf program itself but in the infrastructure that binds a program to a
->> set of tasks.
->> 
->> The problem with this approach is whatever device/inode you have when
->> the namespace they refer to exits there is the possibility that the
->> inode will be reused.  So your filter will eventually start matching on
->> the wrong thing.
->
-> I come up with a differeent helper definition, which is much more
-> similar to existing bpf_get_current_pid_tgid() and helper definition
-> much more conforms to bpf convention.
-
-There is a problem with your bpf_get_ns_current_pid_tgid below.
-The inode number is a 64bit number.  To be nice to old userspace
-we try and not use 64bit inode numbers where they are not required
-but in this case we should not use an interface that assumes inode
-numbers are 32bit.  They just aren't.
-
-I didn't know how to express that in the bpf proto so I did what
-I could.
-
-The alternative to this would be to simply restrict this
-helper to bpf programs registered in the initial pid namespace.
-At which point you could just ensure all the numbers are in
-the global pid namespace.
-
-Hmm.  Looing at the comment below I am confused.
-
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 5e28718928ca..bc26903c80c7 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -11,6 +11,8 @@
->   #include <linux/uidgid.h>
->   #include <linux/filter.h>
->   #include <linux/ctype.h>
-> +#include <linux/pid_namespace.h>
-> +#include <linux/proc_ns.h>
->
->   #include "../../lib/kstrtox.h"
->
-> @@ -487,3 +489,33 @@ const struct bpf_func_proto bpf_strtoul_proto = {
->          .arg4_type      = ARG_PTR_TO_LONG,
->   };
->   #endif
-> +
-> +BPF_CALL_2(bpf_get_ns_current_pid_tgid, u32, dev, u32, inum)
-> +{
-> +       struct task_struct *task = current;
-> +       struct pid_namespace *pidns;
-> +       pid_t pid, tgid;
-> +
-> +       if (unlikely(!task))
-> +               return -EINVAL;
-> +
-> +
-> +       pidns = task_active_pid_ns(task);
-> +       if (unlikely(!pidns))
-> +               return -ENOENT;
-> +
-> +       if (!ns_match(&pidns->ns, (dev_t)dev, inum))
-> +               return -EINVAL;
-> +
-> +       pid = task_pid_nr_ns(task, pidns);
-> +       tgid = task_tgid_nr_ns(task, pidns);
-> +
-> +       return (u64) tgid << 32 | pid;
-> +}
-> +
-> +const struct bpf_func_proto bpf_get_ns_current_pid_tgid_proto = {
-> +       .func           = bpf_get_ns_current_pid_tgid,
-> +       .gpl_only       = false,
-> +       .ret_type       = RET_INTEGER,
-> +       .arg1_type      = ARG_ANYTHING,
-> +       .arg2_type      = ARG_ANYTHING,
-> +};
->
-> Existing usage of bpf_get_current_pid_tgid() can be converted
-> to bpf_get_ns_current_pid_tgid() if ns dev/inode number
-> is supplied. For bpf_get_ns_current_pid_tgid(), checking
-> return value ( < 0 or not) is needed.
-
-Ok.  I missed something.
-
-What is the problem bpf_get_ns_current_pid_tgid trying to solve
-that bpf_get_current_pid_tgid does not solve.
-
-I would think since much of tracing ebpf is fundamentally restricted
-to the global root user.  Limiting the ebpf programs to the initial
-pid namespace should not be a problem.
-
-So I don't understand why you need to specify the namespace in
-the ebpf call.
-
-Can someone give me a clue what problem is being sovled by this
-new call?
-
-Eric
+DQoNCk9uIDkvMTMvMTkgNTo1OSBQTSwgRXJpYyBXLiBCaWVkZXJtYW4gd3JvdGU6DQo+IFlvbmdo
+b25nIFNvbmcgPHloc0BmYi5jb20+IHdyaXRlczoNCj4gDQo+PiBPbiA5LzExLzE5IDk6MTYgQU0s
+IEVyaWMgVy4gQmllZGVybWFuIHdyb3RlOg0KPj4+IEFsIFZpcm8gPHZpcm9AemVuaXYubGludXgu
+b3JnLnVrPiB3cml0ZXM6DQo+Pj4NCj4+Pj4gT24gVHVlLCBTZXAgMTAsIDIwMTkgYXQgMTA6MzU6
+MDlQTSArMDAwMCwgWW9uZ2hvbmcgU29uZyB3cm90ZToNCj4+Pj4+DQo+Pj4+PiBDYXJsb3MsDQo+
+Pj4+Pg0KPj4+Pj4gRGlzY3Vzc2VkIHdpdGggRXJpYyB0b2RheSBmb3Igd2hhdCBpcyB0aGUgYmVz
+dCB3YXkgdG8gZ2V0DQo+Pj4+PiB0aGUgZGV2aWNlIG51bWJlciBmb3IgYSBuYW1lc3BhY2UuIFRo
+ZSBmb2xsb3dpbmcgcGF0Y2ggc2VlbXMNCj4+Pj4+IGEgcmVhc29uYWJsZSBzdGFydCBhbHRob3Vn
+aCBFcmljIHdvdWxkIGxpa2UgdG8gc2VlDQo+Pj4+PiBob3cgdGhlIGhlbHBlciBpcyB1c2VkIGlu
+IG9yZGVyIHRvIGRlY2lkZSB3aGV0aGVyIHRoZQ0KPj4+Pj4gaW50ZXJmYWNlIGxvb2tzIHJpZ2h0
+Lg0KPj4+Pj4NCj4+Pj4+IGNvbW1pdCBiYjAwZmMzNmQ1ZDI2MzA0N2E4YmNlYjNlNTFlOTY5ZDdm
+YmNlN2RiIChIRUFEIC0+IGZzMikNCj4+Pj4+IEF1dGhvcjogWW9uZ2hvbmcgU29uZyA8eWhzQGZi
+LmNvbT4NCj4+Pj4+IERhdGU6ICAgTW9uIFNlcCA5IDIxOjUwOjUxIDIwMTkgLTA3MDANCj4+Pj4+
+DQo+Pj4+PiAgICAgICAgbnNmczogYWRkIGFuIGludGVyZmFjZSBmdW5jdGlvbiBuc19nZXRfaW51
+bV9kZXYoKQ0KPj4+Pj4NCj4+Pj4+ICAgICAgICBUaGlzIHBhdGNoIGFkZGVkIGFuIGludGVyZmFj
+ZSBmdW5jdGlvbg0KPj4+Pj4gICAgICAgIG5zX2dldF9pbnVtX2RldigpLiBHaXZlbiBhIG5zX2Nv
+bW1vbiBzdHJ1Y3R1cmUsDQo+Pj4+PiAgICAgICAgdGhlIGZ1bmN0aW9uIHJldHVybnMgdGhlIGlu
+b2RlIGFuZCBkZXZpY2UNCj4+Pj4+ICAgICAgICBudW1iZXJzLiBUaGUgZnVuY3Rpb24gd2lsbCBi
+ZSB1c2VkIGxhdGVyDQo+Pj4+PiAgICAgICAgYnkgYSBuZXdseSBhZGRlZCBicGYgaGVscGVyLg0K
+Pj4+Pj4NCj4+Pj4+ICAgICAgICBTaWduZWQtb2ZmLWJ5OiBZb25naG9uZyBTb25nIDx5aHNAZmIu
+Y29tPg0KPj4+Pj4NCj4+Pj4+IGRpZmYgLS1naXQgYS9mcy9uc2ZzLmMgYi9mcy9uc2ZzLmMNCj4+
+Pj4+IGluZGV4IGEwNDMxNjQyYzZiNS4uYTYwM2M2ZmMzZjU0IDEwMDY0NA0KPj4+Pj4gLS0tIGEv
+ZnMvbnNmcy5jDQo+Pj4+PiArKysgYi9mcy9uc2ZzLmMNCj4+Pj4+IEBAIC0yNDUsNiArMjQ1LDE0
+IEBAIHN0cnVjdCBmaWxlICpwcm9jX25zX2ZnZXQoaW50IGZkKQ0KPj4+Pj4gICAgICAgICAgICBy
+ZXR1cm4gRVJSX1BUUigtRUlOVkFMKTsNCj4+Pj4+ICAgICB9DQo+Pj4+Pg0KPj4+Pj4gKy8qIEdl
+dCB0aGUgZGV2aWNlIG51bWJlciBmb3IgdGhlIGN1cnJlbnQgdGFzayBwaWRucy4NCj4+Pj4+ICsg
+Ki8NCj4+Pj4+ICt2b2lkIG5zX2dldF9pbnVtX2RldihzdHJ1Y3QgbnNfY29tbW9uICpucywgdTMy
+ICppbnVtLCBkZXZfdCAqZGV2KQ0KPj4+Pj4gK3sNCj4+Pj4+ICsgICAgICAgKmludW0gPSBucy0+
+aW51bTsNCj4+Pj4+ICsgICAgICAgKmRldiA9IG5zZnNfbW50LT5tbnRfc2ItPnNfZGV2Ow0KPj4+
+Pj4gK30NCj4+Pj4NCj4+Pj4gVW1tLi4uICBXaGVyZSB3b3VsZCBpdCBnZXQgdGhlIGRldmljZSBu
+dW1iZXIgb25jZSB3ZSBnZXQgKGhlbGwga25vd3MNCj4+Pj4gd2hhdCBmb3IpIG11bHRpcGxlIG5z
+ZnMgaW5zdGFuY2VzPyAgSSBzdGlsbCBkb24ndCB1bmRlcnN0YW5kIHdoYXQNCj4+Pj4gd291bGQg
+dGhhdCBiZSBhYm91dCwgVEJILi4uICBJcyBpdCByZWFsbHkgcGVyLXVzZXJucz8gIE9yIHNvbWV0
+aGluZw0KPj4+PiBlbHNlIGVudGlyZWx5PyAgRXJpYywgY291bGQgeW91IGdpdmUgc29tZSBjb250
+ZXh0Pw0KPj4+DQo+Pj4gTXkgZ29hbCBpcyBub3QgdG8gcGFpbnQgdGhpbmdzIGludG8gYSBjb3Ju
+ZXIsIHdpdGggZnV0dXJlIGNoYW5nZXMuDQo+Pj4gUmlnaHQgbm93IGl0IGlzIHBvc3NpYmxlIHRv
+IHN0YXQgYSBuYW1lc3BhY2UgZmlsZSBkZXNjcmlwdG9yIGFuZA0KPj4+IGdldCBhIGRldmljZSBh
+bmQgaW5vZGUgbnVtYmVyLiAgVGhlbiBjb21wYXJlIHRoYXQuDQo+Pj4NCj4+PiBJIGRvbid0IHdh
+bnQgcGVvcGxlIHVzaW5nIHRoZSBpbm9kZSBudW1iZXIgaW4gbnNmZCBhcyBzb21lIG1hZ2ljDQo+
+Pj4gbmFtZXNwYWNlIGlkLg0KPj4+DQo+Pj4gV2UgaGF2ZSBoYWQgdGltZXMgaW4gdGhlIHBhc3Qg
+d2hlcmUgdGhlcmUgd2FzIG1vcmUgdGhhbiBvbmUgc3VwZXJibG9jaw0KPj4+IGFuZCB0aHVzIG1v
+cmUgdGhhbiBvbmUgZGV2aWNlIG51bWJlci4gIEZ1cnRoZXIgaWYgdXNlcnNwYWNlIGV2ZXIgdXNl
+cw0KPj4+IHRoaXMgaGVhdmlseSB0aGVyZSBtYXkgYmUgdGltZXMgaW4gdGhlIGZ1dHVyZSB3aGVy
+ZSBmb3INCj4+PiBjaGVja3BvaW50L3Jlc3RhcnQgcHVycG9zZXMgd2Ugd2lsbCB3YW50IG11bHRp
+cGxlIG5zZmQncyBzbyB3ZSBjYW4NCj4+PiBwcmVzZXJ2ZSB0aGUgaW5vZGUgbnVtYmVyIGFjY3Jv
+c3MgYSBtaWdyYXRpb24uDQo+Pj4NCj4+PiBSZWFsaXN0aWNhbGx5IHRoZXJlIHdpbGwgcHJvYmFi
+bHkganVzdCBzb21lIGtpbmQgb2YgaG90cGx1ZyBub3RpZmljYXRpb24NCj4+PiB0byB1c2Vyc3Bh
+Y2UgdG8gc2F5IHdlIGhhdmUgaG90cGx1Z2dlZCB5b3VyIG9wZXJhdGluaW5nIHN5c3RlbSBhcw0K
+Pj4+IGEgbWlncmF0aW9uIG5vdGlmaWNhdGlvbi4NCj4+Pg0KPj4+IE5vdyB0aGUgaGFsd2F5IGRp
+c2N1c3Npb24gZGlkIG5vdCBxdWl0ZSBjYXB0dXJlIGV2ZXJ5dGhpbmcgSSB3YXMgdHJ5aW5nDQo+
+Pj4gdG8gc2F5IGJ1dCBpdCBhdCBsZWFzdCBnb3QgdG8gdGhlIHJpZ2h0IGJhbGxwYXJrLg0KPj4+
+DQo+Pj4gVGhlIGhlbHBlciBpbiBmcy9uc2ZzLmMgc2hvdWxkIGJlOg0KPj4+DQo+Pj4gYm9vbCBu
+c19tYXRjaChjb25zdCBzdHJ1Y3QgbnNfY29tbW9uICpucywgZGV2X3QgZGV2LCBpbm9fdCBpbm8p
+DQo+Pj4gew0KPj4+ICAgICAgICAgICByZXR1cm4gKChucy0+aW51bSA9PSBpbm8pICYmIChuc2Zz
+X21udC0+bW50X3NiLT5zX2RldiA9PSBkZXYpKTsNCj4+PiB9DQo+Pj4NCj4+PiBUaGF0IHdheSBp
+Zi93aGVuIHRoZXJlIGFyZSBtdWx0aXBsZSBpbm9kZXMgaWRlbnRpZnlpbmcgdGhlIHNhbWUNCj4+
+PiBuYW1lc3BhY2UgdGhlIGJwZiBwcm9ncmFtcyBkb24ndCBuZWVkIHRvIGNoYW5nZS4NCj4+DQo+
+PiBUaGFua3MsIEVyaWMuIFRoaXMgaXMgaW5kZWVkIGJldHRlci4gVGhlIGJwZiBoZWxwZXIgc2hv
+dWxkIGZvY3VzDQo+PiBvbiBjb21wYXJpbmcgZGV2L2lubywgaW5zdGVhZCBvZiByZXR1cm4gdGhl
+IGRldi9pbm8gdG8gYnBmIHByb2dyYW0uDQo+Pg0KPj4gU28gb3ZlcmFsbCwgbnNmcyByZWxhdGVk
+IGNoYW5nZSB3aWxsIGxvb2sgbGlrZToNCj4+DQo+PiBkaWZmIC0tZ2l0IGEvZnMvbnNmcy5jIGIv
+ZnMvbnNmcy5jDQo+PiBpbmRleCBhMDQzMTY0MmM2YjUuLjdlNzhkODljMjE3MiAxMDA2NDQNCj4+
+IC0tLSBhL2ZzL25zZnMuYw0KPj4gKysrIGIvZnMvbnNmcy5jDQo+PiBAQCAtMjQ1LDYgKzI0NSwx
+MSBAQCBzdHJ1Y3QgZmlsZSAqcHJvY19uc19mZ2V0KGludCBmZCkNCj4+ICAgICAgICAgICByZXR1
+cm4gRVJSX1BUUigtRUlOVkFMKTsNCj4+ICAgIH0NCj4+DQo+PiArYm9vbCBuc19tYXRjaChjb25z
+dCBzdHJ1Y3QgbnNfY29tbW9uICpucywgZGV2X3QgZGV2LCBpbm9fdCBpbm8pDQo+PiArew0KPj4g
+KyAgICAgICByZXR1cm4gKChucy0+aW51bSA9PSBpbm8pICYmIChuc2ZzX21udC0+bW50X3NiLT5z
+X2RldiA9PSBkZXYpKTsNCj4+ICt9DQo+PiArDQo+PiAgICBzdGF0aWMgaW50IG5zZnNfc2hvd19w
+YXRoKHN0cnVjdCBzZXFfZmlsZSAqc2VxLCBzdHJ1Y3QgZGVudHJ5ICpkZW50cnkpDQo+PiAgICB7
+DQo+PiAgICAgICAgICAgc3RydWN0IGlub2RlICppbm9kZSA9IGRfaW5vZGUoZGVudHJ5KTsNCj4+
+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3Byb2NfbnMuaCBiL2luY2x1ZGUvbGludXgvcHJv
+Y19ucy5oDQo+PiBpbmRleCBkMzFjYjYyMTU5MDUuLjc5NjM5ODA3ZTk2MCAxMDA2NDQNCj4+IC0t
+LSBhL2luY2x1ZGUvbGludXgvcHJvY19ucy5oDQo+PiArKysgYi9pbmNsdWRlL2xpbnV4L3Byb2Nf
+bnMuaA0KPj4gQEAgLTgxLDYgKzgxLDcgQEAgZXh0ZXJuIHZvaWQgKm5zX2dldF9wYXRoKHN0cnVj
+dCBwYXRoICpwYXRoLCBzdHJ1Y3QNCj4+IHRhc2tfc3RydWN0ICp0YXNrLA0KPj4gICAgdHlwZWRl
+ZiBzdHJ1Y3QgbnNfY29tbW9uICpuc19nZXRfcGF0aF9oZWxwZXJfdCh2b2lkICopOw0KPj4gICAg
+ZXh0ZXJuIHZvaWQgKm5zX2dldF9wYXRoX2NiKHN0cnVjdCBwYXRoICpwYXRoLCBuc19nZXRfcGF0
+aF9oZWxwZXJfdA0KPj4gbnNfZ2V0X2NiLA0KPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgdm9pZCAqcHJpdmF0ZV9kYXRhKTsNCj4+ICtleHRlcm4gYm9vbCBuc19tYXRjaChjb25zdCBz
+dHJ1Y3QgbnNfY29tbW9uICpucywgZGV2X3QgZGV2LCBpbm9fdCBpbm8pOw0KPj4NCj4+ICAgIGV4
+dGVybiBpbnQgbnNfZ2V0X25hbWUoY2hhciAqYnVmLCBzaXplX3Qgc2l6ZSwgc3RydWN0IHRhc2tf
+c3RydWN0ICp0YXNrLA0KPj4gICAgICAgICAgICAgICAgICAgICAgICAgICBjb25zdCBzdHJ1Y3Qg
+cHJvY19uc19vcGVyYXRpb25zICpuc19vcHMpOw0KPj4NCj4+Pg0KPj4+IFVwIGZhcnRoZXIgaW4g
+dGhlIHN0YWNrIGl0IHNob3VsZCBiZSBzb21ldGhpbmcgbGlrZToNCj4+Pg0KPj4+PiBCUEZfQ0FM
+TF8yKGJwZl9jdXJyZW50X3BpZG5zX21hdGNoLCBkZXZfdCAqZGV2LCBpbm9fdCAqaW5vKQ0KPj4+
+PiB7DQo+Pj4+ICAgICAgICAgICByZXR1cm4gbnNfbWF0Y2goJnRhc2tfYWN0aXZlX3BpZF9ucyhj
+dXJyZW50KS0+bnMsICpkZXYsICppbm8pOw0KPj4+PiB9DQo+Pj4+DQo+Pj4+IGNvbnN0IHN0cnVj
+dCBicGZfZnVuY19wcm90byBicGZfY3VycmVudF9waWRuc19tYXRjaF9wcm90byA9IHsNCj4+Pj4g
+CS5mdW5jCQk9IGJwZl9jdXJyZW50X3BpbnNfbWF0Y2gsDQo+Pj4+IAkuZ3BsX29ubHkJPSB0cnVl
+LA0KPj4+PiAJLnJldF90eXBlCT0gUkVUX0lOVEVHRVINCj4+Pj4gCS5hcmcxX3R5cGUJPSBBUkdf
+UFRSX1RPX0RFVklDRV9OVU1CRVIsDQo+Pj4+IAkuYXJnMl90eXBlCT0gQVJHX1BUUl9UT19JTk9E
+RV9OVU1CRVIsDQo+Pj4+IH07DQo+Pj4NCj4+PiBUaGF0IGFsbG93cyBjb21wYXJpbmcgd2hhdCB0
+aGUgYnBmIGNhbWUgdXAgd2l0aCB3aXRoIHdoYXRldmVyIHZhbHVlDQo+Pj4gdXNlcnNwYWNlIGdl
+bmVyYXRlZCBieSBzdGF0aW5nIHRoZSBmaWxlIGRlc2NyaXB0b3IuDQo+Pj4NCj4+Pg0KPj4+IFRo
+YXQgaXMgdGhlIGxlYXN0IGJhZCBzdWdnZXN0aW9uIEkgY3VycmVudGx5IGhhdmUgZm9yIHRoYXQN
+Cj4+PiBmdW5jdGlvbmFsaXR5LiAgSXQgcmVhbGx5IHdvdWxkIGJlIGJldHRlciB0byBub3QgaGF2
+ZSB0aGF0IGZpbHRlciBpbiB0aGUNCj4+PiBicGYgcHJvZ3JhbSBpdHNlbGYgYnV0IGluIHRoZSBp
+bmZyYXN0cnVjdHVyZSB0aGF0IGJpbmRzIGEgcHJvZ3JhbSB0byBhDQo+Pj4gc2V0IG9mIHRhc2tz
+Lg0KPj4+DQo+Pj4gVGhlIHByb2JsZW0gd2l0aCB0aGlzIGFwcHJvYWNoIGlzIHdoYXRldmVyIGRl
+dmljZS9pbm9kZSB5b3UgaGF2ZSB3aGVuDQo+Pj4gdGhlIG5hbWVzcGFjZSB0aGV5IHJlZmVyIHRv
+IGV4aXRzIHRoZXJlIGlzIHRoZSBwb3NzaWJpbGl0eSB0aGF0IHRoZQ0KPj4+IGlub2RlIHdpbGwg
+YmUgcmV1c2VkLiAgU28geW91ciBmaWx0ZXIgd2lsbCBldmVudHVhbGx5IHN0YXJ0IG1hdGNoaW5n
+IG9uDQo+Pj4gdGhlIHdyb25nIHRoaW5nLg0KPj4NCj4+IEkgY29tZSB1cCB3aXRoIGEgZGlmZmVy
+ZWVudCBoZWxwZXIgZGVmaW5pdGlvbiwgd2hpY2ggaXMgbXVjaCBtb3JlDQo+PiBzaW1pbGFyIHRv
+IGV4aXN0aW5nIGJwZl9nZXRfY3VycmVudF9waWRfdGdpZCgpIGFuZCBoZWxwZXIgZGVmaW5pdGlv
+bg0KPj4gbXVjaCBtb3JlIGNvbmZvcm1zIHRvIGJwZiBjb252ZW50aW9uLg0KPiANCj4gVGhlcmUg
+aXMgYSBwcm9ibGVtIHdpdGggeW91ciBicGZfZ2V0X25zX2N1cnJlbnRfcGlkX3RnaWQgYmVsb3cu
+DQo+IFRoZSBpbm9kZSBudW1iZXIgaXMgYSA2NGJpdCBudW1iZXIuICBUbyBiZSBuaWNlIHRvIG9s
+ZCB1c2Vyc3BhY2UNCj4gd2UgdHJ5IGFuZCBub3QgdXNlIDY0Yml0IGlub2RlIG51bWJlcnMgd2hl
+cmUgdGhleSBhcmUgbm90IHJlcXVpcmVkDQo+IGJ1dCBpbiB0aGlzIGNhc2Ugd2Ugc2hvdWxkIG5v
+dCB1c2UgYW4gaW50ZXJmYWNlIHRoYXQgYXNzdW1lcyBpbm9kZQ0KPiBudW1iZXJzIGFyZSAzMmJp
+dC4gIFRoZXkganVzdCBhcmVuJ3QuDQo+IA0KPiBJIGRpZG4ndCBrbm93IGhvdyB0byBleHByZXNz
+IHRoYXQgaW4gdGhlIGJwZiBwcm90byBzbyBJIGRpZCB3aGF0DQo+IEkgY291bGQuDQoNCldlIGNh
+biBjaGFuZ2UgaW51bSB0byB1NjQuIEp1c3QgY2hhbmdlIHRoZSBwcm90b3R5cGUgbGlrZQ0KYHU2
+NCwgaW51bWAgc2hvdWxkIGJlIGdvb2QuDQoNCj4gDQo+IFRoZSBhbHRlcm5hdGl2ZSB0byB0aGlz
+IHdvdWxkIGJlIHRvIHNpbXBseSByZXN0cmljdCB0aGlzDQo+IGhlbHBlciB0byBicGYgcHJvZ3Jh
+bXMgcmVnaXN0ZXJlZCBpbiB0aGUgaW5pdGlhbCBwaWQgbmFtZXNwYWNlLg0KPiBBdCB3aGljaCBw
+b2ludCB5b3UgY291bGQganVzdCBlbnN1cmUgYWxsIHRoZSBudW1iZXJzIGFyZSBpbg0KPiB0aGUg
+Z2xvYmFsIHBpZCBuYW1lc3BhY2UuDQo+IA0KPiBIbW0uICBMb29pbmcgYXQgdGhlIGNvbW1lbnQg
+YmVsb3cgSSBhbSBjb25mdXNlZC4NCj4gDQo+PiBkaWZmIC0tZ2l0IGEva2VybmVsL2JwZi9oZWxw
+ZXJzLmMgYi9rZXJuZWwvYnBmL2hlbHBlcnMuYw0KPj4gaW5kZXggNWUyODcxODkyOGNhLi5iYzI2
+OTAzYzgwYzcgMTAwNjQ0DQo+PiAtLS0gYS9rZXJuZWwvYnBmL2hlbHBlcnMuYw0KPj4gKysrIGIv
+a2VybmVsL2JwZi9oZWxwZXJzLmMNCj4+IEBAIC0xMSw2ICsxMSw4IEBADQo+PiAgICAjaW5jbHVk
+ZSA8bGludXgvdWlkZ2lkLmg+DQo+PiAgICAjaW5jbHVkZSA8bGludXgvZmlsdGVyLmg+DQo+PiAg
+ICAjaW5jbHVkZSA8bGludXgvY3R5cGUuaD4NCj4+ICsjaW5jbHVkZSA8bGludXgvcGlkX25hbWVz
+cGFjZS5oPg0KPj4gKyNpbmNsdWRlIDxsaW51eC9wcm9jX25zLmg+DQo+Pg0KPj4gICAgI2luY2x1
+ZGUgIi4uLy4uL2xpYi9rc3RydG94LmgiDQo+Pg0KPj4gQEAgLTQ4NywzICs0ODksMzMgQEAgY29u
+c3Qgc3RydWN0IGJwZl9mdW5jX3Byb3RvIGJwZl9zdHJ0b3VsX3Byb3RvID0gew0KPj4gICAgICAg
+ICAgIC5hcmc0X3R5cGUgICAgICA9IEFSR19QVFJfVE9fTE9ORywNCj4+ICAgIH07DQo+PiAgICAj
+ZW5kaWYNCj4+ICsNCj4+ICtCUEZfQ0FMTF8yKGJwZl9nZXRfbnNfY3VycmVudF9waWRfdGdpZCwg
+dTMyLCBkZXYsIHUzMiwgaW51bSkNCj4+ICt7DQo+PiArICAgICAgIHN0cnVjdCB0YXNrX3N0cnVj
+dCAqdGFzayA9IGN1cnJlbnQ7DQo+PiArICAgICAgIHN0cnVjdCBwaWRfbmFtZXNwYWNlICpwaWRu
+czsNCj4+ICsgICAgICAgcGlkX3QgcGlkLCB0Z2lkOw0KPj4gKw0KPj4gKyAgICAgICBpZiAodW5s
+aWtlbHkoIXRhc2spKQ0KPj4gKyAgICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOw0KPj4gKw0K
+Pj4gKw0KPj4gKyAgICAgICBwaWRucyA9IHRhc2tfYWN0aXZlX3BpZF9ucyh0YXNrKTsNCj4+ICsg
+ICAgICAgaWYgKHVubGlrZWx5KCFwaWRucykpDQo+PiArICAgICAgICAgICAgICAgcmV0dXJuIC1F
+Tk9FTlQ7DQo+PiArDQo+PiArICAgICAgIGlmICghbnNfbWF0Y2goJnBpZG5zLT5ucywgKGRldl90
+KWRldiwgaW51bSkpDQo+PiArICAgICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7DQo+PiArDQo+
+PiArICAgICAgIHBpZCA9IHRhc2tfcGlkX25yX25zKHRhc2ssIHBpZG5zKTsNCj4+ICsgICAgICAg
+dGdpZCA9IHRhc2tfdGdpZF9ucl9ucyh0YXNrLCBwaWRucyk7DQo+PiArDQo+PiArICAgICAgIHJl
+dHVybiAodTY0KSB0Z2lkIDw8IDMyIHwgcGlkOw0KPj4gK30NCj4+ICsNCj4+ICtjb25zdCBzdHJ1
+Y3QgYnBmX2Z1bmNfcHJvdG8gYnBmX2dldF9uc19jdXJyZW50X3BpZF90Z2lkX3Byb3RvID0gew0K
+Pj4gKyAgICAgICAuZnVuYyAgICAgICAgICAgPSBicGZfZ2V0X25zX2N1cnJlbnRfcGlkX3RnaWQs
+DQo+PiArICAgICAgIC5ncGxfb25seSAgICAgICA9IGZhbHNlLA0KPj4gKyAgICAgICAucmV0X3R5
+cGUgICAgICAgPSBSRVRfSU5URUdFUiwNCj4+ICsgICAgICAgLmFyZzFfdHlwZSAgICAgID0gQVJH
+X0FOWVRISU5HLA0KPj4gKyAgICAgICAuYXJnMl90eXBlICAgICAgPSBBUkdfQU5ZVEhJTkcsDQo+
+PiArfTsNCj4+DQo+PiBFeGlzdGluZyB1c2FnZSBvZiBicGZfZ2V0X2N1cnJlbnRfcGlkX3RnaWQo
+KSBjYW4gYmUgY29udmVydGVkDQo+PiB0byBicGZfZ2V0X25zX2N1cnJlbnRfcGlkX3RnaWQoKSBp
+ZiBucyBkZXYvaW5vZGUgbnVtYmVyDQo+PiBpcyBzdXBwbGllZC4gRm9yIGJwZl9nZXRfbnNfY3Vy
+cmVudF9waWRfdGdpZCgpLCBjaGVja2luZw0KPj4gcmV0dXJuIHZhbHVlICggPCAwIG9yIG5vdCkg
+aXMgbmVlZGVkLg0KPiANCj4gT2suICBJIG1pc3NlZCBzb21ldGhpbmcuDQo+IA0KPiBXaGF0IGlz
+IHRoZSBwcm9ibGVtIGJwZl9nZXRfbnNfY3VycmVudF9waWRfdGdpZCB0cnlpbmcgdG8gc29sdmUN
+Cj4gdGhhdCBicGZfZ2V0X2N1cnJlbnRfcGlkX3RnaWQgZG9lcyBub3Qgc29sdmUuDQo+IA0KPiBJ
+IHdvdWxkIHRoaW5rIHNpbmNlIG11Y2ggb2YgdHJhY2luZyBlYnBmIGlzIGZ1bmRhbWVudGFsbHkg
+cmVzdHJpY3RlZA0KPiB0byB0aGUgZ2xvYmFsIHJvb3QgdXNlci4gIExpbWl0aW5nIHRoZSBlYnBm
+IHByb2dyYW1zIHRvIHRoZSBpbml0aWFsDQo+IHBpZCBuYW1lc3BhY2Ugc2hvdWxkIG5vdCBiZSBh
+IHByb2JsZW0uDQo+IA0KPiBTbyBJIGRvbid0IHVuZGVyc3RhbmQgd2h5IHlvdSBuZWVkIHRvIHNw
+ZWNpZnkgdGhlIG5hbWVzcGFjZSBpbg0KPiB0aGUgZWJwZiBjYWxsLg0KPiANCj4gQ2FuIHNvbWVv
+bmUgZ2l2ZSBtZSBhIGNsdWUgd2hhdCBwcm9ibGVtIGlzIGJlaW5nIHNvdmxlZCBieSB0aGlzDQo+
+IG5ldyBjYWxsPw0KDQpXZSB3YW50IHRvIHJ1biB0aGUgYnBmIHByb2dyYW0gaW5zaWRlIHRoZSBu
+YW1lc3BhY2UuDQpUaGVyZSBhcmUgcGFyYWxsZWwgd29yayB0byBpbnRyb2R1Y2UgQ0FQX0JQRiBh
+bmQgQ0FQX1RSQUNJTkcNCihodHRwczovL2xvcmUua2VybmVsLm9yZy9icGYvMjAxOTA5MDYyMzEw
+NTMuMTI3Njc5Mi0xLWFzdEBrZXJuZWwub3JnL1QvI3QpDQp0byBmYWNpbGl0YXRlIHRoaXMuDQoN
+CldlIGhhdmUgdXNlcnMgcmVxdWVzdGluZyB0byB1c2UgYmNjIHRvb2xzIGluc2lkZSB0aGUgY29u
+dGFpbmVycy4NCmh0dHBzOi8vZ2l0aHViLmNvbS9pb3Zpc29yL2JjYy9pc3N1ZXMvMTg3NQ0KaHR0
+cHM6Ly9naXRodWIuY29tL2lvdmlzb3IvYmNjL2lzc3Vlcy8xMzY2DQpodHRwczovL2dpdGh1Yi5j
+b20vaW92aXNvci9iY2MvaXNzdWVzLzEzMjkNCmh0dHBzOi8vZ2l0aHViLmNvbS9pb3Zpc29yL2Jj
+Yy9pc3N1ZXMvMTUzMg0KLi4uDQoNClllcywgdGhpcyBtYXkgcmVxdWlyZSBncmFudGluZyBgcm9v
+dGAgcHJpdmlsZWdlIHRvIGNvbnRhaW5lcnMuDQpUaGlzIGNhbiBiZSBkb25lIG91dHNpZGUgY29u
+dGFpbmVyIGFzIHdlbGwuIEJ1dCBpdCBpcyBqdXN0IGENCmJpZyB1c2FiaWxpdHkgaW1wcm92ZW1l
+bnQgaWYgcGVvcGxlIGNhbiBkbyBpbnNpZGUgdGhlIGNvbnRhaW5lcnMuDQoNCkluIGFkZGl0aW9u
+LCB3ZSBoYXZlIHJlcXVlc3RzIGJlbG93IGFuZCBpbnRlcm5hbCByZXF1ZXN0cyBhcyB3ZWxsDQp0
+byBmaWx0ZXIgYmFzZWQgb24gY29udGFpbmVycy4NCmh0dHBzOi8vZ2l0aHViLmNvbS9pb3Zpc29y
+L2JjYy9pc3N1ZXMvMTExOQ0KVGhlIG5ldyBoZWxwZXIgcGVybWl0cyBhdCByb290IHRoYXQgeW91
+IGNhbiBmaWx0ZXIgYmFzZWQgb24NCmEgcGFydGljdWxhciBjb250YWluZXIgKG5vdCBjb250YWlu
+ZXIgaWQsIGJ1dCBkZXYvaW5vZGUgc2hvdWxkDQppZGVudGlmeWluZyBvbmUpLg0KDQpIb3BlIHRo
+aXMgY2xhcmlmeSB3aHkgdGhpcyBoZWxwZXIgaXMgdXNlZnVsIGZvciB0cmFjaW5nIGNvbW11bml0
+eS4NCg0KPiANCj4gRXJpYw0KPiANCg==
