@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1564EB41F4
-	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2019 22:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 338E8B4227
+	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2019 22:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391450AbfIPUfe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Sep 2019 16:35:34 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:41826 "EHLO
+        id S2391484AbfIPUog (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Sep 2019 16:44:36 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:34016 "EHLO
         mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391449AbfIPUfd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Sep 2019 16:35:33 -0400
-Received: by mail-qt1-f195.google.com with SMTP id x4so1524936qtq.8;
-        Mon, 16 Sep 2019 13:35:33 -0700 (PDT)
+        with ESMTP id S2387513AbfIPUof (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Sep 2019 16:44:35 -0400
+Received: by mail-qt1-f195.google.com with SMTP id j1so1625889qth.1;
+        Mon, 16 Sep 2019 13:44:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ihyLcr/IE8dYmQPkpIxkQFwoGx9mvcYHtpb7Os1ZV9I=;
-        b=NVDnnS7Qjr/iIlDteTT8VdQpogh5KuOmqGAR+uyUiMRjAcDLr+uF+NSzaRmuN0SzyG
-         DDYmyjgeGNHR6DQI/SXQxp6dBzMWV0moM0bbd/wIxEDP4cbEuylTVBW9dhtl1fLoJKir
-         e/Xm32DiqsKNhoV3N9E/FgaWo8OCSgqeY4HAkOGfibBs6G5GbKmwrxCw1AFEl94rn6N3
-         Rnc/imUTNVAdFVs2RrLRgIaC+NuEht3gb6z51oHKDMXoWcRh6mpOyFGgnPRPHd+iXIlr
-         Ke1WZ3hTXpcUkIXD1nU0spWaYs8W0axbgLtphCVsDArRicsBh2GpteOCq1ejiKhThHHP
-         8Oag==
+        bh=fNQ0/77F+AwzFz6t9T1s7MhdfhD+EKvJmwBiN2PsM0A=;
+        b=WxF5VH3DkkGuMREPXNnBNs776VjAu9QvdYnof94lPdrdw+fGzg7amWLYNcVZTYVr0E
+         PfIdvDOcGocHIpzPGEdYNNrelIItwsFKohmfRlsAGAklFkMx6av53NyNilI423DUd82r
+         Iokta/kg02tepBP8pq4aKRETHwoWJ12atxXksAm7DYv+grOVEZ7bDeopX4hfAOeIs+H5
+         xqqrAkaDzPDf/uUkgyy4aldUSTi/H6LdDAW24gE6c2/9LNwl25YZO2ekp+VBb/nBP26K
+         WTxx9bDaMjlJtQUpnDHx7M0mNCUdkpEgKWcHN1RfMw/s/4HzDZZZtIII6f4/WcMbUDtU
+         g8ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ihyLcr/IE8dYmQPkpIxkQFwoGx9mvcYHtpb7Os1ZV9I=;
-        b=E2wfzM9LrOJysvDoS5serqsOAemdO9kavdBfdcOh2YQLcp+Ai9byzJUbuFzdklc09K
-         EIdRpSuz0OhIJ5TafDEJKibWv/zRuSZNMCBpbTvdvuvhuPsfN3Gr2ZhoSt3jrstabaZV
-         XddBI+elWiDMVyycEd0A5SoJyG7ZQcBt5N3V8l9LY31FMn17f/iYCJcVOqVylSx4KVJ+
-         NFtCbj7yw4lE0Pub0HJAUeHthvbYBBbLez+iY4AcAfZ6qKpZadJE/riU1CW43VjbOrKr
-         TiLYNMu3j2+XyrrtzKQVBjP87EWQ7RvFygOYwTmeE3ZzkX5sVzx1Zo1OIlTLzXQZMXrN
-         ZUCA==
-X-Gm-Message-State: APjAAAXnHuNl3pAp/lsfHeOCdfqd/76zA224eZ4iF79PuZZajFLXns+H
-        tXO/J5aLwUh5qPMKCnIYoElrkPD5rfMq3Buqexo=
-X-Google-Smtp-Source: APXvYqy8aV+MnFrM7mg9z9Q3FKj5HhJM55bINhYiDMgDGGW0Vt197cpT56rOs3YEQQ8XH4TDqGsRq5JFKRqX+bh0Zv4=
-X-Received: by 2002:ac8:7401:: with SMTP id p1mr259871qtq.141.1568666132646;
- Mon, 16 Sep 2019 13:35:32 -0700 (PDT)
+        bh=fNQ0/77F+AwzFz6t9T1s7MhdfhD+EKvJmwBiN2PsM0A=;
+        b=RVlorYOf2Xd6VNd8xI+CyWbxb1LdtLc4n0RI0Yf7tqq4klbo21AugdLMuGJmA+wC2N
+         ct05oXKQonOvS3vRzTWMjq58j7YLjmMLTOSFdqWQkKHS3SKVIepfr34p8aN3sOOANDc9
+         e72scYyx11i30cjjPDmQAe62zETqAcm7RXEbDxiyc2Me8x8KVS4Vd//MOdxsnmvrN7Uu
+         fb+1f1VootE1bZrw9XjWZLjO7ITGcWMwSH+WO0EixbCe/LdWgWpr9YUd4AvPvD4lqBRs
+         nb33souAwNQmvnRDUCszYmG3BRVhiK9nB7yOzjgWm/tXXqyC5ZH82NgL8edGyb8nR24y
+         nz4w==
+X-Gm-Message-State: APjAAAVioMPc8xECpIT9aB0NQrTDWKYaw4Ta9mhQOrsiD9mVOmT4I0vx
+        qZPSoB5XG5ysvZFZoMVwoNbbuwYUH8fHedxht0g=
+X-Google-Smtp-Source: APXvYqwFhlHUsQXl15LvXDGEFqUimBRifO2bhyUdORZbmWYBkPaooQHzjBdHdiW2agqPC8ionWphkYdQiv+KIkbcIjk=
+X-Received: by 2002:a05:6214:114a:: with SMTP id b10mr201853qvt.150.1568666674518;
+ Mon, 16 Sep 2019 13:44:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190916105433.11404-1-ivan.khoronzhuk@linaro.org> <20190916105433.11404-5-ivan.khoronzhuk@linaro.org>
-In-Reply-To: <20190916105433.11404-5-ivan.khoronzhuk@linaro.org>
+References: <20190916105433.11404-1-ivan.khoronzhuk@linaro.org> <20190916105433.11404-6-ivan.khoronzhuk@linaro.org>
+In-Reply-To: <20190916105433.11404-6-ivan.khoronzhuk@linaro.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 16 Sep 2019 13:35:21 -0700
-Message-ID: <CAEf4BzYJ5Q4rBHGET5z6nPBhh=8qAK7uuCK=Qnsh14FDH-24gA@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 04/14] samples: bpf: use own EXTRA_CFLAGS for
- clang commands
+Date:   Mon, 16 Sep 2019 13:44:23 -0700
+Message-ID: <CAEf4BzYpCGHxNG-jOjwx5a2NXbvLW4gZH8GD2p7E27v9K3ookg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 05/14] samples: bpf: makefile: use
+ __LINUX_ARM_ARCH__ selector for arm
 To:     Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -66,52 +66,50 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 16, 2019 at 4:01 AM Ivan Khoronzhuk
+On Mon, Sep 16, 2019 at 3:59 AM Ivan Khoronzhuk
 <ivan.khoronzhuk@linaro.org> wrote:
 >
-> It can overlap with CFLAGS used for libraries built with gcc if
-> not now then in next patches. Correct it here for simplicity.
->
-> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+> For arm, -D__LINUX_ARM_ARCH__=X is min version used as instruction
+> set selector and is absolutely required while parsing some parts of
+> headers. It's present in KBUILD_CFLAGS but not in autoconf.h, so let's
+> retrieve it from and add to programs cflags. In another case errors
+> like "SMP is not supported" for armv7 and bunch of other errors are
+> issued resulting to incorrect final object.
 > ---
-
-With GCC BPF front-end recently added, we should probably generalize
-this to something like BPF_EXTRA_CFLAGS or something like that,
-eventually. But for now:
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  samples/bpf/Makefile | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+>  samples/bpf/Makefile | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 >
 > diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> index b59e77e2250e..8ecc5d0c2d5b 100644
+> index 8ecc5d0c2d5b..d3c8db3df560 100644
 > --- a/samples/bpf/Makefile
 > +++ b/samples/bpf/Makefile
-> @@ -218,10 +218,10 @@ BTF_LLVM_PROBE := $(shell echo "int main() { return 0; }" | \
->                           /bin/rm -f ./llvm_btf_verify.o)
+> @@ -185,6 +185,16 @@ HOSTLDLIBS_map_perf_test   += -lrt
+>  HOSTLDLIBS_test_overhead       += -lrt
+>  HOSTLDLIBS_xdpsock             += -pthread
 >
->  ifneq ($(BTF_LLVM_PROBE),)
-> -       EXTRA_CFLAGS += -g
-> +       CLANG_EXTRA_CFLAGS += -g
->  else
->  ifneq ($(and $(BTF_LLC_PROBE),$(BTF_PAHOLE_PROBE),$(BTF_OBJCOPY_PROBE)),)
-> -       EXTRA_CFLAGS += -g
-> +       CLANG_EXTRA_CFLAGS += -g
->         LLC_FLAGS += -mattr=dwarfris
->         DWARF2BTF = y
->  endif
-> @@ -280,8 +280,8 @@ $(obj)/hbm_edt_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
->  # useless for BPF samples.
->  $(obj)/%.o: $(src)/%.c
->         @echo "  CLANG-bpf " $@
-> -       $(Q)$(CLANG) $(NOSTDINC_FLAGS) $(LINUXINCLUDE) $(EXTRA_CFLAGS) -I$(obj) \
-> -               -I$(srctree)/tools/testing/selftests/bpf/ \
-> +       $(Q)$(CLANG) $(NOSTDINC_FLAGS) $(LINUXINCLUDE) $(CLANG_EXTRA_CFLAGS) \
-> +               -I$(obj) -I$(srctree)/tools/testing/selftests/bpf/ \
->                 -D__KERNEL__ -D__BPF_TRACING__ -Wno-unused-value -Wno-pointer-sign \
->                 -D__TARGET_ARCH_$(SRCARCH) -Wno-compare-distinct-pointer-types \
->                 -Wno-gnu-variable-sized-type-not-at-end \
+> +ifeq ($(ARCH), arm)
+> +# Strip all except -D__LINUX_ARM_ARCH__ option needed to handle linux
+> +# headers when arm instruction set identification is requested.
+> +ARM_ARCH_SELECTOR = $(shell echo "$(KBUILD_CFLAGS) " | \
+> +                   sed 's/[[:blank:]]/\n/g' | sed '/^-D__LINUX_ARM_ARCH__/!d')
+
+Does the following work exactly like that without shelling out (and
+being arguably simpler)?
+
+ARM_ARCH_SELECTOR = $(filter -D__LINUX_ARM_ARCH__%, $(KBUILD_CFLAGS))
+
+> +
+> +CLANG_EXTRA_CFLAGS := $(ARM_ARCH_SELECTOR)
+> +KBUILD_HOSTCFLAGS := $(ARM_ARCH_SELECTOR)
+
+Isn't this clearing out previous value of KBUILD_HOSTCFLAGS? Is that
+intentional, or it was supposed to be += here?
+
+> +endif
+> +
+>  # Allows pointing LLC/CLANG to a LLVM backend with bpf support, redefine on cmdline:
+>  #  make samples/bpf/ LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
+>  LLC ?= llc
 > --
 > 2.17.1
 >
