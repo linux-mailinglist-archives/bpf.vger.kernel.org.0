@@ -2,46 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A24B362A
-	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2019 10:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B76F3B3646
+	for <lists+bpf@lfdr.de>; Mon, 16 Sep 2019 10:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730649AbfIPIIW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Sep 2019 04:08:22 -0400
-Received: from www62.your-server.de ([213.133.104.62]:41816 "EHLO
+        id S1727296AbfIPIOk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Sep 2019 04:14:40 -0400
+Received: from www62.your-server.de ([213.133.104.62]:43652 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727374AbfIPIIW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Sep 2019 04:08:22 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
+        with ESMTP id S1726125AbfIPIOk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Sep 2019 04:14:40 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1i9m3U-0007bw-I3; Mon, 16 Sep 2019 10:08:16 +0200
+        id 1i9m9c-000889-6e; Mon, 16 Sep 2019 10:14:36 +0200
 Received: from [2a02:120b:2c12:c120:71a0:62dd:894c:fd0e] (helo=pc-66.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89)
         (envelope-from <daniel@iogearbox.net>)
-        id 1i9m3U-0006Yc-AD; Mon, 16 Sep 2019 10:08:16 +0200
-Subject: Re: [PATCH] libbpf: Don't error out if getsockopt() fails for
- XDP_OPTIONS
-To:     Yonghong Song <yhs@fb.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        id 1i9m9b-000XT4-VQ; Mon, 16 Sep 2019 10:14:35 +0200
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: add bpf-gcc support
+To:     Ilya Leoshkevich <iii@linux.ibm.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "maximmi@mellanox.com" <maximmi@mellanox.com>
-References: <20190909174619.1735-1-toke@redhat.com>
- <8e909219-a225-b242-aaa5-bee1180aed48@fb.com> <87lfuxul2b.fsf@toke.dk>
- <60651b4b-c185-1e17-1664-88957537e3f1@fb.com>
+        "Jose E . Marchesi" <jose.marchesi@oracle.com>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+References: <20190912160543.66653-1-iii@linux.ibm.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9271a44f-1bbf-1305-bff9-8cbb8bae9098@iogearbox.net>
-Date:   Mon, 16 Sep 2019 10:08:14 +0200
+Message-ID: <b45776ba-1f5c-65b4-ca27-d4f4b4c706b0@iogearbox.net>
+Date:   Mon, 16 Sep 2019 10:14:35 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <60651b4b-c185-1e17-1664-88957537e3f1@fb.com>
+In-Reply-To: <20190912160543.66653-1-iii@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.101.4/25573/Sun Sep 15 10:22:02 2019)
 Sender: bpf-owner@vger.kernel.org
@@ -49,49 +45,56 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/13/19 8:53 PM, Yonghong Song wrote:
-> On 9/10/19 12:06 AM, Toke Høiland-Jørgensen wrote:
->> Yonghong Song <yhs@fb.com> writes:
->>> On 9/9/19 10:46 AM, Toke Høiland-Jørgensen wrote:
->>>> The xsk_socket__create() function fails and returns an error if it cannot
->>>> get the XDP_OPTIONS through getsockopt(). However, support for XDP_OPTIONS
->>>> was not added until kernel 5.3, so this means that creating XSK sockets
->>>> always fails on older kernels.
->>>>
->>>> Since the option is just used to set the zero-copy flag in the xsk struct,
->>>> there really is no need to error out if the getsockopt() call fails.
->>>>
->>>> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
->>>> ---
->>>>     tools/lib/bpf/xsk.c | 8 ++------
->>>>     1 file changed, 2 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
->>>> index 680e63066cf3..598e487d9ce8 100644
->>>> --- a/tools/lib/bpf/xsk.c
->>>> +++ b/tools/lib/bpf/xsk.c
->>>> @@ -603,12 +603,8 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
->>>>     
->>>>     	optlen = sizeof(opts);
->>>>     	err = getsockopt(xsk->fd, SOL_XDP, XDP_OPTIONS, &opts, &optlen);
->>>> -	if (err) {
->>>> -		err = -errno;
->>>> -		goto out_mmap_tx;
->>>> -	}
->>>> -
->>>> -	xsk->zc = opts.flags & XDP_OPTIONS_ZEROCOPY;
->>>> +	if (!err)
->>>> +		xsk->zc = opts.flags & XDP_OPTIONS_ZEROCOPY;
->>>>     
->>>>     	if (!(xsk->config.libbpf_flags & XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD)) {
->>>>     		err = xsk_setup_xdp_prog(xsk);
->>>
->>> Since 'zc' is not used by anybody, maybe all codes 'zc' related can be
->>> removed? It can be added back back once there is an interface to use
->>> 'zc'?
->>
->> Fine with me; up to the maintainers what they prefer, I guess? :)
+On 9/12/19 6:05 PM, Ilya Leoshkevich wrote:
+> Now that binutils and gcc support for BPF is upstream, make use of it in
+> BPF selftests using alu32-like approach. Share as much as possible of
+> CFLAGS calculation with clang.
+> 
+> Fixes only obvious issues, leaving more complex ones for later:
+> - Use gcc-provided bpf-helpers.h instead of manually defining the
+>    helpers, change bpf_helpers.h include guard to avoid conflict.
+> - Include <linux/stddef.h> for __always_inline.
+> - Add $(OUTPUT)/../usr/include to include path in order to use local
+>    kernel headers instead of system kernel headers when building with O=.
+> 
+> In order to activate the bpf-gcc support, one needs to configure
+> binutils and gcc with --target=bpf and make them available in $PATH. In
+> particular, gcc must be installed as `bpf-gcc`, which is the default.
+> 
+> Right now with binutils 25a2915e8dba and gcc r275589 only a handful of
+> tests work:
+> 
+> 	# ./test_progs_bpf_gcc
+> 	# Summary: 7/39 PASSED, 1 SKIPPED, 98 FAILED
+> 
+> The reason for those failures are as follows:
+> 
+> - Build errors:
+>    - `error: too many function arguments for eBPF` for __always_inline
+>      functions read_str_var and read_map_var - must be inlining issue,
+>      and for process_l3_headers_v6, which relies on optimizing away
+>      function arguments.
+>    - `error: indirect call in function, which are not supported by eBPF`
+>      where there are no obvious indirect calls in the source calls, e.g.
+>      in __encap_ipip_none.
+>    - `error: field 'lock' has incomplete type` for fields of `struct
+>      bpf_spin_lock` type - bpf_spin_lock is re#defined by bpf-helpers.h,
+>      so its usage is sensitive to order of #includes.
+>    - `error: eBPF stack limit exceeded` in sysctl_tcp_mem.
+> - Load errors:
+>    - Missing object files due to above build errors.
+>    - `libbpf: failed to create map (name: 'test_ver.bss')`.
+>    - `libbpf: object file doesn't contain bpf program`.
+>    - `libbpf: Program '.text' contains unrecognized relo data pointing to
+>      section 0`.
+>    - `libbpf: BTF is required, but is missing or corrupted` - no BTF
+>      support in gcc yet.
+> 
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+> v1->v2: Use bpf-helpers.h, fix a few obvious compatibility problems.
 
-Given this is not exposed to applications at this point and we don't do anything
-useful with it, lets just remove the zc cruft until there is a proper interface
-added to libbpf. Toke, please respin with the suggested removal, thanks!
+I think it's a good starting point unblocking Jose and others to run the BPF test
+suite against bpf-gcc. Longer term we might want to do further refactoring to really
+cleanly split llvm vs gcc dependency, and compare test results back to back to make
+sure it's consistent behavior. Anyway, applied, thanks!
