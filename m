@@ -2,131 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 930DEB57DA
-	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2019 23:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 415F1B5876
+	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2019 01:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727667AbfIQV7Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Sep 2019 17:59:24 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:39352 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727623AbfIQV7Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Sep 2019 17:59:24 -0400
-Received: by mail-oi1-f196.google.com with SMTP id w144so4265485oia.6
-        for <bpf@vger.kernel.org>; Tue, 17 Sep 2019 14:59:23 -0700 (PDT)
+        id S1728596AbfIQXTy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Sep 2019 19:19:54 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:46156 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728593AbfIQXTy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Sep 2019 19:19:54 -0400
+Received: by mail-qk1-f194.google.com with SMTP id 201so5888252qkd.13;
+        Tue, 17 Sep 2019 16:19:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=EW2X0pQcIs7IJCWHWbHBXgfW46P4WEaokqNG2sfuxAw=;
-        b=b/X/epPQZvb6OMWkt3514aW9hqQaZrBWb5oRo9t5edo0vozE7mTuXDkbTXriqLoDW/
-         7Lpvi/9JIpTNEoEaggzKS3c9BnQE/bWnb654MfzXAJiqtGubvaYUNoeRQY5b0fpbxhcD
-         FTdD9L29UX/qm8jcbV9FJoD37EPZivjfBJJ4vawRi5z28eD2KZR6xqWnVyQPBTyuPwm4
-         57f5Fk4dstqlRQm2abRzRFEVRoccjyPyyr1CAFZ3Umi45T5j+YTVY3kiUmY2xOx7v0QB
-         NVpC00klzKEkF/2JKk87Y1cjVR5AdEYKn3OYS7BunXeat8pzVAqYYlu1dzWT6FLQo/pa
-         tSHA==
+        bh=rW0fUUzyh5J4//FBaJRiFgdgywM+/ZSdY6ujE4+DAUk=;
+        b=lCs6VbxaKxAcvuw2itRNfnACUY+KBtbP/PA2lQCYDPK1Qqch4hCbKt0Fgzd1ONvV3+
+         FimQFOOM3mAqLKmB2aNVhOJGIHnRTpljEE9amCuPiKljm+LnLC6i7AeyOKQYKI9CHZoH
+         6D2bGca0Tl1I4F10dOUt2ARwHgKGGa2kZtR++DXCxQe0yNQ2iHOFvzcWFFaF7RZL+ZRD
+         eo1qVjORUf+KuGyKYzXsMLDdumRW5gkiD1jTjKzAElZKQ1Hs2nj5JZxrHFWFc0o5MObc
+         iYtgCf21N9yIQIi7FjISAmYevQ/pObU0lYa9fyXp/OUOlDrjC5nVkbbhkeHowVo7GN6K
+         UBEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EW2X0pQcIs7IJCWHWbHBXgfW46P4WEaokqNG2sfuxAw=;
-        b=IazVJKWlkxnOp08CX3LRVL2++9b2QgGbeOSpTj32/7LGWnIAfZaGXHRm7WCrIgH/kV
-         pBxJzOFtPnq39P5C6mK9ihpntb5/jo7Uh7jSWE32hV+L7/kiHkZwbWnNpX44xY35wRx5
-         odFdAhRjkQqHyru3NH1qkM8lJWYNk87s6WmdZRr4NXEj5XXO6QVMGDEsgDIizpCmsp0j
-         ooLTNctWdj2ieC8EvMIfloZulePyPUJe0E7YdUF7WN9R+6/NwA3PAmItbX88ptbj04Ua
-         KzaKUCIwm+SEM0xHXuiOvrZVerPwVsOT2Q3tz+hUqXtUqKEnoGaIi2ZUig+jVo71cdz1
-         dVlg==
-X-Gm-Message-State: APjAAAWk34oazQ1+8kI91cbxFYeb53aEup4C0BYETZmniSRHRmfEqGmN
-        KU1XoIFuWqczmg5gJCaA+DOCL6IJID60Y10XnaeFlw==
-X-Google-Smtp-Source: APXvYqzQPYBb+qMxeV1bDUw+oSHDBJ2boy2cSrkRRU5vlbjTkrG6EugFukBx4w0hTijgZ77pPvyEDk3fuZbESEyn/gI=
-X-Received: by 2002:aca:eb09:: with SMTP id j9mr212586oih.105.1568757563411;
- Tue, 17 Sep 2019 14:59:23 -0700 (PDT)
+        bh=rW0fUUzyh5J4//FBaJRiFgdgywM+/ZSdY6ujE4+DAUk=;
+        b=FF4q22tMDiiDt+Bthx0hOBElYpVJ2zmoKZZf/jBg4kb68qg15XYUZWwP2uxKVU/ASe
+         sakm3CsNSUjoh8KExActCnYnfihZggrk8bn1qAoU/IgIBGY/vPV/rYIzZ3RE8U5nqVhP
+         JbbwOu4g4sCz2D4vhd25EU00twPVcIdVl8iiDVhY8iaFCKUhhUJ2IyYf5N0SdqsI949b
+         EMmCum7ptZuSsU1UJAf6U0PPO8pCUex8OTZCaQDg7I7gIWXKr3ZfONohvj+LlZBn0YW5
+         YMnOQ34bhwdVnAfy3wtBwIztb/+erwNlePdAZlVs0tvl+rJga5JELvx51KlRXlSBlyip
+         zVUA==
+X-Gm-Message-State: APjAAAXAKaSVRxYtA5LKBLOyNSfYetKtifjPfPc6uFTIdiHUsl1jgCwZ
+        dRglrBypDecFUTvpTd5r5NtK9aQtLBiPtBfnoI8=
+X-Google-Smtp-Source: APXvYqw8N50R1EkGST4sURMrvsr2zGYEOgcUNG/iu4IF+XBMsJJxJ7g8waXOxXrpMDZStlLRdjpv9Yi1hiF693QWKWc=
+X-Received: by 2002:a05:620a:119a:: with SMTP id b26mr1147148qkk.39.1568762391880;
+ Tue, 17 Sep 2019 16:19:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <156821692280.2951081.18036584954940423225.stgit@dwillia2-desk3.amr.corp.intel.com>
- <156821693963.2951081.11214256396118531359.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20190911184332.GL20699@kadam> <9132e214-9b57-07dc-7ee2-f6bc52e960c5@kernel.dk>
- <20190913010937.7fc20d93@lwn.net> <20190913114849.GP20699@kadam> <20190917161608.GA12866@ziepe.ca>
-In-Reply-To: <20190917161608.GA12866@ziepe.ca>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 17 Sep 2019 14:59:11 -0700
-Message-ID: <CAPcyv4jR9ufeXyXOwnnPBC2kbHNfamZu93s4hM371=j-sACAjA@mail.gmail.com>
-Subject: Re: [Ksummit-discuss] [PATCH v2 3/3] libnvdimm, MAINTAINERS:
- Maintainer Entry Profile
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-        Dave Jiang <dave.jiang@intel.com>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org
+References: <20190916105433.11404-1-ivan.khoronzhuk@linaro.org> <20190916105433.11404-8-ivan.khoronzhuk@linaro.org>
+In-Reply-To: <20190916105433.11404-8-ivan.khoronzhuk@linaro.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 17 Sep 2019 16:19:40 -0700
+Message-ID: <CAEf4Bzaidog3n0YP6F5dL2rCrHtKCOBXS0as7usymk8Twdro4w@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 07/14] samples: bpf: add makefile.target for
+ separate CC target build
+To:     Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        clang-built-linux@googlegroups.com,
+        sergei.shtylyov@cogentembedded.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 17, 2019 at 9:16 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Mon, Sep 16, 2019 at 3:58 AM Ivan Khoronzhuk
+<ivan.khoronzhuk@linaro.org> wrote:
 >
-> On Fri, Sep 13, 2019 at 02:48:50PM +0300, Dan Carpenter wrote:
->
-> > It used to be that infiniband used "sizeof foo" instead of sizeof(foo)
-> > but now there is a new maintainer.
->
-> These days I run everything through checkpatch and generally don't
-> want to see much deviation from the 'normal' style, a few minor
-> clang-format quibbles and other check patch positives excluded.
->
-> This means when people touch lines they have to adjust minor things
-> like the odd 'sizeof foo' to make it conforming.
->
-> Like others there is a big historical mismatch and the best I hope for
-> is that new stuff follow the cannonical style. Trying to guess what
-> some appropriate mongral style is for each patch is just a waste of my
-> time.
->
-> I also hold drivers/infiniband as an example of why the column
-> alignment style is harmful. That has not aged well and is the cause of
-> a lot of ugly things.
->
-> > There is one subsystem where the maintainer is super strict rules that
-> > you can't use "I" or "we" in the commit message.  So you can't say "I
-> > noticed a bug while reviewing", you have to say "The code has a bug".
->
-> Ah, the imperative mood nitpick. This one is very exciting to explain
-> to non-native speakers. With many regular submitters I'm still at the
-> "I wish you would use proper grammer and sentence structure" phase..
->
-> These days I just end up copy editing most of the commit messages :(
->
-> > I don't think it's shaming, I think it's validating.  Everyone just
-> > insists that since it's written in the Book of Rules then it's our fault
-> > for not reading it.  It's like those EULA things where there is more
-> > text than anyone can physically read in a life time.
->
-> Yeah, I tend to agree.
->
-> The big special cases with high patch volumes (net being the classic
-> example) should remain special.
->
-> But everyone else is not special, and shouldn't act the same.
->
-> The work people like DanC do with static analysis is valuable, and we
-> should not be insisting that those contributors have to jump through a
-> thousand special hoops.
->
-> I have simply viewed it as the job of the maintainer to run the
-> process and deal with minor nit picks on the fly.
->
-> Maybe that is what we should be documenting?
+> The makefile.target is added only and will be used in
 
-In theory, yes, in practice, as long as there is an exception to the
-rule, it comes down to a question of "is this case special like net or
-not?". I'd rather not waste time debating that on a per-subsystem
-basis vs just getting it all documented for contributors.
+typo: Makefile
 
-I do think it is worth clarifying in the guidelines of writing a
-profile to make an effort to not be special, and that odd looking
-rules will be questioned (like libnvdimm statement continuation), but
-lets not fight the new standards fight until it becomes apparent where
-the outliers lie.
+> sample/bpf/Makefile later in order to switch cross-compiling on CC
+
+on -> to
+
+> from HOSTCC environment.
+>
+> The HOSTCC is supposed to build binaries and tools running on the host
+> afterwards, in order to simplify build or so, like "fixdep" or else.
+> In case of cross compiling "fixdep" is executed on host when the rest
+> samples should run on target arch. In order to build binaries for
+> target arch with CC and tools running on host with HOSTCC, lets add
+> Makefile.target for simplicity, having definition and routines similar
+> to ones, used in script/Makefile.host. This allows later add
+> cross-compilation to samples/bpf with minimum changes.
+>
+> The tprog stands for target programs built with CC.
+
+Why tprog? Could we just use prog: hostprog vs prog.
+
+>
+> Makefile.target contains only stuff needed for samples/bpf, potentially
+> can be reused later and now needed only for unblocking tricky
+> samples/bpf cross compilation.
+>
+> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+> ---
+>  samples/bpf/Makefile.target | 75 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 75 insertions(+)
+>  create mode 100644 samples/bpf/Makefile.target
+>
+> diff --git a/samples/bpf/Makefile.target b/samples/bpf/Makefile.target
+> new file mode 100644
+> index 000000000000..fb6de63f7d2f
+> --- /dev/null
+> +++ b/samples/bpf/Makefile.target
+> @@ -0,0 +1,75 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +# ==========================================================================
+> +# Building binaries on the host system
+> +# Binaries are not used during the compilation of the kernel, and intendent
+
+typo: intended
+
+> +# to be build for target board, target board can be host ofc. Added to build
+
+What's ofc, is it "of course"?
+
+> +# binaries to run not on host system.
+> +#
+> +# Sample syntax (see Documentation/kbuild/makefiles.rst for reference)
+> +# tprogs-y := xsk_example
+> +# Will compile xdpsock_example.c and create an executable named xsk_example
+
+You mix references to xsk_example and xdpsock_example, which is very
+confusing. I'm guessing you meant to use xdpsock_example consistently.
+
+> +#
+> +# tprogs-y    := xdpsock
+> +# xdpsock-objs := xdpsock_1.o xdpsock_2.o
+> +# Will compile xdpsock_1.c and xdpsock_2.c, and then link the executable
+> +# xdpsock, based on xdpsock_1.o and xdpsock_2.o
+> +#
+> +# Inherited from scripts/Makefile.host
+
+"Inspired by" or "Derived from" would be probably more appropriate term :)
+
+> +#
+> +__tprogs := $(sort $(tprogs-y))
+> +
+> +# C code
+> +# Executables compiled from a single .c file
+> +tprog-csingle  := $(foreach m,$(__tprogs), \
+> +                       $(if $($(m)-objs),,$(m)))
+> +
+> +# C executables linked based on several .o files
+> +tprog-cmulti   := $(foreach m,$(__tprogs),\
+> +                       $(if $($(m)-objs),$(m)))
+> +
+> +# Object (.o) files compiled from .c files
+> +tprog-cobjs    := $(sort $(foreach m,$(__tprogs),$($(m)-objs)))
+> +
+> +tprog-csingle  := $(addprefix $(obj)/,$(tprog-csingle))
+> +tprog-cmulti   := $(addprefix $(obj)/,$(tprog-cmulti))
+> +tprog-cobjs    := $(addprefix $(obj)/,$(tprog-cobjs))
+> +
+> +#####
+> +# Handle options to gcc. Support building with separate output directory
+> +
+> +_tprogc_flags   = $(TPROGS_CFLAGS) \
+> +                 $(TPROGCFLAGS_$(basetarget).o)
+> +
+> +# $(objtree)/$(obj) for including generated headers from checkin source files
+> +ifeq ($(KBUILD_EXTMOD),)
+> +ifdef building_out_of_srctree
+> +_tprogc_flags   += -I $(objtree)/$(obj)
+> +endif
+> +endif
+> +
+> +tprogc_flags    = -Wp,-MD,$(depfile) $(_tprogc_flags)
+> +
+> +# Create executable from a single .c file
+> +# tprog-csingle -> Executable
+> +quiet_cmd_tprog-csingle        = CC  $@
+> +      cmd_tprog-csingle        = $(CC) $(tprogc_flags) $(TPROGS_LDFLAGS) -o $@ $< \
+> +               $(TPROGS_LDLIBS) $(TPROGLDLIBS_$(@F))
+> +$(tprog-csingle): $(obj)/%: $(src)/%.c FORCE
+> +       $(call if_changed_dep,tprog-csingle)
+> +
+> +# Link an executable based on list of .o files, all plain c
+> +# tprog-cmulti -> executable
+> +quiet_cmd_tprog-cmulti = LD  $@
+> +      cmd_tprog-cmulti = $(CC) $(tprogc_flags) $(TPROGS_LDFLAGS) -o $@ \
+> +                         $(addprefix $(obj)/,$($(@F)-objs)) \
+> +                         $(TPROGS_LDLIBS) $(TPROGLDLIBS_$(@F))
+> +$(tprog-cmulti): $(tprog-cobjs) FORCE
+> +       $(call if_changed,tprog-cmulti)
+> +$(call multi_depend, $(tprog-cmulti), , -objs)
+> +
+> +# Create .o file from a single .c file
+> +# tprog-cobjs -> .o
+> +quiet_cmd_tprog-cobjs  = CC  $@
+> +      cmd_tprog-cobjs  = $(CC) $(tprogc_flags) -c -o $@ $<
+> +$(tprog-cobjs): $(obj)/%.o: $(src)/%.c FORCE
+> +       $(call if_changed_dep,tprog-cobjs)
+> --
+> 2.17.1
+>
+
+tprogs is quite confusing, but overall looks good to me.
