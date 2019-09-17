@@ -2,194 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5445DB4EFB
-	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2019 15:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48450B4F39
+	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2019 15:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726270AbfIQNRv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Sep 2019 09:17:51 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:43358 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbfIQNRv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Sep 2019 09:17:51 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8HD8uZq013222;
-        Tue, 17 Sep 2019 13:17:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : references : date : in-reply-to : message-id : mime-version :
- content-type; s=corp-2019-08-05;
- bh=XzNv1MZ6Of13L3ansgEAWq2Tt2vhFnfvQBf/yJ5nqLA=;
- b=iBVbQ6/2L93nLAffwpGKtKErM5dFQVHExgpwIo+CoQSIDDUAspOTJU5iybdxUSJ2CBDs
- W6bQvXnMhcYI09bdy1uqkiNu/X1BnNWvfsTZjBkbZcgThNBw+qzMmJzqzNYOr6SmpSks
- BzBWnpqpTbzF6U8wXQJoJ9vQT4REb3VgTbbIxe8as8KYeUI8MpvIdLyoijAiqRKnMrYu
- R4kphHA0hXUvtOG4tyFGBWPsXvleFPCl2fItvJzOuHhxsS0VDsu6QU7Gt3XpDte14rjZ
- CblXUmZK8cPiaM19f9834EEtNy9TLxzHfp4RVGd5XuBPqdi0Zv5ke+XFTY794XNgUktg GQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 2v0ruqp94c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Sep 2019 13:17:24 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8HD8QbN081715;
-        Tue, 17 Sep 2019 13:17:23 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 2v2tmsqe0a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Sep 2019 13:17:23 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x8HDHLUE008812;
-        Tue, 17 Sep 2019 13:17:21 GMT
-Received: from termi.oracle.com (/10.175.7.130)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 17 Sep 2019 06:17:21 -0700
-From:   jose.marchesi@oracle.com (Jose E. Marchesi)
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net
-Subject: Re: [GCC,LLVM] bpf_helpers.h
-References: <87lfutgvsu.fsf@oracle.com>
-        <20190916161742.54yabm3plqert2af@ast-mbp>
-Date:   Tue, 17 Sep 2019 15:17:10 +0200
-In-Reply-To: <20190916161742.54yabm3plqert2af@ast-mbp> (Alexei Starovoitov's
-        message of "Mon, 16 Sep 2019 09:18:17 -0700")
-Message-ID: <87sgov2hbd.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1727024AbfIQNbc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Sep 2019 09:31:32 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:49063 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726131AbfIQNbc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 17 Sep 2019 09:31:32 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id A026E3949;
+        Tue, 17 Sep 2019 09:31:30 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 17 Sep 2019 09:31:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=uhE/vfnqybzdrsUOpjeY917kip
+        DfITlsNpk0umiRhdo=; b=ot7xx72Uo7TcAMiBwtO2/SItXrLMSG0zRRjPWdrRmX
+        +ARzYVeMVVz+3QFO7EbIHNcWn5umL1AeBbQvyfJQ4li9LX3YRd6tRKg0sKr3F2d8
+        9pVy9K3SOca/dDXk9GHOt6ox+QElGyuez4SKyPTewjL+qieclViGFJJNwExBo0DH
+        XYvl953WWHpUh0/FtLWklLP2xGiL5iUSIksUQ4rY66I7+xq7A0q+SLBhxkoZ1oUg
+        rymd5cMpQ2XCAUMBiRKMPOugnTPXqYodHOl3py8+Q4N1lot+QGVNiUy5KxdIjuWD
+        AeBvmPb6joma6X4IE39orwzgTg9yp+oSh2QgKxM6eBzw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=uhE/vfnqybzdrsUOp
+        jeY917kipDfITlsNpk0umiRhdo=; b=Q3zUB3OxJ5qFZVZ6fW5v2wxwFRc5EVcqA
+        n0cPyCRAM5w9lkYlqNSoEMEpEohT461BueXTsWRKHsAdmebyYmHf+aQxnjO3e5U5
+        6KCrvBSK0fxRn768ekBxsmL94T6U8zWrOeAEjIjNqot+lvW2yqO/ZaTjvySg5jsa
+        OruMzJ4H1XKDXDSXtahCkVIRNjhJi6B9VY3BQAW0wa9hkg26AA13ARAUxxDFQ3k8
+        8mn3Np0emgg6Hk0QgInDthPa7xL3OMX05HUw3ZqYD75zZIp0LyauM7u0+IPxo0yK
+        IWcb/uHbZBTLWvr8mmLKsPxgOl08Pvgx1wXJvye8A8VCsVcsNcCbA==
+X-ME-Sender: <xms:MeCAXYEG4Tp3yzO2Vkri9Lue4u1rFx850Q-w18ptikeTMYewqJDAYA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrudeigdefkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephffvuf
+    ffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhes
+    ugiguhhuuhdrgiihiieqnecukfhppeduleelrddvtddurdeiiedrtdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihiienucevlhhushhtvghrufhiiigv
+    pedt
+X-ME-Proxy: <xmx:MeCAXbu_yKFdQ5Myo3XjICgCeKFkUYn7dEixxphC4dL9496n09z7Jg>
+    <xmx:MeCAXYRE5tX0zc4o7Cy15QYEiOYEPWd74WNg3jMHgRkd9IzHm2JOmw>
+    <xmx:MeCAXVPosLEDYC7ygArdMGchSqXMu8daorWtaPPgzQPx-BE6u28LuQ>
+    <xmx:MuCAXbqvRTkzV5irFTH8JMdMQ2DEFhCQqhebxkRUbKUq9-n_ZF7jxyknemk>
+Received: from dlxu-fedora-R90QNFJV.thefacebook.com (unknown [199.201.66.0])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 374CAD6005D;
+        Tue, 17 Sep 2019 09:31:28 -0400 (EDT)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     bpf@vger.kernel.org, songliubraving@fb.com, yhs@fb.com,
+        andriin@fb.com, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, ast@fb.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH bpf-next 0/5] Add PERF_FORMAT_LOST read_format
+Date:   Tue, 17 Sep 2019 06:30:51 -0700
+Message-Id: <20190917133056.5545-1-dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9382 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1909170130
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9382 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1909170130
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+It's useful to know kprobe's nmissed count. For example with tracing
+tools, it's important to know when events may have been lost.  debugfs
+currently exposes a control file to get this information, but it is not
+compatible with probes registered with the perf API.
 
-    [...]
-    > Would you consider implementing this attribute in llvm and adapt the
-    > kernel's bpf_header accordingly?  In that respect, note that it is
-    > possible to pass enum entries to the attribute (at least in GCC.)  So
-    > you once you implement the attribute, you should be able to do:
-    > 
-    >    void *bpf_map_lookup_elem (void *map, const void *key)
-    >        __attribute__ ((kernel_helper (BPF_FUNC_map_lookup_elem)));
-    > 
-    > instead of the current:
-    > 
-    >    static void *(*bpf_map_lookup_elem)(void *map, const void *key) =
-    > 	(void *) BPF_FUNC_map_lookup_elem;
-    
-    What we've been using for long time is not exactly normal C code,
-    but it's a valid C code that any compiler and any backend should
-    consume and generate the code prescribed by the language.
-    Here it says that it's a function pointer with fixed offset.
-    x86 backends in both clang and gcc do the right thing.
+While bpf programs may be able to manually count nhit, there is no way
+to gather nmissed. In other words, it is currently not possible to this
+retrieve information about FD-based probes.
 
-    I don't understand why it's causing bpf backend for gcc to stumble.
-    You mentioned "helper table in gcc bpf backend".
-    That sounds like a red flag.
-    The backend should not know names and numbers for helpers.
-    For the following:
-    static void (*foo)(void) = (void *) 123;
-    int bar()
-    {
-            foo();
-    }
-    It should generate bpf instruction 'bpf_call 123', since that's
-    what C language is asking compiler to do.
+This patch adds a new field to perf's read_format that lets users query
+misses. Misses include both misses from the underlying kprobe
+infrastructure and misses from ringbuffer infrastructure.
 
-The C language does not prescribe compilers to generate any particular
-flavor of call instruction...
+I studied the code various code paths for perf software events and perf
+tracepoints and it does not look like anything can "miss" in the same
+way kprobes can. They can all, however, suffer from ringbuffer misses.
+It's possible I missed something while reading the code so please let
+me know if I am mistaken.
 
-... but that point is moot in this case since bpf only provides one such
-kind of call instruction, and it is perfectly capable of handling the
-situation above, so the compiler should use it, ideally at _any_
-optimization level, and that includes -O0.
+Daniel Xu (5):
+  perf/core: Add PERF_FORMAT_LOST read_format
+  perf/core: Sync perf_event.h to tools
+  libbpf: Add helpers to extract perf fd from bpf_link
+  libbpf: Set read_format PERF_FORMAT_LOST on kprobe perf fds
+  libbpf: Add selftest for PERF_FORMAT_LOST perf read_format
 
-So ok.  What you say makes sense to me.  I'm convinced.
+ include/linux/trace_events.h                  |  1 +
+ include/uapi/linux/perf_event.h               |  5 ++-
+ kernel/events/core.c                          | 39 +++++++++++++++++--
+ kernel/trace/trace_kprobe.c                   |  8 ++++
+ tools/include/uapi/linux/perf_event.h         |  5 ++-
+ tools/lib/bpf/libbpf.c                        | 30 ++++++++++++--
+ tools/lib/bpf/libbpf.h                        | 13 +++++++
+ tools/lib/bpf/libbpf.map                      |  3 ++
+ .../selftests/bpf/prog_tests/attach_probe.c   | 32 ++++++++++++++-
+ 9 files changed, 127 insertions(+), 9 deletions(-)
 
-As for the table of helpers in the compiler, got the same feedback at
-plumbers and I'm removing it. One less maintenance hurdle :)
+-- 
+2.21.0
 
-    It is as you pointed out 'fragile', since it won't work with -O0,
-    but that sort of the point. -O0 is too debuggy and un-optimized
-    that even without this call insn quirk the verifier is not able
-    to analyze even simple programs.
-    Hence -O2 was a requirement for bpf development due to verifier smartness.
-    One can argue that the verifier should become even smarter and analyze -O0 code,
-    but I would argue otherwise. Linux kernel itself won't work with -O0.
-    Same reasoning applies to bpf code. The main purpose of -O0 for user space
-    development is to produce code together with -g that debugger can understand.
-    The variables will stay on stack, line numbers will be intact, etc
-    For bpf program development that's anti pattern.
-    The 'bpf debugging' topic at plumbers showed that we still has a long way
-    to go to make bpf debugging better. Single step, execution trace, nested bpf, etc
-    All that will come, but -O0 support will not.
-
-I see.  Good to know.
-    
-    > Please let me know what do you think.
-    > 
-    > SKB load built-ins
-    > ------------------
-    > 
-    > bpf_helpers.h contains the following llvm-isms:
-    > 
-    >    /* llvm builtin functions that eBPF C program may use to
-    >     * emit BPF_LD_ABS and BPF_LD_IND instructions
-    >     */
-    >    struct sk_buff;
-    >    unsigned long long load_byte(void *skb,
-    >                                 unsigned long long off) asm("llvm.bpf.load.byte");
-    >    unsigned long long load_half(void *skb,
-    > 			        unsigned long long off) asm("llvm.bpf.load.half");
-    >    unsigned long long load_word(void *skb,
-    > 			        unsigned long long off) asm("llvm.bpf.load.word");
-    > 
-    > Would you consider adopting more standard built-ins in llvm, like I
-    > implemented in GCC?  These are:
-    > 
-    >    __builtin_bpf_load_byte (unsigned long long off)
-    >    __builtin_bpf_load_half (unsigned long long off)
-    >    __builtin_bpf_load_word (unsigned long long off)
-    > 
-    > Note that I didn't add an SKB argument to the builtins, as it is not
-    > used: the pointer to the skb is implied by the instructions to be in
-    > some predefined register.  I added compatibility wrappers in my
-    > bpf-helpers.h:
-    > 
-    >   #define load_byte(SKB,OFF) __builtin_bpf_load_byte ((OFF))
-    >   #define load_half(SKB,OFF) __builtin_bpf_load_half ((OFF))
-    >   #define load_word(SKB,OFF) __builtin_bpf_load_word ((OFF))
-    > 
-    > Would you consider removing the unused SKB arguments from the built-ins
-    > in llvm?  Or is there a good reason for having them, other than maybe
-    > backwards compatibility?  In case backwards compatibility is a must, I
-    > can add the unused argument to my builtins.
-    
-    llvm.bpf.load.word consumes 'skb' pointer. llvm bpf backend makes sure
-    that it's in R6 before LD_ABS insn.
-    __builtin_bpf_load_byte (unsigned long long off) cannot produce correct code.
-
-So it is the 'skb' pointer that is loaded into %r6.  I misunderstood.
-Will adapt the GCC built-ins accordingly.
-    
-    As far as doing it as __builtin_bpf_load_word(skb, off) instead of
-    asm("llvm.bpf.load.word") that's fine, of course.
-    Here compilers don't have to be the same.
-    #ifdef clang vs gcc in bpf_helpers.h should do it.
-
-Ok.
-
-    Also please get rid of bpf-helpers.h from gcc tree.
-    There shouldn't be such things shipped with compiler.
-
-bpf-helpers.h is a temporal solution.  Will remove it as soon as we have
-a bpf_helpers.h in the kernel that works with both compilers.
-
-Thanks for the feedback!
