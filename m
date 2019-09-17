@@ -2,85 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A81B5484
-	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2019 19:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8303B55A0
+	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2019 20:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731364AbfIQRpr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 17 Sep 2019 13:45:47 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:23992 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725862AbfIQRpq (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 17 Sep 2019 13:45:46 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x8HHjBvC024471
-        for <bpf@vger.kernel.org>; Tue, 17 Sep 2019 10:45:45 -0700
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2v2kbmuvj3-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 17 Sep 2019 10:45:45 -0700
-Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Tue, 17 Sep 2019 10:45:44 -0700
-Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
-        id A25A476081D; Tue, 17 Sep 2019 10:45:42 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Alexei Starovoitov <ast@kernel.org>
-Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
-To:     <davem@davemloft.net>
-CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf 2/2] bpf: fix BTF limits
-Date:   Tue, 17 Sep 2019 10:45:38 -0700
-Message-ID: <20190917174538.1295523-3-ast@kernel.org>
-X-Mailer: git-send-email 2.20.0
-In-Reply-To: <20190917174538.1295523-1-ast@kernel.org>
-References: <20190917174538.1295523-1-ast@kernel.org>
+        id S1729019AbfIQStK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Sep 2019 14:49:10 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:40486 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728854AbfIQStI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Sep 2019 14:49:08 -0400
+Received: by mail-io1-f71.google.com with SMTP id r20so2517347ioh.7
+        for <bpf@vger.kernel.org>; Tue, 17 Sep 2019 11:49:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=NwVpGkNHgsmoaBSsh3mYYG8q0xqBQTXg+ZIgnqs4C80=;
+        b=UKVJiL/YEIoWGxrvnI5qXpSPKifoRFgu1mO7QlbpvXD9QKENED3uf3Tup0RcZhGvdD
+         A7jsd4hqhrKOoy6JBaYmdukafQksBaS6TUrg6e1rEkBqvLCWgueC+70ljxfwf5iEWLwm
+         Gfiy01sFaJKZhhwI1n0RU3NHk1NowmLeClIm41zgnGii989mC6LUCo+qGn9KEJSCu2/U
+         ceNmoU9FfhtvS77Cknarb27psUe4nLlwjNIlhyCE7MGTMeZNMM+eU9qMT3izVFapN4to
+         rJ9unX7VTcv855gSaZAtGD2BRsVsdE/p4/7aHmVdXBedEcA7XMCyPDTMAvKp/lw9h+SI
+         xCJw==
+X-Gm-Message-State: APjAAAWEx8OerRjHTyXa3bgwrJDxesq0sYOoITZ6X65GO9UR3B2boTU7
+        zB8WIcKdKhR/8O9zzNUO1Knve0LPfEmDbzzZUu/E8TYeUKWk
+X-Google-Smtp-Source: APXvYqzsAS0Pl7r7pEqtH8I83JX6lJEg1mRzZST37KlCqUop1Eo1ndA/srmM39ERBKIJibHr2ZgJi5S+Xu59xduJ6ApYCPrWNg9H
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
- definitions=2019-09-17_09:2019-09-17,2019-09-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=524
- malwarescore=0 adultscore=0 spamscore=0 mlxscore=0 bulkscore=0
- clxscore=1034 suspectscore=1 lowpriorityscore=0 impostorscore=0
- priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1908290000 definitions=main-1909170171
-X-FB-Internal: deliver
+X-Received: by 2002:a05:6602:1d6:: with SMTP id w22mr249979iot.144.1568746146283;
+ Tue, 17 Sep 2019 11:49:06 -0700 (PDT)
+Date:   Tue, 17 Sep 2019 11:49:06 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cacc7e0592c42ce3@google.com>
+Subject: KASAN: slab-out-of-bounds Read in bpf_prog_create
+From:   syzbot <syzbot+eb853b51b10f1befa0b7@syzkaller.appspotmail.com>
+To:     arnd@arndb.de, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        jakub.kicinski@netronome.com, john.fastabend@gmail.com,
+        kafai@fb.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ppp@vger.kernel.org,
+        netdev@vger.kernel.org, paulus@samba.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-vmlinux BTF has more than 64k types.
-Its string section is also at the offset larger than 64k.
-Adjust both limits to make in-kernel BTF verifier successfully parse in-kernel BTF.
+Hello,
 
-Fixes: 69b693f0aefa ("bpf: btf: Introduce BPF Type Format (BTF)")
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+syzbot found the following crash on:
+
+HEAD commit:    2015a28f Add linux-next specific files for 20190915
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=11880d69600000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=110691c2286b679a
+dashboard link: https://syzkaller.appspot.com/bug?extid=eb853b51b10f1befa0b7
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=127c3481600000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1150a70d600000
+
+The bug was bisected to:
+
+commit 2f4fa2db75e26995709043c8d3de4632ebed5c4b
+Author: Al Viro <viro@zeniv.linux.org.uk>
+Date:   Thu Apr 18 03:48:01 2019 +0000
+
+     compat_ioctl: unify copy-in of ppp filters
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=145eee1d600000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=165eee1d600000
+console output: https://syzkaller.appspot.com/x/log.txt?x=125eee1d600000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+eb853b51b10f1befa0b7@syzkaller.appspotmail.com
+Fixes: 2f4fa2db75e2 ("compat_ioctl: unify copy-in of ppp filters")
+
+==================================================================
+BUG: KASAN: slab-out-of-bounds in memcpy include/linux/string.h:404 [inline]
+BUG: KASAN: slab-out-of-bounds in bpf_prog_create+0xe9/0x250  
+net/core/filter.c:1351
+Read of size 32768 at addr ffff88809cf74000 by task syz-executor183/8575
+
+CPU: 0 PID: 8575 Comm: syz-executor183 Not tainted 5.3.0-rc8-next-20190915  
+#0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+  print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
+  __kasan_report.cold+0x1b/0x41 mm/kasan/report.c:506
+  kasan_report+0x12/0x20 mm/kasan/common.c:634
+  check_memory_region_inline mm/kasan/generic.c:185 [inline]
+  check_memory_region+0x134/0x1a0 mm/kasan/generic.c:192
+  memcpy+0x24/0x50 mm/kasan/common.c:122
+  memcpy include/linux/string.h:404 [inline]
+  bpf_prog_create+0xe9/0x250 net/core/filter.c:1351
+  get_filter.isra.0+0x108/0x1a0 drivers/net/ppp/ppp_generic.c:572
+  ppp_get_filter drivers/net/ppp/ppp_generic.c:584 [inline]
+  ppp_ioctl+0x129d/0x2590 drivers/net/ppp/ppp_generic.c:801
+  vfs_ioctl fs/ioctl.c:47 [inline]
+  file_ioctl fs/ioctl.c:539 [inline]
+  do_vfs_ioctl+0xdb6/0x13e0 fs/ioctl.c:726
+  ksys_ioctl+0xab/0xd0 fs/ioctl.c:743
+  __do_sys_ioctl fs/ioctl.c:750 [inline]
+  __se_sys_ioctl fs/ioctl.c:748 [inline]
+  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:748
+  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x4401a9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 fb 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffebb37d0a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004401a9
+RDX: 00000000200000c0 RSI: 0000000040107447 RDI: 0000000000000003
+RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401a30
+R13: 0000000000401ac0 R14: 0000000000000000 R15: 0000000000000000
+
+Allocated by task 8575:
+  save_stack+0x23/0x90 mm/kasan/common.c:69
+  set_track mm/kasan/common.c:77 [inline]
+  __kasan_kmalloc mm/kasan/common.c:510 [inline]
+  __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:483
+  kasan_kmalloc+0x9/0x10 mm/kasan/common.c:524
+  __do_kmalloc mm/slab.c:3655 [inline]
+  __kmalloc_track_caller+0x15f/0x760 mm/slab.c:3670
+  memdup_user+0x26/0xb0 mm/util.c:172
+  get_filter.isra.0+0xd7/0x1a0 drivers/net/ppp/ppp_generic.c:568
+  ppp_get_filter drivers/net/ppp/ppp_generic.c:584 [inline]
+  ppp_ioctl+0x129d/0x2590 drivers/net/ppp/ppp_generic.c:801
+  vfs_ioctl fs/ioctl.c:47 [inline]
+  file_ioctl fs/ioctl.c:539 [inline]
+  do_vfs_ioctl+0xdb6/0x13e0 fs/ioctl.c:726
+  ksys_ioctl+0xab/0xd0 fs/ioctl.c:743
+  __do_sys_ioctl fs/ioctl.c:750 [inline]
+  __se_sys_ioctl fs/ioctl.c:748 [inline]
+  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:748
+  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+Freed by task 0:
+(stack is not available)
+
+The buggy address belongs to the object at ffff88809cf74000
+  which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 0 bytes inside of
+  4096-byte region [ffff88809cf74000, ffff88809cf75000)
+The buggy address belongs to the page:
+page:ffffea000273dd00 refcount:1 mapcount:0 mapping:ffff8880aa402000  
+index:0x0 compound_mapcount: 0
+flags: 0x1fffc0000010200(slab|head)
+raw: 01fffc0000010200 ffffea0002672988 ffffea00027e7788 ffff8880aa402000
+raw: 0000000000000000 ffff88809cf74000 0000000100000001 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+  ffff88809cf74f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  ffff88809cf74f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> ffff88809cf75000: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+                    ^
+  ffff88809cf75080: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+  ffff88809cf75100: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+
 ---
- include/uapi/linux/btf.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/include/uapi/linux/btf.h b/include/uapi/linux/btf.h
-index 63ae4a39e58b..c02dec97e1ce 100644
---- a/include/uapi/linux/btf.h
-+++ b/include/uapi/linux/btf.h
-@@ -22,9 +22,9 @@ struct btf_header {
- };
- 
- /* Max # of type identifier */
--#define BTF_MAX_TYPE	0x0000ffff
-+#define BTF_MAX_TYPE	0x000fffff
- /* Max offset into the string section */
--#define BTF_MAX_NAME_OFFSET	0x0000ffff
-+#define BTF_MAX_NAME_OFFSET	0x00ffffff
- /* Max # of struct/union/enum members or func args */
- #define BTF_MAX_VLEN	0xffff
- 
--- 
-2.20.0
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
