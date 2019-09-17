@@ -2,101 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E32AFB4BB9
-	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2019 12:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7233AB4C2F
+	for <lists+bpf@lfdr.de>; Tue, 17 Sep 2019 12:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727564AbfIQKON (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Sep 2019 06:14:13 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:36984 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727518AbfIQKON (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Sep 2019 06:14:13 -0400
-Received: by mail-lf1-f66.google.com with SMTP id w67so2420372lff.4
-        for <bpf@vger.kernel.org>; Tue, 17 Sep 2019 03:14:11 -0700 (PDT)
+        id S1726091AbfIQKsi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Sep 2019 06:48:38 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:38873 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726843AbfIQKsi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Sep 2019 06:48:38 -0400
+Received: by mail-wr1-f65.google.com with SMTP id l11so2616533wrx.5;
+        Tue, 17 Sep 2019 03:48:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kjxnCGfbE9oG4rXA0UnyUIJoUg+5vOPeXFD1JNJ7Bxk=;
-        b=lqyHqJ/6gSch6A2/7HyTmfxCiK9D0zeoHcv9Tj5I3x0qrpoZPRsfNfQzp/aXNC1l7Q
-         Y06UseY2279S/LZ6lv6HUmgNl/5AxWVmSxiV6TtnRtUulOVSVYTZFw1r2o7qCxTqxgPb
-         WpVlm5hsDSPKKEnSMr73cR9hAnU91GECatNFtO+6PGCPsbboLcSbvDu8mIY8t8mPX8mE
-         rfxkpHrgjVpBmONgNMYYEu1RlnULSSG2Js7yFjyuv2wrO3hGdzXLBEOybIaL9NlN6rO/
-         OI4cdWaMWlO2meZYkVWRQlurxnIkTKyzQqBUCV1JXvJ67cyds4D3ERR/yx9v5MwfWM/H
-         NDsQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2wF2csif6Bxd2Ntfn72EqZLK8iy6fsXfRIhPwvQ9j4I=;
+        b=gr0YmGqkSJwboNqKmNcsQ4SUgGrurjCNWd69nS+WzxdGjEgeCi3V5Mig3OsGC7io6o
+         JoiKHP37l9a5U347BOvMZT2CNYidI9JXskrumeUUCw1xdO3DVH7zQJui/MdAmBmaX73R
+         t6Na5xHGV+SRls06Lx5gv4FInMHPCaR8zW0hz+hS2GNe0IAi7YMCbTWfFlSEHas9fbnJ
+         lnn9gyOK0r7220AQ8VGYY8Ga0i2EQT9fLRkHMgF/m3ZrTaj0dueVrMyswzU59ibdHq39
+         fGtSnFr/5TsJj0zFjdiueig7ZQHlC1YMtGP1Yu7SAsave69ooi1vzAB0hy4DtSbg7CgF
+         p1ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kjxnCGfbE9oG4rXA0UnyUIJoUg+5vOPeXFD1JNJ7Bxk=;
-        b=BddYTETOvRJPjXsMIiPs+iyTzwLMR/l62p1IybSznhRcZ8fOCMA0kvzYLbpk2rwuGa
-         kk+DvaegOIva6qoPH81pyG66sTC3q71tr+mN6/Y6tQn6luJ8uOfLIRXNqo+8YVx/LW+G
-         DXd+XKzWqPDGgNtYsf0F8S/H/boX/Wm+QmUBd1ulRl0+ylvUL6y+oP1rM5bHxAUOsZEt
-         wkgWR4ScMumltUwUXbA0DXyvjOqRsB3ghEoxjDTriBQVYE3EYURLMaMLANli/IUE1ihT
-         Lre93RrpmAE2M1/k1rx9ALGCmFBix0BrJsk1CP6tk2OADr7QTvTtfcpNv7vVs4tKO/Ks
-         fknA==
-X-Gm-Message-State: APjAAAUNbkSwtuvFUIEaSCXJH7eVjRKXTKxzRlzkT6Ms9KtTuL1VO0BH
-        MAp2OVHjj3VFQj+PJd/waYeYpQ==
-X-Google-Smtp-Source: APXvYqxMulznp1P+TSTYERRDeow5/xshl3zawrDJQaWFw5QNipvGHHXAI/dtj9usHhJMT0GMjt5zeg==
-X-Received: by 2002:a19:2207:: with SMTP id i7mr1644977lfi.185.1568715250889;
-        Tue, 17 Sep 2019 03:14:10 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:6e6:a4e9:5101:fe11:ada5:769e? ([2a00:1fa0:6e6:a4e9:5101:fe11:ada5:769e])
-        by smtp.gmail.com with ESMTPSA id g5sm221169ljk.22.2019.09.17.03.14.09
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 17 Sep 2019 03:14:10 -0700 (PDT)
-Subject: Re: [PATCH v3 bpf-next 09/14] samples: bpf: makefile: use own flags
- but not host when cross compile
-To:     Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>, ast@kernel.org,
-        daniel@iogearbox.net, yhs@fb.com, davem@davemloft.net,
-        jakub.kicinski@netronome.com, hawk@kernel.org,
-        john.fastabend@gmail.com
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <20190916105433.11404-1-ivan.khoronzhuk@linaro.org>
- <20190916105433.11404-10-ivan.khoronzhuk@linaro.org>
-From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <b9b802b5-3d86-31ed-6929-209c50530b3b@cogentembedded.com>
-Date:   Tue, 17 Sep 2019 13:14:06 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2wF2csif6Bxd2Ntfn72EqZLK8iy6fsXfRIhPwvQ9j4I=;
+        b=Gr65i9nSFYf3DJy11yQTVFOhjMbBdTpQw7CLltiMEZbRrlbAc5ISBoZAsZd2Znj4o+
+         WzWO1y859dvc7MuZ1C/zX4dmrVycFrhcrbh+xZi5cNZo3qjFVw/p/r+WkSnYgVZOt2ee
+         1Mv9CPMTwRrcjwftR1MrYia9XBumGWXD3UwZLMgx5wK3Fp0/XZzKuePmfXe7Db7/XteF
+         s9ABfJhAltlqEq/Y8d5X2RWWpaSzMY9FqJBa3j71bFIN07aJK6SendR0ZrJC4m/xC8WV
+         qRQPT4D+BkgR9de75xFMd/Njy/q4gpASHNptePDzThGVMv/p/r9/xqc0CZ5WTHOZwwMZ
+         mPaw==
+X-Gm-Message-State: APjAAAUbTRYXr7Q07tm39RQCjSpcEfTgnWlrhSTPE41f/bmj0e64o6nN
+        cW9DGR11l1vxMqzJnaZUwnInn+92twZjqNYMAMA=
+X-Google-Smtp-Source: APXvYqy5RDe58CzMnsXxoGUvtObPFrVMtDwzQ+giwspQnlLoaacKyDOy5s2PBLONAGvY0LesU95VjbrfQwnhO/6mOpE=
+X-Received: by 2002:adf:df81:: with SMTP id z1mr2597191wrl.295.1568717316081;
+ Tue, 17 Sep 2019 03:48:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190916105433.11404-10-ivan.khoronzhuk@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20190905011144.3513-1-kevin.laatz@intel.com>
+In-Reply-To: <20190905011144.3513-1-kevin.laatz@intel.com>
+From:   Maxim Mikityanskiy <maxtram95@gmail.com>
+Date:   Tue, 17 Sep 2019 13:48:09 +0300
+Message-ID: <CAKErNvpe3htU-ETe0y0XQ=SwY047qc3Z3=aHN6g2BbkoGHNNUQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] i40e: fix xdp handle calculations
+To:     Kevin Laatz <kevin.laatz@intel.com>, bjorn.topel@intel.com
+Cc:     maximmi@mellanox.com, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com, bruce.richardson@intel.com,
+        ciara.loftus@intel.com, bpf@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello!
+On Thu, Sep 5, 2019 at 4:11 AM Kevin Laatz <kevin.laatz@intel.com> wrote:
+>
+> Currently, we don't add headroom to the handle in i40e_zca_free,
+> i40e_alloc_buffer_slow_zc and i40e_alloc_buffer_zc. The addition of the
+> headroom to the handle was removed in
+> commit 2f86c806a8a8 ("i40e: modify driver for handling offsets"),
 
-On 16.09.2019 13:54, Ivan Khoronzhuk wrote:
+Hi, it looks to me that headroom is still broken after this commit.
+i40e_run_xdp_zc adds it a second time, i.e.:
 
-> While compile natively, the hosts cflags and ldflags are equal to ones
+1. xdp->handle already has the headroom added (after this patch).
 
-   Compiling. Host's.
+2. bpf_prog_run_xdp(...);
 
-> used from HOSTCFLAGS and HOSTLDFLAGS. When cross compiling it should
-> have own, used for target arch. While verification, for arm, arm64 and
-> x86_64 the following flags were used alsways:
-> 
-> -Wall
-> -O2
-> -fomit-frame-pointer
-> -Wmissing-prototypes
-> -Wstrict-prototypes
-> 
-> So, add them as they were verified and used before adding
-> Makefile.target, but anyway limit it only for cross compile options as
-> for host can be some configurations when another options can be used,
-> So, for host arch samples left all as is, it allows to avoid potential
-> option mistmatches for existent environments.
+3. u64 offset =3D umem->headroom;
+   offset +=3D xdp->data - xdp->data_hard_start;
+   xdp->handle =3D xsk_umem_adjust_offset(umem, xdp->handle, offset);
 
-    Mismatches.
+Step 3 adds the headroom one extra time.
 
-> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-[...]
+I didn't look at ixgbe, it might also need to be fixed.
 
-MBR, Sergei
+> which
+> will break things when headroom is non-zero. This patch fixes this and us=
+es
+> xsk_umem_adjust_offset to add it appropritely based on the mode being run=
+.
+>
+> Fixes: 2f86c806a8a8 ("i40e: modify driver for handling offsets")
+> Reported-by: Bjorn Topel <bjorn.topel@intel.com>
+> Signed-off-by: Kevin Laatz <kevin.laatz@intel.com>
+> Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> ---
+>  drivers/net/ethernet/intel/i40e/i40e_xsk.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/eth=
+ernet/intel/i40e/i40e_xsk.c
+> index eaca6162a6e6..0373bc6c7e61 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> @@ -267,7 +267,7 @@ static bool i40e_alloc_buffer_zc(struct i40e_ring *rx=
+_ring,
+>         bi->addr =3D xdp_umem_get_data(umem, handle);
+>         bi->addr +=3D hr;
+>
+> -       bi->handle =3D handle;
+> +       bi->handle =3D xsk_umem_adjust_offset(umem, handle, umem->headroo=
+m);
+>
+>         xsk_umem_discard_addr(umem);
+>         return true;
+> @@ -304,7 +304,7 @@ static bool i40e_alloc_buffer_slow_zc(struct i40e_rin=
+g *rx_ring,
+>         bi->addr =3D xdp_umem_get_data(umem, handle);
+>         bi->addr +=3D hr;
+>
+> -       bi->handle =3D handle;
+> +       bi->handle =3D xsk_umem_adjust_offset(umem, handle, umem->headroo=
+m);
+>
+>         xsk_umem_discard_addr_rq(umem);
+>         return true;
+> @@ -469,7 +469,8 @@ void i40e_zca_free(struct zero_copy_allocator *alloc,=
+ unsigned long handle)
+>         bi->addr =3D xdp_umem_get_data(rx_ring->xsk_umem, handle);
+>         bi->addr +=3D hr;
+>
+> -       bi->handle =3D (u64)handle;
+> +       bi->handle =3D xsk_umem_adjust_offset(rx_ring->xsk_umem, (u64)han=
+dle,
+> +                                           rx_ring->xsk_umem->headroom);
+>  }
+>
+>  /**
