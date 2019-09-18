@@ -2,57 +2,32 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA10B5E73
-	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2019 09:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D549B5F76
+	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2019 10:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727243AbfIRH5z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Sep 2019 03:57:55 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:36108 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbfIRH5y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Sep 2019 03:57:54 -0400
-Received: by mail-pf1-f195.google.com with SMTP id y22so3845564pfr.3;
-        Wed, 18 Sep 2019 00:57:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ioXkqSJj3i8cLvyWdFqME9j4e4wdtFZPBcH/Mkz1bBY=;
-        b=dTHqRDVhsKgFcRVz+hkGEQ44QEfeE2afW48CiLk6S8wEZ7mgWJF3biDZPYf0OIgH+z
-         e/1PCSnP0+UVetLnJA2q+0OdQTW2aG8SyERWqal1bBHMKVoKc8GTfzPE0RNCDmTpvqp8
-         z/z6AX9EH8sMhJNTqWOrLSlXQ1TkM03CTmGrkFCInm1L06XoPYY7yLkYYpAxDf5hhrX+
-         k99TZ8ZFRg1klJcV3Cmn1ugqkRQb5cKxi/No1myncWI3q0gRSyobjximMOORpEPuc14K
-         Cmsycaen3OCPC01gTWEOnAX3eRalmdK80QfTio3JxNlnfAF76kI1aloHW+zGZR+KpBvn
-         82jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ioXkqSJj3i8cLvyWdFqME9j4e4wdtFZPBcH/Mkz1bBY=;
-        b=IUf1mIEh40bjvbpXzAxRk5QHgx/pelDCwFaBO3NhvlyMo/NV0VM5mIqxQ6v6BDsuev
-         oZUyim5IlRYzsHAwowro4veHoveCbrbHaEi8lfpPutGhryhjGO7hN3EzjGk7C8RFNiAt
-         JPtTrMYrC+MpONu+tG6bjAQdpS7uDQ4QXnFf+U2nk9017+jXCm9ncfpmNLOtRchmzWcg
-         Aopm+TNhPkgMALSMWd6yYvnm1rixHEhUB45f75BUVJ24JN59na4cNViL2LwkJSUIrdg4
-         qh8lE883OzR9lY7ydINF5+EIMpV8gQxH8ZiBYKFcjNzbBuq4MpbsRjZfV/JatsvLck6U
-         kaxQ==
-X-Gm-Message-State: APjAAAVHbEzeC6D7wb/gA+/dz2ducjJfCDMxOLp40HE732XSc9zqIhJQ
-        Xwo1FWe4EIKIUVudqvrJPFg=
-X-Google-Smtp-Source: APXvYqxctC8BCdUXhJW8s8rIWlrpZNFi/8Y/YQ4VGOiN+K3G0YR/3wv4cz9G7YeMERCZRk/mqb4vhA==
-X-Received: by 2002:aa7:83d1:: with SMTP id j17mr2717473pfn.35.1568793472713;
-        Wed, 18 Sep 2019 00:57:52 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com ([192.55.55.41])
-        by smtp.gmail.com with ESMTPSA id b2sm5800888pfd.81.2019.09.18.00.57.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Sep 2019 00:57:52 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, magnus.karlsson@gmail.com,
-        bpf@vger.kernel.org, jonathan.lemon@gmail.com
-Subject: [PATCH bpf] xsk: relax UMEM headroom alignment
-Date:   Wed, 18 Sep 2019 09:57:39 +0200
-Message-Id: <20190918075739.19451-1-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S1730524AbfIRIsq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Sep 2019 04:48:46 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41703 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730504AbfIRIsq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Sep 2019 04:48:46 -0400
+Received: from static-dcd-cqq-121001.business.bouyguestelecom.com ([212.194.121.1] helo=localhost.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1iAVde-0004BF-Bx; Wed, 18 Sep 2019 08:48:38 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     keescook@chromium.org, luto@amacapital.net
+Cc:     jannh@google.com, wad@chromium.org, shuah@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: [PATCH 0/4] seccomp: continue syscall from notifier
+Date:   Wed, 18 Sep 2019 10:48:29 +0200
+Message-Id: <20190918084833.9369-1-christian.brauner@ubuntu.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -61,31 +36,39 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+Hey everyone,
 
-This patch removes the 64B alignment of the UMEM headroom. There is
-really no reason for it, and having a headroom less than 64B should be
-valid.
+This is the patchset coming out of the KSummit session Kees and I gave
+in Lisbon last week (cf. [3] which also contains slides with more
+details on related things such as deep argument inspection).
+The simple idea is to extend the seccomp notifier to allow for the
+continuation of a syscall. The rationale for this can be found in the
+commit message to [1]. For the curious there is more detail in [2].
+This patchset would unblock supervising an extended set of syscalls such
+as mount() where a privileged process is supervising the syscalls of a
+lesser privileged process and emulates the syscall for the latter in
+userspace.
+For more comments on security see [1].
 
-Fixes: c0c77d8fb787 ("xsk: add user memory registration support sockopt")
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- net/xdp/xdp_umem.c | 2 --
- 1 file changed, 2 deletions(-)
+Thanks!
+Christian
 
-diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-index 688aac7a6943..0e81a7fd2df7 100644
---- a/net/xdp/xdp_umem.c
-+++ b/net/xdp/xdp_umem.c
-@@ -335,8 +335,6 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
- 	if (chunks < chunks_per_page || chunks % chunks_per_page)
- 		return -EINVAL;
- 
--	headroom = ALIGN(headroom, 64);
--
- 	size_chk = chunk_size - headroom - XDP_PACKET_HEADROOM;
- 	if (size_chk < 0)
- 		return -EINVAL;
+/* References */
+[1]: [PATCH 1/4] seccomp: add SECCOMP_RET_USER_NOTIF_ALLOW
+[2]: https://lore.kernel.org/r/20190719093538.dhyopljyr5ns33qx@brauner.io
+[3]: https://linuxplumbersconf.org/event/4/contributions/560
+
+Christian Brauner (4):
+  seccomp: add SECCOMP_RET_USER_NOTIF_ALLOW
+  seccomp: add two missing ptrace ifdefines
+  seccomp: avoid overflow in implicit constant conversion
+  seccomp: test SECCOMP_RET_USER_NOTIF_ALLOW
+
+ include/uapi/linux/seccomp.h                  |   2 +
+ kernel/seccomp.c                              |  24 +++-
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 110 +++++++++++++++++-
+ 3 files changed, 131 insertions(+), 5 deletions(-)
+
 -- 
-2.20.1
+2.23.0
 
