@@ -2,108 +2,249 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DDFB60F9
-	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2019 12:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23F4B6129
+	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2019 12:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729083AbfIRKBa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Sep 2019 06:01:30 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:43904 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbfIRKB3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Sep 2019 06:01:29 -0400
-Received: from static-dcd-cqq-121001.business.bouyguestelecom.com ([212.194.121.1] helo=elm)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <tyhicks@canonical.com>)
-        id 1iAWm2-0001XJ-Nx; Wed, 18 Sep 2019 10:01:22 +0000
-Date:   Wed, 18 Sep 2019 12:01:21 +0200
-From:   Tyler Hicks <tyhicks@canonical.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     keescook@chromium.org, luto@amacapital.net, jannh@google.com,
-        wad@chromium.org, shuah@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Tycho Andersen <tycho@tycho.ws>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 3/4] seccomp: avoid overflow in implicit constant
- conversion
-Message-ID: <20190918100121.GB5088@elm>
-References: <20190918084833.9369-1-christian.brauner@ubuntu.com>
- <20190918084833.9369-4-christian.brauner@ubuntu.com>
+        id S1728649AbfIRKMY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Sep 2019 06:12:24 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:40935 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729523AbfIRKMX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Sep 2019 06:12:23 -0400
+Received: by mail-lf1-f65.google.com with SMTP id d17so5252489lfa.7
+        for <bpf@vger.kernel.org>; Wed, 18 Sep 2019 03:12:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JzNHZht1bd6w8WtrKX6lmZo1NhKQxsQQoKxRAfLfPag=;
+        b=cFV6lZrPn1Mcf4EtX5AxtvIqIB1Qk4sGu9JQlMv9h7FqQpBqv/aXUI+14JI21629HA
+         lkOuieXLAl/nkeBUyxDgGxcI1rwy2EvvU59BVBmKIN+cpFE1Uw+42ItVzXATDn/Vdtxd
+         iQuMqn9GMssOl1d4JRTjpsiS5u/Pwfs1rnpSsCoigwBi89ovKKwmAPhnULg1PPfp3Clv
+         xWvFgOiCbBH+oAe2OiwCm9MwC2HYhsRxBcbHl6pnb5uTBr8etIffKratODyx5yz4NHp3
+         ikvmSAsrEy8FN2AzOhNVNxuQm1CtCiRqloW8AZFIMLAJAm2xuZroldu5PFrMj+TiTzvJ
+         sWYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=JzNHZht1bd6w8WtrKX6lmZo1NhKQxsQQoKxRAfLfPag=;
+        b=lClzlQ6JvNiS1HmuFDIwTMRHVGXwi7XC3noypPeHwEDu42Vt5hHJgY2hfORfR/JzRB
+         Ppu9EefhTbWWt8hCyQCqoyxSfNSkgizQyXbGJ52U1KevXzdVBzNJ17JwaUcbDyMi/YAC
+         jhDVP/Zi3Qwnj8XEO8dvutcq59aXHabSK+yywJspGOexIi3PJOsRxsHDYfIaprwcwO1R
+         BSFms+pTA2YzJEQI8GvbpWMeE+a2Vywck3GZVRUZtJTf0mTqbyxPPTCj+Df/Ebqkqdu9
+         nt4S2uz4b578LRdfKXTAUmLPfTKOHw0CTnHQ2Tbb/SNqVWi8JW11f/7NdBDU1U/3bOP5
+         Oi1Q==
+X-Gm-Message-State: APjAAAUVxFWs961xmo+B2P7wj81NbB2MV3xMjKoEzE3WmRZxDic834Uu
+        AzTYc2eZWnWalhH3SA/MHC7S5Q==
+X-Google-Smtp-Source: APXvYqwwcnWx7o1Se4k8YtBfuMRVpPQNz/bjMByXwDKLlJMYEddmufdN8gJLgcO37T1JynR5hVhoOw==
+X-Received: by 2002:ac2:4308:: with SMTP id l8mr1641108lfh.25.1568801540147;
+        Wed, 18 Sep 2019 03:12:20 -0700 (PDT)
+Received: from khorivan (168-200-94-178.pool.ukrtel.net. [178.94.200.168])
+        by smtp.gmail.com with ESMTPSA id 77sm951751ljf.85.2019.09.18.03.12.18
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 18 Sep 2019 03:12:19 -0700 (PDT)
+Date:   Wed, 18 Sep 2019 13:12:17 +0300
+From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        clang-built-linux@googlegroups.com,
+        sergei.shtylyov@cogentembedded.com
+Subject: Re: [PATCH v3 bpf-next 07/14] samples: bpf: add makefile.target for
+ separate CC target build
+Message-ID: <20190918101216.GA2908@khorivan>
+Mail-Followup-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        clang-built-linux@googlegroups.com,
+        sergei.shtylyov@cogentembedded.com
+References: <20190916105433.11404-1-ivan.khoronzhuk@linaro.org>
+ <20190916105433.11404-8-ivan.khoronzhuk@linaro.org>
+ <CAEf4Bzaidog3n0YP6F5dL2rCrHtKCOBXS0as7usymk8Twdro4w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190918084833.9369-4-christian.brauner@ubuntu.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAEf4Bzaidog3n0YP6F5dL2rCrHtKCOBXS0as7usymk8Twdro4w@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2019-09-18 10:48:32, Christian Brauner wrote:
-> USER_NOTIF_MAGIC is assigned to int variables in this test so set it to INT_MAX
-> to avoid warnings:
-> 
-> seccomp_bpf.c: In function ‘user_notification_continue’:
-> seccomp_bpf.c:3088:26: warning: overflow in implicit constant conversion [-Woverflow]
->  #define USER_NOTIF_MAGIC 116983961184613L
->                           ^
-> seccomp_bpf.c:3572:15: note: in expansion of macro ‘USER_NOTIF_MAGIC’
->   resp.error = USER_NOTIF_MAGIC;
->                ^~~~~~~~~~~~~~~~
-> 
-> Fixes: 6a21cc50f0c7 ("seccomp: add a return code to trap to userspace")
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Andy Lutomirski <luto@amacapital.net>
-> Cc: Will Drewry <wad@chromium.org>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: Tycho Andersen <tycho@tycho.ws>
-> CC: Tyler Hicks <tyhicks@canonical.com>
+On Tue, Sep 17, 2019 at 04:19:40PM -0700, Andrii Nakryiko wrote:
+>On Mon, Sep 16, 2019 at 3:58 AM Ivan Khoronzhuk
+><ivan.khoronzhuk@linaro.org> wrote:
+>>
+>> The makefile.target is added only and will be used in
+>
+>typo: Makefile
+>
+>> sample/bpf/Makefile later in order to switch cross-compiling on CC
+>
+>on -> to
+>
+>> from HOSTCC environment.
+>>
+>> The HOSTCC is supposed to build binaries and tools running on the host
+>> afterwards, in order to simplify build or so, like "fixdep" or else.
+>> In case of cross compiling "fixdep" is executed on host when the rest
+>> samples should run on target arch. In order to build binaries for
+>> target arch with CC and tools running on host with HOSTCC, lets add
+>> Makefile.target for simplicity, having definition and routines similar
+>> to ones, used in script/Makefile.host. This allows later add
+>> cross-compilation to samples/bpf with minimum changes.
+>>
+>> The tprog stands for target programs built with CC.
+>
+>Why tprog? Could we just use prog: hostprog vs prog.
+Prev. version was with prog, but Yonghong Song found it ambiguous.
+As prog can be bpf also. So, decision was made to follow logic:
+* target prog - non bpf progs
+* bpf prog = bpf prog, that can be later smth similar, providing build options
+  for each bpf object separately.
 
-INT_MAX should be a safe value to use.
+Details here:
+https://lkml.org/lkml/2019/9/13/1037
 
-Reviewed-by: Tyler Hicks <tyhicks@canonical.com>
+>
+>>
+>> Makefile.target contains only stuff needed for samples/bpf, potentially
+>> can be reused later and now needed only for unblocking tricky
+>> samples/bpf cross compilation.
+>>
+>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+>> ---
+>>  samples/bpf/Makefile.target | 75 +++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 75 insertions(+)
+>>  create mode 100644 samples/bpf/Makefile.target
+>>
+>> diff --git a/samples/bpf/Makefile.target b/samples/bpf/Makefile.target
+>> new file mode 100644
+>> index 000000000000..fb6de63f7d2f
+>> --- /dev/null
+>> +++ b/samples/bpf/Makefile.target
+>> @@ -0,0 +1,75 @@
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +# ==========================================================================
+>> +# Building binaries on the host system
+>> +# Binaries are not used during the compilation of the kernel, and intendent
+>
+>typo: intended
+>
+>> +# to be build for target board, target board can be host ofc. Added to build
+>
+>What's ofc, is it "of course"?
+yes, ofc )
 
-Tyler
+>
+>> +# binaries to run not on host system.
+>> +#
+>> +# Sample syntax (see Documentation/kbuild/makefiles.rst for reference)
+>> +# tprogs-y := xsk_example
+>> +# Will compile xdpsock_example.c and create an executable named xsk_example
+>
+>You mix references to xsk_example and xdpsock_example, which is very
+>confusing. I'm guessing you meant to use xdpsock_example consistently.
+Oh, yes. Thanks.
 
-> Cc: Jann Horn <jannh@google.com>
-> Cc: stable@vger.kernel.org
-> Cc: linux-kselftest@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: bpf@vger.kernel.org
-> ---
->  tools/testing/selftests/seccomp/seccomp_bpf.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> index ee52eab01800..921f0e26f835 100644
-> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> @@ -35,6 +35,7 @@
->  #include <stdbool.h>
->  #include <string.h>
->  #include <time.h>
-> +#include <limits.h>
->  #include <linux/elf.h>
->  #include <sys/uio.h>
->  #include <sys/utsname.h>
-> @@ -3080,7 +3081,7 @@ static int user_trap_syscall(int nr, unsigned int flags)
->  	return seccomp(SECCOMP_SET_MODE_FILTER, flags, &prog);
->  }
->  
-> -#define USER_NOTIF_MAGIC 116983961184613L
-> +#define USER_NOTIF_MAGIC INT_MAX
->  TEST(user_notification_basic)
->  {
->  	pid_t pid;
-> -- 
-> 2.23.0
-> 
+>
+>> +#
+>> +# tprogs-y    := xdpsock
+>> +# xdpsock-objs := xdpsock_1.o xdpsock_2.o
+>> +# Will compile xdpsock_1.c and xdpsock_2.c, and then link the executable
+>> +# xdpsock, based on xdpsock_1.o and xdpsock_2.o
+>> +#
+>> +# Inherited from scripts/Makefile.host
+>
+>"Inspired by" or "Derived from" would be probably more appropriate term :)
+I will replace with "Derived from", looks better.
+
+>
+>> +#
+>> +__tprogs := $(sort $(tprogs-y))
+>> +
+>> +# C code
+>> +# Executables compiled from a single .c file
+>> +tprog-csingle  := $(foreach m,$(__tprogs), \
+>> +                       $(if $($(m)-objs),,$(m)))
+>> +
+>> +# C executables linked based on several .o files
+>> +tprog-cmulti   := $(foreach m,$(__tprogs),\
+>> +                       $(if $($(m)-objs),$(m)))
+>> +
+>> +# Object (.o) files compiled from .c files
+>> +tprog-cobjs    := $(sort $(foreach m,$(__tprogs),$($(m)-objs)))
+>> +
+>> +tprog-csingle  := $(addprefix $(obj)/,$(tprog-csingle))
+>> +tprog-cmulti   := $(addprefix $(obj)/,$(tprog-cmulti))
+>> +tprog-cobjs    := $(addprefix $(obj)/,$(tprog-cobjs))
+>> +
+>> +#####
+>> +# Handle options to gcc. Support building with separate output directory
+>> +
+>> +_tprogc_flags   = $(TPROGS_CFLAGS) \
+>> +                 $(TPROGCFLAGS_$(basetarget).o)
+>> +
+>> +# $(objtree)/$(obj) for including generated headers from checkin source files
+>> +ifeq ($(KBUILD_EXTMOD),)
+>> +ifdef building_out_of_srctree
+>> +_tprogc_flags   += -I $(objtree)/$(obj)
+>> +endif
+>> +endif
+>> +
+>> +tprogc_flags    = -Wp,-MD,$(depfile) $(_tprogc_flags)
+>> +
+>> +# Create executable from a single .c file
+>> +# tprog-csingle -> Executable
+>> +quiet_cmd_tprog-csingle        = CC  $@
+>> +      cmd_tprog-csingle        = $(CC) $(tprogc_flags) $(TPROGS_LDFLAGS) -o $@ $< \
+>> +               $(TPROGS_LDLIBS) $(TPROGLDLIBS_$(@F))
+>> +$(tprog-csingle): $(obj)/%: $(src)/%.c FORCE
+>> +       $(call if_changed_dep,tprog-csingle)
+>> +
+>> +# Link an executable based on list of .o files, all plain c
+>> +# tprog-cmulti -> executable
+>> +quiet_cmd_tprog-cmulti = LD  $@
+>> +      cmd_tprog-cmulti = $(CC) $(tprogc_flags) $(TPROGS_LDFLAGS) -o $@ \
+>> +                         $(addprefix $(obj)/,$($(@F)-objs)) \
+>> +                         $(TPROGS_LDLIBS) $(TPROGLDLIBS_$(@F))
+>> +$(tprog-cmulti): $(tprog-cobjs) FORCE
+>> +       $(call if_changed,tprog-cmulti)
+>> +$(call multi_depend, $(tprog-cmulti), , -objs)
+>> +
+>> +# Create .o file from a single .c file
+>> +# tprog-cobjs -> .o
+>> +quiet_cmd_tprog-cobjs  = CC  $@
+>> +      cmd_tprog-cobjs  = $(CC) $(tprogc_flags) -c -o $@ $<
+>> +$(tprog-cobjs): $(obj)/%.o: $(src)/%.c FORCE
+>> +       $(call if_changed_dep,tprog-cobjs)
+>> --
+>> 2.17.1
+>>
+>
+>tprogs is quite confusing, but overall looks good to me.
+I tend to leave it as tprogs, unless it's going to be progs and agreed with
+Yonghong.
+
+It follows logic:
+- tprogs for bins
+- bpfprogs or bojs or bprogs (could be) for bpf obj
+
+-- 
+Regards,
+Ivan Khoronzhuk
