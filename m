@@ -2,159 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D75E0B6EF7
-	for <lists+bpf@lfdr.de>; Wed, 18 Sep 2019 23:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF73B71A0
+	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2019 04:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387812AbfIRVmp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Sep 2019 17:42:45 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:42628 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387521AbfIRVmo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Sep 2019 17:42:44 -0400
-Received: by mail-qk1-f196.google.com with SMTP id f16so1066160qkl.9;
-        Wed, 18 Sep 2019 14:42:44 -0700 (PDT)
+        id S1730669AbfISClm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Sep 2019 22:41:42 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:43634 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730632AbfISClm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Sep 2019 22:41:42 -0400
+Received: by mail-oi1-f196.google.com with SMTP id t84so1390425oih.10
+        for <bpf@vger.kernel.org>; Wed, 18 Sep 2019 19:41:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=uber.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6P902L7LJNPT4ssJNWdrSjXG2av0wc4klnUEBzyUx6c=;
-        b=I0USsfmHkX8/IosUABXUcAOvs0CABxoOv10rCj4DZH6xCHdY2L4yQblg6NZYhHguX2
-         MsA6e++yIPq7eRMJfOF0+5ORua+JGZQPZ35gb1IFeep1EFUYMoo06xlPuVJ4kdRzbTLk
-         PBO+Nl9u2hQIl6+su6TFrtXNe+RqK/AnWBXsfIz6yh08lEsPuswLbY/MT8CNOcd3mAJX
-         sV1GGSl3zT58PUKSY5Z9K8Mw/GTb5W8kR7XzdlCkaOwV7F9ZyBnxDaAD3pIOUJpxNR2O
-         5aNKuurKLuISXsII48WI+gCkrY1ViQd8AVJ2Sthn0YJEhJNuj3bV3cPWxKw8zLAEOtQv
-         Scbw==
+         :cc:content-transfer-encoding;
+        bh=zF2qMJhxuQ7amM744y+ks2XfHt5ik/9ezksZyHoMiSU=;
+        b=ELpEwWid+4qlSD34uVmhArCa/CyRJZ2W/ET6T6iEapIjYfvkOQegVRurqSJWsY4yx7
+         4eTyl+ojM6L/nV6sWwIpX+g3xFpwHDLM+2wMJzIMnABiDk6SLSydfNiVEvCn5feRLsUD
+         BWOSvWTK6JQ1jq+zFr0I4iLUGFYdKNQyL/bRE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6P902L7LJNPT4ssJNWdrSjXG2av0wc4klnUEBzyUx6c=;
-        b=UQiTVCu9bpQFlKkwWTehfjJNHfx9mMFhupDSn4g64A2FL8WpjoXpiWk8BzjCOhaq12
-         YP3wFq3J96mpeCQYclX13Ial7Emig7L4ZI3HAdK6SSKQr99iMs6y8asi8NjmSUdfwXIe
-         VTU6WjPy0zYyC2QZMLvje94oZsPd+J1qMfGZ8RvJjZuRkz6zB3SbZdpaoNOyRsB/AVLu
-         jyDlmZcbA6Va9wJtQDWJ8/PHc8gUSJQCs1JyOeRcySVraHBvgnA6SkUhsipLFM68RjaB
-         k/vt5HIc0y03dcm8bZj5juw0pObqFgwIH0BBkrbwuMgpjss+/GJuACCLtmyagZI21lGG
-         oDgQ==
-X-Gm-Message-State: APjAAAUb6aFDjWai3TQKhRKTQz5vNiVDyYU6uGAV9nqIG2iZMvSkqTOf
-        n+GH3Nqyu8opZkJ1SdwxgSBawAByqbUFz/FtQ6o=
-X-Google-Smtp-Source: APXvYqxbyXdn7X09SO/uvw7jxw77KPpPDng4/aylfzh22FrvFV2/QOqwmEfv3d7BmUzwno/aB5HcDaVFYVjEU4Wo0iE=
-X-Received: by 2002:a37:98f:: with SMTP id 137mr6695305qkj.449.1568842963752;
- Wed, 18 Sep 2019 14:42:43 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zF2qMJhxuQ7amM744y+ks2XfHt5ik/9ezksZyHoMiSU=;
+        b=aoL/QcDzmBzCmk4mB4/94jyrV3Vz66ucf6cKSFscUEzds/rIHmX1zHJZtGFLzK8V3v
+         Zzt/BKhSEmg7TBw+b2JjsNGrVIkmJ9Ck7tww4RJZU2P3CbKMw6fz+NYm45iYEJOLRkKH
+         C8UjbypIWE7Wp1nmIjxxwK6RvrIJUn/aagILBPI8w7DSrNRGfRINFuLrwPKWdMKaeSsj
+         NXoFlFcBk8JtgIkK5YcnPQVZzdjQku2Bev1eS4oGrhY8YpfqjTCsFf2Og/lFBpPqBIW3
+         bBaOmYbKe2dc3bzaPeHxQGjRmxXpxPP+zSLsxDIhB3VmHiYEL4xHvM2Tr38un8HeSmgO
+         oiYQ==
+X-Gm-Message-State: APjAAAUWsAfsDpj7tMyzbPB1TcEI3+RNFoBTdq7qm2tPLOeqF/I7rW02
+        4fm42yjBVLP0HJzgM0n+CQYesyAAStRtb0ZWMtcX+A==
+X-Google-Smtp-Source: APXvYqwdY67w0gNkFtbnj1bH3iAl2vo2pajLL/nDexd1Q7O0s3eRABmc/mRXydNW0s4t7KX8nU8wmQkZ08j2NeirkBc=
+X-Received: by 2002:aca:d708:: with SMTP id o8mr701338oig.68.1568860900916;
+ Wed, 18 Sep 2019 19:41:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190916105433.11404-1-ivan.khoronzhuk@linaro.org>
- <20190916105433.11404-12-ivan.khoronzhuk@linaro.org> <CAEf4BzZXNN_dhs=jUjtfCqtuV1bk9H=q5b07kVDQQsysjhF4cQ@mail.gmail.com>
- <20190918110517.GD2908@khorivan>
-In-Reply-To: <20190918110517.GD2908@khorivan>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 18 Sep 2019 14:42:32 -0700
-Message-ID: <CAEf4BzZndo1z0A83MmcwtYdstkYKSa9Kzfmf1PRuUtS-D49oeg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 11/14] libbpf: makefile: add C/CXX/LDFLAGS to
- libbpf.so and test_libpf targets
-To:     Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux@googlegroups.com,
-        sergei.shtylyov@cogentembedded.com
+References: <20190918052406.21385-1-jinshan.xiong@gmail.com>
+ <5302836c-a6a1-c160-2de2-6a5b3d2c4828@fb.com> <20190918143235.kpclo45eo7qye7fs@ast-mbp.dhcp.thefacebook.com>
+ <CA+-8EHRk6aAuDQ=S9O7h6T2fhyz2z+zQduN2yiDNWMOWt2-t_A@mail.gmail.com> <CAADnVQLsnFaFS+ZhRoL0QfDVcGiR2OSrqSqRsd5dci=rQ+Pb9A@mail.gmail.com>
+In-Reply-To: <CAADnVQLsnFaFS+ZhRoL0QfDVcGiR2OSrqSqRsd5dci=rQ+Pb9A@mail.gmail.com>
+From:   Jinshan Xiong <jinshan.xiong@uber.com>
+Date:   Wed, 18 Sep 2019 19:41:29 -0700
+Message-ID: <CA+-8EHRHTUPNJEwT_wb+O-CStvCoT2=U4h=0JqB6mXfzBArbvQ@mail.gmail.com>
+Subject: Re: [PATCH] staging: tracing/kprobe: filter kprobe based perf event
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        "jinshan.xiong@gmail.com" <jinshan.xiong@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 18, 2019 at 4:05 AM Ivan Khoronzhuk
-<ivan.khoronzhuk@linaro.org> wrote:
+That's bloody true. Thanks for your insights.
+
+I will make an example program and commit into bcc repository.
+
+Jinshan
+
+
+On Wed, Sep 18, 2019 at 1:22 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Tue, Sep 17, 2019 at 10:19:22PM -0700, Andrii Nakryiko wrote:
-> >On Mon, Sep 16, 2019 at 4:00 AM Ivan Khoronzhuk
-> ><ivan.khoronzhuk@linaro.org> wrote:
-> >>
-> >> In case of LDFLAGS and EXTRA_CC/CXX flags there is no way to pass them
-> >> correctly to build command, for instance when --sysroot is used or
-> >> external libraries are used, like -lelf, wich can be absent in
-> >> toolchain. This can be used for samples/bpf cross-compiling allowing
-> >> to get elf lib from sysroot.
-> >>
-> >> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-> >> ---
-> >>  tools/lib/bpf/Makefile | 11 ++++++++---
-> >>  1 file changed, 8 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-> >> index c6f94cffe06e..bccfa556ef4e 100644
-> >> --- a/tools/lib/bpf/Makefile
-> >> +++ b/tools/lib/bpf/Makefile
-> >> @@ -94,6 +94,10 @@ else
-> >>    CFLAGS := -g -Wall
-> >>  endif
-> >>
-> >> +ifdef EXTRA_CXXFLAGS
-> >> +  CXXFLAGS := $(EXTRA_CXXFLAGS)
-> >> +endif
-> >> +
-> >>  ifeq ($(feature-libelf-mmap), 1)
-> >>    override CFLAGS += -DHAVE_LIBELF_MMAP_SUPPORT
-> >>  endif
-> >> @@ -176,8 +180,9 @@ $(BPF_IN): force elfdep bpfdep
-> >>  $(OUTPUT)libbpf.so: $(OUTPUT)libbpf.so.$(LIBBPF_VERSION)
-> >>
-> >>  $(OUTPUT)libbpf.so.$(LIBBPF_VERSION): $(BPF_IN)
-> >> -       $(QUIET_LINK)$(CC) --shared -Wl,-soname,libbpf.so.$(LIBBPF_MAJOR_VERSION) \
-> >> -                                   -Wl,--version-script=$(VERSION_SCRIPT) $^ -lelf -o $@
-> >> +       $(QUIET_LINK)$(CC) $(LDFLAGS) \
-> >> +               --shared -Wl,-soname,libbpf.so.$(LIBBPF_MAJOR_VERSION) \
-> >> +               -Wl,--version-script=$(VERSION_SCRIPT) $^ -lelf -o $@
-> >>         @ln -sf $(@F) $(OUTPUT)libbpf.so
-> >>         @ln -sf $(@F) $(OUTPUT)libbpf.so.$(LIBBPF_MAJOR_VERSION)
-> >>
-> >> @@ -185,7 +190,7 @@ $(OUTPUT)libbpf.a: $(BPF_IN)
-> >>         $(QUIET_LINK)$(RM) $@; $(AR) rcs $@ $^
-> >>
-> >>  $(OUTPUT)test_libbpf: test_libbpf.cpp $(OUTPUT)libbpf.a
-> >> -       $(QUIET_LINK)$(CXX) $(INCLUDES) $^ -lelf -o $@
-> >> +       $(QUIET_LINK)$(CXX) $(CXXFLAGS) $(LDFLAGS) $(INCLUDES) $^ -lelf -o $@
+> On Wed, Sep 18, 2019 at 8:13 AM Jinshan Xiong <jinshan.xiong@uber.com> wr=
+ote:
 > >
-> >Instead of doing ifdef EXTRA_CXXFLAGS bit above, you can just include
-> >both $(CXXFLAGS) and $(EXTRA_CXXFLAGS), which will do the right thing
-> >(and is actually recommended my make documentation way to do this).
-> It's good practice to follow existent style, I've done similar way as for
-> CFLAGS + EXTRACFLAGS here, didn't want to verify it can impact on
-> smth else. And my goal is not to correct everything but embed my
-> functionality, series tool large w/o it.
-
-Alright, we'll have to eventually clean up this Makefile. What we do
-with EXTRA_CFLAGS is not exactly correct, as in this Makefile
-EXTRA_CFLAGS are overriding CFLAGS, instead of extending them, which
-doesn't seem correct to me. BTW, bpftool does += instead of :=. All
-this is avoided by just keeping CFLAGS and EXTRA_CFLAGS separate and
-specifying both of them in $(CC)/$(CLANG) invocations. But feel free
-to ignore this for now.
-
-
+> > The problem with the current approach is that it would be difficult to =
+filter cgroup, especially the cgroup in question has descendents, and also =
+it would spawn new descendents after BPF program is installed. it's hard to=
+ filter it inside a BPF program.
 >
-> >
-> >But actually, there is no need to use C++ compiler here,
-> >test_libbpf.cpp can just be plain C. Do you mind renaming it to .c and
-> >using C compiler instead?
-> Seems like, will try in next v.
-
-Thanks!
-
->
-> >
-> >>
-> >>  $(OUTPUT)libbpf.pc:
-> >>         $(QUIET_GEN)sed -e "s|@PREFIX@|$(prefix)|" \
-> >> --
-> >> 2.17.1
-> >>
->
-> --
-> Regards,
-> Ivan Khoronzhuk
+> Why is that?
+> bpf_current_task_under_cgroup() fits exactly that purpose.
