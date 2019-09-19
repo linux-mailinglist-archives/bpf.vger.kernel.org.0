@@ -2,181 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B17B8079
-	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2019 19:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77755B80D9
+	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2019 20:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391178AbfISRyT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Sep 2019 13:54:19 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:43522 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389717AbfISRyT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Sep 2019 13:54:19 -0400
-Received: by mail-qt1-f194.google.com with SMTP id c3so5307006qtv.10;
-        Thu, 19 Sep 2019 10:54:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lhjn8qyJcwUfBjY1N3P+y5aRQQfw1E5mf/LtWXDIb7I=;
-        b=dDqdCLKvRNnKNp57sJxOb1B7tco0FEvav4u5SXb0PyIMdZGKomwxE60hmX6bODO/be
-         2RUwUJ2CaVlpAEZLKzTVc+iEaTpF/fxmGpt2UXK1odgysVQHaLRtFN6RdAkQda86IZCg
-         SaBwLHgrT4x+zuE0FdL0ZVOs4CNFSj7KzMUdBTHo/YS7B8AOpOzaen4K1LQqZC13aND/
-         W2qh2OIXWxr9mImTXHRdoNtZh6M/dxDXWAiOH+m2XQv4lNmn9konaNkTjLLYPv42Nqby
-         oz8bO9xeS6piKL/oR8HHRz0FflKwI0frQyI8KHSLU4ZEB7QTiEFuaNRMHu2tJs9lFhmz
-         fxPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lhjn8qyJcwUfBjY1N3P+y5aRQQfw1E5mf/LtWXDIb7I=;
-        b=jiZZLrDFEvd5QhD8E6/YqFJcaGr26d9NcuhAlEkkeHQRfSegWZn5tsft0skS9nik56
-         9KAeOOx8ZyNy2JNSF7uTVkHE2Vlmhztgu0jU7nTrGiNtYTUkNRHKSGHxkbfRtv7oRuMK
-         V2a7xObL3V/XtGKprzzgPQOz1vwr1tVExGC115Yz3FF5elncfyVE2dJUNZIyy/2CIV1y
-         rfDgaDgtnKkrm2I8QekGfbn64TxoNIPSrORjs6pXqPqYrRmnObGDiMr4VbBbUaYewHHG
-         9EaFSpcNDcXoNWuUE6qJGLAPHN2DNhyfGLUpK8ME91Hsu6iUPmes0C7Gy3dxOZLjzt8R
-         PJCw==
-X-Gm-Message-State: APjAAAW7ba5tzGIRNNpSUJ1+Cx1NXFjqzYyQuzV9sitqZnkI1KpkcHcY
-        eUhTqpOihg7MlLIvETpQl/Z3s9/sDFnDICrv78U=
-X-Google-Smtp-Source: APXvYqySMGE9FQ3NKlK5aMuYtzri2leqgoI/V/pw2qlSldLW0loyhGWYeK/GZOi2frfzKsEOl1zObzann3PRUdjIT/Y=
-X-Received: by 2002:a05:6214:582:: with SMTP id bx2mr8789123qvb.60.1568915657312;
- Thu, 19 Sep 2019 10:54:17 -0700 (PDT)
+        id S2392048AbfISSaT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Sep 2019 14:30:19 -0400
+Received: from vmicros1.altlinux.org ([194.107.17.57]:37874 "EHLO
+        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392032AbfISSaT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Sep 2019 14:30:19 -0400
+Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
+        by vmicros1.altlinux.org (Postfix) with ESMTP id 99AB672CCE7;
+        Thu, 19 Sep 2019 21:30:17 +0300 (MSK)
+Received: by mua.local.altlinux.org (Postfix, from userid 508)
+        id 8541B7CCB47; Thu, 19 Sep 2019 21:30:17 +0300 (MSK)
+Date:   Thu, 19 Sep 2019 21:30:17 +0300
+From:   "Dmitry V. Levin" <ldv@altlinux.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Tyler Hicks <tyhicks@canonical.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        luto@amacapital.net, jannh@google.com, wad@chromium.org,
+        shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Tycho Andersen <tycho@tycho.ws>, stable@vger.kernel.org
+Subject: Re: [PATCH 2/4] seccomp: add two missing ptrace ifdefines
+Message-ID: <20190919183017.GD22257@altlinux.org>
+References: <20190918084833.9369-1-christian.brauner@ubuntu.com>
+ <20190918084833.9369-3-christian.brauner@ubuntu.com>
+ <20190918091512.GA5088@elm>
+ <201909181031.1EE73B4@keescook>
+ <20190919104251.GA16834@altlinux.org>
+ <201909190918.443D6BC7@keescook>
 MIME-Version: 1.0
-References: <20190916105433.11404-1-ivan.khoronzhuk@linaro.org>
- <20190916105433.11404-10-ivan.khoronzhuk@linaro.org> <CAEf4BzbuPnxAs0A=w60q0jTCy5pb2R-h0uEuT2tmvjsaj4DH4A@mail.gmail.com>
- <20190918103508.GC2908@khorivan> <CAEf4BzYCNrkaMf-LFHYDi78m9jgMDOswh8VYXGcbttJV-3D21w@mail.gmail.com>
- <20190919141848.GA8870@khorivan>
-In-Reply-To: <20190919141848.GA8870@khorivan>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 19 Sep 2019 10:54:06 -0700
-Message-ID: <CAEf4BzYukBi6DjiN-_ueFp4=n8S3Qfpq1wM2CnPGS-R8LJ7+KQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 09/14] samples: bpf: makefile: use own flags
- but not host when cross compile
-To:     Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux@googlegroups.com,
-        sergei.shtylyov@cogentembedded.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <201909190918.443D6BC7@keescook>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 19, 2019 at 7:18 AM Ivan Khoronzhuk
-<ivan.khoronzhuk@linaro.org> wrote:
->
-> On Wed, Sep 18, 2019 at 02:29:53PM -0700, Andrii Nakryiko wrote:
-> >On Wed, Sep 18, 2019 at 3:35 AM Ivan Khoronzhuk
-> ><ivan.khoronzhuk@linaro.org> wrote:
-> >>
-> >> On Tue, Sep 17, 2019 at 04:42:07PM -0700, Andrii Nakryiko wrote:
-> >> >On Mon, Sep 16, 2019 at 3:59 AM Ivan Khoronzhuk
-> >> ><ivan.khoronzhuk@linaro.org> wrote:
-> >> >>
-> >> >> While compile natively, the hosts cflags and ldflags are equal to ones
-> >> >> used from HOSTCFLAGS and HOSTLDFLAGS. When cross compiling it should
-> >> >> have own, used for target arch. While verification, for arm, arm64 and
-> >> >> x86_64 the following flags were used alsways:
-> >> >>
-> >> >> -Wall
-> >> >> -O2
-> >> >> -fomit-frame-pointer
-> >> >> -Wmissing-prototypes
-> >> >> -Wstrict-prototypes
-> >> >>
-> >> >> So, add them as they were verified and used before adding
-> >> >> Makefile.target, but anyway limit it only for cross compile options as
-> >> >> for host can be some configurations when another options can be used,
-> >> >> So, for host arch samples left all as is, it allows to avoid potential
-> >> >> option mistmatches for existent environments.
-> >> >>
-> >> >> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-> >> >> ---
-> >> >>  samples/bpf/Makefile | 9 +++++++++
-> >> >>  1 file changed, 9 insertions(+)
-> >> >>
-> >> >> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> >> >> index 1579cc16a1c2..b5c87a8b8b51 100644
-> >> >> --- a/samples/bpf/Makefile
-> >> >> +++ b/samples/bpf/Makefile
-> >> >> @@ -178,8 +178,17 @@ CLANG_EXTRA_CFLAGS := $(ARM_ARCH_SELECTOR)
-> >> >>  TPROGS_CFLAGS += $(ARM_ARCH_SELECTOR)
-> >> >>  endif
-> >> >>
-> >> >> +ifdef CROSS_COMPILE
-> >> >> +TPROGS_CFLAGS += -Wall
-> >> >> +TPROGS_CFLAGS += -O2
-> >> >
-> >> >Specifying one arg per line seems like overkill, put them in one line?
-> >> Will combine.
-> >>
-> >> >
-> >> >> +TPROGS_CFLAGS += -fomit-frame-pointer
-> >> >
-> >> >Why this one?
-> >> I've explained in commit msg. The logic is to have as much as close options
-> >> to have smiliar binaries. As those options are used before for hosts and kinda
-> >> cross builds - better follow same way.
-> >
-> >I'm just asking why omit frame pointers and make it harder to do stuff
-> >like profiling? What performance benefits are we seeking for in BPF
-> >samples?
-> >
-> >>
-> >> >
-> >> >> +TPROGS_CFLAGS += -Wmissing-prototypes
-> >> >> +TPROGS_CFLAGS += -Wstrict-prototypes
-> >> >
-> >> >Are these in some way special that we want them in cross-compile mode only?
-> >> >
-> >> >All of those flags seem useful regardless of cross-compilation or not,
-> >> >shouldn't they be common? I'm a bit lost about the intent here...
-> >> They are common but split is needed to expose it at least. Also host for
-> >> different arches can have some own opts already used that shouldn't be present
-> >> for cross, better not mix it for safety.
-> >
-> >We want -Wmissing-prototypes and -Wstrict-prototypes for cross-compile
-> >and non-cross-compile cases, right? So let's specify them as common
-> >set of options, instead of relying on KBUILD_HOSTCFLAGS or
-> >HOST_EXTRACFLAGS to have them. Otherwise we'll be getting extra
-> >warnings for just cross-compile case, which is not good. If you are
-> >worrying about having duplicate -W flags, seems like it's handled by
-> >GCC already, so shouldn't be a problem.
->
-> Ok, lets drop omit-frame-pointer.
->
-> But then, lets do more radical step and drop
-> KBUILD_HOSTCFLAGS & HOST_EXTRACFLAG in this patch:
+On Thu, Sep 19, 2019 at 09:55:30AM -0700, Kees Cook wrote:
+> On Thu, Sep 19, 2019 at 01:42:51PM +0300, Dmitry V. Levin wrote:
+> > On Wed, Sep 18, 2019 at 10:33:09AM -0700, Kees Cook wrote:
+> > > This is actually fixed in -next already (and, yes, with the Fixes line
+> > > Tyler has mentioned):
+> > > 
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=next&id=69b2d3c5924273a0ae968d3818210fc57a1b9d07
+> > 
+> > Excuse me, does it mean that you expect each selftest to be self-hosted?
+> > I was (and still is) under impression that selftests should be built
+> > with headers installed from the tree. Is it the case, or is it not?
+> 
+> As you know (but to give others some context) there is a long-standing
+> bug in the selftest build environment that causes these problems (it
+> isn't including the uAPI headers) which you'd proposed to be fixed
+> recently[1]. Did that ever get sent as a "real" patch? I don't see it
+> in Shuah's tree; can you send it to Shuah?
+> 
+> [1] https://lore.kernel.org/lkml/20190805094719.GA1693@altlinux.org/
 
-Yeah, let's do this, if you confirmed that everything still works (and
-I don't see a reason why it shouldn't). Thanks.
+The [1] was an idea rather than a patch, it didn't take arch uapi headers
+into account.  OK, I'll try to come up with a proper fix then.
 
->
-> -ifdef CROSS_COMPILE
-> +TPROGS_CFLAGS += -Wall -O2
-> +TPROGS_CFLAGS += -Wmissing-prototypes
-> +TPROGS_CFLAGS += -Wstrict-prototypes
-> -else
-> -TPROGS_LDLIBS := $(KBUILD_HOSTLDLIBS)
-> -TPROGS_CFLAGS += $(KBUILD_HOSTCFLAGS) $(HOST_EXTRACFLAGS)
-> -endif
->
-> At least it allows to use same options always for both, native and cross.
->
-> I verified on native x86_64, arm64 and arm and cross for arm and arm64,
-> but should work for others, at least it can be tuned explicitly and
-> no need to depend on KBUILD and use "cross" fork here.
 
-Yep, I like it.
-
->
-> --
-> Regards,
-> Ivan Khoronzhuk
+-- 
+ldv
