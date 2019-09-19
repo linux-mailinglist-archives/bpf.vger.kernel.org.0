@@ -2,49 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0E1B7987
-	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2019 14:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8FBB7BFB
+	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2019 16:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732156AbfISMdx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Sep 2019 08:33:53 -0400
-Received: from www62.your-server.de ([213.133.104.62]:60624 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732153AbfISMdw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Sep 2019 08:33:52 -0400
-Received: from [178.197.248.15] (helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iAvd9-0000Pz-4b; Thu, 19 Sep 2019 14:33:51 +0200
-Date:   Thu, 19 Sep 2019 14:33:50 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH bpf 0/2] bpf: BTF fixes
-Message-ID: <20190919123350.GC5504@pc-63.home>
-References: <20190917174538.1295523-1-ast@kernel.org>
+        id S2389504AbfISOS5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Sep 2019 10:18:57 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:40023 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389489AbfISOS5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Sep 2019 10:18:57 -0400
+Received: by mail-lf1-f66.google.com with SMTP id d17so2504109lfa.7
+        for <bpf@vger.kernel.org>; Thu, 19 Sep 2019 07:18:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=VJcWMgQlBXCDJq+mIxTwVnwKjmA/FYBDYBWzdA4+waM=;
+        b=Ue2ocIOyWscRCt7ZzCTi01c0gL7F7vMVAGP9yIEGYKpEYohfx/PwMKCvSdrtlzdPYK
+         BUht9dlkdUgnz/lwVucsdrAvl5byjMtVldpfPt9guguIxcbNz4SFJOHcYVK+1BiYwvNe
+         7DuwgnRk82njueUCROP8jC8sMCF0EJrc49hkHVFvhTE4Bp3o+Q85DuhPxSlM/vTG26Nu
+         CQ6tS1ewupHReyrLiQCexCiPBVGy5oIcGB/rLj/GtSYvVxZkjonoQgHZA1zmA7kWgQO1
+         tBGOWhOzQKBPw8V7d9iQI2UgQVnQN7Osy+Chy72rqp+xsMyXSmOKfZvFWJ1OpljK4fFB
+         95mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=VJcWMgQlBXCDJq+mIxTwVnwKjmA/FYBDYBWzdA4+waM=;
+        b=nuagqvIVQ6Mi0mIE1s6KdN6MRIICwJ9D50eVgVRru1WMAl+wuQP78vG3/ijyZrYo0/
+         1Wis6CGQaCb6jisRsvs4QnGrhKlM3/R5sMIIPVmeLSeZgXjyP57B7mOV5y9urej0tplR
+         5tfVckrJw8Q/McwjuNs8JrYlBDyDKBt93JSYByg+Rftv15g5O9HofBw9RLgGnEbNYYwF
+         bJlBps5UWLlgsRYRjbNHvBA9bXUC0+KEQOPDapWrPzBmZihqsNClIszpzLGxM0mMCiez
+         BKpIZARBTer61/dtG/t34WVDH3Ehi0AB3KfgkjTLUfGSZqKP3cKwXyczeLmt/9jsOf86
+         VTfw==
+X-Gm-Message-State: APjAAAWLu4KIPENXIhDN6T10Zki06CtIJyHlOpT1/OyZtO/b0SNSqJKb
+        Mwhnsnpl3xRqC0CGvy+Asp1kEg==
+X-Google-Smtp-Source: APXvYqxRTZr3llIsZI+fWfYF0ZscJkUyk92xFy/A2Pm6OM2f9WsqMwr+jw4KsPtNY/3pk4jduAvUPw==
+X-Received: by 2002:a19:d6:: with SMTP id 205mr5444406lfa.144.1568902734233;
+        Thu, 19 Sep 2019 07:18:54 -0700 (PDT)
+Received: from khorivan (168-200-94-178.pool.ukrtel.net. [178.94.200.168])
+        by smtp.gmail.com with ESMTPSA id d25sm1582984lfj.15.2019.09.19.07.18.52
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 19 Sep 2019 07:18:53 -0700 (PDT)
+Date:   Thu, 19 Sep 2019 17:18:50 +0300
+From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        clang-built-linux@googlegroups.com,
+        sergei.shtylyov@cogentembedded.com
+Subject: Re: [PATCH v3 bpf-next 09/14] samples: bpf: makefile: use own flags
+ but not host when cross compile
+Message-ID: <20190919141848.GA8870@khorivan>
+Mail-Followup-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        clang-built-linux@googlegroups.com,
+        sergei.shtylyov@cogentembedded.com
+References: <20190916105433.11404-1-ivan.khoronzhuk@linaro.org>
+ <20190916105433.11404-10-ivan.khoronzhuk@linaro.org>
+ <CAEf4BzbuPnxAs0A=w60q0jTCy5pb2R-h0uEuT2tmvjsaj4DH4A@mail.gmail.com>
+ <20190918103508.GC2908@khorivan>
+ <CAEf4BzYCNrkaMf-LFHYDi78m9jgMDOswh8VYXGcbttJV-3D21w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20190917174538.1295523-1-ast@kernel.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25577/Thu Sep 19 10:20:13 2019)
+In-Reply-To: <CAEf4BzYCNrkaMf-LFHYDi78m9jgMDOswh8VYXGcbttJV-3D21w@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 17, 2019 at 10:45:36AM -0700, Alexei Starovoitov wrote:
-> Two trivial BTF fixes.
-> 
-> Alexei Starovoitov (2):
->   bpf: fix BTF verification of enums
->   bpf: fix BTF limits
-> 
->  include/uapi/linux/btf.h | 4 ++--
->  kernel/bpf/btf.c         | 5 ++---
->  2 files changed, 4 insertions(+), 5 deletions(-)
+On Wed, Sep 18, 2019 at 02:29:53PM -0700, Andrii Nakryiko wrote:
+>On Wed, Sep 18, 2019 at 3:35 AM Ivan Khoronzhuk
+><ivan.khoronzhuk@linaro.org> wrote:
+>>
+>> On Tue, Sep 17, 2019 at 04:42:07PM -0700, Andrii Nakryiko wrote:
+>> >On Mon, Sep 16, 2019 at 3:59 AM Ivan Khoronzhuk
+>> ><ivan.khoronzhuk@linaro.org> wrote:
+>> >>
+>> >> While compile natively, the hosts cflags and ldflags are equal to ones
+>> >> used from HOSTCFLAGS and HOSTLDFLAGS. When cross compiling it should
+>> >> have own, used for target arch. While verification, for arm, arm64 and
+>> >> x86_64 the following flags were used alsways:
+>> >>
+>> >> -Wall
+>> >> -O2
+>> >> -fomit-frame-pointer
+>> >> -Wmissing-prototypes
+>> >> -Wstrict-prototypes
+>> >>
+>> >> So, add them as they were verified and used before adding
+>> >> Makefile.target, but anyway limit it only for cross compile options as
+>> >> for host can be some configurations when another options can be used,
+>> >> So, for host arch samples left all as is, it allows to avoid potential
+>> >> option mistmatches for existent environments.
+>> >>
+>> >> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+>> >> ---
+>> >>  samples/bpf/Makefile | 9 +++++++++
+>> >>  1 file changed, 9 insertions(+)
+>> >>
+>> >> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+>> >> index 1579cc16a1c2..b5c87a8b8b51 100644
+>> >> --- a/samples/bpf/Makefile
+>> >> +++ b/samples/bpf/Makefile
+>> >> @@ -178,8 +178,17 @@ CLANG_EXTRA_CFLAGS := $(ARM_ARCH_SELECTOR)
+>> >>  TPROGS_CFLAGS += $(ARM_ARCH_SELECTOR)
+>> >>  endif
+>> >>
+>> >> +ifdef CROSS_COMPILE
+>> >> +TPROGS_CFLAGS += -Wall
+>> >> +TPROGS_CFLAGS += -O2
+>> >
+>> >Specifying one arg per line seems like overkill, put them in one line?
+>> Will combine.
+>>
+>> >
+>> >> +TPROGS_CFLAGS += -fomit-frame-pointer
+>> >
+>> >Why this one?
+>> I've explained in commit msg. The logic is to have as much as close options
+>> to have smiliar binaries. As those options are used before for hosts and kinda
+>> cross builds - better follow same way.
+>
+>I'm just asking why omit frame pointers and make it harder to do stuff
+>like profiling? What performance benefits are we seeking for in BPF
+>samples?
+>
+>>
+>> >
+>> >> +TPROGS_CFLAGS += -Wmissing-prototypes
+>> >> +TPROGS_CFLAGS += -Wstrict-prototypes
+>> >
+>> >Are these in some way special that we want them in cross-compile mode only?
+>> >
+>> >All of those flags seem useful regardless of cross-compilation or not,
+>> >shouldn't they be common? I'm a bit lost about the intent here...
+>> They are common but split is needed to expose it at least. Also host for
+>> different arches can have some own opts already used that shouldn't be present
+>> for cross, better not mix it for safety.
+>
+>We want -Wmissing-prototypes and -Wstrict-prototypes for cross-compile
+>and non-cross-compile cases, right? So let's specify them as common
+>set of options, instead of relying on KBUILD_HOSTCFLAGS or
+>HOST_EXTRACFLAGS to have them. Otherwise we'll be getting extra
+>warnings for just cross-compile case, which is not good. If you are
+>worrying about having duplicate -W flags, seems like it's handled by
+>GCC already, so shouldn't be a problem.
 
-Applied, thanks!
+Ok, lets drop omit-frame-pointer.
+
+But then, lets do more radical step and drop
+KBUILD_HOSTCFLAGS & HOST_EXTRACFLAG in this patch:
+
+-ifdef CROSS_COMPILE
++TPROGS_CFLAGS += -Wall -O2
++TPROGS_CFLAGS += -Wmissing-prototypes
++TPROGS_CFLAGS += -Wstrict-prototypes
+-else
+-TPROGS_LDLIBS := $(KBUILD_HOSTLDLIBS)
+-TPROGS_CFLAGS += $(KBUILD_HOSTCFLAGS) $(HOST_EXTRACFLAGS)
+-endif
+
+At least it allows to use same options always for both, native and cross.
+
+I verified on native x86_64, arm64 and arm and cross for arm and arm64,
+but should work for others, at least it can be tuned explicitly and
+no need to depend on KBUILD and use "cross" fork here.
+
+-- 
+Regards,
+Ivan Khoronzhuk
