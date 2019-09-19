@@ -2,147 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CCD3B7383
-	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2019 08:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2048CB7602
+	for <lists+bpf@lfdr.de>; Thu, 19 Sep 2019 11:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731548AbfISGx7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Sep 2019 02:53:59 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:49724 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbfISGx6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Sep 2019 02:53:58 -0400
-Received: from static-dcd-cqq-121001.business.bouyguestelecom.com ([212.194.121.1] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1iAqK7-0004uy-7E; Thu, 19 Sep 2019 06:53:51 +0000
-Date:   Thu, 19 Sep 2019 08:53:50 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Tycho Andersen <tycho@tycho.ws>
-Cc:     Kees Cook <keescook@chromium.org>, luto@amacapital.net,
-        jannh@google.com, wad@chromium.org, shuah@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Tyler Hicks <tyhicks@canonical.com>
-Subject: Re: [PATCH 1/4] seccomp: add SECCOMP_RET_USER_NOTIF_ALLOW
-Message-ID: <20190919065349.niedwegw6lczu2zr@wittgenstein>
-References: <20190918084833.9369-1-christian.brauner@ubuntu.com>
- <20190918084833.9369-2-christian.brauner@ubuntu.com>
- <201909181018.E3CEC9A81@keescook>
- <20190918180712.GG3835@cisco>
+        id S2388575AbfISJQv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Sep 2019 05:16:51 -0400
+Received: from mail-yb1-f193.google.com ([209.85.219.193]:35990 "EHLO
+        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387637AbfISJQv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Sep 2019 05:16:51 -0400
+Received: by mail-yb1-f193.google.com with SMTP id p23so1077742yba.3;
+        Thu, 19 Sep 2019 02:16:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oD/ca2L4quCAHVT/XtgQj3jQHJpMXh9BrfnzPChou1w=;
+        b=RwaZ6u6rQoLWT5+RtOg4glunTq2Xp0LVwWBB7uadEnqMynriOk2ej52GCwBnSbp9eu
+         4c4keHhzlYq68JMgtg/rbnxrdoeckp/qJIaUlhPGKBjwceXh73D7+zgjxlkbMMCpNzig
+         A9Q8TQvgNS54Ge19BBL3YHVt5PoHPgdUQQS3ulQ8G28UxG/abjfJvJT4RjdFQm+ZSNY5
+         gmLwLGGbhuxTqmo5K0oVQUqyNz1wdXxHKTAZIjwezUHCkMxf4etbnOiEWTNzWZ8ouJkr
+         HDMhMlzOPJvh6Ui89BSb4DWXlcTTRSLyPzlzJK7SPkQJpTHSAqp5Bc5MX5Nfuqgc2+wJ
+         f8lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oD/ca2L4quCAHVT/XtgQj3jQHJpMXh9BrfnzPChou1w=;
+        b=kiNI4cM4itb5YUnh+U8RgpvPw+4LQeNjvHR5nNXuaxgp/uwp7qPyyqNS6A2pVGzhWV
+         +w9CQrGAKJcIzwtfaQRKY9myQUnQujqiFAjvIJcKW29YDNs7EkvCg7i8Ul1YyUUajygl
+         ubliCNx0fCSJ8wBLbPDyAYGfEKOvx6lNSTGlraV9klqs3lp37cw3zd9HceW12Z3XZ7TM
+         qOGhinchZmEnAAwXYPCz3KMIZoXSqEyVAY2dWPYsDi6Bavc60/kUFORMjnqUe3S7kfd1
+         g5XJCCO9h/MrD9R2HnEDpCHSM0f7FIiP/5JpHDAab5mg6+5XNuA31WOH0s4oHtDKmV64
+         UY+w==
+X-Gm-Message-State: APjAAAVuko5m0XTKjU+gRHObL7b4CqFDNjOgVqb6e1lmyo0WUOIPzwMW
+        vdxwcsHt4igffPz7C2ZEZCswbRciqqCzsH4p8g==
+X-Google-Smtp-Source: APXvYqzkwfBbAqJ2fEs7GLbenea9oMI2oEN6oxZT3Ppej5T+0RSW1IlEHCTJz46TaSY6kzmDE75pVcOkz7bihAcQBvU=
+X-Received: by 2002:a5b:f41:: with SMTP id y1mr5918215ybr.164.1568884609909;
+ Thu, 19 Sep 2019 02:16:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20190918180712.GG3835@cisco>
-User-Agent: NeoMutt/20180716
+References: <20190911190218.22628-1-danieltimlee@gmail.com>
+ <CAEf4Bza7tFdDP0=Nk4UVtWn68Kr7oYZziUodN40a=ZKne4-dEQ@mail.gmail.com>
+ <CAEKGpzjUu7Qr0PbU6Es=7J6KAsyr9K1qZvFoWxZ-dhPsD0_8Kg@mail.gmail.com> <CAEf4BzY_EAf9pH7YvL9XAXPUr9+g5Q7N_n45XBufdxkfDbf3aQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzY_EAf9pH7YvL9XAXPUr9+g5Q7N_n45XBufdxkfDbf3aQ@mail.gmail.com>
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+Date:   Thu, 19 Sep 2019 18:16:33 +0900
+Message-ID: <CAEKGpzjf22NpMapev7OnxSmU2HpHoEcGHjX81Pw4LDvOt58NRw@mail.gmail.com>
+Subject: Re: [bpf-next,v3] samples: bpf: add max_pckt_size option at xdp_adjust_tail
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 18, 2019 at 12:07:12PM -0600, Tycho Andersen wrote:
-> On Wed, Sep 18, 2019 at 10:30:00AM -0700, Kees Cook wrote:
-> > On Wed, Sep 18, 2019 at 10:48:30AM +0200, Christian Brauner wrote:
-> > > This allows the seccomp notifier to continue a syscall. A positive
-> > > discussion about this feature was triggered by a post to the
-> > > ksummit-discuss mailing list (cf. [3]) and took place during KSummit
-> > > (cf. [1]) and again at the containers/checkpoint-restore
-> > > micro-conference at Linux Plumbers.
-> > > 
-> > > Recently we landed seccomp support for SECCOMP_RET_USER_NOTIF (cf. [4])
-> > > which enables a process (watchee) to retrieve an fd for its seccomp
-> > > filter. This fd can then be handed to another (usually more privileged)
-> > > process (watcher). The watcher will then be able to receive seccomp
-> > > messages about the syscalls having been performed by the watchee.
-> > > 
-> > > This feature is heavily used in some userspace workloads. For example,
-> > > it is currently used to intercept mknod() syscalls in user namespaces
-> > > aka in containers.
-> > > The mknod() syscall can be easily filtered based on dev_t. This allows
-> > > us to only intercept a very specific subset of mknod() syscalls.
-> > > Furthermore, mknod() is not possible in user namespaces toto coelo and
-> > > so intercepting and denying syscalls that are not in the whitelist on
-> > > accident is not a big deal. The watchee won't notice a difference.
-> > > 
-> > > In contrast to mknod(), a lot of other syscall we intercept (e.g.
-> > > setxattr()) cannot be easily filtered like mknod() because they have
-> > > pointer arguments. Additionally, some of them might actually succeed in
-> > > user namespaces (e.g. setxattr() for all "user.*" xattrs). Since we
-> > > currently cannot tell seccomp to continue from a user notifier we are
-> > > stuck with performing all of the syscalls in lieu of the container. This
-> > > is a huge security liability since it is extremely difficult to
-> > > correctly assume all of the necessary privileges of the calling task
-> > > such that the syscall can be successfully emulated without escaping
-> > > other additional security restrictions (think missing CAP_MKNOD for
-> > > mknod(), or MS_NODEV on a filesystem etc.). This can be solved by
-> > > telling seccomp to resume the syscall.
-> > > 
-> > > One thing that came up in the discussion was the problem that another
-> > > thread could change the memory after userspace has decided to let the
-> > > syscall continue which is a well known TOCTOU with seccomp which is
-> > > present in other ways already.
-> > > The discussion showed that this feature is already very useful for any
-> > > syscall without pointer arguments. For any accidentally intercepted
-> > > non-pointer syscall it is safe to continue.
-> > > For syscalls with pointer arguments there is a race but for any cautious
-> > > userspace and the main usec cases the race doesn't matter. The notifier
-> > > is intended to be used in a scenario where a more privileged watcher
-> > > supervises the syscalls of lesser privileged watchee to allow it to get
-> > > around kernel-enforced limitations by performing the syscall for it
-> > > whenever deemed save by the watcher. Hence, if a user tricks the watcher
-> > > into allowing a syscall they will either get a deny based on
-> > > kernel-enforced restrictions later or they will have changed the
-> > > arguments in such a way that they manage to perform a syscall with
-> > > arguments that they would've been allowed to do anyway.
-> > > In general, it is good to point out again, that the notifier fd was not
-> > > intended to allow userspace to implement a security policy but rather to
-> > > work around kernel security mechanisms in cases where the watcher knows
-> > > that a given action is safe to perform.
-> > > 
-> > > /* References */
-> > > [1]: https://linuxplumbersconf.org/event/4/contributions/560
-> > > [2]: https://linuxplumbersconf.org/event/4/contributions/477
-> > > [3]: https://lore.kernel.org/r/20190719093538.dhyopljyr5ns33qx@brauner.io
-> > > [4]: commit 6a21cc50f0c7 ("seccomp: add a return code to trap to userspace")
-> > > 
-> > > Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> > > Cc: Kees Cook <keescook@chromium.org>
-> > > Cc: Andy Lutomirski <luto@amacapital.net>
-> > > Cc: Will Drewry <wad@chromium.org>
-> > > Cc: Tycho Andersen <tycho@tycho.ws>
-> > > CC: Tyler Hicks <tyhicks@canonical.com>
-> > > Cc: Jann Horn <jannh@google.com>
-> > > ---
-> > >  include/uapi/linux/seccomp.h |  2 ++
-> > >  kernel/seccomp.c             | 24 ++++++++++++++++++++----
-> > >  2 files changed, 22 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
-> > > index 90734aa5aa36..2c23b9aa6383 100644
-> > > --- a/include/uapi/linux/seccomp.h
-> > > +++ b/include/uapi/linux/seccomp.h
-> > > @@ -76,6 +76,8 @@ struct seccomp_notif {
-> > >  	struct seccomp_data data;
-> > >  };
-> > >  
-> > > +#define SECCOMP_RET_USER_NOTIF_ALLOW 0x00000001
-> > 
-> > nit: I'd like to avoid confusion here about what "family" these flags
-> > belong to. "SECCOMP_RET_..." is used for the cBPF filter return action
-> > value, so let's instead call this:
-> > 
-> > #define SECCOMP_USER_NOTIF_CONTINUE	BIT(0)
-> 
-> +1, I was thinking maybe even SECCOMP_USER_NOTIF_FLAG_CONTINUE.
+On Thu, Sep 19, 2019 at 3:00 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Sep 18, 2019 at 10:37 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+> >
+> > On Tue, Sep 17, 2019 at 1:04 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Wed, Sep 11, 2019 at 2:33 PM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+> > > >
+> > > > Currently, at xdp_adjust_tail_kern.c, MAX_PCKT_SIZE is limited
+> > > > to 600. To make this size flexible, a new map 'pcktsz' is added.
+> > > >
+> > > > By updating new packet size to this map from the userland,
+> > > > xdp_adjust_tail_kern.o will use this value as a new max_pckt_size.
+> > > >
+> > > > If no '-P <MAX_PCKT_SIZE>' option is used, the size of maximum packet
+> > > > will be 600 as a default.
+> > > >
+> > > > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> > > >
+> > > > ---
+> > > > Changes in v2:
+> > > >     - Change the helper to fetch map from 'bpf_map__next' to
+> > > >     'bpf_object__find_map_fd_by_name'.
+> > > >
+> > > >  samples/bpf/xdp_adjust_tail_kern.c | 23 +++++++++++++++++++----
+> > > >  samples/bpf/xdp_adjust_tail_user.c | 28 ++++++++++++++++++++++------
+> > > >  2 files changed, 41 insertions(+), 10 deletions(-)
+> > > >
+> > > > diff --git a/samples/bpf/xdp_adjust_tail_kern.c b/samples/bpf/xdp_adjust_tail_kern.c
+> > > > index 411fdb21f8bc..d6d84ffe6a7a 100644
+> > > > --- a/samples/bpf/xdp_adjust_tail_kern.c
+> > > > +++ b/samples/bpf/xdp_adjust_tail_kern.c
+> > > > @@ -25,6 +25,13 @@
+> > > >  #define ICMP_TOOBIG_SIZE 98
+> > > >  #define ICMP_TOOBIG_PAYLOAD_SIZE 92
+> > > >
+> > > > +struct bpf_map_def SEC("maps") pcktsz = {
+> > > > +       .type = BPF_MAP_TYPE_ARRAY,
+> > > > +       .key_size = sizeof(__u32),
+> > > > +       .value_size = sizeof(__u32),
+> > > > +       .max_entries = 1,
+> > > > +};
+> > > > +
+> > >
+> > > Hey Daniel,
+> > >
+> > > This looks like an ideal use case for global variables on BPF side. I
+> > > think it's much cleaner and will make BPF side of things simpler.
+> > > Would you mind giving global data a spin instead of adding this map?
+> > >
+> >
+> > Sure thing!
+> > But, I'm not sure there is global variables for BPF?
+> > AFAIK, there aren't any support for global variables yet in BPF
+> > program (_kern.c).
+> >
+> >     # when defining global variable at _kern.c
+> >     libbpf: bpf: relocation: not yet supported relo for non-static
+> > global '<var>' variable found in insns[39].code 0x18
+>
+> just what it says: use static global variable (also volatile to
+> prevent compiler optimizations) :)
+>
+> static volatile __u32 pcktsz; /* this should work */
+>
 
-I'll flip a coin between yours and Kees suggestion. :)
+My apologies, but I'm not sure I'm following.
+What you are saying is, should I define global variable to _kern,c
+and access and modify this variable from _user.c?
 
-> 
-> But the whole series (minus the patch that already exists) looks good
-> to me if we make this change:
-> 
-> Reviewed-by: Tycho Andersen <tycho@tycho.ws>
+For example,
 
-Thanks for the review! :)
-Christian
+<_kern.c>
+static volatile __u32 pcktsz = 300;
+
+<_user.c>
+extern __u32 pcktsz;
+// Later in code
+pcktsz = 400;
+
+Is this code means similar to what you've said?
+AFAIK, 'static' keyword for global variable restricts scope to file itself,
+so the 'accessing' and 'modifying' this variable from the <_user.c>
+isn't available.
+
+The reason why I've used bpf map for this 'pcktsz' option is,
+I've wanted to run this kernel xdp program (xdp_adjust_tail_kern.o)
+as it itself, not heavily controlled by user program (./xdp_adjust_tail).
+
+When this 'pcktsz' option is implemented in bpf map, user can simply
+modify 'map' to change this size. (such as bpftool prog map)
+
+But when this variable comes to global data, it can't be changed
+after the program gets loaded.
+
+I really appreciate your time and effort for the review.
+But I'm sorry that I seem to get it wrong.
+
+Thanks,
+Daniel
+
+> >
+> > By the way, thanks for the review.
+> >
+> > Thanks,
+> > Daniel
+> >
+> >
+> > > >  struct bpf_map_def SEC("maps") icmpcnt = {
+> > > >         .type = BPF_MAP_TYPE_ARRAY,
+> > > >         .key_size = sizeof(__u32),
+> > > > @@ -64,7 +71,8 @@ static __always_inline void ipv4_csum(void *data_start, int data_size,
+> > > >         *csum = csum_fold_helper(*csum);
+> > > >  }
+> > > >
+> > >
+> > > [...]
