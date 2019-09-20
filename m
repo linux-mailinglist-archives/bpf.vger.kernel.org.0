@@ -2,190 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F30B97B2
-	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2019 21:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC96B97F7
+	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2019 21:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725820AbfITTTu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Sep 2019 15:19:50 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:43441 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbfITTTu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Sep 2019 15:19:50 -0400
-Received: by mail-lf1-f66.google.com with SMTP id u3so5779272lfl.10
-        for <bpf@vger.kernel.org>; Fri, 20 Sep 2019 12:19:46 -0700 (PDT)
+        id S1727403AbfITTqJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Sep 2019 15:46:09 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:44065 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727358AbfITTqJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Sep 2019 15:46:09 -0400
+Received: by mail-vs1-f67.google.com with SMTP id w195so5452916vsw.11;
+        Fri, 20 Sep 2019 12:46:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gAf5/sB7eVKKCWdFTMcwGWL/j6LnoBpK44/vlo0WiMQ=;
-        b=NyQh7krmksMSqLjhbOuyr7tfCNP1fZenF74Msk2i++P30Qbuykdt+Q1A71lKdxENKv
-         OEc9HIw+zjJ74wmyn6FutxYjkJcMiHKVLyB4VdN+bnrB3FQFrk4So4762SNbwqs7tCHL
-         mI2ATbVm4eAB9BtUngciQnhIRe8j3cr1ZHiNYVeSHP37Xl9c/MtEd4EMN0InI0y0WfZt
-         XfvqO5frv2lFyPji0FqeJ5HZcshgJ0u+EbRZmqEW93VVLlivJpIQQE1lix26BG+ct0ha
-         kra4S+lczs+Vqp9BB49taJWQ3aphd/bsG4dGhR6D0Jti1j5gXWLVXHsRrAXNVohyn535
-         MEDA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=Io9RJ3JL2fzUchkhXxqR2KLLvNnWVOLhMcfl4bJ3PtU=;
+        b=A+mCBrL1vpFmLrtLGyrnmeQtJXeAMN5reVnCv0L8Y1ZXSubri84vFcUGnWLI6VqcXA
+         avdCr1Fmkqfq1M5ZK1soM1hFckd/2wh6LG1LGX+XNXaJSKdYH6nHglkP5hAIGoyU4znP
+         d9xspJfUg05Zp3j67scz7LGZ9wwRZaReJVge0oy4NCuhtqSh1T9Bz6pSRapE+/460VMj
+         1EQRhF+CZKV8ycM5EVFCCtqWM1Tz2kE0VDIcFGvrCXzjbtztSc4Ys7MDW4xFegEx3EW0
+         90gyeV5qkIhksYOuiGyOSKvZX0KzZ/UtKw5rznkzyCG0oJK1r6UOI4xudW247GafyG5h
+         LnIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mail-followup-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gAf5/sB7eVKKCWdFTMcwGWL/j6LnoBpK44/vlo0WiMQ=;
-        b=KsSnjupy7TG2VqQXcp2+sMOb3IOVmzmbHMilWZ6i/TmmIKRLgeFOvfgfnPZNYEx9J/
-         1nPnIyrTnNARGax3vUrAHEwB5aIlmpiuoImniuOL46av/6dCoybb4UBA8ABKRWxsHlru
-         Dn19ko4GetRe7wFi5WIB6MyXBkoGPs8ShR4iNGboWQ7qiPMcsAefnPzZJpUoUYhxfhzV
-         qXDiTKglhxzn1El4mbzbV6TTIVZp4f8n2b52hNCdASSYr9eHNmGiF/rMTbbM2cKbLNie
-         PikLSoiW35/mfHT7e4ewogkpOwvk/PS8a95mXcCatRmZmUJyzlV/EpHckSKD/iscuiOv
-         1fGA==
-X-Gm-Message-State: APjAAAXGJS91inIFl4lUk5IrdGZYVIMDGwIl0C6uCO3/FK0PLZb1XBtb
-        NV1xtRIGXHKjrBz+qwuB8kqi3w==
-X-Google-Smtp-Source: APXvYqyTX2Yv4Vw1igMUKohBkWPQHWgNronoDQHDya9V4EfROzBLILxLNetkOgRt2M2JAv0Eu7uvQQ==
-X-Received: by 2002:a19:48c3:: with SMTP id v186mr9701393lfa.141.1569007185986;
-        Fri, 20 Sep 2019 12:19:45 -0700 (PDT)
-Received: from khorivan (168-200-94-178.pool.ukrtel.net. [178.94.200.168])
-        by smtp.gmail.com with ESMTPSA id v1sm625867lfq.89.2019.09.20.12.19.44
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 20 Sep 2019 12:19:45 -0700 (PDT)
-Date:   Fri, 20 Sep 2019 22:19:43 +0300
-From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf] libbpf: fix version identification on busybox
-Message-ID: <20190920191941.GB2760@khorivan>
-Mail-Followup-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, Martin Lau <kafai@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20190919160518.25901-1-ivan.khoronzhuk@linaro.org>
- <CAEf4BzbCjCYr5NMPctDkUggwpehnqZPVBSqZOsd9MvSq6WmnZQ@mail.gmail.com>
- <20190920082204.GC8870@khorivan>
- <CAEf4BzaVuaN3HhMu8W_i9z4n-2zfjqxBXyOEOaQHexxZq7b3qg@mail.gmail.com>
- <20190920183449.GA2760@khorivan>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=Io9RJ3JL2fzUchkhXxqR2KLLvNnWVOLhMcfl4bJ3PtU=;
+        b=P3cO0Jp+BeEq78VPclB+GV+SKR03LzbQm78ISHAhTnYGI5iouApjHH9boJIw69vaeI
+         ymvhU71uc3t2R2tg7fT4ePc9YCkm3IaNgMdzfeRrSjGcoHRtN897n9cNidij+P963IDs
+         VeGa3O7xCHU0RN1dzzcwQHFtl660UjydIgDIJIoBVumgQqQQmbX9e9jyMhObbIXbQ6xs
+         Wu9OmYMz+9QMw4qlGfn+iAnw2dv55NIHMF7pWcZ/FoxkhMOmb53S8KgrLi3Ad6S8XMP+
+         Ta9tCldEe/+w/K3nsdkEm30w+NJ2/cwJfBhGMG/6InuCWboFqKfAn4lF9cbLbEAaQ48b
+         uwVg==
+X-Gm-Message-State: APjAAAUvsBBpBktqwVpgjLFSitRaS8maZK25iVhU31VwuM6cCEFuDxMd
+        0f7MvXo5usbvh5sYn+s+HGILQpvePQxM5yZCFsM=
+X-Google-Smtp-Source: APXvYqw7oCfZ9PAVUf+G2Ozrp2x9H1visonA1g+8HuC6672fCZ+A38Jrk5MfqKuk2C81VU0aAUVsI6zmYYGEm1IQL50=
+X-Received: by 2002:a67:c181:: with SMTP id h1mr1367388vsj.195.1569008768252;
+ Fri, 20 Sep 2019 12:46:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20190920183449.GA2760@khorivan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20190920185843.4096-1-matthew.cover@stackpath.com>
+In-Reply-To: <20190920185843.4096-1-matthew.cover@stackpath.com>
+From:   Matt Cover <werekraken@gmail.com>
+Date:   Fri, 20 Sep 2019 12:45:56 -0700
+Message-ID: <CAGyo_hoSPGRs8xvs9=D8c+1D_qKWhb2-9i5++mOC20xiYmZ71w@mail.gmail.com>
+Subject: Re: [PATCH net-next] tuntap: Fallback to automq on TUNSETSTEERINGEBPF
+ prog negative return
+To:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        Jason Wang <jasowang@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Stanislav Fomichev <sdf@google.com>, mst@redhat.com,
+        Matthew Cover <matthew.cover@stackpath.com>,
+        mail@timurcelik.de, pabeni@redhat.com,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        wangli39@baidu.com, lifei.shirley@bytedance.com,
+        tglx@linutronix.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 20, 2019 at 09:34:51PM +0300, Ivan Khoronzhuk wrote:
->On Fri, Sep 20, 2019 at 09:41:54AM -0700, Andrii Nakryiko wrote:
->>On Fri, Sep 20, 2019 at 1:22 AM Ivan Khoronzhuk
->><ivan.khoronzhuk@linaro.org> wrote:
->>>
->>>On Thu, Sep 19, 2019 at 01:02:40PM -0700, Andrii Nakryiko wrote:
->>>>On Thu, Sep 19, 2019 at 11:22 AM Ivan Khoronzhuk
->>>><ivan.khoronzhuk@linaro.org> wrote:
->>>>>
->>>>> It's very often for embedded to have stripped version of sort in
->>>>> busybox, when no -V option present. It breaks build natively on target
->>>>> board causing recursive loop.
->>>>>
->>>>> BusyBox v1.24.1 (2019-04-06 04:09:16 UTC) multi-call binary. \
->>>>> Usage: sort [-nrugMcszbdfimSTokt] [-o FILE] [-k \
->>>>> start[.offset][opts][,end[.offset][opts]] [-t CHAR] [FILE]...
->>>>>
->>>>> Lets modify command a little to avoid -V option.
->>>>>
->>>>> Fixes: dadb81d0afe732 ("libbpf: make libbpf.map source of truth for libbpf version")
->>>>>
->>>>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
->>>>> ---
->>>>>
->>>>> Based on bpf/master
->>>>>
->>>>>  tools/lib/bpf/Makefile | 2 +-
->>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
->>>>> index c6f94cffe06e..a12490ad6215 100644
->>>>> --- a/tools/lib/bpf/Makefile
->>>>> +++ b/tools/lib/bpf/Makefile
->>>>> @@ -3,7 +3,7 @@
->>>>>
->>>>>  LIBBPF_VERSION := $(shell \
->>>>>         grep -oE '^LIBBPF_([0-9.]+)' libbpf.map | \
->>>>> -       sort -rV | head -n1 | cut -d'_' -f2)
->>>>> +       cut -d'_' -f2 | sort -r | head -n1)
->>>>
->>>>You can't just sort alphabetically, because:
->>>>
->>>>1.2
->>>>1.11
->>>>
->>>>should be in that order. See discussion on mailing thread for original commit.
->>>
->>>if X1.X2.X3, where X = {0,1,....99999}
->>>Then it can be:
->>>
->>>-LIBBPF_VERSION := $(shell \
->>>-       grep -oE '^LIBBPF_([0-9.]+)' libbpf.map | \
->>>-       sort -rV | head -n1 | cut -d'_' -f2)
->>>+_LBPFLIST := $(patsubst %;,%,$(patsubst LIBBPF_%,%,$(filter LIBBPF_%, \
->>>+           $(shell cat libbpf.map))))
->>>+_LBPFLIST2 := $(foreach v,$(_LBPFLIST), \
->>>+               $(subst $() $(),,$(foreach n,$(subst .,$() $(),$(v)), \
->>>+                       $(shell printf "%05d" $(n)))))
->>>+_LBPF_VER := $(word $(words $(sort $(_LBPFLIST2))), $(sort $(_LBPFLIST2)))
->>>+LIBBPF_VERSION := $(patsubst %_$(_LBPF_VER),%,$(filter %_$(_LBPF_VER), \
->>>+        $(join $(addsuffix _, $(_LBPFLIST)),$(_LBPFLIST2))))
->>>
->>>It's bigger but avoids invocations of grep/sort/cut/head, only cat/printf
->>>, thus -V option also.
->>>
->>
->>No way, this is way too ugly (and still unreliable, if we ever have
->>X.Y.Z.W or something). I'd rather go with my original approach of
->Yes, forgot to add
->X1,X2,X3,...XN, where X = {0,1,....99999} and N = const for all versions.
->But frankly, 1.0.0 looks too far.
-
-It actually works for any numbs of X1.X2...X100
-but not when you have couple kindof:
-X1.X2.X3
-and
-X1.X2.X3.X4
-
-But, no absolutely any problem to extend this solution to handle all cases,
-by just adding leading 0 to every "transformed version", say limit it to 10
-possible 'dots' (%5*10d) and it will work as clocks. Advantage - mostly make
-functions.
-
-Here can be couple more solutions with sed, not sure it can look less maniac.
-
+On Fri, Sep 20, 2019 at 11:59 AM Matthew Cover <werekraken@gmail.com> wrote:
 >
->>fetching the last version in libbpf.map file. See
->>https://www.spinics.net/lists/netdev/msg592703.html.
-
-Yes it's nice but, no sort, no X1.X2.X3....XN
-
-Main is to solve it for a long time.
-
->>
->>>>
->>>>>  LIBBPF_MAJOR_VERSION := $(firstword $(subst ., ,$(LIBBPF_VERSION)))
->>>>>
->>>>>  MAKEFLAGS += --no-print-directory
->>>>> --
->>>>> 2.17.1
->>>>>
->>>
->>>--
->>>Regards,
->>>Ivan Khoronzhuk
+> Treat a negative return from a TUNSETSTEERINGEBPF bpf prog as a signal
+> to fallback to tun_automq_select_queue() for tx queue selection.
 >
->-- 
->Regards,
->Ivan Khoronzhuk
+> Compilation of this exact patch was tested.
+>
+> For functional testing 3 additional printk()s were added.
+>
+> Functional testing results (on 2 txq tap device):
+>
+>   [Fri Sep 20 18:33:27 2019] ========== tun no prog ==========
+>   [Fri Sep 20 18:33:27 2019] tuntap: tun_ebpf_select_queue() returned '-1'
+>   [Fri Sep 20 18:33:27 2019] tuntap: tun_automq_select_queue() ran
+>   [Fri Sep 20 18:33:27 2019] ========== tun prog -1 ==========
+>   [Fri Sep 20 18:33:27 2019] tuntap: bpf_prog_run_clear_cb() returned '-1'
+>   [Fri Sep 20 18:33:27 2019] tuntap: tun_ebpf_select_queue() returned '-1'
+>   [Fri Sep 20 18:33:27 2019] tuntap: tun_automq_select_queue() ran
+>   [Fri Sep 20 18:33:27 2019] ========== tun prog 0 ==========
+>   [Fri Sep 20 18:33:27 2019] tuntap: bpf_prog_run_clear_cb() returned '0'
+>   [Fri Sep 20 18:33:27 2019] tuntap: tun_ebpf_select_queue() returned '0'
+>   [Fri Sep 20 18:33:27 2019] ========== tun prog 1 ==========
+>   [Fri Sep 20 18:33:27 2019] tuntap: bpf_prog_run_clear_cb() returned '1'
+>   [Fri Sep 20 18:33:27 2019] tuntap: tun_ebpf_select_queue() returned '1'
+>   [Fri Sep 20 18:33:27 2019] ========== tun prog 2 ==========
+>   [Fri Sep 20 18:33:27 2019] tuntap: bpf_prog_run_clear_cb() returned '2'
+>   [Fri Sep 20 18:33:27 2019] tuntap: tun_ebpf_select_queue() returned '0'
+>
+> Signed-off-by: Matthew Cover <matthew.cover@stackpath.com>
+> ---
+>  drivers/net/tun.c | 20 +++++++++++---------
+>  1 file changed, 11 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> index aab0be4..173d159 100644
+> --- a/drivers/net/tun.c
+> +++ b/drivers/net/tun.c
+> @@ -583,35 +583,37 @@ static u16 tun_automq_select_queue(struct tun_struct *tun, struct sk_buff *skb)
+>         return txq;
+>  }
+>
+> -static u16 tun_ebpf_select_queue(struct tun_struct *tun, struct sk_buff *skb)
+> +static int tun_ebpf_select_queue(struct tun_struct *tun, struct sk_buff *skb)
+>  {
+>         struct tun_prog *prog;
+>         u32 numqueues;
+> -       u16 ret = 0;
+> +       int ret = -1;
+>
+>         numqueues = READ_ONCE(tun->numqueues);
+>         if (!numqueues)
+>                 return 0;
+>
+> +       rcu_read_lock();
+>         prog = rcu_dereference(tun->steering_prog);
+>         if (prog)
+>                 ret = bpf_prog_run_clear_cb(prog->prog, skb);
+> +       rcu_read_unlock();
+>
+> -       return ret % numqueues;
+> +       if (ret >= 0)
+> +               ret %= numqueues;
+> +
+> +       return ret;
+>  }
+>
+>  static u16 tun_select_queue(struct net_device *dev, struct sk_buff *skb,
+>                             struct net_device *sb_dev)
+>  {
+>         struct tun_struct *tun = netdev_priv(dev);
+> -       u16 ret;
+> +       int ret;
+>
+> -       rcu_read_lock();
+> -       if (rcu_dereference(tun->steering_prog))
+> -               ret = tun_ebpf_select_queue(tun, skb);
+> -       else
+> +       ret = tun_ebpf_select_queue(tun, skb);
+> +       if (ret < 0)
+>                 ret = tun_automq_select_queue(tun, skb);
+> -       rcu_read_unlock();
+>
+>         return ret;
+>  }
+> --
+> 1.8.3.1
+>
 
--- 
-Regards,
-Ivan Khoronzhuk
+Sorry for sending this while net-next is closed... I
+should have been more careful.
+
+Please let me know if I should resubmit once net-next
+is open again.
