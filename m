@@ -2,302 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CCEB878F
-	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2019 00:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C247B884C
+	for <lists+bpf@lfdr.de>; Fri, 20 Sep 2019 02:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393448AbfISWqS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Sep 2019 18:46:18 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:39354 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389023AbfISWqS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Sep 2019 18:46:18 -0400
-Received: by mail-oi1-f194.google.com with SMTP id w144so146326oia.6;
-        Thu, 19 Sep 2019 15:46:16 -0700 (PDT)
+        id S2405706AbfITAF3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Sep 2019 20:05:29 -0400
+Received: from mail-ua1-f68.google.com ([209.85.222.68]:46912 "EHLO
+        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404681AbfITAF3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Sep 2019 20:05:29 -0400
+Received: by mail-ua1-f68.google.com with SMTP id m21so1666632ual.13;
+        Thu, 19 Sep 2019 17:05:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id;
-        bh=bzP3Biuj6YMBoK/rJ9D8S2zv1/uWFhRasQpVD97IPUw=;
-        b=UhRNQkwt5DL9Xj/+S1o2nq+qrUj2+djgXxuF7wHbjyP3E9gG94FnLoNChsZ9KO36FH
-         0WJh8xE0kCelKDPT6ANxYLKDrvQAPHmBH0+jMwpaoTzIy6vUo/FEX5V/a0Alt42kxu0h
-         ZbI9m5i327XrJxTgfQ8UspnaIyOsp7Gei8E4JBnoMT36HZmLLUGksUlWRKYFgWsVHYWF
-         VeSDmbN7Hw06gyQJqIAAGfKH/HjlulCWmPlvI3Hs42j1LwqDKZ6SPcekGpvNRosnp2Fm
-         kcdy6aQuAN3MZ7pGP4tplx15vj50Vp+xLp2cQtA1dJjANfKUCmRsxWIcBdT3gy7YMRAY
-         CHCw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=QkUwz5xhRo/9F03n5Bte1Vs+BpiUIhnebbo6RmVEJCo=;
+        b=mb0zuXXO/KC+zwN2J28aOzAKQ0IqXXLFdTY2w15Rsm+Rb6i6hlEy6RSgGxSbqfM1Y1
+         i+hKv5LIqT0M3cWK6IrUXOgiAZEJtnvP6E3DCCOsds1w5AD1zFQqJJaXAWkvnppN1J3m
+         u1/a0frdNND4TQ4LuwvWcUZshwig3f1P+2iJx1NLaowos67GFNTXTM+xEOqaP3LFGN0Z
+         2xHjLS7KzVEnH5tTi8YHxT6QVYxxkoW8LJw1tJWBaF8xzQcijO5RkIWI77oTMyYoteSQ
+         mYvFkn/S2t8vHk8lrCEk0te3STsM2ppdeC9QfsjwBNf/6Bwckyljqj6G2i7l2MV7JMIW
+         yNwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=bzP3Biuj6YMBoK/rJ9D8S2zv1/uWFhRasQpVD97IPUw=;
-        b=CoejB6c1h5rY4JjVK/jKGuWUxRUJ/lSxVeOPOQ63Xl8qqyiViQrqaNCsDZozXRJ7ws
-         JK1XU58TdH9F3mFp788irl8706XIhu/Umnnfk6wcLHca92ldoer7+8GdfYwudGCOSGVJ
-         LDQYkrB4bTlrM0fO6nTUKWjhJLLUVfuElDzxrzrvz5/ZLE84GSgqHkZk9mIP1i0Izlpx
-         erv6IO5hXXqgd6p9BzYcZr4YBRFPigAEVRoTIbNf2hLHf+qROGRB9ocda+cQAY4xGygE
-         El4pOfaXe+oN+/KxwNbB6cgdVhGdAjO0TDdP4i6Y1UF3pT+llQXiFN7+yk2q4iwCJTAK
-         8ttg==
-X-Gm-Message-State: APjAAAXrGDFifcFsgHgFUSrYEM97Oafsofl/PKJ08XTpecgGG8XIjIzO
-        6rwy9AObr8054QwTaVxant8=
-X-Google-Smtp-Source: APXvYqxKjHwidWKCd3/SYzZ6w6BZJfKbTiYiZOszlYao/L0Ih4KDf/CQjTAGAyWgOBqypGqG3kM0qg==
-X-Received: by 2002:aca:3c0b:: with SMTP id j11mr225963oia.143.1568933175752;
-        Thu, 19 Sep 2019 15:46:15 -0700 (PDT)
-Received: from localhost.localdomain (ip24-56-44-135.ph.ph.cox.net. [24.56.44.135])
-        by smtp.gmail.com with ESMTPSA id 8sm89059oti.41.2019.09.19.15.46.13
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 19 Sep 2019 15:46:15 -0700 (PDT)
-From:   Matthew Cover <werekraken@gmail.com>
-X-Google-Original-From: Matthew Cover <matthew.cover@stackpath.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=QkUwz5xhRo/9F03n5Bte1Vs+BpiUIhnebbo6RmVEJCo=;
+        b=ua2ho7zZ81+9NmHEZZ1PzxewG4aBKRKliN/U4+E/0Mr0USOF1h/AmFUMnC0krSgZgr
+         k377wBROykv4KUCx8XhLh4NycC2GCga2Qq7oSF8hATXVG2svJfgs9SgC/gJ0tE249mxU
+         zoTjZcbUlozkbCjv/cV/oP5v7I/vuIwrDQCysArwmlSpUNuTjlOn1/mEpzB7ZUSlymkx
+         yElIuyG/5h5M/2b8JdeuIF2ioEEXJEAoflvlm1raqrW2kdEk0wt5w/z4qvUyeSj60wpV
+         ObtPBXuoZ1Uq6nNn9lNM/M66NEqWoT14J6w8Q7JRo83b/R3o/mI0RAMiRR7ZEJfoFHcd
+         KyRA==
+X-Gm-Message-State: APjAAAXCnq4yUKkg1EPGW9pVv2OLdNpBsDbjHN1RONQOJOtD+9v8/1iz
+        +T/HxpvFL9pulbwdIz2NJ4hgGA/tECr7+w2Nh2k=
+X-Google-Smtp-Source: APXvYqzWFeN82a7ivnSWhCyirgskp8rj3ehrKDRc8JWhj3hT8rf8PKbZJUkogOPRht2T5ymsjVoV6Pgdup3xVtIANAA=
+X-Received: by 2002:ab0:224e:: with SMTP id z14mr5425489uan.36.1568937925776;
+ Thu, 19 Sep 2019 17:05:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190919224458.91422-1-matthew.cover@stackpath.com>
+In-Reply-To: <20190919224458.91422-1-matthew.cover@stackpath.com>
+From:   Matt Cover <werekraken@gmail.com>
+Date:   Thu, 19 Sep 2019 17:05:14 -0700
+Message-ID: <CAGyo_hrkUPxBAOttpo+xqcUHr89i2N5BOV4_rYFh=dRPkYVPGA@mail.gmail.com>
+Subject: Re: [RFC {net,iproute2}-next 0/2] Introduce an eBPF hookpoint for tx
+ queue selection in the XPS (Transmit Packet Steering) code.
 To:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
         nikolay@cumulusnetworks.com, sd@queasysnail.net,
         sbrivio@redhat.com, vincent@bernat.ch, kda@linux-powerpc.org,
-        matthew.cover@stackpath.com, jiri@mellanox.com,
-        edumazet@google.com, pabeni@redhat.com, idosch@mellanox.com,
-        petrm@mellanox.com, f.fainelli@gmail.com,
+        Matthew Cover <matthew.cover@stackpath.com>, jiri@mellanox.com,
+        Eric Dumazet <edumazet@google.com>, pabeni@redhat.com,
+        idosch@mellanox.com, petrm@mellanox.com, f.fainelli@gmail.com,
         stephen@networkplumber.org, dsahern@gmail.com,
         christian@brauner.io, jakub.kicinski@netronome.com,
-        roopa@cumulusnetworks.com, johannes.berg@intel.com,
-        mkubecek@suse.cz, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: [RFC iproute2-next 2/2] Introduce an eBPF hookpoint for tx queue selection in the XPS (Transmit Packet Steering) code.
-Date:   Thu, 19 Sep 2019 15:46:05 -0700
-Message-Id: <20190919224605.91550-1-matthew.cover@stackpath.com>
-X-Mailer: git-send-email 2.15.2 (Apple Git-101.1)
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        johannes.berg@intel.com, mkubecek@suse.cz, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-WORK IN PROGRESS:
-  * bpf program loading works!
-  * txq steering via bpf program return code works!
-  * bpf program unloading not working.
-  * bpf program attached query not working.
----
- include/bpf_api.h            |  5 +++
- include/uapi/linux/if_link.h | 12 ++++++
- ip/Makefile                  |  2 +-
- ip/ip_common.h               |  4 ++
- ip/iplink.c                  |  7 ++++
- ip/iplink_xps.c              | 88 ++++++++++++++++++++++++++++++++++++++++++++
- lib/bpf.c                    |  6 +++
- 7 files changed, 123 insertions(+), 1 deletion(-)
- create mode 100644 ip/iplink_xps.c
+On Thu, Sep 19, 2019 at 3:45 PM Matthew Cover <werekraken@gmail.com> wrote:
+>
+> WORK IN PROGRESS:
+>   * bpf program loading works!
+>   * txq steering via bpf program return code works!
+>   * bpf program unloading not working.
+>   * bpf program attached query not working.
+>
+> This patch set provides a bpf hookpoint with goals similar to, but a more
+> generic implementation than, TUNSETSTEERINGEBPF; userspace supplied tx queue
+> selection policy.
+>
+> TUNSETSTEERINGEBPF is a useful bpf hookpoint, but has some drawbacks.
+>
+> First, it only works on tun/tap devices.
+>
+> Second, there is no way in the current TUNSETSTEERINGEBPF implementation
+> to bail out or load a noop bpf prog and fallback to the no prog tx queue
+> selection method.
+>
+> Third, the TUNSETSTEERINGEBPF interface seems to require possession of existing
+> or creation of new queues/fds.
+>
+> This most naturally fits in the "wire" implementation since possession of fds
+> is ensured. However, it also means the various "wire" implementations (e.g.
+> qemu) have to all be made aware of TUNSETSTEERINGEBPF and expose an interface
+> to load/unload a bpf prog (or provide a mechanism to pass an fd to another
+> program).
+>
+> Alternatively, you can spin up an extra queue and immediately disable via
+> IFF_DETACH_QUEUE, but this seems unsafe; packets could be enqueued to this
+> extra file descriptor which is part of our bpf prog loader, not our "wire".
+>
+> Placing this in the XPS code and leveraging iproute2 and rtnetlink to provide
+> our bpf prog loader in a similar manner to xdp gives us a nice way to separate
+> the tap "wire" and the loading of tx queue selection policy. It also lets us
+> use this hookpoint for any device traversing XPS.
+>
+> This patch only introduces the new hookpoint to the XPS code and will not yet
+> be used by tun/tap devices using the intree tun.ko (which implements an
+> .ndo_select_queue and does not traverse the XPS code).
+>
+> In a future patch set, we can optionally refactor tun.ko to traverse this call
+> to bpf_prog_run_clear_cb() and bpf prog storage. tun/tap devices could then
+> leverage iproute2 as a generic loader. The TUNSETSTEERINGEBPF interface could
+> at this point be optionally deprecated/removed.
+>
+> Both patches in this set have been tested using a rebuilt tun.ko with no
+> .ndo_select_queue.
+>
+>   sed -i '/\.ndo_select_queue.*=/d' drivers/net/tun.c
+>
+> The tap device was instantiated using tap_mq_pong.c, supporting scripts, and
+> wrapping service found here:
+>
+>   https://github.com/stackpath/rxtxcpu/tree/v1.2.6/helpers
+>
+> The bpf prog source and test scripts can be found here:
+>
+>   https://github.com/werekraken/xps_ebpf
+>
+> In nstxq, netsniff-ng using PACKET_FANOUT_QM is leveraged to check the
+> queue_mapping.
+>
+> With no prog loaded, the tx queue selection is adhering our xps_cpus
+> configuration.
+>
+>   [vagrant@localhost ~]$ grep . /sys/class/net/tap0/queues/tx-*/xps_cpus; ./nstxq; sudo timeout 1 cat /sys/kernel/debug/tracing/trace_pipe;
+>   /sys/class/net/tap0/queues/tx-0/xps_cpus:1
+>   /sys/class/net/tap0/queues/tx-1/xps_cpus:2
+>   cpu0: ping: 64 bytes from 169.254.254.1: icmp_seq=1 ttl=64 time=0.146 ms
+>   cpu0: qm0:  > tap0 98 Unknown => Unknown IPv4 169.254.254.2/169.254.254.1 Len 84 Type 8 Code 0
+>   cpu1: ping: 64 bytes from 169.254.254.1: icmp_seq=1 ttl=64 time=0.121 ms
+>   cpu1: qm1:  > tap0 98 Unknown => Unknown IPv4 169.254.254.2/169.254.254.1 Len 84 Type 8 Code 0
+>
+> With a return 0 bpg prog, our tx queue is 0 (despite xps_cpus).
+>
+>   [vagrant@localhost ~]$ sudo ip link set dev tap0 xps obj hello0.o sec hello && { ./nstxq; sudo timeout 1 cat /sys/kernel/debug/tracing/trace_pipe; }
+>   cpu0: ping: 64 bytes from 169.254.254.1: icmp_seq=1 ttl=64 time=0.160 ms
+>   cpu0: qm0:  > tap0 98 Unknown => Unknown IPv4 169.254.254.2/169.254.254.1 Len 84 Type 8 Code 0
+>   cpu1: ping: 64 bytes from 169.254.254.1: icmp_seq=1 ttl=64 time=0.124 ms
+>   cpu1: qm0:  > tap0 98 Unknown => Unknown IPv4 169.254.254.2/169.254.254.1 Len 84 Type 8 Code 0
+>               ping-4852  [000] ....  2691.633260: 0: xps (RET 0): Hello, World!
+>               ping-4869  [001] ....  2695.753588: 0: xps (RET 0): Hello, World!
+>
+> With a return 1 bpg prog, our tx queue is 1.
+>
+>   [vagrant@localhost ~]$ sudo ip link set dev tap0 xps obj hello1.o sec hello && { ./nstxq; sudo timeout 1 cat /sys/kernel/debug/tracing/trace_pipe; }
+>   cpu0: ping: 64 bytes from 169.254.254.1: icmp_seq=1 ttl=64 time=0.193 ms
+>   cpu0: qm1:  > tap0 98 Unknown => Unknown IPv4 169.254.254.2/169.254.254.1 Len 84 Type 8 Code 0
+>   cpu1: ping: 64 bytes from 169.254.254.1: icmp_seq=1 ttl=64 time=0.135 ms
+>   cpu1: qm1:  > tap0 98 Unknown => Unknown IPv4 169.254.254.2/169.254.254.1 Len 84 Type 8 Code 0
+>               ping-4894  [000] ....  2710.652080: 0: xps (RET 1): Hello, World!
+>               ping-4911  [001] ....  2714.774608: 0: xps (RET 1): Hello, World!
+>
+> With a return 2 bpg prog, our tx queue is 0 (we only have 2 tx queues).
+>
+>   [vagrant@localhost ~]$ sudo ip link set dev tap0 xps obj hello2.o sec hello && { ./nstxq; sudo timeout 1 cat /sys/kernel/debug/tracing/trace_pipe; }
+>   cpu0: ping: 64 bytes from 169.254.254.1: icmp_seq=1 ttl=64 time=1.20 ms
+>   cpu0: qm0:  > tap0 98 Unknown => Unknown IPv4 169.254.254.2/169.254.254.1 Len 84 Type 8 Code 0
+>   cpu1: ping: 64 bytes from 169.254.254.1: icmp_seq=1 ttl=64 time=0.986 ms
+>   cpu1: qm0:  > tap0 98 Unknown => Unknown IPv4 169.254.254.2/169.254.254.1 Len 84 Type 8 Code 0
+>               ping-4936  [000] ....  2729.442668: 0: xps (RET 2): Hello, World!
+>               ping-4953  [001] ....  2733.614558: 0: xps (RET 2): Hello, World!
+>
+> With a return -1 bpf prog, our tx queue selection is once again determined by
+> xps_cpus. Any negative return should work the same and provides a nice
+> mechanism to bail out or have a noop bpf prog at this hookpoint.
+>
+>   [vagrant@localhost ~]$ sudo ip link set dev tap0 xps obj hello_neg1.o sec hello && { ./nstxq; sudo timeout 1 cat /sys/kernel/debug/tracing/trace_pipe; }
+>   cpu0: ping: 64 bytes from 169.254.254.1: icmp_seq=1 ttl=64 time=0.628 ms
+>   cpu0: qm0:  > tap0 98 Unknown => Unknown IPv4 169.254.254.2/169.254.254.1 Len 84 Type 8 Code 0
+>   cpu1: ping: 64 bytes from 169.254.254.1: icmp_seq=1 ttl=64 time=0.322 ms
+>   cpu1: qm1:  > tap0 98 Unknown => Unknown IPv4 169.254.254.2/169.254.254.1 Len 84 Type 8 Code 0
+>               ping-4981  [000] ....  2763.510760: 0: xps (RET -1): Hello, World!
+>               ping-4998  [001] ....  2767.632583: 0: xps (RET -1): Hello, World!
+>
+> bpf prog unloading is not yet working and neither does `ip link show` report
+> when an "xps" bpf prog is attached. This is my first time touching iproute2 or
+> rtnetlink, so it may be something obvious to those more familiar.
 
-diff --git a/include/bpf_api.h b/include/bpf_api.h
-index 89d3488..d1a2d90 100644
---- a/include/bpf_api.h
-+++ b/include/bpf_api.h
-@@ -78,6 +78,11 @@
- 	__section(ELF_SECTION_PROG)
- #endif
- 
-+#ifndef __section_xps_entry
-+# define __section_xps_entry						\
-+	__section(ELF_SECTION_PROG)
-+#endif
-+
- #ifndef __section_cls_entry
- # define __section_cls_entry						\
- 	__section(ELF_SECTION_CLASSIFIER)
-diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
-index d36919f..9efd686 100644
---- a/include/uapi/linux/if_link.h
-+++ b/include/uapi/linux/if_link.h
-@@ -167,6 +167,7 @@ enum {
- 	IFLA_NEW_IFINDEX,
- 	IFLA_MIN_MTU,
- 	IFLA_MAX_MTU,
-+	IFLA_XPS,
- 	__IFLA_MAX
- };
- 
-@@ -977,6 +978,17 @@ enum {
- 
- #define IFLA_XDP_MAX (__IFLA_XDP_MAX - 1)
- 
-+/* XPS section */
-+
-+enum {
-+	IFLA_XPS_UNSPEC,
-+	IFLA_XPS_FD,
-+	IFLA_XPS_ATTACHED,
-+	__IFLA_XPS_MAX,
-+};
-+
-+#define IFLA_XPS_MAX (__IFLA_XPS_MAX - 1)
-+
- enum {
- 	IFLA_EVENT_NONE,
- 	IFLA_EVENT_REBOOT,		/* internal reset / reboot */
-diff --git a/ip/Makefile b/ip/Makefile
-index 5ab78d7..9ad1c53 100644
---- a/ip/Makefile
-+++ b/ip/Makefile
-@@ -5,7 +5,7 @@ IPOBJ=ip.o ipaddress.o ipaddrlabel.o iproute.o iprule.o ipnetns.o \
-     ipxfrm.o xfrm_state.o xfrm_policy.o xfrm_monitor.o iplink_dummy.o \
-     iplink_ifb.o iplink_nlmon.o iplink_team.o iplink_vcan.o iplink_vxcan.o \
-     iplink_vlan.o link_veth.o link_gre.o iplink_can.o iplink_xdp.o \
--    iplink_macvlan.o ipl2tp.o link_vti.o link_vti6.o link_xfrm.o \
-+    iplink_macvlan.o ipl2tp.o link_vti.o link_vti6.o link_xfrm.o iplink_xps.o \
-     iplink_vxlan.o tcp_metrics.o iplink_ipoib.o ipnetconf.o link_ip6tnl.o \
-     link_iptnl.o link_gre6.o iplink_bond.o iplink_bond_slave.o iplink_hsr.o \
-     iplink_bridge.o iplink_bridge_slave.o ipfou.o iplink_ipvlan.o \
-diff --git a/ip/ip_common.h b/ip/ip_common.h
-index cd916ec..805d7d2 100644
---- a/ip/ip_common.h
-+++ b/ip/ip_common.h
-@@ -145,6 +145,10 @@ int xdp_parse(int *argc, char ***argv, struct iplink_req *req, const char *ifnam
- 	      bool generic, bool drv, bool offload);
- void xdp_dump(FILE *fp, struct rtattr *tb, bool link, bool details);
- 
-+/* iplink_xps.c */
-+int xps_parse(int *argc, char ***argv, struct iplink_req *req);
-+void xps_dump(FILE *fp, struct rtattr *tb);
-+
- /* iplink_vrf.c */
- __u32 ipvrf_get_table(const char *name);
- int name_is_vrf(const char *name);
-diff --git a/ip/iplink.c b/ip/iplink.c
-index 212a088..4d6d557 100644
---- a/ip/iplink.c
-+++ b/ip/iplink.c
-@@ -101,6 +101,9 @@ void iplink_usage(void)
- 		"			[ { xdp | xdpgeneric | xdpdrv | xdpoffload } { off |\n"
- 		"				  object FILE [ section NAME ] [ verbose ] |\n"
- 		"				  pinned FILE } ]\n"
-+		"			[ xps { off |\n"
-+		"				  object FILE [ section NAME ] [ verbose ] |\n"
-+		"				  pinned FILE } ]\n"
- 		"			[ master DEVICE ][ vrf NAME ]\n"
- 		"			[ nomaster ]\n"
- 		"			[ addrgenmode { eui64 | none | stable_secret | random } ]\n"
-@@ -668,6 +671,10 @@ int iplink_parse(int argc, char **argv, struct iplink_req *req, char **type)
- 
- 			if (offload && name == dev)
- 				dev = NULL;
-+		} else if (strcmp(*argv, "xps") == 0) {
-+			NEXT_ARG();
-+			if (xps_parse(&argc, &argv, req))
-+				exit(-1);
- 		} else if (strcmp(*argv, "netns") == 0) {
- 			NEXT_ARG();
- 			if (netns != -1)
-diff --git a/ip/iplink_xps.c b/ip/iplink_xps.c
-new file mode 100644
-index 0000000..7e94164
---- /dev/null
-+++ b/ip/iplink_xps.c
-@@ -0,0 +1,88 @@
-+/*
-+ * iplink_xps.c XPS program loader
-+ *
-+ *              This program is free software; you can redistribute it and/or
-+ *              modify it under the terms of the GNU General Public License
-+ *              as published by the Free Software Foundation; either version
-+ *              2 of the License, or (at your option) any later version.
-+ *
-+ * Authors:     Matthew Cover <matthew.cover@stackpath.com>
-+ *
-+ *              Based on iplink_xdp.c by Daniel Borkmann <daniel@iogearbox.net>
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+
-+#include <linux/bpf.h>
-+
-+#include "bpf_util.h"
-+#include "ip_common.h"
-+
-+extern int force;
-+
-+struct xps_req {
-+	struct iplink_req *req;
-+	__u32 flags;
-+};
-+
-+static void xps_ebpf_cb(void *raw, int fd, const char *annotation)
-+{
-+        struct xps_req *xps = raw;
-+        struct iplink_req *req = xps->req;
-+        struct rtattr *xps_attr;
-+
-+        xps_attr = addattr_nest(&req->n, sizeof(*req), IFLA_XPS);
-+        addattr32(&req->n, sizeof(*req), IFLA_XPS_FD, fd);
-+        addattr_nest_end(&req->n, xps_attr);
-+}
-+
-+static const struct bpf_cfg_ops bpf_cb_ops = {
-+	.ebpf_cb = xps_ebpf_cb,
-+};
-+
-+static int xps_delete(struct iplink_req *req)
-+{
-+	xps_ebpf_cb(req, -1, NULL);
-+	return 0;
-+}
-+
-+int xps_parse(int *argc, char ***argv, struct iplink_req *req)
-+{
-+
-+	struct bpf_cfg_in cfg = {
-+		.type = BPF_PROG_TYPE_SOCKET_FILTER,
-+		.argc = *argc,
-+		.argv = *argv,
-+	};
-+
-+	struct xps_req xps = {
-+		.req = req,
-+	};
-+
-+	if (*argc == 1) {
-+		if (strcmp(**argv, "none") == 0 ||
-+		    strcmp(**argv, "off") == 0)
-+			return xps_delete(req);
-+	}
-+
-+	if (bpf_parse_and_load_common(&cfg, &bpf_cb_ops, &xps))
-+		return -1;
-+
-+	*argc = cfg.argc;
-+	*argv = cfg.argv;
-+	return 0;
-+}
-+
-+void xps_dump(FILE *fp, struct rtattr *xps)
-+{
-+	struct rtattr *tb[IFLA_XPS_MAX + 1];
-+
-+	parse_rtattr_nested(tb, IFLA_XPS_MAX, xps);
-+	if (!tb[IFLA_XPS_ATTACHED] ||
-+	    !rta_getattr_u8(tb[IFLA_XPS_ATTACHED]))
-+		return;
-+
-+	fprintf(fp, "xps ");
-+	/* More to come here in future for 'ip -d link' (digest, etc) ... */
-+}
-diff --git a/lib/bpf.c b/lib/bpf.c
-index 7d2a322..e883afb 100644
---- a/lib/bpf.c
-+++ b/lib/bpf.c
-@@ -60,6 +60,7 @@ static const enum bpf_prog_type __bpf_types[] = {
- 	BPF_PROG_TYPE_LWT_IN,
- 	BPF_PROG_TYPE_LWT_OUT,
- 	BPF_PROG_TYPE_LWT_XMIT,
-+	BPF_PROG_TYPE_SOCKET_FILTER,
- };
- 
- static const struct bpf_prog_meta __bpf_prog_meta[] = {
-@@ -100,6 +101,11 @@ static const struct bpf_prog_meta __bpf_prog_meta[] = {
- 		.subdir		= "ip",
- 		.section	= ELF_SECTION_PROG,
- 	},
-+	[BPF_PROG_TYPE_SOCKET_FILTER] = {
-+		.type		= "xps",
-+		.subdir		= "xps",
-+		.section	= ELF_SECTION_PROG,
-+	},
- };
- 
- static const char *bpf_prog_to_subdir(enum bpf_prog_type type)
--- 
-1.8.3.1
-
+Adding Jason... sorry for missing that the first time.
