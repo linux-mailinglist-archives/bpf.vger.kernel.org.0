@@ -2,194 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FED0B998C
-	for <lists+bpf@lfdr.de>; Sat, 21 Sep 2019 00:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F86B9AB3
+	for <lists+bpf@lfdr.de>; Sat, 21 Sep 2019 01:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729783AbfITWOe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Sep 2019 18:14:34 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:44542 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbfITWOe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Sep 2019 18:14:34 -0400
-Received: by mail-lj1-f193.google.com with SMTP id m13so8425790ljj.11
-        for <bpf@vger.kernel.org>; Fri, 20 Sep 2019 15:14:32 -0700 (PDT)
+        id S2404799AbfITXaX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Sep 2019 19:30:23 -0400
+Received: from mail-pf1-f202.google.com ([209.85.210.202]:43985 "EHLO
+        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404787AbfITXaX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Sep 2019 19:30:23 -0400
+Received: by mail-pf1-f202.google.com with SMTP id i187so5764707pfc.10
+        for <bpf@vger.kernel.org>; Fri, 20 Sep 2019 16:30:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IRz22h3W/afcIJB0BovjnHm3KrpXLfImRjiuM75f0vE=;
-        b=nj6dCKWhmdUQxj5iaCpyF6gklY2n3UMYPwQRJI7eaUvn3ZOJVATTF1m/uWCZktXuBK
-         EXP1s8+6sACOn4WGwErbm+uuBKs58dfMtwRkwDfUAhjW3NPuXwFhkVXgyJTbKKi26pVX
-         wUClQWsT3XolYSWxXhMS1vqwkt/LBd7DI323UTUsm3IcdnJHgZO/RR1X8mmHm3+19EkE
-         XhcvIfV6ncLwpH3w6mf/V/yHGhu0gWQXGzf/qTlB8FGMaUkuAQzCdTAUb61ztfh2c/lB
-         hkR8KQqenaCDUHAnBgK25odGBRZ6vhXKyeLhuF+L8dWU6oS3yp3UsJ3BfBIBO01GGyW1
-         nKAQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=LJNLWG7qxYqlS4vxPRzBWLNbdp5Nxg08SBYosGNjYvM=;
+        b=I9j8JiW/Y939Qs7zTunJb7AGiK32Ul7LmZ0u0+HTC7x8O4OOHqanSRqoe2LtxWr8pm
+         FF+zwUd3VDy7XLS/F6ZVOhmDxnC9XwoehOTphIls8m351YHSEJuASbaO4sz/zjkCF6hR
+         ZHWcKkidhcICyS2j+dsJlQ/UWxaPjzIwnEf7diBYMgvzuahkYW8oljl2F9eNy8RLCPW3
+         8CR7HPXv5/xL4fIQ2j+rycayMRGmY0/UsQqBulT5usIEF2hF7ezGbTAQSIjDFJ30y/4E
+         ox420ynJgDHTxeM4Zv7ICWG1mqQWwTPnSNjB2YXnFwlpstahr+gTtJQhiJEf4cwR/x5e
+         zAhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=IRz22h3W/afcIJB0BovjnHm3KrpXLfImRjiuM75f0vE=;
-        b=r4mXBS06dwSpqnNSha7RJ6Pw6yuPuwQlcb5oACzOvSx8Zfk6rnzrjmqprEu1NZ0BDr
-         XlJBf395agdbYszTc0nj7iaJr9RSIZRNA89DnoJVsGCBT6YeCKW4B/HWx0WlyNVHZhKY
-         F/yAhj7zHPkf+c7ysUjeEvSGg7XygptLbVZ8ikTbwydIuJjL9zZHGOsj3ZH5rRyLKe70
-         A1YME37rfEutAX/6bUj86DAxvnjR+O6e9bek1KY4YRzYTXoypluVIEPa9Lw7e7VJFY6A
-         lEbMIS71CfiYSa8wBuJG9ZLdroYHbLAEpRV2HtE2lLZgwmL7qcEOeWJFO7z1LoRVam8t
-         fHjw==
-X-Gm-Message-State: APjAAAXq1lV+WyRG9xUdDhVsYlzdDBZjrUiLQ3KcmQKWXLNloT9gAbrm
-        9l18CFZ7XMEG1SMlh/zVttVSQw==
-X-Google-Smtp-Source: APXvYqywLy+KgGcp2RAVw5wnQazdFc1mY+zJWDkhGpK52VsS2JLEAu2nWxraOw89TpoyEj69bsbXLw==
-X-Received: by 2002:a2e:3e07:: with SMTP id l7mr10480272lja.180.1569017671610;
-        Fri, 20 Sep 2019 15:14:31 -0700 (PDT)
-Received: from khorivan (168-200-94-178.pool.ukrtel.net. [178.94.200.168])
-        by smtp.gmail.com with ESMTPSA id c69sm761013ljf.32.2019.09.20.15.14.30
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 20 Sep 2019 15:14:30 -0700 (PDT)
-Date:   Sat, 21 Sep 2019 01:14:28 +0300
-From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf] libbpf: fix version identification on busybox
-Message-ID: <20190920221427.GD2760@khorivan>
-Mail-Followup-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, Martin Lau <kafai@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20190919160518.25901-1-ivan.khoronzhuk@linaro.org>
- <CAEf4BzbCjCYr5NMPctDkUggwpehnqZPVBSqZOsd9MvSq6WmnZQ@mail.gmail.com>
- <20190920082204.GC8870@khorivan>
- <CAEf4BzaVuaN3HhMu8W_i9z4n-2zfjqxBXyOEOaQHexxZq7b3qg@mail.gmail.com>
- <20190920183449.GA2760@khorivan>
- <20190920191941.GB2760@khorivan>
- <CAEf4BzZGeY-WD17mq6FTd7Rae_f26j4kBAWCmuppeu4VjZxvUg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZGeY-WD17mq6FTd7Rae_f26j4kBAWCmuppeu4VjZxvUg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=LJNLWG7qxYqlS4vxPRzBWLNbdp5Nxg08SBYosGNjYvM=;
+        b=CytxP27fCVOHt2FB5/vnFf3LHmiybSvhY6vJ5SLtmqcAfVbI63YRNz+xw3BjbqIiQO
+         K5LC0kBu/8f+DzBlA5cE3gYOjeY8HXphCl3Rg+VAGLz/neVBT0GRnJH/K14lwFJ70C98
+         hxLkVJjQVO/ir8v3QGe7On37ki4HcwSqdHhQawbpPchIGoM3kH8hmmR8yCrbXXxYF9w9
+         aK3eSI/36PazG6FzDqEttMEBSpONHtPSRKVERe8KAaLEwCnI9yABYLYn92+ESW4KDQ1Z
+         2Yltka6JZy9lNIBBwkK93NViRbcy18fqwBlzyyY4Q5EVlNg7C0yA+nHn3WoVygRN8Nsr
+         x4yA==
+X-Gm-Message-State: APjAAAUmQjuBi3p2H5gYEMwjvDgezn1nlLbN/QtxdsN9mUrLD1/iab7o
+        LIZJA9ffi01rrQkNfBeC8pYTDcg=
+X-Google-Smtp-Source: APXvYqxhXCDSVeeIEupzk0OAb4uhhKv2RGkIC/qWrJabw+QjDvsPOWSJb0hRJHF3gvZ0TPbmh13Fl9s=
+X-Received: by 2002:a65:6709:: with SMTP id u9mr18415155pgf.59.1569022222352;
+ Fri, 20 Sep 2019 16:30:22 -0700 (PDT)
+Date:   Fri, 20 Sep 2019 16:30:19 -0700
+Message-Id: <20190920233019.187498-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.23.0.351.gc4317032e6-goog
+Subject: [PATCH bpf] selftests/bpf: test_progs: fix client/server race in tcp_rtt
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 20, 2019 at 02:51:14PM -0700, Andrii Nakryiko wrote:
->On Fri, Sep 20, 2019 at 12:19 PM Ivan Khoronzhuk
-><ivan.khoronzhuk@linaro.org> wrote:
->>
->> On Fri, Sep 20, 2019 at 09:34:51PM +0300, Ivan Khoronzhuk wrote:
->> >On Fri, Sep 20, 2019 at 09:41:54AM -0700, Andrii Nakryiko wrote:
->> >>On Fri, Sep 20, 2019 at 1:22 AM Ivan Khoronzhuk
->> >><ivan.khoronzhuk@linaro.org> wrote:
->> >>>
->> >>>On Thu, Sep 19, 2019 at 01:02:40PM -0700, Andrii Nakryiko wrote:
->> >>>>On Thu, Sep 19, 2019 at 11:22 AM Ivan Khoronzhuk
->> >>>><ivan.khoronzhuk@linaro.org> wrote:
->> >>>>>
->> >>>>> It's very often for embedded to have stripped version of sort in
->> >>>>> busybox, when no -V option present. It breaks build natively on target
->> >>>>> board causing recursive loop.
->> >>>>>
->> >>>>> BusyBox v1.24.1 (2019-04-06 04:09:16 UTC) multi-call binary. \
->> >>>>> Usage: sort [-nrugMcszbdfimSTokt] [-o FILE] [-k \
->> >>>>> start[.offset][opts][,end[.offset][opts]] [-t CHAR] [FILE]...
->> >>>>>
->> >>>>> Lets modify command a little to avoid -V option.
->> >>>>>
->> >>>>> Fixes: dadb81d0afe732 ("libbpf: make libbpf.map source of truth for libbpf version")
->> >>>>>
->> >>>>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
->> >>>>> ---
->> >>>>>
->> >>>>> Based on bpf/master
->> >>>>>
->> >>>>>  tools/lib/bpf/Makefile | 2 +-
->> >>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->> >>>>>
->> >>>>> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
->> >>>>> index c6f94cffe06e..a12490ad6215 100644
->> >>>>> --- a/tools/lib/bpf/Makefile
->> >>>>> +++ b/tools/lib/bpf/Makefile
->> >>>>> @@ -3,7 +3,7 @@
->> >>>>>
->> >>>>>  LIBBPF_VERSION := $(shell \
->> >>>>>         grep -oE '^LIBBPF_([0-9.]+)' libbpf.map | \
->> >>>>> -       sort -rV | head -n1 | cut -d'_' -f2)
->> >>>>> +       cut -d'_' -f2 | sort -r | head -n1)
->> >>>>
->> >>>>You can't just sort alphabetically, because:
->> >>>>
->> >>>>1.2
->> >>>>1.11
->> >>>>
->> >>>>should be in that order. See discussion on mailing thread for original commit.
->> >>>
->> >>>if X1.X2.X3, where X = {0,1,....99999}
->> >>>Then it can be:
->> >>>
->> >>>-LIBBPF_VERSION := $(shell \
->> >>>-       grep -oE '^LIBBPF_([0-9.]+)' libbpf.map | \
->> >>>-       sort -rV | head -n1 | cut -d'_' -f2)
->> >>>+_LBPFLIST := $(patsubst %;,%,$(patsubst LIBBPF_%,%,$(filter LIBBPF_%, \
->> >>>+           $(shell cat libbpf.map))))
->> >>>+_LBPFLIST2 := $(foreach v,$(_LBPFLIST), \
->> >>>+               $(subst $() $(),,$(foreach n,$(subst .,$() $(),$(v)), \
->> >>>+                       $(shell printf "%05d" $(n)))))
->> >>>+_LBPF_VER := $(word $(words $(sort $(_LBPFLIST2))), $(sort $(_LBPFLIST2)))
->> >>>+LIBBPF_VERSION := $(patsubst %_$(_LBPF_VER),%,$(filter %_$(_LBPF_VER), \
->> >>>+        $(join $(addsuffix _, $(_LBPFLIST)),$(_LBPFLIST2))))
->> >>>
->> >>>It's bigger but avoids invocations of grep/sort/cut/head, only cat/printf
->> >>>, thus -V option also.
->> >>>
->> >>
->> >>No way, this is way too ugly (and still unreliable, if we ever have
->> >>X.Y.Z.W or something). I'd rather go with my original approach of
->> >Yes, forgot to add
->> >X1,X2,X3,...XN, where X = {0,1,....99999} and N = const for all versions.
->> >But frankly, 1.0.0 looks too far.
->>
->> It actually works for any numbs of X1.X2...X100
->> but not when you have couple kindof:
->> X1.X2.X3
->> and
->> X1.X2.X3.X4
->>
->> But, no absolutely any problem to extend this solution to handle all cases,
->> by just adding leading 0 to every "transformed version", say limit it to 10
->> possible 'dots' (%5*10d) and it will work as clocks. Advantage - mostly make
->> functions.
->>
->> Here can be couple more solutions with sed, not sure it can look less maniac.
->>
->> >
->> >>fetching the last version in libbpf.map file. See
->> >>https://www.spinics.net/lists/netdev/msg592703.html.
->>
->> Yes it's nice but, no sort, no X1.X2.X3....XN
->>
->> Main is to solve it for a long time.
->
->Thinking a bit more about this, I'm even more convinced that we should
->just go with my original approach: find last section in libbpf.map and
->extract LIBBPF version from that. That will handle whatever crazy
->version format we might decide to use (e.g., 1.2.3-experimental).
->We'll just need to make sure that latest version is the last in
->libbpf.map, which will just happen naturally. So instead of this
->Makefile complexity, please can you port back my original approach?
->Thanks!
+This is the same problem I found earlier in test_sockopt_inherit:
+there is a race between server thread doing accept() and client
+thread doing connect(). Let's explicitly synchronize them via
+pthread conditional variable.
 
-I don't insist, placed it for history and to show it can be sorted
-alphabetically, I can live with cross-compilation that I hope goes soon,
-on host no need to worry about this at all. So I better leave this change
-up to you.
+Fixes: b55873984dab ("selftests/bpf: test BPF_SOCK_OPS_RTT_CB")
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ tools/testing/selftests/bpf/prog_tests/tcp_rtt.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
+diff --git a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
+index fdc0b3614a9e..e64058906bcd 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
++++ b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
+@@ -203,6 +203,9 @@ static int start_server(void)
+ 	return fd;
+ }
+ 
++static pthread_mutex_t server_started_mtx = PTHREAD_MUTEX_INITIALIZER;
++static pthread_cond_t server_started = PTHREAD_COND_INITIALIZER;
++
+ static void *server_thread(void *arg)
+ {
+ 	struct sockaddr_storage addr;
+@@ -215,6 +218,10 @@ static void *server_thread(void *arg)
+ 		return NULL;
+ 	}
+ 
++	pthread_mutex_lock(&server_started_mtx);
++	pthread_cond_signal(&server_started);
++	pthread_mutex_unlock(&server_started_mtx);
++
+ 	client_fd = accept(fd, (struct sockaddr *)&addr, &len);
+ 	if (CHECK_FAIL(client_fd < 0)) {
+ 		perror("Failed to accept client");
+@@ -248,7 +255,14 @@ void test_tcp_rtt(void)
+ 	if (CHECK_FAIL(server_fd < 0))
+ 		goto close_cgroup_fd;
+ 
+-	pthread_create(&tid, NULL, server_thread, (void *)&server_fd);
++	if (CHECK_FAIL(pthread_create(&tid, NULL, server_thread,
++				      (void *)&server_fd)))
++		goto close_cgroup_fd;
++
++	pthread_mutex_lock(&server_started_mtx);
++	pthread_cond_wait(&server_started, &server_started_mtx);
++	pthread_mutex_unlock(&server_started_mtx);
++
+ 	CHECK_FAIL(run_test(cgroup_fd, server_fd));
+ 	close(server_fd);
+ close_cgroup_fd:
 -- 
-Regards,
-Ivan Khoronzhuk
+2.23.0.351.gc4317032e6-goog
+
