@@ -2,123 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A65BABC3
-	for <lists+bpf@lfdr.de>; Sun, 22 Sep 2019 23:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BB8BABC5
+	for <lists+bpf@lfdr.de>; Sun, 22 Sep 2019 23:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391832AbfIVVEH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 22 Sep 2019 17:04:07 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:44436 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388636AbfIVVEG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 22 Sep 2019 17:04:06 -0400
-Received: by mail-qt1-f194.google.com with SMTP id u40so14862901qth.11;
-        Sun, 22 Sep 2019 14:04:06 -0700 (PDT)
+        id S2389212AbfIVVHd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 22 Sep 2019 17:07:33 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:35835 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388917AbfIVVHd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 22 Sep 2019 17:07:33 -0400
+Received: by mail-qk1-f194.google.com with SMTP id w2so13327469qkf.2;
+        Sun, 22 Sep 2019 14:07:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=oFRwkLtn2Iq4ic5glemRgq9T0csDPXP20ndx8eWwKH0=;
-        b=gF5tS84sfuj26rxAmSD8tXZJzlv6RZCDEVucrdGf8m0OWJKWJ92C2q2hEULVxN//0j
-         pnB0lKgouLiw87AbMdE52dcwgu9lpR2FzQ6/23ADtr0vB2tysPU2UIBGfQKjU4QNEg4h
-         V6x6H8KFXrz1EAtsOpDRtCXOgnWzZ9UOwgGvD5xYU45Cwfa0y22e/LS4VX3/73VJkagA
-         JVXGVCOW/lDhPDi81cnyoDbJlYvDDcL6ot4f8R5V7mS1AzCBmY1ricrZNbN+nNZ9bAcj
-         TzvhQ8qSeOWv+dhuZm0prpbGjUvOwrFi5wNf5i2Jcy1cy6+9IpW1e5uyMSEWThEjKyhK
-         RITA==
+        bh=NEjeJRMZu7XwAcL5sHF1ZmhnHlSVlmSsLDwPoar0bfQ=;
+        b=n3jysIRrqtOkIShrRYRjMwqH9Rpe1/L0JXM5cxhE/hhqqPJuevRtXqirOLhY1NsNWx
+         VZXrL/hrpU4aFVbz9zeh1sGV0d25HpOeckGFl6FAF5uwfYVsKMluYRYsozbyBoLBtOaU
+         ZULTQKxbWcnrvue6Y0+QchjkjVpyGA3qm64fT+OqsvQ4yY0GVkOAz04wLnlWwzn+VWTa
+         w0C0zdQ6c6abSWenSrrf9jt3LGekm3KaOoAuQlz/dFPpnpSQRUC8Iw7fgEyW6bsBuwci
+         7zuQGa2Pl8u/LHE77BGSAeLV8B8Y9mKTSAsd3ts/gH2muTTX0VYgleq6lMJm8//uyYqT
+         Le+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=oFRwkLtn2Iq4ic5glemRgq9T0csDPXP20ndx8eWwKH0=;
-        b=G1WitvnRrdxT1ybbwim3aGzfH4qpNqwTNWjBR11RKtfB4FqJ9XIYluePwcQG+0FlcY
-         Jc9GJ0BPIv39U+OjExt4MoYAY6xLTdqijcQSfqlldurB0/czDPrl9UEzFOtYwej5t2ZE
-         F3lw5suwPrO26Qb2gkmHb1iBcdh+KXVvRzHnsB70H4UnUAIQeomTyeN49Yky1HmQbR9a
-         TVLn6SsnJFS9sNJVEQmrbTr86ZhxeFKHvGRuwOvx4LYbXnYsltC2g4iz4snBXSGPbAq3
-         SZKx84Io9Wsl5fruqca+e6lbI33EJymleaMwxeWVtFJ0g2lvXVNnEeiecjz8zfLbzOPc
-         ol5w==
-X-Gm-Message-State: APjAAAUhFKkJVM0BoTvvzl70wNjBfeMrTkN6TMZC63L7sauDnDzHeDuk
-        /uMnxhTs2BTHSKsOtmPOM1SYbVENaLDdN4Ktofs=
-X-Google-Smtp-Source: APXvYqyOpM+WkAYatt7DzG/e4cFwk8OrxFjR+ycVMRb4cWpvcmoLJd0M3UQroa0ZOGu4FyW2oIRT3GdU+X0W5vULxJU=
-X-Received: by 2002:ac8:5147:: with SMTP id h7mr14139172qtn.117.1569186245693;
- Sun, 22 Sep 2019 14:04:05 -0700 (PDT)
+        bh=NEjeJRMZu7XwAcL5sHF1ZmhnHlSVlmSsLDwPoar0bfQ=;
+        b=LKHQ7x9S/hAz0zRbqwx3VS0ulL/us7pi7ySZyBk5yUgtDLbO8WYieo7DT4kcFvdwYS
+         Npz2A5CteWMjhEPI508N/JiaA9XM6AqH7DRBg8pTEgL9P++yQFacLpN4teY3azeTXFCc
+         Md/bGwMpT9bt+rYtlLd7DPvoSQ6Ba3D6ZlcpjCT87LICQs+cSP4PQNgFs4PUFFJKK7y7
+         2v3QlcpgZwxHhY/4U/2pybtNKgu6Sp7A6lUQMVAJHTyBheeykaeLWIiPp38oyg/TiKMM
+         8ac4psUOz9BdIL/9UOUvfzgXTkXkXqiB1/egx6vMx+oeiQK7kpdC8Eba90akz6x3Dpwk
+         fJHg==
+X-Gm-Message-State: APjAAAWDH5xFZsngIg/SokjxYX7rsCcprxdVvUpb0oR4B9fONPVCSls5
+        aIHCYG7ffM6wTGGEP8Y0AT1hD52VIBdkk2G75XY=
+X-Google-Smtp-Source: APXvYqwtpFjo6cICe41R6nirPAgdVTqLFuXU1uLtdszZC7k30831HZetJAwUsNsjoJ+dYojFLJhe9ctsHcyRmQ0Y8aM=
+X-Received: by 2002:ae9:eb93:: with SMTP id b141mr14705029qkg.36.1569186452282;
+ Sun, 22 Sep 2019 14:07:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190920233019.187498-1-sdf@google.com>
-In-Reply-To: <20190920233019.187498-1-sdf@google.com>
+References: <20190920062544.180997-1-wangkefeng.wang@huawei.com> <20190920062544.180997-31-wangkefeng.wang@huawei.com>
+In-Reply-To: <20190920062544.180997-31-wangkefeng.wang@huawei.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sun, 22 Sep 2019 14:03:54 -0700
-Message-ID: <CAEf4BzYFQhPKoDG7kq=_B5caL-0Af2duL_Uz5v3oVw=BKQ430w@mail.gmail.com>
-Subject: Re: [PATCH bpf] selftests/bpf: test_progs: fix client/server race in tcp_rtt
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+Date:   Sun, 22 Sep 2019 14:07:21 -0700
+Message-ID: <CAEf4BzbD98xeU2dSrXYkVi+mK=kuq+5DsroNDZwOzBGYbMH1-w@mail.gmail.com>
+Subject: Re: [PATCH 30/32] tools lib bpf: Renaming pr_warning to pr_warn
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Sep 22, 2019 at 12:10 PM Stanislav Fomichev <sdf@google.com> wrote:
+On Fri, Sep 20, 2019 at 10:06 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
 >
-> This is the same problem I found earlier in test_sockopt_inherit:
-> there is a race between server thread doing accept() and client
-> thread doing connect(). Let's explicitly synchronize them via
-> pthread conditional variable.
+> For kernel logging macro, pr_warning is completely removed and
+> replaced by pr_warn, using pr_warn in tools lib bpf for symmetry
+> to kernel logging macro, then we could drop pr_warning in the
+> whole linux code.
 >
-> Fixes: b55873984dab ("selftests/bpf: test BPF_SOCK_OPS_RTT_CB")
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Martin KaFai Lau <kafai@fb.com>
+> Cc: Song Liu <songliubraving@fb.com>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: bpf@vger.kernel.org
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 > ---
->  tools/testing/selftests/bpf/prog_tests/tcp_rtt.c | 16 +++++++++++++++-
->  1 file changed, 15 insertions(+), 1 deletion(-)
+>  tools/lib/bpf/btf.c             |  56 +--
+>  tools/lib/bpf/btf_dump.c        |  20 +-
+>  tools/lib/bpf/libbpf.c          | 652 ++++++++++++++++----------------
+>  tools/lib/bpf/libbpf_internal.h |   2 +-
+>  tools/lib/bpf/xsk.c             |   4 +-
+>  5 files changed, 363 insertions(+), 371 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-> index fdc0b3614a9e..e64058906bcd 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-> @@ -203,6 +203,9 @@ static int start_server(void)
->         return fd;
->  }
->
-> +static pthread_mutex_t server_started_mtx = PTHREAD_MUTEX_INITIALIZER;
-> +static pthread_cond_t server_started = PTHREAD_COND_INITIALIZER;
-> +
->  static void *server_thread(void *arg)
->  {
->         struct sockaddr_storage addr;
-> @@ -215,6 +218,10 @@ static void *server_thread(void *arg)
->                 return NULL;
->         }
->
-> +       pthread_mutex_lock(&server_started_mtx);
-> +       pthread_cond_signal(&server_started);
-> +       pthread_mutex_unlock(&server_started_mtx);
-> +
->         client_fd = accept(fd, (struct sockaddr *)&addr, &len);
->         if (CHECK_FAIL(client_fd < 0)) {
->                 perror("Failed to accept client");
-> @@ -248,7 +255,14 @@ void test_tcp_rtt(void)
->         if (CHECK_FAIL(server_fd < 0))
->                 goto close_cgroup_fd;
->
-> -       pthread_create(&tid, NULL, server_thread, (void *)&server_fd);
-> +       if (CHECK_FAIL(pthread_create(&tid, NULL, server_thread,
-> +                                     (void *)&server_fd)))
-> +               goto close_cgroup_fd;
-> +
-> +       pthread_mutex_lock(&server_started_mtx);
-> +       pthread_cond_wait(&server_started, &server_started_mtx);
-> +       pthread_mutex_unlock(&server_started_mtx);
 
+Thanks! This will allow to get rid of tons warnings from checkpatch.pl.
 
-If the server fails to listen, then we'll never get a signal, right?
-Let's use timedwait instead to avoid test getting stuck forever in
-such cases?
+Alexei, Daniel, can we take this through bpf-next tree once it's open?
 
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-> +
->         CHECK_FAIL(run_test(cgroup_fd, server_fd));
->         close(server_fd);
->  close_cgroup_fd:
-> --
-> 2.23.0.351.gc4317032e6-goog
->
+[...]
