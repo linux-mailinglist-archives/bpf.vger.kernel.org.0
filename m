@@ -2,109 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F86B9AB3
-	for <lists+bpf@lfdr.de>; Sat, 21 Sep 2019 01:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B89A7BA2A4
+	for <lists+bpf@lfdr.de>; Sun, 22 Sep 2019 14:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404799AbfITXaX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Sep 2019 19:30:23 -0400
-Received: from mail-pf1-f202.google.com ([209.85.210.202]:43985 "EHLO
-        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404787AbfITXaX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Sep 2019 19:30:23 -0400
-Received: by mail-pf1-f202.google.com with SMTP id i187so5764707pfc.10
-        for <bpf@vger.kernel.org>; Fri, 20 Sep 2019 16:30:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=LJNLWG7qxYqlS4vxPRzBWLNbdp5Nxg08SBYosGNjYvM=;
-        b=I9j8JiW/Y939Qs7zTunJb7AGiK32Ul7LmZ0u0+HTC7x8O4OOHqanSRqoe2LtxWr8pm
-         FF+zwUd3VDy7XLS/F6ZVOhmDxnC9XwoehOTphIls8m351YHSEJuASbaO4sz/zjkCF6hR
-         ZHWcKkidhcICyS2j+dsJlQ/UWxaPjzIwnEf7diBYMgvzuahkYW8oljl2F9eNy8RLCPW3
-         8CR7HPXv5/xL4fIQ2j+rycayMRGmY0/UsQqBulT5usIEF2hF7ezGbTAQSIjDFJ30y/4E
-         ox420ynJgDHTxeM4Zv7ICWG1mqQWwTPnSNjB2YXnFwlpstahr+gTtJQhiJEf4cwR/x5e
-         zAhw==
+        id S1728955AbfIVMho (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 22 Sep 2019 08:37:44 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:56820 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726129AbfIVMhk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 22 Sep 2019 08:37:40 -0400
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com [209.85.222.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 437F1C05686D
+        for <bpf@vger.kernel.org>; Sun, 22 Sep 2019 12:37:39 +0000 (UTC)
+Received: by mail-qk1-f197.google.com with SMTP id w7so14317882qkf.10
+        for <bpf@vger.kernel.org>; Sun, 22 Sep 2019 05:37:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=LJNLWG7qxYqlS4vxPRzBWLNbdp5Nxg08SBYosGNjYvM=;
-        b=CytxP27fCVOHt2FB5/vnFf3LHmiybSvhY6vJ5SLtmqcAfVbI63YRNz+xw3BjbqIiQO
-         K5LC0kBu/8f+DzBlA5cE3gYOjeY8HXphCl3Rg+VAGLz/neVBT0GRnJH/K14lwFJ70C98
-         hxLkVJjQVO/ir8v3QGe7On37ki4HcwSqdHhQawbpPchIGoM3kH8hmmR8yCrbXXxYF9w9
-         aK3eSI/36PazG6FzDqEttMEBSpONHtPSRKVERe8KAaLEwCnI9yABYLYn92+ESW4KDQ1Z
-         2Yltka6JZy9lNIBBwkK93NViRbcy18fqwBlzyyY4Q5EVlNg7C0yA+nHn3WoVygRN8Nsr
-         x4yA==
-X-Gm-Message-State: APjAAAUmQjuBi3p2H5gYEMwjvDgezn1nlLbN/QtxdsN9mUrLD1/iab7o
-        LIZJA9ffi01rrQkNfBeC8pYTDcg=
-X-Google-Smtp-Source: APXvYqxhXCDSVeeIEupzk0OAb4uhhKv2RGkIC/qWrJabw+QjDvsPOWSJb0hRJHF3gvZ0TPbmh13Fl9s=
-X-Received: by 2002:a65:6709:: with SMTP id u9mr18415155pgf.59.1569022222352;
- Fri, 20 Sep 2019 16:30:22 -0700 (PDT)
-Date:   Fri, 20 Sep 2019 16:30:19 -0700
-Message-Id: <20190920233019.187498-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.23.0.351.gc4317032e6-goog
-Subject: [PATCH bpf] selftests/bpf: test_progs: fix client/server race in tcp_rtt
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZIZ6PVJwNqKV66/6V0eWwKczW/IuITxJoofGCnfWMcw=;
+        b=XV5vjApT3uBEnoJTaHxgNYnb+DrlI4FnCmbb68BHme5uzMie6O3dnJsJ/R4qyfCH3I
+         Kfedkdl8dpZOMBjetqcOyWD5nVfqTlybyWDxvXNucdWmgiYGvTevjQd8xperq3MFmjfJ
+         lq7q7Xox3s8FSwMYVTsCSZiaPRNAuBrI5iizxG2q1vpPBnRfEtgusFDnKh02KCH9vMZf
+         jexbEoGyUzGigkUx3xRUliCEzbCMcnAvG03J1kGa3A6f7kxT6uz8slcz52cbbP9qcvJ/
+         ytZ0O1O7o1vepS95QFZwOBVTCkstTxisxrBqKW+zVU0Ei1zreGYs8W/xEJNvO8M0347x
+         1+zQ==
+X-Gm-Message-State: APjAAAVVMCUxnQxmSKo5kniCam9hGGURO+cnvxgpKqESjLc8nQcEwZEw
+        /+zlPlC2BgT4d0PuS0yert0H0hQZdlSqw3gDkgXg+pmfO4Fqx2IalDP3avk5kvkYOoNgEcAI6gt
+        glsZikAyPi5Oj
+X-Received: by 2002:a0c:b0cb:: with SMTP id p11mr20902498qvc.216.1569155858541;
+        Sun, 22 Sep 2019 05:37:38 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqzCmU3TskOEyZFzEQEVup/JmX+POAXnjml1Z6r35N3M5NYpi2V6FhRyoe8OlTiMpNbNUDXHPA==
+X-Received: by 2002:a0c:b0cb:: with SMTP id p11mr20902486qvc.216.1569155858290;
+        Sun, 22 Sep 2019 05:37:38 -0700 (PDT)
+Received: from redhat.com (bzq-79-176-40-226.red.bezeqint.net. [79.176.40.226])
+        by smtp.gmail.com with ESMTPSA id w18sm3976903qts.44.2019.09.22.05.37.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Sep 2019 05:37:37 -0700 (PDT)
+Date:   Sun, 22 Sep 2019 08:37:30 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Matthew Cover <werekraken@gmail.com>
 Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        jasowang@redhat.com, edumazet@google.com, sdf@google.com,
+        matthew.cover@stackpath.com, mail@timurcelik.de, pabeni@redhat.com,
+        nicolas.dichtel@6wind.com, wangli39@baidu.com,
+        lifei.shirley@bytedance.com, tglx@linutronix.de,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH net-next] tuntap: Fallback to automq on
+ TUNSETSTEERINGEBPF prog negative return
+Message-ID: <20190922080326-mutt-send-email-mst@kernel.org>
+References: <20190920185843.4096-1-matthew.cover@stackpath.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190920185843.4096-1-matthew.cover@stackpath.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is the same problem I found earlier in test_sockopt_inherit:
-there is a race between server thread doing accept() and client
-thread doing connect(). Let's explicitly synchronize them via
-pthread conditional variable.
+On Fri, Sep 20, 2019 at 11:58:43AM -0700, Matthew Cover wrote:
+> Treat a negative return from a TUNSETSTEERINGEBPF bpf prog as a signal
+> to fallback to tun_automq_select_queue() for tx queue selection.
+> 
+> Compilation of this exact patch was tested.
+> 
+> For functional testing 3 additional printk()s were added.
+> 
+> Functional testing results (on 2 txq tap device):
+> 
+>   [Fri Sep 20 18:33:27 2019] ========== tun no prog ==========
+>   [Fri Sep 20 18:33:27 2019] tuntap: tun_ebpf_select_queue() returned '-1'
+>   [Fri Sep 20 18:33:27 2019] tuntap: tun_automq_select_queue() ran
+>   [Fri Sep 20 18:33:27 2019] ========== tun prog -1 ==========
+>   [Fri Sep 20 18:33:27 2019] tuntap: bpf_prog_run_clear_cb() returned '-1'
+>   [Fri Sep 20 18:33:27 2019] tuntap: tun_ebpf_select_queue() returned '-1'
+>   [Fri Sep 20 18:33:27 2019] tuntap: tun_automq_select_queue() ran
+>   [Fri Sep 20 18:33:27 2019] ========== tun prog 0 ==========
+>   [Fri Sep 20 18:33:27 2019] tuntap: bpf_prog_run_clear_cb() returned '0'
+>   [Fri Sep 20 18:33:27 2019] tuntap: tun_ebpf_select_queue() returned '0'
+>   [Fri Sep 20 18:33:27 2019] ========== tun prog 1 ==========
+>   [Fri Sep 20 18:33:27 2019] tuntap: bpf_prog_run_clear_cb() returned '1'
+>   [Fri Sep 20 18:33:27 2019] tuntap: tun_ebpf_select_queue() returned '1'
+>   [Fri Sep 20 18:33:27 2019] ========== tun prog 2 ==========
+>   [Fri Sep 20 18:33:27 2019] tuntap: bpf_prog_run_clear_cb() returned '2'
+>   [Fri Sep 20 18:33:27 2019] tuntap: tun_ebpf_select_queue() returned '0'
+> 
+> Signed-off-by: Matthew Cover <matthew.cover@stackpath.com>
 
-Fixes: b55873984dab ("selftests/bpf: test BPF_SOCK_OPS_RTT_CB")
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/testing/selftests/bpf/prog_tests/tcp_rtt.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-index fdc0b3614a9e..e64058906bcd 100644
---- a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-@@ -203,6 +203,9 @@ static int start_server(void)
- 	return fd;
- }
- 
-+static pthread_mutex_t server_started_mtx = PTHREAD_MUTEX_INITIALIZER;
-+static pthread_cond_t server_started = PTHREAD_COND_INITIALIZER;
-+
- static void *server_thread(void *arg)
- {
- 	struct sockaddr_storage addr;
-@@ -215,6 +218,10 @@ static void *server_thread(void *arg)
- 		return NULL;
- 	}
- 
-+	pthread_mutex_lock(&server_started_mtx);
-+	pthread_cond_signal(&server_started);
-+	pthread_mutex_unlock(&server_started_mtx);
-+
- 	client_fd = accept(fd, (struct sockaddr *)&addr, &len);
- 	if (CHECK_FAIL(client_fd < 0)) {
- 		perror("Failed to accept client");
-@@ -248,7 +255,14 @@ void test_tcp_rtt(void)
- 	if (CHECK_FAIL(server_fd < 0))
- 		goto close_cgroup_fd;
- 
--	pthread_create(&tid, NULL, server_thread, (void *)&server_fd);
-+	if (CHECK_FAIL(pthread_create(&tid, NULL, server_thread,
-+				      (void *)&server_fd)))
-+		goto close_cgroup_fd;
-+
-+	pthread_mutex_lock(&server_started_mtx);
-+	pthread_cond_wait(&server_started, &server_started_mtx);
-+	pthread_mutex_unlock(&server_started_mtx);
-+
- 	CHECK_FAIL(run_test(cgroup_fd, server_fd));
- 	close(server_fd);
- close_cgroup_fd:
--- 
-2.23.0.351.gc4317032e6-goog
+Could you add a bit more motivation data here?
+1. why is this a good idea
+2. how do we know existing userspace does not rely on existing behaviour
+3. why doesn't userspace need a way to figure out whether it runs on a kernel with and
+   without this patch
 
+
+thanks,
+MST
+
+> ---
+>  drivers/net/tun.c | 20 +++++++++++---------
+>  1 file changed, 11 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> index aab0be4..173d159 100644
+> --- a/drivers/net/tun.c
+> +++ b/drivers/net/tun.c
+> @@ -583,35 +583,37 @@ static u16 tun_automq_select_queue(struct tun_struct *tun, struct sk_buff *skb)
+>  	return txq;
+>  }
+>  
+> -static u16 tun_ebpf_select_queue(struct tun_struct *tun, struct sk_buff *skb)
+> +static int tun_ebpf_select_queue(struct tun_struct *tun, struct sk_buff *skb)
+>  {
+>  	struct tun_prog *prog;
+>  	u32 numqueues;
+> -	u16 ret = 0;
+> +	int ret = -1;
+>  
+>  	numqueues = READ_ONCE(tun->numqueues);
+>  	if (!numqueues)
+>  		return 0;
+>  
+> +	rcu_read_lock();
+>  	prog = rcu_dereference(tun->steering_prog);
+>  	if (prog)
+>  		ret = bpf_prog_run_clear_cb(prog->prog, skb);
+> +	rcu_read_unlock();
+>  
+> -	return ret % numqueues;
+> +	if (ret >= 0)
+> +		ret %= numqueues;
+> +
+> +	return ret;
+>  }
+>  
+>  static u16 tun_select_queue(struct net_device *dev, struct sk_buff *skb,
+>  			    struct net_device *sb_dev)
+>  {
+>  	struct tun_struct *tun = netdev_priv(dev);
+> -	u16 ret;
+> +	int ret;
+>  
+> -	rcu_read_lock();
+> -	if (rcu_dereference(tun->steering_prog))
+> -		ret = tun_ebpf_select_queue(tun, skb);
+> -	else
+> +	ret = tun_ebpf_select_queue(tun, skb);
+> +	if (ret < 0)
+>  		ret = tun_automq_select_queue(tun, skb);
+> -	rcu_read_unlock();
+>  
+>  	return ret;
+>  }
+> -- 
+> 1.8.3.1
