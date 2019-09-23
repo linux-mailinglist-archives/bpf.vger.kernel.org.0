@@ -2,143 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 49EFBBB81F
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2019 17:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD91BB86B
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2019 17:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728113AbfIWPiW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Sep 2019 11:38:22 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:37975 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727563AbfIWPiW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Sep 2019 11:38:22 -0400
-Received: by mail-pl1-f196.google.com with SMTP id w10so6668645plq.5
-        for <bpf@vger.kernel.org>; Mon, 23 Sep 2019 08:38:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=M/PMh4r97tv7nGSf4Rke5Y5OiYt7ZTJmWzGerKhb1gY=;
-        b=RwY7dq9n7GbzC73yE6fHmE/aQUXzDH2sOFHkeOPM/+YWb//8H6SaSJLL9gxgd4kfFM
-         eFApB+kysf61LLta+9m1CIZpG9smzamplACVnREr/gmMH6vaCF9UgAsoEyPwqsK/uZ+A
-         79PQ8DckIm3V8I/v1L60KIbl/W2dpRRLMFeBfuHrXXdwzyuN58AjMbVQvhuV0u8rz/nG
-         I2PPdR/F4+qCKuDvK4alH7rFOM6liO0cpj8aVudv5mnijQ9SIKHMk5mzVVH3YF/+FuMW
-         quspNDLnD3gRj5CyNcDl9ebryddGZo9FyuLBVKqdzAXJ5uBKKS6Pdc2u+sCgsKJLBYgo
-         q+4Q==
+        id S1732758AbfIWPtO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Sep 2019 11:49:14 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:33999 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728594AbfIWPtN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Sep 2019 11:49:13 -0400
+Received: by mail-io1-f71.google.com with SMTP id z10so8964975ioj.1
+        for <bpf@vger.kernel.org>; Mon, 23 Sep 2019 08:49:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=M/PMh4r97tv7nGSf4Rke5Y5OiYt7ZTJmWzGerKhb1gY=;
-        b=GYaQ+D+vaWfpHUqbhBKxCtXeA/LCxOPG9CRfRcKNme99ONdXw6T20MSMnbSPc4TwRU
-         CRXDhCZMnFHNt0QLIy1GI+rErgMbSNJUJoiH3YSQmpiKmhAd/5aiQzZ12k9SdgMvTBTj
-         +GkaMuRxMg2J3FJA9bk+LnEF/a0daOgvdTc9bglT9HHA/jq+S/sG8LMzQu6rSCgK7j2U
-         W8glVKwGq9kA+kalT6kUQmxiyy5XHSZLljVCA7L8V0evfDvIaRpXrwZS6Wt0wgeDGnjs
-         UP+Xrrv008KPKceHbgKSM4uCdvLwF8436lfGeLg2ptGN1+wcr5Mj2usAaIchOetfd0QW
-         yKyg==
-X-Gm-Message-State: APjAAAVMo3ZkwETHJBXcsu2R2D8zkIhBchInJh91VE0JfpOZ+ANy+Q1J
-        D8QFzxgbazPUeWHYvDEyYdfcZhtAKBY=
-X-Google-Smtp-Source: APXvYqzs9ASBw3DusM2g13xJf9ooEmKRG6t7dzWdPpIv7Y9FcVG6jm8BnPklKFEo8ruXldMBOBVQYQ==
-X-Received: by 2002:a17:902:b902:: with SMTP id bf2mr425171plb.56.1569253101493;
-        Mon, 23 Sep 2019 08:38:21 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id fa24sm6409690pjb.13.2019.09.23.08.38.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Sep 2019 08:38:20 -0700 (PDT)
-Date:   Mon, 23 Sep 2019 08:38:19 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH bpf] selftests/bpf: test_progs: fix client/server race in
- tcp_rtt
-Message-ID: <20190923153819.GA21441@mini-arch>
-References: <20190920233019.187498-1-sdf@google.com>
- <CAEf4BzYFQhPKoDG7kq=_B5caL-0Af2duL_Uz5v3oVw=BKQ430w@mail.gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to
+         :content-transfer-encoding;
+        bh=aTe9vFgxnQSUbqzD1uvP+ahz/Hl3A6XwhKJCZ9nDuOs=;
+        b=eZH5g0wXD9Vbhgl4c8ltCuzAsBskExQFxbFMC3N02gyrx2A5dInnUOpdktW/4/6PCj
+         hlYqCHe+R2AtupEJf6v0/ZBEoIfzb3paNijKhxzwKAe0AX1+Gu39R2RA2vgG6Fnz+zL6
+         B10ofVevlhxvfseLzAAwZ0koxpa23U/afwhEp84lbH+MKdH+L31GH2CfJXZl6R4K9lCK
+         20hFGwEt3Q8vqwyuucGXX9/mj6yCsFvhF4EzLr0Qjgfptr3CiD7xQFGpCSo8s9mCzwUA
+         9VXkzxVHwgiv9LPggtYYyC56btdzzkDDsqnjITakw1jtUaxyHHkXUCaXKEh0qxDc/v4N
+         b7sQ==
+X-Gm-Message-State: APjAAAUpTGed+Rl/7LkMi0bmVPAetyX9ge9lG2jFqVIpZfadnEy80BMt
+        /3MZRFcN7HSWwDKf9cCPEIEOHIo5/hcgzaxU0KU0oSau708U
+X-Google-Smtp-Source: APXvYqxPjdQBB4Fscqb4QFuBDGFKVQVQx/4U6ZEhKpwVw/nNziP7PXssR1WqgphK6lL3xLS8f87kiSF4AJU/MRIDv/RT2Bht86lN
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYFQhPKoDG7kq=_B5caL-0Af2duL_Uz5v3oVw=BKQ430w@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Received: by 2002:a5d:814f:: with SMTP id f15mr16445345ioo.134.1569253751401;
+ Mon, 23 Sep 2019 08:49:11 -0700 (PDT)
+Date:   Mon, 23 Sep 2019 08:49:11 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006a3a2f05933a5c53@google.com>
+Subject: general protection fault in xsk_map_update_elem
+From:   syzbot <syzbot+491c1b7565ba9069ecae@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bjorn.topel@intel.com, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        jakub.kicinski@netronome.com, john.fastabend@gmail.com,
+        jonathan.lemon@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, magnus.karlsson@intel.com,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 09/22, Andrii Nakryiko wrote:
-> On Sun, Sep 22, 2019 at 12:10 PM Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > This is the same problem I found earlier in test_sockopt_inherit:
-> > there is a race between server thread doing accept() and client
-> > thread doing connect(). Let's explicitly synchronize them via
-> > pthread conditional variable.
-> >
-> > Fixes: b55873984dab ("selftests/bpf: test BPF_SOCK_OPS_RTT_CB")
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  tools/testing/selftests/bpf/prog_tests/tcp_rtt.c | 16 +++++++++++++++-
-> >  1 file changed, 15 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-> > index fdc0b3614a9e..e64058906bcd 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-> > @@ -203,6 +203,9 @@ static int start_server(void)
-> >         return fd;
-> >  }
-> >
-> > +static pthread_mutex_t server_started_mtx = PTHREAD_MUTEX_INITIALIZER;
-> > +static pthread_cond_t server_started = PTHREAD_COND_INITIALIZER;
-> > +
-> >  static void *server_thread(void *arg)
-> >  {
-> >         struct sockaddr_storage addr;
-> > @@ -215,6 +218,10 @@ static void *server_thread(void *arg)
-> >                 return NULL;
-> >         }
-> >
-> > +       pthread_mutex_lock(&server_started_mtx);
-> > +       pthread_cond_signal(&server_started);
-> > +       pthread_mutex_unlock(&server_started_mtx);
-> > +
-> >         client_fd = accept(fd, (struct sockaddr *)&addr, &len);
-> >         if (CHECK_FAIL(client_fd < 0)) {
-> >                 perror("Failed to accept client");
-> > @@ -248,7 +255,14 @@ void test_tcp_rtt(void)
-> >         if (CHECK_FAIL(server_fd < 0))
-> >                 goto close_cgroup_fd;
-> >
-> > -       pthread_create(&tid, NULL, server_thread, (void *)&server_fd);
-> > +       if (CHECK_FAIL(pthread_create(&tid, NULL, server_thread,
-> > +                                     (void *)&server_fd)))
-> > +               goto close_cgroup_fd;
-> > +
-> > +       pthread_mutex_lock(&server_started_mtx);
-> > +       pthread_cond_wait(&server_started, &server_started_mtx);
-> > +       pthread_mutex_unlock(&server_started_mtx);
-> 
-> 
-> If the server fails to listen, then we'll never get a signal, right?
-> Let's use timedwait instead to avoid test getting stuck forever in
-> such cases?
-Good point. How about I do the same thing I do in sockopt_inherit tests:
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c#n73
-
-	err = listen()
-	pthread_cond_signal()
-	if (CHECK_FAIL(err)) {
-		return;
-	}
-
-Should fix the problem of getting stuck forever without any timeouts.
-I'll send a v2 later today.
-
-> > +
-> >         CHECK_FAIL(run_test(cgroup_fd, server_fd));
-> >         close(server_fd);
-> >  close_cgroup_fd:
-> > --
-> > 2.23.0.351.gc4317032e6-goog
-> >
+SGVsbG8sDQoNCnN5emJvdCBmb3VuZCB0aGUgZm9sbG93aW5nIGNyYXNoIG9uOg0KDQpIRUFEIGNv
+bW1pdDogICAgYjQxZGFlMDYgTWVyZ2UgdGFnICd4ZnMtNS40LW1lcmdlLTcnIG9mIGdpdDovL2dp
+dC5rZXJuZWwuby4uDQpnaXQgdHJlZTogICAgICAgbmV0LW5leHQNCmNvbnNvbGUgb3V0cHV0OiBo
+dHRwczovL3N5emthbGxlci5hcHBzcG90LmNvbS94L2xvZy50eHQ/eD0xMzBiMjVhZDYwMDAwMA0K
+a2VybmVsIGNvbmZpZzogIGh0dHBzOi8vc3l6a2FsbGVyLmFwcHNwb3QuY29tL3gvLmNvbmZpZz94
+PWRmY2Y1OTJkYjIyYjkxMzINCmRhc2hib2FyZCBsaW5rOiBodHRwczovL3N5emthbGxlci5hcHBz
+cG90LmNvbS9idWc/ZXh0aWQ9NDkxYzFiNzU2NWJhOTA2OWVjYWUNCmNvbXBpbGVyOiAgICAgICBn
+Y2MgKEdDQykgOS4wLjAgMjAxODEyMzEgKGV4cGVyaW1lbnRhbCkNCnN5eiByZXBybzogICAgICBo
+dHRwczovL3N5emthbGxlci5hcHBzcG90LmNvbS94L3JlcHJvLnN5ej94PTE1NWEwYzI5NjAwMDAw
+DQpDIHJlcHJvZHVjZXI6ICAgaHR0cHM6Ly9zeXprYWxsZXIuYXBwc3BvdC5jb20veC9yZXByby5j
+P3g9MTcyYmY2ZDk2MDAwMDANCg0KVGhlIGJ1ZyB3YXMgYmlzZWN0ZWQgdG86DQoNCmNvbW1pdCAw
+NDAyYWNkNjgzYzY3ODg3NGRmNmJkYmMyMzUzMGNhMDdlYTE5MzUzDQpBdXRob3I6IEJqw7ZybiBU
+w7ZwZWwgPGJqb3JuLnRvcGVsQGludGVsLmNvbT4NCkRhdGU6ICAgVGh1IEF1ZyAxNSAwOTozMDox
+MyAyMDE5ICswMDAwDQoNCiAgICAgeHNrOiByZW1vdmUgQUZfWERQIHNvY2tldCBmcm9tIG1hcCB3
+aGVuIHRoZSBzb2NrZXQgaXMgcmVsZWFzZWQNCg0KYmlzZWN0aW9uIGxvZzogIGh0dHBzOi8vc3l6
+a2FsbGVyLmFwcHNwb3QuY29tL3gvYmlzZWN0LnR4dD94PTEwZDRhODIzNjAwMDAwDQpmaW5hbCBj
+cmFzaDogICAgaHR0cHM6Ly9zeXprYWxsZXIuYXBwc3BvdC5jb20veC9yZXBvcnQudHh0P3g9MTJk
+NGE4MjM2MDAwMDANCmNvbnNvbGUgb3V0cHV0OiBodHRwczovL3N5emthbGxlci5hcHBzcG90LmNv
+bS94L2xvZy50eHQ/eD0xNGQ0YTgyMzYwMDAwMA0KDQpJTVBPUlRBTlQ6IGlmIHlvdSBmaXggdGhl
+IGJ1ZywgcGxlYXNlIGFkZCB0aGUgZm9sbG93aW5nIHRhZyB0byB0aGUgY29tbWl0Og0KUmVwb3J0
+ZWQtYnk6IHN5emJvdCs0OTFjMWI3NTY1YmE5MDY5ZWNhZUBzeXprYWxsZXIuYXBwc3BvdG1haWwu
+Y29tDQpGaXhlczogMDQwMmFjZDY4M2M2ICgieHNrOiByZW1vdmUgQUZfWERQIHNvY2tldCBmcm9t
+IG1hcCB3aGVuIHRoZSBzb2NrZXQgaXMgIA0KcmVsZWFzZWQiKQ0KDQpSRFg6IDAwMDAwMDAwMDAw
+MDAwMjAgUlNJOiAwMDAwMDAwMDIwMDAwMTAwIFJESTogMDAwMDAwMDAwMDAwMDAwMg0KUkJQOiAw
+MDAwMDAwMDAwMDAwMDA1IFIwODogMDAwMDAwMDAwMDAwMDAwMSBSMDk6IDAwMDA3ZmZlZjQ1MDAw
+MzMNClIxMDogMDAwMDAwMDAwMDAwMDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAyNDYgUjEyOiAwMDAw
+MDAwMDAwNDAxZmYwDQpSMTM6IDAwMDAwMDAwMDA0MDIwODAgUjE0OiAwMDAwMDAwMDAwMDAwMDAw
+IFIxNTogMDAwMDAwMDAwMDAwMDAwMA0Ka2FzYW46IENPTkZJR19LQVNBTl9JTkxJTkUgZW5hYmxl
+ZA0Ka2FzYW46IEdQRiBjb3VsZCBiZSBjYXVzZWQgYnkgTlVMTC1wdHIgZGVyZWYgb3IgdXNlciBt
+ZW1vcnkgYWNjZXNzDQpnZW5lcmFsIHByb3RlY3Rpb24gZmF1bHQ6IDAwMDAgWyMxXSBQUkVFTVBU
+IFNNUCBLQVNBTg0KQ1BVOiAxIFBJRDogODg3OCBDb21tOiBzeXotZXhlY3V0b3I4MzUgTm90IHRh
+aW50ZWQgNS4zLjArICMwDQpIYXJkd2FyZSBuYW1lOiBHb29nbGUgR29vZ2xlIENvbXB1dGUgRW5n
+aW5lL0dvb2dsZSBDb21wdXRlIEVuZ2luZSwgQklPUyAgDQpHb29nbGUgMDEvMDEvMjAxMQ0KUklQ
+OiAwMDEwOl9fbGlzdF9hZGQgaW5jbHVkZS9saW51eC9saXN0Lmg6NjQgW2lubGluZV0NClJJUDog
+MDAxMDpsaXN0X2FkZF90YWlsIGluY2x1ZGUvbGludXgvbGlzdC5oOjkzIFtpbmxpbmVdDQpSSVA6
+IDAwMTA6eHNrX21hcF9zb2NrX2FkZCBrZXJuZWwvYnBmL3hza21hcC5jOjYyIFtpbmxpbmVdDQpS
+SVA6IDAwMTA6eHNrX21hcF91cGRhdGVfZWxlbSsweDc5Yy8weGFjMCBrZXJuZWwvYnBmL3hza21h
+cC5jOjI2NQ0KQ29kZTogMDAgZmMgZmYgZGYgNDggYzEgZWEgMDMgODAgM2MgMDIgMDAgMGYgODUg
+ZWYgMDIgMDAgMDAgNGMgODkgZTIgNGQgODkgIA0KYTcgZDggMDUgMDAgMDAgNDggYjggMDAgMDAg
+MDAgMDAgMDAgZmMgZmYgZGYgNDggYzEgZWEgMDMgPDgwPiAzYyAwMiAwMCAwZiAgDQo4NSBjMCAw
+MiAwMCAwMCA0OSA4ZCA3YyAyNCAwOCA0OSA4ZCA4NyBkMCAwNSAwMCAwMA0KUlNQOiAwMDE4OmZm
+ZmY4ODgwOWE1MTdiYjggRUZMQUdTOiAwMDAxMDI0Ng0KUkFYOiBkZmZmZmMwMDAwMDAwMDAwIFJC
+WDogZmZmZjg4ODA5Y2NjNDlkMCBSQ1g6IGZmZmZmZmZmODE4NjgwNzANClJEWDogMDAwMDAwMDAw
+MDAwMDAwMCBSU0k6IGZmZmZmZmZmODE4NjgwODUgUkRJOiAwMDAwMDAwMDAwMDAwMDAxDQpSQlA6
+IGZmZmY4ODgwOWE1MTdjNzggUjA4OiBmZmZmODg4MGExMGQyMDAwIFIwOTogZmZmZmVkMTAxMzRh
+MmY2NQ0KUjEwOiBmZmZmZWQxMDEzNGEyZjY0IFIxMTogMDAwMDAwMDAwMDAwMDAwMyBSMTI6IDAw
+MDAwMDAwMDAwMDAwMDANClIxMzogZmZmZjg4ODA5Y2NjNDllMCBSMTQ6IGZmZmY4ODgwODlkYjU1
+ODAgUjE1OiBmZmZmODg4MDljY2M0NDAwDQpGUzogIDAwMDA1NTU1NTVkZjI4ODAoMDAwMCkgR1M6
+ZmZmZjg4ODBhZTkwMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQpDUzogIDAwMTAg
+RFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzDQpDUjI6IDAwMDAwMDAwMjAw
+MDAwNDAgQ1IzOiAwMDAwMDAwMDk4NWU1MDAwIENSNDogMDAwMDAwMDAwMDE0MDZlMA0KRFIwOiAw
+MDAwMDAwMDAwMDAwMDAwIERSMTogMDAwMDAwMDAwMDAwMDAwMCBEUjI6IDAwMDAwMDAwMDAwMDAw
+MDANCkRSMzogMDAwMDAwMDAwMDAwMDAwMCBEUjY6IDAwMDAwMDAwZmZmZTBmZjAgRFI3OiAwMDAw
+MDAwMDAwMDAwNDAwDQpDYWxsIFRyYWNlOg0KICBtYXBfdXBkYXRlX2VsZW0rMHhjODIvMHgxMGIw
+IGtlcm5lbC9icGYvc3lzY2FsbC5jOjk2Ng0KICBfX2RvX3N5c19icGYrMHg4YjUvMHgzMzUwIGtl
+cm5lbC9icGYvc3lzY2FsbC5jOjI4NTQNCiAgX19zZV9zeXNfYnBmIGtlcm5lbC9icGYvc3lzY2Fs
+bC5jOjI4MjUgW2lubGluZV0NCiAgX194NjRfc3lzX2JwZisweDczLzB4YjAga2VybmVsL2JwZi9z
+eXNjYWxsLmM6MjgyNQ0KICBkb19zeXNjYWxsXzY0KzB4ZmEvMHg3NjAgYXJjaC94ODYvZW50cnkv
+Y29tbW9uLmM6MjkwDQogIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFtZSsweDQ5LzB4YmUN
+ClJJUDogMDAzMzoweDQ0MDcwOQ0KQ29kZTogMTggODkgZDAgYzMgNjYgMmUgMGYgMWYgODQgMDAg
+MDAgMDAgMDAgMDAgMGYgMWYgMDAgNDggODkgZjggNDggODkgZjcgIA0KNDggODkgZDYgNDggODkg
+Y2EgNGQgODkgYzIgNGQgODkgYzggNGMgOGIgNGMgMjQgMDggMGYgMDUgPDQ4PiAzZCAwMSBmMCBm
+ZiAgDQpmZiAwZiA4MyA1YiAxNCBmYyBmZiBjMyA2NiAyZSAwZiAxZiA4NCAwMCAwMCAwMCAwMA0K
+UlNQOiAwMDJiOjAwMDA3ZmZlZjQ1MDM0NzggRUZMQUdTOiAwMDAwMDI0NiBPUklHX1JBWDogMDAw
+MDAwMDAwMDAwMDE0MQ0KUkFYOiBmZmZmZmZmZmZmZmZmZmRhIFJCWDogMDAwMDdmZmVmNDUwMzQ4
+MCBSQ1g6IDAwMDAwMDAwMDA0NDA3MDkNClJEWDogMDAwMDAwMDAwMDAwMDAyMCBSU0k6IDAwMDAw
+MDAwMjAwMDAxMDAgUkRJOiAwMDAwMDAwMDAwMDAwMDAyDQpSQlA6IDAwMDAwMDAwMDAwMDAwMDUg
+UjA4OiAwMDAwMDAwMDAwMDAwMDAxIFIwOTogMDAwMDdmZmVmNDUwMDAzMw0KUjEwOiAwMDAwMDAw
+MDAwMDAwMDAwIFIxMTogMDAwMDAwMDAwMDAwMDI0NiBSMTI6IDAwMDAwMDAwMDA0MDFmZjANClIx
+MzogMDAwMDAwMDAwMDQwMjA4MCBSMTQ6IDAwMDAwMDAwMDAwMDAwMDAgUjE1OiAwMDAwMDAwMDAw
+MDAwMDAwDQpNb2R1bGVzIGxpbmtlZCBpbjoNCi0tLVsgZW5kIHRyYWNlIGE5NWI5YjkyNmY4NTYw
+NzcgXS0tLQ0KUklQOiAwMDEwOl9fbGlzdF9hZGQgaW5jbHVkZS9saW51eC9saXN0Lmg6NjQgW2lu
+bGluZV0NClJJUDogMDAxMDpsaXN0X2FkZF90YWlsIGluY2x1ZGUvbGludXgvbGlzdC5oOjkzIFtp
+bmxpbmVdDQpSSVA6IDAwMTA6eHNrX21hcF9zb2NrX2FkZCBrZXJuZWwvYnBmL3hza21hcC5jOjYy
+IFtpbmxpbmVdDQpSSVA6IDAwMTA6eHNrX21hcF91cGRhdGVfZWxlbSsweDc5Yy8weGFjMCBrZXJu
+ZWwvYnBmL3hza21hcC5jOjI2NQ0KQ29kZTogMDAgZmMgZmYgZGYgNDggYzEgZWEgMDMgODAgM2Mg
+MDIgMDAgMGYgODUgZWYgMDIgMDAgMDAgNGMgODkgZTIgNGQgODkgIA0KYTcgZDggMDUgMDAgMDAg
+NDggYjggMDAgMDAgMDAgMDAgMDAgZmMgZmYgZGYgNDggYzEgZWEgMDMgPDgwPiAzYyAwMiAwMCAw
+ZiAgDQo4NSBjMCAwMiAwMCAwMCA0OSA4ZCA3YyAyNCAwOCA0OSA4ZCA4NyBkMCAwNSAwMCAwMA0K
+UlNQOiAwMDE4OmZmZmY4ODgwOWE1MTdiYjggRUZMQUdTOiAwMDAxMDI0Ng0KUkFYOiBkZmZmZmMw
+MDAwMDAwMDAwIFJCWDogZmZmZjg4ODA5Y2NjNDlkMCBSQ1g6IGZmZmZmZmZmODE4NjgwNzANClJE
+WDogMDAwMDAwMDAwMDAwMDAwMCBSU0k6IGZmZmZmZmZmODE4NjgwODUgUkRJOiAwMDAwMDAwMDAw
+MDAwMDAxDQpSQlA6IGZmZmY4ODgwOWE1MTdjNzggUjA4OiBmZmZmODg4MGExMGQyMDAwIFIwOTog
+ZmZmZmVkMTAxMzRhMmY2NQ0KUjEwOiBmZmZmZWQxMDEzNGEyZjY0IFIxMTogMDAwMDAwMDAwMDAw
+MDAwMyBSMTI6IDAwMDAwMDAwMDAwMDAwMDANClIxMzogZmZmZjg4ODA5Y2NjNDllMCBSMTQ6IGZm
+ZmY4ODgwODlkYjU1ODAgUjE1OiBmZmZmODg4MDljY2M0NDAwDQpGUzogIDAwMDA1NTU1NTVkZjI4
+ODAoMDAwMCkgR1M6ZmZmZjg4ODBhZTkwMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAw
+DQpDUzogIDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzDQpDUjI6
+IDAwMDAwMDAwMjAwMDAwNDAgQ1IzOiAwMDAwMDAwMDk4NWU1MDAwIENSNDogMDAwMDAwMDAwMDE0
+MDZlMA0KRFIwOiAwMDAwMDAwMDAwMDAwMDAwIERSMTogMDAwMDAwMDAwMDAwMDAwMCBEUjI6IDAw
+MDAwMDAwMDAwMDAwMDANCkRSMzogMDAwMDAwMDAwMDAwMDAwMCBEUjY6IDAwMDAwMDAwZmZmZTBm
+ZjAgRFI3OiAwMDAwMDAwMDAwMDAwNDAwDQoNCg0KLS0tDQpUaGlzIGJ1ZyBpcyBnZW5lcmF0ZWQg
+YnkgYSBib3QuIEl0IG1heSBjb250YWluIGVycm9ycy4NClNlZSBodHRwczovL2dvby5nbC90cHNt
+RUogZm9yIG1vcmUgaW5mb3JtYXRpb24gYWJvdXQgc3l6Ym90Lg0Kc3l6Ym90IGVuZ2luZWVycyBj
+YW4gYmUgcmVhY2hlZCBhdCBzeXprYWxsZXJAZ29vZ2xlZ3JvdXBzLmNvbS4NCg0Kc3l6Ym90IHdp
+bGwga2VlcCB0cmFjayBvZiB0aGlzIGJ1ZyByZXBvcnQuIFNlZToNCmh0dHBzOi8vZ29vLmdsL3Rw
+c21FSiNzdGF0dXMgZm9yIGhvdyB0byBjb21tdW5pY2F0ZSB3aXRoIHN5emJvdC4NCkZvciBpbmZv
+cm1hdGlvbiBhYm91dCBiaXNlY3Rpb24gcHJvY2VzcyBzZWU6IGh0dHBzOi8vZ29vLmdsL3Rwc21F
+SiNiaXNlY3Rpb24NCnN5emJvdCBjYW4gdGVzdCBwYXRjaGVzIGZvciB0aGlzIGJ1ZywgZm9yIGRl
+dGFpbHMgc2VlOg0KaHR0cHM6Ly9nb28uZ2wvdHBzbUVKI3Rlc3RpbmctcGF0Y2hlcw0K
