@@ -2,96 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC66CBB57E
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2019 15:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49EFBBB81F
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2019 17:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439760AbfIWNgA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Sep 2019 09:36:00 -0400
-Received: from www62.your-server.de ([213.133.104.62]:50092 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730669AbfIWNgA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Sep 2019 09:36:00 -0400
-Received: from [178.197.248.15] (helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iCOVK-0004dR-Id; Mon, 23 Sep 2019 15:35:50 +0200
-Date:   Mon, 23 Sep 2019 15:35:50 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Whitcroft <apw@canonical.com>,
+        id S1728113AbfIWPiW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Sep 2019 11:38:22 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:37975 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727563AbfIWPiW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Sep 2019 11:38:22 -0400
+Received: by mail-pl1-f196.google.com with SMTP id w10so6668645plq.5
+        for <bpf@vger.kernel.org>; Mon, 23 Sep 2019 08:38:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=M/PMh4r97tv7nGSf4Rke5Y5OiYt7ZTJmWzGerKhb1gY=;
+        b=RwY7dq9n7GbzC73yE6fHmE/aQUXzDH2sOFHkeOPM/+YWb//8H6SaSJLL9gxgd4kfFM
+         eFApB+kysf61LLta+9m1CIZpG9smzamplACVnREr/gmMH6vaCF9UgAsoEyPwqsK/uZ+A
+         79PQ8DckIm3V8I/v1L60KIbl/W2dpRRLMFeBfuHrXXdwzyuN58AjMbVQvhuV0u8rz/nG
+         I2PPdR/F4+qCKuDvK4alH7rFOM6liO0cpj8aVudv5mnijQ9SIKHMk5mzVVH3YF/+FuMW
+         quspNDLnD3gRj5CyNcDl9ebryddGZo9FyuLBVKqdzAXJ5uBKKS6Pdc2u+sCgsKJLBYgo
+         q+4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=M/PMh4r97tv7nGSf4Rke5Y5OiYt7ZTJmWzGerKhb1gY=;
+        b=GYaQ+D+vaWfpHUqbhBKxCtXeA/LCxOPG9CRfRcKNme99ONdXw6T20MSMnbSPc4TwRU
+         CRXDhCZMnFHNt0QLIy1GI+rErgMbSNJUJoiH3YSQmpiKmhAd/5aiQzZ12k9SdgMvTBTj
+         +GkaMuRxMg2J3FJA9bk+LnEF/a0daOgvdTc9bglT9HHA/jq+S/sG8LMzQu6rSCgK7j2U
+         W8glVKwGq9kA+kalT6kUQmxiyy5XHSZLljVCA7L8V0evfDvIaRpXrwZS6Wt0wgeDGnjs
+         UP+Xrrv008KPKceHbgKSM4uCdvLwF8436lfGeLg2ptGN1+wcr5Mj2usAaIchOetfd0QW
+         yKyg==
+X-Gm-Message-State: APjAAAVMo3ZkwETHJBXcsu2R2D8zkIhBchInJh91VE0JfpOZ+ANy+Q1J
+        D8QFzxgbazPUeWHYvDEyYdfcZhtAKBY=
+X-Google-Smtp-Source: APXvYqzs9ASBw3DusM2g13xJf9ooEmKRG6t7dzWdPpIv7Y9FcVG6jm8BnPklKFEo8ruXldMBOBVQYQ==
+X-Received: by 2002:a17:902:b902:: with SMTP id bf2mr425171plb.56.1569253101493;
+        Mon, 23 Sep 2019 08:38:21 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id fa24sm6409690pjb.13.2019.09.23.08.38.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Sep 2019 08:38:20 -0700 (PDT)
+Date:   Mon, 23 Sep 2019 08:38:19 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joe Perches <joe@perches.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 30/32] tools lib bpf: Renaming pr_warning to pr_warn
-Message-ID: <20190923133550.GA9880@pc-63.home>
-References: <20190920062544.180997-1-wangkefeng.wang@huawei.com>
- <20190920062544.180997-31-wangkefeng.wang@huawei.com>
- <CAEf4BzbD98xeU2dSrXYkVi+mK=kuq+5DsroNDZwOzBGYbMH1-w@mail.gmail.com>
- <20190923082039.GA2530@pc-63.home>
- <20190923110306.hrgeqwo5ogd55vfo@pathway.suse.cz>
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf] selftests/bpf: test_progs: fix client/server race in
+ tcp_rtt
+Message-ID: <20190923153819.GA21441@mini-arch>
+References: <20190920233019.187498-1-sdf@google.com>
+ <CAEf4BzYFQhPKoDG7kq=_B5caL-0Af2duL_Uz5v3oVw=BKQ430w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190923110306.hrgeqwo5ogd55vfo@pathway.suse.cz>
+In-Reply-To: <CAEf4BzYFQhPKoDG7kq=_B5caL-0Af2duL_Uz5v3oVw=BKQ430w@mail.gmail.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25581/Mon Sep 23 10:20:21 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 23, 2019 at 01:03:06PM +0200, Petr Mladek wrote:
-> On Mon 2019-09-23 10:20:39, Daniel Borkmann wrote:
-> > On Sun, Sep 22, 2019 at 02:07:21PM -0700, Andrii Nakryiko wrote:
-> > > On Fri, Sep 20, 2019 at 10:06 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
-> > > >
-> > > > For kernel logging macro, pr_warning is completely removed and
-> > > > replaced by pr_warn, using pr_warn in tools lib bpf for symmetry
-> > > > to kernel logging macro, then we could drop pr_warning in the
-> > > > whole linux code.
-> > > >
-> > > > Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> > > > ---
-> > > >  tools/lib/bpf/btf.c             |  56 +--
-> > > >  tools/lib/bpf/btf_dump.c        |  20 +-
-> > > >  tools/lib/bpf/libbpf.c          | 652 ++++++++++++++++----------------
-> > > >  tools/lib/bpf/libbpf_internal.h |   2 +-
-> > > >  tools/lib/bpf/xsk.c             |   4 +-
-> > > >  5 files changed, 363 insertions(+), 371 deletions(-)
-> > > 
-> > > Thanks! This will allow to get rid of tons warnings from checkpatch.pl.
-> > > 
-> > > Alexei, Daniel, can we take this through bpf-next tree once it's open?
-> > 
-> > I'd be fine with that, in fact, it probably should be in order to avoid
-> > merge conflicts since pr_warn{ing}() is used all over the place in libbpf.
+On 09/22, Andrii Nakryiko wrote:
+> On Sun, Sep 22, 2019 at 12:10 PM Stanislav Fomichev <sdf@google.com> wrote:
+> >
+> > This is the same problem I found earlier in test_sockopt_inherit:
+> > there is a race between server thread doing accept() and client
+> > thread doing connect(). Let's explicitly synchronize them via
+> > pthread conditional variable.
+> >
+> > Fixes: b55873984dab ("selftests/bpf: test BPF_SOCK_OPS_RTT_CB")
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  tools/testing/selftests/bpf/prog_tests/tcp_rtt.c | 16 +++++++++++++++-
+> >  1 file changed, 15 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
+> > index fdc0b3614a9e..e64058906bcd 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
+> > @@ -203,6 +203,9 @@ static int start_server(void)
+> >         return fd;
+> >  }
+> >
+> > +static pthread_mutex_t server_started_mtx = PTHREAD_MUTEX_INITIALIZER;
+> > +static pthread_cond_t server_started = PTHREAD_COND_INITIALIZER;
+> > +
+> >  static void *server_thread(void *arg)
+> >  {
+> >         struct sockaddr_storage addr;
+> > @@ -215,6 +218,10 @@ static void *server_thread(void *arg)
+> >                 return NULL;
+> >         }
+> >
+> > +       pthread_mutex_lock(&server_started_mtx);
+> > +       pthread_cond_signal(&server_started);
+> > +       pthread_mutex_unlock(&server_started_mtx);
+> > +
+> >         client_fd = accept(fd, (struct sockaddr *)&addr, &len);
+> >         if (CHECK_FAIL(client_fd < 0)) {
+> >                 perror("Failed to accept client");
+> > @@ -248,7 +255,14 @@ void test_tcp_rtt(void)
+> >         if (CHECK_FAIL(server_fd < 0))
+> >                 goto close_cgroup_fd;
+> >
+> > -       pthread_create(&tid, NULL, server_thread, (void *)&server_fd);
+> > +       if (CHECK_FAIL(pthread_create(&tid, NULL, server_thread,
+> > +                                     (void *)&server_fd)))
+> > +               goto close_cgroup_fd;
+> > +
+> > +       pthread_mutex_lock(&server_started_mtx);
+> > +       pthread_cond_wait(&server_started, &server_started_mtx);
+> > +       pthread_mutex_unlock(&server_started_mtx);
 > 
-> The entire patchset modifies many files all over the tree.
-> This is from https://lkml.kernel.org/r/20190920062544.180997-1-wangkefeng.wang@huawei.com
 > 
->     120 files changed, 882 insertions(+), 927 deletions(-)
-> 
-> Would it make sense to push everything at the end of the merge window
-> or for 5.4-rc2 after master settles down?
+> If the server fails to listen, then we'll never get a signal, right?
+> Let's use timedwait instead to avoid test getting stuck forever in
+> such cases?
+Good point. How about I do the same thing I do in sockopt_inherit tests:
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c#n73
 
-If all over the tree it would probably make more sense for e.g. Andrew Morton to
-pick it up if there are no other objections, and try to merge it during mentioned
-time frame.
+	err = listen()
+	pthread_cond_signal()
+	if (CHECK_FAIL(err)) {
+		return;
+	}
 
-Thanks,
-Daniel
+Should fix the problem of getting stuck forever without any timeouts.
+I'll send a v2 later today.
+
+> > +
+> >         CHECK_FAIL(run_test(cgroup_fd, server_fd));
+> >         close(server_fd);
+> >  close_cgroup_fd:
+> > --
+> > 2.23.0.351.gc4317032e6-goog
+> >
